@@ -1,0 +1,891 @@
+<title>Riftgate Style Boards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --ground:#D9DEE3;
+    --surface:#E9EDF0;
+    --surface-2:#F5F7F8;
+    --ink:#12161B;
+    --ink-2:#4B5661;
+    --ink-3:#6E7A86;
+    --line:#B4BDC5;
+    --line-2:#CBD2D8;
+    --accent:#C98A12;
+    --accent-ink:#12161B;
+    --accent-soft:rgba(201,138,18,.16);
+    --pro:#2F7D4F;
+    --con:#B23A2E;
+    --display:'Barlow Condensed', 'Arial Narrow', Impact, sans-serif;
+    --body:'Barlow', 'Helvetica Neue', Arial, sans-serif;
+    --mono:'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#15181C;
+      --surface:#1D2126;
+      --surface-2:#252A30;
+      --ink:#E7EBEE;
+      --ink-2:#A2ACB5;
+      --ink-3:#7C8792;
+      --line:#343B43;
+      --line-2:#2A3037;
+      --accent:#F2B233;
+      --accent-ink:#15181C;
+      --accent-soft:rgba(242,178,51,.16);
+      --pro:#5FC28A;
+      --con:#E8705F;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#15181C;
+    --surface:#1D2126;
+    --surface-2:#252A30;
+    --ink:#E7EBEE;
+    --ink-2:#A2ACB5;
+    --ink-3:#7C8792;
+    --line:#343B43;
+    --line-2:#2A3037;
+    --accent:#F2B233;
+    --accent-ink:#15181C;
+    --accent-soft:rgba(242,178,51,.16);
+    --pro:#5FC28A;
+    --con:#E8705F;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--ground);
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:16px;
+    line-height:1.55;
+    padding-inline:20px;
+    padding-block:0 72px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .stripe{
+    height:10px;
+    margin-inline:-20px;
+    background:repeating-linear-gradient(135deg, var(--accent) 0 14px, var(--ink) 14px 28px);
+  }
+  .wrap{max-width:880px; margin:0 auto}
+  a{color:inherit}
+  p{margin:0 0 1em; max-width:68ch}
+  h1,h2,h3,h4{font-family:var(--display); text-transform:uppercase; margin:0; text-wrap:balance; line-height:1}
+  h1{font-size:clamp(44px, 9vw, 76px); font-weight:700; letter-spacing:.005em; line-height:.92; margin-top:28px}
+  h2{font-size:clamp(30px, 5vw, 40px); font-weight:700; letter-spacing:.01em}
+  h3{font-size:19px; font-weight:600; letter-spacing:.05em; color:var(--ink); margin-bottom:10px}
+  h4{font-size:14px; font-weight:600; letter-spacing:.1em; color:var(--ink-3); margin-bottom:6px}
+  .eyebrow{font-family:var(--display); font-weight:600; font-size:14px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3)}
+  .lede{font-size:19px; line-height:1.45; color:var(--ink); max-width:62ch; margin-top:18px}
+  .muted{color:var(--ink-2)}
+  code, .mono{font-family:var(--mono); font-size:.92em}
+
+  /* brief strip */
+  .brief{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));
+    gap:0; margin-top:28px; border:1px solid var(--line); background:var(--surface);
+  }
+  .brief div{padding:12px 14px; border-right:1px solid var(--line-2)}
+  .brief div:last-child{border-right:0}
+  .brief b{display:block; font-family:var(--display); font-size:28px; font-weight:700; line-height:1; letter-spacing:.01em; font-variant-numeric:tabular-nums}
+  .brief span{display:block; font-size:12.5px; color:var(--ink-2); margin-top:4px; letter-spacing:.02em}
+  @media (max-width:640px){ .brief div{border-right:0; border-bottom:1px solid var(--line-2)} .brief div:last-child{border-bottom:0} }
+
+  /* style sections */
+  section.style{margin-top:64px; border-top:3px solid var(--ink); padding-top:22px}
+  .tag{
+    display:inline-block; font-family:var(--display); font-weight:700; font-size:14px; letter-spacing:.12em; text-transform:uppercase;
+    background:var(--accent); color:var(--accent-ink); padding:3px 9px 2px; margin-bottom:10px;
+  }
+  .refs{font-size:14px; color:var(--ink-2); margin:-4px 0 0}
+  .refs b{color:var(--ink); font-weight:600}
+  .two{display:grid; grid-template-columns:1fr 1fr; gap:28px; margin-top:26px}
+  @media (max-width:680px){ .two{grid-template-columns:1fr; gap:22px} }
+
+  table{border-collapse:collapse; width:100%; font-size:13.5px; font-variant-numeric:tabular-nums}
+  th,td{text-align:left; padding:7px 10px 7px 0; border-bottom:1px solid var(--line-2); vertical-align:top}
+  th{font-family:var(--display); font-weight:600; letter-spacing:.08em; text-transform:uppercase; font-size:12.5px; color:var(--ink-3); border-bottom:2px solid var(--accent); white-space:nowrap}
+  .two > div{min-width:0; overflow-x:auto}
+  td.num{font-family:var(--mono); font-size:13px; white-space:nowrap}
+  tr.flag td{background:var(--accent-soft)}
+  td small{display:block; color:var(--ink-2); font-size:12px; line-height:1.35; margin-top:2px}
+  .tablewrap{overflow-x:auto}
+
+  .swatches{display:grid; grid-template-columns:repeat(auto-fill, minmax(74px, 1fr)); gap:8px}
+  .sw i{display:block; height:42px; border:1px solid rgba(0,0,0,.28)}
+  .sw b{display:block; font-family:var(--mono); font-weight:500; font-size:11px; margin-top:4px; letter-spacing:.02em}
+  .sw span{display:block; font-size:11.5px; color:var(--ink-2); line-height:1.25}
+
+  .mocks{display:flex; flex-wrap:wrap; gap:18px 26px; margin-top:26px; align-items:flex-start}
+  figure{margin:0; max-width:100%}
+  canvas{display:block; image-rendering:pixelated; image-rendering:crisp-edges; max-width:100%; height:auto; border:1px solid var(--line)}
+  figcaption{font-size:12.5px; line-height:1.4; color:var(--ink-2); margin-top:7px; max-width:250px}
+  figcaption b{color:var(--ink); font-weight:600}
+  .honest{font-size:13px; color:var(--ink-3); margin-top:12px; max-width:72ch; border-left:3px solid var(--line); padding-left:12px}
+
+  .treat{margin-top:26px}
+  .treat p{font-size:15px}
+  .verdict{margin-top:26px; border:1px solid var(--line); background:var(--surface)}
+  .verdict .head{padding:10px 16px; border-bottom:1px solid var(--line)}
+  .verdict .cols{display:grid; grid-template-columns:1fr 1fr}
+  @media (max-width:680px){ .verdict .cols{grid-template-columns:1fr} .verdict .cols > div + div{border-top:1px solid var(--line)} }
+  .verdict .cols > div{padding:12px 16px 14px}
+  .verdict .cols > div + div{border-left:1px solid var(--line)}
+  @media (max-width:680px){ .verdict .cols > div + div{border-left:0} }
+  ul.pc{list-style:none; margin:0; padding:0; font-size:14.5px}
+  ul.pc li{padding-left:20px; position:relative; margin-bottom:8px; line-height:1.4}
+  ul.pc li::before{position:absolute; left:0; top:-1px; font-family:var(--display); font-weight:700; font-size:18px}
+  ul.pro li::before{content:"+"; color:var(--pro)}
+  ul.con li::before{content:"\2212"; color:var(--con)}
+  .verdict-line{font-size:15px; font-weight:500; margin:0}
+
+  /* compare */
+  section.compare{margin-top:72px; border-top:3px solid var(--ink); padding-top:22px}
+  .compare table{min-width:640px}
+  .compare td{font-size:13.5px}
+  .compare td:first-child{font-family:var(--display); font-weight:600; font-size:15px; letter-spacing:.03em; text-transform:uppercase; white-space:nowrap}
+  .rec{margin-top:34px; border:2px solid var(--ink); background:var(--surface-2); position:relative}
+  .rec::before{content:""; display:block; height:8px; background:repeating-linear-gradient(135deg, var(--accent) 0 12px, var(--ink) 12px 24px)}
+  .rec .in{padding:18px 20px 22px}
+  .rec p{font-size:16.5px; max-width:70ch}
+  .rec p:last-child{margin-bottom:0}
+  footer{margin-top:40px; font-size:12.5px; color:var(--ink-3); max-width:70ch}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+</style>
+
+<div class="stripe" aria-hidden="true"></div>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow" style="margin-top:26px">Working title: Riftgate &nbsp;&middot;&nbsp; art direction, round one</div>
+  <h1>Riftgate<br>Style Boards</h1>
+  <p class="lede">The design is settled; the art is not. Three pixel-art directions for a portrait-phone hex battler with dice skirmishes, each with real numbers, a real palette, and a sprite pair drawn in code so we can argue about pixels instead of adjectives.</p>
+  <p class="muted" style="max-width:66ch">Tone target: loose, ironic sci-fi. The machines and the stakes are played straight; the manufacturers, the propaganda and the things coming out of the rift carry the joke. Warhammer 40k grandeur, Doom energy, no grimdark fantasy.</p>
+  <div class="brief" aria-label="Constraints the art must satisfy">
+    <div><b>7 &times; 13</b><span>hex grid, pointy-top, no scrolling</span></div>
+    <div><b>400 px</b><span>logical width; 7 columns need &le; 53 px hexes</span></div>
+    <div><b>1 sprite</b><span>per hex on the battlefield</span></div>
+    <div><b>120 px</b><span>die face per mech in the skirmish</span></div>
+    <div><b>3&ndash;4 v 6</b><span>mechs vs a 2 &times; 3 enemy block, units large</span></div>
+  </div>
+</header>
+
+<!-- ============================== STYLE A ============================== -->
+<section class="style" id="style-a">
+  <span class="tag">Style A</span>
+  <h2>Chunky low-bit</h2>
+  <p style="margin-top:12px">Sixteen-pixel units, four to six colours per faction, a thick ink outline on everything. Every unit is a silhouette first and a drawing second, so a 7-wide battlefield reads like a board game on a 400 px screen. The joke lands harder when the propaganda posters are lavish and the actual war machines are little tin toys.</p>
+  <p class="refs"><b>References:</b> Slice &amp; Dice, Downwell, Loop Hero, Into the Breach (map readability, not its sprite size).</p>
+
+  <div class="two">
+    <div>
+      <h4>Pixel scale</h4>
+      <table>
+        <thead><tr><th>Sprite</th><th>Scale</th><th>On screen</th><th>Hex needed</th><th>Cols @ 400 px</th></tr></thead>
+        <tbody>
+          <tr><td class="num">16 px</td><td class="num">3&times;</td><td class="num">48 px</td><td class="num">48&ndash;53 px</td><td class="num">7 <small>uses 360&ndash;398 px</small></td></tr>
+          <tr><td class="num">16 px</td><td class="num">4&times;</td><td class="num">64 px</td><td class="num">64+ px</td><td class="num">5 <small>too big for the grid; skirmish scale only</small></td></tr>
+          <tr><td class="num">16 px</td><td class="num">6&times;</td><td class="num">96 px</td><td class="num">&mdash;</td><td class="num">skirmish <small>96 px next to a 120 px die</small></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h4>Palette &middot; 10 anchors</h4>
+      <div class="swatches" id="pal-a"></div>
+    </div>
+  </div>
+
+  <div class="mocks">
+    <figure><canvas id="a-sprites"></canvas><figcaption><b>Sprites at 6&times;.</b> Biped with a gun arm and a chest hazard stripe; hunched ghoul with bone showing through. 6 colours each plus ink.</figcaption></figure>
+    <figure><canvas id="a-hex"></canvas><figcaption><b>Battlefield at 1&times;.</b> 52 px hexes, sprites at 3&times; (48 px). The amber ring is a move-range highlight drawn on the same pixel grid.</figcaption></figure>
+    <figure><canvas id="a-die"></canvas><figcaption><b>Die face, 120 px.</b> 3&times;5 pixel digits at 8&times;, glyphs at 3&times;/2&times;, chamfered corners. Everything shares the sprite grid.</figcaption></figure>
+  </div>
+  <p class="honest">These are style-direction sketches drawn in code by an AI, not art. A pixel artist would do far better in an afternoon; what matters here is the scale, the outline rule and the palette, all of which survive contact with a real artist.</p>
+
+  <div class="two treat">
+    <div>
+      <h4>Outline and shading</h4>
+      <p>One pixel of pure ink around every sprite and between limbs, no anti-aliasing. Two tones per material plus one highlight, light from top-left, no dithering. The hazard accent appears once per mech (a stripe, a lens) so it stays a signal, not a colour.</p>
+    </div>
+    <div>
+      <h4>Text and UI</h4>
+      <p>Numbers in a 3&times;5 or 5&times;7 pixel face at the same 3&times; scale, so the die face and the sprites share one grid and never look composited. Long text (unit descriptions, manufacturer copy) on a native-resolution layer; nobody wants to read a paragraph in an 8 px font.</p>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <div class="head"><h3 style="margin:0">Verdict for Riftgate</h3></div>
+    <div class="cols">
+      <div><ul class="pc pro">
+        <li>Readability at 48 px is guaranteed; 3&times; is a clean integer and the grid fits with margin to spare.</li>
+        <li>Fastest to make: a new unit is 20&ndash;40 minutes, an enemy variant is a palette swap.</li>
+        <li>Suits the tone. Tin-toy tanks against a lavish propaganda poster is the joke in one image.</li>
+        <li>Dice, glyphs and sprites live on one pixel grid, so the skirmish screen feels like one object.</li>
+      </ul></div>
+      <div><ul class="pc con">
+        <li>Apocalyptic war machine is a hard sell at 16 px. They read as cute before they read as heavy.</li>
+        <li>A 16 px sprite at 6&times; in the skirmish is a 96 px blob of big squares; needs separate 24&ndash;32 px skirmish sprites or a lot of VFX to carry the screen.</li>
+        <li>Loadout is the customisation fantasy, and a gun arm versus a missile pod is a 3-pixel difference.</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== STYLE B ============================== -->
+<section class="style" id="style-b">
+  <span class="tag">Style B</span>
+  <h2>Mid-res tactical</h2>
+  <p style="margin-top:12px">Twenty-four to thirty-two pixel sprites, 12&ndash;16 colours per faction, an outline only on the silhouette, checker dithering for metal. Mechs are drawn as assemblies: a hull, a leg set, hardpoints you can actually see. This is the Advance Wars and Into the Breach register, with the palette pushed toward 40k gunmetal, olive drab and one hazard stripe.</p>
+  <p class="refs"><b>References:</b> Into the Breach, Wargroove, Advance Wars (GBA), FTL.</p>
+
+  <div class="two">
+    <div>
+      <h4>Pixel scale</h4>
+      <table>
+        <thead><tr><th>Sprite</th><th>Scale</th><th>On screen</th><th>Hex needed</th><th>Cols @ 400 px</th></tr></thead>
+        <tbody>
+          <tr><td class="num">24 px</td><td class="num">2&times;</td><td class="num">48 px</td><td class="num">48&ndash;53 px</td><td class="num">7 <small>the sweet spot; 4&times; = 96 px for the skirmish</small></td></tr>
+          <tr class="flag"><td class="num">32 px</td><td class="num">2&times;</td><td class="num">64 px</td><td class="num">64+ px</td><td class="num">5 <small>6 only if edge hexes clip; the 7-wide grid is gone</small></td></tr>
+          <tr class="flag"><td class="num">32 px</td><td class="num">1.5&times;</td><td class="num">48 px</td><td class="num">48&ndash;53 px</td><td class="num">7 <small>non-integer: uneven pixels, shimmer on movement</small></td></tr>
+        </tbody>
+      </table>
+      <p class="muted" style="font-size:13px; margin-top:10px">The flagged rows are the trap. 32 px is where mechs get gorgeous, but 32 &times; 2 = 64 and 64 &times; 7.5 = 480 px. Either the grid shrinks to 5&ndash;6 columns, or the game accepts a 1.5&times; scale and looks slightly wrong on every frame. 24 px is the discipline.</p>
+    </div>
+    <div>
+      <h4>Palette &middot; 11 anchors of ~16</h4>
+      <div class="swatches" id="pal-b"></div>
+    </div>
+  </div>
+
+  <div class="mocks">
+    <figure><canvas id="b-sprites"></canvas><figcaption><b>Sprites at 4&times;.</b> 24 px biped: olive pauldrons, dithered gunmetal hull, red hardpoint lights, cannon arm. 24 px horned demon in three reds with a hot-side highlight.</figcaption></figure>
+    <figure><canvas id="b-hex"></canvas><figcaption><b>Battlefield at 1&times;.</b> Same 52 px hexes, sprites at 2&times; (48 px). Hex edges are 1 px, hexes separated by value, highlight is a tinted fill.</figcaption></figure>
+    <figure><canvas id="b-die"></canvas><figcaption><b>Die face, 120 px.</b> 5&times;7 digits at 5&times;, a 2 px bevel, glyphs at 3&times; and 2&times;. Finer than A, still on the 2&times; grid.</figcaption></figure>
+  </div>
+  <p class="honest">Code-drawn sketches again. The 24 px mech is authored by hand as a character grid; a real artist would fix the shoulders, add sub-pixel-feel edge highlights and give the demon a jaw that reads at 1&times;.</p>
+
+  <div class="two treat">
+    <div>
+      <h4>Outline and shading</h4>
+      <p>A dark (not black) outline on the outer silhouette only; internal parts separate by value and by material. Three or four tones per material, 50% checker dither on flat metal, one specular pixel on lenses and barrels. Each weapon is a 4&ndash;6 px cluster drawn as a separate layer, which is what makes loadout swaps cheap.</p>
+    </div>
+    <div>
+      <h4>Text and UI</h4>
+      <p>Numbers in a 5&times;7 pixel face at 2&times;; die borders, bevels and glyphs at 2&times; so they sit on the sprite grid. Body text, tooltips and the propaganda cards on a native-res layer. The two layers mix well at 2&times; because the pixel size is small enough to read as texture rather than blocks.</p>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <div class="head"><h3 style="margin:0">Verdict for Riftgate</h3></div>
+    <div class="cols">
+      <div><ul class="pc pro">
+        <li>One sprite serves both screens at integer scale: 48 px on the grid, 96 px in the skirmish, no second asset set.</li>
+        <li>Hardpoints read. The gun arm is a gun arm, the missile pod is a missile pod, and swapping them is a layer change.</li>
+        <li>40k grit is available through palette and dither without losing the outline that keeps units legible on a dark field.</li>
+        <li>The die at 2&times; feels like part of the mech, and the 120 px face has room for four glyphs and a number.</li>
+      </ul></div>
+      <div><ul class="pc con">
+        <li>32 px will tempt you constantly and it does not fit; the whole direction depends on staying at 24.</li>
+        <li>1&ndash;2 hours per unit for a solo developer, plus real palette discipline: 16 colours per faction is a rule, not a suggestion.</li>
+        <li>Enemies at this detail level look dead when static; budget 2&ndash;3 idle frames each or the horde looks like a sticker sheet.</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== STYLE C ============================== -->
+<section class="style" id="style-c">
+  <span class="tag">Style C</span>
+  <h2>Hi-bit grim</h2>
+  <p style="margin-top:12px">Forty-eight to sixty-four pixel sprites, painted rather than outlined, heavy blacks, restrained palettes with one rim light. This is the Doom cover: machines with mass and heat, and things from the rift that are actually unsettling. It is the direction that makes the skirmish screen a poster, and the one that struggles most on the grid.</p>
+  <p class="refs"><b>References:</b> Eastward, Octopath Traveler (sprites, not the tilt-shift), Blasphemous, Darkest Dungeon for mood (not pixel).</p>
+
+  <div class="two">
+    <div>
+      <h4>Pixel scale</h4>
+      <table>
+        <thead><tr><th>Sprite</th><th>Scale</th><th>On screen</th><th>Hex needed</th><th>Cols @ 400 px</th></tr></thead>
+        <tbody>
+          <tr><td class="num">48 px</td><td class="num">1&times;</td><td class="num">48 px</td><td class="num">48&ndash;53 px</td><td class="num">7 <small>fits, but no outline in a 53 px hex is the readability problem</small></td></tr>
+          <tr class="flag"><td class="num">64 px</td><td class="num">1&times;</td><td class="num">64 px</td><td class="num">64+ px</td><td class="num">5 <small>grid shrinks; skirmish only</small></td></tr>
+          <tr><td class="num">48 px</td><td class="num">2&times;</td><td class="num">96 px</td><td class="num">&mdash;</td><td class="num">skirmish <small>ideal size beside a 120 px die</small></td></tr>
+        </tbody>
+      </table>
+      <p class="muted" style="font-size:13px; margin-top:10px">1&times; means one sprite pixel is one logical pixel, about 2.7 physical pixels on a 1080p phone. Still pixel art, just fine-grained; the hi-bit look depends on that density.</p>
+    </div>
+    <div>
+      <h4>Palette &middot; 10 anchors of many</h4>
+      <div class="swatches" id="pal-c"></div>
+    </div>
+  </div>
+
+  <div class="mocks">
+    <figure><canvas id="c-sprites"></canvas><figcaption><b>Sprites at 3&times;, authored at 32 px</b> as an approximation of 48 px. No ink outline; a near-black rim on the shadow side, olive plate over gunmetal, five tones per material. Enemy is an eldritch hulk: three eyes, horns, tentacle arms.</figcaption></figure>
+    <figure><canvas id="c-hex"></canvas><figcaption><b>Battlefield at 1&times;.</b> Same 52 px hexes; the 32 px stand-ins are shown at 1&times;. A real 48 px sprite fills the hex, which is exactly the squint test this style has to pass.</figcaption></figure>
+    <figure><canvas id="c-die"></canvas><figcaption><b>Die face, 120 px.</b> Native-res vector: gradient panel, typeset number, vector glyphs. Floats over the sprite layer the way Octopath's UI does.</figcaption></figure>
+  </div>
+  <p class="honest">The 32 px sprites here are the roughest of the three, because painterly shading is precisely the thing a character grid typed by hand cannot fake. Treat them as a value study, not a look.</p>
+
+  <div class="two treat">
+    <div>
+      <h4>Outline and shading</h4>
+      <p>No outline. Edges come from value contrast and a near-black rim on the shadow side only. Five or more tones per material with soft ramps, heavy shadow mass under every unit, one cold rim light from the rift and one warm light from the gate. Enemies get emissive eyes and wounds; mechs get hot barrels and a single hazard element.</p>
+    </div>
+    <div>
+      <h4>Text and UI</h4>
+      <p>Everything native-res: a vector die face, typeset numbers, vector glyphs. The sprites and the UI are two visual languages by design, which works when the UI is quiet and dark. It stops working the moment the UI tries to be pixel art too, because 1&times; pixel UI is unreadably small.</p>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <div class="head"><h3 style="margin:0">Verdict for Riftgate, and the hybrid</h3></div>
+    <div class="cols">
+      <div><ul class="pc pro">
+        <li>Mood. The rift looks like a rift, the mechs have mass, and the skirmish screen with 96 px units beside 120 px dice is the game's poster.</li>
+        <li>Doom and 40k badassery are native here; nothing has to be implied.</li>
+        <li>Enemies can be genuinely disgusting, which is where the ironic tone gets its contrast.</li>
+      </ul></div>
+      <div><ul class="pc con">
+        <li>4&ndash;8 hours per unit for a non-specialist, and animation multiplies it. A solo developer will feel every frame.</li>
+        <li>At 48 px in a 53 px hex on a dark field, no outlines and low value contrast turn a 7&times;13 board into smudges. Readability has to be engineered back in with drop shadows and faction rim colours.</li>
+        <li>Two visual languages (painted sprites, vector UI) are fine, but they never feel like one object the way A and B do.</li>
+      </ul></div>
+    </div>
+    <div style="padding:12px 16px 14px; border-top:1px solid var(--line)">
+      <p class="verdict-line"><b>The hybrid:</b> chunky (A or B) map sprites on the battlefield, hi-bit sprites in the skirmish, exactly as Fire Emblem splits map and battle sprites. It solves readability and keeps the poster. It also doubles the asset count per unit, doubles the animation sets, and asks the player to accept that the tin toy and the war machine are the same thing. Fire Emblem gets away with it because its map sprites are deliberately abstract; Riftgate would need to commit to that abstraction on purpose.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== COMPARE ============================== -->
+<section class="compare" id="compare">
+  <span class="tag">Comparison</span>
+  <h2>Side by side</h2>
+  <div class="tablewrap" style="margin-top:18px">
+    <table>
+      <thead><tr><th>Direction</th><th>Sprite &middot; scale</th><th>Cols @ 400 px</th><th>Battlefield read</th><th>Skirmish presence</th><th>Tone fit</th><th>Cost per unit, solo</th></tr></thead>
+      <tbody>
+        <tr><td>A &middot; Chunky</td><td class="num">16 px &middot; 3&times;</td><td class="num">7</td><td>Excellent</td><td>Weak at 6&times; without VFX</td><td>Strong on irony, weak on grandeur</td><td class="num">20&ndash;40 min</td></tr>
+        <tr><td>B &middot; Mid-res</td><td class="num">24 px &middot; 2&times;</td><td class="num">7</td><td>Good</td><td>Good at 4&times;</td><td>Balanced; grit via palette</td><td class="num">1&ndash;2 h</td></tr>
+        <tr><td>B &middot; at 32 px</td><td class="num">32 px &middot; 2&times;</td><td class="num">5</td><td>Good, but the grid shrinks</td><td>Very good</td><td>Balanced</td><td class="num">2&ndash;3 h</td></tr>
+        <tr><td>C &middot; Hi-bit</td><td class="num">48 px &middot; 1&times;</td><td class="num">7</td><td>Poor without engineered contrast</td><td>Excellent</td><td>Strong on grandeur, needs the joke elsewhere</td><td class="num">4&ndash;8 h</td></tr>
+        <tr><td>Hybrid A+C</td><td class="num">16 px &middot; 3&times; / 48 px &middot; 2&times;</td><td class="num">7</td><td>Excellent</td><td>Excellent</td><td>Two tones to reconcile</td><td class="num">5&ndash;9 h, two sets</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="rec">
+    <div class="in">
+      <div class="eyebrow" style="margin-bottom:8px">Recommendation</div>
+      <h3>Style B at 24 px, 2&times;, and steal C's grandeur where it is cheap</h3>
+      <p>Go with B at 24 px: it is the only direction where one sprite serves both screens at integer scale (48 px on the grid, 96 px in the skirmish) while still showing which gun is bolted to which arm, and that legibility of loadout is the whole customisation fantasy. Take the grandeur from C where it costs no animation frames: painted manufacturer portraits, propaganda posters between waves, and a hi-bit rift backdrop behind a pixel-art horde. Keep A as the fallback if the 24 px units fail the squint test on a real phone, because the hybrid's doubled asset count is the one cost a solo developer cannot argue down.</p>
+    </div>
+  </div>
+
+  <footer>Every sprite, hex and die on this page is drawn procedurally in a canvas from hand-typed character grids. They exist to test scale, outline rules and palettes, not to set a quality bar. Hex maths: pointy-top, width = &radic;3 &times; R, an offset grid of n columns needs (n + 0.5) &times; width.</footer>
+</section>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var K = 2; // internal canvas scale for crisp rendering on 2x screens
+
+  /* ---------- helpers ---------- */
+  function makeCanvas(id, w, h, bg){
+    var c = document.getElementById(id);
+    c.width = w * K; c.height = h * K;
+    c.style.width = w + 'px';
+    var ctx = c.getContext('2d');
+    ctx.setTransform(K, 0, 0, K, 0, 0);
+    ctx.imageSmoothingEnabled = false;
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, w, h);
+    return ctx;
+  }
+  function drawPix(ctx, rows, map, x, y, s){
+    for (var j = 0; j < rows.length; j++){
+      var r = rows[j];
+      for (var i = 0; i < r.length; i++){
+        var ch = r.charAt(i);
+        if (ch === '.') continue;
+        var col = map[ch];
+        if (!col) continue;
+        ctx.fillStyle = col;
+        ctx.fillRect(x + i * s, y + j * s, s, s);
+      }
+    }
+  }
+  function pixRound(ctx, x, y, w, h, r, color){
+    ctx.fillStyle = color;
+    for (var dy = 0; dy < h; dy++){
+      var t = -1;
+      if (dy < r) t = r - dy - 0.5;
+      else if (dy >= h - r) t = dy - (h - r) + 0.5;
+      var ins = 0;
+      if (t >= 0) ins = Math.round(r - Math.sqrt(Math.max(0, r * r - t * t)));
+      ctx.fillRect(x + ins, y + dy, w - 2 * ins, 1);
+    }
+  }
+  function roundPath(ctx, x, y, w, h, r){
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r); ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h); ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+  }
+  function hexPath(ctx, cx, cy, R, snap){
+    ctx.beginPath();
+    for (var i = 0; i < 6; i++){
+      var a = Math.PI / 180 * (60 * i - 90);
+      var px = cx + R * Math.cos(a), py = cy + R * Math.sin(a);
+      if (snap){ px = Math.round(px); py = Math.round(py); }
+      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+  }
+  // pointy-top offset grid; odd rows shift right by half a hex
+  function forHexes(R, cols, rows, ox, oy, cb){
+    var w = Math.sqrt(3) * R;
+    for (var r = 0; r < rows; r++){
+      for (var c = 0; c < cols; c++){
+        var cx = ox + w * (c + 0.5 + (r % 2 ? 0.5 : 0));
+        var cy = oy + R + r * 1.5 * R;
+        cb(c, r, cx, cy);
+      }
+    }
+  }
+  function gridSize(R, cols, rows, m){
+    var w = Math.sqrt(3) * R;
+    return [Math.ceil(w * (cols + 0.5) + 2 * m), Math.ceil(R * (1.5 * (rows - 1) + 2) + 2 * m)];
+  }
+  function swatches(id, list){
+    var el = document.getElementById(id);
+    var html = '';
+    for (var i = 0; i < list.length; i++){
+      html += '<div class="sw"><i style="background:' + list[i][0] + '"></i><b>' + list[i][0] + '</b><span>' + list[i][1] + '</span></div>';
+    }
+    el.innerHTML = html;
+  }
+
+  /* ---------- shared glyphs (7x7) and digits ---------- */
+  var GLYPH = {
+    target: ['..###..', '.#...#.', '#..#..#', '#.###.#', '#..#..#', '.#...#.', '..###..'],
+    bolt:   ['....##.', '...##..', '..###..', '.#####.', '...##..', '..##...', '.##....'],
+    shield: ['#######', '#..#..#', '#..#..#', '#.....#', '.#...#.', '..#.#..', '...#...'],
+    flame:  ['...#...', '..##...', '..###..', '.####..', '.#####.', '.#####.', '..###..']
+  };
+  var DIG3 = {
+    '0': ['###', '#.#', '#.#', '#.#', '###'],
+    '1': ['.#.', '##.', '.#.', '.#.', '###'],
+    '2': ['###', '..#', '###', '#..', '###'],
+    '3': ['###', '..#', '###', '..#', '###'],
+    '4': ['#.#', '#.#', '###', '..#', '..#'],
+    '5': ['###', '#..', '###', '..#', '###'],
+    '6': ['###', '#..', '###', '#.#', '###'],
+    '7': ['###', '..#', '..#', '..#', '..#'],
+    '8': ['###', '#.#', '###', '#.#', '###'],
+    '9': ['###', '#.#', '###', '..#', '###']
+  };
+  var DIG5 = {
+    '0': ['.###.', '#...#', '#..##', '#.#.#', '##..#', '#...#', '.###.'],
+    '1': ['..#..', '.##..', '..#..', '..#..', '..#..', '..#..', '.###.'],
+    '2': ['.###.', '#...#', '....#', '...#.', '..#..', '.#...', '#####'],
+    '3': ['#####', '...#.', '..#..', '...#.', '....#', '#...#', '.###.'],
+    '4': ['...#.', '..##.', '.#.#.', '#..#.', '#####', '...#.', '...#.'],
+    '5': ['#####', '#....', '####.', '....#', '....#', '#...#', '.###.'],
+    '6': ['..##.', '.#...', '#....', '####.', '#...#', '#...#', '.###.'],
+    '7': ['#####', '....#', '...#.', '..#..', '.#...', '.#...', '.#...'],
+    '8': ['.###.', '#...#', '#...#', '.###.', '#...#', '#...#', '.###.'],
+    '9': ['.###.', '#...#', '#...#', '.####', '....#', '...#.', '.##..']
+  };
+
+  /* ---------- STYLE A: 16x16 ---------- */
+  var A_MECH = [
+    '......####......',
+    '.....#lmmm#.....',
+    '.....#lggm#.....',
+    '.####mmmmmm####.',
+    '#ll#mlmmmmlm#dd#',
+    '#lm#mmhhhhmm#d##',
+    '#lm#mmmmmmmm#dll',
+    '#dd#mmddddmm#d##',
+    '####mmmmmmmm####',
+    '...#dmm##mmd#...',
+    '...#dmm##mmd#...',
+    '..##dmm##mmd##..',
+    '..#ddmm##mmdd#..',
+    '..#ddd#..#ddd#..',
+    '.#dddd#..#dddd#.',
+    '.######..######.'
+  ];
+  var A_GHOUL = [
+    '........######..',
+    '.......#mmmmml#.',
+    '......#mmmmmmll#',
+    '..####mddmmmmml#',
+    '.#mmmm#ddmmmmmm#',
+    '#mmmmm#ddmmmmm#.',
+    '#mellmm#dmmmmm#.',
+    '#mmmbbm#ddmmmm#.',
+    '.#bbb##dd#dmm#..',
+    '..###.#d#.#dm#..',
+    '......#d#.#dm#..',
+    '.....#dd#..#d#..',
+    '.....#d#..#dd#..',
+    '....#bd#..#dd#..',
+    '...#bb#..#bbd#..',
+    '...####..#####..'
+  ];
+  var A_PAL = {
+    ink:'#0B0B0F', gunD:'#3C4450', gun:'#6B7684', gunL:'#A9B4BF', hazard:'#F2B233', glow:'#7CF4E8',
+    ghoulD:'#2A5C48', ghoul:'#57A56E', bone:'#E9E2C8', eye:'#FF4D4D'
+  };
+  var A_MECH_MAP  = { '#':A_PAL.ink, d:A_PAL.gunD, m:A_PAL.gun, l:A_PAL.gunL, h:A_PAL.hazard, g:A_PAL.glow };
+  var A_GHOUL_MAP = { '#':A_PAL.ink, d:A_PAL.ghoulD, m:A_PAL.ghoul, l:A_PAL.bone, b:A_PAL.bone, e:A_PAL.eye };
+  var A_FIELD = '#1B1F26', A_HEX1 = '#262C35', A_HEX2 = '#2E3540';
+
+  swatches('pal-a', [
+    [A_PAL.ink, 'Ink, every outline'], [A_PAL.gunD, 'Gunmetal shade'], [A_PAL.gun, 'Gunmetal'], [A_PAL.gunL, 'Gunmetal light'],
+    [A_PAL.hazard, 'Hazard, one per mech'], [A_PAL.glow, 'Visor glow'], [A_PAL.ghoulD, 'Undead shade'], [A_PAL.ghoul, 'Undead flesh'],
+    [A_PAL.bone, 'Bone'], [A_PAL.eye, 'Eye']
+  ]);
+
+  /* ---------- STYLE B: 24x24 ---------- */
+  var B_MECH = [
+    '.........######.........',
+    '........#ppoooo#........',
+    '........#oggggo#........',
+    '........#okkkko#........',
+    '.########oooooo########.',
+    '.#ppooo##pooooo##oooop#.',
+    '.#poroo##oooooo##ooroo#.',
+    '.#ooooO##ohhhho##Ooooo#.',
+    '.#OOOOO##oHHHHo##OOOOO#.',
+    '.########mmmmmm########.',
+    '..#ooo#.#mdmdmd#.#ooo###',
+    '..#ooo#.#dmdmdm#.#ooomll',
+    '..#ooo#.#mdmdmd#.#oooddd',
+    '..#OOO#.#dkdkdk#.#OOO###',
+    '..#kkk##kkkkkkkk##OOO#..',
+    '..######mmkkkkmm######..',
+    '.....#ooo#....#ooo#.....',
+    '.....#ooo#....#ooo#.....',
+    '.....#OkO#....#OkO#.....',
+    '....#oooo#....#oooo#....',
+    '....#oooo#....#oooo#....',
+    '....#OOOO#....#OOOO#....',
+    '...#kkkkk#...#kkkkk#....',
+    '...#######...#######....'
+  ];
+  var B_DEMON = [
+    '....##..........##......',
+    '...#bb#........#bb#.....',
+    '...#bb#........#bb#.....',
+    '....#bb#..####..#bb#....',
+    '.....#bb##rrrr##bb#.....',
+    '......#bb#rrrrrr#bb#....',
+    '.......##orrrrrrr##.....',
+    '.......#ryyrrryyr#......',
+    '.......#rrRRRRRrr#......',
+    '........#RkkkkkR#.......',
+    '........#RwkwkwR#.......',
+    '..#######RRRRRRR#######.',
+    '.#orrrrrrRRRRRRRrrrrrrr#',
+    '#orrrr##rrrRRrrr##rrrrr#',
+    '#rrrr#.#rrRRRRrr#.#rrrr#',
+    '#Rrrr#.#rRRRRRRr#.#rrrR#',
+    '.#rrr#.#RRkkkkRR#.#rrr#.',
+    '.#Rrr#.#RkkkkkkR#.#rrR#.',
+    '.#kkk#..#RRRRRR#..#kkk#.',
+    '.#w#w#..#RR##RR#..#w#w#.',
+    '........#RR#.#RR#.......',
+    '........#RR#.#RR#.......',
+    '.......#kkk#.#kkk#......',
+    '.......#####.#####......'
+  ];
+  var B_PAL = {
+    ink:'#14161C', k:'#2B3038', d:'#4A525E', m:'#737D8A', l:'#A3ACB6', w:'#D7DCE1',
+    O:'#4E5A3A', o:'#7A8A55', p:'#A6B27A', h:'#E8A93A', H:'#A8741F', g:'#6FE3FF', r:'#E0473A',
+    dR:'#5A1418', dr:'#A8242B', dO:'#E56A2E', dy:'#FFD24A', db:'#D9CBA6', dw:'#F0E9D6', dk:'#1A0A0C'
+  };
+  var B_MECH_MAP  = { '#':B_PAL.ink, k:B_PAL.k, d:B_PAL.d, m:B_PAL.m, l:B_PAL.l, w:B_PAL.w, O:B_PAL.O, o:B_PAL.o, p:B_PAL.p, h:B_PAL.h, H:B_PAL.H, g:B_PAL.g, r:B_PAL.r };
+  var B_DEMON_MAP = { '#':B_PAL.ink, R:B_PAL.dR, r:B_PAL.dr, o:B_PAL.dO, y:B_PAL.dy, b:B_PAL.db, w:B_PAL.dw, k:B_PAL.dk };
+  var B_FIELD = '#181B21', B_HEX1 = '#222730', B_HEX2 = '#272D37', B_LINE = '#3A414C';
+
+  swatches('pal-b', [
+    [B_PAL.ink, 'Outline, not black'], [B_PAL.d, 'Gunmetal shade'], [B_PAL.m, 'Gunmetal'], [B_PAL.l, 'Gunmetal light'],
+    [B_PAL.o, 'Olive plate'], [B_PAL.p, 'Olive light'], [B_PAL.h, 'Hazard'], [B_PAL.g, 'Sensor glow'],
+    [B_PAL.dr, 'Demon red'], [B_PAL.dO, 'Demon hot side'], [B_PAL.dy, 'Ember, eyes']
+  ]);
+
+  /* ---------- STYLE C: 32x32 (approximation of 48) ---------- */
+  var C_MECH = [
+    '............DDDDDDDD............',
+    '...........DwppoooOOD...........',
+    '...........DpGggggGOD...........',
+    '...........DoOOOOOOOD...........',
+    '...........DooooooOOD...........',
+    '.DDDDDDDDDDwooooooOOODDDDDDDDDD.',
+    '.DwpppoooDDpoooooooOODDwpooooOD.',
+    '.DppooooODDooooooooOODDpoooooOD.',
+    '.DporoooODDohhhhhhhOODDooroooOD.',
+    '.DoooooOODDoHHHHHHHOODDoooooOOD.',
+    '.DOooooOODDooooooooOODDOooooOOD.',
+    '.DOOOOOOODDOooooooOOODDOOOOOOOD.',
+    '.DDDDDDDDDDlmmmmmmmddDDDDDDDDDD.',
+    '..DwpoooD.DmdmdmdmdmdD.DwpoooD..',
+    '..DpooooD.DdmdmdmdmdmD.DpooooDDD',
+    '..DoooooD.DmdmdmdmdmdD.Doooomllw',
+    '..DOoooOD.DdmdmdmdmdmD.DOooodddd',
+    '..DOOOOOD.DDdDdDdDdDdD.DOOOODDDD',
+    '..DdddddDDmmddddddddmmDDdddddD..',
+    '..DDDDDDDDdmmddddddmmdDDDDDDDD..',
+    '.......DooooDDDDDDDDooooD.......',
+    '.......DpoooD......DpoooD.......',
+    '.......DooooD......DooooD.......',
+    '.......DOooOD......DOooOD.......',
+    '.......DdmmdD......DdmmdD.......',
+    '......DpooooD......DpooooD......',
+    '......DooooOD......DooooOD......',
+    '......DooooOD......DooooOD......',
+    '......DOOOOOD......DOOOOOD......',
+    '.....DddddddD......DddddddD.....',
+    '.....DDdddddD......DDdddddD.....',
+    '.....DDDDDDDD......DDDDDDDD.....'
+  ];
+  var C_HORROR = [
+    '................................',
+    '.................DDDDDDD........',
+    '..............DDDpvvvvvvDD......',
+    '............DDpvvvvvvvvvVD......',
+    '....D....D.DpvvvvvvvvvvvVD......',
+    '...DbD..DbDDpvvvvvvvvvvVVD......',
+    '...DbbD.DbbDvvvvvvvvvvvVVD......',
+    '..DbbbD.DbbbDvvvvvvvvvvVVVD.....',
+    '.DDbbDDDDbbDDvvvvvvvvvvvVVD.....',
+    'DpvvbvvvvvbvvDvvvvvvvvvvvVVD....',
+    'DvkkvvkkvvkkvVvvvvvvvvvvvVVVD...',
+    'DvkcvvkcvvkcvVvvvvvvvvvvvVVVD...',
+    'DvkkvvkkvvkkvVvvvvvvvvvvvVVVD...',
+    'DvvvvvvvvvvvvVvvvvvvvvvVVVVD....',
+    'DVkkkkkkkkkvvDvvvvvvvvVVVVD.....',
+    '.DkbkbkbkbkvvDvvvvvvvVVVVD......',
+    '..DDDDDDDDDvvDvvvvvvVVVVD.......',
+    '........DttDDvvvvVvvvVVVDDttD...',
+    '.......DttD.DvvvvVvvvVVVD.DttD..',
+    '......DttD..DvvvvVvvvVVVD.DttD..',
+    '.....DttD...DVvvvVvvvVVVD..DttD.',
+    '....DttD....DVVvvVvvVVVVD..DttD.',
+    '...DttD.....DDDDDDDDDDDDD.DttD..',
+    '..DttD......DvvvvD.DvvvvDDttD...',
+    '..DtcD......DvvvVD.DvvvVDDDDD...',
+    '..DDDD......DVvvVD.DVvvVD.......',
+    '............DvvvVD.DvvvVD.......',
+    '............DVvvVD.DVvvVD.......',
+    '............DVVVVD.DVVVVD.......',
+    '...........DkbkbkD.DkbkbkD......',
+    '...........DkkkkkD.DkkkkkD......',
+    '...........DDDDDDD.DDDDDDD......'
+  ];
+  var C_PAL = {
+    k:'#0A0B0F', D:'#16181F', d:'#3E4450', m:'#5F6775', l:'#8C95A3', w:'#C9D0D8',
+    O:'#3A3F2C', o:'#5C6640', p:'#8A9460', h:'#D9A441', H:'#8C6420', g:'#9FF1FF', G:'#3FB8CC', r:'#C8412F',
+    eD:'#16121F', ek:'#07060A', V:'#2A1A3F', v:'#5A3A7A', ep:'#8E6BAE', t:'#2E7F86', c:'#B7FFF2', b:'#C9BFA3'
+  };
+  var C_MECH_MAP   = { k:C_PAL.k, D:C_PAL.D, d:C_PAL.d, m:C_PAL.m, l:C_PAL.l, w:C_PAL.w, O:C_PAL.O, o:C_PAL.o, p:C_PAL.p, h:C_PAL.h, H:C_PAL.H, g:C_PAL.g, G:C_PAL.G, r:C_PAL.r };
+  var C_HORROR_MAP = { D:C_PAL.eD, k:C_PAL.ek, V:C_PAL.V, v:C_PAL.v, p:C_PAL.ep, t:C_PAL.t, c:C_PAL.c, b:C_PAL.b };
+  var C_FIELD = '#0E0F13', C_HEX1 = '#16171D', C_HEX2 = '#1B1C23';
+
+  swatches('pal-c', [
+    [C_PAL.k, 'Near-black, shadow mass'], [C_PAL.d, 'Steel shade'], [C_PAL.l, 'Steel light'], [C_PAL.o, 'Olive drab'],
+    [C_PAL.h, 'Hazard, warm light'], [C_PAL.g, 'Sensor, cold rim'], [C_PAL.V, 'Eldritch shade'], [C_PAL.v, 'Eldritch violet'],
+    [C_PAL.t, 'Tentacle teal'], [C_PAL.c, 'Eye glow']
+  ]);
+
+  /* ---------- sprite showcase canvases ---------- */
+  function showcase(id, field, mech, mechMap, enemy, enemyMap, s, floor){
+    var W = 232, H = 112;
+    var ctx = makeCanvas(id, W, H, field);
+    var size = mech.length * s; // 96
+    var y = 8;
+    if (floor === 'line'){
+      ctx.fillStyle = 'rgba(255,255,255,.08)'; ctx.fillRect(0, y + size + 2, W, 1);
+    } else if (floor === 'soft'){
+      ctx.fillStyle = 'rgba(0,0,0,.55)';
+      ctx.beginPath(); ctx.ellipse(12 + size / 2, y + size + 1, 40, 5, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(124 + size / 2, y + size + 1, 44, 5, 0, 0, Math.PI * 2); ctx.fill();
+    }
+    drawPix(ctx, mech, mechMap, 12, y, s);
+    drawPix(ctx, enemy, enemyMap, 124, y, s);
+  }
+  showcase('a-sprites', A_FIELD, A_MECH, A_MECH_MAP, A_GHOUL, A_GHOUL_MAP, 6, 'line');
+  showcase('b-sprites', B_FIELD, B_MECH, B_MECH_MAP, B_DEMON, B_DEMON_MAP, 4, 'line');
+  showcase('c-sprites', C_FIELD, C_MECH, C_MECH_MAP, C_HORROR, C_HORROR_MAP, 3, 'soft');
+
+  /* ---------- hex battlefield mocks ---------- */
+  var R = 30, COLS = 4, ROWS = 3, M = 8;
+  var MECH_AT = [0, 2], ENEMY_AT = [2, 0], HILITE = [1, 1];
+
+  function hexMock(id, style){
+    var sz = gridSize(R, COLS, ROWS, M);
+    var ctx = makeCanvas(id, sz[0], sz[1], style.field);
+    forHexes(R, COLS, ROWS, M, M, function(c, r, cx, cy){
+      var alt = (c + r) % 2 === 0;
+      if (style.kind === 'A'){
+        hexPath(ctx, cx, cy, R - 1, true);
+        ctx.fillStyle = alt ? style.hex1 : style.hex2; ctx.fill();
+        ctx.lineWidth = 2; ctx.strokeStyle = '#0B0B0F'; ctx.stroke();
+        if (c === HILITE[0] && r === HILITE[1]){
+          hexPath(ctx, cx, cy, R - 5, true);
+          ctx.lineWidth = 2; ctx.strokeStyle = A_PAL.hazard; ctx.stroke();
+        }
+      } else if (style.kind === 'B'){
+        hexPath(ctx, cx, cy, R - 1, true);
+        ctx.fillStyle = alt ? style.hex1 : style.hex2; ctx.fill();
+        ctx.lineWidth = 1; ctx.strokeStyle = style.line; ctx.stroke();
+        if (c === HILITE[0] && r === HILITE[1]){
+          hexPath(ctx, cx, cy, R - 2, true);
+          ctx.fillStyle = 'rgba(232,169,58,.28)'; ctx.fill();
+          ctx.lineWidth = 1; ctx.strokeStyle = B_PAL.h; ctx.stroke();
+        }
+      } else {
+        hexPath(ctx, cx, cy, R - 0.5, false);
+        ctx.fillStyle = alt ? style.hex1 : style.hex2; ctx.fill();
+        ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(0,0,0,.45)'; ctx.stroke();
+        if (c === HILITE[0] && r === HILITE[1]){
+          var g = ctx.createRadialGradient(cx, cy, 4, cx, cy, R);
+          g.addColorStop(0, 'rgba(217,164,65,.45)'); g.addColorStop(1, 'rgba(217,164,65,0)');
+          hexPath(ctx, cx, cy, R - 0.5, false); ctx.fillStyle = g; ctx.fill();
+          ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(217,164,65,.7)'; ctx.stroke();
+        }
+      }
+    });
+    // units drawn after all hexes so their corners overlap neighbours the way real map sprites do
+    forHexes(R, COLS, ROWS, M, M, function(c, r, cx, cy){
+      var spr = null, map = null;
+      if (c === MECH_AT[0] && r === MECH_AT[1]){ spr = style.mech; map = style.mechMap; }
+      if (c === ENEMY_AT[0] && r === ENEMY_AT[1]){ spr = style.enemy; map = style.enemyMap; }
+      if (!spr) return;
+      var n = spr.length, s = style.s;
+      var x = Math.round(cx - n * s / 2), y = Math.round(cy - n * s / 2);
+      if (style.kind === 'C'){
+        ctx.fillStyle = 'rgba(0,0,0,.5)';
+        ctx.beginPath(); ctx.ellipse(cx, y + n * s, n * s * 0.42, 3, 0, 0, Math.PI * 2); ctx.fill();
+      }
+      drawPix(ctx, spr, map, x, y, s);
+    });
+  }
+  hexMock('a-hex', { kind:'A', field:A_FIELD, hex1:A_HEX1, hex2:A_HEX2, mech:A_MECH, mechMap:A_MECH_MAP, enemy:A_GHOUL, enemyMap:A_GHOUL_MAP, s:3 });
+  hexMock('b-hex', { kind:'B', field:B_FIELD, hex1:B_HEX1, hex2:B_HEX2, line:B_LINE, mech:B_MECH, mechMap:B_MECH_MAP, enemy:B_DEMON, enemyMap:B_DEMON_MAP, s:2 });
+  hexMock('c-hex', { kind:'C', field:C_FIELD, hex1:C_HEX1, hex2:C_HEX2, mech:C_MECH, mechMap:C_MECH_MAP, enemy:C_HORROR, enemyMap:C_HORROR_MAP, s:1 });
+
+  /* ---------- die faces ---------- */
+  var DIE = 120, PAD = 8;
+
+  function dieA(){
+    var ctx = makeCanvas('a-die', DIE + 2 * PAD, DIE + 2 * PAD, A_FIELD);
+    var x = PAD, y = PAD, S = DIE;
+    pixRound(ctx, x, y, S, S, 7, A_PAL.ink);
+    pixRound(ctx, x + 3, y + 3, S - 6, S - 6, 5, '#2A303A');
+    // primary glyph top-left, 7x7 at 3x = 21
+    drawPix(ctx, GLYPH.target, { '#':A_PAL.gunL }, x + 10, y + 10, 3);
+    // two keyword glyphs top-right, 7x7 at 2x = 14
+    drawPix(ctx, GLYPH.bolt,   { '#':A_PAL.gunL }, x + S - 10 - 14 - 6 - 14, y + 12, 2);
+    drawPix(ctx, GLYPH.shield, { '#':A_PAL.gunL }, x + S - 10 - 14, y + 12, 2);
+    // big number centre, 3x5 at 8x = 24 x 40
+    drawPix(ctx, DIG3['6'], { '#':A_PAL.hazard }, x + (S - 24) / 2, y + (S - 40) / 2 + 6, 8);
+    // heat bottom-left: flame at 2x + digit at 3x (9 x 15)
+    drawPix(ctx, GLYPH.flame, { '#':'#FF6A3D' }, x + 10, y + S - 10 - 14, 2);
+    drawPix(ctx, DIG3['2'],   { '#':'#FF6A3D' }, x + 10 + 14 + 5, y + S - 10 - 15, 3);
+  }
+  function dieB(){
+    var ctx = makeCanvas('b-die', DIE + 2 * PAD, DIE + 2 * PAD, B_FIELD);
+    var x = PAD, y = PAD, S = DIE;
+    pixRound(ctx, x, y, S, S, 9, B_PAL.ink);
+    pixRound(ctx, x + 2, y + 2, S - 4, S - 4, 7, '#2E343D');
+    // bevel: light top/left, dark bottom/right (2 px, on the 2x grid)
+    ctx.fillStyle = B_PAL.d;
+    ctx.fillRect(x + 8, y + 2, S - 16, 2); ctx.fillRect(x + 2, y + 8, 2, S - 16);
+    ctx.fillStyle = B_PAL.k;
+    ctx.fillRect(x + 8, y + S - 4, S - 16, 2); ctx.fillRect(x + S - 4, y + 8, 2, S - 16);
+    drawPix(ctx, GLYPH.target, { '#':B_PAL.w }, x + 10, y + 10, 3);
+    drawPix(ctx, GLYPH.bolt,   { '#':B_PAL.l }, x + S - 10 - 14 - 6 - 14, y + 12, 2);
+    drawPix(ctx, GLYPH.shield, { '#':B_PAL.l }, x + S - 10 - 14, y + 12, 2);
+    // number: 5x7 at 5x = 25 x 35
+    drawPix(ctx, DIG5['6'], { '#':B_PAL.h }, x + Math.round((S - 25) / 2), y + Math.round((S - 35) / 2) + 6, 5);
+    drawPix(ctx, GLYPH.flame, { '#':B_PAL.r }, x + 10, y + S - 10 - 14, 2);
+    drawPix(ctx, DIG5['2'],   { '#':B_PAL.r }, x + 10 + 14 + 4, y + S - 10 - 14, 2);
+  }
+  function vTarget(ctx, cx, cy, r, color){
+    ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.lineCap = 'butt';
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - r - 3); ctx.lineTo(cx, cy - r + 4);
+    ctx.moveTo(cx, cy + r + 3); ctx.lineTo(cx, cy + r - 4);
+    ctx.moveTo(cx - r - 3, cy); ctx.lineTo(cx - r + 4, cy);
+    ctx.moveTo(cx + r + 3, cy); ctx.lineTo(cx + r - 4, cy);
+    ctx.stroke();
+    ctx.fillStyle = color; ctx.beginPath(); ctx.arc(cx, cy, 2, 0, Math.PI * 2); ctx.fill();
+  }
+  function vBolt(ctx, x, y, s, color){
+    ctx.fillStyle = color; ctx.beginPath();
+    ctx.moveTo(x + 0.62 * s, y); ctx.lineTo(x + 0.12 * s, y + 0.58 * s); ctx.lineTo(x + 0.45 * s, y + 0.58 * s);
+    ctx.lineTo(x + 0.35 * s, y + s); ctx.lineTo(x + 0.88 * s, y + 0.4 * s); ctx.lineTo(x + 0.55 * s, y + 0.4 * s);
+    ctx.closePath(); ctx.fill();
+  }
+  function vShield(ctx, x, y, s, color){
+    ctx.fillStyle = color; ctx.beginPath();
+    ctx.moveTo(x, y + 0.12 * s); ctx.lineTo(x + 0.5 * s, y); ctx.lineTo(x + s, y + 0.12 * s); ctx.lineTo(x + s, y + 0.5 * s);
+    ctx.quadraticCurveTo(x + s, y + 0.86 * s, x + 0.5 * s, y + s);
+    ctx.quadraticCurveTo(x, y + 0.86 * s, x, y + 0.5 * s);
+    ctx.closePath(); ctx.fill();
+  }
+  function vFlame(ctx, x, y, s, color){
+    ctx.fillStyle = color; ctx.beginPath();
+    ctx.moveTo(x + 0.5 * s, y);
+    ctx.quadraticCurveTo(x + 0.98 * s, y + 0.45 * s, x + 0.82 * s, y + 0.78 * s);
+    ctx.quadraticCurveTo(x + 0.72 * s, y + s, x + 0.5 * s, y + s);
+    ctx.quadraticCurveTo(x + 0.08 * s, y + s, x + 0.14 * s, y + 0.66 * s);
+    ctx.quadraticCurveTo(x + 0.2 * s, y + 0.46 * s, x + 0.36 * s, y + 0.42 * s);
+    ctx.quadraticCurveTo(x + 0.34 * s, y + 0.2 * s, x + 0.5 * s, y);
+    ctx.closePath(); ctx.fill();
+  }
+  function dieC(){
+    var ctx = makeCanvas('c-die', DIE + 2 * PAD, DIE + 2 * PAD, C_FIELD);
+    var x = PAD, y = PAD, S = DIE;
+    ctx.imageSmoothingEnabled = true;
+    // drop shadow
+    ctx.fillStyle = 'rgba(0,0,0,.6)'; roundPath(ctx, x + 2, y + 4, S, S, 11); ctx.fill();
+    var g = ctx.createLinearGradient(0, y, 0, y + S);
+    g.addColorStop(0, '#262A33'); g.addColorStop(0.55, '#1B1E25'); g.addColorStop(1, '#14161B');
+    roundPath(ctx, x, y, S, S, 11); ctx.fillStyle = g; ctx.fill();
+    // hairline rim: light top, dark bottom
+    roundPath(ctx, x + 0.5, y + 0.5, S - 1, S - 1, 10.5); ctx.strokeStyle = 'rgba(201,208,216,.22)'; ctx.lineWidth = 1; ctx.stroke();
+    // warm glow behind the number
+    var rg = ctx.createRadialGradient(x + S / 2, y + S / 2 + 6, 4, x + S / 2, y + S / 2 + 6, 44);
+    rg.addColorStop(0, 'rgba(217,164,65,.28)'); rg.addColorStop(1, 'rgba(217,164,65,0)');
+    ctx.fillStyle = rg; ctx.fillRect(x, y, S, S);
+    vTarget(ctx, x + 22, y + 22, 9, C_PAL.w);
+    vBolt(ctx, x + S - 10 - 14 - 6 - 14, y + 11, 14, C_PAL.l);
+    vShield(ctx, x + S - 10 - 14, y + 11, 14, C_PAL.l);
+    ctx.fillStyle = C_PAL.h;
+    ctx.font = "700 66px 'Barlow Condensed', 'Arial Narrow', Impact, sans-serif";
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('6', x + S / 2, y + S / 2 + 8);
+    vFlame(ctx, x + 11, y + S - 11 - 15, 14, C_PAL.r);
+    ctx.fillStyle = C_PAL.r;
+    ctx.font = "600 20px 'Barlow Condensed', 'Arial Narrow', Impact, sans-serif";
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.fillText('2', x + 11 + 14 + 5, y + S - 11);
+  }
+
+  dieA(); dieB(); dieC();
+  // the vector die uses a web font; redraw once fonts are in so the typeset number is the real face
+  if (document.fonts && document.fonts.ready){ document.fonts.ready.then(function(){ dieC(); }); }
+})();
+</script>

@@ -1,0 +1,164 @@
+# Riftgate vocabulary
+
+Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
+
+Status: 49 implemented, 18 planned, 1 idea.
+
+## Resource
+
+| Term | Fantasy | Rule | Status |
+|---|---|---|---|
+| **Hull** | The machine itself. When it is gone, the machine is a wreck. | Damage that gets past shield removes hull. Hull never recovers during a battle. At zero the mech is a wreck to be salvaged after the battle. | implemented |
+| **Shield** | A buffer that buys you a few rounds to solve the squad before it starts costing you the machine. | Enemy damage removes shield before hull. Shield faces add shield up to the chassis maximum. Shields recharge fully between skirmishes. | implemented |
+| **Heat** | Every gun has a price, and the big ones are paid in smoke. | Attack faces may add heat. Heat above the chassis maximum spills into hull damage one for one. Vent faces remove heat. | implemented |
+| **Reroll** | You do not like what you see. You get two chances to change your mind. | Two rerolls per round, each rerolling any subset of unassigned mech dice. Never pooled across rounds. | implemented |
+| **Rift Pressure** | The city is running out of time, and there is a bar on screen that says so. | Ticks once per battlefield phase and once per skirmish round. When full it resets and a fresh squad emerges at the rift. | implemented |
+| **Gate Integrity** | The last wall of mankind. If it falls the campaign is over. | A squad whose path reaches the gate strikes it instead of moving. Gate integrity persists across battles and is repaired in the meta. | implemented |
+
+## Face Kind
+
+| Term | Fantasy | Rule | Status |
+|---|---|---|---|
+| **Attack face** | A gun, a claw, a shell. The primary icon is its reach. | Spend on a foe within reach to deal its power in damage, then apply its keywords and heat. | implemented |
+| **Shield face** | Raise the plating. Yours or a friend's. | Spend on self or an ally to add its power in shield, capped at that mech's shield maximum. | implemented |
+| **Vent face** | Blow the heat out of the reactor before it blows out of the hull. | Spend on self or an ally to remove its power in heat. | implemented |
+| **Cracked face** | Something inside is broken and the die shows it. | Does nothing when rolled. Only injuries create cracked faces. Restored when the skirmish ends. | implemented |
+
+## Reach
+
+| Term | Fantasy | Rule | Status |
+|---|---|---|---|
+| **Line of fire** | If you can see it, you can shoot it. If something is in the way, shoot that first. | Targets any front-rank foe, and any back-rank foe whose column is exposed. | implemented |
+| **Indirect** | Over the wall and onto the thing behind it. Just do not aim it at your own feet. | Targets any foe in either rank. Hitting the front rank triggers danger close. | implemented |
+
+## Keyword
+
+| Term | Fantasy | Rule | Status |
+|---|---|---|---|
+| **Cleave** | One swing, three ghouls. | Also hits the foes in the neighbouring columns of the target's rank. | implemented |
+| **Pierce** | The railgun does not care who is standing in front of whom. | Also hits the foe in the other rank of the target's column. | implemented |
+| **Burn** | Set it alight and let it think about its choices. | Adds burn stacks equal to half the face's power, rounded up. Each round the foe takes damage equal to its stacks, then loses one stack. | implemented |
+| **Suppress** | The big hit it was winding up never lands. | The target skips its telegraphed action this round. | implemented |
+| **Overcharge** | Push the reactor past the red line and hope the housing holds. | Double the face's damage and double its heat. | implemented |
+| **Execute** | Finish it before it gets back up. | Double damage against a foe at or below half its health. | implemented |
+| **Chain** | The arc jumps to whoever looks weakest. | Also hits the lowest-health foe within reach other than the target. | implemented |
+| **Lock** | That roll was too good to let go. | After this face is spent, the die keeps it into next round instead of rolling. | implemented |
+| **Flip** | Turn the die over. The other side is usually better. | Set another mech's die to the face opposite its current one. | planned |
+| **Copy** | Whatever they rolled, you rolled too. | Set this die to the current face of an ally's die. | planned |
+| **Reflect** | Hit me. See what happens. | While shield from this face remains, foes that strike this mech take damage equal to the face's power. | idea |
+
+## Status
+
+| Term | Fantasy | Rule | Status |
+|---|---|---|---|
+| **Burning** | On fire, and getting less on fire every round. | Foe status. See the burn keyword. | implemented |
+| **Suppressed** | Head down, gun silent. | Foe status. Skips its action this round, then clears. | implemented |
+| **Injured** | They got through the armour and something important is broken. | Mech status. A specific foe hitting hull cracks one intact face. Injury types are corrode, melt, and corrupt. Restored when the skirmish ends. | implemented |
+| **Corrode** | Undead rot eats the plating. | Undead injury. Currently identical to injured. | planned |
+| **Melt** | Demon fire slags the barrel. | Demonic injury. Currently identical to injured. | planned |
+| **Corrupt** | The face is still there. It just is not yours any more. | Eldritch injury. Currently identical to injured. | planned |
+| **Locked** | Held for next round. | Die status. See the lock keyword. | implemented |
+
+## Formation
+
+| Term | Fantasy | Rule | Status |
+|---|---|---|---|
+| **Front rank** | The bodies. | Three slots. Front-preferring foes fill these first. Always in line of fire. | implemented |
+| **Back rank** | The problems. | Three slots behind the front. Back-preferring foes hold these and never step up. Front-preferring foes wait here and step up when the slot ahead empties. | implemented |
+| **Exposed** | Kill the ghoul and the necromancer behind it is suddenly very interested in cover. | A back-rank foe is exposed when the front slot in its column is empty. Exposed foes are in line of fire. | implemented |
+| **Squad pool** | There are always more where those came from. | Foes not yet on the field. Empty slots refill from the pool after each round. The skirmish is won when the field and the pool are both empty. | implemented |
+| **Step up** | The horde closes the gap. | After the dead are cleared, a front-preferring foe in the back rank moves into an empty front slot in its column. | implemented |
+| **Danger close** | You mortared the thing in your face. Your shields are now also in your face. | Indirect fire on the front rank removes shield from the firing mech equal to half the face's power, rounded up. | implemented |
+| **Massive** | Too big for one slot. Too big for one anything. | A massive foe fills both slots of a column and counts as front rank. Its column is never exposed while it stands. Only some elites and bosses are massive. | implemented |
+| **Withdraw** | Enough. Fall back and let the map decide the rest. | Available only between rounds, after the enemy has acted. Ends the skirmish; survivors on both sides carry their damage to the battlefield. | implemented |
+
+## Battlefield
+
+| Term | Fantasy | Rule | Status |
+|---|---|---|---|
+| **Movespeed** | How much ground it covers before the enemy moves. | Movement points per phase. Entering a hex costs its terrain's move cost for that unit's traits. | implemented |
+| **Intent** | You can see where they are going. Whether they get there is up to you. | Each squad's path for the phase is previewed exactly. It heads for the gate or the nearest city defense, or hunts mechs if aggro. Player routes resolve first. | implemented |
+| **Body block** | Stand in the road. They stop. | A squad stops at the first hex on its path occupied by a blocking unit. Flyers do not block; squads pass through their hex but never land on it. | implemented |
+| **Contact** | Adjacent means fighting. | After all movement, every connected group of adjacent units that contains both sides becomes one skirmish. Multiple skirmishes resolve one at a time. | implemented |
+| **Footprint** | Some things do not fit in a hex. | A unit covers one or more hexes. A boss covers three in a triangle. Every footprint hex blocks, touches for contact, and is a tap target. Squads and mechs stay single-hex. | implemented |
+| **Structure** | The gate is not a hex. It is a wall. | Gate and rift hexes are structures wider than one hex. Nobody stands on them. A squad whose path reaches any gate hex strikes the gate. | implemented |
+| **Spawn** | The rift coughs up another squad. | When Rift Pressure fills, a squad appears on the nearest free hex to the rift. | implemented |
+
+## Terrain
+
+| Term | Fantasy | Rule | Status |
+|---|---|---|---|
+| **Plain** | Open ground. | Cost 1. | implemented |
+| **Road** | Somebody paved this before the end of the world. | Cost 1. | implemented |
+| **Rough** | Rubble and broken ground. | Cost 2. Cost 1 for quads and flyers. | implemented |
+| **Ruins** | What is left of the suburbs. | Cost 2. Cost 1 for quads and flyers. | implemented |
+| **Water** | Deep enough to drown a tank. | Impassable except for hover and flyer. | implemented |
+| **Mountain** | Go around. | Impassable except for flyer. | implemented |
+
+## Trait
+
+| Term | Fantasy | Rule | Status |
+|---|---|---|---|
+| **Flyer** | Reaches anywhere. Holds nothing. | Ignores terrain cost, crosses water and mountains, cannot body-block. | implemented |
+| **Hover** | Skims the river like it is not there. | Crosses water. | implemented |
+| **Quad** | Four legs do not care about rubble. | Rough and ruins cost 1. | implemented |
+| **Tank** | Tracks and armour. | No effect yet. | planned |
+| **City defense** | The city shoots back. | A static player-side unit. Squads path toward it, and it joins any skirmish it is adjacent to. | implemented |
+
+## Trigger
+
+| Term | Fantasy | Rule | Status |
+|---|---|---|---|
+| **On attack** | Whenever this mech fires. | Passive trigger. Fires when an attack face is spent by this mech. | planned |
+| **On shield gain** | Whenever plating goes up. | Passive trigger. Fires when this mech gains shield from any source. | planned |
+| **On heat gain** | Whenever the reactor runs hotter. | Passive trigger. Fires when this mech gains heat. | planned |
+| **On round start** | As the dice come up. | Passive trigger. Fires after the roll, before rerolls. | planned |
+| **On skirmish start** | As contact is made. | Passive trigger. Fires once when the skirmish begins. | planned |
+| **On hull damage** | When they get through. | Passive trigger. Fires when this mech loses hull. | planned |
+| **Out of combat** | A phase spent not fighting. | Passive trigger. Fires at the end of a battlefield phase in which this mech had no skirmish. | planned |
+
+## Commander
+
+| Term | Fantasy | Rule | Status |
+|---|---|---|---|
+| **Command die** | You are not in the machine. You are the one telling the machines what to do. | One die rolled alongside the mech dice each round. Faces are rechargeable commander abilities and never deal damage. Faces come from the hangar, never from rewards. Die size is a research path. | planned |
+| **One-shot** | The button you only get to press once. | Consumable ability. Pouch of three. Picked up from skirmishes, expires when the battle ends. Starting stock restocks every battle. | planned |
+| **Reward pick** | Three things on the table. Take one. | After a skirmish victory: a modifier on a mech face you carry, a one-shot, or a battle-wide boon. Weighted by the squad's faction. | planned |
+
+## City
+
+| Term | Fantasy | Rule | Status |
+|---|---|---|---|
+| **City ability** | The city has a very large gun and a very large crane. | Battlefield-level ability owned and upgraded by the city: sprint, airlift, teleport, tractor beam, orbital strike. Cooldowns measured in phases. | planned |
+| **Cooldown** | Reloading. Come back in two phases. | City abilities only. Counted in battlefield phases. Never used inside a skirmish. | planned |
+
+## Holes
+
+Every entry whose `holes` field is not empty. This is the list of things the mechanics do not do yet.
+
+- **Shield** (implemented): Option not coded: recharge only during phases spent out of combat.
+- **Heat** (implemented): Heat does nothing below the cap. Consider effects at high heat short of overflow.
+- **Rift Pressure** (implemented): Spawns a fixed squad. Should draw from the battle's faction and escalate.
+- **Gate Integrity** (implemented): Gate damage formula is a placeholder (strength divided by three).
+- **Cracked face** (implemented): Duration is always one skirmish. Battle-long injuries are designed but not coded.
+- **Flip** (planned): Needs a definition of opposite faces for non-d6 dice.
+- **Reflect** (idea): Would need shield sources to be tracked separately.
+- **Injured** (implemented): All three injury types behave identically. Each faction's injury should differ.
+- **Corrode** (planned): Differentiate: perhaps cracks a shield face preferentially.
+- **Melt** (planned): Differentiate: perhaps adds heat as well as cracking.
+- **Corrupt** (planned): Differentiate: perhaps replaces a face with a random one instead of blanking it.
+- **Squad pool** (implemented): Elites should surface at set points rather than in pool order.
+- **Massive** (implemented): Cleave treats it as a front-rank neighbour; pierce cannot hit anything behind it because nothing is.
+- **Intent** (implemented): Aggro is a fixed flag. Should be a behaviour per foe type.
+- **Contact** (implemented): No participant cap. May need one for phone readability.
+- **Footprint** (implemented): Footprints do not rotate with facing.
+- **Structure** (implemented): The rift does nothing yet beyond marking where squads spawn.
+- **Road** (implemented): Tanks should move faster on roads. Not coded.
+- **Ruins** (implemented): Designed as cover for the squad inside a skirmish. Skirmish terrain conditions are not coded.
+- **Water** (implemented): Designed to dampen burn inside a skirmish. Not coded.
+- **Tank** (planned): Intended: faster on roads.
+- **City defense** (implemented): Defenses have no die. They cannot act inside a skirmish yet.
+- **On attack** (planned): Passives are data only. The engine does not run them yet.
+- **On hull damage** (planned): Hook for the pinned berserker idea.
+- **Command die** (planned): Open question: whether the command die exists at all, or one-shots only.
+- **City ability** (planned): Consider range limits from the gate so the push north leaves support behind.

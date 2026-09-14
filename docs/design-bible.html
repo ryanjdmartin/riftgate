@@ -1,0 +1,579 @@
+<title>Riftgate Design Bible</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --ground: #F2F3F5;
+    --surface: #FFFFFF;
+    --ink: #1A1E25;
+    --muted: #5C6673;
+    --rule: #D5DAE1;
+    --rule-strong: #B9C0CA;
+    --accent: #B4501C;
+    --accent-ink: #FFFFFF;
+    --rift: #6E3FA6;
+    --steel: #2E5B87;
+    --pin: #6B7480;
+    --tint: #E9EBEF;
+    --code-bg: #E6E9EE;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #14171C;
+      --surface: #1C2028;
+      --ink: #E4E7EB;
+      --muted: #97A1AD;
+      --rule: #2E343D;
+      --rule-strong: #414955;
+      --accent: #E3894B;
+      --accent-ink: #14171C;
+      --rift: #B48CE3;
+      --steel: #7FAEDF;
+      --pin: #8A94A0;
+      --tint: #232830;
+      --code-bg: #262C35;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #14171C;
+    --surface: #1C2028;
+    --ink: #E4E7EB;
+    --muted: #97A1AD;
+    --rule: #2E343D;
+    --rule-strong: #414955;
+    --accent: #E3894B;
+    --accent-ink: #14171C;
+    --rift: #B48CE3;
+    --steel: #7FAEDF;
+    --pin: #8A94A0;
+    --tint: #232830;
+    --code-bg: #262C35;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    padding-inline: 20px;
+    padding-block: 0 96px;
+  }
+  .page { max-width: 72ch; margin: 0 auto; }
+
+  h1, h2, h3, h4 {
+    font-family: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
+    text-wrap: balance;
+    line-height: 1.05;
+    margin: 0;
+    letter-spacing: 0.005em;
+  }
+  h1 { font-size: clamp(44px, 9vw, 72px); font-weight: 800; text-transform: uppercase; }
+  h2 { font-size: 34px; font-weight: 700; text-transform: uppercase; }
+  h3 { font-size: 22px; font-weight: 700; }
+  p { margin: 0 0 1em; max-width: 68ch; }
+  a { color: var(--steel); }
+  strong { font-weight: 600; }
+  em { font-style: italic; }
+
+  .mono, .tag, .eyebrow, .num, table thead th, .legend dt, code {
+    font-family: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
+  }
+  .eyebrow {
+    font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+  }
+
+  /* Briefing header */
+  header.brief {
+    border-top: 6px solid var(--ink);
+    border-bottom: 1px solid var(--rule-strong);
+    padding-block: 28px 24px;
+    margin-bottom: 40px;
+  }
+  header.brief .stamp {
+    display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline;
+    margin-bottom: 18px;
+  }
+  header.brief .meta {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px 24px;
+    margin-top: 22px; padding-top: 18px; border-top: 1px dashed var(--rule-strong);
+  }
+  header.brief .meta div { font-size: 14px; }
+  header.brief .meta .eyebrow { display: block; margin-bottom: 2px; }
+  .lede { font-size: 19px; line-height: 1.5; max-width: 60ch; margin-top: 16px; }
+
+  /* Contents */
+  nav.toc { margin-bottom: 44px; }
+  nav.toc ol {
+    list-style: none; padding: 0; margin: 10px 0 0;
+    columns: 2; column-gap: 32px;
+  }
+  nav.toc li { break-inside: avoid; padding: 4px 0; border-bottom: 1px solid var(--rule); }
+  nav.toc a { text-decoration: none; color: var(--ink); display: flex; gap: 12px; }
+  nav.toc a:hover, nav.toc a:focus-visible { color: var(--accent); }
+  nav.toc .num { color: var(--muted); font-size: 13px; min-width: 2.5ch; padding-top: 3px; }
+  @media (max-width: 520px) { nav.toc ol { columns: 1; } }
+
+  /* Legend */
+  .legend {
+    display: grid; grid-template-columns: auto 1fr; gap: 8px 14px; align-items: center;
+    background: var(--tint); padding: 16px 18px; margin: 0 0 40px;
+  }
+  .legend dt, .legend dd { margin: 0; }
+  .legend dd { font-size: 14px; color: var(--muted); }
+
+  /* Tags */
+  .tag {
+    display: inline-block; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 2px 7px; border: 1.5px solid currentColor; line-height: 1.5; white-space: nowrap;
+    vertical-align: middle;
+  }
+  .tag.decided { color: var(--steel); background: color-mix(in srgb, var(--steel) 12%, transparent); }
+  .tag.rec { color: var(--accent); }
+  .tag.open { color: var(--rift); border-style: dashed; }
+  .tag.pinned { color: var(--pin); border-style: dotted; }
+
+  /* Sections */
+  section { margin-bottom: 56px; scroll-margin-top: 16px; }
+  section > .shead {
+    display: flex; align-items: baseline; gap: 14px;
+    border-bottom: 2px solid var(--ink); padding-bottom: 8px; margin-bottom: 22px;
+  }
+  section > .shead .num { color: var(--accent); font-size: 20px; font-weight: 500; }
+  section h3 { margin: 30px 0 10px; }
+
+  /* Decision rows */
+  .rows { display: grid; gap: 0; margin: 12px 0 20px; border-top: 1px solid var(--rule); }
+  .row {
+    display: grid; grid-template-columns: 112px 1fr; gap: 6px 16px;
+    padding: 12px 0; border-bottom: 1px solid var(--rule);
+  }
+  .row .tagcol { padding-top: 3px; }
+  .row .body p { margin: 0 0 0.5em; }
+  .row .body p:last-child { margin-bottom: 0; }
+  .row .body .lead { font-weight: 600; }
+  @media (max-width: 520px) {
+    .row { grid-template-columns: 1fr; gap: 4px; }
+  }
+
+  /* Tables */
+  .tablewrap { overflow-x: auto; margin: 12px 0 24px; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; }
+  thead th {
+    text-align: left; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); font-weight: 500; padding: 8px 10px; border-bottom: 2px solid var(--ink);
+  }
+  tbody td { padding: 9px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  tbody td:first-child { font-weight: 600; white-space: nowrap; }
+  td.n { font-variant-numeric: tabular-nums; }
+
+  /* Figures */
+  figure { margin: 20px 0 28px; }
+  figure .frame { background: var(--surface); border: 1px solid var(--rule-strong); padding: 18px; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
+  svg text { font-family: "IBM Plex Mono", Menlo, monospace; }
+
+  .grid-fig { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 620px) { .grid-fig { grid-template-columns: 1fr; } }
+
+  /* Callout */
+  .callout {
+    border-left: 4px solid var(--accent); background: var(--tint);
+    padding: 14px 18px; margin: 18px 0 24px;
+  }
+  .callout p { margin: 0; }
+  .callout .eyebrow { display: block; margin-bottom: 4px; color: var(--accent); }
+
+  ul.plain { padding-left: 1.2em; margin: 0 0 1em; }
+  ul.plain li { margin-bottom: 6px; }
+  ol.steps { padding-left: 1.4em; }
+  ol.steps li { margin-bottom: 10px; }
+
+  code { background: var(--code-bg); padding: 1px 5px; font-size: 14px; }
+  footer { border-top: 1px solid var(--rule-strong); padding-top: 16px; font-size: 13px; color: var(--muted); }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+
+<div class="page">
+
+<header class="brief">
+  <div class="stamp">
+    <span class="eyebrow">Design bible · working title</span>
+    <span class="tag rec">Placeholder name</span>
+  </div>
+  <h1>Riftgate</h1>
+  <p class="lede">A portrait-mode tactical hex battler for Android. A handful of customizable war machines hold the last city gate against invading undead, demonic, and eldritch hordes, in a roguelike campaign built from procedurally generated battlefields.</p>
+  <div class="meta">
+    <div><span class="eyebrow">Version</span>0.3, first playable</div>
+    <div><span class="eyebrow">Date</span>12 Sep 2026</div>
+    <div><span class="eyebrow">Platform</span>Android, portrait, 2D pixel art</div>
+    <div><span class="eyebrow">Engine</span>Godot 4, GDScript</div>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Contents">
+  <span class="eyebrow">Contents</span>
+  <ol>
+    <li><a href="#s1"><span class="num">1</span>Concept and tone</a></li>
+    <li><a href="#s2"><span class="num">2</span>Design tests</a></li>
+    <li><a href="#s3"><span class="num">3</span>Campaign loop</a></li>
+    <li><a href="#s4"><span class="num">4</span>Battlefield layer</a></li>
+    <li><a href="#s5"><span class="num">5</span>Skirmish layer</a></li>
+    <li><a href="#s6"><span class="num">6</span>Die faces and iconography</a></li>
+    <li><a href="#s7"><span class="num">7</span>Mechs and the builder</a></li>
+    <li><a href="#s8"><span class="num">8</span>Commander and city</a></li>
+    <li><a href="#s9"><span class="num">9</span>Enemy factions</a></li>
+    <li><a href="#s10"><span class="num">10</span>Meta and resources</a></li>
+    <li><a href="#s11"><span class="num">11</span>Technical plan</a></li>
+    <li><a href="#s12"><span class="num">12</span>Open questions and next steps</a></li>
+  </ol>
+</nav>
+
+<dl class="legend" aria-label="Status legend">
+  <dt><span class="tag decided">Decided</span></dt><dd>Agreed in design discussion. Build against it.</dd>
+  <dt><span class="tag rec">Recommended</span></dt><dd>Proposed direction, not yet confirmed. Prototype it unless a better idea shows up.</dd>
+  <dt><span class="tag open">Open</span></dt><dd>Unresolved. Needs a decision or a playtest.</dd>
+  <dt><span class="tag pinned">Pinned</span></dt><dd>Parked deliberately for later, not rejected.</dd>
+</dl>
+
+<!-- 1 -->
+<section id="s1">
+  <div class="shead"><span class="num">1</span><h2>Concept and tone</h2></div>
+  <p>Three nested loops. The <strong>campaign</strong> is the roguelike run: a sequence of battles, lost for good if the city gate falls. Each <strong>battle</strong> is a hex-grid battlefield with the gate on the south edge and a rift on the north edge, won by reaching and killing the boss that powers the rift. Each <strong>skirmish</strong> is a dice-driven fight triggered when mechs and enemy squads end a movement phase adjacent, and it is where the game's depth lives.</p>
+  <div class="rows">
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Doom and Space Marine energy.</p><p>Over-the-top badassery, played straight. Less overt irony than first planned: propaganda is fine, manufacturer advertisements and Borderlands-style gags are not, because this is the end of civilization. Never edgy, never grimdark fantasy. The city falling is never funny.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Mechs are grounded military mecha.</p><p>Mechwarrior lineage: rugged, brutal, heavy, built from parts that look serviced rather than cobbled together. Not Evangelion. In-world makers exist as provenance and house style, in a maintenance-manual voice, never as marketing.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Enemies are old Final Fantasy monsters.</p><p>Detailed, over-the-top high fantasy, contrasted against the gritty realism of the player units. One genre invading another is the dichotomy the game wants, and it replaces most of the verbal irony.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Hybrid sprite scales.</p><p>Chibi 16 px map sprites that make no attempt at scale, and higher-resolution combat sprites with realistic proportions, in the old Final Fantasy overworld-versus-battle split. Cuteness comes from proportion, not pixel count. Heavies, elites, and bosses overflow their hex on the map, anchored at the hex base, drawn south over north, with the hex as the tap target.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Few, non-disposable war machines.</p><p>Each player unit is an apocalyptic war machine that takes on many foes over many battles. No unit micromanagement. Enemy hexes are squads, so every skirmish is a few machines against a horde.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Learnable in play.</p><p>The game is not simple by nature, but a player must never need a wiki, a build planner, or DPS math. Tooltips and an in-game cheat sheet are fine. External tools are a design failure.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag open">Open</span></div><div class="body"><p class="lead">Pixel art style and the game's name.</p><p>Pixel art is settled. The exact style is not. "Riftgate" is a placeholder.</p></div></div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section id="s2">
+  <div class="shead"><span class="num">2</span><h2>Design tests</h2></div>
+  <p>Every mechanic proposed for the skirmish is held to these. They exist because the designer's stated tendency is to overcomplicate for complexity's sake, and the goal is elegant fun.</p>
+  <div class="rows">
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">A round takes about thirty seconds</p><p>of thought on a phone and contains one to three real decisions.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">The build is visible every round.</p><p>You watch your components act. They are never just stat bonuses.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">One source of randomness.</p><p>The player's dice carry all the chance. No hidden hit rolls. Enemies never roll: their intents are telegraphed and deterministic.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Every squad poses a question,</p><p>such as finishing the resurrectors or interrupting the big hit, rather than being a damage race with different art.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Mismatch costs time, never ability.</p><p>A wrong loadout for a squad chews longer or eats more damage. It is never unable to act.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Never helpless, sometimes unlucky.</p><p>A bad roll with an interesting answer is where the fun lives. The design removes helplessness, not luck.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Hard cap on effects in play.</p><p>Zero to one chassis passive, where a passive is one idea in at most three rule lines: an upside and its cost count as one passive, two unrelated benefits count as two. Component passives are rare. Every trigger is shown on screen when it fires.</p></div></div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section id="s3">
+  <div class="shead"><span class="num">3</span><h2>Campaign loop</h2></div>
+  <div class="rows">
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">The campaign is the run.</p><p>Battles are its floors. Permadeath applies to the campaign: if the gate falls, everything is lost. In-campaign progression (resources, research, upgrades) is lost with it.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Between battles: repair, salvage, research.</p><p>Resources collected in battle repair mechs and the city, upgrade the city's automated defenses and city abilities, and research new chassis, components, and commander tools. Wrecked mechs are salvaged, repaired, or broken down into components. This is core gameplay, not a menu.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">Bounded campaign, about ten battles in three acts.</p><p>One faction leads each act: undead, then demonic, then eldritch. The final battle seals the source rift. Winning unlocks difficulty tiers and new research for the next campaign. An endless mode can come later. Framing the campaign as a countdown to a convergence, one battle per night, gives the escalation a story for free.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag open">Open</span></div><div class="body"><p class="lead">Campaign length and the ultimate goal</p><p>are not yet decided beyond "increasingly difficult battles." Target for mobile: a full campaign finishes in a few sittings, each battle resumable at any phase.</p></div></div>
+  </div>
+</section>
+
+<!-- 4 -->
+<section id="s4">
+  <div class="shead"><span class="num">4</span><h2>Battlefield layer</h2></div>
+  <p>The battlefield decides <em>where, when, and with whom</em> you fight. It is deliberately the layer with positioning, so the skirmish can have none.</p>
+
+  <h3>Map</h3>
+  <div class="rows">
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Hex grid, gate south, rift north.</p><p>Procedurally generated terrain: water, impassable mountains, and more. One mech per hex. One enemy squad per hex. City automated defenses stand on the field near the gate and can be targeted.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">The battlefield may be taller than one screen.</p><p>Seven wide stays the rule for thumbs. Height may exceed a screen and scroll vertically, with the camera following the active unit. Pointy-top hexes make defensive lines straight horizontal rows and force advancing enemies to zigzag. With cube coordinates in the logic, orientation stays a rendering choice.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Multi-hex objects.</p><p>A massive boss can occupy three hexes in a triangle. The gate and the rift are wider than one hex. Squads and mechs stay single-hex. Epic scale without player overhead. Simulation cost: units gain a footprint, and blocking, adjacency, and pathing treat every footprint hex as occupied.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Map presentation rules.</p><p>Squad count is one sprite plus a number badge for now, maybe a small, medium, large count later. Player units face the way they move, with three authored directions mirrored to six; battlefield sprites omit visible customization. Mechs get a per-class idle; enemies get no animation except attacks, in the old Final Fantasy way. If overflow hides something that matters, the overflow allowance is too big; partially hidden objects get an outline highlight.</p></div></div>
+  </div>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Parameter</th><th>Recommendation</th><th>Reason</th></tr></thead>
+      <tbody>
+        <tr><td>Width</td><td class="n">7 hexes, 9 at most</td><td>Tap targets at phone width</td></tr>
+        <tr><td>Height</td><td class="n">12 to 14 per screen, more with scrolling</td><td>Camera follows the active unit</td></tr>
+        <tr><td>Hex width on screen</td><td class="n">48 px or more</td><td>Reliable thumb taps</td></tr>
+        <tr><td>Orientation</td><td>Pointy-top</td><td>Straight defensive rows</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Phase resolution</h3>
+  <div class="rows">
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Enemy moves are previewed. Player plots routes and commits.</p><p>Every unit has a movespeed. Enemy squads usually head for the gate or the city defenses, occasionally for player units. The player sees where each squad will go, then plots each mech's route and commits.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">Player routes resolve first, then enemies execute their previewed moves and stop at the first blocked hex.</p><p>The preview is exact unless a mech ends its move on a squad's path. Body-blocking is the core operational verb, and forming lines is how the gate gets defended. Flyers can engage but cannot block, or blocking breaks.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Adjacency after movement triggers a skirmish.</p><p>A player unit adjacent to an enemy squad, plus any units touching those, forms a skirmish. Multiple skirmishes in one phase resolve one at a time.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">A skirmish is the whole connected group of adjacent units.</p><p>A clustered wave becomes one dangerous fight, which teaches the player to split blobs and pick off stragglers. Cap participants only if phone readability demands it.</p></div></div>
+  </div>
+
+  <h3>Pacing: a race to the rift</h3>
+  <div class="rows">
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">No in-field repair. The battle keeps pushing forward.</p><p>It must feel like a race to close the rift before the city is overwhelmed, not a back-and-forth war simulation. Slow-and-steady versus blitz is the player's choice, including leaving a defender at the gate.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Damage sticks. Mitigation is a real concern.</p><p>Hull never repairs during a battle. Mitigation comes from recharging shields and from defensive tactics, not from healing.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">Shields recharge fully between skirmishes.</p><p>A skirmish solved fast costs nothing. A slow one costs hull. Optional knob: shields recharge only during phases spent out of combat, so pacing a mech has a benefit without a repair bay.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">One Rift Pressure clock.</p><p>A single bar that ticks once per battlefield phase and once per skirmish round, and spawns a fresh squad at the rift when it fills. Dawdling on the map and grinding in a skirmish feed the same meter. It is the race made mechanical, and it replaces any hard limit on skirmish length.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">No persistent movespeed penalties from damage.</p><p>Combined with terrain, limping mechs make runs unwinnable with no warning. Hull damage has no secondary penalty in the first prototype.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">Squads show a likely-loot icon.</p><p>Reward types are faction-weighted (section 8). The squad shows the likely <em>type</em>, never the item, so path choice is informed without a table.</p></div></div>
+  </div>
+</section>
+
+<!-- 5 -->
+<section id="s5">
+  <div class="shead"><span class="num">5</span><h2>Skirmish layer</h2></div>
+  <p>The skirmish decides <em>how</em> you fight. Touchstone: Slice and Dice. Target prioritization, semi-controlled randomness, and build preparation and synergy. Several variants were considered, including a zoomed-in hex grid; that one was set aside because it repeats the battlefield's decision type, fights the no-micromanagement goal, and is hostile to thumbs in portrait.</p>
+
+  <h3>Round loop</h3>
+  <div class="rows">
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">No positioning on the player side.</p><p>Mechs have no ranks and never shuffle. Enemies organize around them.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">Roll, reroll, assign, enemies act.</p><p>Roll every mech's die and the command die. Reroll up to twice per round, keeping what you like. Drag faces onto targets. Enemies then act on their telegraphed intents. Rerolls are per round, never a pooled stock.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">No hard round limit.</p><p>A cap would punish defensive, value, status, reflect, and mitigation builds in favour of burst. Skirmish length is governed by the Rift Pressure clock, the withdraw option, and tuning (typical skirmish three to five rounds; enemy damage must outpace sustain so stalemates cannot happen).</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">Player-initiated withdraw.</p><p>A withdraw button appears after the enemy has acted each round, so there is never free damage. Withdrawing ends the skirmish; survivors on both sides carry their damage back to the map and the squad marches on. This is the stay-or-push decision, made by the player.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Ends on: pool empty (victory), all hulls zero (defeat), or withdraw.</p><p>Victory awards resources and a temporary upgrade choice. Defeat turns the mechs to scrap: wrecks to be salvaged after the battle. Surviving enemies continue their assault.</p></div></div>
+  </div>
+
+  <h3>Enemy formation</h3>
+  <div class="rows">
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Front and back ranks, enemy side only.</p><p>Simple two-rank structure. It adds a second axis to target choice: a front rank of bodies and a back rank of problems.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">A pool with ranks, in columns.</p><p>Two rows by three columns visible at a time. Dead enemies are replaced from the squad's pool, so a horde keeps coming and elites surface at set points. Each back enemy stands behind one front slot, so "exposed" is visible rather than a rule.</p></div></div>
+  </div>
+  <figure>
+    <div class="frame">
+      <svg viewBox="0 0 360 150" width="100%" role="img" aria-label="Enemy formation: three columns, back rank above front rank, with the squad pool feeding empty slots">
+        <text x="12" y="22" font-size="11" fill="var(--muted)">SQUAD POOL  ▸  reinforcements fill empty slots</text>
+        <g font-size="11">
+          <text x="12" y="52" fill="var(--muted)">BACK</text>
+          <rect x="60" y="34" width="84" height="30" fill="var(--tint)" stroke="var(--rule-strong)"/>
+          <rect x="156" y="34" width="84" height="30" fill="var(--tint)" stroke="var(--rule-strong)"/>
+          <rect x="252" y="34" width="84" height="30" fill="var(--tint)" stroke="var(--rule-strong)"/>
+          <text x="102" y="54" text-anchor="middle" fill="var(--ink)">necromancer</text>
+          <text x="198" y="54" text-anchor="middle" fill="var(--ink)">archer</text>
+          <text x="294" y="54" text-anchor="middle" fill="var(--ink)">archer</text>
+          <text x="12" y="98" fill="var(--muted)">FRONT</text>
+          <rect x="60" y="80" width="84" height="30" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/>
+          <rect x="156" y="80" width="84" height="30" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/>
+          <rect x="252" y="80" width="84" height="30" fill="none" stroke="var(--rule-strong)" stroke-dasharray="4 3"/>
+          <text x="102" y="100" text-anchor="middle" fill="var(--ink)">ghoul</text>
+          <text x="198" y="100" text-anchor="middle" fill="var(--ink)">ghoul</text>
+          <text x="294" y="100" text-anchor="middle" fill="var(--muted)">empty</text>
+          <text x="294" y="132" text-anchor="middle" fill="var(--accent)">▲ exposed</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>Fig. 1. A back-rank enemy is exposed when the front slot in its column is empty. The right-hand archer can be hit by line-of-fire weapons; the necromancer cannot until a ghoul dies.</figcaption>
+  </figure>
+
+  <h3>Range archetypes</h3>
+  <div class="rows">
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">No damage falloff at range.</p><p>Futuristic weapons hitting for less at range is counterintuitive. Range is expressed as archetypes with soft penalties, never smaller numbers.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">Two reach types plus keywords.</p><p><strong>Line of fire</strong> hits the front rank freely and a back enemy only where exposed. Direct weapons, melee, and beams share this reach and differ by keyword: cleave for melee, pierce for beams (the whole column). <strong>Indirect</strong> hits any back enemy over the front; its soft penalty on the front rank is danger close, which splashes your own shields. No delayed shells: delay adds cross-round state for no gain.</p></div></div>
+  </div>
+
+  <h3>Shields, heat, injuries</h3>
+  <div class="rows">
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">Shields are a timer.</p><p>Shield faces add shield. The shield buffer gives a few rounds to solve the squad before hull is at risk. Enemy damage should threaten to break a shield within two or three rounds against a typical squad, so shield faces buy time rather than immunity.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">Heat is the second resource.</p><p>Strong faces add heat. A vent face clears it. Running hot risks internal damage. Passives and support faces (vent an ally's heat) make heat a team problem, not a solo one.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Injuries are status effects, not a consequence of all damage.</p><p>Specific enemies inflict a cracked face on a telegraph, with a duration of the skirmish or the battle, and the player can see it coming, prioritize that enemy, or bring a cleanse. This is a faction tool: undead corrode, demons melt, eldritch corrupt. Tying cracked faces to all hull damage was rejected because it spirals.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag pinned">Pinned</span></div><div class="body"><p class="lead">Low-hull berserker or last-stand ability.</p><p>A mech at critical hull unlocking an overdrive face is Doom energy and an anti-spiral. Parked, not rejected.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">Terrain is a skirmish-wide condition.</p><p>The hexes involved set a modifier for the whole fight, so choosing where to engage still matters without positioning inside the skirmish. Water dampens burn, ruins give the squad cover, and so on.</p></div></div>
+  </div>
+</section>
+
+<!-- 6 -->
+<section id="s6">
+  <div class="shead"><span class="num">6</span><h2>Die faces and iconography</h2></div>
+  <div class="rows">
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Primary icon, a number, small secondary icons, one catch-all star.</p><p>The primary icon is the face's type: the reach archetype for attacks, a shield for shield faces, and so on. The number is its power. Small superscript or subscript icons mark common attached effects. One catch-all icon marks a rare, unique effect (legendary faces). Long-press a face to inspect secondary numbers, unique effects, and temporary boosts. An icon cheat sheet is available from the pause menu.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">Every face does something.</p><p>The only blank faces are cracked ones from injury. A pristine war machine is reliable; an injured one is not.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">A keyword vocabulary of about ten.</p><p>Variety comes from combining number, reach, keywords, and heat cost with passives, not from more rules. Slice and Dice gets hundreds of distinct faces from a vocabulary this size.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Keywords are a list, not a single slot.</p><p>A face may carry several keywords, so faces can be upgraded during a battle or in the meta. The content validator caps <em>authored</em> faces at three keywords; upgrades may push past that at runtime. Iconography stays readable because the primary icon and the number are fixed, and extra keywords show as small secondary icons.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Minimal chrome in the skirmish.</p><p>No cards, no boxes. The log stays in the centre for now because it is needed for testing and the space is free; it can hide behind a button later. Health and status are small floating slider bars beside the sprite. Mechs face north-east and enemies south-west; mechs get a per-class idle, enemies only attack animations. A massive elite may occupy both rank slots of a column. Under exploration: an all-vector overlay, dice included, in an edgy sci-fi HUD register with straight lines, parallelograms, and diagonal leader lines from bars to units. Tap, double-tap, or hold shows full numbers and details. Passives are simple enough not to be displayed at all times. Option under consideration: hide true enemy health JRPG-style and signal "near defeat" with cues instead.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Intents show the action, not the target.</p><p>Each foe shows what it will do and for how much. Holding a foe or a mech draws the arrows for that unit; an overlay button draws every arrow. This is Slice and Dice's model.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Tap a die to lock it, hold it for details.</p><p>No separate Keep button. A locked die is highlighted and skipped by reroll.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Double-tap a unit for its codex entry.</p><p>Hold is the quick read: numbers and arrows while the finger is down. Double-tap opens a box that stays: stats, faces, the passive with its rules, the fantasy line, the question it poses or answers, and flavour. A tap outside closes it.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">Numbers in tens.</p><p>Hull, shield, damage, and heat scale in tens rather than ones, so upgrades can be incremental and big numbers feel big. Do it in one pass when balancing begins, because burn and danger-close formulas are expressed as fractions of power and must be restated at the same time.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">The vocabulary is data.</p><p><code>content/vocabulary.json</code> is the single source of truth for every mechanic term, written fantasy-first with a rule, a status (implemented, planned, idea), and a holes field. <code>docs/vocabulary.md</code> is generated from it and lists the holes at the bottom, so it shows where the mechanics are thin.</p></div></div>
+  </div>
+  <figure>
+    <div class="frame grid-fig">
+      <svg viewBox="0 0 200 200" width="100%" role="img" aria-label="Anatomy of a die face">
+        <rect x="30" y="30" width="140" height="140" rx="14" fill="var(--surface)" stroke="var(--ink)" stroke-width="2.5"/>
+        <text x="100" y="118" text-anchor="middle" font-size="64" font-weight="600" fill="var(--ink)">4</text>
+        <g stroke="var(--ink)" stroke-width="2" fill="none">
+          <circle cx="58" cy="58" r="10"/>
+          <line x1="58" y1="44" x2="58" y2="72"/>
+          <line x1="44" y1="58" x2="72" y2="58"/>
+        </g>
+        <circle cx="140" cy="60" r="9" fill="var(--accent)"/>
+        <text x="140" y="64" text-anchor="middle" font-size="10" fill="var(--accent-ink)">🔥</text>
+        <text x="140" y="152" text-anchor="middle" font-size="18" fill="var(--rift)">★</text>
+        <text x="60" y="154" text-anchor="middle" font-size="12" fill="var(--muted)">2♨</text>
+      </svg>
+      <div>
+        <p class="eyebrow" style="margin-bottom:8px">Fig. 2. Reading a face</p>
+        <ul class="plain" style="font-size:14px">
+          <li><strong>Crosshair, top left:</strong> primary icon. Line-of-fire attack.</li>
+          <li><strong>4:</strong> power.</li>
+          <li><strong>Flame, top right:</strong> a common attached effect. Burn.</li>
+          <li><strong>2♨, bottom left:</strong> heat cost.</li>
+          <li><strong>Star, bottom right:</strong> this face has a unique effect. Inspect to read it.</li>
+        </ul>
+      </div>
+    </div>
+    <figcaption>Icons are placeholders. The point is the four fixed positions, so a face reads at a glance and rewards a long press.</figcaption>
+  </figure>
+  <p>Snapshot of the implemented keywords. The live list, including planned terms, is the generated vocabulary document.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Keyword</th><th>Effect</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Cleave</td><td>Also hits front-rank neighbours</td><td>Melee's natural keyword</td></tr>
+        <tr><td>Pierce</td><td>Hits the whole column</td><td>Beams and railguns</td></tr>
+        <tr><td>Burn</td><td>Damage over rounds</td><td>Demon flavour; stacks with burn passives</td></tr>
+        <tr><td>Suppress</td><td>Cancels the target's telegraphed intent</td><td>The interrupt</td></tr>
+        <tr><td>Shield</td><td>Adds shield to self or an ally</td><td>Mitigation</td></tr>
+        <tr><td>Vent</td><td>Clears heat on self or an ally</td><td>Support</td></tr>
+        <tr><td>Overcharge</td><td>More damage, more heat</td><td>The gamble</td></tr>
+        <tr><td>Execute</td><td>Bonus against low-health targets</td><td>Finishing, anti-undead</td></tr>
+        <tr><td>Chain</td><td>Hits a second target</td><td>Energy flavour</td></tr>
+        <tr><td>Lock</td><td>Keeps this die's face into next round</td><td>Dice-shaping</td></tr>
+        <tr><td>Flip / Copy</td><td>Flip a die to its opposite face, or copy a face to an ally</td><td>Dice-shaping, synergy components</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 7 -->
+<section id="s7">
+  <div class="shead"><span class="num">7</span><h2>Mechs and the builder</h2></div>
+  <p>Mechwarrior's build depth, simplified and dialled back. The feel to keep is that a loadout is a real identity. The habits to drop are strict weight classes and gated equipment.</p>
+  <div class="rows">
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Three to four mechs per battlefield.</p><p>Enough for a real decision between splitting up and staying together for skirmish strength, without tedious planning. Recommended: design for four, start a campaign with three, unlock the fourth slot early.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Chassis are not classes and not only bipeds.</p><p>Tanks, hovercraft, quadrupeds, and flyers are all candidates. No light, medium, heavy labels. Chassis diversity comes from base stats: hull, shield, movespeed, hardpoints, and similar simple numbers that do not need prominent display.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">Hardpoints set die size.</p><p>Each component contributes one face; the chassis fills any remainder. A chassis with four hardpoints rolls a d4 and is consistent and focused. One with eight rolls a d8 and carries more but sees each face less. That is the deckbuilder's thin-deck tension as a chassis stat. First pass: d4, d6, d8. The builder shows the odds of each face.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Zero to one chassis passive, and it may be a skirmish passive.</p><p>Two flavours. A double-edged niche definer: a skirmisher aircraft with big shield, high movespeed, low hull, few faces, and "double damage, double heat," positioned by its manufacturer as a hit-and-run assassin, that becomes a carry beside an ally who vents its heat. Or a simple multiplier fantasy: "doubles all burn," where the player stacks burn and burns everything like a maniac.</p><p>A passive is one idea. Two complementary rules, such as "when I gain shield, one random ally gains the same amount" and "my shield does not recharge outside combat," are one passive with an upside and a cost, not two. The test is whether it can be named in a phrase and understood as one thing. Cap: three rule lines.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">A passive multiplies or redirects what faces already do.</p><p>It never introduces a verb of its own. If it needs a new mechanic to explain, it is a component, not a chassis.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Components are free.</p><p>Untyped hardpoints, any component in any slot. A niche you can leave is an invitation; the player steps outside it for experimentation or because resources force them to make it work.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">Silhouettes become terrain traits.</p><p>Hovercraft cross water, quadrupeds ignore rough ground, flyers pass over mountains but cannot body-block, tanks move faster on roads. Team composition becomes a decision about the map as well as the fight.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">Makers with house styles, not brands with adverts.</p><p>Three or four in-world makers give chassis families a coherent silhouette and a maintenance-manual voice, and give the research tree a structure that is not a tier list. No marketing copy. No warranties, no brochures.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">Passive-only components trade a face for a passive.</p><p>Choosing one means a smaller die that behaves better. A build identity in one decision.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag open">Open</span></div><div class="body"><p class="lead">Component damage between battles.</p><p>Depends on builder depth. Recommendation if adopted: one coarse state per component (intact, damaged, destroyed), and nothing finer. Salvage recovers the intact parts from a wreck.</p></div></div>
+  </div>
+</section>
+
+<!-- 8 -->
+<section id="s8">
+  <div class="shead"><span class="num">8</span><h2>Commander and city</h2></div>
+  <p>The mechs are the team; the player is the commander. Commander tools do what mechs cannot: manipulation, mitigation, information, and movement. They are never a fifth gun.</p>
+
+  <h3>In the skirmish</h3>
+  <div class="rows">
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">One command die, rolled with the mech dice.</p><p>Its faces are rechargeable abilities, so recharge is the roll and nobody hoards a die result. Examples: smoke that blanks the back rank's intents this round, a drone screen that absorbs the next hit, focus fire that adds one to every face on a single target, a scan that reveals the squad's next two rounds. Die size (d4, d6, d8) is a research path with stronger faces and a backfire face or two on the larger dice.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Reusable commander abilities never deal direct damage.</p><p>One-shots may. Damage one-shots belong at the battlefield layer (soften a squad before contact) so mech dice stay the killing power inside a skirmish.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Command faces come from the hangar, never from skirmish rewards.</p><p>Thematically wrong as loot, and they would dominate the reward pick because they affect every skirmish equally.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag open">Open</span></div><div class="body"><p class="lead">Is the command die needed at all?</p><p>The alternative is one-shots only, with meta upgrades to inventory size and effectiveness, and reroll bundles among the rewards. Claude's view: keep the die, because a rolled face is inherently non-hoardable and the one-shots-only model pushes everything into the inventory the designer already knows they would hoard.</p></div></div>
+  </div>
+
+  <h3>One-shots and the hoarding problem</h3>
+  <div class="rows">
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Spending a consumable must not feel bad.</p><p>The designer is in the camp that hoards potions for a rainy day that never comes. If one-shots are core, the design has to make spending the default.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">Three fixes.</p><p>One-shots picked up in a battle expire when the rift closes, so there is nothing to save them for beyond this battle. The pouch holds three, so a fourth pickup forces use-or-discard on the spot. A starting stock chosen in the hangar restocks every battle; research raises capacity and quality. Doom Eternal solved the same problem the same way: resources regenerate on a short loop, so spending is the default and saving is the anomaly. Saving a full pouch for the boss remains a legitimate blitz strategy with a real cost in missed upgrades.</p></div></div>
+  </div>
+
+  <h3>Skirmish rewards</h3>
+  <div class="rows">
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">Pick one of three.</p><p>A modifier on a mech face you already carry (lasts the battle), a one-shot for the pouch, or a battle-wide boon such as an extra reroll per round. Temporary upgrades amplify the build you brought and never replace it, so the pull is toward synergy.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Reward types are faction-weighted, never guaranteed.</p><p>Undead might give a greater chance of multiple or rarer one-shots, for example. Flavour to be determined per faction.</p></div></div>
+  </div>
+
+  <h3>On the battlefield: city abilities</h3>
+  <div class="rows">
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Battlefield-level abilities belong to the city.</p><p>Sprint, airlift, teleport, tractor beam, orbital strike, and any number of silly ideas. They are upgraded and managed as city systems, and no command die is rolled on the battlefield.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Cooldowns in battlefield phases are acceptable here.</p><p>Each movement phase is a turn, so a cooldown is legible and cannot be hoarded. City research shortens cooldowns, adds charges, and unlocks abilities. Cooldowns still do not exist inside the skirmish, where the die is the recharge.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">Some city abilities are limited by distance from the gate.</p><p>Artillery reaches the southern half, airlift only lifts from the gate, the tractor beam has a range. The push north leaves city support behind, which is a real cost to blitzing and comes out of flavour rather than a rule.</p></div></div>
+  </div>
+</section>
+
+<!-- 9 -->
+<section id="s9">
+  <div class="shead"><span class="num">9</span><h2>Enemy factions</h2></div>
+  <div class="rows">
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Archetype-based, not elemental.</p><p>Each faction has a behavioral signature that demands a different tactical answer, with internal diversity and general paradigms to guide decisions rather than strict rules. Elements are flavour and the reward currency, never a damage-type triangle. Certain faction combinations are favourable or unfavourable for a given team, which is what makes path choice build-driven.</p></div></div>
+  </div>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Faction</th><th>Signature</th><th>What the build must answer</th><th>Injury it inflicts</th></tr></thead>
+      <tbody>
+        <tr><td>Undead</td><td>Numerous, weak, return unless finished</td><td>Area damage and finishing blows</td><td>Corrode</td></tr>
+        <tr><td>Demonic</td><td>Hard hits on a telegraph, fire and energy</td><td>Mitigation, interrupts, tempo</td><td>Melt</td></tr>
+        <tr><td>Eldritch</td><td>Bends the rules: corrupts faces, scrambles rerolls, swaps ranks</td><td>Redundancy and cleansing</td><td>Corrupt</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Push and pull: squads heading for the gate are the push, upgrades you want from specific squads are the pull. That tension is the battlefield layer's best decision, and faction alignment creates it for free.</p>
+</section>
+
+<!-- 10 -->
+<section id="s10">
+  <div class="shead"><span class="num">10</span><h2>Meta and resources</h2></div>
+  <div class="rows">
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Two kinds of gain.</p><p>Persistent resources, spent between battles. Temporary upgrades, lasting the current battle only. Skirmish victory yields both.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Wrecks are recoverable.</p><p>Defeated mechs become scrap, salvaged, repaired, or broken down into components between battles. Losses hurt but stay recoverable, which is what prevents a campaign from being lost three battles before it ends.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag decided">Decided</span></div><div class="body"><p class="lead">Research trees.</p><p>Chassis and components, city defenses and city abilities, commander dice and one-shot capacity. Manufacturers give the chassis tree its structure.</p></div></div>
+  </div>
+</section>
+
+<!-- 11 -->
+<section id="s11">
+  <div class="shead"><span class="num">11</span><h2>Technical plan</h2></div>
+  <div class="rows">
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">Godot 4 with GDScript.</p><p>Chosen on the project's merits, independent of any other codebase. A 2D-first renderer with pixel-art settings built in, hex tile layers, a strong UI toolkit for a game that is mostly panels and dice, Android export out of the box, no build step, and a permissive license with no runtime fee. Unity wins only if a deep ads and in-app-purchase SDK ecosystem is a day-one priority.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">Keep the simulation pure.</p><p>Hex math, movement, skirmish resolution, and map generation are plain scripts with no scene dependencies, driven by a seeded random generator. That makes them testable headless and gives reproducible runs for replays and daily seeds.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">Save at every phase boundary.</p><p>Android can kill a backgrounded app at any moment. If the whole state serializes at the end of each battlefield phase and each skirmish round, resuming is free rather than a retrofit.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">Cube coordinates for hexes.</p><p>Pointy-top rendering with cube or axial coordinates in the logic, so distance, neighbours, and lines are trivial and orientation can change later.</p></div></div>
+    <div class="row"><div class="tagcol"><span class="tag rec">Recommended</span></div><div class="body"><p class="lead">Prototype the skirmish first.</p><p>It is the riskiest unknown and it defines what a component is, which defines the builder and the meta. It can be played with physical dice and index cards before any code exists, which is also the fastest way to catch overcomplication.</p></div></div>
+  </div>
+  <div class="callout">
+    <span class="eyebrow">Repository</span>
+    <p>The game lives in its own folder and repository under <code>Code/riftgate</code>. Design docs live in <code>docs/</code>, the pure simulation in <code>sim/</code>, scenes and presentation in <code>game/</code>, and headless tests in <code>tests/</code>.</p>
+  </div>
+  <div class="callout">
+    <span class="eyebrow">Content pipeline</span>
+    <p>Concepts are authored fantasy-first in <code>docs/concepts/</code> using the template there, in batches by category. Vetted entries become data in <code>content/*.json</code> (vocabulary, factions, foes, chassis, components), which the game loads at startup. A validator in the test suite enforces the rules in this document, so a concept that breaks one fails the build. New mechanic terms enter the vocabulary first, with a status, and the readable vocabulary document is regenerated.</p>
+  </div>
+</section>
+
+<!-- 12 -->
+<section id="s12">
+  <div class="shead"><span class="num">12</span><h2>Open questions and next steps</h2></div>
+  <h3>Open</h3>
+  <ul class="plain">
+    <li>Campaign length and the ultimate goal.</li>
+    <li>Whether the command die exists, or one-shots only.</li>
+    <li>Component damage between battles, and how deep the builder goes.</li>
+    <li>Enemy targeting logic among mechs inside a skirmish (lowest shield, highest heat, last attacker, random) and how it is telegraphed.</li>
+    <li>Whether a skirmish participant cap is needed for phone readability.</li>
+    <li>Exact numbers: squad sizes, face powers, shield and heat thresholds, Rift Pressure tick rate.</li>
+    <li>Pixel art style. The name.</li>
+  </ul>
+  <h3>Pinned</h3>
+  <ul class="plain">
+    <li>Low-hull berserker or last-stand ability.</li>
+    <li>Command die faces with a second, battlefield meaning. Rejected for now because it doubles the learning load per face.</li>
+    <li>Endless mode after the bounded campaign.</li>
+  </ul>
+  <h3>Next steps</h3>
+  <p>Done: the simulation core with footprints, wide structures, and massive foes; the content pipeline; the skirmish screen in its minimal-chrome form with tap, hold, and drag gestures; a scrolling battlefield viewer.</p>
+  <ol class="steps">
+    <li>Wire the battle loop: plot routes on the battlefield by touch, resolve, open a skirmish on contact with foes unpacked from the squads, apply the result, continue. This is the first time the two layers meet.</li>
+    <li>Restate numbers in tens in one pass, including the burn and danger-close fractions.</li>
+    <li>Play it on a phone. Then the reward pick, one-shots, and the command die.</li>
+  </ol>
+</section>
+
+<footer>Riftgate design bible, v0.3. Decisions recorded from design sessions on 11 to 13 September 2026. Simulation core, content pipeline, and vocabulary added 12 September. Tone, art direction, and skirmish UI direction revised 13 September.</footer>
+
+</div>

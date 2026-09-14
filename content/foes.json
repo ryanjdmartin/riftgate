@@ -1,0 +1,15 @@
+{
+  "_about": "Enemies inside a skirmish. rank is where they prefer to stand: front foes step up, back foes hold. question is the tactical problem the foe poses. Numbers are placeholders.",
+  "entries": [
+    { "id": "ghoul", "name": "Ghoul", "faction": "undead", "fantasy": "A body that forgot to stop.", "question": "There are six of them and three slots. Kill fast or be buried.", "hp": 3, "attack": 1, "rank": "front", "injures": "", "notes": "Should return from the pool once unless executed. Not coded." },
+    { "id": "necromancer", "name": "Necromancer", "faction": "undead", "fantasy": "The reason the ghouls keep coming.", "question": "It hides behind the wall. Reach it, or chew through.", "hp": 3, "attack": 1, "rank": "back", "injures": "corrode", "notes": "Should raise a ghoul from the pool each round. Not coded." },
+    { "id": "brute", "name": "Brute", "faction": "demonic", "fantasy": "A wall that hits back.", "question": "Its swing is telegraphed. Suppress it, shield for it, or eat it.", "hp": 5, "attack": 2, "rank": "front", "injures": "", "notes": "" },
+    { "id": "hellcaster", "name": "Hellcaster", "faction": "demonic", "fantasy": "Artillery with opinions.", "question": "Big damage from the back rank. Priority target for indirect fire.", "hp": 3, "attack": 3, "rank": "back", "injures": "melt", "notes": "" },
+    { "id": "spawn", "name": "Spawn", "faction": "eldritch", "fantasy": "It has too many angles.", "question": "Unremarkable alone. Exists to shield the whisperer.", "hp": 4, "attack": 2, "rank": "front", "injures": "", "notes": "" },
+    { "id": "whisperer", "name": "Whisperer", "faction": "eldritch", "fantasy": "It talks to your dice.", "question": "Every hit that lands corrupts a face. Kill it first or bring a spare.", "hp": 3, "attack": 1, "rank": "back", "injures": "corrupt", "notes": "Should scramble a reroll or swap ranks. Not coded." },
+
+    { "id": "bone_colossus", "name": "Bone Colossus", "faction": "undead", "fantasy": "A cathedral of ribs that walks.", "question": "Fills a whole column. Nothing behind it is reachable until it falls, and it does not fall quickly.", "hp": 14, "attack": 3, "rank": "front", "size": 2, "injures": "corrode", "notes": "Massive elite. On the battlefield it is a three-hex boss." },
+    { "id": "pit_lord", "name": "Pit Lord", "faction": "demonic", "fantasy": "The furnace has a face.", "question": "The biggest telegraphed hit in the game. Suppress it or shield for it every round it stands.", "hp": 16, "attack": 4, "rank": "front", "size": 2, "injures": "melt", "notes": "Massive elite." },
+    { "id": "the_maw", "name": "The Maw", "faction": "eldritch", "fantasy": "You do not see all of it. That is a mercy.", "question": "Every hull hit corrupts a face and it hits often. Redundancy wins; burst loses.", "hp": 12, "attack": 2, "rank": "front", "size": 2, "injures": "corrupt", "notes": "Massive elite." }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "artboards": [
+    { "file": "Current.dc.html", "x": 0, "y": 0, "w": 360, "h": 640, "title": "Current (in engine)" },
+    { "file": "Main.dc.html", "x": 460, "y": 0, "w": 360, "h": 640, "title": "Proposed: minimal chrome" },
+    { "file": "Sketch.dc.html", "x": 920, "y": 0, "w": 360, "h": 640, "title": "Your sketch" },
+    { "file": "Parts.dc.html", "x": 1380, "y": 0, "w": 360, "h": 420, "title": "Parts bin" },
+    { "file": "Hud.dc.html", "x": 460, "y": 820, "w": 360, "h": 640, "title": "Vector HUD exploration" }
+  ],
+  "annotations": [
+    { "id": "note-proposed", "x": 460, "y": -150, "w": 360, "text": "Proposed: sprites carry a tiny floating bar box top-right. No cards. Log kept in the centre for now. Intent chips show the action and number, not the target. Hold a unit for numbers and arrows; the eye button shows every arrow. Tap a die to lock it, hold for details. Numbers shown in tens." },
+    { "id": "note-sketch", "x": 920, "y": -110, "w": 360, "text": "Sketch here. Copy pieces from the parts bin, paste onto this board, drag. Rough is the point. Save when you want me to see it." },
+    { "id": "note-hud", "x": 460, "y": 700, "w": 360, "text": "Vector HUD: everything that is not a sprite is a flat vector overlay. Parallelogram bars leashed to units by short diagonal lines, chamfered dice with corner brackets when locked, bracketed intent readouts, a terminal log. The colour chip above the board swaps the whole overlay between green, yellow, red and cyan." }
+  ],
+  "launch": { "view": "canvas" }
+}

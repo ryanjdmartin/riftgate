@@ -1,0 +1,41 @@
+{
+  "_about": "Enemy factions. Archetype-based: each has a signature behaviour and a tactical answer, not an element. pattern is the foe sequence a squad unpacks into, cycled to the squad's strength.",
+  "entries": [
+    {
+      "id": "undead",
+      "name": "The Risen",
+      "fantasy": "There are more of them than there are bullets, and the ones you already shot are getting back up.",
+      "signature": "Numerous, weak, and they return unless finished.",
+      "answer": "Area damage and finishing blows.",
+      "injury": "corrode",
+      "reward_bias": "one_shot",
+      "pattern": ["ghoul", "ghoul", "ghoul", "necromancer"],
+      "elite": "bone_colossus",
+      "flavour": "Gate order four: nothing that has died passes the wall. Nothing."
+    },
+    {
+      "id": "demonic",
+      "name": "The Furnace Host",
+      "fantasy": "Everything they do is loud, on fire, and telegraphed from a mile away. That does not make it survivable.",
+      "signature": "Hard hits on a telegraph. Fire and energy.",
+      "answer": "Mitigation, interrupts, tempo.",
+      "injury": "melt",
+      "reward_bias": "face_modifier",
+      "pattern": ["brute", "brute", "hellcaster"],
+      "elite": "pit_lord",
+      "flavour": "Recruitment poster: THEY BROUGHT FIRE. WE BROUGHT BIGGER FIRE."
+    },
+    {
+      "id": "eldritch",
+      "name": "The Chorus",
+      "fantasy": "They do not fight the rules. They edit them.",
+      "signature": "Bends the rules: corrupts faces, scrambles rerolls, swaps ranks.",
+      "answer": "Redundancy and cleansing.",
+      "injury": "corrupt",
+      "reward_bias": "boon",
+      "pattern": ["spawn", "whisperer"],
+      "elite": "the_maw",
+      "flavour": "Field manual, appendix K: a face on the die that was never installed means the machine is compromised. Fight on."
+    }
+  ]
+}
