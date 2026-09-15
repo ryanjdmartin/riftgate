@@ -5,6 +5,7 @@ extends Control
 ## boss, all chained into one skirmish. Also opens the battlefield map viewer.
 
 const SKIRMISH_SCENE := preload("res://game/skirmish/skirmish_screen.tscn")
+const BATTLE_SCENE := preload("res://game/battle/battle_screen.tscn")
 const MAP_SCENE := preload("res://game/main.tscn")
 
 var db: ContentDB
@@ -114,7 +115,8 @@ func _build_menu() -> void:
 		swatches.add_child(b)
 
 	col.add_child(HSeparator.new())
-	col.add_child(_button("Fight", _on_fight))
+	col.add_child(_button("Battle", _on_battle))
+	col.add_child(_button("Fight (skirmish only)", _on_fight))
 	col.add_child(_button("Battlefield viewer", _on_map))
 	col.add_child(_label("Tests: godot --headless --path . -s tests/run_tests.gd", 13, Palette.MUTED))
 
@@ -199,6 +201,30 @@ func _on_fight() -> void:
 	var screen: SkirmishScreen = SKIRMISH_SCENE.instantiate()
 	screen.sk = sk
 	screen.setup(sk)
+	screen.back_requested.connect(_back)
+	_show(screen)
+
+
+## A whole battle: the checked team against the faction of the first squad picker, on a map
+## generated from the seed.
+func _on_battle() -> void:
+	var team: Array = []
+	var uid := 1
+	for id in _chassis_checks.keys():
+		if _chassis_checks[id].button_pressed:
+			team.append(db.make_mech(id, uid))
+			uid += 1
+	if team.is_empty():
+		return
+	var fa := str(_foe_a.get_item_metadata(_foe_a.selected))
+	var fac := db.faction_of_foe(fa)
+	if fac.is_empty() or not db.factions.has(fac):
+		fac = "undead"
+	var b := Battle.new(int(_seed.value))
+	b.setup(team, fac)
+	var screen: BattleScreen = BATTLE_SCENE.instantiate()
+	screen.battle = b
+	screen.setup(b)
 	screen.back_requested.connect(_back)
 	_show(screen)
 

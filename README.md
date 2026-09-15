@@ -21,10 +21,16 @@ and open question from the design sessions.
   - `loadouts.gd` sample dice and squads for prototypes and tests
   - `passives.gd` runs the passive triggers the engine supports (the validator refuses others)
   - `content_db.gd` loads and validates `content/*.json`, builds dice, mechs, and foes
+  - `battle.gd` one battle end to end: plot routes, resolve, open a skirmish per contact
+    group, apply the result, until the gate falls, the team is wrecked, or the boss dies
 - `content/` — game data: `vocabulary.json` (every mechanic term, fantasy first), `factions.json`,
   `foes.json`, `chassis.json`, `components.json`. Placeholder numbers.
 - `game/` — scenes and presentation.
-  - `harness.tscn` is the main scene: pick a team, faction, squad size, seed, and fight
+  - `harness.tscn` is the main scene: pick a team, faction, squad size, seed, then Battle
+    (the whole loop), Fight (one skirmish), or the map viewer
+  - `battle/battle_screen.gd` the battle screen: the map with the phase loop around it, and
+    the skirmish screen hosted over it on contact; `battle/battle_map_view.gd` draws the
+    field and reads the gestures
   - `skirmish/skirmish_screen.gd` the skirmish screen, built in code
   - `ui/` die face view, bars, glyphs, palette
   - `main.tscn` the battlefield map viewer
@@ -53,8 +59,10 @@ godot --path .
 godot --headless --path . -s tools/export_vocabulary.gd
 
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument
-# poses the skirmish screen first: codex, mechcodex, diecodex, hold, confirm, lock
+# poses the screen first. Skirmish: codex, mechcodex, diecodex, hold, confirm, lock.
+# Battle: select, route, hold, resolve, contact.
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmish/skirmish_screen.tscn shot.png codex
+godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/battle_screen.tscn shot.png route
 
 # regenerate mech sprites from the primitive models (see tools/spriter/README.md), then re-import
 tools/spriter/.venv/bin/python tools/spriter/spriter.py
@@ -76,6 +84,18 @@ faces are discarded at end of turn.
 The harness can add the faction's massive elite, which fills both ranks of a column. For the
 standalone screen, `RIFTGATE_TEAM=bulwark,sentinel,raptor,anvil` picks the team and
 `RIFTGATE_ELITE=1` adds the elite.
+
+The battle screen is the loop. The header shows the phase, the gate's hull, and Rift
+Pressure. The map scrolls by drag and starts at the gate end. Tap a mech to select it and the
+hexes it can reach light up; tap a lit hex to plot the route there; tap the mech again to
+clear its route. Two mechs cannot claim the same destination. Hold any unit for its numbers.
+Red lines are where each squad goes this phase unless something stops it. Resolve, bottom
+left, moves the team first and then the squads; every group of touching units that mixes both
+sides becomes a skirmish, played on the skirmish screen over the map. Its Back button applies
+the result: wrecks leave the map, squads shrink to their survivors, surviving shields recharge,
+and Rift Pressure ticks once per round fought. The battle ends when the gate's hull reaches
+zero, every mech is wrecked, or the boss dies. For the standalone screen `RIFTGATE_TEAM`
+picks the team and `RIFTGATE_FACTION=undead|demonic|eldritch` the enemy.
 
 In the map viewer: drag to scroll the taller-than-screen battlefield, tap without dragging
 for the next seed. The gate and rift are three hexes wide and a three-hex boss walks the

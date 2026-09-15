@@ -37,7 +37,12 @@ func _init() -> void:
 
 
 func _apply_pose() -> void:
-	if _pose.is_empty() or not (_node is SkirmishScreen):
+	if _pose.is_empty():
+		return
+	if _node is BattleScreen:
+		_apply_battle_pose()
+		return
+	if not (_node is SkirmishScreen):
 		return
 	var s: SkirmishScreen = _node
 	match _pose:
@@ -54,6 +59,36 @@ func _apply_pose() -> void:
 		"lock":
 			s._on_die_tapped(0)
 			s._toggle_all_arrows(true)
+
+
+## Battle screen poses: select (a mech and its reach), route (two routes plotted), hold (a
+## squad's readout), resolve (one phase run), contact (a skirmish open over the map).
+func _apply_battle_pose() -> void:
+	var s: BattleScreen = _node
+	var b := s.battle
+	match _pose:
+		"select":
+			s._on_hex_tapped(b.mechs()[0].pos)
+		"route":
+			for i in range(mini(2, b.mechs().size())):
+				s._on_hex_tapped(b.mechs()[i].pos)
+				var dests: Array = s._map.destinations.keys()
+				if not dests.is_empty():
+					s._on_hex_tapped(dests[dests.size() / 2])
+		"hold":
+			s._on_unit_held(b.field.squads()[0])
+		"resolve":
+			s._on_resolve()
+		"contact":
+			var m: Unit = b.mechs()[0]
+			var sq: Unit = b.field.squads()[0]
+			for n in Hex.neighbors(m.pos):
+				if b.field.can_stand(sq, n):
+					sq.pos = n
+					break
+			sq.movespeed = 0
+			b.field.compute_intents()
+			s._on_resolve()
 
 
 func _tick() -> void:

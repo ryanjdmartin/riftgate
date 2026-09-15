@@ -1,0 +1,131 @@
+extends TestCase
+
+## Drives the battle screen through its handlers without a window: select, route, resolve,
+## contact into a skirmish and back, and the outcome overlay.
+
+
+func _screen(seed_value: int = 3) -> BattleScreen:
+	var db := ContentDB.load_default()
+	var team: Array = []
+	for id in ["bulwark", "sentinel", "raptor"]:
+		team.append(db.make_mech(id))
+	var b := Battle.new(seed_value)
+	b.setup(team, "undead")
+	var s := BattleScreen.new()
+	s.setup(b)
+	return s
+
+
+func _engage(b: Battle, sq: Unit, m: Unit) -> void:
+	for n in Hex.neighbors(m.pos):
+		if b.field.can_stand(sq, n):
+			sq.pos = n
+			break
+	sq.movespeed = 0
+	b.field.compute_intents()
+
+
+func test_screen_builds_in_the_plan_phase() -> void:
+	var s := _screen()
+	assert_true(s._header.text.begins_with("PHASE 01"), "phase one in the header")
+	assert_true(s._sub_label.text.begins_with("PLAN"), "plan readout")
+	assert_false(s._resolve_btn.disabled, "resolve available")
+	assert_true(s._clear_btn.disabled, "nothing to clear yet")
+	assert_true(s._map.field == s.battle.field, "map shows the field")
+	assert_true(s._map.scroll_y <= 0.0, "scrolled to the gate end")
+	s.free()
+
+
+func test_tap_selects_routes_and_clears() -> void:
+	var s := _screen()
+	var m: Unit = s.battle.mechs()[0]
+	s._on_hex_tapped(m.pos)
+	assert_eq(s._map.selected, m, "mech selected")
+	assert_true(s._map.destinations.size() > 0, "destinations lit")
+	var dest: Vector2i = s._map.destinations.keys()[0]
+	s._on_hex_tapped(dest)
+	assert_eq(s._map.selected, null, "deselected after plotting")
+	assert_eq(s.battle.route_end(m), dest, "route plotted")
+	assert_false(s._clear_btn.disabled, "clear available")
+	assert_true(s._sub_label.text.contains("1 OF 3"), "readout counts the route")
+	s._on_hex_tapped(m.pos)
+	s._on_hex_tapped(m.pos)
+	assert_true(s.battle.routes.is_empty(), "second tap on the mech clears its route")
+	assert_eq(s._map.selected, null, "and deselects")
+	s.free()
+
+
+func test_tap_elsewhere_deselects() -> void:
+	var s := _screen()
+	var m: Unit = s.battle.mechs()[0]
+	s._on_hex_tapped(m.pos)
+	s._on_hex_tapped(s.battle.map.rift)
+	assert_eq(s._map.selected, null, "deselected")
+	assert_true(s.battle.routes.is_empty(), "no route to an unreachable hex")
+	s.free()
+
+
+func test_resolve_runs_a_phase() -> void:
+	var s := _screen()
+	var m: Unit = s.battle.mechs()[0]
+	s._on_hex_tapped(m.pos)
+	var dest: Vector2i = s._map.destinations.keys()[0]
+	s._on_hex_tapped(dest)
+	s._on_resolve()
+	assert_eq(m.pos, dest, "mech moved")
+	assert_true(s._header.text.begins_with("PHASE 02"), "next phase")
+	assert_eq(s.battle.state, Battle.State.PLAN, "planning")
+	assert_eq(s._skirmish, null, "no contact, no skirmish")
+	s.free()
+
+
+func test_contact_opens_the_skirmish_screen_and_back_applies_it() -> void:
+	var s := _screen()
+	var b := s.battle
+	var m: Unit = b.mechs()[0]
+	var sq: Unit = b.field.squads()[0]
+	_engage(b, sq, m)
+	s._on_resolve()
+	assert_true(s._skirmish != null, "skirmish screen opened")
+	assert_eq(s._sub_label.text, "CONTACT", "contact readout")
+	assert_true(s._resolve_btn.disabled, "no resolving mid-skirmish")
+	var sk: Skirmish = s._skirmish.sk
+	assert_eq(sk.round, 1, "skirmish started")
+	sk.pool.clear()
+	for f in sk.field_foes():
+		f.hp = 0
+	s._skirmish._end_turn_now()
+	assert_true(s._skirmish._overlay.visible, "skirmish outcome shown")
+	s._on_skirmish_back()
+	assert_eq(s._skirmish, null, "skirmish screen gone")
+	assert_false(b.field.units.has(sq), "squad wiped")
+	assert_eq(b.state, Battle.State.PLAN, "back to the plan")
+	assert_false(s._resolve_btn.disabled, "resolve available again")
+	s.free()
+
+
+func test_hold_shows_a_readout() -> void:
+	var s := _screen()
+	s._on_unit_held(s.battle.mechs()[0])
+	assert_true(s._details.visible, "readout shown")
+	assert_true(s._details_label.text.contains("hull"), "mech numbers")
+	s._on_hold_released()
+	assert_false(s._details.visible, "hidden on release")
+	s._on_unit_held(s.battle.field.squads()[0])
+	assert_true(s._details_label.text.contains("×"), "squad strength")
+	s._on_unit_held(s.battle.boss)
+	assert_true(s._details_label.text.contains("massive"), "boss readout")
+	s.free()
+
+
+func test_gate_falling_shows_the_outcome() -> void:
+	var s := _screen()
+	var b := s.battle
+	b.field.gate_hp = 5
+	var sq: Unit = b.field.squads()[0]
+	load("res://tests/test_battle.gd").threaten_gate(b, sq)
+	s._on_resolve()
+	assert_true(s._overlay.visible, "overlay shown")
+	assert_eq(s._overlay_title.text, "GATE FALLEN", "title")
+	assert_true(s._resolve_btn.disabled, "no more phases")
+	s.free()

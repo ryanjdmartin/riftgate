@@ -134,7 +134,31 @@ func nearest_standable(u: Unit, h: Vector2i) -> Vector2i:
 
 ## Every anchor hex a unit can end its move on this phase, mapped to the cost of getting there.
 func reachable(u: Unit) -> Dictionary:
+	var dist: Dictionary = _search(u)[0]
+	dist.erase(u.pos)
+	return dist
+
+
+## Cheapest route for `u` to `to` within its movespeed, as the hexes after its position.
+## Empty when `to` is out of reach. What resolve_phase expects for a plotted mech.
+func route_to(u: Unit, to: Vector2i) -> Array[Vector2i]:
+	var out: Array[Vector2i] = []
+	if to == u.pos:
+		return out
+	var prev: Dictionary = _search(u)[1]
+	if not prev.has(to):
+		return out
+	var c := to
+	while c != u.pos:
+		out.push_front(c)
+		c = prev[c]
+	return out
+
+
+## Dijkstra from the unit's hex, bounded by its movespeed. Returns [dist, prev].
+func _search(u: Unit) -> Array:
 	var dist := {u.pos: 0}
+	var prev := {}
 	var frontier: Array = [[0, u.pos]]
 	while not frontier.is_empty():
 		var best := 0
@@ -154,9 +178,9 @@ func reachable(u: Unit) -> Dictionary:
 				continue
 			if not dist.has(n) or nd < dist[n]:
 				dist[n] = nd
+				prev[n] = h
 				frontier.append([nd, n])
-	dist.erase(u.pos)
-	return dist
+	return [dist, prev]
 
 
 ## Where each squad intends to go this phase. Paths ignore mechs, so what the player sees is
