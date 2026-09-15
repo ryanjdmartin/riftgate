@@ -35,8 +35,10 @@ Three rerolls a round, and `Die.reroll()` never returns the showing face or an e
 - Routes are tap-to-destination only. Drag-to-draw is not built.
 - A route that passes through another mech's current hex is rejected at resolve time (the
   log says so) unless that mech moves first. The order is the order routes were set.
-- Enemy art is the exported sketch grids, not final art. The upgrade path is an image model
-  or an artist feeding a quantise-and-outline step; the source is Ryan's call.
+- Enemy art: `tools/foeforge/` (mflux, FLUX.2 Klein 4B, ~8 s a candidate on the M4 Max)
+  generates candidates from foes.json prompts and cuts one into art/foes. The ghoul is the
+  first model-made sprite in the engine; the other eight foes still use the sketch grids.
+  Next: `forge.py generate <foe> --n 4` for each, Ryan picks from the contact sheets.
 - The skirmish's Back button still reads "BACK" even when it returns to the battlefield.
 
 **Next, in order.**

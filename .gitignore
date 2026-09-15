@@ -12,3 +12,5 @@ build/
 
 # Python tooling
 tools/spriter/.venv/
+tools/foeforge/.venv/
+tools/foeforge/out/

@@ -38,7 +38,8 @@ and open question from the design sessions.
   `test_` method, including the content validator and a headless drive of the skirmish screen.
 - `tools/` — `export_vocabulary.gd` regenerates `docs/vocabulary.md`; `screenshot.gd` renders a
   scene to PNG at 720x1280; `spriter/` renders mech sprites from primitive models;
-  `sheet_export.py` exports the enemy grids in `docs/sprites-enemies.html` to `art/foes/`.
+  `sheet_export.py` exports the enemy grids in `docs/sprites-enemies.html` to `art/foes/`;
+  `foeforge/` generates enemy candidates with an image model and cuts one into `art/foes/`.
 - `art/` — `mechs/` from the spriter, `foes/` from the sheet export, `fonts/` the HUD faces.
   Everything is optional: a missing sprite falls back to a placeholder shape.
 - `docs/` — design bible, generated vocabulary, concept intake in `docs/concepts/`, and
@@ -74,6 +75,10 @@ godot --headless --path . --import
 # export the enemy sprites from the grids in docs/sprites-enemies.html to art/foes, then re-import
 tools/spriter/.venv/bin/python tools/sheet_export.py
 godot --headless --path . --import
+
+# better enemy sprites from an image model on this Mac (see tools/foeforge/README.md)
+tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate ghoul --n 4
+tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut tools/foeforge/out/ghoul/ghoul_3.png ghoul
 ```
 
 The skirmish screen runs top to bottom: header with the round tag and the intent eye at the
