@@ -315,13 +315,21 @@ def mech(args):
 def cut_mech(args):
     src = key_background(Image.open(args.image))
     MECH_ART.mkdir(parents=True, exist_ok=True)
-    sprite = outline(quantize(fit(src, MECH_FRAME), None, args.colours))
-    dest = MECH_ART / f"{args.chassis}_combat_{args.turn}.png"
+    if args.chunk > 1:
+        # The other genre: mechs at a coarser pixel grid than the foes. Fit into a frame
+        # `chunk` times smaller, quantise there, then scale up by nearest neighbour so each
+        # mech pixel is a block of foe pixels.
+        small_frame = (MECH_FRAME[0] // args.chunk, MECH_FRAME[1] // args.chunk)
+        small = outline(quantize(fit(src, small_frame), None, args.colours))
+        sprite = small.resize((small.width * args.chunk, small.height * args.chunk), Image.NEAREST)
+    else:
+        sprite = outline(quantize(fit(src, MECH_FRAME), None, args.colours))
+    dest = Path(args.out) if args.out else MECH_ART / f"{args.chassis}_combat_{args.turn}.png"
     sprite.save(dest)
-    pv = OUT / args.chassis / f"{args.chassis}_{args.turn}_cut_preview.png"
+    pv = dest.with_name(dest.stem + "_preview.png") if args.out else OUT / args.chassis / f"{args.chassis}_{args.turn}_cut_preview.png"
     pv.parent.mkdir(parents=True, exist_ok=True)
     sprite.resize((sprite.width * 4, sprite.height * 4), Image.NEAREST).save(pv)
-    print(f"wrote {dest.relative_to(ROOT)} {sprite.size}; preview {pv.relative_to(ROOT)}")
+    print(f"wrote {dest} {sprite.size}; preview {pv}")
 
 
 def main():
@@ -340,6 +348,8 @@ def main():
     cm.add_argument("chassis")
     cm.add_argument("--turn", default="front_right", choices=["front", "front_left", "front_right"])
     cm.add_argument("--colours", type=int, default=16)
+    cm.add_argument("--chunk", type=int, default=1, help="pixel size relative to the foes: 2 draws the mech on a grid twice as coarse")
+    cm.add_argument("--out", default="", help="write here instead of art/mechs (for experiments)")
     cm.set_defaults(func=cut_mech)
     g = sub.add_parser("generate")
     g.add_argument("foe")

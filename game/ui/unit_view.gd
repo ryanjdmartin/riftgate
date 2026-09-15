@@ -174,12 +174,13 @@ func _draw() -> void:
 				_gauge(Rect2(bx, y, bw, BAR_H), b)
 				y += BAR_STEP
 		else:
-			# One small gauge floating off the drawing's top-right corner, on a short leader
-			# that leaves from the corner itself.
+			# One small gauge floating above the drawing's top-right, with a short leader
+			# dropping from a third of the way along its underside, diagonally down-left
+			# toward the sprite.
 			var bx := minf(vis.end.x - 10.0, size.x - FLOAT_BAR_W - 2.0)
 			var y := vis.position.y - 16.0
-			var corner := Vector2(vis.end.x - 1.0, vis.position.y + 1.0)
-			draw_line(corner, Vector2(bx + 3.0, y + BAR_H), Color(hud, 0.7), 1.0)
+			var from := Vector2(bx + FLOAT_BAR_W / 3.0, y + BAR_H)
+			draw_line(from, from + Vector2(-9.0, 9.0), Color(hud, 0.8), 1.5)
 			for b in bars:
 				_gauge(Rect2(bx, y, FLOAT_BAR_W, BAR_H), b)
 				y -= 10.0

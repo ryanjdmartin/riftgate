@@ -318,6 +318,7 @@ func _build_codex() -> void:
 	_codex_title = Hud.label("", 32, Palette.INK, Hud.display_bold())
 	_codex_sub = Hud.label("", 13, Color(Palette.HUD, 0.8), Hud.mono())
 	_codex_sub.autowrap_mode = TextServer.AUTOWRAP_WORD
+	_codex_sub.custom_minimum_size = Vector2(380, 0)
 	_codex_sub.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head.add_child(_codex_title)
 	head.add_child(_codex_sub)
@@ -334,8 +335,11 @@ func _build_codex() -> void:
 	_codex_passive = Hud.label("", 17, Palette.ACCENT)
 	_codex_faces = FaceListView.new()
 	_codex_flavour = Hud.label("", 18, Palette.MUTED, Hud.quote())
+	# Wrapping labels need a width before their first layout pass, or they report the height
+	# of every word on its own line and the panel opens far too tall the first time.
 	for l in [_codex_body, _codex_stats, _codex_actions, _codex_passive, _codex_flavour]:
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD
+		l.custom_minimum_size = Vector2(560, 0)
 		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		cv.add_child(l)
@@ -762,7 +766,8 @@ func _open_codex(entry: Dictionary) -> void:
 	_codex_flavour.visible = not quote.is_empty()
 	_codex_shade.visible = true
 	_codex.visible = true
-	_codex.size = Vector2(640, 0)
+	_codex.reset_size()
+	_codex.size = Vector2(640, _codex.get_combined_minimum_size().y)
 
 
 func _close_codex() -> void:
