@@ -289,7 +289,8 @@ func test_rerolls_are_limited_and_work_after_attacking() -> void:
 	assert_true(sk.assign(0, sk.front[0]), "A attacks first")
 	assert_true(sk.reroll([1]), "then B rerolls: attack-then-reroll is allowed")
 	assert_true(sk.reroll([1]), "second reroll")
-	assert_false(sk.reroll([1]), "third refused")
+	assert_true(sk.reroll([1]), "third reroll")
+	assert_false(sk.reroll([1]), "fourth refused")
 
 
 func test_same_seed_same_rolls() -> void:
@@ -457,3 +458,103 @@ func test_shield_face_helps_an_ally() -> void:
 	sk.mechs[0].assigned = false
 	assert_true(sk.assign(0, sk.mechs[1]), "shield again with room")
 	assert_eq(taker.shield, 30, "ally gained 30")
+
+
+func test_forecast_predicts_shield_break_and_hull_loss() -> void:
+	var sk := Skirmish.new(1)
+	var m := Unit.mech(1, "A", Vector2i.ZERO)
+	m.hull = 100
+	m.hull_max = 100
+	m.shield = 20
+	m.shield_max = 20
+	m.die = Die.single(Face.attack(10))
+	var ms := sk.add_mech(m)
+	sk.add_foes([Foe.make("a", 30, 25), Foe.make("b", 30, 30)])
+	sk.begin()
+	sk.start_round()
+	var fc := sk.forecast(ms)
+	assert_eq(fc["incoming"], 55, "both foes aim at the only mech")
+	assert_true(fc["breaks_shield"], "55 incoming breaks a 20 shield")
+	assert_eq(fc["shield_after"], 0, "shield gone")
+	assert_eq(fc["hull_after"], 65, "35 gets through")
+	assert_true(fc["component_risk"], "a 30-point hit on 100 hull may injure")
+	assert_false(fc["destroyed"], "still standing")
+	sk.front[0].suppressed = true
+	fc = sk.forecast(ms)
+	assert_eq(fc["incoming"], 30, "a suppressed foe does not count")
+	sk.front[1].hp = 0
+	fc = sk.forecast(ms)
+	assert_eq(fc["incoming"], 0, "a dead foe does not count")
+	assert_false(fc["breaks_shield"], "nothing incoming")
+
+
+func test_forecast_predicts_wreck_and_overheat() -> void:
+	var sk := Skirmish.new(2)
+	var m := Unit.mech(1, "A", Vector2i.ZERO)
+	m.hull = 20
+	m.hull_max = 100
+	m.shield = 0
+	m.shield_max = 40
+	m.heat_max = 30
+	m.die = Die.single(Face.attack(10, Face.Reach.LINE, [], 40))
+	var ms := sk.add_mech(m)
+	sk.add_foes([Foe.make("a", 30, 25)])
+	sk.begin()
+	sk.start_round()
+	var fc := sk.forecast(ms)
+	assert_eq(fc["overheat"], 10, "a 40-heat face on a 30 cap overheats by 10")
+	assert_eq(fc["heat_after"], 30, "heat capped")
+	assert_true(fc["destroyed"], "25 through plus 10 overheat beats 20 hull")
+	sk.assign(0, sk.front[0])
+	fc = sk.forecast(ms)
+	assert_eq(sk.pending_heat(ms), 0, "a spent face adds no more heat")
+	assert_eq(fc["overheat"], 0, "no pending overheat once spent")
+
+
+func test_forecast_ignores_foes_that_burn_to_death_first() -> void:
+	var sk := Skirmish.new(3)
+	var m := Unit.mech(1, "A", Vector2i.ZERO)
+	m.die = Die.single(Face.attack(10))
+	var ms := sk.add_mech(m)
+	sk.add_foes([Foe.make("a", 10, 25)])
+	sk.begin()
+	sk.start_round()
+	sk.front[0].burn = 1
+	assert_eq(sk.forecast(ms)["incoming"], 0, "burn kills it before it strikes")
+
+
+func test_reroll_always_lands_on_a_different_face() -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 11
+	var die := Die.of([
+		Face.attack(20, Face.Reach.LINE, [], 0, 40, 10),
+		Face.attack(20, Face.Reach.LINE, [], 0, 40, 10),
+		Face.attack(30),
+		Face.shield(20),
+	])
+	for trial in range(60):
+		var cur := die.roll(rng)
+		var next := die.reroll(rng, cur)
+		assert_ne(next, cur, "index changes")
+		assert_true(die.faces[next].to_dict() != die.faces[cur].to_dict(), "and the face is not an equivalent one")
+	var same := Die.of([Face.attack(10), Face.attack(10)])
+	assert_eq(same.reroll(rng, 0), 0, "a die of identical faces keeps its face")
+	var one := Die.single(Face.attack(10))
+	assert_eq(one.reroll(rng, 0), 0, "a one-faced die keeps its face")
+
+
+func test_skirmish_reroll_changes_every_unlocked_face() -> void:
+	var db := ContentDB.load_default()
+	for seed_value in range(1, 25):
+		var sk := Skirmish.new(seed_value)
+		for id in ["bulwark", "sentinel", "raptor"]:
+			sk.add_mech(db.make_mech(id))
+		sk.add_foes([Foe.make("ghoul", 30, 10)])
+		sk.begin()
+		sk.start_round()
+		var before: Array = []
+		for ms in sk.mechs:
+			before.append(ms.face().to_dict())
+		sk.reroll([0, 1, 2])
+		for i in range(3):
+			assert_true(sk.mechs[i].face().to_dict() != before[i], "seed %d mech %d shows a different face" % [seed_value, i])

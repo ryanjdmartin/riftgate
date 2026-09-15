@@ -26,6 +26,22 @@ func roll(rng: RandomNumberGenerator) -> int:
 	return rng.randi_range(0, faces.size() - 1)
 
 
+## A reroll always lands on a different face: never the one showing, never one equivalent
+## to it. These are not really dice, and a reroll that changes nothing reads as a bug. A die
+## whose faces are all alike keeps the face it has.
+func reroll(rng: RandomNumberGenerator, current: int) -> int:
+	if current < 0 or current >= faces.size():
+		return roll(rng)
+	var showing := faces[current].to_dict()
+	var options: Array[int] = []
+	for i in range(faces.size()):
+		if i != current and faces[i].to_dict() != showing:
+			options.append(i)
+	if options.is_empty():
+		return current
+	return options[rng.randi_range(0, options.size() - 1)]
+
+
 ## Chance of any given face, for the builder's odds display.
 func odds() -> float:
 	return 1.0 / float(maxi(1, faces.size()))

@@ -48,6 +48,24 @@ static func map_foe(foe_id: String) -> Texture2D:
 	return _load("res://art/foes/%s_map.png" % foe_id)
 
 
+## The opaque part of a sprite, in texture pixels, so views can hug the drawing rather than
+## the frame. Falls back to the whole texture when the image cannot be read.
+static func used_rect(tex: Texture2D) -> Rect2:
+	if tex == null:
+		return Rect2()
+	var key := "used:%d" % tex.get_instance_id()
+	if _cache.has(key):
+		return _cache[key]
+	var rect := Rect2(Vector2.ZERO, tex.get_size())
+	var img := tex.get_image()
+	if img != null and not img.is_empty():
+		var used := img.get_used_rect()
+		if used.size.x > 0 and used.size.y > 0:
+			rect = Rect2(used.position, used.size)
+	_cache[key] = rect
+	return rect
+
+
 static func _load(path: String) -> Texture2D:
 	if _cache.has(path):
 		return _cache[path]

@@ -162,7 +162,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		faces = u.die.faces.duplicate()
 	var passive := ""
 	if not u.passive.is_empty():
-		passive = "%s. %s %s" % [u.passive.get("name", ""), u.passive.get("fantasy", ""), " ".join(u.passive.get("rules", []))]
+		passive = "%s: %s %s" % [str(u.passive.get("name", "")).to_upper(), u.passive.get("fantasy", ""), " ".join(u.passive.get("rules", []))]
 	return {
 		"title": u.display_name,
 		"subtitle": "%s // %s" % [str(maker.get("name", "")).to_upper(), str(c.get("silhouette", "")).to_upper()],

@@ -3,9 +3,10 @@ extends Control
 
 ## A die drawn as an object under the tactical overlay. The face is a chamfered square that
 ## bobs gently; its keywords sit as small annotation chips hugging its right edge, one per
-## keyword, bright and flickering now and then. On the face: primary glyph top-left, the
-## number or range in the middle, heat bottom-left, crit bottom-right, the lock top-right. A
-## locked die gets bracket corners and a LOCKED readout. A unique effect adds a star chip.
+## keyword, bright and flickering now and then. On the face, as Ryan sketched it: the primary
+## glyph large at the top centre, the number or range beneath it, heat bottom-left, crit
+## bottom-right, the lock top-right. A locked die gets bracket corners and a LOCKED readout.
+## A unique effect adds a star chip.
 ##
 ## Gestures:
 ##   tap   -> `tapped`         lock or unlock
@@ -143,10 +144,10 @@ func _draw() -> void:
 		return
 	var ink := Color(hud, alpha)
 	var mono := Hud.mono()
-	Glyphs.draw(self, Glyphs.primary_for(face), Vector2(20.0, 20.0 + bob), 16, ink, 1.8)
+	Glyphs.draw(self, Glyphs.primary_for(face), Vector2(FACE * 0.5, 34.0 + bob), 34, ink, 2.6)
 	var num := face.number_text()
-	var num_size := 30 if face.is_ranged() else 42
-	draw_string(mono, Vector2(0, 76.0 + bob), num, HORIZONTAL_ALIGNMENT_CENTER, FACE, num_size, ink)
+	var num_size := 28 if face.is_ranged() else 38
+	draw_string(mono, Vector2(0, 92.0 + bob), num, HORIZONTAL_ALIGNMENT_CENTER, FACE, num_size, ink)
 	if face.heat > 0:
 		var hc := Color(Palette.HEAT, alpha)
 		draw_string(mono, Vector2(10.0, FACE - 9.0 + bob), "+%d HEAT" % face.heat, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, hc)

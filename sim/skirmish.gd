@@ -7,7 +7,8 @@ extends RefCounted
 ## Round loop:
 ##   start_round()       roll every live mech's die (unless locked), telegraph foe intents
 ##   reroll([...])       up to REROLLS_PER_ROUND times, any subset of unspent mech dice,
-##                       before or after spending others: a low damage roll is information
+##                       before or after spending others: a low damage roll is information;
+##                       a reroll always lands on a different face (see Die.reroll)
 ##   assign(i, target)   spend a mech's face on a foe (attacks) or a mech (shield, vent);
 ##                       kinetic faces roll their damage here, immediately and visibly
 ##   end_round()         burn ticks, foes act, the dead are cleared, the pool refills,
@@ -20,7 +21,7 @@ enum State { SETUP, ROUND_START, ASSIGN, DONE }
 enum Outcome { NONE, VICTORY, DEFEAT, WITHDRAWN }
 
 const COLUMNS := 3
-const REROLLS_PER_ROUND := 2
+const REROLLS_PER_ROUND := 3
 const DANGER_CLOSE_DIVISOR := 2
 const BURN_PER_STACK := 10          # damage each stack deals per round
 const BURN_DAMAGE_PER_STACK := 20   # damage dealt per stack applied
@@ -147,6 +148,68 @@ func can_withdraw() -> bool:
 	return state == State.ASSIGN and round > 1 and not any_assigned()
 
 
+## Heat the mech's current face will add if it is spent as an attack.
+func pending_heat(ms: MechState) -> int:
+	var f := ms.face()
+	if f == null or ms.assigned or not f.is_attack():
+		return 0
+	var heat := f.heat
+	if f.has(Face.Keyword.OVERCHARGE):
+		heat *= 2
+	return Passives.on_attack(ms.unit.passive, 0, heat)[1]
+
+
+## The foes that will strike this mech when the round ends, in the order they act: alive,
+## not suppressed, aimed at it, and not about to die to burn first.
+func attackers_of(ms: MechState) -> Array[Foe]:
+	var out: Array[Foe] = []
+	for f in field_foes():
+		if not f.alive() or f.suppressed or f.target != ms:
+			continue
+		if f.burn > 0 and f.hp - f.burn * BURN_PER_STACK <= 0:
+			continue
+		out.append(f)
+	return out
+
+
+func incoming_for(ms: MechState) -> int:
+	var total := 0
+	for f in attackers_of(ms):
+		total += f.attack
+	return total
+
+
+## What the end of the round does to this mech if nothing else changes: the screen's warning
+## signs and bar overlays. Recomputed after every action, so shielding or killing an attacker
+## moves the numbers at once.
+func forecast(ms: MechState) -> Dictionary:
+	var shield := ms.unit.shield
+	var hull := ms.unit.hull
+	var incoming := 0
+	var component_risk := false
+	for f in attackers_of(ms):
+		incoming += f.attack
+		var absorbed := mini(shield, f.attack)
+		shield -= absorbed
+		var through := f.attack - absorbed
+		hull -= through
+		if through > 0 and through * 100 >= ms.unit.hull_max * CRACK_MIN_HULL_PCT:
+			component_risk = true
+	var heat_after := ms.heat + pending_heat(ms)
+	var over := maxi(0, heat_after - ms.heat_max)
+	hull -= over
+	return {
+		"incoming": incoming,
+		"shield_after": shield,
+		"hull_after": hull,
+		"heat_after": mini(heat_after, ms.heat_max),
+		"overheat": over,
+		"breaks_shield": ms.unit.shield > 0 and incoming >= ms.unit.shield,
+		"component_risk": component_risk,
+		"destroyed": hull <= 0 and ms.alive(),
+	}
+
+
 ## Foes this mech's current face may be spent on.
 func targets_for(mech_index: int) -> Array[Foe]:
 	var out: Array[Foe] = []
@@ -188,7 +251,7 @@ func reroll(mech_indices: Array) -> bool:
 	for i in mech_indices:
 		var ms := mechs[i]
 		if ms.alive() and not ms.assigned:
-			ms.face_index = ms.die.roll(rng)
+			ms.face_index = ms.die.reroll(rng, ms.face_index)
 	rerolls_left -= 1
 	return true
 

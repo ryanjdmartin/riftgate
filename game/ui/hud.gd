@@ -34,13 +34,12 @@ static func display_bold() -> Font:
 	return _display_bold
 
 
-## The display face slanted, for quotes. Neither bundled face ships an italic.
+## The face for quotes. Neither bundled face ships an italic, and a sheared Rajdhani renders
+## badly at small sizes, so quotes are set upright in the display face and marked by their
+## quotation marks and colour instead.
 static func quote() -> Font:
 	if _quote == null:
-		var fv := FontVariation.new()
-		fv.base_font = display()
-		fv.variation_transform = Transform2D(Vector2(1, 0), Vector2(-0.18, 1), Vector2.ZERO)
-		_quote = fv
+		_quote = display()
 	return _quote
 
 

@@ -66,7 +66,7 @@ func test_attack_then_reroll_flow() -> void:
 	assert_true(s._roll_label.visible, "the number flashed over the target")
 	assert_false(s._reroll_btn.disabled, "reroll still available after attacking")
 	s._on_reroll()
-	assert_eq(s.sk.rerolls_left, 1, "reroll spent after the attack")
+	assert_eq(s.sk.rerolls_left, Skirmish.REROLLS_PER_ROUND - 1, "reroll spent after the attack")
 	assert_true(s.sk.mechs[attacker].assigned, "spent die stays spent")
 	s.free()
 
@@ -159,7 +159,7 @@ func test_double_tap_opens_and_closes_the_codex() -> void:
 	assert_eq(s._codex_title.text, "Raptor", "titled with the chassis name")
 	assert_true(s._codex_sprite.visible and s._codex_sprite.texture != null, "head-on sprite shown")
 	assert_true(s._codex_passive.visible, "raptor's passive is shown")
-	assert_true(s._codex_passive.text.contains("Hot Hands"), "by name")
+	assert_true(s._codex_passive.text.to_lower().contains("hot hands"), "by name")
 	assert_true(s._codex_faces.visible and s._codex_faces.faces.size() == 4, "faces listed visually")
 	s._close_codex()
 	s.free()

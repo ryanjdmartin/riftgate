@@ -76,17 +76,25 @@ tools/spriter/.venv/bin/python tools/sheet_export.py
 godot --headless --path . --import
 ```
 
-The skirmish screen runs top to bottom: header with End turn and Withdraw at the top right,
-enemies, dice with Reroll beneath them, mechs with their bars above the sprites, log at the
-bottom. Tap a die to lock it, hold a die to see every face on it, drag a die onto a foe to
-spend an attack face or onto a mech to spend a shield or vent face; valid targets light up
-while dragging. Keywords float beside each die as annotation tags. Kinetic faces roll their damage when they land and the
-number flashes over the target; energy faces are static. Reroll up to twice per round, before
-or after attacking. End turn runs the enemy and starts the next round immediately. Numbers
-are in tens. Hold a foe or a mech for its numbers and the intent arrows
-that concern it; the eye button shows every arrow; double-tap any unit or die for its codex
-entry. Withdraw is offered at the start of a round after the first, before Lock in. Blank
-faces are discarded at end of turn.
+The skirmish screen runs top to bottom: header with the round tag and the intent eye at the
+right, enemies, log, dice with the wide Reroll right under them, mechs at the bottom with
+their gauges hugging the sprite, End turn bottom-left and Withdraw bottom-right. No unit
+names on screen. Under each foe sits its intent as a fantasy icon and number (a sword for
+the attack) and its statuses (burn, suppressed, exposed) as chips. Under each mech sit its
+statuses and warning signs: a broken shield when incoming damage will break it, a crack when
+a hit that big may injure a component, a skull when the round would wreck it, a thermometer
+when the current face would overheat. The gauges pulse over the part about to change and the
+warnings update as you act, so shielding or killing an attacker clears them at once. Tap a
+die to lock it, hold a die to see every face on it, drag a die onto a foe to spend an attack
+face or onto a mech to spend a shield or vent face; valid targets light up while dragging.
+Keywords float beside each die as annotation tags. Kinetic faces roll their damage when they
+land and the number flashes over the target; energy faces are static. Reroll up to three
+times per round, before or after attacking; a reroll always lands on a different face,
+never the one showing nor an equivalent one. End turn runs the enemy and starts the next round
+immediately. Numbers are in tens. Hold a foe or a mech for its numbers, its statuses with
+icons and text, and the intent arrows that concern it; the eye shows every arrow;
+double-tap any unit or die for its codex entry. Withdraw is offered at the start of a round
+after the first. Blank faces are discarded at end of turn.
 
 The harness can add the faction's massive elite, which fills both ranks of a column. For the
 standalone screen, `RIFTGATE_TEAM=bulwark,sentinel,raptor,anvil` picks the team and

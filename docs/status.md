@@ -19,7 +19,18 @@ hand-typed grids in `docs/sprites-enemies.html` into `art/foes/<id>_combat.png` 
 `<id>_map.png`, so the skirmish and the map show every foe. The mech sheet page opens with
 the rendered contact sheets; its grids are the brief, the renders are current.
 
+Skirmish second pass (15 September, from Ryan's playtest notes): no names, chip row under
+every sprite (fantasy intent icons, statuses, forecast warnings), pulsing gauge overlays,
+big glyph on the die, Reroll wide under the dice, eye in the header, no rank labels,
+upright quotes, `NAME: description` passives. `Skirmish.forecast()` is the prediction.
+Three rerolls a round, and `Die.reroll()` never returns the showing face or an equivalent one.
+
 **Known rough edges.**
+
+- Ryan reported codex stat lines cut off on the left; not reproduced in a 720x1280 render.
+  Labels now expand-fill with autowrap. Needs a screenshot from his device if it persists.
+- Only the basic attack exists, so every foe intent is a sword. Defend, heal, buff, debuff
+  icons are drawn and wired to the action kind for when the engine runs them.
 
 - Routes are tap-to-destination only. Drag-to-draw is not built.
 - A route that passes through another mech's current hex is rejected at resolve time (the

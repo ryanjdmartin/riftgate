@@ -4,17 +4,19 @@ extends Control
 ## The skirmish screen as a tactical overlay. Portrait, 720x1280 logical, positioned
 ## absolutely so every coordinate is a plain number.
 ##
-##   header      round and pool tag, phase readout
-##   formation   two ranks of three unit views; a massive foe spans both ranks of its column
+##   header      round and pool tag, phase readout, the intent eye at the right
+##   formation   two ranks of three unit views; a massive foe spans both ranks of its column;
+##               under each foe its intent (fantasy icon and number) and its statuses
 ##   log         the last few events, oldest dimmest
-##   dice        tap to lock, hold to see every face, drag onto a target to spend; reroll
-##               before or after attacking, so a low roll is information for the rest
-##   controls    Reroll square on the left edge, the intent eye on the right edge
-##   mechs       gauges above the sprite, three-quarter sprite, name
+##   dice        tap to lock, hold to see every face, drag onto a target to spend; the wide
+##               Reroll sits right under them, before or after attacking
+##   mechs       gauges hugging the sprite, warning chips under it: shield break, component
+##               risk, wreck, overheat; the gauges pulse where they are about to change
 ##   bottom      End turn bottom-left, Withdraw bottom-right; both ask first when it matters
 ##
-## Kinetic faces roll when they land and the number flashes over the target. Hold a unit for
-## numbers and arrows. Double-tap a unit or a die for its codex entry.
+## No names on screen. Kinetic faces roll when they land and the number flashes over the
+## target. Hold a unit for numbers, statuses and arrows. Double-tap a unit or a die for its
+## codex entry.
 
 signal finished(outcome: int)
 signal back_requested
@@ -22,18 +24,19 @@ signal back_requested
 const W := 720.0
 const H := 1280.0
 const COL_X := [150.0, 360.0, 570.0]
-const BACK_Y := 84.0
-const FRONT_Y := 224.0
+const BACK_Y := 72.0
+const FRONT_Y := 212.0
 const SLOT_SIZE := Vector2(150, 130)
 const MASSIVE_SIZE := Vector2(150, 270)
-const LOG_Y := 392.0
-const LOG_H := 164.0
-const DIE_Y := 576.0
+const LOG_Y := 366.0
+const LOG_H := 262.0
+const DIE_Y := 660.0
 const DIE_SIZE := 120.0
-const CTRL_Y := 712.0
-const CTRL := 72.0
-const MECH_Y := 804.0
-const MECH_SIZE := Vector2(150, 262)   # gauges 46 + 48x64 sprite at 3x + name
+const REROLL_Y := 796.0
+const REROLL_SIZE := Vector2(240, 52)
+const EYE := 40.0
+const MECH_Y := 923.0
+const MECH_SIZE := Vector2(150, 257)   # gauges 35 + 48x64 sprite at 3x + chip row 26
 const BOTTOM_Y := 1196.0
 const BOTTOM_BTN := Vector2(210, 60)
 const PITCH := 172.0
@@ -57,6 +60,7 @@ var _arrows: ArrowLayer
 var _details: HudPanel
 var _details_label: Label
 var _details_faces: FaceListView
+var _details_status: StatusListView
 var _roll_label: Label
 var _codex_shade: Control
 var _codex: HudPanel
@@ -142,21 +146,26 @@ func _build() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 	var bg := HudBackdrop.new()
-	bg.rules = [BACK_Y - 14.0, LOG_Y - 10.0, CTRL_Y + CTRL + 12.0, BOTTOM_Y - 16.0]
+	bg.rules = [BACK_Y - 14.0, LOG_Y - 10.0, REROLL_Y + REROLL_SIZE.y + 14.0, BOTTOM_Y - 16.0]
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
 
-	# Header: round and pool tag, phase readout beside it.
+	# Header: round and pool tag, phase readout beside it, the intent eye at the right edge
+	# where it sits over the formation it concerns.
 	_header = _tag("", 13, true)
 	_place(_header, Vector2(12, 14), Vector2(200, 28))
 	_sub_label = Hud.label("", 12, Color(Palette.HUD, 0.7), Hud.mono())
-	_place(_sub_label, Vector2(226, 20), Vector2(400, 20))
+	_place(_sub_label, Vector2(226, 20), Vector2(380, 20))
+	_eye = HudButton.new("")
+	_eye.glyph = "eye"
+	_eye.slant_px = 0.0
+	_eye.toggle_mode = true
+	_eye.tooltip_text = "Show every intent arrow"
+	_eye.toggled.connect(_toggle_all_arrows)
+	_place(_eye, Vector2(W - 12 - EYE, 8), Vector2(EYE, EYE))
 
-	# Formation: rank labels, six slot views, three massive views (hidden until needed).
-	var back_tag := Hud.label("BACK", 11, Color(Palette.HUD, 0.55), Hud.mono())
-	_place(back_tag, Vector2(16, BACK_Y + 50), Vector2(60, 20))
-	var front_tag := Hud.label("FRONT", 11, Color(Palette.HUD, 0.55), Hud.mono())
-	_place(front_tag, Vector2(16, FRONT_Y + 50), Vector2(60, 20))
+	# Formation: six slot views, three massive views (hidden until needed). Ranks need no
+	# label; the back rank is the one behind.
 	for col in range(Skirmish.COLUMNS):
 		for rank in range(2):
 			var v := UnitView.new()
@@ -204,20 +213,14 @@ func _build() -> void:
 		d.drag_ended.connect(_on_drag_ended)
 		_dice.append(d)
 
-	# Controls row: Reroll hugging the left edge, the intent eye hugging the right edge.
-	_reroll_btn = HudButton.new("", _on_reroll)
+	# Reroll: one wide button centred right under the dice, the dice's own control. Far from
+	# End turn, so a thumb going for one cannot land on the other.
+	_reroll_btn = HudButton.new("REROLL", _on_reroll)
 	_reroll_btn.glyph = "reroll"
-	_reroll_btn.slant_px = 0.0
-	_place(_reroll_btn, Vector2(8, CTRL_Y), Vector2(CTRL, CTRL))
-	_eye = HudButton.new("")
-	_eye.glyph = "eye"
-	_eye.slant_px = 0.0
-	_eye.toggle_mode = true
-	_eye.tooltip_text = "Show every intent arrow"
-	_eye.toggled.connect(_toggle_all_arrows)
-	_place(_eye, Vector2(W - 8 - CTRL, CTRL_Y), Vector2(CTRL, CTRL))
+	_reroll_btn.font_size = 18
+	_place(_reroll_btn, Vector2(W * 0.5 - REROLL_SIZE.x * 0.5, REROLL_Y), REROLL_SIZE)
 
-	# Mechs: gauges above the sprite, three-quarter sprite, name.
+	# Mechs: gauges hugging the sprite, three-quarter sprite, chip row beneath.
 	for i in range(n):
 		var cx := _column_x(i, n)
 		var ms: Skirmish.MechState = sk.mechs[i]
@@ -270,6 +273,10 @@ func _build() -> void:
 	_details_faces.visible = false
 	_details_faces.custom_minimum_size = Vector2(400, 0)
 	dv.add_child(_details_faces)
+	_details_status = StatusListView.new()
+	_details_status.visible = false
+	_details_status.custom_minimum_size = Vector2(300, 0)
+	dv.add_child(_details_status)
 
 	_build_codex()
 	_build_confirm()
@@ -305,6 +312,8 @@ func _build_codex() -> void:
 	top.add_child(head)
 	_codex_title = Hud.label("", 32, Palette.INK, Hud.display_bold())
 	_codex_sub = Hud.label("", 13, Color(Palette.HUD, 0.8), Hud.mono())
+	_codex_sub.autowrap_mode = TextServer.AUTOWRAP_WORD
+	_codex_sub.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head.add_child(_codex_title)
 	head.add_child(_codex_sub)
 	_codex_sprite = TextureRect.new()
@@ -322,7 +331,8 @@ func _build_codex() -> void:
 	_codex_flavour = Hud.label("", 18, Palette.MUTED, Hud.quote())
 	for l in [_codex_body, _codex_stats, _codex_actions, _codex_passive, _codex_flavour]:
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD
-		l.custom_minimum_size = Vector2(590, 0)
+		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		cv.add_child(l)
 	cv.add_child(_codex_faces)
 	cv.move_child(_codex_faces, cv.get_child_count() - 2)
@@ -421,7 +431,7 @@ func _refresh() -> void:
 	var assigning := sk.state == Skirmish.State.ASSIGN
 	_header.text = "RND %02d // POOL %02d" % [sk.round, sk.pool.size()]
 	_header.queue_redraw()
-	_sub_label.text = ("ASSIGN // REROLLS ×%d" % sk.rerolls_left) if assigning else "ENEMY PHASE"
+	_sub_label.text = "ASSIGN" if assigning else "ENEMY PHASE"
 	_view_foe.clear()
 
 	var targets: Array[Foe] = []
@@ -450,8 +460,9 @@ func _refresh() -> void:
 			if foe == null:
 				v.display_name = ""
 				v.bars = []
-				v.intent = "EXPOSED" if rank == 1 else ""
-				v.intent_dim = true
+				v.intent = ""
+				v.intent_kind = ""
+				v.statuses = []
 				v.highlight = false
 				v.dead = false
 				v.sprite = null
@@ -465,22 +476,18 @@ func _refresh() -> void:
 	for i in range(sk.mechs.size()):
 		var ms: Skirmish.MechState = sk.mechs[i]
 		var v := _mech_views[i]
+		var fc: Dictionary = sk.forecast(ms) if assigning and ms.alive() else {}
 		v.bars = [
-			[ms.unit.hull, ms.unit.hull_max, Palette.HUD],
-			[ms.unit.shield, ms.unit.shield_max, Color(Palette.HUD, 0.55)],
-			[ms.heat, ms.heat_max, Palette.HEAT],
+			[ms.unit.hull, ms.unit.hull_max, Palette.HUD, fc.get("hull_after", ms.unit.hull)],
+			[ms.unit.shield, ms.unit.shield_max, Color(Palette.HUD, 0.55), fc.get("shield_after", ms.unit.shield)],
+			[ms.heat, ms.heat_max, Palette.HEAT, fc.get("heat_after", ms.heat)],
 		]
 		v.dead = not ms.alive()
 		v.highlight = support and ms.alive()
-		v.intent = ""
 		v.statuses = []
-		if ms.heat >= ms.heat_max:
-			v.statuses.append(["heat", "max"])
-		if ms.unit.damaged_face_count() > 0:
-			v.statuses.append(["blank", str(ms.unit.damaged_face_count())])
-		if locked[i]:
-			v.statuses.append(["lock", ""])
-		v.queue_redraw()
+		for r in _mech_rows(i):
+			v.statuses.append([r[0], r[1], r[3]])
+		v.queue_refresh()
 		var d := _dice[i]
 		d.set_face(ms.face())
 		d.spent = ms.assigned
@@ -517,19 +524,55 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe]) -> void:
 	v.bars = [[foe.hp, foe.hp_max, Palette.HUD]]
 	v.dead = not foe.alive()
 	v.highlight = targets.has(foe)
+	v.intent = ""
 	v.intent_dim = false
-	if foe.suppressed:
-		v.intent = "SUPPRESSED"
-	elif foe.target != null:
-		v.intent = "ATK %d" % foe.attack
-	else:
-		v.intent = ""
+	# The engine runs only the basic attack, so the intent is a sword and its damage; a
+	# suppressed foe shows no intent, only the status.
+	v.intent_kind = "" if (foe.suppressed or foe.target == null) else "attack"
+	v.intent_value = foe.attack
 	v.statuses = []
-	if foe.burn > 0:
-		v.statuses.append(["burn", str(foe.burn)])
-	if foe.suppressed:
-		v.statuses.append(["suppress", ""])
+	for r in _foe_rows(foe):
+		v.statuses.append([r[0], r[1], r[3]])
 	v.queue_redraw()
+
+
+## Statuses on a foe as [glyph, chip text, readout text, colour].
+func _foe_rows(foe: Foe) -> Array:
+	var rows: Array = []
+	if foe.burn > 0:
+		rows.append(["burn", str(foe.burn), "Burning: %d damage a round, one stack less each round" % (foe.burn * Skirmish.BURN_PER_STACK), Palette.HEAT])
+	if foe.suppressed:
+		rows.append(["suppress", "", "Suppressed: loses its action this round", Palette.HUD])
+	if foe.rank == 1 and sk.is_exposed(foe.column):
+		rows.append(["exposed", "", "Exposed: nothing in front, line faces reach it", Palette.HUD])
+	return rows
+
+
+## Statuses and warnings on a mech as [glyph, chip text, readout text, colour]. Warnings come
+## from the forecast: what the end of the round does if nothing changes.
+func _mech_rows(i: int) -> Array:
+	var ms: Skirmish.MechState = sk.mechs[i]
+	var rows: Array = []
+	if not ms.alive():
+		return rows
+	if locked[i]:
+		rows.append(["lock", "", "Die locked: reroll skips it", Palette.HUD])
+	if ms.heat >= ms.heat_max:
+		rows.append(["heat", "MAX", "Heat at maximum: any more burns hull", Palette.HEAT])
+	var damaged := ms.unit.damaged_face_count()
+	if damaged > 0:
+		rows.append(["crack", str(damaged), "%d damaged component%s: repair in the hangar" % [damaged, "" if damaged == 1 else "s"], Palette.HUD])
+	if sk.state == Skirmish.State.ASSIGN:
+		var fc := sk.forecast(ms)
+		if int(fc["overheat"]) > 0:
+			rows.append(["heat", "+%d" % int(fc["overheat"]), "This face overheats: hull -%d" % int(fc["overheat"]), Palette.HEAT])
+		if bool(fc["destroyed"]):
+			rows.append(["skull", "", "Wrecked this round: %d incoming" % int(fc["incoming"]), Palette.ENEMY])
+		elif bool(fc["component_risk"]):
+			rows.append(["crack", "!", "A hit that big may injure a component", Palette.ENEMY])
+		if bool(fc["breaks_shield"]):
+			rows.append(["shieldbreak", "", "Incoming %d breaks the shield" % int(fc["incoming"]), Palette.ENEMY])
+	return rows
 
 
 func _foe_view_for(foe: Foe) -> UnitView:
@@ -560,13 +603,15 @@ func _refresh_arrows() -> void:
 	_arrows.set_arrows(list)
 
 
-## Hold readout beside a control: a text block and, for a die, every face in a column.
-func _show_details(text: String, near: Control, faces: Array = [], current: int = -1) -> void:
+## Hold readout beside a control: a text block, then for a die every face in a column, or
+## for a unit its statuses and warnings as icon-and-text rows.
+func _show_details(text: String, near: Control, faces: Array = [], current: int = -1, rows: Array = []) -> void:
 	_details_label.text = text
 	_details_faces.visible = not faces.is_empty()
 	if not faces.is_empty():
 		_details_faces.set_faces(faces, current)
-	var width := 440.0 if not faces.is_empty() else 340.0
+	_details_status.set_rows(rows)
+	var width := 440.0 if not faces.is_empty() else 360.0
 	_details.custom_minimum_size = Vector2(width, 0)
 	_details.visible = true
 	_details.reset_size()
@@ -574,7 +619,7 @@ func _show_details(text: String, near: Control, faces: Array = [], current: int 
 	if pos.x + width > W - 8.0:
 		pos.x = near.position.x - width - 8.0
 	pos.x = clampf(pos.x, 8.0, W - width - 8.0)
-	var height := maxf(_details.size.y, 80.0 + faces.size() * FaceListView.ROW)
+	var height := maxf(_details.size.y, 80.0 + faces.size() * FaceListView.ROW + rows.size() * StatusListView.ROW)
 	if pos.y + height > H - 8.0:
 		pos.y = H - 8.0 - height
 	_details.position = pos
@@ -646,7 +691,7 @@ func _on_foe_held(v: UnitView) -> void:
 		text += "\n→ %s" % foe.target.unit.display_name
 	if foe.is_massive():
 		text += "\nmassive: fills the column"
-	_show_details(text, v)
+	_show_details(text, v, [], -1, _readout_rows(_foe_rows(foe)))
 	_refresh_arrows()
 
 
@@ -654,15 +699,16 @@ func _on_mech_held(i: int) -> void:
 	_hold_mech = i
 	var ms: Skirmish.MechState = sk.mechs[i]
 	var text := "%s\nhull %d/%d · shield %d/%d · heat %d/%d" % [ms.unit.display_name, ms.unit.hull, ms.unit.hull_max, ms.unit.shield, ms.unit.shield_max, ms.heat, ms.heat_max]
-	var incoming := 0
-	for foe in sk.field_foes():
-		if foe.target == ms and not foe.suppressed:
-			incoming += foe.attack
-	text += "\nincoming this round: %d" % incoming
-	if not ms.unit.passive.is_empty():
-		text += "\n%s" % ms.unit.passive.get("name", "")
-	_show_details(text, _mech_views[i])
+	_show_details(text, _mech_views[i], [], -1, _readout_rows(_mech_rows(i)))
 	_refresh_arrows()
+
+
+## Status rows for the readout: [glyph, readout text, colour].
+func _readout_rows(rows: Array) -> Array:
+	var out: Array = []
+	for r in rows:
+		out.append([r[0], r[2], r[3]])
+	return out
 
 
 func _on_foe_double_tapped(v: UnitView) -> void:
