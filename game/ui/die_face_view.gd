@@ -163,7 +163,7 @@ func _draw() -> void:
 	if not face.label.is_empty():
 		tags.append("star")
 	for i in range(tags.size()):
-		var col := Palette.RIFT if tags[i] == "star" else hud
+		var col := Glyphs.colour_for(tags[i])
 		col.a = (_flicker(i) if animate else 1.0) * (0.45 if spent else 1.0)
 		var chip_rect := Rect2(Vector2(FACE - CHIP.x + RAIL - 2.0, 8.0 + i * TAG_STEP + bob * 0.5), CHIP)
 		Hud.box(self, chip_rect, 4.0, Color(Palette.BG, 0.94), col, 1.0)

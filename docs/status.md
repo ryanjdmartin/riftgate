@@ -24,6 +24,10 @@ every sprite (fantasy intent icons, statuses, forecast warnings), pulsing gauge 
 big glyph on the die, Reroll wide under the dice, eye in the header, no rank labels,
 upright quotes, `NAME: description` passives. `Skirmish.forecast()` is the prediction.
 Three rerolls a round, and `Die.reroll()` never returns the showing face or an equivalent one.
+Third pass (same day): eye under the foes, foe slots 194 tall, chips 30 px, mechs centred on
+their drawings, ink-white pulse for colour-blind contrast, details pane sized from minimums,
+mono labels padded (the left clipping), Barlow Condensed Italic for quotes, withdraw open on
+round one, keyword chips coloured by effect (`Glyphs.colour_for`).
 
 **Known rough edges.**
 

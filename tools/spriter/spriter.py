@@ -182,6 +182,30 @@ def render(model: Model, yaw: float, pitch: float, ppu: float, width: int, heigh
     return Image.fromarray(_outline(np.asarray(img)), "RGBA")
 
 
+def render_fit(model: Model, yaw: float, width: int, height: int, ppu: float,
+               baseline: float = 0.0, pad: int = 24, **kw) -> Image.Image:
+    """render() on a canvas padded on every side, then crop back to the frame so the drawing
+    is never clipped: a turned model projects wider and lower than its head-on view, and a
+    fixed baseline cut the tracks off the three-quarter Bulwark. The crop keeps the model's
+    own baseline (so feet and hovering stay where the model put them) unless the drawing
+    would spill out, then shifts just enough, and it centres the drawing horizontally."""
+    big = render(model, yaw, ppu=ppu, width=width + 2 * pad, height=height + 2 * pad,
+                 baseline=baseline + pad / ppu, **kw)
+    arr = np.asarray(big)
+    ys, xs = np.where(arr[:, :, 3] > 0)
+    ox, oy = pad, pad
+    if ys.size:
+        x0, x1, y0, y1 = xs.min(), xs.max(), ys.min(), ys.max()
+        ox = int(round((x0 + x1 + 1) / 2.0 - width / 2.0))
+        if y1 > oy + height - 2:
+            oy = y1 - (height - 2)
+        if y0 < oy + 1:
+            oy = max(y0 - 1, 0)
+        ox = max(0, min(ox, arr.shape[1] - width))
+        oy = max(0, min(oy, arr.shape[0] - height))
+    return Image.fromarray(arr[oy:oy + height, ox:ox + width].copy(), "RGBA")
+
+
 def _mode_downsample(img: np.ndarray, k: int) -> np.ndarray:
     h, w = img.shape[0] // k, img.shape[1] // k
     out = np.zeros((h, w, 4), dtype=np.uint8)
@@ -449,9 +473,9 @@ MAP_YAWS = {"e": 270.0, "ne": 330.0, "nw": 30.0, "w": 90.0, "sw": 150.0, "se": 2
 def build_sheets(model: Model, out_dir: str, contact_only: bool) -> str:
     os.makedirs(out_dir, exist_ok=True)
     cw_, ch_ = model.combat_size
-    combat = {k: render(model, yaw, width=cw_, height=ch_, baseline=model.combat_baseline, **COMBAT)
+    combat = {k: render_fit(model, yaw, width=cw_, height=ch_, baseline=model.combat_baseline, **COMBAT)
               for k, yaw in COMBAT_YAWS.items()}
-    maps = {k: render(model, yaw, **MAP) for k, yaw in MAP_YAWS.items()}
+    maps = {k: render_fit(model, yaw, **MAP) for k, yaw in MAP_YAWS.items()}
     if not contact_only:
         for k, im in combat.items():
             im.save(os.path.join(out_dir, f"{model.name}_combat_{k}.png"))

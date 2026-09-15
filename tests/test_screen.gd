@@ -222,7 +222,7 @@ func test_end_turn_runs_the_enemy_and_returns_to_the_player() -> void:
 
 func test_withdraw_asks_then_shows_overlay() -> void:
 	var s := _screen(5)
-	assert_true(s._withdraw_btn.disabled, "no withdraw in round one")
+	assert_false(s._withdraw_btn.disabled, "withdraw open at the start of round one")
 	s._end_turn_now()
 	s._on_withdraw()
 	assert_true(s._confirm.visible, "withdraw always asks first")

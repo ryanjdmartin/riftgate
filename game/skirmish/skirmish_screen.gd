@@ -24,19 +24,20 @@ signal back_requested
 const W := 720.0
 const H := 1280.0
 const COL_X := [150.0, 360.0, 570.0]
-const BACK_Y := 72.0
-const FRONT_Y := 232.0
-const SLOT_SIZE := Vector2(150, 160)     # 48x64 foes draw at 2x, chip row beneath
-const MASSIVE_SIZE := Vector2(150, 320)  # 64x96 elites at 2x across both ranks
-const LOG_Y := 416.0
-const LOG_H := 212.0
-const DIE_Y := 660.0
+const BACK_Y := 60.0
+const FRONT_Y := 254.0
+const SLOT_SIZE := Vector2(150, 194)     # floating gauge 18 + 48x64 foe at 2x + chip row 38
+const MASSIVE_SIZE := Vector2(150, 388)  # 64x96 elites at 2x across both ranks
+const EYE_Y := 452.0
+const EYE := 44.0
+const LOG_Y := 508.0
+const LOG_H := 128.0
+const DIE_Y := 656.0
 const DIE_SIZE := 120.0
-const REROLL_Y := 796.0
-const REROLL_SIZE := Vector2(240, 52)
-const EYE := 40.0
-const MECH_Y := 923.0
-const MECH_SIZE := Vector2(150, 257)   # gauges 35 + 48x64 sprite at 3x + chip row 26
+const REROLL_Y := 802.0
+const REROLL_SIZE := Vector2(250, 54)
+const MECH_Y := 892.0
+const MECH_SIZE := Vector2(150, 272)   # gauges 35 + 48x64 sprite at 3x + chip row 38
 const BOTTOM_Y := 1196.0
 const BOTTOM_BTN := Vector2(210, 60)
 const PITCH := 172.0
@@ -150,19 +151,20 @@ func _build() -> void:
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
 
-	# Header: round and pool tag, phase readout beside it, the intent eye at the right edge
-	# where it sits over the formation it concerns.
+	# Header: round and pool tag, phase readout beside it.
 	_header = _tag("", 13, true)
 	_place(_header, Vector2(12, 14), Vector2(200, 28))
 	_sub_label = Hud.label("", 12, Color(Palette.HUD, 0.7), Hud.mono())
 	_place(_sub_label, Vector2(226, 20), Vector2(380, 20))
+	# The intent eye sits right under the formation, at the right edge: toggled often, so it
+	# stays within a thumb's reach of the foes it concerns.
 	_eye = HudButton.new("")
 	_eye.glyph = "eye"
 	_eye.slant_px = 0.0
 	_eye.toggle_mode = true
 	_eye.tooltip_text = "Show every intent arrow"
 	_eye.toggled.connect(_toggle_all_arrows)
-	_place(_eye, Vector2(W - 12 - EYE, 8), Vector2(EYE, EYE))
+	_place(_eye, Vector2(W - 12 - EYE, EYE_Y), Vector2(EYE, EYE))
 
 	# Formation: six slot views, three massive views (hidden until needed). Ranks need no
 	# label; the back rank is the one behind.
@@ -217,7 +219,10 @@ func _build() -> void:
 	# End turn, so a thumb going for one cannot land on the other.
 	_reroll_btn = HudButton.new("REROLL", _on_reroll)
 	_reroll_btn.glyph = "reroll"
-	_reroll_btn.font_size = 18
+	_reroll_btn.font_size = 20
+	_reroll_btn.badge_size = 20
+	_reroll_btn.center_text = true
+	_reroll_btn.tooltip_text = "A reroll never shows the same face twice."
 	_place(_reroll_btn, Vector2(W * 0.5 - REROLL_SIZE.x * 0.5, REROLL_Y), REROLL_SIZE)
 
 	# Mechs: gauges hugging the sprite, three-quarter sprite, chip row beneath.
@@ -614,12 +619,15 @@ func _show_details(text: String, near: Control, faces: Array = [], current: int 
 	var width := 440.0 if not faces.is_empty() else 360.0
 	_details.custom_minimum_size = Vector2(width, 0)
 	_details.visible = true
-	_details.reset_size()
+	# Size from the children's minimums now, not from the last frame's layout: the first
+	# open of a differently shaped readout used to keep the previous panel's height.
+	var wanted := _details.get_combined_minimum_size()
+	_details.size = Vector2(width, wanted.y)
 	var pos := near.position + Vector2(near.size.x + 8.0, 0)
 	if pos.x + width > W - 8.0:
 		pos.x = near.position.x - width - 8.0
 	pos.x = clampf(pos.x, 8.0, W - width - 8.0)
-	var height := maxf(_details.size.y, 80.0 + faces.size() * FaceListView.ROW + rows.size() * StatusListView.ROW)
+	var height := wanted.y
 	if pos.y + height > H - 8.0:
 		pos.y = H - 8.0 - height
 	_details.position = pos
@@ -666,7 +674,7 @@ func _on_die_double_tapped(i: int) -> void:
 	var db := ContentDB.load_default()
 	var entry := db.codex_for_unit(ms.unit)
 	entry["title"] = "%s die" % ms.unit.display_name
-	entry["subtitle"] = "D%d // ONE FACE PER HARDPOINT // EACH FACE 1 IN %d PER ROLL" % [ms.die.size(), ms.die.size()]
+	entry["subtitle"] = "D%d // ONE FACE PER HARDPOINT // EACH FACE 1 IN %d PER ROLL // A REROLL NEVER REPEATS A FACE" % [ms.die.size(), ms.die.size()]
 	entry["body"] = ""
 	entry["stats"] = ""
 	entry["faces"] = ms.die.faces.duplicate()

@@ -7,6 +7,7 @@ extends RefCounted
 const MONO_PATH := "res://art/fonts/ShareTechMono-Regular.ttf"
 const DISPLAY_PATH := "res://art/fonts/Rajdhani-SemiBold.ttf"
 const DISPLAY_BOLD_PATH := "res://art/fonts/Rajdhani-Bold.ttf"
+const QUOTE_PATH := "res://art/fonts/BarlowCondensed-MediumItalic.ttf"
 
 static var _mono: Font = null
 static var _display: Font = null
@@ -34,12 +35,12 @@ static func display_bold() -> Font:
 	return _display_bold
 
 
-## The face for quotes. Neither bundled face ships an italic, and a sheared Rajdhani renders
-## badly at small sizes, so quotes are set upright in the display face and marked by their
-## quotation marks and colour instead.
+## The face for quotes: a true italic. Rajdhani ships none and a sheared Rajdhani renders
+## badly, so quotes use Barlow Condensed Medium Italic, a condensed companion in the same
+## register (OFL, bundled).
 static func quote() -> Font:
 	if _quote == null:
-		_quote = display()
+		_quote = _load(QUOTE_PATH)
 	return _quote
 
 
@@ -51,13 +52,19 @@ static func _load(path: String) -> Font:
 	return ThemeDB.fallback_font
 
 
-## A label in one of the HUD faces.
+## A label in one of the HUD faces. Labels clip glyphs at their left edge, and the mono face
+## has glyphs that start left of their origin, so every label gets a few pixels of left
+## padding rather than losing the first stem of an H.
 static func label(text: String, size_px: int, color: Color, font: Font = null) -> Label:
 	var l := Label.new()
 	l.text = text
 	l.add_theme_font_override("font", font if font != null else display())
 	l.add_theme_font_size_override("font_size", size_px)
 	l.add_theme_color_override("font_color", color)
+	var pad := StyleBoxEmpty.new()
+	pad.content_margin_left = 3.0
+	pad.content_margin_right = 3.0
+	l.add_theme_stylebox_override("normal", pad)
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return l
 

@@ -13,7 +13,7 @@ extends RefCounted
 ##                       kinetic faces roll their damage here, immediately and visibly
 ##   end_round()         burn ticks, foes act, the dead are cleared, the pool refills,
 ##                       outcome is checked
-##   can_withdraw()      at the start of a round after the first, before any face is spent
+##   can_withdraw()      at the start of any round, before any face is spent
 ##
 ## Numbers are in tens. Enemy damage is static; only the player's kinetic faces roll.
 
@@ -140,12 +140,13 @@ func any_assigned() -> bool:
 	return false
 
 
+## Withdraw is open at the start of any round, including the first, until a face is spent.
 func can_withdraw() -> bool:
 	if round == 0:
 		return false
 	if state == State.ROUND_START:
 		return true
-	return state == State.ASSIGN and round > 1 and not any_assigned()
+	return state == State.ASSIGN and not any_assigned()
 
 
 ## Heat the mech's current face will add if it is spent as an attack.

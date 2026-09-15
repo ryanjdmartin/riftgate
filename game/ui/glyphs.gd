@@ -81,12 +81,16 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			]), color, width)
 			ci.draw_arc(c, s * 0.3, 0.0, TAU, 16, color, width)
 		"reroll":
-			# A three-quarter circular arrow, clockwise from the top; the head points the way
-			# the arc travels.
-			ci.draw_arc(c, s * 0.8, -PI * 0.5, PI * 1.1, 20, color, width)
-			var tip := c + Vector2(cos(PI * 1.1), sin(PI * 1.1)) * s * 0.8
-			ci.draw_line(tip, tip + Vector2(s * 0.05, s * 0.5), color, width)
-			ci.draw_line(tip, tip + Vector2(-s * 0.5, s * 0.05), color, width)
+			# A three-quarter circular arrow, clockwise from the top, with a filled head
+			# pointing along the arc.
+			var r := s * 0.72
+			var a0 := -PI * 0.45
+			var a1 := PI * 1.0
+			ci.draw_arc(c, r, a0, a1, 24, color, width * 1.15)
+			var p := c + Vector2(cos(a1), sin(a1)) * r
+			var t := Vector2(-sin(a1), cos(a1))
+			var n := Vector2(cos(a1), sin(a1))
+			ci.draw_colored_polygon(PackedVector2Array([p + t * s * 0.5, p + n * s * 0.32, p - n * s * 0.32]), color)
 		# ---- the fantasy set: enemy intents, drawn in the register of the foes, not the HUD
 		"sword":
 			ci.draw_line(c + Vector2(-s * 0.7, s * 0.7), c + Vector2(s * 0.75, -s * 0.75), color, width)
@@ -146,6 +150,23 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_line(c + Vector2(0, s * 0.35), c + Vector2(0, s * 0.8), color, width)
 		_:
 			ci.draw_rect(Rect2(c - Vector2(s, s), Vector2(size, size)), color, false, width)
+
+
+## The colour a chip for this glyph takes. Most sit in the HUD colour; effects that mean
+## damage or danger take their own, so a burn reads as fire at a glance and related effects
+## can share a shape in different colours.
+static func colour_for(id: String) -> Color:
+	match id:
+		"burn", "overcharge", "heat":
+			return Palette.HEAT
+		"execute", "skull", "shieldbreak":
+			return Palette.ENEMY
+		"star":
+			return Palette.RIFT
+		"suppress", "chain":
+			return Palette.SHIELD
+		_:
+			return Palette.HUD
 
 
 ## The fantasy-register icon for an enemy action kind.

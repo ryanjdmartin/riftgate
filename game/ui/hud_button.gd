@@ -12,6 +12,8 @@ var badge: String = ""
 var filled: bool = false
 var ghost: bool = false
 var font_size: int = 20
+var badge_size: int = 13
+var center_text: bool = false               # centre the text over the whole button even with a glyph
 var slant_px: float = 10.0
 var mono: bool = false                      # mono face for readout tags
 var color_override: Color = Color(0, 0, 0, 0)   # zero alpha: use the HUD colour
@@ -64,8 +66,10 @@ func _draw() -> void:
 			return
 	if not text.is_empty():
 		var tw := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
-		var tx := cx - tw * 0.5 + (size.y * 0.35 if not glyph.is_empty() else 0.0)
+		var tx := cx - tw * 0.5 + (size.y * 0.35 if (not glyph.is_empty() and not center_text) else 0.0)
 		var ty := size.y * 0.5 + font.get_ascent(font_size) * 0.5 - font.get_descent(font_size) * 0.5
 		draw_string(font, Vector2(tx, ty), text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, ink)
 	if not badge.is_empty():
-		draw_string(Hud.mono(), Vector2(0, size.y - 7.0), badge, HORIZONTAL_ALIGNMENT_RIGHT, size.x - 12.0, 13, ink)
+		var bfont := Hud.mono()
+		var by := size.y * 0.5 + bfont.get_ascent(badge_size) * 0.5 - bfont.get_descent(badge_size) * 0.5
+		draw_string(bfont, Vector2(0, by), badge, HORIZONTAL_ALIGNMENT_RIGHT, size.x - 16.0, badge_size, ink)

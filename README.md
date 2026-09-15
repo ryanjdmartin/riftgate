@@ -81,8 +81,8 @@ tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate ghoul --n 4
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut tools/foeforge/out/ghoul/ghoul_3.png ghoul
 ```
 
-The skirmish screen runs top to bottom: header with the round tag and the intent eye at the
-right, enemies, log, dice with the wide Reroll right under them, mechs at the bottom with
+The skirmish screen runs top to bottom: header with the round tag, enemies with the intent
+eye right under them at the right edge, log, dice with the wide Reroll right under them, mechs at the bottom with
 their gauges hugging the sprite, End turn bottom-left and Withdraw bottom-right. No unit
 names on screen. Under each foe sits its intent as a fantasy icon and number (a sword for
 the attack) and its statuses (burn, suppressed, exposed) as chips. Under each mech sit its
@@ -98,8 +98,8 @@ times per round, before or after attacking; a reroll always lands on a different
 never the one showing nor an equivalent one. End turn runs the enemy and starts the next round
 immediately. Numbers are in tens. Hold a foe or a mech for its numbers, its statuses with
 icons and text, and the intent arrows that concern it; the eye shows every arrow;
-double-tap any unit or die for its codex entry. Withdraw is offered at the start of a round
-after the first. Blank faces are discarded at end of turn.
+double-tap any unit or die for its codex entry. Withdraw is offered at the start of any round,
+before a face is spent. Blank faces are discarded at end of turn.
 
 The harness can add the faction's massive elite, which fills both ranks of a column. For the
 standalone screen, `RIFTGATE_TEAM=bulwark,sentinel,raptor,anvil` picks the team and

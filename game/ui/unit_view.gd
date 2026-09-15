@@ -19,10 +19,13 @@ signal hold_released
 
 const HOLD_SECONDS := 0.45
 const DOUBLE_TAP_SECONDS := 0.35
-const STATUS_H := 26.0
-const CHIP_H := 20.0
+const STATUS_H := 38.0
+const CHIP_H := 30.0
+const CHIP_GLYPH := 18.0
+const CHIP_TEXT := 16
 const BAR_H := 8.0
 const BAR_STEP := 11.0
+const FLOAT_BAR_W := 52.0
 
 var display_name: String = ""     # for the codex and readouts; never drawn here
 var is_enemy: bool = false
@@ -68,17 +71,23 @@ func _scale() -> float:
 	return maxf(1.0, floorf(minf(size.x / ts.x, avail / ts.y)))
 
 
-## The whole sprite frame, anchored to the bottom of the sprite area.
+## The whole sprite frame, centred in the sprite area so units of different heights line up
+## on their middles. Gauges and chips hug the drawing inside the frame, not the frame.
 func _silhouette() -> Rect2:
 	var top := (_bars_height() + 2.0) if sprite != null else size.y * 0.12 + _bars_height()
 	var avail := size.y - top - STATUS_H
 	if sprite != null:
 		var s := _scale()
 		var ts := sprite.get_size() * s
-		return Rect2(Vector2(floorf((size.x - ts.x) * 0.5), floorf(top + avail - ts.y)), ts)
+		var used := Sprites.used_rect(sprite)
+		# Centre the drawing, not the frame: shift by the frame's own transparent margins.
+		var margin_top := used.position.y * s
+		var margin_bottom := (sprite.get_size().y - used.end.y) * s
+		var y := top + (avail - ts.y) * 0.5 + (margin_bottom - margin_top) * 0.5
+		return Rect2(Vector2(floorf((size.x - ts.x) * 0.5), floorf(y)), ts)
 	var w := size.x * 0.46
 	var h := minf(avail, size.y * (0.78 if massive else 0.62))
-	return Rect2(Vector2((size.x - w) * 0.5, top + avail - h), Vector2(w, h))
+	return Rect2(Vector2((size.x - w) * 0.5, top + (avail - h) * 0.5), Vector2(w, h))
 
 
 ## The opaque part of the drawing on screen: what gauges and chips hug.
@@ -165,19 +174,21 @@ func _draw() -> void:
 				_gauge(Rect2(bx, y, bw, BAR_H), b)
 				y += BAR_STEP
 		else:
-			# One small gauge floating at the drawing's top-right.
-			var y := vis.position.y - 12.0
-			var bx := minf(vis.end.x - 30.0, size.x - 54.0)
+			# One small gauge floating off the drawing's top-right corner, on a short leader
+			# that leaves from the corner itself.
+			var bx := minf(vis.end.x - 10.0, size.x - FLOAT_BAR_W - 2.0)
+			var y := vis.position.y - 16.0
+			var corner := Vector2(vis.end.x - 1.0, vis.position.y + 1.0)
+			draw_line(corner, Vector2(bx + 3.0, y + BAR_H), Color(hud, 0.7), 1.0)
 			for b in bars:
-				_gauge(Rect2(bx, y, 52.0, BAR_H), b)
+				_gauge(Rect2(bx, y, FLOAT_BAR_W, BAR_H), b)
 				y -= 10.0
-			Hud.tick(self, Vector2(vis.end.x - 4.0, vis.position.y + 2.0), Color(hud, 0.6))
 
 	# Quiet readout for an empty slot.
 	if not intent.is_empty() and not dead and sprite == null and intent_kind.is_empty():
 		draw_string(mono, Vector2(0, sil.get_center().y + 5.0), "[%s]" % intent, HORIZONTAL_ALIGNMENT_CENTER, size.x, 13, Color(hud, 0.45 if intent_dim else 0.95))
 
-	# The chip row under the sprite: intent first, then statuses, centred.
+	# The chip row under the drawing: intent first, then statuses, centred.
 	if dead:
 		return
 	var chips: Array = []
@@ -191,25 +202,28 @@ func _draw() -> void:
 	var total := 0.0
 	for ch in chips:
 		var txt: String = ch[1]
-		var w := 20.0 + (mono.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x + 6.0 if not txt.is_empty() else 0.0)
+		var w := CHIP_H + (mono.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, CHIP_TEXT).x + 8.0 if not txt.is_empty() else 0.0)
 		widths.append(w)
-		total += w + 4.0
-	total -= 4.0
+		total += w + 6.0
+	total -= 6.0
 	var x := floorf((size.x - total) * 0.5)
-	var cy := sil.end.y + 4.0 + CHIP_H * 0.5
+	var cy := minf(vis.end.y + 6.0, size.y - 2.0) + CHIP_H * 0.5
+	cy = minf(cy, size.y - CHIP_H * 0.5 - 1.0)
 	for i in range(chips.size()):
 		var ch: Array = chips[i]
 		var col: Color = ch[2]
 		var rect := Rect2(x, cy - CHIP_H * 0.5, widths[i], CHIP_H)
-		Hud.box(self, rect, 3.0, Color(Palette.BG, 0.92), col, 1.0)
-		Glyphs.draw(self, ch[0], Vector2(x + 10.0, cy), 12, col, 1.6)
+		Hud.box(self, rect, 4.0, Color(Palette.BG, 0.94), col, 1.2)
+		Glyphs.draw(self, ch[0], Vector2(x + CHIP_H * 0.5, cy), CHIP_GLYPH, col, 2.0)
 		if not ch[1].is_empty():
-			draw_string(mono, Vector2(x + 20.0, cy + 4.0), ch[1], HORIZONTAL_ALIGNMENT_LEFT, -1, 12, col)
-		x += widths[i] + 4.0
+			draw_string(mono, Vector2(x + CHIP_H - 2.0, cy + CHIP_TEXT * 0.36), ch[1], HORIZONTAL_ALIGNMENT_LEFT, -1, CHIP_TEXT, col)
+		x += widths[i] + 6.0
 
 
-## A gauge with, when a pending value is given, a pulsing overlay on the part about to change:
-## red where a bar will fall, the bar's own colour where it will rise.
+## A gauge with, when a pending value is given, a pulsing overlay on the part about to
+## change. The overlay is ink white with a dark edge, never a hue: it has to read against
+## any bar colour and for any kind of colour vision. Where it sits says which way the bar
+## moves: inside the fill, that much is about to go; past the fill, that much is coming.
 func _gauge(rect: Rect2, b: Array) -> void:
 	var mx := float(maxi(1, int(b[1])))
 	var frac: float = clampf(float(b[0]) / mx, 0.0, 1.0)
@@ -221,7 +235,8 @@ func _gauge(rect: Rect2, b: Array) -> void:
 	var lo := minf(frac, pending)
 	var hi := maxf(frac, pending)
 	var inner := rect.grow(-2.0)
-	var pulse := 0.45 + 0.35 * sin(_t * 6.0)
-	var overlay := Color(Palette.ENEMY if pending < frac else col, pulse)
-	var seg := Rect2(inner.position + Vector2(inner.size.x * lo, 0), Vector2(maxf(2.0, inner.size.x * (hi - lo)), inner.size.y))
-	Hud.fill_poly(self, Hud.slant(seg, 2.4), overlay)
+	var pulse := 0.72 + 0.22 * sin(_t * 2.6)
+	var seg := Rect2(inner.position + Vector2(inner.size.x * lo, 0), Vector2(maxf(3.0, inner.size.x * (hi - lo)), inner.size.y))
+	var pts := Hud.slant(seg, 2.4)
+	Hud.fill_poly(self, pts, Color(Palette.INK, pulse))
+	Hud.stroke_poly(self, pts, Color(Palette.BG, 0.9), 1.0)
