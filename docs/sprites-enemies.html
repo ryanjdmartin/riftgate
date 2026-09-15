@@ -1,0 +1,1172 @@
+<title>Riftgate Enemy Sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --ground:#D9DEE3; --surface:#E9EDF0; --surface-2:#F5F7F8;
+    --ink:#12161B; --ink-2:#4B5661; --ink-3:#6E7A86;
+    --line:#B4BDC5; --line-2:#CBD2D8;
+    --accent:#C98A12; --accent-ink:#12161B; --accent-soft:rgba(201,138,18,.16);
+    --undead:#2F7A55; --demon:#A8242B; --eldritch:#5A3A7A;
+    --stage:#14171C; --stage-line:#3A424E;
+    --display:'Barlow Condensed', 'Arial Narrow', Impact, sans-serif;
+    --body:'Barlow', 'Helvetica Neue', Arial, sans-serif;
+    --mono:'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#15181C; --surface:#1D2126; --surface-2:#252A30;
+      --ink:#E7EBEE; --ink-2:#A2ACB5; --ink-3:#7C8792;
+      --line:#343B43; --line-2:#2A3037;
+      --accent:#F2B233; --accent-ink:#15181C; --accent-soft:rgba(242,178,51,.16);
+      --undead:#57A56E; --demon:#E56A2E; --eldritch:#8E6BAE;
+      --stage:#101317; --stage-line:#2E353E;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#15181C; --surface:#1D2126; --surface-2:#252A30;
+    --ink:#E7EBEE; --ink-2:#A2ACB5; --ink-3:#7C8792;
+    --line:#343B43; --line-2:#2A3037;
+    --accent:#F2B233; --accent-ink:#15181C; --accent-soft:rgba(242,178,51,.16);
+    --undead:#57A56E; --demon:#E56A2E; --eldritch:#8E6BAE;
+    --stage:#101317; --stage-line:#2E353E;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--ground); color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.55; padding-inline:20px; padding-block:0 72px; -webkit-font-smoothing:antialiased}
+  .stripe{height:10px; margin-inline:-20px; background:repeating-linear-gradient(135deg, var(--accent) 0 14px, var(--ink) 14px 28px)}
+  .wrap{max-width:880px; margin:0 auto}
+  p{margin:0 0 1em; max-width:68ch}
+  h1,h2,h3,h4{font-family:var(--display); text-transform:uppercase; margin:0; text-wrap:balance; line-height:1}
+  h1{font-size:clamp(44px, 9vw, 76px); font-weight:700; line-height:.92; margin-top:28px}
+  h2{font-size:clamp(30px, 5vw, 40px); font-weight:700; letter-spacing:.01em}
+  h3{font-size:19px; font-weight:600; letter-spacing:.05em; margin-bottom:6px}
+  h4{font-size:14px; font-weight:600; letter-spacing:.1em; color:var(--ink-3); margin-bottom:6px}
+  .eyebrow{font-family:var(--display); font-weight:600; font-size:14px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3)}
+  .lede{font-size:19px; line-height:1.45; max-width:62ch; margin-top:18px}
+  code,.mono{font-family:var(--mono); font-size:.92em}
+  .tag{display:inline-block; font-family:var(--display); font-weight:700; font-size:14px; letter-spacing:.12em; text-transform:uppercase; background:var(--accent); color:var(--accent-ink); padding:3px 9px 2px; margin-bottom:10px}
+  section{margin-top:64px; border-top:3px solid var(--ink); padding-top:22px}
+  section.faction{border-top-color:var(--fc)}
+  section.faction .tag{background:var(--fc); color:#fff}
+  section.undead{--fc:var(--undead)} section.demon{--fc:var(--demon)} section.eldritch{--fc:var(--eldritch)}
+  .motto{font-family:var(--display); font-size:22px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--fc, var(--ink-2)); margin-top:6px}
+  .foes{display:flex; flex-wrap:wrap; gap:22px 28px; margin-top:22px; align-items:flex-start}
+  figure{margin:0; max-width:100%}
+  canvas{display:block; image-rendering:pixelated; image-rendering:crisp-edges; max-width:100%; height:auto; border:1px solid var(--line)}
+  figcaption{font-size:12.5px; line-height:1.4; color:var(--ink-2); margin-top:7px; max-width:300px}
+  figcaption b{color:var(--ink); font-weight:600}
+  figcaption .q{display:block; margin-top:4px; font-family:var(--mono); font-size:11.5px; color:var(--ink-3)}
+  .foe h3{display:flex; align-items:baseline; gap:10px}
+  .foe h3 span{font-family:var(--mono); font-size:11.5px; font-weight:400; letter-spacing:0; text-transform:none; color:var(--ink-3)}
+  .swatches{display:grid; grid-template-columns:repeat(auto-fill, minmax(58px,1fr)); gap:6px; margin-top:18px; max-width:520px}
+  .swatches i{display:block; height:24px; border:1px solid rgba(0,0,0,.28)}
+  .swatches span{display:block; font-family:var(--mono); font-size:10.5px; color:var(--ink-2); line-height:1.25; margin-top:3px}
+  .honest{font-size:13px; color:var(--ink-3); margin-top:14px; max-width:72ch; border-left:3px solid var(--line); padding-left:12px}
+  ul.judge{list-style:none; margin:20px 0 0; padding:0; max-width:72ch}
+  ul.judge li{padding:10px 0 10px 18px; border-bottom:1px solid var(--line-2); position:relative; font-size:15px; line-height:1.45}
+  ul.judge li::before{content:""; position:absolute; left:0; top:17px; width:8px; height:8px; background:var(--accent)}
+  ul.judge li b{font-family:var(--display); font-weight:600; letter-spacing:.06em; text-transform:uppercase; font-size:15px; margin-right:6px}
+  footer{margin-top:40px; font-size:12.5px; color:var(--ink-3); max-width:70ch}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+</style>
+
+<div class="stripe" aria-hidden="true"></div>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow" style="margin-top:26px">Working title: Riftgate &nbsp;&middot;&nbsp; sprite sheet, enemies</div>
+  <h1>Riftgate<br>Enemy Sheet</h1>
+  <p class="lede">The enemies are old Final Fantasy monsters in spirit: large, ornate, over-the-top high fantasy, drawn with more detail, more colour and more flourish than anything the player fields, because the contrast is the point of the game, one genre invading another. Where the mechs are gritty gunmetal with one hazard stripe and sixteen colours, a foe gets up to twenty colours, bone filigree, ragged cloth, glowing sigils, horns, teeth and too many eyes, and the elites are a different order of thing at 64 &times; 96. Everything on this page is a code-drawn sketch from a hand-typed character grid, not final art; what is being tested is silhouette, palette separation and whether the ornament survives 48 px.</p>
+</header>
+
+<!-- ============================== UNDEAD ============================== -->
+<section class="faction undead" id="undead">
+  <span class="tag">Faction 1</span>
+  <h2>The Risen</h2>
+  <div class="motto">Undead &middot; cold and rotten</div>
+  <p style="margin-top:12px">Cold greens over bone, with a rot purple in the shadows and one red eye. The horde is cheap and numerous; what hides behind it is the threat. Combat sprites face south-west, toward the mechs at the bottom of the skirmish screen.</p>
+  <div class="foes">
+    <figure class="foe"><h3>Ghoul <span>48 &times; 64 &middot; front rank</span></h3><canvas id="c-ghoul"></canvas><figcaption><b>The read: numerous and weak.</b> Hunched so low the skull sits below the shoulder line, ribs and a spine of knuckles showing, arms longer than the legs, jaw hanging open, burial cloth in rags at the hips. The silhouette is all elbows and no mass.<span class="q">Tactical question: how many do I clear this round?</span></figcaption></figure>
+    <figure class="foe"><h3>Necromancer <span>48 &times; 64 &middot; back rank</span></h3><canvas id="c-necro"></canvas><figcaption><b>The read: hides behind the horde.</b> Tall and narrow, a hood with nothing in it but two lights, a bone collar and a skull-topped staff carrying a green flame that is the brightest thing in the faction. Ragged hem, skeletal hands, a sigil on the robe.<span class="q">Tactical question: can I reach the back rank before it raises more?</span></figcaption></figure>
+    <figure class="foe"><h3>Bone Colossus <span>64 &times; 96 &middot; massive elite</span></h3><canvas id="c-colossus"></canvas><figcaption><b>The read: fills a whole column.</b> A cathedral of ribs that walks, a chest of fused skulls, a crown of spines, arms of bundled femurs. Shown beside a ghoul at the same scale, and at 1&times; overflowing the 48 &times; 64 unit slot, which it does on purpose.<span class="q">Tactical question: do I have the damage to take it down, or do I hold?</span></figcaption></figure>
+  </div>
+  <h4 style="margin-top:22px">Faction palette</h4>
+  <div class="swatches" id="pal-undead"></div>
+</section>
+
+<!-- ============================== DEMONIC ============================== -->
+<section class="faction demon" id="demon">
+  <span class="tag">Faction 2</span>
+  <h2>The Furnace Host</h2>
+  <div class="motto">Demonic &middot; hot and furnace-lit</div>
+  <p style="margin-top:12px">Dark red iron cracked open on orange and ember yellow, bound in brass. Everything is lit from inside. The front rank is a wall that hits back; the back rank is artillery with opinions.</p>
+  <div class="foes">
+    <figure class="foe"><h3>Brute <span>48 &times; 64 &middot; front rank</span></h3><canvas id="c-brute"></canvas><figcaption><b>The read: hits hard, telegraphed.</b> Horned and hunched, the shoulders are wider than anything else on the sheet, both fists iron-bound and one already drawn back. Fire cracks run through the skin like a kiln that has been overfilled.<span class="q">Tactical question: who takes the hit, and does the shield hold?</span></figcaption></figure>
+    <figure class="foe"><h3>Hellcaster <span>48 &times; 64 &middot; back rank</span></h3><canvas id="c-hellcaster"></canvas><figcaption><b>The read: back-rank artillery.</b> Lean, swept-back horns, a brazier cannon fused to the forward arm with chains hanging from the barrel, and a burning halo behind the head that reads at any size. It stands upright where the brute crouches.<span class="q">Tactical question: which mech does it shell next round, and can I break the line to it?</span></figcaption></figure>
+    <figure class="foe"><h3>Pit Lord <span>64 &times; 96 &middot; massive elite</span></h3><canvas id="c-pitlord"></canvas><figcaption><b>The read: the furnace has a face.</b> Throne-sized, a maw of coals where the chest should be, a crown of horns, molten seams between brass plates. Beside a brute for scale and at 1&times; overflowing the slot.<span class="q">Tactical question: burn it down before the heat burns me down?</span></figcaption></figure>
+  </div>
+  <h4 style="margin-top:22px">Faction palette</h4>
+  <div class="swatches" id="pal-demon"></div>
+</section>
+
+<!-- ============================== ELDRITCH ============================== -->
+<section class="faction eldritch" id="eldritch">
+  <span class="tag">Faction 3</span>
+  <h2>The Chorus</h2>
+  <div class="motto">Eldritch &middot; violet and wrong</div>
+  <p style="margin-top:12px">Three violets, a teal, and a pale eye glow on void black. Nothing here is shaded like a body; planes fold where they should not, and the pale glow is the only warm thing.</p>
+  <div class="foes">
+    <figure class="foe"><h3>Spawn <span>48 &times; 64 &middot; front rank</span></h3><canvas id="c-spawn"></canvas><figcaption><b>The read: it has too many angles.</b> Low and wide, folded planes with hard edges, six or seven limbs that do not agree on a direction, eyes in the creases. A front-rank blocker with no obvious head to aim at.<span class="q">Tactical question: where is the front of it?</span></figcaption></figure>
+    <figure class="foe"><h3>Whisperer <span>48 &times; 64 &middot; back rank</span></h3><canvas id="c-whisperer"></canvas><figcaption><b>The read: it talks to your dice.</b> Tall and thin, a face split down the middle with the two halves not quite aligned, small mouths down the chest, fragments orbiting the head. Nothing about it is built to fight; it is built to be looked at.<span class="q">Tactical question: which die is it corrupting, and do I reroll or accept?</span></figcaption></figure>
+    <figure class="foe"><h3>The Maw <span>64 &times; 96 &middot; massive elite</span></h3><canvas id="c-maw"></canvas><figcaption><b>The read: you do not see all of it.</b> A ring of teeth and eyes around an opening into nothing, tentacles reaching out of it, and an outline that does not close at the bottom because the rest is somewhere else. Beside a spawn for scale and at 1&times; over the slot.<span class="q">Tactical question: is it even on the board, or is the board in it?</span></figcaption></figure>
+  </div>
+  <h4 style="margin-top:22px">Faction palette</h4>
+  <div class="swatches" id="pal-eldritch"></div>
+</section>
+
+<!-- ============================== MAP TOKENS ============================== -->
+<section id="tokens">
+  <span class="tag">Battlefield</span>
+  <h2>Map tokens</h2>
+  <p style="margin-top:12px">One 16 &times; 16 chibi per foe type, one pixel ink outline, four to six colours, facing south or south-west. On the map they are squad tokens, so they carry a count chip in the hex corner; the Bone Colossus is a three-hex boss and gets a 40 &times; 40 sprite that overflows the centre hex of its triangle.</p>
+  <div class="foes">
+    <figure><canvas id="c-tokens"></canvas><figcaption><b>All nine at 3&times; and 1&times;.</b> Top row The Risen and the first of the Host; bottom row the rest. The 1&times; copy is what the player sees at arm's length; the test is whether faction reads before foe.</figcaption></figure>
+    <figure><canvas id="c-badges"></canvas><figcaption><b>Squad-count chip and boss footprint.</b> Left three: tokens in their hex with a count chip at the lower-right corner, as the battlefield will draw them. Right: the Bone Colossus on its three-hex triangle, 40 &times; 40 at 3&times;, anchored on the base hex and overflowing upward.</figcaption></figure>
+  </div>
+</section>
+
+<!-- ============================== CONTRAST ============================== -->
+<section id="contrast">
+  <span class="tag">Genre clash</span>
+  <h2>Contrast strip</h2>
+  <p style="margin-top:12px">The whole art direction in one image: a mech-sized block, a brute, a necromancer. The player's side is a plain machine in one grey; the other side is a costume.</p>
+  <div class="foes">
+    <figure><canvas id="c-contrast"></canvas><figcaption><b>At 2&times;.</b> The gunmetal block is a stand-in for any 48 &times; 64 mech, see the Mech Sheet. Against it the brute is all curves and heat and the necromancer is all cloth and bone; the mechs should never borrow either.</figcaption></figure>
+  </div>
+</section>
+
+<!-- ============================== JUDGE ============================== -->
+<section id="judge">
+  <span class="tag">Review</span>
+  <h2>What to judge</h2>
+  <ul class="judge">
+    <li><b>Faction at 1&times;.</b> Cover the labels. Does each foe read as Risen, Host or Chorus from colour and silhouette alone at the 1&times; copy?</li>
+    <li><b>Ornament at 48 px.</b> Ribs, filigree, chains, sigils and orbiting fragments are cheap at 3&times;; do they survive at 1&times;, or collapse into noise that a real artist would have to cut?</li>
+    <li><b>Elites as another order.</b> Beside a rank-and-file foe, do the three elites read as a different kind of thing, not just a bigger one?</li>
+    <li><b>Palette separation.</b> Put the three faction swatch rows together: cold green, furnace red, void violet. Any shared hue between factions is a bug.</li>
+    <li><b>The clash.</b> In the contrast strip, does the mech look under-drawn, or does it look disciplined? It should look disciplined.</li>
+  </ul>
+  <footer id="foot">Every grid on this page was width-checked at load: each row of each sprite was compared to its declared width and any mismatch is reported in the console. Canvases render at device pixel ratio with image smoothing off; outlines are #14161c, never pure black.</footer>
+</section>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var K = Math.min(3, Math.max(2, Math.round(window.devicePixelRatio || 2)));
+  var STAGE = '#14171c', STAGE_LINE = '#3a424e', LABEL = '#a2acb5', HAZ = '#f2b233';
+  var FD = "'Barlow Condensed', 'Arial Narrow', Impact, sans-serif";
+  var FM = "'IBM Plex Mono', Menlo, Consolas, monospace";
+
+  /* ---------- helpers (same family as hybrid-mock) ---------- */
+  function makeCanvas(id, w, h, bg, k){
+    k = k || K;
+    var c = document.getElementById(id);
+    c.width = w * k; c.height = h * k;
+    c.style.width = w + 'px';
+    var ctx = c.getContext('2d');
+    ctx.setTransform(k, 0, 0, k, 0, 0);
+    ctx.imageSmoothingEnabled = false;
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, w, h);
+    return ctx;
+  }
+  function drawPix(ctx, rows, map, x, y, s){
+    for (var j = 0; j < rows.length; j++){
+      var r = rows[j];
+      for (var i = 0; i < r.length; i++){
+        var ch = r.charAt(i);
+        if (ch === '.') continue;
+        var col = map[ch];
+        if (!col) continue;
+        ctx.fillStyle = col;
+        ctx.fillRect(x + i * s, y + j * s, s, s);
+      }
+    }
+  }
+  function hexPath(ctx, cx, cy, R, snap){
+    ctx.beginPath();
+    for (var i = 0; i < 6; i++){
+      var a = Math.PI / 180 * (60 * i - 90);
+      var px = cx + R * Math.cos(a), py = cy + R * Math.sin(a);
+      if (snap){ px = Math.round(px); py = Math.round(py); }
+      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+  }
+  function text(ctx, str, x, y, font, color, align){
+    ctx.font = font; ctx.fillStyle = color; ctx.textAlign = align || 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.fillText(str, x, y);
+  }
+  function spriteAt(ctx, spr, map, x, baseY, s){ drawPix(ctx, spr, map, x, Math.round(baseY - spr.length * s), s); }
+  function slot(ctx, x, y, w, h){
+    ctx.strokeStyle = STAGE_LINE; ctx.lineWidth = 1; ctx.setLineDash([2, 2]);
+    ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1); ctx.setLineDash([]);
+  }
+
+  /* ---------- palettes: up to 20 colours per unit ---------- */
+  var UND = { '#':'#14161c', D:'#2a5c48', G:'#57a56e', g:'#3f7f5a', b:'#e9e2c8', B:'#c9bfa3', w:'#f7f2e6',
+              r:'#4a2a4a', R:'#6a3f6a', e:'#ff4d4d', k:'#0a0b0f', c:'#8ff5a3', f:'#3ddc7a', s:'#8c6e4a', S:'#5a4630', t:'#7d6a8a', m:'#1c3a2c' };
+  var DEM = { '#':'#14161c', K:'#1a0a0c', d:'#5a1418', r:'#a8242b', R:'#c93a3a', o:'#e56a2e', y:'#ffd24a', w:'#fff2b0',
+              b:'#b08a3a', B:'#d9b25a', k:'#3a1d1f', h:'#2a1416', H:'#5e4a3a', x:'#7a5a4a', c:'#4f3335', e:'#ffd24a' };
+  var ELD = { '#':'#14161c', V:'#2a1a3f', v:'#5a3a7a', p:'#8e6bae', P:'#b394d0', t:'#2e7f86', T:'#4fb0b5', c:'#b7fff2',
+              k:'#07060a', e:'#e8fff9', m:'#1a1226', w:'#d8c8ee', q:'#6e5090' };
+
+  /* ==== GRIDS:BEGIN ==== */
+  /* Ghoul 48x64: hunched, skull low and forward-left, spine of bone knuckles arching behind, ribs, long forward arm, rag cloth at the hips */
+  var GHOUL = [
+    '................................................',
+    '................................................',
+    '................................................',
+    '................................................',
+    '..........................######................',
+    '........................##GGGGGG##..............',
+    '......................##GgGGgGGGGD##............',
+    '.....................#GGgGbGGgGbGGDDD#..........',
+    '....................#GGGGGbGGGGbGGDDDD#.........',
+    '...................#GGGGGGbGGGGbGGGDDDD#........',
+    '..................#GGGGGGGbGGGGGbGGDDDDD#.......',
+    '.................#GGGGGGGGbGGGGGbGGGDDDDD#......',
+    '..........######.#GGGGGGGGGGGGGGGGDDDDDDrr#.....',
+    '........##GgGGGG###GGGGGGGGGGGGGGGDDDDDrrr#.....',
+    '.......#GgGGGGGGGGGGGGG#GGGGGGGGGGDDDDDDrrr#....',
+    '......#GGGGGGDDGGGGGGGG#GGGGGGGGGGDDDDDDrrr#....',
+    '.....#GGeeGGGGGGGGGGGGGG#GGGGGGGGGDDDDDDDrrr#...',
+    '.....#GekeGGGGDDGGGGGGGG#GGGGGGGGDDDDDDDrrrr#...',
+    '.....#GGeGGGGGDDDGGGGGGG#GGGGGGGDDDDDDDrrrrr#...',
+    '.....#GGGGGGGGDDDDGGGGGG#GGGGGGDDDDDDDrrrrrr#...',
+    '.....#bwbwbwbGGDDDGGGGGG#GGGGGDDDDDDDrrrrrrr#...',
+    '.....#kkkkkkkGGDDDDGGGGG#GGGGDDDDDDDrrrrrrrr#...',
+    '......#kkkkkkGGDDDDDGGGG#GGGGDDDDDDDrrrrrrr#....',
+    '......#bwbwbkkGDDDDDGGGG#GGGDDDDDDDrrrrrrr#.....',
+    '.......#bbbbbb#DDDDDDDG#GGGDDDDDDDrrrrrr#.......',
+    '........######.#DDDDDDG#GGDDDDDDDrrrrrr#........',
+    '............####DDDDDDG#GGDDDDDDDrrrrr####......',
+    '..........##GG#bDbDbDG#GGDDDDDDDrrrrr#DDG#......',
+    '.........#GGG#DbDbDbDG#GGDDDDDDDrrrr#DDDG#......',
+    '.........#GGD#bDbDbDbG#GGDDDDDDDrrrr#DDDG#......',
+    '........#GGD#.#DbDbDbDG#GDDDDDDDrrrr#.#DDG#.....',
+    '........#GD#..#bDbDbDbG#GDDDDDDDrrrr#.#DDG#.....',
+    '.......#GD#...#DbDbDbDG#GDDDDDDDrrr#..#DD#......',
+    '.......#GD#...#bDbDbDbG#GDDDDDDDrrr#..#DD#......',
+    '......#GD#....#DDbDbDDG#DDDDDDDDrrr#..#DD#......',
+    '......#GD#....#DDDDDDDG#DDDDDDDDrr#..#DD#.......',
+    '......#GD#.....#DDDDDDG#DDDDDDDrr#...#DD#.......',
+    '.....#GD#......#tDDDDDD#DDDDDDrr#...#DD#........',
+    '.....#GD#.....#ttDDDDDD#DDDDDDrr#...#DD#........',
+    '....#GD#......#tttDDDDDDDDDDDDrr#..#DD#.........',
+    '....#GD#......#ttttttDDDDDDDtttt#..#DD#.........',
+    '....#GD#.....#ttttttttDDDDttttttt#.#DD#.........',
+    '...#GD#......#ttt#ttttDDDDtttt#ttt#.#bD#........',
+    '...#GD#......#tt#.#DDD#..#DDD#.#tt#.#bD#........',
+    '...#bD#......#t#..#DDD#..#DDD#..#t#.#bD#........',
+    '..#bbD#......###..#DDD#..#DDD#..###.#bbD#.......',
+    '..#bGD#...........#DDD#..#DDD#........#bGD#.....',
+    '.#bDD#............#DDD#..#DDD#........#bDD#.....',
+    '.#bD#.............#DDD#..#DDD#.........#bDD#....',
+    '#bD#..............#DDD#..#DDD#.........#bbD#....',
+    '#bD#..............#DDD#..#DDD#........#b#b#b#...',
+    '#bD#..............#DDD#..#DDD#.........#.#.#....',
+    '#bD#..............#DDD#..#DDD#..................',
+    '#bD#.............#DDD#....#DDD#.................',
+    '#bD#.............#DDD#....#DDD#.................',
+    '#bbD#...........#DDD#......#DDD#................',
+    '#bbbD#.........#DDDD#......#DDD#................',
+    '.#b#b#b#.......#bbDD#......#DDD#................',
+    '..#.#.#.#.....#bbbbD#......#bbD#................',
+    '..............#bwbbbb#.....#bbbb#...............',
+    '.............#b#b#b#b#.....#b#b#b#..............',
+    '.............#.#.#.#.#.....#.#.#.#..............',
+    '................................................',
+    '................................................'];
+
+  /* Necromancer 48x64: skull staff with a floating green flame on the forward side, peaked hood, void face with two lit eyes, bone collar, sigil on the chest, bone belt, ragged hem */
+  var NECRO = [
+    '....##..........................................',
+    '...#cc#.........................................',
+    '...#cfc#........................................',
+    '..#cffc#........................................',
+    '..#cfffc#.......................................',
+    '..#ffcff#.......................................',
+    '...#fff#..................##....................',
+    '..##bfb##................#rr#...................',
+    '.#bwbbbbb#..............#rrrr#..................',
+    '.#bkbbbkb#.............#rrRrrr#.................',
+    '.#bkbbbkb#.............#rrRrrr#.................',
+    '.#bbbbbbb#............#rrRRrrrr#................',
+    '..#bbbbb#.............#rrRRrrrr#................',
+    '...#bSb#.............#rrRRrrrrrr#...............',
+    '....#S#.............#rrRRkkkkrrrr#..............',
+    '....#S#.............#rRRkkkkkkrrr#..............',
+    '....#S#............#rRRkkckkkckrrr#.............',
+    '....#S#............#rRRkkkkkkkkrrr#.............',
+    '....#S#............#rRRkkkkkkkkrrr#.............',
+    '....#S#...........#rrRRkkkkkkkrrrr#.............',
+    '....#S#...........#rrRRrkkkkkrrrrr#.............',
+    '....#S#...........#rrRRrrrrrrrrrrr#.............',
+    '....#S#.........###bwbwbwbwbwbwbwb###...........',
+    '....#S#........#RRrbbbbbbbbbbbbbbbrrr#..........',
+    '....#S#.......#RRRrrrrrbbbbbbrrrrrrrr#..........',
+    '....#S#......#RRRrrrrrrrbbbbrrrrrrrrr#..........',
+    '...#bSb#....#RRRrrrrrrrrrrrrrrrrrrrrr#..........',
+    '..#bbSbb#..#RRRRrrrrrrDDDDDDrrrrrrrrr#..........',
+    '..#b#S#b#.#RRRRrrrrrrDcccccDrrrrrrrrrr#.........',
+    '..#.#S#.#.#RRRRrrrrrrDcDDDcDrrrrrrrrrr#.........',
+    '....#S#..#RRRRrrrrrrrDcDkDcDrrrrrrrrrrr#........',
+    '....#S#..#RRRRrrrrrrrDcDDDcDrrrrrrrrrrr#........',
+    '....#S#..#RRRRrrrrrrrDcccccDrrrrrrrrrrr#........',
+    '....#S#..#RRRRRrrrrrrrDDDDDrrrrrrrrrrrr#........',
+    '....#S#.#RRRRRrrrrrrrrrrrrrrrrrrrrrrrrr#bb#.....',
+    '....#S#.#RRRRRrrrrrrrrrrrrrrrrrrrrrrrrr#bbb#....',
+    '....#S#.#RRRRRrrrrrrrrrrrrrrrrrrrrrrrrr#b#b#....',
+    '....#S##RRRRRRrrrrrrrrrrrrrrrrrrrrrrrrr#b#b#....',
+    '....#S##RRRRRRrbbbbbbbbbbbbbbbbbbbbbbrr#.#.#....',
+    '....#S##RRRRRRrbkbkbkbkbkbkbkbkbkbkbkrr#........',
+    '....#S##RRRRRRrbbbbbbbbbbbbbbbbbbbbbbrr#........',
+    '....#S#RRRRRRRrrrrrrrrrrrrrrrrrrrrrrrrr#........',
+    '....#S#RRRRRRRrrrrrrrrrrrrrrrrrrrrrrrrr#........',
+    '....#S#RRRRRRRrrrrrrrrrrrrrrrrrrrrrrrrrr#.......',
+    '...#SS#RRRRRRRrrrrrrrrrrrrrrrrrrrrrrrrrr#.......',
+    '...#SS#RRRRRRRrrrrrrrrrrrrrrrrrrrrrrrrrr#.......',
+    '...#SS#RRRRRRRRrrrrrrrrrrrrrrrrrrrrrrrrrr#......',
+    '...#SS#RRRRRRRRrrrrrrrrrrrrrrrrrrrrrrrrrr#......',
+    '...#SS#RRRRRRRRrrrrrrrrrrrrrrrrrrrrrrrrrrr#.....',
+    '...#SS#RRRRRRRRrrrrrrrrrrrrrrrrrrrrrrrrrrr#.....',
+    '...#SS#RRRRRRRRRrrrrrrrrrrrrrrrrrrrrrrrrrrr#....',
+    '...#SS#RRRRRRRRRrrrrrrrrrrrrrrrrrrrrrrrrrrr#....',
+    '...#SS#RRRRRRRRRrrrrrrrrrrrrrrrrrrrrrrrrrrrr#...',
+    '...#SS#RRRRRRRRRrrrrrrrrrrrrrrrrrrrrrrrrrrrr#...',
+    '...#SS#RRRRRRRRRRrrrrrrrrrrrrrrrrrrrrrrrrrrr#...',
+    '...#SS#RRRRRRRRRRrrrrrrrrrrrrrrrrrrrrrrrrrrrr#..',
+    '...#SS#RRRRRRRRRRrrrrrrrrrrrrrrrrrrrrrrrrrrrr#..',
+    '...#SS#RRRRRRRRRRrrrrrrrrrrrrrrrrrrrrrrrrrrrr#..',
+    '...#SS#RRRRRRRRRR#rrrrr#rrrrrrr#rrrrr#rrrrrrr#..',
+    '...#SS#RRRRRRRRR#.#rrrr#.#rrrrr#.#rrr#.#rrrrr#..',
+    '...#SS#RRRRRRRR#...#rr#...#rrr#...#r#...#rrr#...',
+    '...#SS#RRRRRR#......##.....##.....#.....#.#.....',
+    '...####RRRR#....................................',
+    '.......####.....................................'];
+
+  /* Bone Colossus 64x96: crown of spines, a great skull with lit sockets, shoulder plates, a ribcage walked like a cathedral with green soulfire and three fused skulls in the chest, arms of bundled femurs, pelvis, column legs */
+  var COLOSSUS = [
+    '..............................##................................',
+    '..............................#b#...............................',
+    '........................##....#b#....##.........................',
+    '.......................#b#....#b#....#b#........................',
+    '..................##...#b#...#bb#....#b#...##...................',
+    '.................#b#...#b#...#bb#...#bb#...#b#..................',
+    '.................#b#..#bb#...#bb#...#bb#..#bb#..................',
+    '................#bb#..#bb#..#bbb#...#bb#..#bb#..................',
+    '................#bb#.#bb##bbbbbbbbbb##bb#.#bb#..................',
+    '................#bb##bbbbbbbbbbbbbbbbbbbb##bb#..................',
+    '.................#bbbbbbbbbbbbbbbbbbbbbbbbbbbbb#................',
+    '.................#bBbbbbbbbbbbbbbbbbbbbbbbbbbBb#................',
+    '................#bbBbbbbbbbbbbbbbbbbbbbbbbbbbBbb#...............',
+    '................#bbbwwbbbbbbbbbbbbbbbbbbbbbbbbbb#...............',
+    '...............#bbbwbbbbbbbbbbbbbbbbbbbbbbbbbbbBb#..............',
+    '...............#bbb#kkkkkkk#bbbbb#kkkkkkk#bbbbbBb#..............',
+    '...............#bb#kkkkkkkkk#bbb#kkkkkkkkk#bbbbBb#..............',
+    '...............#bb#kkeekkkkk#bbb#kkeekkkkk#bbbbBb#..............',
+    '...............#bb#kkeekkkkk#bbb#kkeekkkkk#bbbbBb#..............',
+    '...............#bbb#kkkkkkk#bbbbb#kkkkkkk#bbbbbBb#..............',
+    '...............#bbbb#kkkkk#bbbbbbb#kkkkk#bbbbbbBb#..............',
+    '...............#bbbbb#####bbbb#kk#bb#####bbbbbbBb#..............',
+    '...............#bbbbbbbbbbbbbb#kkk#bbbbbbbbbbbbBb#..............',
+    '................#bbbbbbbbbbbbbb#k#bbbbbbbbbbbbBb#...............',
+    '................#bBbBbBbBbBbBbBbBbBbBbBbBbBbBbBb#...............',
+    '.................#b#b#b#b#b#b#b#b#b#b#b#b#b#b#b#................',
+    '.................#kkkkkkkkkkkkkkkkkkkkkkkkkkkkk#................',
+    '..........########bBbBbBbBbBbBbBbBbBbBbBbBbBbBbB########........',
+    '........##BBBBBB#bbbbbbbbbbbbbbbbbbbbbbbbbbbbb#BBBBBB##.........',
+    '......##BBbbbbBB#bbbbbbbbbbbbbbbbbbbbbbbbbbbbb#BBbbbbBB##.......',
+    '....##BBbbbbbbbB##bbbbbbbbbbbbbbbbbbbbbbbbbbbbb##BbbbbbbbBB##...',
+    '...#BBbbbbbbbbbbB#bbbbbbbbbbbbbbbbbbbbbbbbbbbbb#BbbbbbbbbBB#....',
+    '..#BBb#bbbbbbbbbB#bbbbbbbbbbbbbbbbbbbbbbbbbbbbb#Bbbbbbbb#bBB#...',
+    '..#BB#..#bbbbbbbB#bbbbbbbbbbbbbbbbbbbbbbbbbbbbb#Bbbbbbbb#..#BB#.',
+    '..#Bb#...##bbbbbb#bbbbbbbbbbbbbbbbbbbbbbbbbbbbb#bbbbbb##..#Bb#..',
+    '.#BBb#.....##bbbb#BBBBBBBBBBBBBBBBBBBBBBBBBBBBB#bbbb##...#Bbb#..',
+    '.#BBb#.......####kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk####....#Bbb#....',
+    '.#BbB#.......#bbBbbbbbbbbbbbbbbbbbbbbbbbbbbbbbBbb#....#BbB#.....',
+    '.#BbB#.......#kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk#....#BbB#.....',
+    '#bBbBb#......#bBbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbBbb#....#BbBb#....',
+    '#bBbBb#......#kkkkkkkkkkkkkkkfffkkkkkkkkkkkkkkkkk#....#BbBb#....',
+    '#bBbBb#......#bBbbbbbbbbbbbbfcccfbbbbbbbbbbbbbbBb#....#BbBb#....',
+    '#bBbBb#......#kkkkkkkkkkkkkfccwccfkkkkkkkkkkkkkkk#....#BbBb#....',
+    '#bBbBb#......#bBbbbbbbbbbbbfcwwwcfbbbbbbbbbbbbbBb#....#BbBb#....',
+    '#bBbBb#......#kkkkkkkkkkkkkfccwccfkkkkkkkkkkkkkkk#....#BbBb#....',
+    '#bBbBb#......#bBbbbbbbbbbbbbfcccfbbbbbbbbbbbbbbBb#....#BbBb#....',
+    '#bBbBb#......#kkkkkkkkkkkkkkkfffkkkkkkkkkkkkkkkkk#....#BbBb#....',
+    '#bBbBb#......#bBbbb####bbbbbbbbbbbbbbbb####bbbBb#.....#BbBb#....',
+    '#bBbBb#......#kkkk#bbbb#kkkkkkkkkkkkkkk#bbbb#kkk#.....#BbBb#....',
+    '#bBbBb#......#bBbb#kbbk#bbbbbb####bbbbb#kbbk#bBb#.....#BbBb#....',
+    '#bBbBb#......#kkkk#bbbb#kkkkk#bbbb#kkkk#bbbb#kkk#.....#BbBb#....',
+    '#bBbBb#......#bBbb#b##b#bbbbb#kbbk#bbbb#b##b#bBb#.....#BbBb#....',
+    '#bBbBb#......#kkkkk####kkkkkk#bbbb#kkkkk####kkkk#.....#BbBb#....',
+    '#bBbBb#.......#bBbbbbbbbbbbbb#b##b#bbbbbbbbbbBb#......#BbBb#....',
+    '#bBbBb#.......#kkkkkkkkkkkkkkk####kkkkkkkkkkkkk#......#BbBb#....',
+    '#bBbBb#.......#bBbbbbbbbbbbbbbbbbbbbbbbbbbbbbBb#......#BbBb#....',
+    '#bBbBb#.......#kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk#......#BbBb#....',
+    '#bBbBb#........#bBbbbbbbbbbbbbbbbbbbbbbbbbbbBb#.......#BbBb#....',
+    '#bBbBb#........#kkkkkkkkkkkkkkkkkkkkkkkkkkkkkk#.......#BbBb#....',
+    '#bBbBb#........#bBbbbbbbbbbbbbbbbbbbbbbbbbbbBb#.......#BbBb#....',
+    '#bBbBb#.........#kkkkkkkkkkkkkkkkkkkkkkkkkkkk#........#BbBb#....',
+    '#bBbBb#.........#bBbbbbbbbbbbbbbbbbbbbbbbbbBb#........#BbBb#....',
+    '#bBbBb#..........#rrrrrrrrrrrrrrrrrrrrrrrrrr#.........#BbBb#....',
+    '#bBbBb#..........#rRrrrrrrrrrrrrrrrrrrrrrrRr#.........#BbBb#....',
+    '#bBbBb#.........##BBbbbbbbbbbbbbbbbbbbbbbbBB##........#BbBb#....',
+    '#bBbBb#........#BBbbbbbbbbbbbbbbbbbbbbbbbbbbBB#.......#BbBb#....',
+    '#bBbBb#........#Bbbbbbbbb#kkkkkkkkkkk#bbbbbbbbB#.......#BbBb#...',
+    '#bBbBb#........#Bbbbbbbb#kkkkkkkkkkkkk#bbbbbbbB#.......#BbBb#...',
+    '#bBbBb#........#Bbbbbbb#kkkkkkkkkkkkkkk#bbbbbbB#......#BbBbB#...',
+    '#bBbBb#........#Bbbbbb#kkkkkkkkkkkkkkkkk#bbbbbB#.....#BbbBbB#...',
+    '#bBbBb#........#Bbbbbb#kkkkkkkkkkkkkkkkk#bbbbbB#....#BbBbBbB#...',
+    '#bBbBb#........#BBbbbb#kkkkkkkkkkkkkkkkk#bbbbBB#....#BbBbBbB#...',
+    '#bBbBb#........##bbbbb#kkkkkkkkkkkkkkkkk#bbbbb##...#BbBb#BbB#...',
+    '#bBbBb#.........#bbbbb#.................#bbbbb#....#BbBb#BbB#...',
+    '#bBbBb#.........#bBbBb#.................#bBbBb#...#BbBb##BbB#...',
+    '#bBbBb#.........#bBbBb#.................#bBbBb#...#Bbb#.#Bbb#...',
+    '#bBbBb#.........#bBbBb#.................#bBbBb#..#Bbb#..#Bbb#...',
+    '#bBbBb#.........#bBbBb#.................#bBbBb#..#Bb#...#Bb#....',
+    '#bBbBb#.........#bBbBb#.................#bBbBb#.#Bb#....#Bb#....',
+    '#bBbBb#.........#bBbBb#.................#bBbBb#.#b#.....#b#.....',
+    '#bBbBb#........##bbBbb##...............##bbBbb##.###.....###....',
+    '#bBbBb#.......#BBbbBbbBB#.............#BBbbBbbBB#...............',
+    '#bBbBb#.......#bbbbBbbbb#.............#bbbbBbbbb#...............',
+    '#bBbBb#.......##bbbBbbb##.............##bbbBbbb##...............',
+    '#bBbBb#........#bbbBbbb#...............#bbbBbbb#................',
+    '#bBbBbB#.......#bbbBbbb#...............#bbbBbbb#................',
+    '#bBbBbBb#......#bbbBbbb#...............#bbbBbbb#................',
+    '#bBbBb#Bb#.....#bbbBbbb#...............#bbbBbbb#................',
+    '#bBbBb#Bb#.....#bbbBbbb#...............#bbbBbbb#................',
+    '#bBbb##Bb#.....#bbbBbbb#...............#bbbBbbb#................',
+    '#bBb#.#Bb#....##bbbBbbb##.............##bbbBbbb##...............',
+    '#bb#..#b#....#BBbbbbbbbBB#...........#BBbbbbbbbBB#..............',
+    '#b#...#b#...#bBbBbBbBbBbBb#.........#bBbBbBbBbBbBb#.............',
+    '###...###...#b#b#b#b#b#b#b#.........#b#b#b#b#b#b#b#.............',
+    '............#.#.#.#.#.#.#.#.........#.#.#.#.#.#.#.#.............',
+    '................................................................'];
+
+  /* Brute 48x64: horned, hunched, shoulders wider than anything else, iron-bound fists (one raised behind, one hanging forward), fire cracks in the skin, iron muzzle with white-hot teeth, brass belt */
+  var BRUTE = [
+    '................................................',
+    '..............................###...............',
+    '.......##.............##.....#KKK#..............',
+    '......#xH#...........#Hx#...#KbbbK#.............',
+    '.....#xHH#...........#HHx#..#KbKbK#.............',
+    '.....#HH#.............#HH#.#KbbbbbK#............',
+    '....#HH#...............#HH##KbKbKbK#............',
+    '....#HH#.......####....#HH#KKbbbbbKK#...........',
+    '....#HH#.....##rrrr##..#HH#KKKKKKKKK#...........',
+    '....#HH#....#rrrrrrrr#.#HH##dddddd##............',
+    '.....#HH#..#rrrrrrrrrr##HH#.#ddrrdd#............',
+    '.....#HH###rrrrrrrrrrrr#HH#.#ddrrdd#............',
+    '......#HHrrrrrrrrrrrrrrHH#..#drrrrd#............',
+    '.......#rrrrRRrrrrrrrrrr#...#drrrrd#............',
+    '.......#ryyrrrrrrrryyrr#....#drrrrd#............',
+    '......#rryyrrrrrrrryyrr#....#drrrrd#............',
+    '......#rrrrrrrrrrrrrrrr#...#ddrrrrd#............',
+    '......#rrrrrrrrrrrrrrrr####dddrrrrd#............',
+    '......#rrrrKKKKKKKKrrrrdddddddrrrrrd#...........',
+    '.....##rrrKwKwKwKwKrrrddddddrrrrrrd##...........',
+    '...##rr#rrKKKKKKKKrrrdddddddrrrrrddd##..........',
+    '..#rrrrr#rrrrrrrrrrrrddddddddddddddrrr#.........',
+    '.#rrrrrrr##rrrrrrrrrrddddddddddddddrrrr#........',
+    '.#rrryrrrrr###rrrrrrrrddddddddddddrrrrr#........',
+    '#rrrryrrrrrrrr###########ddddddddddrrrr#........',
+    '#rrrryyrrrrrrrr#ddddddddddddddddddddrrr#........',
+    '#rrrrryrrrrrrrr#ddddoddddddddddddddddrr#........',
+    '#drrrrrrrrrrrrr#dddoyoddddddddddddddddr#........',
+    '#dddrrrrrrrrrrd#ddoyyyoddddddddddddddd#.........',
+    '#dddddrrrrrrrdd#dddoyoddddodddddddddd#..........',
+    '.#ddddddrrrddd#ddddddoddddoyddddddddd#..........',
+    '.#dddddddddddd#dddddddoddyyoddddddddd#..........',
+    '.#Kbbbbbbbbbbb#dddddddyoddoyddddddddd#..........',
+    '.#KbKbKbKbKbKb#ddddddddoddddddddddddd#..........',
+    '.#Kbbbbbbbbbbb#dddddddddddddddddddddd#..........',
+    '.#KKKKKKKKKKKK#dddddddddddddddddddddd#..........',
+    '..#rrrrrrrrrr#ddddddddddddddddddddddd#..........',
+    '..#rrrrrrrrrr#ddddddddddddddddddddddd#..........',
+    '..#rrrrrrrrrr#ddddddddddddddddddddddd#..........',
+    '..#rrrrrrrrr#dddddddddddddddddddddddd#..........',
+    '..#rrrrrrrrr#dddddddddddddddddddddddd#..........',
+    '..#rrrrrrrrr#dddddddddddddddddddddddd#..........',
+    '.#rrrrrrrrrr#dddddddddddddddddddddddd#..........',
+    '.#rrrrrrrrrr#bbbbbbbbbbbbbbbbbbbbbbbb#..........',
+    '.#KKKKKKKKKK#bKbKbKbKbKbKbKbKbKbKbKbK#..........',
+    '#KKbbbbbbbbKK#bbbbbbbbbbbbbbbbbbbbbbb#..........',
+    '#KbbbbbbbbbbK#KKKKKKKKKKKKKKKKKKKKKKK#..........',
+    '#KbKbKbKbKbbK#dddddddd#.....#dddddddd#..........',
+    '#KbbbbbbbbbbK#ddddddd#.......#ddddddd#..........',
+    '#KbbbbbbbbbbK#ddddddd#.......#ddddddd#..........',
+    '#KKbbbbbbbbKK#dddddd#.........#dddddd#..........',
+    '.#KKKKKKKKKK##dddddd#.........#dddddd#..........',
+    '..#KKKKKKKK#.#dddddd#.........#dddddd#..........',
+    '..##########.#dddddd#.........#dddddd#..........',
+    '.............#dddddd#.........#dddddd#..........',
+    '............#ddddddd#.........#ddddddd#.........',
+    '...........#dddddddd#.........#dddddddd#........',
+    '..........#KKKKKKKKK#.........#KKKKKKKKK#.......',
+    '.........#KKKKKKKKKKK#.......#KKKKKKKKKKK#......',
+    '.........#KKKKKKKKKKK#.......#KKKKKKKKKKK#......',
+    '.........#h#h#h#h#h#h#.......#h#h#h#h#h#h#......',
+    '.........#.#.#.#.#.#.#.......#.#.#.#.#.#.#......',
+    '................................................',
+    '................................................'];
+
+  /* Hellcaster 48x64: burning halo behind the head, swept-back horns, lean red body, brazier cannon fused to the forward arm with chains off the muzzle, brass belt, digitigrade legs on iron greaves */
+  var HELLCASTER = [
+    '................................................',
+    '..................######........................',
+    '...............###oooooo###.....................',
+    '.............##ooooyyyyoooo##...................',
+    '............#oooyyyyyyyyyyooo#..................',
+    '...........#ooyyyy######yyyyoo#.....##..........',
+    '..........#ooyyy##......##yyyoo#...#Hx#.........',
+    '..........#oyyy#..........#yyyo#..#HHx#.........',
+    '.........#ooyy#....####....#yyoo#.#HH#..........',
+    '.........#oyy#...##dddd##...#yyo##HH#...........',
+    '.........#oyy#..#ddddddddd#..#yyoHH#............',
+    '.........#oyy#..#dddddddddd#.#yyHH#.............',
+    '.........#oyy#.#ddddddddddddHHHHH#..............',
+    '.........#ooy#.#dRRddddddddHHHHd#...............',
+    '..........#oyy##dyyddddddddddd#yo#..............',
+    '..........#ooyy#dRRddddddddddd#oo#..............',
+    '...........#ooo#dddddddddddddd#o#...............',
+    '............###.#ddyKKKKKKddddd#................',
+    '................#ddKwKwKwKKdddd#................',
+    '.................#dKKKKKKKKddd#.................',
+    '.................##ddddddddddd#.................',
+    '..............#####dddddddddddd####.............',
+    '.............#bbbbbb#dddddddddd#bbb#............',
+    '............#bBbbbbb#dddddddddd#bbbb#...........',
+    '............#KKKKKKK#dddddddddd#bbbb#...........',
+    '...........#KKKKKKKK#dddddddddd#dbbd#...........',
+    '..........#KKKKKKK#.#dydddddddd#dd#.............',
+    '.........#KKbbKKK#..#ddddoydddd#dd#.............',
+    '.........#KKbbKK#...#dddddoyddd#dd#.............',
+    '........#KKKKKK#....#ddddddoddd#dd#.............',
+    '........#KKKKKK#....#dddddddddd#dd#.............',
+    '.......#KKKKKK#.....#dddddddddd#dd#.............',
+    '.......#KKbbKK#.....#dddddddddd#dd#.............',
+    '......#KKbbKK#......#dddddddddd#dd#.............',
+    '......#KKKKKK#......#dddddddddd#dd#.............',
+    '.....#KKKKKK#.......#dddddddddd#dd#.............',
+    '.....#KKKKKK#.......#bbbbbbbbbb#dd#.............',
+    '....#KKKKKK#........#bKbKbKbKbb#dd#.............',
+    '....#KKbbKK#........#bbbbbbbbbb#dd#.............',
+    '...#KKbbKK#.........#dddddddddd#dd#.............',
+    '...#KKKKKK#.........#dddddddddd#dd#.............',
+    '..#KKKKKKK#.........#ddddd#dddd#Kd#.............',
+    '.#KoooooK#..........#dddd#.#ddd#KK#.............',
+    '.#KoyyyoK#..........#dddd#.#ddd##K#.............',
+    '#KoyywyyoK#.........#dddd#.#ddd#.#K#............',
+    '#KoywwwyoK#.........#dddd#.#ddd#..#K#...........',
+    '#KoyywyyoK#.........#dddd#.#ddd#...##...........',
+    '.#KoyyyoK#c.........#dddd#.#ddd#................',
+    '.#KooooK#.c.........#dddd#.#ddd#................',
+    '..#KKKKK#.c.........#dddd#.#ddd#................',
+    '...###.c..c.........#dddd#.#ddd#................',
+    '.......c..c.........#dddd#.#ddd#................',
+    '.......c..c.........#dddd#.#ddd#................',
+    '......c...c.........#dddd#.#ddd#................',
+    '......c...c.........#KKKK#.#KKK#................',
+    '.....c....c.........#KKKK#.#KKK#................',
+    '..........c........#KKKKK#.#KKKK#...............',
+    '...................#hhhhh#.#hhhh#...............',
+    '...................#hh#h#.#hh#h#................',
+    '...................######.######................',
+    '................................................',
+    '................................................',
+    '................................................',
+    '................................................'];
+
+  /* Pit Lord 64x96: crown of horns, a furnace face with ember eyes, brass pauldrons, a chest that opens into a maw of coals, molten seams between iron plates, fists like anvils, a throne-wide base */
+  var PITLORD = [
+    '..............##..............##..............##................',
+    '.............#xH#............#xH#............#xH#...............',
+    '............#xHH#...........#xHH#...........#xHH#...............',
+    '............#HHH#..##.......#HHH#.......##..#HHH#...............',
+    '...........#HHH#..#xH#......#HHH#......#Hx#..#HHH#..............',
+    '...........#HH#...#HH#......#HHH#......#HH#...#HH#..............',
+    '..........#HH#....#HH#......#HHH#......#HH#....#HH#.............',
+    '..........#HH#...#HH#.......#HHH#.......#HH#...#HH#.............',
+    '.........#HH#....#HH#.......#HHH#.......#HH#....#HH#............',
+    '.........#HH#....#HH#..#####HHHHH#####..#HH#....#HH#............',
+    '........#HH#....#HH#.##bbbbbHHHHHbbbbb##.#HH#....#HH#...........',
+    '........#HH#....#HH##bbBbbbbbHHHbbbbbBbb##HH#....#HH#...........',
+    '.......#HH#.....#HH#bBbbbbbbbbbbbbbbbbbBb#HH#.....#HH#..........',
+    '.......#HH#.....#HH#bbbbbbbbbbbbbbbbbbbbb#HH#.....#HH#..........',
+    '......#HH#......#HH#KKKKKKKKKKKKKKKKKKKKK#HH#......#HH#.........',
+    '......#HH#......#HH#KddddddddddddddddddK#HH#......#HH#..........',
+    '.....#HH#.......#HH#KdddddddddddddddddddK#HH#.......#HH#........',
+    '.....#HH#........#HH#KdddyyddddddddyyddddK#HH#.......#HH#.......',
+    '....#HH#.........#HH#KddywwyddddddywwyddK#HH#........#HH#.......',
+    '....#HH#..........#HH#KddyyddddddddyydddK#HH#.........#HH#......',
+    '...#HH#...........#HH#KdddddddddddddddddK#HH#.........#HH#......',
+    '...#HH#............#HH#KKdddddooddddddKKK#HH#..........#HH#.....',
+    '..#HH#.............#HH#KKKddddoyodddddKKK#HH#..........#HH#.....',
+    '..#HH#..............#HHH#KKdddddodddddKK#HHH#...........#HH#....',
+    '.#HH#................#HHH#KKKKKKKKKKKKK#HHH#............#HH#....',
+    '.#HH#.................#HHH#KwKwKwKwKwK#HHH#.............#HH#....',
+    '.#HH#..................#HHH#KKKKKKKKKKKK#HHH#.............#HH#..',
+    '..##...................#HHHH#KKKKKKKKKK#HHHH#.............##....',
+    '.......................##HHHH#KKKKKKKK#HHHH##...................',
+    '.....................###bbHHH###KKKK###HHHbb###.................',
+    '..................###bbbbbbbHHH######HHHbbbbbbb###..............',
+    '...............###bBbbbbbbbbbbbbbbbbbbbbbbbbbbbbbBb###..........',
+    '............###bbBbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbBbb###......',
+    '.........###bbbbBbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbBbbbb###..',
+    '......###bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb###',
+    '....##bbbbbbbbbbbbb#############################bbbbbbbbbbbbbb##',
+    '...#bBbbbbbbbbbbb##KKKKKKKKKKKKKKKKKKKKKKKKKK##bbbbbbbbbbbbbbBb#',
+    '..#bbbbbbbbbbbb##KKKKKKKKKKKKKKKKKKKKKKKKKKKKKK##bbbbbbbbbbbbbb#',
+    '..#bbbbbbbbbbb#KKKKKKKooKKKKKKKKKKKKKKKKKKooKKKKK#bbbbbbbbbbbbb#',
+    '..#Kbbbbbbbbb#KKKKKKKoyoKKKKKKKKKKKKKKKKKoyoKKKKKK#bbbbbbbbbbbK#',
+    '..#KKKKKKKKK##KKKKKKKKoKKKKKKKKKKKKKKKKKKKoKKKKKKK##KKKKKKKKKKK#',
+    '..#KddddddK#KKKKKKKKKKKKK###########KKKKKKKKKKKKKKKK#KddddddddK#',
+    '..#KddddddK#KKKKKKKKKK###yyyyyyyyyyy###KKKKKKKKKKKKK#KddddddddK#',
+    '..#KddddddK#KKKKKKKK##yyyywwwwwwwwwyyyy##KKKKKKKKKKK#KddddddddK#',
+    '..#KddddddK#KKKKKKK#yyywwwwwwwwwwwwwyyy#KKKKKKKKKKKK#KddddddddK#',
+    '..#KddddddK#KKKKKK#yywwwwwwwwwwwwwwwwwyy#KKKKKKKKKKK#KddddddddK#',
+    '..#KddddddK#KKKKKK#ywwwwwwwwwwwwwwwwwwwy#KKKKKKKKKKK#KddddddddK#',
+    '..#KddddddK#KKKKKK#K#K#K#K#K#K#K#K#K#K#K##KKKKKKKKKK#KddddddddK#',
+    '..#KddddddK#KKKKKK#yoyoyoyoyoyoyoyoyoyoyoy#KKKKKKKKK#KddddddddK#',
+    '..#KddddddK#KKKKKK#oyoyoyoyoyoyoyoyoyoyoyo#KKKKKKKKK#KddddddddK#',
+    '..#KddddddK#KKKKKK#yoyoyoyoyoyoyoyoyoyoyoy#KKKKKKKKK#KddddddddK#',
+    '..#KddddddK#KKKKKK#oyoyoyoyoyoyoyoyoyoyoyo#KKKKKKKKK#KddddddddK#',
+    '..#KddddddK#KKKKKK#K#K#K#K#K#K#K#K#K#K#K##KKKKKKKKKK#KddddddddK#',
+    '..#KddddddK#KKKKKK#ywwwwwwwwwwwwwwwwwwwy#KKKKKKKKKKK#KddddddddK#',
+    '..#KddddddK#KKKKKKK#yywwwwwwwwwwwwwwwyy#KKKKKKKKKKKK#KddddddddK#',
+    '..#KddddddK#KKKKKKKK#yyyywwwwwwwwwwyyyy#KKKKKKKKKKKK#KddddddddK#',
+    '..#KddddddK#KKKKKKKKK##yyyyyyyyyyyyy##KKKKKKKKKKKKKK#KddddddddK#',
+    '..#KddddddK#KKKKKKKKKKK##############KKKKKKKKKKKKKKK#KddddddddK#',
+    '..#KddddddK#KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK#KddddddddK#',
+    '..#KddddddK#KKKoyoKKKKKKKKKKKKKKKKKKKKKKKKKKKKoyoKKK#KddddddddK#',
+    '..#KddddddK#KKKKoKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKoKKKK#KddddddddK#',
+    '..#KddddddK#bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb#KddddddddK#',
+    '..#KddddddK#bBbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbBb#KddddddddK#',
+    '..#KddddddK#bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb#KddddddddK#',
+    '..#KddddddK#KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK#KddddddddK#',
+    '..#KKKKKKKK#KddddddddddddddddddddddddddddddddddddddK#KKKKKKKKKK#',
+    '.#KKKKKKKKKK#KdddddddddddddddddddddddddddddddddddK#KKKKKKKKKKKK#',
+    '#KKbbbbbbbbKK#KdddddddddddddddddddddddddddddddddK#KKbbbbbbbbbKK#',
+    '#KbbbbbbbbbbK#KddddoyodddddddddddddddddddddoyoddK#KbbbbbbbbbbbK#',
+    '#KbKbKbKbKbbK#KdddddodddddddddddddddddddddddoddddK#KbbKbKbKbKbK#',
+    '#KbbbbbbbbbbK#KdddddddddddddddddddddddddddddddddK#KbbbbbbbbbbbK#',
+    '#KbbbbbbbbbbK#KdddddddddddddddddddddddddddddddddK#KbbbbbbbbbbbK#',
+    '#KKbbbbbbbbKK#KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK#KKbbbbbbbbbKK#',
+    '.#KKKKKKKKKK#.#KKKKKKKKKKKKKK#....#KKKKKKKKKKKKKK#.#KKKKKKKKKKK#',
+    '..##########..#KddddddddddddK#....#KdddddddddddddK#..###########',
+    '..............#KddddddddddddK#....#KdddddddddddddK#.............',
+    '..............#KddddddddddddK#....#KdddddddddddddK#.............',
+    '..............#KddddddddddddK#....#KdddddddddddddK#.............',
+    '..............#KdddoyoddddddK#....#KddddddoyoddddK#.............',
+    '..............#KddddoddddddK#......#KdddddddoddddK#.............',
+    '..............#KddddddddddK#........#KdddddddddddK#.............',
+    '..............#KddddddddddK#........#KdddddddddddK#.............',
+    '..............#KddddddddddK#........#KdddddddddddK#.............',
+    '.............#KKddddddddddKK#......#KKdddddddddddKK#............',
+    '............#KKKKKKKKKKKKKKKK#....#KKKKKKKKKKKKKKKKK#...........',
+    '...........#KKKKKKKKKKKKKKKKKK#..#KKKKKKKKKKKKKKKKKKK#..........',
+    '..........#KbbbbbbbbbbbbbbbbbbK##KbbbbbbbbbbbbbbbbbbbK#.........',
+    '..........#KbBbbbbbbbbbbbbbbbbK##KbbbbbbbbbbbbbbbbbBbK#.........',
+    '..........#KKKKKKKKKKKKKKKKKKKK##KKKKKKKKKKKKKKKKKKKKK#.........',
+    '..........#h#h#h#h#h#h#h#h#h#h###h#h#h#h#h#h#h#h#h#h#h#.........',
+    '..........#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.........',
+    '................................................................',
+    '................................................................',
+    '................................................................',
+    '................................................................',
+    '................................................................'];
+
+  /* Spawn 48x64: a low, wide thing of folded violet planes with hard teal edges, eyes in the creases, seven limbs that do not agree on a direction, a void seam down the middle */
+  var SPAWN = [
+    '................................................',
+    '................................................',
+    '................................................',
+    '................................................',
+    '................................................',
+    '................................................',
+    '................................................',
+    '................................................',
+    '..............................##................',
+    '.............................#Pp#...............',
+    '............................#Ppv#...............',
+    '............................#pvv#.....##........',
+    '...........................#Ppvv#....#Pp#.......',
+    '...........................#pvvV#...#Ppv#.......',
+    '..........................#Ppvv#...#Ppvv#.......',
+    '......##..................#pvvV#..#Ppvv#........',
+    '.....#Pp#.................#pvV#..#Ppvv#.........',
+    '.....#ppv#...........#####pvvV#.#Ppvv#..........',
+    '......#pvv#.........#PPPPPvvvV##PpvvV#..........',
+    '......#pvvv#.......#PppppppvvvVPpvvVV#..........',
+    '.......#pvvv#.....#PpppppppppvvvvvvVV#..........',
+    '.......#pvvvv#...#PpppppppppppvvvvvVVV#.........',
+    '........#pvvvv#.#PppppppppppppvvvvvVVV#.........',
+    '........#pvvvvv#PppppkkkkkpppppvvvvVVV#.........',
+    '.........#pvvvvPppppkkeccekkppppvvvVVVV#........',
+    '.........#pvvvvpppppkeccccekpppppvvVVVV#........',
+    '..........#tttppppppkkeccekkpppppvvVVVV#........',
+    '.........#tTTTtpppppppkkkkkppppppvvVVVV#........',
+    '........#tTTTTTtppppppppppppppppvvvVVVV#........',
+    '.......#tTTTTTTTtpppppkkkkkkppppvvVVVVV#........',
+    '......#tTTTTTTTTTtpppkkeccekkpppvvVVVVV#........',
+    '.....#tTTTTTTTTTTTtppkecccekkppvvVVVVV#.........',
+    '....#tTTTTTTTTTTTTTtpkkeccekkppvvVVVVV#.........',
+    '....#tTTTTTTTTTTTTTTtppkkkkkppvvvVVVVVV#........',
+    '....#tTTTTTTTTTTTTTTTtpppppppvvvvVVVVVV#........',
+    '....#tTTTTTTTTTTTTTTTTtpppppvvvvVVVVVV#.........',
+    '.....#tTTTTTTTTTTTTTTTTtpppvvvvVVVVVVV#.........',
+    '......#tTTTTTTTTTTTTTTTTtpvvvvVVVVVVV#..........',
+    '.......#tttttttTTTTTTTTTTtvvvVVVVVVV#...........',
+    '........#kkkkkkkkttttTTTTTtvvVVVVVVV#...........',
+    '........#kecckkkkkkkkkkttttvvVVVVVV#............',
+    '........#kcekkkkkkkkkkkkkkttvvVVVV##............',
+    '........#kkkkkkkkkkkkkkkkkkkvvVVVV#.............',
+    '.......#kkkkkkkkkkkkkkkkkkkkvVVVVV#.............',
+    '......#kkkkkkkkkkkkkkkkkkkkkkVVVVV##............',
+    '.....#kkkkkkkkkkkkkkkkkkkkkkkkVVVVVV#...........',
+    '....#kkkkkkk#kkkkkkkkk#kkkkkkkVVVVVVV#..........',
+    '...#kkkkkk#.#kkkkkkkk#.#kkkkkkVVVVVVVV#.........',
+    '..#kkkkk#...#kkkkkkk#...#kkkkkVVVVVVVVV#........',
+    '.#kkkkk#....#kkkkkk#....#kkkkkkVVVVVVVVV#.......',
+    '.#kkkk#....#kkkkkk#.....#kkkkkkkVVVVVVVV#.......',
+    '#kkkk#.....#kkkkk#......#kkkkkkkkVVVVVVVV#......',
+    '#kkk#.....#kkkkk#.......#kkkkkkkkkVVVVVV#.......',
+    '#kk#......#kkkk#........#kkkk#kkkkkVVVV#........',
+    '#kk#.....#kkkk#.........#kkk#.#kkkkkVVV#........',
+    '#k#......#kkk#..........#kk#..#kkkkkkV#.........',
+    '#k#.....#kkk#...........#k#....#kkkkkk#.........',
+    '##......#kk#............##.....#kkkkk#..........',
+    '........#k#....................#kkkk#...........',
+    '........##......................#kk#............',
+    '................................#k#.............',
+    '................................##..............',
+    '................................................',
+    '................................................'];
+
+  /* Whisperer 48x64: tall and thin, a face split down the middle with the halves misaligned, small mouths down the chest, orbiting fragments, a robe that ends before the ground */
+  var WHISPERER = [
+    '..............##................................',
+    '.............#Pw#........##.....................',
+    '.............#wP#.......#Pw#....................',
+    '..............##........#wP#.....##.............',
+    '.........................##.....#Pw#............',
+    '.........##.............................#wP#....',
+    '........#Pw#.........#####..............##......',
+    '........#wP#........#vvvvv#.....................',
+    '.........##........#vvvvvvv#....................',
+    '..................#vvvvvvvvv#..........##.......',
+    '..................#vvvvvvvvv#.........#Pw#......',
+    '.................#vvvvv#vvvv#.........#wP#......',
+    '.................#vkkvv#vvkkv#.........##.......',
+    '.................#kckvv#vkkck#..................',
+    '.................#kkkvv#vvkkk#..................',
+    '.................#vvvvv#kvvvv#..................',
+    '.......##........#vvvvv#kkvvv#..................',
+    '......#Pw#.......#vkkkv#kkkvv#.......##.........',
+    '......#wP#.......#vkekv#kekkv#......#Pw#........',
+    '.......##.........#kkkv#kkkkv#......#wP#........',
+    '..................#vvvv#vvvv#........##.........',
+    '...................#vvv#vvv#....................',
+    '....................#vvvvvv#....................',
+    '....................#VvvvvV#....................',
+    '...................##VvvvvV##...................',
+    '.................##VVVvvvvVVV##.................',
+    '................#VVVVVvvvvVVVVV#................',
+    '...............#VVVVVVvvvvVVVVVV#...............',
+    '..............#VVVVVVkkkkkkVVVVVV#..............',
+    '..............#VVVVVkcccccckVVVVV#..............',
+    '..............#VVVVVVkkkkkkVVVVVV#..............',
+    '.............#VVVVVVVVvvvvVVVVVVVV#.............',
+    '.............#VVVVVVVVvvvvVVVVVVVV#.............',
+    '.............#VVVVVVkkkkkkkkVVVVVV#.............',
+    '.............#VVVVVkccccccccckVVVV#.............',
+    '.............#VVVVVVkkkkkkkkVVVVVV#.............',
+    '............#VVVVVVVVVvvvvVVVVVVVVV#............',
+    '............#VVVVVVVVVvvvvVVVVVVVVV#............',
+    '............#VVVVVVkkkkkkkkkkVVVVVV#............',
+    '............#VVVVVkcccccccccckVVVVV#............',
+    '............#VVVVVVkkkkkkkkkkVVVVVV#............',
+    '...........#VVVVVVVVVVvvvvVVVVVVVVVV#...........',
+    '...........#VVVVVVVVVVvvvvVVVVVVVVVV#...........',
+    '...........#VVVVVVVVVVvvvvVVVVVVVVVV#...........',
+    '...........#VVVVVVVVVVvvvvVVVVVVVVVV#...........',
+    '..........#VVVVVVVVVVVvvvvVVVVVVVVVVV#..........',
+    '..........#VVVVVVVVVVVvvvvVVVVVVVVVVV#..........',
+    '..........#VVVVVVVVVVVvvvvVVVVVVVVVVV#..........',
+    '..........#VVVVVVVVVVVvvvvVVVVVVVVVVV#..........',
+    '.........#VVVVVVVVVVVVvvvvVVVVVVVVVVVV#.........',
+    '.........#VVVVVVVVVVVVvvvvVVVVVVVVVVVV#.........',
+    '.........#VVVVVVVVVVVVvvvvVVVVVVVVVVVV#.........',
+    '.........#VVVVVVVVVVVVvvvvVVVVVVVVVVVV#.........',
+    '.........#VVVVVVVVVVVVvvvvVVVVVVVVVVVV#.........',
+    '.........#VVVVVVVVVVVVvvvvVVVVVVVVVVVV#.........',
+    '.........#VVVVVVVVVVVVvvvvVVVVVVVVVVVV#.........',
+    '.........#VVV#VVVVV#VVvvvvVV#VVVVV#VVV#.........',
+    '.........#VV#.#VVV#.#VvvvvV#.#VVV#.#VV#.........',
+    '.........##...#VV#...#VvvV#...#VV#...##.........',
+    '..............##.....#VvvV#...##................',
+    '......................#VV#......................',
+    '......................#VV#......................',
+    '.......................##.......................',
+    '................................................'];
+
+  /* The Maw 64x96: a ring of teeth and eyes around an opening into nothing, tentacles reaching out of it, geometry that does not close at the bottom because the rest of it is elsewhere */
+  var MAW = [
+    '................................................................',
+    '................................................................',
+    '................................................................',
+    '................................................................',
+    '................................................................',
+    '................................................................',
+    '................................................................',
+    '................................................................',
+    '................................................................',
+    '................................................................',
+    '................................................................',
+    '................................................................',
+    '................................................................',
+    '................................................................',
+    '................................................................',
+    '..........................##.......##...........................',
+    '........................##Pp#.....#pP##.........................',
+    '......................##ppvv#.....#vvpp##.......................',
+    '.....................#ppvvV#.......#Vvvpp#......................',
+    '....................#pvvVV#.........#VVvvp#.....................',
+    '...................#pvVV##...........##VVvp#....................',
+    '..........##.......#pvV#...............#Vvp#.......##...........',
+    '.........#Pp##.....#vV#.................#Vv#.....##pP#..........',
+    '........#pvvvp#....#vV#.................#Vv#....#pvvvp#.........',
+    '.......#pvVVVvp#...#V#...................#V#...#pvVVVvp#........',
+    '......#pvVV#VVvp#..#V#......#########....#V#..#pvVV#VVvp#.......',
+    '......#vVV#.#VVv#..#V#...###PPPPPPPPP###.#V#..#vVV#.#VVv#.......',
+    '......#VV#...#VV####V#.##PPppppppppppppPP##.#V####VV#...#VV#....',
+    '......#V#.....#VVVVVVV##PppppppppppppppppppP##VVVVVVV#.....#V#..',
+    '......#V#......#VVVVVV#PpppppppppppppppppppppP#VVVVVV#......#V#.',
+    '.......##.......##VVV#PppppkkkkpppppppkkkkpppppP#VVV##.......##.',
+    '..................##.#PpppkkeeckkppppkkceekkppppP#.##...........',
+    '....................#PpppkkecccekkpppkkecccekkpppP#.............',
+    '...................#PpppkkeccccekkppkkeccccekkpppP#.............',
+    '...................#PpppkkkecccekkppkkecccekkkpppP#.............',
+    '...................#PppppkkkeeckkppppkkceekkkppppP#.............',
+    '..................#PpppppkkkkkkkppppppkkkkkkkpppppP#............',
+    '..................#PppppppppppppppppppppppppppppppP#............',
+    '..................#Pppppp#c#pppppppppppppp#c#ppppppP#...........',
+    '.................#Pppppp#ccc#ppppppppppppp#ccc#ppppppP#.........',
+    '.................#Pppppp#c#pppppppppppppppp#c#ppppppP#..........',
+    '.................#Ppppppppppppppppppppppppppppppppp#............',
+    '.................#Pppp##################################pppP#...',
+    '................#Pppp#wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww#pppP#....',
+    '................#Ppp#wPwPwPwPwPwPwPwPwPwPwPwPwPwPwPwPw#ppP#.....',
+    '................#Ppp#w#w#w#w#w#w#w#w#w#w#w#w#w#w#w#w#w#ppP#.....',
+    '................#Ppp#kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk#ppP#.....',
+    '................#Ppp#kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk#ppP#.....',
+    '................#Ppp#kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk#ppP#.....',
+    '................#Ppp#kkkkkkkmmmmmmmmmmmmmmmmmmmkkkkkkk#ppP#.....',
+    '................#Ppp#kkkkkmmmmmmmmmmmmmmmmmmmmmmmkkkkk#ppP#.....',
+    '................#Ppp#kkkkmmmmmmmmmmmmmmmmmmmmmmmmmkkkk#ppP#.....',
+    '................#Ppp#kkkkmmmmmmmmmmmmmmmmmmmmmmmmmkkkk#ppP#.....',
+    '................#Ppp#kkkkmmmmmmmmmmmmmmmmmmmmmmmmmkkkk#ppP#.....',
+    '................#Ppp#kkkkkmmmmmmmmmmmmmmmmmmmmmmmkkkkk#ppP#.....',
+    '................#Ppp#kkkkkkkmmmmmmmmmmmmmmmmmmmkkkkkkk#ppP#.....',
+    '................#Ppp#kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk#ppP#.....',
+    '................#Ppp#kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk#ppP#.....',
+    '................#Ppp#kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk#ppP#.....',
+    '................#Ppp#w#w#w#w#w#w#w#w#w#w#w#w#w#w#w#w#w#ppP#.....',
+    '................#Ppp#wPwPwPwPwPwPwPwPwPwPwPwPwPwPwPwPw#ppP#.....',
+    '................#Pppp#wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww#pppP#....',
+    '.................#Pppp##################################pppP#...',
+    '.................#Pppppppppppppppppppppppppppppppppppp#.........',
+    '.................#Ppppppp#c#ppppppppppppppp#c#pppppppP#.........',
+    '.................#Pppppp#ccc#ppppppppppppp#ccc#ppppppP#.........',
+    '.................#Ppppppp#c#ppppppppppppppp#c#pppppppP#.........',
+    '..................#PpppppppppppppppppppppppppppppppppP#.........',
+    '..................#PpppppkkkkkkkppppppkkkkkkkpppppP#............',
+    '...................#PppppkkkeeckkppppkkceekkkppppP#.............',
+    '...................#PpppkkkecccekkppkkecccekkkpppP#.............',
+    '...................#PpppkkeccccekkppkkeccccekkpppP#.............',
+    '....................#PpppkkecccekkpppkkecccekkpppP#.............',
+    '.....................#PpppkkeeckkppppkkceekkppppP#..............',
+    '......................#PpppkkkkpppppppkkkkpppppP#...............',
+    '.......................#PpppppppppppppppppppppP#................',
+    '........................##PPPpppppppppppppPPP##.................',
+    '..........................###PPPPPPPPPPPPP###...................',
+    '.............................###########........................',
+    '...........#tt#.......#vV#.................#Vv#.......#tt#......',
+    '..........#tTt#......#vVV#.................#VVv#......#tTt#.....',
+    '..........#tTt#.....#vVV#...................#VVv#.....#tTt#.....',
+    '.........#tTTt#.....#vV#.....................#Vv#.....#tTTt#....',
+    '.........#tTt#.....#vVV#.......#vV#.#Vv#.....#VVv#.....#tTt#....',
+    '........#tTt#......#vV#.......#vVV#.#VVv#.....#Vv#......#tTt#...',
+    '........#tt#......#vVV#.......#vV#...#Vv#......#VVv#.....#tt#...',
+    '.......#tt#.......#vV#........#vV#...#Vv#.......#Vv#......#tt#..',
+    '.......#t#.......#vVV#.......#vVV#...#VVv#......#VVv#.....#t#...',
+    '......#t#........#vV#........#vV#.....#Vv#.......#Vv#......#t#..',
+    '......##.........#vV#........#vV#.....#Vv#.......#Vv#......##...',
+    '.................#v#.........#v#.......#V#........#V#...........',
+    '.................##..........##.........##........##............',
+    '................................................................',
+    '................................................................',
+    '................................................................',
+    '................................................................'];
+
+  /* ---------- map tokens, 16x16 chibi, 4-6 colours, facing south ---------- */
+  var T_GHOUL = [
+    '................','.....######.....','....#GGGGGG#....','...#GeGGGGeG#...',
+    '...#GGGGGGGG#...','...#GbbbbbbG#...','....#GGGGGG#....','.##.#DDDDDD#.##.',
+    '#GG##DbDbDD##GG#','#GD#DDbDbDDD#DG#','#D#.#DDDDDD#.#D#','#b#.#DD##DD#.#b#',
+    '###.#DD#.#DD#.##','....#bD#.#Db#...','....#bb#.#bb#...','....###..###....'];
+  var T_NECRO = [
+    '.#c#....##......','.#f#...#rr#.....','.#b#..#rrrr#....','.#S#.#rRkkRr#...',
+    '.#S#.#rRcRcr#...','.#S#.#rrkkkr#...','.#S##rbbbbbbr#..','.#S#rrrrrrrrrr#.',
+    '.#S#rRrrcrrrrr#.','.#S#rRrrrrrrrr#.','.#S#rRrbbbbrrr#.','.#S#rRrrrrrrrr#.',
+    '.#S#rRrrrrrrrr#.','.#S#rRrrrrrrrrr#','.#S#r#r#rr#r#rr#','.###.#.#..#.#.#.'];
+  var T_COLOSSUS = [
+    '..#..##..##..#..','.#b#b#bbb#b#b#..','.#bbbbbbbbbbb#..','#bbb#kk#b#kk#bb#',
+    '#bbb#ek#b#ek#bb#','#bbbbbbbbbbbbbb#','#bb#bkbkbkbkb#b#','#bb#bbbbbbbbb#b#',
+    '#bb#kbkbkbkbk#b#','#bb#bbkfffkbb#b#','#bb#kbkbkbkbk#b#','#bb#bbbbbbbbb#b#',
+    '.##.#bbbbbbb#.#.','....#bb#.#bb#...','....#bb#.#bb#...','....###..###....'];
+  var T_BRUTE = [
+    '..##........##..','.#Hx#......#xH#.','.#H#..####..#H#.','.#H#.#rrrr#.#H#.',
+    '..#H#ryrryr#H#..','...#rrrrrrrr#...','..##rKwKwKwr##..','.#rrr#rrrr#rrr#.',
+    '#rrrrrddddrrrrr#','#KKr#doyod#rKKK#','#KbK##ddodd#KbK#','#KKK#.#ddd#.#KK#',
+    '.###.#bbbbbb#.##','.....#dd##dd#...','....#KKK##KKK#..','....####..####..'];
+  var T_HELLCASTER = [
+    '.....#oooo#.....','....#oyyyyo#....','...#oy#dd#yo#.#.','...#oy#dd#yoHH#.',
+    '...#oy#dRdHHo#..','....#oddddd#o#..','.....#dKwKd#....','...###ddddd###..',
+    '..#bb#ddddd#dd#.','.#KK#.#dddd#dd#.','.#KK#.#bbbb#dd#.','#KyK#.#dddd#K#..',
+    '#KyK#.#dd#dd#...','#KKK#.#dd#dd#...','.###..#KK#KK#...','......###.###...'];
+  var T_PITLORD = [
+    '#H#..#H#H#..#H#.','#H#.#HHHHHH#.#H#','#H##HbbbbbbH##H#','.#HbKddddddKbH#.',
+    '.#bbKdyddydKbb#.','.#bbKddoodddbb#.','#bbb#KwKwKwK#bbb','#bbbbbbbbbbbbbb#',
+    '#KKK#KKyyyyKK#KK','#KdK#KywwwwyK#Kd','#KdK#KywwwwyK#Kd','#KdK#KKyyyyKK#Kd',
+    '#KKK#KKKKKKKK#KK','.##.#KKK##KKK#.#','....#KKK##KKK#..','....####..####..'];
+  var T_SPAWN = [
+    '................','................','.......##.......','......#Pp#..##..',
+    '..##..#pv#.#Pp#.','.#Pp#.#pvv##pv#.','..#pv##pkkvvpv#.','...#pppkecekpv#.',
+    '..#TTppkkkkkpv#.','.#TTTTpppppvvV#.','#TTTTTTpppvvVV#.','#kkkkTTTTvvVVV#.',
+    '#kecckkkkkVVVV#.','#kkkkk#kkk#VVV#.','#kk#..#kk#.#VV#.','###...###..###..'];
+  var T_WHISPERER = [
+    '.#w#...##...#w#.','......#vvv#.....','.....#vv#vv#....','.....#kc#ck#....',
+    '.....#vk#kv#....','......#v#v#.....','.....##VVV##....','....#VVkccV#....',
+    '....#VVVVVV#....','...#VVkcccVV#...','...#VVVVVVVV#...','...#VVVkcccV#...',
+    '...#VVVVVVVV#...','...#V#VVVV#V#...','...##.#VV#.##...','.......##.......'];
+  var T_MAW = [
+    '....#pp#.#pp#...','...#pvv###vvp#..','...#v##PPP##v#..','..#PP#ppppp#PP#.',
+    '.#Pp#ecp#pce#pP#','.#p#pppppppppp#.','.#p#wPwPwPwPw#..','.#p#kkkkkkkkk#..',
+    '..#pkkmmmmmkkp#.','..#pkkmmmmmkkp#.','..#pwPwPwPwPwp#.','..#pppppppppp#..',
+    '...#pecp#pcep#..','....#pp###pp#...','...#vV#...#Vv#..','...##......##...'];
+
+  /* boss map token: Bone Colossus 40x40, overflows the centre hex of its three-hex triangle */
+  var TB_COLOSSUS = [
+    '.................#....#.................',
+    '........#.......#b#..#b#.......#........',
+    '.......#b#......#b#..#b#......#b#.......',
+    '.......#b#....###b####b###....#b#.......',
+    '........#b#..#bbbbbbbbbbbb#..#b#........',
+    '.........#b##bbbbbbbbbbbbbb##b#.........',
+    '..........#bbbbbbbbbbbbbbbbbb#..........',
+    '..........#bbbbbbbbbbbbbbbbbb#..........',
+    '..........#bb#kkkkk#b#kkkkk#b#..........',
+    '..........#bb#kkeek#b#kkeek#b#..........',
+    '..........#bb#kkeek#b#kkeek#b#..........',
+    '..........#bbb#kkk#bbb#kkk#bb#..........',
+    '..........#bbbbbbbbbkkbbbbbbb#..........',
+    '..........#bbBbBbBbBbBbBbBbBb#..........',
+    '...........#b#b#b#b#b#b#b#b#............',
+    '.......#####kkkkkkkkkkkkkkkk#####.......',
+    '.....##bbbb#bBbBbBbBbBbBbBbB#bbbb##.....',
+    '...##bbbbbb##bbbbbbbbbbbbbb##bbbbbb##...',
+    '..#bbbbbbbb#kkkkkkkkkkkkkkkk#bbbbbbbb#..',
+    '.#bBb#bbbbb#bbbbbbbbbbbbbbbb#bbbbb#bBb#.',
+    '.#bB#.#bbb#kkkkkkkkfffkkkkkk#bbb#.#Bb#..',
+    '#bBb#..###.#bbbbbbfcccfbbbb#.###..#bBb#.',
+    '#bBb#......#kkkkkkfcwcfkkkk#......#bBb#.',
+    '#bBb#......#bbbbbbfcccfbbbb#......#bBb#.',
+    '#bBb#......#kkkk#kkfffkk#kk#......#bBb#.',
+    '#bBb#......#bbbb#bkbkbkb#bb#......#bBb#.',
+    '#bBb#......#kkkk#bbbbbbb#kk#......#bBb#.',
+    '#bBb#.......#bbb#b#b#b#b#b#.......#bBb#.',
+    '#bBb#.......#rrrrrrrrrrrrr#.......#bBb#.',
+    '#bBb#......##bbbbbbbbbbbbb##......#bBb#.',
+    '#bBb#......#bbbb#kkkkkk#bbbb#.....#bBb#.',
+    '#bBb#......#bbb#kkkkkkkk#bbb#.....#bBb#.',
+    '#bBb#......#bbb#........#bbb#.....#bBb#.',
+    '#bBbB#.....#bBb#........#bBb#....#BbBb#.',
+    '#bB#b#.....#bBb#........#bBb#....#b#Bb#.',
+    '#b#.##.....#bBb#........#bBb#....##.#b#.',
+    '##.........#bBb#........#bBb#.......##..',
+    '..........#bbBbb#......#bbBbb#..........',
+    '..........#b#b#b#......#b#b#b#..........',
+    '..........#.#.#.#......#.#.#.#..........'];
+  /* ==== GRIDS:END ==== */
+
+  var DIG3 = { '0':['###','#.#','#.#','#.#','###'], '1':['.#.','##.','.#.','.#.','###'], '2':['###','..#','###','#..','###'],
+               '3':['###','..#','###','..#','###'], '4':['#.#','#.#','###','..#','..#'], '5':['###','#..','###','..#','###'],
+               '6':['###','#..','###','#.#','###'], '7':['###','..#','..#','..#','..#'], '8':['###','#.#','###','#.#','###'], '9':['###','#.#','###','..#','###'] };
+
+  /* ---------- width check: every row of every grid against its declared size ---------- */
+  var GRIDS = [
+    ['GHOUL', GHOUL, 48, 64], ['NECRO', NECRO, 48, 64], ['COLOSSUS', COLOSSUS, 64, 96],
+    ['BRUTE', BRUTE, 48, 64], ['HELLCASTER', HELLCASTER, 48, 64], ['PITLORD', PITLORD, 64, 96],
+    ['SPAWN', SPAWN, 48, 64], ['WHISPERER', WHISPERER, 48, 64], ['MAW', MAW, 64, 96],
+    ['T_GHOUL', T_GHOUL, 16, 16], ['T_NECRO', T_NECRO, 16, 16], ['T_COLOSSUS', T_COLOSSUS, 16, 16],
+    ['T_BRUTE', T_BRUTE, 16, 16], ['T_HELLCASTER', T_HELLCASTER, 16, 16], ['T_PITLORD', T_PITLORD, 16, 16],
+    ['T_SPAWN', T_SPAWN, 16, 16], ['T_WHISPERER', T_WHISPERER, 16, 16], ['T_MAW', T_MAW, 16, 16],
+    ['TB_COLOSSUS', TB_COLOSSUS, 40, 40]
+  ];
+  (function(){
+    var bad = 0;
+    GRIDS.forEach(function(g){
+      if (g[1].length !== g[3]){ bad++; console.warn('Riftgate enemy sheet: ' + g[0] + ' has ' + g[1].length + ' rows, expected ' + g[3]); }
+      g[1].forEach(function(row, i){
+        if (row.length !== g[2]){ bad++; console.warn('Riftgate enemy sheet: ' + g[0] + ' row ' + i + ' is ' + row.length + ' wide, expected ' + g[2]); }
+      });
+    });
+    var foot = document.getElementById('foot');
+    var note = bad ? ' Width check: ' + bad + ' mismatch(es), see the console.' : ' Width check: ' + GRIDS.length + ' grids, every row matched.';
+    foot.appendChild(document.createTextNode(note));
+  })();
+
+  /* ---------- per-foe canvas: 3x, then 1x beside the 48 px unit slot ---------- */
+  function drawFoe(id, spr, map){
+    var W = 272, H = 216, base = 200;
+    var ctx = makeCanvas(id, W, H, STAGE);
+    ctx.fillStyle = 'rgba(255,255,255,.08)'; ctx.fillRect(0, base + 1, W, 1);
+    spriteAt(ctx, spr, map, 8, base, 3);
+    spriteAt(ctx, spr, map, 164, base, 1);
+    slot(ctx, 216, base - 48, 48, 48);
+    text(ctx, '3x', 8, 14, '700 12px ' + FD, HAZ);
+    text(ctx, '1x', 164, 14, '700 12px ' + FD, HAZ);
+    text(ctx, '48 px', 240, base - 54, '500 9px ' + FM, LABEL, 'center');
+    text(ctx, '48x64', 8, base + 12, '500 9px ' + FM, LABEL);
+  }
+  /* ---------- elite canvas: 64x96 at 3x, a rank foe at 3x for scale, then 1x over the 48x64 slot ---------- */
+  function drawElite(id, spr, map, foe, foeMap, foeName){
+    var W = 436, H = 318, base = 300;
+    var ctx = makeCanvas(id, W, H, STAGE);
+    ctx.fillStyle = 'rgba(255,255,255,.08)'; ctx.fillRect(0, base + 1, W, 1);
+    spriteAt(ctx, spr, map, 8, base, 3);
+    spriteAt(ctx, foe, foeMap, 212, base, 3);
+    slot(ctx, 372, base - 64, 48, 64);
+    spriteAt(ctx, spr, map, 364, base, 1);
+    text(ctx, 'ELITE 3x', 8, 14, '700 12px ' + FD, HAZ);
+    text(ctx, foeName.toUpperCase() + ' 3x', 212, 14, '700 12px ' + FD, LABEL);
+    text(ctx, '1x', 364, 14, '700 12px ' + FD, HAZ);
+    text(ctx, 'slot', 396, base - 70, '500 9px ' + FM, LABEL, 'center');
+    text(ctx, '64x96', 8, base + 12, '500 9px ' + FM, LABEL);
+  }
+
+  drawFoe('c-ghoul', GHOUL, UND);
+  drawFoe('c-necro', NECRO, UND);
+  drawElite('c-colossus', COLOSSUS, UND, GHOUL, UND, 'ghoul');
+  drawFoe('c-brute', BRUTE, DEM);
+  drawFoe('c-hellcaster', HELLCASTER, DEM);
+  drawElite('c-pitlord', PITLORD, DEM, BRUTE, DEM, 'brute');
+  drawFoe('c-spawn', SPAWN, ELD);
+  drawFoe('c-whisperer', WHISPERER, ELD);
+  drawElite('c-maw', MAW, ELD, SPAWN, ELD, 'spawn');
+
+  /* ---------- palette swatches ---------- */
+  function swatches(id, list){
+    var el = document.getElementById(id), html = '';
+    list.forEach(function(s){
+      html += '<div><i style="background:' + s[0] + '"></i><span>' + s[1] + '<br>' + s[0] + '</span></div>';
+    });
+    el.innerHTML = html;
+  }
+  swatches('pal-undead', [[UND.D,'green dark'],[UND.G,'green'],[UND.g,'green mid'],[UND.b,'bone'],[UND.B,'bone shade'],[UND.w,'bone light'],[UND.r,'rot'],[UND.R,'rot light'],[UND.e,'eye'],[UND.k,'void'],[UND.f,'soulfire'],[UND.c,'soulfire light'],[UND.t,'rag cloth'],[UND.S,'staff']]);
+  swatches('pal-demon', [[DEM.d,'red dark'],[DEM.r,'red'],[DEM.R,'red light'],[DEM.o,'hot orange'],[DEM.y,'ember'],[DEM.w,'white hot'],[DEM.K,'iron'],[DEM.k,'iron shade'],[DEM.b,'brass'],[DEM.B,'brass light'],[DEM.H,'horn'],[DEM.x,'horn light'],[DEM.h,'hoof'],[DEM.c,'chain']]);
+  swatches('pal-eldritch', [[ELD.V,'violet deep'],[ELD.v,'violet'],[ELD.p,'violet pale'],[ELD.P,'lilac'],[ELD.w,'lilac light'],[ELD.t,'teal'],[ELD.T,'teal light'],[ELD.c,'eye glow'],[ELD.e,'eye white'],[ELD.k,'void'],[ELD.m,'deep void']]);
+
+  /* ---------- map tokens: nine at 3x with 1x beside ---------- */
+  var TOKENS = [
+    ['Ghoul', T_GHOUL, UND], ['Necro', T_NECRO, UND], ['Colossus', T_COLOSSUS, UND],
+    ['Brute', T_BRUTE, DEM], ['Hellcaster', T_HELLCASTER, DEM], ['Pit Lord', T_PITLORD, DEM],
+    ['Spawn', T_SPAWN, ELD], ['Whisperer', T_WHISPERER, ELD], ['Maw', T_MAW, ELD]
+  ];
+  (function(){
+    var CW = 72, CH = 92, W = CW * 5 + 8, H = CH * 2 + 8;
+    var ctx = makeCanvas('c-tokens', W, H, STAGE);
+    TOKENS.forEach(function(t, i){
+      var cx = 4 + (i % 5) * CW, cy = 4 + Math.floor(i / 5) * CH;
+      if (i % 5) { ctx.fillStyle = STAGE_LINE; ctx.fillRect(cx - 1, cy + 6, 1, CH - 12); }
+      ctx.fillStyle = 'rgba(0,0,0,.45)';
+      ctx.beginPath(); ctx.ellipse(cx + 28, cy + 58, 20, 4, 0, 0, Math.PI * 2); ctx.fill();
+      drawPix(ctx, t[1], t[2], cx + 4, cy + 10, 3);
+      drawPix(ctx, t[1], t[2], cx + 54, cy + 42, 1);
+      text(ctx, t[0].toUpperCase(), cx + 4, cy + 74, '700 11px ' + FD, LABEL);
+      text(ctx, '16x16', cx + 4, cy + 85, '500 8px ' + FM, '#6f7a86');
+    });
+  })();
+
+  /* ---------- squad-count chips and the three-hex boss ---------- */
+  function hexTile(ctx, cx, cy, R, fill){
+    hexPath(ctx, cx, cy, R - 1, true);
+    ctx.fillStyle = fill; ctx.fill();
+    ctx.lineWidth = 2; ctx.strokeStyle = '#0b0b0f'; ctx.stroke();
+  }
+  function chip(ctx, x, y, n){
+    var s = String(n), w = s.length * 4 + 3;
+    ctx.fillStyle = '#0b0b0f'; ctx.fillRect(x - 1, y - 1, w + 2, 9);
+    ctx.fillStyle = HAZ; ctx.fillRect(x, y, w, 7);
+    for (var i = 0; i < s.length; i++) drawPix(ctx, DIG3[s.charAt(i)], { '#':'#12161b' }, x + 2 + i * 4, y + 1, 1);
+  }
+  (function(){
+    var R = 30, W = 380, H = 168;
+    var ctx = makeCanvas('c-badges', W, H, STAGE);
+    var ex = [['Ghoul', T_GHOUL, UND, 6, '#4c5c3c'], ['Brute', T_BRUTE, DEM, 3, '#5a5f66'], ['Spawn', T_SPAWN, ELD, 4, '#4c5c3c']];
+    ex.forEach(function(e, i){
+      var cx = 32 + i * 60, cy = 96;
+      hexTile(ctx, cx, cy, R, e[4]);
+      ctx.fillStyle = 'rgba(0,0,0,.45)';
+      ctx.beginPath(); ctx.ellipse(cx, cy + R * 0.55, 20, 4, 0, 0, Math.PI * 2); ctx.fill();
+      drawPix(ctx, e[1], e[2], cx - 24, cy - 22, 3);
+      chip(ctx, cx + 8, cy + 10, e[3]);
+      text(ctx, e[0].toUpperCase() + ' x' + e[3], cx, cy + 46, '700 11px ' + FD, LABEL, 'center');
+    });
+    ctx.fillStyle = STAGE_LINE; ctx.fillRect(206, 10, 1, H - 20);
+    // three-hex triangle: two on the base row, one above centred; the sprite is anchored on the base row's hex base line
+    var bx = 292, by = 112, hw = Math.sqrt(3) * R;
+    var tri = [[bx - hw / 2, by], [bx + hw / 2, by], [bx, by - 1.5 * R]];
+    tri.forEach(function(p){ hexTile(ctx, p[0], p[1], R, '#3a4a30'); });
+    hexPath(ctx, bx, by - 0.5 * R, R * 2.05, true); ctx.lineWidth = 2; ctx.strokeStyle = '#8e6bae'; ctx.setLineDash([4, 3]); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(0,0,0,.5)';
+    ctx.beginPath(); ctx.ellipse(bx, by + R * 0.6, 56, 6, 0, 0, Math.PI * 2); ctx.fill();
+    drawPix(ctx, TB_COLOSSUS, UND, Math.round(bx - 60), Math.round(by + R * 0.75 - 120), 3);
+    text(ctx, 'BONE COLOSSUS 40x40 @3x', bx, H - 8, '700 11px ' + FD, LABEL, 'center');
+    text(ctx, 'boss, 3 hexes', bx, 16, '500 9px ' + FM, '#8e6bae', 'center');
+  })();
+
+  /* ---------- contrast strip at 2x: a mech-sized block, a brute, a necromancer ---------- */
+  (function(){
+    var W = 352, H = 296, base = 272;
+    var ctx = makeCanvas('c-contrast', W, H, STAGE);
+    ctx.fillStyle = 'rgba(255,255,255,.08)'; ctx.fillRect(0, base + 1, W, 1);
+    ctx.fillStyle = '#4a525e'; ctx.fillRect(16, base - 128, 96, 128);
+    ctx.fillStyle = '#737d8a'; ctx.fillRect(16, base - 128, 96, 2); ctx.fillRect(16, base - 128, 2, 128);
+    ctx.fillStyle = '#2b3038'; ctx.fillRect(16, base - 2, 96, 2); ctx.fillRect(110, base - 128, 2, 128);
+    ctx.fillStyle = '#e8a93a'; ctx.fillRect(16, base - 70, 96, 4);
+    text(ctx, 'MECH', 64, base - 90, '700 16px ' + FD, '#d7dce1', 'center');
+    text(ctx, '48x64', 64, base - 46, '500 9px ' + FM, '#a3acb6', 'center');
+    text(ctx, 'see the Mech Sheet', 64, base - 34, '500 9px ' + FM, '#a3acb6', 'center');
+    spriteAt(ctx, BRUTE, DEM, 128, base, 2);
+    spriteAt(ctx, NECRO, UND, 240, base, 2);
+    text(ctx, 'MECH', 16, 16, '700 12px ' + FD, HAZ);
+    text(ctx, 'BRUTE', 128, 16, '700 12px ' + FD, HAZ);
+    text(ctx, 'NECROMANCER', 240, 16, '700 12px ' + FD, HAZ);
+    text(ctx, 'all at 2x', 16, base + 14, '500 9px ' + FM, LABEL);
+  })();
+})();
+</script>

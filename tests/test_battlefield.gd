@@ -216,5 +216,6 @@ func test_pressure_spawns_squad_at_rift() -> void:
 	var res := f.resolve_phase({})
 	assert_true(res.spawned, "second tick spawns")
 	assert_eq(f.squads().size(), 1, "one squad now")
+	assert_eq(f.squads()[0].foe_id, "ghoul", "spawned from the spawn table")
 	assert_eq(f.rift_pressure, 0, "clock reset")
 	assert_true(Hex.distance(f.squads()[0].pos, f.map.rift) <= 1, "spawned at or beside the rift")

@@ -6,11 +6,15 @@ extends RefCounted
 ##
 ## Round loop:
 ##   start_round()       roll every live mech's die (unless locked), telegraph foe intents
-##   reroll([...])       up to REROLLS_PER_ROUND times, any subset of mechs
-##   assign(i, target)   spend a mech's face on a foe (attacks) or a mech (shield, vent)
+##   reroll([...])       up to REROLLS_PER_ROUND times, any subset of unspent mech dice,
+##                       before or after spending others: a low damage roll is information
+##   assign(i, target)   spend a mech's face on a foe (attacks) or a mech (shield, vent);
+##                       kinetic faces roll their damage here, immediately and visibly
 ##   end_round()         burn ticks, foes act, the dead are cleared, the pool refills,
 ##                       outcome is checked
-##   can_withdraw()      true only between rounds, after the enemy has acted
+##   can_withdraw()      at the start of a round after the first, before any face is spent
+##
+## Numbers are in tens. Enemy damage is static; only the player's kinetic faces roll.
 
 enum State { SETUP, ROUND_START, ASSIGN, DONE }
 enum Outcome { NONE, VICTORY, DEFEAT, WITHDRAWN }
@@ -18,18 +22,20 @@ enum Outcome { NONE, VICTORY, DEFEAT, WITHDRAWN }
 const COLUMNS := 3
 const REROLLS_PER_ROUND := 2
 const DANGER_CLOSE_DIVISOR := 2
-const BURN_PER_STACK := 1
+const BURN_PER_STACK := 10          # damage each stack deals per round
+const BURN_DAMAGE_PER_STACK := 20   # damage dealt per stack applied
+const CRACK_MIN_HULL_PCT := 25      # a single hull hit this big (percent of max) may injure a face
+const CRACK_CHANCE_PCT := 50
 
 
 class MechState:
 	var unit: Unit
 	var die: Die
 	var heat: int = 0
-	var heat_max: int = 6
+	var heat_max: int = 60
 	var face_index: int = -1
 	var locked: bool = false
 	var assigned: bool = false
-	var cracked: Dictionary = {}   # face index -> original Face, restored when the skirmish ends
 
 	func face() -> Face:
 		if face_index < 0 or face_index >= die.faces.size():
@@ -52,6 +58,9 @@ var state: int = State.SETUP
 var outcome: int = Outcome.NONE
 var log: Array[String] = []
 
+## The most recent attack, for the screen to show: {mech, target, rolled, final, crit, ranged}.
+var last_roll: Dictionary = {}
+
 
 func _init(seed_value: int = 0) -> void:
 	rng.seed = seed_value
@@ -63,6 +72,7 @@ func add_mech(u: Unit, d: Die = null) -> MechState:
 	var ms := MechState.new()
 	ms.unit = u
 	ms.die = d if d != null else u.die
+	ms.heat_max = u.heat_max
 	mechs.append(ms)
 	return ms
 
@@ -122,8 +132,19 @@ func survivors_for(sq: Unit) -> int:
 	return n
 
 
+func any_assigned() -> bool:
+	for m in mechs:
+		if m.assigned:
+			return true
+	return false
+
+
 func can_withdraw() -> bool:
-	return state == State.ROUND_START and round > 0
+	if round == 0:
+		return false
+	if state == State.ROUND_START:
+		return true
+	return state == State.ASSIGN and round > 1 and not any_assigned()
 
 
 ## Foes this mech's current face may be spent on.
@@ -147,6 +168,7 @@ func start_round() -> void:
 	assert(state == State.ROUND_START, "start_round called out of order")
 	round += 1
 	rerolls_left = REROLLS_PER_ROUND
+	last_roll.clear()
 	for ms in mechs:
 		ms.assigned = false
 		if not ms.alive():
@@ -196,7 +218,7 @@ func assign(mech_index: int, target = null) -> bool:
 		Face.Kind.ATTACK:
 			if not (target is Foe) or not targets_for(mech_index).has(target):
 				return false
-			_resolve_attack(ms, f, target)
+			_resolve_attack(mech_index, ms, f, target)
 	if f.has(Face.Keyword.LOCK):
 		ms.locked = true
 	ms.assigned = true
@@ -235,15 +257,28 @@ func withdraw() -> bool:
 		return false
 	outcome = Outcome.WITHDRAWN
 	_finish()
-	log.append("Withdrew after round %d" % round)
+	log.append("Withdrew at the start of round %d" % round)
 	return true
 
 
 # ---------------------------------------------------------------- resolution
 
-func _resolve_attack(ms: MechState, f: Face, target: Foe) -> void:
-	var dmg := f.power
+## Roll the face, apply crit, keywords, and passives, then hit every foe the face reaches.
+func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> void:
+	var rolled := f.power
+	if f.is_ranged():
+		rolled = f.average() if f.has(Face.Keyword.STEADY) else rng.randi_range(f.power, f.power_max)
+	var dmg := rolled
 	var heat := f.heat
+	var crit := f.crit > 0 and rng.randi_range(1, 100) <= f.crit
+	var extra_burn := 0
+	var vent := 0
+	if crit:
+		dmg *= 2
+		var c := Passives.on_crit(ms.unit.passive, dmg)
+		dmg = c["damage"]
+		extra_burn = c["burn"]
+		vent = c["vent"]
 	if f.has(Face.Keyword.OVERCHARGE):
 		dmg *= 2
 		heat *= 2
@@ -252,6 +287,7 @@ func _resolve_attack(ms: MechState, f: Face, target: Foe) -> void:
 	var modded := Passives.on_attack(ms.unit.passive, dmg, heat)
 	dmg = modded[0]
 	heat = modded[1]
+	last_roll = {"mech": mech_index, "target": target, "rolled": rolled, "final": dmg, "crit": crit, "ranged": f.is_ranged()}
 	# Keywords stack: a cleaving, piercing face hits the neighbours and the column.
 	var hit: Array[Foe] = [target]
 	if f.has(Face.Keyword.CLEAVE):
@@ -266,7 +302,7 @@ func _resolve_attack(ms: MechState, f: Face, target: Foe) -> void:
 			hit.append(other)
 	if f.has(Face.Keyword.CHAIN):
 		var best: Foe = null
-		for cand in targets_for(mechs.find(ms)):
+		for cand in targets_for(mech_index):
 			if not hit.has(cand) and (best == null or cand.hp < best.hp):
 				best = cand
 		if best != null:
@@ -274,14 +310,22 @@ func _resolve_attack(ms: MechState, f: Face, target: Foe) -> void:
 	for foe in hit:
 		foe.hp -= dmg
 		if f.has(Face.Keyword.BURN):
-			foe.burn += ceili(f.power / 2.0)
+			foe.burn += ceili(float(dmg) / BURN_DAMAGE_PER_STACK)
 		if f.has(Face.Keyword.SUPPRESS):
 			foe.suppressed = true
-		log.append("%s hits %s for %d (%s)" % [ms.unit.display_name, foe.display_name, dmg, f.describe()])
+	target.burn += extra_burn
+	var how := f.describe()
+	if crit:
+		how = "CRIT " + how
+	elif f.is_ranged():
+		how = "rolled %d, " % rolled + how
+	log.append("%s hits %s for %d (%s)" % [ms.unit.display_name, target.display_name, dmg, how])
 	if f.reach == Face.Reach.INDIRECT and target.rank == 0:
-		var splash := ceili(float(f.power) / DANGER_CLOSE_DIVISOR)
+		var splash := ceili(float(dmg) / DANGER_CLOSE_DIVISOR)
 		ms.unit.shield = maxi(0, ms.unit.shield - splash)
 		log.append("%s: danger close, shield -%d" % [ms.unit.display_name, splash])
+	if vent > 0:
+		ms.heat = maxi(0, ms.heat - vent)
 	_add_heat(ms, heat)
 
 
@@ -302,22 +346,36 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	var through := amount - absorbed
 	ms.unit.hull -= through
 	log.append("%s hits %s: shield -%d, hull -%d" % [source.display_name, ms.unit.display_name, absorbed, through])
-	if through > 0 and source.injures != "":
-		_crack_face(ms, source.injures)
+	# The global injury rule: a big hit that reaches the hull may damage a face. Shield before
+	# a telegraphed blow is the counterplay.
+	if through > 0 and through * 100 >= ms.unit.hull_max * CRACK_MIN_HULL_PCT:
+		if rng.randi_range(1, 100) <= CRACK_CHANCE_PCT:
+			apply_injury(ms)
 
 
-## An injury: one intact face goes blank for the rest of this skirmish.
-func _crack_face(ms: MechState, injury: String) -> void:
+## One random usable face takes damage. An intact face cracks: keywords, crit and unique
+## effect are gone, the basic action stays. A cracked face is destroyed: blank. The damage is
+## a damaged component: it lives on the unit and persists until repaired in the hangar.
+func apply_injury(ms: MechState) -> void:
 	var candidates: Array[int] = []
 	for i in range(ms.die.faces.size()):
-		if not ms.cracked.has(i) and ms.die.faces[i].kind != Face.Kind.BLANK:
+		if ms.die.faces[i].kind != Face.Kind.BLANK:
 			candidates.append(i)
 	if candidates.is_empty():
 		return
 	var idx: int = candidates[rng.randi_range(0, candidates.size() - 1)]
-	ms.cracked[idx] = ms.die.faces[idx]
-	ms.die.faces[idx] = Face.blank()
-	log.append("%s: %s cracks a face (%s)" % [ms.unit.display_name, injury, ms.cracked[idx].describe()])
+	var f := ms.die.faces[idx]
+	var originals: Dictionary = ms.unit.damaged_faces
+	if not originals.has(idx):
+		originals[idx] = f.duplicate_face()
+	if f.cracked:
+		ms.die.faces[idx] = Face.blank()
+		log.append("%s: a cracked component is destroyed (%s)" % [ms.unit.display_name, originals[idx].describe()])
+	else:
+		var c := f.duplicate_face()
+		c.crack()
+		ms.die.faces[idx] = c
+		log.append("%s: a component cracks (%s)" % [ms.unit.display_name, originals[idx].describe()])
 
 
 func _pick_mech_target() -> MechState:
@@ -329,6 +387,8 @@ func _pick_mech_target() -> MechState:
 			best = ms
 	return best
 
+
+# ---------------------------------------------------------------- formation
 
 func _clear_dead() -> void:
 	for col in range(COLUMNS):
@@ -412,10 +472,8 @@ func _check_outcome() -> void:
 		_finish()
 
 
+## Damaged faces are NOT restored here: they are damaged components, repaired in the hangar.
 func _finish() -> void:
 	state = State.DONE
 	for ms in mechs:
-		for idx in ms.cracked.keys():
-			ms.die.faces[idx] = ms.cracked[idx]
-		ms.cracked.clear()
 		ms.locked = false

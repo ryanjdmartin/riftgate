@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://eogjlh4sky3"
-path="res://.godot/imported/current.png-9da23f0e6956dff78f8a5f9733d4102d.ctex"
+uid="uid://jtmp0aw2i8c8"
+path="res://.godot/imported/sentinel_map_e.png-7e3726194eda4f7544f7d2150ac64b9b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://docs/canvas/skirmish-layout/current.png"
-dest_files=["res://.godot/imported/current.png-9da23f0e6956dff78f8a5f9733d4102d.ctex"]
+source_file="res://art/mechs/sentinel_map_e.png"
+dest_files=["res://.godot/imported/sentinel_map_e.png-7e3726194eda4f7544f7d2150ac64b9b.ctex"]
 
 [params]
 

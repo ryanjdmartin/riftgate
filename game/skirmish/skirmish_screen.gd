@@ -1,18 +1,20 @@
 class_name SkirmishScreen
 extends Control
 
-## The skirmish screen, minimal chrome. Portrait, 720x1280 logical, positioned absolutely so
-## every coordinate is a plain number.
+## The skirmish screen as a tactical overlay. Portrait, 720x1280 logical, positioned
+## absolutely so every coordinate is a plain number.
 ##
-##   header      round, pool, reroll count, and the eye button that shows every intent arrow
+##   header      round and pool tag, phase readout
 ##   formation   two ranks of three unit views; a massive foe spans both ranks of its column
-##   log         kept in the centre for now
-##   mechs       unit views with floating bars
-##   dice        tap to lock, hold for details, drag onto a target to spend
-##   buttons     Reroll / End round / Withdraw
+##   log         the last few events, oldest dimmest
+##   dice        tap to lock, hold to see every face, drag onto a target to spend; reroll
+##               before or after attacking, so a low roll is information for the rest
+##   controls    Reroll square on the left edge, the intent eye on the right edge
+##   mechs       gauges above the sprite, three-quarter sprite, name
+##   bottom      End turn bottom-left, Withdraw bottom-right; both ask first when it matters
 ##
-## Holding a foe shows its numbers and its arrow. Holding a mech shows its numbers and every
-## arrow aimed at it.
+## Kinetic faces roll when they land and the number flashes over the target. Hold a unit for
+## numbers and arrows. Double-tap a unit or a die for its codex entry.
 
 signal finished(outcome: int)
 signal back_requested
@@ -20,23 +22,31 @@ signal back_requested
 const W := 720.0
 const H := 1280.0
 const COL_X := [150.0, 360.0, 570.0]
-const BACK_Y := 80.0
-const FRONT_Y := 220.0
+const BACK_Y := 84.0
+const FRONT_Y := 224.0
 const SLOT_SIZE := Vector2(150, 130)
 const MASSIVE_SIZE := Vector2(150, 270)
-const MECH_Y := 610.0
-const MECH_SIZE := Vector2(150, 160)
-const DIE_Y := 810.0
+const LOG_Y := 392.0
+const LOG_H := 164.0
+const DIE_Y := 576.0
 const DIE_SIZE := 120.0
+const CTRL_Y := 712.0
+const CTRL := 72.0
+const MECH_Y := 804.0
+const MECH_SIZE := Vector2(150, 262)   # gauges 46 + 48x64 sprite at 3x + name
+const BOTTOM_Y := 1196.0
+const BOTTOM_BTN := Vector2(210, 60)
+const PITCH := 172.0
+const LOG_LINES := 7
 
 var sk: Skirmish
 var locked: Array[bool] = []
 var show_all_arrows: bool = false
 
-var _header: Label
-var _reroll_label: Label
-var _eye: Button
-var _log: Label
+var _header: HudButton
+var _sub_label: Label
+var _eye: HudButton
+var _log: RichTextLabel
 var _slot_views: Array = []          # [rank][col] -> UnitView
 var _massive_views: Array = []       # [col] -> UnitView
 var _view_foe: Dictionary = {}       # UnitView -> Foe
@@ -44,21 +54,28 @@ var _mech_views: Array[UnitView] = []
 var _dice: Array[DieFaceView] = []
 var _ghost: DieFaceView
 var _arrows: ArrowLayer
-var _details: PanelContainer
+var _details: HudPanel
 var _details_label: Label
+var _details_faces: FaceListView
+var _roll_label: Label
 var _codex_shade: Control
-var _codex: PanelContainer
+var _codex: HudPanel
 var _codex_title: Label
 var _codex_sub: Label
-var _codex_fantasy: Label
+var _codex_sprite: TextureRect
+var _codex_body: Label
 var _codex_stats: Label
-var _codex_question: Label
+var _codex_actions: Label
 var _codex_passive: Label
+var _codex_faces: FaceListView
 var _codex_flavour: Label
-var _hint: Label
-var _reroll_btn: Button
-var _end_btn: Button
-var _withdraw_btn: Button
+var _confirm_shade: Control
+var _confirm: HudPanel
+var _confirm_text: Label
+var _confirm_action: Callable = Callable()
+var _reroll_btn: HudButton
+var _end_btn: HudButton
+var _withdraw_btn: HudButton
 var _overlay: Control
 var _overlay_title: Label
 var _overlay_text: Label
@@ -81,6 +98,7 @@ func setup(skirmish: Skirmish) -> void:
 
 
 func _ready() -> void:
+	Settings.apply()
 	if sk == null:
 		setup(_default_skirmish())
 	elif _header == null:
@@ -88,9 +106,9 @@ func _ready() -> void:
 		_refresh()
 
 
-## Standalone default, used when the scene runs on its own (screenshots, quick checks).
-## RIFTGATE_TEAM=bulwark,sentinel,raptor,anvil overrides the team; RIFTGATE_ELITE=1 adds the
-## faction's massive elite.
+## Standalone default, used when the scene runs on its own (screenshots, quick checks): two
+## chained undead squads. RIFTGATE_TEAM=bulwark,sentinel,raptor,anvil overrides the team;
+## RIFTGATE_ELITE=1 adds the faction's boss as a third unit.
 static func _default_skirmish() -> Skirmish:
 	var db := ContentDB.load_default()
 	var s := Skirmish.new(7)
@@ -101,9 +119,13 @@ static func _default_skirmish() -> Skirmish:
 	for id in team:
 		if db.chassis.has(id):
 			s.add_mech(db.make_mech(id))
-	var sq := Unit.squad(1, "risen", Vector2i.ZERO, "undead", 2, 8)
-	sq.elite = OS.get_environment("RIFTGATE_ELITE") == "1"
-	s.add_foes(db.foes_for(sq), sq)
+	var ghouls := Unit.squad(1, "ghoul squad", Vector2i.ZERO, "undead", 2, 6, "ghoul")
+	s.add_foes(db.foes_for(ghouls), ghouls)
+	var necros := Unit.squad(2, "necromancer squad", Vector2i.ZERO, "undead", 2, 2, "necromancer")
+	s.add_foes(db.foes_for(necros), necros)
+	if OS.get_environment("RIFTGATE_ELITE") == "1":
+		var boss := Unit.boss(3, "bone colossus", Vector2i.ZERO, "undead")
+		s.add_foes(db.foes_for(boss), boss)
 	return s
 
 
@@ -119,29 +141,21 @@ func _build() -> void:
 	custom_minimum_size = Vector2(W, H)
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
-	var bg := ColorRect.new()
-	bg.color = Palette.BG
+	var bg := HudBackdrop.new()
+	bg.rules = [BACK_Y - 14.0, LOG_Y - 10.0, CTRL_Y + CTRL + 12.0, BOTTOM_Y - 16.0]
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(bg)
 
-	# Header
-	_header = _label("", 22, Palette.INK)
-	_place(_header, Vector2(24, 18), Vector2(400, 32))
-	_reroll_label = _label("", 16, Palette.MUTED)
-	_place(_reroll_label, Vector2(24, 50), Vector2(400, 24))
-	_eye = Button.new()
-	_eye.toggle_mode = true
-	_eye.text = "◎"
-	_eye.tooltip_text = "Show every intent arrow"
-	_eye.add_theme_font_size_override("font_size", 24)
-	_eye.toggled.connect(_toggle_all_arrows)
-	_place(_eye, Vector2(636, 16), Vector2(60, 48))
+	# Header: round and pool tag, phase readout beside it.
+	_header = _tag("", 13, true)
+	_place(_header, Vector2(12, 14), Vector2(200, 28))
+	_sub_label = Hud.label("", 12, Color(Palette.HUD, 0.7), Hud.mono())
+	_place(_sub_label, Vector2(226, 20), Vector2(400, 20))
 
 	# Formation: rank labels, six slot views, three massive views (hidden until needed).
-	var back_tag := _label("BACK", 12, Palette.MUTED)
+	var back_tag := Hud.label("BACK", 11, Color(Palette.HUD, 0.55), Hud.mono())
 	_place(back_tag, Vector2(16, BACK_Y + 50), Vector2(60, 20))
-	var front_tag := _label("FRONT", 12, Palette.MUTED)
+	var front_tag := Hud.label("FRONT", 11, Color(Palette.HUD, 0.55), Hud.mono())
 	_place(front_tag, Vector2(16, FRONT_Y + 50), Vector2(60, 20))
 	for col in range(Skirmish.COLUMNS):
 		for rank in range(2):
@@ -163,72 +177,111 @@ func _build() -> void:
 		mv.double_tapped.connect(_on_foe_double_tapped.bind(mv))
 		_massive_views[col] = mv
 
-	# Log
-	_log = _label("", 15, Palette.MUTED)
-	_log.autowrap_mode = TextServer.AUTOWRAP_WORD
-	_log.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
-	_place(_log, Vector2(40, 396), Vector2(640, 196))
+	# Log between the formation and the dice, oldest line dimmest.
+	var log_tag := _tag("LOG", 10, true)
+	_place(log_tag, Vector2(12, LOG_Y), Vector2(52, 18))
+	_log = RichTextLabel.new()
+	_log.bbcode_enabled = true
+	_log.scroll_active = false
+	_log.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_log.add_theme_font_override("normal_font", Hud.mono())
+	_log.add_theme_font_size_override("normal_font_size", 14)
+	_log.add_theme_color_override("default_color", Palette.HUD)
+	_place(_log, Vector2(20, LOG_Y + 22), Vector2(W - 40, LOG_H - 22))
 
-	# Mechs and dice
+	# Dice in the middle, each centred on its mech.
 	var n := sk.mechs.size()
 	for i in range(n):
-		var cx := W * 0.5 + (i - (n - 1) * 0.5) * 172.0
-		var ms: Skirmish.MechState = sk.mechs[i]
-		var v := UnitView.new()
-		v.display_name = ms.unit.display_name
-		_place(v, Vector2(cx - MECH_SIZE.x * 0.5, MECH_Y), MECH_SIZE)
-		v.held.connect(_on_mech_held.bind(i))
-		v.hold_released.connect(_on_hold_released)
-		v.double_tapped.connect(_on_mech_double_tapped.bind(i))
-		_mech_views.append(v)
+		var cx := _column_x(i, n)
 		var d := DieFaceView.new()
-		_place(d, Vector2(cx - DIE_SIZE * 0.5, DIE_Y), Vector2(DIE_SIZE, DIE_SIZE))
+		_place(d, Vector2(cx - DIE_SIZE * 0.5, DIE_Y), DieFaceView.view_size())
 		d.tapped.connect(_on_die_tapped.bind(i))
+		d.double_tapped.connect(_on_die_double_tapped.bind(i))
 		d.held.connect(_on_die_held.bind(i))
 		d.hold_released.connect(_on_hold_released)
 		d.drag_started.connect(_on_drag_started.bind(i))
 		d.drag_moved.connect(_on_drag_moved)
 		d.drag_ended.connect(_on_drag_ended)
 		_dice.append(d)
-	_hint = _label("tap a die to lock it · hold for details · drag onto a target", 13, Palette.MUTED)
-	_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_place(_hint, Vector2(0, DIE_Y + DIE_SIZE + 14), Vector2(W, 20))
 
-	# Buttons
-	_reroll_btn = _button("Reroll", _on_reroll)
-	_end_btn = _button("End round", _on_end_round)
-	_withdraw_btn = _button("Withdraw", _on_withdraw)
-	_withdraw_btn.tooltip_text = "Available between rounds, after the enemy has acted."
-	_place(_reroll_btn, Vector2(24, 1180), Vector2(214, 60))
-	_place(_end_btn, Vector2(253, 1180), Vector2(214, 60))
-	_place(_withdraw_btn, Vector2(482, 1180), Vector2(214, 60))
+	# Controls row: Reroll hugging the left edge, the intent eye hugging the right edge.
+	_reroll_btn = HudButton.new("", _on_reroll)
+	_reroll_btn.glyph = "reroll"
+	_reroll_btn.slant_px = 0.0
+	_place(_reroll_btn, Vector2(8, CTRL_Y), Vector2(CTRL, CTRL))
+	_eye = HudButton.new("")
+	_eye.glyph = "eye"
+	_eye.slant_px = 0.0
+	_eye.toggle_mode = true
+	_eye.tooltip_text = "Show every intent arrow"
+	_eye.toggled.connect(_toggle_all_arrows)
+	_place(_eye, Vector2(W - 8 - CTRL, CTRL_Y), Vector2(CTRL, CTRL))
 
-	# Overlays: arrows, drag ghost, details, outcome.
+	# Mechs: gauges above the sprite, three-quarter sprite, name.
+	for i in range(n):
+		var cx := _column_x(i, n)
+		var ms: Skirmish.MechState = sk.mechs[i]
+		var v := UnitView.new()
+		v.display_name = ms.unit.display_name
+		v.bars_above = true
+		v.sprite = Sprites.combat_mech(ms.unit.chassis_id, "front_right")
+		_place(v, Vector2(cx - MECH_SIZE.x * 0.5, MECH_Y), MECH_SIZE)
+		v.held.connect(_on_mech_held.bind(i))
+		v.hold_released.connect(_on_hold_released)
+		v.double_tapped.connect(_on_mech_double_tapped.bind(i))
+		_mech_views.append(v)
+
+	# Bottom row: End turn bottom-left, Withdraw bottom-right.
+	_end_btn = HudButton.new("END TURN", _on_end_turn)
+	_end_btn.filled = true
+	_place(_end_btn, Vector2(16, BOTTOM_Y), BOTTOM_BTN)
+	_withdraw_btn = HudButton.new("WITHDRAW", _on_withdraw)
+	_withdraw_btn.ghost = true
+	_withdraw_btn.tooltip_text = "Available at the start of a round, before spending a face."
+	_place(_withdraw_btn, Vector2(W - 16 - BOTTOM_BTN.x, BOTTOM_Y), BOTTOM_BTN)
+
+	# Overlays: arrows, drag ghost, roll flash, details, codex, confirm, outcome.
 	_arrows = ArrowLayer.new()
 	_arrows.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(_arrows)
 	_ghost = DieFaceView.new()
+	_ghost.animate = false
 	_ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_ghost.modulate = Color(1, 1, 1, 0.85)
 	_ghost.visible = false
-	_place(_ghost, Vector2.ZERO, Vector2(DIE_SIZE, DIE_SIZE))
-	_details = PanelContainer.new()
-	var dsb := StyleBoxFlat.new()
-	dsb.bg_color = Palette.PANEL_RAISED
-	dsb.border_color = Palette.RULE
-	dsb.set_border_width_all(1)
-	dsb.set_corner_radius_all(8)
-	dsb.set_content_margin_all(12)
-	_details.add_theme_stylebox_override("panel", dsb)
+	_place(_ghost, Vector2.ZERO, DieFaceView.view_size())
+	_roll_label = Hud.label("", 44, Palette.INK, Hud.mono())
+	_roll_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_roll_label.visible = false
+	_place(_roll_label, Vector2.ZERO, Vector2(200, 60))
+
+	_details = HudPanel.new(14.0)
 	_details.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_details.visible = false
+	_details.custom_minimum_size = Vector2(340, 0)
 	add_child(_details)
-	_details_label = _label("", 16, Palette.INK)
-	_details_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_details.add_child(_details_label)
+	var dv := VBoxContainer.new()
+	dv.add_theme_constant_override("separation", 8)
+	dv.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_details.add_child(dv)
+	_details_label = Hud.label("", 16, Palette.INK)
+	dv.add_child(_details_label)
+	_details_faces = FaceListView.new()
+	_details_faces.visible = false
+	_details_faces.custom_minimum_size = Vector2(400, 0)
+	dv.add_child(_details_faces)
 
-	# Codex: a double-tap on a unit opens it; a tap anywhere outside closes it.
-	_codex_shade = Control.new()
+	_build_codex()
+	_build_confirm()
+	_build_outcome()
+
+
+func _build_codex() -> void:
+	# Codex: a double-tap opens it; a tap anywhere outside closes it. Head-on sprite top-right,
+	# across from the name.
+	var shade := ColorRect.new()
+	shade.color = Color(0, 0, 0, 0.6)
+	_codex_shade = shade
 	_codex_shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_codex_shade.mouse_filter = Control.MOUSE_FILTER_STOP
 	_codex_shade.visible = false
@@ -236,32 +289,85 @@ func _build() -> void:
 		if e is InputEventMouseButton and e.pressed:
 			_close_codex())
 	add_child(_codex_shade)
-	_codex = PanelContainer.new()
-	var csb := StyleBoxFlat.new()
-	csb.bg_color = Palette.PANEL_RAISED
-	csb.border_color = Palette.ACCENT
-	csb.set_border_width_all(2)
-	csb.set_corner_radius_all(10)
-	csb.set_content_margin_all(20)
-	_codex.add_theme_stylebox_override("panel", csb)
+	_codex = HudPanel.new(24.0)
+	_codex.custom_minimum_size = Vector2(640, 0)
 	_codex.visible = false
-	_place(_codex, Vector2(40, 380), Vector2(640, 0))
+	_place(_codex, Vector2(40, 150), Vector2(640, 0))
 	var cv := VBoxContainer.new()
-	cv.add_theme_constant_override("separation", 8)
+	cv.add_theme_constant_override("separation", 10)
 	_codex.add_child(cv)
-	_codex_title = _label("", 30, Palette.INK)
-	_codex_sub = _label("", 15, Palette.MUTED)
-	_codex_fantasy = _label("", 18, Palette.INK)
-	_codex_stats = _label("", 15, Palette.MUTED)
-	_codex_question = _label("", 16, Palette.INK)
-	_codex_passive = _label("", 16, Palette.ACCENT)
-	_codex_flavour = _label("", 16, Palette.MUTED)
-	for l in [_codex_title, _codex_sub, _codex_fantasy, _codex_stats, _codex_question, _codex_passive, _codex_flavour]:
+	var top := HBoxContainer.new()
+	top.add_theme_constant_override("separation", 16)
+	cv.add_child(top)
+	var head := VBoxContainer.new()
+	head.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	head.add_theme_constant_override("separation", 4)
+	top.add_child(head)
+	_codex_title = Hud.label("", 32, Palette.INK, Hud.display_bold())
+	_codex_sub = Hud.label("", 13, Color(Palette.HUD, 0.8), Hud.mono())
+	head.add_child(_codex_title)
+	head.add_child(_codex_sub)
+	_codex_sprite = TextureRect.new()
+	_codex_sprite.custom_minimum_size = Vector2(96, 128)
+	_codex_sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_codex_sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_codex_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_codex_sprite.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	top.add_child(_codex_sprite)
+	_codex_body = Hud.label("", 19, Palette.INK)
+	_codex_stats = Hud.label("", 13, Color(Palette.HUD, 0.8), Hud.mono())
+	_codex_actions = Hud.label("", 14, Palette.INK, Hud.mono())
+	_codex_passive = Hud.label("", 17, Palette.ACCENT)
+	_codex_faces = FaceListView.new()
+	_codex_flavour = Hud.label("", 18, Palette.MUTED, Hud.quote())
+	for l in [_codex_body, _codex_stats, _codex_actions, _codex_passive, _codex_flavour]:
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD
+		l.custom_minimum_size = Vector2(590, 0)
 		cv.add_child(l)
-	var close := _button("Close", _close_codex)
+	cv.add_child(_codex_faces)
+	cv.move_child(_codex_faces, cv.get_child_count() - 2)
+	var close := HudButton.new("CLOSE", _close_codex)
+	close.custom_minimum_size = Vector2(0, 52)
 	cv.add_child(close)
 
+
+func _build_confirm() -> void:
+	var shade := ColorRect.new()
+	shade.color = Color(0, 0, 0, 0.6)
+	_confirm_shade = shade
+	_confirm_shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_confirm_shade.mouse_filter = Control.MOUSE_FILTER_STOP
+	_confirm_shade.visible = false
+	_confirm_shade.gui_input.connect(func(e: InputEvent) -> void:
+		if e is InputEventMouseButton and e.pressed:
+			_hide_confirm())
+	add_child(_confirm_shade)
+	_confirm = HudPanel.new(22.0)
+	_confirm.custom_minimum_size = Vector2(520, 0)
+	_confirm.visible = false
+	_place(_confirm, Vector2(100, 560), Vector2(520, 0))
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", 18)
+	_confirm.add_child(v)
+	_confirm_text = Hud.label("", 20, Palette.INK)
+	_confirm_text.autowrap_mode = TextServer.AUTOWRAP_WORD
+	_confirm_text.custom_minimum_size = Vector2(470, 0)
+	v.add_child(_confirm_text)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 16)
+	v.add_child(row)
+	var no := HudButton.new("NO", _hide_confirm)
+	no.custom_minimum_size = Vector2(0, 54)
+	no.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(no)
+	var yes := HudButton.new("YES", _confirm_yes)
+	yes.filled = true
+	yes.custom_minimum_size = Vector2(0, 54)
+	yes.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(yes)
+
+
+func _build_outcome() -> void:
 	_overlay = ColorRect.new()
 	_overlay.color = Color(0, 0, 0, 0.72)
 	_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -270,25 +376,26 @@ func _build() -> void:
 	var oc := CenterContainer.new()
 	oc.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_overlay.add_child(oc)
-	var op := PanelContainer.new()
-	var osb := StyleBoxFlat.new()
-	osb.bg_color = Palette.PANEL_RAISED
-	osb.set_corner_radius_all(12)
-	osb.set_content_margin_all(28)
-	op.add_theme_stylebox_override("panel", osb)
+	var op := HudPanel.new(28.0)
 	oc.add_child(op)
 	var ov := VBoxContainer.new()
 	ov.add_theme_constant_override("separation", 14)
 	op.add_child(ov)
-	_overlay_title = _label("", 40, Palette.INK)
+	_overlay_title = Hud.label("", 44, Palette.HUD, Hud.display_bold())
 	_overlay_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	ov.add_child(_overlay_title)
-	_overlay_text = _label("", 18, Palette.MUTED)
+	_overlay_text = Hud.label("", 18, Palette.MUTED)
 	_overlay_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_overlay_text.autowrap_mode = TextServer.AUTOWRAP_WORD
 	_overlay_text.custom_minimum_size = Vector2(420, 0)
 	ov.add_child(_overlay_text)
-	ov.add_child(_button("Back", func() -> void: back_requested.emit()))
+	var back := HudButton.new("BACK", func() -> void: back_requested.emit())
+	back.custom_minimum_size = Vector2(0, 54)
+	ov.add_child(back)
+
+
+func _column_x(i: int, n: int) -> float:
+	return W * 0.5 + (i - (n - 1) * 0.5) * PITCH
 
 
 func _place(c: Control, pos: Vector2, sz: Vector2) -> void:
@@ -297,29 +404,24 @@ func _place(c: Control, pos: Vector2, sz: Vector2) -> void:
 	add_child(c)
 
 
-func _label(text: String, size_px: int, color: Color) -> Label:
-	var l := Label.new()
-	l.text = text
-	l.add_theme_font_size_override("font_size", size_px)
-	l.add_theme_color_override("font_color", color)
-	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	return l
-
-
-func _button(text: String, on_pressed: Callable) -> Button:
-	var b := Button.new()
-	b.text = text
-	b.custom_minimum_size = Vector2(0, 56)
-	b.add_theme_font_size_override("font_size", 20)
-	b.pressed.connect(on_pressed)
-	return b
+## A filled, non-interactive readout tag such as "RND 01 // POOL 02".
+func _tag(text: String, size_px: int, mono: bool) -> HudButton:
+	var t := HudButton.new(text)
+	t.filled = true
+	t.mono = mono
+	t.font_size = size_px
+	t.slant_px = 8.0
+	t.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return t
 
 
 # ---------------------------------------------------------------- refresh
 
 func _refresh() -> void:
-	_header.text = "Round %d      Pool %d" % [sk.round, sk.pool.size()]
-	_reroll_label.text = "Rerolls left: %d" % sk.rerolls_left
+	var assigning := sk.state == Skirmish.State.ASSIGN
+	_header.text = "RND %02d // POOL %02d" % [sk.round, sk.pool.size()]
+	_header.queue_redraw()
+	_sub_label.text = ("ASSIGN // REROLLS ×%d" % sk.rerolls_left) if assigning else "ENEMY PHASE"
 	_view_foe.clear()
 
 	var targets: Array[Foe] = []
@@ -348,11 +450,12 @@ func _refresh() -> void:
 			if foe == null:
 				v.display_name = ""
 				v.bars = []
-				v.intent = "exposed" if rank == 1 else ""
-				v.intent_glyph = ""
+				v.intent = "EXPOSED" if rank == 1 else ""
+				v.intent_dim = true
 				v.highlight = false
 				v.dead = false
-				v.modulate = Color(1, 1, 1, 0.25)
+				v.sprite = null
+				v.modulate = Color(1, 1, 1, 0.3)
 				v.queue_redraw()
 				continue
 			v.modulate = Color.WHITE
@@ -363,52 +466,69 @@ func _refresh() -> void:
 		var ms: Skirmish.MechState = sk.mechs[i]
 		var v := _mech_views[i]
 		v.bars = [
-			[ms.unit.hull, ms.unit.hull_max, Palette.HULL],
-			[ms.unit.shield, ms.unit.shield_max, Palette.SHIELD],
+			[ms.unit.hull, ms.unit.hull_max, Palette.HUD],
+			[ms.unit.shield, ms.unit.shield_max, Color(Palette.HUD, 0.55)],
 			[ms.heat, ms.heat_max, Palette.HEAT],
 		]
 		v.dead = not ms.alive()
 		v.highlight = support and ms.alive()
 		v.intent = ""
+		v.statuses = []
+		if ms.heat >= ms.heat_max:
+			v.statuses.append(["heat", "max"])
+		if ms.unit.damaged_face_count() > 0:
+			v.statuses.append(["blank", str(ms.unit.damaged_face_count())])
+		if locked[i]:
+			v.statuses.append(["lock", ""])
 		v.queue_redraw()
 		var d := _dice[i]
 		d.set_face(ms.face())
 		d.spent = ms.assigned
 		d.dead = not ms.alive()
 		d.locked = locked[i]
-		d.usable = ms.alive() and not ms.assigned and sk.state == Skirmish.State.ASSIGN
+		d.can_tap = assigning and ms.alive() and not ms.assigned
+		d.can_drag = assigning and ms.alive() and not ms.assigned
 		d.queue_redraw()
 
-	var lines: Array[String] = []
-	var start := maxi(0, sk.log.size() - 7)
-	for j in range(start, sk.log.size()):
-		lines.append(sk.log[j])
-	_log.text = "\n".join(lines)
-
-	var assigning := sk.state == Skirmish.State.ASSIGN
-	_reroll_btn.text = "Reroll (%d)" % sk.rerolls_left
-	_reroll_btn.disabled = not assigning or sk.rerolls_left <= 0
-	_end_btn.disabled = not assigning and sk.state != Skirmish.State.ROUND_START
-	_withdraw_btn.disabled = not sk.can_withdraw()
+	_refresh_log()
+	_reroll_btn.badge = "×%d" % sk.rerolls_left
+	_reroll_btn.set_enabled(assigning and sk.rerolls_left > 0)
+	_end_btn.set_enabled(assigning)
+	_withdraw_btn.set_enabled(sk.can_withdraw())
 	_refresh_arrows()
+
+
+func _refresh_log() -> void:
+	var start := maxi(0, sk.log.size() - LOG_LINES)
+	var count := sk.log.size() - start
+	var out := ""
+	if count == 0:
+		out = "[color=#%s]> round %d // %d in the pool // awaiting orders[/color]" % [Color(Palette.HUD, 0.45).to_html(true), sk.round, sk.pool.size()]
+	for j in range(start, sk.log.size()):
+		var age := j - start
+		var a := 1.0 if count <= 1 else lerpf(0.4, 1.0, float(age) / float(count - 1))
+		out += "[color=#%s]> %s[/color]\n" % [Color(Palette.HUD, a).to_html(true), sk.log[j]]
+	_log.text = out
 
 
 func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe]) -> void:
 	v.display_name = foe.display_name
-	v.bars = [[foe.hp, foe.hp_max, Palette.ENEMY]]
+	v.sprite = Sprites.combat_foe(foe.content_id)
+	v.bars = [[foe.hp, foe.hp_max, Palette.HUD]]
 	v.dead = not foe.alive()
 	v.highlight = targets.has(foe)
+	v.intent_dim = false
 	if foe.suppressed:
-		v.intent = "suppressed"
-		v.intent_glyph = "suppress"
+		v.intent = "SUPPRESSED"
 	elif foe.target != null:
-		v.intent = "%d" % foe.attack
-		v.intent_glyph = "line"
+		v.intent = "ATK %d" % foe.attack
 	else:
 		v.intent = ""
-		v.intent_glyph = ""
+	v.statuses = []
 	if foe.burn > 0:
-		v.intent += "  burn %d" % foe.burn
+		v.statuses.append(["burn", str(foe.burn)])
+	if foe.suppressed:
+		v.statuses.append(["suppress", ""])
 	v.queue_redraw()
 
 
@@ -440,14 +560,45 @@ func _refresh_arrows() -> void:
 	_arrows.set_arrows(list)
 
 
-func _show_details(text: String, near: Control) -> void:
+## Hold readout beside a control: a text block and, for a die, every face in a column.
+func _show_details(text: String, near: Control, faces: Array = [], current: int = -1) -> void:
 	_details_label.text = text
+	_details_faces.visible = not faces.is_empty()
+	if not faces.is_empty():
+		_details_faces.set_faces(faces, current)
+	var width := 440.0 if not faces.is_empty() else 340.0
+	_details.custom_minimum_size = Vector2(width, 0)
 	_details.visible = true
 	_details.reset_size()
 	var pos := near.position + Vector2(near.size.x + 8.0, 0)
-	if pos.x + 300.0 > W:
-		pos.x = near.position.x - 308.0
+	if pos.x + width > W - 8.0:
+		pos.x = near.position.x - width - 8.0
+	pos.x = clampf(pos.x, 8.0, W - width - 8.0)
+	var height := maxf(_details.size.y, 80.0 + faces.size() * FaceListView.ROW)
+	if pos.y + height > H - 8.0:
+		pos.y = H - 8.0 - height
 	_details.position = pos
+
+
+## The damage number pops over the struck foe, gold for a crit, then fades.
+func _flash_roll() -> void:
+	if sk.last_roll.is_empty():
+		return
+	var foe: Foe = sk.last_roll["target"]
+	var fv := _foe_view_for(foe)
+	if fv == null:
+		return
+	var crit: bool = sk.last_roll["crit"]
+	_roll_label.text = ("CRIT %d" if crit else "%d") % int(sk.last_roll["final"])
+	_roll_label.add_theme_color_override("font_color", Palette.SELECT if crit else Palette.INK)
+	_roll_label.position = fv.position + Vector2(fv.size.x * 0.5 - 100.0, 4.0)
+	_roll_label.modulate = Color.WHITE
+	_roll_label.visible = true
+	if is_inside_tree():
+		var tw := create_tween()
+		tw.tween_interval(0.5)
+		tw.tween_property(_roll_label, "modulate:a", 0.0, 0.7)
+		tw.tween_callback(func() -> void: _roll_label.visible = false)
 
 
 # ---------------------------------------------------------------- gestures
@@ -462,14 +613,27 @@ func _on_die_tapped(i: int) -> void:
 	_refresh()
 
 
+func _on_die_double_tapped(i: int) -> void:
+	# The first tap of the pair already toggled the lock; put it back, then open the codex.
+	var ms: Skirmish.MechState = sk.mechs[i]
+	if sk.state == Skirmish.State.ASSIGN and ms.alive() and not ms.assigned:
+		locked[i] = not locked[i]
+	var db := ContentDB.load_default()
+	var entry := db.codex_for_unit(ms.unit)
+	entry["title"] = "%s die" % ms.unit.display_name
+	entry["subtitle"] = "D%d // ONE FACE PER HARDPOINT // EACH FACE 1 IN %d PER ROLL" % [ms.die.size(), ms.die.size()]
+	entry["body"] = ""
+	entry["stats"] = ""
+	entry["faces"] = ms.die.faces.duplicate()
+	entry["current"] = ms.face_index
+	entry["passive"] = ""
+	entry["flavour"] = ""
+	_open_codex(entry)
+
+
 func _on_die_held(i: int) -> void:
 	var ms: Skirmish.MechState = sk.mechs[i]
-	var f := ms.face()
-	var text := "%s\n%s" % [ms.unit.display_name, f.describe() if f != null else ""]
-	text += "\nhull %d/%d · shield %d/%d · heat %d/%d" % [ms.unit.hull, ms.unit.hull_max, ms.unit.shield, ms.unit.shield_max, ms.heat, ms.heat_max]
-	if not ms.unit.passive.is_empty():
-		text += "\n%s: %s" % [ms.unit.passive.get("name", ""), "; ".join(ms.unit.passive.get("rules", []))]
-	_show_details(text, _dice[i])
+	_show_details("%s // D%d" % [ms.unit.display_name.to_upper(), ms.die.size()], _dice[i], ms.die.faces.duplicate(), ms.face_index)
 
 
 func _on_foe_held(v: UnitView) -> void:
@@ -480,8 +644,6 @@ func _on_foe_held(v: UnitView) -> void:
 	var text := "%s\nhp %d/%d · attack %d" % [foe.display_name, foe.hp, foe.hp_max, foe.attack]
 	if foe.target != null:
 		text += "\n→ %s" % foe.target.unit.display_name
-	if not foe.injures.is_empty():
-		text += "\ninjures: %s" % foe.injures
 	if foe.is_massive():
 		text += "\nmassive: fills the column"
 	_show_details(text, v)
@@ -510,9 +672,14 @@ func _on_foe_double_tapped(v: UnitView) -> void:
 
 
 func _on_mech_double_tapped(i: int) -> void:
-	_open_codex(ContentDB.load_default().codex_for_unit(sk.mechs[i].unit))
+	var ms: Skirmish.MechState = sk.mechs[i]
+	var entry := ContentDB.load_default().codex_for_unit(ms.unit)
+	entry["current"] = ms.face_index
+	_open_codex(entry)
 
 
+## Fill and show the codex. Entry keys: title, subtitle, body, stats, actions, passive, faces
+## (Array of Face), current (index), flavour, sprite_id (a chassis or foe id).
 func _open_codex(entry: Dictionary) -> void:
 	_details.visible = false
 	_hold_foe = null
@@ -520,16 +687,28 @@ func _open_codex(entry: Dictionary) -> void:
 	_refresh_arrows()
 	_codex_title.text = str(entry.get("title", ""))
 	_codex_sub.text = str(entry.get("subtitle", ""))
-	_codex_fantasy.text = str(entry.get("fantasy", ""))
-	_codex_stats.text = str(entry.get("stats", ""))
-	_codex_question.text = str(entry.get("question", ""))
-	_codex_passive.text = str(entry.get("passive", ""))
-	_codex_passive.visible = not _codex_passive.text.is_empty()
-	_codex_flavour.text = str(entry.get("flavour", ""))
-	_codex_flavour.visible = not _codex_flavour.text.is_empty()
+	var sid := str(entry.get("sprite_id", ""))
+	var tex: Texture2D = null
+	if not sid.is_empty():
+		tex = Sprites.combat_mech(sid, "front")
+		if tex == null:
+			tex = Sprites.combat_foe(sid)
+	_codex_sprite.texture = tex
+	_codex_sprite.visible = tex != null
+	for pair in [[_codex_body, "body"], [_codex_stats, "stats"], [_codex_actions, "actions"], [_codex_passive, "passive"]]:
+		var l: Label = pair[0]
+		l.text = str(entry.get(pair[1], ""))
+		l.visible = not l.text.is_empty()
+	var faces: Array = entry.get("faces", [])
+	_codex_faces.visible = not faces.is_empty()
+	if not faces.is_empty():
+		_codex_faces.set_faces(faces, int(entry.get("current", -1)))
+	var quote := str(entry.get("flavour", ""))
+	_codex_flavour.text = "“%s”" % quote if not quote.is_empty() else ""
+	_codex_flavour.visible = not quote.is_empty()
 	_codex_shade.visible = true
 	_codex.visible = true
-	_codex.reset_size()
+	_codex.size = Vector2(640, 0)
 
 
 func _close_codex() -> void:
@@ -560,7 +739,7 @@ func _on_drag_moved(global_pos: Vector2) -> void:
 	if not _ghost.visible:
 		return
 	var local: Vector2 = get_global_transform().affine_inverse() * global_pos
-	_ghost.position = local - _ghost.size * 0.5
+	_ghost.position = local - Vector2(DIE_SIZE * 0.5, DIE_SIZE * 0.5)
 
 
 func _on_drag_ended(global_pos: Vector2) -> void:
@@ -589,13 +768,36 @@ func _drop_target_at(global_pos: Vector2):
 
 ## Spend die `i` on `target` (a Foe or a MechState). Returns whether the simulation accepted it.
 func _use_die(i: int, target) -> bool:
-	if sk.state != Skirmish.State.ASSIGN:
-		return false
 	var ok := sk.assign(i, target)
 	if ok:
 		locked[i] = false
 	_refresh()
+	if ok and target is Foe:
+		_flash_roll()
 	return ok
+
+
+# ---------------------------------------------------------------- buttons and confirms
+
+func _ask(text: String, on_yes: Callable) -> void:
+	_confirm_text.text = text
+	_confirm_action = on_yes
+	_confirm_shade.visible = true
+	_confirm.visible = true
+	_confirm.reset_size()
+
+
+func _hide_confirm() -> void:
+	_confirm.visible = false
+	_confirm_shade.visible = false
+	_confirm_action = Callable()
+
+
+func _confirm_yes() -> void:
+	var action := _confirm_action
+	_hide_confirm()
+	if action.is_valid():
+		action.call()
 
 
 func _on_reroll() -> void:
@@ -608,10 +810,29 @@ func _on_reroll() -> void:
 	_refresh()
 
 
-func _on_end_round() -> void:
-	if sk.state == Skirmish.State.ROUND_START:
-		_start_next_round()
+## Live dice that still hold a usable face.
+func _unspent_count() -> int:
+	var n := 0
+	for ms in sk.mechs:
+		if ms.alive() and not ms.assigned and ms.face() != null and ms.face().kind != Face.Kind.BLANK:
+			n += 1
+	return n
+
+
+## End turn asks first only when usable dice would go to waste.
+func _on_end_turn() -> void:
+	if sk.state != Skirmish.State.ASSIGN:
 		return
+	var n := _unspent_count()
+	if n > 0:
+		_ask("%d %s still unspent. End the turn anyway?" % [n, "die is" if n == 1 else "dice are"], _end_turn_now)
+	else:
+		_end_turn_now()
+
+
+## Ends the player's turn: unspent blank faces are discarded, the enemy acts, and the next
+## round starts at once so the player is straight back to their own dice.
+func _end_turn_now() -> void:
 	if sk.state != Skirmish.State.ASSIGN:
 		return
 	for i in range(sk.mechs.size()):
@@ -621,22 +842,21 @@ func _on_end_round() -> void:
 	var outcome := sk.end_round()
 	if outcome != Skirmish.Outcome.NONE:
 		_show_outcome(outcome)
-	else:
-		_end_btn.text = "Next round"
-		_refresh()
-
-
-func _start_next_round() -> void:
-	if sk.state != Skirmish.State.ROUND_START:
 		return
 	sk.start_round()
 	for i in range(locked.size()):
 		locked[i] = false
-	_end_btn.text = "End round"
 	_refresh()
 
 
+## Withdraw always asks first.
 func _on_withdraw() -> void:
+	if not sk.can_withdraw():
+		return
+	_ask("Withdraw from the skirmish? The squad keeps marching on the gate.", _withdraw_now)
+
+
+func _withdraw_now() -> void:
 	if sk.withdraw():
 		_show_outcome(sk.outcome)
 

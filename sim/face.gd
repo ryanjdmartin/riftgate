@@ -1,13 +1,15 @@
 class_name Face
 extends RefCounted
 
-## One face of a die. Reads as: primary icon (kind and reach), a number (power),
-## a list of keywords, and a heat cost. Authored faces carry few keywords; upgrades
-## during a battle or in the meta may add more.
+## One face of a die. Reads as: primary icon (kind and reach), a number or a range (power to
+## power_max), a list of keywords, a heat cost, and a crit chance.
+##
+## Numbers are in tens. A static face has power_max equal to power (energy weapons). A kinetic
+## face rolls between power and power_max when spent, and may crit for double.
 
 enum Kind { ATTACK, SHIELD, VENT, BLANK }
 enum Reach { NONE, LINE, INDIRECT }
-enum Keyword { NONE, CLEAVE, PIERCE, BURN, SUPPRESS, OVERCHARGE, EXECUTE, CHAIN, LOCK }
+enum Keyword { NONE, CLEAVE, PIERCE, BURN, SUPPRESS, OVERCHARGE, EXECUTE, CHAIN, LOCK, STEADY }
 
 const KIND_NAMES := {
 	Kind.ATTACK: "attack", Kind.SHIELD: "shield", Kind.VENT: "vent", Kind.BLANK: "blank",
@@ -18,25 +20,30 @@ const REACH_NAMES := {
 const KEYWORD_NAMES := {
 	Keyword.NONE: "", Keyword.CLEAVE: "cleave", Keyword.PIERCE: "pierce", Keyword.BURN: "burn",
 	Keyword.SUPPRESS: "suppress", Keyword.OVERCHARGE: "overcharge", Keyword.EXECUTE: "execute",
-	Keyword.CHAIN: "chain", Keyword.LOCK: "lock",
+	Keyword.CHAIN: "chain", Keyword.LOCK: "lock", Keyword.STEADY: "steady",
 }
 
 # Enum-typed members are declared as int: GDScript 4 reports a spurious "Face.Kind vs Kind"
 # type mismatch when a class_name script is loaded from a headless -s runner.
 var kind: int = Kind.ATTACK
 var reach: int = Reach.LINE
-var power: int = 2
+var power: int = 20
+var power_max: int = 20       # equal to power for a static face
+var crit: int = 0             # percent chance to double the roll
 var keywords: Array[int] = []
 var heat: int = 0
 var label: String = ""
+var cracked: bool = false     # injured: modifiers gone, basic action intact
 
 
-## `kws` may be a single Keyword or an Array of them.
-static func attack(pwr: int, rch: int = Reach.LINE, kws = [], ht: int = 0) -> Face:
+## `kws` may be a single Keyword or an Array of them. `pwr_max` of 0 means static.
+static func attack(pwr: int, rch: int = Reach.LINE, kws = [], ht: int = 0, pwr_max: int = 0, crit_pct: int = 0) -> Face:
 	var f := Face.new()
 	f.kind = Kind.ATTACK
 	f.reach = rch
 	f.power = pwr
+	f.power_max = maxi(pwr, pwr_max)
+	f.crit = crit_pct
 	f.heat = ht
 	if kws is Array:
 		for k in kws:
@@ -51,6 +58,7 @@ static func shield(pwr: int) -> Face:
 	f.kind = Kind.SHIELD
 	f.reach = Reach.NONE
 	f.power = pwr
+	f.power_max = pwr
 	return f
 
 
@@ -59,6 +67,7 @@ static func vent(pwr: int) -> Face:
 	f.kind = Kind.VENT
 	f.reach = Reach.NONE
 	f.power = pwr
+	f.power_max = pwr
 	return f
 
 
@@ -67,6 +76,7 @@ static func blank() -> Face:
 	f.kind = Kind.BLANK
 	f.reach = Reach.NONE
 	f.power = 0
+	f.power_max = 0
 	return f
 
 
@@ -91,9 +101,9 @@ static func reach_from_name(name: String) -> int:
 	return -1
 
 
-## Build from content JSON: {"kind": "attack", "reach": "line", "power": 3,
-## "keywords": ["cleave"], "heat": 1}. Unknown names are ignored here; the content
-## validator reports them.
+## Build from content JSON: {"kind": "attack", "reach": "line", "power": 20, "power_max": 50,
+## "crit": 15, "keywords": ["cleave"], "heat": 10}. Unknown names are ignored here; the
+## content validator reports them.
 static func from_dict(d: Dictionary) -> Face:
 	var f := Face.new()
 	var k := kind_from_name(str(d.get("kind", "attack")))
@@ -101,6 +111,8 @@ static func from_dict(d: Dictionary) -> Face:
 	var r := reach_from_name(str(d.get("reach", "line" if f.kind == Kind.ATTACK else "none")))
 	f.reach = r if r >= 0 else Reach.NONE
 	f.power = int(d.get("power", 0))
+	f.power_max = maxi(f.power, int(d.get("power_max", f.power)))
+	f.crit = int(d.get("crit", 0))
 	f.heat = int(d.get("heat", 0))
 	for name in d.get("keywords", []):
 		var kw := keyword_from_name(str(name))
@@ -114,10 +126,15 @@ func to_dict() -> Dictionary:
 	var names: Array[String] = []
 	for k in keywords:
 		names.append(KEYWORD_NAMES[k])
-	return {
+	var d := {
 		"kind": KIND_NAMES[kind], "reach": REACH_NAMES[reach], "power": power,
 		"keywords": names, "heat": heat,
 	}
+	if power_max != power:
+		d["power_max"] = power_max
+	if crit > 0:
+		d["crit"] = crit
+	return d
 
 
 func add_keyword(kw: int) -> void:
@@ -133,30 +150,63 @@ func is_attack() -> bool:
 	return kind == Kind.ATTACK
 
 
+## Kinetic: the face rolls when spent.
+func is_ranged() -> bool:
+	return power_max > power
+
+
+func average() -> int:
+	return ceili((power + power_max) / 2.0)
+
+
 func duplicate_face() -> Face:
 	var f := Face.new()
 	f.kind = kind
 	f.reach = reach
 	f.power = power
+	f.power_max = power_max
+	f.crit = crit
 	f.heat = heat
 	f.label = label
+	f.cracked = cracked
 	for k in keywords:
 		f.keywords.append(k)
 	return f
 
 
+## An injury: the face keeps its basic action (kind, reach, power) and loses everything that
+## modified it. A cracked face hit again is destroyed, which is Face.blank().
+func crack() -> void:
+	cracked = true
+	keywords.clear()
+	crit = 0
+	label = ""
+
+
+func number_text() -> String:
+	if kind == Kind.BLANK:
+		return ""
+	return "%d–%d" % [power, power_max] if is_ranged() else str(power)
+
+
 func describe() -> String:
+	var s := ""
 	match kind:
 		Kind.BLANK:
-			return "cracked"
+			return "destroyed"
 		Kind.SHIELD:
-			return "shield %d" % power
+			s = "shield %d" % power
 		Kind.VENT:
-			return "vent %d" % power
+			s = "vent %d" % power
 		_:
-			var s := "%s %d" % [REACH_NAMES[reach], power]
+			# Line of fire is the default and goes unsaid; only indirect reach is called out.
+			s = number_text() if reach == Reach.LINE else "%s %s" % [REACH_NAMES[reach], number_text()]
 			for k in keywords:
 				s += " " + KEYWORD_NAMES[k]
+			if crit > 0:
+				s += " crit %d%%" % crit
 			if heat > 0:
 				s += " (+%d heat)" % heat
-			return s
+	if cracked:
+		s += " (cracked)"
+	return s

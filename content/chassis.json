@@ -1,5 +1,5 @@
 {
-  "_about": "Chassis. Not classes: any silhouette, any component in any slot. hardpoints is the die size. loadout is the default components; if their faces total fewer than hardpoints, filler fills the rest. passive is zero or one object; its rules list is one idea with up to three lines (an upside and its cost count as one passive). Passives are data only until the engine runs triggers. Makers are placeholders.",
+  "_about": "Chassis. Not classes: any silhouette, any component in any slot. Numbers are in tens. hardpoints is the die size. loadout is the default components; if their faces total fewer than hardpoints, filler fills the rest. passive is zero or one object; its rules list is one idea with up to three lines (an upside and its cost count as one passive). Passives run through sim/passives.gd; the validator refuses effects the engine cannot execute. Player-facing text: codex and flavour (an in-world line, shown as a quote). fantasy is the internal one-line pitch. Makers are placeholders.",
   "makers": [
     { "id": "halvard", "name": "Halvard Heavy Works", "style": "Armour first. Everything is a tank, even the ones with legs.", "voice": "Maintenance manual. Terse, exact, proud of tolerances." },
     { "id": "kestrel", "name": "Kestrel Dynamics", "style": "Fast, fragile, over-tuned. Airframes and interceptors.", "voice": "Flight-test log. Clipped, numbers first." },
@@ -9,30 +9,40 @@
     {
       "id": "bulwark", "name": "Bulwark", "maker": "halvard", "silhouette": "tracked",
       "fantasy": "A tank with fists. It goes where it is pointed and things stop being there.",
-      "hull": 14, "shield": 4, "movespeed": 2, "heat_max": 6, "hardpoints": 4,
+      "codex": "Halvard's answer to everything: armour, then more armour, then fists. Slow, hard to kill, and it never throws a weak punch.",
+      "hull": 140, "shield": 40, "movespeed": 2, "heat_max": 60, "hardpoints": 4,
       "traits": ["tank"],
       "loadout": ["shredder_claws", "slug_cannon", "ablative_plating"],
-      "filler": { "kind": "shield", "power": 1 },
-      "passive": null,
+      "filler": { "kind": "shield", "power": 10 },
+      "passive": {
+        "id": "braced_mounts", "name": "Braced Mounts",
+        "fantasy": "Halvard does not build guns that whiff.",
+        "rules": ["Attack faces never roll below 30."],
+        "effects": [
+          { "trigger": "on_attack", "effect": "min_damage", "value": 30 }
+        ]
+      },
       "flavour": "Halvard pattern seven. Hull rated for sustained contact. The crews call it the door."
     },
     {
       "id": "sentinel", "name": "Sentinel", "maker": "orrin_pike", "silhouette": "quadruped",
       "fantasy": "Four legs, six hardpoints, no strong opinions. The one you build around.",
-      "hull": 10, "shield": 4, "movespeed": 3, "heat_max": 6, "hardpoints": 6,
+      "codex": "The Orrin & Pike general-purpose walker. Six hardpoints and no opinions about what goes in them; whatever the squad is missing, this is where it gets bolted on.",
+      "hull": 100, "shield": 40, "movespeed": 3, "heat_max": 60, "hardpoints": 6,
       "traits": ["quad"],
       "loadout": ["twin_autoguns", "lance", "pocket_mortar", "ablative_plating", "heat_sink"],
-      "filler": { "kind": "shield", "power": 1 },
+      "filler": { "kind": "shield", "power": 10 },
       "passive": null,
       "flavour": "Orrin & Pike walker frame. Six hardpoints, no favourites. The one that comes back."
     },
     {
       "id": "raptor", "name": "Raptor", "maker": "kestrel", "silhouette": "aircraft",
       "fantasy": "A priority-target assassin. Hit, run, and let someone else carry the fire extinguisher.",
-      "hull": 6, "shield": 6, "movespeed": 5, "heat_max": 6, "hardpoints": 4,
+      "codex": "Kestrel's interceptor. Hits twice as hard as anything its size and runs twice as hot doing it. Somebody else carries the fire extinguisher.",
+      "hull": 60, "shield": 60, "movespeed": 5, "heat_max": 60, "hardpoints": 4,
       "traits": ["flyer"],
       "loadout": ["overclocked_railgun", "headhunter_rifle", "arc_projector", "deflector"],
-      "filler": { "kind": "shield", "power": 1 },
+      "filler": { "kind": "shield", "power": 10 },
       "passive": {
         "id": "hot_hands", "name": "Hot Hands",
         "fantasy": "Everything it fires, it fires too hard.",
@@ -47,11 +57,19 @@
     {
       "id": "anvil", "name": "Anvil", "maker": "orrin_pike", "silhouette": "quadruped",
       "fantasy": "Sits at the back of the fight and ruins the back of theirs.",
-      "hull": 12, "shield": 3, "movespeed": 2, "heat_max": 7, "hardpoints": 6,
+      "codex": "Orrin & Pike's fire-support walker. Reaches their back rank from ours, and what it sets alight stays alight.",
+      "hull": 120, "shield": 30, "movespeed": 2, "heat_max": 70, "hardpoints": 6,
       "traits": ["quad"],
       "loadout": ["howitzer", "incendiary_shells", "shock_barrage", "coolant_dump", "flak_skirt"],
-      "filler": { "kind": "shield", "power": 1 },
-      "passive": null,
+      "filler": { "kind": "shield", "power": 10 },
+      "passive": {
+        "id": "hot_load", "name": "Hot Load",
+        "fantasy": "When an Orrin & Pike shell lands right, it keeps burning.",
+        "rules": ["Critical hits add one burn stack to the target."],
+        "effects": [
+          { "trigger": "on_crit", "effect": "add_burn", "value": 1 }
+        ]
+      },
       "flavour": "Orrin & Pike fire-support walker. Sits behind the line and unmakes the far side of the fight."
     }
   ]

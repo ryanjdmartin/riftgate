@@ -11,6 +11,7 @@ const VIEW_H := 1280.0
 const MAP_W := 7
 const MAP_H := 20
 const DRAG_THRESHOLD := 12.0
+const MAP_SPRITE_SCALE := 2.0
 
 const COLORS := {
 	BattleMap.Terrain.PLAIN: Color("6f8f5a"),
@@ -41,6 +42,7 @@ func _ready() -> void:
 func _build(s: int) -> void:
 	map = BattleMap.generate(MAP_W, MAP_H, s)
 	field = Battlefield.new(map)
+	field.spawn_table = ContentDB.load_default().spawn_table(field.spawn_faction)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = s
 	var gate_o := Hex.axial_to_offset(map.gate)
@@ -93,13 +95,19 @@ func _draw() -> void:
 			for h in u.hexes():
 				draw_colored_polygon(Hex.corners(_center(h), HEX_SIZE - 6.0), Color("5a3a7a"))
 		var c := _center(u.pos)
-		draw_circle(c, 17.0, Color("1b1f26"))
-		draw_circle(c, 14.0, col)
-		var initial := u.display_name.substr(0, 1).to_upper()
-		draw_string(font, c + Vector2(-6.0, 6.0), initial, HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color("1b1f26"))
-		if u.is_player():
-			var d: Vector2 = Hex.to_pixel(Hex.DIRECTIONS[u.facing], 1.0).normalized()
-			draw_line(c, c + d * 22.0, Color("f2c14e"), 3.0)
+		var tex: Texture2D = Sprites.map_mech(u.chassis_id, u.facing) if u.is_player() else Sprites.map_foe(u.foe_id)
+		if tex != null:
+			var ts := tex.get_size() * MAP_SPRITE_SCALE
+			# Feet a little below the hex centre so the sprite reads as standing on the tile.
+			draw_texture_rect(tex, Rect2((c - Vector2(ts.x * 0.5, ts.y - 8.0)).floor(), ts), false)
+		else:
+			draw_circle(c, 17.0, Color("1b1f26"))
+			draw_circle(c, 14.0, col)
+			var initial := u.display_name.substr(0, 1).to_upper()
+			draw_string(font, c + Vector2(-6.0, 6.0), initial, HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color("1b1f26"))
+			if u.is_player():
+				var d: Vector2 = Hex.to_pixel(Hex.DIRECTIONS[u.facing], 1.0).normalized()
+				draw_line(c, c + d * 22.0, Color("f2c14e"), 3.0)
 		if u.is_enemy() and u.strength > 0:
 			draw_string(font, c + Vector2(12.0, -10.0), "x%d" % u.strength, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("e8e4d6"))
 	draw_rect(Rect2(0, 0, VIEW_W, TOP + 4.0), Color("1b1f26"))

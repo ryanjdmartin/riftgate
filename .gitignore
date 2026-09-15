@@ -9,3 +9,6 @@ build/
 
 # OS
 .DS_Store
+
+# Python tooling
+tools/spriter/.venv/

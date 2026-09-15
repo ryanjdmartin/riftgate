@@ -47,33 +47,43 @@ func test_raptor_loadout_matches_design() -> void:
 	assert_true(not db.chassis["raptor"].has("passives"), "still counts as one passive")
 
 
-func test_faction_pattern_unpacks_squads() -> void:
+func test_squads_unpack_by_foe_type() -> void:
 	var db := _db()
-	var sq := Unit.squad(7, "risen", Vector2i.ZERO, "undead", 2, 6)
-	var foes := db.foes_for(sq)
-	assert_eq(foes.size(), 6, "six foes from strength six")
-	var necros := 0
+	var ghouls := Unit.squad(7, "ghouls", Vector2i.ZERO, "undead", 2, 6, "ghoul")
+	var foes := db.foes_for(ghouls)
+	assert_eq(foes.size(), 6, "six ghouls from strength six")
 	for f in foes:
+		assert_eq(f.display_name, "Ghoul", "all the same type")
 		assert_eq(f.squad_id, 7, "foe remembers its squad")
-		if f.display_name == "Necromancer":
-			necros += 1
-			assert_true(f.prefers_back, "necromancer holds the back")
-			assert_eq(f.injures, "corrode", "necromancer corrodes")
-	assert_eq(necros, 1, "one necromancer per four")
+	var necros := Unit.squad(8, "necromancers", Vector2i.ZERO, "undead", 2, 2, "necromancer")
+	var backs := db.foes_for(necros)
+	assert_eq(backs.size(), 2, "two necromancers")
+	assert_true(backs[0].prefers_back, "necromancer holds the back")
+	var untyped := Unit.squad(9, "whatever", Vector2i.ZERO, "demonic", 2, 3)
+	var fallback := db.foes_for(untyped)
+	assert_eq(fallback.size(), 3, "a squad with no type falls back to the faction's first spawn entry")
+	assert_eq(fallback[0].display_name, "Brute", "which is the brute for demons")
 
 
-func test_elite_squad_brings_a_massive_foe() -> void:
+func test_boss_unpacks_to_the_faction_boss() -> void:
 	var db := _db()
-	var sq := Unit.squad(7, "risen", Vector2i.ZERO, "undead", 2, 4)
-	sq.elite = true
-	var foes := db.foes_for(sq)
-	assert_eq(foes.size(), 5, "four from the pattern plus the elite")
-	assert_true(foes[0].is_massive(), "elite comes first so it takes a column")
-	assert_eq(foes[0].display_name, "Bone Colossus", "undead elite")
-	var boss := Unit.boss(8, "colossus", Vector2i.ZERO, "demonic")
+	var boss := Unit.boss(8, "colossus", Vector2i.ZERO, "undead")
 	var only := db.foes_for(boss)
-	assert_eq(only.size(), 1, "a boss unpacks to just its elite")
-	assert_eq(only[0].display_name, "Pit Lord", "demonic elite")
+	assert_eq(only.size(), 1, "a boss unpacks to just its massive foe")
+	assert_eq(only[0].display_name, "Bone Colossus", "undead boss")
+	assert_true(only[0].is_massive(), "and it is massive")
+	var pit := db.foes_for(Unit.boss(9, "lord", Vector2i.ZERO, "demonic"))
+	assert_eq(pit[0].display_name, "Pit Lord", "demonic boss")
+
+
+func test_spawn_table_lists_the_factions_formation() -> void:
+	var db := _db()
+	var table := db.spawn_table("undead")
+	assert_eq(table.size(), 3, "three squads come through together")
+	assert_eq(table[0][0], "ghoul", "ghouls first")
+	assert_eq(table[2][0], "necromancer", "necromancers behind them")
+	assert_eq(table[2][1], 3, "three of them")
+	assert_eq(db.faction_of_foe("hellcaster"), "demonic", "foe to faction lookup")
 
 
 func test_content_mech_survives_a_skirmish_round() -> void:
@@ -128,15 +138,64 @@ func test_raptor_passive_doubles_damage_and_heat() -> void:
 	var db := _db()
 	var u := db.make_mech("raptor")
 	assert_false(u.passive.is_empty(), "raptor carries its passive")
-	u.die = Die.single(Face.attack(3, Face.Reach.LINE, [], 1))
+	u.die = Die.single(Face.attack(30, Face.Reach.LINE, [], 10))
 	var sk := Skirmish.new(1)
 	sk.add_mech(u)
-	sk.add_foes([Foe.make("ghoul", 9, 1)])
+	sk.add_foes([Foe.make("ghoul", 90, 10)])
 	sk.begin()
 	sk.start_round()
 	sk.assign(0, sk.front[0])
-	assert_eq(sk.front[0].hp, 3, "power 3 became 6")
-	assert_eq(sk.mechs[0].heat, 2, "heat 1 became 2")
+	assert_eq(sk.front[0].hp, 30, "power 30 became 60")
+	assert_eq(sk.mechs[0].heat, 20, "heat 10 became 20")
+
+
+func test_bulwark_passive_raises_the_floor() -> void:
+	var db := _db()
+	var u := db.make_mech("bulwark")
+	u.die = Die.single(Face.attack(10, Face.Reach.LINE, [], 0, 20))
+	for seed_value in range(1, 11):
+		var sk := Skirmish.new(seed_value)
+		sk.add_mech(u)
+		sk.add_foes([Foe.make("ghoul", 200, 10)])
+		sk.begin()
+		sk.start_round()
+		sk.assign(0, sk.front[0])
+		assert_eq(sk.front[0].hp, 170, "a 10 to 20 roll is lifted to 30 by Braced Mounts")
+
+
+func test_anvil_passive_burns_on_crit() -> void:
+	var db := _db()
+	var u := db.make_mech("anvil")
+	u.die = Die.single(Face.attack(20, Face.Reach.INDIRECT, [], 0, 0, 100))
+	var sk := Skirmish.new(1)
+	sk.add_mech(u)
+	sk.add_foes([Foe.make("ghoul", 200, 10)])
+	sk.begin()
+	sk.start_round()
+	sk.assign(0, sk.front[0])
+	assert_eq(sk.front[0].hp, 160, "20 crit for 40")
+	assert_eq(sk.front[0].burn, 1, "Hot Load added a burn stack")
+
+
+func test_content_dice_are_in_tens_and_kinetic_faces_roll() -> void:
+	var db := _db()
+	var kinetic := 0
+	var energy := 0
+	for id in db.components.keys():
+		var c: Dictionary = db.components[id]
+		for fd in c.get("faces", []):
+			assert_true(int(fd.get("power", 0)) % 10 == 0, "%s power is a multiple of ten" % id)
+			if str(fd.get("kind", "")) != "attack":
+				continue
+			var tags: Array = c.get("tags", [])
+			if tags.has("kinetic"):
+				kinetic += 1
+				assert_true(int(fd.get("power_max", 0)) > int(fd["power"]), "%s kinetic face has a range" % id)
+			if tags.has("energy"):
+				energy += 1
+				assert_false(fd.has("power_max"), "%s energy face is static" % id)
+				assert_eq(int(fd.get("crit", 0)), 0, "%s energy face never crits" % id)
+	assert_true(kinetic >= 5 and energy >= 3, "both weapon classes present")
 
 
 func test_unsupported_passive_effect_is_rejected() -> void:
@@ -150,6 +209,38 @@ func test_unsupported_passive_effect_is_rejected() -> void:
 		if e.begins_with("chassis dreamer") and e.contains("not implemented"):
 			hit = true
 	assert_true(hit, "an effect the engine cannot run is reported")
+
+
+func test_every_foe_has_an_action_roster_and_player_text() -> void:
+	var db := ContentDB.load_default()
+	for id in db.foes.keys():
+		var f: Dictionary = db.foes[id]
+		assert_true(not str(f.get("codex", "")).is_empty(), "%s has codex text" % id)
+		assert_true(not str(f.get("flavour", "")).is_empty(), "%s has its own flavour line" % id)
+		var implemented := 0
+		for a in f.get("actions", []):
+			if a.get("status") == "implemented":
+				implemented += 1
+				assert_eq(int(a.get("value", -1)), int(f["attack"]), "%s basic attack matches its attack" % id)
+		assert_eq(implemented, 1, "%s has exactly one implemented action" % id)
+	var foe := db.make_foe("ghoul")
+	var entry := db.codex_for_foe(foe)
+	assert_true(entry["actions"].contains("CLAW"), "codex lists the implemented action")
+	assert_false(entry["actions"].contains("GET BACK UP"), "and hides the planned one")
+	assert_eq(entry["flavour"], db.foes["ghoul"]["flavour"], "codex quotes the foe, not the faction")
+
+
+func test_planned_actions_cannot_claim_to_be_implemented() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var f: Dictionary = db.foes["ghoul"].duplicate(true)
+	f["actions"][1]["status"] = "implemented"
+	db.foes["ghoul"] = f
+	var hit := false
+	for e in db.validate():
+		if e.begins_with("foe ghoul action get_back_up") and e.contains("only attack"):
+			hit = true
+	assert_true(hit, "a non-attack action marked implemented is reported")
 
 
 func test_face_round_trips_through_json() -> void:

@@ -5,9 +5,12 @@ extends RefCounted
 ## {"id", "name", "fantasy", "rules": [...], "effects": [{"trigger", "effect", "value"}]}.
 ## Only the triggers and effects listed here are executed; the content validator refuses
 ## anything else so a passive never silently does nothing.
+##
+## on_attack runs on every attack after the damage roll; on_crit runs only when it crit.
 
 const SUPPORTED_EFFECTS := {
-	"on_attack": ["multiply_damage", "multiply_heat", "add_damage", "add_heat"],
+	"on_attack": ["multiply_damage", "multiply_heat", "add_damage", "add_heat", "min_damage"],
+	"on_crit": ["multiply_damage", "add_damage", "add_burn", "vent_heat"],
 }
 
 
@@ -32,4 +35,28 @@ static func on_attack(passive: Dictionary, dmg: int, heat: int) -> Array:
 				dmg += int(v)
 			"add_heat":
 				heat += int(v)
+			"min_damage":
+				dmg = maxi(dmg, int(v))
 	return [dmg, heat]
+
+
+## Apply on_crit effects. Returns {"damage", "burn", "vent"}: extra burn stacks for the
+## target and heat vented from the attacker.
+static func on_crit(passive: Dictionary, dmg: int) -> Dictionary:
+	var out := {"damage": dmg, "burn": 0, "vent": 0}
+	if passive.is_empty():
+		return out
+	for eff in passive.get("effects", []):
+		if str(eff.get("trigger", "")) != "on_crit":
+			continue
+		var v: float = float(eff.get("value", 0))
+		match str(eff.get("effect", "")):
+			"multiply_damage":
+				out["damage"] = int(roundf(out["damage"] * v))
+			"add_damage":
+				out["damage"] += int(v)
+			"add_burn":
+				out["burn"] += int(v)
+			"vent_heat":
+				out["vent"] += int(v)
+	return out

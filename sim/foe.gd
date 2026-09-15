@@ -5,11 +5,10 @@ extends RefCounted
 
 var display_name: String = "ghoul"
 var content_id: String = ""      # id in content/foes.json, for the codex
-var hp: int = 3
-var hp_max: int = 3
-var attack: int = 1
+var hp: int = 30
+var hp_max: int = 30
+var attack: int = 10
 var prefers_back: bool = false   # ranged types hold the back rank and never step up
-var injures: String = ""         # "", "corrode", "melt", "corrupt": cracks a face on a hull hit
 var squad_id: int = 0            # which battlefield squad this foe came from
 var size: int = 1                # 2 = massive: fills both slots of a column
 
@@ -21,14 +20,13 @@ var suppressed: bool = false
 var target: RefCounted = null    # Skirmish.MechState, set when intents are telegraphed
 
 
-static func make(name: String, hp_value: int, attack_value: int, back: bool = false, injury: String = "") -> Foe:
+static func make(name: String, hp_value: int, attack_value: int, back: bool = false) -> Foe:
 	var f := Foe.new()
 	f.display_name = name
 	f.hp = hp_value
 	f.hp_max = hp_value
 	f.attack = attack_value
 	f.prefers_back = back
-	f.injures = injury
 	return f
 
 

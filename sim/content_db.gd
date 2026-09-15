@@ -95,10 +95,11 @@ func build_die(component_ids: Array, hardpoints: int, filler: Dictionary = {}) -
 func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO) -> Unit:
 	var c: Dictionary = chassis[chassis_id]
 	var u := Unit.mech(uid, str(c["name"]), at, int(c.get("movespeed", 3)))
-	u.hull = int(c.get("hull", 10))
+	u.hull = int(c.get("hull", 100))
 	u.hull_max = u.hull
-	u.shield = int(c.get("shield", 4))
+	u.shield = int(c.get("shield", 40))
 	u.shield_max = u.shield
+	u.heat_max = int(c.get("heat_max", 60))
 	for t in c.get("traits", []):
 		u.traits.append(str(t))
 	u.die = build_die(c.get("loadout", []), int(c.get("hardpoints", 6)), c.get("filler", {}))
@@ -111,8 +112,7 @@ func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO) -
 
 func make_foe(foe_id: String) -> Foe:
 	var d: Dictionary = foes[foe_id]
-	var f := Foe.make(str(d["name"]), int(d["hp"]), int(d["attack"]),
-			str(d.get("rank", "front")) == "back", str(d.get("injures", "")))
+	var f := Foe.make(str(d["name"]), int(d["hp"]), int(d["attack"]), str(d.get("rank", "front")) == "back")
 	f.size = int(d.get("size", 1))
 	f.content_id = foe_id
 	return f
@@ -122,61 +122,94 @@ func make_foe(foe_id: String) -> Foe:
 func codex_for_foe(f: Foe) -> Dictionary:
 	var d: Dictionary = foes.get(f.content_id, {})
 	var fac: Dictionary = factions.get(str(d.get("faction", "")), {})
-	var stats := "hp %d/%d · attack %d · %s rank" % [f.hp, f.hp_max, f.attack, "back" if f.prefers_back else "front"]
+	var stats := "HP %d/%d // ATK %d // %s RANK" % [f.hp, f.hp_max, f.attack, "BACK" if f.prefers_back else "FRONT"]
 	if f.is_massive():
-		stats += " · massive"
-	if not f.injures.is_empty():
-		stats += " · injures: %s" % f.injures
+		stats += " // MASSIVE"
+	var acts: Array[String] = []
+	for a in d.get("actions", []):
+		if str(a.get("status", "")) != "implemented":
+			continue
+		var head := "%s // %s" % [str(a.get("name", "")).to_upper(), str(a.get("kind", "")).to_upper()]
+		if a.has("value"):
+			head += " %d" % int(a["value"])
+		acts.append("%s\n  %s" % [head, str(a.get("text", ""))])
+	var faction_name := str(fac.get("name", "")).strip_edges()
+	if faction_name.is_empty():
+		faction_name = str(d.get("faction", "")).capitalize()
 	return {
 		"title": f.display_name,
-		"subtitle": str(fac.get("name", d.get("faction", ""))),
-		"fantasy": str(d.get("fantasy", "")),
-		"question": str(d.get("question", "")),
+		"subtitle": faction_name.to_upper(),
+		"body": str(d.get("codex", "")),
 		"stats": stats,
+		"actions": "\n".join(acts),
 		"passive": "",
-		"flavour": str(fac.get("flavour", "")),
+		"faces": [],
+		"current": -1,
+		"flavour": str(d.get("flavour", "")),
+		"sprite_id": f.content_id,
 	}
 
 
-## Codex text for a mech: chassis fantasy, maker, numbers, faces, passive, and flavour.
+## Codex text for a mech: chassis codex, maker, numbers, faces (for a visual list), passive,
+## and flavour.
 func codex_for_unit(u: Unit) -> Dictionary:
 	var c: Dictionary = chassis.get(u.chassis_id, {})
 	var maker: Dictionary = makers.get(str(c.get("maker", "")), {})
-	var stats := "hull %d/%d · shield %d/%d · move %d · %d hardpoints" % [
+	var stats := "HULL %d/%d // SHIELD %d/%d // MOVE %d // %d HARDPOINTS" % [
 		u.hull, u.hull_max, u.shield, u.shield_max, u.movespeed, u.die.size() if u.die != null else 0]
-	var faces: Array[String] = []
+	var faces: Array = []
 	if u.die != null:
-		for f in u.die.faces:
-			faces.append(f.describe())
+		faces = u.die.faces.duplicate()
 	var passive := ""
 	if not u.passive.is_empty():
 		passive = "%s. %s %s" % [u.passive.get("name", ""), u.passive.get("fantasy", ""), " ".join(u.passive.get("rules", []))]
 	return {
 		"title": u.display_name,
-		"subtitle": "%s · %s" % [str(maker.get("name", "")), str(c.get("silhouette", ""))],
-		"fantasy": str(c.get("fantasy", "")),
-		"question": "Faces: " + ", ".join(faces),
+		"subtitle": "%s // %s" % [str(maker.get("name", "")).to_upper(), str(c.get("silhouette", "")).to_upper()],
+		"body": str(c.get("codex", c.get("fantasy", ""))),
 		"stats": stats,
+		"actions": "",
 		"passive": passive,
+		"faces": faces,
+		"current": -1,
 		"flavour": str(c.get("flavour", "")),
+		"sprite_id": u.chassis_id,
 	}
 
 
-## Unpack a battlefield squad into skirmish foes by cycling its faction's pattern. A squad
-## flagged elite also brings the faction's massive elite.
+## Unpack a battlefield squad into skirmish foes: its foe type times its strength. A boss
+## (elite) unpacks into the faction's massive boss first. A squad with no foe type falls back
+## to the first entry of its faction's spawn list.
 func foes_for(sq: Unit) -> Array[Foe]:
 	var out: Array[Foe] = []
 	var fac: Dictionary = factions.get(sq.faction, {})
-	var pattern: Array = fac.get("pattern", ["ghoul"])
-	for i in range(sq.strength):
-		var f := make_foe(str(pattern[i % pattern.size()]))
-		f.squad_id = sq.id
-		out.append(f)
-	if sq.elite and fac.has("elite") and foes.has(fac["elite"]):
-		var e := make_foe(str(fac["elite"]))
-		e.squad_id = sq.id
-		out.push_front(e)
+	if sq.elite and fac.has("boss") and foes.has(fac["boss"]):
+		var b := make_foe(str(fac["boss"]))
+		b.squad_id = sq.id
+		out.append(b)
+	var fid := sq.foe_id
+	if fid.is_empty():
+		var spawn: Array = fac.get("spawn", [])
+		if not spawn.is_empty():
+			fid = str(spawn[0].get("foe", ""))
+	if foes.has(fid):
+		for i in range(sq.strength):
+			var f := make_foe(fid)
+			f.squad_id = sq.id
+			out.append(f)
 	return out
+
+
+## The squads a faction sends through the rift together, as [[foe_id, strength], ...].
+func spawn_table(faction_id: String) -> Array:
+	var out: Array = []
+	for e in factions.get(faction_id, {}).get("spawn", []):
+		out.append([str(e.get("foe", "")), int(e.get("strength", 1))])
+	return out
+
+
+func faction_of_foe(foe_id: String) -> String:
+	return str(foes.get(foe_id, {}).get("faction", ""))
 
 
 # ---------------------------------------------------------------- validation
@@ -229,6 +262,13 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String]) -> void:
 			errs.append("%s: attack face needs reach line or indirect, got '%s'" % [where, reach])
 	if int(fd.get("power", 0)) <= 0:
 		errs.append("%s: power must be positive" % where)
+	if fd.has("power_max") and int(fd["power_max"]) < int(fd.get("power", 0)):
+		errs.append("%s: power_max below power" % where)
+	var crit := int(fd.get("crit", 0))
+	if crit < 0 or crit > 100:
+		errs.append("%s: crit must be 0 to 100" % where)
+	if crit > 0 and kind != "attack":
+		errs.append("%s: only attack faces crit" % where)
 	var kws: Array = fd.get("keywords", [])
 	if kws.size() > MAX_AUTHORED_KEYWORDS:
 		errs.append("%s: %d keywords, authored cap is %d" % [where, kws.size(), MAX_AUTHORED_KEYWORDS])
@@ -285,7 +325,7 @@ func _validate_chassis(errs: Array[String]) -> void:
 	for id in chassis.keys():
 		var c: Dictionary = chassis[id]
 		var where := "chassis %s" % id
-		for key in ["name", "fantasy", "hull", "shield", "movespeed", "hardpoints", "loadout"]:
+		for key in ["name", "fantasy", "codex", "flavour", "hull", "shield", "movespeed", "hardpoints", "loadout"]:
 			if not c.has(key):
 				errs.append("%s: missing %s" % [where, key])
 		var hp := int(c.get("hardpoints", 0))
@@ -311,15 +351,52 @@ func _validate_chassis(errs: Array[String]) -> void:
 		_validate_passive(where, c.get("passive", null), errs)
 
 
+const ACTION_KINDS := ["attack", "defend", "buff", "debuff"]
+const ACTION_STATUSES := ["implemented", "planned"]
+
+
+## A foe's roster of actions. Today the engine runs only a basic attack, so exactly one
+## implemented attack action is required and its value must match the foe's attack; every
+## other action must be marked planned until the engine can run it.
+func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> void:
+	var acts = f.get("actions", [])
+	if not (acts is Array):
+		errs.append("%s: actions must be a list" % where)
+		return
+	var implemented_attacks := 0
+	for a in acts:
+		if not (a is Dictionary):
+			errs.append("%s: each action must be an object" % where)
+			continue
+		var aw := "%s action %s" % [where, str(a.get("id", "?"))]
+		for key in ["id", "name", "kind", "text", "status"]:
+			if not a.has(key):
+				errs.append("%s: missing %s" % [aw, key])
+		if not ACTION_KINDS.has(str(a.get("kind", ""))):
+			errs.append("%s: kind must be one of %s" % [aw, ", ".join(ACTION_KINDS)])
+		if not ACTION_STATUSES.has(str(a.get("status", ""))):
+			errs.append("%s: status must be implemented or planned" % aw)
+		if str(a.get("status", "")) == "implemented":
+			if str(a.get("kind", "")) != "attack":
+				errs.append("%s: only attack actions are implemented by the engine so far" % aw)
+			else:
+				implemented_attacks += 1
+				if int(a.get("value", -1)) != int(f.get("attack", 0)):
+					errs.append("%s: implemented attack value must equal the foe's attack (%d)" % [aw, int(f.get("attack", 0))])
+	if implemented_attacks != 1:
+		errs.append("%s: needs exactly one implemented attack action, has %d" % [where, implemented_attacks])
+
+
 func _validate_foes(errs: Array[String]) -> void:
 	for id in foes.keys():
 		var f: Dictionary = foes[id]
 		var where := "foe %s" % id
-		for key in ["name", "fantasy", "question", "hp", "attack", "rank"]:
+		for key in ["name", "fantasy", "question", "codex", "flavour", "actions", "hp", "attack", "rank"]:
 			if not f.has(key):
 				errs.append("%s: missing %s" % [where, key])
 		if int(f.get("hp", 0)) <= 0:
 			errs.append("%s: hp must be positive" % where)
+		_validate_actions(where, f, errs)
 		if not ["front", "back"].has(str(f.get("rank", ""))):
 			errs.append("%s: rank must be front or back" % where)
 		var sz := int(f.get("size", 1))
@@ -327,9 +404,8 @@ func _validate_foes(errs: Array[String]) -> void:
 			errs.append("%s: size must be 1 or 2 (massive)" % where)
 		if sz == 2 and str(f.get("rank", "")) == "back":
 			errs.append("%s: a massive foe fills both ranks and must be rank front" % where)
-		var inj := str(f.get("injures", ""))
-		if not inj.is_empty() and (not vocabulary.has(inj) or vocabulary[inj].get("category") != "status"):
-			errs.append("%s: injury '%s' is not a status in the vocabulary" % [where, inj])
+		if f.has("injures"):
+			errs.append("%s: 'injures' is gone; face injuries are a global rule" % where)
 		if f.has("faction") and not factions.has(f["faction"]):
 			errs.append("%s: unknown faction %s" % [where, f["faction"]])
 
@@ -338,22 +414,24 @@ func _validate_factions(errs: Array[String]) -> void:
 	for id in factions.keys():
 		var f: Dictionary = factions[id]
 		var where := "faction %s" % id
-		for key in ["name", "fantasy", "signature", "answer", "pattern"]:
+		for key in ["name", "fantasy", "signature", "answer", "spawn"]:
 			if not f.has(key):
 				errs.append("%s: missing %s" % [where, key])
-		var pattern: Array = f.get("pattern", [])
-		if pattern.is_empty():
-			errs.append("%s: empty pattern" % where)
-		for fid in pattern:
-			if not foes.has(fid):
-				errs.append("%s: pattern names unknown foe %s" % [where, fid])
-			elif int(foes[fid].get("size", 1)) > 1:
-				errs.append("%s: pattern foe %s is massive; massive foes come from 'elite'" % [where, fid])
-		if f.has("elite"):
-			if not foes.has(f["elite"]):
-				errs.append("%s: elite names unknown foe %s" % [where, f["elite"]])
-			elif int(foes[f["elite"]].get("size", 1)) != 2:
-				errs.append("%s: elite %s should be massive (size 2)" % [where, f["elite"]])
-		var inj := str(f.get("injury", ""))
-		if not inj.is_empty() and not vocabulary.has(inj):
-			errs.append("%s: injury '%s' not in vocabulary" % [where, inj])
+		for old in ["pattern", "elite", "injury"]:
+			if f.has(old):
+				errs.append("%s: '%s' is gone; use spawn and boss" % [where, old])
+		var spawn: Array = f.get("spawn", [])
+		if spawn.is_empty():
+			errs.append("%s: empty spawn list" % where)
+		for e in spawn:
+			if not (e is Dictionary) or not foes.has(str(e.get("foe", ""))):
+				errs.append("%s: spawn entry names unknown foe %s" % [where, str(e)])
+			elif int(e.get("strength", 0)) < 1:
+				errs.append("%s: spawn entry %s needs a strength of at least 1" % [where, e.get("foe")])
+			elif int(foes[str(e["foe"])].get("size", 1)) > 1:
+				errs.append("%s: massive foe %s belongs in 'boss', not spawn" % [where, e.get("foe")])
+		if f.has("boss"):
+			if not foes.has(f["boss"]):
+				errs.append("%s: boss names unknown foe %s" % [where, f["boss"]])
+			elif int(foes[f["boss"]].get("size", 1)) != 2:
+				errs.append("%s: boss %s should be massive (size 2)" % [where, f["boss"]])

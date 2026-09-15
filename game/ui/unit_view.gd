@@ -1,8 +1,10 @@
 class_name UnitView
 extends Control
 
-## A unit on the skirmish screen with minimal chrome: a sprite placeholder, a small floating
-## bar box at its top-right, an intent chip below, and a name. Tap and hold gestures only.
+## A unit on the skirmish screen under the tactical overlay: the sprite (or a placeholder box),
+## slanted gauges, a name, a bracketed readout such as [ATK 10] below foes, and status chips on
+## the sprite itself. Mechs carry three full-width gauges above the sprite; foes carry one small
+## gauge floating at the sprite's top-right. Tap and hold gestures only.
 
 signal tapped
 signal double_tapped
@@ -16,10 +18,13 @@ var display_name: String = ""
 var is_enemy: bool = false
 var massive: bool = false
 var bars: Array = []            # [[value, max, Color], ...]
-var intent: String = ""         # short chip text such as "ATK 2"
-var intent_glyph: String = ""   # optional glyph id drawn in the chip
+var bars_above: bool = false    # true: full-width gauges above the sprite; false: floating
+var intent: String = ""         # readout text such as "ATK 10", drawn as [ATK 10]
+var intent_dim: bool = false    # quiet readout (exposed slot)
+var statuses: Array = []        # [[glyph id, text or ""], ...] drawn on the sprite
 var highlight: bool = false     # valid drop target while dragging a die
 var dead: bool = false
+var sprite: Texture2D = null    # pixel art drawn at an integer scale; null draws a placeholder
 
 var _pressed := false
 var _press_at := 0.0
@@ -37,10 +42,26 @@ func anchor_global() -> Vector2:
 	return get_global_transform() * _silhouette().get_center()
 
 
+func _bars_height() -> float:
+	return (6.0 + bars.size() * 11.0) if bars_above and not bars.is_empty() else 0.0
+
+
 func _silhouette() -> Rect2:
+	var top := size.y * 0.12 + _bars_height()
+	var avail := size.y - top - 24.0
+	if sprite != null:
+		# Largest integer scale that fits between the gauges and the name.
+		top = _bars_height() + 4.0
+		avail = size.y - top - 24.0
+		var ts := sprite.get_size()
+		var scale := floorf(minf(size.x / ts.x, avail / ts.y))
+		scale = maxf(1.0, scale)
+		var w := ts.x * scale
+		var h := ts.y * scale
+		return Rect2(Vector2(floorf((size.x - w) * 0.5), floorf(top + avail - h)), Vector2(w, h))
 	var w := size.x * 0.46
-	var h := size.y * (0.78 if massive else 0.62)
-	return Rect2(Vector2((size.x - w) * 0.5, size.y * 0.12), Vector2(w, h))
+	var h := minf(avail, size.y * (0.78 if massive else 0.62))
+	return Rect2(Vector2((size.x - w) * 0.5, top), Vector2(w, h))
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -75,54 +96,55 @@ func _process(_delta: float) -> void:
 
 
 func _draw() -> void:
-	var font := ThemeDB.fallback_font
+	var hud := Palette.HUD
+	var mono := Hud.mono()
+	var disp := Hud.display()
 	var sil := _silhouette()
-	var body := Color("2a3a2a") if is_enemy else Color("233040")
-	var edge := Color("4a6a4a") if is_enemy else Color("3d5470")
-	if dead:
-		body = Palette.PANEL
-		edge = Palette.ENEMY_DIM
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = body
-	sb.border_color = Palette.TARGET if highlight else edge
-	sb.set_border_width_all(3 if highlight else 1)
-	sb.set_corner_radius_all(6)
-	draw_style_box(sb, sil)
+	if sprite != null:
+		draw_texture_rect(sprite, sil, false, Color(0.3, 0.3, 0.3) if dead else Color.WHITE)
+	else:
+		var edge := Color(Palette.ENEMY_DIM if dead else hud, 0.4)
+		Hud.box(self, sil, 10.0, Color(Palette.PANEL_RAISED, 0.9), edge, 1.0)
 	if dead:
 		draw_line(sil.position, sil.end, Palette.ENEMY_DIM, 2.0)
 		draw_line(Vector2(sil.position.x, sil.end.y), Vector2(sil.end.x, sil.position.y), Palette.ENEMY_DIM, 2.0)
-	var name_y := sil.end.y + 16.0
-	draw_string(font, Vector2(0, name_y), display_name, HORIZONTAL_ALIGNMENT_CENTER, size.x, 14, Palette.MUTED)
-	# Floating bar box, top-right of the sprite.
+	if highlight:
+		Hud.brackets(self, sil.grow(5.0), 14.0, Palette.TARGET, 2.0)
+	var name_y := sil.end.y + 17.0
+	draw_string(disp, Vector2(0, name_y), display_name, HORIZONTAL_ALIGNMENT_CENTER, size.x, 16, Color(hud, 0.85 if not dead else 0.4))
 	if not bars.is_empty() and not dead:
-		var bw := 44.0
-		var bh := 4.0 + bars.size() * 6.0
-		var bx := sil.end.x - 10.0
-		var by := sil.position.y - 8.0
-		draw_rect(Rect2(bx, by, bw, bh), Palette.BG)
-		draw_rect(Rect2(bx, by, bw, bh), Palette.RULE, false, 1.0)
-		var y := by + 2.0
-		for b in bars:
-			var frac: float = clampf(float(b[0]) / float(maxi(1, b[1])), 0.0, 1.0)
-			draw_rect(Rect2(bx + 2.0, y, bw - 4.0, 4.0), Palette.PANEL_RAISED)
-			if frac > 0.0:
-				draw_rect(Rect2(bx + 2.0, y, (bw - 4.0) * frac, 4.0), b[2])
-			y += 6.0
-		draw_line(Vector2(sil.end.x - 6.0, sil.position.y + 4.0), Vector2(bx, by + bh), Palette.RULE, 1.0)
-	# Intent chip below the sprite.
+		if bars_above:
+			# Full-width gauges stacked above the sprite: hull, shield, heat.
+			var bx := size.x * 0.1
+			var bw := size.x * 0.8
+			var y := 3.0
+			for b in bars:
+				var frac: float = clampf(float(b[0]) / float(maxi(1, b[1])), 0.0, 1.0)
+				Hud.gauge(self, Rect2(bx, y, bw, 8.0), frac, b[2])
+				y += 11.0
+		else:
+			# One small gauge floating at the sprite's top-right.
+			var y := sil.position.y - 12.0
+			var bx := sil.end.x - 30.0
+			for b in bars:
+				var frac: float = clampf(float(b[0]) / float(maxi(1, b[1])), 0.0, 1.0)
+				Hud.gauge(self, Rect2(bx, y, 52.0, 8.0), frac, b[2])
+				y -= 10.0
+			Hud.tick(self, Vector2(sil.end.x - 4.0, sil.position.y + 2.0), Color(hud, 0.6))
+	# Status chips on the sprite, bottom-left, stacked upward.
+	if not dead:
+		var sy := sil.end.y - 14.0
+		for s in statuses:
+			var glyph: String = s[0]
+			var txt: String = str(s[1])
+			var chip_w := 20.0 + (mono.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x + 6.0 if not txt.is_empty() else 0.0)
+			var chip_rect := Rect2(sil.position.x + 3.0, sy - 9.0, chip_w, 18.0)
+			Hud.box(self, chip_rect, 3.0, Color(Palette.BG, 0.9), hud, 1.0)
+			Glyphs.draw(self, glyph, Vector2(sil.position.x + 13.0, sy), 11, hud, 1.6)
+			if not txt.is_empty():
+				draw_string(mono, Vector2(sil.position.x + 22.0, sy + 4.0), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, hud)
+			sy -= 20.0
+	# Readout below the name: [ATK 10], [SUPPRESSED], [EXPOSED].
 	if not intent.is_empty() and not dead:
-		var tw := font.get_string_size(intent, HORIZONTAL_ALIGNMENT_LEFT, -1, 13).x
-		var cw := tw + 14.0 + (16.0 if not intent_glyph.is_empty() else 0.0)
-		var cx := (size.x - cw) * 0.5
-		var cy := name_y + 6.0
-		var chip := StyleBoxFlat.new()
-		chip.bg_color = Palette.BG
-		chip.border_color = Palette.ACCENT
-		chip.set_border_width_all(1)
-		chip.set_corner_radius_all(9)
-		draw_style_box(chip, Rect2(cx, cy, cw, 18))
-		var tx := cx + 7.0
-		if not intent_glyph.is_empty():
-			Glyphs.draw(self, intent_glyph, Vector2(cx + 12.0, cy + 9.0), 10, Palette.ACCENT, 1.5)
-			tx += 16.0
-		draw_string(font, Vector2(tx, cy + 13.0), intent, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Palette.ACCENT)
+		var col := Color(hud, 0.45 if intent_dim else 0.95)
+		draw_string(mono, Vector2(0, name_y + 17.0), "[%s]" % intent, HORIZONTAL_ALIGNMENT_CENTER, size.x, 13, col)

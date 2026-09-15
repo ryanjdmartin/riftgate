@@ -73,6 +73,19 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				var a := -PI / 2.0 + i * PI / 5.0
 				pts.append(c + Vector2(cos(a), sin(a)) * r)
 			ci.draw_polyline(pts, color, width)
+		"eye":
+			# A hexagonal eye with a pupil: "show every target line".
+			ci.draw_polyline(PackedVector2Array([
+				c + Vector2(-s, 0), c + Vector2(-s * 0.55, -s * 0.7), c + Vector2(s * 0.55, -s * 0.7),
+				c + Vector2(s, 0), c + Vector2(s * 0.55, s * 0.7), c + Vector2(-s * 0.55, s * 0.7), c + Vector2(-s, 0),
+			]), color, width)
+			ci.draw_arc(c, s * 0.3, 0.0, TAU, 16, color, width)
+		"reroll":
+			# A three-quarter circular arrow.
+			ci.draw_arc(c, s * 0.8, -PI * 0.5, PI * 1.1, 20, color, width)
+			var tip := c + Vector2(cos(PI * 1.1), sin(PI * 1.1)) * s * 0.8
+			ci.draw_line(tip, tip + Vector2(-s * 0.05, -s * 0.5), color, width)
+			ci.draw_line(tip, tip + Vector2(s * 0.5, -s * 0.05), color, width)
 		_:
 			ci.draw_rect(Rect2(c - Vector2(s, s), Vector2(size, size)), color, false, width)
 

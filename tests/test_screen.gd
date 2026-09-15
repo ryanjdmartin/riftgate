@@ -1,7 +1,7 @@
 extends TestCase
 
-## Drives the skirmish screen through its gesture handlers without a window, so a script
-## error in the UI layer fails the suite instead of waiting for someone to tap it on a phone.
+## Drives the skirmish screen through its gesture and button handlers without a window, so a
+## script error in the UI layer fails the suite instead of waiting for someone to tap it.
 
 
 func _screen(seed_value: int = 3, elite: bool = false) -> SkirmishScreen:
@@ -9,9 +9,13 @@ func _screen(seed_value: int = 3, elite: bool = false) -> SkirmishScreen:
 	var sk := Skirmish.new(seed_value)
 	for id in ["bulwark", "sentinel", "raptor"]:
 		sk.add_mech(db.make_mech(id))
-	var sq := Unit.squad(1, "risen", Vector2i.ZERO, "undead", 2, 6)
-	sq.elite = elite
-	sk.add_foes(db.foes_for(sq), sq)
+	var ghouls := Unit.squad(1, "ghouls", Vector2i.ZERO, "undead", 2, 4, "ghoul")
+	sk.add_foes(db.foes_for(ghouls), ghouls)
+	var necros := Unit.squad(2, "necromancers", Vector2i.ZERO, "undead", 2, 2, "necromancer")
+	sk.add_foes(db.foes_for(necros), necros)
+	if elite:
+		var boss := Unit.boss(3, "colossus", Vector2i.ZERO, "undead")
+		sk.add_foes(db.foes_for(boss), boss)
 	var screen := SkirmishScreen.new()
 	screen.setup(sk)
 	return screen
@@ -22,8 +26,9 @@ func test_screen_builds_and_starts_round_one() -> void:
 	assert_eq(s.sk.round, 1, "round one started")
 	assert_eq(s.sk.state, Skirmish.State.ASSIGN, "assigning")
 	assert_eq(s._dice.size(), 3, "three dice views")
-	assert_eq(s._mech_views.size(), 3, "three mech views")
-	assert_true(s.get_child_count() > 0, "widgets built")
+	assert_eq(s._end_btn.text, "END TURN", "one end button")
+	assert_true(s._mech_views[0].sprite != null, "mech views carry sprite art")
+	assert_true(s._dice[0].can_tap and s._dice[0].can_drag, "dice lock and drag in the same phase")
 	s.free()
 
 
@@ -37,7 +42,7 @@ func test_tap_locks_and_unlocks_a_die() -> void:
 	s.free()
 
 
-func test_reroll_skips_locked_dice() -> void:
+func test_reroll_skips_locked_and_spent_dice() -> void:
 	var s := _screen(11)
 	s._on_die_tapped(0)
 	var kept_face := s.sk.mechs[0].face_index
@@ -45,6 +50,24 @@ func test_reroll_skips_locked_dice() -> void:
 	s._on_reroll()
 	assert_eq(s.sk.rerolls_left, before - 1, "one reroll spent")
 	assert_eq(s.sk.mechs[0].face_index, kept_face, "locked die untouched")
+	s.free()
+
+
+func test_attack_then_reroll_flow() -> void:
+	var s := _screen(5)
+	var attacker := -1
+	for i in range(3):
+		if s.sk.mechs[i].face().is_attack():
+			attacker = i
+			break
+	assert_true(attacker >= 0, "someone rolled an attack")
+	var target: Foe = s.sk.targets_for(attacker)[0]
+	assert_true(s._use_die(attacker, target), "attack lands first")
+	assert_true(s._roll_label.visible, "the number flashed over the target")
+	assert_false(s._reroll_btn.disabled, "reroll still available after attacking")
+	s._on_reroll()
+	assert_eq(s.sk.rerolls_left, 1, "reroll spent after the attack")
+	assert_true(s.sk.mechs[attacker].assigned, "spent die stays spent")
 	s.free()
 
 
@@ -62,7 +85,8 @@ func test_drag_onto_a_target_spends_the_face() -> void:
 		else:
 			assert_true(s._use_die(i, s.sk.mechs[(i + 1) % 3]), "support face spent on an ally")
 		assert_true(ms.assigned, "mech %d assigned" % i)
-		assert_false(s._dice[i].usable, "spent die is no longer usable")
+		assert_false(s._dice[i].can_drag, "spent die no longer drags")
+		assert_false(s._dice[i].can_tap, "spent die no longer locks")
 	s.free()
 
 
@@ -94,44 +118,116 @@ func test_hold_shows_details_and_arrows() -> void:
 	s.free()
 
 
+func test_die_hold_shows_every_face_visually_without_the_passive() -> void:
+	var s := _screen()
+	s._on_die_held(2)
+	assert_true(s._details.visible, "details shown")
+	var text := s._details_label.text
+	assert_true(text.begins_with("RAPTOR // D4"), "names the die and its size")
+	assert_true(s._details_faces.visible, "face list shown")
+	assert_eq(s._details_faces.faces.size(), 4, "four faces in the column")
+	assert_eq(s._details_faces.current, s.sk.mechs[2].face_index, "current face highlighted")
+	assert_false(text.contains("Hot Hands"), "passive is not on the die readout")
+	s._on_hold_released()
+	assert_false(s._details.visible, "hidden on release")
+	s.free()
+
+
+func test_face_descriptions_drop_the_line_word() -> void:
+	assert_eq(Face.attack(10, Face.Reach.LINE, [], 0, 30).describe(), "10–30", "line of fire goes unsaid")
+	assert_true(Face.attack(20, Face.Reach.INDIRECT).describe().begins_with("indirect 20"), "indirect is called out")
+
+
 func test_double_tap_opens_and_closes_the_codex() -> void:
 	var s := _screen()
 	var foe: Foe = s.sk.front[0]
 	s._on_foe_double_tapped(s._foe_view_for(foe))
 	assert_true(s._codex.visible, "codex opens for a foe")
 	assert_eq(s._codex_title.text, foe.display_name, "titled with the foe's name")
-	assert_true(not s._codex_fantasy.text.is_empty(), "foe fantasy text present")
-	assert_true(not s._codex_question.text.is_empty(), "foe question present")
+	assert_eq(s._codex_sub.text, "THE RISEN", "faction name as the subtitle")
+	assert_true(not s._codex_body.text.is_empty(), "foe codex text present")
+	assert_true(s._codex_actions.visible and s._codex_actions.text.contains("CLAW"), "implemented actions listed")
+	assert_false(s._codex_actions.text.contains("GET BACK UP"), "planned actions stay hidden")
+	assert_true(s._codex_flavour.text.begins_with("“"), "flavour shown as a quote")
+	assert_true(s._codex_flavour.text.contains("tired"), "the foe's own line, not the faction's")
+	assert_false(s._codex_faces.visible, "no face list for a foe")
+	assert_true(s._codex.custom_minimum_size.x >= 600.0, "codex is wide")
 	s._close_codex()
 	assert_false(s._codex.visible, "codex closes")
 	s._on_mech_double_tapped(2)
 	assert_true(s._codex.visible, "codex opens for a mech")
 	assert_eq(s._codex_title.text, "Raptor", "titled with the chassis name")
+	assert_true(s._codex_sprite.visible and s._codex_sprite.texture != null, "head-on sprite shown")
 	assert_true(s._codex_passive.visible, "raptor's passive is shown")
 	assert_true(s._codex_passive.text.contains("Hot Hands"), "by name")
-	assert_true(s._codex_question.text.contains("Faces:"), "faces listed")
+	assert_true(s._codex_faces.visible and s._codex_faces.faces.size() == 4, "faces listed visually")
 	s._close_codex()
 	s.free()
 
 
-func test_end_round_then_next_round_flow() -> void:
-	var s := _screen(5)
-	s._on_end_round()
-	assert_eq(s.sk.state, Skirmish.State.ROUND_START, "between rounds")
-	assert_true(s.sk.can_withdraw(), "withdraw window open")
-	assert_false(s._withdraw_btn.disabled, "withdraw button enabled")
-	assert_eq(s._end_btn.text, "Next round", "button relabelled")
-	s._on_end_round()
-	assert_eq(s.sk.round, 2, "round two")
-	assert_eq(s.sk.state, Skirmish.State.ASSIGN, "assigning again")
-	assert_eq(s._end_btn.text, "End round", "button restored")
+func test_die_double_tap_opens_face_codex_and_keeps_lock_state() -> void:
+	var s := _screen()
+	assert_false(s.locked[0], "unlocked to start")
+	s._on_die_tapped(0)
+	s._on_die_double_tapped(0)
+	assert_false(s.locked[0], "lock state unchanged by a double-tap")
+	assert_true(s._codex.visible, "face codex open")
+	assert_true(s._codex_title.text.ends_with("die"), "titled as the die")
+	assert_true(s._codex_faces.visible, "faces listed visually")
+	assert_eq(s._codex_faces.current, s.sk.mechs[0].face_index, "current face highlighted, not repeated")
+	assert_false(s._codex_body.visible, "no body text on the die entry")
+	s._close_codex()
 	s.free()
 
 
-func test_withdraw_shows_overlay() -> void:
+func test_end_turn_asks_only_when_dice_would_be_wasted() -> void:
 	var s := _screen(5)
-	s._on_end_round()
+	s._on_end_turn()
+	assert_true(s._confirm.visible, "asks with dice unspent")
+	assert_eq(s.sk.round, 1, "nothing happened yet")
+	s._hide_confirm()
+	assert_false(s._confirm.visible, "no keeps the turn")
+	for i in range(3):
+		var ms: Skirmish.MechState = s.sk.mechs[i]
+		var f := ms.face()
+		if f.is_attack():
+			s._use_die(i, s.sk.targets_for(i)[0])
+		elif f.kind == Face.Kind.BLANK:
+			s._use_die(i, null)
+		else:
+			s._use_die(i, s.sk.mechs[(i + 1) % 3])
+	s._on_end_turn()
+	assert_false(s._confirm.visible, "no question when every die is spent")
+	assert_eq(s.sk.round, 2, "the turn ended at once")
+	s.free()
+
+
+func test_end_turn_runs_the_enemy_and_returns_to_the_player() -> void:
+	var s := _screen(5)
+	var before := 0
+	for m in s.sk.mechs:
+		before += m.unit.hull + m.unit.shield
+	s._on_end_turn()
+	s._confirm_yes()
+	assert_eq(s.sk.round, 2, "round two began at once")
+	assert_eq(s.sk.state, Skirmish.State.ASSIGN, "back to the player")
+	var after := 0
+	for m in s.sk.mechs:
+		after += m.unit.hull + m.unit.shield
+	assert_true(after < before, "the enemy acted in between")
+	assert_true(s.sk.can_withdraw(), "withdraw offered at the start of round two")
+	assert_false(s._withdraw_btn.disabled, "withdraw button enabled")
+	s.free()
+
+
+func test_withdraw_asks_then_shows_overlay() -> void:
+	var s := _screen(5)
+	assert_true(s._withdraw_btn.disabled, "no withdraw in round one")
+	s._end_turn_now()
 	s._on_withdraw()
+	assert_true(s._confirm.visible, "withdraw always asks first")
+	assert_eq(s.sk.outcome, Skirmish.Outcome.NONE, "not yet withdrawn")
+	s._confirm_yes()
 	assert_eq(s.sk.outcome, Skirmish.Outcome.WITHDRAWN, "withdrawn")
 	assert_true(s._overlay.visible, "overlay shown")
 	assert_eq(s._overlay_title.text, "WITHDREW", "title")
@@ -142,14 +238,13 @@ func test_exposed_marker_appears_when_front_dies() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
 	var m := db.make_mech("bulwark")
-	m.die = Die.single(Face.attack(9))
+	m.die = Die.single(Face.attack(90))
 	sk.add_mech(m)
-	sk.add_foes([Foe.make("ghoul", 3, 1), Foe.make("archer", 3, 1, true)])
+	sk.add_foes([Foe.make("ghoul", 30, 10), Foe.make("archer", 30, 10, true)])
 	var s := SkirmishScreen.new()
 	s.setup(sk)
 	s._use_die(0, sk.front[0])
-	s._on_end_round()
-	assert_true(s._slot_views[0][0].intent.is_empty() or true, "front slot cleared")
+	s._end_turn_now()
 	assert_true(sk.is_exposed(0), "column exposed in the sim")
 	s.free()
 

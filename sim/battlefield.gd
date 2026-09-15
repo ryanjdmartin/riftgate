@@ -24,11 +24,14 @@ class PhaseResult:
 
 var map: BattleMap
 var units: Array[Unit] = []
-var gate_hp: int = 20
-var gate_hp_max: int = 20
+var gate_hp: int = 200
+var gate_hp_max: int = 200
 var rift_pressure: int = 0
 var rift_pressure_max: int = 12
 var spawn_faction: String = "undead"
+## Squads the rift sends, cycled: [[foe_id, strength], ...]. The game fills this from content.
+var spawn_table: Array = [["ghoul", 6]]
+var _spawn_index: int = 0
 var phase: int = 0
 var intents: Dictionary = {}   # squad id -> Array[Vector2i], the affordable part of its path
 var log: Array[String] = []
@@ -264,7 +267,7 @@ func _execute_squad(sq: Unit, result: PhaseResult) -> void:
 	for step in path:
 		var s: Vector2i = step
 		if map.gate_hexes.has(s):
-			var dmg := maxi(1, sq.strength / 3)
+			var dmg := maxi(10, (sq.strength * 10) / 3)
 			gate_hp = maxi(0, gate_hp - dmg)
 			result.gate_damage += dmg
 			log.append("%s hits the gate for %d" % [sq.display_name, dmg])
@@ -324,7 +327,9 @@ func tick_pressure(ticks: int) -> bool:
 		return false
 	rift_pressure -= rift_pressure_max
 	var at := nearest_free(map.rift, [])
-	var sq := Unit.squad(0, "%s reinforcements" % spawn_faction, at, spawn_faction)
+	var entry: Array = spawn_table[_spawn_index % spawn_table.size()] if not spawn_table.is_empty() else ["", 6]
+	_spawn_index += 1
+	var sq := Unit.squad(0, "%s squad" % str(entry[0]), at, spawn_faction, 2, int(entry[1]), str(entry[0]))
 	add_unit(sq)
 	log.append("Rift pressure peaks: %s emerge at %s" % [sq.display_name, str(at)])
 	return true

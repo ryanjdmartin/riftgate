@@ -32,7 +32,8 @@ and open question from the design sessions.
   `test_` method, including the content validator and a headless drive of the skirmish screen.
 - `tools/` — `export_vocabulary.gd` regenerates `docs/vocabulary.md`; `screenshot.gd` renders a
   scene to PNG at 720x1280.
-- `docs/` — design bible, generated vocabulary, concept intake in `docs/concepts/`.
+- `docs/` — design bible, generated vocabulary, concept intake in `docs/concepts/`, and
+  `status.md`, the handoff note updated at the end of every working session.
 
 ## Running
 
@@ -51,15 +52,26 @@ godot --path .
 # regenerate docs/vocabulary.md from content/vocabulary.json
 godot --headless --path . -s tools/export_vocabulary.gd
 
-# screenshot a scene (needs a window; a small one opens briefly)
-godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmish/skirmish_screen.tscn shot.png
+# screenshot a scene (needs a window; a small one opens briefly); an optional third argument
+# poses the skirmish screen first: codex, mechcodex, diecodex, hold, confirm, lock
+godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmish/skirmish_screen.tscn shot.png codex
+
+# regenerate mech sprites from the primitive models (see tools/spriter/README.md), then re-import
+tools/spriter/.venv/bin/python tools/spriter/spriter.py
+godot --headless --path . --import
 ```
 
-In the skirmish screen: tap a die to lock it (reroll skips it), hold a die for its details,
-drag a die onto a foe to spend an attack face or onto a mech to spend a shield or vent face.
-Valid targets light up while dragging. Hold a foe or a mech for its numbers and the intent
-arrows that concern it; the eye button in the header shows every arrow. Withdraw is
-available between rounds only. Blank faces are discarded at end of round.
+The skirmish screen runs top to bottom: header with End turn and Withdraw at the top right,
+enemies, dice with Reroll beneath them, mechs with their bars above the sprites, log at the
+bottom. Tap a die to lock it, hold a die to see every face on it, drag a die onto a foe to
+spend an attack face or onto a mech to spend a shield or vent face; valid targets light up
+while dragging. Keywords float beside each die as annotation tags. Kinetic faces roll their damage when they land and the
+number flashes over the target; energy faces are static. Reroll up to twice per round, before
+or after attacking. End turn runs the enemy and starts the next round immediately. Numbers
+are in tens. Hold a foe or a mech for its numbers and the intent arrows
+that concern it; the eye button shows every arrow; double-tap any unit or die for its codex
+entry. Withdraw is offered at the start of a round after the first, before Lock in. Blank
+faces are discarded at end of turn.
 
 The harness can add the faction's massive elite, which fills both ranks of a column. For the
 standalone screen, `RIFTGATE_TEAM=bulwark,sentinel,raptor,anvil` picks the team and
