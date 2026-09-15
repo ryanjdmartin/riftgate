@@ -37,7 +37,10 @@ and open question from the design sessions.
 - `tests/` — headless tests. `run_tests.gd` discovers `test_*.gd` files and runs every
   `test_` method, including the content validator and a headless drive of the skirmish screen.
 - `tools/` — `export_vocabulary.gd` regenerates `docs/vocabulary.md`; `screenshot.gd` renders a
-  scene to PNG at 720x1280.
+  scene to PNG at 720x1280; `spriter/` renders mech sprites from primitive models;
+  `sheet_export.py` exports the enemy grids in `docs/sprites-enemies.html` to `art/foes/`.
+- `art/` — `mechs/` from the spriter, `foes/` from the sheet export, `fonts/` the HUD faces.
+  Everything is optional: a missing sprite falls back to a placeholder shape.
 - `docs/` — design bible, generated vocabulary, concept intake in `docs/concepts/`, and
   `status.md`, the handoff note updated at the end of every working session.
 
@@ -67,6 +70,10 @@ godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/
 # regenerate mech sprites from the primitive models (see tools/spriter/README.md), then re-import
 tools/spriter/.venv/bin/python tools/spriter/spriter.py
 godot --headless --path . --import
+
+# export the enemy sprites from the grids in docs/sprites-enemies.html to art/foes, then re-import
+tools/spriter/.venv/bin/python tools/sheet_export.py
+godot --headless --path . --import
 ```
 
 The skirmish screen runs top to bottom: header with End turn and Withdraw at the top right,
@@ -89,8 +96,9 @@ The battle screen is the loop. The header shows the phase, the gate's hull, and 
 Pressure. The map scrolls by drag and starts at the gate end. Tap a mech to select it and the
 hexes it can reach light up; tap a lit hex to plot the route there; tap the mech again to
 clear its route. Two mechs cannot claim the same destination. Hold any unit for its numbers.
-Red lines are where each squad goes this phase unless something stops it. Resolve, bottom
-left, moves the team first and then the squads; every group of touching units that mixes both
+Red lines are where each squad goes this phase unless something stops it. A squad outside the
+view gets a portrait at the edge nearest it, with its strength and a chevron; tap the
+portrait to scroll to it. Resolve, bottom left, moves the team first and then the squads; every group of touching units that mixes both
 sides becomes a skirmish, played on the skirmish screen over the map. Its Back button applies
 the result: wrecks leave the map, squads shrink to their survivors, surviving shields recharge,
 and Rift Pressure ticks once per round fought. The battle ends when the gate's hull reaches

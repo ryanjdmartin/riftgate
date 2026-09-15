@@ -11,6 +11,7 @@ perl -e 'alarm 240; exec @ARGV' godot --headless --path . -s tests/run_tests.gd 
 godot --path .                                     # harness: skirmish screen and map viewer
 godot --headless --path . -s tools/export_vocabulary.gd   # regenerate docs/vocabulary.md
 tools/spriter/.venv/bin/python tools/spriter/spriter.py   # regenerate mech sprites, then --import
+tools/spriter/.venv/bin/python tools/sheet_export.py      # export enemy grids to art/foes, then --import
 ```
 
 Always wrap headless Godot runs in a watchdog: a tool script that errors before `quit()` hangs forever.

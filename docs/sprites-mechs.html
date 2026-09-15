@@ -59,6 +59,11 @@
   .pal{display:grid; grid-template-columns:repeat(auto-fill, minmax(44px, 1fr)); gap:5px; max-width:360px; margin-top:6px}
   .pal i{display:block; height:22px; border:1px solid rgba(0,0,0,.3)}
   .pal span{display:block; font-family:var(--mono); font-size:9.5px; color:var(--ink-3); line-height:1.2; margin-top:2px; letter-spacing:0}
+  .renders{display:flex; flex-wrap:wrap; gap:16px 20px; margin-top:20px}
+  .renders figure{margin:0; max-width:100%}
+  .renders img{display:block; max-width:100%; image-rendering:pixelated; background:#1B1F26; border:1px solid var(--line)}
+  .renders figcaption{font-size:13px; color:var(--ink-2); margin-top:6px}
+  .renders figcaption b{font-family:var(--display); text-transform:uppercase; letter-spacing:.06em; font-size:15px; margin-right:6px}
   .tiles{display:flex; flex-wrap:wrap; gap:16px 20px; margin-top:24px}
   .tiles figure{width:156px}
   .tiles figcaption{max-width:156px}
@@ -81,10 +86,22 @@
   <p class="lede">Player units are grounded military mecha in the Mechwarrior lineage with a Terran-armour attitude: heavy, angular, serviced-not-cobbled, bolted plates and exposed hydraulics, a small crew cockpit where a face would be. Each chassis exists at two scales, a 48 &times; 64 combat sprite that carries the fantasy, and a 16 &times; 16 chibi map sprite that only has to be told apart at hex size. Everything below is still a code-drawn style sketch, rendered at load from hand-typed character grids, not final art; what is being tested is silhouette, mass, house colour, hardpoint legibility and whether the front reads, all of which survive a real pixel artist.</p>
 </header>
 
+<!-- ============================== RENDERED ============================== -->
+<section id="rendered">
+  <span class="tag">Current art</span>
+  <h2>Rendered sprites</h2>
+  <div class="round"><b>14 September</b>These are what the engine draws. Each chassis is a primitive model in <code>tools/spriter/spriter.py</code>, rendered to a head-on combat sprite, two three-quarter turns, and a six-frame map strip; the contact sheets below show every output at 4&times;. The hand-typed grids further down are the round-two brief the models were built from, kept for the reasoning; when the renders and the grids disagree, the renders are current. The Anvil has no model yet.</div>
+  <div class="renders">
+    <figure><img src="../art/mechs/bulwark_contact.png" alt="Bulwark contact sheet"><figcaption><b>Bulwark</b> Halvard deep red on cold steel.</figcaption></figure>
+    <figure><img src="../art/mechs/sentinel_contact.png" alt="Sentinel contact sheet"><figcaption><b>Sentinel</b> Orrin &amp; Pike bone-white plates.</figcaption></figure>
+    <figure><img src="../art/mechs/raptor_contact.png" alt="Raptor contact sheet"><figcaption><b>Raptor</b> Kestrel cobalt, hovering.</figcaption></figure>
+  </div>
+</section>
+
 <!-- ============================== COMBAT ============================== -->
 <section id="combat">
   <span class="tag">Skirmish scale</span>
-  <h2>Combat sprites</h2>
+  <h2>Combat sprites (round-two brief)</h2>
   <div class="round"><b>Round two</b>Olive is gone: every mech is now a cold steel ramp with one saturated house colour on the armour plates and amber or white markings, and every combat sprite is redrawn three-quarter front so the player sees cockpit, chest plate and gun muzzle. The build is heavier throughout, with knee actuators, wide feet, bevelled plates, multi-pane canopies and short fat cannons in place of the round-one boxes.</div>
   <p style="margin-top:12px">48 wide by 64 tall (the Raptor is 64 by 48). The enemy side is above the mechs on screen, but the sprite faces the viewer, turned slightly toward the upper-left, so a cannon pointing at the enemy is drawn as a foreshortened muzzle face: wide bore, brake slots, thick housing behind it. One pixel of <code>#1a1d23</code> outline on the silhouette, at most sixteen colours per unit, interior lines only where a plate changes value or a rivet line runs along an edge. Each is shown at 3&times; and, beside it, at 1&times; next to the 120 px die outline it will share a card with.</p>
 

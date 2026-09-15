@@ -104,6 +104,30 @@ func test_contact_opens_the_skirmish_screen_and_back_applies_it() -> void:
 	s.free()
 
 
+func test_offscreen_squads_get_edge_tags() -> void:
+	var s := _screen()
+	var tags: Array = s._map.offscreen_tags()
+	var hidden := 0
+	for sq in s.battle.field.squads():
+		if s._map.center(sq.pos).y < -BattleMapView.HEX_SIZE * 0.3:
+			hidden += 1
+	assert_true(hidden >= 2, "most squads start off-screen at the gate end")
+	assert_eq(tags.size(), hidden, "one tag per off-screen squad")
+	for t in tags:
+		var rect: Rect2 = t[0]
+		assert_true(t[2], "tags sit at the top edge")
+		assert_true(rect.position.x >= 0.0 and rect.end.x <= s._map.size.x, "tag inside the view")
+	for i in range(1, tags.size()):
+		assert_true(tags[i][0].position.x >= tags[i - 1][0].end.x, "tags do not overlap")
+	var sq: Unit = s.battle.field.squads()[0]
+	s._map.scroll_to_unit(sq)
+	var still: Array = s._map.offscreen_tags()
+	for t in still:
+		assert_true(t[1] != sq, "the squad scrolled to has no tag")
+	assert_true(BattleMapView.foe_sprite_id(s.battle.boss) == "bone_colossus", "boss uses the faction's boss art")
+	s.free()
+
+
 func test_hold_shows_a_readout() -> void:
 	var s := _screen()
 	s._on_unit_held(s.battle.mechs()[0])
