@@ -16,6 +16,7 @@ var _foe_b: OptionButton
 var _count_b: SpinBox
 var _boss: OptionButton
 var _seed: SpinBox
+var _columns: OptionButton
 var _menu: Control
 var _current: Node = null
 
@@ -96,6 +97,13 @@ func _build_menu() -> void:
 	row_c.add_child(_boss)
 	_seed = _spin("seed", 1, 9999, 7)
 	row_c.add_child(_seed)
+	_columns = OptionButton.new()
+	_columns.add_theme_font_size_override("font_size", 18)
+	for n in [3, 4]:
+		_columns.add_item("%d columns" % n)
+		_columns.set_item_metadata(_columns.item_count - 1, n)
+	_columns.select(0)
+	row_c.add_child(_columns)
 
 	col.add_child(_label("HUD colour", 20, Palette.INK))
 	var swatches := HBoxContainer.new()
@@ -171,7 +179,7 @@ func _button(text: String, on_pressed: Callable) -> Button:
 
 
 func _on_fight() -> void:
-	var sk := Skirmish.new(int(_seed.value))
+	var sk := Skirmish.new(int(_seed.value), int(_columns.get_item_metadata(_columns.selected)))
 	var uid := 1
 	for id in _chassis_checks.keys():
 		if _chassis_checks[id].button_pressed:
@@ -221,6 +229,7 @@ func _on_battle() -> void:
 	if fac.is_empty() or not db.factions.has(fac):
 		fac = "undead"
 	var b := Battle.new(int(_seed.value))
+	b.columns = int(_columns.get_item_metadata(_columns.selected))
 	b.setup(team, fac)
 	var screen: BattleScreen = BATTLE_SCENE.instantiate()
 	screen.battle = b

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Riftgate Art Lab</title>
+<style>
+  :root { --bg:#1b1f26; --panel:#242a33; --ink:#e8e4d6; --muted:#9aa3ad; --accent:#e3894b; --line:#39414c; }
+  body { margin:0; background:var(--bg); color:var(--ink); font: 15px/1.5 -apple-system, 'Helvetica Neue', Arial, sans-serif; }
+  .wrap { max-width: 1400px; margin: 0 auto; padding: 32px 24px 80px; }
+  h1 { font-size: 34px; margin: 0 0 4px; letter-spacing: .02em; }
+  h2 { font-size: 22px; margin: 44px 0 6px; color: var(--accent); }
+  p.lede, section > p { max-width: 80ch; color: var(--muted); margin: 0 0 14px; }
+  .row { display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-end; }
+  figure { margin: 0; background: var(--panel); border: 1px solid var(--line); padding: 10px; }
+  figure img { display: block; max-width: 100%; image-rendering: pixelated; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 8px; max-width: 60ch; }
+  figcaption b { color: var(--ink); }
+  .note { border-left: 3px solid var(--accent); padding: 6px 12px; color: var(--muted); max-width: 80ch; }
+  code { background: #0f1216; padding: 1px 5px; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Riftgate Art Lab</h1>
+<p class="lede">Every art experiment from the 15 September sessions, in the order they happened, with what each one showed. Images under <code>docs/art-lab/</code>; the <code>ext/</code> folder holds anything derived from third-party art and is not committed. Regenerate any of these with the commands in <code>tools/foeforge/README.md</code> and <code>tools/spriter/README.md</code>.</p>
+
+<section>
+<h2>1. Enemies from the image model</h2>
+<p>FLUX.2 Klein 4B through mflux, prompted from the foe's codex text plus a Final Fantasy VI style brief. About eight seconds a candidate on the M4 Max. The cutter keys the white, crops, scales to 48x64, flattens to sixteen colours and adds the outline.</p>
+<div class="row">
+  <figure><img src="art-lab/model_ghoul_pick.png" width="256" alt="The first ghoul from the model"><figcaption><b>The first ghoul.</b> Prompted only; the one now in the engine.</figcaption></figure>
+  <figure><img src="art-lab/model_ghoul_candidates.png" width="512" alt="Two more ghoul candidates"><figcaption><b>Two more seeds</b> from <code>forge.py generate ghoul</code>, on the automatic prompt.</figcaption></figure>
+  <figure><img src="art-lab/ghoul_cut_4x.png" alt="The ghoul cut to 48x64 with its map token"><figcaption><b>The cut</b> at 4x, with the 16 px map token. The model's own colours, reduced to sixteen; the faction palette snap read muddy.</figcaption></figure>
+</div>
+</section>
+
+<section>
+<h2>2. Perspective for player units</h2>
+<p>The same three primitive models through our renderer at the old angle and at isometric angles, in the old and the new frame. The angle helps; the models are still boxes.</p>
+<div class="row">
+  <figure><img src="art-lab/iso_compare.png" alt="Renderer comparison of angles and frames"><figcaption><b>Current angle, isometric in 48x64, isometric in 64x96 at two pitches.</b> Decided: 30 degrees down, 45 degrees off head-on, in an 80x96 frame at the foes' pixel density.</figcaption></figure>
+</div>
+</section>
+
+<section>
+<h2>3. The model on mechs, and the hybrid</h2>
+<p>Prompt alone gave superb finish and ignored the design. Feeding the renderer's own sprite as the reference image at low strength kept the design and added the finish. In mflux, low strength means more freedom; 0.5 and above returns the render unchanged.</p>
+<div class="row">
+  <figure><img src="art-lab/model_bulwark_prompt_only_1.png" width="300" alt="Bulwark from the prompt alone, seed 1"><figcaption><b>Prompt only, seed 1.</b> A tank. No fists.</figcaption></figure>
+  <figure><img src="art-lab/model_bulwark_prompt_only_2.png" width="300" alt="Bulwark from the prompt alone, seed 2"><figcaption><b>Prompt only, seed 2.</b> Also a tank.</figcaption></figure>
+  <figure><img src="art-lab/bulwark_render_64x96.png" width="192" alt="The renderer's Bulwark used as the reference"><figcaption><b>The reference:</b> the renderer's own front-right sprite.</figcaption></figure>
+  <figure><img src="art-lab/model_bulwark_from_render.png" width="300" alt="Bulwark refined by the model from the render"><figcaption><b>Refined from the render at strength 0.2.</b> Tracks, cockpit, shoulder cannon and claws all survive.</figcaption></figure>
+  <figure><img src="art-lab/bulwark_hybrid_cut_4x.png" alt="The hybrid Bulwark cut to 80x96"><figcaption><b>The cut</b> at 4x: 80x96, sixteen colours. This is in the engine.</figcaption></figure>
+  <figure><img src="art-lab/skirmish_hybrid_bulwark.png" width="360" alt="Skirmish screen with the hybrid Bulwark"><figcaption><b>On screen</b> beside the plain-render Sentinel and Raptor, all at 2x.</figcaption></figure>
+</div>
+</section>
+
+<section>
+<h2>4. Two genres, two pixel grids</h2>
+<p>To keep the mechs from drifting toward the foes' painterly register, the cut can draw a mech on a grid twice as coarse with ten colours (<code>cut-mech --chunk 2 --colours 10</code>). The line-up in <code>ext/</code> compares a borrowed walker, its refinement, and the Bulwark at both densities beside the ghoul.</p>
+<div class="row">
+  <figure><img src="art-lab/bulwark_hybrid_chunk2_4x.png" alt="The hybrid Bulwark on the coarse grid"><figcaption><b>The Bulwark on the coarse grid</b>, ten colours. Reads as a different medium from the ghoul.</figcaption></figure>
+  <figure><img src="art-lab/ext/density_compare.png" alt="Density comparison line-up (third-party source, not committed)"><figcaption><b>The line-up</b> (not committed: contains the borrowed walker). Source, source coarse, model refinement, refinement coarse, Bulwark coarse, ghoul.</figcaption></figure>
+</div>
+</section>
+
+<section>
+<h2>5. A well-defined walker as source</h2>
+<p>The Antraxx rotation gif, split into eight facings by flood-filling the gradient, then one facing refined by the model in Halvard colours. For pipeline testing only; it is someone else's art.</p>
+<div class="row">
+  <figure><img src="art-lab/ext/antraxx_walker.png" alt="Eight facings of the borrowed walker (not committed)"><figcaption><b>Eight facings extracted</b> at 3x.</figcaption></figure>
+  <figure><img src="art-lab/ext/antraxx_i2i.png" width="300" alt="The walker refined by the model in Halvard colours (not committed)"><figcaption><b>One facing refined</b> at strength 0.3: pose kept, legs that make sense, our colours.</figcaption></figure>
+</div>
+</section>
+
+<p class="note">Next art threads: Ryan's own mech designs through the hybrid, the Anvil model, the coarse grid as the mech default, and the terrain split (realistic near the gate, flat high fantasy near the rift).</p>
+</div>
+</body>
+</html>

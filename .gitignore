@@ -14,3 +14,6 @@ build/
 tools/spriter/.venv/
 tools/foeforge/.venv/
 tools/foeforge/out/
+
+# third-party reference art used in experiments, never shipped
+docs/art-lab/ext/

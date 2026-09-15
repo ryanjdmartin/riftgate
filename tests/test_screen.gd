@@ -259,3 +259,22 @@ func test_massive_elite_uses_the_tall_view() -> void:
 			assert_false(s._slot_views[1][col].visible, "both of them")
 	assert_eq(massive_cols, 1, "one column shows the massive elite")
 	s.free()
+
+
+func test_screen_lays_out_four_columns() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(4, 4)
+	for id in ["bulwark", "sentinel"]:
+		sk.add_mech(db.make_mech(id))
+	var ghouls := Unit.squad(1, "ghouls", Vector2i.ZERO, "undead", 2, 8, "ghoul")
+	sk.add_foes(db.foes_for(ghouls), ghouls)
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	assert_eq(s._slot_views[0].size(), 4, "four front views")
+	assert_eq(s._massive_views.size(), 4, "four massive views")
+	var first: UnitView = s._slot_views[0][0]
+	var last: UnitView = s._slot_views[0][3]
+	assert_true(first.position.x >= 0.0, "first column inside the screen")
+	assert_true(last.position.x + last.size.x <= SkirmishScreen.W, "last column inside the screen")
+	assert_true(s._view_foe.size() == 8, "eight foes shown")
+	s.free()

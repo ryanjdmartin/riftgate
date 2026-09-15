@@ -37,6 +37,7 @@ var pending: Array = []         # contact groups (Array[Unit]) waiting for a ski
 var current: Skirmish = null
 var last_result: Battlefield.PhaseResult = null
 var skirmishes_fought: int = 0
+var columns: int = Skirmish.DEFAULT_COLUMNS   # formation width for every skirmish this battle opens
 
 
 func _init(seed_arg: int = 1) -> void:
@@ -173,7 +174,7 @@ func open_next_skirmish() -> Skirmish:
 
 ## The mechs of the group fight every foe the group's squads unpack into.
 func _build_skirmish(group: Array) -> Skirmish:
-	var sk := Skirmish.new(rng.randi())
+	var sk := Skirmish.new(rng.randi(), columns)
 	for u in group:
 		if not field.units.has(u):
 			continue

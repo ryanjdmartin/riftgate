@@ -23,7 +23,6 @@ signal back_requested
 
 const W := 720.0
 const H := 1280.0
-const COL_X := [150.0, 360.0, 570.0]
 const BACK_Y := 60.0
 const FRONT_Y := 254.0
 const SLOT_SIZE := Vector2(150, 194)     # floating gauge 18 + 48x64 foe at 2x + chip row 38
@@ -113,10 +112,10 @@ func _ready() -> void:
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks): two
 ## chained undead squads. RIFTGATE_TEAM=bulwark,sentinel,raptor,anvil overrides the team;
-## RIFTGATE_ELITE=1 adds the faction's boss as a third unit.
+## RIFTGATE_ELITE=1 adds the faction's boss as a third unit; RIFTGATE_COLUMNS=4 widens the formation.
 static func _default_skirmish() -> Skirmish:
 	var db := ContentDB.load_default()
-	var s := Skirmish.new(7)
+	var s := Skirmish.new(7, int(OS.get_environment("RIFTGATE_COLUMNS")) if not OS.get_environment("RIFTGATE_COLUMNS").is_empty() else Skirmish.DEFAULT_COLUMNS)
 	var team: Array = ["bulwark", "sentinel", "raptor"]
 	var env := OS.get_environment("RIFTGATE_TEAM")
 	if not env.is_empty():
@@ -139,8 +138,13 @@ static func _default_skirmish() -> Skirmish:
 func _build() -> void:
 	for c in get_children():
 		c.queue_free()
-	_slot_views = [[null, null, null], [null, null, null]]
-	_massive_views = [null, null, null]
+	_slot_views = [[], []]
+	for rank in range(2):
+		_slot_views[rank].resize(sk.columns)
+		_slot_views[rank].fill(null)
+	_massive_views = []
+	_massive_views.resize(sk.columns)
+	_massive_views.fill(null)
 	_mech_views.clear()
 	_dice.clear()
 	custom_minimum_size = Vector2(W, H)
@@ -168,12 +172,12 @@ func _build() -> void:
 
 	# Formation: six slot views, three massive views (hidden until needed). Ranks need no
 	# label; the back rank is the one behind.
-	for col in range(Skirmish.COLUMNS):
+	for col in range(sk.columns):
 		for rank in range(2):
 			var v := UnitView.new()
 			v.is_enemy = true
 			var y := FRONT_Y if rank == 0 else BACK_Y
-			_place(v, Vector2(COL_X[col] - SLOT_SIZE.x * 0.5, y), SLOT_SIZE)
+			_place(v, Vector2(_col_x(col) - SLOT_SIZE.x * 0.5, y), SLOT_SIZE)
 			v.held.connect(_on_foe_held.bind(v))
 			v.hold_released.connect(_on_hold_released)
 			v.double_tapped.connect(_on_foe_double_tapped.bind(v))
@@ -182,7 +186,7 @@ func _build() -> void:
 		mv.is_enemy = true
 		mv.massive = true
 		mv.visible = false
-		_place(mv, Vector2(COL_X[col] - MASSIVE_SIZE.x * 0.5, BACK_Y), MASSIVE_SIZE)
+		_place(mv, Vector2(_col_x(col) - MASSIVE_SIZE.x * 0.5, BACK_Y), MASSIVE_SIZE)
 		mv.held.connect(_on_foe_held.bind(mv))
 		mv.hold_released.connect(_on_hold_released)
 		mv.double_tapped.connect(_on_foe_double_tapped.bind(mv))
@@ -417,6 +421,13 @@ func _column_x(i: int, n: int) -> float:
 	return W * 0.5 + (i - (n - 1) * 0.5) * PITCH
 
 
+## Enemy column centres: three columns at a wide pitch, four at a tight one.
+func _col_x(col: int) -> float:
+	var n := sk.columns
+	var pitch := 210.0 if n <= 3 else minf(176.0, (W - 16.0) / n)
+	return W * 0.5 + (col - (n - 1) * 0.5) * pitch
+
+
 func _place(c: Control, pos: Vector2, sz: Vector2) -> void:
 	c.position = pos
 	c.size = sz
@@ -452,7 +463,7 @@ func _refresh() -> void:
 		elif f != null and f.kind != Face.Kind.BLANK:
 			support = true
 
-	for col in range(Skirmish.COLUMNS):
+	for col in range(sk.columns):
 		var front_foe := sk.foe_at(0, col)
 		var massive := front_foe != null and front_foe.is_massive()
 		var mv: UnitView = _massive_views[col]

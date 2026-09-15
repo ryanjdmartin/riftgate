@@ -35,6 +35,15 @@ refines the renderer's combat sprite as its reference (`forge.py mech`, `cut-mec
 Bulwark's front-right is the first hybrid sprite in the engine; Sentinel and Raptor are still
 plain renders. Re-running the spriter overwrites the pick; re-run cut-mech afterwards.
 
+Formation width is a setting: `Skirmish.new(seed, columns)`, `Battle.columns`, a picker on
+the harness, `RIFTGATE_COLUMNS=4` for the standalone screen. Three by default. Ryan is
+taking a pass on enemy types and compositions; the current content is proof of concept.
+Design direction recorded in the bible: few machines versus a horde, hooks from that
+(area damage, taunt, mitigation, dumb rank and file, smart demon and eldritch tiers,
+commander units that scramble targeting when killed). Art experiments are collected on
+`docs/art-lab.html` (open it in a browser); third-party-derived images live in the
+ignored `docs/art-lab/ext/`.
+
 **Known rough edges.**
 
 - Ryan reported codex stat lines cut off on the left; not reproduced in a 720x1280 render.

@@ -560,3 +560,25 @@ func test_skirmish_reroll_changes_every_unlocked_face() -> void:
 		sk.reroll([0, 1, 2])
 		for i in range(3):
 			assert_true(sk.mechs[i].face().to_dict() != before[i], "seed %d mech %d shows a different face" % [seed_value, i])
+
+
+func test_four_columns_fill_and_reach() -> void:
+	var sk := Skirmish.new(1, 4)
+	sk.add_mech(_mech("A", Die.single(Face.attack(20, L, K.CLEAVE))))
+	var foes: Array = []
+	for i in range(10):
+		foes.append(_ghoul(50))
+	sk.add_foes(foes)
+	sk.begin()
+	assert_eq(sk.columns, 4, "four wide")
+	assert_eq(sk.front.size(), 4, "four front slots")
+	assert_eq(sk.field_foes().size(), 8, "eight on the field")
+	assert_eq(sk.pool.size(), 2, "two wait in the pool")
+	sk.start_round()
+	assert_eq(sk.targets_for(0).size(), 4, "every front foe is a line target")
+	assert_true(sk.assign(0, sk.front[3]), "cleave the right edge")
+	assert_eq(sk.front[3].hp, 30, "edge took 20")
+	assert_eq(sk.front[2].hp, 30, "its one neighbour took 20")
+	assert_eq(sk.front[1].hp, 50, "the far column is untouched")
+	var three := Skirmish.new(1)
+	assert_eq(three.columns, Skirmish.DEFAULT_COLUMNS, "three by default")

@@ -20,7 +20,7 @@ extends RefCounted
 enum State { SETUP, ROUND_START, ASSIGN, DONE }
 enum Outcome { NONE, VICTORY, DEFEAT, WITHDRAWN }
 
-const COLUMNS := 3
+const DEFAULT_COLUMNS := 3   # the formation's width; four makes more of a horde
 const REROLLS_PER_ROUND := 3
 const DANGER_CLOSE_DIVISOR := 2
 const BURN_PER_STACK := 10          # damage each stack deals per round
@@ -50,8 +50,9 @@ class MechState:
 var rng := RandomNumberGenerator.new()
 var mechs: Array[MechState] = []
 var squads: Array[Unit] = []
-var front: Array = [null, null, null]
-var back: Array = [null, null, null]
+var columns: int = DEFAULT_COLUMNS
+var front: Array = []
+var back: Array = []
 var pool: Array[Foe] = []
 var round: int = 0
 var rerolls_left: int = 0
@@ -63,8 +64,13 @@ var log: Array[String] = []
 var last_roll: Dictionary = {}
 
 
-func _init(seed_value: int = 0) -> void:
+func _init(seed_value: int = 0, columns_arg: int = DEFAULT_COLUMNS) -> void:
 	rng.seed = seed_value
+	columns = maxi(1, columns_arg)
+	front.resize(columns)
+	front.fill(null)
+	back.resize(columns)
+	back.fill(null)
 
 
 # ---------------------------------------------------------------- setup
@@ -218,7 +224,7 @@ func targets_for(mech_index: int) -> Array[Foe]:
 	var f := ms.face()
 	if f == null or not f.is_attack():
 		return out
-	for col in range(COLUMNS):
+	for col in range(columns):
 		if front[col] != null and not out.has(front[col]):
 			out.append(front[col])
 		if back[col] != null and not out.has(back[col]) and (f.reach == Face.Reach.INDIRECT or is_exposed(col)):
@@ -356,7 +362,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 	var hit: Array[Foe] = [target]
 	if f.has(Face.Keyword.CLEAVE):
 		for c in [target.column - 1, target.column + 1]:
-			if c >= 0 and c < COLUMNS:
+			if c >= 0 and c < columns:
 				var n := foe_at(target.rank, c)
 				if n != null and not hit.has(n):
 					hit.append(n)
@@ -455,7 +461,7 @@ func _pick_mech_target() -> MechState:
 # ---------------------------------------------------------------- formation
 
 func _clear_dead() -> void:
-	for col in range(COLUMNS):
+	for col in range(columns):
 		for rank in [front, back]:
 			var f: Foe = rank[col]
 			if f != null and not f.alive():
@@ -467,7 +473,7 @@ func _clear_dead() -> void:
 
 ## Back-rank foes that do not prefer the back step up into an empty front slot.
 func _advance() -> void:
-	for col in range(COLUMNS):
+	for col in range(columns):
 		if front[col] == null and back[col] != null and not back[col].prefers_back and not back[col].is_massive():
 			var f: Foe = back[col]
 			back[col] = null
@@ -479,19 +485,19 @@ func _advance() -> void:
 ## front-preferrers only, and back slots take back-preferrers first, then anyone waiting
 ## to step up.
 func _fill_from_pool() -> void:
-	for col in range(COLUMNS):
+	for col in range(columns):
 		if front[col] == null and back[col] == null:
 			var i := _pool_index_massive()
 			if i >= 0:
 				var f: Foe = pool.pop_at(i)
 				_place(f, 0, col)
 				back[col] = f
-	for col in range(COLUMNS):
+	for col in range(columns):
 		if front[col] == null:
 			var i := _pool_index(false, false)
 			if i >= 0:
 				_place(pool.pop_at(i), 0, col)
-	for col in range(COLUMNS):
+	for col in range(columns):
 		if back[col] == null:
 			var i := _pool_index(true, true)
 			if i >= 0:
