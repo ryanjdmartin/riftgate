@@ -247,9 +247,100 @@ def cut(args):
     print(f"wrote {args.foe}_combat.png {combat.size} and {args.foe}_map.png {token.size}; preview {pv.relative_to(ROOT)}")
 
 
+# ---------------------------------------------------------------- mechs: the hybrid
+
+CHASSIS = ROOT / "content" / "chassis.json"
+MECH_ART = ROOT / "art" / "mechs"
+MECH_FRAME = (80, 96)
+MECH_STYLE = (
+    "Isometric pixel art game sprite of a heavy military mech in the style of Into the Breach: "
+    "chunky, rugged, grounded military hardware, riveted plates, exposed pistons, a cockpit slit "
+    "glowing cyan, an amber marking light. Keep this pose, proportions and camera angle. Clean "
+    "one-pixel dark outline, flat cel shading with strong top-face highlights, isolated on a "
+    "solid flat pure white background, no text, no ground shadow."
+)
+MAKER_LOOK = {
+    "halvard": "cold steel grey plates with deep red armour panels",
+    "kestrel": "cold steel with cobalt blue airframe panels",
+    "orrin_pike": "cold steel with bone-white armour plates",
+}
+
+
+def load_chassis():
+    d = json.loads(CHASSIS.read_text())
+    return {e["id"]: e for e in d["entries"]}
+
+
+def mech_prompt(c):
+    body = " ".join(s for s in [c.get("fantasy", ""), c.get("codex", "")] if s)
+    look = MAKER_LOOK.get(c.get("maker", ""), "cold steel")
+    return f"{MECH_STYLE} Subject: the {c['name']}, a {c.get('silhouette', '')} war machine. {body} Colours: {look}."
+
+
+def mech_reference(chassis_id, turn):
+    """The renderer's own sprite, on white and blown up, as the model's composition
+    reference: the design stays fixed and the model does the finish."""
+    src = MECH_ART / f"{chassis_id}_combat_{turn}.png"
+    im = Image.open(src).convert("RGBA")
+    bg = Image.new("RGBA", im.size, (255, 255, 255, 255))
+    bg.paste(im, (0, 0), im)
+    k = 8
+    ref = OUT / chassis_id / f"{chassis_id}_{turn}_ref.png"
+    ref.parent.mkdir(parents=True, exist_ok=True)
+    bg.convert("RGB").resize((im.width * k, im.height * k), Image.NEAREST).save(ref)
+    return ref, (im.width * k, im.height * k)
+
+
+def mech(args):
+    c = load_chassis()[args.chassis]
+    ref, (w, h) = mech_reference(args.chassis, args.turn)
+    out = OUT / args.chassis
+    prompt = args.prompt or mech_prompt(c)
+    (out / "prompt.txt").write_text(prompt + "\n")
+    print(prompt)
+    made = []
+    for seed in range(args.seed, args.seed + args.n):
+        path = out / f"{args.chassis}_{args.turn}_{seed}.png"
+        cmd = [str(MFLUX), "--model", MODEL, "--quantize", QUANTIZE, "--prompt", prompt,
+               "--image-path", str(ref), "--image-strength", str(args.strength),
+               "--width", str(w), "--height", str(h), "--steps", STEPS,
+               "--seed", str(seed), "--output", str(path)]
+        print("rendering", path.name)
+        subprocess.run(cmd, check=True)
+        made.append(path)
+    contact(made, out / f"contact_{args.turn}.png")
+    print(f"{len(made)} candidates in {out.relative_to(ROOT)}")
+
+
+def cut_mech(args):
+    src = key_background(Image.open(args.image))
+    MECH_ART.mkdir(parents=True, exist_ok=True)
+    sprite = outline(quantize(fit(src, MECH_FRAME), None, args.colours))
+    dest = MECH_ART / f"{args.chassis}_combat_{args.turn}.png"
+    sprite.save(dest)
+    pv = OUT / args.chassis / f"{args.chassis}_{args.turn}_cut_preview.png"
+    pv.parent.mkdir(parents=True, exist_ok=True)
+    sprite.resize((sprite.width * 4, sprite.height * 4), Image.NEAREST).save(pv)
+    print(f"wrote {dest.relative_to(ROOT)} {sprite.size}; preview {pv.relative_to(ROOT)}")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
+    m = sub.add_parser("mech", help="candidates for a mech's combat sprite, from the renderer's sprite as reference")
+    m.add_argument("chassis")
+    m.add_argument("--turn", default="front_right", choices=["front", "front_left", "front_right"])
+    m.add_argument("--n", type=int, default=2)
+    m.add_argument("--seed", type=int, default=1)
+    m.add_argument("--strength", type=float, default=0.3, help="how far the model may stray from the render; lower is freer (0.2 to 0.35 works)")
+    m.add_argument("--prompt", default="")
+    m.set_defaults(func=mech)
+    cm = sub.add_parser("cut-mech", help="cut a chosen candidate into art/mechs/<chassis>_combat_<turn>.png")
+    cm.add_argument("image")
+    cm.add_argument("chassis")
+    cm.add_argument("--turn", default="front_right", choices=["front", "front_left", "front_right"])
+    cm.add_argument("--colours", type=int, default=16)
+    cm.set_defaults(func=cut_mech)
     g = sub.add_parser("generate")
     g.add_argument("foe")
     g.add_argument("--n", type=int, default=4)

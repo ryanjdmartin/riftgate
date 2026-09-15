@@ -79,6 +79,10 @@ godot --headless --path . --import
 # better enemy sprites from an image model on this Mac (see tools/foeforge/README.md)
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate ghoul --n 4
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut tools/foeforge/out/ghoul/ghoul_3.png ghoul
+
+# mech combat sprites: the model refines the renderer's own sprite (kept as the reference)
+tools/foeforge/.venv/bin/python tools/foeforge/forge.py mech bulwark --n 4
+tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut-mech tools/foeforge/out/bulwark/bulwark_front_right_2.png bulwark
 ```
 
 The skirmish screen runs top to bottom: header with the round tag, enemies with the intent

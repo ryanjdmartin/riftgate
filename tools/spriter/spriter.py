@@ -70,7 +70,7 @@ class Model:
     name: str
     maker: str
     parts: list = field(default_factory=list)
-    combat_size: tuple[int, int] = (48, 64)   # aircraft use a wide frame
+    combat_size: tuple[int, int] = (80, 96)   # foe pixel density, wider than the elite frame: a turned walker is wide and low
     combat_baseline: float = 6.0
 
     def box(self, x0, x1, y0, y1, z0, z1, material, detail=False):
@@ -193,6 +193,13 @@ def render_fit(model: Model, yaw: float, width: int, height: int, ppu: float,
                  baseline=baseline + pad / ppu, **kw)
     arr = np.asarray(big)
     ys, xs = np.where(arr[:, :, 3] > 0)
+    if ys.size:
+        # A model too big for the frame at this scale (a wide airframe turned side-on) is
+        # rendered again a little smaller rather than clipped.
+        bw, bh = xs.max() - xs.min() + 3, ys.max() - ys.min() + 3
+        if bw > width or bh > height:
+            shrink = min(width / bw, height / bh)
+            return render_fit(model, yaw, width, height, ppu * shrink, baseline, pad, **kw)
     ox, oy = pad, pad
     if ys.size:
         x0, x1, y0, y1 = xs.min(), xs.max(), ys.min(), ys.max()
@@ -462,8 +469,11 @@ MODELS = {"bulwark": bulwark, "sentinel": sentinel, "raptor": raptor}
 
 
 # ------------------------------------------------------------------ sheets
-COMBAT = dict(pitch=22.0, ppu=1.0)
-COMBAT_YAWS = {"front": 180.0, "front_left": 150.0, "front_right": 210.0}
+# Combat sprites are isometric in spirit: the camera 30 degrees down and the model turned 45
+# degrees off head-on, so every part shows a top, a lit side and a shaded side. 1.33 pixels
+# per unit fills the 64x96 frame with the same models that filled 48x64.
+COMBAT = dict(pitch=30.0, ppu=1.8)   # walkers fill the 96-tall frame; render_fit shrinks anything that overflows
+COMBAT_YAWS = {"front": 180.0, "front_left": 135.0, "front_right": 225.0}
 MAP = dict(pitch=42.0, ppu=0.42, width=24, height=28, baseline=2.0, detail=False, supersample=3)
 # Pointy-top hex facings in the sim's Hex.DIRECTIONS order: E, NE, NW, W, SW, SE. Yaw 0 faces
 # up the screen (north), positive yaw turns anticlockwise seen from above.

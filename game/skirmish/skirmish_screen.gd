@@ -37,7 +37,7 @@ const DIE_SIZE := 120.0
 const REROLL_Y := 802.0
 const REROLL_SIZE := Vector2(250, 54)
 const MECH_Y := 892.0
-const MECH_SIZE := Vector2(150, 272)   # gauges 35 + 48x64 sprite at 3x + chip row 38
+const MECH_SIZE := Vector2(176, 272)   # gauges 35 + 80x96 sprite at 2x + chip row 38; neighbours overlap 4 px at PITCH
 const BOTTOM_Y := 1196.0
 const BOTTOM_BTN := Vector2(210, 60)
 const PITCH := 172.0
@@ -322,7 +322,7 @@ func _build_codex() -> void:
 	head.add_child(_codex_title)
 	head.add_child(_codex_sub)
 	_codex_sprite = TextureRect.new()
-	_codex_sprite.custom_minimum_size = Vector2(96, 128)
+	_codex_sprite.custom_minimum_size = Vector2(160, 192)
 	_codex_sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_codex_sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_codex_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST

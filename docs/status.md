@@ -29,6 +29,12 @@ their drawings, ink-white pulse for colour-blind contrast, details pane sized fr
 mono labels padded (the left clipping), Barlow Condensed Italic for quotes, withdraw open on
 round one, keyword chips coloured by effect (`Glyphs.colour_for`).
 
+Player art direction (15 September, from Ryan's references): isometric read for units,
+mech combat frame 80x96 at 2x (foe pixel density), renderer keeps the map facings, the model
+refines the renderer's combat sprite as its reference (`forge.py mech`, `cut-mech`). The
+Bulwark's front-right is the first hybrid sprite in the engine; Sentinel and Raptor are still
+plain renders. Re-running the spriter overwrites the pick; re-run cut-mech afterwards.
+
 **Known rough edges.**
 
 - Ryan reported codex stat lines cut off on the left; not reproduced in a 720x1280 render.

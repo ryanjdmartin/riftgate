@@ -29,8 +29,8 @@ For a model called `bulwark`, in `art/mechs/`:
 
 | File | Size | Use |
 | --- | --- | --- |
-| `bulwark_combat_front.png` | 48x64 | skirmish screen, drawn at 3x |
-| `bulwark_combat_front_left.png`, `_front_right.png` | same | spare three-quarter turns |
+| `bulwark_combat_front.png` | 64x96 | head-on, the codex hero shot |
+| `bulwark_combat_front_left.png`, `_front_right.png` | same | isometric three-quarter turns; the skirmish draws `_front_right` at 2x |
 | `bulwark_map_strip.png` | 6 frames of 24x28 | battlefield, one frame per facing |
 | `bulwark_map_e.png` ... `_se.png` | 24x28 | the same frames, loose, for looking at |
 | `bulwark_contact.png` | 4x zoom | everything on one sheet, for review |
@@ -42,7 +42,7 @@ south-east. `Sprites.map_mech(chassis_id, facing)` slices the strip by that inde
 
 Add a function in `spriter.py` that returns a `Model`, and register it in `MODELS`. Coordinates
 are combat-scale pixels: x to the mech's right, y forward (the way it faces), z up, ground at
-z = 0. Keep the whole thing inside about 46 wide and 50 tall for the 48x64 frame (the
+z = 0. Keep the whole thing inside about 46 wide and 50 tall; the 64x96 combat frame renders at 1.33 pixels per unit and shrinks a model that still overflows (the
 three-quarter turns need a little slack at the sides). Aircraft are built on the ground and
 then `m.lift(8)` floats them.
 
@@ -62,7 +62,7 @@ Mark small parts `detail=True` so the 24px map frame stays clean. `m.mirror_x(fn
 
 ## How it draws
 
-One orthographic ray per pixel, camera tilted 22 degrees down for combat frames and 42 for
+One orthographic ray per pixel, camera tilted 30 degrees down and turned 45 degrees off head-on for combat frames (three faces of every block, the isometric read) and 42 degrees down for
 map frames. Each hit is shaded by how much its surface faces a fixed light, snapped to one of
 four tones per material. Flat faces meeting at a right angle, or a big depth jump, get a
 crease in the material's darkest tone. A one-pixel outline goes round the whole silhouette.
