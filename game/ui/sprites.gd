@@ -62,7 +62,9 @@ static func used_rect(tex: Texture2D) -> Rect2:
 		var used := img.get_used_rect()
 		if used.size.x > 0 and used.size.y > 0:
 			rect = Rect2(used.position, used.size)
-	_cache[key] = rect
+		_cache[key] = rect
+	# A viewport texture has no image until its first frame; do not cache the whole-frame
+	# fallback, so the next look gets the real drawing.
 	return rect
 
 

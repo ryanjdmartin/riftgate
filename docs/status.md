@@ -91,6 +91,15 @@ commander units that scramble targeting when killed). Art experiments are collec
 `docs/art-lab.html` (open it in a browser); third-party-derived images live in the
 ignored `docs/art-lab/ext/`.
 
+Open experiment (16 September, night): player units in real 3D. `game/ui/mech_view_3d.gd`
+draws `art/models/<chassis>.glb` (exported from Blender, materials named by role) in a
+SubViewport with the spriter's toon shader (`mech_toon.gdshader`) and an outline pass
+(`outline.gdshader`); `RIFTGATE_MECH3D=pixel|clean` switches the skirmish screen to it,
+every slot falling back to the Bulwark model. Livery is a shader colour per maker. Screens
+on the art lab, section 9. Ryan is deciding between 2D (model, render, edit, cut) and 3D
+(model, export; polish by procedural modelling and materials, which is the open question).
+The `RIFTGATE_MECH3D_FLAT=1` switch skips the nested viewport and the outline, for debugging.
+
 **Known rough edges.**
 
 - Ryan reported codex stat lines cut off on the left; not reproduced in a 720x1280 render.

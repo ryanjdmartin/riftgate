@@ -105,7 +105,17 @@
 </div>
 </section>
 
-<p class="note">Next art threads: Ryan's own mech designs from the archetypes through blendforge, the Anvil model, the coarse grid as the mech default, and the terrain split (realistic near the gate, flat high fantasy near the rift).</p>
+<section>
+<h2>9. Player units in real 3D</h2>
+<p>Ryan's thought experiment: what if the human side is 3D and the rift side stays 2D? The Badger's .blend exported to glTF and drawn live in the skirmish screen by <code>MechView3D</code>: an orthographic camera at the sprites' angle, the spriter's four-tone toon shader with the same light, and a 2D outline pass. Two looks: <b>pixel</b> renders at the 80x96 frame with hard tone steps and is drawn at 2x, so it sits on the foes' pixel grid; <b>clean</b> renders at 160x192 with smooth shading and a rim, drawn at 1x, so it is real 3D against the sprites. Each slot shows its own maker's livery on the same model, which is the paid repaint feature for free. <code>RIFTGATE_MECH3D=pixel|clean</code> switches the screen. No finish yet: this is the plain model, which is the honest baseline for the decision.</p>
+<div class="row">
+  <figure><img src="art-lab/mech3d_zoom.png" width="900" alt="Pixel look, clean look and the old 2D hybrid at 3x"><figcaption><b>At 3x</b>: pixel look, clean look, the old 2D hybrid sprite.</figcaption></figure>
+  <figure><img src="art-lab/mech3d_pixel.png" width="360" alt="Skirmish screen with 3D mechs, pixel look"><figcaption><b>Pixel look</b> on the skirmish screen.</figcaption></figure>
+  <figure><img src="art-lab/mech3d_clean.png" width="360" alt="Skirmish screen with 3D mechs, clean look"><figcaption><b>Clean look</b> on the skirmish screen.</figcaption></figure>
+</div>
+</section>
+
+<p class="note">Next art threads: the 3D-versus-2D decision, Ryan's own mech designs from the archetypes, the Anvil model, the coarse grid as the mech default, and the terrain split (realistic near the gate, flat high fantasy near the rift).</p>
 </div>
 </body>
 </html>

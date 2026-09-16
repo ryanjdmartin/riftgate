@@ -241,6 +241,14 @@ func _build() -> void:
 		v.display_name = ms.unit.display_name
 		v.bars_above = true
 		v.sprite = Sprites.combat_mech(ms.unit.chassis_id, "front_right")
+		var look := OS.get_environment("RIFTGATE_MECH3D")   # experiment: mechs in 3D, pixel or clean
+		if look == "pixel" or look == "clean":
+			var maker := str(ContentDB.load_default().chassis.get(ms.unit.chassis_id, {}).get("maker", "halvard"))
+			var view := MechView3D.make(ms.unit.chassis_id, maker, look)
+			add_child(view)
+			v.sprite = view.texture
+			if look == "clean":
+				v.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		_place(v, Vector2(cx - MECH_SIZE.x * 0.5, MECH_Y), MECH_SIZE)
 		v.held.connect(_on_mech_held.bind(i))
 		v.hold_released.connect(_on_hold_released)
