@@ -20,3 +20,4 @@ docs/art-lab/ext/
 
 tools/blendforge/out/
 __pycache__/
+*.blend1
