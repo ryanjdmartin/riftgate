@@ -11,7 +11,10 @@ const DIR := "res://content/"
 const MAX_AUTHORED_KEYWORDS := 3    # per authored face; upgrades may exceed this at runtime
 const MIN_DIE := 4
 const MAX_DIE := 8
-const MAX_PASSIVE_RULES := 3        # lines in one passive; a benefit and its cost is one passive
+const MAX_PASSIVE_EFFECTS := 3      # effects in one passive; a benefit and its cost is one passive
+## Internal design text lives under `design` and is never shown. These keys at the top level
+## of an entry are the old layout, or a leak waiting to happen, so the validator refuses them.
+const DESIGN_ONLY_KEYS := ["fantasy", "question", "niche", "rule", "holes", "signature", "answer", "notes"]
 const VALID_STATUS := ["implemented", "planned", "idea"]
 
 static var _cache: ContentDB = null
@@ -118,7 +121,8 @@ func make_foe(foe_id: String) -> Foe:
 	return f
 
 
-## Codex text for a foe: fantasy, the question it poses, numbers, and faction flavour.
+## Codex text for a foe: its codex entry, numbers, implemented actions, and its quote. Nothing
+## from `design` is ever read here.
 func codex_for_foe(f: Foe) -> Dictionary:
 	var d: Dictionary = foes.get(f.content_id, {})
 	var fac: Dictionary = factions.get(str(d.get("faction", "")), {})
@@ -162,7 +166,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		faces = u.die.faces.duplicate()
 	var passive := ""
 	if not u.passive.is_empty():
-		passive = "%s: %s %s" % [str(u.passive.get("name", "")).to_upper(), u.passive.get("description", ""), " ".join(u.passive.get("rules", []))]
+		passive = "%s: %s" % [str(u.passive.get("name", "")).to_upper(), u.passive.get("description", "")]
 	return {
 		"title": u.display_name,
 		"subtitle": "%s // %s" % [str(maker.get("name", "")).to_upper(), str(c.get("silhouette", "")).to_upper()],
@@ -256,7 +260,8 @@ func validate() -> Array[String]:
 func _validate_vocabulary(errs: Array[String]) -> void:
 	for id in vocabulary.keys():
 		var e: Dictionary = vocabulary[id]
-		for key in ["category", "name", "fantasy", "rule", "status"]:
+		_validate_design("vocabulary %s" % id, e, errs)
+		for key in ["category", "name", "codex", "status"]:
 			if not e.has(key) or str(e[key]).is_empty():
 				errs.append("vocabulary %s: missing %s" % [id, key])
 		if not categories.has(e.get("category", "")):
@@ -312,19 +317,20 @@ func _validate_passive(where: String, p, errs: Array[String]) -> void:
 	if not (p is Dictionary):
 		errs.append("%s: passive must be an object or null" % where)
 		return
-	# A passive's description is player-facing (the codex prints NAME: description rules);
-	# `fantasy` on a passive would be shown, so it is not the field here.
-	for key in ["id", "name", "description", "rules"]:
+	# name and description are shown (the codex prints NAME: description); effects are what
+	# the engine runs. There is no rules text: the description says what it does.
+	for key in ["id", "name", "description", "effects"]:
 		if not p.has(key):
 			errs.append("%s: passive missing %s" % [where, key])
-	if p.has("fantasy"):
-		errs.append("%s: passive has a fantasy field; use description (player-facing) and keep notes on the chassis" % where)
-	var rules: Array = p.get("rules", [])
-	if rules.is_empty():
-		errs.append("%s: passive has no rules" % where)
-	if rules.size() > MAX_PASSIVE_RULES:
-		errs.append("%s: passive has %d rule lines, cap is %d (one idea per passive)" % [where, rules.size(), MAX_PASSIVE_RULES])
-	for eff in p.get("effects", []):
+	for key in ["rules", "fantasy"]:
+		if p.has(key):
+			errs.append("%s: passive has '%s'; say it in description and put design notes on the entry's design object" % [where, key])
+	var effects: Array = p.get("effects", [])
+	if effects.is_empty():
+		errs.append("%s: passive has no effects" % where)
+	if effects.size() > MAX_PASSIVE_EFFECTS:
+		errs.append("%s: passive has %d effects, cap is %d (one idea per passive)" % [where, effects.size(), MAX_PASSIVE_EFFECTS])
+	for eff in effects:
 		var trig := str(eff.get("trigger", ""))
 		if not vocabulary.has(trig) or vocabulary[trig].get("category") != "trigger":
 			errs.append("%s: passive effect uses unknown trigger '%s'" % [where, trig])
@@ -333,13 +339,27 @@ func _validate_passive(where: String, p, errs: Array[String]) -> void:
 			errs.append("%s: passive effect '%s' on '%s' is not implemented by the engine" % [where, effect, trig])
 
 
+## Every entry keeps its internal text under `design` (fantasy at least) and nothing
+## internal at the top level, so what is shown and what is not can be told by shape alone.
+func _validate_design(where: String, e: Dictionary, errs: Array[String]) -> void:
+	var d = e.get("design", null)
+	if not (d is Dictionary):
+		errs.append("%s: missing design object (internal text: fantasy, niche, ...)" % where)
+	elif not d.has("fantasy"):
+		errs.append("%s: design has no fantasy" % where)
+	for key in DESIGN_ONLY_KEYS:
+		if e.has(key):
+			errs.append("%s: '%s' at the top level would be shown; it belongs under design" % [where, key])
+
+
 func _validate_components(errs: Array[String]) -> void:
 	for id in components.keys():
 		var c: Dictionary = components[id]
 		var where := "component %s" % id
-		for key in ["name", "fantasy", "hardpoints", "faces"]:
+		for key in ["name", "codex", "flavour", "hardpoints", "faces"]:
 			if not c.has(key):
 				errs.append("%s: missing %s" % [where, key])
+		_validate_design(where, c, errs)
 		var faces: Array = c.get("faces", [])
 		if faces.is_empty():
 			errs.append("%s: no faces" % where)
@@ -356,9 +376,10 @@ func _validate_chassis(errs: Array[String]) -> void:
 	for id in chassis.keys():
 		var c: Dictionary = chassis[id]
 		var where := "chassis %s" % id
-		for key in ["name", "fantasy", "codex", "flavour", "hull", "shield", "movespeed", "hardpoints", "loadout"]:
+		for key in ["name", "codex", "flavour", "hull", "shield", "movespeed", "hardpoints", "loadout"]:
 			if not c.has(key):
 				errs.append("%s: missing %s" % [where, key])
+		_validate_design(where, c, errs)
 		var hp := int(c.get("hardpoints", 0))
 		if hp < MIN_DIE or hp > MAX_DIE:
 			errs.append("%s: %d hardpoints, die size must be %d to %d" % [where, hp, MIN_DIE, MAX_DIE])
@@ -422,9 +443,10 @@ func _validate_foes(errs: Array[String]) -> void:
 	for id in foes.keys():
 		var f: Dictionary = foes[id]
 		var where := "foe %s" % id
-		for key in ["name", "fantasy", "question", "codex", "flavour", "actions", "hp", "attack", "rank"]:
+		for key in ["name", "codex", "flavour", "actions", "hp", "attack", "rank"]:
 			if not f.has(key):
 				errs.append("%s: missing %s" % [where, key])
+		_validate_design(where, f, errs)
 		if int(f.get("hp", 0)) <= 0:
 			errs.append("%s: hp must be positive" % where)
 		_validate_actions(where, f, errs)
@@ -445,9 +467,10 @@ func _validate_factions(errs: Array[String]) -> void:
 	for id in factions.keys():
 		var f: Dictionary = factions[id]
 		var where := "faction %s" % id
-		for key in ["name", "fantasy", "signature", "answer", "spawn"]:
+		for key in ["name", "spawn"]:
 			if not f.has(key):
 				errs.append("%s: missing %s" % [where, key])
+		_validate_design(where, f, errs)
 		for old in ["pattern", "elite", "injury"]:
 			if f.has(old):
 				errs.append("%s: '%s' is gone; use spawn and boss" % [where, old])

@@ -1,5 +1,5 @@
 {
-  "_about": "Chassis. Not classes: any silhouette, any component in any slot. Numbers are in tens. hardpoints is the die size. loadout is the default components; if their faces total fewer than hardpoints, filler fills the rest. passive is zero or one object; its rules list is one idea with up to three lines (an upside and its cost count as one passive). Passives run through sim/passives.gd; the validator refuses effects the engine cannot execute. Player-facing text: codex, flavour (an in-world line, shown as a quote) and a passive's description (the codex prints NAME: description rules). fantasy is internal: the pitch, the inspiration, any homage; it is never shown. Makers are placeholders.",
+  "_about": "Chassis. Not classes: any silhouette, any component in any slot. Numbers are in tens. hardpoints is the die size. loadout is the default components; if their faces total fewer than hardpoints, filler fills the rest. passive is zero or one object: name and description are shown (the codex prints NAME: description), effects are what the engine runs, at most three, one idea (an upside and its cost count as one passive); the validator refuses effects the engine cannot execute. Shown to the player: codex (the inspect entry, combat and hangar), flavour (an in-world quote), the passive's name and description. design is internal and never shown: fantasy (pitch, inspiration, homages), niche (the role it is meant to fill). Makers are placeholders.",
   "makers": [
     { "id": "halvard", "name": "Halvard Heavy Works", "style": "Armour first. Everything is a tank, even the ones with legs.", "voice": "Maintenance manual. Terse, exact, proud of tolerances." },
     { "id": "kestrel", "name": "Kestrel Dynamics", "style": "Fast, fragile, over-tuned. Airframes and interceptors.", "voice": "Flight-test log. Clipped, numbers first." },
@@ -8,28 +8,27 @@
   "entries": [
     {
       "id": "bulwark", "name": "Bulwark", "maker": "halvard", "silhouette": "tracked",
-      "fantasy": "A tank with fists. It goes where it is pointed and things stop being there.",
-      "codex": "Halvard's answer to everything: armour, then more armour, then fists. Slow, hard to kill, and it never throws a weak punch.",
-      "hull": 140, "shield": 40, "movespeed": 2, "heat_max": 60, "hardpoints": 4,
+      "design": { "fantasy": "A repurposed mining vehicle, designed to take severe punishment and keep on tracking. Refurbishments were minimal, basically bolting on weapons and armour, it keeps most of its utilitarian mining machinery flavour.", "niche": "" },
+      "codex": "The Halvard EX-45L (colloquially nicknamed the \"Badger\") was a mining mech widely praised for its reliability and durability, being designed to operate in the harshest, deepest environments imaginable. Reports exist of Badgers being caught in cave-ins at 5 kilometers underground, only to dig their way out to the surface a day later, just in time for drinks with the crew. So naturally, when the Rifts opened, the ever-practical Halvard engineering team's first instinct was to finally give their prized Badger claws, teeth, and as many missiles as it could carry, putting its legendary longevity to work on the battlefield.",
+      "hull": 200, "shield": 30, "movespeed": 2, "heat_max": 100, "hardpoints": 7,
       "traits": ["tank"],
-      "loadout": ["shredder_claws", "slug_cannon", "ablative_plating"],
+      "loadout": ["slug_cannon", "chainsaw_claw", "ablative_plating"],
       "filler": { "kind": "shield", "power": 10 },
       "passive": {
-        "id": "braced_mounts", "name": "Braced Mounts",
+        "id": "reinforced_skeleton", "name": "Reinforced Skeleton",
         "description": "Halvard does not build guns that whiff.",
-        "rules": ["Attack faces never roll below 30."],
         "effects": [
           { "trigger": "on_attack", "effect": "min_damage", "value": 30 }
         ]
       },
-      "flavour": "Halvard pattern seven. Hull rated for sustained contact. The crews call it the door."
+      "flavour": "Hey Russ, ain't that yer Badger over there, covered in demon innards? I thought they retired the ol' girl!"
     },
     {
       "id": "sentinel", "name": "Sentinel", "maker": "orrin_pike", "silhouette": "quadruped",
-      "fantasy": "Four legs, six hardpoints, no strong opinions. The one you build around.",
+      "design": { "fantasy": "Four legs, six hardpoints, no strong opinions. The one you build around.", "niche": "" },
       "codex": "The Orrin & Pike general-purpose walker. Six hardpoints and no opinions about what goes in them; whatever the squad is missing, this is where it gets bolted on.",
       "hull": 100, "shield": 40, "movespeed": 3, "heat_max": 60, "hardpoints": 6,
-      "traits": ["quad"],
+      "traits": ["walker"],
       "loadout": ["twin_autoguns", "lance", "pocket_mortar", "ablative_plating", "heat_sink"],
       "filler": { "kind": "shield", "power": 10 },
       "passive": null,
@@ -37,7 +36,7 @@
     },
     {
       "id": "raptor", "name": "Raptor", "maker": "kestrel", "silhouette": "aircraft",
-      "fantasy": "A priority-target assassin. Hit, run, and let someone else carry the fire extinguisher.",
+      "design": { "fantasy": "A priority-target assassin. Hit, run, and let someone else carry the fire extinguisher.", "niche": "" },
       "codex": "Kestrel's interceptor. Hits twice as hard as anything its size and runs twice as hot doing it. Somebody else carries the fire extinguisher.",
       "hull": 60, "shield": 60, "movespeed": 5, "heat_max": 60, "hardpoints": 4,
       "traits": ["flyer"],
@@ -46,7 +45,6 @@
       "passive": {
         "id": "hot_hands", "name": "Hot Hands",
         "description": "Everything it fires, it fires too hard.",
-        "rules": ["Attack faces deal double damage.", "Attack faces generate double heat."],
         "effects": [
           { "trigger": "on_attack", "effect": "multiply_damage", "value": 2 },
           { "trigger": "on_attack", "effect": "multiply_heat", "value": 2 }
@@ -56,16 +54,15 @@
     },
     {
       "id": "anvil", "name": "Anvil", "maker": "orrin_pike", "silhouette": "quadruped",
-      "fantasy": "Sits at the back of the fight and ruins the back of theirs.",
+      "design": { "fantasy": "Sits at the back of the fight and ruins the back of theirs.", "niche": "" },
       "codex": "Orrin & Pike's fire-support walker. Reaches their back rank from ours, and what it sets alight stays alight.",
       "hull": 120, "shield": 30, "movespeed": 2, "heat_max": 70, "hardpoints": 6,
-      "traits": ["quad"],
+      "traits": ["walker"],
       "loadout": ["howitzer", "incendiary_shells", "shock_barrage", "coolant_dump", "flak_skirt"],
       "filler": { "kind": "shield", "power": 10 },
       "passive": {
         "id": "hot_load", "name": "Hot Load",
         "description": "When an Orrin & Pike shell lands right, it keeps burning.",
-        "rules": ["Critical hits add one burn stack to the target."],
         "effects": [
           { "trigger": "on_crit", "effect": "add_burn", "value": 1 }
         ]

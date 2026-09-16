@@ -1,40 +1,40 @@
 {
-  "_about": "Components. Each contributes faces to the die; hardpoints equals the number of faces it occupies. A two-face component is a bigger, more reliable gun. Numbers are in tens. Kinetic faces carry power and power_max and roll between them, and may crit; energy faces are static and never crit. Keywords are a list; authored faces should stay under the validator's cap, upgrades may push past it. passive is null or one object, same shape as a chassis passive. Numbers are placeholders.",
+  "_about": "Components. Each contributes faces to the die; hardpoints equals the number of faces it occupies. A two-face component is a bigger, more reliable gun. Numbers are in tens. Kinetic faces carry power and power_max and roll between them, and may crit; energy faces are static and never crit. Keywords are a list; authored faces should stay under the validator's cap, upgrades may push past it. passive is null or one object, same shape as a chassis passive. Shown to the player: codex (the inspect entry), flavour (a quote); both still to be written. design is internal and never shown: fantasy, niche. Numbers are placeholders.",
   "entries": [
-    { "id": "shredder_claws", "name": "Shredder Claws", "maker": "halvard", "fantasy": "Two swings a round if the dice agree. Ghouls in threes.", "hardpoints": 2, "faces": [
+    { "id": "chainsaw_claw", "name": "Chainsaw Claw", "maker": "halvard", "codex": "", "flavour": "", "design": { "fantasy": "Two swings a round if the dice agree. Ghouls in threes.", "niche": "" }, "hardpoints": 2, "faces": [
       { "kind": "attack", "reach": "line", "power": 20, "power_max": 40, "crit": 10, "keywords": ["cleave"], "heat": 0 },
       { "kind": "attack", "reach": "line", "power": 20, "power_max": 40, "crit": 10, "keywords": ["cleave"], "heat": 0 } ], "passive": null, "tags": ["kinetic", "melee", "horde"] },
-    { "id": "slug_cannon", "name": "Slug Cannon", "maker": "halvard", "fantasy": "One big round. Warm barrel.", "hardpoints": 1, "faces": [
+    { "id": "slug_cannon", "name": "Slug Cannon", "maker": "halvard", "codex": "", "flavour": "", "design": { "fantasy": "One big round. Warm barrel.", "niche": "" }, "hardpoints": 1, "faces": [
       { "kind": "attack", "reach": "line", "power": 30, "power_max": 60, "crit": 15, "keywords": [], "heat": 10 } ], "passive": null, "tags": ["kinetic", "single"] },
-    { "id": "ablative_plating", "name": "Ablative Plating", "maker": "halvard", "fantasy": "Bolt-on armour that comes off in sheets so the hull does not.", "hardpoints": 1, "faces": [
+    { "id": "ablative_plating", "name": "Ablative Plating", "maker": "halvard", "codex": "", "flavour": "", "design": { "fantasy": "Bolt-on armour that comes off in sheets so the hull does not.", "niche": "" }, "hardpoints": 1, "faces": [
       { "kind": "shield", "power": 20 } ], "passive": null, "tags": ["defense"] },
-    { "id": "twin_autoguns", "name": "Twin Autoguns", "maker": "orrin_pike", "fantasy": "Reliable, unremarkable, always there.", "hardpoints": 2, "faces": [
+    { "id": "twin_autoguns", "name": "Twin Autoguns", "maker": "orrin_pike", "codex": "", "flavour": "", "design": { "fantasy": "Reliable, unremarkable, always there.", "niche": "" }, "hardpoints": 2, "faces": [
       { "kind": "attack", "reach": "line", "power": 10, "power_max": 30, "crit": 10, "keywords": [], "heat": 0 },
       { "kind": "attack", "reach": "line", "power": 10, "power_max": 30, "crit": 10, "keywords": [], "heat": 0 } ], "passive": null, "tags": ["kinetic", "single"] },
-    { "id": "lance", "name": "Lance", "maker": "orrin_pike", "fantasy": "A beam that goes through the wall and the thing hiding behind it.", "hardpoints": 1, "faces": [
+    { "id": "lance", "name": "Lance", "maker": "orrin_pike", "codex": "", "flavour": "", "design": { "fantasy": "A beam that goes through the wall and the thing hiding behind it.", "niche": "" }, "hardpoints": 1, "faces": [
       { "kind": "attack", "reach": "line", "power": 30, "keywords": ["pierce"], "heat": 10 } ], "passive": null, "tags": ["energy", "column"] },
-    { "id": "pocket_mortar", "name": "Pocket Mortar", "maker": "orrin_pike", "fantasy": "Small, rude, lands behind the front rank.", "hardpoints": 1, "faces": [
+    { "id": "pocket_mortar", "name": "Pocket Mortar", "maker": "orrin_pike", "codex": "", "flavour": "", "design": { "fantasy": "Small, rude, lands behind the front rank.", "niche": "" }, "hardpoints": 1, "faces": [
       { "kind": "attack", "reach": "indirect", "power": 10, "power_max": 30, "crit": 5, "keywords": [], "heat": 0 } ], "passive": null, "tags": ["kinetic", "artillery"] },
-    { "id": "heat_sink", "name": "Heat Sink", "maker": "orrin_pike", "fantasy": "Fins. Lots of fins.", "hardpoints": 1, "faces": [
+    { "id": "heat_sink", "name": "Heat Sink", "maker": "orrin_pike", "codex": "", "flavour": "", "design": { "fantasy": "Fins. Lots of fins.", "niche": "" }, "hardpoints": 1, "faces": [
       { "kind": "vent", "power": 20 } ], "passive": null, "tags": ["support"] },
-    { "id": "howitzer", "name": "Howitzer", "maker": "orrin_pike", "fantasy": "The back rank's problem, twice per die.", "hardpoints": 2, "faces": [
+    { "id": "howitzer", "name": "Howitzer", "maker": "orrin_pike", "codex": "", "flavour": "", "design": { "fantasy": "The back rank's problem, twice per die.", "niche": "" }, "hardpoints": 2, "faces": [
       { "kind": "attack", "reach": "indirect", "power": 20, "power_max": 50, "crit": 10, "keywords": [], "heat": 0 },
       { "kind": "attack", "reach": "indirect", "power": 20, "power_max": 50, "crit": 10, "keywords": [], "heat": 0 } ], "passive": null, "tags": ["kinetic", "artillery"] },
-    { "id": "incendiary_shells", "name": "Incendiary Shells", "maker": "orrin_pike", "fantasy": "Lands, then keeps landing.", "hardpoints": 1, "faces": [
+    { "id": "incendiary_shells", "name": "Incendiary Shells", "maker": "orrin_pike", "codex": "", "flavour": "", "design": { "fantasy": "Lands, then keeps landing.", "niche": "" }, "hardpoints": 1, "faces": [
       { "kind": "attack", "reach": "indirect", "power": 10, "power_max": 30, "crit": 5, "keywords": ["burn"], "heat": 0 } ], "passive": null, "tags": ["kinetic", "artillery", "burn"] },
-    { "id": "shock_barrage", "name": "Shock Barrage", "maker": "orrin_pike", "fantasy": "Whatever it was about to do, it is not doing it now.", "hardpoints": 1, "faces": [
+    { "id": "shock_barrage", "name": "Shock Barrage", "maker": "orrin_pike", "codex": "", "flavour": "", "design": { "fantasy": "Whatever it was about to do, it is not doing it now.", "niche": "" }, "hardpoints": 1, "faces": [
       { "kind": "attack", "reach": "indirect", "power": 30, "power_max": 50, "crit": 10, "keywords": ["suppress"], "heat": 20 } ], "passive": null, "tags": ["kinetic", "artillery", "control"] },
-    { "id": "coolant_dump", "name": "Coolant Dump", "maker": "orrin_pike", "fantasy": "Empties the reactor jacket onto the ground. Or onto a friend.", "hardpoints": 1, "faces": [
+    { "id": "coolant_dump", "name": "Coolant Dump", "maker": "orrin_pike", "codex": "", "flavour": "", "design": { "fantasy": "Empties the reactor jacket onto the ground. Or onto a friend.", "niche": "" }, "hardpoints": 1, "faces": [
       { "kind": "vent", "power": 30 } ], "passive": null, "tags": ["support"] },
-    { "id": "flak_skirt", "name": "Flak Skirt", "maker": "orrin_pike", "fantasy": "A little armour is better than the amount you had.", "hardpoints": 1, "faces": [
+    { "id": "flak_skirt", "name": "Flak Skirt", "maker": "orrin_pike", "codex": "", "flavour": "", "design": { "fantasy": "A little armour is better than the amount you had.", "niche": "" }, "hardpoints": 1, "faces": [
       { "kind": "shield", "power": 10 } ], "passive": null, "tags": ["defense"] },
-    { "id": "overclocked_railgun", "name": "Overclocked Railgun", "maker": "kestrel", "fantasy": "Kestrel removed the safety interlock and called it a feature.", "hardpoints": 1, "faces": [
+    { "id": "overclocked_railgun", "name": "Overclocked Railgun", "maker": "kestrel", "codex": "", "flavour": "", "design": { "fantasy": "Kestrel removed the safety interlock and called it a feature.", "niche": "" }, "hardpoints": 1, "faces": [
       { "kind": "attack", "reach": "line", "power": 50, "keywords": ["overcharge"], "heat": 20 } ], "passive": null, "tags": ["energy", "single", "hot"] },
-    { "id": "headhunter_rifle", "name": "Headhunter Rifle", "maker": "kestrel", "fantasy": "For finishing what someone else started.", "hardpoints": 1, "faces": [
+    { "id": "headhunter_rifle", "name": "Headhunter Rifle", "maker": "kestrel", "codex": "", "flavour": "", "design": { "fantasy": "For finishing what someone else started.", "niche": "" }, "hardpoints": 1, "faces": [
       { "kind": "attack", "reach": "line", "power": 20, "power_max": 40, "crit": 20, "keywords": ["execute"], "heat": 0 } ], "passive": null, "tags": ["kinetic", "single", "finisher"] },
-    { "id": "arc_projector", "name": "Arc Projector", "maker": "kestrel", "fantasy": "Lightning that picks its own second target.", "hardpoints": 1, "faces": [
+    { "id": "arc_projector", "name": "Arc Projector", "maker": "kestrel", "codex": "", "flavour": "", "design": { "fantasy": "Lightning that picks its own second target.", "niche": "" }, "hardpoints": 1, "faces": [
       { "kind": "attack", "reach": "line", "power": 30, "keywords": ["chain"], "heat": 10 } ], "passive": null, "tags": ["energy", "multi"] },
-    { "id": "deflector", "name": "Deflector", "maker": "kestrel", "fantasy": "A very expensive bubble.", "hardpoints": 1, "faces": [
+    { "id": "deflector", "name": "Deflector", "maker": "kestrel", "codex": "", "flavour": "", "design": { "fantasy": "A very expensive bubble.", "niche": "" }, "hardpoints": 1, "faces": [
       { "kind": "shield", "power": 30 } ], "passive": null, "tags": ["defense"] }
   ]
 }

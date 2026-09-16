@@ -30,18 +30,18 @@ func _init() -> void:
 			continue
 		lines.append("## %s" % str(cat).replace("_", " ").capitalize())
 		lines.append("")
-		lines.append("| Term | Fantasy | Rule | Status |")
+		lines.append("| Term | Fantasy | Codex | Status |")
 		lines.append("|---|---|---|---|")
 		for e in rows:
-			lines.append("| **%s** | %s | %s | %s |" % [e["name"], e["fantasy"], e["rule"], e["status"]])
+			lines.append("| **%s** | %s | %s | %s |" % [e["name"], e.get("design", {}).get("fantasy", ""), e["codex"], e["status"]])
 		lines.append("")
 	lines.append("## Holes")
 	lines.append("")
-	lines.append("Every entry whose `holes` field is not empty. This is the list of things the mechanics do not do yet.")
+	lines.append("Every entry whose `design.holes` is not empty. This is the list of things the mechanics do not do yet.")
 	lines.append("")
 	for id in db.vocabulary.keys():
 		var e: Dictionary = db.vocabulary[id]
-		var h := str(e.get("holes", ""))
+		var h := str(e.get("design", {}).get("holes", ""))
 		if not h.is_empty():
 			lines.append("- **%s** (%s): %s" % [e["name"], e["status"], h])
 	lines.append("")

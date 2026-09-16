@@ -65,7 +65,7 @@ def load_foes():
 
 def prompt_for(foe):
     look = FACTION_LOOK.get(foe.get("faction", ""), "")
-    body = " ".join(s for s in [foe.get("fantasy", ""), foe.get("codex", "")] if s)
+    body = " ".join(s for s in [foe.get("design", {}).get("fantasy", ""), foe.get("codex", "")] if s)
     size = "A towering elite, twice the height of a common foe." if int(foe.get("size") or 1) > 1 else ""
     return f"{STYLE} Subject: {foe['name']}, a {foe.get('faction', '')} monster. {body} {size} Colours: {look}."
 
@@ -272,7 +272,7 @@ def load_chassis():
 
 
 def mech_prompt(c):
-    body = " ".join(s for s in [c.get("fantasy", ""), c.get("codex", "")] if s)
+    body = " ".join(s for s in [c.get("design", {}).get("fantasy", ""), c.get("codex", "")] if s)
     look = MAKER_LOOK.get(c.get("maker", ""), "cold steel")
     return f"{MECH_STYLE} Subject: the {c['name']}, a {c.get('silhouette', '')} war machine. {body} Colours: {look}."
 

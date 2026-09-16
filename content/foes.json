@@ -1,123 +1,105 @@
 {
-  "_about": "Enemies inside a skirmish. Numbers are in tens. Enemy damage is static and telegraphed exactly; only the player's kinetic faces roll. rank is where they prefer to stand: front foes step up, back foes hold. size 2 is massive and fills both slots of a column. Player-facing text: codex (what the codex says), flavour (an in-world quote, shown in italics), and each action's text. Internal design fields, never shown: fantasy (the one-line pitch), question (the tactical problem the foe poses), notes. actions is the foe's roster of things it can do, each kind attack, defend, buff or debuff, with status implemented or planned; only implemented actions appear in the codex, and today the engine runs only the basic attack. Face injuries are a global rule, not a foe property. Numbers are placeholders.",
+  "_about": "Enemies inside a skirmish. Numbers are in tens. Enemy damage is static and telegraphed exactly; only the player's kinetic faces roll. rank is where they prefer to stand: front foes step up, back foes hold. size 2 is massive and fills both slots of a column. Player-facing text: codex (what the codex says), flavour (an in-world quote, shown in italics), and each action's text. design is internal and never shown: fantasy (the pitch, inspiration, homages), niche (the tactical problem the foe poses), notes. actions is the foe's roster of things it can do, each kind attack, defend, buff or debuff, with status implemented or planned; only implemented actions appear in the codex, and today the engine runs only the basic attack. Face injuries are a global rule, not a foe property. Numbers are placeholders.",
   "entries": [
     {
       "id": "ghoul", "name": "Ghoul", "faction": "undead",
-      "fantasy": "A body that forgot to stop.",
-      "question": "There are six of them and three slots. Kill fast or be buried.",
+      "design": { "fantasy": "A body that forgot to stop.", "niche": "There are six of them and three slots. Kill fast or be buried.", "notes": "Get Back Up is not coded." },
       "codex": "The rank and file of the Risen. Slow, stupid and never alone: six arrive for every one you put down, and they walk straight at the nearest thing with a heartbeat.",
       "hp": 30, "attack": 10, "rank": "front",
       "actions": [
         { "id": "claw", "name": "Claw", "kind": "attack", "value": 10, "text": "Tears at the nearest mech for 10.", "status": "implemented" },
         { "id": "get_back_up", "name": "Get Back Up", "kind": "buff", "text": "Returns from the pool once after dying, unless executed.", "status": "planned" }
       ],
-      "flavour": "They don't run. They don't have to. You'll get tired first.",
-      "notes": "Get Back Up is not coded."
+      "flavour": "They don't run. They don't have to. You'll get tired first."
     },
     {
       "id": "necromancer", "name": "Necromancer", "faction": "undead",
-      "fantasy": "The reason the ghouls keep coming.",
-      "question": "It hides behind the wall. Reach it, or chew through.",
+      "design": { "fantasy": "The reason the ghouls keep coming.", "niche": "It hides behind the wall. Reach it, or chew through.", "notes": "Raise is not coded." },
       "codex": "Keeps to the back rank behind a wall of ghouls and keeps the wall standing. Anything that can reach past the front is worth more here than anywhere else.",
       "hp": 30, "attack": 10, "rank": "back",
       "actions": [
         { "id": "hex_bolt", "name": "Hex Bolt", "kind": "attack", "value": 10, "text": "A bolt of grave-light for 10.", "status": "implemented" },
         { "id": "raise", "name": "Raise", "kind": "buff", "text": "Calls a ghoul up from the pool at the end of the round.", "status": "planned" }
       ],
-      "flavour": "Kill the one doing the talking.",
-      "notes": "Raise is not coded."
+      "flavour": "Kill the one doing the talking."
     },
     {
       "id": "brute", "name": "Brute", "faction": "demonic",
-      "fantasy": "A wall that hits back.",
-      "question": "Its swing is telegraphed. Suppress it, shield for it, or eat it.",
+      "design": { "fantasy": "A wall that hits back.", "niche": "Its swing is telegraphed. Suppress it, shield for it, or eat it.", "notes": "Roar is not coded." },
       "codex": "A slab of muscle that swings once a round and means it. Everything it does is announced a round early, which is the only reason anyone survives it.",
       "hp": 50, "attack": 20, "rank": "front",
       "actions": [
         { "id": "haymaker", "name": "Haymaker", "kind": "attack", "value": 20, "text": "One enormous swing for 20.", "status": "implemented" },
         { "id": "roar", "name": "Roar", "kind": "debuff", "text": "Costs the squad one reroll next round.", "status": "planned" }
       ],
-      "flavour": "Big, loud and honest. I've fought worse people.",
-      "notes": "Roar is not coded."
+      "flavour": "Big, loud and honest. I've fought worse people."
     },
     {
       "id": "hellcaster", "name": "Hellcaster", "faction": "demonic",
-      "fantasy": "Artillery with opinions.",
-      "question": "Big damage from the back rank. Priority target for indirect fire.",
+      "design": { "fantasy": "Artillery with opinions.", "niche": "Big damage from the back rank. Priority target for indirect fire.", "notes": "Stoke is not coded." },
       "codex": "Infernal artillery. Stands at the back and lobs fire over the front rank; the front rank exists so it can.",
       "hp": 30, "attack": 30, "rank": "back",
       "actions": [
         { "id": "firebolt", "name": "Firebolt", "kind": "attack", "value": 30, "text": "Lobbed fire for 30, over the front rank.", "status": "implemented" },
         { "id": "stoke", "name": "Stoke", "kind": "debuff", "text": "Adds 10 heat to the mech it hit.", "status": "planned" }
       ],
-      "flavour": "If the sky turns orange, that's not the sunset.",
-      "notes": "Stoke is not coded."
+      "flavour": "If the sky turns orange, that's not the sunset."
     },
     {
       "id": "spawn", "name": "Spawn", "faction": "eldritch",
-      "fantasy": "It has too many angles.",
-      "question": "Unremarkable alone. Exists to shield the whisperer.",
+      "design": { "fantasy": "It has too many angles.", "niche": "Unremarkable alone. Exists to shield the whisperer.", "notes": "Fold is not coded." },
       "codex": "Something like a body, folded wrong. Harmless enough on its own; in numbers it is a wall that keeps the Whisperer out of reach.",
       "hp": 40, "attack": 20, "rank": "front",
       "actions": [
         { "id": "lash", "name": "Lash", "kind": "attack", "value": 20, "text": "A limb from an unexpected direction for 20.", "status": "implemented" },
         { "id": "fold", "name": "Fold", "kind": "defend", "text": "Folds in on itself: takes half damage until its next action.", "status": "planned" }
       ],
-      "flavour": "Count the limbs. Now count again.",
-      "notes": "Fold is not coded."
+      "flavour": "Count the limbs. Now count again."
     },
     {
       "id": "whisperer", "name": "Whisperer", "faction": "eldritch",
-      "fantasy": "It talks to your dice.",
-      "question": "Its hits corrupt what you rolled. Kill it first or bring a spare.",
+      "design": { "fantasy": "It talks to your dice.", "niche": "Its hits corrupt what you rolled. Kill it first or bring a spare.", "notes": "Corrupt is not coded." },
       "codex": "It does not hit hard. It hits your dice. A machine that has been whispered to does not roll what was installed.",
       "hp": 30, "attack": 10, "rank": "back",
       "actions": [
         { "id": "murmur", "name": "Murmur", "kind": "attack", "value": 10, "text": "A word that hurts, for 10.", "status": "implemented" },
         { "id": "corrupt", "name": "Corrupt", "kind": "debuff", "text": "Scrambles one mech's next reroll.", "status": "planned" }
       ],
-      "flavour": "Your die came up with a face you never fitted. Don't trust it. Don't trust the next one either.",
-      "notes": "Corrupt is not coded."
+      "flavour": "Your die came up with a face you never fitted. Don't trust it. Don't trust the next one either."
     },
 
     {
       "id": "bone_colossus", "name": "Bone Colossus", "faction": "undead",
-      "fantasy": "A cathedral of ribs that walks.",
-      "question": "Fills a whole column. Nothing behind it is reachable until it falls, and it does not fall quickly.",
+      "design": { "fantasy": "A cathedral of ribs that walks.", "niche": "Fills a whole column. Nothing behind it is reachable until it falls, and it does not fall quickly.", "notes": "Massive boss. On the battlefield it is a three-hex unit. Knit is not coded." },
       "codex": "A cathedral of ribs that walks. Fills a whole column; nothing behind it can be reached until it falls, and it does not fall quickly.",
       "hp": 140, "attack": 30, "rank": "front", "size": 2,
       "actions": [
         { "id": "sweep", "name": "Sweep", "kind": "attack", "value": 30, "text": "A rib the size of a girder, for 30.", "status": "implemented" },
         { "id": "knit", "name": "Knit", "kind": "defend", "text": "Regrows 20 hull at the end of the round.", "status": "planned" }
       ],
-      "flavour": "Gate order four still applies. Bring more gun.",
-      "notes": "Massive boss. On the battlefield it is a three-hex unit. Knit is not coded."
+      "flavour": "Gate order four still applies. Bring more gun."
     },
     {
       "id": "pit_lord", "name": "Pit Lord", "faction": "demonic",
-      "fantasy": "The furnace has a face.",
-      "question": "The biggest telegraphed hit in the game. Suppress it or shield for it every round it stands.",
+      "design": { "fantasy": "The furnace has a face.", "niche": "The biggest telegraphed hit in the game. Suppress it or shield for it every round it stands.", "notes": "Massive boss. Kindle is not coded." },
       "codex": "The furnace has a face. The single biggest telegraphed hit in the campaign, every round, until it is dead.",
       "hp": 160, "attack": 40, "rank": "front", "size": 2,
       "actions": [
         { "id": "furnace_blow", "name": "Furnace Blow", "kind": "attack", "value": 40, "text": "A fist of slag for 40.", "status": "implemented" },
         { "id": "kindle", "name": "Kindle", "kind": "buff", "text": "Every other demon on the field hits 10 harder next round.", "status": "planned" }
       ],
-      "flavour": "They brought fire. We brought bigger fire. It brought the biggest.",
-      "notes": "Massive boss. Kindle is not coded."
+      "flavour": "They brought fire. We brought bigger fire. It brought the biggest."
     },
     {
       "id": "the_maw", "name": "The Maw", "faction": "eldritch",
-      "fantasy": "You do not see all of it. That is a mercy.",
-      "question": "Hits often enough that faces crack. Redundancy wins; burst loses.",
+      "design": { "fantasy": "You do not see all of it. That is a mercy.", "niche": "Hits often enough that faces crack. Redundancy wins; burst loses.", "notes": "Massive boss. Unmake is not coded." },
       "codex": "You do not see all of it. The part you can see hits often enough that faces crack.",
       "hp": 120, "attack": 20, "rank": "front", "size": 2,
       "actions": [
         { "id": "bite", "name": "Bite", "kind": "attack", "value": 20, "text": "The visible part closes, for 20.", "status": "implemented" },
         { "id": "unmake", "name": "Unmake", "kind": "debuff", "text": "Cracks one face outright, no hull hit needed.", "status": "planned" }
       ],
-      "flavour": "Appendix K, last page: if you can read this, it hasn't noticed you yet.",
-      "notes": "Massive boss. Unmake is not coded."
+      "flavour": "Appendix K, last page: if you can read this, it hasn't noticed you yet."
     }
   ]
 }

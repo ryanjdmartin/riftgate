@@ -43,7 +43,8 @@ func test_raptor_loadout_matches_design() -> void:
 			hot += 1
 	assert_eq(hot, 1, "one overcharge face")
 	var p: Dictionary = db.chassis["raptor"]["passive"]
-	assert_eq(p["rules"].size(), 2, "two rule lines")
+	assert_eq(p["effects"].size(), 2, "two effects, one idea")
+	assert_true(not p.has("rules"), "no rules text: the description says what it does")
 	assert_true(not db.chassis["raptor"].has("passives"), "still counts as one passive")
 
 
@@ -120,18 +121,40 @@ func test_keyword_cap_is_enforced() -> void:
 	assert_true(hit, "four keywords on an authored face is reported")
 
 
-func test_passive_rule_cap_is_enforced() -> void:
+func test_passive_effect_cap_is_enforced() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var c: Dictionary = db.chassis["raptor"].duplicate(true)
-	c["passive"]["rules"] = ["a", "b", "c", "d"]
+	var eff: Dictionary = c["passive"]["effects"][0]
+	c["passive"]["effects"] = [eff, eff, eff, eff]
 	db.chassis["bloated"] = c
 	var errs := db.validate()
 	var hit := false
 	for e in errs:
-		if e.begins_with("chassis bloated") and e.contains("rule lines"):
+		if e.begins_with("chassis bloated") and e.contains("effects, cap"):
 			hit = true
-	assert_true(hit, "four rule lines in one passive is reported")
+	assert_true(hit, "four effects in one passive is reported")
+
+
+func test_internal_text_cannot_sit_at_the_top_level() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var c: Dictionary = db.chassis["raptor"].duplicate(true)
+	c["fantasy"] = "would be shown"
+	db.chassis["leaky"] = c
+	var f: Dictionary = db.foes["ghoul"].duplicate(true)
+	f.erase("design")
+	db.foes["bare"] = f
+	var errs := db.validate()
+	var leak := false
+	var bare := false
+	for e in errs:
+		if e.begins_with("chassis leaky") and e.contains("belongs under design"):
+			leak = true
+		if e.begins_with("foe bare") and e.contains("missing design"):
+			bare = true
+	assert_true(leak, "fantasy at the top level is refused")
+	assert_true(bare, "an entry without design is refused")
 
 
 func test_raptor_passive_doubles_damage_and_heat() -> void:

@@ -29,11 +29,15 @@ he gives it; tone iterates as we build.
 MARCH is decided: the Ministerial Assembly for the Reclamation of Civilised Humanity. Open
 on purpose: whether this is the last bastion, whether other colonies are fine, whether the
 whole thing was a power grab. Ryan is rewriting `content/*.json` in his own voice and
-renaming units; `fantasy` holds his inspiration and homages and is internal. Prepared for
-that: a passive's player-facing line is now `description` (the validator rejects `fantasy`
-on a passive); the codex never falls back to `fantasy`; sim and game code take their
-defaults from content order (`ContentDB.default_team`, `default_faction`, `spawn_foes`,
-`make_boss`) instead of hardcoding bulwark, ghoul or undead. Tests still name the current
+renaming units. Content text is now split by shape (bible, section 6): shown at the top
+level (`codex`, `flavour`, a passive's `name` and `description`, an action's `text`),
+everything internal under `design` (`fantasy`, `niche`, `holes`, `signature`, `answer`,
+`notes`); the validator refuses internal keys at the top level and passives have no
+`rules` text (description plus at most three effects). Components have empty `codex` and
+`flavour` waiting for Ryan's words. Sim and game code take their defaults from content
+order (`ContentDB.default_team`, `default_faction`, `spawn_foes`, `make_boss`) instead of
+hardcoding bulwark, ghoul or undead. Ryan's Bulwark model is
+`tools/blendforge/models/new_bulwark.blend`; it renders cleanly, not yet installed. Tests still name the current
 ids, as do `tools/spriter` MODELS, `tools/sheet_export.py` grid mapping, `tools/foeforge`
 BIG_MAP, and the art file names under `art/`; those get one pass after the rename lands. Next for art: Ryan's first hand-modelled mech (the Anvil has no design
 yet), then `render --install`, `--import`, and a look at it in the skirmish.

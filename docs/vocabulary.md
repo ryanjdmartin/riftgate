@@ -2,11 +2,11 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 56 implemented, 14 planned, 1 idea.
+Status: 57 implemented, 14 planned, 1 idea.
 
 ## Resource
 
-| Term | Fantasy | Rule | Status |
+| Term | Fantasy | Codex | Status |
 |---|---|---|---|
 | **Hull** | The machine itself. When it is gone, the machine is a wreck. | Damage that gets past shield removes hull. Hull never recovers during a battle. At zero the mech is a wreck to be salvaged after the battle. | implemented |
 | **Shield** | A buffer that buys you a few rounds to solve the squad before it starts costing you the machine. | Enemy damage removes shield before hull. Shield faces add shield up to the chassis maximum. Shields recharge fully between skirmishes. | implemented |
@@ -17,7 +17,7 @@ Status: 56 implemented, 14 planned, 1 idea.
 
 ## Face Kind
 
-| Term | Fantasy | Rule | Status |
+| Term | Fantasy | Codex | Status |
 |---|---|---|---|
 | **Attack face** | A gun, a claw, a shell. The primary icon is its reach. | Spend on a foe within reach to deal its power in damage, then apply its keywords and heat. | implemented |
 | **Shield face** | Raise the plating. Yours or a friend's. | Spend on self or an ally to add its power in shield, capped at that mech's shield maximum. | implemented |
@@ -26,21 +26,22 @@ Status: 56 implemented, 14 planned, 1 idea.
 
 ## Face Property
 
-| Term | Fantasy | Rule | Status |
+| Term | Fantasy | Codex | Status |
 |---|---|---|---|
 | **Damage range** | Kinetic weapons do not promise. They roll. | A kinetic attack face shows a minimum and a maximum and rolls between them when spent, immediately and visibly. Energy faces show one number and never roll. Numbers are in tens. | implemented |
 | **Critical hit** | Sometimes the round finds the seam. | A kinetic face may carry a crit chance. On a crit the roll is doubled before other multipliers. Energy faces never crit. Crits fire the on_crit passive trigger. | implemented |
 
 ## Reach
 
-| Term | Fantasy | Rule | Status |
+| Term | Fantasy | Codex | Status |
 |---|---|---|---|
+| **Melee** | Up close and personal. | Targets any front-rank foe, and any back-rank foe whose column is exposed. | implemented |
 | **Line of fire** | If you can see it, you can shoot it. If something is in the way, shoot that first. | Targets any front-rank foe, and any back-rank foe whose column is exposed. | implemented |
 | **Indirect** | Over the wall and onto the thing behind it. Just do not aim it at your own feet. | Targets any foe in either rank. Hitting the front rank triggers danger close. | implemented |
 
 ## Keyword
 
-| Term | Fantasy | Rule | Status |
+| Term | Fantasy | Codex | Status |
 |---|---|---|---|
 | **Cleave** | One swing, three ghouls. | Also hits the foes in the neighbouring columns of the target's rank. | implemented |
 | **Pierce** | The railgun does not care who is standing in front of whom. | Also hits the foe in the other rank of the target's column. | implemented |
@@ -57,7 +58,7 @@ Status: 56 implemented, 14 planned, 1 idea.
 
 ## Status
 
-| Term | Fantasy | Rule | Status |
+| Term | Fantasy | Codex | Status |
 |---|---|---|---|
 | **Burning** | On fire, and getting less on fire every round. | Foe status. See the burn keyword. | implemented |
 | **Suppressed** | Head down, gun silent. | Foe status. Skips its action this round, then clears. | implemented |
@@ -67,7 +68,7 @@ Status: 56 implemented, 14 planned, 1 idea.
 
 ## Formation
 
-| Term | Fantasy | Rule | Status |
+| Term | Fantasy | Codex | Status |
 |---|---|---|---|
 | **Front rank** | The bodies. | Three slots. Front-preferring foes fill these first. Always in line of fire. | implemented |
 | **Back rank** | The problems. | Three slots behind the front. Back-preferring foes hold these and never step up. Front-preferring foes wait here and step up when the slot ahead empties. | implemented |
@@ -80,7 +81,7 @@ Status: 56 implemented, 14 planned, 1 idea.
 
 ## Battlefield
 
-| Term | Fantasy | Rule | Status |
+| Term | Fantasy | Codex | Status |
 |---|---|---|---|
 | **Movespeed** | How much ground it covers before the enemy moves. | Movement points per phase. Entering a hex costs its terrain's move cost for that unit's traits. | implemented |
 | **Intent** | You can see where they are going. Whether they get there is up to you. | Each squad's path for the phase is previewed exactly. It heads for the gate or the nearest city defense, or hunts mechs if aggro. Player routes resolve first. | implemented |
@@ -93,7 +94,7 @@ Status: 56 implemented, 14 planned, 1 idea.
 
 ## Terrain
 
-| Term | Fantasy | Rule | Status |
+| Term | Fantasy | Codex | Status |
 |---|---|---|---|
 | **Plain** | Open ground. | Cost 1. | implemented |
 | **Road** | Somebody paved this before the end of the world. | Cost 1. | implemented |
@@ -104,7 +105,7 @@ Status: 56 implemented, 14 planned, 1 idea.
 
 ## Trait
 
-| Term | Fantasy | Rule | Status |
+| Term | Fantasy | Codex | Status |
 |---|---|---|---|
 | **Flyer** | Reaches anywhere. Holds nothing. | Ignores terrain cost, crosses water and mountains, cannot body-block. | implemented |
 | **Hover** | Skims the river like it is not there. | Crosses water. | implemented |
@@ -114,7 +115,7 @@ Status: 56 implemented, 14 planned, 1 idea.
 
 ## Trigger
 
-| Term | Fantasy | Rule | Status |
+| Term | Fantasy | Codex | Status |
 |---|---|---|---|
 | **On attack** | Whenever this mech fires. | Passive trigger. Fires after the damage roll on every attack. Effects: multiply or add damage or heat, or set a minimum damage. | implemented |
 | **On shield gain** | Whenever plating goes up. | Passive trigger. Fires when this mech gains shield from any source. | planned |
@@ -127,7 +128,7 @@ Status: 56 implemented, 14 planned, 1 idea.
 
 ## Commander
 
-| Term | Fantasy | Rule | Status |
+| Term | Fantasy | Codex | Status |
 |---|---|---|---|
 | **Command die** | You are not in the machine. You are the one telling the machines what to do. | One die rolled alongside the mech dice each round. Faces are rechargeable commander abilities and never deal damage. Faces come from the hangar, never from rewards. Die size is a research path. | planned |
 | **One-shot** | The button you only get to press once. | Consumable ability. Pouch of three. Picked up from skirmishes, expires when the battle ends. Starting stock restocks every battle. | planned |
@@ -135,14 +136,14 @@ Status: 56 implemented, 14 planned, 1 idea.
 
 ## City
 
-| Term | Fantasy | Rule | Status |
+| Term | Fantasy | Codex | Status |
 |---|---|---|---|
 | **City ability** | The city has a very large gun and a very large crane. | Battlefield-level ability owned and upgraded by the city: sprint, airlift, teleport, tractor beam, orbital strike. Cooldowns measured in phases. | planned |
 | **Cooldown** | Reloading. Come back in two phases. | City abilities only. Counted in battlefield phases. Never used inside a skirmish. | planned |
 
 ## Holes
 
-Every entry whose `holes` field is not empty. This is the list of things the mechanics do not do yet.
+Every entry whose `design.holes` is not empty. This is the list of things the mechanics do not do yet.
 
 - **Shield** (implemented): Option not coded: recharge only during phases spent out of combat.
 - **Heat** (implemented): Heat does nothing below the cap. Consider effects at high heat short of overflow.

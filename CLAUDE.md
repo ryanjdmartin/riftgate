@@ -24,10 +24,12 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
 - Declare enum-typed fields and params as `int`. Class-scoped enum types fail to compile when
   class_name scripts load from a headless `-s` runner in Godot 4.7.
 - `content/*.json` is data; `sim/content_db.gd` validates it and `tests/test_content.gd` runs the
-  validator, so bad content fails the build. `fantasy` and `question` are internal design fields
-  (Ryan documents inspiration and homages there; never show them to the player); `codex`,
-  `flavour` and a passive's `description` are player-facing. Content ids are Ryan's and may be
-  renamed; runtime code takes defaults from the content, never from a hardcoded id.
+  validator, so bad content fails the build. Every entry's internal text lives under `design`
+  (`fantasy`, `niche`, `holes`, ...: Ryan's pitch, inspiration and homages) and is never shown;
+  the validator refuses those keys at the top level. Shown to the player: `codex` (the inspect
+  entry), `flavour` (the quote), a passive's `name` and `description`, a foe action's `text`.
+  Content ids are Ryan's and may be renamed; runtime code takes defaults from the content,
+  never from a hardcoded id.
 - `sim/` never touches scenes. Everything there runs headless with a seeded RNG.
 - Numbers in content are placeholders, not balance.
 - Keep the fun in mind: prefer one source of randomness, and push back on systems that add no
