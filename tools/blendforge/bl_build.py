@@ -20,6 +20,7 @@ import bpy
 VIEW_COLOURS = {
     "steel": "#737d8a", "steel_dark": "#4a525e", "rubber": "#35393f", "glass": "#6fe3ff",
     "amber": "#e8a93a", "hot": "#e0473a", "bore": "#14171c", "white": "#d8d2c2", "livery": "#8a2430",
+    "tread": "#2a2d33", "grille": "#3e454f", "rivet": "#7a848f", "panel": "#6d7683",
 }
 
 

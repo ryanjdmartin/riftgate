@@ -277,10 +277,11 @@ def mech_prompt(c):
     return f"{MECH_STYLE} Subject: the {c['name']}, a {c.get('silhouette', '')} war machine. {body} Colours: {look}."
 
 
-def mech_reference(chassis_id, turn):
+def mech_reference(chassis_id, turn, src=""):
     """The renderer's own sprite, on white and blown up, as the model's composition
-    reference: the design stays fixed and the model does the finish."""
-    src = MECH_ART / f"{chassis_id}_combat_{turn}.png"
+    reference: the design stays fixed and the model does the finish. `src` is any render
+    (a blendforge review sprite, say); by default the sprite already in art/mechs."""
+    src = Path(src) if src else MECH_ART / f"{chassis_id}_combat_{turn}.png"
     im = Image.open(src).convert("RGBA")
     bg = Image.new("RGBA", im.size, (255, 255, 255, 255))
     bg.paste(im, (0, 0), im)
@@ -293,7 +294,7 @@ def mech_reference(chassis_id, turn):
 
 def mech(args):
     c = load_chassis()[args.chassis]
-    ref, (w, h) = mech_reference(args.chassis, args.turn)
+    ref, (w, h) = mech_reference(args.chassis, args.turn, args.ref)
     out = OUT / args.chassis
     prompt = args.prompt or mech_prompt(c)
     (out / "prompt.txt").write_text(prompt + "\n")
@@ -342,6 +343,7 @@ def main():
     m.add_argument("--seed", type=int, default=1)
     m.add_argument("--strength", type=float, default=0.3, help="how far the model may stray from the render; lower is freer (0.2 to 0.35 works)")
     m.add_argument("--prompt", default="")
+    m.add_argument("--ref", default="", help="reference sprite to refine (default: the one in art/mechs); e.g. a blendforge render in tools/blendforge/out")
     m.set_defaults(func=mech)
     cm = sub.add_parser("cut-mech", help="cut a chosen candidate into art/mechs/<chassis>_combat_<turn>.png")
     cm.add_argument("image")

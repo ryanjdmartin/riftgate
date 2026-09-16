@@ -8,7 +8,7 @@
   "entries": [
     {
       "id": "bulwark", "name": "Bulwark", "maker": "halvard", "silhouette": "tracked",
-      "design": { "fantasy": "A repurposed mining vehicle, designed to take severe punishment and keep on tracking. Refurbishments were minimal, basically bolting on weapons and armour, it keeps most of its utilitarian mining machinery flavour.", "niche": "" },
+      "design": { "fantasy": "A repurposed mining vehicle, designed to take severe punishment and keep on working. Refurbishments were minimal, basically bolting on weapons and armour, it keeps most of its utilitarian mining machinery flavour.", "niche": "tanky bruiser." },
       "codex": "The Halvard EX-45L (colloquially nicknamed the \"Badger\") was a mining mech widely praised for its reliability and durability, being designed to operate in the harshest, deepest environments imaginable. Reports exist of Badgers being caught in cave-ins at 5 kilometers underground, only to dig their way out to the surface a day later, just in time for drinks with the crew. So naturally, when the Rifts opened, the ever-practical Halvard engineering team's first instinct was to finally give their prized Badger claws, teeth, and as many missiles as it could carry, putting its legendary longevity to work on the battlefield.",
       "hull": 200, "shield": 30, "movespeed": 2, "heat_max": 100, "hardpoints": 7,
       "traits": ["tank"],

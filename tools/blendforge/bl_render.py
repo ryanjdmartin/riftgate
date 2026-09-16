@@ -22,7 +22,9 @@ from pathlib import Path
 import bpy
 from mathutils import Matrix, Vector
 
-ROLES = ["steel", "steel_dark", "rubber", "glass", "amber", "hot", "bore", "white", "livery"]
+ROLES = ["steel", "steel_dark", "rubber", "glass", "amber", "hot", "bore", "white", "livery",
+         # patterned roles: a base material plus a surface pattern drawn by the driver
+         "tread", "grille", "rivet", "panel"]
 
 
 def args():
@@ -140,6 +142,20 @@ def aux_tree(mat, index, near, far):
     nt.links.new(comb.outputs[0], em.inputs["Color"])
 
 
+def pos_tree(mat, radius):
+    """Object-local position, so a surface pattern sticks to its part in every view:
+    RGB = local xyz mapped from -radius..radius to 0..1."""
+    nt, em = clear_tree(mat)
+    tc = nt.nodes.new("ShaderNodeTexCoord")
+    mad = nt.nodes.new("ShaderNodeVectorMath")
+    mad.operation = "MULTIPLY_ADD"
+    k = 0.5 / radius
+    mad.inputs[1].default_value = (k, k, k)
+    mad.inputs[2].default_value = (0.5, 0.5, 0.5)
+    nt.links.new(tc.outputs["Object"], mad.inputs[0])
+    nt.links.new(mad.outputs[0], em.inputs["Color"])
+
+
 def setup_scene(scene):
     engines = [i.identifier for i in bpy.types.RenderSettings.bl_rna.properties["engine"].enum_items]
     scene.render.engine = "BLENDER_EEVEE_NEXT" if "BLENDER_EEVEE_NEXT" in engines else "BLENDER_EEVEE"
@@ -245,7 +261,12 @@ def main():
             aux_tree(m, i + 1, near, far)
         scene.render.filepath = str(out / f"{v['name']}_aux.png")
         bpy.ops.render.render(write_still=True)
+        for m in mats:
+            pos_tree(m, radius)
+        scene.render.filepath = str(out / f"{v['name']}_pos.png")
+        bpy.ops.render.render(write_still=True)
         meta["views"][v["name"]] = {"width_px": width_px, "height_px": height_px, "ppu": p}
+    meta["pos_radius"] = radius
     (out / "meta.json").write_text(json.dumps(meta, indent=1))
     print("blendforge: rendered", len(spec["views"]), "views to", out)
 

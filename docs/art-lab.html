@@ -92,6 +92,17 @@
 </div>
 </section>
 
+<section>
+<h2>8. Detail after the model: the image model versus surface patterns</h2>
+<p>Ryan's first hand-modelled mech, the Badger, rendered plainly, then two ways of adding the detail that flat boxes lack. The image-model pass (the step that finished the old hybrid Bulwark) was run on the render at strengths 0.3, 0.42 and 0.5, ten candidates: every one replaced the design with a generic mech, because a plain render gives the model nothing to hold on to. Surface patterns do the opposite: a material named <code>tread</code> draws tread bands in the part's own coordinates, identically in all nine views, with no model involved. That is the detail step for mechs from now on; the image model stays for enemies.</p>
+<div class="row">
+  <figure><img src="art-lab/badger_plain.png" width="544" alt="The Badger rendered plainly"><figcaption><b>Plain render</b> of Ryan's model. Tracks are boxes.</figcaption></figure>
+  <figure><img src="art-lab/badger_tread.png" width="544" alt="The Badger with the tread pattern"><figcaption><b>The same file with the track material renamed to <code>tread</code>.</b> Nothing else changed.</figcaption></figure>
+  <figure><img src="art-lab/badger_model_pass.png" width="1000" alt="Image-model candidates at strength 0.3 beside the plain render and the old hybrid"><figcaption><b>Image model at 0.3</b>, four seeds, beside the plain render and the old hybrid Bulwark. One tank, one biped, one sword.</figcaption></figure>
+  <figure><img src="art-lab/badger_model_pass_tight.png" width="1000" alt="Image-model candidates at strengths 0.42 and 0.5"><figcaption><b>Image model at 0.42 and 0.5</b>, three seeds each. Tighter, and still not the Badger.</figcaption></figure>
+</div>
+</section>
+
 <p class="note">Next art threads: Ryan's own mech designs from the archetypes through blendforge, the Anvil model, the coarse grid as the mech default, and the terrain split (realistic near the gate, flat high fantasy near the rift).</p>
 </div>
 </body>

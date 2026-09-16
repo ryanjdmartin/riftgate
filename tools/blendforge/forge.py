@@ -115,18 +115,62 @@ def spec_for(args):
     return {"groups": groups, "views": views}
 
 
+# ---------------------------------------------------------------- surface patterns
+# A patterned role is a base material plus a pattern in the part's own coordinates, so it
+# sticks to the part in every view and needs no image model. Each returns, per sample, 0
+# for untouched, 1 for a dark line (the ramp's darkest tone), 2 for a highlight (one tone
+# up). Units are model units; patterns are sized for the 80x96 frame at about 1.2 px/unit.
+
+def _stripes(coord, period, width):
+    return (np.mod(coord, period) < width)
+
+
+def pat_tread(p, n):
+    """Tread blocks: dark bands across the run, which lies along local y."""
+    return np.where(_stripes(p[..., 1], 3.0, 1.1), 1, 0)
+
+
+def pat_grille(p, n):
+    """Horizontal slats up the face."""
+    return np.where(_stripes(p[..., 2], 2.2, 0.9), 1, 0)
+
+
+def pat_rivet(p, n):
+    """A dot every few units in the plane of the face, as a one-pixel highlight."""
+    axis = np.argmax(np.abs(n), axis=-1)
+    u = np.where(axis == 0, p[..., 1], p[..., 0])
+    v = np.where(axis == 2, p[..., 1], p[..., 2])
+    dot = _stripes(u + 2.0, 5.0, 1.0) & _stripes(v + 2.0, 5.0, 1.0)
+    return np.where(dot, 2, 0)
+
+
+def pat_panel(p, n):
+    """Panel seams: a dark line every few units, both ways across the face."""
+    axis = np.argmax(np.abs(n), axis=-1)
+    u = np.where(axis == 0, p[..., 1], p[..., 0])
+    v = np.where(axis == 2, p[..., 1], p[..., 2])
+    return np.where(_stripes(u + 1.0, 7.0, 0.8) | _stripes(v + 1.0, 9.0, 0.8), 1, 0)
+
+
+PATTERNS = {"tread": ("rubber", pat_tread), "grille": ("steel_dark", pat_grille),
+            "rivet": ("steel", pat_rivet), "panel": ("steel", pat_panel)}
+
+
 def ramp_for(material, maker):
     """The spriter's four tones for a role, or four tones built from the author's colour."""
+    if material["role"] in PATTERNS:
+        return [spriter.hex_to_rgb(h) for h in spriter.material_ramp(PATTERNS[material["role"]][0], maker)]
     if material["role"]:
         return [spriter.hex_to_rgb(h) for h in spriter.material_ramp(material["role"], maker)]
     c = np.array(material["colour"], dtype=float) ** (1 / 2.2)   # linear to display
     return [tuple(int(v) for v in np.clip(c * f * 255, 0, 255)) for f in (0.38, 0.6, 0.82, 1.0)]
 
 
-def shade(nrm, aux, yaw, materials, maker, meta):
+def shade(nrm, aux, yaw, materials, maker, meta, pos=None):
     """Colour every sample the spriter's way: normal against the fixed light, four tones,
-    top faces bumped a tone. Returns colours (h, w, 4), normals in the spriter's world,
-    depth in units, material index, coverage."""
+    top faces bumped a tone, then the material's surface pattern if it has one. Returns
+    colours (h, w, 4), normals in the spriter's world, depth in units, material index,
+    coverage."""
     cover = nrm[..., 3] > 127
     n = nrm[..., :3].astype(np.float32) / 255.0 * 2.0 - 1.0
     R = spriter.rot_z(yaw)                      # the spriter's world: the model turned, camera fixed
@@ -138,6 +182,19 @@ def shade(nrm, aux, yaw, materials, maker, meta):
     tone = np.select([ndl > 0.62, ndl > 0.22, ndl > -0.25], [3, 2, 1], default=0)
     tone = np.where((n_w[..., 2] > 0.85) & (tone < 3), tone + 1, tone)
     idx = aux[..., 0].astype(int)
+    if pos is not None:
+        r = float(meta.get("pos_radius", 1.0))
+        local = (pos[..., :3].astype(np.float32) / 255.0 - 0.5) * (2.0 * r)
+        for m in materials:
+            fn = PATTERNS.get(m["role"], (None, None))[1]
+            if fn is None:
+                continue
+            sel = cover & (idx == m["index"])
+            if not sel.any():
+                continue
+            mark = fn(local, n)          # the part's own normal, before the view turn
+            tone = np.where(sel & (mark == 1), 0, tone)
+            tone = np.where(sel & (mark == 2), np.minimum(tone + 1, 3), tone)
     depth = meta["depth_near"] + aux[..., 1].astype(np.float32) / 255.0 * (meta["depth_far"] - meta["depth_near"])
     ramps = {m["index"]: ramp_for(m, maker) for m in materials}
     colour = np.zeros(nrm.shape[:2] + (4,), dtype=np.uint8)
@@ -219,7 +276,9 @@ def crop_fit(arr, width, height, pad):
 def compose(view, passes, meta, maker):
     nrm = np.asarray(Image.open(passes / f"{view['name']}_nrm.png").convert("RGBA"))
     aux = np.asarray(Image.open(passes / f"{view['name']}_aux.png").convert("RGBA"))
-    colour, n_w, depth, idx, cover = shade(nrm, aux, view["yaw"], meta["materials"], maker, meta)
+    pos_file = passes / f"{view['name']}_pos.png"
+    pos = np.asarray(Image.open(pos_file).convert("RGBA")) if pos_file.exists() else None
+    colour, n_w, depth, idx, cover = shade(nrm, aux, view["yaw"], meta["materials"], maker, meta, pos)
     k = view["supersample"]
     small = spriter._mode_downsample(colour, k)
     if view["detail"]:   # combat scale draws creases; map tokens are too small for them

@@ -37,7 +37,16 @@ everything internal under `design` (`fantasy`, `niche`, `holes`, `signature`, `a
 `flavour` waiting for Ryan's words. Sim and game code take their defaults from content
 order (`ContentDB.default_team`, `default_faction`, `spawn_foes`, `make_boss`) instead of
 hardcoding bulwark, ghoul or undead. Ryan's Bulwark model is
-`tools/blendforge/models/new_bulwark.blend`; it renders cleanly, not yet installed. Tests still name the current
+`tools/blendforge/models/new_bulwark.blend`; it renders cleanly, not yet installed.
+
+Detail for modelled mechs (16 September, late): the image-model pass was tried on the
+Badger's render at three strengths and replaced the design every time (art lab, section 8),
+so it is retired for mechs. Blendforge gained surface patterns instead: materials named
+`tread`, `grille`, `rivet`, `panel` draw a pattern in the part's own coordinates from a
+third data pass (object-local position), consistent in all nine views. `tread` on the
+Badger's track boxes makes them read as tracks. Next: Ryan renames his track material to
+`tread` (and splits tracks into run, skirt and sprockets if he wants the spriter's read),
+then `render --install`. Tests still name the current
 ids, as do `tools/spriter` MODELS, `tools/sheet_export.py` grid mapping, `tools/foeforge`
 BIG_MAP, and the art file names under `art/`; those get one pass after the rename lands. Next for art: Ryan's first hand-modelled mech (the Anvil has no design
 yet), then `render --install`, `--import`, and a look at it in the skirmish.

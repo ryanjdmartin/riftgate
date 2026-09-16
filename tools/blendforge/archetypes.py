@@ -55,7 +55,7 @@ class Build:
 def tracks(m, x_in, x_out, y0, y1, h, skirt=3):
     """A pair of track runs with skirts and end sprockets."""
     def one(s):
-        m.box(s * x_in, s * x_out, y0, y1, 0, h, "rubber")
+        m.box(s * x_in, s * x_out, y0, y1, 0, h, "tread")
         m.box(s * x_in, s * x_out, y0, y1, h, h + skirt, "steel_dark")
         r = h / 2.0
         m.cyl("x", s * (x_in + x_out) / 2, y1 - r, r, r, x_out - x_in + 0.5, "steel_dark", detail=True)

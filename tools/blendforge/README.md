@@ -60,6 +60,21 @@ surface is, not what colour it should be:
 | `hot` | engine exhaust glow, thruster nozzles | orange-red |
 | `white` | bone-white plating where the livery is not wanted | off-white |
 
+Four more names carry a **surface pattern** on top of a base material. The pattern is drawn
+in the part's own coordinates, so it sticks to the part in every view and needs no image
+model; it is how a plain box reads as a track or a vented deck at 80x96:
+
+| Name | Base | Pattern |
+| --- | --- | --- |
+| `tread` | rubber | dark bands across the run; the run lies along the part's local Y |
+| `grille` | steel_dark | horizontal slats up the face |
+| `rivet` | steel | a one-pixel highlight dot every few units across the face |
+| `panel` | steel | dark seam lines every few units, both ways across the face |
+
+Patterns use the object's own axes, so apply your rotation before rendering (Object > Apply
+> Rotation) or the bands come out at an angle. A track run modelled along X instead of Y gets
+its bands the wrong way; turn the part or rotate it 90 degrees and apply.
+
 `livery` is why one file serves every maker: `render ... --maker kestrel` repaints the same
 model in cobalt. It is also the plan for player repaints: the maker sets the livery, the
 hangar will sell a change of it. Blender's `.001` suffixes are ignored, so `steel.003` is still steel.
