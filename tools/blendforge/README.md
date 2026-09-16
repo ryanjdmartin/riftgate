@@ -67,6 +67,22 @@ hangar will sell a change of it. Blender's `.001` suffixes are ignored, so `stee
 If you would rather pick colours than names, that works too: any material whose name is not
 in the table is painted from its own Base Color, darkened and lightened into four tones.
 
+## Archetypes: starting points
+
+`tools/blendforge/models/archetypes/` holds sixteen starter silhouettes, one per vehicle
+type, so a new mech starts by dragging vertices rather than from an empty scene: tank,
+H-tank, hover tank, spider tank, six-wheeled APC, four-wheeled buggy, missile platform,
+plantigrade and digitigrade bipeds, tall quadruped, fighter, forward-swept fighter, gunship,
+heavy helicopter, fan helicopter, freighter. Each is a few dozen boxes, cylinders and wedges
+in the conventions above, already split into parts and tagged with material roles. They are
+generic types, not any particular design.
+
+Open one, Save As under the chassis name, reshape it, and render. They are authored in
+`archetypes.py` and rebuilt with `forge.py archetypes` (which also renders a review sheet to
+`tools/blendforge/out/archetypes/contact.png`), so a Save As is the right move: a rebuild
+overwrites the originals. `wedge(..., slope)` there is a box whose top edge on the slope side
+drops to the floor; in Blender it is just a cube with two vertices moved.
+
 ## Options
 
 - `--fill 0.85` leaves headroom in the combat frame (default fills it).

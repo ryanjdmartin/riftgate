@@ -230,13 +230,13 @@ def compose(view, passes, meta, maker):
     return Image.fromarray(small, "RGBA")
 
 
-def render(args):
-    blend = Path(args.blend).resolve()
+def render_blend(blend, name, maker, spec, work, out_dir):
+    """Render one .blend through Blender and the spriter's shading into out_dir. Returns
+    the contact sheet path."""
+    blend = Path(blend).resolve()
     if not blend.exists():
         raise SystemExit(f"no such file {blend}")
-    maker = maker_of(args.chassis, args.maker)
-    spec = spec_for(args)
-    passes = OUT / args.chassis / "passes"
+    passes = Path(work) / "passes"
     passes.mkdir(parents=True, exist_ok=True)
     sj = passes / "spec.json"
     sj.write_text(json.dumps(spec, indent=1))
@@ -250,9 +250,53 @@ def render(args):
         arr = np.asarray(compose(v, passes, meta, maker))
         im = Image.fromarray(crop_fit(arr, g["width"], g["height"], v["pad"]), "RGBA")
         (combat if v["group"] == "combat" else maps)[v["name"].split("_", 1)[1]] = im
+    return spriter.write_sheets(name, combat, maps, str(out_dir), contact_only=False)
+
+
+def render(args):
+    maker = maker_of(args.chassis, args.maker)
     out_dir = MECH_ART if args.install else OUT / args.chassis
-    path = spriter.write_sheets(args.chassis, combat, maps, str(out_dir), contact_only=False)
+    path = render_blend(args.blend, args.chassis, maker, spec_for(args), OUT / args.chassis, out_dir)
     print(f"{args.chassis}: {Path(path).relative_to(ROOT)}" + ("" if args.install else "  (add --install to write art/mechs)"))
+
+
+# ---------------------------------------------------------------- archetypes
+
+def archetypes(args):
+    import archetypes as lib
+    from PIL import ImageDraw
+    names = args.names or list(lib.ARCHETYPES)
+    bad = [n for n in names if n not in lib.ARCHETYPES]
+    if bad:
+        raise SystemExit(f"unknown archetype {bad}; have {', '.join(lib.ARCHETYPES)}")
+    sheets = []
+    for n in names:
+        model = lib.ARCHETYPES[n]()
+        dest = MODELS / "archetypes" / f"{n}.blend"
+        with tempfile.TemporaryDirectory() as td:
+            pj = Path(td) / "parts.json"
+            pj.write_text(json.dumps(model.spec()))
+            blender("-P", str(HERE / "bl_build.py"), "--", "--parts", str(pj), "--out", str(dest))
+        if args.build_only:
+            continue
+        work = OUT / "archetypes" / n
+        sheets.append((n, render_blend(dest, n, args.maker, spec_for(args), work, work)))
+    if not sheets:
+        return
+    # one review sheet: every archetype's contact sheet stacked, labelled
+    imgs = [(n, Image.open(p).convert("RGBA")) for n, p in sheets]
+    W = max(im.width for _, im in imgs)
+    H = sum(im.height + 28 for _, im in imgs)
+    sheet = Image.new("RGBA", (W, H), (0x1b, 0x1f, 0x26, 255))
+    d = ImageDraw.Draw(sheet)
+    y = 0
+    for n, im in imgs:
+        d.text((8, y + 8), n, fill=(232, 228, 214))
+        sheet.paste(im, (0, y + 28), im)
+        y += im.height + 28
+    path = OUT / "archetypes" / "contact.png"
+    sheet.save(path)
+    print(f"{len(imgs)} archetypes: {path.relative_to(ROOT)}; models in {(MODELS / 'archetypes').relative_to(ROOT)}")
 
 
 def main():
@@ -269,6 +313,13 @@ def main():
     e = sub.add_parser("example", help="build a template .blend from a spriter model")
     e.add_argument("model", choices=sorted(spriter.MODELS))
     e.set_defaults(func=example)
+    a = sub.add_parser("archetypes", help="build the starter silhouettes in archetypes.py as .blend files and render a review sheet")
+    a.add_argument("names", nargs="*", help="which archetypes; default all")
+    a.add_argument("--maker", default="halvard", help="livery for the review renders")
+    a.add_argument("--fill", type=float, default=1.0)
+    a.add_argument("--ppu", type=float, default=0.0)
+    a.add_argument("--build-only", action="store_true", help="write the .blend files without rendering")
+    a.set_defaults(func=archetypes)
     args = ap.parse_args()
     args.func(args)
 

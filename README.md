@@ -87,6 +87,7 @@ tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut-mech tools/foeforge/
 
 # mech sprites from a Blender model (see tools/blendforge/README.md): review, then --install
 tools/spriter/.venv/bin/python tools/blendforge/forge.py example bulwark        # template .blend
+tools/spriter/.venv/bin/python tools/blendforge/forge.py archetypes             # rebuild the 16 starter silhouettes + review sheet
 tools/spriter/.venv/bin/python tools/blendforge/forge.py render path/to/anvil.blend anvil --install
 ```
 

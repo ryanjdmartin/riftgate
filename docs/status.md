@@ -19,7 +19,12 @@ the material role and palette are now `livery`, the maker's colour, which the ha
 one day let the player repaint for a fee. Setting direction recorded in the bible, section 1:
 an elected council of mankind that is really a martial-law dictatorship, competing
 manufacturers, propaganda, "nobody stands against the march of human progress". Lore is
-not written; the council needs a name with a good acronym. Next for art: Ryan's first hand-modelled mech (the Anvil has no design
+not written; Ryan likes MARCH for the council if it names the body (leading expansion in the
+bible: Mandated Assembly of the Remaining Cities of Humanity). Sixteen starter .blend
+silhouettes for Ryan to reshape live in `tools/blendforge/models/archetypes/` (authored in
+`archetypes.py`, `forge.py archetypes` rebuilds and renders the review sheet, also on
+`docs/art-lab.html` section 7). Standing instruction from Ryan: take each new direction as
+he gives it; tone iterates as we build. Next for art: Ryan's first hand-modelled mech (the Anvil has no design
 yet), then `render --install`, `--import`, and a look at it in the skirmish.
 
 **Last done.** The battle loop. `sim/battle.gd` owns one battle: routes, resolve, a

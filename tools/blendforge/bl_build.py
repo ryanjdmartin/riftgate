@@ -39,12 +39,20 @@ def material(role):
 
 
 def add_part(i, part):
-    if part["type"] == "box":
+    if part["type"] in ("box", "wedge"):
         lo, hi = part["lo"], part["hi"]
         bpy.ops.mesh.primitive_cube_add(size=1.0)
         o = bpy.context.object
         o.location = [(lo[k] + hi[k]) / 2.0 for k in range(3)]
         o.scale = [max(hi[k] - lo[k], 1e-3) for k in range(3)]
+        if part["type"] == "wedge":
+            # Drop the top edge on the slope side to the floor, in the cube's own
+            # coordinates (half-extents of 0.5), so the scale takes care of the rest.
+            axis = 0 if part["slope"][0] == "x" else 1
+            sign = 1.0 if part["slope"][1] == "+" else -1.0
+            for v in o.data.vertices:
+                if v.co.z > 0 and v.co[axis] * sign > 0:
+                    v.co.z = -0.5
     else:
         c = part["center"]
         bpy.ops.mesh.primitive_cylinder_add(vertices=16, radius=part["radius"], depth=part["length"], location=c)
