@@ -22,7 +22,7 @@ from pathlib import Path
 import bpy
 from mathutils import Matrix, Vector
 
-ROLES = ["steel", "steel_dark", "rubber", "glass", "amber", "hot", "bore", "white", "house"]
+ROLES = ["steel", "steel_dark", "rubber", "glass", "amber", "hot", "bore", "white", "livery"]
 
 
 def args():

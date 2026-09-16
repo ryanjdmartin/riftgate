@@ -33,7 +33,9 @@ HOT = ["#7a2018", "#b0342a", "#e0473a", "#ff8a6a"]
 BORE = ["#0b0d10", "#0b0d10", "#14171c", "#1f2329"]
 WHITE = ["#8f8a7a", "#a9a291", "#d8d2c2", "#f0ebdc"]
 
-HOUSE = {
+# The maker's livery: the one saturated colour on a mech's identity plates. Set by the
+# manufacturer; the player will be able to repaint it in the hangar for a fee.
+LIVERY = {
     "halvard": ["#3a0f16", "#5a1620", "#8a2430", "#b8303f"],
     "kestrel": ["#132148", "#1c3270", "#2d4fa8", "#4a74d8"],
     "orrin_pike": WHITE,
@@ -338,8 +340,8 @@ def _raster(model: Model, yaw: float, pitch: float, ppu: float, width: int, heig
 
 
 def material_ramp(mat: str, maker: str) -> list[str]:
-    if mat == "house":
-        return HOUSE[maker]
+    if mat == "livery":
+        return LIVERY[maker]
     return {
         "steel": STEEL, "steel_dark": STEEL_DARK, "rubber": RUBBER, "glass": GLASS,
         "amber": AMBER, "hot": HOT, "bore": BORE, "white": WHITE,
@@ -360,12 +362,12 @@ def bulwark() -> Model:
     m.mirror_x(track)
     # hull and glacis
     m.box(-12, 12, -15, 14, 5, 19, "steel")
-    m.box(-11, 11, 12, 16, 8, 20, "house")                   # glacis plate, house colour
+    m.box(-11, 11, 12, 16, 8, 20, "livery")                   # glacis plate, livery
     m.box(-12, 12, -15, -12, 19, 22, "steel_dark")           # rear deck lip
     # superstructure with a bevel (stacked, stepping in)
     m.box(-9, 9, -8, 7, 19, 30, "steel")
     m.box(-7, 7, -7, 8, 30, 33, "steel")
-    m.box(-8, 8, 6, 9, 20, 29, "house")                      # front plate
+    m.box(-8, 8, 6, 9, 20, 29, "livery")                      # front plate
     m.box(-5, 5, 8, 10, 23, 28, "glass")                     # cockpit slit
     m.box(-0.6, 0.6, 9.5, 10.5, 23, 28, "steel_dark", detail=True)  # pane divider
     m.box(-3, 3, 8.5, 9.5, 20.5, 22, "amber", detail=True)   # chevron marking
@@ -376,7 +378,7 @@ def bulwark() -> Model:
     m.cyl("y", -11.5, 3.5, 31, 2.5, 2, "amber", detail=True)  # lens
     # shoulder slug cannon, right: housing, short fat barrel, brake, bore
     m.box(5, 16, -8, 8, 27, 38, "steel")
-    m.box(6, 15, 6, 9, 28, 37, "house")                      # housing face plate
+    m.box(6, 15, 6, 9, 28, 37, "livery")                      # housing face plate
     m.cyl("y", 10.5, 14, 32.5, 4.5, 12, "steel_dark")        # barrel y 8..20
     m.box(6, 15, 19, 23, 28, 37, "steel")                    # muzzle brake block
     m.box(6.5, 8, 19.5, 22.5, 29, 36, "bore", detail=True)   # brake slots
@@ -387,7 +389,7 @@ def bulwark() -> Model:
     def arm(s):
         m.box(s * 13, s * 20, 2, 10, 12, 24, "steel")        # shoulder block
         m.cyl("x", s * 16.5, 6, 18, 2.5, 8, "steel_dark", detail=True)  # hydraulic pin
-        m.box(s * 14, s * 21, 9, 21, 9, 17, "house")          # forearm
+        m.box(s * 14, s * 21, 9, 21, 9, 17, "livery")          # forearm
         m.box(s * 15, s * 20, 10, 20, 17, 18.5, "steel_dark", detail=True)  # forearm top rail
         m.box(s * 13.5, s * 21.5, 20, 27, 6, 15, "steel_dark")  # fist
         m.box(s * 14, s * 21, 26.5, 28, 9, 13, "steel", detail=True)  # knuckle plate
@@ -401,8 +403,8 @@ def sentinel() -> Model:
     m = Model("sentinel", "orrin_pike")
     # body
     m.box(-11, 11, -12, 12, 16, 30, "steel")
-    m.box(-9, 9, -10, 10, 30, 32, "house")                   # top plate
-    m.box(-9, 9, 12, 14, 18, 28, "house")                    # glacis
+    m.box(-9, 9, -10, 10, 30, 32, "livery")                   # top plate
+    m.box(-9, 9, 12, 14, 18, 28, "livery")                    # glacis
     m.box(-4, 4, 14, 15, 21, 26, "glass")                    # cockpit
     m.box(-0.6, 0.6, 14.5, 15.5, 21, 26, "steel_dark", detail=True)
     m.box(-9, 9, -12, -10, 22, 30, "steel_dark")             # rear radiator
@@ -411,15 +413,15 @@ def sentinel() -> Model:
     m.box(-2, 2, -7, -5, 36, 37.5, "amber", detail=True)
     def pod(s):
         m.box(s * 11, s * 19, -6, 4, 22, 32, "steel")        # shoulder pod
-        m.box(s * 12, s * 18, 4, 5.5, 23, 31, "house")        # pod face
+        m.box(s * 12, s * 18, 4, 5.5, 23, 31, "livery")        # pod face
         for gx in (13.5, 16.5):
             for gz in (24.5, 28.5):
                 m.box(s * (gx - 0.9), s * (gx + 0.9), 5.6, 6.2, gz - 0.9, gz + 0.9, "bore", detail=True)
-        m.box(s * 12, s * 18, -5, 3, 32, 33.5, "house", detail=True)  # pod lid
+        m.box(s * 12, s * 18, -5, 3, 32, 33.5, "livery", detail=True)  # pod lid
     m.mirror_x(pod)
     def leg(sx, sy):
         m.box(sx * 11, sx * 15, sy * 4, sy * 10, 14, 22, "steel_dark")   # hip
-        m.box(sx * 14, sx * 19, sy * 5, sy * 10, 8, 18, "house")         # upper leg
+        m.box(sx * 14, sx * 19, sy * 5, sy * 10, 8, 18, "livery")         # upper leg
         m.box(sx * 17, sx * 21, sy * 4, sy * 11, 0, 10, "steel_dark")    # lower leg
         m.box(sx * 16, sx * 21.5, sy * 3, sy * 11.5, 0, 2.5, "rubber")   # foot pad
         m.cyl("x", sx * 16.5, sy * 7.5, 18, 2.0, 6, "steel", detail=True)  # hip pin
@@ -439,11 +441,11 @@ def raptor() -> Model:
     m.box(-2, 2, 16, 21, 12, 15, "steel_dark")               # nose cone
     m.box(-3, 3, 2, 9, 17, 20, "glass")                      # canopy
     m.box(-0.6, 0.6, 2, 9, 17.5, 20.5, "steel_dark", detail=True)  # canopy spine
-    m.box(-4, 4, -8, 2, 17, 18.5, "house")                   # spine plate behind the canopy
+    m.box(-4, 4, -8, 2, 17, 18.5, "livery")                   # spine plate behind the canopy
     # swept wing as three stepped slabs
-    m.box(-20, 20, -9, -3, 12, 14, "house")
-    m.box(-15, 15, -3, 1, 12, 14, "house")
-    m.box(-9, 9, 1, 4, 12, 13.5, "house")
+    m.box(-20, 20, -9, -3, 12, 14, "livery")
+    m.box(-15, 15, -3, 1, 12, 14, "livery")
+    m.box(-9, 9, 1, 4, 12, 13.5, "livery")
     m.box(-20, 20, -9, -8, 14, 14.8, "steel_dark", detail=True)  # trailing edge line
     # wingtip missiles and nav lights
     def tip(s):
@@ -457,7 +459,7 @@ def raptor() -> Model:
         m.box(s * 5, s * 9, -6, -4, 16.5, 18, "steel", detail=True)  # intake lip
     m.mirror_x(engine)
     # tail fin and underslung gun
-    m.box(-1, 1, -17, -9, 17, 25, "house")
+    m.box(-1, 1, -17, -9, 17, 25, "livery")
     m.box(-1.2, 1.2, -17, -14, 24, 25.5, "amber", detail=True)
     m.cyl("y", 0, 4, 9.5, 1.5, 14, "steel_dark")
     m.cyl("y", 0, 11.3, 9.5, 0.9, 0.8, "bore", detail=True)

@@ -52,16 +52,17 @@ surface is, not what colour it should be:
 | --- | --- | --- |
 | `steel` | armour plates, the body; the default for anything unnamed | mid grey, four tones |
 | `steel_dark` | joints, barrels, undercarriage, anything recessed or mechanical | darker grey |
-| `house` | one or two big identity panels: glacis, shoulder pod face, wing | the maker's colour: Halvard deep red, Kestrel cobalt, Orrin & Pike bone white |
+| `livery` | one or two big identity panels: glacis, shoulder pod face, wing | the maker's livery: Halvard deep red, Kestrel cobalt, Orrin & Pike bone white |
 | `glass` | cockpit slit, canopy, sensor lens | bright cyan |
 | `amber` | warning lights, chevrons, searchlight lens; one or two spots | warm amber |
 | `rubber` | tyres, tracks, foot pads, cable bundles | near black, recedes |
 | `bore` | the inside of a gun barrel, exhaust holes, muzzle slots | black, reads as a hole |
 | `hot` | engine exhaust glow, thruster nozzles | orange-red |
-| `white` | bone-white plating where the house colour is not wanted | off-white |
+| `white` | bone-white plating where the livery is not wanted | off-white |
 
-`house` is why one file serves every maker: `render ... --maker kestrel` repaints the same
-model in cobalt. Blender's `.001` suffixes are ignored, so `steel.003` is still steel.
+`livery` is why one file serves every maker: `render ... --maker kestrel` repaints the same
+model in cobalt. It is also the plan for player repaints: the maker sets the livery, the
+hangar will sell a change of it. Blender's `.001` suffixes are ignored, so `steel.003` is still steel.
 
 If you would rather pick colours than names, that works too: any material whose name is not
 in the table is painted from its own Base Color, darkened and lightened into four tones.
@@ -71,7 +72,7 @@ in the table is painted from its own Base Color, darkened and lightened into fou
 - `--fill 0.85` leaves headroom in the combat frame (default fills it).
 - `--ppu 1.5` forces pixels per model unit instead of fitting, so two mechs modelled at the
   same scale keep their relative size. The map token follows at the spriter's ratio.
-- `--maker` overrides the house colour looked up from `content/chassis.json`.
+- `--maker` overrides the livery looked up from `content/chassis.json`.
 
 ## How it works
 

@@ -83,7 +83,7 @@
 <header>
   <div class="eyebrow" style="margin-top:26px">Working title: Riftgate &nbsp;&middot;&nbsp; sprite sheet exploration, round two &nbsp;&middot;&nbsp; player units and terrain</div>
   <h1>Riftgate<br>Mech Sheet</h1>
-  <p class="lede">Player units are grounded military mecha in the Mechwarrior lineage with a Terran-armour attitude: heavy, angular, serviced-not-cobbled, bolted plates and exposed hydraulics, a small crew cockpit where a face would be. Each chassis exists at two scales, a 48 &times; 64 combat sprite that carries the fantasy, and a 16 &times; 16 chibi map sprite that only has to be told apart at hex size. Everything below is still a code-drawn style sketch, rendered at load from hand-typed character grids, not final art; what is being tested is silhouette, mass, house colour, hardpoint legibility and whether the front reads, all of which survive a real pixel artist.</p>
+  <p class="lede">Player units are grounded military mecha in the Mechwarrior lineage with a Terran-armour attitude: heavy, angular, serviced-not-cobbled, bolted plates and exposed hydraulics, a small crew cockpit where a face would be. Each chassis exists at two scales, a 48 &times; 64 combat sprite that carries the fantasy, and a 16 &times; 16 chibi map sprite that only has to be told apart at hex size. Everything below is still a code-drawn style sketch, rendered at load from hand-typed character grids, not final art; what is being tested is silhouette, mass, livery, hardpoint legibility and whether the front reads, all of which survive a real pixel artist.</p>
 </header>
 
 <!-- ============================== RENDERED ============================== -->
@@ -102,7 +102,7 @@
 <section id="combat">
   <span class="tag">Skirmish scale</span>
   <h2>Combat sprites (round-two brief)</h2>
-  <div class="round"><b>Round two</b>Olive is gone: every mech is now a cold steel ramp with one saturated house colour on the armour plates and amber or white markings, and every combat sprite is redrawn three-quarter front so the player sees cockpit, chest plate and gun muzzle. The build is heavier throughout, with knee actuators, wide feet, bevelled plates, multi-pane canopies and short fat cannons in place of the round-one boxes.</div>
+  <div class="round"><b>Round two</b>Olive is gone: every mech is now a cold steel ramp with one saturated livery on the armour plates and amber or white markings, and every combat sprite is redrawn three-quarter front so the player sees cockpit, chest plate and gun muzzle. The build is heavier throughout, with knee actuators, wide feet, bevelled plates, multi-pane canopies and short fat cannons in place of the round-one boxes.</div>
   <p style="margin-top:12px">48 wide by 64 tall (the Raptor is 64 by 48). The enemy side is above the mechs on screen, but the sprite faces the viewer, turned slightly toward the upper-left, so a cannon pointing at the enemy is drawn as a foreshortened muzzle face: wide bore, brake slots, thick housing behind it. One pixel of <code>#1a1d23</code> outline on the silhouette, at most sixteen colours per unit, interior lines only where a plate changes value or a rivet line runs along an edge. Each is shown at 3&times; and, beside it, at 1&times; next to the 120 px die outline it will share a card with.</p>
 
   <div class="unit">
@@ -154,7 +154,7 @@
 <section id="map">
   <span class="tag">Battlefield scale</span>
   <h2>Map sprites</h2>
-  <p style="margin-top:12px">16 &times; 16 chibi, one pixel ink outline, a shared steel ramp plus one house colour on the plates so the maker reads even at hex size: Halvard red, Orrin &amp; Pike bone, Kestrel cobalt. Big silhouette, no attempt at scale, facing east or north-east; these stay simple. The Bulwark is the heavy and gets a 24 &times; 28 grid that overflows its hex upward. Map sprites drop all customisation detail: a Sentinel with a different lance is still the same map sprite, and the skirmish is where the loadout shows.</p>
+  <p style="margin-top:12px">16 &times; 16 chibi, one pixel ink outline, a shared steel ramp plus one livery on the plates so the maker reads even at hex size: Halvard red, Orrin &amp; Pike bone, Kestrel cobalt. Big silhouette, no attempt at scale, facing east or north-east; these stay simple. The Bulwark is the heavy and gets a 24 &times; 28 grid that overflows its hex upward. Map sprites drop all customisation detail: a Sentinel with a different lance is still the same map sprite, and the skirmish is where the loadout shows.</p>
   <div class="mocks">
     <figure><canvas id="maps"></canvas><figcaption><b>Four chassis at 3&times; and at 1&times;.</b> At 1&times; a 16 px sprite is 16 CSS pixels; on the map it is drawn at 3&times; inside a 52 px hex, so the 3&times; row is the size the player actually sees. The Bulwark at 3&times; is 72 &times; 84 and spills out of the hex top.</figcaption></figure>
   </div>
@@ -178,7 +178,7 @@
     <figure><canvas id="s-rift"></canvas><figcaption><b>Rift, three hexes, at 2&times;.</b> A violet tear across the three north-edge hexes, light bleeding into the surrounding ground. Enemies arrive from it.</figcaption></figure>
   </div>
   <div class="mocks">
-    <figure><canvas id="patch1"></canvas><figcaption><b>7 &times; 6 battlefield patch at 1&times;.</b> Rift along the top row, gate along the bottom row, road running between them. Raptor over the river, Sentinel and Anvil on the flanks, Bulwark on the road overflowing its hex upward, all in the new house colours. Units are drawn row by row south over north, so the Bulwark covers the hex behind it.</figcaption></figure>
+    <figure><canvas id="patch1"></canvas><figcaption><b>7 &times; 6 battlefield patch at 1&times;.</b> Rift along the top row, gate along the bottom row, road running between them. Raptor over the river, Sentinel and Anvil on the flanks, Bulwark on the road overflowing its hex upward, all in the new liveries. Units are drawn row by row south over north, so the Bulwark covers the hex behind it.</figcaption></figure>
     <figure><canvas id="patch2"></canvas><figcaption><b>Same patch at 2&times;.</b> Every terrain pixel is a 3 px unit at 1&times;, the same unit as the map sprites, so nothing swims when the two are layered.</figcaption></figure>
   </div>
 </section>
@@ -199,9 +199,9 @@
   <h2>What to judge</h2>
   <ul class="rules">
     <li><b>Heavy hardware.</b> Do the combat sprites read as heavy military hardware, weight in the hull and legs and a crew somewhere inside, or do they still read as characters?</li>
-    <li><b>House colour at 1&times;.</b> Cover the 3&times; versions: does red, bone or cobalt tell you who built the unit at card scale, and on the map patch?</li>
+    <li><b>Livery at 1&times;.</b> Cover the 3&times; versions: does red, bone or cobalt tell you who built the unit at card scale, and on the map patch?</li>
     <li><b>The front reads.</b> Can you find the cockpit panes, the chest plate and the gun muzzle on each one without the caption? Does the muzzle-first cannon read as a cannon rather than a wheel?</li>
-    <li><b>Cheapness fixed?</b> Did dropping olive for steel plus one saturated house colour fix the cheap read at pixel scale, or is the problem somewhere else (outline weight, contrast, dither)?</li>
+    <li><b>Cheapness fixed?</b> Did dropping olive for steel plus one saturated livery fix the cheap read at pixel scale, or is the problem somewhere else (outline weight, contrast, dither)?</li>
     <li><b>Hardpoint legibility.</b> Can you point at the claws, the mortar, the lance, the autoguns, the railgun, the howitzer and the shell rack? If a hardpoint needs the caption, it needs a redraw.</li>
     <li><b>Terrain at hex size.</b> At 1&times; on the patch, can you tell road from rough, ruins from rough, water from mountain, without the tile legend?</li>
   </ul>
@@ -280,7 +280,7 @@
     return rows;
   }
 
-  /* ---------- combat palette: cold steel ramp, markings, one saturated house colour per maker ---------- */
+  /* ---------- combat palette: cold steel ramp, markings, one saturated livery per maker ---------- */
   var CP = {
     '#':'#1A1D23', k:'#2B3038', d:'#4A525E', m:'#737D8A', l:'#A3ACB6', w:'#D7DCE1',
     h:'#E8A93A', H:'#A8741F', g:'#6FE3FF', G:'#2FA7C9', r:'#E0473A',
@@ -549,7 +549,7 @@
     '................................................................'
   ]);
 
-  /* ---------- map palette: shared steel, amber, cyan, plus the three house colours ---------- */
+  /* ---------- map palette: shared steel, amber, cyan, plus the three liveries ---------- */
   var MP = { '#':'#1A1D23', d:'#4A525E', m:'#737D8A', l:'#A3ACB6', h:'#E8A93A', g:'#6FE3FF', o:'#8A2430', c:'#2D4FA8', p:'#D8D2C2' };
 
   var M_SENTINEL = grid('Sentinel map', 16, [

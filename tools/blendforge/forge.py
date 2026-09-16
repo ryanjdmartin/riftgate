@@ -17,7 +17,7 @@ a .blend and a mech from primitives sit side by side without a seam.
 Output goes to tools/blendforge/out/<chassis>/ for review; `--install` writes art/mechs instead.
 
 Model conventions (see README.md): one mech per file at the origin, standing on z=0, facing
-+y, any scale; materials named by role (steel, steel_dark, house, glass, amber, rubber, bore,
++y, any scale; materials named by role (steel, steel_dark, livery, glass, amber, rubber, bore,
 hot, white) or coloured freely; objects with "detail" in the name are dropped from map tokens.
 """
 
@@ -260,8 +260,8 @@ def main():
     sub = ap.add_subparsers(dest="cmd", required=True)
     r = sub.add_parser("render", help="render a .blend into the engine's mech files")
     r.add_argument("blend")
-    r.add_argument("chassis", help="chassis id from content/chassis.json; names the files and picks the house colour")
-    r.add_argument("--maker", default="", help="house colour override: halvard, kestrel, orrin_pike")
+    r.add_argument("chassis", help="chassis id from content/chassis.json; names the files and picks the maker's livery")
+    r.add_argument("--maker", default="", help="livery override: halvard, kestrel, orrin_pike")
     r.add_argument("--fill", type=float, default=1.0, help="how much of the combat frame the largest turn fills (default 1.0)")
     r.add_argument("--ppu", type=float, default=0.0, help="force pixels per model unit instead of fitting, for matching sizes across mechs")
     r.add_argument("--install", action="store_true", help="write art/mechs instead of tools/blendforge/out")

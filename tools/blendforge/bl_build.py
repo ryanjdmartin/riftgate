@@ -19,7 +19,7 @@ import bpy
 # and uses the role's tone ramp.
 VIEW_COLOURS = {
     "steel": "#737d8a", "steel_dark": "#4a525e", "rubber": "#35393f", "glass": "#6fe3ff",
-    "amber": "#e8a93a", "hot": "#e0473a", "bore": "#14171c", "white": "#d8d2c2", "house": "#8a2430",
+    "amber": "#e8a93a", "hot": "#e0473a", "bore": "#14171c", "white": "#d8d2c2", "livery": "#8a2430",
 }
 
 

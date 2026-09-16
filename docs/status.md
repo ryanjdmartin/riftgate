@@ -14,7 +14,12 @@ spriter's own code, so the output files and the look are the spriter's. `--insta
 .blend from the primitive Bulwark (`tools/blendforge/models/bulwark.blend`, committed) and
 that render matches the spriter's contact sheet. Modelling rules and the material roles are
 in `tools/blendforge/README.md`. The spriter's `write_sheets` is now shared. Nothing in
-`art/mechs` changed. Next for art: Ryan's first hand-modelled mech (the Anvil has no design
+`art/mechs` changed. Later on 16 September: "house" is retired everywhere (too BattleTech);
+the material role and palette are now `livery`, the maker's colour, which the hangar will
+one day let the player repaint for a fee. Setting direction recorded in the bible, section 1:
+an elected council of mankind that is really a martial-law dictatorship, competing
+manufacturers, propaganda, "nobody stands against the march of human progress". Lore is
+not written; the council needs a name with a good acronym. Next for art: Ryan's first hand-modelled mech (the Anvil has no design
 yet), then `render --install`, `--import`, and a look at it in the skirmish.
 
 **Last done.** The battle loop. `sim/battle.gd` owns one battle: routes, resolve, a

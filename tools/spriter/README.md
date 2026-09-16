@@ -56,7 +56,7 @@ def anvil() -> Model:
 ```
 
 Materials: `steel`, `steel_dark`, `rubber`, `glass`, `amber`, `hot`, `bore`, `white`, and
-`house`, which is the maker's colour (Halvard red, Kestrel cobalt, Orrin & Pike bone-white).
+`livery`, which is the maker's colour (Halvard red, Kestrel cobalt, Orrin & Pike bone-white).
 Mark small parts `detail=True` so the 24px map frame stays clean. `m.mirror_x(fn)` calls
 `fn(-1)` and `fn(1)` for symmetric parts.
 
