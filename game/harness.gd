@@ -59,7 +59,7 @@ func _build_menu() -> void:
 		var cb := CheckBox.new()
 		cb.text = "%s   (%s, %d hardpoints, move %d)" % [c["name"], c.get("silhouette", ""), int(c["hardpoints"]), int(c["movespeed"])]
 		cb.add_theme_font_size_override("font_size", 18)
-		cb.button_pressed = id in ["bulwark", "sentinel", "raptor"]
+		cb.button_pressed = id in db.default_team()
 		col.add_child(cb)
 		_chassis_checks[id] = cb
 
@@ -76,8 +76,9 @@ func _build_menu() -> void:
 	var row_a := HBoxContainer.new()
 	row_a.add_theme_constant_override("separation", 12)
 	col.add_child(row_a)
+	var spawn_foes: Array = db.spawn_foes(db.default_faction())   # rank and file first, then the rest
 	_foe_a = _foe_picker(regular, false)
-	_foe_a.select(_index_of(_foe_a, "ghoul"))
+	_foe_a.select(_index_of(_foe_a, str(spawn_foes[0]) if not spawn_foes.is_empty() else ""))
 	row_a.add_child(_foe_a)
 	_count_a = _spin("x", 1, 18, 6)
 	row_a.add_child(_count_a)
@@ -85,7 +86,7 @@ func _build_menu() -> void:
 	row_b.add_theme_constant_override("separation", 12)
 	col.add_child(row_b)
 	_foe_b = _foe_picker(regular, true)
-	_foe_b.select(_index_of(_foe_b, "necromancer"))
+	_foe_b.select(_index_of(_foe_b, str(spawn_foes[spawn_foes.size() - 1]) if not spawn_foes.is_empty() else ""))
 	row_b.add_child(_foe_b)
 	_count_b = _spin("x", 1, 18, 2)
 	row_b.add_child(_count_b)
@@ -227,7 +228,7 @@ func _on_battle() -> void:
 	var fa := str(_foe_a.get_item_metadata(_foe_a.selected))
 	var fac := db.faction_of_foe(fa)
 	if fac.is_empty() or not db.factions.has(fac):
-		fac = "undead"
+		fac = db.default_faction()
 	var b := Battle.new(int(_seed.value))
 	b.columns = int(_columns.get_item_metadata(_columns.selected))
 	b.setup(team, fac)

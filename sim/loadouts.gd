@@ -57,7 +57,7 @@ static func raptor_die() -> Die:
 static func sample_mechs() -> Array[Unit]:
 	var db := ContentDB.load_default()
 	var out: Array[Unit] = []
-	for id in ["bulwark", "sentinel", "raptor"]:
+	for id in db.default_team():
 		out.append(db.make_mech(id))
 	return out
 
@@ -72,7 +72,7 @@ static func foes_for(sq: Unit) -> Array[Foe]:
 static func sample_squads(field: Battlefield, count: int, rng: RandomNumberGenerator) -> Array[Unit]:
 	var db := ContentDB.load_default()
 	var out: Array[Unit] = []
-	var factions := ["undead", "undead", "demonic", "eldritch"]
+	var factions: Array = db.factions.keys()
 	var tries := 0
 	while out.size() < count and tries < 200:
 		tries += 1
@@ -85,7 +85,9 @@ static func sample_squads(field: Battlefield, count: int, rng: RandomNumberGener
 			continue
 		var fac: String = factions[rng.randi_range(0, factions.size() - 1)]
 		var table := db.spawn_table(fac)
-		var entry: Array = table[rng.randi_range(0, table.size() - 1)] if not table.is_empty() else ["ghoul", 6]
+		if table.is_empty():
+			continue
+		var entry: Array = table[rng.randi_range(0, table.size() - 1)]
 		var sq := Unit.squad(0, "%s squad" % str(entry[0]), h, fac, 2, int(entry[1]), str(entry[0]))
 		sq.aggro = rng.randf() < 0.2
 		field.add_unit(sq)

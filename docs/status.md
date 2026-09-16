@@ -24,7 +24,18 @@ bible: Mandated Assembly of the Remaining Cities of Humanity). Sixteen starter .
 silhouettes for Ryan to reshape live in `tools/blendforge/models/archetypes/` (authored in
 `archetypes.py`, `forge.py archetypes` rebuilds and renders the review sheet, also on
 `docs/art-lab.html` section 7). Standing instruction from Ryan: take each new direction as
-he gives it; tone iterates as we build. Next for art: Ryan's first hand-modelled mech (the Anvil has no design
+he gives it; tone iterates as we build.
+
+MARCH is decided: the Ministerial Assembly for the Reclamation of Civilised Humanity. Open
+on purpose: whether this is the last bastion, whether other colonies are fine, whether the
+whole thing was a power grab. Ryan is rewriting `content/*.json` in his own voice and
+renaming units; `fantasy` holds his inspiration and homages and is internal. Prepared for
+that: a passive's player-facing line is now `description` (the validator rejects `fantasy`
+on a passive); the codex never falls back to `fantasy`; sim and game code take their
+defaults from content order (`ContentDB.default_team`, `default_faction`, `spawn_foes`,
+`make_boss`) instead of hardcoding bulwark, ghoul or undead. Tests still name the current
+ids, as do `tools/spriter` MODELS, `tools/sheet_export.py` grid mapping, `tools/foeforge`
+BIG_MAP, and the art file names under `art/`; those get one pass after the rename lands. Next for art: Ryan's first hand-modelled mech (the Anvil has no design
 yet), then `render --install`, `--import`, and a look at it in the skirmish.
 
 **Last done.** The battle loop. `sim/battle.gd` owns one battle: routes, resolve, a

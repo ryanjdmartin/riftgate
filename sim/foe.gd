@@ -3,7 +3,7 @@ extends RefCounted
 
 ## One enemy inside a skirmish. A squad on the battlefield unpacks into several of these.
 
-var display_name: String = "ghoul"
+var display_name: String = "foe"
 var content_id: String = ""      # id in content/foes.json, for the codex
 var hp: int = 30
 var hp_max: int = 30

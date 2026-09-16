@@ -111,24 +111,28 @@ func _ready() -> void:
 
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks): two
-## chained undead squads. RIFTGATE_TEAM=bulwark,sentinel,raptor,anvil overrides the team;
+## chained squads of the first faction in content. RIFTGATE_TEAM=bulwark,sentinel,raptor,anvil overrides the team;
 ## RIFTGATE_ELITE=1 adds the faction's boss as a third unit; RIFTGATE_COLUMNS=4 widens the formation.
 static func _default_skirmish() -> Skirmish:
 	var db := ContentDB.load_default()
 	var s := Skirmish.new(7, int(OS.get_environment("RIFTGATE_COLUMNS")) if not OS.get_environment("RIFTGATE_COLUMNS").is_empty() else Skirmish.DEFAULT_COLUMNS)
-	var team: Array = ["bulwark", "sentinel", "raptor"]
+	var team: Array = db.default_team()
 	var env := OS.get_environment("RIFTGATE_TEAM")
 	if not env.is_empty():
 		team = env.split(",")
 	for id in team:
 		if db.chassis.has(id):
 			s.add_mech(db.make_mech(id))
-	var ghouls := Unit.squad(1, "ghoul squad", Vector2i.ZERO, "undead", 2, 6, "ghoul")
-	s.add_foes(db.foes_for(ghouls), ghouls)
-	var necros := Unit.squad(2, "necromancer squad", Vector2i.ZERO, "undead", 2, 2, "necromancer")
-	s.add_foes(db.foes_for(necros), necros)
+	# The first faction's first and last spawn entries: its rank and file, then its support.
+	var fac := db.default_faction()
+	var table: Array = db.spawn_table(fac)
+	var uid := 1
+	for entry in [table[0], table[table.size() - 1]] if not table.is_empty() else []:
+		var sq := Unit.squad(uid, "%s squad" % str(entry[0]), Vector2i.ZERO, fac, 2, int(entry[1]), str(entry[0]))
+		s.add_foes(db.foes_for(sq), sq)
+		uid += 1
 	if OS.get_environment("RIFTGATE_ELITE") == "1":
-		var boss := Unit.boss(3, "bone colossus", Vector2i.ZERO, "undead")
+		var boss := db.make_boss(uid, fac)
 		s.add_foes(db.foes_for(boss), boss)
 	return s
 

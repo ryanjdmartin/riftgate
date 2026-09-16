@@ -2,7 +2,8 @@ class_name Passives
 extends RefCounted
 
 ## Minimal passive trigger runner. Passives are content dictionaries of the shape
-## {"id", "name", "fantasy", "rules": [...], "effects": [{"trigger", "effect", "value"}]}.
+## {"id", "name", "description", "rules": [...], "effects": [{"trigger", "effect", "value"}]}.
+## description is player-facing (the codex prints it after the name).
 ## Only the triggers and effects listed here are executed; the content validator refuses
 ## anything else so a passive never silently does nothing.
 ##

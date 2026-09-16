@@ -162,11 +162,11 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		faces = u.die.faces.duplicate()
 	var passive := ""
 	if not u.passive.is_empty():
-		passive = "%s: %s %s" % [str(u.passive.get("name", "")).to_upper(), u.passive.get("fantasy", ""), " ".join(u.passive.get("rules", []))]
+		passive = "%s: %s %s" % [str(u.passive.get("name", "")).to_upper(), u.passive.get("description", ""), " ".join(u.passive.get("rules", []))]
 	return {
 		"title": u.display_name,
 		"subtitle": "%s // %s" % [str(maker.get("name", "")).to_upper(), str(c.get("silhouette", "")).to_upper()],
-		"body": str(c.get("codex", c.get("fantasy", ""))),
+		"body": str(c.get("codex", "")),   # never fantasy: that field is design notes and homages
 		"stats": stats,
 		"actions": "",
 		"passive": passive,
@@ -198,6 +198,33 @@ func foes_for(sq: Unit) -> Array[Foe]:
 			f.squad_id = sq.id
 			out.append(f)
 	return out
+
+
+## Defaults come from the content in file order, never from a hardcoded id, so the ids are
+## Ryan's to rename. The first chassis in the file are the starting team; the first faction
+## is the one the standalone screens and the harness fight.
+func default_team(count: int = 3) -> Array:
+	return chassis.keys().slice(0, count)
+
+
+func default_faction() -> String:
+	return str(factions.keys()[0]) if not factions.is_empty() else ""
+
+
+## The distinct foe ids in a faction's spawn list, in order: rank and file first.
+func spawn_foes(faction_id: String) -> Array:
+	var out: Array = []
+	for entry in spawn_table(faction_id):
+		if not out.has(entry[0]):
+			out.append(entry[0])
+	return out
+
+
+## A boss squad for a faction, named after its massive elite.
+func make_boss(uid: int, faction_id: String) -> Unit:
+	var boss_id := str(factions.get(faction_id, {}).get("boss", ""))
+	var boss_name := str(foes.get(boss_id, {}).get("name", "boss")).to_lower()
+	return Unit.boss(uid, boss_name, Vector2i.ZERO, faction_id)
 
 
 ## The squads a faction sends through the rift together, as [[foe_id, strength], ...].
@@ -285,9 +312,13 @@ func _validate_passive(where: String, p, errs: Array[String]) -> void:
 	if not (p is Dictionary):
 		errs.append("%s: passive must be an object or null" % where)
 		return
-	for key in ["id", "name", "fantasy", "rules"]:
+	# A passive's description is player-facing (the codex prints NAME: description rules);
+	# `fantasy` on a passive would be shown, so it is not the field here.
+	for key in ["id", "name", "description", "rules"]:
 		if not p.has(key):
 			errs.append("%s: passive missing %s" % [where, key])
+	if p.has("fantasy"):
+		errs.append("%s: passive has a fantasy field; use description (player-facing) and keep notes on the chassis" % where)
 	var rules: Array = p.get("rules", [])
 	if rules.is_empty():
 		errs.append("%s: passive has no rules" % where)

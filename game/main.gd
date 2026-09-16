@@ -42,7 +42,9 @@ func _ready() -> void:
 func _build(s: int) -> void:
 	map = BattleMap.generate(MAP_W, MAP_H, s)
 	field = Battlefield.new(map)
-	field.spawn_table = ContentDB.load_default().spawn_table(field.spawn_faction)
+	var db := ContentDB.load_default()
+	field.spawn_faction = db.default_faction()
+	field.spawn_table = db.spawn_table(field.spawn_faction)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = s
 	var gate_o := Hex.axial_to_offset(map.gate)
@@ -53,7 +55,7 @@ func _build(s: int) -> void:
 		field.add_unit(m)
 		i += 1
 	Loadouts.sample_squads(field, 3, rng)
-	var boss := Unit.boss(0, "bone colossus", Vector2i.ZERO, "undead")
+	var boss := db.make_boss(0, field.spawn_faction)
 	boss.pos = field.nearest_standable(boss, Hex.offset_to_axial(MAP_W / 2 - 1, 3))
 	field.add_unit(boss)
 	field.compute_intents()

@@ -1,5 +1,5 @@
 {
-  "_about": "Chassis. Not classes: any silhouette, any component in any slot. Numbers are in tens. hardpoints is the die size. loadout is the default components; if their faces total fewer than hardpoints, filler fills the rest. passive is zero or one object; its rules list is one idea with up to three lines (an upside and its cost count as one passive). Passives run through sim/passives.gd; the validator refuses effects the engine cannot execute. Player-facing text: codex and flavour (an in-world line, shown as a quote). fantasy is the internal one-line pitch. Makers are placeholders.",
+  "_about": "Chassis. Not classes: any silhouette, any component in any slot. Numbers are in tens. hardpoints is the die size. loadout is the default components; if their faces total fewer than hardpoints, filler fills the rest. passive is zero or one object; its rules list is one idea with up to three lines (an upside and its cost count as one passive). Passives run through sim/passives.gd; the validator refuses effects the engine cannot execute. Player-facing text: codex, flavour (an in-world line, shown as a quote) and a passive's description (the codex prints NAME: description rules). fantasy is internal: the pitch, the inspiration, any homage; it is never shown. Makers are placeholders.",
   "makers": [
     { "id": "halvard", "name": "Halvard Heavy Works", "style": "Armour first. Everything is a tank, even the ones with legs.", "voice": "Maintenance manual. Terse, exact, proud of tolerances." },
     { "id": "kestrel", "name": "Kestrel Dynamics", "style": "Fast, fragile, over-tuned. Airframes and interceptors.", "voice": "Flight-test log. Clipped, numbers first." },
@@ -16,7 +16,7 @@
       "filler": { "kind": "shield", "power": 10 },
       "passive": {
         "id": "braced_mounts", "name": "Braced Mounts",
-        "fantasy": "Halvard does not build guns that whiff.",
+        "description": "Halvard does not build guns that whiff.",
         "rules": ["Attack faces never roll below 30."],
         "effects": [
           { "trigger": "on_attack", "effect": "min_damage", "value": 30 }
@@ -45,7 +45,7 @@
       "filler": { "kind": "shield", "power": 10 },
       "passive": {
         "id": "hot_hands", "name": "Hot Hands",
-        "fantasy": "Everything it fires, it fires too hard.",
+        "description": "Everything it fires, it fires too hard.",
         "rules": ["Attack faces deal double damage.", "Attack faces generate double heat."],
         "effects": [
           { "trigger": "on_attack", "effect": "multiply_damage", "value": 2 },
@@ -64,7 +64,7 @@
       "filler": { "kind": "shield", "power": 10 },
       "passive": {
         "id": "hot_load", "name": "Hot Load",
-        "fantasy": "When an Orrin & Pike shell lands right, it keeps burning.",
+        "description": "When an Orrin & Pike shell lands right, it keeps burning.",
         "rules": ["Critical hits add one burn stack to the target."],
         "effects": [
           { "trigger": "on_crit", "effect": "add_burn", "value": 1 }

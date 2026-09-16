@@ -28,7 +28,7 @@ var rng := RandomNumberGenerator.new()
 var db: ContentDB
 var map: BattleMap
 var field: Battlefield
-var faction: String = "undead"
+var faction: String = ""
 var boss: Unit = null
 var state: int = State.PLAN
 var outcome: int = Outcome.NONE
@@ -51,8 +51,8 @@ func _init(seed_arg: int = 1) -> void:
 ## Generate the map, stand the team in front of the gate, place the faction's formation in the
 ## north third of the field and its boss just south of the rift, then preview the first enemy
 ## moves.
-func setup(team: Array, faction_id: String = "undead", w: int = DEFAULT_WIDTH, h: int = DEFAULT_HEIGHT) -> void:
-	faction = faction_id
+func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int = DEFAULT_HEIGHT) -> void:
+	faction = faction_id if not faction_id.is_empty() else db.default_faction()
 	map = BattleMap.generate(w, h, seed_value)
 	field = Battlefield.new(map)
 	field.spawn_faction = faction

@@ -65,7 +65,7 @@ static func _default_battle() -> Battle:
 	var db := ContentDB.load_default()
 	var b := Battle.new(7)
 	var team: Array = []
-	var ids: Array = ["bulwark", "sentinel", "raptor"]
+	var ids: Array = db.default_team()
 	var env := OS.get_environment("RIFTGATE_TEAM")
 	if not env.is_empty():
 		ids = env.split(",")
@@ -74,7 +74,7 @@ static func _default_battle() -> Battle:
 			team.append(db.make_mech(id))
 	var fac := OS.get_environment("RIFTGATE_FACTION")
 	if fac.is_empty() or not db.factions.has(fac):
-		fac = "undead"
+		fac = db.default_faction()
 	b.setup(team, fac)
 	return b
 
