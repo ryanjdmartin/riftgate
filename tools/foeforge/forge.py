@@ -34,6 +34,7 @@ SHEET = ROOT / "docs" / "sprites-enemies.html"
 OUT = ROOT / "tools" / "foeforge" / "out"
 ART = ROOT / "art" / "foes"
 MFLUX = ROOT / "tools" / "foeforge" / ".venv" / "bin" / "mflux-generate-flux2"
+MFLUX_EDIT = ROOT / "tools" / "foeforge" / ".venv" / "bin" / "mflux-generate-flux2-edit"
 
 MODEL = "flux2-klein-4b"
 QUANTIZE = "4"
@@ -264,6 +265,15 @@ MAKER_LOOK = {
     "kestrel": "cold steel with cobalt blue airframe panels",
     "orrin_pike": "cold steel with bone-white armour plates",
 }
+# The edit model keeps the render's shape and adds the finish; the instruction says so in
+# as many words, then names the finish wanted and the colours to keep.
+MECH_EDIT = (
+    "Redraw this isometric pixel art mech with exactly the same silhouette, pose, parts, "
+    "proportions and camera angle, adding finish: riveted steel plates, panel lines, worn "
+    "edges, tread texture on any tracks, hydraulic pistons at the joints, cel shading with "
+    "strong top highlights, one-pixel dark outline. Keep the same colours: {look}, cyan cockpit "
+    "glass, amber marking lights. Solid flat pure white background, no shadow, no text."
+)
 
 
 def load_chassis():
@@ -296,16 +306,25 @@ def mech(args):
     c = load_chassis()[args.chassis]
     ref, (w, h) = mech_reference(args.chassis, args.turn, args.ref)
     out = OUT / args.chassis
-    prompt = args.prompt or mech_prompt(c)
+    if args.mode == "edit":
+        prompt = args.prompt or MECH_EDIT.format(look=MAKER_LOOK.get(c.get("maker", ""), "cold steel"))
+    else:
+        prompt = args.prompt or mech_prompt(c)
     (out / "prompt.txt").write_text(prompt + "\n")
     print(prompt)
     made = []
     for seed in range(args.seed, args.seed + args.n):
         path = out / f"{args.chassis}_{args.turn}_{seed}.png"
-        cmd = [str(MFLUX), "--model", MODEL, "--quantize", QUANTIZE, "--prompt", prompt,
-               "--image-path", str(ref), "--image-strength", str(args.strength),
-               "--width", str(w), "--height", str(h), "--steps", STEPS,
-               "--seed", str(seed), "--output", str(path)]
+        if args.mode == "edit":
+            # Edit mode: the render is the picture being edited, not a noisy starting point,
+            # so the design survives and the model only adds what the instruction asks for.
+            cmd = [str(MFLUX_EDIT), "--model", MODEL, "--quantize", QUANTIZE, "--prompt", prompt,
+                   "--image-paths", str(ref), "--steps", STEPS, "--seed", str(seed), "--output", str(path)]
+        else:
+            cmd = [str(MFLUX), "--model", MODEL, "--quantize", QUANTIZE, "--prompt", prompt,
+                   "--image-path", str(ref), "--image-strength", str(args.strength),
+                   "--width", str(w), "--height", str(h), "--steps", STEPS,
+                   "--seed", str(seed), "--output", str(path)]
         print("rendering", path.name)
         subprocess.run(cmd, check=True)
         made.append(path)
@@ -341,7 +360,8 @@ def main():
     m.add_argument("--turn", default="front_right", choices=["front", "front_left", "front_right"])
     m.add_argument("--n", type=int, default=2)
     m.add_argument("--seed", type=int, default=1)
-    m.add_argument("--strength", type=float, default=0.3, help="how far the model may stray from the render; lower is freer (0.2 to 0.35 works)")
+    m.add_argument("--mode", default="edit", choices=["edit", "img2img"], help="edit (default) keeps the render's design and adds finish; img2img redraws freely from it and rarely keeps the design")
+    m.add_argument("--strength", type=float, default=0.3, help="img2img only: how far the model may stray from the render; lower is freer")
     m.add_argument("--prompt", default="")
     m.add_argument("--ref", default="", help="reference sprite to refine (default: the one in art/mechs); e.g. a blendforge render in tools/blendforge/out")
     m.set_defaults(func=mech)
@@ -349,7 +369,7 @@ def main():
     cm.add_argument("image")
     cm.add_argument("chassis")
     cm.add_argument("--turn", default="front_right", choices=["front", "front_left", "front_right"])
-    cm.add_argument("--colours", type=int, default=8, help="mechs read as the other genre through a short palette and hard shading, not a coarser grid (default 8; foes use 16)")
+    cm.add_argument("--colours", type=int, default=16, help="colours to keep (default 16, the foes' density; 8 was tried for a genre split and dulls a finished sprite)")
     cm.add_argument("--chunk", type=int, default=1, help="pixel size relative to the foes: 2 draws the mech on a grid twice as coarse (tried; it loses too much at 40x48)")
     cm.add_argument("--out", default="", help="write here instead of art/mechs (for experiments)")
     cm.set_defaults(func=cut_mech)

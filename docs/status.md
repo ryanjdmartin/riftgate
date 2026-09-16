@@ -39,14 +39,16 @@ order (`ContentDB.default_team`, `default_faction`, `spawn_foes`, `make_boss`) i
 hardcoding bulwark, ghoul or undead. Ryan's Bulwark model is
 `tools/blendforge/models/new_bulwark.blend`; it renders cleanly, not yet installed.
 
-Detail for modelled mechs (16 September, late): the image-model pass was tried on the
-Badger's render at three strengths and replaced the design every time (art lab, section 8),
-so it is retired for mechs. Blendforge gained surface patterns instead: materials named
-`tread`, `grille`, `rivet`, `panel` draw a pattern in the part's own coordinates from a
-third data pass (object-local position), consistent in all nine views. `tread` on the
-Badger's track boxes makes them read as tracks. Next: Ryan renames his track material to
-`tread` (and splits tracks into run, skirt and sprockets if he wants the spriter's read),
-then `render --install`. Tests still name the current
+Detail for modelled mechs (16 September, late): plain image-to-image on the Badger's render
+replaced the design at every strength (art lab, section 8). The model's edit mode
+(`mflux-generate-flux2-edit`, same weights) keeps it: `forge.py mech <chassis> --ref <render>`
+now runs edit mode by default with a keep-the-shape instruction, and `cut-mech` defaults to
+sixteen colours (eight dulled the finish). Blendforge also gained surface patterns
+(`tread`, `grille`, `rivet`, `panel`, from an object-local position pass) for the plain
+render and the map tokens. Pipeline for a mech: Blender model, `blendforge render`, `mech
+--ref`, pick, `cut-mech`, `--import`. Next: Ryan picks a Badger edit (three are in
+`tools/foeforge/out/bulwark/`) or reruns with more seeds, installs the blendforge render
+for the map strip and the other two turns, then the cut for front-right. Tests still name the current
 ids, as do `tools/spriter` MODELS, `tools/sheet_export.py` grid mapping, `tools/foeforge`
 BIG_MAP, and the art file names under `art/`; those get one pass after the rename lands. Next for art: Ryan's first hand-modelled mech (the Anvil has no design
 yet), then `render --install`, `--import`, and a look at it in the skirmish.

@@ -51,21 +51,24 @@ sketch grids exported by `tools/sheet_export.py` stay until a candidate beats th
   palette on the enemy sheet rather than fighting the prompt.
 - Map tokens at 16 px lose everything but silhouette and colour. That is what they are for.
 
-## Mechs: the hybrid
+## Mechs: the finish pass
 
-The renderer in `tools/spriter/` still draws every mech, because it gives six consistent map
-facings from one model. For the combat sprite the model refines the renderer's own output:
+A mech's design comes from its model (Blender through `tools/blendforge/`, or the primitive
+spriter), which gives the map facings and a clean but plain combat render. The finish comes
+from the model in **edit mode**: the render is the picture being edited, and the instruction
+says to keep the silhouette, pose and parts and add rivets, panel lines, worn edges and tread.
+Tried on Ryan's Badger, every seed kept the design. Plain image-to-image (`--mode img2img`)
+is still there for the record; it redrew the design every time and is not the route.
 
 ```sh
-tools/foeforge/.venv/bin/python tools/foeforge/forge.py mech bulwark --n 4 --strength 0.3
-# pick from tools/foeforge/out/bulwark/contact_front_right.png
+# three edits of the blendforge render, then pick from the contact sheet
+tools/foeforge/.venv/bin/python tools/foeforge/forge.py mech bulwark --n 3 --ref tools/blendforge/out/bulwark/bulwark_combat_front_right.png
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut-mech tools/foeforge/out/bulwark/bulwark_front_right_2.png bulwark
 godot --headless --path . --import
 ```
 
-`mech` blows the renderer's `art/mechs/<chassis>_combat_<turn>.png` up on white and passes it
-as the reference image with the prompt built from `content/chassis.json` and the maker's
-colour brief. Strength is how far the model may stray: 0.2 to 0.35 keeps the design and adds
-finish; above about 0.5 the render comes back unchanged. Seeds vary a lot, so make a few
-and pick. `cut-mech` writes the 80x96 frame the skirmish draws at 2x. Re-run the spriter and
-the renderer's sprite comes back; re-run `cut-mech` to put the pick back.
+`--ref` is any 80x96 render; without it the sprite already in `art/mechs` is used. The
+instruction is fixed apart from the maker's colour brief; `--prompt` replaces it. `cut-mech`
+keys the white, fits the 80x96 frame, keeps sixteen colours (eight dulled the finish) and
+adds the outline. Re-running blendforge with `--install` puts the plain render back; re-run
+`cut-mech` to put the pick back.

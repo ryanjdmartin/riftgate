@@ -82,6 +82,14 @@ hangar will sell a change of it. Blender's `.001` suffixes are ignored, so `stee
 If you would rather pick colours than names, that works too: any material whose name is not
 in the table is painted from its own Base Color, darkened and lightened into four tones.
 
+## Finish
+
+The render is clean but plain. The finish (rivets, panel lines, worn edges, tread, bevelled
+highlights) comes from the image model in edit mode, which keeps the render's design and
+adds only what it is told to; see "Mechs: the finish pass" in `tools/foeforge/README.md`.
+Render here, then `forge.py mech <chassis> --ref <the render>` there, pick, `cut-mech`.
+The map tokens stay as rendered; at 24 px the finish would not survive anyway.
+
 ## Archetypes: starting points
 
 `tools/blendforge/models/archetypes/` holds sixteen starter silhouettes, one per vehicle
