@@ -109,7 +109,7 @@ Status: 57 implemented, 14 planned, 1 idea.
 |---|---|---|---|
 | **Flyer** | Reaches anywhere. Holds nothing. | Ignores terrain cost, crosses water and mountains, cannot body-block. | implemented |
 | **Hover** | Skims the river like it is not there. | Crosses water. | implemented |
-| **Quad** | Four legs do not care about rubble. | Rough and ruins cost 1. | implemented |
+| **Walker** | Legs do not care about rubble. | Rough and ruins cost 1. | implemented |
 | **Tank** | Tracks and armour. | No effect yet. | planned |
 | **City defense** | The city shoots back. | A static player-side unit. Squads path toward it, and it joins any skirmish it is adjacent to. | implemented |
 

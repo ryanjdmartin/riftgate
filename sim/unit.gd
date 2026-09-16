@@ -16,7 +16,7 @@ var shield: int = 40
 var shield_max: int = 40
 var heat_max: int = 60
 
-## Chassis traits: "flyer", "hover", "quad", "tank", "defense".
+## Chassis traits: "flyer", "hover", "walker", "tank", "defense".
 var traits: Array[String] = []
 
 ## Hexes this unit covers, as axial offsets from pos. Squads and mechs are one hex; a massive

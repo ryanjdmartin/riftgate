@@ -66,7 +66,7 @@
 
     { "id": "flyer", "category": "trait", "name": "Flyer", "codex": "Ignores terrain cost, crosses water and mountains, cannot body-block.", "status": "implemented", "design": { "fantasy": "Reaches anywhere. Holds nothing.", "holes": "" } },
     { "id": "hover", "category": "trait", "name": "Hover", "codex": "Crosses water.", "status": "implemented", "design": { "fantasy": "Skims the river like it is not there.", "holes": "" } },
-    { "id": "quad", "category": "trait", "name": "Quad", "codex": "Rough and ruins cost 1.", "status": "implemented", "design": { "fantasy": "Four legs do not care about rubble.", "holes": "" } },
+    { "id": "walker", "category": "trait", "name": "Walker", "codex": "Rough and ruins cost 1.", "status": "implemented", "design": { "fantasy": "Legs do not care about rubble.", "holes": "" } },
     { "id": "tank", "category": "trait", "name": "Tank", "codex": "No effect yet.", "status": "planned", "design": { "fantasy": "Tracks and armour.", "holes": "Intended: faster on roads." } },
     { "id": "defense", "category": "trait", "name": "City defense", "codex": "A static player-side unit. Squads path toward it, and it joins any skirmish it is adjacent to.", "status": "implemented", "design": { "fantasy": "The city shoots back.", "holes": "Defenses have no die. They cannot act inside a skirmish yet." } },
 

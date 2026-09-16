@@ -43,7 +43,7 @@ func test_passability() -> void:
 	assert_false(BattleMap.passable(T.WATER, []), "ground cannot cross water")
 	assert_true(BattleMap.passable(T.WATER, ["hover"]), "hover crosses water")
 	assert_eq(BattleMap.move_cost(T.ROUGH, []), 2, "rough costs 2")
-	assert_eq(BattleMap.move_cost(T.ROUGH, ["quad"]), 1, "quad ignores rough")
+	assert_eq(BattleMap.move_cost(T.ROUGH, ["walker"]), 1, "walker ignores rough")
 	assert_eq(BattleMap.move_cost(T.ROUGH, ["flyer"]), 1, "flyer ignores rough")
 
 

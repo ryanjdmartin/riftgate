@@ -119,9 +119,9 @@ static func move_cost(t: int, traits: Array) -> int:
 		return 1
 	match t:
 		Terrain.ROUGH:
-			return 1 if traits.has("quad") else 2
+			return 1 if traits.has("walker") else 2
 		Terrain.RUINS:
-			return 1 if traits.has("quad") else 2
+			return 1 if traits.has("walker") else 2
 		_:
 			return 1
 
