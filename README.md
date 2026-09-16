@@ -39,8 +39,9 @@ and open question from the design sessions.
 - `tools/` — `export_vocabulary.gd` regenerates `docs/vocabulary.md`; `screenshot.gd` renders a
   scene to PNG at 720x1280; `spriter/` renders mech sprites from primitive models;
   `sheet_export.py` exports the enemy grids in `docs/sprites-enemies.html` to `art/foes/`;
-  `foeforge/` generates enemy candidates with an image model and cuts one into `art/foes/`.
-- `art/` — `mechs/` from the spriter, `foes/` from the sheet export, `fonts/` the HUD faces.
+  `foeforge/` generates enemy candidates with an image model and cuts one into `art/foes/`;
+  `blendforge/` renders a Blender model into the same mech files in the spriter's style.
+- `art/` — `mechs/` from the spriter or blendforge, `foes/` from the sheet export, `fonts/` the HUD faces.
   Everything is optional: a missing sprite falls back to a placeholder shape.
 - `docs/` — design bible, generated vocabulary, concept intake in `docs/concepts/`, and
   `status.md`, the handoff note updated at the end of every working session.
@@ -83,6 +84,10 @@ tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut tools/foeforge/out/g
 # mech combat sprites: the model refines the renderer's own sprite (kept as the reference)
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py mech bulwark --n 4
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut-mech tools/foeforge/out/bulwark/bulwark_front_right_2.png bulwark
+
+# mech sprites from a Blender model (see tools/blendforge/README.md): review, then --install
+tools/spriter/.venv/bin/python tools/blendforge/forge.py example bulwark        # template .blend
+tools/spriter/.venv/bin/python tools/blendforge/forge.py render path/to/anvil.blend anvil --install
 ```
 
 The skirmish screen runs top to bottom: header with the round tag, enemies with the intent

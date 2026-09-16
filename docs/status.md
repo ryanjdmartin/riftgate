@@ -2,9 +2,20 @@
 
 Handoff note for the next session. Replace stale lines; keep it under a screen.
 
-## As of 15 September 2026
+## As of 16 September 2026
 
-**State.** Everything committed. Tests: 108 tests, 1241 checks, green.
+**State.** Everything committed. Tests: 116 tests, 1478 checks, green.
+
+**Last done (16 September).** `tools/blendforge/`: mech sprites from a Blender model. Ryan
+models in Blender (5.2 is installed at /Applications); `forge.py render <file.blend> <chassis>`
+runs Blender headless for normal, material and depth passes and then shades them with the
+spriter's own code, so the output files and the look are the spriter's. `--install` writes
+`art/mechs`; otherwise `tools/blendforge/out/`. `forge.py example bulwark` builds a template
+.blend from the primitive Bulwark (`tools/blendforge/models/bulwark.blend`, committed) and
+that render matches the spriter's contact sheet. Modelling rules and the material roles are
+in `tools/blendforge/README.md`. The spriter's `write_sheets` is now shared. Nothing in
+`art/mechs` changed. Next for art: Ryan's first hand-modelled mech (the Anvil has no design
+yet), then `render --install`, `--import`, and a look at it in the skirmish.
 
 **Last done.** The battle loop. `sim/battle.gd` owns one battle: routes, resolve, a
 skirmish per contact group, results applied back, outcome on gate fallen, all wrecked, or
@@ -64,7 +75,8 @@ ignored `docs/art-lab/ext/`.
 
 1. Play on a phone with the damage ranges in; tune min, max, crit, injury thresholds, map
    size, squad speeds, and the Rift Pressure rate.
-2. Art: mech sheet round two on the grit brief, the Anvil model, enemy art when images exist.
+2. Art: Ryan's Blender models through blendforge (the Anvil first), enemy candidates from
+   foeforge for the eight foes still on sketch grids.
 3. Small HUD fixes owed: roomy log at round one, faint disabled eye button, gesture tutorial.
 4. Hangar: repair cost for cracked and destroyed faces, then rewards, one-shots, command die.
 

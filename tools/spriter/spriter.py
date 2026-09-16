@@ -481,21 +481,30 @@ MAP_YAWS = {"e": 270.0, "ne": 330.0, "nw": 30.0, "w": 90.0, "sw": 150.0, "se": 2
 
 
 def build_sheets(model: Model, out_dir: str, contact_only: bool) -> str:
-    os.makedirs(out_dir, exist_ok=True)
     cw_, ch_ = model.combat_size
     combat = {k: render_fit(model, yaw, width=cw_, height=ch_, baseline=model.combat_baseline, **COMBAT)
               for k, yaw in COMBAT_YAWS.items()}
     maps = {k: render_fit(model, yaw, **MAP) for k, yaw in MAP_YAWS.items()}
+    return write_sheets(model.name, combat, maps, out_dir, contact_only)
+
+
+def write_sheets(name: str, combat: dict, maps: dict, out_dir: str, contact_only: bool) -> str:
+    """Write the engine's files for one mech from rendered frames: the combat turns, the loose
+    map facings, the map strip, and a 4x contact sheet. Shared with tools/blendforge, which
+    renders the frames from a .blend instead of from primitives, so both produce the same
+    files and the engine cannot tell them apart."""
+    os.makedirs(out_dir, exist_ok=True)
+    ch_ = max(im.height for im in combat.values())
     if not contact_only:
         for k, im in combat.items():
-            im.save(os.path.join(out_dir, f"{model.name}_combat_{k}.png"))
+            im.save(os.path.join(out_dir, f"{name}_combat_{k}.png"))
         for k, im in maps.items():
-            im.save(os.path.join(out_dir, f"{model.name}_map_{k}.png"))
+            im.save(os.path.join(out_dir, f"{name}_map_{k}.png"))
         # a strip of the six map facings, in order, for the engine to slice
         strip = Image.new("RGBA", (MAP["width"] * 6, MAP["height"]), (0, 0, 0, 0))
         for i, k in enumerate(MAP_YAWS):
             strip.paste(maps[k], (i * MAP["width"], 0))
-        strip.save(os.path.join(out_dir, f"{model.name}_map_strip.png"))
+        strip.save(os.path.join(out_dir, f"{name}_map_strip.png"))
     # contact sheet at 4x for humans
     z = 4
     cw = sum(im.width for im in combat.values()) + 8 * (len(combat) + 1)
@@ -512,7 +521,7 @@ def build_sheets(model: Model, out_dir: str, contact_only: bool) -> str:
         sheet.paste(im, (x, ch_ + 16), im)
         x += im.width + 8
     sheet = sheet.resize((W * z, H * z), Image.NEAREST)
-    path = os.path.join(out_dir, f"{model.name}_contact.png")
+    path = os.path.join(out_dir, f"{name}_contact.png")
     sheet.save(path)
     return path
 
