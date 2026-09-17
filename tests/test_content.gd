@@ -90,7 +90,7 @@ func test_spawn_table_lists_the_factions_formation() -> void:
 func test_content_mech_survives_a_skirmish_round() -> void:
 	var db := _db()
 	var sk := Skirmish.new(5)
-	sk.add_mech(db.make_mech("bulwark"))
+	sk.add_mech(db.make_mech("badger"))
 	sk.add_mech(db.make_mech("sentinel"))
 	var sq := Unit.squad(1, "risen", Vector2i.ZERO, "undead", 2, 6)
 	sk.add_foes(db.foes_for(sq), sq)
@@ -172,9 +172,9 @@ func test_raptor_passive_doubles_damage_and_heat() -> void:
 	assert_eq(sk.mechs[0].heat, 20, "heat 10 became 20")
 
 
-func test_bulwark_passive_raises_the_floor() -> void:
+func test_badger_passive_raises_the_floor() -> void:
 	var db := _db()
-	var u := db.make_mech("bulwark")
+	var u := db.make_mech("badger")
 	u.die = Die.single(Face.attack(10, Face.Reach.LINE, [], 0, 20))
 	for seed_value in range(1, 11):
 		var sk := Skirmish.new(seed_value)

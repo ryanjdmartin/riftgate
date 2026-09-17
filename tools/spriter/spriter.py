@@ -8,8 +8,8 @@ to the palette, and adds a one-pixel outline. Facing is a yaw of the model; scal
 per unit. So one model gives every facing at every scale, and animation is moving parts.
 
 Usage:
-    python spriter.py bulwark --out ../../art/mechs        # sheets + a contact sheet
-    python spriter.py bulwark --contact-only               # just the contact sheet to look at
+    python spriter.py sentinel --out ../../art/mechs       # sheets + a contact sheet
+    python spriter.py sentinel --contact-only              # just the contact sheet to look at
 """
 from __future__ import annotations
 
@@ -467,7 +467,11 @@ def raptor() -> Model:
     return m
 
 
-MODELS = {"bulwark": bulwark, "sentinel": sentinel, "raptor": raptor}
+# Chassis still drawn from primitives. The Bulwark was replaced by Ryan's Blender Badger
+# (art/models/badger.glb, tools/blendforge/models/badger.blend); its primitive model stays
+# as the blendforge example template only.
+MODELS = {"sentinel": sentinel, "raptor": raptor}
+TEMPLATES = {"bulwark": bulwark, "sentinel": sentinel, "raptor": raptor}
 
 
 # ------------------------------------------------------------------ sheets

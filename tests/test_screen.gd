@@ -7,7 +7,7 @@ extends TestCase
 func _screen(seed_value: int = 3, elite: bool = false) -> SkirmishScreen:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(seed_value)
-	for id in ["bulwark", "sentinel", "raptor"]:
+	for id in ["badger", "sentinel", "raptor"]:
 		sk.add_mech(db.make_mech(id))
 	var ghouls := Unit.squad(1, "ghouls", Vector2i.ZERO, "undead", 2, 4, "ghoul")
 	sk.add_foes(db.foes_for(ghouls), ghouls)
@@ -237,7 +237,7 @@ func test_withdraw_asks_then_shows_overlay() -> void:
 func test_exposed_marker_appears_when_front_dies() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
-	var m := db.make_mech("bulwark")
+	var m := db.make_mech("badger")
 	m.die = Die.single(Face.attack(90))
 	sk.add_mech(m)
 	sk.add_foes([Foe.make("ghoul", 30, 10), Foe.make("archer", 30, 10, true)])
@@ -264,7 +264,7 @@ func test_massive_elite_uses_the_tall_view() -> void:
 func test_screen_lays_out_four_columns() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(4, 4)
-	for id in ["bulwark", "sentinel"]:
+	for id in ["badger", "sentinel"]:
 		sk.add_mech(db.make_mech(id))
 	var ghouls := Unit.squad(1, "ghouls", Vector2i.ZERO, "undead", 2, 8, "ghoul")
 	sk.add_foes(db.foes_for(ghouls), ghouls)

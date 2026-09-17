@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ct3vnc3pro0vf"
-path="res://.godot/imported/bulwark_combat_front.png-3d1bc47a2a62db7c30c1adc3164b1aad.ctex"
+uid="uid://bj4v4yrqhxrgw"
+path="res://.godot/imported/badger_contact.png-a6b9f47367c263ecf8eea5e5d8e98c16.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/mechs/bulwark_combat_front.png"
-dest_files=["res://.godot/imported/bulwark_combat_front.png-3d1bc47a2a62db7c30c1adc3164b1aad.ctex"]
+source_file="res://art/mechs/badger_contact.png"
+dest_files=["res://.godot/imported/badger_contact.png-a6b9f47367c263ecf8eea5e5d8e98c16.ctex"]
 
 [params]
 

@@ -31,9 +31,19 @@ func _draw() -> void:
 	var cols := maxi(1, columns)
 	var rows := ceili(float(faces.size()) / float(cols))
 	var col_w := size.x / float(cols)
+	# Each column's content (face plus its widest line) is centred in its share of the width,
+	# so two columns read as one centred block rather than one hugging each edge.
+	var offsets: Array[float] = []
+	for c in range(cols):
+		var widest := 0.0
+		for i in range(c * rows, mini(faces.size(), (c + 1) * rows)):
+			widest = maxf(widest, disp.get_string_size(faces[i].describe(), HORIZONTAL_ALIGNMENT_LEFT, -1, 17).x)
+		var content := MINI + 22.0 + widest
+		offsets.append(maxf(0.0, (col_w - content) * 0.5) if cols > 1 else 0.0)
 	for i in range(faces.size()):
 		var f: Face = faces[i]
-		var x0 := float(i / rows) * col_w      # fill down the first column, then the next
+		var column := i / rows
+		var x0 := float(column) * col_w + offsets[column]      # fill down the first column, then the next
 		var y := float(i % rows) * ROW
 		var rect := Rect2(Vector2(x0 + 6.0, y + 5.0), Vector2(MINI, MINI))
 		var cur := i == current

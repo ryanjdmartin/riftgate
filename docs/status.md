@@ -36,8 +36,15 @@ everything internal under `design` (`fantasy`, `niche`, `holes`, `signature`, `a
 `rules` text (description plus at most three effects). Components have empty `codex` and
 `flavour` waiting for Ryan's words. Sim and game code take their defaults from content
 order (`ContentDB.default_team`, `default_faction`, `spawn_foes`, `make_boss`) instead of
-hardcoding bulwark, ghoul or undead. Ryan's Bulwark model is
-`tools/blendforge/models/new_bulwark.blend`; it renders cleanly, not yet installed.
+hardcoding badger, ghoul or undead. The Bulwark is now the **Badger**, id `badger`
+everywhere: Ryan's model is `tools/blendforge/models/badger.blend`, its glTF
+`art/models/badger.glb`, and its plain blendforge render is installed as `art/mechs/badger_*`
+(the edit-mode finish pick is still Ryan's to make). The primitive Bulwark left the spriter's
+build list (`spriter.TEMPLATES` keeps it as the blendforge example). Chassis gained an
+optional `designation` (the maker's long name; `name` is the nickname); the codex draws a spec
+plate, a 2x2 stat grid (`StatBlock`), faces in two centred columns, a rule, then codex and
+quote, and fits its size again after layout. With `RIFTGATE_MECH3D` set the codex shows the
+3D model turning.
 
 Detail for modelled mechs (16 September, late): plain image-to-image on the Badger's render
 replaced the design at every strength (art lab, section 8). The model's edit mode

@@ -59,7 +59,7 @@ func _ready() -> void:
 
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks).
-## RIFTGATE_TEAM=bulwark,sentinel,raptor,anvil overrides the team; RIFTGATE_FACTION picks
+## RIFTGATE_TEAM=badger,sentinel,raptor,anvil overrides the team; RIFTGATE_FACTION picks
 ## the enemy.
 static func _default_battle() -> Battle:
 	var db := ContentDB.load_default()

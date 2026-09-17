@@ -41,6 +41,8 @@ const LIVERY := {
 
 var texture: Texture2D
 var mode: String = "pixel"
+var spin: bool = false            # turn slowly, for the codex
+const SPIN_SPEED := 0.7           # radians per second
 
 var _inner: SubViewport
 var _camera: Camera3D
@@ -53,7 +55,7 @@ static func has_model(chassis_id: String) -> bool:
 
 ## Build a view of a chassis in one of the two looks. Falls back to the given chassis when
 ## the wanted one has no model, so a screen can show one model in every slot.
-static func make(chassis_id: String, maker: String, look: String, fallback: String = "bulwark") -> MechView3D:
+static func make(chassis_id: String, maker: String, look: String, fallback: String = "badger") -> MechView3D:
 	var v := MechView3D.new()
 	v.mode = look
 	v._setup(chassis_id if has_model(chassis_id) else fallback, maker)
@@ -111,6 +113,12 @@ func _setup(chassis_id: String, maker: String) -> void:
 
 func _ready() -> void:
 	_frame_camera()
+	set_process(spin)
+
+
+func _process(delta: float) -> void:
+	if _model != null:
+		_model.rotation.y += SPIN_SPEED * delta
 
 
 func _apply_materials(node: Node, maker: String) -> void:

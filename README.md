@@ -81,9 +81,9 @@ godot --headless --path . --import
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate ghoul --n 4
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut tools/foeforge/out/ghoul/ghoul_3.png ghoul
 
-# mech combat sprites: the model refines the renderer's own sprite (kept as the reference)
-tools/foeforge/.venv/bin/python tools/foeforge/forge.py mech bulwark --n 4
-tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut-mech tools/foeforge/out/bulwark/bulwark_front_right_2.png bulwark
+# mech combat sprites: the image model's edit mode adds finish to a render, design kept
+tools/foeforge/.venv/bin/python tools/foeforge/forge.py mech badger --n 3 --ref tools/blendforge/out/badger/badger_combat_front_right.png
+tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut-mech tools/foeforge/out/badger/badger_front_right_2.png badger
 
 # mech sprites from a Blender model (see tools/blendforge/README.md): review, then --install
 tools/spriter/.venv/bin/python tools/blendforge/forge.py example bulwark        # template .blend
@@ -112,7 +112,7 @@ double-tap any unit or die for its codex entry. Withdraw is offered at the start
 before a face is spent. Blank faces are discarded at end of turn.
 
 The harness can add the faction's massive elite, which fills both ranks of a column. For the
-standalone screen, `RIFTGATE_TEAM=bulwark,sentinel,raptor,anvil` picks the team and
+standalone screen, `RIFTGATE_TEAM=badger,sentinel,raptor,anvil` picks the team and
 `RIFTGATE_ELITE=1` adds the elite.
 
 The battle screen is the loop. The header shows the phase, the gate's hull, and Rift

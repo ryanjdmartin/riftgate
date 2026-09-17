@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://cykfbhhoitjj3"
-path="res://.godot/imported/bulwark.glb-b72d2fa2c6df4ac1419934fb3abb55dc.scn"
+uid="uid://dkxejpwc0xppx"
+path="res://.godot/imported/badger.glb-d3c0aead797a9271f5e2eb4547dea73b.scn"
 
 [deps]
 
-source_file="res://art/models/bulwark.glb"
-dest_files=["res://.godot/imported/bulwark.glb-b72d2fa2c6df4ac1419934fb3abb55dc.scn"]
+source_file="res://art/models/badger.glb"
+dest_files=["res://.godot/imported/badger.glb-d3c0aead797a9271f5e2eb4547dea73b.scn"]
 
 [params]
 

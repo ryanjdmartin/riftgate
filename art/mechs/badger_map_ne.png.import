@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b12kdkayyoau"
-path="res://.godot/imported/bulwark_map_nw.png-4f744f2c09069e086a277e9df91512a7.ctex"
+uid="uid://v8obuk4fl1wh"
+path="res://.godot/imported/badger_map_ne.png-953234684f4b30d5295679ab67f67631.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/mechs/bulwark_map_nw.png"
-dest_files=["res://.godot/imported/bulwark_map_nw.png-4f744f2c09069e086a277e9df91512a7.ctex"]
+source_file="res://art/mechs/badger_map_ne.png"
+dest_files=["res://.godot/imported/badger_map_ne.png-953234684f4b30d5295679ab67f67631.ctex"]
 
 [params]
 

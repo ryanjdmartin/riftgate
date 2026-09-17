@@ -81,7 +81,7 @@ def maker_of(chassis_id, override=""):
 # ---------------------------------------------------------------- example
 
 def example(args):
-    model = spriter.MODELS[args.model]()
+    model = spriter.TEMPLATES[args.model]()
     parts = []
     for p in model.parts:
         d = asdict(p)
@@ -370,7 +370,7 @@ def main():
     r.add_argument("--install", action="store_true", help="write art/mechs instead of tools/blendforge/out")
     r.set_defaults(func=render)
     e = sub.add_parser("example", help="build a template .blend from a spriter model")
-    e.add_argument("model", choices=sorted(spriter.MODELS))
+    e.add_argument("model", choices=sorted(spriter.TEMPLATES))
     e.set_defaults(func=example)
     a = sub.add_parser("archetypes", help="build the starter silhouettes in archetypes.py as .blend files and render a review sheet")
     a.add_argument("names", nargs="*", help="which archetypes; default all")

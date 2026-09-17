@@ -549,7 +549,7 @@ func test_skirmish_reroll_changes_every_unlocked_face() -> void:
 	var db := ContentDB.load_default()
 	for seed_value in range(1, 25):
 		var sk := Skirmish.new(seed_value)
-		for id in ["bulwark", "sentinel", "raptor"]:
+		for id in ["badger", "sentinel", "raptor"]:
 			sk.add_mech(db.make_mech(id))
 		sk.add_foes([Foe.make("ghoul", 30, 10)])
 		sk.begin()

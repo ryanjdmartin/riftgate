@@ -145,6 +145,8 @@ func codex_for_foe(f: Foe) -> Dictionary:
 		"subtitle": faction_name.to_upper(),
 		"body": str(d.get("codex", "")),
 		"stats": stats,
+		"stat_items": [["hp", "%d/%d" % [f.hp, f.hp_max]], ["attack", str(f.attack)],
+			["rank", "BACK" if f.prefers_back else "FRONT"]] + ([["size", "MASSIVE"]] if f.is_massive() else []),
 		"actions": "\n".join(acts),
 		"passive": "",
 		"faces": [],
@@ -170,8 +172,11 @@ func codex_for_unit(u: Unit) -> Dictionary:
 	return {
 		"title": u.display_name,
 		"subtitle": "%s // %s" % [str(maker.get("name", "")).to_upper(), str(c.get("silhouette", "")).to_upper()],
+		"designation": str(c.get("designation", "")),   # the maker's long name; the title is the nickname
 		"body": str(c.get("codex", "")),   # never fantasy: that field is design notes and homages
 		"stats": stats,
+		"stat_items": [["hull", "%d/%d" % [u.hull, u.hull_max]], ["shield", "%d/%d" % [u.shield, u.shield_max]],
+			["move", str(u.movespeed)], ["hardpoints", str(u.die.size() if u.die != null else 0)]],
 		"actions": "",
 		"passive": passive,
 		"faces": faces,

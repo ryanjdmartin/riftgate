@@ -68,7 +68,9 @@ var _codex_title: Label
 var _codex_sub: Label
 var _codex_sprite: TextureRect
 var _codex_body: Label
-var _codex_stats: Label
+var _codex_designation: Label
+var _codex_stats: StatBlock
+var _codex_view: MechView3D = null   # the spinning model, when mechs are 3D
 var _codex_actions: Label
 var _codex_passive: Label
 var _codex_faces: FaceListView
@@ -111,7 +113,7 @@ func _ready() -> void:
 
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks): two
-## chained squads of the first faction in content. RIFTGATE_TEAM=bulwark,sentinel,raptor,anvil overrides the team;
+## chained squads of the first faction in content. RIFTGATE_TEAM=badger,sentinel,raptor,anvil overrides the team;
 ## RIFTGATE_ELITE=1 adds the faction's boss as a third unit; RIFTGATE_COLUMNS=4 widens the formation.
 static func _default_skirmish() -> Skirmish:
 	var db := ContentDB.load_default()
@@ -331,11 +333,16 @@ func _build_codex() -> void:
 	head.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head.add_theme_constant_override("separation", 4)
 	top.add_child(head)
+	# Name plate: the maker's designation small above, the nickname big, then maker and
+	# silhouette as the subtitle. Like a spec plate on the hull.
+	_codex_designation = Hud.label("", 13, Color(Palette.HUD, 0.8), Hud.mono())
 	_codex_title = Hud.label("", 32, Palette.INK, Hud.display_bold())
 	_codex_sub = Hud.label("", 13, Color(Palette.HUD, 0.8), Hud.mono())
-	_codex_sub.autowrap_mode = TextServer.AUTOWRAP_WORD
-	_codex_sub.custom_minimum_size = Vector2(380, 0)
-	_codex_sub.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	for l in [_codex_designation, _codex_sub]:
+		l.autowrap_mode = TextServer.AUTOWRAP_WORD
+		l.custom_minimum_size = Vector2(380, 0)
+		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	head.add_child(_codex_designation)
 	head.add_child(_codex_title)
 	head.add_child(_codex_sub)
 	_codex_sprite = TextureRect.new()
@@ -348,7 +355,9 @@ func _build_codex() -> void:
 	# The play half sits beside the portrait: the stats line is the critical readout, so it
 	# is bold and bright, not a subtitle; then the passive and any actions. The faces run in
 	# two columns under that. A thin rule separates play from lore: codex text, then quote.
-	_codex_stats = Hud.label("", 18, Palette.HUD, Hud.display_bold())
+	_codex_stats = StatBlock.new()
+	_codex_stats.custom_minimum_size = Vector2(380, 0)
+	_codex_stats.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_codex_passive = Hud.label("", 17, Palette.ACCENT)
 	_codex_actions = Hud.label("", 14, Palette.INK, Hud.mono())
 	_codex_body = Hud.label("", 19, Palette.INK)
@@ -360,7 +369,8 @@ func _build_codex() -> void:
 	var spacer := Control.new()
 	spacer.custom_minimum_size = Vector2(0, 10)
 	head.add_child(spacer)
-	for l in [_codex_stats, _codex_passive, _codex_actions]:
+	head.add_child(_codex_stats)
+	for l in [_codex_passive, _codex_actions]:
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD
 		l.custom_minimum_size = Vector2(380, 0)
 		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -377,6 +387,9 @@ func _build_codex() -> void:
 		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		cv.add_child(l)
+	var gap := Control.new()   # air between the quote and the button
+	gap.custom_minimum_size = Vector2(0, 8)
+	cv.add_child(gap)
 	var close := HudButton.new("CLOSE", _close_codex)
 	close.custom_minimum_size = Vector2(0, 52)
 	cv.add_child(close)
@@ -784,15 +797,29 @@ func _open_codex(entry: Dictionary) -> void:
 	_refresh_arrows()
 	_codex_title.text = str(entry.get("title", ""))
 	_codex_sub.text = str(entry.get("subtitle", ""))
+	_codex_designation.text = str(entry.get("designation", "")).to_upper()
+	_codex_designation.visible = not _codex_designation.text.is_empty()
 	var sid := str(entry.get("sprite_id", ""))
 	var tex: Texture2D = null
-	if not sid.is_empty():
+	if _codex_view != null:
+		_codex_view.queue_free()
+		_codex_view = null
+	var look := OS.get_environment("RIFTGATE_MECH3D")
+	if not sid.is_empty() and (look == "pixel" or look == "clean") and MechView3D.has_model(sid):
+		# Mechs in 3D: the codex gets the model itself, turning slowly.
+		var maker := str(ContentDB.load_default().chassis.get(sid, {}).get("maker", "halvard"))
+		_codex_view = MechView3D.make(sid, maker, "clean")
+		_codex_view.spin = true
+		add_child(_codex_view)
+		tex = _codex_view.texture
+	elif not sid.is_empty():
 		tex = Sprites.combat_mech(sid, "front")
 		if tex == null:
 			tex = Sprites.combat_foe(sid)
 	_codex_sprite.texture = tex
 	_codex_sprite.visible = tex != null
-	for pair in [[_codex_body, "body"], [_codex_stats, "stats"], [_codex_actions, "actions"], [_codex_passive, "passive"]]:
+	_codex_stats.set_items(entry.get("stat_items", []))
+	for pair in [[_codex_body, "body"], [_codex_actions, "actions"], [_codex_passive, "passive"]]:
 		var l: Label = pair[0]
 		l.text = str(entry.get(pair[1], ""))
 		l.visible = not l.text.is_empty()
@@ -805,6 +832,13 @@ func _open_codex(entry: Dictionary) -> void:
 	_codex_flavour.visible = not quote.is_empty()
 	_codex_shade.visible = true
 	_codex.visible = true
+	_fit_codex()
+	# Wrapping labels report their true height only after a layout pass at the panel's
+	# width, so the first open used to come out the wrong size. Fit again once that has run.
+	_fit_codex.call_deferred()
+
+
+func _fit_codex() -> void:
 	_codex.reset_size()
 	_codex.size = Vector2(640, _codex.get_combined_minimum_size().y)
 
@@ -812,6 +846,9 @@ func _open_codex(entry: Dictionary) -> void:
 func _close_codex() -> void:
 	_codex.visible = false
 	_codex_shade.visible = false
+	if _codex_view != null:
+		_codex_view.queue_free()
+		_codex_view = null
 
 
 func _toggle_all_arrows(on: bool) -> void:

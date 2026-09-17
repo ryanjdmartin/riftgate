@@ -25,15 +25,18 @@ tools/spriter/.venv/bin/pip install pillow numpy
 
 ## What comes out
 
-For a model called `bulwark`, in `art/mechs/`:
+For a model called `sentinel`, in `art/mechs/`:
 
 | File | Size | Use |
 | --- | --- | --- |
-| `bulwark_combat_front.png` | 64x96 | head-on, the codex hero shot |
-| `bulwark_combat_front_left.png`, `_front_right.png` | same | isometric three-quarter turns; the skirmish draws `_front_right` at 2x |
-| `bulwark_map_strip.png` | 6 frames of 24x28 | battlefield, one frame per facing |
-| `bulwark_map_e.png` ... `_se.png` | 24x28 | the same frames, loose, for looking at |
-| `bulwark_contact.png` | 4x zoom | everything on one sheet, for review |
+| `sentinel_combat_front.png` | 80x96 | head-on, the codex hero shot |
+| `sentinel_combat_front_left.png`, `_front_right.png` | same | isometric three-quarter turns; the skirmish draws `_front_right` at 2x |
+| `sentinel_map_strip.png` | 6 frames of 24x28 | battlefield, one frame per facing |
+| `sentinel_map_e.png` ... `_se.png` | 24x28 | the same frames, loose, for looking at |
+| `sentinel_contact.png` | 4x zoom | everything on one sheet, for review |
+
+The Bulwark primitive model is no longer built (the Badger replaced it, from Blender); it
+remains in `TEMPLATES` as the blendforge example.
 
 Map frames are in the sim's direction order: east, north-east, north-west, west, south-west,
 south-east. `Sprites.map_mech(chassis_id, facing)` slices the strip by that index.
