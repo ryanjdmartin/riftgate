@@ -147,6 +147,7 @@ func _draw() -> void:
 	for h in map.all_hexes():
 		var pts := Hex.corners(center(h), HEX_SIZE - 1.5)
 		draw_colored_polygon(pts, TERRAIN[map.terrain[h]])
+		TerrainArt.draw(self, center(h), HEX_SIZE, map.terrain[h], h.x * 131 + h.y * 7919, 0.9)
 		Hud.stroke_poly(self, pts, Color(hud, 0.10), 1.0)
 	for g in map.gate_hexes:
 		var pts := Hex.corners(center(g), HEX_SIZE - 3.0)

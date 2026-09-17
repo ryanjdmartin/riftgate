@@ -40,6 +40,8 @@ var statuses: Array = []          # [[glyph id, chip text, (Color)], ...] under 
 var highlight: bool = false       # valid drop target while dragging a die
 var dead: bool = false
 var sprite: Texture2D = null      # pixel art drawn at an integer scale; null draws a placeholder
+var breathe: bool = false         # a slow 1.5% vertical bob from the feet: a painted foe alive
+var breathe_phase: float = 0.0
 
 var _pressed := false
 var _press_at := 0.0
@@ -135,7 +137,7 @@ func _process(delta: float) -> void:
 	if _pressed and not _holding and Time.get_ticks_msec() / 1000.0 - _press_at >= HOLD_SECONDS:
 		_holding = true
 		held.emit()
-	if _has_pending() and visible and not dead:
+	if (_has_pending() or breathe) and visible and not dead:
 		_t += delta
 		queue_redraw()
 	elif not _pressed:
@@ -143,7 +145,7 @@ func _process(delta: float) -> void:
 
 
 func queue_refresh() -> void:
-	if _has_pending():
+	if _has_pending() or breathe:
 		set_process(true)
 	queue_redraw()
 
@@ -154,7 +156,11 @@ func _draw() -> void:
 	var sil := _silhouette()
 	var vis := _visible()
 	if sprite != null:
-		draw_texture_rect(sprite, sil, false, Color(0.3, 0.3, 0.3) if dead else Color.WHITE)
+		var frame := sil
+		if breathe and not dead:
+			var k := 1.0 + 0.015 * sin(_t * 1.7 + breathe_phase)
+			frame = Rect2(Vector2(sil.position.x, sil.end.y - sil.size.y * k), Vector2(sil.size.x, sil.size.y * k))
+		draw_texture_rect(sprite, frame, false, Color(0.3, 0.3, 0.3) if dead else Color.WHITE)
 	else:
 		var edge := Color(Palette.ENEMY_DIM if dead else hud, 0.4)
 		Hud.box(self, sil, 10.0, Color(Palette.PANEL_RAISED, 0.9), edge, 1.0)

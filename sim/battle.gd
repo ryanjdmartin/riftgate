@@ -180,6 +180,7 @@ func _build_skirmish(group: Array) -> Skirmish:
 			continue
 		if u.is_player() and not u.is_static():
 			sk.add_mech(u)
+			sk.terrain = int(map.terrain.get(u.pos, BattleMap.Terrain.PLAIN))
 		elif u.is_enemy():
 			sk.add_foes(db.foes_for(u), u)
 	if sk.mechs.is_empty() or sk.pool.is_empty():

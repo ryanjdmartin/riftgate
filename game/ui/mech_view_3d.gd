@@ -55,6 +55,9 @@ const LIVERY := {
 var texture: Texture2D
 var mode: String = "pixel"
 var spin: bool = false            # turn slowly, for the codex
+var sway: bool = false            # a slow idle: a breath of yaw and a bob, for the skirmish
+var sway_phase: float = 0.0
+var _t := 0.0
 var yaw: float = YAW_FRONT
 var frame_override: Vector2i = Vector2i.ZERO
 const SPIN_SPEED := 0.7           # radians per second
@@ -142,12 +145,18 @@ func _setup(chassis_id: String, maker: String) -> void:
 
 func _ready() -> void:
 	_frame_camera()
-	set_process(spin)
+	set_process(spin or sway)
 
 
 func _process(delta: float) -> void:
-	if _model != null:
+	if _model == null:
+		return
+	_t += delta
+	if spin:
 		_model.rotation.y += SPIN_SPEED * delta
+	elif sway:
+		_model.rotation.y = deg_to_rad(yaw) + sin(_t * 0.9 + sway_phase) * 0.035
+		_model.position.y = sin(_t * 1.9 + sway_phase) * 0.35
 
 
 func _apply_materials(node: Node, maker: String) -> void:

@@ -59,6 +59,10 @@ func _apply_pose() -> void:
 		"lock":
 			s._on_die_tapped(0)
 			s._toggle_all_arrows(true)
+		"strike":
+			# Spend the first mech's face on the first front foe: the attack animation plays.
+			var foe: Foe = s.sk.front[0]
+			s._use_die(0, foe)
 
 
 ## Battle screen poses: select (a mech and its reach), route (two routes plotted), hold (a
@@ -95,7 +99,12 @@ func _tick() -> void:
 	_frames += 1
 	if _frames == 2:
 		_apply_pose()
-	if _frames < 6:
+	# RIFTGATE_SHOT_FRAME picks the capture frame (default 6), to catch an animation mid-flight.
+	var want := 6
+	var env := OS.get_environment("RIFTGATE_SHOT_FRAME")
+	if not env.is_empty():
+		want = int(env)
+	if _frames < want:
 		return
 	process_frame.disconnect(_tick)
 	var img := _vp.get_texture().get_image()

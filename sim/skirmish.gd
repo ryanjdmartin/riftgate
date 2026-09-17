@@ -51,6 +51,7 @@ var rng := RandomNumberGenerator.new()
 var mechs: Array[MechState] = []
 var squads: Array[Unit] = []
 var columns: int = DEFAULT_COLUMNS
+var terrain: int = BattleMap.Terrain.PLAIN   # the ground the fight is on (the contact hex), for the screen
 var front: Array = []
 var back: Array = []
 var pool: Array[Foe] = []

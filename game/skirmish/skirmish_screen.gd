@@ -86,6 +86,7 @@ var _overlay: Control
 var _overlay_title: Label
 var _overlay_text: Label
 var _drag_from: int = -1
+var _log_seen: int = 0
 var _hold_foe: Foe = null
 var _hold_mech: int = -1
 
@@ -158,6 +159,11 @@ func _build() -> void:
 
 	var bg := HudBackdrop.new()
 	bg.rules = [BACK_Y - 14.0, LOG_Y - 10.0, REROLL_Y + REROLL_SIZE.y + 14.0, BOTTOM_Y - 16.0]
+	# Ground under each side, in the terrain the fight is on: the map's texture, carried in.
+	bg.grounds = [
+		[Rect2(0.0, BACK_Y - 14.0, W, LOG_Y - 10.0 - (BACK_Y - 14.0)), sk.terrain, sk.rng.seed],
+		[Rect2(0.0, REROLL_Y + REROLL_SIZE.y + 14.0, W, BOTTOM_Y - 16.0 - (REROLL_Y + REROLL_SIZE.y + 14.0)), sk.terrain, sk.rng.seed + 1],
+	]
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
 
@@ -249,6 +255,8 @@ func _build() -> void:
 		if look == "pixel" or look == "clean":
 			var maker := str(ContentDB.load_default().chassis.get(ms.unit.chassis_id, {}).get("maker", "minerva"))
 			var view := MechView3D.make(ms.unit.chassis_id, maker, look, "badger", MechView3D.YAW_REAR)
+			view.sway = true
+			view.sway_phase = i * 2.1
 			add_child(view)
 			v.sprite = view.texture
 			if look == "clean":
@@ -581,11 +589,24 @@ func _refresh_log() -> void:
 		var a := 1.0 if count <= 1 else lerpf(0.4, 1.0, float(age) / float(count - 1))
 		out += "[color=#%s]> %s[/color]\n" % [Color(Palette.HUD, a).to_html(true), sk.log[j]]
 	_log.text = out
+	# New lines type in, so the eye is drawn to what just happened.
+	if sk.log.size() > _log_seen and is_inside_tree():
+		var total := _log.get_total_character_count()
+		var fresh := 0
+		for j in range(_log_seen, sk.log.size()):
+			fresh += sk.log[j].length() + 3
+		_log.visible_characters = maxi(0, total - fresh)
+		var tw := create_tween()
+		tw.tween_property(_log, "visible_characters", total, minf(0.6, 0.012 * fresh))
+		tw.tween_callback(func() -> void: _log.visible_characters = -1)
+	_log_seen = sk.log.size()
 
 
 func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe]) -> void:
 	v.display_name = foe.display_name
 	v.sprite = Sprites.combat_foe(foe.content_id)
+	v.breathe = true
+	v.breathe_phase = float(foe.get_instance_id() % 97)
 	v.bars = [[foe.hp, foe.hp_max, Palette.HUD]]
 	v.dead = not foe.alive()
 	v.highlight = targets.has(foe)
@@ -712,6 +733,8 @@ func _flash_roll() -> void:
 		tw.tween_interval(0.5)
 		tw.tween_property(_roll_label, "modulate:a", 0.0, 0.7)
 		tw.tween_callback(func() -> void: _roll_label.visible = false)
+		var rise := create_tween()
+		rise.tween_property(_roll_label, "position:y", _roll_label.position.y - 22.0, 1.2).set_ease(Tween.EASE_OUT)
 
 
 # ---------------------------------------------------------------- gestures
@@ -918,7 +941,63 @@ func _use_die(i: int, target) -> bool:
 	_refresh()
 	if ok and target is Foe:
 		_flash_roll()
+		_animate_attack(_mech_views[i], _foe_view_for(target), bool(sk.last_roll.get("ranged", false)))
 	return ok
+
+
+# ---------------------------------------------------------------- filler animation
+# Nothing here changes state. It makes the exchange readable: who struck, who was struck.
+
+## A melee face lunges the attacker at the target; a ranged face kicks it back. The target
+## flashes and shakes a beat later, when the blow lands.
+func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool) -> void:
+	if not is_inside_tree() or attacker == null:
+		return
+	var origin := attacker.position
+	var tw := create_tween()
+	if ranged or target == null:
+		var kick := Vector2(0.0, 8.0) if attacker in _mech_views else Vector2(0.0, -8.0)
+		tw.tween_property(attacker, "position", origin + kick, 0.05).set_ease(Tween.EASE_OUT)
+		tw.tween_property(attacker, "position", origin, 0.18).set_ease(Tween.EASE_OUT)
+	else:
+		var dir := (target.anchor_global() - attacker.anchor_global()).normalized()
+		tw.tween_property(attacker, "position", origin + dir * 18.0, 0.09).set_ease(Tween.EASE_OUT)
+		tw.tween_property(attacker, "position", origin, 0.16).set_ease(Tween.EASE_IN_OUT)
+	if target != null:
+		_animate_hit(target, 0.08)
+
+
+## The struck unit flashes bright, then shakes side to side and settles.
+func _animate_hit(v: UnitView, delay: float = 0.0) -> void:
+	if not is_inside_tree() or v == null:
+		return
+	var origin := v.position
+	var tw := create_tween()
+	tw.tween_interval(delay)
+	tw.tween_property(v, "modulate", Color(1.8, 1.4, 1.4), 0.04)
+	tw.tween_property(v, "modulate", Color.WHITE, 0.22)
+	var shake := create_tween()
+	shake.tween_interval(delay)
+	for k in range(4):
+		var dx := (5.0 - k * 1.2) * (1.0 if k % 2 == 0 else -1.0)
+		shake.tween_property(v, "position", origin + Vector2(dx, 0.0), 0.035)
+	shake.tween_property(v, "position", origin, 0.05)
+
+
+## The enemy's turn, replayed: each foe that struck lunges down at its mech in sequence.
+func _animate_enemy_turn(hits: Array) -> void:
+	if not is_inside_tree():
+		return
+	var k := 0
+	for h in hits:
+		var fv: UnitView = h[0]
+		var mv: UnitView = h[1]
+		if fv == null or mv == null:
+			continue
+		var tw := create_tween()
+		tw.tween_interval(0.12 * k)
+		tw.tween_callback(func() -> void: _animate_attack(fv, mv, false))
+		k += 1
 
 
 # ---------------------------------------------------------------- buttons and confirms
@@ -952,6 +1031,13 @@ func _on_reroll() -> void:
 			idx.append(i)
 	sk.reroll(idx)
 	_refresh()
+	if is_inside_tree():
+		for i in idx:
+			var d := _dice[i]
+			d.pivot_offset = d.size * 0.5
+			d.scale = Vector2(0.15, 1.0)
+			var tw := create_tween()
+			tw.tween_property(d, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 ## Live dice that still hold a usable face.
@@ -983,6 +1069,13 @@ func _end_turn_now() -> void:
 		var ms: Skirmish.MechState = sk.mechs[i]
 		if ms.alive() and not ms.assigned and ms.face() != null and ms.face().kind == Face.Kind.BLANK:
 			sk.assign(i, null)
+	var hits: Array = []
+	for i in range(sk.mechs.size()):
+		var ms2: Skirmish.MechState = sk.mechs[i]
+		if not ms2.alive():
+			continue
+		for foe in sk.attackers_of(ms2):
+			hits.append([_foe_view_for(foe), _mech_views[i]])
 	var outcome := sk.end_round()
 	if outcome != Skirmish.Outcome.NONE:
 		_show_outcome(outcome)
@@ -991,6 +1084,7 @@ func _end_turn_now() -> void:
 	for i in range(locked.size()):
 		locked[i] = false
 	_refresh()
+	_animate_enemy_turn(hits)
 
 
 ## Withdraw always asks first.

@@ -49,6 +49,14 @@ its glTF is polished and baked. The 2D sprite path (blendforge render, foeforge 
 cut-mech) still works and still feeds the 24 px map tokens. Art experiments and comparisons
 are on `docs/art-lab.html`, sections 8 and 9.
 
+**Alive (17 September).** Filler animation on the skirmish screen: lunge or recoil on a
+player attack, flash and shake on the struck unit, the enemy turn replayed as staggered
+lunges, dice pop on reroll, damage numbers rise, log lines type in, 3D mechs sway, foes
+breathe, a scan band drifts on the backdrop. `Skirmish.terrain` is the contact hex's terrain
+(set by `Battle._build_skirmish`); the backdrop draws ground strips in it, and
+`game/ui/terrain_art.gd` textures the map's hexes with the same marks. `tools/screenshot.gd`
+gained a `strike` pose and `RIFTGATE_SHOT_FRAME` to catch a frame mid-animation.
+
 **Next, in order.**
 
 1. Write the five makers into content once Ryan tweaks the drafts; draft CARE's voice.
