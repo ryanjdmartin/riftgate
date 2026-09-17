@@ -135,8 +135,13 @@ says what it does in its docstring, so the model's history is the list of script
 `tools/blendforge/finish/`.
 
 **Tagging hardpoints and joints.** Both are Empties, which cost nothing and export with the
-model. A hardpoint is an Empty named `hp_1` … `hp_n` at the socket, its +Y pointing where
-the weapon points; the count should match the chassis's hardpoints. A joint is an Empty
+model. A hardpoint is an Empty named `hp_1` … `hp_n` at the socket (where the weapon meets
+the mech, not the muzzle), its +Y pointing where the weapon points; the count should match
+the chassis's hardpoints. Keep any placeholder weapon for now, and parent its parts to the
+pin (select the parts, the Empty last, Ctrl+P, Object (Keep Transform)): whatever hangs
+under `hp_1` is the thing on pin 1, no renaming needed, and the day a real component model
+exists one rule swaps it in. A placeholder modelled with its origin on the pin is already
+that component's first model. A joint is an Empty
 named `joint_<name>` (say `joint_shoulder_l`) placed at the pivot, and the limb's parts are
 parented to it: select the parts, then the Empty last, Ctrl+P, Object (Keep Transform).
 Rotating the Empty then swings the limb, the glTF keeps that hierarchy, and the engine can
