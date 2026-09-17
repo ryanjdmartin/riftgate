@@ -50,9 +50,11 @@ are on `docs/art-lab.html`, sections 8 and 9.
 **Next, in order.**
 
 1. Write the five makers into content once Ryan tweaks the drafts; draft CARE's voice.
-2. Ryan judges the Minerva-profile Badger; tune profiles and the wear shader (`grime`, `wear`)
-   with him; decide map tokens (sprites versus small 3D); livery on a rear or top plate since
-   the skirmish now shows the back.
+2. Polish scope is decided: surface and conversions only, big parts kit-only; Ryan guides
+   rams, lamps and vents with Empties (`ram_1_a`/`ram_1_b`, `lamp_1`, `vent_1`) in the
+   massing and cuts from the polished file. Next: he marks the Badger's rams; tune the
+   Arsenal (fewer, bigger) and Kestrel (ground fins) manners on real models; wear shader
+   (`grime`, `wear`); map tokens; livery on a rear or top plate since the skirmish shows backs.
 3. Hardpoint Empties (`hp_<n>`) on the Badger; components as visual swap-outs.
 4. Gate, defences and hangar as models.
 5. Play on a phone with the damage ranges in; tune numbers, map size, squad speeds, Rift

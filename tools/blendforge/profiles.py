@@ -15,7 +15,10 @@ Maker manner:
   vents            a grille block on the rear deck of the hull
   pistons          a hydraulic ram between each arm and the hull
   collars          a ring and an open cap on vertical stacks
-Chassis kit: a list of named extras, each a rule in bl_polish.py.
+Chassis kit: a list of named extras, each a rule in bl_polish.py. Anything that adds mass to
+the silhouette (fins, boosters, wing_pack, crest) is kit-only: a maker manner adds surface
+and converts parts, and never adds something big on its own. The pass errs toward too much
+small detail; Ryan cuts from the polished file, and the polished file is his to edit.
 """
 
 MAKERS = {
@@ -28,7 +31,7 @@ MAKERS = {
     # chassis. Tracks and wheels stay smooth.
     "kestrel": dict(plate_strength=1.6, track_strength=1.0, bevel_segments=3, cleat_spacing=4.0,
                     wheels=3, rivet_scale=0.0, rims=False, vents=False, pistons=False, collars=False,
-                    fins=True),
+                    ),   # fins are kit-only: nothing big is ever added automatically
     # Wagon-builders. Exposed frame, angle-iron trim, honest bolts, rams you can see working.
     "wainwright_sutler": dict(plate_strength=2.0, track_strength=1.5, bevel_segments=2, cleat_spacing=5.0,
                               wheels=3, rivet_scale=1.0, rims=True, vents=False, pistons=True, collars=True),
@@ -38,14 +41,14 @@ MAKERS = {
     # strips; sensor blisters. An aversion to wheels and treads: no cleats, no road wheels.
     "aphelion": dict(plate_strength=1.5, track_strength=1.0, bevel_segments=1, cleat_spacing=999.0,
                      wheels=0, rivet_scale=0.0, rims=False, vents=False, pistons=True, collars=False,
-                     seams=3, blisters=True, strip_lights=True, boosters=True, wing_pack=True),
+                     seams=3, blisters=True, strip_lights=True),   # boosters and wing-blades are kit-only
     # The Council's own. Heavy, gothic, brutal, slightly wrong: hard chamfers at the largest
     # scale, armour layered over armour, vertical fluting on the big walls, a dorsal crest,
     # bolts in rows along the rims as ornament, and one lit seam low in every big face, the
     # only glow on a machine that is not an engine.
     "arsenal": dict(plate_strength=2.8, track_strength=1.5, bevel_segments=1, cleat_spacing=6.0,
                     wheels=2, rivet_scale=0.0, rims=True, vents=True, pistons=True, collars=True,
-                    layered=True, ribs=True, stud_rows=True, crest=True, glow_seams=True),
+                    layered=True, ribs=True, stud_rows=True, glow_seams=True),   # the crest is kit-only
 }
 DEFAULT_MAKER = MAKERS["minerva"]
 

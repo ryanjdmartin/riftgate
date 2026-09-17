@@ -116,6 +116,27 @@ them. The rules find parts by shape and position, not by name: the hull is the b
 an arm is a part that reaches past the hull's flank, a stack is a tall round cylinder above
 the hull, the cab is whatever holds the glass.
 
+**Scope, decided 17 September.** The pass adds surface and converts parts; it never adds
+mass on its own. Surface: chamfers and smoothing, seams, recessed panels, bolts and studs,
+rim bars, vents and grilles, lamps and light strips, blisters, cleats, wheels, collars.
+Conversions: a plain limb into a hydraulic, and, as chassis need them, hinges into
+actuators, exhausts into boosters, plain runs into treads or tyres, stubs into toes with a
+footprint, blocks into fists or grabbers. Anything that changes the silhouette (fins,
+booster pods, wing-blades, a crest) is kit-only: a chassis asks for it by name in
+`profiles.py`, a maker manner never adds it. The pass errs toward too much small detail
+and you cut.
+
+**Guiding it from Blender.** Where a rule needs judgement, place an Empty in the massing
+file and the rule follows it instead of guessing: `ram_1_a` and `ram_1_b` for a hydraulic
+from a to b (cylinder at a, rod to b; number as many as you like), `lamp_1` for a work
+light facing the Empty's +Y, `vent_1` for a grille sized by the Empty's scale. Where markers
+exist the automatic guess for that rule stands down.
+
+**Iterating on one design.** `polish` writes `<id>_polished.blend` from the massing every
+time, so the polished file is yours to edit after the pass, and `export` takes whichever
+file you give it. Keep the massing as the source of shapes and the polished file as the
+working copy; re-run `polish` only when the massing changes, then re-apply your cuts.
+
 Your own modifiers (an Array of bolt holes, say) are baked first, as they stand. Everything
 stays flat-shaded: the toon look needs flat faces flat. Nothing added is thinner than a
 model unit, because at the sprite's scale a unit is about a pixel and thinner parts survive

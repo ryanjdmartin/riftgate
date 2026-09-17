@@ -252,7 +252,9 @@ def vent(hull):
 
 
 def pistons(hull, plates):
-    """A ram from any part that reaches past the hull's flanks back to the hull's top edge."""
+    """Turn a plain limb into a hydraulic: a cylinder lying along the top of any part that
+    reaches past the hull's flank, from its root to past its middle, with a thinner rod
+    running on to near its end. Excavator style; nothing crosses the body."""
     hlo, hhi = world_bbox(hull)
     dark = material("steel_dark")
     n = 0
@@ -262,14 +264,31 @@ def pistons(hull, plates):
         lo, hi = world_bbox(o)
         dims = hi - lo
         reach = max(hlo.x - lo.x, hi.x - hhi.x)
-        if reach < 5.0 or max(dims.x, dims.y) < 2.0 * dims.z * 0.5:
+        if reach < 5.0:
             continue
-        side = 1.0 if hi.x > hhi.x else -1.0
-        inner_x = lo.x if side > 0 else hi.x
-        a = (inner_x + side * dims.x * 0.35, (lo.y + hi.y) / 2.0, hi.z - dims.z * 0.2)
-        b = (hhi.x if side > 0 else hlo.x, (lo.y + hi.y) / 2.0, hhi.z + kp(0.8))
-        add_rod(f"ram_{o.name}", b, a, kp(0.5), dark)
-        add_rod(f"ram_rod_{o.name}", (Vector(a) + Vector(b)) / 2.0, a, kp(0.3), material("steel"))
+        # The limb's long axis, in the horizontal plane; the root is the end nearest the hull.
+        along_x = dims.x >= dims.y
+        side = 1.0 if (lo.x + hi.x) / 2.0 > (hlo.x + hhi.x) / 2.0 else -1.0
+        r = max(kp(0.35), min(dims.x, dims.y, dims.z) * 0.18)
+        z = hi.z + r * 0.9
+        if along_x:
+            root = lo.x if side > 0 else hi.x
+            tip = hi.x if side > 0 else lo.x
+            y = (lo.y + hi.y) / 2.0
+            a = (root + side * dims.x * 0.08, y, z)
+            b = (root + side * dims.x * 0.55, y, z)
+            c = (root + side * dims.x * 0.85, y, z)
+        else:
+            x = (lo.x + hi.x) / 2.0
+            front = hi.y >= (hlo.y + hhi.y) / 2.0
+            root, tip = (lo.y, hi.y) if front else (hi.y, lo.y)
+            sgn = 1.0 if front else -1.0
+            a = (x, root + sgn * dims.y * 0.08, z)
+            b = (x, root + sgn * dims.y * 0.55, z)
+            c = (x, root + sgn * dims.y * 0.85, z)
+        add_rod(f"hydraulic_{o.name}", a, b, r, dark)
+        add_rod(f"hydraulic_rod_{o.name}", b, c, r * 0.55, material("steel"))
+        add_cyl(f"hydraulic_mount_{o.name}", "x" if not along_x else "y", a, r * 1.3, r * 2.6, dark, verts=8)
         n += 1
     return n
 
@@ -512,6 +531,61 @@ def wing_pack(hull):
         n += 1
     return n
 
+
+# ---------------------------------------------------------------- markers: guidance from the massing file
+
+def markers():
+    """Empties in the massing file that place things by hand: ram_<n>_a / ram_<n>_b for a
+    hydraulic from a to b, lamp_<n> for a work light facing the Empty's +Y, vent_<n> for a
+    grille sized by the Empty's scale. Where markers exist, the automatic guess for that rule
+    stands down."""
+    rams, lamps, vents = {}, [], []
+    for o in bpy.context.scene.objects:
+        if o.type != "EMPTY":
+            continue
+        name = o.name.lower().split(".")[0]
+        parts = name.split("_")
+        if parts[0] == "ram" and len(parts) == 3 and parts[2] in ("a", "b"):
+            rams.setdefault(parts[1], {})[parts[2]] = o.matrix_world.translation.copy()
+        elif parts[0] == "lamp":
+            lamps.append((o.matrix_world.translation.copy(), (o.matrix_world.to_3x3() @ Vector((0, 1, 0))).normalized()))
+        elif parts[0] == "vent":
+            vents.append((o.matrix_world.translation.copy(), o.matrix_world.to_scale()))
+    return [(k, v["a"], v["b"]) for k, v in rams.items() if "a" in v and "b" in v], lamps, vents
+
+
+def guided_rams(pairs):
+    dark = material("steel_dark")
+    for k, a, b in pairs:
+        r = max(kp(0.35), (b - a).length * 0.06)
+        mid = a + (b - a) * 0.6
+        add_rod(f"hydraulic_{k}", a, mid, r, dark)
+        add_rod(f"hydraulic_rod_{k}", mid, b, r * 0.55, material("steel"))
+        add_cyl(f"hydraulic_mount_{k}", "x", a, r * 1.3, r * 2.6, dark, verts=8)
+    return len(pairs)
+
+
+def guided_lamps(points):
+    amber = material("amber")
+    dark = material("steel_dark")
+    s = kp(0.6)
+    for i, (p, fwd) in enumerate(points):
+        add_box(f"lamp_house_{i}", (p.x - s, p.y - s * 0.8, p.z - s * 0.7), (p.x + s, p.y + s * 0.8, p.z + s * 0.7), dark)
+        f = p + fwd * s * 0.9
+        add_box(f"lamp_{i}", (f.x - s * 0.8, f.y - s * 0.2, f.z - s * 0.5), (f.x + s * 0.8, f.y + s * 0.2, f.z + s * 0.5), amber)
+    return len(points)
+
+
+def guided_vents(points):
+    for i, (p, sc) in enumerate(points):
+        w, d = max(sc.x, 2.0), max(sc.y, 1.5)
+        add_box(f"vent_frame_{i}", (p.x - w / 2, p.y - d / 2, p.z - 0.2), (p.x + w / 2, p.y + d / 2, p.z + kp(0.35)), material("steel_dark"))
+        slats = max(3, int(w // 3.0))
+        for j in range(slats):
+            sx = p.x - w / 2 + (j + 0.5) * w / slats
+            add_box(f"vent_slat_{i}_{j}", (sx - 0.35, p.y - d / 2 + 0.4, p.z + kp(0.35)), (sx + 0.35, p.y + d / 2 - 0.4, p.z + kp(0.35) + 0.3), material("bore"))
+    return len(points)
+
 # ---------------------------------------------------------------- tracks
 
 def polish_track(obj):
@@ -610,13 +684,21 @@ def main():
     glass = next((o for o in objs if role_of(o) == "glass"), None)
     hull = hull_of(plates)
     counts = {"plates": len(plates), "tracks": len(tracks), "cylinders": len(cylinders)}
-    # Placement rules first, while the plates are still plain boxes.
+    # Guidance from the massing file first: Ryan's markers beat every guess.
+    ram_pairs, lamp_points, vent_points = markers()
+    if ram_pairs:
+        counts["rams"] = guided_rams(ram_pairs)
+    if lamp_points:
+        counts["lamps"] = guided_lamps(lamp_points)
+    if vent_points:
+        counts["vents"] = guided_vents(vent_points)
+    # Placement rules next, while the plates are still plain boxes.
     if hull is not None:
         if P["rims"]:
             rims(hull)
         if P["vents"]:
             vent(hull)
-        if P["pistons"]:
+        if P["pistons"] and not ram_pairs:
             counts["rams"] = pistons(hull, plates)
         if P["collars"]:
             counts["collars"] = collars(cylinders, hull)
@@ -626,7 +708,7 @@ def main():
             counts["ribbed"] = ribs(plates)
         if P["stud_rows"]:
             counts["studs"] = stud_rows(hull)
-        if P["crest"]:
+        if P["crest"] or "crest" in P["kit"]:   # big additions only when the chassis kit asks
             counts["crest"] = crest(hull, plates)
         if P["glow_seams"]:
             counts["glow"] = glow_seams(plates)
@@ -636,13 +718,13 @@ def main():
             counts["blisters"] = blisters(hull)
         if P["strip_lights"]:
             counts["strips"] = strip_lights([o for o in objs if role_of(o) in PLATE_ROLES], glass)
-        if P["fins"]:
+        if P["fins"] or "fins" in P["kit"]:
             counts["fins"] = fins(hull, plates)
-        if P["boosters"]:
+        if P["boosters"] or "boosters" in P["kit"]:
             counts["boosters"] = boosters(hull)
-        if P["wing_pack"]:
+        if P["wing_pack"] or "wing_pack" in P["kit"]:
             counts["wings"] = wing_pack(hull)
-        if "work_lights" in P["kit"]:
+        if "work_lights" in P["kit"] and not lamp_points:
             counts["lamps"] = kit_work_lights([o for o in objs if role_of(o) in PLATE_ROLES], glass)
         if "tow_lugs" in P["kit"]:
             counts["lugs"] = kit_tow_lugs(hull)
