@@ -32,6 +32,8 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   never from a hardcoded id.
 - `sim/` never touches scenes. Everything there runs headless with a seeded RNG.
 - Numbers in content are placeholders, not balance.
+- Content ideas (makers, chassis, components, foes, names, lore) are proposed in conversation first;
+  Ryan tweaks them against his own notes before they land in `content/*.json` or as decided in the bible.
 - Keep the fun in mind: prefer one source of randomness, and push back on systems that add no
   decision. Slice and Dice is the touchstone.
 
