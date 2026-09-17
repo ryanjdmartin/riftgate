@@ -213,7 +213,9 @@ def polish_track(obj):
 def main():
     a = args()
     out = Path(a["out"])
-    objs = [o for o in bpy.data.objects if o.type == "MESH"]
+    # The active scene only: a file can hold a scratch scene of parts borrowed from an
+    # archetype, and those must not ride along (a tank gun once did).
+    objs = [o for o in bpy.context.scene.objects if o.type == "MESH"]
     apply_transforms(objs)
     counts = {"plates": 0, "tracks": 0, "cylinders": 0, "left": 0}
     for o in list(objs):
