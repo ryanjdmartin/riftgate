@@ -82,7 +82,39 @@ hangar will sell a change of it. Blender's `.001` suffixes are ignored, so `stee
 If you would rather pick colours than names, that works too: any material whose name is not
 in the table is painted from its own Base Color, darkened and lightened into four tones.
 
-## Finish
+## The polish pass: where your job ends and the tool's begins
+
+Your job is massing: which parts exist, their proportions, where they sit, which material
+role each carries, and "detail" on the names of things the map token should drop. Boxes and
+cylinders are enough; do not round edges, cut panels or add rivets. The pass does that:
+
+```sh
+tools/spriter/.venv/bin/python tools/blendforge/forge.py polish tools/blendforge/models/badger.blend
+# writes badger_polished.blend beside it; the massing file is never touched
+tools/spriter/.venv/bin/python tools/blendforge/forge.py render tools/blendforge/models/badger_polished.blend badger --install
+tools/spriter/.venv/bin/python tools/blendforge/forge.py export tools/blendforge/models/badger_polished.blend badger   # art/models/badger.glb for the 3D view
+```
+
+What it does, by what a part is:
+
+| Part | Rule |
+| --- | --- |
+| a plate (any box in steel, steel_dark, livery, white) | bevelled edges, two segments, so every edge catches a highlight band |
+| a big face on a livery or steel plate | a recessed panel inset, and a rivet at each corner (`rivet_*.detail`) |
+| a track (any rubber box) | rounded ends, cleats across the top and down the outer face, three road wheels on the outer face (`cleat_*.detail`, `roadwheel_*.detail`); the run's material becomes `tread` |
+| a cylinder | chamfered caps |
+
+Your own modifiers (an Array of bolt holes, say) are baked first, as they stand. Everything
+stays flat-shaded: the toon look needs flat faces flat. Nothing added is thinner than a
+model unit, because at the sprite's scale a unit is about a pixel and thinner parts survive
+only as stray dots.
+
+If a rule does the wrong thing on a part, name that part so the rule skips it, and say so;
+the pass is meant to grow rules, not exceptions. What it does not do yet: joint pistons,
+textures or wear (the clean 3D look has none; that is the next question), and it has no idea
+which parts are hardpoints, which needs the `hp_<n>` Empties convention from the bible.
+
+## Finish on the 2D path
 
 The render is clean but plain. The finish (rivets, panel lines, worn edges, tread, bevelled
 highlights) comes from the image model in edit mode, which keeps the render's design and

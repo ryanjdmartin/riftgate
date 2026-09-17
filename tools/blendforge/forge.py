@@ -319,6 +319,28 @@ def render(args):
     print(f"{args.chassis}: {Path(path).relative_to(ROOT)}" + ("" if args.install else "  (add --install to write art/mechs)"))
 
 
+# ---------------------------------------------------------------- polish
+
+def polish(args):
+    """Run the finish pass on a massing file, writing a new .blend beside it."""
+    src = Path(args.blend).resolve()
+    dest = Path(args.out).resolve() if args.out else src.with_name(src.stem + "_polished.blend")
+    blender(str(src), "-P", str(HERE / "bl_polish.py"), "--", "--out", str(dest))
+    print(f"polished model at {dest.relative_to(ROOT) if dest.is_relative_to(ROOT) else dest}")
+
+
+def export(args):
+    """Export a .blend to art/models/<chassis>.glb for the in-engine 3D view."""
+    src = Path(args.blend).resolve()
+    dest = ROOT / "art" / "models" / f"{args.chassis}.glb"
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    blender(str(src), "--python-expr",
+            "import bpy; bpy.ops.export_scene.gltf(filepath=%r, export_format='GLB', export_apply=True, "
+            "export_materials='EXPORT', export_yup=True, use_selection=False, use_visible=False, "
+            "export_animations=False); print('blendforge: exported')" % str(dest))
+    print(f"exported {dest.relative_to(ROOT)}; run godot --headless --path . --import")
+
+
 # ---------------------------------------------------------------- archetypes
 
 def archetypes(args):
@@ -372,6 +394,14 @@ def main():
     e = sub.add_parser("example", help="build a template .blend from a spriter model")
     e.add_argument("model", choices=sorted(spriter.TEMPLATES))
     e.set_defaults(func=example)
+    p = sub.add_parser("polish", help="the finish pass: bevels, panels, rivets, track cleats and wheels, chamfered caps; writes <name>_polished.blend")
+    p.add_argument("blend")
+    p.add_argument("--out", default="")
+    p.set_defaults(func=polish)
+    x = sub.add_parser("export", help="export a .blend to art/models/<chassis>.glb for the in-engine 3D view")
+    x.add_argument("blend")
+    x.add_argument("chassis")
+    x.set_defaults(func=export)
     a = sub.add_parser("archetypes", help="build the starter silhouettes in archetypes.py as .blend files and render a review sheet")
     a.add_argument("names", nargs="*", help="which archetypes; default all")
     a.add_argument("--maker", default="halvard", help="livery for the review renders")

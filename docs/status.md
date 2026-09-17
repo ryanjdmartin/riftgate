@@ -98,6 +98,14 @@ commander units that scramble targeting when killed). Art experiments are collec
 `docs/art-lab.html` (open it in a browser); third-party-derived images live in the
 ignored `docs/art-lab/ext/`.
 
+Polish pass (16 September, night): `forge.py polish <massing.blend>` (bl_polish.py) writes
+`<name>_polished.blend`: bevels on plates, recessed panels and rivets on big faces, rounded
+tracks with cleats and road wheels, chamfered cylinders; the author's modifiers are baked
+first; everything flat-shaded. `forge.py export <blend> <chassis>` writes the glTF.
+`art/models/badger.glb` is now the polished Badger; `art/mechs/badger_*` is still the plain
+render. Comparison sent to Ryan; his verdict decides 2D versus 3D and whether the rules are
+enough or textures and wear are needed on the clean look.
+
 Open experiment (16 September, night): player units in real 3D. `game/ui/mech_view_3d.gd`
 draws `art/models/<chassis>.glb` (exported from Blender, materials named by role) in a
 SubViewport with the spriter's toon shader (`mech_toon.gdshader`) and an outline pass
