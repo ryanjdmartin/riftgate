@@ -2,158 +2,61 @@
 
 Handoff note for the next session. Replace stale lines; keep it under a screen.
 
-## As of 16 September 2026
+## As of 17 September 2026
 
-**State.** Everything committed. Tests: 116 tests, 1478 checks, green.
+**State.** Everything committed. Tests: 117 tests, 1483 checks, green. Ryan is editing
+`content/*.json` in his own voice (reload the file after any pass that touches it).
 
-**Last done (16 September).** `tools/blendforge/`: mech sprites from a Blender model. Ryan
-models in Blender (5.2 is installed at /Applications); `forge.py render <file.blend> <chassis>`
-runs Blender headless for normal, material and depth passes and then shades them with the
-spriter's own code, so the output files and the look are the spriter's. `--install` writes
-`art/mechs`; otherwise `tools/blendforge/out/`. `forge.py example bulwark` builds a template
-.blend from the primitive Bulwark (`tools/blendforge/models/bulwark.blend`, committed) and
-that render matches the spriter's contact sheet. Modelling rules and the material roles are
-in `tools/blendforge/README.md`. The spriter's `write_sheets` is now shared. Nothing in
-`art/mechs` changed. Later on 16 September: "house" is retired everywhere (too BattleTech);
-the material role and palette are now `livery`, the maker's colour, which the hangar will
-one day let the player repaint for a fee. Setting direction recorded in the bible, section 1:
-an elected council of mankind that is really a martial-law dictatorship, competing
-manufacturers, propaganda, "nobody stands against the march of human progress". Lore is
-not written; Ryan likes MARCH for the council if it names the body (leading expansion in the
-bible: Mandated Assembly of the Remaining Cities of Humanity). Sixteen starter .blend
-silhouettes for Ryan to reshape live in `tools/blendforge/models/archetypes/` (authored in
-`archetypes.py`, `forge.py archetypes` rebuilds and renders the review sheet, also on
-`docs/art-lab.html` section 7). Standing instruction from Ryan: take each new direction as
-he gives it; tone iterates as we build.
+**Setting, decided.** The governing body is the Council for the Ultimate Liberation of Terra,
+"the Council"; its acronym is never stated in the game. The Council believes its own cause and
+profits from it; the populace has real believers. The player is Battlefield Commander of an
+arms-length defence agency (independent agency or contracted corp, not a ministry), known by
+a four-letter acronym still to be picked; candidates proposed 17 September. The Council's
+own R&D house is the Arsenal, which sells the player a trickle of its tech, gated by how dire
+the campaign gets. Open on purpose: last bastion or not, other colonies, whether it was a
+power grab. Everything is in `docs/design-bible.html` section 1.
 
-The Council is decided: the Council for the Ultimate Liberation of Terra, "the Council", its
-acronym never stated in the game (MARCH is retired). The player is Battlefield Commander of an
-arms-length defence agency, four-letter acronym still to pick. Open on purpose: whether this is the last bastion, whether other colonies are fine, whether the
-whole thing was a power grab. Ryan is rewriting `content/*.json` in his own voice and
-renaming units. Content text is now split by shape (bible, section 6): shown at the top
-level (`codex`, `flavour`, a passive's `name` and `description`, an action's `text`),
-everything internal under `design` (`fantasy`, `niche`, `holes`, `signature`, `answer`,
-`notes`); the validator refuses internal keys at the top level and passives have no
-`rules` text (description plus at most three effects). Components have empty `codex` and
-`flavour` waiting for Ryan's words. Sim and game code take their defaults from content
-order (`ContentDB.default_team`, `default_faction`, `spawn_foes`, `make_boss`) instead of
-hardcoding badger, ghoul or undead. The Bulwark is now the **Badger**, id `badger`
-everywhere: Ryan's model is `tools/blendforge/models/badger.blend`, its glTF
-`art/models/badger.glb`, and its plain blendforge render is installed as `art/mechs/badger_*`
-(the edit-mode finish pick is still Ryan's to make). The primitive Bulwark left the spriter's
-build list (`spriter.TEMPLATES` keeps it as the blendforge example). Chassis gained an
-optional `designation` (the maker's long name; `name` is the nickname); the codex draws a spec
-plate, a 2x2 stat grid (`StatBlock`), faces in two centred columns, a rule, then codex and
-quote, and fits its size again after layout. With `RIFTGATE_MECH3D` set the codex shows the
-3D model turning.
+**Makers, decided (bible, section 7).** At most five: Minerva Heavy Works (`minerva`, was
+Halvard), Kestrel Dynamics, Wainwright & Sutler (`wainwright_sutler`, was Orrin & Pike),
+Aphelion, the Arsenal. Identity by the machines they build, not by battlefield niche; a
+chassis's class decides its battlefield skills. Arsenal plates are decrees (Arsenal Instrument
+IV) and its nicknames zealot words. Only Minerva, Kestrel and Wainwright & Sutler exist in
+content so far; Ryan is moving mechs and equipment around and will place Aphelion and the
+Arsenal himself. Hardwired hardpoints with a paid unlock are tabled until an economy exists.
+Content ideas are proposed in chat first (CLAUDE.md rule).
 
-Detail for modelled mechs (16 September, late): plain image-to-image on the Badger's render
-replaced the design at every strength (art lab, section 8). The model's edit mode
-(`mflux-generate-flux2-edit`, same weights) keeps it: `forge.py mech <chassis> --ref <render>`
-now runs edit mode by default with a keep-the-shape instruction, and `cut-mech` defaults to
-sixteen colours (eight dulled the finish). Blendforge also gained surface patterns
-(`tread`, `grille`, `rivet`, `panel`, from an object-local position pass) for the plain
-render and the map tokens. Pipeline for a mech: Blender model, `blendforge render`, `mech
---ref`, pick, `cut-mech`, `--import`. Next: Ryan picks a Badger edit (three are in
-`tools/foeforge/out/bulwark/`) or reruns with more seeds, installs the blendforge render
-for the map strip and the other two turns, then the cut for front-right. Tests still name the current
-ids, as do `tools/spriter` MODELS, `tools/sheet_export.py` grid mapping, `tools/foeforge`
-BIG_MAP, and the art file names under `art/`; those get one pass after the rename lands. Next for art: Ryan's first hand-modelled mech (the Anvil has no design
-yet), then `render --install`, `--import`, and a look at it in the skirmish.
+**Content shape.** Shown text at the top level (`codex`, `flavour`, a passive's `name` and
+`description`, an action's `text`, a chassis's optional `designation`); everything internal
+under `design`; the validator refuses internal keys at the top level. Code takes defaults
+from content order (`ContentDB.default_team`, `default_faction`, `spawn_foes`, `make_boss`).
+The Bulwark is the Badger (`badger`) everywhere.
 
-**Last done.** The battle loop. `sim/battle.gd` owns one battle: routes, resolve, a
-skirmish per contact group, results applied back, outcome on gate fallen, all wrecked, or
-boss dead. `game/battle/battle_screen.gd` plays it: tap a mech, tap a lit hex to route, hold
-for numbers, drag to scroll, Resolve bottom-left, Clear routes bottom-right; the skirmish
-screen opens over the map on contact and its Back button continues the battle. The harness
-has a Battle button. Screenshot poses: select, route, hold, resolve, contact.
-
-Later on 15 September: off-screen squads get an edge portrait (map token, strength or
-BOSS, chevron; tap to scroll there). Enemy art now exists: `tools/sheet_export.py` turns the
-hand-typed grids in `docs/sprites-enemies.html` into `art/foes/<id>_combat.png` and
-`<id>_map.png`, so the skirmish and the map show every foe. The mech sheet page opens with
-the rendered contact sheets; its grids are the brief, the renders are current.
-
-Skirmish second pass (15 September, from Ryan's playtest notes): no names, chip row under
-every sprite (fantasy intent icons, statuses, forecast warnings), pulsing gauge overlays,
-big glyph on the die, Reroll wide under the dice, eye in the header, no rank labels,
-upright quotes, `NAME: description` passives. `Skirmish.forecast()` is the prediction.
-Three rerolls a round, and `Die.reroll()` never returns the showing face or an equivalent one.
-Third pass (same day): eye under the foes, foe slots 194 tall, chips 30 px, mechs centred on
-their drawings, ink-white pulse for colour-blind contrast, details pane sized from minimums,
-mono labels padded (the left clipping), Barlow Condensed Italic for quotes, withdraw open on
-round one, keyword chips coloured by effect (`Glyphs.colour_for`).
-
-Player art direction (15 September, from Ryan's references): isometric read for units,
-mech combat frame 80x96 at 2x (foe pixel density), renderer keeps the map facings, the model
-refines the renderer's combat sprite as its reference (`forge.py mech`, `cut-mech`). The
-Bulwark's front-right is the first hybrid sprite in the engine; Sentinel and Raptor are still
-plain renders. Re-running the spriter overwrites the pick; re-run cut-mech afterwards.
-
-Formation width is a setting: `Skirmish.new(seed, columns)`, `Battle.columns`, a picker on
-the harness, `RIFTGATE_COLUMNS=4` for the standalone screen. Three by default. Ryan is
-taking a pass on enemy types and compositions; the current content is proof of concept.
-Design direction recorded in the bible: few machines versus a horde, hooks from that
-(area damage, taunt, mitigation, dumb rank and file, smart demon and eldritch tiers,
-commander units that scramble targeting when killed). Art experiments are collected on
-`docs/art-lab.html` (open it in a browser); third-party-derived images live in the
-ignored `docs/art-lab/ext/`.
-
-Names (16 September, night): Halvard Heavy Works is **Minerva Heavy Works**, id `minerva`,
-in content, code and tool docs (the bible's older rows keep the old name as history). Orrin
-& Pike is up for renaming: old-West iron works, quadrupeds and wheels; candidates offered,
-id unchanged until Ryan picks. Codex third pass: designation as a stamped tag, nickname in
-quotes, stat captions above values, portrait top-right at 200x240, passive full width.
-Ryan's idea of hardwired hardpoints (some faces fixed to the chassis, unlockable in the
-hangar for a fee) is in the bible, section 7, not built.
-
-**Decided: native 3D for player units** (bible, section 1). Wear pass (16 September, late
-night): `forge.py export` now bakes occlusion and pointiness into a `wear` vertex colour
-(bl_export.py, Cycles, a few seconds) and the toon shader's clean look reads it for grime,
-worn edges and scratches, tunable by the `grime` and `wear` uniforms. First result sent to
-Ryan; tuning is the next conversation. The Badger's massing file lost a scratch scene of
-archetype parts that the polish had merged in; the pass reads the active scene only.
-
-Polish pass (16 September, night): `forge.py polish <massing.blend>` (bl_polish.py) writes
-`<name>_polished.blend`: bevels on plates, recessed panels and rivets on big faces, rounded
-tracks with cleats and road wheels, chamfered cylinders; the author's modifiers are baked
-first; everything flat-shaded. `forge.py export <blend> <chassis>` writes the glTF.
-`art/models/badger.glb` is now the polished Badger; `art/mechs/badger_*` is still the plain
-render. Comparison sent to Ryan; his verdict decides 2D versus 3D and whether the rules are
-enough or textures and wear are needed on the clean look.
-
-Open experiment (16 September, night): player units in real 3D. `game/ui/mech_view_3d.gd`
-draws `art/models/<chassis>.glb` (exported from Blender, materials named by role) in a
-SubViewport with the spriter's toon shader (`mech_toon.gdshader`) and an outline pass
-(`outline.gdshader`); `RIFTGATE_MECH3D=pixel|clean` switches the skirmish screen to it,
-every slot falling back to the Bulwark model. Livery is a shader colour per maker. Screens
-on the art lab, section 9. Ryan is deciding between 2D (model, render, edit, cut) and 3D
-(model, export; polish by procedural modelling and materials, which is the open question).
-The `RIFTGATE_MECH3D_FLAT=1` switch skips the nested viewport and the outline, for debugging.
-
-**Known rough edges.**
-
-- Ryan reported codex stat lines cut off on the left; not reproduced in a 720x1280 render.
-  Labels now expand-fill with autowrap. Needs a screenshot from his device if it persists.
-- Only the basic attack exists, so every foe intent is a sword. Defend, heal, buff, debuff
-  icons are drawn and wired to the action kind for when the engine runs them.
-
-- Routes are tap-to-destination only. Drag-to-draw is not built.
-- A route that passes through another mech's current hex is rejected at resolve time (the
-  log says so) unless that mech moves first. The order is the order routes were set.
-- Enemy art: `tools/foeforge/` (mflux, FLUX.2 Klein 4B, ~8 s a candidate on the M4 Max)
-  generates candidates from foes.json prompts and cuts one into art/foes. The ghoul is the
-  first model-made sprite in the engine; the other eight foes still use the sketch grids.
-  Next: `forge.py generate <foe> --n 4` for each, Ryan picks from the contact sheets.
-- The skirmish's Back button still reads "BACK" even when it returns to the battlefield.
+**Art, decided: player units are native 3D; enemies stay painted 2D.** Pipeline for a mech:
+Ryan masses it in Blender (`tools/blendforge/models/<id>.blend`, active scene only, materials
+by role, "detail" on small parts), then `forge.py polish` (bevels, panels, rivets, tracks with
+cleats and wheels, chamfered caps; writes `<id>_polished.blend`), then `forge.py export`
+(bakes occlusion and pointiness into a `wear` vertex colour, writes `art/models/<id>.glb`),
+then `--import`. `game/ui/mech_view_3d.gd` draws it in the skirmish screen and the codex with
+`mech_toon.gdshader` (pixel or clean look; the clean look reads the wear bake) and
+`outline.gdshader`; `RIFTGATE_MECH3D=pixel|clean` switches the screen to it, and the switch
+should become the default once the 2D path is retired. The Badger is the only modelled mech;
+its glTF is polished and baked. The 2D sprite path (blendforge render, foeforge edit mode,
+cut-mech) still works and still feeds the 24 px map tokens. Art experiments and comparisons
+are on `docs/art-lab.html`, sections 8 and 9.
 
 **Next, in order.**
 
-1. Play on a phone with the damage ranges in; tune min, max, crit, injury thresholds, map
-   size, squad speeds, and the Rift Pressure rate.
-2. Art: Ryan's Blender models through blendforge (the Anvil first), enemy candidates from
-   foeforge for the eight foes still on sketch grids.
-3. Small HUD fixes owed: roomy log at round one, faint disabled eye button, gesture tutorial.
-4. Hangar: repair cost for cracked and destroyed faces, then rewards, one-shots, command die.
+1. Pick the agency's acronym; write the five makers into content once Ryan tweaks the drafts.
+2. Tune the wear shader with Ryan (uniforms `grime`, `wear`, the noise scales), then make
+   the 3D view the default and decide map tokens (sprites versus small 3D).
+3. Hardpoint Empties (`hp_<n>`) on the Badger; components as visual swap-outs.
+4. Gate, defences and hangar as models.
+5. Play on a phone with the damage ranges in; tune numbers, map size, squad speeds, Rift
+   Pressure. Hangar: repair, rewards, one-shots, command die. Enemy art via foeforge for the
+   eight foes still on sketch grids.
 
-**Open decisions.** See design bible section 12.
+**Known rough edges.** Codex stat labels cut off on Ryan's device once, not reproduced.
+Only the basic attack exists, so every foe intent is a sword. Routes are tap-to-destination
+only. A route through another mech's hex is rejected at resolve time unless that mech moves
+first. The skirmish's Back button reads "BACK" even when it returns to the battlefield.
+`RIFTGATE_MECH3D_FLAT=1` skips the outline pass, for debugging.
