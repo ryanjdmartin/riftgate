@@ -330,14 +330,12 @@ def polish(args):
 
 
 def export(args):
-    """Export a .blend to art/models/<chassis>.glb for the in-engine 3D view."""
+    """Bake wear into vertex colours and export a .blend to art/models/<chassis>.glb for the
+    in-engine 3D view."""
     src = Path(args.blend).resolve()
     dest = ROOT / "art" / "models" / f"{args.chassis}.glb"
     dest.parent.mkdir(parents=True, exist_ok=True)
-    blender(str(src), "--python-expr",
-            "import bpy; bpy.ops.export_scene.gltf(filepath=%r, export_format='GLB', export_apply=True, "
-            "export_materials='EXPORT', export_yup=True, use_selection=False, use_visible=False, "
-            "export_animations=False); print('blendforge: exported')" % str(dest))
+    blender(str(src), "-P", str(HERE / "bl_export.py"), "--", "--out", str(dest), "--bake", "0" if args.no_bake else "1")
     print(f"exported {dest.relative_to(ROOT)}; run godot --headless --path . --import")
 
 
@@ -401,6 +399,7 @@ def main():
     x = sub.add_parser("export", help="export a .blend to art/models/<chassis>.glb for the in-engine 3D view")
     x.add_argument("blend")
     x.add_argument("chassis")
+    x.add_argument("--no-bake", action="store_true", help="skip baking occlusion and edge wear into vertex colours")
     x.set_defaults(func=export)
     a = sub.add_parser("archetypes", help="build the starter silhouettes in archetypes.py as .blend files and render a review sheet")
     a.add_argument("names", nargs="*", help="which archetypes; default all")

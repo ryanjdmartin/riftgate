@@ -114,6 +114,16 @@ the pass is meant to grow rules, not exceptions. What it does not do yet: joint 
 textures or wear (the clean 3D look has none; that is the next question), and it has no idea
 which parts are hardpoints, which needs the `hp_<n>` Empties convention from the bible.
 
+## Wear, on the 3D path
+
+`forge.py export` bakes two signals per vertex with Cycles before writing the glTF: ambient
+occlusion and pointiness, packed into one colour attribute called `wear` (R and G). The toon
+shader's clean look reads them: crevices and undersides take grime, convex edges lose their
+paint to bare metal in patches, and a fine noise runs over everything. The pixel look
+ignores the bake. `--no-bake` skips it. Tuning lives in `game/ui/mech_toon.gdshader` as the
+`grime` and `wear` uniforms and the two noise scales; a mesh without a bake has white vertex
+colour, which the shader reads as "no data" and leaves alone.
+
 ## Finish on the 2D path
 
 The render is clean but plain. The finish (rivets, panel lines, worn edges, tread, bevelled

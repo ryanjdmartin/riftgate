@@ -106,6 +106,13 @@ quotes, stat captions above values, portrait top-right at 200x240, passive full 
 Ryan's idea of hardwired hardpoints (some faces fixed to the chassis, unlockable in the
 hangar for a fee) is in the bible, section 7, not built.
 
+**Decided: native 3D for player units** (bible, section 1). Wear pass (16 September, late
+night): `forge.py export` now bakes occlusion and pointiness into a `wear` vertex colour
+(bl_export.py, Cycles, a few seconds) and the toon shader's clean look reads it for grime,
+worn edges and scratches, tunable by the `grime` and `wear` uniforms. First result sent to
+Ryan; tuning is the next conversation. The Badger's massing file lost a scratch scene of
+archetype parts that the polish had merged in; the pass reads the active scene only.
+
 Polish pass (16 September, night): `forge.py polish <massing.blend>` (bl_polish.py) writes
 `<name>_polished.blend`: bevels on plates, recessed panels and rivets on big faces, rounded
 tracks with cleats and road wheels, chamfered cylinders; the author's modifiers are baked
