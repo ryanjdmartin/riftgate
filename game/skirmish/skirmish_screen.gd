@@ -248,7 +248,7 @@ func _build() -> void:
 		var look := MechView3D.look_setting()
 		if look == "pixel" or look == "clean":
 			var maker := str(ContentDB.load_default().chassis.get(ms.unit.chassis_id, {}).get("maker", "minerva"))
-			var view := MechView3D.make(ms.unit.chassis_id, maker, look)
+			var view := MechView3D.make(ms.unit.chassis_id, maker, look, "badger", MechView3D.YAW_REAR)
 			add_child(view)
 			v.sprite = view.texture
 			if look == "clean":
@@ -818,8 +818,7 @@ func _open_codex(entry: Dictionary) -> void:
 	if not sid.is_empty() and (look == "pixel" or look == "clean") and MechView3D.has_model(sid):
 		# Mechs in 3D: the codex gets the model itself, turning slowly.
 		var maker := str(ContentDB.load_default().chassis.get(sid, {}).get("maker", "minerva"))
-		_codex_view = MechView3D.make(sid, maker, "clean")
-		_codex_view.spin = true
+		_codex_view = MechView3D.make(sid, maker, "clean", "badger", MechView3D.YAW_FRONT, Vector2i(200, 240), true)
 		add_child(_codex_view)
 		tex = _codex_view.texture
 	elif not sid.is_empty():

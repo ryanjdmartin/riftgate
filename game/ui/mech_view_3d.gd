@@ -15,7 +15,8 @@ extends SubViewport
 const PIXEL_FRAME := Vector2i(80, 96)
 const CLEAN_SCALE := 2
 const PITCH := 30.0
-const YAW := 45.0
+const YAW_FRONT := 45.0     # front three-quarter: the codex hero angle
+const YAW_REAR := 225.0     # rear three-quarter: the skirmish, where mechs face the foes up the screen
 const FILL := 0.92
 
 # The spriter's tones, so 3D and sprites share a palette (tools/spriter/spriter.py).
@@ -42,6 +43,8 @@ const LIVERY := {
 var texture: Texture2D
 var mode: String = "pixel"
 var spin: bool = false            # turn slowly, for the codex
+var yaw: float = YAW_FRONT
+var frame_override: Vector2i = Vector2i.ZERO
 const SPIN_SPEED := 0.7           # radians per second
 
 var _inner: SubViewport
@@ -66,16 +69,19 @@ static func look_setting() -> String:
 
 ## Build a view of a chassis in one of the two looks. Falls back to the given chassis when
 ## the wanted one has no model, so a screen can show one model in every slot.
-static func make(chassis_id: String, maker: String, look: String, fallback: String = "badger") -> MechView3D:
+static func make(chassis_id: String, maker: String, look: String, fallback: String = "badger", yaw_deg: float = YAW_REAR, frame: Vector2i = Vector2i.ZERO, spinning: bool = false) -> MechView3D:
 	var v := MechView3D.new()
 	v.mode = look
+	v.yaw = yaw_deg
+	v.frame_override = frame
+	v.spin = spinning
 	v._setup(chassis_id if has_model(chassis_id) else fallback, maker)
 	return v
 
 
 func _setup(chassis_id: String, maker: String) -> void:
 	var k := 1 if mode == "pixel" else CLEAN_SCALE
-	var frame := PIXEL_FRAME * k
+	var frame := frame_override if frame_override != Vector2i.ZERO else PIXEL_FRAME * k
 	# The outer viewport holds the outlined 2D result; the inner one renders the 3D.
 	size = frame
 	transparent_bg = true
@@ -99,7 +105,7 @@ func _setup(chassis_id: String, maker: String) -> void:
 
 	var scene: PackedScene = load("res://art/models/%s.glb" % chassis_id)
 	_model = scene.instantiate()
-	_model.rotation.y = deg_to_rad(YAW)
+	_model.rotation.y = deg_to_rad(yaw)
 	_inner.add_child(_model)
 	_apply_materials(_model, maker)
 
@@ -158,6 +164,13 @@ func _frame_camera() -> void:
 	_collect_corners(_model, corners)
 	if corners.is_empty():
 		return
+	if spin:
+		# A turning model must fit at every angle: sweep the corners around the model's axis.
+		var swept: Array[Vector3] = []
+		for c in corners:
+			for step in range(12):
+				swept.append(c.rotated(Vector3.UP, deg_to_rad(step * 30.0)))
+		corners = swept
 	var pitch := deg_to_rad(PITCH)
 	var back := Vector3(0.0, sin(pitch), -cos(pitch))   # from the model toward the camera
 	var up := Vector3(0.0, cos(pitch), sin(pitch))
