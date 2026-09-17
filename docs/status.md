@@ -65,8 +65,9 @@ gained a `strike` pose and `RIFTGATE_SHOT_FRAME` to catch a frame mid-animation.
 2. The Badger is being taken to completion on its working file, `badger_polished.blend`,
    which Ryan edits by hand; `polish` will not overwrite it, and Claude adds to it with
    `forge.py apply <blend> <script> badger` (backup kept). Applied so far: `finish/badger.py`
-   (rams, teeth) then `finish/badger_braces.py` (X-braced armour plates, Minerva's tell;
-   bolts removed). Next: Ryan moves the rams and tags hardpoints (`hp_<n>`) and joints
+   (rams, teeth), `finish/badger_braces.py` (X-braced armour plates, Minerva's tell; bolts
+   removed), `finish/badger_deck.py` (panelled skirts with crates, cans and vents; roof
+   plates and a hatch; helpers `plate_grid`, `crate`, `hatch`, `top_of`). Next: Ryan moves the rams and tags hardpoints (`hp_<n>`) and joints
    (`joint_<name>` parent Empties); wear shader; map tokens; livery on a rear or top plate.
 3. Hardpoint Empties (`hp_<n>`) on the Badger; components as visual swap-outs.
 4. Gate, defences and hangar as models.

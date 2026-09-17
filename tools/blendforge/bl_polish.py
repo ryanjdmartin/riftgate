@@ -722,6 +722,54 @@ def kit_tow_lugs(hull):
 
 
 
+
+# ---------------------------------------------------------------- deck detail: breaking up big surfaces
+
+def plate_grid(obj, cols=2, rows=2, gap=0.7, proud=0.35, inset=0.6, mat=None):
+    """Split a part's top surface into raised armour panels with grooves between them, so a
+    big flat deck reads as plating rather than one chunk. Panels use the part's own
+    material unless told otherwise."""
+    lo, hi = world_bbox(obj)
+    m = mat or obj.data.materials[0]
+    w = (hi.x - lo.x) - 2.0 * inset
+    d = (hi.y - lo.y) - 2.0 * inset
+    cw = (w - gap * (cols - 1)) / cols
+    cd = (d - gap * (rows - 1)) / rows
+    n = 0
+    for i in range(cols):
+        for j in range(rows):
+            x0 = lo.x + inset + i * (cw + gap)
+            y0 = lo.y + inset + j * (cd + gap)
+            add_box(f"plate_{obj.name}_{n}", (x0, y0, hi.z - 0.1), (x0 + cw, y0 + cd, hi.z + proud), m, detail=False)
+            n += 1
+    return n
+
+
+def crate(name, at, size=(3.0, 4.0, 2.4), mat="steel_dark", strap=True):
+    """A stowage box sitting on a surface at `at` (its base centre), with a strap across it."""
+    x, y, z = at
+    w, d, h = size
+    add_box(name, (x - w / 2, y - d / 2, z), (x + w / 2, y + d / 2, z + h), material(mat))
+    if strap:
+        t = 0.35
+        add_box(f"{name}_strap", (x - w / 2 - 0.15, y - t, z + h * 0.15), (x + w / 2 + 0.15, y + t, z + h + 0.15), material("rubber"))
+    return 1
+
+
+def hatch(name, at, radius=2.6):
+    """A round hatch on a deck: a low disc with a rim and a handle bar."""
+    x, y, z = at
+    add_cyl(f"{name}_disc", "z", (x, y, z + 0.2), radius, 0.4, material("steel"), verts=16)
+    add_cyl(f"{name}_rim", "z", (x, y, z + 0.1), radius * 1.15, 0.2, material("steel_dark"), verts=16)
+    add_box(f"{name}_handle", (x - radius * 0.5, y - 0.3, z + 0.4), (x + radius * 0.5, y + 0.3, z + 0.9), material("steel_dark"))
+    return 1
+
+
+def top_of(obj):
+    """The centre of a part's top face and its height, for placing things on it."""
+    lo, hi = world_bbox(obj)
+    return ((lo.x + hi.x) / 2.0, (lo.y + hi.y) / 2.0, hi.z), lo, hi
+
 # ---------------------------------------------------------------- per-model finish scripts
 
 def part(name):
@@ -787,6 +835,7 @@ def run_finish(path, counts):
               chamfer=chamfer, box=box, cyl=cyl, rod=add_rod, material=material, bbox=world_bbox, Vector=Vector, kp=kp, kt=kt,
               bpy=bpy, bolts_on=polish_plate, rims=rims, vent=vent, blisters=blisters, seams=seams, ribs=ribs,
               braced_panels=braced_panels, teeth_on_blades=teeth_on_blades, role_of=role_of, PLATE_ROLES=PLATE_ROLES,
+              plate_grid=plate_grid, crate=crate, hatch=hatch, top_of=top_of, guided_vents=guided_vents,
               objs=lambda: [o for o in bpy.context.scene.objects if o.type == "MESH"])
     code = Path(path).read_text()
     exec(compile(code, str(path), "exec"), ns)
