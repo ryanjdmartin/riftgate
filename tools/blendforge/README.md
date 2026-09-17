@@ -132,10 +132,18 @@ from a to b (cylinder at a, rod to b; number as many as you like), `lamp_1` for 
 light facing the Empty's +Y, `vent_1` for a grille sized by the Empty's scale. Where markers
 exist the automatic guess for that rule stands down.
 
-**Iterating on one design.** `polish` writes `<id>_polished.blend` from the massing every
-time, so the polished file is yours to edit after the pass, and `export` takes whichever
-file you give it. Keep the massing as the source of shapes and the polished file as the
-working copy; re-run `polish` only when the massing changes, then re-apply your cuts.
+**One model at a time: the finish script.** Nothing here is batch-processed. The pass is a
+toolbox for finishing one machine, guided by its codex and its maker's manner, and each
+chassis gets its own script, `tools/blendforge/finish/<id>.py`, run automatically after the
+generic manner and the kit. The script names parts from the massing file and places things
+by coordinate: `hydraulic(name, a, b, radius)`, `lamp(name, at, facing)`, `grille(name, at,
+w, d)`, `box(...)`, `cyl(...)`, `rod(...)`, `chamfer(part, width, segments)`, `remove(part)`,
+with `part("name")` and `parts("prefix")` to find things and `bbox(part)` to measure them.
+The Badger's is the first: read it as a design note written in numbers, and change the
+numbers. Claude writes the first draft from your codex and a render; you steer; the script
+is the record of the design. `polish` rewrites `<id>_polished.blend` from the massing every
+time, so keep hand edits in the script rather than in the polished file, and `export` takes
+whichever file you give it.
 
 Your own modifiers (an Array of bolt holes, say) are baked first, as they stand. Everything
 stays flat-shaded: the toon look needs flat faces flat. Nothing added is thinner than a

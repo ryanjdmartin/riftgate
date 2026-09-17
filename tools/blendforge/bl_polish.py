@@ -661,6 +661,75 @@ def kit_tow_lugs(hull):
     return 2
 
 
+
+# ---------------------------------------------------------------- per-model finish scripts
+
+def part(name):
+    """A mesh object by name, or by name with Blender's .001 suffix stripped."""
+    o = bpy.context.scene.objects.get(name)
+    if o is not None:
+        return o
+    for c in bpy.context.scene.objects:
+        if c.type == "MESH" and c.name.split(".")[0] == name:
+            return c
+    raise KeyError(name)
+
+
+def parts(prefix):
+    return [o for o in bpy.context.scene.objects if o.type == "MESH" and o.name.startswith(prefix)]
+
+
+def remove(obj):
+    bpy.data.objects.remove(obj, do_unlink=True)
+
+
+def hydraulic(name, a, b, radius=None):
+    """A ram from a to b: cylinder at a, rod on to b, a mount ring at a."""
+    a, b = Vector(a), Vector(b)
+    r = radius if radius else max(kp(0.35), (b - a).length * 0.06)
+    mid = a + (b - a) * 0.6
+    add_rod(f"hydraulic_{name}", a, mid, r, material("steel_dark"))
+    add_rod(f"hydraulic_rod_{name}", mid, b, r * 0.55, material("steel"))
+    add_cyl(f"hydraulic_mount_{name}", "x", a, r * 1.3, r * 2.6, material("steel_dark"), verts=8)
+
+
+def lamp(name, at, facing=(0, 1, 0)):
+    guided_lamps([(Vector(at), Vector(facing).normalized())])
+    for o in bpy.context.scene.objects:
+        if o.name.startswith("lamp_0") or o.name.startswith("lamp_house_0"):
+            o.name = o.name.replace("_0", f"_{name}", 1)
+
+
+def grille(name, at, width, depth):
+    guided_vents([(Vector(at), Vector((width, depth, 1.0)))])
+
+
+def chamfer(obj, width, segments=1):
+    for m in list(obj.modifiers):
+        if m.name == "polish_bevel":
+            obj.modifiers.remove(m)
+    bevel_modifier(obj, width, segments)
+
+
+def box(name, lo, hi, mat="steel_dark", detail=True):
+    return add_box(name, lo, hi, material(mat), detail)
+
+
+def cyl(name, axis, centre, radius, length, mat="steel_dark", detail=True):
+    return add_cyl(name, axis, centre, radius, length, material(mat), detail)
+
+
+def run_finish(path, counts):
+    """Execute a chassis's finish script with the helpers in scope. The script sees the
+    profile as P, the part lookups, and every add_* helper; it runs after the generic
+    manner, so it refines and removes as much as it adds."""
+    ns = dict(P=P, counts=counts, part=part, parts=parts, remove=remove, hydraulic=hydraulic, lamp=lamp, grille=grille,
+              chamfer=chamfer, box=box, cyl=cyl, rod=add_rod, material=material, bbox=world_bbox, Vector=Vector, kp=kp, kt=kt,
+              bpy=bpy, bolts_on=polish_plate, rims=rims, vent=vent, blisters=blisters, seams=seams, ribs=ribs)
+    code = Path(path).read_text()
+    exec(compile(code, str(path), "exec"), ns)
+    return ns
+
 # ---------------------------------------------------------------- main
 
 def main():
@@ -698,7 +767,7 @@ def main():
             rims(hull)
         if P["vents"]:
             vent(hull)
-        if P["pistons"] and not ram_pairs:
+        if P["pistons"] and not ram_pairs and not a.get("finish"):
             counts["rams"] = pistons(hull, plates)
         if P["collars"]:
             counts["collars"] = collars(cylinders, hull)
@@ -736,6 +805,10 @@ def main():
         bevel_modifier(o, kp(0.25), 1, angle=60.0)
     # Everything stays flat-shaded: smoothing by angle bleeds the bevel bands into the big
     # plates and turns a flat panel into a gradient, which the toon shader then bands.
+    finish = a.get("finish", "")
+    if finish and Path(finish).exists():
+        run_finish(finish, counts)
+        counts["finish"] = Path(finish).name
     out.parent.mkdir(parents=True, exist_ok=True)
     bpy.ops.wm.save_as_mainfile(filepath=str(out), compress=True)
     print("blendforge: polished", counts, "->", out)

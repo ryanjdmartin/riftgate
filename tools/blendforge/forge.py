@@ -333,7 +333,9 @@ def polish(args):
         prof["plate_strength"] = args.strength
         prof["track_strength"] = max(1.0, args.strength * 0.6)
     dest = Path(args.out).resolve() if args.out else src.with_name(src.stem + "_polished.blend")
-    blender(str(src), "-P", str(HERE / "bl_polish.py"), "--", "--out", str(dest), "--profile", json.dumps(prof))
+    finish = HERE / "finish" / f"{chassis}.py"     # the chassis's own finishing touches, if written
+    extra = ["--finish", str(finish)] if finish.exists() else []
+    blender(str(src), "-P", str(HERE / "bl_polish.py"), "--", "--out", str(dest), "--profile", json.dumps(prof), *extra)
     print(f"polished {chassis} as {maker}: {dest.relative_to(ROOT) if dest.is_relative_to(ROOT) else dest}")
 
 
