@@ -19,13 +19,14 @@ uniform int role = 0;              // 0 steel, 1 steel_dark, 2 livery, 3 glass, 
 // The spriter's light (-0.45, -0.55, 0.7) in its x-right, y-forward, z-up world, mapped to
 // Godot's y-up world: x stays, y becomes -z, z becomes y.
 uniform vec3 light_dir = vec3(-0.45, 0.7, 0.55);
-uniform float grime = 0.55;        // how dark a fully occluded crevice gets
-uniform float wear = 0.6;          // how much convex edges brighten toward bare metal
-uniform float dust = 0.5;          // how much the lower body takes dust and mud
-uniform float rust = 0.45;         // rust streaking below crevices on steel
+uniform float grime = 0.5;         // how dark a fully occluded crevice gets
+uniform float wear = 0.35;         // how much convex edges brighten toward bare metal
+uniform float dust = 0.14;         // how much the lower body takes dust and mud
+uniform float rust = 0.0;          // rust streaking below crevices on steel (off by default)
 uniform float seams = 0.35;        // faint panel seams across plates
 uniform float chips = 0.5;         // paint chipping on livery
-uniform float dust_height = 9.0;   // model units above the ground where dust fades out
+uniform float dust_height = 6.0;   // model units above the ground where dust fades out
+uniform float gloss = 0.4;         // the maker's finish: 0 matte, 1 gloss-coated (Kestrel)
 uniform vec4 bare_metal : source_color = vec4(0.72, 0.74, 0.76, 1.0);
 uniform vec4 dust_colour : source_color = vec4(0.47, 0.42, 0.33, 1.0);
 uniform vec4 rust_colour : source_color = vec4(0.38, 0.19, 0.09, 1.0);
@@ -105,17 +106,17 @@ void fragment() {
 			// Grime: crevices and undersides darken; a coarse noise keeps it from a gradient.
 			float g = noise3(world_pos * 0.35) * 0.5 + 0.5;
 			float crevice = 1.0 - smoothstep(0.35, 0.9, ao);
-			col *= 1.0 - grime * crevice * (0.6 + 0.4 * g);
+			col *= 1.0 - grime * crevice * (0.8 + 0.2 * g);
 			// Rust: streaks running down from crevices on bare steel.
-			if (metal) {
-				float streak = noise3(vec3(world_pos.x * 2.6, world_pos.y * 0.35, world_pos.z * 2.6));
-				float below = smoothstep(0.55, 0.95, streak) * crevice;
+			if (metal && rust > 0.0 && abs(n.y) < 0.4) {
+				float streak = noise3(vec3(world_pos.x * 3.5, world_pos.y * 0.18, world_pos.z * 3.5));
+				float below = smoothstep(0.6, 0.9, streak) * crevice;
 				col = mix(col, rust_colour.rgb, rust * below);
 			}
 			// Worn edges: convex edges lose paint to bare metal, patchily.
 			float edge = smoothstep(0.56, 0.8, pointy);
-			float patch = smoothstep(0.35, 0.75, noise3(world_pos * 1.7));
-			col = mix(col, bare_metal.rgb, wear * edge * patch);
+			float patch = smoothstep(0.2, 0.9, noise3(world_pos * 1.1));
+			col = mix(col, bare_metal.rgb, wear * edge * (0.4 + 0.6 * patch));
 			// Chips: paint on livery flakes in small patches away from edges too.
 			if (paint) {
 				float chip = smoothstep(0.74, 0.8, noise3(world_pos * 2.4)) * smoothstep(0.4, 0.6, pointy);
@@ -123,24 +124,35 @@ void fragment() {
 			}
 		}
 		if (role == 6) {
-			// Tread bands across the run, which lies along the part's own z (Blender's y).
-			float band = seam_line(obj_pos.z, 3.0, 0.9);
-			col *= 1.0 - 0.45 * band;
+			// Tread ridges across the run, which lies along the part's own z (Blender's y): a
+			// dark groove with a lit crest just above it, so each reads as a raised block.
+			float groove = seam_line(obj_pos.z, 3.0, 1.1);
+			float crest = seam_line(obj_pos.z - 0.95, 3.0, 0.4);
+			col *= 1.0 - 0.55 * groove;
+			col += 0.16 * crest;
 		}
 		// Dust and mud: the lower body, heavier on undersides and in the noise's dark pockets.
 		float low = 1.0 - smoothstep(0.0, dust_height, world_pos.y);
 		float mud = noise3(world_pos * 0.9) * 0.5 + 0.5;
-		float dusty = low * (0.5 + 0.5 * mud) * (n.y < 0.0 ? 1.0 : 0.7);
+		float dusty = low * (0.5 + 0.5 * mud) * (n.y < 0.0 ? 1.0 : 0.35);
 		if (role != 3 && role != 4 && role != 5) {
 			col = mix(col, dust_colour.rgb, dust * dusty);
 		}
 		// Fine scratches: a whisper of noise across every surface.
-		col *= 0.94 + 0.06 * noise3(world_pos * 6.0);
-		// Specular: a soft highlight on steel where the light reflects toward the camera.
-		if (metal) {
+		col *= 0.975 + 0.025 * noise3(world_pos * 6.0);
+		// Material contrast. Primary steel and livery are outer plating: a sharp specular and a
+		// faint sky-to-ground reflection, both scaled by the maker's gloss. Secondary steel is
+		// matte and a touch darker, with a fine weave, like carbon or cast iron: mechanism, not skin.
+		if (role == 0 || paint) {
 			vec3 h = normalize(l + to_cam);
-			float spec = pow(max(dot(n, h), 0.0), 24.0);
-			col += spec * 0.18;
+			float spec = pow(max(dot(n, h), 0.0), mix(14.0, 70.0, gloss));
+			col += spec * mix(0.12, 0.7, gloss);
+			col *= 1.0 + mix(0.02, 0.14, gloss) * (n.y * 0.5 + 0.5) - mix(0.0, 0.08, gloss) * (0.5 - n.y * 0.5);
+		} else if (role == 1) {
+			vec3 an = abs(n);
+			vec2 uv = an.x > 0.7 ? obj_pos.zy : (an.y > 0.7 ? obj_pos.xz : obj_pos.xy);
+			float weave = step(0.5, fract(uv.x * 1.6)) == step(0.5, fract(uv.y * 1.6)) ? 0.96 : 1.0;
+			col *= 0.88 * weave;
 		}
 		// Glass: fresnel glow. Lamps and nozzles: emissive, flat, bright.
 		if (role == 3) {

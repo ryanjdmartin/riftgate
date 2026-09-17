@@ -44,6 +44,8 @@ const ROLE_INDEX := {
 	"hot": 5,
 	"rubber": 6, "tread": 6,
 }
+# The maker's finish, for the shader's gloss lever: Kestrel gloss-coats, the wagon-builders barely.
+const GLOSS := {"minerva": 0.35, "kestrel": 1.0, "wainwright_sutler": 0.15, "aphelion": 0.75, "arsenal": 0.5}
 const LIVERY := {
 	"minerva": ["3a0f16", "5a1620", "8a2430", "b8303f"],
 	"kestrel": ["132148", "1c3270", "2d4fa8", "4a74d8"],
@@ -174,6 +176,7 @@ func _apply_materials(node: Node, maker: String) -> void:
 				m.set_shader_parameter("tone%d" % t, Color(ramp[t]))
 			m.set_shader_parameter("bands", 4 if mode == "pixel" else 0)
 			m.set_shader_parameter("role", ROLE_INDEX.get(role, 0))
+			m.set_shader_parameter("gloss", float(GLOSS.get(maker, 0.4)))
 			mi.set_surface_override_material(i, m)
 	for c in node.get_children():
 		_apply_materials(c, maker)
