@@ -36,7 +36,7 @@ Ryan masses it in Blender (`tools/blendforge/models/<id>.blend`, active scene on
 by role, "detail" on small parts), then `forge.py polish <blend> <chassis>` (chamfers, panels, corner bolts, tracks with cleats and
 wheels, and, per the maker's manner in `profiles.py`, rim bars, a rear vent, rams to the arms,
 stack collars; per the chassis kit, extras like the Badger's work lights and tow lugs; writes
-`<id>_polished.blend`), then `forge.py export`
+`<massing>_polished.blend`, which becomes the working file `<id>.blend`), then `forge.py export`
 (bakes occlusion and pointiness into a `wear` vertex colour, writes `art/models/<id>.glb`),
 then `--import`. `game/ui/mech_view_3d.gd` draws it in the skirmish screen and the codex with
 `mech_toon.gdshader` (pixel or clean look; the clean look reads the wear bake and runs a
@@ -73,14 +73,18 @@ grouped features) is recorded in the bible, section 4, open.
 **Next, in order.**
 
 1. Write the five makers into content once Ryan tweaks the drafts; draft CARE's voice.
-2. The Badger is being taken to completion on its working file, `badger_polished.blend`,
-   which Ryan edits by hand; `polish` will not overwrite it, and Claude adds to it with
-   `forge.py apply <blend> <script> badger` (backup kept). Applied so far: `finish/badger.py`
-   (rams, teeth), `finish/badger_braces.py` (X-braced armour plates, Minerva's tell; bolts
-   removed), `finish/badger_deck.py` (panelled skirts with crates, cans and vents; roof
-   plates and a hatch; helpers `plate_grid`, `crate`, `hatch`, `top_of`). Next: Ryan moves the rams and tags hardpoints (`hp_<n>`) and joints
-   (`joint_<name>` parent Empties); wear shader; map tokens; livery on a rear or top plate.
-3. Hardpoint Empties (`hp_<n>`) on the Badger; components as visual swap-outs.
+2. **The Badger's starting point is `tools/blendforge/models/badger.blend` (finalized 17
+   September, Ryan's call: "good enough for now").** Cleaned for hand editing: parts named
+   by what they are (`body`, `glacis`, `shoulder_l`, `arm_l`, `forearm_l`, `claw_l`, `gun_r`,
+   `launcher`, `beacon`, `track_l`, `skirt_l`, `axle`, `undercarriage`...), slivers joined
+   (braces, cleats, wheels, vent slats, teeth: 224 objects became 109), one material per
+   role, one `badger` collection, marked `blendforge_stage = finished` so `polish` refuses it.
+   The massing is `badger_massing.blend`, reference only; the three `finish/badger*.py`
+   scripts are history (headers say so). `art/models/badger.glb` is exported from it.
+   Ryan is now moving the rams, tweaking parts, and tagging hardpoints (`hp_<n>`) and joints
+   (`joint_<name>` parent Empties) in that file; after that: re-export on request, read the
+   joints in `MechView3D` for ground-unit idle, components as visual swap-outs under the
+   pins, map tokens, livery on a rear or top plate.
 4. Gate, defences and hangar as models.
 5. Play on a phone with the damage ranges in; tune numbers, map size, squad speeds, Rift
    Pressure. Hangar: repair, rewards, one-shots, command die. Enemy art via foeforge for the

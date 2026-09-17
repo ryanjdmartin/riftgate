@@ -858,6 +858,10 @@ def main():
         bpy.ops.wm.save_as_mainfile(filepath=str(out), compress=True)
         print("blendforge: applied", Path(a["apply"]).name, counts, "->", out)
         return
+    if bpy.context.scene.get("blendforge_stage") == "finished":
+        # A finished working file (the Badger since 17 September) is not a massing: polishing
+        # it again would bevel the bevels and plate the plates.
+        raise SystemExit(f"blendforge: {bpy.data.filepath} is a finished model, not a massing; edit it in Blender and `export` it, or `apply` a script to it")
     for key, default in (("plate_strength", 1.0), ("track_strength", 1.0), ("bevel_segments", 2), ("cleat_spacing", 3.0),
                          ("wheels", 3), ("rivet_scale", 1.0), ("rims", False), ("vents", False), ("pistons", False),
                          ("collars", False), ("ribs", False), ("layered", False), ("stud_rows", False), ("crest", False),

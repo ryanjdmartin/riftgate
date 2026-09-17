@@ -1,4 +1,7 @@
-"""Applied to badger_polished.blend in place (forge.py apply). Breaks up the big flat decks
+"""HISTORY. Applied to the Badger's working file and baked into models/badger.blend
+(finished 17 September 2026). Do not run it again.
+
+Applied to badger_polished.blend in place (forge.py apply). Breaks up the big flat decks
 with geometry, no shader tricks: the track skirts become panelled armour with stowage and
 a vent, the body's roof gets raised plates and a hatch. A mining machine carries its kit on
 the outside; a Minerva refit bolts armour over that.

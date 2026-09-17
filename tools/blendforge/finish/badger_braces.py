@@ -1,4 +1,7 @@
-"""Applied to badger_polished.blend in place (forge.py apply). Replaces the hex bolts with
+"""HISTORY. Applied to the Badger's working file and baked into models/badger.blend
+(finished 17 September 2026). Do not run it again.
+
+Applied to badger_polished.blend in place (forge.py apply). Replaces the hex bolts with
 Minerva's X-braced armour plates, removes the sliver teeth that landed in empty space on the
 right, and puts teeth on every real claw blade by shape."""
 

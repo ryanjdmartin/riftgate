@@ -89,11 +89,16 @@ role each carries, and "detail" on the names of things the map token should drop
 cylinders are enough; do not round edges, cut panels or add rivets. The pass does that:
 
 ```sh
-tools/spriter/.venv/bin/python tools/blendforge/forge.py polish tools/blendforge/models/badger.blend
-# writes badger_polished.blend beside it; the massing file is never touched
-tools/spriter/.venv/bin/python tools/blendforge/forge.py render tools/blendforge/models/badger_polished.blend badger --install
-tools/spriter/.venv/bin/python tools/blendforge/forge.py export tools/blendforge/models/badger_polished.blend badger   # art/models/badger.glb for the 3D view
+tools/spriter/.venv/bin/python tools/blendforge/forge.py polish tools/blendforge/models/anvil_massing.blend anvil
+# writes anvil_massing_polished.blend beside it; the massing file is never touched
+tools/spriter/.venv/bin/python tools/blendforge/forge.py render tools/blendforge/models/anvil.blend anvil --install
+tools/spriter/.venv/bin/python tools/blendforge/forge.py export tools/blendforge/models/anvil.blend anvil   # art/models/anvil.glb for the 3D view
 ```
+
+**The Badger is past this.** `models/badger.blend` is the finished working file, the
+starting point from 17 September: edit it in Blender, then `export`. `polish` refuses it
+(the file is marked finished). `models/badger_massing.blend` is the massing it came from,
+kept for reference only.
 
 What it does, by what a part is:
 
@@ -126,13 +131,24 @@ booster pods, wing-blades, a crest) is kit-only: a chassis asks for it by name i
 `profiles.py`, a maker manner never adds it. The pass errs toward too much small detail
 and you cut.
 
-**Working on the file itself.** Once a model has been polished, `<id>_polished.blend` is
-the working file and you edit it in Blender from every angle. `polish` refuses to overwrite
-it (`--force` regenerates from the massing and discards your edits). Additions from Claude
-land on top of your edits with `forge.py apply <working.blend> <script.py> <chassis>`, which
-runs one small named script in place and keeps a `.bak.blend` beside it. Each apply script
-says what it does in its docstring, so the model's history is the list of scripts under
-`tools/blendforge/finish/`.
+**Working on the file itself.** Once a model has been polished, the polished file is the
+working file: rename it to `<id>.blend` and edit it in Blender from every angle. `polish`
+refuses to overwrite a polished file (`--force` regenerates from the massing and discards
+your edits) and refuses a file marked finished. Additions from Claude land on top of your
+edits with `forge.py apply <working.blend> <script.py> <chassis>`, which runs one small
+named script in place and keeps a `.bak.blend` beside it (delete the backup once you are
+happy; it is not committed). Each apply script says what it does in its docstring, so the
+model's history is the list of scripts under `tools/blendforge/finish/`.
+
+**What a finished file looks like**, from the Badger: parts named by what they are
+(`body`, `glacis`, `shoulder_l`, `arm_l`, `forearm_l`, `claw_l`, `gun_r`, `track_l`,
+`skirt_l`, `launcher`, `beacon`...), left and right as `_l` / `_r`, small stuff carrying
+`.detail`; groups of slivers joined into one object each (`body_brace_3.detail`,
+`track_l_cleats.detail`, `skirt_l_vent_slats.detail`, `arm_l_teeth.detail`); one material per
+role, no `.001` copies; everything in one collection named after the mech; the hydraulics
+left as separate parts (`hydraulic_shoulder_l`, its `_rod` and `_mount`) so they can be
+moved. The tool's own bevels are still live modifiers on the big plates, so their widths can
+be changed in the modifier panel.
 
 **Tagging hardpoints and joints.** Both are Empties, which cost nothing and export with the
 model. A hardpoint is an Empty named `hp_1` … `hp_n` at the socket (where the weapon meets
@@ -161,11 +177,11 @@ generic manner and the kit. The script names parts from the massing file and pla
 by coordinate: `hydraulic(name, a, b, radius)`, `lamp(name, at, facing)`, `grille(name, at,
 w, d)`, `box(...)`, `cyl(...)`, `rod(...)`, `chamfer(part, width, segments)`, `remove(part)`,
 with `part("name")` and `parts("prefix")` to find things and `bbox(part)` to measure them.
-The Badger's is the first: read it as a design note written in numbers, and change the
-numbers. Claude writes the first draft from your codex and a render; you steer; the script
-is the record of the design. `polish` rewrites `<id>_polished.blend` from the massing every
-time, so keep hand edits in the script rather than in the polished file, and `export` takes
-whichever file you give it.
+The Badger's was the first: read it as a design note written in numbers. Claude writes the
+first draft from your codex and a render; you steer; the script is the record of how the
+model got to its finished file. Once the file is finished and you edit it by hand, the
+scripts are history (the Badger's three are, since 17 September) and further additions
+come through `apply` scripts or your own hands. `export` takes whichever file you give it.
 
 Your own modifiers (an Array of bolt holes, say) are baked first, as they stand. Everything
 stays flat-shaded: the toon look needs flat faces flat. Nothing added is thinner than a

@@ -1,4 +1,7 @@
-"""The Badger's finishing touches. Runs inside the polish pass after Minerva's generic
+"""HISTORY. Ran inside the polish pass that produced the Badger's working file; its result
+is baked into models/badger.blend (finished 17 September 2026). Do not run it again.
+
+The Badger's finishing touches. Runs inside the polish pass after Minerva's generic
 manner (hard chamfers, corner bolts, rim bars, rear vent) and the Badger kit (work lights,
 tow lugs). Everything here is placed by hand from the massing's part names and coordinates,
 so it is the place to tweak: numbers are model units, x right, y forward, z up.
