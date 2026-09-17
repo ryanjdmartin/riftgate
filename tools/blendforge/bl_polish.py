@@ -23,11 +23,17 @@ from mathutils import Vector
 PLATE_ROLES = {"steel", "steel_dark", "livery", "white"}
 PANEL_MIN_AREA = 60.0        # faces bigger than this get a recessed panel and rivets
 RIVET_INSET = 1.4
+STRENGTH = 1.0               # scales every added size; 1.0 is subtle, sized for the sprite path
 
 
 def args():
     argv = sys.argv[sys.argv.index("--") + 1:]
     return {argv[i].lstrip("-"): argv[i + 1] for i in range(0, len(argv), 2)}
+
+
+def k(x):
+    """A size scaled by the pass strength."""
+    return x * STRENGTH
 
 
 def role_of(obj):
@@ -137,7 +143,7 @@ def polish_plate(obj):
     lo, hi = world_bbox(obj)
     dims = hi - lo
     smallest = min(dims.x, dims.y, dims.z)
-    width = max(0.3, min(0.7, smallest * 0.12))
+    width = max(k(0.3), min(k(0.7), smallest * 0.12 * STRENGTH))
     role = role_of(obj)
     # Recessed panels and rivets on the big faces, before the bevel so the bevel also
     # softens the panel's own edge.
@@ -158,15 +164,15 @@ def polish_plate(obj):
             for v in f.verts:
                 p = obj.matrix_world @ v.co
                 d = (centre - p)
-                if d.length > 2.0 * RIVET_INSET:
-                    rivets.append((p + d.normalized() * RIVET_INSET, n))
-        res = bmesh.ops.inset_individual(bm, faces=big_faces, thickness=0.8, depth=-0.25, use_even_offset=True)
+                if d.length > 2.0 * k(RIVET_INSET):
+                    rivets.append((p + d.normalized() * k(RIVET_INSET), n))
+        res = bmesh.ops.inset_individual(bm, faces=big_faces, thickness=k(0.8), depth=-k(0.25), use_even_offset=True)
     bm.to_mesh(obj.data)
     bm.free()
     for i, (p, n) in enumerate(rivets):
         axis = "x" if abs(n.x) > 0.9 else ("y" if abs(n.y) > 0.9 else "z")
-        c = p + n * 0.2
-        add_cyl(f"rivet_{obj.name}_{i}", axis, c, 0.5, 0.7, material("steel_dark"), verts=8)
+        c = p + n * k(0.2)
+        add_cyl(f"rivet_{obj.name}_{i}", axis, c, k(0.5), k(0.7), material("steel_dark"), verts=8)
     bevel_modifier(obj, width, 2)
 
 
@@ -196,23 +202,25 @@ def polish_track(obj):
             continue     # not on the rounded ends
         # Nothing thinner than a unit: at the sprite's scale a unit is about a pixel, and a
         # part thinner than that survives the downsample only as stray dots.
-        add_box(f"cleat_top_{obj.name}_{i}", (lo.x + 0.4, y - 0.6, hi.z - 0.3), (hi.x - 0.4, y + 0.6, hi.z + 0.7), dark)
+        add_box(f"cleat_top_{obj.name}_{i}", (lo.x + 0.4, y - k(0.6), hi.z - 0.3), (hi.x - 0.4, y + k(0.6), hi.z + k(0.7)), dark)
         xo = hi.x if outer > 0 else lo.x
-        add_box(f"cleat_side_{obj.name}_{i}", (min(xo - outer * 0.3, xo + outer * 0.8), y - 0.6, lo.z + height * 0.25),
-                (max(xo - outer * 0.3, xo + outer * 0.8), y + 0.6, hi.z - height * 0.25), dark)
+        add_box(f"cleat_side_{obj.name}_{i}", (min(xo - outer * 0.3, xo + outer * k(0.8)), y - k(0.6), lo.z + height * 0.25),
+                (max(xo - outer * 0.3, xo + outer * k(0.8)), y + k(0.6), hi.z - height * 0.25), dark)
     # Road wheels on the outer face, between the sprockets, sunk half into the run.
     cy = (lo.y + hi.y) * 0.5
     cz = lo.z + height * 0.5
-    xo = (hi.x if outer > 0 else lo.x) + outer * 0.4
-    for k in (-1, 0, 1):
-        add_cyl(f"roadwheel_{obj.name}_{k + 1}", "x", (xo, cy + k * dims.y * 0.24, cz), height * 0.32, 1.6, dark, verts=12)
+    xo = (hi.x if outer > 0 else lo.x) + outer * k(0.4)
+    for j in (-1, 0, 1):
+        add_cyl(f"roadwheel_{obj.name}_{j + 1}", "x", (xo, cy + j * dims.y * 0.24, cz), height * 0.32, k(1.6), dark, verts=12)
 
 
 # ---------------------------------------------------------------- main
 
 def main():
+    global STRENGTH
     a = args()
     out = Path(a["out"])
+    STRENGTH = float(a.get("strength", "1.0"))
     # The active scene only: a file can hold a scratch scene of parts borrowed from an
     # archetype, and those must not ride along (a tank gun once did).
     objs = [o for o in bpy.context.scene.objects if o.type == "MESH"]
@@ -227,7 +235,7 @@ def main():
             polish_plate(o)
             counts["plates"] += 1
         elif is_cylinder(o) and role != "glass":
-            bevel_modifier(o, 0.25, 1, angle=60.0)
+            bevel_modifier(o, k(0.25), 1, angle=60.0)
             counts["cylinders"] += 1
         else:
             counts["left"] += 1

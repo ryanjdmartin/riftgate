@@ -325,7 +325,7 @@ def polish(args):
     """Run the finish pass on a massing file, writing a new .blend beside it."""
     src = Path(args.blend).resolve()
     dest = Path(args.out).resolve() if args.out else src.with_name(src.stem + "_polished.blend")
-    blender(str(src), "-P", str(HERE / "bl_polish.py"), "--", "--out", str(dest))
+    blender(str(src), "-P", str(HERE / "bl_polish.py"), "--", "--out", str(dest), "--strength", str(args.strength))
     print(f"polished model at {dest.relative_to(ROOT) if dest.is_relative_to(ROOT) else dest}")
 
 
@@ -395,6 +395,7 @@ def main():
     p = sub.add_parser("polish", help="the finish pass: bevels, panels, rivets, track cleats and wheels, chamfered caps; writes <name>_polished.blend")
     p.add_argument("blend")
     p.add_argument("--out", default="")
+    p.add_argument("--strength", type=float, default=1.0, help="scale every added size: 1.0 is subtle (sized for the sprite path), 2.5 reads like a 2000s RTS model")
     p.set_defaults(func=polish)
     x = sub.add_parser("export", help="export a .blend to art/models/<chassis>.glb for the in-engine 3D view")
     x.add_argument("blend")

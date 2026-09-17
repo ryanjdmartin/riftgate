@@ -243,7 +243,9 @@ func _build() -> void:
 		v.display_name = ms.unit.display_name
 		v.bars_above = true
 		v.sprite = Sprites.combat_mech(ms.unit.chassis_id, "front_right")
-		var look := OS.get_environment("RIFTGATE_MECH3D")   # experiment: mechs in 3D, pixel or clean
+		# Mechs are 3D (decided 16 September). RIFTGATE_MECH3D=pixel switches the look,
+		# RIFTGATE_MECH3D=off falls back to the 2D sprites; a chassis with no model uses the Badger's.
+		var look := MechView3D.look_setting()
 		if look == "pixel" or look == "clean":
 			var maker := str(ContentDB.load_default().chassis.get(ms.unit.chassis_id, {}).get("maker", "minerva"))
 			var view := MechView3D.make(ms.unit.chassis_id, maker, look)
@@ -812,7 +814,7 @@ func _open_codex(entry: Dictionary) -> void:
 	if _codex_view != null:
 		_codex_view.queue_free()
 		_codex_view = null
-	var look := OS.get_environment("RIFTGATE_MECH3D")
+	var look := MechView3D.look_setting()
 	if not sid.is_empty() and (look == "pixel" or look == "clean") and MechView3D.has_model(sid):
 		# Mechs in 3D: the codex gets the model itself, turning slowly.
 		var maker := str(ContentDB.load_default().chassis.get(sid, {}).get("maker", "minerva"))

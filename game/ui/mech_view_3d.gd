@@ -53,6 +53,17 @@ static func has_model(chassis_id: String) -> bool:
 	return ResourceLoader.exists("res://art/models/%s.glb" % chassis_id)
 
 
+## Which look the screens use: "clean" by default, RIFTGATE_MECH3D=pixel for the pixel look,
+## RIFTGATE_MECH3D=off for the 2D sprites.
+static func look_setting() -> String:
+	var env := OS.get_environment("RIFTGATE_MECH3D")
+	if env == "off" or DisplayServer.get_name() == "headless":   # tests: no renderer, use the sprites
+		return ""
+	if env == "pixel" or env == "clean":
+		return env
+	return "clean"
+
+
 ## Build a view of a chassis in one of the two looks. Falls back to the given chassis when
 ## the wanted one has no model, so a screen can show one model in every slot.
 static func make(chassis_id: String, maker: String, look: String, fallback: String = "badger") -> MechView3D:
