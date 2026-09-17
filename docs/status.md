@@ -10,8 +10,8 @@ Handoff note for the next session. Replace stale lines; keep it under a screen.
 **Setting, decided.** The governing body is the Council for the Ultimate Liberation of Terra,
 "the Council"; its acronym is never stated in the game. The Council believes its own cause and
 profits from it; the populace has real believers. The player is Battlefield Commander of an
-arms-length defence agency (independent agency or contracted corp, not a ministry), known by
-a four-letter acronym still to be picked; candidates proposed 17 September. The Council's
+arms-length defence agency (independent agency or contracted corp, not a ministry), known as CARE,
+the Civil Auxiliary for Rift Emergencies ("Agency" if Ryan decides they named themselves). The Council's
 own R&D house is the Arsenal, which sells the player a trickle of its tech, gated by how dire
 the campaign gets. Open on purpose: last bastion or not, other colonies, whether it was a
 power grab. Everything is in `docs/design-bible.html` section 1.
@@ -46,7 +46,7 @@ are on `docs/art-lab.html`, sections 8 and 9.
 
 **Next, in order.**
 
-1. Pick the agency's acronym; write the five makers into content once Ryan tweaks the drafts.
+1. Write the five makers into content once Ryan tweaks the drafts; draft CARE's voice.
 2. Tune the wear shader with Ryan (uniforms `grime`, `wear`, the noise scales), then make
    the 3D view the default and decide map tokens (sprites versus small 3D).
 3. Hardpoint Empties (`hp_<n>`) on the Badger; components as visual swap-outs.
