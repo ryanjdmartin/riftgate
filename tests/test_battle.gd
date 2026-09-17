@@ -33,7 +33,7 @@ func _engage(b: Battle, sq: Unit, m: Unit) -> void:
 func _win(sk: Skirmish) -> void:
 	sk.begin()
 	sk.start_round()
-	sk.pool.clear()
+	sk.reinforcements.clear()
 	for f in sk.field_foes():
 		f.hp = 0
 	sk.end_round()
@@ -131,7 +131,7 @@ func test_contact_opens_a_skirmish_with_the_touching_units() -> void:
 		in_it = in_it or ms.unit == m
 	assert_true(in_it, "the touched mech fights")
 	assert_true(sk.squads.has(sq), "the squad is in it")
-	assert_eq(sk.pool.size(), sq.strength, "one foe per point of strength")
+	assert_eq(sk.reinforcements.size(), sq.strength, "one foe per point of strength")
 
 
 func test_finish_skirmish_removes_the_squad_and_recharges_shields() -> void:
@@ -175,7 +175,7 @@ func test_boss_death_seals_the_rift() -> void:
 	assert_eq(b.state, Battle.State.SKIRMISH, "boss contact")
 	var sk := b.open_next_skirmish()
 	var massive := false
-	for f in sk.pool:
+	for f in sk.reinforcements:
 		massive = massive or f.is_massive()
 	assert_true(massive, "boss unpacked into the massive elite")
 	_win(sk)

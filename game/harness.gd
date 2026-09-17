@@ -205,7 +205,7 @@ func _on_fight() -> void:
 	if not boss_id.is_empty():
 		var boss := Unit.boss(sid, str(db.foes[boss_id]["name"]).to_lower(), Vector2i.ZERO, db.faction_of_foe(boss_id))
 		sk.add_foes(db.foes_for(boss), boss)
-	if sk.pool.is_empty():
+	if sk.reinforcements.is_empty():
 		return
 	var screen: SkirmishScreen = SKIRMISH_SCENE.instantiate()
 	screen.sk = sk

@@ -43,8 +43,9 @@ WIDTH, HEIGHT = 512, 768
 
 STYLE = (
     "16-bit SNES RPG battle sprite in the style of Final Fantasy VI enemies: ornate, detailed, "
-    "over-the-top high fantasy, up to twenty colours, one-pixel dark outline. Full body, facing "
-    "the viewer in three-quarter view, centered, isolated on a solid flat pure white background, "
+    "over-the-top high fantasy, up to twenty colours, one-pixel dark outline. Full body, in "
+    "three-quarter view turned toward the viewer's left (its right shoulder nearest the viewer), "
+    "centered, isolated on a solid flat pure white background, "
     "no text, no border, no ground shadow."
 )
 

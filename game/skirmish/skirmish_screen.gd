@@ -4,7 +4,7 @@ extends Control
 ## The skirmish screen as a tactical overlay. Portrait, 720x1280 logical, positioned
 ## absolutely so every coordinate is a plain number.
 ##
-##   header      round and pool tag, phase readout, the intent eye at the right
+##   header      round and reinforcements tag, phase readout, the intent eye at the right
 ##   formation   two ranks of three unit views; a massive foe spans both ranks of its column;
 ##               under each foe its intent (fantasy icon and number) and its statuses
 ##   log         the last few events, oldest dimmest
@@ -167,7 +167,7 @@ func _build() -> void:
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
 
-	# Header: round and pool tag, phase readout beside it.
+	# Header: round and reinforcements tag, phase readout beside it.
 	_header = _tag("", 13, true)
 	_place(_header, Vector2(12, 14), Vector2(200, 28))
 	_sub_label = Hud.label("", 12, Color(Palette.HUD, 0.7), Hud.mono())
@@ -254,8 +254,17 @@ func _build() -> void:
 		var look := MechView3D.look_setting()
 		if look == "pixel" or look == "clean":
 			var maker := str(ContentDB.load_default().chassis.get(ms.unit.chassis_id, {}).get("maker", "minerva"))
-			var view := MechView3D.make(ms.unit.chassis_id, maker, look, "badger", MechView3D.YAW_REAR)
-			view.sway = true
+			var view := MechView3D.make(ms.unit.chassis_id, maker, look, "badger", MechView3D.YAW_SKIRMISH)
+			# Idle: an aircraft hovers, a hover chassis skims, a ground machine stands still
+			# (its idle is limb movement, which waits on annotated joints).
+			if ms.unit.traits.has("flyer"):
+				view.sway = true
+				view.sway_bob = 1.4
+				view.sway_yaw = 0.06
+			elif ms.unit.traits.has("hover"):
+				view.sway = true
+				view.sway_bob = 0.6
+				view.sway_yaw = 0.04
 			view.sway_phase = i * 2.1
 			add_child(view)
 			v.sprite = view.texture
@@ -502,7 +511,7 @@ func _tag(text: String, size_px: int, mono: bool) -> HudButton:
 
 func _refresh() -> void:
 	var assigning := sk.state == Skirmish.State.ASSIGN
-	_header.text = "RND %02d // POOL %02d" % [sk.round, sk.pool.size()]
+	_header.text = "RND %02d // REINF %02d" % [sk.round, sk.reinforcements.size()]
 	_header.queue_redraw()
 	_sub_label.text = "ASSIGN" if assigning else "ENEMY PHASE"
 	_view_foe.clear()
@@ -583,7 +592,7 @@ func _refresh_log() -> void:
 	var count := sk.log.size() - start
 	var out := ""
 	if count == 0:
-		out = "[color=#%s]> round %d // %d in the pool // awaiting orders[/color]" % [Color(Palette.HUD, 0.45).to_html(true), sk.round, sk.pool.size()]
+		out = "[color=#%s]> round %d // %d in reserve // awaiting orders[/color]" % [Color(Palette.HUD, 0.45).to_html(true), sk.round, sk.reinforcements.size()]
 	for j in range(start, sk.log.size()):
 		var age := j - start
 		var a := 1.0 if count <= 1 else lerpf(0.4, 1.0, float(age) / float(count - 1))
@@ -605,6 +614,8 @@ func _refresh_log() -> void:
 func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe]) -> void:
 	v.display_name = foe.display_name
 	v.sprite = Sprites.combat_foe(foe.content_id)
+	# Enemies face left, the convention; a sprite painted facing right says so in content.
+	v.flip_h = bool(ContentDB.load_default().foes.get(foe.content_id, {}).get("flip", false))
 	v.breathe = true
 	v.breathe_phase = float(foe.get_instance_id() % 97)
 	v.bars = [[foe.hp, foe.hp_max, Palette.HUD]]
@@ -1110,6 +1121,6 @@ func _show_outcome(outcome: int) -> void:
 			_overlay_text.text = "Every machine is down. Survivors of the squad march on."
 		_:
 			_overlay_title.text = "WITHDREW"
-			_overlay_text.text = "%d foes remain on the field and %d wait in the pool. They keep marching." % [sk.field_foes().size(), sk.pool.size()]
+			_overlay_text.text = "%d foes remain on the field and %d wait in reserve. They keep marching." % [sk.field_foes().size(), sk.reinforcements.size()]
 	_overlay.visible = true
 	finished.emit(outcome)

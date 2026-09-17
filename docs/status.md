@@ -59,6 +59,17 @@ breathe, a scan band drifts on the backdrop. `Skirmish.terrain` is the contact h
 `game/ui/terrain_art.gd` textures the map's hexes with the same marks. `tools/screenshot.gd`
 gained a `strike` pose and `RIFTGATE_SHOT_FRAME` to catch a frame mid-animation.
 
+**Ranks and reinforcements (17 September).** `Skirmish.pool` is `reinforcements`. Ranks hold:
+front foes only ever stand in front, back foes in back, even with an empty slot the other way;
+no stepping up. First deployment in arrival order; the reinforcement phase at the end of the
+enemy turn fills each empty slot left to right, front first, with a random waiting foe of the
+right rank, logged. Ryan wants player interaction with that phase (open). Facing: mechs at
+`MechView3D.YAW_SKIRMISH` (25 degrees, front three-quarter biased front, turned right), foes
+left (`UnitView.flip_h`, driven by an optional `flip` on a foe; the foeforge prompt asks for
+left). Idle: foes breathe 3%; only flyers and hover chassis sway in 3D, ground stands still
+until joints are annotated. Battlefield direction (landscape, high and low, rift terrain,
+grouped features) is recorded in the bible, section 4, open.
+
 **Next, in order.**
 
 1. Write the five makers into content once Ryan tweaks the drafts; draft CARE's voice.

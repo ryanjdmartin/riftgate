@@ -2,7 +2,7 @@ class_name Skirmish
 extends RefCounted
 
 ## The dice skirmish. Mechs have no positions. Enemies stand in a two-rank, three-column
-## formation fed from a pool, so a horde keeps coming.
+## formation fed from a reinforcements, so a horde keeps coming.
 ##
 ## Round loop:
 ##   start_round()       roll every live mech's die (unless locked), telegraph foe intents
@@ -11,7 +11,7 @@ extends RefCounted
 ##                       a reroll always lands on a different face (see Die.reroll)
 ##   assign(i, target)   spend a mech's face on a foe (attacks) or a mech (shield, vent);
 ##                       kinetic faces roll their damage here, immediately and visibly
-##   end_round()         burn ticks, foes act, the dead are cleared, the pool refills,
+##   end_round()         burn ticks, foes act, the dead are cleared, the reinforcements refills,
 ##                       outcome is checked
 ##   can_withdraw()      at the start of any round, before any face is spent
 ##
@@ -54,7 +54,7 @@ var columns: int = DEFAULT_COLUMNS
 var terrain: int = BattleMap.Terrain.PLAIN   # the ground the fight is on (the contact hex), for the screen
 var front: Array = []
 var back: Array = []
-var pool: Array[Foe] = []
+var reinforcements: Array[Foe] = []   # foes waiting behind the formation; they step in at the reinforcement phase
 var round: int = 0
 var rerolls_left: int = 0
 var state: int = State.SETUP
@@ -89,13 +89,13 @@ func add_foes(list: Array, from_squad: Unit = null) -> void:
 	for f in list:
 		if from_squad != null:
 			f.squad_id = from_squad.id
-		pool.append(f)
+		reinforcements.append(f)
 	if from_squad != null and not squads.has(from_squad):
 		squads.append(from_squad)
 
 
 func begin() -> void:
-	_fill_from_pool()
+	_reinforce(false)   # first deployment: in the order the foes arrived, so a formation is predictable
 	state = State.ROUND_START
 
 
@@ -134,7 +134,7 @@ func survivors_for(sq: Unit) -> int:
 	for f in field_foes():
 		if f.squad_id == sq.id and f.alive():
 			n += 1
-	for f in pool:
+	for f in reinforcements:
 		if f.squad_id == sq.id:
 			n += 1
 	return n
@@ -315,8 +315,7 @@ func end_round() -> int:
 			break
 		_damage_mech(t, f.attack, f)
 	_clear_dead()
-	_advance()
-	_fill_from_pool()
+	_reinforce(true)    # the reinforcement phase: a random waiting foe of the right rank per empty slot
 	_check_outcome()
 	if outcome == Outcome.NONE:
 		state = State.ROUND_START
@@ -472,56 +471,46 @@ func _clear_dead() -> void:
 				rank[col] = null
 
 
-## Back-rank foes that do not prefer the back step up into an empty front slot.
-func _advance() -> void:
-	for col in range(columns):
-		if front[col] == null and back[col] != null and not back[col].prefers_back and not back[col].is_massive():
-			var f: Foe = back[col]
-			back[col] = null
-			front[col] = f
-			f.rank = 0
-
-
-## Massive foes need a whole empty column and take both slots. Then front slots take
-## front-preferrers only, and back slots take back-preferrers first, then anyone waiting
-## to step up.
-func _fill_from_pool() -> void:
+## The reinforcement phase. Ranks hold: a front foe only ever stands in the front, a back
+## foe only in the back, so the question "how is that ghoul hitting me from the back row"
+## never comes up. Massive foes need a whole empty column and take both slots. Empty slots
+## fill left to right, front rank first, each taking a random foe of the right rank from
+## those waiting; the rest keep waiting.
+func _reinforce(random: bool = true) -> void:
+	var placed := 0
 	for col in range(columns):
 		if front[col] == null and back[col] == null:
-			var i := _pool_index_massive()
+			var i := _reinforcement_index_massive()
 			if i >= 0:
-				var f: Foe = pool.pop_at(i)
+				var f: Foe = reinforcements.pop_at(i)
 				_place(f, 0, col)
 				back[col] = f
+				placed += 1
+	var slots: Array = []
 	for col in range(columns):
 		if front[col] == null:
-			var i := _pool_index(false, false)
-			if i >= 0:
-				_place(pool.pop_at(i), 0, col)
-	for col in range(columns):
+			slots.append([0, col])
 		if back[col] == null:
-			var i := _pool_index(true, true)
-			if i >= 0:
-				_place(pool.pop_at(i), 1, col)
-
-
-func _pool_index_massive() -> int:
-	for i in range(pool.size()):
-		if pool[i].is_massive():
-			return i
-	return -1
-
-
-func _pool_index(want_back: bool, allow_any: bool) -> int:
-	for i in range(pool.size()):
-		if pool[i].is_massive():
+			slots.append([1, col])
+	for slot in slots:
+		var want_back: bool = slot[0] == 1
+		var choices: Array = []
+		for i in range(reinforcements.size()):
+			if not reinforcements[i].is_massive() and reinforcements[i].prefers_back == want_back:
+				choices.append(i)
+		if choices.is_empty():
 			continue
-		if pool[i].prefers_back == want_back:
+		var f: Foe = reinforcements.pop_at(choices[rng.randi_range(0, choices.size() - 1)] if random else choices[0])
+		_place(f, slot[0], slot[1])
+		placed += 1
+	if placed > 0 and round > 0:
+		log.append("%d reinforcement%s step%s in" % [placed, "s" if placed != 1 else "", "" if placed != 1 else "s"])
+
+
+func _reinforcement_index_massive() -> int:
+	for i in range(reinforcements.size()):
+		if reinforcements[i].is_massive():
 			return i
-	if allow_any:
-		for i in range(pool.size()):
-			if not pool[i].is_massive():
-				return i
 	return -1
 
 
@@ -538,7 +527,7 @@ func _check_outcome() -> void:
 	if live_mechs().is_empty():
 		outcome = Outcome.DEFEAT
 		_finish()
-	elif field_foes().is_empty() and pool.is_empty():
+	elif field_foes().is_empty() and reinforcements.is_empty():
 		outcome = Outcome.VICTORY
 		_finish()
 

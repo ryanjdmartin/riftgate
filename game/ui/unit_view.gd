@@ -40,7 +40,8 @@ var statuses: Array = []          # [[glyph id, chip text, (Color)], ...] under 
 var highlight: bool = false       # valid drop target while dragging a die
 var dead: bool = false
 var sprite: Texture2D = null      # pixel art drawn at an integer scale; null draws a placeholder
-var breathe: bool = false         # a slow 1.5% vertical bob from the feet: a painted foe alive
+var breathe: bool = false         # a slow vertical bob from the feet: a painted foe alive
+var flip_h: bool = false          # mirror the sprite, so an enemy painted facing right faces left
 var breathe_phase: float = 0.0
 
 var _pressed := false
@@ -158,8 +159,13 @@ func _draw() -> void:
 	if sprite != null:
 		var frame := sil
 		if breathe and not dead:
-			var k := 1.0 + 0.015 * sin(_t * 1.7 + breathe_phase)
-			frame = Rect2(Vector2(sil.position.x, sil.end.y - sil.size.y * k), Vector2(sil.size.x, sil.size.y * k))
+			# A 3% rise from the feet and a 1% lean, slow and out of phase between foes: enough
+			# to be seen as deliberate, not enough to animate a painted sprite.
+			var k := 1.0 + 0.03 * sin(_t * 1.6 + breathe_phase)
+			var lean := 0.01 * sil.size.x * sin(_t * 0.9 + breathe_phase * 0.7)
+			frame = Rect2(Vector2(sil.position.x + lean, sil.end.y - sil.size.y * k), Vector2(sil.size.x, sil.size.y * k))
+		if flip_h:
+			frame = Rect2(Vector2(frame.end.x, frame.position.y), Vector2(-frame.size.x, frame.size.y))
 		draw_texture_rect(sprite, frame, false, Color(0.3, 0.3, 0.3) if dead else Color.WHITE)
 	else:
 		var edge := Color(Palette.ENEMY_DIM if dead else hud, 0.4)

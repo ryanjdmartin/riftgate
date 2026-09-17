@@ -13,7 +13,7 @@ var squad_id: int = 0            # which battlefield squad this foe came from
 var size: int = 1                # 2 = massive: fills both slots of a column
 
 # Live state.
-var rank: int = -1               # 0 front, 1 back, -1 in the pool
+var rank: int = -1               # 0 front, 1 back, -1 in reserve
 var column: int = -1
 var burn: int = 0
 var suppressed: bool = false

@@ -91,7 +91,7 @@ func test_contact_opens_the_skirmish_screen_and_back_applies_it() -> void:
 	assert_true(s._resolve_btn.disabled, "no resolving mid-skirmish")
 	var sk: Skirmish = s._skirmish.sk
 	assert_eq(sk.round, 1, "skirmish started")
-	sk.pool.clear()
+	sk.reinforcements.clear()
 	for f in sk.field_foes():
 		f.hp = 0
 	s._skirmish._end_turn_now()

@@ -266,8 +266,11 @@ func test_screen_lays_out_four_columns() -> void:
 	var sk := Skirmish.new(4, 4)
 	for id in ["badger", "sentinel"]:
 		sk.add_mech(db.make_mech(id))
-	var ghouls := Unit.squad(1, "ghouls", Vector2i.ZERO, "undead", 2, 8, "ghoul")
+	# Ranks hold: four front-rank ghouls fill the front, four back-rank necromancers the back.
+	var ghouls := Unit.squad(1, "ghouls", Vector2i.ZERO, "undead", 2, 4, "ghoul")
 	sk.add_foes(db.foes_for(ghouls), ghouls)
+	var necros := Unit.squad(2, "necromancers", Vector2i.ZERO, "undead", 2, 4, "necromancer")
+	sk.add_foes(db.foes_for(necros), necros)
 	var s := SkirmishScreen.new()
 	s.setup(sk)
 	assert_eq(s._slot_views[0].size(), 4, "four front views")

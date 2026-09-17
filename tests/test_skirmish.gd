@@ -31,12 +31,18 @@ func test_formation_fills_front_then_back() -> void:
 	sk.add_mech(_mech("A", Die.single(Face.attack(10))))
 	sk.add_foes([_ghoul(), _ghoul(), _archer(), _ghoul(), _ghoul()])
 	sk.begin()
-	assert_eq(sk.field_foes().size(), 5, "five on the field")
+	assert_eq(sk.field_foes().size(), 4, "four on the field: ranks hold, so the fourth ghoul waits")
 	assert_eq(sk.front[0].display_name, "ghoul", "front 0 is a ghoul")
 	assert_eq(sk.front[2].display_name, "ghoul", "front 2 is a ghoul")
-	assert_eq(sk.back[0].display_name, "archer", "archer holds the back")
-	assert_eq(sk.back[1].display_name, "ghoul", "spare ghoul waits in the back")
-	assert_eq(sk.pool.size(), 0, "pool drained")
+	var archer_col := -1
+	for col in range(3):
+		if sk.back[col] != null and sk.back[col].display_name == "archer":
+			archer_col = col
+	assert_true(archer_col >= 0, "the archer holds a back slot")
+	for col in range(3):
+		if col != archer_col:
+			assert_eq(sk.back[col], null, "no ghoul in the back row")
+	assert_eq(sk.reinforcements.size(), 1, "the spare ghoul waits in reinforcements")
 
 
 func test_line_reach_needs_exposed_column() -> void:
@@ -218,7 +224,7 @@ func test_static_energy_face_never_varies() -> void:
 		assert_eq(sk.front[0].hp, 170, "static face always deals 30")
 
 
-func test_victory_when_pool_exhausted() -> void:
+func test_victory_when_reinforcements_exhausted() -> void:
 	var sk := Skirmish.new(1)
 	sk.add_mech(_mech("A", Die.single(Face.attack(30, L))))
 	sk.add_foes([_ghoul(20)])
@@ -248,14 +254,15 @@ func test_horde_keeps_coming() -> void:
 		foes.append(_ghoul(30))
 	sk.add_foes(foes)
 	sk.begin()
-	assert_eq(sk.field_foes().size(), 6, "six on the field")
-	assert_eq(sk.pool.size(), 2, "two in the pool")
+	# Ranks hold: front foes fill the three front slots and the rest wait as reinforcements.
+	assert_eq(sk.field_foes().size(), 3, "three on the field")
+	assert_eq(sk.reinforcements.size(), 5, "five in reserve")
 	sk.start_round()
 	sk.assign(0, sk.front[1])
 	sk.end_round()
-	assert_eq(sk.field_foes().size(), 6, "the gap is refilled")
-	assert_eq(sk.pool.size(), 1, "one left in the pool")
-	assert_true(sk.front[1] != null, "a back-rank ghoul stepped up")
+	assert_eq(sk.field_foes().size(), 3, "the gap is refilled at the reinforcement phase")
+	assert_eq(sk.reinforcements.size(), 4, "four left in reserve")
+	assert_true(sk.front[1] != null, "a reinforcement stepped into the gap")
 
 
 func test_withdraw_window() -> void:
@@ -565,15 +572,18 @@ func test_skirmish_reroll_changes_every_unlocked_face() -> void:
 func test_four_columns_fill_and_reach() -> void:
 	var sk := Skirmish.new(1, 4)
 	sk.add_mech(_mech("A", Die.single(Face.attack(20, L, K.CLEAVE))))
+	# Ranks hold: six front ghouls fill four front slots and two wait; four archers take the back.
 	var foes: Array = []
-	for i in range(10):
+	for i in range(6):
 		foes.append(_ghoul(50))
+	for i in range(4):
+		foes.append(_archer(50))
 	sk.add_foes(foes)
 	sk.begin()
 	assert_eq(sk.columns, 4, "four wide")
 	assert_eq(sk.front.size(), 4, "four front slots")
 	assert_eq(sk.field_foes().size(), 8, "eight on the field")
-	assert_eq(sk.pool.size(), 2, "two wait in the pool")
+	assert_eq(sk.reinforcements.size(), 2, "two wait in reserve")
 	sk.start_round()
 	assert_eq(sk.targets_for(0).size(), 4, "every front foe is a line target")
 	assert_true(sk.assign(0, sk.front[3]), "cleave the right edge")

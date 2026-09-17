@@ -16,7 +16,8 @@ const PIXEL_FRAME := Vector2i(80, 96)
 const CLEAN_SCALE := 2
 const PITCH := 30.0
 const YAW_FRONT := 45.0     # front three-quarter: the codex hero angle
-const YAW_REAR := 225.0     # rear three-quarter: the skirmish, where mechs face the foes up the screen
+const YAW_REAR := 225.0     # rear three-quarter, kept for hero shots
+const YAW_SKIRMISH := 25.0  # the skirmish: front three-quarter biased toward front, turned to the right (the convention)
 const FILL := 0.92
 
 # The spriter's tones, so 3D and sprites share a palette (tools/spriter/spriter.py).
@@ -59,6 +60,8 @@ var mode: String = "pixel"
 var spin: bool = false            # turn slowly, for the codex
 var sway: bool = false            # a slow idle: a breath of yaw and a bob, for the skirmish
 var sway_phase: float = 0.0
+var sway_bob: float = 0.35        # model units of vertical drift; a flyer hovers, a tank does not
+var sway_yaw: float = 0.035       # radians of yaw drift
 var _t := 0.0
 var yaw: float = YAW_FRONT
 var frame_override: Vector2i = Vector2i.ZERO
@@ -157,8 +160,8 @@ func _process(delta: float) -> void:
 	if spin:
 		_model.rotation.y += SPIN_SPEED * delta
 	elif sway:
-		_model.rotation.y = deg_to_rad(yaw) + sin(_t * 0.9 + sway_phase) * 0.035
-		_model.position.y = sin(_t * 1.9 + sway_phase) * 0.35
+		_model.rotation.y = deg_to_rad(yaw) + sin(_t * 0.9 + sway_phase) * sway_yaw
+		_model.position.y = sin(_t * 1.9 + sway_phase) * sway_bob + sin(_t * 0.6 + sway_phase) * sway_bob * 0.5
 
 
 func _apply_materials(node: Node, maker: String) -> void:
