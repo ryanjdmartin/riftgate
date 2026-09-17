@@ -261,7 +261,7 @@ MECH_STYLE = (
     "solid flat pure white background, no text, no ground shadow."
 )
 MAKER_LOOK = {
-    "halvard": "cold steel grey plates with deep red armour panels",
+    "minerva": "cold steel grey plates with deep red armour panels",
     "kestrel": "cold steel with cobalt blue airframe panels",
     "orrin_pike": "cold steel with bone-white armour plates",
 }

@@ -34,7 +34,7 @@ const RAMPS := {
 	"panel": ["2b3038", "4a525e", "737d8a", "a3acb6"],
 }
 const LIVERY := {
-	"halvard": ["3a0f16", "5a1620", "8a2430", "b8303f"],
+	"minerva": ["3a0f16", "5a1620", "8a2430", "b8303f"],
 	"kestrel": ["132148", "1c3270", "2d4fa8", "4a74d8"],
 	"orrin_pike": ["8f8a7a", "a9a291", "d8d2c2", "f0ebdc"],
 }
@@ -129,7 +129,7 @@ func _apply_materials(node: Node, maker: String) -> void:
 			var role := "steel"
 			if src != null:
 				role = src.resource_name.get_slice(".", 0).to_lower()
-			var ramp: Array = LIVERY.get(maker, LIVERY["halvard"]) if role == "livery" else RAMPS.get(role, RAMPS["steel"])
+			var ramp: Array = LIVERY.get(maker, LIVERY["minerva"]) if role == "livery" else RAMPS.get(role, RAMPS["steel"])
 			var m := ShaderMaterial.new()
 			m.shader = load("res://game/ui/mech_toon.gdshader")
 			for t in range(4):

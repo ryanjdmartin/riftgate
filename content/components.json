@@ -1,12 +1,12 @@
 {
   "_about": "Components. Each contributes faces to the die; hardpoints equals the number of faces it occupies. A two-face component is a bigger, more reliable gun. Numbers are in tens. Kinetic faces carry power and power_max and roll between them, and may crit; energy faces are static and never crit. Keywords are a list; authored faces should stay under the validator's cap, upgrades may push past it. passive is null or one object, same shape as a chassis passive. Shown to the player: codex (the inspect entry), flavour (a quote); both still to be written. design is internal and never shown: fantasy, niche. Numbers are placeholders.",
   "entries": [
-    { "id": "chainsaw_claw", "name": "Chainsaw Claw", "maker": "halvard", "codex": "", "flavour": "", "design": { "fantasy": "Two swings a round if the dice agree. Ghouls in threes.", "niche": "" }, "hardpoints": 2, "faces": [
+    { "id": "chainsaw_claw", "name": "Chainsaw Claw", "maker": "minerva", "codex": "", "flavour": "", "design": { "fantasy": "Two swings a round if the dice agree. Ghouls in threes.", "niche": "" }, "hardpoints": 2, "faces": [
       { "kind": "attack", "reach": "line", "power": 20, "power_max": 40, "crit": 10, "keywords": ["cleave"], "heat": 0 },
       { "kind": "attack", "reach": "line", "power": 20, "power_max": 40, "crit": 10, "keywords": ["cleave"], "heat": 0 } ], "passive": null, "tags": ["kinetic", "melee", "horde"] },
-    { "id": "slug_cannon", "name": "Slug Cannon", "maker": "halvard", "codex": "", "flavour": "", "design": { "fantasy": "One big round. Warm barrel.", "niche": "" }, "hardpoints": 1, "faces": [
+    { "id": "slug_cannon", "name": "Slug Cannon", "maker": "minerva", "codex": "", "flavour": "", "design": { "fantasy": "One big round. Warm barrel.", "niche": "" }, "hardpoints": 1, "faces": [
       { "kind": "attack", "reach": "line", "power": 30, "power_max": 60, "crit": 15, "keywords": [], "heat": 10 } ], "passive": null, "tags": ["kinetic", "single"] },
-    { "id": "ablative_plating", "name": "Ablative Plating", "maker": "halvard", "codex": "", "flavour": "", "design": { "fantasy": "Bolt-on armour that comes off in sheets so the hull does not.", "niche": "" }, "hardpoints": 1, "faces": [
+    { "id": "ablative_plating", "name": "Ablative Plating", "maker": "minerva", "codex": "", "flavour": "", "design": { "fantasy": "Bolt-on armour that comes off in sheets so the hull does not.", "niche": "" }, "hardpoints": 1, "faces": [
       { "kind": "shield", "power": 20 } ], "passive": null, "tags": ["defense"] },
     { "id": "twin_autoguns", "name": "Twin Autoguns", "maker": "orrin_pike", "codex": "", "flavour": "", "design": { "fantasy": "Reliable, unremarkable, always there.", "niche": "" }, "hardpoints": 2, "faces": [
       { "kind": "attack", "reach": "line", "power": 10, "power_max": 30, "crit": 10, "keywords": [], "heat": 0 },

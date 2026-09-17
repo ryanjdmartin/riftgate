@@ -68,7 +68,7 @@ var _codex_title: Label
 var _codex_sub: Label
 var _codex_sprite: TextureRect
 var _codex_body: Label
-var _codex_designation: Label
+var _codex_designation: HudButton   # a stamped tag, not a label, so the plate does not read as three stacked lines
 var _codex_stats: StatBlock
 var _codex_view: MechView3D = null   # the spinning model, when mechs are 3D
 var _codex_actions: Label
@@ -245,7 +245,7 @@ func _build() -> void:
 		v.sprite = Sprites.combat_mech(ms.unit.chassis_id, "front_right")
 		var look := OS.get_environment("RIFTGATE_MECH3D")   # experiment: mechs in 3D, pixel or clean
 		if look == "pixel" or look == "clean":
-			var maker := str(ContentDB.load_default().chassis.get(ms.unit.chassis_id, {}).get("maker", "halvard"))
+			var maker := str(ContentDB.load_default().chassis.get(ms.unit.chassis_id, {}).get("maker", "minerva"))
 			var view := MechView3D.make(ms.unit.chassis_id, maker, look)
 			add_child(view)
 			v.sprite = view.texture
@@ -333,30 +333,32 @@ func _build_codex() -> void:
 	head.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head.add_theme_constant_override("separation", 4)
 	top.add_child(head)
-	# Name plate: the maker's designation small above, the nickname big, then maker and
-	# silhouette as the subtitle. Like a spec plate on the hull.
-	_codex_designation = Hud.label("", 13, Color(Palette.HUD, 0.8), Hud.mono())
-	_codex_title = Hud.label("", 32, Palette.INK, Hud.display_bold())
+	# Name plate: the maker's designation as a stamped tag, the nickname big in quotes, then
+	# maker and silhouette as the subtitle. Like a spec plate on the hull.
+	_codex_designation = _tag("", 12, true)
+	_codex_designation.custom_minimum_size = Vector2(0, 24)
+	_codex_designation.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	_codex_title = Hud.label("", 34, Palette.INK, Hud.display_bold())
 	_codex_sub = Hud.label("", 13, Color(Palette.HUD, 0.8), Hud.mono())
-	for l in [_codex_designation, _codex_sub]:
-		l.autowrap_mode = TextServer.AUTOWRAP_WORD
-		l.custom_minimum_size = Vector2(380, 0)
-		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_codex_sub.autowrap_mode = TextServer.AUTOWRAP_WORD
+	_codex_sub.custom_minimum_size = Vector2(340, 0)
+	_codex_sub.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head.add_child(_codex_designation)
 	head.add_child(_codex_title)
 	head.add_child(_codex_sub)
 	_codex_sprite = TextureRect.new()
-	_codex_sprite.custom_minimum_size = Vector2(160, 192)
+	_codex_sprite.custom_minimum_size = Vector2(200, 240)    # the corner portrait, top-right
+	_codex_sprite.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	_codex_sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_codex_sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_codex_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_codex_sprite.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	top.add_child(_codex_sprite)
-	# The play half sits beside the portrait: the stats line is the critical readout, so it
-	# is bold and bright, not a subtitle; then the passive and any actions. The faces run in
-	# two columns under that. A thin rule separates play from lore: codex text, then quote.
+	# The play half: the stat grid sits beside the portrait; the passive and any actions run
+	# full width under both, so they need not wrap around the picture; the faces run in two
+	# columns under that. A thin rule separates play from lore: codex text, then quote.
 	_codex_stats = StatBlock.new()
-	_codex_stats.custom_minimum_size = Vector2(380, 0)
+	_codex_stats.custom_minimum_size = Vector2(340, 0)
 	_codex_stats.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_codex_passive = Hud.label("", 17, Palette.ACCENT)
 	_codex_actions = Hud.label("", 14, Palette.INK, Hud.mono())
@@ -372,10 +374,10 @@ func _build_codex() -> void:
 	head.add_child(_codex_stats)
 	for l in [_codex_passive, _codex_actions]:
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD
-		l.custom_minimum_size = Vector2(380, 0)
+		l.custom_minimum_size = Vector2(560, 0)
 		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-		head.add_child(l)
+		cv.add_child(l)
 	cv.add_child(_codex_faces)
 	var rule := ColorRect.new()
 	rule.color = Color(Palette.HUD, 0.25)
@@ -730,9 +732,11 @@ func _on_die_double_tapped(i: int) -> void:
 	var db := ContentDB.load_default()
 	var entry := db.codex_for_unit(ms.unit)
 	entry["title"] = "%s die" % ms.unit.display_name
+	entry["designation"] = ""     # the die is not the machine: no spec-plate tag, no quotes
 	entry["subtitle"] = "D%d // ONE FACE PER HARDPOINT // EACH FACE 1 IN %d PER ROLL // A REROLL NEVER REPEATS A FACE" % [ms.die.size(), ms.die.size()]
 	entry["body"] = ""
 	entry["stats"] = ""
+	entry["stat_items"] = []
 	entry["faces"] = ms.die.faces.duplicate()
 	entry["current"] = ms.face_index
 	entry["passive"] = ""
@@ -795,10 +799,14 @@ func _open_codex(entry: Dictionary) -> void:
 	_hold_foe = null
 	_hold_mech = -1
 	_refresh_arrows()
-	_codex_title.text = str(entry.get("title", ""))
+	var designation := str(entry.get("designation", "")).to_upper()
+	# A mech with a designation gets its nickname in quotes; a foe or a die keeps its name plain.
+	_codex_title.text = ("“%s”" % str(entry.get("title", ""))) if not designation.is_empty() else str(entry.get("title", ""))
 	_codex_sub.text = str(entry.get("subtitle", ""))
-	_codex_designation.text = str(entry.get("designation", "")).to_upper()
-	_codex_designation.visible = not _codex_designation.text.is_empty()
+	_codex_designation.text = designation
+	_codex_designation.custom_minimum_size.x = Hud.mono().get_string_size(designation, HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x + 30.0
+	_codex_designation.visible = not designation.is_empty()
+	_codex_designation.queue_redraw()
 	var sid := str(entry.get("sprite_id", ""))
 	var tex: Texture2D = null
 	if _codex_view != null:
@@ -807,7 +815,7 @@ func _open_codex(entry: Dictionary) -> void:
 	var look := OS.get_environment("RIFTGATE_MECH3D")
 	if not sid.is_empty() and (look == "pixel" or look == "clean") and MechView3D.has_model(sid):
 		# Mechs in 3D: the codex gets the model itself, turning slowly.
-		var maker := str(ContentDB.load_default().chassis.get(sid, {}).get("maker", "halvard"))
+		var maker := str(ContentDB.load_default().chassis.get(sid, {}).get("maker", "minerva"))
 		_codex_view = MechView3D.make(sid, maker, "clean")
 		_codex_view.spin = true
 		add_child(_codex_view)

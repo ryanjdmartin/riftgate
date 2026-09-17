@@ -36,7 +36,7 @@ WHITE = ["#8f8a7a", "#a9a291", "#d8d2c2", "#f0ebdc"]
 # The maker's livery: the one saturated colour on a mech's identity plates. Set by the
 # manufacturer; the player will be able to repaint it in the hangar for a fee.
 LIVERY = {
-    "halvard": ["#3a0f16", "#5a1620", "#8a2430", "#b8303f"],
+    "minerva": ["#3a0f16", "#5a1620", "#8a2430", "#b8303f"],
     "kestrel": ["#132148", "#1c3270", "#2d4fa8", "#4a74d8"],
     "orrin_pike": WHITE,
 }
@@ -350,8 +350,8 @@ def material_ramp(mat: str, maker: str) -> list[str]:
 
 # ------------------------------------------------------------------ models
 def bulwark() -> Model:
-    """Halvard Bulwark: a tank with fists. Units are combat-scale pixels; faces +y."""
-    m = Model("bulwark", "halvard")
+    """Minerva Bulwark: a tank with fists. Units are combat-scale pixels; faces +y."""
+    m = Model("bulwark", "minerva")
     # tracks: rubber runs with steel skirts
     def track(s):
         x0, x1 = s * 12, s * 21

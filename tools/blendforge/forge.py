@@ -74,8 +74,8 @@ def maker_of(chassis_id, override=""):
         return override
     for e in json.loads(CHASSIS.read_text())["entries"]:
         if e["id"] == chassis_id:
-            return e.get("maker", "halvard")
-    return "halvard"
+            return e.get("maker", "minerva")
+    return "minerva"
 
 
 # ---------------------------------------------------------------- example
@@ -386,7 +386,7 @@ def main():
     r = sub.add_parser("render", help="render a .blend into the engine's mech files")
     r.add_argument("blend")
     r.add_argument("chassis", help="chassis id from content/chassis.json; names the files and picks the maker's livery")
-    r.add_argument("--maker", default="", help="livery override: halvard, kestrel, orrin_pike")
+    r.add_argument("--maker", default="", help="livery override: minerva, kestrel, orrin_pike")
     r.add_argument("--fill", type=float, default=1.0, help="how much of the combat frame the largest turn fills (default 1.0)")
     r.add_argument("--ppu", type=float, default=0.0, help="force pixels per model unit instead of fitting, for matching sizes across mechs")
     r.add_argument("--install", action="store_true", help="write art/mechs instead of tools/blendforge/out")
@@ -404,7 +404,7 @@ def main():
     x.set_defaults(func=export)
     a = sub.add_parser("archetypes", help="build the starter silhouettes in archetypes.py as .blend files and render a review sheet")
     a.add_argument("names", nargs="*", help="which archetypes; default all")
-    a.add_argument("--maker", default="halvard", help="livery for the review renders")
+    a.add_argument("--maker", default="minerva", help="livery for the review renders")
     a.add_argument("--fill", type=float, default=1.0)
     a.add_argument("--ppu", type=float, default=0.0)
     a.add_argument("--build-only", action="store_true", help="write the .blend files without rendering")

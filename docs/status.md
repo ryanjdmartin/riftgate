@@ -98,6 +98,14 @@ commander units that scramble targeting when killed). Art experiments are collec
 `docs/art-lab.html` (open it in a browser); third-party-derived images live in the
 ignored `docs/art-lab/ext/`.
 
+Names (16 September, night): Halvard Heavy Works is **Minerva Heavy Works**, id `minerva`,
+in content, code and tool docs (the bible's older rows keep the old name as history). Orrin
+& Pike is up for renaming: old-West iron works, quadrupeds and wheels; candidates offered,
+id unchanged until Ryan picks. Codex third pass: designation as a stamped tag, nickname in
+quotes, stat captions above values, portrait top-right at 200x240, passive full width.
+Ryan's idea of hardwired hardpoints (some faces fixed to the chassis, unlockable in the
+hangar for a fee) is in the bible, section 7, not built.
+
 Polish pass (16 September, night): `forge.py polish <massing.blend>` (bl_polish.py) writes
 `<name>_polished.blend`: bevels on plates, recessed panels and rivets on big faces, rounded
 tracks with cleats and road wheels, chamfered cylinders; the author's modifiers are baked
