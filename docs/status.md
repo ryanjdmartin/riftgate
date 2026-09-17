@@ -33,13 +33,16 @@ The Bulwark is the Badger (`badger`) everywhere.
 
 **Art, decided: player units are native 3D; enemies stay painted 2D.** Pipeline for a mech:
 Ryan masses it in Blender (`tools/blendforge/models/<id>.blend`, active scene only, materials
-by role, "detail" on small parts), then `forge.py polish` (bevels, panels, rivets, tracks with
-cleats and wheels, chamfered caps; writes `<id>_polished.blend`), then `forge.py export`
+by role, "detail" on small parts), then `forge.py polish <blend> <chassis>` (chamfers, panels, corner bolts, tracks with cleats and
+wheels, and, per the maker's manner in `profiles.py`, rim bars, a rear vent, rams to the arms,
+stack collars; per the chassis kit, extras like the Badger's work lights and tow lugs; writes
+`<id>_polished.blend`), then `forge.py export`
 (bakes occlusion and pointiness into a `wear` vertex colour, writes `art/models/<id>.glb`),
 then `--import`. `game/ui/mech_view_3d.gd` draws it in the skirmish screen and the codex with
 `mech_toon.gdshader` (pixel or clean look; the clean look reads the wear bake) and
-`outline.gdshader`; `RIFTGATE_MECH3D=pixel|clean` switches the screen to it, and the switch
-should become the default once the 2D path is retired. The Badger is the only modelled mech;
+`outline.gdshader`; The 3D clean look is the default when a window exists;
+`RIFTGATE_MECH3D=pixel|off` overrides, headless runs use sprites. The skirmish shows mechs
+in rear three-quarter facing the foes; the codex spins the model in a 200x240 frame. The Badger is the only modelled mech;
 its glTF is polished and baked. The 2D sprite path (blendforge render, foeforge edit mode,
 cut-mech) still works and still feeds the 24 px map tokens. Art experiments and comparisons
 are on `docs/art-lab.html`, sections 8 and 9.
@@ -47,8 +50,9 @@ are on `docs/art-lab.html`, sections 8 and 9.
 **Next, in order.**
 
 1. Write the five makers into content once Ryan tweaks the drafts; draft CARE's voice.
-2. Tune the wear shader with Ryan (uniforms `grime`, `wear`, the noise scales), then make
-   the 3D view the default and decide map tokens (sprites versus small 3D).
+2. Ryan judges the Minerva-profile Badger; tune profiles and the wear shader (`grime`, `wear`)
+   with him; decide map tokens (sprites versus small 3D); livery on a rear or top plate since
+   the skirmish now shows the back.
 3. Hardpoint Empties (`hp_<n>`) on the Badger; components as visual swap-outs.
 4. Gate, defences and hangar as models.
 5. Play on a phone with the damage ranges in; tune numbers, map size, squad speeds, Rift

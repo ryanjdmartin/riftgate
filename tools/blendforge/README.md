@@ -104,6 +104,18 @@ What it does, by what a part is:
 | a track (any rubber box) | rounded ends, cleats across the top and down the outer face, three road wheels on the outer face (`cleat_*.detail`, `roadwheel_*.detail`); the run's material becomes `tread` |
 | a cylinder | chamfered caps |
 
+Beyond the part rules, the pass knows who built the machine and what it was for.
+`profiles.py` holds a **maker manner** per maker (how big the chamfers are and whether they
+are hard or rounded, bolt size or none, rim bars, a rear vent, rams to the arms, stack
+collars, cleat spacing, wheel count) and a **chassis kit** per chassis (extras its history
+says it carries: the Badger keeps its mining work lights and tow lugs). `forge.py polish
+<blend> <chassis>` looks the maker up in chassis.json and merges the two; `--maker` overrides,
+`--strength` overrides the plate scale. The profiles are drafts from the makers' codex voice:
+correct them there as models arrive, and add kit rules to `bl_polish.py` as chassis need
+them. The rules find parts by shape and position, not by name: the hull is the biggest box,
+an arm is a part that reaches past the hull's flank, a stack is a tall round cylinder above
+the hull, the cab is whatever holds the glass.
+
 Your own modifiers (an Array of bolt holes, say) are baked first, as they stand. Everything
 stays flat-shaded: the toon look needs flat faces flat. Nothing added is thinner than a
 model unit, because at the sprite's scale a unit is about a pixel and thinner parts survive
