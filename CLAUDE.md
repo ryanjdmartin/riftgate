@@ -15,6 +15,8 @@ tools/spriter/.venv/bin/python tools/sheet_export.py      # export enemy grids t
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate <foe> --n 4   # model candidates (mflux, FLUX.2 Klein)
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut <png> <foe>        # cut one into art/foes, then --import
 tools/spriter/.venv/bin/python tools/blendforge/forge.py render <file.blend> <chassis> [--install]   # mech sprites from a Blender model
+tools/spriter/.venv/bin/python tools/blendforge/forge.py export tools/blendforge/models/<id>.blend <id>   # art/models/<id>.glb for the 3D view, then --import
+godot --path . --resolution 360x640 -s tools/map_tokens.gd -- <id>   # 24 px map tokens from the glTF (needs a window), then --import
 ```
 
 Always wrap headless Godot runs in a watchdog: a tool script that errors before `quit()` hangs forever.

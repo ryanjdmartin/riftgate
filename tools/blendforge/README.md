@@ -100,6 +100,12 @@ starting point from 17 September: edit it in Blender, then `export`. `polish` re
 (the file is marked finished). `models/badger_massing.blend` is the massing it came from,
 kept for reference only.
 
+**Map tokens from the model.** `godot --path . --resolution 360x640 -s tools/map_tokens.gd
+-- badger` renders the exported glTF in the pixel look at 24x28 from the six hex facings
+and writes `art/mechs/badger_map_strip.png`, the strip the battlefield reads, plus a 4x
+copy in `tools/blendforge/out/` to look at. Detail parts are hidden and the surface pass is
+off at that size, as the spriter did. Run it after every export, then `--import`.
+
 What it does, by what a part is:
 
 | Part | Rule |

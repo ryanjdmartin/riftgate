@@ -89,9 +89,11 @@ grouped features) is recorded in the bible, section 4, open.
    a ranged one where they carry a pin (`strike(ranged)`, called from the skirmish's attack
    animation); `mount(n, scene, maker)` / `unmount(n)` swap a component model onto a pin.
    `RIFTGATE_MECH3D_MODEL=<id>` previews another exported file in every slot. Untagged
-   models draw as before. After Ryan's tags land: re-export, check the swing direction and
-   size against his pivots, then components as models under the pins, map tokens, livery
-   on a rear or top plate.
+   models draw as before. Map tokens now come from the glTF too: `tools/map_tokens.gd`
+   writes `art/mechs/<id>_map_strip.png` (pixel look, pitch 42, detail parts hidden, flat
+   tones); the Badger's strip is the 3D one. After Ryan's tags land: re-export, re-run the
+   tokens, check the swing direction and size against his pivots, then components as
+   models under the pins, livery on a rear or top plate.
 4. Gate, defences and hangar as models.
 5. Play on a phone with the damage ranges in; tune numbers, map size, squad speeds, Rift
    Pressure. Hangar: repair, rewards, one-shots, command die. Enemy art via foeforge for the

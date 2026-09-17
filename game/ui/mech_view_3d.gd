@@ -64,6 +64,8 @@ var sway_bob: float = 0.35        # model units of vertical drift; a flyer hover
 var sway_yaw: float = 0.035       # radians of yaw drift
 var _t := 0.0
 var yaw: float = YAW_FRONT
+var pitch: float = PITCH          # camera tilt down; the map tokens look steeper (tools/map_tokens.gd)
+var token: bool = false           # a 24 px map token: no detail parts, no surface pass, lit from the viewer's side
 var frame_override: Vector2i = Vector2i.ZERO
 const SPIN_SPEED := 0.7           # radians per second
 
@@ -315,7 +317,16 @@ func _apply_materials(node: Node, maker: String) -> void:
 			m.set_shader_parameter("bands", 4 if mode == "pixel" else 0)
 			m.set_shader_parameter("role", ROLE_INDEX.get(role, 0))
 			m.set_shader_parameter("gloss", float(GLOSS.get(maker, 0.4)))
+			if token:
+				# At 24 px the surface pass is noise and the wear is mud: flat tones, lit
+				# from above and the viewer's side so the top and front read.
+				for u in ["grime", "wear", "dust", "seams", "chips"]:
+					m.set_shader_parameter(u, 0.0)
+				m.set_shader_parameter("gloss", 0.0)
+				m.set_shader_parameter("light_dir", Vector3(-0.4, 0.8, -0.45))
 			mi.set_surface_override_material(i, m)
+		if token and node.name.contains("detail"):
+			mi.visible = false   # the spriter drops detail parts from tokens too
 	for c in node.get_children():
 		_apply_materials(c, maker)
 
@@ -334,9 +345,9 @@ func _frame_camera() -> void:
 			for step in range(12):
 				swept.append(c.rotated(Vector3.UP, deg_to_rad(step * 30.0)))
 		corners = swept
-	var pitch := deg_to_rad(PITCH)
-	var back := Vector3(0.0, sin(pitch), -cos(pitch))   # from the model toward the camera
-	var up := Vector3(0.0, cos(pitch), sin(pitch))
+	var tilt := deg_to_rad(pitch)
+	var back := Vector3(0.0, sin(tilt), -cos(tilt))   # from the model toward the camera
+	var up := Vector3(0.0, cos(tilt), sin(tilt))
 	var right := Vector3(1.0, 0.0, 0.0)
 	var lo := Vector2(INF, INF)
 	var hi := Vector2(-INF, -INF)
@@ -360,7 +371,7 @@ func _frame_camera() -> void:
 
 
 func _collect_corners(node: Node, out: Array[Vector3]) -> void:
-	if node is MeshInstance3D:
+	if node is MeshInstance3D and (node as MeshInstance3D).visible:
 		var mi: MeshInstance3D = node
 		var aabb := mi.get_aabb()
 		for i in range(8):
