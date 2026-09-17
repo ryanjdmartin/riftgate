@@ -26,8 +26,9 @@ silhouettes for Ryan to reshape live in `tools/blendforge/models/archetypes/` (a
 `docs/art-lab.html` section 7). Standing instruction from Ryan: take each new direction as
 he gives it; tone iterates as we build.
 
-MARCH is decided: the Ministerial Assembly for the Reclamation of Civilised Humanity. Open
-on purpose: whether this is the last bastion, whether other colonies are fine, whether the
+The Council is decided: the Council for the Ultimate Liberation of Terra, "the Council", its
+acronym never stated in the game (MARCH is retired). The player is Battlefield Commander of an
+arms-length defence agency, four-letter acronym still to pick. Open on purpose: whether this is the last bastion, whether other colonies are fine, whether the
 whole thing was a power grab. Ryan is rewriting `content/*.json` in his own voice and
 renaming units. Content text is now split by shape (bible, section 6): shown at the top
 level (`codex`, `flavour`, a passive's `name` and `description`, an action's `text`),
