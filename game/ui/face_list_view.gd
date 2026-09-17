@@ -10,6 +10,7 @@ const MINI := 44.0
 
 var faces: Array = []     # Face
 var current: int = -1
+var columns: int = 1      # the codex runs two columns; the die readout one
 
 
 func _init() -> void:
@@ -19,7 +20,7 @@ func _init() -> void:
 func set_faces(list: Array, cur: int) -> void:
 	faces = list
 	current = cur
-	custom_minimum_size = Vector2(0, ROW * faces.size())
+	custom_minimum_size = Vector2(0, ROW * ceili(float(faces.size()) / float(maxi(1, columns))))
 	size.y = custom_minimum_size.y
 	queue_redraw()
 
@@ -27,10 +28,14 @@ func set_faces(list: Array, cur: int) -> void:
 func _draw() -> void:
 	var mono := Hud.mono()
 	var disp := Hud.display()
+	var cols := maxi(1, columns)
+	var rows := ceili(float(faces.size()) / float(cols))
+	var col_w := size.x / float(cols)
 	for i in range(faces.size()):
 		var f: Face = faces[i]
-		var y := i * ROW
-		var rect := Rect2(Vector2(6.0, y + 5.0), Vector2(MINI, MINI))
+		var x0 := float(i / rows) * col_w      # fill down the first column, then the next
+		var y := float(i % rows) * ROW
+		var rect := Rect2(Vector2(x0 + 6.0, y + 5.0), Vector2(MINI, MINI))
 		var cur := i == current
 		var col := Palette.HUD if cur else Color(Palette.HUD, 0.5)
 		if f.kind == Face.Kind.BLANK:
@@ -47,4 +52,4 @@ func _draw() -> void:
 			if f.cracked:
 				draw_line(rect.position + Vector2(6.0, MINI - 6.0), rect.position + Vector2(MINI - 6.0, 6.0), Palette.ENEMY, 1.5)
 		var ink := Palette.INK if cur else Palette.MUTED
-		draw_string(disp, Vector2(MINI + 22.0, y + ROW * 0.5 + 6.0), f.describe(), HORIZONTAL_ALIGNMENT_LEFT, size.x - MINI - 26.0, 17, ink)
+		draw_string(disp, Vector2(x0 + MINI + 22.0, y + ROW * 0.5 + 6.0), f.describe(), HORIZONTAL_ALIGNMENT_LEFT, col_w - MINI - 26.0, 17, ink)

@@ -345,22 +345,38 @@ func _build_codex() -> void:
 	_codex_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_codex_sprite.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	top.add_child(_codex_sprite)
-	_codex_body = Hud.label("", 19, Palette.INK)
-	_codex_stats = Hud.label("", 13, Color(Palette.HUD, 0.8), Hud.mono())
-	_codex_actions = Hud.label("", 14, Palette.INK, Hud.mono())
+	# The play half sits beside the portrait: the stats line is the critical readout, so it
+	# is bold and bright, not a subtitle; then the passive and any actions. The faces run in
+	# two columns under that. A thin rule separates play from lore: codex text, then quote.
+	_codex_stats = Hud.label("", 18, Palette.HUD, Hud.display_bold())
 	_codex_passive = Hud.label("", 17, Palette.ACCENT)
+	_codex_actions = Hud.label("", 14, Palette.INK, Hud.mono())
+	_codex_body = Hud.label("", 19, Palette.INK)
 	_codex_faces = FaceListView.new()
+	_codex_faces.columns = 2
 	_codex_flavour = Hud.label("", 18, Palette.MUTED, Hud.quote())
 	# Wrapping labels need a width before their first layout pass, or they report the height
 	# of every word on its own line and the panel opens far too tall the first time.
-	for l in [_codex_body, _codex_stats, _codex_actions, _codex_passive, _codex_flavour]:
+	var spacer := Control.new()
+	spacer.custom_minimum_size = Vector2(0, 10)
+	head.add_child(spacer)
+	for l in [_codex_stats, _codex_passive, _codex_actions]:
+		l.autowrap_mode = TextServer.AUTOWRAP_WORD
+		l.custom_minimum_size = Vector2(380, 0)
+		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		head.add_child(l)
+	cv.add_child(_codex_faces)
+	var rule := ColorRect.new()
+	rule.color = Color(Palette.HUD, 0.25)
+	rule.custom_minimum_size = Vector2(0, 1)
+	cv.add_child(rule)
+	for l in [_codex_body, _codex_flavour]:
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD
 		l.custom_minimum_size = Vector2(560, 0)
 		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		cv.add_child(l)
-	cv.add_child(_codex_faces)
-	cv.move_child(_codex_faces, cv.get_child_count() - 2)
 	var close := HudButton.new("CLOSE", _close_codex)
 	close.custom_minimum_size = Vector2(0, 52)
 	cv.add_child(close)
