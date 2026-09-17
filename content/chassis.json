@@ -3,7 +3,7 @@
   "makers": [
     { "id": "minerva", "name": "Minerva Heavy Works", "style": "Armour first. Everything is a tank, even the ones with legs.", "voice": "Maintenance manual. Terse, exact, proud of tolerances." },
     { "id": "kestrel", "name": "Kestrel Dynamics", "style": "Fast, fragile, over-tuned. Airframes and interceptors.", "voice": "Flight-test log. Clipped, numbers first." },
-    { "id": "orrin_pike", "name": "Orrin & Pike", "style": "Quads and artillery. Old firm, odd designs, everything works.", "voice": "Field notes. Dry and precise." }
+    { "id": "wainwright_sutler", "name": "Wainwright & Sutler", "style": "Quads and artillery. Old firm, odd designs, everything works.", "voice": "Field notes. Dry and precise." }
   ],
   "entries": [
     {
@@ -24,15 +24,15 @@
       "flavour": "Hey Russ, ain't that yer Badger over there, covered in demon innards? I thought they retired the ol' girl!"
     },
     {
-      "id": "sentinel", "name": "Sentinel", "maker": "orrin_pike", "silhouette": "quadruped",
+      "id": "sentinel", "name": "Sentinel", "maker": "wainwright_sutler", "silhouette": "quadruped",
       "design": { "fantasy": "Four legs, six hardpoints, no strong opinions. The one you build around.", "niche": "" },
-      "codex": "The Orrin & Pike general-purpose walker. Six hardpoints and no opinions about what goes in them; whatever the squad is missing, this is where it gets bolted on.",
+      "codex": "The Wainwright & Sutler general-purpose walker. Six hardpoints and no opinions about what goes in them; whatever the squad is missing, this is where it gets bolted on.",
       "hull": 100, "shield": 40, "movespeed": 3, "heat_max": 60, "hardpoints": 6,
       "traits": ["walker"],
       "loadout": ["twin_autoguns", "lance", "pocket_mortar", "ablative_plating", "heat_sink"],
       "filler": { "kind": "shield", "power": 10 },
       "passive": null,
-      "flavour": "Orrin & Pike walker frame. Six hardpoints, no favourites. The one that comes back."
+      "flavour": "Wainwright & Sutler walker frame. Six hardpoints, no favourites. The one that comes back."
     },
     {
       "id": "raptor", "name": "Raptor", "maker": "kestrel", "silhouette": "aircraft",
@@ -53,21 +53,21 @@
       "flavour": "Kestrel interceptor airframe. Reactor governor removed by field order. Run it hot and trust the housing."
     },
     {
-      "id": "anvil", "name": "Anvil", "maker": "orrin_pike", "silhouette": "quadruped",
+      "id": "anvil", "name": "Anvil", "maker": "wainwright_sutler", "silhouette": "quadruped",
       "design": { "fantasy": "Sits at the back of the fight and ruins the back of theirs.", "niche": "" },
-      "codex": "Orrin & Pike's fire-support walker. Reaches their back rank from ours, and what it sets alight stays alight.",
+      "codex": "Wainwright & Sutler's fire-support walker. Reaches their back rank from ours, and what it sets alight stays alight.",
       "hull": 120, "shield": 30, "movespeed": 2, "heat_max": 70, "hardpoints": 6,
       "traits": ["walker"],
       "loadout": ["howitzer", "incendiary_shells", "shock_barrage", "coolant_dump", "flak_skirt"],
       "filler": { "kind": "shield", "power": 10 },
       "passive": {
         "id": "hot_load", "name": "Hot Load",
-        "description": "When an Orrin & Pike shell lands right, it keeps burning.",
+        "description": "When an Wainwright & Sutler shell lands right, it keeps burning.",
         "effects": [
           { "trigger": "on_crit", "effect": "add_burn", "value": 1 }
         ]
       },
-      "flavour": "Orrin & Pike fire-support walker. Sits behind the line and unmakes the far side of the fight."
+      "flavour": "Wainwright & Sutler fire-support walker. Sits behind the line and unmakes the far side of the fight."
     }
   ]
 }

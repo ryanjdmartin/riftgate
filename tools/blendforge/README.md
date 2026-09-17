@@ -52,7 +52,7 @@ surface is, not what colour it should be:
 | --- | --- | --- |
 | `steel` | armour plates, the body; the default for anything unnamed | mid grey, four tones |
 | `steel_dark` | joints, barrels, undercarriage, anything recessed or mechanical | darker grey |
-| `livery` | one or two big identity panels: glacis, shoulder pod face, wing | the maker's livery: Minerva deep red, Kestrel cobalt, Orrin & Pike bone white |
+| `livery` | one or two big identity panels: glacis, shoulder pod face, wing | the maker's livery: Minerva deep red, Kestrel cobalt, Wainwright & Sutler bone white |
 | `glass` | cockpit slit, canopy, sensor lens | bright cyan |
 | `amber` | warning lights, chevrons, searchlight lens; one or two spots | warm amber |
 | `rubber` | tyres, tracks, foot pads, cable bundles | near black, recedes |

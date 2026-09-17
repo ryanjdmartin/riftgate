@@ -36,7 +36,7 @@ const RAMPS := {
 const LIVERY := {
 	"minerva": ["3a0f16", "5a1620", "8a2430", "b8303f"],
 	"kestrel": ["132148", "1c3270", "2d4fa8", "4a74d8"],
-	"orrin_pike": ["8f8a7a", "a9a291", "d8d2c2", "f0ebdc"],
+	"wainwright_sutler": ["8f8a7a", "a9a291", "d8d2c2", "f0ebdc"],
 }
 
 var texture: Texture2D

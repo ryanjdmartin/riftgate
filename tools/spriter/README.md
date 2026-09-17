@@ -51,7 +51,7 @@ then `m.lift(8)` floats them.
 
 ```python
 def anvil() -> Model:
-    m = Model("anvil", "orrin_pike")
+    m = Model("anvil", "wainwright_sutler")
     m.box(-11, 11, -12, 12, 16, 30, "steel")        # x0, x1, y0, y1, z0, z1, material
     m.cyl("y", 0, 16, 19, 1.6, 8, "steel_dark")     # axis, cx, cy, cz, radius, length
     m.box(-2, 2, -7, -5, 36, 37.5, "amber", detail=True)   # dropped at map scale
@@ -59,7 +59,7 @@ def anvil() -> Model:
 ```
 
 Materials: `steel`, `steel_dark`, `rubber`, `glass`, `amber`, `hot`, `bore`, `white`, and
-`livery`, which is the maker's colour (Minerva red, Kestrel cobalt, Orrin & Pike bone-white).
+`livery`, which is the maker's colour (Minerva red, Kestrel cobalt, Wainwright & Sutler bone-white).
 Mark small parts `detail=True` so the 24px map frame stays clean. `m.mirror_x(fn)` calls
 `fn(-1)` and `fn(1)` for symmetric parts.
 

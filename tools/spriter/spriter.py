@@ -38,7 +38,7 @@ WHITE = ["#8f8a7a", "#a9a291", "#d8d2c2", "#f0ebdc"]
 LIVERY = {
     "minerva": ["#3a0f16", "#5a1620", "#8a2430", "#b8303f"],
     "kestrel": ["#132148", "#1c3270", "#2d4fa8", "#4a74d8"],
-    "orrin_pike": WHITE,
+    "wainwright_sutler": WHITE,
 }
 OUTLINE = "#1a1d23"
 
@@ -399,8 +399,8 @@ def bulwark() -> Model:
 
 
 def sentinel() -> Model:
-    """Orrin & Pike Sentinel: a quadruped walker with two shoulder pods and a chin gun."""
-    m = Model("sentinel", "orrin_pike")
+    """Wainwright & Sutler Sentinel: a quadruped walker with two shoulder pods and a chin gun."""
+    m = Model("sentinel", "wainwright_sutler")
     # body
     m.box(-11, 11, -12, 12, 16, 30, "steel")
     m.box(-9, 9, -10, 10, 30, 32, "livery")                   # top plate

@@ -263,7 +263,7 @@ MECH_STYLE = (
 MAKER_LOOK = {
     "minerva": "cold steel grey plates with deep red armour panels",
     "kestrel": "cold steel with cobalt blue airframe panels",
-    "orrin_pike": "cold steel with bone-white armour plates",
+    "wainwright_sutler": "cold steel with bone-white armour plates",
 }
 # The edit model keeps the render's shape and adds the finish; the instruction says so in
 # as many words, then names the finish wanted and the colours to keep.

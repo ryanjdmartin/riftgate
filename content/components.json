@@ -8,25 +8,25 @@
       { "kind": "attack", "reach": "line", "power": 30, "power_max": 60, "crit": 15, "keywords": [], "heat": 10 } ], "passive": null, "tags": ["kinetic", "single"] },
     { "id": "ablative_plating", "name": "Ablative Plating", "maker": "minerva", "codex": "", "flavour": "", "design": { "fantasy": "Bolt-on armour that comes off in sheets so the hull does not.", "niche": "" }, "hardpoints": 1, "faces": [
       { "kind": "shield", "power": 20 } ], "passive": null, "tags": ["defense"] },
-    { "id": "twin_autoguns", "name": "Twin Autoguns", "maker": "orrin_pike", "codex": "", "flavour": "", "design": { "fantasy": "Reliable, unremarkable, always there.", "niche": "" }, "hardpoints": 2, "faces": [
+    { "id": "twin_autoguns", "name": "Twin Autoguns", "maker": "wainwright_sutler", "codex": "", "flavour": "", "design": { "fantasy": "Reliable, unremarkable, always there.", "niche": "" }, "hardpoints": 2, "faces": [
       { "kind": "attack", "reach": "line", "power": 10, "power_max": 30, "crit": 10, "keywords": [], "heat": 0 },
       { "kind": "attack", "reach": "line", "power": 10, "power_max": 30, "crit": 10, "keywords": [], "heat": 0 } ], "passive": null, "tags": ["kinetic", "single"] },
-    { "id": "lance", "name": "Lance", "maker": "orrin_pike", "codex": "", "flavour": "", "design": { "fantasy": "A beam that goes through the wall and the thing hiding behind it.", "niche": "" }, "hardpoints": 1, "faces": [
+    { "id": "lance", "name": "Lance", "maker": "wainwright_sutler", "codex": "", "flavour": "", "design": { "fantasy": "A beam that goes through the wall and the thing hiding behind it.", "niche": "" }, "hardpoints": 1, "faces": [
       { "kind": "attack", "reach": "line", "power": 30, "keywords": ["pierce"], "heat": 10 } ], "passive": null, "tags": ["energy", "column"] },
-    { "id": "pocket_mortar", "name": "Pocket Mortar", "maker": "orrin_pike", "codex": "", "flavour": "", "design": { "fantasy": "Small, rude, lands behind the front rank.", "niche": "" }, "hardpoints": 1, "faces": [
+    { "id": "pocket_mortar", "name": "Pocket Mortar", "maker": "wainwright_sutler", "codex": "", "flavour": "", "design": { "fantasy": "Small, rude, lands behind the front rank.", "niche": "" }, "hardpoints": 1, "faces": [
       { "kind": "attack", "reach": "indirect", "power": 10, "power_max": 30, "crit": 5, "keywords": [], "heat": 0 } ], "passive": null, "tags": ["kinetic", "artillery"] },
-    { "id": "heat_sink", "name": "Heat Sink", "maker": "orrin_pike", "codex": "", "flavour": "", "design": { "fantasy": "Fins. Lots of fins.", "niche": "" }, "hardpoints": 1, "faces": [
+    { "id": "heat_sink", "name": "Heat Sink", "maker": "wainwright_sutler", "codex": "", "flavour": "", "design": { "fantasy": "Fins. Lots of fins.", "niche": "" }, "hardpoints": 1, "faces": [
       { "kind": "vent", "power": 20 } ], "passive": null, "tags": ["support"] },
-    { "id": "howitzer", "name": "Howitzer", "maker": "orrin_pike", "codex": "", "flavour": "", "design": { "fantasy": "The back rank's problem, twice per die.", "niche": "" }, "hardpoints": 2, "faces": [
+    { "id": "howitzer", "name": "Howitzer", "maker": "wainwright_sutler", "codex": "", "flavour": "", "design": { "fantasy": "The back rank's problem, twice per die.", "niche": "" }, "hardpoints": 2, "faces": [
       { "kind": "attack", "reach": "indirect", "power": 20, "power_max": 50, "crit": 10, "keywords": [], "heat": 0 },
       { "kind": "attack", "reach": "indirect", "power": 20, "power_max": 50, "crit": 10, "keywords": [], "heat": 0 } ], "passive": null, "tags": ["kinetic", "artillery"] },
-    { "id": "incendiary_shells", "name": "Incendiary Shells", "maker": "orrin_pike", "codex": "", "flavour": "", "design": { "fantasy": "Lands, then keeps landing.", "niche": "" }, "hardpoints": 1, "faces": [
+    { "id": "incendiary_shells", "name": "Incendiary Shells", "maker": "wainwright_sutler", "codex": "", "flavour": "", "design": { "fantasy": "Lands, then keeps landing.", "niche": "" }, "hardpoints": 1, "faces": [
       { "kind": "attack", "reach": "indirect", "power": 10, "power_max": 30, "crit": 5, "keywords": ["burn"], "heat": 0 } ], "passive": null, "tags": ["kinetic", "artillery", "burn"] },
-    { "id": "shock_barrage", "name": "Shock Barrage", "maker": "orrin_pike", "codex": "", "flavour": "", "design": { "fantasy": "Whatever it was about to do, it is not doing it now.", "niche": "" }, "hardpoints": 1, "faces": [
+    { "id": "shock_barrage", "name": "Shock Barrage", "maker": "wainwright_sutler", "codex": "", "flavour": "", "design": { "fantasy": "Whatever it was about to do, it is not doing it now.", "niche": "" }, "hardpoints": 1, "faces": [
       { "kind": "attack", "reach": "indirect", "power": 30, "power_max": 50, "crit": 10, "keywords": ["suppress"], "heat": 20 } ], "passive": null, "tags": ["kinetic", "artillery", "control"] },
-    { "id": "coolant_dump", "name": "Coolant Dump", "maker": "orrin_pike", "codex": "", "flavour": "", "design": { "fantasy": "Empties the reactor jacket onto the ground. Or onto a friend.", "niche": "" }, "hardpoints": 1, "faces": [
+    { "id": "coolant_dump", "name": "Coolant Dump", "maker": "wainwright_sutler", "codex": "", "flavour": "", "design": { "fantasy": "Empties the reactor jacket onto the ground. Or onto a friend.", "niche": "" }, "hardpoints": 1, "faces": [
       { "kind": "vent", "power": 30 } ], "passive": null, "tags": ["support"] },
-    { "id": "flak_skirt", "name": "Flak Skirt", "maker": "orrin_pike", "codex": "", "flavour": "", "design": { "fantasy": "A little armour is better than the amount you had.", "niche": "" }, "hardpoints": 1, "faces": [
+    { "id": "flak_skirt", "name": "Flak Skirt", "maker": "wainwright_sutler", "codex": "", "flavour": "", "design": { "fantasy": "A little armour is better than the amount you had.", "niche": "" }, "hardpoints": 1, "faces": [
       { "kind": "shield", "power": 10 } ], "passive": null, "tags": ["defense"] },
     { "id": "overclocked_railgun", "name": "Overclocked Railgun", "maker": "kestrel", "codex": "", "flavour": "", "design": { "fantasy": "Kestrel removed the safety interlock and called it a feature.", "niche": "" }, "hardpoints": 1, "faces": [
       { "kind": "attack", "reach": "line", "power": 50, "keywords": ["overcharge"], "heat": 20 } ], "passive": null, "tags": ["energy", "single", "hot"] },
