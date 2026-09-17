@@ -152,12 +152,26 @@ def bevel_modifier(obj, width, segments, angle=30.0):
 
 
 def is_box(obj):
-    return len(obj.data.polygons) == 6
+    """A plate: a box, or a box whose edges the author already bevelled. Judged by how much
+    of its bounding box the mesh fills, not by polygon count."""
+    n = len(obj.data.polygons)
+    if n == 6:
+        return True
+    if n > 30:
+        return False
+    lo, hi = world_bbox(obj)
+    d = hi - lo
+    box_vol = max(d.x * d.y * d.z, 1e-6)
+    bm = bmesh.new()
+    bm.from_mesh(obj.data)
+    vol = abs(bm.calc_volume())
+    bm.free()
+    return vol / box_vol > 0.86
 
 
 def is_cylinder(obj):
     n = len(obj.data.polygons)
-    return n >= 10 and n != 6
+    return n >= 10 and not is_box(obj)
 
 
 # ---------------------------------------------------------------- plates
@@ -279,6 +293,225 @@ def collars(cylinders, hull):
     return n
 
 
+
+# ---------------------------------------------------------------- manners beyond the plate
+
+def vertical_faces(obj, min_area=PANEL_MIN_AREA):
+    """Big faces whose normal is horizontal: the faces a wall would have. Returns
+    (normal, lo, hi) in world space for each."""
+    out = []
+    bm = bmesh.new()
+    bm.from_mesh(obj.data)
+    bm.normal_update()
+    for f in bm.faces:
+        if f.calc_area() < min_area or abs(f.normal.z) > 0.3:
+            continue
+        pts = [obj.matrix_world @ v.co for v in f.verts]
+        lo = Vector((min(q.x for q in pts), min(q.y for q in pts), min(q.z for q in pts)))
+        hi = Vector((max(q.x for q in pts), max(q.y for q in pts), max(q.z for q in pts)))
+        out.append((f.normal.copy(), lo, hi))
+    bm.free()
+    return out
+
+
+def _strip_on_face(name, normal, lo, hi, u0, u1, z0, z1, proud, mat, detail=True):
+    """A box lying on a vertical face between parameters u0..u1 along it and z0..z1 up it."""
+    if abs(normal.y) > 0.5:
+        y0, y1 = (hi.y, hi.y + proud) if normal.y > 0 else (lo.y - proud, lo.y)
+        return add_box(name, (lo.x + u0, y0, z0), (lo.x + u1, y1, z1), mat, detail)
+    x0, x1 = (hi.x, hi.x + proud) if normal.x > 0 else (lo.x - proud, lo.x)
+    return add_box(name, (x0, lo.y + u0, z0), (x1, lo.y + u1, z1), mat, detail)
+
+
+def _face_width(normal, lo, hi):
+    return (hi.x - lo.x) if abs(normal.y) > 0.5 else (hi.y - lo.y)
+
+
+def ribs(plates):
+    """Vertical fluting on the big vertical faces: raised ridges, a cathedral wall. Gothic."""
+    n = 0
+    for o in plates:
+        if role_of(o) not in ("livery", "steel"):
+            continue
+        for normal, lo, hi in vertical_faces(o):
+            width = _face_width(normal, lo, hi)
+            count = int(width // 3.0)
+            if count < 2:
+                continue
+            for i in range(count):
+                u = (i + 0.5) * width / count
+                _strip_on_face(f"rib_{o.name}_{n}_{i}", normal, lo, hi, u - kp(0.45), u + kp(0.45), lo.z + 0.6, hi.z - 0.6, kp(0.6), material("steel_dark"))
+            n += 1
+    return n
+
+
+def layered_plates(plates):
+    """A second, smaller plate standing proud of every big vertical face: armour over armour."""
+    n = 0
+    for o in plates:
+        if role_of(o) not in ("livery", "steel"):
+            continue
+        for normal, lo, hi in vertical_faces(o, PANEL_MIN_AREA * 1.5):
+            width = _face_width(normal, lo, hi)
+            inset = kp(0.9)
+            _strip_on_face(f"layer_{o.name}_{n}", normal, lo, hi, inset, width - inset, lo.z + inset, hi.z - inset, kp(0.6), o.data.materials[0], detail=False)
+            n += 1
+    return n
+
+
+def stud_rows(hull):
+    """Bolts in rows along the hull's top edges: ornament, not fastening."""
+    lo, hi = world_bbox(hull)
+    r = kp(0.45)
+    n = 0
+    for y in (lo.y + r * 1.5, hi.y - r * 1.5):
+        x = lo.x + r * 2.0
+        while x < hi.x - r:
+            add_cyl(f"stud_{hull.name}_{n}", "z", (x, y, hi.z + kp(0.3)), r, kp(0.6), material("steel_dark"), verts=6)
+            x += 3.0
+            n += 1
+    return n
+
+
+def highest_wide(hull, plates):
+    top, best = hull, -1e9
+    for o in plates:
+        lo, hi = world_bbox(o)
+        if hi.z > best and (hi.x - lo.x) >= 6.0:
+            top, best = o, hi.z
+    return top
+
+
+def crest(hull, plates):
+    """A dorsal fin down the centre-line of the highest wide part: a silhouette, slightly sinister."""
+    top = highest_wide(hull, plates)
+    lo, hi = world_bbox(top)
+    hlo, hhi = world_bbox(hull)
+    rise = (hhi.z - hlo.z) * 0.45
+    t = max(kp(0.35), rise * 0.12)
+    depth = hi.y - lo.y
+    add_box(f"crest_{top.name}", ((lo.x + hi.x) / 2.0 - t, lo.y + depth * 0.1, hi.z - 0.2), ((lo.x + hi.x) / 2.0 + t, hi.y - depth * 0.3, hi.z + rise), material("steel_dark"), detail=False)
+    return 1
+
+
+def glow_seams(plates):
+    """A thin lit strip low inside each big vertical face: the one otherworldly tell."""
+    n = 0
+    for o in plates:
+        if role_of(o) not in ("livery", "steel"):
+            continue
+        for normal, lo, hi in vertical_faces(o):
+            width = _face_width(normal, lo, hi)
+            z = lo.z + kp(1.1)
+            _strip_on_face(f"glow_{o.name}_{n}", normal, lo, hi, kp(1.2), width - kp(1.2), z, z + kp(0.3), kp(0.3), material("hot"))
+            n += 1
+    return n
+
+
+def seams(plates, count):
+    """Fine dark lines dividing each big vertical face into flush panels: the sealed look."""
+    n = 0
+    for o in plates:
+        if role_of(o) not in ("livery", "steel"):
+            continue
+        for normal, lo, hi in vertical_faces(o):
+            width = _face_width(normal, lo, hi)
+            for i in range(1, int(count)):
+                u = i * width / count
+                _strip_on_face(f"seam_{o.name}_{n}_{i}", normal, lo, hi, u - 0.16, u + 0.16, lo.z + 0.3, hi.z - 0.3, 0.08, material("steel_dark"))
+            n += 1
+    return n
+
+
+def blisters(hull):
+    """Low sensor domes on the hull's top corners."""
+    lo, hi = world_bbox(hull)
+    r = kp(0.9)
+    n = 0
+    for sx in (lo.x + r * 2.0, hi.x - r * 2.0):
+        for sy in (lo.y + r * 2.0, hi.y - r * 2.0):
+            add_cyl(f"blister_{hull.name}_{n}", "z", (sx, sy, hi.z + kp(0.25)), r, kp(0.5), material("steel_dark"), verts=12)
+            n += 1
+    return n
+
+
+def strip_lights(plates, glass):
+    """Flush light strips instead of lamps: one along the top edge of the cab's front face."""
+    if glass is None:
+        return 0
+    glo, ghi = world_bbox(glass)
+    for o in plates:
+        lo, hi = world_bbox(o)
+        if lo.x <= (glo.x + ghi.x) / 2.0 <= hi.x and hi.z >= ghi.z - 0.5 and lo.z <= glo.z + 0.5:
+            add_box(f"strip_{o.name}", (lo.x + 1.0, hi.y - 0.05, hi.z - kp(0.5)), (hi.x - 1.0, hi.y + 0.12, hi.z - kp(0.2)), material("amber"))
+            return 1
+    return 0
+
+
+def fins(hull, plates):
+    """Two swept tail fins rising from the rear corners of the highest wide part, a nav light
+    at each tip: the sleek tell, on any chassis."""
+    top = highest_wide(hull, plates)
+    lo, hi = world_bbox(top)
+    hlo, hhi = world_bbox(hull)
+    depth = hi.y - lo.y
+    height = (hhi.z - hlo.z) * 0.7
+    t = max(kp(0.3), height * 0.05)
+    n = 0
+    for sx in (lo.x + t * 2.0, hi.x - t * 2.0):
+        bpy.ops.mesh.primitive_cube_add(size=1.0)
+        o = bpy.context.object
+        o.name = f"fin_{top.name}_{n}"
+        me = o.data
+        # a thin plate; sweep it: the top edge sits further back and shorter than the base
+        for v in me.vertices:
+            x = sx + v.co.x * t * 2.0
+            top_v = v.co.z > 0
+            y_base_front = lo.y + depth * 0.55
+            y_base_back = lo.y + 0.2
+            y = (y_base_back + (y_base_front - y_base_back) * (0.35 if top_v else 1.0)) if v.co.y > 0 else (y_base_back - (height * 0.35 if top_v else 0.0))
+            z = hi.z + (height if top_v else -0.3)
+            v.co = Vector((x, y, z))
+        o.data.materials.append(material("livery"))
+        add_box(f"fin_light_{top.name}_{n}", (sx - t * 1.2, lo.y - height * 0.35 - 0.2, hi.z + height - 0.6), (sx + t * 1.2, lo.y - height * 0.35 + 0.6, hi.z + height + 0.2), material("amber"))
+        n += 1
+    return n
+
+
+def boosters(hull):
+    """Two pivot-mounted thruster pods on pylons at the hull's rear flanks, nozzles lit."""
+    lo, hi = world_bbox(hull)
+    r = max(kp(1.1), (hi.z - lo.z) * 0.2)
+    n = 0
+    for side in (-1.0, 1.0):
+        x = (hi.x if side > 0 else lo.x) + side * r * 1.6
+        cy = lo.y + (hi.y - lo.y) * 0.22
+        cz = lo.z + (hi.z - lo.z) * 0.62
+        add_box(f"pylon_{hull.name}_{n}", (min(x, x - side * r * 1.6), cy - kp(0.4), cz - kp(0.4)), (max(x, x - side * r * 1.6), cy + kp(0.4), cz + kp(0.4)), material("steel_dark"))
+        add_cyl(f"pivot_{hull.name}_{n}", "x", (x - side * r * 0.4, cy, cz), kp(0.7), r * 0.9, material("steel_dark"), verts=10)
+        add_cyl(f"booster_{hull.name}_{n}", "y", (x, cy, cz), r, r * 4.2, material("steel"), detail=False)
+        add_cyl(f"nozzle_{hull.name}_{n}", "y", (x, cy - r * 2.3, cz), r * 0.8, 0.4, material("hot"))
+        n += 1
+    return n
+
+
+def wing_pack(hull):
+    """A pair of angled wing-blades off the back: the jetpack silhouette."""
+    lo, hi = world_bbox(hull)
+    span = (hi.x - lo.x) * 0.9
+    n = 0
+    for side in (-1.0, 1.0):
+        bpy.ops.mesh.primitive_cube_add(size=1.0)
+        o = bpy.context.object
+        o.name = f"wing_{hull.name}_{n}"
+        cx = (lo.x + hi.x) / 2.0 + side * (hi.x - lo.x) * 0.2
+        for v in o.data.vertices:
+            out = v.co.x * side > 0          # the outer end rises and sweeps back
+            v.co = Vector((cx + v.co.x * span * 0.5, lo.y + 1.0 + v.co.y * kp(1.8) - (2.5 if out else 0.0), hi.z - 1.0 + v.co.z * kp(0.35) + ((hi.z - lo.z) * 0.6 if out else 0.0)))
+        o.data.materials.append(material("livery"))
+        n += 1
+    return n
+
 # ---------------------------------------------------------------- tracks
 
 def polish_track(obj):
@@ -363,7 +596,9 @@ def main():
     P = json.loads(a.get("profile", "{}"))
     for key, default in (("plate_strength", 1.0), ("track_strength", 1.0), ("bevel_segments", 2), ("cleat_spacing", 3.0),
                          ("wheels", 3), ("rivet_scale", 1.0), ("rims", False), ("vents", False), ("pistons", False),
-                         ("collars", False), ("kit", [])):
+                         ("collars", False), ("ribs", False), ("layered", False), ("stud_rows", False), ("crest", False),
+                         ("glow_seams", False), ("seams", 0), ("blisters", False), ("strip_lights", False), ("fins", False),
+                         ("boosters", False), ("wing_pack", False), ("kit", [])):
         P.setdefault(key, default)
     # The active scene only: a file can hold a scratch scene of parts borrowed from an
     # archetype, and those must not ride along (a tank gun once did).
@@ -385,6 +620,28 @@ def main():
             counts["rams"] = pistons(hull, plates)
         if P["collars"]:
             counts["collars"] = collars(cylinders, hull)
+        if P["layered"]:
+            counts["layers"] = layered_plates(plates)
+        if P["ribs"]:
+            counts["ribbed"] = ribs(plates)
+        if P["stud_rows"]:
+            counts["studs"] = stud_rows(hull)
+        if P["crest"]:
+            counts["crest"] = crest(hull, plates)
+        if P["glow_seams"]:
+            counts["glow"] = glow_seams(plates)
+        if int(P["seams"]) > 1:
+            counts["seams"] = seams(plates, int(P["seams"]))
+        if P["blisters"]:
+            counts["blisters"] = blisters(hull)
+        if P["strip_lights"]:
+            counts["strips"] = strip_lights([o for o in objs if role_of(o) in PLATE_ROLES], glass)
+        if P["fins"]:
+            counts["fins"] = fins(hull, plates)
+        if P["boosters"]:
+            counts["boosters"] = boosters(hull)
+        if P["wing_pack"]:
+            counts["wings"] = wing_pack(hull)
         if "work_lights" in P["kit"]:
             counts["lamps"] = kit_work_lights([o for o in objs if role_of(o) in PLATE_ROLES], glass)
         if "tow_lugs" in P["kit"]:

@@ -39,6 +39,8 @@ LIVERY = {
     "minerva": ["#3a0f16", "#5a1620", "#8a2430", "#b8303f"],
     "kestrel": ["#132148", "#1c3270", "#2d4fa8", "#4a74d8"],
     "wainwright_sutler": WHITE,
+    "aphelion": ["#7a3a10", "#b85a18", "#f08a2a", "#ffb35a"],
+    "arsenal": ["#6a5a10", "#a08a14", "#e0c020", "#ffe25a"],
 }
 OUTLINE = "#1a1d23"
 

@@ -23,18 +23,29 @@ MAKERS = {
     # rounded, everything bolted, bumpers on the corners, a radiator where you can reach it.
     "minerva": dict(plate_strength=2.5, track_strength=1.5, bevel_segments=1, cleat_spacing=6.0,
                     wheels=2, rivet_scale=1.4, rims=True, vents=True, pistons=True, collars=True),
-    # Airframes. Rounded edges, flush skins, no bolts showing, nothing that adds drag.
+    # Sleek. Shaped by air even when it never leaves the ground: rounded edges, flowing skin,
+    # no bolts, no rims, no grille, and swept tail fins with a nav light at each tip on any
+    # chassis. Tracks and wheels stay smooth.
     "kestrel": dict(plate_strength=1.6, track_strength=1.0, bevel_segments=3, cleat_spacing=4.0,
-                    wheels=3, rivet_scale=0.0, rims=False, vents=False, pistons=False, collars=False),
+                    wheels=3, rivet_scale=0.0, rims=False, vents=False, pistons=False, collars=False,
+                    fins=True),
     # Wagon-builders. Exposed frame, angle-iron trim, honest bolts, rams you can see working.
     "wainwright_sutler": dict(plate_strength=2.0, track_strength=1.5, bevel_segments=2, cleat_spacing=5.0,
                               wheels=3, rivet_scale=1.0, rims=True, vents=False, pistons=True, collars=True),
-    # Off-world. Smooth, sealed, no bolts, no grilles; the join lines are the detail.
-    "aphelion": dict(plate_strength=1.4, track_strength=1.0, bevel_segments=3, cleat_spacing=4.0,
-                     wheels=3, rivet_scale=0.0, rims=False, vents=False, pistons=False, collars=False),
-    # The Council's own. Heavy, ceremonial, over-built; every edge a hard chamfer, bolts as ornament.
+    # High-tech mecha. Blocky, precise modules with small hard chamfers and no taper; three
+    # fine seams across every big face; exposed actuators at the joints; a booster pack of two
+    # pivot-mounted thruster pods; a pair of angled wing-blades off the back; flush light
+    # strips; sensor blisters. An aversion to wheels and treads: no cleats, no road wheels.
+    "aphelion": dict(plate_strength=1.5, track_strength=1.0, bevel_segments=1, cleat_spacing=999.0,
+                     wheels=0, rivet_scale=0.0, rims=False, vents=False, pistons=True, collars=False,
+                     seams=3, blisters=True, strip_lights=True, boosters=True, wing_pack=True),
+    # The Council's own. Heavy, gothic, brutal, slightly wrong: hard chamfers at the largest
+    # scale, armour layered over armour, vertical fluting on the big walls, a dorsal crest,
+    # bolts in rows along the rims as ornament, and one lit seam low in every big face, the
+    # only glow on a machine that is not an engine.
     "arsenal": dict(plate_strength=2.8, track_strength=1.5, bevel_segments=1, cleat_spacing=6.0,
-                    wheels=2, rivet_scale=1.6, rims=True, vents=True, pistons=True, collars=True),
+                    wheels=2, rivet_scale=0.0, rims=True, vents=True, pistons=True, collars=True,
+                    layered=True, ribs=True, stud_rows=True, crest=True, glow_seams=True),
 }
 DEFAULT_MAKER = MAKERS["minerva"]
 
