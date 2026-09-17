@@ -126,6 +126,23 @@ booster pods, wing-blades, a crest) is kit-only: a chassis asks for it by name i
 `profiles.py`, a maker manner never adds it. The pass errs toward too much small detail
 and you cut.
 
+**Working on the file itself.** Once a model has been polished, `<id>_polished.blend` is
+the working file and you edit it in Blender from every angle. `polish` refuses to overwrite
+it (`--force` regenerates from the massing and discards your edits). Additions from Claude
+land on top of your edits with `forge.py apply <working.blend> <script.py> <chassis>`, which
+runs one small named script in place and keeps a `.bak.blend` beside it. Each apply script
+says what it does in its docstring, so the model's history is the list of scripts under
+`tools/blendforge/finish/`.
+
+**Tagging hardpoints and joints.** Both are Empties, which cost nothing and export with the
+model. A hardpoint is an Empty named `hp_1` … `hp_n` at the socket, its +Y pointing where
+the weapon points; the count should match the chassis's hardpoints. A joint is an Empty
+named `joint_<name>` (say `joint_shoulder_l`) placed at the pivot, and the limb's parts are
+parented to it: select the parts, then the Empty last, Ctrl+P, Object (Keep Transform).
+Rotating the Empty then swings the limb, the glTF keeps that hierarchy, and the engine can
+animate the node without an armature. No rig, no weights, no skinning: a handful of joints
+per mech is all this game needs.
+
 **Guiding it from Blender.** Where a rule needs judgement, place an Empty in the massing
 file and the rule follows it instead of guessing: `ram_1_a` and `ram_1_b` for a hydraulic
 from a to b (cylinder at a, rod to b; number as many as you like), `lamp_1` for a work

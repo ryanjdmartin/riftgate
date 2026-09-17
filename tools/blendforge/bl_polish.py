@@ -586,6 +586,66 @@ def guided_vents(points):
             add_box(f"vent_slat_{i}_{j}", (sx - 0.35, p.y - d / 2 + 0.4, p.z + kp(0.35)), (sx + 0.35, p.y + d / 2 - 0.4, p.z + kp(0.35) + 0.3), material("bore"))
     return len(points)
 
+
+# ---------------------------------------------------------------- armour plates that read as armour
+
+def big_faces(obj, min_area=PANEL_MIN_AREA):
+    """Every big face, any orientation: (normal, corners in world space)."""
+    out = []
+    bm = bmesh.new()
+    bm.from_mesh(obj.data)
+    bm.normal_update()
+    for f in bm.faces:
+        if f.calc_area() >= min_area and len(f.verts) == 4:
+            out.append((f.normal.copy(), [obj.matrix_world @ v.co for v in f.verts]))
+    bm.free()
+    return out
+
+
+def braced_panels(plates, roles=("livery", "steel"), bar=None, proud=None):
+    """The armour-plate trope: a raised frame around each big face and a raised X across it,
+    corner to corner. Reads as a welded reinforcing plate from any angle, which is what
+    heavy armour looks like in every contemporary and future war machine."""
+    n = 0
+    bar = bar or kp(0.45)
+    proud = proud or kp(0.3)
+    dark = material("steel_dark")
+    for o in plates:
+        if role_of(o) not in roles:
+            continue
+        for normal, c in big_faces(o):
+            inset = bar * 1.4
+            centre = sum(c, Vector()) / 4.0
+            # pull the corners in a little so the frame sits inside the chamfer
+            k = [centre + (q - centre) * (1.0 - inset / max((q - centre).length, 1e-6)) + normal * proud * 0.5 for q in c]
+            for i in range(4):
+                add_rod(f"brace_frame_{o.name}_{n}_{i}", k[i], k[(i + 1) % 4], bar * 0.5, dark, verts=6)
+            add_rod(f"brace_x_{o.name}_{n}_a", k[0], k[2], bar * 0.6, dark, verts=6)
+            add_rod(f"brace_x_{o.name}_{n}_b", k[1], k[3], bar * 0.6, dark, verts=6)
+            add_cyl(f"brace_boss_{o.name}_{n}", "x" if abs(normal.x) > 0.9 else ("y" if abs(normal.y) > 0.9 else "z"), centre + normal * proud, bar * 1.1, proud * 2.0, dark, verts=8)
+            n += 1
+    return n
+
+
+def teeth_on_blades(objs, count=4):
+    """A serrated row along the top edge of every claw blade: a tall, thin, dark part standing
+    out past the hull's flank. Found by shape, so an asymmetric model gets teeth only where it
+    has blades."""
+    n = 0
+    for o in objs:
+        if role_of(o) != "steel_dark":
+            continue
+        lo, hi = world_bbox(o)
+        d = hi - lo
+        if d.z < 9.0 or d.x > 4.0 or abs((lo.x + hi.x) / 2.0) < 15.0:
+            continue
+        step = d.y / (count + 1)
+        for i in range(count):
+            y = lo.y + step * (i + 0.7)
+            add_box(f"tooth_{o.name}_{i}", (lo.x - 0.2, y, hi.z - 0.5), (hi.x + 0.2, y + step * 0.5, hi.z + kp(0.55)), material("steel_dark"))
+        n += 1
+    return n
+
 # ---------------------------------------------------------------- tracks
 
 def polish_track(obj):
@@ -725,7 +785,9 @@ def run_finish(path, counts):
     manner, so it refines and removes as much as it adds."""
     ns = dict(P=P, counts=counts, part=part, parts=parts, remove=remove, hydraulic=hydraulic, lamp=lamp, grille=grille,
               chamfer=chamfer, box=box, cyl=cyl, rod=add_rod, material=material, bbox=world_bbox, Vector=Vector, kp=kp, kt=kt,
-              bpy=bpy, bolts_on=polish_plate, rims=rims, vent=vent, blisters=blisters, seams=seams, ribs=ribs)
+              bpy=bpy, bolts_on=polish_plate, rims=rims, vent=vent, blisters=blisters, seams=seams, ribs=ribs,
+              braced_panels=braced_panels, teeth_on_blades=teeth_on_blades, role_of=role_of, PLATE_ROLES=PLATE_ROLES,
+              objs=lambda: [o for o in bpy.context.scene.objects if o.type == "MESH"])
     code = Path(path).read_text()
     exec(compile(code, str(path), "exec"), ns)
     return ns
@@ -737,11 +799,21 @@ def main():
     a = args()
     out = Path(a["out"])
     P = json.loads(a.get("profile", "{}"))
+    if a.get("apply"):
+        # Apply mode: the file is a working copy Ryan edits by hand; run one script on it in
+        # place and touch nothing else. No transforms are applied, no generic rules run.
+        for key, default in (("plate_strength", 1.0), ("track_strength", 1.0), ("rivet_scale", 1.0), ("kit", [])):
+            P.setdefault(key, default)
+        counts = {}
+        run_finish(a["apply"], counts)
+        bpy.ops.wm.save_as_mainfile(filepath=str(out), compress=True)
+        print("blendforge: applied", Path(a["apply"]).name, counts, "->", out)
+        return
     for key, default in (("plate_strength", 1.0), ("track_strength", 1.0), ("bevel_segments", 2), ("cleat_spacing", 3.0),
                          ("wheels", 3), ("rivet_scale", 1.0), ("rims", False), ("vents", False), ("pistons", False),
                          ("collars", False), ("ribs", False), ("layered", False), ("stud_rows", False), ("crest", False),
                          ("glow_seams", False), ("seams", 0), ("blisters", False), ("strip_lights", False), ("fins", False),
-                         ("boosters", False), ("wing_pack", False), ("kit", [])):
+                         ("boosters", False), ("wing_pack", False), ("braces", False), ("kit", [])):
         P.setdefault(key, default)
     # The active scene only: a file can hold a scratch scene of parts borrowed from an
     # archetype, and those must not ride along (a tank gun once did).

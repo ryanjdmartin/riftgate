@@ -25,7 +25,8 @@ MAKERS = {
     # Brick house. Armour first; everything is a tank, even the ones with legs. Nothing
     # rounded, everything bolted, bumpers on the corners, a radiator where you can reach it.
     "minerva": dict(plate_strength=2.5, track_strength=1.5, bevel_segments=1, cleat_spacing=6.0,
-                    wheels=2, rivet_scale=1.4, rims=True, vents=True, pistons=True, collars=True),
+                    wheels=2, rivet_scale=0.0, rims=True, vents=True, pistons=True, collars=True,
+                    braces=True),   # the X-braced armour plate is Minerva's tell; no loose bolts
     # Sleek. Shaped by air even when it never leaves the ground: rounded edges, flowing skin,
     # no bolts, no rims, no grille, and swept tail fins with a nav light at each tip on any
     # chassis. Tracks and wheels stay smooth.

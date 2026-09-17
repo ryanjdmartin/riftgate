@@ -333,6 +333,8 @@ def polish(args):
         prof["plate_strength"] = args.strength
         prof["track_strength"] = max(1.0, args.strength * 0.6)
     dest = Path(args.out).resolve() if args.out else src.with_name(src.stem + "_polished.blend")
+    if dest.exists() and not args.force:
+        raise SystemExit(f"{dest.relative_to(ROOT)} exists and may hold hand edits; use `forge.py apply` to add to it, or --force to regenerate it from the massing")
     finish = HERE / "finish" / f"{chassis}.py"     # the chassis's own finishing touches, if written
     extra = ["--finish", str(finish)] if finish.exists() else []
     blender(str(src), "-P", str(HERE / "bl_polish.py"), "--", "--out", str(dest), "--profile", json.dumps(prof), *extra)
@@ -347,6 +349,20 @@ def export(args):
     dest.parent.mkdir(parents=True, exist_ok=True)
     blender(str(src), "-P", str(HERE / "bl_export.py"), "--", "--out", str(dest), "--bake", "0" if args.no_bake else "1")
     print(f"exported {dest.relative_to(ROOT)}; run godot --headless --path . --import")
+
+
+def apply(args):
+    """Run one finish script on a working file in place, keeping a backup beside it. This is
+    how additions land on a model Ryan is editing by hand: nothing is regenerated."""
+    import shutil
+    src = Path(args.blend).resolve()
+    script = Path(args.script).resolve()
+    chassis = args.chassis or src.stem.split("_")[0]
+    prof = __import__("profiles").profile_for(maker_of(chassis, args.maker), chassis)
+    backup = src.with_suffix(".bak.blend")
+    shutil.copy2(src, backup)
+    blender(str(src), "-P", str(HERE / "bl_polish.py"), "--", "--out", str(src), "--profile", json.dumps(prof), "--apply", str(script))
+    print(f"applied {script.name} to {src.relative_to(ROOT)}; backup at {backup.name}")
 
 
 # ---------------------------------------------------------------- archetypes
@@ -408,6 +424,14 @@ def main():
     p.add_argument("--maker", default="", help="override the maker profile: minerva, kestrel, wainwright_sutler, aphelion, arsenal")
     p.add_argument("--out", default="")
     p.add_argument("--strength", type=float, default=0.0, help="override the profile's plate strength (tracks follow at 0.6x)")
+    p.add_argument("--force", action="store_true", help="regenerate an existing polished file from the massing, discarding hand edits")
+    p.set_defaults(func=polish)
+    ap_ = sub.add_parser("apply", help="run one finish script on a working .blend in place (backup kept); additions on top of hand edits")
+    ap_.add_argument("blend")
+    ap_.add_argument("script")
+    ap_.add_argument("chassis", nargs="?", default="")
+    ap_.add_argument("--maker", default="")
+    ap_.set_defaults(func=apply)
     p.set_defaults(func=polish)
     x = sub.add_parser("export", help="export a .blend to art/models/<chassis>.glb for the in-engine 3D view")
     x.add_argument("blend")
