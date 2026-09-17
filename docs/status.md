@@ -82,9 +82,16 @@ grouped features) is recorded in the bible, section 4, open.
    The massing is `badger_massing.blend`, reference only; the three `finish/badger*.py`
    scripts are history (headers say so). `art/models/badger.glb` is exported from it.
    Ryan is now moving the rams, tweaking parts, and tagging hardpoints (`hp_<n>`) and joints
-   (`joint_<name>` parent Empties) in that file; after that: re-export on request, read the
-   joints in `MechView3D` for ground-unit idle, components as visual swap-outs under the
-   pins, map tokens, livery on a rear or top plate.
+   (`joint_<name>` parent Empties) in that file. He removed the teeth (they floated); revisit.
+   The engine already reads the tags (`MechView3D.joints` / `hardpoints`, built while Ryan
+   was out on 17 September, tested on a scratch-tagged copy, not his file): joints idle
+   (slow settle about X, left and right out of step), swing on a melee strike and recoil on
+   a ranged one where they carry a pin (`strike(ranged)`, called from the skirmish's attack
+   animation); `mount(n, scene, maker)` / `unmount(n)` swap a component model onto a pin.
+   `RIFTGATE_MECH3D_MODEL=<id>` previews another exported file in every slot. Untagged
+   models draw as before. After Ryan's tags land: re-export, check the swing direction and
+   size against his pivots, then components as models under the pins, map tokens, livery
+   on a rear or top plate.
 4. Gate, defences and hangar as models.
 5. Play on a phone with the damage ranges in; tune numbers, map size, squad speeds, Rift
    Pressure. Hangar: repair, rewards, one-shots, command die. Enemy art via foeforge for the

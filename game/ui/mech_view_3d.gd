@@ -67,6 +67,16 @@ var yaw: float = YAW_FRONT
 var frame_override: Vector2i = Vector2i.ZERO
 const SPIN_SPEED := 0.7           # radians per second
 
+# The model's tags, from the Empties in the Blender file (tools/blendforge/README.md):
+# `joint_<name>` is a pivot with the limb's parts under it, `hp_<n>` is a weapon socket with
+# its placeholder under it. Both come through the glTF as plain Node3Ds by name.
+var joints: Dictionary = {}       # "shoulder_l" -> Node3D
+var hardpoints: Dictionary = {}   # 1 -> Node3D
+var _rest: Dictionary = {}        # joint name -> rest rotation (Vector3)
+var _idle: Dictionary = {}        # joint name -> idle rotation offset, added on top of rest and strikes
+var _strike: Dictionary = {}      # joint name -> strike rotation offset (tweened)
+const IDLE_SWING := 0.022         # radians: a shoulder settling, barely there
+
 var _inner: SubViewport
 var _camera: Camera3D
 var _model: Node3D
@@ -74,6 +84,33 @@ var _model: Node3D
 
 static func has_model(chassis_id: String) -> bool:
 	return ResourceLoader.exists("res://art/models/%s.glb" % chassis_id)
+
+
+## Which glTF a chassis draws: its own, else the fallback. RIFTGATE_MECH3D_MODEL=<id> shows
+## another exported file in every slot instead, for previewing a model without installing it.
+static func model_for(chassis_id: String, fallback: String) -> String:
+	var over := OS.get_environment("RIFTGATE_MECH3D_MODEL")
+	if not over.is_empty() and has_model(over):
+		return over
+	return chassis_id if has_model(chassis_id) else fallback
+
+
+## What a node name in the model means: ["joint", "shoulder_l"], ["hp", 1], or [] for a part.
+## Godot's importer may append a suffix to keep names unique; the tag survives that.
+static func parse_tag(node_name: String) -> Array:
+	if node_name.begins_with("joint_") and node_name.length() > 6:
+		return ["joint", node_name.substr(6)]
+	if node_name.begins_with("hp_"):
+		var rest := node_name.substr(3)
+		var digits := ""
+		for ch in rest:
+			if ch.is_valid_int():
+				digits += ch
+			else:
+				break
+		if not digits.is_empty():
+			return ["hp", int(digits)]
+	return []
 
 
 ## Which look the screens use: "clean" by default, RIFTGATE_MECH3D=pixel for the pixel look,
@@ -95,7 +132,7 @@ static func make(chassis_id: String, maker: String, look: String, fallback: Stri
 	v.yaw = yaw_deg
 	v.frame_override = frame
 	v.spin = spinning
-	v._setup(chassis_id if has_model(chassis_id) else fallback, maker)
+	v._setup(model_for(chassis_id, fallback), maker)
 	return v
 
 
@@ -128,6 +165,7 @@ func _setup(chassis_id: String, maker: String) -> void:
 	_model.rotation.y = deg_to_rad(yaw)
 	_inner.add_child(_model)
 	_apply_materials(_model, maker)
+	_collect_tags(_model)
 
 	_camera = Camera3D.new()
 	_camera.projection = Camera3D.PROJECTION_ORTHOGONAL
@@ -150,7 +188,7 @@ func _setup(chassis_id: String, maker: String) -> void:
 
 func _ready() -> void:
 	_frame_camera()
-	set_process(spin or sway)
+	set_process(spin or sway or not joints.is_empty())
 
 
 func _process(delta: float) -> void:
@@ -162,6 +200,103 @@ func _process(delta: float) -> void:
 	elif sway:
 		_model.rotation.y = deg_to_rad(yaw) + sin(_t * 0.9 + sway_phase) * sway_yaw
 		_model.position.y = sin(_t * 1.9 + sway_phase) * sway_bob + sin(_t * 0.6 + sway_phase) * sway_bob * 0.5
+	if not joints.is_empty():
+		# A ground machine's idle is its limbs: each joint settles slowly about its pivot,
+		# left and right out of step, so the mech stands like a machine under power.
+		var k := 0
+		for name in joints.keys():
+			var side := 1.0 if str(name).ends_with("_r") else -1.0
+			_idle[name] = Vector3(sin(_t * 0.7 + sway_phase + k * 1.3) * IDLE_SWING * side, 0.0, 0.0)
+			k += 1
+		_pose_joints()
+
+
+## Rest plus idle plus strike, applied to every joint. Rotations are about the joint's own
+## axes: x swings a limb forward and back (Blender's X, the axle line), y turns it in.
+func _pose_joints() -> void:
+	for name in joints.keys():
+		var j: Node3D = joints[name]
+		j.rotation = _rest[name] + _idle.get(name, Vector3.ZERO) + _strike.get(name, Vector3.ZERO)
+
+
+## A blow: the shoulders swing the arms forward and back. Ranged: only the arms with a
+## weapon socket kick back, a recoil. Does nothing on an untagged model.
+func strike(ranged: bool) -> void:
+	if joints.is_empty() or not is_inside_tree():
+		return
+	var armed := {}
+	for n in hardpoints.keys():
+		var owner := _joint_of(hardpoints[n])
+		if not owner.is_empty():
+			armed[owner] = true
+	for name in joints.keys():
+		var swing: float
+		if ranged:
+			if not armed.has(name):
+				continue
+			swing = 0.09
+		else:
+			swing = -0.5
+		var tw := create_tween()
+		tw.tween_method(_set_strike.bind(name), Vector3.ZERO, Vector3(swing, 0.0, 0.0), 0.10 if not ranged else 0.05).set_ease(Tween.EASE_OUT)
+		tw.tween_method(_set_strike.bind(name), Vector3(swing, 0.0, 0.0), Vector3.ZERO, 0.28 if not ranged else 0.2).set_ease(Tween.EASE_IN_OUT)
+
+
+func _set_strike(value: Vector3, name: String) -> void:
+	_strike[name] = value
+	_pose_joints()
+
+
+## The joint a node hangs under, by name, or "" when it is on the body.
+func _joint_of(node: Node) -> String:
+	var p := node.get_parent()
+	while p != null and p != _model:
+		var tag := parse_tag(p.name)
+		if tag.size() == 2 and tag[0] == "joint":
+			return str(tag[1])
+		p = p.get_parent()
+	return ""
+
+
+## Hang a component's model on a socket: the placeholder under `hp_<n>` is hidden and the
+## scene is added under the pin, so it points where the pin points. Returns false when the
+## model has no such socket.
+func mount(n: int, scene: PackedScene, maker: String) -> bool:
+	if not hardpoints.has(n):
+		return false
+	var pin: Node3D = hardpoints[n]
+	for c in pin.get_children():
+		if c is Node3D:
+			c.visible = false
+	var part := scene.instantiate()
+	part.set_meta("mounted", true)
+	pin.add_child(part)
+	_apply_materials(part, maker)
+	return true
+
+
+## Show the placeholder again and drop anything mounted.
+func unmount(n: int) -> void:
+	if not hardpoints.has(n):
+		return
+	var pin: Node3D = hardpoints[n]
+	for c in pin.get_children():
+		if c.has_meta("mounted"):
+			c.queue_free()
+		elif c is Node3D:
+			c.visible = true
+
+
+func _collect_tags(node: Node) -> void:
+	var tag := parse_tag(node.name)
+	if tag.size() == 2 and node is Node3D:
+		if tag[0] == "joint":
+			joints[tag[1]] = node
+			_rest[tag[1]] = (node as Node3D).rotation
+		else:
+			hardpoints[tag[1]] = node
+	for c in node.get_children():
+		_collect_tags(c)
 
 
 func _apply_materials(node: Node, maker: String) -> void:

@@ -162,7 +162,18 @@ named `joint_<name>` (say `joint_shoulder_l`) placed at the pivot, and the limb'
 parented to it: select the parts, then the Empty last, Ctrl+P, Object (Keep Transform).
 Rotating the Empty then swings the limb, the glTF keeps that hierarchy, and the engine can
 animate the node without an armature. No rig, no weights, no skinning: a handful of joints
-per mech is all this game needs.
+per mech is all this game needs. Leave every joint at zero rotation when you save: that is
+the rest pose.
+
+**What the engine does with them** (`game/ui/mech_view_3d.gd`, since 17 September). Every
+`joint_*` node idles: a slow settle of a couple of degrees about its X axis (Blender's X,
+the axle line: forward and back), left and right out of step, so a ground machine stands
+under power instead of frozen. On a melee attack every joint swings forward and back; on a
+ranged attack only the joints that carry an `hp_*` pin kick back, a recoil. `hp_*` pins are
+sockets: `mount(n, scene, maker)` hides the placeholder under the pin and hangs a component
+model there, pointing where the pin points; `unmount(n)` puts the placeholder back. A model
+with no tags draws as before. To preview an export without installing it, export under
+another name and set `RIFTGATE_MECH3D_MODEL=<name>`: every slot draws that file.
 
 **Guiding it from Blender.** Where a rule needs judgement, place an Empty in the massing
 file and the rule follows it instead of guessing: `ram_1_a` and `ram_1_b` for a hydraulic

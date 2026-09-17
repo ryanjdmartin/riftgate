@@ -71,6 +71,7 @@ var _codex_body: Label
 var _codex_designation: HudButton   # a stamped tag, not a label, so the plate does not read as three stacked lines
 var _codex_stats: StatBlock
 var _codex_view: MechView3D = null   # the spinning model, when mechs are 3D
+var _mech_3d: Array[MechView3D] = [] # parallel to _mech_views; null where the mech is a sprite
 var _codex_actions: Label
 var _codex_passive: Label
 var _codex_faces: FaceListView
@@ -153,6 +154,7 @@ func _build() -> void:
 	_massive_views.resize(sk.columns)
 	_massive_views.fill(null)
 	_mech_views.clear()
+	_mech_3d.clear()
 	_dice.clear()
 	custom_minimum_size = Vector2(W, H)
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -252,6 +254,7 @@ func _build() -> void:
 		# Mechs are 3D (decided 16 September). RIFTGATE_MECH3D=pixel switches the look,
 		# RIFTGATE_MECH3D=off falls back to the 2D sprites; a chassis with no model uses the Badger's.
 		var look := MechView3D.look_setting()
+		_mech_3d.append(null)
 		if look == "pixel" or look == "clean":
 			var maker := str(ContentDB.load_default().chassis.get(ms.unit.chassis_id, {}).get("maker", "minerva"))
 			var view := MechView3D.make(ms.unit.chassis_id, maker, look, "badger", MechView3D.YAW_SKIRMISH)
@@ -267,6 +270,7 @@ func _build() -> void:
 				view.sway_yaw = 0.04
 			view.sway_phase = i * 2.1
 			add_child(view)
+			_mech_3d[i] = view
 			v.sprite = view.texture
 			if look == "clean":
 				v.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
@@ -965,6 +969,9 @@ func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool) -> void
 	if not is_inside_tree() or attacker == null:
 		return
 	var origin := attacker.position
+	var mi := _mech_views.find(attacker)
+	if mi >= 0 and mi < _mech_3d.size() and _mech_3d[mi] != null:
+		_mech_3d[mi].strike(ranged)   # the arms swing when the model has joints
 	var tw := create_tween()
 	if ranged or target == null:
 		var kick := Vector2(0.0, 8.0) if attacker in _mech_views else Vector2(0.0, -8.0)
