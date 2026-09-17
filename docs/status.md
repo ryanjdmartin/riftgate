@@ -39,7 +39,9 @@ stack collars; per the chassis kit, extras like the Badger's work lights and tow
 `<id>_polished.blend`), then `forge.py export`
 (bakes occlusion and pointiness into a `wear` vertex colour, writes `art/models/<id>.glb`),
 then `--import`. `game/ui/mech_view_3d.gd` draws it in the skirmish screen and the codex with
-`mech_toon.gdshader` (pixel or clean look; the clean look reads the wear bake) and
+`mech_toon.gdshader` (pixel or clean look; the clean look reads the wear bake and runs a
+procedural surface pass per material role: dust, rust, chips, tread bands, seams, specular,
+glass and lamp glow, all uniforms, no UVs) and
 `outline.gdshader`; The 3D clean look is the default when a window exists;
 `RIFTGATE_MECH3D=pixel|off` overrides, headless runs use sprites. The skirmish shows mechs
 in rear three-quarter facing the foes; the codex spins the model in a 200x240 frame. The Badger is the only modelled mech;

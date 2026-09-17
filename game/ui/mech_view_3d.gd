@@ -34,6 +34,16 @@ const RAMPS := {
 	"rivet": ["2b3038", "4a525e", "737d8a", "a3acb6"],
 	"panel": ["2b3038", "4a525e", "737d8a", "a3acb6"],
 }
+# What the shader's surface pass needs to know about a material: which kind of thing it is.
+const ROLE_INDEX := {
+	"steel": 0, "rivet": 0, "panel": 0, "white": 0,
+	"steel_dark": 1, "grille": 1, "bore": 1,
+	"livery": 2,
+	"glass": 3,
+	"amber": 4,
+	"hot": 5,
+	"rubber": 6, "tread": 6,
+}
 const LIVERY := {
 	"minerva": ["3a0f16", "5a1620", "8a2430", "b8303f"],
 	"kestrel": ["132148", "1c3270", "2d4fa8", "4a74d8"],
@@ -154,6 +164,7 @@ func _apply_materials(node: Node, maker: String) -> void:
 			for t in range(4):
 				m.set_shader_parameter("tone%d" % t, Color(ramp[t]))
 			m.set_shader_parameter("bands", 4 if mode == "pixel" else 0)
+			m.set_shader_parameter("role", ROLE_INDEX.get(role, 0))
 			mi.set_surface_override_material(i, m)
 	for c in node.get_children():
 		_apply_materials(c, maker)
