@@ -337,7 +337,7 @@ func test_big_hull_hits_always_injure_a_face() -> void:
 		assert_eq(_cracked_count(d), 1, "a half-hull hit cracks one face, no coin toss (seed %d)" % seed_value)
 
 
-func test_injury_rolls_the_die_and_a_destroyed_face_takes_the_blow() -> void:
+func test_injury_rolls_the_die_and_a_destroyed_component_takes_the_blow() -> void:
 	var sk := Skirmish.new(5)
 	var d := Die.of([Face.blank(), Face.blank(), Face.attack(10, L, K.CLEAVE)])
 	var m := _mech("A", d, 0, 100)
@@ -471,7 +471,7 @@ func test_pierce_hits_a_massive_foe_once() -> void:
 	assert_eq(sk.front[0].hp, 110, "took 30, not 60")
 
 
-func test_shield_face_helps_an_ally() -> void:
+func test_shield_component_helps_an_ally() -> void:
 	var sk := Skirmish.new(1)
 	var giver := _mech("Giver", Die.single(Face.shield(30)), 40, 100)
 	var taker := _mech("Taker", Die.single(Face.attack(10, L)), 0, 100)

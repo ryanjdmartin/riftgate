@@ -24,16 +24,16 @@ Status: 62 implemented, 14 planned, 1 idea.
 | **Fixed component** | The part of the machine that is the machine. Restriction makes the build. | A component built into the chassis: always on the die, never removed, never sold, and it uses no hardpoint. The Badger's claw and its plating are fixed. | implemented |
 | **Empty hardpoint** | You ran light. The die remembers. | A hardpoint with nothing in it is an entry on the die that does nothing when it comes up. Nothing fills it for you. | implemented |
 
-## Face Kind
+## Component Kind
 
 | Term | Fantasy | Codex | Status |
 |---|---|---|---|
-| **Attack face** | A gun, a claw, a shell. The primary icon is its reach. | Spend on a foe within reach to deal its power in damage, then apply its keywords and heat. | implemented |
-| **Shield face** | Raise the plating. Yours or a friend's. | Spend on self or an ally to add its power in shield, capped at that mech's shield maximum. | implemented |
-| **Vent face** | Blow the heat out of the reactor before it blows out of the hull. | Spend on self or an ally to remove its power in heat. | implemented |
+| **Attack component** | A gun, a claw, a shell. The primary icon is its reach. | Spend on a foe within reach to deal its power in damage, then apply its keywords and heat. | implemented |
+| **Shield component** | Raise the plating. Yours or a friend's. | Spend on self or an ally to add its power in shield, capped at that mech's shield maximum. | implemented |
+| **Vent component** | Blow the heat out of the reactor before it blows out of the hull. | Spend on self or an ally to remove its power in heat. | implemented |
 | **Cracked component** | Something inside is broken and the die shows it. | A cracked component still acts but loses all modifiers: keywords, crit chance and unique effect. A destroyed component is blank and does nothing when it comes up. Both persist until repaired in the hangar. | implemented |
 
-## Face Property
+## Component Property
 
 | Term | Fantasy | Codex | Status |
 |---|---|---|---|
