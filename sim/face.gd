@@ -34,6 +34,8 @@ var keywords: Array[int] = []
 var heat: int = 0
 var label: String = ""
 var cracked: bool = false     # injured: modifiers gone, basic action intact
+var component: String = ""    # the component this entry is (content id); "" for an empty hardpoint
+var empty: bool = false       # an empty hardpoint: blank, and nothing was ever there to break
 
 
 ## `kws` may be a single Keyword or an Array of them. `pwr_max` of 0 means static.
@@ -77,6 +79,13 @@ static func blank() -> Face:
 	f.reach = Reach.NONE
 	f.power = 0
 	f.power_max = 0
+	return f
+
+
+## A hardpoint with nothing in it: an entry on the die that does nothing when it comes up.
+static func empty_slot() -> Face:
+	var f := blank()
+	f.empty = true
 	return f
 
 
@@ -169,13 +178,15 @@ func duplicate_face() -> Face:
 	f.heat = heat
 	f.label = label
 	f.cracked = cracked
+	f.component = component
+	f.empty = empty
 	for k in keywords:
 		f.keywords.append(k)
 	return f
 
 
-## An injury: the face keeps its basic action (kind, reach, power) and loses everything that
-## modified it. A cracked face hit again is destroyed, which is Face.blank().
+## An injury: the component keeps its basic action (kind, reach, power) and loses everything
+## that modified it. A cracked component hit again is destroyed, which is Face.blank().
 func crack() -> void:
 	cracked = true
 	keywords.clear()
@@ -193,7 +204,7 @@ func describe() -> String:
 	var s := ""
 	match kind:
 		Kind.BLANK:
-			return "destroyed"
+			return "empty hardpoint" if empty else "destroyed"
 		Kind.SHIELD:
 			s = "shield %d" % power
 		Kind.VENT:

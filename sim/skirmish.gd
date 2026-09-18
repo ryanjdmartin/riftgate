@@ -163,7 +163,7 @@ func pending_heat(ms: MechState) -> int:
 	var heat := f.heat
 	if f.has(Face.Keyword.OVERCHARGE):
 		heat *= 2
-	return Passives.on_attack(ms.unit.passive, 0, heat)[1]
+	return Passives.on_attack(ms.unit.passive, 0, heat, f)[1]
 
 
 ## The foes that will strike this mech when the round ends, in the order they act: alive,
@@ -344,7 +344,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 	var vent := 0
 	if crit:
 		dmg *= 2
-		var c := Passives.on_crit(ms.unit.passive, dmg)
+		var c := Passives.on_crit(ms.unit.passive, dmg, f)
 		dmg = c["damage"]
 		extra_burn = c["burn"]
 		vent = c["vent"]
@@ -353,7 +353,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 		heat *= 2
 	if f.has(Face.Keyword.EXECUTE) and target.hp * 2 <= target.hp_max:
 		dmg *= 2
-	var modded := Passives.on_attack(ms.unit.passive, dmg, heat)
+	var modded := Passives.on_attack(ms.unit.passive, dmg, heat, f)
 	dmg = modded[0]
 	heat = modded[1]
 	last_roll = {"mech": mech_index, "target": target, "rolled": rolled, "final": dmg, "crit": crit, "ranged": f.is_ranged()}
@@ -421,30 +421,36 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 		apply_injury(ms)
 
 
-## The injury rolls the die and hits the face it lands on. An intact face cracks: keywords,
-## crit and unique effect are gone, the basic action stays. A cracked face is destroyed:
-## blank. A destroyed face takes the blow and nothing happens, so a mech with little left to
-## break shrugs off more of them. The damage is a damaged component: it lives on the unit and
-## persists until repaired in the hangar. (Decided 17 September: one threshold, one roll.)
+## The injury rolls the die and hits the component it lands on. An intact component cracks:
+## keywords, crit and unique effect are gone, the basic action stays. A cracked component is
+## destroyed: blank. A destroyed component or an empty hardpoint takes the blow and nothing
+## happens, so a mech with little left to break shrugs off more of them. The damage lives on
+## the unit and persists until repaired in the hangar. (Decided 17 September: one threshold,
+## one roll.) A passive may say no_destroy on_injury: then a cracked component holds.
 func apply_injury(ms: MechState) -> void:
 	if ms.die.faces.is_empty():
 		return
 	var idx := ms.die.roll(rng)
 	var f := ms.die.faces[idx]
 	if f.kind == Face.Kind.BLANK:
-		log.append("%s: the blow lands on a destroyed component; nothing left to break" % ms.unit.display_name)
+		log.append("%s: the blow lands on %s; nothing left to break" % [ms.unit.display_name, "an empty hardpoint" if f.empty else "a destroyed component"])
 		return
 	var originals: Dictionary = ms.unit.damaged_faces
-	if not originals.has(idx):
-		originals[idx] = f.duplicate_face()
+	var what := f.describe()
 	if f.cracked:
-		ms.die.faces[idx] = Face.blank()
-		log.append("%s: a cracked component is destroyed (%s)" % [ms.unit.display_name, originals[idx].describe()])
+		if bool(Passives.on_injury(ms.unit.passive, f)["no_destroy"]):
+			log.append("%s: %s holds, cracked but not destroyed" % [ms.unit.display_name, what])
+			return
+		var d := Face.blank()
+		d.component = f.component
+		ms.die.faces[idx] = d
+		log.append("%s: a cracked component is destroyed (%s)" % [ms.unit.display_name, what])
 	else:
+		originals[idx] = f.duplicate_face()
 		var c := f.duplicate_face()
 		c.crack()
 		ms.die.faces[idx] = c
-		log.append("%s: a component cracks (%s)" % [ms.unit.display_name, originals[idx].describe()])
+		log.append("%s: a component cracks (%s)" % [ms.unit.display_name, what])
 
 
 func _pick_mech_target() -> MechState:

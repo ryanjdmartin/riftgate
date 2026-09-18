@@ -1,5 +1,5 @@
 {
-  "_about": "Chassis. Not classes: any silhouette, any component in any slot. Numbers are in tens. hardpoints is the die size. loadout is the default components; if their faces total fewer than hardpoints, filler fills the rest. passive is zero or one object: name and description are shown (the codex prints NAME: description), effects are what the engine runs, at most three, one idea (an upside and its cost count as one passive); the validator refuses effects the engine cannot execute. Shown to the player: codex (the inspect entry, combat and hangar), flavour (an in-world quote), the passive's name and description. design is internal and never shown: fantasy (pitch, inspiration, homages), niche (the role it is meant to fill). Makers are placeholders.",
+  "_about": "Chassis. Not classes: any silhouette, any component in any slot. Numbers are in tens. hardpoints is the number of free slots (and of hp_<n> pins on the model); fixed lists the components built into the chassis (always on the die, never removed, no hardpoint used); loadout is the components fitted to the hardpoints by default, and a hardpoint left empty is an entry on the die that does nothing. Every component is one entry, so die size is fixed count plus hardpoints. passive is zero or one object: name and description are shown (the codex prints NAME: description), effects are what the engine runs, at most three, one idea (an upside and its cost count as one passive); the validator refuses effects the engine cannot execute. Shown to the player: codex (the inspect entry, combat and hangar), flavour (an in-world quote), the passive's name and description. design is internal and never shown: fantasy (pitch, inspiration, homages), niche (the role it is meant to fill). Makers are placeholders.",
   "makers": [
     { "id": "minerva", "name": "Minerva Heavy Works", "style": "Armour first. Everything is a tank, even the ones with legs.", "voice": "Maintenance manual. Terse, exact, proud of tolerances." },
     { "id": "kestrel", "name": "Kestrel Dynamics", "style": "Fast, fragile, over-tuned. Airframes and interceptors.", "voice": "Flight-test log. Clipped, numbers first." },
@@ -7,18 +7,18 @@
   ],
   "entries": [
     {
-      "id": "badger", "name": "Badger", "designation": "EX-45XLE Combat Miner Frame", "maker": "minerva", "silhouette": "tracked",
+      "id": "badger", "name": "Honey Badger", "designation": "EX-45XLE Combat Miner Frame", "maker": "minerva", "silhouette": "tracked",
       "design": { "fantasy": "A repurposed mining vehicle, designed to take severe punishment and keep on working. Refurbishments were minimal, basically bolting on weapons and armour, it keeps most of its utilitarian mining machinery flavour.", "niche": "tanky bruiser." },
       "codex": "The Minerva EX-45L (colloquially nicknamed the \"Badger\") was popular a mining mech widely praised for its reliability and durability, being designed to operate in the harshest, deepest environments imaginable. Reports exist of Badgers being caught in cave-ins while mining over 5 kilometers underground, only to dig their way out to the surface by nightfall, just in time for drinks with the crew. So naturally, when the Rifts opened, the ever-practical Minerva engineering team's first instinct was to finally give their prized Badger claws, teeth, and as many missiles as it could carry, putting its legendary longevity to work on the battlefield.",
-      "hull": 200, "shield": 30, "movespeed": 2, "heat_max": 100, "hardpoints": 7,
+      "hull": 200, "shield": 30, "movespeed": 2, "heat_max": 100, "hardpoints": 4,
       "traits": ["tank"],
-      "loadout": ["slug_cannon", "chainsaw_claw", "ablative_plating"],
-      "filler": { "kind": "shield", "power": 10 },
+      "fixed": ["chainsaw_claw", "ablative_plating"],
+      "loadout": ["slug_cannon", "slug_cannon", "twin_autoguns", "heat_sink"],
       "passive": {
         "id": "reinforced_skeleton", "name": "Reinforced Skeleton",
-        "description": "Minerva does not build guns that whiff.",
+        "description": "Legendary Minervan strength. Components can be cracked but never destroyed.",
         "effects": [
-          { "trigger": "on_attack", "effect": "min_damage", "value": 30 }
+          { "trigger": "on_injury", "effect": "no_destroy", "value": 1 }
         ]
       },
       "flavour": "Hey Russ, ain't that yer Badger over there, covered in demon innards? I thought they retired the ol' girl!"
@@ -29,8 +29,8 @@
       "codex": "The Wainwright & Sutler general-purpose walker. Six hardpoints and no opinions about what goes in them; whatever the squad is missing, this is where it gets bolted on.",
       "hull": 100, "shield": 40, "movespeed": 3, "heat_max": 60, "hardpoints": 6,
       "traits": ["walker"],
-      "loadout": ["twin_autoguns", "lance", "pocket_mortar", "ablative_plating", "heat_sink"],
-      "filler": { "kind": "shield", "power": 10 },
+      "fixed": [],
+      "loadout": ["twin_autoguns", "twin_autoguns", "lance", "pocket_mortar", "ablative_plating", "heat_sink"],
       "passive": null,
       "flavour": "Wainwright & Sutler walker frame. Six hardpoints, no favourites. The one that comes back."
     },
@@ -40,8 +40,8 @@
       "codex": "Kestrel's interceptor. Hits twice as hard as anything its size and runs twice as hot doing it. Somebody else carries the fire extinguisher.",
       "hull": 60, "shield": 60, "movespeed": 5, "heat_max": 60, "hardpoints": 4,
       "traits": ["flyer"],
+      "fixed": [],
       "loadout": ["overclocked_railgun", "headhunter_rifle", "arc_projector", "deflector"],
-      "filler": { "kind": "shield", "power": 10 },
       "passive": {
         "id": "hot_hands", "name": "Hot Hands",
         "description": "Everything it fires, it fires too hard.",
@@ -58,8 +58,8 @@
       "codex": "Wainwright & Sutler's fire-support walker. Reaches their back rank from ours, and what it sets alight stays alight.",
       "hull": 120, "shield": 30, "movespeed": 2, "heat_max": 70, "hardpoints": 6,
       "traits": ["walker"],
-      "loadout": ["howitzer", "incendiary_shells", "shock_barrage", "coolant_dump", "flak_skirt"],
-      "filler": { "kind": "shield", "power": 10 },
+      "fixed": [],
+      "loadout": ["howitzer", "howitzer", "incendiary_shells", "shock_barrage", "coolant_dump", "flak_skirt"],
       "passive": {
         "id": "hot_load", "name": "Hot Load",
         "description": "When an Wainwright & Sutler shell lands right, it keeps burning.",

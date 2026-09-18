@@ -1,7 +1,10 @@
 class_name Die
 extends RefCounted
 
-## A mech's die. Its size is its face count: one face per hardpoint, chassis fills the rest.
+## A mech's die: one entry per component slot, the chassis's fixed components first, then
+## its hardpoints (a component of size two appears twice; an empty hardpoint is a blank
+## entry). The player never sees a polyhedron, so shown text says "component", not "face";
+## Face is the engine's word for one entry.
 
 var faces: Array[Face] = []
 

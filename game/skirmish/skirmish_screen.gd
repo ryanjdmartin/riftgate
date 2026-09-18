@@ -240,7 +240,7 @@ func _build() -> void:
 	_reroll_btn.font_size = 20
 	_reroll_btn.badge_size = 20
 	_reroll_btn.center_text = true
-	_reroll_btn.tooltip_text = "A reroll never shows the same face twice."
+	_reroll_btn.tooltip_text = "A reroll never shows the same component twice."
 	_place(_reroll_btn, Vector2(W * 0.5 - REROLL_SIZE.x * 0.5, REROLL_Y), REROLL_SIZE)
 
 	# Mechs: gauges hugging the sprite, three-quarter sprite, chip row beneath.
@@ -286,7 +286,7 @@ func _build() -> void:
 	_place(_end_btn, Vector2(16, BOTTOM_Y), BOTTOM_BTN)
 	_withdraw_btn = HudButton.new("WITHDRAW", _on_withdraw)
 	_withdraw_btn.ghost = true
-	_withdraw_btn.tooltip_text = "Available at the start of a round, before spending a face."
+	_withdraw_btn.tooltip_text = "Available at the start of a round, before spending a component."
 	_place(_withdraw_btn, Vector2(W - 16 - BOTTOM_BTN.x, BOTTOM_Y), BOTTOM_BTN)
 
 	# Overlays: arrows, drag ghost, roll flash, details, codex, confirm, outcome.
@@ -645,7 +645,7 @@ func _foe_rows(foe: Foe) -> Array:
 	if foe.suppressed:
 		rows.append(["suppress", "", "Suppressed: loses its action this round", Palette.HUD])
 	if foe.rank == 1 and sk.is_exposed(foe.column):
-		rows.append(["exposed", "", "Exposed: nothing in front, line faces reach it", Palette.HUD])
+		rows.append(["exposed", "", "Exposed: nothing in front, line weapons reach it", Palette.HUD])
 	return rows
 
 
@@ -660,13 +660,13 @@ func _mech_rows(i: int) -> Array:
 		rows.append(["lock", "", "Die locked: reroll skips it", Palette.HUD])
 	if ms.heat >= ms.heat_max:
 		rows.append(["heat", "MAX", "Heat at maximum: any more burns hull", Palette.HEAT])
-	var damaged := ms.unit.damaged_face_count()
+	var damaged := ms.unit.damaged_component_count()
 	if damaged > 0:
 		rows.append(["crack", str(damaged), "%d damaged component%s: repair in the hangar" % [damaged, "" if damaged == 1 else "s"], Palette.HUD])
 	if sk.state == Skirmish.State.ASSIGN:
 		var fc := sk.forecast(ms)
 		if int(fc["overheat"]) > 0:
-			rows.append(["heat", "+%d" % int(fc["overheat"]), "This face overheats: hull -%d" % int(fc["overheat"]), Palette.HEAT])
+			rows.append(["heat", "+%d" % int(fc["overheat"]), "This component overheats: hull -%d" % int(fc["overheat"]), Palette.HEAT])
 		if bool(fc["destroyed"]):
 			rows.append(["skull", "", "Wrecked this round: %d incoming" % int(fc["incoming"]), Palette.ENEMY])
 		elif bool(fc["component_risk"]):
@@ -773,7 +773,7 @@ func _on_die_double_tapped(i: int) -> void:
 	var entry := db.codex_for_unit(ms.unit)
 	entry["title"] = "%s die" % ms.unit.display_name
 	entry["designation"] = ""     # the die is not the machine: no spec-plate tag, no quotes
-	entry["subtitle"] = "D%d // ONE FACE PER HARDPOINT // EACH FACE 1 IN %d PER ROLL // A REROLL NEVER REPEATS A FACE" % [ms.die.size(), ms.die.size()]
+	entry["subtitle"] = "D%d // ONE ENTRY PER COMPONENT SLOT // EACH 1 IN %d PER ROLL // A REROLL NEVER REPEATS" % [ms.die.size(), ms.die.size()]
 	entry["body"] = ""
 	entry["stats"] = ""
 	entry["stat_items"] = []

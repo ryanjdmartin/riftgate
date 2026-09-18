@@ -2,18 +2,27 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 57 implemented, 14 planned, 1 idea.
+Status: 62 implemented, 14 planned, 1 idea.
 
 ## Resource
 
 | Term | Fantasy | Codex | Status |
 |---|---|---|---|
 | **Hull** | The machine itself. When it is gone, the machine is a wreck. | Damage that gets past shield removes hull. Hull never recovers during a battle. At zero the mech is a wreck to be salvaged after the battle. | implemented |
-| **Shield** | A buffer that buys you a few rounds to solve the squad before it starts costing you the machine. | Enemy damage removes shield before hull. Shield faces add shield up to the chassis maximum. Shields recharge fully between skirmishes. | implemented |
-| **Heat** | Every gun has a price, and the big ones are paid in smoke. | Attack faces may add heat. Heat above the chassis maximum spills into hull damage one for one. Vent faces remove heat. | implemented |
-| **Reroll** | You do not like what you see. You get three chances to change your mind, and the machine never shows you the same thing twice. | Three rerolls per round, each rerolling every unlocked, unspent mech die. A reroll always lands on a different face: never the one showing, never one equivalent to it (a die whose faces are all alike keeps its face). Rerolls may be spent before or after attacking, so a low damage roll is information for the rest of the round. Never pooled across rounds. | implemented |
+| **Shield** | A buffer that buys you a few rounds to solve the squad before it starts costing you the machine. | Enemy damage removes shield before hull. Shield components add shield up to the chassis maximum. Shields recharge fully between skirmishes. | implemented |
+| **Heat** | Every gun has a price, and the big ones are paid in smoke. | Attack components may add heat. Heat above the chassis maximum spills into hull damage one for one. Vent components remove heat. | implemented |
+| **Reroll** | You do not like what you see. You get three chances to change your mind, and the machine never shows you the same thing twice. | Three rerolls per round, each rerolling every unlocked, unspent mech die. A reroll always lands on a different component: never the one showing, never one equivalent to it (a die whose components are all alike keeps what it shows). Rerolls may be spent before or after attacking, so a low damage roll is information for the rest of the round. Never pooled across rounds. | implemented |
 | **Rift Pressure** | The city is running out of time, and there is a bar on screen that says so. | Ticks once per battlefield phase and once per skirmish round. When full it resets and a fresh squad emerges at the rift. | implemented |
 | **Gate Integrity** | The last wall of mankind. If it falls the campaign is over. | A squad whose path reaches the gate strikes it instead of moving. Gate integrity persists across battles and is repaired in the meta. | implemented |
+
+## Equipment
+
+| Term | Fantasy | Codex | Status |
+|---|---|---|---|
+| **Component** | The gun, the plate, the heat sink. What the machine is made of, and what the die shows. | A piece of equipment on a mech, and one entry on its die. There is no generic equipment: every entry on a die is a component, or an empty hardpoint. Each round the die is rolled and the component that comes up is what the mech can do. | implemented |
+| **Hardpoint** | Bolt it on. The chassis does not care what. | A free slot on the chassis. Any component fits any hardpoint. On the model a hardpoint is a socket where the component mounts. | implemented |
+| **Fixed component** | The part of the machine that is the machine. Restriction makes the build. | A component built into the chassis: always on the die, never removed, never sold, and it uses no hardpoint. The Badger's claw and its plating are fixed. | implemented |
+| **Empty hardpoint** | You ran light. The die remembers. | A hardpoint with nothing in it is an entry on the die that does nothing when it comes up. Nothing fills it for you. | implemented |
 
 ## Face Kind
 
@@ -22,14 +31,14 @@ Status: 57 implemented, 14 planned, 1 idea.
 | **Attack face** | A gun, a claw, a shell. The primary icon is its reach. | Spend on a foe within reach to deal its power in damage, then apply its keywords and heat. | implemented |
 | **Shield face** | Raise the plating. Yours or a friend's. | Spend on self or an ally to add its power in shield, capped at that mech's shield maximum. | implemented |
 | **Vent face** | Blow the heat out of the reactor before it blows out of the hull. | Spend on self or an ally to remove its power in heat. | implemented |
-| **Cracked face** | Something inside is broken and the die shows it. | Does nothing when rolled. Only a destroyed face is blank; a cracked face still acts. Persists until repaired in the hangar. | implemented |
+| **Cracked component** | Something inside is broken and the die shows it. | A cracked component still acts but loses all modifiers: keywords, crit chance and unique effect. A destroyed component is blank and does nothing when it comes up. Both persist until repaired in the hangar. | implemented |
 
 ## Face Property
 
 | Term | Fantasy | Codex | Status |
 |---|---|---|---|
-| **Damage range** | Kinetic weapons do not promise. They roll. | A kinetic attack face shows a minimum and a maximum and rolls between them when spent, immediately and visibly. Energy faces show one number and never roll. Numbers are in tens. | implemented |
-| **Critical hit** | Sometimes the round finds the seam. | A kinetic face may carry a crit chance. On a crit the roll is doubled before other multipliers. Energy faces never crit. Crits fire the on_crit passive trigger. | implemented |
+| **Damage range** | Kinetic weapons do not promise. They roll. | A kinetic attack component shows a minimum and a maximum and rolls between them when spent, immediately and visibly. Energy components show one number and never roll. Numbers are in tens. | implemented |
+| **Critical hit** | Sometimes the round finds the seam. | A kinetic component may carry a crit chance. On a crit the roll is doubled before other multipliers. Energy components never crit. Crits fire the on_crit passive trigger. | implemented |
 
 ## Reach
 
@@ -47,14 +56,14 @@ Status: 57 implemented, 14 planned, 1 idea.
 | **Pierce** | The railgun does not care who is standing in front of whom. | Also hits the foe in the other rank of the target's column. | implemented |
 | **Burn** | Set it alight and let it think about its choices. | Adds one burn stack per 20 damage dealt, rounded up. Each round the foe takes 10 per stack, then loses one stack. | implemented |
 | **Suppress** | The big hit it was winding up never lands. | The target skips its telegraphed action this round. | implemented |
-| **Overcharge** | Push the reactor past the red line and hope the housing holds. | Double the face's damage and double its heat. | implemented |
+| **Overcharge** | Push the reactor past the red line and hope the housing holds. | Double the component's damage and double its heat. | implemented |
 | **Execute** | Finish it before it gets back up. | Double damage against a foe at or below half its health. | implemented |
 | **Chain** | The arc jumps to whoever looks weakest. | Also hits the lowest-health foe within reach other than the target. | implemented |
-| **Lock** | That roll was too good to let go. | After this face is spent, the die keeps it into next round instead of rolling. | implemented |
-| **Steady** | No surprises. That is the whole point of it. | A ranged face with steady always deals its average instead of rolling. It may still crit. | implemented |
+| **Lock** | That roll was too good to let go. | After this component is spent, the die keeps it into next round instead of rolling. | implemented |
+| **Steady** | No surprises. That is the whole point of it. | A ranged component with steady always deals its average instead of rolling. It may still crit. | implemented |
 | **Flip** | Turn the die over. The other side is usually better. | Set another mech's die to the face opposite its current one. | planned |
-| **Copy** | Whatever they rolled, you rolled too. | Set this die to the current face of an ally's die. | planned |
-| **Reflect** | Hit me. See what happens. | While shield from this face remains, foes that strike this mech take damage equal to the face's power. | idea |
+| **Copy** | Whatever they rolled, you rolled too. | Set this die to what an ally's die shows. | planned |
+| **Reflect** | Hit me. See what happens. | While shield from this face remains, foes that strike this mech take damage equal to the component's power. | idea |
 
 ## Status
 
@@ -62,8 +71,8 @@ Status: 57 implemented, 14 planned, 1 idea.
 |---|---|---|---|
 | **Burning** | On fire, and getting less on fire every round. | Foe status. See the burn keyword. | implemented |
 | **Suppressed** | Head down, gun silent. | Foe status. Skips its action this round, then clears. | implemented |
-| **Cracked face** | They got through the armour and something important is bent. | Mech status, global rule. When a hit gets past shield and takes at least a quarter of maximum hull in one blow, there is a one-in-two chance one intact face cracks: it loses its keywords, crit chance and unique effect, but still does its basic action. Counterplay is shield before a big telegraphed hit. A cracked face is a damaged component: it persists across skirmishes and battles until repaired in the hangar. | implemented |
-| **Destroyed face** | Hit where it was already broken. | Mech status. When an injury lands on a face that is already cracked, the component is destroyed: the face is blank and does nothing when rolled, until the hangar repairs or replaces it. | implemented |
+| **Cracked component** | They got through the armour and something important is bent. | Mech status, global rule. When a hit gets past shield and takes at least a quarter of maximum hull in one blow, the mech's die is rolled and the component it lands on is injured. An intact component cracks: it loses its keywords, crit chance and unique effect, but still does its basic action. Counterplay is shield before a big telegraphed hit. A cracked component stays cracked across skirmishes and battles until repaired in the hangar. | implemented |
+| **Destroyed component** | Hit where it was already broken. | Mech status. When an injury lands on a component that is already cracked, it is destroyed: blank, it does nothing when it comes up, until the hangar repairs or replaces it. An injury that lands on a destroyed component or an empty hardpoint finds nothing to break, so a badly broken mech shrugs off more of them. | implemented |
 | **Locked** | Held for next round. | Die status. See the lock keyword. | implemented |
 
 ## Formation
@@ -75,9 +84,9 @@ Status: 57 implemented, 14 planned, 1 idea.
 | **Exposed** | Kill the ghoul and the necromancer behind it is suddenly very interested in cover. | A back-rank foe is exposed when the front slot in its column is empty. Exposed foes are in line of fire. | implemented |
 | **Squad pool** | There are always more where those came from. | Foes not yet on the field. Empty slots refill from the pool after each round. The skirmish is won when the field and the pool are both empty. | implemented |
 | **Step up** | The horde closes the gap. | After the dead are cleared, a front-preferring foe in the back rank moves into an empty front slot in its column. | implemented |
-| **Danger close** | You mortared the thing in your face. Your shields are now also in your face. | Indirect fire on the front rank removes shield from the firing mech equal to half the face's power, rounded up. | implemented |
+| **Danger close** | You mortared the thing in your face. Your shields are now also in your face. | Indirect fire on the front rank removes shield from the firing mech equal to half the component's power, rounded up. | implemented |
 | **Massive** | Too big for one slot. Too big for one anything. | A massive foe fills both slots of a column and counts as front rank. Its column is never exposed while it stands. Only some elites and bosses are massive. | implemented |
-| **Withdraw** | Enough. Fall back and let the map decide the rest. | Available at the start of any round after the first, before any face is spent, so there is never free damage. Ends the skirmish; survivors on both sides carry their damage to the battlefield. | implemented |
+| **Withdraw** | Enough. Fall back and let the map decide the rest. | Available at the start of any round after the first, before any component is spent, so there is never free damage. Ends the skirmish; survivors on both sides carry their damage to the battlefield. | implemented |
 
 ## Battlefield
 
@@ -117,22 +126,23 @@ Status: 57 implemented, 14 planned, 1 idea.
 
 | Term | Fantasy | Codex | Status |
 |---|---|---|---|
-| **On attack** | Whenever this mech fires. | Passive trigger. Fires after the damage roll on every attack. Effects: multiply or add damage or heat, or set a minimum damage. | implemented |
+| **On attack** | Whenever this mech fires. | Passive trigger. Fires after the damage roll on every attack. Effects: multiply or add damage or heat, or set a minimum damage. An effect may carry a when condition: component_cracked (only when the component being spent is cracked). | implemented |
 | **On shield gain** | Whenever plating goes up. | Passive trigger. Fires when this mech gains shield from any source. | planned |
 | **On heat gain** | Whenever the reactor runs hotter. | Passive trigger. Fires when this mech gains heat. | planned |
 | **On round start** | As the dice come up. | Passive trigger. Fires after the roll, before rerolls. | planned |
 | **On skirmish start** | As contact is made. | Passive trigger. Fires once when the skirmish begins. | planned |
-| **On crit** | When the round finds the seam. | Passive trigger. Fires when an attack face crits. Effects: multiply or add damage, add burn to the target, vent the attacker's heat. | implemented |
+| **On crit** | When the round finds the seam. | Passive trigger. Fires when an attack component crits. Effects: multiply or add damage, add burn to the target, vent the attacker's heat. | implemented |
 | **On hull damage** | When they get through. | Passive trigger. Fires when this mech loses hull. | planned |
 | **Out of combat** | A phase spent not fighting. | Passive trigger. Fires at the end of a battlefield phase in which this mech had no skirmish. | planned |
+| **on_injury** | What the machine does when something inside it breaks. | Passive trigger. Fires when an injury lands on a component. Effects: no_destroy (a cracked component holds instead of being destroyed). | implemented |
 
 ## Commander
 
 | Term | Fantasy | Codex | Status |
 |---|---|---|---|
-| **Command die** | You are not in the machine. You are the one telling the machines what to do. | One die rolled alongside the mech dice each round. Faces are rechargeable commander abilities and never deal damage. Faces come from the hangar, never from rewards. Die size is a research path. | planned |
+| **Command die** | You are not in the machine. You are the one telling the machines what to do. | One die rolled alongside the mech dice each round. Its entries are rechargeable commander abilities and never deal damage. They come from the hangar, never from rewards. Die size is a research path. | planned |
 | **One-shot** | The button you only get to press once. | Consumable ability. Pouch of three. Picked up from skirmishes, expires when the battle ends. Starting stock restocks every battle. | planned |
-| **Reward pick** | Three things on the table. Take one. | After a skirmish victory: a modifier on a mech face you carry, a one-shot, or a battle-wide boon. Weighted by the squad's faction. | planned |
+| **Reward pick** | Three things on the table. Take one. | After a skirmish victory: a modifier on a component you carry, a one-shot, or a battle-wide boon. Weighted by the squad's faction. | planned |
 
 ## City
 
@@ -153,7 +163,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Critical hit** (implemented): No crit-chance upgrades yet; no visible crit chance on the die face beyond the description.
 - **Flip** (planned): Needs a definition of opposite faces for non-d6 dice.
 - **Reflect** (idea): Would need shield sources to be tracked separately.
-- **Cracked face** (implemented): Threshold and chance are placeholders. Repair cost and the hangar screen are not built.
+- **Cracked component** (implemented): Threshold is a placeholder. Repair cost and the hangar screen are not built.
 - **Squad pool** (implemented): Elites should surface at set points rather than in pool order.
 - **Massive** (implemented): Cleave treats it as a front-rank neighbour; pierce cannot hit anything behind it because nothing is.
 - **Intent** (implemented): Aggro is a fixed flag. Should be a behaviour per foe type.
@@ -169,3 +179,5 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **On hull damage** (planned): Hook for the pinned berserker idea.
 - **Command die** (planned): Open question: whether the command die exists at all, or one-shots only.
 - **City ability** (planned): Consider range limits from the gate so the push north leaves support behind.
+- **Component** (implemented): Multi-slot components were considered and scrapped on 18 September as invisible complexity.
+- **Fixed component** (implemented): Decided against unlocking fixed slots for money (18 September).

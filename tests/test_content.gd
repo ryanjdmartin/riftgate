@@ -26,9 +26,51 @@ func test_every_chassis_builds_a_full_die() -> void:
 	var db := _db()
 	for id in db.chassis.keys():
 		var u := db.make_mech(id)
-		assert_eq(u.die.size(), int(db.chassis[id]["hardpoints"]), "%s die size equals hardpoints" % id)
+		var c: Dictionary = db.chassis[id]
+		assert_eq(u.die.size(), c.get("fixed", []).size() + int(c["hardpoints"]), "%s die size is fixed plus hardpoints" % id)
+		assert_eq(u.hardpoints, int(c["hardpoints"]), "%s knows its free slots" % id)
 		for f in u.die.faces:
-			assert_true(f.kind != Face.Kind.BLANK, "%s ships with no cracked faces" % id)
+			assert_true(f.kind != Face.Kind.BLANK, "%s ships with every hardpoint filled and nothing broken" % id)
+			assert_false(f.component.is_empty(), "%s: every entry names its component" % id)
+		for i in range(c.get("fixed", []).size()):
+			assert_eq(u.die.faces[i].component, str(c["fixed"][i]), "%s: fixed components come first" % id)
+
+
+func test_build_die_leaves_empty_hardpoints_empty() -> void:
+	var db := _db()
+	var d := db.build_die(["chainsaw_claw"], ["slug_cannon"], 3)
+	assert_eq(d.size(), 4, "one fixed plus three hardpoints")
+	assert_eq(d.faces[0].component, "chainsaw_claw", "the fixed claw first")
+	assert_eq(d.faces[1].component, "slug_cannon", "then the loadout")
+	assert_true(d.faces[2].empty and d.faces[3].empty, "two hardpoints left empty stay empty")
+	assert_eq(d.faces[2].describe(), "empty hardpoint", "and say so")
+
+
+func test_chassis_validator_guards_hardpoints() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var c: Dictionary = db.chassis["raptor"].duplicate(true)
+	c["loadout"] = ["deflector", "deflector", "deflector", "deflector", "deflector"]
+	db.chassis["over"] = c
+	var f: Dictionary = db.chassis["badger"].duplicate(true)
+	f["loadout"] = ["chainsaw_claw"]
+	db.chassis["twice"] = f
+	var g: Dictionary = db.chassis["raptor"].duplicate(true)
+	g["filler"] = {"kind": "shield", "power": 10}
+	db.chassis["stuffed"] = g
+	var over := false
+	var twice := false
+	var stuffed := false
+	for e in db.validate():
+		if e.begins_with("chassis over") and e.contains("into 4 hardpoints"):
+			over = true
+		if e.begins_with("chassis twice") and e.contains("is fixed"):
+			twice = true
+		if e.begins_with("chassis stuffed") and e.contains("filler is gone"):
+			stuffed = true
+	assert_true(over, "more components than hardpoints is refused")
+	assert_true(twice, "a fixed component in the loadout is refused")
+	assert_true(stuffed, "filler is refused")
 
 
 func test_raptor_loadout_matches_design() -> void:
@@ -111,7 +153,7 @@ func test_keyword_cap_is_enforced() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var comp: Dictionary = db.components["lance"].duplicate(true)
-	comp["faces"][0]["keywords"] = ["pierce", "burn", "chain", "execute"]
+	comp["face"]["keywords"] = ["pierce", "burn", "chain", "execute"]
 	db.components["too_many"] = comp
 	var errs := db.validate()
 	var hit := false
@@ -184,7 +226,7 @@ func test_planned_passive_is_kept_but_not_run() -> void:
 	db.load_dir(ContentDB.DIR)
 	var c: Dictionary = db.chassis["raptor"].duplicate(true)
 	c["passive"] = {"id": "draft", "name": "Draft", "description": "Not built yet.", "status": "planned",
-		"effects": [{"trigger": "on_injury", "effect": "immune_destroy", "value": 1}]}
+		"effects": [{"trigger": "on_sunrise", "effect": "immune_destroy", "value": 1}]}
 	db.chassis["drafted"] = c
 	var errs := db.validate()
 	for e in errs:
@@ -220,7 +262,7 @@ func test_content_dice_are_in_tens_and_kinetic_faces_roll() -> void:
 	var energy := 0
 	for id in db.components.keys():
 		var c: Dictionary = db.components[id]
-		for fd in c.get("faces", []):
+		for fd in [c.get("face", {})]:
 			assert_true(int(fd.get("power", 0)) % 10 == 0, "%s power is a multiple of ten" % id)
 			if str(fd.get("kind", "")) != "attack":
 				continue

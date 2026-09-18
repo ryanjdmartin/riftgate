@@ -25,6 +25,20 @@ content so far; Ryan is moving mechs and equipment around and will place Aphelio
 Arsenal himself. Hardwired hardpoints with a paid unlock are tabled until an economy exists.
 Content ideas are proposed in chat first (CLAUDE.md rule).
 
+**Equipment words (18 September, decided).** A component is one piece of equipment and
+exactly one entry on the die (component JSON: `face` is a single object; no slot count).
+A chassis has `fixed` components (built in, never removed or sold, no hardpoint) and
+`hardpoints` (free slots, one `hp_<n>` pin each on the model); die size is fixed plus
+hardpoints; `filler` is gone and an empty hardpoint is a blank entry that does nothing.
+Multi-slot components were scrapped as invisible complexity; no paid unlock of fixed slots.
+Shown text says component, never face (`Face` stays the engine's word for one entry).
+Injuries roll the die: intact cracks, cracked is destroyed, destroyed or empty takes the
+blow. Passives: `status: planned` keeps a draft out of the engine; `on_injury` with
+`no_destroy` (the Badger's Reinforced Skeleton) and a `when: component_cracked` condition on
+`on_attack`/`on_crit` effects exist. The Badger: 4 hardpoints, fixed claw and plating (d6);
+its stock loadout (two slug cannons, twin autoguns, a heat sink) and the one-face versions
+of the claw, twin autoguns and howitzer are placeholders for Ryan to tune.
+
 **Content shape.** Shown text at the top level (`codex`, `flavour`, a passive's `name` and
 `description`, an action's `text`, a chassis's optional `designation`); everything internal
 under `design`; the validator refuses internal keys at the top level. Code takes defaults

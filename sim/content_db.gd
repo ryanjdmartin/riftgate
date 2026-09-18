@@ -83,15 +83,17 @@ func build_face(d: Dictionary) -> Face:
 	return Face.from_dict(d)
 
 
-## Assemble a die from component ids. Faces beyond the components come from `filler`.
-func build_die(component_ids: Array, hardpoints: int, filler: Dictionary = {}) -> Die:
+## Assemble a die: the chassis's fixed components first, then the loadout into its
+## hardpoints, then an empty entry for every hardpoint left. One component is one entry.
+func build_die(fixed_ids: Array, loadout_ids: Array, hardpoints: int) -> Die:
 	var die := Die.new()
-	for cid in component_ids:
+	for cid in fixed_ids + loadout_ids:
 		var comp: Dictionary = components.get(cid, {})
-		for fd in comp.get("faces", []):
-			die.faces.append(build_face(fd))
-	while die.faces.size() < hardpoints:
-		die.faces.append(build_face(filler) if not filler.is_empty() else Face.shield(1))
+		var f := build_face(comp.get("face", {}))
+		f.component = str(cid)
+		die.faces.append(f)
+	for i in range(maxi(0, hardpoints - loadout_ids.size())):
+		die.faces.append(Face.empty_slot())
 	return die
 
 
@@ -105,7 +107,8 @@ func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO) -
 	u.heat_max = int(c.get("heat_max", 60))
 	for t in c.get("traits", []):
 		u.traits.append(str(t))
-	u.die = build_die(c.get("loadout", []), int(c.get("hardpoints", 6)), c.get("filler", {}))
+	u.hardpoints = int(c.get("hardpoints", 6))
+	u.die = build_die(c.get("fixed", []), c.get("loadout", []), u.hardpoints)
 	u.chassis_id = chassis_id
 	var p = c.get("passive", null)
 	if p is Dictionary:
@@ -161,8 +164,8 @@ func codex_for_foe(f: Foe) -> Dictionary:
 func codex_for_unit(u: Unit) -> Dictionary:
 	var c: Dictionary = chassis.get(u.chassis_id, {})
 	var maker: Dictionary = makers.get(str(c.get("maker", "")), {})
-	var stats := "HULL %d/%d // SHIELD %d/%d // MOVE %d // %d HARDPOINTS" % [
-		u.hull, u.hull_max, u.shield, u.shield_max, u.movespeed, u.die.size() if u.die != null else 0]
+	var stats := "HULL %d/%d // SHIELD %d/%d // MOVE %d // %d HARDPOINTS // D%d" % [
+		u.hull, u.hull_max, u.shield, u.shield_max, u.movespeed, u.hardpoints, u.die.size() if u.die != null else 0]
 	var faces: Array = []
 	if u.die != null:
 		faces = u.die.faces.duplicate()
@@ -171,12 +174,12 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		passive = "%s: %s" % [str(u.passive.get("name", "")).to_upper(), u.passive.get("description", "")]
 	return {
 		"title": u.display_name,
-		"subtitle": "%s // %s" % [str(maker.get("name", "")).to_upper(), str(c.get("silhouette", "")).to_upper()],
+		"subtitle": "%s // %s // D%d" % [str(maker.get("name", "")).to_upper(), str(c.get("silhouette", "")).to_upper(), u.die.size() if u.die != null else 0],
 		"designation": str(c.get("designation", "")),   # the maker's long name; the title is the nickname
 		"body": str(c.get("codex", "")),   # never fantasy: that field is design notes and homages
 		"stats": stats,
 		"stat_items": [["hull", "%d/%d" % [u.hull, u.hull_max]], ["shield", "%d/%d" % [u.shield, u.shield_max]],
-			["move", str(u.movespeed)], ["hardpoints", str(u.die.size() if u.die != null else 0)]],
+			["move", str(u.movespeed)], ["hardpoints", str(u.hardpoints)]],
 		"actions": "",
 		"passive": passive,
 		"faces": faces,
@@ -350,6 +353,9 @@ func _validate_passive(where: String, p, errs: Array[String]) -> void:
 		var effect := str(eff.get("effect", ""))
 		if not Passives.supports(trig, effect):
 			errs.append("%s: passive effect '%s' on '%s' is not implemented by the engine" % [where, effect, trig])
+		var when := str(eff.get("when", ""))
+		if not Passives.supports_when(when):
+			errs.append("%s: passive condition '%s' is not implemented by the engine" % [where, when])
 
 
 ## Every entry keeps its internal text under `design` (fantasy at least) and nothing
@@ -369,17 +375,17 @@ func _validate_components(errs: Array[String]) -> void:
 	for id in components.keys():
 		var c: Dictionary = components[id]
 		var where := "component %s" % id
-		for key in ["name", "codex", "flavour", "hardpoints", "faces"]:
+		for key in ["name", "codex", "flavour", "face"]:
 			if not c.has(key):
 				errs.append("%s: missing %s" % [where, key])
+		for key in ["hardpoints", "slots", "faces"]:
+			if c.has(key):
+				errs.append("%s: '%s' is gone; a component is exactly one entry, its 'face'" % [where, key])
 		_validate_design(where, c, errs)
-		var faces: Array = c.get("faces", [])
-		if faces.is_empty():
-			errs.append("%s: no faces" % where)
-		if int(c.get("hardpoints", -1)) != faces.size():
-			errs.append("%s: hardpoints %s but %d faces" % [where, str(c.get("hardpoints")), faces.size()])
-		for i in range(faces.size()):
-			_validate_face("%s face %d" % [where, i], faces[i], errs)
+		if c.get("face", null) is Dictionary:
+			_validate_face("%s face" % where, c["face"], errs)
+		else:
+			errs.append("%s: face must be an object" % where)
 		if c.has("maker") and not makers.has(c["maker"]):
 			errs.append("%s: unknown maker %s" % [where, c["maker"]])
 		_validate_passive(where, c.get("passive", null), errs)
@@ -394,18 +400,23 @@ func _validate_chassis(errs: Array[String]) -> void:
 				errs.append("%s: missing %s" % [where, key])
 		_validate_design(where, c, errs)
 		var hp := int(c.get("hardpoints", 0))
-		if hp < MIN_DIE or hp > MAX_DIE:
-			errs.append("%s: %d hardpoints, die size must be %d to %d" % [where, hp, MIN_DIE, MAX_DIE])
-		var used := 0
-		for cid in c.get("loadout", []):
+		if c.has("filler"):
+			errs.append("%s: filler is gone; an empty hardpoint is empty, fit a component or leave it" % where)
+		var fixed: Array = c.get("fixed", [])
+		for cid in fixed:
+			if not components.has(cid):
+				errs.append("%s: unknown fixed component %s" % [where, cid])
+		var die_size: int = fixed.size() + hp
+		if die_size < MIN_DIE or die_size > MAX_DIE:
+			errs.append("%s: die of %d (%d fixed + %d hardpoints), must be %d to %d" % [where, die_size, fixed.size(), hp, MIN_DIE, MAX_DIE])
+		var loadout: Array = c.get("loadout", [])
+		for cid in loadout:
 			if not components.has(cid):
 				errs.append("%s: unknown component %s" % [where, cid])
-			else:
-				used += int(components[cid].get("hardpoints", 0))
-		if used > hp:
-			errs.append("%s: loadout uses %d hardpoints of %d" % [where, used, hp])
-		if used < hp and c.get("filler", {}).is_empty():
-			errs.append("%s: loadout leaves %d empty hardpoints and no filler" % [where, hp - used])
+			if fixed.has(cid):
+				errs.append("%s: %s is fixed and cannot also be in the loadout" % [where, cid])
+		if loadout.size() > hp:
+			errs.append("%s: loadout fits %d components into %d hardpoints" % [where, loadout.size(), hp])
 		for t in c.get("traits", []):
 			if not vocabulary.has(str(t)) or vocabulary[str(t)].get("category") != "trait":
 				errs.append("%s: unknown trait %s" % [where, t])

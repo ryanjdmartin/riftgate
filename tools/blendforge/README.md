@@ -159,7 +159,8 @@ be changed in the modifier panel.
 **Tagging hardpoints and joints.** Both are Empties, which cost nothing and export with the
 model. A hardpoint is an Empty named `hp_1` … `hp_n` at the socket (where the weapon meets
 the mech, not the muzzle), its +Y pointing where the weapon points; the count should match
-the chassis's hardpoints. Keep any placeholder weapon for now, and parent its parts to the
+the chassis's hardpoints (its free slots: a fixed component such as the Badger's claw is
+plain geometry, no pin). Keep any placeholder weapon for now, and parent its parts to the
 pin (select the parts, the Empty last, Ctrl+P, Object (Keep Transform)): whatever hangs
 under `hp_1` is the thing on pin 1, no renaming needed, and the day a real component model
 exists one rule swaps it in. A placeholder modelled with its origin on the pin is already

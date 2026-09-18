@@ -357,7 +357,7 @@ func test_injury_rolls_the_die_and_a_destroyed_face_takes_the_blow() -> void:
 		assert_eq(sk.log.size(), before + 1, "every injury logs one line")
 	assert_true(misses > hits, "two destroyed faces of three absorb most blows (%d misses, %d hits)" % [misses, hits])
 	assert_eq(d.faces[2].kind, Face.Kind.BLANK, "the live face was cracked then destroyed by the hits")
-	assert_eq(m.damaged_face_count(), 1, "blows on already destroyed faces add no damaged components")
+	assert_eq(m.damaged_component_count(), 1, "blows on already destroyed faces add no damaged components")
 
 
 func test_small_hits_and_shielded_hits_never_crack() -> void:
@@ -399,12 +399,12 @@ func test_injury_cracks_then_destroys_and_persists_until_repaired() -> void:
 	assert_true(f.keywords.is_empty(), "keywords gone")
 	assert_eq(f.crit, 0, "crit gone")
 	assert_true(f.describe().ends_with("(cracked)"), "described as cracked")
-	assert_eq(m.damaged_face_count(), 1, "one damaged component on the unit")
+	assert_eq(m.damaged_component_count(), 1, "one damaged component on the unit")
 	sk.apply_injury(sk.mechs[0])
 	assert_eq(d.faces[0].kind, Face.Kind.BLANK, "second injury destroys it")
-	assert_eq(m.damaged_face_count(), 1, "still one component, now destroyed")
+	assert_eq(m.damaged_component_count(), 1, "still one component, now destroyed")
 	sk.apply_injury(sk.mechs[0])
-	assert_eq(m.damaged_face_count(), 1, "a third injury finds nothing left to break")
+	assert_eq(m.damaged_component_count(), 1, "a third injury finds nothing left to break")
 	sk.end_round()
 	sk.start_round()
 	sk.withdraw()
@@ -421,7 +421,7 @@ func test_injury_cracks_then_destroys_and_persists_until_repaired() -> void:
 	assert_true(d.faces[0].has(K.CLEAVE) and d.faces[0].has(K.BURN), "with its keywords")
 	assert_eq(d.faces[0].crit, 15, "and its crit")
 	assert_false(d.faces[0].cracked, "not cracked any more")
-	assert_eq(m.damaged_face_count(), 0, "nothing left to repair")
+	assert_eq(m.damaged_component_count(), 0, "nothing left to repair")
 
 
 func _colossus(hp: int = 140) -> Foe:
@@ -611,3 +611,44 @@ func test_four_columns_fill_and_reach() -> void:
 	assert_eq(sk.front[1].hp, 50, "the far column is untouched")
 	var three := Skirmish.new(1)
 	assert_eq(three.columns, Skirmish.DEFAULT_COLUMNS, "three by default")
+
+
+func test_no_destroy_passive_holds_a_cracked_component() -> void:
+	var sk := Skirmish.new(3)
+	var d := Die.single(Face.attack(30, L, [K.CLEAVE], 0, 50, 15))
+	var m := _mech("A", d, 0, 100)
+	m.passive = {"id": "hold", "name": "Hold", "description": "", "effects": [{"trigger": "on_injury", "effect": "no_destroy", "value": 1}]}
+	sk.add_mech(m)
+	sk.add_foes([Foe.make("ghoul", 90, 10)])
+	sk.begin()
+	sk.start_round()
+	sk.apply_injury(sk.mechs[0])
+	assert_true(d.faces[0].cracked, "the first injury still cracks")
+	sk.apply_injury(sk.mechs[0])
+	assert_eq(d.faces[0].kind, Face.Kind.ATTACK, "the second does not destroy it")
+	assert_true(d.faces[0].cracked, "it stays cracked")
+	assert_true(str(sk.log[sk.log.size() - 1]).contains("holds"), "and the log says it held")
+	assert_eq(m.damaged_component_count(), 1, "one damaged component")
+
+
+func test_injury_on_an_empty_hardpoint_breaks_nothing() -> void:
+	var sk := Skirmish.new(3)
+	var d := Die.single(Face.empty_slot())
+	var m := _mech("A", d, 0, 100)
+	sk.add_mech(m)
+	sk.add_foes([Foe.make("ghoul", 90, 10)])
+	sk.begin()
+	sk.start_round()
+	sk.apply_injury(sk.mechs[0])
+	assert_true(str(sk.log[sk.log.size() - 1]).contains("empty hardpoint"), "the log names the empty hardpoint")
+	assert_eq(m.damaged_component_count(), 0, "nothing was there to damage")
+	assert_eq(d.faces[0].describe(), "empty hardpoint", "described as empty, not destroyed")
+
+
+func test_cracked_condition_narrows_a_passive_to_cracked_components() -> void:
+	var bonus := {"id": "scars", "name": "Scars", "description": "", "effects": [{"trigger": "on_attack", "when": "component_cracked", "effect": "add_damage", "value": 10}]}
+	var f := Face.attack(20, L)
+	assert_eq(Passives.on_attack(bonus, 20, 0, f), [20, 0], "an intact component gets nothing")
+	f.crack()
+	assert_eq(Passives.on_attack(bonus, 20, 0, f), [30, 0], "a cracked one hits harder")
+	assert_eq(Passives.on_attack(bonus, 20, 0), [20, 0], "no component in hand, no bonus")

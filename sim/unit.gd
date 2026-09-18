@@ -40,10 +40,11 @@ const TRIANGLE: Array[Vector2i] = [Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1
 var die: Die = null
 var passive: Dictionary = {}     # content passive, run by Passives; empty means none
 var chassis_id: String = ""
+var hardpoints: int = 0          # free slots; the die is these plus the chassis's fixed components
 
-## Damaged components. A cracked or destroyed face is a damaged component and stays that way
-## across skirmishes and battles until repaired in the hangar. Maps a face index to the
-## original, undamaged face.
+## Damaged components. A cracked or destroyed component is damaged and stays that way across
+## skirmishes and battles until repaired in the hangar. Maps a die entry index to the
+## original, undamaged component.
 var damaged_faces: Dictionary = {}
 
 
@@ -146,11 +147,11 @@ func recharge_shield() -> void:
 	shield = shield_max
 
 
-func damaged_face_count() -> int:
+func damaged_component_count() -> int:
 	return damaged_faces.size()
 
 
-## Meta-level repair: every damaged face goes back to its original component.
+## Meta-level repair: every damaged component goes back to what it was.
 func repair_faces() -> void:
 	if die == null:
 		damaged_faces.clear()

@@ -35,6 +35,11 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   (a foe action, or a chassis passive): it is kept, not shown, not run, and not validated
   against the engine, so content can be written ahead of code. Tests never assert on a
   specific entry's passive; they use synthetic passives.
+- Equipment words (decided 18 September): a **component** is one piece of equipment and
+  exactly one entry on the die; a **hardpoint** is a free slot (one `hp_<n>` pin on the
+  model); a chassis's **fixed** components are built in and use no hardpoint; an empty
+  hardpoint is a blank entry, nothing fills it. Shown text never says "face" (the player
+  sees no polyhedron); `Face` is the engine's name for one die entry.
 - `sim/` never touches scenes. Everything there runs headless with a seeded RNG.
 - Numbers in content are placeholders, not balance.
 - Content ideas (makers, chassis, components, foes, names, lore) are proposed in conversation first;
