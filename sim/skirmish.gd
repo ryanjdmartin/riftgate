@@ -25,8 +25,7 @@ const REROLLS_PER_ROUND := 3
 const DANGER_CLOSE_DIVISOR := 2
 const BURN_PER_STACK := 10          # damage each stack deals per round
 const BURN_DAMAGE_PER_STACK := 20   # damage dealt per stack applied
-const CRACK_MIN_HULL_PCT := 25      # a single hull hit this big (percent of max) may injure a face
-const CRACK_CHANCE_PCT := 50
+const CRACK_MIN_HULL_PCT := 25      # a single hull hit this big (percent of max) injures a face
 
 
 class MechState:
@@ -416,25 +415,25 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	var through := amount - absorbed
 	ms.unit.hull -= through
 	log.append("%s hits %s: shield -%d, hull -%d" % [source.display_name, ms.unit.display_name, absorbed, through])
-	# The global injury rule: a big hit that reaches the hull may damage a face. Shield before
-	# a telegraphed blow is the counterplay.
+	# The global injury rule: a big hit that reaches the hull injures a face. Shield before a
+	# telegraphed blow is the counterplay. No coin on top: the threshold is the whole gate.
 	if through > 0 and through * 100 >= ms.unit.hull_max * CRACK_MIN_HULL_PCT:
-		if rng.randi_range(1, 100) <= CRACK_CHANCE_PCT:
-			apply_injury(ms)
+		apply_injury(ms)
 
 
-## One random usable face takes damage. An intact face cracks: keywords, crit and unique
-## effect are gone, the basic action stays. A cracked face is destroyed: blank. The damage is
-## a damaged component: it lives on the unit and persists until repaired in the hangar.
+## The injury rolls the die and hits the face it lands on. An intact face cracks: keywords,
+## crit and unique effect are gone, the basic action stays. A cracked face is destroyed:
+## blank. A destroyed face takes the blow and nothing happens, so a mech with little left to
+## break shrugs off more of them. The damage is a damaged component: it lives on the unit and
+## persists until repaired in the hangar. (Decided 17 September: one threshold, one roll.)
 func apply_injury(ms: MechState) -> void:
-	var candidates: Array[int] = []
-	for i in range(ms.die.faces.size()):
-		if ms.die.faces[i].kind != Face.Kind.BLANK:
-			candidates.append(i)
-	if candidates.is_empty():
+	if ms.die.faces.is_empty():
 		return
-	var idx: int = candidates[rng.randi_range(0, candidates.size() - 1)]
+	var idx := ms.die.roll(rng)
 	var f := ms.die.faces[idx]
+	if f.kind == Face.Kind.BLANK:
+		log.append("%s: the blow lands on a destroyed component; nothing left to break" % ms.unit.display_name)
+		return
 	var originals: Dictionary = ms.unit.damaged_faces
 	if not originals.has(idx):
 		originals[idx] = f.duplicate_face()

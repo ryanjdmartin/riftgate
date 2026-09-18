@@ -670,7 +670,7 @@ func _mech_rows(i: int) -> Array:
 		if bool(fc["destroyed"]):
 			rows.append(["skull", "", "Wrecked this round: %d incoming" % int(fc["incoming"]), Palette.ENEMY])
 		elif bool(fc["component_risk"]):
-			rows.append(["crack", "!", "A hit that big may injure a component", Palette.ENEMY])
+			rows.append(["crack", "!", "A hit that big injures a component: the die is rolled", Palette.ENEMY])
 		if bool(fc["breaks_shield"]):
 			rows.append(["shieldbreak", "", "Incoming %d breaks the shield" % int(fc["incoming"]), Palette.ENEMY])
 	return rows

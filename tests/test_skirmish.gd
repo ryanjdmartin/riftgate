@@ -323,9 +323,7 @@ func _cracked_count(d: Die) -> int:
 	return n
 
 
-func test_big_hull_hits_sometimes_crack_a_face() -> void:
-	var cracked := 0
-	var clean := 0
+func test_big_hull_hits_always_injure_a_face() -> void:
 	for seed_value in range(1, 31):
 		var sk := Skirmish.new(seed_value)
 		var d := Die.of([Face.attack(10, L, K.CLEAVE), Face.attack(10, L, K.PIERCE)])
@@ -336,11 +334,30 @@ func test_big_hull_hits_sometimes_crack_a_face() -> void:
 		sk.start_round()
 		sk.end_round()
 		assert_eq(m.hull, 50, "the hit reached the hull")
-		if _cracked_count(d) > 0:
-			cracked += 1
+		assert_eq(_cracked_count(d), 1, "a half-hull hit cracks one face, no coin toss (seed %d)" % seed_value)
+
+
+func test_injury_rolls_the_die_and_a_destroyed_face_takes_the_blow() -> void:
+	var sk := Skirmish.new(5)
+	var d := Die.of([Face.blank(), Face.blank(), Face.attack(10, L, K.CLEAVE)])
+	var m := _mech("A", d, 0, 100)
+	sk.add_mech(m)
+	sk.add_foes([Foe.make("ghoul", 90, 10)])
+	sk.begin()
+	sk.start_round()
+	var misses := 0
+	var hits := 0
+	for i in range(60):
+		var before := sk.log.size()
+		sk.apply_injury(sk.mechs[0])
+		if str(sk.log[sk.log.size() - 1]).contains("nothing left to break"):
+			misses += 1
 		else:
-			clean += 1
-	assert_true(cracked > 0 and clean > 0, "a half-hull hit cracks a face about half the time (%d of 30)" % cracked)
+			hits += 1
+		assert_eq(sk.log.size(), before + 1, "every injury logs one line")
+	assert_true(misses > hits, "two destroyed faces of three absorb most blows (%d misses, %d hits)" % [misses, hits])
+	assert_eq(d.faces[2].kind, Face.Kind.BLANK, "the live face was cracked then destroyed by the hits")
+	assert_eq(m.damaged_face_count(), 1, "blows on already destroyed faces add no damaged components")
 
 
 func test_small_hits_and_shielded_hits_never_crack() -> void:
@@ -386,6 +403,8 @@ func test_injury_cracks_then_destroys_and_persists_until_repaired() -> void:
 	sk.apply_injury(sk.mechs[0])
 	assert_eq(d.faces[0].kind, Face.Kind.BLANK, "second injury destroys it")
 	assert_eq(m.damaged_face_count(), 1, "still one component, now destroyed")
+	sk.apply_injury(sk.mechs[0])
+	assert_eq(m.damaged_face_count(), 1, "a third injury finds nothing left to break")
 	sk.end_round()
 	sk.start_round()
 	sk.withdraw()
