@@ -30,10 +30,10 @@ func _init() -> void:
 			continue
 		lines.append("## %s" % str(cat).replace("_", " ").capitalize())
 		lines.append("")
-		lines.append("| Term | Fantasy | Codex | Status |")
-		lines.append("|---|---|---|---|")
+		lines.append("| Term | Codex | Status |")
+		lines.append("|---|---|---|")
 		for e in rows:
-			lines.append("| **%s** | %s | %s | %s |" % [e["name"], e.get("design", {}).get("fantasy", ""), e["codex"], e["status"]])
+			lines.append("| **%s** | %s | %s |" % [e["name"], e["codex"], e["status"]])
 		lines.append("")
 	lines.append("## Holes")
 	lines.append("")

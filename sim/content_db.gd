@@ -287,7 +287,7 @@ func validate() -> Array[String]:
 func _validate_vocabulary(errs: Array[String]) -> void:
 	for id in vocabulary.keys():
 		var e: Dictionary = vocabulary[id]
-		_validate_design("vocabulary %s" % id, e, errs)
+		_validate_design("vocabulary %s" % id, e, errs, false)   # a rule needs holes at most, no pitch (18 September)
 		for key in ["category", "name", "codex", "status"]:
 			if not e.has(key) or str(e[key]).is_empty():
 				errs.append("vocabulary %s: missing %s" % [id, key])
@@ -332,7 +332,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String]) -> void:
 		errs.append("%s: crit must be 0 to 100" % where)
 	if crit > 0 and kind != "attack":
 		errs.append("%s: only attack faces crit" % where)
-	if float(fd.get("crit_bonus", 0.0)) <= -Skirmish.CRIT_MULT:
+	if float(fd.get("crit_bonus", 0.0)) <= -Face.CRIT_MULT:
 		errs.append("%s: crit_bonus would make crits do nothing or heal" % where)
 	var kws: Array = fd.get("keywords", [])
 	if kws.size() > MAX_AUTHORED_KEYWORDS:
@@ -385,11 +385,11 @@ func _validate_passive(where: String, p, errs: Array[String]) -> void:
 
 ## Every entry keeps its internal text under `design` (fantasy at least) and nothing
 ## internal at the top level, so what is shown and what is not can be told by shape alone.
-func _validate_design(where: String, e: Dictionary, errs: Array[String]) -> void:
+func _validate_design(where: String, e: Dictionary, errs: Array[String], need_fantasy: bool = true) -> void:
 	var d = e.get("design", null)
 	if not (d is Dictionary):
 		errs.append("%s: missing design object (internal text: fantasy, niche, ...)" % where)
-	elif not d.has("fantasy"):
+	elif need_fantasy and not d.has("fantasy"):
 		errs.append("%s: design has no fantasy" % where)
 	for key in DESIGN_ONLY_KEYS:
 		if e.has(key):

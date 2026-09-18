@@ -7,21 +7,29 @@ extends RefCounted
 ## Numbers are in tens. A static face has power_max equal to power (energy weapons). A kinetic
 ## face rolls between power and power_max when spent, and may crit for double.
 
+const CRIT_MULT := 2.0        # a crit multiplies the roll by this plus every crit bonus (component, passives): additive, tunable
+
 enum Kind { ATTACK, SHIELD, VENT, BLANK }
-enum Reach { NONE, LINE, INDIRECT }
-enum Keyword { NONE, CLEAVE, PIERCE, BURN, SUPPRESS, OVERCHARGE, EXECUTE, CHAIN, LOCK, STEADY }
+enum Reach { NONE, LINE, INDIRECT, MELEE }
+enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, OVERCHARGE, EXECUTE, CHAIN, STEADY }
 
 const KIND_NAMES := {
 	Kind.ATTACK: "attack", Kind.SHIELD: "shield", Kind.VENT: "vent", Kind.BLANK: "blank",
 }
 const REACH_NAMES := {
-	Reach.NONE: "none", Reach.LINE: "line", Reach.INDIRECT: "indirect",
+	Reach.NONE: "none", Reach.LINE: "line", Reach.INDIRECT: "indirect", Reach.MELEE: "melee",
 }
 const KEYWORD_NAMES := {
-	Keyword.NONE: "", Keyword.CLEAVE: "cleave", Keyword.PIERCE: "pierce", Keyword.BURN: "burn",
+	Keyword.NONE: "", Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.BURN: "burn",
 	Keyword.SUPPRESS: "suppress", Keyword.OVERCHARGE: "overcharge", Keyword.EXECUTE: "execute",
-	Keyword.CHAIN: "chain", Keyword.LOCK: "lock", Keyword.STEADY: "steady",
+	Keyword.CHAIN: "chain", Keyword.STEADY: "steady",
 }
+## What the player reads where it differs from the content id (the vocabulary's name).
+const KEYWORD_LABELS := { Keyword.CLEAVE: "spread" }
+
+
+static func keyword_label(k: int) -> String:
+	return KEYWORD_LABELS.get(k, KEYWORD_NAMES[k])
 
 # Enum-typed members are declared as int: GDScript 4 reports a spurious "Face.Kind vs Kind"
 # type mismatch when a class_name script is loaded from a headless -s runner.
@@ -227,11 +235,11 @@ func describe() -> String:
 			if strikes > 1:
 				s += " ×%d" % strikes
 			for k in keywords:
-				s += " " + KEYWORD_NAMES[k]
+				s += " " + keyword_label(k)
 			if crit > 0:
 				s += " crit %d%%" % crit
 				if crit_bonus != 0.0:
-					s += " (×%s)" % _trim(Skirmish.CRIT_MULT + crit_bonus)   # the resulting multiplier, never the bonus
+					s += " (×%s)" % _trim(CRIT_MULT + crit_bonus)   # the resulting multiplier, never the bonus
 			if heat > 0:
 				s += " (+%d heat)" % heat
 	if cracked:

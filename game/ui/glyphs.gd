@@ -31,11 +31,16 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 		"blank":
 			ci.draw_line(c + Vector2(-s, -s), c + Vector2(s, s), color, width)
 			ci.draw_line(c + Vector2(-s, s), c + Vector2(s, -s), color, width)
+		"melee":
+			# Three claw strokes, raking down and right.
+			for i in range(3):
+				var x := -s * 0.7 + i * s * 0.7
+				ci.draw_line(c + Vector2(x - s * 0.3, -s), c + Vector2(x + s * 0.3, s), color, width)
 		"cleave":
 			for i in range(3):
 				var x := -s * 0.7 + i * s * 0.7
 				ci.draw_line(c + Vector2(x, -s), c + Vector2(x, s), color, width)
-		"pierce":
+		"penetrate":
 			ci.draw_line(c + Vector2(-s, 0), c + Vector2(s, 0), color, width)
 			ci.draw_line(c + Vector2(s * 0.3, -s * 0.6), c + Vector2(s, 0), color, width)
 			ci.draw_line(c + Vector2(s * 0.3, s * 0.6), c + Vector2(s, 0), color, width)
@@ -193,4 +198,8 @@ static func primary_for(face: Face) -> String:
 		Face.Kind.BLANK:
 			return "blank"
 		_:
-			return "indirect" if face.reach == Face.Reach.INDIRECT else "line"
+			if face.reach == Face.Reach.INDIRECT:
+				return "indirect"
+			if face.reach == Face.Reach.MELEE:
+				return "melee"
+			return "line"

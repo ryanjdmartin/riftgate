@@ -10,7 +10,7 @@
     {"id": "twin_autoguns", "name": "Twin Autoguns", "maker": "wainwright_sutler", "codex": "", "flavour": "", "design": {"fantasy": "Reliable, unremarkable, always there.", "niche": ""}, "face":
       {"kind": "attack", "reach": "line", "power": 10, "power_max": 30, "crit": 10, "keywords": [], "heat": 0}, "passive": null, "tags": ["kinetic", "single"] },
     {"id": "lance", "name": "Lance", "maker": "wainwright_sutler", "codex": "", "flavour": "", "design": {"fantasy": "A beam that goes through the wall and the thing hiding behind it.", "niche": ""}, "face":
-      {"kind": "attack", "reach": "line", "power": 30, "keywords": ["pierce"], "heat": 10}, "passive": null, "tags": ["energy", "column"] },
+      {"kind": "attack", "reach": "line", "power": 30, "keywords": ["penetrate"], "heat": 10}, "passive": null, "tags": ["energy", "column"] },
     {"id": "pocket_mortar", "name": "Pocket Mortar", "maker": "wainwright_sutler", "codex": "", "flavour": "", "design": {"fantasy": "Small, rude, lands behind the front rank.", "niche": ""}, "face":
       {"kind": "attack", "reach": "indirect", "power": 10, "power_max": 30, "crit": 5, "keywords": [], "heat": 0}, "passive": null, "tags": ["kinetic", "artillery"] },
     {"id": "heat_sink", "name": "Heat Sink", "maker": "wainwright_sutler", "codex": "", "flavour": "", "design": {"fantasy": "Fins. Lots of fins.", "niche": ""}, "face":

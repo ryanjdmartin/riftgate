@@ -154,7 +154,7 @@ func test_keyword_cap_is_enforced() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var comp: Dictionary = db.components["lance"].duplicate(true)
-	comp["face"]["keywords"] = ["pierce", "burn", "chain", "execute"]
+	comp["face"]["keywords"] = ["penetrate", "burn", "chain", "execute"]
 	db.components["too_many"] = comp
 	var errs := db.validate()
 	var hit := false

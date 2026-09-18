@@ -69,6 +69,19 @@ component face; foe actions carry the same field. Power checks are non-negative 
 (numbers in tens means magnitude). Salvage from rift-belched wrecks and monster research
 tokens recorded as open in the bible's open questions. HUD palette swatches published as an
 artifact for Ryan's eyes (protan simulation toggles).
+**Vocabulary audit (18 September, Ryan's overhaul, engine caught up).** Renames: cleave is
+shown as Spread (id stays `cleave`, `Face.keyword_label`), pierce is `penetrate`, danger
+close is Splash (log says "splash"), line is "Line of sight". Removed: the lock keyword and
+its die-keeping state, flip, copy, reflect, step_up. Melee is a third reach: front rank
+only, the back only when the whole front is empty. Chain: a kill repeats the attack on a
+new target, no extra heat. Execute: +100%, +50% against massive foes. Burn: 5 per stack.
+A crack takes only keywords (crit, heat, passives stay). New planned entries (overwhelm,
+corrode, numbed, rapid, disable, corrupt, energy armour, scramble, confuse, retaliate,
+disabled, corrupted, phased, taunt, beacon) are content only. `static` trigger with
+`set_reach` and `when: reach_melee/line/indirect` exist; the Badger's Reinforced Skeleton
+uses them (cracked weapons go melee, melee +10%). Vocabulary entries carry no `fantasy`
+any more (validator and export tool follow). `Face.CRIT_MULT` is the crit base (Face, not
+Skirmish: a cycle otherwise).
 Open, discussed 18 September, not built: component stat modifiers
 and granted passives with totals shown as base plus bonus, a fixed colour standard for a
 protanomalous player, movespeed granularity.

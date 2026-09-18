@@ -13,13 +13,15 @@
       "hull": 200, "shield": 30, "movespeed": 2, "heat_max": 100, "hardpoints": 4,
       "armour": 10, "recharge_field": 15,
       "traits": ["tank"],
-      "fixed": ["chainsaw_claw", "ablative_plating"],
+      "fixed": ["chainsaw_claw", "chainsaw_claw"],
       "loadout": ["slug_cannon", "slug_cannon", "twin_autoguns", "heat_sink"],
       "passive": {
         "id": "reinforced_skeleton", "name": "Reinforced Skeleton",
-        "description": "Legendary Minervan strength. Components can be cracked but never destroyed.",
+        "description": "Legendary Minervan strength. Components can be cracked but never destroyed. Melee attacks deal +10% damage. Cracked weapons become melee-typed, instead of their usual type.",
         "effects": [
-          { "trigger": "on_injury", "effect": "no_destroy", "value": 1 }
+          { "trigger": "on_injury", "effect": "no_destroy", "value": 1 },
+          { "trigger": "on_attack", "effect": "multiply_damage", "value": 1.1, "when": "reach_melee" },
+          { "trigger": "static", "effect": "set_reach", "value": "melee", "when": "component_cracked" }
         ]
       },
       "flavour": "Hey Russ, ain't that yer Badger over there, covered in demon innards? I thought they retired the ol' girl!"

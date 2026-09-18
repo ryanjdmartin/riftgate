@@ -71,17 +71,17 @@ func test_indirect_reaches_back_and_splashes_on_front() -> void:
 	var t := sk.targets_for(0)
 	assert_eq(t.size(), 2, "indirect sees both ranks")
 	assert_true(sk.assign(0, sk.front[0]), "mortar the front")
-	assert_eq(m.shield, 30, "danger close cost ten shield")
+	assert_eq(m.shield, 30, "splash cost ten shield")
 	assert_eq(sk.front[0].hp, 30, "ghoul took 20")
 
 
-func test_pierce_hits_the_column() -> void:
+func test_penetrate_hits_the_column() -> void:
 	var sk := Skirmish.new(1)
-	sk.add_mech(_mech("A", Die.single(Face.attack(30, L, K.PIERCE))))
+	sk.add_mech(_mech("A", Die.single(Face.attack(30, L, K.PENETRATE))))
 	sk.add_foes([_ghoul(50), _archer(50)])
 	sk.begin()
 	sk.start_round()
-	assert_true(sk.assign(0, sk.front[0]), "pierce front 0")
+	assert_true(sk.assign(0, sk.front[0]), "penetrate front 0")
 	assert_eq(sk.front[0].hp, 20, "front took 30")
 	assert_eq(sk.back[0].hp, 20, "back of the same column took 30")
 
@@ -162,7 +162,7 @@ func test_burn_ticks_down() -> void:
 	assert_eq(g.hp, 60, "took 30 on hit")
 	assert_eq(g.burn, 2, "two burn stacks from 30 damage")
 	sk.end_round()
-	assert_eq(g.hp, 40, "burn ticked for 20")
+	assert_eq(g.hp, 50, "burn ticked for 10: two stacks of five")
 	assert_eq(g.burn, 1, "one stack consumed")
 
 
@@ -326,7 +326,7 @@ func _cracked_count(d: Die) -> int:
 func test_big_hull_hits_always_injure_a_face() -> void:
 	for seed_value in range(1, 31):
 		var sk := Skirmish.new(seed_value)
-		var d := Die.of([Face.attack(10, L, K.CLEAVE), Face.attack(10, L, K.PIERCE)])
+		var d := Die.of([Face.attack(10, L, K.CLEAVE), Face.attack(10, L, K.PENETRATE)])
 		var m := _mech("A", d, 0, 100)
 		sk.add_mech(m)
 		sk.add_foes([Foe.make("brute", 90, 50)])
@@ -460,9 +460,9 @@ func test_massive_foe_death_clears_both_slots() -> void:
 	assert_eq(out, Skirmish.Outcome.VICTORY, "and that was the whole squad")
 
 
-func test_pierce_hits_a_massive_foe_once() -> void:
+func test_penetrate_hits_a_massive_foe_once() -> void:
 	var sk := Skirmish.new(1)
-	sk.add_mech(_mech("A", Die.single(Face.attack(30, L, K.PIERCE))))
+	sk.add_mech(_mech("A", Die.single(Face.attack(30, L, K.PENETRATE))))
 	sk.add_foes([_colossus(140)])
 	sk.begin()
 	sk.start_round()
@@ -546,8 +546,8 @@ func test_forecast_ignores_foes_that_burn_to_death_first() -> void:
 	sk.add_foes([Foe.make("a", 10, 25)])
 	sk.begin()
 	sk.start_round()
-	sk.front[0].burn = 1
-	assert_eq(sk.forecast(ms)["incoming"], 0, "burn kills it before it strikes")
+	sk.front[0].burn = 2
+	assert_eq(sk.forecast(ms)["incoming"], 0, "two stacks of five kill a ten-hp foe before it strikes")
 
 
 func test_reroll_always_lands_on_a_different_face() -> void:
@@ -784,3 +784,65 @@ func test_crit_bonuses_add_to_one_multiplier() -> void:
 	assert_eq(sk.front[0].hp, 110, "30 at base 2 plus 0.5 plus 0.5 is 90: additive, not 2 x 1.5 x 1.5")
 	assert_eq(gun.describe(), "30 crit 100% (×2.5)", "the readout shows the component's own resulting multiplier")
 	assert_eq(Face.from_dict(gun.to_dict()).crit_bonus, 0.5, "crit_bonus survives content round-trip")
+
+
+func test_melee_reaches_the_back_only_when_the_whole_front_is_empty() -> void:
+	var sk := Skirmish.new(1)
+	sk.add_mech(_mech("A", Die.single(Face.attack(30, Face.Reach.MELEE))))
+	sk.add_foes([_ghoul(30), _archer(50), _archer(50)])
+	sk.begin()
+	sk.start_round()
+	assert_eq(sk.targets_for(0).size(), 1, "one ghoul in front: melee sees only it, though column 1 is exposed")
+	sk.assign(0, sk.front[0])
+	sk.end_round()
+	sk.start_round()
+	assert_eq(sk.targets_for(0).size(), 2, "front rank empty: melee reaches the back rank")
+
+
+func test_static_set_reach_sends_a_cracked_component_to_melee() -> void:
+	var sk := Skirmish.new(3)
+	var mortar := Face.attack(30, I, [], 0, 0, 15)
+	var m := _mech("A", Die.single(mortar), 0, 100)
+	m.passive = {"id": "rs", "name": "RS", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "multiply_damage", "value": 1.1, "when": "reach_melee"},
+		{"trigger": "static", "effect": "set_reach", "value": "melee", "when": "component_cracked"}]}
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(200), _archer(200)])
+	sk.begin()
+	sk.start_round()
+	assert_eq(sk.targets_for(0).size(), 2, "an intact mortar reaches both ranks")
+	sk.apply_injury(sk.mechs[0])
+	var f := sk.mechs[0].face()
+	assert_true(f.cracked and f.reach == Face.Reach.MELEE, "cracked, it is melee now")
+	assert_eq(f.crit, 15, "and keeps its crit")
+	assert_eq(sk.targets_for(0).size(), 1, "so it reaches only the front")
+	sk.assign(0, sk.front[0])
+	assert_true(sk.front[0].hp == 167 or sk.front[0].hp == 134, "30 at 1.1 is 33 (or 66 on a crit)")
+	m.repair_faces()
+	assert_eq(m.die.faces[0].reach, Face.Reach.INDIRECT, "repair restores the original mortar")
+
+
+func test_execute_gives_bosses_half_the_bonus() -> void:
+	var sk := Skirmish.new(1)
+	sk.add_mech(_mech("A", Die.single(Face.attack(20, L, K.EXECUTE))))
+	var boss := Foe.make("maw", 200, 10)
+	boss.size = 2
+	boss.hp = 90
+	sk.add_foes([boss])
+	sk.begin()
+	sk.start_round()
+	sk.assign(0, sk.front[0])
+	assert_eq(boss.hp, 60, "20 at +50% against a wounded boss, not +100%")
+
+
+func test_chain_repeats_on_a_kill() -> void:
+	var sk := Skirmish.new(1)
+	sk.add_mech(_mech("A", Die.single(Face.attack(30, L, K.CHAIN, 10))))
+	sk.add_foes([_ghoul(30), _ghoul(30), _ghoul(90)])
+	sk.begin()
+	sk.start_round()
+	sk.assign(0, sk.front[0])
+	assert_false(sk.front[0].alive(), "the first ghoul dies")
+	assert_false(sk.front[1].alive(), "the chain kills the second")
+	assert_eq(sk.front[2].hp, 60, "and lands once on the third, which survives, so it stops")
+	assert_eq(sk.mechs[0].heat, 10, "heat is paid once, not per link")

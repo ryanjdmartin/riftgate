@@ -24,7 +24,7 @@ static func gunner_die() -> Die:
 	return Die.of([
 		Face.attack(10, L, [], 0, 30, 10),
 		Face.attack(10, L, [], 0, 30, 10),
-		Face.attack(30, L, K.PIERCE, 10),
+		Face.attack(30, L, K.PENETRATE, 10),
 		Face.attack(10, I, [], 0, 30, 5),
 		Face.shield(20),
 		Face.vent(20),

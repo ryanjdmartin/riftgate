@@ -16,8 +16,9 @@ const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "multiply_heat", "add_damage", "add_heat", "min_damage"],
 	"on_crit": ["multiply_damage", "add_damage", "add_burn", "vent_heat", "add_crit_damage"],
 	"on_injury": ["no_destroy"],
+	"static": ["set_reach"],
 }
-const SUPPORTED_WHEN := ["component_cracked"]
+const SUPPORTED_WHEN := ["component_cracked", "reach_melee", "reach_line", "reach_indirect"]
 
 
 static func supports(trigger: String, effect: String) -> bool:
@@ -40,7 +41,24 @@ static func _holds(eff: Dictionary, face: Face) -> bool:
 			return true
 		"component_cracked":
 			return face != null and face.cracked
+		"reach_melee":
+			return face != null and face.reach == Face.Reach.MELEE
+		"reach_line":
+			return face != null and face.reach == Face.Reach.LINE
+		"reach_indirect":
+			return face != null and face.reach == Face.Reach.INDIRECT
 	return false
+
+
+## A static (always-on) reach override for this component, or -1 for none. The condition is
+## checked against the component as it is now, so a cracked one can be sent to melee.
+static func static_reach(passive: Dictionary, face: Face) -> int:
+	if not active(passive):
+		return -1
+	for eff in passive.get("effects", []):
+		if str(eff.get("trigger", "")) == "static" and str(eff.get("effect", "")) == "set_reach" and _holds(eff, face):
+			return Face.reach_from_name(str(eff.get("value", "")))
+	return -1
 
 
 ## Apply on_attack effects for the component `face` being spent. Returns [damage, heat].
