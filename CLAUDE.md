@@ -46,6 +46,9 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   Ryan tweaks them against his own notes before they land in `content/*.json` or as decided in the bible.
 - Keep the fun in mind: prefer one source of randomness, and push back on systems that add no
   decision. Slice and Dice is the touchstone.
+- When Ryan suggests a rule or a change, look for holes in the argument and discuss them in
+  chat before building. A suggestion opens a discussion; it is not a spec. If he reaffirms
+  after hearing the holes, build it as he said.
 
 ## Session handoff
 
