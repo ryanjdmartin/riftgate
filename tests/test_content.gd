@@ -264,7 +264,7 @@ func test_content_dice_are_in_tens_and_kinetic_faces_roll() -> void:
 	for id in db.components.keys():
 		var c: Dictionary = db.components[id]
 		for fd in [c.get("face", {})]:
-			assert_true(int(fd.get("power", 0)) % 10 == 0, "%s power is a multiple of ten" % id)
+			assert_true(int(fd.get("power", 0)) >= 10, "%s power is in the magnitude of tens, not ones" % id)
 			if str(fd.get("kind", "")) != "attack":
 				continue
 			var tags: Array = c.get("tags", [])
@@ -301,13 +301,47 @@ func test_every_foe_has_an_action_roster_and_player_text() -> void:
 		for a in f.get("actions", []):
 			if a.get("status") == "implemented":
 				implemented += 1
-				assert_eq(int(a.get("value", -1)), int(f["attack"]), "%s basic attack matches its attack" % id)
-		assert_eq(implemented, 1, "%s has exactly one implemented action" % id)
+				assert_false(a.has("value"), "%s: an attack scales the base attack, it has no value of its own" % id)
+		assert_true(implemented >= 1, "%s has at least one implemented action" % id)
 	var foe := db.make_foe("ghoul")
 	var entry := db.codex_for_foe(foe)
-	assert_true(entry["actions"].contains("CLAW"), "codex lists the implemented action")
+	assert_true(entry["actions"].contains("CLAW // ATTACK 10"), "codex lists the implemented action with the resulting number")
+	assert_true(entry["actions"].contains("for 10."), "and fills {damage} into the text")
 	assert_false(entry["actions"].contains("GET BACK UP"), "and hides the planned one")
 	assert_eq(entry["flavour"], db.foes["ghoul"]["flavour"], "codex quotes the foe, not the faction")
+
+
+func test_foe_actions_scale_the_base_attack_and_are_picked_by_weight() -> void:
+	var f := Foe.make("ghoul", 30, 10)
+	f.actions = [
+		{"id": "claw", "name": "Claw", "factor": 1.0, "strikes": 1, "breach": false, "weight": 3, "text": "Claws for {damage}."},
+		{"id": "rend", "name": "Jaw Rend", "factor": 1.5, "strikes": 1, "breach": false, "weight": 1, "text": "Bites for {damage}."},
+	]
+	assert_eq(f.damage_of(f.actions[1]), 15, "1.5 times 10 is 15, in the magnitude of tens")
+	assert_eq(f.text_of(f.actions[1]), "Bites for 15.", "the text shows the number, never the factor")
+	assert_eq(f.threat(), 15, "threat is its worst action")
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 7
+	var rends := 0
+	for i in range(400):
+		f.choose_action(rng)
+		if f.action["id"] == "rend":
+			rends += 1
+	assert_true(rends > 60 and rends < 140, "a weight of 1 in 4 picks the rend about a quarter of the time (%d of 400)" % rends)
+	var sk := Skirmish.new(3)
+	var m := Unit.mech(0, "A", Vector2i.ZERO)
+	m.shield = 0
+	m.hull = 100
+	m.hull_max = 100
+	m.die = Die.single(Face.shield(10))
+	sk.add_mech(m)
+	sk.add_foes([f])
+	sk.begin()
+	sk.start_round()
+	assert_true(not f.action.is_empty(), "the round's action is chosen at round start")
+	assert_eq(sk.forecast(sk.mechs[0])["incoming"], f.damage(), "and the forecast uses it")
+	sk.end_round()
+	assert_eq(m.hull, 100 - f.damage(), "and so does the blow")
 
 
 func test_planned_actions_cannot_claim_to_be_implemented() -> void:

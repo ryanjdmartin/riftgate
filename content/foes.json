@@ -1,5 +1,5 @@
 {
-  "_about": "Enemies inside a skirmish. Numbers are in tens. Enemy damage is static and telegraphed exactly; only the player's kinetic faces roll. rank is where they prefer to stand: front foes step up, back foes hold. size 2 is massive and fills both slots of a column. Player-facing text: codex (what the codex says), flavour (an in-world quote, shown in italics), and each action's text. design is internal and never shown: fantasy (the pitch, inspiration, homages), niche (the tactical problem the foe poses), notes. actions is the foe's roster of things it can do, each kind attack, defend, buff or debuff, with status implemented or planned; only implemented actions appear in the codex, and today the engine runs only the basic attack. Component injuries are a global rule, not a foe property. Optional per foe: strikes (hits per turn, default 1; a double strike breaks a shield and reaches the hull) and breach (true: its blows overflow shield into hull, a boss trait). Foes stand and strike front rank left to right then back rank; the heaviest hitters deploy left. Numbers are placeholders.",
+  "_about": "Enemies inside a skirmish. Numbers are in tens. Enemy damage is static and telegraphed exactly; only the player's kinetic faces roll. rank is where they prefer to stand: front foes step up, back foes hold. size 2 is massive and fills both slots of a column. Player-facing text: codex (what the codex says), flavour (an in-world quote, shown in italics), and each action's text. design is internal and never shown: fantasy (the pitch, inspiration, homages), niche (the tactical problem the foe poses), notes. actions is the foe's roster of things it can do, each kind attack, defend, buff or debuff, with status implemented or planned; only implemented actions appear in the codex, and today the engine runs only the basic attack. Component injuries are a global rule, not a foe property. An implemented attack action scales the base attack: factor (default 1.0; damage is attack times factor, rounded), strikes (default 1; each a separate blow, so a double strike breaks a shield and reaches the hull), breach (default false; its blows overflow shield into hull and can injure through it: dangerous, uncommon), weight (default 1; each round a foe picks one of its attacks by weight, announced before the player acts). Write {damage} in an action's text and the resulting number is shown. Foes stand and strike front rank left to right then back rank; the heaviest hitters deploy left. Numbers are placeholders.",
   "entries": [
     {
       "id": "ghoul", "name": "Ghoul", "faction": "undead",
@@ -7,7 +7,7 @@
       "codex": "The rank and file of the Risen. Slow, stupid and never alone: six arrive for every one you put down, and they walk straight at the nearest thing with a heartbeat.",
       "hp": 30, "attack": 10, "rank": "front",
       "actions": [
-        { "id": "claw", "name": "Claw", "kind": "attack", "value": 10, "text": "Tears at the nearest mech for 10.", "status": "implemented" },
+        { "id": "claw", "name": "Claw", "kind": "attack", "text": "Tears at the nearest mech for {damage}.", "status": "implemented" },
         { "id": "get_back_up", "name": "Get Back Up", "kind": "buff", "text": "Returns from the pool once after dying, unless executed.", "status": "planned" }
       ],
       "flavour": "They don't run. They don't have to. You'll get tired first."
@@ -18,7 +18,7 @@
       "codex": "Keeps to the back rank behind a wall of ghouls and keeps the wall standing. Anything that can reach past the front is worth more here than anywhere else.",
       "hp": 30, "attack": 10, "rank": "back",
       "actions": [
-        { "id": "hex_bolt", "name": "Hex Bolt", "kind": "attack", "value": 10, "text": "A bolt of grave-light for 10.", "status": "implemented" },
+        { "id": "hex_bolt", "name": "Hex Bolt", "kind": "attack", "text": "A bolt of grave-light for {damage}.", "status": "implemented" },
         { "id": "raise", "name": "Raise", "kind": "buff", "text": "Calls a ghoul up from the pool at the end of the round.", "status": "planned" }
       ],
       "flavour": "Kill the one doing the talking."
@@ -29,7 +29,7 @@
       "codex": "A slab of muscle that swings once a round and means it. Everything it does is announced a round early, which is the only reason anyone survives it.",
       "hp": 50, "attack": 20, "rank": "front",
       "actions": [
-        { "id": "haymaker", "name": "Haymaker", "kind": "attack", "value": 20, "text": "One enormous swing for 20.", "status": "implemented" },
+        { "id": "haymaker", "name": "Haymaker", "kind": "attack", "text": "One enormous swing for {damage}.", "status": "implemented" },
         { "id": "roar", "name": "Roar", "kind": "debuff", "text": "Costs the squad one reroll next round.", "status": "planned" }
       ],
       "flavour": "Big, loud and honest. I've fought worse people."
@@ -40,7 +40,7 @@
       "codex": "Infernal artillery. Stands at the back and lobs fire over the front rank; the front rank exists so it can.",
       "hp": 30, "attack": 30, "rank": "back",
       "actions": [
-        { "id": "firebolt", "name": "Firebolt", "kind": "attack", "value": 30, "text": "Lobbed fire for 30, over the front rank.", "status": "implemented" },
+        { "id": "firebolt", "name": "Firebolt", "kind": "attack", "text": "Lobbed fire for 30, over the front rank.", "status": "implemented" },
         { "id": "stoke", "name": "Stoke", "kind": "debuff", "text": "Adds 10 heat to the mech it hit.", "status": "planned" }
       ],
       "flavour": "If the sky turns orange, that's not the sunset."
@@ -51,7 +51,7 @@
       "codex": "Something like a body, folded wrong. Harmless enough on its own; in numbers it is a wall that keeps the Whisperer out of reach.",
       "hp": 40, "attack": 20, "rank": "front",
       "actions": [
-        { "id": "lash", "name": "Lash", "kind": "attack", "value": 20, "text": "A limb from an unexpected direction for 20.", "status": "implemented" },
+        { "id": "lash", "name": "Lash", "kind": "attack", "text": "A limb from an unexpected direction for {damage}.", "status": "implemented" },
         { "id": "fold", "name": "Fold", "kind": "defend", "text": "Folds in on itself: takes half damage until its next action.", "status": "planned" }
       ],
       "flavour": "Count the limbs. Now count again."
@@ -62,7 +62,7 @@
       "codex": "It does not hit hard. It hits your dice. A machine that has been whispered to does not roll what was installed.",
       "hp": 30, "attack": 10, "rank": "back",
       "actions": [
-        { "id": "murmur", "name": "Murmur", "kind": "attack", "value": 10, "text": "A word that hurts, for 10.", "status": "implemented" },
+        { "id": "murmur", "name": "Murmur", "kind": "attack", "text": "A word that hurts, for {damage}.", "status": "implemented" },
         { "id": "corrupt", "name": "Corrupt", "kind": "debuff", "text": "Scrambles one mech's next reroll.", "status": "planned" }
       ],
       "flavour": "Your die came up with a face you never fitted. Don't trust it. Don't trust the next one either."
@@ -74,7 +74,7 @@
       "codex": "A cathedral of ribs that walks. Fills a whole column; nothing behind it can be reached until it falls, and it does not fall quickly.",
       "hp": 140, "attack": 30, "rank": "front", "size": 2,
       "actions": [
-        { "id": "sweep", "name": "Sweep", "kind": "attack", "value": 30, "text": "A rib the size of a girder, for 30.", "status": "implemented" },
+        { "id": "sweep", "name": "Sweep", "kind": "attack", "text": "A rib the size of a girder, for {damage}.", "status": "implemented" },
         { "id": "knit", "name": "Knit", "kind": "defend", "text": "Regrows 20 hull at the end of the round.", "status": "planned" }
       ],
       "flavour": "Gate order four still applies. Bring more gun."
@@ -85,7 +85,7 @@
       "codex": "The furnace has a face. The single biggest telegraphed hit in the campaign, every round, until it is dead.",
       "hp": 160, "attack": 40, "rank": "front", "size": 2,
       "actions": [
-        { "id": "furnace_blow", "name": "Furnace Blow", "kind": "attack", "value": 40, "text": "A fist of slag for 40.", "status": "implemented" },
+        { "id": "furnace_blow", "name": "Furnace Blow", "kind": "attack", "text": "A fist of slag for {damage}.", "status": "implemented" },
         { "id": "kindle", "name": "Kindle", "kind": "buff", "text": "Every other demon on the field hits 10 harder next round.", "status": "planned" }
       ],
       "flavour": "They brought fire. We brought bigger fire. It brought the biggest."
@@ -96,7 +96,7 @@
       "codex": "You do not see all of it. The part you can see hits often enough that faces crack.",
       "hp": 120, "attack": 20, "rank": "front", "size": 2,
       "actions": [
-        { "id": "bite", "name": "Bite", "kind": "attack", "value": 20, "text": "The visible part closes, for 20.", "status": "implemented" },
+        { "id": "bite", "name": "Bite", "kind": "attack", "text": "The visible part closes, for {damage}.", "status": "implemented" },
         { "id": "unmake", "name": "Unmake", "kind": "debuff", "text": "Cracks one face outright, no hull hit needed.", "status": "planned" }
       ],
       "flavour": "Appendix K, last page: if you can read this, it hasn't noticed you yet."

@@ -123,8 +123,14 @@ func make_foe(foe_id: String) -> Foe:
 	var d: Dictionary = foes[foe_id]
 	var f := Foe.make(str(d["name"]), int(d["hp"]), int(d["attack"]), str(d.get("rank", "front")) == "back")
 	f.size = int(d.get("size", 1))
-	f.strikes = int(d.get("strikes", 1))
-	f.breach = bool(d.get("breach", false))
+	var acts: Array = []
+	for a in d.get("actions", []):
+		if str(a.get("status", "")) == "implemented" and str(a.get("kind", "")) == "attack":
+			acts.append({"id": str(a.get("id", "attack")), "name": str(a.get("name", "Attack")), "factor": float(a.get("factor", 1.0)),
+				"strikes": int(a.get("strikes", 1)), "breach": bool(a.get("breach", false)), "weight": int(a.get("weight", 1)), "text": str(a.get("text", ""))})
+	if not acts.is_empty():
+		f.actions = acts
+		f.action = acts[0]
 	f.content_id = foe_id
 	return f
 
@@ -142,9 +148,14 @@ func codex_for_foe(f: Foe) -> Dictionary:
 		if str(a.get("status", "")) != "implemented":
 			continue
 		var head := "%s // %s" % [str(a.get("name", "")).to_upper(), str(a.get("kind", "")).to_upper()]
-		if a.has("value"):
-			head += " %d" % int(a["value"])
-		acts.append("%s\n  %s" % [head, str(a.get("text", ""))])
+		if str(a.get("kind", "")) == "attack":
+			# The resulting number, never the factor: "Jaw Rend 15", not "1.5x".
+			head += " %d" % f.damage_of(a)
+			if int(a.get("strikes", 1)) > 1:
+				head += " ×%d" % int(a["strikes"])
+			if bool(a.get("breach", false)):
+				head += " // BREACH"
+		acts.append("%s\n  %s" % [head, f.text_of(a)])
 	var faction_name := str(fac.get("name", "")).strip_edges()
 	if faction_name.is_empty():
 		faction_name = str(d.get("faction", "")).capitalize()
@@ -184,8 +195,9 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		"body": str(c.get("codex", "")),   # never fantasy: that field is design notes and homages
 		"stats": stats,
 		# Hardpoints are not a number here: the component list shows them as sockets.
+		# Mitigation on one row under the bars: armour, then the field recharge under shield.
 		"stat_items": [["hull", "%d/%d" % [u.hull, u.hull_max]], ["shield", "%d/%d" % [u.shield, u.shield_max]],
-			["armour", str(u.armour)], ["move", str(u.movespeed)], ["recharge", "+%d / phase" % u.recharge_field]],
+			["armour", str(u.armour)], ["recharge", "+%d" % u.recharge_field], ["move", str(u.movespeed)]],
 		"actions": "",
 		"passive": passive,
 		"faces": faces,
@@ -467,10 +479,20 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 				errs.append("%s: only attack actions are implemented by the engine so far" % aw)
 			else:
 				implemented_attacks += 1
-				if int(a.get("value", -1)) != int(f.get("attack", 0)):
-					errs.append("%s: implemented attack value must equal the foe's attack (%d)" % [aw, int(f.get("attack", 0))])
-	if implemented_attacks != 1:
-		errs.append("%s: needs exactly one implemented attack action, has %d" % [where, implemented_attacks])
+				# An attack scales the foe's base attack: factor, not a value of its own, so the
+				# base number stays the player's read of how hard it hits.
+				if a.has("value"):
+					errs.append("%s: 'value' is gone; an attack scales the base attack with 'factor' (default 1.0)" % aw)
+				if float(a.get("factor", 1.0)) <= 0.0:
+					errs.append("%s: factor must be positive" % aw)
+				if int(a.get("strikes", 1)) < 1:
+					errs.append("%s: strikes must be at least 1" % aw)
+				if int(a.get("weight", 1)) < 1:
+					errs.append("%s: weight must be at least 1" % aw)
+				if a.has("breach") and not (a["breach"] is bool):
+					errs.append("%s: breach must be true or false" % aw)
+	if implemented_attacks < 1:
+		errs.append("%s: needs at least one implemented attack action" % where)
 
 
 func _validate_foes(errs: Array[String]) -> void:
@@ -493,10 +515,9 @@ func _validate_foes(errs: Array[String]) -> void:
 			errs.append("%s: a massive foe fills both ranks and must be rank front" % where)
 		if f.has("injures"):
 			errs.append("%s: 'injures' is gone; component injuries are a global rule" % where)
-		if f.has("strikes") and int(f.get("strikes", 1)) < 1:
-			errs.append("%s: strikes must be at least 1" % where)
-		if f.has("breach") and not (f["breach"] is bool):
-			errs.append("%s: breach must be true or false" % where)
+		for key in ["strikes", "breach"]:
+			if f.has(key):
+				errs.append("%s: '%s' belongs on an attack action, not the foe" % [where, key])
 		if f.has("faction") and not factions.has(f["faction"]):
 			errs.append("%s: unknown faction %s" % [where, f["faction"]])
 

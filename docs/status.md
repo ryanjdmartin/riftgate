@@ -4,7 +4,7 @@ Handoff note for the next session. Replace stale lines; keep it under a screen.
 
 ## As of 18 September 2026
 
-**State.** Everything committed. Tests: 133 tests, 1654 checks, green. Ryan is editing
+**State.** Everything committed. Tests: 134 tests, 1662 checks, green. Ryan is editing
 `content/*.json` in his own voice (reload the file after any pass that touches it).
 
 **Setting, decided.** The governing body is the Council for the Ultimate Liberation of Terra,
@@ -55,9 +55,16 @@ blow is what counts; its counterplay is redirect or interrupt, not built yet);
 shatter (`UnitView.shatter_shield`, screenshot pose `enemyturn`); `Face.fixed` marks
 built-in entries and the component list draws hardpoints as dashed sockets and empty ones
 as EMPTY; the codex stat block shows hull, shield, armour, move and recharge (hardpoints
-dropped as a number). Open, discussed 18 September, not built: multi-strike as a global
-attack keyword with a count (replacing `Foe.strikes`), foe actions as multipliers of base
-attack chosen by weighted RNG with the resulting number shown, component stat modifiers
+dropped as a number). **Foe actions (18 September, built).** A foe's implemented attack actions scale its base
+attack: `factor` (default 1.0), `strikes`, `breach`, `weight`; `{damage}` in an action's
+text shows the resulting number. `Foe.choose_action(rng)` picks one by weight at round
+start, before the player acts (intent chip shows damage plus ×n or !, forecast is exact);
+`Foe.damage()/strikes()/breaches()` replace the foe-level fields. Content: `value` on an
+attack is refused; a foe needs at least one implemented attack. "Numbers in tens" means the
+magnitude of tens, not multiples of ten (15 is fine; the test says >= 10). Stat block:
+hull, shield, armour, recharge (+15), move; 4 px inset fixes the left clip.
+Open, discussed 18 September, not built: multi-strike as a global attack keyword on player
+components (procs per strike; needs foe armour to be bad against), component stat modifiers
 and granted passives with totals shown as base plus bonus, a fixed colour standard for a
 protanomalous player, movespeed granularity.
 

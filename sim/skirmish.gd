@@ -196,7 +196,7 @@ func attackers_of(ms: MechState) -> Array[Foe]:
 func incoming_for(ms: MechState) -> int:
 	var total := 0
 	for f in attackers_of(ms):
-		total += f.attack
+		total += f.damage() * f.strikes()
 	return total
 
 
@@ -209,9 +209,9 @@ func forecast(ms: MechState) -> Dictionary:
 	var incoming := 0
 	var component_risk := false
 	for f in attackers_of(ms):
-		for s in range(maxi(1, f.strikes)):
-			incoming += f.attack
-			var r := _blow(shield, ms.unit.hull_max, ms.unit.armour, f.attack, f.breach)
+		for s in range(f.strikes()):
+			incoming += f.damage()
+			var r := _blow(shield, ms.unit.hull_max, ms.unit.armour, f.damage(), f.breaches())
 			shield = r["shield"]
 			hull -= r["through"]
 			if r["injures"]:
@@ -261,7 +261,10 @@ func start_round() -> void:
 			ms.locked = false
 		else:
 			ms.face_index = ms.die.roll(rng)
+	# Every foe announces its move for the round: which action, at whom. Chosen now, before
+	# the player acts, so the intent chips and the forecast are exact.
 	for f in field_foes():
+		f.choose_action(rng)
 		f.target = _pick_mech_target()
 	state = State.ASSIGN
 
@@ -330,10 +333,10 @@ func end_round() -> int:
 			t = _pick_mech_target()
 		if t == null:
 			break
-		for s in range(maxi(1, f.strikes)):
+		for s in range(f.strikes()):
 			if not t.alive():
 				break
-			_damage_mech(t, f.attack, f)
+			_damage_mech(t, f.damage(), f)
 	_clear_dead()
 	_reinforce(true)    # the reinforcement phase: a random waiting foe of the right rank per empty slot
 	_check_outcome()
@@ -437,7 +440,7 @@ func _add_heat(ms: MechState, amount: int) -> void:
 ## when what gets through is at least a quarter of max hull. Shield before a telegraphed
 ## blow is the counterplay; a double strike is how a foe gets past it.
 func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
-	var r := _blow(ms.unit.shield, ms.unit.hull_max, ms.unit.armour, amount, source.breach)
+	var r := _blow(ms.unit.shield, ms.unit.hull_max, ms.unit.armour, amount, source.breaches())
 	var had_shield := ms.unit.shield > 0
 	ms.unit.shield = r["shield"]
 	ms.unit.hull -= r["through"]

@@ -34,6 +34,7 @@ var bars: Array = []              # [[value, max, Color, (pending)], ...]
 var bars_above: bool = false      # true: full-width gauges above the sprite; false: floating
 var intent_kind: String = ""      # "attack", "defend", "heal", "buff", "debuff", or ""
 var intent_value: int = 0
+var intent_note: String = ""      # after the number: "×2" for a double strike, "!" for a breach
 var intent: String = ""           # quiet text for an empty slot, e.g. "EXPOSED"
 var intent_dim: bool = false
 var statuses: Array = []          # [[glyph id, chip text, (Color)], ...] under the sprite
@@ -239,7 +240,7 @@ func _draw() -> void:
 		return
 	var chips: Array = []
 	if not intent_kind.is_empty():
-		chips.append([Glyphs.intent_for(intent_kind), str(intent_value) if intent_value > 0 else "", Palette.ENEMY if is_enemy else hud])
+		chips.append([Glyphs.intent_for(intent_kind), (str(intent_value) + intent_note) if intent_value > 0 else "", Palette.ENEMY if is_enemy else hud])
 	for s in statuses:
 		chips.append([s[0], str(s[1]), s[2] if s.size() >= 3 else hud])
 	if chips.is_empty():

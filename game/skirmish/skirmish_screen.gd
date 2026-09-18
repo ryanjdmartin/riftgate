@@ -627,10 +627,11 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe]) -> void:
 	v.highlight = targets.has(foe)
 	v.intent = ""
 	v.intent_dim = false
-	# The engine runs only the basic attack, so the intent is a sword and its damage; a
-	# suppressed foe shows no intent, only the status.
+	# The intent is this round's chosen attack: a sword, its damage, and a mark for a double
+	# strike or a breach; a suppressed foe shows no intent, only the status.
 	v.intent_kind = "" if (foe.suppressed or foe.target == null) else "attack"
-	v.intent_value = foe.attack
+	v.intent_value = foe.damage()
+	v.intent_note = ("×%d" % foe.strikes() if foe.strikes() > 1 else "") + ("!" if foe.breaches() else "")
 	v.statuses = []
 	for r in _foe_rows(foe):
 		v.statuses.append([r[0], r[1], r[3]])
@@ -795,6 +796,8 @@ func _on_foe_held(v: UnitView) -> void:
 		return
 	_hold_foe = foe
 	var text := "%s\nhp %d/%d · attack %d" % [foe.display_name, foe.hp, foe.hp_max, foe.attack]
+	if not foe.action.is_empty():
+		text += "\n%s %d%s" % [str(foe.action.get("name", "")), foe.damage(), v.intent_note]
 	if foe.target != null:
 		text += "\n→ %s" % foe.target.unit.display_name
 	if foe.is_massive():

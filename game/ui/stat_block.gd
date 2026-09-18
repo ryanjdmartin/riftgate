@@ -7,6 +7,7 @@ extends Control
 
 const ROW_H := 50.0
 const COLS := 2
+const INSET := 4.0   # glyphs have a left bearing; without this the first digit clips at the panel edge
 
 var items: Array = []     # [[caption, value], ...]
 
@@ -29,7 +30,7 @@ func _draw() -> void:
 	var mono := Hud.mono()
 	var col_w := size.x / float(COLS)
 	for i in range(items.size()):
-		var x := float(i % COLS) * col_w
+		var x := float(i % COLS) * col_w + INSET
 		var y := float(i / COLS) * ROW_H
 		var value := str(items[i][1])
 		var caption := str(items[i][0]).to_upper()

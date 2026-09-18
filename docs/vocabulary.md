@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 66 implemented, 14 planned, 1 idea.
+Status: 67 implemented, 14 planned, 1 idea.
 
 ## Resource
 
@@ -157,8 +157,9 @@ Status: 66 implemented, 14 planned, 1 idea.
 
 | Term | Fantasy | Codex | Status |
 |---|---|---|---|
-| **Double strike** | The one monster the shield-tank fears. | A foe with two strikes lands two separate blows a turn. The first breaks the shield, the second reaches the hull. It is how a foe threatens a shielded mech, and why armour matters. | implemented |
+| **Double strike** | The one monster the shield-tank fears. | An attack with two strikes lands two separate blows. The first breaks the shield, the second reaches the hull. It is how a foe threatens a shielded mech, and why armour matters. | implemented |
 | **Breach** | Something big enough that the field bends. | A breaching blow overflows: what the shield cannot absorb reaches the hull, and if that is a quarter of maximum hull it injures a component like any bare-hull blow. It breaks the fundamental promise that a standing shield stops the big hit, so it is a dangerous, uncommon trait, and its counterplay is not the shield: redirect it or interrupt it. | implemented |
+| **Foe action** | The ghoul claws, but sometimes it bites. You always know which. | A foe has a base attack, the quick read of how hard it hits, and a list of attacks that scale it. Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number. | implemented |
 
 ## Holes
 
@@ -191,5 +192,6 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Component** (implemented): Multi-slot components were considered and scrapped on 18 September as invisible complexity.
 - **Fixed component** (implemented): Decided against unlocking fixed slots for money (18 September).
 - **Armour** (implemented): Numbers are placeholders. Armour from components is content, not yet written.
-- **Double strike** (implemented): No foe carries it yet; Ryan places it. A massive foe taking two actions is the same rule.
-- **Breach** (implemented): No foe carries it yet; Ryan places it. Redirect and interrupt do not exist yet. Name is a placeholder (pierce is taken by the player keyword). Will become an attack keyword once foe actions carry keywords.
+- **Double strike** (implemented): A property of a foe's attack action (strikes, any count). No foe carries it yet; Ryan places it. To become a global multi-strike keyword on player components too (procs per strike), once foes have armour to make it bad against.
+- **Breach** (implemented): A property of a foe's attack action. No foe carries it yet; Ryan places it. Redirect and interrupt do not exist yet. Name is a placeholder (pierce is taken by the player keyword).
+- **Foe action** (implemented): Only attacks run; defend, buff and debuff actions stay planned. Weighted RNG is the whole brain for now.
