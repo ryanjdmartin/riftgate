@@ -397,7 +397,7 @@ func test_injury_cracks_then_destroys_and_persists_until_repaired() -> void:
 	assert_eq(f.kind, Face.Kind.ATTACK, "it still attacks")
 	assert_eq(f.power, 30, "with its basic damage")
 	assert_true(f.keywords.is_empty(), "keywords gone")
-	assert_eq(f.crit, 0, "crit gone")
+	assert_eq(f.crit, 15, "crit kept (18 September: a crack takes only the keywords)")
 	assert_true(f.describe().ends_with("(cracked)"), "described as cracked")
 	assert_eq(m.damaged_component_count(), 1, "one damaged component on the unit")
 	sk.apply_injury(sk.mechs[0])
@@ -419,7 +419,6 @@ func test_injury_cracks_then_destroys_and_persists_until_repaired() -> void:
 	m.repair_faces()
 	assert_eq(d.faces[0].kind, Face.Kind.ATTACK, "hangar repair restores the component")
 	assert_true(d.faces[0].has(K.CLEAVE) and d.faces[0].has(K.BURN), "with its keywords")
-	assert_eq(d.faces[0].crit, 15, "and its crit")
 	assert_false(d.faces[0].cracked, "not cracked any more")
 	assert_eq(m.damaged_component_count(), 0, "nothing left to repair")
 

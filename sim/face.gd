@@ -197,13 +197,12 @@ func duplicate_face() -> Face:
 	return f
 
 
-## An injury: the component keeps its basic action (kind, reach, power) and loses everything
-## that modified it. A cracked component hit again is destroyed, which is Face.blank().
+## An injury: the component keeps its action, its numbers, its crit and its heat, and loses
+## its keywords (Ryan, 18 September: cracked is the mild state; destroyed is the real one).
+## A cracked component hit again is destroyed, which is Face.blank().
 func crack() -> void:
 	cracked = true
 	keywords.clear()
-	crit = 0
-	crit_bonus = 0.0
 	label = ""
 
 
