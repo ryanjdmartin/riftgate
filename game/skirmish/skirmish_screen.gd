@@ -75,6 +75,7 @@ var _mech_3d: Array[MechView3D] = [] # parallel to _mech_views; null where the m
 var _codex_actions: Label
 var _codex_passive: Label
 var _codex_faces: FaceListView
+var _codex_modifiers: Label            # every live effect on the mech, on the die screen
 var _codex_flavour: Label
 var _confirm_shade: Control
 var _confirm: HudPanel
@@ -388,6 +389,7 @@ func _build_codex() -> void:
 	_codex_body = Hud.label("", 19, Palette.INK)
 	_codex_faces = FaceListView.new()
 	_codex_faces.columns = 2
+	_codex_modifiers = Hud.label("", 14, Palette.INK, Hud.mono())
 	_codex_flavour = Hud.label("", 18, Palette.MUTED, Hud.quote())
 	# Wrapping labels need a width before their first layout pass, or they report the height
 	# of every word on its own line and the panel opens far too tall the first time.
@@ -395,13 +397,15 @@ func _build_codex() -> void:
 	spacer.custom_minimum_size = Vector2(0, 10)
 	head.add_child(spacer)
 	head.add_child(_codex_stats)
-	for l in [_codex_passive, _codex_actions]:
+	for l in [_codex_passive, _codex_actions, _codex_modifiers]:
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD
 		l.custom_minimum_size = Vector2(560, 0)
 		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-		cv.add_child(l)
+	cv.add_child(_codex_passive)
+	cv.add_child(_codex_actions)
 	cv.add_child(_codex_faces)
+	cv.add_child(_codex_modifiers)
 	var rule := ColorRect.new()
 	rule.color = Color(Palette.HUD, 0.25)
 	rule.custom_minimum_size = Vector2(0, 1)
@@ -771,19 +775,54 @@ func _on_die_double_tapped(i: int) -> void:
 	var ms: Skirmish.MechState = sk.mechs[i]
 	if sk.state == Skirmish.State.ASSIGN and ms.alive() and not ms.assigned:
 		locked[i] = not locked[i]
+	# The die screen is a breakdown, not a portrait: no model, no rules helper, one column of
+	# components with their names, and every live effect on the mech under them.
 	var db := ContentDB.load_default()
 	var entry := db.codex_for_unit(ms.unit)
+	var fixed_n := 0
+	for f in ms.die.faces:
+		if f.fixed:
+			fixed_n += 1
 	entry["title"] = "%s die" % ms.unit.display_name
 	entry["designation"] = ""     # the die is not the machine: no spec-plate tag, no quotes
-	entry["subtitle"] = "D%d // ONE ENTRY PER COMPONENT SLOT // EACH 1 IN %d PER ROLL // A REROLL NEVER REPEATS" % [ms.die.size(), ms.die.size()]
+	entry["subtitle"] = "D%d // %d HARDPOINTS // %d FIXED" % [ms.die.size(), ms.unit.hardpoints, fixed_n]
+	entry["sprite_id"] = ""
 	entry["body"] = ""
 	entry["stats"] = ""
 	entry["stat_items"] = []
 	entry["faces"] = _shown_faces(ms)
+	entry["face_columns"] = 1
+	var labels: Array = []
+	for f in ms.die.faces:
+		if f.empty:
+			labels.append("EMPTY HARDPOINT")
+		else:
+			labels.append(db.component_name(f.component).to_upper() + (" // FIXED" if f.fixed else ""))
+	entry["face_labels"] = labels
 	entry["current"] = ms.face_index
 	entry["passive"] = ""
+	entry["modifiers"] = _modifier_lines(ms.unit)
 	entry["flavour"] = ""
 	_open_codex(entry)
+
+
+## Every live effect on a mech as the die screen prints it: name, stacks, source, how long.
+func _modifier_lines(u: Unit) -> String:
+	var db := ContentDB.load_default()
+	var lines: Array[String] = []
+	for m in Effects.live(u):
+		var source := "chassis"
+		if m.source != "chassis":
+			source = db.component_name(m.source) if db.components.has(m.source) else m.source
+		var scopes: Array = ["loadout", "this battle", "this skirmish", "until end of round %d" % m.expires_round]
+		var scope: String = str(scopes[m.scope])
+		var head: String = str(m.name).to_upper()
+		if m.stacks > 1:
+			head += " ×%d" % m.stacks
+		lines.append("%s  [%s, %s]\n  %s" % [head, source, scope, m.description])
+	if lines.is_empty():
+		return "EFFECTS: none"
+	return "EFFECTS\n" + "\n".join(lines)
 
 
 ## The die's entries as the player should see them (effective reach), for lists.
@@ -884,8 +923,12 @@ func _open_codex(entry: Dictionary) -> void:
 		l.visible = not l.text.is_empty()
 	var faces: Array = entry.get("faces", [])
 	_codex_faces.visible = not faces.is_empty()
+	_codex_faces.columns = int(entry.get("face_columns", 2))
+	_codex_faces.labels = entry.get("face_labels", [])
 	if not faces.is_empty():
 		_codex_faces.set_faces(faces, int(entry.get("current", -1)))
+	_codex_modifiers.text = str(entry.get("modifiers", ""))
+	_codex_modifiers.visible = not _codex_modifiers.text.is_empty()
 	var quote := str(entry.get("flavour", ""))
 	_codex_flavour.text = "“%s”" % quote if not quote.is_empty() else ""
 	_codex_flavour.visible = not quote.is_empty()

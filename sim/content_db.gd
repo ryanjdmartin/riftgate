@@ -125,6 +125,10 @@ func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO) -
 	return u
 
 
+func component_name(cid: String) -> String:
+	return str(components.get(cid, {}).get("name", cid))
+
+
 func make_foe(foe_id: String) -> Foe:
 	var d: Dictionary = foes[foe_id]
 	var f := Foe.make(str(d["name"]), int(d["hp"]), int(d["attack"]), str(d.get("rank", "front")) == "back")

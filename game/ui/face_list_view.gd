@@ -11,6 +11,7 @@ const MINI := 44.0
 var faces: Array = []     # Face
 var current: int = -1
 var columns: int = 1      # the codex runs two columns; the die readout one
+var labels: Array = []    # optional, one per face: the component's name above its description
 
 
 func _init() -> void:
@@ -84,4 +85,8 @@ func _draw() -> void:
 			if f.cracked:
 				draw_line(rect.position + Vector2(6.0, MINI - 6.0), rect.position + Vector2(MINI - 6.0, 6.0), Palette.ENEMY, 1.5)
 		var ink := Palette.INK if cur else Palette.MUTED
-		draw_string(disp, Vector2(x0 + MINI + 22.0, y + ROW * 0.5 + 6.0), f.describe(), HORIZONTAL_ALIGNMENT_LEFT, col_w - MINI - 26.0, 17, ink)
+		if i < labels.size() and not str(labels[i]).is_empty():
+			draw_string(mono, Vector2(x0 + MINI + 22.0, y + 21.0), str(labels[i]), HORIZONTAL_ALIGNMENT_LEFT, col_w - MINI - 26.0, 11, Color(Palette.HUD, 0.8 if cur else 0.5))
+			draw_string(disp, Vector2(x0 + MINI + 22.0, y + 42.0), f.describe(), HORIZONTAL_ALIGNMENT_LEFT, col_w - MINI - 26.0, 17, ink)
+		else:
+			draw_string(disp, Vector2(x0 + MINI + 22.0, y + ROW * 0.5 + 6.0), f.describe(), HORIZONTAL_ALIGNMENT_LEFT, col_w - MINI - 26.0, 17, ink)

@@ -105,6 +105,9 @@ tick-decaying statuses. Foe attack keyword `scorch` (placeholder) stacks Overhea
 wants, flavour pending. Numbed stacks accrue; the resistance roll is not applied. Component
 stat modifiers in content are just `static add_stat` effects on a component's passive;
 none written yet.
+The die screen (double-tap a die) is a breakdown: no model, no rules line, one column
+of components with their names (FaceListView.labels), and every live effect on the mech
+listed with stacks, source and how long (`_modifier_lines`).
 Open, discussed 18 September, not built: component stat modifiers as content
 and granted passives with totals shown as base plus bonus, a fixed colour standard for a
 protanomalous player, movespeed granularity.
