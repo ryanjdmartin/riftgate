@@ -167,7 +167,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 	if u.die != null:
 		faces = u.die.faces.duplicate()
 	var passive := ""
-	if not u.passive.is_empty():
+	if Passives.active(u.passive):   # a planned passive is a draft: not shown, not run
 		passive = "%s: %s" % [str(u.passive.get("name", "")).to_upper(), u.passive.get("description", "")]
 	return {
 		"title": u.display_name,
@@ -330,6 +330,14 @@ func _validate_passive(where: String, p, errs: Array[String]) -> void:
 	for key in ["rules", "fantasy"]:
 		if p.has(key):
 			errs.append("%s: passive has '%s'; say it in description and put design notes on the entry's design object" % [where, key])
+	# A passive in the works carries "status": "planned" (like a foe action): its name and
+	# description are kept, the engine ignores it, the codex does not show it, and its
+	# effects are not checked, so a trigger the engine lacks does not break the build.
+	var status := str(p.get("status", "implemented"))
+	if not ACTION_STATUSES.has(status):
+		errs.append("%s: passive status must be implemented or planned" % where)
+	if status == "planned":
+		return
 	var effects: Array = p.get("effects", [])
 	if effects.is_empty():
 		errs.append("%s: passive has no effects" % where)

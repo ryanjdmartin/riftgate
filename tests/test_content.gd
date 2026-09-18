@@ -172,18 +172,32 @@ func test_raptor_passive_doubles_damage_and_heat() -> void:
 	assert_eq(sk.mechs[0].heat, 20, "heat 10 became 20")
 
 
-func test_badger_passive_raises_the_floor() -> void:
-	var db := _db()
-	var u := db.make_mech("badger")
-	u.die = Die.single(Face.attack(10, Face.Reach.LINE, [], 0, 20))
-	for seed_value in range(1, 11):
-		var sk := Skirmish.new(seed_value)
-		sk.add_mech(u)
-		sk.add_foes([Foe.make("ghoul", 200, 10)])
-		sk.begin()
-		sk.start_round()
-		sk.assign(0, sk.front[0])
-		assert_eq(sk.front[0].hp, 170, "a 10 to 20 roll is lifted to 30 by Braced Mounts")
+func test_min_damage_passive_raises_the_floor() -> void:
+	# The engine's damage floor, on a synthetic passive: content is Ryan's and changes.
+	var floor_passive := {"id": "floor", "name": "Floor", "description": "", "effects": [{"trigger": "on_attack", "effect": "min_damage", "value": 30}]}
+	assert_eq(Passives.on_attack(floor_passive, 12, 0), [30, 0], "a 12 is lifted to 30")
+	assert_eq(Passives.on_attack(floor_passive, 45, 5), [45, 5], "a 45 stays")
+
+
+func test_planned_passive_is_kept_but_not_run() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var c: Dictionary = db.chassis["raptor"].duplicate(true)
+	c["passive"] = {"id": "draft", "name": "Draft", "description": "Not built yet.", "status": "planned",
+		"effects": [{"trigger": "on_injury", "effect": "immune_destroy", "value": 1}]}
+	db.chassis["drafted"] = c
+	var errs := db.validate()
+	for e in errs:
+		assert_false(e.begins_with("chassis drafted"), "a planned passive with an unbuilt effect validates clean: %s" % e)
+	assert_eq(Passives.on_attack(c["passive"], 10, 0), [10, 0], "the engine ignores a planned passive")
+	assert_false(Passives.active(c["passive"]), "not active")
+	c["passive"]["status"] = "implemented"
+	db.chassis["drafted"] = c
+	var hit := false
+	for e in db.validate():
+		if e.begins_with("chassis drafted") and e.contains("unknown trigger"):
+			hit = true
+	assert_true(hit, "the same passive marked implemented is refused until the engine has the trigger")
 
 
 func test_anvil_passive_burns_on_crit() -> void:

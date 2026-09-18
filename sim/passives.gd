@@ -19,9 +19,14 @@ static func supports(trigger: String, effect: String) -> bool:
 	return SUPPORTED_EFFECTS.has(trigger) and SUPPORTED_EFFECTS[trigger].has(effect)
 
 
+## A passive the engine runs: present and not marked "planned" (a draft in content).
+static func active(passive: Dictionary) -> bool:
+	return not passive.is_empty() and str(passive.get("status", "implemented")) == "implemented"
+
+
 ## Apply on_attack effects. Returns [damage, heat].
 static func on_attack(passive: Dictionary, dmg: int, heat: int) -> Array:
-	if passive.is_empty():
+	if not active(passive):
 		return [dmg, heat]
 	for eff in passive.get("effects", []):
 		if str(eff.get("trigger", "")) != "on_attack":
@@ -45,7 +50,7 @@ static func on_attack(passive: Dictionary, dmg: int, heat: int) -> Array:
 ## target and heat vented from the attacker.
 static func on_crit(passive: Dictionary, dmg: int) -> Dictionary:
 	var out := {"damage": dmg, "burn": 0, "vent": 0}
-	if passive.is_empty():
+	if not active(passive):
 		return out
 	for eff in passive.get("effects", []):
 		if str(eff.get("trigger", "")) != "on_crit":

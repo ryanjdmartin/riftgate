@@ -31,7 +31,10 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   the validator refuses those keys at the top level. Shown to the player: `codex` (the inspect
   entry), `flavour` (the quote), a passive's `name` and `description`, a foe action's `text`.
   Content ids are Ryan's and may be renamed; runtime code takes defaults from the content,
-  never from a hardcoded id.
+  never from a hardcoded id. A draft the engine cannot run yet carries `"status": "planned"`
+  (a foe action, or a chassis passive): it is kept, not shown, not run, and not validated
+  against the engine, so content can be written ahead of code. Tests never assert on a
+  specific entry's passive; they use synthetic passives.
 - `sim/` never touches scenes. Everything there runs headless with a seeded RNG.
 - Numbers in content are placeholders, not balance.
 - Content ideas (makers, chassis, components, foes, names, lore) are proposed in conversation first;
