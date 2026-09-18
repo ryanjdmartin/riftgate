@@ -116,6 +116,12 @@ func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO) -
 	var p = c.get("passive", null)
 	if p is Dictionary:
 		u.passive = p
+		u.grant_passive(p, "chassis")
+	# Fitted components bring their own passives; a destroyed one keeps its bonuses only.
+	for cid in c.get("fixed", []) + c.get("loadout", []):
+		var cp = components.get(cid, {}).get("passive", null)
+		if cp is Dictionary:
+			u.grant_passive(cp, cid, cid)
 	return u
 
 
@@ -185,16 +191,23 @@ func codex_for_unit(u: Unit) -> Dictionary:
 	var faces: Array = []
 	if u.die != null:
 		for f in u.die.faces:
-			var r := Passives.effective_reach(u.passive, f)
+			var r := Effects.effective_reach(u, f)
 			if r != f.reach:
 				var shown: Face = f.duplicate_face()
 				shown.reach = r
 				faces.append(shown)
 			else:
 				faces.append(f)
-	var passive := ""
-	if Passives.active(u.passive):   # a planned passive is a draft: not shown, not run
-		passive = "%s: %s" % [str(u.passive.get("name", "")).to_upper(), u.passive.get("description", "")]
+	# Every live loadout modifier: the chassis passive first, then what components grant.
+	var lines: Array[String] = []
+	for d in Effects.describe(u):
+		if d[3] != Effects.LOADOUT:
+			continue
+		var head: String = str(d[0]).to_upper()
+		if d[2] != "chassis" and components.has(d[2]):
+			head += " (%s)" % str(components[d[2]].get("name", d[2]))
+		lines.append("%s: %s" % [head, d[1]])
+	var passive := "\n".join(lines)
 	return {
 		"title": u.display_name,
 		"subtitle": "%s // %s // D%d" % [str(maker.get("name", "")).to_upper(), str(c.get("silhouette", "")).to_upper(), u.die.size() if u.die != null else 0],
@@ -383,10 +396,14 @@ func _validate_passive(where: String, p, errs: Array[String]) -> void:
 		if not vocabulary.has(trig) or vocabulary[trig].get("category") != "trigger":
 			errs.append("%s: passive effect uses unknown trigger '%s'" % [where, trig])
 		var effect := str(eff.get("effect", ""))
-		if not Passives.supports(trig, effect):
+		if not Effects.supports(trig, effect):
 			errs.append("%s: passive effect '%s' on '%s' is not implemented by the engine" % [where, effect, trig])
+		if (effect == "add_stat" or effect == "multiply_stat") and not Effects.STATS.has(str(eff.get("stat", ""))):
+			errs.append("%s: a stat effect needs 'stat', one of %s" % [where, ", ".join(Effects.STATS)])
+		if effect == "suppress" and str(eff.get("value", "")).is_empty():
+			errs.append("%s: suppress needs the id or tag it turns off as its value" % where)
 		var when := str(eff.get("when", ""))
-		if not Passives.supports_when(when):
+		if not Effects.supports_when(when):
 			errs.append("%s: passive condition '%s' is not implemented by the engine" % [where, when])
 		if trig == "static" and when.begins_with("reach_"):
 			errs.append("%s: a static reach change cannot be conditioned on reach (it would chase its own tail)" % where)

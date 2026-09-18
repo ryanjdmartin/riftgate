@@ -231,6 +231,8 @@ func _check_outcome() -> bool:
 	elif boss != null and not field.units.has(boss):
 		outcome = Outcome.VICTORY
 	if outcome != Outcome.NONE:
+		for u in field.mechs():
+			Effects.end_battle(u)
 		state = State.DONE
 		return true
 	return false

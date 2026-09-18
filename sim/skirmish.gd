@@ -177,7 +177,7 @@ func pending_heat(ms: MechState) -> int:
 	var heat := f.heat
 	if f.has(Face.Keyword.OVERCHARGE):
 		heat *= 2
-	return Passives.on_attack(ms.unit.passive, 0, heat, f)[1]
+	return Effects.attack(ms.unit, f, 0, heat, false)["heat"]
 
 
 ## The foes that will strike this mech when the round ends, in the order they act: alive,
@@ -211,7 +211,7 @@ func forecast(ms: MechState) -> Dictionary:
 	for f in attackers_of(ms):
 		for s in range(f.strikes()):
 			incoming += f.damage()
-			var r := _blow(shield, ms.unit.hull_max, ms.unit.armour, f.damage(), f.breaches())
+			var r := _blow(shield, ms.unit.hull_max, ms.unit.armour, Effects.damage_taken(ms.unit, f.damage()), f.breaches())
 			shield = r["shield"]
 			hull -= r["through"]
 			if r["injures"]:
@@ -268,7 +268,7 @@ func targets_for(mech_index: int) -> Array[Foe]:
 ## ally reading the same component gets its own answer, and a suppressed passive stops
 ## answering.
 func reach_of(ms: MechState, f: Face) -> int:
-	return Passives.effective_reach(ms.unit.passive, f)
+	return Effects.effective_reach(ms.unit, f)
 
 
 ## The component as the player should see it: a copy carrying the effective reach. For
@@ -371,6 +371,8 @@ func end_round() -> int:
 				break
 			_damage_mech(t, f.damage(), f)
 	_clear_dead()
+	for ms in mechs:
+		Effects.end_round(ms.unit, round)   # timed effects run out
 	_reinforce(true)    # the reinforcement phase: a random waiting foe of the right rank per empty slot
 	_check_outcome()
 	if outcome == Outcome.NONE:
@@ -407,19 +409,18 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 		var heat := f.heat if s == 0 else 0
 		var crit := f.crit > 0 and rng.randi_range(1, 100) <= f.crit
 		if crit:
-			dmg = int(roundf(dmg * (Face.CRIT_MULT + f.crit_bonus + Passives.crit_bonus(ms.unit.passive, f))))
-			var c := Passives.on_crit(ms.unit.passive, dmg, f)
-			dmg = c["damage"]
-			extra_burn += c["burn"]
-			vent += c["vent"]
+			dmg = int(roundf(dmg * (Face.CRIT_MULT + f.crit_bonus + Effects.crit_bonus(ms.unit, f))))
 		if f.has(Face.Keyword.OVERCHARGE):
 			dmg *= 2
 			heat *= 2
 		if f.has(Face.Keyword.EXECUTE) and target.hp * 2 <= target.hp_max:
 			dmg = int(roundf(dmg * (1.5 if target.is_massive() else 2.0)))   # bosses and elites: half the bonus
-		var modded := Passives.on_attack(ms.unit.passive, dmg, heat, f)
-		dmg = modded[0]
-		heat_total += modded[1]
+		# Then the pipeline: every live modifier's adds, multiplies and floors, in that order.
+		var modded := Effects.attack(ms.unit, f, dmg, heat, crit)
+		dmg = modded["damage"]
+		heat_total += modded["heat"]
+		extra_burn += modded["burn"]
+		vent += modded["vent"]
 		# Keywords stack: a cleaving, piercing blow hits the neighbours and the column.
 		var hit: Array[Foe] = [target]
 		if f.has(Face.Keyword.CLEAVE):
@@ -484,6 +485,7 @@ func _add_heat(ms: MechState, amount: int) -> void:
 ## when what gets through is at least a quarter of max hull. Shield before a telegraphed
 ## blow is the counterplay; a double strike is how a foe gets past it.
 func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
+	amount = Effects.damage_taken(ms.unit, amount)   # buffs and debuffs on damage taken, before shield and armour
 	var r := _blow(ms.unit.shield, ms.unit.hull_max, ms.unit.armour, amount, source.breaches())
 	var had_shield := ms.unit.shield > 0
 	ms.unit.shield = r["shield"]
@@ -546,7 +548,7 @@ func apply_injury(ms: MechState) -> void:
 	var originals: Dictionary = ms.unit.damaged_faces
 	var what := f.describe()
 	if f.cracked:
-		if bool(Passives.on_injury(ms.unit.passive, f)["no_destroy"]):
+		if Effects.no_destroy(ms.unit, f):
 			log.append("%s: %s holds, cracked but not destroyed" % [ms.unit.display_name, what])
 			return
 		var d := Face.blank()
@@ -645,6 +647,9 @@ func _check_outcome() -> void:
 		_finish()
 
 
-## Damaged components are NOT restored here: they are repaired in the hangar.
+## Damaged components are NOT restored here: they are repaired in the hangar. Skirmish-long
+## and timed effects end.
 func _finish() -> void:
 	state = State.DONE
+	for ms in mechs:
+		Effects.end_skirmish(ms.unit)

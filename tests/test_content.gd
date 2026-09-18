@@ -218,8 +218,10 @@ func test_raptor_passive_doubles_damage_and_heat() -> void:
 func test_min_damage_passive_raises_the_floor() -> void:
 	# The engine's damage floor, on a synthetic passive: content is Ryan's and changes.
 	var floor_passive := {"id": "floor", "name": "Floor", "description": "", "effects": [{"trigger": "on_attack", "effect": "min_damage", "value": 30}]}
-	assert_eq(Passives.on_attack(floor_passive, 12, 0), [30, 0], "a 12 is lifted to 30")
-	assert_eq(Passives.on_attack(floor_passive, 45, 5), [45, 5], "a 45 stays")
+	var u := Unit.mech(0, "A", Vector2i.ZERO)
+	u.grant_passive(floor_passive)
+	assert_eq(Effects.attack(u, null, 12, 0, false)["damage"], 30, "a 12 is lifted to 30")
+	assert_eq(Effects.attack(u, null, 45, 5, false)["damage"], 45, "a 45 stays")
 
 
 func test_planned_passive_is_kept_but_not_run() -> void:
@@ -232,8 +234,7 @@ func test_planned_passive_is_kept_but_not_run() -> void:
 	var errs := db.validate()
 	for e in errs:
 		assert_false(e.begins_with("chassis drafted"), "a planned passive with an unbuilt effect validates clean: %s" % e)
-	assert_eq(Passives.on_attack(c["passive"], 10, 0), [10, 0], "the engine ignores a planned passive")
-	assert_false(Passives.active(c["passive"]), "not active")
+	assert_true(Effects.make(c["passive"], Effects.LOADOUT, "chassis") == null, "a planned passive grants nothing")
 	c["passive"]["status"] = "implemented"
 	db.chassis["drafted"] = c
 	var hit := false

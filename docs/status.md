@@ -4,7 +4,7 @@ Handoff note for the next session. Replace stale lines; keep it under a screen.
 
 ## As of 18 September 2026
 
-**State.** Everything committed. Tests: 134 tests, 1662 checks, green. Ryan is editing
+**State.** Everything committed. Tests: 144 tests, 1704 checks, green. Ryan is editing
 `content/*.json` in his own voice (reload the file after any pass that touches it).
 
 **Setting, decided.** The governing body is the Council for the Ultimate Liberation of Terra,
@@ -85,7 +85,20 @@ owner's passive, so an ally reading the entry or a suppressed passive gets the p
 `Skirmish.shown_face` gives the screen a display copy. Vocabulary entries carry no `fantasy`
 any more (validator and export tool follow). `Face.CRIT_MULT` is the crit base (Face, not
 Skirmish: a cycle otherwise).
-Open, discussed 18 September, not built: component stat modifiers
+**Effects pipeline (18 September, built).** `sim/effects.gd` replaces `passives.gd`: a
+Modifier is a passive with a scope (LOADOUT, BATTLE, SKIRMISH, ROUNDS) and a source;
+`Unit.modifiers` holds them, `Unit.base` holds chassis numbers and `hull_max`, `shield_max`,
+`heat_max`, `armour`, `movespeed`, `recharge_field` are accessors over `Effects.stat`
+(writing sets the base). Queries: `stat`, `attack` (adds, multiplies, floors on damage and
+heat, burn and vent from crit effects), `crit_bonus`, `damage_taken`, `effective_reach`,
+`no_destroy`, `describe`. Lifetimes: `end_round` (Skirmish.end_round), `end_skirmish`
+(Skirmish._finish), `end_battle` (Battle outcome). Static effects: add_stat, multiply_stat,
+add/multiply_damage_taken, set_reach, suppress (by id or tag). Component passives are
+granted by make_mech with their component id; destroyed components keep bonuses, lose
+abilities. Order of operations is a vocabulary rule (category `rules`). Foes are not on it
+yet (burn, suppressed stay statuses). Component stat modifiers in content are now just
+`static add_stat` effects on a component's passive; none written yet.
+Open, discussed 18 September, not built: component stat modifiers as content
 and granted passives with totals shown as base plus bonus, a fixed colour standard for a
 protanomalous player, movespeed granularity.
 

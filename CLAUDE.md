@@ -44,6 +44,10 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
 - Numbers in content are placeholders, not balance.
 - Content ideas (makers, chassis, components, foes, names, lore) are proposed in conversation first;
   Ryan tweaks them against his own notes before they land in `content/*.json` or as decided in the bible.
+- Numbers are questions, never stored totals: every stat, damage figure and component property
+  is read through `sim/effects.gd` (base plus every live source, in one fixed order). A new
+  buff, reward or passive is a Modifier with a scope and a source; never write to a stat or a
+  component to apply one.
 - Keep the fun in mind: prefer one source of randomness, and push back on systems that add no
   decision. Slice and Dice is the touchstone.
 - When Ryan suggests a rule or a change, look for holes in the argument and discuss them in

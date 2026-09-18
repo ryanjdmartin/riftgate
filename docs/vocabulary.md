@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 65 implemented, 27 planned, 0 idea.
+Status: 66 implemented, 27 planned, 0 idea.
 
 ## Resource
 
@@ -147,7 +147,7 @@ Status: 65 implemented, 27 planned, 0 idea.
 | **On hull damage** | Passive trigger. Fires when this mech loses hull. | planned |
 | **Out of combat** | Passive trigger. Fires at the end of a battlefield phase in which this mech had no skirmish. | planned |
 | **on_injury** | Passive trigger. Fires when an injury lands on a component. Effects: no_destroy (a cracked component holds instead of being destroyed). | implemented |
-| **Static** | Passive trigger. Always on. Its effects change a component's properties while a condition holds, rather than firing on an event: set_reach makes a component another reach (the Badger's cracked weapons become melee). | implemented |
+| **Static** | Passive trigger. Always on. Its effects change a mech's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; set_reach on a component (the Badger's cracked weapons become melee); suppress, which turns off another effect by id or tag. | implemented |
 
 ## Commander
 
@@ -170,6 +170,12 @@ Status: 65 implemented, 27 planned, 0 idea.
 |---|---|---|
 | **Breach** | A breaching blow overflows: what the shield cannot absorb reaches the hull, and if that is a quarter of maximum hull it injures a component like any bare-hull blow. It breaks the fundamental promise that a standing shield stops the big hit, so it is a dangerous, uncommon attack modifier, and its counterplay is not the shield: redirect it or interrupt it. | implemented |
 | **Foe action** | A foe has a base attack, the quick read of how hard it hits, and a list of attacks that scale it. Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number. | implemented |
+
+## Rules
+
+| Term | Codex | Status |
+|---|---|---|
+| **Order of operations** | Everything that changes a number goes through one pipeline, in one order. Sources: the chassis passive and each fitted component's passive (until refitted), skirmish rewards (until the battle ends), buffs and debuffs (until the skirmish ends, or until the end of a given round). First suppression, shortest-lived source to longest: a live effect that suppresses another by id or tag turns it off, and a suppressed effect suppresses nothing. Then the gate: an effect takes part only if it is live, its trigger fires now, its condition holds, and, for an ability, its component is not destroyed (a destroyed component keeps its stat bonuses and loses its abilities). Then adds, all sources summed; then multiplies, all sources multiplied; then floors and caps; then overrides, where the shortest-lived source wins and the latest granted breaks ties. In an attack, the crit multiplier and the fixed keyword rules (overcharge, execute) come before the pipeline's adds and multiplies. Nothing is ever stored as a total: every read asks again, so an effect that is gone stops answering. | implemented |
 
 ## Holes
 
@@ -204,4 +210,5 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Breach** (implemented): A property of a foe's attack action. No foe carries it yet; Ryan places it. Redirect and interrupt do not exist yet. Name is a placeholder (pierce is taken by the player keyword).
 - **Foe action** (implemented): Only attacks run; defend, buff and debuff actions stay planned. Weighted RNG is the whole brain for now.
 - **Strikes** (implemented): Heat is paid once per use, not per strike. Foes have no armour yet, so on the player side strikes only matter for procs until they do.
-- **Static** (implemented): Only set_reach exists. A static change is applied to the cracked copy of a component, so the hangar's repair restores the original untouched.
+- **Static** (implemented): Every read asks the pipeline; nothing is written to a stat or a component, so an effect that is gone stops answering. A static reach rule cannot be conditioned on reach.
+- **Order of operations** (implemented): Foes have no modifier list yet; their burn and suppressed are stored statuses with a duration. Refit (the hangar) is what changes loadout-scoped effects; not built.

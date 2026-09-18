@@ -9,12 +9,44 @@ var id: int = 0
 var display_name: String = ""
 var side: int = Side.PLAYER
 var pos: Vector2i = Vector2i.ZERO
-var movespeed: int = 3
-var hull: int = 100
-var hull_max: int = 100
+var hull: int = 100      # current points; the maximum is a question (see base)
 var shield: int = 40
-var shield_max: int = 40
-var heat_max: int = 60
+
+## Base numbers from the chassis. Every maximum and rate is read through Effects.stat, which
+## adds every live modifier (fitted components, rewards, buffs) on top; writing hull_max or
+## armour sets the base. Nothing stores a total (decided 18 September).
+var base: Dictionary = {"hull": 100, "shield": 40, "heat": 60, "armour": 0, "move": 3, "recharge": 0}
+var modifiers: Array = []   # Effects.Modifier list: loadout, battle, skirmish and timed effects
+var hull_max: int:
+	get:
+		return Effects.stat(self, "hull")
+	set(v):
+		base["hull"] = v
+var shield_max: int:
+	get:
+		return Effects.stat(self, "shield")
+	set(v):
+		base["shield"] = v
+var heat_max: int:
+	get:
+		return Effects.stat(self, "heat")
+	set(v):
+		base["heat"] = v
+var armour: int:
+	get:
+		return Effects.stat(self, "armour")
+	set(v):
+		base["armour"] = v
+var movespeed: int:
+	get:
+		return Effects.stat(self, "move")
+	set(v):
+		base["move"] = v
+var recharge_field: int:
+	get:
+		return Effects.stat(self, "recharge")
+	set(v):
+		base["recharge"] = v
 
 ## Chassis traits: "flyer", "hover", "walker", "tank", "defense".
 var traits: Array[String] = []
@@ -38,11 +70,9 @@ const TRIANGLE: Array[Vector2i] = [Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1
 
 # Skirmish loadout for mechs.
 var die: Die = null
-var passive: Dictionary = {}     # content passive, run by Passives; empty means none
+var passive: Dictionary = {}     # the chassis passive as content, for the codex; the engine runs modifiers
 var chassis_id: String = ""
 var hardpoints: int = 0          # free slots; the die is these plus the chassis's fixed components
-var armour: int = 0              # flat damage taken off every blow that lands on bare hull; small hits bounce
-var recharge_field: int = 0      # shield regained each battlefield phase the mech spends out of combat
 
 ## Damaged components. A cracked or destroyed component is damaged and stays that way across
 ## skirmishes and battles until repaired in the hangar. Maps a die entry index to the
@@ -152,6 +182,11 @@ func recharge_shield(amount: int) -> int:
 	var before := shield
 	shield = mini(shield_max, shield + maxi(0, amount))
 	return shield - before
+
+
+## Grant a content passive as a loadout modifier (tests and the hangar).
+func grant_passive(p: Dictionary, source: String = "chassis", component: String = "") -> void:
+	Effects.grant(self, Effects.make(p, Effects.LOADOUT, source, component))
 
 
 func damaged_component_count() -> int:

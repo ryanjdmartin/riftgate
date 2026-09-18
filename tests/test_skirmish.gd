@@ -616,7 +616,7 @@ func test_no_destroy_passive_holds_a_cracked_component() -> void:
 	var sk := Skirmish.new(3)
 	var d := Die.single(Face.attack(30, L, [K.CLEAVE], 0, 50, 15))
 	var m := _mech("A", d, 0, 100)
-	m.passive = {"id": "hold", "name": "Hold", "description": "", "effects": [{"trigger": "on_injury", "effect": "no_destroy", "value": 1}]}
+	m.grant_passive({"id": "hold", "name": "Hold", "description": "", "effects": [{"trigger": "on_injury", "effect": "no_destroy", "value": 1}]})
 	sk.add_mech(m)
 	sk.add_foes([Foe.make("ghoul", 90, 10)])
 	sk.begin()
@@ -646,11 +646,13 @@ func test_injury_on_an_empty_hardpoint_breaks_nothing() -> void:
 
 func test_cracked_condition_narrows_a_passive_to_cracked_components() -> void:
 	var bonus := {"id": "scars", "name": "Scars", "description": "", "effects": [{"trigger": "on_attack", "when": "component_cracked", "effect": "add_damage", "value": 10}]}
+	var u := Unit.mech(0, "A", Vector2i.ZERO)
+	u.grant_passive(bonus)
 	var f := Face.attack(20, L)
-	assert_eq(Passives.on_attack(bonus, 20, 0, f), [20, 0], "an intact component gets nothing")
+	assert_eq(Effects.attack(u, f, 20, 0, false)["damage"], 20, "an intact component gets nothing")
 	f.crack()
-	assert_eq(Passives.on_attack(bonus, 20, 0, f), [30, 0], "a cracked one hits harder")
-	assert_eq(Passives.on_attack(bonus, 20, 0), [20, 0], "no component in hand, no bonus")
+	assert_eq(Effects.attack(u, f, 20, 0, false)["damage"], 30, "a cracked one hits harder")
+	assert_eq(Effects.attack(u, null, 20, 0, false)["damage"], 20, "no component in hand, no bonus")
 
 
 func test_shield_never_comes_back_on_its_own_in_a_fight() -> void:
@@ -775,7 +777,7 @@ func test_crit_bonuses_add_to_one_multiplier() -> void:
 	var gun := Face.attack(30, L, [], 0, 0, 100)
 	gun.crit_bonus = 0.5
 	var m := _mech("A", Die.single(gun))
-	m.passive = {"id": "eye", "name": "Eye", "description": "", "effects": [{"trigger": "on_crit", "effect": "add_crit_damage", "value": 0.5}]}
+	m.grant_passive({"id": "eye", "name": "Eye", "description": "", "effects": [{"trigger": "on_crit", "effect": "add_crit_damage", "value": 0.5}]})
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(200)])
 	sk.begin()
@@ -803,9 +805,9 @@ func test_static_set_reach_sends_a_cracked_component_to_melee() -> void:
 	var sk := Skirmish.new(3)
 	var mortar := Face.attack(30, I, [], 0, 0, 15)
 	var m := _mech("A", Die.single(mortar), 0, 100)
-	m.passive = {"id": "rs", "name": "RS", "description": "", "effects": [
+	m.grant_passive({"id": "rs", "name": "RS", "description": "", "effects": [
 		{"trigger": "on_attack", "effect": "multiply_damage", "value": 1.1, "when": "reach_melee"},
-		{"trigger": "static", "effect": "set_reach", "value": "melee", "when": "component_cracked"}]}
+		{"trigger": "static", "effect": "set_reach", "value": "melee", "when": "component_cracked"}]})
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(200), _archer(200)])
 	sk.begin()
@@ -820,10 +822,14 @@ func test_static_set_reach_sends_a_cracked_component_to_melee() -> void:
 	assert_eq(sk.targets_for(0).size(), 1, "so it reaches only the front")
 	sk.assign(0, sk.front[0])
 	assert_true(sk.front[0].hp == 167 or sk.front[0].hp == 134, "30 at 1.1 is 33 (or 66 on a crit): the melee bonus follows the effective reach")
-	var saved := m.passive
-	m.passive = {}
+	var saved: Array = m.modifiers
+	m.modifiers = []
 	assert_eq(sk.reach_of(sk.mechs[0], f), Face.Reach.INDIRECT, "take the passive away (suppressed, or an ally reading it) and the reach is its own again")
-	m.passive = saved
+	m.modifiers = saved
+	Effects.grant(m, Effects.make({"id": "jam", "name": "Jam", "description": "", "effects": [{"trigger": "static", "effect": "suppress", "value": "rs"}]}, Effects.SKIRMISH, "foe:whisperer"))
+	assert_eq(sk.reach_of(sk.mechs[0], f), Face.Reach.INDIRECT, "a skirmish-long suppression of the passive turns the transformation off too")
+	Effects.end_skirmish(m)
+	assert_eq(sk.reach_of(sk.mechs[0], f), Face.Reach.MELEE, "and when the skirmish ends the suppression is gone and the passive answers again")
 	m.repair_faces()
 	assert_eq(m.die.faces[0].reach, Face.Reach.INDIRECT, "repair restores the original mortar")
 
@@ -852,3 +858,71 @@ func test_chain_repeats_on_a_kill() -> void:
 	assert_false(sk.front[1].alive(), "the chain kills the second")
 	assert_eq(sk.front[2].hp, 60, "and lands once on the third, which survives, so it stops")
 	assert_eq(sk.mechs[0].heat, 30, "heat is paid on every link, three here: that is the risk of a chain")
+
+
+func test_stats_are_base_plus_every_live_source_in_order() -> void:
+	var u := Unit.mech(0, "A", Vector2i.ZERO)
+	u.hull_max = 200
+	u.armour = 10
+	assert_eq(u.hull_max, 200, "a written maximum is the base")
+	u.grant_passive({"id": "plates", "name": "Plates", "description": "", "effects": [
+		{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 10},
+		{"trigger": "static", "effect": "add_stat", "stat": "hull", "value": 20}]}, "heavy_plates", "heavy_plates")
+	Effects.grant(u, Effects.make({"id": "overdrive", "name": "Overdrive", "description": "", "effects": [
+		{"trigger": "static", "effect": "multiply_stat", "stat": "hull", "value": 1.5}]}, Effects.BATTLE, "reward"))
+	assert_eq(u.hull_max, 330, "(200 + 20) x 1.5: adds before multiplies, whatever order they were granted")
+	assert_eq(u.armour, 20, "armour from the base and the component")
+	Effects.end_battle(u)
+	assert_eq(u.hull_max, 220, "the reward ends with the battle; the component stays")
+	Effects.grant(u, Effects.make({"id": "rust", "name": "Rust", "description": "", "effects": [
+		{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": -50}]}, Effects.SKIRMISH, "foe:corroder"))
+	assert_eq(u.armour, 0, "a stat never goes below zero")
+	Effects.end_skirmish(u)
+	assert_eq(u.armour, 20, "and comes back when the debuff ends")
+
+
+func test_a_timed_damage_taken_debuff_runs_out_after_its_round() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.shield(10)), 0, 200)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(90, 20)])
+	sk.begin()
+	sk.start_round()
+	Effects.grant_for_rounds(m, {"id": "weakened", "name": "Weakened", "description": "", "effects": [
+		{"trigger": "static", "effect": "multiply_damage_taken", "value": 1.5}]}, "foe:hexer", sk.round)
+	assert_eq(sk.forecast(sk.mechs[0])["hull_after"], 170, "the forecast reads the debuff: 20 becomes 30")
+	sk.end_round()
+	assert_eq(m.hull, 170, "and so does the blow")
+	assert_true(m.modifiers.is_empty(), "the debuff ran out at the end of its round")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(m.hull, 150, "the next blow is a plain 20")
+
+
+func test_a_destroyed_component_keeps_its_bonus_and_loses_its_ability() -> void:
+	var u := Unit.mech(0, "A", Vector2i.ZERO)
+	var gun := Face.attack(30, L)
+	gun.component = "big_gun"
+	u.die = Die.single(gun)
+	u.armour = 0
+	u.grant_passive({"id": "bg", "name": "Big Gun", "description": "", "effects": [
+		{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 10},
+		{"trigger": "on_attack", "effect": "add_damage", "value": 10}]}, "big_gun", "big_gun")
+	assert_eq(u.armour, 10, "fitted: the bonus")
+	assert_eq(Effects.attack(u, gun, 30, 0, false)["damage"], 40, "fitted: the ability")
+	var wreck := Face.blank()
+	wreck.component = "big_gun"
+	u.die.faces[0] = wreck
+	assert_eq(u.armour, 10, "destroyed: the bonus stays")
+	assert_eq(Effects.attack(u, gun, 30, 0, false)["damage"], 30, "destroyed: the ability is gone")
+
+
+func test_shorter_lived_sources_override_longer_ones() -> void:
+	var u := Unit.mech(0, "A", Vector2i.ZERO)
+	var f := Face.attack(20, L)
+	u.grant_passive({"id": "a", "name": "A", "description": "", "effects": [{"trigger": "static", "effect": "set_reach", "value": "melee"}]})
+	assert_eq(Effects.effective_reach(u, f), Face.Reach.MELEE, "the loadout rule holds")
+	Effects.grant(u, Effects.make({"id": "b", "name": "B", "description": "", "effects": [{"trigger": "static", "effect": "set_reach", "value": "indirect"}]}, Effects.SKIRMISH, "buff"))
+	assert_eq(Effects.effective_reach(u, f), Face.Reach.INDIRECT, "a skirmish-long rule wins over the loadout one")
+	Effects.end_skirmish(u)
+	assert_eq(Effects.effective_reach(u, f), Face.Reach.MELEE, "and the loadout rule is back when it ends")
