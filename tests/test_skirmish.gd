@@ -729,7 +729,7 @@ func test_breach_overflows_shield_into_hull_and_can_injure() -> void:
 	var m := _mech("A", Die.single(Face.shield(10)), 10, 100)
 	sk.add_mech(m)
 	var boss := Foe.make("maw", 200, 50)
-	boss.actions[0]["breach"] = true
+	boss.actions[0]["keywords"] = ["breach"]
 	sk.add_foes([boss])
 	sk.begin()
 	sk.start_round()

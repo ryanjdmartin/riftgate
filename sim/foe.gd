@@ -4,10 +4,10 @@ extends RefCounted
 ## One enemy inside a skirmish. A squad on the battlefield unpacks into several of these.
 ##
 ## A foe has a base attack number, the player's quick read of how hard it hits, and a list
-## of attack actions that scale it: {id, name, factor, strikes, breach, weight, text}.
+## of attack actions that scale it: {id, name, factor, strikes, weight, keywords, text}.
 ## Each round it picks one by weight before the player acts, so the intent shown is exact.
-## Damage is base attack times the action's factor; strikes are separate blows; breach
-## overflows shield into hull.
+## Damage is base attack times the action's factor; strikes are separate blows; keywords are
+## tags on the blow (breach: overflows shield into hull).
 
 var display_name: String = "foe"
 var content_id: String = ""      # id in content/foes.json, for the codex
@@ -41,7 +41,7 @@ static func make(name: String, hp_value: int, attack_value: int, back: bool = fa
 
 
 static func basic_action() -> Dictionary:
-	return {"id": "attack", "name": "Attack", "factor": 1.0, "strikes": 1, "breach": false, "weight": 1, "text": ""}
+	return {"id": "attack", "name": "Attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": [], "text": ""}
 
 
 func alive() -> bool:
@@ -90,8 +90,17 @@ func strikes() -> int:
 	return maxi(1, int(action.get("strikes", 1)))
 
 
+## Tags an attack action may carry. Anything true or false about a blow is a tag here, never
+## a field of its own.
+const ATTACK_KEYWORDS := ["breach"]
+
+
+func has_keyword(a: Dictionary, k: String) -> bool:
+	return a.get("keywords", []).has(k)
+
+
 func breaches() -> bool:
-	return bool(action.get("breach", false))
+	return has_keyword(action, "breach")
 
 
 ## The action's text with {damage} filled in, so "Jaw Rend for {damage}" reads as a number.
@@ -104,5 +113,5 @@ func text_of(a: Dictionary) -> String:
 func threat() -> int:
 	var best := 0
 	for a in actions:
-		best = maxi(best, damage_of(a) * maxi(1, int(a.get("strikes", 1))) + (1 if bool(a.get("breach", false)) else 0))
+		best = maxi(best, damage_of(a) * maxi(1, int(a.get("strikes", 1))) + (1 if has_keyword(a, "breach") else 0))
 	return best

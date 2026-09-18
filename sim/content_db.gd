@@ -127,7 +127,7 @@ func make_foe(foe_id: String) -> Foe:
 	for a in d.get("actions", []):
 		if str(a.get("status", "")) == "implemented" and str(a.get("kind", "")) == "attack":
 			acts.append({"id": str(a.get("id", "attack")), "name": str(a.get("name", "Attack")), "factor": float(a.get("factor", 1.0)),
-				"strikes": int(a.get("strikes", 1)), "breach": bool(a.get("breach", false)), "weight": int(a.get("weight", 1)), "text": str(a.get("text", ""))})
+				"strikes": int(a.get("strikes", 1)), "weight": int(a.get("weight", 1)), "keywords": Array(a.get("keywords", [])), "text": str(a.get("text", ""))})
 	if not acts.is_empty():
 		f.actions = acts
 		f.action = acts[0]
@@ -153,8 +153,8 @@ func codex_for_foe(f: Foe) -> Dictionary:
 			head += " %d" % f.damage_of(a)
 			if int(a.get("strikes", 1)) > 1:
 				head += " ×%d" % int(a["strikes"])
-			if bool(a.get("breach", false)):
-				head += " // BREACH"
+			for k in a.get("keywords", []):
+				head += " // %s" % str(k).to_upper()
 		acts.append("%s\n  %s" % [head, f.text_of(a)])
 	var faction_name := str(fac.get("name", "")).strip_edges()
 	if faction_name.is_empty():
@@ -493,8 +493,11 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 					errs.append("%s: strikes must be at least 1" % aw)
 				if int(a.get("weight", 1)) < 1:
 					errs.append("%s: weight must be at least 1" % aw)
-				if a.has("breach") and not (a["breach"] is bool):
-					errs.append("%s: breach must be true or false" % aw)
+				if a.has("breach"):
+					errs.append("%s: breach is a tag, put it in keywords" % aw)
+				for k in a.get("keywords", []):
+					if not Foe.ATTACK_KEYWORDS.has(str(k)):
+						errs.append("%s: unknown attack keyword '%s' (foe attacks know %s)" % [aw, k, ", ".join(Foe.ATTACK_KEYWORDS)])
 	if implemented_attacks < 1:
 		errs.append("%s: needs at least one implemented attack action" % where)
 
