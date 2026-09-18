@@ -196,8 +196,9 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		"stats": stats,
 		# Hardpoints are not a number here: the component list shows them as sockets.
 		# Mitigation on one row under the bars: armour, then the field recharge under shield.
-		"stat_items": [["hull", "%d/%d" % [u.hull, u.hull_max]], ["shield", "%d/%d" % [u.shield, u.shield_max]],
-			["armour", str(u.armour)], ["recharge", "+%d" % u.recharge_field], ["move", str(u.movespeed)]],
+		# Shield before hull, as on the gauges: the enemy meets it first.
+		"stat_items": [["shield", "%d/%d" % [u.shield, u.shield_max]], ["hull", "%d/%d" % [u.hull, u.hull_max]],
+			["recharge", "+%d" % u.recharge_field], ["armour", str(u.armour)], ["move", str(u.movespeed)]],
 		"actions": "",
 		"passive": passive,
 		"faces": faces,

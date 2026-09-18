@@ -563,9 +563,10 @@ func _refresh() -> void:
 		var ms: Skirmish.MechState = sk.mechs[i]
 		var v := _mech_views[i]
 		var fc: Dictionary = sk.forecast(ms) if assigning and ms.alive() else {}
+		# Shield above hull: it is what the enemy meets first, and it drops first.
 		v.bars = [
-			[ms.unit.hull, ms.unit.hull_max, Palette.HUD, fc.get("hull_after", ms.unit.hull)],
 			[ms.unit.shield, ms.unit.shield_max, Color(Palette.HUD, 0.55), fc.get("shield_after", ms.unit.shield)],
+			[ms.unit.hull, ms.unit.hull_max, Palette.HUD, fc.get("hull_after", ms.unit.hull)],
 			[ms.heat, ms.heat_max, Palette.HEAT, fc.get("heat_after", ms.heat)],
 		]
 		v.dead = not ms.alive()

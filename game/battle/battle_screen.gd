@@ -242,7 +242,7 @@ func _on_hex_tapped(h: Vector2i) -> void:
 func _on_unit_held(u: Unit) -> void:
 	var text := ""
 	if u.is_player():
-		text = "%s\nhull %d/%d · shield %d/%d · move %d" % [u.display_name, u.hull, u.hull_max, u.shield, u.shield_max, u.movespeed]
+		text = "%s\nshield %d/%d · hull %d/%d · move %d" % [u.display_name, u.shield, u.shield_max, u.hull, u.hull_max, u.movespeed]
 		if u.damaged_component_count() > 0:
 			text += "\n%d damaged component%s" % [u.damaged_component_count(), "" if u.damaged_component_count() == 1 else "s"]
 	else:
