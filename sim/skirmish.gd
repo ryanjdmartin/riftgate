@@ -356,70 +356,80 @@ func withdraw() -> bool:
 
 # ---------------------------------------------------------------- resolution
 
-## Roll the face, apply crit, keywords, and passives, then hit every foe the face reaches.
+## Spend an attack: every strike is its own blow (its own roll, its own crit, its own
+## keywords and passives), landing on every foe the component reaches. Heat is paid once per
+## use; danger close is charged on the total.
 func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> void:
-	var rolled := f.power
-	if f.is_ranged():
-		rolled = f.average() if f.has(Face.Keyword.STEADY) else rng.randi_range(f.power, f.power_max)
-	var dmg := rolled
-	var heat := f.heat
-	var crit := f.crit > 0 and rng.randi_range(1, 100) <= f.crit
-	var extra_burn := 0
+	var total := 0
+	var rolled_total := 0
+	var any_crit := false
+	var heat_total := 0
 	var vent := 0
-	if crit:
-		dmg *= 2
-		var c := Passives.on_crit(ms.unit.passive, dmg, f)
-		dmg = c["damage"]
-		extra_burn = c["burn"]
-		vent = c["vent"]
-	if f.has(Face.Keyword.OVERCHARGE):
-		dmg *= 2
-		heat *= 2
-	if f.has(Face.Keyword.EXECUTE) and target.hp * 2 <= target.hp_max:
-		dmg *= 2
-	var modded := Passives.on_attack(ms.unit.passive, dmg, heat, f)
-	dmg = modded[0]
-	heat = modded[1]
-	last_roll = {"mech": mech_index, "target": target, "rolled": rolled, "final": dmg, "crit": crit, "ranged": f.is_ranged()}
-	# Keywords stack: a cleaving, piercing face hits the neighbours and the column.
-	var hit: Array[Foe] = [target]
-	if f.has(Face.Keyword.CLEAVE):
-		for c in [target.column - 1, target.column + 1]:
-			if c >= 0 and c < columns:
-				var n := foe_at(target.rank, c)
-				if n != null and not hit.has(n):
-					hit.append(n)
-	if f.has(Face.Keyword.PIERCE):
-		var other := foe_at(1 - target.rank, target.column)
-		if other != null and not hit.has(other):
-			hit.append(other)
-	if f.has(Face.Keyword.CHAIN):
-		var best: Foe = null
-		for cand in targets_for(mech_index):
-			if not hit.has(cand) and (best == null or cand.hp < best.hp):
-				best = cand
-		if best != null:
-			hit.append(best)
-	for foe in hit:
-		foe.hp -= dmg
-		if f.has(Face.Keyword.BURN):
-			foe.burn += ceili(float(dmg) / BURN_DAMAGE_PER_STACK)
-		if f.has(Face.Keyword.SUPPRESS):
-			foe.suppressed = true
+	var extra_burn := 0
+	for s in range(maxi(1, f.strikes)):
+		var rolled := f.power
+		if f.is_ranged():
+			rolled = f.average() if f.has(Face.Keyword.STEADY) else rng.randi_range(f.power, f.power_max)
+		var dmg := rolled
+		var heat := f.heat if s == 0 else 0
+		var crit := f.crit > 0 and rng.randi_range(1, 100) <= f.crit
+		if crit:
+			dmg *= 2
+			var c := Passives.on_crit(ms.unit.passive, dmg, f)
+			dmg = c["damage"]
+			extra_burn += c["burn"]
+			vent += c["vent"]
+		if f.has(Face.Keyword.OVERCHARGE):
+			dmg *= 2
+			heat *= 2
+		if f.has(Face.Keyword.EXECUTE) and target.hp * 2 <= target.hp_max:
+			dmg *= 2
+		var modded := Passives.on_attack(ms.unit.passive, dmg, heat, f)
+		dmg = modded[0]
+		heat_total += modded[1]
+		# Keywords stack: a cleaving, piercing blow hits the neighbours and the column.
+		var hit: Array[Foe] = [target]
+		if f.has(Face.Keyword.CLEAVE):
+			for c in [target.column - 1, target.column + 1]:
+				if c >= 0 and c < columns:
+					var n := foe_at(target.rank, c)
+					if n != null and not hit.has(n):
+						hit.append(n)
+		if f.has(Face.Keyword.PIERCE):
+			var other := foe_at(1 - target.rank, target.column)
+			if other != null and not hit.has(other):
+				hit.append(other)
+		if f.has(Face.Keyword.CHAIN):
+			var best: Foe = null
+			for cand in targets_for(mech_index):
+				if not hit.has(cand) and (best == null or cand.hp < best.hp):
+					best = cand
+			if best != null:
+				hit.append(best)
+		for foe in hit:
+			foe.hp -= dmg
+			if f.has(Face.Keyword.BURN):
+				foe.burn += ceili(float(dmg) / BURN_DAMAGE_PER_STACK)
+			if f.has(Face.Keyword.SUPPRESS):
+				foe.suppressed = true
+		total += dmg
+		rolled_total += rolled
+		any_crit = any_crit or crit
 	target.burn += extra_burn
+	last_roll = {"mech": mech_index, "target": target, "rolled": rolled_total, "final": total, "crit": any_crit, "ranged": f.is_ranged()}
 	var how := f.describe()
-	if crit:
+	if any_crit:
 		how = "CRIT " + how
 	elif f.is_ranged():
-		how = "rolled %d, " % rolled + how
-	log.append("%s hits %s for %d (%s)" % [ms.unit.display_name, target.display_name, dmg, how])
+		how = "rolled %d, " % rolled_total + how
+	log.append("%s hits %s for %d (%s)" % [ms.unit.display_name, target.display_name, total, how])
 	if f.reach == Face.Reach.INDIRECT and target.rank == 0:
-		var splash := ceili(float(dmg) / DANGER_CLOSE_DIVISOR)
+		var splash := ceili(float(total) / DANGER_CLOSE_DIVISOR)
 		ms.unit.shield = maxi(0, ms.unit.shield - splash)
 		log.append("%s: danger close, shield -%d" % [ms.unit.display_name, splash])
 	if vent > 0:
 		ms.heat = maxi(0, ms.heat - vent)
-	_add_heat(ms, heat)
+	_add_heat(ms, heat_total)
 
 
 func _add_heat(ms: MechState, amount: int) -> void:

@@ -752,3 +752,20 @@ func test_heaviest_hitters_deploy_left_and_strike_first() -> void:
 	sk.end_round()
 	assert_eq(m.shield, 0, "the brute strikes first and the shield takes it")
 	assert_eq(m.hull, 80, "the two ghouls then hit bare hull")
+
+
+func test_strikes_are_separate_blows_with_their_own_rolls_and_procs() -> void:
+	var sk := Skirmish.new(2)
+	var gun := Face.attack(10, L, K.BURN, 20)
+	gun.strikes = 3
+	sk.add_mech(_mech("A", Die.single(gun)))
+	sk.add_foes([_ghoul(200)])
+	sk.begin()
+	sk.start_round()
+	sk.assign(0, sk.front[0])
+	assert_eq(sk.front[0].hp, 170, "three blows of ten")
+	assert_eq(sk.front[0].burn, 3, "each blow procs burn on its own: three stacks, where one thirty would give two")
+	assert_eq(sk.mechs[0].heat, 20, "heat is paid once per use, not per strike")
+	assert_eq(sk.last_roll["final"], 30, "the screen sees the total")
+	assert_eq(gun.describe(), "10 ×3 burn (+20 heat)", "described as a burst")
+	assert_eq(Face.from_dict(gun.to_dict()).strikes, 3, "strikes survive content round-trip")

@@ -63,8 +63,13 @@ start, before the player acts (intent chip shows damage plus ×n or !, forecast 
 attack is refused; a foe needs at least one implemented attack. "Numbers in tens" means the
 magnitude of tens, not multiples of ten (15 is fine; the test says >= 10). Stat block:
 hull, shield, armour, recharge (+15), move; 4 px inset fixes the left clip.
-Open, discussed 18 September, not built: multi-strike as a global attack keyword on player
-components (procs per strike; needs foe armour to be bad against), component stat modifiers
+`Face.strikes` (built 18 September): an attack's blows per use, each its own roll, crit,
+keywords and passives; heat once per use; die face shows "10 ×3"; content `strikes` on a
+component face; foe actions carry the same field. Power checks are non-negative only
+(numbers in tens means magnitude). Salvage from rift-belched wrecks and monster research
+tokens recorded as open in the bible's open questions. HUD palette swatches published as an
+artifact for Ryan's eyes (protan simulation toggles).
+Open, discussed 18 September, not built: component stat modifiers
 and granted passives with totals shown as base plus bonus, a fixed colour standard for a
 protanomalous player, movespeed granularity.
 

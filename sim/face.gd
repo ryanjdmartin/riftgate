@@ -32,6 +32,7 @@ var power_max: int = 20       # equal to power for a static face
 var crit: int = 0             # percent chance to double the roll
 var keywords: Array[int] = []
 var heat: int = 0
+var strikes: int = 1          # blows per use: a rapid-fire weapon lands many small hits (each rolls, crits and procs on its own)
 var label: String = ""
 var cracked: bool = false     # injured: modifiers gone, basic action intact
 var component: String = ""    # the component this entry is (content id); "" for an empty hardpoint
@@ -124,6 +125,7 @@ static func from_dict(d: Dictionary) -> Face:
 	f.power_max = maxi(f.power, int(d.get("power_max", f.power)))
 	f.crit = int(d.get("crit", 0))
 	f.heat = int(d.get("heat", 0))
+	f.strikes = maxi(1, int(d.get("strikes", 1)))
 	for name in d.get("keywords", []):
 		var kw := keyword_from_name(str(name))
 		if kw > 0:
@@ -144,6 +146,8 @@ func to_dict() -> Dictionary:
 		d["power_max"] = power_max
 	if crit > 0:
 		d["crit"] = crit
+	if strikes > 1:
+		d["strikes"] = strikes
 	return d
 
 
@@ -177,6 +181,7 @@ func duplicate_face() -> Face:
 	f.power_max = power_max
 	f.crit = crit
 	f.heat = heat
+	f.strikes = strikes
 	f.label = label
 	f.cracked = cracked
 	f.component = component
@@ -214,6 +219,8 @@ func describe() -> String:
 		_:
 			# Line of fire is the default and goes unsaid; only indirect reach is called out.
 			s = number_text() if reach == Reach.LINE else "%s %s" % [REACH_NAMES[reach], number_text()]
+			if strikes > 1:
+				s += " ×%d" % strikes
 			for k in keywords:
 				s += " " + KEYWORD_NAMES[k]
 			if crit > 0:

@@ -40,6 +40,7 @@ Status: 67 implemented, 14 planned, 1 idea.
 |---|---|---|---|
 | **Damage range** | Kinetic weapons do not promise. They roll. | A kinetic attack component shows a minimum and a maximum and rolls between them when spent, immediately and visibly. Energy components show one number and never roll. Numbers are in tens. | implemented |
 | **Critical hit** | Sometimes the round finds the seam. | A kinetic component may carry a crit chance. On a crit the roll is doubled before other multipliers. Energy components never crit. Crits fire the on_crit passive trigger. | implemented |
+| **Strikes** | Miniguns, missile swarms, the claw that rakes twice. Players love procs; embrace it. | An attack's blows per use. A weapon with three strikes lands three separate hits: each rolls its own damage, its own crit and its own effects, so a rapid-fire weapon procs often. Against a shield, every strike past the first reaches the hull; against armour, every small strike loses the armour, so many small hits are the wrong tool for a heavy target and the right one for a soft one. Foe attacks have strikes too. | implemented |
 
 ## Reach
 
@@ -157,8 +158,7 @@ Status: 67 implemented, 14 planned, 1 idea.
 
 | Term | Fantasy | Codex | Status |
 |---|---|---|---|
-| **Double strike** | The one monster the shield-tank fears. | An attack with two strikes lands two separate blows. The first breaks the shield, the second reaches the hull. It is how a foe threatens a shielded mech, and why armour matters. | implemented |
-| **Breach** | Something big enough that the field bends. | A breaching blow overflows: what the shield cannot absorb reaches the hull, and if that is a quarter of maximum hull it injures a component like any bare-hull blow. It breaks the fundamental promise that a standing shield stops the big hit, so it is a dangerous, uncommon trait, and its counterplay is not the shield: redirect it or interrupt it. | implemented |
+| **Breach** | Something big enough that the field bends. | A breaching blow overflows: what the shield cannot absorb reaches the hull, and if that is a quarter of maximum hull it injures a component like any bare-hull blow. It breaks the fundamental promise that a standing shield stops the big hit, so it is a dangerous, uncommon attack modifier, and its counterplay is not the shield: redirect it or interrupt it. | implemented |
 | **Foe action** | The ghoul claws, but sometimes it bites. You always know which. | A foe has a base attack, the quick read of how hard it hits, and a list of attacks that scale it. Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number. | implemented |
 
 ## Holes
@@ -192,6 +192,6 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Component** (implemented): Multi-slot components were considered and scrapped on 18 September as invisible complexity.
 - **Fixed component** (implemented): Decided against unlocking fixed slots for money (18 September).
 - **Armour** (implemented): Numbers are placeholders. Armour from components is content, not yet written.
-- **Double strike** (implemented): A property of a foe's attack action (strikes, any count). No foe carries it yet; Ryan places it. To become a global multi-strike keyword on player components too (procs per strike), once foes have armour to make it bad against.
 - **Breach** (implemented): A property of a foe's attack action. No foe carries it yet; Ryan places it. Redirect and interrupt do not exist yet. Name is a placeholder (pierce is taken by the player keyword).
 - **Foe action** (implemented): Only attacks run; defend, buff and debuff actions stay planned. Weighted RNG is the whole brain for now.
+- **Strikes** (implemented): Heat is paid once per use, not per strike. Foes have no armour yet, so on the player side strikes only matter for procs until they do.

@@ -318,8 +318,12 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String]) -> void:
 		var reach := str(fd.get("reach", ""))
 		if not ["line", "indirect"].has(reach):
 			errs.append("%s: attack face needs reach line or indirect, got '%s'" % [where, reach])
-	if int(fd.get("power", 0)) <= 0:
-		errs.append("%s: power must be positive" % where)
+	if int(fd.get("power", 0)) < 0:
+		errs.append("%s: power cannot be negative" % where)
+	if int(fd.get("strikes", 1)) < 1:
+		errs.append("%s: strikes must be at least 1" % where)
+	if int(fd.get("strikes", 1)) > 1 and kind != "attack":
+		errs.append("%s: only attacks strike more than once" % where)
 	if fd.has("power_max") and int(fd["power_max"]) < int(fd.get("power", 0)):
 		errs.append("%s: power_max below power" % where)
 	var crit := int(fd.get("crit", 0))

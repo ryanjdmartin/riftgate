@@ -148,6 +148,10 @@ func _draw() -> void:
 	var num := face.number_text()
 	var num_size := 28 if face.is_ranged() else 38
 	draw_string(mono, Vector2(0, 92.0 + bob), num, HORIZONTAL_ALIGNMENT_CENTER, FACE, num_size, ink)
+	if face.strikes > 1:
+		# Blows per use, small, to the right of the number: "10 ×3" reads as a burst.
+		var w := mono.get_string_size(num, HORIZONTAL_ALIGNMENT_CENTER, -1, num_size).x
+		draw_string(mono, Vector2(FACE * 0.5 + w * 0.5 + 2.0, 92.0 + bob), "×%d" % face.strikes, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, ink)
 	if face.heat > 0:
 		var hc := Color(Palette.HEAT, alpha)
 		draw_string(mono, Vector2(10.0, FACE - 9.0 + bob), "+%d HEAT" % face.heat, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, hc)

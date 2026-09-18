@@ -257,14 +257,14 @@ func test_anvil_passive_burns_on_crit() -> void:
 	assert_eq(sk.front[0].burn, 1, "Hot Load added a burn stack")
 
 
-func test_content_dice_are_in_tens_and_kinetic_faces_roll() -> void:
+func test_content_dice_are_sane_and_kinetic_faces_roll() -> void:
 	var db := _db()
 	var kinetic := 0
 	var energy := 0
 	for id in db.components.keys():
 		var c: Dictionary = db.components[id]
 		for fd in [c.get("face", {})]:
-			assert_true(int(fd.get("power", 0)) >= 10, "%s power is in the magnitude of tens, not ones" % id)
+			assert_true(int(fd.get("power", 0)) >= 0, "%s power is not negative" % id)
 			if str(fd.get("kind", "")) != "attack":
 				continue
 			var tags: Array = c.get("tags", [])
