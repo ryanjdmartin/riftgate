@@ -813,11 +813,17 @@ func test_static_set_reach_sends_a_cracked_component_to_melee() -> void:
 	assert_eq(sk.targets_for(0).size(), 2, "an intact mortar reaches both ranks")
 	sk.apply_injury(sk.mechs[0])
 	var f := sk.mechs[0].face()
-	assert_true(f.cracked and f.reach == Face.Reach.MELEE, "cracked, it is melee now")
+	assert_true(f.cracked and f.reach == Face.Reach.INDIRECT, "cracked; the component itself is untouched")
+	assert_eq(sk.reach_of(sk.mechs[0], f), Face.Reach.MELEE, "but read through the passive it is melee")
+	assert_eq(sk.shown_face(sk.mechs[0], f).reach, Face.Reach.MELEE, "and the screen shows it as melee")
 	assert_eq(f.crit, 15, "and keeps its crit")
 	assert_eq(sk.targets_for(0).size(), 1, "so it reaches only the front")
 	sk.assign(0, sk.front[0])
-	assert_true(sk.front[0].hp == 167 or sk.front[0].hp == 134, "30 at 1.1 is 33 (or 66 on a crit)")
+	assert_true(sk.front[0].hp == 167 or sk.front[0].hp == 134, "30 at 1.1 is 33 (or 66 on a crit): the melee bonus follows the effective reach")
+	var saved := m.passive
+	m.passive = {}
+	assert_eq(sk.reach_of(sk.mechs[0], f), Face.Reach.INDIRECT, "take the passive away (suppressed, or an ally reading it) and the reach is its own again")
+	m.passive = saved
 	m.repair_faces()
 	assert_eq(m.die.faces[0].reach, Face.Reach.INDIRECT, "repair restores the original mortar")
 
@@ -845,4 +851,4 @@ func test_chain_repeats_on_a_kill() -> void:
 	assert_false(sk.front[0].alive(), "the first ghoul dies")
 	assert_false(sk.front[1].alive(), "the chain kills the second")
 	assert_eq(sk.front[2].hp, 60, "and lands once on the third, which survives, so it stops")
-	assert_eq(sk.mechs[0].heat, 10, "heat is paid once, not per link")
+	assert_eq(sk.mechs[0].heat, 30, "heat is paid on every link, three here: that is the risk of a chain")

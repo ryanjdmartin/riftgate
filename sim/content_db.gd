@@ -184,7 +184,14 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		u.hull, u.hull_max, u.armour, u.shield, u.shield_max, u.recharge_field, u.movespeed, u.hardpoints, u.die.size() if u.die != null else 0]
 	var faces: Array = []
 	if u.die != null:
-		faces = u.die.faces.duplicate()
+		for f in u.die.faces:
+			var r := Passives.effective_reach(u.passive, f)
+			if r != f.reach:
+				var shown: Face = f.duplicate_face()
+				shown.reach = r
+				faces.append(shown)
+			else:
+				faces.append(f)
 	var passive := ""
 	if Passives.active(u.passive):   # a planned passive is a draft: not shown, not run
 		passive = "%s: %s" % [str(u.passive.get("name", "")).to_upper(), u.passive.get("description", "")]
@@ -381,6 +388,8 @@ func _validate_passive(where: String, p, errs: Array[String]) -> void:
 		var when := str(eff.get("when", ""))
 		if not Passives.supports_when(when):
 			errs.append("%s: passive condition '%s' is not implemented by the engine" % [where, when])
+		if trig == "static" and when.begins_with("reach_"):
+			errs.append("%s: a static reach change cannot be conditioned on reach (it would chase its own tail)" % where)
 
 
 ## Every entry keeps its internal text under `design` (fantasy at least) and nothing

@@ -74,12 +74,15 @@ shown as Spread (id stays `cleave`, `Face.keyword_label`), pierce is `penetrate`
 close is Splash (log says "splash"), line is "Line of sight". Removed: the lock keyword and
 its die-keeping state, flip, copy, reflect, step_up. Melee is a third reach: front rank
 only, the back only when the whole front is empty. Chain: a kill repeats the attack on a
-new target, no extra heat. Execute: +100%, +50% against massive foes. Burn: 5 per stack.
+new target, heat paid on every link (the risk). Execute: +100%, +50% against massive foes. Burn: 5 per stack.
 A crack takes only keywords (crit, heat, passives stay). New planned entries (overwhelm,
 corrode, numbed, rapid, disable, corrupt, energy armour, scramble, confuse, retaliate,
 disabled, corrupted, phased, taunt, beacon) are content only. `static` trigger with
 `set_reach` and `when: reach_melee/line/indirect` exist; the Badger's Reinforced Skeleton
-uses them (cracked weapons go melee, melee +10%). Vocabulary entries carry no `fantasy`
+uses them (cracked weapons go melee, melee +10%). Reach is never written to a component:
+`Skirmish.reach_of(ms, f)` / `Passives.effective_reach` compute it on every read from the
+owner's passive, so an ally reading the entry or a suppressed passive gets the plain reach;
+`Skirmish.shown_face` gives the screen a display copy. Vocabulary entries carry no `fantasy`
 any more (validator and export tool follow). `Face.CRIT_MULT` is the crit base (Face, not
 Skirmish: a cycle otherwise).
 Open, discussed 18 September, not built: component stat modifiers

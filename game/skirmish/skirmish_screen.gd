@@ -576,7 +576,7 @@ func _refresh() -> void:
 			v.statuses.append([r[0], r[1], r[3]])
 		v.queue_refresh()
 		var d := _dice[i]
-		d.set_face(ms.face())
+		d.set_face(sk.shown_face(ms, ms.face()))   # reach as the passive reads it now
 		d.spent = ms.assigned
 		d.dead = not ms.alive()
 		d.locked = locked[i]
@@ -779,16 +779,24 @@ func _on_die_double_tapped(i: int) -> void:
 	entry["body"] = ""
 	entry["stats"] = ""
 	entry["stat_items"] = []
-	entry["faces"] = ms.die.faces.duplicate()
+	entry["faces"] = _shown_faces(ms)
 	entry["current"] = ms.face_index
 	entry["passive"] = ""
 	entry["flavour"] = ""
 	_open_codex(entry)
 
 
+## The die's entries as the player should see them (effective reach), for lists.
+func _shown_faces(ms: Skirmish.MechState) -> Array:
+	var out: Array = []
+	for f in ms.die.faces:
+		out.append(sk.shown_face(ms, f))
+	return out
+
+
 func _on_die_held(i: int) -> void:
 	var ms: Skirmish.MechState = sk.mechs[i]
-	_show_details("%s // D%d" % [ms.unit.display_name.to_upper(), ms.die.size()], _dice[i], ms.die.faces.duplicate(), ms.face_index)
+	_show_details("%s // D%d" % [ms.unit.display_name.to_upper(), ms.die.size()], _dice[i], _shown_faces(ms), ms.face_index)
 
 
 func _on_foe_held(v: UnitView) -> void:
@@ -916,7 +924,7 @@ func _on_hold_released() -> void:
 
 func _on_drag_started(i: int) -> void:
 	_drag_from = i
-	_ghost.set_face(sk.mechs[i].face())
+	_ghost.set_face(sk.shown_face(sk.mechs[i], sk.mechs[i].face()))
 	_ghost.visible = true
 	_refresh()
 

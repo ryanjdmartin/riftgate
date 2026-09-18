@@ -34,31 +34,44 @@ static func active(passive: Dictionary) -> bool:
 	return not passive.is_empty() and str(passive.get("status", "implemented")) == "implemented"
 
 
-## Does this effect's `when` hold for the component in use? No `when` always holds.
-static func _holds(eff: Dictionary, face: Face) -> bool:
+## Does this effect's `when` hold for the component in use? No `when` always holds. Reach
+## conditions read the effective reach (the passive's own static changes included), so
+## "+10% melee" applies to a component the same passive has sent to melee.
+static func _holds(passive: Dictionary, eff: Dictionary, face: Face) -> bool:
 	match str(eff.get("when", "")):
 		"":
 			return true
 		"component_cracked":
 			return face != null and face.cracked
 		"reach_melee":
-			return face != null and face.reach == Face.Reach.MELEE
+			return face != null and effective_reach(passive, face) == Face.Reach.MELEE
 		"reach_line":
-			return face != null and face.reach == Face.Reach.LINE
+			return face != null and effective_reach(passive, face) == Face.Reach.LINE
 		"reach_indirect":
-			return face != null and face.reach == Face.Reach.INDIRECT
+			return face != null and effective_reach(passive, face) == Face.Reach.INDIRECT
 	return false
 
 
-## A static (always-on) reach override for this component, or -1 for none. The condition is
-## checked against the component as it is now, so a cracked one can be sent to melee.
-static func static_reach(passive: Dictionary, face: Face) -> int:
+## A component's reach under this passive: its own, unless a static set_reach effect holds.
+## Static conditions are read against the component itself (never against effective reach,
+## which would loop), so a static rule can key on cracked but not on reach. Nothing is
+## written to the component: ask again and the answer follows the passive's state.
+static func effective_reach(passive: Dictionary, face: Face) -> int:
+	if face == null:
+		return Face.Reach.NONE
 	if not active(passive):
-		return -1
+		return face.reach
 	for eff in passive.get("effects", []):
-		if str(eff.get("trigger", "")) == "static" and str(eff.get("effect", "")) == "set_reach" and _holds(eff, face):
-			return Face.reach_from_name(str(eff.get("value", "")))
-	return -1
+		if str(eff.get("trigger", "")) != "static" or str(eff.get("effect", "")) != "set_reach":
+			continue
+		var when := str(eff.get("when", ""))
+		if when.begins_with("reach_"):
+			continue
+		if _holds({}, eff, face):
+			var r := Face.reach_from_name(str(eff.get("value", "")))
+			if r >= 0:
+				return r
+	return face.reach
 
 
 ## Apply on_attack effects for the component `face` being spent. Returns [damage, heat].
@@ -66,7 +79,7 @@ static func on_attack(passive: Dictionary, dmg: int, heat: int, face: Face = nul
 	if not active(passive):
 		return [dmg, heat]
 	for eff in passive.get("effects", []):
-		if str(eff.get("trigger", "")) != "on_attack" or not _holds(eff, face):
+		if str(eff.get("trigger", "")) != "on_attack" or not _holds(passive, eff, face):
 			continue
 		var v: float = float(eff.get("value", 0))
 		match str(eff.get("effect", "")):
@@ -90,7 +103,7 @@ static func crit_bonus(passive: Dictionary, face: Face = null) -> float:
 	if not active(passive):
 		return total
 	for eff in passive.get("effects", []):
-		if str(eff.get("trigger", "")) == "on_crit" and str(eff.get("effect", "")) == "add_crit_damage" and _holds(eff, face):
+		if str(eff.get("trigger", "")) == "on_crit" and str(eff.get("effect", "")) == "add_crit_damage" and _holds(passive, eff, face):
 			total += float(eff.get("value", 0))
 	return total
 
@@ -102,7 +115,7 @@ static func on_crit(passive: Dictionary, dmg: int, face: Face = null) -> Diction
 	if not active(passive):
 		return out
 	for eff in passive.get("effects", []):
-		if str(eff.get("trigger", "")) != "on_crit" or not _holds(eff, face):
+		if str(eff.get("trigger", "")) != "on_crit" or not _holds(passive, eff, face):
 			continue
 		var v: float = float(eff.get("value", 0))
 		match str(eff.get("effect", "")):
@@ -124,7 +137,7 @@ static func on_injury(passive: Dictionary, face: Face) -> Dictionary:
 	if not active(passive):
 		return out
 	for eff in passive.get("effects", []):
-		if str(eff.get("trigger", "")) != "on_injury" or not _holds(eff, face):
+		if str(eff.get("trigger", "")) != "on_injury" or not _holds(passive, eff, face):
 			continue
 		if str(eff.get("effect", "")) == "no_destroy":
 			out["no_destroy"] = true

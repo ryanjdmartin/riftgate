@@ -250,9 +250,10 @@ func targets_for(mech_index: int) -> Array[Foe]:
 		if back[col] == null or out.has(back[col]):
 			continue
 		var reaches_back := false
-		if f.reach == Face.Reach.INDIRECT:
+		var reach := reach_of(ms, f)
+		if reach == Face.Reach.INDIRECT:
 			reaches_back = true
-		elif f.reach == Face.Reach.MELEE:
+		elif reach == Face.Reach.MELEE:
 			reaches_back = front_empty
 		else:
 			reaches_back = is_exposed(col)
@@ -261,15 +262,26 @@ func targets_for(mech_index: int) -> Array[Foe]:
 	return out
 
 
-## Static passives (always on): a cracked component's reach may be overridden. Applied to
-## the die's entries in place; a cracked entry is already a copy, so repair restores the
-## original untouched.
-func _apply_static(ms: MechState) -> void:
-	for f in ms.die.faces:
-		if f.is_attack():
-			var r := Passives.static_reach(ms.unit.passive, f)
-			if r >= 0:
-				f.reach = r
+## A component's reach as it is right now: its own, unless the mech's passive says
+## otherwise while a condition holds (the Badger's cracked weapons are melee). Computed on
+## every read and never written to the component, so the answer always has a source: an
+## ally reading the same component gets its own answer, and a suppressed passive stops
+## answering.
+func reach_of(ms: MechState, f: Face) -> int:
+	return Passives.effective_reach(ms.unit.passive, f)
+
+
+## The component as the player should see it: a copy carrying the effective reach. For
+## drawing only; the die keeps the real one.
+func shown_face(ms: MechState, f: Face) -> Face:
+	if f == null:
+		return null
+	var r := reach_of(ms, f)
+	if r == f.reach:
+		return f
+	var c := f.duplicate_face()
+	c.reach = r
+	return c
 
 
 # ---------------------------------------------------------------- round flow
@@ -283,7 +295,6 @@ func start_round() -> void:
 		ms.assigned = false
 		if not ms.alive():
 			continue
-		_apply_static(ms)
 		ms.face_index = ms.die.roll(rng)
 	# Every foe announces its move for the round: which action, at whom. Chosen now, before
 	# the player acts, so the intent chips and the forecast are exact.
@@ -381,7 +392,7 @@ func withdraw() -> bool:
 ## Spend an attack: every strike is its own blow (its own roll, its own crit, its own
 ## keywords and passives), landing on every foe the component reaches. Heat is paid once per
 ## use; danger close is charged on the total.
-func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, chained: bool = false) -> void:
+func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> void:
 	var total := 0
 	var rolled_total := 0
 	var any_crit := false
@@ -393,7 +404,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, chain
 		if f.is_ranged():
 			rolled = f.average() if f.has(Face.Keyword.STEADY) else rng.randi_range(f.power, f.power_max)
 		var dmg := rolled
-		var heat := f.heat if s == 0 and not chained else 0
+		var heat := f.heat if s == 0 else 0
 		var crit := f.crit > 0 and rng.randi_range(1, 100) <= f.crit
 		if crit:
 			dmg = int(roundf(dmg * (Face.CRIT_MULT + f.crit_bonus + Passives.crit_bonus(ms.unit.passive, f))))
@@ -438,19 +449,20 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe, chain
 	elif f.is_ranged():
 		how = "rolled %d, " % rolled_total + how
 	log.append("%s hits %s for %d (%s)" % [ms.unit.display_name, target.display_name, total, how])
-	if f.reach == Face.Reach.INDIRECT and target.rank == 0:
+	if reach_of(ms, f) == Face.Reach.INDIRECT and target.rank == 0:
 		var splash := ceili(float(total) / DANGER_CLOSE_DIVISOR)
 		ms.unit.shield = maxi(0, ms.unit.shield - splash)
 		log.append("%s: splash, shield -%d" % [ms.unit.display_name, splash])
 	if vent > 0:
 		ms.heat = maxi(0, ms.heat - vent)
 	_add_heat(ms, heat_total)
-	# Chain: a kill repeats the attack on a new valid target, free of heat, until it misses a kill.
+	# Chain: a kill repeats the attack on a new valid target, heat and all (the heat is the
+	# risk, and a laser is telegraphed), until it misses a kill.
 	if f.has(Face.Keyword.CHAIN) and not target.alive():
 		for cand in targets_for(mech_index):
 			if cand.alive() and cand != target:
 				log.append("%s chains to %s" % [ms.unit.display_name, cand.display_name])
-				_resolve_attack(mech_index, ms, f, cand, true)
+				_resolve_attack(mech_index, ms, f, cand)
 				break
 
 
@@ -546,7 +558,6 @@ func apply_injury(ms: MechState) -> void:
 		var c := f.duplicate_face()
 		c.crack()
 		ms.die.faces[idx] = c
-		_apply_static(ms)
 		log.append("%s: a component cracks (%s)" % [ms.unit.display_name, what])
 
 
