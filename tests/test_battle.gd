@@ -134,7 +134,7 @@ func test_contact_opens_a_skirmish_with_the_touching_units() -> void:
 	assert_eq(sk.reinforcements.size(), sq.strength, "one foe per point of strength")
 
 
-func test_finish_skirmish_removes_the_squad_and_recharges_shields() -> void:
+func test_finish_skirmish_removes_the_squad_and_keeps_shields_as_they_were() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
 	var sq: Unit = b.field.squads()[0]
@@ -147,9 +147,31 @@ func test_finish_skirmish_removes_the_squad_and_recharges_shields() -> void:
 	var squads_before := b.field.squads().size()
 	b.finish_skirmish()
 	assert_eq(b.field.squads().size(), squads_before - 1, "squad wiped from the map")
-	assert_eq(m.shield, m.shield_max, "shield recharged between skirmishes")
+	assert_eq(m.shield, 0, "no free refill between skirmishes")
 	assert_eq(b.state, Battle.State.PLAN, "planning again")
 	assert_eq(b.current, null, "no skirmish open")
+
+
+func test_shield_recharges_at_the_field_rate_only_out_of_combat() -> void:
+	var b := _battle()
+	var m: Unit = b.mechs()[0]
+	m.shield = 0
+	m.recharge_field = 15
+	m.shield_max = 40
+	var sq: Unit = b.field.squads()[0]
+	# Phase one: contact. The engaged mech gets nothing from the phase.
+	_engage(b, sq, m)
+	b.commit()
+	assert_eq(m.shield, 0, "a mech in contact this phase does not recharge at the field rate")
+	var sk := b.open_next_skirmish()
+	_win(sk)
+	b.finish_skirmish()
+	assert_eq(m.shield, 0, "still nothing after the fight")
+	# Later phases with no contact: the field rate, capped at max.
+	if b.state == Battle.State.PLAN:
+		b.commit()
+		assert_true(m.shield == 15 or b.has_pending(), "a quiet phase gives the field rate (%d)" % m.shield)
+	assert_true(m.shield <= m.shield_max, "never above max")
 
 
 func test_survivors_shrink_the_squad() -> void:

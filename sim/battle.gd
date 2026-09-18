@@ -150,6 +150,16 @@ func commit() -> Battlefield.PhaseResult:
 	last_result = field.resolve_phase(routes)
 	routes.clear()
 	pending = last_result.skirmishes.duplicate()
+	# A phase spent out of combat recharges shield at the field rate. A mech in contact this
+	# phase gets nothing here: its skirmish is its phase, and it recharges only at the combat
+	# rate inside it. So withdrawing buys a slower recharge, not a reset.
+	var engaged := {}
+	for group in pending:
+		for u in group:
+			engaged[u] = true
+	for u in field.mechs():
+		if not engaged.has(u):
+			u.recharge_shield(u.recharge_field)
 	_after_phase()
 	return last_result
 
@@ -188,15 +198,13 @@ func _build_skirmish(group: Array) -> Skirmish:
 	return sk
 
 
-## Apply the finished skirmish: wrecks leave the map, squads shrink or vanish, survivors'
-## shields recharge, and Rift Pressure ticks once per round fought.
+## Apply the finished skirmish: wrecks leave the map, squads shrink or vanish, and Rift
+## Pressure ticks once per round fought. Shields do not refill here: survivors carry what
+## they had, and recharge at the field rate only in phases they spend out of combat.
 func finish_skirmish() -> void:
 	if current == null:
 		return
 	field.apply_skirmish_result(current)
-	for ms in current.mechs:
-		if ms.alive():
-			ms.unit.recharge_shield()
 	current = null
 	if _check_outcome():
 		pending.clear()

@@ -41,6 +41,8 @@ var die: Die = null
 var passive: Dictionary = {}     # content passive, run by Passives; empty means none
 var chassis_id: String = ""
 var hardpoints: int = 0          # free slots; the die is these plus the chassis's fixed components
+var recharge_combat: int = 0     # shield regained at the start of each skirmish round after the first
+var recharge_field: int = 0      # shield regained each battlefield phase the mech spends out of combat
 
 ## Damaged components. A cracked or destroyed component is damaged and stays that way across
 ## skirmishes and battles until repaired in the hangar. Maps a die entry index to the
@@ -143,8 +145,13 @@ func touches(other: Unit) -> bool:
 	return false
 
 
-func recharge_shield() -> void:
-	shield = shield_max
+## Shield comes back at two rates, both chassis stats: a little each skirmish round in
+## combat, more each battlefield phase spent out of it. Never a full refill for free, so
+## withdrawing and re-engaging is not a way to reset (Ryan, 18 September).
+func recharge_shield(amount: int) -> int:
+	var before := shield
+	shield = mini(shield_max, shield + maxi(0, amount))
+	return shield - before
 
 
 func damaged_component_count() -> int:

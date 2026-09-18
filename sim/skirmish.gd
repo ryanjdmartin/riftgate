@@ -243,6 +243,8 @@ func start_round() -> void:
 		ms.assigned = false
 		if not ms.alive():
 			continue
+		if round > 1:
+			ms.unit.recharge_shield(ms.unit.recharge_combat)   # the in-combat rate, a trickle
 		if ms.locked:
 			ms.locked = false
 		else:

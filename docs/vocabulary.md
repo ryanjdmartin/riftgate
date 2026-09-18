@@ -9,7 +9,7 @@ Status: 62 implemented, 14 planned, 1 idea.
 | Term | Fantasy | Codex | Status |
 |---|---|---|---|
 | **Hull** | The machine itself. When it is gone, the machine is a wreck. | Damage that gets past shield removes hull. Hull never recovers during a battle. At zero the mech is a wreck to be salvaged after the battle. | implemented |
-| **Shield** | A buffer that buys you a few rounds to solve the squad before it starts costing you the machine. | Enemy damage removes shield before hull. Shield components add shield up to the chassis maximum. Shields recharge fully between skirmishes. | implemented |
+| **Shield** | A buffer that buys you a few rounds to solve the squad before it starts costing you the machine. | Enemy damage removes shield before hull. Shield components add shield up to the chassis maximum. Shield also comes back on its own at two chassis rates: a trickle at the start of each skirmish round after the first, and a faster amount each battlefield phase the mech spends out of combat. It never refills for free between skirmishes, so withdrawing to re-engage buys a slower recharge, not a reset. | implemented |
 | **Heat** | Every gun has a price, and the big ones are paid in smoke. | Attack components may add heat. Heat above the chassis maximum spills into hull damage one for one. Vent components remove heat. | implemented |
 | **Reroll** | You do not like what you see. You get three chances to change your mind, and the machine never shows you the same thing twice. | Three rerolls per round, each rerolling every unlocked, unspent mech die. A reroll always lands on a different component: never the one showing, never one equivalent to it (a die whose components are all alike keeps what it shows). Rerolls may be spent before or after attacking, so a low damage roll is information for the rest of the round. Never pooled across rounds. | implemented |
 | **Rift Pressure** | The city is running out of time, and there is a bar on screen that says so. | Ticks once per battlefield phase and once per skirmish round. When full it resets and a fresh squad emerges at the rift. | implemented |
@@ -86,7 +86,7 @@ Status: 62 implemented, 14 planned, 1 idea.
 | **Step up** | The horde closes the gap. | After the dead are cleared, a front-preferring foe in the back rank moves into an empty front slot in its column. | implemented |
 | **Danger close** | You mortared the thing in your face. Your shields are now also in your face. | Indirect fire on the front rank removes shield from the firing mech equal to half the component's power, rounded up. | implemented |
 | **Massive** | Too big for one slot. Too big for one anything. | A massive foe fills both slots of a column and counts as front rank. Its column is never exposed while it stands. Only some elites and bosses are massive. | implemented |
-| **Withdraw** | Enough. Fall back and let the map decide the rest. | Available at the start of any round after the first, before any component is spent, so there is never free damage. Ends the skirmish; survivors on both sides carry their damage to the battlefield. | implemented |
+| **Withdraw** | Enough. Fall back and let the map decide the rest. | Available at the start of any round after the first, before any component is spent, so there is never free damage. Ends the skirmish; survivors on both sides carry their damage to the battlefield. Shields do not refill on withdrawing; they recharge at the field rate only in phases spent out of combat. | implemented |
 
 ## Battlefield
 
@@ -155,9 +155,9 @@ Status: 62 implemented, 14 planned, 1 idea.
 
 Every entry whose `design.holes` is not empty. This is the list of things the mechanics do not do yet.
 
-- **Shield** (implemented): Option not coded: recharge only during phases spent out of combat.
+- **Shield** (implemented): Both rates are placeholders. Decided 18 September, replacing the full refill between skirmishes.
 - **Heat** (implemented): Heat does nothing below the cap. Consider effects at high heat short of overflow.
-- **Rift Pressure** (implemented): Spawns a fixed squad. Should draw from the battle's faction and escalate.
+- **Rift Pressure** (implemented): Spawns a fixed squad. Should draw from the battle's faction(s) and escalate.
 - **Gate Integrity** (implemented): Gate damage formula is a placeholder (strength divided by three).
 - **Damage range** (implemented): Ranges are content-authored per component; no upgrade path raises min or max yet.
 - **Critical hit** (implemented): No crit-chance upgrades yet; no visible crit chance on the die face beyond the description.

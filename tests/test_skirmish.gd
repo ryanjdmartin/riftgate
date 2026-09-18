@@ -652,3 +652,26 @@ func test_cracked_condition_narrows_a_passive_to_cracked_components() -> void:
 	f.crack()
 	assert_eq(Passives.on_attack(bonus, 20, 0, f), [30, 0], "a cracked one hits harder")
 	assert_eq(Passives.on_attack(bonus, 20, 0), [20, 0], "no component in hand, no bonus")
+
+
+func test_shield_trickles_back_each_round_in_combat() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.shield(10)), 0, 100)
+	m.shield_max = 40
+	m.recharge_combat = 5
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(90, 0)])
+	sk.begin()
+	sk.start_round()
+	assert_eq(m.shield, 0, "round one: no recharge yet")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(m.shield, 5, "round two: the combat rate")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(m.shield, 10, "and again")
+	m.shield = 38
+	sk.end_round()
+	sk.start_round()
+	assert_eq(m.shield, 40, "capped at max")
+	assert_eq(m.recharge_shield(100), 0, "nothing to regain at max")

@@ -2,9 +2,9 @@
 
 Handoff note for the next session. Replace stale lines; keep it under a screen.
 
-## As of 17 September 2026
+## As of 18 September 2026
 
-**State.** Everything committed. Tests: 117 tests, 1483 checks, green. Ryan is editing
+**State.** Everything committed. Tests: 128 tests, 1632 checks, green. Ryan is editing
 `content/*.json` in his own voice (reload the file after any pass that touches it).
 
 **Setting, decided.** The governing body is the Council for the Ultimate Liberation of Terra,
@@ -22,7 +22,7 @@ Aphelion, the Arsenal. Identity by the machines they build, not by battlefield n
 chassis's class decides its battlefield skills. Arsenal plates are decrees (Arsenal Instrument
 IV) and its nicknames zealot words. Only Minerva, Kestrel and Wainwright & Sutler exist in
 content so far; Ryan is moving mechs and equipment around and will place Aphelion and the
-Arsenal himself. Hardwired hardpoints with a paid unlock are tabled until an economy exists.
+Arsenal himself. Fixed slots are never bought open (decided 18 September).
 Content ideas are proposed in chat first (CLAUDE.md rule).
 
 **Equipment words (18 September, decided).** A component is one piece of equipment and
@@ -38,6 +38,13 @@ blow. Passives: `status: planned` keeps a draft out of the engine; `on_injury` w
 `on_attack`/`on_crit` effects exist. The Badger: 4 hardpoints, fixed claw and plating (d6);
 its stock loadout (two slug cannons, twin autoguns, a heat sink) and the one-face versions
 of the claw, twin autoguns and howitzer are placeholders for Ryan to tune.
+
+**Shields (18 September, decided).** No free refill between skirmishes (it made withdraw and
+re-engage a reset). Chassis stats `recharge_combat` (start of each skirmish round after the
+first) and `recharge_field` (each battlefield phase spent out of contact, faster; the
+validator requires field >= combat). Placeholders: Badger 5/15, Sentinel 10/20, Raptor
+10/30, Anvil 5/15. `Battle.commit` applies the field rate to mechs not in any contact group
+that phase; `Skirmish.start_round` applies the combat rate.
 
 **Content shape.** Shown text at the top level (`codex`, `flavour`, a passive's `name` and
 `description`, an action's `text`, a chassis's optional `designation`); everything internal

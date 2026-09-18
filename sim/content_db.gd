@@ -108,6 +108,8 @@ func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO) -
 	for t in c.get("traits", []):
 		u.traits.append(str(t))
 	u.hardpoints = int(c.get("hardpoints", 6))
+	u.recharge_combat = int(c.get("recharge_combat", 0))
+	u.recharge_field = int(c.get("recharge_field", 0))
 	u.die = build_die(c.get("fixed", []), c.get("loadout", []), u.hardpoints)
 	u.chassis_id = chassis_id
 	var p = c.get("passive", null)
@@ -164,8 +166,8 @@ func codex_for_foe(f: Foe) -> Dictionary:
 func codex_for_unit(u: Unit) -> Dictionary:
 	var c: Dictionary = chassis.get(u.chassis_id, {})
 	var maker: Dictionary = makers.get(str(c.get("maker", "")), {})
-	var stats := "HULL %d/%d // SHIELD %d/%d // MOVE %d // %d HARDPOINTS // D%d" % [
-		u.hull, u.hull_max, u.shield, u.shield_max, u.movespeed, u.hardpoints, u.die.size() if u.die != null else 0]
+	var stats := "HULL %d/%d // SHIELD %d/%d (+%d ROUND, +%d PHASE) // MOVE %d // %d HARDPOINTS // D%d" % [
+		u.hull, u.hull_max, u.shield, u.shield_max, u.recharge_combat, u.recharge_field, u.movespeed, u.hardpoints, u.die.size() if u.die != null else 0]
 	var faces: Array = []
 	if u.die != null:
 		faces = u.die.faces.duplicate()
@@ -395,9 +397,13 @@ func _validate_chassis(errs: Array[String]) -> void:
 	for id in chassis.keys():
 		var c: Dictionary = chassis[id]
 		var where := "chassis %s" % id
-		for key in ["name", "codex", "flavour", "hull", "shield", "movespeed", "hardpoints", "loadout"]:
+		for key in ["name", "codex", "flavour", "hull", "shield", "movespeed", "hardpoints", "loadout", "recharge_combat", "recharge_field"]:
 			if not c.has(key):
 				errs.append("%s: missing %s" % [where, key])
+		if int(c.get("recharge_combat", 0)) < 0 or int(c.get("recharge_field", 0)) < 0:
+			errs.append("%s: recharge rates cannot be negative" % where)
+		if int(c.get("recharge_field", 0)) < int(c.get("recharge_combat", 0)):
+			errs.append("%s: the field recharge rate should be at least the combat rate (out of combat is faster)" % where)
 		_validate_design(where, c, errs)
 		var hp := int(c.get("hardpoints", 0))
 		if c.has("filler"):
