@@ -63,6 +63,11 @@ func _apply_pose() -> void:
 			# Spend the first mech's face on the first front foe: the attack animation plays.
 			var foe: Foe = s.sk.front[0]
 			s._use_die(0, foe)
+		"enemyturn":
+			# Thin every shield so the enemy turn breaks some: the replay and shatter play.
+			for ms in s.sk.mechs:
+				ms.unit.shield = mini(ms.unit.shield, 10)
+			s._end_turn_now()
 
 
 ## Battle screen poses: select (a mech and its reach), route (two routes plotted), hold (a

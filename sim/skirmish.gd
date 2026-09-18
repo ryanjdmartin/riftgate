@@ -62,6 +62,9 @@ var log: Array[String] = []
 
 ## The most recent attack, for the screen to show: {mech, target, rolled, final, crit, ranged}.
 var last_roll: Dictionary = {}
+## Every blow of the last enemy turn, in order, for the screen to replay:
+## {foe, mech (index), absorbed, through, blocked, broke_shield, injured}.
+var turn_events: Array = []
 
 
 func _init(seed_value: int = 0, columns_arg: int = DEFAULT_COLUMNS) -> void:
@@ -308,6 +311,7 @@ func assign(mech_index: int, target = null) -> bool:
 
 func end_round() -> int:
 	assert(state == State.ASSIGN, "end_round called out of order")
+	turn_events.clear()
 	# Burn ticks before the enemy acts, so a burning foe may die without striking.
 	for f in field_foes():
 		if f.burn > 0:
@@ -434,8 +438,11 @@ func _add_heat(ms: MechState, amount: int) -> void:
 ## blow is the counterplay; a double strike is how a foe gets past it.
 func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	var r := _blow(ms.unit.shield, ms.unit.hull_max, ms.unit.armour, amount, source.breach)
+	var had_shield := ms.unit.shield > 0
 	ms.unit.shield = r["shield"]
 	ms.unit.hull -= r["through"]
+	turn_events.append({"foe": source, "mech": mechs.find(ms), "absorbed": r["absorbed"], "through": r["through"],
+		"blocked": r["blocked"], "broke_shield": had_shield and ms.unit.shield == 0, "injured": r["injures"]})
 	if r["blocked"]:
 		log.append("%s hits %s: shield -%d, blocked" % [source.display_name, ms.unit.display_name, r["absorbed"]])
 	elif r["absorbed"] > 0:
@@ -468,7 +475,10 @@ static func _blow(shield: int, hull_max: int, armour: int, amount: int, breach: 
 	if through > 0 and bare:
 		armoured = mini(armour, through)
 		through -= armoured
-	var injures := bare and through > 0 and through * 100 >= hull_max * CRACK_MIN_HULL_PCT
+	# Injury is about hull lost in one blow, wherever it came from: a breach that overflows a
+	# quarter of the hull injures too (Ryan, 18 September: breach is the release valve, and its
+	# counterplay is not the shield).
+	var injures := through > 0 and through * 100 >= hull_max * CRACK_MIN_HULL_PCT
 	return {"shield": shield - absorbed, "absorbed": absorbed, "through": through, "armoured": armoured, "blocked": blocked, "injures": injures}
 
 

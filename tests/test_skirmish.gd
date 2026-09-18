@@ -680,6 +680,7 @@ func test_a_standing_shield_blocks_the_whole_blow() -> void:
 	sk.end_round()
 	assert_eq(m.shield, 0, "ten shield is spent")
 	assert_eq(m.hull, 100, "fifty blocked by a ten-point shield: nothing bleeds")
+	assert_true(sk.turn_events[0]["blocked"] and sk.turn_events[0]["broke_shield"], "the blow is recorded as blocked and shield-breaking")
 	assert_eq(m.damaged_component_count(), 0, "and a shielded blow never injures")
 	sk.start_round()
 	sk.end_round()
@@ -723,7 +724,7 @@ func test_double_strike_breaks_the_shield_and_reaches_the_hull() -> void:
 	assert_eq(m.hull, 70, "second blow reaches the hull")
 
 
-func test_breach_overflows_shield_into_hull_but_never_injures() -> void:
+func test_breach_overflows_shield_into_hull_and_can_injure() -> void:
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.shield(10)), 10, 100)
 	sk.add_mech(m)
@@ -735,7 +736,8 @@ func test_breach_overflows_shield_into_hull_but_never_injures() -> void:
 	sk.end_round()
 	assert_eq(m.shield, 0, "shield gone")
 	assert_eq(m.hull, 60, "forty overflowed")
-	assert_eq(m.damaged_component_count(), 0, "a shielded blow never injures, even breached")
+	assert_eq(m.damaged_component_count(), 1, "forty of a hundred hull in one blow injures: a breach gets past the shield rule")
+	assert_true(sk.turn_events.size() == 1 and sk.turn_events[0]["broke_shield"] and sk.turn_events[0]["injured"], "the turn event says the shield broke and a component was hit")
 
 
 func test_heaviest_hitters_deploy_left_and_strike_first() -> void:

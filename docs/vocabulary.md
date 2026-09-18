@@ -72,7 +72,7 @@ Status: 66 implemented, 14 planned, 1 idea.
 |---|---|---|---|
 | **Burning** | On fire, and getting less on fire every round. | Foe status. See the burn keyword. | implemented |
 | **Suppressed** | Head down, gun silent. | Foe status. Skips its action this round, then clears. | implemented |
-| **Cracked component** | They got through the armour and something important is bent. | Mech status, global rule. When a blow lands on bare hull (no shield standing) and what gets past armour is at least a quarter of maximum hull, the mech's die is rolled and the component it lands on is injured. An intact component cracks: it loses its keywords, crit chance and unique effect, but still does its basic action. Any shield standing, however small, prevents injury; a foe's double strike is how it gets past that. A cracked component stays cracked across skirmishes and battles until repaired in the hangar. | implemented |
+| **Cracked component** | They got through the armour and something important is bent. | Mech status, global rule. When a blow lands on bare hull (no shield standing) and what gets past armour is at least a quarter of maximum hull, the mech's die is rolled and the component it lands on is injured. An intact component cracks: it loses its keywords, crit chance and unique effect, but still does its basic action. Any shield standing, however small, prevents injury, except against a breach; a foe's double strike is the other way past it. A cracked component stays cracked across skirmishes and battles until repaired in the hangar. | implemented |
 | **Destroyed component** | Hit where it was already broken. | Mech status. When an injury lands on a component that is already cracked, it is destroyed: blank, it does nothing when it comes up, until the hangar repairs or replaces it. An injury that lands on a destroyed component or an empty hardpoint finds nothing to break, so a badly broken mech shrugs off more of them. | implemented |
 | **Locked** | Held for next round. | Die status. See the lock keyword. | implemented |
 
@@ -158,7 +158,7 @@ Status: 66 implemented, 14 planned, 1 idea.
 | Term | Fantasy | Codex | Status |
 |---|---|---|---|
 | **Double strike** | The one monster the shield-tank fears. | A foe with two strikes lands two separate blows a turn. The first breaks the shield, the second reaches the hull. It is how a foe threatens a shielded mech, and why armour matters. | implemented |
-| **Breach** | Something big enough that the field bends. | A breaching foe's blows overflow: what the shield cannot absorb reaches the hull. A shielded blow still never injures a component. A boss trait. | implemented |
+| **Breach** | Something big enough that the field bends. | A breaching blow overflows: what the shield cannot absorb reaches the hull, and if that is a quarter of maximum hull it injures a component like any bare-hull blow. It breaks the fundamental promise that a standing shield stops the big hit, so it is a dangerous, uncommon trait, and its counterplay is not the shield: redirect it or interrupt it. | implemented |
 
 ## Holes
 
@@ -192,4 +192,4 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Fixed component** (implemented): Decided against unlocking fixed slots for money (18 September).
 - **Armour** (implemented): Numbers are placeholders. Armour from components is content, not yet written.
 - **Double strike** (implemented): No foe carries it yet; Ryan places it. A massive foe taking two actions is the same rule.
-- **Breach** (implemented): No foe carries it yet; Ryan places it. Name is a placeholder (pierce is taken by the player keyword).
+- **Breach** (implemented): No foe carries it yet; Ryan places it. Redirect and interrupt do not exist yet. Name is a placeholder (pierce is taken by the player keyword). Will become an attack keyword once foe actions carry keywords.

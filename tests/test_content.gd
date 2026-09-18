@@ -43,6 +43,7 @@ func test_build_die_leaves_empty_hardpoints_empty() -> void:
 	assert_eq(d.faces[0].component, "chainsaw_claw", "the fixed claw first")
 	assert_eq(d.faces[1].component, "slug_cannon", "then the loadout")
 	assert_true(d.faces[2].empty and d.faces[3].empty, "two hardpoints left empty stay empty")
+	assert_true(d.faces[0].fixed and not d.faces[1].fixed and not d.faces[2].fixed, "only the claw is fixed; the rest are hardpoints")
 	assert_eq(d.faces[2].describe(), "empty hardpoint", "and say so")
 
 

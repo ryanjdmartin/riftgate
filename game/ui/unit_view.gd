@@ -43,6 +43,8 @@ var sprite: Texture2D = null      # pixel art drawn at an integer scale; null dr
 var breathe: bool = false         # a slow vertical bob from the feet: a painted foe alive
 var flip_h: bool = false          # mirror the sprite, so an enemy painted facing right faces left
 var breathe_phase: float = 0.0
+var _shatter: float = -1.0        # seconds since the shield broke on this unit; negative when idle
+const SHATTER_SECONDS := 0.55
 
 var _pressed := false
 var _press_at := 0.0
@@ -138,10 +140,15 @@ func _process(delta: float) -> void:
 	if _pressed and not _holding and Time.get_ticks_msec() / 1000.0 - _press_at >= HOLD_SECONDS:
 		_holding = true
 		held.emit()
+	if _shatter >= 0.0:
+		_shatter += delta
+		if _shatter > SHATTER_SECONDS:
+			_shatter = -1.0
+		queue_redraw()
 	if (_has_pending() or breathe) and visible and not dead:
 		_t += delta
 		queue_redraw()
-	elif not _pressed:
+	elif not _pressed and _shatter < 0.0:
 		set_process(false)
 
 
@@ -149,6 +156,30 @@ func queue_refresh() -> void:
 	if _has_pending() or breathe:
 		set_process(true)
 	queue_redraw()
+
+
+## The shield just broke on this unit: a hex ring bursts outward and shards fly, in the
+## shield's colour, over the drawing. Called by the skirmish screen as the blow lands.
+func shatter_shield() -> void:
+	_shatter = 0.0
+	set_process(true)
+	queue_redraw()
+
+
+func _draw_shatter(vis: Rect2) -> void:
+	var t := clampf(_shatter / SHATTER_SECONDS, 0.0, 1.0)
+	var c := vis.get_center()
+	var r0 := minf(vis.size.x, vis.size.y) * 0.42
+	var ring := Color(Palette.SHIELD, (1.0 - t) * 0.9)
+	draw_polyline(Hex.corners(c, r0 * (1.0 + t * 0.9)), ring, 2.5 * (1.0 - t * 0.6), true)
+	if t < 0.5:
+		draw_polyline(Hex.corners(c, r0 * (1.0 + t * 0.4)), Color(Color.WHITE, (0.5 - t) * 1.2), 1.5, true)
+	for k in range(8):
+		var ang := TAU * float(k) / 8.0 + 0.3
+		var dir := Vector2(cos(ang), sin(ang))
+		var a := c + dir * r0 * (0.6 + t * 1.6)
+		var b := a + dir * (10.0 + 14.0 * (1.0 - t))
+		draw_line(a, b, Color(Palette.SHIELD, (1.0 - t) * 0.8), 2.0)
 
 
 func _draw() -> void:
@@ -175,6 +206,8 @@ func _draw() -> void:
 		draw_line(Vector2(vis.position.x, vis.end.y), Vector2(vis.end.x, vis.position.y), Palette.ENEMY_DIM, 2.0)
 	if highlight:
 		Hud.brackets(self, vis.grow(6.0), 14.0, Palette.TARGET, 2.0)
+	if _shatter >= 0.0:
+		_draw_shatter(vis)
 
 	if not bars.is_empty() and not dead:
 		if bars_above:

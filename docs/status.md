@@ -4,7 +4,7 @@ Handoff note for the next session. Replace stale lines; keep it under a screen.
 
 ## As of 18 September 2026
 
-**State.** Everything committed. Tests: 133 tests, 1651 checks, green. Ryan is editing
+**State.** Everything committed. Tests: 133 tests, 1654 checks, green. Ryan is editing
 `content/*.json` in his own voice (reload the file after any pass that touches it).
 
 **Setting, decided.** The governing body is the Council for the Ultimate Liberation of Terra,
@@ -49,7 +49,17 @@ bare-hull blow whose through-damage is at least a quarter of max hull. Foes: `st
 hull, never injures through shield); none set in content yet, Ryan places them. Strike
 order: front rank left to right then back; heaviest hitters (`Foe.threat`) deploy left at
 first contact. `Skirmish._blow` is the shared arithmetic for the real hit and the forecast.
-Round cap rejected. Per-round Rift Pressure tick kept (it is what makes a long wall cost).
+Round cap rejected. Per-round Rift Pressure tick kept (it is what makes a long wall cost). Later the same day: a breach injures like any blow (hull lost in one
+blow is what counts; its counterplay is redirect or interrupt, not built yet);
+`Skirmish.turn_events` records every enemy blow and the screen replays them with a shield
+shatter (`UnitView.shatter_shield`, screenshot pose `enemyturn`); `Face.fixed` marks
+built-in entries and the component list draws hardpoints as dashed sockets and empty ones
+as EMPTY; the codex stat block shows hull, shield, armour, move and recharge (hardpoints
+dropped as a number). Open, discussed 18 September, not built: multi-strike as a global
+attack keyword with a count (replacing `Foe.strikes`), foe actions as multipliers of base
+attack chosen by weighted RNG with the resulting number shown, component stat modifiers
+and granted passives with totals shown as base plus bonus, a fixed colour standard for a
+protanomalous player, movespeed granularity.
 
 **Content shape.** Shown text at the top level (`codex`, `flavour`, a passive's `name` and
 `description`, an action's `text`, a chassis's optional `designation`); everything internal

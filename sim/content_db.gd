@@ -91,6 +91,7 @@ func build_die(fixed_ids: Array, loadout_ids: Array, hardpoints: int) -> Die:
 		var comp: Dictionary = components.get(cid, {})
 		var f := build_face(comp.get("face", {}))
 		f.component = str(cid)
+		f.fixed = fixed_ids.has(cid)
 		die.faces.append(f)
 	for i in range(maxi(0, hardpoints - loadout_ids.size())):
 		die.faces.append(Face.empty_slot())
@@ -182,8 +183,9 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		"designation": str(c.get("designation", "")),   # the maker's long name; the title is the nickname
 		"body": str(c.get("codex", "")),   # never fantasy: that field is design notes and homages
 		"stats": stats,
+		# Hardpoints are not a number here: the component list shows them as sockets.
 		"stat_items": [["hull", "%d/%d" % [u.hull, u.hull_max]], ["shield", "%d/%d" % [u.shield, u.shield_max]],
-			["move", str(u.movespeed)], ["hardpoints", str(u.hardpoints)]],
+			["armour", str(u.armour)], ["move", str(u.movespeed)], ["recharge", "+%d / phase" % u.recharge_field]],
 		"actions": "",
 		"passive": passive,
 		"faces": faces,

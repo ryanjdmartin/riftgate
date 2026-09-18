@@ -36,6 +36,7 @@ var label: String = ""
 var cracked: bool = false     # injured: modifiers gone, basic action intact
 var component: String = ""    # the component this entry is (content id); "" for an empty hardpoint
 var empty: bool = false       # an empty hardpoint: blank, and nothing was ever there to break
+var fixed: bool = false       # built into the chassis (no hardpoint); false means this entry is a hardpoint
 
 
 ## `kws` may be a single Keyword or an Array of them. `pwr_max` of 0 means static.
@@ -180,6 +181,7 @@ func duplicate_face() -> Face:
 	f.cracked = cracked
 	f.component = component
 	f.empty = empty
+	f.fixed = fixed
 	for k in keywords:
 		f.keywords.append(k)
 	return f

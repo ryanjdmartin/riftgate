@@ -48,12 +48,34 @@ func _draw() -> void:
 		var rect := Rect2(Vector2(x0 + 6.0, y + 5.0), Vector2(MINI, MINI))
 		var cur := i == current
 		var col := Palette.HUD if cur else Color(Palette.HUD, 0.5)
-		if f.kind == Face.Kind.BLANK:
+		if f.kind == Face.Kind.BLANK and not f.empty:
 			col = Palette.ENEMY_DIM
-		Hud.box(self, rect, 8.0, Palette.PANEL_RAISED if cur else Palette.PANEL, col, 2.0 if cur else 1.0)
+		# A hardpoint is a socket: a dashed frame around the tile, so a free slot reads as a
+		# slot and an empty one as an empty slot. A fixed component has no frame; it is the
+		# machine itself.
+		if not f.fixed:
+			var socket := rect.grow(3.0)
+			var dash := Color(Palette.HUD, 0.35 if not cur else 0.6)
+			var seg := 6.0
+			for edge in [[socket.position, Vector2(socket.end.x, socket.position.y)], [Vector2(socket.end.x, socket.position.y), socket.end],
+					[socket.end, Vector2(socket.position.x, socket.end.y)], [Vector2(socket.position.x, socket.end.y), socket.position]]:
+				var a: Vector2 = edge[0]
+				var b: Vector2 = edge[1]
+				var n := int(a.distance_to(b) / (seg * 2.0))
+				for s in range(n + 1):
+					var p0 := a.lerp(b, float(s * 2) * seg / a.distance_to(b))
+					var p1 := a.lerp(b, minf(1.0, float(s * 2 + 1) * seg / a.distance_to(b)))
+					draw_line(p0, p1, dash, 1.0)
+		if f.empty:
+			draw_rect(rect, Color(Palette.HUD, 0.06), true)
+			draw_string(mono, Vector2(rect.position.x, rect.position.y + MINI * 0.5 + 4.0), "EMPTY", HORIZONTAL_ALIGNMENT_CENTER, MINI, 9, Color(Palette.HUD, 0.5))
+		else:
+			Hud.box(self, rect, 8.0, Palette.PANEL_RAISED if cur else Palette.PANEL, col, 2.0 if cur else 1.0)
 		if cur:
 			Hud.brackets(self, rect.grow(5.0), 9.0, Palette.HUD, 1.0)
-		if f.kind == Face.Kind.BLANK:
+		if f.empty:
+			pass
+		elif f.kind == Face.Kind.BLANK:
 			Glyphs.draw(self, "blank", rect.get_center(), 18.0, Palette.ENEMY_DIM, 2.5)
 		else:
 			Glyphs.draw(self, Glyphs.primary_for(f), rect.position + Vector2(10.0, 10.0), 10.0, col, 1.4)

@@ -1002,7 +1002,8 @@ func _animate_hit(v: UnitView, delay: float = 0.0) -> void:
 	shake.tween_property(v, "position", origin, 0.05)
 
 
-## The enemy's turn, replayed: each foe that struck lunges down at its mech in sequence.
+## The enemy's turn, replayed: each blow lunges its foe down at its mech in sequence, and a
+## blow that broke the shield shatters it on the mech when it lands.
 func _animate_enemy_turn(hits: Array) -> void:
 	if not is_inside_tree():
 		return
@@ -1010,11 +1011,18 @@ func _animate_enemy_turn(hits: Array) -> void:
 	for h in hits:
 		var fv: UnitView = h[0]
 		var mv: UnitView = h[1]
-		if fv == null or mv == null:
+		var broke: bool = h.size() > 2 and h[2]
+		if mv == null:
 			continue
 		var tw := create_tween()
 		tw.tween_interval(0.12 * k)
-		tw.tween_callback(func() -> void: _animate_attack(fv, mv, false))
+		tw.tween_callback(func() -> void:
+			if fv != null:
+				_animate_attack(fv, mv, false)
+			if broke:
+				var t2 := create_tween()
+				t2.tween_interval(0.08)
+				t2.tween_callback(mv.shatter_shield))
 		k += 1
 
 
@@ -1087,14 +1095,14 @@ func _end_turn_now() -> void:
 		var ms: Skirmish.MechState = sk.mechs[i]
 		if ms.alive() and not ms.assigned and ms.face() != null and ms.face().kind == Face.Kind.BLANK:
 			sk.assign(i, null)
-	var hits: Array = []
-	for i in range(sk.mechs.size()):
-		var ms2: Skirmish.MechState = sk.mechs[i]
-		if not ms2.alive():
-			continue
-		for foe in sk.attackers_of(ms2):
-			hits.append([_foe_view_for(foe), _mech_views[i]])
 	var outcome := sk.end_round()
+	# The blows the sim just resolved, in order, so the replay shows what happened: who
+	# lunged at whom, and where a shield broke.
+	var hits: Array = []
+	for ev in sk.turn_events:
+		var mi: int = ev["mech"]
+		if mi >= 0 and mi < _mech_views.size():
+			hits.append([_foe_view_for(ev["foe"]), _mech_views[mi], bool(ev["broke_shield"])])
 	if outcome != Skirmish.Outcome.NONE:
 		_show_outcome(outcome)
 		return
