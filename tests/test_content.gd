@@ -255,7 +255,7 @@ func test_anvil_passive_burns_on_crit() -> void:
 	sk.start_round()
 	sk.assign(0, sk.front[0])
 	assert_eq(sk.front[0].hp, 160, "20 crit for 40")
-	assert_eq(sk.front[0].burn, 1, "Hot Load added a burn stack")
+	assert_eq(sk.front[0].burn_stacks(), 1, "Hot Load added a burn stack")
 
 
 func test_content_dice_are_sane_and_kinetic_faces_roll() -> void:

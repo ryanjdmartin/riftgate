@@ -630,7 +630,7 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe]) -> void:
 	v.intent_dim = false
 	# The intent is this round's chosen attack: a sword, its damage, and a mark for a double
 	# strike or a breach; a suppressed foe shows no intent, only the status.
-	v.intent_kind = "" if (foe.suppressed or foe.target == null) else "attack"
+	v.intent_kind = "" if (foe.is_suppressed() or foe.target == null) else "attack"
 	v.intent_value = foe.damage()
 	v.intent_note = ("×%d" % foe.strikes() if foe.strikes() > 1 else "") + ("!" if foe.breaches() else "")
 	v.statuses = []
@@ -642,9 +642,9 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe]) -> void:
 ## Statuses on a foe as [glyph, chip text, readout text, colour].
 func _foe_rows(foe: Foe) -> Array:
 	var rows: Array = []
-	if foe.burn > 0:
-		rows.append(["burn", str(foe.burn), "Burning: %d damage a round, one stack less each round" % (foe.burn * Skirmish.BURN_PER_STACK), Palette.HEAT])
-	if foe.suppressed:
+	if foe.burn_stacks() > 0:
+		rows.append(["burn", str(foe.burn_stacks()), "Burning: %d damage a round, one stack less each round" % int(Effects.tick_preview(foe)["hp"]), Palette.HEAT])
+	if foe.is_suppressed():
 		rows.append(["suppress", "", "Suppressed: loses its action this round", Palette.HUD])
 	if foe.rank == 1 and sk.is_exposed(foe.column):
 		rows.append(["exposed", "", "Exposed: nothing in front, line weapons reach it", Palette.HUD])
@@ -689,7 +689,7 @@ func _refresh_arrows() -> void:
 	var list: Array = []
 	var inv := _arrows.get_global_transform().affine_inverse()
 	for foe in sk.field_foes():
-		if foe.target == null or foe.suppressed:
+		if foe.target == null or foe.is_suppressed():
 			continue
 		var target_index := sk.mechs.find(foe.target)
 		if target_index < 0:

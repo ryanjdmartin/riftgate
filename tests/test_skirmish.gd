@@ -160,10 +160,10 @@ func test_burn_ticks_down() -> void:
 	sk.assign(0, sk.front[0])
 	var g: Foe = sk.front[0]
 	assert_eq(g.hp, 60, "took 30 on hit")
-	assert_eq(g.burn, 2, "two burn stacks from 30 damage")
+	assert_eq(g.burn_stacks(), 2, "two burn stacks from 30 damage")
 	sk.end_round()
 	assert_eq(g.hp, 50, "burn ticked for 10: two stacks of five")
-	assert_eq(g.burn, 1, "one stack consumed")
+	assert_eq(g.burn_stacks(), 1, "one stack consumed")
 
 
 func test_ranged_face_rolls_within_bounds() -> void:
@@ -506,7 +506,7 @@ func test_forecast_predicts_shield_break_and_hull_loss() -> void:
 	assert_eq(fc["hull_after"], 75, "the thirty stands left, strikes first and is blocked whole; the twenty-five lands on bare hull")
 	assert_true(fc["component_risk"], "a 25-point bare-hull hit on 100 hull injures")
 	assert_false(fc["destroyed"], "still standing")
-	sk.front[0].suppressed = true
+	sk._suppress(sk.front[0])
 	fc = sk.forecast(ms)
 	assert_eq(fc["incoming"], 25, "a suppressed foe does not count")
 	sk.front[1].hp = 0
@@ -546,7 +546,7 @@ func test_forecast_ignores_foes_that_burn_to_death_first() -> void:
 	sk.add_foes([Foe.make("a", 10, 25)])
 	sk.begin()
 	sk.start_round()
-	sk.front[0].burn = 2
+	Effects.stack(sk.front[0], Effects.STATUS["burning"], Effects.SKIRMISH, "test", 2)
 	assert_eq(sk.forecast(ms)["incoming"], 0, "two stacks of five kill a ten-hp foe before it strikes")
 
 
@@ -765,7 +765,7 @@ func test_strikes_are_separate_blows_with_their_own_rolls_and_procs() -> void:
 	sk.start_round()
 	sk.assign(0, sk.front[0])
 	assert_eq(sk.front[0].hp, 170, "three blows of ten")
-	assert_eq(sk.front[0].burn, 3, "each blow procs burn on its own: three stacks, where one thirty would give two")
+	assert_eq(sk.front[0].burn_stacks(), 3, "each blow procs burn on its own: three stacks, where one thirty would give two")
 	assert_eq(sk.mechs[0].heat, 20, "heat is paid once per use, not per strike")
 	assert_eq(sk.last_roll["final"], 30, "the screen sees the total")
 	assert_eq(gun.describe(), "10 ×3 burn (+20 heat)", "described as a burst")
@@ -926,3 +926,58 @@ func test_shorter_lived_sources_override_longer_ones() -> void:
 	assert_eq(Effects.effective_reach(u, f), Face.Reach.INDIRECT, "a skirmish-long rule wins over the loadout one")
 	Effects.end_skirmish(u)
 	assert_eq(Effects.effective_reach(u, f), Face.Reach.MELEE, "and the loadout rule is back when it ends")
+
+
+func test_statuses_stack_tick_and_decay_on_both_sides() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.shield(10)), 0, 200)
+	sk.add_mech(m)
+	var scorcher := Foe.make("hellhound", 90, 10)
+	scorcher.actions[0]["keywords"] = ["scorch"]
+	sk.add_foes([scorcher])
+	sk.begin()
+	sk.start_round()
+	sk.end_round()
+	assert_eq(Effects.stacks_of(m, "overheating"), 1, "a scorching blow leaves one heat stack")
+	sk.start_round()
+	assert_eq(sk.mechs[0].heat, 5, "it ticks at the mech's turn: five heat")
+	assert_eq(Effects.stacks_of(m, "overheating"), 0, "and the stack is spent")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(sk.mechs[0].heat, 10, "the next scorch ticks again")
+	Effects.stack(m, Effects.STATUS["overheating"], Effects.SKIRMISH, "test", 3)
+	assert_eq(Effects.stacks_of(m, "overheating"), 3, "stacks add up")
+	assert_eq(int(Effects.tick_preview(m)["heat"]), 15, "five per stack")
+	sk.withdraw()
+	assert_eq(Effects.stacks_of(m, "overheating"), 0, "skirmish-scoped statuses end with the skirmish")
+
+
+func test_suppress_skips_the_action_and_numbs() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.attack(10, L, K.SUPPRESS)), 0, 100)
+	sk.add_mech(m)
+	var boss := Foe.make("maw", 200, 30)
+	boss.size = 2
+	sk.add_foes([boss])
+	sk.begin()
+	sk.start_round()
+	sk.assign(0, sk.front[0])
+	assert_true(boss.is_suppressed(), "suppressed this round")
+	assert_eq(Effects.stacks_of(boss, "numbed"), 2, "a massive foe gains two Numbed stacks")
+	sk.end_round()
+	assert_eq(m.hull, 100, "it skipped")
+	assert_false(boss.is_suppressed(), "the suppression ran out with the round")
+	assert_eq(Effects.stacks_of(boss, "numbed"), 2, "Numbed does not decay")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(m.hull, 70, "next round it strikes")
+
+
+func test_stacked_adds_scale_with_stacks() -> void:
+	var u := Unit.mech(0, "A", Vector2i.ZERO)
+	u.armour = 0
+	var plating := {"id": "energy_armour", "name": "Energy Armour", "description": "", "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 5}]}
+	Effects.stack(u, plating, Effects.SKIRMISH, "component", 1, Effects.DECAY_NONE)
+	Effects.stack(u, plating, Effects.SKIRMISH, "component", 2, Effects.DECAY_NONE)
+	assert_eq(u.modifiers.size(), 1, "the same status stacks instead of doubling")
+	assert_eq(u.armour, 15, "five per stack, three stacks")

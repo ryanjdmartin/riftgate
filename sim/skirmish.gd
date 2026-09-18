@@ -23,7 +23,6 @@ enum Outcome { NONE, VICTORY, DEFEAT, WITHDRAWN }
 const DEFAULT_COLUMNS := 3   # the formation's width; four makes more of a horde
 const REROLLS_PER_ROUND := 3
 const DANGER_CLOSE_DIVISOR := 2
-const BURN_PER_STACK := 5           # damage each stack deals per round (bypasses armour)
 const BURN_DAMAGE_PER_STACK := 20   # damage dealt per stack applied
 const CRACK_MIN_HULL_PCT := 25      # a single hull hit this big (percent of max) injures a face
 
@@ -185,9 +184,9 @@ func pending_heat(ms: MechState) -> int:
 func attackers_of(ms: MechState) -> Array[Foe]:
 	var out: Array[Foe] = []
 	for f in field_foes():
-		if not f.alive() or f.suppressed or f.target != ms:
+		if not f.alive() or f.is_suppressed() or f.target != ms:
 			continue
-		if f.burn > 0 and f.hp - f.burn * BURN_PER_STACK <= 0:
+		if f.hp - int(Effects.tick_preview(f)["hp"]) <= 0:   # burns to death before it strikes
 			continue
 		out.append(f)
 	return out
@@ -295,6 +294,11 @@ func start_round() -> void:
 		ms.assigned = false
 		if not ms.alive():
 			continue
+		# The mech's turn begins: its statuses tick (heat stacks warm it), then it rolls.
+		var t := Effects.tick(ms.unit)
+		if int(t["heat"]) > 0:
+			log.append("%s: %d heat from overheating" % [ms.unit.display_name, int(t["heat"])])
+			_add_heat(ms, int(t["heat"]))
 		ms.face_index = ms.die.roll(rng)
 	# Every foe announces its move for the round: which action, at whom. Chosen now, before
 	# the player acts, so the intent chips and the forecast are exact.
@@ -348,18 +352,18 @@ func assign(mech_index: int, target = null) -> bool:
 func end_round() -> int:
 	assert(state == State.ASSIGN, "end_round called out of order")
 	turn_events.clear()
-	# Burn ticks before the enemy acts, so a burning foe may die without striking.
+	# Foes act in the order they stand: front rank left to right, then the back rank. Each
+	# foe's statuses tick at the start of its action (burning may kill it first), a
+	# suppressed foe skips, and a foe with two strikes lands two separate blows, so a shield
+	# stops the first and the second reaches the hull.
 	for f in field_foes():
-		if f.burn > 0:
-			f.hp -= f.burn * BURN_PER_STACK
-			f.burn -= 1
-	_clear_dead()
-	# Foes strike in the order they stand: front rank left to right, then the back rank. A
-	# foe with two strikes lands two separate blows, so a shield stops the first and the
-	# second reaches the hull.
-	for f in field_foes():
-		if f.suppressed:
-			f.suppressed = false
+		var tick := Effects.tick(f)
+		if int(tick["hp"]) > 0:
+			f.hp -= int(tick["hp"])
+			log.append("%s burns for %d" % [f.display_name, int(tick["hp"])])
+			if not f.alive():
+				continue
+		if tick["skip"]:
 			continue
 		var t := f.target as MechState
 		if t == null or not t.alive():
@@ -370,9 +374,13 @@ func end_round() -> int:
 			if not t.alive():
 				break
 			_damage_mech(t, f.damage(), f)
+			if f.has_keyword(f.action, "scorch") and t.alive():
+				Effects.stack(t.unit, Effects.STATUS["overheating"], Effects.SKIRMISH, "foe:" + f.content_id)
 	_clear_dead()
 	for ms in mechs:
 		Effects.end_round(ms.unit, round)   # timed effects run out
+	for f in field_foes():
+		Effects.end_round(f, round)
 	_reinforce(true)    # the reinforcement phase: a random waiting foe of the right rank per empty slot
 	_check_outcome()
 	if outcome == Outcome.NONE:
@@ -436,13 +444,14 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 		for foe in hit:
 			foe.hp -= dmg
 			if f.has(Face.Keyword.BURN):
-				foe.burn += ceili(float(dmg) / BURN_DAMAGE_PER_STACK)
+				Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", ceili(float(dmg) / BURN_DAMAGE_PER_STACK))
 			if f.has(Face.Keyword.SUPPRESS):
-				foe.suppressed = true
+				_suppress(foe)
 		total += dmg
 		rolled_total += rolled
 		any_crit = any_crit or crit
-	target.burn += extra_burn
+	if extra_burn > 0:
+		Effects.stack(target, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", extra_burn)
 	last_roll = {"mech": mech_index, "target": target, "rolled": rolled_total, "final": total, "crit": any_crit, "ranged": f.is_ranged()}
 	var how := f.describe()
 	if any_crit:
@@ -465,6 +474,13 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 				log.append("%s chains to %s" % [ms.unit.display_name, cand.display_name])
 				_resolve_attack(mech_index, ms, f, cand)
 				break
+
+
+## Suppress: the foe skips its action this round, then grows Numbed (two stacks for a
+## massive foe). Resistance from Numbed is tracked, not yet rolled against (planned).
+func _suppress(foe: Foe) -> void:
+	Effects.grant_for_rounds(foe, Effects.STATUS["suppressed"], "mech", round)
+	Effects.stack(foe, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 2 if foe.is_massive() else 1, Effects.DECAY_NONE)
 
 
 func _add_heat(ms: MechState, amount: int) -> void:

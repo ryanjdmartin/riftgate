@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 66 implemented, 27 planned, 0 idea.
+Status: 68 implemented, 27 planned, 0 idea.
 
 ## Resource
 
@@ -82,10 +82,11 @@ Status: 66 implemented, 27 planned, 0 idea.
 | **Phased** | Player and enemy status. This unit cannot attack, nor can it be damaged by attacks, until end of round. | planned |
 | **Taunt** | Player status. Until end of round, all front-rank foes will target this unit. | planned |
 | **Beacon** | Player status. Until end of round, all back-rank foes will target this unit. | planned |
-| **Burning** | Foe status. Loses 5 HP per stack at the start of their action, then lose one stack. Bypasses armour. | implemented |
+| **Burning** | Foe status. Loses 5 HP per stack at the start of its action, then loses one stack. Bypasses armour. Applied by the burn keyword, one stack per twenty damage dealt. | implemented |
 | **Suppressed** | Foe status. Skips its action this round, then clears. | implemented |
 | **Cracked component** | Mech status, global rule. When a blow lands on bare hull (no shield standing) and what gets past armour is at least a quarter of maximum hull, the mech's die is rolled and the component it lands on is injured. An intact component cracks: it loses its keywords and unique effects, but still does its basic action, can still crit, still generates heat, and still provides its passive bonuses and abilities. Any shield standing, however small, prevents injury, except against a breach; a foe's double strike is the other way past it. A cracked component stays cracked across skirmishes and battles until repaired in the hangar. | implemented |
 | **Destroyed component** | Mech status. When an injury lands on a component that is already cracked, it is destroyed: blank, it does nothing when it comes up, and provides its passive bonuses but not passive abilities. until the hangar repairs or replaces it. An injury that lands on a destroyed component or an empty hardpoint finds nothing to break, so a badly broken mech shrugs off more of them. | implemented |
+| **Overheating** | Mech status. Gains 5 heat per stack at the start of its turn, then loses one stack. The mech-side counterpart of Burning: metal does not burn, it heats. Applied by foe attacks that scorch. Clears at end of skirmish. | implemented |
 
 ## Formation
 
@@ -170,12 +171,13 @@ Status: 66 implemented, 27 planned, 0 idea.
 |---|---|---|
 | **Breach** | A breaching blow overflows: what the shield cannot absorb reaches the hull, and if that is a quarter of maximum hull it injures a component like any bare-hull blow. It breaks the fundamental promise that a standing shield stops the big hit, so it is a dangerous, uncommon attack modifier, and its counterplay is not the shield: redirect it or interrupt it. | implemented |
 | **Foe action** | A foe has a base attack, the quick read of how hard it hits, and a list of attacks that scale it. Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number. | implemented |
+| **Scorch** | Foe attack keyword. Each blow that lands leaves one stack of Overheating on the mech it hit. | implemented |
 
 ## Rules
 
 | Term | Codex | Status |
 |---|---|---|
-| **Order of operations** | Everything that changes a number goes through one pipeline, in one order. Sources: the chassis passive and each fitted component's passive (until refitted), skirmish rewards (until the battle ends), buffs and debuffs (until the skirmish ends, or until the end of a given round). First suppression, shortest-lived source to longest: a live effect that suppresses another by id or tag turns it off, and a suppressed effect suppresses nothing. Then the gate: an effect takes part only if it is live, its trigger fires now, its condition holds, and, for an ability, its component is not destroyed (a destroyed component keeps its stat bonuses and loses its abilities). Then adds, all sources summed; then multiplies, all sources multiplied; then floors and caps; then overrides, where the shortest-lived source wins and the latest granted breaks ties. In an attack, the crit multiplier and the fixed keyword rules (overcharge, execute) come before the pipeline's adds and multiplies. Nothing is ever stored as a total: every read asks again, so an effect that is gone stops answering. | implemented |
+| **Order of operations** | Everything that changes a number goes through one pipeline, in one order. Sources: the chassis passive and each fitted component's passive (until refitted), skirmish rewards (until the battle ends), buffs and debuffs (until the skirmish ends, or until the end of a given round). First suppression, shortest-lived source to longest: a live effect that suppresses another by id or tag turns it off, and a suppressed effect suppresses nothing. Then the gate: an effect takes part only if it is live, its trigger fires now, its condition holds, and, for an ability, its component is not destroyed (a destroyed component keeps its stat bonuses and loses its abilities). Then adds, all sources summed; then multiplies, all sources multiplied; then floors and caps; then overrides, where the shortest-lived source wins and the latest granted breaks ties. In an attack, the crit multiplier and the fixed keyword rules (overcharge, execute) come before the pipeline's adds and multiplies. Nothing is ever stored as a total: every read asks again, so an effect that is gone stops answering. Statuses stack: the same status granted again adds stacks instead of a second copy; an add is worth its value per stack and a multiply is applied once per stack; a status that ticks applies its per-stack tick at its owner's turn, then loses one stack, and is gone at zero. | implemented |
 
 ## Holes
 
@@ -211,4 +213,6 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Foe action** (implemented): Only attacks run; defend, buff and debuff actions stay planned. Weighted RNG is the whole brain for now.
 - **Strikes** (implemented): Heat is paid once per use, not per strike. Foes have no armour yet, so on the player side strikes only matter for procs until they do.
 - **Static** (implemented): Every read asks the pipeline; nothing is written to a stat or a component, so an effect that is gone stops answering. A static reach rule cannot be conditioned on reach.
-- **Order of operations** (implemented): Foes have no modifier list yet; their burn and suppressed are stored statuses with a duration. Refit (the hangar) is what changes loadout-scoped effects; not built.
+- **Order of operations** (implemented): Refit (the hangar) is what changes loadout-scoped effects; not built. Numbed stacks accrue but the resistance roll is not applied yet.
+- **Overheating** (implemented): Placeholder name and numbers, engine id overheating; Ryan is looking for the flavour. Nothing cleanses it yet.
+- **Scorch** (implemented): Placeholder name. No foe carries it yet; Ryan places it (fire demons, presumably).

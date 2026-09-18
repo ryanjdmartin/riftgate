@@ -22,10 +22,18 @@ var actions: Array = []          # implemented attack actions; at least the basi
 # Live state.
 var rank: int = -1               # 0 front, 1 back, -1 in reserve
 var column: int = -1
-var burn: int = 0
-var suppressed: bool = false
 var target: RefCounted = null    # Skirmish.MechState, set when intents are telegraphed
 var action: Dictionary = {}      # this round's chosen action
+var modifiers: Array = []        # statuses on this foe (burning, suppressed, numbed...): Effects.Modifier list
+var die = null                   # foes have no die; the pipeline asks, so the field exists
+
+
+func burn_stacks() -> int:
+	return Effects.stacks_of(self, "burning")
+
+
+func is_suppressed() -> bool:
+	return Effects.tick_preview(self)["skip"]
 
 
 static func make(name: String, hp_value: int, attack_value: int, back: bool = false) -> Foe:
@@ -92,7 +100,9 @@ func strikes() -> int:
 
 ## Tags an attack action may carry. Anything true or false about a blow is a tag here, never
 ## a field of its own.
-const ATTACK_KEYWORDS := ["breach"]
+## breach: overflows shield into hull. scorch: stacks Overheating on the mech it hits (a
+## placeholder name; the mech-side heat DOT Ryan asked for).
+const ATTACK_KEYWORDS := ["breach", "scorch"]
 
 
 func has_keyword(a: Dictionary, k: String) -> bool:

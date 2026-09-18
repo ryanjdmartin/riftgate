@@ -29,6 +29,12 @@ extends RefCounted
 ##   5. overrides (set_reach): the shortest-lived source wins, then the latest granted
 ## In an attack, the crit multiplier and the fixed keyword rules (overcharge, execute) are
 ## applied by the skirmish before step 2, so the pipeline's adds and multiplies come last.
+##
+## Stacking. A modifier has stacks (one by default). Granting the same id in the same scope
+## again adds stacks instead of a second copy; an add is worth its value per stack, a
+## multiply is applied once per stack. A status with tick decay ticks at its owner's turn:
+## its tick effects apply per stack (tick_hp, tick_heat), then it loses one stack and is
+## gone at zero. Burning on a foe and heat stacks on a mech are the same object.
 
 const LOADOUT := 0
 const BATTLE := 1
@@ -41,6 +47,22 @@ const SUPPORTED_EFFECTS := {
 	"on_crit": ["multiply_damage", "add_damage", "add_burn", "vent_heat", "add_crit_damage"],
 	"on_injury": ["no_destroy"],
 	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress"],
+	"status": ["tick_hp", "tick_heat", "skip_action", "resist_suppress"],
+}
+const DECAY_NONE := 0    # lives until its scope ends
+const DECAY_TICK := 1    # loses a stack each tick, gone at zero
+
+## The engine's own statuses, granted by keywords and foe attacks. Names are placeholders
+## for Ryan's vocabulary; ids are what the engine keys on.
+const STATUS := {
+	"burning": {"id": "burning", "name": "Burning", "description": "Loses 5 HP per stack at the start of its action, then loses a stack.",
+		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_hp", "value": 5}]},
+	"overheating": {"id": "overheating", "name": "Overheating", "description": "Gains 5 heat per stack at the start of its turn, then loses a stack.",
+		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_heat", "value": 5}]},
+	"suppressed": {"id": "suppressed", "name": "Suppressed", "description": "Skips its telegraphed action this round.",
+		"effects": [{"trigger": "status", "effect": "skip_action", "value": 1}]},
+	"numbed": {"id": "numbed", "name": "Numbed", "description": "Resists being suppressed, 10% per stack.",
+		"effects": [{"trigger": "status", "effect": "resist_suppress", "value": 10}]},
 }
 const SUPPORTED_WHEN := ["component_cracked", "reach_melee", "reach_line", "reach_indirect"]
 ## Stats a static effect may change: the mech's base numbers by these names.
@@ -63,6 +85,8 @@ class Modifier:
 	var tags: Array[String] = []
 	var effects: Array = []        # [{trigger, effect, value, (when), (stat)}]
 	var seq: int = 0               # grant order, for override ties
+	var stacks: int = 1
+	var decay: int = DECAY_NONE
 
 	func matches(key: String) -> bool:
 		return id == key or tags.has(key)
@@ -101,6 +125,71 @@ static func grant_for_rounds(u, passive: Dictionary, source: String, round: int)
 	if m != null:
 		m.expires_round = round
 	return grant(u, m)
+
+
+## Add stacks of a status. The same id in the same scope stacks up instead of doubling;
+## a fresh one is granted with `n` stacks. Tick-decaying statuses lose a stack per tick.
+static func stack(u, passive: Dictionary, scope: int, source: String, n: int = 1, decay: int = DECAY_TICK, expires_round: int = -1) -> Modifier:
+	var id := str(passive.get("id", ""))
+	for m in u.modifiers:
+		if m.id == id and m.scope == scope:
+			m.stacks += n
+			if expires_round >= 0:
+				m.expires_round = maxi(m.expires_round, expires_round)
+			return m
+	var m := make(passive, scope, source)
+	if m == null:
+		return null
+	m.stacks = n
+	m.decay = decay
+	m.expires_round = expires_round
+	return grant(u, m)
+
+
+static func stacks_of(u, id: String) -> int:
+	for m in live(u):
+		if m.id == id:
+			return m.stacks
+	return 0
+
+
+static func has(u, id: String) -> bool:
+	return stacks_of(u, id) > 0
+
+
+## What a status effect amounts to right now across live statuses: {hp, heat, skip,
+## resist}. hp and heat are per stack sums; skip is any skip_action; resist is percent.
+static func tick_preview(u) -> Dictionary:
+	var out := {"hp": 0, "heat": 0, "skip": false, "resist": 0}
+	for pair in _taking_part(u, "status", null):
+		var eff: Dictionary = pair[0]
+		var m: Modifier = pair[1]
+		var v := int(eff.get("value", 0)) * m.stacks
+		match str(eff.get("effect", "")):
+			"tick_hp":
+				out["hp"] += v
+			"tick_heat":
+				out["heat"] += v
+			"skip_action":
+				out["skip"] = true
+			"resist_suppress":
+				out["resist"] += v
+	return out
+
+
+## The owner's turn comes: apply this tick (the caller subtracts hp and adds heat), then
+## every tick-decaying status loses a stack and the empty ones go.
+static func tick(u) -> Dictionary:
+	var out := tick_preview(u)
+	var keep: Array = []
+	for m in u.modifiers:
+		if m.decay == DECAY_TICK:
+			m.stacks -= 1
+			if m.stacks <= 0:
+				continue
+		keep.append(m)
+	u.modifiers = keep
+	return out
 
 
 static func supports(trigger: String, effect: String) -> bool:
@@ -163,7 +252,7 @@ static func live(u) -> Array:
 
 ## A component-sourced ability is off while its component is destroyed; its bonuses stay.
 static func _usable(u, m: Modifier, effect: String) -> bool:
-	if m.component.is_empty() or BONUS_EFFECTS.has(effect) or u.die == null:
+	if m.component.is_empty() or BONUS_EFFECTS.has(effect) or u.get("die") == null:
 		return true
 	var seen := false
 	for f in u.die.faces:
@@ -222,13 +311,14 @@ static func stat(u, name: String) -> int:
 	var mult := 1.0
 	for pair in _taking_part(u, "static", null):
 		var eff: Dictionary = pair[0]
+		var n: int = pair[1].stacks
 		if str(eff.get("stat", "")) != name:
 			continue
 		match str(eff.get("effect", "")):
 			"add_stat":
-				add += float(eff.get("value", 0))
+				add += float(eff.get("value", 0)) * n
 			"multiply_stat":
-				mult *= float(eff.get("value", 1))
+				mult *= pow(float(eff.get("value", 1)), n)
 	return maxi(0, int(roundf((base + add) * mult)))
 
 
@@ -237,7 +327,7 @@ static func crit_bonus(u, face: Face) -> float:
 	var total := 0.0
 	for pair in _taking_part(u, "on_crit", face, true):
 		if str(pair[0].get("effect", "")) == "add_crit_damage":
-			total += float(pair[0].get("value", 0))
+			total += float(pair[0].get("value", 0)) * pair[1].stacks
 	return total
 
 
@@ -257,21 +347,22 @@ static func attack(u, face: Face, dmg: int, heat: int, crit: bool) -> Dictionary
 	for pair in parts:
 		var eff: Dictionary = pair[0]
 		var v: float = float(eff.get("value", 0))
+		var n: int = pair[1].stacks
 		match str(eff.get("effect", "")):
 			"add_damage":
-				d_add += v
+				d_add += v * n
 			"multiply_damage":
-				d_mult *= v
+				d_mult *= pow(v, n)
 			"min_damage":
 				d_floor = maxi(d_floor, int(v))
 			"add_heat":
-				h_add += v
+				h_add += v * n
 			"multiply_heat":
-				h_mult *= v
+				h_mult *= pow(v, n)
 			"add_burn":
-				burn += int(v)
+				burn += int(v) * n
 			"vent_heat":
-				vent += int(v)
+				vent += int(v) * n
 	var out_dmg := maxi(d_floor, int(roundf((dmg + d_add) * d_mult)))
 	var out_heat := maxi(0, int(roundf((heat + h_add) * h_mult)))
 	return {"damage": out_dmg, "heat": out_heat, "burn": burn, "vent": vent}
@@ -283,11 +374,12 @@ static func damage_taken(u, amount: int) -> int:
 	var mult := 1.0
 	for pair in _taking_part(u, "static", null):
 		var eff: Dictionary = pair[0]
+		var n: int = pair[1].stacks
 		match str(eff.get("effect", "")):
 			"add_damage_taken":
-				add += float(eff.get("value", 0))
+				add += float(eff.get("value", 0)) * n
 			"multiply_damage_taken":
-				mult *= float(eff.get("value", 1))
+				mult *= pow(float(eff.get("value", 1)), n)
 	return maxi(0, int(roundf((amount + add) * mult)))
 
 

@@ -4,7 +4,7 @@ Handoff note for the next session. Replace stale lines; keep it under a screen.
 
 ## As of 18 September 2026
 
-**State.** Everything committed. Tests: 144 tests, 1704 checks, green. Ryan is editing
+**State.** Everything committed. Tests: 147 tests, 1719 checks, green. Ryan is editing
 `content/*.json` in his own voice (reload the file after any pass that touches it).
 
 **Setting, decided.** The governing body is the Council for the Ultimate Liberation of Terra,
@@ -95,9 +95,16 @@ heat, burn and vent from crit effects), `crit_bonus`, `damage_taken`, `effective
 (Skirmish._finish), `end_battle` (Battle outcome). Static effects: add_stat, multiply_stat,
 add/multiply_damage_taken, set_reach, suppress (by id or tag). Component passives are
 granted by make_mech with their component id; destroyed components keep bonuses, lose
-abilities. Order of operations is a vocabulary rule (category `rules`). Foes are not on it
-yet (burn, suppressed stay statuses). Component stat modifiers in content are now just
-`static add_stat` effects on a component's passive; none written yet.
+abilities. Order of operations is a vocabulary rule (category `rules`). Foes are on it too:
+`Foe.modifiers`, `burn_stacks()`, `is_suppressed()`; the engine's statuses live in
+`Effects.STATUS` (burning, overheating, suppressed, numbed) and stack via `Effects.stack`
+(same id and scope add stacks; adds scale per stack, multiplies apply once per stack);
+`Effects.tick` at the owner's turn applies tick_hp/tick_heat per stack and drops a stack of
+tick-decaying statuses. Foe attack keyword `scorch` (placeholder) stacks Overheating
+(placeholder name, 5 heat per stack per turn) on the mech it hits: the mech-side DOT Ryan
+wants, flavour pending. Numbed stacks accrue; the resistance roll is not applied. Component
+stat modifiers in content are just `static add_stat` effects on a component's passive;
+none written yet.
 Open, discussed 18 September, not built: component stat modifiers as content
 and granted passives with totals shown as base plus bonus, a fixed colour standard for a
 protanomalous player, movespeed granularity.
