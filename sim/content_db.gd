@@ -332,6 +332,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String]) -> void:
 		errs.append("%s: crit must be 0 to 100" % where)
 	if crit > 0 and kind != "attack":
 		errs.append("%s: only attack faces crit" % where)
+	if float(fd.get("crit_bonus", 0.0)) <= -Skirmish.CRIT_MULT:
+		errs.append("%s: crit_bonus would make crits do nothing or heal" % where)
 	var kws: Array = fd.get("keywords", [])
 	if kws.size() > MAX_AUTHORED_KEYWORDS:
 		errs.append("%s: %d keywords, authored cap is %d" % [where, kws.size(), MAX_AUTHORED_KEYWORDS])

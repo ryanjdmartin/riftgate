@@ -25,6 +25,7 @@ const REROLLS_PER_ROUND := 3
 const DANGER_CLOSE_DIVISOR := 2
 const BURN_PER_STACK := 10          # damage each stack deals per round
 const BURN_DAMAGE_PER_STACK := 20   # damage dealt per stack applied
+const CRIT_MULT := 2.0              # a crit multiplies the roll by this plus every crit bonus (component, passives): additive, tunable
 const CRACK_MIN_HULL_PCT := 25      # a single hull hit this big (percent of max) injures a face
 
 
@@ -374,7 +375,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 		var heat := f.heat if s == 0 else 0
 		var crit := f.crit > 0 and rng.randi_range(1, 100) <= f.crit
 		if crit:
-			dmg *= 2
+			dmg = int(roundf(dmg * (CRIT_MULT + f.crit_bonus + Passives.crit_bonus(ms.unit.passive, f))))
 			var c := Passives.on_crit(ms.unit.passive, dmg, f)
 			dmg = c["damage"]
 			extra_burn += c["burn"]

@@ -769,3 +769,19 @@ func test_strikes_are_separate_blows_with_their_own_rolls_and_procs() -> void:
 	assert_eq(sk.last_roll["final"], 30, "the screen sees the total")
 	assert_eq(gun.describe(), "10 ×3 burn (+20 heat)", "described as a burst")
 	assert_eq(Face.from_dict(gun.to_dict()).strikes, 3, "strikes survive content round-trip")
+
+
+func test_crit_bonuses_add_to_one_multiplier() -> void:
+	var sk := Skirmish.new(1)
+	var gun := Face.attack(30, L, [], 0, 0, 100)
+	gun.crit_bonus = 0.5
+	var m := _mech("A", Die.single(gun))
+	m.passive = {"id": "eye", "name": "Eye", "description": "", "effects": [{"trigger": "on_crit", "effect": "add_crit_damage", "value": 0.5}]}
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(200)])
+	sk.begin()
+	sk.start_round()
+	sk.assign(0, sk.front[0])
+	assert_eq(sk.front[0].hp, 110, "30 at base 2 plus 0.5 plus 0.5 is 90: additive, not 2 x 1.5 x 1.5")
+	assert_eq(gun.describe(), "30 crit 100% (×2.5)", "the readout shows the component's own resulting multiplier")
+	assert_eq(Face.from_dict(gun.to_dict()).crit_bonus, 0.5, "crit_bonus survives content round-trip")

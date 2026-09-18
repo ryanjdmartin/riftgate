@@ -29,7 +29,8 @@ var kind: int = Kind.ATTACK
 var reach: int = Reach.LINE
 var power: int = 20
 var power_max: int = 20       # equal to power for a static face
-var crit: int = 0             # percent chance to double the roll
+var crit: int = 0             # percent chance to crit
+var crit_bonus: float = 0.0   # added to the crit multiplier (base Skirmish.CRIT_MULT); +0.5 means crits do half again more
 var keywords: Array[int] = []
 var heat: int = 0
 var strikes: int = 1          # blows per use: a rapid-fire weapon lands many small hits (each rolls, crits and procs on its own)
@@ -124,6 +125,7 @@ static func from_dict(d: Dictionary) -> Face:
 	f.power = int(d.get("power", 0))
 	f.power_max = maxi(f.power, int(d.get("power_max", f.power)))
 	f.crit = int(d.get("crit", 0))
+	f.crit_bonus = float(d.get("crit_bonus", 0.0))
 	f.heat = int(d.get("heat", 0))
 	f.strikes = maxi(1, int(d.get("strikes", 1)))
 	for name in d.get("keywords", []):
@@ -146,6 +148,8 @@ func to_dict() -> Dictionary:
 		d["power_max"] = power_max
 	if crit > 0:
 		d["crit"] = crit
+	if crit_bonus != 0.0:
+		d["crit_bonus"] = crit_bonus
 	if strikes > 1:
 		d["strikes"] = strikes
 	return d
@@ -180,6 +184,7 @@ func duplicate_face() -> Face:
 	f.power = power
 	f.power_max = power_max
 	f.crit = crit
+	f.crit_bonus = crit_bonus
 	f.heat = heat
 	f.strikes = strikes
 	f.label = label
@@ -198,6 +203,7 @@ func crack() -> void:
 	cracked = true
 	keywords.clear()
 	crit = 0
+	crit_bonus = 0.0
 	label = ""
 
 
@@ -225,8 +231,14 @@ func describe() -> String:
 				s += " " + KEYWORD_NAMES[k]
 			if crit > 0:
 				s += " crit %d%%" % crit
+				if crit_bonus != 0.0:
+					s += " (×%s)" % _trim(Skirmish.CRIT_MULT + crit_bonus)   # the resulting multiplier, never the bonus
 			if heat > 0:
 				s += " (+%d heat)" % heat
 	if cracked:
 		s += " (cracked)"
 	return s
+
+
+static func _trim(x: float) -> String:
+	return str(x) if x != floorf(x) else str(int(x))

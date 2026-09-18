@@ -14,7 +14,7 @@ extends RefCounted
 
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "multiply_heat", "add_damage", "add_heat", "min_damage"],
-	"on_crit": ["multiply_damage", "add_damage", "add_burn", "vent_heat"],
+	"on_crit": ["multiply_damage", "add_damage", "add_burn", "vent_heat", "add_crit_damage"],
 	"on_injury": ["no_destroy"],
 }
 const SUPPORTED_WHEN := ["component_cracked"]
@@ -65,8 +65,20 @@ static func on_attack(passive: Dictionary, dmg: int, heat: int, face: Face = nul
 	return [dmg, heat]
 
 
-## Apply on_crit effects. Returns {"damage", "burn", "vent"}: extra burn stacks for the
-## target and heat vented from the attacker.
+## What the passive adds to the crit multiplier (add_crit_damage effects, summed): applied
+## with the base and the component's own bonus before any other on_crit effect.
+static func crit_bonus(passive: Dictionary, face: Face = null) -> float:
+	var total := 0.0
+	if not active(passive):
+		return total
+	for eff in passive.get("effects", []):
+		if str(eff.get("trigger", "")) == "on_crit" and str(eff.get("effect", "")) == "add_crit_damage" and _holds(eff, face):
+			total += float(eff.get("value", 0))
+	return total
+
+
+## Apply on_crit effects after the multiplier. Returns {"damage", "burn", "vent"}: extra burn
+## stacks for the target and heat vented from the attacker.
 static func on_crit(passive: Dictionary, dmg: int, face: Face = null) -> Dictionary:
 	var out := {"damage": dmg, "burn": 0, "vent": 0}
 	if not active(passive):
