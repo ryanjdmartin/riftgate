@@ -94,7 +94,18 @@ func add_foes(list: Array, from_squad: Unit = null) -> void:
 
 
 func begin() -> void:
-	_reinforce(false)   # first deployment: in the order the foes arrived, so a formation is predictable
+	# First deployment: heaviest hitters first, so they stand left and strike first, and the
+	# player sees the big blow coming from the jump. Ties keep arrival order, so a formation
+	# is predictable.
+	var ordered: Array = reinforcements.duplicate()
+	var ranked: Array = []
+	for i in range(ordered.size()):
+		ranked.append([ordered[i].threat(), -i, ordered[i]])
+	ranked.sort_custom(func(a, b) -> bool: return a[0] > b[0] or (a[0] == b[0] and a[1] > b[1]))
+	reinforcements.clear()
+	for r in ranked:
+		reinforcements.append(r[2])
+	_reinforce(false)
 	state = State.ROUND_START
 
 
@@ -195,13 +206,13 @@ func forecast(ms: MechState) -> Dictionary:
 	var incoming := 0
 	var component_risk := false
 	for f in attackers_of(ms):
-		incoming += f.attack
-		var absorbed := mini(shield, f.attack)
-		shield -= absorbed
-		var through := f.attack - absorbed
-		hull -= through
-		if through > 0 and through * 100 >= ms.unit.hull_max * CRACK_MIN_HULL_PCT:
-			component_risk = true
+		for s in range(maxi(1, f.strikes)):
+			incoming += f.attack
+			var r := _blow(shield, ms.unit.hull_max, ms.unit.armour, f.attack, f.breach)
+			shield = r["shield"]
+			hull -= r["through"]
+			if r["injures"]:
+				component_risk = true
 	var heat_after := ms.heat + pending_heat(ms)
 	var over := maxi(0, heat_after - ms.heat_max)
 	hull -= over
@@ -243,8 +254,6 @@ func start_round() -> void:
 		ms.assigned = false
 		if not ms.alive():
 			continue
-		if round > 1:
-			ms.unit.recharge_shield(ms.unit.recharge_combat)   # the in-combat rate, a trickle
 		if ms.locked:
 			ms.locked = false
 		else:
@@ -305,6 +314,9 @@ func end_round() -> int:
 			f.hp -= f.burn * BURN_PER_STACK
 			f.burn -= 1
 	_clear_dead()
+	# Foes strike in the order they stand: front rank left to right, then the back rank. A
+	# foe with two strikes lands two separate blows, so a shield stops the first and the
+	# second reaches the hull.
 	for f in field_foes():
 		if f.suppressed:
 			f.suppressed = false
@@ -314,7 +326,10 @@ func end_round() -> int:
 			t = _pick_mech_target()
 		if t == null:
 			break
-		_damage_mech(t, f.attack, f)
+		for s in range(maxi(1, f.strikes)):
+			if not t.alive():
+				break
+			_damage_mech(t, f.attack, f)
 	_clear_dead()
 	_reinforce(true)    # the reinforcement phase: a random waiting foe of the right rank per empty slot
 	_check_outcome()
@@ -411,16 +426,50 @@ func _add_heat(ms: MechState, amount: int) -> void:
 		log.append("%s overheats: hull -%d" % [ms.unit.display_name, over])
 
 
+## One blow. Decided 18 September: a standing shield blocks the whole blow, however small the
+## shield and however big the blow; nothing bleeds through (unless the foe breaches, then the
+## excess reaches the hull). A blow on bare hull loses the chassis's armour first, so small
+## hits bounce off a heavy machine. Only a bare-hull blow can injure a component, and only
+## when what gets through is at least a quarter of max hull. Shield before a telegraphed
+## blow is the counterplay; a double strike is how a foe gets past it.
 func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
-	var absorbed := mini(ms.unit.shield, amount)
-	ms.unit.shield -= absorbed
-	var through := amount - absorbed
-	ms.unit.hull -= through
-	log.append("%s hits %s: shield -%d, hull -%d" % [source.display_name, ms.unit.display_name, absorbed, through])
-	# The global injury rule: a big hit that reaches the hull injures a face. Shield before a
-	# telegraphed blow is the counterplay. No coin on top: the threshold is the whole gate.
-	if through > 0 and through * 100 >= ms.unit.hull_max * CRACK_MIN_HULL_PCT:
+	var r := _blow(ms.unit.shield, ms.unit.hull_max, ms.unit.armour, amount, source.breach)
+	ms.unit.shield = r["shield"]
+	ms.unit.hull -= r["through"]
+	if r["blocked"]:
+		log.append("%s hits %s: shield -%d, blocked" % [source.display_name, ms.unit.display_name, r["absorbed"]])
+	elif r["absorbed"] > 0:
+		log.append("%s breaches %s: shield -%d, hull -%d" % [source.display_name, ms.unit.display_name, r["absorbed"], r["through"]])
+	elif r["through"] == 0:
+		log.append("%s hits %s: armour holds" % [source.display_name, ms.unit.display_name])
+	else:
+		log.append("%s hits %s: hull -%d%s" % [source.display_name, ms.unit.display_name, r["through"], " (armour -%d)" % r["armoured"] if r["armoured"] > 0 else ""])
+	if r["injures"]:
 		apply_injury(ms)
+
+
+## The arithmetic of one blow against a shield, hull max and armour, shared by the real hit
+## and the forecast. Returns shield after, absorbed, through (to hull), armoured (taken off
+## by armour), blocked (a standing shield took it all), injures (bare hull, over threshold).
+static func _blow(shield: int, hull_max: int, armour: int, amount: int, breach: bool) -> Dictionary:
+	var absorbed := 0
+	var through := 0
+	var blocked := false
+	var bare := shield <= 0
+	if bare:
+		through = amount
+	elif breach:
+		absorbed = mini(shield, amount)
+		through = amount - absorbed
+	else:
+		absorbed = mini(shield, amount)
+		blocked = true
+	var armoured := 0
+	if through > 0 and bare:
+		armoured = mini(armour, through)
+		through -= armoured
+	var injures := bare and through > 0 and through * 100 >= hull_max * CRACK_MIN_HULL_PCT
+	return {"shield": shield - absorbed, "absorbed": absorbed, "through": through, "armoured": armoured, "blocked": blocked, "injures": injures}
 
 
 ## The injury rolls the die and hits the component it lands on. An intact component cracks:

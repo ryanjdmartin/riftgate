@@ -108,7 +108,7 @@ func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO) -
 	for t in c.get("traits", []):
 		u.traits.append(str(t))
 	u.hardpoints = int(c.get("hardpoints", 6))
-	u.recharge_combat = int(c.get("recharge_combat", 0))
+	u.armour = int(c.get("armour", 0))
 	u.recharge_field = int(c.get("recharge_field", 0))
 	u.die = build_die(c.get("fixed", []), c.get("loadout", []), u.hardpoints)
 	u.chassis_id = chassis_id
@@ -122,6 +122,8 @@ func make_foe(foe_id: String) -> Foe:
 	var d: Dictionary = foes[foe_id]
 	var f := Foe.make(str(d["name"]), int(d["hp"]), int(d["attack"]), str(d.get("rank", "front")) == "back")
 	f.size = int(d.get("size", 1))
+	f.strikes = int(d.get("strikes", 1))
+	f.breach = bool(d.get("breach", false))
 	f.content_id = foe_id
 	return f
 
@@ -166,8 +168,8 @@ func codex_for_foe(f: Foe) -> Dictionary:
 func codex_for_unit(u: Unit) -> Dictionary:
 	var c: Dictionary = chassis.get(u.chassis_id, {})
 	var maker: Dictionary = makers.get(str(c.get("maker", "")), {})
-	var stats := "HULL %d/%d // SHIELD %d/%d (+%d ROUND, +%d PHASE) // MOVE %d // %d HARDPOINTS // D%d" % [
-		u.hull, u.hull_max, u.shield, u.shield_max, u.recharge_combat, u.recharge_field, u.movespeed, u.hardpoints, u.die.size() if u.die != null else 0]
+	var stats := "HULL %d/%d // ARMOUR %d // SHIELD %d/%d (+%d A PHASE OUT OF COMBAT) // MOVE %d // %d HARDPOINTS // D%d" % [
+		u.hull, u.hull_max, u.armour, u.shield, u.shield_max, u.recharge_field, u.movespeed, u.hardpoints, u.die.size() if u.die != null else 0]
 	var faces: Array = []
 	if u.die != null:
 		faces = u.die.faces.duplicate()
@@ -397,13 +399,13 @@ func _validate_chassis(errs: Array[String]) -> void:
 	for id in chassis.keys():
 		var c: Dictionary = chassis[id]
 		var where := "chassis %s" % id
-		for key in ["name", "codex", "flavour", "hull", "shield", "movespeed", "hardpoints", "loadout", "recharge_combat", "recharge_field"]:
+		for key in ["name", "codex", "flavour", "hull", "shield", "armour", "movespeed", "hardpoints", "loadout", "recharge_field"]:
 			if not c.has(key):
 				errs.append("%s: missing %s" % [where, key])
-		if int(c.get("recharge_combat", 0)) < 0 or int(c.get("recharge_field", 0)) < 0:
-			errs.append("%s: recharge rates cannot be negative" % where)
-		if int(c.get("recharge_field", 0)) < int(c.get("recharge_combat", 0)):
-			errs.append("%s: the field recharge rate should be at least the combat rate (out of combat is faster)" % where)
+		if c.has("recharge_combat"):
+			errs.append("%s: recharge_combat is gone; in a fight shield comes only from components (a passive may say otherwise)" % where)
+		if int(c.get("recharge_field", 0)) < 0 or int(c.get("armour", 0)) < 0:
+			errs.append("%s: armour and the field recharge rate cannot be negative" % where)
 		_validate_design(where, c, errs)
 		var hp := int(c.get("hardpoints", 0))
 		if c.has("filler"):
@@ -488,7 +490,11 @@ func _validate_foes(errs: Array[String]) -> void:
 		if sz == 2 and str(f.get("rank", "")) == "back":
 			errs.append("%s: a massive foe fills both ranks and must be rank front" % where)
 		if f.has("injures"):
-			errs.append("%s: 'injures' is gone; face injuries are a global rule" % where)
+			errs.append("%s: 'injures' is gone; component injuries are a global rule" % where)
+		if f.has("strikes") and int(f.get("strikes", 1)) < 1:
+			errs.append("%s: strikes must be at least 1" % where)
+		if f.has("breach") and not (f["breach"] is bool):
+			errs.append("%s: breach must be true or false" % where)
 		if f.has("faction") and not factions.has(f["faction"]):
 			errs.append("%s: unknown faction %s" % [where, f["faction"]])
 

@@ -4,7 +4,7 @@ Handoff note for the next session. Replace stale lines; keep it under a screen.
 
 ## As of 18 September 2026
 
-**State.** Everything committed. Tests: 128 tests, 1632 checks, green. Ryan is editing
+**State.** Everything committed. Tests: 133 tests, 1651 checks, green. Ryan is editing
 `content/*.json` in his own voice (reload the file after any pass that touches it).
 
 **Setting, decided.** The governing body is the Council for the Ultimate Liberation of Terra,
@@ -39,12 +39,17 @@ blow. Passives: `status: planned` keeps a draft out of the engine; `on_injury` w
 its stock loadout (two slug cannons, twin autoguns, a heat sink) and the one-face versions
 of the claw, twin autoguns and howitzer are placeholders for Ryan to tune.
 
-**Shields (18 September, decided).** No free refill between skirmishes (it made withdraw and
-re-engage a reset). Chassis stats `recharge_combat` (start of each skirmish round after the
-first) and `recharge_field` (each battlefield phase spent out of contact, faster; the
-validator requires field >= combat). Placeholders: Badger 5/15, Sentinel 10/20, Raptor
-10/30, Anvil 5/15. `Battle.commit` applies the field rate to mechs not in any contact group
-that phase; `Skirmish.start_round` applies the combat rate.
+**Shields, armour, strikes (18 September, decided after discussion).** A standing shield
+blocks a blow whole (nothing bleeds through; the blow costs the shield its damage). No
+in-combat recharge (a passive may add it for one chassis); `recharge_field` per battlefield
+phase out of contact stays (`Battle.commit`). `armour` is a flat chassis number off every
+bare-hull blow; zero damage is fine (Badger 10, others 0, placeholders). Injury only on a
+bare-hull blow whose through-damage is at least a quarter of max hull. Foes: `strikes`
+(default 1; a double strike breaks a shield and reaches hull) and `breach` (overflow into
+hull, never injures through shield); none set in content yet, Ryan places them. Strike
+order: front rank left to right then back; heaviest hitters (`Foe.threat`) deploy left at
+first contact. `Skirmish._blow` is the shared arithmetic for the real hit and the forecast.
+Round cap rejected. Per-round Rift Pressure tick kept (it is what makes a long wall cost).
 
 **Content shape.** Shown text at the top level (`codex`, `flavour`, a passive's `name` and
 `description`, an action's `text`, a chassis's optional `designation`); everything internal

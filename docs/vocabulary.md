@@ -2,18 +2,19 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 62 implemented, 14 planned, 1 idea.
+Status: 66 implemented, 14 planned, 1 idea.
 
 ## Resource
 
 | Term | Fantasy | Codex | Status |
 |---|---|---|---|
 | **Hull** | The machine itself. When it is gone, the machine is a wreck. | Damage that gets past shield removes hull. Hull never recovers during a battle. At zero the mech is a wreck to be salvaged after the battle. | implemented |
-| **Shield** | A buffer that buys you a few rounds to solve the squad before it starts costing you the machine. | Enemy damage removes shield before hull. Shield components add shield up to the chassis maximum. Shield also comes back on its own at two chassis rates: a trickle at the start of each skirmish round after the first, and a faster amount each battlefield phase the mech spends out of combat. It never refills for free between skirmishes, so withdrawing to re-engage buys a slower recharge, not a reset. | implemented |
+| **Shield** | A buffer that buys you a few rounds to solve the squad before it starts costing you the machine. | Enemy damage hits shield before hull, and a standing shield blocks a blow whole: however small the shield and however big the blow, nothing bleeds through to the hull (a breaching foe is the exception). The blow still costs the shield its damage. Shield components add shield up to the chassis maximum; in a fight that is the only way shield comes back. Out of combat it returns each battlefield phase at the chassis's field rate. It never refills for free between skirmishes. | implemented |
 | **Heat** | Every gun has a price, and the big ones are paid in smoke. | Attack components may add heat. Heat above the chassis maximum spills into hull damage one for one. Vent components remove heat. | implemented |
 | **Reroll** | You do not like what you see. You get three chances to change your mind, and the machine never shows you the same thing twice. | Three rerolls per round, each rerolling every unlocked, unspent mech die. A reroll always lands on a different component: never the one showing, never one equivalent to it (a die whose components are all alike keeps what it shows). Rerolls may be spent before or after attacking, so a low damage roll is information for the rest of the round. Never pooled across rounds. | implemented |
 | **Rift Pressure** | The city is running out of time, and there is a bar on screen that says so. | Ticks once per battlefield phase and once per skirmish round. When full it resets and a fresh squad emerges at the rift. | implemented |
 | **Gate Integrity** | The last wall of mankind. If it falls the campaign is over. | A squad whose path reaches the gate strikes it instead of moving. Gate integrity persists across battles and is repaired in the meta. | implemented |
+| **Armour** | Tank treads over a horde of ghouls, laughing. A ghoul that only ever claws for ten deserves to be walled forever; the answer is monsters that do more than claw. | A chassis number taken off every blow that lands on bare hull, flat, never a percentage. A blow smaller than the armour does nothing. Shield is not armoured: a blow on shield costs the shield its full damage. | implemented |
 
 ## Equipment
 
@@ -71,7 +72,7 @@ Status: 62 implemented, 14 planned, 1 idea.
 |---|---|---|---|
 | **Burning** | On fire, and getting less on fire every round. | Foe status. See the burn keyword. | implemented |
 | **Suppressed** | Head down, gun silent. | Foe status. Skips its action this round, then clears. | implemented |
-| **Cracked component** | They got through the armour and something important is bent. | Mech status, global rule. When a hit gets past shield and takes at least a quarter of maximum hull in one blow, the mech's die is rolled and the component it lands on is injured. An intact component cracks: it loses its keywords, crit chance and unique effect, but still does its basic action. Counterplay is shield before a big telegraphed hit. A cracked component stays cracked across skirmishes and battles until repaired in the hangar. | implemented |
+| **Cracked component** | They got through the armour and something important is bent. | Mech status, global rule. When a blow lands on bare hull (no shield standing) and what gets past armour is at least a quarter of maximum hull, the mech's die is rolled and the component it lands on is injured. An intact component cracks: it loses its keywords, crit chance and unique effect, but still does its basic action. Any shield standing, however small, prevents injury; a foe's double strike is how it gets past that. A cracked component stays cracked across skirmishes and battles until repaired in the hangar. | implemented |
 | **Destroyed component** | Hit where it was already broken. | Mech status. When an injury lands on a component that is already cracked, it is destroyed: blank, it does nothing when it comes up, until the hangar repairs or replaces it. An injury that lands on a destroyed component or an empty hardpoint finds nothing to break, so a badly broken mech shrugs off more of them. | implemented |
 | **Locked** | Held for next round. | Die status. See the lock keyword. | implemented |
 
@@ -87,6 +88,7 @@ Status: 62 implemented, 14 planned, 1 idea.
 | **Danger close** | You mortared the thing in your face. Your shields are now also in your face. | Indirect fire on the front rank removes shield from the firing mech equal to half the component's power, rounded up. | implemented |
 | **Massive** | Too big for one slot. Too big for one anything. | A massive foe fills both slots of a column and counts as front rank. Its column is never exposed while it stands. Only some elites and bosses are massive. | implemented |
 | **Withdraw** | Enough. Fall back and let the map decide the rest. | Available at the start of any round after the first, before any component is spent, so there is never free damage. Ends the skirmish; survivors on both sides carry their damage to the battlefield. Shields do not refill on withdrawing; they recharge at the field rate only in phases spent out of combat. | implemented |
+| **Strike order** | No initiative numbers, nothing to micromanage: read the row. | Foes strike in the order they stand: front rank left to right, then the back rank. Each blow is resolved on its own against the shield standing at that moment, so which foe strikes first decides what a small shield blocks. At first contact the heaviest hitters deploy left. | implemented |
 
 ## Battlefield
 
@@ -151,11 +153,18 @@ Status: 62 implemented, 14 planned, 1 idea.
 | **City ability** | The city has a very large gun and a very large crane. | Battlefield-level ability owned and upgraded by the city: sprint, airlift, teleport, tractor beam, orbital strike. Cooldowns measured in phases. | planned |
 | **Cooldown** | Reloading. Come back in two phases. | City abilities only. Counted in battlefield phases. Never used inside a skirmish. | planned |
 
+## Foe
+
+| Term | Fantasy | Codex | Status |
+|---|---|---|---|
+| **Double strike** | The one monster the shield-tank fears. | A foe with two strikes lands two separate blows a turn. The first breaks the shield, the second reaches the hull. It is how a foe threatens a shielded mech, and why armour matters. | implemented |
+| **Breach** | Something big enough that the field bends. | A breaching foe's blows overflow: what the shield cannot absorb reaches the hull. A shielded blow still never injures a component. A boss trait. | implemented |
+
 ## Holes
 
 Every entry whose `design.holes` is not empty. This is the list of things the mechanics do not do yet.
 
-- **Shield** (implemented): Both rates are placeholders. Decided 18 September, replacing the full refill between skirmishes.
+- **Shield** (implemented): Rates and shield sizes are placeholders. Decided 18 September: block-the-blow replaced bleed-through, and the in-combat trickle was dropped the same day (a passive may bring it back for one chassis).
 - **Heat** (implemented): Heat does nothing below the cap. Consider effects at high heat short of overflow.
 - **Rift Pressure** (implemented): Spawns a fixed squad. Should draw from the battle's faction(s) and escalate.
 - **Gate Integrity** (implemented): Gate damage formula is a placeholder (strength divided by three).
@@ -181,3 +190,6 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **City ability** (planned): Consider range limits from the gate so the push north leaves support behind.
 - **Component** (implemented): Multi-slot components were considered and scrapped on 18 September as invisible complexity.
 - **Fixed component** (implemented): Decided against unlocking fixed slots for money (18 September).
+- **Armour** (implemented): Numbers are placeholders. Armour from components is content, not yet written.
+- **Double strike** (implemented): No foe carries it yet; Ryan places it. A massive foe taking two actions is the same rule.
+- **Breach** (implemented): No foe carries it yet; Ryan places it. Name is a placeholder (pierce is taken by the player keyword).

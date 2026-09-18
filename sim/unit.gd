@@ -41,7 +41,7 @@ var die: Die = null
 var passive: Dictionary = {}     # content passive, run by Passives; empty means none
 var chassis_id: String = ""
 var hardpoints: int = 0          # free slots; the die is these plus the chassis's fixed components
-var recharge_combat: int = 0     # shield regained at the start of each skirmish round after the first
+var armour: int = 0              # flat damage taken off every blow that lands on bare hull; small hits bounce
 var recharge_field: int = 0      # shield regained each battlefield phase the mech spends out of combat
 
 ## Damaged components. A cracked or destroyed component is damaged and stays that way across
@@ -145,8 +145,8 @@ func touches(other: Unit) -> bool:
 	return false
 
 
-## Shield comes back at two rates, both chassis stats: a little each skirmish round in
-## combat, more each battlefield phase spent out of it. Never a full refill for free, so
+## Shield comes back each battlefield phase spent out of combat, at the chassis's field
+## rate, and inside a fight only from shield components. Never a full refill for free, so
 ## withdrawing and re-engaging is not a way to reset (Ryan, 18 September).
 func recharge_shield(amount: int) -> int:
 	var before := shield

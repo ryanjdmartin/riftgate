@@ -109,7 +109,7 @@ func test_enemy_targets_lowest_shield() -> void:
 	sk.end_round()
 	assert_eq(tough.shield, 40, "tough untouched")
 	assert_eq(weak.shield, 0, "weak lost its shield")
-	assert_eq(weak.hull, 90, "and ten hull")
+	assert_eq(weak.hull, 100, "and no hull: a standing shield blocks the blow whole")
 
 
 func test_heat_overflow_damages_hull() -> void:
@@ -504,12 +504,12 @@ func test_forecast_predicts_shield_break_and_hull_loss() -> void:
 	assert_eq(fc["incoming"], 55, "both foes aim at the only mech")
 	assert_true(fc["breaks_shield"], "55 incoming breaks a 20 shield")
 	assert_eq(fc["shield_after"], 0, "shield gone")
-	assert_eq(fc["hull_after"], 65, "35 gets through")
-	assert_true(fc["component_risk"], "a 30-point hit on 100 hull may injure")
+	assert_eq(fc["hull_after"], 75, "the thirty stands left, strikes first and is blocked whole; the twenty-five lands on bare hull")
+	assert_true(fc["component_risk"], "a 25-point bare-hull hit on 100 hull injures")
 	assert_false(fc["destroyed"], "still standing")
 	sk.front[0].suppressed = true
 	fc = sk.forecast(ms)
-	assert_eq(fc["incoming"], 30, "a suppressed foe does not count")
+	assert_eq(fc["incoming"], 25, "a suppressed foe does not count")
 	sk.front[1].hp = 0
 	fc = sk.forecast(ms)
 	assert_eq(fc["incoming"], 0, "a dead foe does not count")
@@ -654,24 +654,99 @@ func test_cracked_condition_narrows_a_passive_to_cracked_components() -> void:
 	assert_eq(Passives.on_attack(bonus, 20, 0), [20, 0], "no component in hand, no bonus")
 
 
-func test_shield_trickles_back_each_round_in_combat() -> void:
+func test_shield_never_comes_back_on_its_own_in_a_fight() -> void:
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.shield(10)), 0, 100)
 	m.shield_max = 40
-	m.recharge_combat = 5
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(90, 0)])
 	sk.begin()
 	sk.start_round()
-	assert_eq(m.shield, 0, "round one: no recharge yet")
 	sk.end_round()
 	sk.start_round()
-	assert_eq(m.shield, 5, "round two: the combat rate")
-	sk.end_round()
-	sk.start_round()
-	assert_eq(m.shield, 10, "and again")
+	assert_eq(m.shield, 0, "no trickle between rounds")
 	m.shield = 38
-	sk.end_round()
+	assert_eq(m.recharge_shield(100), 2, "the field rate is capped at max")
+	assert_eq(m.shield, 40, "at max")
+
+
+func test_a_standing_shield_blocks_the_whole_blow() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.shield(10)), 10, 100)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(90, 50)])
+	sk.begin()
 	sk.start_round()
-	assert_eq(m.shield, 40, "capped at max")
-	assert_eq(m.recharge_shield(100), 0, "nothing to regain at max")
+	sk.end_round()
+	assert_eq(m.shield, 0, "ten shield is spent")
+	assert_eq(m.hull, 100, "fifty blocked by a ten-point shield: nothing bleeds")
+	assert_eq(m.damaged_component_count(), 0, "and a shielded blow never injures")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(m.hull, 50, "bare hull takes the next one")
+	assert_eq(m.damaged_component_count(), 1, "and it injures")
+
+
+func test_armour_takes_a_flat_amount_off_bare_hull_blows() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.shield(10)), 0, 200)
+	m.armour = 10
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(90, 10), _ghoul(90, 10), _ghoul(90, 30)])
+	sk.begin()
+	sk.start_round()
+	sk.end_round()
+	assert_eq(m.hull, 180, "two ghouls bounce off, the thirty does twenty")
+	assert_true(str(sk.log).contains("armour holds"), "the log says the armour held")
+	m.shield = 10
+	sk.start_round()
+	sk.end_round()
+	assert_eq(m.shield, 0, "the thirty stands left and strikes first: the ten-point shield takes it whole")
+	assert_eq(m.hull, 180, "then both ghouls bounce off the armour")
+
+
+func test_double_strike_breaks_the_shield_and_reaches_the_hull() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.shield(10)), 10, 100)
+	sk.add_mech(m)
+	var brute := Foe.make("brute", 200, 30)
+	brute.strikes = 2
+	sk.add_foes([brute])
+	sk.begin()
+	sk.start_round()
+	var fc := sk.forecast(sk.mechs[0])
+	assert_eq(fc["incoming"], 60, "forecast counts both blows")
+	assert_eq(fc["hull_after"], 70, "and knows the second lands on bare hull")
+	assert_true(fc["component_risk"], "and that it can injure")
+	sk.end_round()
+	assert_eq(m.shield, 0, "first blow spends the shield")
+	assert_eq(m.hull, 70, "second blow reaches the hull")
+
+
+func test_breach_overflows_shield_into_hull_but_never_injures() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.shield(10)), 10, 100)
+	sk.add_mech(m)
+	var boss := Foe.make("maw", 200, 50)
+	boss.breach = true
+	sk.add_foes([boss])
+	sk.begin()
+	sk.start_round()
+	sk.end_round()
+	assert_eq(m.shield, 0, "shield gone")
+	assert_eq(m.hull, 60, "forty overflowed")
+	assert_eq(m.damaged_component_count(), 0, "a shielded blow never injures, even breached")
+
+
+func test_heaviest_hitters_deploy_left_and_strike_first() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.shield(10)), 10, 100)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(90, 10), _ghoul(90, 10), Foe.make("brute", 90, 50)])
+	sk.begin()
+	assert_eq(sk.front[0].display_name, "brute", "the brute stands left")
+	assert_eq(sk.front[1].display_name, "ghoul", "ghouls follow in arrival order")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(m.shield, 0, "the brute strikes first and the shield takes it")
+	assert_eq(m.hull, 80, "the two ghouls then hit bare hull")

@@ -11,6 +11,8 @@ var attack: int = 10
 var prefers_back: bool = false   # ranged types hold the back rank and never step up
 var squad_id: int = 0            # which battlefield squad this foe came from
 var size: int = 1                # 2 = massive: fills both slots of a column
+var strikes: int = 1             # hits per turn, each its own blow: a double strike breaks a shield and reaches the hull
+var breach: bool = false         # its blows overflow shield into hull (a boss trait); a shielded hit still never injures
 
 # Live state.
 var rank: int = -1               # 0 front, 1 back, -1 in reserve
@@ -36,6 +38,12 @@ func alive() -> bool:
 
 func is_massive() -> bool:
 	return size >= 2
+
+
+## How much this foe threatens per turn, for deployment order: the heaviest hitters stand
+## left, where they strike first, so the player sees the big blow coming from the jump.
+func threat() -> int:
+	return attack * strikes + (1 if breach else 0)
 
 
 func on_field() -> bool:
