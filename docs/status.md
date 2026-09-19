@@ -61,6 +61,14 @@ the .blend files; rerun export and the sprite tool after. Per-mech repaint exist
 `Unit.paint` {primary, secondary} recolours the livery and bone plating (`MechView3D.paint`,
 `ramp_for`); `RIFTGATE_PAINT=badger:ff8800/223344` previews it. Nothing sets it in play yet.
 
+**True 3D battlefield (19 September, experiment).** `RIFTGATE_MAP3D=1` swaps the map's
+ground, structures and units for geometry in `game/battle/map_3d.gd` (a SubViewport the map
+view draws behind its overlays): hex ground stretched in depth so it projects onto the 2D
+grid exactly (overlays and gestures untouched), lit props for mountains, rubble, rocks and
+roads, the gate and wall glTFs, mechs as toon models turned to their facing, foes as
+billboard sprites. `MechView3D.toon` is the shared material pass. No outline pass, no
+terrain marks yet. Off by default until Ryan decides.
+
 **Art (17 September).** Player units are native 3D (glTF plus toon and surface shader);
 enemies painted 2D. The Badger's working file is `tools/blendforge/models/badger.blend`
 (finished; `polish` refuses it); `forge.py export` then `tools/map_tokens.gd` then

@@ -311,6 +311,12 @@ func _collect_tags(node: Node) -> void:
 
 
 func _apply_materials(node: Node, maker: String) -> void:
+	toon(node, maker, mode, paint, token, hide_detail)
+
+
+## Give every mesh under `node` the toon shader in the maker's tones (or a repaint), the way
+## the skirmish and the codex draw a mech. Shared with the 3D battlefield (Map3D).
+static func toon(node: Node, maker: String, look: String, paint_arg: Dictionary = {}, as_token: bool = false, drop_detail: bool = true) -> void:
 	if node is MeshInstance3D:
 		var mi: MeshInstance3D = node
 		for i in range(mi.mesh.get_surface_count()):
@@ -320,18 +326,18 @@ func _apply_materials(node: Node, maker: String) -> void:
 				role = src.resource_name.get_slice(".", 0).to_lower()
 			var ramp: Array = LIVERY.get(maker, LIVERY["minerva"]) if role == "livery" else RAMPS.get(role, RAMPS["steel"])
 			# A repaint: the primary colour takes the livery panels, the secondary the bone plating.
-			if role == "livery" and paint.has("primary"):
-				ramp = ramp_for(paint["primary"])
-			elif role == "white" and paint.has("secondary"):
-				ramp = ramp_for(paint["secondary"])
+			if role == "livery" and paint_arg.has("primary"):
+				ramp = ramp_for(paint_arg["primary"])
+			elif role == "white" and paint_arg.has("secondary"):
+				ramp = ramp_for(paint_arg["secondary"])
 			var m := ShaderMaterial.new()
 			m.shader = load("res://game/ui/mech_toon.gdshader")
 			for t in range(4):
 				m.set_shader_parameter("tone%d" % t, Color(ramp[t]))
-			m.set_shader_parameter("bands", 4 if mode == "pixel" else 0)
+			m.set_shader_parameter("bands", 4 if look == "pixel" else 0)
 			m.set_shader_parameter("role", ROLE_INDEX.get(role, 0))
 			m.set_shader_parameter("gloss", float(GLOSS.get(maker, 0.4)))
-			if token:
+			if as_token:
 				# At 24 px the surface pass is noise and the wear is mud: flat tones, lit
 				# from above and the viewer's side so the top and front read.
 				for u in ["grime", "wear", "dust", "seams", "chips"]:
@@ -339,10 +345,10 @@ func _apply_materials(node: Node, maker: String) -> void:
 				m.set_shader_parameter("gloss", 0.0)
 				m.set_shader_parameter("light_dir", Vector3(-0.4, 0.8, -0.45))
 			mi.set_surface_override_material(i, m)
-		if token and hide_detail and node.name.contains("detail"):
+		if as_token and drop_detail and node.name.contains("detail"):
 			mi.visible = false   # the spriter drops detail parts from tokens too
 	for c in node.get_children():
-		_apply_materials(c, maker)
+		toon(c, maker, look, paint_arg, as_token, drop_detail)
 
 
 ## Orthographic camera on the sprites' angle, sized so the model fills the frame the way
