@@ -4,205 +4,80 @@ Handoff note for the next session. Replace stale lines; keep it under a screen.
 
 ## As of 18 September 2026
 
-**State.** Everything committed. Tests: 150 tests, 1737 checks, green. Ryan is editing
-`content/*.json` in his own voice (reload the file after any pass that touches it).
+**State.** Everything committed. Tests: 150 tests, 1737 checks, green. Ryan writes
+`content/*.json` in his own voice (reload after any pass that touches it). The rules are in
+`docs/vocabulary.md` (generated) and every decision in `docs/design-bible.html`; the
+vocabulary carries an `order_of_operations` rule that the engine follows.
 
-**Setting, decided.** The governing body is the Council for the Ultimate Liberation of Terra,
-"the Council"; its acronym is never stated in the game. The Council believes its own cause and
-profits from it; the populace has real believers. The player is Battlefield Commander of an
-arms-length defence agency (independent agency or contracted corp, not a ministry), known as CARE,
-the Civil Auxiliary for Rift Emergencies ("Agency" if Ryan decides they named themselves). The Council's
-own R&D house is the Arsenal, which sells the player a trickle of its tech, gated by how dire
-the campaign gets. Open on purpose: last bastion or not, other colonies, whether it was a
-power grab. Everything is in `docs/design-bible.html` section 1.
+**Setting and makers, decided (bible sections 1 and 7).** The Council for the Ultimate
+Liberation of Terra ("the Council", acronym never stated); the player commands CARE, the
+Civil Auxiliary for Rift Emergencies, an arms-length agency; the Arsenal is the Council's
+own R&D house. Five makers at most: Minerva Heavy Works, Kestrel Dynamics, Wainwright &
+Sutler, Aphelion, the Arsenal. Only the first three exist in content; Ryan places the rest.
 
-**Makers, decided (bible, section 7).** At most five: Minerva Heavy Works (`minerva`, was
-Halvard), Kestrel Dynamics, Wainwright & Sutler (`wainwright_sutler`, was Orrin & Pike),
-Aphelion, the Arsenal. Identity by the machines they build, not by battlefield niche; a
-chassis's class decides its battlefield skills. Arsenal plates are decrees (Arsenal Instrument
-IV) and its nicknames zealot words. Only Minerva, Kestrel and Wainwright & Sutler exist in
-content so far; Ryan is moving mechs and equipment around and will place Aphelion and the
-Arsenal himself. Fixed slots are never bought open (decided 18 September).
-Content ideas are proposed in chat first (CLAUDE.md rule).
+**Equipment (18 September).** A component is one entry on the die (`face`, a single
+object). A chassis has `fixed` components (built in, no hardpoint, never sold) and
+`hardpoints` (free slots, one `hp_<n>` pin each on the model); an empty hardpoint is a blank
+entry. Shown text says component, never face. Injuries roll the die on a bare-hull blow of
+a quarter max hull: intact cracks (keywords only), cracked is destroyed, destroyed or empty
+takes the blow; a breach injures through shield. Reach is melee (front rank; the back only
+when the whole front is empty), line of sight, indirect (splash on the front rank).
+Keywords: spread (id `cleave`), penetrate, burn (5 per stack), suppress (then Numbed),
+execute (+100%, +50% on massive), chain (repeats on a kill, heat every link), steady,
+rapid (switch off for the round, free reroll, act again), overcharge. Foe attack keywords:
+breach, scorch (placeholder: stacks Overheating, 5 heat per stack per turn), disable
+(switches off the showing entry through the next turn). `strikes` on any attack are
+separate blows, heat once per use. Crit: `Face.CRIT_MULT` (2.0) plus additive bonuses.
 
-**Equipment words (18 September, decided).** A component is one piece of equipment and
-exactly one entry on the die (component JSON: `face` is a single object; no slot count).
-A chassis has `fixed` components (built in, never removed or sold, no hardpoint) and
-`hardpoints` (free slots, one `hp_<n>` pin each on the model); die size is fixed plus
-hardpoints; `filler` is gone and an empty hardpoint is a blank entry that does nothing.
-Multi-slot components were scrapped as invisible complexity; no paid unlock of fixed slots.
-Shown text says component, never face (`Face` stays the engine's word for one entry).
-Injuries roll the die: intact cracks, cracked is destroyed, destroyed or empty takes the
-blow. Passives: `status: planned` keeps a draft out of the engine; `on_injury` with
-`no_destroy` (the Badger's Reinforced Skeleton) and a `when: component_cracked` condition on
-`on_attack`/`on_crit` effects exist. The Badger: 4 hardpoints, fixed claw and plating (d6);
-its stock loadout (two slug cannons, twin autoguns, a heat sink) and the one-face versions
-of the claw, twin autoguns and howitzer are placeholders for Ryan to tune.
+**Shields and armour (18 September).** A standing shield blocks a blow whole; no in-combat
+recharge; `recharge_field` per quiet battlefield phase; `armour` is flat off bare-hull
+blows and zero damage is fine. Foes strike front rank left to right then back; heaviest
+deploy left. Shield sits above hull in every readout.
 
-**Shields, armour, strikes (18 September, decided after discussion).** A standing shield
-blocks a blow whole (nothing bleeds through; the blow costs the shield its damage). No
-in-combat recharge (a passive may add it for one chassis); `recharge_field` per battlefield
-phase out of contact stays (`Battle.commit`). `armour` is a flat chassis number off every
-bare-hull blow; zero damage is fine (Badger 10, others 0, placeholders). Injury only on a
-bare-hull blow whose through-damage is at least a quarter of max hull. Foes: `strikes`
-(default 1; a double strike breaks a shield and reaches hull) and `breach` (overflow into
-hull, never injures through shield); none set in content yet, Ryan places them. Strike
-order: front rank left to right then back; heaviest hitters (`Foe.threat`) deploy left at
-first contact. `Skirmish._blow` is the shared arithmetic for the real hit and the forecast.
-Round cap rejected. Per-round Rift Pressure tick kept (it is what makes a long wall cost). Later the same day: a breach injures like any blow (hull lost in one
-blow is what counts; its counterplay is redirect or interrupt, not built yet);
-`Skirmish.turn_events` records every enemy blow and the screen replays them with a shield
-shatter (`UnitView.shatter_shield`, screenshot pose `enemyturn`); `Face.fixed` marks
-built-in entries and the component list draws hardpoints as dashed sockets and empty ones
-as EMPTY; the codex stat block shows hull, shield, armour, move and recharge (hardpoints
-dropped as a number). **Foe actions (18 September, built).** A foe's implemented attack actions scale its base
-attack: `factor` (default 1.0), `strikes`, `breach`, `weight`; `{damage}` in an action's
-text shows the resulting number. `Foe.choose_action(rng)` picks one by weight at round
-start, before the player acts (intent chip shows damage plus ×n or !, forecast is exact);
-`Foe.damage()/strikes()/breaches()` replace the foe-level fields. Content: `value` on an
-attack is refused; a foe needs at least one implemented attack. "Numbers in tens" means the
-magnitude of tens, not multiples of ten (15 is fine; the test says >= 10). Stat block:
-hull, shield, armour, recharge (+15), move; 4 px inset fixes the left clip.
-`Face.strikes` (built 18 September): an attack's blows per use, each its own roll, crit,
-keywords and passives; heat once per use; die face shows "10 ×3"; content `strikes` on a
-component face; foe actions carry the same field. Power checks are non-negative only
-(numbers in tens means magnitude). Salvage from rift-belched wrecks and monster research
-tokens recorded as open in the bible's open questions. HUD palette swatches published as an
-artifact for Ryan's eyes (protan simulation toggles).
-**Vocabulary audit (18 September, Ryan's overhaul, engine caught up).** Renames: cleave is
-shown as Spread (id stays `cleave`, `Face.keyword_label`), pierce is `penetrate`, danger
-close is Splash (log says "splash"), line is "Line of sight". Removed: the lock keyword and
-its die-keeping state, flip, copy, reflect, step_up. Melee is a third reach: front rank
-only, the back only when the whole front is empty. Chain: a kill repeats the attack on a
-new target, heat paid on every link (the risk). Execute: +100%, +50% against massive foes. Burn: 5 per stack.
-A crack takes only keywords (crit, heat, passives stay). New planned entries (overwhelm,
-corrode, numbed, rapid, disable, corrupt, energy armour, scramble, confuse, retaliate,
-disabled, corrupted, phased, taunt, beacon) are content only. `static` trigger with
-`set_reach` and `when: reach_melee/line/indirect` exist; the Badger's Reinforced Skeleton
-uses them (cracked weapons go melee, melee +10%). Reach is never written to a component:
-`Skirmish.reach_of(ms, f)` / `Passives.effective_reach` compute it on every read from the
-owner's passive, so an ally reading the entry or a suppressed passive gets the plain reach;
-`Skirmish.shown_face` gives the screen a display copy. Vocabulary entries carry no `fantasy`
-any more (validator and export tool follow). `Face.CRIT_MULT` is the crit base (Face, not
-Skirmish: a cycle otherwise).
-**Effects pipeline (18 September, built).** `sim/effects.gd` replaces `passives.gd`: a
-Modifier is a passive with a scope (LOADOUT, BATTLE, SKIRMISH, ROUNDS) and a source;
-`Unit.modifiers` holds them, `Unit.base` holds chassis numbers and `hull_max`, `shield_max`,
-`heat_max`, `armour`, `movespeed`, `recharge_field` are accessors over `Effects.stat`
-(writing sets the base). Queries: `stat`, `attack` (adds, multiplies, floors on damage and
-heat, burn and vent from crit effects), `crit_bonus`, `damage_taken`, `effective_reach`,
-`no_destroy`, `describe`. Lifetimes: `end_round` (Skirmish.end_round), `end_skirmish`
-(Skirmish._finish), `end_battle` (Battle outcome). Static effects: add_stat, multiply_stat,
-add/multiply_damage_taken, set_reach, suppress (by id or tag). Component passives are
-granted by make_mech with their component id; destroyed components keep bonuses, lose
-abilities. Order of operations is a vocabulary rule (category `rules`). Foes are on it too:
-`Foe.modifiers`, `burn_stacks()`, `is_suppressed()`; the engine's statuses live in
-`Effects.STATUS` (burning, overheating, suppressed, numbed) and stack via `Effects.stack`
-(same id and scope add stacks; adds scale per stack, multiplies apply once per stack);
-`Effects.tick` at the owner's turn applies tick_hp/tick_heat per stack and drops a stack of
-tick-decaying statuses. Foe attack keyword `scorch` (placeholder) stacks Overheating
-(placeholder name, 5 heat per stack per turn) on the mech it hits: the mech-side DOT Ryan
-wants, flavour pending. Numbed stacks accrue; the resistance roll is not applied. Component
-stat modifiers in content are just `static add_stat` effects on a component's passive;
-none written yet.
-The die screen (double-tap a die) is a breakdown: no model, no rules line, one column
-of components with their names (FaceListView.labels), and every live effect on the mech
-listed with stacks, source and how long (`_modifier_lines`).
-Rapid (player keyword) and disable (foe attack keyword) are built: an entry can be switched
-off by a status (`Effects.disable_entry`, `MechState.face()` returns a blank stand-in with
-`disabled` set); rapid switches its own entry off for the round, rerolls free and leaves the
-mech unspent; a foe's disable switches off the showing entry through the mech's next turn.
-The die screen and the hold readout label every entry with its component name; the die
-screen tags each entry with the effects that apply to it now (`Effects.explain`) and lists
-every live effect in words (`Effects.effect_text`) instead of its description.
-Open, discussed 18 September, not built: component stat modifiers as content
-and granted passives with totals shown as base plus bonus, a fixed colour standard for a
-protanomalous player, movespeed granularity.
+**Effects pipeline (18 September).** `sim/effects.gd`: every stat, damage figure and
+component property is a question, never a stored total. A Modifier is a passive with a
+scope (LOADOUT, BATTLE, SKIRMISH, ROUNDS), a source, stacks and a decay rule; order is
+suppression, gate, adds, multiplies, floors, overrides. Mech maximums are accessors over
+`Unit.base`. Foes carry statuses the same way (burning, suppressed, numbed). Component
+passives are granted with their component id; a destroyed component keeps bonuses, loses
+abilities. `Effects.explain` and `effect_text` feed the die screen.
 
-**Palette (18 September, shipped).** `game/ui/palette.gd` holds the fixed semantic set from
-Ryan's swatch review (revision 5 of the artifact): ink f2f4ee, muted 7b857c, hull d8d2c4,
-shield 2f63d8, heat/accent ff6a00, enemy ff1e1e, select/target/ok white; no rift role (the
-map's rift outline is `BattleMapView.RIFT_ART`, art not meaning). `Settings.HUD_OPTIONS` is
-green 33ff55, amber fff21a, blue 5cd8ff; red is gone. Map: squad counts on plaques
-(`_plaque`), boss diamond with an inset outline, elite tags with a double border. Skirmish
-gauges use SHIELD/HULL/HEAT; `UnitView._gauge` dims a pending loss and hatches a pending gain.
+**Screens (18 September).** Palette shipped from Ryan's swatch review: fixed semantic set
+(hull d8d2c4, shield 2f63d8, heat ff6a00, enemy ff1e1e, white for good and selection, ink
+f2f4ee over muted 7b857c, no green or purple as meaning), HUD picker is chrome only (green,
+amber, cyan; red gone), map numbers on plaques, boss and elite by shape, rift as its own art.
+Gauges dim a pending loss and hatch a pending gain. The die screen is a breakdown: labelled
+components in one column, per-entry effect tags, every live effect in words. Shield shatter
+plays on the enemy turn replay. Skirmish mechs face the foes (`YAW_SKIRMISH` 155).
 
-**Content shape.** Shown text at the top level (`codex`, `flavour`, a passive's `name` and
-`description`, an action's `text`, a chassis's optional `designation`); everything internal
-under `design`; the validator refuses internal keys at the top level. Code takes defaults
-from content order (`ContentDB.default_team`, `default_faction`, `spawn_foes`, `make_boss`).
-The Bulwark is the Badger (`badger`) everywhere.
+**Art (17 September).** Player units are native 3D (glTF plus toon and surface shader);
+enemies painted 2D. The Badger's working file is `tools/blendforge/models/badger.blend`
+(finished; `polish` refuses it); `forge.py export` then `tools/map_tokens.gd` then
+`--import`. The engine reads `joint_*` and `hp_*` Empties (idle, strike, mount). Ryan is
+adding joints and pins by hand; the file has `hp_3` and `hp_4` on the tubes so far.
 
-**Art, decided: player units are native 3D; enemies stay painted 2D.** Pipeline for a mech:
-Ryan masses it in Blender (`tools/blendforge/models/<id>.blend`, active scene only, materials
-by role, "detail" on small parts), then `forge.py polish <blend> <chassis>` (chamfers, panels, corner bolts, tracks with cleats and
-wheels, and, per the maker's manner in `profiles.py`, rim bars, a rear vent, rams to the arms,
-stack collars; per the chassis kit, extras like the Badger's work lights and tow lugs; writes
-`<massing>_polished.blend`, which becomes the working file `<id>.blend`), then `forge.py export`
-(bakes occlusion and pointiness into a `wear` vertex colour, writes `art/models/<id>.glb`),
-then `--import`. `game/ui/mech_view_3d.gd` draws it in the skirmish screen and the codex with
-`mech_toon.gdshader` (pixel or clean look; the clean look reads the wear bake and runs a
-procedural surface pass per material role, tuned 17 September: light wear, chipped livery,
-tread ridges, a hint of dust, rust off, primary steel and livery as glossy plating with a
-reflection gradient, secondary steel matte with a fine weave, a `gloss` lever per maker
-(`MechView3D.GLOSS`: Kestrel 1.0, Minerva 0.35, W&S 0.15), glass and lamp glow, no UVs) and
-`outline.gdshader`; The 3D clean look is the default when a window exists;
-`RIFTGATE_MECH3D=pixel|off` overrides, headless runs use sprites. The skirmish shows mechs
-in rear three-quarter facing the foes; the codex spins the model in a 200x240 frame. The Badger is the only modelled mech;
-its glTF is polished and baked. The 2D sprite path (blendforge render, foeforge edit mode,
-cut-mech) still works and still feeds the 24 px map tokens. Art experiments and comparisons
-are on `docs/art-lab.html`, sections 8 and 9.
+**Open, in the order I would take them.**
 
-**Alive (17 September).** Filler animation on the skirmish screen: lunge or recoil on a
-player attack, flash and shake on the struck unit, the enemy turn replayed as staggered
-lunges, dice pop on reroll, damage numbers rise, log lines type in, 3D mechs sway, foes
-breathe, a scan band drifts on the backdrop. `Skirmish.terrain` is the contact hex's terrain
-(set by `Battle._build_skirmish`); the backdrop draws ground strips in it, and
-`game/ui/terrain_art.gd` textures the map's hexes with the same marks. `tools/screenshot.gd`
-gained a `strike` pose and `RIFTGATE_SHOT_FRAME` to catch a frame mid-animation.
-
-**Ranks and reinforcements (17 September).** `Skirmish.pool` is `reinforcements`. Ranks hold:
-front foes only ever stand in front, back foes in back, even with an empty slot the other way;
-no stepping up. First deployment in arrival order; the reinforcement phase at the end of the
-enemy turn fills each empty slot left to right, front first, with a random waiting foe of the
-right rank, logged. Ryan wants player interaction with that phase (open). Facing: mechs at
-`MechView3D.YAW_SKIRMISH` (155 degrees, rear three-quarter facing the foes above, turned left so the claw side shows; Ryan, 18 September), foes
-left (`UnitView.flip_h`, driven by an optional `flip` on a foe; the foeforge prompt asks for
-left). Idle: foes breathe 3%; only flyers and hover chassis sway in 3D, ground stands still
-until joints are annotated. Battlefield direction (landscape, high and low, rift terrain,
-grouped features) is recorded in the bible, section 4, open.
-
-**Next, in order.**
-
-1. Write the five makers into content once Ryan tweaks the drafts; draft CARE's voice.
-2. **The Badger's starting point is `tools/blendforge/models/badger.blend` (finalized 17
-   September, Ryan's call: "good enough for now").** Cleaned for hand editing: parts named
-   by what they are (`body`, `glacis`, `shoulder_l`, `arm_l`, `forearm_l`, `claw_l`, `gun_r`,
-   `launcher`, `beacon`, `track_l`, `skirt_l`, `axle`, `undercarriage`...), slivers joined
-   (braces, cleats, wheels, vent slats, teeth: 224 objects became 109), one material per
-   role, one `badger` collection, marked `blendforge_stage = finished` so `polish` refuses it.
-   The massing is `badger_massing.blend`, reference only; the three `finish/badger*.py`
-   scripts are history (headers say so). `art/models/badger.glb` is exported from it.
-   Ryan is now moving the rams, tweaking parts, and tagging hardpoints (`hp_<n>`) and joints
-   (`joint_<name>` parent Empties) in that file. He removed the teeth (they floated); revisit.
-   The engine already reads the tags (`MechView3D.joints` / `hardpoints`, built while Ryan
-   was out on 17 September, tested on a scratch-tagged copy, not his file): joints idle
-   (slow settle about X, left and right out of step), swing on a melee strike and recoil on
-   a ranged one where they carry a pin (`strike(ranged)`, called from the skirmish's attack
-   animation); `mount(n, scene, maker)` / `unmount(n)` swap a component model onto a pin.
-   `RIFTGATE_MECH3D_MODEL=<id>` previews another exported file in every slot. Untagged
-   models draw as before. Map tokens now come from the glTF too: `tools/map_tokens.gd`
-   writes `art/mechs/<id>_map_strip.png` (pixel look, pitch 42, detail parts hidden, flat
-   tones); the Badger's strip is the 3D one. After Ryan's tags land: re-export, re-run the
-   tokens, check the swing direction and size against his pivots, then components as
-   models under the pins, livery on a rear or top plate.
-4. Gate, defences and hangar as models.
-5. Play on a phone with the damage ranges in; tune numbers, map size, squad speeds, Rift
-   Pressure. Hangar: repair, rewards, one-shots, command die. Enemy art via foeforge for the
-   eight foes still on sketch grids.
+1. Ryan: Badger joints and pins; then re-export, tokens, and tune the strike swing.
+2. Ryan's content: names for overheating and scorch; place strikes, breach, scorch, disable
+   and rapid on foes and components; Ablative Plating as armour or shield; line versus
+   "direct"; the Badger's loadout and claw numbers; Aphelion and the Arsenal; CARE's voice.
+3. Engine gaps waiting on content: Numbed resistance roll; Corrupted (needs an on-spend
+   trigger, value from the foe's ability); cleanse; foe roles (fodder, elite, boss) so
+   execute and chain cannot cheese priority targets; elites surfacing at set points in the
+   reinforcements; the planned statuses (overwhelm, corrode, energy armour, scramble,
+   confuse, retaliate, phased, taunt, beacon) are plain modifiers once placed; component
+   stat modifiers as content; granted passives in their own colour on the mech codex.
+4. Design still open: player interaction with the reinforcement phase; battlefield
+   landscape, terrain costs and movespeed in tens; the economy (salvage from rift wrecks,
+   research tokens, hangar repair and refit); the withdraw penalty when contact was forced.
+5. Art: wear tuning by eye; livery on a rear or top plate; the other makers' manners on
+   real models; enemy art for the eight foes still on sketch grids; gate, defences and
+   hangar as models; the other chassis borrow the Badger's model and tokens.
+6. Play it on a phone and tune numbers, map size, squad speeds, Rift Pressure.
 
 **Known rough edges.** Codex stat labels cut off on Ryan's device once, not reproduced.
-Only the basic attack exists, so every foe intent is a sword. Routes are tap-to-destination
-only. A route through another mech's hex is rejected at resolve time unless that mech moves
-first. The skirmish's Back button reads "BACK" even when it returns to the battlefield.
-`RIFTGATE_MECH3D_FLAT=1` skips the outline pass, for debugging.
+Routes are tap-to-destination only; a route through another mech's hex is rejected at
+resolve time unless that mech moves first. The skirmish's Back button reads "BACK" even when
+it returns to the battlefield. `RIFTGATE_MECH3D_FLAT=1` skips the outline pass;
+`RIFTGATE_MECH3D_MODEL=<id>` previews another exported model; `RIFTGATE_MECH3D=pixel|off`.
