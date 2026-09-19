@@ -158,7 +158,7 @@ front foes only ever stand in front, back foes in back, even with an empty slot 
 no stepping up. First deployment in arrival order; the reinforcement phase at the end of the
 enemy turn fills each empty slot left to right, front first, with a random waiting foe of the
 right rank, logged. Ryan wants player interaction with that phase (open). Facing: mechs at
-`MechView3D.YAW_SKIRMISH` (25 degrees, front three-quarter biased front, turned right), foes
+`MechView3D.YAW_SKIRMISH` (205 degrees, rear three-quarter, facing the foes above, turned right; Ryan, 18 September), foes
 left (`UnitView.flip_h`, driven by an optional `flip` on a foe; the foeforge prompt asks for
 left). Idle: foes breathe 3%; only flyers and hover chassis sway in 3D, ground stands still
 until joints are annotated. Battlefield direction (landscape, high and low, rift terrain,
