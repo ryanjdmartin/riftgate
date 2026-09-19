@@ -119,6 +119,14 @@ Open, discussed 18 September, not built: component stat modifiers as content
 and granted passives with totals shown as base plus bonus, a fixed colour standard for a
 protanomalous player, movespeed granularity.
 
+**Palette (18 September, shipped).** `game/ui/palette.gd` holds the fixed semantic set from
+Ryan's swatch review (revision 5 of the artifact): ink f2f4ee, muted 7b857c, hull d8d2c4,
+shield 2f63d8, heat/accent ff6a00, enemy ff1e1e, select/target/ok white; no rift role (the
+map's rift outline is `BattleMapView.RIFT_ART`, art not meaning). `Settings.HUD_OPTIONS` is
+green 33ff55, amber fff21a, blue 5cd8ff; red is gone. Map: squad counts on plaques
+(`_plaque`), boss diamond with an inset outline, elite tags with a double border. Skirmish
+gauges use SHIELD/HULL/HEAT; `UnitView._gauge` dims a pending loss and hatches a pending gain.
+
 **Content shape.** Shown text at the top level (`codex`, `flavour`, a passive's `name` and
 `description`, an action's `text`, a chassis's optional `designation`); everything internal
 under `design`; the validator refuses internal keys at the top level. Code takes defaults

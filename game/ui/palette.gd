@@ -1,27 +1,29 @@
 class_name Palette
 extends RefCounted
 
-## UI colours. The screen is a tactical overlay: near-black ground, everything drawn in one
-## HUD colour that the player picks in settings (see Settings), with a few semantic colours
-## for heat, enemies and the rift.
+## UI colours. The screen is a tactical overlay: near-black ground, chrome in one HUD colour
+## the player picks in settings (see Settings), and one fixed set of semantic colours that
+## never changes with the chrome. Decided with Ryan on 18 September from swatches he judged
+## by eye (he is protanomalous): no green or purple carries meaning; shield is the only blue;
+## enemy and heat are both warm and a full lightness band apart; good and selection are
+## white; every state also carries a glyph or a shape, never colour alone.
 
 const BG := Color("070907")
 const PANEL := Color("0c100c")
 const PANEL_RAISED := Color("121812")
 const RULE := Color("2c3a2c")
-const INK := Color("dfe8e0")
-const MUTED := Color("6f8a74")
-const ACCENT := Color("e3894b")      # hazard orange, used sparingly
+const INK := Color("f2f4ee")
+const MUTED := Color("7b857c")
+const ACCENT := Color("ff6a00")      # the heat colour, used sparingly as an accent
 const ACCENT_INK := Color("070907")
-const ENEMY := Color("ff5c5c")
-const ENEMY_DIM := Color("6e3434")
+const ENEMY := Color("ff1e1e")
+const ENEMY_DIM := Color("7a1414")
 const HULL := Color("d8d2c4")
-const SHIELD := Color("5aa9e6")
-const HEAT := Color("ff6a3d")
-const SELECT := Color("f2c14e")
-const TARGET := Color("f2c14e")
-const OK := Color("6fbf73")
-const RIFT := Color("b48ce3")
+const SHIELD := Color("2f63d8")
+const HEAT := Color("ff6a00")
+const SELECT := Color("ffffff")
+const TARGET := Color("ffffff")
+const OK := Color("ffffff")
 
 ## The overlay colour. Settings.apply() sets it from the saved choice.
 static var HUD := Color("5cff6a")

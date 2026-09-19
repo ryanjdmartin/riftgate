@@ -6,10 +6,11 @@ extends RefCounted
 const PATH := "user://settings.cfg"
 
 ## HUD colour choices, in the order a picker shows them.
+# Chrome only: the semantic colours in Palette never change with this. Red is not offered,
+# since red is the enemy colour.
 const HUD_OPTIONS := {
-	"green": Color("5cff6a"),
-	"amber": Color("f5d90a"),
-	"red": Color("ff5c5c"),
+	"green": Color("33ff55"),
+	"amber": Color("fff21a"),
 	"blue": Color("5cd8ff"),
 }
 const DEFAULT_HUD := "green"

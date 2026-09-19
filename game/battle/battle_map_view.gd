@@ -156,7 +156,7 @@ func _draw() -> void:
 	for r in map.rift_hexes:
 		var pts := Hex.corners(center(r), HEX_SIZE - 3.0)
 		draw_colored_polygon(pts, Color("2a1a3f"))
-		Hud.stroke_poly(self, pts, Palette.RIFT, 2.0)
+		Hud.stroke_poly(self, pts, RIFT_ART, 2.0)   # the rift's own art, not a palette role
 
 	# Where the selected mech may end its move.
 	for h in destinations.keys():
@@ -200,14 +200,29 @@ func _draw() -> void:
 
 
 ## Off-screen squads get a portrait at the edge nearest them: the source of the intent line.
+const RIFT_ART := Color("c9a6ff")   # what the rift looks like; it means nothing but the rift
+
+
+## A number on a dark plaque with a coloured border: legible on any tile, and the colour
+## carries the side without asking coloured text to survive the ground.
+func _plaque(at: Vector2, text: String, border: Color, thick: float = 1.5) -> void:
+	var w := Hud.mono().get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x + 10.0
+	var rect := Rect2(at - Vector2(w * 0.5, 9.0), Vector2(w, 18.0))
+	draw_rect(rect, Palette.BG, true)
+	draw_rect(rect, border, false, thick)
+	draw_string(Hud.mono(), rect.position + Vector2(5.0, 13.0), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color.WHITE)
+
+
 func _draw_tags() -> void:
 	_tags = offscreen_tags()
 	for t in _tags:
 		var rect: Rect2 = t[0]
 		var sq: Unit = t[1]
 		var above: bool = t[2]
-		var border := Palette.RIFT if sq.elite else Palette.ENEMY
+		var border := Palette.ENEMY
 		Hud.box(self, rect, 6.0, Color(Palette.BG, 0.94), Color(border, 0.9), 1.5)
+		if sq.elite:
+			Hud.box(self, rect.grow(-4.0), 4.0, Color(0, 0, 0, 0), Color(border, 0.9), 1.5)   # a double border says elite
 		var c := rect.position + Vector2(rect.size.x * 0.5, 24.0)
 		var tex := Sprites.map_foe(foe_sprite_id(sq))
 		if tex != null:
@@ -247,14 +262,18 @@ func _draw_unit(u: Unit) -> void:
 	else:
 		var r := 20.0 if u.is_multi_hex() else 14.0
 		var diamond := PackedVector2Array([c + Vector2(0, -r), c + Vector2(r, 0), c + Vector2(0, r), c + Vector2(-r, 0)])
-		draw_colored_polygon(diamond, Palette.RIFT if u.is_multi_hex() else Palette.ENEMY)
+		draw_colored_polygon(diamond, Palette.ENEMY)
+		if u.is_multi_hex():
+			# A boss is the big diamond with a second, inset outline: shape and size, not a colour.
+			var inner := PackedVector2Array([c + Vector2(0, -r + 6.0), c + Vector2(r - 6.0, 0), c + Vector2(0, r - 6.0), c + Vector2(-r + 6.0, 0)])
+			Hud.stroke_poly(self, inner, Palette.BG, 2.0)
 		draw_string(Hud.mono(), c + Vector2(-5.0, 5.0), u.display_name.substr(0, 1).to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Palette.BG)
 	if u.is_player() and not u.is_static():
 		# A sliver of hull over the machine, so the state of the team reads from the map.
 		var w := 30.0
 		Hud.gauge(self, Rect2(c + Vector2(-w * 0.5, -HEX_SIZE * 0.78), Vector2(w, 5.0)), float(u.hull) / float(maxi(1, u.hull_max)), hud, 2.0)
 	if u.is_enemy() and u.strength > 0:
-		draw_string(Hud.mono(), c + Vector2(10.0, -12.0), "×%d" % u.strength, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Palette.INK)
+		_plaque(c + Vector2(16.0, -16.0), "×%d" % u.strength, Palette.ENEMY, 3.0 if u.elite else 1.5)
 
 
 # ---------------------------------------------------------------- gestures

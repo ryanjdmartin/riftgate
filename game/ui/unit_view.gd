@@ -285,5 +285,14 @@ func _gauge(rect: Rect2, b: Array) -> void:
 	var pulse := 0.72 + 0.22 * sin(_t * 2.6)
 	var seg := Rect2(inner.position + Vector2(inner.size.x * lo, 0), Vector2(maxf(3.0, inner.size.x * (hi - lo)), inner.size.y))
 	var pts := Hud.slant(seg, 2.4)
-	Hud.fill_poly(self, pts, Color(Palette.INK, pulse))
-	Hud.stroke_poly(self, pts, Color(Palette.BG, 0.9), 1.0)
+	if pending < frac:
+		# A loss: the part about to go is dimmed and pulses.
+		Hud.fill_poly(self, pts, Color(Palette.BG, 0.55 * pulse))
+		Hud.stroke_poly(self, pts, Color(Palette.INK, 0.9), 1.0)
+	else:
+		# A gain: hatched in the bar's own colour, so it reads as "coming", not "there".
+		Hud.stroke_poly(self, pts, Color(col, pulse), 1.0)
+		var x := seg.position.x + 3.0
+		while x < seg.end.x:
+			draw_line(Vector2(x, seg.end.y), Vector2(x + seg.size.y, seg.position.y), Color(col, pulse * 0.8), 1.0)
+			x += 4.0

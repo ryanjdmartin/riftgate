@@ -167,7 +167,7 @@ static func colour_for(id: String) -> Color:
 		"execute", "skull", "shieldbreak":
 			return Palette.ENEMY
 		"star":
-			return Palette.RIFT
+			return Palette.SELECT
 		"suppress", "chain":
 			return Palette.SHIELD
 		_:
