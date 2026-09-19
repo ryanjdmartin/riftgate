@@ -365,6 +365,25 @@ def apply(args):
     print(f"applied {script.name} to {src.relative_to(ROOT)}; backup at {backup.name}")
 
 
+# ---------------------------------------------------------------- structures
+
+def structures(args):
+    """Build the gate and wall models from structures.py and export their glTFs."""
+    import structures as lib
+    names = args.names or list(lib.STRUCTURES)
+    for n in names:
+        model = lib.STRUCTURES[n]()
+        dest = MODELS / f"{n}.blend"
+        with tempfile.TemporaryDirectory() as td:
+            pj = Path(td) / "parts.json"
+            pj.write_text(json.dumps(model.spec()))
+            blender("-P", str(HERE / "bl_build.py"), "--", "--parts", str(pj), "--out", str(dest))
+        glb = ROOT / "art" / "models" / f"{n}.glb"
+        blender(str(dest), "-P", str(HERE / "bl_export.py"), "--", "--out", str(glb), "--bake", "0" if args.no_bake else "1")
+        print(f"built {dest.relative_to(ROOT)} and {glb.relative_to(ROOT)}")
+    print("now: godot --path . --resolution 360x640 -s tools/structure_sprites.gd, then --import")
+
+
 # ---------------------------------------------------------------- archetypes
 
 def archetypes(args):
@@ -438,6 +457,10 @@ def main():
     x.add_argument("chassis")
     x.add_argument("--no-bake", action="store_true", help="skip baking occlusion and edge wear into vertex colours")
     x.set_defaults(func=export)
+    st = sub.add_parser("structures", help="build the gate and wall models (structures.py) and export art/models/<name>.glb")
+    st.add_argument("names", nargs="*", help="gate, wall; default both")
+    st.add_argument("--no-bake", action="store_true")
+    st.set_defaults(func=structures)
     a = sub.add_parser("archetypes", help="build the starter silhouettes in archetypes.py as .blend files and render a review sheet")
     a.add_argument("names", nargs="*", help="which archetypes; default all")
     a.add_argument("--maker", default="minerva", help="livery for the review renders")

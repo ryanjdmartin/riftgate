@@ -44,6 +44,11 @@ static func map_mech(chassis_id: String, facing: int) -> Texture2D:
 	return tex
 
 
+## A structure's battlefield sprite (tools/structure_sprites.gd), or null.
+static func structure(id: String) -> Texture2D:
+	return _load("res://art/structures/%s.png" % id)
+
+
 static func map_foe(foe_id: String) -> Texture2D:
 	return _load("res://art/foes/%s_map.png" % foe_id)
 

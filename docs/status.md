@@ -30,7 +30,8 @@ breach, scorch (placeholder: stacks Overheating, 5 heat per stack per turn), dis
 separate blows, heat once per use. Crit: `Face.CRIT_MULT` (2.0) plus additive bonuses.
 
 **Shields and armour (18 September).** A standing shield blocks a blow whole; no in-combat
-recharge; `recharge_field` per quiet battlefield phase; `armour` is flat off bare-hull
+recharge; withdraw at any point of the player's turn, always at the price of one enemy turn
+(19 September); `recharge_field` per quiet battlefield phase; `armour` is flat off bare-hull
 blows and zero damage is fine. Foes strike front rank left to right then back; heaviest
 deploy left. Shield sits above hull in every readout.
 
@@ -50,6 +51,16 @@ Gauges dim a pending loss and hatch a pending gain. The die screen is a breakdow
 components in one column, per-entry effect tags, every live effect in words. Shield shatter
 plays on the enemy turn replay. Skirmish mechs face the foes (`YAW_SKIRMISH` 155).
 
+**Structures (19 September).** `BattleMap.wall_hexes` fills the bottom row beside the
+three-hex gate; walls are structures (nobody stands there, nothing hurts them). Models are
+code-massed: `tools/blendforge/structures.py` (gate with two tower guns, wall segment),
+`forge.py structures` builds `models/gate.blend`, `models/wall.blend` and exports the glTFs;
+`tools/structure_sprites.gd` renders `art/structures/gate.png` (76x44) and `wall.png`
+(26x30) from the map's angle; `BattleMapView` draws them under the units. Ryan may reshape
+the .blend files; rerun export and the sprite tool after. Per-mech repaint exists:
+`Unit.paint` {primary, secondary} recolours the livery and bone plating (`MechView3D.paint`,
+`ramp_for`); `RIFTGATE_PAINT=badger:ff8800/223344` previews it. Nothing sets it in play yet.
+
 **Art (17 September).** Player units are native 3D (glTF plus toon and surface shader);
 enemies painted 2D. The Badger's working file is `tools/blendforge/models/badger.blend`
 (finished; `polish` refuses it); `forge.py export` then `tools/map_tokens.gd` then
@@ -64,13 +75,14 @@ adding joints and pins by hand; the file has `hp_3` and `hp_4` on the tubes so f
    "direct"; the Badger's loadout and claw numbers; Aphelion and the Arsenal; CARE's voice.
 3. Engine gaps waiting on content: Numbed resistance roll; Corrupted (needs an on-spend
    trigger, value from the foe's ability); cleanse; foe roles (fodder, elite, boss) so
-   execute and chain cannot cheese priority targets; elites surfacing at set points in the
-   reinforcements; the planned statuses (overwhelm, corrode, energy armour, scramble,
+   execute and chain cannot cheese priority targets; the planned statuses (overwhelm, corrode, energy armour, scramble,
    confuse, retaliate, phased, taunt, beacon) are plain modifiers once placed; component
    stat modifiers as content; granted passives in their own colour on the mech codex.
-4. Design still open: player interaction with the reinforcement phase; battlefield
+4. Design still open: player interaction with the reinforcement phase; skirmish
+   composition follows battlefield placement (rules and rules text needed); battlefield
    landscape, terrain costs and movespeed in tens; the economy (salvage from rift wrecks,
-   research tokens, hangar repair and refit); the withdraw penalty when contact was forced.
+   research tokens, hangar repair and refit); base defences: how the gate guns attack and
+   are attacked (proposal in chat, 19 September), then deployable turrets.
 5. Art: wear tuning by eye; livery on a rear or top plate; the other makers' manners on
    real models; enemy art for the eight foes still on sketch grids; gate, defences and
    hangar as models; the other chassis borrow the Badger's model and tokens.

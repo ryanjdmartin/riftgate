@@ -125,9 +125,22 @@ static func _default_skirmish() -> Skirmish:
 	var env := OS.get_environment("RIFTGATE_TEAM")
 	if not env.is_empty():
 		team = env.split(",")
+	# RIFTGATE_PAINT=badger:ff8800/223344,raptor:ffffff repaints for a look (primary/secondary).
+	var paints := {}
+	for spec in OS.get_environment("RIFTGATE_PAINT").split(",", false):
+		var kv := spec.split(":")
+		if kv.size() == 2:
+			var cols := kv[1].split("/")
+			var pd := {"primary": Color(cols[0])}
+			if cols.size() > 1:
+				pd["secondary"] = Color(cols[1])
+			paints[kv[0]] = pd
 	for id in team:
 		if db.chassis.has(id):
-			s.add_mech(db.make_mech(id))
+			var u := db.make_mech(id)
+			if paints.has(id):
+				u.paint = paints[id]
+			s.add_mech(u)
 	# The first faction's first and last spawn entries: its rank and file, then its support.
 	var fac := db.default_faction()
 	var table: Array = db.spawn_table(fac)
@@ -258,7 +271,7 @@ func _build() -> void:
 		_mech_3d.append(null)
 		if look == "pixel" or look == "clean":
 			var maker := str(ContentDB.load_default().chassis.get(ms.unit.chassis_id, {}).get("maker", "minerva"))
-			var view := MechView3D.make(ms.unit.chassis_id, maker, look, "badger", MechView3D.YAW_SKIRMISH)
+			var view := MechView3D.make(ms.unit.chassis_id, maker, look, "badger", MechView3D.YAW_SKIRMISH, Vector2i.ZERO, false, ms.unit.paint)
 			# Idle: an aircraft hovers, a hover chassis skims, a ground machine stands still
 			# (its idle is limb movement, which waits on annotated joints).
 			if ms.unit.traits.has("flyer"):
@@ -287,7 +300,7 @@ func _build() -> void:
 	_place(_end_btn, Vector2(16, BOTTOM_Y), BOTTOM_BTN)
 	_withdraw_btn = HudButton.new("WITHDRAW", _on_withdraw)
 	_withdraw_btn.ghost = true
-	_withdraw_btn.tooltip_text = "Available at the start of a round, before spending a component."
+	_withdraw_btn.tooltip_text = "Pull out: the enemy strikes once more, then the team flees."
 	_place(_withdraw_btn, Vector2(W - 16 - BOTTOM_BTN.x, BOTTOM_Y), BOTTOM_BTN)
 
 	# Overlays: arrows, drag ghost, roll flash, details, codex, confirm, outcome.
@@ -927,7 +940,8 @@ func _open_codex(entry: Dictionary) -> void:
 	if not sid.is_empty() and (look == "pixel" or look == "clean") and MechView3D.has_model(sid):
 		# Mechs in 3D: the codex gets the model itself, turning slowly.
 		var maker := str(ContentDB.load_default().chassis.get(sid, {}).get("maker", "minerva"))
-		_codex_view = MechView3D.make(sid, maker, "clean", "badger", MechView3D.YAW_FRONT, Vector2i(200, 240), true)
+		var paint: Dictionary = entry.get("paint", {})
+		_codex_view = MechView3D.make(sid, maker, "clean", "badger", MechView3D.YAW_FRONT, Vector2i(200, 240), true, paint)
 		add_child(_codex_view)
 		tex = _codex_view.texture
 	elif not sid.is_empty():
@@ -1192,7 +1206,7 @@ func _end_turn_now() -> void:
 func _on_withdraw() -> void:
 	if not sk.can_withdraw():
 		return
-	_ask("Withdraw from the skirmish? The squad keeps marching on the gate.", _withdraw_now)
+	_ask("Withdraw? The enemy strikes once more as you pull out, and the squad keeps marching on the gate.", _withdraw_now)
 
 
 func _withdraw_now() -> void:

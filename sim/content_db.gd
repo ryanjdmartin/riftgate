@@ -229,6 +229,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		"current": -1,
 		"flavour": str(c.get("flavour", "")),
 		"sprite_id": u.chassis_id,
+		"paint": u.paint,
 	}
 
 

@@ -24,6 +24,7 @@ var gate: Vector2i            # centre of the gate structure
 var rift: Vector2i            # centre of the rift structure
 var gate_hexes: Array[Vector2i] = []   # the gate is wider than one hex
 var rift_hexes: Array[Vector2i] = []
+var wall_hexes: Array[Vector2i] = []   # the rest of the bottom row: indestructible, nobody stands there
 var map_seed: int = 0
 
 const STRUCTURE_HALF_WIDTH := 1   # gate and rift span centre plus this many hexes each side
@@ -41,6 +42,10 @@ static func flat(w: int, h: int) -> BattleMap:
 	m.rift = Hex.offset_to_axial(w / 2, 0)
 	m.gate_hexes = m._span(w / 2, h - 1)
 	m.rift_hexes = m._span(w / 2, 0)
+	for col in range(w):
+		var hx := Hex.offset_to_axial(col, h - 1)
+		if not m.gate_hexes.has(hx):
+			m.wall_hexes.append(hx)
 	return m
 
 
@@ -53,9 +58,10 @@ func _span(col: int, row: int) -> Array[Vector2i]:
 	return out
 
 
-## Gate and rift hexes are structures: nobody stands on them, squads strike them.
+## Gate, rift and wall hexes are structures: nobody stands on them. Squads strike the gate;
+## the walls cannot be hurt.
 func is_structure(h: Vector2i) -> bool:
-	return gate_hexes.has(h) or rift_hexes.has(h)
+	return gate_hexes.has(h) or rift_hexes.has(h) or wall_hexes.has(h)
 
 
 static func generate(w: int, h: int, seed_value: int) -> BattleMap:

@@ -70,6 +70,7 @@ const TRIANGLE: Array[Vector2i] = [Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1
 
 # Skirmish loadout for mechs.
 var die: Die = null
+var paint: Dictionary = {}       # optional repaint: {"primary": Color, "secondary": Color}; empty means the maker's livery
 var passive: Dictionary = {}     # the chassis passive as content, for the codex; the engine runs modifiers
 var chassis_id: String = ""
 var hardpoints: int = 0          # free slots; the die is these plus the chassis's fixed components

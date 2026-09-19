@@ -98,7 +98,7 @@ Status: 71 implemented, 24 planned, 0 idea.
 | **Reinforcements** | Foes not yet on the field. Front and Back ranks have their own reinforcement pool. Empty slots refill from the pool of reinforcements after each round. The skirmish is won when the field and all reinforcements are defeated. | implemented |
 | **Splash** | Indirect fire on the front rank damages the firing unit equal to half the component's power, rounded up. | implemented |
 | **Massive** | A massive foe fills both slots of a column and counts as front rank. Its column is never exposed while it stands. Only some elites and bosses are massive. | implemented |
-| **Withdraw** | Available at the start of any round after the first, before any component is spent, so there is never free damage. Ends the skirmish; survivors on both sides carry their damage to the battlefield. Shields do not refill on withdrawing; they recharge at the field rate only in phases spent out of combat. | implemented |
+| **Withdraw** | Available at any point of the player's turn, the first round included. The price is always the same: the enemy takes its turn, then the team flees at the end of the round, so nobody leapfrogs out of contact unscathed. Ends the skirmish; survivors on both sides carry their damage to the battlefield. Shields do not refill on withdrawing; they recharge at the field rate only in phases spent out of combat. | implemented |
 | **Strike order** | Foes strike in the order they stand: front rank left to right, then the back rank. Each blow is resolved on its own against the shield standing at that moment, so which foe strikes first decides what a small shield blocks. At first contact the heaviest hitters deploy left. | implemented |
 
 ## Battlefield

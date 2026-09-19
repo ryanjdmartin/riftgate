@@ -267,26 +267,21 @@ func test_horde_keeps_coming() -> void:
 
 func test_withdraw_window() -> void:
 	var sk := Skirmish.new(1)
-	sk.add_mech(_mech("A", Die.single(Face.attack(10, L))))
+	var m := _mech("A", Die.single(Face.attack(10, L)), 0, 100)
+	sk.add_mech(m)
 	sk.add_foes([_ghoul(90, 10)])
 	sk.begin()
-	assert_false(sk.can_withdraw(), "not before the first round")
+	assert_true(sk.can_withdraw(), "open even before the first roll: the price is the same either way")
 	sk.start_round()
-	assert_true(sk.can_withdraw(), "open at the start of round one, before a face is spent")
+	assert_true(sk.can_withdraw(), "open at the start of round one")
 	sk.assign(0, sk.front[0])
-	assert_false(sk.can_withdraw(), "closed once a face is spent")
-	assert_false(sk.withdraw(), "withdraw refused mid-round")
+	assert_true(sk.can_withdraw(), "still open after spending: the price is the enemy turn, not the timing")
 	sk.end_round()
 	assert_true(sk.can_withdraw(), "between rounds")
 	sk.start_round()
-	assert_true(sk.can_withdraw(), "at the start of round two")
-	sk.assign(0, sk.front[0])
-	assert_false(sk.can_withdraw(), "not once a face is spent")
-	sk.end_round()
-	sk.start_round()
-	assert_true(sk.withdraw(), "withdrew at the start of round three")
+	assert_true(sk.withdraw(), "withdrew in round two")
 	assert_eq(sk.outcome, Skirmish.Outcome.WITHDRAWN, "outcome withdrawn")
-
+	assert_eq(m.hull, 80, "and the enemy struck on the way out, both rounds: no leapfrogging out unscathed")
 
 func test_rerolls_are_limited_and_work_after_attacking() -> void:
 	var sk := Skirmish.new(1)

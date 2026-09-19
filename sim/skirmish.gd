@@ -163,13 +163,11 @@ func any_assigned() -> bool:
 	return false
 
 
-## Withdraw is open at the start of any round, including the first, until a face is spent.
+## Withdraw is open at any point of the player's turn, the first round included. Its price is
+## always the same: the enemy takes its turn, then the team flees at the end of the round, so
+## there is no leapfrogging out of contact unscathed (Ryan, 19 September).
 func can_withdraw() -> bool:
-	if round == 0:
-		return false
-	if state == State.ROUND_START:
-		return true
-	return state == State.ASSIGN and not any_assigned()
+	return state == State.ROUND_START or state == State.ASSIGN
 
 
 ## Heat the mech's current face will add if it is spent as an attack.
@@ -363,6 +361,17 @@ func assign(mech_index: int, target = null) -> bool:
 
 func end_round() -> int:
 	assert(state == State.ASSIGN, "end_round called out of order")
+	_enemy_turn()
+	_reinforce(true)    # the reinforcement phase: a random waiting foe of the right rank per empty slot
+	_check_outcome()
+	if outcome == Outcome.NONE:
+		state = State.ROUND_START
+	return outcome
+
+
+## The enemy's turn: every foe on the field acts in order, statuses tick, timed effects run
+## out. Shared by the end of a round and by a withdrawal.
+func _enemy_turn() -> void:
 	turn_events.clear()
 	# Foes act in the order they stand: front rank left to right, then the back rank. Each
 	# foe's statuses tick at the start of its action (burning may kill it first), a
@@ -397,19 +406,19 @@ func end_round() -> int:
 		Effects.end_round(ms.unit, round)   # timed effects run out
 	for f in field_foes():
 		Effects.end_round(f, round)
-	_reinforce(true)    # the reinforcement phase: a random waiting foe of the right rank per empty slot
-	_check_outcome()
-	if outcome == Outcome.NONE:
-		state = State.ROUND_START
-	return outcome
 
 
 func withdraw() -> bool:
 	if not can_withdraw():
 		return false
-	outcome = Outcome.WITHDRAWN
+	if state == State.ROUND_START:
+		start_round()
+	log.append("Withdrawing: the enemy strikes as the team pulls out")
+	_enemy_turn()
+	outcome = Outcome.DEFEAT if live_mechs().is_empty() else Outcome.WITHDRAWN
 	_finish()
-	log.append("Withdrew at the start of round %d" % round)
+	if outcome == Outcome.WITHDRAWN:
+		log.append("Withdrew at the end of round %d" % round)
 	return true
 
 

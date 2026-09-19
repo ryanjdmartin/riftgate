@@ -66,6 +66,8 @@ var _t := 0.0
 var yaw: float = YAW_FRONT
 var pitch: float = PITCH          # camera tilt down; the map tokens look steeper (tools/map_tokens.gd)
 var token: bool = false           # a 24 px map token: no detail parts, no surface pass, lit from the viewer's side
+var hide_detail: bool = true      # in token mode: drop ".detail" parts (a structure sprite keeps them)
+var paint: Dictionary = {}        # optional repaint: {"primary": Color, "secondary": Color} over the maker's livery and bone plating
 var frame_override: Vector2i = Vector2i.ZERO
 const SPIN_SPEED := 0.7           # radians per second
 
@@ -86,6 +88,12 @@ var _model: Node3D
 
 static func has_model(chassis_id: String) -> bool:
 	return ResourceLoader.exists("res://art/models/%s.glb" % chassis_id)
+
+
+## Four toon tones from one colour, the way the maker ramps are built: two darker, the
+## colour itself, one lighter.
+static func ramp_for(c: Color) -> Array:
+	return [c.darkened(0.55).to_html(false), c.darkened(0.3).to_html(false), c.to_html(false), c.lightened(0.3).to_html(false)]
 
 
 ## Which glTF a chassis draws: its own, else the fallback. RIFTGATE_MECH3D_MODEL=<id> shows
@@ -128,12 +136,13 @@ static func look_setting() -> String:
 
 ## Build a view of a chassis in one of the two looks. Falls back to the given chassis when
 ## the wanted one has no model, so a screen can show one model in every slot.
-static func make(chassis_id: String, maker: String, look: String, fallback: String = "badger", yaw_deg: float = YAW_REAR, frame: Vector2i = Vector2i.ZERO, spinning: bool = false) -> MechView3D:
+static func make(chassis_id: String, maker: String, look: String, fallback: String = "badger", yaw_deg: float = YAW_REAR, frame: Vector2i = Vector2i.ZERO, spinning: bool = false, paint_arg: Dictionary = {}) -> MechView3D:
 	var v := MechView3D.new()
 	v.mode = look
 	v.yaw = yaw_deg
 	v.frame_override = frame
 	v.spin = spinning
+	v.paint = paint_arg
 	v._setup(model_for(chassis_id, fallback), maker)
 	return v
 
@@ -310,6 +319,11 @@ func _apply_materials(node: Node, maker: String) -> void:
 			if src != null:
 				role = src.resource_name.get_slice(".", 0).to_lower()
 			var ramp: Array = LIVERY.get(maker, LIVERY["minerva"]) if role == "livery" else RAMPS.get(role, RAMPS["steel"])
+			# A repaint: the primary colour takes the livery panels, the secondary the bone plating.
+			if role == "livery" and paint.has("primary"):
+				ramp = ramp_for(paint["primary"])
+			elif role == "white" and paint.has("secondary"):
+				ramp = ramp_for(paint["secondary"])
 			var m := ShaderMaterial.new()
 			m.shader = load("res://game/ui/mech_toon.gdshader")
 			for t in range(4):
@@ -325,7 +339,7 @@ func _apply_materials(node: Node, maker: String) -> void:
 				m.set_shader_parameter("gloss", 0.0)
 				m.set_shader_parameter("light_dir", Vector3(-0.4, 0.8, -0.45))
 			mi.set_surface_override_material(i, m)
-		if token and node.name.contains("detail"):
+		if token and hide_detail and node.name.contains("detail"):
 			mi.visible = false   # the spriter drops detail parts from tokens too
 	for c in node.get_children():
 		_apply_materials(c, maker)

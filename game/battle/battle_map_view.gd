@@ -149,10 +149,26 @@ func _draw() -> void:
 		draw_colored_polygon(pts, TERRAIN[map.terrain[h]])
 		TerrainArt.draw(self, center(h), HEX_SIZE, map.terrain[h], h.x * 131 + h.y * 7919, 0.9)
 		Hud.stroke_poly(self, pts, Color(hud, 0.10), 1.0)
+	# The wall and the gate along the bottom row: their sprites stand on the hexes, drawn
+	# before the units so a mech in front overlaps the top of the wall.
+	var wall_tex := Sprites.structure("wall")
+	for wh in map.wall_hexes:
+		var c := center(wh)
+		if wall_tex != null:
+			var ts := wall_tex.get_size() * SPRITE_SCALE
+			draw_texture_rect(wall_tex, Rect2((c - Vector2(ts.x * 0.5, ts.y - HEX_SIZE * 0.55)).floor(), ts), false)
+		else:
+			draw_colored_polygon(Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.MUTED, 0.35))
+	var gate_tex := Sprites.structure("gate")
 	for g in map.gate_hexes:
 		var pts := Hex.corners(center(g), HEX_SIZE - 3.0)
 		draw_colored_polygon(pts, Color(hud, 0.10))
-		Hud.stroke_poly(self, pts, Color(hud, 0.85), 2.0)
+		if gate_tex == null:
+			Hud.stroke_poly(self, pts, Color(hud, 0.85), 2.0)
+	if gate_tex != null:
+		var gc := center(map.gate)
+		var gs := gate_tex.get_size() * SPRITE_SCALE
+		draw_texture_rect(gate_tex, Rect2((gc - Vector2(gs.x * 0.5, gs.y - HEX_SIZE * 0.55)).floor(), gs), false)
 	for r in map.rift_hexes:
 		var pts := Hex.corners(center(r), HEX_SIZE - 3.0)
 		draw_colored_polygon(pts, Color("2a1a3f"))
