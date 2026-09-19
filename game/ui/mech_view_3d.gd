@@ -17,7 +17,7 @@ const CLEAN_SCALE := 2
 const PITCH := 30.0
 const YAW_FRONT := 45.0     # front three-quarter: the codex hero angle
 const YAW_REAR := 225.0     # rear three-quarter, kept for hero shots
-const YAW_SKIRMISH := 205.0 # the skirmish: rear three-quarter biased toward away, turned to the right: facing the foes above
+const YAW_SKIRMISH := 155.0 # the skirmish: rear three-quarter facing the foes above, turned to the left (the claw side shows)
 const FILL := 0.92
 
 # The spriter's tones, so 3D and sprites share a palette (tools/spriter/spriter.py).
