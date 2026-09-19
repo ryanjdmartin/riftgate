@@ -11,7 +11,7 @@ const CRIT_MULT := 2.0        # a crit multiplies the roll by this plus every cr
 
 enum Kind { ATTACK, SHIELD, VENT, BLANK }
 enum Reach { NONE, LINE, INDIRECT, MELEE }
-enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, OVERCHARGE, EXECUTE, CHAIN, STEADY }
+enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, OVERCHARGE, EXECUTE, CHAIN, STEADY, RAPID }
 
 const KIND_NAMES := {
 	Kind.ATTACK: "attack", Kind.SHIELD: "shield", Kind.VENT: "vent", Kind.BLANK: "blank",
@@ -22,7 +22,7 @@ const REACH_NAMES := {
 const KEYWORD_NAMES := {
 	Keyword.NONE: "", Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.BURN: "burn",
 	Keyword.SUPPRESS: "suppress", Keyword.OVERCHARGE: "overcharge", Keyword.EXECUTE: "execute",
-	Keyword.CHAIN: "chain", Keyword.STEADY: "steady",
+	Keyword.CHAIN: "chain", Keyword.STEADY: "steady", Keyword.RAPID: "rapid",
 }
 ## What the player reads where it differs from the content id (the vocabulary's name).
 const KEYWORD_LABELS := { Keyword.CLEAVE: "spread" }
@@ -47,6 +47,7 @@ var cracked: bool = false     # injured: modifiers gone, basic action intact
 var component: String = ""    # the component this entry is (content id); "" for an empty hardpoint
 var empty: bool = false       # an empty hardpoint: blank, and nothing was ever there to break
 var fixed: bool = false       # built into the chassis (no hardpoint); false means this entry is a hardpoint
+var disabled: bool = false    # a stand-in for an entry a status has switched off: blank for now, the real one is untouched
 
 
 ## `kws` may be a single Keyword or an Array of them. `pwr_max` of 0 means static.
@@ -90,6 +91,15 @@ static func blank() -> Face:
 	f.reach = Reach.NONE
 	f.power = 0
 	f.power_max = 0
+	return f
+
+
+## What the die shows while an entry is disabled: blank, but still that component's slot.
+static func disabled_stand_in(original: Face) -> Face:
+	var f := blank()
+	f.disabled = true
+	f.component = original.component
+	f.fixed = original.fixed
 	return f
 
 
@@ -200,6 +210,7 @@ func duplicate_face() -> Face:
 	f.component = component
 	f.empty = empty
 	f.fixed = fixed
+	f.disabled = disabled
 	for k in keywords:
 		f.keywords.append(k)
 	return f
@@ -224,6 +235,8 @@ func describe() -> String:
 	var s := ""
 	match kind:
 		Kind.BLANK:
+			if disabled:
+				return "disabled"
 			return "empty hardpoint" if empty else "destroyed"
 		Kind.SHIELD:
 			s = "shield %d" % power

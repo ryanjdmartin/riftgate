@@ -102,7 +102,7 @@ func strikes() -> int:
 ## a field of its own.
 ## breach: overflows shield into hull. scorch: stacks Overheating on the mech it hits (a
 ## placeholder name; the mech-side heat DOT Ryan asked for).
-const ATTACK_KEYWORDS := ["breach", "scorch"]
+const ATTACK_KEYWORDS := ["breach", "scorch", "disable"]   # disable: switches off the entry the target's die shows, through its next turn
 
 
 func has_keyword(a: Dictionary, k: String) -> bool:

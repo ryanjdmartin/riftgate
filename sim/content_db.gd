@@ -331,7 +331,7 @@ func _validate_vocabulary(errs: Array[String]) -> void:
 	for id in vocabulary.keys():
 		var e: Dictionary = vocabulary[id]
 		if e.get("category") == "keyword" and e.get("status") == "implemented":
-			if Face.keyword_from_name(id) < 0:
+			if Face.keyword_from_name(id) < 0 and not Foe.ATTACK_KEYWORDS.has(id):
 				errs.append("vocabulary keyword '%s' is marked implemented but the engine has no such keyword" % id)
 
 

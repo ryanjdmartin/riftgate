@@ -4,7 +4,7 @@ Handoff note for the next session. Replace stale lines; keep it under a screen.
 
 ## As of 18 September 2026
 
-**State.** Everything committed. Tests: 147 tests, 1719 checks, green. Ryan is editing
+**State.** Everything committed. Tests: 150 tests, 1737 checks, green. Ryan is editing
 `content/*.json` in his own voice (reload the file after any pass that touches it).
 
 **Setting, decided.** The governing body is the Council for the Ultimate Liberation of Terra,
@@ -108,6 +108,13 @@ none written yet.
 The die screen (double-tap a die) is a breakdown: no model, no rules line, one column
 of components with their names (FaceListView.labels), and every live effect on the mech
 listed with stacks, source and how long (`_modifier_lines`).
+Rapid (player keyword) and disable (foe attack keyword) are built: an entry can be switched
+off by a status (`Effects.disable_entry`, `MechState.face()` returns a blank stand-in with
+`disabled` set); rapid switches its own entry off for the round, rerolls free and leaves the
+mech unspent; a foe's disable switches off the showing entry through the mech's next turn.
+The die screen and the hold readout label every entry with its component name; the die
+screen tags each entry with the effects that apply to it now (`Effects.explain`) and lists
+every live effect in words (`Effects.effect_text`) instead of its description.
 Open, discussed 18 September, not built: component stat modifiers as content
 and granted passives with totals shown as base plus bonus, a fixed colour standard for a
 protanomalous player, movespeed granularity.

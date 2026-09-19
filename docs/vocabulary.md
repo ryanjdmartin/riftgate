@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 68 implemented, 27 planned, 0 idea.
+Status: 71 implemented, 24 planned, 0 idea.
 
 ## Resource
 
@@ -64,9 +64,9 @@ Status: 68 implemented, 27 planned, 0 idea.
 | **Overcharge** | Double the component's damage and double its heat. | implemented |
 | **Execute** | +100% damage against a foe at or below half its health. Reduced to +50% against bosses and elites. | implemented |
 | **Chain** | If this attack kills an enemy, repeat it on a new, valid target. | implemented |
-| **Rapid** | After this component is spent, it becomes Disabled for the remainder of this turn. This die is then re-rolled and becomes unspent. | planned |
+| **Rapid** | After this component is spent, it is switched off for the rest of this round, the die rerolls for free (never the same entry), and the mech may act again. The switch-off only stops an infinite turn. | implemented |
 | **Steady** | A component with steady always uses its average damage as its base damage. It may still crit. | implemented |
-| **Disable** | Enemy keyword. One random component of target unit becomes effectively blank until end of next round. | planned |
+| **Disable** | Enemy keyword. The component the target's die is showing is switched off through the target's next turn: if the die lands on it, it comes up blank. | implemented |
 | **Corrupt** | Enemy keyword. Target unit's currently visible component deals damage to its owner whenever spent. Stacks. | planned |
 | **Energy Armour** | Player status. Until end of round, attacks that strike shield are reduced by a flat amount. Stacks. | planned |
 | **Scramble** | Player keyword. Randomize the enemy's intended target. | planned |
@@ -77,7 +77,7 @@ Status: 68 implemented, 27 planned, 0 idea.
 | Term | Codex | Status |
 |---|---|---|
 | **Retaliate** | Until the end of this round, foes that strike this unit lose HP equal to this component's power. Stacks. | planned |
-| **Disabled** | Component status. This component is effectively blank until the end of this round. Can be cleansed. | planned |
+| **Disabled** | Component status. This die entry comes up blank while it lasts; the component itself is untouched. A foe's disable lasts through the mech's next turn; a rapid component's own switch-off ends with the round. Can be cleansed. | implemented |
 | **Corrupted** | Component status. Deals damage to this unit when spent. Stacks. Clears at end of skirmish. Can be cleansed. | planned |
 | **Phased** | Player and enemy status. This unit cannot attack, nor can it be damaged by attacks, until end of round. | planned |
 | **Taunt** | Player status. Until end of round, all front-rank foes will target this unit. | planned |
@@ -190,6 +190,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Damage range** (implemented): Ranges are content-authored per component; no upgrade path raises min or max yet.
 - **Critical hit** (implemented): The base is Face.CRIT_MULT, a balance knob; lower it if crit triggers make crits too strong at low chance.
 - **Retaliate** (planned): Would need shield sources to be tracked separately.
+- **Disabled** (implemented): Cleanse does not exist yet.
 - **Cracked component** (implemented): Threshold is a placeholder. Repair cost and the hangar screen are not built.
 - **Reinforcements** (implemented): Elites should surface at set points rather than in pool order.
 - **Massive** (implemented): Cleave treats it as a front-rank neighbour; pierce cannot hit anything behind it because nothing is.

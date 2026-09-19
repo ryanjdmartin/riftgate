@@ -47,7 +47,7 @@ const SUPPORTED_EFFECTS := {
 	"on_crit": ["multiply_damage", "add_damage", "add_burn", "vent_heat", "add_crit_damage"],
 	"on_injury": ["no_destroy"],
 	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress"],
-	"status": ["tick_hp", "tick_heat", "skip_action", "resist_suppress"],
+	"status": ["tick_hp", "tick_heat", "skip_action", "resist_suppress", "disable_entry"],
 }
 const DECAY_NONE := 0    # lives until its scope ends
 const DECAY_TICK := 1    # loses a stack each tick, gone at zero
@@ -409,6 +409,80 @@ static func no_destroy(u, face: Face) -> bool:
 		if str(pair[0].get("effect", "")) == "no_destroy":
 			return true
 	return false
+
+
+## Switch one die entry off until the end of `until_round`: the entry shows blank, the
+## component itself is untouched. Applied to the target's showing entry by a foe's disable
+## (through the mech's next turn) and by a mech's own rapid component (this round only).
+static func disable_entry(u, index: int, source: String, until_round: int) -> Modifier:
+	var status := {"id": "disabled_%d" % index, "name": "Disabled", "description": "This component is switched off.",
+		"effects": [{"trigger": "status", "effect": "disable_entry", "value": index}]}
+	return grant_for_rounds(u, status, source, until_round)
+
+
+static func is_entry_disabled(u, index: int) -> bool:
+	for pair in _taking_part(u, "status", null):
+		if str(pair[0].get("effect", "")) == "disable_entry" and int(pair[0].get("value", -1)) == index:
+			return true
+	return false
+
+
+## One effect in plain words, the way the die screen prints it: what it does, and when.
+static func effect_text(eff: Dictionary) -> String:
+	var v = eff.get("value", 0)
+	var vs := str(v) if not (v is float) else (str(v) if v != floorf(v) else str(int(v)))
+	var body := ""
+	match str(eff.get("effect", "")):
+		"multiply_damage": body = "damage ×%s" % vs
+		"add_damage": body = "damage +%s" % vs
+		"min_damage": body = "damage at least %s" % vs
+		"multiply_heat": body = "heat ×%s" % vs
+		"add_heat": body = "heat +%s" % vs
+		"add_burn": body = "+%s burn" % vs
+		"vent_heat": body = "vents %s heat" % vs
+		"add_crit_damage": body = "crit multiplier +%s" % vs
+		"no_destroy": body = "cracked components are never destroyed"
+		"set_reach": body = "reach becomes %s" % vs
+		"add_stat": body = "%s +%s" % [str(eff.get("stat", "")), vs]
+		"multiply_stat": body = "%s ×%s" % [str(eff.get("stat", "")), vs]
+		"add_damage_taken": body = "damage taken +%s" % vs
+		"multiply_damage_taken": body = "damage taken ×%s" % vs
+		"suppress": body = "turns off %s" % vs
+		"tick_hp": body = "%s damage per stack each turn" % vs
+		"tick_heat": body = "%s heat per stack each turn" % vs
+		"skip_action": body = "skips its action"
+		"resist_suppress": body = "resists suppress %s%% per stack" % vs
+		"disable_entry": body = "die entry %s switched off" % str(int(v) + 1)
+		_: body = str(eff.get("effect", ""))
+	var lead := ""
+	match str(eff.get("trigger", "")):
+		"on_crit": lead = "on a crit: "
+		"on_injury": lead = "on an injury: "
+	match str(eff.get("when", "")):
+		"component_cracked": lead += "cracked components: "
+		"reach_melee": lead += "melee attacks: "
+		"reach_line": lead += "line-of-sight attacks: "
+		"reach_indirect": lead += "indirect attacks: "
+	return lead + body
+
+
+## The effects that apply to this component right now, as short tags with their source:
+## what the row on the die screen shows beside the component's name.
+static func explain(u, face: Face) -> Array[String]:
+	var out: Array[String] = []
+	if face == null or not face.is_attack():
+		return out
+	for m in live(u):
+		for eff in m.effects:
+			var trig := str(eff.get("trigger", ""))
+			var name := str(eff.get("effect", ""))
+			if trig == "static" and name == "set_reach":
+				if not str(eff.get("when", "")).begins_with("reach_") and _usable(u, m, name) and _holds(u, eff, face) and effective_reach(u, face) == Face.reach_from_name(str(eff.get("value", ""))) and effective_reach(u, face) != face.reach:
+					out.append("%s (%s)" % [effect_text(eff), m.name])
+			elif trig == "on_attack" or trig == "on_crit":
+				if _usable(u, m, name) and _holds(u, eff, face):
+					out.append("%s (%s)" % [effect_text(eff), m.name])
+	return out
 
 
 ## What the codex lists: every live modifier as [name, description, source, scope].

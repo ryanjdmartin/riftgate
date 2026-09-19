@@ -981,3 +981,65 @@ func test_stacked_adds_scale_with_stacks() -> void:
 	Effects.stack(u, plating, Effects.SKIRMISH, "component", 2, Effects.DECAY_NONE)
 	assert_eq(u.modifiers.size(), 1, "the same status stacks instead of doubling")
 	assert_eq(u.armour, 15, "five per stack, three stacks")
+
+
+func test_rapid_rolls_again_for_free_and_switches_itself_off_for_the_round() -> void:
+	var sk := Skirmish.new(2)
+	var gun := Face.attack(10, L, K.RAPID)
+	var d := Die.of([gun, Face.attack(30, L)])
+	var m := _mech("A", d)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(200)])
+	sk.begin()
+	sk.start_round()
+	sk.mechs[0].face_index = 0
+	assert_true(sk.assign(0, sk.front[0]), "fire the rapid gun")
+	assert_eq(sk.front[0].hp, 190, "ten landed")
+	assert_false(sk.mechs[0].assigned, "the mech may act again")
+	assert_eq(sk.rerolls_left, 3, "the reroll was free")
+	assert_eq(sk.mechs[0].face_index, 1, "the die rolled to the other entry, never the same one")
+	assert_true(sk.mechs[0].die.faces[0].has(K.RAPID), "the component itself is untouched")
+	sk.mechs[0].face_index = 0
+	assert_eq(sk.mechs[0].face().describe(), "disabled", "but shown, the rapid entry is switched off for the round")
+	sk.mechs[0].face_index = 1
+	assert_true(sk.assign(0, sk.front[0]), "and the second spend goes through")
+	assert_eq(sk.front[0].hp, 160, "thirty more")
+	sk.end_round()
+	sk.start_round()
+	sk.mechs[0].face_index = 0
+	assert_false(sk.mechs[0].face().disabled, "back next round")
+
+
+func test_a_foe_disable_switches_off_the_showing_entry_through_the_next_turn() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.attack(30, L)), 0, 200)
+	sk.add_mech(m)
+	var jammer := Foe.make("whisperer", 90, 10)
+	jammer.actions[0]["keywords"] = ["disable"]
+	sk.add_foes([jammer])
+	sk.begin()
+	sk.start_round()
+	sk.end_round()
+	sk.start_round()
+	assert_eq(sk.mechs[0].face().describe(), "disabled", "the entry comes up blank on the mech's next turn")
+	assert_true(sk.targets_for(0).is_empty(), "no targets from a blank")
+	sk.assign(0, sk.front[0])
+	assert_eq(sk.front[0].hp, 90, "spending a blank does nothing")
+	sk._suppress(sk.front[0])   # or it would disable again
+	sk.end_round()
+	sk.start_round()
+	assert_eq(sk.mechs[0].face().describe(), "30", "and it is back the turn after")
+
+
+func test_the_die_screen_explains_what_applies_to_a_component() -> void:
+	var u := Unit.mech(0, "A", Vector2i.ZERO)
+	var mortar := Face.attack(30, I)
+	u.grant_passive({"id": "rs", "name": "Reinforced Skeleton", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "multiply_damage", "value": 1.1, "when": "reach_melee"},
+		{"trigger": "static", "effect": "set_reach", "value": "melee", "when": "component_cracked"}]})
+	assert_true(Effects.explain(u, mortar).is_empty(), "nothing applies to an intact mortar")
+	mortar.crack()
+	var notes := Effects.explain(u, mortar)
+	assert_eq(notes.size(), 2, "cracked: the reach change and the melee bonus both apply")
+	assert_true(notes[0].contains("reach becomes melee (Reinforced Skeleton)") or notes[1].contains("reach becomes melee (Reinforced Skeleton)"), "the reach change names its source")
+	assert_eq(Effects.effect_text({"trigger": "on_injury", "effect": "no_destroy", "value": 1}), "on an injury: cracked components are never destroyed", "effects read as sentences")

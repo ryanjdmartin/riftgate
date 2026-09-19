@@ -712,9 +712,10 @@ func _refresh_arrows() -> void:
 
 ## Hold readout beside a control: a text block, then for a die every face in a column, or
 ## for a unit its statuses and warnings as icon-and-text rows.
-func _show_details(text: String, near: Control, faces: Array = [], current: int = -1, rows: Array = []) -> void:
+func _show_details(text: String, near: Control, faces: Array = [], current: int = -1, rows: Array = [], labels: Array = []) -> void:
 	_details_label.text = text
 	_details_faces.visible = not faces.is_empty()
+	_details_faces.labels = labels
 	if not faces.is_empty():
 		_details_faces.set_faces(faces, current)
 	_details_status.set_rows(rows)
@@ -792,13 +793,7 @@ func _on_die_double_tapped(i: int) -> void:
 	entry["stat_items"] = []
 	entry["faces"] = _shown_faces(ms)
 	entry["face_columns"] = 1
-	var labels: Array = []
-	for f in ms.die.faces:
-		if f.empty:
-			labels.append("EMPTY HARDPOINT")
-		else:
-			labels.append(db.component_name(f.component).to_upper() + (" // FIXED" if f.fixed else ""))
-	entry["face_labels"] = labels
+	entry["face_labels"] = _face_labels(ms, true)
 	entry["current"] = ms.face_index
 	entry["passive"] = ""
 	entry["modifiers"] = _modifier_lines(ms.unit)
@@ -806,7 +801,29 @@ func _on_die_double_tapped(i: int) -> void:
 	_open_codex(entry)
 
 
-## Every live effect on a mech as the die screen prints it: name, stacks, source, how long.
+## One label per die entry: the component's name, FIXED where it is built in, and, with
+## `tags`, the effects that apply to it right now with their source.
+func _face_labels(ms: Skirmish.MechState, tags: bool) -> Array:
+	var db := ContentDB.load_default()
+	var labels: Array = []
+	for i in range(ms.die.faces.size()):
+		var f: Face = ms.die.faces[i]
+		if f.empty:
+			labels.append("EMPTY HARDPOINT")
+			continue
+		var label := db.component_name(f.component).to_upper() + (" // FIXED" if f.fixed else "")
+		if Effects.is_entry_disabled(ms.unit, i):
+			label += " // DISABLED"
+		if tags:
+			var notes: Array[String] = Effects.explain(ms.unit, f)
+			if not notes.is_empty():
+				label += "  · " + " · ".join(notes)
+		labels.append(label)
+	return labels
+
+
+## Every live effect on a mech as the die screen prints it: name, stacks, source, how long,
+## then each of its effects in plain words.
 func _modifier_lines(u: Unit) -> String:
 	var db := ContentDB.load_default()
 	var lines: Array[String] = []
@@ -819,7 +836,10 @@ func _modifier_lines(u: Unit) -> String:
 		var head: String = str(m.name).to_upper()
 		if m.stacks > 1:
 			head += " ×%d" % m.stacks
-		lines.append("%s  [%s, %s]\n  %s" % [head, source, scope, m.description])
+		var parts: Array[String] = []
+		for eff in m.effects:
+			parts.append("  " + Effects.effect_text(eff))
+		lines.append("%s  [%s, %s]\n%s" % [head, source, scope, "\n".join(parts)])
 	if lines.is_empty():
 		return "EFFECTS: none"
 	return "EFFECTS\n" + "\n".join(lines)
@@ -835,7 +855,7 @@ func _shown_faces(ms: Skirmish.MechState) -> Array:
 
 func _on_die_held(i: int) -> void:
 	var ms: Skirmish.MechState = sk.mechs[i]
-	_show_details("%s // D%d" % [ms.unit.display_name.to_upper(), ms.die.size()], _dice[i], _shown_faces(ms), ms.face_index)
+	_show_details("%s // D%d" % [ms.unit.display_name.to_upper(), ms.die.size()], _dice[i], _shown_faces(ms), ms.face_index, [], _face_labels(ms, false))
 
 
 func _on_foe_held(v: UnitView) -> void:

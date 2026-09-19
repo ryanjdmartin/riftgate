@@ -36,9 +36,13 @@ class MechState:
 	var locked: bool = false
 	var assigned: bool = false
 
+	## The entry showing, as it is right now: a disabled one shows as blank (the component
+	## itself is untouched; the status is what says so).
 	func face() -> Face:
 		if face_index < 0 or face_index >= die.faces.size():
 			return null
+		if Effects.is_entry_disabled(unit, face_index):
+			return Face.disabled_stand_in(die.faces[face_index])
 		return die.faces[face_index]
 
 	func alive() -> bool:
@@ -346,6 +350,14 @@ func assign(mech_index: int, target = null) -> bool:
 				return false
 			_resolve_attack(mech_index, ms, f, target)
 	ms.assigned = true
+	# Rapid: the component is switched off for the rest of this round, the die rerolls for
+	# free (never the same entry), and the mech may act again. The disable is only there to
+	# stop an infinite turn.
+	if f.has(Face.Keyword.RAPID):
+		Effects.disable_entry(ms.unit, ms.face_index, "rapid", round)
+		ms.face_index = ms.die.reroll(rng, ms.face_index)
+		ms.assigned = false
+		log.append("%s: rapid, rolls again" % ms.unit.display_name)
 	return true
 
 
@@ -376,6 +388,10 @@ func end_round() -> int:
 			_damage_mech(t, f.damage(), f)
 			if f.has_keyword(f.action, "scorch") and t.alive():
 				Effects.stack(t.unit, Effects.STATUS["overheating"], Effects.SKIRMISH, "foe:" + f.content_id)
+			if f.has_keyword(f.action, "disable") and t.alive() and t.face_index >= 0:
+				# The entry the die shows is switched off through the mech's next turn.
+				Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, round + 1)
+				log.append("%s disables %s's %s" % [f.display_name, t.unit.display_name, t.die.faces[t.face_index].describe()])
 	_clear_dead()
 	for ms in mechs:
 		Effects.end_round(ms.unit, round)   # timed effects run out
