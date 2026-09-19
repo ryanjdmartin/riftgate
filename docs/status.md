@@ -61,6 +61,12 @@ the .blend files; rerun export and the sprite tool after. Per-mech repaint exist
 `Unit.paint` {primary, secondary} recolours the livery and bone plating (`MechView3D.paint`,
 `ramp_for`); `RIFTGATE_PAINT=badger:ff8800/223344` previews it. Nothing sets it in play yet.
 
+**True 3D battlefield (19 September, decided).** Bible: the battlefield is 3D and the rift's world
+bleeds in as flat 2D (gradient toward the rift plus radii around squads; foes are flat
+images with no 3D cues; contact flattens the camera into the skirmish look; terrain marks
+as a ground texture). Not built yet beyond the experiment: the compositor of the 3D
+viewport and the existing 2D map by a mask, the prop collapse, the contact transition,
+zoom. Fiction frame (tactical reconstruction) proposed, awaiting Ryan.
 **True 3D battlefield (19 September, experiment).** `RIFTGATE_MAP3D=1` swaps the map's
 ground, structures and units for geometry in `game/battle/map_3d.gd` (a SubViewport the map
 view draws behind its overlays): hex ground stretched in depth so it projects onto the 2D
