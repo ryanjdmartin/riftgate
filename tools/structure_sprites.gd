@@ -9,7 +9,7 @@ extends SceneTree
 
 const PITCH := 42.0
 const YAW := 180.0   # facing north, away from the camera
-const FRAMES := {"gate": Vector2i(76, 44), "wall": Vector2i(26, 30)}
+const FRAMES := {"gate": Vector2i(92, 62), "wall": Vector2i(31, 40)}
 const SETTLE := 4
 
 var _views: Dictionary = {}
