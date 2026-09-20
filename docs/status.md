@@ -2,9 +2,9 @@
 
 Handoff note for the next session. Replace stale lines; keep it under a screen.
 
-## As of 18 September 2026
+## As of 20 September 2026
 
-**State.** Everything committed. Tests: 150 tests, 1737 checks, green. Ryan writes
+**State.** Everything committed. Tests: 151 tests, 1746 checks, green. Ryan writes
 `content/*.json` in his own voice (reload after any pass that touches it). The rules are in
 `docs/vocabulary.md` (generated) and every decision in `docs/design-bible.html`; the
 vocabulary carries an `order_of_operations` rule that the engine follows.
@@ -56,8 +56,12 @@ three-hex gate; walls are structures (nobody stands there, nothing hurts them). 
 code-massed: `tools/blendforge/structures.py` (gate with two tower guns, wall segment),
 `forge.py structures` builds `models/gate.blend`, `models/wall.blend` and exports the glTFs;
 `tools/structure_sprites.gd` renders `art/structures/gate.png` (76x44) and `wall.png`
-(26x30) from the map's angle; `BattleMapView` draws them under the units. Ryan may reshape
-the .blend files; rerun export and the sprite tool after. Per-mech repaint exists:
+from the map's angle; `BattleMapView` draws them under the units. Ryan may reshape
+the .blend files; rerun export and the sprite tool after. Rebuilt 20 September to feel epic:
+wall body 70 high, a gatehouse above it with a tall narrow pointed mouth in three stepped
+reveals, towers of 112 with fins and bigger guns, blades along every top edge in place of
+crenellations (Ryan: sand-castle squares make it small). Sprite frames 92x70 and 31x48
+(widths fix the hex scale, heights follow the projected aspect). Not yet seen in play by Ryan. Per-mech repaint exists:
 `Unit.paint` {primary, secondary} recolours the livery and bone plating (`MechView3D.paint`,
 `ramp_for`); `RIFTGATE_PAINT=badger:ff8800/223344` previews it. Nothing sets it in play yet.
 
@@ -66,7 +70,11 @@ bleeds in as flat 2D (gradient toward the rift plus radii around squads; foes ar
 images with no 3D cues; contact flattens the camera into the skirmish look; terrain marks
 as a ground texture). Not built yet beyond the experiment: the compositor of the 3D
 viewport and the existing 2D map by a mask, the prop collapse, the contact transition,
-zoom. Fiction frame (tactical reconstruction) proposed, awaiting Ryan.
+zoom. Fiction frame decided 20 September: the screen is CARE's tactical reconstruction
+(survey plus telemetry; the rift's world returns flat; contact hands over to the feed), with
+sensor language for the HUD (contacts, returns, projections) wanted. Open, awaiting Ryan: what
+keeps the rift's world out of the city, since a wall can be flown over. Proposal in the bible:
+an energy field with the gate as its projector, the mouth its one blind spot.
 **True 3D battlefield (19 September, experiment).** `RIFTGATE_MAP3D=1` swaps the map's
 ground, structures and units for geometry in `game/battle/map_3d.gd` (a SubViewport the map
 view draws behind its overlays): hex ground stretched in depth so it projects onto the 2D
@@ -95,8 +103,11 @@ adding joints and pins by hand; the file has `hp_3` and `hp_4` on the tubes so f
 4. Design still open: player interaction with the reinforcement phase; skirmish
    composition follows battlefield placement (rules and rules text needed); battlefield
    landscape, terrain costs and movespeed in tens; the economy (salvage from rift wrecks,
-   research tokens, hangar repair and refit); base defences: how the gate guns attack and
-   are attacked (proposal in chat, 19 September), then deployable turrets.
+   research tokens, hangar repair and refit); the city's enclosure (field, dome or mountain;
+   bible, 20 September); base defences: how the gate guns attack and are attacked (proposal
+   in chat, 19 September), then deployable turrets.
+   Build next, once the enclosure is picked: the 3D map compositor (mask of north gradient,
+   squad radii and rift; prop collapse; terrain marks as a ground texture; contact transition).
 5. Art: wear tuning by eye; livery on a rear or top plate; the other makers' manners on
    real models; enemy art for the eight foes still on sketch grids; gate, defences and
    hangar as models; the other chassis borrow the Badger's model and tokens.
