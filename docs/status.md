@@ -4,7 +4,7 @@ Handoff note for the next session. Replace stale lines; keep it under a screen.
 
 ## As of 20 September 2026
 
-**State.** Everything committed. Tests: 151 tests, 1746 checks, green. Ryan writes
+**State.** Everything committed. Tests: 151 tests, 1767 checks, green. Ryan writes
 `content/*.json` in his own voice (reload after any pass that touches it). The rules are in
 `docs/vocabulary.md` (generated) and every decision in `docs/design-bible.html`; the
 vocabulary carries an `order_of_operations` rule that the engine follows.
