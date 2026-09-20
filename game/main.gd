@@ -50,7 +50,7 @@ func _build(s: int) -> void:
 	var gate_o := Hex.axial_to_offset(map.gate)
 	var i := 0
 	for m in Loadouts.sample_mechs():
-		var want := Hex.offset_to_axial(gate_o.x - 1 + i, gate_o.y - 1)
+		var want := Hex.offset_to_axial(gate_o.x - 1 + i, gate_o.y - BattleMap.GATE_ROWS)
 		m.pos = field.nearest_standable(m, want)
 		field.add_unit(m)
 		i += 1

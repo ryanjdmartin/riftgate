@@ -18,16 +18,20 @@ const TERRAIN_WEIGHTS := {
 }
 
 var width: int = 7
-var height: int = 13
+var height: int = 14              # 14 rows: the rift, eleven of open ground, two of gate and wall
 var terrain: Dictionary = {}  # Vector2i (axial) -> Terrain
 var gate: Vector2i            # centre of the gate structure
 var rift: Vector2i            # centre of the rift structure
-var gate_hexes: Array[Vector2i] = []   # the gate is wider than one hex
+var gate_hexes: Array[Vector2i] = []   # the gate: three wide and GATE_ROWS deep, apron included
 var rift_hexes: Array[Vector2i] = []
-var wall_hexes: Array[Vector2i] = []   # the rest of the bottom row: indestructible, nobody stands there
+var wall_hexes: Array[Vector2i] = []   # the rest of the bottom GATE_ROWS rows: indestructible, nobody stands there
 var map_seed: int = 0
 
 const STRUCTURE_HALF_WIDTH := 1   # gate and rift span centre plus this many hexes each side
+## The gate and the walls are two rows deep: the models stand on the bottom row and the row
+## above is their apron, so the wall never hides a unit behind it from the map camera
+## (Ryan, 20 September). A squad strikes the gate from the row above the apron.
+const GATE_ROWS := 2
 
 
 ## A map of nothing but plain ground. Used by tests and as a fallback.
@@ -40,12 +44,14 @@ static func flat(w: int, h: int) -> BattleMap:
 			m.terrain[Hex.offset_to_axial(col, row)] = Terrain.PLAIN
 	m.gate = Hex.offset_to_axial(w / 2, h - 1)
 	m.rift = Hex.offset_to_axial(w / 2, 0)
-	m.gate_hexes = m._span(w / 2, h - 1)
 	m.rift_hexes = m._span(w / 2, 0)
-	for col in range(w):
-		var hx := Hex.offset_to_axial(col, h - 1)
-		if not m.gate_hexes.has(hx):
-			m.wall_hexes.append(hx)
+	for row in range(h - GATE_ROWS, h):
+		var span := m._span(w / 2, row)
+		m.gate_hexes.append_array(span)
+		for col in range(w):
+			var hx := Hex.offset_to_axial(col, row)
+			if not span.has(hx):
+				m.wall_hexes.append(hx)
 	return m
 
 
@@ -141,6 +147,9 @@ func find_path(from: Vector2i, to: Vector2i, traits: Array, blocked: Dictionary 
 	var dist := {from: 0}
 	var prev := {}
 	var frontier: Array = [[0, from]]
+	# A path that starts inside the gate may cross the rest of the gate (its apron) to get
+	# out; that is how the gate-to-rift guarantee is checked. Nothing else crosses a structure.
+	var own_gate := gate_hexes.has(from)
 	while not frontier.is_empty():
 		var best := 0
 		for i in range(1, frontier.size()):
@@ -156,7 +165,7 @@ func find_path(from: Vector2i, to: Vector2i, traits: Array, blocked: Dictionary 
 		for n in Hex.neighbors(h):
 			if not has(n):
 				continue
-			if n != to and (blocked.has(n) or is_structure(n)):
+			if n != to and (blocked.has(n) or (is_structure(n) and not (own_gate and gate_hexes.has(n)))):
 				continue
 			var t: int = terrain[n]
 			if not passable(t, traits):

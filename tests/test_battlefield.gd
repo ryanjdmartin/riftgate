@@ -105,15 +105,16 @@ func test_squad_stops_short_of_flyer_destination() -> void:
 func test_gate_takes_damage_when_squad_arrives() -> void:
 	var f := _field()
 	var gate_o := Hex.axial_to_offset(f.map.gate)
-	var sq := f.add_unit(Unit.squad(1, "ghouls", _o(gate_o.x, gate_o.y - 1), "undead", 2, 6))
+	var front := _o(gate_o.x, gate_o.y - BattleMap.GATE_ROWS)   # the open row above the apron
+	var sq := f.add_unit(Unit.squad(1, "ghouls", front, "undead", 2, 6))
 	f.compute_intents()
 	assert_eq(f.intents[1].size(), 1, "preview shows the strike")
-	assert_eq(f.intents[1][0], f.map.gate, "preview targets the gate")
+	assert_true(f.map.gate_hexes.has(f.intents[1][0]), "preview targets the gate (its apron)")
 	var hp := f.gate_hp
 	var res := f.resolve_phase({})
 	assert_true(f.gate_hp < hp, "gate lost hp")
 	assert_eq(res.gate_damage, hp - f.gate_hp, "damage reported")
-	assert_eq(sq.pos, _o(gate_o.x, gate_o.y - 1), "squad holds position at the gate")
+	assert_eq(sq.pos, front, "squad holds position at the gate")
 
 
 func test_aggro_squad_hunts_nearest_mech() -> void:
@@ -176,9 +177,9 @@ func test_boss_touches_from_any_of_its_hexes() -> void:
 
 func test_gate_is_wider_than_one_hex() -> void:
 	var f := _field()
-	assert_eq(f.map.gate_hexes.size(), 3, "three gate hexes")
+	assert_eq(f.map.gate_hexes.size(), 3 * BattleMap.GATE_ROWS, "three gate hexes per gate row")
 	assert_eq(f.map.rift_hexes.size(), 3, "three rift hexes")
-	var side: Vector2i = f.map.gate_hexes[0]
+	var side: Vector2i = f.map.gate_hexes[0]   # the apron row comes first: a squad strikes from above it
 	var side_o := Hex.axial_to_offset(side)
 	var sq := f.add_unit(Unit.squad(1, "ghouls", _o(side_o.x, side_o.y - 1), "undead", 2))
 	f.compute_intents()
@@ -191,7 +192,7 @@ func test_gate_is_wider_than_one_hex() -> void:
 func test_nobody_stands_on_structures() -> void:
 	var f := _field()
 	var gate_o := Hex.axial_to_offset(f.map.gate)
-	var m := f.add_unit(Unit.mech(1, "A", _o(gate_o.x, gate_o.y - 1), 3))
+	var m := f.add_unit(Unit.mech(1, "A", _o(gate_o.x, gate_o.y - BattleMap.GATE_ROWS), 3))
 	var r := f.reachable(m)
 	for g in f.map.gate_hexes:
 		assert_false(r.has(g), "gate hex %s not reachable" % str(g))

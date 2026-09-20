@@ -60,7 +60,7 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 	var gate_o := Hex.axial_to_offset(map.gate)
 	var i := 0
 	for u in team:
-		var want := Hex.offset_to_axial(gate_o.x - 1 + i, gate_o.y - 1)
+		var want := Hex.offset_to_axial(gate_o.x - 1 + i, gate_o.y - BattleMap.GATE_ROWS)
 		u.pos = field.nearest_standable(u, want)
 		field.add_unit(u)
 		i += 1
