@@ -54,15 +54,13 @@ plays on the enemy turn replay. Skirmish mechs face the foes (`YAW_SKIRMISH` 155
 **Structures (19 September).** `BattleMap.wall_hexes` fills the bottom row beside the
 three-hex gate; walls are structures (nobody stands there, nothing hurts them). Models are
 code-massed: `tools/blendforge/structures.py` (gate with two tower guns, wall segment),
-`forge.py structures` builds `models/gate.blend`, `models/wall.blend` and exports the glTFs;
-`tools/structure_sprites.gd` renders `art/structures/gate.png` (76x44) and `wall.png`
-from the map's angle; `BattleMapView` draws them under the units. Ryan may reshape
-the .blend files; rerun export and the sprite tool after. Rebuilt 20 September to feel epic:
-wall body 70 high, a gatehouse above it with a tall narrow pointed mouth in three stepped
-reveals, towers of 112 with fins and bigger guns, blades along every top edge in place of
-crenellations (Ryan: sand-castle squares make it small). The 3D battlefield places the glTFs
-directly; the 2D sprites were not regenerated and the sprite tool is dead once the 2D path
-goes. Not yet seen in play by Ryan. Per-mech repaint exists:
+`forge.py structures` builds `models/gate.blend`, `models/wall.blend` and exports the glTFs,
+which `Map3D` places on the bottom row; then `--import`. Ryan may reshape the .blend files.
+Rebuilt 20 September to feel epic: wall body 70 high, a gatehouse above it with a tall narrow
+pointed mouth in three stepped reveals, towers of 112 with fins and bigger guns, blades along
+every top edge in place of crenellations (Ryan: sand-castle squares make it small). The
+structures are two rows deep (`BattleMap.GATE_ROWS`): the row above them is an apron nobody
+enters, so the wall never hides a unit; squads strike the gate from the row above the apron. Per-mech repaint exists:
 `Unit.paint` {primary, secondary} recolours the livery and bone plating (`MechView3D.paint`,
 `ramp_for`); `RIFTGATE_PAINT=badger:ff8800/223344` previews it. Nothing sets it in play yet.
 
@@ -76,13 +74,13 @@ zoom. Fiction frame decided 20 September: the screen is CARE's tactical reconstr
 sensor language for the HUD (contacts, returns, projections) wanted. Open, awaiting Ryan: what
 keeps the rift's world out of the city, since a wall can be flown over. Proposal in the bible:
 an energy field with the gate as its projector, the mouth its one blind spot.
-**True 3D battlefield (19 September, experiment).** `RIFTGATE_MAP3D=1` swaps the map's
-ground, structures and units for geometry in `game/battle/map_3d.gd` (a SubViewport the map
-view draws behind its overlays): hex ground stretched in depth so it projects onto the 2D
+**3D battlefield (default since 20 September).** `game/battle/map_3d.gd` is a SubViewport the
+map view draws behind its overlays: hex ground stretched in depth so it projects onto the 2D
 grid exactly (overlays and gestures untouched), lit props for mountains, rubble, rocks and
-roads, the gate and wall glTFs, mechs as toon models turned to their facing, foes as
-billboard sprites. `MechView3D.toon` is the shared material pass. No outline pass, no
-terrain marks yet. Off by default until Ryan decides.
+roads, the gate and wall glTFs, mechs as toon models turned to their facing. Foes are flat
+pictures drawn by the map view over the viewport, never objects in the scene. Headless runs
+fall back to the painted 2D map. `MechView3D.toon` is the shared material pass. No outline
+pass yet.
 
 **Art (17 September).** Player units are native 3D (glTF plus toon and surface shader);
 enemies painted 2D. The Badger's working file is `tools/blendforge/models/badger.blend`

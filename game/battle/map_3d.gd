@@ -1,13 +1,12 @@
 class_name Map3D
 extends SubViewport
 
-## The battlefield in true 3D: an experiment (Ryan, 19 September). The hex ground, the
-## gate and walls, and the player's mechs are real geometry under an orthographic camera
-## pitched like the map tokens; foes stay painted sprites standing on the ground. The 2D map
-## view draws this viewport's texture behind its overlays. The ground is stretched in depth so
-## every hex projects exactly onto the 2D grid the overlays and gestures already use: the
-## overlays did not have to change, only what is under them.
-## RIFTGATE_MAP3D=1 turns it on.
+## The battlefield in 3D (decided 19 September). The hex ground, the gate and walls, and the
+## player's mechs are real geometry under an orthographic camera pitched like the map tokens.
+## Foes are never here: they are flat pictures the map view draws over this viewport's
+## texture, with no 3D cues, because they are the other world showing through. The ground is
+## stretched in depth so every hex projects exactly onto the 2D grid the overlays and gestures
+## already use: the overlays did not have to change, only what is under them.
 
 const PITCH := 42.0            # the map tokens' tilt
 const HEX_WORLD := 35.0        # a hex's circumradius in model units: a mech is about one hex wide
@@ -24,7 +23,6 @@ const TERRAIN := {
 
 var field: Battlefield
 var hex_px: float = 44.0        # the 2D view's HEX_SIZE, so the projection lands on its grid
-var sprite_scale: float = 2.0
 var _ppu: float = 1.0           # screen pixels per model unit
 var _sin: float = 1.0
 var _origin := Vector2.ZERO     # where hex (0,0) sits in this viewport, in pixels
@@ -195,6 +193,8 @@ func _build_structures() -> void:
 		add_child(g)
 	if MechView3D.has_model("wall"):
 		for w in map.wall_hexes:
+			if Hex.axial_to_offset(w).y != map.height - 1:
+				continue   # the structures are GATE_ROWS deep; the models stand on the bottom row only
 			var m := _model("wall", "arsenal")
 			m.position = _hex_world(w)
 			m.rotation.y = PI
@@ -215,8 +215,7 @@ func _build_camera() -> void:
 	_camera.look_at_from_position(target + back * CAMERA_DISTANCE, target, Vector3.UP)
 
 
-## Put every unit where the field says it is: mechs as models turned to their facing, foes
-## as billboarded sprites standing on the ground.
+## Put every mech where the field says it is, as a model turned to its facing.
 func sync() -> void:
 	var seen := {}
 	for u in field.units:
@@ -242,16 +241,4 @@ func _make_unit(u: Unit) -> Node3D:
 	if u.is_player() and not u.is_static():
 		var maker := str(ContentDB.load_default().chassis.get(u.chassis_id, {}).get("maker", "minerva"))
 		return _model(MechView3D.model_for(u.chassis_id, "badger"), maker, u.paint)
-	var tex := Sprites.map_foe(BattleMapView.foe_sprite_id(u))
-	if tex == null:
-		return null
-	var s := Sprite3D.new()
-	s.texture = tex
-	s.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	s.shaded = false
-	s.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
-	s.pixel_size = sprite_scale / _ppu
-	s.offset = Vector2(0, tex.get_height() * 0.5)   # feet on the ground
-	var big := 1.5 if u.is_multi_hex() else 1.0
-	s.scale = Vector3.ONE * big
-	return s
+	return null   # foes and static units are drawn flat by the map view

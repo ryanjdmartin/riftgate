@@ -381,7 +381,7 @@ def structures(args):
         glb = ROOT / "art" / "models" / f"{n}.glb"
         blender(str(dest), "-P", str(HERE / "bl_export.py"), "--", "--out", str(glb), "--bake", "0" if args.no_bake else "1")
         print(f"built {dest.relative_to(ROOT)} and {glb.relative_to(ROOT)}")
-    print("now: godot --path . --resolution 360x640 -s tools/structure_sprites.gd, then --import")
+    print("now: godot --headless --path . --import")
 
 
 # ---------------------------------------------------------------- archetypes

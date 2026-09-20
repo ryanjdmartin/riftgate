@@ -38,7 +38,7 @@ var destinations: Dictionary = {}    # hexes the selected mech may end on
 var scroll_y: float = 0.0
 
 var _origin := Vector2.ZERO
-var _map3d: Map3D = null             # the battlefield in true 3D, when RIFTGATE_MAP3D=1
+var _map3d: Map3D = null             # the battlefield's geometry; null only when headless
 var _tags: Array = []                # [[Rect2, Unit], ...] the off-screen portraits, as drawn
 var _pressed := false
 var _dragged := false
@@ -58,7 +58,9 @@ func set_field(f: Battlefield) -> void:
 	field = f
 	_layout()
 	scroll_to_bottom()
-	if OS.get_environment("RIFTGATE_MAP3D") == "1" and DisplayServer.get_name() != "headless":
+	# The battlefield is geometry (decided 19 September); headless runs have no renderer and
+	# fall back to the painted map alone.
+	if DisplayServer.get_name() != "headless":
 		if _map3d != null:
 			_map3d.queue_free()
 		_map3d = Map3D.new()
@@ -152,35 +154,23 @@ func _draw() -> void:
 	var hud := Palette.HUD
 	var map := field.map
 	if _map3d != null:
-		# The ground, the structures and the units are geometry in the 3D viewport; only the
-		# overlays are drawn here.
+		# The ground, the structures and the mechs are geometry in the 3D viewport; the foes,
+		# being pictures from the other world, and every overlay are drawn here on top.
 		_map3d.sync()
 		draw_texture_rect(_map3d.get_texture(), Rect2(Vector2(0, scroll_y), Vector2(_map3d.size)), false)
-	for h in (map.all_hexes() if _map3d == null else []):
-		var pts := Hex.corners(center(h), HEX_SIZE - 1.5)
-		draw_colored_polygon(pts, TERRAIN[map.terrain[h]])
-		TerrainArt.draw(self, center(h), HEX_SIZE, map.terrain[h], h.x * 131 + h.y * 7919, 0.9)
-		Hud.stroke_poly(self, pts, Color(hud, 0.10), 1.0)
-	# The wall and the gate along the bottom row: their sprites stand on the hexes, drawn
-	# before the units so a mech in front overlaps the top of the wall.
-	var wall_tex := Sprites.structure("wall") if _map3d == null else null
-	for wh in (map.wall_hexes if _map3d == null else []):
-		var c := center(wh)
-		if wall_tex != null:
-			var ts := wall_tex.get_size() * SPRITE_SCALE
-			draw_texture_rect(wall_tex, Rect2((c - Vector2(ts.x * 0.5, ts.y - HEX_SIZE * 0.55)).floor(), ts), false)
-		else:
-			draw_colored_polygon(Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.MUTED, 0.35))
-	var gate_tex := Sprites.structure("gate") if _map3d == null else null
-	for g in (map.gate_hexes if _map3d == null else []):
-		var pts := Hex.corners(center(g), HEX_SIZE - 3.0)
-		draw_colored_polygon(pts, Color(hud, 0.10))
-		if gate_tex == null:
+	else:
+		# Headless: the painted map, so the view still lays out and the structures still show.
+		for h in map.all_hexes():
+			var pts := Hex.corners(center(h), HEX_SIZE - 1.5)
+			draw_colored_polygon(pts, TERRAIN[map.terrain[h]])
+			TerrainArt.draw(self, center(h), HEX_SIZE, map.terrain[h], h.x * 131 + h.y * 7919, 0.9)
+			Hud.stroke_poly(self, pts, Color(hud, 0.10), 1.0)
+		for wh in map.wall_hexes:
+			draw_colored_polygon(Hex.corners(center(wh), HEX_SIZE - 3.0), Color(Palette.MUTED, 0.35))
+		for g in map.gate_hexes:
+			var pts := Hex.corners(center(g), HEX_SIZE - 3.0)
+			draw_colored_polygon(pts, Color(hud, 0.10))
 			Hud.stroke_poly(self, pts, Color(hud, 0.85), 2.0)
-	if gate_tex != null:
-		var gc := center(map.gate)
-		var gs := gate_tex.get_size() * SPRITE_SCALE
-		draw_texture_rect(gate_tex, Rect2((gc - Vector2(gs.x * 0.5, gs.y - HEX_SIZE * 0.55)).floor(), gs), false)
 	for r in map.rift_hexes:
 		var pts := Hex.corners(center(r), HEX_SIZE - 3.0)
 		draw_colored_polygon(pts, Color("2a1a3f"))
@@ -279,9 +269,11 @@ func _draw_unit(u: Unit) -> void:
 			draw_colored_polygon(Hex.corners(center(h), HEX_SIZE - 6.0), Color("4a2e66"))
 	var c := center(u.pos)
 	var tex: Texture2D = Sprites.map_mech(u.chassis_id, u.facing) if u.is_player() else Sprites.map_foe(foe_sprite_id(u))
-	if _map3d != null:
-		pass   # the unit itself is geometry in the 3D viewport; the gauge and plaque below stay
+	if _map3d != null and u.is_player() and not u.is_static():
+		pass   # a mech is geometry in the 3D viewport; the gauge below stays
 	elif tex != null:
+		# A foe is a flat picture on the screen, never an object in the scene: no shadow, no
+		# base, no lighting. It is the other world showing through (decided 19 September).
 		var ts := tex.get_size() * SPRITE_SCALE
 		draw_texture_rect(tex, Rect2((c - Vector2(ts.x * 0.5, ts.y - 8.0)).floor(), ts), false)
 	elif u.is_player():
