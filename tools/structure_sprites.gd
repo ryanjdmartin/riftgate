@@ -9,9 +9,7 @@ extends SceneTree
 
 const PITCH := 42.0
 const YAW := 180.0   # facing north, away from the camera
-## Widths set the hex scale (three hexes and one); heights follow each model's projected
-## aspect at this pitch, so the fit is tight both ways and the sprite stands on its hex.
-const FRAMES := {"gate": Vector2i(92, 70), "wall": Vector2i(31, 48)}
+const FRAMES := {"gate": Vector2i(92, 62), "wall": Vector2i(31, 40)}
 const SETTLE := 4
 
 var _views: Dictionary = {}

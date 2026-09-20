@@ -60,8 +60,9 @@ from the map's angle; `BattleMapView` draws them under the units. Ryan may resha
 the .blend files; rerun export and the sprite tool after. Rebuilt 20 September to feel epic:
 wall body 70 high, a gatehouse above it with a tall narrow pointed mouth in three stepped
 reveals, towers of 112 with fins and bigger guns, blades along every top edge in place of
-crenellations (Ryan: sand-castle squares make it small). Sprite frames 92x70 and 31x48
-(widths fix the hex scale, heights follow the projected aspect). Not yet seen in play by Ryan. Per-mech repaint exists:
+crenellations (Ryan: sand-castle squares make it small). The 3D battlefield places the glTFs
+directly; the 2D sprites were not regenerated and the sprite tool is dead once the 2D path
+goes. Not yet seen in play by Ryan. Per-mech repaint exists:
 `Unit.paint` {primary, secondary} recolours the livery and bone plating (`MechView3D.paint`,
 `ramp_for`); `RIFTGATE_PAINT=badger:ff8800/223344` previews it. Nothing sets it in play yet.
 
