@@ -64,12 +64,18 @@ enters, so the wall never hides a unit; squads strike the gate from the row abov
 `Unit.paint` {primary, secondary} recolours the livery and bone plating (`MechView3D.paint`,
 `ramp_for`); `RIFTGATE_PAINT=badger:ff8800/223344` previews it. Nothing sets it in play yet.
 
-**True 3D battlefield (19 September, decided).** Bible: the battlefield is 3D and the rift's world
-bleeds in as flat 2D (gradient toward the rift plus radii around squads; foes are flat
-images with no 3D cues; contact flattens the camera into the skirmish look; terrain marks
-as a ground texture). Not built yet beyond the experiment: the compositor of the 3D
-viewport and the existing 2D map by a mask, the prop collapse, the contact transition,
-zoom. Fiction frame decided 20 September: the screen is CARE's tactical reconstruction
+**The bleed (built 20 September).** The rift's world shows through as flat 2D. `PaintedMap`
+draws the flat map (hex fills, marks, grid) once into a SubViewport; `ground.gdshader` makes
+the 3D ground wear that texture by world position; `bleed.gd` is the bleed function (a
+gradient south of the rift plus a radius around every squad, 0 solid to 1 flat) and
+`bleed.gdshader` in a compositor SubViewport (`_mix`) mixes the 3D scene with the posterized
+painted map by it, with a Bayer-dithered 4 px edge; `Map3D.sync` collapses each hex's props
+and the gate and walls by the same function, flat before the pixels turn. Tuning knobs are
+the constants in `bleed.gd` and the shader uniforms `cell` and `levels`; the posterize is a
+plain quantize, not yet the foes' sixteen-colour register. Not built: the contact transition
+(camera flattening into the skirmish), zoom, the gradient growing with Rift Pressure, an
+outline pass on the map. `tools/screenshot.gd ... north` shows the rift end.
+Fiction frame decided 20 September: the screen is CARE's tactical reconstruction
 (survey plus telemetry; the rift's world returns flat; contact hands over to the feed), with
 sensor language for the HUD (contacts, returns, projections) wanted. Open, awaiting Ryan: what
 keeps the rift's world out of the city, since a wall can be flown over. Proposal in the bible:
@@ -105,8 +111,9 @@ adding joints and pins by hand; the file has `hp_3` and `hp_4` on the tubes so f
    research tokens, hangar repair and refit); the city's enclosure (field, dome or mountain;
    bible, 20 September); base defences: how the gate guns attack and are attacked (proposal
    in chat, 19 September), then deployable turrets.
-   Build next, once the enclosure is picked: the 3D map compositor (mask of north gradient,
-   squad radii and rift; prop collapse; terrain marks as a ground texture; contact transition).
+   Build next: the contact transition (the camera flattening into the skirmish's pixel
+   look), then tune the bleed by eye with Ryan (radii, gradient rows, posterize, dither
+   cell), then the wall as the field's emitter line once the enclosure is picked.
 5. Art: wear tuning by eye; livery on a rear or top plate; the other makers' manners on
    real models; enemy art for the eight foes still on sketch grids; gate, defences and
    hangar as models; the other chassis borrow the Badger's model and tokens.

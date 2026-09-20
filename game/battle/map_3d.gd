@@ -26,13 +26,16 @@ var hex_px: float = 44.0        # the 2D view's HEX_SIZE, so the projection land
 var _ppu: float = 1.0           # screen pixels per model unit
 var _sin: float = 1.0
 var _origin := Vector2.ZERO     # where hex (0,0) sits in this viewport, in pixels
+var painted: Texture2D          # the flat painted map the ground wears (PaintedMap)
 var _camera: Camera3D
 var _units: Dictionary = {}     # unit id -> Node3D
-var _statics: Array = []
+var _props: Dictionary = {}     # hex -> Node3D holding that hex's props, collapsed by the bleed
+var _structs: Array = []        # [[hex, Node3D], ...] the gate and walls, collapsed the same way
 
 
-func setup(f: Battlefield, view_size: Vector2, origin: Vector2, hex_size: float) -> void:
+func setup(f: Battlefield, view_size: Vector2, origin: Vector2, hex_size: float, painted_map: Texture2D) -> void:
 	field = f
+	painted = painted_map
 	hex_px = hex_size
 	_origin = origin
 	_ppu = hex_px / HEX_WORLD
@@ -88,6 +91,18 @@ func _flat(color: Color) -> StandardMaterial3D:
 	return m
 
 
+## The ground samples the painted map by world position (ground.gdshader).
+func _ground_material() -> ShaderMaterial:
+	var m := ShaderMaterial.new()
+	m.shader = load("res://game/battle/ground.gdshader")
+	m.set_shader_parameter("painted", painted)
+	m.set_shader_parameter("origin", _origin)
+	m.set_shader_parameter("map_size", Vector2(size))
+	m.set_shader_parameter("ppu", _ppu)
+	m.set_shader_parameter("sin_pitch", _sin)
+	return m
+
+
 ## A prop (a peak, rubble, a rock): lit, so its faces read as volume.
 func _lit(color: Color) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
@@ -118,6 +133,7 @@ func _build_ground() -> void:
 	var fill := _hex_mesh(1.5)
 	var rim := _hex_mesh(0.0)
 	var rim_mat := _flat(Color(Palette.HUD, 0.10).blend(Palette.BG))
+	var ground_mat := _ground_material()
 	var map := field.map
 	var rng := RandomNumberGenerator.new()
 	for h in map.all_hexes():
@@ -132,9 +148,15 @@ func _build_ground() -> void:
 		add_child(r)
 		var g := MeshInstance3D.new()
 		g.mesh = fill
-		g.material_override = _flat(TERRAIN[t])
+		g.material_override = ground_mat
 		g.position = at + drop
 		add_child(g)
+		# The hex's props hang off one node at ground level, so the bleed can collapse them
+		# by scaling its height: every prop sinks into the painting beneath it.
+		var props := Node3D.new()
+		props.position = at
+		add_child(props)
+		_props[h] = props
 		rng.seed = h.x * 131 + h.y * 7919
 		match t:
 			BattleMap.Terrain.MOUNTAIN:
@@ -146,8 +168,8 @@ func _build_ground() -> void:
 				var mi := MeshInstance3D.new()
 				mi.mesh = cone
 				mi.material_override = _lit(TERRAIN[t].lightened(0.18))
-				mi.position = at + Vector3(rng.randf_range(-3, 3), cone.height * 0.5, rng.randf_range(-2, 2))
-				add_child(mi)
+				mi.position = Vector3(rng.randf_range(-3, 3), cone.height * 0.5, rng.randf_range(-2, 2))
+				props.add_child(mi)
 			BattleMap.Terrain.RUINS:
 				for k in range(3):
 					var b := BoxMesh.new()
@@ -155,8 +177,8 @@ func _build_ground() -> void:
 					var mi := MeshInstance3D.new()
 					mi.mesh = b
 					mi.material_override = _lit(TERRAIN[t].lightened(0.25))
-					mi.position = at + Vector3(rng.randf_range(-16, 16), b.size.y * 0.5, rng.randf_range(-12, 12))
-					add_child(mi)
+					mi.position = Vector3(rng.randf_range(-16, 16), b.size.y * 0.5, rng.randf_range(-12, 12))
+					props.add_child(mi)
 			BattleMap.Terrain.ROUGH:
 				for k in range(4):
 					var b := BoxMesh.new()
@@ -164,17 +186,17 @@ func _build_ground() -> void:
 					var mi := MeshInstance3D.new()
 					mi.mesh = b
 					mi.material_override = _lit(TERRAIN[t].darkened(0.25))
-					mi.position = at + Vector3(rng.randf_range(-18, 18), b.size.y * 0.5, rng.randf_range(-14, 14))
+					mi.position = Vector3(rng.randf_range(-18, 18), b.size.y * 0.5, rng.randf_range(-14, 14))
 					mi.rotation.y = rng.randf_range(0, TAU)
-					add_child(mi)
+					props.add_child(mi)
 			BattleMap.Terrain.ROAD:
 				var b := BoxMesh.new()
 				b.size = Vector3(HEX_WORLD * 0.55, 0.3, HEX_WORLD * 1.5 / _sin)
 				var mi := MeshInstance3D.new()
 				mi.mesh = b
 				mi.material_override = _flat(TERRAIN[t].lightened(0.12))
-				mi.position = at + Vector3(0, 0.2, 0)
-				add_child(mi)
+				mi.position = Vector3(0, 0.2, 0)
+				props.add_child(mi)
 
 
 func _model(id: String, maker: String, paint: Dictionary = {}) -> Node3D:
@@ -191,6 +213,7 @@ func _build_structures() -> void:
 		g.position = _hex_world(map.gate)
 		g.rotation.y = PI   # facing north
 		add_child(g)
+		_structs.append([map.gate, g])
 	if MechView3D.has_model("wall"):
 		for w in map.wall_hexes:
 			if Hex.axial_to_offset(w).y != map.height - 1:
@@ -199,6 +222,7 @@ func _build_structures() -> void:
 			m.position = _hex_world(w)
 			m.rotation.y = PI
 			add_child(m)
+			_structs.append([w, m])
 
 
 func _build_camera() -> void:
@@ -215,8 +239,15 @@ func _build_camera() -> void:
 	_camera.look_at_from_position(target + back * CAMERA_DISTANCE, target, Vector3.UP)
 
 
-## Put every mech where the field says it is, as a model turned to its facing.
+## Put every mech where the field says it is, as a model turned to its facing, and collapse
+## the props and structures under the bleed: where the other world has reached, height goes.
 func sync() -> void:
+	var grad := Bleed.gradient(field, _origin, hex_px)
+	var src := Bleed.sources(field, _origin, hex_px)
+	for h in _props.keys():
+		(_props[h] as Node3D).scale.y = maxf(0.02, Bleed.standing(Bleed.at(_origin + Hex.to_pixel(h, hex_px), grad, src)))
+	for s in _structs:
+		(s[1] as Node3D).scale.y = maxf(0.02, Bleed.standing(Bleed.at(_origin + Hex.to_pixel(s[0], hex_px), grad, src)))
 	var seen := {}
 	for u in field.units:
 		seen[u.id] = true

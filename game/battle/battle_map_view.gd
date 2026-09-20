@@ -39,6 +39,9 @@ var scroll_y: float = 0.0
 
 var _origin := Vector2.ZERO
 var _map3d: Map3D = null             # the battlefield's geometry; null only when headless
+var _painted: SubViewport = null     # the flat painted map, rendered once
+var _mix: SubViewport = null         # the two worlds mixed by the bleed, drawn under the overlays
+var _composite: TextureRect = null   # the rect inside _mix that carries the bleed shader
 var _tags: Array = []                # [[Rect2, Unit], ...] the off-screen portraits, as drawn
 var _pressed := false
 var _dragged := false
@@ -58,14 +61,45 @@ func set_field(f: Battlefield) -> void:
 	field = f
 	_layout()
 	scroll_to_bottom()
-	# The battlefield is geometry (decided 19 September); headless runs have no renderer and
-	# fall back to the painted map alone.
+	# The battlefield is geometry with the other world bleeding in (decided 19 September):
+	# the painted map rendered once, the 3D scene whose ground wears it, and a compositor
+	# that mixes the two by the bleed, drawn behind this control's own overlays. Headless
+	# runs have no renderer and fall back to the painted map alone.
 	if DisplayServer.get_name() != "headless":
-		if _map3d != null:
-			_map3d.queue_free()
+		for old in [_painted, _map3d, _mix]:
+			if old != null:
+				old.queue_free()
+		var map_size := Vector2(size.x, _map_px_height())
+		_painted = SubViewport.new()
+		_painted.size = Vector2i(map_size)
+		_painted.transparent_bg = true
+		_painted.render_target_update_mode = SubViewport.UPDATE_ONCE
+		_painted.canvas_item_default_texture_filter = SubViewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
+		add_child(_painted)
+		var painted := PaintedMap.new()
+		painted.size = map_size
+		painted.setup(field, _origin, HEX_SIZE)
+		_painted.add_child(painted)
 		_map3d = Map3D.new()
 		add_child(_map3d)
-		_map3d.setup(field, Vector2(size.x, _map_px_height()), _origin, HEX_SIZE)
+		_map3d.setup(field, map_size, _origin, HEX_SIZE, _painted.get_texture())
+		# The compositor runs in its own 2D viewport: a rect the size of the map, textured
+		# with the 3D scene, whose shader mixes in the painted map by the bleed.
+		_mix = SubViewport.new()
+		_mix.size = Vector2i(map_size)
+		_mix.transparent_bg = true
+		_mix.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+		_mix.canvas_item_default_texture_filter = SubViewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
+		add_child(_mix)
+		_composite = TextureRect.new()
+		_composite.texture = _map3d.get_texture()
+		_composite.size = map_size
+		var mat := ShaderMaterial.new()
+		mat.shader = load("res://game/battle/bleed.gdshader")
+		mat.set_shader_parameter("painted", _painted.get_texture())
+		mat.set_shader_parameter("map_size", map_size)
+		_composite.material = mat
+		_mix.add_child(_composite)
 	queue_redraw()
 
 
@@ -154,10 +188,17 @@ func _draw() -> void:
 	var hud := Palette.HUD
 	var map := field.map
 	if _map3d != null:
-		# The ground, the structures and the mechs are geometry in the 3D viewport; the foes,
-		# being pictures from the other world, and every overlay are drawn here on top.
+		# The ground, the structures and the mechs are geometry in the 3D viewport, mixed
+		# with the painted map by the compositor behind this drawing; the foes, being
+		# pictures from the other world, and every overlay are drawn here on top.
 		_map3d.sync()
-		draw_texture_rect(_map3d.get_texture(), Rect2(Vector2(0, scroll_y), Vector2(_map3d.size)), false)
+		var mat: ShaderMaterial = _composite.material
+		var src := Bleed.sources(field, _origin, HEX_SIZE)
+		mat.set_shader_parameter("grad", Bleed.gradient(field, _origin, HEX_SIZE))
+		mat.set_shader_parameter("source_count", src.size())
+		src.resize(Bleed.MAX_SOURCES)
+		mat.set_shader_parameter("sources", src)
+		draw_texture_rect(_mix.get_texture(), Rect2(Vector2(0, scroll_y), Vector2(_mix.size)), false)
 	else:
 		# Headless: the painted map, so the view still lays out and the structures still show.
 		for h in map.all_hexes():

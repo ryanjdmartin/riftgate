@@ -86,6 +86,10 @@ func _apply_battle_pose() -> void:
 					s._on_hex_tapped(dests[dests.size() / 2])
 		"hold":
 			s._on_unit_held(b.field.squads()[0])
+		"north":
+			# The rift end of the map, where the other world bleeds in.
+			s._map.scroll_y = 0.0
+			s._map.queue_redraw()
 		"resolve":
 			s._on_resolve()
 		"contact":
