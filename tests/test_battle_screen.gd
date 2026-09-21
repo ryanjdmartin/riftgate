@@ -109,7 +109,7 @@ func test_offscreen_squads_get_edge_tags() -> void:
 	var tags: Array = s._map.offscreen_tags()
 	var hidden := 0
 	for sq in s.battle.field.squads():
-		if s._map.center(sq.pos).y < -BattleMapView.HEX_SIZE * 0.3:
+		if s._map.to_screen(s._map.center(sq.pos)).y < -BattleMapView.HEX_SIZE * 0.3:   # center is map space; tags are judged on screen
 			hidden += 1
 	assert_true(hidden >= 2, "most squads start off-screen at the gate end")
 	assert_eq(tags.size(), hidden, "one tag per off-screen squad")

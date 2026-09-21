@@ -90,6 +90,10 @@ func _apply_battle_pose() -> void:
 			# The rift end of the map, where the other world bleeds in.
 			s._map.scroll_y = 0.0
 			s._map.queue_redraw()
+		"zoom":
+			# Zoomed in twice on the first mech, panned so it sits mid-screen.
+			s._map.zoom_at(s._map.size * 0.5, 2.2)
+			s._map.scroll_to_unit(b.mechs()[0])
 		"resolve":
 			s._on_resolve()
 		"contact":

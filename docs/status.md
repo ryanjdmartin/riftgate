@@ -99,10 +99,14 @@ tile generator, `forge.py build <id>` writes `art/models/<id>.glb` with the tile
 (review PNGs under `tools/lowforge/tiles/<maker>/`). `MechView3D.toon` takes the tile look
 automatically for any textured model (nearest filter, gloss by maker, a sun in the view);
 the gate and wall are lowforge models too (`gate`, `wall`, maker arsenal, `tile_world` 40
-so their tiles read at true scale on the map). On the map a mech is a marker
-(`Map3D._marker`: each part its tile's average tone, flat, plus a dark inverted-hull
-outline) fitted to about one hex; the ground style is drawn at half resolution with chunky
-marks, so its texels match the units'. Deleted: `art/mechs`, the spriter, the map token
+so their tiles read at true scale on the map). On the map a mech is the same textured model
+as the skirmish with a dark inverted-hull outline (`Map3D._marker`), fitted to about one
+hex; the ground style is drawn at half resolution with chunky marks, so its texels match
+the units'. The map zooms (wheel, pinch; `BattleMapView.zoom_at`, 1 to 2.6) and pans both
+ways: overlays draw in map space under one transform, `to_screen`/`to_map` convert, the
+edge tags stay in screen space; `tools/screenshot.gd ... zoom` shows it. The 3D scene is
+rendered once at 1x and upscaled nearest when zoomed, which is on-register but could render
+at 2x later. Deleted: `art/mechs`, the spriter, the map token
 tool, all of blendforge and its .blend files. Dead code to remove next: `Sprites.combat_mech`/`map_mech` and the
 skirmish's `RIFTGATE_MECH3D=off` sprite fallback, the pixel look. Not built: joints and
 hardpoint pins on the new units (the engine reads `joint_*` and `hp_*`; lowforge writes

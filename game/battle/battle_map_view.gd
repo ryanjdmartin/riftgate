@@ -35,7 +35,12 @@ var field: Battlefield
 var routes: Dictionary = {}          # mech id -> Array[Vector2i]
 var selected: Unit = null
 var destinations: Dictionary = {}    # hexes the selected mech may end on
-var scroll_y: float = 0.0
+var scroll_y: float = 0.0            # the map's offset on screen, in pixels
+var scroll_x: float = 0.0
+var zoom: float = 1.0                # the reconstruction's zoom (Ryan, 21 September); 1 fits the width
+
+const ZOOM_MIN := 1.0
+const ZOOM_MAX := 2.6
 
 var _origin := Vector2.ZERO
 var _map3d: Map3D = null             # the battlefield's geometry; null only when headless
@@ -55,6 +60,7 @@ var _press_at := 0.0
 func _init() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	clip_contents = true
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST   # zoom scales texels, never blurs them
 	set_process(false)
 
 
@@ -124,27 +130,41 @@ func _map_px_height() -> float:
 	return HEX_SIZE * (1.5 * (field.map.height - 1) + 2.0) + TOP_PAD + BOTTOM_PAD
 
 
-func _min_scroll() -> float:
-	return minf(0.0, size.y - _map_px_height())
+## Keep the map covering the view: no bare edge at any zoom.
+func _clamp_scroll() -> void:
+	scroll_y = clampf(scroll_y, minf(0.0, size.y - _map_px_height() * zoom), 0.0)
+	scroll_x = clampf(scroll_x, minf(0.0, size.x - size.x * zoom), 0.0)
 
 
 ## Start at the gate end, where the player's machines stand.
 func scroll_to_bottom() -> void:
-	scroll_y = _min_scroll()
+	scroll_y = -1.0e9
+	_clamp_scroll()
 
 
-## Pixel centre of a hex in this control's coordinates: its grid cell, lifted by the height
-## of its column so the overlays stand on the terrain.
+## Map space is the unzoomed, unscrolled map: the composite texture's pixels. The overlays
+## are drawn in it under one transform; gestures and popups convert.
+func to_screen(p: Vector2) -> Vector2:
+	return p * zoom + Vector2(scroll_x, scroll_y)
+
+
+func to_map(local: Vector2) -> Vector2:
+	return (local - Vector2(scroll_x, scroll_y)) / zoom
+
+
+## Centre of a hex in map space: its grid cell, lifted by the height of its column so the
+## overlays stand on the terrain.
 func center(h: Vector2i) -> Vector2:
 	var lift := _map3d.lift(h) if _map3d != null else 0.0
-	return _origin + Vector2(0, scroll_y) + Hex.to_pixel(h, HEX_SIZE) + Vector2(0, -lift)
+	return _origin + Hex.to_pixel(h, HEX_SIZE) + Vector2(0, -lift)
 
 
-## The hex under a point. A raised hex's top sits above its cell and covers part of the hex
-## north of it, so the candidates' lifted outlines are tested, the southmost (nearest the
-## camera) winning.
+## The hex under a screen point. A raised hex's top sits above its cell and covers part of
+## the hex north of it, so the candidates' lifted outlines are tested, the southmost (nearest
+## the camera) winning.
 func hex_at(local: Vector2) -> Vector2i:
-	var flat := Hex.from_pixel(local - _origin - Vector2(0, scroll_y), HEX_SIZE)
+	var p := to_map(local)
+	var flat := Hex.from_pixel(p - _origin, HEX_SIZE)
 	if _map3d == null or field == null:
 		return flat
 	var best := flat
@@ -154,7 +174,7 @@ func hex_at(local: Vector2) -> Vector2i:
 	for cand in cands:
 		if not field.map.has(cand) or cand.y <= best_row:
 			continue
-		if Geometry2D.is_point_in_polygon(local, Hex.corners(center(cand), HEX_SIZE)):
+		if Geometry2D.is_point_in_polygon(p, Hex.corners(center(cand), HEX_SIZE)):
 			best = cand
 			best_row = cand.y
 	return best
@@ -162,8 +182,21 @@ func hex_at(local: Vector2) -> Vector2i:
 
 ## Scroll so the unit sits in the middle of the view.
 func scroll_to_unit(u: Unit) -> void:
-	var y := _origin.y + Hex.to_pixel(u.pos, HEX_SIZE).y
-	scroll_y = clampf(size.y * 0.5 - y, _min_scroll(), 0.0)
+	var p := center(u.pos)
+	scroll_x = size.x * 0.5 - p.x * zoom
+	scroll_y = size.y * 0.5 - p.y * zoom
+	_clamp_scroll()
+	queue_redraw()
+
+
+## Zoom about a screen point, so what is under the finger stays under it.
+func zoom_at(local: Vector2, factor: float) -> void:
+	var nz := clampf(zoom * factor, ZOOM_MIN, ZOOM_MAX)
+	var k := nz / zoom
+	scroll_x = local.x - (local.x - scroll_x) * k
+	scroll_y = local.y - (local.y - scroll_y) * k
+	zoom = nz
+	_clamp_scroll()
 	queue_redraw()
 
 
@@ -176,7 +209,7 @@ func offscreen_tags() -> Array:
 		return out
 	var rows := {true: [], false: []}
 	for sq in field.squads():
-		var c := center(sq.pos)
+		var c := to_screen(center(sq.pos))
 		var above := c.y < -HEX_SIZE * 0.3
 		var below := c.y > size.y + HEX_SIZE * 0.3
 		if not (above or below):
@@ -217,6 +250,8 @@ func _draw() -> void:
 		return
 	var hud := Palette.HUD
 	var map := field.map
+	# Everything up to the edge tags is drawn in map space under the zoom and scroll.
+	draw_set_transform(Vector2(scroll_x, scroll_y), 0.0, Vector2(zoom, zoom))
 	if _map3d != null:
 		# The ground, the structures and the mechs are geometry in the 3D viewport, mixed
 		# with the painted map by the compositor behind this drawing; the foes, being
@@ -228,8 +263,8 @@ func _draw() -> void:
 		mat.set_shader_parameter("source_count", src.size())
 		src.resize(Bleed.MAX_SOURCES)
 		mat.set_shader_parameter("sources", src)
-		mat.set_shader_parameter("focus_y", size.y * 0.5 - scroll_y)
-		draw_texture_rect(_mix.get_texture(), Rect2(Vector2(0, scroll_y), Vector2(_mix.size)), false)
+		mat.set_shader_parameter("focus_y", (size.y * 0.5 - scroll_y) / zoom)
+		draw_texture_rect(_mix.get_texture(), Rect2(Vector2.ZERO, Vector2(_mix.size)), false)
 	else:
 		# Headless: the painted map, so the view still lays out and the structures still show.
 		for h in map.all_hexes():
@@ -286,6 +321,7 @@ func _draw() -> void:
 		var c := center(selected.pos)
 		Hud.brackets(self, Rect2(c - Vector2(HEX_SIZE, HEX_SIZE) * 0.85, Vector2(HEX_SIZE, HEX_SIZE) * 1.7), 12.0, hud, 2.0)
 
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)   # the edge tags live in screen space
 	_draw_tags()
 
 
@@ -397,11 +433,19 @@ func _gui_input(event: InputEvent) -> void:
 			_pressed = false
 			_holding = false
 		accept_event()
+	elif event is InputEventMouseButton and event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN]:
+		zoom_at(event.position, 1.15 if event.button_index == MOUSE_BUTTON_WHEEL_UP else 1.0 / 1.15)
+		accept_event()
+	elif event is InputEventMagnifyGesture:
+		zoom_at(event.position, event.factor)   # pinch on a touch screen or trackpad
+		accept_event()
 	elif event is InputEventMouseMotion and _pressed and not _holding:
 		if not _dragged and event.position.distance_to(_press_pos) > DRAG_THRESHOLD:
 			_dragged = true
 		if _dragged:
-			scroll_y = clampf(scroll_y + (event.position.y - _last_pos.y), _min_scroll(), 0.0)
+			scroll_x += event.position.x - _last_pos.x
+			scroll_y += event.position.y - _last_pos.y
+			_clamp_scroll()
 			_last_pos = event.position
 			queue_redraw()
 		accept_event()

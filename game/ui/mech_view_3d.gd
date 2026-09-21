@@ -358,6 +358,7 @@ static func toon(node: Node, maker: String, look: String, paint_arg: Dictionary 
 				tm.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 				tm.roughness = clampf(1.0 - float(GLOSS.get(maker, 0.4)) * 0.9, 0.3, 0.98)
 				tm.metallic = 0.0
+				tm.cull_mode = BaseMaterial3D.CULL_DISABLED   # wings and fins are single plates
 				mi.set_surface_override_material(i, tm)
 				continue
 			var m := ShaderMaterial.new()

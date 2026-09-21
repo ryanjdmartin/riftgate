@@ -252,7 +252,7 @@ func _on_unit_held(u: Unit) -> void:
 			text = "%s\nmassive · %s" % [u.display_name, "hunting" if u.aggro else "to the gate"]
 		else:
 			text = "%s\n%s ×%d · move %d\n%s" % [u.display_name, foe_name, u.strength, u.movespeed, "hunting the nearest machine" if u.aggro else "marching on the gate"]
-	_show_details(text, _map.position + _map.center(u.pos))
+	_show_details(text, _map.position + _map.to_screen(_map.center(u.pos)))
 
 
 func _on_hold_released() -> void:
