@@ -64,17 +64,21 @@ enters, so the wall never hides a unit; squads strike the gate from the row abov
 `Unit.paint` {primary, secondary} recolours the livery and bone plating (`MechView3D.paint`,
 `ramp_for`); `RIFTGATE_PAINT=badger:ff8800/223344` previews it. Nothing sets it in play yet.
 
-**The bleed (built 20 September).** The rift's world shows through as flat 2D. `PaintedMap`
-draws the flat map (hex fills, marks, grid) once into a SubViewport; `ground.gdshader` makes
-the 3D ground wear that texture by world position; `bleed.gd` is the bleed function (a
-gradient south of the rift plus a radius around every squad, 0 solid to 1 flat) and
-`bleed.gdshader` in a compositor SubViewport (`_mix`) mixes the 3D scene with the posterized
-painted map by it, with a Bayer-dithered 4 px edge; `Map3D.sync` collapses each hex's props
-and the gate and walls by the same function, flat before the pixels turn. Tuning knobs are
-the constants in `bleed.gd` and the shader uniforms `cell` and `levels`; the posterize is a
-plain quantize, not yet the foes' sixteen-colour register. Not built: the contact transition
-(camera flattening into the skirmish), zoom, the gradient growing with Rift Pressure, an
-outline pass on the map. `tools/screenshot.gd ... north` shows the rift end.
+**The bleed (built 20 September, the clash made to jar the same day).** `PaintedMap` paints
+the map once in two styles into two SubViewports: "ground" (gritty, muted, grain and
+cracks) which the 3D columns' tops wear through `ground.gdshader` (lit, sampled by world
+position), and "other" (bright saturated overworld, chunky marks) which the bleed shows
+through. `Map3D`: every hex is a column with `HEIGHT` by terrain, one sun with shadows;
+`lift(h)` is how far a hex's top sits above its grid cell on screen, and the map view's
+`center` and `hex_at` use it so overlays and taps follow the terrain. `bleed.gd` is the
+bleed function (gradient south of the rift plus a radius per squad); `bleed.gdshader` in the
+compositor SubViewport (`_mix`) mixes the two by it with a hard Bayer-dithered seam, and
+tilt-shifts the 3D side around `focus_y` (trial: `focus_band`, `focus_falloff`, `blur_max`).
+`Map3D.sync` collapses columns and structures just outside the seam (`Bleed.FLAT_AT`). Knobs:
+`Bleed` constants, `Map3D.HEIGHT`, `PaintedMap.OTHER`, the sun and ambient in
+`_build_light`, the albedo lift in `ground.gdshader`. Not built: the contact transition,
+zoom, the gradient growing with Rift Pressure, an outline pass, outlines for units behind
+tall columns. `tools/screenshot.gd ... north` shows the rift end.
 Fiction frame decided 20 September: the screen is CARE's tactical reconstruction
 (survey plus telemetry; the rift's world returns flat; contact hands over to the feed), with
 sensor language for the HUD (contacts, returns, projections) wanted. Open, awaiting Ryan: what

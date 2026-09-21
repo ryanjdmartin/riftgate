@@ -1,8 +1,11 @@
-// The compositor of the two worlds (decided 19 September). TEXTURE is the 3D battlefield;
-// `painted` is the flat painted map, the other world. Where the bleed is high the painted
-// map shows through, posterized into the foes' register, with a dithered, pixel-stepped
-// edge so the seam is a coarse 2D thing and never a smooth 3D fade. The bleed function is
-// the same as Bleed.at in bleed.gd; keep them identical.
+// The compositor of the two worlds (decided 19 September; the seam made hard and the
+// reconstruction tilt-shifted on 20 September). TEXTURE is the 3D battlefield; `painted` is
+// the other world, the flat bright overworld map. Where the bleed is past half the other
+// world shows through, posterized, and the edge is a coarse dithered band a few cells wide,
+// never a smooth fade: the seam is a 2D thing. The 3D side is blurred away from a focus
+// band around the middle of the screen, so the reconstruction reads as a miniature with
+// depth of field while the flat world is always sharp. The bleed function is the same as
+// Bleed.at in bleed.gd; keep them identical.
 shader_type canvas_item;
 
 uniform sampler2D painted : filter_nearest;
@@ -11,7 +14,11 @@ uniform vec2 grad = vec2(0.0, 1.0);          // y where the rift's bleed is tota
 uniform vec3 sources[32];                    // x, y, radius in map pixels
 uniform int source_count = 0;
 uniform float cell = 4.0;                    // the dither's pixel step
-uniform float levels = 6.0;                  // posterize steps per channel on the flat side
+uniform float levels = 5.0;                  // posterize steps per channel on the flat side
+uniform float focus_y = 0.0;                 // map-pixel y of the screen's middle
+uniform float focus_band = 280.0;            // half height of the sharp zone, in pixels
+uniform float focus_falloff = 360.0;         // pixels over which the blur reaches its maximum
+uniform float blur_max = 1.3;                // the blur's tap spacing at its maximum, in pixels
 
 float bleed_at(vec2 px) {
 	float m = 1.0 - clamp((px.y - grad.x) / max(1.0, grad.y - grad.x), 0.0, 1.0);
@@ -33,12 +40,28 @@ float bayer(ivec2 c) {
 	return (m2lo * 4.0 + m2hi + 0.5) / 16.0;
 }
 
+vec4 scene_at(sampler2D scene_tex, vec2 uv, vec2 px) {
+	float f = clamp((abs(px.y - focus_y) - focus_band) / focus_falloff, 0.0, 1.0);
+	float rad = f * blur_max;
+	if (rad < 0.05) {
+		return texture(scene_tex, uv);
+	}
+	vec2 ts = rad / map_size;
+	vec4 acc = vec4(0.0);
+	for (int i = -2; i <= 2; i++) {
+		for (int j = -2; j <= 2; j++) {
+			acc += texture(scene_tex, uv + vec2(float(i), float(j)) * ts);
+		}
+	}
+	return acc / 25.0;
+}
+
 void fragment() {
 	vec2 px = UV * map_size;
 	ivec2 c = ivec2(floor(px / cell));
 	vec2 q = (vec2(c) + 0.5) * cell;
-	float k = smoothstep(0.35, 0.65, bleed_at(q));
-	vec4 scene = texture(TEXTURE, UV);
+	float k = smoothstep(0.42, 0.58, bleed_at(q));
+	vec4 scene = scene_at(TEXTURE, UV, px);
 	vec4 other = texture(painted, UV);
 	other.rgb = floor(other.rgb * levels + 0.5) / levels;
 	COLOR = (k > bayer(c)) ? other : scene;

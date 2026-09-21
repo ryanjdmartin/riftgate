@@ -1,8 +1,8 @@
-// The 3D ground wears the painted map: each hex samples the flat map by its world position,
-// so the terrain marks live in one texture and the 3D side fades into the very picture it
-// stands on (decided 19 September). Unshaded, so the palette stays exact.
+// The columns' tops wear the gritty ground texture: each samples the flat map by its world
+// position, so the marks live in one texture and a raised hex still shows the right
+// picture. Lit, so the sun and the shadows read on it and the 3D side stays muted.
 shader_type spatial;
-render_mode unshaded, cull_disabled, shadows_disabled;
+render_mode cull_disabled;
 
 uniform sampler2D painted : source_color, filter_nearest;
 uniform vec2 origin = vec2(0.0, 0.0);     // where hex (0,0) sits in the map, in pixels
@@ -18,5 +18,8 @@ void vertex() {
 
 void fragment() {
 	vec2 px = vec2(wpos.x * ppu + origin.x, wpos.z * ppu * sin_pitch + origin.y);
-	ALBEDO = texture(painted, px / map_size).rgb;
+	// Lifted a little: the painted colours were tuned unlit, and the sun only half lights a flat top.
+	ALBEDO = min(texture(painted, px / map_size).rgb * 1.45, vec3(1.0));
+	ROUGHNESS = 1.0;
+	METALLIC = 0.0;
 }

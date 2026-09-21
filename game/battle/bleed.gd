@@ -14,7 +14,7 @@ const SQUAD_RADIUS_HEX := 1.7
 const BOSS_RADIUS_HEX := 2.6
 const RIFT_RADIUS_HEX := 2.6
 const GRADIENT_ROWS := 5.0      # the rift's bleed is total on its row and gone this many rows south
-const FLAT_AT := 0.5            # props are fully collapsed by this much bleed, before the pixels turn
+const FLAT_AT := 0.42           # columns are fully collapsed by this much bleed, just before the seam
 const MAX_SOURCES := 32         # the shader's array size
 
 
