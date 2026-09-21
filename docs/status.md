@@ -141,8 +141,12 @@ road neighbour (the gate counts), so adjoining road hexes make one road; concret
 shoulders, kerbs, a guide line, verge lamps with some lit and emissive. The map's own
 overlay draws the skirmish backdrop's scanlines and drifting band. Past the field's sides
 the world blurs and fades over `edge_fade` (150 px, `MARGIN_COLS` 3), as the far north
-does. The outline hull is light, not ink (`Map3D._ink`: HUD colour, emissive; `RIFTGATE_INK=dark`
-compares). Composition: wasteland across the rougher half, ruins in dense clusters, water
+does. The display traces every feature edge of units, structures and props in light
+(`Map3D._trace`: `_edge_mesh` welds a mesh by position and keeps edges where faces meet at
+more than `EDGE_ANGLE` or that belong to one face; `trace.gdshader` draws them additive
+and emissive with a brightness wave rolling south, `wave_len`, `speed`; plus a thin hull);
+`RIFTGATE_INK=dark` keeps the old black hull alone. Roads are never a lone slab and sit at
+ground level; no fade at the sides, only the blur. Composition: wasteland across the rougher half, ruins in dense clusters, water
 in bodies; ruins may sit on shores again. The gatehouse wears the lighter plate tile. Props carry the ink hull (`Map3D._prop`); dead trees
 and boulders on wasteland, taller skyscraper crags with a couple of lit windows. Ruins
 keep off water's shores. Units: the ground is the model's Z = 0 by convention (nothing

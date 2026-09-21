@@ -216,6 +216,23 @@ func _lay_roads(rng: RandomNumberGenerator) -> void:
 			if rng.randf() < ROAD_GAP_CHANCE:
 				continue
 			terrain[h] = Terrain.ROAD
+	# A road is never a lone slab: a road hex with no road (or gate) beside it goes back to
+	# plain. Roads sit at one level, like water, so a road never breaks over a terrace.
+	var lone: Array[Vector2i] = []
+	for h in terrain.keys():
+		if terrain[h] != Terrain.ROAD:
+			continue
+		var joined := false
+		for n in Hex.neighbors(h):
+			if terrain.get(n, -1) == Terrain.ROAD or gate_hexes.has(n):
+				joined = true
+		if not joined:
+			lone.append(h)
+	for h in lone:
+		terrain[h] = Terrain.PLAIN
+	for h in terrain.keys():
+		if terrain[h] == Terrain.ROAD:
+			elevation[h] = 0
 
 
 static func _roll_terrain(rng: RandomNumberGenerator) -> int:

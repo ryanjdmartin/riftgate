@@ -56,8 +56,8 @@ void fragment() {
 		d_min = length(p);   // a lone slab: a pad
 	}
 	vec2 wuv = vec2(wpos.x, wpos.z) / tile_world;
-	vec3 shoulder = texture(tile, wuv).rgb * lift * 0.72;   // darker than the dirt, so the hex does not glow
-	vec3 deck = vec3(0.12, 0.13, 0.14) * (0.92 + 0.08 * hash(floor(wpos.x * 0.5) + floor(wpos.z * 0.5) * 91.0));
+	vec3 shoulder = texture(tile, wuv).rgb * lift * 1.05;   // pale concrete against a near-black deck
+	vec3 deck = vec3(0.07, 0.08, 0.09) * (0.92 + 0.08 * hash(floor(wpos.x * 0.5) + floor(wpos.z * 0.5) * 91.0));
 	vec3 col = shoulder;
 	if (d_min < HALF_W) {
 		col = deck;

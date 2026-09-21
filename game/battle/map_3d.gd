@@ -132,9 +132,9 @@ func _build_light() -> void:
 	e.ambient_light_energy = 1.0
 	# A little glow, so the lamps, engines and light strips bleed like a screen would.
 	e.glow_enabled = true
-	e.glow_intensity = 0.5
-	e.glow_bloom = 0.05
-	e.glow_hdr_threshold = 1.0
+	e.glow_intensity = 0.8
+	e.glow_bloom = 0.08
+	e.glow_hdr_threshold = 0.9
 	env.environment = e
 	add_child(env)
 
@@ -227,7 +227,7 @@ func _road_material() -> ShaderMaterial:
 	return _road_mat
 
 
-## A prop with the display's ink on it: the mesh, and a grown front-culled hull behind it.
+## A prop with the display's trace on it.
 func _prop(col: Node3D, mesh: Mesh, material: Material, pos: Vector3, rot: Vector3 = Vector3.ZERO) -> MeshInstance3D:
 	var mi := MeshInstance3D.new()
 	mi.mesh = mesh
@@ -235,12 +235,100 @@ func _prop(col: Node3D, mesh: Mesh, material: Material, pos: Vector3, rot: Vecto
 	mi.position = pos
 	mi.rotation = rot
 	col.add_child(mi)
-	var hull := MeshInstance3D.new()
-	hull.mesh = mesh
-	hull.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	hull.material_override = _ink()
-	mi.add_child(hull)
+	_trace(mi)
 	return mi
+
+
+## The display traces a thing's edges in light: every crease (faces meeting at more than
+## EDGE_ANGLE) and every silhouette-only edge, as glowing lines that pulse with the
+## field's wave, plus a thin grown hull for the outline. RIFTGATE_INK=dark keeps the old
+## black hull alone, to compare.
+const EDGE_ANGLE := 28.0
+var _edge_cache: Dictionary = {}   # mesh rid -> ArrayMesh of lines
+var _trace_mat: ShaderMaterial = null
+
+func _trace(mi: MeshInstance3D) -> void:
+	if mi.mesh == null:
+		return
+	var hull := MeshInstance3D.new()
+	hull.mesh = mi.mesh
+	hull.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	hull.material_override = _ink(0.7)
+	mi.add_child(hull)
+	if OS.get_environment("RIFTGATE_INK") == "dark":
+		return
+	var edges := _edge_mesh(mi.mesh)
+	if edges == null:
+		return
+	var em := MeshInstance3D.new()
+	em.mesh = edges
+	em.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	em.material_override = _trace_material()
+	mi.add_child(em)
+
+
+func _trace_material() -> ShaderMaterial:
+	if _trace_mat == null:
+		_trace_mat = ShaderMaterial.new()
+		_trace_mat.shader = load("res://game/battle/trace.gdshader")
+		_trace_mat.set_shader_parameter("color", Palette.HUD)
+	return _trace_mat
+
+
+## The feature edges of a mesh as a line mesh: edges shared by faces that meet at an angle,
+## or belonging to one face only. Vertices are welded by position, since flat-shaded
+## exports split them per face.
+func _edge_mesh(mesh: Mesh) -> ArrayMesh:
+	var key := mesh.get_rid()
+	if _edge_cache.has(key):
+		return _edge_cache[key]
+	var edges: Dictionary = {}   # "a|b" -> [Vector3 a, Vector3 b, Array normals]
+	var limit := cos(deg_to_rad(EDGE_ANGLE))
+	for s in range(mesh.get_surface_count()):
+		var arrays := mesh.surface_get_arrays(s)
+		if arrays.is_empty():
+			continue
+		var verts: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+		var idx: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+		var n := idx.size() if idx.size() > 0 else verts.size()
+		for f in range(0, n - 2, 3):
+			var a: Vector3 = verts[idx[f]] if idx.size() > 0 else verts[f]
+			var b: Vector3 = verts[idx[f + 1]] if idx.size() > 0 else verts[f + 1]
+			var c: Vector3 = verts[idx[f + 2]] if idx.size() > 0 else verts[f + 2]
+			var nrm := (b - a).cross(c - a)
+			if nrm.length_squared() < 1e-8:
+				continue
+			nrm = nrm.normalized()
+			for pair in [[a, b], [b, c], [c, a]]:
+				var ka := _vkey(pair[0])
+				var kb := _vkey(pair[1])
+				var k := ka + "|" + kb if ka < kb else kb + "|" + ka
+				if not edges.has(k):
+					edges[k] = [pair[0], pair[1], []]
+				(edges[k][2] as Array).append(nrm)
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_LINES)
+	var any := false
+	for k in edges.keys():
+		var e: Array = edges[k]
+		var normals: Array = e[2]
+		var keep := normals.size() == 1
+		if not keep:
+			for i in range(normals.size()):
+				for j in range(i + 1, normals.size()):
+					if (normals[i] as Vector3).dot(normals[j]) < limit:
+						keep = true
+		if keep:
+			st.add_vertex(e[0])
+			st.add_vertex(e[1])
+			any = true
+	var out: ArrayMesh = st.commit() if any else null
+	_edge_cache[key] = out
+	return out
+
+
+static func _vkey(v: Vector3) -> String:
+	return "%d,%d,%d" % [roundi(v.x * 50.0), roundi(v.y * 50.0), roundi(v.z * 50.0)]
 
 
 var _ink_mat: StandardMaterial3D = null
@@ -709,18 +797,11 @@ func _make_unit(u: Unit) -> Node3D:
 	return null   # foes and static units are drawn flat by the map view
 
 
-## On the map a mech is the same textured model as the skirmish, with a dark inverted-hull
-## outline so it still reads at one hex.
+## On the map a mech is the same textured model as the skirmish, traced in light so it
+## still reads at one hex.
 func _marker(node: Node) -> void:
 	for child in node.find_children("*", "MeshInstance3D", true, false):
-		var mi: MeshInstance3D = child
-		if mi.mesh == null:
-			continue
-		var hull := MeshInstance3D.new()
-		hull.mesh = mi.mesh
-		hull.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		hull.material_override = _ink()
-		mi.add_child(hull)
+		_trace(child)
 
 
 ## The union of every mesh's bounds under `node`, in the node's own space.

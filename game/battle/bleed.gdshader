@@ -101,7 +101,5 @@ void fragment() {
 	float flick = step(0.995, fract(sin(band * 12.9898 + tick * 7.31) * 43758.5453));
 	other.rgb *= 1.0 - 0.18 * flick;
 	COLOR = (k > bayer(c)) ? other : scene;
-	float side = 1.0 - edge;
-	COLOR.rgb *= side;
-	COLOR.a *= side;
+	// No fade to black at the sides: the blur alone is the edge of what the table resolves.
 }

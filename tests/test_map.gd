@@ -102,3 +102,14 @@ func test_roads_are_laid_as_paths_with_gaps() -> void:
 					touching += 1
 					break
 	assert_true(touching * 10 >= total * 6, "most road hexes connect to another (%d of %d)" % [touching, total])
+	# No lone slabs, and roads all at one level.
+	var m2 := BattleMap.generate(7, 14, 9)
+	for h in m2.all_hexes():
+		if m2.terrain[h] != BattleMap.Terrain.ROAD:
+			continue
+		var joined := false
+		for n in Hex.neighbors(h):
+			if m2.terrain.get(n, -1) == BattleMap.Terrain.ROAD or m2.gate_hexes.has(n):
+				joined = true
+		assert_true(joined, "road hex %s joins a road or the gate" % str(h))
+		assert_eq(m2.elevation[h], 0, "road hex %s is at ground level" % str(h))
