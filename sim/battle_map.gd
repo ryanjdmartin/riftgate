@@ -12,10 +12,12 @@ const TERRAIN_NAMES := {
 }
 
 ## Weighted roll. Plain dominates so the map reads as a field with features on it.
+## Roads are never rolled: they are laid as paths (see `_lay_roads`).
 const TERRAIN_WEIGHTS := {
-	Terrain.PLAIN: 50, Terrain.ROAD: 6, Terrain.ROUGH: 14,
+	Terrain.PLAIN: 50, Terrain.ROAD: 0, Terrain.ROUGH: 14,
 	Terrain.RUINS: 10, Terrain.WATER: 12, Terrain.MOUNTAIN: 8,
 }
+const ROAD_GAP_CHANCE := 0.18   # a laid road is missing this share of its slabs: nobody paves between attacks
 
 var width: int = 7
 var height: int = 14              # 14 rows: the rift, eleven of open ground, two of gate and wall
@@ -77,6 +79,7 @@ static func generate(w: int, h: int, seed_value: int) -> BattleMap:
 	rng.seed = seed_value
 	for hx in m.terrain.keys():
 		m.terrain[hx] = _roll_terrain(rng)
+	m._lay_roads(rng)
 	# The gate, the rift, and the ground right in front of each are always open.
 	var open: Array[Vector2i] = []
 	open.append_array(m.gate_hexes)
@@ -88,6 +91,51 @@ static func generate(w: int, h: int, seed_value: int) -> BattleMap:
 				m.terrain[n] = Terrain.PLAIN
 	m._ensure_ground_path(rng)
 	return m
+
+
+## A paved road runs north from the gate as a connected path with drift, most of the way
+## to the rift, with a branch or two, and gaps where the slabs are gone (Ryan, 21
+## September: the road need not reach the rift, and gaps suit the fiction). Crags and
+## water are never paved.
+func _lay_roads(rng: RandomNumberGenerator) -> void:
+	var trunk: Array[Vector2i] = []
+	# From the open row above the gate's apron (the gate hexes themselves are structure).
+	var gate_o := Hex.axial_to_offset(gate)
+	var cur := Hex.offset_to_axial(gate_o.x, gate_o.y - GATE_ROWS)
+	if has(cur) and not is_structure(cur):
+		trunk.append(cur)
+	var steps := int(float(height) * rng.randf_range(0.55, 0.8))
+	for i in range(steps):
+		var options: Array[Vector2i] = []
+		for n in Hex.neighbors(cur):
+			if has(n) and n.y < cur.y and not is_structure(n):
+				options.append(n)
+		if options.is_empty():
+			break
+		cur = options[rng.randi_range(0, options.size() - 1)]
+		trunk.append(cur)
+	var branches: Array = [trunk]
+	for k in range(rng.randi_range(1, 2)):
+		if trunk.size() < 4:
+			break
+		var from: Vector2i = trunk[rng.randi_range(1, trunk.size() - 2)]
+		var branch: Array[Vector2i] = []
+		var dir: int = rng.randi_range(0, 5)
+		for i in range(rng.randi_range(3, 5)):
+			var n: Vector2i = from + Hex.DIRECTIONS[dir]
+			if not has(n) or is_structure(n):
+				break
+			branch.append(n)
+			from = n
+		branches.append(branch)
+	for path in branches:
+		for h in path:
+			var t: int = terrain[h]
+			if t == Terrain.MOUNTAIN or t == Terrain.WATER:
+				continue
+			if rng.randf() < ROAD_GAP_CHANCE:
+				continue
+			terrain[h] = Terrain.ROAD
 
 
 static func _roll_terrain(rng: RandomNumberGenerator) -> int:

@@ -44,14 +44,10 @@ const ZOOM_MAX := 2.6
 
 var _origin := Vector2.ZERO
 var _map3d: Map3D = null             # the battlefield's geometry; null only when headless
-var _ground: SubViewport = null      # the gritty ground texture the 3D columns wear, rendered once
 var _painted: SubViewport = null     # the other world's flat bright map, rendered once
-var _mix: SubViewport = null         # the two worlds mixed by the bleed, drawn under the overlays
+var _mix: SubViewport = null         # the two worlds mixed by the bleed, screen-sized, drawn under the overlays
 var _composite: TextureRect = null   # the rect inside _mix that carries the bleed shader
-var _map_size := Vector2.ZERO        # the map in 1x pixels
-var _render_scale: float = 1.0       # 2 once zoomed past ZOOM_DETAIL: the reconstruction resolves more
-
-const ZOOM_DETAIL := 1.6
+var _map_size := Vector2.ZERO        # the map in map pixels
 var _tags: Array = []                # [[Rect2, Unit], ...] the off-screen portraits, as drawn
 var _pressed := false
 var _dragged := false
@@ -77,52 +73,48 @@ func set_field(f: Battlefield) -> void:
 	# that mixes the two by the bleed, drawn behind this control's own overlays. Headless
 	# runs have no renderer and fall back to the painted map alone.
 	if DisplayServer.get_name() != "headless":
-		for old in [_ground, _painted, _map3d, _mix]:
+		for old in [_painted, _map3d, _mix]:
 			if old != null:
 				old.queue_free()
 		var map_size := Vector2(size.x, _map_px_height())
 		_map_size = map_size
-		_render_scale = 1.0
-		_ground = _paint(map_size, "ground")
-		_painted = _paint(map_size, "other")
+		_painted = _paint(map_size)
+		# The 3D scene and the compositor are the size of this control, not the map: the
+		# camera follows the scroll and zoom, so a frame costs the same at any zoom and the
+		# scene runs every frame (sway, ripple, later the movement phase).
 		_map3d = Map3D.new()
 		add_child(_map3d)
-		_map3d.setup(field, map_size, _origin, HEX_SIZE, _ground.get_texture())
-		# The compositor runs in its own 2D viewport: a rect the size of the map, textured
-		# with the 3D scene, whose shader mixes in the painted map by the bleed.
+		_map3d.setup(field, size, _origin, HEX_SIZE)
 		_mix = SubViewport.new()
-		_mix.size = Vector2i(map_size)
+		_mix.size = Vector2i(size)
 		_mix.transparent_bg = true
-		_mix.render_target_update_mode = SubViewport.UPDATE_ONCE   # re-rendered per redraw, like the 3D
+		_mix.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 		_mix.canvas_item_default_texture_filter = SubViewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
 		add_child(_mix)
 		_composite = TextureRect.new()
 		_composite.texture = _map3d.get_texture()
-		_composite.size = map_size
+		_composite.size = size
 		var mat := ShaderMaterial.new()
 		mat.shader = load("res://game/battle/bleed.gdshader")
 		mat.set_shader_parameter("painted", _painted.get_texture())
 		mat.set_shader_parameter("map_size", map_size)
+		mat.set_shader_parameter("view_size", size)
 		_composite.material = mat
 		_mix.add_child(_composite)
 	queue_redraw()
 
 
-## A painted map in one style, rendered once into a viewport the size of the whole map.
-func _paint(map_size: Vector2, style: String) -> SubViewport:
-	# The ground is drawn at half resolution and sampled nearest, so its texels are the
-	# size of the units' tiles: one register on both.
-	var k := 0.5 if style == "ground" else 1.0
+## The other world's painted map, rendered once into a viewport the size of the whole map.
+func _paint(map_size: Vector2) -> SubViewport:
 	var vp := SubViewport.new()
-	vp.size = Vector2i(map_size * k)
+	vp.size = Vector2i(map_size)
 	vp.transparent_bg = true
 	vp.render_target_update_mode = SubViewport.UPDATE_ONCE
 	vp.canvas_item_default_texture_filter = SubViewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
 	add_child(vp)
 	var painted := PaintedMap.new()
 	painted.size = map_size
-	painted.scale = Vector2(k, k)
-	painted.setup(field, _origin, HEX_SIZE, style)
+	painted.setup(field, _origin, HEX_SIZE)
 	vp.add_child(painted)
 	return vp
 
@@ -256,23 +248,13 @@ func _draw() -> void:
 		return
 	var hud := Palette.HUD
 	var map := field.map
-	# Everything up to the edge tags is drawn in map space under the zoom and scroll.
-	draw_set_transform(Vector2(scroll_x, scroll_y), 0.0, Vector2(zoom, zoom))
 	if _map3d != null:
 		# The ground, the structures and the mechs are geometry in the 3D viewport, mixed
-		# with the painted map by the compositor behind this drawing; the foes, being
-		# pictures from the other world, and every overlay are drawn here on top.
-		# Zoomed in, the scene renders at twice the size: more detail, not bigger texels.
-		# Both viewports render once per redraw, never per frame.
-		var want := 2.0 if zoom >= ZOOM_DETAIL else 1.0
-		if want != _render_scale:
-			_render_scale = want
-			_map3d.set_render_scale(want)
-			_mix.size = Vector2i(_map_size * want)
-			_composite.size = _map_size * want
+		# with the painted map by the compositor, both screen-sized and drawn here in screen
+		# space; the foes, being pictures from the other world, and every overlay are drawn
+		# on top in map space.
+		_map3d.look(Vector2(scroll_x, scroll_y), zoom)
 		_map3d.sync()
-		_map3d.redraw()
-		_mix.render_target_update_mode = SubViewport.UPDATE_ONCE
 		var mat: ShaderMaterial = _composite.material
 		var src := Bleed.sources(field, _origin, HEX_SIZE)
 		mat.set_shader_parameter("grad", Bleed.gradient(field, _origin, HEX_SIZE))
@@ -280,8 +262,15 @@ func _draw() -> void:
 		src.resize(Bleed.MAX_SOURCES)
 		mat.set_shader_parameter("sources", src)
 		mat.set_shader_parameter("focus_y", (size.y * 0.5 - scroll_y) / zoom)
-		draw_texture_rect(_mix.get_texture(), Rect2(Vector2.ZERO, _map_size), false)
+		mat.set_shader_parameter("scroll", Vector2(scroll_x, scroll_y))
+		mat.set_shader_parameter("zoom", zoom)
+		draw_texture_rect(_mix.get_texture(), Rect2(Vector2.ZERO, size), false)
+		# Everything from here to the edge tags is drawn in map space under the zoom and scroll.
+		draw_set_transform(Vector2(scroll_x, scroll_y), 0.0, Vector2(zoom, zoom))
+		for h in map.all_hexes():
+			Hud.stroke_poly(self, Hex.corners(center(h), HEX_SIZE - 1.5), Color(hud, 0.10), 1.0)   # the grid, on the terrain
 	else:
+		draw_set_transform(Vector2(scroll_x, scroll_y), 0.0, Vector2(zoom, zoom))
 		# Headless: the painted map, so the view still lays out and the structures still show.
 		for h in map.all_hexes():
 			var pts := Hex.corners(center(h), HEX_SIZE - 1.5)

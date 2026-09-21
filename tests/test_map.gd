@@ -73,3 +73,25 @@ func test_walls_fill_the_bottom_row_beside_the_gate_and_block() -> void:
 		assert_false(m.is_structure(Hex.offset_to_axial(col, 17)), "the row above the apron is open ground")
 	var g := BattleMap.generate(7, 20, 3)
 	assert_eq(g.wall_hexes.size(), 8, "generated maps have them too")
+
+
+func test_roads_are_laid_as_paths_with_gaps() -> void:
+	# Roads are never rolled at random: a trunk runs north from the gate, mostly connected,
+	# with slabs missing here and there. Over many seeds every map has a road, and most
+	# road hexes touch another road hex.
+	var touching := 0
+	var total := 0
+	for s in range(1, 40):
+		var m := BattleMap.generate(7, 14, s)
+		var roads: Array[Vector2i] = []
+		for h in m.all_hexes():
+			if m.terrain[h] == BattleMap.Terrain.ROAD:
+				roads.append(h)
+		assert_true(roads.size() >= 3, "seed %d has a road" % s)
+		for r in roads:
+			total += 1
+			for n in Hex.neighbors(r):
+				if roads.has(n):
+					touching += 1
+					break
+	assert_true(touching * 10 >= total * 6, "most road hexes connect to another (%d of %d)" % [touching, total])

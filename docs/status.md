@@ -110,11 +110,20 @@ hex; the ground style is drawn at half resolution with chunky marks, so its texe
 the units'. The map zooms (wheel, pinch; `BattleMapView.zoom_at`, 1 to 2.6) and pans both
 ways: overlays draw in map space under one transform, `to_screen`/`to_map` convert, the
 edge tags stay in screen space; `tools/screenshot.gd ... zoom` (or `zoomlast`) shows it.
-The 3D scene and the compositor render once per map redraw (`Map3D.redraw`, UPDATE_ONCE),
-never per frame, at 1x, or at 2x once the zoom passes `ZOOM_DETAIL` (1.6) so zooming
-resolves more. Units stand on their lowest point (`Map3D._rise`), flyers hover (`HOVER`).
-Roles light the register: `amber` tiles are emissive and both 3D environments carry a
-little glow; `glass` is glossy. Deleted: `art/mechs`, the spriter, the map token
+The 3D scene and the compositor are screen-sized: `Map3D.look(scroll, zoom)` pans and
+zooms the camera in the world, so a frame costs one screen at any zoom and both render
+every frame (the map is alive: `Map3D._process` sways and bobs the units, flyers more;
+water ripples in `terrain.gdshader`). Units stand on their lowest point (`_rise`), flyers
+hover (`HOVER`). Roles light the register: `amber` tiles are emissive and both 3D
+environments carry a little glow; `glass` is glossy. Terrain (21 September): the columns
+wear material tiles from `art/terrain` (`forge.py terrain` generates dirt, gravel, rubble,
+concrete, water, rock, crag) through `terrain.gdshader`, sides in rock, heights in
+`Map3D.HEIGHT` (crags 20 plus a spire: impassable, flyers only, decided); the painted
+ground map is gone and `PaintedMap` is the overworld only. Roads are laid by
+`BattleMap._lay_roads` as a drifting trunk north from the gate with a branch or two and
+`ROAD_GAP_CHANCE` missing slabs, never rolled. Next for the map: the movement phase
+animated; an outline for units behind tall columns; a plateau terrain if height comes to
+matter. Deleted: `art/mechs`, the spriter, the map token
 tool, all of blendforge and its .blend files. Dead code to remove next: `Sprites.combat_mech`/`map_mech` and the
 skirmish's `RIFTGATE_MECH3D=off` sprite fallback, the pixel look. Not built: joints and
 hardpoint pins on the new units (the engine reads `joint_*` and `hp_*`; lowforge writes

@@ -50,7 +50,14 @@ def export(names):
     print("now: godot --headless --path . --import")
 
 
+def terrain(_names):
+    """The battlefield's material tiles, into art/terrain for the 3D columns."""
+    _run([BLENDER, "-b", "-P", str(HERE / "bl_low.py"), "--", "--terrain", str(ROOT / "art" / "terrain")])
+    print("now: godot --headless --path . --import")
+
+
 if __name__ == "__main__":
-    if len(sys.argv) < 3 or sys.argv[1] not in ("build", "export"):
+    cmds = {"build": build, "export": export, "terrain": terrain}
+    if len(sys.argv) < 2 or sys.argv[1] not in cmds or (sys.argv[1] != "terrain" and len(sys.argv) < 3):
         raise SystemExit(__doc__)
-    (build if sys.argv[1] == "build" else export)(sys.argv[2:])
+    cmds[sys.argv[1]](sys.argv[2:])

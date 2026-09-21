@@ -62,9 +62,9 @@ def badger(b):
         b.prism("y", cx, 12.0, 34.0, 2.6, 26.0, "steel.dark", 6, "cannon")
         b.pin("hp_%d" % (3 if s < 0 else 4), (cx, 0.0, 34.0))
         start = (hinge_x, -6.0, 34.0)
-        elbow, _ = boom(b, start, 42.0, 12.0, s * 3.0, ARM, ARM, ARM, ARM, "livery.livery2", "upper_boom")
+        elbow, _ = boom(b, start, 42.0, 12.0, 0.0, ARM, ARM, ARM, ARM, "livery.livery2", "upper_boom")   # straight ahead, no yaw
         b.prism("x", elbow[0], elbow[1], elbow[2], 10.0, ARM + 4.0, "steel.dark", 6, "elbow")
-        wrist, rot = boom(b, elbow, 28.0, 48.0, s * 2.0, ARM, ARM, ARM, ARM, "steel.plate", "forearm")
+        wrist, rot = boom(b, elbow, 28.0, 48.0, 0.0, ARM, ARM, ARM, ARM, "steel.plate", "forearm")
         b.prism("x", wrist[0], wrist[1], wrist[2], 9.0, ARM + 8.0, "steel.dark", 6, "wrist")
         if kind == "claw":
             # The grapple (Ryan's references, 21 September): an excavator grab made sharp.
@@ -134,7 +134,7 @@ def sparrowhawk(b):
     # Boosters: two big six-sided drums under and behind the cockpit, red glow at the back.
     for s in (-1.0, 1.0):
         b.prism("y", s * 7.5, -32.0, -1.0, 6.0, 28.0, "steel.panel", 6, "booster", phase=math.pi / 6)
-        b.prism("y", s * 7.5, -47.0, -1.0, 6.5, 2.0, "steel.engine", 6, "booster_ring", phase=math.pi / 6)
+        b.prism("y", s * 7.5, -47.0, -1.0, 6.5, 2.0, "amber.engine", 6, "booster_ring", phase=math.pi / 6)   # lit: the amber role glows
         b.loft([(-48.0, hexagon(s * 7.5, -1.0, 11.0, 9.5)), (-48.5, hexagon(s * 7.5, -1.0, 10.0, 8.5))], "amber.engine", "exhaust")
     # Tail: rooted into the fuselage with a keel, riding over the boosters, two angled
     # stabilisers at the end.

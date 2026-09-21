@@ -309,6 +309,70 @@ def boom(b, start, length, pitch_deg, yaw_deg, w0, h0, w1, h1, material, label):
 
 # ---------------------------------------------------------------- main
 
+def terrain_tiles(out_dir, seed=11):
+    """The battlefield's materials, in the same register as the units: dirt, gravel,
+    rubble, cracked concrete, water and rock, 64 px each, written as PNGs for Godot."""
+    rng = np.random.default_rng(seed)
+    os.makedirs(out_dir, exist_ok=True)
+
+    def base(col, mottle, streak=0.0):
+        img = np.tile(np.array(col, np.float32), (TILE, TILE, 1))
+        img += rng.uniform(-mottle, mottle, size=(TILE, TILE, 1)).astype(np.float32)
+        if streak > 0.0:
+            img += rng.uniform(-streak, streak, size=(TILE, 1, 1)).astype(np.float32)
+        return img
+
+    def specks(img, n, size, k_lo, k_hi):
+        for _ in range(n):
+            y, x = rng.integers(0, TILE - size, 2)
+            img[y:y + size, x:x + size, :] *= rng.uniform(k_lo, k_hi)
+        return img
+
+    tiles = {}
+    tiles["dirt"] = specks(base((0.36, 0.33, 0.27), 0.03), 40, 2, 0.75, 1.2)
+    tiles["gravel"] = specks(specks(base((0.40, 0.40, 0.37), 0.03), 50, 3, 0.6, 0.85), 30, 2, 1.15, 1.35)
+    rubble = base((0.42, 0.43, 0.45), 0.03)
+    for _ in range(9):
+        y, x = rng.integers(2, TILE - 12, 2)
+        w, h = rng.integers(5, 12, 2)
+        rubble[y:y + h, x:x + w, :] *= 0.72
+        rubble[y:y + 2, x:x + w, :] *= 1.55
+    tiles["rubble"] = rubble
+    concrete = base((0.52, 0.53, 0.52), 0.02, 0.02)
+    concrete[0:2, :, :] *= 0.55
+    concrete[:, 0:2, :] *= 0.55
+    concrete[31:33, :, :] *= 0.65
+    concrete[:, 31:33, :] *= 0.65
+    for _ in range(3):
+        y, x = rng.integers(4, TILE - 4, 2)
+        for _ in range(14):
+            concrete[y % TILE, x % TILE, :] *= 0.6
+            y += rng.integers(-1, 2)
+            x += rng.integers(0, 2)
+    tiles["concrete"] = specks(concrete, 12, 3, 0.85, 0.95)
+    water = base((0.13, 0.24, 0.40), 0.015, 0.03)
+    for _ in range(8):
+        y, x = rng.integers(0, TILE, 2)
+        w = rng.integers(8, 20)
+        for i in range(w):
+            water[y, (x + i) % TILE, :] = np.minimum(water[y, (x + i) % TILE, :] * 1.5, 1.0)
+    tiles["water"] = water
+    rock = base((0.30, 0.29, 0.31), 0.03, 0.07)
+    for y in range(0, TILE, rng.integers(5, 9)):
+        rock[y:y + 1, :, :] *= 0.6
+    tiles["rock"] = specks(rock, 20, 2, 0.8, 1.25)
+    tiles["crag"] = np.minimum(tiles["rock"] * 1.25, 1.0)
+    for name, img in tiles.items():
+        image = bpy.data.images.new("terrain_" + name, TILE, TILE, alpha=True)
+        rgba = np.ones((TILE, TILE, 4), np.float32)
+        rgba[..., :3] = np.clip(img, 0.0, 1.0)
+        image.pixels = rgba.ravel().tolist()
+        image.filepath_raw = os.path.join(out_dir, name + ".png")
+        image.file_format = "PNG"
+        image.save()
+    print(f"lowforge: terrain tiles -> {out_dir}: {', '.join(tiles)}")
+
+
 def _export(out):
     os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
     bpy.ops.object.select_all(action="SELECT")
@@ -318,6 +382,10 @@ def _export(out):
 
 def main():
     a = _args()
+    if "terrain" in a:
+        bpy.ops.wm.read_factory_settings(use_empty=True)
+        terrain_tiles(a["terrain"])
+        return
     out = a["out"]
     if "blend" in a and "model" not in a:
         # Export a hand-edited working file as it is: joints (joint_*) and pins (hp_*) are

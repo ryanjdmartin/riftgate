@@ -2,19 +2,26 @@ class_name Map3D
 extends SubViewport
 
 ## The battlefield in 3D (decided 19 September). Every hex is a column with a real height by
-## terrain (elevation decided 20 September: it is real, and it will come to matter), the gate
-## and walls are models, and the player's mechs are toon models, all under an orthographic
-## camera pitched like the map tokens, with one sun casting shadows. Foes are never here:
-## they are flat pictures the map view draws over this viewport's texture, with no 3D cues,
-## because they are the other world showing through. The ground is stretched in depth so a
-## hex at ground level projects exactly onto the 2D grid the overlays and gestures use; a
-## raised hex's top sits higher on screen by `lift`, and the overlays ask for it.
+## terrain wearing a material tile from art/terrain (decided 21 September: the ground is the
+## same kind of texture as the units), the gate and walls are models, and the player's mechs
+## are the skirmish's own models with an outline, all under an orthographic camera pitched
+## like the map tokens, with one sun casting shadows. Foes are never here: they are flat
+## pictures the map view draws over this viewport's texture, because they are the other
+## world showing through.
+##
+## The viewport is the size of the screen area, not the map: the camera pans and zooms in
+## the world to follow the map view's scroll and zoom (`look`), so a frame costs the same at
+## any zoom and the scene can render every frame. That pays for the idle sway, the water
+## ripple and, later, the movement phase. The ground is stretched in depth so a hex at
+## ground level projects exactly onto the 2D grid the overlays and gestures use; a raised
+## hex's top sits higher on screen by `lift`, and the overlays ask for it.
 
 const PITCH := 42.0            # the map tokens' tilt
 const HEX_WORLD := 35.0        # a hex's circumradius in model units: a mech is about one hex wide
 const CAMERA_DISTANCE := 900.0
 const MARKER_FIT := 1.05       # a mech's widest extent, in hex widths, on the map
 const HOVER := 8.0             # a flyer rides this far above the ground, in model units
+const TILE_WORLD := 40.0       # world units one terrain tile covers, as the structures
 
 const TERRAIN := {
 	BattleMap.Terrain.PLAIN: Color("2a3628"),
@@ -25,46 +32,60 @@ const TERRAIN := {
 	BattleMap.Terrain.MOUNTAIN: Color("23212a"),
 }
 
-## The top of each terrain's column in model units. Water is sunk, so its far bank shows.
+## The top of each terrain's column in model units. Water is sunk, so its far bank shows;
+## a crag is a tall column with a spire on it, and only a flyer crosses it.
 const HEIGHT := {
 	BattleMap.Terrain.PLAIN: 0.0,
-	BattleMap.Terrain.ROAD: 0.0,
-	BattleMap.Terrain.ROUGH: 3.0,
-	BattleMap.Terrain.RUINS: 5.0,
-	BattleMap.Terrain.WATER: -4.0,
-	BattleMap.Terrain.MOUNTAIN: 12.0,
+	BattleMap.Terrain.ROAD: 1.0,
+	BattleMap.Terrain.ROUGH: 6.0,
+	BattleMap.Terrain.RUINS: 9.0,
+	BattleMap.Terrain.WATER: -5.0,
+	BattleMap.Terrain.MOUNTAIN: 20.0,
+}
+
+## The tile each terrain's top wears (art/terrain/<name>.png); sides wear rock.
+const TILE := {
+	BattleMap.Terrain.PLAIN: "dirt",
+	BattleMap.Terrain.ROAD: "concrete",
+	BattleMap.Terrain.ROUGH: "gravel",
+	BattleMap.Terrain.RUINS: "rubble",
+	BattleMap.Terrain.WATER: "water",
+	BattleMap.Terrain.MOUNTAIN: "crag",
 }
 
 var field: Battlefield
 var hex_px: float = 44.0        # the 2D view's HEX_SIZE, so the projection lands on its grid
-var painted: Texture2D          # the gritty ground texture the columns' tops wear (PaintedMap "ground")
-var _ppu: float = 1.0           # screen pixels per model unit
+var _ppu: float = 1.0           # screen pixels per model unit at zoom 1
 var _sin: float = 1.0
 var _cos: float = 1.0
-var _origin := Vector2.ZERO     # where hex (0,0) sits in this viewport, in pixels
+var _origin := Vector2.ZERO     # where hex (0,0) sits in the map, in map pixels
+var _view := Vector2.ZERO       # the screen area, in pixels
+var _scroll := Vector2.ZERO     # the map view's scroll
+var _zoom: float = 1.0
 var _camera: Camera3D
 var _units: Dictionary = {}     # unit id -> Node3D
 var _rise: Dictionary = {}      # unit id -> how far up the model sits so its lowest point is on the ground
-var _base_size := Vector2.ZERO  # the map in 1x pixels; `size` is this times render_scale
-var render_scale: float = 1.0   # 2 when zoomed in, so the reconstruction shows more, not bigger texels
+var _base: Dictionary = {}      # unit id -> resting position, which the idle sway plays around
+var _phase: Dictionary = {}     # unit id -> idle phase, so the team does not sway in step
 var _columns: Dictionary = {}   # hex -> Node3D: the column and its props, collapsed by the bleed
 var _structs: Array = []        # [[hex, Node3D], ...] the gate and walls, collapsed the same way
 var _lift: Dictionary = {}      # hex -> how far above its grid cell the top sits on screen, in px
+var _materials: Dictionary = {} # tile name -> ShaderMaterial
+var _time: float = 0.0
 
 
-func setup(f: Battlefield, view_size: Vector2, origin: Vector2, hex_size: float, ground_tex: Texture2D) -> void:
+func setup(f: Battlefield, view_size: Vector2, origin: Vector2, hex_size: float) -> void:
 	field = f
-	painted = ground_tex
 	hex_px = hex_size
 	_origin = origin
+	_view = view_size
 	_ppu = hex_px / HEX_WORLD
 	_sin = sin(deg_to_rad(PITCH))
 	_cos = cos(deg_to_rad(PITCH))
-	_base_size = view_size
 	size = Vector2i(int(view_size.x), int(view_size.y))
 	own_world_3d = true
 	transparent_bg = true
-	render_target_update_mode = SubViewport.UPDATE_ONCE   # the map view asks for a frame when something changed
+	render_target_update_mode = SubViewport.UPDATE_ALWAYS   # alive: sway and ripple every frame
 	msaa_3d = SubViewport.MSAA_4X
 	canvas_item_default_texture_filter = SubViewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
 	_build_light()
@@ -72,6 +93,24 @@ func setup(f: Battlefield, view_size: Vector2, origin: Vector2, hex_size: float,
 	_build_structures()
 	_build_camera()
 	sync()
+
+
+## Follow the map view: what it scrolls and zooms, the camera pans and zooms in the world.
+func look(scroll: Vector2, zoom: float) -> void:
+	_scroll = scroll
+	_zoom = zoom
+	_aim()
+
+
+func _aim() -> void:
+	if _camera == null:
+		return
+	_camera.size = _view.y / (_ppu * _zoom)
+	var centre_px := (_view * 0.5 - _scroll) / _zoom   # the map pixel under the screen's middle
+	var target := _world(centre_px - _origin)
+	var back := Vector3(0.0, _sin, _cos)
+	_camera.position = target + back * CAMERA_DISTANCE
+	_camera.look_at(target, Vector3.UP)
 
 
 ## One sun from the north-west, casting shadows, and a little ambient; the mechs and
@@ -102,22 +141,7 @@ func _build_light() -> void:
 	add_child(env)
 
 
-## Render at `k` times the map's pixel size (1 or 2) and ask for a frame.
-func set_render_scale(k: float) -> void:
-	render_scale = k
-	size = Vector2i(_base_size * k)
-	if _camera != null:
-		_camera.size = float(size.y) / (_ppu * render_scale)
-	redraw()
-
-
-## The scene renders once per change, never per frame: the map view calls this whenever it
-## redraws.
-func redraw() -> void:
-	render_target_update_mode = SubViewport.UPDATE_ONCE
-
-
-## World position of a 2D pixel offset from hex (0,0): x as is, depth stretched so the
+## World position of a map pixel offset from hex (0,0): x as is, depth stretched so the
 ## pitched camera compresses it back to the 2D grid.
 func _world(px: Vector2, height: float = 0.0) -> Vector3:
 	return Vector3(px.x / _ppu, height, px.y / (_ppu * _sin))
@@ -127,8 +151,8 @@ func _hex_world(h: Vector2i, height: float = 0.0) -> Vector3:
 	return _world(Hex.to_pixel(h, hex_px), height)
 
 
-## How far above its grid cell a hex's top sits on screen right now, in pixels (negative
-## when sunk). The overlays add it so routes, plaques and taps follow the terrain.
+## How far above its grid cell a hex's top sits on screen right now, in map pixels
+## (negative when sunk). The overlays add it so routes, plaques and taps follow the terrain.
 func lift(h: Vector2i) -> float:
 	return _lift.get(h, 0.0)
 
@@ -142,7 +166,7 @@ func _flat(color: Color) -> StandardMaterial3D:
 	return m
 
 
-## Lit, matte, two-sided: props and the columns' sides.
+## Lit, matte, two-sided: the props.
 func _lit(color: Color) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
 	m.albedo_color = color
@@ -151,16 +175,19 @@ func _lit(color: Color) -> StandardMaterial3D:
 	return m
 
 
-## The columns' tops sample the gritty ground texture by world position (ground.gdshader),
-## lit, so the sun and the shadows read on them.
-func _ground_material() -> ShaderMaterial:
+## A terrain tile as a lit material sampled by world position (terrain.gdshader).
+func _terrain_material(tile: String, ripple: float = 0.0) -> ShaderMaterial:
+	if _materials.has(tile):
+		return _materials[tile]
 	var m := ShaderMaterial.new()
-	m.shader = load("res://game/battle/ground.gdshader")
-	m.set_shader_parameter("painted", painted)
-	m.set_shader_parameter("origin", _origin)
-	m.set_shader_parameter("map_size", _base_size)
-	m.set_shader_parameter("ppu", _ppu)
-	m.set_shader_parameter("sin_pitch", _sin)
+	m.shader = load("res://game/battle/terrain.gdshader")
+	var path := "res://art/terrain/%s.png" % tile
+	if ResourceLoader.exists(path):
+		m.set_shader_parameter("tile", load(path))
+	m.set_shader_parameter("tile_world", TILE_WORLD)
+	m.set_shader_parameter("ripple", ripple)
+	m.set_shader_parameter("lift", 1.35)
+	_materials[tile] = m
 	return m
 
 
@@ -170,12 +197,9 @@ func _hex_mesh(inset: float) -> ArrayMesh:
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	for i in range(1, corners.size() - 1):
-		st.set_normal(Vector3.UP)
-		st.add_vertex(_world(corners[0]))
-		st.set_normal(Vector3.UP)
-		st.add_vertex(_world(corners[i + 1]))
-		st.set_normal(Vector3.UP)
-		st.add_vertex(_world(corners[i]))
+		for v in [corners[0], corners[i + 1], corners[i]]:
+			st.set_normal(Vector3.UP)
+			st.add_vertex(_world(v))
 	return st.commit()
 
 
@@ -215,7 +239,7 @@ func _column_mesh(h: float) -> ArrayMesh:
 func _build_ground() -> void:
 	var rim := _hex_mesh(0.0)
 	var rim_mat := _flat(Color(Palette.HUD, 0.10).blend(Palette.BG))
-	var ground_mat := _ground_material()
+	var rock := _terrain_material("rock")
 	var map := field.map
 	var rng := RandomNumberGenerator.new()
 	for h in map.all_hexes():
@@ -235,22 +259,24 @@ func _build_ground() -> void:
 		_columns[h] = col
 		var mi := MeshInstance3D.new()
 		mi.mesh = _column_mesh(hgt)
-		mi.set_surface_override_material(0, ground_mat)
+		mi.set_surface_override_material(0, _terrain_material(TILE[t], 1.0 if t == BattleMap.Terrain.WATER else 0.0))
 		if mi.mesh.get_surface_count() > 1:
-			mi.set_surface_override_material(1, _lit(TERRAIN[t].lightened(0.22)))
+			mi.set_surface_override_material(1, rock)
 		col.add_child(mi)
 		rng.seed = h.x * 131 + h.y * 7919
 		match t:
 			BattleMap.Terrain.MOUNTAIN:
+				# The spire that makes a crag: nobody but a flyer gets over this.
 				var cone := CylinderMesh.new()
-				cone.top_radius = 2.0
-				cone.bottom_radius = HEX_WORLD * 0.62
-				cone.height = 22.0 + rng.randf_range(-4.0, 6.0)
-				cone.radial_segments = 6
+				cone.top_radius = 1.5
+				cone.bottom_radius = HEX_WORLD * 0.6
+				cone.height = 24.0 + rng.randf_range(-4.0, 8.0)
+				cone.radial_segments = 5
 				var pk := MeshInstance3D.new()
 				pk.mesh = cone
-				pk.material_override = _lit(TERRAIN[t].lightened(0.18))
+				pk.material_override = _lit(Color("4c4850"))
 				pk.position = Vector3(rng.randf_range(-3, 3), hgt + cone.height * 0.5, rng.randf_range(-2, 2))
+				pk.rotation.y = rng.randf_range(0, TAU)
 				col.add_child(pk)
 			BattleMap.Terrain.RUINS:
 				for k in range(3):
@@ -258,7 +284,7 @@ func _build_ground() -> void:
 					b.size = Vector3(rng.randf_range(6, 12), rng.randf_range(4, 14), rng.randf_range(5, 9))
 					var bi := MeshInstance3D.new()
 					bi.mesh = b
-					bi.material_override = _lit(TERRAIN[t].lightened(0.25))
+					bi.material_override = _lit(Color("5a5c60"))
 					bi.position = Vector3(rng.randf_range(-16, 16), hgt + b.size.y * 0.5, rng.randf_range(-12, 12))
 					col.add_child(bi)
 			BattleMap.Terrain.ROUGH:
@@ -267,18 +293,10 @@ func _build_ground() -> void:
 					b.size = Vector3(rng.randf_range(3, 6), rng.randf_range(2, 5), rng.randf_range(3, 6))
 					var bi := MeshInstance3D.new()
 					bi.mesh = b
-					bi.material_override = _lit(TERRAIN[t].darkened(0.25))
+					bi.material_override = _lit(Color("3a3834"))
 					bi.position = Vector3(rng.randf_range(-18, 18), hgt + b.size.y * 0.5, rng.randf_range(-14, 14))
 					bi.rotation.y = rng.randf_range(0, TAU)
 					col.add_child(bi)
-			BattleMap.Terrain.ROAD:
-				var b := BoxMesh.new()
-				b.size = Vector3(HEX_WORLD * 0.55, 0.3, HEX_WORLD * 1.5 / _sin)
-				var bi := MeshInstance3D.new()
-				bi.mesh = b
-				bi.material_override = _flat(TERRAIN[t].lightened(0.12))
-				bi.position = Vector3(0, hgt + 0.2, 0)
-				col.add_child(bi)
 
 
 func _model(id: String, maker: String, paint: Dictionary = {}) -> Node3D:
@@ -293,7 +311,7 @@ func _build_structures() -> void:
 	if MechView3D.has_model("gate"):
 		var g := _model("gate", "arsenal")
 		g.position = _hex_world(map.gate)
-		g.rotation.y = PI   # facing north
+		g.rotation.y = PI   # turned about, so its portcullis face is the one the player sees
 		add_child(g)
 		_structs.append([map.gate, g])
 	if MechView3D.has_model("wall"):
@@ -311,14 +329,10 @@ func _build_camera() -> void:
 	_camera = Camera3D.new()
 	_camera.projection = Camera3D.PROJECTION_ORTHOGONAL
 	_camera.keep_aspect = Camera3D.KEEP_HEIGHT
-	_camera.size = float(size.y) / (_ppu * render_scale)
 	_camera.near = 1.0
 	_camera.far = 4000.0
-	# The point that must land on the viewport's centre: hex (0,0) sits at `_origin`.
-	var target := _world(_base_size * 0.5 - _origin)
-	var back := Vector3(0.0, _sin, cos(deg_to_rad(PITCH)))
 	add_child(_camera)
-	_camera.look_at_from_position(target + back * CAMERA_DISTANCE, target, Vector3.UP)
+	_aim()
 
 
 ## Collapse the columns and structures under the bleed (where the other world has reached,
@@ -344,7 +358,9 @@ func sync() -> void:
 				continue
 			add_child(node)
 			_units[u.id] = node
-		node.position = _hex_world(u.pos, _lift.get(u.pos, 0.0) / (_cos * _ppu) + _rise.get(u.id, 0.0))
+			_phase[u.id] = float(u.id) * 1.7
+		_base[u.id] = _hex_world(u.pos, _lift.get(u.pos, 0.0) / (_cos * _ppu) + _rise.get(u.id, 0.0))
+		node.position = _base[u.id]
 		if u.is_player() and not u.is_static():
 			# The model faces -Z (north) at rest; screen-down is +Z, so the facing turns the
 			# other way from the pixel direction.
@@ -354,6 +370,22 @@ func sync() -> void:
 		if not seen.has(uid):
 			_units[uid].queue_free()
 			_units.erase(uid)
+			_base.erase(uid)
+
+
+## The team waits impatiently: a small sway and bob, each machine on its own beat, a flyer
+## riding higher swells.
+func _process(delta: float) -> void:
+	_time += delta
+	for uid in _units.keys():
+		var node: Node3D = _units[uid]
+		var ph: float = _phase.get(uid, 0.0)
+		var u := field.unit_by_id(uid)
+		var flyer := u != null and u.traits.has("flyer")
+		node.rotation.z = sin(_time * 1.6 + ph) * (0.035 if flyer else 0.018)
+		node.rotation.x = sin(_time * 1.1 + ph * 0.7) * (0.02 if flyer else 0.008)
+		var base: Vector3 = _base.get(uid, node.position)
+		node.position = base + Vector3(0.0, sin(_time * 2.1 + ph) * (2.0 if flyer else 0.5), 0.0)
 
 
 func _make_unit(u: Unit) -> Node3D:
@@ -374,9 +406,8 @@ func _make_unit(u: Unit) -> Node3D:
 	return null   # foes and static units are drawn flat by the map view
 
 
-## On the map a mech is the same textured model as the skirmish (Ryan, 21 September: one
-## model everywhere, and the map zooms), with a dark inverted-hull outline so it still reads
-## at one hex.
+## On the map a mech is the same textured model as the skirmish, with a dark inverted-hull
+## outline so it still reads at one hex.
 func _marker(node: Node) -> void:
 	for child in node.find_children("*", "MeshInstance3D", true, false):
 		var mi: MeshInstance3D = child
@@ -389,7 +420,7 @@ func _marker(node: Node) -> void:
 		om.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 		om.cull_mode = BaseMaterial3D.CULL_FRONT
 		om.grow = true
-		om.grow_amount = 2.0
+		om.grow_amount = 1.4
 		om.albedo_color = Palette.BG
 		hull.material_override = om
 		mi.add_child(hull)
