@@ -270,12 +270,9 @@ func _draw() -> void:
 		mat.set_shader_parameter("scroll", Vector2(scroll_x, scroll_y))
 		mat.set_shader_parameter("zoom", zoom)
 		draw_texture_rect(_mix.get_texture(), Rect2(Vector2.ZERO, size), false)
-		# Everything from here to the edge tags is drawn in map space under the zoom and scroll.
+		# Everything from here to the edge tags is drawn in map space under the zoom and
+		# scroll. The grid itself is in the scene, lit, so raised ground hides it.
 		draw_set_transform(Vector2(scroll_x, scroll_y), 0.0, Vector2(zoom, zoom))
-		for h in map.all_hexes():
-			if map.gate_hexes.has(h) or map.wall_hexes.has(h):
-				continue   # the gate's rows are not ground anyone plays on
-			Hud.stroke_poly(self, Hex.corners(center(h), HEX_SIZE - 1.5), Color(hud, 0.10), 1.0)   # the grid, on the terrain
 	else:
 		draw_set_transform(Vector2(scroll_x, scroll_y), 0.0, Vector2(zoom, zoom))
 		# Headless: the painted map, so the view still lays out and the structures still show.
@@ -434,10 +431,7 @@ func _gui_input(event: InputEvent) -> void:
 			if _holding:
 				hold_released.emit()
 			elif _pressed and not _dragged and field != null:
-				var tagged := _tag_at(event.position)
-				if tagged != null:
-					scroll_to_unit(tagged)
-				else:
+				if _tag_at(event.position) == null:   # the edge tags only inform; no jump (Ryan, 21 September)
 					var h := hex_at(event.position)
 					if field.map.has(h):
 						var now := Time.get_ticks_msec() / 1000.0

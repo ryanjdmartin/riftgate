@@ -44,7 +44,7 @@ MAKERS = {
     "kestrel": {"grey": 0.70, "streak": 0.04, "mottle": 0.012, "tint": (0.92, 0.95, 1.0), "livery": (0.16, 0.40, 0.88), "rivets": 0},
     "wainwright_sutler": {"grey": 0.42, "streak": 0.10, "mottle": 0.07, "tint": (1.0, 0.86, 0.72), "livery": (0.58, 0.30, 0.14), "rivets": 8},
     "aphelion": {"grey": 0.80, "streak": 0.02, "mottle": 0.01, "tint": (1.0, 1.0, 1.0), "livery": (0.86, 0.12, 0.12), "rivets": 0},
-    "arsenal": {"grey": 0.26, "streak": 0.08, "mottle": 0.03, "tint": (0.88, 0.90, 0.96), "livery": (0.36, 0.38, 0.42), "rivets": 16},
+    "arsenal": {"grey": 0.28, "streak": 0.025, "mottle": 0.012, "tint": (0.88, 0.90, 0.96), "livery": (0.36, 0.38, 0.42), "rivets": 16},
 }
 
 
@@ -331,6 +331,15 @@ def terrain_tiles(out_dir, seed=11):
     tiles = {}
     tiles["dirt"] = specks(base((0.36, 0.33, 0.27), 0.03), 40, 2, 0.75, 1.2)
     tiles["gravel"] = specks(specks(base((0.40, 0.40, 0.37), 0.03), 50, 3, 0.6, 0.85), 30, 2, 1.15, 1.35)
+    # Scrub: broken ground with dark tufts and bushes, the 3D face of what the other world
+    # paints as forest.
+    scrub = base((0.33, 0.32, 0.24), 0.03)
+    for _ in range(18):
+        y, x = rng.integers(0, TILE - 5, 2)
+        w, h = rng.integers(3, 6, 2)
+        scrub[y:y + h, x:x + w, :] = np.array([0.20, 0.30, 0.16], np.float32) * rng.uniform(0.8, 1.15)
+        scrub[y:y + 1, x:x + w, :] = np.array([0.30, 0.42, 0.22], np.float32)
+    tiles["scrub"] = specks(scrub, 20, 2, 0.8, 1.15)
     rubble = base((0.42, 0.43, 0.45), 0.03)
     for _ in range(9):
         y, x = rng.integers(2, TILE - 12, 2)
@@ -338,11 +347,12 @@ def terrain_tiles(out_dir, seed=11):
         rubble[y:y + h, x:x + w, :] *= 0.72
         rubble[y:y + 2, x:x + w, :] *= 1.55
     tiles["rubble"] = rubble
-    concrete = base((0.52, 0.53, 0.52), 0.02, 0.02)
-    concrete[0:2, :, :] *= 0.55
-    concrete[:, 0:2, :] *= 0.55
-    concrete[31:33, :, :] *= 0.65
-    concrete[:, 31:33, :] *= 0.65
+    # Old paving: dark, worn, seams faint, cracks strong.
+    concrete = base((0.34, 0.35, 0.34), 0.02, 0.015)
+    concrete[0:2, :, :] *= 0.7
+    concrete[:, 0:2, :] *= 0.7
+    concrete[31:33, :, :] *= 0.8
+    concrete[:, 31:33, :] *= 0.8
     for _ in range(3):
         y, x = rng.integers(4, TILE - 4, 2)
         for _ in range(14):

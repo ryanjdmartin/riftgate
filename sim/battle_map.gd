@@ -28,6 +28,7 @@ var gate_hexes: Array[Vector2i] = []   # the gate: three wide and GATE_ROWS deep
 var rift_hexes: Array[Vector2i] = []
 var wall_hexes: Array[Vector2i] = []   # the rest of the bottom GATE_ROWS rows: indestructible, nobody stands there
 var crag_base: Dictionary = {}         # crag hex -> the ground under the rock (water, ruins, ...): flavour only
+var elevation: Dictionary = {}         # hex -> relief step 0..3 (water -1): landscape only, no rule reads it
 var map_seed: int = 0
 
 const STRUCTURE_HALF_WIDTH := 1   # gate and rift span centre plus this many hexes each side
@@ -89,14 +90,19 @@ static func generate(w: int, h: int, seed_value: int) -> BattleMap:
 	for hx in open:
 		m.terrain[hx] = Terrain.PLAIN
 		m.crag_base.erase(hx)
+		m.elevation[hx] = 0
 		for n in Hex.neighbors(hx):
 			if m.has(n):
 				m.terrain[n] = Terrain.PLAIN
 				m.crag_base.erase(n)
-	for row in range(h - GATE_ROWS - 2, h - GATE_ROWS):
+				m.elevation[n] = 0
+	for row in range(h - GATE_ROWS - 2, h):
 		for col in range(w):
 			var hx := Hex.offset_to_axial(col, row)
-			if m.has(hx) and (m.terrain[hx] == Terrain.WATER or m.terrain[hx] == Terrain.MOUNTAIN):
+			if not m.has(hx):
+				continue
+			m.elevation[hx] = 0
+			if m.terrain[hx] == Terrain.WATER or m.terrain[hx] == Terrain.MOUNTAIN:
 				m.terrain[hx] = Terrain.PLAIN
 				m.crag_base.erase(hx)
 	m._ensure_ground_path(rng)
@@ -117,6 +123,9 @@ func _lay_landscape(rng: RandomNumberGenerator) -> void:
 	var ridge := FastNoiseLite.new()
 	ridge.seed = map_seed + 202
 	ridge.frequency = 0.22
+	var relief := FastNoiseLite.new()   # terraces, decoupled from what the ground is
+	relief.seed = map_seed + 303
+	relief.frequency = 0.16
 	var centres: Array[Vector2i] = []
 	var keys := terrain.keys()
 	for k in range(rng.randi_range(2, 3)):
@@ -126,12 +135,13 @@ func _lay_landscape(rng: RandomNumberGenerator) -> void:
 		var t := Terrain.PLAIN
 		if wet.get_noise_2d(p.x, p.y) < -0.22:
 			t = Terrain.WATER
-		elif rough.get_noise_2d(p.x, p.y) > 0.24:
+		elif rough.get_noise_2d(p.x, p.y) > 0.40:
 			t = Terrain.ROUGH
 		for c in centres:
 			if Hex.distance(hx, c) <= 1 and rng.randf() < 0.75 and t != Terrain.WATER:
 				t = Terrain.RUINS
 		terrain[hx] = t
+		elevation[hx] = -1 if t == Terrain.WATER else clampi(int(floor((relief.get_noise_2d(p.x, p.y) + 0.45) * 3.4)), 0, 3)
 		if absf(ridge.get_noise_2d(p.x, p.y)) < 0.075 and rng.randf() < 0.85 and not is_structure(hx):
 			crag_base[hx] = t
 			terrain[hx] = Terrain.MOUNTAIN

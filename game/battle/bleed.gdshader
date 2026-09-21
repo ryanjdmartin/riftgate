@@ -71,5 +71,12 @@ void fragment() {
 	vec4 scene = scene_at(TEXTURE, UV, px);
 	vec4 other = texture(painted, px / map_size);
 	other.rgb = floor(other.rgb * levels + 0.5) / levels;
+	// The corrupted side is input the display cannot hold: bands of it tear and flicker.
+	float band = floor(px.y / 6.0);
+	float tick = floor(TIME * 18.0);
+	float flick = step(0.94, fract(sin(band * 12.9898 + tick * 7.31) * 43758.5453));
+	other.rgb *= 1.0 - 0.4 * flick;
 	COLOR = (k > bayer(c)) ? other : scene;
+	// The whole battlefield is a projection: scanlines across all of it.
+	COLOR.rgb *= 0.93 + 0.07 * step(1.0, mod(spx.y, 3.0));
 }

@@ -34,22 +34,17 @@ const TERRAIN := {
 	BattleMap.Terrain.MOUNTAIN: Color("23212a"),
 }
 
-## The top of each terrain's column in model units. Water is sunk, so its far bank shows;
-## a crag is a tall column with a spire on it, and only a flyer crosses it.
-const HEIGHT := {
-	BattleMap.Terrain.PLAIN: 0.0,
-	BattleMap.Terrain.ROAD: 1.0,
-	BattleMap.Terrain.ROUGH: 6.0,
-	BattleMap.Terrain.RUINS: 9.0,
-	BattleMap.Terrain.WATER: -5.0,
-	BattleMap.Terrain.MOUNTAIN: 20.0,
-}
+## Height is landscape, not terrain type (Ryan, 21 September): the map's relief field in
+## steps of STEP, water sunk so its far bank shows. A crag sits at its ground's level with
+## the spikes on top.
+const STEP := 7.0
+const WATER_DROP := -5.0
 
 ## The tile each terrain's top wears (art/terrain/<name>.png); sides wear rock.
 const TILE := {
 	BattleMap.Terrain.PLAIN: "dirt",
 	BattleMap.Terrain.ROAD: "concrete",
-	BattleMap.Terrain.ROUGH: "gravel",
+	BattleMap.Terrain.ROUGH: "scrub",
 	BattleMap.Terrain.RUINS: "rubble",
 	BattleMap.Terrain.WATER: "water",
 	BattleMap.Terrain.MOUNTAIN: "crag",
@@ -65,7 +60,8 @@ var _view := Vector2.ZERO       # the screen area, in pixels
 var _scroll := Vector2.ZERO     # the map view's scroll
 var _zoom: float = 1.0
 var _camera: Camera3D
-var _units: Dictionary = {}     # unit id -> Node3D, a pivot at the hex; the model hangs off it centred by its bounds
+var _units: Dictionary = {}     # unit id -> Node3D, the seat at the hex (set south a little); the pivot under it turns
+var _pivots: Dictionary = {}    # unit id -> the pivot that turns to the facing; the model hangs off it centred by its bounds
 var _shadows: Dictionary = {}   # unit id -> the ground disc under a flyer
 var _base: Dictionary = {}      # unit id -> resting position, which the idle sway plays around
 var _phase: Dictionary = {}     # unit id -> idle phase, so the team does not sway in step
@@ -159,6 +155,14 @@ func lift(h: Vector2i) -> float:
 	return _lift.get(h, 0.0)
 
 
+## A hex's ground height in model units, from the map's relief.
+func _height_of(h: Vector2i) -> float:
+	if not field.map.has(h):
+		return 0.0
+	var e: int = field.map.elevation.get(h, 0)
+	return WATER_DROP if e < 0 else float(e) * STEP
+
+
 ## Flat colour: unshaded so the palette stays exact, two-sided so winding never matters.
 func _flat(color: Color) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
@@ -191,6 +195,32 @@ func _terrain_material(tile: String, ripple: float = 0.0) -> ShaderMaterial:
 	m.set_shader_parameter("lift", 1.35)
 	_materials[tile] = m
 	return m
+
+
+## The hex outline as lines at height `y`, for the glowing grid.
+func _grid_mesh(y: float) -> ArrayMesh:
+	var corners := Hex.corners(Vector2.ZERO, hex_px - 1.5)
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_LINES)
+	for i in range(corners.size()):
+		st.add_vertex(_world(corners[i], y))
+		st.add_vertex(_world(corners[(i + 1) % corners.size()], y))
+	return st.commit()
+
+
+var _grid_mat: StandardMaterial3D = null
+
+## The display's light: unshaded HUD colour, emissive so the glow pass catches it.
+func _grid_material() -> StandardMaterial3D:
+	if _grid_mat == null:
+		_grid_mat = StandardMaterial3D.new()
+		_grid_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		_grid_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		_grid_mat.albedo_color = Color(Palette.HUD, 0.55)
+		_grid_mat.emission_enabled = true
+		_grid_mat.emission = Palette.HUD
+		_grid_mat.emission_energy_multiplier = 1.4
+	return _grid_mat
 
 
 ## One hex of flat ground as a polygon: the dark rim under the columns, for the grid gaps.
@@ -252,7 +282,7 @@ func _build_ground() -> void:
 	for h in map.all_hexes():
 		var t: int = map.terrain[h]
 		var at := _hex_world(h)
-		var hgt: float = HEIGHT[t]
+		var hgt := _height_of(h)
 		# Which edges need a wall: those facing a neighbour at another height, or none.
 		var sides: Array = []
 		var here := Hex.to_pixel(h, hex_px)
@@ -262,7 +292,7 @@ func _build_ground() -> void:
 			var other: float = -999.0
 			for nb in Hex.neighbors(h):
 				if map.has(nb) and Hex.to_pixel(nb, hex_px).distance_to(across) < hex_px * 0.5:
-					other = HEIGHT[map.terrain[nb]] if not (map.gate_hexes.has(nb) or map.wall_hexes.has(nb)) else 0.0
+					other = _height_of(nb)
 			sides.append(absf(other - hgt) > 0.01)
 		var r := MeshInstance3D.new()
 		r.mesh = rim
@@ -284,6 +314,14 @@ func _build_ground() -> void:
 		if mi.mesh.get_surface_count() > 1:
 			mi.set_surface_override_material(1, rock)
 		col.add_child(mi)
+		if not (map.gate_hexes.has(h) or map.wall_hexes.has(h)):
+			# The grid is the display's own light, drawn on the ground in the scene so a
+			# raised hex hides the lines behind it and the bleed takes them with the column.
+			var grid := MeshInstance3D.new()
+			grid.mesh = _grid_mesh(hgt + 0.35)
+			grid.material_override = _grid_material()
+			grid.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			col.add_child(grid)
 		rng.seed = h.x * 131 + h.y * 7919
 		match t:
 			BattleMap.Terrain.MOUNTAIN:
@@ -291,7 +329,7 @@ func _build_ground() -> void:
 				# but a flyer gets over it.
 				# Filling the tile and overflowing its height, so it reads as a thing you fly
 				# over, not a pile.
-				var rock_dark := _lit(Color("3a383e"))
+				var rock_dark := _terrain_material("rock")
 				for k in range(6):
 					var spike := CylinderMesh.new()
 					spike.top_radius = 0.8
@@ -307,14 +345,26 @@ func _build_ground() -> void:
 					pk.rotation = Vector3(rng.randf_range(-0.18, 0.18), rng.randf_range(0, TAU), rng.randf_range(-0.18, 0.18))
 					col.add_child(pk)
 			BattleMap.Terrain.RUINS:
-				for k in range(3):
+				# Broken blocks and a couple of standing wall stubs.
+				var rubble := _terrain_material("rubble")
+				for k in range(5):
 					var b := BoxMesh.new()
-					b.size = Vector3(rng.randf_range(6, 12), rng.randf_range(4, 14), rng.randf_range(5, 9))
+					b.size = Vector3(rng.randf_range(5, 12), rng.randf_range(3, 12), rng.randf_range(4, 9))
 					var bi := MeshInstance3D.new()
 					bi.mesh = b
-					bi.material_override = _lit(Color("5a5c60"))
-					bi.position = Vector3(rng.randf_range(-16, 16), hgt + b.size.y * 0.5, rng.randf_range(-12, 12))
+					bi.material_override = rubble
+					bi.position = Vector3(rng.randf_range(-18, 18), hgt + b.size.y * 0.5, rng.randf_range(-13, 13))
+					bi.rotation.y = rng.randf_range(0, TAU)
 					col.add_child(bi)
+				for k in range(2):
+					var wall_stub := BoxMesh.new()
+					wall_stub.size = Vector3(rng.randf_range(10, 18), rng.randf_range(14, 24), 2.5)
+					var wi := MeshInstance3D.new()
+					wi.mesh = wall_stub
+					wi.material_override = rubble
+					wi.position = Vector3(rng.randf_range(-14, 14), hgt + wall_stub.size.y * 0.5, rng.randf_range(-10, 10))
+					wi.rotation.y = rng.randf_range(0, TAU)
+					col.add_child(wi)
 			BattleMap.Terrain.ROUGH:
 				for k in range(4):
 					var b := BoxMesh.new()
@@ -338,6 +388,7 @@ func _build_structures() -> void:
 	var map := field.map
 	if MechView3D.has_model("gate"):
 		var g := _model("gate", "arsenal")
+		_marker(g)   # ink on its creases, so the towers and reveals read as geometry
 		g.position = _hex_world(map.gate)
 		g.rotation.y = PI   # turned about, so its portcullis face is the one the player sees
 		add_child(g)
@@ -347,6 +398,7 @@ func _build_structures() -> void:
 			if Hex.axial_to_offset(w).y != map.height - 1:
 				continue   # the structures are GATE_ROWS deep; the models stand on the bottom row only
 			var m := _model("wall", "arsenal")
+			_marker(m)
 			m.position = _hex_world(w)
 			m.rotation.y = PI
 			add_child(m)
@@ -373,7 +425,7 @@ func sync() -> void:
 	for h in _columns.keys():
 		var s := Bleed.standing(Bleed.at(_origin + Hex.to_pixel(h, hex_px), grad, src))
 		(_columns[h] as Node3D).scale.y = maxf(0.02, s)
-		_lift[h] = HEIGHT[map.terrain[h]] * s * _cos * _ppu
+		_lift[h] = _height_of(h) * s * _cos * _ppu
 	for st in _structs:
 		(st[1] as Node3D).scale.y = maxf(0.02, Bleed.standing(Bleed.at(_origin + Hex.to_pixel(st[0], hex_px), grad, src)))
 	var seen := {}
@@ -391,15 +443,17 @@ func sync() -> void:
 		node.position = _base[u.id]
 		if _shadows.has(u.id):
 			(_shadows[u.id] as Node3D).position = _base[u.id] + Vector3(0.0, 0.3, 0.0)
-		if u.is_player() and not u.is_static():
+		if u.is_player() and not u.is_static() and _pivots.has(u.id):
 			# The model faces -Z (north) at rest; screen-down is +Z, so the facing turns the
-			# other way from the pixel direction.
+			# other way from the pixel direction. The pivot turns; the seat's southward set
+			# above it does not.
 			var d: Vector2 = Hex.to_pixel(Hex.DIRECTIONS[u.facing], 1.0).normalized()
-			node.rotation.y = atan2(-d.x, -d.y)
+			(_pivots[u.id] as Node3D).rotation.y = atan2(-d.x, -d.y)
 	for uid in _units.keys():
 		if not seen.has(uid):
 			_units[uid].queue_free()
 			_units.erase(uid)
+			_pivots.erase(uid)
 			_base.erase(uid)
 			if _shadows.has(uid):
 				_shadows[uid].queue_free()
@@ -417,8 +471,10 @@ func _process(delta: float) -> void:
 			continue
 		var node: Node3D = _units[uid]
 		var ph: float = _phase.get(uid, 0.0)
-		node.rotation.z = sin(_time * 1.6 + ph) * 0.035
-		node.rotation.x = sin(_time * 1.1 + ph * 0.7) * 0.02
+		if _pivots.has(uid):
+			var pv: Node3D = _pivots[uid]
+			pv.rotation.z = sin(_time * 1.6 + ph) * 0.035
+			pv.rotation.x = sin(_time * 1.1 + ph * 0.7) * 0.02
 		var base: Vector3 = _base.get(uid, node.position)
 		node.position = base + Vector3(0.0, sin(_time * 2.1 + ph) * 2.0, 0.0)
 
@@ -442,12 +498,13 @@ func _make_unit(u: Unit) -> Node3D:
 		var hover := HOVER if flyer else 0.0
 		# Under the pitched camera a body's middle projects north of its feet, so the model
 		# is set south by as much as that, and its visual centre lands on the hex centre.
-		var south := (hover + aabb.size.y * k * 0.5) * _cos / _sin
+		var south := (hover + aabb.size.y * k * 0.6) * _cos / _sin
 		node.position = Vector3(-aabb.get_center().x, -aabb.position.y, -aabb.get_center().z) * k + Vector3(0.0, hover, 0.0)
 		pivot.add_child(node)
 		var seat := Node3D.new()   # the pivot turns to the facing; the seat's southward set does not
 		seat.position = Vector3(0.0, 0.0, south)
 		seat.add_child(pivot)
+		_pivots[u.id] = pivot
 		pivot = seat
 		if flyer:
 			var disc := CylinderMesh.new()

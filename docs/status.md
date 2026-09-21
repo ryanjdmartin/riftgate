@@ -126,7 +126,12 @@ ground map is gone and `PaintedMap` is the overworld only. Roads are laid by
 (water bodies), roughness (gravel belts) and a ridge (crags along lines), ruins in two or
 three clusters; a crag keeps the ground under it in `crag_base` (crag-water, crag-ruin) and
 the 3D map shows that tile under the spikes; the two rows above the apron are always open
-ground. Column walls are built only on edges whose
+ground. Height is a relief field (`BattleMap.elevation`, steps of `Map3D.STEP`, water
+sunk), not terrain type; crags sit at their ground's level. The holographic display
+(decided 21 September): the grid is emissive lines in the scene (`_grid_mesh`), scanlines
+and the corrupted side's flicker are in `bleed.gdshader`, the gate and walls carry the ink
+outline, spikes and ruin props wear terrain tiles, rough is scrub (rare), the road is dark
+paving. The edge tags no longer jump on tap. Column walls are built only on edges whose
 neighbour sits at another height, so pools and fields read as one. Crags are clusters of
 leaning rock spikes. The gate's rows draw no ground. Units hang off a pivot at the hex,
 centred by their bounds; only flyers move at rest (a slow swell, `HOVER` 30 above the
