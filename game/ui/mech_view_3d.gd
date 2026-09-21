@@ -358,7 +358,8 @@ static func toon(node: Node, maker: String, look: String, paint_arg: Dictionary 
 				if src is StandardMaterial3D:
 					var tm: StandardMaterial3D = (src as StandardMaterial3D).duplicate()
 					tm.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
-					tm.roughness = 0.95
+					# The maker's gloss: Kestrel shines, Minerva does not.
+					tm.roughness = clampf(1.0 - float(GLOSS.get(maker, 0.4)) * 0.9, 0.3, 0.98)
 					tm.metallic = 0.0
 					mi.set_surface_override_material(i, tm)
 				continue

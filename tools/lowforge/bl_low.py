@@ -33,30 +33,50 @@ def _args():
 
 # ---------------------------------------------------------------- tiles
 
-class Tiles:
-    """Generated 64 px tiles, cached by name, saved as PNG beside the model for review."""
+## The primary differentiator between makers (Ryan, 21 September): the metal itself.
+## grey is the base value, streak the brushed banding, mottle the grain, tint the cast,
+## livery the maker's colour, rivets the panel stud spacing (0 for none).
+MAKERS = {
+    "minerva": {"grey": 0.34, "streak": 0.13, "mottle": 0.07, "tint": (0.90, 0.94, 0.88), "livery": (0.62, 0.12, 0.10), "rivets": 12},
+    "kestrel": {"grey": 0.66, "streak": 0.03, "mottle": 0.015, "tint": (0.95, 0.97, 1.0), "livery": (0.88, 0.16, 0.14), "rivets": 0},
+    "wainwright": {"grey": 0.48, "streak": 0.10, "mottle": 0.08, "tint": (1.0, 0.95, 0.86), "livery": (0.80, 0.55, 0.12), "rivets": 8},
+}
 
-    def __init__(self, out_dir, seed=7):
-        self.out_dir = out_dir
+
+class Tiles:
+    """Generated 64 px tiles in a maker's metal, cached by name, saved as PNG for review."""
+
+    def __init__(self, out_dir, maker="minerva", seed=7):
+        self.maker = maker
+        self.p = MAKERS.get(maker, MAKERS["minerva"])
+        self.out_dir = os.path.join(out_dir, maker)
         self.rng = np.random.default_rng(seed)
         self.images = {}
-        os.makedirs(out_dir, exist_ok=True)
+        os.makedirs(self.out_dir, exist_ok=True)
 
-    def metal(self, grey=0.46, streak=0.12, tint=(1.0, 1.0, 1.0), mottle=0.06):
+    def metal(self, grey=None, streak=None, tint=(1.0, 1.0, 1.0), mottle=None):
+        p = self.p
+        grey = p["grey"] if grey is None else grey
+        streak = p["streak"] if streak is None else streak
+        mottle = p["mottle"] if mottle is None else mottle
         rows = self.rng.uniform(-streak, streak, size=(TILE, 1, 1)).astype(np.float32)
         noise = self.rng.uniform(-mottle, mottle, size=(TILE, TILE, 1)).astype(np.float32)
         smear = np.zeros_like(noise)
         for i in range(7):
             smear += np.roll(noise, i, axis=1)
         img = np.full((TILE, TILE, 3), grey, np.float32) + rows + smear
-        return np.clip(img * np.array(tint, np.float32), 0.0, 1.0)
+        cast = np.array(p["tint"], np.float32) * np.array(tint, np.float32)
+        return np.clip(img * cast, 0.0, 1.0)
 
     def _seam(self, img, dark=0.28):
         img[0:2, :, :] *= dark
         img[:, 0:2, :] *= dark
         return img
 
-    def _rivets(self, img, step=16, inset=4, dark=0.45):
+    def _rivets(self, img, step=None, inset=4, dark=0.45):
+        step = self.p["rivets"] if step is None else step
+        if step <= 0:
+            return img
         for y in range(inset, TILE, step):
             for x in range(inset, TILE, step):
                 img[y:y + 2, x:x + 2, :] *= dark
@@ -67,21 +87,22 @@ class Tiles:
         if name in self.images:
             return self.images[name]
         kind = name.split("_")[0]
+        g = self.p["grey"]
         if kind == "metal":
             img = self.metal()
         elif kind == "panel":
-            img = self._rivets(self._seam(self.metal(0.56)))
+            img = self._rivets(self._seam(self.metal()))
         elif kind == "plate":
-            img = self._seam(self.metal(0.62, 0.06))
+            img = self._seam(self.metal(g * 1.08, self.p["streak"] * 0.6))
         elif kind == "dark":
-            img = self.metal(0.30, 0.06)
+            img = self.metal(g * 0.55, 0.05)
         elif kind == "vent":
-            img = self.metal(0.42, 0.05)
+            img = self.metal(g * 0.8, 0.05)
             for y in range(6, TILE - 4, 10):
                 img[y:y + 4, 6:TILE - 6, :] *= 0.25
                 img[y - 1:y, 6:TILE - 6, :] = np.minimum(img[y - 1:y, 6:TILE - 6, :] * 1.4, 1.0)
         elif kind == "stripe":
-            img = self.metal(0.55, 0.06)
+            img = self.metal(g, 0.06)
             for y in range(TILE):
                 for x in range(TILE):
                     if 22 <= y < 42:
@@ -103,7 +124,7 @@ class Tiles:
                     x = (TILE - y + d) % TILE
                     img[y, x, :] = np.minimum(img[y, x, :] * 1.6, 1.0)
         elif kind == "tread":
-            img = self.metal(0.22, 0.04, mottle=0.03)
+            img = self.metal(0.20, 0.04, mottle=0.03)
             for x in range(0, TILE, 8):
                 img[:, x:x + 3, :] *= 0.45
                 img[:, x + 3:x + 4, :] = np.minimum(img[:, x + 3:x + 4, :] * 1.5, 1.0)
@@ -121,19 +142,19 @@ class Tiles:
                     img[r < 8.0] = np.array([0.55, 0.55, 0.58], np.float32)
                     img[r < 6.0] = np.array([0.08, 0.08, 0.09], np.float32)
         elif kind == "ladder":
-            img = self.metal(0.5, 0.05)
+            img = self.metal(g, 0.05)
             img[:, 20:24, :] *= 0.4
             img[:, 40:44, :] *= 0.4
             for y in range(4, TILE, 10):
                 img[y:y + 3, 20:44, :] = np.minimum(img[y:y + 3, 20:44, :] * 1.6, 1.0)
         elif kind == "livery":
-            img = self.metal(0.62, 0.10, tint=(0.80, 0.14, 0.12))
+            img = self.metal(0.70, self.p["streak"], tint=self.p["livery"])
         elif kind == "livery2":
-            img = self._seam(self.metal(0.62, 0.10, tint=(0.80, 0.14, 0.12)))
+            img = self._seam(self.metal(0.70, self.p["streak"], tint=self.p["livery"]))
         elif kind == "bone":
-            img = self._seam(self.metal(0.72, 0.06, tint=(0.96, 0.93, 0.85)))
+            img = self._seam(self.metal(0.74, self.p["streak"] * 0.5, tint=(0.96, 0.93, 0.85)))
         elif kind == "hazard":
-            img = self.metal(0.5, 0.05)
+            img = self.metal(g, 0.05)
             img[26:38, :, :] = np.array([0.95, 0.75, 0.10], np.float32)
         else:
             img = self.metal()
@@ -278,10 +299,11 @@ def boom(b, start, length, pitch_deg, yaw_deg, w0, h0, w1, h1, material, label):
 def main():
     a = _args()
     bpy.ops.wm.read_factory_settings(use_empty=True)
-    tiles = Tiles(a.get("tiles", os.path.join(HERE, "tiles")))
     import models_low
+    fn = getattr(models_low, a["model"])
+    tiles = Tiles(a.get("tiles", os.path.join(HERE, "tiles")), getattr(fn, "maker", "minerva"))
     builder = Build(a["model"], tiles)
-    getattr(models_low, a["model"])(builder)
+    fn(builder)
     out = a["out"]
     os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
     bpy.ops.object.select_all(action="SELECT")
