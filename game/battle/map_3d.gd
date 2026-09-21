@@ -373,19 +373,21 @@ func sync() -> void:
 			_base.erase(uid)
 
 
-## The team waits impatiently: a small sway and bob, each machine on its own beat, a flyer
-## riding higher swells.
+## Only a flyer moves at rest: it rides a slow swell, each on its own beat. A grounded
+## machine holds still; its idle will be joint motion, the same as the skirmish's, once the
+## joints exist (Ryan, 21 September).
 func _process(delta: float) -> void:
 	_time += delta
 	for uid in _units.keys():
+		var u := field.unit_by_id(uid)
+		if u == null or not u.traits.has("flyer"):
+			continue
 		var node: Node3D = _units[uid]
 		var ph: float = _phase.get(uid, 0.0)
-		var u := field.unit_by_id(uid)
-		var flyer := u != null and u.traits.has("flyer")
-		node.rotation.z = sin(_time * 1.6 + ph) * (0.035 if flyer else 0.018)
-		node.rotation.x = sin(_time * 1.1 + ph * 0.7) * (0.02 if flyer else 0.008)
+		node.rotation.z = sin(_time * 1.6 + ph) * 0.035
+		node.rotation.x = sin(_time * 1.1 + ph * 0.7) * 0.02
 		var base: Vector3 = _base.get(uid, node.position)
-		node.position = base + Vector3(0.0, sin(_time * 2.1 + ph) * (2.0 if flyer else 0.5), 0.0)
+		node.position = base + Vector3(0.0, sin(_time * 2.1 + ph) * 2.0, 0.0)
 
 
 func _make_unit(u: Unit) -> Node3D:
