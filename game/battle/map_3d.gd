@@ -245,17 +245,10 @@ func _prop(col: Node3D, mesh: Mesh, material: Material, pos: Vector3, rot: Vecto
 ## black hull alone, to compare.
 const EDGE_ANGLE := 28.0
 var _edge_cache: Dictionary = {}   # mesh rid -> ArrayMesh of lines
-var _trace_mat: ShaderMaterial = null
+var _trace_mat: Material = null
 
 func _trace(mi: MeshInstance3D) -> void:
 	if mi.mesh == null:
-		return
-	var hull := MeshInstance3D.new()
-	hull.mesh = mi.mesh
-	hull.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	hull.material_override = _ink(0.7)
-	mi.add_child(hull)
-	if OS.get_environment("RIFTGATE_INK") == "dark":
 		return
 	var edges := _edge_mesh(mi.mesh)
 	if edges == null:
@@ -267,11 +260,22 @@ func _trace(mi: MeshInstance3D) -> void:
 	mi.add_child(em)
 
 
-func _trace_material() -> ShaderMaterial:
+## The trace's material: light (the default) or, with RIFTGATE_INK=dark, the same edges as
+## plain black ink with no glow, to compare. Lines are one pixel either way; the light
+## version looks thicker only by its bloom.
+func _trace_material() -> Material:
 	if _trace_mat == null:
-		_trace_mat = ShaderMaterial.new()
-		_trace_mat.shader = load("res://game/battle/trace.gdshader")
-		_trace_mat.set_shader_parameter("color", Palette.HUD)
+		if OS.get_environment("RIFTGATE_INK") == "dark":
+			var ink := StandardMaterial3D.new()
+			ink.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			ink.albedo_color = Palette.BG
+			ink.cull_mode = BaseMaterial3D.CULL_DISABLED
+			_trace_mat = ink
+		else:
+			var sm := ShaderMaterial.new()
+			sm.shader = load("res://game/battle/trace.gdshader")
+			sm.set_shader_parameter("color", Palette.HUD)
+			_trace_mat = sm
 	return _trace_mat
 
 
@@ -509,11 +513,11 @@ func _build_ground() -> void:
 				var rubble := _terrain_material("rubble")
 				for k in range(5):
 					var b := BoxMesh.new()
-					b.size = Vector3(rng.randf_range(5, 12), rng.randf_range(3, 12), rng.randf_range(4, 9))
+					b.size = Vector3(rng.randf_range(8, 16), rng.randf_range(5, 18), rng.randf_range(6, 13))
 					_prop(col, b, rubble, Vector3(rng.randf_range(-18, 18), hgt + b.size.y * 0.5, rng.randf_range(-13, 13)), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
 				for k in range(2):
 					var wall_stub := BoxMesh.new()
-					wall_stub.size = Vector3(rng.randf_range(10, 18), rng.randf_range(14, 24), 2.5)
+					wall_stub.size = Vector3(rng.randf_range(14, 24), rng.randf_range(20, 32), 3.5)
 					_prop(col, wall_stub, rubble, Vector3(rng.randf_range(-14, 14), hgt + wall_stub.size.y * 0.5, rng.randf_range(-10, 10)), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
 			BattleMap.Terrain.ROUGH:
 				# Wasteland: dead trees and boulders, the parallel of the other world's forest.
@@ -521,7 +525,7 @@ func _build_ground() -> void:
 					_dead_tree(col, Vector3(rng.randf_range(-18, 18), hgt, rng.randf_range(-14, 14)), rng)
 				for k in range(rng.randi_range(1, 3)):
 					var boulder := SphereMesh.new()
-					boulder.radius = rng.randf_range(3.0, 6.0)
+					boulder.radius = rng.randf_range(5.0, 9.0)
 					boulder.height = boulder.radius * 1.6
 					boulder.radial_segments = 6
 					boulder.rings = 3
@@ -594,16 +598,16 @@ func _crag(col: Node3D, ground_t: int, hgt: float, rng: RandomNumberGenerator) -
 ## A dead tree: a bare trunk, thick at the foot, with a few stub branches, inked.
 func _dead_tree(col: Node3D, at: Vector3, rng: RandomNumberGenerator) -> void:
 	var bark := _lit(Color("2e2a26"))
-	var tall := rng.randf_range(16.0, 28.0)
+	var tall := rng.randf_range(24.0, 40.0)
 	var trunk := CylinderMesh.new()
-	trunk.top_radius = 0.9
-	trunk.bottom_radius = 2.4
+	trunk.top_radius = 1.2
+	trunk.bottom_radius = 3.4
 	trunk.height = tall
 	trunk.radial_segments = 5
 	_prop(col, trunk, bark, at + Vector3(0.0, tall * 0.5, 0.0), Vector3(0.0, 0.0, rng.randf_range(-0.12, 0.12)))
 	for k in range(rng.randi_range(2, 4)):
 		var branch := BoxMesh.new()
-		branch.size = Vector3(rng.randf_range(6.0, 12.0), 1.4, 1.4)
+		branch.size = Vector3(rng.randf_range(9.0, 18.0), 2.0, 2.0)
 		_prop(col, branch, bark, at + Vector3(branch.size.x * 0.4, tall * rng.randf_range(0.5, 0.9), 0.0),
 			Vector3(0.0, rng.randf_range(0, TAU), rng.randf_range(0.3, 0.8)))
 

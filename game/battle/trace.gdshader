@@ -21,6 +21,6 @@ void fragment() {
 	float w = 0.5 + 0.5 * sin(TIME * speed * 6.2831 + wpos.z / wave_len * 6.2831);
 	float k = base + pulse * w * w;
 	ALBEDO = color * k;
-	EMISSION = color * k * 1.4;
-	ALPHA = 0.9;
+	EMISSION = color * k * 0.8;   // enough to glow, not enough to fatten the line
+	ALPHA = 0.85;
 }

@@ -29,28 +29,13 @@ void fragment() {
 	vec2 mids[6] = {vec2(S3 * 0.5, 0.0), vec2(S3 * 0.25, -0.375), vec2(-S3 * 0.25, -0.375),
 	                vec2(-S3 * 0.5, 0.0), vec2(-S3 * 0.25, 0.375), vec2(S3 * 0.25, 0.375)};
 	float d_min = 1.0;
-	float lamp = 0.0;
-	float lit = 0.0;
 	for (int i = 0; i < 6; i++) {
 		if ((links & (1 << i)) == 0) {
 			continue;
 		}
 		vec2 m = mids[i];
 		float t = clamp(dot(p, m) / dot(m, m), 0.0, 1.0);
-		float d = length(p - m * t);
-		d_min = min(d_min, d);
-		// Lamps on both verges at three stations along the segment.
-		vec2 nrm = normalize(vec2(-m.y, m.x));
-		for (int k = 0; k < 3; k++) {
-			float tk = 0.3 + 0.28 * float(k);
-			for (int s = -1; s <= 1; s += 2) {
-				vec2 lp = m * tk + nrm * float(s) * (KERB + 0.03);
-				if (length(p - lp) < 0.018) {
-					lamp = 1.0;
-					lit = step(0.6, hash(seed + float(i) * 7.1 + float(k) * 3.3 + float(s) * 1.7));
-				}
-			}
-		}
+		d_min = min(d_min, length(p - m * t));
 	}
 	if (links == 0) {
 		d_min = length(p);   // a lone slab: a pad
@@ -62,18 +47,26 @@ void fragment() {
 	if (d_min < HALF_W) {
 		col = deck;
 		if (d_min < 0.007) {
-			col = vec3(0.34, 0.36, 0.34);   // the guide line
+			col = vec3(0.34, 0.36, 0.34);   // the guide line, worn away in places
+			col = mix(col, deck, step(0.55, hash(floor(wpos.x * 0.12) * 3.7 + floor(wpos.z * 0.12) * 5.1 + seed)));
 		}
+		// Nobody maintains this road: cracks along the contours of a cheap noise, and the
+		// odd pale ding where a slab has spalled.
+		vec2 q = vec2(wpos.x, wpos.z) * 0.06;
+		vec2 c = floor(q);
+		vec2 f = fract(q);
+		float n = mix(mix(hash(c.x + c.y * 57.0), hash(c.x + 1.0 + c.y * 57.0), f.x),
+		              mix(hash(c.x + (c.y + 1.0) * 57.0), hash(c.x + 1.0 + (c.y + 1.0) * 57.0), f.x), f.y);
+		float crack = 1.0 - smoothstep(0.0, 0.025, abs(n - 0.5));
+		float where = step(0.45, hash(floor(q.x * 0.5) + floor(q.y * 0.5) * 91.0 + seed));
+		col = mix(col, deck * 0.45, crack * where);
+		float ding = step(0.94, hash(floor(wpos.x * 0.3) * 13.0 + floor(wpos.z * 0.3) * 71.0 + seed));
+		col = mix(col, vec3(0.22, 0.22, 0.21), ding);
 	} else if (d_min < KERB) {
 		col = vec3(0.24, 0.25, 0.24);       // the kerb
 	}
-	vec3 emit = vec3(0.0);
-	if (lamp > 0.5) {
-		col = (lit > 0.5) ? vec3(1.0, 0.78, 0.35) : vec3(0.22, 0.18, 0.12);
-		emit = (lit > 0.5) ? vec3(1.0, 0.7, 0.3) * 1.6 : vec3(0.0);
-	}
 	ALBEDO = min(col, vec3(1.0));
-	EMISSION = emit;
+	EMISSION = vec3(0.0);
 	ROUGHNESS = 0.95;
 	METALLIC = 0.0;
 }
