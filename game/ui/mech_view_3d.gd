@@ -180,11 +180,12 @@ func _setup(chassis_id: String, maker: String) -> void:
 	if OS.get_environment("RIFTGATE_MECH3D_WIRE") == "1":
 		# Wireframe trial (21 September): the reconstruction's own telemetry drawing.
 		_inner.debug_draw = Viewport.DEBUG_DRAW_WIREFRAME
-	if OS.get_environment("RIFTGATE_MECH3D_LOOK") == "flat":
-		# The flat look has no light of its own: one sun from the front-left and above, a
+	if OS.get_environment("RIFTGATE_MECH3D_LOOK") in ["flat", "tile"]:
+		# The flat and tile looks have no light of their own: one sun from the front-left and above, a
 		# little cool ambient, and shadows so the facets and overhangs read.
+		var tile_look := OS.get_environment("RIFTGATE_MECH3D_LOOK") == "tile"
 		var sun := DirectionalLight3D.new()
-		sun.light_energy = 3.0
+		sun.light_energy = 1.7 if tile_look else 3.0
 		sun.rotation_degrees = Vector3(-55.0, yaw - 150.0, 0.0)
 		sun.shadow_enabled = true
 		sun.directional_shadow_max_distance = 2000.0
@@ -195,7 +196,7 @@ func _setup(chassis_id: String, maker: String) -> void:
 		e.background_color = Color(0, 0, 0, 0)
 		e.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 		e.ambient_light_color = Color("a0b4c8")
-		e.ambient_light_energy = 1.3
+		e.ambient_light_energy = 0.7 if tile_look else 1.3
 		env.environment = e
 		_inner.add_child(env)
 
@@ -351,6 +352,16 @@ static func toon(node: Node, maker: String, look: String, paint_arg: Dictionary 
 				ramp = ramp_for(paint_arg["primary"])
 			elif role == "white" and paint_arg.has("secondary"):
 				ramp = ramp_for(paint_arg["secondary"])
+			if OS.get_environment("RIFTGATE_MECH3D_LOOK") == "tile":
+				# Lowforge trial (21 September): the glTF's own tiled texture, nearest
+				# filtered, matte, lit by the scene's sun. The mid-nineties register.
+				if src is StandardMaterial3D:
+					var tm: StandardMaterial3D = (src as StandardMaterial3D).duplicate()
+					tm.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+					tm.roughness = 0.95
+					tm.metallic = 0.0
+					mi.set_surface_override_material(i, tm)
+				continue
 			if look == "flat" or OS.get_environment("RIFTGATE_MECH3D_LOOK") == "flat":
 				# Direction-1 trial (20 September): flat palette colour per role, matte, lit
 				# by the scene's sun, facets doing the work. No toon ramp, no surface pass.
