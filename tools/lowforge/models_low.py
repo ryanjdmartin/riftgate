@@ -222,88 +222,123 @@ def _gun(b, x, y, z):
     b.box(x - 4.0, x + 4.0, y + 8.0, y + 11.0, z + 6.0, z + 13.0, "amber.light", "sight")
 
 
+def _battered(b, x0, x1, d_base, d_top, z0, z1, material, label):
+    """A sloped slab: wider at the foot than the top, the curtain-wall section of every
+    reference (Ryan, 21 September)."""
+    bottom = [(x0, -d_base, z0), (x1, -d_base, z0), (x1, d_base, z0), (x0, d_base, z0)]
+    top = [(x0, -d_top, z1), (x1, -d_top, z1), (x1, d_top, z1), (x0, d_top, z1)]
+    return _rings(b, [bottom, top], material, label)
+
+
+def _bastion(b, cx, cy, half_base, half_top, z0, z1, material, label):
+    """A squat tapered square tower."""
+    bottom = [(cx - half_base, cy - half_base, z0), (cx + half_base, cy - half_base, z0), (cx + half_base, cy + half_base, z0), (cx - half_base, cy + half_base, z0)]
+    top = [(cx - half_top, cy - half_top, z1), (cx + half_top, cy - half_top, z1), (cx + half_top, cy + half_top, z1), (cx - half_top, cy + half_top, z1)]
+    return _rings(b, [bottom, top], material, label)
+
+
+def _pilasters(b, x0, x1, d_base, d_top, z0, z1, step, w=6.0):
+    """Vertical ribs standing proud of a battered face, both faces, following its slope."""
+    x = x0
+    while x <= x1 + 0.01:
+        for f in (-1.0, 1.0):
+            bottom = [(x - w / 2, f * d_base, z0), (x + w / 2, f * d_base, z0), (x + w / 2, f * (d_base + 4.0), z0), (x - w / 2, f * (d_base + 4.0), z0)]
+            top = [(x - w / 2, f * d_top, z1), (x + w / 2, f * d_top, z1), (x + w / 2, f * (d_top + 2.5), z1), (x - w / 2, f * (d_top + 2.5), z1)]
+            _rings(b, [bottom, top], "steel.dark", "pilaster")
+        x += step
+
+
+def _seams(b, x0, x1, d_base, d_top, z0, z1, heights):
+    """Horizontal seam bands across a battered face, both faces."""
+    for z in heights:
+        t = (z - z0) / (z1 - z0)
+        d = d_base + (d_top - d_base) * t
+        for f in (-1.0, 1.0):
+            b.box(x0, x1, f * d, f * (d + 0.6), z - 0.8, z + 0.8, "steel.dark", "seam")
+
+
+def _turret(b, x, y, z):
+    """A low drum on a pad with a twin gun, barrels to local -y (north on the field)."""
+    b.prism("z", x, y, z + 1.5, 19.0, 3.0, "steel.dark", 8, "pad")
+    b.prism("z", x, y, z + 7.0, 15.0, 8.0, "steel.panel", 8, "drum")
+    b.prism("z", x, y, z + 11.5, 15.5, 1.5, "amber.strip", 8, "drum_light")
+    b.box(x - 8.0, x + 8.0, y - 7.0, y + 7.0, z + 11.0, z + 19.0, "steel.panel", "mount")
+    for s in (-1.0, 1.0):
+        b.prism("y", x + s * 3.5, y - 22.0, z + 15.0, 2.6, 36.0, "steel.dark", 6, "barrel")
+    b.box(x - 4.0, x + 4.0, y + 7.0, y + 10.0, z + 12.0, z + 18.0, "amber.light", "sight")
+
+
 def wall(b):
-    """One wall segment of the field's emitter line (decided 20 September): a hex wide, the
-    gate's wall height, a hazard band, a buttress each face, blades along the top."""
+    """One segment of the curtain wall, a hex wide: a battered slab with a lip, two
+    pilasters, seam bands, a vent hatch and lamps. No crenellations, no blades."""
     b.tile_world = 40.0
-    W, D, H = 31.0, 12.0, 70.0
-    b.box(-W, W, -D - 6.0, D + 6.0, 0.0, 6.0, "steel.dark", "plinth")
-    b.box(-W, W, -D, D, 6.0, H, "steel.panel", "wall")
+    W, DB, DT, H = 31.0, 15.0, 10.0, 70.0
+    b.box(-W, W, -DB - 5.0, DB + 5.0, 0.0, 5.0, "steel.dark", "footing")
+    _battered(b, -W, W, DB, DT, 5.0, H, "steel.panel", "wall")
+    b.box(-W, W, -DT - 2.0, DT + 2.0, H, H + 4.0, "steel.dark", "lip")
+    _pilasters(b, -W + 10.0, W - 10.0, DB, DT, 5.0, H, 42.0)
+    _seams(b, -W, W, DB, DT, 5.0, H, (26.0, 48.0))
     for f in (-1.0, 1.0):
-        b.box(-W, W, f * (D + 0.2), f * (D + 1.4), 21.0, 24.5, "amber.strip", "light_strip")
-        b.loft([(f * D, rect(0.0, 10.0, 6.0, H - 6.0)), (f * (D + 12.0), rect(0.0, 10.0, 6.0, 12.0))], "steel.dark", "buttress")
-    _blades(b, -W + 4.0, W - 4.0, D - 2.0, H, step=26.0, h=20.0, w=4.0)
-    _blades(b, -W + 4.0, W - 4.0, -D + 2.0, H, step=26.0, h=20.0, w=4.0)
-    for f in (-1.0, 1.0):
+        b.box(-W, W, f * (DB + (DT - DB) * 0.3), f * (DB + (DT - DB) * 0.3 + 1.2), 21.0, 24.5, "amber.strip", "light_strip")
+        b.box(-6.0, 6.0, f * (DT + 0.5), f * (DT + 1.6), H - 14.0, H - 6.0, "steel.vent", "vent")
         for lx in (-20.0, 0.0, 20.0):
-            b.box(lx - 1.5, lx + 1.5, f * (D + 0.3), f * (D + 1.6), H - 5.0, H - 2.5, "amber.light", "lamp_row")
+            b.box(lx - 1.5, lx + 1.5, f * (DT + 0.4), f * (DT + 1.8), H - 3.5, H - 1.0, "amber.light", "lamp")
 
 
 wall.maker = "arsenal"
 
 
 def gate(b):
-    """The gate: the field's projector and the Arsenal's device. Three hexes wide, a low
-    wall either side, a gatehouse rising above it with a tall narrow pointed mouth in two
-    stepped reveals, two finned six-sided towers with a heavy gun each, blades on every top
-    edge, lamps either side of the mouth."""
+    """The gate: the field's projector. A battered curtain across three hexes, two squat
+    tapered bastions with turret drums, and between them a taller gatehouse block with a
+    wide panelled door that parts on a lit seam, under a heavy lintel and lip. Panelled
+    skins, seams and pilasters, lamps and vents: thick, machine-made, impenetrable."""
     b.tile_world = 40.0
-    W, D, H = 92.0, 16.0, 70.0
-    b.box(-W, W, -D - 8.0, D + 8.0, 0.0, 6.0, "steel.dark", "plinth")
-    b.box(-W, W, -D, D, 6.0, H, "steel.panel", "wall")
-    GW, GH = 66.0, H + 22.0
-    b.box(-GW, GW, -D - 3.0, D + 3.0, 6.0, GH, "steel.panel", "gatehouse")
-    MW, MH = 30.0, 64.0
+    W, DB, DT, H = 92.0, 15.0, 10.0, 70.0
+    b.box(-W, W, -DB - 6.0, DB + 6.0, 0.0, 5.0, "steel.dark", "footing")
+    _battered(b, -W, W, DB, DT, 5.0, H, "steel.panel", "wall")
+    b.box(-W, W, -DT - 2.0, DT + 2.0, H, H + 4.0, "steel.dark", "lip")
+    _seams(b, -W, W, DB, DT, 5.0, H, (26.0, 48.0))
+    # The gatehouse: a taller battered block, its door wide and tall.
+    GW, GB, GT, GH = 54.0, 21.0, 15.0, 104.0
+    _battered(b, -GW, GW, GB, GT, 5.0, GH, "steel.panel", "gatehouse")
+    b.box(-GW - 2.0, GW + 2.0, -GT - 3.0, GT + 3.0, GH, GH + 5.0, "steel.dark", "gate_lip")
+    _pilasters(b, -GW + 8.0, GW - 8.0, GB, GT, 5.0, GH, 23.0, w=7.0)
+    _seams(b, -GW, GW, GB, GT, 5.0, GH, (34.0, 62.0, 88.0))
+    MW, MH = 36.0, 70.0
+    b.box(-MW, MW, -GB - 1.5, GB + 1.5, 5.0, MH, "bore.dark", "mouth")
     for f in (-1.0, 1.0):
-        b.box(-W, -GW, f * (D + 0.2), f * (D + 1.4), 21.0, 24.5, "amber.strip", "light_strip")
-        b.box(GW, W, f * (D + 0.2), f * (D + 1.4), 21.0, 24.5, "amber.strip", "light_strip")
-        # A row of lamps along the wall top and the gatehouse, the projector's own light.
-        for lx in range(-84, 85, 12):
-            if abs(lx) > GW + 4.0 or abs(lx) < GW - 4.0:
-                b.box(lx - 1.5, lx + 1.5, f * (D + 0.3), f * (D + 1.6), (GH if abs(lx) < GW else H) - 5.0, (GH if abs(lx) < GW else H) - 2.5, "amber.light", "lamp_row")
-    b.box(-MW, MW, -D - 4.0, D + 4.0, 6.0, MH, "bore.dark", "mouth")
-    # The door: two panels that part in the middle, their seam a light, each with a
-    # horizontal groove line, the mechanism of a thing that opens.
+        d = GB + (GT - GB) * ((MH * 0.5 - 5.0) / (GH - 5.0))
+        for s in (-1.0, 1.0):
+            b.box(min(s * MW, 0.0) + 0.8, max(s * MW, 0.0) - 0.8, f * (d + 1.0), f * (d + 2.0), 6.0, MH - 3.0, "steel.plate", "door_panel")
+            for gz in (24.0, 44.0):
+                b.box(min(s * MW, 0.0) + 3.0, max(s * MW, 0.0) - 3.0, f * (d + 2.0), f * (d + 2.6), gz - 0.8, gz + 0.8, "steel.dark", "door_groove")
+        b.box(-1.0, 1.0, f * (d + 2.0), f * (d + 2.8), 6.0, MH - 3.0, "amber.strip", "door_seam")
+        b.box(-MW - 4.0, MW + 4.0, f * (GB + (GT - GB) * ((MH - 5.0) / (GH - 5.0)) + 0.5), f * (GB + (GT - GB) * ((MH - 5.0) / (GH - 5.0)) + 3.0), MH, MH + 7.0, "steel.dark", "lintel")
+        b.box(-24.0, 24.0, f * (GT + 0.5), f * (GT + 1.6), GH - 22.0, GH - 12.0, "livery.livery", "device")
+        for lx in range(-48, 49, 12):
+            b.box(lx - 1.5, lx + 1.5, f * (GT + 0.4), f * (GT + 1.8), GH - 3.5, GH - 1.0, "amber.light", "lamp")
+        for lx in (-44.0, 44.0):
+            b.box(lx - 5.0, lx + 5.0, f * (GB + (GT - GB) * 0.2 + 0.5), f * (GB + (GT - GB) * 0.2 + 1.6), 20.0, 30.0, "steel.vent", "vent")
+    # The bastions: squat tapered towers at the ends, a turret drum on each pad.
+    BH = 118.0
     for s in (-1.0, 1.0):
-        b.box(min(s * MW, 0.0) + 0.6, max(s * MW, 0.0) - 0.6, -D - 2.0, -D - 1.0, 7.0, MH - 4.0, "steel.plate", "door_panel")
-        b.box(min(s * MW, 0.0) + 2.0, max(s * MW, 0.0) - 2.0, -D - 2.6, -D - 2.0, 30.0, 32.0, "steel.dark", "door_groove")
-    b.box(-0.9, 0.9, -D - 2.8, -D - 2.0, 7.0, MH - 4.0, "amber.strip", "door_seam")
-    for rw, rh, rd in ((MW + 5.0, MH + 8.0, 4.5), (MW + 10.0, MH + 16.0, 6.0)):
+        x = s * 74.0
+        _bastion(b, x, 0.0, 22.0, 17.0, 0.0, BH, "steel.panel", "bastion")
+        b.box(x - 19.0, x + 19.0, -19.0, 19.0, BH, BH + 3.0, "steel.dark", "bastion_lip")
         for f in (-1.0, 1.0):
-            y0, y1 = f * (D + 3.0), f * (D + 3.0 + rd)
-            b.box(-rw, -rw + 4.5, y0, y1, 6.0, rh, "steel.dark", "jamb")
-            b.box(rw - 4.5, rw, y0, y1, 6.0, rh, "steel.dark", "jamb")
-            b.loft([(y0, [(-rw, rh), (rw, rh), (0.0, rh + rw * 0.55)]), (y1, [(-rw, rh), (rw, rh), (0.0, rh + rw * 0.55)])], "steel.dark", "point")
-    for i in range(5):
-        x = -12.0 + i * 6.0
-        b.box(x - 0.9, x + 0.9, D + 2.0, D + 4.0, 6.0, MH, "steel.dark", "bar")
-    for s in (-1.0, 1.0):
-        b.box(-22.0, 22.0, s * (D + 3.0), s * (D + 5.0), GH - 18.0, GH - 6.0, "livery.livery", "device")
-        for f in (-1.0, 1.0):
-            b.box(s * 30.0, s * 34.0, f * (D + 3.0), f * (D + 5.0), 30.0, 36.0, "amber.light", "lamp")
-    b.box(-GW - 2.0, GW + 2.0, -D - 5.0, D + 5.0, GH - 6.0, GH, "steel.dark", "lintel")
-    # Fewer, bigger vanes: emitters, not crenellations.
-    _blades(b, -GW + 6.0, GW - 6.0, D - 1.0, GH, step=26.0, h=24.0, w=4.0)
-    _blades(b, -GW + 6.0, GW - 6.0, -D + 1.0, GH, step=26.0, h=24.0, w=4.0)
-    TR, TT = 20.0, 112.0
-    for s in (-1.0, 1.0):
-        x = s * 76.0
-        b.prism("z", x, 0.0, (6.0 + TT) / 2.0, TR, TT - 6.0, "steel.panel", 6, "tower", phase=math.pi / 6)
-        # Bands and a lit collar make it a tower, not a texture: machinery in rings.
-        for bz in (30.0, 62.0, 94.0):
-            b.prism("z", x, 0.0, bz, TR + 1.5, 4.0, "steel.dark", 6, "tower_band", phase=math.pi / 6)
-        b.prism("z", x, 0.0, 80.0, TR + 1.2, 2.0, "amber.strip", 6, "tower_collar", phase=math.pi / 6)
-        for k in range(3):
-            a = k * 2.0 * math.pi / 3.0 + math.pi / 2.0
-            fx, fy = TR * math.cos(a), TR * math.sin(a)
-            b.box(x + fx - 2.5, x + fx + 2.5, fy - 2.5, fy + 2.5, 12.0, TT + 10.0, "steel.dark", "fin")
-        b.prism("z", x, 0.0, TT + 1.5, TR + 2.0, 3.0, "steel.dark", 6, "cap", phase=math.pi / 6)
-        _gun(b, x, 0.0, TT + 3.0)
-        for bx in (x - 30.0, x + 30.0):
-            if abs(bx) < W - 4.0 and abs(bx) > GW + 2.0:
-                for f in (-1.0, 1.0):
-                    b.loft([(f * D, rect(bx, 10.0, 6.0, H - 6.0)), (f * (D + 14.0), rect(bx, 10.0, 6.0, 12.0))], "steel.dark", "bastion")
-
+            for bz in (36.0, 72.0):
+                t = bz / BH
+                d = 22.0 + (17.0 - 22.0) * t
+                b.box(x - d, x + d, f * d, f * (d + 0.6), bz - 0.8, bz + 0.8, "steel.dark", "bastion_seam")
+            b.box(x - 4.0, x + 4.0, f * 18.5, f * 19.6, BH - 14.0, BH - 6.0, "steel.vent", "bastion_vent")
+            b.box(x - 12.0, x + 12.0, f * 20.0, f * 21.0, 56.0, 59.0, "amber.strip", "bastion_light")
+        _turret(b, x, 0.0, BH + 3.0)
+        b.pin("hp_%d" % (1 if s < 0 else 2), (x, 0.0, BH + 18.0))
+    # A couple of masts on the gatehouse: the projector's antennae.
+    for mx in (-30.0, 30.0):
+        b.prism("z", mx, 0.0, GH + 14.0, 1.2, 28.0, "steel.dark", 4, "mast")
+        b.box(mx - 1.5, mx + 1.5, -1.5, 1.5, GH + 27.0, GH + 30.0, "amber.light", "mast_light")
 
 
 gate.maker = "arsenal"

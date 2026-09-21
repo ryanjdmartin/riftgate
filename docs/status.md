@@ -135,7 +135,11 @@ on a longer battlefield. Crags take their ground's idiom (`Map3D._crag`: rock sp
 broken towers on ruins, mesas on wasteland); scrub carries dead trees. The readout has its
 own strip (`BattleScreen.INFO_H`) between the map and the log. Scanlines are drawn on top
 in the map view; the flicker is rare. `RIFTGATE_MAP_WIRE=1` is a trial of terrain as pure
-wireframe. Height is a relief field (`BattleMap.elevation`, steps of `Map3D.STEP`, water
+wireframe. The gate and wall were rebuilt to Ryan's curtain-wall references (21 September):
+battered slabs (`_battered`) with a lip, pilaster ribs, seam bands, vents and lamps; the
+gate a taller gatehouse block with a wide panelled door parting on a lit seam under a
+lintel, squat tapered bastions (`_bastion`) with turret drums and twin guns at the ends,
+masts on top; no blades or crenellations. Height is a relief field (`BattleMap.elevation`, steps of `Map3D.STEP`, water
 sunk), not terrain type; crags sit at their ground's level. The holographic display
 (decided 21 September): the grid is emissive lines in the scene (`_grid_mesh`), scanlines
 and the corrupted side's flicker are in `bleed.gdshader`, the gate and walls carry the ink
