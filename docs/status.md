@@ -121,18 +121,27 @@ concrete, water, rock, crag) through `terrain.gdshader`, sides in rock, heights 
 `Map3D.HEIGHT` (crags 20 plus a spire: impassable, flyers only, decided); the painted
 ground map is gone and `PaintedMap` is the overworld only. Roads are laid by
 `BattleMap._lay_roads` as a drifting trunk north from the gate with a branch or two and
-`ROAD_GAP_CHANCE` missing slabs, never rolled. Column walls are built only on edges whose
+`ROAD_GAP_CHANCE` missing slabs, never rolled. The landscape is laid, not rolled
+(`BattleMap._lay_landscape`, 21 September): seeded `FastNoiseLite` fields for wetness
+(water bodies), roughness (gravel belts) and a ridge (crags along lines), ruins in two or
+three clusters; a crag keeps the ground under it in `crag_base` (crag-water, crag-ruin) and
+the 3D map shows that tile under the spikes; the two rows above the apron are always open
+ground. Column walls are built only on edges whose
 neighbour sits at another height, so pools and fields read as one. Crags are clusters of
 leaning rock spikes. The gate's rows draw no ground. Units hang off a pivot at the hex,
 centred by their bounds; only flyers move at rest (a slow swell, `HOVER` 30 above the
 ground, a shadow disc on their tile); grounded idle waits for joints. The team deploys
 facing north (one of the two north directions, seeded). Tapping empty ground with nothing
-selected shows the terrain's name, move cost and who can cross it. Foe pictures draw a
-little larger than their pixels, plaques up and right. Open on the map: the gate wants a
-sci-fi pass (less gothic); terrain height has no rule yet and skirmishes happen on
-flattened ground, so its meaning is open (Ryan, 21 September), as is whether squads leave
-corruption in their wake; a believable landscape (coherent regions, not per-hex rolls) is
-wanted either way; the movement phase animated; an outline for units behind tall columns. Deleted: `art/mechs`, the spriter, the map token
+selected shows the terrain's name, move cost and who can cross it; the readout is docked
+over the bottom of the map and a tap on it dismisses it; tapping an ally selects it and
+shows its shield, hull and move (no gauge over the unit any more), tapping an enemy shows
+its quick label, double-tap (`hex_double_tapped`) is wired and shows the full readout until
+the battle screen hosts the skirmish's codex. Flyers draw at 0.8 of a mech's fit and every
+unit is set south so its visual middle lands on its hex. The tilt-shift blurs only north
+of the focus. Open on the map: the gate wants a sci-fi pass (less gothic); terrain height
+is landscape with no rule (decided 21 September: skirmishes happen on flattened ground);
+whether squads leave corruption in their wake; the movement phase animated; an outline for
+units behind tall columns; the codex on the battle screen. Deleted: `art/mechs`, the spriter, the map token
 tool, all of blendforge and its .blend files. Dead code to remove next: `Sprites.combat_mech`/`map_mech` and the
 skirmish's `RIFTGATE_MECH3D=off` sprite fallback, the pixel look. Not built: joints and
 hardpoint pins on the new units (the engine reads `joint_*` and `hp_*`; lowforge writes

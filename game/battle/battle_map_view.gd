@@ -9,8 +9,11 @@ extends Control
 ## its readout. The view owns no game logic.
 
 signal hex_tapped(h: Vector2i)
+signal hex_double_tapped(h: Vector2i)
 signal unit_held(u: Unit)
 signal hold_released
+
+const DOUBLE_TAP_SECONDS := 0.35
 
 const HEX_SIZE := 44.0
 const DRAG_THRESHOLD := 12.0
@@ -55,6 +58,8 @@ var _holding := false
 var _press_pos := Vector2.ZERO
 var _last_pos := Vector2.ZERO
 var _press_at := 0.0
+var _last_tap_at := -10.0
+var _last_tap_hex := Vector2i(-9999, -9999)
 
 
 func _init() -> void:
@@ -406,10 +411,8 @@ func _draw_unit(u: Unit) -> void:
 			var inner := PackedVector2Array([c + Vector2(0, -r + 6.0), c + Vector2(r - 6.0, 0), c + Vector2(0, r - 6.0), c + Vector2(-r + 6.0, 0)])
 			Hud.stroke_poly(self, inner, Palette.BG, 2.0)
 		draw_string(Hud.mono(), c + Vector2(-5.0, 5.0), u.display_name.substr(0, 1).to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Palette.BG)
-	if u.is_player() and not u.is_static():
-		# A sliver of hull over the machine, so the state of the team reads from the map.
-		var w := 30.0
-		Hud.gauge(self, Rect2(c + Vector2(-w * 0.5, -HEX_SIZE * 0.78), Vector2(w, 5.0)), float(u.hull) / float(maxi(1, u.hull_max)), hud, 2.0)
+	# No gauge over a mech: shield and hull read in the docked readout when it is tapped
+	# (Ryan, 21 September), where the contrast is under control.
 	if u.is_enemy() and u.strength > 0:
 		_plaque(c + Vector2(28.0, -30.0), "×%d" % u.strength, Palette.ENEMY, 3.0 if u.elite else 1.5)   # up and right, clear of the picture
 
@@ -437,7 +440,14 @@ func _gui_input(event: InputEvent) -> void:
 				else:
 					var h := hex_at(event.position)
 					if field.map.has(h):
-						hex_tapped.emit(h)
+						var now := Time.get_ticks_msec() / 1000.0
+						if h == _last_tap_hex and now - _last_tap_at < DOUBLE_TAP_SECONDS:
+							_last_tap_at = -10.0
+							hex_double_tapped.emit(h)
+						else:
+							_last_tap_at = now
+							_last_tap_hex = h
+							hex_tapped.emit(h)
 			_pressed = false
 			_holding = false
 		accept_event()

@@ -21,9 +21,9 @@ uniform int source_count = 0;
 uniform float cell = 4.0;                    // the dither's pixel step, on screen
 uniform float levels = 5.0;                  // posterize steps per channel on the flat side
 uniform float focus_y = 0.0;                 // map-pixel y of the screen's middle
-uniform float focus_band = 280.0;            // half height of the sharp zone, in map pixels
-uniform float focus_falloff = 360.0;         // map pixels over which the blur reaches its maximum
-uniform float blur_max = 1.3;                // the blur's tap spacing at its maximum, in screen pixels
+uniform float focus_band = 220.0;            // the sharp zone reaches this far north of the middle, in map pixels
+uniform float focus_falloff = 260.0;         // map pixels over which the blur reaches its maximum
+uniform float blur_max = 2.4;                // the blur's tap spacing at its maximum, in screen pixels
 
 float bleed_at(vec2 px) {
 	float m = 1.0 - clamp((px.y - grad.x) / max(1.0, grad.y - grad.x), 0.0, 1.0);
@@ -46,7 +46,8 @@ float bayer(ivec2 c) {
 }
 
 vec4 scene_at(sampler2D scene_tex, vec2 uv, vec2 px) {
-	float f = clamp((abs(px.y - focus_y) - focus_band) / focus_falloff, 0.0, 1.0);
+	// Only the far ground softens, north of the focus; the gate end stays sharp (Ryan, 21 September).
+	float f = clamp((focus_y - focus_band - px.y) / focus_falloff, 0.0, 1.0);
 	float rad = f * blur_max;
 	if (rad < 0.05) {
 		return texture(scene_tex, uv);

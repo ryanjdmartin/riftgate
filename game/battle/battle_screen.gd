@@ -101,6 +101,7 @@ func _build() -> void:
 	_place(_map, Vector2(0, MAP_Y), Vector2(W, LOG_Y - 10.0 - MAP_Y))
 	_map.set_field(battle.field)
 	_map.hex_tapped.connect(_on_hex_tapped)
+	_map.hex_double_tapped.connect(_on_hex_double_tapped)
 	_map.unit_held.connect(_on_unit_held)
 	_map.hold_released.connect(_on_hold_released)
 
@@ -122,10 +123,16 @@ func _build() -> void:
 	_clear_btn.ghost = true
 	_place(_clear_btn, Vector2(W - 16 - BOTTOM_BTN.x, BOTTOM_Y), BOTTOM_BTN)
 
+	# The readout lives in one place, docked over the bottom of the map (thumbs, not a
+	# mouse: Ryan, 21 September), and a tap on it dismisses it.
 	_details = HudPanel.new(14.0)
-	_details.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_details.mouse_filter = Control.MOUSE_FILTER_STOP
 	_details.visible = false
-	_details.custom_minimum_size = Vector2(340, 0)
+	_details.custom_minimum_size = Vector2(W - 24.0, 0)
+	_details.gui_input.connect(func(ev: InputEvent) -> void:
+		if ev is InputEventMouseButton and ev.pressed:
+			_details.visible = false
+			_details.accept_event())
 	add_child(_details)
 	_details_label = Hud.label("", 16, Palette.INK)
 	_details.add_child(_details_label)
@@ -224,6 +231,7 @@ func _select(u: Unit) -> void:
 func _on_hex_tapped(h: Vector2i) -> void:
 	if battle.state != Battle.State.PLAN:
 		return
+	_details.visible = false
 	var u := battle.field.unit_at(h)
 	if u != null and u.is_player() and not u.is_static():
 		if _map.selected == u:
@@ -231,6 +239,9 @@ func _on_hex_tapped(h: Vector2i) -> void:
 			_select(null)
 		else:
 			_select(u)
+			_on_unit_held(u)   # its shield, hull and move, in the readout
+	elif u != null and u.is_enemy():
+		_on_unit_held(u)   # a quick label for the enemy; double-tap for the codex
 	elif _map.selected != null and _map.destinations.has(h):
 		battle.set_route(_map.selected, h)
 		_select(null)
@@ -270,19 +281,23 @@ func _on_hold_released() -> void:
 	_details.visible = false
 
 
+## Double-tap a unit for its codex. The battle screen has no codex of its own yet, so for
+## now it shows the full readout; the skirmish's codex is the one to host here.
+func _on_hex_double_tapped(h: Vector2i) -> void:
+	if battle.state != Battle.State.PLAN:
+		return
+	var u := battle.field.unit_at(h)
+	if u != null:
+		_on_unit_held(u)
+
+
 ## Readout beside a point on the screen, kept inside the frame.
-func _show_details(text: String, near: Vector2) -> void:
+func _show_details(text: String, _near: Vector2) -> void:
 	_details_label.text = text
 	_details.visible = true
 	_details.reset_size()
-	var width := 340.0
-	var pos := near + Vector2(BattleMapView.HEX_SIZE, -BattleMapView.HEX_SIZE)
-	if pos.x + width > W - 8.0:
-		pos.x = near.x - BattleMapView.HEX_SIZE - width
-	pos.x = clampf(pos.x, 8.0, W - width - 8.0)
 	var height := maxf(_details.size.y, 80.0)
-	pos.y = clampf(pos.y, MAP_Y + 8.0, LOG_Y - 8.0 - height)
-	_details.position = pos
+	_details.position = Vector2(12.0, LOG_Y - 18.0 - height)
 
 
 # ---------------------------------------------------------------- the loop

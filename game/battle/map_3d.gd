@@ -20,6 +20,7 @@ const PITCH := 42.0            # the map tokens' tilt
 const HEX_WORLD := 35.0        # a hex's circumradius in model units: a mech is about one hex wide
 const CAMERA_DISTANCE := 900.0
 const MARKER_FIT := 1.05       # a mech's widest extent, in hex widths, on the map
+const FIT_FLYER := 0.8         # a flyer is a small craft beside a mech (Ryan, 21 September)
 const HOVER := 30.0            # a flyer rides this far above the ground, in model units: clear of a mech
 const SHADOW_RADIUS := 0.38    # a flyer's ground shadow, in hex widths: it says which tile it is on
 const TILE_WORLD := 40.0       # world units one terrain tile covers, as the structures
@@ -249,8 +250,6 @@ func _build_ground() -> void:
 	var rng := RandomNumberGenerator.new()
 	var corners := Hex.corners(Vector2.ZERO, hex_px)
 	for h in map.all_hexes():
-		if map.gate_hexes.has(h) or map.wall_hexes.has(h):
-			continue   # the gate's rows are the structures' ground, not the field's
 		var t: int = map.terrain[h]
 		var at := _hex_world(h)
 		var hgt: float = HEIGHT[t]
@@ -276,9 +275,12 @@ func _build_ground() -> void:
 		col.position = at
 		add_child(col)
 		_columns[h] = col
+		# A crag keeps the ground it stands on (crag-water, crag-ruin, crag-field: the
+		# flavour of the tile shows through under the rock).
+		var ground_t: int = map.crag_base.get(h, t) if t == BattleMap.Terrain.MOUNTAIN else t
 		var mi := MeshInstance3D.new()
 		mi.mesh = _column_mesh(hgt, sides)
-		mi.set_surface_override_material(0, _terrain_material(TILE[t], 1.0 if t == BattleMap.Terrain.WATER else 0.0))
+		mi.set_surface_override_material(0, _terrain_material(TILE[ground_t], 1.0 if ground_t == BattleMap.Terrain.WATER else 0.0))
 		if mi.mesh.get_surface_count() > 1:
 			mi.set_surface_override_material(1, rock)
 		col.add_child(mi)
@@ -287,18 +289,20 @@ func _build_ground() -> void:
 			BattleMap.Terrain.MOUNTAIN:
 				# The crag: a cluster of narrow leaning rock spikes, tall enough that nobody
 				# but a flyer gets over it.
+				# Filling the tile and overflowing its height, so it reads as a thing you fly
+				# over, not a pile.
 				var rock_dark := _lit(Color("3a383e"))
-				for k in range(3):
+				for k in range(6):
 					var spike := CylinderMesh.new()
-					spike.top_radius = 0.6
-					spike.bottom_radius = rng.randf_range(5.0, 8.0)
-					spike.height = rng.randf_range(22.0, 38.0) if k == 0 else rng.randf_range(14.0, 26.0)
+					spike.top_radius = 0.8
+					spike.bottom_radius = rng.randf_range(9.0, 14.0)
+					spike.height = rng.randf_range(40.0, 56.0) if k == 0 else rng.randf_range(22.0, 40.0)
 					spike.radial_segments = 4
 					var pk := MeshInstance3D.new()
 					pk.mesh = spike
 					pk.material_override = rock_dark
-					var a := rng.randf_range(0.0, TAU)
-					var dist := 0.0 if k == 0 else rng.randf_range(8.0, 14.0)
+					var a := k * TAU / 5.0 + rng.randf_range(-0.4, 0.4)
+					var dist := 0.0 if k == 0 else rng.randf_range(14.0, 22.0)
 					pk.position = Vector3(cos(a) * dist, hgt + spike.height * 0.5 - 1.0, sin(a) * dist)
 					pk.rotation = Vector3(rng.randf_range(-0.18, 0.18), rng.randf_range(0, TAU), rng.randf_range(-0.18, 0.18))
 					col.add_child(pk)
@@ -430,12 +434,21 @@ func _make_unit(u: Unit) -> Node3D:
 		# it) and standing on its lowest point; a flyer hovers, with a shadow on its tile.
 		var aabb := _bounds(node)
 		var widest := maxf(aabb.size.x, aabb.size.z)
-		var k := (HEX_WORLD * 2.0 * MARKER_FIT / widest) if widest > 0.0 else 1.0
 		var flyer := u.traits.has("flyer")
+		var fit := MARKER_FIT * (FIT_FLYER if flyer else 1.0)
+		var k := (HEX_WORLD * 2.0 * fit / widest) if widest > 0.0 else 1.0
 		var pivot := Node3D.new()
 		node.scale = Vector3.ONE * k
-		node.position = Vector3(-aabb.get_center().x, -aabb.position.y, -aabb.get_center().z) * k + Vector3(0.0, HOVER if flyer else 0.0, 0.0)
+		var hover := HOVER if flyer else 0.0
+		# Under the pitched camera a body's middle projects north of its feet, so the model
+		# is set south by as much as that, and its visual centre lands on the hex centre.
+		var south := (hover + aabb.size.y * k * 0.5) * _cos / _sin
+		node.position = Vector3(-aabb.get_center().x, -aabb.position.y, -aabb.get_center().z) * k + Vector3(0.0, hover, 0.0)
 		pivot.add_child(node)
+		var seat := Node3D.new()   # the pivot turns to the facing; the seat's southward set does not
+		seat.position = Vector3(0.0, 0.0, south)
+		seat.add_child(pivot)
+		pivot = seat
 		if flyer:
 			var disc := CylinderMesh.new()
 			disc.top_radius = HEX_WORLD * 2.0 * SHADOW_RADIUS

@@ -225,7 +225,7 @@ def _gun(b, x, y, z):
 def wall(b):
     """One wall segment of the field's emitter line (decided 20 September): a hex wide, the
     gate's wall height, a hazard band, a buttress each face, blades along the top."""
-    b.tile_world = 80.0
+    b.tile_world = 40.0
     W, D, H = 31.0, 12.0, 70.0
     b.box(-W, W, -D - 6.0, D + 6.0, 0.0, 6.0, "steel.dark", "plinth")
     b.box(-W, W, -D, D, 6.0, H, "steel.panel", "wall")
@@ -244,7 +244,7 @@ def gate(b):
     wall either side, a gatehouse rising above it with a tall narrow pointed mouth in two
     stepped reveals, two finned six-sided towers with a heavy gun each, blades on every top
     edge, lamps either side of the mouth."""
-    b.tile_world = 80.0
+    b.tile_world = 40.0
     W, D, H = 92.0, 16.0, 70.0
     b.box(-W, W, -D - 8.0, D + 8.0, 0.0, 6.0, "steel.dark", "plinth")
     b.box(-W, W, -D, D, 6.0, H, "steel.panel", "wall")

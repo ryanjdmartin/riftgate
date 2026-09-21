@@ -27,6 +27,7 @@ var rift: Vector2i            # centre of the rift structure
 var gate_hexes: Array[Vector2i] = []   # the gate: three wide and GATE_ROWS deep, apron included
 var rift_hexes: Array[Vector2i] = []
 var wall_hexes: Array[Vector2i] = []   # the rest of the bottom GATE_ROWS rows: indestructible, nobody stands there
+var crag_base: Dictionary = {}         # crag hex -> the ground under the rock (water, ruins, ...): flavour only
 var map_seed: int = 0
 
 const STRUCTURE_HALF_WIDTH := 1   # gate and rift span centre plus this many hexes each side
@@ -77,20 +78,63 @@ static func generate(w: int, h: int, seed_value: int) -> BattleMap:
 	m.map_seed = seed_value
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value
-	for hx in m.terrain.keys():
-		m.terrain[hx] = _roll_terrain(rng)
+	m._lay_landscape(rng)
 	m._lay_roads(rng)
-	# The gate, the rift, and the ground right in front of each are always open.
+	# The gate, the rift, and the ground right in front of each are always open, and the
+	# two rows above the gate's apron are the team's ground: never water or crag, so a
+	# deployed machine always has somewhere to go.
 	var open: Array[Vector2i] = []
 	open.append_array(m.gate_hexes)
 	open.append_array(m.rift_hexes)
 	for hx in open:
 		m.terrain[hx] = Terrain.PLAIN
+		m.crag_base.erase(hx)
 		for n in Hex.neighbors(hx):
 			if m.has(n):
 				m.terrain[n] = Terrain.PLAIN
+				m.crag_base.erase(n)
+	for row in range(h - GATE_ROWS - 2, h - GATE_ROWS):
+		for col in range(w):
+			var hx := Hex.offset_to_axial(col, row)
+			if m.has(hx) and (m.terrain[hx] == Terrain.WATER or m.terrain[hx] == Terrain.MOUNTAIN):
+				m.terrain[hx] = Terrain.PLAIN
+				m.crag_base.erase(hx)
 	m._ensure_ground_path(rng)
 	return m
+
+
+## A believable landscape rather than per-hex rolls (Ryan, 21 September): water as bodies
+## with shores from a wetness field, gravel as belts from a roughness field, ruins in a few
+## clusters, crags along ridge lines (the ground under a crag is kept as its flavour). The
+## fields are seeded noise, so the same seed is the same map.
+func _lay_landscape(rng: RandomNumberGenerator) -> void:
+	var wet := FastNoiseLite.new()
+	wet.seed = map_seed
+	wet.frequency = 0.30
+	var rough := FastNoiseLite.new()
+	rough.seed = map_seed + 101
+	rough.frequency = 0.34
+	var ridge := FastNoiseLite.new()
+	ridge.seed = map_seed + 202
+	ridge.frequency = 0.22
+	var centres: Array[Vector2i] = []
+	var keys := terrain.keys()
+	for k in range(rng.randi_range(2, 3)):
+		centres.append(keys[rng.randi_range(0, keys.size() - 1)])
+	for hx in keys:
+		var p := Hex.to_pixel(hx, 1.0)
+		var t := Terrain.PLAIN
+		if wet.get_noise_2d(p.x, p.y) < -0.22:
+			t = Terrain.WATER
+		elif rough.get_noise_2d(p.x, p.y) > 0.24:
+			t = Terrain.ROUGH
+		for c in centres:
+			if Hex.distance(hx, c) <= 1 and rng.randf() < 0.75 and t != Terrain.WATER:
+				t = Terrain.RUINS
+		terrain[hx] = t
+		if absf(ridge.get_noise_2d(p.x, p.y)) < 0.075 and rng.randf() < 0.85 and not is_structure(hx):
+			crag_base[hx] = t
+			terrain[hx] = Terrain.MOUNTAIN
 
 
 ## A paved road runs north from the gate as a connected path with drift, most of the way
@@ -106,10 +150,16 @@ func _lay_roads(rng: RandomNumberGenerator) -> void:
 		trunk.append(cur)
 	var steps := int(float(height) * rng.randf_range(0.55, 0.8))
 	for i in range(steps):
+		# Northward steps, steering around water and crags when there is a way round.
 		var options: Array[Vector2i] = []
+		var any: Array[Vector2i] = []
 		for n in Hex.neighbors(cur):
 			if has(n) and n.y < cur.y and not is_structure(n):
-				options.append(n)
+				any.append(n)
+				if terrain[n] != Terrain.WATER and terrain[n] != Terrain.MOUNTAIN:
+					options.append(n)
+		if options.is_empty():
+			options = any
 		if options.is_empty():
 			break
 		cur = options[rng.randi_range(0, options.size() - 1)]
