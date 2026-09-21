@@ -214,11 +214,12 @@ def _blades(b, x0, x1, y, z, step=12.0, h=16.0, w=2.4):
 
 
 def _gun(b, x, y, z):
-    """A turret ring, a mount and one heavy six-sided barrel, pointing north."""
+    """A turret ring, a mount and one heavy six-sided barrel. The map stands the gate turned
+    about, so the barrel points to local -y to face north on the field."""
     b.prism("z", x, y, z + 2.5, 12.0, 5.0, "steel.dark", 6, "ring")
     b.box(x - 7.0, x + 7.0, y - 8.0, y + 8.0, z + 5.0, z + 15.0, "steel.panel", "mount")
-    b.prism("y", x, y + 20.0, z + 11.0, 3.6, 34.0, "steel.dark", 6, "barrel")
-    b.box(x - 4.0, x + 4.0, y - 11.0, y - 8.0, z + 6.0, z + 13.0, "amber.light", "sight")
+    b.prism("y", x, y - 20.0, z + 11.0, 3.6, 34.0, "steel.dark", 6, "barrel")
+    b.box(x - 4.0, x + 4.0, y + 8.0, y + 11.0, z + 6.0, z + 13.0, "amber.light", "sight")
 
 
 def wall(b):
@@ -229,7 +230,7 @@ def wall(b):
     b.box(-W, W, -D - 6.0, D + 6.0, 0.0, 6.0, "steel.dark", "plinth")
     b.box(-W, W, -D, D, 6.0, H, "steel.panel", "wall")
     for f in (-1.0, 1.0):
-        b.box(-W, W, f * (D + 0.2), f * (D + 1.4), 20.0, 25.0, "steel.stripe", "band")
+        b.box(-W, W, f * (D + 0.2), f * (D + 1.4), 21.0, 24.5, "amber.strip", "light_strip")
         b.loft([(f * D, rect(0.0, 10.0, 6.0, H - 6.0)), (f * (D + 12.0), rect(0.0, 10.0, 6.0, 12.0))], "steel.dark", "buttress")
     _blades(b, -W + 1.0, W - 1.0, D - 2.0, H)
     _blades(b, -W + 1.0, W - 1.0, -D + 2.0, H)
@@ -247,9 +248,12 @@ def gate(b):
     W, D, H = 92.0, 16.0, 70.0
     b.box(-W, W, -D - 8.0, D + 8.0, 0.0, 6.0, "steel.dark", "plinth")
     b.box(-W, W, -D, D, 6.0, H, "steel.panel", "wall")
-    GW, GH = 46.0, H + 22.0
+    GW, GH = 58.0, H + 22.0
     b.box(-GW, GW, -D - 3.0, D + 3.0, 6.0, GH, "steel.panel", "gatehouse")
-    MW, MH = 15.0, 64.0
+    MW, MH = 22.0, 64.0
+    for f in (-1.0, 1.0):
+        b.box(-W, -GW, f * (D + 0.2), f * (D + 1.4), 21.0, 24.5, "amber.strip", "light_strip")
+        b.box(GW, W, f * (D + 0.2), f * (D + 1.4), 21.0, 24.5, "amber.strip", "light_strip")
     b.box(-MW, MW, -D - 4.0, D + 4.0, 6.0, MH, "bore.dark", "mouth")
     for rw, rh, rd in ((MW + 5.0, MH + 8.0, 4.5), (MW + 10.0, MH + 16.0, 6.0)):
         for f in (-1.0, 1.0):
@@ -269,7 +273,7 @@ def gate(b):
     _blades(b, -GW + 2.0, GW - 2.0, -D + 1.0, GH, step=10.0, h=22.0)
     TR, TT = 20.0, 112.0
     for s in (-1.0, 1.0):
-        x = s * 66.0
+        x = s * 74.0
         b.prism("z", x, 0.0, (6.0 + TT) / 2.0, TR, TT - 6.0, "steel.panel", 6, "tower", phase=math.pi / 6)
         for k in range(6):
             a = k * math.pi / 3.0

@@ -109,9 +109,12 @@ as the skirmish with a dark inverted-hull outline (`Map3D._marker`), fitted to a
 hex; the ground style is drawn at half resolution with chunky marks, so its texels match
 the units'. The map zooms (wheel, pinch; `BattleMapView.zoom_at`, 1 to 2.6) and pans both
 ways: overlays draw in map space under one transform, `to_screen`/`to_map` convert, the
-edge tags stay in screen space; `tools/screenshot.gd ... zoom` shows it. The 3D scene is
-rendered once at 1x and upscaled nearest when zoomed, which is on-register but could render
-at 2x later. Deleted: `art/mechs`, the spriter, the map token
+edge tags stay in screen space; `tools/screenshot.gd ... zoom` (or `zoomlast`) shows it.
+The 3D scene and the compositor render once per map redraw (`Map3D.redraw`, UPDATE_ONCE),
+never per frame, at 1x, or at 2x once the zoom passes `ZOOM_DETAIL` (1.6) so zooming
+resolves more. Units stand on their lowest point (`Map3D._rise`), flyers hover (`HOVER`).
+Roles light the register: `amber` tiles are emissive and both 3D environments carry a
+little glow; `glass` is glossy. Deleted: `art/mechs`, the spriter, the map token
 tool, all of blendforge and its .blend files. Dead code to remove next: `Sprites.combat_mech`/`map_mech` and the
 skirmish's `RIFTGATE_MECH3D=off` sprite fallback, the pixel look. Not built: joints and
 hardpoint pins on the new units (the engine reads `joint_*` and `hp_*`; lowforge writes

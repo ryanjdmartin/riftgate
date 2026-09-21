@@ -48,6 +48,10 @@ var _ground: SubViewport = null      # the gritty ground texture the 3D columns 
 var _painted: SubViewport = null     # the other world's flat bright map, rendered once
 var _mix: SubViewport = null         # the two worlds mixed by the bleed, drawn under the overlays
 var _composite: TextureRect = null   # the rect inside _mix that carries the bleed shader
+var _map_size := Vector2.ZERO        # the map in 1x pixels
+var _render_scale: float = 1.0       # 2 once zoomed past ZOOM_DETAIL: the reconstruction resolves more
+
+const ZOOM_DETAIL := 1.6
 var _tags: Array = []                # [[Rect2, Unit], ...] the off-screen portraits, as drawn
 var _pressed := false
 var _dragged := false
@@ -77,6 +81,8 @@ func set_field(f: Battlefield) -> void:
 			if old != null:
 				old.queue_free()
 		var map_size := Vector2(size.x, _map_px_height())
+		_map_size = map_size
+		_render_scale = 1.0
 		_ground = _paint(map_size, "ground")
 		_painted = _paint(map_size, "other")
 		_map3d = Map3D.new()
@@ -87,7 +93,7 @@ func set_field(f: Battlefield) -> void:
 		_mix = SubViewport.new()
 		_mix.size = Vector2i(map_size)
 		_mix.transparent_bg = true
-		_mix.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+		_mix.render_target_update_mode = SubViewport.UPDATE_ONCE   # re-rendered per redraw, like the 3D
 		_mix.canvas_item_default_texture_filter = SubViewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
 		add_child(_mix)
 		_composite = TextureRect.new()
@@ -256,7 +262,17 @@ func _draw() -> void:
 		# The ground, the structures and the mechs are geometry in the 3D viewport, mixed
 		# with the painted map by the compositor behind this drawing; the foes, being
 		# pictures from the other world, and every overlay are drawn here on top.
+		# Zoomed in, the scene renders at twice the size: more detail, not bigger texels.
+		# Both viewports render once per redraw, never per frame.
+		var want := 2.0 if zoom >= ZOOM_DETAIL else 1.0
+		if want != _render_scale:
+			_render_scale = want
+			_map3d.set_render_scale(want)
+			_mix.size = Vector2i(_map_size * want)
+			_composite.size = _map_size * want
 		_map3d.sync()
+		_map3d.redraw()
+		_mix.render_target_update_mode = SubViewport.UPDATE_ONCE
 		var mat: ShaderMaterial = _composite.material
 		var src := Bleed.sources(field, _origin, HEX_SIZE)
 		mat.set_shader_parameter("grad", Bleed.gradient(field, _origin, HEX_SIZE))
@@ -264,7 +280,7 @@ func _draw() -> void:
 		src.resize(Bleed.MAX_SOURCES)
 		mat.set_shader_parameter("sources", src)
 		mat.set_shader_parameter("focus_y", (size.y * 0.5 - scroll_y) / zoom)
-		draw_texture_rect(_mix.get_texture(), Rect2(Vector2.ZERO, Vector2(_mix.size)), false)
+		draw_texture_rect(_mix.get_texture(), Rect2(Vector2.ZERO, _map_size), false)
 	else:
 		# Headless: the painted map, so the view still lays out and the structures still show.
 		for h in map.all_hexes():

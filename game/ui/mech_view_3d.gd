@@ -195,6 +195,10 @@ func _setup(chassis_id: String, maker: String) -> void:
 	e.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	e.ambient_light_color = Color("a0b4c8")
 	e.ambient_light_energy = 0.7
+	e.glow_enabled = true
+	e.glow_intensity = 0.5
+	e.glow_bloom = 0.05
+	e.glow_hdr_threshold = 1.0
 	env.environment = e
 	_inner.add_child(env)
 
@@ -359,6 +363,14 @@ static func toon(node: Node, maker: String, look: String, paint_arg: Dictionary 
 				tm.roughness = clampf(1.0 - float(GLOSS.get(maker, 0.4)) * 0.9, 0.3, 0.98)
 				tm.metallic = 0.0
 				tm.cull_mode = BaseMaterial3D.CULL_DISABLED   # wings and fins are single plates
+				if role == "amber":
+					# Lamps, engines and light strips glow: the reconstruction's own light.
+					tm.emission_enabled = true
+					tm.emission_texture = tm.albedo_texture
+					tm.emission_energy_multiplier = 1.8
+				elif role == "glass":
+					tm.roughness = 0.25
+					tm.metallic = 0.35
 				mi.set_surface_override_material(i, tm)
 				continue
 			var m := ShaderMaterial.new()

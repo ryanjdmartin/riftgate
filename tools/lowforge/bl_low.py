@@ -114,6 +114,11 @@ class Tiles:
                     if 22 <= y < 42:
                         band = ((x + y) // 8) % 2 == 0
                         img[y, x, :] = np.array([0.95, 0.75, 0.10], np.float32) * (0.9 + img[y, x, 0] * 0.2) if band else np.array([0.10, 0.10, 0.10], np.float32)
+        elif kind == "strip":
+            # A light strip: dark housing with one bright amber line, for the emissive role.
+            img = self.metal(g * 0.5, 0.03, mottle=0.01)
+            img[28:36, :, :] = np.array([1.0, 0.80, 0.30], np.float32)
+            img[30:34, :, :] = np.array([1.0, 0.95, 0.70], np.float32)
         elif kind == "light":
             img = self.metal(0.25, 0.04)
             img[14:50, 10:54, :] = np.array([1.0, 0.92, 0.62], np.float32)

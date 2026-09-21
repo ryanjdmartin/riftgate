@@ -14,6 +14,7 @@ const PITCH := 42.0            # the map tokens' tilt
 const HEX_WORLD := 35.0        # a hex's circumradius in model units: a mech is about one hex wide
 const CAMERA_DISTANCE := 900.0
 const MARKER_FIT := 1.05       # a mech's widest extent, in hex widths, on the map
+const HOVER := 8.0             # a flyer rides this far above the ground, in model units
 
 const TERRAIN := {
 	BattleMap.Terrain.PLAIN: Color("2a3628"),
@@ -43,6 +44,9 @@ var _cos: float = 1.0
 var _origin := Vector2.ZERO     # where hex (0,0) sits in this viewport, in pixels
 var _camera: Camera3D
 var _units: Dictionary = {}     # unit id -> Node3D
+var _rise: Dictionary = {}      # unit id -> how far up the model sits so its lowest point is on the ground
+var _base_size := Vector2.ZERO  # the map in 1x pixels; `size` is this times render_scale
+var render_scale: float = 1.0   # 2 when zoomed in, so the reconstruction shows more, not bigger texels
 var _columns: Dictionary = {}   # hex -> Node3D: the column and its props, collapsed by the bleed
 var _structs: Array = []        # [[hex, Node3D], ...] the gate and walls, collapsed the same way
 var _lift: Dictionary = {}      # hex -> how far above its grid cell the top sits on screen, in px
@@ -56,10 +60,11 @@ func setup(f: Battlefield, view_size: Vector2, origin: Vector2, hex_size: float,
 	_ppu = hex_px / HEX_WORLD
 	_sin = sin(deg_to_rad(PITCH))
 	_cos = cos(deg_to_rad(PITCH))
+	_base_size = view_size
 	size = Vector2i(int(view_size.x), int(view_size.y))
 	own_world_3d = true
 	transparent_bg = true
-	render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	render_target_update_mode = SubViewport.UPDATE_ONCE   # the map view asks for a frame when something changed
 	msaa_3d = SubViewport.MSAA_4X
 	canvas_item_default_texture_filter = SubViewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
 	_build_light()
@@ -88,8 +93,28 @@ func _build_light() -> void:
 	e.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	e.ambient_light_color = Color("aab4bc")
 	e.ambient_light_energy = 1.0
+	# A little glow, so the lamps, engines and light strips bleed like a screen would.
+	e.glow_enabled = true
+	e.glow_intensity = 0.5
+	e.glow_bloom = 0.05
+	e.glow_hdr_threshold = 1.0
 	env.environment = e
 	add_child(env)
+
+
+## Render at `k` times the map's pixel size (1 or 2) and ask for a frame.
+func set_render_scale(k: float) -> void:
+	render_scale = k
+	size = Vector2i(_base_size * k)
+	if _camera != null:
+		_camera.size = float(size.y) / (_ppu * render_scale)
+	redraw()
+
+
+## The scene renders once per change, never per frame: the map view calls this whenever it
+## redraws.
+func redraw() -> void:
+	render_target_update_mode = SubViewport.UPDATE_ONCE
 
 
 ## World position of a 2D pixel offset from hex (0,0): x as is, depth stretched so the
@@ -133,7 +158,7 @@ func _ground_material() -> ShaderMaterial:
 	m.shader = load("res://game/battle/ground.gdshader")
 	m.set_shader_parameter("painted", painted)
 	m.set_shader_parameter("origin", _origin)
-	m.set_shader_parameter("map_size", Vector2(size))
+	m.set_shader_parameter("map_size", _base_size)
 	m.set_shader_parameter("ppu", _ppu)
 	m.set_shader_parameter("sin_pitch", _sin)
 	return m
@@ -286,11 +311,11 @@ func _build_camera() -> void:
 	_camera = Camera3D.new()
 	_camera.projection = Camera3D.PROJECTION_ORTHOGONAL
 	_camera.keep_aspect = Camera3D.KEEP_HEIGHT
-	_camera.size = float(size.y) / _ppu
+	_camera.size = float(size.y) / (_ppu * render_scale)
 	_camera.near = 1.0
 	_camera.far = 4000.0
 	# The point that must land on the viewport's centre: hex (0,0) sits at `_origin`.
-	var target := _world(Vector2(size.x * 0.5, size.y * 0.5) - _origin)
+	var target := _world(_base_size * 0.5 - _origin)
 	var back := Vector3(0.0, _sin, cos(deg_to_rad(PITCH)))
 	add_child(_camera)
 	_camera.look_at_from_position(target + back * CAMERA_DISTANCE, target, Vector3.UP)
@@ -319,7 +344,7 @@ func sync() -> void:
 				continue
 			add_child(node)
 			_units[u.id] = node
-		node.position = _hex_world(u.pos, _lift.get(u.pos, 0.0) / (_cos * _ppu))
+		node.position = _hex_world(u.pos, _lift.get(u.pos, 0.0) / (_cos * _ppu) + _rise.get(u.id, 0.0))
 		if u.is_player() and not u.is_static():
 			# The model faces -Z (north) at rest; screen-down is +Z, so the facing turns the
 			# other way from the pixel direction.
@@ -342,6 +367,9 @@ func _make_unit(u: Unit) -> Node3D:
 		var widest := maxf(aabb.size.x, aabb.size.z)
 		if widest > 0.0:
 			node.scale = Vector3.ONE * (HEX_WORLD * 2.0 * MARKER_FIT / widest)
+		# Stand it on its lowest point (a model's origin is wherever its author put it), and
+		# let a flyer hover.
+		_rise[u.id] = -aabb.position.y * node.scale.y + (HOVER if u.traits.has("flyer") else 0.0)
 		return node
 	return null   # foes and static units are drawn flat by the map view
 
