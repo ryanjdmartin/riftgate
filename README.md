@@ -37,12 +37,14 @@ and open question from the design sessions.
 - `tests/` — headless tests. `run_tests.gd` discovers `test_*.gd` files and runs every
   `test_` method, including the content validator and a headless drive of the skirmish screen.
 - `tools/` — `export_vocabulary.gd` regenerates `docs/vocabulary.md`; `screenshot.gd` renders a
-  scene to PNG at 720x1280; `spriter/` renders mech sprites from primitive models;
-  `sheet_export.py` exports the enemy grids in `docs/sprites-enemies.html` to `art/foes/`;
-  `foeforge/` generates enemy candidates with an image model and cuts one into `art/foes/`;
-  `blendforge/` renders a Blender model into the same mech files in the spriter's style.
-- `art/` — `mechs/` from the spriter or blendforge, `foes/` from the sheet export, `fonts/` the HUD faces.
-  Everything is optional: a missing sprite falls back to a placeholder shape.
+  scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `lowforge/` builds the
+  ally units by code from a brief (`models_low.py`, one function per chassis id) in the
+  mid-nineties 3D register with generated tiles; `sheet_export.py` exports the enemy grids
+  in `docs/sprites-enemies.html` to `art/foes/`; `foeforge/` generates enemy candidates with
+  an image model and cuts one into `art/foes/`; `blendforge/` builds the gate and wall
+  models; `spriter/.venv` is the Python the tools run with.
+- `art/` — `models/` every glTF the engine draws (units, gate, wall), `foes/` from the sheet
+  export, `fonts/` the HUD faces. A missing foe sprite falls back to a placeholder shape.
 - `docs/` — design bible, generated vocabulary, concept intake in `docs/concepts/`, and
   `status.md`, the handoff note updated at the end of every working session.
 
@@ -69,9 +71,10 @@ godot --headless --path . -s tools/export_vocabulary.gd
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmish/skirmish_screen.tscn shot.png codex
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/battle_screen.tscn shot.png route
 
-# regenerate mech sprites from the primitive models (see tools/spriter/README.md), then re-import
-tools/spriter/.venv/bin/python tools/spriter/spriter.py
+# build ally units from their briefs (tools/lowforge/models_low.py), then re-import
+tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger raptor
 godot --headless --path . --import
+godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva hero.png front 480 480
 
 # export the enemy sprites from the grids in docs/sprites-enemies.html to art/foes, then re-import
 tools/spriter/.venv/bin/python tools/sheet_export.py
@@ -81,14 +84,8 @@ godot --headless --path . --import
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate ghoul --n 4
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut tools/foeforge/out/ghoul/ghoul_3.png ghoul
 
-# mech combat sprites: the image model's edit mode adds finish to a render, design kept
-tools/foeforge/.venv/bin/python tools/foeforge/forge.py mech badger --n 3 --ref tools/blendforge/out/badger/badger_combat_front_right.png
-tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut-mech tools/foeforge/out/badger/badger_front_right_2.png badger
-
-# mech sprites from a Blender model (see tools/blendforge/README.md): review, then --install
-tools/spriter/.venv/bin/python tools/blendforge/forge.py example bulwark        # template .blend
-tools/spriter/.venv/bin/python tools/blendforge/forge.py archetypes             # rebuild the 16 starter silhouettes + review sheet
-tools/spriter/.venv/bin/python tools/blendforge/forge.py render path/to/anvil.blend anvil --install
+# the gate and wall models (tools/blendforge/structures.py), then re-import
+tools/spriter/.venv/bin/python tools/blendforge/forge.py structures
 ```
 
 The skirmish screen runs top to bottom: header with the round tag, enemies with the intent

@@ -13,6 +13,7 @@ extends SubViewport
 const PITCH := 42.0            # the map tokens' tilt
 const HEX_WORLD := 35.0        # a hex's circumradius in model units: a mech is about one hex wide
 const CAMERA_DISTANCE := 900.0
+const MARKER_FIT := 1.05       # a mech's widest extent, in hex widths, on the map
 
 const TERRAIN := {
 	BattleMap.Terrain.PLAIN: Color("2a3628"),
@@ -331,5 +332,36 @@ func sync() -> void:
 func _make_unit(u: Unit) -> Node3D:
 	if u.is_player() and not u.is_static():
 		var maker := str(ContentDB.load_default().chassis.get(u.chassis_id, {}).get("maker", "minerva"))
-		return _model(MechView3D.model_for(u.chassis_id, "badger"), maker, u.paint)
+		var node := _model(MechView3D.model_for(u.chassis_id, "badger"), maker, u.paint)
+		# Mechs are the reconstruction's markers, drawn at marker size: whatever the model's
+		# true size, its footprint is fitted to about one hex.
+		var aabb := _bounds(node)
+		var widest := maxf(aabb.size.x, aabb.size.z)
+		if widest > 0.0:
+			node.scale = Vector3.ONE * (HEX_WORLD * 2.0 * MARKER_FIT / widest)
+		return node
 	return null   # foes and static units are drawn flat by the map view
+
+
+## The union of every mesh's bounds under `node`, in the node's own space.
+func _bounds(node: Node3D) -> AABB:
+	var out := AABB()
+	var first := true
+	for mi in node.find_children("*", "MeshInstance3D", true, false):
+		var box: AABB = (mi as MeshInstance3D).get_aabb()
+		var xf: Transform3D = node.global_transform.affine_inverse() * (mi as Node3D).global_transform if node.is_inside_tree() else _relative(mi, node)
+		var b := xf * box
+		out = b if first else out.merge(b)
+		first = false
+	return out
+
+
+## Transform of `child` relative to `root` before either is in the tree.
+func _relative(child: Node, root: Node) -> Transform3D:
+	var xf := Transform3D.IDENTITY
+	var n := child
+	while n != null and n != root:
+		if n is Node3D:
+			xf = (n as Node3D).transform * xf
+		n = n.get_parent()
+	return xf

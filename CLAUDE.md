@@ -10,13 +10,20 @@ godot --headless --path . --import                 # first run, and after adding
 perl -e 'alarm 240; exec @ARGV' godot --headless --path . -s tests/run_tests.gd   # tests (watchdog: no `timeout` on macOS)
 godot --path .                                     # harness: skirmish screen and map viewer
 godot --headless --path . -s tools/export_vocabulary.gd   # regenerate docs/vocabulary.md
-tools/spriter/.venv/bin/python tools/spriter/spriter.py   # regenerate mech sprites, then --import
 tools/spriter/.venv/bin/python tools/sheet_export.py      # export enemy grids to art/foes, then --import
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate <foe> --n 4   # model candidates (mflux, FLUX.2 Klein)
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut <png> <foe>        # cut one into art/foes, then --import
-tools/spriter/.venv/bin/python tools/blendforge/forge.py render <file.blend> <chassis> [--install]   # mech sprites from a Blender model
-tools/spriter/.venv/bin/python tools/blendforge/forge.py export tools/blendforge/models/<id>.blend <id>   # art/models/<id>.glb for the 3D view, then --import
-godot --path . --resolution 360x640 -s tools/map_tokens.gd -- <id>   # 24 px map tokens from the glTF (needs a window), then --import
+tools/spriter/.venv/bin/python tools/lowforge/forge.py build <chassis id>...   # ally units by code (tools/lowforge/models_low.py), then --import
+tools/spriter/.venv/bin/python tools/blendforge/forge.py structures            # the gate and wall glTFs, then --import
+godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- <chassis> <maker> out.png front 480 480   # one unit large (needs a window)
+```
+
+Ally art (decided 21 September): the mid-nineties 3D register, built by `tools/lowforge`
+from a written brief. A unit is a few hundred flat-shaded facets wearing small generated
+tiles in its maker's metal; no hand modelling, no unwrapping. `tools/spriter/.venv` is only
+the Python the tools run with.
+
+```sh
 ```
 
 Always wrap headless Godot runs in a watchdog: a tool script that errors before `quit()` hangs forever.

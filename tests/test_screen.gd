@@ -27,7 +27,7 @@ func test_screen_builds_and_starts_round_one() -> void:
 	assert_eq(s.sk.state, Skirmish.State.ASSIGN, "assigning")
 	assert_eq(s._dice.size(), 3, "three dice views")
 	assert_eq(s._end_btn.text, "END TURN", "one end button")
-	assert_true(s._mech_views[0].sprite != null, "mech views carry sprite art")
+	assert_eq(s._mech_views.size(), 3, "three mech views")   # mechs are models; headless has no renderer and no sprite
 	assert_true(s._dice[0].can_tap and s._dice[0].can_drag, "dice lock and drag in the same phase")
 	s.free()
 
@@ -123,7 +123,8 @@ func test_die_hold_shows_every_face_visually_without_the_passive() -> void:
 	s._on_die_held(2)
 	assert_true(s._details.visible, "details shown")
 	var text := s._details_label.text
-	assert_true(text.begins_with("RAPTOR // D4"), "names the die and its size")
+	var title := str(ContentDB.load_default().chassis.get(s.sk.mechs[2].unit.chassis_id, {}).get("name", "")).to_upper()
+	assert_true(text.begins_with(title + " // D4"), "names the die and its size (from content, never a hardcoded name)")
 	assert_true(s._details_faces.visible, "face list shown")
 	assert_eq(s._details_faces.faces.size(), 4, "four faces in the column")
 	assert_eq(s._details_faces.current, s.sk.mechs[2].face_index, "current face highlighted")
@@ -156,8 +157,10 @@ func test_double_tap_opens_and_closes_the_codex() -> void:
 	assert_false(s._codex.visible, "codex closes")
 	s._on_mech_double_tapped(2)
 	assert_true(s._codex.visible, "codex opens for a mech")
-	assert_eq(s._codex_title.text, "Raptor", "titled with the chassis name")
-	assert_true(s._codex_sprite.visible and s._codex_sprite.texture != null, "head-on sprite shown")
+	var title := str(ContentDB.load_default().chassis.get(s.sk.mechs[2].unit.chassis_id, {}).get("name", ""))
+	assert_true(s._codex_title.text.contains(title), "titled with the chassis name from content")
+	var headless := DisplayServer.get_name() == "headless"   # no renderer: the model view cannot draw
+	assert_true(headless or (s._codex_sprite.visible and s._codex_sprite.texture != null), "head-on model shown")
 	assert_true(s._codex_passive.visible, "raptor's passive is shown")
 	assert_true(s._codex_passive.text.to_lower().contains("hot hands"), "by name")
 	assert_true(s._codex_faces.visible and s._codex_faces.faces.size() == 4, "faces listed visually")

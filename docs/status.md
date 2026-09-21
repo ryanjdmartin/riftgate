@@ -92,11 +92,21 @@ pictures drawn by the map view over the viewport, never objects in the scene. He
 fall back to the painted 2D map. `MechView3D.toon` is the shared material pass. No outline
 pass yet.
 
-**Art (17 September).** Player units are native 3D (glTF plus toon and surface shader);
-enemies painted 2D. The Badger's working file is `tools/blendforge/models/badger.blend`
-(finished; `polish` refuses it); `forge.py export` then `tools/map_tokens.gd` then
-`--import`. The engine reads `joint_*` and `hp_*` Empties (idle, strike, mount). Ryan is
-adding joints and pins by hand; the file has `hp_3` and `hp_4` on the tubes so far.
+**Ally art (locked 21 September).** The mid-nineties 3D register (Descent, MechWarrior 2),
+built by `tools/lowforge`: `models_low.py` holds one function of numbers per chassis id
+(`badger`, `raptor` so far), `bl_low.py` the primitives, the maker metals (`MAKERS`) and the
+tile generator, `forge.py build <id>` writes `art/models/<id>.glb` with the tiles embedded
+(review PNGs under `tools/lowforge/tiles/<maker>/`). `MechView3D.toon` takes the tile look
+automatically for any textured model (nearest filter, gloss by maker, a sun in the view);
+untextured models (gate, wall) keep the toon pass. Deleted: `art/mechs`, the spriter, the
+map token tool, the old Badger .blend files and blendforge's mech renders; blendforge stays
+only for the structures. Dead code to remove next: `Sprites.combat_mech`/`map_mech` and the
+skirmish's `RIFTGATE_MECH3D=off` sprite fallback, the pixel look. Not built: joints and
+hardpoint pins on the new units (the engine reads `joint_*` and `hp_*`; lowforge writes
+`hp_*` pins only), the wireframe mode, and a map-scale look: `Map3D` fits every unit to
+about one hex (`MARKER_FIT`), but at that size the tile grain reads as static and there is
+no outline, so units on the map want a flat-tone, outlined LOD (the reconstruction's
+marker) rather than the skirmish's textured facets.
 
 **Open, in the order I would take them.**
 

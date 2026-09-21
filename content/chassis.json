@@ -39,9 +39,9 @@
       "flavour": "Wainwright & Sutler walker frame. Six hardpoints, no favourites. The one that comes back."
     },
     {
-      "id": "raptor", "name": "Raptor", "maker": "kestrel", "silhouette": "aircraft",
-      "design": { "fantasy": "A priority-target assassin. Hit, run, and let someone else carry the fire extinguisher.", "niche": "" },
-      "codex": "Kestrel's interceptor. Hits twice as hard as anything its size and runs twice as hot doing it. Somebody else carries the fire extinguisher.",
+      "id": "raptor", "name": "Sparrowhawk", "maker": "kestrel", "silhouette": "aircraft",
+      "design": { "fantasy": "A priority-target interceptor. Designed for speed and firepower and not much else, taking out a key asset and fleeing while its generous shields recharge.", "niche": "assassin" },
+      "codex": "Shortly into the invasion, it was determined that the masses of ",
       "hull": 60, "shield": 60, "movespeed": 5, "heat_max": 60, "hardpoints": 4,
       "armour": 0, "recharge_field": 30,
       "traits": ["flyer"],

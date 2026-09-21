@@ -36,10 +36,15 @@ def _args():
 ## The primary differentiator between makers (Ryan, 21 September): the metal itself.
 ## grey is the base value, streak the brushed banding, mottle the grain, tint the cast,
 ## livery the maker's colour, rivets the panel stud spacing (0 for none).
+## Ryan's tones (21 September): Minerva steel and military greens, matte; Kestrel chrome,
+## silver and blues; Wainwright & Sutler iron and warm browns; Aphelion whites and reds;
+## the Arsenal dark steel and gunmetal.
 MAKERS = {
-    "minerva": {"grey": 0.34, "streak": 0.13, "mottle": 0.07, "tint": (0.90, 0.94, 0.88), "livery": (0.62, 0.12, 0.10), "rivets": 12},
-    "kestrel": {"grey": 0.66, "streak": 0.03, "mottle": 0.015, "tint": (0.95, 0.97, 1.0), "livery": (0.88, 0.16, 0.14), "rivets": 0},
-    "wainwright": {"grey": 0.48, "streak": 0.10, "mottle": 0.08, "tint": (1.0, 0.95, 0.86), "livery": (0.80, 0.55, 0.12), "rivets": 8},
+    "minerva": {"grey": 0.36, "streak": 0.12, "mottle": 0.05, "tint": (0.84, 0.92, 0.80), "livery": (0.42, 0.50, 0.28), "rivets": 12},
+    "kestrel": {"grey": 0.70, "streak": 0.04, "mottle": 0.012, "tint": (0.92, 0.95, 1.0), "livery": (0.16, 0.40, 0.88), "rivets": 0},
+    "wainwright_sutler": {"grey": 0.42, "streak": 0.10, "mottle": 0.07, "tint": (1.0, 0.86, 0.72), "livery": (0.58, 0.30, 0.14), "rivets": 8},
+    "aphelion": {"grey": 0.80, "streak": 0.02, "mottle": 0.01, "tint": (1.0, 1.0, 1.0), "livery": (0.86, 0.12, 0.12), "rivets": 0},
+    "arsenal": {"grey": 0.26, "streak": 0.08, "mottle": 0.03, "tint": (0.88, 0.90, 0.96), "livery": (0.36, 0.38, 0.42), "rivets": 16},
 }
 
 
@@ -97,10 +102,11 @@ class Tiles:
         elif kind == "dark":
             img = self.metal(g * 0.55, 0.05)
         elif kind == "vent":
-            img = self.metal(g * 0.8, 0.05)
+            # Grilles read by contrast, not grain: a calm base and deep slits.
+            img = self.metal(g * 0.85, 0.03, mottle=0.015)
             for y in range(6, TILE - 4, 10):
-                img[y:y + 4, 6:TILE - 6, :] *= 0.25
-                img[y - 1:y, 6:TILE - 6, :] = np.minimum(img[y - 1:y, 6:TILE - 6, :] * 1.4, 1.0)
+                img[y:y + 4, 6:TILE - 6, :] *= 0.15
+                img[y - 1:y, 6:TILE - 6, :] = np.minimum(img[y - 1:y, 6:TILE - 6, :] * 1.6, 1.0)
         elif kind == "stripe":
             img = self.metal(g, 0.06)
             for y in range(TILE):
@@ -124,17 +130,17 @@ class Tiles:
                     x = (TILE - y + d) % TILE
                     img[y, x, :] = np.minimum(img[y, x, :] * 1.6, 1.0)
         elif kind == "tread":
-            img = self.metal(0.20, 0.04, mottle=0.03)
+            img = self.metal(0.24, 0.02, mottle=0.01)
             for x in range(0, TILE, 8):
-                img[:, x:x + 3, :] *= 0.45
-                img[:, x + 3:x + 4, :] = np.minimum(img[:, x + 3:x + 4, :] * 1.5, 1.0)
+                img[:, x:x + 3, :] *= 0.3
+                img[:, x + 3:x + 5, :] = np.minimum(img[:, x + 3:x + 5, :] * 1.7, 1.0)
         elif kind == "engine":
             img = self.metal(0.28, 0.05)
             img[8:56, 8:56, :] = np.array([0.55, 0.05, 0.03], np.float32)
             img[14:50, 14:50, :] = np.array([0.95, 0.12, 0.05], np.float32)
             img[22:42, 22:42, :] = np.array([1.0, 0.45, 0.20], np.float32)
         elif kind == "missile":
-            img = self.metal(0.34, 0.04)
+            img = self.metal(g * 0.9, 0.03, mottle=0.01)
             for cy in (11, 32, 53):
                 for cx in (11, 32, 53):
                     yy, xx = np.mgrid[0:TILE, 0:TILE]
