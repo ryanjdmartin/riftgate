@@ -121,9 +121,18 @@ concrete, water, rock, crag) through `terrain.gdshader`, sides in rock, heights 
 `Map3D.HEIGHT` (crags 20 plus a spire: impassable, flyers only, decided); the painted
 ground map is gone and `PaintedMap` is the overworld only. Roads are laid by
 `BattleMap._lay_roads` as a drifting trunk north from the gate with a branch or two and
-`ROAD_GAP_CHANCE` missing slabs, never rolled. Next for the map: the movement phase
-animated; an outline for units behind tall columns; a plateau terrain if height comes to
-matter. Deleted: `art/mechs`, the spriter, the map token
+`ROAD_GAP_CHANCE` missing slabs, never rolled. Column walls are built only on edges whose
+neighbour sits at another height, so pools and fields read as one. Crags are clusters of
+leaning rock spikes. The gate's rows draw no ground. Units hang off a pivot at the hex,
+centred by their bounds; only flyers move at rest (a slow swell, `HOVER` 30 above the
+ground, a shadow disc on their tile); grounded idle waits for joints. The team deploys
+facing north (one of the two north directions, seeded). Tapping empty ground with nothing
+selected shows the terrain's name, move cost and who can cross it. Foe pictures draw a
+little larger than their pixels, plaques up and right. Open on the map: the gate wants a
+sci-fi pass (less gothic); terrain height has no rule yet and skirmishes happen on
+flattened ground, so its meaning is open (Ryan, 21 September), as is whether squads leave
+corruption in their wake; a believable landscape (coherent regions, not per-hex rolls) is
+wanted either way; the movement phase animated; an outline for units behind tall columns. Deleted: `art/mechs`, the spriter, the map token
 tool, all of blendforge and its .blend files. Dead code to remove next: `Sprites.combat_mech`/`map_mech` and the
 skirmish's `RIFTGATE_MECH3D=off` sprite fallback, the pixel look. Not built: joints and
 hardpoint pins on the new units (the engine reads `joint_*` and `hp_*`; lowforge writes

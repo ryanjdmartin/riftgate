@@ -59,9 +59,12 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 	field.spawn_table = db.spawn_table(faction)
 	var gate_o := Hex.axial_to_offset(map.gate)
 	var i := 0
+	var face_rng := RandomNumberGenerator.new()
+	face_rng.seed = seed_value * 7 + 3
 	for u in team:
 		var want := Hex.offset_to_axial(gate_o.x - 1 + i, gate_o.y - BattleMap.GATE_ROWS)
 		u.pos = field.nearest_standable(u, want)
+		u.facing = face_rng.randi_range(1, 2)   # northward, one of the two directions that lead away from the gate
 		field.add_unit(u)
 		i += 1
 	var table: Array = field.spawn_table

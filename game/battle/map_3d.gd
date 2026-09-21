@@ -20,7 +20,8 @@ const PITCH := 42.0            # the map tokens' tilt
 const HEX_WORLD := 35.0        # a hex's circumradius in model units: a mech is about one hex wide
 const CAMERA_DISTANCE := 900.0
 const MARKER_FIT := 1.05       # a mech's widest extent, in hex widths, on the map
-const HOVER := 8.0             # a flyer rides this far above the ground, in model units
+const HOVER := 30.0            # a flyer rides this far above the ground, in model units: clear of a mech
+const SHADOW_RADIUS := 0.38    # a flyer's ground shadow, in hex widths: it says which tile it is on
 const TILE_WORLD := 40.0       # world units one terrain tile covers, as the structures
 
 const TERRAIN := {
@@ -63,8 +64,8 @@ var _view := Vector2.ZERO       # the screen area, in pixels
 var _scroll := Vector2.ZERO     # the map view's scroll
 var _zoom: float = 1.0
 var _camera: Camera3D
-var _units: Dictionary = {}     # unit id -> Node3D
-var _rise: Dictionary = {}      # unit id -> how far up the model sits so its lowest point is on the ground
+var _units: Dictionary = {}     # unit id -> Node3D, a pivot at the hex; the model hangs off it centred by its bounds
+var _shadows: Dictionary = {}   # unit id -> the ground disc under a flyer
 var _base: Dictionary = {}      # unit id -> resting position, which the idle sway plays around
 var _phase: Dictionary = {}     # unit id -> idle phase, so the team does not sway in step
 var _columns: Dictionary = {}   # hex -> Node3D: the column and its props, collapsed by the bleed
@@ -203,10 +204,12 @@ func _hex_mesh(inset: float) -> ArrayMesh:
 	return st.commit()
 
 
-## A hex column: surface 0 is the top at `h`, surface 1 its six sides from the ground to
-## `h` (absent when flat). Normals are explicit, outward for a raised column and inward for
-## a sunk one, since it is the sunk hex's far bank that faces the camera.
-func _column_mesh(h: float) -> ArrayMesh:
+## A hex column: surface 0 is the top at `h`, surface 1 its sides from the ground to `h`,
+## only on the edges in `sides` (an edge shared with a neighbour of the same height has no
+## wall: two water hexes are one pool, two gravel hexes one field). Normals are explicit,
+## outward for a raised column and inward for a sunk one, since it is the sunk hex's far
+## bank that faces the camera.
+func _column_mesh(h: float, sides: Array) -> ArrayMesh:
 	var corners := Hex.corners(Vector2.ZERO, hex_px - 0.75)
 	var top: Array[Vector3] = []
 	for c in corners:
@@ -218,12 +221,14 @@ func _column_mesh(h: float) -> ArrayMesh:
 			st.set_normal(Vector3.UP)
 			st.add_vertex(v)
 	var mesh := st.commit()
-	if absf(h) < 0.01:
+	if absf(h) < 0.01 or not sides.has(true):
 		return mesh
 	var ss := SurfaceTool.new()
 	ss.begin(Mesh.PRIMITIVE_TRIANGLES)
 	var n := corners.size()
 	for i in range(n):
+		if not sides[i]:
+			continue
 		var a := top[i]
 		var b := top[(i + 1) % n]
 		var a0 := Vector3(a.x, 0.0, a.z)
@@ -242,10 +247,24 @@ func _build_ground() -> void:
 	var rock := _terrain_material("rock")
 	var map := field.map
 	var rng := RandomNumberGenerator.new()
+	var corners := Hex.corners(Vector2.ZERO, hex_px)
 	for h in map.all_hexes():
+		if map.gate_hexes.has(h) or map.wall_hexes.has(h):
+			continue   # the gate's rows are the structures' ground, not the field's
 		var t: int = map.terrain[h]
 		var at := _hex_world(h)
 		var hgt: float = HEIGHT[t]
+		# Which edges need a wall: those facing a neighbour at another height, or none.
+		var sides: Array = []
+		var here := Hex.to_pixel(h, hex_px)
+		for i in range(corners.size()):
+			var mid: Vector2 = (corners[i] + corners[(i + 1) % corners.size()]) * 0.5
+			var across := here + mid * 2.0
+			var other: float = -999.0
+			for nb in Hex.neighbors(h):
+				if map.has(nb) and Hex.to_pixel(nb, hex_px).distance_to(across) < hex_px * 0.5:
+					other = HEIGHT[map.terrain[nb]] if not (map.gate_hexes.has(nb) or map.wall_hexes.has(nb)) else 0.0
+			sides.append(absf(other - hgt) > 0.01)
 		var r := MeshInstance3D.new()
 		r.mesh = rim
 		r.material_override = rim_mat
@@ -258,7 +277,7 @@ func _build_ground() -> void:
 		add_child(col)
 		_columns[h] = col
 		var mi := MeshInstance3D.new()
-		mi.mesh = _column_mesh(hgt)
+		mi.mesh = _column_mesh(hgt, sides)
 		mi.set_surface_override_material(0, _terrain_material(TILE[t], 1.0 if t == BattleMap.Terrain.WATER else 0.0))
 		if mi.mesh.get_surface_count() > 1:
 			mi.set_surface_override_material(1, rock)
@@ -266,18 +285,23 @@ func _build_ground() -> void:
 		rng.seed = h.x * 131 + h.y * 7919
 		match t:
 			BattleMap.Terrain.MOUNTAIN:
-				# The spire that makes a crag: nobody but a flyer gets over this.
-				var cone := CylinderMesh.new()
-				cone.top_radius = 1.5
-				cone.bottom_radius = HEX_WORLD * 0.6
-				cone.height = 24.0 + rng.randf_range(-4.0, 8.0)
-				cone.radial_segments = 5
-				var pk := MeshInstance3D.new()
-				pk.mesh = cone
-				pk.material_override = _lit(Color("4c4850"))
-				pk.position = Vector3(rng.randf_range(-3, 3), hgt + cone.height * 0.5, rng.randf_range(-2, 2))
-				pk.rotation.y = rng.randf_range(0, TAU)
-				col.add_child(pk)
+				# The crag: a cluster of narrow leaning rock spikes, tall enough that nobody
+				# but a flyer gets over it.
+				var rock_dark := _lit(Color("3a383e"))
+				for k in range(3):
+					var spike := CylinderMesh.new()
+					spike.top_radius = 0.6
+					spike.bottom_radius = rng.randf_range(5.0, 8.0)
+					spike.height = rng.randf_range(22.0, 38.0) if k == 0 else rng.randf_range(14.0, 26.0)
+					spike.radial_segments = 4
+					var pk := MeshInstance3D.new()
+					pk.mesh = spike
+					pk.material_override = rock_dark
+					var a := rng.randf_range(0.0, TAU)
+					var dist := 0.0 if k == 0 else rng.randf_range(8.0, 14.0)
+					pk.position = Vector3(cos(a) * dist, hgt + spike.height * 0.5 - 1.0, sin(a) * dist)
+					pk.rotation = Vector3(rng.randf_range(-0.18, 0.18), rng.randf_range(0, TAU), rng.randf_range(-0.18, 0.18))
+					col.add_child(pk)
 			BattleMap.Terrain.RUINS:
 				for k in range(3):
 					var b := BoxMesh.new()
@@ -359,8 +383,10 @@ func sync() -> void:
 			add_child(node)
 			_units[u.id] = node
 			_phase[u.id] = float(u.id) * 1.7
-		_base[u.id] = _hex_world(u.pos, _lift.get(u.pos, 0.0) / (_cos * _ppu) + _rise.get(u.id, 0.0))
+		_base[u.id] = _hex_world(u.pos, _lift.get(u.pos, 0.0) / (_cos * _ppu))
 		node.position = _base[u.id]
+		if _shadows.has(u.id):
+			(_shadows[u.id] as Node3D).position = _base[u.id] + Vector3(0.0, 0.3, 0.0)
 		if u.is_player() and not u.is_static():
 			# The model faces -Z (north) at rest; screen-down is +Z, so the facing turns the
 			# other way from the pixel direction.
@@ -371,6 +397,9 @@ func sync() -> void:
 			_units[uid].queue_free()
 			_units.erase(uid)
 			_base.erase(uid)
+			if _shadows.has(uid):
+				_shadows[uid].queue_free()
+				_shadows.erase(uid)
 
 
 ## Only a flyer moves at rest: it rides a slow swell, each on its own beat. A grounded
@@ -396,15 +425,34 @@ func _make_unit(u: Unit) -> Node3D:
 		var node := _model(MechView3D.model_for(u.chassis_id, "badger"), maker, u.paint)
 		_marker(node)
 		# Mechs are the reconstruction's markers, drawn at marker size: whatever the model's
-		# true size, its footprint is fitted to about one hex.
+		# true size, its footprint is fitted to about one hex. The model hangs off a pivot
+		# at the hex, centred by its bounds (a model's origin is wherever its author put
+		# it) and standing on its lowest point; a flyer hovers, with a shadow on its tile.
 		var aabb := _bounds(node)
 		var widest := maxf(aabb.size.x, aabb.size.z)
-		if widest > 0.0:
-			node.scale = Vector3.ONE * (HEX_WORLD * 2.0 * MARKER_FIT / widest)
-		# Stand it on its lowest point (a model's origin is wherever its author put it), and
-		# let a flyer hover.
-		_rise[u.id] = -aabb.position.y * node.scale.y + (HOVER if u.traits.has("flyer") else 0.0)
-		return node
+		var k := (HEX_WORLD * 2.0 * MARKER_FIT / widest) if widest > 0.0 else 1.0
+		var flyer := u.traits.has("flyer")
+		var pivot := Node3D.new()
+		node.scale = Vector3.ONE * k
+		node.position = Vector3(-aabb.get_center().x, -aabb.position.y, -aabb.get_center().z) * k + Vector3(0.0, HOVER if flyer else 0.0, 0.0)
+		pivot.add_child(node)
+		if flyer:
+			var disc := CylinderMesh.new()
+			disc.top_radius = HEX_WORLD * 2.0 * SHADOW_RADIUS
+			disc.bottom_radius = disc.top_radius
+			disc.height = 0.2
+			disc.radial_segments = 12
+			var sh := MeshInstance3D.new()
+			sh.mesh = disc
+			var sm := StandardMaterial3D.new()
+			sm.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			sm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			sm.albedo_color = Color(0.0, 0.0, 0.0, 0.45)
+			sh.material_override = sm
+			sh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			add_child(sh)
+			_shadows[u.id] = sh
+		return pivot
 	return null   # foes and static units are drawn flat by the map view
 
 

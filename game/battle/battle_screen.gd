@@ -234,6 +234,17 @@ func _on_hex_tapped(h: Vector2i) -> void:
 	elif _map.selected != null and _map.destinations.has(h):
 		battle.set_route(_map.selected, h)
 		_select(null)
+	elif _map.selected == null and u == null and battle.field.map.has(h) and not battle.field.map.is_structure(h):
+		# Nothing to route: the tap asks what the ground is (Ryan, 21 September). Its
+		# properties will grow with the terrain rules.
+		var t: int = battle.field.map.terrain[h]
+		var who: Array[String] = []
+		for pair in [["ground", []], ["hover", ["hover"]], ["flyer", ["flyer"]]]:
+			if BattleMap.passable(t, pair[1]):
+				who.append(pair[0])
+		var text := "%s\nmove %d · %s" % [str(BattleMap.TERRAIN_NAMES.get(t, "ground")).to_upper(), BattleMap.move_cost(t, []), " · ".join(who) if not who.is_empty() else "impassable"]
+		_show_details(text, _map.position + _map.to_screen(_map.center(h)))
+		return
 	else:
 		_select(null)
 	_refresh()

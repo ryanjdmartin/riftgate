@@ -268,6 +268,8 @@ func _draw() -> void:
 		# Everything from here to the edge tags is drawn in map space under the zoom and scroll.
 		draw_set_transform(Vector2(scroll_x, scroll_y), 0.0, Vector2(zoom, zoom))
 		for h in map.all_hexes():
+			if map.gate_hexes.has(h) or map.wall_hexes.has(h):
+				continue   # the gate's rows are not ground anyone plays on
 			Hud.stroke_poly(self, Hex.corners(center(h), HEX_SIZE - 1.5), Color(hud, 0.10), 1.0)   # the grid, on the terrain
 	else:
 		draw_set_transform(Vector2(scroll_x, scroll_y), 0.0, Vector2(zoom, zoom))
@@ -387,7 +389,8 @@ func _draw_unit(u: Unit) -> void:
 	elif tex != null:
 		# A foe is a flat picture on the screen, never an object in the scene: no shadow, no
 		# base, no lighting. It is the other world showing through (decided 19 September).
-		var ts := tex.get_size() * SPRITE_SCALE
+		# A small foe draws a little larger than its pixels, so it holds its own beside a mech.
+		var ts := tex.get_size() * SPRITE_SCALE * (1.3 if u.is_enemy() and not u.is_multi_hex() else 1.0)
 		draw_texture_rect(tex, Rect2((c - Vector2(ts.x * 0.5, ts.y - 8.0)).floor(), ts), false)
 	elif u.is_player():
 		draw_circle(c, 17.0, Palette.BG)
@@ -408,7 +411,7 @@ func _draw_unit(u: Unit) -> void:
 		var w := 30.0
 		Hud.gauge(self, Rect2(c + Vector2(-w * 0.5, -HEX_SIZE * 0.78), Vector2(w, 5.0)), float(u.hull) / float(maxi(1, u.hull_max)), hud, 2.0)
 	if u.is_enemy() and u.strength > 0:
-		_plaque(c + Vector2(16.0, -16.0), "×%d" % u.strength, Palette.ENEMY, 3.0 if u.elite else 1.5)
+		_plaque(c + Vector2(28.0, -30.0), "×%d" % u.strength, Palette.ENEMY, 3.0 if u.elite else 1.5)   # up and right, clear of the picture
 
 
 # ---------------------------------------------------------------- gestures
