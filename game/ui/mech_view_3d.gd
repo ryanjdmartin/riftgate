@@ -177,6 +177,24 @@ func _setup(chassis_id: String, maker: String) -> void:
 	_inner.add_child(_model)
 	_apply_materials(_model, maker)
 	_collect_tags(_model)
+	if OS.get_environment("RIFTGATE_MECH3D_LOOK") == "flat":
+		# The flat look has no light of its own: one sun from the front-left and above, a
+		# little cool ambient, and shadows so the facets and overhangs read.
+		var sun := DirectionalLight3D.new()
+		sun.light_energy = 3.0
+		sun.rotation_degrees = Vector3(-55.0, yaw - 150.0, 0.0)
+		sun.shadow_enabled = true
+		sun.directional_shadow_max_distance = 2000.0
+		_inner.add_child(sun)
+		var env := WorldEnvironment.new()
+		var e := Environment.new()
+		e.background_mode = Environment.BG_COLOR
+		e.background_color = Color(0, 0, 0, 0)
+		e.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+		e.ambient_light_color = Color("a0b4c8")
+		e.ambient_light_energy = 1.3
+		env.environment = e
+		_inner.add_child(env)
 
 	_camera = Camera3D.new()
 	_camera.projection = Camera3D.PROJECTION_ORTHOGONAL
@@ -330,6 +348,15 @@ static func toon(node: Node, maker: String, look: String, paint_arg: Dictionary 
 				ramp = ramp_for(paint_arg["primary"])
 			elif role == "white" and paint_arg.has("secondary"):
 				ramp = ramp_for(paint_arg["secondary"])
+			if look == "flat" or OS.get_environment("RIFTGATE_MECH3D_LOOK") == "flat":
+				# Direction-1 trial (20 September): flat palette colour per role, matte, lit
+				# by the scene's sun, facets doing the work. No toon ramp, no surface pass.
+				var fm := StandardMaterial3D.new()
+				fm.albedo_color = Color(ramp[1])
+				fm.roughness = 0.9
+				fm.metallic = 0.0
+				mi.set_surface_override_material(i, fm)
+				continue
 			var m := ShaderMaterial.new()
 			m.shader = load("res://game/ui/mech_toon.gdshader")
 			for t in range(4):
