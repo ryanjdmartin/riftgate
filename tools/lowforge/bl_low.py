@@ -40,7 +40,7 @@ def _args():
 ## silver and blues; Wainwright & Sutler iron and warm browns; Aphelion whites and reds;
 ## the Arsenal dark steel and gunmetal.
 MAKERS = {
-    "minerva": {"grey": 0.36, "streak": 0.12, "mottle": 0.05, "tint": (0.84, 0.92, 0.80), "livery": (0.42, 0.50, 0.28), "rivets": 12},
+    "minerva": {"grey": 0.40, "streak": 0.05, "mottle": 0.03, "tint": (0.86, 0.90, 0.87), "livery": (0.42, 0.50, 0.28), "rivets": 12},
     "kestrel": {"grey": 0.70, "streak": 0.04, "mottle": 0.012, "tint": (0.92, 0.95, 1.0), "livery": (0.16, 0.40, 0.88), "rivets": 0},
     "wainwright_sutler": {"grey": 0.42, "streak": 0.10, "mottle": 0.07, "tint": (1.0, 0.86, 0.72), "livery": (0.58, 0.30, 0.14), "rivets": 8},
     "aphelion": {"grey": 0.80, "streak": 0.02, "mottle": 0.01, "tint": (1.0, 1.0, 1.0), "livery": (0.86, 0.12, 0.12), "rivets": 0},
@@ -130,10 +130,11 @@ class Tiles:
                     x = (TILE - y + d) % TILE
                     img[y, x, :] = np.minimum(img[y, x, :] * 1.6, 1.0)
         elif kind == "tread":
-            img = self.metal(0.24, 0.02, mottle=0.01)
+            # Dark rubber with low cleats: darker than any vent, so the two never read alike.
+            img = self.metal(0.13, 0.015, mottle=0.008)
             for x in range(0, TILE, 8):
-                img[:, x:x + 3, :] *= 0.3
-                img[:, x + 3:x + 5, :] = np.minimum(img[:, x + 3:x + 5, :] * 1.7, 1.0)
+                img[:, x:x + 3, :] *= 0.55
+                img[:, x + 3:x + 4, :] = np.minimum(img[:, x + 3:x + 4, :] * 1.35, 1.0)
         elif kind == "engine":
             img = self.metal(0.28, 0.05)
             img[8:56, 8:56, :] = np.array([0.55, 0.05, 0.03], np.float32)

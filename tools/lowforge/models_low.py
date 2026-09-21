@@ -47,42 +47,46 @@ def badger(b):
     b.box(-8.0, 0.0, -14.0, -6.0, 46.0, 48.0, "steel.plate", "hatch")
     b.box(-14.0, -10.0, -26.0, -18.0, 46.0, 54.0, "steel.dark", "exhaust")
     b.box(-22.5, -19.5, -20.0, 0.0, 22.0, 44.0, "steel.ladder", "ladder")
-    # Booms: pivot rings on the flanks at mid-length, big tapered upper booms angled out and
-    # forward, forearms dropping to the ground ahead of the cockpit, hydraulic rams on top.
+    # Booms: a compact cuff on each flank at mid-length holding a big hinge cylinder (like
+    # the elbow), a cannon flanking it outboard, upper and lower booms of one width, the
+    # forearms dropping to the ground ahead of the cockpit.
+    ARM = 16.0
     for s, kind in ((-1.0, "claw"), (1.0, "gun")):
-        px = s * 24.0
-        # The rotator cuff: a big pivot house pulled back on the flank, a boss on its face,
-        # and a gun on top of it (Ryan liked the accident).
-        b.box(px - 11.0, px + 11.0, -18.0, 4.0, 22.0, 46.0, "steel.panel", "pivot_house")
-        b.prism("x", px + s * 11.0, -7.0, 34.0, 11.0, 4.0, "steel.dark", 8, "pivot_boss")
-        b.box(px - 4.0, px + 4.0, -14.0, 2.0, 46.0, 52.0, "steel.plate", "cuff_mount")
-        b.prism("y", px, 10.0, 49.0, 2.4, 22.0, "steel.dark", 6, "cuff_gun")
-        b.pin("hp_%d" % (3 if s < 0 else 4), (px, 2.0, 49.0))
-        start = (px + s * 13.0, -7.0, 34.0)
-        elbow, _ = boom(b, start, 42.0, 12.0, s * 3.0, 18.0, 20.0, 14.0, 16.0, "livery.livery2", "upper_boom")
-        ram_mid = ((start[0] + elbow[0]) / 2.0, (start[1] + elbow[1]) / 2.0, (start[2] + elbow[2]) / 2.0 + 11.0)
-        b.prism("y", ram_mid[0], ram_mid[1], ram_mid[2], 3.0, 28.0, "steel.dark", 6, "ram")
-        b.prism("x", elbow[0], elbow[1], elbow[2], 9.0, 18.0, "steel.dark", 6, "elbow")
-        wrist, rot = boom(b, elbow, 28.0, 48.0, s * 2.0, 14.0, 15.0, 12.0, 12.0, "steel.plate", "forearm")
+        px = s * 22.0
+        b.box(px - 6.0, px + 6.0, -14.0, 2.0, 24.0, 44.0, "steel.panel", "cuff")
+        hinge_x = px + s * 10.0
+        b.prism("x", hinge_x, -6.0, 34.0, 11.0, 16.0, "steel.dark", 6, "hinge")
+        # The shoulder cannon, outboard of the hinge.
+        cx = hinge_x + s * 12.0
+        b.box(cx - 3.5, cx + 3.5, -12.0, 0.0, 30.0, 38.0, "steel.plate", "cannon_mount")
+        b.prism("y", cx, 12.0, 34.0, 2.6, 26.0, "steel.dark", 6, "cannon")
+        b.pin("hp_%d" % (3 if s < 0 else 4), (cx, 0.0, 34.0))
+        start = (hinge_x, -6.0, 34.0)
+        elbow, _ = boom(b, start, 42.0, 12.0, s * 3.0, ARM, ARM, ARM, ARM, "livery.livery2", "upper_boom")
+        b.prism("x", elbow[0], elbow[1], elbow[2], 10.0, ARM + 4.0, "steel.dark", 6, "elbow")
+        wrist, rot = boom(b, elbow, 28.0, 48.0, s * 2.0, ARM, ARM, ARM, ARM, "steel.plate", "forearm")
+        b.prism("x", wrist[0], wrist[1], wrist[2], 9.0, ARM + 8.0, "steel.dark", 6, "wrist")
         if kind == "claw":
-            # The claw, outsized on purpose: a wide knuckle, two hooked fingers spread apart
-            # and a thumb from below that closes between them.
-            b.prism("x", wrist[0], wrist[1], wrist[2], 9.0, 24.0, "steel.dark", 6, "knuckle")
-            for side, yaw, pitch, span, base in ((-1.0, -14.0, -48.0, 28.0, 9.0), (1.0, 14.0, -48.0, 28.0, 9.0), (0.0, 0.0, -100.0, 26.0, 9.0)):
+            # The claw, outsized on purpose: two hooked fingers spread wide and a thumb from
+            # below that closes between them.
+            for side, yaw, pitch, span, base in ((-1.0, 16.0, -48.0, 32.0, 9.0), (1.0, -16.0, -48.0, 32.0, 9.0), (0.0, 0.0, -100.0, 30.0, 10.0)):
                 m = Matrix.Translation(Vector(wrist)) @ Matrix.Rotation(math.radians(pitch), 4, "X") @ Matrix.Rotation(math.radians(yaw), 4, "Z")
-                b.loft([(0.0, rect(side * 8.0, base, -4.5, 4.5)), (span * 0.6, rect(side * 8.0, base * 0.7, -3.2, 3.2)),
-                        (span, rect(side * 8.0, 1.5, -0.8, 0.8))], "steel.stripe", "prong", m)
+                b.loft([(0.0, rect(side * 9.0, base, -4.5, 4.5)), (span * 0.6, rect(side * 9.0, base * 0.7, -3.2, 3.2)),
+                        (span, rect(side * 9.0, 1.5, -0.8, 0.8))], "steel.stripe", "prong", m)
         else:
-            # A weapons mount: receiver block and a six-sided barrel, the hardpoint on it.
-            b.box(wrist[0] - 7.0, wrist[0] + 7.0, wrist[1] - 8.0, wrist[1] + 10.0, wrist[2] - 6.0, wrist[2] + 6.0, "steel.panel", "mount")
-            b.prism("y", wrist[0], wrist[1] + 24.0, wrist[2], 3.2, 30.0, "steel.dark", 6, "barrel")
-            b.box(wrist[0] - 3.0, wrist[0] + 3.0, wrist[1] + 8.0, wrist[1] + 14.0, wrist[2] + 6.0, wrist[2] + 9.0, "amber.light", "mount_light")
-            b.pin("hp_1", (wrist[0], wrist[1] + 10.0, wrist[2]))
-    # Deck weapon: a missile box on a turret ring, right of centre.
-    b.prism("z", 12.0, -14.0, 47.0, 8.0, 2.0, "steel.dark", 8, "ring")
-    b.box(4.0, 20.0, -22.0, -4.0, 48.0, 58.0, "steel.panel", "turret")
-    b.box(4.5, 19.5, -4.0, -2.5, 49.0, 57.0, "steel.missile", "missile_face")
-    b.pin("hp_2", (12.0, -12.0, 53.0))
+            # A weapons mount on the wrist: receiver block and a six-sided barrel, the
+            # hardpoint on it.
+            b.box(wrist[0] - 7.0, wrist[0] + 7.0, wrist[1] - 6.0, wrist[1] + 12.0, wrist[2] - 6.0, wrist[2] + 6.0, "steel.panel", "mount")
+            b.prism("y", wrist[0], wrist[1] + 26.0, wrist[2], 3.2, 30.0, "steel.dark", 6, "barrel")
+            b.box(wrist[0] - 3.0, wrist[0] + 3.0, wrist[1] + 10.0, wrist[1] + 16.0, wrist[2] + 6.0, wrist[2] + 9.0, "amber.light", "mount_light")
+            b.pin("hp_1", (wrist[0], wrist[1] + 12.0, wrist[2]))
+    # Deck weapon: a missile box on a turret ring, right of centre. Its face is exactly one
+    # tile (14 units) square on tile boundaries, so the box projection shows the nine tubes
+    # whole rather than a slice of them.
+    b.prism("z", 7.0, -13.0, 41.0, 8.0, 2.0, "steel.dark", 8, "ring")
+    b.box(0.0, 14.0, -22.0, -4.0, 42.0, 56.0, "steel.panel", "turret")
+    b.box(0.0, 14.0, -4.6, -3.6, 42.0, 56.0, "steel.missile", "missile_face")
+    b.pin("hp_2", (7.0, -12.0, 49.0))
 
 
 badger.maker = "minerva"
@@ -93,28 +97,31 @@ def sparrowhawk(b):
     reverse-swept wings whose rear faces run back into the boosters, a faired canopy far
     back, twin nose guns, two big boosters, a tail rooted into the fuselage and riding over
     the boosters, ending in two angled stabilisers. Small but deadly."""
-    # Fuselage: a flattened hexagon lofted from a needle nose to a broad rear.
-    b.loft([(46.0, diamond(0.0, 0.0, 1.5, 1.0)), (36.0, hexagon(0.0, 0.0, 6.0, 4.0)),
-            (18.0, hexagon(0.0, 1.0, 12.0, 7.0)), (0.0, hexagon(0.0, 2.0, 16.0, 9.0)),
-            (-16.0, hexagon(0.0, 2.0, 18.0, 10.0)), (-30.0, hexagon(0.0, 1.5, 14.0, 8.0))], "bone.bone", "fuselage")
+    # Fuselage: one piece, a six-sided section lofted from a needle nose to a broad rear.
+    # The top tapers sharply toward the nose, the belly shallowly, and the belly carries
+    # forward under the wing roots (Ryan, 21 September).
+    b.loft([(46.0, _fuse(1.2, 0.6, 0.5)), (36.0, _fuse(6.0, 2.2, 2.0)), (18.0, _fuse(12.0, 3.8, 3.4)),
+            (0.0, _fuse(16.0, 6.4, 4.6)), (-16.0, _fuse(18.0, 7.0, 4.8)), (-30.0, _fuse(15.0, 5.4, 4.0))], "bone.bone", "fuselage")
     b.loft([(38.0, diamond(0.0, 0.5, 2.0, 1.5)), (46.0, diamond(0.0, 0.5, 1.0, 0.7))], "steel.dark", "nose_tip")
     # Twin nose guns, one either side of the nosecone.
     for s in (-1.0, 1.0):
         b.prism("y", s * 4.5, 36.0, -1.0, 1.3, 26.0, "steel.dark", 6, "nose_gun")
         b.box(s * 4.5 - 1.5, s * 4.5 + 1.5, 22.0, 30.0, -2.5, 1.0, "steel.plate", "gun_fairing")
-    # Canopy: far back, long and low, faired into the spine rather than a bubble.
-    b.loft([(4.0, hexagon(0.0, 6.0, 7.0, 0.5)), (-8.0, hexagon(0.0, 7.4, 9.0, 3.0)),
-            (-22.0, hexagon(0.0, 7.6, 9.0, 3.2)), (-34.0, hexagon(0.0, 7.2, 9.0, 3.0))], "glass.glass", "canopy")
-    b.loft([(-16.0, hexagon(0.0, 7.6, 9.2, 3.4)), (-35.0, hexagon(0.0, 7.2, 9.2, 3.2))], "steel.panel", "canopy_fairing")
-    # A belly under the wing roots, so the underside is coherent where the fuselage ends;
-    # the boosters still hang below it, since Kestrel never truly lands.
-    b.loft([(12.0, hexagon(0.0, -2.0, 12.0, 5.0)), (-8.0, hexagon(0.0, -2.6, 17.0, 6.0)),
-            (-32.0, hexagon(0.0, -2.4, 17.0, 5.6))], "bone.bone", "belly")
-    # Reverse-swept wings with a little anhedral, thin and sharp, the root's trailing edge
-    # running back into the boosters; a weapon pod and gun at each tip.
+    # Canopy: far back, low, faired into the spine rather than a bubble.
+    b.loft([(-2.0, hexagon(0.0, 6.2, 7.0, 0.5)), (-10.0, hexagon(0.0, 7.4, 9.0, 3.0)),
+            (-18.0, hexagon(0.0, 7.5, 9.0, 3.2)), (-26.0, hexagon(0.0, 7.2, 9.0, 3.0))], "glass.glass", "canopy")
+    # Behind it the raised spine is an air intake: a scoop with a dark mouth facing forward
+    # and slits down its sides.
+    b.loft([(-24.0, hexagon(0.0, 7.6, 9.4, 3.6)), (-28.0, hexagon(0.0, 8.4, 10.0, 5.0)), (-36.0, hexagon(0.0, 7.4, 9.4, 3.6))], "steel.panel", "intake")
+    b.loft([(-28.2, hexagon(0.0, 8.4, 8.6, 4.2)), (-27.4, hexagon(0.0, 8.4, 8.6, 4.2))], "bore.dark", "intake_mouth")
     for s in (-1.0, 1.0):
-        root = [(s * 8.0, -32.0, -0.6), (s * 8.0, 6.0, -0.6), (s * 8.0, 6.0, 1.4), (s * 8.0, -32.0, 1.4)]
-        tip = [(s * 32.0, 6.0, -5.2), (s * 32.0, 14.0, -5.2), (s * 32.0, 14.0, -4.5), (s * 32.0, 6.0, -4.5)]
+        b.box(s * 4.6, s * 5.2, -34.0, -29.0, 7.0, 9.6, "steel.vent", "intake_slits")
+    # Reverse-swept wings with a little anhedral, knife-edged at the front (a three-point
+    # section: the leading edge is one line), the root's trailing edge running back into
+    # the boosters; a weapon pod and gun at each tip.
+    for s in (-1.0, 1.0):
+        root = [(s * 8.0, -32.0, -1.0), (s * 8.0, -32.0, 1.4), (s * 8.0, 6.0, 0.2)]
+        tip = [(s * 32.0, 6.0, -5.4), (s * 32.0, 6.0, -4.6), (s * 32.0, 14.0, -5.0)]
         _wing(b, root, tip, "livery.livery", "wing")
         b.prism("y", s * 32.0, 10.0, -4.8, 2.2, 22.0, "steel.dark", 6, "wing_pod")
         b.prism("y", s * 32.0, 24.0, -4.8, 1.2, 8.0, "steel.dark", 6, "wing_gun")
@@ -138,6 +145,12 @@ def sparrowhawk(b):
 
 
 sparrowhawk.maker = "kestrel"
+
+
+def _fuse(w, top, bottom):
+    """A fuselage section: six points, `top` above the centreline and `bottom` below it,
+    so the top and belly can taper at different rates."""
+    return [(w / 2, 0.0), (w / 4, top), (-w / 4, top), (-w / 2, 0.0), (-w / 4, -bottom), (w / 4, -bottom)]
 
 
 def _wing(b, root, tip, material, label):
