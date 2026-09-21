@@ -8,6 +8,7 @@ uniform sampler2D tile : source_color, filter_nearest, repeat_enable;
 uniform float tile_world = 40.0;   // world units one tile covers
 uniform float ripple = 0.0;        // 1 on water
 uniform float lift = 1.0;          // brightness, since the tiles were tuned unlit
+uniform float by_uv = 0.0;         // 1: the tile covers the hex exactly by its UVs (roads)
 
 varying vec3 wpos;
 
@@ -16,7 +17,7 @@ void vertex() {
 }
 
 void fragment() {
-	vec2 uv = vec2(wpos.x, wpos.z) / tile_world;
+	vec2 uv = mix(vec2(wpos.x, wpos.z) / tile_world, UV, by_uv);
 	float breathe = 1.0;
 	if (ripple > 0.0) {
 		uv += vec2(sin(TIME * 1.3 + wpos.z * 0.12), cos(TIME * 1.1 + wpos.x * 0.10)) * 0.025 * ripple;

@@ -360,6 +360,27 @@ def terrain_tiles(out_dir, seed=11):
         concrete[14:17, x:x + 3, :] = np.array([1.0, 0.75, 0.30], np.float32) if lit else np.array([0.20, 0.16, 0.10], np.float32)
         concrete[46:49, x + 8:x + 11, :] = np.array([1.0, 0.75, 0.30], np.float32) if rng.random() < 0.35 else np.array([0.20, 0.16, 0.10], np.float32)
     tiles["concrete"] = concrete
+    # Directional roads (Ryan, 21 September): a tile that covers one hex exactly (the
+    # engine maps it by UV, not by world position), a dark deck running through the hex
+    # centre toward the north-east or north-west neighbour, concrete shoulders either side,
+    # a worn guide line down the middle and guide lamps, most dead, along the verges.
+    for name, dx, dy in (("road_ne", 0.5, -0.866), ("road_nw", -0.5, -0.866)):
+        img = base((0.36, 0.36, 0.35), 0.02)          # concrete shoulders
+        img = specks(img, 20, 2, 0.85, 1.1)
+        yy, xx = np.mgrid[0:TILE, 0:TILE]
+        px = (xx + 0.5) / TILE - 0.5
+        py = (yy + 0.5) / TILE - 0.5
+        along = px * dx + py * dy
+        across = np.abs(px * dy - py * dx)
+        deck = across < 0.17
+        img[deck] = np.array([0.11, 0.12, 0.13], np.float32) + rng.uniform(-0.01, 0.01, size=(int(deck.sum()), 1)).astype(np.float32)
+        img[(across >= 0.17) & (across < 0.19)] = np.array([0.22, 0.23, 0.22], np.float32)   # the kerb
+        img[across < 0.012] = np.array([0.30, 0.32, 0.30], np.float32)                        # the guide line
+        for k in range(-3, 4):
+            lamp = (np.abs(along - k * 0.16) < 0.02) & (across > 0.20) & (across < 0.235)
+            lit = rng.random() < 0.35
+            img[lamp] = np.array([1.0, 0.75, 0.30], np.float32) if lit else np.array([0.20, 0.16, 0.10], np.float32)
+        tiles[name] = img
     water = base((0.13, 0.24, 0.40), 0.015, 0.03)
     for _ in range(8):
         y, x = rng.integers(0, TILE, 2)

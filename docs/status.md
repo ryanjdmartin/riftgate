@@ -133,8 +133,18 @@ of the field, laid from the same noise, never played on; `Map3D` builds them, th
 runs across them, `bleed.gdshader` fades them out past `play_x` so the field is a window
 on a longer battlefield. Crags take their ground's idiom (`Map3D._crag`: rock spikes,
 broken towers on ruins, mesas on wasteland); scrub carries dead trees. The readout has its
-own strip (`BattleScreen.INFO_H`) between the map and the log. Scanlines are drawn on top
-in the map view; the flicker is rare. `RIFTGATE_MAP_WIRE=1` is a trial of terrain as pure
+own strip (`BattleScreen.INFO_H`) between the map and the log. A scan sweeps the map top
+to bottom every few seconds (`SWEEP_H`, `SWEEP_SPEED`; the map view processes every frame
+for it); the flicker is rare. Roads are directional: `road_ne` and `road_nw` tiles cover
+one hex exactly by UV (`terrain.gdshader` `by_uv`, `Map3D._road_tile` picks the axis from
+the road neighbours; branches only run diagonally), a dark deck with concrete shoulders,
+kerbs, a guide line and verge lamps. Props carry the ink hull (`Map3D._prop`); dead trees
+and boulders on wasteland, taller skyscraper crags with a couple of lit windows. Ruins
+keep off water's shores. Units: the ground is the model's Z = 0 by convention (nothing
+hangs below it; the Badger's arm was raised so the claw rests on the ground), and
+`Map3D._make_unit` centres a model halfway by its bounds and sets it south by half its
+height, so its body sits on the hex and a long reach leans over the front edge. Past the
+field's sides the scenery dims at once and fades out (`edge_fade`), the holo table's edge. `RIFTGATE_MAP_WIRE=1` is a trial of terrain as pure
 wireframe. The gate and wall were rebuilt to Ryan's curtain-wall references (21 September):
 battered slabs (`_battered`) with a lip, pilaster ribs, seam bands, vents and lamps; the
 gate a taller gatehouse block with a wide panelled door parting on a lit seam under a

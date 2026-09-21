@@ -118,7 +118,7 @@ static func generate(w: int, h: int, seed_value: int) -> BattleMap:
 func _lay_landscape(rng: RandomNumberGenerator) -> void:
 	var wet := FastNoiseLite.new()   # slow, so water gathers into a few bodies
 	wet.seed = map_seed
-	wet.frequency = 0.17
+	wet.frequency = 0.12
 	var rough := FastNoiseLite.new()
 	rough.seed = map_seed + 101
 	rough.frequency = 0.30
@@ -139,17 +139,28 @@ func _lay_landscape(rng: RandomNumberGenerator) -> void:
 			all.append(Hex.offset_to_axial(col, row))
 		for col in range(width, width + MARGIN_COLS):
 			all.append(Hex.offset_to_axial(col, row))
+	# Pass one: the ground from the fields, water first so ruins can keep off its shores.
+	var ground: Dictionary = {}
 	for hx in all:
 		var p := Hex.to_pixel(hx, 1.0)
 		var t := Terrain.PLAIN
-		if wet.get_noise_2d(p.x, p.y) < -0.30:
+		if wet.get_noise_2d(p.x, p.y) < -0.34:
 			t = Terrain.WATER
 		elif rough.get_noise_2d(p.x, p.y) > 0.16:
 			t = Terrain.ROUGH
-		for c in centres:
-			var d := Hex.distance(hx, c)
-			if d <= 2 and rng.randf() < (0.8 if d <= 1 else 0.35) and t != Terrain.WATER:
-				t = Terrain.RUINS   # a dense core and a scatter around it
+		ground[hx] = t
+	for hx in all:
+		var p := Hex.to_pixel(hx, 1.0)
+		var t: int = ground[hx]
+		if t != Terrain.WATER:
+			var shore := false
+			for n in Hex.neighbors(hx):
+				if ground.get(n, Terrain.PLAIN) == Terrain.WATER:
+					shore = true
+			for c in centres:
+				var d := Hex.distance(hx, c)
+				if not shore and d <= 2 and rng.randf() < (0.8 if d <= 1 else 0.35):
+					t = Terrain.RUINS   # a dense core and a scatter around it, never on a shore
 		var crag := absf(ridge.get_noise_2d(p.x, p.y)) < 0.075 and rng.randf() < 0.85 and not is_structure(hx)
 		elevation[hx] = -1 if t == Terrain.WATER else clampi(int(floor((relief.get_noise_2d(p.x, p.y) + 0.45) * 3.4)), 0, 3)
 		if has(hx):
@@ -197,7 +208,7 @@ func _lay_roads(rng: RandomNumberGenerator) -> void:
 			break
 		var from: Vector2i = trunk[rng.randi_range(1, trunk.size() - 2)]
 		var branch: Array[Vector2i] = []
-		var dir: int = rng.randi_range(0, 5)
+		var dir: int = [1, 2, 4, 5][rng.randi_range(0, 3)]   # diagonal only: roads run north-east or north-west, never across
 		for i in range(rng.randi_range(3, 5)):
 			var n: Vector2i = from + Hex.DIRECTIONS[dir]
 			if not has(n) or is_structure(n):

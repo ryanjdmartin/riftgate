@@ -53,18 +53,20 @@ def badger(b):
     ARM = 16.0
     for s, kind in ((-1.0, "claw"), (1.0, "gun")):
         px = s * 22.0
-        b.box(px - 6.0, px + 6.0, -14.0, 2.0, 24.0, 44.0, "steel.panel", "cuff")
+        # The arm sits high enough that the claw rests on the ground, never under it: the
+        # model's Z = 0 is the ground, and nothing hangs below it.
+        b.box(px - 6.0, px + 6.0, -14.0, 2.0, 30.0, 50.0, "steel.panel", "cuff")
         hinge_x = px + s * 10.0
-        b.prism("x", hinge_x, -6.0, 34.0, 11.0, 16.0, "steel.dark", 6, "hinge")
+        b.prism("x", hinge_x, -6.0, 40.0, 11.0, 16.0, "steel.dark", 6, "hinge")
         # The shoulder cannon, outboard of the hinge.
         cx = hinge_x + s * 12.0
-        b.box(cx - 3.5, cx + 3.5, -12.0, 0.0, 30.0, 38.0, "steel.plate", "cannon_mount")
-        b.prism("y", cx, 12.0, 34.0, 2.6, 26.0, "steel.dark", 6, "cannon")
-        b.pin("hp_%d" % (3 if s < 0 else 4), (cx, 0.0, 34.0))
-        start = (hinge_x, -6.0, 34.0)
-        elbow, _ = boom(b, start, 42.0, 12.0, 0.0, ARM, ARM, ARM, ARM, "livery.livery2", "upper_boom")   # straight ahead, no yaw
+        b.box(cx - 3.5, cx + 3.5, -12.0, 0.0, 36.0, 44.0, "steel.plate", "cannon_mount")
+        b.prism("y", cx, 12.0, 40.0, 2.6, 26.0, "steel.dark", 6, "cannon")
+        b.pin("hp_%d" % (3 if s < 0 else 4), (cx, 0.0, 40.0))
+        start = (hinge_x, -6.0, 40.0)
+        elbow, _ = boom(b, start, 42.0, 6.0, 0.0, ARM, ARM, ARM, ARM, "livery.livery2", "upper_boom")   # straight ahead, no yaw
         b.prism("x", elbow[0], elbow[1], elbow[2], 10.0, ARM + 4.0, "steel.dark", 6, "elbow")
-        wrist, rot = boom(b, elbow, 28.0, 48.0, 0.0, ARM, ARM, ARM, ARM, "steel.plate", "forearm")
+        wrist, rot = boom(b, elbow, 28.0, 36.0, 0.0, ARM, ARM, ARM, ARM, "steel.plate", "forearm")
         b.prism("x", wrist[0], wrist[1], wrist[2], 9.0, ARM + 8.0, "steel.dark", 6, "wrist")
         if kind == "claw":
             # The grapple (Ryan's references, 21 September): an excavator grab made sharp.
@@ -75,9 +77,9 @@ def badger(b):
                 b.box(wrist[0] + s2 * 13.0 - 1.5, wrist[0] + s2 * 13.0 + 1.5, wrist[1] - 9.0, wrist[1] + 9.0, wrist[2] - 9.0, wrist[2] + 9.0, "steel.panel", "cheek")
             b.prism("x", wrist[0], wrist[1] + 6.0, wrist[2] - 6.0, 2.2, 30.0, "steel.dark", 6, "pin")
             for sx in (-9.0, 9.0):
-                _tine(b, wrist, sx, -10.0, -105.0, 38.0, 8.0, 5.5, "steel.dark", "finger")
+                _tine(b, wrist, sx, 0.0, -100.0, 32.0, 8.0, 5.5, "steel.dark", "finger")
             for sx in (-3.0, 3.0):
-                _tine(b, wrist, sx, -100.0, 95.0, 30.0, 7.0, 4.5, "steel.dark", "tine")
+                _tine(b, wrist, sx, -95.0, 90.0, 24.0, 7.0, 4.5, "steel.dark", "tine")
         else:
             # A weapons mount on the wrist: receiver block and a six-sided barrel, the
             # hardpoint on it.
@@ -305,15 +307,21 @@ def gate(b):
     b.box(-GW - 2.0, GW + 2.0, -GT - 3.0, GT + 3.0, GH, GH + 5.0, "steel.dark", "gate_lip")
     _pilasters(b, -GW + 8.0, GW - 8.0, GB, GT, 5.0, GH, 23.0, w=7.0)
     _seams(b, -GW, GW, GB, GT, 5.0, GH, (34.0, 62.0, 88.0))
-    MW, MH = 36.0, 70.0
+    MW, MH = 38.0, 74.0
     b.box(-MW, MW, -GB - 1.5, GB + 1.5, 5.0, MH, "bore.dark", "mouth")
+    # The door stands proud of the battered face on a frame, so it reads as a door and
+    # not a recess: two big panels parting on a lit seam, grooves across them, a lit
+    # threshold below.
     for f in (-1.0, 1.0):
-        d = GB + (GT - GB) * ((MH * 0.5 - 5.0) / (GH - 5.0))
+        d = GB + 2.5
+        b.box(-MW - 5.0, MW + 5.0, f * (d - 1.0), f * (d + 0.5), 5.0, MH + 3.0, "steel.dark", "door_frame")
         for s in (-1.0, 1.0):
-            b.box(min(s * MW, 0.0) + 0.8, max(s * MW, 0.0) - 0.8, f * (d + 1.0), f * (d + 2.0), 6.0, MH - 3.0, "steel.plate", "door_panel")
-            for gz in (24.0, 44.0):
-                b.box(min(s * MW, 0.0) + 3.0, max(s * MW, 0.0) - 3.0, f * (d + 2.0), f * (d + 2.6), gz - 0.8, gz + 0.8, "steel.dark", "door_groove")
-        b.box(-1.0, 1.0, f * (d + 2.0), f * (d + 2.8), 6.0, MH - 3.0, "amber.strip", "door_seam")
+            b.box(min(s * MW, 0.0) + 1.0, max(s * MW, 0.0) - 1.0, f * (d + 0.5), f * (d + 2.5), 7.0, MH - 2.0, "steel.plate", "door_panel")
+            for gz in (22.0, 40.0, 58.0):
+                b.box(min(s * MW, 0.0) + 4.0, max(s * MW, 0.0) - 4.0, f * (d + 2.5), f * (d + 3.2), gz - 1.0, gz + 1.0, "steel.dark", "door_groove")
+            b.box(min(s * MW, 0.0) + 4.0, max(s * MW, 0.0) - 4.0, f * (d + 2.5), f * (d + 3.1), MH - 12.0, MH - 8.0, "amber.strip", "door_light")
+        b.box(-1.2, 1.2, f * (d + 2.5), f * (d + 3.4), 7.0, MH - 2.0, "amber.strip", "door_seam")
+        b.box(-MW - 3.0, MW + 3.0, f * (d + 0.5), f * (d + 3.0), 5.0, 7.5, "amber.strip", "threshold")
         b.box(-MW - 4.0, MW + 4.0, f * (GB + (GT - GB) * ((MH - 5.0) / (GH - 5.0)) + 0.5), f * (GB + (GT - GB) * ((MH - 5.0) / (GH - 5.0)) + 3.0), MH, MH + 7.0, "steel.dark", "lintel")
         b.box(-24.0, 24.0, f * (GT + 0.5), f * (GT + 1.6), GH - 22.0, GH - 12.0, "livery.livery", "device")
         for lx in range(-48, 49, 12):
@@ -321,18 +329,18 @@ def gate(b):
         for lx in (-44.0, 44.0):
             b.box(lx - 5.0, lx + 5.0, f * (GB + (GT - GB) * 0.2 + 0.5), f * (GB + (GT - GB) * 0.2 + 1.6), 20.0, 30.0, "steel.vent", "vent")
     # The bastions: squat tapered towers at the ends, a turret drum on each pad.
-    BH = 118.0
+    BH = 112.0
     for s in (-1.0, 1.0):
-        x = s * 74.0
-        _bastion(b, x, 0.0, 22.0, 17.0, 0.0, BH, "steel.panel", "bastion")
-        b.box(x - 19.0, x + 19.0, -19.0, 19.0, BH, BH + 3.0, "steel.dark", "bastion_lip")
+        x = s * 76.0
+        _bastion(b, x, 0.0, 28.0, 21.0, 0.0, BH, "steel.panel", "bastion")
+        b.box(x - 23.0, x + 23.0, -23.0, 23.0, BH, BH + 3.0, "steel.dark", "bastion_lip")
         for f in (-1.0, 1.0):
             for bz in (36.0, 72.0):
                 t = bz / BH
-                d = 22.0 + (17.0 - 22.0) * t
+                d = 28.0 + (21.0 - 28.0) * t
                 b.box(x - d, x + d, f * d, f * (d + 0.6), bz - 0.8, bz + 0.8, "steel.dark", "bastion_seam")
-            b.box(x - 4.0, x + 4.0, f * 18.5, f * 19.6, BH - 14.0, BH - 6.0, "steel.vent", "bastion_vent")
-            b.box(x - 12.0, x + 12.0, f * 20.0, f * 21.0, 56.0, 59.0, "amber.strip", "bastion_light")
+            b.box(x - 5.0, x + 5.0, f * 22.5, f * 23.6, BH - 14.0, BH - 6.0, "steel.vent", "bastion_vent")
+            b.box(x - 14.0, x + 14.0, f * 25.0, f * 26.0, 56.0, 59.0, "amber.strip", "bastion_light")
         _turret(b, x, 0.0, BH + 3.0)
         b.pin("hp_%d" % (1 if s < 0 else 2), (x, 0.0, BH + 18.0))
     # A couple of masts on the gatehouse: the projector's antennae.

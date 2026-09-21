@@ -14,6 +14,9 @@ signal unit_held(u: Unit)
 signal hold_released
 
 const DOUBLE_TAP_SECONDS := 0.35
+const SWEEP_H := 90.0          # the scan's trailing glow, in pixels
+const SWEEP_SPEED := 160.0     # pixels per second, top to bottom
+var _sweep_t := 0.0
 
 const HEX_SIZE := 44.0
 const DRAG_THRESHOLD := 12.0
@@ -66,7 +69,7 @@ func _init() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	clip_contents = true
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST   # zoom scales texels, never blurs them
-	set_process(false)
+	set_process(true)   # the scan sweeps every frame; the hold timer rides the same loop
 
 
 func set_field(f: Battlefield) -> void:
@@ -335,14 +338,17 @@ func _draw() -> void:
 
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)   # the edge tags live in screen space
 	_draw_tags()
-	# The whole battlefield is a projection: scanlines over everything, foes and overlays too.
-	var lines := PackedVector2Array()
-	var y := 0.0
-	while y < size.y:
-		lines.append(Vector2(0.0, y))
-		lines.append(Vector2(size.x, y))
-		y += 3.0
-	draw_multiline(lines, Color(0.0, 0.0, 0.0, 0.18), 1.0)
+	# The whole battlefield is a projection: a scan sweeps it top to bottom, over
+	# everything, foes and overlays too (Ryan, 21 September: the sweep, not scanlines).
+	var period := size.y + SWEEP_H
+	var sy := fmod(_sweep_t * SWEEP_SPEED, period) - SWEEP_H
+	for k in range(int(SWEEP_H / 2.0)):
+		var yy := sy + k * 2.0
+		if yy < 0.0 or yy > size.y:
+			continue
+		var a := 0.09 * (1.0 - float(k) / (SWEEP_H / 2.0))
+		draw_rect(Rect2(0.0, yy, size.x, 2.0), Color(hud, a))
+	draw_rect(Rect2(0.0, sy + SWEEP_H - 2.0, size.x, 2.0), Color(hud, 0.32))
 
 
 ## Off-screen squads get a portrait at the edge nearest them: the source of the intent line.
@@ -436,9 +442,7 @@ func _gui_input(event: InputEvent) -> void:
 			_press_pos = event.position
 			_last_pos = event.position
 			_press_at = Time.get_ticks_msec() / 1000.0
-			set_process(true)
 		else:
-			set_process(false)
 			if _holding:
 				hold_released.emit()
 			elif _pressed and not _dragged and field != null:
@@ -474,10 +478,12 @@ func _gui_input(event: InputEvent) -> void:
 		accept_event()
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	if _map3d != null:
+		_sweep_t += delta
+		queue_redraw()
 	if _pressed and not _dragged and not _holding and Time.get_ticks_msec() / 1000.0 - _press_at >= HOLD_SECONDS:
 		_holding = true
-		set_process(false)
 		if field != null:
 			var u := field.unit_at(hex_at(_press_pos))
 			if u != null:

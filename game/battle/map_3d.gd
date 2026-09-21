@@ -184,8 +184,9 @@ func _lit(color: Color) -> StandardMaterial3D:
 	return m
 
 
-## A terrain tile as a lit material sampled by world position (terrain.gdshader).
-func _terrain_material(tile: String, ripple: float = 0.0) -> ShaderMaterial:
+## A terrain tile as a lit material sampled by world position, or by the hex's UVs for a
+## tile that covers one hex exactly (terrain.gdshader).
+func _terrain_material(tile: String, ripple: float = 0.0, by_uv: bool = false) -> ShaderMaterial:
 	if _materials.has(tile):
 		return _materials[tile]
 	var m := ShaderMaterial.new()
@@ -196,8 +197,53 @@ func _terrain_material(tile: String, ripple: float = 0.0) -> ShaderMaterial:
 	m.set_shader_parameter("tile_world", TILE_WORLD)
 	m.set_shader_parameter("ripple", ripple)
 	m.set_shader_parameter("lift", 1.35)
+	m.set_shader_parameter("by_uv", 1.0 if by_uv else 0.0)
 	_materials[tile] = m
 	return m
+
+
+## Which way a road hex runs: toward the north-east or north-west neighbours, whichever
+## axis it connects to more (branches only run diagonally, so there is no third).
+func _road_tile(h: Vector2i) -> String:
+	var map := field.map
+	var ne := 0
+	var nw := 0
+	for d in [Vector2i(1, -1), Vector2i(-1, 1)]:
+		if map.terrain_of(h + d) == BattleMap.Terrain.ROAD:
+			ne += 1
+	for d in [Vector2i(0, -1), Vector2i(0, 1)]:
+		if map.terrain_of(h + d) == BattleMap.Terrain.ROAD:
+			nw += 1
+	return "road_nw" if nw > ne else "road_ne"
+
+
+## A prop with the display's ink on it: the mesh, and a grown front-culled hull behind it.
+func _prop(col: Node3D, mesh: Mesh, material: Material, pos: Vector3, rot: Vector3 = Vector3.ZERO) -> MeshInstance3D:
+	var mi := MeshInstance3D.new()
+	mi.mesh = mesh
+	mi.material_override = material
+	mi.position = pos
+	mi.rotation = rot
+	col.add_child(mi)
+	var hull := MeshInstance3D.new()
+	hull.mesh = mesh
+	hull.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	hull.material_override = _ink()
+	mi.add_child(hull)
+	return mi
+
+
+var _ink_mat: StandardMaterial3D = null
+
+func _ink() -> StandardMaterial3D:
+	if _ink_mat == null:
+		_ink_mat = StandardMaterial3D.new()
+		_ink_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		_ink_mat.cull_mode = BaseMaterial3D.CULL_FRONT
+		_ink_mat.grow = true
+		_ink_mat.grow_amount = 1.0
+		_ink_mat.albedo_color = Palette.BG
+	return _ink_mat
 
 
 ## The hex outline as lines at height `y`, for the glowing grid.
@@ -251,9 +297,10 @@ func _column_mesh(h: float, sides: Array) -> ArrayMesh:
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	for i in range(1, corners.size() - 1):
-		for v in [top[0], top[i + 1], top[i]]:
+		for j in [0, i + 1, i]:
 			st.set_normal(Vector3.UP)
-			st.add_vertex(v)
+			st.set_uv(corners[j] / (hex_px * 2.0) + Vector2(0.5, 0.5))   # the hex inscribed in the tile
+			st.add_vertex(top[j])
 	var mesh := st.commit()
 	if absf(h) < 0.01 or not sides.has(true):
 		return mesh
@@ -326,7 +373,10 @@ func _build_ground() -> void:
 			edges.material_override = _grid_material()
 			col.add_child(edges)
 		else:
-			mi.set_surface_override_material(0, _terrain_material(TILE[ground_t], 1.0 if ground_t == BattleMap.Terrain.WATER else 0.0))
+			if ground_t == BattleMap.Terrain.ROAD:
+				mi.set_surface_override_material(0, _terrain_material(_road_tile(h), 0.0, true))
+			else:
+				mi.set_surface_override_material(0, _terrain_material(TILE[ground_t], 1.0 if ground_t == BattleMap.Terrain.WATER else 0.0))
 			if mi.mesh.get_surface_count() > 1:
 				mi.set_surface_override_material(1, rock)
 		col.add_child(mi)
@@ -350,25 +400,22 @@ func _build_ground() -> void:
 				for k in range(5):
 					var b := BoxMesh.new()
 					b.size = Vector3(rng.randf_range(5, 12), rng.randf_range(3, 12), rng.randf_range(4, 9))
-					var bi := MeshInstance3D.new()
-					bi.mesh = b
-					bi.material_override = rubble
-					bi.position = Vector3(rng.randf_range(-18, 18), hgt + b.size.y * 0.5, rng.randf_range(-13, 13))
-					bi.rotation.y = rng.randf_range(0, TAU)
-					col.add_child(bi)
+					_prop(col, b, rubble, Vector3(rng.randf_range(-18, 18), hgt + b.size.y * 0.5, rng.randf_range(-13, 13)), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
 				for k in range(2):
 					var wall_stub := BoxMesh.new()
 					wall_stub.size = Vector3(rng.randf_range(10, 18), rng.randf_range(14, 24), 2.5)
-					var wi := MeshInstance3D.new()
-					wi.mesh = wall_stub
-					wi.material_override = rubble
-					wi.position = Vector3(rng.randf_range(-14, 14), hgt + wall_stub.size.y * 0.5, rng.randf_range(-10, 10))
-					wi.rotation.y = rng.randf_range(0, TAU)
-					col.add_child(wi)
+					_prop(col, wall_stub, rubble, Vector3(rng.randf_range(-14, 14), hgt + wall_stub.size.y * 0.5, rng.randf_range(-10, 10)), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
 			BattleMap.Terrain.ROUGH:
-				# Wasteland: a few dead trees, the parallel of the other world's forest.
+				# Wasteland: dead trees and boulders, the parallel of the other world's forest.
 				for k in range(rng.randi_range(2, 4)):
 					_dead_tree(col, Vector3(rng.randf_range(-18, 18), hgt, rng.randf_range(-14, 14)), rng)
+				for k in range(rng.randi_range(1, 3)):
+					var boulder := SphereMesh.new()
+					boulder.radius = rng.randf_range(3.0, 6.0)
+					boulder.height = boulder.radius * 1.6
+					boulder.radial_segments = 6
+					boulder.rings = 3
+					_prop(col, boulder, rock, Vector3(rng.randf_range(-16, 16), hgt + boulder.radius * 0.6, rng.randf_range(-12, 12)), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
 
 
 ## The blocking crag on a tile, in the ground's own idiom: rock spikes on dirt and water,
@@ -377,22 +424,34 @@ func _build_ground() -> void:
 func _crag(col: Node3D, ground_t: int, hgt: float, rng: RandomNumberGenerator) -> void:
 	match ground_t:
 		BattleMap.Terrain.RUINS:
-			# Dead skyscrapers: tall thin shells, tops broken to steps.
+			# Dead skyscrapers: tall thin shells stepping down as they rise, a few dim
+			# windows still lit on the tallest, far above anything else on the field.
 			var rubble := _terrain_material("rubble")
-			for k in range(3):
-				var w := rng.randf_range(9.0, 14.0)
-				var tall := rng.randf_range(44.0, 70.0) if k == 0 else rng.randf_range(26.0, 48.0)
-				var ox := 0.0 if k == 0 else rng.randf_range(-16.0, 16.0)
-				var oz := 0.0 if k == 0 else rng.randf_range(-12.0, 12.0)
+			for k in range(4):
+				var w := rng.randf_range(8.0, 12.0)
+				var tall := rng.randf_range(70.0, 96.0) if k == 0 else rng.randf_range(34.0, 62.0)
+				var ox := 0.0 if k == 0 else rng.randf_range(-17.0, 17.0)
+				var oz := 0.0 if k == 0 else rng.randf_range(-13.0, 13.0)
 				for step in range(3):
 					var b := BoxMesh.new()
-					var frac := 1.0 - 0.28 * step
+					var frac := 1.0 - 0.22 * step
 					b.size = Vector3(w * frac, tall / 3.0, w * frac * rng.randf_range(0.7, 1.0))
-					var bi := MeshInstance3D.new()
-					bi.mesh = b
-					bi.material_override = rubble
-					bi.position = Vector3(ox + rng.randf_range(-1.5, 1.5), hgt + tall / 6.0 + step * tall / 3.0, oz + rng.randf_range(-1.5, 1.5))
-					col.add_child(bi)
+					_prop(col, b, rubble, Vector3(ox + rng.randf_range(-1.0, 1.0), hgt + tall / 6.0 + step * tall / 3.0, oz + rng.randf_range(-1.0, 1.0)))
+				if k == 0:
+					var win := BoxMesh.new()
+					win.size = Vector3(w * 0.7, 2.0, 0.6)
+					var wm := StandardMaterial3D.new()
+					wm.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+					wm.albedo_color = Color(0.9, 0.7, 0.35)
+					wm.emission_enabled = true
+					wm.emission = Color(0.9, 0.7, 0.35)
+					wm.emission_energy_multiplier = 1.2
+					for wz in [tall * 0.35, tall * 0.55]:
+						var wi := MeshInstance3D.new()
+						wi.mesh = win
+						wi.material_override = wm
+						wi.position = Vector3(ox, hgt + wz, oz - w * 0.5 * rng.randf_range(0.8, 1.0))
+						col.add_child(wi)
 		BattleMap.Terrain.ROUGH:
 			# Mesas: flat-topped blocks stacked and offset, a badland.
 			var rock := _terrain_material("rock")
@@ -406,12 +465,7 @@ func _crag(col: Node3D, ground_t: int, hgt: float, rng: RandomNumberGenerator) -
 					slab.top_radius = rng.randf_range(10.0, 15.0) * (0.8 if step == 1 else 1.0)
 					slab.bottom_radius = slab.top_radius * 1.15
 					slab.height = tall * (0.6 if step == 0 else 0.4)
-					var mi := MeshInstance3D.new()
-					mi.mesh = slab
-					mi.material_override = rock
-					mi.position = Vector3(ox, hgt + slab.height * 0.5 + (tall * 0.6 if step == 1 else 0.0), oz)
-					mi.rotation.y = rng.randf_range(0, TAU)
-					col.add_child(mi)
+					_prop(col, slab, rock, Vector3(ox, hgt + slab.height * 0.5 + (tall * 0.6 if step == 1 else 0.0), oz), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
 		_:
 			# Rock spikes, leaning, filling the tile.
 			var rock_dark := _terrain_material("rock")
@@ -421,40 +475,27 @@ func _crag(col: Node3D, ground_t: int, hgt: float, rng: RandomNumberGenerator) -
 				spike.bottom_radius = rng.randf_range(9.0, 14.0)
 				spike.height = rng.randf_range(40.0, 56.0) if k == 0 else rng.randf_range(22.0, 40.0)
 				spike.radial_segments = 4
-				var pk := MeshInstance3D.new()
-				pk.mesh = spike
-				pk.material_override = rock_dark
 				var a := k * TAU / 5.0 + rng.randf_range(-0.4, 0.4)
 				var dist := 0.0 if k == 0 else rng.randf_range(14.0, 22.0)
-				pk.position = Vector3(cos(a) * dist, hgt + spike.height * 0.5 - 1.0, sin(a) * dist)
-				pk.rotation = Vector3(rng.randf_range(-0.18, 0.18), rng.randf_range(0, TAU), rng.randf_range(-0.18, 0.18))
-				col.add_child(pk)
+				_prop(col, spike, rock_dark, Vector3(cos(a) * dist, hgt + spike.height * 0.5 - 1.0, sin(a) * dist),
+					Vector3(rng.randf_range(-0.18, 0.18), rng.randf_range(0, TAU), rng.randf_range(-0.18, 0.18)))
 
 
-## A dead tree: a bare trunk and a couple of stub branches.
+## A dead tree: a bare trunk, thick at the foot, with a few stub branches, inked.
 func _dead_tree(col: Node3D, at: Vector3, rng: RandomNumberGenerator) -> void:
 	var bark := _lit(Color("2e2a26"))
-	var tall := rng.randf_range(10.0, 18.0)
+	var tall := rng.randf_range(16.0, 28.0)
 	var trunk := CylinderMesh.new()
-	trunk.top_radius = 0.5
-	trunk.bottom_radius = 1.3
+	trunk.top_radius = 0.9
+	trunk.bottom_radius = 2.4
 	trunk.height = tall
 	trunk.radial_segments = 5
-	var tm := MeshInstance3D.new()
-	tm.mesh = trunk
-	tm.material_override = bark
-	tm.position = at + Vector3(0.0, tall * 0.5, 0.0)
-	tm.rotation.z = rng.randf_range(-0.12, 0.12)
-	col.add_child(tm)
-	for k in range(rng.randi_range(1, 3)):
+	_prop(col, trunk, bark, at + Vector3(0.0, tall * 0.5, 0.0), Vector3(0.0, 0.0, rng.randf_range(-0.12, 0.12)))
+	for k in range(rng.randi_range(2, 4)):
 		var branch := BoxMesh.new()
-		branch.size = Vector3(rng.randf_range(4.0, 8.0), 0.8, 0.8)
-		var bm := MeshInstance3D.new()
-		bm.mesh = branch
-		bm.material_override = bark
-		bm.position = at + Vector3(branch.size.x * 0.4, tall * rng.randf_range(0.55, 0.9), 0.0)
-		bm.rotation = Vector3(0.0, rng.randf_range(0, TAU), rng.randf_range(0.3, 0.7))
-		col.add_child(bm)
+		branch.size = Vector3(rng.randf_range(6.0, 12.0), 1.4, 1.4)
+		_prop(col, branch, bark, at + Vector3(branch.size.x * 0.4, tall * rng.randf_range(0.5, 0.9), 0.0),
+			Vector3(0.0, rng.randf_range(0, TAU), rng.randf_range(0.3, 0.8)))
 
 
 var _wire_mat: StandardMaterial3D = null
@@ -612,10 +653,14 @@ func _make_unit(u: Unit) -> Node3D:
 		var pivot := Node3D.new()
 		node.scale = Vector3.ONE * k
 		var hover := HOVER if flyer else 0.0
-		# Under the pitched camera a body's middle projects north of its feet, so the model
-		# is set south by as much as that, and its visual centre lands on the hex centre.
-		var south := (hover + aabb.size.y * k * 0.6) * _cos / _sin
-		node.position = Vector3(-aabb.get_center().x, -aabb.position.y, -aabb.get_center().z) * k + Vector3(0.0, hover, 0.0)
+		# The ground is the model's Z = 0 by convention, never its lowest point: a claw or a
+		# wing tip may hang below it, and lifting the whole machine to clear that is what
+		# shoved the Badger off its hex. Under the pitched camera a body's middle projects
+		# north of its feet, so the model is set south by as much as that; and it is
+		# centred halfway by its bounds, so a long reach ahead (the booms) leans over the
+		# hex's front edge rather than dragging the body back.
+		var south := (hover + (aabb.end.y * k) * 0.5) * _cos / _sin
+		node.position = Vector3(-aabb.get_center().x, 0.0, -aabb.get_center().z * 0.5) * k + Vector3(0.0, hover, 0.0)
 		pivot.add_child(node)
 		var seat := Node3D.new()   # the pivot turns to the facing; the seat's southward set does not
 		seat.position = Vector3(0.0, 0.0, south)

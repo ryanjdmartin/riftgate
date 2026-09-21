@@ -10,7 +10,7 @@ extends RefCounted
 ## Later knobs: the gradient could grow with Rift Pressure, so the corruption spreads south
 ## as the clock runs.
 
-const SQUAD_RADIUS_HEX := 1.7
+const SQUAD_RADIUS_HEX := 1.45
 const BOSS_RADIUS_HEX := 2.6
 const RIFT_RADIUS_HEX := 2.6
 const GRADIENT_ROWS := 5.0      # the rift's bleed is total on its row and gone this many rows south

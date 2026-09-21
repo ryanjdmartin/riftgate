@@ -94,11 +94,14 @@ void fragment() {
 	// The corrupted side is input the display cannot hold: now and then a band of it tears.
 	float band = floor(px.y / 6.0);
 	float tick = floor(TIME * 14.0);
-	float flick = step(0.985, fract(sin(band * 12.9898 + tick * 7.31) * 43758.5453));
-	other.rgb *= 1.0 - 0.25 * flick;
+	float flick = step(0.995, fract(sin(band * 12.9898 + tick * 7.31) * 43758.5453));
+	other.rgb *= 1.0 - 0.18 * flick;
 	COLOR = (k > bayer(c)) ? other : scene;
-	// The field is a window on a longer battlefield: the scenery past its sides fades out.
-	float side = min(smoothstep(-edge_fade, 0.0, px.x - play_x.x + edge_fade), smoothstep(-edge_fade, 0.0, play_x.y + edge_fade - px.x));
+	// The field is what the table projects; past its sides the scenery dims at once and
+	// fades to nothing over `edge_fade`, the way a holo table's projection ends (Ryan, 21
+	// September).
+	float outside = max(play_x.x - px.x, px.x - play_x.y);
+	float side = (outside <= 0.0) ? 1.0 : 0.55 * (1.0 - smoothstep(0.0, edge_fade, outside));
 	COLOR.rgb *= side;
 	COLOR.a *= side;
 }
