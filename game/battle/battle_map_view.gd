@@ -14,8 +14,7 @@ signal unit_held(u: Unit)
 signal hold_released
 
 const DOUBLE_TAP_SECONDS := 0.35
-const SWEEP_H := 90.0          # the scan's trailing glow, in pixels
-const SWEEP_SPEED := 160.0     # pixels per second, top to bottom
+const SWEEP_SPEED := 140.0     # pixels per second, top to bottom, as the skirmish backdrop
 var _sweep_t := 0.0
 
 const HEX_SIZE := 44.0
@@ -338,17 +337,13 @@ func _draw() -> void:
 
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)   # the edge tags live in screen space
 	_draw_tags()
-	# The whole battlefield is a projection: a scan sweeps it top to bottom, over
-	# everything, foes and overlays too (Ryan, 21 September: the sweep, not scanlines).
-	var period := size.y + SWEEP_H
-	var sy := fmod(_sweep_t * SWEEP_SPEED, period) - SWEEP_H
-	for k in range(int(SWEEP_H / 2.0)):
-		var yy := sy + k * 2.0
-		if yy < 0.0 or yy > size.y:
-			continue
-		var a := 0.09 * (1.0 - float(k) / (SWEEP_H / 2.0))
-		draw_rect(Rect2(0.0, yy, size.x, 2.0), Color(hud, a))
-	draw_rect(Rect2(0.0, sy + SWEEP_H - 2.0, size.x, 2.0), Color(hud, 0.32))
+	# The whole battlefield is a projection, the same one as the skirmish's backdrop: its
+	# faint scanlines and its soft band drifting down, over everything, foes and overlays
+	# too (Ryan, 21 September).
+	Hud.scanlines(self, Rect2(Vector2.ZERO, size))
+	var sy := fmod(_sweep_t * SWEEP_SPEED, size.y + 120.0) - 60.0
+	for i in range(-2, 3):
+		draw_rect(Rect2(0.0, sy + i * 3.0, size.x, 1.0), Color(1, 1, 1, 0.07 - 0.015 * absi(i)))
 
 
 ## Off-screen squads get a portrait at the edge nearest them: the source of the intent line.

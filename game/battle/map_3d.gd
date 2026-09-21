@@ -202,19 +202,29 @@ func _terrain_material(tile: String, ripple: float = 0.0, by_uv: bool = false) -
 	return m
 
 
-## Which way a road hex runs: toward the north-east or north-west neighbours, whichever
-## axis it connects to more (branches only run diagonally, so there is no third).
-func _road_tile(h: Vector2i) -> String:
+## Which neighbours of a road hex are road too (the gate counts, so the road runs into
+## it), as a bitmask over Hex.DIRECTIONS for road.gdshader.
+func _road_links(h: Vector2i) -> int:
 	var map := field.map
-	var ne := 0
-	var nw := 0
-	for d in [Vector2i(1, -1), Vector2i(-1, 1)]:
-		if map.terrain_of(h + d) == BattleMap.Terrain.ROAD:
-			ne += 1
-	for d in [Vector2i(0, -1), Vector2i(0, 1)]:
-		if map.terrain_of(h + d) == BattleMap.Terrain.ROAD:
-			nw += 1
-	return "road_nw" if nw > ne else "road_ne"
+	var bits := 0
+	for i in range(Hex.DIRECTIONS.size()):
+		var n: Vector2i = h + Hex.DIRECTIONS[i]
+		if map.terrain_of(n) == BattleMap.Terrain.ROAD or map.gate_hexes.has(n):
+			bits |= 1 << i
+	return bits
+
+
+var _road_mat: ShaderMaterial = null
+
+func _road_material() -> ShaderMaterial:
+	if _road_mat == null:
+		_road_mat = ShaderMaterial.new()
+		_road_mat.shader = load("res://game/battle/road.gdshader")
+		var path := "res://art/terrain/concrete.png"
+		if ResourceLoader.exists(path):
+			_road_mat.set_shader_parameter("tile", load(path))
+		_road_mat.set_shader_parameter("tile_world", TILE_WORLD)
+	return _road_mat
 
 
 ## A prop with the display's ink on it: the mesh, and a grown front-culled hull behind it.
@@ -235,14 +245,24 @@ func _prop(col: Node3D, mesh: Mesh, material: Material, pos: Vector3, rot: Vecto
 
 var _ink_mat: StandardMaterial3D = null
 
-func _ink() -> StandardMaterial3D:
+## The outline hull's material: light, not ink (Ryan, 21 September), the HUD colour with a
+## little emission so the glow pass catches it, like the grid. RIFTGATE_INK=dark for the
+## old black line, to compare.
+func _ink(grow: float = 1.0) -> StandardMaterial3D:
 	if _ink_mat == null:
 		_ink_mat = StandardMaterial3D.new()
 		_ink_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 		_ink_mat.cull_mode = BaseMaterial3D.CULL_FRONT
 		_ink_mat.grow = true
-		_ink_mat.grow_amount = 1.0
-		_ink_mat.albedo_color = Palette.BG
+		_ink_mat.grow_amount = grow
+		if OS.get_environment("RIFTGATE_INK") == "dark":
+			_ink_mat.albedo_color = Palette.BG
+		else:
+			_ink_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			_ink_mat.albedo_color = Color(Palette.HUD, 0.5)
+			_ink_mat.emission_enabled = true
+			_ink_mat.emission = Palette.HUD
+			_ink_mat.emission_energy_multiplier = 0.9
 	return _ink_mat
 
 
@@ -374,7 +394,9 @@ func _build_ground() -> void:
 			col.add_child(edges)
 		else:
 			if ground_t == BattleMap.Terrain.ROAD:
-				mi.set_surface_override_material(0, _terrain_material(_road_tile(h), 0.0, true))
+				mi.set_surface_override_material(0, _road_material())
+				mi.set_instance_shader_parameter("links", _road_links(h))
+				mi.set_instance_shader_parameter("seed", float(h.x * 131 + h.y * 7919))
 			else:
 				mi.set_surface_override_material(0, _terrain_material(TILE[ground_t], 1.0 if ground_t == BattleMap.Terrain.WATER else 0.0))
 			if mi.mesh.get_surface_count() > 1:
@@ -697,13 +719,7 @@ func _marker(node: Node) -> void:
 		var hull := MeshInstance3D.new()
 		hull.mesh = mi.mesh
 		hull.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		var om := StandardMaterial3D.new()
-		om.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		om.cull_mode = BaseMaterial3D.CULL_FRONT
-		om.grow = true
-		om.grow_amount = 1.4
-		om.albedo_color = Palette.BG
-		hull.material_override = om
+		hull.material_override = _ink()
 		mi.add_child(hull)
 
 

@@ -303,7 +303,7 @@ def gate(b):
     _seams(b, -W, W, DB, DT, 5.0, H, (26.0, 48.0))
     # The gatehouse: a taller battered block, its door wide and tall.
     GW, GB, GT, GH = 54.0, 21.0, 15.0, 104.0
-    _battered(b, -GW, GW, GB, GT, 5.0, GH, "steel.panel", "gatehouse")
+    _battered(b, -GW, GW, GB, GT, 5.0, GH, "steel.plate", "gatehouse")   # a shade lighter than the bastions, so the blocks read
     b.box(-GW - 2.0, GW + 2.0, -GT - 3.0, GT + 3.0, GH, GH + 5.0, "steel.dark", "gate_lip")
     _pilasters(b, -GW + 8.0, GW - 8.0, GB, GT, 5.0, GH, 23.0, w=7.0)
     _seams(b, -GW, GW, GB, GT, 5.0, GH, (34.0, 62.0, 88.0))

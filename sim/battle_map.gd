@@ -30,7 +30,7 @@ var wall_hexes: Array[Vector2i] = []   # the rest of the bottom GATE_ROWS rows: 
 var crag_base: Dictionary = {}         # crag hex -> the ground under the rock (water, ruins, ...): flavour only
 var elevation: Dictionary = {}         # hex -> relief step 0..3 (water -1): landscape only, no rule reads it
 var margin: Dictionary = {}            # hex beside the field -> terrain: scenery past the playable edge, never played on
-const MARGIN_COLS := 2
+const MARGIN_COLS := 3
 var map_seed: int = 0
 
 const STRUCTURE_HALF_WIDTH := 1   # gate and rift span centre plus this many hexes each side
@@ -139,28 +139,20 @@ func _lay_landscape(rng: RandomNumberGenerator) -> void:
 			all.append(Hex.offset_to_axial(col, row))
 		for col in range(width, width + MARGIN_COLS):
 			all.append(Hex.offset_to_axial(col, row))
-	# Pass one: the ground from the fields, water first so ruins can keep off its shores.
-	var ground: Dictionary = {}
+	# The ground from the fields: water where it is wet, wasteland across the rougher
+	# half of what is left, plain in between, ruins in clusters with a dense core.
 	for hx in all:
 		var p := Hex.to_pixel(hx, 1.0)
 		var t := Terrain.PLAIN
 		if wet.get_noise_2d(p.x, p.y) < -0.34:
 			t = Terrain.WATER
-		elif rough.get_noise_2d(p.x, p.y) > 0.16:
+		elif rough.get_noise_2d(p.x, p.y) > 0.02:
 			t = Terrain.ROUGH
-		ground[hx] = t
-	for hx in all:
-		var p := Hex.to_pixel(hx, 1.0)
-		var t: int = ground[hx]
 		if t != Terrain.WATER:
-			var shore := false
-			for n in Hex.neighbors(hx):
-				if ground.get(n, Terrain.PLAIN) == Terrain.WATER:
-					shore = true
 			for c in centres:
 				var d := Hex.distance(hx, c)
-				if not shore and d <= 2 and rng.randf() < (0.8 if d <= 1 else 0.35):
-					t = Terrain.RUINS   # a dense core and a scatter around it, never on a shore
+				if d <= 2 and rng.randf() < (0.9 if d <= 1 else 0.5):
+					t = Terrain.RUINS
 		var crag := absf(ridge.get_noise_2d(p.x, p.y)) < 0.075 and rng.randf() < 0.85 and not is_structure(hx)
 		elevation[hx] = -1 if t == Terrain.WATER else clampi(int(floor((relief.get_noise_2d(p.x, p.y) + 0.45) * 3.4)), 0, 3)
 		if has(hx):

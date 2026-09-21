@@ -25,7 +25,7 @@ uniform float focus_band = 330.0;            // the sharp zone reaches this far 
 uniform float focus_falloff = 180.0;         // map pixels over which the blur reaches its maximum
 uniform float blur_max = 2.4;                // the blur's tap spacing at its maximum, in screen pixels
 uniform vec2 play_x = vec2(0.0, 1.0);        // the playable field's left and right, in map pixels
-uniform float edge_fade = 70.0;              // map pixels past the field over which the scenery fades out
+uniform float edge_fade = 150.0;             // map pixels past the field over which the scenery softens and fades out
 
 float bleed_at(vec2 px) {
 	float m = 1.0 - clamp((px.y - grad.x) / max(1.0, grad.y - grad.x), 0.0, 1.0);
@@ -87,7 +87,11 @@ void fragment() {
 	vec2 q = ((vec2(c) + 0.5) * cell - scroll) / zoom;         // the dither cell's map pixel
 	float k = smoothstep(0.42, 0.58, bleed_at(q));
 	vec2 px = (spx - scroll) / zoom;                           // this fragment's map pixel
-	float rad = blur_radius(px);
+	// Past the field's sides the world softens and fades into the edge of the table, the
+	// same way the far north does: blur first, then darkness (Ryan, 21 September).
+	float outside = max(play_x.x - px.x, px.x - play_x.y);
+	float edge = smoothstep(0.0, edge_fade, outside);
+	float rad = max(blur_radius(px), edge * blur_max);
 	vec4 scene = blurred_scene(TEXTURE, UV, 1.0 / view_size, rad);
 	vec4 other = blurred_other(px / map_size, 1.0 / (map_size * zoom), rad);
 	other.rgb = floor(other.rgb * levels + 0.5) / levels;
@@ -97,11 +101,7 @@ void fragment() {
 	float flick = step(0.995, fract(sin(band * 12.9898 + tick * 7.31) * 43758.5453));
 	other.rgb *= 1.0 - 0.18 * flick;
 	COLOR = (k > bayer(c)) ? other : scene;
-	// The field is what the table projects; past its sides the scenery dims at once and
-	// fades to nothing over `edge_fade`, the way a holo table's projection ends (Ryan, 21
-	// September).
-	float outside = max(play_x.x - px.x, px.x - play_x.y);
-	float side = (outside <= 0.0) ? 1.0 : 0.55 * (1.0 - smoothstep(0.0, edge_fade, outside));
+	float side = 1.0 - edge;
 	COLOR.rgb *= side;
 	COLOR.a *= side;
 }

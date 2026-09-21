@@ -135,10 +135,15 @@ on a longer battlefield. Crags take their ground's idiom (`Map3D._crag`: rock sp
 broken towers on ruins, mesas on wasteland); scrub carries dead trees. The readout has its
 own strip (`BattleScreen.INFO_H`) between the map and the log. A scan sweeps the map top
 to bottom every few seconds (`SWEEP_H`, `SWEEP_SPEED`; the map view processes every frame
-for it); the flicker is rare. Roads are directional: `road_ne` and `road_nw` tiles cover
-one hex exactly by UV (`terrain.gdshader` `by_uv`, `Map3D._road_tile` picks the axis from
-the road neighbours; branches only run diagonally), a dark deck with concrete shoulders,
-kerbs, a guide line and verge lamps. Props carry the ink hull (`Map3D._prop`); dead trees
+for it); the flicker is rare. Roads are drawn, not tiled (`road.gdshader`, one material, per-hex instance uniforms
+`links` and `seed` from `Map3D._road_links`): a deck runs from the hex centre to every
+road neighbour (the gate counts), so adjoining road hexes make one road; concrete
+shoulders, kerbs, a guide line, verge lamps with some lit and emissive. The map's own
+overlay draws the skirmish backdrop's scanlines and drifting band. Past the field's sides
+the world blurs and fades over `edge_fade` (150 px, `MARGIN_COLS` 3), as the far north
+does. The outline hull is light, not ink (`Map3D._ink`: HUD colour, emissive; `RIFTGATE_INK=dark`
+compares). Composition: wasteland across the rougher half, ruins in dense clusters, water
+in bodies; ruins may sit on shores again. The gatehouse wears the lighter plate tile. Props carry the ink hull (`Map3D._prop`); dead trees
 and boulders on wasteland, taller skyscraper crags with a couple of lit windows. Ruins
 keep off water's shores. Units: the ground is the model's Z = 0 by convention (nothing
 hangs below it; the Badger's arm was raised so the claw rests on the ground), and
