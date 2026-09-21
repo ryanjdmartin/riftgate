@@ -177,6 +177,9 @@ func _setup(chassis_id: String, maker: String) -> void:
 	_inner.add_child(_model)
 	_apply_materials(_model, maker)
 	_collect_tags(_model)
+	if OS.get_environment("RIFTGATE_MECH3D_WIRE") == "1":
+		# Wireframe trial (21 September): the reconstruction's own telemetry drawing.
+		_inner.debug_draw = Viewport.DEBUG_DRAW_WIREFRAME
 	if OS.get_environment("RIFTGATE_MECH3D_LOOK") == "flat":
 		# The flat look has no light of its own: one sun from the front-left and above, a
 		# little cool ambient, and shadows so the facets and overhangs read.

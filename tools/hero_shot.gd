@@ -10,6 +10,8 @@ var _out := "hero.png"
 
 
 func _init() -> void:
+	if OS.get_environment("RIFTGATE_MECH3D_WIRE") == "1":
+		RenderingServer.set_debug_generate_wireframes(true)   # before any mesh loads
 	var args := OS.get_cmdline_user_args()
 	if args.size() < 3:
 		push_error("usage: <chassis> <maker> out.png [front|rear] [width height]")
