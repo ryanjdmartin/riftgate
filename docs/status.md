@@ -98,7 +98,12 @@ built by `tools/lowforge`: `models_low.py` holds one function of numbers per cha
 tile generator, `forge.py build <id>` writes `art/models/<id>.glb` with the tiles embedded
 (review PNGs under `tools/lowforge/tiles/<maker>/`). `MechView3D.toon` takes the tile look
 automatically for any textured model (nearest filter, gloss by maker, a sun in the view);
-the gate and wall are lowforge models too (`gate`, `wall`, maker arsenal, `tile_world` 40
+`forge.py build` also saves `tools/lowforge/models/<id>.blend` (tiles packed) for hand
+edits in Blender, and `forge.py export <id>` turns that file back into the glTF, Empties
+included, so joints (`joint_*`) and pins (`hp_*`) can be placed by hand; a rebuild from code
+overwrites the .blend, so an edited unit is saved under another name or its code retired.
+Those folders carry `.gdignore` so Godot never tries to import the .blend files itself.
+The gate and wall are lowforge models too (`gate`, `wall`, maker arsenal, `tile_world` 40
 so their tiles read at true scale on the map). On the map a mech is the same textured model
 as the skirmish with a dark inverted-hull outline (`Map3D._marker`), fitted to about one
 hex; the ground style is drawn at half resolution with chunky marks, so its texels match

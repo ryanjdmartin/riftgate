@@ -304,19 +304,38 @@ def boom(b, start, length, pitch_deg, yaw_deg, w0, h0, w1, h1, material, label):
 
 # ---------------------------------------------------------------- main
 
+def _export(out):
+    os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
+    bpy.ops.object.select_all(action="SELECT")
+    bpy.ops.export_scene.gltf(filepath=out, export_format="GLB", export_apply=True, export_yup=True,
+                              export_image_format="AUTO", use_selection=True)
+
+
 def main():
     a = _args()
+    out = a["out"]
+    if "blend" in a and "model" not in a:
+        # Export a hand-edited working file as it is: joints (joint_*) and pins (hp_*) are
+        # Empties and come through as nodes, materials keep their "<role>.<tile>" names.
+        bpy.ops.wm.open_mainfile(filepath=a["blend"])
+        _export(out)
+        meshes = [ob for ob in bpy.data.objects if ob.type == "MESH"]
+        tris = sum(sum(len(p.vertices) - 2 for p in ob.data.polygons) for ob in meshes)
+        print(f"lowforge: {a['blend']} -> {out}, {len(meshes)} parts, {tris} triangles")
+        return
     bpy.ops.wm.read_factory_settings(use_empty=True)
     import models_low
     fn = getattr(models_low, a["model"])
     tiles = Tiles(a.get("tiles", os.path.join(HERE, "tiles")), getattr(fn, "maker", "minerva"))
     builder = Build(a["model"], tiles)
     fn(builder)
-    out = a["out"]
-    os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
-    bpy.ops.object.select_all(action="SELECT")
-    bpy.ops.export_scene.gltf(filepath=out, export_format="GLB", export_apply=True, export_yup=True,
-                              export_image_format="AUTO", use_selection=True)
+    _export(out)
+    if "blend" in a:
+        # The working file for hand edits in Blender, tiles packed inside. A rebuild from
+        # code overwrites it: save a hand-edited copy under another name.
+        os.makedirs(os.path.dirname(a["blend"]) or ".", exist_ok=True)
+        bpy.ops.file.pack_all()
+        bpy.ops.wm.save_as_mainfile(filepath=a["blend"])
     tris = sum(sum(len(p.vertices) - 2 for p in ob.data.polygons) for ob in builder.objects)
     print(f"lowforge: {a['model']} -> {out}, {len(builder.objects)} parts, {tris} triangles, {len(tiles.images)} tiles")
 

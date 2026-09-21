@@ -67,12 +67,17 @@ def badger(b):
         wrist, rot = boom(b, elbow, 28.0, 48.0, s * 2.0, ARM, ARM, ARM, ARM, "steel.plate", "forearm")
         b.prism("x", wrist[0], wrist[1], wrist[2], 9.0, ARM + 8.0, "steel.dark", 6, "wrist")
         if kind == "claw":
-            # The claw, outsized on purpose: two hooked fingers spread wide and a thumb from
-            # below that closes between them.
-            for side, yaw, pitch, span, base in ((-1.0, 16.0, -48.0, 32.0, 9.0), (1.0, -16.0, -48.0, 32.0, 9.0), (0.0, 0.0, -100.0, 30.0, 10.0)):
-                m = Matrix.Translation(Vector(wrist)) @ Matrix.Rotation(math.radians(pitch), 4, "X") @ Matrix.Rotation(math.radians(yaw), 4, "Z")
-                b.loft([(0.0, rect(side * 9.0, base, -4.5, 4.5)), (span * 0.6, rect(side * 9.0, base * 0.7, -3.2, 3.2)),
-                        (span, rect(side * 9.0, 1.5, -0.8, 0.8))], "steel.stripe", "prong", m)
+            # The grapple (Ryan's references, 21 September): an excavator grab made sharp.
+            # Plated cheeks house the pivot; two long curved fingers sweep down and back
+            # from above, two shorter opposing tines curl up from below, interleaved so
+            # they close between each other; every tine tapers to a point.
+            for s2 in (-1.0, 1.0):
+                b.box(wrist[0] + s2 * 13.0 - 1.5, wrist[0] + s2 * 13.0 + 1.5, wrist[1] - 9.0, wrist[1] + 9.0, wrist[2] - 9.0, wrist[2] + 9.0, "steel.panel", "cheek")
+            b.prism("x", wrist[0], wrist[1] + 6.0, wrist[2] - 6.0, 2.2, 30.0, "steel.dark", 6, "pin")
+            for sx in (-9.0, 9.0):
+                _tine(b, wrist, sx, -10.0, -105.0, 38.0, 8.0, 5.5, "steel.dark", "finger")
+            for sx in (-3.0, 3.0):
+                _tine(b, wrist, sx, -100.0, 95.0, 30.0, 7.0, 4.5, "steel.dark", "tine")
         else:
             # A weapons mount on the wrist: receiver block and a six-sided barrel, the
             # hardpoint on it.
@@ -154,22 +159,47 @@ def _fuse(w, top, bottom):
 
 
 def _wing(b, root, tip, material, label):
-    """A wing as a loft between two four-point sections given in full 3D."""
+    """A wing as a loft between two sections given in full 3D."""
+    return _rings(b, [root, tip], material, label)
+
+
+def _rings(b, rings, material, label):
+    """A loft through any number of sections given as 3D point rings, capped at both ends."""
     bm = bmesh.new()
-    r = [bm.verts.new(p) for p in root]
-    t = [bm.verts.new(p) for p in tip]
-    n = len(r)
-    for i in range(n):
-        try:
-            bm.faces.new([r[i], r[(i + 1) % n], t[(i + 1) % n], t[i]])
-        except ValueError:
-            pass
-    for ring in (r, t):
+    vs = [[bm.verts.new(p) for p in ring] for ring in rings]
+    n = len(vs[0])
+    for r0, r1 in zip(vs, vs[1:]):
+        for i in range(n):
+            try:
+                bm.faces.new([r0[i], r0[(i + 1) % n], r1[(i + 1) % n], r1[i]])
+            except ValueError:
+                pass
+    for ring in (vs[0], vs[-1]):
         try:
             bm.faces.new(ring)
         except ValueError:
             pass
     return b._finish(bm, material, label)
+
+
+def _tine(b, origin, side_x, pitch0, curve, length, w0, t0, material, label, n=5):
+    """A curved, tapering tine: a rectangular section swept along an arc in the y-z plane
+    from `origin` (offset `side_x`), starting at `pitch0` degrees and turning through
+    `curve` degrees over `length`, narrowing to a point."""
+    rings = []
+    pos = Vector(origin) + Vector((side_x, 0.0, 0.0))
+    for k in range(n + 1):
+        f = k / float(n)
+        th = math.radians(pitch0 + curve * f)
+        nrm = Vector((0.0, -math.sin(th), math.cos(th)))
+        w = w0 * (1.0 - 0.82 * f) + 0.4
+        t = t0 * (1.0 - 0.9 * f) + 0.3
+        rings.append([pos + Vector((-w / 2, 0, 0)) - nrm * (t / 2), pos + Vector((w / 2, 0, 0)) - nrm * (t / 2),
+                      pos + Vector((w / 2, 0, 0)) + nrm * (t / 2), pos + Vector((-w / 2, 0, 0)) + nrm * (t / 2)])
+        if k < n:
+            th2 = math.radians(pitch0 + curve * (k + 0.5) / n)
+            pos = pos + Vector((0.0, math.cos(th2), math.sin(th2))) * (length / n)
+    return _rings(b, rings, material, label)
 
 
 # ---------------------------------------------------------------- structures (the Arsenal)
