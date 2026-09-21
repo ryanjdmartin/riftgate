@@ -232,8 +232,11 @@ def wall(b):
     for f in (-1.0, 1.0):
         b.box(-W, W, f * (D + 0.2), f * (D + 1.4), 21.0, 24.5, "amber.strip", "light_strip")
         b.loft([(f * D, rect(0.0, 10.0, 6.0, H - 6.0)), (f * (D + 12.0), rect(0.0, 10.0, 6.0, 12.0))], "steel.dark", "buttress")
-    _blades(b, -W + 1.0, W - 1.0, D - 2.0, H)
-    _blades(b, -W + 1.0, W - 1.0, -D + 2.0, H)
+    _blades(b, -W + 4.0, W - 4.0, D - 2.0, H, step=26.0, h=20.0, w=4.0)
+    _blades(b, -W + 4.0, W - 4.0, -D + 2.0, H, step=26.0, h=20.0, w=4.0)
+    for f in (-1.0, 1.0):
+        for lx in (-20.0, 0.0, 20.0):
+            b.box(lx - 1.5, lx + 1.5, f * (D + 0.3), f * (D + 1.6), H - 5.0, H - 2.5, "amber.light", "lamp_row")
 
 
 wall.maker = "arsenal"
@@ -248,13 +251,23 @@ def gate(b):
     W, D, H = 92.0, 16.0, 70.0
     b.box(-W, W, -D - 8.0, D + 8.0, 0.0, 6.0, "steel.dark", "plinth")
     b.box(-W, W, -D, D, 6.0, H, "steel.panel", "wall")
-    GW, GH = 58.0, H + 22.0
+    GW, GH = 66.0, H + 22.0
     b.box(-GW, GW, -D - 3.0, D + 3.0, 6.0, GH, "steel.panel", "gatehouse")
-    MW, MH = 22.0, 64.0
+    MW, MH = 30.0, 64.0
     for f in (-1.0, 1.0):
         b.box(-W, -GW, f * (D + 0.2), f * (D + 1.4), 21.0, 24.5, "amber.strip", "light_strip")
         b.box(GW, W, f * (D + 0.2), f * (D + 1.4), 21.0, 24.5, "amber.strip", "light_strip")
+        # A row of lamps along the wall top and the gatehouse, the projector's own light.
+        for lx in range(-84, 85, 12):
+            if abs(lx) > GW + 4.0 or abs(lx) < GW - 4.0:
+                b.box(lx - 1.5, lx + 1.5, f * (D + 0.3), f * (D + 1.6), (GH if abs(lx) < GW else H) - 5.0, (GH if abs(lx) < GW else H) - 2.5, "amber.light", "lamp_row")
     b.box(-MW, MW, -D - 4.0, D + 4.0, 6.0, MH, "bore.dark", "mouth")
+    # The door: two panels that part in the middle, their seam a light, each with a
+    # horizontal groove line, the mechanism of a thing that opens.
+    for s in (-1.0, 1.0):
+        b.box(min(s * MW, 0.0) + 0.6, max(s * MW, 0.0) - 0.6, -D - 2.0, -D - 1.0, 7.0, MH - 4.0, "steel.plate", "door_panel")
+        b.box(min(s * MW, 0.0) + 2.0, max(s * MW, 0.0) - 2.0, -D - 2.6, -D - 2.0, 30.0, 32.0, "steel.dark", "door_groove")
+    b.box(-0.9, 0.9, -D - 2.8, -D - 2.0, 7.0, MH - 4.0, "amber.strip", "door_seam")
     for rw, rh, rd in ((MW + 5.0, MH + 8.0, 4.5), (MW + 10.0, MH + 16.0, 6.0)):
         for f in (-1.0, 1.0):
             y0, y1 = f * (D + 3.0), f * (D + 3.0 + rd)
@@ -269,25 +282,28 @@ def gate(b):
         for f in (-1.0, 1.0):
             b.box(s * 30.0, s * 34.0, f * (D + 3.0), f * (D + 5.0), 30.0, 36.0, "amber.light", "lamp")
     b.box(-GW - 2.0, GW + 2.0, -D - 5.0, D + 5.0, GH - 6.0, GH, "steel.dark", "lintel")
-    _blades(b, -GW + 2.0, GW - 2.0, D - 1.0, GH, step=10.0, h=22.0)
-    _blades(b, -GW + 2.0, GW - 2.0, -D + 1.0, GH, step=10.0, h=22.0)
+    # Fewer, bigger vanes: emitters, not crenellations.
+    _blades(b, -GW + 6.0, GW - 6.0, D - 1.0, GH, step=26.0, h=24.0, w=4.0)
+    _blades(b, -GW + 6.0, GW - 6.0, -D + 1.0, GH, step=26.0, h=24.0, w=4.0)
     TR, TT = 20.0, 112.0
     for s in (-1.0, 1.0):
-        x = s * 74.0
+        x = s * 76.0
         b.prism("z", x, 0.0, (6.0 + TT) / 2.0, TR, TT - 6.0, "steel.panel", 6, "tower", phase=math.pi / 6)
-        for k in range(6):
-            a = k * math.pi / 3.0
+        # Bands and a lit collar make it a tower, not a texture: machinery in rings.
+        for bz in (30.0, 62.0, 94.0):
+            b.prism("z", x, 0.0, bz, TR + 1.5, 4.0, "steel.dark", 6, "tower_band", phase=math.pi / 6)
+        b.prism("z", x, 0.0, 80.0, TR + 1.2, 2.0, "amber.strip", 6, "tower_collar", phase=math.pi / 6)
+        for k in range(3):
+            a = k * 2.0 * math.pi / 3.0 + math.pi / 2.0
             fx, fy = TR * math.cos(a), TR * math.sin(a)
-            b.box(x + fx - 2.0, x + fx + 2.0, fy - 2.0, fy + 2.0, 12.0, TT + 10.0, "steel.dark", "fin")
+            b.box(x + fx - 2.5, x + fx + 2.5, fy - 2.5, fy + 2.5, 12.0, TT + 10.0, "steel.dark", "fin")
         b.prism("z", x, 0.0, TT + 1.5, TR + 2.0, 3.0, "steel.dark", 6, "cap", phase=math.pi / 6)
         _gun(b, x, 0.0, TT + 3.0)
         for bx in (x - 30.0, x + 30.0):
             if abs(bx) < W - 4.0 and abs(bx) > GW + 2.0:
                 for f in (-1.0, 1.0):
                     b.loft([(f * D, rect(bx, 10.0, 6.0, H - 6.0)), (f * (D + 14.0), rect(bx, 10.0, 6.0, 12.0))], "steel.dark", "bastion")
-    for side in (1.0, -1.0):
-        _blades(b, -W + 2.0, -88.0, side * (D - 2.0), H)
-        _blades(b, 88.0, W - 2.0, side * (D - 2.0), H)
+
 
 
 gate.maker = "arsenal"

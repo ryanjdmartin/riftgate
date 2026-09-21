@@ -21,9 +21,11 @@ uniform int source_count = 0;
 uniform float cell = 4.0;                    // the dither's pixel step, on screen
 uniform float levels = 5.0;                  // posterize steps per channel on the flat side
 uniform float focus_y = 0.0;                 // map-pixel y of the screen's middle
-uniform float focus_band = 220.0;            // the sharp zone reaches this far north of the middle, in map pixels
-uniform float focus_falloff = 260.0;         // map pixels over which the blur reaches its maximum
+uniform float focus_band = 330.0;            // the sharp zone reaches this far north of the middle, in map pixels
+uniform float focus_falloff = 180.0;         // map pixels over which the blur reaches its maximum
 uniform float blur_max = 2.4;                // the blur's tap spacing at its maximum, in screen pixels
+uniform vec2 play_x = vec2(0.0, 1.0);        // the playable field's left and right, in map pixels
+uniform float edge_fade = 70.0;              // map pixels past the field over which the scenery fades out
 
 float bleed_at(vec2 px) {
 	float m = 1.0 - clamp((px.y - grad.x) / max(1.0, grad.y - grad.x), 0.0, 1.0);
@@ -45,18 +47,35 @@ float bayer(ivec2 c) {
 	return (m2lo * 4.0 + m2hi + 0.5) / 16.0;
 }
 
-vec4 scene_at(sampler2D scene_tex, vec2 uv, vec2 px) {
-	// Only the far ground softens, north of the focus; the gate end stays sharp (Ryan, 21 September).
+// Only the far ground softens, north of the focus; the gate end stays sharp (Ryan, 21
+// September). Both worlds soften alike: all or none.
+float blur_radius(vec2 px) {
 	float f = clamp((focus_y - focus_band - px.y) / focus_falloff, 0.0, 1.0);
-	float rad = f * blur_max;
+	return f * blur_max;
+}
+
+// Two helpers, since a built-in and a uniform sampler cannot share one function.
+vec4 blurred_scene(sampler2D scene_tex, vec2 uv, vec2 texel, float rad) {
 	if (rad < 0.05) {
 		return texture(scene_tex, uv);
 	}
-	vec2 ts = rad / view_size;
 	vec4 acc = vec4(0.0);
 	for (int i = -2; i <= 2; i++) {
 		for (int j = -2; j <= 2; j++) {
-			acc += texture(scene_tex, uv + vec2(float(i), float(j)) * ts);
+			acc += texture(scene_tex, uv + vec2(float(i), float(j)) * texel * rad);
+		}
+	}
+	return acc / 25.0;
+}
+
+vec4 blurred_other(vec2 uv, vec2 texel, float rad) {
+	if (rad < 0.05) {
+		return texture(painted, uv);
+	}
+	vec4 acc = vec4(0.0);
+	for (int i = -2; i <= 2; i++) {
+		for (int j = -2; j <= 2; j++) {
+			acc += texture(painted, uv + vec2(float(i), float(j)) * texel * rad);
 		}
 	}
 	return acc / 25.0;
@@ -68,15 +87,18 @@ void fragment() {
 	vec2 q = ((vec2(c) + 0.5) * cell - scroll) / zoom;         // the dither cell's map pixel
 	float k = smoothstep(0.42, 0.58, bleed_at(q));
 	vec2 px = (spx - scroll) / zoom;                           // this fragment's map pixel
-	vec4 scene = scene_at(TEXTURE, UV, px);
-	vec4 other = texture(painted, px / map_size);
+	float rad = blur_radius(px);
+	vec4 scene = blurred_scene(TEXTURE, UV, 1.0 / view_size, rad);
+	vec4 other = blurred_other(px / map_size, 1.0 / (map_size * zoom), rad);
 	other.rgb = floor(other.rgb * levels + 0.5) / levels;
-	// The corrupted side is input the display cannot hold: bands of it tear and flicker.
+	// The corrupted side is input the display cannot hold: now and then a band of it tears.
 	float band = floor(px.y / 6.0);
-	float tick = floor(TIME * 18.0);
-	float flick = step(0.94, fract(sin(band * 12.9898 + tick * 7.31) * 43758.5453));
-	other.rgb *= 1.0 - 0.4 * flick;
+	float tick = floor(TIME * 14.0);
+	float flick = step(0.985, fract(sin(band * 12.9898 + tick * 7.31) * 43758.5453));
+	other.rgb *= 1.0 - 0.25 * flick;
 	COLOR = (k > bayer(c)) ? other : scene;
-	// The whole battlefield is a projection: scanlines across all of it.
-	COLOR.rgb *= 0.93 + 0.07 * step(1.0, mod(spx.y, 3.0));
+	// The field is a window on a longer battlefield: the scenery past its sides fades out.
+	float side = min(smoothstep(-edge_fade, 0.0, px.x - play_x.x + edge_fade), smoothstep(-edge_fade, 0.0, play_x.y + edge_fade - px.x));
+	COLOR.rgb *= side;
+	COLOR.a *= side;
 }

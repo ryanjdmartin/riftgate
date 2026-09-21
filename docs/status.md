@@ -126,7 +126,16 @@ ground map is gone and `PaintedMap` is the overworld only. Roads are laid by
 (water bodies), roughness (gravel belts) and a ridge (crags along lines), ruins in two or
 three clusters; a crag keeps the ground under it in `crag_base` (crag-water, crag-ruin) and
 the 3D map shows that tile under the spikes; the two rows above the apron are always open
-ground. Height is a relief field (`BattleMap.elevation`, steps of `Map3D.STEP`, water
+ground. Water is fordable by everyone at a cost by trait (tracks 3, walker 2, hover 1;
+hover chokes on rubble at 3): `BattleMap.move_cost` is where each way of moving gets its
+own worst ground. `BattleMap.margin` holds `MARGIN_COLS` columns of scenery either side
+of the field, laid from the same noise, never played on; `Map3D` builds them, the wall
+runs across them, `bleed.gdshader` fades them out past `play_x` so the field is a window
+on a longer battlefield. Crags take their ground's idiom (`Map3D._crag`: rock spikes,
+broken towers on ruins, mesas on wasteland); scrub carries dead trees. The readout has its
+own strip (`BattleScreen.INFO_H`) between the map and the log. Scanlines are drawn on top
+in the map view; the flicker is rare. `RIFTGATE_MAP_WIRE=1` is a trial of terrain as pure
+wireframe. Height is a relief field (`BattleMap.elevation`, steps of `Map3D.STEP`, water
 sunk), not terrain type; crags sit at their ground's level. The holographic display
 (decided 21 September): the grid is emissive lines in the scene (`_grid_mesh`), scanlines
 and the corrupted side's flicker are in `bleed.gdshader`, the gate and walls carry the ink

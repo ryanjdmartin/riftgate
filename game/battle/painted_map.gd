@@ -35,12 +35,14 @@ func _draw() -> void:
 	if field == null:
 		return
 	var map := field.map
-	for h in map.all_hexes():
+	var hexes: Array = map.all_hexes().duplicate()
+	hexes.append_array(map.margin.keys())
+	for h in hexes:
 		var c: Vector2 = origin + Hex.to_pixel(h, hex_px)
 		# Opaque under the whole hex, transparent outside, so the bleed's dither never
 		# shows off the map.
 		draw_colored_polygon(Hex.corners(c, hex_px), Palette.BG)
-		_draw_other(c, map.terrain[h], h.x * 131 + h.y * 7919)
+		_draw_other(c, map.terrain_of(h), h.x * 131 + h.y * 7919)
 
 
 ## The overworld: a flat bright fill and a few chunky marks, drawn at a coarse scale.

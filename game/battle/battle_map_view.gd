@@ -104,6 +104,9 @@ func set_field(f: Battlefield) -> void:
 		mat.set_shader_parameter("painted", _painted.get_texture())
 		mat.set_shader_parameter("map_size", map_size)
 		mat.set_shader_parameter("view_size", size)
+		var hex_w := sqrt(3.0) * HEX_SIZE
+		var left := _origin.x - hex_w * 0.5
+		mat.set_shader_parameter("play_x", Vector2(left, left + hex_w * (field.map.width + 0.5)))
 		_composite.material = mat
 		_mix.add_child(_composite)
 	queue_redraw()
@@ -332,6 +335,14 @@ func _draw() -> void:
 
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)   # the edge tags live in screen space
 	_draw_tags()
+	# The whole battlefield is a projection: scanlines over everything, foes and overlays too.
+	var lines := PackedVector2Array()
+	var y := 0.0
+	while y < size.y:
+		lines.append(Vector2(0.0, y))
+		lines.append(Vector2(size.x, y))
+		y += 3.0
+	draw_multiline(lines, Color(0.0, 0.0, 0.0, 0.18), 1.0)
 
 
 ## Off-screen squads get a portrait at the edge nearest them: the source of the intent line.

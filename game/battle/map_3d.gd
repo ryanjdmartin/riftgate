@@ -155,12 +155,15 @@ func lift(h: Vector2i) -> float:
 	return _lift.get(h, 0.0)
 
 
-## A hex's ground height in model units, from the map's relief.
+## A hex's ground height in model units, from the map's relief (margin hexes included).
 func _height_of(h: Vector2i) -> float:
-	if not field.map.has(h):
-		return 0.0
 	var e: int = field.map.elevation.get(h, 0)
 	return WATER_DROP if e < 0 else float(e) * STEP
+
+
+## RIFTGATE_MAP_WIRE=1: the terrain as the display's wireframe, a trial (Ryan, 21 September).
+static func wire_mode() -> bool:
+	return OS.get_environment("RIFTGATE_MAP_WIRE") == "1"
 
 
 ## Flat colour: unshaded so the palette stays exact, two-sided so winding never matters.
@@ -279,8 +282,12 @@ func _build_ground() -> void:
 	var map := field.map
 	var rng := RandomNumberGenerator.new()
 	var corners := Hex.corners(Vector2.ZERO, hex_px)
-	for h in map.all_hexes():
-		var t: int = map.terrain[h]
+	var hexes: Array = map.all_hexes().duplicate()
+	hexes.append_array(map.margin.keys())
+	var wire := wire_mode()
+	for h in hexes:
+		var t: int = map.terrain_of(h)
+		var in_field: bool = map.has(h)
 		var at := _hex_world(h)
 		var hgt := _height_of(h)
 		# Which edges need a wall: those facing a neighbour at another height, or none.
@@ -291,7 +298,7 @@ func _build_ground() -> void:
 			var across := here + mid * 2.0
 			var other: float = -999.0
 			for nb in Hex.neighbors(h):
-				if map.has(nb) and Hex.to_pixel(nb, hex_px).distance_to(across) < hex_px * 0.5:
+				if (map.has(nb) or map.margin.has(nb)) and Hex.to_pixel(nb, hex_px).distance_to(across) < hex_px * 0.5:
 					other = _height_of(nb)
 			sides.append(absf(other - hgt) > 0.01)
 		var r := MeshInstance3D.new()
@@ -310,11 +317,20 @@ func _build_ground() -> void:
 		var ground_t: int = map.crag_base.get(h, t) if t == BattleMap.Terrain.MOUNTAIN else t
 		var mi := MeshInstance3D.new()
 		mi.mesh = _column_mesh(hgt, sides)
-		mi.set_surface_override_material(0, _terrain_material(TILE[ground_t], 1.0 if ground_t == BattleMap.Terrain.WATER else 0.0))
-		if mi.mesh.get_surface_count() > 1:
-			mi.set_surface_override_material(1, rock)
+		if wire:
+			mi.set_surface_override_material(0, _wire_fill())
+			if mi.mesh.get_surface_count() > 1:
+				mi.set_surface_override_material(1, _wire_fill())
+			var edges := MeshInstance3D.new()
+			edges.mesh = _column_edges(hgt, sides)
+			edges.material_override = _grid_material()
+			col.add_child(edges)
+		else:
+			mi.set_surface_override_material(0, _terrain_material(TILE[ground_t], 1.0 if ground_t == BattleMap.Terrain.WATER else 0.0))
+			if mi.mesh.get_surface_count() > 1:
+				mi.set_surface_override_material(1, rock)
 		col.add_child(mi)
-		if not (map.gate_hexes.has(h) or map.wall_hexes.has(h)):
+		if in_field and not (map.gate_hexes.has(h) or map.wall_hexes.has(h)):
 			# The grid is the display's own light, drawn on the ground in the scene so a
 			# raised hex hides the lines behind it and the bleed takes them with the column.
 			var grid := MeshInstance3D.new()
@@ -323,27 +339,11 @@ func _build_ground() -> void:
 			grid.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 			col.add_child(grid)
 		rng.seed = h.x * 131 + h.y * 7919
+		if wire:
+			continue
 		match t:
 			BattleMap.Terrain.MOUNTAIN:
-				# The crag: a cluster of narrow leaning rock spikes, tall enough that nobody
-				# but a flyer gets over it.
-				# Filling the tile and overflowing its height, so it reads as a thing you fly
-				# over, not a pile.
-				var rock_dark := _terrain_material("rock")
-				for k in range(6):
-					var spike := CylinderMesh.new()
-					spike.top_radius = 0.8
-					spike.bottom_radius = rng.randf_range(9.0, 14.0)
-					spike.height = rng.randf_range(40.0, 56.0) if k == 0 else rng.randf_range(22.0, 40.0)
-					spike.radial_segments = 4
-					var pk := MeshInstance3D.new()
-					pk.mesh = spike
-					pk.material_override = rock_dark
-					var a := k * TAU / 5.0 + rng.randf_range(-0.4, 0.4)
-					var dist := 0.0 if k == 0 else rng.randf_range(14.0, 22.0)
-					pk.position = Vector3(cos(a) * dist, hgt + spike.height * 0.5 - 1.0, sin(a) * dist)
-					pk.rotation = Vector3(rng.randf_range(-0.18, 0.18), rng.randf_range(0, TAU), rng.randf_range(-0.18, 0.18))
-					col.add_child(pk)
+				_crag(col, ground_t, hgt, rng)
 			BattleMap.Terrain.RUINS:
 				# Broken blocks and a couple of standing wall stubs.
 				var rubble := _terrain_material("rubble")
@@ -366,15 +366,124 @@ func _build_ground() -> void:
 					wi.rotation.y = rng.randf_range(0, TAU)
 					col.add_child(wi)
 			BattleMap.Terrain.ROUGH:
-				for k in range(4):
+				# Wasteland: a few dead trees, the parallel of the other world's forest.
+				for k in range(rng.randi_range(2, 4)):
+					_dead_tree(col, Vector3(rng.randf_range(-18, 18), hgt, rng.randf_range(-14, 14)), rng)
+
+
+## The blocking crag on a tile, in the ground's own idiom: rock spikes on dirt and water,
+## broken towers on ruins, mesas on wasteland (Ryan, 21 September). All overflow the tile's
+## height so they read as things you fly over.
+func _crag(col: Node3D, ground_t: int, hgt: float, rng: RandomNumberGenerator) -> void:
+	match ground_t:
+		BattleMap.Terrain.RUINS:
+			# Dead skyscrapers: tall thin shells, tops broken to steps.
+			var rubble := _terrain_material("rubble")
+			for k in range(3):
+				var w := rng.randf_range(9.0, 14.0)
+				var tall := rng.randf_range(44.0, 70.0) if k == 0 else rng.randf_range(26.0, 48.0)
+				var ox := 0.0 if k == 0 else rng.randf_range(-16.0, 16.0)
+				var oz := 0.0 if k == 0 else rng.randf_range(-12.0, 12.0)
+				for step in range(3):
 					var b := BoxMesh.new()
-					b.size = Vector3(rng.randf_range(3, 6), rng.randf_range(2, 5), rng.randf_range(3, 6))
+					var frac := 1.0 - 0.28 * step
+					b.size = Vector3(w * frac, tall / 3.0, w * frac * rng.randf_range(0.7, 1.0))
 					var bi := MeshInstance3D.new()
 					bi.mesh = b
-					bi.material_override = _lit(Color("3a3834"))
-					bi.position = Vector3(rng.randf_range(-18, 18), hgt + b.size.y * 0.5, rng.randf_range(-14, 14))
-					bi.rotation.y = rng.randf_range(0, TAU)
+					bi.material_override = rubble
+					bi.position = Vector3(ox + rng.randf_range(-1.5, 1.5), hgt + tall / 6.0 + step * tall / 3.0, oz + rng.randf_range(-1.5, 1.5))
 					col.add_child(bi)
+		BattleMap.Terrain.ROUGH:
+			# Mesas: flat-topped blocks stacked and offset, a badland.
+			var rock := _terrain_material("rock")
+			for k in range(3):
+				var tall := rng.randf_range(30.0, 46.0) if k == 0 else rng.randf_range(18.0, 30.0)
+				var ox := 0.0 if k == 0 else rng.randf_range(-16.0, 16.0)
+				var oz := 0.0 if k == 0 else rng.randf_range(-12.0, 12.0)
+				for step in range(2):
+					var slab := CylinderMesh.new()
+					slab.radial_segments = 6
+					slab.top_radius = rng.randf_range(10.0, 15.0) * (0.8 if step == 1 else 1.0)
+					slab.bottom_radius = slab.top_radius * 1.15
+					slab.height = tall * (0.6 if step == 0 else 0.4)
+					var mi := MeshInstance3D.new()
+					mi.mesh = slab
+					mi.material_override = rock
+					mi.position = Vector3(ox, hgt + slab.height * 0.5 + (tall * 0.6 if step == 1 else 0.0), oz)
+					mi.rotation.y = rng.randf_range(0, TAU)
+					col.add_child(mi)
+		_:
+			# Rock spikes, leaning, filling the tile.
+			var rock_dark := _terrain_material("rock")
+			for k in range(6):
+				var spike := CylinderMesh.new()
+				spike.top_radius = 0.8
+				spike.bottom_radius = rng.randf_range(9.0, 14.0)
+				spike.height = rng.randf_range(40.0, 56.0) if k == 0 else rng.randf_range(22.0, 40.0)
+				spike.radial_segments = 4
+				var pk := MeshInstance3D.new()
+				pk.mesh = spike
+				pk.material_override = rock_dark
+				var a := k * TAU / 5.0 + rng.randf_range(-0.4, 0.4)
+				var dist := 0.0 if k == 0 else rng.randf_range(14.0, 22.0)
+				pk.position = Vector3(cos(a) * dist, hgt + spike.height * 0.5 - 1.0, sin(a) * dist)
+				pk.rotation = Vector3(rng.randf_range(-0.18, 0.18), rng.randf_range(0, TAU), rng.randf_range(-0.18, 0.18))
+				col.add_child(pk)
+
+
+## A dead tree: a bare trunk and a couple of stub branches.
+func _dead_tree(col: Node3D, at: Vector3, rng: RandomNumberGenerator) -> void:
+	var bark := _lit(Color("2e2a26"))
+	var tall := rng.randf_range(10.0, 18.0)
+	var trunk := CylinderMesh.new()
+	trunk.top_radius = 0.5
+	trunk.bottom_radius = 1.3
+	trunk.height = tall
+	trunk.radial_segments = 5
+	var tm := MeshInstance3D.new()
+	tm.mesh = trunk
+	tm.material_override = bark
+	tm.position = at + Vector3(0.0, tall * 0.5, 0.0)
+	tm.rotation.z = rng.randf_range(-0.12, 0.12)
+	col.add_child(tm)
+	for k in range(rng.randi_range(1, 3)):
+		var branch := BoxMesh.new()
+		branch.size = Vector3(rng.randf_range(4.0, 8.0), 0.8, 0.8)
+		var bm := MeshInstance3D.new()
+		bm.mesh = branch
+		bm.material_override = bark
+		bm.position = at + Vector3(branch.size.x * 0.4, tall * rng.randf_range(0.55, 0.9), 0.0)
+		bm.rotation = Vector3(0.0, rng.randf_range(0, TAU), rng.randf_range(0.3, 0.7))
+		col.add_child(bm)
+
+
+var _wire_mat: StandardMaterial3D = null
+
+## The wireframe trial's ground: near-black glass, so only the lines and the units show.
+func _wire_fill() -> StandardMaterial3D:
+	if _wire_mat == null:
+		_wire_mat = StandardMaterial3D.new()
+		_wire_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		_wire_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+		_wire_mat.albedo_color = Color(0.02, 0.05, 0.03, 1.0)
+	return _wire_mat
+
+
+## A column's vertical edges as lines, for the wireframe trial.
+func _column_edges(h: float, sides: Array) -> ArrayMesh:
+	var corners := Hex.corners(Vector2.ZERO, hex_px - 0.75)
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_LINES)
+	var n := corners.size()
+	for i in range(n):
+		if sides[i] or sides[(i - 1 + n) % n]:
+			st.add_vertex(_world(corners[i], 0.0))
+			st.add_vertex(_world(corners[i], h))
+	if absf(h) > 0.01:
+		for i in range(n):
+			st.add_vertex(_world(corners[i], 0.0))
+			st.add_vertex(_world(corners[(i + 1) % n], 0.0))
+	return st.commit()
 
 
 func _model(id: String, maker: String, paint: Dictionary = {}) -> Node3D:
@@ -394,9 +503,16 @@ func _build_structures() -> void:
 		add_child(g)
 		_structs.append([map.gate, g])
 	if MechView3D.has_model("wall"):
+		# The wall runs the whole width of the view, margin included: the field is a window
+		# on a longer line.
+		var bottom: Array = []
 		for w in map.wall_hexes:
-			if Hex.axial_to_offset(w).y != map.height - 1:
-				continue   # the structures are GATE_ROWS deep; the models stand on the bottom row only
+			if Hex.axial_to_offset(w).y == map.height - 1:
+				bottom.append(w)
+		for mh in map.margin.keys():
+			if Hex.axial_to_offset(mh).y == map.height - 1:
+				bottom.append(mh)
+		for w in bottom:
 			var m := _model("wall", "arsenal")
 			_marker(m)
 			m.position = _hex_world(w)

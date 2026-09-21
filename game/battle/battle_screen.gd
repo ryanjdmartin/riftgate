@@ -22,6 +22,7 @@ const W := 720.0
 const H := 1280.0
 const MAP_Y := 56.0
 const LOG_Y := 1076.0
+const INFO_H := 112.0   # the readout's own strip between the map and the log
 const LOG_H := 104.0
 const BOTTOM_Y := 1196.0
 const BOTTOM_BTN := Vector2(210, 60)
@@ -88,7 +89,7 @@ func _build() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 	var bg := HudBackdrop.new()
-	bg.rules = [MAP_Y - 6.0, LOG_Y - 10.0, BOTTOM_Y - 16.0]
+	bg.rules = [MAP_Y - 6.0, LOG_Y - 10.0 - INFO_H, LOG_Y - 10.0, BOTTOM_Y - 16.0]
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
 
@@ -98,7 +99,7 @@ func _build() -> void:
 	_place(_sub_label, Vector2(326, 20), Vector2(380, 20))
 
 	_map = BattleMapView.new()
-	_place(_map, Vector2(0, MAP_Y), Vector2(W, LOG_Y - 10.0 - MAP_Y))
+	_place(_map, Vector2(0, MAP_Y), Vector2(W, LOG_Y - 10.0 - INFO_H - MAP_Y))
 	_map.set_field(battle.field)
 	_map.hex_tapped.connect(_on_hex_tapped)
 	_map.hex_double_tapped.connect(_on_hex_double_tapped)
@@ -296,8 +297,7 @@ func _show_details(text: String, _near: Vector2) -> void:
 	_details_label.text = text
 	_details.visible = true
 	_details.reset_size()
-	var height := maxf(_details.size.y, 80.0)
-	_details.position = Vector2(12.0, LOG_Y - 18.0 - height)
+	_details.position = Vector2(12.0, LOG_Y - 10.0 - INFO_H + 6.0)
 
 
 # ---------------------------------------------------------------- the loop

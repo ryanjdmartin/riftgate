@@ -29,6 +29,8 @@ var rift_hexes: Array[Vector2i] = []
 var wall_hexes: Array[Vector2i] = []   # the rest of the bottom GATE_ROWS rows: indestructible, nobody stands there
 var crag_base: Dictionary = {}         # crag hex -> the ground under the rock (water, ruins, ...): flavour only
 var elevation: Dictionary = {}         # hex -> relief step 0..3 (water -1): landscape only, no rule reads it
+var margin: Dictionary = {}            # hex beside the field -> terrain: scenery past the playable edge, never played on
+const MARGIN_COLS := 2
 var map_seed: int = 0
 
 const STRUCTURE_HALF_WIDTH := 1   # gate and rift span centre plus this many hexes each side
@@ -114,12 +116,12 @@ static func generate(w: int, h: int, seed_value: int) -> BattleMap:
 ## clusters, crags along ridge lines (the ground under a crag is kept as its flavour). The
 ## fields are seeded noise, so the same seed is the same map.
 func _lay_landscape(rng: RandomNumberGenerator) -> void:
-	var wet := FastNoiseLite.new()
+	var wet := FastNoiseLite.new()   # slow, so water gathers into a few bodies
 	wet.seed = map_seed
-	wet.frequency = 0.30
+	wet.frequency = 0.17
 	var rough := FastNoiseLite.new()
 	rough.seed = map_seed + 101
-	rough.frequency = 0.34
+	rough.frequency = 0.30
 	var ridge := FastNoiseLite.new()
 	ridge.seed = map_seed + 202
 	ridge.frequency = 0.22
@@ -128,23 +130,38 @@ func _lay_landscape(rng: RandomNumberGenerator) -> void:
 	relief.frequency = 0.16
 	var centres: Array[Vector2i] = []
 	var keys := terrain.keys()
-	for k in range(rng.randi_range(2, 3)):
+	for k in range(rng.randi_range(2, 4)):
 		centres.append(keys[rng.randi_range(0, keys.size() - 1)])
-	for hx in keys:
+	# The field, then the margin columns either side of it: seen past the edge, never played.
+	var all: Array = keys.duplicate()
+	for row in range(height):
+		for col in range(-MARGIN_COLS, 0):
+			all.append(Hex.offset_to_axial(col, row))
+		for col in range(width, width + MARGIN_COLS):
+			all.append(Hex.offset_to_axial(col, row))
+	for hx in all:
 		var p := Hex.to_pixel(hx, 1.0)
 		var t := Terrain.PLAIN
-		if wet.get_noise_2d(p.x, p.y) < -0.22:
+		if wet.get_noise_2d(p.x, p.y) < -0.30:
 			t = Terrain.WATER
-		elif rough.get_noise_2d(p.x, p.y) > 0.40:
+		elif rough.get_noise_2d(p.x, p.y) > 0.16:
 			t = Terrain.ROUGH
 		for c in centres:
-			if Hex.distance(hx, c) <= 1 and rng.randf() < 0.75 and t != Terrain.WATER:
-				t = Terrain.RUINS
-		terrain[hx] = t
+			var d := Hex.distance(hx, c)
+			if d <= 2 and rng.randf() < (0.8 if d <= 1 else 0.35) and t != Terrain.WATER:
+				t = Terrain.RUINS   # a dense core and a scatter around it
+		var crag := absf(ridge.get_noise_2d(p.x, p.y)) < 0.075 and rng.randf() < 0.85 and not is_structure(hx)
 		elevation[hx] = -1 if t == Terrain.WATER else clampi(int(floor((relief.get_noise_2d(p.x, p.y) + 0.45) * 3.4)), 0, 3)
-		if absf(ridge.get_noise_2d(p.x, p.y)) < 0.075 and rng.randf() < 0.85 and not is_structure(hx):
-			crag_base[hx] = t
-			terrain[hx] = Terrain.MOUNTAIN
+		if has(hx):
+			terrain[hx] = t
+			if crag:
+				crag_base[hx] = t
+				terrain[hx] = Terrain.MOUNTAIN
+		else:
+			margin[hx] = t
+			if crag:
+				crag_base[hx] = t
+				margin[hx] = Terrain.MOUNTAIN
 
 
 ## A paved road runs north from the gate as a connected path with drift, most of the way
@@ -223,27 +240,39 @@ func all_hexes() -> Array:
 
 
 ## Whether a unit with these traits can enter this terrain at all.
+## Only a crag stops anyone but a flyer. Water is fordable by machines this size (Ryan, 21
+## September): it costs, by how the machine moves.
 static func passable(t: int, traits: Array) -> bool:
 	match t:
 		Terrain.MOUNTAIN:
 			return traits.has("flyer")
-		Terrain.WATER:
-			return traits.has("flyer") or traits.has("hover")
 		_:
 			return true
 
 
-## Movement points spent to enter this terrain.
+## Movement points spent to enter this terrain. Each way of moving has its own worst
+## ground: tracks wade slowly, walkers hate nothing but water, hover skims water and
+## chokes on rubble, flyers ignore it all.
 static func move_cost(t: int, traits: Array) -> int:
 	if traits.has("flyer"):
 		return 1
+	var walker := traits.has("walker")
+	var hover := traits.has("hover")
 	match t:
+		Terrain.WATER:
+			return 1 if hover else (2 if walker else 3)
 		Terrain.ROUGH:
-			return 1 if traits.has("walker") else 2
+			return 1 if walker else 2
 		Terrain.RUINS:
-			return 1 if traits.has("walker") else 2
+			return 1 if walker else (3 if hover else 2)
 		_:
 			return 1
+
+
+## The ground of a hex on or beside the field: the margin columns exist to be seen, not
+## played on, and `has` stays false for them.
+func terrain_of(h: Vector2i) -> int:
+	return terrain.get(h, margin.get(h, Terrain.PLAIN))
 
 
 ## Cheapest path from `from` to `to` for a unit with `traits`, as the hexes after `from`.

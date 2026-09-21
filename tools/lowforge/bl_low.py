@@ -340,26 +340,26 @@ def terrain_tiles(out_dir, seed=11):
         scrub[y:y + h, x:x + w, :] = np.array([0.20, 0.30, 0.16], np.float32) * rng.uniform(0.8, 1.15)
         scrub[y:y + 1, x:x + w, :] = np.array([0.30, 0.42, 0.22], np.float32)
     tiles["scrub"] = specks(scrub, 20, 2, 0.8, 1.15)
-    rubble = base((0.42, 0.43, 0.45), 0.03)
+    rubble = base((0.27, 0.28, 0.30), 0.03)
     for _ in range(9):
         y, x = rng.integers(2, TILE - 12, 2)
         w, h = rng.integers(5, 12, 2)
         rubble[y:y + h, x:x + w, :] *= 0.72
-        rubble[y:y + 2, x:x + w, :] *= 1.55
+        rubble[y:y + 2, x:x + w, :] *= 1.45
     tiles["rubble"] = rubble
-    # Old paving: dark, worn, seams faint, cracks strong.
-    concrete = base((0.34, 0.35, 0.34), 0.02, 0.015)
-    concrete[0:2, :, :] *= 0.7
-    concrete[:, 0:2, :] *= 0.7
-    concrete[31:33, :, :] *= 0.8
-    concrete[:, 31:33, :] *= 0.8
-    for _ in range(3):
-        y, x = rng.integers(4, TILE - 4, 2)
-        for _ in range(14):
-            concrete[y % TILE, x % TILE, :] *= 0.6
-            y += rng.integers(-1, 2)
-            x += rng.integers(0, 2)
-    tiles["concrete"] = specks(concrete, 12, 3, 0.85, 0.95)
+    # A road of the future: near-black deck plate with faint seams, a worn pale guide line
+    # and a row of guide lamps, most of them dead (Ryan, 21 September).
+    concrete = base((0.11, 0.12, 0.13), 0.01, 0.008)
+    concrete[0:1, :, :] *= 1.6
+    concrete[:, 0:1, :] *= 1.6
+    concrete[31:32, :, :] *= 1.4
+    concrete[:, 31:32, :] *= 1.4
+    concrete[30:32, :, :] = np.array([0.30, 0.32, 0.30], np.float32)
+    for x in range(4, TILE, 16):
+        lit = rng.random() < 0.35
+        concrete[14:17, x:x + 3, :] = np.array([1.0, 0.75, 0.30], np.float32) if lit else np.array([0.20, 0.16, 0.10], np.float32)
+        concrete[46:49, x + 8:x + 11, :] = np.array([1.0, 0.75, 0.30], np.float32) if rng.random() < 0.35 else np.array([0.20, 0.16, 0.10], np.float32)
+    tiles["concrete"] = concrete
     water = base((0.13, 0.24, 0.40), 0.015, 0.03)
     for _ in range(8):
         y, x = rng.integers(0, TILE, 2)

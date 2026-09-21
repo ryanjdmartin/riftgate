@@ -40,11 +40,18 @@ func test_passability() -> void:
 	var T := BattleMap.Terrain
 	assert_false(BattleMap.passable(T.MOUNTAIN, []), "ground cannot cross mountain")
 	assert_true(BattleMap.passable(T.MOUNTAIN, ["flyer"]), "flyer crosses mountain")
-	assert_false(BattleMap.passable(T.WATER, []), "ground cannot cross water")
-	assert_true(BattleMap.passable(T.WATER, ["hover"]), "hover crosses water")
+	assert_true(BattleMap.passable(T.WATER, []), "machines this size ford water")
+	assert_eq(BattleMap.move_cost(T.WATER, []), 3, "tracks wade slowly")
+	assert_eq(BattleMap.move_cost(T.WATER, ["walker"]), 2, "a walker wades")
+	assert_eq(BattleMap.move_cost(T.WATER, ["hover"]), 1, "hover skims water")
+	assert_eq(BattleMap.move_cost(T.RUINS, ["hover"]), 3, "hover chokes on rubble")
 	assert_eq(BattleMap.move_cost(T.ROUGH, []), 2, "rough costs 2")
 	assert_eq(BattleMap.move_cost(T.ROUGH, ["walker"]), 1, "walker ignores rough")
 	assert_eq(BattleMap.move_cost(T.ROUGH, ["flyer"]), 1, "flyer ignores rough")
+	var m := BattleMap.generate(7, 14, 5)
+	assert_true(m.margin.size() > 0, "a generated map has scenery past its edges")
+	for hx in m.margin.keys():
+		assert_false(m.has(hx), "margin hex %s is not part of the field" % str(hx))
 
 
 func test_path_respects_blocked() -> void:
