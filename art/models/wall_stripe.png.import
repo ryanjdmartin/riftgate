@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://chttohyth4xhb"
-path="res://.godot/imported/raptor_bone.png-ee3b2b8ef100db3e76c7d25b87bb13fc.ctex"
+uid="uid://bqu0mokmycire"
+path="res://.godot/imported/wall_stripe.png-2c5305d0ec3715b8cbcc70554ac7ec1b.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "b13f489c18458381b4cddf46f98e0154"
+"md5": "8f1b35fcd442ff49a2e30d6928ff3053"
 }
 
 [deps]
 
-source_file="res://art/models/raptor_bone.png"
-dest_files=["res://.godot/imported/raptor_bone.png-ee3b2b8ef100db3e76c7d25b87bb13fc.ctex"]
+source_file="res://art/models/wall_stripe.png"
+dest_files=["res://.godot/imported/wall_stripe.png-2c5305d0ec3715b8cbcc70554ac7ec1b.ctex"]
 
 [params]
 

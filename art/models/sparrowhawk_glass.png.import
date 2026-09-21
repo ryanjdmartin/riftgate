@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c3s2dtby0x18a"
-path="res://.godot/imported/raptor_engine.png-59849a6ede3b10943c8b8a51316d8172.ctex"
+uid="uid://buqhopmcikxhy"
+path="res://.godot/imported/sparrowhawk_glass.png-b47e9e305939c4e447f176cf9a401902.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "d6d8dc0d9938d6caf0fdfa7959dbf069"
+"md5": "4cffc5b768b5bb874aa2bc560ae1314e"
 }
 
 [deps]
 
-source_file="res://art/models/raptor_engine.png"
-dest_files=["res://.godot/imported/raptor_engine.png-59849a6ede3b10943c8b8a51316d8172.ctex"]
+source_file="res://art/models/sparrowhawk_glass.png"
+dest_files=["res://.godot/imported/sparrowhawk_glass.png-b47e9e305939c4e447f176cf9a401902.ctex"]
 
 [params]
 

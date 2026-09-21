@@ -333,6 +333,7 @@ func _make_unit(u: Unit) -> Node3D:
 	if u.is_player() and not u.is_static():
 		var maker := str(ContentDB.load_default().chassis.get(u.chassis_id, {}).get("maker", "minerva"))
 		var node := _model(MechView3D.model_for(u.chassis_id, "badger"), maker, u.paint)
+		_marker(node)
 		# Mechs are the reconstruction's markers, drawn at marker size: whatever the model's
 		# true size, its footprint is fitted to about one hex.
 		var aabb := _bounds(node)
@@ -341,6 +342,61 @@ func _make_unit(u: Unit) -> Node3D:
 			node.scale = Vector3.ONE * (HEX_WORLD * 2.0 * MARKER_FIT / widest)
 		return node
 	return null   # foes and static units are drawn flat by the map view
+
+
+## On the map a mech is the reconstruction's marker, not the skirmish's textured facets:
+## each part takes its tile's average tone, flat and matte, and the whole gets a dark
+## inverted-hull outline, so it reads at one hex.
+static var _tone_cache: Dictionary = {}
+
+func _marker(node: Node) -> void:
+	for child in node.find_children("*", "MeshInstance3D", true, false):
+		var mi: MeshInstance3D = child
+		if mi.mesh == null:
+			continue
+		for i in range(mi.mesh.get_surface_count()):
+			var src := mi.get_active_material(i)
+			var tone := Color(0.5, 0.5, 0.5)
+			if src is StandardMaterial3D:
+				var sm: StandardMaterial3D = src
+				tone = _average(sm.albedo_texture) if sm.albedo_texture != null else sm.albedo_color
+			var flat := StandardMaterial3D.new()
+			flat.albedo_color = tone
+			flat.roughness = 1.0
+			mi.set_surface_override_material(i, flat)
+		var hull := MeshInstance3D.new()
+		hull.mesh = mi.mesh
+		hull.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		var om := StandardMaterial3D.new()
+		om.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		om.cull_mode = BaseMaterial3D.CULL_FRONT
+		om.grow = true
+		om.grow_amount = 2.0
+		om.albedo_color = Palette.BG
+		hull.material_override = om
+		mi.add_child(hull)
+
+
+## The mean colour of a texture, from a coarse sample, cached by resource path.
+static func _average(tex: Texture2D) -> Color:
+	var key := tex.resource_path
+	if not key.is_empty() and _tone_cache.has(key):
+		return _tone_cache[key]
+	var img := tex.get_image()
+	var sum := Color(0, 0, 0, 0)
+	var n := 0
+	if img != null:
+		if img.is_compressed():
+			img.decompress()
+		for y in range(0, img.get_height(), 4):
+			for x in range(0, img.get_width(), 4):
+				sum += img.get_pixel(x, y)
+				n += 1
+	var tone := sum / float(maxi(1, n)) if n > 0 else Color(0.5, 0.5, 0.5)
+	tone.a = 1.0
+	if not key.is_empty():
+		_tone_cache[key] = tone
+	return tone
 
 
 ## The union of every mesh's bounds under `node`, in the node's own space.

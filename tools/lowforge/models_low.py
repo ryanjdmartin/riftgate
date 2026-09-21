@@ -88,7 +88,7 @@ def badger(b):
 badger.maker = "minerva"
 
 
-def raptor(b):
+def sparrowhawk(b):
     """Kestrel "Sparrowhawk": a small hit-and-run interceptor. Sleek, speed over defence;
     reverse-swept wings whose rear faces run back into the boosters, a faired canopy far
     back, twin nose guns, two big boosters, a tail rooted into the fuselage and riding over
@@ -137,7 +137,7 @@ def raptor(b):
         _wing(b, root, tip, "livery.livery", "stabiliser")
 
 
-raptor.maker = "kestrel"
+sparrowhawk.maker = "kestrel"
 
 
 def _wing(b, root, tip, material, label):
@@ -157,3 +157,90 @@ def _wing(b, root, tip, material, label):
         except ValueError:
             pass
     return b._finish(bm, material, label)
+
+
+# ---------------------------------------------------------------- structures (the Arsenal)
+
+def _blades(b, x0, x1, y, z, step=12.0, h=16.0, w=2.4):
+    """A row of upright blades along a top edge, each a wedge leaning back, so the crown
+    reads as a saw rather than teeth (no crenellations: Ryan, 20 September)."""
+    x = x0
+    while x + w <= x1 + 0.01:
+        b.loft([(y - 3.5, rect(x + w / 2, w, z, z + h * 0.35)), (y + 3.5, rect(x + w / 2, w, z, z + h))], "steel.dark", "blade")
+        x += step
+
+
+def _gun(b, x, y, z):
+    """A turret ring, a mount and one heavy six-sided barrel, pointing north."""
+    b.prism("z", x, y, z + 2.5, 12.0, 5.0, "steel.dark", 6, "ring")
+    b.box(x - 7.0, x + 7.0, y - 8.0, y + 8.0, z + 5.0, z + 15.0, "steel.panel", "mount")
+    b.prism("y", x, y + 20.0, z + 11.0, 3.6, 34.0, "steel.dark", 6, "barrel")
+    b.box(x - 4.0, x + 4.0, y - 11.0, y - 8.0, z + 6.0, z + 13.0, "amber.light", "sight")
+
+
+def wall(b):
+    """One wall segment of the field's emitter line (decided 20 September): a hex wide, the
+    gate's wall height, a hazard band, a buttress each face, blades along the top."""
+    b.tile_world = 40.0
+    W, D, H = 31.0, 12.0, 70.0
+    b.box(-W, W, -D - 6.0, D + 6.0, 0.0, 6.0, "steel.dark", "plinth")
+    b.box(-W, W, -D, D, 6.0, H, "steel.panel", "wall")
+    for f in (-1.0, 1.0):
+        b.box(-W, W, f * (D + 0.2), f * (D + 1.4), 20.0, 25.0, "steel.stripe", "band")
+        b.loft([(f * D, rect(0.0, 10.0, 6.0, H - 6.0)), (f * (D + 12.0), rect(0.0, 10.0, 6.0, 12.0))], "steel.dark", "buttress")
+    _blades(b, -W + 1.0, W - 1.0, D - 2.0, H)
+    _blades(b, -W + 1.0, W - 1.0, -D + 2.0, H)
+
+
+wall.maker = "arsenal"
+
+
+def gate(b):
+    """The gate: the field's projector and the Arsenal's device. Three hexes wide, a low
+    wall either side, a gatehouse rising above it with a tall narrow pointed mouth in two
+    stepped reveals, two finned six-sided towers with a heavy gun each, blades on every top
+    edge, lamps either side of the mouth."""
+    b.tile_world = 40.0
+    W, D, H = 92.0, 16.0, 70.0
+    b.box(-W, W, -D - 8.0, D + 8.0, 0.0, 6.0, "steel.dark", "plinth")
+    b.box(-W, W, -D, D, 6.0, H, "steel.panel", "wall")
+    GW, GH = 46.0, H + 22.0
+    b.box(-GW, GW, -D - 3.0, D + 3.0, 6.0, GH, "steel.panel", "gatehouse")
+    MW, MH = 15.0, 64.0
+    b.box(-MW, MW, -D - 4.0, D + 4.0, 6.0, MH, "bore.dark", "mouth")
+    for rw, rh, rd in ((MW + 5.0, MH + 8.0, 4.5), (MW + 10.0, MH + 16.0, 6.0)):
+        for f in (-1.0, 1.0):
+            y0, y1 = f * (D + 3.0), f * (D + 3.0 + rd)
+            b.box(-rw, -rw + 4.5, y0, y1, 6.0, rh, "steel.dark", "jamb")
+            b.box(rw - 4.5, rw, y0, y1, 6.0, rh, "steel.dark", "jamb")
+            b.loft([(y0, [(-rw, rh), (rw, rh), (0.0, rh + rw * 0.55)]), (y1, [(-rw, rh), (rw, rh), (0.0, rh + rw * 0.55)])], "steel.dark", "point")
+    for i in range(5):
+        x = -12.0 + i * 6.0
+        b.box(x - 0.9, x + 0.9, D + 2.0, D + 4.0, 6.0, MH, "steel.dark", "bar")
+    for s in (-1.0, 1.0):
+        b.box(-22.0, 22.0, s * (D + 3.0), s * (D + 5.0), GH - 18.0, GH - 6.0, "livery.livery", "device")
+        for f in (-1.0, 1.0):
+            b.box(s * 30.0, s * 34.0, f * (D + 3.0), f * (D + 5.0), 30.0, 36.0, "amber.light", "lamp")
+    b.box(-GW - 2.0, GW + 2.0, -D - 5.0, D + 5.0, GH - 6.0, GH, "steel.dark", "lintel")
+    _blades(b, -GW + 2.0, GW - 2.0, D - 1.0, GH, step=10.0, h=22.0)
+    _blades(b, -GW + 2.0, GW - 2.0, -D + 1.0, GH, step=10.0, h=22.0)
+    TR, TT = 20.0, 112.0
+    for s in (-1.0, 1.0):
+        x = s * 66.0
+        b.prism("z", x, 0.0, (6.0 + TT) / 2.0, TR, TT - 6.0, "steel.panel", 6, "tower", phase=math.pi / 6)
+        for k in range(6):
+            a = k * math.pi / 3.0
+            fx, fy = TR * math.cos(a), TR * math.sin(a)
+            b.box(x + fx - 2.0, x + fx + 2.0, fy - 2.0, fy + 2.0, 12.0, TT + 10.0, "steel.dark", "fin")
+        b.prism("z", x, 0.0, TT + 1.5, TR + 2.0, 3.0, "steel.dark", 6, "cap", phase=math.pi / 6)
+        _gun(b, x, 0.0, TT + 3.0)
+        for bx in (x - 30.0, x + 30.0):
+            if abs(bx) < W - 4.0 and abs(bx) > GW + 2.0:
+                for f in (-1.0, 1.0):
+                    b.loft([(f * D, rect(bx, 10.0, 6.0, H - 6.0)), (f * (D + 14.0), rect(bx, 10.0, 6.0, 12.0))], "steel.dark", "bastion")
+    for side in (1.0, -1.0):
+        _blades(b, -W + 2.0, -88.0, side * (D - 2.0), H)
+        _blades(b, 88.0, W - 2.0, side * (D - 2.0), H)
+
+
+gate.maker = "arsenal"

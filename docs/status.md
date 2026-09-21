@@ -94,13 +94,16 @@ pass yet.
 
 **Ally art (locked 21 September).** The mid-nineties 3D register (Descent, MechWarrior 2),
 built by `tools/lowforge`: `models_low.py` holds one function of numbers per chassis id
-(`badger`, `raptor` so far), `bl_low.py` the primitives, the maker metals (`MAKERS`) and the
+(`badger`, `sparrowhawk` so far), `bl_low.py` the primitives, the maker metals (`MAKERS`) and the
 tile generator, `forge.py build <id>` writes `art/models/<id>.glb` with the tiles embedded
 (review PNGs under `tools/lowforge/tiles/<maker>/`). `MechView3D.toon` takes the tile look
 automatically for any textured model (nearest filter, gloss by maker, a sun in the view);
-untextured models (gate, wall) keep the toon pass. Deleted: `art/mechs`, the spriter, the
-map token tool, the old Badger .blend files and blendforge's mech renders; blendforge stays
-only for the structures. Dead code to remove next: `Sprites.combat_mech`/`map_mech` and the
+the gate and wall are lowforge models too (`gate`, `wall`, maker arsenal, `tile_world` 40
+so their tiles read at true scale on the map). On the map a mech is a marker
+(`Map3D._marker`: each part its tile's average tone, flat, plus a dark inverted-hull
+outline) fitted to about one hex; the ground style is drawn at half resolution with chunky
+marks, so its texels match the units'. Deleted: `art/mechs`, the spriter, the map token
+tool, all of blendforge and its .blend files. Dead code to remove next: `Sprites.combat_mech`/`map_mech` and the
 skirmish's `RIFTGATE_MECH3D=off` sprite fallback, the pixel look. Not built: joints and
 hardpoint pins on the new units (the engine reads `joint_*` and `hp_*`; lowforge writes
 `hp_*` pins only), the wireframe mode, and a map-scale look: `Map3D` fits every unit to

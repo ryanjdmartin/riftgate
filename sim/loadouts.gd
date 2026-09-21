@@ -44,7 +44,7 @@ static func mortar_die() -> Die:
 
 
 ## A skirmisher aircraft: big shield, low hull, few faces, runs hot. Energy, so static.
-static func raptor_die() -> Die:
+static func sparrowhawk_die() -> Die:
 	return Die.of([
 		Face.attack(50, L, K.OVERCHARGE, 20),
 		Face.attack(20, L, K.EXECUTE, 0, 40, 20),

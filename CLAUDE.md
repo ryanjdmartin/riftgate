@@ -13,8 +13,7 @@ godot --headless --path . -s tools/export_vocabulary.gd   # regenerate docs/voca
 tools/spriter/.venv/bin/python tools/sheet_export.py      # export enemy grids to art/foes, then --import
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate <foe> --n 4   # model candidates (mflux, FLUX.2 Klein)
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut <png> <foe>        # cut one into art/foes, then --import
-tools/spriter/.venv/bin/python tools/lowforge/forge.py build <chassis id>...   # ally units by code (tools/lowforge/models_low.py), then --import
-tools/spriter/.venv/bin/python tools/blendforge/forge.py structures            # the gate and wall glTFs, then --import
+tools/spriter/.venv/bin/python tools/lowforge/forge.py build <chassis id>...   # ally units, and gate and wall, by code (tools/lowforge/models_low.py), then --import
 godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- <chassis> <maker> out.png front 480 480   # one unit large (needs a window)
 ```
 

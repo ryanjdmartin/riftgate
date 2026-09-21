@@ -81,7 +81,7 @@ func test_flyer_does_not_block() -> void:
 	f.compute_intents()
 	var first_step: Vector2i = f.intents[1][0]
 	var second_step: Vector2i = f.intents[1][1]
-	var fly := Unit.mech(2, "Raptor", first_step, 0)
+	var fly := Unit.mech(2, "Sparrowhawk", first_step, 0)
 	fly.traits = ["flyer"]
 	f.add_unit(fly)
 	var res := f.resolve_phase({})
@@ -95,7 +95,7 @@ func test_squad_stops_short_of_flyer_destination() -> void:
 	f.compute_intents()
 	var first_step: Vector2i = f.intents[1][0]
 	var second_step: Vector2i = f.intents[1][1]
-	var fly := Unit.mech(2, "Raptor", second_step, 0)
+	var fly := Unit.mech(2, "Sparrowhawk", second_step, 0)
 	fly.traits = ["flyer"]
 	f.add_unit(fly)
 	f.resolve_phase({})

@@ -116,7 +116,7 @@ func _ready() -> void:
 
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks): two
-## chained squads of the first faction in content. RIFTGATE_TEAM=badger,sentinel,raptor,anvil overrides the team;
+## chained squads of the first faction in content. RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,anvil overrides the team;
 ## RIFTGATE_ELITE=1 adds the faction's boss as a third unit; RIFTGATE_COLUMNS=4 widens the formation.
 static func _default_skirmish() -> Skirmish:
 	var db := ContentDB.load_default()
@@ -125,7 +125,7 @@ static func _default_skirmish() -> Skirmish:
 	var env := OS.get_environment("RIFTGATE_TEAM")
 	if not env.is_empty():
 		team = env.split(",")
-	# RIFTGATE_PAINT=badger:ff8800/223344,raptor:ffffff repaints for a look (primary/secondary).
+	# RIFTGATE_PAINT=badger:ff8800/223344,sparrowhawk:ffffff repaints for a look (primary/secondary).
 	var paints := {}
 	for spec in OS.get_environment("RIFTGATE_PAINT").split(",", false):
 		var kv := spec.split(":")

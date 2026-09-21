@@ -98,14 +98,18 @@ func set_field(f: Battlefield) -> void:
 
 ## A painted map in one style, rendered once into a viewport the size of the whole map.
 func _paint(map_size: Vector2, style: String) -> SubViewport:
+	# The ground is drawn at half resolution and sampled nearest, so its texels are the
+	# size of the units' tiles: one register on both.
+	var k := 0.5 if style == "ground" else 1.0
 	var vp := SubViewport.new()
-	vp.size = Vector2i(map_size)
+	vp.size = Vector2i(map_size * k)
 	vp.transparent_bg = true
 	vp.render_target_update_mode = SubViewport.UPDATE_ONCE
 	vp.canvas_item_default_texture_filter = SubViewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
 	add_child(vp)
 	var painted := PaintedMap.new()
 	painted.size = map_size
+	painted.scale = Vector2(k, k)
 	painted.setup(field, _origin, HEX_SIZE, style)
 	vp.add_child(painted)
 	return vp

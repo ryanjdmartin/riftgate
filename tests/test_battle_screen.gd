@@ -7,7 +7,7 @@ extends TestCase
 func _screen(seed_value: int = 3) -> BattleScreen:
 	var db := ContentDB.load_default()
 	var team: Array = []
-	for id in ["badger", "sentinel", "raptor"]:
+	for id in ["badger", "clydesdale", "sparrowhawk"]:
 		team.append(db.make_mech(id))
 	var b := Battle.new(seed_value)
 	b.setup(team, "undead")

@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://314mxwa7hpq3"
-path="res://.godot/imported/raptor_dark.png-cabec525f8d445e86dc7a3974bbf8d04.ctex"
+uid="uid://0wvhxab5pnmq"
+path="res://.godot/imported/gate_panel.png-1a83f3c3858078032e0d4ed1734582ce.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "06a4d857c52d373f1a483b936138ef5e"
+"md5": "a42e44c4c8b4118017f65c67ba0acd4d"
 }
 
 [deps]
 
-source_file="res://art/models/raptor_dark.png"
-dest_files=["res://.godot/imported/raptor_dark.png-cabec525f8d445e86dc7a3974bbf8d04.ctex"]
+source_file="res://art/models/gate_panel.png"
+dest_files=["res://.godot/imported/gate_panel.png-1a83f3c3858078032e0d4ed1734582ce.ctex"]
 
 [params]
 

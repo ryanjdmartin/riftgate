@@ -2,19 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cpm7b7kj2g6to"
-path="res://.godot/imported/raptor_livery.png-d0545ee2e8eca00c49f74e8652a8ea87.ctex"
+uid="uid://c7bla7b53vpb2"
+path="res://.godot/imported/light.png-71b73b6f1c76918705cb7ea3963c115c.ctex"
 metadata={
 "vram_texture": false
-}
-generator_parameters={
-"md5": "3ffe345f8285739c59bc162dea261c66"
 }
 
 [deps]
 
-source_file="res://art/models/raptor_livery.png"
-dest_files=["res://.godot/imported/raptor_livery.png-d0545ee2e8eca00c49f74e8652a8ea87.ctex"]
+source_file="res://tools/lowforge/tiles/arsenal/light.png"
+dest_files=["res://.godot/imported/light.png-71b73b6f1c76918705cb7ea3963c115c.ctex"]
 
 [params]
 
@@ -26,7 +23,7 @@ compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
-mipmaps/generate=true
+mipmaps/generate=false
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""

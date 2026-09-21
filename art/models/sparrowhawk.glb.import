@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://ctoyvmewmnl1n"
-path="res://.godot/imported/raptor.glb-f3cf5195c69eee10781aeb84c0c04899.scn"
+uid="uid://pqb3dt1gtq55"
+path="res://.godot/imported/sparrowhawk.glb-f2cc7899b5b84c99c735571a09ccc59e.scn"
 
 [deps]
 
-source_file="res://art/models/raptor.glb"
-dest_files=["res://.godot/imported/raptor.glb-f3cf5195c69eee10781aeb84c0c04899.scn"]
+source_file="res://art/models/sparrowhawk.glb"
+dest_files=["res://.godot/imported/sparrowhawk.glb-f2cc7899b5b84c99c735571a09ccc59e.scn"]
 
 [params]
 

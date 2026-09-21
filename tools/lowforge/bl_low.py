@@ -200,6 +200,7 @@ class Build:
         self.tiles = tiles
         self.materials = {}
         self.objects = []
+        self.tile_world = TILE_WORLD   # a structure sets this higher: it is seen at true scale on the map
 
     def material(self, name):
         if name in self.materials:
@@ -229,7 +230,7 @@ class Build:
             a, b = [i for i in range(3) if i != ax]
             for loop in f.loops:
                 co = loop.vert.co
-                loop[uv].uv = (co[a] / TILE_WORLD, co[b] / TILE_WORLD)
+                loop[uv].uv = (co[a] / self.tile_world, co[b] / self.tile_world)
         mesh = bpy.data.meshes.new(label)
         bm.to_mesh(mesh)
         bm.free()

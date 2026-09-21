@@ -7,7 +7,7 @@ extends TestCase
 func _screen(seed_value: int = 3, elite: bool = false) -> SkirmishScreen:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(seed_value)
-	for id in ["badger", "sentinel", "raptor"]:
+	for id in ["badger", "clydesdale", "sparrowhawk"]:
 		sk.add_mech(db.make_mech(id))
 	var ghouls := Unit.squad(1, "ghouls", Vector2i.ZERO, "undead", 2, 4, "ghoul")
 	sk.add_foes(db.foes_for(ghouls), ghouls)
@@ -161,7 +161,7 @@ func test_double_tap_opens_and_closes_the_codex() -> void:
 	assert_true(s._codex_title.text.contains(title), "titled with the chassis name from content")
 	var headless := DisplayServer.get_name() == "headless"   # no renderer: the model view cannot draw
 	assert_true(headless or (s._codex_sprite.visible and s._codex_sprite.texture != null), "head-on model shown")
-	assert_true(s._codex_passive.visible, "raptor's passive is shown")
+	assert_true(s._codex_passive.visible, "sparrowhawk's passive is shown")
 	assert_true(s._codex_passive.text.to_lower().contains("hot hands"), "by name")
 	assert_true(s._codex_faces.visible and s._codex_faces.faces.size() == 4, "faces listed visually")
 	s._close_codex()
@@ -267,7 +267,7 @@ func test_massive_elite_uses_the_tall_view() -> void:
 func test_screen_lays_out_four_columns() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(4, 4)
-	for id in ["badger", "sentinel"]:
+	for id in ["badger", "clydesdale"]:
 		sk.add_mech(db.make_mech(id))
 	# Ranks hold: four front-rank ghouls fill the front, four back-rank necromancers the back.
 	var ghouls := Unit.squad(1, "ghouls", Vector2i.ZERO, "undead", 2, 4, "ghoul")

@@ -50,13 +50,13 @@ func test_build_die_leaves_empty_hardpoints_empty() -> void:
 func test_chassis_validator_guards_hardpoints() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var c: Dictionary = db.chassis["raptor"].duplicate(true)
+	var c: Dictionary = db.chassis["sparrowhawk"].duplicate(true)
 	c["loadout"] = ["deflector", "deflector", "deflector", "deflector", "deflector"]
 	db.chassis["over"] = c
 	var f: Dictionary = db.chassis["badger"].duplicate(true)
 	f["loadout"] = ["chainsaw_claw"]
 	db.chassis["twice"] = f
-	var g: Dictionary = db.chassis["raptor"].duplicate(true)
+	var g: Dictionary = db.chassis["sparrowhawk"].duplicate(true)
 	g["filler"] = {"kind": "shield", "power": 10}
 	db.chassis["stuffed"] = g
 	var over := false
@@ -74,21 +74,21 @@ func test_chassis_validator_guards_hardpoints() -> void:
 	assert_true(stuffed, "filler is refused")
 
 
-func test_raptor_loadout_matches_design() -> void:
+func test_sparrowhawk_loadout_matches_design() -> void:
 	var db := _db()
-	var u := db.make_mech("raptor")
-	assert_eq(u.movespeed, 5, "raptor is fast")
-	assert_true(u.traits.has("flyer"), "raptor flies")
+	var u := db.make_mech("sparrowhawk")
+	assert_eq(u.movespeed, 5, "sparrowhawk is fast")
+	assert_true(u.traits.has("flyer"), "sparrowhawk flies")
 	assert_false(u.can_block(), "and therefore does not block")
 	var hot := 0
 	for f in u.die.faces:
 		if f.has(Face.Keyword.OVERCHARGE):
 			hot += 1
 	assert_eq(hot, 1, "one overcharge face")
-	var p: Dictionary = db.chassis["raptor"]["passive"]
+	var p: Dictionary = db.chassis["sparrowhawk"]["passive"]
 	assert_eq(p["effects"].size(), 2, "two effects, one idea")
 	assert_true(not p.has("rules"), "no rules text: the description says what it does")
-	assert_true(not db.chassis["raptor"].has("passives"), "still counts as one passive")
+	assert_true(not db.chassis["sparrowhawk"].has("passives"), "still counts as one passive")
 
 
 func test_squads_unpack_by_foe_type() -> void:
@@ -134,7 +134,7 @@ func test_content_mech_survives_a_skirmish_round() -> void:
 	var db := _db()
 	var sk := Skirmish.new(5)
 	sk.add_mech(db.make_mech("badger"))
-	sk.add_mech(db.make_mech("sentinel"))
+	sk.add_mech(db.make_mech("clydesdale"))
 	var sq := Unit.squad(1, "risen", Vector2i.ZERO, "undead", 2, 6)
 	sk.add_foes(db.foes_for(sq), sq)
 	sk.begin()
@@ -167,7 +167,7 @@ func test_keyword_cap_is_enforced() -> void:
 func test_passive_effect_cap_is_enforced() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var c: Dictionary = db.chassis["raptor"].duplicate(true)
+	var c: Dictionary = db.chassis["sparrowhawk"].duplicate(true)
 	var eff: Dictionary = c["passive"]["effects"][0]
 	c["passive"]["effects"] = [eff, eff, eff, eff]
 	db.chassis["bloated"] = c
@@ -182,7 +182,7 @@ func test_passive_effect_cap_is_enforced() -> void:
 func test_internal_text_cannot_sit_at_the_top_level() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var c: Dictionary = db.chassis["raptor"].duplicate(true)
+	var c: Dictionary = db.chassis["sparrowhawk"].duplicate(true)
 	c["fantasy"] = "would be shown"
 	db.chassis["leaky"] = c
 	var f: Dictionary = db.foes["ghoul"].duplicate(true)
@@ -200,10 +200,10 @@ func test_internal_text_cannot_sit_at_the_top_level() -> void:
 	assert_true(bare, "an entry without design is refused")
 
 
-func test_raptor_passive_doubles_damage_and_heat() -> void:
+func test_sparrowhawk_passive_doubles_damage_and_heat() -> void:
 	var db := _db()
-	var u := db.make_mech("raptor")
-	assert_false(u.passive.is_empty(), "raptor carries its passive")
+	var u := db.make_mech("sparrowhawk")
+	assert_false(u.passive.is_empty(), "sparrowhawk carries its passive")
 	u.die = Die.single(Face.attack(30, Face.Reach.LINE, [], 10))
 	var sk := Skirmish.new(1)
 	sk.add_mech(u)
@@ -227,7 +227,7 @@ func test_min_damage_passive_raises_the_floor() -> void:
 func test_planned_passive_is_kept_but_not_run() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var c: Dictionary = db.chassis["raptor"].duplicate(true)
+	var c: Dictionary = db.chassis["sparrowhawk"].duplicate(true)
 	c["passive"] = {"id": "draft", "name": "Draft", "description": "Not built yet.", "status": "planned",
 		"effects": [{"trigger": "on_sunrise", "effect": "immune_destroy", "value": 1}]}
 	db.chassis["drafted"] = c
@@ -282,7 +282,7 @@ func test_content_dice_are_sane_and_kinetic_faces_roll() -> void:
 func test_unsupported_passive_effect_is_rejected() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var c: Dictionary = db.chassis["raptor"].duplicate(true)
+	var c: Dictionary = db.chassis["sparrowhawk"].duplicate(true)
 	c["passive"]["effects"] = [{"trigger": "on_attack", "effect": "summon_dragon", "value": 1}]
 	db.chassis["dreamer"] = c
 	var hit := false

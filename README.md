@@ -41,8 +41,8 @@ and open question from the design sessions.
   ally units by code from a brief (`models_low.py`, one function per chassis id) in the
   mid-nineties 3D register with generated tiles; `sheet_export.py` exports the enemy grids
   in `docs/sprites-enemies.html` to `art/foes/`; `foeforge/` generates enemy candidates with
-  an image model and cuts one into `art/foes/`; `blendforge/` builds the gate and wall
-  models; `spriter/.venv` is the Python the tools run with.
+  an image model and cuts one into `art/foes/`; `spriter/.venv` is the Python the tools run
+  with. The gate and wall are lowforge models too (`gate`, `wall`).
 - `art/` — `models/` every glTF the engine draws (units, gate, wall), `foes/` from the sheet
   export, `fonts/` the HUD faces. A missing foe sprite falls back to a placeholder shape.
 - `docs/` — design bible, generated vocabulary, concept intake in `docs/concepts/`, and
@@ -72,7 +72,7 @@ godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmis
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/battle_screen.tscn shot.png route
 
 # build ally units from their briefs (tools/lowforge/models_low.py), then re-import
-tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger raptor
+tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger sparrowhawk
 godot --headless --path . --import
 godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva hero.png front 480 480
 
@@ -84,8 +84,8 @@ godot --headless --path . --import
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate ghoul --n 4
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut tools/foeforge/out/ghoul/ghoul_3.png ghoul
 
-# the gate and wall models (tools/blendforge/structures.py), then re-import
-tools/spriter/.venv/bin/python tools/blendforge/forge.py structures
+# the gate and wall are built the same way
+tools/spriter/.venv/bin/python tools/lowforge/forge.py build gate wall
 ```
 
 The skirmish screen runs top to bottom: header with the round tag, enemies with the intent
@@ -109,7 +109,7 @@ double-tap any unit or die for its codex entry. Withdraw is offered at the start
 before a face is spent. Blank faces are discarded at end of turn.
 
 The harness can add the faction's massive elite, which fills both ranks of a column. For the
-standalone screen, `RIFTGATE_TEAM=badger,sentinel,raptor,anvil` picks the team and
+standalone screen, `RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,anvil` picks the team and
 `RIFTGATE_ELITE=1` adds the elite.
 
 The battle screen is the loop. The header shows the phase, the gate's hull, and Rift

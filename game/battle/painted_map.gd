@@ -54,31 +54,47 @@ func _draw() -> void:
 			_draw_ground(c, t, seed_value)
 
 
-## Gritty ground: the muted colour, desaturated further, a fine grain of light and dark
-## specks, a crack or two, and the marks at half strength.
+## The reconstruction's ground in the ally register (21 September): muted, realistically
+## coloured, and chunky. This style is rendered at half resolution and sampled nearest, so
+## every mark here is a block of at least two pixels; nothing thin, no grain.
 func _draw_ground(c: Vector2, t: int, seed_value: int) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value
 	var base := TerrainArt.colour(t)
 	var grey := Color(base.get_luminance(), base.get_luminance(), base.get_luminance())
-	var muted := base.lerp(grey, 0.35).darkened(0.08)
+	var muted := base.lerp(grey, 0.25)
+	var light := muted.lightened(0.16)
+	var dark := muted.darkened(0.3)
 	var pts := Hex.corners(c, hex_px - 1.5)
 	draw_colored_polygon(pts, muted)
-	var r := hex_px * 0.86
-	for i in range(70):
-		var p := c + Vector2(rng.randf_range(-r, r), rng.randf_range(-r * 0.85, r * 0.85))
-		var k := rng.randf_range(-0.14, 0.12)
-		draw_rect(Rect2(p.floor(), Vector2(1.0, 1.0)), muted.lightened(k) if k > 0.0 else muted.darkened(-k))
-	if t != BattleMap.Terrain.WATER:
-		for i in range(2):
-			var p := c + Vector2(rng.randf_range(-r * 0.6, r * 0.6), rng.randf_range(-r * 0.5, r * 0.5))
-			var q := p
-			for k in range(4):
-				var n := q + Vector2(rng.randf_range(-7, 7), rng.randf_range(-6, 6))
-				draw_line(q, n, muted.darkened(0.3), 1.0)
-				q = n
-	TerrainArt.draw(self, c, hex_px, t, seed_value, 0.55)
-	Hud.stroke_poly(self, pts, Color(Palette.HUD, 0.10), 1.0)
+	var r := hex_px * 0.72
+	# A sparse speckle of blocks, the texel grain of the register.
+	for i in range(10):
+		var p := c + Vector2(rng.randf_range(-r, r), rng.randf_range(-r * 0.8, r * 0.8))
+		draw_rect(Rect2(p.floor(), Vector2(3.0, 2.0)), light if rng.randf() < 0.5 else dark)
+	match t:
+		BattleMap.Terrain.ROAD:
+			for dx in [-r * 0.3, r * 0.3]:
+				draw_rect(Rect2(Vector2(c.x + dx - 1.5, c.y - r), Vector2(3.0, r * 2.0)), dark)
+		BattleMap.Terrain.ROUGH:
+			for i in range(4):
+				var p := c + Vector2(rng.randf_range(-r, r), rng.randf_range(-r * 0.7, r * 0.7))
+				draw_rect(Rect2(p, Vector2(7.0, 5.0)), dark)
+				draw_rect(Rect2(p, Vector2(7.0, 2.0)), light)
+		BattleMap.Terrain.RUINS:
+			for i in range(3):
+				var p := c + Vector2(rng.randf_range(-r, r * 0.6), rng.randf_range(-r * 0.6, r * 0.5))
+				draw_rect(Rect2(p, Vector2(rng.randf_range(8.0, 14.0), 5.0)), dark)
+				draw_rect(Rect2(p, Vector2(4.0, 2.0)), light)
+		BattleMap.Terrain.WATER:
+			for i in range(3):
+				var p := c + Vector2(rng.randf_range(-r * 0.7, r * 0.5), -r * 0.5 + i * r * 0.5)
+				draw_rect(Rect2(p.floor(), Vector2(12.0, 2.0)), light)
+		BattleMap.Terrain.MOUNTAIN:
+			var p := c + Vector2(0.0, 8.0)
+			draw_colored_polygon(PackedVector2Array([p + Vector2(-r * 0.7, r * 0.4), p + Vector2(0.0, -r * 0.6), p + Vector2(r * 0.7, r * 0.4)]), dark)
+			draw_colored_polygon(PackedVector2Array([p + Vector2(0.0, -r * 0.6), p + Vector2(r * 0.7, r * 0.4), p + Vector2(r * 0.15, r * 0.4)]), light)
+	Hud.stroke_poly(self, pts, Color(Palette.HUD, 0.12), 2.0)
 
 
 ## The overworld: a flat bright fill and a few chunky marks, drawn at a coarse scale.
