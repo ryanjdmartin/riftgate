@@ -420,10 +420,7 @@ func _draw_unit(u: Unit) -> void:
 	elif tex != null:
 		# A foe is a flat picture on the screen, never an object in the scene: no shadow, no
 		# base, no lighting. It is the other world showing through (decided 19 September).
-		# A small foe draws a little larger than its pixels, so it holds its own beside a
-		# mech, and stands on a dark plate so it reads against the bright ground it brings.
-		if u.is_enemy():
-			draw_colored_polygon(Hex.corners(c, HEX_SIZE - 5.0), Color(Palette.BG, 0.42))
+		# A small foe draws a little larger than its pixels, so it holds its own beside a mech.
 		var ts := tex.get_size() * SPRITE_SCALE * (1.3 if u.is_enemy() and not u.is_multi_hex() else 1.0)
 		draw_texture_rect(tex, Rect2((c - Vector2(ts.x * 0.5, ts.y - 8.0)).floor(), ts), false)
 	elif u.is_player():

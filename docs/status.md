@@ -149,8 +149,8 @@ and emissive with a brightness wave rolling south, `wave_len`, `speed`; plus a t
 hands `Map3D.set_sweep` the band's map y every frame; `trace.gdshader` `sweep_z`, `band`).
 Roads are never a lone slab and sit at ground level; no fade at the sides, only the blur.
 The overworld runs at two frames (`PaintedMap.frame`, two viewports, `anim_rate` in the
-compositor): waves, leaves, grass and chimney smoke move. A dark hex plate sits under
-every foe picture. TUNE on the battle screen opens `MapTuner`, live knobs for the look:
+compositor): waves, leaves, grass and chimney smoke move. Each overworld terrain has its own fill (`PaintedMap.OTHER`) so a
+tile reads as what it is when a unit's picture covers its marks. TUNE on the battle screen opens `MapTuner`, live knobs for the look:
 trace light/ink/off, trace gain, bloom, grid, saturation, brightness, far blur, edge fade,
 posterize, flicker, frame rate, bleed radius, scan on/off; `tools/screenshot.gd ... tune`
 shows it. Nothing it sets persists. Composition: wasteland across the rougher half, ruins in dense clusters, water

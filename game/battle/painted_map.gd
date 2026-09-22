@@ -13,13 +13,16 @@ var frame: int = 0   # 0 or 1: the overworld's two-frame animation (Ryan, 21 Sep
 
 ## The other world's palette: overworld colours, saturated on purpose. Green carries no
 ## meaning in the palette rules, so it may be this green.
+## Each ground has its own fill, so a tile still reads as what it is when a unit's picture
+## covers its marks (Ryan, 21 September): grass, sand, forest floor, town paving, sea, and
+## a dusty upland under the ridges.
 const OTHER := {
 	BattleMap.Terrain.PLAIN: Color("48b038"),
 	BattleMap.Terrain.ROAD: Color("e0c890"),
-	BattleMap.Terrain.ROUGH: Color("2e8a2a"),
-	BattleMap.Terrain.RUINS: Color("48b038"),
+	BattleMap.Terrain.ROUGH: Color("1f6a22"),
+	BattleMap.Terrain.RUINS: Color("9a9a8c"),
 	BattleMap.Terrain.WATER: Color("2860e8"),
-	BattleMap.Terrain.MOUNTAIN: Color("48b038"),
+	BattleMap.Terrain.MOUNTAIN: Color("a8905a"),
 }
 const OTHER_GRID := Color("1a3a12")
 
