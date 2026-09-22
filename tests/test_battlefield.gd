@@ -251,3 +251,63 @@ func test_preview_matches_resolve_and_leaves_nothing_behind() -> void:
 		assert_eq(pres.rejected, res.rejected, "same rejections (seed %d)" % s)
 		assert_eq(pres.skirmishes.size(), res.skirmishes.size(), "same number of contacts (seed %d)" % s)
 		assert_eq(hp - f.gate_hp, pres.gate_damage, "the preview's gate damage is the real one (seed %d)" % s)
+
+
+func test_routes_plan_in_order_so_resolve_never_rejects() -> void:
+	# A is plotted first, then B. B may route through the hex A is leaving and may not end
+	# on A's destination; both resolve exactly as planned, in that order.
+	var b := Battle.new(1)
+	b.setup([Unit.mech(1, "A", Vector2i.ZERO, 3), Unit.mech(2, "B", Vector2i.ZERO, 3)], "undead")
+	var a_unit: Unit = b.mechs()[0]
+	var b_unit: Unit = b.mechs()[1]
+	var a_from := a_unit.pos
+	var a_dests: Array = b.destinations_for(a_unit).keys()
+	assert_true(not a_dests.is_empty(), "A can go somewhere")
+	var a_to: Vector2i = a_dests[0]
+	assert_true(b.set_route(a_unit, a_to), "A's route set")
+	var b_dests := b.destinations_for(b_unit)
+	assert_false(b_dests.has(a_to), "B cannot end where A is going")
+	assert_true(b_dests.has(a_from) or Hex.distance(b_unit.pos, a_from) > b_unit.movespeed, "B may end where A is leaving, if in reach")
+	var b_dests_keys: Array = b_dests.keys()
+	assert_true(b.set_route(b_unit, b_dests_keys[b_dests_keys.size() / 2]), "B's route set")
+	var pv: Battlefield.PhaseResult = b.field.preview_phase(b.routes)["result"]
+	assert_true(pv.rejected.is_empty(), "the plan rejects nobody")
+	b.commit()
+	assert_true(b.last_result.rejected.is_empty(), "and Resolve rejected nobody")
+	assert_eq(a_unit.pos, a_to, "A arrived")
+
+
+func test_a_replot_drops_a_later_route_it_now_blocks() -> void:
+	# A then B, with B's route through A's current hex. A re-plots to stay put (clears its
+	# route): B's path now crosses a standing machine, so B's route is dropped and logged.
+	var f := _field()
+	f.map.terrain[_o(4, 10)] = BattleMap.Terrain.MOUNTAIN   # so A's hex is B's only way north
+	var a := f.add_unit(Unit.mech(1, "A", _o(3, 10), 3))
+	var b_unit := f.add_unit(Unit.mech(2, "B", _o(3, 11), 3))
+	var bt := Battle.new(1)
+	bt.field = f
+	bt.map = f.map
+	bt.state = Battle.State.PLAN
+	assert_true(bt.set_route(a, _o(3, 8)), "A goes north")
+	assert_true(bt.set_route(b_unit, _o(3, 9)), "B goes north through A's hex, which A is leaving")
+	assert_true((bt.routes[b_unit.id] as Array).has(_o(3, 10)), "B's route runs through A's hex")
+	bt.clear_route(a.id)
+	assert_false(bt.routes.has(b_unit.id), "B's route dropped, since A now stands in it")
+	assert_true(str(f.log).contains("route cleared"), "and the log says so")
+
+
+
+func test_squads_plan_in_order_around_each_others_destinations() -> void:
+	# Two squads in a column heading for the gate. The front one takes the hex the rear
+	# one would have reached, so the rear one plans around it rather than stopping short.
+	var f := _field(7, 14)
+	var front := f.add_unit(Unit.squad(1, "front", _o(3, 6), "undead", 2))
+	var rear := f.add_unit(Unit.squad(2, "rear", _o(3, 4), "undead", 2))
+	f.compute_intents()
+	var front_end: Vector2i = f.intents[front.id][f.intents[front.id].size() - 1]
+	var rear_path: Array = f.intents[rear.id]
+	assert_false(rear_path.has(front_end), "the rear squad does not plan through the front's destination")
+	assert_eq(rear_path.size(), 2, "and still uses its whole move")
+	var res := f.resolve_phase({})
+	assert_false(res.blocked.has(rear.id), "so it is not blocked at resolve")
+	assert_eq(rear.pos, rear_path[rear_path.size() - 1], "and lands where the intent said")

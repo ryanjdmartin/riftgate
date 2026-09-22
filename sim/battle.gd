@@ -97,9 +97,12 @@ func mechs() -> Array[Unit]:
 	return field.mechs()
 
 
-## Hexes a mech may end this phase on, minus the destinations other mechs already claimed.
+## Hexes a mech may end this phase on. Planned in plot order (Ryan, 22 September): the
+## machines plotted before it stand at their destinations, the ones after it where they
+## are, so a route can pass where an earlier machine is leaving and never where one is
+## going, and Resolve can never reject it. Other claimed destinations are out too.
 func destinations_for(u: Unit) -> Dictionary:
-	var out := field.reachable(u)
+	var out: Dictionary = field.with_plan(u, routes, func() -> Dictionary: return field.reachable(u))
 	for uid in routes.keys():
 		if uid == u.id:
 			continue
@@ -109,25 +112,40 @@ func destinations_for(u: Unit) -> Dictionary:
 	return out
 
 
-## Plot the cheapest route to `to`. The mech's own hex clears its route. False when the hex
-## is out of reach or claimed.
+## Plot the cheapest route to `to`, in the same planned view. The mech's own hex clears its
+## route. False when the hex is out of reach or claimed. A re-plot keeps the mech's place
+## in the order; any later route it now stands in the way of is dropped and logged, so
+## the plan is always one Resolve will play exactly.
 func set_route(u: Unit, to: Vector2i) -> bool:
 	if state != State.PLAN:
 		return false
 	if to == u.pos:
-		routes.erase(u.id)
+		clear_route(u.id)
 		return true
 	if not destinations_for(u).has(to):
 		return false
-	var route := field.route_to(u, to)
+	var route: Array = field.with_plan(u, routes, func() -> Array: return field.route_to(u, to))
 	if route.is_empty():
 		return false
 	routes[u.id] = route
+	_drop_conflicts()
 	return true
 
 
 func clear_route(uid: int) -> void:
 	routes.erase(uid)
+	_drop_conflicts()
+
+
+## After a change, any route the plan would now reject is dropped, with a line in the log.
+func _drop_conflicts() -> void:
+	var res: Battlefield.PhaseResult = field.preview_phase(routes)["result"]
+	for uid in res.rejected:
+		if routes.has(uid):
+			routes.erase(uid)
+			var u := field.unit_by_id(uid)
+			if u != null:
+				field.log.append("%s: route cleared, the plan changed under it" % u.display_name)
 
 
 func clear_routes() -> void:

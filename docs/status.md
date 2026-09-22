@@ -4,7 +4,7 @@ Handoff note for the next session. Replace stale lines; keep it under a screen.
 
 ## As of 22 September 2026
 
-**State.** Everything committed. Tests: 153 tests, 2221 checks, green. Ryan writes
+**State.** Everything committed. Tests: 156 tests, 2238 checks, green. Ryan writes
 `content/*.json` in his own voice (reload after any pass that touches it). The rules are in
 `docs/vocabulary.md` (generated) and every decision in `docs/design-bible.html`; the
 vocabulary carries an `order_of_operations` rule that the engine follows. Chassis ids:
@@ -60,8 +60,11 @@ tap an enemy for its label, double-tap is wired for the codex; the readout is do
 its own strip and a tap on it dismisses it. Before a plan is locked the map shows the phase as it will resolve
 (`Battlefield.preview_phase`: the resolver's own movement run dry and every unit put
 back; the map view caches it per plan): contact groups, squads stopped by a body block
-(BLOCKED), routes that will be rejected (NO ROUTE). Order matters twice and `_move_all`
-is where it is decided: mechs in route order, then squads in field order.
+(BLOCKED), routes that will be rejected (NO ROUTE). Mechs move in plot order and routes are planned in that order
+(`Battlefield.with_plan`: earlier machines at their destinations, later ones where they
+stand), so Resolve never rejects a route; a re-plot or clear drops any later route it now
+blocks, with a log line (`Battle._drop_conflicts`). Squads plan and move after, in field order, each intent routed around where the squads
+before it will end (`compute_intents`), so a squad never stops short of another squad.
 Resolve plays the movement phase (`play_moves`: mechs then squads along the paths they
 actually took, `MOVE_SECONDS_PER_HEX`; `Map3D.set_anim` moves the model and turns it to
 its heading) and only then opens the skirmish; headless skips the play. `map_tuner.gd` (TUNE on the battle screen) is
@@ -109,6 +112,5 @@ ground level.
    per-frame cost of the map.
 
 **Known rough edges.** Codex stat labels cut off on Ryan's device once, not reproduced.
-Routes are tap-to-destination only; a route through another mech's hex is rejected at
-resolve time unless that mech moves first. The skirmish's Back button reads "BACK" even
+Routes are tap-to-destination only. The skirmish's Back button reads "BACK" even
 when it returns to the battlefield. Double-tap on the map shows the readout, not a codex.

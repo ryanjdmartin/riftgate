@@ -186,16 +186,33 @@ func _search(u: Unit) -> Array:
 ## Where each squad intends to go this phase. Paths ignore mechs, so what the player sees is
 ## "where they go unless you stop them". Other squads' current hexes are avoided.
 func compute_intents() -> void:
+	# Squads plan in field order, each around where the squads before it will end and
+	# where the ones after it stand now (Ryan, 22 September), so a squad routes around a
+	# hex another is taking instead of walking into it and stopping short. The same order
+	# moves them at resolve, so an intent plays as shown unless a mech blocks it.
 	intents.clear()
+	var ends: Dictionary = {}   # squad id -> hexes it will hold, for the squads after it
 	for sq in squads():
 		var target := _pick_target(sq)
 		var blocked := {}
 		for other in squads():
-			if other != sq:
-				for h in other.hexes():
-					blocked[h] = true
+			if other == sq:
+				continue
+			var held: Array = ends[other.id] if ends.has(other.id) else other.hexes()
+			for h in held:
+				blocked[h] = true
 		var full := map.find_path(sq.pos, target, sq.traits, blocked)
-		intents[sq.id] = _affordable(sq, full)
+		var path := _affordable(sq, full)
+		intents[sq.id] = path
+		var end: Vector2i = sq.pos
+		for step in path:
+			if map.gate_hexes.has(step) or (unit_at(step) != null and unit_at(step).is_player()):
+				break   # a strike, not a move
+			end = step
+		var held_now: Array = []
+		for o in sq.footprint:
+			held_now.append(end + o)
+		ends[sq.id] = held_now
 
 
 func _pick_target(sq: Unit) -> Vector2i:
@@ -274,6 +291,10 @@ func preview_phase(routes: Dictionary) -> Dictionary:
 ## squad stops short of a hex another squad has already taken. `dry` skips the gate
 ## damage and the log.
 func _move_all(routes: Dictionary, result: PhaseResult, dry: bool) -> void:
+	# Mechs first, in the order the player plotted them (the dictionary's order). Routes
+	# are planned in that same order against where earlier machines will be (Ryan, 22
+	# September: don't let a destination be chosen that an earlier move blocks), so a
+	# route is never rejected here in play; the branch stays as a guard.
 	for uid in routes.keys():
 		var u := unit_by_id(uid)
 		if u == null or not u.is_player() or u.is_static():
@@ -287,6 +308,30 @@ func _move_all(routes: Dictionary, result: PhaseResult, dry: bool) -> void:
 				log.append("%s: route rejected" % u.display_name)
 	for sq in squads():
 		_execute_squad(sq, result, dry)
+
+
+## Run `fn` with the machines that move before `u` (earlier in `routes`, or all of them
+## when `u` has no route yet) standing at their destinations, then put them back. This is
+## the view a route is planned in, so plotting in order can never conflict at resolve.
+func with_plan(u: Unit, routes: Dictionary, fn: Callable) -> Variant:
+	var saved: Dictionary = {}
+	var before := not routes.has(u.id)
+	for uid in routes.keys():
+		if uid == u.id:
+			before = false
+			continue
+		if not before:
+			continue
+		var o := unit_by_id(uid)
+		var r: Array = routes[uid]
+		if o == null or r.is_empty():
+			continue
+		saved[uid] = o.pos
+		o.pos = r[r.size() - 1]
+	var out: Variant = fn.call()
+	for uid in saved.keys():
+		unit_by_id(uid).pos = saved[uid]
+	return out
 
 
 func _apply_route(u: Unit, route: Array) -> bool:
