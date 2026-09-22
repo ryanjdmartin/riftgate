@@ -69,15 +69,7 @@ var _details_label: Label
 var _details_faces: FaceListView
 var _details_status: StatusListView
 var _roll_label: Label
-var _codex_shade: Control
-var _codex: HudPanel
-var _codex_title: Label
-var _codex_sub: Label
-var _codex_sprite: TextureRect
-var _codex_body: Label
-var _codex_designation: HudButton   # a stamped tag, not a label, so the plate does not read as three stacked lines
-var _codex_stats: StatBlock
-var _codex_view: MechView3D = null   # the spinning model, when mechs are 3D
+var _codex: CodexBox                 # the spec plate, shared with the battle screen
 var _mech_3d: Array[MechView3D] = [] # parallel to _mech_views; null where the mech is a sprite
 var _bg: HudBackdrop = null
 
@@ -95,11 +87,6 @@ func _process(_delta: float) -> void:
 		if v.size.y <= 0.0:
 			continue
 		view.set_sweep_screen((y - v.position.y) * float(view.size.y) / v.size.y)
-var _codex_actions: Label
-var _codex_passive: Label
-var _codex_faces: FaceListView
-var _codex_modifiers: Label            # every live effect on the mech, on the die screen
-var _codex_flavour: Label
 var _confirm_shade: Control
 var _confirm: HudPanel
 var _confirm_text: Label
@@ -444,97 +431,9 @@ func _toggle_log_full() -> void:
 
 
 func _build_codex() -> void:
-	# Codex: a double-tap opens it; a tap anywhere outside closes it. Head-on sprite top-right,
-	# across from the name.
-	var shade := ColorRect.new()
-	shade.color = Color(0, 0, 0, 0.6)
-	_codex_shade = shade
-	_codex_shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_codex_shade.mouse_filter = Control.MOUSE_FILTER_STOP
-	_codex_shade.visible = false
-	_codex_shade.gui_input.connect(func(e: InputEvent) -> void:
-		if e is InputEventMouseButton and e.pressed:
-			_close_codex())
-	add_child(_codex_shade)
-	_codex = HudPanel.new(24.0)
-	_codex.custom_minimum_size = Vector2(640, 0)
-	_codex.visible = false
-	_place(_codex, Vector2(40, 150), Vector2(640, 0))
-	var cv := VBoxContainer.new()
-	cv.add_theme_constant_override("separation", 10)
-	_codex.add_child(cv)
-	var top := HBoxContainer.new()
-	top.add_theme_constant_override("separation", 16)
-	cv.add_child(top)
-	var head := VBoxContainer.new()
-	head.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	head.add_theme_constant_override("separation", 4)
-	top.add_child(head)
-	# Name plate: the maker's designation as a stamped tag, the nickname big in quotes, then
-	# maker and silhouette as the subtitle. Like a spec plate on the hull.
-	_codex_designation = _tag("", 12, true)
-	_codex_designation.custom_minimum_size = Vector2(0, 24)
-	_codex_designation.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	_codex_title = Hud.label("", 34, Palette.INK, Hud.display_bold())
-	_codex_sub = Hud.label("", 13, Color(Palette.HUD, 0.8), Hud.mono())
-	_codex_sub.autowrap_mode = TextServer.AUTOWRAP_WORD
-	_codex_sub.custom_minimum_size = Vector2(340, 0)
-	_codex_sub.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	head.add_child(_codex_designation)
-	head.add_child(_codex_title)
-	head.add_child(_codex_sub)
-	_codex_sprite = TextureRect.new()
-	_codex_sprite.custom_minimum_size = Vector2(200, 240)    # the corner portrait, top-right
-	_codex_sprite.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	_codex_sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	_codex_sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	_codex_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	_codex_sprite.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	top.add_child(_codex_sprite)
-	# The play half: the stat grid sits beside the portrait; the passive and any actions run
-	# full width under both, so they need not wrap around the picture; the faces run in two
-	# columns under that. A thin rule separates play from lore: codex text, then quote.
-	_codex_stats = StatBlock.new()
-	_codex_stats.custom_minimum_size = Vector2(340, 0)
-	_codex_stats.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_codex_passive = Hud.label("", 17, Palette.ACCENT)
-	_codex_actions = Hud.label("", 14, Palette.INK, Hud.mono())
-	_codex_body = Hud.label("", 19, Palette.INK)
-	_codex_faces = FaceListView.new()
-	_codex_faces.columns = 2
-	_codex_modifiers = Hud.label("", 14, Palette.INK, Hud.mono())
-	_codex_flavour = Hud.label("", 18, Palette.MUTED, Hud.quote())
-	# Wrapping labels need a width before their first layout pass, or they report the height
-	# of every word on its own line and the panel opens far too tall the first time.
-	var spacer := Control.new()
-	spacer.custom_minimum_size = Vector2(0, 10)
-	head.add_child(spacer)
-	head.add_child(_codex_stats)
-	for l in [_codex_passive, _codex_actions, _codex_modifiers]:
-		l.autowrap_mode = TextServer.AUTOWRAP_WORD
-		l.custom_minimum_size = Vector2(560, 0)
-		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	cv.add_child(_codex_passive)
-	cv.add_child(_codex_actions)
-	cv.add_child(_codex_faces)
-	cv.add_child(_codex_modifiers)
-	var rule := ColorRect.new()
-	rule.color = Color(Palette.HUD, 0.25)
-	rule.custom_minimum_size = Vector2(0, 1)
-	cv.add_child(rule)
-	for l in [_codex_body, _codex_flavour]:
-		l.autowrap_mode = TextServer.AUTOWRAP_WORD
-		l.custom_minimum_size = Vector2(560, 0)
-		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-		cv.add_child(l)
-	var gap := Control.new()   # air between the quote and the button
-	gap.custom_minimum_size = Vector2(0, 8)
-	cv.add_child(gap)
-	var close := HudButton.new("CLOSE", _close_codex)
-	close.custom_minimum_size = Vector2(0, 52)
-	cv.add_child(close)
+	# Codex: a double-tap opens it; a tap anywhere outside closes it (`CodexBox`).
+	_codex = CodexBox.new()
+	add_child(_codex)
 
 
 func _build_confirm() -> void:
@@ -1078,75 +977,17 @@ func _on_mech_double_tapped(i: int) -> void:
 	_open_codex(entry)
 
 
-## Fill and show the codex. Entry keys: title, subtitle, body, stats, actions, passive, faces
-## (Array of Face), current (index), flavour, sprite_id (a chassis or foe id).
+## Fill and show the codex (see `CodexBox` for the entry keys).
 func _open_codex(entry: Dictionary) -> void:
 	_details.visible = false
 	_hold_foe = null
 	_hold_mech = -1
 	_refresh_arrows()
-	var designation := str(entry.get("designation", "")).to_upper()
-	# A mech with a designation gets its nickname in quotes; a foe or a die keeps its name plain.
-	_codex_title.text = ("“%s”" % str(entry.get("title", ""))) if not designation.is_empty() else str(entry.get("title", ""))
-	_codex_sub.text = str(entry.get("subtitle", ""))
-	_codex_designation.text = designation
-	_codex_designation.custom_minimum_size.x = Hud.mono().get_string_size(designation, HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x + 30.0
-	_codex_designation.visible = not designation.is_empty()
-	_codex_designation.queue_redraw()
-	var sid := str(entry.get("sprite_id", ""))
-	var tex: Texture2D = null
-	if _codex_view != null:
-		_codex_view.queue_free()
-		_codex_view = null
-	var look := MechView3D.look_setting()
-	if not sid.is_empty() and (look == "pixel" or look == "clean") and MechView3D.has_model(sid):
-		# Mechs in 3D: the codex gets the model itself, turning slowly.
-		var maker := str(ContentDB.load_default().chassis.get(sid, {}).get("maker", "minerva"))
-		var paint: Dictionary = entry.get("paint", {})
-		_codex_view = MechView3D.make(sid, maker, "clean", "badger", MechView3D.YAW_FRONT, Vector2i(200, 240), true, paint)
-		add_child(_codex_view)
-		tex = _codex_view.texture
-	elif not sid.is_empty():
-		tex = Sprites.combat_mech(sid, "front")
-		if tex == null:
-			tex = Sprites.combat_foe(sid)
-	_codex_sprite.texture = tex
-	_codex_sprite.visible = tex != null
-	_codex_stats.set_items(entry.get("stat_items", []))
-	for pair in [[_codex_body, "body"], [_codex_actions, "actions"], [_codex_passive, "passive"]]:
-		var l: Label = pair[0]
-		l.text = str(entry.get(pair[1], ""))
-		l.visible = not l.text.is_empty()
-	var faces: Array = entry.get("faces", [])
-	_codex_faces.visible = not faces.is_empty()
-	_codex_faces.columns = int(entry.get("face_columns", 2))
-	_codex_faces.labels = entry.get("face_labels", [])
-	if not faces.is_empty():
-		_codex_faces.set_faces(faces, int(entry.get("current", -1)))
-	_codex_modifiers.text = str(entry.get("modifiers", ""))
-	_codex_modifiers.visible = not _codex_modifiers.text.is_empty()
-	var quote := str(entry.get("flavour", ""))
-	_codex_flavour.text = "“%s”" % quote if not quote.is_empty() else ""
-	_codex_flavour.visible = not quote.is_empty()
-	_codex_shade.visible = true
-	_codex.visible = true
-	_fit_codex()
-	# Wrapping labels report their true height only after a layout pass at the panel's
-	# width, so the first open used to come out the wrong size. Fit again once that has run.
-	_fit_codex.call_deferred()
-
-
-func _fit_codex() -> void:
-	_codex.reset_size()
-	_codex.size = Vector2(640, _codex.get_combined_minimum_size().y)
+	_codex.open(entry)
 
 
 func _close_codex() -> void:
-	_codex.visible = false
-	_codex_shade.visible = false
-	if _codex_view != null:
-		_codex_view.queue_free()
-		_codex_view = null
+	_codex.close()
 
 
 func _toggle_all_arrows(on: bool) -> void:

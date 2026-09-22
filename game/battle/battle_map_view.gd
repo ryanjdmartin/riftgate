@@ -37,6 +37,7 @@ const TERRAIN := {
 var field: Battlefield
 var routes: Dictionary = {}          # mech id -> Array[Vector2i]
 var selected: Unit = null
+var pending: Array = []              # contact groups waiting to be fought: the map freezes on them
 var destinations: Dictionary = {}    # hexes the selected mech may end on
 var scroll_y: float = 0.0            # the map's offset on screen, in pixels
 var scroll_x: float = 0.0
@@ -352,7 +353,7 @@ func _draw() -> void:
 	# run that finds the contacts (Ryan, 22 September: a route that cuts a squad off shows
 	# in that squad's path), and none at all while a move is playing.
 	var contact_hexes: Dictionary = {}
-	if _anim.is_empty():
+	if _anim.is_empty() and pending.is_empty():
 		var pv := _preview()
 		var res: Battlefield.PhaseResult = pv["result"]
 		for group in res.skirmishes:
@@ -395,10 +396,24 @@ func _draw() -> void:
 			prev = p
 		Hud.stroke_poly(self, Hex.corners(prev, HEX_SIZE * 0.45), hud, 2.0)
 
+	# Contacts waiting to be fought (Ryan, 22 September): the map freezes on them, the
+	# units about to engage lit, and nothing of the next phase shows until they are done.
+	if not pending.is_empty() and _anim.is_empty():
+		for group in pending:
+			var mid := Vector2.ZERO
+			var top_y := INF
+			var lit := _highlight.is_empty() or _highlight.has((group[0] as Unit).pos)
+			for u in group:
+				var c := center(u.pos)
+				mid += c
+				top_y = minf(top_y, c.y)
+				_contact_effect(c, lit)
+			mid /= float(group.size())
+			_plaque(Vector2(mid.x, top_y - HEX_SIZE * 0.95), "CONTACT // " + contact_text(group), Palette.ENEMY, 2.0)
 	# The plan as it will resolve, from the resolver itself run dry (Ryan, 21 September:
 	# never ambiguous): every contact group, every squad stopped by a body block, every
 	# route that will be rejected.
-	if _anim.is_empty():
+	if _anim.is_empty() and pending.is_empty():
 		var pv := _preview()
 		var res: Battlefield.PhaseResult = pv["result"]
 		var ends: Dictionary = pv["ends"]

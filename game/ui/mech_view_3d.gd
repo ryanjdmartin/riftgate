@@ -184,12 +184,7 @@ func _setup(chassis_id: String, maker: String) -> void:
 		if spin:
 			# The codex: black ink only, no silhouette, no scan (Ryan, 22 September).
 			_trace_mat = TraceLines.ink_material()
-			for child in _model.find_children("*", "MeshInstance3D", true, false):
-				var mi: MeshInstance3D = child
-				for i in range(mi.get_surface_override_material_count()):
-					var sm := mi.get_surface_override_material(i)
-					if sm is BaseMaterial3D and "stencil_mode" in sm:
-						sm.set("stencil_mode", BaseMaterial3D.STENCIL_MODE_DISABLED)
+			strip_silhouette()
 		elif tmode == "pulse":
 			_trace_mat = TraceLines.pulse_material(Palette.HUD)
 		elif TraceLines.inked(tmode, "asset"):
@@ -462,6 +457,19 @@ var _target := Vector3.ZERO
 var _screen_down := Vector3.ZERO
 
 ## The screen's scan bar, in this view's own pixels from its top: the traces under it light.
+## Drop the light outline from every material: the codex and the portraits (Ryan, 22
+## September) show the machine bare.
+func strip_silhouette() -> void:
+	if _model == null:
+		return
+	for child in _model.find_children("*", "MeshInstance3D", true, false):
+		var mi: MeshInstance3D = child
+		for i in range(mi.get_surface_override_material_count()):
+			var sm := mi.get_surface_override_material(i)
+			if sm is BaseMaterial3D and "stencil_mode" in sm:
+				sm.set("stencil_mode", BaseMaterial3D.STENCIL_MODE_DISABLED)
+
+
 func set_sweep_screen(local_y: float) -> void:
 	if _trace_mat == null or not (_trace_mat is ShaderMaterial) or _camera == null:
 		return

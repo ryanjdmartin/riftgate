@@ -115,6 +115,9 @@ static func _default_battle() -> Battle:
 
 # ---------------------------------------------------------------- build
 
+var _codex: CodexBox = null
+
+
 func _build() -> void:
 	for c in get_children():
 		c.queue_free()
@@ -176,6 +179,8 @@ func _build() -> void:
 	_details.add_child(_details_label)
 	# One scan bar over the whole screen, on the top layer: it crosses the map and the
 	# controls alike, and whatever geometry lies under it lights (Ryan, 21 September).
+	_codex = CodexBox.new()
+	add_child(_codex)
 	_scan = ScanBar.new()
 	_scan.map = _map
 	_scan.map_y = MAP_Y
@@ -242,6 +247,7 @@ func _refresh() -> void:
 		_:
 			_sub_label.text = "BATTLE OVER"
 	_map.routes = battle.routes
+	_map.pending = battle.pending if battle.state == Battle.State.SKIRMISH else []
 	_map.queue_redraw()
 	_refresh_log()
 	_resolve_btn.set_enabled(planning)
@@ -277,7 +283,13 @@ func _on_hex_tapped(h: Vector2i) -> void:
 		return
 	_details.visible = false
 	var u := battle.field.unit_at(h)
-	if u != null and u.is_player() and not u.is_static():
+	if _map.selected != null and u != _map.selected and _map.destinations.has(h):
+		# A hex a machine plotted earlier is leaving is a destination too (Ryan, 22
+		# September): plotting in order makes it free, so the tap routes there rather
+		# than selecting the machine still drawn on it.
+		battle.set_route(_map.selected, h)
+		_select(null)
+	elif u != null and u.is_player() and not u.is_static():
 		if _map.selected == u:
 			battle.clear_route(u.id)
 			_select(null)
@@ -334,14 +346,33 @@ func _toggle_tuner() -> void:
 		_tuner.visible = not _tuner.visible
 
 
-## Double-tap a unit for its codex. The battle screen has no codex of its own yet, so for
-## now it shows the full readout; the skirmish's codex is the one to host here.
+## Double-tap a unit for its codex (Ryan, 22 September: the player needs that on the map
+## as much as in the fight). A machine's entry is its own; a squad's is its foe type's,
+## headed by the squad.
 func _on_hex_double_tapped(h: Vector2i) -> void:
-	if battle.state != Battle.State.PLAN:
+	if battle.state == Battle.State.DONE:
 		return
 	var u := battle.field.unit_at(h)
-	if u != null:
-		_on_unit_held(u)
+	if u == null:
+		return
+	_details.visible = false
+	_codex.move_to_front()
+	_codex.open(codex_entry_for(u))
+
+
+static func codex_entry_for(u: Unit) -> Dictionary:
+	var db := ContentDB.load_default()
+	if u.is_player():
+		var entry := db.codex_for_unit(u)
+		entry["paint"] = u.paint
+		return entry
+	var fid := BattleMapView.foe_sprite_id(u)
+	if not db.foes.has(fid):
+		return {"title": u.display_name, "subtitle": str(u.faction).to_upper(), "body": ""}
+	var entry := db.codex_for_foe(db.make_foe(fid))
+	entry["title"] = u.display_name
+	entry["subtitle"] = "%s // %s" % [entry["subtitle"], ("BOSS" if u.elite else "×%d // MOVE %d" % [u.strength, u.movespeed])]
+	return entry
 
 
 ## Readout beside a point on the screen, kept inside the frame.
@@ -529,6 +560,7 @@ func _portrait_mech(u: Unit, db: ContentDB) -> Control:
 	var maker := str(db.chassis.get(u.chassis_id, {}).get("maker", "minerva"))
 	var view := MechView3D.make(u.chassis_id, maker, "clean", "badger", MechView3D.YAW_FRONT, Vector2i(96, 96), false, u.paint)
 	add_child(view)
+	view.strip_silhouette()
 	var tr := TextureRect.new()
 	tr.texture = view.texture
 	tr.custom_minimum_size = Vector2(96, 96)
@@ -544,7 +576,11 @@ func _portrait_squad(u: Unit) -> Control:
 	var box := VBoxContainer.new()
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
 	var tr := TextureRect.new()
-	tr.texture = Sprites.map_foe(BattleMapView.foe_sprite_id(u))
+	var fid := BattleMapView.foe_sprite_id(u)
+	tr.texture = Sprites.combat_foe(fid)   # the battle sprite, as the skirmish shows it
+	if tr.texture == null:
+		tr.texture = Sprites.map_foe(fid)
+	tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	tr.custom_minimum_size = Vector2(96, 96)
 	tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	tr.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST

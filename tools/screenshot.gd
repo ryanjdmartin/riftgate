@@ -83,7 +83,8 @@ func _apply_pose() -> void:
 
 
 ## Battle screen poses: select (a mech and its reach), route (two routes plotted), hold (a
-## squad's readout), resolve (one phase run), contact (a skirmish open over the map).
+## squad's readout), codex / foecodex (a machine's or a squad's entry), resolve (one
+## phase run), contact (a skirmish open over the map).
 func _apply_battle_pose() -> void:
 	var s: BattleScreen = _node
 	var b := s.battle
@@ -122,6 +123,10 @@ func _apply_battle_pose() -> void:
 			# Zoomed in twice on the first (or last) mech, panned so it sits mid-screen.
 			s._map.zoom_at(s._map.size * 0.5, 2.4)
 			s._map.scroll_to_unit(b.mechs()[0] if _pose == "zoom" else b.mechs()[b.mechs().size() - 1])
+		"codex":
+			s._on_hex_double_tapped(b.mechs()[0].pos)
+		"foecodex":
+			s._on_hex_double_tapped(b.field.squads()[0].pos)
 		"resolve":
 			s._on_resolve()
 		"contact":

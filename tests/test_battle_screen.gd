@@ -156,3 +156,41 @@ func test_gate_falling_shows_the_outcome() -> void:
 	assert_eq(s._overlay_title.text, "GATE FALLEN", "title")
 	assert_true(s._resolve_btn.disabled, "no more phases")
 	s.free()
+
+
+func test_double_tap_opens_the_codex_for_a_machine_and_a_squad() -> void:
+	var s := _screen()
+	var m: Unit = s.battle.mechs()[0]
+	s._on_hex_double_tapped(m.pos)
+	assert_true(s._codex.visible, "the codex opens for a machine")
+	assert_true(s._codex._faces.visible, "with its die listed")
+	s._codex.close()
+	assert_false(s._codex.visible, "and closes")
+	var sq: Unit = s.battle.field.squads()[0]
+	s._on_hex_double_tapped(sq.pos)
+	assert_true(s._codex.visible, "the codex opens for a squad")
+	assert_eq(s._codex._title.text, sq.display_name, "headed by the squad")
+	assert_true(s._codex._sub.text.contains("×%d" % sq.strength), "with its strength in the subtitle")
+	assert_true(not s._codex._body.text.is_empty(), "and its foe type's codex text")
+	s._codex.close()
+	s.free()
+
+
+func test_a_tap_routes_onto_a_hex_an_earlier_machine_is_leaving() -> void:
+	# Ryan, 22 September: plotting in order frees the hex; the tap must route there, not
+	# select the machine still drawn on it.
+	var s := _screen()
+	var a: Unit = s.battle.mechs()[0]
+	var b: Unit = s.battle.mechs()[1]
+	var a_from := a.pos
+	s._on_hex_tapped(a.pos)
+	var dests: Array = s._map.destinations.keys()
+	s._on_hex_tapped(dests[0])
+	assert_true(s.battle.routes.has(a.id), "A plotted away")
+	s._on_hex_tapped(b.pos)
+	if s._map.destinations.has(a_from):
+		s._on_hex_tapped(a_from)
+		assert_true(s.battle.routes.has(b.id), "B's route set by the tap on A's old hex")
+		var r: Array = s.battle.routes[b.id]
+		assert_eq(r[r.size() - 1], a_from, "and it ends there")
+	s.free()

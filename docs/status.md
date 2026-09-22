@@ -94,12 +94,18 @@ the change breaks is dropped with a log line (`Battle._drop_conflicts`). A boss 
 the rift (`_pick_target`, picked by phase so the preview holds); the multi-hex footprint
 stays in the engine (`Unit.TRIANGLE`) for later. Squads plan and move after, in field order, each intent routed around where the squads
 before it will end (`compute_intents`), so a squad never stops short of another squad.
-After the movement phase, a CONTACT warning flashes, then the contact panel slides up
+While contacts are pending the map freezes on them (`BattleMapView.pending`: the fights
+lit, nothing of the next phase drawn). After the movement phase, a CONTACT warning flashes, then the contact panel slides up
 (`_show_contacts` then `_build_contact_panel`: one contact at a time with `MechView3D`
 and foe-sprite portraits, arrows to page, ENGAGE; paging zooms the map to that fight via
 `focus_on` and lights its hexes via `set_highlight`; `Battle.open_skirmish_at`), and
-nothing opens until the player picks. Contact tags name the units (`contact_text`), kept
-on screen when zoomed. The bleed's squad sources follow the movement animation
+nothing opens until the player picks; portraits carry no silhouette
+(`MechView3D.strip_silhouette`) and foes use their battle sprite. Contact tags name the
+units (`contact_text`), kept on screen when zoomed. The codex is a shared box
+(`game/ui/codex_box.gd`, `CodexBox.open(entry)`), on both screens: double-tap a unit on
+the map (`BattleScreen.codex_entry_for`: a machine's own entry, a squad's foe type headed
+by the squad). A tap on a destination wins over the machine still drawn there, so a
+route can end where an earlier-plotted machine is leaving. The bleed's squad sources follow the movement animation
 (`Bleed.sources(..., moving)`). Resolve plays the movement phase (`play_moves`, which first parks every mover at its
 start so nobody blinks to the end: mechs then squads along the paths they
 actually took, `MOVE_SECONDS_PER_HEX`; `Map3D.set_anim` moves the model and turns it to
@@ -135,8 +141,7 @@ ground level.
    disable and rapid on foes and components; Ablative Plating as armour or shield; line
    versus "direct"; the Badger's loadout and claw numbers; Aphelion and the Arsenal; CARE's
    voice.
-3. The map, next: the codex hosted on the battle screen; an
-   outline for units behind tall columns; joint idle for grounded units once joints exist;
+3. The map, next: an outline for units behind tall columns; joint idle for grounded units once joints exist;
    the contact transition (camera flattening into the skirmish); whether squads leave
    corruption in their wake; tune every knob with all three chrome colours; delete the
    dead sprite loaders (`Sprites.combat_mech`/`map_mech`, the skirmish's sprite fallback,
@@ -156,4 +161,4 @@ ground level.
 
 **Known rough edges.** Codex stat labels cut off on Ryan's device once, not reproduced.
 Routes are tap-to-destination only. The skirmish's Back button reads "BACK" even
-when it returns to the battlefield. Double-tap on the map shows the readout, not a codex.
+when it returns to the battlefield. 
