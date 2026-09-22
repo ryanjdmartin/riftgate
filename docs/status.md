@@ -21,7 +21,8 @@ light on every edge). `tools/lowforge/` builds every model by code from a brief;
 `tools/screenshot.gd` poses either screen (`README.md` lists the poses);
 `tools/perf_probe.gd` measures the map; the `map_tuner` knobs are behind
 `RIFTGATE_TUNE=1`. `docs/design-bible.html` records every decision; section 12 is the
-roadmap. `docs/vocabulary.md` is generated from content.
+roadmap; it is published at https://claude.ai/artifact/RtmTzY3FX9seSgc4Ut11Ye (republish
+the file to that URL after a bible change). `docs/vocabulary.md` is generated from content.
 
 **What the game does today.** A battle: the map shows every squad's intent and the exact
 result of the plan before Resolve (the resolver run dry): contacts, blocks, zones of
