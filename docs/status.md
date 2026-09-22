@@ -175,7 +175,7 @@ and foe-sprite portraits, arrows to page, ENGAGE; paging zooms the map to that f
 nothing opens until the player picks. The ground a contact is fought on is the squad's hex, the first
 squad in field order with several (`Battle.ground_hex`, `ground_terrain`; decided 22
 September): the skirmish's terrain, the handover's spread, the panel's "GROUND // RUINS"
-line, the map plaque's "ON RUINS" and the skirmish header all use that one rule. ENGAGE plays the handover (`_play_handover`,
+line, the map plaque's "// RUINS" and the skirmish header all use that one rule. ENGAGE plays the handover (`_play_handover`,
 decided 22 September): the map dives to full zoom on the contact while one more bleed
 source grows out of the ground hex (`BattleMapView.flatten_at` / `flatten_r`) until the ground
 there is flat and bright with the machines still standing in it, a cut to black, and the

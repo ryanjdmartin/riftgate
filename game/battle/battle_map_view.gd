@@ -754,7 +754,7 @@ func contact_label(group: Array, ends: Dictionary = {}) -> String:
 				ground_h = ends[u.id]
 				break
 	var t: int = field.map.terrain.get(ground_h, BattleMap.Terrain.PLAIN)
-	return "%s // ON %s" % [contact_text(group), str(BattleMap.TERRAIN_NAMES.get(t, "plain")).to_upper()]
+	return "%s // %s" % [contact_text(group), str(BattleMap.TERRAIN_NAMES.get(t, "plain")).to_upper()]
 
 
 ## The frame's left and right lines in map pixels: the field plus a little, and the line
