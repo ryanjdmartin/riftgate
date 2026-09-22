@@ -23,7 +23,7 @@ uniform float zoom = 1.0;
 uniform vec2 grad = vec2(0.0, 1.0);          // y where the rift's bleed is total, y where it is gone
 uniform vec3 sources[32];                    // x, y, radius in map pixels
 uniform int source_count = 0;
-uniform sampler2D units : filter_nearest;    // the machines alone, drawn over both worlds
+uniform sampler2D units : filter_nearest;    // the machines alone: a mask where the scene wins
 uniform float cell = 4.0;                    // the dither's pixel step, on screen
 uniform float levels = 5.0;                  // posterize steps per channel on the flat side
 uniform float focus_y = 0.0;                 // map-pixel y of the screen's middle
@@ -138,11 +138,12 @@ void fragment() {
 	float tick = floor(TIME * 6.0);
 	float flick = step(0.997, fract(sin(band * 12.9898 + tick * 7.31) * 43758.5453)) * flicker;
 	other.rgb *= 1.0 - 0.12 * flick;
-	COLOR = (k > bayer(c)) ? other : scene;
-	// The machines ride over whichever world won: the reconstruction's own, never under
-	// the painting (Ryan, 22 September).
+	// Where a machine is, the reconstruction wins whatever the bleed says: the machines
+	// are its own and never go under the painting (Ryan, 22 September). The units layer
+	// is a mask only; the pixel comes from the scene, so the wall and the crags still
+	// stand in front of a machine behind them.
 	vec4 u = blurred_units(UV, 1.0 / view_size, rad);
-	COLOR.rgb = mix(COLOR.rgb, u.rgb, u.a);
+	COLOR = (k > bayer(c) && u.a < 0.5) ? other : scene;
 	float luma = dot(COLOR.rgb, vec3(0.299, 0.587, 0.114));
 	COLOR.rgb = mix(vec3(luma), COLOR.rgb, saturation) * brightness;
 	// No fade to black at the sides: the blur alone is the edge of what the table resolves.

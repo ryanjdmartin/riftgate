@@ -148,8 +148,9 @@ in screen terms and gets what it asked for. The grid runs every playable hex to 
 last edge; nothing is skipped for the wall (the lines once seen along its top were the
 zone outline, drawn in 2D). Enemy outlines are lined in black like the lines. The machines never go under the other world's painting: `Map3D` renders
 them again into a second viewport sharing its world (`UNITS_LAYER`, `_build_units_layer`,
-a camera copying the main one) and the compositor draws that texture over both worlds
-(`units` in `bleed.gdshader`); the earlier bleed holes are gone. `Map3D.COLLAPSE` is
+a camera copying the main one) and the compositor uses that texture as a mask where the
+scene wins over the painting (`units` in `bleed.gdshader`; the pixel is the scene's own,
+so the wall and the crags still stand in front of a machine behind them); the earlier bleed holes are gone. `Map3D.COLLAPSE` is
 false (a trial, 22 September): the ground keeps its true height under the bleed and the
 painting sits over it at ground level, half up and half down; true collapses columns
 and structures as before. Machines keep their
