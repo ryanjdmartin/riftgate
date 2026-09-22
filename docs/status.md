@@ -4,7 +4,7 @@ Handoff note for the next session. Replace stale lines; keep it under a screen.
 
 ## As of 22 September 2026
 
-**State.** Everything committed. Tests: 176 tests, 2382 checks, green. Ryan writes
+**State.** Everything committed. Tests: 177 tests, 2387 checks, green. Ryan writes
 `content/*.json` in his own voice (reload after any pass that touches it). The rules are in
 `docs/vocabulary.md` (generated) and every decision in `docs/design-bible.html`; the
 vocabulary carries an `order_of_operations` rule that the engine follows. Chassis ids:
@@ -152,9 +152,15 @@ in screen terms and gets what it asked for. The grid runs every playable hex to 
 last edge; nothing is skipped for the wall (the lines once seen along its top were the
 zone outline, drawn in 2D). Enemy outlines are lined in black like the lines. The machines never go under the other world's painting: `Map3D` renders
 them again into a second viewport sharing its world (`UNITS_LAYER`, `_build_units_layer`,
-a camera copying the main one) and the compositor uses that texture as a mask where the
-scene wins over the painting (`units` in `bleed.gdshader`; the pixel is the scene's own,
-so the wall and the crags still stand in front of a machine behind them); the earlier bleed holes are gone. `Map3D.COLLAPSE` is
+a camera copying the main one); one rule in the compositor (`units` in
+`bleed.gdshader`): under the painting the geometry is gone, so a machine there is drawn
+from its own layer with nothing in front of it, and the layer's translucent part (a
+flyer's shadow) falls on the painting; on the reconstruction the scene's pixel wins with
+its real depth, so the wall and crags stand in front of a machine behind them. A flyer's
+height is keyed to the same threshold (`solid` in `Map3D.sync`: full clearance of props
+wherever the reconstruction shows, level over the painting), eased between hexes
+(`_fly_y`); its shadow disc is drawn without depth, so a prop never swallows it. Nothing
+resolves, routes or taps while a move plays (`BattleMapView.is_playing`, the buttons grey); the earlier bleed holes are gone. `Map3D.COLLAPSE` is
 false (a trial, 22 September): the ground keeps its true height under the bleed and the
 painting sits over it at ground level, half up and half down; true collapses columns
 and structures as before. Machines keep their

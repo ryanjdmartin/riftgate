@@ -787,6 +787,10 @@ var _anim_queue: Array = []     # [[moves], ...] phases still to play: mechs, th
 var _anim_done: Callable = Callable()
 
 
+func is_playing() -> bool:
+	return not _anim.is_empty() or not _anim_queue.is_empty()
+
+
 ## Play the phase's moves: the mechs along their routes, then the squads along their
 ## intents, then `done`. Each move is [unit id, Array of hexes from start to end].
 func play_moves(mech_moves: Array, squad_moves: Array, done: Callable) -> void:

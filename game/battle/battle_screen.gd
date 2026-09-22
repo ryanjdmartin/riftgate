@@ -262,8 +262,8 @@ func _refresh() -> void:
 	_map.pending = battle.pending if battle.state == Battle.State.SKIRMISH else []
 	_map.queue_redraw()
 	_refresh_log()
-	_resolve_btn.set_enabled(planning)
-	_clear_btn.set_enabled(planning and not battle.routes.is_empty())
+	_resolve_btn.set_enabled(planning and not _map.is_playing())
+	_clear_btn.set_enabled(planning and not battle.routes.is_empty() and not _map.is_playing())
 
 
 func _refresh_log() -> void:
@@ -291,7 +291,7 @@ func _select(u: Unit) -> void:
 ## Tap a mech to select it; tap a lit hex to plot its route; tap the selected mech again to
 ## clear its route; tap anything else to deselect.
 func _on_hex_tapped(h: Vector2i) -> void:
-	if battle.state != Battle.State.PLAN:
+	if battle.state != Battle.State.PLAN or _map.is_playing():
 		return
 	_details.visible = false
 	var u := battle.field.unit_at(h)
@@ -469,8 +469,8 @@ func _on_clear() -> void:
 
 
 func _on_resolve() -> void:
-	if battle.state != Battle.State.PLAN:
-		return
+	if battle.state != Battle.State.PLAN or _map.is_playing():
+		return   # a second Resolve while the move plays would resolve the next phase over it
 	_select(null)
 	_details.visible = false
 	# Capture where everyone meant to go, resolve, then play what actually happened: each
@@ -501,6 +501,7 @@ func _on_resolve() -> void:
 		_after_step()
 	else:
 		_map.play_moves(mech_moves, squad_moves, _after_step)
+		_refresh()   # the buttons grey until the move has played
 
 
 func _after_step() -> void:

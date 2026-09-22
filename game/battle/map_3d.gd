@@ -908,13 +908,16 @@ func sync() -> void:
 			# world has taken, the painting is flat, so it flies level with it, and the
 			# height it flies at eases between hexes rather than stepping (Ryan, the same day).
 			var under_px: Vector2 = _origin + (_anim_px[u.id] if _anim_px.has(u.id) else Hex.to_pixel(u.pos, hex_px))
-			var standing := Bleed.standing(Bleed.at(under_px, grad, src))
+			# Whether the ground here is still the reconstruction's: the same threshold the
+			# compositor paints at, so the flyer clears the geometry wherever it can be seen
+			# and flies level only where the painting has taken it.
+			var solid := 1.0 - smoothstep(0.42, 0.58, Bleed.at(under_px, grad, src))
 			var clear := maxf(0.0, float(_top.get(under, 0.0)) - _height_of(under) + 6.0 - HOVER)
-			var want := (_height_of(under) + clear) * standing
+			var want := (_height_of(under) + clear) * solid
 			var prev: float = _fly_y.get(u.id, want)
 			y = lerpf(prev, want, 1.0 - exp(-_dt * 7.0))
 			_fly_y[u.id] = y
-			ground_y = _height_of(under) * standing
+			ground_y = _height_of(under) * solid
 		if _anim_px.has(u.id):
 			_base[u.id] = _world(_anim_px[u.id], y)
 			if _shadows.has(u.id):
@@ -1010,6 +1013,8 @@ func _make_unit(u: Unit) -> Node3D:
 			sm.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 			sm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			sm.albedo_color = Color(0.0, 0.0, 0.0, 0.45)
+			sm.no_depth_test = true   # a soft disc on whatever is below, never lost inside a prop
+			sm.render_priority = 2
 			sh.material_override = sm
 			sh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 			add_child(sh)

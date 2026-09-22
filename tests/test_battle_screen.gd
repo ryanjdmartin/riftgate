@@ -229,3 +229,21 @@ func test_the_menu_opens_and_the_settings_persist() -> void:
 	s._menu.close()
 	assert_false(s._menu.is_open(), "resume closes it")
 	s.free()
+
+
+func test_nothing_resolves_or_routes_while_a_move_plays() -> void:
+	var s := _screen()
+	var m: Unit = s.battle.mechs()[0]
+	s._map._anim_queue = [[]]   # a move in flight, as far as the screen knows
+	assert_true(s._map.is_playing(), "the map is playing")
+	var phase := s.battle.field.phase
+	s._on_resolve()
+	assert_eq(s.battle.field.phase, phase, "Resolve does nothing while the move plays")
+	s._on_hex_tapped(m.pos)
+	assert_eq(s._map.selected, null, "nor does a tap")
+	s._refresh()
+	assert_true(s._resolve_btn.disabled, "and the button is greyed")
+	s._map._anim_queue = []
+	s._refresh()
+	assert_false(s._resolve_btn.disabled, "until it is done")
+	s.free()
