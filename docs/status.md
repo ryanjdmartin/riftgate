@@ -1,283 +1,72 @@
 # Status
 
-Handoff note for the next session. Replace stale lines; keep it under a screen.
+Handoff note for the next session. Replace stale lines; keep it under a screen. How a
+thing works lives in its file's comments; why it is that way lives in the bible.
 
 ## As of 22 September 2026
 
-**State.** Everything committed. Tests: 177 tests, 2387 checks, green. Ryan writes
-`content/*.json` in his own voice (reload after any pass that touches it). The rules are in
-`docs/vocabulary.md` (generated) and every decision in `docs/design-bible.html`; the
-vocabulary carries an `order_of_operations` rule that the engine follows. Chassis ids:
-`badger`, `clydesdale`, `sparrowhawk`, `anvil`.
+**State.** Everything committed. Tests: 177 tests, 2387 checks, green (`perl -e 'alarm
+240; exec @ARGV' godot --headless --path . -s tests/run_tests.gd`). Ryan sometimes runs a
+second session on this repo at the same time: check `git status` before committing and
+stage by path. Chassis ids: `badger`, `clydesdale`, `sparrowhawk`, `anvil`. Ryan writes
+`content/*.json` in his own voice; tests never hardcode an entry's passive name.
 
-**Setting, decided (bible 1 and 7).** The Council; the player commands CARE; the Arsenal is
-the Council's R&D house; five makers at most (Minerva, Kestrel, Wainwright & Sutler,
-Aphelion, the Arsenal), three in content. The city sits under a field and the gate is its
-projector (20 September). The battlefield screen is CARE's tactical reconstruction, and it
-looks like the commander's holographic display, over the top like the HUD (21 September).
+**Where things are.** `sim/` is the headless game (battle map, battlefield resolver,
+battle loop, skirmish, effects pipeline, content DB). `game/battle/` is the battle screen
+and the map (`battle_map_view.gd` overlays and gestures, `map_3d.gd` the scene,
+`painted_map.gd` the other world, `bleed.gd` + `bleed.gdshader` the compositor that mixes
+them). `game/skirmish/` the fight. `game/ui/` the HUD kit, the shared codex box, the pause
+menu, `mech_view_3d.gd` (any model in a viewport) and `trace_lines.gd` (the display's
+light on every edge). `tools/lowforge/` builds every model by code from a brief;
+`tools/screenshot.gd` poses either screen (`README.md` lists the poses);
+`tools/perf_probe.gd` measures the map; the `map_tuner` knobs are behind
+`RIFTGATE_TUNE=1`. `docs/design-bible.html` records every decision; section 12 is the
+roadmap. `docs/vocabulary.md` is generated from content.
 
-**Rules that landed since the 18th.** Equipment: component, hardpoint, fixed; `Face` is the
-engine's name only. Shields block whole; withdraw costs one enemy turn; armour flat. The
-effects pipeline in `sim/effects.gd` (every number is a question). Water is fordable by
-everyone at a cost by trait (tracks 3, walker 2, hover 1; hover chokes on rubble); only a
-crag stops anyone but a flyer (`BattleMap.move_cost`, `passable`). Terrain height is
-landscape only, never read by a rule. The gate and walls are two rows deep
-(`BattleMap.GATE_ROWS`); squads strike from the row above the apron. Cooling (Ryan, 22
-September): a chassis's `cooling` (content, 0 if absent; a stat in the pipeline) is shed
-from heat at the start of every turn in `start_round` (one log line); Overheating ticks at
-the end of the round after the enemy turn (`_tick_mechs`), so a scorch lands on peak heat;
-every overheat burns at the end of the round too (`_settle_heat`: heat climbs past the cap
-during the round, `_add_heat` never clamps, a vent in time prevents the burn); the
-forecast's `heat_after` and `overheat` include the tick (`scorch_incoming`) and count the
-die's own heat only when asked (`forecast(ms, with_face)`; the screen asks while that die
-is dragged); the old MAX chip is now the burn warning; the codex grid has a heat max /
-cooling cell. Placeholder numbers went in for all four chassis (10, the
-Sparrowhawk 5); Ryan tunes them, and the heat sink wants a bigger number (tuning).
+**What the game does today.** A battle: the map shows every squad's intent and the exact
+result of the plan before Resolve (the resolver run dry): contacts, blocks, zones of
+control, the ground each fight will be on. Resolve plays the moves at a pace by movespeed,
+then a CONTACT band, then a panel of the contacts with portraits; ENGAGE dives the map
+and the other world's painting spreads over the ground before the skirmish fades up. The
+skirmish is the dice fight on the enemy's ground. Back applies it and the next round
+plans. The gate has an integrity bar, the rift a spawn bar, both on the map; the codex
+opens by double-tap on either screen; MENU pauses with settings that persist.
 
-**Skirmish rules and screen (22 September).** A kill clears its slot at once
-(`_resolve_attack` calls `_clear_dead`), so line and melee reach the back rank until the
-reinforcement phase; the screen plays a ghost of the drawing (`_animate_death`) and
-reinforcements step in after the enemy's replay (`_animate_arrival`). A decided fight ends
-the moment a die decides it (`assign` checks the outcome; the screen shows it after the
-blow plays). Every skirmish animation returns a unit to `_home` and kills what was still
-moving it (`_settle`), so recoil never drifts a mech. Mech gauges and chips hug the model
-by `MechView3D.model_rect` (every vertex projected through the camera's basis) through
-`UnitView.used_override`; gauges 11 px tall, pending overlays pulse on one shared clock,
-a die's hold readout opens above the die;
-nothing reads a viewport texture back from the GPU any more (`Sprites.used_rect` did,
-every frame until a non-empty read, which is the likely cause of the choppy die drag and
-the floating gauges on the phone; unverified on a device). The log strip scrolls (every
-line, newest brightest, scrolled to the end when something happens) and a double-tap
-opens it full screen (`_toggle_log_full`); gauges sit on dark plates and a pending loss
-breathes between dim and ink. Later the same day: hold readouts open above whatever is
-held (beside only when there is no room); the die codex is gone (a quick second tap is a
-tap; the hold shows every entry with `_face_labels(ms, true)`); the skirmish's mechs have
-no light silhouette (`strip_silhouette`); the ground bands draw no marks and use
-`HudBackdrop.BAND_HEX` (72), `TerrainArt.draw_ground(..., marks)`; the codex grid is
-maxima and rates only (`codex_for_unit` stat_items, shared by both screens); the 3D view
-hangs its model off `_pivot` at the bounds' centre (`_collect_corners_local`, usable
-before the tree), so spin and sway turn about the machine. The mech views' bounds hook is
-connected before `add_child` (ready fires inside it when the screen is already in the
-tree). Screenshot poses: rounds, logfull, killed; diecodex removed. The mech sprite
-loaders and the "pixel" look are gone (22 September): mechs are models only, `Sprites`
-loads foe art alone, `MechView3D` has the one clean look, headless draws placeholders.
-The skirmish's outcome button says where back leads (`SkirmishScreen.back_label`).
-
-**Ally art, locked (21 September).** The mid-nineties 3D register, built by `tools/lowforge`:
-`models_low.py` holds one function of numbers per chassis id (`badger`, `sparrowhawk`,
-`clydesdale`, plus `gate` and `wall`), `bl_low.py` the primitives, maker metals (`MAKERS`) and the tile
-generator; `forge.py build <id>` writes `art/models/<id>.glb` and a working
-`tools/lowforge/models/<id>.blend` (tiles packed); `forge.py export <id>` turns a
-hand-edited .blend back into the glTF with its Empties (joints `joint_*`, pins `hp_*`);
-`forge.py terrain` writes the ground tiles to `art/terrain`. The model's Z = 0 is the
-ground; forward is +Y. `MechView3D.toon` takes the tile look for any textured model; amber
-is emissive, glass glossy. `tools/hero_shot.gd` renders one unit large. The skirmish is fought on the enemy's ground
-(decided 21 September): `TerrainArt.draw_ground` styles "other" (the overworld, two
-frames, under the foes) and "seam" (the tile with the other world dithering into it from
-above, under the mechs); the overworld hex drawing is `TerrainArt.draw_other_hex`, shared
-with `PaintedMap`. The skirmish backdrop draws each ground band in a clipped child (no spill past the
-edges), on the display grid's lattice at map-size hexes with a faint grid. The skirmish's
-mech views carry the trace and its backdrop's bar lights them (`MechView3D.set_sweep_screen`; `trace.gdshader` takes a `screen_down` vector). Sparrowhawk locked in
-shape; reskinned 22 September to Kestrel's metals (chrome plate body, cobalt wings, dark
-boosters; the bone body predated the palettes). Finish by maker on textured models:
-`MechView3D.FINISH` (roughness, metallic, specular; decided 22 September, in the bible):
-Kestrel chrome, the signature; Minerva and W&S strict matte; Aphelion a pearl-sheen
-white; the Arsenal black chrome. Chrome needs something to mirror, so both 3D environments
-(mech views and `Map3D`) carry `MechView3D.chrome_sky()` as a reflection source only
-(the ambient stays flat, the background transparent). The sky is the nineties chrome
-map, light blue overhead down to a white band hugging the horizon, over cool dark
-ground, at energy 1.25. Chrome reads by contrast, not brightness (Ryan, 22 September: a
-brighter sky made the whole machine read as white), so the top facets take the blue, the
-facets facing the viewer the white band and the sheen (`SHEEN` 3.6, hot on purpose: on a
-phone an effect has to be exaggerated to be obvious, Ryan, and he always leans hotter;
-the codex is the reference level, and the skirmish's rear pose shows fewer facets to the
-light, so the skirmish screen sets `SHEEN_SKIRMISH` 5.4 through `set_sheen`; the map
-stays at the base, small most of the time), the underside the dark ground. Kestrel keeps a little roughness (0.15): under the orthographic camera a flat facet takes
-one reflection sample, so a sharp sky made neighbouring facets snap between sky and
-ground as the model turned ("random faces glitching", Ryan); soft and wide, they shade
-continuously. The sun's highlight only lands when a facet's normal bisects sun and
-camera, which the spin passes near north-south and the map's and skirmish's three-quarter
-pose never does (Ryan, 22 September), so each scene's camera carries a sheen light
-(`MechView3D.sheen_light()`, a child of the camera, from well above it (50 degrees, so
-the spine's upper strakes catch it at the skirmish's rear pose), specular 1, no shadow) whose cull mask is `SHEEN_LAYER` (20); `toon` puts a glossy maker's meshes
-(metallic 0.25 or more: Kestrel, Aphelion, the Arsenal) on that layer and `Map3D._to_units_layer`
-ORs its mask in rather than assigning, so the bit survives. Chrome shows no diffuse,
-so on Kestrel it is pure highlight; the matte makers never see it. `hero_shot.gd`
-takes a yaw in degrees as well as front/rear, for checking a finish around the spin. The engine's `LIVERY` ramps
-(untextured models only) follow the decided metals now. Badger is Ryan's to tweak in
-Blender (joints and pins are his next art job).
-
-**The battlefield (`game/battle/`).** `map_3d.gd` is a screen-sized SubViewport whose
-camera follows the map view's scroll and zoom (`look`), so it renders every frame: every
-hex a column at `BattleMap.elevation` (relief field, water sunk) wearing a tile via
-`terrain.gdshader` (water ripples), roads drawn by `road.gdshader` from a per-hex link mask
-so they join, crags in their ground's idiom (`_crag`), props with the trace, the gate and
-walls across the margin columns, units as their skirmish models centred by bounds and set
-south, flyers hovering with a shadow disc; the grid is emissive lines in the scene. Every
-feature edge of units, structures and props is traced in light (`game/ui/trace_lines.gd`,
-shared with the skirmish's mech views, which carry a steady trace; `trace.gdshader`); the traces brighten under the screen's one scan bar (`BattleScreen.ScanBar`, drawn on
-top of everything; it hands the map its y through `sweep_at`). `painted_map.gd` is the other world, two frames; `bleed.gd` and `bleed.gdshader`
-composite the two by the bleed with a hard dithered seam, tilt-shift north and a wider, stronger blur past the field's sides (`edge_fade`,
-`edge_blur`), scanlines and the skirmish's band on top, and expose saturation,
-brightness, flicker and frame rate. The map view draws the field's frame (boundary lines,
-row ticks and numbers counted up from the gate, a sector readout; `frame_alpha`). `battle_map_view.gd` draws every overlay in map space
-under one transform (zoom by wheel or pinch, pan both ways); `center` and `hex_at` follow
-the terrain's lift; tap empty ground for its readout, tap an ally to select and read it,
-tap an enemy for its label, double-tap is wired for the codex; the readout is docked in
-its own strip and a tap on it dismisses it. Before a plan is locked the map shows the phase as it will resolve
-(`Battlefield.preview_phase`: the resolver's own movement run dry and every unit put
-back; the map view caches it per plan): contact groups, squads stopped by another squad
-(BLOCKED), routes that will be rejected (NO ROUTE). Zone of control (decided 22 September):
-`Battlefield.controlled(h)` is true beside any grounded mech; `compute_intents` runs inside
-`_move_all` after the mechs (preview and resolve alike, `PhaseResult.intents`); squads
-plan blind to the machines (a plot never makes a squad swerve, Ryan 22 September) and the
-path is cut at the first controlled hex (`intercepted`); a squad starting on controlled
-ground holds; flyers control nothing. The map draws intents from the preview's intents,
-never during a move: the destination is one component in the HUD's weight, nothing
-translucent (a tint and a 2.5 px outline drawn under the line, the line running to the
-hex's centre (`LINE_TO_CENTRE`, a trial; false stops it at the outer ring), three broken
-rings turning against each other around a dot; the rings, the line and the outline all
-breathe between red and the bright, never down to the deep red, `_ring_colour`,
-`ENEMY_LIT`), on the ground's own height like every other mark (a trial at the hex's
-base was worse, Ryan 22 September; `base(h)` stays as a helper); a contact a heavier pulsing tint with bursting rings
-(`_contact_effect`; one effect per hex, contact wins), a machine's own marker sits on two
-faint breathing rings (`_ally_target`), and each grounded machine's zone is one faint
-tinted flower with one outline (`_zone`). Every hex tint and every zone outline is a mark on the ground in the scene
-(`Map3D.set_marks`: a flat hex and edge ribbons per mark, fed from
-`BattleMapView._fill` / `_edges`), so the machines and the wall hide them by standing on
-them, like the grid; headless draws them flat. Tints are heavy on purpose (Ryan, 22
-September: the UX over the ground under them): the zone breathes at about a third with a
-hairline outline (`Map3D.EDGE_W` 1; the tint does the work), enemy destinations pulsing around
-half on the breath clock, contacts at 70 and more, the selected machine's reach at a quarter. The scene blends in linear light, so
-`Map3D._scene_alpha` raises a mark's alpha to the 2.2 before it lands: the map view asks
-in screen terms and gets what it asked for. The grid runs every playable hex to its
-last edge; nothing is skipped for the wall (the lines once seen along its top were the
-zone outline, drawn in 2D). Enemy outlines are lined in black like the lines. The machines never go under the other world's painting: `Map3D` renders
-them again into a second viewport sharing its world (`UNITS_LAYER`, `_build_units_layer`,
-a camera copying the main one); one rule in the compositor (`units` in
-`bleed.gdshader`): under the painting the geometry is gone, so a machine there is drawn
-from its own layer with nothing in front of it, and the layer's translucent part (a
-flyer's shadow) falls on the painting; on the reconstruction the scene's pixel wins with
-its real depth, so the wall and crags stand in front of a machine behind them. A flyer's
-height is keyed to the same threshold (`solid` in `Map3D.sync`: full clearance of props
-wherever the reconstruction shows, level over the painting), eased between hexes
-(`_fly_y`); its shadow disc is drawn without depth, so a prop never swallows it. Nothing
-resolves, routes or taps while a move plays (`BattleMapView.is_playing`, the buttons grey); the earlier bleed holes are gone. `Map3D.COLLAPSE` is
-false (a trial, 22 September): the ground keeps its true height under the bleed and the
-painting sits over it at ground level, half up and half down; true collapses columns
-and structures as before. Machines keep their
-silhouette through whatever hides them (`TraceLines.silhouette_through`); the gate and
-walls wear none. The gate's integrity is a bar on
-the wall's face (`_draw_gate_bar`); tap the gate for its readout (`gate_selected`),
-double-tap for its entry (`BattleScreen.gate_codex_entry`, rule text only: the
-projector's voice is Ryan's to write). Moves
-play at a pace by movespeed (`MOVE_REF_SPEED` moves at `MOVE_SECONDS_PER_HEX`, the
-fastest ever; slower units slower). Mechs move in plot order and routes are planned in that order
-(`Battlefield.with_plan`: earlier machines at their destinations, later ones where they
-stand), so Resolve never rejects a route; a re-plot puts the mech last in the order; any route
-the change breaks is dropped with a log line (`Battle._drop_conflicts`). A boss stands on one hex now and patrols within `BOSS_ZONE` of
-the rift (`_pick_target`, picked by phase so the preview holds); the multi-hex footprint
-stays in the engine (`Unit.TRIANGLE`) for later. Squads plan and move after, in field order, each intent routed around where the squads
-before it will end (`compute_intents`), so a squad never stops short of another squad.
-While contacts are pending the map freezes on them (`BattleMapView.pending`: the fights
-lit, no plaque, nothing of the next phase drawn). After the movement phase, a CONTACT
-band beats twice over the dimmed map (about two seconds), then the contact panel slides up
-(`_show_contacts` then `_build_contact_panel`: one contact at a time with `MechView3D`
-and foe-sprite portraits, arrows to page, ENGAGE; paging zooms the map to that fight via
-`focus_on` and lights its hexes via `set_highlight`; `Battle.open_skirmish_at`), and
-nothing opens until the player picks. The ground a contact is fought on is the squad's hex, the first
-squad in field order with several (`Battle.ground_hex`, `ground_terrain`; decided 22
-September): the skirmish's terrain, the handover's spread, the panel's "GROUND // RUINS"
-line, the map plaque's "// RUINS" and the skirmish header all use that one rule. ENGAGE plays the handover (`_play_handover`,
-decided 22 September): the map dives to full zoom on the contact while one more bleed
-source grows out of the ground hex (`BattleMapView.flatten_at` / `flatten_r`) until the ground
-there is flat and bright with the machines still standing in it, a cut to black, and the
-skirmish fades up; the map is put back behind it. Headless adds the skirmish at once.
-The screenshot pose `engage` catches it (`RIFTGATE_SHOT_FRAME` 60 the dive, 150 the
-spread, later the fade-up); portraits carry no silhouette
-(`MechView3D.strip_silhouette`) and foes use their battle sprite. Contact tags name the
-units (`contact_text`), kept on screen when zoomed. The codex is a shared box
-(`game/ui/codex_box.gd`, `CodexBox.open(entry)`), on both screens: double-tap a unit on
-the map (`BattleScreen.codex_entry_for`: a machine's own entry, a squad's foe type headed
-by the squad). A tap on a destination wins over the machine still drawn there, so a
-route can end where an earlier-plotted machine is leaving. The bleed's squad sources follow the movement animation
-(`Bleed.sources(..., moving)`). Resolve plays the movement phase (`play_moves`, which first parks every mover at its
-start so nobody blinks to the end: mechs then squads along the paths they
-actually took, `MOVE_SECONDS_PER_HEX`; `Map3D.set_anim` moves the model and turns it to
-its heading) and only then opens the skirmish; headless skips the play. `map_tuner.gd` is the development knob panel, behind
-`RIFTGATE_TUNE=1` (Ryan is happy with the look, 22 September); nothing it sets persists.
-The player's knobs are the pause menu's (`game/ui/pause_menu.gd`, MENU on both screens:
-PAUSED with RESUME and SETTINGS; SETTINGS has the display colour, brightness, move pace,
-and glitch and scan bar toggles (saturation and bloom were cut, 22 September: no
-difference a player would want), saved by `Settings.set_display` and applied live by
-`BattleScreen._apply_display` and the skirmish's backdrop; scan off means the band stays
-away and every trace rests as ink, on both screens; a colour change rebuilds the screen,
-and the battle screen catches up when a skirmish that changed it returns). The top bar
-reads in plain words: "ROUND n // NEXT SPAWN IN k" and "ORDERS // a OF b SET"; the
-gate's integrity is only on the map, and the rift's pressure is a bar above the rift in
-the scenery rows ("NEXT SPAWN IN k", `_draw_rift_bar`). The frame, both bars and their
-text draw in screen space (`_draw_frame`, `_hud_bar`), so they stay crisp and thin under
-zoom. The default trace mode is `pulse` (locked
-22 September): everything rests as ink and the scan lights it with a long tail
-(`pulse_material`; the trace shader blends rather than adds, so `base` 0 is black), the
-machines with the light silhouette (`TraceLines.silhouette`, the material's stencil
-outline); `assets` keeps the props in steady light; `RIFTGATE_INK=light|dark|assets` for
-the others (the tuner's TRACE has assets, pulse, light, ink, off). The skirmish's mech
-views carry the trace without the silhouette; the codex is plain black ink. Side blur begins at the
-frame's lines (`_frame_x`), not the field's edge; intent lines carry a dark underline; the
-scan bar pauses `HudBackdrop.SCAN_PAUSE` seconds between sweeps on both screens; the
-corrupted tear is rarer, and the skirmish's overworld band tears too; `RIFTGATE_MAP_WIRE=1` is the pure-wireframe trial. `tools/screenshot.gd` poses:
-select, route, hold, north, zoom, zoomlast, flyer (the flyer parked in the other world's ground), tune, predict, resolve, contact
-(`RIFTGATE_SHOT_FRAME=210` catches the CONTACT band after the move plays, 400 the panel).
-
-**Landscape generation (`sim/battle_map.gd`).** `_lay_landscape` from seeded noise: water
-in bodies, wasteland across the rougher half, ruins in dense clusters, crags along a ridge
-keeping the ground under them (`crag_base`), four margin columns of scenery either side
-and three rows beyond the rift (`margin`, never played on), two rows of city behind the
-wall (`city`, built as lit blocks by `Map3D._city_block`, blurred south into the HUD;
-the scroll runs a row past the rift and a row past the wall, no further; the wall rows'
-margin is level and bare), the two rows above the apron always open; `_lay_roads` lays
-a drifting trunk north from the gate with branches and gaps, never a lone slab, all at
-ground level.
+**Decided this week, in the bible (section 4 and 5 rows dated 20 to 22 September).**
+The field projector and the city behind the wall; the clash between the gritty 3D
+reconstruction and the flat bright overworld; the mid-nineties 3D register for every
+ally asset, built by lowforge, maker metals and finishes as the differentiator; the
+holographic display look with the pulse trace as default; exact preview, plotting in
+order, re-plot last, squads planning in order; zone of control (grounded machines stop
+squads beside them, flyers stop nobody, squads never swerve); contacts offered and
+chosen; the boss on one hex patrolling the rift; the skirmish fought on the first squad's
+hex; the handover; machines never under the painting (drawn from their own layer where
+the geometry is gone, the scene with its depth elsewhere); the ground keeping its height
+under the painting (`Map3D.COLLAPSE` false, a trial Ryan called flawless); tints heavy on
+purpose; the pause menu and its knobs; the top bar in plain words.
 
 **Open, in the order I would take them.**
 
-1. Ryan: Badger tweaks in Blender, joints and pins; then `forge.py export badger`, and
-   tune the strike swing. The Badger's shoulder guns now sit on a bevelled pauldron over
-   each cuff and hinge, not outboard (Ryan, 22 September). The Clydesdale has a first
-   pass (22 September, from the content's fantasy; Ryan: "a pretty excellent read", not
-   much to improve): an ironclad wagon body on four columnar
-   legs, a low head on a neck, a wagon bed in W&S brown carrying the loadout (two
-   autogun turrets, the lance along the spine, the mortar aft, ablative slabs on the
-   flanks, the heat sink at the tail), bone skirts over the hooves; six `hp_` pins, no
-   joints. The W&S metal's grain was calmed the same day (it read as wood) and bone is
-   now a neutral white paint for every maker (`Tiles.metal(cast=...)`); the Sparrowhawk's
-   bone fuselage picks that up on its next rebuild, a hair warmer. Ryan's notes next, by
-   render. The Anvil still borrows the Badger's model.
-2. Ryan's content: names for overheating and scorch; place strikes, breach, scorch,
-   disable and rapid on foes and components; Ablative Plating as armour or shield; line
-   versus "direct"; the Badger's loadout and claw numbers; Aphelion and the Arsenal; CARE's
-   voice.
-3. The map, next: ally wrecks left on the map with a death animation (Ryan, 22
-   September; a wrecked machine leaves the field today; discuss first: does a wreck block,
-   and does it stay a phase or the battle); joint idle for grounded units once joints
-   exist; whether squads leave corruption in their wake; tune every knob with all three
-   chrome colours.
-4. Engine gaps waiting on content: Numbed resistance roll; Corrupted (on-spend trigger,
-   value from the foe's ability); cleanse; foe roles (fodder, elite, boss); the planned
-   statuses as plain modifiers once placed; component stat modifiers as content; granted
-   passives in their own colour on the mech codex.
-5. Design still open: player interaction with the reinforcement phase; skirmish
-   composition follows battlefield placement (rules and text); movespeed in tens; the
-   economy (salvage, research tokens, hangar repair and refit); base defences: how the gate
-   guns attack and are attacked (proposal in chat, 19 September), then deployable turrets.
-6. Art: enemy art for the eight foes still on sketch grids; the hangar as a model; the
-   field itself, if it shows; per-mech repaint in play (`Unit.paint` exists, nothing sets it).
-7. Play it on a phone and tune numbers, map size, squad speeds, Rift Pressure. The map's
-   per-frame cost on the Mac (`tools/perf_probe.gd`, 22 September): about 8.4 ms a frame
-   at 720x1280 with vsync off, 5130 draw calls and 6168 objects at zoom 1 (1610 and 2648
-   at full zoom): every prop and every trace is its own instance. If a phone drops
-   frames, batch the props and traces per column into MultiMeshes before anything else.
+1. Ryan: Badger tweaks in Blender, then joints and pins (`forge.py export badger`); notes
+   on the Clydesdale's first pass; the Anvil (borrows the Badger's model).
+2. Ryan's content: names for overheating and scorch; strikes, breach, scorch, disable and
+   rapid placed on foes and components; Ablative Plating as armour or shield; the
+   Badger's loadout and claw numbers; Aphelion and the Arsenal; CARE's voice, including
+   the gate's codex entry (rule text today).
+3. The map: ally wrecks left on the field with a death animation (discuss first: does a
+   wreck block, and does it stay a round or the battle); joint idle for grounded units
+   once joints exist; whether squads leave corruption in their wake; the `LINE_TO_CENTRE`
+   trial on intent lines (Ryan to judge in play).
+4. Engine gaps waiting on content: Numbed resistance roll; Corrupted; cleanse; foe roles;
+   planned statuses as modifiers; component stat modifiers; granted passives coloured on
+   the codex.
+5. Design still open (bible section 12): the reinforcement phase; skirmish composition
+   from placement; movespeed in tens; the economy; base defences and turrets.
+6. Art: enemy art for the eight foes still on sketch grids; the hangar as a model.
+7. Phone: play it and tune numbers, map size, squad speeds, Rift Pressure. The map costs
+   about 8.4 ms a frame on the Mac at 5130 draw calls (every prop and trace its own
+   instance); if a phone drops frames, batch props and traces per column into MultiMeshes.
 
 **Known rough edges.** Codex stat labels cut off on Ryan's device once, not reproduced.
-Routes are tap-to-destination only.
+Routes are tap-to-destination only. The skirmish's die drag was choppy on the phone
+before the GPU readback went; unverified since.

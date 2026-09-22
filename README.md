@@ -46,8 +46,9 @@ and open question from the design sessions.
   with. The gate and wall are lowforge models too (`gate`, `wall`).
 - `art/` — `models/` every glTF the engine draws (units, gate, wall), `foes/` from the sheet
   export, `fonts/` the HUD faces. A missing foe sprite falls back to a placeholder shape.
-- `docs/` — design bible, generated vocabulary, concept intake in `docs/concepts/`, and
-  `status.md`, the handoff note updated at the end of every working session.
+- `docs/` — design bible, generated vocabulary, concept intake in `docs/concepts/`,
+  `sprites-enemies.html` (the enemy sheet the export reads), design canvases under
+  `canvas/`, and `status.md`, the handoff note updated at the end of every working session.
 
 ## Running
 
@@ -67,8 +68,10 @@ godot --path .
 godot --headless --path . -s tools/export_vocabulary.gd
 
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument
-# poses the screen first. Skirmish: codex, mechcodex, diecodex, hold, confirm, lock.
-# Battle: select, route, hold, resolve, contact.
+# poses the screen first. Skirmish: codex, mechcodex, hold, confirm, lock, strike,
+# enemyturn, rounds, logfull, killed. Battle: select, route, hold, north, zoom, zoomlast,
+# flyer, predict, resolve, contact, engage, codex, foecodex, menu, settings, tune.
+# RIFTGATE_SHOT_FRAME=<n> picks the capture frame, to catch an animation mid-flight.
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmish/skirmish_screen.tscn shot.png codex
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/battle_screen.tscn shot.png route
 
@@ -114,18 +117,25 @@ The harness can add the faction's massive elite, which fills both ranks of a col
 standalone screen, `RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,anvil` picks the team and
 `RIFTGATE_ELITE=1` adds the elite.
 
-The battle screen is the loop. The header shows the phase, the gate's hull, and Rift
-Pressure. The map scrolls by drag and starts at the gate end. Tap a mech to select it and the
-hexes it can reach light up; tap a lit hex to plot the route there; tap the mech again to
-clear its route. Two mechs cannot claim the same destination. Hold any unit for its numbers.
-Red lines are where each squad goes this phase unless something stops it. A squad outside the
-view gets a portrait at the edge nearest it, with its strength and a chevron; tap the
-portrait to scroll to it. Resolve, bottom left, moves the team first and then the squads; every group of touching units that mixes both
-sides becomes a skirmish, played on the skirmish screen over the map. Its Back button applies
-the result: wrecks leave the map, squads shrink to their survivors, surviving shields recharge,
-and Rift Pressure ticks once per round fought. The battle ends when the gate's hull reaches
-zero, every mech is wrecked, or the boss dies. For the standalone screen `RIFTGATE_TEAM`
-picks the team and `RIFTGATE_FACTION=undead|demonic|eldritch` the enemy.
+The battle screen is the loop. The header shows the round and how many rounds until the
+rift spawns; the gate's integrity is a bar on the wall and the rift's pressure a bar above
+the rift. The map scrolls by drag, zooms by pinch or wheel, and starts at the gate end. Tap
+a mech to select it and the hexes it can reach light up; tap a lit hex to plot the route
+there; tap the mech again to clear its route. Routes are planned in the order they are
+plotted, so a later machine may end where an earlier one is leaving; re-plotting a machine
+puts it last. Hold any unit for its numbers; double-tap it for its codex; tap the gate for
+its integrity. Red lines are where each squad goes this round, from the plan as it stands:
+a grounded machine controls the ground beside it (the tinted flower), a squad stepping into
+it stops there and that is a contact, marked before Resolve with who is in it and the ground
+it will be fought on. Resolve plays the moves, then a CONTACT band, then a panel of the
+contacts with portraits; ENGAGE dives the map onto the fight and hands over to the skirmish
+screen. Its Back button applies the result: wrecks leave the map, squads shrink to their
+survivors, surviving shields recharge, and Rift Pressure ticks once per round fought. The
+battle ends when the gate falls, every mech is wrecked, or the boss dies. MENU on either
+screen pauses and holds the settings (display colour, brightness, move pace, glitch, scan
+bar). For the standalone screen `RIFTGATE_TEAM` picks the team and
+`RIFTGATE_FACTION=undead|demonic|eldritch` the enemy; `RIFTGATE_TUNE=1` shows the
+development knob panel.
 
 In the map viewer: drag to scroll the taller-than-screen battlefield, tap without dragging
 for the next seed. The gate and rift are three hexes wide and a three-hex boss walks the

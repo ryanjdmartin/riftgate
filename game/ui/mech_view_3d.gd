@@ -465,7 +465,7 @@ static func toon(node: Node, maker: String, look: String, paint_arg: Dictionary 
 				tm.transparency = BaseMaterial3D.TRANSPARENCY_DISABLED
 				tm.depth_draw_mode = BaseMaterial3D.DEPTH_DRAW_ALWAYS
 				if TraceLines.mode() in ["assets", "pulse"]:
-					TraceLines.silhouette(tm, Palette.HUD, 2.0)   # the light outline around the whole machine
+					TraceLines.silhouette(tm, Palette.HUD, 1.0)   # the light outline around the whole machine, thin (Ryan, 22 September)
 				if role == "amber":
 					# Lamps, engines and light strips glow: the reconstruction's own light.
 					tm.emission_enabled = true
