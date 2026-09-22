@@ -361,15 +361,16 @@ func _draw() -> void:
 				pts.append(center(step))
 			var owned := not (contact_hexes.has(dest) or map.gate_hexes.has(dest))
 			if owned:
-				# The line runs through the outline to the target's outer ring: line,
-				# tint, outline and rings are one component (Ryan, 22 September).
+				# The line runs over the outline to the target's outer ring: line, tint,
+				# outline and rings are one component, nothing translucent, the hex under
+				# the line so nothing cuts it (Ryan, 22 September).
+				_destination_hex(dest)
 				var dc := pts[pts.size() - 1]
 				var dir := (dc - pts[pts.size() - 2]).normalized()
 				pts[pts.size() - 1] = dc - dir * DEST_RING
-			draw_polyline(pts, Color(Palette.BG, 0.35), 9.0)
-			draw_polyline(pts, Color(Palette.ENEMY, 0.95), 4.0)
+			draw_polyline(pts, Palette.ENEMY, 4.0)
 			if owned:
-				_destination_effect(dest)
+				_destination_rings(center(dest), _light_ground(dest))
 
 	# The player's plotted routes, ending in a small marker hex.
 	for uid in routes.keys():
@@ -584,31 +585,46 @@ func _fill(h: Vector2i, col: Color) -> void:
 		draw_colored_polygon(Hex.corners(center(h), HEX_SIZE - 3.0), col)
 
 
-const DEST_RING := HEX_SIZE * 0.72   # the target's outer ring, where the intent line arrives
-const ENEMY_LIT := Color("ff8a7a")    # the enemy marks' bright: red lifted toward white, so rings read on the tint
+const DEST_RING := HEX_SIZE * 0.58   # the target's outer ring, where the intent line arrives; clear of the outline
+const ENEMY_LIT := Color("ff8a7a")    # the enemy marks' bright: red lifted toward white, for dark ground
 
-## The target in the HUD's own weight (Ryan, 22 September: no solid black, nothing
-## abutting, the animation the thing you see): a tint, a thin outline, and two bright
-## broken rings turning against each other around a centre dot. The line arrives at the
-## outer ring over a soft dark halo, the same halo the outline sits in, so they flow.
-func _destination_effect(h: Vector2i) -> void:
-	var c := center(h)
+## The target in the HUD's own weight (Ryan, 22 September: nothing translucent, nothing
+## abutting, the animation the thing you see): a tint and a thin outline under the line,
+## then three bright broken rings turning against each other around a centre dot.
+func _destination_hex(h: Vector2i) -> void:
 	_fill(h, Color(Palette.ENEMY, 0.22))
-	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.BG, 0.35), 6.0)
-	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, 0.85), 2.0)
-	_target_rings(c, ENEMY_LIT, DEST_RING, 1.0)
-	draw_circle(c, 4.0, ENEMY_LIT)
+	Hud.stroke_poly(self, Hex.corners(center(h), HEX_SIZE - 3.0), Palette.ENEMY, 2.5)
 
 
-## Two rings of broken arcs turning against each other: the display's own target lock.
+## The rings' colour meets the ground: the bright red on dark ground, the deep red on
+## pale ground (ruins, rock, road), and a slow breath between them so it reads as live.
+func _light_ground(h: Vector2i) -> bool:
+	var t: int = field.map.terrain.get(h, BattleMap.Terrain.PLAIN)
+	return t in [BattleMap.Terrain.RUINS, BattleMap.Terrain.MOUNTAIN, BattleMap.Terrain.ROAD]
+
+
+func _ring_colour(light_ground: bool) -> Color:
+	var breath := 0.5 + 0.5 * sin(_ring_t * 1.6)
+	var a := Palette.ENEMY if light_ground else ENEMY_LIT
+	var b := ENEMY_LIT if light_ground else Palette.ENEMY
+	return a.lerp(b, 0.3 * breath)
+
+
+func _destination_rings(c: Vector2, light_ground: bool) -> void:
+	var col := _ring_colour(light_ground)
+	_target_rings(c, col, DEST_RING, 1.0)
+	draw_circle(c, 4.0, col)
+
+
+## Three rings of broken arcs turning against each other: the display's own target lock.
 func _target_rings(c: Vector2, col: Color, r: float, dir: float) -> void:
-	for k in range(2):
-		var rad := r * (0.5 + 0.5 * k)
+	for k in range(3):
+		var rad := r * (0.42 + 0.29 * k)
 		var segs := 3 + k * 2
-		var a0 := _ring_t * dir * (1.0 - 0.35 * k) * (1.0 if k % 2 == 0 else -1.0)
+		var a0 := _ring_t * dir * (1.0 - 0.25 * k) * (1.0 if k % 2 == 0 else -1.0)
 		for sgm in range(segs):
 			var a := a0 + TAU * float(sgm) / float(segs)
-			draw_arc(c, rad, a, a + TAU / float(segs) * 0.6, 10, Color(col, 0.95 - 0.15 * k), 3.0)
+			draw_arc(c, rad, a, a + TAU / float(segs) * 0.6, 10, col, 3.0)
 
 
 ## Under a machine's own destination marker: two faint rings breathing, in the display's
@@ -625,12 +641,12 @@ func _contact_effect(h: Vector2i, lit: bool) -> void:
 	var a := 1.0 if lit else 0.35
 	var breath := 0.5 + 0.5 * sin(_ring_t * 4.0)
 	_fill(h, Color(Palette.ENEMY, (0.34 + 0.2 * breath) * a))
-	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.BG, 0.35 * a), 6.0)
-	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, 0.95 * a), 2.5)
+	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, a), 2.5)
+	var col := _ring_colour(_light_ground(h))
 	for k in range(2):
 		var phase := fmod(_ring_t * 0.9 + k * 0.5, 1.0)
 		var r := HEX_SIZE * (0.3 + 1.1 * phase)
-		draw_arc(c, r, 0.0, TAU, 40, Color(ENEMY_LIT, (1.0 - phase) * 0.9 * a), 3.0 * (1.0 - phase * 0.5) + 1.0)
+		draw_arc(c, r, 0.0, TAU, 40, Color(col, (1.0 - phase) * a), 3.0 * (1.0 - phase * 0.5) + 1.0)
 
 
 ## A machine's zone: its six neighbours as one tinted flower with one outline round the

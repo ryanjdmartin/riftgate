@@ -106,10 +106,12 @@ back; the map view caches it per plan): contact groups, squads stopped by anothe
 plan blind to the machines (a plot never makes a squad swerve, Ryan 22 September) and the
 path is cut at the first controlled hex (`intercepted`); a squad starting on controlled
 ground holds; flyers control nothing. The map draws intents from the preview's intents,
-never during a move: the destination is one component in the HUD's weight (a tint, a
-2 px outline in a soft dark halo, two bright broken rings turning against each other
-around a dot, the line arriving at the outer ring over the same halo; no solid black;
-`_destination_effect`, `_target_rings`, `ENEMY_LIT` for the rings), a contact a heavier pulsing tint with bursting rings
+never during a move: the destination is one component in the HUD's weight, nothing
+translucent (a tint and a 2.5 px outline drawn under the line, the line arriving at the
+outer of three broken rings turning against each other around a dot, all inside the
+outline; the rings' colour meets the ground, bright red on dark ground and deep red on
+ruins, rock and road, with a slow breath between; `_destination_hex`,
+`_destination_rings`, `_ring_colour`, `ENEMY_LIT`), a contact a heavier pulsing tint with bursting rings
 (`_contact_effect`; one effect per hex, contact wins), a machine's own marker sits on two
 faint breathing rings (`_ally_target`), and each grounded machine's zone is one faint
 tinted flower with one outline (`_zone`). Every hex tint is a mark on the ground in the
