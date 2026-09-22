@@ -621,7 +621,9 @@ const ENEMY_LIT := Color("ff8a7a")    # the enemy marks' bright: red lifted towa
 ## centre dot. On the ground's own height, like everything else (a trial at the hex's
 ## base was worse, Ryan the same day).
 func _destination_hex(h: Vector2i) -> void:
-	_fill(h, Color(Palette.ENEMY, 0.4))
+	# The tint pulses on the same clock as the line and rings (Ryan, 22 September).
+	var breath := 0.5 + 0.5 * sin(_ring_t * 1.6)
+	_fill(h, Color(Palette.ENEMY, 0.3 + 0.2 * breath))
 	Hud.stroke_poly(self, Hex.corners(center(h), HEX_SIZE - 3.0), _ring_colour(), 2.5)
 
 
