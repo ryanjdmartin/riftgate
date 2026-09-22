@@ -105,9 +105,10 @@ static func draw_ground(ci: CanvasItem, rect: Rect2, terrain: int, seed_value: i
 		else:
 			ci.draw_rect(rect, Color(colour(terrain), 0.5))
 		if style == "seam":
-			# The other world down to a third of the band, then a dithered edge of cells
-			# where it and the tile trade places, the map's seam brought in close.
-			var seam := rect.position.y + rect.size.y * 0.34
+			# The other world down to a fifth of the band, then a dithered edge of cells
+			# where it and the tile trade places, the map's seam brought in close (Ryan, 22
+			# September: higher, so more of the machines' own ground shows).
+			var seam := rect.position.y + rect.size.y * 0.2
 			var cell := 6.0
 			var band := cell * 5.0
 			_overworld(ci, Rect2(rect.position, Vector2(rect.size.x, seam - rect.position.y)), terrain, seed_value, hex, frame)

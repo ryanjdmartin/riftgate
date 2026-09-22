@@ -303,7 +303,12 @@ func _build() -> void:
 			add_child(view)
 			_mech_3d[i] = view
 			v.sprite = view.texture
-			v.used_override = view.model_rect()   # hug the model by its framed bounds; never read the render back
+			# Hug the model by its framed bounds, never the render read back. The view frames
+			# its camera on ready, so the bounds are taken then (the screen is built before
+			# it enters the tree on the harness path; the mech views are ready with it).
+			view.ready.connect(func() -> void:
+				v.used_override = view.model_rect()
+				v.queue_redraw())
 			if look == "clean":
 				v.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		_place(v, Vector2(cx - MECH_SIZE.x * 0.5, MECH_Y), MECH_SIZE)
