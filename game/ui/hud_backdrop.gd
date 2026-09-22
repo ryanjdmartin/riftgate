@@ -53,15 +53,23 @@ func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Palette.BG)
 
 
-## Where the band is right now, in this control's pixels, or far off-screen between sweeps.
+## Where the band is right now, in this control's pixels. Through the pause it keeps
+## travelling below the screen, so the traces' tails fade out on their own instead of
+## snapping to black when the sweep switched off (Ryan, 22 September).
 func scan_y() -> float:
 	if not scan:
 		return -1.0e6
 	var sweep := (size.y + 120.0) / SCAN_SPEED
 	var t := fmod(_t, sweep + SCAN_PAUSE)
-	if t > sweep:
-		return -1.0e6
 	return t * SCAN_SPEED - 60.0
+
+
+## Whether the band is on screen: the drawn lines want to know, the traces do not.
+func scan_visible() -> bool:
+	if not scan:
+		return false
+	var sweep := (size.y + 120.0) / SCAN_SPEED
+	return fmod(_t, sweep + SCAN_PAUSE) <= sweep
 
 
 func time() -> float:
@@ -97,6 +105,6 @@ class Overlay extends Control:
 		for y in owner_bg.rules:
 			draw_line(Vector2(12.0, y), Vector2(size.x - 12.0, y), Color(Palette.HUD, 0.22), 1.0)
 		var y := owner_bg.scan_y()
-		if y > -1.0e5:
+		if owner_bg.scan_visible():
 			for i in range(-2, 3):
 				draw_rect(Rect2(0.0, y + i * 3.0, size.x, 1.0), Color(1, 1, 1, 0.07 - 0.015 * absi(i)))

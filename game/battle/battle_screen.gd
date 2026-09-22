@@ -62,11 +62,14 @@ class ScanBar extends Control:
 		# A sweep, then a pause (Ryan, 22 September: back to back was busy).
 		var sweep := (size.y + 120.0) / SPEED
 		var t := fmod(_t, sweep + HudBackdrop.SCAN_PAUSE)
+		# The band keeps travelling below the screen through the pause, so the traces'
+		# tails fade out on their own; switching the sweep off snapped them to black
+		# (Ryan, 22 September).
+		var y := t * SPEED - 60.0
 		if t > sweep:
 			if map != null:
-				map.sweep_at(-1.0e6)
+				map.sweep_at(y - map_y)
 			return
-		var y := t * SPEED - 60.0
 		for i in range(-2, 3):
 			draw_rect(Rect2(0.0, y + i * 3.0, size.x, 1.0), Color(1, 1, 1, 0.07 - 0.015 * absi(i)))
 		if map != null:
