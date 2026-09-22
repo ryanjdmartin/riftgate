@@ -4,7 +4,7 @@ Handoff note for the next session. Replace stale lines; keep it under a screen.
 
 ## As of 22 September 2026
 
-**State.** Everything committed. Tests: 162 tests, 2282 checks, green. Ryan writes
+**State.** Everything committed. Tests: 168 tests, 2329 checks, green. Ryan writes
 `content/*.json` in his own voice (reload after any pass that touches it). The rules are in
 `docs/vocabulary.md` (generated) and every decision in `docs/design-bible.html`; the
 vocabulary carries an `order_of_operations` rule that the engine follows. Chassis ids:
@@ -22,7 +22,22 @@ effects pipeline in `sim/effects.gd` (every number is a question). Water is ford
 everyone at a cost by trait (tracks 3, walker 2, hover 1; hover chokes on rubble); only a
 crag stops anyone but a flyer (`BattleMap.move_cost`, `passable`). Terrain height is
 landscape only, never read by a rule. The gate and walls are two rows deep
-(`BattleMap.GATE_ROWS`); squads strike from the row above the apron.
+(`BattleMap.GATE_ROWS`); squads strike from the row above the apron. Cooling (Ryan, 22
+September): a chassis's `cooling` (content, 0 if absent; a stat in the pipeline) is shed
+from heat at the end of every round after the enemy turn (`Skirmish._cool`, one log line);
+the forecast's `heat_after` shows the drop; the codex grid has a heat max / cooling cell.
+Placeholder numbers went in for all four chassis (10, the Sparrowhawk 5); Ryan tunes them.
+Open from the same pass: cooling competes with the heat sink component for one job.
+
+**Skirmish screen fixes (22 September).** A foe killed by a die stood until the round's end
+and still struck (the "resurrection"); now it strikes nobody, is no target, shows no intent
+or arrow, and reinforcements visibly step in after the enemy's replay (`_animate_arrival`).
+Open: whether a kill should clear the slot at once so line weapons reach the back rank the
+same round (bible, enemy formation). Every skirmish animation returns a unit to `_home`
+and kills what was still moving it (`_settle`), so recoil never drifts a mech. The log
+strip scrolls (every line, newest brightest, scrolled to the end when something happens)
+and a double-tap opens it full screen (`_toggle_log_full`); gauges sit on dark plates.
+Screenshot poses added: rounds, logfull, killed.
 
 **Ally art, locked (21 September).** The mid-nineties 3D register, built by `tools/lowforge`:
 `models_low.py` holds one function of numbers per chassis id (`badger`, `sparrowhawk`,

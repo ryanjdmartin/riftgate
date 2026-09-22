@@ -15,7 +15,7 @@ var shield: int = 40
 ## Base numbers from the chassis. Every maximum and rate is read through Effects.stat, which
 ## adds every live modifier (fitted components, rewards, buffs) on top; writing hull_max or
 ## armour sets the base. Nothing stores a total (decided 18 September).
-var base: Dictionary = {"hull": 100, "shield": 40, "heat": 60, "armour": 0, "move": 3, "recharge": 0}
+var base: Dictionary = {"hull": 100, "shield": 40, "heat": 60, "armour": 0, "move": 3, "recharge": 0, "cooling": 0}
 var modifiers: Array = []   # Effects.Modifier list: loadout, battle, skirmish and timed effects
 var hull_max: int:
 	get:
@@ -47,6 +47,13 @@ var recharge_field: int:
 		return Effects.stat(self, "recharge")
 	set(v):
 		base["recharge"] = v
+## Heat shed at the end of every skirmish round, passively (Ryan, 22 September): venting is
+## a tactic, but a round spent on ballistics or shields is a way of cooling too.
+var cooling: int:
+	get:
+		return Effects.stat(self, "cooling")
+	set(v):
+		base["cooling"] = v
 
 ## Chassis traits: "flyer", "hover", "walker", "tank", "defense".
 var traits: Array[String] = []

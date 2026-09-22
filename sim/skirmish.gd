@@ -224,7 +224,7 @@ func forecast(ms: MechState) -> Dictionary:
 		"incoming": incoming,
 		"shield_after": shield,
 		"hull_after": hull,
-		"heat_after": mini(heat_after, ms.heat_max),
+		"heat_after": maxi(0, mini(heat_after, ms.heat_max) - ms.unit.cooling),   # the round ends with the chassis cooling
 		"overheat": over,
 		"breaks_shield": ms.unit.shield > 0 and incoming >= ms.unit.shield,
 		"component_risk": component_risk,
@@ -245,10 +245,12 @@ func targets_for(mech_index: int) -> Array[Foe]:
 	for col in range(columns):
 		if front[col] != null:
 			front_empty = false
+	# A foe already killed this round still stands until the dead are cleared, but it is
+	# no target: a die spent on it would be wasted.
 	for col in range(columns):
-		if front[col] != null and not out.has(front[col]):
+		if front[col] != null and front[col].alive() and not out.has(front[col]):
 			out.append(front[col])
-		if back[col] == null or out.has(back[col]):
+		if back[col] == null or not back[col].alive() or out.has(back[col]):
 			continue
 		var reaches_back := false
 		var reach := reach_of(ms, f)
@@ -362,6 +364,7 @@ func assign(mech_index: int, target = null) -> bool:
 func end_round() -> int:
 	assert(state == State.ASSIGN, "end_round called out of order")
 	_enemy_turn()
+	_cool()
 	_reinforce(true)    # the reinforcement phase: a random waiting foe of the right rank per empty slot
 	_check_outcome()
 	if outcome == Outcome.NONE:
@@ -378,6 +381,8 @@ func _enemy_turn() -> void:
 	# suppressed foe skips, and a foe with two strikes lands two separate blows, so a shield
 	# stops the first and the second reaches the hull.
 	for f in field_foes():
+		if not f.alive():
+			continue   # killed by a die this round; it stands until the dead are cleared, and does nothing
 		var tick := Effects.tick(f)
 		if int(tick["hp"]) > 0:
 			f.hp -= int(tick["hp"])
@@ -406,6 +411,22 @@ func _enemy_turn() -> void:
 		Effects.end_round(ms.unit, round)   # timed effects run out
 	for f in field_foes():
 		Effects.end_round(f, round)
+
+
+## Passive cooling (Ryan, 22 September): at the end of the round, after the enemy has
+## struck, every machine still standing sheds its chassis's cooling rating in heat. Overflow
+## was already paid when the component was spent, so cooling never undoes a burn; it makes a
+## round of ballistics or shields a way to come down without a vent. One log line for all.
+func _cool() -> void:
+	var parts: Array[String] = []
+	for ms in live_mechs():
+		var drop := mini(ms.heat, ms.unit.cooling)
+		if drop <= 0:
+			continue
+		ms.heat -= drop
+		parts.append("%s -%d" % [ms.unit.display_name, drop])
+	if not parts.is_empty():
+		log.append("cooling: " + ", ".join(parts))
 
 
 func withdraw() -> bool:

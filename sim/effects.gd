@@ -66,7 +66,7 @@ const STATUS := {
 }
 const SUPPORTED_WHEN := ["component_cracked", "reach_melee", "reach_line", "reach_indirect"]
 ## Stats a static effect may change: the mech's base numbers by these names.
-const STATS := ["hull", "shield", "heat", "armour", "move", "recharge"]
+const STATS := ["hull", "shield", "heat", "armour", "move", "recharge", "cooling"]
 ## Effects that are bonuses (a destroyed component keeps them) rather than abilities.
 const BONUS_EFFECTS := ["add_stat", "multiply_stat"]
 

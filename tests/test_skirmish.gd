@@ -1038,3 +1038,73 @@ func test_the_die_screen_explains_what_applies_to_a_component() -> void:
 	assert_eq(notes.size(), 2, "cracked: the reach change and the melee bonus both apply")
 	assert_true(notes[0].contains("reach becomes melee (Reinforced Skeleton)") or notes[1].contains("reach becomes melee (Reinforced Skeleton)"), "the reach change names its source")
 	assert_eq(Effects.effect_text({"trigger": "on_injury", "effect": "no_destroy", "value": 1}), "on an injury: cracked components are never destroyed", "effects read as sentences")
+
+
+func test_a_foe_killed_this_round_neither_strikes_nor_takes_a_die() -> void:
+	# The dead stand until the round ends (Ryan, 22 September: a killed foe still struck, and
+	# came back as its own reinforcement). Killed by a die: it strikes nobody, it is no target,
+	# and the forecast that said so is the truth.
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.of([Face.attack(90, L), Face.attack(90, L)]), 0, 100)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(30, 25)])
+	sk.begin()
+	sk.start_round()
+	var ghoul: Foe = sk.front[0]
+	assert_true(sk.assign(0, ghoul), "the first blow kills it")
+	assert_false(ghoul.alive(), "dead")
+	assert_eq(sk.forecast(sk.mechs[0])["incoming"], 0, "the forecast counts nothing")
+	assert_false(sk.targets_for(0).has(ghoul), "a corpse is no target")
+	sk.mechs[0].assigned = false
+	assert_false(sk.assign(0, ghoul), "a die cannot be spent on it")
+	sk.end_round()
+	assert_eq(m.hull, 100, "and it struck nobody")
+	assert_eq(sk.front[0], null, "cleared at the end of the round")
+
+
+func test_cooling_sheds_heat_after_the_enemy_turn_and_the_forecast_shows_it() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.attack(10, L, [], 30)), 40, 100)
+	m.heat_max = 60
+	m.cooling = 10
+	var ms := sk.add_mech(m)
+	sk.add_foes([_ghoul(30, 10)])
+	sk.begin()
+	sk.start_round()
+	assert_eq(sk.forecast(ms)["heat_after"], 20, "30 from the face, 10 shed at the end of the round")
+	sk.assign(0, sk.front[0])
+	assert_eq(ms.heat, 30, "the face's heat lands when spent")
+	assert_eq(sk.forecast(ms)["heat_after"], 20, "the forecast still shows the cooling to come")
+	sk.end_round()
+	assert_eq(ms.heat, 20, "cooled by 10 at the end of the round")
+	assert_true(sk.log[sk.log.size() - 1].begins_with("cooling: A -10"), "one log line: %s" % sk.log[sk.log.size() - 1])
+	# Overflow is paid when the face is spent; cooling never undoes a burn.
+	sk.start_round()
+	ms.heat = 50
+	sk.assign(0, sk.front[0])
+	assert_eq(m.hull, 80, "50 plus 30 on a 60 cap: 20 burnt off the hull")
+	assert_eq(ms.heat, 60, "capped")
+	sk.end_round()
+	assert_eq(ms.heat, 50, "then cooled by 10")
+	# Cooling is a stat like any other: a passive can raise it, and it never goes below zero.
+	m.grant_passive({"id": "fins", "name": "Fins", "description": "", "effects": [{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 15}]}, "fins")
+	assert_eq(m.cooling, 25, "base plus the passive")
+	sk.start_round()
+	ms.heat = 5
+	sk.end_round()
+	assert_eq(ms.heat, 0, "never below zero")
+	assert_true(sk.log[sk.log.size() - 1].begins_with("cooling: A -5"), "logged as what was actually shed")
+
+
+func test_no_cooling_means_no_line_and_no_change() -> void:
+	var sk := Skirmish.new(1)
+	var ms := sk.add_mech(_mech("A", Die.single(Face.attack(10, L, [], 30)), 40, 100))
+	sk.add_foes([_ghoul(30, 10)])
+	sk.begin()
+	sk.start_round()
+	sk.assign(0, sk.front[0])
+	var lines := sk.log.size()
+	sk.end_round()
+	assert_eq(ms.heat, 30, "a chassis with no cooling keeps its heat")
+	for j in range(lines, sk.log.size()):
+		assert_false(sk.log[j].begins_with("cooling"), "no cooling line")

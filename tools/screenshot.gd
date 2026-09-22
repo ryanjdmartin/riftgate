@@ -68,6 +68,18 @@ func _apply_pose() -> void:
 			for ms in s.sk.mechs:
 				ms.unit.shield = mini(ms.unit.shield, 10)
 			s._end_turn_now()
+		"rounds", "logfull":
+			# A few rounds of events; logfull then opens the log full screen.
+			for k in range(3):
+				s._use_die(0, s.sk.front[0])
+				s._end_turn_now()
+			if _pose == "logfull":
+				s._toggle_log_full()
+		"killed":
+			# The first foe killed by a big die: dead where it stands, no intent, every arrow on.
+			s.sk.mechs[0].die.faces[s.sk.mechs[0].face_index] = Face.attack(200)
+			s._use_die(0, s.sk.front[0])
+			s._toggle_all_arrows(true)
 
 
 ## Battle screen poses: select (a mech and its reach), route (two routes plotted), hold (a

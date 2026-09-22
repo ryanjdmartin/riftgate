@@ -111,6 +111,7 @@ func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO) -
 	u.hardpoints = int(c.get("hardpoints", 6))
 	u.armour = int(c.get("armour", 0))
 	u.recharge_field = int(c.get("recharge_field", 0))
+	u.cooling = int(c.get("cooling", 0))
 	u.die = build_die(c.get("fixed", []), c.get("loadout", []), u.hardpoints)
 	u.chassis_id = chassis_id
 	var p = c.get("passive", null)
@@ -190,8 +191,8 @@ func codex_for_foe(f: Foe) -> Dictionary:
 func codex_for_unit(u: Unit) -> Dictionary:
 	var c: Dictionary = chassis.get(u.chassis_id, {})
 	var maker: Dictionary = makers.get(str(c.get("maker", "")), {})
-	var stats := "HULL %d/%d // ARMOUR %d // SHIELD %d/%d (+%d A PHASE OUT OF COMBAT) // MOVE %d // %d HARDPOINTS // D%d" % [
-		u.hull, u.hull_max, u.armour, u.shield, u.shield_max, u.recharge_field, u.movespeed, u.hardpoints, u.die.size() if u.die != null else 0]
+	var stats := "HULL %d/%d // ARMOUR %d // SHIELD %d/%d (+%d A PHASE OUT OF COMBAT) // HEAT %d (-%d A ROUND) // MOVE %d // %d HARDPOINTS // D%d" % [
+		u.hull, u.hull_max, u.armour, u.shield, u.shield_max, u.recharge_field, u.heat_max, u.cooling, u.movespeed, u.hardpoints, u.die.size() if u.die != null else 0]
 	var faces: Array = []
 	if u.die != null:
 		for f in u.die.faces:
@@ -220,9 +221,11 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		"stats": stats,
 		# Hardpoints are not a number here: the component list shows them as sockets.
 		# Mitigation on one row under the bars: armour, then the field recharge under shield.
-		# Shield before hull, as on the gauges: the enemy meets it first.
+		# Shield before hull, as on the gauges: the enemy meets it first. Then heat: the cap
+		# and what the chassis sheds at the end of every round.
 		"stat_items": [["shield", "%d/%d" % [u.shield, u.shield_max]], ["hull", "%d/%d" % [u.hull, u.hull_max]],
-			["recharge", "+%d" % u.recharge_field], ["armour", str(u.armour)], ["move", str(u.movespeed)]],
+			["recharge", "+%d" % u.recharge_field], ["armour", str(u.armour)],
+			["heat max / cooling", "%d / %d" % [u.heat_max, u.cooling]], ["move", str(u.movespeed)]],
 		"actions": "",
 		"passive": passive,
 		"faces": faces,
@@ -456,8 +459,8 @@ func _validate_chassis(errs: Array[String]) -> void:
 				errs.append("%s: missing %s" % [where, key])
 		if c.has("recharge_combat"):
 			errs.append("%s: recharge_combat is gone; in a fight shield comes only from components (a passive may say otherwise)" % where)
-		if int(c.get("recharge_field", 0)) < 0 or int(c.get("armour", 0)) < 0:
-			errs.append("%s: armour and the field recharge rate cannot be negative" % where)
+		if int(c.get("recharge_field", 0)) < 0 or int(c.get("armour", 0)) < 0 or int(c.get("cooling", 0)) < 0:
+			errs.append("%s: armour, the field recharge rate and cooling cannot be negative" % where)
 		_validate_design(where, c, errs)
 		var hp := int(c.get("hardpoints", 0))
 		if c.has("filler"):

@@ -7,7 +7,7 @@ extends Control
 ##   header      round and reinforcements tag, phase readout, the intent eye at the right
 ##   formation   two ranks of three unit views; a massive foe spans both ranks of its column;
 ##               under each foe its intent (fantasy icon and number) and its statuses
-##   log         the last few events, oldest dimmest
+##   log         every event, scrollable, the newest brightest; double-tap for it full screen
 ##   dice        tap to lock, hold to see every face, drag onto a target to spend; the wide
 ##               Reroll sits right under them, before or after attacking
 ##   mechs       gauges hugging the sprite, warning chips under it: shield break, component
@@ -50,6 +50,13 @@ var _header: HudButton
 var _sub_label: Label
 var _eye: HudButton
 var _log: RichTextLabel
+var _log_scroll: ScrollContainer
+var _log_full: Control = null        # the log full screen: a shade with a panel
+var _log_full_text: RichTextLabel
+var _log_full_scroll: ScrollContainer
+var _log_tap_at := -10.0
+var _home: Dictionary = {}           # Control -> where it rests; every animation returns there
+var _live_tweens: Dictionary = {}    # Control -> the tweens moving it now, killed before a new one starts
 var _slot_views: Array = []          # [rank][col] -> UnitView
 var _massive_views: Array = []       # [col] -> UnitView
 var _view_foe: Dictionary = {}       # UnitView -> Foe
@@ -129,6 +136,7 @@ func _ready() -> void:
 	elif _header == null:
 		_build()
 		_refresh()
+	_scroll_to_end(_log_scroll)   # set up before entering the tree: the strip starts at its last line
 
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks): two
@@ -186,6 +194,9 @@ func _build() -> void:
 	_mech_views.clear()
 	_mech_3d.clear()
 	_dice.clear()
+	_home.clear()
+	_live_tweens.clear()
+	_log_full = null
 	custom_minimum_size = Vector2(W, H)
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
@@ -240,17 +251,16 @@ func _build() -> void:
 		mv.double_tapped.connect(_on_foe_double_tapped.bind(mv))
 		_massive_views[col] = mv
 
-	# Log between the formation and the dice, oldest line dimmest.
+	# Log between the formation and the dice: every line, the newest brightest, scrolled to
+	# the end whenever something happens; drag to read back, double-tap for it full screen
+	# (Ryan, 22 September: the strip alone was too little to follow a round).
 	var log_tag := _tag("LOG", 10, true)
 	_place(log_tag, Vector2(12, LOG_Y), Vector2(52, 18))
-	_log = RichTextLabel.new()
-	_log.bbcode_enabled = true
-	_log.scroll_active = false
-	_log.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_log.add_theme_font_override("normal_font", Hud.mono())
-	_log.add_theme_font_size_override("normal_font_size", 14)
-	_log.add_theme_color_override("default_color", Palette.HUD)
-	_place(_log, Vector2(20, LOG_Y + 22), Vector2(W - 40, LOG_H - 22))
+	_log_scroll = _log_scroller()
+	_log_scroll.tooltip_text = "Drag to read back; double-tap to expand"
+	_place(_log_scroll, Vector2(20, LOG_Y + 22), Vector2(W - 40, LOG_H - 22))
+	_log = _log_label(14)
+	_log_scroll.add_child(_log)
 
 	# Dice in the middle, each centred on its mech.
 	var n := sk.mechs.size()
@@ -361,6 +371,76 @@ func _build() -> void:
 	_build_codex()
 	_build_confirm()
 	_build_outcome()
+	_build_log_full()
+
+
+## A log body: bbcode, sized by its content, filling its scroller's width.
+func _log_label(size_px: int) -> RichTextLabel:
+	var l := RichTextLabel.new()
+	l.bbcode_enabled = true
+	l.fit_content = true
+	l.scroll_active = false
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	l.add_theme_font_override("normal_font", Hud.mono())
+	l.add_theme_font_size_override("normal_font_size", size_px)
+	l.add_theme_color_override("default_color", Palette.HUD)
+	return l
+
+
+## The log full screen: the whole fight so far in a bigger face, on a shade. A tap on the
+## shade, a double-tap on the text, or CLOSE puts it away.
+func _build_log_full() -> void:
+	var shade := ColorRect.new()
+	shade.color = Color(0, 0, 0, 0.82)
+	shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	shade.mouse_filter = Control.MOUSE_FILTER_STOP
+	shade.visible = false
+	shade.gui_input.connect(func(e: InputEvent) -> void:
+		if e is InputEventMouseButton and e.pressed:
+			_toggle_log_full())
+	add_child(shade)
+	_log_full = shade
+	var panel := HudPanel.new(18.0)
+	panel.position = Vector2(16, 40)
+	panel.size = Vector2(W - 32, H - 80)
+	shade.add_child(panel)
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", 10)
+	panel.add_child(col)
+	var head := _tag("LOG // EVERY EVENT", 12, true)
+	head.custom_minimum_size = Vector2(220, 26)
+	head.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	col.add_child(head)
+	_log_full_scroll = _log_scroller()
+	_log_full_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	col.add_child(_log_full_scroll)
+	_log_full_text = _log_label(18)
+	_log_full_scroll.add_child(_log_full_text)
+	var close := HudButton.new("CLOSE", _toggle_log_full)
+	close.custom_minimum_size = Vector2(0, 52)
+	col.add_child(close)
+
+
+## Two taps within the double-tap window on either log switch the full screen one.
+func _on_log_input(e: InputEvent) -> void:
+	if not (e is InputEventMouseButton) or e.button_index != MOUSE_BUTTON_LEFT or e.pressed:
+		return
+	var now := Time.get_ticks_msec() / 1000.0
+	if now - _log_tap_at <= UnitView.DOUBLE_TAP_SECONDS:
+		_log_tap_at = -10.0
+		_toggle_log_full()
+	else:
+		_log_tap_at = now
+
+
+func _toggle_log_full() -> void:
+	if _log_full == null:
+		return
+	_log_full.visible = not _log_full.visible
+	if _log_full.visible:
+		_log_full_text.text = _log_text(0)   # nothing faded: it is there to be read
+		_scroll_to_end(_log_full_scroll)
 
 
 func _build_codex() -> void:
@@ -534,6 +614,7 @@ func _col_x(col: int) -> float:
 func _place(c: Control, pos: Vector2, sz: Vector2) -> void:
 	c.position = pos
 	c.size = sz
+	_home[c] = pos
 	add_child(c)
 
 
@@ -589,6 +670,7 @@ func _refresh() -> void:
 				v.highlight = false
 				v.dead = false
 				v.sprite = null
+				_settle(v)   # a hit still playing on the foe that stood here would end at full brightness
 				v.modulate = Color(1, 1, 1, 0.3)
 				v.queue_redraw()
 				continue
@@ -630,18 +712,11 @@ func _refresh() -> void:
 
 
 func _refresh_log() -> void:
-	var start := maxi(0, sk.log.size() - LOG_LINES)
-	var count := sk.log.size() - start
-	var out := ""
-	if count == 0:
-		out = "[color=#%s]> round %d // %d in reserve // awaiting orders[/color]" % [Color(Palette.HUD, 0.45).to_html(true), sk.round, sk.reinforcements.size()]
-	for j in range(start, sk.log.size()):
-		var age := j - start
-		var a := 1.0 if count <= 1 else lerpf(0.4, 1.0, float(age) / float(count - 1))
-		out += "[color=#%s]> %s[/color]\n" % [Color(Palette.HUD, a).to_html(true), sk.log[j]]
-	_log.text = out
-	# New lines type in, so the eye is drawn to what just happened.
-	if sk.log.size() > _log_seen and is_inside_tree():
+	var fresh_lines := sk.log.size() > _log_seen
+	_log.text = _log_text(LOG_LINES)
+	# New lines type in, so the eye is drawn to what just happened, and the strip scrolls
+	# to them; a strip the player scrolled back stays put until something new happens.
+	if fresh_lines and is_inside_tree():
 		var total := _log.get_total_character_count()
 		var fresh := 0
 		for j in range(_log_seen, sk.log.size()):
@@ -650,7 +725,68 @@ func _refresh_log() -> void:
 		var tw := create_tween()
 		tw.tween_property(_log, "visible_characters", total, minf(0.6, 0.012 * fresh))
 		tw.tween_callback(func() -> void: _log.visible_characters = -1)
+	if fresh_lines or _log_seen == 0:
+		_scroll_to_end(_log_scroll)
+	if _log_full != null and _log_full.visible and fresh_lines:
+		_log_full_text.text = _log_text(0)
+		_scroll_to_end(_log_full_scroll)
 	_log_seen = sk.log.size()
+
+
+## The whole log as bbcode, one line per event, the last `bright` lines fading up to full
+## and everything older at the dim end; `bright` 0 leaves every line at full.
+func _log_text(bright: int) -> String:
+	var n := sk.log.size()
+	if n == 0:
+		return "[color=#%s]> round %d // %d in reserve // awaiting orders[/color]" % [Color(Palette.HUD, 0.45).to_html(true), sk.round, sk.reinforcements.size()]
+	var start := maxi(0, n - bright)
+	var count := n - start
+	var out := ""
+	for j in range(n):
+		var a := 1.0
+		if bright > 0:
+			if j < start:
+				a = 0.4
+			elif count > 1:
+				a = lerpf(0.4, 1.0, float(j - start) / float(count - 1))
+		out += "[color=#%s]> %s[/color]\n" % [Color(Palette.HUD, a).to_html(true), sk.log[j]]
+	return out
+
+
+## Scroll a log to its last line once the new text has been laid out: the label sizes
+## itself on its next process and the scroller sorts a frame after, so keep pushing to the
+## end for a few frames rather than guessing which one.
+func _scroll_to_end(sc: ScrollContainer) -> void:
+	if sc == null or not is_inside_tree():
+		return
+	for k in range(3):
+		await get_tree().process_frame
+		if not is_instance_valid(sc) or not sc.is_inside_tree():
+			return
+		sc.scroll_vertical = int(sc.get_v_scroll_bar().max_value)
+
+
+## A scroller in the overlay style: a thin track in the HUD colour, no arrows.
+func _log_scroller() -> ScrollContainer:
+	var sc := ScrollContainer.new()
+	sc.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	sc.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	sc.gui_input.connect(_on_log_input)
+	var bar := sc.get_v_scroll_bar()
+	var track := StyleBoxFlat.new()
+	track.bg_color = Color(Palette.HUD, 0.12)
+	track.content_margin_left = 2.0
+	track.content_margin_right = 2.0
+	var grab := StyleBoxFlat.new()
+	grab.bg_color = Color(Palette.HUD, 0.7)
+	var grab_hi := StyleBoxFlat.new()
+	grab_hi.bg_color = Palette.HUD
+	bar.add_theme_stylebox_override("scroll", track)
+	bar.add_theme_stylebox_override("grabber", grab)
+	bar.add_theme_stylebox_override("grabber_highlight", grab_hi)
+	bar.add_theme_stylebox_override("grabber_pressed", grab_hi)
+	bar.custom_minimum_size = Vector2(8, 0)
+	return sc
 
 
 func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe]) -> void:
@@ -666,8 +802,9 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe]) -> void:
 	v.intent = ""
 	v.intent_dim = false
 	# The intent is this round's chosen attack: a sword, its damage, and a mark for a double
-	# strike or a breach; a suppressed foe shows no intent, only the status.
-	v.intent_kind = "" if (foe.is_suppressed() or foe.target == null) else "attack"
+	# strike or a breach; a suppressed foe shows no intent, only the status; a dead one
+	# threatens nothing.
+	v.intent_kind = "" if (foe.is_suppressed() or foe.target == null or not foe.alive()) else "attack"
 	v.intent_value = foe.damage()
 	v.intent_note = ("×%d" % foe.strikes() if foe.strikes() > 1 else "") + ("!" if foe.breaches() else "")
 	v.statuses = []
@@ -726,7 +863,7 @@ func _refresh_arrows() -> void:
 	var list: Array = []
 	var inv := _arrows.get_global_transform().affine_inverse()
 	for foe in sk.field_foes():
-		if foe.target == null or foe.is_suppressed():
+		if foe.target == null or foe.is_suppressed() or not foe.alive():
 			continue
 		var target_index := sk.mechs.find(foe.target)
 		if target_index < 0:
@@ -897,10 +1034,13 @@ func _on_foe_held(v: UnitView) -> void:
 		return
 	_hold_foe = foe
 	var text := "%s\nhp %d/%d · attack %d" % [foe.display_name, foe.hp, foe.hp_max, foe.attack]
-	if not foe.action.is_empty():
-		text += "\n%s %d%s" % [str(foe.action.get("name", "")), foe.damage(), v.intent_note]
-	if foe.target != null:
-		text += "\n→ %s" % foe.target.unit.display_name
+	if not foe.alive():
+		text += "\ndestroyed: cleared at the end of the round"
+	else:
+		if not foe.action.is_empty():
+			text += "\n%s %d%s" % [str(foe.action.get("name", "")), foe.damage(), v.intent_note]
+		if foe.target != null:
+			text += "\n→ %s" % foe.target.unit.display_name
 	if foe.is_massive():
 		text += "\nmassive: fills the column"
 	_show_details(text, v, [], -1, _readout_rows(_foe_rows(foe)))
@@ -911,6 +1051,8 @@ func _on_mech_held(i: int) -> void:
 	_hold_mech = i
 	var ms: Skirmish.MechState = sk.mechs[i]
 	var text := "%s\nhull %d/%d · shield %d/%d · heat %d/%d" % [ms.unit.display_name, ms.unit.hull, ms.unit.hull_max, ms.unit.shield, ms.unit.shield_max, ms.heat, ms.heat_max]
+	if ms.unit.cooling > 0:
+		text += "\ncools %d a round" % ms.unit.cooling
 	_show_details(text, _mech_views[i], [], -1, _readout_rows(_mech_rows(i)))
 	_refresh_arrows()
 
@@ -1077,11 +1219,12 @@ func _use_die(i: int, target) -> bool:
 func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool) -> void:
 	if not is_inside_tree() or attacker == null:
 		return
-	var origin := attacker.position
+	_settle(attacker)
+	var origin: Vector2 = _home.get(attacker, attacker.position)
 	var mi := _mech_views.find(attacker)
 	if mi >= 0 and mi < _mech_3d.size() and _mech_3d[mi] != null:
 		_mech_3d[mi].strike(ranged)   # the arms swing when the model has joints
-	var tw := create_tween()
+	var tw := _track(attacker, create_tween())
 	if ranged or target == null:
 		var kick := Vector2(0.0, 8.0) if attacker in _mech_views else Vector2(0.0, -8.0)
 		tw.tween_property(attacker, "position", origin + kick, 0.05).set_ease(Tween.EASE_OUT)
@@ -1098,12 +1241,13 @@ func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool) -> void
 func _animate_hit(v: UnitView, delay: float = 0.0) -> void:
 	if not is_inside_tree() or v == null:
 		return
-	var origin := v.position
-	var tw := create_tween()
+	_settle(v)
+	var origin: Vector2 = _home.get(v, v.position)
+	var tw := _track(v, create_tween())
 	tw.tween_interval(delay)
 	tw.tween_property(v, "modulate", Color(1.8, 1.4, 1.4), 0.04)
 	tw.tween_property(v, "modulate", Color.WHITE, 0.22)
-	var shake := create_tween()
+	var shake := _track(v, create_tween())
 	shake.tween_interval(delay)
 	for k in range(4):
 		var dx := (5.0 - k * 1.2) * (1.0 if k % 2 == 0 else -1.0)
@@ -1128,11 +1272,49 @@ func _animate_enemy_turn(hits: Array) -> void:
 		tw.tween_callback(func() -> void:
 			if fv != null:
 				_animate_attack(fv, mv, false)
+			else:
+				_animate_hit(mv)   # the striker's slot has changed hands since: the blow still shows
 			if broke:
 				var t2 := create_tween()
 				t2.tween_interval(0.08)
 				t2.tween_callback(mv.shatter_shield))
 		k += 1
+
+
+## Every animation on a control returns it to where it was placed. Whatever is still
+## moving it is stopped first, so a second blow landing mid-shake cannot carry the unit off
+## (Ryan, 22 September: mechs drifted out of position under fire).
+func _settle(v: Control) -> void:
+	for tw in _live_tweens.get(v, []):
+		if tw.is_valid():
+			tw.kill()
+	_live_tweens.erase(v)
+	if _home.has(v):
+		v.position = _home[v]
+		v.modulate = Color.WHITE
+
+
+func _track(v: Control, tw: Tween) -> Tween:
+	if not _live_tweens.has(v):
+		_live_tweens[v] = []
+	_live_tweens[v].append(tw)
+	return tw
+
+
+## A reinforcement steps in: it fades up and drops into its slot after `delay`, so a fresh
+## foe in a slot whose last holder just died reads as an arrival, never a resurrection.
+func _animate_arrival(v: UnitView, delay: float) -> void:
+	if not is_inside_tree() or v == null:
+		return
+	_settle(v)
+	var home: Vector2 = _home.get(v, v.position)
+	v.modulate = Color(1, 1, 1, 0)
+	v.position = home + Vector2(0, -28.0)
+	var tw := _track(v, create_tween())
+	tw.tween_interval(delay)
+	tw.set_parallel(true)
+	tw.tween_property(v, "modulate", Color.WHITE, 0.28)
+	tw.tween_property(v, "position", home, 0.32).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 
 
 # ---------------------------------------------------------------- buttons and confirms
@@ -1204,14 +1386,8 @@ func _end_turn_now() -> void:
 		var ms: Skirmish.MechState = sk.mechs[i]
 		if ms.alive() and not ms.assigned and ms.face() != null and ms.face().kind == Face.Kind.BLANK:
 			sk.assign(i, null)
+	var before: Array[Foe] = sk.field_foes()
 	var outcome := sk.end_round()
-	# The blows the sim just resolved, in order, so the replay shows what happened: who
-	# lunged at whom, and where a shield broke.
-	var hits: Array = []
-	for ev in sk.turn_events:
-		var mi: int = ev["mech"]
-		if mi >= 0 and mi < _mech_views.size():
-			hits.append([_foe_view_for(ev["foe"]), _mech_views[mi], bool(ev["broke_shield"])])
 	if outcome != Skirmish.Outcome.NONE:
 		_show_outcome(outcome)
 		return
@@ -1219,7 +1395,20 @@ func _end_turn_now() -> void:
 	for i in range(locked.size()):
 		locked[i] = false
 	_refresh()
+	# The blows the sim just resolved, in order, so the replay shows what happened: who
+	# lunged at whom, and where a shield broke. Views are looked up after the refresh, so a
+	# slot a reinforcement has since taken never lunges as if it had struck.
+	var hits: Array = []
+	for ev in sk.turn_events:
+		var mi: int = ev["mech"]
+		if mi >= 0 and mi < _mech_views.size():
+			hits.append([_foe_view_for(ev["foe"]), _mech_views[mi], bool(ev["broke_shield"])])
 	_animate_enemy_turn(hits)
+	# Then the reinforcements step in, after the replay has played.
+	var after_replay := 0.12 * hits.size() + 0.3
+	for foe in sk.field_foes():
+		if not before.has(foe):
+			_animate_arrival(_foe_view_for(foe), after_replay)
 
 
 ## Withdraw always asks first.

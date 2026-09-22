@@ -25,7 +25,7 @@ const CHIP_GLYPH := 18.0
 const CHIP_TEXT := 16
 const BAR_H := 8.0
 const BAR_STEP := 11.0
-const FLOAT_BAR_W := 52.0
+const FLOAT_BAR_W := 60.0
 
 var display_name: String = ""     # for the codex and readouts; never drawn here
 var is_enemy: bool = false
@@ -210,12 +210,15 @@ func _draw() -> void:
 	if _shatter >= 0.0:
 		_draw_shatter(vis)
 
+	# Gauges sit on a dark plate (Ryan, 22 September): the ground under the units is now the
+	# terrain's colour, and a bare bar was lost on it.
 	if not bars.is_empty() and not dead:
 		if bars_above:
 			# Full-width gauges stacked right above the drawing: hull, shield, heat.
 			var bx := size.x * 0.1
 			var bw := size.x * 0.8
 			var y := vis.position.y - 4.0 - bars.size() * BAR_STEP
+			_plate(Rect2(bx - 5.0, y - 4.0, bw + 10.0, bars.size() * BAR_STEP + 5.0))
 			for b in bars:
 				_gauge(Rect2(bx, y, bw, BAR_H), b)
 				y += BAR_STEP
@@ -227,6 +230,8 @@ func _draw() -> void:
 			var y := vis.position.y - 16.0
 			var from := Vector2(bx + FLOAT_BAR_W / 3.0, y + BAR_H)
 			draw_line(from, from + Vector2(-9.0, 9.0), Color(hud, 0.8), 1.5)
+			var top := y - 10.0 * (bars.size() - 1)
+			_plate(Rect2(bx - 4.0, top - 3.0, FLOAT_BAR_W + 8.0, y - top + BAR_H + 6.0))
 			for b in bars:
 				_gauge(Rect2(bx, y, FLOAT_BAR_W, BAR_H), b)
 				y -= 10.0
@@ -267,6 +272,11 @@ func _draw() -> void:
 		x += widths[i] + 6.0
 
 
+## The dark plate under a stack of gauges, with a faint edge in the HUD colour.
+func _plate(rect: Rect2) -> void:
+	Hud.box(self, rect, 4.0, Color(Palette.BG, 0.84), Color(Palette.HUD, 0.35), 1.0)
+
+
 ## A gauge with, when a pending value is given, a pulsing overlay on the part about to
 ## change. The overlay is ink white with a dark edge, never a hue: it has to read against
 ## any bar colour and for any kind of colour vision. Where it sits says which way the bar
@@ -276,6 +286,7 @@ func _gauge(rect: Rect2, b: Array) -> void:
 	var frac: float = clampf(float(b[0]) / mx, 0.0, 1.0)
 	var col: Color = b[2]
 	Hud.gauge(self, rect, frac, col)
+	Hud.stroke_poly(self, Hud.slant(rect, 4.0), Color(col, 0.95), 1.0)   # a full-strength edge, so an empty bar still shows
 	if b.size() < 4 or int(b[3]) == int(b[0]):
 		return
 	var pending: float = clampf(float(b[3]) / mx, 0.0, 1.0)

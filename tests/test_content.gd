@@ -363,3 +363,20 @@ func test_face_round_trips_through_json() -> void:
 	var back := Face.from_dict(f.to_dict())
 	assert_eq(back.describe(), f.describe(), "describe matches after round trip")
 	assert_true(back.has(Face.Keyword.BURN) and back.has(Face.Keyword.SUPPRESS), "both keywords kept")
+
+
+func test_chassis_cooling_is_read_and_never_negative() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	assert_true(db.validate().is_empty(), "content validates")
+	for id in db.chassis.keys():
+		var u := db.make_mech(id)
+		assert_eq(u.cooling, int(db.chassis[id].get("cooling", 0)), "%s cooling read from content (0 when absent)" % id)
+	var c: Dictionary = db.chassis["sparrowhawk"].duplicate(true)
+	c["cooling"] = -5
+	db.chassis["frozen"] = c
+	var hit := false
+	for e in db.validate():
+		if e.begins_with("chassis frozen") and e.contains("cooling"):
+			hit = true
+	assert_true(hit, "negative cooling is refused")

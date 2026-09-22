@@ -284,3 +284,39 @@ func test_screen_lays_out_four_columns() -> void:
 	assert_true(last.position.x + last.size.x <= SkirmishScreen.W, "last column inside the screen")
 	assert_true(s._view_foe.size() == 8, "eight foes shown")
 	s.free()
+
+
+func test_log_holds_every_line_and_double_tap_opens_it_full() -> void:
+	var s := _screen(5)
+	assert_true(s._log_scroll != null and s._log_scroll.get_child_count() == 1, "the log strip is a scroller around the text")
+	for k in range(12):
+		s.sk.log.append("line %d" % k)
+	s._refresh()
+	for k in range(12):
+		assert_true(s._log.text.contains("line %d" % k), "every line is in the strip: %d" % k)
+	assert_false(s._log_full.visible, "full log closed to start")
+	s._toggle_log_full()
+	assert_true(s._log_full.visible, "double-tap opens the full log")
+	assert_true(s._log_full_text.text.contains("line 0") and s._log_full_text.text.contains("line 11"), "the full log has the whole fight")
+	s._toggle_log_full()
+	assert_false(s._log_full.visible, "and closes it again")
+	s.free()
+
+
+func test_a_killed_foe_shows_no_intent_and_no_arrow() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	m.die = Die.single(Face.attack(90))
+	sk.add_mech(m)
+	sk.add_foes([Foe.make("ghoul", 30, 10), Foe.make("ghoul", 30, 10)])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	s._toggle_all_arrows(true)
+	assert_eq(s._arrows.arrows.size(), 2, "both ghouls aim at the only mech")
+	s._use_die(0, sk.front[0])
+	var v: UnitView = s._foe_view_for(sk.front[0])
+	assert_true(v.dead, "drawn as dead")
+	assert_eq(v.intent_kind, "", "no intent on a dead foe")
+	assert_eq(s._arrows.arrows.size(), 1, "its arrow is gone")
+	s.free()
