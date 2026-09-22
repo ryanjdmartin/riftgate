@@ -110,6 +110,7 @@ func set_field(f: Battlefield) -> void:
 		mat.shader = load("res://game/battle/bleed.gdshader")
 		mat.set_shader_parameter("painted", _painted.get_texture())
 		mat.set_shader_parameter("painted2", _painted2.get_texture())
+		mat.set_shader_parameter("units", _map3d.get_units_texture())
 		mat.set_shader_parameter("map_size", map_size)
 		mat.set_shader_parameter("view_size", size)
 		mat.set_shader_parameter("play_x", _frame_x())   # sharp inside the frame's lines, soft outside
@@ -182,6 +183,13 @@ func to_screen(p: Vector2) -> Vector2:
 
 func to_map(local: Vector2) -> Vector2:
 	return (local - Vector2(scroll_x, scroll_y)) / zoom
+
+
+## The base of a hex in map space: its grid cell before any height. The enemy's marks and
+## the squads themselves sit here (Ryan, 22 September: their world is flat, and they
+## flatten what they walk on).
+func base(h: Vector2i) -> Vector2:
+	return _origin + Hex.to_pixel(h, HEX_SIZE)
 
 
 ## Centre of a hex in map space: its grid cell, lifted by the height of its column so the
@@ -297,10 +305,6 @@ func _draw() -> void:
 		mat.set_shader_parameter("source_count", src.size())
 		src.resize(Bleed.MAX_SOURCES)
 		mat.set_shader_parameter("sources", src)
-		var holes := Bleed.holes(field, _origin, HEX_SIZE, _anim_px)
-		mat.set_shader_parameter("hole_count", holes.size())
-		holes.resize(Bleed.MAX_HOLES)
-		mat.set_shader_parameter("holes", holes)
 		mat.set_shader_parameter("focus_y", (size.y * 0.5 - scroll_y) / zoom)
 		mat.set_shader_parameter("scroll", Vector2(scroll_x, scroll_y))
 		mat.set_shader_parameter("zoom", zoom)
@@ -330,8 +334,8 @@ func _draw() -> void:
 	# Where the selected mech may end its move.
 	for h in destinations.keys():
 		var pts := Hex.corners(center(h), HEX_SIZE - 5.0)
-		draw_colored_polygon(pts, Color(hud, 0.14))
-		Hud.stroke_poly(self, pts, Color(hud, 0.55), 1.0)
+		draw_colored_polygon(pts, Color(hud, 0.26))
+		Hud.stroke_poly(self, pts, Color(hud, 0.8), 1.5)
 
 	# Enemy previews: where each squad goes given the plan as it stands, from the same dry
 	# run that finds the contacts (Ryan, 22 September: a route that cuts a squad off shows
@@ -356,21 +360,22 @@ func _draw() -> void:
 			if path.is_empty():
 				continue
 			var dest: Vector2i = path[path.size() - 1]
-			var pts: PackedVector2Array = [center(sq.pos)]
+			var pts: PackedVector2Array = [base(sq.pos)]
 			for step in path:
-				pts.append(center(step))
+				pts.append(base(step))
 			var owned := not (contact_hexes.has(dest) or map.gate_hexes.has(dest))
 			if owned:
-				# The line runs over the outline to the target's outer ring: line, tint,
-				# outline and rings are one component, nothing translucent, the hex under
-				# the line so nothing cuts it (Ryan, 22 September).
+				# The line runs over the outline into the target: line, tint, outline and
+				# rings are one component, nothing translucent, the hex under the line so
+				# nothing cuts it (Ryan, 22 September).
 				_destination_hex(dest)
-				var dc := pts[pts.size() - 1]
-				var dir := (dc - pts[pts.size() - 2]).normalized()
-				pts[pts.size() - 1] = dc - dir * DEST_RING
+				if not LINE_TO_CENTRE:
+					var dc := pts[pts.size() - 1]
+					var dir := (dc - pts[pts.size() - 2]).normalized()
+					pts[pts.size() - 1] = dc - dir * DEST_RING
 			draw_polyline(pts, Palette.ENEMY, 4.0)
 			if owned:
-				_destination_rings(center(dest), _light_ground(dest))
+				_destination_rings(base(dest))
 
 	# The player's plotted routes, ending in a small marker hex.
 	for uid in routes.keys():
@@ -391,7 +396,7 @@ func _draw() -> void:
 		for group in pending:
 			var lit := _highlight.is_empty() or _highlight.has((group[0] as Unit).pos)
 			for u in group:
-				_contact_effect(u.pos, lit)
+				_contact_effect(u.pos, lit, u.is_enemy())
 	# The plan as it will resolve, from the resolver itself run dry (Ryan, 21 September:
 	# never ambiguous): every contact group, every squad stopped by a body block, every
 	# route that will be rejected.
@@ -410,7 +415,7 @@ func _draw() -> void:
 				var c := center(ends[u.id])
 				mid += c
 				top_y = minf(top_y, c.y)
-				_contact_effect(ends[u.id], lit)
+				_contact_effect(ends[u.id], lit, u.is_enemy())
 			mid /= float(group.size())
 			# Who is in it: the machines against the squads, so the player knows what the
 			# skirmish will hold before locking in (Ryan, 22 September).
@@ -606,33 +611,29 @@ func _mark(h: Vector2i) -> Dictionary:
 	return m
 
 
-const DEST_RING := HEX_SIZE * 0.58   # the target's outer ring, where the intent line arrives; clear of the outline
-const ENEMY_LIT := Color("ff8a7a")    # the enemy marks' bright: red lifted toward white, for dark ground
+const DEST_RING := HEX_SIZE * 0.58   # the target's outer ring; the line stops here unless LINE_TO_CENTRE
+const LINE_TO_CENTRE := true          # the intent line runs to the hex's centre (Ryan, 22 September: to try)
+const ENEMY_LIT := Color("ff8a7a")    # the enemy marks' bright: red lifted toward white
 
 ## The target in the HUD's own weight (Ryan, 22 September: nothing translucent, nothing
 ## abutting, the animation the thing you see): a tint and a thin outline under the line,
-## then three bright broken rings turning against each other around a centre dot.
+## then three bright broken rings turning against each other around a centre dot. Drawn
+## at the hex's base, flat, since the enemy flattens what it walks on.
 func _destination_hex(h: Vector2i) -> void:
-	_fill(h, Color(Palette.ENEMY, 0.22))
-	Hud.stroke_poly(self, Hex.corners(center(h), HEX_SIZE - 3.0), Palette.ENEMY, 2.5)
+	var pts := Hex.corners(base(h), HEX_SIZE - 3.0)
+	draw_colored_polygon(pts, Color(Palette.ENEMY, 0.4))
+	Hud.stroke_poly(self, pts, Palette.ENEMY, 2.5)
 
 
-## The rings' colour meets the ground: the bright red on dark ground, the deep red on
-## pale ground (ruins, rock, road), and a slow breath between them so it reads as live.
-func _light_ground(h: Vector2i) -> bool:
-	var t: int = field.map.terrain.get(h, BattleMap.Terrain.PLAIN)
-	return t in [BattleMap.Terrain.RUINS, BattleMap.Terrain.MOUNTAIN, BattleMap.Terrain.ROAD]
-
-
-func _ring_colour(light_ground: bool) -> Color:
+## The rings breathe the whole way between the deep red and the bright, so on any ground,
+## props or not, they pass through a colour that reads (Ryan, 22 September).
+func _ring_colour() -> Color:
 	var breath := 0.5 + 0.5 * sin(_ring_t * 1.6)
-	var a := Palette.ENEMY if light_ground else ENEMY_LIT
-	var b := ENEMY_LIT if light_ground else Palette.ENEMY
-	return a.lerp(b, 0.3 * breath)
+	return Palette.ENEMY.lerp(ENEMY_LIT, breath)
 
 
-func _destination_rings(c: Vector2, light_ground: bool) -> void:
-	var col := _ring_colour(light_ground)
+func _destination_rings(c: Vector2) -> void:
+	var col := _ring_colour()
 	_target_rings(c, col, DEST_RING, 1.0)
 	draw_circle(c, 4.0, col)
 
@@ -657,13 +658,16 @@ func _ally_target(c: Vector2, col: Color) -> void:
 		draw_arc(c, r, 0.0, TAU, 32, Color(col, 0.4 - 0.12 * k), 1.5)
 
 
-func _contact_effect(h: Vector2i, lit: bool) -> void:
-	var c := center(h)
+func _contact_effect(h: Vector2i, lit: bool, at_base: bool = false) -> void:
+	var c := base(h) if at_base else center(h)
 	var a := 1.0 if lit else 0.35
 	var breath := 0.5 + 0.5 * sin(_ring_t * 4.0)
-	_fill(h, Color(Palette.ENEMY, (0.34 + 0.2 * breath) * a))
+	if at_base:
+		draw_colored_polygon(Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, (0.5 + 0.25 * breath) * a))
+	else:
+		_fill(h, Color(Palette.ENEMY, (0.5 + 0.25 * breath) * a))
 	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, a), 2.5)
-	var col := _ring_colour(_light_ground(h))
+	var col := _ring_colour()
 	for k in range(2):
 		var phase := fmod(_ring_t * 0.9 + k * 0.5, 1.0)
 		var r := HEX_SIZE * (0.3 + 1.1 * phase)
@@ -677,9 +681,12 @@ func _zone(h: Vector2i, col: Color) -> void:
 	for n in Hex.neighbors(h):
 		if field.map.has(n) and not field.map.is_structure(n):
 			cluster[n] = true
+	# A real aura (Ryan, 22 September: the tints were far too subtle; the UX matters more
+	# than the ground under them), breathing so it reads as the machine's reach.
+	var breath := 0.5 + 0.5 * sin(_ring_t * 2.2)
 	for n in cluster.keys():
 		if n != h:
-			_fill(n, Color(col, 0.12))
+			_fill(n, Color(col, 0.28 + 0.12 * breath))
 	for n in cluster.keys():
 		if n == h:
 			continue
@@ -695,7 +702,7 @@ func _zone(h: Vector2i, col: Color) -> void:
 			if not cluster.has(across) and field.map.has(across) and not field.map.is_structure(across):
 				edges.append(i)
 		if not edges.is_empty():
-			_edges(n, edges, Color(col, 0.65))
+			_edges(n, edges, Color(col, 0.95))
 
 
 func _dotted_poly(pts: PackedVector2Array, col: Color, dash: float) -> void:
@@ -839,10 +846,12 @@ var _anim_px: Dictionary = {}   # unit id -> map pixel offset from hex (0,0) whi
 func _unit_center(u: Unit) -> Vector2:
 	if _anim_px.has(u.id):
 		var px: Vector2 = _anim_px[u.id]
+		if u.is_enemy():
+			return _origin + px
 		var under := Hex.from_pixel(px, HEX_SIZE)
 		var lift := _map3d.lift(under) if _map3d != null else 0.0
 		return _origin + px + Vector2(0, -lift)
-	return center(u.pos)
+	return base(u.pos) if u.is_enemy() else center(u.pos)
 
 
 func _draw_unit(u: Unit) -> void:

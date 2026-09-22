@@ -21,6 +21,11 @@ const HEX_WORLD := 35.0        # a hex's circumradius in model units: a mech is 
 const CAMERA_DISTANCE := 900.0
 const MARKER_FIT := 1.05       # a mech's widest extent, in hex widths, on the map
 const FIT_FLYER := 0.8         # a flyer is a small craft beside a mech (Ryan, 21 September)
+## Whether the ground under the bleed collapses to flat (the first cut) or keeps its true
+## height while the other world's painting sits over it at ground level, half up and half
+## down (Ryan, 22 September, to see). The enemy's marks sit at the base either way.
+const COLLAPSE := false
+const UNITS_LAYER := 2         # the machines render again into their own layer, drawn over both worlds
 const HOVER := 30.0            # a flyer rides this far above the ground, in model units: clear of a mech
 const SHADOW_RADIUS := 0.38    # a flyer's ground shadow, in hex widths: it says which tile it is on
 const TILE_WORLD := 40.0       # world units one terrain tile covers, as the structures
@@ -91,6 +96,7 @@ func setup(f: Battlefield, view_size: Vector2, origin: Vector2, hex_size: float)
 	_build_ground()
 	_build_structures()
 	_build_camera()
+	_build_units_layer()
 	sync()
 
 
@@ -110,6 +116,51 @@ func _aim() -> void:
 	var back := Vector3(0.0, _sin, _cos)
 	_camera.position = target + back * CAMERA_DISTANCE
 	_camera.look_at(target, Vector3.UP)
+	if _units_cam != null:
+		_units_cam.size = _camera.size
+		_units_cam.global_transform = _camera.global_transform
+
+
+## The machines are the reconstruction's own and never go under the other world's
+## painting (Ryan, 22 September: a machine over a flat hex showed a hole of dark ground
+## around it). A second viewport shares this world and a camera that only sees the
+## units' layer; the compositor draws its texture over both worlds.
+var _units_vp: SubViewport = null
+var _units_cam: Camera3D = null
+
+func _build_units_layer() -> void:
+	_units_vp = SubViewport.new()
+	_units_vp.size = size
+	_units_vp.transparent_bg = true
+	_units_vp.own_world_3d = false
+	_units_vp.world_3d = world_3d
+	_units_vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	_units_vp.msaa_3d = msaa_3d
+	add_child(_units_vp)
+	_units_cam = Camera3D.new()
+	_units_cam.projection = Camera3D.PROJECTION_ORTHOGONAL
+	_units_cam.keep_aspect = Camera3D.KEEP_HEIGHT
+	_units_cam.near = 1.0
+	_units_cam.far = 4000.0
+	_units_cam.cull_mask = 1 << (UNITS_LAYER - 1)
+	var e: Environment = _env.duplicate()
+	e.background_mode = Environment.BG_COLOR
+	e.background_color = Color(0, 0, 0, 0)
+	_units_cam.environment = e
+	_units_vp.add_child(_units_cam)
+	_aim()
+
+
+func get_units_texture() -> Texture2D:
+	return _units_vp.get_texture() if _units_vp != null else null
+
+
+func _to_units_layer(n: Node) -> void:
+	var mask := 1 | (1 << (UNITS_LAYER - 1))
+	if n is VisualInstance3D:
+		(n as VisualInstance3D).layers = mask
+	for c in n.find_children("*", "VisualInstance3D", true, false):
+		(c as VisualInstance3D).layers = mask
 
 
 ## One sun from the north-west, casting shadows, and a little ambient; the mechs and
@@ -360,7 +411,7 @@ func _ink(grow: float = 1.0) -> StandardMaterial3D:
 ## follow every call, so a mark can breathe.
 var _marks: Dictionary = {}   # hex -> [fill MeshInstance3D or null, line MeshInstance3D or null]
 var _marks_key := ""
-const EDGE_W := 2.5   # the ribbon's width in map pixels
+const EDGE_W := 3.5   # the ribbon's width in map pixels
 
 func set_marks(list: Array) -> void:
 	var key := ""
@@ -830,11 +881,12 @@ func sync() -> void:
 	var src := Bleed.sources(field, _origin, hex_px, _anim_px)
 	var map := field.map
 	for h in _columns.keys():
-		var s := Bleed.standing(Bleed.at(_origin + Hex.to_pixel(h, hex_px), grad, src))
+		var s := Bleed.standing(Bleed.at(_origin + Hex.to_pixel(h, hex_px), grad, src)) if COLLAPSE else 1.0
 		(_columns[h] as Node3D).scale.y = maxf(0.02, s)
 		_lift[h] = _height_of(h) * s * _cos * _ppu
-	for st in _structs:
-		(st[1] as Node3D).scale.y = maxf(0.02, Bleed.standing(Bleed.at(_origin + Hex.to_pixel(st[0], hex_px), grad, src)))
+	if COLLAPSE:
+		for st in _structs:
+			(st[1] as Node3D).scale.y = maxf(0.02, Bleed.standing(Bleed.at(_origin + Hex.to_pixel(st[0], hex_px), grad, src)))
 	var seen := {}
 	for u in field.units:
 		seen[u.id] = true
@@ -947,6 +999,8 @@ func _make_unit(u: Unit) -> Node3D:
 			sh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 			add_child(sh)
 			_shadows[u.id] = sh
+			_to_units_layer(sh)
+		_to_units_layer(pivot)
 		return pivot
 	return null   # foes and static units are drawn flat by the map view
 

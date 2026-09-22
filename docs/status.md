@@ -114,22 +114,30 @@ plan blind to the machines (a plot never makes a squad swerve, Ryan 22 September
 path is cut at the first controlled hex (`intercepted`); a squad starting on controlled
 ground holds; flyers control nothing. The map draws intents from the preview's intents,
 never during a move: the destination is one component in the HUD's weight, nothing
-translucent (a tint and a 2.5 px outline drawn under the line, the line arriving at the
-outer of three broken rings turning against each other around a dot, all inside the
-outline; the rings' colour meets the ground, bright red on dark ground and deep red on
-ruins, rock and road, with a slow breath between; `_destination_hex`,
-`_destination_rings`, `_ring_colour`, `ENEMY_LIT`), a contact a heavier pulsing tint with bursting rings
+translucent (a tint and a 2.5 px outline drawn under the line, the line running to the
+hex's centre (`LINE_TO_CENTRE`, a trial; false stops it at the outer ring), three broken
+rings turning against each other around a dot; the rings breathe the whole way between
+deep red and bright, `_ring_colour`, `ENEMY_LIT`), drawn at the hex's base before any
+height (`base(h)`), as are the squads themselves and their contact tints: the enemy's
+world is flat and it flattens what it walks on (Ryan, 22 September); a contact a heavier pulsing tint with bursting rings
 (`_contact_effect`; one effect per hex, contact wins), a machine's own marker sits on two
 faint breathing rings (`_ally_target`), and each grounded machine's zone is one faint
 tinted flower with one outline (`_zone`). Every hex tint and every zone outline is a mark on the ground in the scene
 (`Map3D.set_marks`: a flat hex and edge ribbons per mark, fed from
 `BattleMapView._fill` / `_edges`), so the machines and the wall hide them by standing on
-them, like the grid; headless draws them flat. The scene blends in linear light, so
+them, like the grid; headless draws them flat. Tints are heavy on purpose (Ryan, 22
+September: the UX over the ground under them): the zone breathes at about a third, its
+outline near solid, contacts at half and more, the selected machine's reach at a quarter. The scene blends in linear light, so
 `Map3D._scene_alpha` raises a mark's alpha to the 2.2 before it lands: the map view asks
 in screen terms and gets what it asked for. The grid runs every playable hex to its
 last edge; nothing is skipped for the wall (the lines once seen along its top were the
-zone outline, drawn in 2D). Enemy outlines are lined in black like the lines. The bleed never
-covers a machine (`Bleed.holes`, `holes` in the compositor). Machines keep their
+zone outline, drawn in 2D). Enemy outlines are lined in black like the lines. The machines never go under the other world's painting: `Map3D` renders
+them again into a second viewport sharing its world (`UNITS_LAYER`, `_build_units_layer`,
+a camera copying the main one) and the compositor draws that texture over both worlds
+(`units` in `bleed.gdshader`); the earlier bleed holes are gone. `Map3D.COLLAPSE` is
+false (a trial, 22 September): the ground keeps its true height under the bleed and the
+painting sits over it at ground level, half up and half down; true collapses columns
+and structures as before. Machines keep their
 silhouette through whatever hides them (`TraceLines.silhouette_through`); the gate and
 walls wear none. The gate's integrity is a bar on
 the wall's face (`_draw_gate_bar`); tap the gate for its readout (`gate_selected`),

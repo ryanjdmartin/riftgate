@@ -23,8 +23,7 @@ uniform float zoom = 1.0;
 uniform vec2 grad = vec2(0.0, 1.0);          // y where the rift's bleed is total, y where it is gone
 uniform vec3 sources[32];                    // x, y, radius in map pixels
 uniform int source_count = 0;
-uniform vec3 holes[8];                       // x, y, radius: the machines, which the bleed never covers
-uniform int hole_count = 0;
+uniform sampler2D units : filter_nearest;    // the machines alone, drawn over both worlds
 uniform float cell = 4.0;                    // the dither's pixel step, on screen
 uniform float levels = 5.0;                  // posterize steps per channel on the flat side
 uniform float focus_y = 0.0;                 // map-pixel y of the screen's middle
@@ -42,10 +41,6 @@ float bleed_at(vec2 px) {
 		vec3 s = sources[i];
 		float d = distance(px, s.xy);
 		m = max(m, 1.0 - smoothstep(s.z * 0.55, s.z, d));
-	}
-	for (int i = 0; i < hole_count; i++) {
-		vec3 h = holes[i];
-		m *= smoothstep(h.z * 0.5, h.z, distance(px, h.xy));
 	}
 	return m;
 }
@@ -131,6 +126,10 @@ void fragment() {
 	float flick = step(0.997, fract(sin(band * 12.9898 + tick * 7.31) * 43758.5453)) * flicker;
 	other.rgb *= 1.0 - 0.12 * flick;
 	COLOR = (k > bayer(c)) ? other : scene;
+	// The machines ride over whichever world won: the reconstruction's own, never under
+	// the painting (Ryan, 22 September).
+	vec4 u = blurred_scene(units, UV, 1.0 / view_size, rad);
+	COLOR.rgb = mix(COLOR.rgb, u.rgb, u.a);
 	float luma = dot(COLOR.rgb, vec3(0.299, 0.587, 0.114));
 	COLOR.rgb = mix(vec3(luma), COLOR.rgb, saturation) * brightness;
 	// No fade to black at the sides: the blur alone is the edge of what the table resolves.
