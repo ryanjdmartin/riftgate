@@ -419,7 +419,7 @@ func _draw() -> void:
 			mid /= float(group.size())
 			# Who is in it: the machines against the squads, so the player knows what the
 			# skirmish will hold before locking in (Ryan, 22 September).
-			_plaque(Vector2(mid.x, top_y - HEX_SIZE * 0.95), "CONTACT // " + contact_text(group), Palette.ENEMY, 2.0)
+			_plaque(Vector2(mid.x, top_y - HEX_SIZE * 0.95), "CONTACT // " + contact_label(group, ends), Palette.ENEMY, 2.0)
 		for sid in res.blocked:
 			var sq := field.unit_by_id(sid)
 			if sq != null:
@@ -743,6 +743,18 @@ static func contact_text(group: Array) -> String:
 		else:
 			squads.append("%s ×%d" % [u.display_name, u.strength] if u.strength > 0 else str(u.display_name).to_upper())
 	return " + ".join(mechs) + " vs " + " + ".join(squads)
+
+
+## The contact's words with the ground it is fought on (decided 22 September).
+func contact_label(group: Array, ends: Dictionary = {}) -> String:
+	var ground_h: Vector2i = Battle.ground_hex(group)
+	if ends.has((group[0] as Unit).id):
+		for u in group:
+			if u.is_enemy():
+				ground_h = ends[u.id]
+				break
+	var t: int = field.map.terrain.get(ground_h, BattleMap.Terrain.PLAIN)
+	return "%s // ON %s" % [contact_text(group), str(BattleMap.TERRAIN_NAMES.get(t, "plain")).to_upper()]
 
 
 ## The frame's left and right lines in map pixels: the field plus a little, and the line

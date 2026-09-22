@@ -4,7 +4,7 @@ Handoff note for the next session. Replace stale lines; keep it under a screen.
 
 ## As of 22 September 2026
 
-**State.** Everything committed. Tests: 175 tests, 2379 checks, green. Ryan writes
+**State.** Everything committed. Tests: 176 tests, 2382 checks, green. Ryan writes
 `content/*.json` in his own voice (reload after any pass that touches it). The rules are in
 `docs/vocabulary.md` (generated) and every decision in `docs/design-bible.html`; the
 vocabulary carries an `order_of_operations` rule that the engine follows. Chassis ids:
@@ -164,9 +164,12 @@ band beats twice over the dimmed map (about two seconds), then the contact panel
 (`_show_contacts` then `_build_contact_panel`: one contact at a time with `MechView3D`
 and foe-sprite portraits, arrows to page, ENGAGE; paging zooms the map to that fight via
 `focus_on` and lights its hexes via `set_highlight`; `Battle.open_skirmish_at`), and
-nothing opens until the player picks. ENGAGE plays the handover (`_play_handover`,
+nothing opens until the player picks. The ground a contact is fought on is the squad's hex, the first
+squad in field order with several (`Battle.ground_hex`, `ground_terrain`; decided 22
+September): the skirmish's terrain, the handover's spread, the panel's "GROUND // RUINS"
+line, the map plaque's "ON RUINS" and the skirmish header all use that one rule. ENGAGE plays the handover (`_play_handover`,
 decided 22 September): the map dives to full zoom on the contact while one more bleed
-source grows out of the squad (`BattleMapView.flatten_at` / `flatten_r`) until the ground
+source grows out of the ground hex (`BattleMapView.flatten_at` / `flatten_r`) until the ground
 there is flat and bright with the machines still standing in it, a cut to black, and the
 skirmish fades up; the map is put back behind it. Headless adds the skirmish at once.
 The screenshot pose `engage` catches it (`RIFTGATE_SHOT_FRAME` 60 the dive, 150 the

@@ -644,6 +644,10 @@ func _fill_contact_panel() -> void:
 			continue
 		faces.add_child(_portrait_squad(u))
 	rows.add_child(faces)
+	# The ground the fight is on, named before ENGAGE (decided 22 September).
+	var ground := Hud.label("GROUND // %s" % str(BattleMap.TERRAIN_NAMES.get(battle.ground_terrain(group), "plain")).to_upper(), 14, Palette.HUD, Hud.mono())
+	ground.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	rows.add_child(ground)
 	var gap := Control.new()   # the portraits say who; ENGAGE sits at the foot of the panel
 	gap.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	rows.add_child(gap)
@@ -736,19 +740,15 @@ const HANDOVER_FLAT_HEX := 7.5
 func _play_handover(group: Array, screen: SkirmishScreen) -> void:
 	var hexes: Array = []
 	var mid := Vector2.ZERO
-	var squad_mid := Vector2.ZERO
-	var squads := 0
 	for u in group:
 		hexes.append(u.pos)
 		mid += _map.center(u.pos)
-		if u.is_enemy():
-			squad_mid += _map._origin + Hex.to_pixel(u.pos, BattleMapView.HEX_SIZE)   # unlifted: what the bleed reads
-			squads += 1
 	mid /= maxf(1.0, float(group.size()))
-	squad_mid = squad_mid / float(squads) if squads > 0 else mid
 	_map.set_highlight(hexes)
 	_map.pending = [group]        # the map stays frozen on this fight until the cut
-	_map.flatten_at = squad_mid   # map pixels, as the bleed reads them
+	# The spread grows out of the ground the fight is on, the same hex the skirmish
+	# takes its terrain from (Ryan, 22 September: it came out of the wrong tile).
+	_map.flatten_at = _map._origin + Hex.to_pixel(Battle.ground_hex(group), BattleMapView.HEX_SIZE)
 	_map.flatten_r = 0.0
 	var z0 := _map.zoom
 	var scroll0 := Vector2(_map.scroll_x, _map.scroll_y)

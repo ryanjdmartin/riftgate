@@ -543,7 +543,7 @@ func _tag(text: String, size_px: int, mono: bool) -> HudButton:
 
 func _refresh() -> void:
 	var assigning := sk.state == Skirmish.State.ASSIGN
-	_header.text = "RND %02d // REINF %02d" % [sk.round, sk.reinforcements.size()]
+	_header.text = "RND %02d // REINF %02d // %s" % [sk.round, sk.reinforcements.size(), str(BattleMap.TERRAIN_NAMES.get(sk.terrain, "plain")).to_upper()]
 	_header.queue_redraw()
 	_sub_label.text = "ASSIGN" if assigning else "ENEMY PHASE"
 	_view_foe.clear()

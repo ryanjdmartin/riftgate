@@ -215,14 +215,30 @@ func open_skirmish_at(index: int) -> Skirmish:
 
 
 ## The mechs of the group fight every foe the group's squads unpack into.
+## The hex a contact is fought on (decided 22 September): the squad's, since the fight
+## opens where the squad stands and its ground has already gone flat; with several
+## squads, the first in field order, the one the contact names first. One rule, used by
+## the skirmish's terrain, the handover's spread and every label, so the ground is never
+## ambiguous.
+static func ground_hex(group: Array) -> Vector2i:
+	for u in group:
+		if u.is_enemy():
+			return u.pos
+	return (group[0] as Unit).pos if not group.is_empty() else Vector2i.ZERO
+
+
+func ground_terrain(group: Array) -> int:
+	return int(map.terrain.get(ground_hex(group), BattleMap.Terrain.PLAIN))
+
+
 func _build_skirmish(group: Array) -> Skirmish:
 	var sk := Skirmish.new(rng.randi(), columns)
+	sk.terrain = ground_terrain(group)
 	for u in group:
 		if not field.units.has(u):
 			continue
 		if u.is_player() and not u.is_static():
 			sk.add_mech(u)
-			sk.terrain = int(map.terrain.get(u.pos, BattleMap.Terrain.PLAIN))
 		elif u.is_enemy():
 			sk.add_foes(db.foes_for(u), u)
 	if sk.mechs.is_empty() or sk.reinforcements.is_empty():

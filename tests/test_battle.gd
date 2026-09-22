@@ -248,3 +248,21 @@ func test_wrecked_mechs_leave_the_map() -> void:
 	b.finish_skirmish()
 	assert_eq(b.mechs().size(), before - sk.mechs.size(), "wrecks are gone")
 	assert_true(b.state == Battle.State.PLAN or b.outcome == Battle.Outcome.WRECKED, "battle continues or ends")
+
+
+func test_a_skirmish_is_fought_on_the_first_squads_ground() -> void:
+	# Decided 22 September: the ground is the squad's hex, the first squad in field order
+	# when there are several, whatever the machines stand on.
+	var b := _battle()
+	var f := b.field
+	var m: Unit = b.mechs()[0]
+	var sq: Unit = f.squads()[0]
+	var sq2: Unit = f.squads()[1]
+	f.map.terrain[m.pos] = BattleMap.Terrain.ROAD
+	f.map.terrain[sq.pos] = BattleMap.Terrain.RUINS
+	f.map.terrain[sq2.pos] = BattleMap.Terrain.WATER
+	var group: Array = [m, sq, sq2]
+	assert_eq(Battle.ground_hex(group), sq.pos, "the first squad's hex")
+	assert_eq(b.ground_terrain(group), BattleMap.Terrain.RUINS, "and its terrain")
+	var sk := b._build_skirmish(group)
+	assert_eq(sk.terrain, BattleMap.Terrain.RUINS, "the skirmish is fought there, not on the machine's road")
