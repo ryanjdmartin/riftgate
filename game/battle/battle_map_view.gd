@@ -50,6 +50,7 @@ var _map3d: Map3D = null             # the battlefield's geometry; null only whe
 var _painted: SubViewport = null     # the other world's flat bright map, rendered once
 var _painted2: SubViewport = null    # its second frame
 var sweep_on := true                 # the scan band; the tuner can stop it
+var frame_alpha := 0.5               # the field's boundary lines, the table's frame (Ryan, 21 September)
 var _mix: SubViewport = null         # the two worlds mixed by the bleed, screen-sized, drawn under the overlays
 var _composite: TextureRect = null   # the rect inside _mix that carries the bleed shader
 var _map_size := Vector2.ZERO        # the map in map pixels
@@ -288,6 +289,22 @@ func _draw() -> void:
 		# Everything from here to the edge tags is drawn in map space under the zoom and
 		# scroll. The grid itself is in the scene, lit, so raised ground hides it.
 		draw_set_transform(Vector2(scroll_x, scroll_y), 0.0, Vector2(zoom, zoom))
+		if frame_alpha > 0.0:
+			# The frame: the field's two boundary lines in the display's light, with a tick
+			# at every row, so the playable area has an edge and the blur runs into it.
+			var hex_w := sqrt(3.0) * HEX_SIZE
+			var left := _origin.x - hex_w * 0.5
+			var right := left + hex_w * (map.width + 0.5)
+			var top := _origin.y - HEX_SIZE
+			var bottom := _origin.y + Hex.to_pixel(map.gate, HEX_SIZE).y - HEX_SIZE * 1.5 * (BattleMap.GATE_ROWS - 0.5)
+			var fc := Color(hud, frame_alpha)
+			for x in [left, right]:
+				draw_line(Vector2(x, top), Vector2(x, bottom), fc, 2.0)
+				var y := top
+				while y < bottom:
+					var dir := 1.0 if x == left else -1.0
+					draw_line(Vector2(x, y), Vector2(x + 8.0 * dir, y), fc, 2.0)
+					y += HEX_SIZE * 1.5
 	else:
 		draw_set_transform(Vector2(scroll_x, scroll_y), 0.0, Vector2(zoom, zoom))
 		# Headless: the painted map, so the view still lays out and the structures still show.

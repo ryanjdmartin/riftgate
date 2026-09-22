@@ -24,8 +24,11 @@ func _init(map: BattleMapView) -> void:
 	_slider("SATURATION", 0.0, 1.6, 1.0, func(v: float) -> void: _map.tune("saturation", v))
 	_slider("BRIGHTNESS", 0.4, 1.6, 1.0, func(v: float) -> void: _map.tune("brightness", v))
 	_slider("FAR BLUR", 0.0, 6.0, 3.0, func(v: float) -> void: _map.tune("blur_max", v))
-	_slider("EDGE RAMP", 20.0, 300.0, 90.0, func(v: float) -> void: _map.tune("edge_fade", v))   # smaller is harder
-	_slider("EDGE BLUR", 0.0, 8.0, 3.0, func(v: float) -> void: _map.tune("edge_blur", v))
+	_slider("EDGE RAMP", 10.0, 300.0, 30.0, func(v: float) -> void: _map.tune("edge_fade", v))   # smaller is harder
+	_slider("EDGE BLUR", 0.0, 8.0, 1.6, func(v: float) -> void: _map.tune("edge_blur", v))
+	_slider("FRAME", 0.0, 1.0, 0.5, func(v: float) -> void:
+		_map.frame_alpha = v
+		_map.queue_redraw())
 	_slider("POSTERIZE", 2.0, 10.0, 5.0, func(v: float) -> void: _map.tune("levels", v))
 	_slider("FLICKER", 0.0, 3.0, 1.0, func(v: float) -> void: _map.tune("flicker", v))
 	_slider("FRAME RATE", 0.2, 6.0, 1.6, func(v: float) -> void: _map.tune("anim_rate", v))

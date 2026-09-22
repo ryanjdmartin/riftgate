@@ -10,9 +10,11 @@ uniform vec3 color : source_color = vec3(0.2, 1.0, 0.33);
 uniform float base = 0.55;       // steady brightness: a high floor, so the lines always read
 uniform float pulse = 1.6;       // the extra at the scan's leading edge, past the bloom threshold
 uniform float gain = 1.0;        // the tuner's overall multiplier
-uniform float sweep_z = -1.0e6;  // world z of the scan band (it moves toward +z, down the screen)
-uniform float lead = 14.0;       // world units the light reaches ahead of the band: it snaps on
-uniform float tail = 80.0;       // world units the light lingers behind it: it fades in the wake
+uniform float sweep_p = -1.0e6;  // the scan band's projected depth: map pixels below hex (0,0), per unit
+uniform float sin_pitch = 0.669; // the camera's pitch, so a tall thing's top counts where it appears on screen
+uniform float cos_pitch = 0.743;
+uniform float lead = 10.0;       // projected units the light reaches ahead of the band: it snaps on
+uniform float tail = 55.0;       // projected units the light lingers behind it: it fades in the wake
 
 varying vec3 wpos;
 
@@ -22,7 +24,8 @@ void vertex() {
 
 void fragment() {
 	// Light snaps on just ahead of the band and decays behind it, like a wake.
-	float d = wpos.z - sweep_z;
+	// Where this point sits on screen, not on the ground: height lifts it toward the bar.
+	float d = (wpos.z * sin_pitch - wpos.y * cos_pitch) - sweep_p;
 	float w = (d > 0.0) ? exp(-(d / lead) * (d / lead)) : exp(d / tail * 2.2);
 	float k = (base + pulse * w) * gain;
 	ALBEDO = color * min(k, 1.0);

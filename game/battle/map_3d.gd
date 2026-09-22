@@ -304,11 +304,12 @@ func set_trace_gain(v: float) -> void:
 
 ## Where the scan band is, as a map-pixel y: the traces and the grid under it brighten.
 func set_sweep(map_y: float) -> void:
-	var z := (map_y - _origin.y) / (_ppu * _sin)
-	if _light_mat != null:
-		_light_mat.set_shader_parameter("sweep_z", z)
-	if _grid_mat != null:
-		_grid_mat.set_shader_parameter("sweep_z", z)
+	var p := (map_y - _origin.y) / _ppu   # projected depth: what the shader computes from z and height
+	for m in [_light_mat, _grid_mat]:
+		if m != null:
+			m.set_shader_parameter("sweep_p", p)
+			m.set_shader_parameter("sin_pitch", _sin)
+			m.set_shader_parameter("cos_pitch", _cos)
 
 
 var _env: Environment = null
