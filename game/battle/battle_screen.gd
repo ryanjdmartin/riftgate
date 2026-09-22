@@ -409,29 +409,44 @@ func _show_contacts() -> void:
 	_refresh()
 	if _contacts != null:
 		_contacts.queue_free()
-	_contacts = HudPanel.new(14.0)
-	_contacts.custom_minimum_size = Vector2(W - 24.0, 0)
+	# Centred over the map on a dim scrim, big enough to read with a thumb (Ryan, 22
+	# September); the contacts stay tagged on the map behind it.
+	_contacts = ColorRect.new()
+	(_contacts as ColorRect).color = Color(0, 0, 0, 0.55)
+	_contacts.position = Vector2(0, MAP_Y)
+	_contacts.size = Vector2(W, LOG_Y - 10.0 - INFO_H - MAP_Y)
+	var centre := CenterContainer.new()
+	centre.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_contacts.add_child(centre)
+	var panel := HudPanel.new(20.0)
+	centre.add_child(panel)
 	var rows := VBoxContainer.new()
-	rows.position = Vector2(12, 10)
-	rows.add_theme_constant_override("separation", 6)
-	_contacts.add_child(rows)
+	rows.add_theme_constant_override("separation", 12)
+	panel.add_child(rows)
 	var n := battle.pending.size()
-	rows.add_child(Hud.label("%d CONTACT%s // CHOOSE THE FIRST" % [n, "" if n == 1 else "S"], 14, Palette.ENEMY))
+	var title := Hud.label("%d CONTACT%s" % [n, "" if n == 1 else "S"], 30, Palette.ENEMY, Hud.display_bold())
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	rows.add_child(title)
+	var sub := Hud.label("CHOOSE WHICH TO FIGHT FIRST" if n > 1 else "ENGAGE TO OPEN THE FEED", 13, Palette.MUTED, Hud.mono())
+	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	rows.add_child(sub)
 	for i in range(n):
 		var group: Array = battle.pending[i]
-		var row := HBoxContainer.new()
-		row.add_theme_constant_override("separation", 10)
+		var row := VBoxContainer.new()
+		row.add_theme_constant_override("separation", 6)
+		var who := Hud.label(BattleMapView.contact_text(group), 16, Palette.INK)
+		who.autowrap_mode = TextServer.AUTOWRAP_WORD
+		who.custom_minimum_size = Vector2(520, 0)
+		row.add_child(who)
 		var btn := HudButton.new("ENGAGE", _open_skirmish.bind(i))
-		btn.custom_minimum_size = Vector2(150, 34)
+		btn.filled = i == 0
+		btn.custom_minimum_size = Vector2(520, 54)
 		row.add_child(btn)
-		row.add_child(Hud.label(BattleMapView.contact_text(group), 13, Palette.INK))
 		rows.add_child(row)
 	add_child(_contacts)
-	_contacts.reset_size()
-	_contacts.position = Vector2(12.0, LOG_Y - 10.0 - INFO_H + 6.0)
 
 
-var _contacts: HudPanel = null
+var _contacts: Control = null
 
 
 func _open_skirmish(index: int = 0) -> void:

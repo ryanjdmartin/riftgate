@@ -156,7 +156,7 @@ static func _tear(ci: CanvasItem, rect: Rect2, t: float) -> void:
 	var band := 0
 	while y < rect.end.y:
 		var h := fmod(sin(float(band) * 12.9898 + tick * 7.31) * 43758.5453, 1.0)
-		if absf(h) > 0.997:
+		if absf(h) > 0.9985:
 			ci.draw_rect(Rect2(rect.position.x, y, rect.size.x, 6.0), Color(0, 0, 0, 0.12))
 		y += 6.0
 		band += 1

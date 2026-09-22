@@ -71,12 +71,17 @@ before it will end (`compute_intents`), so a squad never stops short of another 
 After the movement phase, the contacts are offered in a panel (`_show_contacts`: how many,
 who is in each, an ENGAGE button per contact, the player picks which to fight first;
 `Battle.open_skirmish_at`), and nothing opens until they do. Contact tags name the units
-(`contact_text`). Resolve plays the movement phase (`play_moves`: mechs then squads along the paths they
+(`contact_text`); intent lines are wide with a dark underline, their destination hex
+shaded, and both destinations and contacts carry turning target rings (`_target_rings`).
+The contact panel is centred over the map on a scrim with a big ENGAGE per contact. Resolve plays the movement phase (`play_moves`, which first parks every mover at its
+start so nobody blinks to the end: mechs then squads along the paths they
 actually took, `MOVE_SECONDS_PER_HEX`; `Map3D.set_anim` moves the model and turns it to
 its heading) and only then opens the skirmish; headless skips the play. `map_tuner.gd` (TUNE on the battle screen) is
 the live knob panel; nothing it sets persists. The default trace mode is `assets`: the mechs, gate and
-walls in ink under a prominent light hull (`TraceLines.hull_material`), the field's props and
-grid in fainter light; `RIFTGATE_INK=light|dark` for the others (the tuner's TRACE has
+walls in ink with a light silhouette (`TraceLines.silhouette`, the material's stencil
+outline), the field's props and grid in fainter light; `pulse` rests everything as ink and
+the scan lights it (`pulse_material`; the trace shader blends rather than adds, so `base`
+0 is black); `RIFTGATE_INK=light|dark` for the others (the tuner's TRACE has
 assets, light, ink, off). The skirmish's mech views take the same. Side blur begins at the
 frame's lines (`_frame_x`), not the field's edge; intent lines carry a dark underline; the
 scan bar pauses `HudBackdrop.SCAN_PAUSE` seconds between sweeps on both screens; the

@@ -68,6 +68,7 @@ var _phase: Dictionary = {}     # unit id -> idle phase, so the team does not sw
 var _columns: Dictionary = {}   # hex -> Node3D: the column and its props, collapsed by the bleed
 var _structs: Array = []        # [[hex, Node3D], ...] the gate and walls, collapsed the same way
 var _lift: Dictionary = {}      # hex -> how far above its grid cell the top sits on screen, in px
+var _top: Dictionary = {}       # hex -> the tallest thing standing on it, in model units above the ground
 var _materials: Dictionary = {} # tile name -> ShaderMaterial
 var _time: float = 0.0
 
@@ -253,23 +254,15 @@ func _trace(mi: MeshInstance3D, kind: String = "prop") -> void:
 		em.visible = _trace_mode != "off"
 		em.set_meta("kind", kind)
 	_trace_nodes.append_array(added)
-	if kind == "asset":
-		# The assets mode gives a machine a prominent light silhouette over its inked creases.
-		for h in TraceLines.attach_hull(mi, _hull_material()):
-			h.visible = _trace_mode == "assets"
-			_hull_nodes.append(h)
 
 
-var _hull_nodes: Array = []
-var _hull_mat: StandardMaterial3D = null
-
-func _hull_material() -> StandardMaterial3D:
-	if _hull_mat == null:
-		_hull_mat = TraceLines.hull_material(Palette.HUD)
-	return _hull_mat
-
+var _pulse_mat: ShaderMaterial = null
 
 func _trace_material(kind: String) -> Material:
+	if _trace_mode == "pulse":
+		if _pulse_mat == null:
+			_pulse_mat = TraceLines.pulse_material(Palette.HUD)
+		return _pulse_mat
 	if TraceLines.inked(_trace_mode, kind):
 		if _ink_line_mat == null:
 			_ink_line_mat = TraceLines.ink_material()
@@ -289,20 +282,19 @@ func set_trace_mode(mode: String) -> void:
 			em.visible = mode != "off"
 			if mode != "off":
 				em.material_override = _trace_material(str(em.get_meta("kind", "prop")))
-	for h in _hull_nodes:
-		if is_instance_valid(h):
-			h.visible = mode == "assets"
+
 
 
 func set_trace_gain(v: float) -> void:
-	if _light_mat != null:
-		_light_mat.set_shader_parameter("gain", v)
+	for m in [_light_mat, _pulse_mat]:
+		if m != null:
+			m.set_shader_parameter("gain", v)
 
 
 ## Where the scan band is, as a map-pixel y: the traces and the grid under it brighten.
 func set_sweep(map_y: float) -> void:
 	var p := (map_y - _origin.y) / _ppu   # projected depth: what the shader computes along screen-down
-	for m in [_light_mat, _grid_mat]:
+	for m in [_light_mat, _grid_mat, _pulse_mat]:
 		if m != null:
 			m.set_shader_parameter("sweep_p", p)
 			m.set_shader_parameter("screen_down", Vector3(0.0, -_cos, _sin))
@@ -509,6 +501,7 @@ func _build_ground() -> void:
 		match t:
 			BattleMap.Terrain.MOUNTAIN:
 				_crag(col, ground_t, hgt, rng)
+				_top[h] = hgt + 96.0   # the tallest a crag's spikes, towers or mesas reach
 			BattleMap.Terrain.RUINS:
 				# Broken blocks and a couple of standing wall stubs.
 				var rubble := _terrain_material("rubble")
@@ -522,6 +515,7 @@ func _build_ground() -> void:
 					_prop(col, wall_stub, rubble, Vector3(rng.randf_range(-14, 14), hgt + wall_stub.size.y * 0.5, rng.randf_range(-10, 10)), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
 			BattleMap.Terrain.ROUGH:
 				# Wasteland: dead trees and boulders, the parallel of the other world's forest.
+				_top[h] = hgt + 40.0
 				for k in range(rng.randi_range(2, 4)):
 					_dead_tree(col, Vector3(rng.randf_range(-18, 18), hgt, rng.randf_range(-14, 14)), rng)
 				for k in range(rng.randi_range(1, 3)):
@@ -742,12 +736,16 @@ func sync() -> void:
 			add_child(node)
 			_units[u.id] = node
 			_phase[u.id] = float(u.id) * 1.7
+		var under: Vector2i = Hex.from_pixel(_anim_px[u.id], hex_px) if _anim_px.has(u.id) else u.pos
+		var y: float = float(_lift.get(under, 0.0)) / (_cos * _ppu)
+		if u.traits.has("flyer"):
+			# A flyer rides over whatever stands on its hex (Ryan, 22 September: no clipping
+			# through a mesa), a little above the tallest thing there.
+			y += maxf(0.0, _top.get(under, 0.0) - _height_of(under) + 10.0 - HOVER)
 		if _anim_px.has(u.id):
-			var px: Vector2 = _anim_px[u.id]
-			var under := Hex.from_pixel(px, hex_px)
-			_base[u.id] = _world(px, _lift.get(under, 0.0) / (_cos * _ppu))
+			_base[u.id] = _world(_anim_px[u.id], y)
 		else:
-			_base[u.id] = _hex_world(u.pos, _lift.get(u.pos, 0.0) / (_cos * _ppu))
+			_base[u.id] = _hex_world(u.pos, y)
 		node.position = _base[u.id]
 		if _shadows.has(u.id):
 			(_shadows[u.id] as Node3D).position = _base[u.id] + Vector3(0.0, 0.3, 0.0)

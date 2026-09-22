@@ -181,12 +181,15 @@ func _setup(chassis_id: String, maker: String) -> void:
 		# The skirmish's machines carry the display's trace too (Ryan, 21 September); the
 		# screen's scan bar lights it through set_sweep_screen.
 		var tmode := TraceLines.mode()
-		_trace_mat = TraceLines.ink_material() if TraceLines.inked(tmode, "asset") else TraceLines.light_material(Palette.HUD)
+		if tmode == "pulse":
+			_trace_mat = TraceLines.pulse_material(Palette.HUD)
+		elif TraceLines.inked(tmode, "asset"):
+			_trace_mat = TraceLines.ink_material()
+		else:
+			_trace_mat = TraceLines.light_material(Palette.HUD)
 		if _trace_mat is ShaderMaterial:
 			(_trace_mat as ShaderMaterial).set_shader_parameter("gain", 0.8)
 		TraceLines.attach(_model, _trace_mat)
-		if tmode == "assets":
-			TraceLines.attach_hull(_model, TraceLines.hull_material(Palette.HUD))
 	if OS.get_environment("RIFTGATE_MECH3D_WIRE") == "1":
 		# Wireframe trial (21 September): the reconstruction's own telemetry drawing.
 		_inner.debug_draw = Viewport.DEBUG_DRAW_WIREFRAME
@@ -373,6 +376,8 @@ static func toon(node: Node, maker: String, look: String, paint_arg: Dictionary 
 				tm.roughness = clampf(1.0 - float(GLOSS.get(maker, 0.4)) * 0.9, 0.3, 0.98)
 				tm.metallic = 0.0
 				tm.cull_mode = BaseMaterial3D.CULL_DISABLED   # wings and fins are single plates
+				if TraceLines.mode() == "assets":
+					TraceLines.silhouette(tm, Palette.HUD, 2.0)   # the light outline around the whole machine
 				if role == "amber":
 					# Lamps, engines and light strips glow: the reconstruction's own light.
 					tm.emission_enabled = true

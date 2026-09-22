@@ -10,15 +10,35 @@ static var _cache: Dictionary = {}   # mesh rid -> ArrayMesh of lines, or null
 
 
 ## "light": everything as light. "ink": everything as black ink. "assets": the player's
-## things (mechs, gate, walls) in ink, the field (props, grid) in light (Ryan's trial, 22
-## September). RIFTGATE_INK=dark|assets picks at start; the map tuner switches live.
+## things (mechs, gate, walls) in ink with a silhouette, the field (props, grid) in light.
+## "pulse": everything rests as ink and the scan lights it (Ryan's trial, 22 September).
+## RIFTGATE_INK=dark|light|pulse picks at start; the map tuner switches live.
 static func mode() -> String:
 	match OS.get_environment("RIFTGATE_INK"):
 		"dark":
 			return "ink"
 		"light":
 			return "light"
+		"pulse":
+			return "pulse"
 	return "assets"   # the default (Ryan, 22 September)
+
+
+## The pulse mode's material: the light shader resting at black.
+static func pulse_material(color: Color) -> ShaderMaterial:
+	var m := light_material(color)
+	m.set_shader_parameter("base", 0.0)
+	m.set_shader_parameter("pulse", 2.2)
+	return m
+
+
+## A true silhouette for an asset (Ryan, 22 September: the outline, no interior lines):
+## the material's stencil outline, which the engine draws around the whole thing at once.
+static func silhouette(mat: BaseMaterial3D, color: Color, thickness: float) -> void:
+	if "stencil_mode" in mat:
+		mat.set("stencil_mode", BaseMaterial3D.STENCIL_MODE_OUTLINE)
+		mat.set("stencil_color", color)
+		mat.set("stencil_outline_thickness", thickness)
 
 
 ## The prominent silhouette an asset wears in the assets mode: a grown, front-culled hull

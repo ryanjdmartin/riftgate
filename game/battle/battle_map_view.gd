@@ -353,19 +353,23 @@ func _draw() -> void:
 		var path: Array = field.intents.get(sq.id, [])
 		if path.is_empty():
 			continue
-		# A dark underline first, so the red reads on any ground.
+		# A dark underline first, so the red reads on any ground; then the destination hex
+		# shaded and ringed with turning target circles (Ryan, 22 September).
 		var prev := center(sq.pos)
 		for step in path:
 			var p := center(step)
-			draw_line(prev, p, Color(Palette.BG, 0.7), 6.0)
+			draw_line(prev, p, Color(Palette.BG, 0.75), 10.0)
 			prev = p
 		prev = center(sq.pos)
 		for step in path:
 			var p := center(step)
-			draw_line(prev, p, Color(Palette.ENEMY, 0.9), 3.0)
+			draw_line(prev, p, Color(Palette.ENEMY, 0.95), 5.0)
 			prev = p
-		draw_circle(prev, 6.0, Palette.BG)
-		draw_circle(prev, 4.5, Palette.ENEMY)
+		if not path.is_empty():
+			var dest: Vector2i = path[path.size() - 1]
+			if not map.gate_hexes.has(dest):
+				draw_colored_polygon(Hex.corners(prev, HEX_SIZE - 3.0), Color(Palette.ENEMY, 0.22))
+			_target_rings(prev, Palette.ENEMY, HEX_SIZE * 0.55, 1.0)
 
 	# The player's plotted routes, ending in a small marker hex.
 	for uid in routes.keys():
@@ -394,7 +398,9 @@ func _draw() -> void:
 				var c := center(ends[u.id])
 				mid += c
 				top_y = minf(top_y, c.y)
-				Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 5.0), Color(Palette.ENEMY, 0.85), 2.0)
+				draw_colored_polygon(Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, 0.18))
+				Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 4.0), Color(Palette.ENEMY, 0.9), 3.0)
+				_target_rings(c, Palette.ENEMY, HEX_SIZE * 0.8, -1.0)
 			mid /= float(group.size())
 			# Who is in it: the machines against the squads, so the player knows what the
 			# skirmish will hold before locking in (Ryan, 22 September).
@@ -475,6 +481,20 @@ func _draw_tags() -> void:
 		draw_colored_polygon(PackedVector2Array([Vector2(mid - 6.0, edge_y), Vector2(mid + 6.0, edge_y), Vector2(mid, edge_y + 6.0 * dir)]), border)
 
 
+## Turning concentric target rings: three dashed circles, each turning the other way from
+## the last, the way a targeting display would draw a lock.
+var _ring_t := 0.0
+
+func _target_rings(c: Vector2, col: Color, r: float, dir: float) -> void:
+	for k in range(3):
+		var rad := r * (0.45 + 0.275 * k)
+		var segs := 4 + k * 2
+		var a0 := _ring_t * dir * (1.2 - 0.3 * k) * (1.0 if k % 2 == 0 else -1.0)
+		for sgm in range(segs):
+			var a := a0 + TAU * float(sgm) / float(segs)
+			draw_arc(c, rad, a, a + TAU / float(segs) * 0.55, 8, Color(col, 0.85 - 0.2 * k), 2.0)
+
+
 ## "Badger + Sparrowhawk vs ghouls ×6 + necromancers ×3": one contact group, in words.
 static func contact_text(group: Array) -> String:
 	var mechs: Array[String] = []
@@ -520,6 +540,16 @@ var _anim_done: Callable = Callable()
 func play_moves(mech_moves: Array, squad_moves: Array, done: Callable) -> void:
 	_anim_queue = [mech_moves, squad_moves]
 	_anim_done = done
+	# Everyone who will move starts where they were, this frame, so nobody blinks to the
+	# end and rewinds (Ryan, 22 September); the squads wait there while the mechs play.
+	for moves in _anim_queue:
+		for mv in moves:
+			var path: Array = mv[1]
+			if path.size() >= 2:
+				var px: Vector2 = Hex.to_pixel(path[0], HEX_SIZE)
+				_anim_px[mv[0]] = px
+				if _map3d != null:
+					_map3d.set_anim(mv[0], px, Vector2.ZERO)
 	_next_anim_phase()
 
 
@@ -531,6 +561,10 @@ func _next_anim_phase() -> void:
 			if (mv[1] as Array).size() >= 2:
 				_anim[mv[0]] = {"path": mv[1], "t": 0.0}
 	if _anim.is_empty():
+		for uid in _anim_px.keys():
+			if _map3d != null:
+				_map3d.clear_anim(uid)
+		_anim_px.clear()
 		var cb := _anim_done
 		_anim_done = Callable()
 		if cb.is_valid():
@@ -660,6 +694,7 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _process(delta: float) -> void:
+	_ring_t += delta
 	if not _anim.is_empty():
 		_advance_anim(delta)
 	if _map3d != null:
