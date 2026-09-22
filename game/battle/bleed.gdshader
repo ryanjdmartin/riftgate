@@ -30,8 +30,8 @@ uniform float focus_band = 330.0;            // the sharp zone reaches this far 
 uniform float focus_falloff = 180.0;         // map pixels over which the blur reaches its maximum
 uniform float blur_max = 3.0;                // the blur's tap spacing at its maximum, in screen pixels
 uniform vec2 play_x = vec2(0.0, 1.0);        // the playable field's left and right, in map pixels
-uniform float edge_fade = 300.0;             // map pixels past the field over which the scenery softens away
-uniform float edge_blur = 5.0;               // the side blur's maximum, stronger than the far one
+uniform float edge_fade = 90.0;              // map pixels past the field over which the side blur reaches full strength (smaller is harder)
+uniform float edge_blur = 6.0;               // the side blur's maximum, stronger than the far one
 
 float bleed_at(vec2 px) {
 	float m = 1.0 - clamp((px.y - grad.x) / max(1.0, grad.y - grad.x), 0.0, 1.0);
