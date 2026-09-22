@@ -613,7 +613,7 @@ func _mark(h: Vector2i) -> Dictionary:
 
 const DEST_RING := HEX_SIZE * 0.58   # the target's outer ring; the line stops here unless LINE_TO_CENTRE
 const LINE_TO_CENTRE := true          # the intent line runs to the hex's centre (Ryan, 22 September: to try)
-const ENEMY_LIT := Color("ff8a7a")    # the enemy marks' bright: red lifted toward white
+const ENEMY_LIT := Color("ffb3a6")    # the enemy marks' bright: red lifted well toward white, so the rings ride the tint
 
 ## The target in the HUD's own weight (Ryan, 22 September: nothing translucent, nothing
 ## abutting, the animation the thing you see): a tint on the ground and a thin outline
@@ -623,7 +623,7 @@ const ENEMY_LIT := Color("ff8a7a")    # the enemy marks' bright: red lifted towa
 func _destination_hex(h: Vector2i) -> void:
 	# The tint pulses on the same clock as the line and rings (Ryan, 22 September).
 	var breath := 0.5 + 0.5 * sin(_ring_t * 1.6)
-	_fill(h, Color(Palette.ENEMY, 0.3 + 0.2 * breath))
+	_fill(h, Color(Palette.ENEMY, 0.45 + 0.2 * breath))
 	Hud.stroke_poly(self, Hex.corners(center(h), HEX_SIZE - 3.0), _ring_colour(), 2.5)
 
 
@@ -665,7 +665,7 @@ func _contact_effect(h: Vector2i, lit: bool, _at_base: bool = false) -> void:
 	var c := center(h)
 	var a := 1.0 if lit else 0.35
 	var breath := 0.5 + 0.5 * sin(_ring_t * 4.0)
-	_fill(h, Color(Palette.ENEMY, (0.5 + 0.25 * breath) * a))
+	_fill(h, Color(Palette.ENEMY, (0.7 + 0.25 * breath) * a))
 	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, a), 2.5)
 	var col := _ring_colour()
 	for k in range(2):
