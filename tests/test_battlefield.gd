@@ -363,15 +363,23 @@ func test_a_squad_stepping_beside_a_mech_stops_there_and_a_flyer_stops_nobody() 
 	assert_true(Hex.distance(sq2.pos, f2.map.gate) < Hex.distance(_o(1, 2), f2.map.gate) - 2, "the squad kept going")
 
 
-func test_squads_route_around_control_when_they_can() -> void:
+func test_a_squad_never_swerves_for_a_machine_only_stops() -> void:
+	# Ryan, 22 September: a plot must never make a squad change its path, only cut it.
 	var f := _field(7, 14)
-	f.add_unit(Unit.mech(1, "A", _o(1, 6), 0))   # off to one side: the squad can go round
 	var sq := f.add_unit(Unit.squad(2, "ghouls", _o(3, 2), "undead", 3))
 	f.compute_intents()
-	for h in f.intents[sq.id]:
-		assert_false(f.controlled(h), "the path keeps off controlled ground")
-	var res := f.resolve_phase({})
-	assert_false(res.intercepted.has(sq.id), "and nothing stops it")
+	var free_path: Array = (f.intents[sq.id] as Array).duplicate()
+	var m := f.add_unit(Unit.mech(1, "A", free_path[free_path.size() - 1], 3))   # on its way
+	f.compute_intents()
+	var cut: Array = f.intents[sq.id]
+	assert_true(cut.size() <= free_path.size(), "the path is no longer than it was")
+	for i in range(cut.size()):
+		assert_eq(cut[i], free_path[i], "the same steps, up to the cut")
+	assert_true(f.controlled(cut[cut.size() - 1]), "and it ends on controlled ground")
+	# A machine well off the path changes nothing at all.
+	m.pos = _o(0, 12)
+	f.compute_intents()
+	assert_eq(f.intents[sq.id], free_path, "a machine off the path leaves it as it was")
 
 
 func test_the_preview_shows_a_squad_stopped_by_a_route_not_yet_resolved() -> void:

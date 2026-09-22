@@ -358,45 +358,29 @@ func _draw() -> void:
 		for group in res.skirmishes:
 			for u in group:
 				contact_hexes[(pv["ends"] as Dictionary)[u.id]] = true
-		# Danger: the ground beside every grounded machine's destination, where a squad
-		# will be stopped. Drawn faint, in the HUD colour, before the paths.
+		# The zone of control: the ground beside every grounded machine's destination, one
+		# tinted flower around the machine with a single outline, so whose it is reads at a
+		# glance and the field stays quiet (Ryan, 22 September).
 		var ends: Dictionary = pv["ends"]
 		for m in field.mechs():
 			if m.traits.has("flyer"):
 				continue
-			for n in Hex.neighbors(ends[m.id]):
-				if field.map.has(n) and not field.map.is_structure(n):
-					var pts := Hex.corners(center(n), HEX_SIZE - 6.0)
-					draw_colored_polygon(pts, Color(hud, 0.10))
-					_dotted_poly(pts, Color(hud, 0.7), 6.0)
+			_zone(ends[m.id], hud)
 		for sq in field.squads():
 			var path: Array = res.intents.get(sq.id, [])
 			if path.is_empty():
 				continue
-			var prev := center(sq.pos)
-			for step in path:
-				var p := center(step)
-				draw_line(prev, p, Color(Palette.BG, 0.75), 10.0)
-				prev = p
-			prev = center(sq.pos)
-			var last := prev
-			for step in path:
-				var p := center(step)
-				draw_line(prev, p, Color(Palette.ENEMY, 0.95), 5.0)
-				last = prev
-				prev = p
 			var dest: Vector2i = path[path.size() - 1]
-			if contact_hexes.has(dest):
-				continue   # the contact effect owns this hex
-			if not map.gate_hexes.has(dest):
-				# The destination: shaded, a thick outline, and an arrowhead where the path
-				# arrives, so it reads as "goes here" and never as a target.
-				draw_colored_polygon(Hex.corners(prev, HEX_SIZE - 3.0), Color(Palette.ENEMY, 0.32))
-				Hud.stroke_poly(self, Hex.corners(prev, HEX_SIZE - 3.0), Color(Palette.ENEMY, 0.95), 4.0)
-			var dir := (prev - last).normalized()
-			var tip := prev - dir * 6.0
-			var side := Vector2(-dir.y, dir.x)
-			draw_colored_polygon(PackedVector2Array([tip, tip - dir * 16.0 + side * 10.0, tip - dir * 16.0 - side * 10.0]), Palette.ENEMY)
+			var pts: PackedVector2Array = [center(sq.pos)]
+			for step in path:
+				pts.append(center(step))
+			# The line stops at the destination's edge; the target inside it is the effect.
+			pts[pts.size() - 1] = pts[pts.size() - 2].lerp(pts[pts.size() - 1], 0.5)
+			draw_polyline(pts, Color(Palette.BG, 0.75), 10.0)
+			draw_polyline(pts, Color(Palette.ENEMY, 0.95), 5.0)
+			if contact_hexes.has(dest) or map.gate_hexes.has(dest):
+				continue   # the contact effect owns this hex; the gate is a strike
+			_destination_effect(center(dest))
 
 	# The player's plotted routes, ending in a small marker hex.
 	for uid in routes.keys():
@@ -514,20 +498,58 @@ func _draw_tags() -> void:
 		draw_colored_polygon(PackedVector2Array([Vector2(mid - 6.0, edge_y), Vector2(mid + 6.0, edge_y), Vector2(mid, edge_y + 6.0 * dir)]), border)
 
 
-## The contact effect (Ryan, 22 September: big, obvious, in the face): a filled hex that
-## breathes, a heavy outline, and a ring that bursts from the centre past the hex's edge
-## and fades, again and again. Dimmed when another contact is the one being looked at.
+## The effects, told apart by motion (Ryan, 22 September: a red outline alone never reads
+## against this ground, so tint the hex and move something). A squad's destination: a
+## tinted hex with a target of concentric rings breathing inside it. A contact: a heavier
+## tint that pulses, a thick outline, and rings bursting out past the hex's edge, again and
+## again. Dimmed when another contact is the one being looked at.
 var _ring_t := 0.0
+
+func _destination_effect(c: Vector2) -> void:
+	var breath := 0.5 + 0.5 * sin(_ring_t * 3.0)
+	draw_colored_polygon(Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, 0.30))
+	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, 0.8), 2.0)
+	for k in range(3):
+		var r := HEX_SIZE * (0.22 + 0.2 * k) * (0.85 + 0.15 * breath)
+		draw_arc(c, r, 0.0, TAU, 32, Color(Palette.ENEMY, 0.95 - 0.2 * k), 2.5)
+	draw_circle(c, 3.5, Palette.ENEMY)
+
 
 func _contact_effect(c: Vector2, lit: bool) -> void:
 	var a := 1.0 if lit else 0.35
 	var breath := 0.5 + 0.5 * sin(_ring_t * 4.0)
-	draw_colored_polygon(Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, (0.22 + 0.18 * breath) * a))
+	draw_colored_polygon(Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, (0.38 + 0.22 * breath) * a))
 	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, 0.95 * a), 4.0)
 	for k in range(2):
 		var phase := fmod(_ring_t * 0.9 + k * 0.5, 1.0)
 		var r := HEX_SIZE * (0.3 + 1.1 * phase)
 		draw_arc(c, r, 0.0, TAU, 40, Color(Palette.ENEMY, (1.0 - phase) * 0.9 * a), 3.0 * (1.0 - phase * 0.5) + 1.0)
+
+
+## A machine's zone: its six neighbours as one tinted flower with one outline round the
+## outside, so the zone belongs visibly to the hex at its centre.
+func _zone(h: Vector2i, col: Color) -> void:
+	var cluster: Dictionary = {h: true}
+	for n in Hex.neighbors(h):
+		if field.map.has(n) and not field.map.is_structure(n):
+			cluster[n] = true
+	for n in cluster.keys():
+		if n == h:
+			continue
+		var pts := Hex.corners(center(n), HEX_SIZE)
+		draw_colored_polygon(pts, Color(col, 0.13))
+	for n in cluster.keys():
+		if n == h:
+			continue
+		var pts := Hex.corners(center(n), HEX_SIZE - 1.0)
+		var nb := Hex.neighbors(n)
+		# Corner i to corner i+1 of a pointy hex (corners from -30 degrees) faces the
+		# direction at 60i degrees, which is DIRECTIONS[(6 - i) % 6]; draw the edges whose
+		# far side is outside the cluster.
+		for i in range(6):
+			var across: Vector2i = nb[(6 - i) % 6]
+			if not cluster.has(across):
+				draw_line(pts[i], pts[(i + 1) % 6], Color(col, 0.75), 2.0)
 
 
 func _dotted_poly(pts: PackedVector2Array, col: Color, dash: float) -> void:
@@ -592,7 +614,8 @@ func _preview() -> Dictionary:
 
 # ---------------------------------------------------------------- the movement phase
 
-const MOVE_SECONDS_PER_HEX := 0.22
+const MOVE_SECONDS_PER_HEX := 0.22   # the fastest anything ever moves (Ryan, 22 September)
+const MOVE_REF_SPEED := 5.0          # a unit this quick moves at that pace; slower ones slower
 var _anim: Dictionary = {}      # unit id -> {path: Array[Vector2i], t: float}
 var _anim_queue: Array = []     # [[moves], ...] phases still to play: mechs, then squads
 var _anim_done: Callable = Callable()
@@ -622,7 +645,8 @@ func _next_anim_phase() -> void:
 		var moves: Array = _anim_queue.pop_front()
 		for mv in moves:
 			if (mv[1] as Array).size() >= 2:
-				_anim[mv[0]] = {"path": mv[1], "t": 0.0}
+				var u := field.unit_by_id(mv[0])
+				_anim[mv[0]] = {"path": mv[1], "t": 0.0, "speed": u.movespeed if u != null else MOVE_REF_SPEED}
 	if _anim.is_empty():
 		for uid in _anim_px.keys():
 			if _map3d != null:
@@ -640,7 +664,7 @@ func _advance_anim(delta: float) -> void:
 	for uid in _anim.keys():
 		var a: Dictionary = _anim[uid]
 		var path: Array = a["path"]
-		a["t"] += delta / MOVE_SECONDS_PER_HEX
+		a["t"] += delta / (MOVE_SECONDS_PER_HEX * maxf(1.0, MOVE_REF_SPEED / maxf(1.0, float(a["speed"]))))
 		var last := float(path.size() - 1)
 		if a["t"] >= last:
 			finished.append(uid)

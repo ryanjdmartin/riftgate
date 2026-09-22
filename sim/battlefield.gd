@@ -203,8 +203,6 @@ func compute_intents() -> void:
 			var held: Array = ends[other.id] if ends.has(other.id) else other.hexes()
 			for h in held:
 				blocked[h] = true
-		# Around controlled ground when a way round exists; through it when none does,
-		# and then the path ends at the first controlled hex, where the squad will stop.
 		var ignores_control := sq.elite and sq.strength == 0   # the boss guards; nothing herds it
 		if not ignores_control and controlled(sq.pos):
 			# Already under a machine's guns: it holds its ground, and the contact is this
@@ -213,14 +211,10 @@ func compute_intents() -> void:
 			intents[sq.id] = none
 			ends[sq.id] = sq.hexes()
 			continue
-		var avoid := blocked.duplicate()
-		if not ignores_control:
-			for h in map.all_hexes():
-				if h != target and controlled(h):
-					avoid[h] = true
-		var full := map.find_path(sq.pos, target, sq.traits, avoid)
-		if full.is_empty():
-			full = map.find_path(sq.pos, target, sq.traits, blocked)
+		# Squads plan blind to the machines (Ryan, 22 September: a plot never makes a squad
+		# swerve; the enemy's path is stable and only where it is cut changes). Control cuts
+		# the affordable path at the first controlled hex, where the squad will stop.
+		var full := map.find_path(sq.pos, target, sq.traits, blocked)
 		var path := _affordable(sq, full)
 		if not ignores_control:
 			for i in range(path.size()):

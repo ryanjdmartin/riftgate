@@ -78,13 +78,16 @@ its own strip and a tap on it dismisses it. Before a plan is locked the map show
 back; the map view caches it per plan): contact groups, squads stopped by another squad
 (BLOCKED), routes that will be rejected (NO ROUTE). Zone of control (decided 22 September):
 `Battlefield.controlled(h)` is true beside any grounded mech; `compute_intents` runs inside
-`_move_all` after the mechs (preview and resolve alike, `PhaseResult.intents`), routes
-squads around control when it can, cuts the path at the first controlled hex otherwise
-(`intercepted`), and a squad starting on controlled ground holds; flyers control nothing.
-The map draws intents from the preview's intents, never during a move, danger hexes
-(dashed) beside every planned grounded destination, destinations as a shaded hex with an
-arrowhead, contacts as a breathing hex with bursting rings (`_contact_effect`; one effect
-per hex, contact wins). Mechs move in plot order and routes are planned in that order
+`_move_all` after the mechs (preview and resolve alike, `PhaseResult.intents`); squads
+plan blind to the machines (a plot never makes a squad swerve, Ryan 22 September) and the
+path is cut at the first controlled hex (`intercepted`); a squad starting on controlled
+ground holds; flyers control nothing. The map draws intents from the preview's intents,
+never during a move: the line stops at the destination's edge, the destination is a
+tinted hex with breathing concentric rings (`_destination_effect`), a contact a heavier
+pulsing tint with bursting rings (`_contact_effect`; one effect per hex, contact wins),
+and each grounded machine's zone is one tinted flower with one outline (`_zone`). Moves
+play at a pace by movespeed (`MOVE_REF_SPEED` moves at `MOVE_SECONDS_PER_HEX`, the
+fastest ever; slower units slower). Mechs move in plot order and routes are planned in that order
 (`Battlefield.with_plan`: earlier machines at their destinations, later ones where they
 stand), so Resolve never rejects a route; a re-plot puts the mech last in the order; any route
 the change breaks is dropped with a log line (`Battle._drop_conflicts`). A boss stands on one hex now and patrols within `BOSS_ZONE` of

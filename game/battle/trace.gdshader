@@ -14,7 +14,7 @@ uniform float gain = 1.0;        // the tuner's overall multiplier
 uniform float sweep_p = -1.0e6;  // the scan band's projected depth along `screen_down`, in world units
 uniform vec3 screen_down = vec3(0.0, -0.743, 0.669);   // the world direction that runs down the screen, so height counts
 uniform float lead = 10.0;       // projected units the light reaches ahead of the band: it snaps on
-uniform float tail = 110.0;       // projected units the light lingers behind it: it fades in the wake
+uniform float tail = 75.0;        // projected units the light lingers behind it: it fades in the wake
 
 varying vec3 wpos;
 
