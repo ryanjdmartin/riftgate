@@ -23,8 +23,8 @@ const STATUS_H := 38.0
 const CHIP_H := 30.0
 const CHIP_GLYPH := 18.0
 const CHIP_TEXT := 16
-const BAR_H := 8.0
-const BAR_STEP := 11.0
+const BAR_H := 11.0
+const BAR_STEP := 14.0
 const FLOAT_BAR_W := 60.0
 
 var display_name: String = ""     # for the codex and readouts; never drawn here
@@ -241,14 +241,14 @@ func _draw() -> void:
 			# dropping from a third of the way along its underside, diagonally down-left
 			# toward the sprite.
 			var bx := minf(vis.end.x - 10.0, size.x - FLOAT_BAR_W - 2.0)
-			var y := vis.position.y - 11.0
+			var y := vis.position.y - 14.0
 			var from := Vector2(bx + FLOAT_BAR_W / 3.0, y + BAR_H)
 			draw_line(from, from + Vector2(-6.0, 6.0), Color(hud, 0.8), 1.5)
-			var top := y - 10.0 * (bars.size() - 1)
+			var top := y - BAR_STEP * (bars.size() - 1)
 			_plate(Rect2(bx - 4.0, top - 3.0, FLOAT_BAR_W + 8.0, y - top + BAR_H + 6.0))
 			for b in bars:
 				_gauge(Rect2(bx, y, FLOAT_BAR_W, BAR_H), b)
-				y -= 10.0
+				y -= BAR_STEP
 
 	# Quiet readout for an empty slot.
 	if not intent.is_empty() and not dead and sprite == null and intent_kind.is_empty():
@@ -307,14 +307,17 @@ func _gauge(rect: Rect2, b: Array) -> void:
 	var lo := minf(frac, pending)
 	var hi := maxf(frac, pending)
 	var inner := rect.grow(-2.0)
-	var pulse := 0.72 + 0.22 * sin(_t * 2.6)
+	# One clock for every gauge on screen (Ryan, 22 September: bars that breathe together
+	# are easier to read), not this view's own, which starts when its first pending shows.
+	var clock := Time.get_ticks_msec() / 1000.0
+	var pulse := 0.72 + 0.22 * sin(clock * 3.2)
 	var seg := Rect2(inner.position + Vector2(inner.size.x * lo, 0), Vector2(maxf(3.0, inner.size.x * (hi - lo)), inner.size.y))
 	var pts := Hud.slant(seg, 2.4)
 	if pending < frac:
 		# A loss: the part about to go breathes between dimmed and lit in ink, a full swing,
 		# so it is seen to pulse on any bar colour (Ryan, 22 September: it had faded to a
 		# faint dimming).
-		var beat := 0.5 + 0.5 * sin(_t * 3.2)
+		var beat := 0.5 + 0.5 * sin(clock * 3.2)
 		Hud.fill_poly(self, pts, Color(Palette.BG, 0.65 * (1.0 - beat)))
 		Hud.fill_poly(self, pts, Color(Palette.INK, 0.55 * beat))
 		Hud.stroke_poly(self, pts, Color(Palette.INK, 0.6 + 0.4 * beat), 1.0)

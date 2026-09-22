@@ -445,12 +445,21 @@ func _frame_camera() -> void:
 	var height := maxf(extent.y, extent.x / aspect) / FILL
 	_camera.size = height
 	var mid := (lo + hi) * 0.5
-	# Where the model lands in the frame, in pixels: the projected bounds, so a view can
-	# hug the drawing without reading the rendered image back from the GPU.
+	# Where the drawing lands in the frame, in pixels: every vertex projected the same way,
+	# so a view can hug the model without reading the rendered image back from the GPU.
+	# Vertices, not box corners: a tilted box projects taller than the thing inside it.
 	var px_per_unit := float(size.y) / height
+	var verts: Array[Vector3] = []
+	_collect_vertices(_model, verts)
+	var vlo := Vector2(INF, INF)
+	var vhi := Vector2(-INF, -INF)
+	for v in (verts if not verts.is_empty() else corners):
+		var p := Vector2(v.dot(right), v.dot(up))
+		vlo = Vector2(minf(vlo.x, p.x), minf(vlo.y, p.y))
+		vhi = Vector2(maxf(vhi.x, p.x), maxf(vhi.y, p.y))
 	_model_rect = Rect2(
-		Vector2(size.x * 0.5 - extent.x * 0.5 * px_per_unit, size.y * 0.5 - extent.y * 0.5 * px_per_unit),
-		extent * px_per_unit)
+		Vector2(size.x * 0.5 + (vlo.x - mid.x) * px_per_unit, size.y * 0.5 - (vhi.y - mid.y) * px_per_unit),
+		(vhi - vlo) * px_per_unit)
 	var target := right * mid.x + up * mid.y + back * centre.dot(back)
 	_camera.position = target + back * 500.0
 	_camera.look_at(target, up)
@@ -493,6 +502,15 @@ func set_sweep_screen(local_y: float) -> void:
 	(_trace_mat as ShaderMaterial).set_shader_parameter("screen_down", _screen_down)
 	_camera.near = 1.0
 	_camera.far = 2000.0
+
+
+func _collect_vertices(node: Node, out: Array[Vector3]) -> void:
+	if node is MeshInstance3D and (node as MeshInstance3D).visible and (node as MeshInstance3D).mesh != null:
+		var mi: MeshInstance3D = node
+		for v in mi.mesh.get_faces():
+			out.append(mi.global_transform * v)
+	for c in node.get_children():
+		_collect_vertices(c, out)
 
 
 func _collect_corners(node: Node, out: Array[Vector3]) -> void:

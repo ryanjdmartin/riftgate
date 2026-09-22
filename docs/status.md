@@ -4,7 +4,7 @@ Handoff note for the next session. Replace stale lines; keep it under a screen.
 
 ## As of 22 September 2026
 
-**State.** Everything committed. Tests: 172 tests, 2357 checks, green. Ryan writes
+**State.** Everything committed. Tests: 173 tests, 2372 checks, green. Ryan writes
 `content/*.json` in his own voice (reload after any pass that touches it). The rules are in
 `docs/vocabulary.md` (generated) and every decision in `docs/design-bible.html`; the
 vocabulary carries an `order_of_operations` rule that the engine follows. Chassis ids:
@@ -26,8 +26,12 @@ landscape only, never read by a rule. The gate and walls are two rows deep
 September): a chassis's `cooling` (content, 0 if absent; a stat in the pipeline) is shed
 from heat at the start of every turn in `start_round` (one log line); Overheating ticks at
 the end of the round after the enemy turn (`_tick_mechs`), so a scorch lands on peak heat;
-the forecast's `heat_after` includes that tick (`scorch_incoming`); the codex grid has a
-heat max / cooling cell. Placeholder numbers went in for all four chassis (10, the
+every overheat burns at the end of the round too (`_settle_heat`: heat climbs past the cap
+during the round, `_add_heat` never clamps, a vent in time prevents the burn); the
+forecast's `heat_after` and `overheat` include the tick (`scorch_incoming`) and count the
+die's own heat only when asked (`forecast(ms, with_face)`; the screen asks while that die
+is dragged); the old MAX chip is now the burn warning; the codex grid has a heat max /
+cooling cell. Placeholder numbers went in for all four chassis (10, the
 Sparrowhawk 5); Ryan tunes them, and the heat sink wants a bigger number (tuning).
 
 **Skirmish rules and screen (22 September).** A kill clears its slot at once
@@ -37,7 +41,9 @@ reinforcements step in after the enemy's replay (`_animate_arrival`). A decided 
 the moment a die decides it (`assign` checks the outcome; the screen shows it after the
 blow plays). Every skirmish animation returns a unit to `_home` and kills what was still
 moving it (`_settle`), so recoil never drifts a mech. Mech gauges and chips hug the model
-by `MechView3D.model_rect` (the camera's framed bounds) through `UnitView.used_override`;
+by `MechView3D.model_rect` (every vertex projected through the camera's basis) through
+`UnitView.used_override`; gauges 11 px tall, pending overlays pulse on one shared clock,
+a die's hold readout opens above the die;
 nothing reads a viewport texture back from the GPU any more (`Sprites.used_rect` did,
 every frame until a non-empty read, which is the likely cause of the choppy die drag and
 the floating gauges on the phone; unverified on a device). The log strip scrolls (every

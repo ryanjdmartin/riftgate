@@ -13,7 +13,8 @@ extends RefCounted
 ##                       kinetic faces roll their damage here, immediately and visibly
 ##                       a kill clears its slot at once; a decided fight ends at once
 ##   end_round()         burn ticks, foes act, the dead are cleared, mech statuses tick
-##                       (overheating), the reinforcements refill, outcome is checked
+##                       (overheating), heat over the cap burns hull, the reinforcements
+##                       refill, outcome is checked
 ##   can_withdraw()      at the start of any round, before any face is spent
 ##
 ## Numbers are in tens. Enemy damage is static; only the player's kinetic faces roll.
@@ -215,8 +216,9 @@ func incoming_for(ms: MechState) -> int:
 
 ## What the end of the round does to this mech if nothing else changes: the screen's warning
 ## signs and bar overlays. Recomputed after every action, so shielding or killing an attacker
-## moves the numbers at once.
-func forecast(ms: MechState) -> Dictionary:
+## moves the numbers at once. `with_face` counts the heat of the die's showing component as
+## if spent; the screen asks for that only while the die is being dragged.
+func forecast(ms: MechState, with_face: bool = true) -> Dictionary:
 	var shield := ms.unit.shield
 	var hull := ms.unit.hull
 	var incoming := 0
@@ -229,15 +231,12 @@ func forecast(ms: MechState) -> Dictionary:
 			hull -= r["through"]
 			if r["injures"]:
 				component_risk = true
-	# Heat: the face's own when spent (overflow paid at once), then the end of the round's
-	# Overheating tick: the stacks it carries plus one per scorching blow coming.
-	var heat_after := ms.heat + pending_heat(ms)
+	# Heat: what the gauge holds (past the cap, if the round ran hot), the face's own if
+	# asked, then the end of the round's Overheating tick: the stacks it carries plus one
+	# per scorching blow coming. Whatever ends over the cap burns hull at the round's end.
+	var heat_after := ms.heat + (pending_heat(ms) if with_face else 0) + int(Effects.tick_preview(ms.unit)["heat"]) + scorch_incoming(ms)
 	var over := maxi(0, heat_after - ms.heat_max)
 	hull -= over
-	heat_after = mini(heat_after, ms.heat_max) + int(Effects.tick_preview(ms.unit)["heat"]) + scorch_incoming(ms)
-	var tick_over := maxi(0, heat_after - ms.heat_max)
-	hull -= tick_over
-	over += tick_over
 	return {
 		"incoming": incoming,
 		"shield_after": shield,
@@ -390,6 +389,7 @@ func end_round() -> int:
 	assert(state == State.ASSIGN, "end_round called out of order")
 	_enemy_turn()
 	_tick_mechs()
+	_settle_heat()
 	_reinforce(true)    # the reinforcement phase: a random waiting foe of the right rank per empty slot
 	_check_outcome()
 	if outcome == Outcome.NONE:
@@ -553,12 +553,21 @@ func _suppress(foe: Foe) -> void:
 	Effects.stack(foe, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 2 if foe.is_massive() else 1, Effects.DECAY_NONE)
 
 
+## Heat only climbs here, past the maximum too. It burns at the end of the round (Ryan,
+## 22 September: every overheat lands at once, never as a spike when a component is spent),
+## so a machine run hot can still be vented before it pays.
 func _add_heat(ms: MechState, amount: int) -> void:
-	if amount <= 0:
-		return
-	ms.heat += amount
-	if ms.heat > ms.heat_max:
+	if amount > 0:
+		ms.heat += amount
+
+
+## The end of the round: heat above the maximum burns hull one for one and the gauge
+## settles at its cap.
+func _settle_heat() -> void:
+	for ms in live_mechs():
 		var over := ms.heat - ms.heat_max
+		if over <= 0:
+			continue
 		ms.unit.hull -= over
 		ms.heat = ms.heat_max
 		log.append("%s overheats: hull -%d" % [ms.unit.display_name, over])

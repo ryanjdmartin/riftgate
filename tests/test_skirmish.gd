@@ -120,8 +120,11 @@ func test_heat_overflow_damages_hull() -> void:
 	sk.begin()
 	sk.start_round()
 	assert_true(sk.assign(0, sk.front[0]), "fire the hot gun")
-	assert_eq(sk.mechs[0].heat, 60, "heat capped at max")
-	assert_eq(m.hull, 80, "twenty points of overflow hit the hull")
+	assert_eq(sk.mechs[0].heat, 80, "the gauge runs past its cap during the round")
+	assert_eq(m.hull, 100, "nothing burns yet")
+	sk.end_round()
+	assert_eq(sk.mechs[0].heat, 60, "at the end of the round the gauge settles at its cap")
+	assert_eq(m.hull, 80, "and the twenty over it burnt the hull (the ghoul's blow was blocked by the shield)")
 
 
 func test_overcharge_doubles_damage_and_heat() -> void:
@@ -528,7 +531,10 @@ func test_forecast_predicts_wreck_and_overheat() -> void:
 	sk.assign(0, sk.front[0])
 	fc = sk.forecast(ms)
 	assert_eq(sk.pending_heat(ms), 0, "a spent face adds no more heat")
-	assert_eq(fc["overheat"], 0, "no pending overheat once spent")
+	assert_eq(ms.heat, 40, "the heat is on the gauge, past the cap")
+	assert_eq(m.hull, 20, "nothing burnt yet")
+	assert_eq(fc["overheat"], 10, "the burn is still coming at the end of the round")
+	assert_eq(sk.forecast(ms, false)["overheat"], 10, "with or without the die counted: it is spent")
 
 
 func test_forecast_ignores_foes_that_burn_to_death_first() -> void:
@@ -1083,17 +1089,22 @@ func test_cooling_at_the_start_of_the_turn_and_overheating_at_the_end_of_the_rou
 	sk.start_round()
 	assert_eq(ms.heat, 20, "cooled by 10 as the turn begins")
 	assert_true(sk.log[sk.log.size() - 1].begins_with("cooling: A -10"), "one log line: %s" % sk.log[sk.log.size() - 1])
-	# Overflow is paid when the face is spent; cooling never undoes a burn.
+	# Overflow burns at the end of the round, never when the face is spent (Ryan, 22
+	# September), so a hot machine can still be vented before it pays.
 	ms.heat = 50
+	assert_eq(sk.forecast(ms, false)["overheat"], 0, "the die's heat is not counted unless asked")
+	assert_eq(sk.forecast(ms, true)["overheat"], 20, "asked (the die is dragged): 50 plus 30 on a 60 cap")
 	sk.assign(0, sk.front[0])
-	assert_eq(m.hull, 80, "50 plus 30 on a 60 cap: 20 burnt off the hull")
-	assert_eq(ms.heat, 60, "capped")
+	assert_eq(ms.heat, 80, "80 on the gauge, past the cap")
+	assert_eq(m.hull, 100, "nothing burnt yet")
+	assert_eq(sk.forecast(ms)["overheat"], 20, "the forecast warns of the twenty to come")
 	# Overheating ticks at the end of the round, on that peak, before the next cooling.
 	Effects.stack(m, Effects.STATUS["overheating"], Effects.SKIRMISH, "test", 2)
-	assert_eq(sk.forecast(ms)["heat_after"], 60, "the forecast caps the tick")
-	assert_eq(sk.forecast(ms)["overheat"], 10, "and warns of the ten it burns")
+	assert_eq(sk.forecast(ms)["heat_after"], 60, "the forecast caps the gauge")
+	assert_eq(sk.forecast(ms)["overheat"], 30, "twenty over plus the tick's ten")
 	sk.end_round()
-	assert_eq(m.hull, 70, "two stacks: ten heat on a full gauge burns ten hull")
+	assert_eq(m.hull, 70, "all of it burns at once at the end of the round")
+	assert_eq(ms.heat, 60, "and the gauge settles at its cap")
 	assert_eq(Effects.stacks_of(m, "overheating"), 1, "one stack ticked away")
 	sk.start_round()
 	assert_eq(ms.heat, 50, "then cooled by 10")
@@ -1141,3 +1152,24 @@ func test_no_cooling_means_no_line_and_no_change() -> void:
 	assert_eq(ms.heat, 30, "a chassis with no cooling keeps its heat")
 	for j in range(lines, sk.log.size()):
 		assert_false(sk.log[j].begins_with("cooling"), "no cooling line")
+
+
+func test_venting_before_the_end_of_the_round_prevents_the_burn() -> void:
+	var sk := Skirmish.new(1)
+	var hot := _mech("Hot", Die.single(Face.attack(10, L, [], 50)), 40, 100)
+	hot.heat_max = 60
+	var ms := sk.add_mech(hot)
+	var cool := _mech("Cool", Die.single(Face.vent(30)), 40, 100)
+	sk.add_mech(cool)
+	sk.add_foes([_ghoul(90, 10)])
+	sk.begin()
+	sk.start_round()
+	ms.heat = 30
+	sk.assign(0, sk.front[0])
+	assert_eq(ms.heat, 80, "twenty over the cap")
+	assert_eq(sk.forecast(ms)["overheat"], 20, "warned")
+	assert_true(sk.assign(1, ms), "the ally vents it")
+	assert_eq(ms.heat, 50, "back under the cap")
+	assert_eq(sk.forecast(ms)["overheat"], 0, "nothing to burn")
+	sk.end_round()
+	assert_eq(hot.hull, 100, "no burn: the vent came in time")

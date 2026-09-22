@@ -36,7 +36,7 @@ const DIE_SIZE := 120.0
 const REROLL_Y := 802.0
 const REROLL_SIZE := Vector2(250, 54)
 const MECH_Y := 892.0
-const MECH_SIZE := Vector2(176, 272)   # gauges 35 + 80x96 sprite at 2x + chip row 38; neighbours overlap 4 px at PITCH
+const MECH_SIZE := Vector2(176, 284)   # gauges 46 + 80x96 sprite at 2x + chip row 38; neighbours overlap 4 px at PITCH
 const BOTTOM_Y := 1196.0
 const BOTTOM_BTN := Vector2(210, 60)
 const PITCH := 172.0
@@ -581,7 +581,9 @@ func _refresh() -> void:
 	for i in range(sk.mechs.size()):
 		var ms: Skirmish.MechState = sk.mechs[i]
 		var v := _mech_views[i]
-		var fc: Dictionary = sk.forecast(ms) if assigning and ms.alive() else {}
+		# The forecast counts this die's own heat only while it is being dragged: shown
+		# unasked, it read as something done to the mech rather than by the player.
+		var fc: Dictionary = sk.forecast(ms, _drag_from == i) if assigning and ms.alive() else {}
 		# Shield above hull: it is what the enemy meets first, and it drops first.
 		v.bars = [
 			[ms.unit.shield, ms.unit.shield_max, Palette.SHIELD, fc.get("shield_after", ms.unit.shield)],
@@ -734,15 +736,14 @@ func _mech_rows(i: int) -> Array:
 		return rows
 	if locked[i]:
 		rows.append(["lock", "", "Die locked: reroll skips it", Palette.HUD])
-	if ms.heat >= ms.heat_max:
-		rows.append(["heat", "MAX", "Heat at maximum: any more burns hull", Palette.HEAT])
 	var damaged := ms.unit.damaged_component_count()
 	if damaged > 0:
 		rows.append(["crack", str(damaged), "%d damaged component%s: repair in the hangar" % [damaged, "" if damaged == 1 else "s"], Palette.HUD])
 	if sk.state == Skirmish.State.ASSIGN:
-		var fc := sk.forecast(ms)
+		var fc := sk.forecast(ms, _drag_from == i)
 		if int(fc["overheat"]) > 0:
-			rows.append(["heat", "+%d" % int(fc["overheat"]), "This component overheats: hull -%d" % int(fc["overheat"]), Palette.HEAT])
+			# Overheating burns at the end of the round, so there is still time to vent.
+			rows.append(["heat", "-%d" % int(fc["overheat"]), "Overheating: hull -%d at the end of the round unless vented" % int(fc["overheat"]), Palette.HEAT])
 		if bool(fc["destroyed"]):
 			rows.append(["skull", "", "Wrecked this round: %d incoming" % int(fc["incoming"]), Palette.ENEMY])
 		elif bool(fc["component_risk"]):
@@ -782,7 +783,7 @@ func _refresh_arrows() -> void:
 
 ## Hold readout beside a control: a text block, then for a die every face in a column, or
 ## for a unit its statuses and warnings as icon-and-text rows.
-func _show_details(text: String, near: Control, faces: Array = [], current: int = -1, rows: Array = [], labels: Array = []) -> void:
+func _show_details(text: String, near: Control, faces: Array = [], current: int = -1, rows: Array = [], labels: Array = [], above: bool = false) -> void:
 	_details_label.text = text
 	_details_faces.visible = not faces.is_empty()
 	_details_faces.labels = labels
@@ -796,13 +797,16 @@ func _show_details(text: String, near: Control, faces: Array = [], current: int 
 	# open of a differently shaped readout used to keep the previous panel's height.
 	var wanted := _details.get_combined_minimum_size()
 	_details.size = Vector2(width, wanted.y)
+	var height := wanted.y
 	var pos := near.position + Vector2(near.size.x + 8.0, 0)
-	if pos.x + width > W - 8.0:
+	if above:
+		# Over the control, centred on it: a thumb holding a die covers what is beside and
+		# below it (Ryan, 22 September).
+		pos = Vector2(near.position.x + near.size.x * 0.5 - width * 0.5, near.position.y - height - 10.0)
+	elif pos.x + width > W - 8.0:
 		pos.x = near.position.x - width - 8.0
 	pos.x = clampf(pos.x, 8.0, W - width - 8.0)
-	var height := wanted.y
-	if pos.y + height > H - 8.0:
-		pos.y = H - 8.0 - height
+	pos.y = clampf(pos.y, 8.0, H - 8.0 - height)
 	_details.position = pos
 
 
@@ -921,7 +925,7 @@ func _shown_faces(ms: Skirmish.MechState) -> Array:
 
 func _on_die_held(i: int) -> void:
 	var ms: Skirmish.MechState = sk.mechs[i]
-	_show_details("%s // D%d" % [ms.unit.display_name.to_upper(), ms.die.size()], _dice[i], _shown_faces(ms), ms.face_index, [], _face_labels(ms, false))
+	_show_details("%s // D%d" % [ms.unit.display_name.to_upper(), ms.die.size()], _dice[i], _shown_faces(ms), ms.face_index, [], _face_labels(ms, false), true)
 
 
 func _on_foe_held(v: UnitView) -> void:
