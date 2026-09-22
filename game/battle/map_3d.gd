@@ -302,10 +302,13 @@ func set_trace_gain(v: float) -> void:
 		_light_mat.set_shader_parameter("gain", v)
 
 
-## Where the scan band is, as a map-pixel y: the traces under it brighten.
+## Where the scan band is, as a map-pixel y: the traces and the grid under it brighten.
 func set_sweep(map_y: float) -> void:
+	var z := (map_y - _origin.y) / (_ppu * _sin)
 	if _light_mat != null:
-		_light_mat.set_shader_parameter("sweep_z", (map_y - _origin.y) / (_ppu * _sin))
+		_light_mat.set_shader_parameter("sweep_z", z)
+	if _grid_mat != null:
+		_grid_mat.set_shader_parameter("sweep_z", z)
 
 
 var _env: Environment = null
@@ -316,10 +319,8 @@ func set_glow(v: float) -> void:
 		_env.glow_enabled = v > 0.01
 
 
-func set_grid(alpha: float) -> void:
-	var m := _grid_material()
-	m.albedo_color = Color(Palette.HUD, alpha)
-	m.emission_energy_multiplier = 1.4 * alpha / 0.55
+func set_grid(gain: float) -> void:
+	_grid_material().set_shader_parameter("gain", gain)
 
 
 ## The feature edges of a mesh as a line mesh: edges shared by faces that meet at an angle,
@@ -412,18 +413,16 @@ func _grid_mesh(y: float) -> ArrayMesh:
 	return st.commit()
 
 
-var _grid_mat: StandardMaterial3D = null
+var _grid_mat: ShaderMaterial = null
 
-## The display's light: unshaded HUD colour, emissive so the glow pass catches it.
-func _grid_material() -> StandardMaterial3D:
+## The display's light: the same trace shader as the edges, so the scan bar lights the grid
+## as it passes; a little dimmer than the traces.
+func _grid_material() -> ShaderMaterial:
 	if _grid_mat == null:
-		_grid_mat = StandardMaterial3D.new()
-		_grid_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		_grid_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-		_grid_mat.albedo_color = Color(Palette.HUD, 0.55)
-		_grid_mat.emission_enabled = true
-		_grid_mat.emission = Palette.HUD
-		_grid_mat.emission_energy_multiplier = 1.4
+		_grid_mat = ShaderMaterial.new()
+		_grid_mat.shader = load("res://game/battle/trace.gdshader")
+		_grid_mat.set_shader_parameter("color", Palette.HUD)
+		_grid_mat.set_shader_parameter("gain", 0.7)
 	return _grid_mat
 
 

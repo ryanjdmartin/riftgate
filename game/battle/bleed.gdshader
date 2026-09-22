@@ -31,7 +31,7 @@ uniform float focus_falloff = 180.0;         // map pixels over which the blur r
 uniform float blur_max = 3.0;                // the blur's tap spacing at its maximum, in screen pixels
 uniform vec2 play_x = vec2(0.0, 1.0);        // the playable field's left and right, in map pixels
 uniform float edge_fade = 90.0;              // map pixels past the field over which the side blur reaches full strength (smaller is harder)
-uniform float edge_blur = 6.0;               // the side blur's maximum, stronger than the far one
+uniform float edge_blur = 3.0;               // the side blur's maximum
 
 float bleed_at(vec2 px) {
 	float m = 1.0 - clamp((px.y - grad.x) / max(1.0, grad.y - grad.x), 0.0, 1.0);
@@ -60,18 +60,19 @@ float blur_radius(vec2 px) {
 	return f * blur_max;
 }
 
-// Two helpers, since a built-in and a uniform sampler cannot share one function.
+// A dense 7x7 box at `rad` spacing: thick and smooth, never a ghosted multiple image.
+// Three copies, since a built-in and a uniform sampler cannot share one function.
 vec4 blurred_scene(sampler2D scene_tex, vec2 uv, vec2 texel, float rad) {
 	if (rad < 0.05) {
 		return texture(scene_tex, uv);
 	}
 	vec4 acc = vec4(0.0);
-	for (int i = -2; i <= 2; i++) {
-		for (int j = -2; j <= 2; j++) {
+	for (int i = -3; i <= 3; i++) {
+		for (int j = -3; j <= 3; j++) {
 			acc += texture(scene_tex, uv + vec2(float(i), float(j)) * texel * rad);
 		}
 	}
-	return acc / 25.0;
+	return acc / 49.0;
 }
 
 vec4 blurred_other(vec2 uv, vec2 texel, float rad) {
@@ -79,12 +80,12 @@ vec4 blurred_other(vec2 uv, vec2 texel, float rad) {
 		return texture(painted, uv);
 	}
 	vec4 acc = vec4(0.0);
-	for (int i = -2; i <= 2; i++) {
-		for (int j = -2; j <= 2; j++) {
+	for (int i = -3; i <= 3; i++) {
+		for (int j = -3; j <= 3; j++) {
 			acc += texture(painted, uv + vec2(float(i), float(j)) * texel * rad);
 		}
 	}
-	return acc / 25.0;
+	return acc / 49.0;
 }
 
 vec4 blurred_other2(vec2 uv, vec2 texel, float rad) {
@@ -92,12 +93,12 @@ vec4 blurred_other2(vec2 uv, vec2 texel, float rad) {
 		return texture(painted2, uv);
 	}
 	vec4 acc = vec4(0.0);
-	for (int i = -2; i <= 2; i++) {
-		for (int j = -2; j <= 2; j++) {
+	for (int i = -3; i <= 3; i++) {
+		for (int j = -3; j <= 3; j++) {
 			acc += texture(painted2, uv + vec2(float(i), float(j)) * texel * rad);
 		}
 	}
-	return acc / 25.0;
+	return acc / 49.0;
 }
 
 void fragment() {

@@ -30,7 +30,7 @@ var wall_hexes: Array[Vector2i] = []   # the rest of the bottom GATE_ROWS rows: 
 var crag_base: Dictionary = {}         # crag hex -> the ground under the rock (water, ruins, ...): flavour only
 var elevation: Dictionary = {}         # hex -> relief step 0..3 (water -1): landscape only, no rule reads it
 var margin: Dictionary = {}            # hex beside the field -> terrain: scenery past the playable edge, never played on
-const MARGIN_COLS := 3
+const MARGIN_COLS := 4
 var map_seed: int = 0
 
 const STRUCTURE_HALF_WIDTH := 1   # gate and rift span centre plus this many hexes each side
