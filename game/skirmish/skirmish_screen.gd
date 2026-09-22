@@ -206,9 +206,9 @@ func _build() -> void:
 
 	# Header: round and reinforcements tag, phase readout beside it.
 	_header = _tag("", 13, true)
-	_place(_header, Vector2(12, 14), Vector2(200, 28))
+	_place(_header, Vector2(12, 14), Vector2(300, 28))
 	_sub_label = Hud.label("", 12, Color(Palette.HUD, 0.7), Hud.mono())
-	_place(_sub_label, Vector2(226, 20), Vector2(380, 20))
+	_place(_sub_label, Vector2(326, 20), Vector2(380, 20))
 	# The intent eye sits right under the formation, at the right edge: toggled often, so it
 	# stays within a thumb's reach of the foes it concerns.
 	var menu_btn := HudButton.new("MENU", _open_menu)
