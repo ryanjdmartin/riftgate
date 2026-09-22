@@ -629,9 +629,10 @@ func _open_skirmish(index: int = 0) -> void:
 	if _contacts != null:
 		_contacts.queue_free()
 		_contacts = null
-	_map.set_highlight([])
+	var group: Array = battle.pending[clampi(index, 0, battle.pending.size() - 1)] if not battle.pending.is_empty() else []
 	var sk := battle.open_skirmish_at(index)
 	if sk == null:
+		_map.set_highlight([])
 		_after_step()
 		return
 	var screen: SkirmishScreen = SKIRMISH_SCENE.instantiate()
@@ -639,8 +640,63 @@ func _open_skirmish(index: int = 0) -> void:
 	screen.setup(sk)
 	screen.back_requested.connect(_on_skirmish_back)
 	_skirmish = screen
-	add_child(screen)
-	_refresh()
+	if DisplayServer.get_name() == "headless":
+		_map.set_highlight([])
+		add_child(screen)
+		_refresh()
+		return
+	_play_handover(group, screen)
+
+
+## The handover into the skirmish (decided 22 September): the reconstruction dives onto
+## the contact, the other world's bleed grows out of the squad until the ground there has
+## gone flat and bright, the display cuts to black, and the skirmish's feed fades up.
+const HANDOVER_DIVE := 0.8
+const HANDOVER_FLAT := 0.9
+const HANDOVER_FLAT_HEX := 4.5
+
+func _play_handover(group: Array, screen: SkirmishScreen) -> void:
+	var hexes: Array = []
+	var mid := Vector2.ZERO
+	var squad_mid := Vector2.ZERO
+	var squads := 0
+	for u in group:
+		hexes.append(u.pos)
+		mid += _map.center(u.pos)
+		if u.is_enemy():
+			squad_mid += _map._origin + Hex.to_pixel(u.pos, BattleMapView.HEX_SIZE)   # unlifted: what the bleed reads
+			squads += 1
+	mid /= maxf(1.0, float(group.size()))
+	squad_mid = squad_mid / float(squads) if squads > 0 else mid
+	_map.set_highlight(hexes)
+	_map.pending = [group]        # the map stays frozen on this fight until the cut
+	_map.flatten_at = squad_mid   # map pixels, as the bleed reads them
+	_map.flatten_r = 0.0
+	var z0 := _map.zoom
+	var scroll0 := Vector2(_map.scroll_x, _map.scroll_y)
+	var scrim := ColorRect.new()
+	scrim.color = Color.BLACK
+	scrim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	scrim.mouse_filter = Control.MOUSE_FILTER_STOP
+	scrim.modulate = Color(1, 1, 1, 0)
+	add_child(scrim)
+	var tw := create_tween().set_parallel(true)
+	tw.tween_method(func(t: float) -> void:
+		_map.focus_on(mid, lerpf(z0, BattleMapView.ZOOM_MAX, t)), 0.0, 1.0, HANDOVER_DIVE).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+	tw.tween_property(_map, "flatten_r", HANDOVER_FLAT_HEX, HANDOVER_FLAT).set_delay(0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tw.chain().tween_property(scrim, "modulate", Color(1, 1, 1, 1), 0.3)
+	tw.chain().tween_callback(func() -> void:
+		add_child(screen)
+		scrim.move_to_front()
+		_map.flatten_r = 0.0
+		_map.set_highlight([])
+		_map.zoom = z0
+		_map.scroll_x = scroll0.x
+		_map.scroll_y = scroll0.y
+		_map._clamp_scroll()
+		_refresh())
+	tw.chain().tween_property(scrim, "modulate", Color(1, 1, 1, 0), 0.4)
+	tw.chain().tween_callback(scrim.queue_free)
 
 
 ## The skirmish's Back button: apply the result, then the next contact or back to the plan.

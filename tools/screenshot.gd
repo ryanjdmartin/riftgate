@@ -130,6 +130,19 @@ func _apply_battle_pose() -> void:
 			s._on_hex_double_tapped(b.field.squads()[0].pos)
 		"resolve":
 			s._on_resolve()
+		"engage":
+			# ENGAGE pressed: the handover into the skirmish, mid-flight (RIFTGATE_SHOT_FRAME).
+			var m: Unit = b.mechs()[0]
+			var sq: Unit = b.field.squads()[0]
+			for n in Hex.neighbors(m.pos):
+				if b.field.can_stand(sq, n):
+					sq.pos = n
+					break
+			sq.movespeed = 0
+			b.field.compute_intents()
+			b.commit()
+			s._refresh()
+			s._open_skirmish(0)
 		"contact":
 			var m: Unit = b.mechs()[0]
 			var sq: Unit = b.field.squads()[0]

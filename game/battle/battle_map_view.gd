@@ -38,6 +38,8 @@ var field: Battlefield
 var routes: Dictionary = {}          # mech id -> Array[Vector2i]
 var selected: Unit = null
 var pending: Array = []              # contact groups waiting to be fought: the map freezes on them
+var flatten_at := Vector2.ZERO       # the handover into a skirmish: one more bleed source, growing
+var flatten_r := 0.0                 # its radius in hexes; 0 is none (tweened by the screen)
 var destinations: Dictionary = {}    # hexes the selected mech may end on
 var scroll_y: float = 0.0            # the map's offset on screen, in pixels
 var scroll_x: float = 0.0
@@ -289,6 +291,8 @@ func _draw() -> void:
 		_map3d.sync()
 		var mat: ShaderMaterial = _composite.material
 		var src := Bleed.sources(field, _origin, HEX_SIZE, _anim_px)
+		if flatten_r > 0.0 and src.size() < Bleed.MAX_SOURCES:
+			src.append(Vector3(flatten_at.x, flatten_at.y, flatten_r * HEX_SIZE))
 		mat.set_shader_parameter("grad", Bleed.gradient(field, _origin, HEX_SIZE))
 		mat.set_shader_parameter("source_count", src.size())
 		src.resize(Bleed.MAX_SOURCES)

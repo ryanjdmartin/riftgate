@@ -115,7 +115,13 @@ band beats three times over the dimmed map (about three seconds), then the conta
 (`_show_contacts` then `_build_contact_panel`: one contact at a time with `MechView3D`
 and foe-sprite portraits, arrows to page, ENGAGE; paging zooms the map to that fight via
 `focus_on` and lights its hexes via `set_highlight`; `Battle.open_skirmish_at`), and
-nothing opens until the player picks; portraits carry no silhouette
+nothing opens until the player picks. ENGAGE plays the handover (`_play_handover`,
+decided 22 September): the map dives to full zoom on the contact while one more bleed
+source grows out of the squad (`BattleMapView.flatten_at` / `flatten_r`) until the ground
+there is flat and bright with the machines still standing in it, a cut to black, and the
+skirmish fades up; the map is put back behind it. Headless adds the skirmish at once.
+The screenshot pose `engage` catches it (`RIFTGATE_SHOT_FRAME` 60 the dive, 125 flat,
+165 the fade-up); portraits carry no silhouette
 (`MechView3D.strip_silhouette`) and foes use their battle sprite. Contact tags name the
 units (`contact_text`), kept on screen when zoomed. The codex is a shared box
 (`game/ui/codex_box.gd`, `CodexBox.open(entry)`), on both screens: double-tap a unit on
@@ -158,8 +164,7 @@ ground level.
    versus "direct"; the Badger's loadout and claw numbers; Aphelion and the Arsenal; CARE's
    voice.
 3. The map, next: ally wrecks left on the map with a death animation (Ryan, 22
-   September; a wrecked machine leaves the field today); the contact transition into the
-   skirmish (proposal in chat, 22 September); an outline for units behind tall columns; joint idle for grounded units once joints exist;
+   September; a wrecked machine leaves the field today); an outline for units behind tall columns; joint idle for grounded units once joints exist;
    the contact transition (camera flattening into the skirmish); whether squads leave
    corruption in their wake; tune every knob with all three chrome colours; delete the
    dead sprite loaders (`Sprites.combat_mech`/`map_mech`, the skirmish's sprite fallback,
