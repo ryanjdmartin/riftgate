@@ -132,8 +132,8 @@ tinted flower with one outline (`_zone`). Every hex tint and every zone outline 
 (`Map3D.set_marks`: a flat hex and edge ribbons per mark, fed from
 `BattleMapView._fill` / `_edges`), so the machines and the wall hide them by standing on
 them, like the grid; headless draws them flat. Tints are heavy on purpose (Ryan, 22
-September: the UX over the ground under them): the zone breathes at about a third, its
-outline near solid, contacts at half and more, the selected machine's reach at a quarter. The scene blends in linear light, so
+September: the UX over the ground under them): the zone breathes at about a third with a
+hairline outline (`Map3D.EDGE_W` 1; the tint does the work), contacts at half and more, the selected machine's reach at a quarter. The scene blends in linear light, so
 `Map3D._scene_alpha` raises a mark's alpha to the 2.2 before it lands: the map view asks
 in screen terms and gets what it asked for. The grid runs every playable hex to its
 last edge; nothing is skipped for the wall (the lines once seen along its top were the

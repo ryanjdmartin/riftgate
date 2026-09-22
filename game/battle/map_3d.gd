@@ -411,7 +411,7 @@ func _ink(grow: float = 1.0) -> StandardMaterial3D:
 ## follow every call, so a mark can breathe.
 var _marks: Dictionary = {}   # hex -> [fill MeshInstance3D or null, line MeshInstance3D or null]
 var _marks_key := ""
-const EDGE_W := 3.5   # the ribbon's width in map pixels
+const EDGE_W := 1.0   # the ribbon's width in map pixels: a hairline, the tint does the work (Ryan, 22 September)
 
 func set_marks(list: Array) -> void:
 	var key := ""
