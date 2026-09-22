@@ -132,9 +132,12 @@ func _build() -> void:
 
 	_header = _tag("", 13, true)
 	_place(_header, Vector2(12, 14), Vector2(300, 28))
-	# TUNE opens the map's live knobs (not a player feature).
-	var tune_btn := HudButton.new("TUNE", _toggle_tuner)
-	_place(tune_btn, Vector2(W - 96, 10), Vector2(84, 34))
+	var menu_btn := HudButton.new("MENU", _open_menu)
+	_place(menu_btn, Vector2(W - 96, 10), Vector2(84, 34))
+	if OS.get_environment("RIFTGATE_TUNE") == "1":
+		# The map's live knobs, a development tool; the player's knobs are in the menu.
+		var tune_btn := HudButton.new("TUNE", _toggle_tuner)
+		_place(tune_btn, Vector2(W - 190, 10), Vector2(84, 34))
 	_sub_label = Hud.label("", 12, Color(Palette.HUD, 0.7), Hud.mono())
 	_place(_sub_label, Vector2(326, 20), Vector2(380, 20))
 
@@ -144,6 +147,7 @@ func _build() -> void:
 	_map.hex_tapped.connect(_on_hex_tapped)
 	_map.hex_double_tapped.connect(_on_hex_double_tapped)
 	_map.unit_held.connect(_on_unit_held)
+	_apply_display()
 	_map.hold_released.connect(_on_hold_released)
 
 	var log_tag := _tag("LOG", 10, true)
@@ -237,11 +241,13 @@ func _tag(text: String, size_px: int, mono: bool) -> HudButton:
 func _refresh() -> void:
 	var f := battle.field
 	var planning := battle.state == Battle.State.PLAN
-	_header.text = "PHASE %02d // GATE %d // RIFT %d/%d" % [f.phase + 1, f.gate_hp, f.rift_pressure, f.rift_pressure_max]
+	# Plain words (Ryan, 22 September): the round, and how long until the rift spawns. The
+	# gate's integrity is on the map, under the gate.
+	_header.text = "ROUND %02d // NEXT SPAWN IN %d" % [f.phase + 1, f.rift_pressure_max - f.rift_pressure]
 	_header.queue_redraw()
 	match battle.state:
 		Battle.State.PLAN:
-			_sub_label.text = "PLAN // %d OF %d ROUTES SET" % [battle.routes.size(), battle.mechs().size()]
+			_sub_label.text = "ORDERS // %d OF %d SET" % [battle.routes.size(), battle.mechs().size()]
 		Battle.State.SKIRMISH:
 			_sub_label.text = "CONTACT"
 		_:
@@ -260,7 +266,7 @@ func _refresh_log() -> void:
 	var count := lines.size() - start
 	var out := ""
 	if count == 0:
-		out = "[color=#%s]> phase %d // %d squads on the field // plot routes, then resolve[/color]" % [
+		out = "[color=#%s]> round %d // %d squads on the field // give orders, then resolve[/color]" % [
 			Color(Palette.HUD, 0.45).to_html(true), battle.field.phase + 1, battle.field.squads().size()]
 	for j in range(start, lines.size()):
 		var age := j - start
@@ -343,6 +349,46 @@ func _on_unit_held(u: Unit) -> void:
 
 func _on_hold_released() -> void:
 	_details.visible = false
+
+
+# ---------------------------------------------------------------- the menu
+
+var _menu: PauseMenu = null
+var _built_hud := ""   # the HUD colour this screen was built with; a change rebuilds it
+
+func _open_menu() -> void:
+	if _menu == null:
+		_menu = PauseMenu.new()
+		_menu.display_changed.connect(func(_key: String, _value: Variant) -> void: _apply_display())
+		_menu.hud_changed.connect(_rebuild)
+		add_child(_menu)
+	_menu.move_to_front()
+	_menu.open()
+
+
+## The player's display knobs onto the map: the compositor's uniforms, the scene's glow,
+## the scan bar, and the pace of moves.
+func _apply_display() -> void:
+	var d := Settings.display
+	_map.tune("brightness", float(d["brightness"]))
+	_map.tune("saturation", float(d["saturation"]))
+	_map.tune("flicker", float(d["glitch"]))
+	if _map._map3d != null:
+		_map._map3d.set_glow(float(d["bloom"]))
+	_map.sweep_on = bool(d["scan"])
+	if _scan != null:
+		_scan.visible = _map.sweep_on
+	BattleMapView.pace = float(d["pace"])
+	_built_hud = Settings.hud
+
+
+## A colour change rebuilds the screen from the battle (the skirmish, if one is open,
+## rebuilds itself and this screen catches up when it returns).
+func _rebuild() -> void:
+	if _skirmish != null:
+		return
+	_build()
+	_refresh()
 
 
 func _toggle_tuner() -> void:
@@ -736,6 +782,8 @@ func _on_skirmish_back() -> void:
 		_skirmish.queue_free()
 		_skirmish = null
 	battle.finish_skirmish()
+	if _built_hud != Settings.hud:
+		_build()   # the colour changed in the skirmish's menu: this screen catches up
 	_after_step()
 
 

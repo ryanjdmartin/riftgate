@@ -27,8 +27,9 @@ func _engage(b: Battle, sq: Unit, m: Unit) -> void:
 
 func test_screen_builds_in_the_plan_phase() -> void:
 	var s := _screen()
-	assert_true(s._header.text.begins_with("PHASE 01"), "phase one in the header")
-	assert_true(s._sub_label.text.begins_with("PLAN"), "plan readout")
+	assert_true(s._header.text.begins_with("ROUND 01"), "round one in the header")
+	assert_true(s._header.text.contains("NEXT SPAWN IN"), "and how long until the rift spawns")
+	assert_true(s._sub_label.text.begins_with("ORDERS"), "orders readout")
 	assert_false(s._resolve_btn.disabled, "resolve available")
 	assert_true(s._clear_btn.disabled, "nothing to clear yet")
 	assert_true(s._map.field == s.battle.field, "map shows the field")
@@ -73,7 +74,7 @@ func test_resolve_runs_a_phase() -> void:
 	s._on_hex_tapped(dest)
 	s._on_resolve()
 	assert_eq(m.pos, dest, "mech moved")
-	assert_true(s._header.text.begins_with("PHASE 02"), "next phase")
+	assert_true(s._header.text.begins_with("ROUND 02"), "next round")
 	assert_eq(s.battle.state, Battle.State.PLAN, "planning")
 	assert_eq(s._skirmish, null, "no contact, no skirmish")
 	s.free()
@@ -208,4 +209,23 @@ func test_the_gate_is_selectable_and_has_an_entry() -> void:
 	assert_true(s._codex.visible, "double-tap opens its entry")
 	assert_eq(s._codex._title.text, "“The Gate”", "titled as the gate")
 	s._codex.close()
+	s.free()
+
+
+func test_the_menu_opens_and_the_settings_persist() -> void:
+	var s := _screen()
+	s._open_menu()
+	assert_true(s._menu.is_open(), "the menu opens")
+	s._menu._show_page("settings")
+	Settings.set_display("pace", 1.5)
+	s._menu.display_changed.emit("pace", 1.5)
+	assert_eq(BattleMapView.pace, 1.5, "the pace setting reaches the map")
+	Settings._loaded = false
+	Settings.display = Settings.DISPLAY_DEFAULTS.duplicate()
+	Settings.apply()
+	assert_eq(float(Settings.display["pace"]), 1.5, "and it comes back from the file")
+	Settings.reset_display()
+	BattleMapView.pace = 1.0
+	s._menu.close()
+	assert_false(s._menu.is_open(), "resume closes it")
 	s.free()

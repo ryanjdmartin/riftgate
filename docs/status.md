@@ -4,7 +4,7 @@ Handoff note for the next session. Replace stale lines; keep it under a screen.
 
 ## As of 22 September 2026
 
-**State.** Everything committed. Tests: 174 tests, 2374 checks, green. Ryan writes
+**State.** Everything committed. Tests: 175 tests, 2379 checks, green. Ryan writes
 `content/*.json` in his own voice (reload after any pass that touches it). The rules are in
 `docs/vocabulary.md` (generated) and every decision in `docs/design-bible.html`; the
 vocabulary carries an `order_of_operations` rule that the engine follows. Chassis ids:
@@ -150,8 +150,18 @@ route can end where an earlier-plotted machine is leaving. The bleed's squad sou
 (`Bleed.sources(..., moving)`). Resolve plays the movement phase (`play_moves`, which first parks every mover at its
 start so nobody blinks to the end: mechs then squads along the paths they
 actually took, `MOVE_SECONDS_PER_HEX`; `Map3D.set_anim` moves the model and turns it to
-its heading) and only then opens the skirmish; headless skips the play. `map_tuner.gd` (TUNE on the battle screen) is
-the live knob panel; nothing it sets persists. The default trace mode is `pulse` (locked
+its heading) and only then opens the skirmish; headless skips the play. `map_tuner.gd` is the development knob panel, behind
+`RIFTGATE_TUNE=1` (Ryan is happy with the look, 22 September); nothing it sets persists.
+The player's knobs are the pause menu's (`game/ui/pause_menu.gd`, MENU on both screens:
+PAUSED with RESUME and SETTINGS; SETTINGS has the display colour and brightness,
+saturation, bloom, glitch, move pace and the scan bar, saved by `Settings.set_display`
+and applied live by `BattleScreen._apply_display`; a colour change rebuilds the screen,
+and the battle screen catches up when a skirmish that changed it returns). The top bar
+reads in plain words: "ROUND n // NEXT SPAWN IN k" and "ORDERS // a OF b SET"; the
+gate's integrity is only on the map, and the rift's pressure is a bar above the rift in
+the scenery rows ("NEXT SPAWN IN k", `_draw_rift_bar`). The frame, both bars and their
+text draw in screen space (`_draw_frame`, `_hud_bar`), so they stay crisp and thin under
+zoom. The default trace mode is `pulse` (locked
 22 September): everything rests as ink and the scan lights it with a long tail
 (`pulse_material`; the trace shader blends rather than adds, so `base` 0 is black), the
 machines with the light silhouette (`TraceLines.silhouette`, the material's stencil
@@ -202,8 +212,11 @@ ground level.
    guns attack and are attacked (proposal in chat, 19 September), then deployable turrets.
 6. Art: enemy art for the eight foes still on sketch grids; the hangar as a model; the
    field itself, if it shows; per-mech repaint in play (`Unit.paint` exists, nothing sets it).
-7. Play it on a phone and tune numbers, map size, squad speeds, Rift Pressure, and the
-   per-frame cost of the map.
+7. Play it on a phone and tune numbers, map size, squad speeds, Rift Pressure. The map's
+   per-frame cost on the Mac (`tools/perf_probe.gd`, 22 September): about 8.4 ms a frame
+   at 720x1280 with vsync off, 5130 draw calls and 6168 objects at zoom 1 (1610 and 2648
+   at full zoom): every prop and every trace is its own instance. If a phone drops
+   frames, batch the props and traces per column into MultiMeshes before anything else.
 
 **Known rough edges.** Codex stat labels cut off on Ryan's device once, not reproduced.
 Routes are tap-to-destination only.

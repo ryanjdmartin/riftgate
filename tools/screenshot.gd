@@ -104,6 +104,11 @@ func _apply_battle_pose() -> void:
 			s._map.queue_redraw()
 		"tune":
 			s._toggle_tuner()
+		"menu":
+			s._open_menu()
+		"settings":
+			s._open_menu()
+			s._menu._show_page("settings")
 		"predict":
 			# A squad parked beside the first mech and a route plotted: the plan's contact
 			# and block tags before resolve.

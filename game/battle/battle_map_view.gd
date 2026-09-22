@@ -308,30 +308,6 @@ func _draw() -> void:
 		# Everything from here to the edge tags is drawn in map space under the zoom and
 		# scroll. The grid itself is in the scene, lit, so raised ground hides it.
 		draw_set_transform(Vector2(scroll_x, scroll_y), 0.0, Vector2(zoom, zoom))
-		if frame_alpha > 0.0:
-			# The frame: the field's two boundary lines in the display's light, a tick on
-			# every row's centre with the row's number, and a sector readout at each end, so
-			# the playable area has a viewfinder's edge and the blur runs into it.
-			var fx := _frame_x()
-			var left := fx.x
-			var right := fx.y
-			var top := _origin.y - HEX_SIZE
-			var bottom := _origin.y + Hex.to_pixel(map.gate, HEX_SIZE).y - HEX_SIZE * 1.5 * (BattleMap.GATE_ROWS - 0.5)
-			var fc := Color(hud, frame_alpha)
-			var font := Hud.mono()
-			for x in [left, right]:
-				var dir := 1.0 if x == left else -1.0
-				draw_line(Vector2(x, top), Vector2(x, bottom), fc, 2.0)
-				for row in range(map.height - BattleMap.GATE_ROWS):
-					var y := _origin.y + HEX_SIZE * 1.5 * row
-					draw_line(Vector2(x, y), Vector2(x + 10.0 * dir, y), fc, 2.0)
-					var label := "%02d" % (map.height - BattleMap.GATE_ROWS - row)   # counted up from the gate
-					var lx: float = (x - 30.0) if dir > 0.0 else (x + 8.0)
-					draw_string(font, Vector2(lx, y + 4.0), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, fc)
-				draw_line(Vector2(x, top), Vector2(x + 18.0 * dir, top), fc, 2.0)
-				draw_line(Vector2(x, bottom), Vector2(x + 18.0 * dir, bottom), fc, 2.0)
-			draw_string(font, Vector2(left + 6.0, top - 6.0), "SEC %02d // GRID %dx%d // RECON" % [field.map.map_seed % 100, map.width, map.height - BattleMap.GATE_ROWS], HORIZONTAL_ALIGNMENT_LEFT, -1, 11, fc)
-			draw_string(font, Vector2(left + 6.0, bottom + 14.0), "CARE // PROJECTOR LINE", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, fc)
 	else:
 		draw_set_transform(Vector2(scroll_x, scroll_y), 0.0, Vector2(zoom, zoom))
 		# Headless: the painted map, so the view still lays out and the structures still show.
@@ -454,8 +430,14 @@ func _draw() -> void:
 		var c := center(selected.pos)
 		Hud.brackets(self, Rect2(c - Vector2(HEX_SIZE, HEX_SIZE) * 0.85, Vector2(HEX_SIZE, HEX_SIZE) * 1.7), 12.0, hud, 2.0)
 
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)   # from here, screen space
+	# The HUD's own marks (the frame, the bars, their text) are drawn in screen space at
+	# their positions under the zoom, so they stay crisp and their lines stay thin however
+	# far the reconstruction is zoomed (Ryan, 22 September).
+	if _map3d != null and frame_alpha > 0.0:
+		_draw_frame(hud)
 	_draw_gate_bar()
-	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)   # the edge tags live in screen space
+	_draw_rift_bar()
 	_draw_tags()
 	if _map3d != null:
 		_map3d.set_marks(_ground_marks)
@@ -466,26 +448,66 @@ func _draw() -> void:
 	Hud.scanlines(self, Rect2(Vector2.ZERO, size))
 
 
+## The frame: the field's two boundary lines in the display's light, a tick on every
+## row's centre with the row's number, and a sector readout at each end, so the playable
+## area has a viewfinder's edge and the blur runs into it. Screen space.
+func _draw_frame(hud: Color) -> void:
+	var map := field.map
+	var fx := _frame_x()
+	var top := _origin.y - HEX_SIZE
+	var bottom := _origin.y + Hex.to_pixel(map.gate, HEX_SIZE).y - HEX_SIZE * 1.5 * (BattleMap.GATE_ROWS - 0.5)
+	var fc := Color(hud, frame_alpha)
+	var font := Hud.mono()
+	for x in [fx.x, fx.y]:
+		var dir := 1.0 if x == fx.x else -1.0
+		var sx := to_screen(Vector2(x, 0)).x
+		draw_line(Vector2(sx, to_screen(Vector2(0, top)).y), Vector2(sx, to_screen(Vector2(0, bottom)).y), fc, 2.0)
+		for row in range(map.height - BattleMap.GATE_ROWS):
+			var y := to_screen(Vector2(0, _origin.y + HEX_SIZE * 1.5 * row)).y
+			draw_line(Vector2(sx, y), Vector2(sx + 10.0 * dir, y), fc, 2.0)
+			var label := "%02d" % (map.height - BattleMap.GATE_ROWS - row)   # counted up from the gate
+			var lx: float = (sx - 30.0) if dir > 0.0 else (sx + 8.0)
+			draw_string(font, Vector2(lx, y + 4.0), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, fc)
+		for y in [top, bottom]:
+			var sy := to_screen(Vector2(0, y)).y
+			draw_line(Vector2(sx, sy), Vector2(sx + 18.0 * dir, sy), fc, 2.0)
+	var left := to_screen(Vector2(fx.x, 0)).x
+	draw_string(font, Vector2(left + 6.0, to_screen(Vector2(0, top)).y - 6.0), "SEC %02d // GRID %dx%d // RECON" % [map.map_seed % 100, map.width, map.height - BattleMap.GATE_ROWS], HORIZONTAL_ALIGNMENT_LEFT, -1, 11, fc)
+	draw_string(font, Vector2(left + 6.0, to_screen(Vector2(0, bottom)).y + 14.0), "CARE // PROJECTOR LINE", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, fc)
+
+
+## A HUD bar in screen space: a backing, a track, a fill, a rim, a label above.
+func _hud_bar(map_pos: Vector2, map_w: float, frac: float, col: Color, label: String, a: float = 1.0) -> Rect2:
+	var p := to_screen(map_pos)
+	var rect := Rect2(p.x - map_w * zoom * 0.5, p.y, map_w * zoom, 12.0)
+	draw_rect(rect.grow(3.0), Color(Palette.BG, 0.85), true)
+	draw_rect(rect, Color(col, 0.18 * a), true)
+	draw_rect(Rect2(rect.position, Vector2(rect.size.x * frac, rect.size.y)), Color(col, a), true)
+	draw_rect(rect.grow(3.0), Color(col, 0.7 * a), false, 1.5)
+	draw_string(Hud.mono(), Vector2(rect.position.x, rect.position.y - 5.0), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color(col, a))
+	return rect
+
+
 ## The gate's integrity as a true bar (Ryan, 22 September), on the wall's face under the
 ## gate, always; brighter while the gate is selected.
 var gate_selected := false
 
 func _draw_gate_bar() -> void:
 	var map := field.map
-	var gx := (_origin + Hex.to_pixel(map.gate, HEX_SIZE)).x
-	var top := _origin.y + Hex.to_pixel(map.gate, HEX_SIZE).y - HEX_SIZE * 1.5 * (BattleMap.GATE_ROWS - 0.5)
-	var w := HEX_SIZE * 3.2
-	var rect := Rect2(gx - w * 0.5, top + 26.0, w, 12.0)
+	var at := _origin + Hex.to_pixel(map.gate, HEX_SIZE) + Vector2(0, -HEX_SIZE * 1.5 * (BattleMap.GATE_ROWS - 0.5) + 26.0)
 	var frac := float(field.gate_hp) / maxf(1.0, float(field.gate_hp_max))
 	var col := Palette.HUD if frac > 0.34 else Palette.ENEMY
-	var a := 1.0 if gate_selected else 0.8
-	draw_rect(rect.grow(3.0), Color(Palette.BG, 0.85), true)
-	draw_rect(rect, Color(col, 0.18 * a), true)
-	draw_rect(Rect2(rect.position, Vector2(rect.size.x * frac, rect.size.y)), Color(col, a), true)
-	draw_rect(rect.grow(3.0), Color(col, 0.7 * a), false, 1.5)
-	draw_string(Hud.mono(), Vector2(rect.position.x, rect.position.y - 5.0), "GATE %d/%d" % [field.gate_hp, field.gate_hp_max], HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color(col, a))
+	var rect := _hud_bar(at, HEX_SIZE * 3.2, frac, col, "GATE %d/%d" % [field.gate_hp, field.gate_hp_max], 1.0 if gate_selected else 0.8)
 	if gate_selected:
 		Hud.brackets(self, rect.grow(10.0), 8.0, col, 2.0)
+
+
+## The rift's pressure as a bar toward the next spawn (Ryan, 22 September), above the rift
+## in the scenery rows, where the boss standing in front of the rift never covers it.
+func _draw_rift_bar() -> void:
+	var at := _origin + Hex.to_pixel(field.map.rift, HEX_SIZE) + Vector2(0, -HEX_SIZE * 1.9)
+	var frac := float(field.rift_pressure) / maxf(1.0, float(field.rift_pressure_max))
+	_hud_bar(at, HEX_SIZE * 3.2, frac, RIFT_ART, "NEXT SPAWN IN %d" % (field.rift_pressure_max - field.rift_pressure))
 
 
 ## The one scan bar crosses the whole screen on the top layer (the battle screen draws it);
@@ -696,6 +718,7 @@ func _preview() -> Dictionary:
 # ---------------------------------------------------------------- the movement phase
 
 const MOVE_SECONDS_PER_HEX := 0.22   # the fastest anything ever moves (Ryan, 22 September)
+static var pace := 1.0               # the player's setting: seconds per hex are divided by it
 const MOVE_REF_SPEED := 5.0          # a unit this quick moves at that pace; slower ones slower
 var _anim: Dictionary = {}      # unit id -> {path: Array[Vector2i], t: float}
 var _anim_queue: Array = []     # [[moves], ...] phases still to play: mechs, then squads
@@ -745,7 +768,7 @@ func _advance_anim(delta: float) -> void:
 	for uid in _anim.keys():
 		var a: Dictionary = _anim[uid]
 		var path: Array = a["path"]
-		a["t"] += delta / (MOVE_SECONDS_PER_HEX * maxf(1.0, MOVE_REF_SPEED / maxf(1.0, float(a["speed"]))))
+		a["t"] += delta * pace / (MOVE_SECONDS_PER_HEX * maxf(1.0, MOVE_REF_SPEED / maxf(1.0, float(a["speed"]))))
 		var last := float(path.size() - 1)
 		if a["t"] >= last:
 			finished.append(uid)

@@ -210,6 +210,8 @@ func _build() -> void:
 	_place(_sub_label, Vector2(226, 20), Vector2(380, 20))
 	# The intent eye sits right under the formation, at the right edge: toggled often, so it
 	# stays within a thumb's reach of the foes it concerns.
+	var menu_btn := HudButton.new("MENU", _open_menu)
+	_place(menu_btn, Vector2(W - 96, 10), Vector2(84, 34))
 	_eye = HudButton.new("")
 	_eye.glyph = "eye"
 	_eye.slant_px = 0.0
@@ -946,6 +948,22 @@ func _open_codex(entry: Dictionary) -> void:
 
 func _close_codex() -> void:
 	_codex.close()
+
+
+var _menu: PauseMenu = null
+
+func _open_menu() -> void:
+	if _menu == null:
+		_menu = PauseMenu.new()
+		_menu.display_changed.connect(func(key: String, value: Variant) -> void:
+			if key == "pace":
+				BattleMapView.pace = float(value))
+		_menu.hud_changed.connect(func() -> void:
+			_build()
+			_refresh())
+		add_child(_menu)
+	_menu.move_to_front()
+	_menu.open()
 
 
 func _toggle_all_arrows(on: bool) -> void:

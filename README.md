@@ -37,7 +37,8 @@ and open question from the design sessions.
 - `tests/` — headless tests. `run_tests.gd` discovers `test_*.gd` files and runs every
   `test_` method, including the content validator and a headless drive of the skirmish screen.
 - `tools/` — `export_vocabulary.gd` regenerates `docs/vocabulary.md`; `screenshot.gd` renders a
-  scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `lowforge/` builds the
+  scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `perf_probe.gd` measures
+  the battle map's frame cost; `lowforge/` builds the
   ally units by code from a brief (`models_low.py`, one function per chassis id) in the
   mid-nineties 3D register with generated tiles; `sheet_export.py` exports the enemy grids
   in `docs/sprites-enemies.html` to `art/foes/`; `foeforge/` generates enemy candidates with
@@ -75,6 +76,7 @@ godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger sparrowhawk clydesdale
 godot --headless --path . --import
 godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva hero.png front 480 480
+godot --path . --resolution 360x640 --disable-vsync -s tools/perf_probe.gd     # the battle map's ms per frame and draw calls, at zoom 1 and full zoom
 
 # export the enemy sprites from the grids in docs/sprites-enemies.html to art/foes, then re-import
 tools/spriter/.venv/bin/python tools/sheet_export.py
