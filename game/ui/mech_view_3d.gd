@@ -124,15 +124,26 @@ static func chrome_sky() -> Sky:
 ## north-south and the map's and skirmish's three-quarter pose never does (Ryan, 22
 ## September). Its cull mask keeps it off the matte makers; chrome shows no diffuse, so
 ## on Kestrel and the Arsenal it is pure highlight. A child of the camera.
-static func sheen_light() -> DirectionalLight3D:
+const SHEEN := 3.6            # hot on purpose: on a phone an effect has to be exaggerated to be obvious (Ryan, 22 September)
+const SHEEN_SKIRMISH := 5.4   # the skirmish's rear pose shows fewer facets to the light; hotter to match the codex (Ryan)
+
+
+static func sheen_light(energy: float = SHEEN) -> DirectionalLight3D:
 	var l := DirectionalLight3D.new()
 	l.name = "Sheen"
-	l.light_energy = 3.6   # hot on purpose: on a phone an effect has to be exaggerated to be obvious (Ryan, 22 September)
+	l.light_energy = energy
 	l.light_specular = 1.0
 	l.shadow_enabled = false
 	l.light_cull_mask = 1 << (SHEEN_LAYER - 1)
 	l.rotation_degrees = Vector3(-50.0, 0.0, 0.0)   # from well above the camera, so the spine's upper strakes catch it at the skirmish's rear pose too
 	return l
+
+
+## How hot this view's sheen is; the skirmish asks for more than the codex.
+func set_sheen(energy: float) -> void:
+	var l := _camera.get_node_or_null("Sheen")
+	if l is DirectionalLight3D:
+		(l as DirectionalLight3D).light_energy = energy
 
 
 static func has_model(chassis_id: String) -> bool:
