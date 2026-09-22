@@ -50,6 +50,8 @@ const GLOSS := {"minerva": 0.35, "kestrel": 1.0, "wainwright_sutler": 0.15, "aph
 # September). Kestrel is chrome and shines like it, the signature; Minerva and the
 # wagon-builders are strict matte; Aphelion's white has a pearl sheen (gloss without
 # metal, so the white stays white); the Arsenal is black chrome, a dark mirror.
+# Glossy makers' meshes also sit on this render layer, which only the sheen light lights.
+const SHEEN_LAYER := 20
 const FINISH := {"minerva": [0.92, 0.0, 0.2], "kestrel": [0.15, 1.0, 1.0], "wainwright_sutler": [0.96, 0.0, 0.15], "aphelion": [0.3, 0.3, 0.9], "arsenal": [0.2, 0.9, 1.0]}
 const LIVERY := {
 	# The livery tones, after the metals decided with the ally art (21 September; the
@@ -114,6 +116,23 @@ static func chrome_sky() -> Sky:
 	sky.sky_material = mat
 	sky.radiance_size = Sky.RADIANCE_SIZE_128
 	return sky
+
+
+## The sheen: a light that rides with the camera, from a little above it, so a glossy
+## facet facing the viewer carries a highlight at every pose. The sun's highlight only
+## lands when a facet's normal bisects sun and camera, which the spin passes through near
+## north-south and the map's and skirmish's three-quarter pose never does (Ryan, 22
+## September). Its cull mask keeps it off the matte makers; chrome shows no diffuse, so
+## on Kestrel and the Arsenal it is pure highlight. A child of the camera.
+static func sheen_light() -> DirectionalLight3D:
+	var l := DirectionalLight3D.new()
+	l.name = "Sheen"
+	l.light_energy = 1.6
+	l.light_specular = 1.0
+	l.shadow_enabled = false
+	l.light_cull_mask = 1 << (SHEEN_LAYER - 1)
+	l.rotation_degrees = Vector3(-28.0, 0.0, 0.0)   # from above the camera, down the view
+	return l
 
 
 static func has_model(chassis_id: String) -> bool:
@@ -268,6 +287,7 @@ func _setup(chassis_id: String, maker: String) -> void:
 	_camera.projection = Camera3D.PROJECTION_ORTHOGONAL
 	_camera.keep_aspect = Camera3D.KEEP_HEIGHT
 	_inner.add_child(_camera)
+	_camera.add_child(sheen_light())
 	# Framing needs global transforms, so it waits for the tree (see _ready).
 
 	if nested:
@@ -423,6 +443,8 @@ static func toon(node: Node, maker: String, look: String, paint_arg: Dictionary 
 				var tm: StandardMaterial3D = (src as StandardMaterial3D).duplicate()
 				tm.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 				var finish: Array = FINISH.get(maker, FINISH["minerva"])
+				if float(finish[1]) >= 0.25:
+					mi.layers |= 1 << (SHEEN_LAYER - 1)   # the sheen light finds it
 				tm.roughness = float(finish[0])
 				tm.metallic = float(finish[1])
 				tm.metallic_specular = float(finish[2])

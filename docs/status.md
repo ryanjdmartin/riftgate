@@ -89,8 +89,15 @@ map, pale blue down to a white horizon over cool dark ground, both gradients wid
 Kestrel keeps a little roughness (0.22): under the orthographic camera a flat facet takes
 one reflection sample, so a sharp sky made neighbouring facets snap between sky and
 ground as the model turned ("random faces glitching", Ryan); soft and wide, they shade
-continuously. `hero_shot.gd` takes a yaw in degrees as well as front/rear, for checking
-a finish around the spin. The engine's `LIVERY` ramps
+continuously. The sun's highlight only lands when a facet's normal bisects sun and
+camera, which the spin passes near north-south and the map's and skirmish's three-quarter
+pose never does (Ryan, 22 September), so each scene's camera carries a sheen light
+(`MechView3D.sheen_light()`, a child of the camera, from a little above it, specular 1,
+no shadow) whose cull mask is `SHEEN_LAYER` (20); `toon` puts a glossy maker's meshes
+(metallic 0.25 or more: Kestrel, Aphelion, the Arsenal) on that layer and `Map3D._to_units_layer`
+ORs its mask in rather than assigning, so the bit survives. Chrome shows no diffuse,
+so on Kestrel it is pure highlight; the matte makers never see it. `hero_shot.gd`
+takes a yaw in degrees as well as front/rear, for checking a finish around the spin. The engine's `LIVERY` ramps
 (untextured models only) follow the decided metals now. Badger is Ryan's to tweak in
 Blender (joints and pins are his next art job).
 

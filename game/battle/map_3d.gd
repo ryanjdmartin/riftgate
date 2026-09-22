@@ -158,9 +158,9 @@ func get_units_texture() -> Texture2D:
 func _to_units_layer(n: Node) -> void:
 	var mask := 1 | (1 << (UNITS_LAYER - 1))
 	if n is VisualInstance3D:
-		(n as VisualInstance3D).layers = mask
+		(n as VisualInstance3D).layers |= mask   # keeps the sheen layer a glossy maker joined
 	for c in n.find_children("*", "VisualInstance3D", true, false):
-		(c as VisualInstance3D).layers = mask
+		(c as VisualInstance3D).layers |= mask
 
 
 ## One sun from the north-west, casting shadows, and a little ambient; the mechs and
@@ -870,6 +870,7 @@ func _build_camera() -> void:
 	_camera.near = 1.0
 	_camera.far = 4000.0
 	add_child(_camera)
+	_camera.add_child(MechView3D.sheen_light())   # one world: the units' camera shares it
 	_aim()
 
 
