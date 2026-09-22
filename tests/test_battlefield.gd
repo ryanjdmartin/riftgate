@@ -220,3 +220,34 @@ func test_pressure_spawns_squad_at_rift() -> void:
 	assert_eq(f.squads()[0].foe_id, "ghoul", "spawned from the spawn table")
 	assert_eq(f.rift_pressure, 0, "clock reset")
 	assert_true(Hex.distance(f.squads()[0].pos, f.map.rift) <= 1, "spawned at or beside the rift")
+
+
+func test_preview_matches_resolve_and_leaves_nothing_behind() -> void:
+	# The plan's preview is the resolver run dry: same ends, same contacts, same blocks,
+	# and afterwards every unit is where it was.
+	for s in range(1, 12):
+		var b := Battle.new(s)
+		b.setup([Unit.mech(1, "A", Vector2i.ZERO, 3), Unit.mech(2, "B", Vector2i.ZERO, 3)], "undead")
+		var f := b.field
+		var routes := {}
+		for m in f.mechs():
+			var dests: Array = f.reachable(m).keys()
+			if not dests.is_empty():
+				routes[m.id] = f.map.find_path(m.pos, dests[dests.size() / 2], m.traits)
+		var before := {}
+		for u in f.units:
+			before[u.id] = u.pos
+		var pv := f.preview_phase(routes)
+		for u in f.units:
+			assert_eq(u.pos, before[u.id], "preview moved nobody (seed %d)" % s)
+		var hp := f.gate_hp
+		var res := f.resolve_phase(routes)
+		var ends: Dictionary = pv["ends"]
+		for u in f.units:
+			if ends.has(u.id):
+				assert_eq(u.pos, ends[u.id], "%s ends where the preview said (seed %d)" % [u.display_name, s])
+		var pres: Battlefield.PhaseResult = pv["result"]
+		assert_eq(pres.blocked, res.blocked, "same blocks (seed %d)" % s)
+		assert_eq(pres.rejected, res.rejected, "same rejections (seed %d)" % s)
+		assert_eq(pres.skirmishes.size(), res.skirmishes.size(), "same number of contacts (seed %d)" % s)
+		assert_eq(hp - f.gate_hp, pres.gate_damage, "the preview's gate damage is the real one (seed %d)" % s)

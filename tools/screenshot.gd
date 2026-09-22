@@ -92,6 +92,20 @@ func _apply_battle_pose() -> void:
 			s._map.queue_redraw()
 		"tune":
 			s._toggle_tuner()
+		"predict":
+			# A squad parked beside the first mech and a route plotted: the plan's contact
+			# and block tags before resolve.
+			var m: Unit = b.mechs()[0]
+			var sq: Unit = b.field.squads()[0]
+			for n in Hex.neighbors(m.pos):
+				if b.field.can_stand(sq, n):
+					sq.pos = n
+					break
+			b.field.compute_intents()
+			s._on_hex_tapped(b.mechs()[1].pos)
+			var dests: Array = s._map.destinations.keys()
+			if not dests.is_empty():
+				s._on_hex_tapped(dests[0])
 		"zoom", "zoomlast":
 			# Zoomed in twice on the first (or last) mech, panned so it sits mid-screen.
 			s._map.zoom_at(s._map.size * 0.5, 2.4)

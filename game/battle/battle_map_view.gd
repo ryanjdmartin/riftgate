@@ -375,16 +375,29 @@ func _draw() -> void:
 			prev = p
 		Hud.stroke_poly(self, Hex.corners(prev, HEX_SIZE * 0.45), hud, 2.0)
 
-	# Where the plan, as it stands, brings a machine and a squad together after both have
-	# moved: a contact tag before the player locks in (Ryan, 21 September). An estimate,
-	# since a body block can stop a squad short; the resolve is the truth.
+	# The plan as it will resolve, from the resolver itself run dry (Ryan, 21 September:
+	# never ambiguous): every contact group, every squad stopped by a body block, every
+	# route that will be rejected.
 	if _anim.is_empty():
-		for c in _predicted_contacts():
-			var a := center(c[0])
-			var b := center(c[1])
-			Hud.stroke_poly(self, Hex.corners(a, HEX_SIZE - 5.0), Color(Palette.ENEMY, 0.8), 2.0)
-			Hud.stroke_poly(self, Hex.corners(b, HEX_SIZE - 5.0), Color(Palette.ENEMY, 0.8), 2.0)
-			_plaque((a + b) * 0.5 + Vector2(0.0, -HEX_SIZE * 0.9), "CONTACT", Palette.ENEMY, 2.0)
+		var pv := _preview()
+		var res: Battlefield.PhaseResult = pv["result"]
+		var ends: Dictionary = pv["ends"]
+		for group in res.skirmishes:
+			var mid := Vector2.ZERO
+			for u in group:
+				var c := center(ends[u.id])
+				mid += c
+				Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 5.0), Color(Palette.ENEMY, 0.85), 2.0)
+			mid /= float(group.size())
+			_plaque(mid + Vector2(0.0, -HEX_SIZE * 0.9), "CONTACT", Palette.ENEMY, 2.0)
+		for sid in res.blocked:
+			var sq := field.unit_by_id(sid)
+			if sq != null:
+				_plaque(center(ends[sid]) + Vector2(0.0, HEX_SIZE * 0.7), "BLOCKED", Palette.MUTED, 1.5)
+		for mid_id in res.rejected:
+			var m := field.unit_by_id(mid_id)
+			if m != null:
+				_plaque(center(m.pos) + Vector2(0.0, HEX_SIZE * 0.7), "NO ROUTE", Palette.ENEMY, 1.5)
 
 	for u in field.units:
 		_draw_unit(u)
@@ -453,24 +466,16 @@ func _draw_tags() -> void:
 		draw_colored_polygon(PackedVector2Array([Vector2(mid - 6.0, edge_y), Vector2(mid + 6.0, edge_y), Vector2(mid, edge_y + 6.0 * dir)]), border)
 
 
-## Pairs of [mech hex, squad hex] that end adjacent if every route and intent plays out.
-func _predicted_contacts() -> Array:
-	var out: Array = []
-	var mech_at: Dictionary = {}
-	for m in field.mechs():
-		var route: Array = routes.get(m.id, [])
-		mech_at[m] = route[route.size() - 1] if not route.is_empty() else m.pos
-	for sq in field.squads():
-		var path: Array = field.intents.get(sq.id, [])
-		var end: Vector2i = sq.pos
-		for step in path:
-			if field.map.gate_hexes.has(step):
-				break   # a strike on the gate, not a move
-			end = step
-		for m in mech_at.keys():
-			if Hex.distance(mech_at[m], end) <= 1:
-				out.append([mech_at[m], end])
-	return out
+## The dry run of the phase, redone only when the plan changes.
+var _preview_key := ""
+var _preview_cache: Dictionary = {}
+
+func _preview() -> Dictionary:
+	var key := "%d|%s|%s" % [field.phase, str(routes), str(field.intents)]
+	if key != _preview_key:
+		_preview_key = key
+		_preview_cache = field.preview_phase(routes)
+	return _preview_cache
 
 
 # ---------------------------------------------------------------- the movement phase

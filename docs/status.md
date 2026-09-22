@@ -4,7 +4,7 @@ Handoff note for the next session. Replace stale lines; keep it under a screen.
 
 ## As of 22 September 2026
 
-**State.** Everything committed. Tests: 152 tests, 2045 checks, green. Ryan writes
+**State.** Everything committed. Tests: 153 tests, 2221 checks, green. Ryan writes
 `content/*.json` in his own voice (reload after any pass that touches it). The rules are in
 `docs/vocabulary.md` (generated) and every decision in `docs/design-bible.html`; the
 vocabulary carries an `order_of_operations` rule that the engine follows. Chassis ids:
@@ -57,8 +57,11 @@ row ticks and numbers counted up from the gate, a sector readout; `frame_alpha`)
 under one transform (zoom by wheel or pinch, pan both ways); `center` and `hex_at` follow
 the terrain's lift; tap empty ground for its readout, tap an ally to select and read it,
 tap an enemy for its label, double-tap is wired for the codex; the readout is docked in
-its own strip and a tap on it dismisses it. Before a plan is locked the map tags predicted
-contacts (`_predicted_contacts`: a route end and an intent end adjacent; an estimate).
+its own strip and a tap on it dismisses it. Before a plan is locked the map shows the phase as it will resolve
+(`Battlefield.preview_phase`: the resolver's own movement run dry and every unit put
+back; the map view caches it per plan): contact groups, squads stopped by a body block
+(BLOCKED), routes that will be rejected (NO ROUTE). Order matters twice and `_move_all`
+is where it is decided: mechs in route order, then squads in field order.
 Resolve plays the movement phase (`play_moves`: mechs then squads along the paths they
 actually took, `MOVE_SECONDS_PER_HEX`; `Map3D.set_anim` moves the model and turns it to
 its heading) and only then opens the skirmish; headless skips the play. `map_tuner.gd` (TUNE on the battle screen) is

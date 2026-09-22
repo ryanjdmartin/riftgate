@@ -241,6 +241,39 @@ func _affordable(sq: Unit, path: Array[Vector2i]) -> Array[Vector2i]:
 func resolve_phase(routes: Dictionary) -> PhaseResult:
 	var result := PhaseResult.new()
 	phase += 1
+	_move_all(routes, result, false)
+	result.spawned = tick_pressure(1)
+	result.skirmishes = detect_skirmishes()
+	return result
+
+
+## The phase as it would resolve right now, without resolving it (Ryan, 21 September: the
+## plan must never be ambiguous). Runs the same movement as `resolve_phase`, dry, then puts
+## every unit back. Returns {"result": PhaseResult, "ends": {unit id: hex}}. Only the
+## pressure tick and its spawn are left out: a squad that spawns at the rift this phase
+## cannot be in a contact, since nothing stands at the rift.
+func preview_phase(routes: Dictionary) -> Dictionary:
+	var saved: Dictionary = {}
+	for u in units:
+		saved[u.id] = [u.pos, u.facing]
+	var result := PhaseResult.new()
+	_move_all(routes, result, true)
+	result.skirmishes = detect_skirmishes()
+	var ends: Dictionary = {}
+	for u in units:
+		ends[u.id] = u.pos
+	for u in units:
+		u.pos = saved[u.id][0]
+		u.facing = saved[u.id][1]
+	return {"result": result, "ends": ends}
+
+
+## The movement of one phase: the mechs' routes in the order given, then every squad in
+## field order. Order matters twice, and this is the one place it is decided: a route
+## through a hex another mech is leaving is rejected unless that mech went first, and a
+## squad stops short of a hex another squad has already taken. `dry` skips the gate
+## damage and the log.
+func _move_all(routes: Dictionary, result: PhaseResult, dry: bool) -> void:
 	for uid in routes.keys():
 		var u := unit_by_id(uid)
 		if u == null or not u.is_player() or u.is_static():
@@ -250,12 +283,10 @@ func resolve_phase(routes: Dictionary) -> PhaseResult:
 			result.moved.append(uid)
 		else:
 			result.rejected.append(uid)
-			log.append("%s: route rejected" % u.display_name)
+			if not dry:
+				log.append("%s: route rejected" % u.display_name)
 	for sq in squads():
-		_execute_squad(sq, result)
-	result.spawned = tick_pressure(1)
-	result.skirmishes = detect_skirmishes()
-	return result
+		_execute_squad(sq, result, dry)
 
 
 func _apply_route(u: Unit, route: Array) -> bool:
@@ -283,7 +314,7 @@ func _direction_index(from: Vector2i, to: Vector2i) -> int:
 	return 0
 
 
-func _execute_squad(sq: Unit, result: PhaseResult) -> void:
+func _execute_squad(sq: Unit, result: PhaseResult, dry: bool = false) -> void:
 	var path: Array = intents.get(sq.id, [])
 	var budget := sq.movespeed
 	var landed := sq.pos
@@ -292,18 +323,21 @@ func _execute_squad(sq: Unit, result: PhaseResult) -> void:
 		var s: Vector2i = step
 		if map.gate_hexes.has(s):
 			var dmg := maxi(10, (sq.strength * 10) / 3)
-			gate_hp = maxi(0, gate_hp - dmg)
 			result.gate_damage += dmg
-			log.append("%s hits the gate for %d" % [sq.display_name, dmg])
+			if not dry:
+				gate_hp = maxi(0, gate_hp - dmg)
+				log.append("%s hits the gate for %d" % [sq.display_name, dmg])
 			break
 		var occ := unit_at(s)
 		if occ != null and occ != sq and (occ.can_block() or occ.is_enemy()):
 			result.blocked.append(sq.id)
-			log.append("%s blocked at %s by %s" % [sq.display_name, str(s), occ.display_name])
+			if not dry:
+				log.append("%s blocked at %s by %s" % [sq.display_name, str(s), occ.display_name])
 			break
 		if sq.is_multi_hex() and not can_stand(sq, s, true):
 			result.blocked.append(sq.id)
-			log.append("%s cannot fit at %s" % [sq.display_name, str(s)])
+			if not dry:
+				log.append("%s cannot fit at %s" % [sq.display_name, str(s)])
 			break
 		var c := BattleMap.move_cost(map.terrain[s], sq.traits)
 		if c > budget:
