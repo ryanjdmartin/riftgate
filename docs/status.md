@@ -187,8 +187,10 @@ ground level.
 **Open, in the order I would take them.**
 
 1. Ryan: Badger tweaks in Blender, joints and pins; then `forge.py export badger`, and
-   tune the strike swing. The Clydesdale has a first pass (22 September, from the
-   content's fantasy, no brief from Ryan yet): an ironclad wagon body on four columnar
+   tune the strike swing. The Badger's shoulder guns now sit on a bevelled pauldron over
+   each cuff and hinge, not outboard (Ryan, 22 September). The Clydesdale has a first
+   pass (22 September, from the content's fantasy; Ryan: "a pretty excellent read", not
+   much to improve): an ironclad wagon body on four columnar
    legs, a low head on a neck, a wagon bed in W&S brown carrying the loadout (two
    autogun turrets, the lance along the spine, the mortar aft, ablative slabs on the
    flanks, the heat sink at the tail), bone skirts over the hooves; six `hp_` pins, no

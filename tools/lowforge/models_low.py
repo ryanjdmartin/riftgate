@@ -48,8 +48,9 @@ def badger(b):
     b.box(-14.0, -10.0, -26.0, -18.0, 46.0, 54.0, "steel.dark", "exhaust")
     b.box(-22.5, -19.5, -20.0, 0.0, 22.0, 44.0, "steel.ladder", "ladder")
     # Booms: a compact cuff on each flank at mid-length holding a big hinge cylinder (like
-    # the elbow), a cannon flanking it outboard, upper and lower booms of one width, the
-    # forearms dropping to the ground ahead of the cockpit.
+    # the elbow), a bevelled armour plate over cuff and hinge with the shoulder gun on top
+    # of it (Ryan, 22 September: no guns hanging outboard), upper and lower booms of one
+    # width, the forearms dropping to the ground ahead of the cockpit.
     ARM = 16.0
     for s, kind in ((-1.0, "claw"), (1.0, "gun")):
         px = s * 22.0
@@ -58,11 +59,14 @@ def badger(b):
         b.box(px - 6.0, px + 6.0, -14.0, 2.0, 30.0, 50.0, "steel.panel", "cuff")
         hinge_x = px + s * 10.0
         b.prism("x", hinge_x, -6.0, 40.0, 11.0, 16.0, "steel.dark", 6, "hinge")
-        # The shoulder cannon, outboard of the hinge.
-        cx = hinge_x + s * 12.0
-        b.box(cx - 3.5, cx + 3.5, -12.0, 0.0, 36.0, 44.0, "steel.plate", "cannon_mount")
-        b.prism("y", cx, 12.0, 40.0, 2.6, 26.0, "steel.dark", 6, "cannon")
-        b.pin("hp_%d" % (3 if s < 0 else 4), (cx, 0.0, 40.0))
+        # The pauldron: a plate over the whole shoulder, wider at its foot, and the gun
+        # mounted on it.
+        cx = px + s * 5.5
+        _rings(b, [[(cx - s * 12.5, -16.0, 50.0), (cx + s * 12.5, -16.0, 50.0), (cx + s * 12.5, 4.0, 50.0), (cx - s * 12.5, 4.0, 50.0)],
+                   [(cx - s * 9.5, -14.0, 54.0), (cx + s * 9.5, -14.0, 54.0), (cx + s * 9.5, 2.0, 54.0), (cx - s * 9.5, 2.0, 54.0)]], "steel.plate", "pauldron")
+        b.box(cx - 4.0, cx + 4.0, -12.0, 0.0, 54.0, 60.0, "steel.plate", "cannon_mount")
+        b.prism("y", cx, 12.0, 57.0, 2.6, 26.0, "steel.dark", 6, "cannon")
+        b.pin("hp_%d" % (3 if s < 0 else 4), (cx, 0.0, 57.0))
         start = (hinge_x, -6.0, 40.0)
         elbow, _ = boom(b, start, 42.0, 6.0, 0.0, ARM, ARM, ARM, ARM, "livery.livery2", "upper_boom")   # straight ahead, no yaw
         b.prism("x", elbow[0], elbow[1], elbow[2], 10.0, ARM + 4.0, "steel.dark", 6, "elbow")
