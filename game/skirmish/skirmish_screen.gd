@@ -198,6 +198,7 @@ func _build() -> void:
 		[Rect2(0.0, BACK_Y - 14.0, W, LOG_Y - 10.0 - (BACK_Y - 14.0)), sk.terrain, sk.rng.seed, "other"],
 		[Rect2(0.0, REROLL_Y + REROLL_SIZE.y + 14.0, W, BOTTOM_Y - 16.0 - (REROLL_Y + REROLL_SIZE.y + 14.0)), sk.terrain, sk.rng.seed + 1, "seam"],
 	]
+	bg.scan = bool(Settings.display["scan"])   # off: no band, and the machines' traces rest as ink
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
 	_bg = bg
@@ -957,7 +958,9 @@ func _open_menu() -> void:
 		_menu = PauseMenu.new()
 		_menu.display_changed.connect(func(key: String, value: Variant) -> void:
 			if key == "pace":
-				BattleMapView.pace = float(value))
+				BattleMapView.pace = float(value)
+			elif key == "scan" and _bg != null:
+				_bg.scan = bool(value))
 		_menu.hud_changed.connect(func() -> void:
 			_build()
 			_refresh())

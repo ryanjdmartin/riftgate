@@ -60,6 +60,9 @@ class ScanBar extends Control:
 
 	func _draw() -> void:
 		# A sweep, then a pause (Ryan, 22 September: back to back was busy).
+		if map != null and not map.sweep_on:
+			map.sweep_at(-1.0e6)   # the scan is off: no band, and the lights go out
+			return
 		var sweep := (size.y + 120.0) / SPEED
 		var t := fmod(_t, sweep + HudBackdrop.SCAN_PAUSE)
 		# The band keeps travelling below the screen through the pause, so the traces'
@@ -374,13 +377,8 @@ func _open_menu() -> void:
 func _apply_display() -> void:
 	var d := Settings.display
 	_map.tune("brightness", float(d["brightness"]))
-	_map.tune("saturation", float(d["saturation"]))
-	_map.tune("flicker", float(d["glitch"]))
-	if _map._map3d != null:
-		_map._map3d.set_glow(float(d["bloom"]))
-	_map.sweep_on = bool(d["scan"])
-	if _scan != null:
-		_scan.visible = _map.sweep_on
+	_map.tune("flicker", 1.0 if bool(d["glitch"]) else 0.0)
+	_map.sweep_on = bool(d["scan"])   # off: the bar stays hidden and the traces rest as ink
 	BattleMapView.pace = float(d["pace"])
 	_built_hud = Settings.hud
 

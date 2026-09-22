@@ -366,8 +366,8 @@ func _draw() -> void:
 				var dc := pts[pts.size() - 1]
 				var dir := (dc - pts[pts.size() - 2]).normalized()
 				pts[pts.size() - 1] = dc - dir * DEST_RING
-			draw_polyline(pts, Color(Palette.BG, 0.75), 10.0)
-			draw_polyline(pts, Color(Palette.ENEMY, 0.95), 5.0)
+			draw_polyline(pts, Color(Palette.BG, 0.35), 9.0)
+			draw_polyline(pts, Color(Palette.ENEMY, 0.95), 4.0)
 			if owned:
 				_destination_effect(dest)
 
@@ -573,8 +573,6 @@ func _draw_tags() -> void:
 ## again. Dimmed when another contact is the one being looked at.
 var _ring_t := 0.0
 
-const DEST_RING := HEX_SIZE * 0.78   # the target's outer ring, where the intent line arrives
-
 var _ground_marks: Array = []   # [hex, Color] this frame, handed to the scene after the draw
 
 ## A hex's tint: on the ground in the scene, under the machines, when there is a scene;
@@ -586,25 +584,31 @@ func _fill(h: Vector2i, col: Color) -> void:
 		draw_colored_polygon(Hex.corners(center(h), HEX_SIZE - 3.0), col)
 
 
+const DEST_RING := HEX_SIZE * 0.72   # the target's outer ring, where the intent line arrives
+const ENEMY_LIT := Color("ff8a7a")    # the enemy marks' bright: red lifted toward white, so rings read on the tint
+
+## The target in the HUD's own weight (Ryan, 22 September: no solid black, nothing
+## abutting, the animation the thing you see): a tint, a thin outline, and two bright
+## broken rings turning against each other around a centre dot. The line arrives at the
+## outer ring over a soft dark halo, the same halo the outline sits in, so they flow.
 func _destination_effect(h: Vector2i) -> void:
 	var c := center(h)
-	_fill(h, Color(Palette.ENEMY, 0.30))
-	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.BG, 0.75), 9.0)   # lined in black, like the line
-	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, 0.95), 4.0)
-	_target_rings(c, Palette.ENEMY, DEST_RING, 1.0)
-	draw_circle(c, 4.0, Palette.ENEMY)
+	_fill(h, Color(Palette.ENEMY, 0.22))
+	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.BG, 0.35), 6.0)
+	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, 0.85), 2.0)
+	_target_rings(c, ENEMY_LIT, DEST_RING, 1.0)
+	draw_circle(c, 4.0, ENEMY_LIT)
 
 
-## Three concentric rings of broken arcs turning against each other: the display's own
-## target lock, brought back from the first cut (Ryan, 22 September).
+## Two rings of broken arcs turning against each other: the display's own target lock.
 func _target_rings(c: Vector2, col: Color, r: float, dir: float) -> void:
-	for k in range(3):
-		var rad := r * (0.45 + 0.275 * k)
-		var segs := 4 + k * 2
-		var a0 := _ring_t * dir * (1.2 - 0.3 * k) * (1.0 if k % 2 == 0 else -1.0)
+	for k in range(2):
+		var rad := r * (0.5 + 0.5 * k)
+		var segs := 3 + k * 2
+		var a0 := _ring_t * dir * (1.0 - 0.35 * k) * (1.0 if k % 2 == 0 else -1.0)
 		for sgm in range(segs):
 			var a := a0 + TAU * float(sgm) / float(segs)
-			draw_arc(c, rad, a, a + TAU / float(segs) * 0.55, 8, Color(col, 0.95 - 0.15 * k), 2.5)
+			draw_arc(c, rad, a, a + TAU / float(segs) * 0.6, 10, Color(col, 0.95 - 0.15 * k), 3.0)
 
 
 ## Under a machine's own destination marker: two faint rings breathing, in the display's
@@ -620,13 +624,13 @@ func _contact_effect(h: Vector2i, lit: bool) -> void:
 	var c := center(h)
 	var a := 1.0 if lit else 0.35
 	var breath := 0.5 + 0.5 * sin(_ring_t * 4.0)
-	_fill(h, Color(Palette.ENEMY, (0.38 + 0.22 * breath) * a))
-	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.BG, 0.75 * a), 9.0)
-	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, 0.95 * a), 4.0)
+	_fill(h, Color(Palette.ENEMY, (0.34 + 0.2 * breath) * a))
+	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.BG, 0.35 * a), 6.0)
+	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, 0.95 * a), 2.5)
 	for k in range(2):
 		var phase := fmod(_ring_t * 0.9 + k * 0.5, 1.0)
 		var r := HEX_SIZE * (0.3 + 1.1 * phase)
-		draw_arc(c, r, 0.0, TAU, 40, Color(Palette.ENEMY, (1.0 - phase) * 0.9 * a), 3.0 * (1.0 - phase * 0.5) + 1.0)
+		draw_arc(c, r, 0.0, TAU, 40, Color(ENEMY_LIT, (1.0 - phase) * 0.9 * a), 3.0 * (1.0 - phase * 0.5) + 1.0)
 
 
 ## A machine's zone: its six neighbours as one tinted flower with one outline round the

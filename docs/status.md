@@ -106,9 +106,10 @@ back; the map view caches it per plan): contact groups, squads stopped by anothe
 plan blind to the machines (a plot never makes a squad swerve, Ryan 22 September) and the
 path is cut at the first controlled hex (`intercepted`); a squad starting on controlled
 ground holds; flyers control nothing. The map draws intents from the preview's intents,
-never during a move: the destination is one component (tint, heavy outline, three
-counter-turning broken rings, the line arriving at the outer ring; `_destination_effect`,
-`_target_rings`), a contact a heavier pulsing tint with bursting rings
+never during a move: the destination is one component in the HUD's weight (a tint, a
+2 px outline in a soft dark halo, two bright broken rings turning against each other
+around a dot, the line arriving at the outer ring over the same halo; no solid black;
+`_destination_effect`, `_target_rings`, `ENEMY_LIT` for the rings), a contact a heavier pulsing tint with bursting rings
 (`_contact_effect`; one effect per hex, contact wins), a machine's own marker sits on two
 faint breathing rings (`_ally_target`), and each grounded machine's zone is one faint
 tinted flower with one outline (`_zone`). Every hex tint is a mark on the ground in the
@@ -153,9 +154,11 @@ actually took, `MOVE_SECONDS_PER_HEX`; `Map3D.set_anim` moves the model and turn
 its heading) and only then opens the skirmish; headless skips the play. `map_tuner.gd` is the development knob panel, behind
 `RIFTGATE_TUNE=1` (Ryan is happy with the look, 22 September); nothing it sets persists.
 The player's knobs are the pause menu's (`game/ui/pause_menu.gd`, MENU on both screens:
-PAUSED with RESUME and SETTINGS; SETTINGS has the display colour and brightness,
-saturation, bloom, glitch, move pace and the scan bar, saved by `Settings.set_display`
-and applied live by `BattleScreen._apply_display`; a colour change rebuilds the screen,
+PAUSED with RESUME and SETTINGS; SETTINGS has the display colour, brightness, move pace,
+and glitch and scan bar toggles (saturation and bloom were cut, 22 September: no
+difference a player would want), saved by `Settings.set_display` and applied live by
+`BattleScreen._apply_display` and the skirmish's backdrop; scan off means the band stays
+away and every trace rests as ink, on both screens; a colour change rebuilds the screen,
 and the battle screen catches up when a skirmish that changed it returns). The top bar
 reads in plain words: "ROUND n // NEXT SPAWN IN k" and "ORDERS // a OF b SET"; the
 gate's integrity is only on the map, and the rift's pressure is a bar above the rift in

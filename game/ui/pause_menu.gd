@@ -3,8 +3,9 @@ extends Control
 
 ## The pause menu (Ryan, 22 September): MENU on either screen opens it over a scrim that
 ## swallows input. Two pages. PAUSED: resume, settings. SETTINGS: the display's colour and
-## the knobs a player may want (brightness, saturation, bloom, glitch, the scan bar, the
-## pace of moves), saved through `Settings` and applied live by the host screen.
+## the knobs a player may want (brightness, the pace of moves, the glitch, the scan bar;
+## Ryan, 22 September: saturation and bloom made no difference a player would want),
+## saved through `Settings` and applied live by the host screen.
 
 signal resumed
 signal display_changed(key: String, value: Variant)
@@ -69,10 +70,8 @@ func _show_page(page: String) -> void:
 			_title("SETTINGS")
 			_colour_row()
 			_slider("BRIGHTNESS", "brightness")
-			_slider("SATURATION", "saturation")
-			_slider("BLOOM", "bloom")
-			_slider("GLITCH", "glitch")
 			_slider("MOVE PACE", "pace")
+			_toggle("GLITCH", "glitch")
 			_toggle("SCAN BAR", "scan")
 			_button("BACK", func() -> void: _show_page("paused"))
 	_fit()
