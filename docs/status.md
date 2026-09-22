@@ -85,8 +85,11 @@ Kestrel chrome, the signature; Minerva and W&S strict matte; Aphelion a pearl-sh
 white; the Arsenal black chrome. Chrome needs something to mirror, so both 3D environments
 (mech views and `Map3D`) carry `MechView3D.chrome_sky()` as a reflection source only
 (the ambient stays flat, the background transparent). The sky is the nineties chrome
-map, pale blue down to a white horizon over cool dark ground, both gradients wide, and
-Kestrel keeps a little roughness (0.22): under the orthographic camera a flat facet takes
+map, light blue overhead down to a white band hugging the horizon, over cool dark
+ground, at energy 1.25. Chrome reads by contrast, not brightness (Ryan, 22 September: a
+brighter sky made the whole machine read as white), so the top facets take the blue, the
+facets facing the viewer the white band and the sheen (energy 2.4), the underside the
+dark ground. Kestrel keeps a little roughness (0.15): under the orthographic camera a flat facet takes
 one reflection sample, so a sharp sky made neighbouring facets snap between sky and
 ground as the model turned ("random faces glitching", Ryan); soft and wide, they shade
 continuously. The sun's highlight only lands when a facet's normal bisects sun and

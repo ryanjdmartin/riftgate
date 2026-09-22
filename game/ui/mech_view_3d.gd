@@ -104,13 +104,13 @@ var _pivot: Node3D = null   # the model's turntable, at its bounds' centre
 ## transparent.
 static func chrome_sky() -> Sky:
 	var mat := ProceduralSkyMaterial.new()
-	mat.sky_top_color = Color("9fc4ea")
+	mat.sky_top_color = Color("6e9bd6")   # a real blue overhead: the top facets go light blue, not white
 	mat.sky_horizon_color = Color("ffffff")
-	mat.sky_curve = 0.6
-	mat.sky_energy_multiplier = 1.8
-	mat.ground_horizon_color = Color("6c7886")   # cool below, so dark parts stay steel, not bronze
-	mat.ground_bottom_color = Color("14171c")
-	mat.ground_curve = 0.6
+	mat.sky_curve = 0.3   # the white hugs the horizon as a band; chrome reads by the band against the blue
+	mat.sky_energy_multiplier = 1.25
+	mat.ground_horizon_color = Color("7d8894")   # cool below, so dark parts stay steel, not bronze
+	mat.ground_bottom_color = Color("0b0d10")
+	mat.ground_curve = 0.35
 	mat.sun_angle_max = 0.0
 	var sky := Sky.new()
 	sky.sky_material = mat
@@ -127,7 +127,7 @@ static func chrome_sky() -> Sky:
 static func sheen_light() -> DirectionalLight3D:
 	var l := DirectionalLight3D.new()
 	l.name = "Sheen"
-	l.light_energy = 1.6
+	l.light_energy = 2.4
 	l.light_specular = 1.0
 	l.shadow_enabled = false
 	l.light_cull_mask = 1 << (SHEEN_LAYER - 1)
