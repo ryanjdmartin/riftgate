@@ -84,6 +84,7 @@ const IDLE_SWING := 0.022         # radians: a shoulder settling, barely there
 var _inner: SubViewport
 var _camera: Camera3D
 var _model: Node3D
+var _pivot: Node3D = null   # the model's turntable, at its bounds' centre
 
 
 static func has_model(chassis_id: String) -> bool:
@@ -173,8 +174,22 @@ func _setup(chassis_id: String, maker: String) -> void:
 
 	var scene: PackedScene = load("res://art/models/%s.glb" % chassis_id)
 	_model = scene.instantiate()
-	_model.rotation.y = deg_to_rad(yaw)
-	_inner.add_child(_model)
+	# The model hangs off a pivot at its own bounds' centre (a model's origin is wherever
+	# its author put it; the Badger's is off to one side, and it turned around that, Ryan
+	# 22 September). Yaw, spin and sway all turn the pivot. The ground stays at y = 0.
+	_pivot = Node3D.new()
+	_inner.add_child(_pivot)
+	_pivot.add_child(_model)
+	var corners: Array[Vector3] = []
+	_collect_corners_local(_model, _model, corners)   # before the tree: relative transforms, never global
+	if not corners.is_empty():
+		var lo := corners[0]
+		var hi := corners[0]
+		for c in corners:
+			lo = Vector3(minf(lo.x, c.x), minf(lo.y, c.y), minf(lo.z, c.z))
+			hi = Vector3(maxf(hi.x, c.x), maxf(hi.y, c.y), maxf(hi.z, c.z))
+		_model.position = -Vector3((lo.x + hi.x) * 0.5, 0.0, (lo.z + hi.z) * 0.5)
+	_pivot.rotation.y = deg_to_rad(yaw)
 	_apply_materials(_model, maker)
 	_collect_tags(_model)
 	if not token and mode != "pixel":
@@ -248,10 +263,10 @@ func _process(delta: float) -> void:
 		return
 	_t += delta
 	if spin:
-		_model.rotation.y += SPIN_SPEED * delta
+		_pivot.rotation.y += SPIN_SPEED * delta
 	elif sway:
-		_model.rotation.y = deg_to_rad(yaw) + sin(_t * 0.9 + sway_phase) * sway_yaw
-		_model.position.y = sin(_t * 1.9 + sway_phase) * sway_bob + sin(_t * 0.6 + sway_phase) * sway_bob * 0.5
+		_pivot.rotation.y = deg_to_rad(yaw) + sin(_t * 0.9 + sway_phase) * sway_yaw
+		_pivot.position.y = sin(_t * 1.9 + sway_phase) * sway_bob + sin(_t * 0.6 + sway_phase) * sway_bob * 0.5
 	if not joints.is_empty():
 		# A ground machine's idle is its limbs: each joint settles slowly about its pivot,
 		# left and right out of step, so the mech stands like a machine under power.
@@ -511,6 +526,24 @@ func _collect_vertices(node: Node, out: Array[Vector3]) -> void:
 			out.append(mi.global_transform * v)
 	for c in node.get_children():
 		_collect_vertices(c, out)
+
+
+## Every mesh's box corners in `root`'s own space, by walking the parent chain: usable
+## before anything is in the tree, where global transforms are not.
+func _collect_corners_local(node: Node, root: Node3D, out: Array[Vector3]) -> void:
+	if node is MeshInstance3D and (node as MeshInstance3D).visible:
+		var mi: MeshInstance3D = node
+		var xf := Transform3D.IDENTITY
+		var p: Node = mi
+		while p != null and p != root:
+			if p is Node3D:
+				xf = (p as Node3D).transform * xf
+			p = p.get_parent()
+		var aabb := mi.get_aabb()
+		for i in range(8):
+			out.append(xf * aabb.get_endpoint(i))
+	for c in node.get_children():
+		_collect_corners_local(c, root, out)
 
 
 func _collect_corners(node: Node, out: Array[Vector3]) -> void:

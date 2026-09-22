@@ -393,7 +393,7 @@ func _draw() -> void:
 			draw_polyline(pts, Color(Palette.BG, 0.75), 10.0)
 			draw_polyline(pts, Color(Palette.ENEMY, 0.95), 5.0)
 			if owned:
-				_destination_effect(center(dest))
+				_destination_effect(dest)
 
 	# The player's plotted routes, ending in a small marker hex.
 	for uid in routes.keys():
@@ -414,7 +414,7 @@ func _draw() -> void:
 		for group in pending:
 			var lit := _highlight.is_empty() or _highlight.has((group[0] as Unit).pos)
 			for u in group:
-				_contact_effect(center(u.pos), lit)
+				_contact_effect(u.pos, lit)
 	# The plan as it will resolve, from the resolver itself run dry (Ryan, 21 September:
 	# never ambiguous): every contact group, every squad stopped by a body block, every
 	# route that will be rejected.
@@ -433,7 +433,7 @@ func _draw() -> void:
 				var c := center(ends[u.id])
 				mid += c
 				top_y = minf(top_y, c.y)
-				_contact_effect(c, lit)
+				_contact_effect(ends[u.id], lit)
 			mid /= float(group.size())
 			# Who is in it: the machines against the squads, so the player knows what the
 			# skirmish will hold before locking in (Ryan, 22 September).
@@ -454,12 +454,38 @@ func _draw() -> void:
 		var c := center(selected.pos)
 		Hud.brackets(self, Rect2(c - Vector2(HEX_SIZE, HEX_SIZE) * 0.85, Vector2(HEX_SIZE, HEX_SIZE) * 1.7), 12.0, hud, 2.0)
 
+	_draw_gate_bar()
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)   # the edge tags live in screen space
 	_draw_tags()
+	if _map3d != null:
+		_map3d.set_marks(_ground_marks)
+		_ground_marks = []
 	# The whole battlefield is a projection, the same one as the skirmish's backdrop: its
 	# faint scanlines and its soft band drifting down, over everything, foes and overlays
 	# too (Ryan, 21 September).
 	Hud.scanlines(self, Rect2(Vector2.ZERO, size))
+
+
+## The gate's integrity as a true bar (Ryan, 22 September), on the wall's face under the
+## gate, always; brighter while the gate is selected.
+var gate_selected := false
+
+func _draw_gate_bar() -> void:
+	var map := field.map
+	var gx := (_origin + Hex.to_pixel(map.gate, HEX_SIZE)).x
+	var top := _origin.y + Hex.to_pixel(map.gate, HEX_SIZE).y - HEX_SIZE * 1.5 * (BattleMap.GATE_ROWS - 0.5)
+	var w := HEX_SIZE * 3.2
+	var rect := Rect2(gx - w * 0.5, top + 26.0, w, 12.0)
+	var frac := float(field.gate_hp) / maxf(1.0, float(field.gate_hp_max))
+	var col := Palette.HUD if frac > 0.34 else Palette.ENEMY
+	var a := 1.0 if gate_selected else 0.8
+	draw_rect(rect.grow(3.0), Color(Palette.BG, 0.85), true)
+	draw_rect(rect, Color(col, 0.18 * a), true)
+	draw_rect(Rect2(rect.position, Vector2(rect.size.x * frac, rect.size.y)), Color(col, a), true)
+	draw_rect(rect.grow(3.0), Color(col, 0.7 * a), false, 1.5)
+	draw_string(Hud.mono(), Vector2(rect.position.x, rect.position.y - 5.0), "GATE %d/%d" % [field.gate_hp, field.gate_hp_max], HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color(col, a))
+	if gate_selected:
+		Hud.brackets(self, rect.grow(10.0), 8.0, col, 2.0)
 
 
 ## The one scan bar crosses the whole screen on the top layer (the battle screen draws it);
@@ -527,8 +553,21 @@ var _ring_t := 0.0
 
 const DEST_RING := HEX_SIZE * 0.78   # the target's outer ring, where the intent line arrives
 
-func _destination_effect(c: Vector2) -> void:
-	draw_colored_polygon(Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, 0.30))
+var _ground_marks: Array = []   # [hex, Color] this frame, handed to the scene after the draw
+
+## A hex's tint: on the ground in the scene, under the machines, when there is a scene;
+## drawn flat when headless.
+func _fill(h: Vector2i, col: Color) -> void:
+	if _map3d != null:
+		_ground_marks.append([h, col])
+	else:
+		draw_colored_polygon(Hex.corners(center(h), HEX_SIZE - 3.0), col)
+
+
+func _destination_effect(h: Vector2i) -> void:
+	var c := center(h)
+	_fill(h, Color(Palette.ENEMY, 0.30))
+	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.BG, 0.75), 9.0)   # lined in black, like the line
 	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, 0.95), 4.0)
 	_target_rings(c, Palette.ENEMY, DEST_RING, 1.0)
 	draw_circle(c, 4.0, Palette.ENEMY)
@@ -555,10 +594,12 @@ func _ally_target(c: Vector2, col: Color) -> void:
 		draw_arc(c, r, 0.0, TAU, 32, Color(col, 0.4 - 0.12 * k), 1.5)
 
 
-func _contact_effect(c: Vector2, lit: bool) -> void:
+func _contact_effect(h: Vector2i, lit: bool) -> void:
+	var c := center(h)
 	var a := 1.0 if lit else 0.35
 	var breath := 0.5 + 0.5 * sin(_ring_t * 4.0)
-	draw_colored_polygon(Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, (0.38 + 0.22 * breath) * a))
+	_fill(h, Color(Palette.ENEMY, (0.38 + 0.22 * breath) * a))
+	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.BG, 0.75 * a), 9.0)
 	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, 0.95 * a), 4.0)
 	for k in range(2):
 		var phase := fmod(_ring_t * 0.9 + k * 0.5, 1.0)
@@ -574,10 +615,8 @@ func _zone(h: Vector2i, col: Color) -> void:
 		if field.map.has(n) and not field.map.is_structure(n):
 			cluster[n] = true
 	for n in cluster.keys():
-		if n == h:
-			continue
-		var pts := Hex.corners(center(n), HEX_SIZE)
-		draw_colored_polygon(pts, Color(col, 0.08))
+		if n != h:
+			_fill(n, Color(col, 0.08))
 	for n in cluster.keys():
 		if n == h:
 			continue

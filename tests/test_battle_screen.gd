@@ -194,3 +194,18 @@ func test_a_tap_routes_onto_a_hex_an_earlier_machine_is_leaving() -> void:
 		var r: Array = s.battle.routes[b.id]
 		assert_eq(r[r.size() - 1], a_from, "and it ends there")
 	s.free()
+
+
+func test_the_gate_is_selectable_and_has_an_entry() -> void:
+	var s := _screen()
+	var g: Vector2i = s.battle.field.map.gate
+	s._on_hex_tapped(g)
+	assert_true(s._map.gate_selected, "the gate is selected")
+	assert_true(s._details.visible and s._details_label.text.contains("integrity"), "its integrity in the readout")
+	s._on_hex_tapped(s.battle.mechs()[0].pos)
+	assert_false(s._map.gate_selected, "another tap lets it go")
+	s._on_hex_double_tapped(g)
+	assert_true(s._codex.visible, "double-tap opens its entry")
+	assert_eq(s._codex._title.text, "“The Gate”", "titled as the gate")
+	s._codex.close()
+	s.free()

@@ -118,7 +118,7 @@ func test_hold_shows_details_and_arrows() -> void:
 	s.free()
 
 
-func test_die_hold_shows_every_face_visually_without_the_passive() -> void:
+func test_die_hold_shows_every_face_with_what_applies_to_it() -> void:
 	var s := _screen()
 	s._on_die_held(2)
 	assert_true(s._details.visible, "details shown")
@@ -128,7 +128,12 @@ func test_die_hold_shows_every_face_visually_without_the_passive() -> void:
 	assert_true(s._details_faces.visible, "face list shown")
 	assert_eq(s._details_faces.faces.size(), 4, "four faces in the column")
 	assert_eq(s._details_faces.current, s.sk.mechs[2].face_index, "current face highlighted")
-	assert_false(text.contains("Hot Hands"), "passive is not on the die readout")
+	assert_false(text.contains("Hot Hands"), "the passive is not in the heading")
+	var tagged := false
+	for l in s._details_faces.labels:
+		if str(l).contains("Hot Hands"):
+			tagged = true
+	assert_true(tagged, "but each entry it changes says so (the Sparrowhawk's doubled damage and heat)")
 	s._on_hold_released()
 	assert_false(s._details.visible, "hidden on release")
 	s.free()
@@ -168,18 +173,14 @@ func test_double_tap_opens_and_closes_the_codex() -> void:
 	s.free()
 
 
-func test_die_double_tap_opens_face_codex_and_keeps_lock_state() -> void:
+func test_a_quick_second_tap_on_a_die_is_a_tap() -> void:
+	# The die codex is gone (Ryan, 22 September): tap locks, tap again unlocks, hold reads.
 	var s := _screen()
 	assert_false(s.locked[0], "unlocked to start")
 	s._on_die_tapped(0)
-	s._on_die_double_tapped(0)
-	assert_false(s.locked[0], "lock state unchanged by a double-tap")
-	assert_true(s._codex.visible, "face codex open")
-	assert_true(s._codex._title.text.ends_with("die"), "titled as the die")
-	assert_true(s._codex._faces.visible, "faces listed visually")
-	assert_eq(s._codex._faces.current, s.sk.mechs[0].face_index, "current face highlighted, not repeated")
-	assert_false(s._codex._body.visible, "no body text on the die entry")
-	s._close_codex()
+	s._on_die_tapped(0)
+	assert_false(s.locked[0], "two taps: locked then unlocked")
+	assert_false(s._codex.visible, "no codex opened")
 	s.free()
 
 

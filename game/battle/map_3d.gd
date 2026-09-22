@@ -350,12 +350,63 @@ func _ink(grow: float = 1.0) -> StandardMaterial3D:
 	return _ink_mat
 
 
+## Marks on the ground, in the scene so they sit under the machines (Ryan, 22 September:
+## a tint over a machine reads as on top of it): [hex, Color] each, as flat hexes on the
+## column, collapsing with it. Rebuilt only when the set of hexes changes; the colours
+## follow every call, so a mark can breathe.
+var _marks: Dictionary = {}   # hex -> MeshInstance3D
+var _marks_key := ""
+
+func set_marks(list: Array) -> void:
+	var key := ""
+	for m in list:
+		key += str(m[0]) + ";"
+	if key != _marks_key:
+		_marks_key = key
+		for mi in _marks.values():
+			mi.queue_free()
+		_marks.clear()
+		for m in list:
+			var h: Vector2i = m[0]
+			if not _columns.has(h):
+				continue
+			var mi := MeshInstance3D.new()
+			mi.mesh = _mark_mesh(_height_of(h) + 0.45)
+			var mat := StandardMaterial3D.new()
+			mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			mat.no_depth_test = false
+			mat.render_priority = 1
+			mi.material_override = mat
+			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			(_columns[h] as Node3D).add_child(mi)
+			_marks[h] = mi
+	for m in list:
+		var mi: MeshInstance3D = _marks.get(m[0], null)
+		if mi != null:
+			(mi.material_override as StandardMaterial3D).albedo_color = m[1]
+
+
+func _mark_mesh(y: float) -> ArrayMesh:
+	var corners := Hex.corners(Vector2.ZERO, hex_px - 3.0)
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var c := _world(Vector2.ZERO, y)
+	for i in range(corners.size()):
+		st.add_vertex(c)
+		st.add_vertex(_world(corners[(i + 1) % corners.size()], y))
+		st.add_vertex(_world(corners[i], y))
+	return st.commit()
+
+
 ## The hex outline as lines at height `y`, for the glowing grid.
-func _grid_mesh(y: float) -> ArrayMesh:
+func _grid_mesh(y: float, skip: Array[int] = []) -> ArrayMesh:
 	var corners := Hex.corners(Vector2.ZERO, hex_px - 1.5)
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_LINES)
 	for i in range(corners.size()):
+		if skip.has(i):
+			continue
 		st.add_vertex(_world(corners[i], y))
 		st.add_vertex(_world(corners[(i + 1) % corners.size()], y))
 	return st.commit()
@@ -484,11 +535,18 @@ func _build_ground() -> void:
 			if mi.mesh.get_surface_count() > 1:
 				mi.set_surface_override_material(1, rock)
 		col.add_child(mi)
-		if in_field and not (map.gate_hexes.has(h) or map.wall_hexes.has(h)):
+		if in_field and not (map.gate_hexes.has(h) or map.wall_hexes.has(h)) and Hex.axial_to_offset(h).y < map.height - BattleMap.GATE_ROWS:
 			# The grid is the display's own light, drawn on the ground in the scene so a
 			# raised hex hides the lines behind it and the bleed takes them with the column.
 			var grid := MeshInstance3D.new()
-			grid.mesh = _grid_mesh(hgt + 0.35)
+			# The edges that border the wall rows are left out: they ran along the wall's
+			# top on screen (Ryan, 22 September).
+			var skip: Array[int] = []
+			for i in range(6):
+				var across: Vector2i = h + Hex.DIRECTIONS[(6 - i) % 6]
+				if Hex.axial_to_offset(across).y >= map.height - BattleMap.GATE_ROWS:
+					skip.append(i)
+			grid.mesh = _grid_mesh(hgt + 0.35, skip)
 			grid.material_override = _grid_material()
 			grid.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 			col.add_child(grid)
@@ -674,17 +732,21 @@ func _column_edges(h: float, sides: Array) -> ArrayMesh:
 	return st.commit()
 
 
-func _model(id: String, maker: String, paint: Dictionary = {}) -> Node3D:
+func _model(id: String, maker: String, paint: Dictionary = {}, outline: bool = true) -> Node3D:
 	var scene: PackedScene = load("res://art/models/%s.glb" % id)
 	var node: Node3D = scene.instantiate()
 	MechView3D.toon(node, maker, "clean", paint, false)
+	if outline:
+		TraceLines.silhouette_through_all(node)   # a machine keeps its outline behind the wall
+	else:
+		TraceLines.strip_silhouette(node)         # the gate and walls wear none (Ryan, 22 September)
 	return node
 
 
 func _build_structures() -> void:
 	var map := field.map
 	if MechView3D.has_model("gate"):
-		var g := _model("gate", "arsenal")
+		var g := _model("gate", "arsenal", {}, false)
 		_marker(g)   # ink on its creases, so the towers and reveals read as geometry
 		g.position = _hex_world(map.gate)
 		g.rotation.y = PI   # turned about, so its portcullis face is the one the player sees
@@ -701,7 +763,7 @@ func _build_structures() -> void:
 			if Hex.axial_to_offset(mh).y == map.height - 1 and not map.city.has(mh):
 				bottom.append(mh)
 		for w in bottom:
-			var m := _model("wall", "arsenal")
+			var m := _model("wall", "arsenal", {}, false)
 			_marker(m)
 			m.position = _hex_world(w)
 			m.rotation.y = PI

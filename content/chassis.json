@@ -48,10 +48,10 @@
       "fixed": [],
       "loadout": ["overclocked_railgun", "headhunter_rifle", "arc_projector", "deflector"],
       "passive": {
-        "id": "hot_hands", "name": "Hot Hands",
-        "description": "Premium \"feature:\" Energy weapon regulators are disabled, resulting in double damage and double heat for all energy weapons.",
+        "id": "hot_hands", "name": "Disabled Weapon Regulators",
+        "description": "Premium Kestrel \"feature.\" Double damage and double heat for all weapons.",
         "effects": [
-          { "trigger": "on_attack", "effect": "multiply_damage", "value": 2 },
+          { "trigger": "on_attack", "effect": "multiply_damage", "value": 2},
           { "trigger": "on_attack", "effect": "multiply_heat", "value": 2 }
         ]
       },

@@ -8,6 +8,7 @@ extends Control
 
 const SCAN_SPEED := 140.0     # pixels per second
 const SCAN_PAUSE := 6.0       # seconds between sweeps (Ryan, 22 September: too often was busy)
+const BAND_HEX := 72.0        # the ground bands' hex size: bigger than the map's, and bare of marks
 
 var rules: Array[float] = []   # y positions of faint horizontal rules
 var grounds: Array = []        # [[Rect2, terrain, seed, style], ...]
@@ -81,7 +82,7 @@ class GroundBand extends Control:
 
 	func _draw() -> void:
 		var t := owner_bg.time() if owner_bg != null else 0.0
-		TerrainArt.draw_ground(self, Rect2(Vector2.ZERO, size), terrain, seed_value, 44.0, style, int(t * 1.6) % 2, t)
+		TerrainArt.draw_ground(self, Rect2(Vector2.ZERO, size), terrain, seed_value, BAND_HEX, style, int(t * 1.6) % 2, t, false)
 
 
 ## Scanlines, rules and the scan band, over everything.

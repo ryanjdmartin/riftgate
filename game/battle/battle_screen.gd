@@ -283,6 +283,14 @@ func _on_hex_tapped(h: Vector2i) -> void:
 		return
 	_details.visible = false
 	var u := battle.field.unit_at(h)
+	_map.gate_selected = false
+	if battle.field.map.gate_hexes.has(h) and (_map.selected == null or not _map.destinations.has(h)):
+		# The gate is selectable for its integrity (Ryan, 22 September).
+		_select(null)
+		_map.gate_selected = true
+		_show_details(gate_text(battle.field), Vector2.ZERO)
+		_map.queue_redraw()
+		return
 	if _map.selected != null and u != _map.selected and _map.destinations.has(h):
 		# A hex a machine plotted earlier is leaving is a destination too (Ryan, 22
 		# September): plotting in order makes it free, so the tap routes there rather
@@ -353,11 +361,33 @@ func _on_hex_double_tapped(h: Vector2i) -> void:
 	if battle.state == Battle.State.DONE:
 		return
 	var u := battle.field.unit_at(h)
+	if u == null and battle.field.map.gate_hexes.has(h):
+		_details.visible = false
+		_codex.move_to_front()
+		_codex.open(gate_codex_entry(battle.field))
+		return
 	if u == null:
 		return
 	_details.visible = false
 	_codex.move_to_front()
 	_codex.open(codex_entry_for(u))
+
+
+## The gate's readout and codex entry. The text is the rule, not lore: CARE's voice for
+## the projector is Ryan's to write.
+static func gate_text(f: Battlefield) -> String:
+	return "THE GATE\nintegrity %d/%d\nfield projector · a squad on the apron strikes it" % [f.gate_hp, f.gate_hp_max]
+
+
+static func gate_codex_entry(f: Battlefield) -> Dictionary:
+	return {
+		"title": "The Gate",
+		"designation": "CARE FIELD PROJECTOR",
+		"subtitle": "THE CITY'S ENCLOSURE // THE LINE THE MACHINES HOLD",
+		"stat_items": [["integrity", "%d/%d" % [f.gate_hp, f.gate_hp_max]], ["rows", str(BattleMap.GATE_ROWS)]],
+		"body": "The projector that holds the field over the city. A squad that reaches the apron strikes it for a third of its strength each phase, at least ten; when its integrity is gone the field is down and the battle is lost. Machines may stand on it; nothing else may.",
+		"flavour": "",
+	}
 
 
 static func codex_entry_for(u: Unit) -> Dictionary:
@@ -482,10 +512,10 @@ func _show_contacts() -> void:
 	warn.modulate = Color(1, 1, 1, 0)
 	add_child(warn)
 	var tw := create_tween()
-	# Three beats, drawn out (Ryan, 22 September: one flash looked accidental).
+	# Two beats, drawn out (Ryan, 22 September: one flash looked accidental).
 	tw.tween_property(warn, "modulate", Color(1, 1, 1, 1), 0.3)
 	tw.tween_interval(0.6)
-	for _i in range(2):
+	for _i in range(1):
 		tw.tween_property(warn, "modulate", Color(1, 1, 1, 0.1), 0.15)
 		tw.tween_interval(0.12)
 		tw.tween_property(warn, "modulate", Color(1, 1, 1, 1), 0.15)
@@ -567,9 +597,9 @@ func _fill_contact_panel() -> void:
 			continue
 		faces.add_child(_portrait_squad(u))
 	rows.add_child(faces)
-	var who := Hud.label(BattleMapView.contact_text(group), 14, Palette.INK, Hud.mono())
-	who.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	rows.add_child(who)
+	var gap := Control.new()   # the portraits say who; ENGAGE sits at the foot of the panel
+	gap.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	rows.add_child(gap)
 	var btn := HudButton.new("ENGAGE", _open_skirmish.bind(_contact_index))
 	btn.filled = true
 	btn.custom_minimum_size = Vector2(0, 54)
@@ -651,9 +681,9 @@ func _open_skirmish(index: int = 0) -> void:
 ## The handover into the skirmish (decided 22 September): the reconstruction dives onto
 ## the contact, the other world's bleed grows out of the squad until the ground there has
 ## gone flat and bright, the display cuts to black, and the skirmish's feed fades up.
-const HANDOVER_DIVE := 0.8
-const HANDOVER_FLAT := 0.9
-const HANDOVER_FLAT_HEX := 4.5
+const HANDOVER_DIVE := 1.0
+const HANDOVER_FLAT := 1.6      # the spread runs on past the dive before the cut (Ryan, 22 September)
+const HANDOVER_FLAT_HEX := 7.5
 
 func _play_handover(group: Array, screen: SkirmishScreen) -> void:
 	var hexes: Array = []

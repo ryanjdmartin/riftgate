@@ -151,7 +151,7 @@ func make_foe(foe_id: String) -> Foe:
 func codex_for_foe(f: Foe) -> Dictionary:
 	var d: Dictionary = foes.get(f.content_id, {})
 	var fac: Dictionary = factions.get(str(d.get("faction", "")), {})
-	var stats := "HP %d/%d // ATK %d // %s RANK" % [f.hp, f.hp_max, f.attack, "BACK" if f.prefers_back else "FRONT"]
+	var stats := "HP %d // ATK %d // %s RANK" % [f.hp_max, f.attack, "BACK" if f.prefers_back else "FRONT"]
 	if f.is_massive():
 		stats += " // MASSIVE"
 	var acts: Array[String] = []
@@ -175,7 +175,7 @@ func codex_for_foe(f: Foe) -> Dictionary:
 		"subtitle": faction_name.to_upper(),
 		"body": str(d.get("codex", "")),
 		"stats": stats,
-		"stat_items": [["hp", "%d/%d" % [f.hp, f.hp_max]], ["attack", str(f.attack)],
+		"stat_items": [["hp", str(f.hp_max)], ["attack", str(f.attack)],
 			["rank", "BACK" if f.prefers_back else "FRONT"]] + ([["size", "MASSIVE"]] if f.is_massive() else []),
 		"actions": "\n".join(acts),
 		"passive": "",
@@ -191,8 +191,8 @@ func codex_for_foe(f: Foe) -> Dictionary:
 func codex_for_unit(u: Unit) -> Dictionary:
 	var c: Dictionary = chassis.get(u.chassis_id, {})
 	var maker: Dictionary = makers.get(str(c.get("maker", "")), {})
-	var stats := "HULL %d/%d // ARMOUR %d // SHIELD %d/%d (+%d A PHASE OUT OF COMBAT) // HEAT %d (-%d A ROUND) // MOVE %d // %d HARDPOINTS // D%d" % [
-		u.hull, u.hull_max, u.armour, u.shield, u.shield_max, u.recharge_field, u.heat_max, u.cooling, u.movespeed, u.hardpoints, u.die.size() if u.die != null else 0]
+	var stats := "SHIELD %d (+%d A PHASE OUT OF COMBAT) // HULL %d // ARMOUR %d // HEAT %d (-%d A TURN) // MOVE %d // %d HARDPOINTS // D%d" % [
+		u.shield_max, u.recharge_field, u.hull_max, u.armour, u.heat_max, u.cooling, u.movespeed, u.hardpoints, u.die.size() if u.die != null else 0]
 	var faces: Array = []
 	if u.die != null:
 		for f in u.die.faces:
@@ -220,12 +220,10 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		"body": str(c.get("codex", "")),   # never fantasy: that field is design notes and homages
 		"stats": stats,
 		# Hardpoints are not a number here: the component list shows them as sockets.
-		# Mitigation on one row under the bars: armour, then the field recharge under shield.
-		# Shield before hull, as on the gauges: the enemy meets it first. Then heat: the cap
-		# and what the chassis sheds at the end of every round.
-		"stat_items": [["shield", "%d/%d" % [u.shield, u.shield_max]], ["hull", "%d/%d" % [u.hull, u.hull_max]],
-			["recharge", "+%d" % u.recharge_field], ["armour", str(u.armour)],
-			["heat max / cooling", "%d / %d" % [u.heat_max, u.cooling]], ["move", str(u.movespeed)]],
+		# The machine's numbers, never its state (Ryan, 22 September: the codex is the spec
+		# plate; the gauges say how it is doing): maxima with their rates beside them.
+		"stat_items": [["shield max / recharge", "%d / +%d" % [u.shield_max, u.recharge_field]], ["hull max / armour", "%d / %d" % [u.hull_max, u.armour]],
+			["heat max / cooling", "%d / %d" % [u.heat_max, u.cooling]], ["move speed", str(u.movespeed)]],
 		"actions": "",
 		"passive": passive,
 		"faces": faces,

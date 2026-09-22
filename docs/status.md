@@ -4,7 +4,7 @@ Handoff note for the next session. Replace stale lines; keep it under a screen.
 
 ## As of 22 September 2026
 
-**State.** Everything committed. Tests: 173 tests, 2372 checks, green. Ryan writes
+**State.** Everything committed. Tests: 174 tests, 2374 checks, green. Ryan writes
 `content/*.json` in his own voice (reload after any pass that touches it). The rules are in
 `docs/vocabulary.md` (generated) and every decision in `docs/design-bible.html`; the
 vocabulary carries an `order_of_operations` rule that the engine follows. Chassis ids:
@@ -99,8 +99,15 @@ counter-turning broken rings, the line arriving at the outer ring; `_destination
 `_target_rings`), a contact a heavier pulsing tint with bursting rings
 (`_contact_effect`; one effect per hex, contact wins), a machine's own marker sits on two
 faint breathing rings (`_ally_target`), and each grounded machine's zone is one faint
-tinted flower with one outline (`_zone`). The bleed never covers a machine
-(`Bleed.holes`, `holes` in the compositor). Moves
+tinted flower with one outline (`_zone`). Every hex tint is a mark on the ground in the
+scene (`Map3D.set_marks`, fed from `BattleMapView._fill`), so it sits under the machines;
+headless draws it flat. Enemy outlines are lined in black like the lines. The bleed never
+covers a machine (`Bleed.holes`, `holes` in the compositor). Machines keep their
+silhouette through whatever hides them (`TraceLines.silhouette_through`); the gate and
+walls wear none; the grid stops short of the wall rows. The gate's integrity is a bar on
+the wall's face (`_draw_gate_bar`); tap the gate for its readout (`gate_selected`),
+double-tap for its entry (`BattleScreen.gate_codex_entry`, rule text only: the
+projector's voice is Ryan's to write). Moves
 play at a pace by movespeed (`MOVE_REF_SPEED` moves at `MOVE_SECONDS_PER_HEX`, the
 fastest ever; slower units slower). Mechs move in plot order and routes are planned in that order
 (`Battlefield.with_plan`: earlier machines at their destinations, later ones where they
@@ -111,7 +118,7 @@ stays in the engine (`Unit.TRIANGLE`) for later. Squads plan and move after, in 
 before it will end (`compute_intents`), so a squad never stops short of another squad.
 While contacts are pending the map freezes on them (`BattleMapView.pending`: the fights
 lit, no plaque, nothing of the next phase drawn). After the movement phase, a CONTACT
-band beats three times over the dimmed map (about three seconds), then the contact panel slides up
+band beats twice over the dimmed map (about two seconds), then the contact panel slides up
 (`_show_contacts` then `_build_contact_panel`: one contact at a time with `MechView3D`
 and foe-sprite portraits, arrows to page, ENGAGE; paging zooms the map to that fight via
 `focus_on` and lights its hexes via `set_highlight`; `Battle.open_skirmish_at`), and
@@ -120,8 +127,8 @@ decided 22 September): the map dives to full zoom on the contact while one more 
 source grows out of the squad (`BattleMapView.flatten_at` / `flatten_r`) until the ground
 there is flat and bright with the machines still standing in it, a cut to black, and the
 skirmish fades up; the map is put back behind it. Headless adds the skirmish at once.
-The screenshot pose `engage` catches it (`RIFTGATE_SHOT_FRAME` 60 the dive, 125 flat,
-165 the fade-up); portraits carry no silhouette
+The screenshot pose `engage` catches it (`RIFTGATE_SHOT_FRAME` 60 the dive, 150 the
+spread, later the fade-up); portraits carry no silhouette
 (`MechView3D.strip_silhouette`) and foes use their battle sprite. Contact tags name the
 units (`contact_text`), kept on screen when zoomed. The codex is a shared box
 (`game/ui/codex_box.gd`, `CodexBox.open(entry)`), on both screens: double-tap a unit on

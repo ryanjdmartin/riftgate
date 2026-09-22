@@ -4,7 +4,7 @@ extends SceneTree
 ## (not headless) because the dummy renderer produces no pixels.
 ##   godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmish/skirmish_screen.tscn out.png [pose]
 ## Poses put the skirmish screen into a state before the capture: codex (a foe's entry),
-## mechcodex, diecodex, hold (a die's readout), confirm (the end-turn question), lock.
+## mechcodex, hold (a die's readout), confirm (the end-turn question), lock.
 
 var _frames := 0
 var _vp: SubViewport
@@ -50,8 +50,6 @@ func _apply_pose() -> void:
 			s._on_foe_double_tapped(s._foe_view_for(s.sk.front[0]))
 		"mechcodex":
 			s._on_mech_double_tapped(0)
-		"diecodex":
-			s._on_die_double_tapped(1)
 		"hold":
 			s._on_die_held(1)
 		"confirm":

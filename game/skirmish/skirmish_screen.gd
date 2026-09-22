@@ -15,8 +15,8 @@ extends Control
 ##   bottom      End turn bottom-left, Withdraw bottom-right; both ask first when it matters
 ##
 ## No names on screen. Kinetic faces roll when they land and the number flashes over the
-## target. Hold a unit for numbers, statuses and arrows. Double-tap a unit or a die for its
-## codex entry.
+## target. Hold a unit for numbers, statuses and arrows, a die for every entry and what
+## applies to it. Double-tap a unit for its codex entry.
 
 signal finished(outcome: int)
 signal back_requested
@@ -256,7 +256,7 @@ func _build() -> void:
 		var d := DieFaceView.new()
 		_place(d, Vector2(cx - DIE_SIZE * 0.5, DIE_Y), DieFaceView.view_size())
 		d.tapped.connect(_on_die_tapped.bind(i))
-		d.double_tapped.connect(_on_die_double_tapped.bind(i))
+		d.double_tapped.connect(_on_die_tapped.bind(i))   # a quick second tap is a tap: no die codex (Ryan, 22 September), hold shows everything
 		d.held.connect(_on_die_held.bind(i))
 		d.hold_released.connect(_on_hold_released)
 		d.drag_started.connect(_on_drag_started.bind(i))
@@ -300,6 +300,7 @@ func _build() -> void:
 				view.sway_bob = 0.6
 				view.sway_yaw = 0.04
 			view.sway_phase = i * 2.1
+			view.strip_silhouette()   # no light outline in the skirmish (Ryan, 22 September); the trace and its scan glow stay
 			add_child(view)
 			_mech_3d[i] = view
 			v.sprite = view.texture
@@ -788,7 +789,7 @@ func _refresh_arrows() -> void:
 
 ## Hold readout beside a control: a text block, then for a die every face in a column, or
 ## for a unit its statuses and warnings as icon-and-text rows.
-func _show_details(text: String, near: Control, faces: Array = [], current: int = -1, rows: Array = [], labels: Array = [], above: bool = false) -> void:
+func _show_details(text: String, near: Control, faces: Array = [], current: int = -1, rows: Array = [], labels: Array = []) -> void:
 	_details_label.text = text
 	_details_faces.visible = not faces.is_empty()
 	_details_faces.labels = labels
@@ -803,13 +804,14 @@ func _show_details(text: String, near: Control, faces: Array = [], current: int 
 	var wanted := _details.get_combined_minimum_size()
 	_details.size = Vector2(width, wanted.y)
 	var height := wanted.y
-	var pos := near.position + Vector2(near.size.x + 8.0, 0)
-	if above:
-		# Over the control, centred on it: a thumb holding a die covers what is beside and
-		# below it (Ryan, 22 September).
-		pos = Vector2(near.position.x + near.size.x * 0.5 - width * 0.5, near.position.y - height - 10.0)
-	elif pos.x + width > W - 8.0:
-		pos.x = near.position.x - width - 8.0
+	# Over the control, centred on it, whenever it fits: the thumb holding the thing covers
+	# what is beside and below it (Ryan, 22 September). Only when there is no room above
+	# (the back rank) does it sit beside.
+	var pos := Vector2(near.position.x + near.size.x * 0.5 - width * 0.5, near.position.y - height - 10.0)
+	if pos.y < 8.0:
+		pos = near.position + Vector2(near.size.x + 8.0, 0)
+		if pos.x + width > W - 8.0:
+			pos.x = near.position.x - width - 8.0
 	pos.x = clampf(pos.x, 8.0, W - width - 8.0)
 	pos.y = clampf(pos.y, 8.0, H - 8.0 - height)
 	_details.position = pos
@@ -846,36 +848,6 @@ func _on_die_tapped(i: int) -> void:
 	_refresh()
 
 
-func _on_die_double_tapped(i: int) -> void:
-	# The first tap of the pair already toggled the lock; put it back, then open the codex.
-	var ms: Skirmish.MechState = sk.mechs[i]
-	if sk.state == Skirmish.State.ASSIGN and ms.alive() and not ms.assigned:
-		locked[i] = not locked[i]
-	# The die screen is a breakdown, not a portrait: no model, no rules helper, one column of
-	# components with their names, and every live effect on the mech under them.
-	var db := ContentDB.load_default()
-	var entry := db.codex_for_unit(ms.unit)
-	var fixed_n := 0
-	for f in ms.die.faces:
-		if f.fixed:
-			fixed_n += 1
-	entry["title"] = "%s die" % ms.unit.display_name
-	entry["designation"] = ""     # the die is not the machine: no spec-plate tag, no quotes
-	entry["subtitle"] = "D%d // %d HARDPOINTS // %d FIXED" % [ms.die.size(), ms.unit.hardpoints, fixed_n]
-	entry["sprite_id"] = ""
-	entry["body"] = ""
-	entry["stats"] = ""
-	entry["stat_items"] = []
-	entry["faces"] = _shown_faces(ms)
-	entry["face_columns"] = 1
-	entry["face_labels"] = _face_labels(ms, true)
-	entry["current"] = ms.face_index
-	entry["passive"] = ""
-	entry["modifiers"] = _modifier_lines(ms.unit)
-	entry["flavour"] = ""
-	_open_codex(entry)
-
-
 ## One label per die entry: the component's name, FIXED where it is built in, and, with
 ## `tags`, the effects that apply to it right now with their source.
 func _face_labels(ms: Skirmish.MechState, tags: bool) -> Array:
@@ -897,29 +869,6 @@ func _face_labels(ms: Skirmish.MechState, tags: bool) -> Array:
 	return labels
 
 
-## Every live effect on a mech as the die screen prints it: name, stacks, source, how long,
-## then each of its effects in plain words.
-func _modifier_lines(u: Unit) -> String:
-	var db := ContentDB.load_default()
-	var lines: Array[String] = []
-	for m in Effects.live(u):
-		var source := "chassis"
-		if m.source != "chassis":
-			source = db.component_name(m.source) if db.components.has(m.source) else m.source
-		var scopes: Array = ["loadout", "this battle", "this skirmish", "until end of round %d" % m.expires_round]
-		var scope: String = str(scopes[m.scope])
-		var head: String = str(m.name).to_upper()
-		if m.stacks > 1:
-			head += " ×%d" % m.stacks
-		var parts: Array[String] = []
-		for eff in m.effects:
-			parts.append("  " + Effects.effect_text(eff))
-		lines.append("%s  [%s, %s]\n%s" % [head, source, scope, "\n".join(parts)])
-	if lines.is_empty():
-		return "EFFECTS: none"
-	return "EFFECTS\n" + "\n".join(lines)
-
-
 ## The die's entries as the player should see them (effective reach), for lists.
 func _shown_faces(ms: Skirmish.MechState) -> Array:
 	var out: Array = []
@@ -930,7 +879,9 @@ func _shown_faces(ms: Skirmish.MechState) -> Array:
 
 func _on_die_held(i: int) -> void:
 	var ms: Skirmish.MechState = sk.mechs[i]
-	_show_details("%s // D%d" % [ms.unit.display_name.to_upper(), ms.die.size()], _dice[i], _shown_faces(ms), ms.face_index, [], _face_labels(ms, false), true)
+	# Every entry with what applies to it right now (a disabled entry, a passive's change,
+	# a cracked component): the hold is the die's whole readout since the die codex went.
+	_show_details("%s // D%d" % [ms.unit.display_name.to_upper(), ms.die.size()], _dice[i], _shown_faces(ms), ms.face_index, [], _face_labels(ms, true))
 
 
 func _on_foe_held(v: UnitView) -> void:
