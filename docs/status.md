@@ -145,7 +145,7 @@ does. The display traces every feature edge of units, structures and props in li
 (`Map3D._trace`: `_edge_mesh` welds a mesh by position and keeps edges where faces meet at
 more than `EDGE_ANGLE` or that belong to one face; `trace.gdshader` draws them additive
 and emissive with a brightness wave rolling south, `wave_len`, `speed`; plus a thin hull);
-`RIFTGATE_INK=dark` starts in ink. The traces brighten under the scan band (the map view
+`RIFTGATE_INK=dark` starts in ink. The traces brighten under the scan band, which sweeps the map in map pixels and scrolls with it (the map view
 hands `Map3D.set_sweep` the band's map y every frame; `trace.gdshader` `sweep_z`, `band`).
 Roads are never a lone slab and sit at ground level; no fade at the sides, only the blur.
 The overworld runs at two frames (`PaintedMap.frame`, two viewports, `anim_rate` in the

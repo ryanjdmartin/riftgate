@@ -354,11 +354,16 @@ func _draw() -> void:
 	# too (Ryan, 21 September).
 	Hud.scanlines(self, Rect2(Vector2.ZERO, size))
 	if sweep_on:
-		var sy := fmod(_sweep_t * SWEEP_SPEED, size.y + 120.0) - 60.0
+		# The band belongs to the map, not the screen (Ryan, 21 September): it sweeps the
+		# battlefield in map pixels, scrolls and zooms with the ground, and the traces under
+		# it brighten. The skirmish's band, by contrast, is a screen effect.
+		var my := fmod(_sweep_t * SWEEP_SPEED, _map_size.y + 120.0) - 60.0
+		draw_set_transform(Vector2(scroll_x, scroll_y), 0.0, Vector2(zoom, zoom))
 		for i in range(-2, 3):
-			draw_rect(Rect2(0.0, sy + i * 3.0, size.x, 1.0), Color(1, 1, 1, 0.07 - 0.015 * absi(i)))
+			draw_rect(Rect2(0.0, my + i * 3.0, _map_size.x, 1.0), Color(1, 1, 1, 0.07 - 0.015 * absi(i)))
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 		if _map3d != null:
-			_map3d.set_sweep((sy - scroll_y) / zoom)   # the traces under the band brighten
+			_map3d.set_sweep(my)
 	elif _map3d != null:
 		_map3d.set_sweep(-1.0e6)
 
