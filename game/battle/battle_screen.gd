@@ -667,6 +667,7 @@ func _open_skirmish(index: int = 0) -> void:
 		return
 	var screen: SkirmishScreen = SKIRMISH_SCENE.instantiate()
 	screen.sk = sk
+	screen.back_label = "BACK TO THE FIELD"
 	screen.setup(sk)
 	screen.back_requested.connect(_on_skirmish_back)
 	_skirmish = screen

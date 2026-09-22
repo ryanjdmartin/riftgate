@@ -785,7 +785,7 @@ func _draw_unit(u: Unit) -> void:
 		for h in u.hexes():
 			draw_colored_polygon(Hex.corners(center(h), HEX_SIZE - 6.0), Color("4a2e66"))
 	var c := _unit_center(u)
-	var tex: Texture2D = Sprites.map_mech(u.chassis_id, u.facing) if u.is_player() else Sprites.map_foe(foe_sprite_id(u))
+	var tex: Texture2D = null if u.is_player() else Sprites.map_foe(foe_sprite_id(u))
 	if _map3d != null and u.is_player() and not u.is_static():
 		pass   # a mech is geometry in the 3D viewport; the gauge below stays
 	elif tex != null:

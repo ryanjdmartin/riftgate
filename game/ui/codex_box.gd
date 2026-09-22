@@ -144,7 +144,7 @@ func open(entry: Dictionary) -> void:
 		_view.queue_free()
 		_view = null
 	var look := MechView3D.look_setting()
-	if not sid.is_empty() and (look == "pixel" or look == "clean") and MechView3D.has_model(sid):
+	if not sid.is_empty() and not look.is_empty() and MechView3D.has_model(sid):
 		# Mechs in 3D: the codex gets the model itself, turning slowly.
 		var maker := str(ContentDB.load_default().chassis.get(sid, {}).get("maker", "minerva"))
 		var paint: Dictionary = entry.get("paint", {})
@@ -152,9 +152,7 @@ func open(entry: Dictionary) -> void:
 		add_child(_view)
 		tex = _view.texture
 	elif not sid.is_empty():
-		tex = Sprites.combat_mech(sid, "front")
-		if tex == null:
-			tex = Sprites.combat_foe(sid)
+		tex = Sprites.combat_foe(sid)
 	_sprite.texture = tex
 	_sprite.visible = tex != null
 	_stats.set_items(entry.get("stat_items", []))

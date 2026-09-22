@@ -97,7 +97,7 @@ func _draw() -> void:
 			for h in u.hexes():
 				draw_colored_polygon(Hex.corners(_center(h), HEX_SIZE - 6.0), Color("5a3a7a"))
 		var c := _center(u.pos)
-		var tex: Texture2D = Sprites.map_mech(u.chassis_id, u.facing) if u.is_player() else Sprites.map_foe(u.foe_id)
+		var tex: Texture2D = null if u.is_player() else Sprites.map_foe(u.foe_id)
 		if tex != null:
 			var ts := tex.get_size() * MAP_SPRITE_SCALE
 			# Feet a little below the hex centre so the sprite reads as standing on the tile.

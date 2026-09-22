@@ -21,6 +21,8 @@ extends Control
 signal finished(outcome: int)
 signal back_requested
 
+var back_label := "BACK"   # the outcome's button: the battle screen says where back leads
+
 const W := 720.0
 const H := 1280.0
 const BACK_Y := 60.0
@@ -281,12 +283,11 @@ func _build() -> void:
 		var v := UnitView.new()
 		v.display_name = ms.unit.display_name
 		v.bars_above = true
-		v.sprite = Sprites.combat_mech(ms.unit.chassis_id, "front_right")
-		# Mechs are 3D (decided 16 September). RIFTGATE_MECH3D=pixel switches the look,
-		# RIFTGATE_MECH3D=off falls back to the 2D sprites; a chassis with no model uses the Badger's.
+		# Mechs are 3D (decided 16 September); headless (and RIFTGATE_MECH3D=off) draws the
+		# placeholder shape. A chassis with no model uses the Badger's.
 		var look := MechView3D.look_setting()
 		_mech_3d.append(null)
-		if look == "pixel" or look == "clean":
+		if not look.is_empty():
 			var maker := str(ContentDB.load_default().chassis.get(ms.unit.chassis_id, {}).get("maker", "minerva"))
 			var view := MechView3D.make(ms.unit.chassis_id, maker, look, "badger", MechView3D.YAW_SKIRMISH, Vector2i.ZERO, false, ms.unit.paint)
 			# Idle: an aircraft hovers, a hover chassis skims, a ground machine stands still
@@ -501,7 +502,7 @@ func _build_outcome() -> void:
 	_overlay_text.autowrap_mode = TextServer.AUTOWRAP_WORD
 	_overlay_text.custom_minimum_size = Vector2(420, 0)
 	ov.add_child(_overlay_text)
-	var back := HudButton.new("BACK", func() -> void: back_requested.emit())
+	var back := HudButton.new(back_label, func() -> void: back_requested.emit())
 	back.custom_minimum_size = Vector2(0, 54)
 	ov.add_child(back)
 

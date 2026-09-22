@@ -6,11 +6,10 @@ extends SubViewport
 ## framed by an orthographic camera at the sprites' angle (30 degrees down, turned 45 off
 ## head-on), then outlined in 2D. `texture` is a Texture2D the UnitView can draw like a sprite.
 ##
-## Two looks. "pixel": rendered at the sprite frame (80x96) with hard tone steps and a
-## one-pixel outline, drawn at 2x like the sprites, so it sits on the foes' pixel grid.
-## "clean": rendered at 160x192 with smooth shading, drawn at 1x, so it is the same size on
-## screen but twice the resolution and no pixel grid: real 3D against the 2D foes.
-## Experiment, 16 September. RIFTGATE_MECH3D=pixel|clean switches the skirmish screen to it.
+## One look, "clean": rendered at 160x192 with smooth shading, drawn at 1x, so it is
+## sprite-sized on screen but twice the resolution and no pixel grid: real 3D against the
+## 2D foes. (The "pixel" look, hard tone steps at 80x96, was an experiment of 16 September
+## and went on the 22nd.) RIFTGATE_MECH3D=off draws placeholders instead.
 
 const PIXEL_FRAME := Vector2i(80, 96)
 const CLEAN_SCALE := 2
@@ -56,7 +55,7 @@ const LIVERY := {
 }
 
 var texture: Texture2D
-var mode: String = "pixel"
+var mode: String = "clean"
 var spin: bool = false            # turn slowly, for the codex
 var sway: bool = false            # a slow idle: a breath of yaw and a bob, for the skirmish
 var sway_phase: float = 0.0
@@ -128,10 +127,8 @@ static func parse_tag(node_name: String) -> Array:
 ## RIFTGATE_MECH3D=off for the 2D sprites.
 static func look_setting() -> String:
 	var env := OS.get_environment("RIFTGATE_MECH3D")
-	if env == "off" or DisplayServer.get_name() == "headless":   # tests: no renderer, use the sprites
+	if env == "off" or DisplayServer.get_name() == "headless":   # tests: no renderer, placeholders
 		return ""
-	if env == "pixel" or env == "clean":
-		return env
 	return "clean"
 
 
@@ -149,8 +146,7 @@ static func make(chassis_id: String, maker: String, look: String, fallback: Stri
 
 
 func _setup(chassis_id: String, maker: String) -> void:
-	var k := 1 if mode == "pixel" else CLEAN_SCALE
-	var frame := frame_override if frame_override != Vector2i.ZERO else PIXEL_FRAME * k
+	var frame := frame_override if frame_override != Vector2i.ZERO else PIXEL_FRAME * CLEAN_SCALE
 	# The outer viewport holds the outlined 2D result; the inner one renders the 3D.
 	size = frame
 	transparent_bg = true
@@ -164,13 +160,13 @@ func _setup(chassis_id: String, maker: String) -> void:
 		_inner.own_world_3d = true     # otherwise every mech view shares one world and the models overlap
 		_inner.transparent_bg = true
 		_inner.render_target_update_mode = SubViewport.UPDATE_ALWAYS
-		_inner.msaa_3d = SubViewport.MSAA_DISABLED if mode == "pixel" else SubViewport.MSAA_4X
+		_inner.msaa_3d = SubViewport.MSAA_4X
 		_inner.screen_space_aa = SubViewport.SCREEN_SPACE_AA_DISABLED
 		add_child(_inner)
 	else:
 		_inner = self
 		own_world_3d = true
-		msaa_3d = SubViewport.MSAA_DISABLED if mode == "pixel" else SubViewport.MSAA_4X
+		msaa_3d = SubViewport.MSAA_4X
 
 	var scene: PackedScene = load("res://art/models/%s.glb" % chassis_id)
 	_model = scene.instantiate()
@@ -192,7 +188,7 @@ func _setup(chassis_id: String, maker: String) -> void:
 	_pivot.rotation.y = deg_to_rad(yaw)
 	_apply_materials(_model, maker)
 	_collect_tags(_model)
-	if not token and mode != "pixel":
+	if not token:
 		# The skirmish's machines carry the display's trace too (Ryan, 21 September); the
 		# screen's scan bar lights it through set_sweep_screen.
 		var tmode := TraceLines.mode()
@@ -247,7 +243,7 @@ func _setup(chassis_id: String, maker: String) -> void:
 		rect.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		var mat := ShaderMaterial.new()
 		mat.shader = load("res://game/ui/outline.gdshader")
-		mat.set_shader_parameter("width", float(k))
+		mat.set_shader_parameter("width", float(CLEAN_SCALE))
 		rect.material = mat
 		add_child(rect)
 	texture = get_texture()
@@ -411,7 +407,7 @@ static func toon(node: Node, maker: String, look: String, paint_arg: Dictionary 
 			m.shader = load("res://game/ui/mech_toon.gdshader")
 			for t in range(4):
 				m.set_shader_parameter("tone%d" % t, Color(ramp[t]))
-			m.set_shader_parameter("bands", 4 if look == "pixel" else 0)
+			m.set_shader_parameter("bands", 0)
 			m.set_shader_parameter("role", ROLE_INDEX.get(role, 0))
 			m.set_shader_parameter("gloss", float(GLOSS.get(maker, 0.4)))
 			if as_token:

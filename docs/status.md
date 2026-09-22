@@ -58,10 +58,10 @@ maxima and rates only (`codex_for_unit` stat_items, shared by both screens); the
 hangs its model off `_pivot` at the bounds' centre (`_collect_corners_local`, usable
 before the tree), so spin and sway turn about the machine. The mech views' bounds hook is
 connected before `add_child` (ready fires inside it when the screen is already in the
-tree). Screenshot poses: rounds, logfull, killed; diecodex removed. Ryan's chassis.json
-edit in flight when this was written uses `"when": "type_energy"` on Hot Hands, which the
-engine does not support yet (SUPPORTED_WHEN); it needs a type condition on components
-(energy versus kinetic) before the validator will pass it.
+tree). Screenshot poses: rounds, logfull, killed; diecodex removed. The mech sprite
+loaders and the "pixel" look are gone (22 September): mechs are models only, `Sprites`
+loads foe art alone, `MechView3D` has the one clean look, headless draws placeholders.
+The skirmish's outcome button says where back leads (`SkirmishScreen.back_label`).
 
 **Ally art, locked (21 September).** The mid-nineties 3D register, built by `tools/lowforge`:
 `models_low.py` holds one function of numbers per chassis id (`badger`, `sparrowhawk`,
@@ -151,12 +151,13 @@ route can end where an earlier-plotted machine is leaving. The bleed's squad sou
 start so nobody blinks to the end: mechs then squads along the paths they
 actually took, `MOVE_SECONDS_PER_HEX`; `Map3D.set_anim` moves the model and turns it to
 its heading) and only then opens the skirmish; headless skips the play. `map_tuner.gd` (TUNE on the battle screen) is
-the live knob panel; nothing it sets persists. The default trace mode is `assets`: the mechs, gate and
-walls in ink with a light silhouette (`TraceLines.silhouette`, the material's stencil
-outline), the field's props and grid in fainter light; `pulse` rests everything as ink and
-the scan lights it (`pulse_material`; the trace shader blends rather than adds, so `base`
-0 is black); `RIFTGATE_INK=light|dark` for the others (the tuner's TRACE has
-assets, light, ink, off). The skirmish's mech views take the same. Side blur begins at the
+the live knob panel; nothing it sets persists. The default trace mode is `pulse` (locked
+22 September): everything rests as ink and the scan lights it with a long tail
+(`pulse_material`; the trace shader blends rather than adds, so `base` 0 is black), the
+machines with the light silhouette (`TraceLines.silhouette`, the material's stencil
+outline); `assets` keeps the props in steady light; `RIFTGATE_INK=light|dark|assets` for
+the others (the tuner's TRACE has assets, pulse, light, ink, off). The skirmish's mech
+views carry the trace without the silhouette; the codex is plain black ink. Side blur begins at the
 frame's lines (`_frame_x`), not the field's edge; intent lines carry a dark underline; the
 scan bar pauses `HudBackdrop.SCAN_PAUSE` seconds between sweeps on both screens; the
 corrupted tear is rarer, and the skirmish's overworld band tears too; `RIFTGATE_MAP_WIRE=1` is the pure-wireframe trial. `tools/screenshot.gd` poses:
@@ -183,11 +184,10 @@ ground level.
    versus "direct"; the Badger's loadout and claw numbers; Aphelion and the Arsenal; CARE's
    voice.
 3. The map, next: ally wrecks left on the map with a death animation (Ryan, 22
-   September; a wrecked machine leaves the field today); an outline for units behind tall columns; joint idle for grounded units once joints exist;
-   the contact transition (camera flattening into the skirmish); whether squads leave
-   corruption in their wake; tune every knob with all three chrome colours; delete the
-   dead sprite loaders (`Sprites.combat_mech`/`map_mech`, the skirmish's sprite fallback,
-   the pixel look).
+   September; a wrecked machine leaves the field today; discuss first: does a wreck block,
+   and does it stay a phase or the battle); joint idle for grounded units once joints
+   exist; whether squads leave corruption in their wake; tune every knob with all three
+   chrome colours.
 4. Engine gaps waiting on content: Numbed resistance roll; Corrupted (on-spend trigger,
    value from the foe's ability); cleanse; foe roles (fodder, elite, boss); the planned
    statuses as plain modifiers once placed; component stat modifiers as content; granted
@@ -202,5 +202,4 @@ ground level.
    per-frame cost of the map.
 
 **Known rough edges.** Codex stat labels cut off on Ryan's device once, not reproduced.
-Routes are tap-to-destination only. The skirmish's Back button reads "BACK" even
-when it returns to the battlefield. 
+Routes are tap-to-destination only.
