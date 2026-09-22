@@ -48,7 +48,7 @@
       "fixed": [],
       "loadout": ["overclocked_railgun", "headhunter_rifle", "arc_projector", "deflector"],
       "passive": {
-        "id": "hot_hands", "name": "Disabled Weapon Regulators",
+        "id": "disabled_regulators", "name": "Disabled Weapon Regulators",
         "description": "Premium Kestrel \"feature.\" Double damage and double heat for all weapons.",
         "effects": [
           { "trigger": "on_attack", "effect": "multiply_damage", "value": 2},
