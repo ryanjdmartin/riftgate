@@ -143,7 +143,13 @@ void fragment() {
 	// is a mask only; the pixel comes from the scene, so the wall and the crags still
 	// stand in front of a machine behind them.
 	vec4 u = blurred_units(UV, 1.0 / view_size, rad);
-	COLOR = (k > bayer(c) && u.a < 0.5) ? other : scene;
+	bool other_wins = k > bayer(c) && u.a < 0.5;
+	COLOR = other_wins ? other : scene;
+	if (other_wins) {
+		// A flyer's shadow is translucent, under the mask's threshold: it falls on the
+		// painting as it falls on the ground (the scene pixel carries it already).
+		COLOR.rgb = mix(COLOR.rgb, u.rgb, u.a);
+	}
 	float luma = dot(COLOR.rgb, vec3(0.299, 0.587, 0.114));
 	COLOR.rgb = mix(vec3(luma), COLOR.rgb, saturation) * brightness;
 	// No fade to black at the sides: the blur alone is the edge of what the table resolves.
