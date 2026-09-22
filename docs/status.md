@@ -95,8 +95,8 @@ ground as the model turned ("random faces glitching", Ryan); soft and wide, they
 continuously. The sun's highlight only lands when a facet's normal bisects sun and
 camera, which the spin passes near north-south and the map's and skirmish's three-quarter
 pose never does (Ryan, 22 September), so each scene's camera carries a sheen light
-(`MechView3D.sheen_light()`, a child of the camera, from a little above it, specular 1,
-no shadow) whose cull mask is `SHEEN_LAYER` (20); `toon` puts a glossy maker's meshes
+(`MechView3D.sheen_light()`, a child of the camera, from well above it (50 degrees, so
+the spine's upper strakes catch it at the skirmish's rear pose), specular 1, no shadow) whose cull mask is `SHEEN_LAYER` (20); `toon` puts a glossy maker's meshes
 (metallic 0.25 or more: Kestrel, Aphelion, the Arsenal) on that layer and `Map3D._to_units_layer`
 ORs its mask in rather than assigning, so the bit survives. Chrome shows no diffuse,
 so on Kestrel it is pure highlight; the matte makers never see it. `hero_shot.gd`

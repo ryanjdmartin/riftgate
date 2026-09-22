@@ -131,7 +131,7 @@ static func sheen_light() -> DirectionalLight3D:
 	l.light_specular = 1.0
 	l.shadow_enabled = false
 	l.light_cull_mask = 1 << (SHEEN_LAYER - 1)
-	l.rotation_degrees = Vector3(-28.0, 0.0, 0.0)   # from above the camera, down the view
+	l.rotation_degrees = Vector3(-50.0, 0.0, 0.0)   # from well above the camera, so the spine's upper strakes catch it at the skirmish's rear pose too
 	return l
 
 
