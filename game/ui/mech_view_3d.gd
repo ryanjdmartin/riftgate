@@ -127,7 +127,7 @@ static func chrome_sky() -> Sky:
 static func sheen_light() -> DirectionalLight3D:
 	var l := DirectionalLight3D.new()
 	l.name = "Sheen"
-	l.light_energy = 2.4
+	l.light_energy = 3.6   # hot on purpose: on a phone an effect has to be exaggerated to be obvious (Ryan, 22 September)
 	l.light_specular = 1.0
 	l.shadow_enabled = false
 	l.light_cull_mask = 1 << (SHEEN_LAYER - 1)

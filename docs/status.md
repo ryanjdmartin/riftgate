@@ -88,8 +88,9 @@ white; the Arsenal black chrome. Chrome needs something to mirror, so both 3D en
 map, light blue overhead down to a white band hugging the horizon, over cool dark
 ground, at energy 1.25. Chrome reads by contrast, not brightness (Ryan, 22 September: a
 brighter sky made the whole machine read as white), so the top facets take the blue, the
-facets facing the viewer the white band and the sheen (energy 2.4), the underside the
-dark ground. Kestrel keeps a little roughness (0.15): under the orthographic camera a flat facet takes
+facets facing the viewer the white band and the sheen (energy 3.6, hot on purpose: on a
+phone an effect has to be exaggerated to be obvious, Ryan, and he always leans hotter),
+the underside the dark ground. Kestrel keeps a little roughness (0.15): under the orthographic camera a flat facet takes
 one reflection sample, so a sharp sky made neighbouring facets snap between sky and
 ground as the model turned ("random faces glitching", Ryan); soft and wide, they shade
 continuously. The sun's highlight only lands when a facet's normal bisects sun and
