@@ -194,7 +194,10 @@ ground level.
    legs, a low head on a neck, a wagon bed in W&S brown carrying the loadout (two
    autogun turrets, the lance along the spine, the mortar aft, ablative slabs on the
    flanks, the heat sink at the tail), bone skirts over the hooves; six `hp_` pins, no
-   joints. Ryan's notes next, by render. The Anvil still borrows the Badger's model.
+   joints. The W&S metal's grain was calmed the same day (it read as wood) and bone is
+   now a neutral white paint for every maker (`Tiles.metal(cast=...)`); the Sparrowhawk's
+   bone fuselage picks that up on its next rebuild, a hair warmer. Ryan's notes next, by
+   render. The Anvil still borrows the Badger's model.
 2. Ryan's content: names for overheating and scorch; place strikes, breach, scorch,
    disable and rapid on foes and components; Ablative Plating as armour or shield; line
    versus "direct"; the Badger's loadout and claw numbers; Aphelion and the Arsenal; CARE's

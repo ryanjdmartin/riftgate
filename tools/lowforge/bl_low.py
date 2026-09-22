@@ -42,7 +42,7 @@ def _args():
 MAKERS = {
     "minerva": {"grey": 0.40, "streak": 0.05, "mottle": 0.03, "tint": (0.86, 0.90, 0.87), "livery": (0.42, 0.50, 0.28), "rivets": 12},
     "kestrel": {"grey": 0.70, "streak": 0.04, "mottle": 0.012, "tint": (0.92, 0.95, 1.0), "livery": (0.16, 0.40, 0.88), "rivets": 0},
-    "wainwright_sutler": {"grey": 0.42, "streak": 0.10, "mottle": 0.07, "tint": (1.0, 0.86, 0.72), "livery": (0.58, 0.30, 0.14), "rivets": 8},
+    "wainwright_sutler": {"grey": 0.42, "streak": 0.045, "mottle": 0.025, "tint": (1.0, 0.88, 0.76), "livery": (0.52, 0.29, 0.16), "rivets": 8},   # calmer grain than the first cut: it read as wood (Ryan, 22 September)
     "aphelion": {"grey": 0.80, "streak": 0.02, "mottle": 0.01, "tint": (1.0, 1.0, 1.0), "livery": (0.86, 0.12, 0.12), "rivets": 0},
     "arsenal": {"grey": 0.28, "streak": 0.025, "mottle": 0.012, "tint": (0.88, 0.90, 0.96), "livery": (0.36, 0.38, 0.42), "rivets": 16},
 }
@@ -59,8 +59,9 @@ class Tiles:
         self.images = {}
         os.makedirs(self.out_dir, exist_ok=True)
 
-    def metal(self, grey=None, streak=None, tint=(1.0, 1.0, 1.0), mottle=None):
+    def metal(self, grey=None, streak=None, tint=(1.0, 1.0, 1.0), mottle=None, cast=None):
         p = self.p
+        cast = p["tint"] if cast is None else cast
         grey = p["grey"] if grey is None else grey
         streak = p["streak"] if streak is None else streak
         mottle = p["mottle"] if mottle is None else mottle
@@ -70,8 +71,7 @@ class Tiles:
         for i in range(7):
             smear += np.roll(noise, i, axis=1)
         img = np.full((TILE, TILE, 3), grey, np.float32) + rows + smear
-        cast = np.array(p["tint"], np.float32) * np.array(tint, np.float32)
-        return np.clip(img * cast, 0.0, 1.0)
+        return np.clip(img * np.array(cast, np.float32) * np.array(tint, np.float32), 0.0, 1.0)
 
     def _seam(self, img, dark=0.28):
         img[0:2, :, :] *= dark
@@ -164,7 +164,8 @@ class Tiles:
         elif kind == "livery2":
             img = self._seam(self.metal(0.70, self.p["streak"], tint=self.p["livery"]))
         elif kind == "bone":
-            img = self._seam(self.metal(0.74, self.p["streak"] * 0.5, tint=(0.96, 0.93, 0.85)))
+            # Bone is paint, not the maker's metal: the same white for everyone, no cast.
+            img = self._seam(self.metal(0.74, self.p["streak"] * 0.5, tint=(0.96, 0.93, 0.85), mottle=0.012, cast=(1.0, 1.0, 1.0)))
         elif kind == "hazard":
             img = self.metal(g, 0.05)
             img[26:38, :, :] = np.array([0.95, 0.75, 0.10], np.float32)
