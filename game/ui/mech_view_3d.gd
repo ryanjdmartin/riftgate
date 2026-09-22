@@ -46,10 +46,11 @@ const ROLE_INDEX := {
 }
 # The maker's finish, for the shader's gloss lever: Kestrel gloss-coats, the wagon-builders barely.
 const GLOSS := {"minerva": 0.35, "kestrel": 1.0, "wainwright_sutler": 0.15, "aphelion": 0.75, "arsenal": 0.5}
-# The same finish on a textured (lowforge) model: roughness, metallic, specular. Kestrel is
-# chrome and shines like it, the signature (Ryan, 22 September); the wagon-builders' iron is
-# matte; the rest sit between.
-const FINISH := {"minerva": [0.68, 0.0, 0.4], "kestrel": [0.22, 1.0, 1.0], "wainwright_sutler": [0.86, 0.0, 0.3], "aphelion": [0.32, 0.15, 0.7], "arsenal": [0.55, 0.1, 0.5]}
+# The same finish on a textured (lowforge) model: roughness, metallic, specular (Ryan, 22
+# September). Kestrel is chrome and shines like it, the signature; Minerva and the
+# wagon-builders are strict matte; Aphelion's white has a pearl sheen (gloss without
+# metal, so the white stays white); the Arsenal is black chrome, a dark mirror.
+const FINISH := {"minerva": [0.92, 0.0, 0.2], "kestrel": [0.15, 1.0, 1.0], "wainwright_sutler": [0.96, 0.0, 0.15], "aphelion": [0.3, 0.3, 0.9], "arsenal": [0.2, 0.9, 1.0]}
 const LIVERY := {
 	# The livery tones, after the metals decided with the ally art (21 September; the
 	# earlier red, bone, orange and yellow retired 22 September). Only untextured models
@@ -104,7 +105,7 @@ static func chrome_sky() -> Sky:
 	mat.sky_top_color = Color("9fc4ea")
 	mat.sky_horizon_color = Color("ffffff")
 	mat.sky_curve = 0.6
-	mat.sky_energy_multiplier = 1.4
+	mat.sky_energy_multiplier = 1.8
 	mat.ground_horizon_color = Color("6c7886")   # cool below, so dark parts stay steel, not bronze
 	mat.ground_bottom_color = Color("14171c")
 	mat.ground_curve = 0.6

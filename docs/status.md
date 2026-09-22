@@ -80,8 +80,9 @@ edges), on the display grid's lattice at map-size hexes with a faint grid. The s
 mech views carry the trace and its backdrop's bar lights them (`MechView3D.set_sweep_screen`; `trace.gdshader` takes a `screen_down` vector). Sparrowhawk locked in
 shape; reskinned 22 September to Kestrel's metals (chrome plate body, cobalt wings, dark
 boosters; the bone body predated the palettes). Finish by maker on textured models:
-`MechView3D.FINISH` (roughness, metallic, specular); Kestrel is chrome and shines, the
-signature (Ryan, 22 September), which needs something to mirror, so both 3D environments
+`MechView3D.FINISH` (roughness, metallic, specular; decided 22 September, in the bible):
+Kestrel chrome, the signature; Minerva and W&S strict matte; Aphelion a pearl-sheen
+white; the Arsenal black chrome. Chrome needs something to mirror, so both 3D environments
 (mech views and `Map3D`) carry `MechView3D.chrome_sky()` as a reflection source only
 (the ambient stays flat, the background transparent). The sky is the nineties chrome
 map, pale blue down to a white horizon over cool dark ground, both gradients wide, and
