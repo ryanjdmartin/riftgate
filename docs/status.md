@@ -77,8 +77,15 @@ frames, under the foes) and "seam" (the tile with the other world dithering into
 above, under the mechs); the overworld hex drawing is `TerrainArt.draw_other_hex`, shared
 with `PaintedMap`. The skirmish backdrop draws each ground band in a clipped child (no spill past the
 edges), on the display grid's lattice at map-size hexes with a faint grid. The skirmish's
-mech views carry the trace and its backdrop's bar lights them (`MechView3D.set_sweep_screen`; `trace.gdshader` takes a `screen_down` vector). Sparrowhawk locked;
-Badger is Ryan's to tweak in Blender (joints and pins are his next art job).
+mech views carry the trace and its backdrop's bar lights them (`MechView3D.set_sweep_screen`; `trace.gdshader` takes a `screen_down` vector). Sparrowhawk locked in
+shape; reskinned 22 September to Kestrel's metals (chrome plate body, cobalt wings, dark
+boosters; the bone body predated the palettes). Finish by maker on textured models:
+`MechView3D.FINISH` (roughness, metallic, specular); Kestrel is chrome and shines, the
+signature (Ryan, 22 September), which needs something to mirror, so both 3D environments
+(mech views and `Map3D`) carry `MechView3D.chrome_sky()` as a reflection source only
+(the ambient stays flat, the background transparent). The engine's `LIVERY` ramps
+(untextured models only) follow the decided metals now. Badger is Ryan's to tweak in
+Blender (joints and pins are his next art job).
 
 **The battlefield (`game/battle/`).** `map_3d.gd` is a screen-sized SubViewport whose
 camera follows the map view's scroll and zoom (`look`), so it renders every frame: every

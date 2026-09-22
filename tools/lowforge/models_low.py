@@ -107,12 +107,14 @@ def sparrowhawk(b):
     """Kestrel "Sparrowhawk": a small hit-and-run interceptor. Sleek, speed over defence;
     reverse-swept wings whose rear faces run back into the boosters, a faired canopy far
     back, twin nose guns, two big boosters, a tail rooted into the fuselage and riding over
-    the boosters, ending in two angled stabilisers. Small but deadly."""
+    the boosters, ending in two angled stabilisers. Small but deadly. Reskinned 22 September
+    to Kestrel's metals: the body in chrome plate, the wings cobalt, the boosters dark (the
+    bone body predated the palettes)."""
     # Fuselage: one piece, a six-sided section lofted from a needle nose to a broad rear.
     # The top tapers sharply toward the nose, the belly shallowly, and the belly carries
     # forward under the wing roots (Ryan, 21 September).
     b.loft([(46.0, _fuse(1.2, 0.6, 0.5)), (36.0, _fuse(6.0, 2.2, 2.0)), (18.0, _fuse(12.0, 3.8, 3.4)),
-            (0.0, _fuse(16.0, 6.4, 4.6)), (-16.0, _fuse(18.0, 7.0, 4.8)), (-30.0, _fuse(15.0, 5.4, 4.0))], "bone.bone", "fuselage")
+            (0.0, _fuse(16.0, 6.4, 4.6)), (-16.0, _fuse(18.0, 7.0, 4.8)), (-30.0, _fuse(15.0, 5.4, 4.0))], "steel.plate", "fuselage")
     b.loft([(38.0, diamond(0.0, 0.5, 2.0, 1.5)), (46.0, diamond(0.0, 0.5, 1.0, 0.7))], "steel.dark", "nose_tip")
     # Twin nose guns, one either side of the nosecone.
     for s in (-1.0, 1.0):
@@ -139,13 +141,13 @@ def sparrowhawk(b):
         b.pin("hp_%d" % (1 if s < 0 else 2), (s * 32.0, 14.0, -4.8))
     # Boosters: two big six-sided drums under and behind the cockpit, red glow at the back.
     for s in (-1.0, 1.0):
-        b.prism("y", s * 7.5, -32.0, -1.0, 6.0, 28.0, "steel.panel", 6, "booster", phase=math.pi / 6)
+        b.prism("y", s * 7.5, -32.0, -1.0, 6.0, 28.0, "steel.dark", 6, "booster", phase=math.pi / 6)
         b.prism("y", s * 7.5, -47.0, -1.0, 6.5, 2.0, "amber.engine", 6, "booster_ring", phase=math.pi / 6)   # lit: the amber role glows
         b.loft([(-48.0, hexagon(s * 7.5, -1.0, 11.0, 9.5)), (-48.5, hexagon(s * 7.5, -1.0, 10.0, 8.5))], "amber.engine", "exhaust")
     # Tail: rooted into the fuselage with a keel, riding over the boosters, two angled
     # stabilisers at the end.
     b.loft([(-18.0, rect(0.0, 12.0, 4.0, 12.0)), (-32.0, rect(0.0, 8.0, 7.0, 12.5)),
-            (-46.0, rect(0.0, 5.0, 9.0, 12.5)), (-60.0, rect(0.0, 3.0, 9.5, 11.5))], "bone.bone", "tail_boom")
+            (-46.0, rect(0.0, 5.0, 9.0, 12.5)), (-60.0, rect(0.0, 3.0, 9.5, 11.5))], "steel.plate", "tail_boom")
     b.loft([(-30.0, rect(0.0, 4.0, 4.5, 8.0)), (-44.0, rect(0.0, 3.0, 5.5, 9.0))], "steel.dark", "keel")
     for s in (-1.0, 1.0):
         a = math.radians(s * 38.0)
