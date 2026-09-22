@@ -94,10 +94,13 @@ back; the map view caches it per plan): contact groups, squads stopped by anothe
 plan blind to the machines (a plot never makes a squad swerve, Ryan 22 September) and the
 path is cut at the first controlled hex (`intercepted`); a squad starting on controlled
 ground holds; flyers control nothing. The map draws intents from the preview's intents,
-never during a move: the line stops at the destination's edge, the destination is a
-tinted hex with breathing concentric rings (`_destination_effect`), a contact a heavier
-pulsing tint with bursting rings (`_contact_effect`; one effect per hex, contact wins),
-and each grounded machine's zone is one tinted flower with one outline (`_zone`). Moves
+never during a move: the destination is one component (tint, heavy outline, three
+counter-turning broken rings, the line arriving at the outer ring; `_destination_effect`,
+`_target_rings`), a contact a heavier pulsing tint with bursting rings
+(`_contact_effect`; one effect per hex, contact wins), a machine's own marker sits on two
+faint breathing rings (`_ally_target`), and each grounded machine's zone is one faint
+tinted flower with one outline (`_zone`). The bleed never covers a machine
+(`Bleed.holes`, `holes` in the compositor). Moves
 play at a pace by movespeed (`MOVE_REF_SPEED` moves at `MOVE_SECONDS_PER_HEX`, the
 fastest ever; slower units slower). Mechs move in plot order and routes are planned in that order
 (`Battlefield.with_plan`: earlier machines at their destinations, later ones where they
@@ -107,7 +110,8 @@ the rift (`_pick_target`, picked by phase so the preview holds); the multi-hex f
 stays in the engine (`Unit.TRIANGLE`) for later. Squads plan and move after, in field order, each intent routed around where the squads
 before it will end (`compute_intents`), so a squad never stops short of another squad.
 While contacts are pending the map freezes on them (`BattleMapView.pending`: the fights
-lit, nothing of the next phase drawn). After the movement phase, a CONTACT warning flashes, then the contact panel slides up
+lit, no plaque, nothing of the next phase drawn). After the movement phase, a CONTACT
+band beats three times over the dimmed map (about three seconds), then the contact panel slides up
 (`_show_contacts` then `_build_contact_panel`: one contact at a time with `MechView3D`
 and foe-sprite portraits, arrows to page, ENGAGE; paging zooms the map to that fight via
 `focus_on` and lights its hexes via `set_highlight`; `Battle.open_skirmish_at`), and
@@ -153,7 +157,9 @@ ground level.
    disable and rapid on foes and components; Ablative Plating as armour or shield; line
    versus "direct"; the Badger's loadout and claw numbers; Aphelion and the Arsenal; CARE's
    voice.
-3. The map, next: an outline for units behind tall columns; joint idle for grounded units once joints exist;
+3. The map, next: ally wrecks left on the map with a death animation (Ryan, 22
+   September; a wrecked machine leaves the field today); the contact transition into the
+   skirmish (proposal in chat, 22 September); an outline for units behind tall columns; joint idle for grounded units once joints exist;
    the contact transition (camera flattening into the skirmish); whether squads leave
    corruption in their wake; tune every knob with all three chrome colours; delete the
    dead sprite loaders (`Sprites.combat_mech`/`map_mech`, the skirmish's sprite fallback,

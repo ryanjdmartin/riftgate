@@ -293,6 +293,10 @@ func _draw() -> void:
 		mat.set_shader_parameter("source_count", src.size())
 		src.resize(Bleed.MAX_SOURCES)
 		mat.set_shader_parameter("sources", src)
+		var holes := Bleed.holes(field, _origin, HEX_SIZE, _anim_px)
+		mat.set_shader_parameter("hole_count", holes.size())
+		holes.resize(Bleed.MAX_HOLES)
+		mat.set_shader_parameter("holes", holes)
 		mat.set_shader_parameter("focus_y", (size.y * 0.5 - scroll_y) / zoom)
 		mat.set_shader_parameter("scroll", Vector2(scroll_x, scroll_y))
 		mat.set_shader_parameter("zoom", zoom)
@@ -375,13 +379,17 @@ func _draw() -> void:
 			var pts: PackedVector2Array = [center(sq.pos)]
 			for step in path:
 				pts.append(center(step))
-			# The line stops at the destination's edge; the target inside it is the effect.
-			pts[pts.size() - 1] = pts[pts.size() - 2].lerp(pts[pts.size() - 1], 0.5)
+			var owned := not (contact_hexes.has(dest) or map.gate_hexes.has(dest))
+			if owned:
+				# The line runs through the outline to the target's outer ring: line,
+				# tint, outline and rings are one component (Ryan, 22 September).
+				var dc := pts[pts.size() - 1]
+				var dir := (dc - pts[pts.size() - 2]).normalized()
+				pts[pts.size() - 1] = dc - dir * DEST_RING
 			draw_polyline(pts, Color(Palette.BG, 0.75), 10.0)
 			draw_polyline(pts, Color(Palette.ENEMY, 0.95), 5.0)
-			if contact_hexes.has(dest) or map.gate_hexes.has(dest):
-				continue   # the contact effect owns this hex; the gate is a strike
-			_destination_effect(center(dest))
+			if owned:
+				_destination_effect(center(dest))
 
 	# The player's plotted routes, ending in a small marker hex.
 	for uid in routes.keys():
@@ -400,16 +408,9 @@ func _draw() -> void:
 	# units about to engage lit, and nothing of the next phase shows until they are done.
 	if not pending.is_empty() and _anim.is_empty():
 		for group in pending:
-			var mid := Vector2.ZERO
-			var top_y := INF
 			var lit := _highlight.is_empty() or _highlight.has((group[0] as Unit).pos)
 			for u in group:
-				var c := center(u.pos)
-				mid += c
-				top_y = minf(top_y, c.y)
-				_contact_effect(c, lit)
-			mid /= float(group.size())
-			_plaque(Vector2(mid.x, top_y - HEX_SIZE * 0.95), "CONTACT // " + contact_text(group), Palette.ENEMY, 2.0)
+				_contact_effect(center(u.pos), lit)
 	# The plan as it will resolve, from the resolver itself run dry (Ryan, 21 September:
 	# never ambiguous): every contact group, every squad stopped by a body block, every
 	# route that will be rejected.
@@ -520,14 +521,34 @@ func _draw_tags() -> void:
 ## again. Dimmed when another contact is the one being looked at.
 var _ring_t := 0.0
 
+const DEST_RING := HEX_SIZE * 0.78   # the target's outer ring, where the intent line arrives
+
 func _destination_effect(c: Vector2) -> void:
-	var breath := 0.5 + 0.5 * sin(_ring_t * 3.0)
 	draw_colored_polygon(Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, 0.30))
-	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, 0.8), 2.0)
+	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, 0.95), 4.0)
+	_target_rings(c, Palette.ENEMY, DEST_RING, 1.0)
+	draw_circle(c, 4.0, Palette.ENEMY)
+
+
+## Three concentric rings of broken arcs turning against each other: the display's own
+## target lock, brought back from the first cut (Ryan, 22 September).
+func _target_rings(c: Vector2, col: Color, r: float, dir: float) -> void:
 	for k in range(3):
-		var r := HEX_SIZE * (0.22 + 0.2 * k) * (0.85 + 0.15 * breath)
-		draw_arc(c, r, 0.0, TAU, 32, Color(Palette.ENEMY, 0.95 - 0.2 * k), 2.5)
-	draw_circle(c, 3.5, Palette.ENEMY)
+		var rad := r * (0.45 + 0.275 * k)
+		var segs := 4 + k * 2
+		var a0 := _ring_t * dir * (1.2 - 0.3 * k) * (1.0 if k % 2 == 0 else -1.0)
+		for sgm in range(segs):
+			var a := a0 + TAU * float(sgm) / float(segs)
+			draw_arc(c, rad, a, a + TAU / float(segs) * 0.55, 8, Color(col, 0.95 - 0.15 * k), 2.5)
+
+
+## Under a machine's own destination marker: two faint rings breathing, in the display's
+## light, so the plan's ends read as the same language as the enemy's, quieter.
+func _ally_target(c: Vector2, col: Color) -> void:
+	var breath := 0.5 + 0.5 * sin(_ring_t * 2.5)
+	for k in range(2):
+		var r := HEX_SIZE * (0.3 + 0.22 * k) * (0.9 + 0.1 * breath)
+		draw_arc(c, r, 0.0, TAU, 32, Color(col, 0.4 - 0.12 * k), 1.5)
 
 
 func _contact_effect(c: Vector2, lit: bool) -> void:
@@ -552,7 +573,7 @@ func _zone(h: Vector2i, col: Color) -> void:
 		if n == h:
 			continue
 		var pts := Hex.corners(center(n), HEX_SIZE)
-		draw_colored_polygon(pts, Color(col, 0.13))
+		draw_colored_polygon(pts, Color(col, 0.08))
 	for n in cluster.keys():
 		if n == h:
 			continue
@@ -564,7 +585,7 @@ func _zone(h: Vector2i, col: Color) -> void:
 		for i in range(6):
 			var across: Vector2i = nb[(6 - i) % 6]
 			if not cluster.has(across):
-				draw_line(pts[i], pts[(i + 1) % 6], Color(col, 0.75), 2.0)
+				draw_line(pts[i], pts[(i + 1) % 6], Color(col, 0.5), 2.0)
 
 
 func _dotted_poly(pts: PackedVector2Array, col: Color, dash: float) -> void:

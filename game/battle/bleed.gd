@@ -39,12 +39,29 @@ static func sources(field: Battlefield, origin: Vector2, hex_px: float, moving: 
 	return out
 
 
+## Where the bleed keeps off: a machine is the reconstruction's own, so the other world's
+## dither never draws over it (Ryan, 22 September). (x, y, radius) in map pixels.
+const HOLE_RADIUS_HEX := 0.9
+const MAX_HOLES := 8
+
+static func holes(field: Battlefield, origin: Vector2, hex_px: float, moving: Dictionary = {}) -> PackedVector3Array:
+	var out := PackedVector3Array()
+	for m in field.mechs():
+		if out.size() >= MAX_HOLES:
+			break
+		var p: Vector2 = origin + (moving[m.id] if moving.has(m.id) else Hex.to_pixel(m.pos, hex_px))
+		out.append(Vector3(p.x, p.y, HOLE_RADIUS_HEX * hex_px))
+	return out
+
+
 ## The bleed at a map pixel, 0 to 1.
-static func at(px: Vector2, grad: Vector2, src: PackedVector3Array) -> float:
+static func at(px: Vector2, grad: Vector2, src: PackedVector3Array, hole: PackedVector3Array = PackedVector3Array()) -> float:
 	var m := 1.0 - clampf((px.y - grad.x) / maxf(1.0, grad.y - grad.x), 0.0, 1.0)
 	for s in src:
 		var d := px.distance_to(Vector2(s.x, s.y))
 		m = maxf(m, 1.0 - smoothstep(s.z * 0.55, s.z, d))
+	for h in hole:
+		m *= smoothstep(h.z * 0.5, h.z, px.distance_to(Vector2(h.x, h.y)))
 	return m
 
 

@@ -482,12 +482,15 @@ func _show_contacts() -> void:
 	warn.modulate = Color(1, 1, 1, 0)
 	add_child(warn)
 	var tw := create_tween()
-	tw.tween_property(warn, "modulate", Color(1, 1, 1, 1), 0.12)
-	tw.tween_interval(0.25)
-	tw.tween_property(warn, "modulate", Color(1, 1, 1, 0.15), 0.08)
-	tw.tween_property(warn, "modulate", Color(1, 1, 1, 1), 0.08)
-	tw.tween_interval(0.45)
-	tw.tween_property(warn, "modulate", Color(1, 1, 1, 0), 0.2)
+	# Three beats, drawn out (Ryan, 22 September: one flash looked accidental).
+	tw.tween_property(warn, "modulate", Color(1, 1, 1, 1), 0.3)
+	tw.tween_interval(0.6)
+	for _i in range(2):
+		tw.tween_property(warn, "modulate", Color(1, 1, 1, 0.1), 0.15)
+		tw.tween_interval(0.12)
+		tw.tween_property(warn, "modulate", Color(1, 1, 1, 1), 0.15)
+		tw.tween_interval(0.55)
+	tw.tween_property(warn, "modulate", Color(1, 1, 1, 0), 0.4)
 	tw.tween_callback(warn.queue_free)
 	tw.tween_callback(_build_contact_panel)
 	if DisplayServer.get_name() == "headless":
