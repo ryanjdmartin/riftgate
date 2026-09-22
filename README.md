@@ -72,7 +72,7 @@ godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmis
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/battle_screen.tscn shot.png route
 
 # build ally units from their briefs (tools/lowforge/models_low.py), then re-import
-tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger sparrowhawk
+tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger sparrowhawk clydesdale
 godot --headless --path . --import
 godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva hero.png front 480 480
 

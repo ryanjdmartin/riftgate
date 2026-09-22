@@ -154,6 +154,113 @@ def sparrowhawk(b):
 sparrowhawk.maker = "kestrel"
 
 
+def clydesdale(b):
+    """Wainwright & Sutler "Clydesdale": a massive, boxy, heavily armoured quadruped, the
+    wagon-builder's walker, unchanged in a century. An ironclad wagon body, slab-sided in
+    riveted iron with chamfered shoulders, on four thick columnar legs that step fore and
+    aft only (the notorious turning circle); a low armoured head on a short neck, a visor
+    slit under a brow, lamps at the temples; on top a wagon bed in the maker's brown
+    carrying the whole payload: two twin-autogun turrets forward, the lance along the spine
+    running out past the head, the pocket mortar aft, ablative slabs bolted on the flanks,
+    the heat sink and a stack at the tail. Bone-white flared skirts over the hooves, the
+    namesake's feathering. First pass from the content's fantasy (22 September)."""
+    # The body: an ironclad casemate, one loft from tail to shoulders with a short taper
+    # to the neck. A keel under it, a hitch at the tail.
+    b.loft([(-36.0, _case(36.0, 26.0, 46.0, 5.0)), (22.0, _case(36.0, 26.0, 46.0, 5.0)), (30.0, _case(30.0, 27.0, 44.0, 4.0))], "steel.panel", "hull")
+    b.box(-10.0, 10.0, -30.0, 18.0, 23.0, 26.0, "steel.dark", "keel")
+    b.box(-3.0, 3.0, -42.0, -36.0, 24.0, 28.0, "steel.dark", "hitch")
+    # The neck and head: lower than the body, so it reads as an animal and not a tank.
+    b.loft([(30.0, rect(0.0, 26.0, 30.0, 44.0)), (36.0, rect(0.0, 22.0, 24.0, 40.0))], "steel.plate", "neck")
+    b.box(-12.0, 12.0, 36.0, 52.0, 20.0, 38.0, "steel.panel", "head")
+    b.box(-13.0, 13.0, 44.0, 53.5, 38.0, 41.5, "steel.plate", "brow")
+    b.box(-10.0, 10.0, 52.0, 53.0, 28.0, 34.0, "glass.glass", "visor")
+    b.box(-9.0, 9.0, 48.0, 54.0, 20.0, 25.0, "steel.dark", "chin")
+    for s in (-1.0, 1.0):
+        b.box(min(s * 12.0, s * 13.5), max(s * 12.0, s * 13.5), 44.0, 49.0, 30.0, 35.0, "amber.light", "lamp")
+    # The legs: a hip cuff on the flank, a hinge pin, a thigh angling out and (fore pair)
+    # forward or (hind pair) back, a knee, a shin straight down into a flared bone skirt
+    # and a broad hoof. Nothing hangs below z = 0, the ground.
+    for yh, splay in ((16.0, 6.0), (-24.0, -6.0)):
+        for s in (-1.0, 1.0):
+            hip = (s * 26.0, yh, 37.0)
+            knee = (s * 30.0, yh + splay, 20.0)
+            ankle = (s * 30.0, yh + splay * 1.5, 6.0)
+            b.box(min(s * 18.0, s * 24.0), max(s * 18.0, s * 24.0), yh - 7.0, yh + 7.0, 30.0, 44.0, "steel.panel", "hip")
+            b.prism("x", hip[0], hip[1], hip[2], 6.0, 6.0, "steel.dark", 6, "hip_pin")
+            _beam(b, hip, knee, _sq(10.0, 12.0), _sq(9.0, 10.0), "steel.plate", "thigh")
+            b.prism("x", knee[0], knee[1], knee[2], 5.5, 12.0, "steel.dark", 6, "knee")
+            _beam(b, knee, ankle, _sq(8.0, 9.0), _sq(8.0, 8.0), "steel.panel", "shin")
+            _rings(b, [[(ankle[0] + u, ankle[1] + v, 12.0) for u, v in _sq(9.0, 9.0)],
+                       [(ankle[0] + u, ankle[1] + v, 3.0) for u, v in _sq(16.0, 16.0)]], "bone.bone", "feather")
+            b.box(ankle[0] - 7.0, ankle[0] + 7.0, ankle[1] - 8.0, ankle[1] + 8.0, 0.0, 5.0, "steel.dark", "hoof")
+    # The bed: a deck plate and low boards round it in the maker's brown, the wagon's own.
+    b.box(-19.0, 19.0, -34.0, 20.0, 46.0, 48.0, "steel.plate", "deck")
+    for s in (-1.0, 1.0):
+        b.box(min(s * 19.0, s * 22.0), max(s * 19.0, s * 22.0), -35.0, 21.0, 46.0, 56.0, "livery.livery2", "bed_side")
+    b.box(-22.0, 22.0, 18.0, 21.0, 46.0, 54.0, "livery.livery2", "bed_front")
+    b.box(-22.0, 22.0, -35.0, -32.0, 46.0, 54.0, "livery.livery2", "bed_tail")
+    # Twin autoguns: a turret ring, a mount and two barrels, one turret each side forward.
+    for s in (-1.0, 1.0):
+        tx = s * 11.0
+        b.prism("z", tx, 8.0, 49.0, 6.0, 2.0, "steel.dark", 8, "ring")
+        b.box(tx - 5.0, tx + 5.0, 3.0, 13.0, 50.0, 60.0, "steel.panel", "turret")
+        for s2 in (-1.0, 1.0):
+            b.prism("y", tx + s2 * 2.6, 24.0, 56.0, 1.8, 22.0, "steel.dark", 6, "autogun")
+        b.box(tx - 2.0, tx + 2.0, 13.0, 15.0, 57.0, 59.0, "amber.light", "sight")
+        b.pin("hp_%d" % (1 if s < 0 else 2), (tx, 8.0, 56.0))
+    # The lance: a breech block aft of centre, saddles along the deck, one long six-sided
+    # rail out past the head, a collar, a lit emitter at the point.
+    b.box(-5.0, 5.0, -24.0, -6.0, 48.0, 61.0, "steel.panel", "breech")
+    b.box(-3.5, 3.5, 6.0, 10.0, 48.0, 54.0, "steel.dark", "saddle")
+    _beam(b, (0.0, -26.0, 57.0), (0.0, 64.0, 57.0), _poly(3.4, 6), _poly(2.8, 6), "steel.dark", "lance")
+    b.prism("y", 0.0, 24.0, 57.0, 4.8, 5.0, "steel.plate", 6, "guard")
+    _beam(b, (0.0, 64.0, 57.0), (0.0, 72.0, 57.0), _poly(2.8, 6), _poly(0.8, 6), "amber.light", "emitter")
+    b.pin("hp_3", (0.0, -15.0, 57.0))
+    # The pocket mortar aft on the deck, a stubby tube pitched up and forward on a base.
+    b.prism("z", -9.0, -24.0, 49.5, 5.0, 3.0, "steel.dark", 8, "mortar_base")
+    _beam(b, (-9.0, -24.0, 51.0), (-9.0, -16.0, 65.0), _poly(4.0, 6), _poly(4.4, 6), "steel.panel", "mortar")
+    _beam(b, (-9.0, -16.0, 65.0), (-9.0, -15.0, 66.8), _poly(4.4, 6), _poly(3.2, 6), "steel.dark", "muzzle")
+    b.pin("hp_4", (-9.0, -20.0, 58.0))
+    # Ablative plating: two bolted slabs each flank, standing proud of the hull.
+    for s in (-1.0, 1.0):
+        for y0, y1 in ((-30.0, -9.0), (-6.0, 15.0)):
+            b.box(min(s * 18.0, s * 21.5), max(s * 18.0, s * 21.5), y0, y1, 28.0, 44.0, "steel.plate", "ablative")
+    b.pin("hp_5", (-21.5, -7.0, 36.0))
+    # The heat sink across the tail, its stack up through the bed.
+    b.box(-13.0, 13.0, -40.0, -36.0, 28.0, 44.0, "steel.vent", "heat_sink")
+    b.prism("z", 9.0, -28.0, 58.0, 2.8, 20.0, "steel.dark", 6, "stack")
+    b.pin("hp_6", (0.0, -38.0, 36.0))
+
+
+clydesdale.maker = "wainwright_sutler"
+
+
+def _case(w, z0, z1, c):
+    """An ironclad's casemate section: a rectangle with its top corners chamfered by `c`."""
+    return [(-w / 2, z0), (w / 2, z0), (w / 2, z1 - c), (w / 2 - c, z1), (-w / 2 + c, z1), (-w / 2, z1 - c)]
+
+
+def _sq(w, h):
+    """A rectangular profile for `_beam`, centred: (across, up) pairs."""
+    return [(-w / 2, -h / 2), (w / 2, -h / 2), (w / 2, h / 2), (-w / 2, h / 2)]
+
+
+def _poly(r, n, phase=0.0):
+    """A regular polygon profile for `_beam`."""
+    return [(r * math.cos(phase + i * 2.0 * math.pi / n), r * math.sin(phase + i * 2.0 * math.pi / n)) for i in range(n)]
+
+
+def _beam(b, p0, p1, ring0, ring1, material, label):
+    """A straight member from `p0` to `p1` in world space: a profile (across, up) at each
+    end lofted along the line between them, `across` horizontal. Legs, rails, tubes."""
+    d = (Vector(p1) - Vector(p0)).normalized()
+    up = Vector((0.0, 0.0, 1.0))
+    side = Vector((1.0, 0.0, 0.0)) if abs(d.dot(up)) > 0.999 else d.cross(up).normalized()
+    up = side.cross(d).normalized()
+    rings = [[Vector(p) + side * u + up * v for u, v in ring] for p, ring in ((p0, ring0), (p1, ring1))]
+    return _rings(b, rings, material, label)
+
+
 def _fuse(w, top, bottom):
     """A fuselage section: six points, `top` above the centreline and `bottom` below it,
     so the top and belly can taper at different rates."""

@@ -65,7 +65,7 @@ The skirmish's outcome button says where back leads (`SkirmishScreen.back_label`
 
 **Ally art, locked (21 September).** The mid-nineties 3D register, built by `tools/lowforge`:
 `models_low.py` holds one function of numbers per chassis id (`badger`, `sparrowhawk`,
-plus `gate` and `wall`), `bl_low.py` the primitives, maker metals (`MAKERS`) and the tile
+`clydesdale`, plus `gate` and `wall`), `bl_low.py` the primitives, maker metals (`MAKERS`) and the tile
 generator; `forge.py build <id>` writes `art/models/<id>.glb` and a working
 `tools/lowforge/models/<id>.blend` (tiles packed); `forge.py export <id>` turns a
 hand-edited .blend back into the glTF with its Empties (joints `joint_*`, pins `hp_*`);
@@ -177,8 +177,12 @@ ground level.
 **Open, in the order I would take them.**
 
 1. Ryan: Badger tweaks in Blender, joints and pins; then `forge.py export badger`, and
-   tune the strike swing. Then briefs for the Clydesdale and the Anvil (they borrow the
-   Badger's model until then).
+   tune the strike swing. The Clydesdale has a first pass (22 September, from the
+   content's fantasy, no brief from Ryan yet): an ironclad wagon body on four columnar
+   legs, a low head on a neck, a wagon bed in W&S brown carrying the loadout (two
+   autogun turrets, the lance along the spine, the mortar aft, ablative slabs on the
+   flanks, the heat sink at the tail), bone skirts over the hooves; six `hp_` pins, no
+   joints. Ryan's notes next, by render. The Anvil still borrows the Badger's model.
 2. Ryan's content: names for overheating and scorch; place strikes, breach, scorch,
    disable and rapid on foes and components; Ablative Plating as armour or shield; line
    versus "direct"; the Badger's loadout and claw numbers; Aphelion and the Arsenal; CARE's
