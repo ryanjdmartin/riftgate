@@ -627,7 +627,9 @@ func _zone(h: Vector2i, col: Color) -> void:
 		# far side is outside the cluster.
 		for i in range(6):
 			var across: Vector2i = nb[(6 - i) % 6]
-			if not cluster.has(across):
+			# No edge against the wall, the gate or the map's end: nothing comes from there,
+			# and the line ran along the wall's top (Ryan, 22 September).
+			if not cluster.has(across) and field.map.has(across) and not field.map.is_structure(across):
 				draw_line(pts[i], pts[(i + 1) % 6], Color(col, 0.5), 2.0)
 
 

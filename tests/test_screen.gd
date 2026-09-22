@@ -128,10 +128,11 @@ func test_die_hold_shows_every_face_with_what_applies_to_it() -> void:
 	assert_true(s._details_faces.visible, "face list shown")
 	assert_eq(s._details_faces.faces.size(), 4, "four faces in the column")
 	assert_eq(s._details_faces.current, s.sk.mechs[2].face_index, "current face highlighted")
-	assert_false(text.contains("Hot Hands"), "the passive is not in the heading")
+	var passive_name := str(ContentDB.load_default().chassis.get(s.sk.mechs[2].unit.chassis_id, {}).get("passive", {}).get("name", ""))
+	assert_false(text.contains(passive_name), "the passive is not in the heading")
 	var tagged := false
 	for l in s._details_faces.labels:
-		if str(l).contains("Hot Hands"):
+		if str(l).contains(passive_name):
 			tagged = true
 	assert_true(tagged, "but each entry it changes says so (the Sparrowhawk's doubled damage and heat)")
 	s._on_hold_released()
@@ -167,7 +168,8 @@ func test_double_tap_opens_and_closes_the_codex() -> void:
 	var headless := DisplayServer.get_name() == "headless"   # no renderer: the model view cannot draw
 	assert_true(headless or (s._codex._sprite.visible and s._codex._sprite.texture != null), "head-on model shown")
 	assert_true(s._codex._passive.visible, "sparrowhawk's passive is shown")
-	assert_true(s._codex._passive.text.to_lower().contains("hot hands"), "by name")
+	var passive_name := str(ContentDB.load_default().chassis.get(s.sk.mechs[2].unit.chassis_id, {}).get("passive", {}).get("name", "")).to_lower()
+	assert_true(not passive_name.is_empty() and s._codex._passive.text.to_lower().contains(passive_name), "by its name from content")
 	assert_true(s._codex._faces.visible and s._codex._faces.faces.size() == 4, "faces listed visually")
 	s._close_codex()
 	s.free()
