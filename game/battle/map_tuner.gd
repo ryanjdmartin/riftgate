@@ -17,7 +17,7 @@ func _init(map: BattleMapView) -> void:
 	_rows.position = Vector2(12, 10)
 	_rows.add_theme_constant_override("separation", 4)
 	add_child(_rows)
-	_option("TRACE", ["light", "assets", "ink", "off"], func(i: int) -> void: _m3d().set_trace_mode(["light", "assets", "ink", "off"][i]))
+	_option("TRACE", ["assets", "light", "ink", "off"], func(i: int) -> void: _m3d().set_trace_mode(["assets", "light", "ink", "off"][i]))
 	_slider("TRACE GAIN", 0.0, 2.5, 1.0, func(v: float) -> void: _m3d().set_trace_gain(v))
 	_slider("BLOOM", 0.0, 2.0, 0.8, func(v: float) -> void: _m3d().set_glow(v))
 	_slider("GRID", 0.0, 1.6, 0.7, func(v: float) -> void: _m3d().set_grid(v))

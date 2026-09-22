@@ -109,9 +109,7 @@ func set_field(f: Battlefield) -> void:
 		mat.set_shader_parameter("painted2", _painted2.get_texture())
 		mat.set_shader_parameter("map_size", map_size)
 		mat.set_shader_parameter("view_size", size)
-		var hex_w := sqrt(3.0) * HEX_SIZE
-		var left := _origin.x - hex_w * 0.5
-		mat.set_shader_parameter("play_x", Vector2(left, left + hex_w * (field.map.width + 0.5)))
+		mat.set_shader_parameter("play_x", _frame_x())   # sharp inside the frame's lines, soft outside
 		mat.set_shader_parameter("south_y", _origin.y + Hex.to_pixel(field.map.gate, HEX_SIZE).y + HEX_SIZE * 0.75)
 		_composite.material = mat
 		_mix.add_child(_composite)
@@ -305,9 +303,9 @@ func _draw() -> void:
 			# The frame: the field's two boundary lines in the display's light, a tick on
 			# every row's centre with the row's number, and a sector readout at each end, so
 			# the playable area has a viewfinder's edge and the blur runs into it.
-			var hex_w := sqrt(3.0) * HEX_SIZE
-			var left := _origin.x - hex_w * 0.5 - HEX_SIZE * 0.55
-			var right := left + hex_w * (map.width + 0.5) + HEX_SIZE * 1.1
+			var fx := _frame_x()
+			var left := fx.x
+			var right := fx.y
 			var top := _origin.y - HEX_SIZE
 			var bottom := _origin.y + Hex.to_pixel(map.gate, HEX_SIZE).y - HEX_SIZE * 1.5 * (BattleMap.GATE_ROWS - 0.5)
 			var fc := Color(hud, frame_alpha)
@@ -355,12 +353,19 @@ func _draw() -> void:
 		var path: Array = field.intents.get(sq.id, [])
 		if path.is_empty():
 			continue
+		# A dark underline first, so the red reads on any ground.
 		var prev := center(sq.pos)
 		for step in path:
 			var p := center(step)
-			draw_line(prev, p, Color(Palette.ENEMY, 0.75), 3.0)
+			draw_line(prev, p, Color(Palette.BG, 0.7), 6.0)
 			prev = p
-		draw_circle(prev, 5.0, Palette.ENEMY)
+		prev = center(sq.pos)
+		for step in path:
+			var p := center(step)
+			draw_line(prev, p, Color(Palette.ENEMY, 0.9), 3.0)
+			prev = p
+		draw_circle(prev, 6.0, Palette.BG)
+		draw_circle(prev, 4.5, Palette.ENEMY)
 
 	# The player's plotted routes, ending in a small marker hex.
 	for uid in routes.keys():
@@ -384,12 +389,16 @@ func _draw() -> void:
 		var ends: Dictionary = pv["ends"]
 		for group in res.skirmishes:
 			var mid := Vector2.ZERO
+			var top_y := INF
 			for u in group:
 				var c := center(ends[u.id])
 				mid += c
+				top_y = minf(top_y, c.y)
 				Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 5.0), Color(Palette.ENEMY, 0.85), 2.0)
 			mid /= float(group.size())
-			_plaque(mid + Vector2(0.0, -HEX_SIZE * 0.9), "CONTACT", Palette.ENEMY, 2.0)
+			# Who is in it: the machines against the squads, so the player knows what the
+			# skirmish will hold before locking in (Ryan, 22 September).
+			_plaque(Vector2(mid.x, top_y - HEX_SIZE * 0.95), "CONTACT // " + contact_text(group), Palette.ENEMY, 2.0)
 		for sid in res.blocked:
 			var sq := field.unit_by_id(sid)
 			if sq != null:
@@ -464,6 +473,26 @@ func _draw_tags() -> void:
 		var edge_y := rect.position.y - 1.0 if above else rect.end.y + 1.0
 		var dir := -1.0 if above else 1.0
 		draw_colored_polygon(PackedVector2Array([Vector2(mid - 6.0, edge_y), Vector2(mid + 6.0, edge_y), Vector2(mid, edge_y + 6.0 * dir)]), border)
+
+
+## "Badger + Sparrowhawk vs ghouls ×6 + necromancers ×3": one contact group, in words.
+static func contact_text(group: Array) -> String:
+	var mechs: Array[String] = []
+	var squads: Array[String] = []
+	for u in group:
+		if u.is_player():
+			mechs.append(str(u.display_name))
+		else:
+			squads.append("%s ×%d" % [u.display_name, u.strength] if u.strength > 0 else str(u.display_name).to_upper())
+	return " + ".join(mechs) + " vs " + " + ".join(squads)
+
+
+## The frame's left and right lines in map pixels: the field plus a little, and the line
+## the side blur begins at.
+func _frame_x() -> Vector2:
+	var hex_w := sqrt(3.0) * HEX_SIZE
+	var left := _origin.x - hex_w * 0.5 - HEX_SIZE * 0.55
+	return Vector2(left, left + hex_w * (field.map.width + 0.5) + HEX_SIZE * 1.1)
 
 
 ## The dry run of the phase, redone only when the plan changes.

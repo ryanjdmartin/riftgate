@@ -152,6 +152,7 @@ func test_two_mechs_alone_are_not_a_skirmish() -> void:
 func test_boss_covers_three_hexes_and_blocks_them() -> void:
 	var f := _field()
 	var boss := f.add_unit(Unit.boss(1, "colossus", _o(3, 5)))
+	boss.footprint = Unit.TRIANGLE.duplicate()   # the wide footprint, kept in the engine for later
 	assert_eq(boss.hexes().size(), 3, "three hexes")
 	for h in boss.hexes():
 		assert_eq(f.unit_at(h), boss, "boss found at %s" % str(h))
@@ -165,6 +166,7 @@ func test_boss_covers_three_hexes_and_blocks_them() -> void:
 func test_boss_touches_from_any_of_its_hexes() -> void:
 	var f := _field()
 	var boss := f.add_unit(Unit.boss(1, "colossus", _o(3, 5)))
+	boss.footprint = Unit.TRIANGLE.duplicate()
 	var far_hex: Vector2i = boss.hexes()[2]
 	var spot := Vector2i.ZERO
 	for n in Hex.neighbors(far_hex):
@@ -324,3 +326,16 @@ func test_a_replot_moves_the_mech_to_the_end_of_the_order() -> void:
 	var a_dests: Array = b.destinations_for(a_unit).keys()
 	assert_true(b.set_route(a_unit, a_dests[a_dests.size() - 1]), "A re-plotted")
 	assert_eq(b.routes.keys(), [b_unit.id, a_unit.id], "now B then A: the re-plot goes last")
+
+
+func test_a_boss_patrols_its_zone_outside_the_rift() -> void:
+	var f := _field(7, 14)
+	var rift_o := Hex.axial_to_offset(f.map.rift)
+	var boss := f.add_unit(Unit.boss(1, "colossus", _o(rift_o.x, rift_o.y + 2)))
+	for i in range(6):
+		f.compute_intents()
+		var path: Array = f.intents[boss.id]
+		assert_true(path.size() <= 1, "one step at most")
+		f.resolve_phase({})
+		assert_true(Hex.distance(boss.pos, f.map.rift) <= Battlefield.BOSS_ZONE, "stays within its zone (phase %d)" % i)
+		assert_false(f.map.rift_hexes.has(boss.pos), "never on the rift itself")

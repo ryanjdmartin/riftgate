@@ -89,7 +89,7 @@ static var _tiles: Dictionary = {}
 ##             edge through a dithered, pixel-stepped boundary, under the mechs.
 ##   "ground": the reconstruction's tile alone.
 ## All wear the display's hex grid in the HUD colour, fading from the band's edges.
-static func draw_ground(ci: CanvasItem, rect: Rect2, terrain: int, seed_value: int, hex: float = 30.0, style: String = "ground", frame: int = 0) -> void:
+static func draw_ground(ci: CanvasItem, rect: Rect2, terrain: int, seed_value: int, hex: float = 44.0, style: String = "ground", frame: int = 0, time: float = 0.0) -> void:
 	var name: String = TILE.get(terrain, "dirt")
 	if not _tiles.has(name):
 		var path := "res://art/terrain/%s.png" % name
@@ -98,6 +98,7 @@ static func draw_ground(ci: CanvasItem, rect: Rect2, terrain: int, seed_value: i
 	var w := sqrt(3.0) * hex
 	if style == "other":
 		_overworld(ci, rect, terrain, seed_value, hex, frame)
+		_tear(ci, rect, time)
 	else:
 		if tile != null:
 			ci.draw_texture_rect(tile, rect, true, Color(0.62, 0.62, 0.62, 1.0))
@@ -124,8 +125,9 @@ static func draw_ground(ci: CanvasItem, rect: Rect2, terrain: int, seed_value: i
 					col_i += 1
 				cy += cell
 				row_i += 1
+	# The display's grid, faint, on the same lattice as the ground's own hexes.
 	var row := 0
-	var y := rect.position.y + hex
+	var y := rect.position.y + hex * 0.5
 	while y < rect.end.y + hex:
 		var x := rect.position.x + (w * 0.5 if row % 2 == 1 else 0.0)
 		while x < rect.end.x + w:
@@ -133,7 +135,7 @@ static func draw_ground(ci: CanvasItem, rect: Rect2, terrain: int, seed_value: i
 			var edge := minf(c.y - rect.position.y, rect.end.y - c.y) / (rect.size.y * 0.5)
 			var fade := clampf(edge * 1.6, 0.0, 1.0)
 			if fade > 0.05:
-				ci.draw_polyline(Hex.corners(c, hex - 1.5), Color(Palette.HUD, 0.28 * fade), 1.0, true)
+				ci.draw_polyline(Hex.corners(c, hex - 1.5), Color(Palette.HUD, 0.14 * fade), 1.0, true)
 			x += w
 		y += hex * 1.5
 		row += 1
@@ -146,8 +148,22 @@ static func draw_ground(ci: CanvasItem, rect: Rect2, terrain: int, seed_value: i
 		ci.draw_rect(Rect2(rect.position.x, rect.end.y - (i + 1) * h, rect.size.x, h), Color(Palette.BG, a))
 
 
+## The corrupted side's tear, as the map's compositor does it: now and then one thin band
+## darkens for a tick.
+static func _tear(ci: CanvasItem, rect: Rect2, t: float) -> void:
+	var tick := floorf(t * 6.0)
+	var y := rect.position.y
+	var band := 0
+	while y < rect.end.y:
+		var h := fmod(sin(float(band) * 12.9898 + tick * 7.31) * 43758.5453, 1.0)
+		if absf(h) > 0.997:
+			ci.draw_rect(Rect2(rect.position.x, y, rect.size.x, 6.0), Color(0, 0, 0, 0.12))
+		y += 6.0
+		band += 1
+
+
 ## The other world's overworld across a rect: the painted map's hexes, its fills and
-## marks, at its two-frame animation (shared with PaintedMap).
+## marks, at its two-frame animation (shared with PaintedMap), on the display grid's lattice.
 static func _overworld(ci: CanvasItem, rect: Rect2, terrain: int, seed_value: int, hex: float, frame: int) -> void:
 	ci.draw_rect(rect, _other_fill(terrain, rect.position, seed_value))
 	var w := sqrt(3.0) * hex
@@ -157,7 +173,7 @@ static func _overworld(ci: CanvasItem, rect: Rect2, terrain: int, seed_value: in
 	while y < rect.end.y + hex:
 		var x := rect.position.x + (w * 0.5 if row % 2 == 1 else 0.0)
 		while x < rect.end.x + w:
-			draw_other_hex(ci, Vector2(x, y), hex, terrain, seed_value + k * 7919, frame, rect)
+			draw_other_hex(ci, Vector2(x, y), hex, terrain, seed_value + k * 7919, frame, Rect2(), 0.18)
 			x += w
 			k += 1
 		y += hex * 1.5
@@ -189,7 +205,7 @@ const OTHER_GRID := Color("1a3a12")
 ## One hex of the other world: a flat bright fill and a few chunky marks at a coarse
 ## scale; the second frame nudges what moves (waves, leaves, grass, smoke). `clip`, when
 ## given, keeps marks inside a band.
-static func draw_other_hex(ci: CanvasItem, c: Vector2, hex_px: float, t: int, seed_value: int, frame: int = 0, clip: Rect2 = Rect2()) -> void:
+static func draw_other_hex(ci: CanvasItem, c: Vector2, hex_px: float, t: int, seed_value: int, frame: int = 0, clip: Rect2 = Rect2(), grid_alpha: float = 0.35) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value
 	var base: Color = OTHER.get(t, OTHER[BattleMap.Terrain.PLAIN])
@@ -236,7 +252,7 @@ static func draw_other_hex(ci: CanvasItem, c: Vector2, hex_px: float, t: int, se
 				ci.draw_colored_polygon(peak, Color("6a4020"))
 				ci.draw_colored_polygon(PackedVector2Array([peak[1], peak[2], p + Vector2(w * 0.2, w * 0.7)]), Color("a06a38"))
 				ci.draw_colored_polygon(PackedVector2Array([p + Vector2(-w * 0.3, -w * 0.45), p + Vector2(0.0, -w * 1.1), p + Vector2(w * 0.3, -w * 0.45)]), Color("f8f8f8"))
-	Hud.stroke_poly(ci, pts, Color(OTHER_GRID, 0.35), 1.0)
+	Hud.stroke_poly(ci, pts, Color(OTHER_GRID, grid_alpha), 1.0)
 
 
 static func _in_hex(rng: RandomNumberGenerator, r: float) -> Vector2:

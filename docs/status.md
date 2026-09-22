@@ -4,7 +4,7 @@ Handoff note for the next session. Replace stale lines; keep it under a screen.
 
 ## As of 22 September 2026
 
-**State.** Everything committed. Tests: 157 tests, 2243 checks, green. Ryan writes
+**State.** Everything committed. Tests: 158 tests, 2260 checks, green. Ryan writes
 `content/*.json` in his own voice (reload after any pass that touches it). The rules are in
 `docs/vocabulary.md` (generated) and every decision in `docs/design-bible.html`; the
 vocabulary carries an `order_of_operations` rule that the engine follows. Chassis ids:
@@ -36,8 +36,9 @@ is emissive, glass glossy. `tools/hero_shot.gd` renders one unit large. The skir
 (decided 21 September): `TerrainArt.draw_ground` styles "other" (the overworld, two
 frames, under the foes) and "seam" (the tile with the other world dithering into it from
 above, under the mechs); the overworld hex drawing is `TerrainArt.draw_other_hex`, shared
-with `PaintedMap`. The skirmish's mech views carry the trace and its backdrop's bar lights
-them (`MechView3D.set_sweep_screen`; `trace.gdshader` takes a `screen_down` vector). Sparrowhawk locked;
+with `PaintedMap`. The skirmish backdrop draws each ground band in a clipped child (no spill past the
+edges), on the display grid's lattice at map-size hexes with a faint grid. The skirmish's
+mech views carry the trace and its backdrop's bar lights them (`MechView3D.set_sweep_screen`; `trace.gdshader` takes a `screen_down` vector). Sparrowhawk locked;
 Badger is Ryan's to tweak in Blender (joints and pins are his next art job).
 
 **The battlefield (`game/battle/`).** `map_3d.gd` is a screen-sized SubViewport whose
@@ -63,14 +64,23 @@ back; the map view caches it per plan): contact groups, squads stopped by a body
 (BLOCKED), routes that will be rejected (NO ROUTE). Mechs move in plot order and routes are planned in that order
 (`Battlefield.with_plan`: earlier machines at their destinations, later ones where they
 stand), so Resolve never rejects a route; a re-plot puts the mech last in the order; any route
-the change breaks is dropped with a log line (`Battle._drop_conflicts`). Squads plan and move after, in field order, each intent routed around where the squads
+the change breaks is dropped with a log line (`Battle._drop_conflicts`). A boss stands on one hex now and patrols within `BOSS_ZONE` of
+the rift (`_pick_target`, picked by phase so the preview holds); the multi-hex footprint
+stays in the engine (`Unit.TRIANGLE`) for later. Squads plan and move after, in field order, each intent routed around where the squads
 before it will end (`compute_intents`), so a squad never stops short of another squad.
-Resolve plays the movement phase (`play_moves`: mechs then squads along the paths they
+After the movement phase, the contacts are offered in a panel (`_show_contacts`: how many,
+who is in each, an ENGAGE button per contact, the player picks which to fight first;
+`Battle.open_skirmish_at`), and nothing opens until they do. Contact tags name the units
+(`contact_text`). Resolve plays the movement phase (`play_moves`: mechs then squads along the paths they
 actually took, `MOVE_SECONDS_PER_HEX`; `Map3D.set_anim` moves the model and turns it to
 its heading) and only then opens the skirmish; headless skips the play. `map_tuner.gd` (TUNE on the battle screen) is
-the live knob panel; nothing it sets persists. `RIFTGATE_INK=dark` starts the traces as
-black ink, `RIFTGATE_INK=assets` inks only the mechs, gate and walls (the tuner's TRACE has
-light, assets, ink, off); `RIFTGATE_MAP_WIRE=1` is the pure-wireframe trial. `tools/screenshot.gd` poses:
+the live knob panel; nothing it sets persists. The default trace mode is `assets`: the mechs, gate and
+walls in ink under a prominent light hull (`TraceLines.hull_material`), the field's props and
+grid in fainter light; `RIFTGATE_INK=light|dark` for the others (the tuner's TRACE has
+assets, light, ink, off). The skirmish's mech views take the same. Side blur begins at the
+frame's lines (`_frame_x`), not the field's edge; intent lines carry a dark underline; the
+scan bar pauses `HudBackdrop.SCAN_PAUSE` seconds between sweeps on both screens; the
+corrupted tear is rarer, and the skirmish's overworld band tears too; `RIFTGATE_MAP_WIRE=1` is the pure-wireframe trial. `tools/screenshot.gd` poses:
 select, route, hold, north, zoom, zoomlast, tune, resolve, contact.
 
 **Landscape generation (`sim/battle_map.gd`).** `_lay_landscape` from seeded noise: water

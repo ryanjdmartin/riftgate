@@ -121,8 +121,8 @@ void fragment() {
 	other.rgb = floor(other.rgb * levels + 0.5) / levels;
 	// The corrupted side is input the display cannot hold: rarely, a band of it tears.
 	float band = floor(px.y / 6.0);
-	float tick = floor(TIME * 9.0);
-	float flick = step(0.992, fract(sin(band * 12.9898 + tick * 7.31) * 43758.5453)) * flicker;
+	float tick = floor(TIME * 6.0);
+	float flick = step(0.997, fract(sin(band * 12.9898 + tick * 7.31) * 43758.5453)) * flicker;
 	other.rgb *= 1.0 - 0.12 * flick;
 	COLOR = (k > bayer(c)) ? other : scene;
 	float luma = dot(COLOR.rgb, vec3(0.299, 0.587, 0.114));

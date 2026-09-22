@@ -215,7 +215,20 @@ func compute_intents() -> void:
 		ends[sq.id] = held_now
 
 
+## Where a squad heads this phase. A boss patrols its zone outside the rift (Ryan, 22
+## September): one step to a standable hex within BOSS_ZONE of the rift, picked by the
+## phase so the preview never disagrees with the resolve; nothing, when nothing fits.
+const BOSS_ZONE := 2
+
 func _pick_target(sq: Unit) -> Vector2i:
+	if sq.elite and sq.strength == 0 and not sq.aggro:
+		var options: Array[Vector2i] = []
+		for n in Hex.neighbors(sq.pos):
+			if map.has(n) and Hex.distance(n, map.rift) <= BOSS_ZONE and can_stand(sq, n) and not map.rift_hexes.has(n):
+				options.append(n)
+		if options.is_empty():
+			return sq.pos
+		return options[(phase * 7 + sq.id * 13) % options.size()]
 	if sq.aggro:
 		var best: Unit = null
 		for m in mechs():

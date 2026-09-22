@@ -194,8 +194,17 @@ func has_pending() -> bool:
 ## Build the next contact group's skirmish. Null when nothing is left to fight, in which case
 ## the battle has moved on to the next plan (or ended).
 func open_next_skirmish() -> Skirmish:
+	return open_skirmish_at(0)
+
+
+## Open the pending contact at `index` (the player's choice of which to fight first, Ryan,
+## 22 September); the rest wait. Null when nothing is left to fight, in which case the
+## battle has moved on.
+func open_skirmish_at(index: int) -> Skirmish:
 	while not pending.is_empty():
-		var group: Array = pending.pop_front()
+		var i := clampi(index, 0, pending.size() - 1)
+		var group: Array = pending.pop_at(i)
+		index = 0
 		var sk := _build_skirmish(group)
 		if sk != null:
 			current = sk

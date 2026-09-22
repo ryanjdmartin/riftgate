@@ -107,10 +107,12 @@ static func squad(uid: int, name: String, at: Vector2i, fac: String = "undead", 
 
 
 ## A single huge enemy that covers three hexes and unpacks into its faction's massive elite.
+## A boss stands on one hex for now (Ryan, 22 September: a wider footprint cannot path
+## through a field of hexes, and the boss guards the rift rather than marching). The
+## multi-hex footprint (`TRIANGLE`) stays in the engine for later.
 static func boss(uid: int, name: String, at: Vector2i, fac: String = "undead", speed: int = 1) -> Unit:
 	var u := squad(uid, name, at, fac, speed, 0)
 	u.elite = true
-	u.footprint = TRIANGLE.duplicate()
 	u.hull = 1
 	return u
 

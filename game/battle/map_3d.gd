@@ -253,6 +253,20 @@ func _trace(mi: MeshInstance3D, kind: String = "prop") -> void:
 		em.visible = _trace_mode != "off"
 		em.set_meta("kind", kind)
 	_trace_nodes.append_array(added)
+	if kind == "asset":
+		# The assets mode gives a machine a prominent light silhouette over its inked creases.
+		for h in TraceLines.attach_hull(mi, _hull_material()):
+			h.visible = _trace_mode == "assets"
+			_hull_nodes.append(h)
+
+
+var _hull_nodes: Array = []
+var _hull_mat: StandardMaterial3D = null
+
+func _hull_material() -> StandardMaterial3D:
+	if _hull_mat == null:
+		_hull_mat = TraceLines.hull_material(Palette.HUD)
+	return _hull_mat
 
 
 func _trace_material(kind: String) -> Material:
@@ -275,6 +289,9 @@ func set_trace_mode(mode: String) -> void:
 			em.visible = mode != "off"
 			if mode != "off":
 				em.material_override = _trace_material(str(em.get_meta("kind", "prop")))
+	for h in _hull_nodes:
+		if is_instance_valid(h):
+			h.visible = mode == "assets"
 
 
 func set_trace_gain(v: float) -> void:

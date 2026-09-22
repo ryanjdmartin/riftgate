@@ -59,7 +59,14 @@ class ScanBar extends Control:
 		queue_redraw()
 
 	func _draw() -> void:
-		var y := fmod(_t * SPEED, size.y + 120.0) - 60.0
+		# A sweep, then a pause (Ryan, 22 September: back to back was busy).
+		var sweep := (size.y + 120.0) / SPEED
+		var t := fmod(_t, sweep + HudBackdrop.SCAN_PAUSE)
+		if t > sweep:
+			if map != null:
+				map.sweep_at(-1.0e6)
+			return
+		var y := t * SPEED - 60.0
 		for i in range(-2, 3):
 			draw_rect(Rect2(0.0, y + i * 3.0, size.x, 1.0), Color(1, 1, 1, 0.07 - 0.015 * absi(i)))
 		if map != null:
@@ -387,7 +394,7 @@ func _on_resolve() -> void:
 func _after_step() -> void:
 	match battle.state:
 		Battle.State.SKIRMISH:
-			_open_skirmish()
+			_show_contacts()
 		Battle.State.DONE:
 			_refresh()
 			_show_outcome()
@@ -395,8 +402,43 @@ func _after_step() -> void:
 			_refresh()
 
 
-func _open_skirmish() -> void:
-	var sk := battle.open_next_skirmish()
+## The contacts this phase, before any opens (Ryan, 22 September): how many, who is in
+## each, and the player picks which to fight first and confirms. The map keeps showing
+## them tagged behind the panel.
+func _show_contacts() -> void:
+	_refresh()
+	if _contacts != null:
+		_contacts.queue_free()
+	_contacts = HudPanel.new(14.0)
+	_contacts.custom_minimum_size = Vector2(W - 24.0, 0)
+	var rows := VBoxContainer.new()
+	rows.position = Vector2(12, 10)
+	rows.add_theme_constant_override("separation", 6)
+	_contacts.add_child(rows)
+	var n := battle.pending.size()
+	rows.add_child(Hud.label("%d CONTACT%s // CHOOSE THE FIRST" % [n, "" if n == 1 else "S"], 14, Palette.ENEMY))
+	for i in range(n):
+		var group: Array = battle.pending[i]
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 10)
+		var btn := HudButton.new("ENGAGE", _open_skirmish.bind(i))
+		btn.custom_minimum_size = Vector2(150, 34)
+		row.add_child(btn)
+		row.add_child(Hud.label(BattleMapView.contact_text(group), 13, Palette.INK))
+		rows.add_child(row)
+	add_child(_contacts)
+	_contacts.reset_size()
+	_contacts.position = Vector2(12.0, LOG_Y - 10.0 - INFO_H + 6.0)
+
+
+var _contacts: HudPanel = null
+
+
+func _open_skirmish(index: int = 0) -> void:
+	if _contacts != null:
+		_contacts.queue_free()
+		_contacts = null
+	var sk := battle.open_skirmish_at(index)
 	if sk == null:
 		_after_step()
 		return
@@ -415,10 +457,7 @@ func _on_skirmish_back() -> void:
 		_skirmish.queue_free()
 		_skirmish = null
 	battle.finish_skirmish()
-	if battle.state == Battle.State.SKIRMISH:
-		_open_skirmish()
-	else:
-		_after_step()
+	_after_step()
 
 
 func _show_outcome() -> void:

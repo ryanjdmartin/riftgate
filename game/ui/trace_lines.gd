@@ -16,9 +16,43 @@ static func mode() -> String:
 	match OS.get_environment("RIFTGATE_INK"):
 		"dark":
 			return "ink"
-		"assets":
-			return "assets"
-	return "light"
+		"light":
+			return "light"
+	return "assets"   # the default (Ryan, 22 September)
+
+
+## The prominent silhouette an asset wears in the assets mode: a grown, front-culled hull
+## in the display's light, so the machine stands out from the field's fainter traces.
+static func hull_material(color: Color) -> StandardMaterial3D:
+	var m := StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.cull_mode = BaseMaterial3D.CULL_FRONT
+	m.grow = true
+	m.grow_amount = 1.6
+	m.albedo_color = color
+	m.emission_enabled = true
+	m.emission = color
+	m.emission_energy_multiplier = 1.1
+	return m
+
+
+static func attach_hull(node: Node, material: Material) -> Array:
+	var out: Array = []
+	var targets: Array = node.find_children("*", "MeshInstance3D", true, false)
+	if node is MeshInstance3D:
+		targets.append(node)
+	for child in targets:
+		var mi: MeshInstance3D = child
+		if mi.mesh == null or mi.has_meta("is_trace"):
+			continue
+		var hull := MeshInstance3D.new()
+		hull.mesh = mi.mesh
+		hull.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		hull.material_override = material
+		hull.set_meta("is_trace", true)
+		mi.add_child(hull)
+		out.append(hull)
+	return out
 
 
 ## Whether a thing of `kind` ("asset" or "prop") draws in ink under `mode`.
@@ -44,6 +78,7 @@ static func attach(node: Node, material: Material) -> Array:
 		em.mesh = edges
 		em.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		em.material_override = material
+		em.set_meta("is_trace", true)   # so a hull pass never hulls the lines themselves
 		mi.add_child(em)
 		out.append(em)
 	return out

@@ -86,6 +86,9 @@ func test_contact_opens_the_skirmish_screen_and_back_applies_it() -> void:
 	var sq: Unit = b.field.squads()[0]
 	_engage(b, sq, m)
 	s._on_resolve()
+	assert_true(s._contacts != null, "the contacts are offered first, for the player to pick and confirm")
+	assert_eq(s._skirmish, null, "nothing opens until they do")
+	s._open_skirmish(0)
 	assert_true(s._skirmish != null, "skirmish screen opened")
 	assert_eq(s._sub_label.text, "CONTACT", "contact readout")
 	assert_true(s._resolve_btn.disabled, "no resolving mid-skirmish")
