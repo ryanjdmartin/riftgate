@@ -88,7 +88,7 @@ func _apply_battle_pose() -> void:
 			s._on_unit_held(b.field.squads()[0])
 		"north":
 			# The rift end of the map, where the other world bleeds in.
-			s._map.scroll_y = 0.0
+			s._map.scroll_to_top()
 			s._map.queue_redraw()
 		"tune":
 			s._toggle_tuner()

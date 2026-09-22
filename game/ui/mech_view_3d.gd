@@ -177,6 +177,13 @@ func _setup(chassis_id: String, maker: String) -> void:
 	_inner.add_child(_model)
 	_apply_materials(_model, maker)
 	_collect_tags(_model)
+	if not token and mode != "pixel":
+		# The skirmish's machines carry the display's trace too (Ryan, 21 September), steady
+		# here since no scan bar crosses this screen.
+		var tm: Material = TraceLines.ink_material() if TraceLines.mode() == "ink" else TraceLines.light_material(Palette.HUD)
+		if tm is ShaderMaterial:
+			(tm as ShaderMaterial).set_shader_parameter("gain", 0.9)
+		TraceLines.attach(_model, tm)
 	if OS.get_environment("RIFTGATE_MECH3D_WIRE") == "1":
 		# Wireframe trial (21 September): the reconstruction's own telemetry drawing.
 		_inner.debug_draw = Viewport.DEBUG_DRAW_WIREFRAME

@@ -112,6 +112,7 @@ func set_field(f: Battlefield) -> void:
 		var hex_w := sqrt(3.0) * HEX_SIZE
 		var left := _origin.x - hex_w * 0.5
 		mat.set_shader_parameter("play_x", Vector2(left, left + hex_w * (field.map.width + 0.5)))
+		mat.set_shader_parameter("south_y", _origin.y + Hex.to_pixel(field.map.gate, HEX_SIZE).y + HEX_SIZE * 0.75)
 		_composite.material = mat
 		_mix.add_child(_composite)
 	queue_redraw()
@@ -142,22 +143,33 @@ func tune(name: String, value: Variant) -> void:
 
 func _layout() -> void:
 	var px_w := sqrt(3.0) * HEX_SIZE * (field.map.width + 0.5)
-	_origin = Vector2((size.x - px_w) / 2.0 + sqrt(3.0) * HEX_SIZE / 2.0, HEX_SIZE + TOP_PAD)
+	# The scenery rows beyond the rift sit above hex (0,0), so the origin moves down for them.
+	_origin = Vector2((size.x - px_w) / 2.0 + sqrt(3.0) * HEX_SIZE / 2.0, HEX_SIZE + TOP_PAD + HEX_SIZE * 1.5 * BattleMap.MARGIN_ROWS)
 
 
 func _map_px_height() -> float:
-	return HEX_SIZE * (1.5 * (field.map.height - 1) + 2.0) + TOP_PAD + BOTTOM_PAD
+	var rows := field.map.height + BattleMap.MARGIN_ROWS + BattleMap.CITY_ROWS
+	return HEX_SIZE * (1.5 * (rows - 1) + 2.0) + TOP_PAD + BOTTOM_PAD
 
 
-## Keep the map covering the view: no bare edge at any zoom.
+## Keep the map covering the view: no bare edge at any zoom. The scroll runs over the
+## playable field plus a little of the scenery beyond each end; the rest of the margin
+## rows are there to fill the edges, not to scroll to (Ryan, 21 September).
 func _clamp_scroll() -> void:
-	scroll_y = clampf(scroll_y, minf(0.0, size.y - _map_px_height() * zoom), 0.0)
+	var top := _origin.y - HEX_SIZE * 2.4                                                  # a row of scenery past the rift
+	var bottom := _origin.y + Hex.to_pixel(field.map.gate, HEX_SIZE).y + HEX_SIZE * 2.6   # a row of city past the wall
+	scroll_y = clampf(scroll_y, minf(-top * zoom, size.y - bottom * zoom), -top * zoom)
 	scroll_x = clampf(scroll_x, minf(0.0, size.x - size.x * zoom), 0.0)
 
 
 ## Start at the gate end, where the player's machines stand.
 func scroll_to_bottom() -> void:
 	scroll_y = -1.0e9
+	_clamp_scroll()
+
+
+func scroll_to_top() -> void:
+	scroll_y = 1.0e9
 	_clamp_scroll()
 
 
@@ -290,21 +302,29 @@ func _draw() -> void:
 		# scroll. The grid itself is in the scene, lit, so raised ground hides it.
 		draw_set_transform(Vector2(scroll_x, scroll_y), 0.0, Vector2(zoom, zoom))
 		if frame_alpha > 0.0:
-			# The frame: the field's two boundary lines in the display's light, with a tick
-			# at every row, so the playable area has an edge and the blur runs into it.
+			# The frame: the field's two boundary lines in the display's light, a tick on
+			# every row's centre with the row's number, and a sector readout at each end, so
+			# the playable area has a viewfinder's edge and the blur runs into it.
 			var hex_w := sqrt(3.0) * HEX_SIZE
-			var left := _origin.x - hex_w * 0.5
-			var right := left + hex_w * (map.width + 0.5)
+			var left := _origin.x - hex_w * 0.5 - HEX_SIZE * 0.55
+			var right := left + hex_w * (map.width + 0.5) + HEX_SIZE * 1.1
 			var top := _origin.y - HEX_SIZE
 			var bottom := _origin.y + Hex.to_pixel(map.gate, HEX_SIZE).y - HEX_SIZE * 1.5 * (BattleMap.GATE_ROWS - 0.5)
 			var fc := Color(hud, frame_alpha)
+			var font := Hud.mono()
 			for x in [left, right]:
+				var dir := 1.0 if x == left else -1.0
 				draw_line(Vector2(x, top), Vector2(x, bottom), fc, 2.0)
-				var y := top
-				while y < bottom:
-					var dir := 1.0 if x == left else -1.0
-					draw_line(Vector2(x, y), Vector2(x + 8.0 * dir, y), fc, 2.0)
-					y += HEX_SIZE * 1.5
+				for row in range(map.height - BattleMap.GATE_ROWS):
+					var y := _origin.y + HEX_SIZE * 1.5 * row
+					draw_line(Vector2(x, y), Vector2(x + 10.0 * dir, y), fc, 2.0)
+					var label := "%02d" % (map.height - BattleMap.GATE_ROWS - row)   # counted up from the gate
+					var lx: float = (x - 30.0) if dir > 0.0 else (x + 8.0)
+					draw_string(font, Vector2(lx, y + 4.0), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, fc)
+				draw_line(Vector2(x, top), Vector2(x + 18.0 * dir, top), fc, 2.0)
+				draw_line(Vector2(x, bottom), Vector2(x + 18.0 * dir, bottom), fc, 2.0)
+			draw_string(font, Vector2(left + 6.0, top - 6.0), "SEC %02d // GRID %dx%d // RECON" % [field.map.map_seed % 100, map.width, map.height - BattleMap.GATE_ROWS], HORIZONTAL_ALIGNMENT_LEFT, -1, 11, fc)
+			draw_string(font, Vector2(left + 6.0, bottom + 14.0), "CARE // PROJECTOR LINE", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, fc)
 	else:
 		draw_set_transform(Vector2(scroll_x, scroll_y), 0.0, Vector2(zoom, zoom))
 		# Headless: the painted map, so the view still lays out and the structures still show.

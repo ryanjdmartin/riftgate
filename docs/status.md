@@ -32,7 +32,8 @@ generator; `forge.py build <id>` writes `art/models/<id>.glb` and a working
 hand-edited .blend back into the glTF with its Empties (joints `joint_*`, pins `hp_*`);
 `forge.py terrain` writes the ground tiles to `art/terrain`. The model's Z = 0 is the
 ground; forward is +Y. `MechView3D.toon` takes the tile look for any textured model; amber
-is emissive, glass glossy. `tools/hero_shot.gd` renders one unit large. Sparrowhawk locked;
+is emissive, glass glossy. `tools/hero_shot.gd` renders one unit large. The skirmish backdrop's ground bands are the
+map's terrain tiles under the HUD-colour hex grid (`TerrainArt.draw_ground`). Sparrowhawk locked;
 Badger is Ryan's to tweak in Blender (joints and pins are his next art job).
 
 **The battlefield (`game/battle/`).** `map_3d.gd` is a screen-sized SubViewport whose
@@ -42,12 +43,13 @@ hex a column at `BattleMap.elevation` (relief field, water sunk) wearing a tile 
 so they join, crags in their ground's idiom (`_crag`), props with the trace, the gate and
 walls across the margin columns, units as their skirmish models centred by bounds and set
 south, flyers hovering with a shadow disc; the grid is emissive lines in the scene. Every
-feature edge of units, structures and props is traced in light (`_trace`, `_edge_mesh`,
-`trace.gdshader`); the traces brighten under the screen's one scan bar (`BattleScreen.ScanBar`, drawn on
+feature edge of units, structures and props is traced in light (`game/ui/trace_lines.gd`,
+shared with the skirmish's mech views, which carry a steady trace; `trace.gdshader`); the traces brighten under the screen's one scan bar (`BattleScreen.ScanBar`, drawn on
 top of everything; it hands the map its y through `sweep_at`). `painted_map.gd` is the other world, two frames; `bleed.gd` and `bleed.gdshader`
 composite the two by the bleed with a hard dithered seam, tilt-shift north and a wider, stronger blur past the field's sides (`edge_fade`,
 `edge_blur`), scanlines and the skirmish's band on top, and expose saturation,
-brightness, flicker and frame rate. `battle_map_view.gd` draws every overlay in map space
+brightness, flicker and frame rate. The map view draws the field's frame (boundary lines,
+row ticks and numbers counted up from the gate, a sector readout; `frame_alpha`). `battle_map_view.gd` draws every overlay in map space
 under one transform (zoom by wheel or pinch, pan both ways); `center` and `hex_at` follow
 the terrain's lift; tap empty ground for its readout, tap an ally to select and read it,
 tap an enemy for its label, double-tap is wired for the codex; the readout is docked in
@@ -58,8 +60,11 @@ select, route, hold, north, zoom, zoomlast, tune, resolve, contact.
 
 **Landscape generation (`sim/battle_map.gd`).** `_lay_landscape` from seeded noise: water
 in bodies, wasteland across the rougher half, ruins in dense clusters, crags along a ridge
-keeping the ground under them (`crag_base`), three margin columns of scenery either side
-(`margin`, never played on), the two rows above the apron always open; `_lay_roads` lays
+keeping the ground under them (`crag_base`), four margin columns of scenery either side
+and three rows beyond the rift (`margin`, never played on), two rows of city behind the
+wall (`city`, built as lit blocks by `Map3D._city_block`, blurred south into the HUD;
+the scroll runs a row past the rift and a row past the wall, no further; the wall rows'
+margin is level and bare), the two rows above the apron always open; `_lay_roads` lays
 a drifting trunk north from the gate with branches and gaps, never a lone slab, all at
 ground level.
 

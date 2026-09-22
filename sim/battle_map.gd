@@ -30,7 +30,10 @@ var wall_hexes: Array[Vector2i] = []   # the rest of the bottom GATE_ROWS rows: 
 var crag_base: Dictionary = {}         # crag hex -> the ground under the rock (water, ruins, ...): flavour only
 var elevation: Dictionary = {}         # hex -> relief step 0..3 (water -1): landscape only, no rule reads it
 var margin: Dictionary = {}            # hex beside the field -> terrain: scenery past the playable edge, never played on
+var city: Dictionary = {}              # margin hex -> true: the city behind the wall, what the gate protects
 const MARGIN_COLS := 4
+const MARGIN_ROWS := 3                 # scenery rows beyond the rift
+const CITY_ROWS := 2                   # city rows behind the wall
 var map_seed: int = 0
 
 const STRUCTURE_HALF_WIDTH := 1   # gate and rift span centre plus this many hexes each side
@@ -134,11 +137,18 @@ func _lay_landscape(rng: RandomNumberGenerator) -> void:
 		centres.append(keys[rng.randi_range(0, keys.size() - 1)])
 	# The field, then the margin columns either side of it: seen past the edge, never played.
 	var all: Array = keys.duplicate()
-	for row in range(height):
-		for col in range(-MARGIN_COLS, 0):
-			all.append(Hex.offset_to_axial(col, row))
-		for col in range(width, width + MARGIN_COLS):
-			all.append(Hex.offset_to_axial(col, row))
+	for row in range(-MARGIN_ROWS, height):
+		for col in range(-MARGIN_COLS, width + MARGIN_COLS):
+			var hx := Hex.offset_to_axial(col, row)
+			if not has(hx):
+				all.append(hx)
+	# Behind the wall, the city: flat paved rows the map builds as blocks.
+	for row in range(height, height + CITY_ROWS):
+		for col in range(-MARGIN_COLS, width + MARGIN_COLS):
+			var hx := Hex.offset_to_axial(col, row)
+			margin[hx] = Terrain.ROAD
+			elevation[hx] = 0
+			city[hx] = true
 	# The ground from the fields: water where it is wet, wasteland across the rougher
 	# half of what is left, plain in between, ruins in clusters with a dense core.
 	for hx in all:
@@ -165,6 +175,11 @@ func _lay_landscape(rng: RandomNumberGenerator) -> void:
 			if crag:
 				crag_base[hx] = t
 				margin[hx] = Terrain.MOUNTAIN
+			if Hex.axial_to_offset(hx).y >= height - GATE_ROWS:
+				# The wall runs across the margin: level ground under it, nothing on it.
+				margin[hx] = Terrain.PLAIN
+				crag_base.erase(hx)
+				elevation[hx] = 0
 
 
 ## A paved road runs north from the gate as a connected path with drift, most of the way
@@ -209,13 +224,18 @@ func _lay_roads(rng: RandomNumberGenerator) -> void:
 			from = n
 		branches.append(branch)
 	for path in branches:
-		for h in path:
+		for i in range(path.size()):
+			var h: Vector2i = path[i]
 			var t: int = terrain[h]
-			if t == Terrain.MOUNTAIN or t == Terrain.WATER:
+			# The team's rows above the apron are cleared to open ground after this, so a
+			# road may cross them whatever the noise put there.
+			var team_rows := Hex.axial_to_offset(h).y >= height - GATE_ROWS - 2
+			if (t == Terrain.MOUNTAIN or t == Terrain.WATER) and not team_rows:
 				continue
-			if rng.randf() < ROAD_GAP_CHANCE:
-				continue
+			if rng.randf() < ROAD_GAP_CHANCE and not (path == trunk and i < 3):
+				continue   # a gap, except the first slabs off the gate: there is always a road
 			terrain[h] = Terrain.ROAD
+			crag_base.erase(h)
 	# A road is never a lone slab: a road hex with no road (or gate) beside it goes back to
 	# plain. Roads sit at one level, like water, so a road never breaks over a terrace.
 	var lone: Array[Vector2i] = []

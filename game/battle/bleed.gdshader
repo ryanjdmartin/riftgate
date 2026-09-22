@@ -26,6 +26,7 @@ uniform int source_count = 0;
 uniform float cell = 4.0;                    // the dither's pixel step, on screen
 uniform float levels = 5.0;                  // posterize steps per channel on the flat side
 uniform float focus_y = 0.0;                 // map-pixel y of the screen's middle
+uniform float south_y = 1.0e6;               // map-pixel y of the wall's foot: the city past it softens into the HUD
 uniform float focus_band = 330.0;            // the sharp zone reaches this far north of the middle, in map pixels
 uniform float focus_falloff = 180.0;         // map pixels over which the blur reaches its maximum
 uniform float blur_max = 3.0;                // the blur's tap spacing at its maximum, in screen pixels
@@ -57,7 +58,8 @@ float bayer(ivec2 c) {
 // September). Both worlds soften alike: all or none.
 float blur_radius(vec2 px) {
 	float f = clamp((focus_y - focus_band - px.y) / focus_falloff, 0.0, 1.0);
-	return f * blur_max;
+	float s = clamp((px.y - south_y) / (focus_falloff * 0.5), 0.0, 1.0);
+	return max(f, s) * blur_max;
 }
 
 // A dense 7x7 box at `rad` spacing: thick and smooth, never a ghosted multiple image.

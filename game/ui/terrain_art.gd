@@ -73,15 +73,28 @@ static func draw(ci: CanvasItem, c: Vector2, r: float, terrain: int, seed_value:
 		ci.draw_colored_polygon(PackedVector2Array([peak[1], peak[2], p + Vector2(r * 0.2, r * 0.35)]), light)
 
 
-## A tiled band of textured ground for the skirmish: hex outlines on the terrain colour with
-## the same marks the map draws, fading in from the band's edges.
+## The battlefield's tile for each terrain (art/terrain/<name>.png), as the 3D map wears it.
+const TILE := {
+	BattleMap.Terrain.PLAIN: "dirt", BattleMap.Terrain.ROAD: "concrete",
+	BattleMap.Terrain.ROUGH: "scrub", BattleMap.Terrain.RUINS: "rubble",
+	BattleMap.Terrain.WATER: "water", BattleMap.Terrain.MOUNTAIN: "rock",
+}
+static var _tiles: Dictionary = {}
+
+
+## A band of ground for the skirmish, in step with the map (Ryan, 21 September): the same
+## terrain tile the 3D columns wear, dimmed, under the display's hex grid in the HUD colour,
+## fading in from the band's edges. Falls back to the old marks with no tile.
 static func draw_ground(ci: CanvasItem, rect: Rect2, terrain: int, seed_value: int, hex: float = 30.0) -> void:
-	var base := colour(terrain)
-	var steps := 8
-	for i in range(steps):
-		var t := float(i) / float(steps - 1)
-		var inset := rect.size.y * 0.5 * (1.0 - t)
-		ci.draw_rect(Rect2(rect.position.x, rect.position.y + inset, rect.size.x, rect.size.y - inset * 2.0), Color(base, 0.16))
+	var name: String = TILE.get(terrain, "dirt")
+	if not _tiles.has(name):
+		var path := "res://art/terrain/%s.png" % name
+		_tiles[name] = load(path) if ResourceLoader.exists(path) else null
+	var tile: Texture2D = _tiles[name]
+	if tile != null:
+		ci.draw_texture_rect(tile, rect, true, Color(0.62, 0.62, 0.62, 1.0))
+	else:
+		ci.draw_rect(rect, Color(colour(terrain), 0.5))
 	var w := sqrt(3.0) * hex
 	var row := 0
 	var y := rect.position.y + hex
@@ -93,12 +106,20 @@ static func draw_ground(ci: CanvasItem, rect: Rect2, terrain: int, seed_value: i
 			var edge := minf(c.y - rect.position.y, rect.end.y - c.y) / (rect.size.y * 0.5)
 			var fade := clampf(edge * 1.6, 0.0, 1.0)
 			if fade > 0.05:
-				ci.draw_polyline(Hex.corners(c, hex - 1.0), Color(base.lightened(0.25), 0.18 * fade), 1.0, true)
-				draw(ci, c, hex, terrain, seed_value + k * 7919, 0.55 * fade)
+				ci.draw_polyline(Hex.corners(c, hex - 1.5), Color(Palette.HUD, 0.28 * fade), 1.0, true)
+				if tile == null:
+					draw(ci, c, hex, terrain, seed_value + k * 7919, 0.55 * fade)
 			x += w
 			k += 1
 		y += hex * 1.5
 		row += 1
+	# The band's edges soften into the panel, top and bottom.
+	var steps := 6
+	for i in range(steps):
+		var a := 0.55 * (1.0 - float(i) / float(steps))
+		var h := rect.size.y * 0.06
+		ci.draw_rect(Rect2(rect.position.x, rect.position.y + i * h, rect.size.x, h), Color(Palette.BG, a))
+		ci.draw_rect(Rect2(rect.position.x, rect.end.y - (i + 1) * h, rect.size.x, h), Color(Palette.BG, a))
 
 
 static func _in_hex(rng: RandomNumberGenerator, r: float) -> Vector2:

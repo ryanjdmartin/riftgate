@@ -240,48 +240,27 @@ func _prop(col: Node3D, mesh: Mesh, material: Material, pos: Vector3, rot: Vecto
 	return mi
 
 
-## The display traces a thing's edges in light: every crease (faces meeting at more than
-## EDGE_ANGLE) and every silhouette-only edge, as glowing lines that pulse with the
-## field's wave, plus a thin grown hull for the outline. RIFTGATE_INK=dark keeps the old
-## black hull alone, to compare.
-const EDGE_ANGLE := 28.0
-var _edge_cache: Dictionary = {}   # mesh rid -> ArrayMesh of lines
-var _trace_mat: Material = null
-
-func _trace(mi: MeshInstance3D) -> void:
-	if mi.mesh == null:
-		return
-	var edges := _edge_mesh(mi.mesh)
-	if edges == null:
-		return
-	var em := MeshInstance3D.new()
-	em.mesh = edges
-	em.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	em.material_override = _trace_material()
-	em.visible = _trace_mode != "off"
-	mi.add_child(em)
-	_trace_nodes.append(em)
-
-
+## The display traces a thing's edges in light (TraceLines), lit by the scan bar as it
+## passes. RIFTGATE_INK=dark starts them as black ink.
 var _trace_nodes: Array = []
-var _trace_mode := "ink" if OS.get_environment("RIFTGATE_INK") == "dark" else "light"
+var _trace_mode := TraceLines.mode()
 var _light_mat: ShaderMaterial = null
 var _ink_line_mat: StandardMaterial3D = null
 
-## The trace's material: light (the default) or the same edges as plain black ink with no
-## glow. Lines are one pixel either way; the light version looks thicker only by its bloom.
+func _trace(mi: MeshInstance3D) -> void:
+	var added := TraceLines.attach(mi, _trace_material())
+	for em in added:
+		em.visible = _trace_mode != "off"
+	_trace_nodes.append_array(added)
+
+
 func _trace_material() -> Material:
 	if _trace_mode == "ink":
 		if _ink_line_mat == null:
-			_ink_line_mat = StandardMaterial3D.new()
-			_ink_line_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-			_ink_line_mat.albedo_color = Palette.BG
-			_ink_line_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+			_ink_line_mat = TraceLines.ink_material()
 		return _ink_line_mat
 	if _light_mat == null:
-		_light_mat = ShaderMaterial.new()
-		_light_mat.shader = load("res://game/battle/trace.gdshader")
-		_light_mat.set_shader_parameter("color", Palette.HUD)
+		_light_mat = TraceLines.light_material(Palette.HUD)
 	return _light_mat
 
 
@@ -322,62 +301,6 @@ func set_glow(v: float) -> void:
 
 func set_grid(gain: float) -> void:
 	_grid_material().set_shader_parameter("gain", gain)
-
-
-## The feature edges of a mesh as a line mesh: edges shared by faces that meet at an angle,
-## or belonging to one face only. Vertices are welded by position, since flat-shaded
-## exports split them per face.
-func _edge_mesh(mesh: Mesh) -> ArrayMesh:
-	var key := mesh.get_rid()
-	if _edge_cache.has(key):
-		return _edge_cache[key]
-	var edges: Dictionary = {}   # "a|b" -> [Vector3 a, Vector3 b, Array normals]
-	var limit := cos(deg_to_rad(EDGE_ANGLE))
-	for s in range(mesh.get_surface_count()):
-		var arrays := mesh.surface_get_arrays(s)
-		if arrays.is_empty():
-			continue
-		var verts: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
-		var idx: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
-		var n := idx.size() if idx.size() > 0 else verts.size()
-		for f in range(0, n - 2, 3):
-			var a: Vector3 = verts[idx[f]] if idx.size() > 0 else verts[f]
-			var b: Vector3 = verts[idx[f + 1]] if idx.size() > 0 else verts[f + 1]
-			var c: Vector3 = verts[idx[f + 2]] if idx.size() > 0 else verts[f + 2]
-			var nrm := (b - a).cross(c - a)
-			if nrm.length_squared() < 1e-8:
-				continue
-			nrm = nrm.normalized()
-			for pair in [[a, b], [b, c], [c, a]]:
-				var ka := _vkey(pair[0])
-				var kb := _vkey(pair[1])
-				var k := ka + "|" + kb if ka < kb else kb + "|" + ka
-				if not edges.has(k):
-					edges[k] = [pair[0], pair[1], []]
-				(edges[k][2] as Array).append(nrm)
-	var st := SurfaceTool.new()
-	st.begin(Mesh.PRIMITIVE_LINES)
-	var any := false
-	for k in edges.keys():
-		var e: Array = edges[k]
-		var normals: Array = e[2]
-		var keep := normals.size() == 1
-		if not keep:
-			for i in range(normals.size()):
-				for j in range(i + 1, normals.size()):
-					if (normals[i] as Vector3).dot(normals[j]) < limit:
-						keep = true
-		if keep:
-			st.add_vertex(e[0])
-			st.add_vertex(e[1])
-			any = true
-	var out: ArrayMesh = st.commit() if any else null
-	_edge_cache[key] = out
-	return out
-
-
-static func _vkey(v: Vector3) -> String:
-	return "%d,%d,%d" % [roundi(v.x * 50.0), roundi(v.y * 50.0), roundi(v.z * 50.0)]
 
 
 var _ink_mat: StandardMaterial3D = null
@@ -548,6 +471,9 @@ func _build_ground() -> void:
 		rng.seed = h.x * 131 + h.y * 7919
 		if wire:
 			continue
+		if map.city.has(h):
+			_city_block(col, hgt, rng)
+			continue
 		match t:
 			BattleMap.Terrain.MOUNTAIN:
 				_crag(col, ground_t, hgt, rng)
@@ -638,6 +564,37 @@ func _crag(col: Node3D, ground_t: int, hgt: float, rng: RandomNumberGenerator) -
 					Vector3(rng.randf_range(-0.18, 0.18), rng.randf_range(0, TAU), rng.randf_range(-0.18, 0.18)))
 
 
+## A hex of the city behind the wall: intact blocks in the Arsenal's grey, lit windows in
+## rows, one or two taller. What the gate protects, seen past the wall.
+func _city_block(col: Node3D, hgt: float, rng: RandomNumberGenerator) -> void:
+	var skin := _terrain_material("rubble")
+	var win := StandardMaterial3D.new()
+	win.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	win.albedo_color = Color(1.0, 0.85, 0.5)
+	win.emission_enabled = true
+	win.emission = Color(1.0, 0.8, 0.45)
+	win.emission_energy_multiplier = 1.3
+	for k in range(rng.randi_range(2, 4)):
+		var w := rng.randf_range(12.0, 20.0)
+		var tall := rng.randf_range(40.0, 80.0) if k == 0 else rng.randf_range(18.0, 44.0)
+		var ox := 0.0 if k == 0 else rng.randf_range(-18.0, 18.0)
+		var oz := 0.0 if k == 0 else rng.randf_range(-14.0, 14.0)
+		var b := BoxMesh.new()
+		b.size = Vector3(w, tall, w * rng.randf_range(0.7, 1.0))
+		_prop(col, b, skin, Vector3(ox, hgt + tall * 0.5, oz))
+		var rows := int(tall / 9.0)
+		for r in range(rows):
+			if rng.randf() < 0.35:
+				continue
+			var strip := BoxMesh.new()
+			strip.size = Vector3(w * 0.8, 1.6, 0.6)
+			var wm := MeshInstance3D.new()
+			wm.mesh = strip
+			wm.material_override = win
+			wm.position = Vector3(ox, hgt + 5.0 + r * 9.0, oz + b.size.z * 0.5 + 0.2)
+			col.add_child(wm)
+
+
 ## A dead tree: a bare trunk, thick at the foot, with a few stub branches, inked.
 func _dead_tree(col: Node3D, at: Vector3, rng: RandomNumberGenerator) -> void:
 	var bark := _lit(Color("2e2a26"))
@@ -708,7 +665,7 @@ func _build_structures() -> void:
 			if Hex.axial_to_offset(w).y == map.height - 1:
 				bottom.append(w)
 		for mh in map.margin.keys():
-			if Hex.axial_to_offset(mh).y == map.height - 1:
+			if Hex.axial_to_offset(mh).y == map.height - 1 and not map.city.has(mh):
 				bottom.append(mh)
 		for w in bottom:
 			var m := _model("wall", "arsenal")
