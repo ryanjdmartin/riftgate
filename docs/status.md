@@ -218,7 +218,7 @@ views carry the trace without the silhouette; the codex is plain black ink. Side
 frame's lines (`_frame_x`), not the field's edge; intent lines carry a dark underline; the
 scan bar pauses `HudBackdrop.SCAN_PAUSE` seconds between sweeps on both screens; the
 corrupted tear is rarer, and the skirmish's overworld band tears too; `RIFTGATE_MAP_WIRE=1` is the pure-wireframe trial. `tools/screenshot.gd` poses:
-select, route, hold, north, zoom, zoomlast, tune, predict, resolve, contact
+select, route, hold, north, zoom, zoomlast, flyer (the flyer parked in the other world's ground), tune, predict, resolve, contact
 (`RIFTGATE_SHOT_FRAME=210` catches the CONTACT band after the move plays, 400 the panel).
 
 **Landscape generation (`sim/battle_map.gd`).** `_lay_landscape` from seeded noise: water

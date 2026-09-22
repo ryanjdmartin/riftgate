@@ -123,6 +123,15 @@ func _apply_battle_pose() -> void:
 			var dests: Array = s._map.destinations.keys()
 			if not dests.is_empty():
 				s._on_hex_tapped(dests[0])
+		"flyer":
+			# The flyer parked two rows south of the rift, in the other world's ground, zoomed.
+			for m in b.mechs():
+				if m.traits.has("flyer"):
+					var want := Hex.offset_to_axial(Hex.axial_to_offset(b.field.map.rift).x, Hex.axial_to_offset(b.field.map.rift).y + 2)
+					m.pos = b.field.nearest_standable(m, want)
+					s._map.zoom_at(s._map.size * 0.5, 2.0)
+					s._map.scroll_to_unit(m)
+					break
 		"zoom", "zoomlast":
 			# Zoomed in twice on the first (or last) mech, panned so it sits mid-screen.
 			s._map.zoom_at(s._map.size * 0.5, 2.4)
