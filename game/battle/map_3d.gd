@@ -390,9 +390,16 @@ func set_marks(list: Array) -> void:
 		if pair.is_empty():
 			continue
 		if pair[0] != null:
-			(pair[0].material_override as StandardMaterial3D).albedo_color = m["fill"]
+			(pair[0].material_override as StandardMaterial3D).albedo_color = _scene_alpha(m["fill"])
 		if pair[1] != null:
-			(pair[1].material_override as StandardMaterial3D).albedo_color = m["line"]
+			(pair[1].material_override as StandardMaterial3D).albedo_color = _scene_alpha(m["line"])
+
+
+## The scene blends in linear light, so a thin tint of a bright colour over dark ground
+## comes out far stronger than the same alpha drawn flat on the screen. Marks are asked
+## for in screen terms; this makes them land as asked.
+func _scene_alpha(c: Color) -> Color:
+	return Color(c.r, c.g, c.b, pow(c.a, 2.2))
 
 
 func _flat_mark(mesh: Mesh, col: Node3D) -> MeshInstance3D:
@@ -401,6 +408,7 @@ func _flat_mark(mesh: Mesh, col: Node3D) -> MeshInstance3D:
 	var mat := StandardMaterial3D.new()
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED   # flat marks: winding must never hide one
 	mat.render_priority = 1
 	mi.material_override = mat
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
@@ -433,8 +441,8 @@ func _edge_mesh(y: float, edges: Array) -> ArrayMesh:
 		var b := _world(outer[j], y)
 		var c := _world(inner[j], y)
 		var d := _world(inner[i], y)
-		st.add_vertex(a); st.add_vertex(c); st.add_vertex(b)
-		st.add_vertex(a); st.add_vertex(d); st.add_vertex(c)
+		st.add_vertex(a); st.add_vertex(b); st.add_vertex(c)
+		st.add_vertex(a); st.add_vertex(c); st.add_vertex(d)
 	return st.commit()
 
 

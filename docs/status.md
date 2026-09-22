@@ -117,7 +117,9 @@ faint breathing rings (`_ally_target`), and each grounded machine's zone is one 
 tinted flower with one outline (`_zone`). Every hex tint and every zone outline is a mark on the ground in the scene
 (`Map3D.set_marks`: a flat hex and edge ribbons per mark, fed from
 `BattleMapView._fill` / `_edges`), so the machines and the wall hide them by standing on
-them, like the grid; headless draws them flat. The grid runs every playable hex to its
+them, like the grid; headless draws them flat. The scene blends in linear light, so
+`Map3D._scene_alpha` raises a mark's alpha to the 2.2 before it lands: the map view asks
+in screen terms and gets what it asked for. The grid runs every playable hex to its
 last edge; nothing is skipped for the wall (the lines once seen along its top were the
 zone outline, drawn in 2D). Enemy outlines are lined in black like the lines. The bleed never
 covers a machine (`Bleed.holes`, `holes` in the compositor). Machines keep their

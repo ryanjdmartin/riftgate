@@ -679,7 +679,7 @@ func _zone(h: Vector2i, col: Color) -> void:
 			cluster[n] = true
 	for n in cluster.keys():
 		if n != h:
-			_fill(n, Color(col, 0.08))
+			_fill(n, Color(col, 0.12))
 	for n in cluster.keys():
 		if n == h:
 			continue
@@ -695,7 +695,7 @@ func _zone(h: Vector2i, col: Color) -> void:
 			if not cluster.has(across) and field.map.has(across) and not field.map.is_structure(across):
 				edges.append(i)
 		if not edges.is_empty():
-			_edges(n, edges, Color(col, 0.5))
+			_edges(n, edges, Color(col, 0.65))
 
 
 func _dotted_poly(pts: PackedVector2Array, col: Color, dash: float) -> void:
