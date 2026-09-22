@@ -113,14 +113,16 @@ func destinations_for(u: Unit) -> Dictionary:
 
 
 ## Plot the cheapest route to `to`, in the same planned view. The mech's own hex clears its
-## route. False when the hex is out of reach or claimed. A re-plot keeps the mech's place
-## in the order; any later route it now stands in the way of is dropped and logged, so
-## the plan is always one Resolve will play exactly.
+## route. False when the hex is out of reach or claimed. A re-plot puts the mech last in
+## the order (Ryan, 22 September: the last thing plotted moves last), so it is planned
+## against everyone else's destination; any route the change still breaks is dropped and
+## logged, so the plan is always one Resolve will play exactly.
 func set_route(u: Unit, to: Vector2i) -> bool:
 	if state != State.PLAN:
 		return false
+	routes.erase(u.id)
 	if to == u.pos:
-		clear_route(u.id)
+		_drop_conflicts()
 		return true
 	if not destinations_for(u).has(to):
 		return false

@@ -311,3 +311,16 @@ func test_squads_plan_in_order_around_each_others_destinations() -> void:
 	var res := f.resolve_phase({})
 	assert_false(res.blocked.has(rear.id), "so it is not blocked at resolve")
 	assert_eq(rear.pos, rear_path[rear_path.size() - 1], "and lands where the intent said")
+
+
+func test_a_replot_moves_the_mech_to_the_end_of_the_order() -> void:
+	var b := Battle.new(1)
+	b.setup([Unit.mech(1, "A", Vector2i.ZERO, 3), Unit.mech(2, "B", Vector2i.ZERO, 3)], "undead")
+	var a_unit: Unit = b.mechs()[0]
+	var b_unit: Unit = b.mechs()[1]
+	assert_true(b.set_route(a_unit, b.destinations_for(a_unit).keys()[0]), "A plotted")
+	assert_true(b.set_route(b_unit, b.destinations_for(b_unit).keys()[0]), "B plotted")
+	assert_eq(b.routes.keys(), [a_unit.id, b_unit.id], "A then B")
+	var a_dests: Array = b.destinations_for(a_unit).keys()
+	assert_true(b.set_route(a_unit, a_dests[a_dests.size() - 1]), "A re-plotted")
+	assert_eq(b.routes.keys(), [b_unit.id, a_unit.id], "now B then A: the re-plot goes last")

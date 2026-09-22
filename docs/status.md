@@ -4,7 +4,7 @@ Handoff note for the next session. Replace stale lines; keep it under a screen.
 
 ## As of 22 September 2026
 
-**State.** Everything committed. Tests: 156 tests, 2238 checks, green. Ryan writes
+**State.** Everything committed. Tests: 157 tests, 2243 checks, green. Ryan writes
 `content/*.json` in his own voice (reload after any pass that touches it). The rules are in
 `docs/vocabulary.md` (generated) and every decision in `docs/design-bible.html`; the
 vocabulary carries an `order_of_operations` rule that the engine follows. Chassis ids:
@@ -62,8 +62,8 @@ its own strip and a tap on it dismisses it. Before a plan is locked the map show
 back; the map view caches it per plan): contact groups, squads stopped by a body block
 (BLOCKED), routes that will be rejected (NO ROUTE). Mechs move in plot order and routes are planned in that order
 (`Battlefield.with_plan`: earlier machines at their destinations, later ones where they
-stand), so Resolve never rejects a route; a re-plot or clear drops any later route it now
-blocks, with a log line (`Battle._drop_conflicts`). Squads plan and move after, in field order, each intent routed around where the squads
+stand), so Resolve never rejects a route; a re-plot puts the mech last in the order; any route
+the change breaks is dropped with a log line (`Battle._drop_conflicts`). Squads plan and move after, in field order, each intent routed around where the squads
 before it will end (`compute_intents`), so a squad never stops short of another squad.
 Resolve plays the movement phase (`play_moves`: mechs then squads along the paths they
 actually took, `MOVE_SECONDS_PER_HEX`; `Map3D.set_anim` moves the model and turns it to
