@@ -131,6 +131,8 @@ func _build_light() -> void:
 	e.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	e.ambient_light_color = Color("aab4bc")
 	e.ambient_light_energy = 1.0
+	e.sky = MechView3D.chrome_sky()   # reflections only, so Kestrel's chrome shines here too
+	e.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	# A little glow, so the lamps, engines and light strips bleed like a screen would.
 	e.glow_enabled = true
 	e.glow_intensity = 0.8
@@ -351,40 +353,59 @@ func _ink(grow: float = 1.0) -> StandardMaterial3D:
 
 
 ## Marks on the ground, in the scene so they sit under the machines (Ryan, 22 September:
-## a tint over a machine reads as on top of it): [hex, Color] each, as flat hexes on the
-## column, collapsing with it. Rebuilt only when the set of hexes changes; the colours
+## a tint or a line over a machine reads as on top of it; the machines and the wall hide
+## these by standing on them, like the grid). Each mark is {hex, fill: Color, edges:
+## Array[int], line: Color}: a flat tinted hex on the column and ribbons along the given
+## edges, collapsing with the column. Rebuilt only when the set changes; the colours
 ## follow every call, so a mark can breathe.
-var _marks: Dictionary = {}   # hex -> MeshInstance3D
+var _marks: Dictionary = {}   # hex -> [fill MeshInstance3D or null, line MeshInstance3D or null]
 var _marks_key := ""
+const EDGE_W := 2.5   # the ribbon's width in map pixels
 
 func set_marks(list: Array) -> void:
 	var key := ""
 	for m in list:
-		key += str(m[0]) + ";"
+		key += "%s%s;" % [str(m["hex"]), str(m["edges"])]
 	if key != _marks_key:
 		_marks_key = key
-		for mi in _marks.values():
-			mi.queue_free()
+		for pair in _marks.values():
+			for mi in pair:
+				if mi != null:
+					mi.queue_free()
 		_marks.clear()
 		for m in list:
-			var h: Vector2i = m[0]
+			var h: Vector2i = m["hex"]
 			if not _columns.has(h):
 				continue
-			var mi := MeshInstance3D.new()
-			mi.mesh = _mark_mesh(_height_of(h) + 0.45)
-			var mat := StandardMaterial3D.new()
-			mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-			mat.no_depth_test = false
-			mat.render_priority = 1
-			mi.material_override = mat
-			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-			(_columns[h] as Node3D).add_child(mi)
-			_marks[h] = mi
+			var y := _height_of(h) + 0.45
+			var fill: MeshInstance3D = null
+			if (m["fill"] as Color).a > 0.0:
+				fill = _flat_mark(_mark_mesh(y), _columns[h])
+			var line: MeshInstance3D = null
+			if not (m["edges"] as Array).is_empty():
+				line = _flat_mark(_edge_mesh(y + 0.05, m["edges"]), _columns[h])
+			_marks[h] = [fill, line]
 	for m in list:
-		var mi: MeshInstance3D = _marks.get(m[0], null)
-		if mi != null:
-			(mi.material_override as StandardMaterial3D).albedo_color = m[1]
+		var pair: Array = _marks.get(m["hex"], [])
+		if pair.is_empty():
+			continue
+		if pair[0] != null:
+			(pair[0].material_override as StandardMaterial3D).albedo_color = m["fill"]
+		if pair[1] != null:
+			(pair[1].material_override as StandardMaterial3D).albedo_color = m["line"]
+
+
+func _flat_mark(mesh: Mesh, col: Node3D) -> MeshInstance3D:
+	var mi := MeshInstance3D.new()
+	mi.mesh = mesh
+	var mat := StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.render_priority = 1
+	mi.material_override = mat
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	col.add_child(mi)
+	return mi
 
 
 func _mark_mesh(y: float) -> ArrayMesh:
@@ -396,6 +417,24 @@ func _mark_mesh(y: float) -> ArrayMesh:
 		st.add_vertex(c)
 		st.add_vertex(_world(corners[(i + 1) % corners.size()], y))
 		st.add_vertex(_world(corners[i], y))
+	return st.commit()
+
+
+## Ribbons along the given edges (corner i to i+1), just inside the hex's edge.
+func _edge_mesh(y: float, edges: Array) -> ArrayMesh:
+	var outer := Hex.corners(Vector2.ZERO, hex_px - 1.0)
+	var inner := Hex.corners(Vector2.ZERO, hex_px - 1.0 - EDGE_W * 1.15)
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for e in edges:
+		var i: int = int(e)
+		var j := (i + 1) % 6
+		var a := _world(outer[i], y)
+		var b := _world(outer[j], y)
+		var c := _world(inner[j], y)
+		var d := _world(inner[i], y)
+		st.add_vertex(a); st.add_vertex(c); st.add_vertex(b)
+		st.add_vertex(a); st.add_vertex(d); st.add_vertex(c)
 	return st.commit()
 
 
@@ -535,18 +574,12 @@ func _build_ground() -> void:
 			if mi.mesh.get_surface_count() > 1:
 				mi.set_surface_override_material(1, rock)
 		col.add_child(mi)
-		if in_field and not (map.gate_hexes.has(h) or map.wall_hexes.has(h)) and Hex.axial_to_offset(h).y < map.height - BattleMap.GATE_ROWS:
+		if in_field and not (map.gate_hexes.has(h) or map.wall_hexes.has(h)):
 			# The grid is the display's own light, drawn on the ground in the scene so a
-			# raised hex hides the lines behind it and the bleed takes them with the column.
+			# raised hex hides the lines behind it and the bleed takes them with the column;
+			# the wall and the machines hide it the same way, by standing on it.
 			var grid := MeshInstance3D.new()
-			# The edges that border the wall rows are left out: they ran along the wall's
-			# top on screen (Ryan, 22 September).
-			var skip: Array[int] = []
-			for i in range(6):
-				var across: Vector2i = h + Hex.DIRECTIONS[(6 - i) % 6]
-				if Hex.axial_to_offset(across).y >= map.height - BattleMap.GATE_ROWS:
-					skip.append(i)
-			grid.mesh = _grid_mesh(hgt + 0.35, skip)
+			grid.mesh = _grid_mesh(hgt + 0.35)
 			grid.material_override = _grid_material()
 			grid.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 			col.add_child(grid)

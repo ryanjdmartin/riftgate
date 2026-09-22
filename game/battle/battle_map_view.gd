@@ -574,15 +574,36 @@ func _draw_tags() -> void:
 ## again. Dimmed when another contact is the one being looked at.
 var _ring_t := 0.0
 
-var _ground_marks: Array = []   # [hex, Color] this frame, handed to the scene after the draw
+var _ground_marks: Array = []   # {hex, fill, edges, line} this frame, handed to the scene after the draw
 
 ## A hex's tint: on the ground in the scene, under the machines, when there is a scene;
 ## drawn flat when headless.
 func _fill(h: Vector2i, col: Color) -> void:
 	if _map3d != null:
-		_ground_marks.append([h, col])
+		_mark(h)["fill"] = col
 	else:
 		draw_colored_polygon(Hex.corners(center(h), HEX_SIZE - 3.0), col)
+
+
+## Some of a hex's edges (corner i to i+1) as a line on the ground, the same way.
+func _edges(h: Vector2i, idx: Array, col: Color) -> void:
+	if _map3d != null:
+		var m := _mark(h)
+		m["edges"] = idx
+		m["line"] = col
+	else:
+		var pts := Hex.corners(center(h), HEX_SIZE - 1.0)
+		for i in idx:
+			draw_line(pts[i], pts[(i + 1) % 6], col, 2.0)
+
+
+func _mark(h: Vector2i) -> Dictionary:
+	for m in _ground_marks:
+		if m["hex"] == h:
+			return m
+	var m := {"hex": h, "fill": Color(0, 0, 0, 0), "edges": [], "line": Color(0, 0, 0, 0)}
+	_ground_marks.append(m)
+	return m
 
 
 const DEST_RING := HEX_SIZE * 0.58   # the target's outer ring, where the intent line arrives; clear of the outline
@@ -662,17 +683,19 @@ func _zone(h: Vector2i, col: Color) -> void:
 	for n in cluster.keys():
 		if n == h:
 			continue
-		var pts := Hex.corners(center(n), HEX_SIZE - 1.0)
 		var nb := Hex.neighbors(n)
 		# Corner i to corner i+1 of a pointy hex (corners from -30 degrees) faces the
-		# direction at 60i degrees, which is DIRECTIONS[(6 - i) % 6]; draw the edges whose
-		# far side is outside the cluster.
+		# direction at 60i degrees, which is DIRECTIONS[(6 - i) % 6]; the edges whose far
+		# side is outside the cluster make the flower's outline, on the ground so the
+		# machines standing in the zone hide it (Ryan, 22 September).
+		var edges: Array = []
 		for i in range(6):
 			var across: Vector2i = nb[(6 - i) % 6]
-			# No edge against the wall, the gate or the map's end: nothing comes from there,
-			# and the line ran along the wall's top (Ryan, 22 September).
+			# No edge against the wall, the gate or the map's end: nothing comes from there.
 			if not cluster.has(across) and field.map.has(across) and not field.map.is_structure(across):
-				draw_line(pts[i], pts[(i + 1) % 6], Color(col, 0.5), 2.0)
+				edges.append(i)
+		if not edges.is_empty():
+			_edges(n, edges, Color(col, 0.5))
 
 
 func _dotted_poly(pts: PackedVector2Array, col: Color, dash: float) -> void:

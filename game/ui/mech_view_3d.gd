@@ -46,12 +46,19 @@ const ROLE_INDEX := {
 }
 # The maker's finish, for the shader's gloss lever: Kestrel gloss-coats, the wagon-builders barely.
 const GLOSS := {"minerva": 0.35, "kestrel": 1.0, "wainwright_sutler": 0.15, "aphelion": 0.75, "arsenal": 0.5}
+# The same finish on a textured (lowforge) model: roughness, metallic, specular. Kestrel is
+# chrome and shines like it, the signature (Ryan, 22 September); the wagon-builders' iron is
+# matte; the rest sit between.
+const FINISH := {"minerva": [0.68, 0.0, 0.4], "kestrel": [0.04, 0.9, 1.0], "wainwright_sutler": [0.86, 0.0, 0.3], "aphelion": [0.32, 0.15, 0.7], "arsenal": [0.55, 0.1, 0.5]}
 const LIVERY := {
-	"minerva": ["3a0f16", "5a1620", "8a2430", "b8303f"],
-	"kestrel": ["132148", "1c3270", "2d4fa8", "4a74d8"],
-	"wainwright_sutler": ["8f8a7a", "a9a291", "d8d2c2", "f0ebdc"],
-	"aphelion": ["7a3a10", "b85a18", "f08a2a", "ffb35a"],      # signal orange on gunmetal
-	"arsenal": ["6a5a10", "a08a14", "e0c020", "ffe25a"],       # hazard yellow, the HUD's own colour
+	# The livery tones, after the metals decided with the ally art (21 September; the
+	# earlier red, bone, orange and yellow retired 22 September). Only untextured models
+	# read these; lowforge models carry their maker's tiles.
+	"minerva": ["1e2614", "35401f", "6b8047", "8fa668"],       # military green
+	"kestrel": ["132148", "1c3270", "2d4fa8", "4a74d8"],       # cobalt
+	"wainwright_sutler": ["3a2010", "5c3218", "85492a", "a8683f"],   # warm brown
+	"aphelion": ["5a0c0c", "8c1414", "db1f1f", "f05a5a"],      # red on white
+	"arsenal": ["2a2c30", "3f4247", "5c6169", "7f858e"],       # gunmetal
 }
 
 var texture: Texture2D
@@ -84,6 +91,21 @@ var _inner: SubViewport
 var _camera: Camera3D
 var _model: Node3D
 var _pivot: Node3D = null   # the model's turntable, at its bounds' centre
+
+
+## The sky a chrome finish mirrors: bright overhead, a pale band at the horizon, dark
+## ground. Never drawn; the background stays transparent.
+static func chrome_sky() -> Sky:
+	var mat := ProceduralSkyMaterial.new()
+	mat.sky_top_color = Color("ffffff")
+	mat.sky_horizon_color = Color("b4c4d4")
+	mat.ground_horizon_color = Color("3a4048")
+	mat.ground_bottom_color = Color("15181c")
+	mat.sun_angle_max = 0.0
+	var sky := Sky.new()
+	sky.sky_material = mat
+	sky.radiance_size = Sky.RADIANCE_SIZE_64
+	return sky
 
 
 static func has_model(chassis_id: String) -> bool:
@@ -223,6 +245,10 @@ func _setup(chassis_id: String, maker: String) -> void:
 	e.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	e.ambient_light_color = Color("a0b4c8")
 	e.ambient_light_energy = 0.7
+	# A plain sky for reflections only (the ambient stays the flat colour above), so chrome
+	# has something to mirror: Kestrel shines, the signature (Ryan, 22 September).
+	e.sky = chrome_sky()
+	e.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	e.glow_enabled = true
 	e.glow_intensity = 0.5
 	e.glow_bloom = 0.05
@@ -388,9 +414,15 @@ static func toon(node: Node, maker: String, look: String, paint_arg: Dictionary 
 				# maker. The toon pass below is for untextured models (the structures).
 				var tm: StandardMaterial3D = (src as StandardMaterial3D).duplicate()
 				tm.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
-				tm.roughness = clampf(1.0 - float(GLOSS.get(maker, 0.4)) * 0.9, 0.3, 0.98)
-				tm.metallic = 0.0
+				var finish: Array = FINISH.get(maker, FINISH["minerva"])
+				tm.roughness = float(finish[0])
+				tm.metallic = float(finish[1])
+				tm.metallic_specular = float(finish[2])
 				tm.cull_mode = BaseMaterial3D.CULL_DISABLED   # wings and fins are single plates
+				# Opaque and writing depth, whatever the export said: a machine stands on the
+				# grid and hides it, like a prop or the wall (Ryan, 22 September).
+				tm.transparency = BaseMaterial3D.TRANSPARENCY_DISABLED
+				tm.depth_draw_mode = BaseMaterial3D.DEPTH_DRAW_ALWAYS
 				if TraceLines.mode() in ["assets", "pulse"]:
 					TraceLines.silhouette(tm, Palette.HUD, 2.0)   # the light outline around the whole machine
 				if role == "amber":

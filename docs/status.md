@@ -114,12 +114,15 @@ ruins, rock and road, with a slow breath between; `_destination_hex`,
 `_destination_rings`, `_ring_colour`, `ENEMY_LIT`), a contact a heavier pulsing tint with bursting rings
 (`_contact_effect`; one effect per hex, contact wins), a machine's own marker sits on two
 faint breathing rings (`_ally_target`), and each grounded machine's zone is one faint
-tinted flower with one outline (`_zone`). Every hex tint is a mark on the ground in the
-scene (`Map3D.set_marks`, fed from `BattleMapView._fill`), so it sits under the machines;
-headless draws it flat. Enemy outlines are lined in black like the lines. The bleed never
+tinted flower with one outline (`_zone`). Every hex tint and every zone outline is a mark on the ground in the scene
+(`Map3D.set_marks`: a flat hex and edge ribbons per mark, fed from
+`BattleMapView._fill` / `_edges`), so the machines and the wall hide them by standing on
+them, like the grid; headless draws them flat. The grid runs every playable hex to its
+last edge; nothing is skipped for the wall (the lines once seen along its top were the
+zone outline, drawn in 2D). Enemy outlines are lined in black like the lines. The bleed never
 covers a machine (`Bleed.holes`, `holes` in the compositor). Machines keep their
 silhouette through whatever hides them (`TraceLines.silhouette_through`); the gate and
-walls wear none; the grid stops short of the wall rows. The gate's integrity is a bar on
+walls wear none. The gate's integrity is a bar on
 the wall's face (`_draw_gate_bar`); tap the gate for its readout (`gate_selected`),
 double-tap for its entry (`BattleScreen.gate_codex_entry`, rule text only: the
 projector's voice is Ryan's to write). Moves
