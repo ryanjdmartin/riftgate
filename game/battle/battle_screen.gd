@@ -38,6 +38,7 @@ var _resolve_btn: HudButton
 var _clear_btn: HudButton
 var _details: HudPanel
 var _details_label: Label
+var _tuner: MapTuner = null
 var _overlay: Control
 var _overlay_title: Label
 var _overlay_text: Label
@@ -95,6 +96,9 @@ func _build() -> void:
 
 	_header = _tag("", 13, true)
 	_place(_header, Vector2(12, 14), Vector2(300, 28))
+	# TUNE opens the map's live knobs (not a player feature).
+	var tune_btn := HudButton.new("TUNE", _toggle_tuner)
+	_place(tune_btn, Vector2(W - 96, 10), Vector2(84, 34))
 	_sub_label = Hud.label("", 12, Color(Palette.HUD, 0.7), Hud.mono())
 	_place(_sub_label, Vector2(326, 20), Vector2(380, 20))
 
@@ -280,6 +284,15 @@ func _on_unit_held(u: Unit) -> void:
 
 func _on_hold_released() -> void:
 	_details.visible = false
+
+
+func _toggle_tuner() -> void:
+	if _tuner == null:
+		_tuner = MapTuner.new(_map)
+		add_child(_tuner)
+		_tuner.position = Vector2(W - 380.0, MAP_Y + 12.0)
+	else:
+		_tuner.visible = not _tuner.visible
 
 
 ## Double-tap a unit for its codex. The battle screen has no codex of its own yet, so for

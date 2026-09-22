@@ -145,8 +145,15 @@ does. The display traces every feature edge of units, structures and props in li
 (`Map3D._trace`: `_edge_mesh` welds a mesh by position and keeps edges where faces meet at
 more than `EDGE_ANGLE` or that belong to one face; `trace.gdshader` draws them additive
 and emissive with a brightness wave rolling south, `wave_len`, `speed`; plus a thin hull);
-`RIFTGATE_INK=dark` keeps the old black hull alone. Roads are never a lone slab and sit at
-ground level; no fade at the sides, only the blur. Composition: wasteland across the rougher half, ruins in dense clusters, water
+`RIFTGATE_INK=dark` starts in ink. The traces brighten under the scan band (the map view
+hands `Map3D.set_sweep` the band's map y every frame; `trace.gdshader` `sweep_z`, `band`).
+Roads are never a lone slab and sit at ground level; no fade at the sides, only the blur.
+The overworld runs at two frames (`PaintedMap.frame`, two viewports, `anim_rate` in the
+compositor): waves, leaves, grass and chimney smoke move. A dark hex plate sits under
+every foe picture. TUNE on the battle screen opens `MapTuner`, live knobs for the look:
+trace light/ink/off, trace gain, bloom, grid, saturation, brightness, far blur, edge fade,
+posterize, flicker, frame rate, bleed radius, scan on/off; `tools/screenshot.gd ... tune`
+shows it. Nothing it sets persists. Composition: wasteland across the rougher half, ruins in dense clusters, water
 in bodies; ruins may sit on shores again. The gatehouse wears the lighter plate tile. Props carry the ink hull (`Map3D._prop`); dead trees
 and boulders on wasteland, taller skyscraper crags with a couple of lit windows. Ruins
 keep off water's shores. Units: the ground is the model's Z = 0 by convention (nothing

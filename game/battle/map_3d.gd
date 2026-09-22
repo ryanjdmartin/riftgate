@@ -136,6 +136,7 @@ func _build_light() -> void:
 	e.glow_bloom = 0.08
 	e.glow_hdr_threshold = 0.9
 	env.environment = e
+	_env = e
 	add_child(env)
 
 
@@ -257,26 +258,68 @@ func _trace(mi: MeshInstance3D) -> void:
 	em.mesh = edges
 	em.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	em.material_override = _trace_material()
+	em.visible = _trace_mode != "off"
 	mi.add_child(em)
+	_trace_nodes.append(em)
 
 
-## The trace's material: light (the default) or, with RIFTGATE_INK=dark, the same edges as
-## plain black ink with no glow, to compare. Lines are one pixel either way; the light
-## version looks thicker only by its bloom.
+var _trace_nodes: Array = []
+var _trace_mode := "ink" if OS.get_environment("RIFTGATE_INK") == "dark" else "light"
+var _light_mat: ShaderMaterial = null
+var _ink_line_mat: StandardMaterial3D = null
+
+## The trace's material: light (the default) or the same edges as plain black ink with no
+## glow. Lines are one pixel either way; the light version looks thicker only by its bloom.
 func _trace_material() -> Material:
-	if _trace_mat == null:
-		if OS.get_environment("RIFTGATE_INK") == "dark":
-			var ink := StandardMaterial3D.new()
-			ink.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-			ink.albedo_color = Palette.BG
-			ink.cull_mode = BaseMaterial3D.CULL_DISABLED
-			_trace_mat = ink
-		else:
-			var sm := ShaderMaterial.new()
-			sm.shader = load("res://game/battle/trace.gdshader")
-			sm.set_shader_parameter("color", Palette.HUD)
-			_trace_mat = sm
-	return _trace_mat
+	if _trace_mode == "ink":
+		if _ink_line_mat == null:
+			_ink_line_mat = StandardMaterial3D.new()
+			_ink_line_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			_ink_line_mat.albedo_color = Palette.BG
+			_ink_line_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+		return _ink_line_mat
+	if _light_mat == null:
+		_light_mat = ShaderMaterial.new()
+		_light_mat.shader = load("res://game/battle/trace.gdshader")
+		_light_mat.set_shader_parameter("color", Palette.HUD)
+	return _light_mat
+
+
+# ---------------------------------------------------------------- live tuning
+
+## "light", "ink" or "off": every trace on the map swaps at once.
+func set_trace_mode(mode: String) -> void:
+	_trace_mode = mode
+	for em in _trace_nodes:
+		if is_instance_valid(em):
+			em.visible = mode != "off"
+			if mode != "off":
+				em.material_override = _trace_material()
+
+
+func set_trace_gain(v: float) -> void:
+	if _light_mat != null:
+		_light_mat.set_shader_parameter("gain", v)
+
+
+## Where the scan band is, as a map-pixel y: the traces under it brighten.
+func set_sweep(map_y: float) -> void:
+	if _light_mat != null:
+		_light_mat.set_shader_parameter("sweep_z", (map_y - _origin.y) / (_ppu * _sin))
+
+
+var _env: Environment = null
+
+func set_glow(v: float) -> void:
+	if _env != null:
+		_env.glow_intensity = v
+		_env.glow_enabled = v > 0.01
+
+
+func set_grid(alpha: float) -> void:
+	var m := _grid_material()
+	m.albedo_color = Color(Palette.HUD, alpha)
+	m.emission_energy_multiplier = 1.4 * alpha / 0.55
 
 
 ## The feature edges of a mesh as a line mesh: edges shared by faces that meet at an angle,

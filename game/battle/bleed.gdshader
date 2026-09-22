@@ -11,6 +11,11 @@
 shader_type canvas_item;
 
 uniform sampler2D painted : filter_nearest;
+uniform sampler2D painted2 : filter_nearest;  // the other world's second frame
+uniform float anim_rate = 1.6;               // frames per second between the two
+uniform float saturation = 1.0;              // the tuner's: 0 grey, 1 as painted
+uniform float brightness = 1.0;
+uniform float flicker = 1.0;                 // the corrupted side's tear, 0 off
 uniform vec2 map_size = vec2(1.0, 1.0);      // the painted map, in map pixels
 uniform vec2 view_size = vec2(1.0, 1.0);     // this texture, in screen pixels
 uniform vec2 scroll = vec2(0.0, 0.0);        // the map view's scroll
@@ -25,7 +30,7 @@ uniform float focus_band = 330.0;            // the sharp zone reaches this far 
 uniform float focus_falloff = 180.0;         // map pixels over which the blur reaches its maximum
 uniform float blur_max = 2.4;                // the blur's tap spacing at its maximum, in screen pixels
 uniform vec2 play_x = vec2(0.0, 1.0);        // the playable field's left and right, in map pixels
-uniform float edge_fade = 150.0;             // map pixels past the field over which the scenery softens and fades out
+uniform float edge_fade = 210.0;             // map pixels past the field over which the scenery softens away
 
 float bleed_at(vec2 px) {
 	float m = 1.0 - clamp((px.y - grad.x) / max(1.0, grad.y - grad.x), 0.0, 1.0);
@@ -81,6 +86,19 @@ vec4 blurred_other(vec2 uv, vec2 texel, float rad) {
 	return acc / 25.0;
 }
 
+vec4 blurred_other2(vec2 uv, vec2 texel, float rad) {
+	if (rad < 0.05) {
+		return texture(painted2, uv);
+	}
+	vec4 acc = vec4(0.0);
+	for (int i = -2; i <= 2; i++) {
+		for (int j = -2; j <= 2; j++) {
+			acc += texture(painted2, uv + vec2(float(i), float(j)) * texel * rad);
+		}
+	}
+	return acc / 25.0;
+}
+
 void fragment() {
 	vec2 spx = UV * view_size;                                 // screen pixel
 	ivec2 c = ivec2(floor(spx / cell));
@@ -93,13 +111,17 @@ void fragment() {
 	float edge = smoothstep(0.0, edge_fade, outside);
 	float rad = max(blur_radius(px), edge * blur_max);
 	vec4 scene = blurred_scene(TEXTURE, UV, 1.0 / view_size, rad);
-	vec4 other = blurred_other(px / map_size, 1.0 / (map_size * zoom), rad);
+	// The other world runs at two frames, the old way.
+	bool second = mod(floor(TIME * anim_rate), 2.0) > 0.5;
+	vec4 other = second ? blurred_other2(px / map_size, 1.0 / (map_size * zoom), rad) : blurred_other(px / map_size, 1.0 / (map_size * zoom), rad);
 	other.rgb = floor(other.rgb * levels + 0.5) / levels;
-	// The corrupted side is input the display cannot hold: now and then a band of it tears.
+	// The corrupted side is input the display cannot hold: rarely, a band of it tears.
 	float band = floor(px.y / 6.0);
-	float tick = floor(TIME * 14.0);
-	float flick = step(0.995, fract(sin(band * 12.9898 + tick * 7.31) * 43758.5453));
+	float tick = floor(TIME * 6.0);
+	float flick = step(0.9985, fract(sin(band * 12.9898 + tick * 7.31) * 43758.5453)) * flicker;
 	other.rgb *= 1.0 - 0.18 * flick;
 	COLOR = (k > bayer(c)) ? other : scene;
+	float luma = dot(COLOR.rgb, vec3(0.299, 0.587, 0.114));
+	COLOR.rgb = mix(vec3(luma), COLOR.rgb, saturation) * brightness;
 	// No fade to black at the sides: the blur alone is the edge of what the table resolves.
 }

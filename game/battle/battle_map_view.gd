@@ -50,6 +50,8 @@ const ZOOM_MAX := 2.6
 var _origin := Vector2.ZERO
 var _map3d: Map3D = null             # the battlefield's geometry; null only when headless
 var _painted: SubViewport = null     # the other world's flat bright map, rendered once
+var _painted2: SubViewport = null    # its second frame
+var sweep_on := true                 # the scan band; the tuner can stop it
 var _mix: SubViewport = null         # the two worlds mixed by the bleed, screen-sized, drawn under the overlays
 var _composite: TextureRect = null   # the rect inside _mix that carries the bleed shader
 var _map_size := Vector2.ZERO        # the map in map pixels
@@ -80,12 +82,13 @@ func set_field(f: Battlefield) -> void:
 	# that mixes the two by the bleed, drawn behind this control's own overlays. Headless
 	# runs have no renderer and fall back to the painted map alone.
 	if DisplayServer.get_name() != "headless":
-		for old in [_painted, _map3d, _mix]:
+		for old in [_painted, _painted2, _map3d, _mix]:
 			if old != null:
 				old.queue_free()
 		var map_size := Vector2(size.x, _map_px_height())
 		_map_size = map_size
-		_painted = _paint(map_size)
+		_painted = _paint(map_size, 0)
+		_painted2 = _paint(map_size, 1)
 		# The 3D scene and the compositor are the size of this control, not the map: the
 		# camera follows the scroll and zoom, so a frame costs the same at any zoom and the
 		# scene runs every frame (sway, ripple, later the movement phase).
@@ -104,6 +107,7 @@ func set_field(f: Battlefield) -> void:
 		var mat := ShaderMaterial.new()
 		mat.shader = load("res://game/battle/bleed.gdshader")
 		mat.set_shader_parameter("painted", _painted.get_texture())
+		mat.set_shader_parameter("painted2", _painted2.get_texture())
 		mat.set_shader_parameter("map_size", map_size)
 		mat.set_shader_parameter("view_size", size)
 		var hex_w := sqrt(3.0) * HEX_SIZE
@@ -114,8 +118,9 @@ func set_field(f: Battlefield) -> void:
 	queue_redraw()
 
 
-## The other world's painted map, rendered once into a viewport the size of the whole map.
-func _paint(map_size: Vector2) -> SubViewport:
+## The other world's painted map, one frame of two, rendered once into a viewport the size
+## of the whole map.
+func _paint(map_size: Vector2, frame: int) -> SubViewport:
 	var vp := SubViewport.new()
 	vp.size = Vector2i(map_size)
 	vp.transparent_bg = true
@@ -124,9 +129,16 @@ func _paint(map_size: Vector2) -> SubViewport:
 	add_child(vp)
 	var painted := PaintedMap.new()
 	painted.size = map_size
-	painted.setup(field, _origin, HEX_SIZE)
+	painted.setup(field, _origin, HEX_SIZE, frame)
 	vp.add_child(painted)
 	return vp
+
+
+## A live knob from the map tuner: a compositor uniform by name.
+func tune(name: String, value: Variant) -> void:
+	if _composite != null:
+		(_composite.material as ShaderMaterial).set_shader_parameter(name, value)
+	queue_redraw()
 
 
 func _layout() -> void:
@@ -341,9 +353,14 @@ func _draw() -> void:
 	# faint scanlines and its soft band drifting down, over everything, foes and overlays
 	# too (Ryan, 21 September).
 	Hud.scanlines(self, Rect2(Vector2.ZERO, size))
-	var sy := fmod(_sweep_t * SWEEP_SPEED, size.y + 120.0) - 60.0
-	for i in range(-2, 3):
-		draw_rect(Rect2(0.0, sy + i * 3.0, size.x, 1.0), Color(1, 1, 1, 0.07 - 0.015 * absi(i)))
+	if sweep_on:
+		var sy := fmod(_sweep_t * SWEEP_SPEED, size.y + 120.0) - 60.0
+		for i in range(-2, 3):
+			draw_rect(Rect2(0.0, sy + i * 3.0, size.x, 1.0), Color(1, 1, 1, 0.07 - 0.015 * absi(i)))
+		if _map3d != null:
+			_map3d.set_sweep((sy - scroll_y) / zoom)   # the traces under the band brighten
+	elif _map3d != null:
+		_map3d.set_sweep(-1.0e6)
 
 
 ## Off-screen squads get a portrait at the edge nearest them: the source of the intent line.
@@ -403,7 +420,10 @@ func _draw_unit(u: Unit) -> void:
 	elif tex != null:
 		# A foe is a flat picture on the screen, never an object in the scene: no shadow, no
 		# base, no lighting. It is the other world showing through (decided 19 September).
-		# A small foe draws a little larger than its pixels, so it holds its own beside a mech.
+		# A small foe draws a little larger than its pixels, so it holds its own beside a
+		# mech, and stands on a dark plate so it reads against the bright ground it brings.
+		if u.is_enemy():
+			draw_colored_polygon(Hex.corners(c, HEX_SIZE - 5.0), Color(Palette.BG, 0.42))
 		var ts := tex.get_size() * SPRITE_SCALE * (1.3 if u.is_enemy() and not u.is_multi_hex() else 1.0)
 		draw_texture_rect(tex, Rect2((c - Vector2(ts.x * 0.5, ts.y - 8.0)).floor(), ts), false)
 	elif u.is_player():

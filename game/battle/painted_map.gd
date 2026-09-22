@@ -9,6 +9,7 @@ extends Control
 var field: Battlefield
 var origin := Vector2.ZERO
 var hex_px: float = 44.0
+var frame: int = 0   # 0 or 1: the overworld's two-frame animation (Ryan, 21 September)
 
 ## The other world's palette: overworld colours, saturated on purpose. Green carries no
 ## meaning in the palette rules, so it may be this green.
@@ -23,10 +24,11 @@ const OTHER := {
 const OTHER_GRID := Color("1a3a12")
 
 
-func setup(f: Battlefield, o: Vector2, hex_size: float) -> void:
+func setup(f: Battlefield, o: Vector2, hex_size: float, which_frame: int = 0) -> void:
 	field = f
 	origin = o
 	hex_px = hex_size
+	frame = which_frame
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	queue_redraw()
 
@@ -53,12 +55,13 @@ func _draw_other(c: Vector2, t: int, seed_value: int) -> void:
 	var pts := Hex.corners(c, hex_px - 1.5)
 	draw_colored_polygon(pts, base)
 	var r := hex_px * 0.7
+	var f2 := float(frame)   # the second frame nudges what moves: waves, leaves, grass
 	match t:
 		BattleMap.Terrain.PLAIN:
 			# Grass: a light speckle, the way the old overworld tiles shimmer.
 			for i in range(8):
 				var p := c + Vector2(rng.randf_range(-r, r), rng.randf_range(-r * 0.75, r * 0.75))
-				draw_rect(Rect2(p.floor(), Vector2(3.0, 2.0)), Color("6ad04a"))
+				draw_rect(Rect2(p.floor() + Vector2(2.0 * f2, 0.0), Vector2(3.0, 2.0)), Color("6ad04a"))
 		BattleMap.Terrain.ROAD:
 			# Sand: a beige patch with a darker rim and a few darker grains.
 			draw_colored_polygon(Hex.corners(c, hex_px - 6.0), Color("d4b878"))
@@ -71,7 +74,7 @@ func _draw_other(c: Vector2, t: int, seed_value: int) -> void:
 				var p := c + Vector2(rng.randf_range(-r, r), rng.randf_range(-r * 0.7, r * 0.7))
 				draw_circle(p + Vector2(0.0, 3.0), 9.0, Color("144a14"))
 				draw_circle(p, 8.0, Color("2a8a28"))
-				draw_circle(p + Vector2(-2.0, -3.0), 4.0, Color("4cc040"))
+				draw_circle(p + Vector2(-2.0 + 3.0 * f2, -3.0), 4.0, Color("4cc040"))   # the leaves turn
 		BattleMap.Terrain.RUINS:
 			# A town: little roofs and walls on the grass.
 			for i in range(3):
@@ -79,12 +82,13 @@ func _draw_other(c: Vector2, t: int, seed_value: int) -> void:
 				draw_rect(Rect2(p, Vector2(13.0, 10.0)), Color("d8d8e0"))
 				draw_rect(Rect2(p + Vector2(-1.0, -4.0), Vector2(15.0, 5.0)), Color("c04030"))
 				draw_rect(Rect2(p + Vector2(5.0, 4.0), Vector2(3.0, 6.0)), Color("404050"))
+				draw_rect(Rect2(p + Vector2(10.0, -7.0 - 2.0 * f2), Vector2(2.0, 2.0)), Color("e8e8f0"))   # chimney smoke rises
 		BattleMap.Terrain.WATER:
 			# Sea: a pale shore band and wave dots.
 			Hud.stroke_poly(self, Hex.corners(c, hex_px - 5.0), Color("7ab8ff"), 3.0)
 			for i in range(6):
-				var p := c + Vector2(rng.randf_range(-r * 0.8, r * 0.8), rng.randf_range(-r * 0.6, r * 0.6))
-				draw_rect(Rect2(p.floor(), Vector2(4.0, 2.0)), Color("a8d0ff"))
+				var p := c + Vector2(rng.randf_range(-r * 0.8, r * 0.8), rng.randf_range(-r * 0.6, r * 0.6)) + Vector2(3.0 * f2, -2.0 * f2)
+				draw_rect(Rect2(p.floor(), Vector2(4.0, 2.0)), Color("a8d0ff"))   # the waves move
 				draw_rect(Rect2(p.floor() + Vector2(1.0, 2.0), Vector2(2.0, 1.0)), Color("1848b8"))
 		BattleMap.Terrain.MOUNTAIN:
 			# A ridge: brown peaks in a row, dark faces, white tips.

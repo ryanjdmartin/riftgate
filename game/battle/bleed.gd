@@ -10,7 +10,7 @@ extends RefCounted
 ## Later knobs: the gradient could grow with Rift Pressure, so the corruption spreads south
 ## as the clock runs.
 
-const SQUAD_RADIUS_HEX := 1.45
+static var squad_radius_hex := 1.45   # a var, so the map tuner can move it live
 const BOSS_RADIUS_HEX := 2.6
 const RIFT_RADIUS_HEX := 2.6
 const GRADIENT_ROWS := 5.0      # the rift's bleed is total on its row and gone this many rows south
@@ -33,7 +33,7 @@ static func sources(field: Battlefield, origin: Vector2, hex_px: float) -> Packe
 		if out.size() >= MAX_SOURCES:
 			break
 		var p := origin + Hex.to_pixel(sq.pos, hex_px)
-		out.append(Vector3(p.x, p.y, (BOSS_RADIUS_HEX if sq.is_multi_hex() else SQUAD_RADIUS_HEX) * hex_px))
+		out.append(Vector3(p.x, p.y, (BOSS_RADIUS_HEX if sq.is_multi_hex() else squad_radius_hex) * hex_px))
 	return out
 
 
