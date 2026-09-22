@@ -18,6 +18,8 @@ class PhaseResult:
 	var moved: Array[int] = []        # unit ids that moved
 	var rejected: Array[int] = []     # unit ids whose route was invalid
 	var blocked: Array[int] = []      # squad ids stopped by a body block
+	var intercepted: Array[int] = []  # squad ids stopped by a mech's control of the ground beside it
+	var intents: Dictionary = {}      # squad id -> the path it followed, planned after the mechs moved
 	var gate_damage: int = 0
 	var spawned: bool = false
 	var skirmishes: Array = []        # Array of Array[Unit]
@@ -201,12 +203,34 @@ func compute_intents() -> void:
 			var held: Array = ends[other.id] if ends.has(other.id) else other.hexes()
 			for h in held:
 				blocked[h] = true
-		var full := map.find_path(sq.pos, target, sq.traits, blocked)
+		# Around controlled ground when a way round exists; through it when none does,
+		# and then the path ends at the first controlled hex, where the squad will stop.
+		var ignores_control := sq.elite and sq.strength == 0   # the boss guards; nothing herds it
+		if not ignores_control and controlled(sq.pos):
+			# Already under a machine's guns: it holds its ground, and the contact is this
+			# phase's fight. Nothing ambiguous to preview.
+			var none: Array[Vector2i] = []
+			intents[sq.id] = none
+			ends[sq.id] = sq.hexes()
+			continue
+		var avoid := blocked.duplicate()
+		if not ignores_control:
+			for h in map.all_hexes():
+				if h != target and controlled(h):
+					avoid[h] = true
+		var full := map.find_path(sq.pos, target, sq.traits, avoid)
+		if full.is_empty():
+			full = map.find_path(sq.pos, target, sq.traits, blocked)
 		var path := _affordable(sq, full)
+		if not ignores_control:
+			for i in range(path.size()):
+				if controlled(path[i]) and not map.gate_hexes.has(path[i]):
+					path = path.slice(0, i + 1)
+					break
 		intents[sq.id] = path
 		var end: Vector2i = sq.pos
 		for step in path:
-			if map.gate_hexes.has(step) or (unit_at(step) != null and unit_at(step).is_player()):
+			if map.gate_hexes.has(step) or (unit_at(step) != null and unit_at(step).is_player() and unit_at(step).can_block()):
 				break   # a strike, not a move
 			end = step
 		var held_now: Array = []
@@ -256,7 +280,7 @@ func _affordable(sq: Unit, path: Array[Vector2i]) -> Array[Vector2i]:
 		# Reaching a target hex (gate, defense, mech) is an attack, not a move. Keep it in
 		# the preview so the player sees the strike, then stop.
 		var occ := unit_at(step)
-		if map.gate_hexes.has(step) or (occ != null and occ.is_player()):
+		if map.gate_hexes.has(step) or (occ != null and occ.is_player() and occ.can_block()):
 			out.append(step)
 			break
 		var c := BattleMap.move_cost(map.terrain[step], sq.traits)
@@ -287,7 +311,9 @@ func preview_phase(routes: Dictionary) -> Dictionary:
 	for u in units:
 		saved[u.id] = [u.pos, u.facing]
 	var result := PhaseResult.new()
+	phase += 1   # the phase the resolve will be, so a boss's patrol step is the same one
 	_move_all(routes, result, true)
+	phase -= 1
 	result.skirmishes = detect_skirmishes()
 	var ends: Dictionary = {}
 	for u in units:
@@ -319,8 +345,25 @@ func _move_all(routes: Dictionary, result: PhaseResult, dry: bool) -> void:
 			result.rejected.append(uid)
 			if not dry:
 				log.append("%s: route rejected" % u.display_name)
+	# The squads plan against where the machines now stand (Ryan, 22 September: a route
+	# that cuts a squad off must show in that squad's path before Resolve), so their
+	# intents are recomputed here, in the preview and the resolve alike.
+	compute_intents()
+	result.intents = intents.duplicate(true)
 	for sq in squads():
 		_execute_squad(sq, result, dry)
+
+
+## Whether a grounded machine controls `h`: a squad that steps beside a mech stops there
+## (decided 22 September). A flyer controls nothing; its edge is speed, and it engages by
+## ending beside a squad.
+func controlled(h: Vector2i) -> bool:
+	for m in mechs():
+		if m.traits.has("flyer"):
+			continue
+		if Hex.distance(m.pos, h) == 1:
+			return true
+	return false
 
 
 ## Run `fn` with the machines that move before `u` (earlier in `routes`, or all of them
@@ -406,6 +449,11 @@ func _execute_squad(sq: Unit, result: PhaseResult, dry: bool = false) -> void:
 			landed = s
 			sq.facing = _direction_index(prev, s)
 		prev = s
+		if controlled(s) and not (sq.elite and sq.strength == 0):
+			result.intercepted.append(sq.id)
+			if not dry:
+				log.append("%s stopped at %s, under a machine's guns" % [sq.display_name, str(s)])
+			break
 	sq.pos = landed
 
 

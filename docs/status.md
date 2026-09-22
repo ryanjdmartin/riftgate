@@ -4,7 +4,7 @@ Handoff note for the next session. Replace stale lines; keep it under a screen.
 
 ## As of 22 September 2026
 
-**State.** Everything committed. Tests: 158 tests, 2260 checks, green. Ryan writes
+**State.** Everything committed. Tests: 162 tests, 2282 checks, green. Ryan writes
 `content/*.json` in his own voice (reload after any pass that touches it). The rules are in
 `docs/vocabulary.md` (generated) and every decision in `docs/design-bible.html`; the
 vocabulary carries an `order_of_operations` rule that the engine follows. Chassis ids:
@@ -60,20 +60,29 @@ the terrain's lift; tap empty ground for its readout, tap an ally to select and 
 tap an enemy for its label, double-tap is wired for the codex; the readout is docked in
 its own strip and a tap on it dismisses it. Before a plan is locked the map shows the phase as it will resolve
 (`Battlefield.preview_phase`: the resolver's own movement run dry and every unit put
-back; the map view caches it per plan): contact groups, squads stopped by a body block
-(BLOCKED), routes that will be rejected (NO ROUTE). Mechs move in plot order and routes are planned in that order
+back; the map view caches it per plan): contact groups, squads stopped by another squad
+(BLOCKED), routes that will be rejected (NO ROUTE). Zone of control (decided 22 September):
+`Battlefield.controlled(h)` is true beside any grounded mech; `compute_intents` runs inside
+`_move_all` after the mechs (preview and resolve alike, `PhaseResult.intents`), routes
+squads around control when it can, cuts the path at the first controlled hex otherwise
+(`intercepted`), and a squad starting on controlled ground holds; flyers control nothing.
+The map draws intents from the preview's intents, never during a move, danger hexes
+(dashed) beside every planned grounded destination, destinations as a shaded hex with an
+arrowhead, contacts as a breathing hex with bursting rings (`_contact_effect`; one effect
+per hex, contact wins). Mechs move in plot order and routes are planned in that order
 (`Battlefield.with_plan`: earlier machines at their destinations, later ones where they
 stand), so Resolve never rejects a route; a re-plot puts the mech last in the order; any route
 the change breaks is dropped with a log line (`Battle._drop_conflicts`). A boss stands on one hex now and patrols within `BOSS_ZONE` of
 the rift (`_pick_target`, picked by phase so the preview holds); the multi-hex footprint
 stays in the engine (`Unit.TRIANGLE`) for later. Squads plan and move after, in field order, each intent routed around where the squads
 before it will end (`compute_intents`), so a squad never stops short of another squad.
-After the movement phase, the contacts are offered in a panel (`_show_contacts`: how many,
-who is in each, an ENGAGE button per contact, the player picks which to fight first;
-`Battle.open_skirmish_at`), and nothing opens until they do. Contact tags name the units
-(`contact_text`); intent lines are wide with a dark underline, their destination hex
-shaded, and both destinations and contacts carry turning target rings (`_target_rings`).
-The contact panel is centred over the map on a scrim with a big ENGAGE per contact. Resolve plays the movement phase (`play_moves`, which first parks every mover at its
+After the movement phase, a CONTACT warning flashes, then the contact panel slides up
+(`_show_contacts` then `_build_contact_panel`: one contact at a time with `MechView3D`
+and foe-sprite portraits, arrows to page, ENGAGE; paging zooms the map to that fight via
+`focus_on` and lights its hexes via `set_highlight`; `Battle.open_skirmish_at`), and
+nothing opens until the player picks. Contact tags name the units (`contact_text`), kept
+on screen when zoomed. The bleed's squad sources follow the movement animation
+(`Bleed.sources(..., moving)`). Resolve plays the movement phase (`play_moves`, which first parks every mover at its
 start so nobody blinks to the end: mechs then squads along the paths they
 actually took, `MOVE_SECONDS_PER_HEX`; `Map3D.set_anim` moves the model and turns it to
 its heading) and only then opens the skirmish; headless skips the play. `map_tuner.gd` (TUNE on the battle screen) is
@@ -86,7 +95,8 @@ assets, light, ink, off). The skirmish's mech views take the same. Side blur beg
 frame's lines (`_frame_x`), not the field's edge; intent lines carry a dark underline; the
 scan bar pauses `HudBackdrop.SCAN_PAUSE` seconds between sweeps on both screens; the
 corrupted tear is rarer, and the skirmish's overworld band tears too; `RIFTGATE_MAP_WIRE=1` is the pure-wireframe trial. `tools/screenshot.gd` poses:
-select, route, hold, north, zoom, zoomlast, tune, resolve, contact.
+select, route, hold, north, zoom, zoomlast, tune, predict, resolve, contact
+(`RIFTGATE_SHOT_FRAME=260` catches the contact panel after the warning).
 
 **Landscape generation (`sim/battle_map.gd`).** `_lay_landscape` from seeded noise: water
 in bodies, wasteland across the rougher half, ruins in dense clusters, crags along a ridge

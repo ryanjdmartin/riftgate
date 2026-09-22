@@ -14,7 +14,7 @@ uniform float gain = 1.0;        // the tuner's overall multiplier
 uniform float sweep_p = -1.0e6;  // the scan band's projected depth along `screen_down`, in world units
 uniform vec3 screen_down = vec3(0.0, -0.743, 0.669);   // the world direction that runs down the screen, so height counts
 uniform float lead = 10.0;       // projected units the light reaches ahead of the band: it snaps on
-uniform float tail = 55.0;       // projected units the light lingers behind it: it fades in the wake
+uniform float tail = 110.0;       // projected units the light lingers behind it: it fades in the wake
 
 varying vec3 wpos;
 
@@ -24,7 +24,7 @@ void vertex() {
 
 void fragment() {
 	float d = dot(wpos, screen_down) - sweep_p;
-	float w = (d > 0.0) ? exp(-(d / lead) * (d / lead)) : exp(d / tail * 2.2);
+	float w = (d > 0.0) ? exp(-(d / lead) * (d / lead)) : exp(d / tail * 1.6);
 	float k = (base + pulse * w) * gain;
 	ALBEDO = color * min(k, 1.0);
 	EMISSION = color * max(k - 0.35, 0.0) * 1.1;

@@ -21,7 +21,9 @@ static func mode() -> String:
 			return "light"
 		"pulse":
 			return "pulse"
-	return "assets"   # the default (Ryan, 22 September)
+		"assets":
+			return "assets"
+	return "pulse"   # the default (Ryan, 22 September: the pulse is a winner)
 
 
 ## The pulse mode's material: the light shader resting at black.

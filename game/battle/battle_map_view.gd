@@ -287,7 +287,7 @@ func _draw() -> void:
 		_map3d.look(Vector2(scroll_x, scroll_y), zoom)
 		_map3d.sync()
 		var mat: ShaderMaterial = _composite.material
-		var src := Bleed.sources(field, _origin, HEX_SIZE)
+		var src := Bleed.sources(field, _origin, HEX_SIZE, _anim_px)
 		mat.set_shader_parameter("grad", Bleed.gradient(field, _origin, HEX_SIZE))
 		mat.set_shader_parameter("source_count", src.size())
 		src.resize(Bleed.MAX_SOURCES)
@@ -348,28 +348,55 @@ func _draw() -> void:
 		draw_colored_polygon(pts, Color(hud, 0.14))
 		Hud.stroke_poly(self, pts, Color(hud, 0.55), 1.0)
 
-	# Enemy previews: where each squad goes unless something stops it.
-	for sq in field.squads():
-		var path: Array = field.intents.get(sq.id, [])
-		if path.is_empty():
-			continue
-		# A dark underline first, so the red reads on any ground; then the destination hex
-		# shaded and ringed with turning target circles (Ryan, 22 September).
-		var prev := center(sq.pos)
-		for step in path:
-			var p := center(step)
-			draw_line(prev, p, Color(Palette.BG, 0.75), 10.0)
-			prev = p
-		prev = center(sq.pos)
-		for step in path:
-			var p := center(step)
-			draw_line(prev, p, Color(Palette.ENEMY, 0.95), 5.0)
-			prev = p
-		if not path.is_empty():
+	# Enemy previews: where each squad goes given the plan as it stands, from the same dry
+	# run that finds the contacts (Ryan, 22 September: a route that cuts a squad off shows
+	# in that squad's path), and none at all while a move is playing.
+	var contact_hexes: Dictionary = {}
+	if _anim.is_empty():
+		var pv := _preview()
+		var res: Battlefield.PhaseResult = pv["result"]
+		for group in res.skirmishes:
+			for u in group:
+				contact_hexes[(pv["ends"] as Dictionary)[u.id]] = true
+		# Danger: the ground beside every grounded machine's destination, where a squad
+		# will be stopped. Drawn faint, in the HUD colour, before the paths.
+		var ends: Dictionary = pv["ends"]
+		for m in field.mechs():
+			if m.traits.has("flyer"):
+				continue
+			for n in Hex.neighbors(ends[m.id]):
+				if field.map.has(n) and not field.map.is_structure(n):
+					var pts := Hex.corners(center(n), HEX_SIZE - 6.0)
+					draw_colored_polygon(pts, Color(hud, 0.10))
+					_dotted_poly(pts, Color(hud, 0.7), 6.0)
+		for sq in field.squads():
+			var path: Array = res.intents.get(sq.id, [])
+			if path.is_empty():
+				continue
+			var prev := center(sq.pos)
+			for step in path:
+				var p := center(step)
+				draw_line(prev, p, Color(Palette.BG, 0.75), 10.0)
+				prev = p
+			prev = center(sq.pos)
+			var last := prev
+			for step in path:
+				var p := center(step)
+				draw_line(prev, p, Color(Palette.ENEMY, 0.95), 5.0)
+				last = prev
+				prev = p
 			var dest: Vector2i = path[path.size() - 1]
+			if contact_hexes.has(dest):
+				continue   # the contact effect owns this hex
 			if not map.gate_hexes.has(dest):
-				draw_colored_polygon(Hex.corners(prev, HEX_SIZE - 3.0), Color(Palette.ENEMY, 0.22))
-			_target_rings(prev, Palette.ENEMY, HEX_SIZE * 0.55, 1.0)
+				# The destination: shaded, a thick outline, and an arrowhead where the path
+				# arrives, so it reads as "goes here" and never as a target.
+				draw_colored_polygon(Hex.corners(prev, HEX_SIZE - 3.0), Color(Palette.ENEMY, 0.32))
+				Hud.stroke_poly(self, Hex.corners(prev, HEX_SIZE - 3.0), Color(Palette.ENEMY, 0.95), 4.0)
+			var dir := (prev - last).normalized()
+			var tip := prev - dir * 6.0
+			var side := Vector2(-dir.y, dir.x)
+			draw_colored_polygon(PackedVector2Array([tip, tip - dir * 16.0 + side * 10.0, tip - dir * 16.0 - side * 10.0]), Palette.ENEMY)
 
 	# The player's plotted routes, ending in a small marker hex.
 	for uid in routes.keys():
@@ -394,13 +421,15 @@ func _draw() -> void:
 		for group in res.skirmishes:
 			var mid := Vector2.ZERO
 			var top_y := INF
+			var group_hexes: Array = []
+			for u in group:
+				group_hexes.append(ends[u.id])
+			var lit := _highlight.is_empty() or _highlight.has(group_hexes[0])
 			for u in group:
 				var c := center(ends[u.id])
 				mid += c
 				top_y = minf(top_y, c.y)
-				draw_colored_polygon(Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, 0.18))
-				Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 4.0), Color(Palette.ENEMY, 0.9), 3.0)
-				_target_rings(c, Palette.ENEMY, HEX_SIZE * 0.8, -1.0)
+				_contact_effect(c, lit)
 			mid /= float(group.size())
 			# Who is in it: the machines against the squads, so the player knows what the
 			# skirmish will hold before locking in (Ryan, 22 September).
@@ -444,7 +473,11 @@ const RIFT_ART := Color("c9a6ff")   # what the rift looks like; it means nothing
 ## carries the side without asking coloured text to survive the ground.
 func _plaque(at: Vector2, text: String, border: Color, thick: float = 1.5) -> void:
 	var w := Hud.mono().get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x + 10.0
-	var rect := Rect2(at - Vector2(w * 0.5, 9.0), Vector2(w, 18.0))
+	# Kept inside the visible width, so a zoomed-in plaque never runs off the screen.
+	var left := (4.0 - scroll_x) / zoom
+	var right := (size.x - 4.0 - scroll_x) / zoom
+	var x := clampf(at.x, left + w * 0.5, right - w * 0.5) if right - left > w else at.x
+	var rect := Rect2(Vector2(x, at.y) - Vector2(w * 0.5, 9.0), Vector2(w, 18.0))
 	draw_rect(rect, Palette.BG, true)
 	draw_rect(rect, border, false, thick)
 	draw_string(Hud.mono(), rect.position + Vector2(5.0, 13.0), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color.WHITE)
@@ -481,18 +514,48 @@ func _draw_tags() -> void:
 		draw_colored_polygon(PackedVector2Array([Vector2(mid - 6.0, edge_y), Vector2(mid + 6.0, edge_y), Vector2(mid, edge_y + 6.0 * dir)]), border)
 
 
-## Turning concentric target rings: three dashed circles, each turning the other way from
-## the last, the way a targeting display would draw a lock.
+## The contact effect (Ryan, 22 September: big, obvious, in the face): a filled hex that
+## breathes, a heavy outline, and a ring that bursts from the centre past the hex's edge
+## and fades, again and again. Dimmed when another contact is the one being looked at.
 var _ring_t := 0.0
 
-func _target_rings(c: Vector2, col: Color, r: float, dir: float) -> void:
-	for k in range(3):
-		var rad := r * (0.45 + 0.275 * k)
-		var segs := 4 + k * 2
-		var a0 := _ring_t * dir * (1.2 - 0.3 * k) * (1.0 if k % 2 == 0 else -1.0)
-		for sgm in range(segs):
-			var a := a0 + TAU * float(sgm) / float(segs)
-			draw_arc(c, rad, a, a + TAU / float(segs) * 0.55, 8, Color(col, 0.85 - 0.2 * k), 2.0)
+func _contact_effect(c: Vector2, lit: bool) -> void:
+	var a := 1.0 if lit else 0.35
+	var breath := 0.5 + 0.5 * sin(_ring_t * 4.0)
+	draw_colored_polygon(Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, (0.22 + 0.18 * breath) * a))
+	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, 0.95 * a), 4.0)
+	for k in range(2):
+		var phase := fmod(_ring_t * 0.9 + k * 0.5, 1.0)
+		var r := HEX_SIZE * (0.3 + 1.1 * phase)
+		draw_arc(c, r, 0.0, TAU, 40, Color(Palette.ENEMY, (1.0 - phase) * 0.9 * a), 3.0 * (1.0 - phase * 0.5) + 1.0)
+
+
+func _dotted_poly(pts: PackedVector2Array, col: Color, dash: float) -> void:
+	for i in range(pts.size()):
+		var a := pts[i]
+		var b := pts[(i + 1) % pts.size()]
+		var n := int(a.distance_to(b) / dash)
+		for k in range(0, n, 2):
+			draw_line(a.lerp(b, float(k) / n), a.lerp(b, float(k + 1) / n), col, 2.0)
+
+
+## The contact being looked at in the contact panel: its hexes, so the others dim.
+var _highlight: Dictionary = {}
+
+func set_highlight(hexes: Array) -> void:
+	_highlight.clear()
+	for h in hexes:
+		_highlight[h] = true
+	queue_redraw()
+
+
+## Zoom to `z` and centre a map point, for the contact panel's look at a fight.
+func focus_on(p: Vector2, z: float) -> void:
+	zoom = clampf(z, ZOOM_MIN, ZOOM_MAX)
+	scroll_x = size.x * 0.5 - p.x * zoom
+	scroll_y = size.y * 0.5 - p.y * zoom
+	_clamp_scroll()
+	queue_redraw()
 
 
 ## "Badger + Sparrowhawk vs ghouls ×6 + necromancers ×3": one contact group, in words.

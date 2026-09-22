@@ -63,15 +63,14 @@ func test_squad_marches_toward_gate() -> void:
 
 
 func test_mech_body_blocks_squad() -> void:
-	var f := _field()
-	var sq := f.add_unit(Unit.squad(1, "ghouls", _o(3, 2), "undead", 2))
-	f.compute_intents()
-	var second_step: Vector2i = f.intents[1][1]
-	var first_step: Vector2i = f.intents[1][0]
-	f.add_unit(Unit.mech(2, "A", second_step, 0))
+	# A grounded machine in the middle of a corridor (three columns: every hex of its row
+	# is under its guns): the squad stops on the ground beside it, and that is the contact.
+	var f := _field(3, 13)
+	var m := f.add_unit(Unit.mech(2, "A", _o(1, 4), 0))
+	var sq := f.add_unit(Unit.squad(1, "ghouls", _o(1, 2), "undead", 3))
 	var res := f.resolve_phase({})
-	assert_eq(sq.pos, first_step, "squad stopped one short")
-	assert_true(res.blocked.has(1), "squad reported as blocked")
+	assert_eq(Hex.distance(sq.pos, m.pos), 1, "squad stopped beside the machine")
+	assert_true(res.intercepted.has(1), "squad reported as stopped by control")
 	assert_eq(res.skirmishes.size(), 1, "contact makes a skirmish")
 
 
@@ -339,3 +338,74 @@ func test_a_boss_patrols_its_zone_outside_the_rift() -> void:
 		f.resolve_phase({})
 		assert_true(Hex.distance(boss.pos, f.map.rift) <= Battlefield.BOSS_ZONE, "stays within its zone (phase %d)" % i)
 		assert_false(f.map.rift_hexes.has(boss.pos), "never on the rift itself")
+
+
+func test_a_squad_stepping_beside_a_mech_stops_there_and_a_flyer_stops_nobody() -> void:
+	# Control (decided 22 September): the ground beside a grounded machine stops a squad.
+	var f := _field(3, 14)   # a corridor: no way round
+	var m := f.add_unit(Unit.mech(1, "A", _o(1, 6), 0))
+	var sq := f.add_unit(Unit.squad(2, "ghouls", _o(1, 2), "undead", 4))
+	f.compute_intents()
+	var path: Array = f.intents[sq.id]
+	assert_true(f.controlled(path[path.size() - 1]), "the intent ends on controlled ground")
+	var res := f.resolve_phase({})
+	assert_true(res.intercepted.has(sq.id), "stopped by control")
+	assert_eq(Hex.distance(sq.pos, m.pos), 1, "beside the machine")
+	assert_eq(res.skirmishes.size(), 1, "and that is a contact")
+	# A flyer in the same spot controls nothing: the squad passes.
+	var f2 := _field(3, 14)
+	var fly := f2.add_unit(Unit.mech(1, "hawk", _o(1, 6), 0))
+	fly.traits = ["flyer"]
+	var sq2 := f2.add_unit(Unit.squad(2, "ghouls", _o(1, 2), "undead", 4))
+	f2.compute_intents()
+	var res2 := f2.resolve_phase({})
+	assert_false(res2.intercepted.has(sq2.id), "a flyer stops nobody")
+	assert_true(Hex.distance(sq2.pos, f2.map.gate) < Hex.distance(_o(1, 2), f2.map.gate) - 2, "the squad kept going")
+
+
+func test_squads_route_around_control_when_they_can() -> void:
+	var f := _field(7, 14)
+	f.add_unit(Unit.mech(1, "A", _o(1, 6), 0))   # off to one side: the squad can go round
+	var sq := f.add_unit(Unit.squad(2, "ghouls", _o(3, 2), "undead", 3))
+	f.compute_intents()
+	for h in f.intents[sq.id]:
+		assert_false(f.controlled(h), "the path keeps off controlled ground")
+	var res := f.resolve_phase({})
+	assert_false(res.intercepted.has(sq.id), "and nothing stops it")
+
+
+func test_the_preview_shows_a_squad_stopped_by_a_route_not_yet_resolved() -> void:
+	# A mech's plotted route ends beside the squad's path: the preview's intents already
+	# stop there, before Resolve.
+	var f := _field(3, 14)
+	var m := f.add_unit(Unit.mech(1, "A", _o(1, 8), 3))
+	var sq := f.add_unit(Unit.squad(2, "ghouls", _o(1, 3), "undead", 4))   # wants past row 7
+	f.compute_intents()
+	var free_path: Array = f.intents[sq.id]
+	var routes := {m.id: f.map.find_path(m.pos, _o(1, 7), m.traits)}
+	var pv := f.preview_phase(routes)
+	var res: Battlefield.PhaseResult = pv["result"]
+	assert_true(res.intercepted.has(sq.id), "the preview stops the squad")
+	var shown: Array = res.intents[sq.id]
+	assert_true(shown.size() <= free_path.size(), "its shown path is cut at the control")
+	assert_eq(sq.pos, _o(1, 3), "and nothing moved")
+
+
+func test_a_squad_already_beside_a_machine_holds_its_ground() -> void:
+	var f := _field(7, 14)
+	var m := f.add_unit(Unit.mech(1, "A", _o(3, 6), 0))
+	var sq := f.add_unit(Unit.squad(2, "ghouls", _o(3, 5), "undead", 3))
+	f.compute_intents()
+	assert_true((f.intents[sq.id] as Array).is_empty(), "no intent: it is engaged where it stands")
+	var res := f.resolve_phase({})
+	assert_eq(sq.pos, _o(3, 5), "it did not move")
+	assert_false(res.blocked.has(sq.id), "and it is not a body block")
+	assert_eq(res.skirmishes.size(), 1, "the contact is the fight")
+	assert_eq(Hex.distance(sq.pos, m.pos), 1, "still beside the machine")
+	# Beside a flyer it moves on as if nothing were there.
+	var f2 := _field(7, 14)
+	var fly := f2.add_unit(Unit.mech(1, "hawk", _o(3, 6), 0))
+	fly.traits = ["flyer"]
+	var sq2 := f2.add_unit(Unit.squad(2, "ghouls", _o(3, 5), "undead", 3))
+	f2.compute_intents()
+	assert_false((f2.intents[sq2.id] as Array).is_empty(), "a flyer holds nobody")

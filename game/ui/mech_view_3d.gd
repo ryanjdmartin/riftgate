@@ -181,7 +181,16 @@ func _setup(chassis_id: String, maker: String) -> void:
 		# The skirmish's machines carry the display's trace too (Ryan, 21 September); the
 		# screen's scan bar lights it through set_sweep_screen.
 		var tmode := TraceLines.mode()
-		if tmode == "pulse":
+		if spin:
+			# The codex: black ink only, no silhouette, no scan (Ryan, 22 September).
+			_trace_mat = TraceLines.ink_material()
+			for child in _model.find_children("*", "MeshInstance3D", true, false):
+				var mi: MeshInstance3D = child
+				for i in range(mi.get_surface_override_material_count()):
+					var sm := mi.get_surface_override_material(i)
+					if sm is BaseMaterial3D and "stencil_mode" in sm:
+						sm.set("stencil_mode", BaseMaterial3D.STENCIL_MODE_DISABLED)
+		elif tmode == "pulse":
 			_trace_mat = TraceLines.pulse_material(Palette.HUD)
 		elif TraceLines.inked(tmode, "asset"):
 			_trace_mat = TraceLines.ink_material()
@@ -376,7 +385,7 @@ static func toon(node: Node, maker: String, look: String, paint_arg: Dictionary 
 				tm.roughness = clampf(1.0 - float(GLOSS.get(maker, 0.4)) * 0.9, 0.3, 0.98)
 				tm.metallic = 0.0
 				tm.cull_mode = BaseMaterial3D.CULL_DISABLED   # wings and fins are single plates
-				if TraceLines.mode() == "assets":
+				if TraceLines.mode() in ["assets", "pulse"]:
 					TraceLines.silhouette(tm, Palette.HUD, 2.0)   # the light outline around the whole machine
 				if role == "amber":
 					# Lamps, engines and light strips glow: the reconstruction's own light.

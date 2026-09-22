@@ -500,8 +500,7 @@ func _build_ground() -> void:
 			continue
 		match t:
 			BattleMap.Terrain.MOUNTAIN:
-				_crag(col, ground_t, hgt, rng)
-				_top[h] = hgt + 96.0   # the tallest a crag's spikes, towers or mesas reach
+				_top[h] = hgt + _crag(col, ground_t, hgt, rng)
 			BattleMap.Terrain.RUINS:
 				# Broken blocks and a couple of standing wall stubs.
 				var rubble := _terrain_material("rubble")
@@ -530,7 +529,8 @@ func _build_ground() -> void:
 ## The blocking crag on a tile, in the ground's own idiom: rock spikes on dirt and water,
 ## broken towers on ruins, mesas on wasteland (Ryan, 21 September). All overflow the tile's
 ## height so they read as things you fly over.
-func _crag(col: Node3D, ground_t: int, hgt: float, rng: RandomNumberGenerator) -> void:
+func _crag(col: Node3D, ground_t: int, hgt: float, rng: RandomNumberGenerator) -> float:
+	## Returns how tall the crag stands above the ground, so a flyer clears it and no more.
 	match ground_t:
 		BattleMap.Terrain.RUINS:
 			# Dead skyscrapers: tall thin shells stepping down as they rise, a few dim
@@ -588,6 +588,13 @@ func _crag(col: Node3D, ground_t: int, hgt: float, rng: RandomNumberGenerator) -
 				var dist := 0.0 if k == 0 else rng.randf_range(14.0, 22.0)
 				_prop(col, spike, rock_dark, Vector3(cos(a) * dist, hgt + spike.height * 0.5 - 1.0, sin(a) * dist),
 					Vector3(rng.randf_range(-0.18, 0.18), rng.randf_range(0, TAU), rng.randf_range(-0.18, 0.18)))
+	match ground_t:
+		BattleMap.Terrain.RUINS:
+			return 96.0
+		BattleMap.Terrain.ROUGH:
+			return 46.0
+		_:
+			return 56.0
 
 
 ## A hex of the city behind the wall: intact blocks in the Arsenal's grey, lit windows in
@@ -717,7 +724,7 @@ func _build_camera() -> void:
 ## turned to its facing.
 func sync() -> void:
 	var grad := Bleed.gradient(field, _origin, hex_px)
-	var src := Bleed.sources(field, _origin, hex_px)
+	var src := Bleed.sources(field, _origin, hex_px, _anim_px)
 	var map := field.map
 	for h in _columns.keys():
 		var s := Bleed.standing(Bleed.at(_origin + Hex.to_pixel(h, hex_px), grad, src))
@@ -738,17 +745,20 @@ func sync() -> void:
 			_phase[u.id] = float(u.id) * 1.7
 		var under: Vector2i = Hex.from_pixel(_anim_px[u.id], hex_px) if _anim_px.has(u.id) else u.pos
 		var y: float = float(_lift.get(under, 0.0)) / (_cos * _ppu)
+		var ground_y := y
 		if u.traits.has("flyer"):
 			# A flyer rides over whatever stands on its hex (Ryan, 22 September: no clipping
-			# through a mesa), a little above the tallest thing there.
-			y += maxf(0.0, _top.get(under, 0.0) - _height_of(under) + 10.0 - HOVER)
+			# through a mesa), just clear of the tallest thing there.
+			y += maxf(0.0, float(_top.get(under, 0.0)) - _height_of(under) + 6.0 - HOVER)
 		if _anim_px.has(u.id):
 			_base[u.id] = _world(_anim_px[u.id], y)
+			if _shadows.has(u.id):
+				(_shadows[u.id] as Node3D).position = _world(_anim_px[u.id], ground_y + 0.3)
 		else:
 			_base[u.id] = _hex_world(u.pos, y)
+			if _shadows.has(u.id):
+				(_shadows[u.id] as Node3D).position = _hex_world(u.pos, ground_y + 0.3)   # on the ground, always
 		node.position = _base[u.id]
-		if _shadows.has(u.id):
-			(_shadows[u.id] as Node3D).position = _base[u.id] + Vector3(0.0, 0.3, 0.0)
 		if _anim_px.has(u.id):
 			continue   # heading is set by the move
 		if u.is_player() and not u.is_static() and _pivots.has(u.id):

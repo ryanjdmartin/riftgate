@@ -370,9 +370,13 @@ func _on_resolve() -> void:
 	var planned: Dictionary = {}
 	for m in battle.mechs():
 		planned[m.id] = [m.pos] + Array(battle.routes.get(m.id, []))
+	var starts: Dictionary = {}
 	for sq in battle.field.squads():
-		planned[sq.id] = [sq.pos] + Array(battle.field.intents.get(sq.id, []))
-	battle.commit()
+		starts[sq.id] = sq.pos
+	# The squads' paths are the resolve's own, planned after the machines moved.
+	var result := battle.commit()
+	for sid in starts.keys():
+		planned[sid] = [starts[sid]] + Array(result.intents.get(sid, []))
 	var mech_moves: Array = []
 	var squad_moves: Array = []
 	for u in battle.field.units:
@@ -409,41 +413,146 @@ func _show_contacts() -> void:
 	_refresh()
 	if _contacts != null:
 		_contacts.queue_free()
-	# Centred over the map on a dim scrim, big enough to read with a thumb (Ryan, 22
-	# September); the contacts stay tagged on the map behind it.
-	_contacts = ColorRect.new()
-	(_contacts as ColorRect).color = Color(0, 0, 0, 0.55)
-	_contacts.position = Vector2(0, MAP_Y)
-	_contacts.size = Vector2(W, LOG_Y - 10.0 - INFO_H - MAP_Y)
-	var centre := CenterContainer.new()
-	centre.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_contacts.add_child(centre)
-	var panel := HudPanel.new(20.0)
-	centre.add_child(panel)
-	var rows := VBoxContainer.new()
-	rows.add_theme_constant_override("separation", 12)
-	panel.add_child(rows)
-	var n := battle.pending.size()
-	var title := Hud.label("%d CONTACT%s" % [n, "" if n == 1 else "S"], 30, Palette.ENEMY, Hud.display_bold())
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	rows.add_child(title)
-	var sub := Hud.label("CHOOSE WHICH TO FIGHT FIRST" if n > 1 else "ENGAGE TO OPEN THE FEED", 13, Palette.MUTED, Hud.mono())
-	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	rows.add_child(sub)
-	for i in range(n):
-		var group: Array = battle.pending[i]
-		var row := VBoxContainer.new()
-		row.add_theme_constant_override("separation", 6)
-		var who := Hud.label(BattleMapView.contact_text(group), 16, Palette.INK)
-		who.autowrap_mode = TextServer.AUTOWRAP_WORD
-		who.custom_minimum_size = Vector2(520, 0)
-		row.add_child(who)
-		var btn := HudButton.new("ENGAGE", _open_skirmish.bind(i))
-		btn.filled = i == 0
-		btn.custom_minimum_size = Vector2(520, 54)
-		row.add_child(btn)
-		rows.add_child(row)
+		_contacts = null
+	# First the warning, big and red over the map; then the panel slides in and the map
+	# zooms to the first contact (Ryan, 22 September: dramatic, and in the player's face).
+	var warn := Hud.label("CONTACT", 72, Palette.ENEMY, Hud.display_bold())
+	warn.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	warn.position = Vector2(0, MAP_Y + 300.0)
+	warn.size = Vector2(W, 90)
+	warn.modulate = Color(1, 1, 1, 0)
+	add_child(warn)
+	var tw := create_tween()
+	tw.tween_property(warn, "modulate", Color(1, 1, 1, 1), 0.12)
+	tw.tween_interval(0.25)
+	tw.tween_property(warn, "modulate", Color(1, 1, 1, 0.15), 0.08)
+	tw.tween_property(warn, "modulate", Color(1, 1, 1, 1), 0.08)
+	tw.tween_interval(0.45)
+	tw.tween_property(warn, "modulate", Color(1, 1, 1, 0), 0.2)
+	tw.tween_callback(warn.queue_free)
+	tw.tween_callback(_build_contact_panel)
+	if DisplayServer.get_name() == "headless":
+		tw.kill()
+		warn.queue_free()
+		_build_contact_panel()
+
+
+## The contact panel: one contact at a time, with portraits, paged with arrows; paging
+## zooms the map to that fight and lights its hexes.
+var _contact_index := 0
+
+func _build_contact_panel() -> void:
+	_contact_index = 0
+	_contacts = HudPanel.new(16.0)
+	_contacts.position = Vector2(12.0, LOG_Y - 10.0 - INFO_H - 200.0)
+	_contacts.custom_minimum_size = Vector2(W - 24.0, 300.0)
 	add_child(_contacts)
+	_fill_contact_panel()
+	var start := _contacts.position + Vector2(0, 240.0)
+	var end := _contacts.position
+	_contacts.position = start
+	var tw := create_tween()
+	tw.tween_property(_contacts, "position", end, 0.22).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+
+
+func _fill_contact_panel() -> void:
+	for c in _contacts.get_children():
+		c.queue_free()
+	var n := battle.pending.size()
+	_contact_index = clampi(_contact_index, 0, n - 1)
+	var group: Array = battle.pending[_contact_index]
+	var rows := VBoxContainer.new()
+	rows.position = Vector2(14, 12)
+	rows.size = Vector2(W - 52.0, 276.0)
+	rows.add_theme_constant_override("separation", 8)
+	_contacts.add_child(rows)
+	# Header: which contact this is, and the arrows.
+	var head := HBoxContainer.new()
+	head.add_theme_constant_override("separation", 12)
+	var prev_btn := HudButton.new("◀", func() -> void:
+		_contact_index = (_contact_index - 1 + n) % n
+		_fill_contact_panel())
+	prev_btn.custom_minimum_size = Vector2(54, 40)
+	prev_btn.visible = n > 1
+	head.add_child(prev_btn)
+	var title := Hud.label("CONTACT %d OF %d" % [_contact_index + 1, n], 22, Palette.ENEMY, Hud.display_bold())
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	head.add_child(title)
+	var next_btn := HudButton.new("▶", func() -> void:
+		_contact_index = (_contact_index + 1) % n
+		_fill_contact_panel())
+	next_btn.custom_minimum_size = Vector2(54, 40)
+	next_btn.visible = n > 1
+	head.add_child(next_btn)
+	rows.add_child(head)
+	# Portraits: the machines, a VS, the squads.
+	var faces := HBoxContainer.new()
+	faces.alignment = BoxContainer.ALIGNMENT_CENTER
+	faces.add_theme_constant_override("separation", 10)
+	var db := ContentDB.load_default()
+	for u in group:
+		if not u.is_player():
+			continue
+		faces.add_child(_portrait_mech(u, db))
+	var vs := Hud.label("VS", 26, Palette.MUTED, Hud.display_bold())
+	vs.custom_minimum_size = Vector2(60, 0)
+	vs.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vs.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	faces.add_child(vs)
+	for u in group:
+		if not u.is_enemy():
+			continue
+		faces.add_child(_portrait_squad(u))
+	rows.add_child(faces)
+	var who := Hud.label(BattleMapView.contact_text(group), 14, Palette.INK, Hud.mono())
+	who.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	rows.add_child(who)
+	var btn := HudButton.new("ENGAGE", _open_skirmish.bind(_contact_index))
+	btn.filled = true
+	btn.custom_minimum_size = Vector2(0, 54)
+	rows.add_child(btn)
+	# The map looks at this fight and dims the others.
+	var hexes: Array = []
+	var mid := Vector2.ZERO
+	for u in group:
+		hexes.append(u.pos)
+		mid += _map.center(u.pos)
+	mid /= float(group.size())
+	_map.set_highlight(hexes)
+	_map.focus_on(mid + Vector2(0, 90.0), 1.9)
+
+
+func _portrait_mech(u: Unit, db: ContentDB) -> Control:
+	var box := VBoxContainer.new()
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	var maker := str(db.chassis.get(u.chassis_id, {}).get("maker", "minerva"))
+	var view := MechView3D.make(u.chassis_id, maker, "clean", "badger", MechView3D.YAW_FRONT, Vector2i(96, 96), false, u.paint)
+	add_child(view)
+	var tr := TextureRect.new()
+	tr.texture = view.texture
+	tr.custom_minimum_size = Vector2(96, 96)
+	tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	box.add_child(tr)
+	var lbl := Hud.label(str(u.display_name), 11, Palette.HUD, Hud.mono())
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(lbl)
+	return box
+
+
+func _portrait_squad(u: Unit) -> Control:
+	var box := VBoxContainer.new()
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	var tr := TextureRect.new()
+	tr.texture = Sprites.map_foe(BattleMapView.foe_sprite_id(u))
+	tr.custom_minimum_size = Vector2(96, 96)
+	tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	tr.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	box.add_child(tr)
+	var lbl := Hud.label("%s ×%d" % [u.display_name, u.strength] if u.strength > 0 else str(u.display_name).to_upper(), 11, Palette.ENEMY, Hud.mono())
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(lbl)
+	return box
 
 
 var _contacts: Control = null
@@ -453,6 +562,7 @@ func _open_skirmish(index: int = 0) -> void:
 	if _contacts != null:
 		_contacts.queue_free()
 		_contacts = null
+	_map.set_highlight([])
 	var sk := battle.open_skirmish_at(index)
 	if sk == null:
 		_after_step()

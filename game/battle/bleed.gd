@@ -25,14 +25,16 @@ static func gradient(field: Battlefield, origin: Vector2, hex_px: float) -> Vect
 
 
 ## The sources of bleed as (x, y, radius) in map pixels: the rift, then every squad.
-static func sources(field: Battlefield, origin: Vector2, hex_px: float) -> PackedVector3Array:
+## `moving` maps a unit id to its pixel offset from hex (0,0) while a move plays, so the
+## bleed travels with a squad (Ryan, 22 September).
+static func sources(field: Battlefield, origin: Vector2, hex_px: float, moving: Dictionary = {}) -> PackedVector3Array:
 	var out := PackedVector3Array()
 	var r := origin + Hex.to_pixel(field.map.rift, hex_px)
 	out.append(Vector3(r.x, r.y, RIFT_RADIUS_HEX * hex_px))
 	for sq in field.squads():
 		if out.size() >= MAX_SOURCES:
 			break
-		var p := origin + Hex.to_pixel(sq.pos, hex_px)
+		var p: Vector2 = origin + (moving[sq.id] if moving.has(sq.id) else Hex.to_pixel(sq.pos, hex_px))
 		out.append(Vector3(p.x, p.y, (BOSS_RADIUS_HEX if sq.is_multi_hex() else squad_radius_hex) * hex_px))
 	return out
 
