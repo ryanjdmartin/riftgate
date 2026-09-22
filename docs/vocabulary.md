@@ -10,7 +10,7 @@ Status: 71 implemented, 24 planned, 0 idea.
 |---|---|---|
 | **Hull** | Damage that gets past shield removes hull. Hull never recovers during a battle. At zero the mech is a wreck to be salvaged after the battle. | implemented |
 | **Shield** | Enemy damage hits shield before hull, and a standing shield blocks a blow whole: however small the shield and however big the blow, nothing bleeds through to the hull (a breaching foe is the exception). The blow still costs the shield its damage. Shield components add shield up to the chassis maximum; in a fight that is the only way shield comes back. Out of combat it returns each battlefield phase at the chassis's field rate. It never refills for free between skirmishes. | implemented |
-| **Heat** | Attack components may add heat. Heat above the chassis maximum spills into hull damage one for one. Vent components remove heat. At the end of every round, after the enemy has struck, a mech sheds its chassis's cooling rating in heat, so a round spent on ballistics or shields is a way of cooling down without a vent. | implemented |
+| **Heat** | Attack components may add heat. Heat above the chassis maximum spills into hull damage one for one. Vent components remove heat. At the start of every turn a mech sheds its chassis's cooling rating in heat, so a round spent on ballistics or shields is a way of cooling down without a vent; Overheating ticks at the end of the round, after the enemy has struck, so a scorch lands on the round's peak heat before cooling relieves it. | implemented |
 | **Reroll** | Three rerolls per round, each rerolling every unlocked, unspent mech die. A reroll always lands on a different component: never the one showing, never one equivalent to it (a die whose components are all alike keeps what it shows). Rerolls may be spent before or after attacking, so a low damage roll is information for the rest of the round. Never pooled across rounds. | implemented |
 | **Rift Pressure** | Ticks once per battlefield phase and once per skirmish round. When full it resets and a fresh squad emerges at the rift. | implemented |
 | **Gate Integrity** | A squad whose path reaches the gate strikes it instead of moving. Gate integrity persists across battles and is repaired in the meta. | implemented |
@@ -86,7 +86,7 @@ Status: 71 implemented, 24 planned, 0 idea.
 | **Suppressed** | Foe status. Skips its action this round, then clears. | implemented |
 | **Cracked component** | Mech status, global rule. When a blow lands on bare hull (no shield standing) and what gets past armour is at least a quarter of maximum hull, the mech's die is rolled and the component it lands on is injured. An intact component cracks: it loses its keywords and unique effects, but still does its basic action, can still crit, still generates heat, and still provides its passive bonuses and abilities. Any shield standing, however small, prevents injury, except against a breach; a foe's double strike is the other way past it. A cracked component stays cracked across skirmishes and battles until repaired in the hangar. | implemented |
 | **Destroyed component** | Mech status. When an injury lands on a component that is already cracked, it is destroyed: blank, it does nothing when it comes up, and provides its passive bonuses but not passive abilities. until the hangar repairs or replaces it. An injury that lands on a destroyed component or an empty hardpoint finds nothing to break, so a badly broken mech shrugs off more of them. | implemented |
-| **Overheating** | Mech status. Gains 5 heat per stack at the start of its turn, then loses one stack. The mech-side counterpart of Burning: metal does not burn, it heats. Applied by foe attacks that scorch. Clears at end of skirmish. | implemented |
+| **Overheating** | Mech status. Gains 5 heat per stack at the end of the round, after the enemy has struck, then loses one stack. The mech-side counterpart of Burning: metal does not burn, it heats. Applied by foe attacks that scorch. Clears at end of skirmish. | implemented |
 
 ## Formation
 
@@ -184,7 +184,7 @@ Status: 71 implemented, 24 planned, 0 idea.
 Every entry whose `design.holes` is not empty. This is the list of things the mechanics do not do yet.
 
 - **Shield** (implemented): Rates and shield sizes are placeholders. Decided 18 September: block-the-blow replaced bleed-through, and the in-combat trickle was dropped the same day (a passive may bring it back for one chassis).
-- **Heat** (implemented): Heat does nothing below the cap. Consider effects at high heat short of overflow. Cooling numbers are placeholders; cooling must stay below a typical weapon's heat or heat never matters.
+- **Heat** (implemented): Heat does nothing below the cap. Consider effects at high heat short of overflow. Cooling numbers are placeholders; cooling must stay below a typical weapon's heat or heat never matters, and a vent component must be worth a whole turn (tuning).
 - **Rift Pressure** (implemented): Spawns a fixed squad. Should draw from the battle's faction(s) and escalate.
 - **Gate Integrity** (implemented): Gate damage formula is a placeholder (strength divided by three).
 - **Damage range** (implemented): Ranges are content-authored per component; no upgrade path raises min or max yet.

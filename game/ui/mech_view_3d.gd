@@ -445,6 +445,12 @@ func _frame_camera() -> void:
 	var height := maxf(extent.y, extent.x / aspect) / FILL
 	_camera.size = height
 	var mid := (lo + hi) * 0.5
+	# Where the model lands in the frame, in pixels: the projected bounds, so a view can
+	# hug the drawing without reading the rendered image back from the GPU.
+	var px_per_unit := float(size.y) / height
+	_model_rect = Rect2(
+		Vector2(size.x * 0.5 - extent.x * 0.5 * px_per_unit, size.y * 0.5 - extent.y * 0.5 * px_per_unit),
+		extent * px_per_unit)
 	var target := right * mid.x + up * mid.y + back * centre.dot(back)
 	_camera.position = target + back * 500.0
 	_camera.look_at(target, up)
@@ -454,6 +460,14 @@ func _frame_camera() -> void:
 
 var _trace_mat: Material = null
 var _target := Vector3.ZERO
+var _model_rect := Rect2()
+
+
+## The model's projected bounds in this view's pixels, from the camera's framing. Gauges
+## and chips hug this; nothing reads the viewport's image back (a GPU readback every frame
+## on a phone, and an empty one before the first render, which left gauges floating).
+func model_rect() -> Rect2:
+	return _model_rect
 var _screen_down := Vector3.ZERO
 
 ## The screen's scan bar, in this view's own pixels from its top: the traces under it light.

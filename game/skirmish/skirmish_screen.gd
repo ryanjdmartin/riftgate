@@ -303,6 +303,7 @@ func _build() -> void:
 			add_child(view)
 			_mech_3d[i] = view
 			v.sprite = view.texture
+			v.used_override = view.model_rect()   # hug the model by its framed bounds; never read the render back
 			if look == "clean":
 				v.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		_place(v, Vector2(cx - MECH_SIZE.x * 0.5, MECH_Y), MECH_SIZE)
@@ -806,12 +807,8 @@ func _show_details(text: String, near: Control, faces: Array = [], current: int 
 
 
 ## The damage number pops over the struck foe, gold for a crit, then fades.
-func _flash_roll() -> void:
-	if sk.last_roll.is_empty():
-		return
-	var foe: Foe = sk.last_roll["target"]
-	var fv := _foe_view_for(foe)
-	if fv == null:
+func _flash_roll(fv: UnitView) -> void:
+	if sk.last_roll.is_empty() or fv == null:
 		return
 	var crit: bool = sk.last_roll["crit"]
 	_roll_label.text = ("CRIT %d" if crit else "%d") % int(sk.last_roll["final"])
@@ -951,7 +948,7 @@ func _on_mech_held(i: int) -> void:
 	var ms: Skirmish.MechState = sk.mechs[i]
 	var text := "%s\nhull %d/%d · shield %d/%d · heat %d/%d" % [ms.unit.display_name, ms.unit.hull, ms.unit.hull_max, ms.unit.shield, ms.unit.shield_max, ms.heat, ms.heat_max]
 	if ms.unit.cooling > 0:
-		text += "\ncools %d a round" % ms.unit.cooling
+		text += "\ncools %d at the start of each turn" % ms.unit.cooling
 	_show_details(text, _mech_views[i], [], -1, _readout_rows(_mech_rows(i)))
 	_refresh_arrows()
 
@@ -1042,13 +1039,33 @@ func _drop_target_at(global_pos: Vector2):
 
 ## Spend die `i` on `target` (a Foe or a MechState). Returns whether the simulation accepted it.
 func _use_die(i: int, target) -> bool:
+	# Every foe's view and drawing before the die lands: a kill clears its slot at once, so
+	# the death has to be played from what was there (the ghost of the sprite).
+	var was: Dictionary = {}
+	for foe in sk.field_foes():
+		var fv := _foe_view_for(foe)
+		if fv != null:
+			was[foe] = [fv, fv.sprite, fv.sprite_frame(), fv.flip_h]
 	var ok := sk.assign(i, target)
 	if ok:
 		locked[i] = false
 	_refresh()
 	if ok and target is Foe:
-		_flash_roll()
-		_animate_attack(_mech_views[i], _foe_view_for(target), bool(sk.last_roll.get("ranged", false)))
+		var tv: UnitView = was[target][0] if was.has(target) else null
+		_flash_roll(tv)
+		_animate_attack(_mech_views[i], tv, bool(sk.last_roll.get("ranged", false)), target.alive())
+		for foe in was.keys():
+			if not foe.alive():
+				var w: Array = was[foe]
+				_animate_death(w[0], w[1], w[2], w[3])
+	if ok and sk.outcome != Skirmish.Outcome.NONE:
+		# Decided by this die: the fight ends now, after the last blow has played.
+		if is_inside_tree():
+			var tw := create_tween()
+			tw.tween_interval(0.75)
+			tw.tween_callback(_show_outcome.bind(sk.outcome))
+		else:
+			_show_outcome(sk.outcome)
 	return ok
 
 
@@ -1057,7 +1074,7 @@ func _use_die(i: int, target) -> bool:
 
 ## A melee face lunges the attacker at the target; a ranged face kicks it back. The target
 ## flashes and shakes a beat later, when the blow lands.
-func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool) -> void:
+func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool, hit: bool = true) -> void:
 	if not is_inside_tree() or attacker == null:
 		return
 	_settle(attacker)
@@ -1074,8 +1091,40 @@ func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool) -> void
 		var dir := (target.anchor_global() - attacker.anchor_global()).normalized()
 		tw.tween_property(attacker, "position", origin + dir * 18.0, 0.09).set_ease(Tween.EASE_OUT)
 		tw.tween_property(attacker, "position", origin, 0.16).set_ease(Tween.EASE_IN_OUT)
-	if target != null:
+	if target != null and hit:
 		_animate_hit(target, 0.08)
+
+
+## A foe dies: a ghost of its drawing, where it stood, flashes, drops and fades, in the
+## enemy's colour. The slot itself is already empty (a kill clears it at once).
+func _animate_death(v: UnitView, tex: Texture2D, frame: Rect2, flip: bool) -> void:
+	if not is_inside_tree() or v == null or tex == null:
+		return
+	var ghost := TextureRect.new()
+	ghost.texture = tex
+	ghost.flip_h = flip
+	ghost.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	ghost.stretch_mode = TextureRect.STRETCH_SCALE
+	ghost.texture_filter = v.texture_filter
+	ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	ghost.position = _home.get(v, v.position) + frame.position
+	ghost.size = frame.size
+	add_child(ghost)
+	var tw := create_tween()
+	tw.tween_property(ghost, "modulate", Color(2.0, 1.2, 1.2), 0.06)
+	tw.tween_property(ghost, "modulate", Color(Palette.ENEMY_DIM, 1.0), 0.12)
+	tw.set_parallel(true)
+	tw.tween_property(ghost, "modulate", Color(Palette.ENEMY_DIM, 0.0), 0.4)
+	tw.tween_property(ghost, "position:y", ghost.position.y + 16.0, 0.4).set_ease(Tween.EASE_IN)
+	tw.set_parallel(false)
+	tw.tween_callback(ghost.queue_free)
+
+
+## What a control looks like at rest: an empty foe slot sits faint, everything else plain.
+func _rest_modulate(v: Control) -> Color:
+	if v is UnitView and v.is_enemy and not _view_foe.has(v):
+		return Color(1, 1, 1, 0.3)
+	return Color.WHITE
 
 
 ## The struck unit flashes bright, then shakes side to side and settles.
@@ -1087,7 +1136,7 @@ func _animate_hit(v: UnitView, delay: float = 0.0) -> void:
 	var tw := _track(v, create_tween())
 	tw.tween_interval(delay)
 	tw.tween_property(v, "modulate", Color(1.8, 1.4, 1.4), 0.04)
-	tw.tween_property(v, "modulate", Color.WHITE, 0.22)
+	tw.tween_property(v, "modulate", _rest_modulate(v), 0.22)
 	var shake := _track(v, create_tween())
 	shake.tween_interval(delay)
 	for k in range(4):
@@ -1132,7 +1181,7 @@ func _settle(v: Control) -> void:
 	_live_tweens.erase(v)
 	if _home.has(v):
 		v.position = _home[v]
-		v.modulate = Color.WHITE
+		v.modulate = _rest_modulate(v)
 
 
 func _track(v: Control, tw: Tween) -> Tween:

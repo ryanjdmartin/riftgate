@@ -41,6 +41,7 @@ var statuses: Array = []          # [[glyph id, chip text, (Color)], ...] under 
 var highlight: bool = false       # valid drop target while dragging a die
 var dead: bool = false
 var sprite: Texture2D = null      # pixel art drawn at an integer scale; null draws a placeholder
+var used_override := Rect2()      # the drawing's extent inside the sprite, when the caller knows it (a 3D view's model bounds)
 var breathe: bool = false         # a slow vertical bob from the feet: a painted foe alive
 var flip_h: bool = false          # mirror the sprite, so an enemy painted facing right faces left
 var breathe_phase: float = 0.0
@@ -77,6 +78,19 @@ func _scale() -> float:
 	return maxf(1.0, floorf(minf(size.x / ts.x, avail / ts.y)))
 
 
+## The opaque part of the sprite, in sprite pixels: told by the caller, or read from the
+## image (pixel art only; a viewport texture would be read back from the GPU every frame).
+func _used() -> Rect2:
+	if used_override.size.x > 0.0 and used_override.size.y > 0.0:
+		return used_override
+	return Sprites.used_rect(sprite)
+
+
+## The drawn frame on screen (unflipped), for a ghost of the sprite when the unit dies.
+func sprite_frame() -> Rect2:
+	return _silhouette()
+
+
 ## The whole sprite frame, centred in the sprite area so units of different heights line up
 ## on their middles. Gauges and chips hug the drawing inside the frame, not the frame.
 func _silhouette() -> Rect2:
@@ -85,7 +99,7 @@ func _silhouette() -> Rect2:
 	if sprite != null:
 		var s := _scale()
 		var ts := sprite.get_size() * s
-		var used := Sprites.used_rect(sprite)
+		var used := _used()
 		# Centre the drawing, not the frame: shift by the frame's own transparent margins.
 		var margin_top := used.position.y * s
 		var margin_bottom := (sprite.get_size().y - used.end.y) * s
@@ -101,7 +115,7 @@ func _visible() -> Rect2:
 	var sil := _silhouette()
 	if sprite == null:
 		return sil
-	var used := Sprites.used_rect(sprite)
+	var used := _used()
 	var s := _scale()
 	return Rect2(sil.position + used.position * s, used.size * s)
 
@@ -217,8 +231,8 @@ func _draw() -> void:
 			# Full-width gauges stacked right above the drawing: hull, shield, heat.
 			var bx := size.x * 0.1
 			var bw := size.x * 0.8
-			var y := vis.position.y - 4.0 - bars.size() * BAR_STEP
-			_plate(Rect2(bx - 5.0, y - 4.0, bw + 10.0, bars.size() * BAR_STEP + 5.0))
+			var y := vis.position.y - 2.0 - bars.size() * BAR_STEP
+			_plate(Rect2(bx - 5.0, y - 4.0, bw + 10.0, bars.size() * BAR_STEP + 4.0))
 			for b in bars:
 				_gauge(Rect2(bx, y, bw, BAR_H), b)
 				y += BAR_STEP
@@ -227,9 +241,9 @@ func _draw() -> void:
 			# dropping from a third of the way along its underside, diagonally down-left
 			# toward the sprite.
 			var bx := minf(vis.end.x - 10.0, size.x - FLOAT_BAR_W - 2.0)
-			var y := vis.position.y - 16.0
+			var y := vis.position.y - 11.0
 			var from := Vector2(bx + FLOAT_BAR_W / 3.0, y + BAR_H)
-			draw_line(from, from + Vector2(-9.0, 9.0), Color(hud, 0.8), 1.5)
+			draw_line(from, from + Vector2(-6.0, 6.0), Color(hud, 0.8), 1.5)
 			var top := y - 10.0 * (bars.size() - 1)
 			_plate(Rect2(bx - 4.0, top - 3.0, FLOAT_BAR_W + 8.0, y - top + BAR_H + 6.0))
 			for b in bars:
@@ -259,7 +273,7 @@ func _draw() -> void:
 		total += w + 6.0
 	total -= 6.0
 	var x := floorf((size.x - total) * 0.5)
-	var cy := minf(vis.end.y + 6.0, size.y - 2.0) + CHIP_H * 0.5
+	var cy := minf(vis.end.y + 2.0, size.y - 2.0) + CHIP_H * 0.5
 	cy = minf(cy, size.y - CHIP_H * 0.5 - 1.0)
 	for i in range(chips.size()):
 		var ch: Array = chips[i]
@@ -297,9 +311,13 @@ func _gauge(rect: Rect2, b: Array) -> void:
 	var seg := Rect2(inner.position + Vector2(inner.size.x * lo, 0), Vector2(maxf(3.0, inner.size.x * (hi - lo)), inner.size.y))
 	var pts := Hud.slant(seg, 2.4)
 	if pending < frac:
-		# A loss: the part about to go is dimmed and pulses.
-		Hud.fill_poly(self, pts, Color(Palette.BG, 0.55 * pulse))
-		Hud.stroke_poly(self, pts, Color(Palette.INK, 0.9), 1.0)
+		# A loss: the part about to go breathes between dimmed and lit in ink, a full swing,
+		# so it is seen to pulse on any bar colour (Ryan, 22 September: it had faded to a
+		# faint dimming).
+		var beat := 0.5 + 0.5 * sin(_t * 3.2)
+		Hud.fill_poly(self, pts, Color(Palette.BG, 0.65 * (1.0 - beat)))
+		Hud.fill_poly(self, pts, Color(Palette.INK, 0.55 * beat))
+		Hud.stroke_poly(self, pts, Color(Palette.INK, 0.6 + 0.4 * beat), 1.0)
 	else:
 		# A gain: hatched in the bar's own colour, so it reads as "coming", not "there".
 		Hud.stroke_poly(self, pts, Color(col, pulse), 1.0)

@@ -76,7 +76,8 @@ func _apply_pose() -> void:
 			if _pose == "logfull":
 				s._toggle_log_full()
 		"killed":
-			# The first foe killed by a big die: dead where it stands, no intent, every arrow on.
+			# The first foe killed by a big die: its slot cleared, the death ghost mid-flight
+			# (RIFTGATE_SHOT_FRAME=14), the foe behind it exposed, every arrow on.
 			s.sk.mechs[0].die.faces[s.sk.mechs[0].face_index] = Face.attack(200)
 			s._use_die(0, s.sk.front[0])
 			s._toggle_all_arrows(true)

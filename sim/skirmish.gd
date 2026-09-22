@@ -5,14 +5,15 @@ extends RefCounted
 ## formation fed from a reinforcements, so a horde keeps coming.
 ##
 ## Round loop:
-##   start_round()       roll every live mech's die (unless locked), telegraph foe intents
+##   start_round()       passive cooling, roll every live mech's die, telegraph foe intents
 ##   reroll([...])       up to REROLLS_PER_ROUND times, any subset of unspent mech dice,
 ##                       before or after spending others: a low damage roll is information;
 ##                       a reroll always lands on a different face (see Die.reroll)
 ##   assign(i, target)   spend a mech's face on a foe (attacks) or a mech (shield, vent);
 ##                       kinetic faces roll their damage here, immediately and visibly
-##   end_round()         burn ticks, foes act, the dead are cleared, the reinforcements refills,
-##                       outcome is checked
+##                       a kill clears its slot at once; a decided fight ends at once
+##   end_round()         burn ticks, foes act, the dead are cleared, mech statuses tick
+##                       (overheating), the reinforcements refill, outcome is checked
 ##   can_withdraw()      at the start of any round, before any face is spent
 ##
 ## Numbers are in tens. Enemy damage is static; only the player's kinetic faces roll.
@@ -194,6 +195,17 @@ func attackers_of(ms: MechState) -> Array[Foe]:
 	return out
 
 
+## Heat the round's end will add from the scorching blows about to land: one stack each,
+## ticking at once.
+func scorch_incoming(ms: MechState) -> int:
+	var per_stack := int(Effects.STATUS["overheating"]["effects"][0]["value"])
+	var stacks := 0
+	for f in attackers_of(ms):
+		if f.has_keyword(f.action, "scorch"):
+			stacks += f.strikes()
+	return stacks * per_stack
+
+
 func incoming_for(ms: MechState) -> int:
 	var total := 0
 	for f in attackers_of(ms):
@@ -217,14 +229,20 @@ func forecast(ms: MechState) -> Dictionary:
 			hull -= r["through"]
 			if r["injures"]:
 				component_risk = true
+	# Heat: the face's own when spent (overflow paid at once), then the end of the round's
+	# Overheating tick: the stacks it carries plus one per scorching blow coming.
 	var heat_after := ms.heat + pending_heat(ms)
 	var over := maxi(0, heat_after - ms.heat_max)
 	hull -= over
+	heat_after = mini(heat_after, ms.heat_max) + int(Effects.tick_preview(ms.unit)["heat"]) + scorch_incoming(ms)
+	var tick_over := maxi(0, heat_after - ms.heat_max)
+	hull -= tick_over
+	over += tick_over
 	return {
 		"incoming": incoming,
 		"shield_after": shield,
 		"hull_after": hull,
-		"heat_after": maxi(0, mini(heat_after, ms.heat_max) - ms.unit.cooling),   # the round ends with the chassis cooling
+		"heat_after": mini(heat_after, ms.heat_max),
 		"overheat": over,
 		"breaks_shield": ms.unit.shield > 0 and incoming >= ms.unit.shield,
 		"component_risk": component_risk,
@@ -294,16 +312,20 @@ func start_round() -> void:
 	round += 1
 	rerolls_left = REROLLS_PER_ROUND
 	last_roll.clear()
+	# The turn begins with passive cooling (Ryan, 22 September: cool at the start, heat at
+	# the end): every machine sheds its chassis's cooling rating, one log line for all.
+	var cooled: Array[String] = []
 	for ms in mechs:
 		ms.assigned = false
 		if not ms.alive():
 			continue
-		# The mech's turn begins: its statuses tick (heat stacks warm it), then it rolls.
-		var t := Effects.tick(ms.unit)
-		if int(t["heat"]) > 0:
-			log.append("%s: %d heat from overheating" % [ms.unit.display_name, int(t["heat"])])
-			_add_heat(ms, int(t["heat"]))
+		var drop := mini(ms.heat, ms.unit.cooling)
+		if drop > 0:
+			ms.heat -= drop
+			cooled.append("%s -%d" % [ms.unit.display_name, drop])
 		ms.face_index = ms.die.roll(rng)
+	if not cooled.is_empty():
+		log.append("cooling: " + ", ".join(cooled))
 	# Every foe announces its move for the round: which action, at whom. Chosen now, before
 	# the player acts, so the intent chips and the forecast are exact.
 	for f in field_foes():
@@ -358,13 +380,16 @@ func assign(mech_index: int, target = null) -> bool:
 		ms.face_index = ms.die.reroll(rng, ms.face_index)
 		ms.assigned = false
 		log.append("%s: rapid, rolls again" % ms.unit.display_name)
+	# The fight ends the moment it is decided (Ryan, 22 September): the last foe down, or
+	# the last machine burnt out by its own heat, and nobody waits for End turn.
+	_check_outcome()
 	return true
 
 
 func end_round() -> int:
 	assert(state == State.ASSIGN, "end_round called out of order")
 	_enemy_turn()
-	_cool()
+	_tick_mechs()
 	_reinforce(true)    # the reinforcement phase: a random waiting foe of the right rank per empty slot
 	_check_outcome()
 	if outcome == Outcome.NONE:
@@ -413,20 +438,15 @@ func _enemy_turn() -> void:
 		Effects.end_round(f, round)
 
 
-## Passive cooling (Ryan, 22 September): at the end of the round, after the enemy has
-## struck, every machine still standing sheds its chassis's cooling rating in heat. Overflow
-## was already paid when the component was spent, so cooling never undoes a burn; it makes a
-## round of ballistics or shields a way to come down without a vent. One log line for all.
-func _cool() -> void:
-	var parts: Array[String] = []
+## The round ends with the machines' statuses ticking, after the enemy has struck: an
+## Overheating stack lands on the round's peak heat, before the next turn's cooling can
+## relieve it (Ryan, 22 September), so a scorch bites the round it was dealt.
+func _tick_mechs() -> void:
 	for ms in live_mechs():
-		var drop := mini(ms.heat, ms.unit.cooling)
-		if drop <= 0:
-			continue
-		ms.heat -= drop
-		parts.append("%s -%d" % [ms.unit.display_name, drop])
-	if not parts.is_empty():
-		log.append("cooling: " + ", ".join(parts))
+		var t := Effects.tick(ms.unit)
+		if int(t["heat"]) > 0:
+			log.append("%s: %d heat from overheating" % [ms.unit.display_name, int(t["heat"])])
+			_add_heat(ms, int(t["heat"]))
 
 
 func withdraw() -> bool:
@@ -505,7 +525,11 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 	elif f.is_ranged():
 		how = "rolled %d, " % rolled_total + how
 	log.append("%s hits %s for %d (%s)" % [ms.unit.display_name, target.display_name, total, how])
-	if reach_of(ms, f) == Face.Reach.INDIRECT and target.rank == 0:
+	var was_front := target.rank == 0
+	# A kill clears the slot at once (Ryan, 22 September): burning a hole through the front
+	# opens the back rank to line and melee until reinforcements plug it.
+	_clear_dead()
+	if reach_of(ms, f) == Face.Reach.INDIRECT and was_front:
 		var splash := ceili(float(total) / DANGER_CLOSE_DIVISOR)
 		ms.unit.shield = maxi(0, ms.unit.shield - splash)
 		log.append("%s: splash, shield -%d" % [ms.unit.display_name, splash])

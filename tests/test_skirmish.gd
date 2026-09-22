@@ -231,9 +231,8 @@ func test_victory_when_reinforcements_exhausted() -> void:
 	sk.begin()
 	sk.start_round()
 	sk.assign(0, sk.front[0])
-	var out := sk.end_round()
-	assert_eq(out, Skirmish.Outcome.VICTORY, "victory")
-	assert_eq(sk.state, Skirmish.State.DONE, "skirmish done")
+	assert_eq(sk.outcome, Skirmish.Outcome.VICTORY, "victory the moment the last foe falls")
+	assert_eq(sk.state, Skirmish.State.DONE, "skirmish done, no End turn needed")
 
 
 func test_defeat_when_all_hulls_zero() -> void:
@@ -449,10 +448,9 @@ func test_massive_foe_death_clears_both_slots() -> void:
 	sk.begin()
 	sk.start_round()
 	assert_true(sk.assign(0, sk.front[0]), "hit the colossus")
-	var out := sk.end_round()
-	assert_eq(sk.front[0], null, "front slot cleared")
-	assert_eq(sk.back[0], null, "back slot cleared")
-	assert_eq(out, Skirmish.Outcome.VICTORY, "and that was the whole squad")
+	assert_eq(sk.front[0], null, "front slot cleared at once")
+	assert_eq(sk.back[0], null, "back slot cleared at once")
+	assert_eq(sk.outcome, Skirmish.Outcome.VICTORY, "and that was the whole squad")
 
 
 func test_penetrate_hits_a_massive_foe_once() -> void:
@@ -849,8 +847,8 @@ func test_chain_repeats_on_a_kill() -> void:
 	sk.begin()
 	sk.start_round()
 	sk.assign(0, sk.front[0])
-	assert_false(sk.front[0].alive(), "the first ghoul dies")
-	assert_false(sk.front[1].alive(), "the chain kills the second")
+	assert_eq(sk.front[0], null, "the first ghoul dies and its slot clears")
+	assert_eq(sk.front[1], null, "the chain kills the second")
 	assert_eq(sk.front[2].hp, 60, "and lands once on the third, which survives, so it stops")
 	assert_eq(sk.mechs[0].heat, 30, "heat is paid on every link, three here: that is the risk of a chain")
 
@@ -933,13 +931,12 @@ func test_statuses_stack_tick_and_decay_on_both_sides() -> void:
 	sk.begin()
 	sk.start_round()
 	sk.end_round()
-	assert_eq(Effects.stacks_of(m, "overheating"), 1, "a scorching blow leaves one heat stack")
-	sk.start_round()
-	assert_eq(sk.mechs[0].heat, 5, "it ticks at the mech's turn: five heat")
+	assert_eq(sk.mechs[0].heat, 5, "a scorching blow leaves one heat stack, and it ticks at the round's end: five heat")
 	assert_eq(Effects.stacks_of(m, "overheating"), 0, "and the stack is spent")
-	sk.end_round()
 	sk.start_round()
+	sk.end_round()
 	assert_eq(sk.mechs[0].heat, 10, "the next scorch ticks again")
+	sk.start_round()
 	Effects.stack(m, Effects.STATUS["overheating"], Effects.SKIRMISH, "test", 3)
 	assert_eq(Effects.stacks_of(m, "overheating"), 3, "stacks add up")
 	assert_eq(int(Effects.tick_preview(m)["heat"]), 15, "five per stack")
@@ -1040,29 +1037,35 @@ func test_the_die_screen_explains_what_applies_to_a_component() -> void:
 	assert_eq(Effects.effect_text({"trigger": "on_injury", "effect": "no_destroy", "value": 1}), "on an injury: cracked components are never destroyed", "effects read as sentences")
 
 
-func test_a_foe_killed_this_round_neither_strikes_nor_takes_a_die() -> void:
-	# The dead stand until the round ends (Ryan, 22 September: a killed foe still struck, and
-	# came back as its own reinforcement). Killed by a die: it strikes nobody, it is no target,
-	# and the forecast that said so is the truth.
+func test_a_kill_clears_the_slot_at_once_and_opens_the_back_rank() -> void:
+	# Ryan, 22 September: burning a hole through the front is a legitimate choice, since it
+	# opens the back rank to line and melee until reinforcements plug it at the round's end.
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.of([Face.attack(90, L), Face.attack(90, L)]), 0, 100)
 	sk.add_mech(m)
-	sk.add_foes([_ghoul(30, 25)])
+	sk.add_foes([_ghoul(30, 25), _archer(30, 10), _ghoul(30, 25)])
 	sk.begin()
 	sk.start_round()
 	var ghoul: Foe = sk.front[0]
-	assert_true(sk.assign(0, ghoul), "the first blow kills it")
-	assert_false(ghoul.alive(), "dead")
-	assert_eq(sk.forecast(sk.mechs[0])["incoming"], 0, "the forecast counts nothing")
-	assert_false(sk.targets_for(0).has(ghoul), "a corpse is no target")
+	var archer: Foe = sk.back[0]
+	assert_true(archer != null, "the archer stands behind the first ghoul")
+	assert_false(sk.targets_for(0).has(archer), "covered: the line weapon cannot reach it")
+	assert_true(sk.assign(0, ghoul), "the blow kills the ghoul")
+	assert_eq(sk.front[0], null, "its slot is empty at once")
+	assert_true(sk.log[sk.log.size() - 1].ends_with("destroyed"), "logged as destroyed now, not at the round's end")
+	assert_true(sk.is_exposed(0), "the column is exposed")
+	assert_eq(sk.forecast(sk.mechs[0])["incoming"], 35, "only the archer and the other ghoul count")
 	sk.mechs[0].assigned = false
-	assert_false(sk.assign(0, ghoul), "a die cannot be spent on it")
+	assert_true(sk.targets_for(0).has(archer), "the line weapon now reaches the archer")
+	assert_true(sk.assign(0, archer), "and the second die takes it")
 	sk.end_round()
-	assert_eq(m.hull, 100, "and it struck nobody")
-	assert_eq(sk.front[0], null, "cleared at the end of the round")
+	assert_eq(m.hull, 75, "only the surviving ghoul struck")
+	assert_true(sk.front[0] != null or sk.reinforcements.is_empty(), "the hole is plugged at the round's end when anyone waits")
 
 
-func test_cooling_sheds_heat_after_the_enemy_turn_and_the_forecast_shows_it() -> void:
+func test_cooling_at_the_start_of_the_turn_and_overheating_at_the_end_of_the_round() -> void:
+	# Ryan, 22 September: cool at the start, heat at the end, so a scorch lands on the
+	# round's peak heat before cooling relieves it.
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.attack(10, L, [], 30)), 40, 100)
 	m.heat_max = 60
@@ -1071,29 +1074,59 @@ func test_cooling_sheds_heat_after_the_enemy_turn_and_the_forecast_shows_it() ->
 	sk.add_foes([_ghoul(30, 10)])
 	sk.begin()
 	sk.start_round()
-	assert_eq(sk.forecast(ms)["heat_after"], 20, "30 from the face, 10 shed at the end of the round")
+	assert_eq(ms.heat, 0, "nothing to cool at the start")
+	assert_eq(sk.forecast(ms)["heat_after"], 30, "the face's heat, nothing cooling it this round")
 	sk.assign(0, sk.front[0])
 	assert_eq(ms.heat, 30, "the face's heat lands when spent")
-	assert_eq(sk.forecast(ms)["heat_after"], 20, "the forecast still shows the cooling to come")
 	sk.end_round()
-	assert_eq(ms.heat, 20, "cooled by 10 at the end of the round")
+	assert_eq(ms.heat, 30, "nothing cools at the end of the round")
+	sk.start_round()
+	assert_eq(ms.heat, 20, "cooled by 10 as the turn begins")
 	assert_true(sk.log[sk.log.size() - 1].begins_with("cooling: A -10"), "one log line: %s" % sk.log[sk.log.size() - 1])
 	# Overflow is paid when the face is spent; cooling never undoes a burn.
-	sk.start_round()
 	ms.heat = 50
 	sk.assign(0, sk.front[0])
 	assert_eq(m.hull, 80, "50 plus 30 on a 60 cap: 20 burnt off the hull")
 	assert_eq(ms.heat, 60, "capped")
+	# Overheating ticks at the end of the round, on that peak, before the next cooling.
+	Effects.stack(m, Effects.STATUS["overheating"], Effects.SKIRMISH, "test", 2)
+	assert_eq(sk.forecast(ms)["heat_after"], 60, "the forecast caps the tick")
+	assert_eq(sk.forecast(ms)["overheat"], 10, "and warns of the ten it burns")
 	sk.end_round()
+	assert_eq(m.hull, 70, "two stacks: ten heat on a full gauge burns ten hull")
+	assert_eq(Effects.stacks_of(m, "overheating"), 1, "one stack ticked away")
+	sk.start_round()
 	assert_eq(ms.heat, 50, "then cooled by 10")
 	# Cooling is a stat like any other: a passive can raise it, and it never goes below zero.
 	m.grant_passive({"id": "fins", "name": "Fins", "description": "", "effects": [{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 15}]}, "fins")
 	assert_eq(m.cooling, 25, "base plus the passive")
-	sk.start_round()
 	ms.heat = 5
-	sk.end_round()
+	sk.end_round()   # the last stack ticks: five more
+	assert_eq(ms.heat, 10, "the remaining stack ticked at the round's end")
+	sk.start_round()
 	assert_eq(ms.heat, 0, "never below zero")
-	assert_true(sk.log[sk.log.size() - 1].begins_with("cooling: A -5"), "logged as what was actually shed")
+	assert_true(sk.log[sk.log.size() - 1].begins_with("cooling: A -10"), "logged as what was actually shed: %s" % sk.log[sk.log.size() - 1])
+
+
+func test_forecast_counts_the_scorch_about_to_land() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.shield(10)), 0, 100)
+	m.heat_max = 60
+	var ms := sk.add_mech(m)
+	var demon := _ghoul(30, 10)
+	demon.actions[0]["keywords"] = ["scorch"]
+	demon.actions[0]["strikes"] = 2
+	demon.action = demon.actions[0]
+	sk.add_foes([demon])
+	sk.begin()
+	sk.start_round()
+	ms.heat = 55
+	var fc := sk.forecast(ms)
+	assert_eq(fc["heat_after"], 60, "two scorching blows: two stacks tick ten at the round's end, capped")
+	assert_eq(fc["overheat"], 5, "five of it burns hull")
+	sk.end_round()
+	assert_eq(ms.heat, 60, "as forecast")
+	assert_eq(m.hull, 100 - 20 - 5, "two blows of ten on bare hull, then five burnt")
 
 
 func test_no_cooling_means_no_line_and_no_change() -> void:

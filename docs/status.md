@@ -4,7 +4,7 @@ Handoff note for the next session. Replace stale lines; keep it under a screen.
 
 ## As of 22 September 2026
 
-**State.** Everything committed. Tests: 168 tests, 2329 checks, green. Ryan writes
+**State.** Everything committed. Tests: 172 tests, 2357 checks, green. Ryan writes
 `content/*.json` in his own voice (reload after any pass that touches it). The rules are in
 `docs/vocabulary.md` (generated) and every decision in `docs/design-bible.html`; the
 vocabulary carries an `order_of_operations` rule that the engine follows. Chassis ids:
@@ -24,20 +24,26 @@ crag stops anyone but a flyer (`BattleMap.move_cost`, `passable`). Terrain heigh
 landscape only, never read by a rule. The gate and walls are two rows deep
 (`BattleMap.GATE_ROWS`); squads strike from the row above the apron. Cooling (Ryan, 22
 September): a chassis's `cooling` (content, 0 if absent; a stat in the pipeline) is shed
-from heat at the end of every round after the enemy turn (`Skirmish._cool`, one log line);
-the forecast's `heat_after` shows the drop; the codex grid has a heat max / cooling cell.
-Placeholder numbers went in for all four chassis (10, the Sparrowhawk 5); Ryan tunes them.
-Open from the same pass: cooling competes with the heat sink component for one job.
+from heat at the start of every turn in `start_round` (one log line); Overheating ticks at
+the end of the round after the enemy turn (`_tick_mechs`), so a scorch lands on peak heat;
+the forecast's `heat_after` includes that tick (`scorch_incoming`); the codex grid has a
+heat max / cooling cell. Placeholder numbers went in for all four chassis (10, the
+Sparrowhawk 5); Ryan tunes them, and the heat sink wants a bigger number (tuning).
 
-**Skirmish screen fixes (22 September).** A foe killed by a die stood until the round's end
-and still struck (the "resurrection"); now it strikes nobody, is no target, shows no intent
-or arrow, and reinforcements visibly step in after the enemy's replay (`_animate_arrival`).
-Open: whether a kill should clear the slot at once so line weapons reach the back rank the
-same round (bible, enemy formation). Every skirmish animation returns a unit to `_home`
-and kills what was still moving it (`_settle`), so recoil never drifts a mech. The log
-strip scrolls (every line, newest brightest, scrolled to the end when something happens)
-and a double-tap opens it full screen (`_toggle_log_full`); gauges sit on dark plates.
-Screenshot poses added: rounds, logfull, killed.
+**Skirmish rules and screen (22 September).** A kill clears its slot at once
+(`_resolve_attack` calls `_clear_dead`), so line and melee reach the back rank until the
+reinforcement phase; the screen plays a ghost of the drawing (`_animate_death`) and
+reinforcements step in after the enemy's replay (`_animate_arrival`). A decided fight ends
+the moment a die decides it (`assign` checks the outcome; the screen shows it after the
+blow plays). Every skirmish animation returns a unit to `_home` and kills what was still
+moving it (`_settle`), so recoil never drifts a mech. Mech gauges and chips hug the model
+by `MechView3D.model_rect` (the camera's framed bounds) through `UnitView.used_override`;
+nothing reads a viewport texture back from the GPU any more (`Sprites.used_rect` did,
+every frame until a non-empty read, which is the likely cause of the choppy die drag and
+the floating gauges on the phone; unverified on a device). The log strip scrolls (every
+line, newest brightest, scrolled to the end when something happens) and a double-tap
+opens it full screen (`_toggle_log_full`); gauges sit on dark plates and a pending loss
+breathes between dim and ink. Screenshot poses added: rounds, logfull, killed.
 
 **Ally art, locked (21 September).** The mid-nineties 3D register, built by `tools/lowforge`:
 `models_low.py` holds one function of numbers per chassis id (`badger`, `sparrowhawk`,

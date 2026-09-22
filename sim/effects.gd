@@ -57,7 +57,7 @@ const DECAY_TICK := 1    # loses a stack each tick, gone at zero
 const STATUS := {
 	"burning": {"id": "burning", "name": "Burning", "description": "Loses 5 HP per stack at the start of its action, then loses a stack.",
 		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_hp", "value": 5}]},
-	"overheating": {"id": "overheating", "name": "Overheating", "description": "Gains 5 heat per stack at the start of its turn, then loses a stack.",
+	"overheating": {"id": "overheating", "name": "Overheating", "description": "Gains 5 heat per stack at the end of the round, then loses a stack.",
 		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_heat", "value": 5}]},
 	"suppressed": {"id": "suppressed", "name": "Suppressed", "description": "Skips its telegraphed action this round.",
 		"effects": [{"trigger": "status", "effect": "skip_action", "value": 1}]},
