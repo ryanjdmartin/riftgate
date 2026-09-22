@@ -447,10 +447,38 @@ func _show_contacts() -> void:
 		_contacts = null
 	# First the warning, big and red over the map; then the panel slides in and the map
 	# zooms to the first contact (Ryan, 22 September: dramatic, and in the player's face).
-	var warn := Hud.label("CONTACT", 72, Palette.ENEMY, Hud.display_bold())
-	warn.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	warn.position = Vector2(0, MAP_Y + 300.0)
-	warn.size = Vector2(W, 90)
+	# On a black band with red rules across the map, and the map dimmed under it: red on
+	# the terrain alone never reads (Ryan, 22 September).
+	var warn := Control.new()
+	warn.position = Vector2(0, MAP_Y)
+	warn.size = Vector2(W, LOG_Y - 10.0 - INFO_H - MAP_Y)
+	warn.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var dim := ColorRect.new()
+	dim.color = Color(0, 0, 0, 0.45)
+	dim.size = warn.size
+	warn.add_child(dim)
+	var band := ColorRect.new()
+	band.color = Color(0, 0, 0, 0.92)
+	band.position = Vector2(0, 260.0)
+	band.size = Vector2(W, 150.0)
+	warn.add_child(band)
+	for y in [band.position.y, band.position.y + band.size.y - 4.0]:
+		var rule := ColorRect.new()
+		rule.color = Palette.ENEMY
+		rule.position = Vector2(0, y)
+		rule.size = Vector2(W, 4.0)
+		warn.add_child(rule)
+	var text := Hud.label("CONTACT", 84, Palette.ENEMY, Hud.display_bold())
+	text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	text.position = band.position
+	text.size = band.size
+	warn.add_child(text)
+	var sub := Hud.label("%d SKIRMISH%s // ENGAGE" % [battle.pending.size(), "" if battle.pending.size() == 1 else "ES"], 16, Palette.INK, Hud.mono())
+	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sub.position = Vector2(0, band.position.y + band.size.y - 34.0)
+	sub.size = Vector2(W, 20)
+	warn.add_child(sub)
 	warn.modulate = Color(1, 1, 1, 0)
 	add_child(warn)
 	var tw := create_tween()

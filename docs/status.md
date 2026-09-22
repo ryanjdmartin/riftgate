@@ -120,7 +120,7 @@ frame's lines (`_frame_x`), not the field's edge; intent lines carry a dark unde
 scan bar pauses `HudBackdrop.SCAN_PAUSE` seconds between sweeps on both screens; the
 corrupted tear is rarer, and the skirmish's overworld band tears too; `RIFTGATE_MAP_WIRE=1` is the pure-wireframe trial. `tools/screenshot.gd` poses:
 select, route, hold, north, zoom, zoomlast, tune, predict, resolve, contact
-(`RIFTGATE_SHOT_FRAME=260` catches the contact panel after the warning).
+(`RIFTGATE_SHOT_FRAME=210` catches the CONTACT band after the move plays, 400 the panel).
 
 **Landscape generation (`sim/battle_map.gd`).** `_lay_landscape` from seeded noise: water
 in bodies, wasteland across the rougher half, ruins in dense clusters, crags along a ridge
