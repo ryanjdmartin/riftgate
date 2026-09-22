@@ -9,8 +9,21 @@ const EDGE_ANGLE := 28.0
 static var _cache: Dictionary = {}   # mesh rid -> ArrayMesh of lines, or null
 
 
+## "light": everything as light. "ink": everything as black ink. "assets": the player's
+## things (mechs, gate, walls) in ink, the field (props, grid) in light (Ryan's trial, 22
+## September). RIFTGATE_INK=dark|assets picks at start; the map tuner switches live.
 static func mode() -> String:
-	return "ink" if OS.get_environment("RIFTGATE_INK") == "dark" else "light"
+	match OS.get_environment("RIFTGATE_INK"):
+		"dark":
+			return "ink"
+		"assets":
+			return "assets"
+	return "light"
+
+
+## Whether a thing of `kind` ("asset" or "prop") draws in ink under `mode`.
+static func inked(mode_name: String, kind: String) -> bool:
+	return mode_name == "ink" or (mode_name == "assets" and kind == "asset")
 
 
 ## Hang a trace off every mesh under `node`. Returns the trace instances, so a caller can

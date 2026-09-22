@@ -180,7 +180,7 @@ func _setup(chassis_id: String, maker: String) -> void:
 	if not token and mode != "pixel":
 		# The skirmish's machines carry the display's trace too (Ryan, 21 September); the
 		# screen's scan bar lights it through set_sweep_screen.
-		_trace_mat = TraceLines.ink_material() if TraceLines.mode() == "ink" else TraceLines.light_material(Palette.HUD)
+		_trace_mat = TraceLines.ink_material() if TraceLines.inked(TraceLines.mode(), "asset") else TraceLines.light_material(Palette.HUD)
 		if _trace_mat is ShaderMaterial:
 			(_trace_mat as ShaderMaterial).set_shader_parameter("gain", 0.8)
 		TraceLines.attach(_model, _trace_mat)

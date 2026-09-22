@@ -63,7 +63,8 @@ Resolve plays the movement phase (`play_moves`: mechs then squads along the path
 actually took, `MOVE_SECONDS_PER_HEX`; `Map3D.set_anim` moves the model and turns it to
 its heading) and only then opens the skirmish; headless skips the play. `map_tuner.gd` (TUNE on the battle screen) is
 the live knob panel; nothing it sets persists. `RIFTGATE_INK=dark` starts the traces as
-black ink; `RIFTGATE_MAP_WIRE=1` is the pure-wireframe trial. `tools/screenshot.gd` poses:
+black ink, `RIFTGATE_INK=assets` inks only the mechs, gate and walls (the tuner's TRACE has
+light, assets, ink, off); `RIFTGATE_MAP_WIRE=1` is the pure-wireframe trial. `tools/screenshot.gd` poses:
 select, route, hold, north, zoom, zoomlast, tune, resolve, contact.
 
 **Landscape generation (`sim/battle_map.gd`).** `_lay_landscape` from seeded noise: water

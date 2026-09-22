@@ -247,15 +247,16 @@ var _trace_mode := TraceLines.mode()
 var _light_mat: ShaderMaterial = null
 var _ink_line_mat: StandardMaterial3D = null
 
-func _trace(mi: MeshInstance3D) -> void:
-	var added := TraceLines.attach(mi, _trace_material())
+func _trace(mi: MeshInstance3D, kind: String = "prop") -> void:
+	var added := TraceLines.attach(mi, _trace_material(kind))
 	for em in added:
 		em.visible = _trace_mode != "off"
+		em.set_meta("kind", kind)
 	_trace_nodes.append_array(added)
 
 
-func _trace_material() -> Material:
-	if _trace_mode == "ink":
+func _trace_material(kind: String) -> Material:
+	if TraceLines.inked(_trace_mode, kind):
 		if _ink_line_mat == null:
 			_ink_line_mat = TraceLines.ink_material()
 		return _ink_line_mat
@@ -273,7 +274,7 @@ func set_trace_mode(mode: String) -> void:
 		if is_instance_valid(em):
 			em.visible = mode != "off"
 			if mode != "off":
-				em.material_override = _trace_material()
+				em.material_override = _trace_material(str(em.get_meta("kind", "prop")))
 
 
 func set_trace_gain(v: float) -> void:
@@ -826,7 +827,7 @@ func _make_unit(u: Unit) -> Node3D:
 ## still reads at one hex.
 func _marker(node: Node) -> void:
 	for child in node.find_children("*", "MeshInstance3D", true, false):
-		_trace(child)
+		_trace(child, "asset")
 
 
 ## The union of every mesh's bounds under `node`, in the node's own space.
