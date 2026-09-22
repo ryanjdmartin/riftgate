@@ -301,15 +301,15 @@ func _build() -> void:
 				view.sway_yaw = 0.04
 			view.sway_phase = i * 2.1
 			view.strip_silhouette()   # no light outline in the skirmish (Ryan, 22 September); the trace and its scan glow stay
-			add_child(view)
-			_mech_3d[i] = view
-			v.sprite = view.texture
 			# Hug the model by its framed bounds, never the render read back. The view frames
-			# its camera on ready, so the bounds are taken then (the screen is built before
-			# it enters the tree on the harness path; the mech views are ready with it).
+			# its camera on ready, so the bounds are taken then: connected before add_child,
+			# because when the screen is already in the tree ready fires inside it.
 			view.ready.connect(func() -> void:
 				v.used_override = view.model_rect()
 				v.queue_redraw())
+			add_child(view)
+			_mech_3d[i] = view
+			v.sprite = view.texture
 			if look == "clean":
 				v.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		_place(v, Vector2(cx - MECH_SIZE.x * 0.5, MECH_Y), MECH_SIZE)

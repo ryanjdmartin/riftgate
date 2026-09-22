@@ -49,7 +49,19 @@ every frame until a non-empty read, which is the likely cause of the choppy die 
 the floating gauges on the phone; unverified on a device). The log strip scrolls (every
 line, newest brightest, scrolled to the end when something happens) and a double-tap
 opens it full screen (`_toggle_log_full`); gauges sit on dark plates and a pending loss
-breathes between dim and ink. Screenshot poses added: rounds, logfull, killed.
+breathes between dim and ink. Later the same day: hold readouts open above whatever is
+held (beside only when there is no room); the die codex is gone (a quick second tap is a
+tap; the hold shows every entry with `_face_labels(ms, true)`); the skirmish's mechs have
+no light silhouette (`strip_silhouette`); the ground bands draw no marks and use
+`HudBackdrop.BAND_HEX` (72), `TerrainArt.draw_ground(..., marks)`; the codex grid is
+maxima and rates only (`codex_for_unit` stat_items, shared by both screens); the 3D view
+hangs its model off `_pivot` at the bounds' centre (`_collect_corners_local`, usable
+before the tree), so spin and sway turn about the machine. The mech views' bounds hook is
+connected before `add_child` (ready fires inside it when the screen is already in the
+tree). Screenshot poses: rounds, logfull, killed; diecodex removed. Ryan's chassis.json
+edit in flight when this was written uses `"when": "type_energy"` on Hot Hands, which the
+engine does not support yet (SUPPORTED_WHEN); it needs a type condition on components
+(energy versus kinetic) before the validator will pass it.
 
 **Ally art, locked (21 September).** The mid-nineties 3D register, built by `tools/lowforge`:
 `models_low.py` holds one function of numbers per chassis id (`badger`, `sparrowhawk`,
