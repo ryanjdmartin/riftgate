@@ -43,10 +43,10 @@ so they join, crags in their ground's idiom (`_crag`), props with the trace, the
 walls across the margin columns, units as their skirmish models centred by bounds and set
 south, flyers hovering with a shadow disc; the grid is emissive lines in the scene. Every
 feature edge of units, structures and props is traced in light (`_trace`, `_edge_mesh`,
-`trace.gdshader`); the traces brighten under the scan band, which sweeps the map in map
-pixels. `painted_map.gd` is the other world, two frames; `bleed.gd` and `bleed.gdshader`
-composite the two by the bleed with a hard dithered seam, tilt-shift north and blur past
-the field's sides, scanlines and the skirmish's band on top, and expose saturation,
+`trace.gdshader`); the traces brighten under the screen's one scan bar (`BattleScreen.ScanBar`, drawn on
+top of everything; it hands the map its y through `sweep_at`). `painted_map.gd` is the other world, two frames; `bleed.gd` and `bleed.gdshader`
+composite the two by the bleed with a hard dithered seam, tilt-shift north and a wider, stronger blur past the field's sides (`edge_fade`,
+`edge_blur`), scanlines and the skirmish's band on top, and expose saturation,
 brightness, flicker and frame rate. `battle_map_view.gd` draws every overlay in map space
 under one transform (zoom by wheel or pinch, pan both ways); `center` and `hex_at` follow
 the terrain's lift; tap empty ground for its readout, tap an ally to select and read it,

@@ -39,6 +39,31 @@ var _clear_btn: HudButton
 var _details: HudPanel
 var _details_label: Label
 var _tuner: MapTuner = null
+var _scan: ScanBar = null
+
+
+## The screen's scan bar: the skirmish backdrop's band, drawn last so it rides over every
+## control, and told where the map is so the map can light the traces under it.
+class ScanBar extends Control:
+	const SPEED := 140.0
+	var map: BattleMapView
+	var map_y: float = 0.0
+	var _t := 0.0
+
+	func _init() -> void:
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		set_process(true)
+
+	func _process(delta: float) -> void:
+		_t += delta
+		queue_redraw()
+
+	func _draw() -> void:
+		var y := fmod(_t * SPEED, size.y + 120.0) - 60.0
+		for i in range(-2, 3):
+			draw_rect(Rect2(0.0, y + i * 3.0, size.x, 1.0), Color(1, 1, 1, 0.07 - 0.015 * absi(i)))
+		if map != null:
+			map.sweep_at(y - map_y)
 var _overlay: Control
 var _overlay_title: Label
 var _overlay_text: Label
@@ -90,6 +115,7 @@ func _build() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 	var bg := HudBackdrop.new()
+	bg.scan = false   # this screen's one scan bar is drawn on top of everything, below
 	bg.rules = [MAP_Y - 6.0, LOG_Y - 10.0 - INFO_H, LOG_Y - 10.0, BOTTOM_Y - 16.0]
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
@@ -141,6 +167,12 @@ func _build() -> void:
 	add_child(_details)
 	_details_label = Hud.label("", 16, Palette.INK)
 	_details.add_child(_details_label)
+	# One scan bar over the whole screen, on the top layer: it crosses the map and the
+	# controls alike, and whatever geometry lies under it lights (Ryan, 21 September).
+	_scan = ScanBar.new()
+	_scan.map = _map
+	_scan.map_y = MAP_Y
+	_place(_scan, Vector2.ZERO, Vector2(W, H))
 
 	_build_outcome()
 

@@ -14,8 +14,6 @@ signal unit_held(u: Unit)
 signal hold_released
 
 const DOUBLE_TAP_SECONDS := 0.35
-const SWEEP_SPEED := 140.0     # pixels per second, top to bottom, as the skirmish backdrop
-var _sweep_t := 0.0
 
 const HEX_SIZE := 44.0
 const DRAG_THRESHOLD := 12.0
@@ -353,19 +351,13 @@ func _draw() -> void:
 	# faint scanlines and its soft band drifting down, over everything, foes and overlays
 	# too (Ryan, 21 September).
 	Hud.scanlines(self, Rect2(Vector2.ZERO, size))
-	if sweep_on:
-		# The band belongs to the map, not the screen (Ryan, 21 September): it sweeps the
-		# battlefield in map pixels, scrolls and zooms with the ground, and the traces under
-		# it brighten. The skirmish's band, by contrast, is a screen effect.
-		var my := fmod(_sweep_t * SWEEP_SPEED, _map_size.y + 120.0) - 60.0
-		draw_set_transform(Vector2(scroll_x, scroll_y), 0.0, Vector2(zoom, zoom))
-		for i in range(-2, 3):
-			draw_rect(Rect2(0.0, my + i * 3.0, _map_size.x, 1.0), Color(1, 1, 1, 0.07 - 0.015 * absi(i)))
-		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-		if _map3d != null:
-			_map3d.set_sweep(my)
-	elif _map3d != null:
-		_map3d.set_sweep(-1.0e6)
+
+
+## The one scan bar crosses the whole screen on the top layer (the battle screen draws it);
+## it tells the map where it is, in this control's pixels, and the traces under it light.
+func sweep_at(local_y: float) -> void:
+	if _map3d != null:
+		_map3d.set_sweep((local_y - scroll_y) / zoom if sweep_on else -1.0e6)
 
 
 ## Off-screen squads get a portrait at the edge nearest them: the source of the intent line.
@@ -495,10 +487,9 @@ func _gui_input(event: InputEvent) -> void:
 		accept_event()
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if _map3d != null:
-		_sweep_t += delta
-		queue_redraw()
+		queue_redraw()   # the scene is alive under the overlays
 	if _pressed and not _dragged and not _holding and Time.get_ticks_msec() / 1000.0 - _press_at >= HOLD_SECONDS:
 		_holding = true
 		if field != null:

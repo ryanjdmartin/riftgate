@@ -7,8 +7,8 @@ shader_type spatial;
 render_mode unshaded, cull_disabled, blend_add, depth_draw_never;
 
 uniform vec3 color : source_color = vec3(0.2, 1.0, 0.33);
-uniform float base = 0.5;        // steady brightness
-uniform float pulse = 0.6;       // the extra under the scan
+uniform float base = 0.4;        // steady brightness
+uniform float pulse = 1.8;       // the extra under the scan: past the bloom threshold, so it lights
 uniform float gain = 1.0;        // the tuner's overall multiplier
 uniform float sweep_z = -1.0e6;  // world z of the scan band
 uniform float band = 90.0;       // half width of the brightened band, in world units
@@ -23,7 +23,7 @@ void fragment() {
 	float d = (wpos.z - sweep_z) / band;
 	float w = exp(-d * d);
 	float k = (base + pulse * w) * gain;
-	ALBEDO = color * k;
-	EMISSION = color * k * 0.8;
+	ALBEDO = color * min(k, 1.0);
+	EMISSION = color * k * 1.1;   // over 1 under the band, where the glow pass blooms it
 	ALPHA = 0.85;
 }

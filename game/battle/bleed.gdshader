@@ -28,9 +28,10 @@ uniform float levels = 5.0;                  // posterize steps per channel on t
 uniform float focus_y = 0.0;                 // map-pixel y of the screen's middle
 uniform float focus_band = 330.0;            // the sharp zone reaches this far north of the middle, in map pixels
 uniform float focus_falloff = 180.0;         // map pixels over which the blur reaches its maximum
-uniform float blur_max = 2.4;                // the blur's tap spacing at its maximum, in screen pixels
+uniform float blur_max = 3.0;                // the blur's tap spacing at its maximum, in screen pixels
 uniform vec2 play_x = vec2(0.0, 1.0);        // the playable field's left and right, in map pixels
-uniform float edge_fade = 210.0;             // map pixels past the field over which the scenery softens away
+uniform float edge_fade = 300.0;             // map pixels past the field over which the scenery softens away
+uniform float edge_blur = 5.0;               // the side blur's maximum, stronger than the far one
 
 float bleed_at(vec2 px) {
 	float m = 1.0 - clamp((px.y - grad.x) / max(1.0, grad.y - grad.x), 0.0, 1.0);
@@ -109,7 +110,7 @@ void fragment() {
 	// same way the far north does: blur first, then darkness (Ryan, 21 September).
 	float outside = max(play_x.x - px.x, px.x - play_x.y);
 	float edge = smoothstep(0.0, edge_fade, outside);
-	float rad = max(blur_radius(px), edge * blur_max);
+	float rad = max(blur_radius(px), edge * edge_blur);
 	vec4 scene = blurred_scene(TEXTURE, UV, 1.0 / view_size, rad);
 	// The other world runs at two frames, the old way.
 	bool second = mod(floor(TIME * anim_rate), 2.0) > 0.5;
@@ -117,9 +118,9 @@ void fragment() {
 	other.rgb = floor(other.rgb * levels + 0.5) / levels;
 	// The corrupted side is input the display cannot hold: rarely, a band of it tears.
 	float band = floor(px.y / 6.0);
-	float tick = floor(TIME * 6.0);
-	float flick = step(0.9985, fract(sin(band * 12.9898 + tick * 7.31) * 43758.5453)) * flicker;
-	other.rgb *= 1.0 - 0.18 * flick;
+	float tick = floor(TIME * 9.0);
+	float flick = step(0.997, fract(sin(band * 12.9898 + tick * 7.31) * 43758.5453)) * flicker;
+	other.rgb *= 1.0 - 0.22 * flick;
 	COLOR = (k > bayer(c)) ? other : scene;
 	float luma = dot(COLOR.rgb, vec3(0.299, 0.587, 0.114));
 	COLOR.rgb = mix(vec3(luma), COLOR.rgb, saturation) * brightness;
