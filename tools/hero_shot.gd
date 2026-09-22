@@ -2,7 +2,7 @@ extends SceneTree
 
 ## Renders one chassis model large through the game's own 3D view and saves a PNG, for
 ## judging polish and manner at a size the codex cannot show. Needs a window.
-##   godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- <chassis> <maker> out.png [front|rear] [width height]
+##   godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- <chassis> <maker> out.png [front|rear|<yaw degrees>] [width height]
 
 var _frames := 0
 var _view: MechView3D
@@ -12,13 +12,17 @@ var _out := "hero.png"
 func _init() -> void:
 	var args := OS.get_cmdline_user_args()
 	if args.size() < 3:
-		push_error("usage: <chassis> <maker> out.png [front|rear] [width height]")
+		push_error("usage: <chassis> <maker> out.png [front|rear|<yaw degrees>] [width height]")
 		quit(2)
 		return
 	var chassis: String = args[0]
 	var maker: String = args[1]
 	_out = args[2]
-	var yaw := MechView3D.YAW_FRONT if args.size() < 4 or args[3] != "rear" else MechView3D.YAW_REAR
+	var yaw := MechView3D.YAW_FRONT
+	if args.size() >= 4 and args[3] == "rear":
+		yaw = MechView3D.YAW_REAR
+	elif args.size() >= 4 and args[3].is_valid_float():
+		yaw = float(args[3])   # any angle, for checking a finish around the spin
 	var frame := Vector2i(480, 576)
 	if args.size() >= 6:
 		frame = Vector2i(int(args[4]), int(args[5]))

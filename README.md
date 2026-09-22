@@ -75,7 +75,7 @@ godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/
 # build ally units from their briefs (tools/lowforge/models_low.py), then re-import
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger sparrowhawk clydesdale
 godot --headless --path . --import
-godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva hero.png front 480 480
+godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva hero.png front 480 480   # front, rear, or a yaw in degrees
 godot --path . --resolution 360x640 --disable-vsync -s tools/perf_probe.gd     # the battle map's ms per frame and draw calls, at zoom 1 and full zoom
 
 # export the enemy sprites from the grids in docs/sprites-enemies.html to art/foes, then re-import

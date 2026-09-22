@@ -83,7 +83,13 @@ boosters; the bone body predated the palettes). Finish by maker on textured mode
 `MechView3D.FINISH` (roughness, metallic, specular); Kestrel is chrome and shines, the
 signature (Ryan, 22 September), which needs something to mirror, so both 3D environments
 (mech views and `Map3D`) carry `MechView3D.chrome_sky()` as a reflection source only
-(the ambient stays flat, the background transparent). The engine's `LIVERY` ramps
+(the ambient stays flat, the background transparent). The sky is the nineties chrome
+map, pale blue down to a white horizon over cool dark ground, both gradients wide, and
+Kestrel keeps a little roughness (0.22): under the orthographic camera a flat facet takes
+one reflection sample, so a sharp sky made neighbouring facets snap between sky and
+ground as the model turned ("random faces glitching", Ryan); soft and wide, they shade
+continuously. `hero_shot.gd` takes a yaw in degrees as well as front/rear, for checking
+a finish around the spin. The engine's `LIVERY` ramps
 (untextured models only) follow the decided metals now. Badger is Ryan's to tweak in
 Blender (joints and pins are his next art job).
 

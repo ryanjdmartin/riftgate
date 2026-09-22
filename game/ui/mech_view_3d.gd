@@ -49,7 +49,7 @@ const GLOSS := {"minerva": 0.35, "kestrel": 1.0, "wainwright_sutler": 0.15, "aph
 # The same finish on a textured (lowforge) model: roughness, metallic, specular. Kestrel is
 # chrome and shines like it, the signature (Ryan, 22 September); the wagon-builders' iron is
 # matte; the rest sit between.
-const FINISH := {"minerva": [0.68, 0.0, 0.4], "kestrel": [0.04, 0.9, 1.0], "wainwright_sutler": [0.86, 0.0, 0.3], "aphelion": [0.32, 0.15, 0.7], "arsenal": [0.55, 0.1, 0.5]}
+const FINISH := {"minerva": [0.68, 0.0, 0.4], "kestrel": [0.22, 1.0, 1.0], "wainwright_sutler": [0.86, 0.0, 0.3], "aphelion": [0.32, 0.15, 0.7], "arsenal": [0.55, 0.1, 0.5]}
 const LIVERY := {
 	# The livery tones, after the metals decided with the ally art (21 September; the
 	# earlier red, bone, orange and yellow retired 22 September). Only untextured models
@@ -93,18 +93,25 @@ var _model: Node3D
 var _pivot: Node3D = null   # the model's turntable, at its bounds' centre
 
 
-## The sky a chrome finish mirrors: bright overhead, a pale band at the horizon, dark
-## ground. Never drawn; the background stays transparent.
+## The sky a chrome finish mirrors: the nineties chrome map, pale blue overhead running
+## down to a white horizon, cool dark ground below, both gradients wide and soft so that
+## neighbouring flat facets (one reflection sample each under the orthographic camera)
+## shade continuously instead of snapping between sky and ground as the model turns
+## (Ryan, 22 September: "random faces glitching"). Never drawn; the background stays
+## transparent.
 static func chrome_sky() -> Sky:
 	var mat := ProceduralSkyMaterial.new()
-	mat.sky_top_color = Color("ffffff")
-	mat.sky_horizon_color = Color("b4c4d4")
-	mat.ground_horizon_color = Color("3a4048")
-	mat.ground_bottom_color = Color("15181c")
+	mat.sky_top_color = Color("9fc4ea")
+	mat.sky_horizon_color = Color("ffffff")
+	mat.sky_curve = 0.6
+	mat.sky_energy_multiplier = 1.4
+	mat.ground_horizon_color = Color("6c7886")   # cool below, so dark parts stay steel, not bronze
+	mat.ground_bottom_color = Color("14171c")
+	mat.ground_curve = 0.6
 	mat.sun_angle_max = 0.0
 	var sky := Sky.new()
 	sky.sky_material = mat
-	sky.radiance_size = Sky.RADIANCE_SIZE_64
+	sky.radiance_size = Sky.RADIANCE_SIZE_128
 	return sky
 
 
