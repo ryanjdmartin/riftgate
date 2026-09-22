@@ -903,8 +903,17 @@ func sync() -> void:
 		var ground_y := y
 		if u.traits.has("flyer"):
 			# A flyer rides over whatever stands on its hex (Ryan, 22 September: no clipping
-			# through a mesa), just clear of the tallest thing there.
-			y += maxf(0.0, float(_top.get(under, 0.0)) - _height_of(under) + 6.0 - HOVER)
+			# through a mesa), just clear of the tallest thing there. Over ground the other
+			# world has taken, the painting is flat, so it flies level with it, and the
+			# height it flies at eases between hexes rather than stepping (Ryan, the same day).
+			var under_px: Vector2 = _origin + (_anim_px[u.id] if _anim_px.has(u.id) else Hex.to_pixel(u.pos, hex_px))
+			var standing := Bleed.standing(Bleed.at(under_px, grad, src))
+			var clear := maxf(0.0, float(_top.get(under, 0.0)) - _height_of(under) + 6.0 - HOVER)
+			var want := (_height_of(under) + clear) * standing
+			var prev: float = _fly_y.get(u.id, want)
+			y = lerpf(prev, want, 1.0 - exp(-_dt * 7.0))
+			_fly_y[u.id] = y
+			ground_y = _height_of(under) * standing
 		if _anim_px.has(u.id):
 			_base[u.id] = _world(_anim_px[u.id], y)
 			if _shadows.has(u.id):
@@ -928,6 +937,7 @@ func sync() -> void:
 			_units.erase(uid)
 			_pivots.erase(uid)
 			_base.erase(uid)
+			_fly_y.erase(uid)
 			if _shadows.has(uid):
 				_shadows[uid].queue_free()
 				_shadows.erase(uid)
@@ -936,8 +946,12 @@ func sync() -> void:
 ## Only a flyer moves at rest: it rides a slow swell, each on its own beat. A grounded
 ## machine holds still; its idle will be joint motion, the same as the skirmish's, once the
 ## joints exist (Ryan, 21 September).
+var _fly_y: Dictionary = {}   # unit id -> the eased height a flyer is at
+var _dt := 1.0 / 60.0
+
 func _process(delta: float) -> void:
 	_time += delta
+	_dt = delta
 	for uid in _units.keys():
 		var u := field.unit_by_id(uid)
 		if u == null or not u.traits.has("flyer"):
