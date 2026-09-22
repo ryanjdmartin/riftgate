@@ -56,16 +56,24 @@ purpose; the pause menu and its knobs; the top bar in plain words.
 3. The map: ally wrecks left on the field with a death animation (discuss first: does a
    wreck block, and does it stay a round or the battle); joint idle for grounded units
    once joints exist; whether squads leave corruption in their wake; the `LINE_TO_CENTRE`
-   trial on intent lines (Ryan to judge in play).
-4. Engine gaps waiting on content: Numbed resistance roll; Corrupted; cleanse; foe roles;
-   planned statuses as modifiers; component stat modifiers; granted passives coloured on
-   the codex.
-5. Design still open (bible section 12): the reinforcement phase; skirmish composition
-   from placement; movespeed in tens; the economy; base defences and turrets.
-6. Art: enemy art for the eight foes still on sketch grids; the hangar as a model.
-7. Phone: play it and tune numbers, map size, squad speeds, Rift Pressure. The map costs
-   about 8.4 ms a frame on the Mac at 5130 draw calls (every prop and trace its own
-   instance); if a phone drops frames, batch props and traces per column into MultiMeshes.
+   trial on intent lines and the `RIFTGATE_MAP_WIRE` wireframe trial (Ryan to judge or
+   retire). Batch props and traces per column into MultiMeshes: the map costs about
+   8.4 ms a frame on the Mac at 5130 draw calls, every prop and trace its own instance.
+4. Design that needs a decision before code (all in bible section 12 now): what terrain
+   does in a skirmish (the ground is named, nothing acts on it); movespeed in tens; base
+   defences and turrets (`defenses()` exists, nothing fills it); the reinforcement phase;
+   skirmish composition from placement; the multi-hex boss's return; the economy.
+5. Engine gaps waiting on content: Numbed resistance roll; Corrupted; cleanse; foe roles;
+   the ten planned foe actions in `foes.json`; planned statuses as modifiers; component
+   stat modifiers; granted passives coloured on the codex; Ryan's cooling numbers (the
+   heat sink wants a bigger one).
+6. Art: enemy art for the eight foes still on sketch grids; the hangar as a model;
+   Aphelion and Arsenal chassis once written; per-mech repaint (`Unit.paint` exists,
+   nothing sets it).
+7. Before a phone leaves the desk: save and resume mid-battle (nothing serialised);
+   onboarding (gesture tutorial, cheat sheet: reroll rule and zone of control first);
+   audio (nothing exists, no direction); the Android export checked on a device; then
+   play and tune numbers, map size, squad speeds, Rift Pressure.
 
 **Known rough edges.** Codex stat labels cut off on Ryan's device once, not reproduced.
 Routes are tap-to-destination only. The skirmish's die drag was choppy on the phone
