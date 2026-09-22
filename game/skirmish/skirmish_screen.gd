@@ -72,6 +72,22 @@ var _codex_designation: HudButton   # a stamped tag, not a label, so the plate d
 var _codex_stats: StatBlock
 var _codex_view: MechView3D = null   # the spinning model, when mechs are 3D
 var _mech_3d: Array[MechView3D] = [] # parallel to _mech_views; null where the mech is a sprite
+var _bg: HudBackdrop = null
+
+
+## The backdrop's scan bar lights the mechs' traces as it crosses them, as on the map.
+func _process(_delta: float) -> void:
+	if _bg == null:
+		return
+	var y := _bg.scan_y()
+	for i in range(_mech_3d.size()):
+		var view := _mech_3d[i]
+		if view == null or i >= _mech_views.size():
+			continue
+		var v := _mech_views[i]
+		if v.size.y <= 0.0:
+			continue
+		view.set_sweep_screen((y - v.position.y) * float(view.size.y) / v.size.y)
 var _codex_actions: Label
 var _codex_passive: Label
 var _codex_faces: FaceListView
@@ -175,13 +191,17 @@ func _build() -> void:
 
 	var bg := HudBackdrop.new()
 	bg.rules = [BACK_Y - 14.0, LOG_Y - 10.0, REROLL_Y + REROLL_SIZE.y + 14.0, BOTTOM_Y - 16.0]
-	# Ground under each side, in the terrain the fight is on: the map's texture, carried in.
+	# The fight is on the enemy's ground (Ryan, 21 September): the foes stand on the other
+	# world's flat bright overworld of this terrain; the mechs stand on the seam, the
+	# reconstruction's tile with the other world eating into it from above.
 	bg.grounds = [
-		[Rect2(0.0, BACK_Y - 14.0, W, LOG_Y - 10.0 - (BACK_Y - 14.0)), sk.terrain, sk.rng.seed],
-		[Rect2(0.0, REROLL_Y + REROLL_SIZE.y + 14.0, W, BOTTOM_Y - 16.0 - (REROLL_Y + REROLL_SIZE.y + 14.0)), sk.terrain, sk.rng.seed + 1],
+		[Rect2(0.0, BACK_Y - 14.0, W, LOG_Y - 10.0 - (BACK_Y - 14.0)), sk.terrain, sk.rng.seed, "other"],
+		[Rect2(0.0, REROLL_Y + REROLL_SIZE.y + 14.0, W, BOTTOM_Y - 16.0 - (REROLL_Y + REROLL_SIZE.y + 14.0)), sk.terrain, sk.rng.seed + 1, "seam"],
 	]
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
+	_bg = bg
+	set_process(true)
 
 	# Header: round and reinforcements tag, phase readout beside it.
 	_header = _tag("", 13, true)

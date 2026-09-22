@@ -2,9 +2,9 @@
 
 Handoff note for the next session. Replace stale lines; keep it under a screen.
 
-## As of 21 September 2026
+## As of 22 September 2026
 
-**State.** Everything committed. Tests: 152 tests, 1948 checks, green. Ryan writes
+**State.** Everything committed. Tests: 152 tests, 2045 checks, green. Ryan writes
 `content/*.json` in his own voice (reload after any pass that touches it). The rules are in
 `docs/vocabulary.md` (generated) and every decision in `docs/design-bible.html`; the
 vocabulary carries an `order_of_operations` rule that the engine follows. Chassis ids:
@@ -32,8 +32,12 @@ generator; `forge.py build <id>` writes `art/models/<id>.glb` and a working
 hand-edited .blend back into the glTF with its Empties (joints `joint_*`, pins `hp_*`);
 `forge.py terrain` writes the ground tiles to `art/terrain`. The model's Z = 0 is the
 ground; forward is +Y. `MechView3D.toon` takes the tile look for any textured model; amber
-is emissive, glass glossy. `tools/hero_shot.gd` renders one unit large. The skirmish backdrop's ground bands are the
-map's terrain tiles under the HUD-colour hex grid (`TerrainArt.draw_ground`). Sparrowhawk locked;
+is emissive, glass glossy. `tools/hero_shot.gd` renders one unit large. The skirmish is fought on the enemy's ground
+(decided 21 September): `TerrainArt.draw_ground` styles "other" (the overworld, two
+frames, under the foes) and "seam" (the tile with the other world dithering into it from
+above, under the mechs); the overworld hex drawing is `TerrainArt.draw_other_hex`, shared
+with `PaintedMap`. The skirmish's mech views carry the trace and its backdrop's bar lights
+them (`MechView3D.set_sweep_screen`; `trace.gdshader` takes a `screen_down` vector). Sparrowhawk locked;
 Badger is Ryan's to tweak in Blender (joints and pins are his next art job).
 
 **The battlefield (`game/battle/`).** `map_3d.gd` is a screen-sized SubViewport whose
@@ -53,7 +57,11 @@ row ticks and numbers counted up from the gate, a sector readout; `frame_alpha`)
 under one transform (zoom by wheel or pinch, pan both ways); `center` and `hex_at` follow
 the terrain's lift; tap empty ground for its readout, tap an ally to select and read it,
 tap an enemy for its label, double-tap is wired for the codex; the readout is docked in
-its own strip and a tap on it dismisses it. `map_tuner.gd` (TUNE on the battle screen) is
+its own strip and a tap on it dismisses it. Before a plan is locked the map tags predicted
+contacts (`_predicted_contacts`: a route end and an intent end adjacent; an estimate).
+Resolve plays the movement phase (`play_moves`: mechs then squads along the paths they
+actually took, `MOVE_SECONDS_PER_HEX`; `Map3D.set_anim` moves the model and turns it to
+its heading) and only then opens the skirmish; headless skips the play. `map_tuner.gd` (TUNE on the battle screen) is
 the live knob panel; nothing it sets persists. `RIFTGATE_INK=dark` starts the traces as
 black ink; `RIFTGATE_MAP_WIRE=1` is the pure-wireframe trial. `tools/screenshot.gd` poses:
 select, route, hold, north, zoom, zoomlast, tune, resolve, contact.
@@ -77,7 +85,7 @@ ground level.
    disable and rapid on foes and components; Ablative Plating as armour or shield; line
    versus "direct"; the Badger's loadout and claw numbers; Aphelion and the Arsenal; CARE's
    voice.
-3. The map, next: the codex hosted on the battle screen; the movement phase animated; an
+3. The map, next: the codex hosted on the battle screen; an
    outline for units behind tall columns; joint idle for grounded units once joints exist;
    the contact transition (camera flattening into the skirmish); whether squads leave
    corruption in their wake; tune every knob with all three chrome colours; delete the

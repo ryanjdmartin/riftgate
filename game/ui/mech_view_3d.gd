@@ -178,12 +178,12 @@ func _setup(chassis_id: String, maker: String) -> void:
 	_apply_materials(_model, maker)
 	_collect_tags(_model)
 	if not token and mode != "pixel":
-		# The skirmish's machines carry the display's trace too (Ryan, 21 September), steady
-		# here since no scan bar crosses this screen.
-		var tm: Material = TraceLines.ink_material() if TraceLines.mode() == "ink" else TraceLines.light_material(Palette.HUD)
-		if tm is ShaderMaterial:
-			(tm as ShaderMaterial).set_shader_parameter("gain", 0.9)
-		TraceLines.attach(_model, tm)
+		# The skirmish's machines carry the display's trace too (Ryan, 21 September); the
+		# screen's scan bar lights it through set_sweep_screen.
+		_trace_mat = TraceLines.ink_material() if TraceLines.mode() == "ink" else TraceLines.light_material(Palette.HUD)
+		if _trace_mat is ShaderMaterial:
+			(_trace_mat as ShaderMaterial).set_shader_parameter("gain", 0.8)
+		TraceLines.attach(_model, _trace_mat)
 	if OS.get_environment("RIFTGATE_MECH3D_WIRE") == "1":
 		# Wireframe trial (21 September): the reconstruction's own telemetry drawing.
 		_inner.debug_draw = Viewport.DEBUG_DRAW_WIREFRAME
@@ -436,6 +436,22 @@ func _frame_camera() -> void:
 	var target := right * mid.x + up * mid.y + back * centre.dot(back)
 	_camera.position = target + back * 500.0
 	_camera.look_at(target, up)
+	_target = target
+	_screen_down = -up
+
+
+var _trace_mat: Material = null
+var _target := Vector3.ZERO
+var _screen_down := Vector3.ZERO
+
+## The screen's scan bar, in this view's own pixels from its top: the traces under it light.
+func set_sweep_screen(local_y: float) -> void:
+	if _trace_mat == null or not (_trace_mat is ShaderMaterial) or _camera == null:
+		return
+	var per_px := _camera.size / float(size.y)   # world units per view pixel
+	var p := _target.dot(_screen_down) + (local_y - size.y * 0.5) * per_px
+	(_trace_mat as ShaderMaterial).set_shader_parameter("sweep_p", p)
+	(_trace_mat as ShaderMaterial).set_shader_parameter("screen_down", _screen_down)
 	_camera.near = 1.0
 	_camera.far = 2000.0
 

@@ -375,6 +375,17 @@ func _draw() -> void:
 			prev = p
 		Hud.stroke_poly(self, Hex.corners(prev, HEX_SIZE * 0.45), hud, 2.0)
 
+	# Where the plan, as it stands, brings a machine and a squad together after both have
+	# moved: a contact tag before the player locks in (Ryan, 21 September). An estimate,
+	# since a body block can stop a squad short; the resolve is the truth.
+	if _anim.is_empty():
+		for c in _predicted_contacts():
+			var a := center(c[0])
+			var b := center(c[1])
+			Hud.stroke_poly(self, Hex.corners(a, HEX_SIZE - 5.0), Color(Palette.ENEMY, 0.8), 2.0)
+			Hud.stroke_poly(self, Hex.corners(b, HEX_SIZE - 5.0), Color(Palette.ENEMY, 0.8), 2.0)
+			_plaque((a + b) * 0.5 + Vector2(0.0, -HEX_SIZE * 0.9), "CONTACT", Palette.ENEMY, 2.0)
+
 	for u in field.units:
 		_draw_unit(u)
 
@@ -442,12 +453,102 @@ func _draw_tags() -> void:
 		draw_colored_polygon(PackedVector2Array([Vector2(mid - 6.0, edge_y), Vector2(mid + 6.0, edge_y), Vector2(mid, edge_y + 6.0 * dir)]), border)
 
 
+## Pairs of [mech hex, squad hex] that end adjacent if every route and intent plays out.
+func _predicted_contacts() -> Array:
+	var out: Array = []
+	var mech_at: Dictionary = {}
+	for m in field.mechs():
+		var route: Array = routes.get(m.id, [])
+		mech_at[m] = route[route.size() - 1] if not route.is_empty() else m.pos
+	for sq in field.squads():
+		var path: Array = field.intents.get(sq.id, [])
+		var end: Vector2i = sq.pos
+		for step in path:
+			if field.map.gate_hexes.has(step):
+				break   # a strike on the gate, not a move
+			end = step
+		for m in mech_at.keys():
+			if Hex.distance(mech_at[m], end) <= 1:
+				out.append([mech_at[m], end])
+	return out
+
+
+# ---------------------------------------------------------------- the movement phase
+
+const MOVE_SECONDS_PER_HEX := 0.22
+var _anim: Dictionary = {}      # unit id -> {path: Array[Vector2i], t: float}
+var _anim_queue: Array = []     # [[moves], ...] phases still to play: mechs, then squads
+var _anim_done: Callable = Callable()
+
+
+## Play the phase's moves: the mechs along their routes, then the squads along their
+## intents, then `done`. Each move is [unit id, Array of hexes from start to end].
+func play_moves(mech_moves: Array, squad_moves: Array, done: Callable) -> void:
+	_anim_queue = [mech_moves, squad_moves]
+	_anim_done = done
+	_next_anim_phase()
+
+
+func _next_anim_phase() -> void:
+	_anim.clear()
+	while not _anim_queue.is_empty() and _anim.is_empty():
+		var moves: Array = _anim_queue.pop_front()
+		for mv in moves:
+			if (mv[1] as Array).size() >= 2:
+				_anim[mv[0]] = {"path": mv[1], "t": 0.0}
+	if _anim.is_empty():
+		var cb := _anim_done
+		_anim_done = Callable()
+		if cb.is_valid():
+			cb.call()
+	queue_redraw()
+
+
+func _advance_anim(delta: float) -> void:
+	var finished: Array = []
+	for uid in _anim.keys():
+		var a: Dictionary = _anim[uid]
+		var path: Array = a["path"]
+		a["t"] += delta / MOVE_SECONDS_PER_HEX
+		var last := float(path.size() - 1)
+		if a["t"] >= last:
+			finished.append(uid)
+			continue
+		var i := int(floor(a["t"]))
+		var f: float = a["t"] - i
+		var from: Vector2 = Hex.to_pixel(path[i], HEX_SIZE)
+		var to: Vector2 = Hex.to_pixel(path[i + 1], HEX_SIZE)
+		var px := from.lerp(to, f)
+		_anim_px[uid] = px
+		if _map3d != null:
+			_map3d.set_anim(uid, px, (to - from).normalized())
+	for uid in finished:
+		_anim.erase(uid)
+		_anim_px.erase(uid)
+		if _map3d != null:
+			_map3d.clear_anim(uid)
+	if _anim.is_empty() and not _anim_queue.is_empty() or (_anim.is_empty() and _anim_done.is_valid()):
+		_next_anim_phase()
+
+
+var _anim_px: Dictionary = {}   # unit id -> map pixel offset from hex (0,0) while moving
+
+
+func _unit_center(u: Unit) -> Vector2:
+	if _anim_px.has(u.id):
+		var px: Vector2 = _anim_px[u.id]
+		var under := Hex.from_pixel(px, HEX_SIZE)
+		var lift := _map3d.lift(under) if _map3d != null else 0.0
+		return _origin + px + Vector2(0, -lift)
+	return center(u.pos)
+
+
 func _draw_unit(u: Unit) -> void:
 	var hud := Palette.HUD
 	if u.is_multi_hex():
 		for h in u.hexes():
 			draw_colored_polygon(Hex.corners(center(h), HEX_SIZE - 6.0), Color("4a2e66"))
-	var c := center(u.pos)
+	var c := _unit_center(u)
 	var tex: Texture2D = Sprites.map_mech(u.chassis_id, u.facing) if u.is_player() else Sprites.map_foe(foe_sprite_id(u))
 	if _map3d != null and u.is_player() and not u.is_static():
 		pass   # a mech is geometry in the 3D viewport; the gauge below stays
@@ -524,7 +625,9 @@ func _gui_input(event: InputEvent) -> void:
 		accept_event()
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	if not _anim.is_empty():
+		_advance_anim(delta)
 	if _map3d != null:
 		queue_redraw()   # the scene is alive under the overlays
 	if _pressed and not _dragged and not _holding and Time.get_ticks_msec() / 1000.0 - _press_at >= HOLD_SECONDS:

@@ -283,12 +283,26 @@ func set_trace_gain(v: float) -> void:
 
 ## Where the scan band is, as a map-pixel y: the traces and the grid under it brighten.
 func set_sweep(map_y: float) -> void:
-	var p := (map_y - _origin.y) / _ppu   # projected depth: what the shader computes from z and height
+	var p := (map_y - _origin.y) / _ppu   # projected depth: what the shader computes along screen-down
 	for m in [_light_mat, _grid_mat]:
 		if m != null:
 			m.set_shader_parameter("sweep_p", p)
-			m.set_shader_parameter("sin_pitch", _sin)
-			m.set_shader_parameter("cos_pitch", _cos)
+			m.set_shader_parameter("screen_down", Vector3(0.0, -_cos, _sin))
+
+
+# ---------------------------------------------------------------- the movement phase
+
+var _anim_px: Dictionary = {}   # unit id -> map pixel while a move plays, in place of its hex
+
+## While a phase plays, a unit is where its animation says, not on its hex.
+func set_anim(uid: int, px: Vector2, heading: Vector2) -> void:
+	_anim_px[uid] = px
+	if _pivots.has(uid) and heading.length_squared() > 0.001:
+		(_pivots[uid] as Node3D).rotation.y = atan2(-heading.x, -heading.y)
+
+
+func clear_anim(uid: int) -> void:
+	_anim_px.erase(uid)
 
 
 var _env: Environment = null
@@ -710,10 +724,17 @@ func sync() -> void:
 			add_child(node)
 			_units[u.id] = node
 			_phase[u.id] = float(u.id) * 1.7
-		_base[u.id] = _hex_world(u.pos, _lift.get(u.pos, 0.0) / (_cos * _ppu))
+		if _anim_px.has(u.id):
+			var px: Vector2 = _anim_px[u.id]
+			var under := Hex.from_pixel(px, hex_px)
+			_base[u.id] = _world(px, _lift.get(under, 0.0) / (_cos * _ppu))
+		else:
+			_base[u.id] = _hex_world(u.pos, _lift.get(u.pos, 0.0) / (_cos * _ppu))
 		node.position = _base[u.id]
 		if _shadows.has(u.id):
 			(_shadows[u.id] as Node3D).position = _base[u.id] + Vector3(0.0, 0.3, 0.0)
+		if _anim_px.has(u.id):
+			continue   # heading is set by the move
 		if u.is_player() and not u.is_static() and _pivots.has(u.id):
 			# The model faces -Z (north) at rest; screen-down is +Z, so the facing turns the
 			# other way from the pixel direction. The pivot turns; the seat's southward set

@@ -28,12 +28,18 @@ func _draw() -> void:
 	var rect := Rect2(Vector2.ZERO, size)
 	draw_rect(rect, Palette.BG)
 	for g in grounds:
-		TerrainArt.draw_ground(self, g[0], int(g[1]), int(g[2]))
+		var style: String = g[3] if g.size() > 3 else "ground"
+		TerrainArt.draw_ground(self, g[0], int(g[1]), int(g[2]), 30.0, style, int(_t * 1.6) % 2)
 	Hud.scanlines(self, rect)
 	if scan:
 		# A soft band that takes about nine seconds to cross the screen.
-		var y := fmod(_t * 140.0, size.y + 120.0) - 60.0
+		var y := scan_y()
 		for i in range(-2, 3):
 			draw_rect(Rect2(0.0, y + i * 3.0, size.x, 1.0), Color(1, 1, 1, 0.07 - 0.015 * absi(i)))
+
+
+## Where the band is right now, in this control's pixels.
+func scan_y() -> float:
+	return fmod(_t * 140.0, size.y + 120.0) - 60.0
 	for y in rules:
 		draw_line(Vector2(12.0, y), Vector2(size.x - 12.0, y), Color(Palette.HUD, 0.22), 1.0)

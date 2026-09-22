@@ -358,8 +358,30 @@ func _on_resolve() -> void:
 		return
 	_select(null)
 	_details.visible = false
+	# Capture where everyone meant to go, resolve, then play what actually happened: each
+	# path cut at the hex the unit really reached (a block or a rejection stops it short).
+	var planned: Dictionary = {}
+	for m in battle.mechs():
+		planned[m.id] = [m.pos] + Array(battle.routes.get(m.id, []))
+	for sq in battle.field.squads():
+		planned[sq.id] = [sq.pos] + Array(battle.field.intents.get(sq.id, []))
 	battle.commit()
-	_after_step()
+	var mech_moves: Array = []
+	var squad_moves: Array = []
+	for u in battle.field.units:
+		if not planned.has(u.id):
+			continue
+		var path: Array = planned[u.id]
+		var at: int = path.find(u.pos)
+		var played: Array = path.slice(0, at + 1) if at >= 0 else [path[0], u.pos]
+		if u.is_player():
+			mech_moves.append([u.id, played])
+		else:
+			squad_moves.append([u.id, played])
+	if DisplayServer.get_name() == "headless":
+		_after_step()
+	else:
+		_map.play_moves(mech_moves, squad_moves, _after_step)
 
 
 func _after_step() -> void:
