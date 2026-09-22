@@ -360,9 +360,9 @@ func _draw() -> void:
 			if path.is_empty():
 				continue
 			var dest: Vector2i = path[path.size() - 1]
-			var pts: PackedVector2Array = [base(sq.pos)]
+			var pts: PackedVector2Array = [center(sq.pos)]
 			for step in path:
-				pts.append(base(step))
+				pts.append(center(step))
 			var owned := not (contact_hexes.has(dest) or map.gate_hexes.has(dest))
 			if owned:
 				# The line runs over the outline into the target: line, tint, outline and
@@ -373,9 +373,9 @@ func _draw() -> void:
 					var dc := pts[pts.size() - 1]
 					var dir := (dc - pts[pts.size() - 2]).normalized()
 					pts[pts.size() - 1] = dc - dir * DEST_RING
-			draw_polyline(pts, Palette.ENEMY, 4.0)
+			draw_polyline(pts, _ring_colour(), 4.0)   # the line breathes with the target (Ryan, 22 September: to see)
 			if owned:
-				_destination_rings(base(dest))
+				_destination_rings(center(dest))
 
 	# The player's plotted routes, ending in a small marker hex.
 	for uid in routes.keys():
@@ -616,20 +616,21 @@ const LINE_TO_CENTRE := true          # the intent line runs to the hex's centre
 const ENEMY_LIT := Color("ff8a7a")    # the enemy marks' bright: red lifted toward white
 
 ## The target in the HUD's own weight (Ryan, 22 September: nothing translucent, nothing
-## abutting, the animation the thing you see): a tint and a thin outline under the line,
-## then three bright broken rings turning against each other around a centre dot. Drawn
-## at the hex's base, flat, since the enemy flattens what it walks on.
+## abutting, the animation the thing you see): a tint on the ground and a thin outline
+## under the line, then three bright broken rings turning against each other around a
+## centre dot. On the ground's own height, like everything else (a trial at the hex's
+## base was worse, Ryan the same day).
 func _destination_hex(h: Vector2i) -> void:
-	var pts := Hex.corners(base(h), HEX_SIZE - 3.0)
-	draw_colored_polygon(pts, Color(Palette.ENEMY, 0.4))
-	Hud.stroke_poly(self, pts, Palette.ENEMY, 2.5)
+	_fill(h, Color(Palette.ENEMY, 0.4))
+	Hud.stroke_poly(self, Hex.corners(center(h), HEX_SIZE - 3.0), _ring_colour(), 2.5)
 
 
-## The rings breathe the whole way between the deep red and the bright, so on any ground,
-## props or not, they pass through a colour that reads (Ryan, 22 September).
+## The enemy marks breathe between red and the bright, most of the way up and never
+## quite down to the deep red, so on any ground, props or not, they pass through a
+## colour that reads (Ryan, 22 September).
 func _ring_colour() -> Color:
 	var breath := 0.5 + 0.5 * sin(_ring_t * 1.6)
-	return Palette.ENEMY.lerp(ENEMY_LIT, breath)
+	return Palette.ENEMY.lerp(ENEMY_LIT, 0.35 + 0.65 * breath)
 
 
 func _destination_rings(c: Vector2) -> void:
@@ -658,14 +659,11 @@ func _ally_target(c: Vector2, col: Color) -> void:
 		draw_arc(c, r, 0.0, TAU, 32, Color(col, 0.4 - 0.12 * k), 1.5)
 
 
-func _contact_effect(h: Vector2i, lit: bool, at_base: bool = false) -> void:
-	var c := base(h) if at_base else center(h)
+func _contact_effect(h: Vector2i, lit: bool, _at_base: bool = false) -> void:
+	var c := center(h)
 	var a := 1.0 if lit else 0.35
 	var breath := 0.5 + 0.5 * sin(_ring_t * 4.0)
-	if at_base:
-		draw_colored_polygon(Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, (0.5 + 0.25 * breath) * a))
-	else:
-		_fill(h, Color(Palette.ENEMY, (0.5 + 0.25 * breath) * a))
+	_fill(h, Color(Palette.ENEMY, (0.5 + 0.25 * breath) * a))
 	Hud.stroke_poly(self, Hex.corners(c, HEX_SIZE - 3.0), Color(Palette.ENEMY, a), 2.5)
 	var col := _ring_colour()
 	for k in range(2):
@@ -846,12 +844,10 @@ var _anim_px: Dictionary = {}   # unit id -> map pixel offset from hex (0,0) whi
 func _unit_center(u: Unit) -> Vector2:
 	if _anim_px.has(u.id):
 		var px: Vector2 = _anim_px[u.id]
-		if u.is_enemy():
-			return _origin + px
 		var under := Hex.from_pixel(px, HEX_SIZE)
 		var lift := _map3d.lift(under) if _map3d != null else 0.0
 		return _origin + px + Vector2(0, -lift)
-	return base(u.pos) if u.is_enemy() else center(u.pos)
+	return center(u.pos)
 
 
 func _draw_unit(u: Unit) -> void:

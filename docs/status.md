@@ -122,10 +122,10 @@ ground holds; flyers control nothing. The map draws intents from the preview's i
 never during a move: the destination is one component in the HUD's weight, nothing
 translucent (a tint and a 2.5 px outline drawn under the line, the line running to the
 hex's centre (`LINE_TO_CENTRE`, a trial; false stops it at the outer ring), three broken
-rings turning against each other around a dot; the rings breathe the whole way between
-deep red and bright, `_ring_colour`, `ENEMY_LIT`), drawn at the hex's base before any
-height (`base(h)`), as are the squads themselves and their contact tints: the enemy's
-world is flat and it flattens what it walks on (Ryan, 22 September); a contact a heavier pulsing tint with bursting rings
+rings turning against each other around a dot; the rings, the line and the outline all
+breathe between red and the bright, never down to the deep red, `_ring_colour`,
+`ENEMY_LIT`), on the ground's own height like every other mark (a trial at the hex's
+base was worse, Ryan 22 September; `base(h)` stays as a helper); a contact a heavier pulsing tint with bursting rings
 (`_contact_effect`; one effect per hex, contact wins), a machine's own marker sits on two
 faint breathing rings (`_ally_target`), and each grounded machine's zone is one faint
 tinted flower with one outline (`_zone`). Every hex tint and every zone outline is a mark on the ground in the scene

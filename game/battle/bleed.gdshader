@@ -78,6 +78,19 @@ vec4 blurred_scene(sampler2D scene_tex, vec2 uv, vec2 texel, float rad) {
 	return acc / 49.0;
 }
 
+vec4 blurred_units(vec2 uv, vec2 texel, float rad) {
+	if (rad < 0.05) {
+		return texture(units, uv);
+	}
+	vec4 acc = vec4(0.0);
+	for (int i = -3; i <= 3; i++) {
+		for (int j = -3; j <= 3; j++) {
+			acc += texture(units, uv + vec2(float(i), float(j)) * texel * rad);
+		}
+	}
+	return acc / 49.0;
+}
+
 vec4 blurred_other(vec2 uv, vec2 texel, float rad) {
 	if (rad < 0.05) {
 		return texture(painted, uv);
@@ -128,7 +141,7 @@ void fragment() {
 	COLOR = (k > bayer(c)) ? other : scene;
 	// The machines ride over whichever world won: the reconstruction's own, never under
 	// the painting (Ryan, 22 September).
-	vec4 u = blurred_scene(units, UV, 1.0 / view_size, rad);
+	vec4 u = blurred_units(UV, 1.0 / view_size, rad);
 	COLOR.rgb = mix(COLOR.rgb, u.rgb, u.a);
 	float luma = dot(COLOR.rgb, vec3(0.299, 0.587, 0.114));
 	COLOR.rgb = mix(vec3(luma), COLOR.rgb, saturation) * brightness;
