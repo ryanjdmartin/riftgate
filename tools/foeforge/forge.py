@@ -323,15 +323,58 @@ def _key_rift(path):
     return src
 
 
+def _core(img):
+    """The centre of the vortex: the centroid of its near-black opaque pixels."""
+    arr = np.array(img)
+    dark = (arr[..., 3] >= 128) & (arr[..., :3].max(axis=2) < 40)
+    ys, xs = np.nonzero(dark)
+    if len(xs) == 0:
+        b = img.getbbox()
+        return ((b[0] + b[2]) / 2.0, (b[1] + b[3]) / 2.0)
+    return (xs.mean(), ys.mean())
+
+
+def _place(img, scale, core, target, frame):
+    """Scale the keyed figure by `scale` and paste it so `core` lands on `target`, clipped
+    to the frame; edge pixels blend with the figure's mean colour, alpha hard afterwards."""
+    fig = np.array(img).astype(np.float32)
+    opaque = fig[..., 3] >= 128
+    if opaque.any():
+        fig[~opaque, :3] = fig[opaque][:, :3].mean(axis=0)
+    fig[..., 3] = np.where(opaque, 255.0, 0.0)
+    size = (max(1, round(img.width * scale)), max(1, round(img.height * scale)))
+    small = np.array(Image.fromarray(fig.astype(np.uint8), "RGBA").resize(size, Image.LANCZOS))
+    small[..., 3] = np.where(small[..., 3] >= 128, 255, 0)
+    small[small[..., 3] == 0] = 0
+    canvas = Image.new("RGBA", frame, (0, 0, 0, 0))
+    dx = int(round(target[0] - core[0] * scale))
+    dy = int(round(target[1] - core[1] * scale))
+    canvas.paste(Image.fromarray(small, "RGBA"), (dx, dy), Image.fromarray(small, "RGBA"))
+    return canvas
+
+
 def cut_rift(args):
     """One candidate into three frames: the vortex turned a little each way about its
     centre (an image model cannot draw a consistent second frame; a turn of a few degrees,
     ping-ponged, reads as the spiral moving). Written as one strip, frames side by side."""
     frames = []
     if args.frames:
-        # Distinct drawings (rift_frames), each cut the same way.
-        for path in [args.image] + args.frames:
-            frames.append(outline(quantize(fit(_key_rift(path), RIFT_FRAME), None, args.colours)))
+        # Distinct drawings (rift_frames), cut at one scale and aligned on the black core:
+        # fitting each to its own bounds let a stray bolt shrink a whole frame and drop
+        # its centre (Ryan, 23 September).
+        keyed = [_key_rift(path) for path in [args.image] + args.frames]
+        ref = keyed[0]
+        bbox = ref.getbbox()
+        inner = (RIFT_FRAME[0] - 2, RIFT_FRAME[1] - 2)
+        scale = min(inner[0] / (bbox[2] - bbox[0]), inner[1] / (bbox[3] - bbox[1]))
+        ref_core = _core(ref)
+        # Where the reference's core lands when the reference is fitted the usual way.
+        fitted_w = round((bbox[2] - bbox[0]) * scale)
+        fitted_h = round((bbox[3] - bbox[1]) * scale)
+        origin = ((RIFT_FRAME[0] - fitted_w) // 2, RIFT_FRAME[1] - 1 - fitted_h)
+        target = (origin[0] + (ref_core[0] - bbox[0]) * scale, origin[1] + (ref_core[1] - bbox[1]) * scale)
+        for img in keyed:
+            frames.append(outline(quantize(_place(img, scale, _core(img), target, RIFT_FRAME), None, args.colours)))
     else:
         src = _key_rift(args.image)
         for angle in [-RIFT_TWIST, 0.0, RIFT_TWIST]:
