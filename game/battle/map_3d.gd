@@ -71,7 +71,7 @@ var _pivots: Dictionary = {}    # unit id -> the pivot that turns to the facing;
 var _shadows: Dictionary = {}   # unit id -> the ground disc under a flyer
 var _base: Dictionary = {}      # unit id -> resting position, which the idle sway plays around
 var _phase: Dictionary = {}     # unit id -> idle phase, so the team does not sway in step
-var _columns: Dictionary = {}   # hex -> Node3D at the hex's ground: the marks, and a road's column, hang off it
+var _columns: Dictionary = {}   # hex -> Node3D at the hex's ground: the marks hang off it
 var _lift: Dictionary = {}      # hex -> how far above its grid cell the top sits on screen, in px
 var _top: Dictionary = {}       # hex -> the tallest thing standing on it, in model units above the ground
 var _materials: Dictionary = {} # tile name -> ShaderMaterial
@@ -279,91 +279,243 @@ func _road_material() -> ShaderMaterial:
 
 
 ## A prop with the display's trace on it, baked into its column's band (`pos` and `rot`
-## are in the column's space, as if it were a child).
-func _prop(col: Node3D, mesh: Mesh, material: Material, pos: Vector3, rot: Vector3 = Vector3.ZERO) -> void:
+## are in the column's space, as if it were a child). Three shapes make every prop: a box,
+## a cylinder (a cone, a mesa slab, a trunk) and a ball. None is ever a Mesh resource: the
+## renderer is asked for a box's and a ball's arrays once, and cylinders are made here.
+func _box(col: Node3D, size: Vector3, material: Material, pos: Vector3, rot: Vector3 = Vector3.ZERO, traced: bool = true) -> void:
+	var xf := Transform3D(Basis.from_euler(rot), col.position + pos).scaled_local(size)
+	var band: int = col.get_meta("band", 0)
+	_bake(_unit_geo("box"), xf, material, band, true)
+	if traced:
+		_bake(_unit_geo("box_lines"), xf, _trace_material("prop"), band, false, "prop")
+
+
+func _ball(col: Node3D, radius: float, material: Material, pos: Vector3, rot: Vector3 = Vector3.ZERO) -> void:
+	var xf := Transform3D(Basis.from_euler(rot), col.position + pos).scaled_local(Vector3.ONE * radius)
+	var band: int = col.get_meta("band", 0)
+	_bake(_unit_geo("ball"), xf, material, band, true)
+	_bake(_unit_geo("ball_lines"), xf, _trace_material("prop"), band, false, "prop")
+
+
+func _cyl(col: Node3D, top: float, bottom: float, height: float, segments: int, material: Material, pos: Vector3, rot: Vector3 = Vector3.ZERO) -> void:
 	var xf := Transform3D(Basis.from_euler(rot), col.position + pos)
 	var band: int = col.get_meta("band", 0)
-	for sfc in range(mesh.get_surface_count()):
-		_bake(mesh, sfc, xf, material, band, true)
-	var edges := TraceLines.edge_mesh(mesh)
-	if edges != null:
-		_bake(edges, 0, xf, _trace_material("prop"), band, false, "prop")
+	_bake(_cylinder_geo(top, bottom, height, segments), xf, material, band, true)
+	_bake(_cylinder_lines(top, bottom, height, segments), xf, _trace_material("prop"), band, false, "prop")
 
 
 # ---------------------------------------------------------------- baking
 
-## Every static thing on the ground (rims, columns, grid lines, props, their traces) is
-## welded with its world transform into one mesh per material per band of rows, instead
-## of an instance each: the field was about 5,400 draw calls with every prop and trace
-## its own object, and a phone pays per draw call more than per vertex. Bands keep the
-## far end of the map culled under zoom. A road column stays its own instance for its
-## per-instance shader parameters; the marks and the units are live and stay nodes.
+## Every static thing on the ground (rims, columns, grid lines, props, their traces, the
+## gate and the walls) is welded with its world transform into one mesh per material per
+## band of rows, instead of an instance each: the field was about 5,400 draw calls with
+## every prop and trace its own object, and a phone pays per draw call more than per
+## vertex. Bands keep the far end of the map culled under zoom. Geometry travels as packed
+## arrays, never indexed, and is appended with the engine's own array ops: asking the
+## renderer for a mesh's arrays is a round trip to its thread, so a shape is read back once
+## (`_geo_of`) and the thousands of props are transforms of a few shapes. The marks and
+## the units are live and stay nodes.
 class Batch:
 	var material: Material
-	var lines: bool
 	var shadow: bool
 	var layers: int
 	var kind: String            # "" for geometry, else a trace kind (set_trace_mode)
-	var verts := PackedVector3Array()
-	var normals := PackedVector3Array()
-	var uvs := PackedVector2Array()
-	var indices := PackedInt32Array()
+	var lines: bool
+	var colours: bool
+	var v := PackedVector3Array()
+	var n := PackedVector3Array()
+	var uv := PackedVector2Array()
+	var c := PackedColorArray()
 
 var _batches: Dictionary = {}   # key -> Batch, until _flush_batches
+var _geo_cache: Dictionary = {} # mesh rid/surface -> geometry, the mesh kept alive with it
+var _baked_models: Array = []   # the model instances the structures were baked from, kept: freeing them mid-build upsets the renderer
+var _shapes: Dictionary = {}    # "box", "box_lines", "ball", "ball_lines" -> geometry
 
 
 func _band(h: Vector2i) -> int:
 	return floori(float(h.y) / BAND_ROWS)
 
 
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		for m in _baked_models:
+			if is_instance_valid(m):
+				m.free()
+
+
+## A mesh surface as packed arrays: {"v", "n", "uv", "c" as present, "lines"}. Indexed
+## surfaces are expanded, so every batch is a plain triangle or segment list.
+func _geo_of(mesh: Mesh, surface: int = 0) -> Dictionary:
+	var key := "%d/%d" % [mesh.get_rid().get_id(), surface]
+	if _geo_cache.has(key):
+		return _geo_cache[key]
+	var out := {"keep": mesh}
+	var arrays := mesh.surface_get_arrays(surface)
+	if not arrays.is_empty():
+		out["lines"] = mesh is ArrayMesh and (mesh as ArrayMesh).surface_get_primitive_type(surface) == Mesh.PRIMITIVE_LINES
+		var idx = arrays[Mesh.ARRAY_INDEX]
+		for pair in [[Mesh.ARRAY_VERTEX, "v"], [Mesh.ARRAY_NORMAL, "n"], [Mesh.ARRAY_TEX_UV, "uv"], [Mesh.ARRAY_COLOR, "c"]]:
+			var src = arrays[pair[0]]
+			if src == null:
+				continue
+			if idx != null and idx.size() > 0:
+				var dst = src.duplicate()
+				dst.clear()
+				for i in idx:
+					dst.append(src[i])
+				out[pair[1]] = dst
+			else:
+				out[pair[1]] = src
+	_geo_cache[key] = out
+	return out
+
+
+## The unit shapes: a box of side 1, a ball of radius 1, and their traces.
+func _unit_geo(name: String) -> Dictionary:
+	if _shapes.has(name):
+		return _shapes[name]
+	var geo: Dictionary
+	match name:
+		"box":
+			var u := BoxMesh.new()
+			u.size = Vector3.ONE
+			geo = _geo_of(u)
+		"box_lines":
+			var u := BoxMesh.new()
+			u.size = Vector3.ONE
+			geo = {"v": TraceLines.edge_points(u), "lines": true, "keep": u}
+		"ball":
+			geo = _geo_of(_unit_ball())
+		"ball_lines":
+			var u := _unit_ball()
+			geo = {"v": TraceLines.edge_points(u), "lines": true, "keep": u}
+	_shapes[name] = geo
+	return geo
+
+
+## The boulders: six around, three rings, a little squat (height 1.6 of the radius).
+func _unit_ball() -> SphereMesh:
+	var u := SphereMesh.new()
+	u.radius = 1.0
+	u.height = 1.6
+	u.radial_segments = 6
+	u.rings = 3
+	return u
+
+
+## A cylinder or cone with flat facets, as CylinderMesh lays it out (x = r sin a,
+## z = r cos a, y centred on the height), with its caps.
+func _cylinder_geo(top: float, bottom: float, height: float, segments: int) -> Dictionary:
+	var v := PackedVector3Array()
+	var n := PackedVector3Array()
+	var half := height * 0.5
+	for i in range(segments):
+		var a0 := TAU * float(i) / segments
+		var a1 := TAU * float(i + 1) / segments
+		var t0 := Vector3(sin(a0) * top, half, cos(a0) * top)
+		var t1 := Vector3(sin(a1) * top, half, cos(a1) * top)
+		var b0 := Vector3(sin(a0) * bottom, -half, cos(a0) * bottom)
+		var b1 := Vector3(sin(a1) * bottom, -half, cos(a1) * bottom)
+		var am := (a0 + a1) * 0.5
+		var side := Vector3(sin(am) * height, bottom - top, cos(am) * height).normalized()
+		for p in [b0, b1, t1, b0, t1, t0]:
+			v.append(p)
+			n.append(side)
+		if top > 0.01:
+			for p in [Vector3(0, half, 0), t0, t1]:
+				v.append(p)
+				n.append(Vector3.UP)
+		for p in [Vector3(0, -half, 0), b1, b0]:
+			v.append(p)
+			n.append(Vector3.DOWN)
+	return {"v": v, "n": n}
+
+
+## Its trace: the two rims and the verticals between them.
+func _cylinder_lines(top: float, bottom: float, height: float, segments: int) -> Dictionary:
+	var v := PackedVector3Array()
+	var half := height * 0.5
+	for i in range(segments):
+		var a0 := TAU * float(i) / segments
+		var a1 := TAU * float(i + 1) / segments
+		var t0 := Vector3(sin(a0) * top, half, cos(a0) * top)
+		var b0 := Vector3(sin(a0) * bottom, -half, cos(a0) * bottom)
+		var b1 := Vector3(sin(a1) * bottom, -half, cos(a1) * bottom)
+		if top > 0.01:
+			v.append(t0)
+			v.append(Vector3(sin(a1) * top, half, cos(a1) * top))
+		v.append(b0)
+		v.append(b1)
+		v.append(b0)
+		v.append(t0)
+	return {"v": v, "lines": true}
+
+
 ## `key_of` names the batch when the material to draw with is not the one to group by: a
 ## model's surfaces each wear their own copy of a toon'd material, but the copies of one
 ## source are alike, so they group by the source and draw with the first copy seen.
-func _bake(mesh: Mesh, surface: int, xf: Transform3D, material: Material, band: int, shadow: bool, kind: String = "", layers: int = 1, key_of: Object = null) -> void:
-	var arrays := mesh.surface_get_arrays(surface)
-	if arrays.is_empty():
+func _bake(geo: Dictionary, xf: Transform3D, material: Material, band: int, shadow: bool, kind: String = "", layers: int = 1, key_of: Object = null) -> void:
+	if not geo.has("v"):
 		return
-	# A PrimitiveMesh is always triangles; only an ArrayMesh can be lines.
-	var lines: bool = mesh is ArrayMesh and (mesh as ArrayMesh).surface_get_primitive_type(surface) == Mesh.PRIMITIVE_LINES
+	var lines: bool = geo.get("lines", false)
 	var group := key_of if key_of != null else material
 	var key := "%d/%d/%s/%d" % [group.get_instance_id(), band, kind, layers]
 	var b: Batch = _batches.get(key, null)
 	if b == null:
 		b = Batch.new()
 		b.material = material
-		b.lines = lines
 		b.shadow = shadow
 		b.kind = kind
 		b.layers = layers
+		b.lines = lines
+		b.colours = geo.has("c")
 		_batches[key] = b
-	var base := b.verts.size()
-	var src_v: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
-	for v in src_v:
-		b.verts.append(xf * v)
-	if not lines:
-		var src_n = arrays[Mesh.ARRAY_NORMAL]
-		var src_uv = arrays[Mesh.ARRAY_TEX_UV]
-		for i in range(src_v.size()):
-			b.normals.append((xf.basis * src_n[i]).normalized() if src_n != null else Vector3.UP)
-			b.uvs.append(src_uv[i] if src_uv != null else Vector2.ZERO)
-	var src_i = arrays[Mesh.ARRAY_INDEX]
-	if src_i != null and src_i.size() > 0:
-		for i in src_i:
-			b.indices.append(base + i)
+	var src: PackedVector3Array = geo["v"]
+	b.v.append_array(xf * src)
+	if lines:
+		return
+	if geo.has("n"):
+		# Rotation only: the props' scales are along their own axes or uniform, so the
+		# normals need no inverse transpose.
+		b.n.append_array(Transform3D(xf.basis.orthonormalized(), Vector3.ZERO) * (geo["n"] as PackedVector3Array))
 	else:
-		for i in range(src_v.size()):
-			b.indices.append(base + i)
+		b.n.append_array(_filled3(src.size(), Vector3.UP))
+	if geo.has("uv"):
+		b.uv.append_array(geo["uv"])
+	else:
+		var z := PackedVector2Array()
+		z.resize(src.size())
+		b.uv.append_array(z)
+	if b.colours:
+		if geo.has("c"):
+			b.c.append_array(geo["c"])
+		else:
+			var w := PackedColorArray()
+			w.resize(src.size())
+			w.fill(Color.WHITE)
+			b.c.append_array(w)
+
+
+func _filled3(count: int, value: Vector3) -> PackedVector3Array:
+	var out := PackedVector3Array()
+	out.resize(count)
+	out.fill(value)
+	return out
 
 
 func _flush_batches() -> void:
 	for b in _batches.values():
+		if b.v.is_empty():
+			continue
 		var arrays: Array = []
 		arrays.resize(Mesh.ARRAY_MAX)
-		arrays[Mesh.ARRAY_VERTEX] = b.verts
-		arrays[Mesh.ARRAY_INDEX] = b.indices
+		arrays[Mesh.ARRAY_VERTEX] = b.v
 		if not b.lines:
-			arrays[Mesh.ARRAY_NORMAL] = b.normals
-			arrays[Mesh.ARRAY_TEX_UV] = b.uvs
+			arrays[Mesh.ARRAY_NORMAL] = b.n
+			arrays[Mesh.ARRAY_TEX_UV] = b.uv
+			if b.colours:
+				arrays[Mesh.ARRAY_COLOR] = b.c
 		var mesh := ArrayMesh.new()
 		mesh.add_surface_from_arrays(Mesh.PRIMITIVE_LINES if b.lines else Mesh.PRIMITIVE_TRIANGLES, arrays)
 		var mi := MeshInstance3D.new()
@@ -381,9 +533,10 @@ func _flush_batches() -> void:
 	_batches.clear()
 
 
-## A static model (the gate, a wall segment) baked the same way, its creases into the
-## asset traces; the node itself never joins the tree. Grouped by the source material of
-## each surface (see `_bake`), so a dozen wall segments draw as a few meshes.
+## A static model (the gate, a wall segment) baked the same way at its current transform,
+## its creases into the asset traces; the node never joins the tree, and one instance can
+## be baked at many places. Grouped by the source material of each surface (see `_bake`),
+## so a dozen wall segments draw as a few meshes.
 func _bake_model(node: Node3D, band: int) -> void:
 	for child in node.find_children("*", "MeshInstance3D", true, false):
 		var mi: MeshInstance3D = child
@@ -395,11 +548,10 @@ func _bake_model(node: Node3D, band: int) -> void:
 			if mat == null:
 				continue
 			var src := mi.mesh.surface_get_material(sfc)
-			_bake(mi.mesh, sfc, xf, mat, band, true, "", mi.layers, src if src != null else mat)
-		var edges := TraceLines.edge_mesh(mi.mesh)
-		if edges != null:
-			_bake(edges, 0, xf, _trace_material("asset"), band, false, "asset")
-	node.free()
+			_bake(_geo_of(mi.mesh, sfc), xf, mat, band, true, "", mi.layers, src if src != null else mat)
+		var pts := TraceLines.edge_points(mi.mesh)
+		if not pts.is_empty():
+			_bake({"v": pts, "lines": true}, xf, _trace_material("asset"), band, false, "asset")
 
 
 ## The display traces a thing's edges in light (TraceLines), lit by the scan bar as it
@@ -605,17 +757,14 @@ func _edge_mesh(y: float, edges: Array) -> ArrayMesh:
 	return st.commit()
 
 
-## The hex outline as lines at height `y`, for the glowing grid.
-func _grid_mesh(y: float, skip: Array[int] = []) -> ArrayMesh:
+## The hex outline as segments at height `y`, for the glowing grid.
+func _grid_geo(y: float) -> Dictionary:
 	var corners := Hex.corners(Vector2.ZERO, hex_px - 1.5)
-	var st := SurfaceTool.new()
-	st.begin(Mesh.PRIMITIVE_LINES)
+	var v := PackedVector3Array()
 	for i in range(corners.size()):
-		if skip.has(i):
-			continue
-		st.add_vertex(_world(corners[i], y))
-		st.add_vertex(_world(corners[(i + 1) % corners.size()], y))
-	return st.commit()
+		v.append(_world(corners[i], y))
+		v.append(_world(corners[(i + 1) % corners.size()], y))
+	return {"v": v, "lines": true}
 
 
 var _grid_mat: ShaderMaterial = null
@@ -643,46 +792,48 @@ func _hex_mesh(inset: float) -> ArrayMesh:
 	return st.commit()
 
 
-## A hex column: surface 0 is the top at `h`, surface 1 its sides from the ground to `h`,
-## only on the edges in `sides` (an edge shared with a neighbour of the same height has no
-## wall: two water hexes are one pool, two gravel hexes one field). Normals are explicit,
-## outward for a raised column and inward for a sunk one, since it is the sunk hex's far
-## bank that faces the camera.
-func _column_mesh(h: float, sides: Array) -> ArrayMesh:
+## A hex column as two pieces of geometry: the top at `h`, and its sides from the ground
+## to `h`, only on the edges in `sides` (an edge shared with a neighbour of the same height
+## has no wall: two water hexes are one pool, two gravel hexes one field). Normals are
+## explicit, outward for a raised column and inward for a sunk one, since it is the sunk
+## hex's far bank that faces the camera. `colour` rides on the top's vertices for a shader
+## that wants per-hex data (the road's links).
+func _column_geo(h: float, sides: Array, colour: Color = Color.WHITE) -> Array:
 	var corners := Hex.corners(Vector2.ZERO, hex_px - 0.75)
 	var top: Array[Vector3] = []
 	for c in corners:
 		top.append(_world(c, h))
-	var st := SurfaceTool.new()
-	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var tv := PackedVector3Array()
+	var tuv := PackedVector2Array()
 	for i in range(1, corners.size() - 1):
 		for j in [0, i + 1, i]:
-			st.set_normal(Vector3.UP)
-			st.set_uv(corners[j] / (hex_px * 2.0) + Vector2(0.5, 0.5))   # the hex inscribed in the tile
-			st.add_vertex(top[j])
-	var mesh := st.commit()
-	if absf(h) < 0.01 or not sides.has(true):
-		return mesh
-	var ss := SurfaceTool.new()
-	ss.begin(Mesh.PRIMITIVE_TRIANGLES)
-	var n := corners.size()
-	for i in range(n):
-		if not sides[i]:
-			continue
-		var a := top[i]
-		var b := top[(i + 1) % n]
-		var a0 := Vector3(a.x, 0.0, a.z)
-		var b0 := Vector3(b.x, 0.0, b.z)
-		var mid := (a0 + b0) * 0.5
-		var nrm := Vector3(mid.x, 0.0, mid.z).normalized() * (1.0 if h > 0.0 else -1.0)
-		for v in [a0, b0, b, a0, b, a]:
-			ss.set_normal(nrm)
-			ss.add_vertex(v)
-	return ss.commit(mesh)
+			tv.append(top[j])
+			tuv.append(corners[j] / (hex_px * 2.0) + Vector2(0.5, 0.5))   # the hex inscribed in the tile
+	var tc := PackedColorArray()
+	tc.resize(tv.size())
+	tc.fill(colour)
+	var top_geo := {"v": tv, "n": _filled3(tv.size(), Vector3.UP), "uv": tuv, "c": tc}
+	var sv := PackedVector3Array()
+	var sn := PackedVector3Array()
+	if absf(h) >= 0.01 and sides.has(true):
+		var n := corners.size()
+		for i in range(n):
+			if not sides[i]:
+				continue
+			var a := top[i]
+			var b := top[(i + 1) % n]
+			var a0 := Vector3(a.x, 0.0, a.z)
+			var b0 := Vector3(b.x, 0.0, b.z)
+			var mid := (a0 + b0) * 0.5
+			var nrm := Vector3(mid.x, 0.0, mid.z).normalized() * (1.0 if h > 0.0 else -1.0)
+			for v in [a0, b0, b, a0, b, a]:
+				sv.append(v)
+				sn.append(nrm)
+	return [top_geo, {"v": sv, "n": sn} if not sv.is_empty() else {}]
 
 
 func _build_ground() -> void:
-	var rim := _hex_mesh(0.0)
+	var rim := _geo_of(_hex_mesh(0.0))
 	var rim_mat := _flat(Color(Palette.HUD, 0.10).blend(Palette.BG))
 	var rock := _terrain_material("rock")
 	var map := field.map
@@ -707,8 +858,8 @@ func _build_ground() -> void:
 					other = _height_of(nb)
 			sides.append(absf(other - hgt) > 0.01)
 		var band := _band(h)
-		_bake(rim, 0, Transform3D(Basis.IDENTITY, at + Vector3(0, minf(0.0, hgt) - 0.2, 0)), rim_mat, band, false)
-		# One node at ground level per hex: the marks hang off it, and a road's column.
+		_bake(rim, Transform3D(Basis.IDENTITY, at + Vector3(0, minf(0.0, hgt) - 0.2, 0)), rim_mat, band, false)
+		# One node at ground level per hex: the marks hang off it.
 		var col := Node3D.new()
 		col.position = at
 		col.set_meta("band", band)
@@ -717,26 +868,23 @@ func _build_ground() -> void:
 		# A crag keeps the ground it stands on (crag-water, crag-ruin, crag-field: the
 		# flavour of the tile shows through under the rock).
 		var ground_t: int = map.crag_base.get(h, t) if t == BattleMap.Terrain.MOUNTAIN else t
-		var column := _column_mesh(hgt, sides)
 		var at_xf := Transform3D(Basis.IDENTITY, at)
+		var column: Array
 		if ground_t == BattleMap.Terrain.ROAD:
-			var mi := MeshInstance3D.new()
-			mi.mesh = column
-			mi.set_surface_override_material(0, _road_material())
-			mi.set_instance_shader_parameter("links", _road_links(h))
-			mi.set_instance_shader_parameter("seed", float(h.x * 131 + h.y * 7919))
-			if column.get_surface_count() > 1:
-				mi.set_surface_override_material(1, rock)
-			col.add_child(mi)
+			# The road's links and its seed ride in the vertex colour (road.gdshader), so
+			# road hexes bake like any other and need nothing per instance.
+			var seed_f := fmod(float(h.x * 131 + h.y * 7919) * 0.0137, 1.0)
+			column = _column_geo(hgt, sides, Color(float(_road_links(h)) / 255.0, absf(seed_f), 0.0, 1.0))
+			_bake(column[0], at_xf, _road_material(), band, true)
 		else:
-			_bake(column, 0, at_xf, _terrain_material(TILE[ground_t], 1.0 if ground_t == BattleMap.Terrain.WATER else 0.0), band, true)
-			if column.get_surface_count() > 1:
-				_bake(column, 1, at_xf, rock, band, true)
+			column = _column_geo(hgt, sides)
+			_bake(column[0], at_xf, _terrain_material(TILE[ground_t], 1.0 if ground_t == BattleMap.Terrain.WATER else 0.0), band, true)
+		_bake(column[1], at_xf, rock, band, true)
 		if in_field and not (map.gate_hexes.has(h) or map.wall_hexes.has(h)):
 			# The grid is the display's own light, drawn on the ground in the scene so a
 			# raised hex hides the lines behind it; the wall and the machines hide it the
 			# same way, by standing on it.
-			_bake(_grid_mesh(hgt + 0.35), 0, at_xf, _grid_material(), band, false)
+			_bake(_grid_geo(hgt + 0.35), at_xf, _grid_material(), band, false)
 		rng.seed = h.x * 131 + h.y * 7919
 		if map.city.has(h):
 			_city_block(col, hgt, rng)
@@ -748,25 +896,19 @@ func _build_ground() -> void:
 				# Broken blocks and a couple of standing wall stubs.
 				var rubble := _terrain_material("rubble")
 				for k in range(5):
-					var b := BoxMesh.new()
-					b.size = Vector3(rng.randf_range(8, 16), rng.randf_range(5, 18), rng.randf_range(6, 13))
-					_prop(col, b, rubble, Vector3(rng.randf_range(-18, 18), hgt + b.size.y * 0.5, rng.randf_range(-13, 13)), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
+					var size := Vector3(rng.randf_range(8, 16), rng.randf_range(5, 18), rng.randf_range(6, 13))
+					_box(col, size, rubble, Vector3(rng.randf_range(-18, 18), hgt + size.y * 0.5, rng.randf_range(-13, 13)), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
 				for k in range(2):
-					var wall_stub := BoxMesh.new()
-					wall_stub.size = Vector3(rng.randf_range(14, 24), rng.randf_range(20, 32), 3.5)
-					_prop(col, wall_stub, rubble, Vector3(rng.randf_range(-14, 14), hgt + wall_stub.size.y * 0.5, rng.randf_range(-10, 10)), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
+					var stub := Vector3(rng.randf_range(14, 24), rng.randf_range(20, 32), 3.5)
+					_box(col, stub, rubble, Vector3(rng.randf_range(-14, 14), hgt + stub.y * 0.5, rng.randf_range(-10, 10)), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
 			BattleMap.Terrain.ROUGH:
 				# Wasteland: dead trees and boulders, the parallel of the other world's forest.
 				_top[h] = hgt + 40.0
 				for k in range(rng.randi_range(2, 4)):
 					_dead_tree(col, Vector3(rng.randf_range(-18, 18), hgt, rng.randf_range(-14, 14)), rng)
 				for k in range(rng.randi_range(1, 3)):
-					var boulder := SphereMesh.new()
-					boulder.radius = rng.randf_range(5.0, 9.0)
-					boulder.height = boulder.radius * 1.6
-					boulder.radial_segments = 6
-					boulder.rings = 3
-					_prop(col, boulder, rock, Vector3(rng.randf_range(-16, 16), hgt + boulder.radius * 0.6, rng.randf_range(-12, 12)), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
+					var radius := rng.randf_range(5.0, 9.0)
+					_ball(col, radius, rock, Vector3(rng.randf_range(-16, 16), hgt + radius * 0.6, rng.randf_range(-12, 12)), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
 	_flush_batches()
 
 
@@ -786,16 +928,13 @@ func _crag(col: Node3D, ground_t: int, hgt: float, rng: RandomNumberGenerator) -
 				var ox := 0.0 if k == 0 else rng.randf_range(-17.0, 17.0)
 				var oz := 0.0 if k == 0 else rng.randf_range(-13.0, 13.0)
 				for step in range(3):
-					var b := BoxMesh.new()
 					var frac := 1.0 - 0.22 * step
-					b.size = Vector3(w * frac, tall / 3.0, w * frac * rng.randf_range(0.7, 1.0))
-					_prop(col, b, rubble, Vector3(ox + rng.randf_range(-1.0, 1.0), hgt + tall / 6.0 + step * tall / 3.0, oz + rng.randf_range(-1.0, 1.0)))
+					var size := Vector3(w * frac, tall / 3.0, w * frac * rng.randf_range(0.7, 1.0))
+					_box(col, size, rubble, Vector3(ox + rng.randf_range(-1.0, 1.0), hgt + tall / 6.0 + step * tall / 3.0, oz + rng.randf_range(-1.0, 1.0)))
 				if k == 0:
-					var win := BoxMesh.new()
-					win.size = Vector3(w * 0.7, 2.0, 0.6)
 					var wm := _window_material("dim", Color(0.9, 0.7, 0.35), 1.2)
 					for wz in [tall * 0.35, tall * 0.55]:
-						_bake(win, 0, Transform3D(Basis.IDENTITY, col.position + Vector3(ox, hgt + wz, oz - w * 0.5 * rng.randf_range(0.8, 1.0))), wm, col.get_meta("band", 0), false)
+						_box(col, Vector3(w * 0.7, 2.0, 0.6), wm, Vector3(ox, hgt + wz, oz - w * 0.5 * rng.randf_range(0.8, 1.0)), Vector3.ZERO, false)
 		BattleMap.Terrain.ROUGH:
 			# Mesas: flat-topped blocks stacked and offset, a badland.
 			var rock := _terrain_material("rock")
@@ -804,24 +943,18 @@ func _crag(col: Node3D, ground_t: int, hgt: float, rng: RandomNumberGenerator) -
 				var ox := 0.0 if k == 0 else rng.randf_range(-16.0, 16.0)
 				var oz := 0.0 if k == 0 else rng.randf_range(-12.0, 12.0)
 				for step in range(2):
-					var slab := CylinderMesh.new()
-					slab.radial_segments = 6
-					slab.top_radius = rng.randf_range(10.0, 15.0) * (0.8 if step == 1 else 1.0)
-					slab.bottom_radius = slab.top_radius * 1.15
-					slab.height = tall * (0.6 if step == 0 else 0.4)
-					_prop(col, slab, rock, Vector3(ox, hgt + slab.height * 0.5 + (tall * 0.6 if step == 1 else 0.0), oz), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
+					var top := rng.randf_range(10.0, 15.0) * (0.8 if step == 1 else 1.0)
+					var slab_h := tall * (0.6 if step == 0 else 0.4)
+					_cyl(col, top, top * 1.15, slab_h, 6, rock, Vector3(ox, hgt + slab_h * 0.5 + (tall * 0.6 if step == 1 else 0.0), oz), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
 		_:
 			# Rock spikes, leaning, filling the tile.
 			var rock_dark := _terrain_material("rock")
 			for k in range(6):
-				var spike := CylinderMesh.new()
-				spike.top_radius = 0.8
-				spike.bottom_radius = rng.randf_range(9.0, 14.0)
-				spike.height = rng.randf_range(40.0, 56.0) if k == 0 else rng.randf_range(22.0, 40.0)
-				spike.radial_segments = 4
+				var foot := rng.randf_range(9.0, 14.0)
+				var spike_h := rng.randf_range(40.0, 56.0) if k == 0 else rng.randf_range(22.0, 40.0)
 				var a := k * TAU / 5.0 + rng.randf_range(-0.4, 0.4)
 				var dist := 0.0 if k == 0 else rng.randf_range(14.0, 22.0)
-				_prop(col, spike, rock_dark, Vector3(cos(a) * dist, hgt + spike.height * 0.5 - 1.0, sin(a) * dist),
+				_cyl(col, 0.8, foot, spike_h, 4, rock_dark, Vector3(cos(a) * dist, hgt + spike_h * 0.5 - 1.0, sin(a) * dist),
 					Vector3(rng.randf_range(-0.18, 0.18), rng.randf_range(0, TAU), rng.randf_range(-0.18, 0.18)))
 	match ground_t:
 		BattleMap.Terrain.RUINS:
@@ -842,16 +975,13 @@ func _city_block(col: Node3D, hgt: float, rng: RandomNumberGenerator) -> void:
 		var tall := rng.randf_range(40.0, 80.0) if k == 0 else rng.randf_range(18.0, 44.0)
 		var ox := 0.0 if k == 0 else rng.randf_range(-18.0, 18.0)
 		var oz := 0.0 if k == 0 else rng.randf_range(-14.0, 14.0)
-		var b := BoxMesh.new()
-		b.size = Vector3(w, tall, w * rng.randf_range(0.7, 1.0))
-		_prop(col, b, skin, Vector3(ox, hgt + tall * 0.5, oz))
+		var size := Vector3(w, tall, w * rng.randf_range(0.7, 1.0))
+		_box(col, size, skin, Vector3(ox, hgt + tall * 0.5, oz))
 		var rows := int(tall / 9.0)
 		for r in range(rows):
 			if rng.randf() < 0.35:
 				continue
-			var strip := BoxMesh.new()
-			strip.size = Vector3(w * 0.8, 1.6, 0.6)
-			_bake(strip, 0, Transform3D(Basis.IDENTITY, col.position + Vector3(ox, hgt + 5.0 + r * 9.0, oz + b.size.z * 0.5 + 0.2)), win, col.get_meta("band", 0), false)
+			_box(col, Vector3(w * 0.8, 1.6, 0.6), win, Vector3(ox, hgt + 5.0 + r * 9.0, oz + size.z * 0.5 + 0.2), Vector3.ZERO, false)
 
 
 var _window_mats: Dictionary = {}
@@ -877,16 +1007,10 @@ func _dead_tree(col: Node3D, at: Vector3, rng: RandomNumberGenerator) -> void:
 		_bark_mat = _lit(Color("2e2a26"))
 	var bark := _bark_mat
 	var tall := rng.randf_range(24.0, 40.0)
-	var trunk := CylinderMesh.new()
-	trunk.top_radius = 1.2
-	trunk.bottom_radius = 3.4
-	trunk.height = tall
-	trunk.radial_segments = 5
-	_prop(col, trunk, bark, at + Vector3(0.0, tall * 0.5, 0.0), Vector3(0.0, 0.0, rng.randf_range(-0.12, 0.12)))
+	_cyl(col, 1.2, 3.4, tall, 5, bark, at + Vector3(0.0, tall * 0.5, 0.0), Vector3(0.0, 0.0, rng.randf_range(-0.12, 0.12)))
 	for k in range(rng.randi_range(2, 4)):
-		var branch := BoxMesh.new()
-		branch.size = Vector3(rng.randf_range(9.0, 18.0), 2.0, 2.0)
-		_prop(col, branch, bark, at + Vector3(branch.size.x * 0.4, tall * rng.randf_range(0.5, 0.9), 0.0),
+		var branch := Vector3(rng.randf_range(9.0, 18.0), 2.0, 2.0)
+		_box(col, branch, bark, at + Vector3(branch.x * 0.4, tall * rng.randf_range(0.5, 0.9), 0.0),
 			Vector3(0.0, rng.randf_range(0, TAU), rng.randf_range(0.3, 0.8)))
 
 
@@ -908,6 +1032,7 @@ func _build_structures() -> void:
 		g.position = _hex_world(map.gate)
 		g.rotation.y = PI   # turned about, so its portcullis face is the one the player sees
 		_bake_model(g, _band(map.gate))   # with ink on its creases, so the towers and reveals read as geometry
+		_baked_models.append(g)
 	if MechView3D.has_model("wall"):
 		# The wall runs the whole width of the view, margin included: the field is a window
 		# on a longer line.
@@ -918,11 +1043,12 @@ func _build_structures() -> void:
 		for mh in map.margin.keys():
 			if Hex.axial_to_offset(mh).y == map.height - 1 and not map.city.has(mh):
 				bottom.append(mh)
+		var m := _model("wall", "arsenal", {}, false)   # one segment, baked at every place on the line
+		m.rotation.y = PI
 		for w in bottom:
-			var m := _model("wall", "arsenal", {}, false)
 			m.position = _hex_world(w)
-			m.rotation.y = PI
 			_bake_model(m, _band(w))
+		_baked_models.append(m)
 	_flush_batches()
 
 

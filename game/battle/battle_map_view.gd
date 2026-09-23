@@ -15,7 +15,7 @@ signal hold_released
 
 const DOUBLE_TAP_SECONDS := 0.35
 
-const HEX_SIZE := 44.0
+const HEX_SIZE := 48.0   # up from 44 (Ryan, 23 September: the map must not get smaller)
 const DRAG_THRESHOLD := 12.0
 const HOLD_SECONDS := 0.45
 const SPRITE_SCALE := 2.0
@@ -66,6 +66,9 @@ var _last_pos := Vector2.ZERO
 var _press_at := 0.0
 var _last_tap_at := -10.0
 var _last_tap_hex := Vector2i(-9999, -9999)
+var _touches: Dictionary = {}       # finger index -> position, for the pinch
+var _pinch_d := 0.0                 # the fingers' distance when the pinch last zoomed
+var _pinching := false
 
 
 func _init() -> void:
@@ -935,9 +938,33 @@ func _gui_input(event: InputEvent) -> void:
 		zoom_at(event.position, 1.15 if event.button_index == MOUSE_BUTTON_WHEEL_UP else 1.0 / 1.15)
 		accept_event()
 	elif event is InputEventMagnifyGesture:
-		zoom_at(event.position, event.factor)   # pinch on a touch screen or trackpad
+		zoom_at(event.position, event.factor)   # a trackpad's pinch
 		accept_event()
-	elif event is InputEventMouseMotion and _pressed and not _holding:
+	elif event is InputEventScreenTouch or event is InputEventScreenDrag:
+		# The pinch, from the fingers themselves: the same on Android and in a browser
+		# (the web never sends a magnify gesture). The first finger also arrives as the
+		# mouse; while two are down it neither scrolls nor taps.
+		if event is InputEventScreenTouch and not event.pressed:
+			_touches.erase(event.index)
+		else:
+			_touches[event.index] = event.position
+		if _touches.size() >= 2:
+			var pts: Array = _touches.values()
+			var d: float = (pts[0] as Vector2).distance_to(pts[1])
+			var mid: Vector2 = ((pts[0] as Vector2) + (pts[1] as Vector2)) * 0.5
+			if not _pinching:
+				_pinching = true
+				_pressed = false
+				_holding = false
+			elif _pinch_d > 1.0:
+				zoom_at(mid, d / _pinch_d)
+			_pinch_d = d
+		elif _pinching and _touches.size() < 2:
+			_pinching = false
+			_pressed = false
+		if _touches.size() >= 2 or _pinching:
+			accept_event()
+	elif event is InputEventMouseMotion and _pressed and not _holding and not _pinching:
 		if not _dragged and event.position.distance_to(_press_pos) > DRAG_THRESHOLD:
 			_dragged = true
 		if _dragged:

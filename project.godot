@@ -21,7 +21,7 @@ window/size/viewport_width=720
 window/size/viewport_height=1280
 window/handheld/orientation=1
 window/stretch/mode="canvas_items"
-window/stretch/aspect="keep"
+window/stretch/aspect="expand"
 
 [rendering]
 
@@ -33,4 +33,4 @@ textures/vram_compression/import_etc2_astc=true
 
 [input_devices]
 
-pointing/android/enable_pan_and_scale_gestures=true
+pointing/android/enable_pan_and_scale_gestures=false

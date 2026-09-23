@@ -151,10 +151,13 @@ static func ink_material() -> StandardMaterial3D:
 	return m
 
 
-static func edge_mesh(mesh: Mesh) -> ArrayMesh:
+## The feature edges of a mesh as line segments (pairs of points), from the mesh's own
+## arrays, cached by mesh. `edge_mesh` wraps them in a line mesh for a node; the map bakes
+## the points straight into its batches.
+static func edge_points(mesh: Mesh) -> PackedVector3Array:
 	var key := mesh.get_rid()
-	if _cache.has(key):
-		return _cache[key]
+	if _points.has(key):
+		return _points[key]
 	var edges: Dictionary = {}   # "a|b" -> [Vector3 a, Vector3 b, Array normals]
 	var limit := cos(deg_to_rad(EDGE_ANGLE))
 	for s in range(mesh.get_surface_count()):
@@ -179,9 +182,7 @@ static func edge_mesh(mesh: Mesh) -> ArrayMesh:
 				if not edges.has(k):
 					edges[k] = [pair[0], pair[1], []]
 				(edges[k][2] as Array).append(nrm)
-	var st := SurfaceTool.new()
-	st.begin(Mesh.PRIMITIVE_LINES)
-	var any := false
+	var out := PackedVector3Array()
 	for k in edges.keys():
 		var e: Array = edges[k]
 		var normals: Array = e[2]
@@ -192,10 +193,26 @@ static func edge_mesh(mesh: Mesh) -> ArrayMesh:
 					if (normals[i] as Vector3).dot(normals[j]) < limit:
 						keep = true
 		if keep:
-			st.add_vertex(e[0])
-			st.add_vertex(e[1])
-			any = true
-	var out: ArrayMesh = st.commit() if any else null
+			out.append(e[0])
+			out.append(e[1])
+	_points[key] = out
+	return out
+
+
+static var _points: Dictionary = {}   # mesh rid -> PackedVector3Array of segment ends
+
+static func edge_mesh(mesh: Mesh) -> ArrayMesh:
+	var key := mesh.get_rid()
+	if _cache.has(key):
+		return _cache[key]
+	var pts := edge_points(mesh)
+	var out: ArrayMesh = null
+	if not pts.is_empty():
+		var arrays: Array = []
+		arrays.resize(Mesh.ARRAY_MAX)
+		arrays[Mesh.ARRAY_VERTEX] = pts
+		out = ArrayMesh.new()
+		out.add_surface_from_arrays(Mesh.PRIMITIVE_LINES, arrays)
 	_cache[key] = out
 	return out
 

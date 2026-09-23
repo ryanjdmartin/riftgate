@@ -55,6 +55,14 @@ static func _load(path: String) -> Font:
 ## A label in one of the HUD faces. Labels clip glyphs at their left edge, and the mono face
 ## has glyphs that start left of their origin, so every label gets a few pixels of left
 ## padding rather than losing the first stem of an H.
+## The height a screen should lay itself out to: the design's 1280 or, in the tree on a
+## taller phone (the window keeps the width and expands the height), the real one.
+static func screen_height(screen: Control) -> float:
+	if screen.is_inside_tree():
+		return maxf(1280.0, screen.get_viewport_rect().size.y)
+	return 1280.0
+
+
 static func label(text: String, size_px: int, color: Color, font: Font = null) -> Label:
 	var l := Label.new()
 	l.text = text

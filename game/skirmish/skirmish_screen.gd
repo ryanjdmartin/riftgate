@@ -24,22 +24,25 @@ signal back_requested
 var back_label := "BACK"   # the outcome's button: the battle screen says where back leads
 
 const W := 720.0
-const H := 1280.0
-const BACK_Y := 60.0
-const FRONT_Y := 254.0
+const BASE_H := 1280.0   # the design's height; on a taller phone the rows spread out to fill it
+var H := BASE_H
+var BACK_Y := 60.0
+var FRONT_Y := 254.0
 const SLOT_SIZE := Vector2(150, 194)     # floating gauge 18 + 48x64 foe at 2x + chip row 38
 const MASSIVE_SIZE := Vector2(150, 388)  # 64x96 elites at 2x across both ranks
-const EYE_Y := 452.0
+var EYE_Y := 452.0
 const EYE := 44.0
-const LOG_Y := 508.0
+var LOG_Y := 508.0
 const LOG_H := 128.0
-const DIE_Y := 656.0
+var DIE_Y := 656.0
 const DIE_SIZE := 120.0
-const REROLL_Y := 802.0
+var REROLL_Y := 802.0
 const REROLL_SIZE := Vector2(250, 54)
-const MECH_Y := 892.0
+var MECH_Y := 892.0
 const MECH_SIZE := Vector2(176, 284)   # gauges 46 + 80x96 sprite at 2x + chip row 38; neighbours overlap 4 px at PITCH
-const BOTTOM_Y := 1196.0
+var BOTTOM_Y := 1196.0
+## The rows' places on the 1280 design, scaled to the screen in `_build`.
+const ROWS := {"BACK_Y": 60.0, "FRONT_Y": 254.0, "EYE_Y": 452.0, "LOG_Y": 508.0, "DIE_Y": 656.0, "REROLL_Y": 802.0, "MECH_Y": 892.0, "BOTTOM_Y": 1196.0}
 const BOTTOM_BTN := Vector2(210, 60)
 const PITCH := 172.0
 const LOG_LINES := 7
@@ -122,8 +125,8 @@ func _ready() -> void:
 	Settings.apply()
 	if sk == null:
 		setup(_default_skirmish())
-	elif _header == null:
-		_build()
+	elif _header == null or H != Hud.screen_height(self):
+		_build()   # built here for the screen's real height (a taller phone than the design)
 		_refresh()
 	_scroll_to_end(_log_scroll)   # set up before entering the tree: the strip starts at its last line
 	Sound.music("skirmish")
@@ -187,6 +190,9 @@ func _build() -> void:
 	_home.clear()
 	_live_tweens.clear()
 	_log_full = null
+	H = Hud.screen_height(self)
+	for key in ROWS.keys():
+		set(key, float(ROWS[key]) * H / BASE_H)
 	custom_minimum_size = Vector2(W, H)
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 

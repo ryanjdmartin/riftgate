@@ -19,12 +19,13 @@ signal back_requested
 const SKIRMISH_SCENE := preload("res://game/skirmish/skirmish_screen.tscn")
 
 const W := 720.0
-const H := 1280.0
+const BASE_H := 1280.0   # the design's height; a taller phone gives the extra to the map
+var H := BASE_H
 const MAP_Y := 56.0
-const LOG_Y := 1076.0
+var LOG_Y := 1076.0
 const INFO_H := 112.0   # the readout's own strip between the map and the log
 const LOG_H := 104.0
-const BOTTOM_Y := 1196.0
+var BOTTOM_Y := 1196.0
 const BOTTOM_BTN := Vector2(210, 60)
 const LOG_LINES := 4
 
@@ -93,8 +94,8 @@ func _ready() -> void:
 	Settings.apply()
 	if battle == null:
 		setup(_default_battle())
-	elif _header == null:
-		_build()
+	elif _header == null or H != Hud.screen_height(self):
+		_build()   # built here for the screen's real height (a taller phone than the design)
 		_refresh()
 	Sound.music("map")
 
@@ -128,6 +129,9 @@ var _codex: CodexBox = null
 func _build() -> void:
 	for c in get_children():
 		c.queue_free()
+	H = Hud.screen_height(self)
+	LOG_Y = 1076.0 + (H - BASE_H)   # the map takes the extra height; the log and buttons keep to the bottom
+	BOTTOM_Y = 1196.0 + (H - BASE_H)
 	custom_minimum_size = Vector2(W, H)
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 

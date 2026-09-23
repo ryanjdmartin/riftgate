@@ -10,19 +10,30 @@ render_mode cull_disabled;
 uniform sampler2D tile : source_color, filter_nearest, repeat_enable;   // the shoulder
 uniform float tile_world = 40.0;
 uniform float lift = 1.35;
-instance uniform int links = 0;
-instance uniform float seed = 0.0;
+// Which neighbours are road (six bits) and a seed, from the hex's vertex colour: the road
+// columns are baked into one mesh with every other column (Map3D._bake), and the
+// Compatibility renderer the phone runs has no per-instance uniforms anyway.
+varying float v_links;
+varying float v_seed;
 
 const float HALF_W = 0.17;   // deck half width in UV
 const float KERB = 0.19;
 
 varying vec3 wpos;
 
+void vertex() {
+	wpos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
+	v_links = COLOR.r * 255.0;
+	v_seed = COLOR.g * 64.0;
+}
+
 float hash(float n) {
 	return fract(sin(n) * 43758.5453);
 }
 
 void fragment() {
+	int links = int(v_links + 0.5);
+	float seed = v_seed;
 	vec2 p = UV - vec2(0.5);
 	// Edge midpoints of the six neighbours, in UV units: to_pixel(dir) / (2 * hex) / 2.
 	const float S3 = 0.8660254;
@@ -69,8 +80,4 @@ void fragment() {
 	EMISSION = vec3(0.0);
 	ROUGHNESS = 0.95;
 	METALLIC = 0.0;
-}
-
-void vertex() {
-	wpos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 }
