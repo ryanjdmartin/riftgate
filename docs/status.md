@@ -89,8 +89,10 @@ setting like the unit tears. The machine readout is a live bar chart or an equal
 three level bars (`levels`), the die recalc is wide static over a held number, the foes'
 breathing is spread by slot, and the foe events and the machine-and-dice events run on two
 independent lanes (`FeedFX.LANES`), each 5 to 11 s apart. The die's static covers the
-whole die, chips too, drawn last; the machine boxes run 3.6 s at 68 px wide; the foes'
-pane sits 12 px lower (BACK_Y 72) for black between it and the header. Cut after Ryan saw it: the scan band
+face edge to edge, drawn last, and a die can also wobble (`DieFaceView.wobble`, a jolt and
+a tilt through one draw transform); the machine boxes run 3.6 s at 68 px wide; the foes'
+pane sits 12 px lower (BACK_Y 72) for black between it and the header; the shear has no
+hairlines. Cut after Ryan saw it: the scan band
 lighting gauges, chips, buttons and rules (blinked rather than swept). Ryan's second pass:
 the events wanted drawing out (now one to two seconds for the boxes, half a second or
 more for the rest; he first wrote "too slow" and meant too fast) and the tears were too

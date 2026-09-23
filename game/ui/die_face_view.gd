@@ -115,6 +115,19 @@ func recalc(seconds: float = 0.7) -> void:
 	queue_redraw()
 
 
+var _wobble: float = -1.0        # seconds since the die's picture began to wobble; negative when idle
+var _wobble_for := 0.6
+
+
+## The die's picture wobbles for a moment, as a torn sprite's slices jump (Ryan, 23
+## September): the whole drawing jitters a few pixels and tilts a degree, in steps held a
+## few frames each. Nothing about the face changes.
+func wobble(seconds: float = 0.6) -> void:
+	_wobble = 0.0
+	_wobble_for = seconds
+	queue_redraw()
+
+
 func _process(delta: float) -> void:
 	if _pressed and not _dragging and not _holding:
 		if Time.get_ticks_msec() / 1000.0 - _press_at >= HOLD_SECONDS:
@@ -124,6 +137,11 @@ func _process(delta: float) -> void:
 		_recalc += delta
 		if _recalc > _recalc_for:
 			_recalc = -1.0
+		queue_redraw()
+	if _wobble >= 0.0:
+		_wobble += delta
+		if _wobble > _wobble_for:
+			_wobble = -1.0
 		queue_redraw()
 	if animate and visible and not dead:
 		_t += delta
@@ -143,6 +161,18 @@ func _flicker(i: int) -> float:
 func _draw() -> void:
 	var bob := sin(_t * 1.6 + _phase) * BOB_PX if animate else 0.0
 	var rect := Rect2(Vector2(0, bob), Vector2(FACE, FACE))
+	if _wobble >= 0.0:
+		# Everything below is drawn through a small jolt about the face's centre.
+		var tick := int(_wobble * 24.0)
+		var d := Vector2((Hud.noise(tick * 1.3 + 0.2) - 0.5) * 7.0, (Hud.noise(tick * 0.7 + 0.9) - 0.5) * 4.0)
+		var rot := (Hud.noise(tick * 1.9 + 0.4) - 0.5) * 0.05
+		if Hud.noise(tick * 2.3 + 0.6) < 0.3:
+			d = Vector2.ZERO
+			rot = 0.0
+		var c := rect.get_center()
+		var xf := Transform2D(rot, Vector2.ZERO)
+		xf.origin = c + d - xf.basis_xform(c)
+		draw_set_transform_matrix(xf)
 	var hud := Palette.HUD
 	var alpha := 0.35 if spent else 1.0
 	var border := Color(hud, alpha)
@@ -198,16 +228,16 @@ func _draw() -> void:
 		Hud.box(self, chip_rect, 4.0, Color(Palette.BG, 0.94), col, 1.0)
 		Glyphs.draw(self, tags[i], chip_rect.get_center(), 13, col, 1.8)
 	if _recalc >= 0.0:
-		_draw_static()
+		_draw_static(rect)
 
 
-## Static over the whole die, chips included, while it is recomputed: the signal-drop noise
-## a foe gets, more subtle, in the display's colour, no tag (Ryan, 23 September).
-func _draw_static() -> void:
+## Static over the die's face while it is recomputed: the signal-drop noise a foe gets,
+## more subtle, in the display's colour, no tag (Ryan, 23 September). Kept to the face
+## itself, edge to edge, not the control's wider rect with the chip rail.
+func _draw_static(face_rect: Rect2) -> void:
 	var tick := int(_recalc * 20.0)
-	var r := Rect2(Vector2.ZERO, size)
 	for j in range(22):
-		var yy := Hud.noise(tick * 0.9 + j * 0.61) * r.size.y
-		var w := r.size.x * (0.2 + 0.6 * Hud.noise(tick * 0.4 + j * 0.83))
-		var x0 := Hud.noise(tick * 1.7 + j * 0.23) * (r.size.x - w)
+		var yy := face_rect.position.y + Hud.noise(tick * 0.9 + j * 0.61) * face_rect.size.y
+		var w := face_rect.size.x * (0.3 + 0.7 * Hud.noise(tick * 0.4 + j * 0.83))
+		var x0 := face_rect.position.x + Hud.noise(tick * 1.7 + j * 0.23) * (face_rect.size.x - w)
 		draw_rect(Rect2(x0, yy, w, 1.0), Color(Palette.HUD, 0.12 + 0.25 * Hud.noise(tick + j * 0.5)))

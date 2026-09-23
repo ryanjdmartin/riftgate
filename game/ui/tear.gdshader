@@ -1,8 +1,8 @@
 shader_type canvas_item;
 
 // The corrupted side's tear, over everything on it: one or two slices of what is already
-// drawn (ground and sprites alike) redrawn displaced and dimmed, with a bright hairline on
-// top and a dark one under. TearLayer sets the slices in this rect's UV and the shift as a
+// drawn (ground and sprites alike) redrawn displaced and a little dimmed. TearLayer sets
+// the slices in this rect's UV and the shift as a
 // fraction of the screen's width (the layer spans it). Outside a slice the layer is clear.
 
 uniform sampler2D screen_tex : hint_screen_texture, filter_nearest, repeat_disable;
@@ -25,12 +25,8 @@ void fragment() {
 		float sh = i == 0 ? shift0 : shift1;
 		float dm = i == 0 ? dim0 : dim1;
 		if (UV.x >= s.x && UV.x < s.x + s.z && UV.y >= s.y && UV.y < s.y + s.w) {
+			// No hairlines on the cut (Ryan, 23 September): the shift alone says it tore.
 			vec3 c = texture(screen_tex, SCREEN_UV + vec2(sh, 0.0)).rgb * (1.0 - dm);
-			if (UV.y < s.y + px_y) {
-				c += vec3(0.25);
-			} else if (UV.y > s.y + s.w - px_y) {
-				c *= 0.6;
-			}
 			out_col = vec4(c, 1.0);
 		}
 	}

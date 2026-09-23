@@ -64,7 +64,7 @@ func _apply_pose() -> void:
 			# The corrupted side's tear, caught as it fires: the backdrop's clock is set just
 			# past the first firing time (RIFTGATE_SHOT_FRAME=4).
 			s._bg._t = TearLayer.fire_time() + 0.03
-		"feed_scanbox", "feed_databox", "feed_readout", "feed_levels", "feed_recalc", "feed_tear", "feed_signal":
+		"feed_scanbox", "feed_databox", "feed_readout", "feed_levels", "feed_recalc", "feed_wobble", "feed_tear", "feed_signal":
 			# One of the feed's analysis events, started now (RIFTGATE_SHOT_FRAME=20 for the
 			# boxes, 8 for the tear, the signal drop and the recalculation).
 			s._fx.force(_pose.trim_prefix("feed_"))

@@ -20,6 +20,7 @@ extends Control
 ##   readout   a live chart beside a machine: bars rolling in on a fixed leader
 ##   levels    three chunky horizontal bars beside a machine, growing and shrinking like an equaliser
 ##   recalc    static runs across a die's face and its frame flashes once; the number holds
+##   wobble    a die's picture jolts and tilts for half a second, as a torn sprite's slices jump
 ##
 ## The host gives three callables returning what is alive right now; the tear and signal
 ## events go off with the glitch setting. Draws over the units, under the panels; takes no
@@ -33,10 +34,10 @@ const GAP_MIN := 5.0
 const GAP_MAX := 11.0
 const LANES := {
 	"foe": {"scanbox": 3, "databox": 3, "tear": 2, "signal": 1},
-	"ally": {"readout": 3, "levels": 2, "recalc": 3},
+	"ally": {"readout": 3, "levels": 2, "recalc": 3, "wobble": 2},
 }
 # Drawn out (Ryan, 23 September: the first cut, at a second or under, was too quick to read).
-const DURATION := {"scanbox": 2.6, "databox": 2.8, "readout": 3.6, "levels": 3.6, "recalc": 0.7, "tear": 0.5, "signal": 1.3}
+const DURATION := {"scanbox": 2.6, "databox": 2.8, "readout": 3.6, "levels": 3.6, "recalc": 0.7, "wobble": 0.6, "tear": 0.5, "signal": 1.3}
 const SETTLE := 0.35        # seconds the brackets and the boxes take to land
 const SCAN_HOLD := 0.7      # the scanbox's meter fills over this share of its time, then it blinks "complete"
 const BOX := Vector2(72.0, 48.0)     # the foe's telemetry box
@@ -107,7 +108,7 @@ func _start(lane: String, forced: String = "") -> void:
 			view = _pick(foe_views)
 		"readout", "levels":
 			view = _pick(mech_views)
-		"recalc":
+		"recalc", "wobble":
 			view = _pick(dice)
 	if view == null:
 		st["wait"] = 1.0
@@ -126,6 +127,8 @@ func _start(lane: String, forced: String = "") -> void:
 			view.glitch("drop", ev["dur"])
 		"recalc":
 			view.recalc(ev["dur"])
+		"wobble":
+			view.wobble(ev["dur"])
 	st["ev"] = ev
 	queue_redraw()
 
