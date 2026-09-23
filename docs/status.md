@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible.
 
-## As of 23 September 2026
+## As of 23 September 2026 (midday)
 
 **State.** Everything committed. Tests: 180 tests, 2422 checks, green (`perl -e 'alarm
 240; exec @ARGV' godot --headless --path . -s tests/run_tests.gd`). Ryan sometimes runs a
@@ -38,12 +38,17 @@ the settings, now with music and effects knobs. A map groove plays on the field 
 skirmish groove in the fight, crossfading.
 
 **Done 22 September (late) and 23 September.** The map's draw calls: 5400 and 10.9 ms a
-frame at zoom 1 on the Mac became 1166 and 2.0 ms by baking rims, columns, grid lines,
-props, traces, the gate and the walls into one mesh per material per band of rows; the
-three machines stay live models. The phone path without an Android export:
-`tools/phone.sh`, https with its own certificate (Godot's web build refuses plain http off
-localhost). The sound set, first cut. The intent-line and wireframe trials retired; the die
-drag and the codex labels struck off. The bible republished (link above).
+frame at zoom 1 on the Mac became 1036 and about 3 ms by baking rims, columns, grid lines,
+props, traces, roads, the gate and the walls into one mesh per material per band of rows;
+the three machines stay live models. The map's build: 3.1 s to 0.8 s on the Mac (geometry
+as packed arrays, one renderer readback per shape, edges per shape; `map_3d.gd`'s baking
+section says why). The phone path without an Android export: `tools/phone.sh`, https with
+its own certificate. The real one: `tools/android.sh` exports a signed debug APK
+(templates, SDK, JDK and keystore all on this Mac now; README says how) and installs it
+over USB; it has not yet been run on a device. The screens follow the phone's height;
+pinch from two fingers; roads join on the Compatibility renderer; hex 48. The sound set,
+first cut. Trials retired; the bible republished (link above). A placeholder launcher
+icon (`art/icon.png`, a tool-drawn hex).
 
 **Ryan's verdict on the web harness (23 September).** It served for sizes and touch and no
 more: the map must not get smaller (the base hex size may go up a little; zoom makes it
@@ -74,10 +79,10 @@ from bpm and bars and wraps tails.
 
 **Open, in the order I would take them.**
 
-1. This session: the four web-harness fixes above and the hex size, then the Android
-   debug export (templates installed; the SDK, JDK 17 and a debug keystore are not).
-   Ryan: Badger tweaks in Blender, then joints and pins (`forge.py export badger`); notes
-   on the Clydesdale; the Anvil. Another session: audio tweaking, from the paragraph above.
+1. Ryan: plug the phone in with USB debugging on and run `tools/android.sh`; judge the
+   frame rate, the hex outlines, the sound set and the layout at the phone's height.
+   Badger tweaks in Blender, then joints and pins (`forge.py export badger`); notes on
+   the Clydesdale; the Anvil. Another session: audio tweaking, from the paragraph above.
 2. Ryan's content: names for overheating and scorch; strikes, breach, scorch, disable and
    rapid placed on foes and components; Ablative Plating as armour or shield; the Badger's
    loadout and claw numbers; Aphelion and the Arsenal; CARE's voice, including the gate's

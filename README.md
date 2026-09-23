@@ -44,8 +44,8 @@ and open question from the design sessions.
   in `docs/sprites-enemies.html` to `art/foes/`; `foeforge/` generates enemy candidates with
   an image model and cuts one into `art/foes/`; `soundforge/` builds every sound and the
   two music loops from written recipes (numpy); `phone.sh` puts a Web build on a phone
-  over the LAN; `spriter/.venv` is the Python the tools run with. The gate and wall are
-  lowforge models too (`gate`, `wall`).
+  over the LAN, `android.sh` the real debug APK over USB; `spriter/.venv` is the Python
+  the tools run with. The gate and wall are lowforge models too (`gate`, `wall`).
 - `art/` — `models/` every glTF the engine draws (units, gate, wall), `foes/` from the sheet
   export, `fonts/` the HUD faces, `audio/` every sound by name (`game/audio/sound.gd` lists
   them). A missing foe sprite falls back to a placeholder shape; a missing sound is silence.
@@ -107,6 +107,14 @@ godot --headless --path . --import
 # from the Godot release, unzip, and put its `templates` folder at
 # ~/Library/Application Support/Godot/export_templates/4.7.2.stable
 tools/phone.sh          # export then serve; `tools/phone.sh serve` serves the last export
+
+# the real thing: a debug APK exported, installed over USB and launched (USB debugging on
+# the phone). Beyond the templates this needs the Android SDK at ~/Library/Android/sdk
+# (brew install --cask android-commandlinetools, then sdkmanager "platform-tools"
+# "build-tools;35.0.0" "platforms;android-35"), a JDK (brew's openjdk does; Godot's
+# editor settings point export/android/java_sdk_path at it) and the debug keystore
+# (keytool, at the path Godot's editor settings name). All of that is set up on this Mac.
+tools/android.sh        # export, install, launch; `tools/android.sh log` tails the phone
 ```
 
 The skirmish screen runs top to bottom: header with the round tag, enemies with the intent
@@ -132,6 +140,11 @@ before a face is spent. Blank faces are discarded at end of turn.
 The harness can add the faction's massive elite, which fills both ranks of a column. For the
 standalone screen, `RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,anvil` picks the team and
 `RIFTGATE_ELITE=1` adds the elite.
+
+The screens are laid out for 720 by 1280 and the window expands its height to the phone's
+(stretch aspect `expand`): the battle screen gives the extra to the map, the skirmish
+spreads its rows. Pinch is read from the two fingers themselves, so it works in a browser
+too.
 
 The battle screen is the loop. The header shows the round and how many rounds until the
 rift spawns; the gate's integrity is a bar on the wall and the rift's pressure a bar above
