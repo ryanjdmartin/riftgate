@@ -136,7 +136,10 @@ void fragment() {
 	// first cut tore a band in ten each tick and was far too much).
 	float band = floor(px.y / 6.0);
 	float tick = floor(TIME * 6.0);
-	float near = source_count > 0 ? 1.0 - smoothstep(sources[0].z * 0.5, sources[0].z * 1.2, distance(px, sources[0].xy)) : 0.0;
+	// Centred above the rift's hexes, where the vortex's mouth is, not on them (Ryan, 23
+	// September: the tear read too low), and reaching about a hex beyond it.
+	vec2 mouth = sources[0].xy - vec2(0.0, sources[0].z * 0.75);
+	float near = source_count > 0 ? 1.0 - smoothstep(sources[0].z * 0.5, sources[0].z * 1.0, distance(px, mouth)) : 0.0;
 	float flick = step(mix(0.997, 0.982, near), fract(sin(band * 12.9898 + tick * 7.31) * 43758.5453)) * flicker;
 	float shear = flick * near * (mod(band, 2.0) * 2.0 - 1.0) * 3.0;
 	vec2 opx = px + vec2(shear, 0.0);

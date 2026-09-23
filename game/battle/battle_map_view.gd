@@ -162,7 +162,7 @@ func _map_px_height() -> float:
 ## playable field plus a little of the scenery beyond each end; the rest of the margin
 ## rows are there to fill the edges, not to scroll to (Ryan, 21 September).
 func _clamp_scroll() -> void:
-	var top := _origin.y - HEX_SIZE * 5.0                                                  # the scenery past the rift, and the vortex's height
+	var top := _origin.y - HEX_SIZE * 3.6                                                  # the scenery past the rift, and the vortex's height
 	var bottom := _origin.y + Hex.to_pixel(field.map.gate, HEX_SIZE).y + HEX_SIZE * 2.6   # a row of city past the wall
 	scroll_y = clampf(scroll_y, minf(-top * zoom, size.y - bottom * zoom), -top * zoom)
 	scroll_x = clampf(scroll_x, minf(0.0, size.x - size.x * zoom), 0.0)
@@ -522,7 +522,7 @@ func _draw_gate_bar() -> void:
 ## The rift's pressure as a bar toward the next spawn (Ryan, 22 September), above the rift
 ## in the scenery rows, where the boss standing in front of the rift never covers it.
 func _draw_rift_bar() -> void:
-	var at := _origin + Hex.to_pixel(field.map.rift, HEX_SIZE) + Vector2(0, -HEX_SIZE * 2.9)
+	var at := _origin + Hex.to_pixel(field.map.rift, HEX_SIZE) + Vector2(0, -HEX_SIZE * 2.3)
 	var frac := float(field.rift_pressure) / maxf(1.0, float(field.rift_pressure_max))
 	_hud_bar(at, HEX_SIZE * 3.2, frac, RIFT_ART, "NEXT SPAWN IN %d" % (field.rift_pressure_max - field.rift_pressure))
 
@@ -561,7 +561,7 @@ func _draw_rift(map: BattleMap) -> void:
 	var beat := Sound.beat()
 	var k := int(beat if beat >= 0.0 else _ring_t / RIFT_FRAME_SECONDS) % frames
 	var c := center(map.rift)
-	var dest := Rect2((c - Vector2(fw * SPRITE_SCALE * 0.5, fh * SPRITE_SCALE - HEX_SIZE * 0.3)).floor(), Vector2(fw, fh) * SPRITE_SCALE)   # its mouth well above the hexes (Ryan, 23 September: it sat too low)
+	var dest := Rect2((c - Vector2(fw * SPRITE_SCALE * 0.5, fh * SPRITE_SCALE - HEX_SIZE * 0.9)).floor(), Vector2(fw, fh) * SPRITE_SCALE)
 	# The vortex is the worst input the display gets: it is drawn in bands, and now and
 	# then one tears sideways and dims, the same tear the compositor gives the ground
 	# around it (Ryan, 23 September; a band in five each tick was far too much). Off with
@@ -574,7 +574,7 @@ func _draw_rift(map: BattleMap) -> void:
 	var band_h := fh / rows
 	for b in range(rows):
 		var h: float = fmod(absf(sin(float(b) * 12.9898 + tick * 7.31 + 3.7) * 43758.5453), 1.0)
-		var torn := h > 0.96
+		var torn := h > 0.96 and b < rows * 0.7   # the mouth tears; the tendrils over the hexes never do (Ryan, 23 September: it read too low)
 		var shear := (3.0 if int(b) % 2 == 0 else -3.0) * SPRITE_SCALE if torn else 0.0
 		var src := Rect2(k * fw, b * band_h, fw, band_h)
 		var dst := Rect2(dest.position + Vector2(shear, b * band_h * SPRITE_SCALE), Vector2(fw, band_h) * SPRITE_SCALE)
