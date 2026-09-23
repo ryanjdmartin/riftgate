@@ -146,13 +146,15 @@ synth crunch, unison riff sections and drawn-out ones), the rift palette for the
 (creepier, more electronic and glitchy, the echo kept); human was plain beside them. Third
 listen: longer sections, the map's bass organic (orchestral, not electronic), the fight
 riff-heavy with the kick forward and no long chord stretches, instruments trading by
-section on both. Built: 48 bars each in eight-bar sections (bible section 1, sound row,
-has every note). The map (A groove, C lift, D interlude, E strings section) on pizzicato
-and cellos, bells, horn, violins, harp, timpani, choir and strings pads; the fight (A riff,
-C lift, U unison, F keys-and-guitar, D four bars of open chords with a lead on top) on
-`kick_metal` with double kicks and kick rolls, `snare_metal`, chug, `bass_guitar`, the
-crunch synth in C only, `epiano`, `lead`, `chime_metal`. Not yet heard: these two loops
-as built, and every effect. If a loop's bpm changes in
+section on both. Fourth listen (bible section 1,
+sound row, has every note): the map's interlude paused between bars (now the pad
+crossfades chord to chord and held notes are legato), a discord section (G: every lead in
+its own count over tritone chords), the bass a bowed `contrabass` (the pizzicato read
+chiptune); the fight's leads softened (`lead`, `chime_metal`, hats, tilt 2), a guitar solo
+section (S) and a keyboard solo section (K, `synlead`, the bass answering) in place of
+the open chords, wilder drums under them. Now: the map 56 bars (A C D E G A C D) at 92, the
+fight 48 (A C U F S K) at 100; `forge.py sketch map_88` renders the map slightly slower
+to compare. Not yet heard: these two as built, the 88 variant, and every effect. If a loop's bpm changes in
 `groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
 loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
 wraps every tail, the room's included. The display's scan and idle stay silent by decision.
