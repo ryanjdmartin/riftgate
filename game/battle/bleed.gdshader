@@ -16,6 +16,7 @@ uniform float anim_rate = 1.6;               // frames per second between the tw
 uniform float saturation = 1.0;              // the tuner's: 0 grey, 1 as painted
 uniform float brightness = 1.0;
 uniform float flicker = 1.0;                 // the corrupted side's tear, 0 off
+uniform float tear_debug = 0.0;              // 1: torn bands tinted, cyan for the general tear and magenta for the rift's (RIFTGATE_TEAR_DEBUG=1)
 uniform vec2 map_size = vec2(1.0, 1.0);      // the painted map, in map pixels
 uniform vec2 view_size = vec2(1.0, 1.0);     // this texture, in screen pixels
 uniform vec2 scroll = vec2(0.0, 0.0);        // the map view's scroll
@@ -135,7 +136,7 @@ void fragment() {
 	// first cut tore a band in ten each tick and was far too much).
 	float band = floor(px.y / 6.0);
 	float tick = floor(TIME * 6.0);
-	float near = source_count > 0 ? 1.0 - smoothstep(sources[0].z * 0.9, sources[0].z * 2.2, distance(px, sources[0].xy)) : 0.0;
+	float near = source_count > 0 ? 1.0 - smoothstep(sources[0].z * 0.5, sources[0].z * 1.2, distance(px, sources[0].xy)) : 0.0;
 	float flick = step(mix(0.997, 0.982, near), fract(sin(band * 12.9898 + tick * 7.31) * 43758.5453)) * flicker;
 	float shear = flick * near * (mod(band, 2.0) * 2.0 - 1.0) * 3.0;
 	vec2 opx = px + vec2(shear, 0.0);
@@ -144,6 +145,9 @@ void fragment() {
 	vec4 other = second ? blurred_other2(opx / map_size, 1.0 / (map_size * zoom), rad) : blurred_other(opx / map_size, 1.0 / (map_size * zoom), rad);
 	other.rgb = floor(other.rgb * levels + 0.5) / levels;
 	other.rgb *= 1.0 - (0.12 + 0.08 * near) * flick;
+	if (tear_debug > 0.5 && flick > 0.5) {
+		other.rgb = mix(vec3(0.0, 1.0, 1.0), vec3(1.0, 0.0, 1.0), step(0.5, near));
+	}
 	// Where a machine is, the reconstruction wins whatever the bleed says: the machines
 	// are its own and never go under the painting (Ryan, 22 September). The units layer
 	// is a mask only; the pixel comes from the scene, so the wall and the crags still

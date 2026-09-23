@@ -118,6 +118,7 @@ func set_field(f: Battlefield) -> void:
 		mat.set_shader_parameter("view_size", size)
 		mat.set_shader_parameter("play_x", _frame_x())   # sharp inside the frame's lines, soft outside
 		mat.set_shader_parameter("south_y", _origin.y + Hex.to_pixel(field.map.gate, HEX_SIZE).y + HEX_SIZE * 0.75)
+		mat.set_shader_parameter("tear_debug", 1.0 if TEAR_DEBUG else 0.0)
 		_composite.material = mat
 		_mix.add_child(_composite)
 	queue_redraw()
@@ -536,6 +537,9 @@ func sweep_at(local_y: float) -> void:
 const RIFT_ART := Color("c9a6ff")   # what the rift looks like; it means nothing but the rift
 const RIFT_FRAME_SECONDS := 0.65   # with no music playing; with music, a frame a beat
 const RIFT_TEAR_ROWS := 16         # the bands the vortex is drawn in, for its tear
+## RIFTGATE_TEAR_DEBUG=1 tints every torn band so the tears can be told apart: cyan the
+## general tear, magenta the rift's ground tear, green the vortex's own bands.
+static var TEAR_DEBUG := OS.get_environment("RIFTGATE_TEAR_DEBUG") == "1"
 
 ## The rift (Ryan, 23 September): a vortex tearing a hole in reality, in the foes' own
 ## register, standing over its three hexes and reaching up into the scenery, its spiral
@@ -574,7 +578,10 @@ func _draw_rift(map: BattleMap) -> void:
 		var shear := (3.0 if int(b) % 2 == 0 else -3.0) * SPRITE_SCALE if torn else 0.0
 		var src := Rect2(k * fw, b * band_h, fw, band_h)
 		var dst := Rect2(dest.position + Vector2(shear, b * band_h * SPRITE_SCALE), Vector2(fw, band_h) * SPRITE_SCALE)
-		draw_texture_rect_region(tex, dst, src, Color(1, 1, 1, 1) if not torn else Color(0.82, 0.82, 0.88, 1.0))
+		var tint := Color(0.82, 0.82, 0.88, 1.0)
+		if TEAR_DEBUG:
+			tint = Color(0.2, 1.0, 0.2, 1.0)
+		draw_texture_rect_region(tex, dst, src, Color(1, 1, 1, 1) if not torn else tint)
 
 
 ## Off-screen squads get a portrait at the edge nearest them: the source of the intent line.
