@@ -24,8 +24,8 @@ exports a Web build and serves it on the LAN for a phone; `tools/screenshot.gd` 
 screen (`README.md` lists the poses); `tools/perf_probe.gd` measures the map; the
 `map_tuner` knobs are behind `RIFTGATE_TUNE=1`. `docs/design-bible.html` records every
 decision; section 12 is the roadmap; it is published at
-https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ (v0.7, republished 23 September after
-the earlier copy was deleted; republish the file to that URL after a bible change).
+https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ (v0.8, republished 23 September;
+republish the file to that URL after a bible change).
 `docs/vocabulary.md` is generated from content.
 
 **What the game does today.** A battle: the map shows every squad's intent and the exact
@@ -63,7 +63,7 @@ Layout: ally gauges and chips 10 px off the model, foe leaders longer, every gau
 black ground of its own shape (no plate), the eye 52 px in the black at the log's right
 (the log strip stops short of it), log 112 tall, dice and Reroll up 16, 30 px of black
 under Reroll. Poses added to `tools/screenshot.gd`: menu, settings, quit, withdraw. The
-bible has the rows (sections 5 and the HUD row in 4); it is not yet republished.
+bible has the rows (section 5, and the HUD row in 4) and is republished as v0.8 (link above).
 
 **Ryan's verdict on the web harness (23 September).** It served for sizes and touch and no
 more: the map must not get smaller (the base hex size may go up a little; zoom makes it
