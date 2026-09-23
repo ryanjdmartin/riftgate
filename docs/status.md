@@ -111,7 +111,7 @@ phone band (300 to 4000 Hz) of every blow sits 6 to 10 dB under its full loudnes
 music 6 dB, so the balance holds on a speaker. Ryan heard the map loop (a huge improvement)
 and gave notes, now built and in the bible's sound row: no builds, bass drops or speed
 snares; 32-bar loops with an eight-bar interlude; the crunch bass back; a little metal at
-low gain; the map at 84 on its own kit (soft kick, rim, brushed hats, pad and chimes), the
+low gain; the map at 92 (84 was too slow) on its own kit (soft kick, rim, brushed hats, pad and chimes), the
 skirmish at 100 on kick, snare, clank and saw stabs, the pad and bass shared. Not yet
 heard: the skirmish loop as rebuilt, and every effect. The knobs: `LEVELS`, `DIP`, each
 loop's `kit` gains, `bass` and `pad` in `music_map` and `music_skirmish`. If a loop's bpm changes in

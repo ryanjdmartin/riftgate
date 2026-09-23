@@ -803,12 +803,13 @@ def groove(bpm, form, kit, drums, riffs, chords, arps, stabs, bass, pad, swells=
 
 
 def music_map():
-    # Subdued, still moving, at 84: a soft kick, a rim instead of a snare, brushed hats, the
+    # Subdued, still moving, at 92 (84 was tried and was too slow, Ryan, 23 September): a
+    # soft kick, a rim instead of a snare, brushed hats, the
     # pad and the chimes forward, the riff sparse and long. Thirty-two bars: the groove (A),
     # a turn bar (B), the lift with the chimes (C), and an interlude of eight bars (D) where
     # the kick stops and the chimes carry it, twice round.
     return groove(
-        bpm=84,
+        bpm=92,
         form="AAAB AACC AACB DDDD DDDD AACC CCCB DDDD",
         kit={"kick": (kick_drum(False), 0.85), "rim": (rim(), 0.8), "hat": (hat(False, False), 0.55),
              "open": (hat(True, False), 0.45), "knock": (knock_perc(), 0.7), "clank": (clank(), 0.35), "tick": (tick(), 0.3)},
