@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible.
 
-## As of 22 September 2026 (late)
+## As of 23 September 2026
 
 **State.** Everything committed. Tests: 180 tests, 2422 checks, green (`perl -e 'alarm
 240; exec @ARGV' godot --headless --path . -s tests/run_tests.gd`). Ryan sometimes runs a
@@ -37,21 +37,47 @@ the codex opens by double-tap on either screen; MENU pauses, ducks the music, an
 the settings, now with music and effects knobs. A map groove plays on the field and a
 skirmish groove in the fight, crossfading.
 
-**Done this session (22 September, late).** The map's draw calls: 5400 and 10.9 ms a frame
-at zoom 1 on the Mac became 1166 and 2.0 ms by baking rims, columns, grid lines, props,
-traces, the gate and the walls into one mesh per material per band of rows; what remains
-is the three machines, live models of about 70 meshes each, left alone because joints are
-coming. The phone path without an Android export: `tools/phone.sh` (needs the 4.7.2
-export templates, now installed on this Mac; the README says where they go). The sound
-set, first cut, unheard by anyone yet. The intent-line and wireframe trials retired as
-closed; the die drag and the codex labels struck off as resolved.
+**Done 22 September (late) and 23 September.** The map's draw calls: 5400 and 10.9 ms a
+frame at zoom 1 on the Mac became 1166 and 2.0 ms by baking rims, columns, grid lines,
+props, traces, the gate and the walls into one mesh per material per band of rows; the
+three machines stay live models. The phone path without an Android export:
+`tools/phone.sh`, https with its own certificate (Godot's web build refuses plain http off
+localhost). The sound set, first cut. The intent-line and wireframe trials retired; the die
+drag and the codex labels struck off. The bible republished (link above).
+
+**Ryan's verdict on the web harness (23 September).** It served for sizes and touch and no
+more: the map must not get smaller (the base hex size may go up a little; zoom makes it
+playable as is). Judged real, to fix now: the load time (the first frame builds the map in
+3.2 s on the Mac, all GDScript: the feature-edge extraction per prop and the per-vertex
+bake loops); the letterboxing (stretch aspect `keep` on a 9:16 design leaves a 9:20 phone
+with bars, both screens laid out at fixed 720x1280 coordinates); roads not joining (the
+road shader's per-instance parameters are not a Compatibility-renderer feature, and the
+phone runs Compatibility); pinch (the map only hears the magnify gesture, which the web
+never sends: handle two fingers directly). Not to chase on the web: missing hex outlines
+and general frame rate, which want a native build. Then the true Android export.
+
+**Audio, for whoever picks it up (a separate session is expected).** Nobody has heard the
+set yet. Every sound is a Python function in `tools/soundforge/forge.py`, one per name,
+built from a few primitives at the top of the file (`thud`, `ring`, `burst`, `sweep`,
+filters, `sat`, `at` to place a part in time, `wrap` for loops); the two loops are
+`groove()` with drum patterns as strings, a bass riff in semitones above E2, a drone.
+Rebuild one or all with `tools/spriter/.venv/bin/python tools/soundforge/forge.py build
+[names]`, then `godot --headless --path . --import`. The names and where each is heard:
+`game/audio/sound.gd` lists them (`NAMES`) and `grep -rn 'Sound\.' game` finds every hook
+with its level in dB and its delay after the animation. Levels to check first on a phone
+speaker: `step` (-9 dB a hex, may still be too much), `hit` under the enemy turn (-4),
+`ui_tap` on every button (-2, and it doubles with the specific sound on Resolve and
+End Turn), `contact` twice. Not hooked: the scan bar, overheating burns (they surface only
+in the log), the display's idle. The direction is bible section 1 (sound row, 22
+September). The loops must stay sample-exact for seamless play: `groove` sizes the buffer
+from bpm and bars and wraps tails.
 
 **Open, in the order I would take them.**
 
-1. Ryan: hear the sound set on the phone (`tools/phone.sh`, then Battle) and say what is
-   wrong with it; the loops and every effect are recipes in `forge.py`, cheap to redo.
-   Badger tweaks in Blender, then joints and pins (`forge.py export badger`); notes on the
-   Clydesdale; the Anvil.
+1. This session: the four web-harness fixes above and the hex size, then the Android
+   debug export (templates installed; the SDK, JDK 17 and a debug keystore are not).
+   Ryan: Badger tweaks in Blender, then joints and pins (`forge.py export badger`); notes
+   on the Clydesdale; the Anvil. Another session: audio tweaking, from the paragraph above.
 2. Ryan's content: names for overheating and scorch; strikes, breach, scorch, disable and
    rapid placed on foes and components; Ablative Plating as armour or shield; the Badger's
    loadout and claw numbers; Aphelion and the Arsenal; CARE's voice, including the gate's
