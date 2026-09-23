@@ -24,8 +24,9 @@ var dice: Callable = Callable()         # -> Array of DieFaceView
 const GAP_MIN := 4.0
 const GAP_MAX := 9.0
 const WEIGHTS := {"scanbox": 3, "databox": 3, "readout": 2, "recalc": 2, "tear": 2, "signal": 1}
-# Quick, all of them (Ryan, 23 September: the first cut was far too slow).
-const DURATION := {"scanbox": 0.55, "databox": 0.5, "readout": 0.5, "recalc": 0.25, "tear": 0.18, "signal": 0.22}
+# Drawn out (Ryan, 23 September: the first cut, at a second or under, was too quick to read).
+const DURATION := {"scanbox": 1.8, "databox": 1.6, "readout": 1.6, "recalc": 0.7, "tear": 0.5, "signal": 0.6}
+const SETTLE := 0.35   # seconds the brackets and the boxes take to land
 const BOX := Vector2(100.0, 48.0)
 ## RIFTGATE_FEED_DEBUG=1: an event every half second or so, and the ground tears every
 ## couple of seconds, to judge them by eye.
@@ -85,11 +86,11 @@ func _start(forced: String = "") -> void:
 	_ev = {"type": type, "view": view, "t": 0.0, "dur": float(DURATION[type]), "salt": int(_rng.randi() % 1000)}
 	match type:
 		"tear":
-			view.glitch("tear")
+			view.glitch("tear", _ev["dur"])
 		"signal":
-			view.glitch("drop")
+			view.glitch("drop", _ev["dur"])
 		"recalc":
-			view.recalc()
+			view.recalc(_ev["dur"])
 	queue_redraw()
 
 
@@ -114,22 +115,26 @@ func _draw() -> void:
 	var v: Control = _ev["view"]
 	if not is_instance_valid(v) or not v.visible:
 		return
-	var t: float = _ev["t"] / _ev["dur"]
+	var secs: float = _ev["t"]
+	var t: float = secs / _ev["dur"]
 	var frame := int(Time.get_ticks_msec() / 90)
 	var salt: int = _ev["salt"]
 	var hud := Palette.HUD
 	var mono := Hud.mono()
-	# In fast, out over the last sixth.
-	var a := minf(1.0, t * 8.0) * (1.0 if t < 0.84 else (1.0 - t) / 0.16)
+	# In over a few frames, out over the last sixth.
+	var a := minf(1.0, secs * 10.0) * (1.0 if t < 0.84 else (1.0 - t) / 0.16)
+	var settle := clampf(secs / SETTLE, 0.0, 1.0)
 	match _ev["type"]:
 		"scanbox":
 			var r := _unit_rect(v)
-			var grow := 4.0 + 12.0 * maxf(0.0, 1.0 - t * 4.0)
+			var grow := 4.0 + 14.0 * (1.0 - settle)
 			Hud.brackets(self, r.grow(grow), 10.0, Color(hud, a), 1.5)
-			var meter := Rect2(r.position.x, r.end.y + grow + 4.0, r.size.x, 4.0)
+			# The meter and the bytes sit top-left, clear of the intent chip below the foe and
+			# of its gauge top-right.
+			var meter := Rect2(r.position.x - 4.0, r.position.y - grow - 4.0, r.size.x * 0.55, 3.0)
 			draw_rect(meter, Color(hud, 0.25 * a))
 			draw_rect(Rect2(meter.position, Vector2(meter.size.x * minf(1.0, t / 0.84), meter.size.y)), Color(hud, a))
-			draw_string(mono, Vector2(r.position.x - 4.0, r.position.y - grow - 5.0), Hud.hex_bytes(3, frame, salt), HORIZONTAL_ALIGNMENT_LEFT, r.size.x + 8.0, 10, Color(hud, a))
+			draw_string(mono, Vector2(r.position.x - 4.0, r.position.y - grow - 8.0), Hud.hex_bytes(3, frame, salt), HORIZONTAL_ALIGNMENT_LEFT, r.size.x + 8.0, 10, Color(hud, a))
 		"databox", "readout":
 			var r := _unit_rect(v)
 			var lines: Array[String] = []

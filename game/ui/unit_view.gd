@@ -55,7 +55,7 @@ const ACQUIRE_SECONDS := 0.3
 const SCRAMBLE_PART := 0.55       # the first part of the acquire, while the number is still settling
 var _glitch: float = -1.0         # seconds since this unit's picture tore; negative when idle
 var _glitch_kind := "tear"        # "tear": slices jump sideways; "drop": the signal goes, static and a tag
-const GLITCH_SECONDS := 0.18
+var _glitch_for := 0.5            # how long this tear lasts
 
 var _pressed := false
 var _press_at := 0.0
@@ -176,7 +176,7 @@ func _process(delta: float) -> void:
 		queue_redraw()
 	if _glitch >= 0.0:
 		_glitch += delta
-		if _glitch > GLITCH_SECONDS:
+		if _glitch > _glitch_for:
 			_glitch = -1.0
 		queue_redraw()
 	if (_has_pending() or breathe) and visible and not dead:
@@ -214,9 +214,10 @@ func acquire() -> void:
 ## the corrupted side's tear on one unit, not only across the whole side). "tear": the
 ## sprite's slices jump sideways; "drop": the signal goes, the sprite fades under static
 ## and a tag says so.
-func glitch(kind: String = "tear") -> void:
+func glitch(kind: String = "tear", seconds: float = 0.5) -> void:
 	_glitch = 0.0
 	_glitch_kind = kind
+	_glitch_for = seconds
 	set_process(true)
 	queue_redraw()
 
@@ -231,15 +232,15 @@ func drawing_rect() -> Rect2:
 ## a dropped signal draws them faint under static with a tag.
 func _draw_glitched(frame: Rect2) -> void:
 	var drop := _glitch_kind == "drop"
-	var tick := int(_glitch * 40.0)
+	var tick := int(_glitch * 24.0)   # the slices hold a new position for a few frames each
 	var ts := sprite.get_size()
 	var n := 7
 	for k in range(n):
 		var f0 := float(k) / float(n)
 		var f1 := float(k + 1) / float(n)
 		var src := Rect2(0.0, ts.y * f0, ts.x, ts.y * (f1 - f0))
-		var off := (Hud.noise(tick * 1.3 + k * 0.77 + breathe_phase) - 0.5) * (16.0 if drop else 10.0)
-		if Hud.noise(tick * 2.1 + k * 0.31 + breathe_phase) < 0.45:
+		var off := (Hud.noise(tick * 1.3 + k * 0.77 + breathe_phase) - 0.5) * (22.0 if drop else 18.0)
+		if Hud.noise(tick * 2.1 + k * 0.31 + breathe_phase) < 0.4:
 			off = 0.0
 		var dst := Rect2(Vector2(frame.position.x + off, frame.position.y + frame.size.y * f0), Vector2(frame.size.x, frame.size.y * (f1 - f0)))
 		var mod := Color.WHITE

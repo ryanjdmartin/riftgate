@@ -103,13 +103,14 @@ func _gui_input(event: InputEvent) -> void:
 
 
 var _recalc: float = -1.0        # seconds since the display began recomputing this face; negative when idle
-const RECALC_SECONDS := 0.35
+var _recalc_for := 0.7           # how long the recomputation shows
 
 
 ## The display recomputes this face for a moment (Ryan, 23 September: the feed being read):
 ## the number scrambles and settles, the frame flashes once. Nothing about the face changes.
-func recalc() -> void:
+func recalc(seconds: float = 0.7) -> void:
 	_recalc = 0.0
+	_recalc_for = seconds
 	queue_redraw()
 
 
@@ -120,7 +121,7 @@ func _process(delta: float) -> void:
 			held.emit()
 	if _recalc >= 0.0:
 		_recalc += delta
-		if _recalc > RECALC_SECONDS:
+		if _recalc > _recalc_for:
 			_recalc = -1.0
 		queue_redraw()
 	if animate and visible and not dead:
@@ -164,7 +165,7 @@ func _draw() -> void:
 	var num := face.number_text()
 	var num_size := 28 if face.is_ranged() else 38
 	if _recalc >= 0.0:
-		var rt := _recalc / RECALC_SECONDS
+		var rt := _recalc / _recalc_for
 		if rt < 0.65:
 			num = Hud.scramble(num, int(Time.get_ticks_msec() / 45), get_instance_id() % 97)
 		Hud.stroke_poly(self, Hud.cut(rect.grow(-3.0), CUT), Color(Palette.INK, 0.6 * (1.0 - rt)), 1.0)

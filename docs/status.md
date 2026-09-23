@@ -83,8 +83,9 @@ tool). The ground tear (`TerrainArt._tear`) is one burst of one to three slices 
 eight seconds at most, over part of the width, dimming or shearing (the map's rift shear),
 off with the glitch setting like the unit tears. Cut after Ryan saw it: the scan band
 lighting gauges, chips, buttons and rules (blinked rather than swept). Ryan's second pass:
-the events were far too slow (now about half a second each) and the tears too many and
-too often. `RIFTGATE_FEED_DEBUG=1` fires everything constantly for judging; Ryan is doing
+the events wanted drawing out (now one to two seconds for the boxes, half a second or
+more for the rest; he first wrote "too slow" and meant too fast) and the tears were too
+many, too often and too faint (now one to three heavy slices, dimming or shearing). `RIFTGATE_FEED_DEBUG=1` fires everything constantly for judging; Ryan is doing
 that now. Knobs: `FeedFX.WEIGHTS`, `GAP_MIN`/`GAP_MAX`, `DURATION`, `TerrainArt.TEAR_PERIOD`.
 
 **Ryan's verdict on the web harness (23 September).** It served for sizes and touch and no
@@ -115,9 +116,19 @@ music 6 dB, so the balance holds on a speaker. Ryan heard the map loop (a huge i
 and gave notes, now built and in the bible's sound row: no builds, bass drops or speed
 snares; 32-bar loops with an eight-bar interlude; the crunch bass back; a little metal at
 low gain; the map at 92 (84 was too slow) on its own kit (soft kick, rim, brushed hats, pad and chimes), the
-skirmish at 100 on kick, snare, clank and saw stabs, the pad and bass shared. Not yet
-heard: the skirmish loop as rebuilt, and every effect. The knobs: `LEVELS`, `DIP`, each
-loop's `kit` gains, `bass` and `pad` in `music_map` and `music_skirmish`. If a loop's bpm changes in
+skirmish at 100 on kick, snare, clank and saw stabs, the pad and bass shared. Ryan's
+second listen: the map's writing is right (the chimes), the kit reads as Loop Hero (the
+pulse-and-saw palette), the industrial noises were too much (the swell cut, the tick kept
+to the interlude), the skirmish tune is less complex than the map's. The direction
+discussion is in the bible's sound row (open: the palette; the dichotomy as the mixing
+rule). The groove engine is now voices over chords (`groove(bpm, form, kit, drums,
+chords, voices, pad)`) with new instruments: FM `epiano`, `bell`, `brass`; Karplus-Strong
+`pluck`, `pluck_bass`, `chug`; formant `choir`; `organ`, `strings`, `orch_hit`. Three
+eight-bar sketches on one riff (`forge.py sketch`, into `tools/soundforge/out/`, ignored
+by git): human (FM keys, bells, plucked bass), rift (choir, strings, taiko, orchestral
+hits, the crunch bass), djent (a seven-step chug the kick locks to, bells, choir). Next:
+Ryan listens to the three and picks; the loops are rebuilt in that palette with the
+skirmish given the map's counterpoint and chord motion. Not yet heard: every effect. If a loop's bpm changes in
 `groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
 loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
 wraps every tail, the room's included. The display's scan and idle stay silent by decision.

@@ -160,7 +160,7 @@ static func draw_ground(ci: CanvasItem, rect: Rect2, terrain: int, seed_value: i
 ## Deterministic in time, so the two ground bands agree. RIFTGATE_FEED_DEBUG=1: every two
 ## seconds, never silent.
 const TEAR_PERIOD := 8.0
-const TEAR_SECONDS := 0.2
+const TEAR_SECONDS := 0.45
 
 static func tear_period() -> float:
 	return 2.0 if FeedFX.DEBUG else TEAR_PERIOD
@@ -188,28 +188,30 @@ static func _tear(ci: CanvasItem, rect: Rect2, t: float, terrain: int, hex: floa
 	var age := t - at
 	if age < 0.0 or age > TEAR_SECONDS:
 		return
-	var tick := floorf(age * 30.0)
+	var tick := floorf(age * 16.0)   # a new position every few frames, held long enough to see
 	var shear := Hud.noise(slot * 8.8 + 0.1) < 0.5
 	var n := 1 + int(Hud.noise(slot * 1.3 + 0.2) * 3.0)
 	for k in range(n):
-		var yy := rect.position.y + Hud.noise(slot * 11.1 + k * 0.37) * (rect.size.y - 12.0)
+		var yy := rect.position.y + Hud.noise(slot * 11.1 + k * 0.37) * (rect.size.y - 16.0)
 		var full := Hud.noise(slot * 5.5 + k * 0.91) < 0.3
 		var wfrac := 1.0 if full else 0.2 + 0.5 * Hud.noise(slot * 2.2 + k * 0.53)
 		var x0 := rect.position.x + (0.0 if full else Hud.noise(slot * 9.9 + k * 0.71) * (1.0 - wfrac) * rect.size.x)
-		var hh := 3.0 + 7.0 * Hud.noise(slot * 4.4 + k * 0.29)
+		var hh := 5.0 + 9.0 * Hud.noise(slot * 4.4 + k * 0.29)
 		var w := wfrac * rect.size.x
 		var slice := Rect2(x0, yy, w, hh)
-		var shift := (Hud.noise(slot * 6.6 + k * 0.43 + tick * 1.7) - 0.5) * 18.0
+		var shift := (Hud.noise(slot * 6.6 + k * 0.43 + tick * 1.7) - 0.5) * 36.0
 		if shear:
-			# The slice's input arrives displaced: its flat ground over the grid, then its
-			# own grid segments drawn again where they landed, slightly dimmer.
+			# The slice's input arrives displaced: its flat ground, darker, over the grid,
+			# then its own grid segments drawn again where they landed, and the cut's edges.
 			var base: Color = OTHER.get(terrain, OTHER[BattleMap.Terrain.PLAIN])
-			ci.draw_rect(slice, base.darkened(0.06))
-			_grid_pieces(ci, rect, hex, slice, shift, 0.14)
+			ci.draw_rect(slice, base.darkened(0.22))
+			_grid_pieces(ci, rect, hex, slice, shift, 0.3)
+			ci.draw_rect(Rect2(x0, yy, w, 1.0), Color(0, 0, 0, 0.5))
+			ci.draw_rect(Rect2(x0, yy + hh - 1.0, w, 1.0), Color(0, 0, 0, 0.5))
 		else:
-			ci.draw_rect(slice, Color(0, 0, 0, 0.22))
-			ci.draw_rect(Rect2(x0 + shift, yy, w, 1.0), Color(1, 1, 1, 0.12))
-			ci.draw_rect(Rect2(x0 - shift * 0.5, yy + hh - 1.0, w, 1.0), Color(Palette.ENEMY, 0.10))
+			ci.draw_rect(slice, Color(0, 0, 0, 0.5))
+			ci.draw_rect(Rect2(x0 + shift, yy, w, 1.0), Color(1, 1, 1, 0.4))
+			ci.draw_rect(Rect2(x0 - shift * 0.5, yy + hh - 1.0, w, 1.0), Color(Palette.ENEMY, 0.35))
 
 
 ## The display's grid segments that fall inside `clip`, drawn `shift` pixels to the side:
