@@ -246,6 +246,10 @@ func _on_map() -> void:
 
 
 func _show(node: Node) -> void:
+	if OS.has_feature("web"):
+		# On a phone's browser (tools/phone.sh) the button press is the gesture that lets
+		# the page go full screen, so the address bar leaves and the height is real.
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 	_menu.visible = false
 	_current = node
 	add_child(node)

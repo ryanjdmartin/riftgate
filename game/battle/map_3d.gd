@@ -114,11 +114,12 @@ func _aim() -> void:
 	var centre_px := (_view * 0.5 - _scroll) / _zoom   # the map pixel under the screen's middle
 	var target := _world(centre_px - _origin)
 	var back := Vector3(0.0, _sin, _cos)
-	_camera.position = target + back * CAMERA_DISTANCE
-	_camera.look_at(target, Vector3.UP)
+	# Aimed before the map is in the tree too (setup runs first), so nothing global here:
+	# both cameras sit directly under their viewport and local is global.
+	_camera.look_at_from_position(target + back * CAMERA_DISTANCE, target, Vector3.UP)
 	if _units_cam != null:
 		_units_cam.size = _camera.size
-		_units_cam.global_transform = _camera.global_transform
+		_units_cam.transform = _camera.transform
 
 
 ## The machines are the reconstruction's own and never go under the other world's
@@ -214,11 +215,6 @@ func lift(h: Vector2i) -> float:
 func _height_of(h: Vector2i) -> float:
 	var e: int = field.map.elevation.get(h, 0)
 	return WATER_DROP if e < 0 else float(e) * STEP
-
-
-## RIFTGATE_MAP_WIRE=1: the terrain as the display's wireframe, a trial (Ryan, 21 September).
-static func wire_mode() -> bool:
-	return OS.get_environment("RIFTGATE_MAP_WIRE") == "1"
 
 
 ## Flat colour: unshaded so the palette stays exact, two-sided so winding never matters.
@@ -582,7 +578,6 @@ func _build_ground() -> void:
 	var corners := Hex.corners(Vector2.ZERO, hex_px)
 	var hexes: Array = map.all_hexes().duplicate()
 	hexes.append_array(map.margin.keys())
-	var wire := wire_mode()
 	for h in hexes:
 		var t: int = map.terrain_of(h)
 		var in_field: bool = map.has(h)
@@ -615,23 +610,14 @@ func _build_ground() -> void:
 		var ground_t: int = map.crag_base.get(h, t) if t == BattleMap.Terrain.MOUNTAIN else t
 		var mi := MeshInstance3D.new()
 		mi.mesh = _column_mesh(hgt, sides)
-		if wire:
-			mi.set_surface_override_material(0, _wire_fill())
-			if mi.mesh.get_surface_count() > 1:
-				mi.set_surface_override_material(1, _wire_fill())
-			var edges := MeshInstance3D.new()
-			edges.mesh = _column_edges(hgt, sides)
-			edges.material_override = _grid_material()
-			col.add_child(edges)
+		if ground_t == BattleMap.Terrain.ROAD:
+			mi.set_surface_override_material(0, _road_material())
+			mi.set_instance_shader_parameter("links", _road_links(h))
+			mi.set_instance_shader_parameter("seed", float(h.x * 131 + h.y * 7919))
 		else:
-			if ground_t == BattleMap.Terrain.ROAD:
-				mi.set_surface_override_material(0, _road_material())
-				mi.set_instance_shader_parameter("links", _road_links(h))
-				mi.set_instance_shader_parameter("seed", float(h.x * 131 + h.y * 7919))
-			else:
-				mi.set_surface_override_material(0, _terrain_material(TILE[ground_t], 1.0 if ground_t == BattleMap.Terrain.WATER else 0.0))
-			if mi.mesh.get_surface_count() > 1:
-				mi.set_surface_override_material(1, rock)
+			mi.set_surface_override_material(0, _terrain_material(TILE[ground_t], 1.0 if ground_t == BattleMap.Terrain.WATER else 0.0))
+		if mi.mesh.get_surface_count() > 1:
+			mi.set_surface_override_material(1, rock)
 		col.add_child(mi)
 		if in_field and not (map.gate_hexes.has(h) or map.wall_hexes.has(h)):
 			# The grid is the display's own light, drawn on the ground in the scene so a
@@ -643,8 +629,6 @@ func _build_ground() -> void:
 			grid.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 			col.add_child(grid)
 		rng.seed = h.x * 131 + h.y * 7919
-		if wire:
-			continue
 		if map.city.has(h):
 			_city_block(col, hgt, rng)
 			continue
@@ -793,35 +777,6 @@ func _dead_tree(col: Node3D, at: Vector3, rng: RandomNumberGenerator) -> void:
 		branch.size = Vector3(rng.randf_range(9.0, 18.0), 2.0, 2.0)
 		_prop(col, branch, bark, at + Vector3(branch.size.x * 0.4, tall * rng.randf_range(0.5, 0.9), 0.0),
 			Vector3(0.0, rng.randf_range(0, TAU), rng.randf_range(0.3, 0.8)))
-
-
-var _wire_mat: StandardMaterial3D = null
-
-## The wireframe trial's ground: near-black glass, so only the lines and the units show.
-func _wire_fill() -> StandardMaterial3D:
-	if _wire_mat == null:
-		_wire_mat = StandardMaterial3D.new()
-		_wire_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		_wire_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
-		_wire_mat.albedo_color = Color(0.02, 0.05, 0.03, 1.0)
-	return _wire_mat
-
-
-## A column's vertical edges as lines, for the wireframe trial.
-func _column_edges(h: float, sides: Array) -> ArrayMesh:
-	var corners := Hex.corners(Vector2.ZERO, hex_px - 0.75)
-	var st := SurfaceTool.new()
-	st.begin(Mesh.PRIMITIVE_LINES)
-	var n := corners.size()
-	for i in range(n):
-		if sides[i] or sides[(i - 1 + n) % n]:
-			st.add_vertex(_world(corners[i], 0.0))
-			st.add_vertex(_world(corners[i], h))
-	if absf(h) > 0.01:
-		for i in range(n):
-			st.add_vertex(_world(corners[i], 0.0))
-			st.add_vertex(_world(corners[(i + 1) % n], 0.0))
-	return st.commit()
 
 
 func _model(id: String, maker: String, paint: Dictionary = {}, outline: bool = true) -> Node3D:

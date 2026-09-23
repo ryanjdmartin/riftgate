@@ -365,15 +365,11 @@ func _draw() -> void:
 				pts.append(center(step))
 			var owned := not (contact_hexes.has(dest) or map.gate_hexes.has(dest))
 			if owned:
-				# The line runs over the outline into the target: line, tint, outline and
-				# rings are one component, nothing translucent, the hex under the line so
-				# nothing cuts it (Ryan, 22 September).
+				# The line runs over the outline to the target's centre: line, tint, outline
+				# and rings are one component, nothing translucent, the hex under the line
+				# so nothing cuts it (Ryan, 22 September).
 				_destination_hex(dest)
-				if not LINE_TO_CENTRE:
-					var dc := pts[pts.size() - 1]
-					var dir := (dc - pts[pts.size() - 2]).normalized()
-					pts[pts.size() - 1] = dc - dir * DEST_RING
-			draw_polyline(pts, _ring_colour(), 4.0)   # the line breathes with the target (Ryan, 22 September: to see)
+			draw_polyline(pts, _ring_colour(), 4.0)   # the line breathes with the target (Ryan, 22 September)
 			if owned:
 				_destination_rings(center(dest))
 
@@ -611,8 +607,7 @@ func _mark(h: Vector2i) -> Dictionary:
 	return m
 
 
-const DEST_RING := HEX_SIZE * 0.58   # the target's outer ring; the line stops here unless LINE_TO_CENTRE
-const LINE_TO_CENTRE := true          # the intent line runs to the hex's centre (Ryan, 22 September: to try)
+const DEST_RING := HEX_SIZE * 0.58   # the target's outer ring
 const ENEMY_LIT := Color("ffb3a6")    # the enemy marks' bright: red lifted well toward white, so the rings ride the tint
 
 ## The target in the HUD's own weight (Ryan, 22 September: nothing translucent, nothing

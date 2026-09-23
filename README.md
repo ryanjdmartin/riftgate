@@ -91,6 +91,14 @@ tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut tools/foeforge/out/g
 
 # the gate and wall are built the same way
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build gate wall
+
+# the game on a phone, without an Android export: a Web build served over the LAN. Open the
+# printed address in the phone's browser on the same Wi-Fi; the first button press goes
+# full screen. Sizes and touch are the phone's own, the frame rate is the browser's.
+# Needs the 4.7.2 export templates once: fetch Godot_v4.7.2-stable_export_templates.tpz
+# from the Godot release, unzip, and put its `templates` folder at
+# ~/Library/Application Support/Godot/export_templates/4.7.2.stable
+tools/phone.sh          # export then serve; `tools/phone.sh serve` serves the last export
 ```
 
 The skirmish screen runs top to bottom: header with the round tag, enemies with the intent
