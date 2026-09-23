@@ -5,14 +5,16 @@ thing works lives in its file's comments; why it is that way lives in the bible.
 
 ## As of 23 September 2026 (midday)
 
-**State.** Tests: 187 tests, 2453 checks, green (`perl -e 'alarm 240; exec @ARGV' godot
---headless --path . -s tests/run_tests.gd`). Ryan runs a second session on this repo at
+**State.** Tests: 187 tests, 2458 checks (`perl -e 'alarm 240; exec @ARGV' godot
+--headless --path . -s tests/run_tests.gd`); green apart from
+`test_every_named_sound_has_a_file`, which fails on five names the audio session added to
+`game/audio/sound.gd` (laser, gunfire, cannon, slash, slam) whose files are not built yet:
+that session's open work, not a regression. Ryan runs a second session on this repo at
 the same time (today: the HUD session and the audio session): check `git status` before
-committing and stage by path. The audio session's hunks in `game/ui/hud_button.gd` (the
-`sound` property), `game/battle/battle_screen.gd` and `game/skirmish/skirmish_screen.gd`
-(buttons with their own sound, the overheat landing) sit in the working tree beside the HUD
-session's edits and go in with them. Chassis ids: `badger`, `clydesdale`, `sparrowhawk`, `anvil`. Ryan writes
-`content/*.json` in his own voice; tests never hardcode an entry's passive name.
+committing and stage by path; the HUD session's work is all committed, the audio session's
+open edits sit in `art/audio`, `game/audio` and `tools/soundforge`. Chassis ids: `badger`,
+`clydesdale`, `sparrowhawk`, `anvil`. Ryan writes `content/*.json` in his own voice; tests
+never hardcode an entry's passive name.
 
 **Where things are.** `sim/` is the headless game (battle map, battlefield resolver,
 battle loop, skirmish, effects pipeline, content DB). `game/battle/` is the battle screen
@@ -73,34 +75,30 @@ beat), each blow stepping the struck mech's shield and hull from the event the s
 Layout: ally gauges and chips 10 px off the model, a foe's gauge 16 px above its sprite
 with a 16 px leader running onto it, every gauge on a black ground of its own shape (no
 plate), the eye 60 px in the black at the log's right with 12 px margins (the log strip
-stops short of it), log 112 tall, dice and Reroll up 16, 30 px of black under Reroll. Poses
-added to `tools/screenshot.gd`: menu, settings, quit, withdraw, acquire. The bible has the
-rows (section 5, and the HUD row in 4) and is republished as v0.8 (link above). Then the
-"feed being analysed" pass (bible section 6 row): intents are acquired with collapsing
-brackets and a digit scramble (`UnitView.acquire`; Ryan: exactly right), the phase readout
-carries a fight clock, the log strip ends in a blinking prompt, and `game/ui/feed_fx.gd`
-runs one rare one-shot event every 4 to 9 s on a random unit or die (scanbox, databox,
-readout, recalc, tear, signal; poses `feed_<name>` and `groundtear` in the screenshot
-tool). The corrupted side's tear is `game/ui/tear_layer.gd` + `tear.gdshader`, a
-screen-reading layer over the foes' band (sprites included; under them it was lost): one
-or two slices every eight seconds at most, over part of the width, sheared as the map's
-rift ground is (the dimming flavour was cut), hidden between tears, off with the glitch
-setting like the unit tears. The machine readout is a live bar chart or an equaliser of
-three level bars (`levels`), the die recalc is wide static over a held number, the foes'
-breathing is spread by slot, and the foe events and the machine-and-dice events run on two
-independent lanes (`FeedFX.LANES`), each 5 to 11 s apart. The die's static covers the
-face edge to edge inside its chamfers, drawn last, and a die can also wobble
-(`DieFaceView.wobble`: a manual `TearLayer` child reads the die back and sets a few of six
-horizontal bands sideways, as the foe's signal drop does; the shader now takes up to eight
-slices as arrays); the machine boxes run 3.6 s at 68 px wide; the foes'
-pane sits 12 px lower (BACK_Y 72) for black between it and the header; the shear has no
-hairlines. Cut after Ryan saw it: the scan band
-lighting gauges, chips, buttons and rules (blinked rather than swept). Ryan's second pass:
-the events wanted drawing out (now one to two seconds for the boxes, half a second or
-more for the rest; he first wrote "too slow" and meant too fast) and the tears were too
-many, too often and too faint. `RIFTGATE_FEED_DEBUG=1` fires everything constantly for
-judging; Ryan is doing that now. Knobs: `FeedFX.LANES`, `GAP_MIN`/`GAP_MAX`, `DURATION`,
-`TearLayer.PERIOD`.
+stops short of it), log 112 tall, dice and Reroll up 16, 30 px of black under Reroll, the
+foes' pane 12 px lower (BACK_Y 72) for black under the header. Poses added to
+`tools/screenshot.gd`: menu, settings, quit, withdraw, acquire, groundtear, feed_<name>.
+
+**The feed pass, 23 September (locked by Ryan after judging every effect in motion; bible
+section 6 row has the full record of kept, cut and reworked).** The skirmish HUD reads as a
+feed being analysed. Always on: intents acquired with collapsing brackets and a digit
+scramble as they appear (`UnitView.acquire`), the header's fight clock, the log strip's
+blinking prompt, the scan band on the mechs' traces only. `game/ui/feed_fx.gd` runs rare
+one-shot events on two independent lanes, each firing every 5 to 11 s: the foe lane
+(scanbox with a meter and a blinking "SCAN OK"; a telemetry box whose leader's select box
+moves between parts of the foe; a sprite tear; a signal drop under static with a plated
+"SIG LOST") and the ally lane (a rolling bar chart or a three-bar equaliser beside a
+machine; a die's static over its held number at 60 positions a second; a die's wobble in
+horizontal slices). `game/ui/tear_layer.gd` + `tear.gdshader` is the screen-reading slice
+shear, used over the foes' whole pane (one or two slices every 8 s at most, one slot in
+three silent, hidden between tears) and, in manual mode, as the die's wobble. The tear,
+the signal drop and the wobble go off with the GLITCH setting. Cut along the way: the scan
+band lighting gauges, chips, buttons and rules (blinked rather than swept); a dimming tear
+flavour; hairlines on the shear; a jolt-and-tilt wobble; a digit scramble on the die.
+`RIFTGATE_FEED_DEBUG=1` fires every lane every half second and the tear every two seconds.
+Knobs: `FeedFX.LANES`, `GAP_MIN`/`GAP_MAX`, `DURATION`, `TearLayer.PERIOD`,
+`DieFaceView.STATIC_RATE`. Ryan judges effects in motion, never from stills: keep the debug
+switch and the poses for the next pass.
 
 **Ryan's verdict on the web harness (23 September).** It served for sizes and touch and no
 more: the map must not get smaller (the base hex size may go up a little; zoom makes it

@@ -103,7 +103,7 @@ func _gui_input(event: InputEvent) -> void:
 
 
 var _recalc: float = -1.0        # seconds since the display began recomputing this face; negative when idle
-const STATIC_RATE := 48.0        # new static positions a second (Ryan, 23 September: 20 was too slow)
+const STATIC_RATE := 60.0        # new static positions a second (Ryan, 23 September: 20 was too slow, 48 still a little)
 var _recalc_for := 0.7           # how long the recomputation shows
 
 
