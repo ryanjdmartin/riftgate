@@ -15,6 +15,7 @@ extends Control
 ## either opens the next skirmish or returns to the plan.
 
 signal back_requested
+signal quit_requested   # the menu's QUIT, on this screen or in an open skirmish: out to the harness
 
 const SKIRMISH_SCENE := preload("res://game/skirmish/skirmish_screen.tscn")
 
@@ -128,7 +129,8 @@ var _codex: CodexBox = null
 
 func _build() -> void:
 	for c in get_children():
-		c.queue_free()
+		if c != _menu:   # the menu outlives a rebuild it asked for (a colour change)
+			c.queue_free()
 	H = Hud.screen_height(self)
 	LOG_Y = 1076.0 + (H - BASE_H)   # the map takes the extra height; the log and buttons keep to the bottom
 	BOTTOM_Y = 1196.0 + (H - BASE_H)
@@ -202,6 +204,8 @@ func _build() -> void:
 	_place(_scan, Vector2.ZERO, Vector2(W, H))
 
 	_build_outcome()
+	if _menu != null:
+		_menu.move_to_front()
 
 
 func _build_outcome() -> void:
@@ -378,6 +382,8 @@ func _open_menu() -> void:
 		_menu = PauseMenu.new()
 		_menu.display_changed.connect(func(_key: String, _value: Variant) -> void: _apply_display())
 		_menu.hud_changed.connect(_rebuild)
+		_menu.quit_requested.connect(func() -> void: quit_requested.emit())
+		_menu.quit_requested.connect(func() -> void: quit_requested.emit())
 		add_child(_menu)
 	_menu.move_to_front()
 	_menu.open()
@@ -749,6 +755,8 @@ func _open_skirmish(index: int = 0) -> void:
 	screen.back_label = "BACK TO THE FIELD"
 	screen.setup(sk)
 	screen.back_requested.connect(_on_skirmish_back)
+	screen.quit_requested.connect(func() -> void: quit_requested.emit())   # QUIT in the fight leaves the battle too
+	screen.quit_requested.connect(func() -> void: quit_requested.emit())   # straight out to the harness
 	_skirmish = screen
 	if DisplayServer.get_name() == "headless":
 		_map.set_highlight([])
