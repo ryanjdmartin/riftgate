@@ -102,11 +102,27 @@ func _gui_input(event: InputEvent) -> void:
 		accept_event()
 
 
+var _recalc: float = -1.0        # seconds since the display began recomputing this face; negative when idle
+const RECALC_SECONDS := 0.35
+
+
+## The display recomputes this face for a moment (Ryan, 23 September: the feed being read):
+## the number scrambles and settles, the frame flashes once. Nothing about the face changes.
+func recalc() -> void:
+	_recalc = 0.0
+	queue_redraw()
+
+
 func _process(delta: float) -> void:
 	if _pressed and not _dragging and not _holding:
 		if Time.get_ticks_msec() / 1000.0 - _press_at >= HOLD_SECONDS:
 			_holding = true
 			held.emit()
+	if _recalc >= 0.0:
+		_recalc += delta
+		if _recalc > RECALC_SECONDS:
+			_recalc = -1.0
+		queue_redraw()
 	if animate and visible and not dead:
 		_t += delta
 		queue_redraw()
@@ -147,6 +163,11 @@ func _draw() -> void:
 	Glyphs.draw(self, Glyphs.primary_for(face), Vector2(FACE * 0.5, 34.0 + bob), 34, ink, 2.6)
 	var num := face.number_text()
 	var num_size := 28 if face.is_ranged() else 38
+	if _recalc >= 0.0:
+		var rt := _recalc / RECALC_SECONDS
+		if rt < 0.65:
+			num = Hud.scramble(num, int(Time.get_ticks_msec() / 45), get_instance_id() % 97)
+		Hud.stroke_poly(self, Hud.cut(rect.grow(-3.0), CUT), Color(Palette.INK, 0.6 * (1.0 - rt)), 1.0)
 	draw_string(mono, Vector2(0, 92.0 + bob), num, HORIZONTAL_ALIGNMENT_CENTER, FACE, num_size, ink)
 	if face.strikes > 1:
 		# Blows per use, small, to the right of the number: "10 ×3" reads as a burst.

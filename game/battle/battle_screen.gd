@@ -146,6 +146,7 @@ func _build() -> void:
 	_header = _tag("", 13, true)
 	_place(_header, Vector2(12, 14), Vector2(300, 28))
 	var menu_btn := HudButton.new("MENU", _open_menu)
+	menu_btn.sound = ""   # the menu's own breaker is the sound
 	_place(menu_btn, Vector2(W - 96, 10), Vector2(84, 34))
 	if OS.get_environment("RIFTGATE_TUNE") == "1":
 		# The map's live knobs, a development tool; the player's knobs are in the menu.
@@ -175,6 +176,7 @@ func _build() -> void:
 	_place(_log, Vector2(20, LOG_Y + 22), Vector2(W - 40, LOG_H - 22))
 
 	_resolve_btn = HudButton.new("RESOLVE", _on_resolve)
+	_resolve_btn.sound = ""   # the lever is the sound
 	_resolve_btn.filled = true
 	_place(_resolve_btn, Vector2(16, BOTTOM_Y), BOTTOM_BTN)
 	_clear_btn = HudButton.new("CLEAR ROUTES", _on_clear)
@@ -685,6 +687,7 @@ func _fill_contact_panel() -> void:
 	gap.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	rows.add_child(gap)
 	var btn := HudButton.new("ENGAGE", _open_skirmish.bind(_contact_index))
+	btn.sound = ""   # the dive is the sound
 	btn.filled = true
 	btn.custom_minimum_size = Vector2(0, 54)
 	rows.add_child(btn)

@@ -93,9 +93,10 @@ var _phase := "ASSIGN"               # the header's phase word; the clock rides 
 var _log_typing := false             # new lines typing in: the cursor waits
 
 
-## Every frame: the scan band lights whatever it crosses (the mechs' traces, every gauge,
-## chip and button), the header's clock ticks, and the log's cursor blinks (Ryan, 23
-## September: the HUD as a feed being read in real time).
+## Every frame: the scan band lights the mechs' traces as it crosses them (as on the map),
+## the header's clock ticks, and the log's cursor blinks (Ryan, 23 September: the HUD as a
+## feed being read in real time; the band lighting gauges and buttons too was tried the
+## same day and cut, a horizontal band crossing a horizontal bar only blinks it).
 func _process(delta: float) -> void:
 	if _bg == null:
 		return
@@ -118,11 +119,31 @@ func _process(delta: float) -> void:
 		if v.size.y <= 0.0:
 			continue
 		view.set_sweep_screen((y - v.position.y) * float(view.size.y) / v.size.y)
-	for c in get_children():
-		if c is UnitView:
-			c.set_sweep(y - c.position.y)
-		elif c is HudButton:
-			c.set_sweep(y - c.position.y)
+
+
+## The feed's analysis events pick from what is alive right now.
+func _live_foe_views() -> Array:
+	var out: Array = []
+	for v in _view_foe.keys():
+		if v.visible and not v.dead:
+			out.append(v)
+	return out
+
+
+func _live_mech_views() -> Array:
+	var out: Array = []
+	for v in _mech_views:
+		if not v.dead:
+			out.append(v)
+	return out
+
+
+func _live_dice() -> Array:
+	var out: Array = []
+	for d in _dice:
+		if not d.dead and not d.spent and d.face != null:
+			out.append(d)
+	return out
 
 
 func _phase_text() -> String:
@@ -154,6 +175,7 @@ var _overlay: Control
 var _overlay_title: Label
 var _overlay_text: Label
 var _replay_shade: Control            # swallows taps while the enemy's turn replays
+var _fx: FeedFX = null                # the display's rare analysis events
 var _drag_from: int = -1
 var _log_seen: int = 0
 var _hold_foe: Foe = null
@@ -275,6 +297,7 @@ func _build() -> void:
 	# (Ryan, 23 September: off the ground band): toggled often, so it stays within a thumb's
 	# reach of the foes it concerns. The log strip stops short of it.
 	var menu_btn := HudButton.new("MENU", _open_menu)
+	menu_btn.sound = ""   # the menu's own breaker is the sound
 	_place(menu_btn, Vector2(W - 96, 10), Vector2(84, 34))
 	_eye = HudButton.new("")
 	_eye.glyph = "eye"
@@ -388,6 +411,7 @@ func _build() -> void:
 
 	# Bottom row: End turn bottom-left, Withdraw bottom-right.
 	_end_btn = HudButton.new("END TURN", _on_end_turn)
+	_end_btn.sound = ""   # the lever is the sound
 	_end_btn.filled = true
 	_place(_end_btn, Vector2(16, BOTTOM_Y), BOTTOM_BTN)
 	_withdraw_btn = HudButton.new("WITHDRAW", _on_withdraw)
@@ -401,6 +425,15 @@ func _build() -> void:
 	_replay_shade.visible = false
 	_replay_shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(_replay_shade)
+
+	# The display reading the fight: every few seconds one brief analysis event on a random
+	# unit or die (brackets and a meter, a telemetry box, a tear, a recalculation).
+	_fx = FeedFX.new()
+	_fx.foe_views = _live_foe_views
+	_fx.mech_views = _live_mech_views
+	_fx.dice = _live_dice
+	_fx.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(_fx)
 
 	# Overlays: arrows, drag ghost, roll flash, details, codex, confirm, outcome.
 	_arrows = ArrowLayer.new()
@@ -1253,7 +1286,7 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 		if mi >= 0 and mi < _mech_views.size():
 			hits.append([before["views"].get(ev["foe"]), _mech_views[mi], bool(ev["broke_shield"]),
 				bool(ev.get("blocked", false)), int(ev["shield"]), int(ev["hull"])])
-	if not is_inside_tree() or hits.is_empty():
+	if not is_inside_tree() or (hits.is_empty() and sk.overheats.is_empty()):
 		then.call()
 		return
 	_set_phase("ENEMY PHASE")
@@ -1275,6 +1308,9 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 	var tw := create_tween()
 	for h in hits:
 		tw.tween_callback(_land_blow.bind(h))
+		tw.tween_interval(beat)
+	if not sk.overheats.is_empty():
+		tw.tween_callback(_land_overheats)
 		tw.tween_interval(beat)
 	tw.tween_interval(0.25)
 	tw.tween_callback(func() -> void:
@@ -1307,6 +1343,24 @@ func _land_blow(h: Array) -> void:
 		mv.queue_redraw()
 		if broke:
 			mv.shatter_shield())
+
+
+## The round's overheats land together after the enemy's blows (the sim burns them at the
+## round's end, all at once): the machines that ran hot flinch and their hull steps down.
+## Heard once, however many burn.
+func _land_overheats() -> void:
+	Sound.play("overheat")
+	for ov in sk.overheats:
+		var i: int = ov["mech"]
+		if i < 0 or i >= _mech_views.size():
+			continue
+		var mv := _mech_views[i]
+		_animate_hit(mv)
+		if mv.bars.size() >= 2:
+			mv.bars[1][0] = int(ov["hull"])
+		if int(ov["hull"]) <= 0:
+			mv.dead = true
+		mv.queue_redraw()
 
 
 ## Every animation on a control returns it to where it was placed. Whatever is still

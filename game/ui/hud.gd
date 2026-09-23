@@ -145,22 +145,33 @@ static func scanlines(ci: CanvasItem, rect: Rect2, alpha: float = 0.03) -> void:
 		y += 3.0
 
 
-## How lit an element spanning y0..y1 is by the display's scan band at `band_y` (all in
-## the same space): full as the band crosses it, with a short lead, then a tail that fades
-## fast at first (Ryan, 23 September: the one sweep the screen has touches everything, so
-## the HUD reads as one display being read rather than a print).
-const SWEEP_LEAD := 12.0
-const SWEEP_TAIL := 110.0
+## A readout's digits replaced by others, stable for a few frames at a time (`frame` is a
+## coarse frame counter), so a number is seen to settle rather than flicker at random. The
+## display's "still computing" look (Ryan, 23 September).
+static func scramble(txt: String, frame: int, salt: int = 0) -> String:
+	var out := ""
+	for k in range(txt.length()):
+		var c := txt[k]
+		if c.is_valid_int():
+			out += str(absi(hash(frame * 31 + k * 7 + salt * 131)) % 10)
+		else:
+			out += c
+	return out
 
-static func sweep_glow(band_y: float, y0: float, y1: float) -> float:
-	if band_y < y0 - SWEEP_LEAD:
-		return 0.0
-	if band_y <= y1:
-		return 1.0
-	var d := (band_y - y1) / SWEEP_TAIL
-	if d >= 1.0:
-		return 0.0
-	return (1.0 - d) * (1.0 - d)
+
+## A deterministic 0..1 from a float, for effects that must not change between frames
+## unless their input does.
+static func noise(x: float) -> float:
+	return fmod(absf(sin(x * 12.9898) * 43758.5453), 1.0)
+
+
+## Gibberish telemetry: `n` hex bytes for a coarse frame counter, as the display "reading" a
+## unit shows while it works.
+static func hex_bytes(n: int, frame: int, salt: int = 0) -> String:
+	var parts: PackedStringArray = []
+	for k in range(n):
+		parts.append("%02X" % (absi(hash(frame * 17 + k * 13 + salt * 101)) % 256))
+	return " ".join(parts)
 
 
 ## A short diagonal tick, the mock's "leader" mark beside a unit.

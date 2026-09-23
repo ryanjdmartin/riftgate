@@ -149,18 +149,37 @@ static func draw_ground(ci: CanvasItem, rect: Rect2, terrain: int, seed_value: i
 		ci.draw_rect(Rect2(rect.position.x, rect.end.y - (i + 1) * h, rect.size.x, h), Color(Palette.BG, a))
 
 
-## The corrupted side's tear, as the map's compositor does it: now and then one thin band
-## darkens for a tick.
+## The corrupted side's tear: input the display cannot hold. One tear every few seconds
+## (Ryan, 23 September: the earlier ticking bands read as extra scan lines), a burst of a
+## few slices that jump sideways for a fifth of a second, each over part of the width as
+## often as all of it, and one slot in four silent so it never becomes a rhythm. Off with
+## the glitch setting. Deterministic in time, so the two ground bands agree.
+const TEAR_PERIOD := 5.0
+const TEAR_SECONDS := 0.2
+
 static func _tear(ci: CanvasItem, rect: Rect2, t: float) -> void:
-	var tick := floorf(t * 6.0)
-	var y := rect.position.y
-	var band := 0
-	while y < rect.end.y:
-		var h := fmod(sin(float(band) * 12.9898 + tick * 7.31) * 43758.5453, 1.0)
-		if absf(h) > 0.9985:
-			ci.draw_rect(Rect2(rect.position.x, y, rect.size.x, 6.0), Color(0, 0, 0, 0.12))
-		y += 6.0
-		band += 1
+	if not bool(Settings.display.get("glitch", true)):
+		return
+	var slot := floorf(t / TEAR_PERIOD)
+	if Hud.noise(slot * 7.7 + 0.3) > 0.75:
+		return
+	var at := (slot + 0.1 + 0.75 * Hud.noise(slot * 3.1 + 0.7)) * TEAR_PERIOD
+	var age := t - at
+	if age < 0.0 or age > TEAR_SECONDS:
+		return
+	var tick := floorf(age * 30.0)
+	var n := 2 + int(Hud.noise(slot * 1.3 + 0.2) * 3.0)
+	for k in range(n):
+		var yy := rect.position.y + Hud.noise(slot * 11.1 + k * 0.37) * (rect.size.y - 12.0)
+		var full := Hud.noise(slot * 5.5 + k * 0.91) < 0.3
+		var wfrac := 1.0 if full else 0.2 + 0.5 * Hud.noise(slot * 2.2 + k * 0.53)
+		var x0 := rect.position.x + (0.0 if full else Hud.noise(slot * 9.9 + k * 0.71) * (1.0 - wfrac) * rect.size.x)
+		var hh := 3.0 + 7.0 * Hud.noise(slot * 4.4 + k * 0.29)
+		var shift := (Hud.noise(slot * 6.6 + k * 0.43 + tick * 1.7) - 0.5) * 18.0
+		var w := wfrac * rect.size.x
+		ci.draw_rect(Rect2(x0, yy, w, hh), Color(0, 0, 0, 0.22))
+		ci.draw_rect(Rect2(x0 + shift, yy, w, 1.0), Color(1, 1, 1, 0.12))
+		ci.draw_rect(Rect2(x0 - shift * 0.5, yy + hh - 1.0, w, 1.0), Color(Palette.ENEMY, 0.10))
 
 
 ## The other world's overworld across a rect: the painted map's hexes, its fills and
