@@ -730,14 +730,14 @@ def pluck_bass(f, dur):
     return lp(sat(x * 1.5, 1.6), 1800.0)
 
 
-def chug(f, dur):
+def chug(f, dur, mute=True):
     # A palm-muted low string through a wall of gain: the plucked string driven hard,
     # a resonant low-pass for the cabinet, muted quickly, a thump on the front.
     x = pluck(f, dur, bright=0.45, damp=0.992)
     x = np.clip(sat(x * 4.0, 3.0) * 1.4, -1.0, 1.0)
     x = hp(svf(x, 1500.0, 0.8), 70.0)
     n = len(x)
-    x = x * env_ad(n, 0.001, min(0.14, dur * 0.5), curve=3.0)
+    x = x * (env_ad(n, 0.001, min(0.14, dur * 0.5), curve=3.0) if mute else env_ad(n, 0.001, dur * 0.7, curve=2.0))
     return mix(x, body(210.0, 95.0, 0.05, drive=2.0, click=0.3) * 0.35)
 
 
@@ -784,7 +784,7 @@ NOTE_INST["epiano"] = lambda f, d, p: epiano(f, d)
 NOTE_INST["brass"] = lambda f, d, p: brass(f, d)
 NOTE_INST["pluck"] = lambda f, d, p: pluck(f, d, p.get("bright", 0.6)) * 0.7
 NOTE_INST["pluck_bass"] = lambda f, d, p: pluck_bass(f, d)
-NOTE_INST["chug"] = lambda f, d, p: chug(f, d)
+NOTE_INST["chug"] = lambda f, d, p: chug(f, d, p.get("mute", True))
 
 
 # ---- the instruments: a chord held or struck
@@ -871,6 +871,91 @@ def orch_hit(semis, dur):
 STAB_INST = {"stab": stab, "epiano": epiano_chord, "brass": brass_chord, "hit": orch_hit}
 
 
+# ---- the metal kit and the other world's tools (Ryan's verdict on the sketches, 23
+# September: djent for the fight, harder still; the rift palette for the map, creepier,
+# more electronic and glitchy; the bells and the choir shared between them)
+
+def kick_metal():
+    # Tight and clicky: a short sub, the knock, and a hard click at 3 to 6 kHz so it cuts
+    # through the chug on a phone.
+    click = bp(noise(n_of(0.03)), 2500.0, 7000.0) * env_ad(n_of(0.03), 0.0002, 0.004) * 1.2
+    return mix(thud(175.0, 50.0, 0.22, click=0.9, drive=3.5, body_gain=1.1), click)
+
+
+def snare_metal():
+    # A crack: the tone higher and shorter, the noise brighter, a transient on the front,
+    # a short bright room.
+    n = n_of(0.18)
+    tone = harmonics(225.0, n, [1.0, 0.5, 0.25]) * env_ad(n, 0.001, 0.035) * 0.6
+    crack = bp(noise(n_of(0.02)), 1500.0, 9000.0) * env_ad(n_of(0.02), 0.0002, 0.003) * 0.9
+    b = mix(burst(0.18, 300.0, 9500.0, decay=0.045) * 1.0, tone, crack, body(320.0, 150.0, 0.05, click=0.5) * 0.4)
+    return room(b, decay=0.08, mix=0.16, cut=9000.0)
+
+
+def crash():
+    # A crash: a long bright wash with a few inharmonic partials, quiet by nature.
+    n = n_of(1.6)
+    wash = bp(noise(n), 2500.0, 15000.0) * env_ad(n, 0.002, 0.45, curve=2.5)
+    return mix(wash, knock([3100.0, 4700.0, 6900.0], [0.5, 0.35, 0.25], [0.5, 0.3, 0.2], noise_gain=0.0) * 0.3) * 0.4
+
+
+def tom(f=140.0):
+    return mix(thud(f * 1.6, f * 0.8, 0.28, click=0.4, drive=2.0, body_gain=0.6), burst(0.06, 200.0, 3000.0, decay=0.02) * 0.3)
+
+
+def bass_guitar(f, dur):
+    # A bass guitar, not a synth (Ryan: the crunch bass was too electronic under the metal):
+    # the plucked string with a pick on it, driven a little, the cabinet's low-pass.
+    x = pluck(f, dur, bright=0.55, damp=0.9975)
+    x = np.clip(sat(x * 2.2, 2.2) * 1.2, -1.0, 1.0)
+    return hp(lp(x, 2400.0), 45.0) * 0.9
+
+
+def lead(f, dur):
+    # The unison lead: two saws a hair apart with a slow vibrato, driven, sustained.
+    n = n_of(dur)
+    x = saws_vib(f, n, (0.997, 1.003), vib_hz=5.5, vib_depth=0.004)
+    x = lp(sat(x, 2.2), 3200.0)
+    return x * env_pts(n, [(0.0, 0.0), (0.01, 1.0), (max(dur - 0.03, 0.02), 0.9), (dur, 0.0)])
+
+
+def crush(x, bits=6, hold=6):
+    """Bit depth down and every `hold` samples held: the glitch."""
+    q = 2.0 ** (bits - 1)
+    y = np.round(x * q) / q
+    return np.repeat(y[::hold], hold)[: len(x)]
+
+
+def glitch_perc():
+    # A crushed click: the other world's percussion, digital and wrong.
+    n = n_of(0.05)
+    x = crush(bp(noise(n), 900.0, 6000.0) * env_ad(n, 0.0003, 0.012), bits=5, hold=9)
+    return lp(x, 7000.0) * 0.6
+
+
+def bell_stutter(f, dur):
+    # A bell whose first slice retriggers four times, then rings: the glitch on a chime.
+    note = bell(f, dur)
+    s = n_of(0.042)
+    head = np.concatenate([note[:s] * g for g in (1.0, 0.8, 0.65, 0.5)])
+    return np.concatenate([head, note[len(head):]]) if len(note) > len(head) else head
+
+
+def swell_rev(semis, dur):
+    # A chord's room played backwards, so it arrives on the beat that follows it.
+    n = n_of(dur)
+    x = mix(*[bell(E2 * 2.0 ** (s / 12.0) * 4.0, dur * 0.5) for s in semis]) / max(1, len(semis))
+    r = room(x, decay=dur * 0.3, mix=1.0, cut=6000.0)[:n]
+    r = r[::-1] * env_pts(n, [(0.0, 0.0), (dur * 0.85, 1.0), (dur, 0.0)])
+    return lp(r, 5000.0) * 0.5
+
+
+NOTE_INST["bass_guitar"] = lambda f, d, p: bass_guitar(f, d)
+NOTE_INST["lead"] = lambda f, d, p: lead(f, d)
+NOTE_INST["bell_stutter"] = lambda f, d, p: bell_stutter(f, d)
+STAB_INST["swell_rev"] = swell_rev
+
+
 # ---- the engine
 
 def _steps(form, part, default="."):
@@ -948,7 +1033,8 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0):
                 note = NOTE_INST[v["inst"]](f, step_s * v.get("dur", 1.6), params)
                 buf = at(buf, note, i * step_s, gain, wrap=True)
                 if echo:
-                    buf = at(buf, note, (i + echo[0]) * step_s, gain * echo[1], wrap=True)
+                    for k in range(1, (echo[2] if len(echo) > 2 else 1) + 1):
+                        buf = at(buf, note, (i + echo[0] * k) * step_s, gain * echo[1] ** k, wrap=True)
         elif mode == "stab":
             for i, c in enumerate(s):
                 if c == "x" and per_bar[i // 16]:
@@ -958,11 +1044,15 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0):
         b = 0
         while b < bars:
             e = b
-            while e < bars and per_bar[e] == per_bar[b]:
+            while e < bars and per_bar[e] == per_bar[b] and form[e] == form[b]:
                 e += 1
-            if per_bar[b]:
+            if per_bar[b] and form[b] in pad.get("sections", form):
                 p = PAD_INST[pad["inst"]](per_bar[b], bar_n * (e - b), pad)
                 p *= env_pts(len(p), [(0.0, 0.0), (0.35, 1.0), (len(p) / SR - 0.25, 1.0), (len(p) / SR, 0.0)])
+                if pad.get("pump"):
+                    # Ducked on every eighth and let back: the electronic pulse under the choir.
+                    tt = t_of(len(p)) % (2.0 * step_s)
+                    p *= 1.0 - pad["pump"] * np.exp(-tt / (step_s * 0.6))
                 buf = at(buf, p, b * 16 * step_s, 1.0, wrap=True)
             b = e
     r = room(buf, decay=0.12, mix=0.06, cut=6000.0)
@@ -972,77 +1062,107 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0):
     return sat(buf, 1.25)
 
 
-# ---- the loops
+# ---- the loops (Ryan's verdict on the sketches, 23 September: the fight in the djent
+# palette, the map in the rift's; bells and choir in both for cohesion)
 
 def music_map():
-    # Subdued, still moving, at 92 (84 was tried and was too slow): a soft kick, a rim
-    # instead of a snare, brushed hats, the pad and the chimes forward, the riff sparse and
-    # long. Thirty-two bars: the groove (A), a turn bar (B), the lift with the chimes (C),
-    # and an interlude of eight bars (D) where the kick stops and the chimes carry it,
-    # twice round. The machine swell is gone and the tick keeps to the interlude (Ryan, 23
-    # September: the industrial noises were too much).
+    # The other world, at 92: subdued, underwater, a little wrong. A taiko under a low-pass
+    # for the kick, a big-room snare, sparse hats, crushed clicks for the glitch; the choir
+    # on "oo" pumping on the eighths, strings under the interlude; the bells with a three-tap
+    # echo, some of them stuttering; the crunch bass (electronic is right here), a sub drone
+    # through the interlude; a backwards swell into every section; one orchestral hit at the
+    # interlude's door. Thirty-two bars: the groove (A), a turn bar (B), the lift (C), the
+    # interlude of eight (D) with a tritone in its chords, twice round.
     return groove(
         bpm=92,
         form="AAAB AACC AACB DDDD DDDD AACC CCCB DDDD",
-        kit={"kick": (kick_drum(False), 0.85), "rim": (rim(), 0.8), "hat": (hat(False, False), 0.55),
-             "open": (hat(True, False), 0.45), "knock": (knock_perc(), 0.6), "clank": (clank(), 0.35), "tick": (tick(), 0.3)},
+        kit={"kick": (lp(taiko(), 900.0), 1.0), "snare": (snare_drum(True), 0.85), "hat": (hat(False, True), 0.4),
+             "open": (hat(True, True), 0.35), "glitch": (glitch_perc(), 0.5), "clank": (clank(), 0.3)},
         drums={
-            "kick": {"A": "x.......x.....o.x.......x...o...", "B": "x...o...x.....o.x...o...x...x...",
-                     "C": "x...o...x..o..o.x...o...x.....o.", "D": "................"},
-            "rim": {"A": "....x.......x...", "B": "....x.......x..o", "C": "....x.......x.o.", "D": "............o..."},
-            "hat": {"A": "x.x.x.x.x.x.x.x.", "B": "x.x.x.x.x.x.x.x.", "C": "xxx.x.xxx.x.xxx.", "D": "x...x...x...x..."},
-            "open": {"A": "..........x.....", "B": "..............x.", "C": "......x.......x."},
-            "knock": {"C": "..x.....x.......", "D": "......x........."},
-            "clank": {"A": "..............x.................", "C": "..........x....................."},
-            "tick": {"D": "xxxxxxxxxxxxxxxx"},
+            "kick": {"A": "x.......x..x....x.....x.x.......", "B": "x.......x..x....x.....x...x.....",
+                     "C": "x..x....x.....x.x..x....x...x...", "D": "x...............x..............."},
+            "snare": {"A": "....x.......x...", "B": "....x.......x..o", "C": "....x.......x..o", "D": "....x.......x..."},
+            "hat": {"A": "..x...x...x...x.", "B": "..x...x...x...x.", "C": "x.x.x.x.x.x.x.x.", "D": "....x.......x..."},
+            "open": {"C": "......x.......x."},
+            "glitch": {"C": "..x..x....x...x.x..x.....x..x...", "D": ".....x.........x......x........."},
+            "clank": {"A": "..............x................."},
         },
-        chords={"A": [0, 7, 15], "B": [0, 7, 15], "C": [8, 15, 19],
-                "D": [[10, 17, 22], [10, 17, 22], [8, 15, 19], [8, 15, 19], [7, 14, 22], [7, 14, 22], [0, 7, 15], [0, 7, 15]]},
+        chords={"A": [[0, 7, 15], [0, 7, 15], [-2, 5, 10], [3, 10, 17]], "B": [[0, 7, 15]],
+                "C": [[8, 15, 19], [5, 12, 19], [3, 10, 17], [7, 14, 22]],
+                "D": [[10, 17, 22], [10, 16, 22], [8, 15, 19], [0, 6, 13], [7, 14, 22], [7, 13, 22], [0, 7, 15], [0, 6, 13]]},
         voices=[
-            {"inst": "bass", "mode": "riff", "gain": 0.6, "params": {"drive": 2.8, "cutoff": 650.0},
-             "pat": {"A": "0--.3-.0-...1-..0--.3-.g-...0-..", "B": "0--.3-.0-...5-..3--.1-.0-...g-..",
-                     "C": "0--.3-.5-..3.1-.0--.3-.7-..5.3-.",
-                     "D": "0---------------8-------7-------3---------------5-------g-------"}},
-            {"inst": "chime", "mode": "chord", "octave": 2, "gain": 0.4, "echo": (3, 0.18), "dur": 1.6,
-             "pat": {"A": "0...............2...............", "C": "0.2.1.3.0.2.1.2.",
-                     "D": "0...2...1...3...0...2...3...1...0.2...1...3.....0...2...1.3....."}},
+            {"inst": "bass", "mode": "riff", "gain": 0.55, "params": {"drive": 3.0, "cutoff": 800.0},
+             "pat": {"A": "0--.3-.0-...1-..g--.3-.5-...3-..", "B": "0--.3-.0-...5-..3--.1-.0-...g-..",
+                     "C": "8--.a-.8-..a.5-.3--.5-.7-..5.7-."}},
+            {"inst": "bass", "mode": "riff", "gain": 0.45, "params": {"drive": 2.0, "cutoff": 300.0},
+             "pat": {"D": "a---------------8---------------g---------------0---------------"}},
+            {"inst": "bell", "mode": "chord", "octave": 2, "gain": 0.32, "echo": (3, 0.35, 3), "dur": 2.5,
+             "pat": {"A": "0.2.1.3.0.2.1.2.", "C": "0.2.1.3.0.2.1.2.0.3.2.1.0.3.2.3.",
+                     "D": "0...2...1...3...0...2...1.3.....0.2...1...3.....0...2...1.3....."}},
+            {"inst": "bell_stutter", "mode": "chord", "octave": 3, "gain": 0.22, "echo": (3, 0.3, 2), "dur": 2.0,
+             "pat": {"C": "............3...............1...", "D": "......................2........."}},
+            {"inst": "brass", "mode": "chord", "octave": 1, "gain": 0.22, "dur": 2.0,
+             "pat": {"A": "........3...2.1.", "C": "....3.2.....1..."}},
+            {"inst": "swell_rev", "mode": "stab", "gain": 0.45, "dur": 2.0,
+             "pat": {"B": "..............x.", "C": "..............................x.", "D": "." * 62 + "x" + "." * 63 + "x" + "."}},
+            {"inst": "hit", "mode": "stab", "gain": 0.4, "dur": 3.0,
+             "pat": {"D": "." * 64 + "x" + "." * 63}},   # 128 steps: the first bar of each eight-bar interlude
         ],
-        pad={"inst": "saw", "gain": 0.24, "cut": 900.0})
+        pad={"inst": "choir", "gain": 0.26, "vowel": "oo", "pump": 0.45})
 
 
 def music_skirmish():
-    # Driving at 100: the hard kick, the snare with its ghosts, bright hats, clanks and
-    # knocks on the offbeats, saw stabs on the chord, the riff busy and dirty with the
-    # octave jump. Thirty-two bars: the groove (A), a turn bar (B), the lift with stabs and
-    # open hats (C), and a half-time stretch (D) where the chimes come through.
+    # The fight, at 100, in the metal: a clicky kick and a cracking snare, bright hats, a
+    # crash at every section's door, a tom in the turn bar; a chugged low string in a
+    # seven-step figure the kick locks to, a bass guitar under it, bells and brass stabs in
+    # the lift, the choir on "oh" a touch up; a unison section (U) where chug, bass and a lead
+    # play one riff in octaves with the drums on its hits and no pad, and a drawn-out section
+    # (D) of open chords, half-time, the choir and the bells. Thirty-two bars.
     return groove(
         bpm=100,
-        form="AAAB AACC AACB DDDD AACC CCCB AAAB CCDD",
-        kit={"kick": (kick_drum(True), 1.0), "snare": (snare_drum(), 1.1), "hat": (hat(False, True), 0.8),
-             "open": (hat(True, True), 0.7), "knock": (knock_perc(), 0.7), "clank": (clank(), 0.45), "tick": (tick(), 0.35)},
+        form="AAAB AACC UUUU DDDD AACC UUUU AACB DDDD",
+        kit={"kick": (kick_metal(), 1.0), "snare": (snare_metal(), 1.1), "hat": (hat(False, True), 0.7),
+             "open": (hat(True, True), 0.5), "crash": (crash(), 0.8), "tom": (tom(150.0), 0.8), "tom2": (tom(110.0), 0.8),
+             "clank": (clank(), 0.35)},
         drums={
-            "kick": {"A": "x..x..x...x.x...x..x..x.x...x.o.", "B": "x..x..x...x.x...x..x..x.x.x.x...",
-                     "C": "x..x..x...x.x..ox..x..x.x...x.o.", "D": "x.......x.....x.x.......x..x...."},
-            "snare": {"A": "....x..o....x...", "B": "....x..o....x.......x..o..o.x...",
-                      "C": "....x..o....x..o", "D": "........x......."},
-            "hat": {"A": "x.x.x.x.xxx.x.x.", "B": "x.x.x.x.xxx.x.x.x.x.x.x.x.x.xxx.",
-                    "C": "xxxxxxxxxxxxxxxx", "D": "x...x.x.x...x.x."},
-            "open": {"A": "......x.......x.", "C": "..x...x...x...x.", "D": "..............x."},
-            "knock": {"A": "..x...........x.", "C": "..x...x.........", "D": "..x............."},
-            "clank": {"A": "..............x.", "C": "..x.......x.....", "D": "x..............."},
-            "tick": {"D": "xxxxxxxxxxxxxxxx"},
+            "kick": {"A": "x..x.x.", "B": "x..x.x.x..x.x.x.x..x.x.xx.x.x.x.", "C": "x..x.x.",
+                     "U": "x..x..x.x..x..x.x..x..x.x.x.x.x.x..x..x.x..x..x.x..x..x.x.x.x.x.",
+                     "D": "x.......x.....x.x.......x..x...."},
+            "snare": {"A": "....x.......x...", "B": "....x.......x...", "C": "....x.......x...",
+                      "U": "....x.......x.......x.......x...", "D": "........x......."},
+            "hat": {"A": "x.x.x.x.x.x.x.x.", "B": "x.x.x.x.x.x.x.x.", "C": "xxxxxxxxxxxxxxxx", "U": "x.x.x.x.x.x.x.x.", "D": "x...x.x.x...x.x."},
+            "open": {"C": "......x.......x.", "D": "..............x."},
+            "crash": {"*": "x" + "." * 63},   # every four bars
+            "tom": {"B": "............x.x."},
+            "tom2": {"B": "..............x."},
+            "clank": {"C": "..............x................."},
         },
-        chords={"A": [0, 7, 15], "B": [0, 7, 15], "C": [8, 15, 19], "D": [[-2, 5, 10], [-2, 5, 10], [0, 7, 15], [0, 7, 15]]},
+        chords={"A": [[0, 7, 15], [0, 7, 15], [-2, 5, 10], [3, 10, 17]], "B": [[0, 7, 15]],
+                "C": [[8, 15, 19], [5, 12, 19], [3, 10, 17], [7, 14, 22]],
+                "U": [[0, 7, 15]],
+                "D": [[10, 17, 22], [8, 15, 19], [-2, 5, 10], [0, 7, 15], [10, 17, 22], [8, 15, 19], [7, 14, 22], [0, 7, 15]]},
         voices=[
-            {"inst": "bass", "mode": "riff", "gain": 0.6, "params": {"drive": 4.0, "cutoff": 1100.0},
-             "pat": {"A": "00.c.0-3.00.1-.g00.c.0-3.00.h-..", "B": "00.c.0-3.00.1-.g00.c.0-3.5-.3-.0",
-                     "C": "0-.c.0-3.0-.5-.30-.c.0-3.8-.7-.5", "D": "0-------3-------g-------0---..3-"}},
-            {"inst": "chime", "mode": "chord", "octave": 2, "gain": 0.4, "echo": (3, 0.18), "dur": 1.6,
-             "pat": {"C": "0.......2.......", "D": "0...2...1...3...0...2...1.3....."}},
-            {"inst": "stab", "mode": "stab", "gain": 0.3, "dur": 1.2,
-             "pat": {"A": "..............x.", "C": "..x...x...x...x.", "B": "..x...x...x...x."}},
+            {"inst": "chug", "mode": "riff", "gain": 0.8, "octave": -1,
+             "pat": {"A": "0.0-3.0", "B": "0.0-3.0.0.0-3.0.0.0-5.0.0.3-g.0.", "C": "8.8-a.8"}},
+            {"inst": "chug", "mode": "riff", "gain": 0.75, "octave": -1, "params": {"mute": False},
+             "pat": {"D": "a---------------8---------------g---------------0---------------"}},
+            # The unison riff, in three octaves: three against three against two, the second
+            # bar answering a fourth up.
+            {"inst": "chug", "mode": "riff", "gain": 0.8, "octave": -1,
+             "pat": {"U": "0..0..0.3..3..3.5..5..5.3.0.g.0.5..5..5.8..8..8.a..a..a.8.5.3.0."}},
+            {"inst": "bass_guitar", "mode": "riff", "gain": 0.7,
+             "pat": {"A": "0--.3-.0-...1-..g--.3-.5-...3-..", "B": "0--.3-.0-...5-..3--.1-.0-...g-..",
+                     "C": "8--.a-.8-..a.5-.3--.5-.7-..5.7-.",
+                     "U": "0..0..0.3..3..3.5..5..5.3.0.g.0.5..5..5.8..8..8.a..a..a.8.5.3.0.",
+                     "D": "a-------a---a---8-------8---8---g-------g---g---0-------0-------"}},
+            {"inst": "lead", "mode": "riff", "gain": 0.3, "octave": 2,
+             "pat": {"U": "0..0..0.3..3..3.5..5..5.3.0.g.0.5..5..5.8..8..8.a..a..a.8.5.3.0."}},
+            {"inst": "bell", "mode": "chord", "octave": 2, "gain": 0.3, "echo": (3, 0.25, 2), "dur": 2.5,
+             "pat": {"C": "0.2.1.3.0.2.1.2.0.3.2.1.0.3.2.3.", "D": "0...2...1...3...0...2...1.3....."}},
+            {"inst": "brass", "mode": "stab", "gain": 0.28, "dur": 1.0,
+             "pat": {"C": "..x...x...x...x."}},
         ],
-        pad={"inst": "saw", "gain": 0.18, "cut": 1100.0})
+        pad={"inst": "choir", "gain": 0.2, "vowel": "oh", "sections": "ACD"})
 
 
 # ---- the sketches: eight bars each on one riff and one chord progression, so only the
