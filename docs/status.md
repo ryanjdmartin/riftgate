@@ -101,7 +101,8 @@ speaker: `step` (-9 dB a hex, may still be too much), `hit` under the enemy turn
 `ui_tap` on every button (-2, and it doubles with the specific sound on Resolve and
 End Turn), `contact` twice. Not hooked: the scan bar, overheating burns (they surface only
 in the log), the display's idle. The direction is bible section 1 (sound row, 22
-September). The loops must stay sample-exact for seamless play: `groove` sizes the buffer
+September). If a loop's bpm changes in `groove()`, change `Sound.TEMPO` to match: the
+rift's vortex steps on `Sound.beat()`, computed from it. The loops must stay sample-exact for seamless play: `groove` sizes the buffer
 from bpm and bars and wraps tails.
 
 **Open, in the order I would take them.**
