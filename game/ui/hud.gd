@@ -145,6 +145,24 @@ static func scanlines(ci: CanvasItem, rect: Rect2, alpha: float = 0.03) -> void:
 		y += 3.0
 
 
+## How lit an element spanning y0..y1 is by the display's scan band at `band_y` (all in
+## the same space): full as the band crosses it, with a short lead, then a tail that fades
+## fast at first (Ryan, 23 September: the one sweep the screen has touches everything, so
+## the HUD reads as one display being read rather than a print).
+const SWEEP_LEAD := 12.0
+const SWEEP_TAIL := 110.0
+
+static func sweep_glow(band_y: float, y0: float, y1: float) -> float:
+	if band_y < y0 - SWEEP_LEAD:
+		return 0.0
+	if band_y <= y1:
+		return 1.0
+	var d := (band_y - y1) / SWEEP_TAIL
+	if d >= 1.0:
+		return 0.0
+	return (1.0 - d) * (1.0 - d)
+
+
 ## A short diagonal tick, the mock's "leader" mark beside a unit.
 static func tick(ci: CanvasItem, at: Vector2, color: Color) -> void:
 	ci.draw_line(at, at + Vector2(7.0, -11.0), color, 1.0)

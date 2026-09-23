@@ -17,6 +17,15 @@ var center_text: bool = false               # centre the text over the whole but
 var slant_px: float = 10.0
 var mono: bool = false                      # mono face for readout tags
 var color_override: Color = Color(0, 0, 0, 0)   # zero alpha: use the HUD colour
+var sweep_glow: float = 0.0                 # how lit by the display's scan band, 0..1 (set_sweep)
+
+
+## The scan band's position in this button's own pixels: the outline lights as it crosses.
+func set_sweep(local_y: float) -> void:
+	var g := Hud.sweep_glow(local_y, 0.0, size.y)
+	if g != sweep_glow:
+		sweep_glow = g
+		queue_redraw()
 
 
 func _init(label: String = "", on_pressed: Callable = Callable()) -> void:
@@ -47,15 +56,18 @@ func _draw() -> void:
 	var pts := Hud.slant(rect, slant_px)
 	var active := button_pressed or is_pressed()
 	var ink := col
+	var g := sweep_glow * (0.5 if disabled else 1.0)
 	if filled:
-		Hud.fill_poly(self, pts, Color(base, alpha * (0.75 if active else 1.0)))
+		Hud.fill_poly(self, pts, Color(base, alpha * (0.75 if active else 1.0)).lerp(Color(Color.WHITE, alpha), 0.25 * g))
 		ink = Color(Palette.BG, 1.0)
 	else:
 		if active:
 			Hud.fill_poly(self, pts, Color(base, 0.22 * alpha))
 		elif is_hovered() and not disabled:
 			Hud.fill_poly(self, pts, Color(base, 0.08))
-		Hud.stroke_poly(self, pts, col, 1.5 if not ghost else 1.0)
+		if g > 0.0:
+			Hud.fill_poly(self, pts, Color(base, 0.06 * g))
+		Hud.stroke_poly(self, pts, Color(col, minf(1.0, col.a + 0.5 * g)).lerp(Color(Color.WHITE, col.a), 0.35 * g), (1.5 if not ghost else 1.0) + g)
 	var font := Hud.mono() if mono else Hud.display_bold()
 	var cx := size.x * 0.5
 	if not glyph.is_empty():

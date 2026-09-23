@@ -72,7 +72,7 @@ godot --headless --path . -s tools/export_vocabulary.gd
 
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument
 # poses the screen first. Skirmish: codex, mechcodex, hold, confirm, lock, strike,
-# enemyturn, withdraw, rounds, logfull, killed, menu, settings, quit. Battle: select, route, hold, north, zoom, zoomlast,
+# enemyturn, withdraw, rounds, logfull, killed, acquire, menu, settings, quit. Battle: select, route, hold, north, zoom, zoomlast,
 # flyer, predict, resolve, contact, engage, codex, foecodex, menu, settings, tune.
 # RIFTGATE_SHOT_FRAME=<n> picks the capture frame, to catch an animation mid-flight.
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmish/skirmish_screen.tscn shot.png codex

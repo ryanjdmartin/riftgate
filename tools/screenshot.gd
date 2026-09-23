@@ -57,6 +57,9 @@ func _apply_pose() -> void:
 		"lock":
 			s._on_die_tapped(0)
 			s._toggle_all_arrows(true)
+		"acquire":
+			# The display locking onto every intent, mid-collapse (RIFTGATE_SHOT_FRAME=10).
+			s._acquire_intents()
 		"menu", "settings", "quit":
 			s._open_menu()
 			if _pose != "menu":

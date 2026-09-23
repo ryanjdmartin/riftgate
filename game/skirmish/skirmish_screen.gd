@@ -87,10 +87,28 @@ var _mech_3d: Array[MechView3D] = [] # parallel to _mech_views; null where the m
 var _bg: HudBackdrop = null
 
 
-## The backdrop's scan bar lights the mechs' traces as it crosses them, as on the map.
-func _process(_delta: float) -> void:
+var _fight_t := 0.0                  # seconds since the feed opened: the header's clock
+var _clock_sec := -1
+var _phase := "ASSIGN"               # the header's phase word; the clock rides after it
+var _log_typing := false             # new lines typing in: the cursor waits
+
+
+## Every frame: the scan band lights whatever it crosses (the mechs' traces, every gauge,
+## chip and button), the header's clock ticks, and the log's cursor blinks (Ryan, 23
+## September: the HUD as a feed being read in real time).
+func _process(delta: float) -> void:
 	if _bg == null:
 		return
+	_fight_t += delta
+	var sec := int(_fight_t)
+	if sec != _clock_sec:
+		_clock_sec = sec
+		_sub_label.text = _phase_text()
+	if _log != null and not _log_typing:
+		var total := _log.get_total_character_count()
+		var want := total if fmod(_fight_t, 1.0) < 0.6 else total - 1
+		if _log.visible_characters != want:
+			_log.visible_characters = want
 	var y := _bg.scan_y()
 	for i in range(_mech_3d.size()):
 		var view := _mech_3d[i]
@@ -100,6 +118,31 @@ func _process(_delta: float) -> void:
 		if v.size.y <= 0.0:
 			continue
 		view.set_sweep_screen((y - v.position.y) * float(view.size.y) / v.size.y)
+	for c in get_children():
+		if c is UnitView:
+			c.set_sweep(y - c.position.y)
+		elif c is HudButton:
+			c.set_sweep(y - c.position.y)
+
+
+func _phase_text() -> String:
+	if not is_inside_tree() or _clock_sec < 0:
+		return _phase
+	return "%s // %02d:%02d" % [_phase, _clock_sec / 60, _clock_sec % 60]
+
+
+func _set_phase(p: String) -> void:
+	_phase = p
+	_sub_label.text = _phase_text()
+
+
+## The display locks onto every foe's intent: called as a round's intents appear.
+func _acquire_intents() -> void:
+	if not is_inside_tree():
+		return
+	for v in _view_foe.keys():
+		if v.visible and not v.dead:
+			v.acquire()
 var _confirm_shade: Control
 var _confirm: HudPanel
 var _confirm_text: Label
@@ -138,6 +181,7 @@ func _ready() -> void:
 		_build()   # built here for the screen's real height (a taller phone than the design)
 		_refresh()
 	_scroll_to_end(_log_scroll)   # set up before entering the tree: the strip starts at its last line
+	_acquire_intents()
 	Sound.music("skirmish")
 
 
@@ -574,7 +618,7 @@ func _refresh() -> void:
 	var assigning := sk.state == Skirmish.State.ASSIGN
 	_header.text = "RND %02d // REINF %02d // %s" % [sk.round, sk.reinforcements.size(), str(BattleMap.TERRAIN_NAMES.get(sk.terrain, "plain")).to_upper()]
 	_header.queue_redraw()
-	_sub_label.text = "ASSIGN" if assigning else "ENEMY PHASE"
+	_set_phase("ASSIGN" if assigning else "ENEMY PHASE")
 	_view_foe.clear()
 
 	var targets: Array[Foe] = []
@@ -654,18 +698,21 @@ func _refresh() -> void:
 
 func _refresh_log() -> void:
 	var fresh_lines := sk.log.size() > _log_seen
-	_log.text = _log_text(LOG_LINES)
+	_log.text = _log_text(LOG_LINES, true)
 	# New lines type in, so the eye is drawn to what just happened, and the strip scrolls
 	# to them; a strip the player scrolled back stays put until something new happens.
 	if fresh_lines and is_inside_tree():
 		var total := _log.get_total_character_count()
-		var fresh := 0
+		var fresh := PROMPT.length()   # the cursor line comes last, after the new lines
 		for j in range(_log_seen, sk.log.size()):
 			fresh += sk.log[j].length() + 3
 		_log.visible_characters = maxi(0, total - fresh)
+		_log_typing = true
 		var tw := create_tween()
 		tw.tween_property(_log, "visible_characters", total, minf(0.6, 0.012 * fresh))
-		tw.tween_callback(func() -> void: _log.visible_characters = -1)
+		tw.tween_callback(func() -> void:
+			_log.visible_characters = -1
+			_log_typing = false)
 	if fresh_lines or _log_seen == 0:
 		_scroll_to_end(_log_scroll)
 	if _log_full != null and _log_full.visible and fresh_lines:
@@ -674,15 +721,18 @@ func _refresh_log() -> void:
 	_log_seen = sk.log.size()
 
 
+const PROMPT := "> _"   # the strip's last line: a terminal prompt whose cursor blinks (_process)
+
 ## The whole log as bbcode, one line per event, the last `bright` lines fading up to full
-## and everything older at the dim end; `bright` 0 leaves every line at full.
-func _log_text(bright: int) -> String:
+## and everything older at the dim end; `bright` 0 leaves every line at full. `prompt`
+## adds the cursor line at the end (the strip; never the full-screen log).
+func _log_text(bright: int, prompt: bool = false) -> String:
 	var n := sk.log.size()
+	var out := ""
 	if n == 0:
-		return "[color=#%s]> round %d // %d in reserve // awaiting orders[/color]" % [Color(Palette.HUD, 0.45).to_html(true), sk.round, sk.reinforcements.size()]
+		out = "[color=#%s]> round %d // %d in reserve // awaiting orders[/color]\n" % [Color(Palette.HUD, 0.45).to_html(true), sk.round, sk.reinforcements.size()]
 	var start := maxi(0, n - bright)
 	var count := n - start
-	var out := ""
 	for j in range(n):
 		var a := 1.0
 		if bright > 0:
@@ -691,6 +741,8 @@ func _log_text(bright: int) -> String:
 			elif count > 1:
 				a = lerpf(0.4, 1.0, float(j - start) / float(count - 1))
 		out += "[color=#%s]> %s[/color]\n" % [Color(Palette.HUD, a).to_html(true), sk.log[j]]
+	if prompt:
+		out += "[color=#%s]%s[/color]" % [Color(Palette.HUD, 0.8).to_html(true), PROMPT]
 	return out
 
 
@@ -1204,7 +1256,7 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 	if not is_inside_tree() or hits.is_empty():
 		then.call()
 		return
-	_sub_label.text = "ENEMY PHASE"
+	_set_phase("ENEMY PHASE")
 	_replay_shade.visible = true
 	_replay_shade.move_to_front()
 	if _menu != null:
@@ -1378,6 +1430,7 @@ func _end_turn_now() -> void:
 			_show_outcome(outcome)
 			return
 		_refresh()
+		_acquire_intents()
 		# Then the reinforcements step in.
 		var arrived := 0
 		for foe in sk.field_foes():

@@ -50,6 +50,11 @@ var flip_h: bool = false          # mirror the sprite, so an enemy painted facin
 var breathe_phase: float = 0.0
 var _shatter: float = -1.0        # seconds since the shield broke on this unit; negative when idle
 const SHATTER_SECONDS := 0.55
+var _acquire: float = -1.0        # seconds since the display locked onto this unit's intent; negative when idle
+const ACQUIRE_SECONDS := 0.3
+const SCRAMBLE_PART := 0.55       # the first part of the acquire, while the number is still settling
+var sweep_y: float = -1.0e6       # the display's scan band, in this view's pixels (set_sweep)
+var _sweep_lit := false
 
 var _pressed := false
 var _press_at := 0.0
@@ -163,10 +168,15 @@ func _process(delta: float) -> void:
 		if _shatter > SHATTER_SECONDS:
 			_shatter = -1.0
 		queue_redraw()
+	if _acquire >= 0.0:
+		_acquire += delta
+		if _acquire > ACQUIRE_SECONDS:
+			_acquire = -1.0
+		queue_redraw()
 	if (_has_pending() or breathe) and visible and not dead:
 		_t += delta
 		queue_redraw()
-	elif not _pressed and _shatter < 0.0:
+	elif not _pressed and _shatter < 0.0 and _acquire < 0.0:
 		set_process(false)
 
 
@@ -182,6 +192,31 @@ func shatter_shield() -> void:
 	_shatter = 0.0
 	set_process(true)
 	queue_redraw()
+
+
+## The display locks onto this unit's intent (Ryan, 23 September: a feed being read, not a
+## print): bracket corners collapse onto the intent chip, its number settles from a
+## scramble, and the gauge's leader draws itself. Called when a round's intents appear and
+## when a foe arrives.
+func acquire() -> void:
+	_acquire = 0.0
+	set_process(true)
+	queue_redraw()
+
+
+## Where the scan band is, in this view's pixels. The gauges, chips and leader light as it
+## crosses them; the view redraws only while the band is near.
+func set_sweep(local_y: float) -> void:
+	sweep_y = local_y
+	var lit := Hud.sweep_glow(local_y, -20.0, size.y + 20.0) > 0.0
+	if lit or _sweep_lit:
+		queue_redraw()
+	_sweep_lit = lit
+
+
+## How lit an element at y0..y1 (this view's pixels) is by the band right now.
+func _glow(y0: float, y1: float) -> float:
+	return Hud.sweep_glow(sweep_y, y0, y1)
 
 
 func _draw_shatter(vis: Rect2) -> void:
@@ -237,17 +272,21 @@ func _draw() -> void:
 			var bw := size.x * 0.8
 			var y := vis.position.y - GAP - bars.size() * BAR_STEP
 			for b in bars:
-				_gauge(Rect2(bx, y, bw, BAR_H), b)
+				_gauge(Rect2(bx, y, bw, BAR_H), b, _glow(y, y + BAR_H))
 				y += BAR_STEP
 		else:
 			# One small gauge floating above the drawing's top-right, with a leader dropping
 			# from a third of the way along its underside, diagonally down-left onto the sprite.
+			# On acquire the leader draws itself.
 			var bx := minf(vis.end.x - 10.0, size.x - FLOAT_BAR_W - 2.0)
 			var y := vis.position.y - FLOAT_LIFT
 			var from := Vector2(bx + FLOAT_BAR_W / 3.0, y + BAR_H)
-			draw_line(from, from + Vector2(-LEADER, LEADER), Color(hud, 0.85), 2.0)
+			var reach := 1.0 if _acquire < 0.0 else clampf(_acquire / (ACQUIRE_SECONDS * 0.6), 0.0, 1.0)
+			var lg := _glow(y, y + BAR_H + LEADER)
+			if reach > 0.0:
+				draw_line(from, from + Vector2(-LEADER, LEADER) * reach, Color(hud, 0.85).lerp(Color.WHITE, 0.5 * lg), 2.0 + lg)
 			for b in bars:
-				_gauge(Rect2(bx, y, FLOAT_BAR_W, BAR_H), b)
+				_gauge(Rect2(bx, y, FLOAT_BAR_W, BAR_H), b, _glow(y, y + BAR_H))
 				y -= BAR_STEP
 
 	# Quiet readout for an empty slot.
@@ -275,15 +314,39 @@ func _draw() -> void:
 	var x := floorf((size.x - total) * 0.5)
 	var cy := minf(vis.end.y + GAP, size.y - 2.0) + CHIP_H * 0.5
 	cy = minf(cy, size.y - CHIP_H * 0.5 - 1.0)
+	var cg := _glow(cy - CHIP_H * 0.5, cy + CHIP_H * 0.5)
+	var acq := clampf(_acquire / ACQUIRE_SECONDS, 0.0, 1.0) if _acquire >= 0.0 else 1.0
 	for i in range(chips.size()):
 		var ch: Array = chips[i]
 		var col: Color = ch[2]
 		var rect := Rect2(x, cy - CHIP_H * 0.5, widths[i], CHIP_H)
-		Hud.box(self, rect, 4.0, Color(Palette.BG, 0.94), col, 1.2)
+		var edge := col.lerp(Color(Color.WHITE, col.a), 0.45 * cg)
+		Hud.box(self, rect, 4.0, Color(Palette.BG, 0.94), edge, 1.2 + 0.8 * cg)
 		Glyphs.draw(self, ch[0], Vector2(x + CHIP_H * 0.5, cy), CHIP_GLYPH, col, 2.0)
-		if not ch[1].is_empty():
-			draw_string(mono, Vector2(x + CHIP_H - 2.0, cy + CHIP_TEXT * 0.36), ch[1], HORIZONTAL_ALIGNMENT_LEFT, -1, CHIP_TEXT, col)
+		var txt: String = ch[1]
+		var locking := i == 0 and not intent_kind.is_empty() and acq < 1.0
+		if locking and acq < SCRAMBLE_PART:
+			txt = _scrambled(txt)
+		if not txt.is_empty():
+			draw_string(mono, Vector2(x + CHIP_H - 2.0, cy + CHIP_TEXT * 0.36), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, CHIP_TEXT, col)
+		if locking:
+			# The lock: bracket corners collapsing onto the chip, fading as they land.
+			Hud.brackets(self, rect.grow(2.0 + 18.0 * (1.0 - acq)), 8.0, Color(col, 1.0 - acq * 0.7), 1.5)
 		x += widths[i] + 6.0
+
+
+## A number's digits replaced by others, stable for a few frames at a time, so a readout
+## is seen to settle rather than flicker at random.
+func _scrambled(txt: String) -> String:
+	var frame := int(Time.get_ticks_msec() / 45)
+	var out := ""
+	for k in range(txt.length()):
+		var c := txt[k]
+		if c.is_valid_int():
+			out += str(absi(hash(frame * 31 + k * 7)) % 10)
+		else:
+			out += c
+	return out
 
 
 ## A gauge on its own dark ground, with, when a pending value is given, a pulsing overlay on
@@ -291,13 +354,14 @@ func _draw() -> void:
 ## to read against any bar colour and for any kind of colour vision. Where it sits says
 ## which way the bar moves: inside the fill, that much is about to go; past the fill, that
 ## much is coming.
-func _gauge(rect: Rect2, b: Array) -> void:
+func _gauge(rect: Rect2, b: Array, glow: float = 0.0) -> void:
 	var mx := float(maxi(1, int(b[1])))
 	var frac: float = clampf(float(b[0]) / mx, 0.0, 1.0)
 	var col: Color = b[2]
 	Hud.fill_poly(self, Hud.slant(rect.grow(1.0), 4.0), Color(Palette.BG, 0.9))
 	Hud.gauge(self, rect, frac, col)
-	Hud.stroke_poly(self, Hud.slant(rect, 4.0), Color(col, 0.95), 1.0)   # a full-strength edge, so an empty bar still shows
+	# A full-strength edge, so an empty bar still shows; it whitens and thickens under the band.
+	Hud.stroke_poly(self, Hud.slant(rect, 4.0), Color(col, 0.95).lerp(Color.WHITE, 0.5 * glow), 1.0 + glow)
 	if b.size() < 4 or int(b[3]) == int(b[0]):
 		return
 	var pending: float = clampf(float(b[3]) / mx, 0.0, 1.0)

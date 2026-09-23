@@ -102,9 +102,12 @@ class Overlay extends Control:
 
 	func _draw() -> void:
 		Hud.scanlines(self, Rect2(Vector2.ZERO, size))
-		for y in owner_bg.rules:
-			draw_line(Vector2(12.0, y), Vector2(size.x - 12.0, y), Color(Palette.HUD, 0.22), 1.0)
-		var y := owner_bg.scan_y()
+		var band := owner_bg.scan_y()
+		for ry in owner_bg.rules:
+			# A rule lights as the band crosses it and fades behind it.
+			var g := Hud.sweep_glow(band, ry, ry)
+			draw_line(Vector2(12.0, ry), Vector2(size.x - 12.0, ry), Color(Palette.HUD, 0.22 + 0.5 * g), 1.0 + g)
+		var y := band
 		if owner_bg.scan_visible():
 			for i in range(-2, 3):
 				draw_rect(Rect2(0.0, y + i * 3.0, size.x, 1.0), Color(1, 1, 1, 0.07 - 0.015 * absi(i)))

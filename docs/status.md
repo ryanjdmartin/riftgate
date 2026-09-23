@@ -67,8 +67,14 @@ beat), each blow stepping the struck mech's shield and hull from the event the s
 Layout: ally gauges and chips 10 px off the model, a foe's gauge 16 px above its sprite
 with a 16 px leader running onto it, every gauge on a black ground of its own shape (no
 plate), the eye 60 px in the black at the log's right with 12 px margins (the log strip
-stops short of it), log 112 tall, dice and Reroll up 16, 30 px of black under Reroll. Poses added to `tools/screenshot.gd`: menu, settings, quit, withdraw. The
-bible has the rows (section 5, and the HUD row in 4) and is republished as v0.8 (link above).
+stops short of it), log 112 tall, dice and Reroll up 16, 30 px of black under Reroll. Poses
+added to `tools/screenshot.gd`: menu, settings, quit, withdraw, acquire. The bible has the
+rows (section 5, and the HUD row in 4) and is republished as v0.8 (link above). Then the
+"feed being read" pass (bible section 6 row): the scan band lights every gauge, chip,
+button and rule it crosses (`Hud.sweep_glow`, fed from the screen's `_process`), intents
+are acquired with collapsing brackets and a digit scramble (`UnitView.acquire`), the phase
+readout carries a fight clock and the log strip ends in a blinking prompt. Ryan has not
+yet judged it in motion; anything busy is to be cut.
 
 **Ryan's verdict on the web harness (23 September).** It served for sizes and touch and no
 more: the map must not get smaller (the base hex size may go up a little; zoom makes it
