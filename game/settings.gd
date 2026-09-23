@@ -22,9 +22,11 @@ static var _loaded := false
 ## The display knobs: key -> default. Ranges for the sliders alongside.
 const DISPLAY_DEFAULTS := {
 	"brightness": 1.0, "glitch": true, "pace": 1.0, "scan": true,
+	"music": 0.8, "effects": 1.0,
 }
 const DISPLAY_RANGES := {
 	"brightness": Vector2(0.5, 1.5), "pace": Vector2(0.5, 2.0),
+	"music": Vector2(0.0, 1.0), "effects": Vector2(0.0, 1.0),
 }
 static var display: Dictionary = DISPLAY_DEFAULTS.duplicate()
 

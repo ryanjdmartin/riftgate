@@ -256,6 +256,7 @@ func _show(node: Node) -> void:
 
 
 func _back() -> void:
+	Sound.music("")
 	if _current != null:
 		_current.queue_free()
 		_current = null

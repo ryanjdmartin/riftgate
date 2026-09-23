@@ -25,6 +25,7 @@ func _init(label: String = "", on_pressed: Callable = Callable()) -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	if on_pressed.is_valid():
 		pressed.connect(on_pressed)
+	button_down.connect(func() -> void: Sound.play("ui_tap", -2.0))
 	button_down.connect(queue_redraw)
 	button_up.connect(queue_redraw)
 	toggled.connect(func(_on: bool) -> void: queue_redraw())

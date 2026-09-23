@@ -96,6 +96,7 @@ func _ready() -> void:
 	elif _header == null:
 		_build()
 		_refresh()
+	Sound.music("map")
 
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks).
@@ -302,6 +303,7 @@ func _on_hex_tapped(h: Vector2i) -> void:
 		_map.gate_selected = true
 		_show_details(gate_text(battle.field), Vector2.ZERO)
 		_map.queue_redraw()
+		Sound.play("ui_tap", -4.0)
 		return
 	if _map.selected != null and u != _map.selected and _map.destinations.has(h):
 		# A hex a machine plotted earlier is leaving is a destination too (Ryan, 22
@@ -309,18 +311,23 @@ func _on_hex_tapped(h: Vector2i) -> void:
 		# than selecting the machine still drawn on it.
 		battle.set_route(_map.selected, h)
 		_select(null)
+		Sound.play("plot")
 	elif u != null and u.is_player() and not u.is_static():
 		if _map.selected == u:
 			battle.clear_route(u.id)
 			_select(null)
+			Sound.play("ui_back")
 		else:
 			_select(u)
 			_on_unit_held(u)   # its shield, hull and move, in the readout
+			Sound.play("ui_tap", -4.0)
 	elif u != null and u.is_enemy():
 		_on_unit_held(u)   # a quick label for the enemy; double-tap for the codex
+		Sound.play("ui_tap", -8.0)
 	elif _map.selected != null and _map.destinations.has(h):
 		battle.set_route(_map.selected, h)
 		_select(null)
+		Sound.play("plot")
 	elif _map.selected == null and u == null and battle.field.map.has(h) and not battle.field.map.is_structure(h):
 		# Nothing to route: the tap asks what the ground is (Ryan, 21 September). Its
 		# properties will grow with the terrain rules.
@@ -463,6 +470,7 @@ func _show_details(text: String, _near: Vector2) -> void:
 # ---------------------------------------------------------------- the loop
 
 func _on_clear() -> void:
+	Sound.play("ui_back")
 	battle.clear_routes()
 	_select(null)
 	_refresh()
@@ -482,7 +490,11 @@ func _on_resolve() -> void:
 	for sq in battle.field.squads():
 		starts[sq.id] = sq.pos
 	# The squads' paths are the resolve's own, planned after the machines moved.
+	Sound.play("resolve")
+	var gate_before := battle.field.gate_hp
 	var result := battle.commit()
+	_gate_struck = battle.field.gate_hp < gate_before
+	_spawned = result.spawned
 	for sid in starts.keys():
 		planned[sid] = [starts[sid]] + Array(result.intents.get(sid, []))
 	var mech_moves: Array = []
@@ -504,7 +516,16 @@ func _on_resolve() -> void:
 		_refresh()   # the buttons grey until the move has played
 
 
+var _gate_struck := false   # the phase just resolved hit the gate: heard when the moves have played
+var _spawned := false       # and the rift spawned
+
 func _after_step() -> void:
+	if _gate_struck:
+		Sound.play("gate_hit")
+	if _spawned:
+		Sound.play_after(0.35 if _gate_struck else 0.0, "spawn")
+	_gate_struck = false
+	_spawned = false
 	match battle.state:
 		Battle.State.SKIRMISH:
 			_show_contacts()
@@ -559,6 +580,8 @@ func _show_contacts() -> void:
 	warn.add_child(sub)
 	warn.modulate = Color(1, 1, 1, 0)
 	add_child(warn)
+	Sound.play("contact")
+	Sound.play_after(1.02, "contact", -2.0)   # the second beat, with the blink
 	var tw := create_tween()
 	# Two beats, drawn out (Ryan, 22 September: one flash looked accidental).
 	tw.tween_property(warn, "modulate", Color(1, 1, 1, 1), 0.3)
@@ -759,12 +782,14 @@ func _play_handover(group: Array, screen: SkirmishScreen) -> void:
 	scrim.mouse_filter = Control.MOUSE_FILTER_STOP
 	scrim.modulate = Color(1, 1, 1, 0)
 	add_child(scrim)
+	Sound.play("engage")
 	var tw := create_tween().set_parallel(true)
 	tw.tween_method(func(t: float) -> void:
 		_map.focus_on(mid, lerpf(z0, BattleMapView.ZOOM_MAX, t)), 0.0, 1.0, HANDOVER_DIVE).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 	tw.tween_property(_map, "flatten_r", HANDOVER_FLAT_HEX, HANDOVER_FLAT).set_delay(0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	tw.chain().tween_property(scrim, "modulate", Color(1, 1, 1, 1), 0.3)
 	tw.chain().tween_callback(func() -> void:
+		Sound.play("cut")
 		add_child(screen)
 		scrim.move_to_front()
 		_map.flatten_r = 0.0
@@ -784,6 +809,7 @@ func _on_skirmish_back() -> void:
 		_skirmish.queue_free()
 		_skirmish = null
 	battle.finish_skirmish()
+	Sound.music("map")
 	if _built_hud != Settings.hud:
 		_build()   # the colour changed in the skirmish's menu: this screen catches up
 	_after_step()
@@ -791,6 +817,7 @@ func _on_skirmish_back() -> void:
 
 func _show_outcome() -> void:
 	var f := battle.field
+	Sound.play("victory" if battle.outcome == Battle.Outcome.VICTORY else "defeat")
 	match battle.outcome:
 		Battle.Outcome.VICTORY:
 			_overlay_title.text = "RIFT SEALED"

@@ -45,10 +45,14 @@ func _init() -> void:
 func open() -> void:
 	_show_page("paused")
 	visible = true
+	Sound.play("menu_open")
+	Sound.duck(true)
 
 
 func close() -> void:
 	visible = false
+	Sound.play("ui_back")
+	Sound.duck(false)
 	resumed.emit()
 
 
@@ -73,6 +77,8 @@ func _show_page(page: String) -> void:
 			_slider("MOVE PACE", "pace")
 			_toggle("GLITCH", "glitch")
 			_toggle("SCAN BAR", "scan")
+			_slider("MUSIC", "music")
+			_slider("EFFECTS", "effects")
 			_button("BACK", func() -> void: _show_page("paused"))
 	_fit()
 	_fit.call_deferred()
@@ -138,6 +144,8 @@ func _slider(caption: String, key: String) -> void:
 	s.custom_minimum_size = Vector2(0, 28)
 	s.value_changed.connect(func(v: float) -> void:
 		Settings.set_display(key, v)
+		if key in ["music", "effects"]:
+			Sound.apply_settings()
 		display_changed.emit(key, v))
 	row.add_child(s)
 	_rows.add_child(row)

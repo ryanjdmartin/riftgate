@@ -171,6 +171,8 @@ func open(entry: Dictionary) -> void:
 	var quote := str(entry.get("flavour", ""))
 	_flavour.text = "“%s”" % quote if not quote.is_empty() else ""
 	_flavour.visible = not quote.is_empty()
+	if not visible:
+		Sound.play("codex_open")
 	visible = true
 	_fit()
 	# Wrapping labels report their true height only after a layout pass at the panel's
@@ -184,6 +186,8 @@ func _fit() -> void:
 
 
 func close() -> void:
+	if visible:
+		Sound.play("codex_close")
 	visible = false
 	if _view != null:
 		_view.queue_free()

@@ -126,6 +126,7 @@ func _ready() -> void:
 		_build()
 		_refresh()
 	_scroll_to_end(_log_scroll)   # set up before entering the tree: the strip starts at its last line
+	Sound.music("skirmish")
 
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks): two
@@ -850,6 +851,7 @@ func _on_die_tapped(i: int) -> void:
 	if not ms.alive() or ms.assigned:
 		return
 	locked[i] = not locked[i]
+	Sound.play("die_lock")
 	_refresh()
 
 
@@ -984,6 +986,7 @@ func _on_hold_released() -> void:
 
 func _on_drag_started(i: int) -> void:
 	_drag_from = i
+	Sound.play("die_pick")
 	_ghost.set_face(sk.shown_face(sk.mechs[i], sk.mechs[i].face()))
 	_ghost.visible = true
 	_refresh()
@@ -1006,6 +1009,8 @@ func _on_drag_ended(global_pos: Vector2) -> void:
 	var target = _drop_target_at(global_pos)
 	if target != null:
 		_use_die(i, target)
+	else:
+		Sound.play("die_drop", -6.0)
 	_refresh()
 
 
@@ -1029,6 +1034,7 @@ func _use_die(i: int, target) -> bool:
 		var fv := _foe_view_for(foe)
 		if fv != null:
 			was[foe] = [fv, fv.sprite, fv.sprite_frame(), fv.flip_h]
+	var spent: Face = sk.mechs[i].face()
 	var ok := sk.assign(i, target)
 	if ok:
 		locked[i] = false
@@ -1037,10 +1043,19 @@ func _use_die(i: int, target) -> bool:
 		var tv: UnitView = was[target][0] if was.has(target) else null
 		_flash_roll(tv)
 		_animate_attack(_mech_views[i], tv, bool(sk.last_roll.get("ranged", false)), target.alive())
+		Sound.play_after(0.08, "hit_crit" if bool(sk.last_roll.get("crit", false)) else "hit")   # when the blow lands
+		var k := 0
 		for foe in was.keys():
 			if not foe.alive():
 				var w: Array = was[foe]
 				_animate_death(w[0], w[1], w[2], w[3])
+				Sound.play_after(0.14 + 0.07 * k, "kill", -2.0 * k)
+				k += 1
+	elif ok and spent != null:
+		if spent.kind == Face.Kind.SHIELD:
+			Sound.play("shield_up")
+		elif spent.kind == Face.Kind.VENT:
+			Sound.play("vent")
 	if ok and sk.outcome != Skirmish.Outcome.NONE:
 		# Decided by this die: the fight ends now, after the last blow has played.
 		if is_inside_tree():
@@ -1138,6 +1153,7 @@ func _animate_enemy_turn(hits: Array) -> void:
 		var fv: UnitView = h[0]
 		var mv: UnitView = h[1]
 		var broke: bool = h.size() > 2 and h[2]
+		var held: bool = h.size() > 3 and h[3]
 		if mv == null:
 			continue
 		var tw := create_tween()
@@ -1147,6 +1163,7 @@ func _animate_enemy_turn(hits: Array) -> void:
 				_animate_attack(fv, mv, false)
 			else:
 				_animate_hit(mv)   # the striker's slot has changed hands since: the blow still shows
+			Sound.play_after(0.08, "shield_break" if broke else ("block" if held else "hit"), 0.0 if broke else -4.0)
 			if broke:
 				var t2 := create_tween()
 				t2.tween_interval(0.08)
@@ -1221,6 +1238,8 @@ func _on_reroll() -> void:
 			idx.append(i)
 	sk.reroll(idx)
 	_refresh()
+	if not idx.is_empty():
+		Sound.play("die_roll")
 	if is_inside_tree():
 		for i in idx:
 			var d := _dice[i]
@@ -1255,6 +1274,7 @@ func _on_end_turn() -> void:
 func _end_turn_now() -> void:
 	if sk.state != Skirmish.State.ASSIGN:
 		return
+	Sound.play("resolve", -4.0)
 	for i in range(sk.mechs.size()):
 		var ms: Skirmish.MechState = sk.mechs[i]
 		if ms.alive() and not ms.assigned and ms.face() != null and ms.face().kind == Face.Kind.BLANK:
@@ -1275,13 +1295,16 @@ func _end_turn_now() -> void:
 	for ev in sk.turn_events:
 		var mi: int = ev["mech"]
 		if mi >= 0 and mi < _mech_views.size():
-			hits.append([_foe_view_for(ev["foe"]), _mech_views[mi], bool(ev["broke_shield"])])
+			hits.append([_foe_view_for(ev["foe"]), _mech_views[mi], bool(ev["broke_shield"]), bool(ev.get("blocked", false))])
 	_animate_enemy_turn(hits)
 	# Then the reinforcements step in, after the replay has played.
 	var after_replay := 0.12 * hits.size() + 0.3
+	var arrived := 0
 	for foe in sk.field_foes():
 		if not before.has(foe):
 			_animate_arrival(_foe_view_for(foe), after_replay)
+			Sound.play_after(after_replay + 0.26 + 0.09 * arrived, "arrival", -3.0 * arrived)
+			arrived += 1
 
 
 ## Withdraw always asks first.
@@ -1300,12 +1323,15 @@ func _show_outcome(outcome: int) -> void:
 	_refresh()
 	match outcome:
 		Skirmish.Outcome.VICTORY:
+			Sound.play("victory")
 			_overlay_title.text = "VICTORY"
 			_overlay_text.text = "The squad is gone. Rift pressure rose by %d." % sk.round
 		Skirmish.Outcome.DEFEAT:
+			Sound.play("defeat")
 			_overlay_title.text = "WRECKED"
 			_overlay_text.text = "Every machine is down. Survivors of the squad march on."
 		_:
+			Sound.play("withdraw")
 			_overlay_title.text = "WITHDREW"
 			_overlay_text.text = "%d foes remain on the field and %d wait in reserve. They keep marching." % [sk.field_foes().size(), sk.reinforcements.size()]
 	_overlay.visible = true

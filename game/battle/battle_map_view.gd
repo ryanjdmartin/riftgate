@@ -835,6 +835,10 @@ func _advance_anim(delta: float) -> void:
 			finished.append(uid)
 			continue
 		var i := int(floor(a["t"]))
+		if i != int(a.get("i", -1)):
+			a["i"] = i
+			if i > 0 and field.unit_by_id(uid) != null and field.unit_by_id(uid).is_player():
+				Sound.play("step", -9.0, 0.1)   # a footfall a hex; the squads are pictures and make none
 		var f: float = a["t"] - i
 		var from: Vector2 = Hex.to_pixel(path[i], HEX_SIZE)
 		var to: Vector2 = Hex.to_pixel(path[i + 1], HEX_SIZE)
