@@ -239,24 +239,32 @@ func _draw_glitched(frame: Rect2) -> void:
 		var f0 := float(k) / float(n)
 		var f1 := float(k + 1) / float(n)
 		var src := Rect2(0.0, ts.y * f0, ts.x, ts.y * (f1 - f0))
-		var off := (Hud.noise(tick * 1.3 + k * 0.77 + breathe_phase) - 0.5) * (22.0 if drop else 18.0)
-		if Hud.noise(tick * 2.1 + k * 0.31 + breathe_phase) < 0.4:
+		# A tear throws slices sideways; a dropped signal barely moves them (Ryan, 23 September:
+		# the two read alike), it fades the picture and fills it with static.
+		var off := (Hud.noise(tick * 1.3 + k * 0.77 + breathe_phase) - 0.5) * (6.0 if drop else 18.0)
+		if Hud.noise(tick * 2.1 + k * 0.31 + breathe_phase) < (0.7 if drop else 0.4):
 			off = 0.0
 		var dst := Rect2(Vector2(frame.position.x + off, frame.position.y + frame.size.y * f0), Vector2(frame.size.x, frame.size.y * (f1 - f0)))
 		var mod := Color.WHITE
 		if drop:
-			mod = Color(1, 1, 1, 0.2 + 0.2 * Hud.noise(tick + k * 0.5))
+			mod = Color(1, 1, 1, 0.12 + 0.18 * Hud.noise(tick + k * 0.5))
 		elif Hud.noise(tick * 3.3 + k * 0.17) > 0.8:
 			mod = Color(1.5, 0.55, 0.55)
 		draw_texture_rect_region(sprite, dst, src, mod)
 	if drop:
 		var r := frame.abs()
-		for j in range(14):
+		for j in range(22):
 			var yy := r.position.y + Hud.noise(tick * 0.7 + j * 0.61) * r.size.y
 			var x0 := r.position.x + Hud.noise(tick * 1.9 + j * 0.23) * r.size.x * 0.6
-			var w := r.size.x * (0.15 + 0.35 * Hud.noise(tick * 0.4 + j * 0.83))
-			draw_rect(Rect2(x0, yy, w, 1.0), Color(Palette.HUD, 0.4))
-		draw_string(Hud.mono(), Vector2(r.position.x, r.get_center().y + 4.0), "SIG LOST", HORIZONTAL_ALIGNMENT_CENTER, r.size.x, 11, Palette.ENEMY)
+			var w := r.size.x * (0.15 + 0.4 * Hud.noise(tick * 0.4 + j * 0.83))
+			draw_rect(Rect2(x0, yy, w, 1.0), Color(Palette.HUD, 0.3 + 0.3 * Hud.noise(tick * 1.1 + j)))
+		# The tag on a dark plate, in the enemy's colour, blinking slowly.
+		if int(_glitch * 3.0) % 2 == 0:
+			var font := Hud.display_bold()
+			var tw := font.get_string_size("SIG LOST", HORIZONTAL_ALIGNMENT_LEFT, -1, 16).x
+			var plate := Rect2(r.get_center().x - tw * 0.5 - 8.0, r.get_center().y - 13.0, tw + 16.0, 26.0)
+			Hud.box(self, plate, 4.0, Color(Palette.BG, 0.9), Palette.ENEMY, 1.2)
+			draw_string(font, Vector2(plate.position.x, plate.get_center().y + 6.0), "SIG LOST", HORIZONTAL_ALIGNMENT_CENTER, plate.size.x, 16, Palette.ENEMY)
 
 
 func _draw_shatter(vis: Rect2) -> void:
@@ -283,10 +291,13 @@ func _draw() -> void:
 	if sprite != null:
 		var frame := sil
 		if breathe and not dead:
-			# A 3% rise from the feet and a 1% lean, slow and out of phase between foes: enough
+			# A 2% rise from the feet and a small lean, slow and out of phase between foes: enough
 			# to be seen as deliberate, not enough to animate a painted sprite.
-			var k := 1.0 + 0.03 * sin(_t * 1.6 + breathe_phase)
-			var lean := 0.01 * sil.size.x * sin(_t * 0.9 + breathe_phase * 0.7)
+			# Each foe at its own rate as well as its own phase, so neighbours drift apart
+			# instead of falling into step (Ryan, 23 September; and a touch less of it).
+			var rate := 1.35 + 0.5 * Hud.noise(breathe_phase * 0.37 + 0.11)
+			var k := 1.0 + 0.022 * sin(_t * rate + breathe_phase)
+			var lean := 0.007 * sil.size.x * sin(_t * rate * 0.55 + breathe_phase * 0.7)
 			frame = Rect2(Vector2(sil.position.x + lean, sil.end.y - sil.size.y * k), Vector2(sil.size.x, sil.size.y * k))
 		if flip_h:
 			frame = Rect2(Vector2(frame.end.x, frame.position.y), Vector2(-frame.size.x, frame.size.y))

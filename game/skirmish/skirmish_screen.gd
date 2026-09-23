@@ -328,6 +328,13 @@ func _build() -> void:
 		mv.hold_released.connect(_on_hold_released)
 		mv.double_tapped.connect(_on_foe_double_tapped.bind(mv))
 		_massive_views[col] = mv
+	# The corrupted side's tear, over the foes and their ground alike (Ryan, 23 September:
+	# under the sprites it was lost): a screen-reading layer the size of the foes' ground.
+	var tear := TearLayer.new()
+	tear.clock = bg.time
+	tear.position = Vector2(0.0, BACK_Y - 14.0)
+	tear.size = Vector2(W, LOG_Y - 10.0 - (BACK_Y - 14.0))
+	add_child(tear)
 
 	# Log between the formation and the dice: every line, the newest brightest, scrolled to
 	# the end whenever something happens; drag to read back, double-tap for it full screen

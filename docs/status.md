@@ -79,9 +79,11 @@ brackets and a digit scramble (`UnitView.acquire`; Ryan: exactly right), the pha
 carries a fight clock, the log strip ends in a blinking prompt, and `game/ui/feed_fx.gd`
 runs one rare one-shot event every 4 to 9 s on a random unit or die (scanbox, databox,
 readout, recalc, tear, signal; poses `feed_<name>` and `groundtear` in the screenshot
-tool). The ground tear (`TerrainArt._tear`) is one burst of one to three slices every
-eight seconds at most, over part of the width, dimming or shearing (the map's rift shear),
-off with the glitch setting like the unit tears. Cut after Ryan saw it: the scan band
+tool). The corrupted side's tear is `game/ui/tear_layer.gd` + `tear.gdshader`, a
+screen-reading layer over the foes' band (sprites included; under them it was lost): one
+or two slices every eight seconds at most, over part of the width, dimming or shearing
+(the map's rift shear), hidden between tears, off with the glitch setting like the unit
+tears. Cut after Ryan saw it: the scan band
 lighting gauges, chips, buttons and rules (blinked rather than swept). Ryan's second pass:
 the events wanted drawing out (now one to two seconds for the boxes, half a second or
 more for the rest; he first wrote "too slow" and meant too fast) and the tears were too
