@@ -42,10 +42,13 @@ and open question from the design sessions.
   ally units by code from a brief (`models_low.py`, one function per chassis id) in the
   mid-nineties 3D register with generated tiles; `sheet_export.py` exports the enemy grids
   in `docs/sprites-enemies.html` to `art/foes/`; `foeforge/` generates enemy candidates with
-  an image model and cuts one into `art/foes/`; `spriter/.venv` is the Python the tools run
-  with. The gate and wall are lowforge models too (`gate`, `wall`).
+  an image model and cuts one into `art/foes/`; `soundforge/` builds every sound and the
+  two music loops from written recipes (numpy); `phone.sh` puts a Web build on a phone
+  over the LAN; `spriter/.venv` is the Python the tools run with. The gate and wall are
+  lowforge models too (`gate`, `wall`).
 - `art/` — `models/` every glTF the engine draws (units, gate, wall), `foes/` from the sheet
-  export, `fonts/` the HUD faces. A missing foe sprite falls back to a placeholder shape.
+  export, `fonts/` the HUD faces, `audio/` every sound by name (`game/audio/sound.gd` lists
+  them). A missing foe sprite falls back to a placeholder shape; a missing sound is silence.
 - `docs/` — design bible, generated vocabulary, concept intake in `docs/concepts/`,
   `sprites-enemies.html` (the enemy sheet the export reads), design canvases under
   `canvas/`, and `status.md`, the handoff note updated at the end of every working session.
@@ -91,6 +94,10 @@ tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut tools/foeforge/out/g
 
 # the gate and wall are built the same way
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build gate wall
+
+# every sound and the two music loops, from the recipes in tools/soundforge/forge.py, then re-import
+tools/spriter/.venv/bin/python tools/soundforge/forge.py build          # or: build hit kill music_map
+godot --headless --path . --import
 
 # the game on a phone, without an Android export: a Web build served over the LAN. Open the
 # printed address in the phone's browser on the same Wi-Fi; the first button press goes
@@ -141,7 +148,7 @@ screen. Its Back button applies the result: wrecks leave the map, squads shrink 
 survivors, surviving shields recharge, and Rift Pressure ticks once per round fought. The
 battle ends when the gate falls, every mech is wrecked, or the boss dies. MENU on either
 screen pauses and holds the settings (display colour, brightness, move pace, glitch, scan
-bar). For the standalone screen `RIFTGATE_TEAM` picks the team and
+bar, music and effects volume). For the standalone screen `RIFTGATE_TEAM` picks the team and
 `RIFTGATE_FACTION=undead|demonic|eldritch` the enemy; `RIFTGATE_TUNE=1` shows the
 development knob panel.
 
