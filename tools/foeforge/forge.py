@@ -399,6 +399,19 @@ def _similarity(a, b):
     return float((x * y).sum() / (np.sqrt((x * x).sum() * (y * y).sum()) + 1e-6))
 
 
+BAYER4 = np.array([[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]]) / 16.0
+
+
+def _dither_mix(a, b):
+    """Half of each frame's pixels, chosen by a 4x4 Bayer pattern, so the mix stays in the
+    two frames' own colours and reads as a pixel-art tween rather than a blur."""
+    A, B = np.array(a), np.array(b)
+    h, w = A.shape[:2]
+    thr = np.tile(BAYER4, (h // 4 + 1, w // 4 + 1))[:h, :w]
+    take_b = (thr >= 0.5)[..., None]
+    return Image.fromarray(np.where(take_b, B, A).astype(np.uint8), "RGBA")
+
+
 def cut_rift(args):
     """One candidate into three frames: the vortex turned a little each way about its
     centre (an image model cannot draw a consistent second frame; a turn of a few degrees,
@@ -429,6 +442,14 @@ def cut_rift(args):
         for angle in [-RIFT_TWIST, 0.0, RIFT_TWIST]:
             turned = src.rotate(angle, resample=Image.BICUBIC, expand=False)
             frames.append(outline(quantize(fit(turned, RIFT_FRAME), None, args.colours)))
+    if args.tween and len(frames) > 1:
+        # A frame between each pair, in the register: a Bayer-dithered half-and-half of
+        # the two, no new colours (Ryan, 23 September: a tiny bit smoother).
+        tweened = []
+        for i, f in enumerate(frames):
+            tweened.append(f)
+            tweened.append(_dither_mix(f, frames[(i + 1) % len(frames)]))
+        frames = tweened
     strip = Image.new("RGBA", (RIFT_FRAME[0] * len(frames), RIFT_FRAME[1]), (0, 0, 0, 0))
     for k, f in enumerate(frames):
         strip.paste(f, (k * RIFT_FRAME[0], 0))
@@ -586,6 +607,7 @@ def main():
     cr.add_argument("image")
     cr.add_argument("--colours", type=int, default=16)
     cr.add_argument("--frames", nargs="*", default=[], help="further frames (rift-frames output) after the first; without them, the one image turned")
+    cr.add_argument("--tween", action="store_true", help="a dithered half-and-half frame between each pair, for a smoother turn")
     cr.set_defaults(func=cut_rift)
     rf = sub.add_parser("rift-frames", help="the next frames of a chosen vortex through the edit model")
     rf.add_argument("image")

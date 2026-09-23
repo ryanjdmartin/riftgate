@@ -521,7 +521,7 @@ func _draw_gate_bar() -> void:
 ## The rift's pressure as a bar toward the next spawn (Ryan, 22 September), above the rift
 ## in the scenery rows, where the boss standing in front of the rift never covers it.
 func _draw_rift_bar() -> void:
-	var at := _origin + Hex.to_pixel(field.map.rift, HEX_SIZE) + Vector2(0, -HEX_SIZE * 2.3)
+	var at := _origin + Hex.to_pixel(field.map.rift, HEX_SIZE) + Vector2(0, -HEX_SIZE * 2.7)
 	var frac := float(field.rift_pressure) / maxf(1.0, float(field.rift_pressure_max))
 	_hud_bar(at, HEX_SIZE * 3.2, frac, RIFT_ART, "NEXT SPAWN IN %d" % (field.rift_pressure_max - field.rift_pressure))
 
@@ -552,10 +552,13 @@ func _draw_rift(map: BattleMap) -> void:
 	var fh := tex.get_size().y
 	var frames := maxi(1, int(round(tex.get_size().x / fh)))   # square frames side by side
 	var fw := tex.get_size().x / frames
-	# On the music's beat when there is music (Ryan, 23 September: it had landed near the
-	# beat by chance, so it is on it), else on its own slow clock.
+	# One turn of the strip is a bar of the music, four beats, however many frames it
+	# holds (four drawn, or eight with the dithered tweens between them), when there is
+	# music (Ryan, 23 September: it had landed near the beat by chance, so it is on it);
+	# else on its own slow clock at the same pace.
 	var beat := Sound.beat()
-	var k := int(beat if beat >= 0.0 else _ring_t / RIFT_FRAME_SECONDS) % frames
+	var bars: float = (beat if beat >= 0.0 else _ring_t / RIFT_FRAME_SECONDS) / 4.0
+	var k := int(bars * frames) % frames
 	var c := center(map.rift)
 	var dest := Rect2((c - Vector2(fw * SPRITE_SCALE * 0.5, fh * SPRITE_SCALE - HEX_SIZE * 0.9)).floor(), Vector2(fw, fh) * SPRITE_SCALE)
 	# The vortex is the worst input the display gets: it is drawn in bands, and now and

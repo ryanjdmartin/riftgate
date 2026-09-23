@@ -137,7 +137,7 @@ void fragment() {
 	// tears come more often there and shear further. Centred above the rift's hexes,
 	// where the vortex's mouth is, not on them, reaching about a hex beyond it.
 	float band = floor(px.y / 6.0);
-	float tick = floor(TIME * 4.0);   // a tear holds a quarter second (Ryan, 23 September: a little longer)
+	float tick = floor(TIME * 2.5);   // a tear holds 0.4 s (Ryan, 23 September)
 	vec2 mouth = sources[0].xy - vec2(0.0, sources[0].z * 0.75);
 	float near = source_count > 0 ? 1.0 - smoothstep(sources[0].z * 0.5, sources[0].z * 1.0, distance(px, mouth)) : 0.0;
 	float h1 = fract(sin(band * 12.9898 + tick * 7.31) * 43758.5453);
@@ -146,7 +146,7 @@ void fragment() {
 	float seg_x0 = h2 * map_size.x;
 	float seg_len = mix(50.0, 200.0, h3);
 	float in_seg = step(seg_x0, px.x) * step(px.x, seg_x0 + seg_len);
-	float flick = step(mix(0.9975, 0.982, near), h1) * in_seg * flicker;
+	float flick = step(mix(0.99714, 0.982, near), h1) * in_seg * flicker;   // one row in 350 a tick on the field
 	// The shear the vortex's own bands have (three of its pixels at the map's 2x): two
 	// map pixels was invisible on the dithered painting (Ryan, 23 September).
 	float shear = flick * (mod(band, 2.0) * 2.0 - 1.0) * mix(6.0, 8.0, near);
