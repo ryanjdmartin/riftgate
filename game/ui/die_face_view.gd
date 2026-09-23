@@ -173,10 +173,11 @@ func _draw() -> void:
 		var tick := int(_recalc * 20.0)
 		ink.a *= 0.7 + 0.3 * Hud.noise(tick * 0.7 + 0.3)
 		Hud.stroke_poly(self, Hud.cut(rect.grow(-3.0), CUT), Color(Palette.INK, 0.5 * (1.0 - rt)), 1.0)
-		for j in range(12):
-			var yy := rect.position.y + 6.0 + Hud.noise(tick * 0.9 + j * 0.61) * (FACE - 12.0)
-			var x0 := rect.position.x + 6.0 + Hud.noise(tick * 1.7 + j * 0.23) * (FACE - 12.0) * 0.6
-			var w := (FACE - 12.0) * (0.15 + 0.35 * Hud.noise(tick * 0.4 + j * 0.83))
+		# Wide dashes, most of the face across (Ryan, 23 September: the first cut was narrow).
+		for j in range(14):
+			var yy := rect.position.y + 5.0 + Hud.noise(tick * 0.9 + j * 0.61) * (FACE - 10.0)
+			var w := (FACE - 8.0) * (0.35 + 0.6 * Hud.noise(tick * 0.4 + j * 0.83))
+			var x0 := rect.position.x + 4.0 + Hud.noise(tick * 1.7 + j * 0.23) * (FACE - 8.0 - w)
 			draw_rect(Rect2(x0, yy, w, 1.0), Color(hud, (0.18 + 0.3 * Hud.noise(tick + j * 0.5)) * alpha))
 	draw_string(mono, Vector2(0, 92.0 + bob), num, HORIZONTAL_ALIGNMENT_CENTER, FACE, num_size, ink)
 	if face.strikes > 1:

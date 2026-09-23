@@ -85,8 +85,10 @@ tool). The corrupted side's tear is `game/ui/tear_layer.gd` + `tear.gdshader`, a
 screen-reading layer over the foes' band (sprites included; under them it was lost): one
 or two slices every eight seconds at most, over part of the width, sheared as the map's
 rift ground is (the dimming flavour was cut), hidden between tears, off with the glitch
-setting like the unit tears. The machine readout is a live bar chart, the die recalc is
-static over a held number, and the foes' breathing is spread by slot. Cut after Ryan saw it: the scan band
+setting like the unit tears. The machine readout is a live bar chart or an equaliser of
+three level bars (`levels`), the die recalc is wide static over a held number, the foes'
+breathing is spread by slot, and the foe events and the machine-and-dice events run on two
+independent lanes (`FeedFX.LANES`), each 5 to 11 s apart. Cut after Ryan saw it: the scan band
 lighting gauges, chips, buttons and rules (blinked rather than swept). Ryan's second pass:
 the events wanted drawing out (now one to two seconds for the boxes, half a second or
 more for the rest; he first wrote "too slow" and meant too fast) and the tears were too

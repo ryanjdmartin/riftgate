@@ -73,7 +73,7 @@ godot --headless --path . -s tools/export_vocabulary.gd
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument
 # poses the screen first. Skirmish: codex, mechcodex, hold, confirm, lock, strike,
 # enemyturn, withdraw, rounds, logfull, killed, acquire, menu, settings, quit, and the feed's
-# events feed_scanbox, feed_databox, feed_readout, feed_recalc, feed_tear, feed_signal,
+# events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_tear, feed_signal,
 # and groundtear (the corrupted side's tear as it fires).
 # Battle: select, route, hold, north, zoom, zoomlast,
 # flyer, predict, resolve, contact, engage, codex, foecodex, menu, settings, tune.
