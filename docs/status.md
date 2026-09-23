@@ -52,8 +52,9 @@ pinch from two fingers; roads join on the Compatibility renderer; hex 48. The so
 first cut. Trials retired; the bible republished (link above). A placeholder launcher
 icon (`art/icon.png`, a tool-drawn hex). Afternoon: the map's frame belongs to the viewport
 (lines the view's height, readouts fixed, ticks and numbers scrolling), tighter and with
-bigger text; bar labels on plaques; the rift is a foeforge vortex in three frames
-(bible section 5 row, 23 September; the other three candidates are in
+bigger text, pinned through zoom too; bar labels on plaques; the rift is a foeforge
+vortex in four distinct frames, the chosen candidate plus three edit-model follow-ons
+(bible section 5 row, 23 September; the other candidates and the frames are in
 `tools/foeforge/out/rift`).
 
 **Ryan's skirmish notes, 23 September (done).** Four columns locked in. The menu has QUIT
