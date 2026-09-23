@@ -1124,7 +1124,7 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0):
 # ---- the loops (Ryan's verdicts, 23 September: the fight in the djent palette, the map in
 # the rift's, both with longer sections and more instruments trading the tune)
 
-def music_map():
+def music_map(bpm=92):
     # The other world at 92, orchestral and a little wrong. Forty-eight bars in eight-bar
     # sections: the groove (A: pizzicato bass, the bells, the horn answering, the choir on
     # "oo" pulsing), the lift (C: the bells doubled, the strings under), the interlude (D:
@@ -1134,7 +1134,7 @@ def music_map():
     # pizzicato under). The taiko under a low-pass for the kick, a big-room snare, crushed
     # clicks for the glitch, a backwards swell into every section.
     return groove(
-        bpm=92,
+        bpm=bpm,
         form="AAAAAAAB CCCCCCCB DDDDDDDD EEEEEEEB AAAACCCC DDDDDDDD",
         kit={"kick": (lp(taiko(), 900.0), 1.0), "snare": (snare_drum(True), 0.85), "hat": (hat(False, True), 0.4),
              "open": (hat(True, True), 0.35), "glitch": (glitch_perc(), 0.45), "clank": (clank(), 0.3), "timp": (timpani(), 0.9)},
@@ -1328,7 +1328,8 @@ def sketch_djent():
         pad={"inst": "choir", "gain": 0.12, "vowel": "oh"})
 
 
-SKETCHES = {"human": sketch_human, "rift": sketch_rift, "djent": sketch_djent}
+SKETCHES = {"human": sketch_human, "rift": sketch_rift, "djent": sketch_djent,
+            "map_88": lambda: music_map(88)}   # the map loop slightly slower, to compare (Ryan, 23 September)
 OUT_SKETCH = os.path.join(os.path.dirname(__file__), "out")
 
 
