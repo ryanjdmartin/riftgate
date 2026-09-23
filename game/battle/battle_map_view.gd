@@ -452,25 +452,25 @@ func _draw() -> void:
 	Hud.scanlines(self, Rect2(Vector2.ZERO, size))
 
 
-## The frame: the field's two boundary lines in the display's light, a tick on every
-## row's centre with the row's number, and a readout at each end, so the playable area has
-## a viewfinder's edge and the blur runs into it. The frame belongs to the viewport, not
-## the map (Ryan, 23 September): its lines run the height of the view and its readouts sit
-## at the view's top and bottom whatever the scroll; only the ticks and numbers ride the
-## map. Screen space.
+## The frame: two boundary lines in the display's light, a tick on every row's centre with
+## the row's number, and a readout at each end, so the field has a viewfinder's edge and
+## the blur runs into it. The frame belongs to the viewport, not the map (Ryan, 23
+## September): its lines stand at the view's edges through every scroll and zoom, its
+## readouts sit at the view's top and bottom, and only the ticks and numbers ride the map.
+## The numbers sit inside the lines, the same distance in on both sides. Screen space.
 const FRAME_PAD := 8.0
+const FRAME_SIDE := 14.0   # the lines' distance in from the view's left and right
 const FRAME_FONT := 14
 
 func _draw_frame(hud: Color) -> void:
 	var map := field.map
-	var fx := _frame_x()
 	var fc := Color(hud, frame_alpha)
 	var font := Hud.mono()
 	var top := FRAME_PAD
 	var bottom := size.y - FRAME_PAD
-	for x in [fx.x, fx.y]:
-		var dir := 1.0 if x == fx.x else -1.0
-		var sx := to_screen(Vector2(x, 0)).x
+	var label_w := font.get_string_size("00", HORIZONTAL_ALIGNMENT_LEFT, -1, FRAME_FONT).x
+	for sx in [FRAME_SIDE, size.x - FRAME_SIDE]:
+		var dir := 1.0 if sx < size.x * 0.5 else -1.0
 		draw_line(Vector2(sx, top), Vector2(sx, bottom), fc, 2.0)
 		for row in range(map.height - BattleMap.GATE_ROWS):
 			var y := to_screen(Vector2(0, _origin.y + HEX_SIZE * 1.5 * row)).y
@@ -478,13 +478,12 @@ func _draw_frame(hud: Color) -> void:
 				continue   # under the readouts
 			draw_line(Vector2(sx, y), Vector2(sx + 10.0 * dir, y), fc, 2.0)
 			var label := "%02d" % (map.height - BattleMap.GATE_ROWS - row)   # counted up from the gate
-			var lx: float = (sx - 34.0) if dir > 0.0 else (sx + 8.0)
+			var lx: float = (sx + 14.0) if dir > 0.0 else (sx - 14.0 - label_w)
 			draw_string(font, Vector2(lx, y + 5.0), label, HORIZONTAL_ALIGNMENT_LEFT, -1, FRAME_FONT, fc)
 		for y in [top, bottom]:
 			draw_line(Vector2(sx, y), Vector2(sx + 18.0 * dir, y), fc, 2.0)
-	var left := to_screen(Vector2(fx.x, 0)).x
-	draw_string(font, Vector2(left + 8.0, top + 19.0), "SEC %02d // GRID %dx%d // RECON" % [map.map_seed % 100, map.width, map.height - BattleMap.GATE_ROWS], HORIZONTAL_ALIGNMENT_LEFT, -1, FRAME_FONT, fc)
-	draw_string(font, Vector2(left + 8.0, bottom - 8.0), "CARE // PROJECTOR LINE", HORIZONTAL_ALIGNMENT_LEFT, -1, FRAME_FONT, fc)
+	draw_string(font, Vector2(FRAME_SIDE + 8.0, top + 19.0), "SEC %02d // GRID %dx%d // RECON" % [map.map_seed % 100, map.width, map.height - BattleMap.GATE_ROWS], HORIZONTAL_ALIGNMENT_LEFT, -1, FRAME_FONT, fc)
+	draw_string(font, Vector2(FRAME_SIDE + 8.0, bottom - 8.0), "CARE // PROJECTOR LINE", HORIZONTAL_ALIGNMENT_LEFT, -1, FRAME_FONT, fc)
 
 
 ## A HUD bar in screen space: a backing, a track, a fill, a rim, a label above on its own
@@ -535,7 +534,6 @@ func sweep_at(local_y: float) -> void:
 
 
 const RIFT_ART := Color("c9a6ff")   # what the rift looks like; it means nothing but the rift
-const RIFT_FRAMES := 3
 const RIFT_FRAME_SECONDS := 0.32
 
 ## The rift (Ryan, 23 September): a vortex tearing a hole in reality, in the foes' own
@@ -550,9 +548,10 @@ func _draw_rift(map: BattleMap) -> void:
 		for r in map.rift_hexes:
 			Hud.stroke_poly(self, Hex.corners(center(r), HEX_SIZE - 3.0), RIFT_ART, 2.0)
 		return
-	var fw := tex.get_size().x / RIFT_FRAMES
 	var fh := tex.get_size().y
-	var k: int = [0, 1, 2, 1][int(_ring_t / RIFT_FRAME_SECONDS) % 4]
+	var frames := maxi(1, int(round(tex.get_size().x / fh)))   # square frames side by side
+	var fw := tex.get_size().x / frames
+	var k := int(_ring_t / RIFT_FRAME_SECONDS) % frames
 	var c := center(map.rift)
 	var dest := Rect2((c - Vector2(fw * SPRITE_SCALE * 0.5, fh * SPRITE_SCALE - HEX_SIZE * 0.9)).floor(), Vector2(fw, fh) * SPRITE_SCALE)
 	draw_texture_rect_region(tex, dest, Rect2(k * fw, 0, fw, fh))

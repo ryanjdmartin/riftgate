@@ -283,11 +283,35 @@ def generate_rift(args):
     print(f"{len(made)} candidates in {out.relative_to(ROOT)}")
 
 
-def cut_rift(args):
-    """One candidate into three frames: the vortex turned a little each way about its
-    centre (an image model cannot draw a consistent second frame; a turn of a few degrees,
-    ping-ponged, reads as the spiral moving). Written as one strip, frames side by side."""
-    src = key_background(Image.open(args.image))
+RIFT_EDIT = (
+    "Redraw this pixel art vortex with exactly the same style, size, colours and outline, "
+    "as the next frame of its animation: the spiral has turned a quarter turn, the arcs of "
+    "cyan lightning strike in different places, and the torn dark tendrils at the rim have "
+    "shifted. Solid flat pure white background, no text, no shadow."
+)
+
+
+def rift_frames(args):
+    """Distinct frames from a chosen candidate through the edit model (Ryan, 23 September:
+    a turn is not an animation): the reference is frame 0, and each seed asks for the
+    next frame of the same vortex."""
+    out = OUT / "rift"
+    out.mkdir(parents=True, exist_ok=True)
+    prompt = args.prompt or RIFT_EDIT
+    made = [Path(args.image)]
+    for seed in range(args.seed, args.seed + args.n):
+        path = out / f"frame_{seed}.png"
+        cmd = [str(MFLUX_EDIT), "--model", MODEL, "--quantize", QUANTIZE, "--prompt", prompt,
+               "--image-paths", args.image, "--steps", STEPS, "--seed", str(seed), "--output", str(path)]
+        print("rendering", path.name)
+        subprocess.run(cmd, check=True)
+        made.append(path)
+    contact(made, out / "frames_contact.png")
+    print(f"{len(made) - 1} frames in {out.relative_to(ROOT)}; cut-rift with --frames to build the strip")
+
+
+def _key_rift(path):
+    src = key_background(Image.open(path))
     # The tendrils close pockets of background that the flood fill from the edges never
     # reaches; a vortex has no white detail worth keeping, so every near-white pixel goes.
     px = src.load()
@@ -296,12 +320,24 @@ def cut_rift(args):
             r, g, b, a = px[x, y]
             if a and r > 225 and g > 225 and b > 225:
                 px[x, y] = (0, 0, 0, 0)
+    return src
+
+
+def cut_rift(args):
+    """One candidate into three frames: the vortex turned a little each way about its
+    centre (an image model cannot draw a consistent second frame; a turn of a few degrees,
+    ping-ponged, reads as the spiral moving). Written as one strip, frames side by side."""
     frames = []
-    for k, angle in enumerate([-RIFT_TWIST, 0.0, RIFT_TWIST]):
-        turned = src.rotate(angle, resample=Image.BICUBIC, expand=False)
-        cut_frame = fit(turned, RIFT_FRAME)
-        frames.append(outline(quantize(cut_frame, None, args.colours)))
-    strip = Image.new("RGBA", (RIFT_FRAME[0] * 3, RIFT_FRAME[1]), (0, 0, 0, 0))
+    if args.frames:
+        # Distinct drawings (rift_frames), each cut the same way.
+        for path in [args.image] + args.frames:
+            frames.append(outline(quantize(fit(_key_rift(path), RIFT_FRAME), None, args.colours)))
+    else:
+        src = _key_rift(args.image)
+        for angle in [-RIFT_TWIST, 0.0, RIFT_TWIST]:
+            turned = src.rotate(angle, resample=Image.BICUBIC, expand=False)
+            frames.append(outline(quantize(fit(turned, RIFT_FRAME), None, args.colours)))
+    strip = Image.new("RGBA", (RIFT_FRAME[0] * len(frames), RIFT_FRAME[1]), (0, 0, 0, 0))
     for k, f in enumerate(frames):
         strip.paste(f, (k * RIFT_FRAME[0], 0))
     dest = ROOT / "art" / "terrain" / "rift.png"
@@ -457,7 +493,14 @@ def main():
     cr = sub.add_parser("cut-rift", help="cut a chosen candidate into art/terrain/rift.png, three frames")
     cr.add_argument("image")
     cr.add_argument("--colours", type=int, default=16)
+    cr.add_argument("--frames", nargs="*", default=[], help="further frames (rift-frames output) after the first; without them, the one image turned")
     cr.set_defaults(func=cut_rift)
+    rf = sub.add_parser("rift-frames", help="the next frames of a chosen vortex through the edit model")
+    rf.add_argument("image")
+    rf.add_argument("--n", type=int, default=3)
+    rf.add_argument("--seed", type=int, default=1)
+    rf.add_argument("--prompt", default="")
+    rf.set_defaults(func=rift_frames)
     args = ap.parse_args()
     args.func(args)
 
