@@ -23,9 +23,10 @@ plays every sound by name; `tools/soundforge/forge.py` builds them all from reci
 exports a Web build and serves it on the LAN for a phone; `tools/screenshot.gd` poses either
 screen (`README.md` lists the poses); `tools/perf_probe.gd` measures the map; the
 `map_tuner` knobs are behind `RIFTGATE_TUNE=1`. `docs/design-bible.html` records every
-decision; section 12 is the roadmap. Its published copy (the claude.ai artifact from 22
-September) was found deleted late that day and has not been republished: Ryan to say
-whether he wants a new link. `docs/vocabulary.md` is generated from content.
+decision; section 12 is the roadmap; it is published at
+https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ (v0.7, republished 23 September after
+the earlier copy was deleted; republish the file to that URL after a bible change).
+`docs/vocabulary.md` is generated from content.
 
 **What the game does today.** A battle: the map shows every squad's intent and the exact
 result of the plan before Resolve; Resolve plays the moves with footfalls, then a CONTACT
