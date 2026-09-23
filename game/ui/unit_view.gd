@@ -55,7 +55,7 @@ const ACQUIRE_SECONDS := 0.3
 const SCRAMBLE_PART := 0.55       # the first part of the acquire, while the number is still settling
 var _glitch: float = -1.0         # seconds since this unit's picture tore; negative when idle
 var _glitch_kind := "tear"        # "tear": slices jump sideways; "drop": the signal goes, static and a tag
-const GLITCH_SECONDS := 0.25
+const GLITCH_SECONDS := 0.18
 
 var _pressed := false
 var _press_at := 0.0

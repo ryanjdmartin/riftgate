@@ -24,8 +24,12 @@ var dice: Callable = Callable()         # -> Array of DieFaceView
 const GAP_MIN := 4.0
 const GAP_MAX := 9.0
 const WEIGHTS := {"scanbox": 3, "databox": 3, "readout": 2, "recalc": 2, "tear": 2, "signal": 1}
-const DURATION := {"scanbox": 1.0, "databox": 0.9, "readout": 0.9, "recalc": 0.35, "tear": 0.25, "signal": 0.3}
+# Quick, all of them (Ryan, 23 September: the first cut was far too slow).
+const DURATION := {"scanbox": 0.55, "databox": 0.5, "readout": 0.5, "recalc": 0.25, "tear": 0.18, "signal": 0.22}
 const BOX := Vector2(100.0, 48.0)
+## RIFTGATE_FEED_DEBUG=1: an event every half second or so, and the ground tears every
+## couple of seconds, to judge them by eye.
+static var DEBUG := OS.get_environment("RIFTGATE_FEED_DEBUG") == "1"
 
 var _wait := 3.0
 var _ev: Dictionary = {}   # type, view, t, dur, salt
@@ -43,7 +47,7 @@ func _process(delta: float) -> void:
 		_ev["t"] += delta
 		if _ev["t"] >= _ev["dur"] or not is_instance_valid(_ev["view"]):
 			_ev = {}
-			_wait = _rng.randf_range(GAP_MIN, GAP_MAX)
+			_wait = _rng.randf_range(0.4, 0.9) if DEBUG else _rng.randf_range(GAP_MIN, GAP_MAX)
 		queue_redraw()
 		return
 	_wait -= delta

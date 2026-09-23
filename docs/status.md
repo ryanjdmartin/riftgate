@@ -79,10 +79,13 @@ brackets and a digit scramble (`UnitView.acquire`; Ryan: exactly right), the pha
 carries a fight clock, the log strip ends in a blinking prompt, and `game/ui/feed_fx.gd`
 runs one rare one-shot event every 4 to 9 s on a random unit or die (scanbox, databox,
 readout, recalc, tear, signal; poses `feed_<name>` and `groundtear` in the screenshot
-tool). The ground tear (`TerrainArt._tear`) is one burst every few seconds over part of
-the width, off with the glitch setting like the unit tears. Cut after Ryan saw it: the scan
-band lighting gauges, chips, buttons and rules (blinked rather than swept). Ryan has not
-yet judged the events in motion; cut or reweight (`FeedFX.WEIGHTS`, `GAP_MIN`/`GAP_MAX`).
+tool). The ground tear (`TerrainArt._tear`) is one burst of one to three slices every
+eight seconds at most, over part of the width, dimming or shearing (the map's rift shear),
+off with the glitch setting like the unit tears. Cut after Ryan saw it: the scan band
+lighting gauges, chips, buttons and rules (blinked rather than swept). Ryan's second pass:
+the events were far too slow (now about half a second each) and the tears too many and
+too often. `RIFTGATE_FEED_DEBUG=1` fires everything constantly for judging; Ryan is doing
+that now. Knobs: `FeedFX.WEIGHTS`, `GAP_MIN`/`GAP_MAX`, `DURATION`, `TerrainArt.TEAR_PERIOD`.
 
 **Ryan's verdict on the web harness (23 September).** It served for sizes and touch and no
 more: the map must not get smaller (the base hex size may go up a little; zoom makes it

@@ -77,6 +77,8 @@ godot --headless --path . -s tools/export_vocabulary.gd
 # Battle: select, route, hold, north, zoom, zoomlast,
 # flyer, predict, resolve, contact, engage, codex, foecodex, menu, settings, tune.
 # RIFTGATE_SHOT_FRAME=<n> picks the capture frame, to catch an animation mid-flight.
+# RIFTGATE_FEED_DEBUG=1 (any run) fires the skirmish feed's analysis events every half
+# second and the ground tears every couple of seconds, to judge them by eye.
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmish/skirmish_screen.tscn shot.png codex
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/battle_screen.tscn shot.png route
 

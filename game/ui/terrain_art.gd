@@ -98,7 +98,6 @@ static func draw_ground(ci: CanvasItem, rect: Rect2, terrain: int, seed_value: i
 	var w := sqrt(3.0) * hex
 	if style == "other":
 		_overworld(ci, rect, terrain, seed_value, hex, frame, marks)
-		_tear(ci, rect, time)
 	else:
 		if tile != null:
 			ci.draw_texture_rect(tile, rect, true, Color(0.62, 0.62, 0.62, 1.0))
@@ -140,6 +139,8 @@ static func draw_ground(ci: CanvasItem, rect: Rect2, terrain: int, seed_value: i
 			x += w
 		y += hex * 1.5
 		row += 1
+	if style == "other":
+		_tear(ci, rect, time, terrain, hex)   # over the grid, so a sheared slice carries its grid with it
 	# The band's edges soften into the panel, top and bottom.
 	var steps := 6
 	for i in range(steps):
@@ -149,37 +150,95 @@ static func draw_ground(ci: CanvasItem, rect: Rect2, terrain: int, seed_value: i
 		ci.draw_rect(Rect2(rect.position.x, rect.end.y - (i + 1) * h, rect.size.x, h), Color(Palette.BG, a))
 
 
-## The corrupted side's tear: input the display cannot hold. One tear every few seconds
-## (Ryan, 23 September: the earlier ticking bands read as extra scan lines), a burst of a
-## few slices that jump sideways for a fifth of a second, each over part of the width as
-## often as all of it, and one slot in four silent so it never becomes a rhythm. Off with
-## the glitch setting. Deterministic in time, so the two ground bands agree.
-const TEAR_PERIOD := 5.0
+## The corrupted side's tear: input the display cannot hold. One tear every several
+## seconds (Ryan, 23 September: the earlier ticking bands read as extra scan lines, and a
+## first rework of two to four slices every five seconds was still too many and too often),
+## one to three slices for a fifth of a second, each over part of the width as often as all
+## of it, one slot in three silent so it never becomes a rhythm. Two flavours, so it is not
+## always the same tear: the slice dims with a bright hairline, or it shears sideways as
+## the rift's ground does on the map, its grid going with it. Off with the glitch setting.
+## Deterministic in time, so the two ground bands agree. RIFTGATE_FEED_DEBUG=1: every two
+## seconds, never silent.
+const TEAR_PERIOD := 8.0
 const TEAR_SECONDS := 0.2
 
-static func _tear(ci: CanvasItem, rect: Rect2, t: float) -> void:
+static func tear_period() -> float:
+	return 2.0 if FeedFX.DEBUG else TEAR_PERIOD
+
+
+## When the first tear of the wanted flavour fires, in band seconds (screenshots).
+static func tear_time(want_shear: bool) -> float:
+	var period := tear_period()
+	for slot in range(40):
+		if not FeedFX.DEBUG and Hud.noise(slot * 7.7 + 0.3) > 0.66:
+			continue
+		if (Hud.noise(slot * 8.8 + 0.1) < 0.5) == want_shear:
+			return (slot + 0.1 + 0.75 * Hud.noise(slot * 3.1 + 0.7)) * period
+	return 0.0
+
+
+static func _tear(ci: CanvasItem, rect: Rect2, t: float, terrain: int, hex: float) -> void:
 	if not bool(Settings.display.get("glitch", true)):
 		return
-	var slot := floorf(t / TEAR_PERIOD)
-	if Hud.noise(slot * 7.7 + 0.3) > 0.75:
+	var period := tear_period()
+	var slot := floorf(t / period)
+	if not FeedFX.DEBUG and Hud.noise(slot * 7.7 + 0.3) > 0.66:
 		return
-	var at := (slot + 0.1 + 0.75 * Hud.noise(slot * 3.1 + 0.7)) * TEAR_PERIOD
+	var at := (slot + 0.1 + 0.75 * Hud.noise(slot * 3.1 + 0.7)) * period
 	var age := t - at
 	if age < 0.0 or age > TEAR_SECONDS:
 		return
 	var tick := floorf(age * 30.0)
-	var n := 2 + int(Hud.noise(slot * 1.3 + 0.2) * 3.0)
+	var shear := Hud.noise(slot * 8.8 + 0.1) < 0.5
+	var n := 1 + int(Hud.noise(slot * 1.3 + 0.2) * 3.0)
 	for k in range(n):
 		var yy := rect.position.y + Hud.noise(slot * 11.1 + k * 0.37) * (rect.size.y - 12.0)
 		var full := Hud.noise(slot * 5.5 + k * 0.91) < 0.3
 		var wfrac := 1.0 if full else 0.2 + 0.5 * Hud.noise(slot * 2.2 + k * 0.53)
 		var x0 := rect.position.x + (0.0 if full else Hud.noise(slot * 9.9 + k * 0.71) * (1.0 - wfrac) * rect.size.x)
 		var hh := 3.0 + 7.0 * Hud.noise(slot * 4.4 + k * 0.29)
-		var shift := (Hud.noise(slot * 6.6 + k * 0.43 + tick * 1.7) - 0.5) * 18.0
 		var w := wfrac * rect.size.x
-		ci.draw_rect(Rect2(x0, yy, w, hh), Color(0, 0, 0, 0.22))
-		ci.draw_rect(Rect2(x0 + shift, yy, w, 1.0), Color(1, 1, 1, 0.12))
-		ci.draw_rect(Rect2(x0 - shift * 0.5, yy + hh - 1.0, w, 1.0), Color(Palette.ENEMY, 0.10))
+		var slice := Rect2(x0, yy, w, hh)
+		var shift := (Hud.noise(slot * 6.6 + k * 0.43 + tick * 1.7) - 0.5) * 18.0
+		if shear:
+			# The slice's input arrives displaced: its flat ground over the grid, then its
+			# own grid segments drawn again where they landed, slightly dimmer.
+			var base: Color = OTHER.get(terrain, OTHER[BattleMap.Terrain.PLAIN])
+			ci.draw_rect(slice, base.darkened(0.06))
+			_grid_pieces(ci, rect, hex, slice, shift, 0.14)
+		else:
+			ci.draw_rect(slice, Color(0, 0, 0, 0.22))
+			ci.draw_rect(Rect2(x0 + shift, yy, w, 1.0), Color(1, 1, 1, 0.12))
+			ci.draw_rect(Rect2(x0 - shift * 0.5, yy + hh - 1.0, w, 1.0), Color(Palette.ENEMY, 0.10))
+
+
+## The display's grid segments that fall inside `clip`, drawn `shift` pixels to the side:
+## the sheared slice's own lines, moved with it.
+static func _grid_pieces(ci: CanvasItem, rect: Rect2, hex: float, clip: Rect2, shift: float, alpha: float) -> void:
+	var w := sqrt(3.0) * hex
+	var poly := PackedVector2Array([clip.position, Vector2(clip.end.x, clip.position.y), clip.end, Vector2(clip.position.x, clip.end.y)])
+	var row := 0
+	var y := rect.position.y + hex * 0.5
+	while y < rect.end.y + hex:
+		if absf(y - clip.get_center().y) <= hex + clip.size.y:
+			var x := rect.position.x + (w * 0.5 if row % 2 == 1 else 0.0)
+			while x < rect.end.x + w:
+				if x + w >= clip.position.x and x - w <= clip.end.x:
+					var c := Vector2(x, y)
+					var edge := minf(c.y - rect.position.y, rect.end.y - c.y) / (rect.size.y * 0.5)
+					var fade := clampf(edge * 1.6, 0.0, 1.0)
+					if fade > 0.05:
+						var ring := Hex.corners(c, hex - 1.5)
+						ring.append(ring[0])
+						for piece in Geometry2D.clip_polyline_with_polygon(ring, poly):
+							var moved := PackedVector2Array()
+							for p in piece:
+								moved.append(p + Vector2(shift, 0.0))
+							if moved.size() >= 2:
+								ci.draw_polyline(moved, Color(Palette.HUD, alpha * fade), 1.0, true)
+				x += w
+		y += hex * 1.5
+		row += 1
 
 
 ## The other world's overworld across a rect: the painted map's hexes, its fills and

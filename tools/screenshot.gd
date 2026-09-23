@@ -60,10 +60,11 @@ func _apply_pose() -> void:
 		"acquire":
 			# The display locking onto every intent, mid-collapse (RIFTGATE_SHOT_FRAME=10).
 			s._acquire_intents()
-		"groundtear":
-			# The corrupted ground's tear, caught as it fires: the backdrop's clock is set just
-			# past the first slot's firing time (RIFTGATE_SHOT_FRAME=4).
-			s._bg._t = (0.1 + 0.75 * Hud.noise(0.7)) * TerrainArt.TEAR_PERIOD + 0.03
+		"groundtear", "groundshear":
+			# The corrupted ground's tear, caught as it fires, in its dimming or its shearing
+			# flavour: the backdrop's clock is set just past the first such firing time
+			# (RIFTGATE_SHOT_FRAME=4).
+			s._bg._t = TerrainArt.tear_time(_pose == "groundshear") + 0.03
 		"feed_scanbox", "feed_databox", "feed_readout", "feed_recalc", "feed_tear", "feed_signal":
 			# One of the feed's analysis events, started now (RIFTGATE_SHOT_FRAME=20 for the
 			# boxes, 8 for the tear, the signal drop and the recalculation).
