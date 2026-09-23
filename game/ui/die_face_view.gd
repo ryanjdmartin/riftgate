@@ -166,19 +166,12 @@ func _draw() -> void:
 	var num := face.number_text()
 	var num_size := 28 if face.is_ranged() else 38
 	if _recalc >= 0.0:
-		# Static across the face while the display recomputes it: the number stays what it
-		# is and stays readable (Ryan, 23 September: a digit scramble here was wrong), its
-		# ink dipping a little under the noise, the frame flashing once.
+		# The display recomputes this face: its ink dips a little and the frame flashes once;
+		# the static itself is drawn last, over the whole die (`_draw_static`). The number
+		# stays what it is and stays readable (Ryan, 23 September: a scramble here was wrong).
 		var rt := _recalc / _recalc_for
-		var tick := int(_recalc * 20.0)
-		ink.a *= 0.7 + 0.3 * Hud.noise(tick * 0.7 + 0.3)
+		ink.a *= 0.75 + 0.25 * Hud.noise(int(_recalc * 20.0) * 0.7 + 0.3)
 		Hud.stroke_poly(self, Hud.cut(rect.grow(-3.0), CUT), Color(Palette.INK, 0.5 * (1.0 - rt)), 1.0)
-		# Wide dashes, most of the face across (Ryan, 23 September: the first cut was narrow).
-		for j in range(14):
-			var yy := rect.position.y + 5.0 + Hud.noise(tick * 0.9 + j * 0.61) * (FACE - 10.0)
-			var w := (FACE - 8.0) * (0.35 + 0.6 * Hud.noise(tick * 0.4 + j * 0.83))
-			var x0 := rect.position.x + 4.0 + Hud.noise(tick * 1.7 + j * 0.23) * (FACE - 8.0 - w)
-			draw_rect(Rect2(x0, yy, w, 1.0), Color(hud, (0.18 + 0.3 * Hud.noise(tick + j * 0.5)) * alpha))
 	draw_string(mono, Vector2(0, 92.0 + bob), num, HORIZONTAL_ALIGNMENT_CENTER, FACE, num_size, ink)
 	if face.strikes > 1:
 		# Blows per use, small, to the right of the number: "10 ×3" reads as a burst.
@@ -204,3 +197,17 @@ func _draw() -> void:
 		var chip_rect := Rect2(Vector2(FACE - CHIP.x + RAIL - 2.0, 8.0 + i * TAG_STEP + bob * 0.5), CHIP)
 		Hud.box(self, chip_rect, 4.0, Color(Palette.BG, 0.94), col, 1.0)
 		Glyphs.draw(self, tags[i], chip_rect.get_center(), 13, col, 1.8)
+	if _recalc >= 0.0:
+		_draw_static()
+
+
+## Static over the whole die, chips included, while it is recomputed: the signal-drop noise
+## a foe gets, more subtle, in the display's colour, no tag (Ryan, 23 September).
+func _draw_static() -> void:
+	var tick := int(_recalc * 20.0)
+	var r := Rect2(Vector2.ZERO, size)
+	for j in range(22):
+		var yy := Hud.noise(tick * 0.9 + j * 0.61) * r.size.y
+		var w := r.size.x * (0.2 + 0.6 * Hud.noise(tick * 0.4 + j * 0.83))
+		var x0 := Hud.noise(tick * 1.7 + j * 0.23) * (r.size.x - w)
+		draw_rect(Rect2(x0, yy, w, 1.0), Color(Palette.HUD, 0.12 + 0.25 * Hud.noise(tick + j * 0.5)))

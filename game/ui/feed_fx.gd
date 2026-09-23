@@ -36,11 +36,11 @@ const LANES := {
 	"ally": {"readout": 3, "levels": 2, "recalc": 3},
 }
 # Drawn out (Ryan, 23 September: the first cut, at a second or under, was too quick to read).
-const DURATION := {"scanbox": 2.6, "databox": 2.8, "readout": 2.8, "levels": 2.8, "recalc": 0.7, "tear": 0.5, "signal": 1.3}
+const DURATION := {"scanbox": 2.6, "databox": 2.8, "readout": 3.6, "levels": 3.6, "recalc": 0.7, "tear": 0.5, "signal": 1.3}
 const SETTLE := 0.35        # seconds the brackets and the boxes take to land
 const SCAN_HOLD := 0.7      # the scanbox's meter fills over this share of its time, then it blinks "complete"
 const BOX := Vector2(72.0, 48.0)     # the foe's telemetry box
-const CHART := Vector2(80.0, 54.0)   # the machine's live chart and its levels
+const CHART := Vector2(68.0, 54.0)   # the machine's live chart and its levels
 const READ_EVERY := 0.9     # a telemetry box moves to another part of the unit this often
 ## RIFTGATE_FEED_DEBUG=1: an event every half second or so on each lane, and the ground
 ## tears every couple of seconds, to judge them by eye.
@@ -226,7 +226,7 @@ func _draw_event(ev: Dictionary) -> void:
 			if ev["type"] == "readout":
 				draw_string(mono, Vector2(bx, by + 13.0), "%3d" % (absi(hash(int(secs / 0.1) + salt)) % 100 + 400), HORIZONTAL_ALIGNMENT_RIGHT, CHART.x - 7.0, 10, Color(hud, 0.8 * fade))
 				draw_line(Vector2(inner.position.x, inner.end.y), inner.end, Color(hud, 0.4 * fade), 1.0)
-				var nbars := 12
+				var nbars := 10
 				var bw := inner.size.x / nbars
 				var step := int(secs / 0.1)
 				for i in range(nbars):

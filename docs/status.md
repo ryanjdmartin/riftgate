@@ -94,8 +94,9 @@ pane sits 12 px lower (BACK_Y 72) for black between it and the header. Cut after
 lighting gauges, chips, buttons and rules (blinked rather than swept). Ryan's second pass:
 the events wanted drawing out (now one to two seconds for the boxes, half a second or
 more for the rest; he first wrote "too slow" and meant too fast) and the tears were too
-many, too often and too faint (now one to three heavy slices, dimming or shearing). `RIFTGATE_FEED_DEBUG=1` fires everything constantly for judging; Ryan is doing
-that now. Knobs: `FeedFX.WEIGHTS`, `GAP_MIN`/`GAP_MAX`, `DURATION`, `TerrainArt.TEAR_PERIOD`.
+many, too often and too faint. `RIFTGATE_FEED_DEBUG=1` fires everything constantly for
+judging; Ryan is doing that now. Knobs: `FeedFX.LANES`, `GAP_MIN`/`GAP_MAX`, `DURATION`,
+`TearLayer.PERIOD`.
 
 **Ryan's verdict on the web harness (23 September).** It served for sizes and touch and no
 more: the map must not get smaller (the base hex size may go up a little; zoom makes it
