@@ -63,10 +63,10 @@ spares `_menu`). Withdraw replays the enemy's parting blows before the outcome; 
 enemy turn replays at ENEMY PACE (`Settings.display["enemy_pace"]`, top = the old 0.12 s
 beat), each blow stepping the struck mech's shield and hull from the event the sim records
 (`turn_events` now carry `shield` and `hull`), taps held off by `_replay_shade` meanwhile.
-Layout: ally gauges and chips 10 px off the model, foe leaders longer, every gauge on a
-black ground of its own shape (no plate), the eye 52 px in the black at the log's right
-(the log strip stops short of it), log 112 tall, dice and Reroll up 16, 30 px of black
-under Reroll. Poses added to `tools/screenshot.gd`: menu, settings, quit, withdraw. The
+Layout: ally gauges and chips 10 px off the model, a foe's gauge 16 px above its sprite
+with a 16 px leader running onto it, every gauge on a black ground of its own shape (no
+plate), the eye 60 px in the black at the log's right with 12 px margins (the log strip
+stops short of it), log 112 tall, dice and Reroll up 16, 30 px of black under Reroll. Poses added to `tools/screenshot.gd`: menu, settings, quit, withdraw. The
 bible has the rows (section 5, and the HUD row in 4) and is republished as v0.8 (link above).
 
 **Ryan's verdict on the web harness (23 September).** It served for sizes and touch and no
