@@ -156,7 +156,7 @@ void fragment() {
 	float in_seg = step(seg_x0, px.x) * step(px.x, seg_x0 + seg_len) * step(tear_y0, px.y) * step(px.y, tear_y0 + tear_h);
 	// Per row per tick: on the field enough that a tear or two usually shows (Ryan, 23
 	// September, halved from one to three); a little more around the rift's mouth.
-	float flick = step(mix(0.98, 0.95, near), h1) * in_seg * flicker;
+	float flick = step(mix(0.988, 0.96, near), h1) * in_seg * flicker;
 	// The skirmish's tear (tear.gdshader) is the model, Ryan, 23 September: the slice
 	// shears by a shift that jitters every few frames while it holds, up to 18 pixels
 	// either way, with only a light dim (its hairlines were tried here and cut).

@@ -546,7 +546,7 @@ func sweep_at(local_y: float) -> void:
 
 
 const RIFT_ART := Color("c9a6ff")   # what the rift looks like; it means nothing but the rift
-const RIFT_FRAME_SECONDS := 0.6    # a frame, on the vortex's own clock
+const RIFT_FRAME_SECONDS := 0.9    # a frame, on the vortex's own clock
 const RIFT_ON_BEAT := false        # true: one turn of the strip is a bar of the music instead (Ryan, 23 September: an option, off for now)
 const RIFT_TEAR_ROWS := 16         # the bands the vortex is drawn in, for its tear
 
@@ -591,9 +591,12 @@ func _draw_rift(map: BattleMap) -> void:
 	for i in range(count):
 		var pick: float = fmod(absf(sin(tick * 5.19 + float(i) * 2.9 + 1.3) * 27183.1), 1.0)
 		torn_bands[int(pick * rows * 0.7)] = true
+	# The shear jitters every few frames while a tear holds, as the map's does.
+	var sub := floorf(_ring_t * 16.0)
 	for b in range(rows):
 		var torn: bool = torn_bands.has(b)
-		var shear := (3.0 if int(b) % 2 == 0 else -3.0) * SPRITE_SCALE if torn else 0.0
+		var jitter: float = fmod(absf(sin(float(b) * 4.13 + tick * 3.37 + sub * 1.7 + 5.5) * 15731.3), 1.0)
+		var shear := (jitter - 0.5) * 9.0 * SPRITE_SCALE if torn else 0.0
 		var src := Rect2(k * fw, b * band_h, fw, band_h)
 		var dst := Rect2(dest.position + Vector2(shear, b * band_h * SPRITE_SCALE), Vector2(fw, band_h) * SPRITE_SCALE)
 		draw_texture_rect_region(tex, dst, src, Color(1, 1, 1, 1) if not torn else Color(0.55, 0.55, 0.68, 1.0))   # dimmed hard: at 0.82 only the shear showed (Ryan, 23 September)
