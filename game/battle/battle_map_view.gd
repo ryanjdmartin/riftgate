@@ -535,6 +535,7 @@ func sweep_at(local_y: float) -> void:
 
 const RIFT_ART := Color("c9a6ff")   # what the rift looks like; it means nothing but the rift
 const RIFT_FRAME_SECONDS := 0.65   # with no music playing; with music, a frame a beat
+const RIFT_TEAR_ROWS := 16         # the bands the vortex is drawn in, for its tear
 
 ## The rift (Ryan, 23 September): a vortex tearing a hole in reality, in the foes' own
 ## register, standing over its three hexes and reaching up into the scenery, its spiral
@@ -557,7 +558,22 @@ func _draw_rift(map: BattleMap) -> void:
 	var k := int(beat if beat >= 0.0 else _ring_t / RIFT_FRAME_SECONDS) % frames
 	var c := center(map.rift)
 	var dest := Rect2((c - Vector2(fw * SPRITE_SCALE * 0.5, fh * SPRITE_SCALE - HEX_SIZE * 0.9)).floor(), Vector2(fw, fh) * SPRITE_SCALE)
-	draw_texture_rect_region(tex, dest, Rect2(k * fw, 0, fw, fh))
+	# The vortex is the worst input the display gets: it is drawn in bands, and every tick
+	# a few of them tear sideways and dim, the same tear the compositor gives the ground
+	# around it (Ryan, 23 September). Off with the glitch setting.
+	if not bool(Settings.display.get("glitch", true)):
+		draw_texture_rect_region(tex, dest, Rect2(k * fw, 0, fw, fh))
+		return
+	var tick := floorf(_ring_t * 6.0)
+	var rows := RIFT_TEAR_ROWS
+	var band_h := fh / rows
+	for b in range(rows):
+		var h: float = fmod(absf(sin(float(b) * 12.9898 + tick * 7.31 + 3.7) * 43758.5453), 1.0)
+		var torn := h > 0.78
+		var shear := (5.0 if int(b) % 2 == 0 else -5.0) * SPRITE_SCALE if torn else 0.0
+		var src := Rect2(k * fw, b * band_h, fw, band_h)
+		var dst := Rect2(dest.position + Vector2(shear, b * band_h * SPRITE_SCALE), Vector2(fw, band_h) * SPRITE_SCALE)
+		draw_texture_rect_region(tex, dst, src, Color(1, 1, 1, 1) if not torn else Color(0.72, 0.72, 0.8, 1.0))
 
 
 ## Off-screen squads get a portrait at the edge nearest them: the source of the intent line.
@@ -879,7 +895,7 @@ func _advance_anim(delta: float) -> void:
 		if i != int(a.get("i", -1)):
 			a["i"] = i
 			if i > 0 and field.unit_by_id(uid) != null and field.unit_by_id(uid).is_player():
-				Sound.play("step", -9.0, 0.1)   # a footfall a hex; the squads are pictures and make none
+				Sound.play("step", 0.0, 0.1)   # a footfall a hex (quiet by its file); the squads are pictures and make none
 		var f: float = a["t"] - i
 		var from: Vector2 = Hex.to_pixel(path[i], HEX_SIZE)
 		var to: Vector2 = Hex.to_pixel(path[i + 1], HEX_SIZE)

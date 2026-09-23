@@ -301,8 +301,18 @@ def rift_frames(args):
     made = [Path(args.image)]
     for seed in range(args.seed, args.seed + args.n):
         path = out / f"frame_{seed}.png"
-        cmd = [str(MFLUX_EDIT), "--model", MODEL, "--quantize", QUANTIZE, "--prompt", prompt,
-               "--image-paths", args.image, "--steps", STEPS, "--seed", str(seed), "--output", str(path)]
+        if args.mode == "edit":
+            # Keeps the drawing closely: the lightning and colour move, the rim less so.
+            cmd = [str(MFLUX_EDIT), "--model", MODEL, "--quantize", QUANTIZE, "--prompt", prompt,
+                   "--image-paths", args.image, "--steps", STEPS, "--seed", str(seed), "--output", str(path)]
+        else:
+            # Redraws from the reference at `strength`: looser, so the tendrils at the rim
+            # move too (Ryan, 23 September).
+            ref = Image.open(args.image)
+            cmd = [str(MFLUX), "--model", MODEL, "--quantize", QUANTIZE, "--prompt", prompt,
+                   "--image-path", args.image, "--image-strength", str(args.strength),
+                   "--width", str(ref.width), "--height", str(ref.height), "--steps", STEPS,
+                   "--seed", str(seed), "--output", str(path)]
         print("rendering", path.name)
         subprocess.run(cmd, check=True)
         made.append(path)
@@ -582,6 +592,8 @@ def main():
     rf.add_argument("--n", type=int, default=3)
     rf.add_argument("--seed", type=int, default=1)
     rf.add_argument("--prompt", default="")
+    rf.add_argument("--mode", default="edit", choices=["edit", "img2img"], help="edit keeps the drawing and moves the lightning; img2img redraws from it and moves the rim too")
+    rf.add_argument("--strength", type=float, default=0.6, help="img2img only: how close to the reference to stay")
     rf.set_defaults(func=rift_frames)
     args = ap.parse_args()
     args.func(args)

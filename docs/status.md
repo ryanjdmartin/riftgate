@@ -53,9 +53,10 @@ first cut. Trials retired; the bible republished (link above). A placeholder lau
 icon (`art/icon.png`, a tool-drawn hex). Afternoon: the map's frame belongs to the viewport
 (lines the view's height, readouts fixed, ticks and numbers scrolling), tighter and with
 bigger text, pinned through zoom too; bar labels on plaques; the rift is a foeforge
-vortex in four distinct frames, the chosen candidate plus three edit-model follow-ons
-(bible section 5 row, 23 September; the other candidates and the frames are in
-`tools/foeforge/out/rift`).
+vortex in four distinct frames (the candidate plus three image-to-image redraws that move
+the tendrils, aligned by correlation, chosen by measured likeness), stepping on the
+music's beat, torn in bands like the ground round it (bible section 5 row, 23
+September; every candidate and frame is in `tools/foeforge/out/rift`).
 
 **Ryan's skirmish notes, 23 September (done).** Four columns locked in. The menu has QUIT
 (asks first; `quit_requested` runs harness-ward through the battle screen) and a colour
