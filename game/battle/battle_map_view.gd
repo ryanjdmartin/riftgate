@@ -494,7 +494,7 @@ func _draw_frame(hud: Color) -> void:
 ## A readout on its own dark plaque.
 func _readout(font: Font, at: Vector2, text: String, fc: Color) -> void:
 	var tw := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, FRAME_FONT).x
-	draw_rect(Rect2(at.x - 5.0, at.y - 15.0, tw + 10.0, 20.0), Color(Palette.BG, 0.85), true)
+	draw_rect(Rect2(at.x - 5.0, at.y - 15.0, tw + 10.0, 20.0), Color(Palette.BG, 0.5), true)   # faint: it is not real information (Ryan, 23 September)
 	draw_string(font, at, text, HORIZONTAL_ALIGNMENT_LEFT, -1, FRAME_FONT, fc)
 
 
@@ -583,9 +583,17 @@ func _draw_rift(map: BattleMap) -> void:
 	var tick := floorf(_ring_t * 4.0)
 	var rows := RIFT_TEAR_ROWS
 	var band_h := fh / rows
+	# Never more than two bands torn at once, and most ticks none (Ryan, 23 September):
+	# the tick draws how many, then which, from the mouth's bands (the tendrils over the
+	# hexes never tear: it read too low).
+	var roll: float = fmod(absf(sin(tick * 7.31 + 3.7) * 43758.5453), 1.0)
+	var count := 0 if roll < 0.7 else (1 if roll < 0.92 else 2)
+	var torn_bands := {}
+	for i in range(count):
+		var pick: float = fmod(absf(sin(tick * 5.19 + float(i) * 2.9 + 1.3) * 27183.1), 1.0)
+		torn_bands[int(pick * rows * 0.7)] = true
 	for b in range(rows):
-		var h: float = fmod(absf(sin(float(b) * 12.9898 + tick * 7.31 + 3.7) * 43758.5453), 1.0)
-		var torn := h > 0.96 and b < rows * 0.7   # the mouth tears; the tendrils over the hexes never do (Ryan, 23 September: it read too low)
+		var torn: bool = torn_bands.has(b)
 		var shear := (3.0 if int(b) % 2 == 0 else -3.0) * SPRITE_SCALE if torn else 0.0
 		var src := Rect2(k * fw, b * band_h, fw, band_h)
 		var dst := Rect2(dest.position + Vector2(shear, b * band_h * SPRITE_SCALE), Vector2(fw, band_h) * SPRITE_SCALE)

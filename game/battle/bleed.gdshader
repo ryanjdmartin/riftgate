@@ -136,9 +136,10 @@ void fragment() {
 	// 23 September). Around the rift (the first source, always) the input is worst: the
 	// tears come more often there and shear further. Centred above the rift's hexes,
 	// where the vortex's mouth is, not on them, reaching about a hex beyond it.
-	// The map is cut into rows of 32 pixels; a torn row's tear is a stretch of it, from 10
-	// to 28 pixels tall at a random height in the row (Ryan, 23 September: the old fixed
-	// six was too thin), and from 50 to 200 wide at a random place along it.
+	// The map is cut into rows of 32 pixels; a torn row's tear is a stretch of it, from 8
+	// to 16 pixels tall at a random height in the row (Ryan, 23 September: the old fixed
+	// six was too thin, 28 too tall), and from 120 to 260 wide at a random place along it
+	// (the little ones looked out of place).
 	float band = floor(px.y / 32.0);
 	float tick = floor(TIME * 2.5);   // a tear holds 0.4 s (Ryan, 23 September)
 	vec2 mouth = sources[0].xy - vec2(0.0, sources[0].z * 0.75);
@@ -149,13 +150,13 @@ void fragment() {
 	float h4 = fract(sin(band * 5.71 + tick * 9.13 + 2.9) * 31337.3);
 	float h5 = fract(sin(band * 2.39 + tick * 4.47 + 7.7) * 12289.9);
 	float seg_x0 = h2 * map_size.x;
-	float seg_len = mix(50.0, 200.0, h3);
-	float tear_h = mix(10.0, 28.0, h4);
+	float seg_len = mix(120.0, 260.0, h3);
+	float tear_h = mix(8.0, 16.0, h4);
 	float tear_y0 = band * 32.0 + h5 * (32.0 - tear_h);
 	float in_seg = step(seg_x0, px.x) * step(px.x, seg_x0 + seg_len) * step(tear_y0, px.y) * step(px.y, tear_y0 + tear_h);
-	// The chance per row is scaled for rows five times taller than the old six-pixel
-	// bands, so the field tears about as often as at one in 200 of those.
-	float flick = step(mix(0.973, 0.90, near), h1) * in_seg * flicker;
+	// Per row per tick: on the field enough that one to three tears usually show at once
+	// (Ryan, 23 September); a little more around the rift's mouth.
+	float flick = step(mix(0.93, 0.90, near), h1) * in_seg * flicker;
 	// The shear the vortex's own bands have (three of its pixels at the map's 2x): two
 	// map pixels was invisible on the dithered painting (Ryan, 23 September).
 	float shear = flick * (mod(band, 2.0) * 2.0 - 1.0) * mix(6.0, 8.0, near);
