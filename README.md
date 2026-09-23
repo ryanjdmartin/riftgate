@@ -99,9 +99,10 @@ tools/spriter/.venv/bin/python tools/lowforge/forge.py build gate wall
 tools/spriter/.venv/bin/python tools/soundforge/forge.py build          # or: build hit kill music_map
 godot --headless --path . --import
 
-# the game on a phone, without an Android export: a Web build served over the LAN. Open the
-# printed address in the phone's browser on the same Wi-Fi; the first button press goes
-# full screen. Sizes and touch are the phone's own, the frame rate is the browser's.
+# the game on a phone, without an Android export: a Web build served over the LAN (https,
+# with a certificate the script makes: accept the browser's warning once). Open the printed
+# address in the phone's browser on the same Wi-Fi; the first button press goes full
+# screen. Sizes and touch are the phone's own, the frame rate is the browser's.
 # Needs the 4.7.2 export templates once: fetch Godot_v4.7.2-stable_export_templates.tpz
 # from the Godot release, unzip, and put its `templates` folder at
 # ~/Library/Application Support/Godot/export_templates/4.7.2.stable
