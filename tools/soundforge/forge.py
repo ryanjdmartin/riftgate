@@ -8,6 +8,7 @@ real recordings and a real track when there are some. numpy only.
     tools/spriter/.venv/bin/python tools/soundforge/forge.py build hit kill   # some
     tools/spriter/.venv/bin/python tools/soundforge/forge.py list
     tools/spriter/.venv/bin/python tools/soundforge/forge.py measure          # level and balance of every file
+    tools/spriter/.venv/bin/python tools/soundforge/forge.py sketch [human rift djent]   # eight bars in a direction, to tools/soundforge/out
 
 Then `godot --headless --path . --import`. `game/audio/sound.gd` plays them by name.
 
@@ -599,19 +600,31 @@ def overheat():
 
 # ---------------------------------------------------------------- music
 # Two loops, each 32 bars in sections, on kits of their own with a shared pad and bass
-# (Ryan, 23 September: the two read too alike; the map slower and on other instruments,
-# some tones in common). A bar is 16 steps. In a drum pattern `x` is a hit, `o` a softer
-# one, `.` a rest; a pattern may run 16, 32 or 64 steps (a phrase over several bars).
-# Never a build, never a bass drop, never a speed snare (Ryan, the same day): a section
-# changes by what plays, not by a roll into it. A bass riff is semitones above E2 (82.4
-# Hz): a digit, `a`..`f` for 10..17, `g` and `h` for -2 and -5; `-` holds, `.` rests. An arp
-# pattern indexes the section's chord (0 root, 1, 2, 3 the octave), `.` rests; the chimes.
-# A stab pattern hits the chord as a saw stab. Loops render wrapped, so every tail crosses
-# the seam and it plays round.
+# (Ryan, 23 September: the two read too alike; the map on other instruments, some tones in
+# common). A bar is 16 steps. In a drum pattern `x` is a hit, `o` a softer one, `.` a rest;
+# a pattern may be any length in steps: 16 or 32 for a bar or two, 7 for a figure that
+# walks round the bar (polymeter). Never a build, never a bass drop, never a speed snare
+# (Ryan, the same day): a section changes by what plays, not by a roll into it.
+#
+# The tune is voices over chords. A section's chords are one chord or a list, one per bar,
+# cycling. A voice is an instrument and a pattern: `riff` mode reads semitones above E2
+# (82.4 Hz: a digit, `a`..`f` for 10..17, `g` and `h` for -2 and -5; `-` holds, `.` rests),
+# `chord` mode indexes the bar's chord (0 root, 1, 2, 3 the octave up; the chimes), `stab`
+# mode plays the whole chord on `x`. A pad holds each chord while it runs. Loops render
+# wrapped, so every tail crosses the seam and it plays round.
+#
+# The instruments (Ryan, 23 September: the pulse-and-saw palette read as Loop Hero; the
+# game's own ancestors are FM keys and bells (Descent, MechWarrior 2), plucked strings,
+# choir and fantasy harmony (Final Fantasy), the liturgical register (40K), and the
+# polymetric chug (progressive metal)): `fm`, `epiano`, `bell`, `brass`; `pluck` and
+# `chug` by the Karplus-Strong string; `choir` by formants; `organ`, `strings`; the crunch
+# `bass` and the `chime` and `stab` of the second cut stay available.
 
 E2 = 82.41
 NOTE = {"a": 10, "b": 11, "c": 12, "d": 14, "e": 15, "f": 17, "g": -2, "h": -5}
 
+
+# ---- the kit
 
 def kick_drum(hard=True):
     if hard:
@@ -622,11 +635,16 @@ def kick_drum(hard=True):
                body(220.0, 120.0, 0.09, drive=1.8, click=0.0) * 0.6)
 
 
-def snare_drum():
+def taiko():
+    # The rift side's drum: a big skin in a big room.
+    return room(thud(95.0, 38.0, 0.55, click=0.3, drive=2.0, body_gain=1.4), decay=0.35, mix=0.25, cut=3000.0)
+
+
+def snare_drum(big=False):
     n = n_of(0.22)
     tone = harmonics(190.0, n, [1.0, 0.4, 0.2]) * env_ad(n, 0.001, 0.05) * 0.6
     b = mix(burst(0.22, 180.0, 7500.0, decay=0.05) * 0.9, tone, body(300.0, 140.0, 0.06, click=0.5) * 0.4)
-    return room(b, decay=0.1, mix=0.18, cut=7000.0)
+    return room(b, decay=0.3 if big else 0.1, mix=0.3 if big else 0.18, cut=7000.0)
 
 
 def rim():
@@ -648,14 +666,79 @@ def knock_perc():
 
 
 def clank():
-    # The little metal that is allowed (Ryan, 23 September): inharmonic, gone in a tenth of
-    # a second, band-limited so it never gets to cowbell.
+    # The little metal that is allowed: inharmonic, gone in a tenth of a second,
+    # band-limited so it never gets to cowbell.
     k = knock([1180.0, 1930.0, 2760.0], [0.08, 0.055, 0.04], [1.0, 0.5, 0.3], noise_gain=0.3)
     return bp(k, 600.0, 6000.0) * 0.5
 
 
 def tick():
     return ratchet(1, 0.008, 3000.0, 0.5) * 0.5
+
+
+# ---- the instruments: one note
+
+def fm(f, n, ratio=1.0, index=2.0, idx_decay=0.3, amp_decay=0.6, attack=0.003, curve=3.0):
+    """One FM voice: a sine carrier bent by a sine at `ratio` times its pitch, the bend
+    (`index`) fading over `idx_decay` so the note starts bright and settles."""
+    t = t_of(n)
+    idx = index * np.exp(-t / max(idx_decay, 1e-3))
+    return np.sin(2.0 * math.pi * f * t + idx * np.sin(2.0 * math.pi * f * ratio * t)) * env_ad(n, attack, amp_decay, curve=curve)
+
+
+def epiano(f, dur):
+    # The tine piano: a soft carrier with a bright short bell on its front.
+    n = n_of(dur)
+    return mix(fm(f, n, 1.0, 1.6, 0.18, dur * 0.45), fm(f, n, 14.0, 0.25, 0.04, 0.06) * 0.2, fm(f * 0.5, n, 1.0, 0.6, 0.3, dur * 0.4) * 0.3) * 0.8
+
+
+def bell(f, dur):
+    # Glassy and inharmonic, long: the chimes without the pulse wave.
+    n = n_of(dur)
+    return mix(fm(f, n, 3.5, 2.8, dur * 0.35, dur * 0.45, curve=2.0), fm(f, n, 1.41, 1.2, dur * 0.3, dur * 0.5, curve=2.0) * 0.5) * 0.7
+
+
+def brass(f, dur):
+    # A stab: the bend rises over the front, the note is driven and cut.
+    n = n_of(dur)
+    t = t_of(n)
+    idx = 2.5 * (1.0 - np.exp(-t / 0.04))
+    x = np.sin(2.0 * math.pi * f * t + idx * np.sin(2.0 * math.pi * f * t)) + 0.4 * np.sin(2.0 * math.pi * f * 2.0 * t + idx * np.sin(2.0 * math.pi * f * t))
+    return lp(sat(x, 1.8), 3200.0) * env_ad(n, 0.01, dur * 0.35)
+
+
+def pluck(f, dur, bright=0.6, damp=0.996):
+    """A plucked string (Karplus-Strong): a burst of noise round a delay line the length of
+    the pitch, averaged each pass so it darkens as it rings."""
+    n = n_of(dur)
+    length = max(2, int(round(SR / f)))
+    ring = lp(noise(length), 600.0 + 9000.0 * bright)
+    ring /= np.max(np.abs(ring)) + 1e-9
+    out = np.empty(n)
+    prev = 0.0
+    for i in range(n):
+        j = i % length
+        y = ring[j]
+        ring[j] = damp * 0.5 * (y + prev)
+        prev = y
+        out[i] = y
+    return out * env_pts(n, [(0.0, 1.0), (max(dur - 0.02, 0.0), 1.0), (dur, 0.0)])
+
+
+def pluck_bass(f, dur):
+    x = pluck(f, dur, bright=0.35, damp=0.998)
+    return lp(sat(x * 1.5, 1.6), 1800.0)
+
+
+def chug(f, dur):
+    # A palm-muted low string through a wall of gain: the plucked string driven hard,
+    # a resonant low-pass for the cabinet, muted quickly, a thump on the front.
+    x = pluck(f, dur, bright=0.45, damp=0.992)
+    x = np.clip(sat(x * 4.0, 3.0) * 1.4, -1.0, 1.0)
+    x = hp(svf(x, 1500.0, 0.8), 70.0)
+    n = len(x)
+    x = x * env_ad(n, 0.001, min(0.14, dur * 0.5), curve=3.0)
+    return mix(x, body(210.0, 95.0, 0.05, drive=2.0, click=0.3) * 0.35)
 
 
 def bass_note(freq, dur, drive=3.0, cutoff=900.0):
@@ -674,9 +757,40 @@ def bass_note(freq, dur, drive=3.0, cutoff=900.0):
     return x * env
 
 
+def chime(f, dur):
+    # The second cut's chimes: a pulse through a band. Kept for reference.
+    n = n_of(dur)
+    t = t_of(n)
+    pulse = np.where((f * t) % 1.0 < 0.28, 1.0, -1.0) * 0.6 + np.sin(2.0 * math.pi * f * 2.0 * t) * 0.2
+    return bp(sat(pulse, 1.5), 300.0, 3500.0) * env_ad(n, 0.003, dur * 0.35)
+
+
+def saws_vib(f, n, detune=(0.994, 1.0, 1.006), vib_hz=5.2, vib_depth=0.004):
+    """Detuned saws with a slow vibrato: a bowed or sung tone rather than a synth's."""
+    t = t_of(n)
+    out = np.zeros(n)
+    for d in detune:
+        ph = RNG.uniform(0.0, 2.0 * math.pi)
+        fr = f * d * (1.0 + vib_depth * np.sin(2.0 * math.pi * vib_hz * t + ph))
+        out += 2.0 * ((np.cumsum(fr) / SR + RNG.uniform(0.0, 1.0)) % 1.0) - 1.0
+    return out / len(detune)
+
+
+NOTE_INST = {}   # name -> f(freq, dur, params)
+NOTE_INST["bass"] = lambda f, d, p: bass_note(f, d, p.get("drive", 3.0), p.get("cutoff", 900.0))
+NOTE_INST["chime"] = lambda f, d, p: chime(f, d)
+NOTE_INST["bell"] = lambda f, d, p: bell(f, d)
+NOTE_INST["epiano"] = lambda f, d, p: epiano(f, d)
+NOTE_INST["brass"] = lambda f, d, p: brass(f, d)
+NOTE_INST["pluck"] = lambda f, d, p: pluck(f, d, p.get("bright", 0.6)) * 0.7
+NOTE_INST["pluck_bass"] = lambda f, d, p: pluck_bass(f, d)
+NOTE_INST["chug"] = lambda f, d, p: chug(f, d)
+
+
+# ---- the instruments: a chord held or struck
+
 def pad_chord(semis, n, cutoff=700.0, gain=0.12, octave=1):
-    # A stack of detuned saws with a harmonics layer over each note, a slow swell in the
-    # filter: the overtones under the loop. Shared by both loops.
+    # Detuned saws with a harmonics layer over each note, a slow swell in the filter.
     t = t_of(n)
     x = np.zeros(n)
     for s in semis:
@@ -687,16 +801,49 @@ def pad_chord(semis, n, cutoff=700.0, gain=0.12, octave=1):
     return lp(sat(x, 1.6), cutoff) * lfo * gain
 
 
-def arp_note(freq, dur):
-    # The chimes (Ryan, 23 September: yes please).
-    n = n_of(dur)
-    t = t_of(n)
-    pulse = np.where((freq * t) % 1.0 < 0.28, 1.0, -1.0) * 0.6 + np.sin(2.0 * math.pi * freq * 2.0 * t) * 0.2
-    return bp(sat(pulse, 1.5), 300.0, 3500.0) * env_ad(n, 0.003, dur * 0.35)
+VOWELS = {"ah": (700.0, 1100.0, 2600.0), "oh": (450.0, 800.0, 2500.0), "oo": (300.0, 700.0, 2400.0)}
+
+
+def choir(semis, n, gain=0.2, vowel="ah", octave=1):
+    # Voices: five slightly detuned singers a note, each with a vibrato of its own, through
+    # the vowel's three formants.
+    x = np.zeros(n)
+    for s in semis:
+        f = E2 * 2.0 ** (s / 12.0) * (2 ** octave)
+        x += saws_vib(f, n, (0.992, 0.996, 1.0, 1.004, 1.008), vib_hz=RNG.uniform(4.6, 5.8), vib_depth=0.005)
+    x /= max(1, len(semis))
+    f1, f2, f3 = VOWELS[vowel]
+    y = bp(x, f1 * 0.8, f1 * 1.25) * 1.0 + bp(x, f2 * 0.85, f2 * 1.18) * 0.5 + bp(x, f3 * 0.88, f3 * 1.14) * 0.22
+    return room(y, decay=0.4, mix=0.25, cut=4000.0)[:n] * gain * 2.2
+
+
+def organ(semis, n, gain=0.15, octave=1):
+    # Drawbars: eight harmonics a note, a slow chorus between two copies.
+    x = np.zeros(n)
+    for s in semis:
+        f = E2 * 2.0 ** (s / 12.0) * (2 ** octave)
+        x += harmonics(f, n, [1.0, 0.7, 0.5, 0.35, 0.25, 0.15, 0.1, 0.08], detune=0.0) + harmonics(f * 1.003, n, [1.0, 0.7, 0.5, 0.35, 0.25], detune=0.0) * 0.5
+    x /= max(1, len(semis))
+    return lp(x, 4000.0) * gain
+
+
+def strings(semis, n, gain=0.15, octave=1):
+    x = np.zeros(n)
+    for s in semis:
+        f = E2 * 2.0 ** (s / 12.0) * (2 ** octave)
+        x += saws_vib(f, n, (0.993, 0.997, 1.0, 1.003, 1.007), vib_hz=5.0, vib_depth=0.003)
+    x /= max(1, len(semis))
+    return room(lp(x, 2600.0), decay=0.35, mix=0.2, cut=5000.0)[:n] * gain
+
+
+PAD_INST = {"saw": lambda c, n, p: pad_chord(c, n, p.get("cut", 700.0), p.get("gain", 0.12)),
+            "choir": lambda c, n, p: choir(c, n, p.get("gain", 0.2), p.get("vowel", "ah")),
+            "organ": lambda c, n, p: organ(c, n, p.get("gain", 0.15)),
+            "strings": lambda c, n, p: strings(c, n, p.get("gain", 0.15))}
 
 
 def stab(semis, dur):
-    # The skirmish's saw stab on the chord: short, driven, the thing the map never plays.
+    # A saw stab on the chord: short, driven.
     n = n_of(dur)
     x = np.zeros(n)
     for s in semis:
@@ -705,13 +852,31 @@ def stab(semis, dur):
     return lp(sat(x, 2.5), 1800.0) * env_ad(n, 0.004, dur * 0.3)
 
 
-def machine_swell(dur):
-    return mix(hydraulic(dur, 400.0, 1800.0, 0.5), at(np.zeros(1), servo(700.0, 1500.0, dur * 0.7, 0.18), dur * 0.15))
+def epiano_chord(semis, dur):
+    return mix(*[epiano(E2 * 2.0 ** (s / 12.0) * 2.0, dur) for s in semis]) / max(1, len(semis)) * 1.2
 
+
+def brass_chord(semis, dur):
+    return mix(*[brass(E2 * 2.0 ** (s / 12.0) * 2.0, dur) for s in semis]) / max(1, len(semis))
+
+
+def orch_hit(semis, dur):
+    # The other world's hit: strings and brass together, a crack on the front, a hall.
+    n = n_of(dur)
+    x = mix(strings(semis, n, 1.0, 1)[:n] * env_ad(n, 0.01, dur * 0.3), brass_chord(semis, dur) * 0.6,
+            burst(0.06, 300.0, 6000.0, decay=0.02) * 0.5, thud(110.0, 40.0, 0.4, click=0.4, drive=2.5) * 0.5)
+    return room(x, decay=0.5, mix=0.3, cut=5000.0)
+
+
+STAB_INST = {"stab": stab, "epiano": epiano_chord, "brass": brass_chord, "hit": orch_hit}
+
+
+# ---- the engine
 
 def _steps(form, part, default="."):
     """The whole loop's step string for a part: the section's pattern per bar, a pattern
-    longer than a bar indexed by the loop's own step so a phrase keeps its place."""
+    longer or shorter than a bar indexed by the loop's own step so a figure keeps its place
+    (a seven-step pattern walks round the bar)."""
     out = []
     for bar, sec in enumerate(form):
         pat = part.get(sec, part.get("*", default * 16))
@@ -719,14 +884,24 @@ def _steps(form, part, default="."):
     return "".join(out)
 
 
-def _chord(chords, sec, bar_in_run):
-    c = chords.get(sec, chords.get("*"))
-    if c and isinstance(c[0], (list, tuple)):
-        return list(c[(bar_in_run // 2) % len(c)])
-    return list(c) if c else None
+def _chords_per_bar(form, chords):
+    out = []
+    start = 0
+    while start < len(form):
+        end = start
+        while end < len(form) and form[end] == form[start]:
+            end += 1
+        c = chords.get(form[start], chords.get("*"))
+        for b in range(start, end):
+            if c and isinstance(c[0], (list, tuple)):
+                out.append(list(c[(b - start) % len(c)]))
+            else:
+                out.append(list(c) if c else None)
+        start = end
+    return out
 
 
-def groove(bpm, form, kit, drums, riffs, chords, arps, stabs, bass, pad, swells=()):
+def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0):
     form = form.replace(" ", "")
     bars = len(form)
     step_s = 60.0 / bpm / 4.0
@@ -738,102 +913,101 @@ def groove(bpm, form, kit, drums, riffs, chords, arps, stabs, bass, pad, swells=
         for i, c in enumerate(s):
             when = i * step_s
             if c == "x":
-                buf = at(buf, sound, when, gain * (1.0 if name not in ("hat",) or i % 4 == 0 else 0.7), wrap=True)
+                buf = at(buf, sound, when, gain * (1.0 if not name.startswith("hat") or i % 4 == 0 else 0.7), wrap=True)
             elif c == "o":
                 buf = at(buf, sound, when, gain * 0.45, wrap=True)
-    # The riff: a note holds through `-` steps, across bars too.
-    s = _steps(form, riffs)
-    i = 0
-    while i < len(s):
-        c = s[i]
-        if c in ".-":
-            i += 1
-            continue
-        semis = int(c) if c.isdigit() else NOTE[c]
-        length = 1
-        while i + length < len(s) and s[i + length] == "-":
-            length += 1
-        freq = E2 * 2.0 ** (semis / 12.0)
-        buf = at(buf, bass_note(freq, length * step_s * 0.95, bass["drive"], bass["cutoff"]), i * step_s, bass["gain"], wrap=True)
-        i += length
-    # The pad: the section's chord, or its chords two bars each, held while they run.
-    bar_n = int(round(16 * step_s * SR))
-    per_bar = []
-    start = 0
-    while start < bars:
-        end = start
-        while end < bars and form[end] == form[start]:
-            end += 1
-        for b in range(start, end):
-            per_bar.append(_chord(chords, form[b], b - start))
-        start = end
-    b = 0
-    while b < bars:
-        e = b
-        while e < bars and per_bar[e] == per_bar[b]:
-            e += 1
-        if per_bar[b]:
-            p = pad_chord(per_bar[b], bar_n * (e - b), pad["cut"], pad["gain"])
-            p *= env_pts(len(p), [(0.0, 0.0), (0.4, 1.0), (len(p) / SR - 0.3, 1.0), (len(p) / SR, 0.0)])
-            buf = at(buf, p, b * 16 * step_s, 1.0, wrap=True)
-        b = e
-    # The chimes: a note of the bar's chord, with an echo a dotted eighth later.
-    s = _steps(form, arps)
-    for i, c in enumerate(s):
-        if not c.isdigit() or not per_bar[i // 16]:
-            continue
-        semis = per_bar[i // 16]
-        k = int(c)
-        f = E2 * 2.0 ** ((semis[k % len(semis)] + 12 * (k // len(semis)) + 24) / 12.0)
-        note = arp_note(f, step_s * 1.6)
-        buf = at(buf, note, i * step_s, 0.4, wrap=True)
-        buf = at(buf, note, (i + 3) * step_s, 0.18, wrap=True)
-    # The stabs.
-    s = _steps(form, stabs)
-    for i, c in enumerate(s):
-        if c == "x" and per_bar[i // 16]:
-            buf = at(buf, stab(per_bar[i // 16], step_s * 1.2), i * step_s, 0.3, wrap=True)
-    for bar in swells:
-        buf = at(buf, machine_swell(16 * step_s * 0.9), bar * 16 * step_s, 0.35, wrap=True)
+    per_bar = _chords_per_bar(form, chords)
+    for v in voices:
+        s = _steps(form, v["pat"])
+        mode = v.get("mode", "riff")
+        gain = v.get("gain", 0.4)
+        params = v.get("params", {})
+        octave = v.get("octave", 0)
+        echo = v.get("echo")
+        if mode == "riff":
+            i = 0
+            while i < len(s):
+                c = s[i]
+                if c in ".-":
+                    i += 1
+                    continue
+                semis = int(c) if c.isdigit() else NOTE[c]
+                length = 1
+                while i + length < len(s) and s[i + length] == "-":
+                    length += 1
+                f = E2 * 2.0 ** ((semis + 12 * octave) / 12.0)
+                buf = at(buf, NOTE_INST[v["inst"]](f, length * step_s * 0.95, params), i * step_s, gain, wrap=True)
+                i += length
+        elif mode == "chord":
+            for i, c in enumerate(s):
+                if not c.isdigit() or not per_bar[i // 16]:
+                    continue
+                semis = per_bar[i // 16]
+                k = int(c)
+                f = E2 * 2.0 ** ((semis[k % len(semis)] + 12 * (k // len(semis)) + 12 * octave) / 12.0)
+                note = NOTE_INST[v["inst"]](f, step_s * v.get("dur", 1.6), params)
+                buf = at(buf, note, i * step_s, gain, wrap=True)
+                if echo:
+                    buf = at(buf, note, (i + echo[0]) * step_s, gain * echo[1], wrap=True)
+        elif mode == "stab":
+            for i, c in enumerate(s):
+                if c == "x" and per_bar[i // 16]:
+                    buf = at(buf, STAB_INST[v["inst"]](per_bar[i // 16], step_s * v.get("dur", 1.2)), i * step_s, gain, wrap=True)
+    if pad:
+        bar_n = int(round(16 * step_s * SR))
+        b = 0
+        while b < bars:
+            e = b
+            while e < bars and per_bar[e] == per_bar[b]:
+                e += 1
+            if per_bar[b]:
+                p = PAD_INST[pad["inst"]](per_bar[b], bar_n * (e - b), pad)
+                p *= env_pts(len(p), [(0.0, 0.0), (0.35, 1.0), (len(p) / SR - 0.25, 1.0), (len(p) / SR, 0.0)])
+                buf = at(buf, p, b * 16 * step_s, 1.0, wrap=True)
+            b = e
     r = room(buf, decay=0.12, mix=0.06, cut=6000.0)
     buf = r[:n]
     buf[: len(r) - n] += r[n:]   # the room's tail wraps to the top, so the seam is seamless
-    buf = shelf(buf, 700.0, 4.0)   # the master's tilt: the mids and highs up, for the phone
+    buf = shelf(buf, 700.0, tilt)   # the master's tilt: the mids and highs up, for the phone
     return sat(buf, 1.25)
 
 
+# ---- the loops
+
 def music_map():
-    # Subdued, still moving, at 92 (84 was tried and was too slow, Ryan, 23 September): a
-    # soft kick, a rim instead of a snare, brushed hats, the
-    # pad and the chimes forward, the riff sparse and long. Thirty-two bars: the groove (A),
-    # a turn bar (B), the lift with the chimes (C), and an interlude of eight bars (D) where
-    # the kick stops and the chimes carry it, twice round.
+    # Subdued, still moving, at 92 (84 was tried and was too slow): a soft kick, a rim
+    # instead of a snare, brushed hats, the pad and the chimes forward, the riff sparse and
+    # long. Thirty-two bars: the groove (A), a turn bar (B), the lift with the chimes (C),
+    # and an interlude of eight bars (D) where the kick stops and the chimes carry it,
+    # twice round. The machine swell is gone and the tick keeps to the interlude (Ryan, 23
+    # September: the industrial noises were too much).
     return groove(
         bpm=92,
         form="AAAB AACC AACB DDDD DDDD AACC CCCB DDDD",
         kit={"kick": (kick_drum(False), 0.85), "rim": (rim(), 0.8), "hat": (hat(False, False), 0.55),
-             "open": (hat(True, False), 0.45), "knock": (knock_perc(), 0.7), "clank": (clank(), 0.35), "tick": (tick(), 0.3)},
+             "open": (hat(True, False), 0.45), "knock": (knock_perc(), 0.6), "clank": (clank(), 0.35), "tick": (tick(), 0.3)},
         drums={
             "kick": {"A": "x.......x.....o.x.......x...o...", "B": "x...o...x.....o.x...o...x...x...",
                      "C": "x...o...x..o..o.x...o...x.....o.", "D": "................"},
             "rim": {"A": "....x.......x...", "B": "....x.......x..o", "C": "....x.......x.o.", "D": "............o..."},
             "hat": {"A": "x.x.x.x.x.x.x.x.", "B": "x.x.x.x.x.x.x.x.", "C": "xxx.x.xxx.x.xxx.", "D": "x...x...x...x..."},
             "open": {"A": "..........x.....", "B": "..............x.", "C": "......x.......x."},
-            "knock": {"A": "......x.........", "C": "..x.....x..x....", "D": "......x.......x."},
+            "knock": {"C": "..x.....x.......", "D": "......x........."},
             "clank": {"A": "..............x.................", "C": "..........x....................."},
-            "tick": {"A": "xxxxxxxxxxxxxxxx", "C": "xxxxxxxxxxxxxxxx", "D": "xxxxxxxxxxxxxxxx"},
+            "tick": {"D": "xxxxxxxxxxxxxxxx"},
         },
-        riffs={"A": "0--.3-.0-...1-..0--.3-.g-...0-..", "B": "0--.3-.0-...5-..3--.1-.0-...g-..",
-               "C": "0--.3-.5-..3.1-.0--.3-.7-..5.3-.",
-               "D": "0---------------8-------7-------3---------------5-------g-------"},
         chords={"A": [0, 7, 15], "B": [0, 7, 15], "C": [8, 15, 19],
-                "D": [[10, 17, 22], [8, 15, 19], [7, 14, 22], [0, 7, 15]]},
-        arps={"A": "0...............2...............", "C": "0.2.1.3.0.2.1.2.",
-              "D": "0...2...1...3...0...2...3...1...0.2...1...3.....0...2...1.3....."},
-        stabs={},
-        bass={"drive": 2.8, "cutoff": 650.0, "gain": 0.6},
-        pad={"gain": 0.24, "cut": 900.0},
-        swells=(12, 28))
+                "D": [[10, 17, 22], [10, 17, 22], [8, 15, 19], [8, 15, 19], [7, 14, 22], [7, 14, 22], [0, 7, 15], [0, 7, 15]]},
+        voices=[
+            {"inst": "bass", "mode": "riff", "gain": 0.6, "params": {"drive": 2.8, "cutoff": 650.0},
+             "pat": {"A": "0--.3-.0-...1-..0--.3-.g-...0-..", "B": "0--.3-.0-...5-..3--.1-.0-...g-..",
+                     "C": "0--.3-.5-..3.1-.0--.3-.7-..5.3-.",
+                     "D": "0---------------8-------7-------3---------------5-------g-------"}},
+            {"inst": "chime", "mode": "chord", "octave": 2, "gain": 0.4, "echo": (3, 0.18), "dur": 1.6,
+             "pat": {"A": "0...............2...............", "C": "0.2.1.3.0.2.1.2.",
+                     "D": "0...2...1...3...0...2...3...1...0.2...1...3.....0...2...1.3....."}},
+        ],
+        pad={"inst": "saw", "gain": 0.24, "cut": 900.0})
 
 
 def music_skirmish():
@@ -845,7 +1019,7 @@ def music_skirmish():
         bpm=100,
         form="AAAB AACC AACB DDDD AACC CCCB AAAB CCDD",
         kit={"kick": (kick_drum(True), 1.0), "snare": (snare_drum(), 1.1), "hat": (hat(False, True), 0.8),
-             "open": (hat(True, True), 0.7), "knock": (knock_perc(), 0.8), "clank": (clank(), 0.45), "tick": (tick(), 0.35)},
+             "open": (hat(True, True), 0.7), "knock": (knock_perc(), 0.7), "clank": (clank(), 0.45), "tick": (tick(), 0.35)},
         drums={
             "kick": {"A": "x..x..x...x.x...x..x..x.x...x.o.", "B": "x..x..x...x.x...x..x..x.x.x.x...",
                      "C": "x..x..x...x.x..ox..x..x.x...x.o.", "D": "x.......x.....x.x.......x..x...."},
@@ -854,18 +1028,109 @@ def music_skirmish():
             "hat": {"A": "x.x.x.x.xxx.x.x.", "B": "x.x.x.x.xxx.x.x.x.x.x.x.x.x.xxx.",
                     "C": "xxxxxxxxxxxxxxxx", "D": "x...x.x.x...x.x."},
             "open": {"A": "......x.......x.", "C": "..x...x...x...x.", "D": "..............x."},
-            "knock": {"A": "..x...x...x...x.", "C": "..x...x...x...x.", "D": "..x.......x....."},
-            "clank": {"A": "..x...........x.", "C": "..x.......x.....", "D": "x..............."},
-            "tick": {"C": "xxxxxxxxxxxxxxxx", "D": "xxxxxxxxxxxxxxxx"},
+            "knock": {"A": "..x...........x.", "C": "..x...x.........", "D": "..x............."},
+            "clank": {"A": "..............x.", "C": "..x.......x.....", "D": "x..............."},
+            "tick": {"D": "xxxxxxxxxxxxxxxx"},
         },
-        riffs={"A": "00.c.0-3.00.1-.g00.c.0-3.00.h-..", "B": "00.c.0-3.00.1-.g00.c.0-3.5-.3-.0",
-               "C": "0-.c.0-3.0-.5-.30-.c.0-3.8-.7-.5", "D": "0-------3-------g-------0---..3-"},
-        chords={"A": [0, 7, 15], "B": [0, 7, 15], "C": [8, 15, 19], "D": [[-2, 5, 10], [0, 7, 15]]},
-        arps={"C": "0.......2.......", "D": "0...2...1...3...0...2...1.3....."},
-        stabs={"A": "..............x.", "C": "..x...x...x...x.", "B": "..x...x...x...x."},
-        bass={"drive": 4.0, "cutoff": 1100.0, "gain": 0.6},
-        pad={"gain": 0.18, "cut": 1100.0},
-        swells=(12,))
+        chords={"A": [0, 7, 15], "B": [0, 7, 15], "C": [8, 15, 19], "D": [[-2, 5, 10], [-2, 5, 10], [0, 7, 15], [0, 7, 15]]},
+        voices=[
+            {"inst": "bass", "mode": "riff", "gain": 0.6, "params": {"drive": 4.0, "cutoff": 1100.0},
+             "pat": {"A": "00.c.0-3.00.1-.g00.c.0-3.00.h-..", "B": "00.c.0-3.00.1-.g00.c.0-3.5-.3-.0",
+                     "C": "0-.c.0-3.0-.5-.30-.c.0-3.8-.7-.5", "D": "0-------3-------g-------0---..3-"}},
+            {"inst": "chime", "mode": "chord", "octave": 2, "gain": 0.4, "echo": (3, 0.18), "dur": 1.6,
+             "pat": {"C": "0.......2.......", "D": "0...2...1...3...0...2...1.3....."}},
+            {"inst": "stab", "mode": "stab", "gain": 0.3, "dur": 1.2,
+             "pat": {"A": "..............x.", "C": "..x...x...x...x.", "B": "..x...x...x...x."}},
+        ],
+        pad={"inst": "saw", "gain": 0.18, "cut": 1100.0})
+
+
+# ---- the sketches: eight bars each on one riff and one chord progression, so only the
+# instruments differ. Rendered by `forge.py sketch` into tools/soundforge/out, never into
+# the game, for Ryan to A/B (23 September).
+
+SKETCH_FORM = "AACC AADD"
+SKETCH_CHORDS = {"A": [[0, 7, 15], [0, 7, 15], [-2, 5, 10], [3, 10, 17]],
+                 "C": [[8, 15, 19], [5, 12, 19], [3, 10, 17], [7, 14, 22]],
+                 "D": [[10, 17, 22], [8, 15, 19], [-2, 5, 10], [0, 7, 15]]}
+SKETCH_RIFF = {"A": "0--.3-.0-...1-..g--.3-.5-...3-..", "C": "8--.a-.8-..a.5-.3--.5-.7-..5.7-.",
+               "D": "a---------------8-------g-------"}
+SKETCH_CHIMES = {"A": "0.2.1.3.0.2.1.2.", "C": "0.2.1.3.0.2.1.2.0.3.2.1.0.3.2.3.", "D": "0...2...1...3...0...2...1.3....."}
+SKETCH_ANSWER = {"A": "........3...2.1.", "C": "....3.2.....1...", "D": "........2.......3..............."}
+
+
+def sketch_human():
+    # The human side: FM keys and bells, a plucked bass, drums in a room, one knock. The
+    # reconstruction's own music: precise, technical, warm.
+    return groove(
+        bpm=96, form=SKETCH_FORM,
+        kit={"kick": (kick_drum(True), 0.9), "snare": (snare_drum(), 1.0), "hat": (hat(False, False), 0.6),
+             "open": (hat(True, False), 0.45), "knock": (knock_perc(), 0.5)},
+        drums={"kick": {"A": "x.......x..x....x.....x.x.......", "C": "x..x....x.....x.x..x....x...x...", "D": "x...............x...........o..."},
+               "snare": {"A": "....x.......x...", "C": "....x.......x..o", "D": "....x.......x..."},
+               "hat": {"A": "x.x.x.x.x.x.x.x.", "C": "x.xxx.x.x.xxx.x.", "D": "x...x...x...x..."},
+               "open": {"C": "......x.......x."},
+               "knock": {"A": "..............x.................", "C": "..........x....................."}},
+        chords=SKETCH_CHORDS,
+        voices=[
+            {"inst": "pluck_bass", "mode": "riff", "gain": 0.7, "pat": SKETCH_RIFF},
+            {"inst": "bell", "mode": "chord", "octave": 2, "gain": 0.35, "echo": (3, 0.2), "dur": 2.5, "pat": SKETCH_CHIMES},
+            {"inst": "epiano", "mode": "chord", "octave": 1, "gain": 0.45, "dur": 3.0, "pat": SKETCH_ANSWER},
+            {"inst": "epiano", "mode": "stab", "gain": 0.3, "dur": 2.0,
+             "pat": {"A": "..x...x...x...x.", "C": "..x.....x.x.....", "D": "x.......x......."}},
+        ],
+        pad={"inst": "strings", "gain": 0.08})
+
+
+def sketch_rift():
+    # The rift side: choir and strings under the groove, bells, orchestral hits at the
+    # turns, a taiko for the kick, the crunch bass kept so the beat is still the game's.
+    return groove(
+        bpm=96, form=SKETCH_FORM,
+        kit={"kick": (taiko(), 1.0), "snare": (snare_drum(True), 0.9), "hat": (hat(False, True), 0.5),
+             "open": (hat(True, True), 0.4)},
+        drums={"kick": {"A": "x.......x..x....x.....x.x.......", "C": "x..x....x.....x.x..x....x...x...", "D": "x...............x..............."},
+               "snare": {"A": "....x.......x...", "C": "....x.......x..o", "D": "....x.......x..."},
+               "hat": {"A": "..x...x...x...x.", "C": "x.x.x.x.x.x.x.x.", "D": "....x.......x..."},
+               "open": {"C": "......x.......x."}},
+        chords=SKETCH_CHORDS,
+        voices=[
+            {"inst": "bass", "mode": "riff", "gain": 0.55, "params": {"drive": 3.0, "cutoff": 800.0}, "pat": SKETCH_RIFF},
+            {"inst": "bell", "mode": "chord", "octave": 2, "gain": 0.3, "echo": (3, 0.2), "dur": 2.5, "pat": SKETCH_CHIMES},
+            {"inst": "brass", "mode": "chord", "octave": 1, "gain": 0.3, "dur": 2.0, "pat": SKETCH_ANSWER},
+            {"inst": "hit", "mode": "stab", "gain": 0.5, "dur": 3.0,
+             "pat": {"A": "x...............................", "C": "x...............", "D": "x..............................."}},
+        ],
+        pad={"inst": "choir", "gain": 0.22, "vowel": "ah"})
+
+
+def sketch_djent():
+    # The progressive metal side: a chugged low string in a seven-step figure that walks
+    # round the bar, the kick locked to it, the snare steady on two and four, bells over
+    # it, the choir under the last section.
+    return groove(
+        bpm=96, form=SKETCH_FORM,
+        kit={"kick": (kick_drum(True), 1.0), "snare": (snare_drum(), 1.1), "hat": (hat(False, True), 0.7),
+             "open": (hat(True, True), 0.5), "clank": (clank(), 0.4)},
+        drums={"kick": {"A": "x..x.x.", "C": "x..x.x.", "D": "x.......x......."},
+               "snare": {"A": "....x.......x...", "C": "....x.......x...", "D": "........x......."},
+               "hat": {"A": "x.x.x.x.x.x.x.x.", "C": "xxxxxxxxxxxxxxxx", "D": "x...x...x...x..."},
+               "open": {"C": "......x.......x."},
+               "clank": {"C": "..............x................."}},
+        chords=SKETCH_CHORDS,
+        voices=[
+            {"inst": "chug", "mode": "riff", "gain": 0.8, "octave": -1,
+             "pat": {"A": "0.0-3.0", "C": "8.8-a.8", "D": "a---------------8-------g-------"}},
+            {"inst": "bass", "mode": "riff", "gain": 0.3, "params": {"drive": 4.0, "cutoff": 700.0}, "pat": SKETCH_RIFF},
+            {"inst": "bell", "mode": "chord", "octave": 2, "gain": 0.3, "echo": (3, 0.2), "dur": 2.5, "pat": SKETCH_CHIMES},
+            {"inst": "brass", "mode": "stab", "gain": 0.25, "dur": 1.0,
+             "pat": {"C": "..x...x...x...x."}},
+        ],
+        pad={"inst": "choir", "gain": 0.12, "vowel": "oh"})
+
+
+SKETCHES = {"human": sketch_human, "rift": sketch_rift, "djent": sketch_djent}
+OUT_SKETCH = os.path.join(os.path.dirname(__file__), "out")
 
 
 SOUNDS = {
@@ -900,9 +1165,25 @@ def read(name):
 
 
 def main(argv):
-    if len(argv) < 1 or argv[0] not in ("build", "list", "measure"):
+    if len(argv) < 1 or argv[0] not in ("build", "list", "measure", "sketch"):
         print(__doc__)
         return 2
+    if argv[0] == "sketch":
+        # Eight bars in a direction, into tools/soundforge/out, never into the game.
+        os.makedirs(OUT_SKETCH, exist_ok=True)
+        for name in argv[1:] or list(SKETCHES):
+            seed("sketch_" + name)
+            x = SKETCHES[name]()
+            x = limit(x * 10.0 ** ((-16.0 - loudness(x)) / 20.0))
+            pcm = (np.clip(x, -1.0, 1.0) * 32767.0).astype("<i2")
+            path = os.path.join(OUT_SKETCH, "sketch_%s.wav" % name)
+            with wave.open(path, "wb") as w:
+                w.setnchannels(1)
+                w.setsampwidth(2)
+                w.setframerate(SR)
+                w.writeframes(pcm.tobytes())
+            print("%-16s %5.2f s  %s" % (name, len(x) / SR, os.path.relpath(path)))
+        return 0
     if argv[0] == "list":
         for name in SOUNDS:
             print(name)

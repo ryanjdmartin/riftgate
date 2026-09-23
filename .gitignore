@@ -19,3 +19,6 @@ tools/foeforge/out/
 tools/blendforge/out/
 __pycache__/
 *.blend1
+
+# soundforge sketches: rendered for listening, never shipped
+tools/soundforge/out/
