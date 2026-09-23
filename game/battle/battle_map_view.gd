@@ -534,7 +534,7 @@ func sweep_at(local_y: float) -> void:
 
 
 const RIFT_ART := Color("c9a6ff")   # what the rift looks like; it means nothing but the rift
-const RIFT_FRAME_SECONDS := 0.32
+const RIFT_FRAME_SECONDS := 0.65   # with no music playing; with music, a frame a beat
 
 ## The rift (Ryan, 23 September): a vortex tearing a hole in reality, in the foes' own
 ## register, standing over its three hexes and reaching up into the scenery, its spiral
@@ -551,7 +551,10 @@ func _draw_rift(map: BattleMap) -> void:
 	var fh := tex.get_size().y
 	var frames := maxi(1, int(round(tex.get_size().x / fh)))   # square frames side by side
 	var fw := tex.get_size().x / frames
-	var k := int(_ring_t / RIFT_FRAME_SECONDS) % frames
+	# On the music's beat when there is music (Ryan, 23 September: it had landed near the
+	# beat by chance, so it is on it), else on its own slow clock.
+	var beat := Sound.beat()
+	var k := int(beat if beat >= 0.0 else _ring_t / RIFT_FRAME_SECONDS) % frames
 	var c := center(map.rift)
 	var dest := Rect2((c - Vector2(fw * SPRITE_SCALE * 0.5, fh * SPRITE_SCALE - HEX_SIZE * 0.9)).floor(), Vector2(fw, fh) * SPRITE_SCALE)
 	draw_texture_rect_region(tex, dest, Rect2(k * fw, 0, fw, fh))

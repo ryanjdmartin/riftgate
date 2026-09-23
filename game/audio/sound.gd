@@ -27,6 +27,20 @@ const NAMES := [
 static var _node: Sound = null
 static var muted := false   # tests and tools: nothing plays
 
+## The loops' tempos, as tools/soundforge writes them, so a thing on screen can move on
+## the beat (the rift's vortex, Ryan, 23 September: it had landed near the beat by chance).
+const TEMPO := {"music_map": 92.0, "music_skirmish": 100.0}
+
+
+## Beats elapsed in the loop that is playing, or -1 when nothing is.
+static func beat() -> float:
+	if _node == null or not is_instance_valid(_node) or not _node.is_inside_tree():
+		return -1.0
+	var p := _node._music[_node._music_live]
+	if not p.playing or not TEMPO.has(_node._playing):
+		return -1.0
+	return p.get_playback_position() * float(TEMPO[_node._playing]) / 60.0
+
 var _voices: Array[AudioStreamPlayer] = []
 var _next_voice := 0
 var _music: Array[AudioStreamPlayer] = []   # two, so one loop fades into the next

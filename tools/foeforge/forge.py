@@ -353,6 +353,21 @@ def _place(img, scale, core, target, frame):
     return canvas
 
 
+def _snap_cores(frames):
+    """After scaling and quantizing, the cores land within a pixel or two of each other;
+    at the map's 2x that is a visible twitch. Shift every frame by whole pixels so its core
+    sits exactly where the first frame's does."""
+    ref = _core(frames[0])
+    out = [frames[0]]
+    for f in frames[1:]:
+        c = _core(f)
+        dx, dy = int(round(ref[0] - c[0])), int(round(ref[1] - c[1]))
+        moved = Image.new("RGBA", f.size, (0, 0, 0, 0))
+        moved.paste(f, (dx, dy), f)
+        out.append(moved)
+    return out
+
+
 def cut_rift(args):
     """One candidate into three frames: the vortex turned a little each way about its
     centre (an image model cannot draw a consistent second frame; a turn of a few degrees,
@@ -375,6 +390,7 @@ def cut_rift(args):
         target = (origin[0] + (ref_core[0] - bbox[0]) * scale, origin[1] + (ref_core[1] - bbox[1]) * scale)
         for img in keyed:
             frames.append(outline(quantize(_place(img, scale, _core(img), target, RIFT_FRAME), None, args.colours)))
+        frames = _snap_cores(frames)
     else:
         src = _key_rift(args.image)
         for angle in [-RIFT_TWIST, 0.0, RIFT_TWIST]:
