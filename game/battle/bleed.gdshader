@@ -16,7 +16,7 @@ uniform float anim_rate = 1.6;               // frames per second between the tw
 uniform float saturation = 1.0;              // the tuner's: 0 grey, 1 as painted
 uniform float brightness = 1.0;
 uniform float flicker = 1.0;                 // the corrupted side's tear, 0 off
-uniform float tear_debug = 0.0;              // 1: torn bands tinted, cyan for the general tear and magenta for the rift's (RIFTGATE_TEAR_DEBUG=1)
+uniform float tear_debug = 0.0;              // 1: torn bands painted solid, yellow for the general tear and magenta for the rift's (RIFTGATE_TEAR_DEBUG=1)
 uniform vec2 map_size = vec2(1.0, 1.0);      // the painted map, in map pixels
 uniform vec2 view_size = vec2(1.0, 1.0);     // this texture, in screen pixels
 uniform vec2 scroll = vec2(0.0, 0.0);        // the map view's scroll
@@ -146,7 +146,7 @@ void fragment() {
 	other.rgb = floor(other.rgb * levels + 0.5) / levels;
 	other.rgb *= 1.0 - (0.12 + 0.08 * near) * flick;
 	if (tear_debug > 0.5 && flick > 0.5) {
-		other.rgb = mix(vec3(0.0, 1.0, 1.0), vec3(1.0, 0.0, 1.0), step(0.5, near));
+		other.rgb = mix(vec3(1.0, 1.0, 0.0), vec3(1.0, 0.0, 1.0), step(0.5, near));
 	}
 	// Where a machine is, the reconstruction wins whatever the bleed says: the machines
 	// are its own and never go under the painting (Ryan, 22 September). The units layer
