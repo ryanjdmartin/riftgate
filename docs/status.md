@@ -108,8 +108,13 @@ a loop resumes where it left; 16-bar forms in sections; buttons with their own s
 longer double the tap; overheats land after the enemy's blows with their own sound.
 Measured, not heard: `forge.py measure` prints each file's loudness and low share, and the
 phone band (300 to 4000 Hz) of every blow sits 6 to 10 dB under its full loudness, the
-music 6 dB, so the balance holds on a speaker. Next: Ryan listens on the phone; the numbers
-in `LEVELS`, `DIP` and the groove gains are the first knobs. If a loop's bpm changes in
+music 6 dB, so the balance holds on a speaker. Ryan heard the map loop (a huge improvement)
+and gave notes, now built and in the bible's sound row: no builds, bass drops or speed
+snares; 32-bar loops with an eight-bar interlude; the crunch bass back; a little metal at
+low gain; the map at 84 on its own kit (soft kick, rim, brushed hats, pad and chimes), the
+skirmish at 100 on kick, snare, clank and saw stabs, the pad and bass shared. Not yet
+heard: the skirmish loop as rebuilt, and every effect. The knobs: `LEVELS`, `DIP`, each
+loop's `kit` gains, `bass` and `pad` in `music_map` and `music_skirmish`. If a loop's bpm changes in
 `groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
 loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
 wraps every tail, the room's included. The display's scan and idle stay silent by decision.

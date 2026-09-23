@@ -20,7 +20,11 @@ The second cut (Ryan's notes, 23 September, after the first was measured):
     undertone an octave down), and a small room on everything, so nothing reads as chip-tune.
   - The mix is here: LEVELS gives each sound its loudness (the loudest 50 ms, RMS dB), so a
     hook in the game passes an offset only for a relative moment.
-  - The loops are 16 bars in sections, not a two-bar phrase repeated.
+  - The loops are 32 bars in sections, not a two-bar phrase repeated, with a long interlude,
+    on a kit each (the map slower, rim and brushed hats; the skirmish kick, snare, clank and
+    stabs) over a shared pad and bass. Never a build, a bass drop or a speed snare.
+  - A little metal is allowed, at low gain and gone in a tenth of a second; the crunch bass
+    of the first cut came back.
 """
 import math
 import os
@@ -241,6 +245,13 @@ def ratchet(count, dur, f=2200.0, gain=1.0, jitter=0.15):
     return buf
 
 
+def metal(gain=0.2, pitch=1.0):
+    """The little metal allowed (Ryan, 23 September): inharmonic partials that die in a
+    tenth of a second, band-limited, under a blow at low gain. Never a cowbell."""
+    k = knock([1180.0 * pitch, 1930.0 * pitch, 2760.0 * pitch], [0.08, 0.055, 0.04], [1.0, 0.5, 0.3], noise_gain=0.0)
+    return bp(k, 600.0, 6000.0) * gain
+
+
 def relay(gain=1.0, pitch=1.0):
     """A relay closing: a dry click with a little casing under it."""
     c = bp(noise(n_of(0.03)), 1200.0 * pitch, 6000.0 * pitch) * env_ad(n_of(0.03), 0.0003, 0.004)
@@ -369,7 +380,7 @@ def die_pick():
 
 def die_drop():
     # Set back down on the plate: a knock with a casing under it.
-    return room(mix(body(260.0, 100.0, 0.1, click=0.6), knock([640.0, 1010.0, 1480.0], [0.03, 0.02, 0.012], [1.0, 0.5, 0.25]) * 0.6), decay=0.1, mix=0.1)
+    return room(mix(body(260.0, 100.0, 0.1, click=0.6), knock([640.0, 1010.0, 1480.0], [0.03, 0.02, 0.012], [1.0, 0.5, 0.25]) * 0.6, metal(0.15, 1.3)), decay=0.1, mix=0.1)
 
 
 def die_roll():
@@ -396,6 +407,7 @@ def shield_up():
     hyd = hydraulic(0.24, 500.0, 1400.0, 0.4)
     slam = mix(thud(200.0, 60.0, 0.2, click=0.9, drive=3.0), knock([680.0, 1120.0, 1730.0], [0.04, 0.025, 0.015], [1.0, 0.5, 0.25]) * 0.5)
     b = at(hyd, slam, 0.12)
+    b = at(b, metal(0.2, 1.1), 0.12)
     b = at(b, servo(1400.0, 900.0, 0.09, 0.25), 0.16)
     return room(b, decay=0.14, mix=0.12)
 
@@ -412,7 +424,8 @@ def hit():
     # A blow landing on armour: the thud, the strike, the plate knocked and stopped.
     b = mix(thud(150.0, 45.0, 0.3, click=0.8, drive=3.0),
             burst(0.08, 250.0, 5000.0, decay=0.02) * 0.6,
-            knock([480.0, 860.0, 1390.0, 2100.0], [0.045, 0.03, 0.02, 0.012], [1.0, 0.6, 0.35, 0.2]) * 0.5)
+            knock([480.0, 860.0, 1390.0, 2100.0], [0.045, 0.03, 0.02, 0.012], [1.0, 0.6, 0.35, 0.2]) * 0.5,
+            metal(0.18, 0.9))
     return room(b, decay=0.16, mix=0.14)
 
 
@@ -430,7 +443,8 @@ def block():
     # Struck plate holding: a dull knock, stopped fast, the casing behind it.
     b = mix(knock([380.0, 640.0, 1010.0, 1480.0], [0.05, 0.035, 0.022, 0.014], [1.0, 0.7, 0.45, 0.25], noise_gain=0.5) * 0.9,
             burst(0.05, 500.0, 3500.0, decay=0.015) * 0.5,
-            body(240.0, 100.0, 0.08, click=0.5) * 0.5)
+            body(240.0, 100.0, 0.08, click=0.5) * 0.5,
+            metal(0.22, 0.8))
     return room(b, decay=0.12, mix=0.12)
 
 
@@ -584,21 +598,28 @@ def overheat():
 
 
 # ---------------------------------------------------------------- music
-# Two loops in one kit, each 16 bars in sections. A bar is 16 steps. In a drum pattern `x`
-# is a hit, `o` a softer one, `r` a roll of three in the step, `.` a rest; a pattern may be
-# 16 or 32 steps long (a two-bar figure). A bass riff is semitones above E2 (82.4 Hz): a
-# digit, `a`..`f` for 10..17, `g` and `h` for -2 and -5; `-` holds the note, `.` rests. An
-# arp pattern indexes the section's chord (0 root, 1, 2, 3 the octave), `.` rests. Loops
-# are rendered wrapped, so tails cross the seam and it plays round.
+# Two loops, each 32 bars in sections, on kits of their own with a shared pad and bass
+# (Ryan, 23 September: the two read too alike; the map slower and on other instruments,
+# some tones in common). A bar is 16 steps. In a drum pattern `x` is a hit, `o` a softer
+# one, `.` a rest; a pattern may run 16, 32 or 64 steps (a phrase over several bars).
+# Never a build, never a bass drop, never a speed snare (Ryan, the same day): a section
+# changes by what plays, not by a roll into it. A bass riff is semitones above E2 (82.4
+# Hz): a digit, `a`..`f` for 10..17, `g` and `h` for -2 and -5; `-` holds, `.` rests. An arp
+# pattern indexes the section's chord (0 root, 1, 2, 3 the octave), `.` rests; the chimes.
+# A stab pattern hits the chord as a saw stab. Loops render wrapped, so every tail crosses
+# the seam and it plays round.
 
 E2 = 82.41
 NOTE = {"a": 10, "b": 11, "c": 12, "d": 14, "e": 15, "f": 17, "g": -2, "h": -5}
 
 
-def kick_drum():
-    # Sub under a knock at 200 Hz: the knock is what a phone plays.
-    return mix(thud(150.0, 46.0, 0.3, click=0.9, drive=3.0, body_gain=1.2),
-               body(260.0, 130.0, 0.08, drive=2.5, click=0.2) * 0.8)
+def kick_drum(hard=True):
+    if hard:
+        return mix(thud(150.0, 46.0, 0.3, click=0.9, drive=3.0, body_gain=1.2),
+                   body(260.0, 130.0, 0.08, drive=2.5, click=0.2) * 0.8)
+    # The map's: a rounder front, less click, the same knock so a phone still hears it.
+    return mix(thud(130.0, 44.0, 0.34, click=0.35, drive=2.2, body_gain=1.0),
+               body(220.0, 120.0, 0.09, drive=1.8, click=0.0) * 0.6)
 
 
 def snare_drum():
@@ -608,37 +629,54 @@ def snare_drum():
     return room(b, decay=0.1, mix=0.18, cut=7000.0)
 
 
-def hat(open_=False):
-    return burst(0.28 if open_ else 0.045, 5500.0, 13000.0, decay=0.09 if open_ else 0.012) * 0.35
+def rim():
+    # A side-stick on a casing: the map's answer to the snare.
+    return mix(knock([900.0, 1400.0, 2300.0], [0.02, 0.014, 0.009], [1.0, 0.5, 0.3], noise_gain=0.6) * 0.7,
+               body(420.0, 200.0, 0.03, click=0.4) * 0.3)
+
+
+def hat(open_=False, bright=True):
+    if bright:
+        return burst(0.28 if open_ else 0.045, 5500.0, 13000.0, decay=0.09 if open_ else 0.012) * 0.35
+    # Brushed: a softer front, a narrower band.
+    return burst(0.24 if open_ else 0.05, 3500.0, 9000.0, attack=0.004, decay=0.08 if open_ else 0.014) * 0.3
 
 
 def knock_perc():
-    # The percussion that was a clank: a casing tapped, dead at once.
+    # A casing tapped, dead at once.
     return knock([740.0, 1180.0, 1660.0], [0.03, 0.02, 0.012], [1.0, 0.5, 0.3], noise_gain=0.5) * 0.6
+
+
+def clank():
+    # The little metal that is allowed (Ryan, 23 September): inharmonic, gone in a tenth of
+    # a second, band-limited so it never gets to cowbell.
+    k = knock([1180.0, 1930.0, 2760.0], [0.08, 0.055, 0.04], [1.0, 0.5, 0.3], noise_gain=0.3)
+    return bp(k, 600.0, 6000.0) * 0.5
 
 
 def tick():
     return ratchet(1, 0.008, 3000.0, 0.5) * 0.5
 
 
-def bass_note(freq, dur, drive=3.0, cutoff=900.0, res=0.8):
-    # Three detuned saws, a sub, an undertone an octave down, through a resonant filter that
-    # closes over the note.
+def bass_note(freq, dur, drive=3.0, cutoff=900.0):
+    # The crunch (Ryan, 23 September: the rougher first cut fit better): one saw with a
+    # shadow a hair off tune, a sub, driven hard and clipped, then one fixed low-pass.
     n = n_of(dur)
     t = t_of(n)
-    x = saws(freq, n, (0.995, 1.0, 1.005)) + np.sin(2.0 * math.pi * freq * t) * 0.35 + np.sin(2.0 * math.pi * freq * 0.5 * t) * 0.1
-    x = sat(x, drive)
-    cut = cutoff * (0.7 + 1.6 * np.exp(-t / (dur * 0.35)))
-    x = svf(x, cut, res)
-    env = env_ad(n, 0.004, dur * 0.7, curve=2.0)
-    r = n_of(0.015)
+    saw = 2.0 * ((freq * t) % 1.0) - 1.0
+    shadow = 2.0 * ((freq * 1.004 * t + 0.3) % 1.0) - 1.0
+    sub = np.sin(2.0 * math.pi * freq * t) * 0.6
+    x = np.clip(sat(saw + shadow * 0.35 + sub, drive) * 1.3, -1.0, 1.0)
+    x = lp(x, cutoff)
+    env = env_ad(n, 0.004, dur * 0.6, curve=2.0)
+    r = n_of(0.02)
     env[-r:] *= np.linspace(1.0, 0.0, r)
     return x * env
 
 
 def pad_chord(semis, n, cutoff=700.0, gain=0.12, octave=1):
     # A stack of detuned saws with a harmonics layer over each note, a slow swell in the
-    # filter: the overtones under the loop.
+    # filter: the overtones under the loop. Shared by both loops.
     t = t_of(n)
     x = np.zeros(n)
     for s in semis:
@@ -650,10 +688,21 @@ def pad_chord(semis, n, cutoff=700.0, gain=0.12, octave=1):
 
 
 def arp_note(freq, dur):
+    # The chimes (Ryan, 23 September: yes please).
     n = n_of(dur)
     t = t_of(n)
     pulse = np.where((freq * t) % 1.0 < 0.28, 1.0, -1.0) * 0.6 + np.sin(2.0 * math.pi * freq * 2.0 * t) * 0.2
     return bp(sat(pulse, 1.5), 300.0, 3500.0) * env_ad(n, 0.003, dur * 0.35)
+
+
+def stab(semis, dur):
+    # The skirmish's saw stab on the chord: short, driven, the thing the map never plays.
+    n = n_of(dur)
+    x = np.zeros(n)
+    for s in semis:
+        x += saws(E2 * 2.0 ** (s / 12.0) * 2.0, n, (0.99, 1.0, 1.01))
+    x /= max(1, len(semis))
+    return lp(sat(x, 2.5), 1800.0) * env_ad(n, 0.004, dur * 0.3)
 
 
 def machine_swell(dur):
@@ -661,7 +710,8 @@ def machine_swell(dur):
 
 
 def _steps(form, part, default="."):
-    """The whole loop's step string for a part: the section's pattern per bar."""
+    """The whole loop's step string for a part: the section's pattern per bar, a pattern
+    longer than a bar indexed by the loop's own step so a phrase keeps its place."""
     out = []
     for bar, sec in enumerate(form):
         pat = part.get(sec, part.get("*", default * 16))
@@ -669,25 +719,28 @@ def _steps(form, part, default="."):
     return "".join(out)
 
 
-def groove(bpm, form, drums, riffs, chords, arps, drive, cutoff, pad_gain, pad_cut, swells=(), hat_gain=1.0):
+def _chord(chords, sec, bar_in_run):
+    c = chords.get(sec, chords.get("*"))
+    if c and isinstance(c[0], (list, tuple)):
+        return list(c[(bar_in_run // 2) % len(c)])
+    return list(c) if c else None
+
+
+def groove(bpm, form, kit, drums, riffs, chords, arps, stabs, bass, pad, swells=()):
     form = form.replace(" ", "")
     bars = len(form)
     step_s = 60.0 / bpm / 4.0
     n = int(round(bars * 16 * step_s * SR))
     buf = np.zeros(n)
-    kit = {"kick": kick_drum(), "snare": snare_drum(), "hat": hat(False), "open": hat(True), "knock": knock_perc(), "tick": tick()}
-    gains = {"kick": 1.0, "snare": 1.1, "hat": 0.8 * hat_gain, "open": 0.7 * hat_gain, "knock": 0.8, "tick": 0.35}
     for name, part in drums.items():
+        sound, gain = kit[name]
         s = _steps(form, part)
         for i, c in enumerate(s):
             when = i * step_s
             if c == "x":
-                buf = at(buf, kit[name], when, gains[name] * (1.0 if name != "hat" or i % 4 == 0 else 0.7), wrap=True)
+                buf = at(buf, sound, when, gain * (1.0 if name not in ("hat",) or i % 4 == 0 else 0.7), wrap=True)
             elif c == "o":
-                buf = at(buf, kit[name], when, gains[name] * 0.45, wrap=True)
-            elif c == "r":
-                for j in range(3):
-                    buf = at(buf, kit[name], when + j * step_s / 3.0, gains[name] * 0.55, wrap=True)
+                buf = at(buf, sound, when, gain * 0.45, wrap=True)
     # The riff: a note holds through `-` steps, across bars too.
     s = _steps(form, riffs)
     i = 0
@@ -701,32 +754,45 @@ def groove(bpm, form, drums, riffs, chords, arps, drive, cutoff, pad_gain, pad_c
         while i + length < len(s) and s[i + length] == "-":
             length += 1
         freq = E2 * 2.0 ** (semis / 12.0)
-        buf = at(buf, bass_note(freq, length * step_s * 0.95, drive, cutoff), i * step_s, 0.6, wrap=True)
+        buf = at(buf, bass_note(freq, length * step_s * 0.95, bass["drive"], bass["cutoff"]), i * step_s, bass["gain"], wrap=True)
         i += length
-    # The pad: one chord a section, held while the section runs, with a slow front.
+    # The pad: the section's chord, or its chords two bars each, held while they run.
     bar_n = int(round(16 * step_s * SR))
+    per_bar = []
     start = 0
     while start < bars:
         end = start
         while end < bars and form[end] == form[start]:
             end += 1
-        semis = chords.get(form[start], chords.get("*"))
-        if semis:
-            pad = pad_chord(semis, bar_n * (end - start), pad_cut, pad_gain)
-            pad *= env_pts(len(pad), [(0.0, 0.0), (0.4, 1.0), (len(pad) / SR - 0.3, 1.0), (len(pad) / SR, 0.0)])
-            buf = at(buf, pad, start * 16 * step_s, 1.0, wrap=True)
+        for b in range(start, end):
+            per_bar.append(_chord(chords, form[b], b - start))
         start = end
-    # The arp: a texture on the chord, with an echo a dotted eighth later.
+    b = 0
+    while b < bars:
+        e = b
+        while e < bars and per_bar[e] == per_bar[b]:
+            e += 1
+        if per_bar[b]:
+            p = pad_chord(per_bar[b], bar_n * (e - b), pad["cut"], pad["gain"])
+            p *= env_pts(len(p), [(0.0, 0.0), (0.4, 1.0), (len(p) / SR - 0.3, 1.0), (len(p) / SR, 0.0)])
+            buf = at(buf, p, b * 16 * step_s, 1.0, wrap=True)
+        b = e
+    # The chimes: a note of the bar's chord, with an echo a dotted eighth later.
     s = _steps(form, arps)
     for i, c in enumerate(s):
-        if not c.isdigit():
+        if not c.isdigit() or not per_bar[i // 16]:
             continue
-        semis = chords.get(form[i // 16], chords.get("*"))
+        semis = per_bar[i // 16]
         k = int(c)
         f = E2 * 2.0 ** ((semis[k % len(semis)] + 12 * (k // len(semis)) + 24) / 12.0)
         note = arp_note(f, step_s * 1.6)
         buf = at(buf, note, i * step_s, 0.4, wrap=True)
         buf = at(buf, note, (i + 3) * step_s, 0.18, wrap=True)
+    # The stabs.
+    s = _steps(form, stabs)
+    for i, c in enumerate(s):
+        if c == "x" and per_bar[i // 16]:
+            buf = at(buf, stab(per_bar[i // 16], step_s * 1.2), i * step_s, 0.3, wrap=True)
     for bar in swells:
         buf = at(buf, machine_swell(16 * step_s * 0.9), bar * 16 * step_s, 0.35, wrap=True)
     r = room(buf, decay=0.12, mix=0.06, cut=6000.0)
@@ -737,55 +803,68 @@ def groove(bpm, form, drums, riffs, chords, arps, drive, cutoff, pad_gain, pad_c
 
 
 def music_map():
-    # Subdued, still moving: four to the floor but light, the snare on two and four, hats
-    # ticking, a knock a bar, the riff sparse and low. Sixteen bars: two of the plain groove,
-    # a lift with the arp, a breakdown where the kick drops out, and a build back.
+    # Subdued, still moving, at 84: a soft kick, a rim instead of a snare, brushed hats, the
+    # pad and the chimes forward, the riff sparse and long. Thirty-two bars: the groove (A),
+    # a turn bar (B), the lift with the chimes (C), and an interlude of eight bars (D) where
+    # the kick stops and the chimes carry it, twice round.
     return groove(
-        bpm=92,
-        form="AAAB AACB DDDB AACE",
+        bpm=84,
+        form="AAAB AACC AACB DDDD DDDD AACC CCCB DDDD",
+        kit={"kick": (kick_drum(False), 0.85), "rim": (rim(), 0.8), "hat": (hat(False, False), 0.55),
+             "open": (hat(True, False), 0.45), "knock": (knock_perc(), 0.7), "clank": (clank(), 0.35), "tick": (tick(), 0.3)},
         drums={
-            "kick": {"A": "x...o...x.....o.x...o...x...o.o.", "B": "x...o...x.....o.x...o...x...x.x.",
-                     "C": "x...o...x..o..o.x...o...x...o.o.", "D": "................", "E": "x...x...x...x...x.x.x.x.xxxxxxxx"},
-            "snare": {"A": "....x.......x...", "B": "....x.......x..o....x.......r.r.",
-                      "C": "....x.......x.o.", "D": "............o...", "E": "....x.......x...........rrrrrrrr"},
-            "hat": {"A": "x.x.x.x.x.x.x.x.", "B": "x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.r.",
-                    "C": "xxx.x.xxx.x.xxx.", "D": "x...x...x...x...", "E": "x.x.x.x.x.x.x.x.xxxxxxxxxxxxxxxx"},
-            "open": {"A": "..........x.....", "C": "......x.......x.", "E": "..............x."},
-            "knock": {"A": "......x.........", "C": "..x.....x..x....", "D": "......x.......x.", "E": "......x...x...x."},
+            "kick": {"A": "x.......x.....o.x.......x...o...", "B": "x...o...x.....o.x...o...x...x...",
+                     "C": "x...o...x..o..o.x...o...x.....o.", "D": "................"},
+            "rim": {"A": "....x.......x...", "B": "....x.......x..o", "C": "....x.......x.o.", "D": "............o..."},
+            "hat": {"A": "x.x.x.x.x.x.x.x.", "B": "x.x.x.x.x.x.x.x.", "C": "xxx.x.xxx.x.xxx.", "D": "x...x...x...x..."},
+            "open": {"A": "..........x.....", "B": "..............x.", "C": "......x.......x."},
+            "knock": {"A": "......x.........", "C": "..x.....x..x....", "D": "......x.......x."},
+            "clank": {"A": "..............x.................", "C": "..........x....................."},
             "tick": {"A": "xxxxxxxxxxxxxxxx", "C": "xxxxxxxxxxxxxxxx", "D": "xxxxxxxxxxxxxxxx"},
         },
-        riffs={"A": "0--.3-.0-...1-..0--.3-.g-...0-..", "B": "0--.3-.0-...1-..0--.3-.g-..h0-..",
-               "C": "0--.3-.5-..3.1-.0--.3-.7-..5.3-.", "D": "0---------------8-------7-------",
-               "E": "0-.0-.0-.3-.5-..0-.0-.0-.7-.c-.."},
-        chords={"A": [0, 7, 15], "B": [0, 7, 15], "C": [8, 15, 19], "D": [10, 17, 22], "E": [7, 14, 22]},
-        arps={"C": "0.2.1.3.0.2.1.2.", "D": "0...2...1...3...0...2...3...1...", "E": "0.1.2.3.0.1.2.3."},
-        drive=2.2, cutoff=650.0, pad_gain=0.24, pad_cut=900.0, swells=(8,), hat_gain=0.8)
+        riffs={"A": "0--.3-.0-...1-..0--.3-.g-...0-..", "B": "0--.3-.0-...5-..3--.1-.0-...g-..",
+               "C": "0--.3-.5-..3.1-.0--.3-.7-..5.3-.",
+               "D": "0---------------8-------7-------3---------------5-------g-------"},
+        chords={"A": [0, 7, 15], "B": [0, 7, 15], "C": [8, 15, 19],
+                "D": [[10, 17, 22], [8, 15, 19], [7, 14, 22], [0, 7, 15]]},
+        arps={"A": "0...............2...............", "C": "0.2.1.3.0.2.1.2.",
+              "D": "0...2...1...3...0...2...3...1...0.2...1...3.....0...2...1.3....."},
+        stabs={},
+        bass={"drive": 2.8, "cutoff": 650.0, "gain": 0.6},
+        pad={"gain": 0.24, "cut": 900.0},
+        swells=(12, 28))
 
 
 def music_skirmish():
-    # Driving: the kick pushes, the snare answers with ghosts, trap hats with rolls, knocks
-    # on the offbeats, the riff busier and dirtier with the octave jump. Sixteen bars: the
-    # groove, a lift with the arp and open hats, a half-time drop, and the build.
+    # Driving at 100: the hard kick, the snare with its ghosts, bright hats, clanks and
+    # knocks on the offbeats, saw stabs on the chord, the riff busy and dirty with the
+    # octave jump. Thirty-two bars: the groove (A), a turn bar (B), the lift with stabs and
+    # open hats (C), and a half-time stretch (D) where the chimes come through.
     return groove(
         bpm=100,
-        form="AAAB CCCB DDDB AACE",
+        form="AAAB AACC AACB DDDD AACC CCCB AAAB CCDD",
+        kit={"kick": (kick_drum(True), 1.0), "snare": (snare_drum(), 1.1), "hat": (hat(False, True), 0.8),
+             "open": (hat(True, True), 0.7), "knock": (knock_perc(), 0.8), "clank": (clank(), 0.45), "tick": (tick(), 0.35)},
         drums={
-            "kick": {"A": "x..x..x...x.x...x..x..x.x...x.o.", "B": "x..x..x...x.x...x..x..x.x.x.x.x.",
-                     "C": "x..x..x...x.x..ox..x..x.x...x.o.", "D": "x.......x.....x.x.......x..x....", "E": "x...x...x...x...x.x.x.x.x.x.xxxx"},
-            "snare": {"A": "....x..o....x...", "B": "....x..o....x.......x..o..o.r.r.",
-                      "C": "....x..o....x..o", "D": "........x.......", "E": "....x.......x...rrrr....rrrrrrrr"},
-            "hat": {"A": "x.x.x.x.xxx.x.x.x.x.x.rrx.x.x.x.", "B": "x.x.x.x.xxx.x.x.x.x.x.x.r.x.r.r.",
-                    "C": "xxxxxxxxxxxxxxxx", "D": "x...x.x.x...x.x.", "E": "x.x.x.x.x.x.x.x.xxxxxxxxxxxxxxxx"},
-            "open": {"A": "......x.......x.", "C": "..x...x...x...x.", "D": "..............x.", "E": "......x.......x."},
-            "knock": {"A": "..x...x...x...x.", "C": "..x...x...x...x.", "D": "..x.......x.....", "E": "..x...x...x...x."},
+            "kick": {"A": "x..x..x...x.x...x..x..x.x...x.o.", "B": "x..x..x...x.x...x..x..x.x.x.x...",
+                     "C": "x..x..x...x.x..ox..x..x.x...x.o.", "D": "x.......x.....x.x.......x..x...."},
+            "snare": {"A": "....x..o....x...", "B": "....x..o....x.......x..o..o.x...",
+                      "C": "....x..o....x..o", "D": "........x......."},
+            "hat": {"A": "x.x.x.x.xxx.x.x.", "B": "x.x.x.x.xxx.x.x.x.x.x.x.x.x.xxx.",
+                    "C": "xxxxxxxxxxxxxxxx", "D": "x...x.x.x...x.x."},
+            "open": {"A": "......x.......x.", "C": "..x...x...x...x.", "D": "..............x."},
+            "knock": {"A": "..x...x...x...x.", "C": "..x...x...x...x.", "D": "..x.......x....."},
+            "clank": {"A": "..x...........x.", "C": "..x.......x.....", "D": "x..............."},
             "tick": {"C": "xxxxxxxxxxxxxxxx", "D": "xxxxxxxxxxxxxxxx"},
         },
-        riffs={"A": "00.c.0-3.00.1-.g00.c.0-3.00.h-..", "B": "00.c.0-3.00.1-.g00.c.0-3.5-.7-.c",
-               "C": "0-.c.0-3.0-.5-.30-.c.0-3.8-.7-.5", "D": "0-------3-------g-------0---..3-",
-               "E": "0-.0-.0-.c-.0-.30-.0-.0-.c-.d-.e"},
-        chords={"A": [0, 7, 15], "B": [0, 7, 15], "C": [8, 15, 19], "D": [-2, 5, 10], "E": [7, 14, 22]},
-        arps={"C": "0.1.2.1.3.2.1.0.", "D": "0.......2.......1.......3.......", "E": "0.1.2.3.2.1.0.1."},
-        drive=3.5, cutoff=1100.0, pad_gain=0.2, pad_cut=1100.0, swells=(12,), hat_gain=0.9)
+        riffs={"A": "00.c.0-3.00.1-.g00.c.0-3.00.h-..", "B": "00.c.0-3.00.1-.g00.c.0-3.5-.3-.0",
+               "C": "0-.c.0-3.0-.5-.30-.c.0-3.8-.7-.5", "D": "0-------3-------g-------0---..3-"},
+        chords={"A": [0, 7, 15], "B": [0, 7, 15], "C": [8, 15, 19], "D": [[-2, 5, 10], [0, 7, 15]]},
+        arps={"C": "0.......2.......", "D": "0...2...1...3...0...2...1.3....."},
+        stabs={"A": "..............x.", "C": "..x...x...x...x.", "B": "..x...x...x...x."},
+        bass={"drive": 4.0, "cutoff": 1100.0, "gain": 0.6},
+        pad={"gain": 0.18, "cut": 1100.0},
+        swells=(12,))
 
 
 SOUNDS = {
