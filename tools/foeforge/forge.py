@@ -353,19 +353,40 @@ def _place(img, scale, core, target, frame):
     return canvas
 
 
-def _snap_cores(frames):
-    """After scaling and quantizing, the cores land within a pixel or two of each other;
-    at the map's 2x that is a visible twitch. Shift every frame by whole pixels so its core
-    sits exactly where the first frame's does."""
-    ref = _core(frames[0])
+def _luma(img):
+    a = np.array(img).astype(np.float32)
+    return (a[..., :3].mean(axis=2)) * (a[..., 3] >= 128)
+
+
+def _snap_cores(frames, reach=10):
+    """Line every frame up with the first as a whole drawing, not by any one feature: the
+    eye tracks the whole thing, and aligning on the black core alone still read as a bob
+    (Ryan, 23 September). Each frame is shifted by the whole pixels that make its
+    brightness best match the first frame's, searched within `reach`."""
+    ref = _luma(frames[0])
     out = [frames[0]]
+    h, w = ref.shape
     for f in frames[1:]:
-        c = _core(f)
-        dx, dy = int(round(ref[0] - c[0])), int(round(ref[1] - c[1]))
+        lum = _luma(f)
+        best, best_score = (0, 0), -1e18
+        for dy in range(-reach, reach + 1):
+            for dx in range(-reach, reach + 1):
+                a = ref[max(0, dy):h + min(0, dy), max(0, dx):w + min(0, dx)]
+                b = lum[max(0, -dy):h + min(0, -dy), max(0, -dx):w + min(0, -dx)]
+                score = float((a * b).sum())
+                if score > best_score:
+                    best, best_score = (dx, dy), score
         moved = Image.new("RGBA", f.size, (0, 0, 0, 0))
-        moved.paste(f, (dx, dy), f)
+        moved.paste(f, best, f)
         out.append(moved)
     return out
+
+
+def _similarity(a, b):
+    """How alike two frames are: the correlation of their brightness, 0 to 1."""
+    x, y = _luma(a).ravel(), _luma(b).ravel()
+    x, y = x - x.mean(), y - y.mean()
+    return float((x * y).sum() / (np.sqrt((x * x).sum() * (y * y).sum()) + 1e-6))
 
 
 def cut_rift(args):
@@ -391,6 +412,8 @@ def cut_rift(args):
         for img in keyed:
             frames.append(outline(quantize(_place(img, scale, _core(img), target, RIFT_FRAME), None, args.colours)))
         frames = _snap_cores(frames)
+        for i in range(len(frames)):
+            print("frame %d likeness to the others: %s" % (i, " ".join("%.2f" % _similarity(frames[i], frames[j]) for j in range(len(frames)) if j != i)))
     else:
         src = _key_rift(args.image)
         for angle in [-RIFT_TWIST, 0.0, RIFT_TWIST]:
