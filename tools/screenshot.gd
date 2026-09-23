@@ -57,6 +57,15 @@ func _apply_pose() -> void:
 		"lock":
 			s._on_die_tapped(0)
 			s._toggle_all_arrows(true)
+		"menu", "settings", "quit":
+			s._open_menu()
+			if _pose != "menu":
+				s._menu._show_page(_pose)
+		"withdraw":
+			# Withdraw confirmed: the enemy's parting blows replay (RIFTGATE_SHOT_FRAME) before
+			# the outcome.
+			s._on_withdraw()
+			s._confirm_yes()
 		"strike":
 			# Spend the first mech's face on the first front foe: the attack animation plays.
 			var foe: Foe = s.sk.front[0]

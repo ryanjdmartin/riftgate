@@ -19,13 +19,15 @@ const DEFAULT_HUD := "green"
 static var hud: String = DEFAULT_HUD
 static var _loaded := false
 
-## The display knobs: key -> default. Ranges for the sliders alongside.
+## The display knobs: key -> default. Ranges for the sliders alongside. `enemy_pace` is the
+## speed of the enemy turn's replay in the skirmish: its top is the old instant replay
+## (Ryan, 23 September: that should be the fastest the slider goes).
 const DISPLAY_DEFAULTS := {
-	"brightness": 1.0, "glitch": true, "pace": 1.0, "scan": true,
+	"brightness": 1.0, "glitch": true, "pace": 1.0, "enemy_pace": 1.0, "scan": true,
 	"music": 0.8, "effects": 1.0,
 }
 const DISPLAY_RANGES := {
-	"brightness": Vector2(0.5, 1.5), "pace": Vector2(0.5, 2.0),
+	"brightness": Vector2(0.5, 1.5), "pace": Vector2(0.5, 2.0), "enemy_pace": Vector2(0.5, 3.75),
 	"music": Vector2(0.0, 1.0), "effects": Vector2(0.0, 1.0),
 }
 static var display: Dictionary = DISPLAY_DEFAULTS.duplicate()

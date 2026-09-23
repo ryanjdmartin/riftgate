@@ -5,7 +5,7 @@ thing works lives in its file's comments; why it is that way lives in the bible.
 
 ## As of 23 September 2026 (midday)
 
-**State.** Everything committed. Tests: 180 tests, 2422 checks, green (`perl -e 'alarm
+**State.** Everything committed. Tests: 187 tests, 2452 checks, green (`perl -e 'alarm
 240; exec @ARGV' godot --headless --path . -s tests/run_tests.gd`). Ryan sometimes runs a
 second session on this repo at the same time: check `git status` before committing and
 stage by path. Chassis ids: `badger`, `clydesdale`, `sparrowhawk`, `anvil`. Ryan writes
@@ -33,9 +33,11 @@ result of the plan before Resolve; Resolve plays the moves with footfalls, then 
 band with its horn, then a panel of the contacts; ENGAGE dives the map and cuts to the
 skirmish, the dice fight on the enemy's ground, every blow, shield and kill heard. Back
 applies it and the next round plans. The gate has an integrity bar, the rift a spawn bar;
-the codex opens by double-tap on either screen; MENU pauses, ducks the music, and holds
-the settings, now with music and effects knobs. A map groove plays on the field and a
-skirmish groove in the fight, crossfading.
+the codex opens by double-tap on either screen; MENU pauses, ducks the music, holds the
+settings (music, effects and enemy pace among them) and quits to the harness after asking.
+The enemy's turn replays blow by blow with the gauges stepping down, before the next dice
+or the outcome, a withdrawal included. The formation is four wide. A map groove plays on
+the field and a skirmish groove in the fight, crossfading.
 
 **Done 22 September (late) and 23 September.** The map's draw calls: 5400 and 10.9 ms a
 frame at zoom 1 on the Mac became 1036 and about 3 ms by baking rims, columns, grid lines,
@@ -49,6 +51,19 @@ over USB; it has not yet been run on a device. The screens follow the phone's he
 pinch from two fingers; roads join on the Compatibility renderer; hex 48. The sound set,
 first cut. Trials retired; the bible republished (link above). A placeholder launcher
 icon (`art/icon.png`, a tool-drawn hex).
+
+**Ryan's skirmish notes, 23 September (done).** Four columns locked in. The menu has QUIT
+(asks first; `quit_requested` runs harness-ward through the battle screen) and a colour
+change keeps the menu up behind a mask while the screen rebuilds (`_build` on both screens
+spares `_menu`). Withdraw replays the enemy's parting blows before the outcome; every
+enemy turn replays at ENEMY PACE (`Settings.display["enemy_pace"]`, top = the old 0.12 s
+beat), each blow stepping the struck mech's shield and hull from the event the sim records
+(`turn_events` now carry `shield` and `hull`), taps held off by `_replay_shade` meanwhile.
+Layout: ally gauges and chips 10 px off the model, foe leaders longer, every gauge on a
+black ground of its own shape (no plate), the eye 52 px in the black at the log's right
+(the log strip stops short of it), log 112 tall, dice and Reroll up 16, 30 px of black
+under Reroll. Poses added to `tools/screenshot.gd`: menu, settings, quit, withdraw. The
+bible has the rows (sections 5 and the HUD row in 4); it is not yet republished.
 
 **Ryan's verdict on the web harness (23 September).** It served for sizes and touch and no
 more: the map must not get smaller (the base hex size may go up a little; zoom makes it
@@ -106,6 +121,7 @@ from bpm and bars and wraps tails.
    Android export checked on a device (templates are installed; the SDK and a debug
    keystore are not); then play and tune numbers, map size, squad speeds, Rift Pressure.
 
-**Known rough edges.** Routes are tap-to-destination only. On the phone's browser the
+**Known rough edges.** Routes are tap-to-destination only. The bible's formation figure
+still draws three columns (the text says four). On the phone's browser the
 address bar takes a strip until the first button press goes full screen. The engage pose
 of `tools/screenshot.gd` prints renderer leak warnings at exit (mid-tween quit), harmless.

@@ -22,7 +22,7 @@ extends RefCounted
 enum State { SETUP, ROUND_START, ASSIGN, DONE }
 enum Outcome { NONE, VICTORY, DEFEAT, WITHDRAWN }
 
-const DEFAULT_COLUMNS := 3   # the formation's width; four makes more of a horde
+const DEFAULT_COLUMNS := 4   # the formation's width (Ryan, 23 September: four plays better than three)
 const REROLLS_PER_ROUND := 3
 const DANGER_CLOSE_DIVISOR := 2
 const BURN_DAMAGE_PER_STACK := 20   # damage dealt per stack applied
@@ -68,7 +68,7 @@ var log: Array[String] = []
 ## The most recent attack, for the screen to show: {mech, target, rolled, final, crit, ranged}.
 var last_roll: Dictionary = {}
 ## Every blow of the last enemy turn, in order, for the screen to replay:
-## {foe, mech (index), absorbed, through, blocked, broke_shield, injured}.
+## {foe, mech (index), absorbed, through, blocked, broke_shield, injured, shield, hull}.
 var turn_events: Array = []
 
 
@@ -585,8 +585,10 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	var had_shield := ms.unit.shield > 0
 	ms.unit.shield = r["shield"]
 	ms.unit.hull -= r["through"]
+	# The mech's gauges after the blow ride along, so a replay can step them down blow by blow.
 	turn_events.append({"foe": source, "mech": mechs.find(ms), "absorbed": r["absorbed"], "through": r["through"],
-		"blocked": r["blocked"], "broke_shield": had_shield and ms.unit.shield == 0, "injured": r["injures"]})
+		"blocked": r["blocked"], "broke_shield": had_shield and ms.unit.shield == 0, "injured": r["injures"],
+		"shield": ms.unit.shield, "hull": ms.unit.hull})
 	if r["blocked"]:
 		log.append("%s hits %s: shield -%d, blocked" % [source.display_name, ms.unit.display_name, r["absorbed"]])
 	elif r["absorbed"] > 0:

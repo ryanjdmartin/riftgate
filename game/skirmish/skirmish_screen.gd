@@ -4,10 +4,11 @@ extends Control
 ## The skirmish screen as a tactical overlay. Portrait, 720x1280 logical, positioned
 ## absolutely so every coordinate is a plain number.
 ##
-##   header      round and reinforcements tag, phase readout, the intent eye at the right
-##   formation   two ranks of three unit views; a massive foe spans both ranks of its column;
+##   header      round and reinforcements tag, phase readout, MENU at the right
+##   formation   two ranks of four unit views; a massive foe spans both ranks of its column;
 ##               under each foe its intent (fantasy icon and number) and its statuses
-##   log         every event, scrollable, the newest brightest; double-tap for it full screen
+##   log         every event, scrollable, the newest brightest; double-tap for it full screen;
+##               the intent eye at its right, in the black between the two grounds
 ##   dice        tap to lock, hold to see every face, drag onto a target to spend; the wide
 ##               Reroll sits right under them, before or after attacking
 ##   mechs       gauges hugging the sprite, warning chips under it: shield break, component
@@ -17,9 +18,14 @@ extends Control
 ## No names on screen. Kinetic faces roll when they land and the number flashes over the
 ## target. Hold a unit for numbers, statuses and arrows, a die for every entry and what
 ## applies to it. Double-tap a unit for its codex entry.
+##
+## The enemy's turn is replayed blow by blow at the ENEMY PACE setting, the struck mech's
+## gauges stepping down as each lands, before the next round's dice show or the outcome
+## (a withdrawal included: Ryan, 23 September). Taps are held off while it plays.
 
 signal finished(outcome: int)
 signal back_requested
+signal quit_requested   # the menu's QUIT: the host leaves for the harness
 
 var back_label := "BACK"   # the outcome's button: the battle screen says where back leads
 
@@ -30,22 +36,24 @@ var BACK_Y := 60.0
 var FRONT_Y := 254.0
 const SLOT_SIZE := Vector2(150, 194)     # floating gauge 18 + 48x64 foe at 2x + chip row 38
 const MASSIVE_SIZE := Vector2(150, 388)  # 64x96 elites at 2x across both ranks
-var EYE_Y := 452.0
-const EYE := 44.0
+var EYE_Y := 502.0
+const EYE := 52.0
 var LOG_Y := 508.0
-const LOG_H := 128.0
-var DIE_Y := 656.0
+const LOG_H := 112.0
+var DIE_Y := 640.0
 const DIE_SIZE := 120.0
-var REROLL_Y := 802.0
+var REROLL_Y := 786.0
 const REROLL_SIZE := Vector2(250, 54)
+const REROLL_GAP := 30.0   # black between Reroll and the mechs' ground (Ryan, 23 September: 14 was too tight)
 var MECH_Y := 892.0
 const MECH_SIZE := Vector2(176, 284)   # gauges 46 + 80x96 sprite at 2x + chip row 38; neighbours overlap 4 px at PITCH
 var BOTTOM_Y := 1196.0
 ## The rows' places on the 1280 design, scaled to the screen in `_build`.
-const ROWS := {"BACK_Y": 60.0, "FRONT_Y": 254.0, "EYE_Y": 452.0, "LOG_Y": 508.0, "DIE_Y": 656.0, "REROLL_Y": 802.0, "MECH_Y": 892.0, "BOTTOM_Y": 1196.0}
+const ROWS := {"BACK_Y": 60.0, "FRONT_Y": 254.0, "EYE_Y": 502.0, "LOG_Y": 508.0, "DIE_Y": 640.0, "REROLL_Y": 786.0, "MECH_Y": 892.0, "BOTTOM_Y": 1196.0}
 const BOTTOM_BTN := Vector2(210, 60)
 const PITCH := 172.0
 const LOG_LINES := 7
+const ENEMY_BEAT := 0.45   # seconds between the enemy's blows at ENEMY PACE 1; the setting divides it
 
 var sk: Skirmish
 var locked: Array[bool] = []
@@ -102,6 +110,7 @@ var _withdraw_btn: HudButton
 var _overlay: Control
 var _overlay_title: Label
 var _overlay_text: Label
+var _replay_shade: Control            # swallows taps while the enemy's turn replays
 var _drag_from: int = -1
 var _log_seen: int = 0
 var _hold_foe: Foe = null
@@ -176,7 +185,8 @@ static func _default_skirmish() -> Skirmish:
 
 func _build() -> void:
 	for c in get_children():
-		c.queue_free()
+		if c != _menu:   # the menu outlives a rebuild it asked for (a colour change)
+			c.queue_free()
 	_slot_views = [[], []]
 	for rank in range(2):
 		_slot_views[rank].resize(sk.columns)
@@ -197,13 +207,14 @@ func _build() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 	var bg := HudBackdrop.new()
-	bg.rules = [BACK_Y - 14.0, LOG_Y - 10.0, REROLL_Y + REROLL_SIZE.y + 14.0, BOTTOM_Y - 16.0]
+	var seam_y := REROLL_Y + REROLL_SIZE.y + REROLL_GAP
+	bg.rules = [BACK_Y - 14.0, LOG_Y - 10.0, seam_y, BOTTOM_Y - 16.0]
 	# The fight is on the enemy's ground (Ryan, 21 September): the foes stand on the other
 	# world's flat bright overworld of this terrain; the mechs stand on the seam, the
 	# reconstruction's tile with the other world eating into it from above.
 	bg.grounds = [
 		[Rect2(0.0, BACK_Y - 14.0, W, LOG_Y - 10.0 - (BACK_Y - 14.0)), sk.terrain, sk.rng.seed, "other"],
-		[Rect2(0.0, REROLL_Y + REROLL_SIZE.y + 14.0, W, BOTTOM_Y - 16.0 - (REROLL_Y + REROLL_SIZE.y + 14.0)), sk.terrain, sk.rng.seed + 1, "seam"],
+		[Rect2(0.0, seam_y, W, BOTTOM_Y - 16.0 - seam_y), sk.terrain, sk.rng.seed + 1, "seam"],
 	]
 	bg.scan = bool(Settings.display["scan"])   # off: no band, and the machines' traces rest as ink
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -216,8 +227,9 @@ func _build() -> void:
 	_place(_header, Vector2(12, 14), Vector2(300, 28))
 	_sub_label = Hud.label("", 12, Color(Palette.HUD, 0.7), Hud.mono())
 	_place(_sub_label, Vector2(326, 20), Vector2(380, 20))
-	# The intent eye sits right under the formation, at the right edge: toggled often, so it
-	# stays within a thumb's reach of the foes it concerns.
+	# The intent eye sits right under the formation, at the right edge of the log's black
+	# (Ryan, 23 September: off the ground band): toggled often, so it stays within a thumb's
+	# reach of the foes it concerns. The log strip stops short of it.
 	var menu_btn := HudButton.new("MENU", _open_menu)
 	_place(menu_btn, Vector2(W - 96, 10), Vector2(84, 34))
 	_eye = HudButton.new("")
@@ -257,7 +269,7 @@ func _build() -> void:
 	_place(log_tag, Vector2(12, LOG_Y), Vector2(52, 18))
 	_log_scroll = _log_scroller()
 	_log_scroll.tooltip_text = "Drag to read back; double-tap to expand"
-	_place(_log_scroll, Vector2(20, LOG_Y + 22), Vector2(W - 40, LOG_H - 22))
+	_place(_log_scroll, Vector2(20, LOG_Y + 22), Vector2(W - 52 - EYE, LOG_H - 22))
 	_log = _log_label(14)
 	_log_scroll.add_child(_log)
 
@@ -339,6 +351,13 @@ func _build() -> void:
 	_withdraw_btn.tooltip_text = "Pull out: the enemy strikes once more, then the team flees."
 	_place(_withdraw_btn, Vector2(W - 16 - BOTTOM_BTN.x, BOTTOM_Y), BOTTOM_BTN)
 
+	# While the enemy's turn replays, nothing on the screen takes a tap.
+	_replay_shade = Control.new()
+	_replay_shade.mouse_filter = Control.MOUSE_FILTER_STOP
+	_replay_shade.visible = false
+	_replay_shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(_replay_shade)
+
 	# Overlays: arrows, drag ghost, roll flash, details, codex, confirm, outcome.
 	_arrows = ArrowLayer.new()
 	_arrows.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -378,6 +397,8 @@ func _build() -> void:
 	_build_confirm()
 	_build_outcome()
 	_build_log_full()
+	if _menu != null:
+		_menu.move_to_front()
 
 
 ## A log body: bbcode, sized by its content, filling its scroller's width.
@@ -973,6 +994,7 @@ func _open_menu() -> void:
 		_menu.hud_changed.connect(func() -> void:
 			_build()
 			_refresh())
+		_menu.quit_requested.connect(func() -> void: quit_requested.emit())
 		add_child(_menu)
 	_menu.move_to_front()
 	_menu.open()
@@ -1149,32 +1171,90 @@ func _animate_hit(v: UnitView, delay: float = 0.0) -> void:
 	shake.tween_property(v, "position", origin, 0.05)
 
 
-## The enemy's turn, replayed: each blow lunges its foe down at its mech in sequence, and a
-## blow that broke the shield shatters it on the mech when it lands.
-func _animate_enemy_turn(hits: Array) -> void:
-	if not is_inside_tree():
+## What the replay needs before the sim runs the enemy's turn: every field foe's view now (a
+## slot a reinforcement takes afterwards must never lunge as if it had struck), and every
+## mech's shield and hull as they stand, for the gauges to wind back to.
+func _before_enemy_turn() -> Dictionary:
+	var views: Dictionary = {}
+	for foe in sk.field_foes():
+		views[foe] = _foe_view_for(foe)
+	var gauges: Array = []
+	for ms in sk.mechs:
+		gauges.append([ms.unit.shield, ms.unit.hull])
+	return {"views": views, "gauges": gauges}
+
+
+## Seconds between the enemy's blows: the ENEMY PACE setting divides the beat, so its top
+## is the old instant replay.
+func _enemy_beat() -> float:
+	return ENEMY_BEAT / clampf(float(Settings.display.get("enemy_pace", 1.0)), 0.1, 10.0)
+
+
+## The enemy's turn the sim just resolved, replayed one blow a beat: the foe lunges down at
+## its mech, and as the blow lands the mech's shield and hull step down to what it left, a
+## broken shield shattering. Then `then` runs: the next round, or the outcome. Off the tree
+## (tests, headless) it all happens at once.
+func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
+	var hits: Array = []
+	for ev in sk.turn_events:
+		var mi: int = ev["mech"]
+		if mi >= 0 and mi < _mech_views.size():
+			hits.append([before["views"].get(ev["foe"]), _mech_views[mi], bool(ev["broke_shield"]),
+				bool(ev.get("blocked", false)), int(ev["shield"]), int(ev["hull"])])
+	if not is_inside_tree() or hits.is_empty():
+		then.call()
 		return
-	var k := 0
+	_sub_label.text = "ENEMY PHASE"
+	_replay_shade.visible = true
+	_replay_shade.move_to_front()
+	if _menu != null:
+		_menu.move_to_front()
+	# The gauges wind back to before the turn, plain (no forecast pulse: it is happening).
+	var gauges: Array = before["gauges"]
+	for i in range(_mech_views.size()):
+		var v := _mech_views[i]
+		if v.bars.size() >= 2 and i < gauges.size():
+			v.bars[0] = [gauges[i][0], v.bars[0][1], v.bars[0][2]]
+			v.bars[1] = [gauges[i][1], v.bars[1][1], v.bars[1][2]]
+			if v.bars.size() >= 3:
+				v.bars[2] = v.bars[2].slice(0, 3)
+			v.queue_redraw()
+	var beat := _enemy_beat()
+	var tw := create_tween()
 	for h in hits:
-		var fv: UnitView = h[0]
-		var mv: UnitView = h[1]
-		var broke: bool = h.size() > 2 and h[2]
-		var held: bool = h.size() > 3 and h[3]
-		if mv == null:
-			continue
-		var tw := create_tween()
-		tw.tween_interval(0.12 * k)
-		tw.tween_callback(func() -> void:
-			if fv != null:
-				_animate_attack(fv, mv, false)
-			else:
-				_animate_hit(mv)   # the striker's slot has changed hands since: the blow still shows
-			Sound.play_after(0.08, "shield_break" if broke else ("block" if held else "hit"), 0.0 if broke else -4.0)
-			if broke:
-				var t2 := create_tween()
-				t2.tween_interval(0.08)
-				t2.tween_callback(mv.shatter_shield))
-		k += 1
+		tw.tween_callback(_land_blow.bind(h))
+		tw.tween_interval(beat)
+	tw.tween_interval(0.25)
+	tw.tween_callback(func() -> void:
+		_replay_shade.visible = false
+		then.call())
+
+
+## One blow of the replay: [foe view or null, mech view, broke shield, blocked, shield after,
+## hull after]. A striker whose slot has since emptied (killed by burn) still lands its blow.
+func _land_blow(h: Array) -> void:
+	var fv: UnitView = h[0]
+	var mv: UnitView = h[1]
+	var broke: bool = h[2]
+	var held: bool = h[3]
+	var shield_after: int = h[4]
+	var hull_after: int = h[5]
+	if fv != null and fv.visible:
+		_animate_attack(fv, mv, false)
+	else:
+		_animate_hit(mv)
+	Sound.play_after(0.08, "shield_break" if broke else ("block" if held else "hit"), 0.0 if broke else -4.0)
+	var t2 := create_tween()
+	t2.tween_interval(0.08)
+	t2.tween_callback(func() -> void:
+		if mv.bars.size() >= 2:
+			mv.bars[0][0] = shield_after
+			mv.bars[1][0] = hull_after
+		if hull_after <= 0:
+			mv.dead = true
+		mv.queue_redraw()
+		if broke:
+			mv.shatter_shield())
 
 
 ## Every animation on a control returns it to where it was placed. Whatever is still
@@ -1275,8 +1355,8 @@ func _on_end_turn() -> void:
 		_end_turn_now()
 
 
-## Ends the player's turn: unspent blank faces are discarded, the enemy acts, and the next
-## round starts at once so the player is straight back to their own dice.
+## Ends the player's turn: unspent blank faces are discarded, the enemy acts and its turn
+## replays, then the next round shows so the player is straight back to their own dice.
 func _end_turn_now() -> void:
 	if sk.state != Skirmish.State.ASSIGN:
 		return
@@ -1285,32 +1365,26 @@ func _end_turn_now() -> void:
 		var ms: Skirmish.MechState = sk.mechs[i]
 		if ms.alive() and not ms.assigned and ms.face() != null and ms.face().kind == Face.Kind.BLANK:
 			sk.assign(i, null)
-	var before: Array[Foe] = sk.field_foes()
+	var before := _before_enemy_turn()
+	var field_before: Array[Foe] = sk.field_foes()
 	var outcome := sk.end_round()
-	if outcome != Skirmish.Outcome.NONE:
-		_show_outcome(outcome)
-		return
-	sk.start_round()
-	for i in range(locked.size()):
-		locked[i] = false
-	_refresh()
-	# The blows the sim just resolved, in order, so the replay shows what happened: who
-	# lunged at whom, and where a shield broke. Views are looked up after the refresh, so a
-	# slot a reinforcement has since taken never lunges as if it had struck.
-	var hits: Array = []
-	for ev in sk.turn_events:
-		var mi: int = ev["mech"]
-		if mi >= 0 and mi < _mech_views.size():
-			hits.append([_foe_view_for(ev["foe"]), _mech_views[mi], bool(ev["broke_shield"]), bool(ev.get("blocked", false))])
-	_animate_enemy_turn(hits)
-	# Then the reinforcements step in, after the replay has played.
-	var after_replay := 0.12 * hits.size() + 0.3
-	var arrived := 0
-	for foe in sk.field_foes():
-		if not before.has(foe):
-			_animate_arrival(_foe_view_for(foe), after_replay)
-			Sound.play_after(after_replay + 0.26 + 0.09 * arrived, "arrival", -3.0 * arrived)
-			arrived += 1
+	if outcome == Skirmish.Outcome.NONE:
+		sk.start_round()
+		for i in range(locked.size()):
+			locked[i] = false
+	_refresh_log()   # the blows type into the log as they play
+	_play_enemy_turn(before, func() -> void:
+		if outcome != Skirmish.Outcome.NONE:
+			_show_outcome(outcome)
+			return
+		_refresh()
+		# Then the reinforcements step in.
+		var arrived := 0
+		for foe in sk.field_foes():
+			if not field_before.has(foe):
+				_animate_arrival(_foe_view_for(foe), 0.1)
+				Sound.play_after(0.36 + 0.09 * arrived, "arrival", -3.0 * arrived)
+				arrived += 1)
 
 
 ## Withdraw always asks first.
@@ -1320,9 +1394,15 @@ func _on_withdraw() -> void:
 	_ask("Withdraw? The enemy strikes once more as you pull out, and the squad keeps marching on the gate.", _withdraw_now)
 
 
+## The enemy's parting blows play out before the team is seen to flee (Ryan, 23 September:
+## the outcome came up over an unplayed turn).
 func _withdraw_now() -> void:
+	if not sk.can_withdraw():
+		return
+	var before := _before_enemy_turn()
 	if sk.withdraw():
-		_show_outcome(sk.outcome)
+		_refresh_log()
+		_play_enemy_turn(before, func() -> void: _show_outcome(sk.outcome))
 
 
 func _show_outcome(outcome: int) -> void:

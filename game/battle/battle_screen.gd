@@ -383,7 +383,6 @@ func _open_menu() -> void:
 		_menu.display_changed.connect(func(_key: String, _value: Variant) -> void: _apply_display())
 		_menu.hud_changed.connect(_rebuild)
 		_menu.quit_requested.connect(func() -> void: quit_requested.emit())
-		_menu.quit_requested.connect(func() -> void: quit_requested.emit())
 		add_child(_menu)
 	_menu.move_to_front()
 	_menu.open()
@@ -755,8 +754,7 @@ func _open_skirmish(index: int = 0) -> void:
 	screen.back_label = "BACK TO THE FIELD"
 	screen.setup(sk)
 	screen.back_requested.connect(_on_skirmish_back)
-	screen.quit_requested.connect(func() -> void: quit_requested.emit())   # QUIT in the fight leaves the battle too
-	screen.quit_requested.connect(func() -> void: quit_requested.emit())   # straight out to the harness
+	screen.quit_requested.connect(func() -> void: quit_requested.emit())   # QUIT in the fight leaves the battle too, straight out to the harness
 	_skirmish = screen
 	if DisplayServer.get_name() == "headless":
 		_map.set_highlight([])

@@ -27,7 +27,7 @@ func _archer(hp: int = 30, atk: int = 10) -> Foe:
 
 
 func test_formation_fills_front_then_back() -> void:
-	var sk := Skirmish.new(1)
+	var sk := Skirmish.new(1, 3)   # three wide: the rank rules, not the default width
 	sk.add_mech(_mech("A", Die.single(Face.attack(10))))
 	sk.add_foes([_ghoul(), _ghoul(), _archer(), _ghoul(), _ghoul()])
 	sk.begin()
@@ -249,7 +249,7 @@ func test_defeat_when_all_hulls_zero() -> void:
 
 
 func test_horde_keeps_coming() -> void:
-	var sk := Skirmish.new(1)
+	var sk := Skirmish.new(1, 3)   # three wide: the rank rules, not the default width
 	sk.add_mech(_mech("A", Die.single(Face.attack(90, L))))
 	var foes: Array = []
 	for i in range(8):

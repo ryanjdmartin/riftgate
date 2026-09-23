@@ -72,7 +72,7 @@ godot --headless --path . -s tools/export_vocabulary.gd
 
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument
 # poses the screen first. Skirmish: codex, mechcodex, hold, confirm, lock, strike,
-# enemyturn, rounds, logfull, killed. Battle: select, route, hold, north, zoom, zoomlast,
+# enemyturn, withdraw, rounds, logfull, killed, menu, settings, quit. Battle: select, route, hold, north, zoom, zoomlast,
 # flyer, predict, resolve, contact, engage, codex, foecodex, menu, settings, tune.
 # RIFTGATE_SHOT_FRAME=<n> picks the capture frame, to catch an animation mid-flight.
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmish/skirmish_screen.tscn shot.png codex
@@ -117,10 +117,10 @@ tools/phone.sh          # export then serve; `tools/phone.sh serve` serves the l
 tools/android.sh        # export, install, launch; `tools/android.sh log` tails the phone
 ```
 
-The skirmish screen runs top to bottom: header with the round tag, enemies with the intent
-eye right under them at the right edge, log, dice with the wide Reroll right under them, mechs at the bottom with
-their gauges hugging the sprite, End turn bottom-left and Withdraw bottom-right. No unit
-names on screen. Under each foe sits its intent as a fantasy icon and number (a sword for
+The skirmish screen runs top to bottom: header with the round tag and MENU, enemies in two
+ranks of four, log with the intent eye at its right, dice with the wide Reroll right under
+them, mechs at the bottom with their gauges above the sprite, End turn bottom-left and
+Withdraw bottom-right. No unit names on screen. Under each foe sits its intent as a fantasy icon and number (a sword for
 the attack) and its statuses (burn, suppressed, exposed) as chips. Under each mech sit its
 statuses and warning signs: a broken shield when incoming damage will break it, a crack when
 a hit that big may injure a component, a skull when the round would wreck it, a thermometer
@@ -131,11 +131,13 @@ face or onto a mech to spend a shield or vent face; valid targets light up while
 Keywords float beside each die as annotation tags. Kinetic faces roll their damage when they
 land and the number flashes over the target; energy faces are static. Reroll up to three
 times per round, before or after attacking; a reroll always lands on a different face,
-never the one showing nor an equivalent one. End turn runs the enemy and starts the next round
-immediately. Numbers are in tens. Hold a foe or a mech for its numbers, its statuses with
-icons and text, and the intent arrows that concern it; the eye shows every arrow;
-double-tap any unit or die for its codex entry. Withdraw is offered at the start of any round,
-before a face is spent. Blank faces are discarded at end of turn.
+never the one showing nor an equivalent one. End turn runs the enemy: its turn replays blow
+by blow at the ENEMY PACE setting, the struck mech's gauges stepping down as each lands,
+and then the next round's dice show. Numbers are in tens. Hold a foe or a mech for its
+numbers, its statuses with icons and text, and the intent arrows that concern it; the eye
+shows every arrow; double-tap any unit for its codex entry. Withdraw is offered at any point
+of the player's turn; the enemy's parting blows replay before the team flees. Blank faces
+are discarded at end of turn. MENU pauses: resume, settings, or quit to the harness.
 
 The harness can add the faction's massive elite, which fills both ranks of a column. For the
 standalone screen, `RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,anvil` picks the team and

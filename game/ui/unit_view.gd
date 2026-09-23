@@ -26,6 +26,9 @@ const CHIP_TEXT := 16
 const BAR_H := 11.0
 const BAR_STEP := 14.0
 const FLOAT_BAR_W := 60.0
+const GAP := 10.0          # between the drawing and its gauges above or its chips below
+const FLOAT_LIFT := 26.0   # a foe's floating gauge: how far its top row sits above the drawing
+const LEADER := 16.0       # the floating gauge's leader, in x and in y
 
 var display_name: String = ""     # for the codex and readouts; never drawn here
 var is_enemy: bool = false
@@ -66,7 +69,7 @@ func anchor_global() -> Vector2:
 
 
 func _bars_height() -> float:
-	return (bars.size() * BAR_STEP + 2.0) if bars_above and not bars.is_empty() else 0.0
+	return (bars.size() * BAR_STEP + GAP) if bars_above and not bars.is_empty() else 0.0
 
 
 func _scale() -> float:
@@ -224,28 +227,25 @@ func _draw() -> void:
 	if _shatter >= 0.0:
 		_draw_shatter(vis)
 
-	# Gauges sit on a dark plate (Ryan, 22 September): the ground under the units is now the
-	# terrain's colour, and a bare bar was lost on it.
+	# Every gauge has a dark ground of its own shape (Ryan, 23 September: the plate under the
+	# stack was a box; the bars keep the chamfer and the ground keeps them readable on
+	# terrain). Gauges and chips stand a little off the drawing, not against it.
 	if not bars.is_empty() and not dead:
 		if bars_above:
-			# Full-width gauges stacked right above the drawing: hull, shield, heat.
+			# Full-width gauges stacked above the drawing: hull, shield, heat.
 			var bx := size.x * 0.1
 			var bw := size.x * 0.8
-			var y := vis.position.y - 2.0 - bars.size() * BAR_STEP
-			_plate(Rect2(bx - 5.0, y - 4.0, bw + 10.0, bars.size() * BAR_STEP + 4.0))
+			var y := vis.position.y - GAP - bars.size() * BAR_STEP
 			for b in bars:
 				_gauge(Rect2(bx, y, bw, BAR_H), b)
 				y += BAR_STEP
 		else:
-			# One small gauge floating above the drawing's top-right, with a short leader
-			# dropping from a third of the way along its underside, diagonally down-left
-			# toward the sprite.
+			# One small gauge floating above the drawing's top-right, with a leader dropping
+			# from a third of the way along its underside, diagonally down-left onto the sprite.
 			var bx := minf(vis.end.x - 10.0, size.x - FLOAT_BAR_W - 2.0)
-			var y := vis.position.y - 14.0
+			var y := vis.position.y - FLOAT_LIFT
 			var from := Vector2(bx + FLOAT_BAR_W / 3.0, y + BAR_H)
-			draw_line(from, from + Vector2(-6.0, 6.0), Color(hud, 0.8), 1.5)
-			var top := y - BAR_STEP * (bars.size() - 1)
-			_plate(Rect2(bx - 4.0, top - 3.0, FLOAT_BAR_W + 8.0, y - top + BAR_H + 6.0))
+			draw_line(from, from + Vector2(-LEADER, LEADER), Color(hud, 0.85), 2.0)
 			for b in bars:
 				_gauge(Rect2(bx, y, FLOAT_BAR_W, BAR_H), b)
 				y -= BAR_STEP
@@ -273,7 +273,7 @@ func _draw() -> void:
 		total += w + 6.0
 	total -= 6.0
 	var x := floorf((size.x - total) * 0.5)
-	var cy := minf(vis.end.y + 2.0, size.y - 2.0) + CHIP_H * 0.5
+	var cy := minf(vis.end.y + GAP, size.y - 2.0) + CHIP_H * 0.5
 	cy = minf(cy, size.y - CHIP_H * 0.5 - 1.0)
 	for i in range(chips.size()):
 		var ch: Array = chips[i]
@@ -286,19 +286,16 @@ func _draw() -> void:
 		x += widths[i] + 6.0
 
 
-## The dark plate under a stack of gauges, with a faint edge in the HUD colour.
-func _plate(rect: Rect2) -> void:
-	Hud.box(self, rect, 4.0, Color(Palette.BG, 0.84), Color(Palette.HUD, 0.35), 1.0)
-
-
-## A gauge with, when a pending value is given, a pulsing overlay on the part about to
-## change. The overlay is ink white with a dark edge, never a hue: it has to read against
-## any bar colour and for any kind of colour vision. Where it sits says which way the bar
-## moves: inside the fill, that much is about to go; past the fill, that much is coming.
+## A gauge on its own dark ground, with, when a pending value is given, a pulsing overlay on
+## the part about to change. The overlay is ink white with a dark edge, never a hue: it has
+## to read against any bar colour and for any kind of colour vision. Where it sits says
+## which way the bar moves: inside the fill, that much is about to go; past the fill, that
+## much is coming.
 func _gauge(rect: Rect2, b: Array) -> void:
 	var mx := float(maxi(1, int(b[1])))
 	var frac: float = clampf(float(b[0]) / mx, 0.0, 1.0)
 	var col: Color = b[2]
+	Hud.fill_poly(self, Hud.slant(rect.grow(1.0), 4.0), Color(Palette.BG, 0.9))
 	Hud.gauge(self, rect, frac, col)
 	Hud.stroke_poly(self, Hud.slant(rect, 4.0), Color(col, 0.95), 1.0)   # a full-strength edge, so an empty bar still shows
 	if b.size() < 4 or int(b[3]) == int(b[0]):

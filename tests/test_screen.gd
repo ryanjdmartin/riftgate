@@ -340,3 +340,79 @@ func test_the_last_kill_ends_the_fight_without_end_turn() -> void:
 	assert_eq(s._overlay_title.text, "VICTORY", "title")
 	assert_true(s._end_btn.disabled, "nothing left to end")
 	s.free()
+
+
+func test_the_formation_is_four_wide_by_default() -> void:
+	assert_eq(Skirmish.new(1).columns, 4, "four columns unless asked otherwise (Ryan, 23 September)")
+	var s := _screen()
+	assert_eq(s._slot_views[0].size(), 4, "four front views")
+	assert_eq(s._massive_views.size(), 4, "four massive views")
+	s.free()
+
+
+func test_withdraw_plays_the_enemy_turn_before_fleeing() -> void:
+	var s := _screen(5)
+	var before := 0
+	for m in s.sk.mechs:
+		before += m.unit.hull + m.unit.shield
+	s._on_withdraw()
+	s._confirm_yes()
+	assert_eq(s.sk.outcome, Skirmish.Outcome.WITHDRAWN, "withdrawn")
+	assert_true(s.sk.turn_events.size() > 0, "the enemy struck on the way out")
+	var ev: Dictionary = s.sk.turn_events[0]
+	assert_true(ev.has("shield") and ev.has("hull"), "each blow carries the mech's gauges after it, for the replay")
+	var after := 0
+	for m in s.sk.mechs:
+		after += m.unit.hull + m.unit.shield
+	assert_true(after < before, "and it cost the team")
+	assert_true(s._overlay.visible, "the outcome shows once the replay is done (headless: at once)")
+	assert_eq(s._overlay_title.text, "WITHDREW", "title")
+	assert_false(s._replay_shade.visible, "taps are taken again")
+	s.free()
+
+
+func test_the_enemy_beat_follows_the_setting_and_tops_out_at_the_old_instant() -> void:
+	var s := _screen()
+	Settings.display["enemy_pace"] = 1.0
+	assert_eq(s._enemy_beat(), SkirmishScreen.ENEMY_BEAT, "one beat at pace 1")
+	Settings.display["enemy_pace"] = Settings.DISPLAY_RANGES["enemy_pace"].y
+	assert_true(absf(s._enemy_beat() - 0.12) < 0.01, "the slider's top is the old 0.12 s between blows")
+	Settings.display["enemy_pace"] = Settings.DISPLAY_DEFAULTS["enemy_pace"]
+	assert_true(Settings.DISPLAY_RANGES.has("enemy_pace"), "and it has a slider range")
+	s.free()
+
+
+func test_the_menu_survives_a_colour_change_and_quits_to_the_host() -> void:
+	var s := _screen()
+	s._open_menu()
+	var menu: PauseMenu = s._menu
+	assert_true(menu.is_open(), "the menu opens")
+	var was := Settings.hud
+	menu.hud_changed.emit()   # what a swatch does after the mask has shown
+	assert_true(is_instance_valid(s._menu) and s._menu == menu, "the same menu after the rebuild")
+	assert_true(menu.get_parent() == s, "still on the screen")
+	assert_eq(s.get_child(s.get_child_count() - 1), menu, "and on top of it")
+	assert_true(menu.is_open(), "still open")
+	Settings.set_hud(was)
+	var quits: Array = []
+	s.quit_requested.connect(func() -> void: quits.append(true))
+	menu._show_page("quit")
+	var pressed := false
+	for c in menu._rows.get_children():
+		if c is HudButton and c.text == "QUIT":
+			c.pressed.emit()
+			pressed = true
+	assert_true(pressed, "the quit page has a QUIT")
+	assert_eq(quits.size(), 1, "the screen asks its host to leave")
+	assert_false(menu.is_open(), "and the menu is gone")
+	s.free()
+
+
+func test_the_eye_and_reroll_keep_off_the_grounds() -> void:
+	var s := _screen()
+	assert_true(s._eye.position.y >= s.LOG_Y - 10.0, "the eye sits in the black under the foes' ground")
+	assert_true(s._log_scroll.position.x + s._log_scroll.size.x <= s._eye.position.x, "the log strip stops short of it")
+	var seam := s.REROLL_Y + SkirmishScreen.REROLL_SIZE.y + SkirmishScreen.REROLL_GAP
+	assert_true(seam <= s.MECH_Y, "the mechs' ground starts before the mechs")
+	assert_true(s.DIE_Y >= s.LOG_Y + SkirmishScreen.LOG_H, "the dice sit under the log")
+	s.free()

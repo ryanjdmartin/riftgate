@@ -247,3 +247,31 @@ func test_nothing_resolves_or_routes_while_a_move_plays() -> void:
 	s._refresh()
 	assert_false(s._resolve_btn.disabled, "until it is done")
 	s.free()
+
+
+func test_the_menu_survives_a_colour_change_and_quits_to_the_harness() -> void:
+	var s := _screen()
+	s._open_menu()
+	var menu: PauseMenu = s._menu
+	menu.hud_changed.emit()
+	assert_true(is_instance_valid(s._menu) and s._menu == menu and menu.get_parent() == s, "the same menu after the rebuild")
+	assert_eq(s.get_child(s.get_child_count() - 1), menu, "on top of the rebuilt screen")
+	var quits: Array = []
+	s.quit_requested.connect(func() -> void: quits.append(true))
+	menu.quit_requested.emit()
+	assert_eq(quits.size(), 1, "the battle screen passes QUIT up to the harness")
+	s.free()
+
+
+func test_a_skirmish_quit_leaves_the_battle_too() -> void:
+	var s := _screen()
+	var b := s.battle
+	_engage(b, b.field.squads()[0], b.mechs()[0])
+	s._on_resolve()
+	s._open_skirmish(0)
+	assert_true(s._skirmish != null, "skirmish screen opened")
+	var quits: Array = []
+	s.quit_requested.connect(func() -> void: quits.append(true))
+	s._skirmish.quit_requested.emit()
+	assert_eq(quits.size(), 1, "the skirmish's QUIT goes straight out to the harness")
+	s.free()
