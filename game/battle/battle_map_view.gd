@@ -574,7 +574,7 @@ func _draw_rift(map: BattleMap) -> void:
 		var shear := (3.0 if int(b) % 2 == 0 else -3.0) * SPRITE_SCALE if torn else 0.0
 		var src := Rect2(k * fw, b * band_h, fw, band_h)
 		var dst := Rect2(dest.position + Vector2(shear, b * band_h * SPRITE_SCALE), Vector2(fw, band_h) * SPRITE_SCALE)
-		draw_texture_rect_region(tex, dst, src, Color(1, 1, 1, 1) if not torn else Color(0.82, 0.82, 0.88, 1.0))
+		draw_texture_rect_region(tex, dst, src, Color(1, 1, 1, 1) if not torn else Color(0.55, 0.55, 0.68, 1.0))   # dimmed hard: at 0.82 only the shear showed (Ryan, 23 September)
 
 
 ## Off-screen squads get a portrait at the edge nearest them: the source of the intent line.
