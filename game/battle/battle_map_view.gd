@@ -457,7 +457,11 @@ func _draw() -> void:
 ## the blur runs into it. The frame belongs to the viewport, not the map (Ryan, 23
 ## September): its lines stand at the view's edges through every scroll and zoom, its
 ## readouts sit at the view's top and bottom, and only the ticks and numbers ride the map.
-## The numbers sit inside the lines, the same distance in on both sides. Screen space.
+## The numbers sit inside the lines, the same distance in on both sides. A row's tick
+## stands level with the top of the hex beside it (the row's edge hex on that side), since
+## the 3D ground is the display's native and a raised row sits higher on screen (Ryan,
+## 23 September). The readouts sit on plaques, so they read over the painted world too.
+## Screen space.
 const FRAME_PAD := 8.0
 const FRAME_SIDE := 14.0   # the lines' distance in from the view's left and right
 const FRAME_FONT := 14
@@ -473,7 +477,8 @@ func _draw_frame(hud: Color) -> void:
 		var dir := 1.0 if sx < size.x * 0.5 else -1.0
 		draw_line(Vector2(sx, top), Vector2(sx, bottom), fc, 2.0)
 		for row in range(map.height - BattleMap.GATE_ROWS):
-			var y := to_screen(Vector2(0, _origin.y + HEX_SIZE * 1.5 * row)).y
+			var edge := Hex.offset_to_axial(0 if dir > 0.0 else map.width - 1, row)
+			var y := to_screen(Vector2(0, center(edge).y)).y
 			if y < top + 30.0 or y > bottom - 30.0:
 				continue   # under the readouts
 			draw_line(Vector2(sx, y), Vector2(sx + 10.0 * dir, y), fc, 2.0)
@@ -482,8 +487,15 @@ func _draw_frame(hud: Color) -> void:
 			draw_string(font, Vector2(lx, y + 5.0), label, HORIZONTAL_ALIGNMENT_LEFT, -1, FRAME_FONT, fc)
 		for y in [top, bottom]:
 			draw_line(Vector2(sx, y), Vector2(sx + 18.0 * dir, y), fc, 2.0)
-	draw_string(font, Vector2(FRAME_SIDE + 8.0, top + 19.0), "SEC %02d // GRID %dx%d // RECON" % [map.map_seed % 100, map.width, map.height - BattleMap.GATE_ROWS], HORIZONTAL_ALIGNMENT_LEFT, -1, FRAME_FONT, fc)
-	draw_string(font, Vector2(FRAME_SIDE + 8.0, bottom - 8.0), "CARE // PROJECTOR LINE", HORIZONTAL_ALIGNMENT_LEFT, -1, FRAME_FONT, fc)
+	_readout(font, Vector2(FRAME_SIDE + 8.0, top + 19.0), "SEC %02d // GRID %dx%d // RECON" % [map.map_seed % 100, map.width, map.height - BattleMap.GATE_ROWS], fc)
+	_readout(font, Vector2(FRAME_SIDE + 8.0, bottom - 8.0), "CARE // PROJECTOR LINE", fc)
+
+
+## A readout on its own dark plaque.
+func _readout(font: Font, at: Vector2, text: String, fc: Color) -> void:
+	var tw := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, FRAME_FONT).x
+	draw_rect(Rect2(at.x - 5.0, at.y - 15.0, tw + 10.0, 20.0), Color(Palette.BG, 0.85), true)
+	draw_string(font, at, text, HORIZONTAL_ALIGNMENT_LEFT, -1, FRAME_FONT, fc)
 
 
 ## A HUD bar in screen space: a backing, a track, a fill, a rim, a label above on its own
