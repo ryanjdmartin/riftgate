@@ -8,12 +8,19 @@ extends Node
 ## `Sound.music("skirmish")`. Like `Settings`, a static face; the node behind it is made on
 ## first use and lives under the root. Headless there is no node and every call is a no-op,
 ## so the sim and the tests never touch audio.
+##
+## The mix lives in the forge: every file is written at its own level (a tap is quiet, the
+## gate is not), so a hook passes a dB offset only when one moment is relatively louder or
+## softer than the sound's usual one (the enemy's blows, a stack of kills).
 
 const DIR := "res://art/audio/"
 const VOICES := 10          # effects that can sound at once; the oldest is cut for the next
-const CROSSFADE := 1.4      # seconds between one loop and the next
+const FADE_OUT := 0.5       # the loop leaving
+const FADE_IN := 0.9        # the loop arriving...
+const FADE_IN_DELAY := 0.25 # ...a little after, so two tempos overlap less
 const DUCK_DB := -9.0       # how far the music drops under the pause menu
 const SILENT_DB := -80.0
+const VARY := 0.04          # random pitch on a blow or a knock, as a fraction
 
 ## Every name the game asks for, so a test can check the files exist and the forge writes them.
 const NAMES := [
@@ -21,8 +28,21 @@ const NAMES := [
 	"die_pick", "die_drop", "die_roll", "die_lock", "shield_up", "vent",
 	"hit", "hit_crit", "block", "shield_break", "kill", "arrival", "step", "resolve",
 	"contact", "engage", "cut", "gate_hit", "spawn", "victory", "defeat", "withdraw",
+	"overheat",
 	"music_map", "music_skirmish",
 ]
+
+## Pitched sounds (a horn, a chord, a drone) play at their written pitch; the rest get VARY.
+const TONAL := ["contact", "victory", "defeat", "spawn", "engage", "overheat"]
+
+## The moments that push the music down and let it climb back: name -> [depth dB, seconds
+## to recover]. A cheap way to make a blow feel bigger than its file (Ryan, 23 September).
+const DIP := {
+	"contact": [-7.0, 0.7], "engage": [-9.0, 2.4], "cut": [-14.0, 1.6],
+	"gate_hit": [-9.0, 1.4], "spawn": [-5.0, 1.3], "kill": [-6.0, 0.9],
+	"shield_break": [-4.0, 0.5], "overheat": [-5.0, 1.0],
+	"victory": [-12.0, 3.0], "defeat": [-12.0, 3.0],
+}
 
 static var _node: Sound = null
 static var muted := false   # tests and tools: nothing plays
@@ -46,25 +66,32 @@ var _next_voice := 0
 var _music: Array[AudioStreamPlayer] = []   # two, so one loop fades into the next
 var _music_live := 0
 var _playing := ""
+var _loop_of: Array[String] = ["", ""]      # which loop each music player holds
+var _pos: Dictionary = {}                    # loop -> where it was when it left, to resume there
+var _fade: Tween = null                      # the crossfade in flight, killed by the next
 var _streams: Dictionary = {}
 var _ducked := false
+var _duck_db := 0.0
+var _dip_db := 0.0
+var _duck_tween: Tween = null
+var _dip_tween: Tween = null
 
 
 # ---------------------------------------------------------------- the static face
 
-## An effect, at `db` under its file's level, with a little random pitch (`vary`, as a
-## fraction) so a repeated blow never sounds like a sample repeating.
-static func play(name: String, db: float = 0.0, vary: float = 0.04) -> void:
+## An effect, at `db` under its file's level. `vary` is the random pitch as a fraction;
+## left negative it is VARY, or none for a TONAL sound.
+static func play(name: String, db: float = 0.0, vary: float = -1.0) -> void:
 	_call("_play", [name, db, vary])
 
 
 ## The same, `delay` seconds from now: the sound of a thing that lands after its animation.
-static func play_after(delay: float, name: String, db: float = 0.0, vary: float = 0.04) -> void:
+static func play_after(delay: float, name: String, db: float = 0.0, vary: float = -1.0) -> void:
 	_call("_play_after", [delay, name, db, vary])
 
 
-## The loop a screen wants: "map", "skirmish", or "" for silence. Crossfades; asking for
-## the loop already playing does nothing.
+## The loop a screen wants: "map", "skirmish", or "" for silence. Crossfades, and a loop
+## coming back resumes where it left; asking for the loop already playing does nothing.
 static func music(name: String) -> void:
 	_call("_music_to", [name])
 
@@ -153,55 +180,90 @@ func _play(name: String, db: float, vary: float) -> void:
 	var s := _stream(name)
 	if s == null:
 		return
+	if vary < 0.0:
+		vary = 0.0 if TONAL.has(name) else VARY
 	var p := _voices[_next_voice]
 	_next_voice = (_next_voice + 1) % VOICES
 	p.stream = s
 	p.volume_db = db
 	p.pitch_scale = 1.0 + randf_range(-vary, vary)
 	p.play()
+	if DIP.has(name):
+		_dip(float(DIP[name][0]), float(DIP[name][1]))
 
 
+## The crossfade. The one before is killed first: it would otherwise still stop the player
+## it was fading out, which may be the very player the new loop now plays on (Ryan, 23
+## September: the skirmish loop went missing about half the time, whenever the next fight
+## began inside the last fade).
 func _music_to(name: String) -> void:
 	var full := "" if name.is_empty() else "music_" + name
 	if full == _playing:
 		return
 	_playing = full
+	if _fade != null and _fade.is_valid():
+		_fade.kill()
 	var out := _music[_music_live]
 	_music_live = 1 - _music_live
 	var into := _music[_music_live]
-	var tw := create_tween().set_parallel(true)
+	_fade = create_tween().set_parallel(true)
 	if out.playing:
-		tw.tween_property(out, "volume_db", SILENT_DB, CROSSFADE).set_trans(Tween.TRANS_SINE)
-		tw.chain().tween_callback(out.stop)
+		_pos[_loop_of[1 - _music_live]] = out.get_playback_position()
+		_fade.tween_property(out, "volume_db", SILENT_DB, FADE_OUT).set_trans(Tween.TRANS_SINE)
+		_fade.tween_callback(out.stop).set_delay(FADE_OUT)
 	var s := _stream(full) if not full.is_empty() else null
 	if s == null:
 		into.stop()
 		return
 	into.stream = s
 	into.volume_db = SILENT_DB
-	into.play()
-	tw.tween_property(into, "volume_db", 0.0, CROSSFADE).set_trans(Tween.TRANS_SINE)
+	_loop_of[_music_live] = full
+	into.play(fmod(float(_pos.get(full, 0.0)), maxf(s.get_length(), 0.001)))
+	_fade.tween_property(into, "volume_db", 0.0, FADE_IN).set_trans(Tween.TRANS_SINE).set_delay(FADE_IN_DELAY)
 
 
 func _duck(on: bool) -> void:
 	if _ducked == on:
 		return
 	_ducked = on
-	_apply(0.35)
+	if _duck_tween != null and _duck_tween.is_valid():
+		_duck_tween.kill()
+	_duck_tween = create_tween()
+	_duck_tween.tween_method(_set_duck, _duck_db, DUCK_DB if on else 0.0, 0.35)
+
+
+## A fast drop and a slow climb back, on top of whatever the duck is doing.
+func _dip(depth: float, recover: float) -> void:
+	if _dip_tween != null and _dip_tween.is_valid():
+		_dip_tween.kill()
+	var low := minf(_dip_db, depth)
+	_dip_tween = create_tween()
+	_dip_tween.tween_method(_set_dip, _dip_db, low, 0.03)
+	_dip_tween.tween_method(_set_dip, low, 0.0, recover).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+
+
+func _set_duck(v: float) -> void:
+	_duck_db = v
+	_set_music_bus()
+
+
+func _set_dip(v: float) -> void:
+	_dip_db = v
+	_set_music_bus()
 
 
 ## Settings onto the buses: a knob at 0 is silence, not merely quiet.
-func _apply(over: float = 0.0) -> void:
-	var music_db := _db(float(Settings.display.get("music", 0.8))) + (DUCK_DB if _ducked else 0.0)
-	var fx_db := _db(float(Settings.display.get("effects", 1.0)))
-	var mi := AudioServer.get_bus_index("Music")
-	var ei := AudioServer.get_bus_index("Effects")
-	if over <= 0.0:
-		AudioServer.set_bus_volume_db(mi, music_db)
-	else:
-		var tw := create_tween()
-		tw.tween_method(func(v: float) -> void: AudioServer.set_bus_volume_db(mi, v), AudioServer.get_bus_volume_db(mi), music_db, over)
-	AudioServer.set_bus_volume_db(ei, fx_db)
+func _apply() -> void:
+	_set_music_bus()
+	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Effects"), _db(float(Settings.display.get("effects", 1.0))))
+
+
+## The music bus is the knob, the duck and the dip together; each moves its own number and
+## calls this, so none of them fights another's tween.
+func _set_music_bus() -> void:
+	var knob := _db(float(Settings.display.get("music", 0.8)))
+	var v := SILENT_DB if knob <= SILENT_DB else knob + _duck_db + _dip_db
+	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Music"), v)
 
 
 static func _db(v: float) -> float:

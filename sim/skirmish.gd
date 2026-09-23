@@ -70,6 +70,9 @@ var last_roll: Dictionary = {}
 ## Every blow of the last enemy turn, in order, for the screen to replay:
 ## {foe, mech (index), absorbed, through, blocked, broke_shield, injured, shield, hull}.
 var turn_events: Array = []
+## Every mech that burnt at the end of the last enemy turn, for the screen to land after
+## the blows: {mech (index), over, hull}.
+var overheats: Array = []
 
 
 func _init(seed_value: int = 0, columns_arg: int = DEFAULT_COLUMNS) -> void:
@@ -401,6 +404,7 @@ func end_round() -> int:
 ## out. Shared by the end of a round and by a withdrawal.
 func _enemy_turn() -> void:
 	turn_events.clear()
+	overheats.clear()
 	# Foes act in the order they stand: front rank left to right, then the back rank. Each
 	# foe's statuses tick at the start of its action (burning may kill it first), a
 	# suppressed foe skips, and a foe with two strikes lands two separate blows, so a shield
@@ -570,6 +574,7 @@ func _settle_heat() -> void:
 			continue
 		ms.unit.hull -= over
 		ms.heat = ms.heat_max
+		overheats.append({"mech": mechs.find(ms), "over": over, "hull": ms.unit.hull})
 		log.append("%s overheats: hull -%d" % [ms.unit.display_name, over])
 
 

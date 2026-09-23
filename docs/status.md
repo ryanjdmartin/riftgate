@@ -5,10 +5,13 @@ thing works lives in its file's comments; why it is that way lives in the bible.
 
 ## As of 23 September 2026 (midday)
 
-**State.** Everything committed. Tests: 187 tests, 2452 checks, green (`perl -e 'alarm
-240; exec @ARGV' godot --headless --path . -s tests/run_tests.gd`). Ryan sometimes runs a
-second session on this repo at the same time: check `git status` before committing and
-stage by path. Chassis ids: `badger`, `clydesdale`, `sparrowhawk`, `anvil`. Ryan writes
+**State.** Tests: 187 tests, 2453 checks, green (`perl -e 'alarm 240; exec @ARGV' godot
+--headless --path . -s tests/run_tests.gd`). Ryan runs a second session on this repo at
+the same time (today: the HUD session and the audio session): check `git status` before
+committing and stage by path. The audio session's hunks in `game/ui/hud_button.gd` (the
+`sound` property), `game/battle/battle_screen.gd` and `game/skirmish/skirmish_screen.gd`
+(buttons with their own sound, the overheat landing) sit in the working tree beside the HUD
+session's edits and go in with them. Chassis ids: `badger`, `clydesdale`, `sparrowhawk`, `anvil`. Ryan writes
 `content/*.json` in his own voice; tests never hardcode an entry's passive name.
 
 **Where things are.** `sim/` is the headless game (battle map, battlefield resolver,
@@ -31,8 +34,8 @@ republish the file to that URL after a bible change).
 **What the game does today.** A battle: the map shows every squad's intent and the exact
 result of the plan before Resolve; Resolve plays the moves with footfalls, then a CONTACT
 band with its horn, then a panel of the contacts; ENGAGE dives the map and cuts to the
-skirmish, the dice fight on the enemy's ground, every blow, shield and kill heard. Back
-applies it and the next round plans. The gate has an integrity bar, the rift a spawn bar;
+skirmish, the dice fight on the enemy's ground, every blow, shield, kill and overheat heard,
+the music dipping under the big ones. Back applies it and the next round plans. The gate has an integrity bar, the rift a spawn bar;
 the codex opens by double-tap on either screen; MENU pauses, ducks the music, holds the
 settings (music, effects and enemy pace among them) and quits to the harness after asking.
 The enemy's turn replays blow by blow with the gauges stepping down, before the next dice
@@ -88,29 +91,31 @@ phone runs Compatibility); pinch (the map only hears the magnify gesture, which 
 never sends: handle two fingers directly). Not to chase on the web: missing hex outlines
 and general frame rate, which want a native build. Then the true Android export.
 
-**Audio, for whoever picks it up (a separate session is expected).** Nobody has heard the
-set yet. Every sound is a Python function in `tools/soundforge/forge.py`, one per name,
-built from a few primitives at the top of the file (`thud`, `ring`, `burst`, `sweep`,
-filters, `sat`, `at` to place a part in time, `wrap` for loops); the two loops are
-`groove()` with drum patterns as strings, a bass riff in semitones above E2, a drone.
-Rebuild one or all with `tools/spriter/.venv/bin/python tools/soundforge/forge.py build
-[names]`, then `godot --headless --path . --import`. The names and where each is heard:
-`game/audio/sound.gd` lists them (`NAMES`) and `grep -rn 'Sound\.' game` finds every hook
-with its level in dB and its delay after the animation. Levels to check first on a phone
-speaker: `step` (-9 dB a hex, may still be too much), `hit` under the enemy turn (-4),
-`ui_tap` on every button (-2, and it doubles with the specific sound on Resolve and
-End Turn), `contact` twice. Not hooked: the scan bar, overheating burns (they surface only
-in the log), the display's idle. The direction is bible section 1 (sound row, 22
-September). If a loop's bpm changes in `groove()`, change `Sound.TEMPO` to match: the
-rift's vortex steps on `Sound.beat()`, computed from it. The loops must stay sample-exact for seamless play: `groove` sizes the buffer
-from bpm and bars and wraps tails.
+**Audio (23 September, second cut; bible section 1, sound row).** Ryan's notes on the first
+cut: the skirmish loop went missing about half the time (the last crossfade's chained stop
+landed on the player the new loop had taken: fixed, verified in a window at every gap);
+the loops needed length and complexity, more under and overtones, and read as chip-tune;
+the pings were cowbell and anvil where mechanical was wanted. Done: 48 kHz; every thud has
+a body pinned to 230 Hz so a phone hears the weight; knocks that die in tens of ms, servos,
+hydraulics, relays; stacks and a small room on everything; a loudness target per sound in
+`LEVELS` (the mix lives in the forge; hooks carry offsets only for relative moments); the
+music dips under big moments (`Sound.DIP`); pitched sounds keep their pitch (`Sound.TONAL`);
+a loop resumes where it left; 16-bar forms in sections; buttons with their own sound no
+longer double the tap; overheats land after the enemy's blows with their own sound.
+Measured, not heard: `forge.py measure` prints each file's loudness and low share, and the
+phone band (300 to 4000 Hz) of every blow sits 6 to 10 dB under its full loudness, the
+music 6 dB, so the balance holds on a speaker. Next: Ryan listens on the phone; the numbers
+in `LEVELS`, `DIP` and the groove gains are the first knobs. If a loop's bpm changes in
+`groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
+loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
+wraps every tail, the room's included. The display's scan and idle stay silent by decision.
 
 **Open, in the order I would take them.**
 
 1. Ryan: plug the phone in with USB debugging on and run `tools/android.sh`; judge the
    frame rate, the hex outlines, the sound set and the layout at the phone's height.
    Badger tweaks in Blender, then joints and pins (`forge.py export badger`); notes on
-   the Clydesdale; the Anvil. Another session: audio tweaking, from the paragraph above.
+   the Clydesdale; the Anvil.
 2. Ryan's content: names for overheating and scorch; strikes, breach, scorch, disable and
    rapid placed on foes and components; Ablative Plating as armour or shield; the Badger's
    loadout and claw numbers; Aphelion and the Arsenal; CARE's voice, including the gate's
@@ -127,8 +132,7 @@ from bpm and bars and wraps tails.
    stat modifiers; granted passives coloured on the codex; Ryan's cooling numbers.
 6. Art: enemy art for the eight foes still on sketch grids; the hangar as a model;
    Aphelion and Arsenal chassis once written; per-mech repaint (`Unit.paint` exists,
-   nothing sets it). Sound: the display's scan has no sound; overheating burns are silent
-   (they surface only in the log).
+   nothing sets it). Sound: the real recordings and the real track, once the set is judged.
 7. Before a phone leaves the desk: save and resume mid-battle (nothing serialised);
    onboarding (gesture tutorial, cheat sheet: reroll rule and zone of control first); the
    Android export checked on a device (templates are installed; the SDK and a debug

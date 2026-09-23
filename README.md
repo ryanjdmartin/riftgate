@@ -72,7 +72,9 @@ godot --headless --path . -s tools/export_vocabulary.gd
 
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument
 # poses the screen first. Skirmish: codex, mechcodex, hold, confirm, lock, strike,
-# enemyturn, withdraw, rounds, logfull, killed, acquire, menu, settings, quit. Battle: select, route, hold, north, zoom, zoomlast,
+# enemyturn, withdraw, rounds, logfull, killed, acquire, menu, settings, quit, and the feed's
+# events feed_scanbox, feed_databox, feed_readout, feed_recalc, feed_tear, feed_signal.
+# Battle: select, route, hold, north, zoom, zoomlast,
 # flyer, predict, resolve, contact, engage, codex, foecodex, menu, settings, tune.
 # RIFTGATE_SHOT_FRAME=<n> picks the capture frame, to catch an animation mid-flight.
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmish/skirmish_screen.tscn shot.png codex
@@ -99,6 +101,7 @@ tools/spriter/.venv/bin/python tools/lowforge/forge.py build gate wall
 
 # every sound and the two music loops, from the recipes in tools/soundforge/forge.py, then re-import
 tools/spriter/.venv/bin/python tools/soundforge/forge.py build          # or: build hit kill music_map
+tools/spriter/.venv/bin/python tools/soundforge/forge.py measure        # each file's loudness, peak and share under 150 Hz
 godot --headless --path . --import
 
 # the game on a phone, without an Android export: a Web build served over the LAN (https,
