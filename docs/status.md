@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible.
 
-## As of 23 September 2026 (midday)
+## As of 23 September 2026 (evening)
 
 **State.** Tests: 187 tests, 2458 checks, green (`perl -e 'alarm 240; exec @ARGV' godot
 --headless --path . -s tests/run_tests.gd`). Ryan runs a second session on this repo at
@@ -58,8 +58,16 @@ vortex in eight true frames (the candidate plus seven image-to-image redraws tha
 the tendrils, aligned by correlation, ordered for the smoothest cycle; a dithered tween
 was tried and read as blur), one turn a bar of the music, torn in bands like the ground
 round it (bible section 5 row, 23 September; every candidate and frame is in
-`tools/foeforge/out/rift`). The map's tear: one row in 200 a tick, 0.4 s, sheared six
-map pixels; Ryan is still tuning the rate by eye.
+`tools/foeforge/out/rift`), a frame every 0.7 s on its own clock (`RIFT_ON_BEAT` locks
+it to the music instead, off). The map's tear, tuned by Ryan's eye through the
+afternoon and settled: rows of 32 map pixels, a torn row's tear 6 to 10 tall and 120 to
+260 wide at a random place, 1.2% of rows a tick, under 0.3 s, a shear jittering up to
+12 px either way, a 12% dim, no hairlines, painted pixels only (so a lone enemy tile
+between 3D tiles tears alone); the vortex's own bands tear at most two at once, a fifth
+of a second, up to 6 of its pixels either way, never in the tendrils over the hexes; the
+rift's ground tear is centred on the vortex's mouth. All the knobs are at the top of the
+tear block in `bleed.gdshader` and in `_draw_rift`. The frame's ticks stand level with
+the hex beside them; the readouts sit on faint plaques.
 
 **Ryan's skirmish notes, 23 September (done).** Four columns locked in. The menu has QUIT
 (asks first; `quit_requested` runs harness-ward through the battle screen) and a colour
@@ -187,8 +195,15 @@ wraps every tail, the room's included. The display's scan and idle stay silent b
    nothing sets it). Sound: the real recordings and the real track, once the set is judged.
 7. Before a phone leaves the desk: save and resume mid-battle (nothing serialised);
    onboarding (gesture tutorial, cheat sheet: reroll rule and zone of control first); the
-   Android export checked on a device (templates are installed; the SDK and a debug
-   keystore are not); then play and tune numbers, map size, squad speeds, Rift Pressure.
+   Android export checked on a device (everything it needs is on this Mac; bible section
+   11 and the README say how); then play and tune numbers, map size, squad speeds, Rift
+   Pressure.
+
+**Two sessions on the bible.** Both sessions edited and published `docs/design-bible.html`
+on 23 September; publishing from one collides with the other's uncommitted working copy.
+Whoever publishes should commit first and publish from the committed file, and the file
+in the repo is the superset either way. The published copy is a row or two behind the
+repo at the end of the day (the phone row in section 11, the frame and rift rows in 5).
 
 **Known rough edges.** Routes are tap-to-destination only. The bible's formation figure
 still draws three columns (the text says four). On the phone's browser the
