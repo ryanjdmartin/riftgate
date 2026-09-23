@@ -130,19 +130,20 @@ void fragment() {
 	float rad = max(blur_radius(px), edge * edge_blur);
 	vec4 scene = blurred_scene(TEXTURE, UV, 1.0 / view_size, rad);
 	// The corrupted side is input the display cannot hold: rarely, a band of it tears.
-	// Around the rift (the first source, always) the input is worst: bands tear far more
-	// often there, and a torn band shears sideways as well as dimming (Ryan, 23 September).
+	// Around the rift (the first source, always) the input is worst: bands tear more often
+	// there, and a torn band shears sideways as well as dimming (Ryan, 23 September; the
+	// first cut tore a band in ten each tick and was far too much).
 	float band = floor(px.y / 6.0);
 	float tick = floor(TIME * 6.0);
 	float near = source_count > 0 ? 1.0 - smoothstep(sources[0].z * 0.9, sources[0].z * 2.2, distance(px, sources[0].xy)) : 0.0;
-	float flick = step(mix(0.997, 0.90, near), fract(sin(band * 12.9898 + tick * 7.31) * 43758.5453)) * flicker;
-	float shear = flick * near * (mod(band, 2.0) * 2.0 - 1.0) * 5.0;
+	float flick = step(mix(0.997, 0.982, near), fract(sin(band * 12.9898 + tick * 7.31) * 43758.5453)) * flicker;
+	float shear = flick * near * (mod(band, 2.0) * 2.0 - 1.0) * 3.0;
 	vec2 opx = px + vec2(shear, 0.0);
 	// The other world runs at two frames, the old way.
 	bool second = mod(floor(TIME * anim_rate), 2.0) > 0.5;
 	vec4 other = second ? blurred_other2(opx / map_size, 1.0 / (map_size * zoom), rad) : blurred_other(opx / map_size, 1.0 / (map_size * zoom), rad);
 	other.rgb = floor(other.rgb * levels + 0.5) / levels;
-	other.rgb *= 1.0 - (0.12 + 0.18 * near) * flick;
+	other.rgb *= 1.0 - (0.12 + 0.08 * near) * flick;
 	// Where a machine is, the reconstruction wins whatever the bleed says: the machines
 	// are its own and never go under the painting (Ryan, 22 September). The units layer
 	// is a mask only; the pixel comes from the scene, so the wall and the crags still
