@@ -107,7 +107,8 @@ var _recalc_for := 0.7           # how long the recomputation shows
 
 
 ## The display recomputes this face for a moment (Ryan, 23 September: the feed being read):
-## the number scrambles and settles, the frame flashes once. Nothing about the face changes.
+## static runs across it and the frame flashes once. Nothing about the face changes and
+## the number never does.
 func recalc(seconds: float = 0.7) -> void:
 	_recalc = 0.0
 	_recalc_for = seconds
@@ -165,10 +166,18 @@ func _draw() -> void:
 	var num := face.number_text()
 	var num_size := 28 if face.is_ranged() else 38
 	if _recalc >= 0.0:
+		# Static across the face while the display recomputes it: the number stays what it
+		# is and stays readable (Ryan, 23 September: a digit scramble here was wrong), its
+		# ink dipping a little under the noise, the frame flashing once.
 		var rt := _recalc / _recalc_for
-		if rt < 0.65:
-			num = Hud.scramble(num, int(Time.get_ticks_msec() / 45), get_instance_id() % 97)
-		Hud.stroke_poly(self, Hud.cut(rect.grow(-3.0), CUT), Color(Palette.INK, 0.6 * (1.0 - rt)), 1.0)
+		var tick := int(_recalc * 20.0)
+		ink.a *= 0.7 + 0.3 * Hud.noise(tick * 0.7 + 0.3)
+		Hud.stroke_poly(self, Hud.cut(rect.grow(-3.0), CUT), Color(Palette.INK, 0.5 * (1.0 - rt)), 1.0)
+		for j in range(12):
+			var yy := rect.position.y + 6.0 + Hud.noise(tick * 0.9 + j * 0.61) * (FACE - 12.0)
+			var x0 := rect.position.x + 6.0 + Hud.noise(tick * 1.7 + j * 0.23) * (FACE - 12.0) * 0.6
+			var w := (FACE - 12.0) * (0.15 + 0.35 * Hud.noise(tick * 0.4 + j * 0.83))
+			draw_rect(Rect2(x0, yy, w, 1.0), Color(hud, (0.18 + 0.3 * Hud.noise(tick + j * 0.5)) * alpha))
 	draw_string(mono, Vector2(0, 92.0 + bob), num, HORIZONTAL_ALIGNMENT_CENTER, FACE, num_size, ink)
 	if face.strikes > 1:
 		# Blows per use, small, to the right of the number: "10 ×3" reads as a burst.

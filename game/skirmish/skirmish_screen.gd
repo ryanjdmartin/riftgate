@@ -676,7 +676,7 @@ func _refresh() -> void:
 		var mv: UnitView = _massive_views[col]
 		mv.visible = massive
 		if massive:
-			_fill_foe_view(mv, front_foe, targets)
+			_fill_foe_view(mv, front_foe, targets, col)
 			_view_foe[mv] = front_foe
 		for rank in range(2):
 			var v: UnitView = _slot_views[rank][col]
@@ -698,7 +698,7 @@ func _refresh() -> void:
 				v.queue_redraw()
 				continue
 			v.modulate = Color.WHITE
-			_fill_foe_view(v, foe, targets)
+			_fill_foe_view(v, foe, targets, rank * sk.columns + col)
 			_view_foe[v] = foe
 
 	for i in range(sk.mechs.size()):
@@ -822,13 +822,15 @@ func _log_scroller() -> ScrollContainer:
 	return sc
 
 
-func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe]) -> void:
+func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -> void:
 	v.display_name = foe.display_name
 	v.sprite = Sprites.combat_foe(foe.content_id)
 	# Enemies face left, the convention; a sprite painted facing right says so in content.
 	v.flip_h = bool(ContentDB.load_default().foes.get(foe.content_id, {}).get("flip", false))
 	v.breathe = true
-	v.breathe_phase = float(foe.get_instance_id() % 97)
+	# Breathing spread by slot at the golden angle, so no two neighbours are near in phase
+	# (Ryan, 23 September: the instance-id phases read as in step).
+	v.breathe_phase = slot * 2.39996 + 0.7
 	v.bars = [[foe.hp, foe.hp_max, Palette.HUD]]
 	v.dead = not foe.alive()
 	v.highlight = targets.has(foe)

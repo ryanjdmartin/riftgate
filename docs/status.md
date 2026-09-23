@@ -83,9 +83,10 @@ runs one rare one-shot event every 4 to 9 s on a random unit or die (scanbox, da
 readout, recalc, tear, signal; poses `feed_<name>` and `groundtear` in the screenshot
 tool). The corrupted side's tear is `game/ui/tear_layer.gd` + `tear.gdshader`, a
 screen-reading layer over the foes' band (sprites included; under them it was lost): one
-or two slices every eight seconds at most, over part of the width, dimming or shearing
-(the map's rift shear), hidden between tears, off with the glitch setting like the unit
-tears. Cut after Ryan saw it: the scan band
+or two slices every eight seconds at most, over part of the width, sheared as the map's
+rift ground is (the dimming flavour was cut), hidden between tears, off with the glitch
+setting like the unit tears. The machine readout is a live bar chart, the die recalc is
+static over a held number, and the foes' breathing is spread by slot. Cut after Ryan saw it: the scan band
 lighting gauges, chips, buttons and rules (blinked rather than swept). Ryan's second pass:
 the events wanted drawing out (now one to two seconds for the boxes, half a second or
 more for the rest; he first wrote "too slow" and meant too fast) and the tears were too
@@ -130,9 +131,15 @@ chords, voices, pad)`) with new instruments: FM `epiano`, `bell`, `brass`; Karpl
 `pluck`, `pluck_bass`, `chug`; formant `choir`; `organ`, `strings`, `orch_hit`. Three
 eight-bar sketches on one riff (`forge.py sketch`, into `tools/soundforge/out/`, ignored
 by git): human (FM keys, bells, plucked bass), rift (choir, strings, taiko, orchestral
-hits, the crunch bass), djent (a seven-step chug the kick locks to, bells, choir). Next:
-Ryan listens to the three and picks; the loops are rebuilt in that palette with the
-skirmish given the map's counterpoint and chord motion. Not yet heard: every effect. If a loop's bpm changes in
+hits, the crunch bass), djent (a seven-step chug the kick locks to, bells, choir). Ryan
+picked: djent for the fight (harder drums, choir up a touch, a bass guitar for the
+synth crunch, unison riff sections and drawn-out ones), the rift palette for the map
+(creepier, more electronic and glitchy, the echo kept); human was plain beside them. Both
+loops are rebuilt that way (bible section 1, sound row, has every note); the map's kit is
+taiko, big snare, crushed clicks, choir on "oo" with a pump, stuttering bells, a
+backwards swell into each section; the skirmish's is `kick_metal`, `snare_metal`, crash,
+toms, a seven-step chug, `bass_guitar`, a `lead` in the unison section (U), open chords in
+the drawn-out one (D). Not yet heard: these two loops as built, and every effect. If a loop's bpm changes in
 `groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
 loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
 wraps every tail, the room's included. The display's scan and idle stay silent by decision.
