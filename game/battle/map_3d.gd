@@ -21,10 +21,11 @@ const HEX_WORLD := 35.0        # a hex's circumradius in model units: a mech is 
 const CAMERA_DISTANCE := 900.0
 const MARKER_FIT := 1.05       # a mech's widest extent, in hex widths, on the map
 const FIT_FLYER := 0.8         # a flyer is a small craft beside a mech (Ryan, 21 September)
-## Whether the ground under the bleed collapses to flat (the first cut) or keeps its true
-## height while the other world's painting sits over it at ground level, half up and half
-## down (Ryan, 22 September, to see). The enemy's marks sit at the base either way.
-const COLLAPSE := false
+## The ground keeps its true height under the bleed; the other world's painting sits over
+## it at ground level, half up and half down (Ryan, 22 September: flawless). The enemy's
+## marks sit at the base. So nothing on the ground moves once built, and all of it is
+## baked into a few meshes (see `_bake`).
+const BAND_ROWS := 4           # rows of hexes per baked mesh, so the far end still culls under zoom
 const UNITS_LAYER := 2         # the machines render again into their own layer, drawn over both worlds
 const HOVER := 30.0            # a flyer rides this far above the ground, in model units: clear of a mech
 const SHADOW_RADIUS := 0.38    # a flyer's ground shadow, in hex widths: it says which tile it is on
@@ -70,8 +71,7 @@ var _pivots: Dictionary = {}    # unit id -> the pivot that turns to the facing;
 var _shadows: Dictionary = {}   # unit id -> the ground disc under a flyer
 var _base: Dictionary = {}      # unit id -> resting position, which the idle sway plays around
 var _phase: Dictionary = {}     # unit id -> idle phase, so the team does not sway in step
-var _columns: Dictionary = {}   # hex -> Node3D: the column and its props, collapsed by the bleed
-var _structs: Array = []        # [[hex, Node3D], ...] the gate and walls, collapsed the same way
+var _columns: Dictionary = {}   # hex -> Node3D at the hex's ground: the marks, and a road's column, hang off it
 var _lift: Dictionary = {}      # hex -> how far above its grid cell the top sits on screen, in px
 var _top: Dictionary = {}       # hex -> the tallest thing standing on it, in model units above the ground
 var _materials: Dictionary = {} # tile name -> ShaderMaterial
@@ -278,16 +278,128 @@ func _road_material() -> ShaderMaterial:
 	return _road_mat
 
 
-## A prop with the display's trace on it.
-func _prop(col: Node3D, mesh: Mesh, material: Material, pos: Vector3, rot: Vector3 = Vector3.ZERO) -> MeshInstance3D:
-	var mi := MeshInstance3D.new()
-	mi.mesh = mesh
-	mi.material_override = material
-	mi.position = pos
-	mi.rotation = rot
-	col.add_child(mi)
-	_trace(mi)
-	return mi
+## A prop with the display's trace on it, baked into its column's band (`pos` and `rot`
+## are in the column's space, as if it were a child).
+func _prop(col: Node3D, mesh: Mesh, material: Material, pos: Vector3, rot: Vector3 = Vector3.ZERO) -> void:
+	var xf := Transform3D(Basis.from_euler(rot), col.position + pos)
+	var band: int = col.get_meta("band", 0)
+	for sfc in range(mesh.get_surface_count()):
+		_bake(mesh, sfc, xf, material, band, true)
+	var edges := TraceLines.edge_mesh(mesh)
+	if edges != null:
+		_bake(edges, 0, xf, _trace_material("prop"), band, false, "prop")
+
+
+# ---------------------------------------------------------------- baking
+
+## Every static thing on the ground (rims, columns, grid lines, props, their traces) is
+## welded with its world transform into one mesh per material per band of rows, instead
+## of an instance each: the field was about 5,400 draw calls with every prop and trace
+## its own object, and a phone pays per draw call more than per vertex. Bands keep the
+## far end of the map culled under zoom. A road column stays its own instance for its
+## per-instance shader parameters; the marks and the units are live and stay nodes.
+class Batch:
+	var material: Material
+	var lines: bool
+	var shadow: bool
+	var layers: int
+	var kind: String            # "" for geometry, else a trace kind (set_trace_mode)
+	var verts := PackedVector3Array()
+	var normals := PackedVector3Array()
+	var uvs := PackedVector2Array()
+	var indices := PackedInt32Array()
+
+var _batches: Dictionary = {}   # key -> Batch, until _flush_batches
+
+
+func _band(h: Vector2i) -> int:
+	return floori(float(h.y) / BAND_ROWS)
+
+
+## `key_of` names the batch when the material to draw with is not the one to group by: a
+## model's surfaces each wear their own copy of a toon'd material, but the copies of one
+## source are alike, so they group by the source and draw with the first copy seen.
+func _bake(mesh: Mesh, surface: int, xf: Transform3D, material: Material, band: int, shadow: bool, kind: String = "", layers: int = 1, key_of: Object = null) -> void:
+	var arrays := mesh.surface_get_arrays(surface)
+	if arrays.is_empty():
+		return
+	# A PrimitiveMesh is always triangles; only an ArrayMesh can be lines.
+	var lines: bool = mesh is ArrayMesh and (mesh as ArrayMesh).surface_get_primitive_type(surface) == Mesh.PRIMITIVE_LINES
+	var group := key_of if key_of != null else material
+	var key := "%d/%d/%s/%d" % [group.get_instance_id(), band, kind, layers]
+	var b: Batch = _batches.get(key, null)
+	if b == null:
+		b = Batch.new()
+		b.material = material
+		b.lines = lines
+		b.shadow = shadow
+		b.kind = kind
+		b.layers = layers
+		_batches[key] = b
+	var base := b.verts.size()
+	var src_v: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+	for v in src_v:
+		b.verts.append(xf * v)
+	if not lines:
+		var src_n = arrays[Mesh.ARRAY_NORMAL]
+		var src_uv = arrays[Mesh.ARRAY_TEX_UV]
+		for i in range(src_v.size()):
+			b.normals.append((xf.basis * src_n[i]).normalized() if src_n != null else Vector3.UP)
+			b.uvs.append(src_uv[i] if src_uv != null else Vector2.ZERO)
+	var src_i = arrays[Mesh.ARRAY_INDEX]
+	if src_i != null and src_i.size() > 0:
+		for i in src_i:
+			b.indices.append(base + i)
+	else:
+		for i in range(src_v.size()):
+			b.indices.append(base + i)
+
+
+func _flush_batches() -> void:
+	for b in _batches.values():
+		var arrays: Array = []
+		arrays.resize(Mesh.ARRAY_MAX)
+		arrays[Mesh.ARRAY_VERTEX] = b.verts
+		arrays[Mesh.ARRAY_INDEX] = b.indices
+		if not b.lines:
+			arrays[Mesh.ARRAY_NORMAL] = b.normals
+			arrays[Mesh.ARRAY_TEX_UV] = b.uvs
+		var mesh := ArrayMesh.new()
+		mesh.add_surface_from_arrays(Mesh.PRIMITIVE_LINES if b.lines else Mesh.PRIMITIVE_TRIANGLES, arrays)
+		var mi := MeshInstance3D.new()
+		mi.mesh = mesh
+		mi.material_override = b.material
+		mi.layers = b.layers
+		if not b.shadow:
+			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		if not b.kind.is_empty():
+			mi.set_meta("is_trace", true)
+			mi.set_meta("kind", b.kind)
+			mi.visible = _trace_mode != "off"
+			_trace_nodes.append(mi)
+		add_child(mi)
+	_batches.clear()
+
+
+## A static model (the gate, a wall segment) baked the same way, its creases into the
+## asset traces; the node itself never joins the tree. Grouped by the source material of
+## each surface (see `_bake`), so a dozen wall segments draw as a few meshes.
+func _bake_model(node: Node3D, band: int) -> void:
+	for child in node.find_children("*", "MeshInstance3D", true, false):
+		var mi: MeshInstance3D = child
+		if mi.mesh == null or mi.has_meta("is_trace") or not mi.visible:
+			continue
+		var xf := node.transform * _relative(mi, node)
+		for sfc in range(mi.mesh.get_surface_count()):
+			var mat := mi.get_active_material(sfc)
+			if mat == null:
+				continue
+			var src := mi.mesh.surface_get_material(sfc)
+			_bake(mi.mesh, sfc, xf, mat, band, true, "", mi.layers, src if src != null else mat)
+		var edges := TraceLines.edge_mesh(mi.mesh)
+		if edges != null:
+			_bake(edges, 0, xf, _trace_material("asset"), band, false, "asset")
+	node.free()
 
 
 ## The display traces a thing's edges in light (TraceLines), lit by the scan bar as it
@@ -594,40 +706,37 @@ func _build_ground() -> void:
 				if (map.has(nb) or map.margin.has(nb)) and Hex.to_pixel(nb, hex_px).distance_to(across) < hex_px * 0.5:
 					other = _height_of(nb)
 			sides.append(absf(other - hgt) > 0.01)
-		var r := MeshInstance3D.new()
-		r.mesh = rim
-		r.material_override = rim_mat
-		r.position = at + Vector3(0, minf(0.0, hgt) - 0.2, 0)
-		add_child(r)
-		# The column and everything on it hang off one node at ground level, so the bleed
-		# can collapse the lot by scaling its height: the hex sinks into the painting.
+		var band := _band(h)
+		_bake(rim, 0, Transform3D(Basis.IDENTITY, at + Vector3(0, minf(0.0, hgt) - 0.2, 0)), rim_mat, band, false)
+		# One node at ground level per hex: the marks hang off it, and a road's column.
 		var col := Node3D.new()
 		col.position = at
+		col.set_meta("band", band)
 		add_child(col)
 		_columns[h] = col
 		# A crag keeps the ground it stands on (crag-water, crag-ruin, crag-field: the
 		# flavour of the tile shows through under the rock).
 		var ground_t: int = map.crag_base.get(h, t) if t == BattleMap.Terrain.MOUNTAIN else t
-		var mi := MeshInstance3D.new()
-		mi.mesh = _column_mesh(hgt, sides)
+		var column := _column_mesh(hgt, sides)
+		var at_xf := Transform3D(Basis.IDENTITY, at)
 		if ground_t == BattleMap.Terrain.ROAD:
+			var mi := MeshInstance3D.new()
+			mi.mesh = column
 			mi.set_surface_override_material(0, _road_material())
 			mi.set_instance_shader_parameter("links", _road_links(h))
 			mi.set_instance_shader_parameter("seed", float(h.x * 131 + h.y * 7919))
+			if column.get_surface_count() > 1:
+				mi.set_surface_override_material(1, rock)
+			col.add_child(mi)
 		else:
-			mi.set_surface_override_material(0, _terrain_material(TILE[ground_t], 1.0 if ground_t == BattleMap.Terrain.WATER else 0.0))
-		if mi.mesh.get_surface_count() > 1:
-			mi.set_surface_override_material(1, rock)
-		col.add_child(mi)
+			_bake(column, 0, at_xf, _terrain_material(TILE[ground_t], 1.0 if ground_t == BattleMap.Terrain.WATER else 0.0), band, true)
+			if column.get_surface_count() > 1:
+				_bake(column, 1, at_xf, rock, band, true)
 		if in_field and not (map.gate_hexes.has(h) or map.wall_hexes.has(h)):
 			# The grid is the display's own light, drawn on the ground in the scene so a
-			# raised hex hides the lines behind it and the bleed takes them with the column;
-			# the wall and the machines hide it the same way, by standing on it.
-			var grid := MeshInstance3D.new()
-			grid.mesh = _grid_mesh(hgt + 0.35)
-			grid.material_override = _grid_material()
-			grid.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-			col.add_child(grid)
+			# raised hex hides the lines behind it; the wall and the machines hide it the
+			# same way, by standing on it.
+			_bake(_grid_mesh(hgt + 0.35), 0, at_xf, _grid_material(), band, false)
 		rng.seed = h.x * 131 + h.y * 7919
 		if map.city.has(h):
 			_city_block(col, hgt, rng)
@@ -658,6 +767,7 @@ func _build_ground() -> void:
 					boulder.radial_segments = 6
 					boulder.rings = 3
 					_prop(col, boulder, rock, Vector3(rng.randf_range(-16, 16), hgt + boulder.radius * 0.6, rng.randf_range(-12, 12)), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
+	_flush_batches()
 
 
 ## The blocking crag on a tile, in the ground's own idiom: rock spikes on dirt and water,
@@ -683,18 +793,9 @@ func _crag(col: Node3D, ground_t: int, hgt: float, rng: RandomNumberGenerator) -
 				if k == 0:
 					var win := BoxMesh.new()
 					win.size = Vector3(w * 0.7, 2.0, 0.6)
-					var wm := StandardMaterial3D.new()
-					wm.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-					wm.albedo_color = Color(0.9, 0.7, 0.35)
-					wm.emission_enabled = true
-					wm.emission = Color(0.9, 0.7, 0.35)
-					wm.emission_energy_multiplier = 1.2
+					var wm := _window_material("dim", Color(0.9, 0.7, 0.35), 1.2)
 					for wz in [tall * 0.35, tall * 0.55]:
-						var wi := MeshInstance3D.new()
-						wi.mesh = win
-						wi.material_override = wm
-						wi.position = Vector3(ox, hgt + wz, oz - w * 0.5 * rng.randf_range(0.8, 1.0))
-						col.add_child(wi)
+						_bake(win, 0, Transform3D(Basis.IDENTITY, col.position + Vector3(ox, hgt + wz, oz - w * 0.5 * rng.randf_range(0.8, 1.0))), wm, col.get_meta("band", 0), false)
 		BattleMap.Terrain.ROUGH:
 			# Mesas: flat-topped blocks stacked and offset, a badland.
 			var rock := _terrain_material("rock")
@@ -735,12 +836,7 @@ func _crag(col: Node3D, ground_t: int, hgt: float, rng: RandomNumberGenerator) -
 ## rows, one or two taller. What the gate protects, seen past the wall.
 func _city_block(col: Node3D, hgt: float, rng: RandomNumberGenerator) -> void:
 	var skin := _terrain_material("rubble")
-	var win := StandardMaterial3D.new()
-	win.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	win.albedo_color = Color(1.0, 0.85, 0.5)
-	win.emission_enabled = true
-	win.emission = Color(1.0, 0.8, 0.45)
-	win.emission_energy_multiplier = 1.3
+	var win := _window_material("lit", Color(1.0, 0.85, 0.5), 1.3)
 	for k in range(rng.randi_range(2, 4)):
 		var w := rng.randf_range(12.0, 20.0)
 		var tall := rng.randf_range(40.0, 80.0) if k == 0 else rng.randf_range(18.0, 44.0)
@@ -755,16 +851,31 @@ func _city_block(col: Node3D, hgt: float, rng: RandomNumberGenerator) -> void:
 				continue
 			var strip := BoxMesh.new()
 			strip.size = Vector3(w * 0.8, 1.6, 0.6)
-			var wm := MeshInstance3D.new()
-			wm.mesh = strip
-			wm.material_override = win
-			wm.position = Vector3(ox, hgt + 5.0 + r * 9.0, oz + b.size.z * 0.5 + 0.2)
-			col.add_child(wm)
+			_bake(strip, 0, Transform3D(Basis.IDENTITY, col.position + Vector3(ox, hgt + 5.0 + r * 9.0, oz + b.size.z * 0.5 + 0.2)), win, col.get_meta("band", 0), false)
+
+
+var _window_mats: Dictionary = {}
+
+## A lit window strip: unshaded and glowing, one material per tone so the strips bake together.
+func _window_material(tone: String, colour: Color, energy: float) -> StandardMaterial3D:
+	if not _window_mats.has(tone):
+		var m := StandardMaterial3D.new()
+		m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		m.albedo_color = colour
+		m.emission_enabled = true
+		m.emission = colour
+		m.emission_energy_multiplier = energy
+		_window_mats[tone] = m
+	return _window_mats[tone]
 
 
 ## A dead tree: a bare trunk, thick at the foot, with a few stub branches, inked.
+var _bark_mat: StandardMaterial3D = null
+
 func _dead_tree(col: Node3D, at: Vector3, rng: RandomNumberGenerator) -> void:
-	var bark := _lit(Color("2e2a26"))
+	if _bark_mat == null:
+		_bark_mat = _lit(Color("2e2a26"))
+	var bark := _bark_mat
 	var tall := rng.randf_range(24.0, 40.0)
 	var trunk := CylinderMesh.new()
 	trunk.top_radius = 1.2
@@ -794,11 +905,9 @@ func _build_structures() -> void:
 	var map := field.map
 	if MechView3D.has_model("gate"):
 		var g := _model("gate", "arsenal", {}, false)
-		_marker(g)   # ink on its creases, so the towers and reveals read as geometry
 		g.position = _hex_world(map.gate)
 		g.rotation.y = PI   # turned about, so its portcullis face is the one the player sees
-		add_child(g)
-		_structs.append([map.gate, g])
+		_bake_model(g, _band(map.gate))   # with ink on its creases, so the towers and reveals read as geometry
 	if MechView3D.has_model("wall"):
 		# The wall runs the whole width of the view, margin included: the field is a window
 		# on a longer line.
@@ -811,11 +920,10 @@ func _build_structures() -> void:
 				bottom.append(mh)
 		for w in bottom:
 			var m := _model("wall", "arsenal", {}, false)
-			_marker(m)
 			m.position = _hex_world(w)
 			m.rotation.y = PI
-			add_child(m)
-			_structs.append([w, m])
+			_bake_model(m, _band(w))
+	_flush_batches()
 
 
 func _build_camera() -> void:
@@ -829,20 +937,14 @@ func _build_camera() -> void:
 	_aim()
 
 
-## Collapse the columns and structures under the bleed (where the other world has reached,
-## height goes), then put every mech where the field says it is, on top of its column and
-## turned to its facing.
+## Put every mech where the field says it is, on top of its column and turned to its
+## facing.
 func sync() -> void:
 	var grad := Bleed.gradient(field, _origin, hex_px)
 	var src := Bleed.sources(field, _origin, hex_px, _anim_px)
 	var map := field.map
 	for h in _columns.keys():
-		var s := Bleed.standing(Bleed.at(_origin + Hex.to_pixel(h, hex_px), grad, src)) if COLLAPSE else 1.0
-		(_columns[h] as Node3D).scale.y = maxf(0.02, s)
-		_lift[h] = _height_of(h) * s * _cos * _ppu
-	if COLLAPSE:
-		for st in _structs:
-			(st[1] as Node3D).scale.y = maxf(0.02, Bleed.standing(Bleed.at(_origin + Hex.to_pixel(st[0], hex_px), grad, src)))
+		_lift[h] = _height_of(h) * _cos * _ppu
 	var seen := {}
 	for u in field.units:
 		seen[u.id] = true
