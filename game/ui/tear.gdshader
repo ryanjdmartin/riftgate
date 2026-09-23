@@ -1,33 +1,28 @@
 shader_type canvas_item;
 
-// The corrupted side's tear, over everything on it: one or two slices of what is already
-// drawn (ground and sprites alike) redrawn displaced and a little dimmed. TearLayer sets
-// the slices in this rect's UV and the shift as a
-// fraction of the screen's width (the layer spans it). Outside a slice the layer is clear.
+// Slices of what is already drawn under this rect (ground, sprites, a die alike) redrawn
+// displaced sideways and a little dimmed: the corrupted side's tear over the foes, and a
+// die's wobble. TearLayer sets the slices in this rect's UV and each shift as a fraction of
+// the screen's width. Outside a slice the layer is clear.
+
+const int MAX_SLICES = 8;
 
 uniform sampler2D screen_tex : hint_screen_texture, filter_nearest, repeat_disable;
 uniform int count = 0;
-uniform vec4 slice0 = vec4(0.0);   // x, y, w, h in this rect's UV
-uniform vec4 slice1 = vec4(0.0);
-uniform float shift0 = 0.0;        // sideways, as a fraction of the screen's width
-uniform float shift1 = 0.0;
-uniform float dim0 = 0.0;
-uniform float dim1 = 0.0;
-uniform float px_y = 0.002;        // one of this rect's pixels, in UV
+uniform vec4 slices[8];    // x, y, w, h in this rect's UV
+uniform float shifts[8];   // sideways, as a fraction of the screen's width
+uniform float dim = 0.12;
 
 void fragment() {
 	vec4 out_col = vec4(0.0);
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < MAX_SLICES; i++) {
 		if (i >= count) {
 			break;
 		}
-		vec4 s = i == 0 ? slice0 : slice1;
-		float sh = i == 0 ? shift0 : shift1;
-		float dm = i == 0 ? dim0 : dim1;
+		vec4 s = slices[i];
 		if (UV.x >= s.x && UV.x < s.x + s.z && UV.y >= s.y && UV.y < s.y + s.w) {
 			// No hairlines on the cut (Ryan, 23 September): the shift alone says it tore.
-			vec3 c = texture(screen_tex, SCREEN_UV + vec2(sh, 0.0)).rgb * (1.0 - dm);
-			out_col = vec4(c, 1.0);
+			out_col = vec4(texture(screen_tex, SCREEN_UV + vec2(shifts[i], 0.0)).rgb * (1.0 - dim), 1.0);
 		}
 	}
 	COLOR = out_col;

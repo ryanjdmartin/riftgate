@@ -117,15 +117,37 @@ func recalc(seconds: float = 0.7) -> void:
 
 var _wobble: float = -1.0        # seconds since the die's picture began to wobble; negative when idle
 var _wobble_for := 0.6
+var _shear: TearLayer = null     # reads the die back and redraws its slices displaced, while it wobbles
+const WOBBLE_BANDS := 6
 
 
-## The die's picture wobbles for a moment, as a torn sprite's slices jump (Ryan, 23
-## September): the whole drawing jitters a few pixels and tilts a degree, in steps held a
-## few frames each. Nothing about the face changes.
+## The die's picture wobbles for a moment, as a foe's does when its signal drops (Ryan, 23
+## September): the drawing is read back in horizontal slices and a few of them sit
+## sideways, a new set every few frames, sideways only. Nothing about the face changes.
 func wobble(seconds: float = 0.6) -> void:
 	_wobble = 0.0
 	_wobble_for = seconds
+	if _shear == null:
+		_shear = TearLayer.new()
+		_shear.manual = true
+		_shear.position = Vector2(-2.0, -BOB_PX - 2.0)
+		_shear.size = Vector2(FACE + 4.0, FACE + 2.0 * BOB_PX + 4.0)
+		add_child(_shear)
 	queue_redraw()
+
+
+## The wobble's slices for this instant, in the shear layer's pixels: the face's height in
+## bands, a few of them thrown sideways.
+func _wobble_slices(bob: float) -> Array:
+	var tick := int(_wobble * 24.0)
+	var out: Array = []
+	var band_h := FACE / WOBBLE_BANDS
+	for k in range(WOBBLE_BANDS):
+		if Hud.noise(tick * 2.1 + k * 0.31 + _phase) < 0.55:
+			continue
+		var shift := (Hud.noise(tick * 1.3 + k * 0.77 + _phase) - 0.5) * 12.0
+		out.append({"rect": Rect2(2.0, BOB_PX + 2.0 + bob + k * band_h, FACE, band_h), "shift": shift})
+	return out
 
 
 func _process(delta: float) -> void:
@@ -142,6 +164,8 @@ func _process(delta: float) -> void:
 		_wobble += delta
 		if _wobble > _wobble_for:
 			_wobble = -1.0
+			if _shear != null:
+				_shear.set_slices([])
 		queue_redraw()
 	if animate and visible and not dead:
 		_t += delta
@@ -161,18 +185,8 @@ func _flicker(i: int) -> float:
 func _draw() -> void:
 	var bob := sin(_t * 1.6 + _phase) * BOB_PX if animate else 0.0
 	var rect := Rect2(Vector2(0, bob), Vector2(FACE, FACE))
-	if _wobble >= 0.0:
-		# Everything below is drawn through a small jolt about the face's centre.
-		var tick := int(_wobble * 24.0)
-		var d := Vector2((Hud.noise(tick * 1.3 + 0.2) - 0.5) * 7.0, (Hud.noise(tick * 0.7 + 0.9) - 0.5) * 4.0)
-		var rot := (Hud.noise(tick * 1.9 + 0.4) - 0.5) * 0.05
-		if Hud.noise(tick * 2.3 + 0.6) < 0.3:
-			d = Vector2.ZERO
-			rot = 0.0
-		var c := rect.get_center()
-		var xf := Transform2D(rot, Vector2.ZERO)
-		xf.origin = c + d - xf.basis_xform(c)
-		draw_set_transform_matrix(xf)
+	if _wobble >= 0.0 and _shear != null:
+		_shear.set_slices(_wobble_slices(bob))
 	var hud := Palette.HUD
 	var alpha := 0.35 if spent else 1.0
 	var border := Color(hud, alpha)
@@ -233,11 +247,21 @@ func _draw() -> void:
 
 ## Static over the die's face while it is recomputed: the signal-drop noise a foe gets,
 ## more subtle, in the display's colour, no tag (Ryan, 23 September). Kept to the face
-## itself, edge to edge, not the control's wider rect with the chip rail.
+## itself, edge to edge and inside its chamfers: a dash near the cut top-left or bottom-right
+## corner starts or stops where the cut does.
 func _draw_static(face_rect: Rect2) -> void:
 	var tick := int(_recalc * 20.0)
 	for j in range(22):
-		var yy := face_rect.position.y + Hud.noise(tick * 0.9 + j * 0.61) * face_rect.size.y
-		var w := face_rect.size.x * (0.3 + 0.7 * Hud.noise(tick * 0.4 + j * 0.83))
-		var x0 := face_rect.position.x + Hud.noise(tick * 1.7 + j * 0.23) * (face_rect.size.x - w)
+		var yy := face_rect.position.y + 1.0 + Hud.noise(tick * 0.9 + j * 0.61) * (face_rect.size.y - 2.0)
+		var x_min := face_rect.position.x + 1.0
+		var x_max := face_rect.end.x - 1.0
+		var from_top := yy - face_rect.position.y
+		if from_top < CUT:
+			x_min += CUT - from_top
+		var from_bottom := face_rect.end.y - yy
+		if from_bottom < CUT:
+			x_max -= CUT - from_bottom
+		var span := x_max - x_min
+		var w := span * (0.4 + 0.6 * Hud.noise(tick * 0.4 + j * 0.83))
+		var x0 := x_min + Hud.noise(tick * 1.7 + j * 0.23) * (span - w)
 		draw_rect(Rect2(x0, yy, w, 1.0), Color(Palette.HUD, 0.12 + 0.25 * Hud.noise(tick + j * 0.5)))

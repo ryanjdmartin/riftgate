@@ -16,8 +16,10 @@ extends ColorRect
 const PERIOD := 8.0
 const SECONDS := 0.45
 const SHADER := preload("res://game/ui/tear.gdshader")
+const MAX_SLICES := 8
 
 var clock: Callable = Callable()   # -> float: the backdrop's seconds
+var manual := false                # true: no schedule of its own; the owner calls set_slices (a die's wobble)
 
 
 func _init() -> void:
@@ -45,21 +47,34 @@ static func fire_time() -> float:
 
 
 func _process(_delta: float) -> void:
+	if manual:
+		return
 	var t: float = clock.call() if clock.is_valid() else 0.0
-	var slices := _slices_at(t)
+	set_slices(_slices_at(t))
+
+
+## Show these slices now: [{rect (this layer's pixels), shift (pixels)}, ...], at most
+## MAX_SLICES; none hides the layer.
+func set_slices(slices: Array, dim: float = 0.12) -> void:
 	if slices.is_empty():
 		visible = false
 		return
 	visible = true
-	var m := material as ShaderMaterial
-	m.set_shader_parameter("count", slices.size())
-	m.set_shader_parameter("px_y", 1.0 / maxf(1.0, size.y))
-	for i in range(2):
-		var s: Dictionary = slices[i] if i < slices.size() else {"rect": Rect2(), "shift": 0.0, "dim": 0.0}
+	var screen_w := maxf(1.0, get_viewport_rect().size.x) if is_inside_tree() else 720.0
+	var rects: Array[Vector4] = []
+	var shifts: Array[float] = []
+	for s in slices.slice(0, MAX_SLICES):
 		var r: Rect2 = s["rect"]
-		m.set_shader_parameter("slice%d" % i, Vector4(r.position.x / size.x, r.position.y / size.y, r.size.x / size.x, r.size.y / size.y))
-		m.set_shader_parameter("shift%d" % i, float(s["shift"]) / size.x)
-		m.set_shader_parameter("dim%d" % i, float(s["dim"]))
+		rects.append(Vector4(r.position.x / size.x, r.position.y / size.y, r.size.x / size.x, r.size.y / size.y))
+		shifts.append(float(s["shift"]) / screen_w)
+	while rects.size() < MAX_SLICES:
+		rects.append(Vector4.ZERO)
+		shifts.append(0.0)
+	var m := material as ShaderMaterial
+	m.set_shader_parameter("count", mini(slices.size(), MAX_SLICES))
+	m.set_shader_parameter("slices", rects)
+	m.set_shader_parameter("shifts", shifts)
+	m.set_shader_parameter("dim", dim)
 
 
 ## The slices torn at clock time `t`, in this layer's pixels: none most of the time.
@@ -85,5 +100,5 @@ func _slices_at(t: float) -> Array:
 		var x0 := 0.0 if full else Hud.noise(slot * 9.9 + k * 0.71) * (1.0 - wfrac) * size.x
 		var hh := 5.0 + 9.0 * Hud.noise(slot * 4.4 + k * 0.29)
 		var shift := (Hud.noise(slot * 6.6 + k * 0.43 + tick * 1.7) - 0.5) * 36.0
-		out.append({"rect": Rect2(x0, yy, wfrac * size.x, hh), "shift": shift, "dim": 0.12})
+		out.append({"rect": Rect2(x0, yy, wfrac * size.x, hh), "shift": shift})
 	return out
