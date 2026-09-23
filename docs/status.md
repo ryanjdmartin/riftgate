@@ -88,7 +88,9 @@ rift ground is (the dimming flavour was cut), hidden between tears, off with the
 setting like the unit tears. The machine readout is a live bar chart or an equaliser of
 three level bars (`levels`), the die recalc is wide static over a held number, the foes'
 breathing is spread by slot, and the foe events and the machine-and-dice events run on two
-independent lanes (`FeedFX.LANES`), each 5 to 11 s apart. Cut after Ryan saw it: the scan band
+independent lanes (`FeedFX.LANES`), each 5 to 11 s apart. The die's static covers the
+whole die, chips too, drawn last; the machine boxes run 3.6 s at 68 px wide; the foes'
+pane sits 12 px lower (BACK_Y 72) for black between it and the header. Cut after Ryan saw it: the scan band
 lighting gauges, chips, buttons and rules (blinked rather than swept). Ryan's second pass:
 the events wanted drawing out (now one to two seconds for the boxes, half a second or
 more for the rest; he first wrote "too slow" and meant too fast) and the tears were too
@@ -136,12 +138,16 @@ by git): human (FM keys, bells, plucked bass), rift (choir, strings, taiko, orch
 hits, the crunch bass), djent (a seven-step chug the kick locks to, bells, choir). Ryan
 picked: djent for the fight (harder drums, choir up a touch, a bass guitar for the
 synth crunch, unison riff sections and drawn-out ones), the rift palette for the map
-(creepier, more electronic and glitchy, the echo kept); human was plain beside them. Both
-loops are rebuilt that way (bible section 1, sound row, has every note); the map's kit is
-taiko, big snare, crushed clicks, choir on "oo" with a pump, stuttering bells, a
-backwards swell into each section; the skirmish's is `kick_metal`, `snare_metal`, crash,
-toms, a seven-step chug, `bass_guitar`, a `lead` in the unison section (U), open chords in
-the drawn-out one (D). Not yet heard: these two loops as built, and every effect. If a loop's bpm changes in
+(creepier, more electronic and glitchy, the echo kept); human was plain beside them. Third
+listen: longer sections, the map's bass organic (orchestral, not electronic), the fight
+riff-heavy with the kick forward and no long chord stretches, instruments trading by
+section on both. Built: 48 bars each in eight-bar sections (bible section 1, sound row,
+has every note). The map (A groove, C lift, D interlude, E strings section) on pizzicato
+and cellos, bells, horn, violins, harp, timpani, choir and strings pads; the fight (A riff,
+C lift, U unison, F keys-and-guitar, D four bars of open chords with a lead on top) on
+`kick_metal` with double kicks and kick rolls, `snare_metal`, chug, `bass_guitar`, the
+crunch synth in C only, `epiano`, `lead`, `chime_metal`. Not yet heard: these two loops
+as built, and every effect. If a loop's bpm changes in
 `groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
 loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
 wraps every tail, the room's included. The display's scan and idle stay silent by decision.
