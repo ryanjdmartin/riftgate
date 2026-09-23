@@ -27,7 +27,7 @@ exports a Web build and serves it on the LAN for a phone; `tools/screenshot.gd` 
 screen (`README.md` lists the poses); `tools/perf_probe.gd` measures the map; the
 `map_tuner` knobs are behind `RIFTGATE_TUNE=1`. `docs/design-bible.html` records every
 decision; section 12 is the roadmap; it is published at
-https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ (v0.8, republished 23 September;
+https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ (v0.9, republished 23 September;
 republish the file to that URL after a bible change).
 `docs/vocabulary.md` is generated from content.
 
@@ -74,11 +74,15 @@ plate), the eye 60 px in the black at the log's right with 12 px margins (the lo
 stops short of it), log 112 tall, dice and Reroll up 16, 30 px of black under Reroll. Poses
 added to `tools/screenshot.gd`: menu, settings, quit, withdraw, acquire. The bible has the
 rows (section 5, and the HUD row in 4) and is republished as v0.8 (link above). Then the
-"feed being read" pass (bible section 6 row): the scan band lights every gauge, chip,
-button and rule it crosses (`Hud.sweep_glow`, fed from the screen's `_process`), intents
-are acquired with collapsing brackets and a digit scramble (`UnitView.acquire`), the phase
-readout carries a fight clock and the log strip ends in a blinking prompt. Ryan has not
-yet judged it in motion; anything busy is to be cut.
+"feed being analysed" pass (bible section 6 row): intents are acquired with collapsing
+brackets and a digit scramble (`UnitView.acquire`; Ryan: exactly right), the phase readout
+carries a fight clock, the log strip ends in a blinking prompt, and `game/ui/feed_fx.gd`
+runs one rare one-shot event every 4 to 9 s on a random unit or die (scanbox, databox,
+readout, recalc, tear, signal; poses `feed_<name>` and `groundtear` in the screenshot
+tool). The ground tear (`TerrainArt._tear`) is one burst every few seconds over part of
+the width, off with the glitch setting like the unit tears. Cut after Ryan saw it: the scan
+band lighting gauges, chips, buttons and rules (blinked rather than swept). Ryan has not
+yet judged the events in motion; cut or reweight (`FeedFX.WEIGHTS`, `GAP_MIN`/`GAP_MAX`).
 
 **Ryan's verdict on the web harness (23 September).** It served for sizes and touch and no
 more: the map must not get smaller (the base hex size may go up a little; zoom makes it
