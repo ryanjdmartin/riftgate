@@ -146,7 +146,7 @@ void fragment() {
 	float seg_x0 = h2 * map_size.x;
 	float seg_len = mix(50.0, 200.0, h3);
 	float in_seg = step(seg_x0, px.x) * step(px.x, seg_x0 + seg_len);
-	float flick = step(mix(0.99714, 0.982, near), h1) * in_seg * flicker;   // one row in 350 a tick on the field
+	float flick = step(mix(0.995, 0.982, near), h1) * in_seg * flicker;   // one row in 200 a tick on the field
 	// The shear the vortex's own bands have (three of its pixels at the map's 2x): two
 	// map pixels was invisible on the dithered painting (Ryan, 23 September).
 	float shear = flick * (mod(band, 2.0) * 2.0 - 1.0) * mix(6.0, 8.0, near);
