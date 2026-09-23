@@ -546,7 +546,8 @@ func sweep_at(local_y: float) -> void:
 
 
 const RIFT_ART := Color("c9a6ff")   # what the rift looks like; it means nothing but the rift
-const RIFT_FRAME_SECONDS := 0.65   # with no music playing; with music, a frame a beat
+const RIFT_FRAME_SECONDS := 0.6    # a frame, on the vortex's own clock
+const RIFT_ON_BEAT := false        # true: one turn of the strip is a bar of the music instead (Ryan, 23 September: an option, off for now)
 const RIFT_TEAR_ROWS := 16         # the bands the vortex is drawn in, for its tear
 
 ## The rift (Ryan, 23 September): a vortex tearing a hole in reality, in the foes' own
@@ -564,13 +565,11 @@ func _draw_rift(map: BattleMap) -> void:
 	var fh := tex.get_size().y
 	var frames := maxi(1, int(round(tex.get_size().x / fh)))   # square frames side by side
 	var fw := tex.get_size().x / frames
-	# One turn of the strip is a bar of the music, four beats, however many frames it
-	# holds (four drawn, or eight with the dithered tweens between them), when there is
-	# music (Ryan, 23 September: it had landed near the beat by chance, so it is on it);
-	# else on its own slow clock at the same pace.
-	var beat := Sound.beat()
-	var bars: float = (beat if beat >= 0.0 else _ring_t / RIFT_FRAME_SECONDS) / 4.0
-	var k := int(bars * frames) % frames
+	# On its own slow clock; or, with RIFT_ON_BEAT, one turn of the strip is a bar of the
+	# music, four beats, however many frames it holds (it had landed near the beat by
+	# chance once, and Ryan liked it, then wanted it slower).
+	var beat := Sound.beat() if RIFT_ON_BEAT else -1.0
+	var k := int(beat / 4.0 * frames if beat >= 0.0 else _ring_t / RIFT_FRAME_SECONDS) % frames
 	var c := center(map.rift)
 	var dest := Rect2((c - Vector2(fw * SPRITE_SCALE * 0.5, fh * SPRITE_SCALE - HEX_SIZE * 0.9)).floor(), Vector2(fw, fh) * SPRITE_SCALE)
 	# The vortex is the worst input the display gets: it is drawn in bands, and now and

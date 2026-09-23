@@ -136,8 +136,8 @@ void fragment() {
 	// 23 September). Around the rift (the first source, always) the input is worst: the
 	// tears come more often there and shear further. Centred above the rift's hexes,
 	// where the vortex's mouth is, not on them, reaching about a hex beyond it.
-	// The map is cut into rows of 32 pixels; a torn row's tear is a stretch of it, from 8
-	// to 16 pixels tall at a random height in the row (Ryan, 23 September: the old fixed
+	// The map is cut into rows of 32 pixels; a torn row's tear is a stretch of it, from 6
+	// to 14 pixels tall at a random height in the row (Ryan, 23 September: the old fixed
 	// six was too thin, 28 too tall), and from 120 to 260 wide at a random place along it
 	// (the little ones looked out of place).
 	float band = floor(px.y / 32.0);
@@ -151,15 +151,15 @@ void fragment() {
 	float h5 = fract(sin(band * 2.39 + tick * 4.47 + 7.7) * 12289.9);
 	float seg_x0 = h2 * map_size.x;
 	float seg_len = mix(120.0, 260.0, h3);
-	float tear_h = mix(8.0, 16.0, h4);
+	float tear_h = mix(6.0, 14.0, h4);
 	float tear_y0 = band * 32.0 + h5 * (32.0 - tear_h);
 	float in_seg = step(seg_x0, px.x) * step(px.x, seg_x0 + seg_len) * step(tear_y0, px.y) * step(px.y, tear_y0 + tear_h);
 	// Per row per tick: on the field enough that a tear or two usually shows (Ryan, 23
 	// September, halved from one to three); a little more around the rift's mouth.
-	float flick = step(mix(0.965, 0.93, near), h1) * in_seg * flicker;
+	float flick = step(mix(0.98, 0.95, near), h1) * in_seg * flicker;
 	// The skirmish's tear (tear.gdshader) is the model, Ryan, 23 September: the slice
 	// shears by a shift that jitters every few frames while it holds, up to 18 pixels
-	// either way, with only a light dim, a bright hairline on top and a dark one under.
+	// either way, with only a light dim (its hairlines were tried here and cut).
 	float sub = floor(TIME * 16.0);
 	float h6 = fract(sin(band * 4.13 + tick * 3.37 + sub * 1.7 + 5.5) * 15731.3);
 	float shear = flick * (h6 - 0.5) * 36.0 * mix(1.0, 1.3, near);
@@ -169,13 +169,6 @@ void fragment() {
 	vec4 other = second ? blurred_other2(opx / map_size, 1.0 / (map_size * zoom), rad) : blurred_other(opx / map_size, 1.0 / (map_size * zoom), rad);
 	other.rgb = floor(other.rgb * levels + 0.5) / levels;
 	other.rgb *= 1.0 - 0.12 * flick;
-	if (flick > 0.5) {
-		if (px.y < tear_y0 + 1.0) {
-			other.rgb += vec3(0.25);
-		} else if (px.y > tear_y0 + tear_h - 1.0) {
-			other.rgb *= 0.6;
-		}
-	}
 	// Where a machine is, the reconstruction wins whatever the bleed says: the machines
 	// are its own and never go under the painting (Ryan, 22 September). The units layer
 	// is a mask only; the pixel comes from the scene, so the wall and the crags still
