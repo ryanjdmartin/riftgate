@@ -103,6 +103,7 @@ func _gui_input(event: InputEvent) -> void:
 
 
 var _recalc: float = -1.0        # seconds since the display began recomputing this face; negative when idle
+const STATIC_RATE := 48.0        # new static positions a second (Ryan, 23 September: 20 was too slow)
 var _recalc_for := 0.7           # how long the recomputation shows
 
 
@@ -214,7 +215,7 @@ func _draw() -> void:
 		# the static itself is drawn last, over the whole die (`_draw_static`). The number
 		# stays what it is and stays readable (Ryan, 23 September: a scramble here was wrong).
 		var rt := _recalc / _recalc_for
-		ink.a *= 0.75 + 0.25 * Hud.noise(int(_recalc * 20.0) * 0.7 + 0.3)
+		ink.a *= 0.75 + 0.25 * Hud.noise(int(_recalc * STATIC_RATE) * 0.7 + 0.3)
 		Hud.stroke_poly(self, Hud.cut(rect.grow(-3.0), CUT), Color(Palette.INK, 0.5 * (1.0 - rt)), 1.0)
 	draw_string(mono, Vector2(0, 92.0 + bob), num, HORIZONTAL_ALIGNMENT_CENTER, FACE, num_size, ink)
 	if face.strikes > 1:
@@ -250,7 +251,7 @@ func _draw() -> void:
 ## itself, edge to edge and inside its chamfers: a dash near the cut top-left or bottom-right
 ## corner starts or stops where the cut does.
 func _draw_static(face_rect: Rect2) -> void:
-	var tick := int(_recalc * 20.0)
+	var tick := int(_recalc * STATIC_RATE)
 	for j in range(22):
 		var yy := face_rect.position.y + 1.0 + Hud.noise(tick * 0.9 + j * 0.61) * (face_rect.size.y - 2.0)
 		var x_min := face_rect.position.x + 1.0
