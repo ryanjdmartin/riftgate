@@ -27,8 +27,8 @@ const BAR_H := 11.0
 const BAR_STEP := 14.0
 const FLOAT_BAR_W := 60.0
 const GAP := 10.0          # between the drawing and its gauges above or its chips below
-const FLOAT_LIFT := 26.0   # a foe's floating gauge: how far its top row sits above the drawing
-const LEADER := 16.0       # the floating gauge's leader, in x and in y
+const FLOAT_LIFT := 16.0   # a foe's floating gauge: how far its bottom row sits above the drawing (any higher and it crowds the rank above)
+const LEADER := 16.0       # the floating gauge's leader, in x and in y; it runs onto the sprite, which is allowed
 
 var display_name: String = ""     # for the codex and readouts; never drawn here
 var is_enemy: bool = false
