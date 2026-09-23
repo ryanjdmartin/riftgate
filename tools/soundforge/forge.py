@@ -9,6 +9,7 @@ real recordings and a real track when there are some. numpy only.
     tools/spriter/.venv/bin/python tools/soundforge/forge.py list
     tools/spriter/.venv/bin/python tools/soundforge/forge.py measure          # level and balance of every file
     tools/spriter/.venv/bin/python tools/soundforge/forge.py sketch [human rift djent]   # eight bars in a direction, to tools/soundforge/out
+    tools/spriter/.venv/bin/python tools/soundforge/forge.py sections                    # every section of both loops, with timestamps
 
 Then `godot --headless --path . --import`. `game/audio/sound.gd` plays them by name.
 
@@ -333,83 +334,279 @@ def write(name, x, level):
 
 
 # ---------------------------------------------------------------- effects
-# The register: weight, machinery, relays, servos and hydraulics. Nothing whooshes,
-# nothing rings.
+# Two registers (Ryan, 23 September). The interface is sci-fi electronic: beeps and boops,
+# StarCraft's menu pushed a little toward comedy, never a Doom or Quake menu. Combat and
+# the map are over-the-top weighty: lasers, gunfire, explosions and melee of various kinds,
+# with Doom levels of punch, for both sides.
+
+def blip(f0, f1=None, dur=0.05, width=0.5, attack=0.002, decay=None, gain=1.0):
+    """A pulse wave gliding from f0 to f1: the interface's voice."""
+    n = n_of(dur)
+    t = t_of(n)
+    f1 = f1 or f0
+    f = f0 * (f1 / f0) ** (t / dur)
+    ph = np.cumsum(f) / SR
+    x = np.where(ph % 1.0 < width, 1.0, -1.0) * 0.7 + np.sin(2.0 * math.pi * ph) * 0.3
+    return lp(x, 7000.0) * env_ad(n, attack, decay or dur * 0.5, curve=3.0) * gain
+
+
+def chirp(notes, gap=0.0, gain=1.0):
+    """A sequence of blips: [(f0, f1, dur), ...] one after another."""
+    buf = np.zeros(1)
+    when = 0.0
+    for f0, f1, dur in notes:
+        buf = at(buf, blip(f0, f1, dur), when, gain)
+        when += dur + gap
+    return buf
+
+
+def tick_click():
+    return bp(noise(n_of(0.012)), 2500.0, 9000.0) * env_ad(n_of(0.012), 0.0002, 0.002) * 0.5
+
+
+def zap(f0, f1, dur, gain=1.0):
+    """An energy discharge: a saw stack falling fast, saturated, with a sizzle."""
+    n = n_of(dur)
+    t = t_of(n)
+    f = f0 * (f1 / f0) ** (t / dur)
+    ph = 2.0 * math.pi * np.cumsum(f) / SR
+    x = (2.0 * ((ph / (2.0 * math.pi)) % 1.0) - 1.0) * 0.7 + np.sin(ph * 2.0) * 0.4 + np.sin(ph * 3.01) * 0.25
+    sizzle = hp(noise(n), 2500.0) * env_ad(n, 0.001, dur * 0.4) * 0.35
+    return lp(sat(x + sizzle, 3.0), 6000.0) * env_ad(n, 0.001, dur * 0.45, curve=2.5) * gain
+
+
+def explosion(dur=1.1, low=28.0, gain=1.0, debris=3):
+    """The big one: a hard front, a body, a rumble, the crack of the air, pieces landing."""
+    n = n_of(dur)
+    front = mix(thud(160.0, low, dur * 0.7, click=1.2, drive=4.0, body_gain=1.5),
+                burst(dur * 0.35, 120.0, 5000.0, decay=dur * 0.08) * 1.0,
+                lp(noise(n), 220.0) * env_ad(n, 0.005, dur * 0.4) * 1.3,
+                bp(noise(n_of(0.05)), 2000.0, 9000.0) * env_ad(n_of(0.05), 0.0002, 0.006) * 0.8)
+    buf = front
+    for k in range(debris):
+        when = 0.22 + k * RNG.uniform(0.09, 0.16)
+        piece = mix(body(RNG.uniform(220.0, 340.0), 90.0, 0.07, click=0.6) * 0.5,
+                    knock([RNG.uniform(700.0, 1300.0), RNG.uniform(1500.0, 2400.0)], [0.03, 0.02], [0.6, 0.3]) * 0.4)
+        buf = at(buf, piece, when, gain=1.0 - k * 0.2)
+    return room(buf, decay=0.35, mix=0.2) * gain
+
+
+# ---- the interface
 
 def ui_tap():
-    return room(relay(), decay=0.05, mix=0.06)
+    # A two-tone blip with a click on its front.
+    return mix(chirp([(1100.0, 1500.0, 0.028), (1500.0, 1500.0, 0.03)], gain=0.8), tick_click())
 
 
 def ui_back():
-    # The relay letting go: softer, lower, a second click a beat later.
-    b = relay(0.6, pitch=0.85)
-    return room(at(b, relay(0.35, pitch=0.8), 0.06), decay=0.05, mix=0.06)
+    # The same going down.
+    return mix(chirp([(1400.0, 1000.0, 0.03), (900.0, 760.0, 0.04)], gain=0.7), tick_click() * 0.7)
 
 
 def plot():
-    # The relay, then a short blip from the display, with overtones so it is not a beep.
-    n = n_of(0.06)
-    blip = harmonics(540.0, n, [1.0, 0.5, 0.25, 0.12]) * env_ad(n, 0.003, 0.018) * 0.4
-    return room(at(relay(0.8), lp(blip, 3000.0), 0.015), decay=0.06, mix=0.08)
+    # Three notes climbing, quick, and a data tick: the route is accepted.
+    return mix(chirp([(700.0, 760.0, 0.035), (950.0, 1000.0, 0.035), (1300.0, 1450.0, 0.06)], gain=0.8),
+               at(np.zeros(1), tick_click() * 0.6, 0.11))
 
 
 def codex_open():
-    # A plate sliding out on a rail, stopping against its catch.
-    slide = hydraulic(0.2, 900.0, 2200.0, 0.45, floor=300.0)
-    stop = mix(knock([310.0, 560.0, 890.0], [0.03, 0.02, 0.012], [1.0, 0.6, 0.3]) * 0.7, body(300.0, 130.0, 0.08, click=0.4) * 0.6)
-    return room(at(slide, stop, 0.19), decay=0.12, mix=0.1)
+    # A rising sweep chopped into pulses, then a confirm: the plate slides out of the console.
+    n = n_of(0.2)
+    t = t_of(n)
+    sweep_ = blip(300.0, 2400.0, 0.2, width=0.35, decay=0.4) * (0.55 + 0.45 * np.sign(np.sin(2.0 * math.pi * 38.0 * t)))
+    return at(sweep_ * 0.7, chirp([(1600.0, 1900.0, 0.05)]) * 0.7, 0.19)
 
 
 def codex_close():
-    stop = mix(knock([260.0, 470.0], [0.025, 0.015], [1.0, 0.5]) * 0.6, body(260.0, 110.0, 0.07, click=0.4) * 0.6)
-    slide = hydraulic(0.17, 2000.0, 700.0, 0.4, floor=300.0)
-    return room(at(stop, slide, 0.03), decay=0.12, mix=0.1)
+    n = n_of(0.16)
+    t = t_of(n)
+    sweep_ = blip(2200.0, 320.0, 0.16, width=0.35, decay=0.3) * (0.55 + 0.45 * np.sign(np.sin(2.0 * math.pi * 44.0 * t)))
+    return at(chirp([(1400.0, 1100.0, 0.04)]) * 0.6, sweep_ * 0.6, 0.03)
 
 
 def menu_open():
-    # A heavy breaker thrown: the thunk, then the hiss of the display holding.
+    # The console powering up: a low hum swelling, four blips climbing over it.
     n = n_of(0.5)
-    hiss = lp(noise(n), 1800.0) * env_ad(n, 0.03, 0.25) * 0.18
-    return room(at(thud(180.0, 55.0, 0.18, click=0.8), hiss, 0.04), decay=0.2, mix=0.12)
+    hum = lp(sat(saws(110.0, n, (0.995, 1.0, 1.005)), 1.5), 900.0) * env_pts(n, [(0.0, 0.0), (0.08, 0.6), (0.3, 0.5), (0.5, 0.0)]) * 0.5
+    arp = chirp([(660.0, 660.0, 0.05), (880.0, 880.0, 0.05), (1100.0, 1100.0, 0.05), (1320.0, 1500.0, 0.09)], gap=0.01, gain=0.6)
+    return at(hum, arp, 0.06)
 
 
 def die_pick():
-    # A die lifted off its plate: a small catch letting go, the pawl over two teeth.
-    k = knock([1150.0, 1720.0], [0.008, 0.006], [1.0, 0.5], noise_gain=0.5)
-    return room(at(k, ratchet(2, 0.03, 2600.0, 0.5), 0.012), decay=0.05, mix=0.06)
+    # A bright bip rising: the die lifts off the display.
+    return mix(chirp([(1500.0, 2300.0, 0.04)], gain=0.7), tick_click() * 0.6)
 
 
 def die_drop():
-    # Set back down on the plate: a knock with a casing under it.
-    return room(mix(body(260.0, 100.0, 0.1, click=0.6), knock([640.0, 1010.0, 1480.0], [0.03, 0.02, 0.012], [1.0, 0.5, 0.25]) * 0.6, metal(0.15, 1.3)), decay=0.1, mix=0.1)
-
-
-def die_roll():
-    # Dice on a steel tray: a scatter of small knocks, settling.
-    buf = np.zeros(n_of(0.42))
-    when = 0.0
-    for k in range(7):
-        p = RNG.uniform(0.85, 1.25)
-        hit_ = mix(body(280.0 * p, 110.0 * p, 0.05, click=0.6) * 0.6,
-                   knock([720.0 * p, 1180.0 * p, 1690.0 * p], [0.025, 0.016, 0.01], [1.0, 0.5, 0.3]) * 0.55)
-        buf = at(buf, hit_, when, gain=1.0 - k * 0.09)
-        when += RNG.uniform(0.03, 0.075) * (1.0 + k * 0.12)
-    return room(buf, decay=0.12, mix=0.12)
+    # A lower boop, and a soft set-down.
+    return mix(chirp([(800.0, 520.0, 0.07)], gain=0.7), body(240.0, 100.0, 0.06, click=0.3) * 0.35)
 
 
 def die_lock():
-    # A latch: click, then the bolt seating.
-    seat = mix(body(420.0, 160.0, 0.05, click=0.9, drive=2.0) * 0.8, knock([590.0, 940.0], [0.02, 0.012], [1.0, 0.5]) * 0.6)
-    return room(at(relay(0.9), seat, 0.055), decay=0.08, mix=0.08)
+    # Two tones confirming, and the click.
+    return mix(chirp([(880.0, 880.0, 0.045), (1320.0, 1320.0, 0.07)], gap=0.01, gain=0.75), tick_click())
+
+
+def die_roll():
+    # The display computing: a run of random blips, quick, settling on a low boop.
+    buf = np.zeros(n_of(0.42))
+    when = 0.0
+    for k in range(9):
+        f = RNG.choice([660.0, 880.0, 1100.0, 1320.0, 1760.0, 2200.0])
+        buf = at(buf, blip(f, f * RNG.uniform(0.9, 1.15), 0.03, decay=0.012), when, 0.55)
+        when += RNG.uniform(0.028, 0.045)
+    return at(buf, chirp([(600.0, 440.0, 0.09)]) * 0.7, when + 0.02)
+
+
+def resolve():
+    # The plan committed: a descending run, a low confirm swelling under it, and the
+    # console's heavy latch so it still has weight.
+    run = chirp([(1760.0, 1760.0, 0.04), (1320.0, 1320.0, 0.04), (1100.0, 1100.0, 0.04), (880.0, 700.0, 0.12)], gap=0.005, gain=0.7)
+    n = n_of(0.45)
+    swell = lp(sat(saws(82.4, n, (0.996, 1.0, 1.004)) + np.sin(2.0 * math.pi * 164.8 * t_of(n)) * 0.5, 2.0), 1200.0) * env_pts(n, [(0.0, 0.0), (0.1, 0.7), (0.3, 0.6), (0.45, 0.0)]) * 0.5
+    b = at(run, swell, 0.1)
+    return room(at(b, thud(160.0, 48.0, 0.25, click=1.0, drive=3.5) * 0.7, 0.2), decay=0.18, mix=0.12)
+
+
+def engage():
+    # The dive: the display's drive spinning down, a wash rising under it, three beeps
+    # counting in faster and faster, until the cut.
+    n = n_of(2.2)
+    t = t_of(n)
+    f = 420.0 * np.exp(-t / 0.9) + 38.0
+    ph = 2.0 * math.pi * np.cumsum(f) / SR
+    drive = np.sin(ph) + 0.35 * np.sin(2.0 * ph) + 0.2 * (2.0 * ((ph / (2.0 * math.pi)) % 1.0) - 1.0)
+    drive = lp(sat(drive, 2.0), 1400.0) * (0.5 + 0.5 * np.exp(-t / 1.2))
+    wash = lp_var(noise(n), 600.0 + 2400.0 * (t / 2.2) ** 2) * (t / 2.2) ** 1.5 * 0.8
+    b = mix(drive * 0.6, wash)
+    for k, when in enumerate([0.9, 1.45, 1.8, 2.02]):
+        b = at(b, blip(1200.0 + 150.0 * k, 1200.0 + 150.0 * k, 0.06), when, 0.4)
+    return room(b, decay=0.3, mix=0.12)
+
+
+def contact():
+    # The alarm: the low industrial horn, and a klaxon beeping twice over it.
+    n = n_of(0.62)
+    t = t_of(n)
+    horn = mix(saws(82.5, n, (0.992, 1.0, 1.008)) * 0.7,
+               harmonics(110.0, n, [0.6, 0.5, 0.4, 0.3, 0.2, 0.15]) * 0.6,
+               np.sin(2.0 * math.pi * 55.0 * t) * 0.35)
+    horn = lp(sat(horn, 3.0), 2200.0) * env_ad(n, 0.06, 0.5, curve=2.0)
+    env = np.ones(n)
+    env[-n_of(0.05):] = np.linspace(1.0, 0.0, n_of(0.05))
+    b = mix(horn * env, thud(90.0, 40.0, 0.3, click=0.2, drive=2.0) * 0.4)
+    b = at(b, blip(1800.0, 1800.0, 0.12, width=0.5, decay=0.1), 0.05, 0.3)
+    b = at(b, blip(1800.0, 1800.0, 0.12, width=0.5, decay=0.1), 0.3, 0.3)
+    return room(b, decay=0.3, mix=0.14)
+
+
+def cut():
+    # The cut to black at the handover: one hard boom, close.
+    return explosion(0.7, 26.0, 1.0, debris=0)
+
+
+# ---- combat and the map: over-the-top weighty
+
+def laser():
+    # An energy weapon: the discharge falling from a scream to a growl, the beam's sizzle,
+    # and the hit on armour under it.
+    b = zap(2600.0, 220.0, 0.16, 1.0)
+    b = at(b, mix(thud(150.0, 45.0, 0.28, click=0.6, drive=3.0), burst(0.1, 300.0, 5000.0, decay=0.03) * 0.5), 0.05, 0.9)
+    b = at(b, hp(noise(n_of(0.25)), 4000.0) * env_ad(n_of(0.25), 0.001, 0.07) * 0.25, 0.04)
+    return room(b, decay=0.2, mix=0.14)
+
+
+def shot(pitch=1.0):
+    return mix(thud(420.0 * pitch, 110.0 * pitch, 0.07, click=1.3, drive=4.0, body_gain=1.2),
+               burst(0.04, 700.0, 7000.0, decay=0.01) * 0.9,
+               bp(noise(n_of(0.015)), 3000.0, 10000.0) * env_ad(n_of(0.015), 0.0002, 0.003) * 0.8)
+
+
+def gunfire():
+    # A kinetic line weapon: a burst of four, the action clacking between, the last one
+    # landing on armour.
+    buf = np.zeros(1)
+    for k in range(4):
+        buf = at(buf, shot(RNG.uniform(0.94, 1.06)), k * 0.058, 1.0 - k * 0.06)
+        buf = at(buf, knock([1400.0, 2300.0], [0.008, 0.005], [0.6, 0.3], noise_gain=0.4) * 0.35, k * 0.058 + 0.03)
+    buf = at(buf, mix(thud(150.0, 45.0, 0.25, click=0.5, drive=3.0), knock([480.0, 860.0, 1390.0], [0.04, 0.03, 0.02], [1.0, 0.6, 0.35]) * 0.4), 0.2, 0.8)
+    return room(buf, decay=0.22, mix=0.16)
+
+
+def cannon():
+    # One heavy shot: the crack, the shell leaving, the blast, and the shell landing as an
+    # explosion of its own.
+    front = mix(thud(220.0, 32.0, 0.5, click=1.4, drive=4.0, body_gain=1.5), burst(0.14, 150.0, 4000.0, decay=0.04) * 1.0,
+                bp(noise(n_of(0.03)), 2000.0, 9000.0) * env_ad(n_of(0.03), 0.0002, 0.005) * 1.0)
+    b = at(front, hydraulic(0.2, 3000.0, 800.0, 0.3), 0.05)
+    b = at(b, explosion(0.9, 30.0, 0.9, debris=3), 0.26)
+    return room(b, decay=0.3, mix=0.16)
+
+
+def slash():
+    # A claw or a blade: the swing's air, the rip through plate, a wet weight under it.
+    n = n_of(0.12)
+    t = t_of(n)
+    swing = lp_var(hp(noise(n), 400.0), 7000.0 - 5500.0 * (t / 0.12)) * env_ad(n, 0.003, 0.05) * 0.6
+    rip = bp(noise(n_of(0.16)), 600.0, 5000.0) * (0.5 + 0.5 * np.sign(np.sin(2.0 * math.pi * 58.0 * t_of(n_of(0.16))))) * env_ad(n_of(0.16), 0.001, 0.05) * 0.8
+    b = at(swing, rip, 0.05)
+    b = at(b, mix(thud(170.0, 50.0, 0.2, click=0.7, drive=3.0), knock([520.0, 940.0, 1500.0], [0.035, 0.025, 0.015], [1.0, 0.5, 0.3]) * 0.4), 0.07, 0.9)
+    return room(b, decay=0.18, mix=0.14)
+
+
+def slam():
+    # The heavy melee: a fist, a tread, a bulk landing. The biggest thud of the set with a
+    # crack of plate and a scatter of pieces.
+    b = mix(thud(130.0, 30.0, 0.55, click=1.3, drive=4.0, body_gain=1.6), burst(0.15, 200.0, 5000.0, decay=0.04) * 0.9,
+            knock([420.0, 760.0, 1240.0, 1900.0], [0.07, 0.045, 0.03, 0.02], [1.0, 0.6, 0.45, 0.3]) * 0.5,
+            metal(0.2, 0.9))
+    for k, when in enumerate([0.14, 0.24, 0.36]):
+        b = at(b, knock([RNG.uniform(600.0, 1100.0), RNG.uniform(1400.0, 2200.0)], [0.025, 0.015], [0.6, 0.3]) * 0.3, when, 1.0 - 0.25 * k)
+    return room(b, decay=0.28, mix=0.16)
+
+
+def hit():
+    # A blow landing on armour, the generic one: the thud, the strike, the plate knocked.
+    b = mix(thud(150.0, 45.0, 0.3, click=1.0, drive=3.5, body_gain=1.2),
+            burst(0.08, 250.0, 5000.0, decay=0.02) * 0.7,
+            knock([480.0, 860.0, 1390.0, 2100.0], [0.045, 0.03, 0.02, 0.012], [1.0, 0.6, 0.35, 0.2]) * 0.5,
+            metal(0.18, 0.9))
+    return room(b, decay=0.16, mix=0.14)
+
+
+def hit_crit():
+    return slam()
+
+
+def block():
+    # Struck plate holding: a dull knock, stopped fast, and a ping off the deflection.
+    b = mix(knock([380.0, 640.0, 1010.0, 1480.0], [0.05, 0.035, 0.022, 0.014], [1.0, 0.7, 0.45, 0.25], noise_gain=0.5) * 0.9,
+            burst(0.05, 500.0, 3500.0, decay=0.015) * 0.5,
+            body(240.0, 100.0, 0.08, click=0.5) * 0.6,
+            metal(0.3, 1.4))
+    return room(b, decay=0.12, mix=0.12)
+
+
+def shield_break():
+    # The shield failing: an electric crack, the field's discharge, shards, the ground
+    # taking the weight.
+    buf = mix(burst(0.04, 2000.0, 14000.0, decay=0.006) * 1.0, body(900.0, 220.0, 0.05, click=1.0, drive=3.0) * 0.6,
+              zap(3200.0, 400.0, 0.12, 0.7))
+    for k in range(9):
+        p = RNG.uniform(0.7, 1.6)
+        shard = knock([2100.0 * p, 3300.0 * p], [0.018, 0.012], [0.6, 0.3], noise_gain=0.3) * 0.35
+        buf = at(buf, shard, 0.03 + k * RNG.uniform(0.012, 0.03))
+    buf = at(buf, thud(120.0, 40.0, 0.35, click=0.3, drive=2.5) * 0.7, 0.05)
+    return room(buf, decay=0.18, mix=0.14)
 
 
 def shield_up():
-    # A plate slamming into place, hydraulics pushing it, servos catching it.
-    hyd = hydraulic(0.24, 500.0, 1400.0, 0.4)
-    slam = mix(thud(200.0, 60.0, 0.2, click=0.9, drive=3.0), knock([680.0, 1120.0, 1730.0], [0.04, 0.025, 0.015], [1.0, 0.5, 0.25]) * 0.5)
-    b = at(hyd, slam, 0.12)
-    b = at(b, metal(0.2, 1.1), 0.12)
-    b = at(b, servo(1400.0, 900.0, 0.09, 0.25), 0.16)
+    # The field raised: a charge climbing, then the snap of it holding, hydraulics under.
+    n = n_of(0.22)
+    charge = blip(200.0, 1600.0, 0.22, width=0.3, decay=0.5) * 0.35 + zap(300.0, 1400.0, 0.22, 0.25)[::-1]
+    b = at(charge, mix(thud(200.0, 60.0, 0.2, click=0.9, drive=3.0), zap(2400.0, 900.0, 0.06, 0.5),
+                       knock([680.0, 1120.0, 1730.0], [0.04, 0.025, 0.015], [1.0, 0.5, 0.25]) * 0.4), 0.2)
+    b = at(b, hydraulic(0.2, 500.0, 1400.0, 0.3), 0.1)
     return room(b, decay=0.14, mix=0.12)
 
 
@@ -421,139 +618,54 @@ def vent():
     return room(b, decay=0.12, mix=0.1)
 
 
-def hit():
-    # A blow landing on armour: the thud, the strike, the plate knocked and stopped.
-    b = mix(thud(150.0, 45.0, 0.3, click=0.8, drive=3.0),
-            burst(0.08, 250.0, 5000.0, decay=0.02) * 0.6,
-            knock([480.0, 860.0, 1390.0, 2100.0], [0.045, 0.03, 0.02, 0.012], [1.0, 0.6, 0.35, 0.2]) * 0.5,
-            metal(0.18, 0.9))
-    return room(b, decay=0.16, mix=0.14)
-
-
-def hit_crit():
-    # The same, bigger: deeper, longer, a second knock in its tail, a servo giving way.
-    b = mix(thud(170.0, 38.0, 0.5, click=1.0, drive=4.0),
-            burst(0.12, 200.0, 6000.0, decay=0.03) * 0.7,
-            knock([420.0, 760.0, 1240.0, 1900.0, 2700.0], [0.07, 0.045, 0.03, 0.02, 0.012], [1.0, 0.6, 0.45, 0.3, 0.2]) * 0.55)
-    b = at(b, thud(130.0, 40.0, 0.2, click=0.4, drive=2.0) * 0.5, 0.11)
-    b = at(b, servo(1200.0, 300.0, 0.3, 0.2), 0.14)
-    return room(b, decay=0.24, mix=0.16)
-
-
-def block():
-    # Struck plate holding: a dull knock, stopped fast, the casing behind it.
-    b = mix(knock([380.0, 640.0, 1010.0, 1480.0], [0.05, 0.035, 0.022, 0.014], [1.0, 0.7, 0.45, 0.25], noise_gain=0.5) * 0.9,
-            burst(0.05, 500.0, 3500.0, decay=0.015) * 0.5,
-            body(240.0, 100.0, 0.08, click=0.5) * 0.5,
-            metal(0.22, 0.8))
-    return room(b, decay=0.12, mix=0.12)
-
-
-def shield_break():
-    # The shield cracking: a sharp snap, a scatter of pieces, the ground taking the weight.
-    buf = mix(burst(0.04, 2000.0, 14000.0, decay=0.006) * 1.0, body(900.0, 220.0, 0.05, click=1.0, drive=3.0) * 0.6)
-    for k in range(9):
-        p = RNG.uniform(0.7, 1.6)
-        shard = knock([2100.0 * p, 3300.0 * p], [0.018, 0.012], [0.6, 0.3], noise_gain=0.3) * 0.35
-        buf = at(buf, shard, 0.03 + k * RNG.uniform(0.012, 0.03))
-    buf = at(buf, thud(120.0, 40.0, 0.35, click=0.3, drive=2.5) * 0.7, 0.05)
-    return room(buf, decay=0.18, mix=0.14)
-
-
 def kill():
-    # A machine coming apart: a deep crunch, rumble, the drive winding down, late pieces landing.
-    n = n_of(0.9)
-    rumble = lp(noise(n), 200.0) * env_ad(n, 0.01, 0.35) * 1.2
-    buf = mix(thud(110.0, 30.0, 0.6, click=1.0, drive=4.0), burst(0.2, 150.0, 3000.0, decay=0.06) * 0.8, rumble)
-    buf = at(buf, servo(900.0, 160.0, 0.55, 0.3, band=(300.0, 2600.0)), 0.08)
-    for k, when in enumerate([0.28, 0.41, 0.55]):
-        piece = mix(body(260.0, 90.0, 0.07, click=0.6) * 0.5, knock([980.0, 1600.0], [0.02, 0.012], [0.6, 0.3]) * 0.4)
-        buf = at(buf, piece, when, gain=1.0 - k * 0.25)
-    return room(buf, decay=0.28, mix=0.16)
+    # A machine coming apart: the explosion, the drive winding down, pieces landing late.
+    buf = explosion(1.2, 26.0, 1.0, debris=4)
+    buf = at(buf, servo(900.0, 160.0, 0.55, 0.3, band=(300.0, 2600.0)), 0.1)
+    return buf
 
 
 def arrival():
-    # A heavy footfall as a foe steps into the line, hydraulics settling, dust after it.
+    # A foe stepping into the line: a heavy footfall, hydraulics settling, dust after it.
     n = n_of(0.35)
     dust = lp(noise(n), 900.0) * env_ad(n, 0.04, 0.12) * 0.25
-    b = at(thud(120.0, 36.0, 0.3, click=0.5, drive=3.0, body_gain=1.3), dust, 0.06)
+    b = at(thud(120.0, 36.0, 0.35, click=0.6, drive=3.5, body_gain=1.4), dust, 0.06)
     b = at(b, knock([300.0, 520.0, 810.0], [0.05, 0.03, 0.02], [1.0, 0.5, 0.3]) * 0.5, 0.0)
     b = at(b, hydraulic(0.18, 1200.0, 400.0, 0.4), 0.05)
-    return room(b, decay=0.2, mix=0.14)
+    return room(b, decay=0.24, mix=0.16)
 
 
 def step():
-    # A machine's footfall on the map, light: heard once a hex.
+    # A machine's footfall on the map, once a hex: a stomp, the hydraulics catching it.
     n = n_of(0.12)
     grit = bp(noise(n), 600.0, 3500.0) * env_ad(n, 0.002, 0.03) * 0.3
-    return room(mix(thud(160.0, 55.0, 0.11, click=0.5, drive=2.0) * 0.8, grit), decay=0.1, mix=0.1)
-
-
-def resolve():
-    # A lever pulled over and latched: the travel, then the heavy engagement.
-    travel = hydraulic(0.26, 400.0, 1600.0, 0.45, floor=250.0)
-    latch = mix(thud(160.0, 48.0, 0.25, click=1.0, drive=3.5), knock([620.0, 1050.0], [0.035, 0.02], [0.5, 0.3]) * 0.5)
-    b = at(travel, ratchet(4, 0.16, 1800.0, 0.35), 0.03)
-    return room(at(b, latch, 0.24), decay=0.18, mix=0.12)
-
-
-def contact():
-    # The alarm: a low industrial horn, a stack with an undertone, saturated, swelling and cut.
-    n = n_of(0.62)
-    t = t_of(n)
-    horn = mix(saws(82.5, n, (0.992, 1.0, 1.008)) * 0.7,
-               harmonics(110.0, n, [0.6, 0.5, 0.4, 0.3, 0.2, 0.15]) * 0.6,
-               np.sin(2.0 * math.pi * 55.0 * t) * 0.35)
-    horn = lp(sat(horn, 3.0), 2200.0) * env_ad(n, 0.06, 0.5, curve=2.0)
-    env = np.ones(n)
-    env[-n_of(0.05):] = np.linspace(1.0, 0.0, n_of(0.05))
-    return room(mix(horn * env, thud(90.0, 40.0, 0.3, click=0.2, drive=2.0) * 0.4), decay=0.3, mix=0.14)
-
-
-def engage():
-    # The dive: the display's drive spinning down, a wash rising under it, until the cut.
-    n = n_of(2.2)
-    t = t_of(n)
-    f = 420.0 * np.exp(-t / 0.9) + 38.0
-    ph = 2.0 * math.pi * np.cumsum(f) / SR
-    drive = np.sin(ph) + 0.35 * np.sin(2.0 * ph) + 0.2 * (2.0 * ((ph / (2.0 * math.pi)) % 1.0) - 1.0)
-    drive = lp(sat(drive, 2.0), 1400.0) * (0.5 + 0.5 * np.exp(-t / 1.2))
-    wash = lp_var(noise(n), 600.0 + 2400.0 * (t / 2.2) ** 2) * (t / 2.2) ** 1.5 * 0.8
-    b = mix(drive * 0.6, wash)
-    b = at(b, servo(600.0, 2400.0, 1.6, 0.12), 0.5)
-    return room(b, decay=0.3, mix=0.12)
-
-
-def cut():
-    # The cut to black at the handover: one hard boom, close.
-    n = n_of(0.6)
-    rumble = lp(noise(n), 160.0) * env_ad(n, 0.005, 0.25) * 1.0
-    return room(mix(thud(90.0, 28.0, 0.6, click=1.0, drive=4.0, body_gain=1.2), rumble), decay=0.3, mix=0.14)
+    b = mix(thud(150.0, 45.0, 0.16, click=0.7, drive=2.5, body_gain=1.2), grit)
+    b = at(b, hydraulic(0.1, 900.0, 300.0, 0.2), 0.03)
+    return room(b, decay=0.12, mix=0.1)
 
 
 def gate_hit():
-    # The gate struck: a huge slow boom, the structure groaning after it.
-    n = n_of(1.6)
+    # The gate struck: the biggest explosion of the set, the structure groaning after it.
+    n = n_of(1.8)
     t = t_of(n)
     groan = saws(58.0, n, (0.99, 1.0, 1.01)) * (1.0 + 0.1 * np.sin(2.0 * math.pi * 1.3 * t)) * env_ad(n, 0.15, 0.6) * 0.5
     groan = lp(sat(groan, 2.5), 1100.0)
-    rumble = lp(noise(n), 110.0) * env_ad(n, 0.01, 0.5) * 1.3
-    b = mix(thud(70.0, 22.0, 1.0, click=0.8, drive=4.0, body_gain=1.3) * 1.2, rumble, groan, burst(0.15, 120.0, 2200.0, decay=0.05) * 0.5)
-    for k, when in enumerate([0.5, 0.75, 1.1]):
+    b = mix(explosion(1.6, 22.0, 1.3, debris=5), groan)
+    for k, when in enumerate([0.6, 0.85, 1.2]):
         b = at(b, knock([340.0, 610.0, 900.0], [0.05, 0.035, 0.02], [1.0, 0.5, 0.3]) * 0.3, when, gain=1.0 - 0.25 * k)
     return room(b, decay=0.45, mix=0.18)
 
 
 def spawn():
-    # The rift: a swell rising from nothing to a low pulse, a wash of static over it.
+    # The rift: a swell rising from nothing to a low pulse, a wash of static over it, the
+    # thing arriving with a boom.
     n = n_of(1.3)
     t = t_of(n)
     swell = mix(np.sin(2.0 * math.pi * 44.0 * t) * 0.5, harmonics(88.0, n, [0.5, 0.3, 0.35, 0.3, 0.25, 0.2, 0.15]) * 0.8,
                 saws(176.0, n, (0.99, 1.0, 1.01)) * 0.3) * (t / 1.3) ** 2.5
     swell = lp(sat(swell, 3.0), 1600.0)
     static = bp(noise(n), 1000.0, 7000.0) * (t / 1.3) ** 3 * 0.5
-    end = thud(110.0, 36.0, 0.5, click=0.6, drive=3.0, body_gain=1.3) * 0.8
-    return room(at(mix(swell, static), end, 1.05), decay=0.3, mix=0.14)
+    return room(at(mix(swell, static), explosion(0.6, 34.0, 0.8, debris=1), 1.05), decay=0.3, mix=0.14)
 
 
 def victory():
@@ -562,7 +674,7 @@ def victory():
     chord = np.zeros(n)
     for f, a in [(82.4, 1.0), (123.5, 0.7), (164.8, 0.5), (247.0, 0.3)]:
         chord += saws(f, n, (0.995, 1.0, 1.005)) * a
-    chord += np.sin(2.0 * math.pi * 41.2 * t_of(n)) * 0.3   # the undertone
+    chord += np.sin(2.0 * math.pi * 41.2 * t_of(n)) * 0.3
     chord = lp(sat(chord, 2.0), 2400.0) * env_ad(n, 0.12, 0.7, curve=2.5)
     return room(mix(chord, thud(120.0, 40.0, 0.5, click=0.5, drive=3.0) * 0.6), decay=0.5, mix=0.18)
 
@@ -575,14 +687,14 @@ def defeat():
     ph = 2.0 * math.pi * np.cumsum(f) / SR
     drone_ = np.sin(ph) + 0.4 * np.sin(ph * 1.5) + 0.3 * (2.0 * ((ph / (2.0 * math.pi)) % 1.0) - 1.0) + 0.25 * np.sin(ph * 3.0)
     drone_ = lp(sat(drone_, 2.5), 900.0) * env_ad(n, 0.05, 1.0, curve=2.0)
-    return room(at(drone_, thud(100.0, 30.0, 0.5, click=0.6, drive=3.5) * 0.9, 1.35), decay=0.5, mix=0.18)
+    return room(at(drone_, explosion(0.8, 28.0, 0.9, debris=2), 1.35), decay=0.5, mix=0.18)
 
 
 def withdraw():
     # Pulling out: hydraulics retreating, a door coming down behind the machines.
     b = hydraulic(0.7, 1400.0, 500.0, 0.45)
     b = at(b, servo(1500.0, 700.0, 0.4, 0.15), 0.1)
-    return room(at(b, thud(140.0, 42.0, 0.35, click=0.8, drive=3.0), 0.55), decay=0.3, mix=0.14)
+    return room(at(b, thud(140.0, 42.0, 0.4, click=0.9, drive=3.5, body_gain=1.4), 0.55), decay=0.3, mix=0.14)
 
 
 def overheat():
@@ -1156,10 +1268,46 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0):
     return sat(buf, 1.25)
 
 
+
+# The loops' shape, for `forge.py sections`: bar counts and timestamps of every section.
+MUSIC = {
+    "music_map": {"bpm": 92, "form": "AAAAAAAB CCCCCCCB DDDDDDDD EEEEEEEB GGGGGGGB AAAACCCC DDDDDDDD",
+                  "names": {"A": "groove: contrabass, bells, horn answering, choir pulsing",
+                            "B": "turn bar: a backwards swell into the next section",
+                            "C": "lift: bells doubled, strings under, glitch clicks",
+                            "D": "interlude: cellos and strings crossfading, timpani, tritone every other bar, sparse bells",
+                            "E": "strings section: violins carry the tune, horns answer, harp runs the chord",
+                            "G": "discord: every lead at once, each in its own count, over tritone chords"}},
+    "music_skirmish": {"bpm": 100, "form": "AAAAAAAB CCCCCCCB UUUUUUUU FFFFFFFB SSSSSSSB KKKKKKKK",
+                       "names": {"A": "riff: seven-step chug, bass guitar, double kicks",
+                                 "B": "turn bar: kick roll and tom fill",
+                                 "C": "lift: crunch synth bass takes the riff, piano stabs, metal chime, syncopated snare, choir",
+                                 "U": "unison riff: chug, bass and lead in octaves, drums on the hits",
+                                 "F": "keys section: piano comping, the lead's tune, walking bass, ghost snares",
+                                 "S": "guitar solo: runs over the chug and a busy kick, tom fill at its turn",
+                                 "K": "keyboard solo: synth runs over piano and bass, the bass answering with runs"}},
+}
+
+
+def sections(name):
+    """Every run of bars in a loop: section, bars, and where it starts in seconds."""
+    m = MUSIC[name]
+    form = m["form"].replace(" ", "")
+    bar_s = 4.0 * 60.0 / m["bpm"]
+    out = []
+    b = 0
+    while b < len(form):
+        e = b
+        while e < len(form) and form[e] == form[b]:
+            e += 1
+        out.append((form[b], b + 1, e, b * bar_s, m["names"].get(form[b], "")))
+        b = e
+    return out, len(form) * bar_s
+
 # ---- the loops (Ryan's verdicts, 23 September: the fight in the djent palette, the map in
 # the rift's, long sections, instruments trading the tune, solos in the fight)
 
-def music_map(bpm=92):
+def music_map(bpm=MUSIC["music_map"]["bpm"]):
     # The other world at 92, orchestral and a little wrong. Fifty-six bars in eight-bar
     # sections: the groove (A: bowed contrabass, the bells, the horn answering, the choir on
     # "oo" pulsing), the lift (C: the bells doubled, the strings under), the interlude (D:
@@ -1173,7 +1321,7 @@ def music_map(bpm=92):
     # swell into every section.
     return groove(
         bpm=bpm,
-        form="AAAAAAAB CCCCCCCB DDDDDDDD EEEEEEEB GGGGGGGB AAAACCCC DDDDDDDD",
+        form=MUSIC["music_map"]["form"],
         kit={"kick": (lp(taiko(), 900.0), 1.0), "snare": (snare_drum(True), 0.85), "hat": (hat(False, True), 0.4),
              "open": (hat(True, True), 0.35), "glitch": (glitch_perc(), 0.45), "clank": (clank(), 0.3), "timp": (timpani(), 0.9)},
         drums={
@@ -1240,8 +1388,8 @@ def music_skirmish():
     # over the piano and the bass, the bass answering with runs of its own). A crash every
     # four bars, a kick roll and a tom fill into the turn bars, the choir under the lift only.
     return groove(
-        bpm=100,
-        form="AAAAAAAB CCCCCCCB UUUUUUUU FFFFFFFB SSSSSSSB KKKKKKKK",
+        bpm=MUSIC["music_skirmish"]["bpm"],
+        form=MUSIC["music_skirmish"]["form"],
         kit={"kick": (kick_metal(), 1.2), "snare": (snare_metal(), 1.0), "hat": (hat(False, True), 0.5),
              "open": (hat(True, True), 0.4), "crash": (crash(), 0.7), "tom": (tom(150.0), 0.8), "tom2": (tom(110.0), 0.8),
              "clank": (clank(), 0.3)},
@@ -1398,6 +1546,7 @@ SOUNDS = {
     "arrival": arrival, "step": step, "resolve": resolve,
     "contact": contact, "engage": engage, "cut": cut, "gate_hit": gate_hit, "spawn": spawn,
     "victory": victory, "defeat": defeat, "withdraw": withdraw, "overheat": overheat,
+    "laser": laser, "gunfire": gunfire, "cannon": cannon, "slash": slash, "slam": slam,
     "music_map": music_map, "music_skirmish": music_skirmish,
 }
 
@@ -1410,6 +1559,7 @@ LEVELS = {
     "arrival": -13, "step": -22, "resolve": -13,
     "contact": -10, "engage": -13, "cut": -8, "gate_hit": -8, "spawn": -12,
     "victory": -10, "defeat": -10, "withdraw": -11, "overheat": -12,
+    "laser": -11, "gunfire": -11, "cannon": -8, "slash": -12, "slam": -9,
     "music_map": -17, "music_skirmish": -16,
 }
 
@@ -1421,9 +1571,16 @@ def read(name):
 
 
 def main(argv):
-    if len(argv) < 1 or argv[0] not in ("build", "list", "measure", "sketch"):
+    if len(argv) < 1 or argv[0] not in ("build", "list", "measure", "sketch", "sections"):
         print(__doc__)
         return 2
+    if argv[0] == "sections":
+        for name in argv[1:] or list(MUSIC):
+            runs, total = sections(name)
+            print("%s  (%d bpm, %d bars, %d:%02d)" % (name, MUSIC[name]["bpm"], len(MUSIC[name]["form"].replace(" ", "")), int(total // 60), int(total % 60)))
+            for sec, b0, b1, t, what in runs:
+                print("  %s  bars %2d-%2d  %d:%04.1f  %s" % (sec, b0, b1, int(t // 60), t % 60, what))
+        return 0
     if argv[0] == "sketch":
         # Eight bars in a direction, into tools/soundforge/out, never into the game.
         os.makedirs(OUT_SKETCH, exist_ok=True)

@@ -28,7 +28,7 @@ const NAMES := [
 	"die_pick", "die_drop", "die_roll", "die_lock", "shield_up", "vent",
 	"hit", "hit_crit", "block", "shield_break", "kill", "arrival", "step", "resolve",
 	"contact", "engage", "cut", "gate_hit", "spawn", "victory", "defeat", "withdraw",
-	"overheat",
+	"overheat", "laser", "gunfire", "cannon", "slash", "slam",
 	"music_map", "music_skirmish",
 ]
 
@@ -40,7 +40,7 @@ const TONAL := ["contact", "victory", "defeat", "spawn", "engage", "overheat"]
 const DIP := {
 	"contact": [-7.0, 0.7], "engage": [-9.0, 2.4], "cut": [-14.0, 1.6],
 	"gate_hit": [-9.0, 1.4], "spawn": [-5.0, 1.3], "kill": [-6.0, 0.9],
-	"shield_break": [-4.0, 0.5], "overheat": [-5.0, 1.0],
+	"shield_break": [-4.0, 0.5], "overheat": [-5.0, 1.0], "cannon": [-5.0, 0.7], "slam": [-4.0, 0.5],
 	"victory": [-12.0, 3.0], "defeat": [-12.0, 3.0],
 }
 

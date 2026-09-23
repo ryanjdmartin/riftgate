@@ -5,14 +5,10 @@ thing works lives in its file's comments; why it is that way lives in the bible.
 
 ## As of 23 September 2026 (midday)
 
-**State.** Tests: 187 tests, 2458 checks (`perl -e 'alarm 240; exec @ARGV' godot
---headless --path . -s tests/run_tests.gd`); green apart from
-`test_every_named_sound_has_a_file`, which fails on five names the audio session added to
-`game/audio/sound.gd` (laser, gunfire, cannon, slash, slam) whose files are not built yet:
-that session's open work, not a regression. Ryan runs a second session on this repo at
+**State.** Tests: 187 tests, 2458 checks, green (`perl -e 'alarm 240; exec @ARGV' godot
+--headless --path . -s tests/run_tests.gd`). Ryan runs a second session on this repo at
 the same time (today: the HUD session and the audio session): check `git status` before
-committing and stage by path; the HUD session's work is all committed, the audio session's
-open edits sit in `art/audio`, `game/audio` and `tools/soundforge`. Chassis ids: `badger`,
+committing and stage by path. Chassis ids: `badger`,
 `clydesdale`, `sparrowhawk`, `anvil`. Ryan writes `content/*.json` in his own voice; tests
 never hardcode an entry's passive name.
 
@@ -152,7 +148,16 @@ chiptune); the fight's leads softened (`lead`, `chime_metal`, hats, tilt 2), a g
 section (S) and a keyboard solo section (K, `synlead`, the bass answering) in place of
 the open chords, wilder drums under them. Now: the map 56 bars (A C D E G A C D) at 92, the
 fight 48 (A C U F S K) at 100; `forge.py sketch map_88` renders the map slightly slower
-to compare. Not yet heard: these two as built, the 88 variant, and every effect. If a loop's bpm changes in
+to compare. Effects, fifth pass (bible section 1, sound row):
+two registers. The interface is sci-fi electronic (`blip`, `chirp`: taps, back, plot, the
+codex, the menu, the dice, Resolve, the dive's count-in, the contact klaxon); combat and the
+map are over-the-top weighty (`explosion`, `zap`, `shot`: `laser`, `gunfire`, `cannon`,
+`slash`, `slam`, `kill` and `gate_hit` as explosions, heavier steps and arrivals). The
+skirmish picks a machine's blow by its face (`_blow_sound`: energy laser, kinetic line
+gunfire and cannon on a crit, indirect cannon, melee slash and slam on a crit) and a foe's
+by its damage (`SLAM_DAMAGE`). `forge.py sections` prints every section of both loops with
+timestamps, for notes by section. Not yet heard: the loops as built, the 88 variant, and
+the effects as rebuilt. If a loop's bpm changes in
 `groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
 loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
 wraps every tail, the room's included. The display's scan and idle stay silent by decision.

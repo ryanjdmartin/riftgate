@@ -1147,6 +1147,27 @@ func _drop_target_at(global_pos: Vector2):
 	return null
 
 
+## A foe's blow this big or bigger lands as a slam rather than a slash (a placeholder, like
+## every number).
+const SLAM_DAMAGE := 20
+
+
+## The sound of a machine's blow, by its weapon (Ryan, 23 September: lasers, gunfire,
+## explosions and melee of various kinds, with Doom levels of punch): energy is a laser
+## (static, never crits), a kinetic line weapon is gunfire and its crit the cannon, indirect
+## is the cannon, melee is a slash and its crit a slam.
+func _blow_sound(f: Face, crit: bool) -> String:
+	if f == null:
+		return "hit_crit" if crit else "hit"
+	if f.reach == Face.Reach.MELEE:
+		return "slam" if crit else "slash"
+	if f.reach == Face.Reach.INDIRECT:
+		return "cannon"
+	if f.crit == 0 and f.power == f.power_max:
+		return "laser"
+	return "cannon" if crit else "gunfire"
+
+
 ## Spend die `i` on `target` (a Foe or a MechState). Returns whether the simulation accepted it.
 func _use_die(i: int, target) -> bool:
 	# Every foe's view and drawing before the die lands: a kill clears its slot at once, so
@@ -1165,7 +1186,7 @@ func _use_die(i: int, target) -> bool:
 		var tv: UnitView = was[target][0] if was.has(target) else null
 		_flash_roll(tv)
 		_animate_attack(_mech_views[i], tv, bool(sk.last_roll.get("ranged", false)), target.alive())
-		Sound.play_after(0.08, "hit_crit" if bool(sk.last_roll.get("crit", false)) else "hit")   # when the blow lands
+		Sound.play_after(0.08, _blow_sound(spent, bool(sk.last_roll.get("crit", false))))   # when the blow lands
 		var k := 0
 		for foe in was.keys():
 			if not foe.alive():
@@ -1294,7 +1315,8 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 		var mi: int = ev["mech"]
 		if mi >= 0 and mi < _mech_views.size():
 			hits.append([before["views"].get(ev["foe"]), _mech_views[mi], bool(ev["broke_shield"]),
-				bool(ev.get("blocked", false)), int(ev["shield"]), int(ev["hull"])])
+				bool(ev.get("blocked", false)), int(ev["shield"]), int(ev["hull"]),
+				int(ev.get("absorbed", 0)) + int(ev.get("through", 0))])
 	if not is_inside_tree() or (hits.is_empty() and sk.overheats.is_empty()):
 		then.call()
 		return
@@ -1340,7 +1362,8 @@ func _land_blow(h: Array) -> void:
 		_animate_attack(fv, mv, false)
 	else:
 		_animate_hit(mv)
-	Sound.play_after(0.08, "shield_break" if broke else ("block" if held else "hit"), 0.0 if broke else -4.0)
+	var blow := "slam" if (h.size() > 6 and int(h[6]) >= SLAM_DAMAGE) else "slash"
+	Sound.play_after(0.08, "shield_break" if broke else ("block" if held else blow), 0.0 if broke else -3.0)
 	var t2 := create_tween()
 	t2.tween_interval(0.08)
 	t2.tween_callback(func() -> void:
