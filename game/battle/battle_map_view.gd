@@ -161,7 +161,7 @@ func _map_px_height() -> float:
 ## playable field plus a little of the scenery beyond each end; the rest of the margin
 ## rows are there to fill the edges, not to scroll to (Ryan, 21 September).
 func _clamp_scroll() -> void:
-	var top := _origin.y - HEX_SIZE * 2.4                                                  # a row of scenery past the rift
+	var top := _origin.y - HEX_SIZE * 3.6                                                  # the scenery past the rift, and the vortex's height
 	var bottom := _origin.y + Hex.to_pixel(field.map.gate, HEX_SIZE).y + HEX_SIZE * 2.6   # a row of city past the wall
 	scroll_y = clampf(scroll_y, minf(-top * zoom, size.y - bottom * zoom), -top * zoom)
 	scroll_x = clampf(scroll_x, minf(0.0, size.x - size.x * zoom), 0.0)
@@ -262,7 +262,9 @@ func offscreen_tags() -> Array:
 		var list: Array = rows[above]
 		list.sort_custom(func(a, b) -> bool: return a[0] < b[0])
 		var next_x := TAG_GAP
-		var y := TAG_GAP if above else size.y - TAG_SIZE.y - TAG_GAP
+		# Under the frame's top readout, or over its bottom one (Ryan, 23 September: the
+		# frame belongs to the viewport, so the tags make room for it).
+		var y := FRAME_PAD + 24.0 if above else size.y - TAG_SIZE.y - FRAME_PAD - 20.0
 		for item in list:
 			var x := clampf(item[0] - TAG_SIZE.x * 0.5, TAG_GAP, size.x - TAG_SIZE.x - TAG_GAP)
 			x = maxf(x, next_x)
@@ -329,10 +331,7 @@ func _draw() -> void:
 			var pts := Hex.corners(center(g), HEX_SIZE - 3.0)
 			draw_colored_polygon(pts, Color(hud, 0.10))
 			Hud.stroke_poly(self, pts, Color(hud, 0.85), 2.0)
-	for r in map.rift_hexes:
-		var pts := Hex.corners(center(r), HEX_SIZE - 3.0)
-		draw_colored_polygon(pts, Color("2a1a3f"))
-		Hud.stroke_poly(self, pts, RIFT_ART, 2.0)   # the rift's own art, not a palette role
+	_draw_rift(map)
 
 	# Where the selected mech may end its move.
 	for h in destinations.keys():
@@ -454,42 +453,55 @@ func _draw() -> void:
 
 
 ## The frame: the field's two boundary lines in the display's light, a tick on every
-## row's centre with the row's number, and a sector readout at each end, so the playable
-## area has a viewfinder's edge and the blur runs into it. Screen space.
+## row's centre with the row's number, and a readout at each end, so the playable area has
+## a viewfinder's edge and the blur runs into it. The frame belongs to the viewport, not
+## the map (Ryan, 23 September): its lines run the height of the view and its readouts sit
+## at the view's top and bottom whatever the scroll; only the ticks and numbers ride the
+## map. Screen space.
+const FRAME_PAD := 8.0
+const FRAME_FONT := 14
+
 func _draw_frame(hud: Color) -> void:
 	var map := field.map
 	var fx := _frame_x()
-	var top := _origin.y - HEX_SIZE
-	var bottom := _origin.y + Hex.to_pixel(map.gate, HEX_SIZE).y - HEX_SIZE * 1.5 * (BattleMap.GATE_ROWS - 0.5)
 	var fc := Color(hud, frame_alpha)
 	var font := Hud.mono()
+	var top := FRAME_PAD
+	var bottom := size.y - FRAME_PAD
 	for x in [fx.x, fx.y]:
 		var dir := 1.0 if x == fx.x else -1.0
 		var sx := to_screen(Vector2(x, 0)).x
-		draw_line(Vector2(sx, to_screen(Vector2(0, top)).y), Vector2(sx, to_screen(Vector2(0, bottom)).y), fc, 2.0)
+		draw_line(Vector2(sx, top), Vector2(sx, bottom), fc, 2.0)
 		for row in range(map.height - BattleMap.GATE_ROWS):
 			var y := to_screen(Vector2(0, _origin.y + HEX_SIZE * 1.5 * row)).y
+			if y < top + 30.0 or y > bottom - 30.0:
+				continue   # under the readouts
 			draw_line(Vector2(sx, y), Vector2(sx + 10.0 * dir, y), fc, 2.0)
 			var label := "%02d" % (map.height - BattleMap.GATE_ROWS - row)   # counted up from the gate
-			var lx: float = (sx - 30.0) if dir > 0.0 else (sx + 8.0)
-			draw_string(font, Vector2(lx, y + 4.0), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, fc)
+			var lx: float = (sx - 34.0) if dir > 0.0 else (sx + 8.0)
+			draw_string(font, Vector2(lx, y + 5.0), label, HORIZONTAL_ALIGNMENT_LEFT, -1, FRAME_FONT, fc)
 		for y in [top, bottom]:
-			var sy := to_screen(Vector2(0, y)).y
-			draw_line(Vector2(sx, sy), Vector2(sx + 18.0 * dir, sy), fc, 2.0)
+			draw_line(Vector2(sx, y), Vector2(sx + 18.0 * dir, y), fc, 2.0)
 	var left := to_screen(Vector2(fx.x, 0)).x
-	draw_string(font, Vector2(left + 6.0, to_screen(Vector2(0, top)).y - 6.0), "SEC %02d // GRID %dx%d // RECON" % [map.map_seed % 100, map.width, map.height - BattleMap.GATE_ROWS], HORIZONTAL_ALIGNMENT_LEFT, -1, 11, fc)
-	draw_string(font, Vector2(left + 6.0, to_screen(Vector2(0, bottom)).y + 14.0), "CARE // PROJECTOR LINE", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, fc)
+	draw_string(font, Vector2(left + 8.0, top + 19.0), "SEC %02d // GRID %dx%d // RECON" % [map.map_seed % 100, map.width, map.height - BattleMap.GATE_ROWS], HORIZONTAL_ALIGNMENT_LEFT, -1, FRAME_FONT, fc)
+	draw_string(font, Vector2(left + 8.0, bottom - 8.0), "CARE // PROJECTOR LINE", HORIZONTAL_ALIGNMENT_LEFT, -1, FRAME_FONT, fc)
 
 
-## A HUD bar in screen space: a backing, a track, a fill, a rim, a label above.
+## A HUD bar in screen space: a backing, a track, a fill, a rim, a label above on its own
+## dark plaque, so it reads on any ground, the rift's included (Ryan, 23 September).
+const BAR_FONT := 14
+
 func _hud_bar(map_pos: Vector2, map_w: float, frac: float, col: Color, label: String, a: float = 1.0) -> Rect2:
 	var p := to_screen(map_pos)
 	var rect := Rect2(p.x - map_w * zoom * 0.5, p.y, map_w * zoom, 12.0)
+	var font := Hud.mono()
+	var tw := font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, BAR_FONT).x
+	draw_rect(Rect2(rect.position.x - 3.0, rect.position.y - 22.0, tw + 10.0, 20.0), Color(Palette.BG, 0.85), true)
 	draw_rect(rect.grow(3.0), Color(Palette.BG, 0.85), true)
 	draw_rect(rect, Color(col, 0.18 * a), true)
 	draw_rect(Rect2(rect.position, Vector2(rect.size.x * frac, rect.size.y)), Color(col, a), true)
 	draw_rect(rect.grow(3.0), Color(col, 0.7 * a), false, 1.5)
-	draw_string(Hud.mono(), Vector2(rect.position.x, rect.position.y - 5.0), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color(col, a))
+	draw_string(font, Vector2(rect.position.x + 2.0, rect.position.y - 7.0), label, HORIZONTAL_ALIGNMENT_LEFT, -1, BAR_FONT, Color(col, a))
 	return rect
 
 
@@ -510,7 +522,7 @@ func _draw_gate_bar() -> void:
 ## The rift's pressure as a bar toward the next spawn (Ryan, 22 September), above the rift
 ## in the scenery rows, where the boss standing in front of the rift never covers it.
 func _draw_rift_bar() -> void:
-	var at := _origin + Hex.to_pixel(field.map.rift, HEX_SIZE) + Vector2(0, -HEX_SIZE * 1.9)
+	var at := _origin + Hex.to_pixel(field.map.rift, HEX_SIZE) + Vector2(0, -HEX_SIZE * 2.3)
 	var frac := float(field.rift_pressure) / maxf(1.0, float(field.rift_pressure_max))
 	_hud_bar(at, HEX_SIZE * 3.2, frac, RIFT_ART, "NEXT SPAWN IN %d" % (field.rift_pressure_max - field.rift_pressure))
 
@@ -522,8 +534,31 @@ func sweep_at(local_y: float) -> void:
 		_map3d.set_sweep((local_y - scroll_y) / zoom if sweep_on else -1.0e6)
 
 
-## Off-screen squads get a portrait at the edge nearest them: the source of the intent line.
 const RIFT_ART := Color("c9a6ff")   # what the rift looks like; it means nothing but the rift
+const RIFT_FRAMES := 3
+const RIFT_FRAME_SECONDS := 0.32
+
+## The rift (Ryan, 23 September): a vortex tearing a hole in reality, in the foes' own
+## register, standing over its three hexes and reaching up into the scenery, its spiral
+## turning a little and back. The hexes under it are the hole's floor. Without the art,
+## the old outline.
+func _draw_rift(map: BattleMap) -> void:
+	for r in map.rift_hexes:
+		draw_colored_polygon(Hex.corners(center(r), HEX_SIZE - 3.0), Color("140a1f"))
+	var tex := Sprites.rift()
+	if tex == null:
+		for r in map.rift_hexes:
+			Hud.stroke_poly(self, Hex.corners(center(r), HEX_SIZE - 3.0), RIFT_ART, 2.0)
+		return
+	var fw := tex.get_size().x / RIFT_FRAMES
+	var fh := tex.get_size().y
+	var k: int = [0, 1, 2, 1][int(_ring_t / RIFT_FRAME_SECONDS) % 4]
+	var c := center(map.rift)
+	var dest := Rect2((c - Vector2(fw * SPRITE_SCALE * 0.5, fh * SPRITE_SCALE - HEX_SIZE * 0.9)).floor(), Vector2(fw, fh) * SPRITE_SCALE)
+	draw_texture_rect_region(tex, dest, Rect2(k * fw, 0, fw, fh))
+
+
+## Off-screen squads get a portrait at the edge nearest them: the source of the intent line.
 
 
 ## A number on a dark plaque with a coloured border: legible on any tile, and the colour
@@ -758,9 +793,10 @@ func contact_label(group: Array, ends: Dictionary = {}) -> String:
 ## The frame's left and right lines in map pixels: the field plus a little, and the line
 ## the side blur begins at.
 func _frame_x() -> Vector2:
+	# Close on the play area, so the blur runs on outside it (Ryan, 23 September).
 	var hex_w := sqrt(3.0) * HEX_SIZE
-	var left := _origin.x - hex_w * 0.5 - HEX_SIZE * 0.55
-	return Vector2(left, left + hex_w * (field.map.width + 0.5) + HEX_SIZE * 1.1)
+	var left := _origin.x - hex_w * 0.5 - HEX_SIZE * 0.22
+	return Vector2(left, left + hex_w * (field.map.width + 0.5) + HEX_SIZE * 0.44)
 
 
 ## The dry run of the phase, redone only when the plan changes.

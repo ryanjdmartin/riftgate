@@ -21,6 +21,11 @@ static func map_foe(foe_id: String) -> Texture2D:
 	return _load("res://art/foes/%s_map.png" % foe_id)
 
 
+## The rift on the map: a strip of three frames (tools/foeforge `cut-rift`), or null.
+static func rift() -> Texture2D:
+	return _load("res://art/terrain/rift.png")
+
+
 ## The opaque part of a sprite, in texture pixels, so views can hug the drawing rather than
 ## the frame. Falls back to the whole texture when the image cannot be read.
 static func used_rect(tex: Texture2D) -> Rect2:

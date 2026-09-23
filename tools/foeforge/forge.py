@@ -249,6 +249,69 @@ def cut(args):
     print(f"wrote {args.foe}_combat.png {combat.size} and {args.foe}_map.png {token.size}; preview {pv.relative_to(ROOT)}")
 
 
+# ---------------------------------------------------------------- the rift
+
+RIFT_PROMPT = (
+    "16-bit SNES RPG battle sprite in the style of Final Fantasy VI: ornate, detailed, "
+    "over-the-top dark fantasy, up to twenty colours, one-pixel dark outline. Subject: a "
+    "swirling vortex of violet, magenta and black energy tearing a ragged hole in reality, "
+    "seen from slightly above, a spiral of light sucked into a black centre, jagged torn edges "
+    "of the world curling outward, tendrils of dark energy and pale cyan lightning at the rim, "
+    "unsettling. Wider than it is tall. Centered, isolated on a solid flat pure white background, "
+    "no text, no border, no ground shadow."
+)
+RIFT_FRAME = (128, 128)  # at the map's 2x this spans the three rift hexes and reaches up over the scenery
+RIFT_TWIST = 7.0         # degrees between frames: the spiral turns a little, then back
+
+
+def generate_rift(args):
+    out = OUT / "rift"
+    out.mkdir(parents=True, exist_ok=True)
+    prompt = args.prompt or RIFT_PROMPT
+    (out / "prompt.txt").write_text(prompt + "\n")
+    print(prompt)
+    made = []
+    for seed in range(args.seed, args.seed + args.n):
+        path = out / f"rift_{seed}.png"
+        cmd = [str(MFLUX), "--model", MODEL, "--quantize", QUANTIZE, "--prompt", prompt,
+               "--width", "768", "--height", "640", "--steps", STEPS,
+               "--seed", str(seed), "--output", str(path)]
+        print("rendering", path.name)
+        subprocess.run(cmd, check=True)
+        made.append(path)
+    contact(made, out / "contact.png")
+    print(f"{len(made)} candidates in {out.relative_to(ROOT)}")
+
+
+def cut_rift(args):
+    """One candidate into three frames: the vortex turned a little each way about its
+    centre (an image model cannot draw a consistent second frame; a turn of a few degrees,
+    ping-ponged, reads as the spiral moving). Written as one strip, frames side by side."""
+    src = key_background(Image.open(args.image))
+    # The tendrils close pockets of background that the flood fill from the edges never
+    # reaches; a vortex has no white detail worth keeping, so every near-white pixel goes.
+    px = src.load()
+    for y in range(src.height):
+        for x in range(src.width):
+            r, g, b, a = px[x, y]
+            if a and r > 225 and g > 225 and b > 225:
+                px[x, y] = (0, 0, 0, 0)
+    frames = []
+    for k, angle in enumerate([-RIFT_TWIST, 0.0, RIFT_TWIST]):
+        turned = src.rotate(angle, resample=Image.BICUBIC, expand=False)
+        cut_frame = fit(turned, RIFT_FRAME)
+        frames.append(outline(quantize(cut_frame, None, args.colours)))
+    strip = Image.new("RGBA", (RIFT_FRAME[0] * 3, RIFT_FRAME[1]), (0, 0, 0, 0))
+    for k, f in enumerate(frames):
+        strip.paste(f, (k * RIFT_FRAME[0], 0))
+    dest = ROOT / "art" / "terrain" / "rift.png"
+    strip.save(dest)
+    preview = strip.resize((strip.width * 3, strip.height * 3), Image.NEAREST)
+    pv = OUT / "rift" / "rift_cut_preview.png"
+    preview.save(pv)
+    print(f"wrote {dest.relative_to(ROOT)} {strip.size}; preview {pv.relative_to(ROOT)}")
+
+
 # ---------------------------------------------------------------- mechs: the hybrid
 
 CHASSIS = ROOT / "content" / "chassis.json"
@@ -386,6 +449,15 @@ def main():
     c.add_argument("--colours", type=int, default=16, help="colours to keep (default 16)")
     c.add_argument("--faction-palette", action="store_true", help="snap to the faction palette from the enemy sheet instead of keeping the model's colours")
     c.set_defaults(func=cut)
+    r = sub.add_parser("rift", help="candidates for the rift: a vortex tearing a hole in reality")
+    r.add_argument("--n", type=int, default=4)
+    r.add_argument("--seed", type=int, default=1)
+    r.add_argument("--prompt", default="")
+    r.set_defaults(func=generate_rift)
+    cr = sub.add_parser("cut-rift", help="cut a chosen candidate into art/terrain/rift.png, three frames")
+    cr.add_argument("image")
+    cr.add_argument("--colours", type=int, default=16)
+    cr.set_defaults(func=cut_rift)
     args = ap.parse_args()
     args.func(args)
 
