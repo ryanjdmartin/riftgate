@@ -137,11 +137,11 @@ void fragment() {
 	// tears come more often there and shear further. Centred above the rift's hexes,
 	// where the vortex's mouth is, not on them, reaching about a hex beyond it.
 	// The map is cut into rows of 32 pixels; a torn row's tear is a stretch of it, from 6
-	// to 14 pixels tall at a random height in the row (Ryan, 23 September: the old fixed
+	// to 10 pixels tall at a random height in the row (Ryan, 23 September: the old fixed
 	// six was too thin, 28 too tall), and from 120 to 260 wide at a random place along it
 	// (the little ones looked out of place).
 	float band = floor(px.y / 32.0);
-	float tick = floor(TIME * 2.5);   // a tear holds 0.4 s (Ryan, 23 September)
+	float tick = floor(TIME * 3.5);   // a tear holds under 0.3 s (Ryan, 23 September)
 	vec2 mouth = sources[0].xy - vec2(0.0, sources[0].z * 0.75);
 	float near = source_count > 0 ? 1.0 - smoothstep(sources[0].z * 0.5, sources[0].z * 1.0, distance(px, mouth)) : 0.0;
 	float h1 = fract(sin(band * 12.9898 + tick * 7.31) * 43758.5453);
@@ -151,7 +151,7 @@ void fragment() {
 	float h5 = fract(sin(band * 2.39 + tick * 4.47 + 7.7) * 12289.9);
 	float seg_x0 = h2 * map_size.x;
 	float seg_len = mix(120.0, 260.0, h3);
-	float tear_h = mix(6.0, 14.0, h4);
+	float tear_h = mix(6.0, 10.0, h4);   // always thinner than the vortex's 16-pixel bands
 	float tear_y0 = band * 32.0 + h5 * (32.0 - tear_h);
 	float in_seg = step(seg_x0, px.x) * step(px.x, seg_x0 + seg_len) * step(tear_y0, px.y) * step(px.y, tear_y0 + tear_h);
 	// Per row per tick: on the field enough that a tear or two usually shows (Ryan, 23
@@ -162,7 +162,7 @@ void fragment() {
 	// either way, with only a light dim (its hairlines were tried here and cut).
 	float sub = floor(TIME * 16.0);
 	float h6 = fract(sin(band * 4.13 + tick * 3.37 + sub * 1.7 + 5.5) * 15731.3);
-	float shear = flick * (h6 - 0.5) * 36.0 * mix(1.0, 1.3, near);
+	float shear = flick * (h6 - 0.5) * 24.0 * mix(1.0, 1.3, near);
 	vec2 opx = px + vec2(shear, 0.0);
 	// The other world runs at two frames, the old way.
 	bool second = mod(floor(TIME * anim_rate), 2.0) > 0.5;
