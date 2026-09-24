@@ -168,8 +168,13 @@ timestamps, for notes by section. Map, fifth listen (bible sound row): a soft ta
 and three, airier and softer throughout, cellos under the groove and the contrabass kept to
 C, E and G, the strings late by half a beat in the interlude (`late` on a pad), the climax
 G as independent melodies over the groove with a crescendo (`crescendo` on the groove);
-`sketch map_88 map_90` render the slower variants. Not yet heard: the map as rebuilt, 90,
-the skirmish loop, and the effects as rebuilt. If a loop's bpm changes in
+`sketch map_88 map_90` render the slower variants. Skirmish, sixth listen (bible sound
+row): levelled by section (the bass voice changes per section: chug and bass guitar in A,
+crunch synth in C, `sub_bass` in F, a dark quiet chug in S, a driven bass guitar with runs
+in K), the leads up and high-passed into their own bands, a low shelf on the master
+(`low` on the groove), a `ride` and a `china` with displaced snares. Measured: each
+section's lead band within one to four dB of its low band. Not yet heard: the map as
+rebuilt, 90, the skirmish as levelled, and the effects as rebuilt. If a loop's bpm changes in
 `groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
 loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
 wraps every tail, the room's included. The display's scan and idle stay silent by decision.
