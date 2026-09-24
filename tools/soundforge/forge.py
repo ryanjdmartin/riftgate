@@ -1382,10 +1382,10 @@ MUSIC = {
                        "names": {"A": "riff: seven-step chug, bass guitar, double kicks",
                                  "B": "turn bar: kick roll and tom fill",
                                  "C": "lift: crunch synth bass takes the riff, piano stabs, metal chime, syncopated snare, choir",
-                                 "U": "unison riff: chug, bass and lead in octaves, the snare on the riff's accents, chinas",
-                                 "F": "keys section: piano comping, the lead's tune, a soft sub on the roots, the ride, ghost snares",
-                                 "S": "guitar solo: runs over a darker chug, the ride, chinas on the accents, the snare displaced",
-                                 "K": "keyboard solo: synth runs over the piano, half-time with the ride, the bass driven and answering with runs"}},
+                                 "U": "unison riff: chug, bass and lead in octaves, a restrained groove under it",
+                                 "F": "keys section: piano comping, the lead's tune, the bass walking, the ride with little fills",
+                                 "S": "guitar solo: a melodic line with rests over a darker chug and a tamer kick",
+                                 "K": "keyboard solo: half time with crashes, the lead's long line and the bass's moving line at once"}},
 }
 
 
@@ -1555,46 +1555,51 @@ def sub_bass(f, dur):
 NOTE_INST["sub_bass"] = lambda f, d, p: sub_bass(f, d)
 
 
-def music_skirmish(real=False):
-    # The fight at 100, riff-heavy, in the metal, levelled (Ryan, 23 September, sixth
-    # listen: the bass buried everything and floundered in the middle in the leads'
-    # sections). Forty-eight bars in eight-bar sections: the riff (A: the seven-step chug the
-    # kick locks to, a bass guitar under, double kicks), the lift (C: the crunch synth bass
-    # takes the riff, electric piano stabs, the metal chime, a syncopated snare), the unison
-    # riff (U: chug, bass and lead on one riff in octaves, the drums on its hits, the snare
-    # on the riff's accents, a kick roll at its end), the keys section (F: the electric piano
-    # comping, the lead's tune, a soft sub bass on the roots, a ride, ghost snares), the
-    # guitar solo (S: runs over a darker, quieter chug, a ride, chinas on the accents, the
-    # snare displaced), and the keyboard solo (K: the synth lead's runs over the piano, a
-    # half-time feel with the ride's bell, the bass guitar driven and answering with runs).
-    # A crash every four bars, a kick roll and a tom fill into the turn bars, a china on the
-    # "and" of four before each section, the choir under the lift only. The master cuts the
-    # low shelf so the leads have room.
+def music_skirmish(palette="hybrid"):
+    # The fight at 100, riff-heavy, on the hybrid palette Ryan's notes on the realism run
+    # picked (24 September): real drums, the real guitar's mechanical chug for the backing,
+    # the real bass everywhere (the finger's pluck audible), the original electric piano,
+    # a distorted real lead for the guitar solo, the synth lead for the unison and the
+    # keyboard solo. Forty-eight bars in eight-bar sections: the riff (A), the lift (C: the
+    # bass takes the riff, piano stabs, the metal chime, a syncopated snare), the unison
+    # riff (U: chug, bass and lead in octaves; the drums a restrained groove under it, never
+    # hitting every note), the keys section (F: piano comping, the lead's tune, the bass
+    # walking, the ride's cadence broken up with little fills), the guitar solo (S: a
+    # melodic line with rests over a tamer kick), and the keyboard solo (K: half time with
+    # crashes, the lead's long line and the bass's moving line firing at once, not
+    # answering each other). `palette="synth"` is the second cut's set, kept to compare.
+    real = palette == "hybrid"
     if real:
-        kit = {"kick": (variants(kick_real), 1.1), "snare": (variants(snare_real), 1.0), "hat": (variants(lambda p: hat_real(False, p)), 0.45),
-               "open": ([hat_real(True)], 0.4), "crash": ([crash_real()], 1.0), "china": (china(), 0.9), "ride": ([ride_real()], 0.7),
+        kit = {"kick": (variants(kick_real), 1.0), "snare": (variants(snare_real), 1.0), "hat": (variants(lambda p: hat_real(False, p)), 0.45),
+               "open": ([hat_real(True)], 0.4), "crash": ([crash_real()], 0.9), "china": (china(), 0.8), "ride": ([ride_real()], 0.5),
                "tom": (variants(lambda p: tom(150.0 * p)), 0.8), "tom2": (variants(lambda p: tom(110.0 * p)), 0.8), "clank": (clank(), 0.3)}
     else:
-        kit = {"kick": (kick_metal(), 1.15), "snare": (snare_metal(), 1.0), "hat": (hat(False, True), 0.45),
-               "open": (hat(True, True), 0.4), "crash": (crash(), 1.0), "china": (china(), 0.9), "ride": (ride(), 0.8),
+        kit = {"kick": (kick_metal(), 1.0), "snare": (snare_metal(), 1.0), "hat": (hat(False, True), 0.45),
+               "open": (hat(True, True), 0.4), "crash": (crash(), 1.0), "china": (china(), 0.9), "ride": (ride(), 0.5),
                "tom": (tom(150.0), 0.8), "tom2": (tom(110.0), 0.8), "clank": (clank(), 0.3)}
+    backing = "guitar_real" if real else "chug"
+    bass = "bass_real" if real else "bass_guitar"
+    solo = "lead_real" if real else "lead"
     return groove(
         bpm=MUSIC["music_skirmish"]["bpm"],
         form=MUSIC["music_skirmish"]["form"],
         kit=kit,
         drums={
             "kick": {"A": "x.xx.x.", "B": "x.xx.x.x.xx.x.x.x.xx.x.x.xxxxxxx", "C": "x..xx...x..xx.x.",
-                     "U": "x..x..x.x..x..x.x..x..x.x.x.x.x.x..x..x.x..x..x.x..x..x.x.xxxxxx",
-                     "F": "x.......x...xx..x.....x.x...xx..", "S": "x.xx.x.xx.xx.x.xx.xx.x.xx.xx.xxx", "K": "x...x.x.x...x.xxx...x.x.x.xx.x.x"},
+                     "U": "x.......x.....x.x.......x.x.....",
+                     "F": "x.......x...xx..x.....x.x...xx..", "S": "x..x.x..x.xx.x..", "K": "x.......x.......x.....x.x......."},
             "snare": {"A": "....x.......x...", "B": "....x.......x...", "C": "....x..o.x..x..o",
-                      "U": "..x..x.x..x..x.x..x..x.x.x.x.x.x..x..x.x..x..x.x..x..x.x.x.x.x.x",
-                      "F": "....x..x....x...", "S": "....x.....x...o.....x..x..x.....", "K": "........x.......x.....o.x......."},
-            "hat": {"A": "x.x.x.x.x.x.x.x.", "B": "x.x.x.x.x.x.x.x.", "C": "x.x.x.xxx.x.x.xx", "U": "x.x.x.x.x.x.x.x."},
-            "ride": {"F": "x.x.x.x.x.x.x.x.", "S": "x.x.x.x.x.x.x.x.", "K": "x.x.x.x.x.x.x.x."},
+                      "U": "....x.......x...",
+                      "F": "....x..x....x...", "S": "....x.....x...o.....x..x..x.....", "K": "........x......."},
+            "hat": {"A": "x.x.x.x.x.x.x.x.", "B": "x.x.x.x.x.x.x.x.", "C": "x.x.x.xxx.x.x.xx"},
+            # The ride under the keys with little fills and rolls, never the same two bars.
+            "ride": {"U": "x.x.x.x.x.x.x.x.",
+                     "F": "x.x.x.x.x.x.xx.xx.x.x.x.x.xxx.x.x.x.x.x.x.x.x.x.x.xx.x.x.x.x.xx.",
+                     "S": "x.x.x.x.x.x.x.x.x.x.x.x.x.xx.x.."},
             "open": {"C": "......x.......x.", "F": "..............x."},
-            "crash": {"*": "x" + "." * 63},   # every four bars
-            "china": {"B": "..............x.", "S": "......x.......x.......x...x.....", "U": "........x...............x......."},
-            "tom": {"B": "........x.x.xx.x", "S": "." * 60 + "x.x."},
+            "crash": {"*": "x" + "." * 63, "K": "x" + "." * 31},   # every four bars; every two at half time
+            "china": {"B": "..............x.", "S": "......x.......x.", "U": "........x......................."},
+            "tom": {"B": "........x.x.xx.x", "S": "." * 60 + "x.x.", "F": "." * 62 + "x."},
             "tom2": {"B": "..............x.", "S": "." * 62 + "x."},
             "clank": {"C": "..............x................."},
         },
@@ -1605,53 +1610,54 @@ def music_skirmish(real=False):
                 "S": [[0, 7, 15], [0, 7, 15], [-2, 5, 10], [3, 10, 17]],
                 "K": [[8, 15, 19], [5, 12, 19], [3, 10, 17], [7, 14, 22], [0, 7, 15], [8, 15, 19], [10, 17, 22], [7, 14, 22]]},
         voices=[
-            # The riff: the chug and the bass guitar at full.
-            {"inst": "chug", "mode": "riff", "gain": 0.75, "octave": -1,
+            # The riff: the chug and the bass at full, the bass with character.
+            {"inst": backing, "mode": "riff", "gain": 0.75, "octave": -1,
              "pat": {"A": "0.0-3.0", "B": "0.0-3.0.0.0-3.0.0.0-5.0.0.3-g.0."}},
-            {"inst": "bass_guitar", "mode": "riff", "gain": 0.5,
+            {"inst": bass, "mode": "riff", "gain": 0.6, "hold": 1.1,
              "pat": {"A": "0--.3-.0-...1-..g--.3-.5-...3-..", "B": "0--.3-.0-...5-..3--.1-.0-...g-.."}},
-            # The lift: the crunch synth alone under the keys.
-            {"inst": "bass", "mode": "riff", "gain": 0.45, "params": {"drive": 3.5, "cutoff": 800.0},
+            # The lift: the bass takes the riff.
+            {"inst": bass, "mode": "riff", "gain": 0.65, "hold": 1.1,
              "pat": {"C": "8-.c.8-a.8-.5-.38-.c.8-a.3-.5-.7"}},
             # The unison: the lead on top, the chug and the bass behind it.
-            {"inst": "chug", "mode": "riff", "gain": 0.6, "octave": -1, "params": {"cutoff": 1100.0},
+            {"inst": backing, "mode": "riff", "gain": 0.55, "octave": -1, "params": {"cutoff": 1100.0},
              "pat": {"U": "0..0..0.3..3..3.5..5..5.3.0.g.0.5..5..5.8..8..8.a..a..a.8.5.3.0."}},
-            {"inst": "bass_guitar", "mode": "riff", "gain": 0.4,
+            {"inst": bass, "mode": "riff", "gain": 0.4,
              "pat": {"U": "0..0..0.3..3..3.5..5..5.3.0.g.0.5..5..5.8..8..8.a..a..a.8.5.3.0."}},
-            {"inst": "lead", "mode": "riff", "gain": 0.55, "octave": 2,
-             "pat": {"U": "0..0..0.3..3..3.5..5..5.3.0.g.0.5..5..5.8..8..8.a..a..a.8.5.3.0."}},
-            # The keys: a soft sub on the roots, the piano and the lead in front.
-            {"inst": "sub_bass", "mode": "riff", "gain": 0.4, "legato": True,
-             "pat": {"F": "0-------------..8-------------..a-------------..7-------------..0-------------..5-------------..3-------------..g-------------.."}},
             {"inst": "lead", "mode": "riff", "gain": 0.5, "octave": 2,
+             "pat": {"U": "0..0..0.3..3..3.5..5..5.3.0.g.0.5..5..5.8..8..8.a..a..a.8.5.3.0."}},
+            # The keys: the bass walking, the piano and the lead in front.
+            {"inst": bass, "mode": "riff", "gain": 0.5, "hold": 1.05,
+             "pat": {"F": "0.0.3.0.5.3.0.0.8.8.a.8.c.a.8.8.a.a.c.a.d.c.a.a.7.7.a.7.c.a.7.7."}},
+            {"inst": "lead", "mode": "riff", "gain": 0.46, "octave": 2,
              "pat": {"F": "7--.8-.7-..5.3-.0---....3-.5-.7-8--.a-.8-..7.5-.3---....5-.3-.0-"}},
             {"inst": "epiano", "mode": "stab", "gain": 0.55, "dur": 1.5,
              "pat": {"C": "..x...x...x...x.", "F": "x.x...x.x...x.x."}},
-            # The guitar solo: the lead in front of a darker, quieter chug.
-            {"inst": "chug", "mode": "riff", "gain": 0.4, "octave": -1, "params": {"cutoff": 800.0},
+            # The guitar solo: a melodic line, phrases with rests, over a darker quieter chug.
+            {"inst": backing, "mode": "riff", "gain": 0.4, "octave": -1, "params": {"cutoff": 800.0},
              "pat": {"S": "0.0-3.0"}},
-            {"inst": "bass_guitar", "mode": "riff", "gain": 0.35,
+            {"inst": bass, "mode": "riff", "gain": 0.4, "hold": 1.1,
              "pat": {"S": "0--.3-.0-...1-..g--.3-.5-...3-.."}},
-            {"inst": "lead", "mode": "riff", "gain": 0.6, "octave": 2,
-             "pat": {"S": "0.3.5.7.a.c.e.f.i.f.e.c.a.7.5.3.0..3.5.3.0.g.0.3.5.7.a.7.5.3.0.."
-                          "c.e.f.i.j.i.f.e.c.a.7.a.c.a.7.5.3---5---7---a---c---e---f---i---"}},
-            # The keyboard solo: the synth in front, the piano under, the bass driven and
-            # answering with runs of its own.
-            {"inst": "bass_guitar", "mode": "riff", "gain": 0.36, "params": {"drive": 3.0},
-             "pat": {"K": "8.......a...c...5.......7...8...3.5.7.a.c.a.7.5.3.0.3.5.7.5.3.0."}},
-            {"inst": "synlead", "mode": "riff", "gain": 0.55, "octave": 2,
-             "pat": {"K": "0..3..5.7..a..c.e..f..e.c..a..7.5..7..a.c..e..f.i..j..i.f..e..c."
-                          "a.c.e.f.i.f.e.c.a.7.5.3.0.3.5.7.a...............c...e...f...i..."}},
-            {"inst": "epiano", "mode": "stab", "gain": 0.42, "dur": 1.5,
-             "pat": {"K": "x...x.x...x...x."}},
+            {"inst": solo, "mode": "riff", "gain": 0.55, "octave": 2,
+             "pat": {"S": "0--.3-.5-------7--.8-.7-.5--...."
+                          "3--.5-.7---a---8--.7-.5-.3--...."
+                          "c--.a-.8-------a--.c-.e---c--..."
+                          "a--.8-.7---5---3--.5-.3-.0------"}},
+            # The keyboard solo: the lead's long line and the bass's moving line at once.
+            {"inst": bass, "mode": "riff", "gain": 0.52, "hold": 1.05,
+             "pat": {"K": "8.8.a.8.5.5.7.5.3.3.5.3.0.0.3.0.8.8.a.8.c.a.8.8.7.7.a.7.5.5.3.0."
+                          "8.a.c.a.5.7.8.7.3.5.7.5.0.3.5.3.8.a.c.e.c.a.8.a.7.a.c.a.5.3.0.3."}},
+            {"inst": "lead", "mode": "riff", "gain": 0.48, "octave": 2,
+             "pat": {"K": "8---a---c-------a---8---5-------3---5---7-------5-------........"
+                          "8---a---c---e---c---a---8-------7---5---3---0---3-------........"}},
+            {"inst": "epiano", "mode": "stab", "gain": 0.36, "dur": 2.0,
+             "pat": {"K": "x.......x......."}},
             {"inst": "chime_metal", "mode": "chord", "octave": 2, "gain": 0.22, "echo": (3, 0.25, 2), "dur": 1.6,
              "pat": {"A": "0...............2...............", "C": "0.2.1.3.0.2.1.2.0.3.2.1.0.3.2.3.", "F": "........0.2....."}},
             {"inst": "brass", "mode": "stab", "gain": 0.2, "dur": 1.0,
              "pat": {"C": "..............x."}},
         ],
-        pad=[{"inst": "choir", "gain": 0.18, "vowel": "oh", "sections": "C"}],
+        pad=[{"inst": "choir_real" if real else "choir", "gain": 0.18, "vowel": "oh", "sections": "C"}],
         tilt=3.0, low=(150.0, -6.0),
-        swap=REAL_SKIRMISH_SWAP if real else None,
         human=(0.005, 0.15) if real else None)
 
 
@@ -1780,8 +1786,9 @@ def lead_real(f, dur):
     vib = 1.0 + 0.006 * np.sin(2.0 * math.pi * 5.4 * t) * np.clip((t - 0.12) / 0.2, 0.0, 1.0)
     idx = np.clip((np.cumsum(vib) - np.arange(n)).astype(int) + np.arange(n), 0, n - 1)
     x = x[idx]
-    x = np.clip(sat(hp(x, 400.0) * 6.0, 2.5), -1.0, 1.0)
-    return cabinet(x) * env_pts(n, [(0.0, 0.0), (0.005, 1.0), (max(dur - 0.04, 0.02), 0.8), (dur, 0.0)]) * 0.9
+    # The gain to carry a solo (Ryan: more distortion or the synth is better).
+    x = np.clip(sat(hp(x, 400.0) * 14.0, 4.0) * 1.2, -1.0, 1.0)
+    return cabinet(x) * env_pts(n, [(0.0, 0.0), (0.005, 1.0), (max(dur - 0.04, 0.02), 0.85), (dur, 0.0)]) * 0.9
 
 
 def bass_real(f, dur):
@@ -1792,7 +1799,11 @@ def bass_real(f, dur):
     x = x + bp(x, 80.0, 140.0) * 0.8
     thump = lp(noise(n_of(0.02)), 900.0) * env_ad(n_of(0.02), 0.0005, 0.006) * 0.5
     x = at(x, thump, 0.0)[:n]
-    return hp(lp(sat(x * 1.6, 1.8), 1600.0), 40.0) * 0.9
+    # More character than the first cut (Ryan: lame beside the guitar): driven harder, a
+    # growl in the low mids, the amp open a little wider.
+    x = np.clip(sat(x * 2.6, 2.4) * 1.2, -1.0, 1.0)
+    x = x + bp(x, 200.0, 500.0) * 0.5
+    return hp(lp(x, 2200.0), 40.0) * 0.85
 
 
 def strings_real(semis, n, gain=0.15, octave=1):
@@ -1886,12 +1897,14 @@ def kick_real(pitch=1.0):
 def snare_real(pitch=1.0):
     # A real snare: the top head's tone, the shell, the wires rattling under it, the
     # stick's crack, and the room.
-    n = n_of(0.3)
-    tone = harmonics(185.0 * pitch, n, [1.0, 0.6, 0.3]) * env_ad(n, 0.0005, 0.06) * 0.7
-    shell = harmonics(330.0 * pitch, n, [0.6, 0.3]) * env_ad(n, 0.0005, 0.03) * 0.4
-    wires = bp(noise(n), 1500.0, 9000.0) * env_ad(n, 0.001, 0.09, curve=2.5) * (0.7 + 0.3 * np.abs(tone / (np.max(np.abs(tone)) + 1e-9)))
+    # Shorter than the first cut (Ryan: a little long, the echo cool): the wires die
+    # quicker, the room stays but is brief.
+    n = n_of(0.22)
+    tone = harmonics(185.0 * pitch, n, [1.0, 0.6, 0.3]) * env_ad(n, 0.0005, 0.045) * 0.7
+    shell = harmonics(330.0 * pitch, n, [0.6, 0.3]) * env_ad(n, 0.0005, 0.025) * 0.4
+    wires = bp(noise(n), 1500.0, 9000.0) * env_ad(n, 0.001, 0.055, curve=2.5) * (0.7 + 0.3 * np.abs(tone / (np.max(np.abs(tone)) + 1e-9)))
     crack = bp(noise(n_of(0.008)), 3000.0, 10000.0) * env_ad(n_of(0.008), 0.0001, 0.002) * 0.9
-    return room(mix(tone, shell, wires * 0.9, at(np.zeros(1), crack, 0.0)), decay=0.22, mix=0.24, cut=8000.0)
+    return room(mix(tone, shell, wires * 0.9, at(np.zeros(1), crack, 0.0)), decay=0.14, mix=0.24, cut=8000.0)
 
 
 def hat_real(open_=False, pitch=1.0):
@@ -1904,16 +1917,18 @@ def hat_real(open_=False, pitch=1.0):
 
 
 def ride_real():
+    # Lower and rounder than the first cut (Ryan: too high and tiny, it hurt).
     n = n_of(0.9)
-    return mix(knock([2600.0, 3900.0, 5300.0, 7800.0], [0.5, 0.4, 0.3, 0.2], [0.5, 0.4, 0.3, 0.2], noise_gain=0.0) * 0.5,
-               bp(noise(n), 3000.0, 12000.0) * env_ad(n, 0.001, 0.2) * 0.3,
-               bp(noise(n_of(0.015)), 5000.0, 12000.0) * env_ad(n_of(0.015), 0.0002, 0.003) * 0.7) * 0.5
+    return lp(mix(knock([1700.0, 2500.0, 3600.0, 5100.0], [0.5, 0.4, 0.3, 0.2], [0.5, 0.4, 0.3, 0.2], noise_gain=0.0) * 0.5,
+                  bp(noise(n), 1800.0, 8000.0) * env_ad(n, 0.001, 0.2) * 0.3,
+                  bp(noise(n_of(0.015)), 2500.0, 7000.0) * env_ad(n_of(0.015), 0.0002, 0.003) * 0.6), 7500.0) * 0.5
 
 
 def crash_real():
-    n = n_of(2.2)
-    return mix(bp(noise(n), 2000.0, 15000.0) * env_ad(n, 0.002, 0.6, curve=2.0),
-               knock([2900.0, 4300.0, 6400.0, 8100.0], [0.9, 0.7, 0.5, 0.4], [0.4, 0.3, 0.25, 0.2], noise_gain=0.0) * 0.4) * 0.35
+    # Shorter than a real one (Ryan: it lasted way too long).
+    n = n_of(1.1)
+    return mix(bp(noise(n), 2000.0, 15000.0) * env_ad(n, 0.002, 0.28, curve=2.0),
+               knock([2900.0, 4300.0, 6400.0, 8100.0], [0.4, 0.3, 0.22, 0.18], [0.4, 0.3, 0.25, 0.2], noise_gain=0.0) * 0.4) * 0.35
 
 
 def timpani_real():
@@ -2087,7 +2102,7 @@ def sketch_meter_map():
         air=(0.3, 0.12))
 
 
-SKETCHES.update({"real_map": lambda: music_map(real=True), "real_skirmish": lambda: music_skirmish(real=True),
+SKETCHES.update({"real_map": lambda: music_map(real=True), "skirmish_synth": lambda: music_skirmish(palette="synth"),
                  "meter_map": sketch_meter_map, "meter_skirmish": sketch_meter_skirmish})
 
 

@@ -186,8 +186,15 @@ late on the "and" and the upper strings on two in the interlude (`late` on voice
 pads), the discord evened. The realism sketches are now the whole loops with
 `real=True` (`REAL_MAP_SWAP`, `REAL_SKIRMISH_SWAP`, an orchestral `bassdrum_real` for the
 map); the map's meter sketch is a 7/8 bar at two phrase ends of the interlude and a 6/8
-section whose triplets ride the 4/4 bar (`meter` takes (steps, scale)). Not yet heard:
-the map as rebuilt, the skirmish as levelled, the effects, and the sketches as re-rendered. If a loop's bpm changes in
+section whose triplets ride the 4/4 bar (`meter` takes (steps, scale)). Fight, seventh listen (bible sound
+row): a hybrid palette (real drums with the crash and snare shortened and the ride
+lowered, `guitar_real` backing, `bass_real` everywhere with more drive, the original
+`epiano`, `lead_real` with more gain for the guitar solo, the synth `lead` for the unison
+and the keyboard solo), the kick down, the unison's drums restrained, the ride's cadence
+under the keys, both solos as melodic lines with rests, the keyboard solo half time with
+crashes and the bass firing alongside. `music_skirmish(palette="synth")` is the old set
+(`sketch skirmish_synth`). Four-three as flair and a written 7/8 section wait. Not yet
+heard: the map as rebuilt, the fight on the hybrid, the effects. If a loop's bpm changes in
 `groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
 loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
 wraps every tail, the room's included. The display's scan and idle stay silent by decision.
