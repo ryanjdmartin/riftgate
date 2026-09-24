@@ -218,8 +218,13 @@ Peart-style solo (`_drum_solo`), the keys section twelve bars, the guitar solo a
 chug an octave up with open notes, the keyboard solo's sub in long notes against the
 lead on the beat with crashes on one and three, a soft `ride_real`, the riff's bass down
 and softer-edged. `sketch bass_samples` plays six bass voices on the lift's riff for Ryan
-to pick (`sub_pluck`, `slap_bass` new). Not yet heard: the map as rebuilt, the fight as
-rebuilt, the effects, the bass samples. If a loop's bpm changes in
+to pick (`sub_pluck`, `slap_bass` new). Map, ninth listen (bible sound row, with
+Ryan's rule that the kick keeps its places whatever the meter): opens on eight bars of
+the groove bare (P), the 9/8 and 5/4 turns gone (a triplet bar T into the climax, the
+kick steady), the bass drum up, bells and the lift's horns down, the strings section's
+climb and horn swells rewritten on the beat and quieter, its contrabass gentler, the 6/8
+reprise out of the loop and kept as `sketch map_outro` (a second track's seed). Not yet
+heard: the map as rebuilt, the fight as rebuilt, the effects, the bass samples. If a loop's bpm changes in
 `groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
 loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
 wraps every tail, the room's included. The display's scan and idle stay silent by decision.
