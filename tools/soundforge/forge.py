@@ -1636,21 +1636,22 @@ def music_skirmish(palette="hybrid"):
             # The riff: the chug and the bass at full, the bass with character.
             {"inst": backing, "mode": "riff", "gain": 0.75, "octave": -1,
              "pat": {"A": "0.0-3.0", "B": "0.0-3.0.0.0-3.0.0.0-5.0.0.3-g.0."}},
-            {"inst": bass, "mode": "riff", "gain": 0.6, "hold": 1.1,
+            {"inst": bass, "mode": "riff", "gain": 0.36, "hold": 1.1,
              "pat": {"A": "0--.3-.0-...1-..g--.3-.5-...3-..", "B": "0--.3-.0-...5-..3--.1-.0-...g-.."}},
-            # The lift: the bass takes the riff.
-            {"inst": bass, "mode": "riff", "gain": 0.65, "hold": 1.1,
+            # The lift: the soft sub takes the riff (Ryan, 24 September: the voice he liked
+            # under the keys, heard here as he asked).
+            {"inst": "sub_bass", "mode": "riff", "gain": 0.55, "hold": 1.0,
              "pat": {"C": "8-.c.8-a.8-.5-.38-.c.8-a.3-.5-.7"}},
             # The unison: the lead on top, the chug and the bass behind it.
             {"inst": backing, "mode": "riff", "gain": 0.55, "octave": -1, "params": {"cutoff": 1100.0},
              "pat": {"U": "0..0..0.3..3..3.5..5..5.3.0.g.0.5..5..5.8..8..8.a..a..a.8.5.3.0."}},
-            {"inst": bass, "mode": "riff", "gain": 0.4,
+            {"inst": bass, "mode": "riff", "gain": 0.3,
              "pat": {"U": "0..0..0.3..3..3.5..5..5.3.0.g.0.5..5..5.8..8..8.a..a..a.8.5.3.0."}},
             {"inst": "lead", "mode": "riff", "gain": 0.5, "octave": 2,
              "pat": {"U": "0..0..0.3..3..3.5..5..5.3.0.g.0.5..5..5.8..8..8.a..a..a.8.5.3.0."}},
-            # The keys: the bass walking, the piano and the lead in front.
-            {"inst": bass, "mode": "riff", "gain": 0.5, "hold": 1.05,
-             "pat": {"F": "0.0.3.0.5.3.0.0.8.8.a.8.c.a.8.8.a.a.c.a.d.c.a.a.7.7.a.7.c.a.7.7."}},
+            # The keys: the soft sub on the roots, the piano and the lead in front.
+            {"inst": "sub_bass", "mode": "riff", "gain": 0.5, "legato": True,
+             "pat": {"F": "0-------------..8-------------..a-------------..7-------------..0-------------..5-------------..3-------------..g-------------.."}},
             {"inst": "lead", "mode": "riff", "gain": 0.46, "octave": 2,
              "pat": {"F": "7--.8-.7-..5.3-.0---....3-.5-.7-8--.a-.8-..7.5-.3---....5-.3-.0-"}},
             {"inst": "epiano", "mode": "stab", "gain": 0.55, "dur": 1.5,
@@ -1658,15 +1659,15 @@ def music_skirmish(palette="hybrid"):
             # The guitar solo: a melodic line, phrases with rests, over a darker quieter chug.
             {"inst": backing, "mode": "riff", "gain": 0.4, "octave": -1, "params": {"cutoff": 800.0},
              "pat": {"S": "0.0-3.0"}},
-            {"inst": bass, "mode": "riff", "gain": 0.4, "hold": 1.1,
+            {"inst": bass, "mode": "riff", "gain": 0.3, "hold": 1.1,
              "pat": {"S": "0--.3-.0-...1-..g--.3-.5-...3-.."}},
             {"inst": solo, "mode": "riff", "gain": 0.55, "octave": 2,
              "pat": {"S": "0--.3-.5-------7--.8-.7-.5--...."
                           "3--.5-.7---a---8--.7-.5-.3--...."
                           "c--.a-.8-------a--.c-.e---c--..."
                           "a--.8-.7---5---3--.5-.3-.0------"}},
-            # The keyboard solo: the lead's long line and the bass's moving line at once.
-            {"inst": bass, "mode": "riff", "gain": 0.52, "hold": 1.05,
+            # The keyboard solo: the lead's long line and the sub's moving line at once.
+            {"inst": "sub_bass", "mode": "riff", "gain": 0.5, "hold": 1.0,
              "pat": {"K": "8.8.a.8.5.5.7.5.3.3.5.3.0.0.3.0.8.8.a.8.c.a.8.8.7.7.a.7.5.5.3.0."
                           "8.a.c.a.5.7.8.7.3.5.7.5.0.3.5.3.8.a.c.e.c.a.8.a.7.a.c.a.5.3.0.3."}},
             {"inst": "lead", "mode": "riff", "gain": 0.48, "octave": 2,
