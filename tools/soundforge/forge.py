@@ -1308,14 +1308,16 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
     outer = RNG
     for name, part in drums.items():
         RNG = np.random.default_rng(zlib.crc32(("drum:" + name).encode()))
-        sound, gain = kit[name]
+        entry = kit[name]
+        sound, gain = entry[0], entry[1]
+        behind = entry[2] if len(entry) > 2 else 0.0   # seconds behind the beat (a crash that drags)
         s = _steps(form, part, meter)
         for i, c in enumerate(s):
             in_bar = i - starts[step_bar[i]]
             if c == "x":
-                buf = at(buf, pick(sound), when(i), gain * vel() * (1.0 if not name.startswith("hat") or in_bar % 4 == 0 else 0.7), wrap=True)
+                buf = at(buf, pick(sound), when(i) + behind, gain * vel() * (1.0 if not name.startswith("hat") or in_bar % 4 == 0 else 0.7), wrap=True)
             elif c == "o":
-                buf = at(buf, pick(sound), when(i), gain * vel() * 0.45, wrap=True)
+                buf = at(buf, pick(sound), when(i) + behind, gain * vel() * 0.45, wrap=True)
     per_bar = _chords_per_bar(form, chords)
     for vi, v in enumerate(voices):
         RNG = np.random.default_rng(zlib.crc32(("voice:%s:%d" % (v["inst"], vi)).encode()))
@@ -1416,17 +1418,19 @@ MUSIC = {
                             "Z": "a bar of 7/8 closing the interlude's half",
                             "E": "strings section, sixteen bars: violins carry the tune (on the riff's pattern in the second half), cellos in two-note chords, the drone swelling, the horns building",
                             "G": "climax: every lead running its own melody at once, sixteen bars shaped in swells"}},
-    "music_skirmish": {"bpm": 100, "form": "AAAAAAAB CCCCCCCB AAAA LLLLLLLL XXXXXXXX UUUUUUUU FFFFFFFFFFFB SSSSSSSB KKKKKKKK J",
+    "music_skirmish": {"bpm": 100, "form": "AAAAAAAAAAAAB CCCCCCCB NNNN LLLLLLLL M XXXXXXXX UUUUUUUU FFFFFFFFFFFFFFFB SSSSSSSB KKKKKKKK J",
                        "meter": {"X": 14},
-                       "names": {"A": "riff: seven-step chug, bass guitar, double kicks",
-                                 "B": "turn bar: kick roll and tom fill",
+                       "names": {"A": "riff, twelve bars: four bare, four with the bass, four with bass power chords",
+                                 "N": "the riff again, with the bass",
+                                 "B": "turn bar: one hit, a tom figure, a china into the next",
+                                 "M": "a bar down into the seven",
                                  "C": "lift: the soft sub takes the riff, piano stabs, metal chime, syncopated snare, choir",
-                                 "L": "second lift: the sub with a pluck takes the riff",
+                                 "L": "second lift: the crunch synth takes the riff",
                                  "X": "the seven: a riff written for 7/8, the kick in two-two-three, a crash closing each bar",
                                  "U": "unison riff: chug, bass and lead in octaves, a drum solo behind them in threes and twos",
                                  "F": "keys section: piano comping, the lead's tune, the sub hard and unbroken on the roots, the ride with little fills",
-                                 "S": "guitar solo: the mechanical chug an octave above the riff, open notes, over a fuller floor",
-                                 "K": "keyboard solo: guitar and piano holding chords, the crunch synth and the pluck sub walking against each other",
+                                 "S": "guitar solo: the mechanical chug an octave above the riff, open notes, the crunch synth under",
+                                 "K": "keyboard solo: guitar and piano holding chords, the crunch synth and the plucked bass walking against each other, crashes ringing a hair late",
                                  "J": "the descent: one bar, chug, bass and lead down in a gallop with the toms and cymbals on its hits"}},
 }
 
@@ -1687,19 +1691,23 @@ def china():
                knock([2100.0, 3300.0, 5200.0], [0.12, 0.09, 0.06], [0.4, 0.3, 0.2], noise_gain=0.0) * 0.3) * 0.45
 
 
-def sub_bass(f, dur, res=0.0):
+def sub_bass(f, dur, res=0.0, punch=0.0):
     # The back seat: a sine with a little saw, soft-edged, for the sections the leads own;
-    # `res` adds a resonance in the low mids (Ryan: the keys' bass should hit harder).
+    # `res` adds a resonance in the low mids, `punch` a kick-like front on every note (Ryan:
+    # like a club woofer).
     n = n_of(dur)
     t = t_of(n)
     x = np.sin(2.0 * math.pi * f * t) + saws(f, n, (1.0,)) * 0.18
     x = lp(sat(x, 1.2), 500.0)
     if res:
         x = x + bp(x, 110.0, 260.0) * res * 1.5 + bp(saws(f, n, (1.0,)), 200.0, 600.0) * res * 0.5
+    if punch:
+        front = sweep(f * 3.0, f, n, tau=0.03) * env_ad(n, 0.001, 0.05, curve=3.0) * punch
+        x = sat(x + lp(front, 900.0), 1.3)
     return x * env_pts(n, [(0.0, 0.0), (0.012, 1.0), (max(dur - 0.04, 0.02), 0.85), (dur, 0.0)]) * 0.8
 
 
-NOTE_INST["sub_bass"] = lambda f, d, p: sub_bass(f, d, p.get("res", 0.0))
+NOTE_INST["sub_bass"] = lambda f, d, p: sub_bass(f, d, p.get("res", 0.0), p.get("punch", 0.0))
 
 
 def slap_bass(f, dur):
@@ -1746,6 +1754,13 @@ def splash():
     n = n_of(0.3)
     return mix(bp(noise(n), 4000.0, 15000.0) * env_ad(n, 0.001, 0.07, curve=2.5),
                knock([5200.0, 7300.0, 9800.0], [0.12, 0.09, 0.07], [0.4, 0.3, 0.2], noise_gain=0.0) * 0.3) * 0.4
+
+
+def crash_long():
+    # A crash let ring (Ryan: in the keyboard solo they should echo and draw out).
+    n = n_of(2.4)
+    return mix(bp(noise(n), 2000.0, 15000.0) * env_ad(n, 0.002, 0.7, curve=2.0),
+               knock([2900.0, 4300.0, 6400.0, 8100.0], [1.0, 0.8, 0.6, 0.45], [0.4, 0.3, 0.25, 0.2], noise_gain=0.0) * 0.4) * 0.35
 
 
 def crash_low():
@@ -1816,6 +1831,8 @@ def _drum_solo(bars):
                 else:
                     bar["stack"][pos] = "x"
                     bar["tom"][pos] = "x"
+                if pos + 1 < 16 and bar["tom2"][pos + 1] == "." and bar["snare"][pos + 1] == "." and RNG.integers(3) == 0:
+                    bar["tom2"][pos + 1] = "x"   # fills the air (Ryan: a couple of empty bits)
         if b % 4 == 3:
             for pos in range(12, 16):
                 bar[("snare", "tom", "tom2")[pos % 3]][pos] = "x"
@@ -1836,14 +1853,20 @@ def music_skirmish(palette="hybrid"):
     # the descent (J, two bars: a unison run down two octaves, Dream Theater style, landing
     # on the riff as the loop comes round). `palette="synth"` is the second cut's set.
     real = palette == "hybrid"
+    riff1 = "0--.3-.0-...1-..g--.3-.1-...3-.."   # the seventh note at the fourth's pitch
+    rise = "0--.3-.0-...1-..g--.3-.5-...3-.."    # the rise, for a run's last bar
+    riff_up = "7--.a-.7-...8-..5--.a-.8-...a-.."  # a fifth above: the power chord
+    rise_up = "7--.a-.7-...8-..5--.a-.c-...a-.."
     if real:
         kit = {"kick": (variants(kick_real), 1.0), "snare": (variants(snare_real), 1.0), "hat": (variants(lambda p: hat_real(False, p)), 0.45),
                "open": ([hat_real(True)], 0.4), "crash": ([crash_real()], 0.9), "crash2": ([crash_low()], 0.9), "china": (china(), 0.8),
+               "crash_long": ([crash_long()], 0.9, 0.035),
                "splash": ([splash()], 0.8), "stack": ([stack()], 0.7), "bell": ([ride_bell()], 0.6), "ride": ([ride_real()], 0.35),
                "tom": (variants(lambda p: tom_real(150.0, p)), 0.9), "tom2": (variants(lambda p: tom_real(105.0, p)), 0.9), "clank": (clank(), 0.3)}
     else:
         kit = {"kick": (kick_metal(), 1.0), "snare": (snare_metal(), 1.0), "hat": (hat(False, True), 0.45),
                "open": (hat(True, True), 0.4), "crash": (crash(), 1.0), "crash2": (crash(), 0.9), "china": (china(), 0.9),
+               "crash_long": (crash(), 1.0, 0.035),
                "splash": (splash(), 0.8), "stack": (stack(), 0.7), "bell": (ride_bell(), 0.6), "ride": (ride(), 0.5),
                "tom": (tom(150.0), 0.8), "tom2": (tom(110.0), 0.8), "clank": (clank(), 0.3)}
     backing = "guitar_real" if real else "chug"
@@ -1855,7 +1878,7 @@ def music_skirmish(palette="hybrid"):
     total = sum(steps)
     # Crashes at the doors of the sections that want one, never at the top (a pattern
     # indexed by the loop's own step: its length is no multiple of a bar).
-    doors = [starts[b] for b in range(len(form)) if form[b] in "CLXFSKJ" and b > 0 and form[b - 1] != form[b]]
+    doors = [starts[b] for b in range(len(form)) if form[b] in "CLXFSJ" and b > 0 and form[b - 1] != form[b]]
     doors += [starts[b] + 14 for b in range(len(form) - 1) if form[b] == "B" and form[b + 1] == "A"]   # the turn before the riff returns
     door_pat = "".join("x" if i in doors else "." for i in range(total + (1 if total % 16 == 0 else 0)))
     return groove(
@@ -1864,60 +1887,65 @@ def music_skirmish(palette="hybrid"):
         meter=meter,
         kit=kit,
         drums={
-            "kick": {"A": "x.xx.x.", "B": "x.xx.x.x.xx.x.x.x.xx.x.x.xxxxxxx", "C": "x..xx...x..xx.x.", "L": "x..xx...x..xx.x.",
-                     "X": "x...x...x.....",
+            "kick": {"A": "x.xx.x.", "N": "x.xx.x.", "B": "x.......x.......", "C": "x..xx...x..xx.x.", "L": "x..xx...x..xx.x.",
+                     "M": "x...x...x...x...", "X": "x...x...x.....",
                      "U": solo["kick"],
                      "F": "x.......x...xx..x.....x.x...xx..", "S": "x..x..x.x..x..x.x..x..x.x.x.x...", "K": "x.......x.......x.....x.x.......",
                      "J": "x..x..x.x..x..x."},
-            "snare": {"A": "....x.......x...", "B": "....x.......x...", "C": "....x..o.x..x..o", "L": "....x..o.x..x..o",
-                      "X": "......x.....x.",
+            "snare": {"A": "....x.......x...", "N": "....x.......x...", "B": "....x...x.......", "C": "....x..o.x..x..o", "L": "....x..o.x..x..o",
+                      "M": "....x.......x...", "X": "......x.....x.",
                       "U": solo["snare"],
-                      "F": "....x..x....x...", "S": "....x.......x...", "K": "....x.......x...",
+                      "F": "....x..x....x...", "S": "....x.......x...", "K": "........x.......",
                       "J": "......x.......x."},
-            "hat": {"A": "x.x.x.x.x.x.x.x.", "B": "x.x.x.x.x.x.x.x.", "C": "x.x.x.xxx.x.x.xx", "L": "x.x.x.xxx.x.x.xx", "X": "x.x.x.x.x.x.x.", "S": "x.x.x.x.x.x.x.x."},
+            "hat": {"A": "x.x.x.x.x.x.x.x.", "N": "x.x.x.x.x.x.x.x.", "C": "x.x.x.xxx.x.x.xx", "L": "x.x.x.xxx.x.x.xx", "M": "x.x.x.x.x.x.x.x.", "X": "x.x.x.x.x.x.x.", "S": "x.x.x.x.x.x.x.x."},
             "ride": {"F": "x.x.x.x.x.x.xx.xx.x.x.x.x.xxx.x.x.x.x.x.x.x.x.x.x.xx.x.x.x.x.xx.",
                      "S": "x.x.x.x.x.x.x.x.x.x.x.x.x.xx.x.."},
             "open": {"C": "......x.......x.", "L": "......x.......x.", "F": "..............x.", "X": "............x."},
-            "crash": {"*": door_pat, "U": solo["crash"], "K": "x...............", "X": "............x."},
+            "crash": {"*": door_pat, "U": solo["crash"], "X": "............x."},
+            "crash_long": {"K": "x..............."},
             "crash2": {"U": solo["crash2"]},
-            "china": {"B": "..............x.", "S": "......x.......x.", "U": solo["china"], "J": "......x........."},
+            "china": {"B": "..............x.", "M": "..............x.", "S": "......x.......x.", "U": solo["china"], "J": "......x........."},
             "stack": {"U": solo["stack"]},
 
-            "tom": {"B": "........x.x.xx.x", "S": "." * 60 + "x.x.", "F": "." * 62 + "x.", "U": solo["tom"],
+            "tom": {"B": "........x.x.x...", "S": "." * 60 + "x.x.", "F": "." * 62 + "x.", "U": solo["tom"],
                     "K": "." * 26 + "x.x..." + "." * 28 + "x.x.", "J": ".x.x....x.x....x"},
-            "tom2": {"B": "..............x.", "S": "." * 62 + "x.", "U": solo["tom2"],
+            "tom2": {"B": "............x.x.", "S": "." * 62 + "x.", "U": solo["tom2"],
                      "K": "." * 30 + "x." + "." * 28 + "x...", "J": "...x.x....x.x..."},
             "splash": {"U": solo["splash"], "K": "." * 30 + "x.", "J": "............x..."},
             "clank": {"C": "..............x.................", "L": "..............x................."},
         },
-        chords={"A": [[0, 7, 15], [0, 7, 15], [-2, 5, 10], [3, 10, 17]], "B": [[0, 7, 15]],
+        chords={"A": [[0, 7, 15], [0, 7, 15], [-2, 5, 10], [3, 10, 17]], "N": [[0, 7, 15], [0, 7, 15], [-2, 5, 10], [3, 10, 17]],
+                "B": [[0, 7, 15]], "M": [[8, 15, 19]],
                 "C": [[8, 15, 19], [5, 12, 19], [3, 10, 17], [7, 14, 22]],
                 "L": [[8, 15, 19], [5, 12, 19], [3, 10, 17], [7, 14, 22]],
                 "X": [[0, 7, 15], [0, 7, 15], [3, 10, 17], [-2, 5, 10]],
                 "U": [[0, 7, 15]],
-                "F": [[0, 7, 15], [8, 15, 19], [10, 17, 22], [7, 14, 22], [0, 7, 15], [5, 12, 19], [3, 10, 17], [-2, 5, 10], [0, 7, 15], [8, 15, 19], [7, 14, 22], [-2, 5, 10]],
+                "F": [[0, 7, 15], [8, 15, 19], [10, 17, 22], [7, 14, 22], [0, 7, 15], [5, 12, 19], [3, 10, 17], [-2, 5, 10],
+                      [0, 7, 15], [8, 15, 19], [7, 14, 22], [-2, 5, 10], [0, 7, 15], [8, 15, 19], [10, 17, 22], [7, 14, 22]],
                 "S": [[0, 7, 15], [0, 7, 15], [-2, 5, 10], [3, 10, 17]],
                 "K": [[8, 15, 19, 22], [5, 12, 19, 22], [3, 10, 17, 22], [7, 14, 22, 26], [0, 7, 15, 22], [8, 15, 19, 26], [10, 17, 22, 29], [7, 14, 22, 26]],
                 "J": [[0, 7, 15]]},
         voices=[
             # The riff: the chug at full, the bass under it, up a little, held long.
             {"inst": backing, "mode": "riff", "gain": 0.75, "octave": -1,
-             "pat": {"A": "0.0-3.0", "B": "0.0-3.0.0.0-3.0.0.0-5.0.0.3-g.0."}},
-            {"inst": bass, "mode": "riff", "gain": 0.38, "hold": 1.6, "params": {"drive": 3.5},
-             "pat": {"A": "0--.3-.0-...1-..g--.3-.5-...3-.."}},
-            {"inst": bass, "mode": "riff", "gain": 0.4, "hold": 1.6, "octave": -1, "params": {"drive": 3.5},
-             "pat": {"B": "0---g---h---0---0---g---h---g---"}},
+             "pat": {"A": "0.0-3.0", "N": "0.0-3.0", "B": "0-------........", "M": "8---7---5---3---"}},
+            {"inst": bass, "mode": "riff", "gain": 0.38, "hold": 1.1, "params": {"drive": 3.5},
+             "pat": {"A": "." * 64 + riff1 + rise + riff1 + rise, "N": riff1 + rise, "B": "0-------........", "M": "8---7---5---3---"}},
+            {"inst": bass, "mode": "riff", "gain": 0.3, "hold": 1.1, "params": {"drive": 3.5},
+             "pat": {"A": "." * 128 + riff_up + rise_up}},
             # The lift: the soft sub with a pluck on it takes the riff (Ryan, 24 September: to
             # hear the pluck in context; "sub_bass" is the plain one).
             {"inst": "sub_bass", "mode": "riff", "gain": 0.55, "hold": 1.0,
              "pat": {"C": "8-.c.8-a.8-.5-.38-.c.8-a.3-.5-.7"}},
-            {"inst": "sub_pluck", "mode": "riff", "gain": 0.55, "hold": 1.0,
+            {"inst": "bass", "mode": "riff", "gain": 0.5, "hold": 1.0, "params": {"drive": 3.5, "cutoff": 800.0},
              "pat": {"L": "8-.c.8-a.8-.5-.38-.c.8-a.3-.5-.7"}},
             # The seven: a riff written for it, the bass and a chime on the long beat.
             {"inst": backing, "mode": "riff", "gain": 0.72, "octave": -1,
-             "pat": {"X": "0.0-3.0-5.3-0.0.0-3.0-8.7-5.3."}},
-            {"inst": bass, "mode": "riff", "gain": 0.32, "hold": 1.2, "params": {"drive": 3.5},
-             "pat": {"X": "0---3---5-..3.0---3---8---7-5-"}},
+             "pat": {"X": "0-..3-..5-3-0.0-..3-..8-7-5."}},
+            {"inst": bass, "mode": "riff", "gain": 0.32, "hold": 1.1, "params": {"drive": 3.5},
+             "pat": {"X": "0-..3-..5-3-0.0-..3-..8-7-5."}},
+            {"inst": bass, "mode": "riff", "gain": 0.26, "hold": 1.1, "params": {"drive": 3.5},
+             "pat": {"X": "7-..a-..c-a-7.7-..a-..e-d-c."}},
             {"inst": "chime_metal", "mode": "chord", "octave": 2, "gain": 0.2, "echo": (3, 0.25, 2), "dur": 1.6,
              "pat": {"X": "........0.....2.......1......."}},
             # The unison: the lead on top, the chug and the bass behind it, the drums soloing.
@@ -1928,20 +1956,21 @@ def music_skirmish(palette="hybrid"):
             {"inst": "lead", "mode": "riff", "gain": 0.5, "octave": 2,
              "pat": {"U": "0..0..0.3..3..3.5..5..5.3.0.g.0.5..5..5.8..8..8.a..a..a.8.5.3.0."}},
             # The keys: the sub hard and unbroken on the roots, the piano and the lead in front.
-            {"inst": "sub_bass", "mode": "riff", "gain": 0.45, "legato": True, "params": {"res": 0.35},
+            {"inst": "sub_bass", "mode": "riff", "gain": 0.45, "legato": True, "params": {"res": 0.35, "punch": 0.8},
              "pat": {"F": "0---------------8---------------a---------------7---------------0---------------5---------------3---------------g---------------"
-                          "0---------------8---------------7---------------g---------------"}},
+                          "0---------------8---------------7---------------g---------------0---------------8---------------a---------------7---------------"}},
             {"inst": "lead", "mode": "riff", "gain": 0.46, "octave": 2,
              "pat": {"F": "7--.8-.7-..5.3-.0---....3-.5-.7-8--.a-.8-..7.5-.3---....5-.3-.0-"
                           "7--.a-.c---....a--.8-.7-.5---...3--.5-.7-..8.a-.7-------........"
-                          "c--.a-.8---....7--.5-.3-.0---...3--.5-.7-..8.7-.5-------0-------"}},
+                          "c---a---8-------7---5---3---0-------3---5---7---8---7---5---0---"
+                          "7---8---a---c---a---8---7---5---3-------5---3---0---------------"}},
             {"inst": "epiano", "mode": "stab", "gain": 0.55, "dur": 1.5,
              "pat": {"C": "..x...x...x...x.", "L": "..x...x...x...x.", "F": "x.x...x.x...x.x.", "S": "....x.......x..."}},
             # The guitar solo: the mechanical chug in the higher register, open notes, a fuller
             # line, over a darker quieter chug and a low bass.
             {"inst": backing, "mode": "riff", "gain": 0.55, "octave": -1, "params": {"cutoff": 1000.0},
              "pat": {"S": "0.0-3.0"}},
-            {"inst": bass, "mode": "riff", "gain": 0.3, "hold": 1.3, "params": {"drive": 3.5},
+            {"inst": "bass", "mode": "riff", "gain": 0.3, "hold": 1.0, "params": {"drive": 3.5, "cutoff": 800.0},
              "pat": {"S": "0--.3-.0-...1-..g--.3-.5-...3-.."}},
             {"inst": backing, "mode": "riff", "gain": 0.5, "octave": 0, "params": {"mute": False, "cutoff": 2400.0}, "hold": 1.0,
              "pat": {"S": "0-3-5---7-8-7-5-3-5-7---a-8-7-5-"
@@ -1953,7 +1982,7 @@ def music_skirmish(palette="hybrid"):
             {"inst": "bass", "mode": "riff", "gain": 0.5, "hold": 1.0, "params": {"drive": 3.5, "cutoff": 800.0},
              "pat": {"K": "8---a---c---a---5---7---8---7---3---5---7---5---0---3---5---3---"
                           "8---a---c---e---c---a---8---a---7---a---c---a---5---3---0---3---"}},
-            {"inst": "sub_pluck", "mode": "riff", "gain": 0.5, "hold": 1.0, "octave": 1,
+            {"inst": bass, "mode": "riff", "gain": 0.45, "hold": 1.0, "octave": 1, "params": {"drive": 2.0},
              "pat": {"K": "c---a---8---a---e---c---a---c---a---8---7---8---c---a---8---a---"
                           "c---a---8---7---8---a---c---a---c---a---8---a---5---7---8---a---"}},
             {"inst": "guitar_chord", "mode": "stab", "gain": 0.4, "dur": 14.0,
@@ -2508,7 +2537,8 @@ def main(argv):
             runs, total = sections(name)
             print("%s  (%d bpm, %d bars, %d:%02d)" % (name, MUSIC[name]["bpm"], len(MUSIC[name]["form"].replace(" ", "")), int(total // 60), int(total % 60)))
             for sec, b0, b1, t, what in runs:
-                print("  %s  bars %2d-%2d  %d:%04.1f  %s" % (sec, b0, b1, int(t // 60), t % 60, what))
+                m, sec_ = divmod(round(t, 1), 60)
+                print("  %s  bars %2d-%2d  %d:%04.1f  %s" % (sec, b0, b1, int(m), sec_, what))
         return 0
     if argv[0] == "sketch":
         # Eight bars in a direction, into tools/soundforge/out, never into the game.
