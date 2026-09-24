@@ -2140,7 +2140,7 @@ def sketch_djent():
 
 
 SKETCHES = {"human": sketch_human, "rift": sketch_rift, "djent": sketch_djent,
-            "map_88": lambda: music_map(88), "map_92": lambda: music_map(92), "map_outro": sketch_map_outro}   # the map loop slightly slower, to compare (Ryan, 23 September)
+            "map_86": lambda: music_map(86), "map_88": lambda: music_map(88), "map_92": lambda: music_map(92), "map_outro": sketch_map_outro}   # the map loop slightly slower, to compare (Ryan, 23 September)
 OUT_SKETCH = os.path.join(os.path.dirname(__file__), "out")
 
 
