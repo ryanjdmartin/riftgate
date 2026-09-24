@@ -1338,7 +1338,7 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
 
 # The loops' shape, for `forge.py sections`: bar counts and timestamps of every section.
 MUSIC = {
-    "music_map": {"bpm": 92, "form": "AAAAAAAB CCCCCCCB DDDDDDDD EEEEEEEB GGGGGGGB AAAACCCC DDDDDDDD",
+    "music_map": {"bpm": 90, "form": "AAAAAAAB CCCCCCCB DDDDDDDD EEEEEEEB GGGGGGGB AAAACCCC DDDDDDDD",
                   "names": {"A": "groove: contrabass, bells, horn answering, choir pulsing",
                             "B": "turn bar: a backwards swell into the next section",
                             "C": "lift: bells doubled, strings under, glitch clicks",
@@ -1381,7 +1381,8 @@ def taiko_soft():
 
 
 def music_map(bpm=MUSIC["music_map"]["bpm"]):
-    # The other world at 92, orchestral, airy and a little wrong. Fifty-six bars in
+    # The other world at 90 (Ryan, 24 September: perfect over 92; 88 was lazy), orchestral,
+    # airy and a little wrong. Fifty-six bars in
     # eight-bar sections: the groove (A: cellos low, the bells, the horn answering, the
     # choir on "oo" pulsing softly), the lift (C: the contrabass in short bows, the bells
     # doubled, strings under), the interlude (D: exposed chords on the cellos, the strings

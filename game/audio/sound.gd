@@ -49,7 +49,7 @@ static var muted := false   # tests and tools: nothing plays
 
 ## The loops' tempos, as tools/soundforge writes them, so a thing on screen can move on
 ## the beat (the rift's vortex, Ryan, 23 September: it had landed near the beat by chance).
-const TEMPO := {"music_map": 92.0, "music_skirmish": 100.0}
+const TEMPO := {"music_map": 90.0, "music_skirmish": 100.0}
 
 
 ## Beats elapsed in the loop that is playing, or -1 when nothing is.

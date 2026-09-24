@@ -179,8 +179,9 @@ September; bible sound row): `forge.py sketch meter_map meter_skirmish` (section
 groove, steps per bar per section) and `real_map real_skirmish` (the first sixteen bars
 of each on a pseudo-realistic palette: `guitar_real`, `lead_real`, `bass_real`,
 `strings_real`, `violin_real`, `cello_real`, `horn_real`, `choir_real`, real-ish drums in
-three variants each, `human` timing and velocity). Not yet heard: the map as rebuilt, 90,
-the skirmish as levelled, the effects as rebuilt, and the four experiment sketches. If a loop's bpm changes in
+three variants each, `human` timing and velocity). The map runs at 90 (Ryan, 24
+September: perfect over 92; `Sound.TEMPO` follows). Not yet heard: the skirmish as
+levelled, the effects as rebuilt, and the four experiment sketches. If a loop's bpm changes in
 `groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
 loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
 wraps every tail, the room's included. The display's scan and idle stay silent by decision.
