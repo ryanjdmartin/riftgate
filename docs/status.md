@@ -193,8 +193,14 @@ lowered, `guitar_real` backing, `bass_real` everywhere with more drive, the orig
 and the keyboard solo), the kick down, the unison's drums restrained, the ride's cadence
 under the keys, both solos as melodic lines with rests, the keyboard solo half time with
 crashes and the bass firing alongside. `music_skirmish(palette="synth")` is the old set
-(`sketch skirmish_synth`). Four-three as flair and a written 7/8 section wait. Not yet
-heard: the map as rebuilt, the fight on the hybrid, the effects. If a loop's bpm changes in
+(`sketch skirmish_synth`). Four-three as flair and a written 7/8 section wait. The map's realism won (bible
+sound row) and is folded in: `music_map(palette="real")` is the map (`map_synth` the
+sketch), 60 bars with a 7/8 bar closing each interlude phrase (`meter` in `MUSIC`, which
+`sections` reads) and a twelve-bar climax; the bass drum louder with `headroom` before
+the master stage and every kit sound normalised, since the mix had been distorting; the
+strings' note ends softened; the groove's horns down; the strings section's horns in
+three swelling notes. Not yet heard: the map as folded, the fight on the hybrid, the
+effects. If a loop's bpm changes in
 `groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
 loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
 wraps every tail, the room's included. The display's scan and idle stay silent by decision.

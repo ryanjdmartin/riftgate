@@ -1221,7 +1221,7 @@ def _chords_per_bar(form, chords):
 
 
 def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=None, air=(0.12, 0.06), low=None,
-           meter=None, human=None, swap=None):
+           meter=None, human=None, swap=None, master=1.25, headroom=None):
     """`kit` maps a drum to (sound, gain) or ([variants], gain), a variant chosen per hit.
     `human` is (seconds of timing slop, fraction of velocity slop) for every hit and note.
     `swap` renames instruments (a realism pass: {"cello": "cello_real"}). A voice may carry
@@ -1259,7 +1259,8 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
         return 1.0 - RNG.uniform(0.0, slop_v) if slop_v else 1.0
 
     def pick(sound):
-        return sound[RNG.integers(len(sound))] if isinstance(sound, list) else sound
+        s = sound[RNG.integers(len(sound))] if isinstance(sound, list) else sound
+        return s / max(1.0, float(np.max(np.abs(s))))   # never louder than full scale
 
     def inst(name):
         return swap.get(name, name)
@@ -1366,18 +1367,24 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
     buf = shelf(buf, 700.0, tilt)   # the master's tilt: the mids and highs up, for the phone
     if low:
         buf = low_shelf(buf, low[0], low[1])   # and the low shelf cut, so the leads have room
-    return sat(buf, 1.25)
+    if headroom:
+        # The mix brought under the knee before the master's saturation, so a big drum
+        # cannot drive the whole track into distortion (Ryan, 24 September).
+        buf = buf / max(1.0, float(np.max(np.abs(buf))) / headroom)
+    return sat(buf, master)
 
 
 # The loops' shape, for `forge.py sections`: bar counts and timestamps of every section.
 MUSIC = {
-    "music_map": {"bpm": 90, "form": "AAAAAAAB CCCCCCCB DDDDDDDD EEEEEEEB GGGGGGGB AAAACCCC DDDDDDDD",
+    "music_map": {"bpm": 90, "form": "AAAAAAAB CCCCCCCB DDDDDDDZ EEEEEEEB GGGGGGGGGGGB AAAACCCC DDDDDDDZ",
+                  "meter": {"Z": 14},
                   "names": {"A": "groove: contrabass, bells, horn answering, choir pulsing",
                             "B": "turn bar: a backwards swell into the next section",
                             "C": "lift: bells doubled, strings under, glitch clicks",
-                            "D": "interlude: cellos and strings crossfading, timpani, tritone every other bar, sparse bells",
+                            "D": "interlude: exposed chords, cellos late on the and, strings on two, timpani, sparse bells",
+                            "Z": "a bar of 7/8 closing the interlude's phrase",
                             "E": "strings section: violins carry the tune, horns answer, harp runs the chord",
-                            "G": "discord: every lead at once, each in its own count, over tritone chords"}},
+                            "G": "climax: every lead running its own melody at once, a crescendo across twelve bars"}},
     "music_skirmish": {"bpm": 100, "form": "AAAAAAAB CCCCCCCB UUUUUUUU FFFFFFFB SSSSSSSB KKKKKKKK",
                        "names": {"A": "riff: seven-step chug, bass guitar, double kicks",
                                  "B": "turn bar: kick roll and tom fill",
@@ -1393,16 +1400,20 @@ def sections(name):
     """Every run of bars in a loop: section, bars, and where it starts in seconds."""
     m = MUSIC[name]
     form = m["form"].replace(" ", "")
-    bar_s = 4.0 * 60.0 / m["bpm"]
+    steps, starts, scales = _bars(form, m.get("meter"))
+    step_s = 60.0 / m["bpm"] / 4.0
+    t_of_bar = [0.0]
+    for b in range(len(form)):
+        t_of_bar.append(t_of_bar[-1] + steps[b] * scales[b] * step_s)
     out = []
     b = 0
     while b < len(form):
         e = b
         while e < len(form) and form[e] == form[b]:
             e += 1
-        out.append((form[b], b + 1, e, b * bar_s, m["names"].get(form[b], "")))
+        out.append((form[b], b + 1, e, t_of_bar[b], m["names"].get(form[b], "")))
         b = e
-    return out, len(form) * bar_s
+    return out, t_of_bar[-1]
 
 # ---- the loops (Ryan's verdicts, 23 September: the fight in the djent palette, the map in
 # the rift's, long sections, instruments trading the tune, solos in the fight)
@@ -1441,22 +1452,24 @@ REAL_MAP_SWAP = {"cello": "cello_real", "contrabass": "contrabass_real", "violin
 REAL_SKIRMISH_SWAP = {"chug": "guitar_real", "bass_guitar": "bass_real", "lead": "lead_real", "choir": "choir_real"}
 
 
-def music_map(bpm=MUSIC["music_map"]["bpm"], real=False):
-    # The other world at 90 (Ryan, 24 September: perfect over 92; 88 was lazy), orchestral,
-    # airy and a little wrong. Fifty-six bars in eight-bar sections: the groove (A: cellos
-    # low, the bells, the horn answering, the choir on "oo" pulsing softly), the lift (C:
-    # the contrabass in long bows, the bells doubled, strings under), the interlude (D:
-    # exposed chords, the cellos changing on the "and" of one and the upper strings on two,
-    # timpani, a tritone every other bar, the bells sparse and some stuttering, one
-    # orchestral hit at its door), the strings' section (E: the violins carry the tune, the
-    # horns answer, a harp runs the chord), the climax (G: the same groove, every lead
-    # running its own melody at once, the discord in how they miss each other, a crescendo
-    # across the run), then the groove and the lift again and the interlude to close. A soft
-    # taiko for the kick, a big-room snare, sparse hats, crushed clicks for the glitch, a
-    # backwards swell into every section. `real` swaps the voices and the kit for the
-    # realism pass and humanises every hit.
+def music_map(bpm=MUSIC["music_map"]["bpm"], palette="real"):
+    # The other world at 90, orchestral, airy and a little wrong, on the real palette (Ryan,
+    # 24 September: the realism run won by a significant margin, so it is the map). Sixty
+    # bars in sections: the groove (A: cellos low, the bells, the horn answering softly, the
+    # choir on "oo" pulsing), the lift (C: the contrabass in long bows, the bells doubled,
+    # strings under), the interlude (D: exposed chords, the cellos changing on the "and" of
+    # one and the upper strings on two, timpani, a tritone every other bar, the bells sparse
+    # and some stuttering, one orchestral hit at its door, and a bar of 7/8 closing each
+    # eight-bar phrase, the lines written to land on it), the strings' section (E: the
+    # violins carry the tune, the horns answer in three notes that swell, a harp runs the
+    # chord), the climax (G, twelve bars: the same groove, every lead running its own melody
+    # at once, a crescendo across the run), then the groove and the lift again and the
+    # interlude to close. An orchestral bass drum for the kick, a big-room snare, sparse
+    # hats, crushed clicks for the glitch, a backwards swell into every section, every hit
+    # varied and humanised. `palette="synth"` is the earlier set, kept to compare.
+    real = palette == "real"
     if real:
-        kit = {"kick": (variants(bassdrum_real), 0.9), "snare": (variants(snare_real), 0.55), "hat": (variants(lambda p: hat_real(False, p)), 0.4),
+        kit = {"kick": (variants(bassdrum_real), 1.0), "snare": (variants(snare_real), 0.55), "hat": (variants(lambda p: hat_real(False, p)), 0.4),
                "open": ([hat_real(True)], 0.3), "glitch": (glitch_perc(), 0.4), "clank": (clank(), 0.25), "timp": (variants(lambda p: timpani_real()), 0.8)}
     else:
         kit = {"kick": (taiko_soft(), 0.8), "snare": (snare_drum(True), 0.7), "hat": (hat(False, True), 0.35),
@@ -1464,22 +1477,25 @@ def music_map(bpm=MUSIC["music_map"]["bpm"], real=False):
     return groove(
         bpm=bpm,
         form=MUSIC["music_map"]["form"],
+        meter=MUSIC["music_map"]["meter"],
         kit=kit,
         drums={
             "kick": {"A": "x.......x.......", "B": "x.......x.....x.",
-                     "C": "x.......x.....x.", "D": "x...............", "E": "x.......x.......", "G": "x.......x.....x."},
-            "snare": {"A": "....x.......x...", "B": "....x.......x..o", "C": "....x.......x..o", "D": "........x.......",
+                     "C": "x.......x.....x.", "D": "x...............", "Z": "x.....x.......", "E": "x.......x.......", "G": "x.......x.....x."},
+            "snare": {"A": "....x.......x...", "B": "....x.......x..o", "C": "....x.......x..o", "D": "........x.......", "Z": "......x.....x.",
                       "E": "....x.......x...", "G": "....x.......x..o"},
-            "hat": {"A": "..x...x...x...x.", "B": "..x...x...x...x.", "C": "x.x.x.x.x.x.x.x.", "D": "....x.......x...",
+            "hat": {"A": "..x...x...x...x.", "B": "..x...x...x...x.", "C": "x.x.x.x.x.x.x.x.", "D": "....x.......x...", "Z": "..x...x...x...",
                     "E": "..x...x...x...x.", "G": "x.x.x.x.x.x.x.x."},
             "open": {"C": "......x.......x.", "G": "......x.......x."},
             "glitch": {"C": "..x..x....x...x.x..x.....x..x...", "D": ".....x.........x......x.........", "G": "..x..x....x...x."},
             "clank": {"A": "..............x................."},
-            "timp": {"D": "x...............x...............x...............x.........x.x...", "G": "x...............x...............x...............x.......x...x.x."},
+            "timp": {"D": "x...............x...............x...............x.........x.x...", "Z": "x.........x...",
+                     "G": "x...............x...............x...............x.......x...x.x."},
         },
         chords={"A": [[0, 7, 15], [0, 7, 15], [-2, 5, 10], [3, 10, 17]], "B": [[0, 7, 15]],
                 "C": [[8, 15, 19], [5, 12, 19], [3, 10, 17], [7, 14, 22]],
-                "D": [[10, 17, 22], [10, 16, 22], [8, 15, 19], [0, 6, 13], [7, 14, 22], [7, 13, 22], [0, 7, 15], [0, 6, 13]],
+                "D": [[10, 17, 22], [10, 16, 22], [8, 15, 19], [0, 6, 13], [7, 14, 22], [7, 13, 22], [0, 7, 15]],
+                "Z": [[0, 6, 13]],
                 "E": [[0, 7, 15], [8, 15, 19], [10, 17, 22], [7, 14, 22], [0, 7, 15], [5, 12, 19], [3, 10, 17], [-2, 5, 10]],
                 "G": [[0, 7, 15], [8, 15, 19], [10, 17, 22], [7, 14, 22], [0, 7, 15], [5, 12, 19], [3, 10, 17], [-2, 5, 10]]},
         voices=[
@@ -1489,21 +1505,27 @@ def music_map(bpm=MUSIC["music_map"]["bpm"], real=False):
             {"inst": "contrabass", "mode": "riff", "gain": 0.55, "hold": 1.25,
              "pat": {"C": "8--.a-.8-..a.5-.3--.5-.7-..5.7-.", "E": "0..0..0.3..3..3.a..a..a.7..7..7.0..0..0.5..5..5.3..3..3.g..g..g.",
                      "G": "0..0..0.8..8..8.a..a..a.7..7..7.0..0..0.5..5..5.3..3..3.g..g..g."}},
-            # The interlude's cellos, changing on the "and" of one.
+            # The interlude's cellos, changing on the "and" of one; on the 7/8 bar they hold.
             {"inst": "cello", "mode": "riff", "gain": 0.4, "legato": True, "late": 2,
-             "pat": {"D": "a---------------8---------------g---------------0---------------"}},
+             "pat": {"D": "a---------------8---------------g---------------0---------------", "Z": "0-------------"}},
             {"inst": "cello", "mode": "riff", "gain": 0.3, "octave": 1, "legato": True, "late": 2,
-             "pat": {"D": "5-------4-------3---------------7-------6-------0-------........"}},
+             "pat": {"D": "5-------4-------3---------------7-------6-------0-------........", "Z": "6-------------"}},
             {"inst": "cello", "mode": "riff", "gain": 0.4, "legato": True,
              "pat": {"G": "0---------------8---------------a---------------7---------------0---------------5---------------3---------------g---------------"}},
             {"inst": "bell", "mode": "chord", "octave": 2, "gain": 0.2, "echo": (3, 0.4, 3), "dur": 3.5,
              "pat": {"A": "0.2.1.3.0.2.1.2.", "C": "0.2.1.3.0.2.1.2.0.3.2.1.0.3.2.3.",
-                     "D": "0...2...1...3...0...2...1.3.....0.2...1...3.....0...2...1.3.....",
+                     "D": "0...2...1...3...0...2...1.3.....0.2...1...3.....0...2...1.3.....", "Z": "0...2...1.3...",
                      "G": "0..2.1.3..0.2..10..3.2.1..0.3..2"}},
             {"inst": "bell_stutter", "mode": "chord", "octave": 3, "gain": 0.14, "echo": (3, 0.3, 2), "dur": 2.5,
              "pat": {"C": "............3...............1...", "D": "......................2........."}},
-            {"inst": "horn", "mode": "chord", "octave": 1, "gain": 0.36, "dur": 3.0,
-             "pat": {"A": "........3...2.1.", "C": "....3.2.....1...", "E": "............2...............1..."}},
+            {"inst": "horn", "mode": "chord", "octave": 1, "gain": 0.28, "dur": 3.0,
+             "pat": {"A": "........3...2.1.", "C": "....3.2.....1..."}},
+            # The strings section's horns answer in three notes: the first softer, the next
+            # two coming up.
+            {"inst": "horn", "mode": "chord", "octave": 1, "gain": 0.2, "dur": 2.0,
+             "pat": {"E": "............2..............................."}},
+            {"inst": "horn", "mode": "chord", "octave": 1, "gain": 0.34, "dur": 2.5,
+             "pat": {"E": "..............1.0..........................."}},
             # The climax's melodies: each its own line and its own rhythm, none written to fit
             # the others; levelled so none leads.
             {"inst": "horn", "mode": "riff", "gain": 0.22, "octave": 1,
@@ -1514,16 +1536,17 @@ def music_map(bpm=MUSIC["music_map"]["bpm"], real=False):
             {"inst": "harp", "mode": "chord", "octave": 2, "gain": 0.2, "dur": 1.2,
              "pat": {"E": "0.1.2.3.2.1.0.1.", "G": "0.1.2.3.2.1.0.1.3.2.1.0.1.2.3.2."}},
             {"inst": "swell_rev", "mode": "stab", "gain": 0.45, "dur": 2.0,
-             "pat": {"B": "..............x.", "C": "." * 62 + "x" + ".", "D": "." * 126 + "x" + "."}},
+             "pat": {"B": "..............x.", "C": "." * 62 + "x" + ".", "Z": "............x."}},
             {"inst": "hit", "mode": "stab", "gain": 0.4, "dur": 3.0,
-             "pat": {"D": "x" + "." * 127}},
+             "pat": {"D": "x" + "." * 111}},
         ],
         pad=[{"inst": "choir", "gain": 0.26, "vowel": "oo", "pump": 0.2, "sections": "ABC"},
              {"inst": "strings", "gain": 0.16, "sections": "CEG"},
-             {"inst": "strings", "gain": 0.18, "sections": "D", "late": 4},   # the upper strings land on two
-             {"inst": "choir", "gain": 0.18, "vowel": "ah", "sections": "DEG"}],
+             {"inst": "strings", "gain": 0.18, "sections": "DZ", "late": 4},   # the upper strings land on two
+             {"inst": "choir", "gain": 0.18, "vowel": "ah", "sections": "DZEG"}],
         crescendo={"G": (0.6, 1.2)},
         air=(0.3, 0.12),
+        master=1.1 if real else 1.25, headroom=0.6 if real else None,
         swap=REAL_MAP_SWAP if real else None,
         human=(0.007, 0.18) if real else None)
 
@@ -1746,7 +1769,7 @@ def sketch_djent():
 
 
 SKETCHES = {"human": sketch_human, "rift": sketch_rift, "djent": sketch_djent,
-            "map_88": lambda: music_map(88), "map_90": lambda: music_map(90)}   # the map loop slightly slower, to compare (Ryan, 23 September)
+            "map_88": lambda: music_map(88), "map_92": lambda: music_map(92)}   # the map loop slightly slower, to compare (Ryan, 23 September)
 OUT_SKETCH = os.path.join(os.path.dirname(__file__), "out")
 
 
@@ -1835,7 +1858,7 @@ def violin_real(f, dur):
     bow = bp(noise(n), 2500.0, 6000.0) * env_pts(n, [(0.0, 0.5), (0.05, 0.15), (dur, 0.1)]) * 0.12
     x = lp(x, 4500.0) - lp(x, 260.0)
     x = x + bp(x, 280.0, 360.0) * 0.5 + bp(x, 1000.0, 1250.0) * 0.4
-    return (x + bow) * env_pts(n, [(0.0, 0.0), (0.07, 1.0), (max(dur - 0.06, 0.08), 0.85), (dur, 0.0)]) * 0.7
+    return (x + bow) * env_pts(n, [(0.0, 0.0), (0.07, 1.0), (max(dur - 0.22, 0.08), 0.85), (max(dur - 0.06, 0.09), 0.35), (dur, 0.0)]) * 0.7
 
 
 def cello_real(f, dur):
@@ -1847,7 +1870,7 @@ def cello_real(f, dur):
     bow = bp(noise(n), 1500.0, 4000.0) * env_pts(n, [(0.0, 0.4), (0.06, 0.12), (dur, 0.08)]) * 0.1
     x = lp(x, 2200.0)
     x = x + bp(x, 180.0, 240.0) * 0.6 + bp(x, 400.0, 520.0) * 0.4
-    return (x + bow) * env_pts(n, [(0.0, 0.0), (0.06, 1.0), (max(dur - 0.05, 0.06), 0.9), (dur, 0.0)]) * 0.8
+    return (x + bow) * env_pts(n, [(0.0, 0.0), (0.06, 1.0), (max(dur - 0.24, 0.07), 0.9), (max(dur - 0.06, 0.08), 0.35), (dur, 0.0)]) * 0.8
 
 
 def horn_real(f, dur):
@@ -2102,7 +2125,7 @@ def sketch_meter_map():
         air=(0.3, 0.12))
 
 
-SKETCHES.update({"real_map": lambda: music_map(real=True), "skirmish_synth": lambda: music_skirmish(palette="synth"),
+SKETCHES.update({"map_synth": lambda: music_map(palette="synth"), "skirmish_synth": lambda: music_skirmish(palette="synth"),
                  "meter_map": sketch_meter_map, "meter_skirmish": sketch_meter_skirmish})
 
 
