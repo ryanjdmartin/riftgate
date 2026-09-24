@@ -250,9 +250,14 @@ three stages of four bars, a plainer turn (B) and a walk-down bar (M) into the s
 second lift on the crunch synth, power chords under the seven, the solo denser, the keys
 sixteen bars with `punch` on the sub, the guitar solo's bass on the crunch synth, the
 keyboard solo with `crash_long` a hair behind the beat (a third kit field), the snare on
-kicks only, the real bass as its second walker. Next for music: a second map track from
-`sketch map_outro` (Ryan: a great starting point) that the map could crossfade into
-rather than loop. Not yet heard: both loops as rebuilt, the effects. If a loop's bpm changes in
+kicks only, the real bass as its second walker. Map, twelfth listen (bible sound row; Ryan:
+almost done): 79 bars (P A C E Q D T V G H), the lift's five-note line back, the
+strings' second half on the riff with expected horns at every phrase end, a two-bar
+bridge (Q) into the interlude, four quiet 6/8 bars (V) before the climax, the climax
+twenty bars with each voice on its own `shape` (a per-voice rise and fall across the
+run). Next for music: a second map track from `sketch map_outro` (Ryan: a great starting
+point) that the map could crossfade into rather than loop. Not yet heard: both loops as
+rebuilt, the effects. If a loop's bpm changes in
 `groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
 loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
 wraps every tail, the room's included. The display's scan and idle stay silent by decision.
