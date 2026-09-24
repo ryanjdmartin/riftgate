@@ -240,9 +240,14 @@ second lift (L) on `sub_pluck` before the seven, crashes closing the seven's bar
 the turn before the riff's return, `tom_real` sharper and drier, the ride bell out of the
 solo, the keys' sub sane with the tune run to the end, the guitar solo an octave lower
 over a fuller floor, the keyboard solo as held chords over two walking basses, a one-bar
-gallop descent. Next for music: a second map track from `sketch map_outro` (Ryan: a
-great starting point) that the map could crossfade into rather than loop. Not yet heard:
-both loops as rebuilt, the effects. If a loop's bpm changes in
+gallop descent. Map, eleventh listen (bible sound row): 69 bars
+(P A C E B D T G H), the lift's bows on a bar-length line again (a 40-step line had
+walked the bar), the strings' second half on the riff's pattern with four-note chords
+and a swelling drone (`swell` on a pad), the triplet turn between the interlude and the
+climax, the climax shaped (`crescendo` takes a list of points), more horn in the closer.
+Next for music: a second map track from `sketch map_outro` (Ryan: a great starting
+point) that the map could crossfade into rather than loop. Not yet heard: both loops as
+rebuilt, the effects. If a loop's bpm changes in
 `groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
 loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
 wraps every tail, the room's included. The display's scan and idle stay silent by decision.
