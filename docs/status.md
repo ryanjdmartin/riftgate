@@ -212,8 +212,14 @@ battle screen); a fight's return still resumes. Map, eighth listen: a four-bar c
 after the climax, a 6/8-at-4/4-length reprise (R) after it, long turns in 9/8 (W) and
 5/4 (V) in place of the 7/8 turns, six horn swells in the strings section, the violins'
 tails longer and overlapping (`hold` 1.3); 60 bars, 2:40. `forge.py audition` renders
-every effect into one file with timestamps. Not yet heard: the map as rebuilt, the fight
-as corrected, the effects. If a loop's bpm changes in
+every effect into one file with timestamps. Fight, eighth listen (bible sound row):
+60 bars (A C X U F S K) with a written 7/8 section (X), the unison's drums a generated
+Peart-style solo (`_drum_solo`), the keys section twelve bars, the guitar solo as the
+chug an octave up with open notes, the keyboard solo's sub in long notes against the
+lead on the beat with crashes on one and three, a soft `ride_real`, the riff's bass down
+and softer-edged. `sketch bass_samples` plays six bass voices on the lift's riff for Ryan
+to pick (`sub_pluck`, `slap_bass` new). Not yet heard: the map as rebuilt, the fight as
+rebuilt, the effects, the bass samples. If a loop's bpm changes in
 `groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
 loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
 wraps every tail, the room's included. The display's scan and idle stay silent by decision.
