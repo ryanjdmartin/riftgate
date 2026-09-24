@@ -245,9 +245,14 @@ gallop descent. Map, eleventh listen (bible sound row): 69 bars
 walked the bar), the strings' second half on the riff's pattern with four-note chords
 and a swelling drone (`swell` on a pad), the triplet turn between the interlude and the
 climax, the climax shaped (`crescendo` takes a list of points), more horn in the closer.
-Next for music: a second map track from `sketch map_outro` (Ryan: a great starting
-point) that the map could crossfade into rather than loop. Not yet heard: both loops as
-rebuilt, the effects. If a loop's bpm changes in
+Fight, eleventh listen (bible sound row): 83 bars (A C N L M X U F S K J), the riff in
+three stages of four bars, a plainer turn (B) and a walk-down bar (M) into the seven, the
+second lift on the crunch synth, power chords under the seven, the solo denser, the keys
+sixteen bars with `punch` on the sub, the guitar solo's bass on the crunch synth, the
+keyboard solo with `crash_long` a hair behind the beat (a third kit field), the snare on
+kicks only, the real bass as its second walker. Next for music: a second map track from
+`sketch map_outro` (Ryan: a great starting point) that the map could crossfade into
+rather than loop. Not yet heard: both loops as rebuilt, the effects. If a loop's bpm changes in
 `groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
 loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
 wraps every tail, the room's included. The display's scan and idle stay silent by decision.
