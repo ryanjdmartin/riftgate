@@ -1424,6 +1424,22 @@ MUSIC = {
                             "Z": "a bar of 7/8 closing the interlude's half",
                             "E": "strings section, sixteen bars: violins carry the tune (on the riff's pattern in the second half), cellos in two-note chords, the drone swelling, the horns building",
                             "G": "climax, twenty bars: every lead running its own melody, each rising to lead for a moment and falling back, a tutti rise at the end"}},
+    "music_rift_calm": {"bpm": 90, "form": "IIIIIIII AAAAAAAAAAAAAAAA CCCCCCCCCCCCCCCC DDDDDDDD RRRRRRRRRRRRRRRR OOOOOOOO",
+                        "meter": {k: (12, 4.0 / 3.0) for k in "IACDRO"},
+                        "names": {"I": "intro: the choir pumping and the bells in threes",
+                                  "A": "groove: a soft bass drum on one and three, the sub pulsing in threes, cellos on the roots, bells, horns sparse",
+                                  "C": "lift: the violins' line, the harp, the strings under, horns at the phrase ends",
+                                  "D": "breakdown: no kick, the choir on ah, cellos late with a dissonance, the bells' stutters",
+                                  "R": "the groove again with a violin counter-line",
+                                  "O": "outro: the kick thinning, the pad fading, into the intro"}},
+    "music_human_calm": {"bpm": 96, "form": "IIIIIIII AAAAAAAAAAAAAAAA BBBBBBBB CCCCCCCCCCCCCCCC DDDDDDDD RRRRRRRR OOOOOOOO",
+                         "names": {"I": "intro: the kick on every beat, hats, the sub pulsing",
+                                   "A": "groove: the piano off the beat, the chime's hook, a soft clap, the sub, the guitar muted low, knocks and ticks",
+                                   "B": "breakdown: the choir, the piano holding chords, the sub in long notes",
+                                   "C": "the lead in long notes over the guitar's muted rhythm and a ride",
+                                   "D": "the crunch synth dark and low on the riff, hats in sixteenths, knocks and a stack",
+                                   "R": "the groove again",
+                                   "O": "outro: the kick thinning, the pad fading, the chime"}},
     "music_skirmish": {"bpm": 100, "form": "AAAAAAAAAAAAB CCCCCCCB NNNN LLLLLLLL M XXXXXXXX UUUUUUUU FFFFFFFFFFFFFFFB SSSSSSSB KKKKKKKK J",
                        "meter": {"X": 14},
                        "names": {"A": "riff, twelve bars: four bare, four with the bass, four with bass power chords",
@@ -2055,6 +2071,170 @@ def sketch_bass_samples():
     return groove(bpm=100, form=form, kit=kit, drums=drums, chords=chords, voices=vs, tilt=3.0, low=(150.0, -6.0), human=(0.005, 0.15))
 
 
+# ---- the calm tracks (Ryan, 24 September): the map loop is the rift theme and the fight
+# loop the human theme; these are their subdued siblings, background music that embraces
+# the house roots more (a steady soft kick, off-beat opens, a pulsing sub, pumped and swept
+# pads), each in its theme's palette. Not hooked in the game yet; a multi-track setup later.
+
+def pad_sweep(semis, n, gain=0.14, octave=1, rate=0.05):
+    # A house pad: saws under a low-pass that opens and closes slowly (two fixed filters
+    # blended by a slow sine, so it costs nothing).
+    x = np.zeros(n)
+    for s in semis:
+        f = E2 * 2.0 ** (s / 12.0) * (2 ** octave)
+        x += saws(f, n, (0.994, 1.0, 1.006))
+    x /= max(1, len(semis))
+    x = sat(x, 1.4)
+    dark, bright = lp(x, 420.0), lp(x, 2600.0)
+    m = 0.5 + 0.5 * np.sin(2.0 * math.pi * rate * t_of(n) + RNG.uniform(0.0, 6.0))
+    return (dark * (1.0 - m) + bright * m) * gain
+
+
+PAD_INST["sweep"] = lambda c, n, p: pad_sweep(c, n, p.get("gain", 0.14), p.get("octave", 1), p.get("rate", 0.05))
+
+
+def music_rift_calm():
+    # The rift theme's calm sibling, grown from the reprise: 6/8 at the 4/4 bar's length
+    # throughout, the pulse a triplet, at 90. The choir on "oo" pumping, the bells in threes
+    # with their long echo, cellos legato on the roots, a soft bass drum on one and three
+    # with a sub pulsing under it, brushed hats in threes, glitch clicks and the odd stutter
+    # (the rift's electronic side), horns and a harp coming and going, the violins once.
+    # Seventy-two bars: an intro of pad and bells (I), the groove (A), the lift with the
+    # violins and the harp (C), a breakdown with the choir and the bells' stutters (D), the
+    # groove again with a violin counter-line (R), and an outro that thins to the pad and
+    # wraps into the intro (O).
+    m = MUSIC["music_rift_calm"]
+    drum = variants(bassdrum_real)
+    kit = {"kick": (drum, 1.0), "snare": (variants(snare_real), 0.35), "hat": (variants(lambda p: hat_real(False, p)), 0.3),
+           "open": ([hat_real(True)], 0.22), "glitch": (glitch_perc(), 0.3), "timp": (variants(lambda p: timpani_real()), 0.6)}
+    roots = "0-----------0-----------g-----------3-----------0-----------8-----------g-----------0-----------"
+    return groove(
+        bpm=m["bpm"], form=m["form"], meter=m["meter"], kit=kit,
+        drums={
+            "kick": {"A": "x.....x.....", "C": "x.....x.....", "R": "x.....x.....", "O": "x..........."},
+            "snare": {"A": "......o.....", "C": "......x.....", "R": "......x....."},
+            "hat": {"A": "x.x.x.x.x.x.", "C": "x.x.x.x.x.x.", "R": "x.x.x.x.x.x.", "O": "x..x..x..x.."},
+            "open": {"A": ".........x..", "C": "...x.....x..", "R": "...x.....x.."},
+            "glitch": {"I": "........x...", "A": "........x...........x......x.", "D": "....x.......x...x.......", "O": "........x..."},
+            "timp": {"D": "x.......................x.......................x.......................x...........x.x.x.x."},
+        },
+        chords={"I": [[0, 7, 15], [0, 7, 15], [-2, 5, 10], [3, 10, 17]],
+                "A": [[0, 7, 15], [0, 7, 15], [-2, 5, 10], [3, 10, 17], [0, 7, 15], [8, 15, 19], [-2, 5, 10], [0, 7, 15]],
+                "C": [[8, 15, 19], [5, 12, 19], [3, 10, 17], [7, 14, 22], [0, 7, 15], [8, 15, 19], [10, 17, 22], [7, 14, 22]],
+                "D": [[10, 17, 22], [10, 16, 22], [8, 15, 19], [0, 6, 13], [7, 14, 22], [7, 13, 22], [0, 7, 15], [0, 6, 13]],
+                "R": [[0, 7, 15], [0, 7, 15], [-2, 5, 10], [3, 10, 17], [0, 7, 15], [8, 15, 19], [-2, 5, 10], [0, 7, 15]],
+                "O": [[0, 7, 15], [0, 7, 15], [-2, 5, 10], [0, 7, 15]]},
+        voices=[
+            {"inst": "cello", "mode": "riff", "gain": 0.3, "legato": True,
+             "pat": {"A": roots, "C": "8-----------5-----------3-----------7-----------0-----------8-----------a-----------7-----------",
+                     "R": roots, "O": "0-----------0-----------g-----------0-----------"}},
+            {"inst": "cello", "mode": "riff", "gain": 0.3, "legato": True, "late": 2,
+             "pat": {"D": "a-----------a-----------8-----------0-----------7-----------7-----------0-----------0-----------"}},
+            {"inst": "cello", "mode": "riff", "gain": 0.2, "legato": True, "octave": 1, "late": 2,
+             "pat": {"D": "5-----------4-----------3-----------6-----------2-----------1-----------7-----------6-----------"}},
+            # The sub pulsing in threes: the house under the six-eight.
+            {"inst": "sub_bass", "mode": "riff", "gain": 0.34, "hold": 0.6,
+             "pat": {"A": "0.0.0.0.0.0.0.0.0.0.0.0.g.g.g.g.g.g.3.3.3.3.3.3.0.0.0.0.0.0.8.8.8.8.8.8.g.g.g.g.g.g.0.0.0.0.0.0.",
+                     "R": "0.0.0.0.0.0.0.0.0.0.0.0.g.g.g.g.g.g.3.3.3.3.3.3.0.0.0.0.0.0.8.8.8.8.8.8.g.g.g.g.g.g.0.0.0.0.0.0.",
+                     "C": "8.8.8.8.8.8.5.5.5.5.5.5.3.3.3.3.3.3.7.7.7.7.7.7.0.0.0.0.0.0.8.8.8.8.8.8.a.a.a.a.a.a.7.7.7.7.7.7."}},
+            {"inst": "bell", "mode": "chord", "octave": 2, "gain": 0.11, "echo": (3, 0.45, 3), "dur": 3.5,
+             "pat": {"I": "0..2..1..3..", "A": "0..2..1..3..", "C": "0..2..1..3..0..3..2..1..", "R": "0..2..1..3..", "O": "0.....2.....",
+                     "D": "0...........2...........1..........."}},
+            {"inst": "bell_stutter", "mode": "chord", "octave": 3, "gain": 0.09, "echo": (3, 0.3, 2), "dur": 2.5,
+             "pat": {"D": "......3.................1...............", "A": "........................................3......."}},
+            {"inst": "horn", "mode": "chord", "octave": 1, "gain": 0.18, "dur": 3.0,
+             "pat": {"A": "........................2..........................1....................................",
+                     "C": "..................2.....1...............................................0..........."}},
+            {"inst": "violin", "mode": "riff", "gain": 0.26, "octave": 2, "hold": 1.3,
+             "pat": {"C": "7-----8--.7-----5--.3-----0--......3--.5--.7-----8-----a--.8-----7--.5-----3--......5--.3--.0-----",
+                     "R": "................................................7-----8--.7--.5--.3-----........0--.3--.5--.3-----"}},
+            {"inst": "harp", "mode": "chord", "octave": 2, "gain": 0.18, "dur": 1.2,
+             "pat": {"C": "0.1.2.3.2.1.", "R": ".......................................0.1.2.3.2.1."}},
+            {"inst": "swell_rev", "mode": "stab", "gain": 0.35, "dur": 2.0,
+             "pat": {"D": "." * 94 + "x.", "O": "." * 94 + "x."}},
+        ],
+        pad=[{"inst": "choir", "gain": 0.24, "vowel": "oo", "pump": 0.25, "sections": "IAR"},
+             {"inst": "choir", "gain": 0.2, "vowel": "ah", "sections": "DC"},
+             {"inst": "sweep", "gain": 0.1, "sections": "ACRO", "rate": 0.04},
+             {"inst": "strings", "gain": 0.12, "sections": "C"},
+             {"inst": "choir", "gain": 0.24, "vowel": "oo", "pump": 0.25, "sections": "O", "swell": (1.0, 0.35)}],
+        air=(0.35, 0.14), master=1.1, headroom=0.6, swap=REAL_MAP_SWAP, human=(0.007, 0.18))
+
+
+def music_human_calm():
+    # The human theme's calm sibling at 96, four-on-the-floor and soft: the kick on every
+    # beat, hats in eighths with the open on the off-beats, a clap-soft snare on two and
+    # four, the sub pulsing in eighths, the electric piano stabbing off the beat (the house
+    # piano), the metal chime as the hook, the mechanical guitar muted and low as a rhythm,
+    # the crunch synth filtered dark for one section, a synth lead in long notes once, the
+    # choir under the breakdown, and the industry under it all (Ryan: it fits the background
+    # brief): knocks and ticks, a clank now and then, crushed clicks, the guitar muted low as
+    # a rhythm through the groove, the crunch synth dark under the sub. Seventy-two bars: the intro (I), the groove (A), a
+    # breakdown (B), the lead's section (C), the dark synth's section (D), the groove again
+    # (R) and an outro that thins to the pad and the chime (O).
+    m = MUSIC["music_human_calm"]
+    kit = {"kick": (variants(kick_real), 0.75), "snare": (variants(snare_real), 0.45), "hat": (variants(lambda p: hat_real(False, p)), 0.4),
+           "open": ([hat_real(True)], 0.3), "ride": ([ride_real()], 0.3), "clank": (clank(), 0.25), "knock": (knock_perc(), 0.45),
+           "tick": (tick(), 0.25), "glitch": (glitch_perc(), 0.3), "stack": ([stack()], 0.5)}
+    pulse = "0.0.0.0.0.0.0.0.8.8.8.8.8.8.8.8.a.a.a.a.a.a.a.a.7.7.7.7.7.7.7.7.0.0.0.0.0.0.0.0.5.5.5.5.5.5.5.5.3.3.3.3.3.3.3.3.g.g.g.g.g.g.g.g."
+    return groove(
+        bpm=m["bpm"], form=m["form"], meter=m.get("meter"), kit=kit,
+        drums={
+            "kick": {"I": "x...x...x...x...", "A": "x...x...x...x...", "C": "x...x...x...x...", "D": "x...x...x...x...", "R": "x...x...x...x...", "O": "x...............x..............."},
+            "snare": {"A": "....o.......o...", "C": "....x.......x...", "D": "....o.......o...", "R": "....x.......x..."},
+            "hat": {"I": "x.x.x.x.x.x.x.x.", "A": "x.x.x.x.x.x.x.x.", "C": "x.x.x.x.x.x.x.x.", "D": "xxxxxxxxxxxxxxxx", "R": "x.x.x.x.x.x.x.x."},
+            "open": {"I": "..x...x...x...x.", "A": "..x...x...x...x.", "C": "..x...x...x...x.", "R": "..x...x...x...x.", "O": "..x.......x....."},
+            "ride": {"C": "x.x.x.x.x.x.x.x."},
+            "clank": {"A": "..............x.................................................", "R": "..............x.................", "D": "..............x................."},
+            "knock": {"A": "......x.......x.", "C": "......x.......x.", "R": "......x.......x.", "D": "..x...x...x...x."},
+            "tick": {"A": "xxxxxxxxxxxxxxxx", "C": "xxxxxxxxxxxxxxxx", "R": "xxxxxxxxxxxxxxxx"},
+            "glitch": {"I": "........x.......", "A": "...x.......x....x.........x.....", "D": "...x.......x....", "O": "........x......."},
+            "stack": {"D": "..x...x...x...x."},
+        },
+        chords={"I": [[0, 7, 15]],
+                "A": [[0, 7, 15], [8, 15, 19], [10, 17, 22], [7, 14, 22], [0, 7, 15], [5, 12, 19], [3, 10, 17], [-2, 5, 10]],
+                "B": [[0, 7, 15, 19], [8, 15, 19, 24], [10, 17, 22, 26], [7, 14, 22, 26]],
+                "C": [[0, 7, 15], [8, 15, 19], [10, 17, 22], [7, 14, 22], [0, 7, 15], [5, 12, 19], [3, 10, 17], [-2, 5, 10]],
+                "D": [[0, 7, 15], [0, 7, 15], [-2, 5, 10], [3, 10, 17]],
+                "R": [[0, 7, 15], [8, 15, 19], [10, 17, 22], [7, 14, 22], [0, 7, 15], [5, 12, 19], [3, 10, 17], [-2, 5, 10]],
+                "O": [[0, 7, 15], [8, 15, 19], [7, 14, 22], [0, 7, 15]]},
+        voices=[
+            # The sub pulsing in eighths on the roots: the house floor.
+            {"inst": "sub_bass", "mode": "riff", "gain": 0.4, "hold": 0.7, "params": {"punch": 0.3},
+             "pat": {"I": "0.0.0.0.0.0.0.0.", "A": pulse, "C": pulse, "R": pulse, "D": "0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.g.g.g.g.g.g.g.g.3.3.3.3.3.3.3.3."}},
+            {"inst": "sub_bass", "mode": "riff", "gain": 0.36, "legato": True,
+             "pat": {"B": "0---------------8---------------a---------------7---------------", "O": "0---------------8---------------7---------------0---------------"}},
+            # The piano off the beat.
+            {"inst": "epiano", "mode": "stab", "gain": 0.42, "dur": 1.5,
+             "pat": {"A": "..x...x...x...x.", "C": "..x...x...x...x.", "R": "..x...x...x...x."}},
+            {"inst": "epiano", "mode": "stab", "gain": 0.4, "dur": 8.0,
+             "pat": {"B": "x.......x.......", "O": "x..............."}},
+            # The chime as the hook, and the guitar muted and low as a rhythm.
+            {"inst": "chime_metal", "mode": "chord", "octave": 2, "gain": 0.16, "echo": (3, 0.3, 2), "dur": 1.6,
+             "pat": {"A": "0...2.1.....3...", "R": "0...2.1.....3...", "O": "0.......2......."}},
+            {"inst": "guitar_real", "mode": "riff", "gain": 0.22, "octave": -1, "params": {"cutoff": 800.0},
+             "pat": {"A": "0.0.0.0.0.0.0.0.8.8.8.8.8.8.8.8.a.a.a.a.a.a.a.a.7.7.7.7.7.7.7.7.0.0.0.0.0.0.0.0.5.5.5.5.5.5.5.5.3.3.3.3.3.3.3.3.g.g.g.g.g.g.g.g.",
+                     "R": "0.0.0.0.0.0.0.0.8.8.8.8.8.8.8.8.a.a.a.a.a.a.a.a.7.7.7.7.7.7.7.7.0.0.0.0.0.0.0.0.5.5.5.5.5.5.5.5.3.3.3.3.3.3.3.3.g.g.g.g.g.g.g.g."}},
+            {"inst": "guitar_real", "mode": "riff", "gain": 0.28, "octave": -1, "params": {"cutoff": 900.0},
+             "pat": {"C": "0.0.0.0.0.0.0.0.8.8.8.8.8.8.8.8.a.a.a.a.a.a.a.a.7.7.7.7.7.7.7.7.0.0.0.0.0.0.0.0.5.5.5.5.5.5.5.5.3.3.3.3.3.3.3.3.g.g.g.g.g.g.g.g."}},
+            # The crunch synth dark under the sub through the groove.
+            {"inst": "bass", "mode": "riff", "gain": 0.2, "hold": 1.0, "params": {"drive": 3.0, "cutoff": 300.0},
+             "pat": {"A": "0-------8-------a-------7-------0-------5-------3-------g-------", "R": "0-------8-------a-------7-------0-------5-------3-------g-------"}},
+            # The lead in long notes, once; the crunch synth dark, once.
+            {"inst": "lead", "mode": "riff", "gain": 0.28, "octave": 2,
+             "pat": {"C": "7-------8-------7-------5-------3---------------5-------3-------0-------------------------------3-------5-------7-------8---------------"}},
+            {"inst": "bass", "mode": "riff", "gain": 0.34, "hold": 1.0, "params": {"drive": 2.5, "cutoff": 380.0},
+             "pat": {"D": "0--.3-.0-...1-..g--.3-.1-...3-.."}},
+            {"inst": "brass", "mode": "stab", "gain": 0.16, "dur": 1.0,
+             "pat": {"A": "." * 62 + "x.", "R": "." * 62 + "x."}},
+        ],
+        pad=[{"inst": "sweep", "gain": 0.12, "sections": "IACR", "rate": 0.06},
+             {"inst": "choir_real", "gain": 0.2, "vowel": "oh", "sections": "B"},
+             {"inst": "sweep", "gain": 0.14, "sections": "D", "rate": 0.12},
+             {"inst": "sweep", "gain": 0.12, "sections": "O", "swell": (1.0, 0.3)}],
+        tilt=2.0, low=(150.0, -4.0), air=(0.2, 0.08), human=(0.005, 0.15))
+
+
 # ---- the sketches: eight bars each on one riff and one chord progression, so only the
 # instruments differ. Rendered by `forge.py sketch` into tools/soundforge/out, never into
 # the game, for Ryan to A/B (23 September).
@@ -2513,6 +2693,7 @@ SOUNDS = {
     "victory": victory, "defeat": defeat, "withdraw": withdraw, "overheat": overheat,
     "laser": laser, "gunfire": gunfire, "cannon": cannon, "slash": slash, "slam": slam,
     "music_map": music_map, "music_skirmish": music_skirmish,
+    "music_rift_calm": music_rift_calm, "music_human_calm": music_human_calm,
 }
 
 ## The mix: each sound's loudness (its loudest 50 ms, RMS dB). The music sits under the
@@ -2526,6 +2707,7 @@ LEVELS = {
     "victory": -10, "defeat": -10, "withdraw": -11, "overheat": -12,
     "laser": -11, "gunfire": -11, "cannon": -8, "slash": -12, "slam": -9,
     "music_map": -24.9, "music_skirmish": -20.7,   # mean RMS dB, pinned where Ryan judged them
+    "music_rift_calm": -26.9, "music_human_calm": -23.7,   # the calm siblings, a little under their themes
 }
 
 

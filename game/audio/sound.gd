@@ -29,7 +29,7 @@ const NAMES := [
 	"hit", "hit_crit", "block", "shield_break", "kill", "arrival", "step", "resolve",
 	"contact", "engage", "cut", "gate_hit", "spawn", "victory", "defeat", "withdraw",
 	"overheat", "laser", "gunfire", "cannon", "slash", "slam",
-	"music_map", "music_skirmish",
+	"music_map", "music_skirmish", "music_rift_calm", "music_human_calm",
 ]
 
 ## Pitched sounds (a horn, a chord, a drone) play at their written pitch; the rest get VARY.
@@ -49,7 +49,7 @@ static var muted := false   # tests and tools: nothing plays
 
 ## The loops' tempos, as tools/soundforge writes them, so a thing on screen can move on
 ## the beat (the rift's vortex, Ryan, 23 September: it had landed near the beat by chance).
-const TEMPO := {"music_map": 90.0, "music_skirmish": 100.0}
+const TEMPO := {"music_map": 90.0, "music_skirmish": 100.0, "music_rift_calm": 90.0, "music_human_calm": 96.0}
 
 
 ## Beats elapsed in the loop that is playing, or -1 when nothing is.

@@ -255,9 +255,12 @@ almost done): 79 bars (P A C E Q D T V G H), the lift's five-note line back, the
 strings' second half on the riff with expected horns at every phrase end, a two-bar
 bridge (Q) into the interlude, four quiet 6/8 bars (V) before the climax, the climax
 twenty bars with each voice on its own `shape` (a per-voice rise and fall across the
-run). Next for music: a second map track from `sketch map_outro` (Ryan: a great starting
-point) that the map could crossfade into rather than loop. Not yet heard: both loops as
-rebuilt, the effects. If a loop's bpm changes in
+run). Names (Ryan, 24 September): the map loop is the rift theme, the fight loop the human
+theme. Two calm siblings built (bible sound row): `music_rift_calm` (6/8 throughout,
+grown from the reprise, 72 bars, 3:11) and `music_human_calm` (four on the floor,
+industrial, 72 bars, 3:00), in `art/audio`, `Sound.NAMES` and `TEMPO`, not hooked to a
+screen yet; a multi-track setup per screen is the likely end state. Not yet heard: the
+themes as last rebuilt, the calm tracks, the effects. If a loop's bpm changes in
 `groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
 loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
 wraps every tail, the room's included. The display's scan and idle stay silent by decision.
