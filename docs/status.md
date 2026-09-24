@@ -115,155 +115,66 @@ phone runs Compatibility); pinch (the map only hears the magnify gesture, which 
 never sends: handle two fingers directly). Not to chase on the web: missing hex outlines
 and general frame rate, which want a native build. Then the true Android export.
 
-**Audio (23 September, second cut; bible section 1, sound row).** Ryan's notes on the first
-cut: the skirmish loop went missing about half the time (the last crossfade's chained stop
-landed on the player the new loop had taken: fixed, verified in a window at every gap);
-the loops needed length and complexity, more under and overtones, and read as chip-tune;
-the pings were cowbell and anvil where mechanical was wanted. Done: 48 kHz; every thud has
-a body pinned to 230 Hz so a phone hears the weight; knocks that die in tens of ms, servos,
-hydraulics, relays; stacks and a small room on everything; a loudness target per sound in
-`LEVELS` (the mix lives in the forge; hooks carry offsets only for relative moments); the
-music dips under big moments (`Sound.DIP`); pitched sounds keep their pitch (`Sound.TONAL`);
-a loop resumes where it left; 16-bar forms in sections; buttons with their own sound no
-longer double the tap; overheats land after the enemy's blows with their own sound.
-Measured, not heard: `forge.py measure` prints each file's loudness and low share, and the
-phone band (300 to 4000 Hz) of every blow sits 6 to 10 dB under its full loudness, the
-music 6 dB, so the balance holds on a speaker. Ryan heard the map loop (a huge improvement)
-and gave notes, now built and in the bible's sound row: no builds, bass drops or speed
-snares; 32-bar loops with an eight-bar interlude; the crunch bass back; a little metal at
-low gain; the map at 92 (84 was too slow) on its own kit (soft kick, rim, brushed hats, pad and chimes), the
-skirmish at 100 on kick, snare, clank and saw stabs, the pad and bass shared. Ryan's
-second listen: the map's writing is right (the chimes), the kit reads as Loop Hero (the
-pulse-and-saw palette), the industrial noises were too much (the swell cut, the tick kept
-to the interlude), the skirmish tune is less complex than the map's. The direction
-discussion is in the bible's sound row (open: the palette; the dichotomy as the mixing
-rule). The groove engine is now voices over chords (`groove(bpm, form, kit, drums,
-chords, voices, pad)`) with new instruments: FM `epiano`, `bell`, `brass`; Karplus-Strong
-`pluck`, `pluck_bass`, `chug`; formant `choir`; `organ`, `strings`, `orch_hit`. Three
-eight-bar sketches on one riff (`forge.py sketch`, into `tools/soundforge/out/`, ignored
-by git): human (FM keys, bells, plucked bass), rift (choir, strings, taiko, orchestral
-hits, the crunch bass), djent (a seven-step chug the kick locks to, bells, choir). Ryan
-picked: djent for the fight (harder drums, choir up a touch, a bass guitar for the
-synth crunch, unison riff sections and drawn-out ones), the rift palette for the map
-(creepier, more electronic and glitchy, the echo kept); human was plain beside them. Third
-listen: longer sections, the map's bass organic (orchestral, not electronic), the fight
-riff-heavy with the kick forward and no long chord stretches, instruments trading by
-section on both. Fourth listen (bible section 1,
-sound row, has every note): the map's interlude paused between bars (now the pad
-crossfades chord to chord and held notes are legato), a discord section (G: every lead in
-its own count over tritone chords), the bass a bowed `contrabass` (the pizzicato read
-chiptune); the fight's leads softened (`lead`, `chime_metal`, hats, tilt 2), a guitar solo
-section (S) and a keyboard solo section (K, `synlead`, the bass answering) in place of
-the open chords, wilder drums under them. Now: the map 56 bars (A C D E G A C D) at 92, the
-fight 48 (A C U F S K) at 100; `forge.py sketch map_88` renders the map slightly slower
-to compare. Effects, fifth pass (bible section 1, sound row):
-two registers. The interface is sci-fi electronic (`blip`, `chirp`: taps, back, plot, the
-codex, the menu, the dice, Resolve, the dive's count-in, the contact klaxon); combat and the
-map are over-the-top weighty (`explosion`, `zap`, `shot`: `laser`, `gunfire`, `cannon`,
-`slash`, `slam`, `kill` and `gate_hit` as explosions, heavier steps and arrivals). The
-skirmish picks a machine's blow by its face (`_blow_sound`: energy laser, kinetic line
-gunfire and cannon on a crit, indirect cannon, melee slash and slam on a crit) and a foe's
-by its damage (`SLAM_DAMAGE`). `forge.py sections` prints every section of both loops with
-timestamps, for notes by section. Map, fifth listen (bible sound row): a soft taiko on one
-and three, airier and softer throughout, cellos under the groove and the contrabass kept to
-C, E and G, the strings late by half a beat in the interlude (`late` on a pad), the climax
-G as independent melodies over the groove with a crescendo (`crescendo` on the groove);
-`sketch map_88 map_90` render the slower variants. Skirmish, sixth listen (bible sound
-row): levelled by section (the bass voice changes per section: chug and bass guitar in A,
-crunch synth in C, `sub_bass` in F, a dark quiet chug in S, a driven bass guitar with runs
-in K), the leads up and high-passed into their own bands, a low shelf on the master
-(`low` on the groove), a `ride` and a `china` with displaced snares. Measured: each
-section's lead band within one to four dB of its low band. Two experiments as sketches (24
-September; bible sound row): `forge.py sketch meter_map meter_skirmish` (sections in
-5/4 and 6/8 on the map; four-three alternation and 7/8 on the fight; `meter` on the
-groove, steps per bar per section) and `real_map real_skirmish` (the first sixteen bars
-of each on a pseudo-realistic palette: `guitar_real`, `lead_real`, `bass_real`,
-`strings_real`, `violin_real`, `cello_real`, `horn_real`, `choir_real`, real-ish drums in
-three variants each, `human` timing and velocity). The map runs at 90 (Ryan, 24
-September: perfect over 92; `Sound.TEMPO` follows). Map, sixth listen (bible sound row): a
-fuller kick, the horns up, the contrabass held longer (`hold` on a voice), the cellos
-late on the "and" and the upper strings on two in the interlude (`late` on voices and
-pads), the discord evened. The realism sketches are now the whole loops with
-`real=True` (`REAL_MAP_SWAP`, `REAL_SKIRMISH_SWAP`, an orchestral `bassdrum_real` for the
-map); the map's meter sketch is a 7/8 bar at two phrase ends of the interlude and a 6/8
-section whose triplets ride the 4/4 bar (`meter` takes (steps, scale)). Fight, seventh listen (bible sound
-row): a hybrid palette (real drums with the crash and snare shortened and the ride
-lowered, `guitar_real` backing, `bass_real` everywhere with more drive, the original
-`epiano`, `lead_real` with more gain for the guitar solo, the synth `lead` for the unison
-and the keyboard solo), the kick down, the unison's drums restrained, the ride's cadence
-under the keys, both solos as melodic lines with rests, the keyboard solo half time with
-crashes and the bass firing alongside. `music_skirmish(palette="synth")` is the old set
-(`sketch skirmish_synth`). Four-three as flair and a written 7/8 section wait. The map's realism won (bible
-sound row) and is folded in: `music_map(palette="real")` is the map (`map_synth` the
-sketch), 60 bars with a 7/8 bar closing each interlude phrase (`meter` in `MUSIC`, which
-`sections` reads) and a twelve-bar climax; the bass drum louder with `headroom` before
-the master stage and every kit sound normalised, since the mix had been distorting; the
-strings' note ends softened; the groove's horns down; the strings section's horns in
-three swelling notes. The fight's bass corrected after
-Ryan clarified: `sub_bass` under the lift, the keys and the keyboard solo; the driven
-`bass_real` under the riff, the unison and the guitar solo, quieter. Map, seventh listen (bible sound
-row): the bass drum up with a knock for speakers, loops levelled by mean RMS pinned to
-their judged levels (`mean_level` in `write`), horns, bells and interlude cellos down, a
-7/8 bar closing each interlude half and two turns in 7/8 (`Y`), the strings section
-twelve bars with unpredictable horn swells, the violins up where they carry, the reprise
-after the climax dropped (48 bars: A C D E G). In the game a new battle restarts the map
-loop from the top after the map is drawn (`Sound.music("map", true)` deferred from the
-battle screen); a fight's return still resumes. Map, eighth listen: a four-bar closer (H)
-after the climax, a 6/8-at-4/4-length reprise (R) after it, long turns in 9/8 (W) and
-5/4 (V) in place of the 7/8 turns, six horn swells in the strings section, the violins'
-tails longer and overlapping (`hold` 1.3); 60 bars, 2:40. `forge.py audition` renders
-every effect into one file with timestamps. Fight, eighth listen (bible sound row):
-60 bars (A C X U F S K) with a written 7/8 section (X), the unison's drums a generated
-Peart-style solo (`_drum_solo`), the keys section twelve bars, the guitar solo as the
-chug an octave up with open notes, the keyboard solo's sub in long notes against the
-lead on the beat with crashes on one and three, a soft `ride_real`, the riff's bass down
-and softer-edged. `sketch bass_samples` plays six bass voices on the lift's riff for Ryan
-to pick (`sub_pluck`, `slap_bass` new). Map, ninth listen (bible sound row, with
-Ryan's rule that the kick keeps its places whatever the meter): opens on eight bars of
-the groove bare (P), the 9/8 and 5/4 turns gone (a triplet bar T into the climax, the
-kick steady), the bass drum up, bells and the lift's horns down, the strings section's
-climb and horn swells rewritten on the beat and quieter, its contrabass gentler, the 6/8
-reprise out of the loop and kept as `sketch map_outro` (a second track's seed). Fight, ninth listen (bible sound
-row): 66 bars (A C A X U F S K J), crashes by hand at section doors (none at the top),
-every drum part and voice on its own seeded stream (`groove` reseeds per part, so an
-unedited riff is stable), `tom_real` with bottom end, more cymbals in the solo (`splash`,
-`crash_low`, `stack`, `ride_bell`), the keys' sub unbroken with `res`, the keyboard solo on
-the crunch synth with the lead travelling and `guitar_chord` behind, a two-bar unison
-descent (J) into the loop; `sub_pluck` in the lift to hear in context. The map's closer
-violin no longer wraps onto the start. Map, tenth listen (bible sound row): 68 bars
-(P A C E T D G H), the strings and the interlude swapped, the strings sixteen bars with
-cellos in two-note chords and eleven horn swells building, the climax sixteen bars, the
-kick per section (`kick_soft` under the groove and strings), the bells' echo kept
-stronger than their dry note. Fight, tenth listen (bible sound row): 73 bars
-(A C A L X U F S K J): the driven bass clipped and angrier, the turn's bass lower, a
-second lift (L) on `sub_pluck` before the seven, crashes closing the seven's bars and
-the turn before the riff's return, `tom_real` sharper and drier, the ride bell out of the
-solo, the keys' sub sane with the tune run to the end, the guitar solo an octave lower
-over a fuller floor, the keyboard solo as held chords over two walking basses, a one-bar
-gallop descent. Map, eleventh listen (bible sound row): 69 bars
-(P A C E B D T G H), the lift's bows on a bar-length line again (a 40-step line had
-walked the bar), the strings' second half on the riff's pattern with four-note chords
-and a swelling drone (`swell` on a pad), the triplet turn between the interlude and the
-climax, the climax shaped (`crescendo` takes a list of points), more horn in the closer.
-Fight, eleventh listen (bible sound row): 83 bars (A C N L M X U F S K J), the riff in
-three stages of four bars, a plainer turn (B) and a walk-down bar (M) into the seven, the
-second lift on the crunch synth, power chords under the seven, the solo denser, the keys
-sixteen bars with `punch` on the sub, the guitar solo's bass on the crunch synth, the
-keyboard solo with `crash_long` a hair behind the beat (a third kit field), the snare on
-kicks only, the real bass as its second walker. Map, twelfth listen (bible sound row; Ryan:
-almost done): 79 bars (P A C E Q D T V G H), the lift's five-note line back, the
-strings' second half on the riff with expected horns at every phrase end, a two-bar
-bridge (Q) into the interlude, four quiet 6/8 bars (V) before the climax, the climax
-twenty bars with each voice on its own `shape` (a per-voice rise and fall across the
-run). Names (Ryan, 24 September): the map loop is the rift theme, the fight loop the human
-theme. Two calm siblings built (bible sound row): `music_rift_calm` (6/8 throughout,
-grown from the reprise, 72 bars, 3:11) and `music_human_calm` (four on the floor,
-industrial, 72 bars, 3:00), in `art/audio`, `Sound.NAMES` and `TEMPO`, not hooked to a
-screen yet; a multi-track setup per screen is the likely end state. Not yet heard: the
-themes as last rebuilt, the calm tracks, the effects. If a loop's bpm changes in
-`groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
-loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
-wraps every tail, the room's included. The display's scan and idle stay silent by decision.
+**Audio, handoff (24 September; the bible's section 1 sound row has every decision and
+the reasons, listen by listen).** Everything is `tools/soundforge/forge.py` (numpy only)
+writing WAVs into `art/audio/`, played by name from `game/audio/sound.gd`. Commands:
+`build [names]` then `godot --headless --path . --import`; `measure`; `sections` (every
+section of every loop with timestamps: notes are given by section letter or time);
+`audition` (every effect in one file, a second apart); `sketch <name>` (renders to
+`tools/soundforge/out/`, git-ignored, never shipped). Any Python with numpy runs it; the
+spriter venv is the one that has it.
+
+*The engine.* `groove(bpm, form, kit, drums, chords, voices, pad, ...)`: a form string of
+section letters, a bar per letter; `meter` gives a section its steps per bar or (steps,
+scale) so a bar can be 7/8, or 6/8 at the 4/4 bar's length; drums as pattern strings (a
+pattern shorter than a bar walks round it: polymeter); chords per section, one or a list
+cycling per bar; voices in `riff` (semitones, holds), `chord` (the bar's chord by degree)
+or `stab` mode with `hold`, `late`, `legato`, `echo`, `shape` (a voice's own rise and fall
+across its section's run); pads by section with `pump`, `swell`, `late`; `crescendo` per
+section; `human` timing and velocity slop; kit sounds as variant lists picked per hit,
+normalised, an optional third field playing them behind the beat; `headroom` before the
+master. Every drum part and voice draws its own seeded stream, so an unedited riff never
+changes. Loops are levelled by mean RMS pinned where Ryan judged them (`LEVELS`);
+effects by their loudest 50 ms. Ryan's rule: the kick keeps its places for the whole
+track, whatever the meter.
+
+*The tracks.* `music_map` is the **rift theme** (90, 79 bars, 3:29): the real orchestral
+palette (bass drum, cellos, contrabass, violins, horns, harp, timpani, choir, strings
+pads, bells with a three-tap echo, glitch clicks and stutters), form P A C E Q D T V G H
+(groove bare, groove, lift, strings, bridge, interlude with 7/8 closes, triplet turn, the
+quiet before, a twenty-bar climax where each voice leads in turn, the closer). Ryan: almost
+done. `music_skirmish` is the **human theme** (100, 83 bars, 3:16): the hybrid palette
+(real drums with many cymbals, the real guitar's mechanical chug, the real bass driven,
+the soft sub, the crunch synth, the original piano, the synth lead), form A C N L M X U F
+S K J (the riff in three stages, lift, riff, second lift, a bar down, the seven, the
+unison over a drum solo, keys, guitar solo, keyboard solo over two walking basses, a
+one-bar descent). `music_rift_calm` (90, 6/8 throughout, 3:11) and `music_human_calm`
+(96, four on the floor, industrial, 3:00) are their calm siblings, in `Sound.NAMES` and
+`TEMPO`, not hooked to a screen. The pure-synth versions survive as sketches
+(`map_synth`, `skirmish_synth`), as do `map_86/88/92`, `map_outro` and `bass_samples`.
+
+*The effects.* Two registers: the interface sci-fi electronic (blips and chirps), combat
+and the map over-the-top weighty (an explosion primitive; laser, gunfire, cannon, slash,
+slam; kills and the gate as explosions). The skirmish picks a machine's blow by its face
+(`_blow_sound`) and a foe's by its damage (`SLAM_DAMAGE`). `Sound.DIP` ducks the music
+under big moments; `TONAL` sounds keep their pitch; a new battle restarts the map loop
+from the top after the map is drawn, a fight's return resumes it. The display's scan and
+idle stay silent by decision.
+
+*To do, audio.* (1) Ryan has not yet heard: the rift theme as last rebuilt, the human
+theme as last rebuilt, the two calm tracks, and the effects since their rewrite (use
+`audition`); expect another round of notes on each. (2) The human theme's open
+questions: the guitar solo's bass is the crunch synth as a first try before cutting its
+volume; the keyboard solo's second walker is the real bass, one of the two may still
+change; four-three flair and the 3/4 injections wait for a place. (3) The rift theme:
+the 6/8 triplets as disturbing flair somewhere, and whether the interlude's 7/8 closes
+should obey the kick rule too. (4) Hook the calm tracks: a multi-track setup per screen
+(a screen picking or crossfading between its theme and its calm sibling) is the likely
+end state; nothing chooses between them yet. (5) The phone: nothing has been heard on a
+device; the mix was checked by measuring each section's low band against its lead band
+and the phone band (300 to 4000 Hz) of every blow. (6) The real recordings and the real
+track are still section 12's open question; everything here is a placeholder in the
+decided register.
 
 **Open, in the order I would take them.**
 
