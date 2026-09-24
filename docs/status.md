@@ -208,8 +208,12 @@ their judged levels (`mean_level` in `write`), horns, bells and interlude cellos
 twelve bars with unpredictable horn swells, the violins up where they carry, the reprise
 after the climax dropped (48 bars: A C D E G). In the game a new battle restarts the map
 loop from the top after the map is drawn (`Sound.music("map", true)` deferred from the
-battle screen); a fight's return still resumes. Not yet heard: the map as rebuilt, the
-fight as corrected, the effects. If a loop's bpm changes in
+battle screen); a fight's return still resumes. Map, eighth listen: a four-bar closer (H)
+after the climax, a 6/8-at-4/4-length reprise (R) after it, long turns in 9/8 (W) and
+5/4 (V) in place of the 7/8 turns, six horn swells in the strings section, the violins'
+tails longer and overlapping (`hold` 1.3); 60 bars, 2:40. `forge.py audition` renders
+every effect into one file with timestamps. Not yet heard: the map as rebuilt, the fight
+as corrected, the effects. If a loop's bpm changes in
 `groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
 loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
 wraps every tail, the room's included. The display's scan and idle stay silent by decision.
