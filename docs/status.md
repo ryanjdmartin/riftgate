@@ -234,9 +234,15 @@ violin no longer wraps onto the start. Map, tenth listen (bible sound row): 68 b
 (P A C E T D G H), the strings and the interlude swapped, the strings sixteen bars with
 cellos in two-note chords and eleven horn swells building, the climax sixteen bars, the
 kick per section (`kick_soft` under the groove and strings), the bells' echo kept
-stronger than their dry note. Next for music: a second map track from `sketch
-map_outro` (Ryan: a great starting point) that the map could crossfade into rather than
-loop. Not yet heard: both loops as rebuilt, the effects. If a loop's bpm changes in
+stronger than their dry note. Fight, tenth listen (bible sound row): 73 bars
+(A C A L X U F S K J): the driven bass clipped and angrier, the turn's bass lower, a
+second lift (L) on `sub_pluck` before the seven, crashes closing the seven's bars and
+the turn before the riff's return, `tom_real` sharper and drier, the ride bell out of the
+solo, the keys' sub sane with the tune run to the end, the guitar solo an octave lower
+over a fuller floor, the keyboard solo as held chords over two walking basses, a one-bar
+gallop descent. Next for music: a second map track from `sketch map_outro` (Ryan: a
+great starting point) that the map could crossfade into rather than loop. Not yet heard:
+both loops as rebuilt, the effects. If a loop's bpm changes in
 `groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
 loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
 wraps every tail, the room's included. The display's scan and idle stay silent by decision.
