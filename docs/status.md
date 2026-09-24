@@ -164,8 +164,12 @@ map are over-the-top weighty (`explosion`, `zap`, `shot`: `laser`, `gunfire`, `c
 skirmish picks a machine's blow by its face (`_blow_sound`: energy laser, kinetic line
 gunfire and cannon on a crit, indirect cannon, melee slash and slam on a crit) and a foe's
 by its damage (`SLAM_DAMAGE`). `forge.py sections` prints every section of both loops with
-timestamps, for notes by section. Not yet heard: the loops as built, the 88 variant, and
-the effects as rebuilt. If a loop's bpm changes in
+timestamps, for notes by section. Map, fifth listen (bible sound row): a soft taiko on one
+and three, airier and softer throughout, cellos under the groove and the contrabass kept to
+C, E and G, the strings late by half a beat in the interlude (`late` on a pad), the climax
+G as independent melodies over the groove with a crescendo (`crescendo` on the groove);
+`sketch map_88 map_90` render the slower variants. Not yet heard: the map as rebuilt, 90,
+the skirmish loop, and the effects as rebuilt. If a loop's bpm changes in
 `groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
 loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
 wraps every tail, the room's included. The display's scan and idle stay silent by decision.
