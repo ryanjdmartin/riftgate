@@ -223,8 +223,14 @@ Ryan's rule that the kick keeps its places whatever the meter): opens on eight b
 the groove bare (P), the 9/8 and 5/4 turns gone (a triplet bar T into the climax, the
 kick steady), the bass drum up, bells and the lift's horns down, the strings section's
 climb and horn swells rewritten on the beat and quieter, its contrabass gentler, the 6/8
-reprise out of the loop and kept as `sketch map_outro` (a second track's seed). Not yet
-heard: the map as rebuilt, the fight as rebuilt, the effects, the bass samples. If a loop's bpm changes in
+reprise out of the loop and kept as `sketch map_outro` (a second track's seed). Fight, ninth listen (bible sound
+row): 66 bars (A C A X U F S K J), crashes by hand at section doors (none at the top),
+every drum part and voice on its own seeded stream (`groove` reseeds per part, so an
+unedited riff is stable), `tom_real` with bottom end, more cymbals in the solo (`splash`,
+`crash_low`, `stack`, `ride_bell`), the keys' sub unbroken with `res`, the keyboard solo on
+the crunch synth with the lead travelling and `guitar_chord` behind, a two-bar unison
+descent (J) into the loop; `sub_pluck` in the lift to hear in context. The map's closer
+violin no longer wraps onto the start. Not yet heard: both loops as rebuilt, the effects. If a loop's bpm changes in
 `groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
 loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
 wraps every tail, the room's included. The display's scan and idle stay silent by decision.
