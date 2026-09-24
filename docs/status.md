@@ -180,8 +180,14 @@ groove, steps per bar per section) and `real_map real_skirmish` (the first sixte
 of each on a pseudo-realistic palette: `guitar_real`, `lead_real`, `bass_real`,
 `strings_real`, `violin_real`, `cello_real`, `horn_real`, `choir_real`, real-ish drums in
 three variants each, `human` timing and velocity). The map runs at 90 (Ryan, 24
-September: perfect over 92; `Sound.TEMPO` follows). Not yet heard: the skirmish as
-levelled, the effects as rebuilt, and the four experiment sketches. If a loop's bpm changes in
+September: perfect over 92; `Sound.TEMPO` follows). Map, sixth listen (bible sound row): a
+fuller kick, the horns up, the contrabass held longer (`hold` on a voice), the cellos
+late on the "and" and the upper strings on two in the interlude (`late` on voices and
+pads), the discord evened. The realism sketches are now the whole loops with
+`real=True` (`REAL_MAP_SWAP`, `REAL_SKIRMISH_SWAP`, an orchestral `bassdrum_real` for the
+map); the map's meter sketch is a 7/8 bar at two phrase ends of the interlude and a 6/8
+section whose triplets ride the 4/4 bar (`meter` takes (steps, scale)). Not yet heard:
+the map as rebuilt, the skirmish as levelled, the effects, and the sketches as re-rendered. If a loop's bpm changes in
 `groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
 loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
 wraps every tail, the room's included. The display's scan and idle stay silent by decision.
