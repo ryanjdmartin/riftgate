@@ -201,8 +201,15 @@ the master stage and every kit sound normalised, since the mix had been distorti
 strings' note ends softened; the groove's horns down; the strings section's horns in
 three swelling notes. The fight's bass corrected after
 Ryan clarified: `sub_bass` under the lift, the keys and the keyboard solo; the driven
-`bass_real` under the riff, the unison and the guitar solo, quieter. Not yet heard: the
-map as folded, the fight as corrected, the effects. If a loop's bpm changes in
+`bass_real` under the riff, the unison and the guitar solo, quieter. Map, seventh listen (bible sound
+row): the bass drum up with a knock for speakers, loops levelled by mean RMS pinned to
+their judged levels (`mean_level` in `write`), horns, bells and interlude cellos down, a
+7/8 bar closing each interlude half and two turns in 7/8 (`Y`), the strings section
+twelve bars with unpredictable horn swells, the violins up where they carry, the reprise
+after the climax dropped (48 bars: A C D E G). In the game a new battle restarts the map
+loop from the top after the map is drawn (`Sound.music("map", true)` deferred from the
+battle screen); a fight's return still resumes. Not yet heard: the map as rebuilt, the
+fight as corrected, the effects. If a loop's bpm changes in
 `groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
 loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
 wraps every tail, the room's included. The display's scan and idle stay silent by decision.

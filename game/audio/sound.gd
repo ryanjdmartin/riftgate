@@ -91,9 +91,11 @@ static func play_after(delay: float, name: String, db: float = 0.0, vary: float 
 
 
 ## The loop a screen wants: "map", "skirmish", or "" for silence. Crossfades, and a loop
-## coming back resumes where it left; asking for the loop already playing does nothing.
-static func music(name: String) -> void:
-	_call("_music_to", [name])
+## coming back resumes where it left (the map after a fight), unless `restart`: a new
+## battle starts its loop from the top (Ryan, 24 September: the map's music began mid-lift,
+## where the last battle had left it). Asking for the loop already playing does nothing.
+static func music(name: String, restart: bool = false) -> void:
+	_call("_music_to", [name, restart])
 
 
 ## The music drops under the pause menu and comes back after.
@@ -196,8 +198,10 @@ func _play(name: String, db: float, vary: float) -> void:
 ## it was fading out, which may be the very player the new loop now plays on (Ryan, 23
 ## September: the skirmish loop went missing about half the time, whenever the next fight
 ## began inside the last fade).
-func _music_to(name: String) -> void:
+func _music_to(name: String, restart: bool = false) -> void:
 	var full := "" if name.is_empty() else "music_" + name
+	if restart:
+		_pos.erase(full)
 	if full == _playing:
 		return
 	_playing = full

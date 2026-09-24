@@ -98,7 +98,13 @@ func _ready() -> void:
 	elif _header == null or H != Hud.screen_height(self):
 		_build()   # built here for the screen's real height (a taller phone than the design)
 		_refresh()
-	Sound.music("map")
+	# The loop from the top, and only once the map has been built and drawn (a new battle
+	# is not a fight's return, which resumes where the map's music left off).
+	_start_music.call_deferred()
+
+
+func _start_music() -> void:
+	Sound.music("map", true)
 
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks).
