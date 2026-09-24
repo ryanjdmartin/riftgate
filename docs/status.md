@@ -230,7 +230,13 @@ unedited riff is stable), `tom_real` with bottom end, more cymbals in the solo (
 `crash_low`, `stack`, `ride_bell`), the keys' sub unbroken with `res`, the keyboard solo on
 the crunch synth with the lead travelling and `guitar_chord` behind, a two-bar unison
 descent (J) into the loop; `sub_pluck` in the lift to hear in context. The map's closer
-violin no longer wraps onto the start. Not yet heard: both loops as rebuilt, the effects. If a loop's bpm changes in
+violin no longer wraps onto the start. Map, tenth listen (bible sound row): 68 bars
+(P A C E T D G H), the strings and the interlude swapped, the strings sixteen bars with
+cellos in two-note chords and eleven horn swells building, the climax sixteen bars, the
+kick per section (`kick_soft` under the groove and strings), the bells' echo kept
+stronger than their dry note. Next for music: a second map track from `sketch
+map_outro` (Ryan: a great starting point) that the map could crossfade into rather than
+loop. Not yet heard: both loops as rebuilt, the effects. If a loop's bpm changes in
 `groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
 loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
 wraps every tail, the room's included. The display's scan and idle stay silent by decision.
