@@ -173,8 +173,14 @@ row): levelled by section (the bass voice changes per section: chug and bass gui
 crunch synth in C, `sub_bass` in F, a dark quiet chug in S, a driven bass guitar with runs
 in K), the leads up and high-passed into their own bands, a low shelf on the master
 (`low` on the groove), a `ride` and a `china` with displaced snares. Measured: each
-section's lead band within one to four dB of its low band. Not yet heard: the map as
-rebuilt, 90, the skirmish as levelled, and the effects as rebuilt. If a loop's bpm changes in
+section's lead band within one to four dB of its low band. Two experiments as sketches (24
+September; bible sound row): `forge.py sketch meter_map meter_skirmish` (sections in
+5/4 and 6/8 on the map; four-three alternation and 7/8 on the fight; `meter` on the
+groove, steps per bar per section) and `real_map real_skirmish` (the first sixteen bars
+of each on a pseudo-realistic palette: `guitar_real`, `lead_real`, `bass_real`,
+`strings_real`, `violin_real`, `cello_real`, `horn_real`, `choir_real`, real-ish drums in
+three variants each, `human` timing and velocity). Not yet heard: the map as rebuilt, 90,
+the skirmish as levelled, the effects as rebuilt, and the four experiment sketches. If a loop's bpm changes in
 `groove()`, change `Sound.TEMPO` to match: the rift's vortex steps on `Sound.beat()`. The
 loops stay sample-exact for seamless play: `groove` sizes the buffer from bpm and bars and
 wraps every tail, the room's included. The display's scan and idle stay silent by decision.

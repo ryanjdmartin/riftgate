@@ -1162,14 +1162,35 @@ NOTE_INST["synlead"] = lambda f, d, p: synlead(f, d)
 
 # ---- the engine
 
-def _steps(form, part, default="."):
-    """The whole loop's step string for a part: the section's pattern per bar, a pattern
-    longer or shorter than a bar indexed by the loop's own step so a figure keeps its place
-    (a seven-step pattern walks round the bar)."""
+def _bars(form, meter):
+    """Steps per bar and each bar's first step. A section's meter is its steps per bar
+    (16 is 4/4; 12 is 3/4 or 6/8; 20 is 5/4; 14 is 7/8)."""
+    steps = [(meter or {}).get(sec, 16) for sec in form]
+    starts = [0]
+    for s in steps[:-1]:
+        starts.append(starts[-1] + s)
+    return steps, starts
+
+
+def _steps(form, part, meter=None, default="."):
+    """The whole loop's step string for a part: the section's pattern per bar. With every
+    bar sixteen steps a pattern is indexed by the loop's own step, so a figure shorter
+    than a bar walks round it (polymeter) and a two-bar figure keeps its place. With mixed
+    meters a pattern that fits its bar whole is indexed from its run's start, and one that
+    does not (a seven-step figure) still walks by the loop's step."""
+    steps, starts = _bars(form, meter)
+    uniform = all(s == 16 for s in steps)
     out = []
+    run_start = 0
     for bar, sec in enumerate(form):
-        pat = part.get(sec, part.get("*", default * 16))
-        out.append("".join(pat[(bar * 16 + i) % len(pat)] for i in range(16)))
+        if bar > 0 and form[bar - 1] != sec:
+            run_start = bar
+        pat = part.get(sec, part.get("*", default * steps[bar]))
+        if uniform or len(pat) % steps[bar] != 0:
+            out.append("".join(pat[(starts[bar] + i) % len(pat)] for i in range(steps[bar])))
+        else:
+            base = starts[bar] - starts[run_start]
+            out.append("".join(pat[(base + i) % len(pat)] for i in range(steps[bar])))
     return "".join(out)
 
 
@@ -1190,13 +1211,31 @@ def _chords_per_bar(form, chords):
     return out
 
 
-def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=None, air=(0.12, 0.06), low=None):
+def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=None, air=(0.12, 0.06), low=None,
+           meter=None, human=None):
+    """`kit` maps a drum to (sound, gain) or ([variants], gain), a variant chosen per hit.
+    `human` is (seconds of timing slop, fraction of velocity slop) for every hit and note."""
     form = form.replace(" ", "")
     bars = len(form)
     step_s = 60.0 / bpm / 4.0
-    n = int(round(bars * 16 * step_s * SR))
+    steps, starts = _bars(form, meter)
+    total = sum(steps)
+    n = int(round(total * step_s * SR))
     buf = np.zeros(n)
-    # A crescendo: {section: (gain at the run's start, gain at its end)} over every note.
+    step_bar = []
+    for b, s in enumerate(steps):
+        step_bar += [b] * s
+    slop_t, slop_v = human if human else (0.0, 0.0)
+
+    def when(step):
+        return step * step_s + (RNG.uniform(-slop_t, slop_t) if slop_t else 0.0)
+
+    def vel():
+        return 1.0 - RNG.uniform(0.0, slop_v) if slop_v else 1.0
+
+    def pick(sound):
+        return sound[RNG.integers(len(sound))] if isinstance(sound, list) else sound
+
     runs = []
     b0 = 0
     while b0 < bars:
@@ -1205,27 +1244,29 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
             e0 += 1
         runs.append((b0, e0))
         b0 = e0
+
     def swell(step):
-        bar = step // 16
+        bar = step_bar[step]
         if not crescendo or form[bar] not in crescendo:
             return 1.0
         lo, hi = crescendo[form[bar]]
         for r0, r1 in runs:
             if r0 <= bar < r1:
-                return lo + (hi - lo) * (step - r0 * 16) / float((r1 - r0) * 16)
+                return lo + (hi - lo) * (step - starts[r0]) / float(starts[r1] - starts[r0] if r1 < bars else total - starts[r0])
         return 1.0
+
     for name, part in drums.items():
         sound, gain = kit[name]
-        s = _steps(form, part)
+        s = _steps(form, part, meter)
         for i, c in enumerate(s):
-            when = i * step_s
+            in_bar = i - starts[step_bar[i]]
             if c == "x":
-                buf = at(buf, sound, when, gain * (1.0 if not name.startswith("hat") or i % 4 == 0 else 0.7), wrap=True)
+                buf = at(buf, pick(sound), when(i), gain * vel() * (1.0 if not name.startswith("hat") or in_bar % 4 == 0 else 0.7), wrap=True)
             elif c == "o":
-                buf = at(buf, sound, when, gain * 0.45, wrap=True)
+                buf = at(buf, pick(sound), when(i), gain * vel() * 0.45, wrap=True)
     per_bar = _chords_per_bar(form, chords)
     for v in voices:
-        s = _steps(form, v["pat"])
+        s = _steps(form, v["pat"], meter)
         mode = v.get("mode", "riff")
         gain = v.get("gain", 0.4)
         params = v.get("params", {})
@@ -1244,26 +1285,26 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
                     length += 1
                 f = E2 * 2.0 ** ((semis + 12 * octave) / 12.0)
                 span = length * step_s * (1.0 if v.get("legato") else 0.95)
-                buf = at(buf, NOTE_INST[v["inst"]](f, span, params), i * step_s, gain * swell(i), wrap=True)
+                buf = at(buf, NOTE_INST[v["inst"]](f, span, params), when(i), gain * vel() * swell(i), wrap=True)
                 i += length
         elif mode == "chord":
             for i, c in enumerate(s):
-                if not c.isdigit() or not per_bar[i // 16]:
+                if not c.isdigit() or not per_bar[step_bar[i]]:
                     continue
-                semis = per_bar[i // 16]
+                semis = per_bar[step_bar[i]]
                 k = int(c)
                 f = E2 * 2.0 ** ((semis[k % len(semis)] + 12 * (k // len(semis)) + 12 * octave) / 12.0)
                 note = NOTE_INST[v["inst"]](f, step_s * v.get("dur", 1.6), params)
-                buf = at(buf, note, i * step_s, gain * swell(i), wrap=True)
+                g = gain * vel() * swell(i)
+                buf = at(buf, note, when(i), g, wrap=True)
                 if echo:
-                    for k in range(1, (echo[2] if len(echo) > 2 else 1) + 1):
-                        buf = at(buf, note, (i + echo[0] * k) * step_s, gain * swell(i) * echo[1] ** k, wrap=True)
+                    for k2 in range(1, (echo[2] if len(echo) > 2 else 1) + 1):
+                        buf = at(buf, note, (i + echo[0] * k2) * step_s, g * echo[1] ** k2, wrap=True)
         elif mode == "stab":
             for i, c in enumerate(s):
-                if c == "x" and per_bar[i // 16]:
-                    buf = at(buf, STAB_INST[v["inst"]](per_bar[i // 16], step_s * v.get("dur", 1.2)), i * step_s, gain, wrap=True)
+                if c == "x" and per_bar[step_bar[i]]:
+                    buf = at(buf, STAB_INST[v["inst"]](per_bar[step_bar[i]], step_s * v.get("dur", 1.2)), when(i), gain * vel() * swell(i), wrap=True)
     for pad in (pad if isinstance(pad, list) else [pad]) if pad else []:
-        bar_n = int(round(16 * step_s * SR))
         secs = pad.get("sections", form)
         on = [bool(per_bar[i]) and form[i] in secs for i in range(bars)]
         xf = 0.5   # seconds of crossfade between one chord and the next in a run
@@ -1275,7 +1316,8 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
             if on[b]:
                 first = b == 0 or not on[b - 1] or form[b - 1] != form[b]
                 last = e == bars or not on[e] or form[e] != form[b]
-                n_span = bar_n * (e - b) + (0 if last else n_of(xf))
+                span_steps = sum(steps[b:e])
+                n_span = int(round(span_steps * step_s * SR)) + (0 if last else n_of(xf))
                 p = PAD_INST[pad["inst"]](per_bar[b], n_span, pad)
                 T = len(p) / SR
                 p *= env_pts(len(p), [(0.0, 0.0), (0.35 if first else xf, 1.0), (T - (0.25 if last else xf), 1.0), (T, 0.0)])
@@ -1283,7 +1325,7 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
                     # Ducked on every eighth and let back: the electronic pulse under the choir.
                     tt = t_of(len(p)) % (2.0 * step_s)
                     p *= 1.0 - pad["pump"] * np.exp(-tt / (step_s * 0.6))
-                buf = at(buf, p, (b * 16 + pad.get("late", 0)) * step_s, 1.0, wrap=True)
+                buf = at(buf, p, (starts[b] + pad.get("late", 0)) * step_s, 1.0, wrap=True)
             b = e
     r = room(buf, decay=air[0], mix=air[1], cut=6000.0)
     buf = r[:n]
@@ -1292,7 +1334,6 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
     if low:
         buf = low_shelf(buf, low[0], low[1])   # and the low shelf cut, so the leads have room
     return sat(buf, 1.25)
-
 
 
 # The loops' shape, for `forge.py sections`: bar counts and timestamps of every section.
@@ -1621,6 +1662,345 @@ def sketch_djent():
 SKETCHES = {"human": sketch_human, "rift": sketch_rift, "djent": sketch_djent,
             "map_88": lambda: music_map(88), "map_90": lambda: music_map(90)}   # the map loop slightly slower, to compare (Ryan, 23 September)
 OUT_SKETCH = os.path.join(os.path.dirname(__file__), "out")
+
+
+# ---- the experiments (Ryan, 24 September): meters, and the far end of pseudo-realism
+
+# -- realism: instruments built closer to the real thing, and hits that are never twice the same
+
+def cabinet(x, peaks=((110.0, 1.0), (420.0, 0.9), (1150.0, 0.7), (2400.0, 0.5), (3600.0, 0.25))):
+    """A guitar cabinet: the signal through a few resonant peaks, closed above 5 kHz."""
+    y = np.zeros(len(x))
+    for f, g in peaks:
+        y += bp(x, f * 0.75, f * 1.3) * g
+    return lp(y / 2.2 + x * 0.15, 5000.0)
+
+
+def guitar_real(f, dur, mute=True):
+    # A power chord on real-ish strings: root, fifth and octave as plucked strings a hair
+    # apart, the pick's scrape, pre-emphasis into the gain, the cabinet, the palm.
+    n = n_of(dur)
+    x = np.zeros(n)
+    for ratio, g in ((1.0, 1.0), (1.5, 0.7), (2.0, 0.5)):
+        x += pluck(f * ratio * RNG.uniform(0.998, 1.002), dur, bright=RNG.uniform(0.4, 0.6), damp=0.993)[:n] * g
+    scrape = bp(noise(n_of(0.012)), 2000.0, 7000.0) * env_ad(n_of(0.012), 0.0002, 0.003) * 0.6
+    x = at(x, scrape, 0.0)[:n]
+    x = np.clip(sat(hp(x, 600.0) * 5.0 + x * 1.5, 3.0) * 1.3, -1.0, 1.0)
+    x = cabinet(x)
+    env = env_ad(n, 0.001, min(0.16, dur * 0.5), curve=3.0) if mute else env_ad(n, 0.001, dur * 0.7, curve=2.0)
+    return mix(x * env, body(200.0, 90.0, 0.05, drive=2.0, click=0.2) * 0.3)
+
+
+def lead_real(f, dur):
+    # A lead guitar string: one string, sustain from the gain, vibrato arriving late, the
+    # cabinet.
+    n = n_of(dur)
+    t = t_of(n)
+    x = pluck(f, dur, bright=0.7, damp=0.9992)[:n]
+    vib = 1.0 + 0.006 * np.sin(2.0 * math.pi * 5.4 * t) * np.clip((t - 0.12) / 0.2, 0.0, 1.0)
+    idx = np.clip((np.cumsum(vib) - np.arange(n)).astype(int) + np.arange(n), 0, n - 1)
+    x = x[idx]
+    x = np.clip(sat(hp(x, 400.0) * 6.0, 2.5), -1.0, 1.0)
+    return cabinet(x) * env_pts(n, [(0.0, 0.0), (0.005, 1.0), (max(dur - 0.04, 0.02), 0.8), (dur, 0.0)]) * 0.9
+
+
+def bass_real(f, dur):
+    # A bass guitar: two strings' worth of pluck, the finger's thump, the body's peak, the
+    # amp's roll-off.
+    n = n_of(dur)
+    x = pluck(f, dur, bright=0.5, damp=0.998)[:n] + pluck(f * 1.001, dur, bright=0.3, damp=0.998)[:n] * 0.5
+    x = x + bp(x, 80.0, 140.0) * 0.8
+    thump = lp(noise(n_of(0.02)), 900.0) * env_ad(n_of(0.02), 0.0005, 0.006) * 0.5
+    x = at(x, thump, 0.0)[:n]
+    return hp(lp(sat(x * 1.6, 1.8), 1600.0), 40.0) * 0.9
+
+
+def strings_real(semis, n, gain=0.15, octave=1):
+    # An ensemble: eight players a note, each with a vibrato of their own rate and depth
+    # and their own late start, the bow's noise, the body's resonances, a hall.
+    x = np.zeros(n)
+    for s in semis:
+        f = E2 * 2.0 ** (s / 12.0) * (2 ** octave)
+        for _ in range(8):
+            d = RNG.uniform(0.994, 1.006)
+            v = saws_vib(f * d, n, (1.0,), vib_hz=RNG.uniform(4.6, 6.4), vib_depth=RNG.uniform(0.003, 0.007))
+            onset = n_of(RNG.uniform(0.0, 0.05))
+            v = np.concatenate([np.zeros(onset), v])[:n]
+            x += v
+    x /= max(1, len(semis)) * 8.0
+    bow = bp(noise(n), 2000.0, 5000.0) * 0.06
+    x = lp(x, 3800.0) - lp(x, 220.0)
+    x = x + bp(x, 260.0, 340.0) * 0.5 + bp(x, 550.0, 700.0) * 0.4 + bp(x, 1100.0, 1300.0) * 0.3
+    return room(x + bow, decay=0.6, mix=0.3, cut=5000.0)[:n] * gain * 1.6
+
+
+def violin_real(f, dur):
+    n = n_of(dur)
+    t = t_of(n)
+    x = np.zeros(n)
+    for _ in range(3):
+        x += saws_vib(f * RNG.uniform(0.997, 1.003), n, (1.0,), vib_hz=RNG.uniform(5.0, 6.2), vib_depth=0.006 * np.clip((t - 0.1) / 0.15, 0.0, 1.0).mean())
+    x /= 3.0
+    bow = bp(noise(n), 2500.0, 6000.0) * env_pts(n, [(0.0, 0.5), (0.05, 0.15), (dur, 0.1)]) * 0.12
+    x = lp(x, 4500.0) - lp(x, 260.0)
+    x = x + bp(x, 280.0, 360.0) * 0.5 + bp(x, 1000.0, 1250.0) * 0.4
+    return (x + bow) * env_pts(n, [(0.0, 0.0), (0.07, 1.0), (max(dur - 0.06, 0.08), 0.85), (dur, 0.0)]) * 0.7
+
+
+def cello_real(f, dur):
+    n = n_of(dur)
+    x = np.zeros(n)
+    for _ in range(3):
+        x += saws_vib(f * RNG.uniform(0.997, 1.003), n, (1.0,), vib_hz=RNG.uniform(4.2, 5.4), vib_depth=0.005)
+    x /= 3.0
+    bow = bp(noise(n), 1500.0, 4000.0) * env_pts(n, [(0.0, 0.4), (0.06, 0.12), (dur, 0.08)]) * 0.1
+    x = lp(x, 2200.0)
+    x = x + bp(x, 180.0, 240.0) * 0.6 + bp(x, 400.0, 520.0) * 0.4
+    return (x + bow) * env_pts(n, [(0.0, 0.0), (0.06, 1.0), (max(dur - 0.05, 0.06), 0.9), (dur, 0.0)]) * 0.8
+
+
+def horn_real(f, dur):
+    # A horn with the player in it: a scoop up to the pitch, lip noise on the front, the
+    # bend of the tone growing with the breath, vibrato late.
+    n = n_of(dur)
+    t = t_of(n)
+    scoop = 1.0 - 0.03 * np.exp(-t / 0.05)
+    vib = 1.0 + 0.004 * np.sin(2.0 * math.pi * 5.0 * t) * np.clip((t - 0.15) / 0.2, 0.0, 1.0)
+    fr = f * scoop * vib
+    ph = 2.0 * math.pi * np.cumsum(fr) / SR
+    idx = 1.4 * (1.0 - np.exp(-t / 0.15))
+    x = np.sin(ph + idx * np.sin(ph)) + 0.3 * np.sin(2.0 * ph + idx * np.sin(ph))
+    lip = bp(noise(n), 800.0, 2500.0) * env_ad(n, 0.002, 0.03) * 0.25
+    x = lp(sat(x + lip, 1.5), 2600.0)
+    return room(x, decay=0.3, mix=0.2, cut=4000.0)[:n] * env_pts(n, [(0.0, 0.0), (0.06, 1.0), (max(dur - 0.06, 0.08), 0.8), (dur, 0.0)]) * 0.8
+
+
+def choir_real(semis, n, gain=0.2, vowel="ah", octave=1):
+    # More singers, each with breath and a start of their own, the formants wider.
+    x = np.zeros(n)
+    for s in semis:
+        f = E2 * 2.0 ** (s / 12.0) * (2 ** octave)
+        for _ in range(7):
+            v = saws_vib(f * RNG.uniform(0.992, 1.008), n, (1.0,), vib_hz=RNG.uniform(4.4, 6.0), vib_depth=RNG.uniform(0.004, 0.007))
+            onset = n_of(RNG.uniform(0.0, 0.08))
+            x += np.concatenate([np.zeros(onset), v])[:n]
+    x /= max(1, len(semis)) * 7.0
+    f1, f2, f3 = VOWELS[vowel]
+    y = bp(x, f1 * 0.75, f1 * 1.3) * 1.0 + bp(x, f2 * 0.8, f2 * 1.22) * 0.5 + bp(x, f3 * 0.85, f3 * 1.16) * 0.2
+    breath = bp(noise(n), 1500.0, 5000.0) * 0.04
+    return room(y + breath, decay=0.7, mix=0.3, cut=4000.0)[:n] * gain * 2.2
+
+
+def kick_real(pitch=1.0):
+    # A real kick: the skin's pitch falling from 130 to 50, the beater's click, the shell's
+    # tone, a little room.
+    n = n_of(0.45)
+    t = t_of(n)
+    f = (50.0 + 80.0 * np.exp(-t / 0.05)) * pitch
+    skin = np.sin(2.0 * math.pi * np.cumsum(f) / SR) * env_ad(n, 0.001, 0.14, curve=3.0)
+    beater = bp(noise(n_of(0.006)), 2000.0, 6000.0) * env_ad(n_of(0.006), 0.0002, 0.0015) * 0.9
+    shell = harmonics(180.0 * pitch, n, [0.5, 0.3, 0.15]) * env_ad(n, 0.001, 0.02) * 0.4
+    return room(mix(sat(skin, 1.6), at(np.zeros(1), beater, 0.0), shell), decay=0.12, mix=0.12, cut=3000.0)
+
+
+def snare_real(pitch=1.0):
+    # A real snare: the top head's tone, the shell, the wires rattling under it, the
+    # stick's crack, and the room.
+    n = n_of(0.3)
+    tone = harmonics(185.0 * pitch, n, [1.0, 0.6, 0.3]) * env_ad(n, 0.0005, 0.06) * 0.7
+    shell = harmonics(330.0 * pitch, n, [0.6, 0.3]) * env_ad(n, 0.0005, 0.03) * 0.4
+    wires = bp(noise(n), 1500.0, 9000.0) * env_ad(n, 0.001, 0.09, curve=2.5) * (0.7 + 0.3 * np.abs(tone / (np.max(np.abs(tone)) + 1e-9)))
+    crack = bp(noise(n_of(0.008)), 3000.0, 10000.0) * env_ad(n_of(0.008), 0.0001, 0.002) * 0.9
+    return room(mix(tone, shell, wires * 0.9, at(np.zeros(1), crack, 0.0)), decay=0.22, mix=0.24, cut=8000.0)
+
+
+def hat_real(open_=False, pitch=1.0):
+    n = n_of(0.5 if open_ else 0.07)
+    partials = knock([3100.0 * pitch, 4700.0 * pitch, 6900.0 * pitch, 9300.0 * pitch, 11800.0 * pitch],
+                     [0.18, 0.15, 0.12, 0.1, 0.08] if open_ else [0.02, 0.018, 0.015, 0.012, 0.01],
+                     [0.5, 0.45, 0.4, 0.3, 0.2], noise_gain=0.0)
+    wash = bp(noise(n), 4000.0, 14000.0) * env_ad(n, 0.001, 0.14 if open_ else 0.015)
+    return mix(partials * 0.5, wash * 0.6) * 0.4
+
+
+def ride_real():
+    n = n_of(0.9)
+    return mix(knock([2600.0, 3900.0, 5300.0, 7800.0], [0.5, 0.4, 0.3, 0.2], [0.5, 0.4, 0.3, 0.2], noise_gain=0.0) * 0.5,
+               bp(noise(n), 3000.0, 12000.0) * env_ad(n, 0.001, 0.2) * 0.3,
+               bp(noise(n_of(0.015)), 5000.0, 12000.0) * env_ad(n_of(0.015), 0.0002, 0.003) * 0.7) * 0.5
+
+
+def crash_real():
+    n = n_of(2.2)
+    return mix(bp(noise(n), 2000.0, 15000.0) * env_ad(n, 0.002, 0.6, curve=2.0),
+               knock([2900.0, 4300.0, 6400.0, 8100.0], [0.9, 0.7, 0.5, 0.4], [0.4, 0.3, 0.25, 0.2], noise_gain=0.0) * 0.4) * 0.35
+
+
+def timpani_real():
+    n = n_of(1.2)
+    t = t_of(n)
+    f = 62.0 * (1.0 + 0.06 * np.exp(-t / 0.08))
+    skin = np.sin(2.0 * math.pi * np.cumsum(f) / SR) * env_ad(n, 0.002, 0.35) + harmonics(62.0, n, [0.0, 0.5, 0.3, 0.2]) * env_ad(n, 0.002, 0.2) * 0.5
+    mallet = lp(noise(n_of(0.02)), 1500.0) * env_ad(n_of(0.02), 0.0003, 0.005) * 0.5
+    return room(mix(skin, at(np.zeros(1), mallet, 0.0)), decay=0.6, mix=0.3, cut=2500.0)
+
+
+def variants(fn, k=3):
+    """Several renderings of a hit, each a hair different in pitch, so no two are the same."""
+    return [fn(RNG.uniform(0.96, 1.04)) for _ in range(k)]
+
+
+NOTE_INST["guitar_real"] = lambda f, d, p: guitar_real(f, d, p.get("mute", True))
+NOTE_INST["lead_real"] = lambda f, d, p: lead_real(f, d)
+NOTE_INST["bass_real"] = lambda f, d, p: bass_real(f, d)
+NOTE_INST["violin_real"] = lambda f, d, p: violin_real(f, d)
+NOTE_INST["cello_real"] = lambda f, d, p: cello_real(f, d)
+NOTE_INST["horn_real"] = lambda f, d, p: horn_real(f, d)
+PAD_INST["strings_real"] = lambda c, n, p: strings_real(c, n, p.get("gain", 0.15))
+PAD_INST["choir_real"] = lambda c, n, p: choir_real(c, n, p.get("gain", 0.2), p.get("vowel", "ah"))
+STAB_INST["hit_real"] = lambda semis, dur: room(mix(strings_real(semis, n_of(dur), 1.0)[: n_of(dur)] * env_ad(n_of(dur), 0.01, dur * 0.3),
+                                                   mix(*[horn_real(E2 * 2.0 ** (s / 12.0) * 2.0, dur) for s in semis]) / len(semis) * 0.6,
+                                                   timpani_real()[: n_of(dur)] * 0.6), decay=0.5, mix=0.3)
+
+
+# -- the realism sketches: the first sixteen bars of each loop (the groove and the lift) on
+# the real-ish palette, hits varied, timing and velocity humanised.
+
+def sketch_real_map():
+    return groove(
+        bpm=92, form="AAAAAAAB CCCCCCCB",
+        kit={"kick": (variants(lambda p: lp(timpani_real(), 900.0 * p)), 0.7), "snare": (variants(snare_real), 0.55),
+             "hat": (variants(lambda p: hat_real(False, p)), 0.5), "open": ([hat_real(True)], 0.4),
+             "timp": (variants(lambda p: timpani_real()), 0.8)},
+        drums={"kick": {"A": "x.......x.......", "B": "x.......x.....x.", "C": "x.......x.....x."},
+               "snare": {"A": "....x.......x...", "B": "....x.......x..o", "C": "....x.......x..o"},
+               "hat": {"A": "..x...x...x...x.", "B": "..x...x...x...x.", "C": "x.x.x.x.x.x.x.x."},
+               "open": {"C": "......x.......x."},
+               "timp": {"B": "..............x."}},
+        chords={"A": [[0, 7, 15], [0, 7, 15], [-2, 5, 10], [3, 10, 17]], "B": [[0, 7, 15]],
+                "C": [[8, 15, 19], [5, 12, 19], [3, 10, 17], [7, 14, 22]]},
+        voices=[
+            {"inst": "cello_real", "mode": "riff", "gain": 0.4, "legato": True,
+             "pat": {"A": "0------.3------.0---....1-------g------.3------.5---....3-------", "B": "0------.3------.0-------5-------"}},
+            {"inst": "bass_real", "mode": "riff", "gain": 0.5,
+             "pat": {"C": "8--.a-.8-..a.5-.3--.5-.7-..5.7-."}},
+            {"inst": "bell", "mode": "chord", "octave": 2, "gain": 0.2, "echo": (3, 0.4, 3), "dur": 3.5,
+             "pat": {"A": "0.2.1.3.0.2.1.2.", "C": "0.2.1.3.0.2.1.2.0.3.2.1.0.3.2.3."}},
+            {"inst": "horn_real", "mode": "chord", "octave": 1, "gain": 0.3, "dur": 3.0,
+             "pat": {"A": "........3...2.1.", "C": "....3.2.....1..."}},
+            {"inst": "violin_real", "mode": "riff", "gain": 0.26, "octave": 2,
+             "pat": {"C": "........7--.8-.7........5.3-.0--"}},
+            {"inst": "hit_real", "mode": "stab", "gain": 0.35, "dur": 3.0, "pat": {"C": "x" + "." * 127}},
+        ],
+        pad=[{"inst": "choir_real", "gain": 0.24, "vowel": "oo", "pump": 0.15, "sections": "ABC"},
+             {"inst": "strings_real", "gain": 0.18, "sections": "C"}],
+        air=(0.35, 0.14), human=(0.007, 0.18))
+
+
+def sketch_real_skirmish():
+    return groove(
+        bpm=100, form="AAAAAAAB CCCCCCCB",
+        kit={"kick": (variants(kick_real), 1.1), "snare": (variants(snare_real), 1.0),
+             "hat": (variants(lambda p: hat_real(False, p)), 0.5), "open": ([hat_real(True)], 0.4),
+             "crash": ([crash_real()], 1.0), "ride": ([ride_real()], 0.7),
+             "tom": (variants(lambda p: tom(150.0 * p)), 0.8), "tom2": (variants(lambda p: tom(110.0 * p)), 0.8)},
+        drums={"kick": {"A": "x.xx.x.", "B": "x.xx.x.x.xx.x.x.x.xx.x.x.xxxxxxx", "C": "x..xx...x..xx.x."},
+               "snare": {"A": "....x.......x...", "B": "....x.......x...", "C": "....x..o.x..x..o"},
+               "hat": {"A": "x.x.x.x.x.x.x.x.", "B": "x.x.x.x.x.x.x.x."},
+               "ride": {"C": "x.x.x.x.x.x.x.x."},
+               "open": {"C": "......x.......x."},
+               "crash": {"*": "x" + "." * 63},
+               "tom": {"B": "........x.x.xx.x"}, "tom2": {"B": "..............x."}},
+        chords={"A": [[0, 7, 15], [0, 7, 15], [-2, 5, 10], [3, 10, 17]], "B": [[0, 7, 15]],
+                "C": [[8, 15, 19], [5, 12, 19], [3, 10, 17], [7, 14, 22]]},
+        voices=[
+            {"inst": "guitar_real", "mode": "riff", "gain": 0.75, "octave": -1,
+             "pat": {"A": "0.0-3.0", "B": "0.0-3.0.0.0-3.0.0.0-5.0.0.3-g.0.", "C": "8.8-a.8"}},
+            {"inst": "bass_real", "mode": "riff", "gain": 0.55,
+             "pat": {"A": "0--.3-.0-...1-..g--.3-.5-...3-..", "B": "0--.3-.0-...5-..3--.1-.0-...g-..", "C": "8-.c.8-a.8-.5-.38-.c.8-a.3-.5-.7"}},
+            {"inst": "lead_real", "mode": "riff", "gain": 0.45, "octave": 2,
+             "pat": {"C": "7--.8-.7-..5.3-.0---....3-.5-.7-8--.a-.8-..7.5-.3---....5-.3-.0-"}},
+            {"inst": "epiano", "mode": "stab", "gain": 0.45, "dur": 1.5, "pat": {"C": "..x...x...x...x."}},
+            {"inst": "chime_metal", "mode": "chord", "octave": 2, "gain": 0.2, "echo": (3, 0.25, 2), "dur": 1.6,
+             "pat": {"A": "0...............2..............."}},
+        ],
+        pad=[{"inst": "choir_real", "gain": 0.16, "vowel": "oh", "sections": "C"}],
+        tilt=3.0, low=(150.0, -6.0), air=(0.18, 0.08), human=(0.005, 0.15))
+
+
+# -- the meter sketches: the loops' own palettes, the bars changing length. The skirmish
+# alternates 4/4 and 3/4 (Ryan's four-three) then runs a 7/8 section; the map goes to 5/4
+# for the strings and 6/8 for an interlude.
+
+def sketch_meter_skirmish():
+    return groove(
+        bpm=100, form="AAAA FTFTFTFT VVVVVVVV AAAA",
+        meter={"T": 12, "V": 14},
+        kit={"kick": (kick_metal(), 1.15), "snare": (snare_metal(), 1.0), "hat": (hat(False, True), 0.45),
+             "open": (hat(True, True), 0.4), "crash": (crash(), 1.0), "china": (china(), 0.9), "ride": (ride(), 0.8),
+             "tom": (tom(150.0), 0.8)},
+        drums={"kick": {"A": "x.xx.x.", "F": "x.xx..x.x.......", "T": "x.....x.x.x.", "V": "x..x..x.xx..x."},
+               "snare": {"A": "....x.......x...", "F": "....x.......x...", "T": "....x...x..o", "V": "....x.....x..o"},
+               "hat": {"A": "x.x.x.x.x.x.x.x.", "F": "x.x.x.x.x.x.x.x.", "T": "x.x.x.x.x.x.", "V": "x.x.x.x.x.x.x."},
+               "open": {"T": "..........x.", "V": "............x."},
+               "crash": {"*": "x" + "." * 63},
+               "china": {"V": "......x......."},
+               "tom": {"T": "..........xx"}},
+        chords={"A": [[0, 7, 15], [0, 7, 15], [-2, 5, 10], [3, 10, 17]],
+                "F": [[0, 7, 15], [8, 15, 19], [10, 17, 22], [7, 14, 22]], "T": [[0, 7, 15], [8, 15, 19], [10, 17, 22], [7, 14, 22]],
+                "V": [[0, 7, 15], [0, 7, 15], [-2, 5, 10], [3, 10, 17], [0, 7, 15], [8, 15, 19], [10, 17, 22], [7, 14, 22]]},
+        voices=[
+            {"inst": "chug", "mode": "riff", "gain": 0.75, "octave": -1,
+             "pat": {"A": "0.0-3.0", "F": "0.0-3.0.0.0-5.0.", "T": "0.0-3.0.0.0-", "V": "0.0-3.0.0.0-5.3"}},
+            {"inst": "bass_guitar", "mode": "riff", "gain": 0.5,
+             "pat": {"A": "0--.3-.0-...1-..g--.3-.5-...3-..", "F": "0--.3-.0-...5-..", "T": "3--.1-.0-.g.", "V": "0--.3-.5-.3.0-"}},
+            {"inst": "lead", "mode": "riff", "gain": 0.45, "octave": 2,
+             "pat": {"F": "7--.8-.7-..5.3-.", "T": "0---....3-.5", "V": "7-.8-.7.5-.3-."}},
+            {"inst": "epiano", "mode": "stab", "gain": 0.45, "dur": 1.5, "pat": {"F": "..x...x...x...x.", "T": "..x...x...x."}},
+            {"inst": "chime_metal", "mode": "chord", "octave": 2, "gain": 0.2, "echo": (3, 0.25, 2), "dur": 1.6,
+             "pat": {"V": "0.....2......."}},
+        ],
+        pad=[{"inst": "choir", "gain": 0.16, "vowel": "oh", "sections": "V"}],
+        tilt=3.0, low=(150.0, -6.0))
+
+
+def sketch_meter_map():
+    return groove(
+        bpm=92, form="AAAA WWWWWWWW XXXXXXXX AAAA",
+        meter={"W": 20, "X": 12},
+        kit={"kick": (taiko_soft(), 0.8), "snare": (snare_drum(True), 0.7), "hat": (hat(False, True), 0.35),
+             "open": (hat(True, True), 0.3), "timp": (timpani(), 0.8)},
+        drums={"kick": {"A": "x.......x.......", "W": "x.......x...x.......", "X": "x.....x....."},
+               "snare": {"A": "....x.......x...", "W": "....x.......x...x...", "X": "......x....."},
+               "hat": {"A": "..x...x...x...x.", "W": "..x...x...x...x...x.", "X": "x.x.x.x.x.x."},
+               "timp": {"W": "x...................x.......x......." , "X": "x..........."}},
+        chords={"A": [[0, 7, 15], [0, 7, 15], [-2, 5, 10], [3, 10, 17]],
+                "W": [[0, 7, 15], [8, 15, 19], [10, 17, 22], [7, 14, 22], [0, 7, 15], [5, 12, 19], [3, 10, 17], [-2, 5, 10]],
+                "X": [[10, 17, 22], [10, 16, 22], [8, 15, 19], [0, 6, 13], [7, 14, 22], [7, 13, 22], [0, 7, 15], [0, 6, 13]]},
+        voices=[
+            {"inst": "cello", "mode": "riff", "gain": 0.32, "legato": True,
+             "pat": {"A": "0------.3------.0---....1-------g------.3------.5---....3-------"}},
+            {"inst": "contrabass", "mode": "riff", "gain": 0.55,
+             "pat": {"W": "0..0..0.3..3..3.a..a", "X": "0..0..0..3.."}},
+            {"inst": "cello", "mode": "riff", "gain": 0.4, "legato": True,
+             "pat": {"X": "a-----------8-----------g-----------0-----------"}},
+            {"inst": "bell", "mode": "chord", "octave": 2, "gain": 0.2, "echo": (3, 0.4, 3), "dur": 3.5,
+             "pat": {"A": "0.2.1.3.0.2.1.2.", "W": "0.2.1.3.0.2.1.2.3.1.", "X": "0..2..1..3.."}},
+            {"inst": "horn", "mode": "chord", "octave": 1, "gain": 0.24, "dur": 3.0,
+             "pat": {"A": "........3...2.1.", "W": "............2.....1."}},
+            {"inst": "violin", "mode": "riff", "gain": 0.28, "octave": 2,
+             "pat": {"W": "7--.8-.7-..5.3-.0---8--.a-.8-..7.5-.3---"}},
+            {"inst": "harp", "mode": "chord", "octave": 2, "gain": 0.22, "dur": 1.2,
+             "pat": {"W": "0.1.2.3.2.1.0.1.2.3.", "X": "0.1.2.3.2.1."}},
+        ],
+        pad=[{"inst": "choir", "gain": 0.26, "vowel": "oo", "pump": 0.2, "sections": "A"},
+             {"inst": "strings", "gain": 0.16, "sections": "WX"},
+             {"inst": "choir", "gain": 0.18, "vowel": "ah", "sections": "X"}],
+        air=(0.3, 0.12))
+
+
+SKETCHES.update({"real_map": sketch_real_map, "real_skirmish": sketch_real_skirmish,
+                 "meter_map": sketch_meter_map, "meter_skirmish": sketch_meter_skirmish})
 
 
 SOUNDS = {
