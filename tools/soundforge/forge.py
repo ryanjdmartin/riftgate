@@ -1417,12 +1417,19 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
     RNG = outer
     for pad in (pad if isinstance(pad, list) else [pad]) if pad else []:
         secs = pad.get("sections", form)
-        on = [bool(per_bar[i]) and form[i] in secs for i in range(bars)]
+        skip = pad.get("skip", {})   # section -> bars from each run's start the pad leaves out
+
+        def run_start(i):
+            for r0, r1 in runs:
+                if r0 <= i < r1:
+                    return r0
+            return 0
+        on = [bool(per_bar[i]) and form[i] in secs and i - run_start(i) >= int(skip.get(form[i], 0)) for i in range(bars)]
         xf = 0.5   # seconds of crossfade between one chord and the next in a run
         b = 0
         while b < bars:
             e = b
-            while e < bars and per_bar[e] == per_bar[b] and form[e] == form[b]:
+            while e < bars and per_bar[e] == per_bar[b] and form[e] == form[b] and on[e] == on[b]:
                 e += 1
             if on[b]:
                 first = b == 0 or not on[b - 1]
@@ -1507,8 +1514,8 @@ MUSIC = {
                                     "E": "the two basses in unison over double kicks, the drums up"}},
     "music_skirmish": {"bpm": 100, "form": "AAAAAAAAAAAAAAAAB CCCCCCCC NNNN LLLLLLLL M XXXXXXXX UUUUUUUU FFFFFFFFFFFFFFFF WW SSSSSSSS RRRRRRRR ZZZZZZZZ Y KKKKKKKKKKKKKKKK V Q JJ",
                        "meter": {"X": 14, "K": (16, 1.06), "V": (16, 1.06)},
-                       "names": {"A": "riff, sixteen bars: four bare, four with a low bass, eight with bass power chords",
-                                 "N": "the riff again, on power chords",
+                       "names": {"A": "riff, sixteen bars: four bare, four with a low bass, eight with bass power chords and a low drone",
+                                 "N": "the riff again, on power chords over the drone",
                                  "B": "turn bar: one short hit with the power chord, the drums filling",
                                  "W": "the keys' turn, two bars: the seven's instruments ring on the tune's note with the drums in from beat three, then an exposed epic fill",
                                  "Q": "a snare and tom fill before the descent",
@@ -2231,7 +2238,11 @@ def music_skirmish(palette="hybrid"):
             {"inst": "swell_rev", "mode": "stab", "gain": 0.4, "dur": 2.0,
              "pat": {"Y": "..............x.", "V": "..............x."}},
         ],
-        pad=[{"inst": "choir_real" if real else "choir", "gain": 0.18, "vowel": "oh", "sections": "C"}],
+        pad=[{"inst": "choir_real" if real else "choir", "gain": 0.18, "vowel": "oh", "sections": "C"},
+             # A subtle drone under the power chords, for drive (Ryan, 25 September): the
+             # sweep pad's saws low on the bar's chord, from the riff's third stage and under
+             # the riff between the lifts.
+             {"inst": "sweep", "gain": 0.09, "octave": 0, "rate": 0.08, "sections": "AN", "skip": {"A": 8}}],
         drum_gain={"U": 1.3, "S": 1.15, "R": 1.25, "Z": 1.3, "W": 1.25, "Q": 1.2},
         crescendo={"S": (0.85, 1.0), "R": (1.0, 1.12), "Z": (1.12, 1.3)},
         tilt=3.0, low=(150.0, -6.0),
