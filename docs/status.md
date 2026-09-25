@@ -148,10 +148,14 @@ he changes direction, the new direction is taken as given and the old bible line
 retired; content and voices are proposed in chat before they land; he leans hotter on
 effects than seems right and judges effects in motion, never from stills; the most
 recent messages beat the bible when they differ. Two sessions often run on this repo
-at once: stage by path, never `git add -A`, and the bible is published after each
-change to https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ (a different account cannot
-publish to that URL; publish a new artifact and record its link here). Commit after each
-verified chunk, from this folder, with the tests green.
+at once: stage by path, never `git add -A`, diff a shared file before staging it (a
+path still sweeps the other session's hunks in that file), never kill a bare
+`godot --path .` (it may be the other session's harness), and the bible is published
+after each change to https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ (a different
+account cannot publish to that URL; publish a new artifact and record its link here).
+Commit after each verified chunk, from this folder, with the tests green. Headless Godot
+runs go under a watchdog (`perl -e 'alarm 240; exec @ARGV' godot ...`; macOS has no
+`timeout`), and a new `class_name` script needs one `--import` before the tests see it.
 
 **Audio, handoff (24 September; the bible's section 1 sound row has every decision and
 the reasons, listen by listen).** Everything is `tools/soundforge/forge.py` (numpy only)
@@ -250,7 +254,12 @@ patterns in bar multiples unless that is wanted.
 
 *To do, audio.* (1) Listen: human C as last built; rift C's extension; the Terran
 interface set and the glide-free skirmish set in the game (`forge.py audition` for the
-file); the map set's equal-power crossfade. Expect notes on each. (2) **Boss themes, the
+file); the map set's equal-power crossfade; the pause menu's skips (a manual crossfade
+mid-fight, at the screen's fade times) and the header ticker's run-in and beat meter,
+both judged running, never from the `menu` pose alone. Expect notes on each; the six
+titles are Ryan's picks and may still move (one string each in `Sound.TRACKS`, plus the
+file id if he wants the file to follow). The ticker's crawl never fires today, since
+every title fits the box. (2) **Boss themes, the
 plan discussed 25 September (Ryan has not yet said build).** The structure: a run is
 about ten battles in three acts, one family per act (The Risen, then The Infernal
 Horde, then The Chorus); every battle ends by killing the boss that powers its rift, so
