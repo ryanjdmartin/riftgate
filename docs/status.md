@@ -176,15 +176,16 @@ under big moments; `TONAL` sounds keep their pitch; a new battle restarts the ma
 from the top after the map is drawn, a fight's return resumes it. The display's scan and
 idle stay silent by decision.
 
-*To do, audio (25 September).* (1) Listen: rift A (**locked** at the twenty-second listen's build: the climax thirty-two bars, the rotation from the repeat edge; 89 bars, 3:56) and human A (twenty-third listen built: the riff sixteen bars, the power chords four bars alone then four with a continuous E drone, the drone under the second riff too, its filter held open and up to 0.34; a pad `skip` and `chord`, the sweep pad's `open` and `depth`; "everything else fixed, breaths and turns great"); human B
+*To do, audio (25 September).* (1) Listen: rift A (**locked** at the twenty-second listen's build: the climax thirty-two bars, the rotation from the repeat edge; 89 bars, 3:56) and human A (twenty-third listen built: "almost there": the riff sixteen bars, the power chords four bars alone then four with a continuous E drone, the drone under the second riff and the whole climax, alone under its first set, the backing guitar from the second at 0.75; Ryan really likes the drone as a human-track element; a pad `skip` and `chord`, the sweep pad's `open` and `depth`; "everything else fixed, breaths and turns great"); human B
 (calm) and C (heavy) and rift B (calm, the ground bass) and C (drive) not yet heard at
 all beyond a first pass on the two calms; the interface effects since the third audition
 (an octave and a third down, glides cut, half again as long, darker: `UI_PITCH`, `UI_GLIDE`, `UI_LEN` and `blip` in the forge; `forge.py audition`). Expect a round of notes on each. (2) The
 screens: the map plays rift B and human B in turn (a set; judge the two-second crossfade
 at the seam), the skirmish human A; rift A, rift C and human C sit in the table unhooked;
 decide where they go and whether a set should pick rather than cycle. Both calms are rebuilt
-on the current engine (pad crossfades at their doors) and pinned at one level, the map's
-(-24.9 dB mean RMS); the other tracks' levels wait on where they end up. (3) Loose ends inside the tracks:
+on the current engine (pad crossfades at their doors), pinned at one level, the map's
+(-24.9 dB mean RMS), and **locked for now** (Ryan, 25 September: both sound good); the
+other tracks' levels wait on where they end up. (3) Loose ends inside the tracks:
 four-three flair belongs to the prog track, human C (human A's and rift A's meters are
 settled). Human A's drum solo is the intensity Ryan wants wherever drums lead a human
 track. (4) The phone: nothing has been heard on a device;

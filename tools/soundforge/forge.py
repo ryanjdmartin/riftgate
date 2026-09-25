@@ -1533,8 +1533,8 @@ MUSIC = {
                                  "X": "the seven: a riff for 7/8, power chords, the piano on the long beat, a chime, a guitar held through its second half",
                                  "U": "unison riff: chug, bass and lead in octaves, a drum solo behind them in threes and twos, the drums up",
                                  "F": "keys section: the sub punching once a bar then fading on the roots with a soft touch on three, a fifth under it late, the lead's tune and chord work",
-                                 "S": "the climax: a new unison riff on the lead guitar voice, the chug with a fifth and the driven bass, a backing guitar ringing the chord a whole bar from each one, intense drums",
-                                 "R": "the climax's second set: the keys join the riff, the drums more intense",
+                                 "S": "the climax: a new unison riff on the lead guitar voice, the chug with a fifth and the driven bass, the drone under it, intense drums",
+                                 "R": "the climax's second set: the backing guitar joins, ringing the chord a whole bar from each one, the keys join the riff, the drums more intense",
                                  "Z": "the climax's third set: double kicks on the sixteenths, the keys on simple chords on the beat, nothing backed off",
                                  "K": "keyboard solo, sixteen bars, six percent slower: the piano in single notes drifting from the crunch synth's walk, dark chords held on guitar and piano changing with crashes that fade to nothing",
                                  "J": "the descent, two bars: chug, bass and lead down in a gallop with the toms and cymbals on its hits"}},
@@ -2190,8 +2190,10 @@ def music_skirmish(palette="hybrid"):
              "pat": {"Y": "0---------------"}},
             # A backing guitar on the chord, filling the air; the keys on the riff from the
             # second set.
-            {"inst": "guitar_hold", "mode": "stab", "gain": 0.9, "dur": 20,
-             "pat": {"S": "x...............", "R": "x...............", "Z": "x...............", "Y": "x..............."}},
+            # The first set has the drone under it instead; the backing guitar joins from the
+            # second set, a little under where it was (Ryan, 25 September).
+            {"inst": "guitar_hold", "mode": "stab", "gain": 0.75, "dur": 20,
+             "pat": {"R": "x...............", "Z": "x...............", "Y": "x..............."}},
             {"inst": "epiano", "mode": "stab", "gain": 0.28, "dur": 4,
              "pat": {"Z": "x...x...x...x..."}},
             {"inst": backing, "mode": "riff", "gain": 0.3, "octave": -1,
@@ -2251,7 +2253,9 @@ def music_skirmish(palette="hybrid"):
              # third stage and under the riff between the lifts.
              # Its filter sits open and barely moves, and it is up, so the sustain reads through
              # the riff (Ryan: not hearing it sustained; it was level but masked).
-             {"inst": "sweep", "gain": 0.34, "octave": 0, "rate": 0.08, "depth": 0.3, "open": 0.75, "sections": "AN", "skip": {"A": 12}, "chord": [0, 7, 12]}],
+             # Ryan really likes this drone as an element for the human tracks; it also sits
+             # under the whole climax, alone under the first set.
+             {"inst": "sweep", "gain": 0.34, "octave": 0, "rate": 0.08, "depth": 0.3, "open": 0.75, "sections": "ANSRZ", "skip": {"A": 12}, "chord": [0, 7, 12]}],
         drum_gain={"U": 1.3, "S": 1.15, "R": 1.25, "Z": 1.3, "W": 1.25, "Q": 1.2},
         crescendo={"S": (0.85, 1.0), "R": (1.0, 1.12), "Z": (1.12, 1.3)},
         tilt=3.0, low=(150.0, -6.0),
