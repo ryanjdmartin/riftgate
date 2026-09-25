@@ -181,8 +181,7 @@ tracks: six sit in the table and only rift A and human A play; decide which trac
 screen gets, or a multi-track setup per screen (pick or crossfade), and whether the
 labels A B C map to map, fight and something else. (3) Loose ends inside the tracks:
 human A's keyboard solo may still want a different upper voice; four-three flair and 3/4
-injections have no home yet; rift A's 6/8 triplets as flair somewhere, and whether its
-7/8 closes should obey the kick rule. (4) The phone: nothing has been heard on a device;
+injections have no home yet (rift A's meters are settled). (4) The phone: nothing has been heard on a device;
 the mix was checked by measurement only (each section's low band against its lead band,
 the phone band of every blow). (5) The real recordings and the real track remain
 section 12's open question; everything here is a placeholder in the decided register.
