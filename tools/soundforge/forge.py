@@ -348,10 +348,11 @@ def write(name, x, level):
 
 
 # ---------------------------------------------------------------- effects
-# Two registers (Ryan, 23 September). The interface is sci-fi electronic: beeps and boops,
-# StarCraft's menu pushed a little toward comedy, never a Doom or Quake menu. Combat and
-# the map are over-the-top weighty: lasers, gunfire, explosions and melee of various kinds,
-# with Doom levels of punch, for both sides.
+# Two registers (Ryan, 23 September). The interface is sci-fi electronic in the StarCraft
+# Terran register (Ryan, 25 September, after three auditions of beeps: grounded computer
+# gibberish, relay clicks, flat tones with no glide, irony rather than parody), never a
+# Doom or Quake menu. Combat and the map are over-the-top weighty: lasers, gunfire,
+# explosions and melee of various kinds, with Doom levels of punch, for both sides.
 
 def blip(f0, f1=None, dur=0.05, width=0.5, attack=0.006, decay=None, gain=1.0):
     """The interface's voice, future-digital rather than retro (Ryan, 24 September: the
@@ -369,34 +370,39 @@ def blip(f0, f1=None, dur=0.05, width=0.5, attack=0.006, decay=None, gain=1.0):
     return room(x, decay=0.09, mix=0.16, cut=5000.0) * gain
 
 
-# The interface's register (Ryan, 25 September, twice: the electronic noises too high and
-# too chirpy, then still a little bright and chirpy): every interface tone sits about an
-# octave and a third below where it was written, glides less than a third as far, and lasts
-# half again as long, so it boops rather than chirps; the blip itself carries less shimmer,
-# less second harmonic, less air, and a darker room.
-UI_PITCH = 0.4
-UI_GLIDE = 0.3
-UI_LEN = 1.5
+def tone(f, dur, gain=1.0, edge=0.3):
+    """A console tone: flat, no glide, a sine with a little triangle edge and a second
+    harmonic, low-passed, a soft front. The Terran console's voice."""
+    n = n_of(dur)
+    t = t_of(n)
+    ph = 2.0 * math.pi * f * t
+    tri = 2.0 / math.pi * np.arcsin(np.sin(ph))
+    x = np.sin(ph) * (1.0 - edge) + tri * edge + 0.12 * np.sin(2.0 * ph)
+    x = lp(x, 2200.0)
+    return x * env_pts(n, [(0.0, 0.0), (0.006, 1.0), (max(dur - 0.02, 0.01), 0.85), (dur, 0.0)]) * gain
 
 
-def ui_blip(f0, f1=None, dur=0.05, **kw):
-    """`blip` in the interface's register: pitched down, the glide halved, a little longer."""
-    f1 = f1 or f0
-    return blip(f0 * UI_PITCH, f0 * UI_PITCH * (f1 / f0) ** UI_GLIDE, dur * UI_LEN, **kw)
+CHATTER_PITCHES = [240.0, 300.0, 360.0, 410.0, 480.0, 560.0, 640.0, 720.0]
 
 
-def chirp(notes, gap=0.0, gain=1.0):
-    """A sequence of interface tones: [(f0, f1, dur), ...] one after another."""
-    buf = np.zeros(1)
+def chatter(dur, gain=1.0, pace=(0.006, 0.016)):
+    """Computer gibberish: a run of tiny flat tones and filtered ticks at pitches off any
+    scale, dry, low-passed, the console working."""
+    buf = np.zeros(n_of(dur))
     when = 0.0
-    for f0, f1, dur in notes:
-        buf = at(buf, ui_blip(f0, f1, dur), when, gain)
-        when += dur * UI_LEN + gap
-    return buf
+    while when < dur - 0.012:
+        d = RNG.uniform(*pace)
+        if RNG.random() < 0.7:
+            piece = tone(float(RNG.choice(CHATTER_PITCHES)), d, edge=0.6)
+        else:
+            piece = burst(d, 700.0, 3200.0, decay=d * 0.5)
+        buf = at(buf, piece, when, RNG.uniform(0.45, 1.0))
+        when += d + RNG.uniform(0.002, 0.012)
+    return lp(buf, 4000.0) * gain
 
 
 def tick_click():
-    return bp(noise(n_of(0.012)), 1500.0, 5000.0) * env_ad(n_of(0.012), 0.0002, 0.002) * 0.35
+    return bp(noise(n_of(0.012)), 1500.0, 5000.0) * env_ad(n_of(0.012), 0.0002, 0.002) * 0.3
 
 
 def zap(f0, f1, dur, gain=1.0):
@@ -426,85 +432,77 @@ def explosion(dur=1.1, low=28.0, gain=1.0, debris=3):
     return room(buf, decay=0.35, mix=0.2) * gain
 
 
-# ---- the interface
+# ---- the interface: a Terran console. Every press is a relay closing under a flat tone;
+# the console works in bursts of chatter; nothing glides.
 
 def ui_tap():
-    # A two-tone blip with a click on its front.
-    return mix(chirp([(1100.0, 1500.0, 0.028), (1500.0, 1500.0, 0.03)], gain=0.8), tick_click())
+    return mix(relay(0.8), tone(330.0, 0.06, 0.6))
 
 
 def ui_back():
-    # The same going down.
-    return mix(chirp([(1400.0, 1000.0, 0.03), (900.0, 760.0, 0.04)], gain=0.7), tick_click() * 0.7)
+    return mix(relay(0.7, 0.9), tone(262.0, 0.07, 0.55))
 
 
 def plot():
-    # Three notes climbing, quick, and a data tick: the route is accepted.
-    return mix(chirp([(700.0, 760.0, 0.035), (950.0, 1000.0, 0.035), (1300.0, 1450.0, 0.06)], gain=0.8),
-               at(np.zeros(1), tick_click() * 0.6, 0.11))
+    # The console takes the route: a burst of chatter, then the relay and a confirm.
+    b = chatter(0.14, 0.8)
+    return at(b, mix(relay(0.8), tone(294.0, 0.09, 0.6)), 0.15)
 
 
 def codex_open():
-    # A rising sweep with a breath of air under it, then a soft confirm: the plate slides
-    # out of the console.
-    n = n_of(0.24)
-    t = t_of(n)
-    sweep_ = blip(220.0, 900.0, 0.24, decay=0.4)[:n]
-    air = lp_var(hp(noise(n), 500.0), 1000.0 + 2500.0 * t / 0.24) * env_ad(n, 0.02, 0.1) * 0.22
-    return at(mix(sweep_ * 0.6, air), chirp([(1600.0, 1900.0, 0.06)]) * 0.6, 0.2)
+    # The plate slides out on a small servo while the console loads it, then latches.
+    b = servo(180.0, 260.0, 0.16, gain=0.45, band=(300.0, 2000.0))
+    b = at(b, chatter(0.28, 0.8), 0.05)
+    return room(at(b, mix(relay(0.9), tone(262.0, 0.1, 0.5)), 0.34), decay=0.12, mix=0.12)
 
 
 def codex_close():
-    n = n_of(0.2)
-    t = t_of(n)
-    sweep_ = blip(900.0, 220.0, 0.2, decay=0.3)[:n]
-    air = lp_var(hp(noise(n), 500.0), 3500.0 - 2500.0 * t / 0.2) * env_ad(n, 0.01, 0.08) * 0.2
-    return at(chirp([(1400.0, 1100.0, 0.05)]) * 0.5, mix(sweep_ * 0.5, air), 0.03)
+    # A short burst as it clears, the servo back, the latch.
+    b = chatter(0.12, 0.7)
+    b = at(b, servo(260.0, 170.0, 0.13, gain=0.45, band=(300.0, 2000.0)), 0.06)
+    return room(at(b, mix(relay(1.0, 0.8), tone(220.0, 0.08, 0.45)), 0.2), decay=0.12, mix=0.12)
 
 
 def menu_open():
-    # The console powering up: a low hum swelling, four blips climbing over it.
+    # The console powering up: a low hum swelling, the relay, the console working, a tone
+    # to say it is ready.
     n = n_of(0.5)
     hum = lp(sat(saws(110.0, n, (0.995, 1.0, 1.005)), 1.5), 900.0) * env_pts(n, [(0.0, 0.0), (0.08, 0.6), (0.3, 0.5), (0.5, 0.0)]) * 0.5
-    arp = chirp([(660.0, 660.0, 0.05), (880.0, 880.0, 0.05), (1100.0, 1100.0, 0.05), (1320.0, 1500.0, 0.09)], gap=0.01, gain=0.6)
-    return at(hum, arp, 0.06)
+    b = at(hum, relay(0.9), 0.05)
+    b = at(b, chatter(0.3, 0.6), 0.08)
+    return at(b, tone(220.0, 0.14, 0.5), 0.4)
 
 
 def die_pick():
-    # A bright bip rising: the die lifts off the display.
-    return mix(chirp([(1500.0, 2300.0, 0.04)], gain=0.7), tick_click() * 0.6)
+    return mix(relay(0.9, 1.2), tone(392.0, 0.05, 0.5))
 
 
 def die_drop():
-    # A lower boop, and a soft set-down.
-    return mix(chirp([(800.0, 520.0, 0.07)], gain=0.7), body(240.0, 100.0, 0.06, click=0.3) * 0.35)
+    return mix(relay(0.7, 0.8), tone(220.0, 0.08, 0.5), body(240.0, 100.0, 0.06, click=0.3) * 0.35)
 
 
 def die_lock():
-    # Two tones confirming, and the click.
-    return mix(chirp([(880.0, 880.0, 0.045), (1320.0, 1320.0, 0.07)], gap=0.01, gain=0.75), tick_click())
+    # Two relays, the second under the tone: the latch engaging.
+    b = relay(0.8)
+    return at(b, mix(relay(1.0, 0.9), tone(330.0, 0.09, 0.6)), 0.05)
 
 
 def die_roll():
-    # The display computing: a run of soft tones and crushed data ticks, quick, settling on
-    # a low tone.
-    buf = np.zeros(n_of(0.42))
-    when = 0.0
-    for k in range(9):
-        f = RNG.choice([660.0, 880.0, 1100.0, 1320.0, 1760.0, 2200.0])
-        buf = at(buf, ui_blip(f, f * RNG.uniform(0.95, 1.08), 0.035, decay=0.018), when, 0.45)
-        buf = at(buf, glitch_perc() * 0.5, when + 0.008)
-        when += RNG.uniform(0.028, 0.045)
-    return at(buf, chirp([(600.0, 440.0, 0.1)]) * 0.7, when + 0.02)
+    # The console computing: chatter over crushed ticks, settling on a low tone.
+    b = chatter(0.4, 0.9)
+    for when in (0.04, 0.13, 0.24, 0.33):
+        b = at(b, glitch_perc() * 0.4, when)
+    return at(b, tone(196.0, 0.14, 0.7), 0.42)
 
 
 def resolve():
-    # The plan committed: a descending run, a low confirm swelling under it, and the
+    # The plan committed: the console working, a low confirm swelling under it, and the
     # console's heavy latch so it still has weight.
-    run = chirp([(1760.0, 1760.0, 0.04), (1320.0, 1320.0, 0.04), (1100.0, 1100.0, 0.04), (880.0, 700.0, 0.12)], gap=0.005, gain=0.7)
+    run = chatter(0.2, 0.8)
     n = n_of(0.45)
     swell = lp(sat(saws(82.4, n, (0.996, 1.0, 1.004)) + np.sin(2.0 * math.pi * 164.8 * t_of(n)) * 0.5, 2.0), 1200.0) * env_pts(n, [(0.0, 0.0), (0.1, 0.7), (0.3, 0.6), (0.45, 0.0)]) * 0.5
     b = at(run, swell, 0.1)
+    b = at(b, tone(165.0, 0.2, 0.5), 0.22)
     return room(at(b, thud(160.0, 48.0, 0.25, click=1.0, drive=3.5) * 0.7, 0.2), decay=0.18, mix=0.12)
 
 
@@ -520,7 +518,7 @@ def engage():
     wash = lp_var(noise(n), 600.0 + 2400.0 * (t / 2.2) ** 2) * (t / 2.2) ** 1.5 * 0.8
     b = mix(drive * 0.6, wash)
     for k, when in enumerate([0.9, 1.45, 1.8, 2.02]):
-        b = at(b, ui_blip(1200.0 + 150.0 * k, 1200.0 + 150.0 * k, 0.06), when, 0.4)
+        b = at(b, tone(330.0, 0.14 if k == 3 else 0.07, 0.5), when, 0.4)
     return room(b, decay=0.3, mix=0.12)
 
 
@@ -535,8 +533,8 @@ def contact():
     env = np.ones(n)
     env[-n_of(0.05):] = np.linspace(1.0, 0.0, n_of(0.05))
     b = mix(horn * env, thud(90.0, 40.0, 0.3, click=0.2, drive=2.0) * 0.4)
-    b = at(b, ui_blip(1800.0, 1800.0, 0.12, width=0.5, decay=0.1), 0.05, 0.3)
-    b = at(b, ui_blip(1800.0, 1800.0, 0.12, width=0.5, decay=0.1), 0.3, 0.3)
+    b = at(b, tone(440.0, 0.12, edge=0.6), 0.05, 0.3)
+    b = at(b, tone(440.0, 0.12, edge=0.6), 0.3, 0.3)
     return room(b, decay=0.3, mix=0.14)
 
 

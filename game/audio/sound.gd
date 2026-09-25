@@ -262,7 +262,10 @@ func _fade_to(full: String, fade_out: float, fade_in: float, delay: float) -> vo
 	_fade = create_tween().set_parallel(true)
 	if out.playing:
 		_pos[_loop_of[1 - _music_live]] = out.get_playback_position()
-		_fade.tween_property(out, "volume_db", SILENT_DB, fade_out).set_trans(Tween.TRANS_SINE)
+		# Equal power, on linear gain: a tween of decibels from silence spent most of its
+		# time inaudible, so a crossfade read as a gap and then a start (Ryan, 25 September).
+		var x0 := acos(clampf(db_to_linear(out.volume_db), 0.0, 1.0)) / (PI / 2.0)
+		_fade.tween_method(_fade_out_gain.bind(out), x0, 1.0, fade_out)
 		_fade.tween_callback(out.stop).set_delay(fade_out)
 	var s := _stream(full) if not full.is_empty() else null
 	if s == null:
@@ -273,9 +276,23 @@ func _fade_to(full: String, fade_out: float, fade_in: float, delay: float) -> vo
 	_loop_of[_music_live] = full
 	var pos := fmod(float(_pos.get(full, 0.0)), maxf(s.get_length(), 0.001))
 	into.play(pos)
-	_fade.tween_property(into, "volume_db", 0.0, fade_in).set_trans(Tween.TRANS_SINE).set_delay(delay)
+	_fade.tween_method(_fade_in_gain.bind(into), 0.0, 1.0, fade_in).set_delay(delay)
 	if SETS.get(_set, []).size() > 1:
 		_advance.start(maxf(0.1, s.get_length() - pos - SET_FADE))
+
+
+## The two halves of an equal-power crossfade: `x` runs 0 to 1, the leaving loop follows
+## the cosine and the arriving one the sine, so the sum of powers holds through the cross.
+func _fade_out_gain(x: float, p: AudioStreamPlayer) -> void:
+	p.volume_db = _gain_db(cos(x * PI / 2.0))
+
+
+func _fade_in_gain(x: float, p: AudioStreamPlayer) -> void:
+	p.volume_db = _gain_db(sin(x * PI / 2.0))
+
+
+static func _gain_db(v: float) -> float:
+	return SILENT_DB if v <= 0.0005 else linear_to_db(v)
 
 
 func _duck(on: bool) -> void:
