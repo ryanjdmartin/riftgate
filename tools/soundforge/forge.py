@@ -1505,9 +1505,9 @@ MUSIC = {
                                     "X": "the seven: the driven bass's riff for 7/8, the clean bass over the long beats",
                                     "D": "breakdown: clean-bass chords held, a long crash, the choir",
                                     "E": "the two basses in unison over double kicks, the drums up"}},
-    "music_skirmish": {"bpm": 100, "form": "AAAAAAAAAAAAB CCCCCCCC NNNN LLLLLLLL M XXXXXXXX UUUUUUUU FFFFFFFFFFFFFFFF WW SSSSSSSS RRRRRRRR ZZZZZZZZ Y KKKKKKKKKKKKKKKK V Q JJ",
+    "music_skirmish": {"bpm": 100, "form": "AAAAAAAAAAAAAAAAB CCCCCCCC NNNN LLLLLLLL M XXXXXXXX UUUUUUUU FFFFFFFFFFFFFFFF WW SSSSSSSS RRRRRRRR ZZZZZZZZ Y KKKKKKKKKKKKKKKK V Q JJ",
                        "meter": {"X": 14, "K": (16, 1.06), "V": (16, 1.06)},
-                       "names": {"A": "riff, twelve bars: four bare, four with a low bass, four with bass power chords",
+                       "names": {"A": "riff, sixteen bars: four bare, four with a low bass, eight with bass power chords",
                                  "N": "the riff again, on power chords",
                                  "B": "turn bar: one short hit with the power chord, the drums filling",
                                  "W": "the keys' turn, two bars: the seven's instruments ring on the tune's note with the drums in from beat three, then an exposed epic fill",
@@ -1998,8 +1998,8 @@ def _drum_solo(bars):
 
 
 def music_skirmish(palette="hybrid"):
-    # Human A (the fight loop) at 100 on the hybrid palette. A hundred and one bars: the riff
-    # (A: four bars bare, four with a low bass, four with bass power chords), a turn (B: one
+    # Human A (the fight loop) at 100 on the hybrid palette. A hundred and seventeen bars: the riff
+    # (A: four bars bare, four with a low bass, eight with bass power chords), a turn (B: one
     # short hit and the drums filling), the lift (C: the soft sub takes the riff, piano
     # stabs, the metal chime, a tom fill closing it), the riff again on power chords (N), the
     # second lift on the crunch synth (L), a bar down (M), the seven (X), the unison (U:
@@ -2103,11 +2103,11 @@ def music_skirmish(palette="hybrid"):
             {"inst": backing, "mode": "riff", "gain": 0.3, "octave": 1, "params": {"mute": False, "cutoff": 2000.0}, "legato": True,
              "pat": {"W": "7---------------................"}},
             {"inst": bass, "mode": "riff", "gain": 0.42, "hold": 1.1, "octave": -1, "params": {"drive": 3.5},
-             "pat": {"A": "." * 64 + riff1 + rise}},
+             "pat": {"A": "." * 64 + riff1 + rise + "." * 128}},
             {"inst": bass, "mode": "riff", "gain": 0.38, "hold": 1.1, "params": {"drive": 3.5},
-             "pat": {"A": "." * 128 + riff1 + rise, "N": riff1 + rise, "B": "0--.............", "W": "7---------------................", "M": "8---7---5---3---"}},
+             "pat": {"A": "." * 128 + (riff1 + rise) * 2, "N": riff1 + rise, "B": "0--.............", "W": "7---------------................", "M": "8---7---5---3---"}},
             {"inst": bass, "mode": "riff", "gain": 0.38, "hold": 1.1, "params": {"drive": 3.5},
-             "pat": {"A": "." * 128 + riff_up + rise_up, "N": riff_up + rise_up, "B": "7--.............", "W": "e---------------................"}},
+             "pat": {"A": "." * 128 + (riff_up + rise_up) * 2, "N": riff_up + rise_up, "B": "7--.............", "W": "e---------------................"}},
             # The lifts.
             {"inst": "sub_bass", "mode": "riff", "gain": 0.55, "hold": 1.0,
              "pat": {"C": "8-.c.8-a.8-.5-.38-.c.8-a.3-.5-.7"}},

@@ -147,7 +147,7 @@ twenty-eight-bar climax that starts level and then swells each voice in and out 
 before thinning into the closer). Ryan: nearly perfect; the strings' chords and the
 build's bells were the last notes (25 September). A pattern whose length is no multiple
 of the bar walks round the bar by design: write section patterns in bar multiples unless
-that is wanted. `music_skirmish` is **human A** (100, 113 bars, 4:31; Ryan labels tracks by creation
+that is wanted. `music_skirmish` is **human A** (100, 117 bars, 4:41; Ryan labels tracks by creation
 order now, human A B C and rift A B C, the screens unsettled): the hybrid palette (real
 drums with many cymbals, the real guitar's mechanical chug, the real bass driven, the
 soft sub, the crunch synth, the original piano, the synth lead), form A B C N L M X U F
