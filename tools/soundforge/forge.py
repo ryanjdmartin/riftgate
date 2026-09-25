@@ -362,19 +362,21 @@ def blip(f0, f1=None, dur=0.05, width=0.5, attack=0.006, decay=None, gain=1.0):
     f1 = f1 or f0
     f = f0 * (f1 / f0) ** (t / dur)
     ph = 2.0 * math.pi * np.cumsum(f) / SR
-    shimmer = 0.3 * np.exp(-t / max(dur * 0.4, 0.01)) * np.sin(ph * 3.01)
-    x = np.sin(ph + shimmer) + 0.25 * np.sin(2.0 * ph) + 0.04 * np.sin(4.0 * ph)
-    air = bp(noise(n), 3000.0, 10000.0) * env_ad(n, 0.002, dur * 0.3) * 0.18
+    shimmer = 0.15 * np.exp(-t / max(dur * 0.4, 0.01)) * np.sin(ph * 3.01)
+    x = np.sin(ph + shimmer) + 0.15 * np.sin(2.0 * ph) + 0.02 * np.sin(4.0 * ph)
+    air = bp(noise(n), 2000.0, 6000.0) * env_ad(n, 0.002, dur * 0.3) * 0.08
     x = (x + air) * env_ad(n, attack, decay or dur * 0.5, curve=2.5)
-    return room(x, decay=0.09, mix=0.16, cut=9000.0) * gain
+    return room(x, decay=0.09, mix=0.16, cut=5000.0) * gain
 
 
-# The interface's register (Ryan, 25 September: the electronic noises too high and still too
-# chirpy): every interface tone sits a little under an octave below where it was written,
-# glides half as far, and lasts a quarter longer, so it boops rather than chirps.
-UI_PITCH = 0.55
-UI_GLIDE = 0.5
-UI_LEN = 1.25
+# The interface's register (Ryan, 25 September, twice: the electronic noises too high and
+# too chirpy, then still a little bright and chirpy): every interface tone sits about an
+# octave and a third below where it was written, glides less than a third as far, and lasts
+# half again as long, so it boops rather than chirps; the blip itself carries less shimmer,
+# less second harmonic, less air, and a darker room.
+UI_PITCH = 0.4
+UI_GLIDE = 0.3
+UI_LEN = 1.5
 
 
 def ui_blip(f0, f1=None, dur=0.05, **kw):
@@ -394,7 +396,7 @@ def chirp(notes, gap=0.0, gain=1.0):
 
 
 def tick_click():
-    return bp(noise(n_of(0.012)), 2500.0, 9000.0) * env_ad(n_of(0.012), 0.0002, 0.002) * 0.5
+    return bp(noise(n_of(0.012)), 1500.0, 5000.0) * env_ad(n_of(0.012), 0.0002, 0.002) * 0.35
 
 
 def zap(f0, f1, dur, gain=1.0):
@@ -445,18 +447,18 @@ def plot():
 def codex_open():
     # A rising sweep with a breath of air under it, then a soft confirm: the plate slides
     # out of the console.
-    n = n_of(0.22)
+    n = n_of(0.24)
     t = t_of(n)
-    sweep_ = blip(260.0, 1300.0, 0.22, decay=0.4)[:n]
-    air = lp_var(hp(noise(n), 600.0), 1200.0 + 3500.0 * t / 0.22) * env_ad(n, 0.02, 0.1) * 0.25
+    sweep_ = blip(220.0, 900.0, 0.24, decay=0.4)[:n]
+    air = lp_var(hp(noise(n), 500.0), 1000.0 + 2500.0 * t / 0.24) * env_ad(n, 0.02, 0.1) * 0.22
     return at(mix(sweep_ * 0.6, air), chirp([(1600.0, 1900.0, 0.06)]) * 0.6, 0.2)
 
 
 def codex_close():
-    n = n_of(0.18)
+    n = n_of(0.2)
     t = t_of(n)
-    sweep_ = blip(1300.0, 260.0, 0.18, decay=0.3)[:n]
-    air = lp_var(hp(noise(n), 600.0), 4500.0 - 3300.0 * t / 0.18) * env_ad(n, 0.01, 0.08) * 0.22
+    sweep_ = blip(900.0, 220.0, 0.2, decay=0.3)[:n]
+    air = lp_var(hp(noise(n), 500.0), 3500.0 - 2500.0 * t / 0.2) * env_ad(n, 0.01, 0.08) * 0.2
     return at(chirp([(1400.0, 1100.0, 0.05)]) * 0.5, mix(sweep_ * 0.5, air), 0.03)
 
 

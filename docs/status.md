@@ -178,8 +178,8 @@ idle stay silent by decision.
 
 *To do, audio (25 September).* (1) Listen: rift A (twenty-first listen built: the climax's swells on bar lines, a bar up, a bar at the top, two down, the horn peaking on the repeat edge at 2:49.5; "good") and human A (twenty-first listen built: the riff sixteen bars with a sweep drone under its power chords and the second riff, a pad `skip`; "everything else fixed, breaths and turns great"); human B
 (calm) and C (heavy) and rift B (calm, the ground bass) and C (drive) not yet heard at
-all beyond a first pass on the two calms; the interface effects since the second audition
-(pitched down, glides halved, longer: `UI_PITCH`, `UI_GLIDE`, `UI_LEN` in the forge; `forge.py audition`). Expect a round of notes on each. (2) The
+all beyond a first pass on the two calms; the interface effects since the third audition
+(an octave and a third down, glides cut, half again as long, darker: `UI_PITCH`, `UI_GLIDE`, `UI_LEN` and `blip` in the forge; `forge.py audition`). Expect a round of notes on each. (2) The
 screens: the map plays rift B and human B in turn (a set; judge the two-second crossfade
 at the seam), the skirmish human A; rift A, rift C and human C sit in the table unhooked;
 decide where they go and whether a set should pick rather than cycle. Both calms are rebuilt
