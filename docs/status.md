@@ -173,20 +173,19 @@ under big moments; `TONAL` sounds keep their pitch; a new battle restarts the ma
 from the top after the map is drawn, a fight's return resumes it. The display's scan and
 idle stay silent by decision.
 
-*To do, audio.* (1) Ryan has not yet heard: the rift theme as last rebuilt, the human
-theme as last rebuilt, the two calm tracks, and the effects since their rewrite (use
-`audition`); expect another round of notes on each. (2) The human theme's open
-questions: the guitar solo's bass is the crunch synth as a first try before cutting its
-volume; the keyboard solo's second walker is the real bass, one of the two may still
-change; four-three flair and the 3/4 injections wait for a place. (3) The rift theme:
-the 6/8 triplets as disturbing flair somewhere, and whether the interlude's 7/8 closes
-should obey the kick rule too. (4) Hook the calm tracks: a multi-track setup per screen
-(a screen picking or crossfading between its theme and its calm sibling) is the likely
-end state; nothing chooses between them yet. (5) The phone: nothing has been heard on a
-device; the mix was checked by measuring each section's low band against its lead band
-and the phone band (300 to 4000 Hz) of every blow. (6) The real recordings and the real
-track are still section 12's open question; everything here is a placeholder in the
-decided register.
+*To do, audio (25 September).* (1) Listen: rift A and human A as last rebuilt; human B
+(calm) and C (heavy) and rift B (calm, the ground bass) and C (drive) not yet heard at
+all beyond a first pass on the two calms; the interface effects since they went
+future-digital (`forge.py audition`). Expect a round of notes on each. (2) Hook the
+tracks: six sit in the table and only rift A and human A play; decide which track a
+screen gets, or a multi-track setup per screen (pick or crossfade), and whether the
+labels A B C map to map, fight and something else. (3) Loose ends inside the tracks:
+human A's keyboard solo may still want a different upper voice; four-three flair and 3/4
+injections have no home yet; rift A's 6/8 triplets as flair somewhere, and whether its
+7/8 closes should obey the kick rule. (4) The phone: nothing has been heard on a device;
+the mix was checked by measurement only (each section's low band against its lead band,
+the phone band of every blow). (5) The real recordings and the real track remain
+section 12's open question; everything here is a placeholder in the decided register.
 
 **Open, in the order I would take them.**
 
