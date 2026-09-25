@@ -144,7 +144,10 @@ pads, bells with a three-tap echo, glitch clicks and stutters), form P A C E D T
 (a gradual build from the choir and kick alone through the groove to the lift, the
 bells' lift, minor strings, interlude with 7/8 closes, triplet turn, the quiet before, a
 twenty-eight-bar climax that starts level and then swells each voice in and out twice
-before thinning into the closer). Ryan: almost done. `music_skirmish` is **human A** (100, 101 bars, 4:02; Ryan labels tracks by creation
+before thinning into the closer). Ryan: nearly perfect; the strings' chords and the
+build's bells were the last notes (25 September). A pattern whose length is no multiple
+of the bar walks round the bar by design: write section patterns in bar multiples unless
+that is wanted. `music_skirmish` is **human A** (100, 101 bars, 4:02; Ryan labels tracks by creation
 order now, human A B C and rift A B C, the screens unsettled): the hybrid palette (real
 drums with many cymbals, the real guitar's mechanical chug, the real bass driven, the
 soft sub, the crunch synth, the original piano, the synth lead), form A B C N L M X U F
