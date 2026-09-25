@@ -546,9 +546,14 @@ def cut():
 # ---- combat and the map: over-the-top weighty
 
 def laser():
-    # An energy weapon: the discharge falling from a scream to a growl, the beam's sizzle,
-    # and the hit on armour under it.
-    b = zap(2600.0, 220.0, 0.16, 1.0)
+    # An energy weapon: the discharge's crack, a beam that buzzes flat for a tenth of a
+    # second (the scream falling to a growl read as an arcade "pew": Ryan, 25 September, some
+    # skirmish effects gave Pac-Man), the beam's sizzle, and the hit on armour under it.
+    n = n_of(0.14)
+    beam = lp(sat(saws(110.0, n, (0.99, 1.0, 1.01)) + harmonics(220.0, n, [0.5, 0.4, 0.3, 0.2]), 3.0), 3500.0)
+    beam = bp(beam, 250.0, 4000.0) * env_pts(n, [(0.0, 0.0), (0.004, 1.0), (0.11, 0.9), (0.14, 0.0)])
+    crack = bp(noise(n_of(0.03)), 1500.0, 9000.0) * env_ad(n_of(0.03), 0.0002, 0.006)
+    b = mix(crack, beam * 0.8)
     b = at(b, mix(thud(150.0, 45.0, 0.28, click=0.6, drive=3.0), burst(0.1, 300.0, 5000.0, decay=0.03) * 0.5), 0.05, 0.9)
     b = at(b, hp(noise(n_of(0.25)), 4000.0) * env_ad(n_of(0.25), 0.001, 0.07) * 0.25, 0.04)
     return room(b, decay=0.2, mix=0.14)
@@ -628,8 +633,10 @@ def block():
 def shield_break():
     # The shield failing: an electric crack, the field's discharge, shards, the ground
     # taking the weight.
-    buf = mix(burst(0.04, 2000.0, 14000.0, decay=0.006) * 1.0, body(900.0, 220.0, 0.05, click=1.0, drive=3.0) * 0.6,
-              zap(3200.0, 400.0, 0.12, 0.7))
+    # (the falling zap that was here read as arcade; the field tears as gated static now)
+    tear_n = n_of(0.12)
+    tear = bp(noise(tear_n), 400.0, 3000.0) * (0.5 + 0.5 * np.sign(np.sin(2.0 * math.pi * 90.0 * t_of(tear_n)))) * env_ad(tear_n, 0.001, 0.04) * 0.7
+    buf = mix(burst(0.04, 2000.0, 14000.0, decay=0.006) * 1.0, body(900.0, 220.0, 0.05, click=1.0, drive=3.0) * 0.6, tear)
     for k in range(9):
         p = RNG.uniform(0.7, 1.6)
         shard = knock([2100.0 * p, 3300.0 * p], [0.018, 0.012], [0.6, 0.3], noise_gain=0.3) * 0.35
@@ -639,12 +646,16 @@ def shield_break():
 
 
 def shield_up():
-    # The field raised: a charge climbing, then the snap of it holding, hydraulics under.
-    n = n_of(0.22)
-    charge = mix(blip(200.0, 1600.0, 0.22, width=0.3, decay=0.5) * 0.35, zap(300.0, 1400.0, 0.22, 0.25)[::-1])
-    b = at(charge, mix(thud(200.0, 60.0, 0.2, click=0.9, drive=3.0), zap(2400.0, 900.0, 0.06, 0.5),
-                       knock([680.0, 1120.0, 1730.0], [0.04, 0.025, 0.015], [1.0, 0.5, 0.25]) * 0.4), 0.2)
-    b = at(b, hydraulic(0.2, 500.0, 1400.0, 0.3), 0.1)
+    # The field raised: the relay, the field's hum snapping on (flat, mains-low, with a hard
+    # front), a crack of static as it seals, the thud of it holding, hydraulics under. No
+    # charge climbing: the rise read as arcade (Ryan, 25 September).
+    n = n_of(0.3)
+    hum = lp(sat(harmonics(60.0, n, [1.0, 0.8, 0.5, 0.4, 0.3, 0.2]) + harmonics(120.0, n, [0.5, 0.4, 0.3]), 2.5), 1800.0)
+    hum = hum * env_pts(n, [(0.0, 0.0), (0.01, 1.0), (0.2, 0.7), (0.3, 0.0)])
+    b = mix(relay(0.8), hum * 0.7, burst(0.05, 1500.0, 9000.0, decay=0.012) * 0.6)
+    b = at(b, mix(thud(200.0, 60.0, 0.2, click=0.9, drive=3.0),
+                  knock([680.0, 1120.0, 1730.0], [0.04, 0.025, 0.015], [1.0, 0.5, 0.25]) * 0.4), 0.02)
+    b = at(b, hydraulic(0.2, 500.0, 1400.0, 0.3), 0.08)
     return room(b, decay=0.14, mix=0.12)
 
 
@@ -658,8 +669,12 @@ def vent():
 
 def kill():
     # A machine coming apart: the explosion, the drive winding down, pieces landing late.
+    # (the servo winding down was a falling glide, the arcade death; the collapse is
+    # hydraulics letting go and a clatter of plate slowing down instead)
     buf = explosion(1.2, 26.0, 1.0, debris=4)
-    buf = at(buf, servo(900.0, 160.0, 0.55, 0.3, band=(300.0, 2600.0)), 0.1)
+    buf = at(buf, hydraulic(0.5, 2500.0, 500.0, 0.35), 0.1)
+    for k, when in enumerate([0.3, 0.42, 0.58, 0.8]):
+        buf = at(buf, knock([RNG.uniform(500.0, 900.0), RNG.uniform(1200.0, 2000.0)], [0.03, 0.02], [0.6, 0.3]) * 0.35, when, 1.0 - 0.2 * k)
     return buf
 
 
@@ -718,20 +733,23 @@ def victory():
 
 
 def defeat():
-    # The line broken: a low drone sinking, then the last thing to fall.
+    # The line broken: the power going, a low hum flickering out (flat; the drone that sank
+    # in pitch was the arcade "lose"), then the last thing to fall.
     n = n_of(1.9)
     t = t_of(n)
-    f = 70.0 * np.exp(-t / 1.6) + 26.0
-    ph = 2.0 * math.pi * np.cumsum(f) / SR
-    drone_ = np.sin(ph) + 0.4 * np.sin(ph * 1.5) + 0.3 * (2.0 * ((ph / (2.0 * math.pi)) % 1.0) - 1.0) + 0.25 * np.sin(ph * 3.0)
-    drone_ = lp(sat(drone_, 2.5), 900.0) * env_ad(n, 0.05, 1.0, curve=2.0)
-    return room(at(drone_, explosion(0.8, 28.0, 0.9, debris=2), 1.35), decay=0.5, mix=0.18)
+    hum = lp(sat(harmonics(55.0, n, [1.0, 0.6, 0.5, 0.3, 0.25, 0.2]) + saws(110.0, n, (0.99, 1.0, 1.01)) * 0.3, 2.5), 900.0)
+    flicker = np.ones(n)
+    for when in (0.35, 0.62, 0.8, 0.98, 1.08, 1.16):
+        a, b_ = n_of(when), n_of(when + RNG.uniform(0.02, 0.06))
+        flicker[a:b_] = 0.15
+    hum = hum * flicker * env_pts(n, [(0.0, 0.0), (0.05, 1.0), (0.9, 0.8), (1.3, 0.0), (1.9, 0.0)])
+    return room(at(hum, explosion(0.8, 28.0, 0.9, debris=2), 1.35), decay=0.5, mix=0.18)
 
 
 def withdraw():
     # Pulling out: hydraulics retreating, a door coming down behind the machines.
     b = hydraulic(0.7, 1400.0, 500.0, 0.45)
-    b = at(b, servo(1500.0, 700.0, 0.4, 0.15), 0.1)
+    b = at(b, relay(0.7, 0.8), 0.08)
     return room(at(b, thud(140.0, 42.0, 0.4, click=0.9, drive=3.5, body_gain=1.4), 0.55), decay=0.3, mix=0.14)
 
 
