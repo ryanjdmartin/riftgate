@@ -48,12 +48,12 @@ const SETS := {
 const PICK := ["skirmish"]
 
 ## Every loop's shown title and its working label (Ryan labels tracks by creation order,
-## human A B C and rift A B C; the titles are the ones proposed 25 September, and are his to
-## rename). The header's ticker shows the title; the pause menu shows both.
+## human A B C and rift A B C; the titles are Ryan's picks of 25 September, rift C's still
+## a placeholder). The header's ticker shows the title; the pause menu shows both.
 const TRACKS := {
-	"music_skirmish": {"title": "Stand-To", "label": "Human A"},
+	"music_skirmish": {"title": "Hold The Line", "label": "Human A"},
 	"music_human_calm": {"title": "Night Shift", "label": "Human B"},
-	"music_human_heavy": {"title": "Overpressure", "label": "Human C"},
+	"music_human_heavy": {"title": "Full Bore", "label": "Human C"},
 	"music_map": {"title": "The Far Bank", "label": "Rift A"},
 	"music_rift_calm": {"title": "Low Ground", "label": "Rift B"},
 	"music_rift_drive": {"title": "Procession", "label": "Rift C"},

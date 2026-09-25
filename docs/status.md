@@ -173,9 +173,9 @@ rift A B C. State of each:
   bass, paired basses, held guitars, louder drums) are built and **unheard**. In the
   skirmish set since 25 September (already at the skirmish's level).
 
-*Titles (25 September, proposed by Claude, Ryan's to rename; the one table is
-`Sound.TRACKS`).* Human A **Stand-To**, human B **Night Shift**, human C **Overpressure**,
-rift A **The Far Bank**, rift B **Low Ground**, rift C **Procession**. Shown in the header's
+*Titles (25 September, Ryan's picks from proposals; the one table is `Sound.TRACKS`).*
+Human A **Hold The Line**, human B **Night Shift**, human C **Full Bore**, rift A **The
+Far Bank**, rift B **Low Ground**, rift C **open** (Procession stands in until Ryan picks). Shown in the header's
 ticker (`game/ui/music_ticker.gd`: mono title right-aligned against MENU, a three-bar beat
 meter, a run-in on change, a crawl when too long) and on the pause menu's music plate
 under PAUSED (label over title, previous and next: `Sound.skip`, within the screen's set,
