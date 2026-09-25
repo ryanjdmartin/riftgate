@@ -18,6 +18,7 @@ const VOICES := 10          # effects that can sound at once; the oldest is cut 
 const FADE_OUT := 0.5       # the loop leaving
 const FADE_IN := 0.9        # the loop arriving...
 const FADE_IN_DELAY := 0.25 # ...a little after, so two tempos overlap less
+const SET_FADE := 2.0       # one loop of a set into the next: out and in together, over this long
 const DUCK_DB := -9.0       # how far the music drops under the pause menu
 const SILENT_DB := -80.0
 const VARY := 0.04          # random pitch on a blow or a knock, as a fraction
@@ -31,6 +32,15 @@ const NAMES := [
 	"overheat", "laser", "gunfire", "cannon", "slash", "slam",
 	"music_map", "music_skirmish", "music_rift_calm", "music_human_calm", "music_rift_drive", "music_human_heavy",
 ]
+
+## What a screen's music is: a set of loops played in turn, one full loop each, the last
+## crossfading into the first again. The map plays the two calm tracks, rift B and human B
+## (Ryan, 25 September: both very good; one loop of each, then crossfade, to judge the
+## crossfade). The skirmish plays human A. A set of one loops as it always did.
+const SETS := {
+	"map": ["music_rift_calm", "music_human_calm"],
+	"skirmish": ["music_skirmish"],
+}
 
 ## Pitched sounds (a horn, a chord, a drone) play at their written pitch; the rest get VARY.
 const TONAL := ["contact", "victory", "defeat", "spawn", "engage", "overheat"]
@@ -66,6 +76,9 @@ var _next_voice := 0
 var _music: Array[AudioStreamPlayer] = []   # two, so one loop fades into the next
 var _music_live := 0
 var _playing := ""
+var _set := ""                               # the set a screen asked for ("map", "skirmish")
+var _set_at: Dictionary = {}                 # set -> which of its loops is current
+var _advance: Timer = null                   # fires SET_FADE before a set's loop ends, to go on to the next
 var _loop_of: Array[String] = ["", ""]      # which loop each music player holds
 var _pos: Dictionary = {}                    # loop -> where it was when it left, to resume there
 var _fade: Tween = null                      # the crossfade in flight, killed by the next
@@ -90,10 +103,11 @@ static func play_after(delay: float, name: String, db: float = 0.0, vary: float 
 	_call("_play_after", [delay, name, db, vary])
 
 
-## The loop a screen wants: "map", "skirmish", or "" for silence. Crossfades, and a loop
-## coming back resumes where it left (the map after a fight), unless `restart`: a new
-## battle starts its loop from the top (Ryan, 24 September: the map's music began mid-lift,
-## where the last battle had left it). Asking for the loop already playing does nothing.
+## The music a screen wants: a set from SETS ("map", "skirmish"), a loop's own name
+## ("rift_drive"), or "" for silence. Crossfades, and a set coming back resumes its current
+## loop where it left (the map after a fight), unless `restart`: a new battle starts the set
+## from its first loop's top (Ryan, 24 September: the map's music began mid-lift, where the
+## last battle had left it). Asking for the set already playing does nothing.
 static func music(name: String, restart: bool = false) -> void:
 	_call("_music_to", [name, restart])
 
@@ -144,6 +158,10 @@ func _init() -> void:
 		p.volume_db = SILENT_DB
 		add_child(p)
 		_music.append(p)
+	_advance = Timer.new()
+	_advance.one_shot = true
+	_advance.timeout.connect(_advance_set)
+	add_child(_advance)
 	_apply()
 
 
@@ -194,14 +212,45 @@ func _play(name: String, db: float, vary: float) -> void:
 		_dip(float(DIP[name][0]), float(DIP[name][1]))
 
 
+## A screen's set (or a single loop by name), with the screen's own crossfade.
+func _music_to(name: String, restart: bool = false) -> void:
+	if name.is_empty():
+		_set = ""
+		_fade_to("", FADE_OUT, FADE_IN, FADE_IN_DELAY)
+		return
+	var loops: Array = SETS.get(name, ["music_" + name])
+	if restart:
+		_set_at[name] = 0
+		for loop in loops:
+			_pos.erase(loop)
+	if name == _set:
+		return
+	_set = name
+	_fade_to(loops[int(_set_at.get(name, 0)) % loops.size()], FADE_OUT, FADE_IN, FADE_IN_DELAY)
+
+
+## SET_FADE before the current loop's end: the set's next loop, from its top, the two
+## crossing over the seam. The loop that ends is forgotten, so its next turn starts from
+## the top as well.
+func _advance_set() -> void:
+	var loops: Array = SETS.get(_set, [])
+	if loops.size() < 2:
+		return
+	var ending := _playing
+	var i := (int(_set_at.get(_set, 0)) + 1) % loops.size()
+	_set_at[_set] = i
+	_pos.erase(loops[i])
+	_fade_to(loops[i], SET_FADE, SET_FADE, 0.0)
+	_pos.erase(ending)
+
+
 ## The crossfade. The one before is killed first: it would otherwise still stop the player
 ## it was fading out, which may be the very player the new loop now plays on (Ryan, 23
 ## September: the skirmish loop went missing about half the time, whenever the next fight
-## began inside the last fade).
-func _music_to(name: String, restart: bool = false) -> void:
-	var full := "" if name.is_empty() else "music_" + name
-	if restart:
-		_pos.erase(full)
+## began inside the last fade). A loop of a set of several arms the advance timer for
+## SET_FADE before its end.
+func _fade_to(full: String, fade_out: float, fade_in: float, delay: float) -> void:
+	_advance.stop()
 	if full == _playing:
 		return
 	_playing = full
@@ -213,8 +262,8 @@ func _music_to(name: String, restart: bool = false) -> void:
 	_fade = create_tween().set_parallel(true)
 	if out.playing:
 		_pos[_loop_of[1 - _music_live]] = out.get_playback_position()
-		_fade.tween_property(out, "volume_db", SILENT_DB, FADE_OUT).set_trans(Tween.TRANS_SINE)
-		_fade.tween_callback(out.stop).set_delay(FADE_OUT)
+		_fade.tween_property(out, "volume_db", SILENT_DB, fade_out).set_trans(Tween.TRANS_SINE)
+		_fade.tween_callback(out.stop).set_delay(fade_out)
 	var s := _stream(full) if not full.is_empty() else null
 	if s == null:
 		into.stop()
@@ -222,8 +271,11 @@ func _music_to(name: String, restart: bool = false) -> void:
 	into.stream = s
 	into.volume_db = SILENT_DB
 	_loop_of[_music_live] = full
-	into.play(fmod(float(_pos.get(full, 0.0)), maxf(s.get_length(), 0.001)))
-	_fade.tween_property(into, "volume_db", 0.0, FADE_IN).set_trans(Tween.TRANS_SINE).set_delay(FADE_IN_DELAY)
+	var pos := fmod(float(_pos.get(full, 0.0)), maxf(s.get_length(), 0.001))
+	into.play(pos)
+	_fade.tween_property(into, "volume_db", 0.0, fade_in).set_trans(Tween.TRANS_SINE).set_delay(delay)
+	if SETS.get(_set, []).size() > 1:
+		_advance.start(maxf(0.1, s.get_length() - pos - SET_FADE))
 
 
 func _duck(on: bool) -> void:

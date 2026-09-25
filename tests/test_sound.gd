@@ -9,6 +9,14 @@ func test_every_named_sound_has_a_file() -> void:
 		assert_true(FileAccess.file_exists(Sound.DIR + name + ".wav"), "art/audio/%s.wav exists (tools/soundforge builds it)" % name)
 
 
+func test_every_set_names_known_loops() -> void:
+	for set_name in Sound.SETS:
+		assert_true(Sound.SETS[set_name].size() >= 1, "set %s has a loop" % set_name)
+		for loop in Sound.SETS[set_name]:
+			assert_true(Sound.NAMES.has(loop), "set %s's %s is a named loop" % [set_name, loop])
+			assert_true(Sound.TEMPO.has(loop), "set %s's %s has a tempo" % [set_name, loop])
+
+
 func test_headless_calls_are_no_ops() -> void:
 	Sound.play("hit")
 	Sound.play_after(0.1, "kill")

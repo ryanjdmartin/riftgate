@@ -157,8 +157,11 @@ the climax riff in unison then under a blast beat, a one-bar breath, the keyboar
 sixteen bars six percent slower over dark chords, a one-bar descent). `drum_gain` per
 section, a `clean` guitar voice and `fade` on the sub exist for it. `music_rift_calm` (90, 6/8 throughout, a ground bass under six
 variations, 2:29) and `music_human_calm` (94, four on the floor, industrial, 3:04) are
-their calm siblings, in `Sound.NAMES` and `TEMPO`, not hooked to a screen. The rift theme
-runs at 86 now. The interface effects are future-digital (a sine with a shimmer and air),
+their calm siblings, and **the map's music for now** (Ryan, 25 September: both very good):
+`Sound.SETS["map"]` plays them in turn, one full loop each, crossing over the seam for
+`SET_FADE` seconds, and the set resumes its current loop where it left after a fight; a
+new battle restarts the set from rift B's top. The skirmish set is human A. Rift A is in
+the table, unhooked. The rift theme runs at 86 now. The interface effects are future-digital (a sine with a shimmer and air),
 not the pulse wave. Third tracks (25 September): `music_rift_drive` (112, an electronic
 chug on Ryan's kick-chug-snare pattern under the orchestra, 2:17; `e_chug`) and
 `music_human_heavy` (105, full Omnific, bass-led, a driven bass and a clean bass an
@@ -176,10 +179,12 @@ idle stay silent by decision.
 *To do, audio (25 September).* (1) Listen: rift A (twentieth listen built: the climax's swells on bar lines, the horn peaking on the repeat edge at 2:49.5 with the crescendo stepping there, round one three bars apart, round two two bars apart and overlapping) and human A (nineteenth listen built: stab lengths are steps, so the backing guitar and the second breath's chords now ring a whole bar; the third set's keys on chords on the beat; a voice's run curve now follows a held note, so the breath's bass fades); human B
 (calm) and C (heavy) and rift B (calm, the ground bass) and C (drive) not yet heard at
 all beyond a first pass on the two calms; the interface effects since the second audition
-(pitched down, glides halved, longer: `UI_PITCH`, `UI_GLIDE`, `UI_LEN` in the forge; `forge.py audition`). Expect a round of notes on each. (2) Hook the
-tracks: six sit in the table and only rift A and human A play; decide which track a
-screen gets, or a multi-track setup per screen (pick or crossfade), and whether the
-labels A B C map to map, fight and something else. (3) Loose ends inside the tracks:
+(pitched down, glides halved, longer: `UI_PITCH`, `UI_GLIDE`, `UI_LEN` in the forge; `forge.py audition`). Expect a round of notes on each. (2) The
+screens: the map plays rift B and human B in turn (a set; judge the two-second crossfade
+at the seam), the skirmish human A; rift A, rift C and human C sit in the table unhooked;
+decide where they go and whether a set should pick rather than cycle. Both calms were
+built before the pad crossfades, the held-note curves and the stab-length lesson: rebuild
+them on the current engine before the next notes. (3) Loose ends inside the tracks:
 four-three flair belongs to the prog track, human C (human A's and rift A's meters are
 settled). Human A's drum solo is the intensity Ryan wants wherever drums lead a human
 track. (4) The phone: nothing has been heard on a device;
