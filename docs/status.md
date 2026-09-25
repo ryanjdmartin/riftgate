@@ -180,8 +180,9 @@ future-digital (`forge.py audition`). Expect a round of notes on each. (2) Hook 
 tracks: six sit in the table and only rift A and human A play; decide which track a
 screen gets, or a multi-track setup per screen (pick or crossfade), and whether the
 labels A B C map to map, fight and something else. (3) Loose ends inside the tracks:
-human A's keyboard solo may still want a different upper voice; four-three flair and 3/4
-injections have no home yet (rift A's meters are settled). (4) The phone: nothing has been heard on a device;
+four-three flair belongs to the prog track, human C (human A's and rift A's meters are
+settled). Human A's drum solo is the intensity Ryan wants wherever drums lead a human
+track. (4) The phone: nothing has been heard on a device;
 the mix was checked by measurement only (each section's low band against its lead band,
 the phone band of every blow). (5) The real recordings and the real track remain
 section 12's open question; everything here is a placeholder in the decided register.
