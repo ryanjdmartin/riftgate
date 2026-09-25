@@ -292,7 +292,9 @@ func _build() -> void:
 	_header = _tag("", 13, true)
 	_place(_header, Vector2(12, 14), Vector2(300, 28))
 	_sub_label = Hud.label("", 12, Color(Palette.HUD, 0.7), Hud.mono())
-	_place(_sub_label, Vector2(326, 20), Vector2(380, 20))
+	_place(_sub_label, Vector2(326, 20), Vector2(160, 20))
+	# The music ticker fills the rest of the bar up to MENU (Ryan, 25 September).
+	_place(MusicTicker.new(), Vector2(486, 20), Vector2(W - 108 - 486, 20))
 	# The intent eye sits right under the formation, at the right edge of the log's black
 	# (Ryan, 23 September: off the ground band): toggled often, so it stays within a thumb's
 	# reach of the foes it concerns. The log strip stops short of it.

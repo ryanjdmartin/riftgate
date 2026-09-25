@@ -37,14 +37,27 @@ const NAMES := [
 ## loop each, the last crossfading into the first again: the map's, the two calm tracks,
 ## rift B and human B (Ryan, 25 September: both very good; one loop of each, then
 ## crossfade, to judge the crossfade). A picking set (PICK) takes one loop per visit, the
-## next one each visit, and loops it: the skirmish's, human A and rift C, since a fight
-## must never crossfade tracks in the middle (Ryan, the same day: fade in from the map,
-## loop, fade back to the map on exit).
+## next one each visit, and loops it: the skirmish's, human A, rift C and human C, since a
+## fight must never crossfade tracks in the middle of itself (Ryan, the same day: fade in
+## from the map, loop, fade back to the map on exit). The player may still skip: the pause
+## menu's next and previous move within the screen's set (Ryan, 25 September).
 const SETS := {
 	"map": ["music_rift_calm", "music_human_calm"],
-	"skirmish": ["music_skirmish", "music_rift_drive"],
+	"skirmish": ["music_skirmish", "music_rift_drive", "music_human_heavy"],
 }
 const PICK := ["skirmish"]
+
+## Every loop's shown title and its working label (Ryan labels tracks by creation order,
+## human A B C and rift A B C; the titles are the ones proposed 25 September, and are his to
+## rename). The header's ticker shows the title; the pause menu shows both.
+const TRACKS := {
+	"music_skirmish": {"title": "Stand-To", "label": "Human A"},
+	"music_human_calm": {"title": "Night Shift", "label": "Human B"},
+	"music_human_heavy": {"title": "Overpressure", "label": "Human C"},
+	"music_map": {"title": "The Far Bank", "label": "Rift A"},
+	"music_rift_calm": {"title": "Low Ground", "label": "Rift B"},
+	"music_rift_drive": {"title": "Procession", "label": "Rift C"},
+}
 
 ## Pitched sounds (a horn, a chord, a drone) play at their written pitch; the rest get VARY.
 const TONAL := ["contact", "victory", "defeat", "spawn", "engage", "overheat"]
@@ -119,6 +132,36 @@ static func music(name: String, restart: bool = false) -> void:
 ## The music drops under the pause menu and comes back after.
 static func duck(on: bool) -> void:
 	_call("_duck", [on])
+
+
+## The pause menu's next (+1) and previous (-1): the neighbouring loop of the set that is
+## playing, from its top, with the screen's own crossfade. A set of one loop, or silence,
+## has nowhere to go.
+static func skip(step: int) -> void:
+	_call("_skip", [step])
+
+
+## The loop playing (or arriving), by its full name, or "" when nothing is.
+static func track() -> String:
+	if _node == null or not is_instance_valid(_node):
+		return ""
+	return _node._playing
+
+
+## The set a screen asked for ("map", "skirmish"), or "" when none is.
+static func set_playing() -> String:
+	if _node == null or not is_instance_valid(_node):
+		return ""
+	return _node._set
+
+
+## A loop's shown title, and its working label ("Human A"); "" for a loop without one.
+static func title(loop: String) -> String:
+	return str(TRACKS.get(loop, {}).get("title", ""))
+
+
+static func label(loop: String) -> String:
+	return str(TRACKS.get(loop, {}).get("label", ""))
 
 
 ## The volume knobs from Settings onto the buses.
@@ -250,6 +293,24 @@ func _advance_set() -> void:
 	_pos.erase(loops[i])
 	_fade_to(loops[i], SET_FADE, SET_FADE, 0.0)
 	_pos.erase(ending)
+
+
+## A step through the playing set, from the player's hand. The loop left behind is
+## forgotten like a loop that ended, so its next turn starts from the top; the set's
+## counter moves with the step, so a picking set's next visit goes on from here.
+func _skip(step: int) -> void:
+	var loops: Array = SETS.get(_set, [])
+	if loops.size() < 2 or _playing.is_empty():
+		return
+	var i := loops.find(_playing)
+	if i < 0:
+		i = int(_set_at.get(_set, 0))
+	i = posmod(i + step, loops.size())
+	_set_at[_set] = i
+	var leaving := _playing
+	_pos.erase(loops[i])
+	_fade_to(loops[i], FADE_OUT, FADE_IN, FADE_IN_DELAY)
+	_pos.erase(leaving)
 
 
 ## The crossfade. The one before is killed first: it would otherwise still stop the player

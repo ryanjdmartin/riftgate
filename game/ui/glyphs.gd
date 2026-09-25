@@ -85,6 +85,13 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				c + Vector2(s, 0), c + Vector2(s * 0.55, s * 0.7), c + Vector2(-s * 0.55, s * 0.7), c + Vector2(-s, 0),
 			]), color, width)
 			ci.draw_arc(c, s * 0.3, 0.0, TAU, 16, color, width)
+		"prev", "next":
+			# Skip back or on: a filled triangle against a bar, the transport's own mark.
+			var d := 1.0 if id == "next" else -1.0
+			ci.draw_colored_polygon(PackedVector2Array([
+				c + Vector2(-s * 0.75 * d, -s * 0.8), c + Vector2(s * 0.35 * d, 0), c + Vector2(-s * 0.75 * d, s * 0.8),
+			]), color)
+			ci.draw_line(c + Vector2(s * 0.6 * d, -s * 0.8), c + Vector2(s * 0.6 * d, s * 0.8), color, width)
 		"reroll":
 			# A three-quarter circular arrow, clockwise from the top, with a filled head
 			# pointing along the arc.

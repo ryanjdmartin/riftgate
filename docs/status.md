@@ -3,9 +3,9 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible.
 
-## As of 23 September 2026 (evening)
+## As of 25 September 2026 (evening)
 
-**State.** Tests: 187 tests, 2458 checks, green (`perl -e 'alarm 240; exec @ARGV' godot
+**State.** Tests: 189 tests, 2502 checks, green (`perl -e 'alarm 240; exec @ARGV' godot
 --headless --path . -s tests/run_tests.gd`). Ryan runs a second session on this repo at
 the same time (today: the HUD session and the audio session): check `git status` before
 committing and stage by path. Chassis ids: `badger`,
@@ -35,7 +35,9 @@ band with its horn, then a panel of the contacts; ENGAGE dives the map and cuts 
 skirmish, the dice fight on the enemy's ground, every blow, shield, kill and overheat heard,
 the music dipping under the big ones. Back applies it and the next round plans. The gate has an integrity bar, the rift a spawn bar;
 the codex opens by double-tap on either screen; MENU pauses, ducks the music, holds the
-settings (music, effects and enemy pace among them) and quits to the harness after asking.
+settings (music, effects and enemy pace among them) and quits to the harness after asking;
+under PAUSED a plate names the track playing, with previous and next, and the top bar's
+ticker names it during play.
 The enemy's turn replays blow by blow with the gauges stepping down, before the next dice
 or the outcome, a withdrawal included. The formation is four wide. A map groove plays on
 the field and a skirmish groove in the fight, crossfading.
@@ -168,15 +170,25 @@ rift A B C. State of each:
   melody with the synth lead doubling, guitar chords held under the keys, piano
   arpeggios under the breakdown, a choir under the unison, drums running everywhere and
   loud, a section in seven. Four listens in; the last notes (whiny upper voice, heavier
-  bass, paired basses, held guitars, louder drums) are built and **unheard**. Not hooked.
+  bass, paired basses, held guitars, louder drums) are built and **unheard**. In the
+  skirmish set since 25 September (already at the skirmish's level).
+
+*Titles (25 September, proposed by Claude, Ryan's to rename; the one table is
+`Sound.TRACKS`).* Human A **Stand-To**, human B **Night Shift**, human C **Overpressure**,
+rift A **The Far Bank**, rift B **Low Ground**, rift C **Procession**. Shown in the header's
+ticker (`game/ui/music_ticker.gd`: mono title right-aligned against MENU, a three-bar beat
+meter, a run-in on change, a crawl when too long) and on the pause menu's music plate
+under PAUSED (label over title, previous and next: `Sound.skip`, within the screen's set,
+from the new loop's top). The bible's section 1 has the row.
 
 *The screens.* `Sound.SETS`: a screen asks for a set. The map's set cycles (rift B, human
 B, one full loop each, an equal-power crossfade of `SET_FADE` seconds at the seam,
 resuming its current loop where it left after a fight, restarting from rift B's top on a
-new battle). The skirmish's set **picks** (`Sound.PICK`): human A or rift C, the next one
-each fight, looped for the whole fight, fading in from the map at the door and back to
-the map on exit, never a crossfade mid-fight. The crossfade's gap-then-start was a
-decibel tween from silence; both crossfades are equal-power on linear gain now.
+new battle). The skirmish's set **picks** (`Sound.PICK`): human A, rift C or human C, the
+next one each fight, looped for the whole fight, fading in from the map at the door and
+back to the map on exit, never a crossfade mid-fight unless the player skips. The
+crossfade's gap-then-start was a decibel tween from silence; both crossfades are
+equal-power on linear gain now.
 
 *The drone* (Ryan really likes it as a human-track element): the `sweep` pad at octave 0
 with a `chord` of its own held across the run, `open` 0.75, `depth` 0.3, gain about 0.34
@@ -200,10 +212,12 @@ patterns in bar multiples unless that is wanted.
 
 *To do, audio.* (1) Listen: human C as last built; rift C's extension; the Terran
 interface set and the glide-free skirmish set in the game (`forge.py audition` for the
-file); the map set's equal-power crossfade. Expect notes on each. (2) Rift A has no
-screen: decide where it goes (a third map track, a title, a victory?). (3) Levels: the
-map's two at -24.9, the skirmish's two at -20.7; anything moved to another screen needs
-its level moved with it (`LEVELS`). (4) The phone: nothing has been heard on a device;
+file); the map set's equal-power crossfade; the ticker and the menu's skips in motion
+(the skips make every in-game track reachable from the pause menu now). Expect notes on
+each, and on the titles. (2) Rift A has no screen, so the controls never reach it: decide
+where it goes (a third map track, a title, a victory?). (3) Levels: the map's two at
+-24.9, the skirmish's three at -20.7; anything moved to another screen needs its level
+moved with it (`LEVELS`). (4) The phone: nothing has been heard on a device;
 the mix was checked by measurement only. (5) The real recordings and the real track
 remain section 12's open question; everything here is a placeholder in the decided
 register.

@@ -11,6 +11,10 @@ extends Control
 ##
 ## A colour change rebuilds the host screen, which is not instant: the menu stays up, a
 ## mask says so, and the host must keep this node through its rebuild (it is a child).
+##
+## Under the PAUSED page, in the scrim's empty space, a second plate is the music: what is
+## playing, by title and working label, with previous and next through the screen's set
+## (Ryan, 25 September: on the page itself, not a settings item).
 
 signal resumed
 signal display_changed(key: String, value: Variant)
@@ -18,11 +22,18 @@ signal hud_changed
 signal quit_requested
 
 const WIDTH := 560.0
+const MUSIC_GAP := 18.0   # between the menu's panel and the music plate
 
 var _scrim: ColorRect
 var _panel: HudPanel
 var _rows: VBoxContainer
 var _mask: Control
+var _music: HudPanel
+var _music_label: Label
+var _music_title: Label
+var _music_prev: HudButton
+var _music_next: HudButton
+var _music_loop := "?"    # the loop the plate shows; "?" so the first poll draws it
 var _page := "paused"
 var _busy := false
 
@@ -48,6 +59,8 @@ func _init() -> void:
 	_rows = VBoxContainer.new()
 	_rows.add_theme_constant_override("separation", 12)
 	_panel.add_child(_rows)
+	_music = _music_plate()
+	add_child(_music)
 	_mask = BusyMask.new()
 	_mask.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_mask.visible = false
@@ -55,6 +68,7 @@ func _init() -> void:
 
 
 func open() -> void:
+	_music_loop = "?"
 	_show_page("paused")
 	visible = true
 	Sound.play("menu_open")
@@ -112,6 +126,64 @@ func _show_page(page: String) -> void:
 func _fit() -> void:
 	_panel.reset_size()
 	_panel.size = Vector2(WIDTH, _panel.get_combined_minimum_size().y)
+	_music.visible = _page == "paused"
+	_music.reset_size()
+	_music.size = Vector2(WIDTH, _music.get_combined_minimum_size().y)
+	_music.position = Vector2(_panel.position.x, _panel.position.y + _panel.size.y + MUSIC_GAP)
+
+
+## The plate follows the music while the menu is up: a skip changes the title at once, and
+## a set that rolls over under the menu changes it too.
+func _process(_delta: float) -> void:
+	if not visible:
+		return
+	var loop := Sound.track()
+	if loop == _music_loop:
+		return
+	_music_loop = loop
+	if loop.is_empty():
+		_music_label.text = "MUSIC"
+		_music_title.text = "NOTHING PLAYING"
+		_music_title.add_theme_color_override("font_color", Palette.MUTED)
+	else:
+		_music_label.text = "NOW PLAYING // %s" % Sound.label(loop).to_upper()
+		_music_title.text = Sound.title(loop).to_upper()
+		_music_title.add_theme_color_override("font_color", Palette.HUD)
+	var loops: Array = Sound.SETS.get(Sound.set_playing(), [])
+	var can_skip := loops.size() > 1
+	_music_prev.set_enabled(can_skip)
+	_music_next.set_enabled(can_skip)
+
+
+## The music plate: previous, the readout (label over title), next.
+func _music_plate() -> HudPanel:
+	var plate := HudPanel.new(14.0)
+	plate.custom_minimum_size = Vector2(WIDTH, 0)
+	plate.mouse_filter = Control.MOUSE_FILTER_STOP
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 12)
+	_music_prev = HudButton.new("", func() -> void: Sound.skip(-1))
+	_music_prev.glyph = "prev"
+	_music_prev.custom_minimum_size = Vector2(60, 60)
+	row.add_child(_music_prev)
+	var mid := VBoxContainer.new()
+	mid.add_theme_constant_override("separation", 2)
+	mid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	mid.alignment = BoxContainer.ALIGNMENT_CENTER
+	_music_label = Hud.label("", 12, Palette.MUTED, Hud.mono())
+	_music_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	mid.add_child(_music_label)
+	_music_title = Hud.label("", 26, Palette.HUD, Hud.display_bold())
+	_music_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_music_title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	mid.add_child(_music_title)
+	row.add_child(mid)
+	_music_next = HudButton.new("", func() -> void: Sound.skip(1))
+	_music_next.glyph = "next"
+	_music_next.custom_minimum_size = Vector2(60, 60)
+	row.add_child(_music_next)
+	plate.add_child(row)
+	return plate
 
 
 func _title(text: String) -> void:

@@ -158,8 +158,12 @@ func _build() -> void:
 		# The map's live knobs, a development tool; the player's knobs are in the menu.
 		var tune_btn := HudButton.new("TUNE", _toggle_tuner)
 		_place(tune_btn, Vector2(W - 190, 10), Vector2(84, 34))
+	else:
+		# The music ticker fills the bar between the readout and MENU (Ryan, 25 September);
+		# the tuner's button takes that space when it is on.
+		_place(MusicTicker.new(), Vector2(486, 20), Vector2(W - 108 - 486, 20))
 	_sub_label = Hud.label("", 12, Color(Palette.HUD, 0.7), Hud.mono())
-	_place(_sub_label, Vector2(326, 20), Vector2(380, 20))
+	_place(_sub_label, Vector2(326, 20), Vector2(160, 20))
 
 	_map = BattleMapView.new()
 	_place(_map, Vector2(0, MAP_Y), Vector2(W, LOG_Y - 10.0 - INFO_H - MAP_Y))
