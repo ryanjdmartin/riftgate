@@ -151,9 +151,11 @@ F W S Y K J (the riff in three stages, a drum-fill turn, lift, riff on power cho
 second lift, a bar down, the seven, the unison over a drum solo, keys, the keys' turn,
 guitar solo climbing to a held note, a two-bar breath, the keyboard solo six percent
 slower over dark chords, a one-bar descent). `drum_gain` per section and a `clean`
-guitar voice exist for it. `music_rift_calm` (90, 6/8 throughout, 3:11) and `music_human_calm`
-(96, four on the floor, industrial, 3:00) are their calm siblings, in `Sound.NAMES` and
-`TEMPO`, not hooked to a screen. The pure-synth versions survive as sketches
+guitar voice exist for it. `music_rift_calm` (90, 6/8 throughout, a ground bass under six
+variations, 2:29) and `music_human_calm` (94, four on the floor, industrial, 3:04) are
+their calm siblings, in `Sound.NAMES` and `TEMPO`, not hooked to a screen. The rift theme
+runs at 86 now. The interface effects are future-digital (a sine with a shimmer and air),
+not the pulse wave. The pure-synth versions survive as sketches
 (`map_synth`, `skirmish_synth`), as do `map_86/88/92`, `map_outro` and `bass_samples`.
 
 *The effects.* Two registers: the interface sci-fi electronic (blips and chirps), combat
