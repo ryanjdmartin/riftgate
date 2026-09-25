@@ -182,9 +182,9 @@ all beyond a first pass on the two calms; the interface effects since the second
 (pitched down, glides halved, longer: `UI_PITCH`, `UI_GLIDE`, `UI_LEN` in the forge; `forge.py audition`). Expect a round of notes on each. (2) The
 screens: the map plays rift B and human B in turn (a set; judge the two-second crossfade
 at the seam), the skirmish human A; rift A, rift C and human C sit in the table unhooked;
-decide where they go and whether a set should pick rather than cycle. Both calms were
-built before the pad crossfades, the held-note curves and the stab-length lesson: rebuild
-them on the current engine before the next notes. (3) Loose ends inside the tracks:
+decide where they go and whether a set should pick rather than cycle. Both calms are rebuilt
+on the current engine (pad crossfades at their doors) and pinned at one level, the map's
+(-24.9 dB mean RMS); the other tracks' levels wait on where they end up. (3) Loose ends inside the tracks:
 four-three flair belongs to the prog track, human C (human A's and rift A's meters are
 settled). Human A's drum solo is the intensity Ryan wants wherever drums lead a human
 track. (4) The phone: nothing has been heard on a device;

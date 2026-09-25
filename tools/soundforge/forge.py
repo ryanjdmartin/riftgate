@@ -3078,7 +3078,7 @@ LEVELS = {
     "victory": -10, "defeat": -10, "withdraw": -11, "overheat": -12,
     "laser": -11, "gunfire": -11, "cannon": -8, "slash": -12, "slam": -9,
     "music_map": -24.9, "music_skirmish": -20.7,   # mean RMS dB, pinned where Ryan judged them
-    "music_rift_calm": -26.9, "music_human_calm": -23.7,   # the calm siblings, a little under their themes
+    "music_rift_calm": -24.9, "music_human_calm": -24.9,   # the map's two, at one level, the map's level (Ryan, 25 September)
     "music_rift_drive": -24.9, "music_human_heavy": -20.7,
 }
 
