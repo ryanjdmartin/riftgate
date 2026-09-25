@@ -2251,7 +2251,7 @@ def music_skirmish(palette="hybrid"):
              # third stage and under the riff between the lifts.
              # Its filter sits open and barely moves, and it is up, so the sustain reads through
              # the riff (Ryan: not hearing it sustained; it was level but masked).
-             {"inst": "sweep", "gain": 0.16, "octave": 0, "rate": 0.08, "depth": 0.3, "open": 0.75, "sections": "AN", "skip": {"A": 8}, "chord": [0, 7, 12]}],
+             {"inst": "sweep", "gain": 0.28, "octave": 0, "rate": 0.08, "depth": 0.3, "open": 0.75, "sections": "AN", "skip": {"A": 8}, "chord": [0, 7, 12]}],
         drum_gain={"U": 1.3, "S": 1.15, "R": 1.25, "Z": 1.3, "W": 1.25, "Q": 1.2},
         crescendo={"S": (0.85, 1.0), "R": (1.0, 1.12), "Z": (1.12, 1.3)},
         tilt=3.0, low=(150.0, -6.0),
