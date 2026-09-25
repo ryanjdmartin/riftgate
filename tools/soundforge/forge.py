@@ -2068,14 +2068,18 @@ def music_skirmish(palette="hybrid"):
             # The keys: the sub punching then fading on the roots, a fifth under it in the
             # second half, the piano's tune and its chord work; the turn is theirs.
             {"inst": "sub_bass", "mode": "riff", "gain": 0.52, "legato": True, "params": {"res": 0.35, "punch": 2.4, "fade": 0.4},
-             "pat": {"F": "0---------------8---------------a---------------7---------------0---------------5---------------3---------------g---------------"
-                          "0---------------8---------------7---------------g---------------0---------------8---------------a---------------7---------------"}},
-            {"inst": "sub_bass", "mode": "riff", "gain": 0.2, "legato": True, "octave": -1, "params": {"res": 0.2, "fade": 0.4},
-             "pat": {"F": "." * 128 + "7---------------e---------------d---------------5---------------7---------------e---------------f---------------d---------------"}},
+             "pat": {"F": "0-------0-------8-------8-------g-------g-------7-------7-------0-------0-------5-------5-------3-------3-------g-------g-------"
+                          "0-------0-------8-------8-------7-------7-------g-------g-------0-------0-------8-------8-------g-------g-------7-------7-------"}},
+            # The fifth below each second-half hit, in register; an octave down only where the
+            # root is the low D.
+            {"inst": "sub_bass", "mode": "riff", "gain": 0.24, "legato": True, "params": {"res": 0.2, "fade": 0.4},
+             "pat": {"F": "." * 128 + "h-------h-------3-------3-------2-------2-------................h-------h-------3-------3-------................2-------2-------"}},
+            {"inst": "sub_bass", "mode": "riff", "gain": 0.24, "legato": True, "octave": -1, "params": {"res": 0.2, "fade": 0.4},
+             "pat": {"F": "." * 128 + "................................................5-------5-------................................5-------5-------................"}},
             {"inst": "lead", "mode": "riff", "gain": 0.46, "octave": 2,
              "pat": {"F": "7--.8-.7-..5.3-.0-----..3---5---8--.a-.8-..7.5-.3---....5-.3-.0-"
                           "7--.a-.c---....a--.8-.7-.5---...3--.5-.7-..8.a-.7-------........"
-                          "c---a---8-------7---5---3---0-------3---5---7---8---7---5---0---"
+                          "7--.8-.7-..5.3-.0-----..3---5---8--.a-.8-..7.5-.3---....5-.3-.0-"
                           "7---8---a---c---a---8---7---5---3-------5---3---0-------3---5---"}},
             {"inst": "epiano", "mode": "stab", "gain": 0.5, "dur": 2.0,
              "pat": {"C": "..x...x...x...x.", "L": "..x...x...x...x.",
@@ -2084,7 +2088,7 @@ def music_skirmish(palette="hybrid"):
                           "x...........x..." "x.......x......." "x...x.......x..." "x.......x...x..."
                           "x...x...x...x..." "x.......x...x..." "x...x...x...x..." "x...x...x...x..."}},
             {"inst": "epiano", "mode": "riff", "gain": 0.5, "octave": 2, "legato": True,
-             "pat": {"Y": "3---------------"}},
+             "pat": {"Y": "7---------------"}},
             # The climax: the lead guitar voice and the driven bass on a new riff in unison,
             # the drums on the riff and then blasting under the repeat.
             {"inst": backing, "mode": "riff", "gain": 0.6, "octave": 0, "params": {"mute": False, "cutoff": 2400.0, "clean": True}, "hold": 0.9,
@@ -2094,11 +2098,13 @@ def music_skirmish(palette="hybrid"):
             {"inst": backing, "mode": "riff", "gain": 0.4, "octave": -1,
              "pat": {k: climax.translate(str.maketrans("0357a8", "7ac0f3")) for k in "SRZ"}},
             {"inst": bass, "mode": "riff", "gain": 0.4, "hold": 1.0, "params": {"drive": 3.5},
-             "pat": {"S": climax, "R": climax, "Z": climax, "Y": "0---------------"}},
+             "pat": {"S": climax, "R": climax, "Z": climax, "Y": "3---------------"}},
             # A backing guitar on the chord, filling the air; the keys on the riff from the
             # second set.
-            {"inst": "guitar_chord", "mode": "stab", "gain": 0.35, "dur": 16.0,
-             "pat": {"S": "x...............", "R": "x...............", "Z": "x..............."}},
+            {"inst": "guitar_chord", "mode": "stab", "gain": 0.6, "dur": 8.0,
+             "pat": {"S": "x.......x.......", "R": "x.......x.......", "Z": "x.......x......."}},
+            {"inst": backing, "mode": "riff", "gain": 0.3, "octave": -1,
+             "pat": {"R": "0.0-3.0", "Z": "0.0-3.0"}},
             {"inst": "epiano", "mode": "riff", "gain": 0.4, "octave": 1, "hold": 0.9,
              "pat": {"R": climax, "Z": climax}},
             {"inst": "chime_metal", "mode": "chord", "octave": 2, "gain": 0.2, "echo": (3, 0.25, 2), "dur": 1.6,
@@ -2106,7 +2112,7 @@ def music_skirmish(palette="hybrid"):
             # The breath: a chord, not one note: the root on the chug, bass and sub, the third
             # on the piano, the fifth on the guitar.
             {"inst": backing, "mode": "riff", "gain": 0.28, "octave": 1, "params": {"mute": False, "cutoff": 2400.0, "clean": True}, "legato": True,
-             "pat": {"Y": "7---------------"}},
+             "pat": {"Y": "3---------------"}},
             {"inst": "sub_bass", "mode": "riff", "gain": 0.36, "legato": True,
              "pat": {"Y": "0---------------"}},
             # The keyboard solo: the piano in single notes drifting from the crunch synth's
@@ -2141,6 +2147,7 @@ def music_skirmish(palette="hybrid"):
         ],
         pad=[{"inst": "choir_real" if real else "choir", "gain": 0.18, "vowel": "oh", "sections": "C"}],
         drum_gain={"U": 1.3, "S": 1.15, "R": 1.25, "Z": 1.3, "W": 1.25, "Q": 1.2},
+        crescendo={"S": (0.85, 1.0), "R": (1.0, 1.12), "Z": (1.12, 1.3)},
         tilt=3.0, low=(150.0, -6.0),
         human=(0.005, 0.15) if real else None)
 
