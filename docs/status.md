@@ -169,8 +169,8 @@ E Phrygian, a pizzicato three-three-two over timpani as the engine, Ryan's kick-
 pattern as one section, a new motif on horn and violins, eight bars of 3/4, extended to a
 second developed pass, 144 bars, 4:27, at the skirmish level) and `music_human_heavy` (**human C**, rebuilt dense after
 "good bones, too empty": 105, the Omnific construction on the human sound leaning metal
-and never letting up: two chug guitars, the sub, the drone, the synth lead doubling the
-clean bass, the lead guitar's own lines, piano arpeggios under the breakdown, a choir
+and never letting up: two chug guitars, the sub, the drone, the keys leading the tapped
+melody with the synth lead doubling, the lead guitar's own lines, piano arpeggios under the breakdown, a choir
 under the unison, drums running throughout, a section in seven, 66 bars, 2:06;
 `bass_clean`), in the table, not hooked. The pure-synth versions survive as sketches
 (`map_synth`, `skirmish_synth`), as do `map_86/88/92`, `map_outro` and `bass_samples`.

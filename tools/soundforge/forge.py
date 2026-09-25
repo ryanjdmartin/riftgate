@@ -1538,7 +1538,7 @@ MUSIC = {
                           "meter": {"X": 14},
                           "names": {"A": "the riff on the driven bass, two guitars chugging its power chords and the fifth above, the sub and the drone under, the clean bass answering an octave up, the lead guitar's line over the last three bars; double kicks running, ghost snares, a china every other bar, a tom fill every four",
                                     "B": "a turn: the bass and guitars cut short, a tom fill, a china",
-                                    "C": "the clean bass leads in tapped sixteenths with the synth lead doubling it, over a driving kick, the ride and its bell, piano chords on the beat",
+                                    "C": "the keys lead: the piano in tapped sixteenths with the synth lead doubling it, the clean bass and the guitar on the roots in eighths under, the drone, over a driving kick, the ride and its bell",
                                     "X": "the seven: the driven bass's riff for 7/8 with both guitars and the crunch synth on it, a guitar chord held on the long beats, the clean bass and the synth lead over them, the drone",
                                     "D": "the breakdown that does not let up: piano arpeggios in sixteenths, the lead guitar's melody, guitar chords held, the choir, half-time with double-kick fills, the ride bell",
                                     "E": "the two basses, both guitars and the synth lead in unison over a blast of double kicks, a china on every beat, a crash every bar, the choir, the drone, the drums up"}},
@@ -2704,9 +2704,18 @@ def music_human_heavy():
             # the synth lead doubles it where it leads and in the unison.
             {"inst": "bass_clean", "mode": "riff", "gain": 0.5, "hold": 1.0, "octave": 1,
              "pat": {"A": "........7.8.7.5.........3.5.3.0.........a.c.a.8.........5.7.5.3.",
-                     "C": melody_c, "X": "..7.8...a.......c.a.8.7.5.......", "E": riff}},
+                     "X": "..7.8...a.......c.a.8.7.5.......", "E": riff}},
+            # The keys lead (Ryan: the clean bass leading was not great; keys): the piano
+            # carries the tapped melody, the synth lead doubles it, the clean bass and the
+            # guitar hold the roots in eighths under.
+            {"inst": "epiano", "mode": "riff", "gain": 0.5, "octave": 2, "hold": 0.9,
+             "pat": {"C": melody_c}},
             {"inst": "synlead", "mode": "riff", "gain": 0.26, "octave": 2, "hold": 0.9,
              "pat": {"C": melody_c, "X": "..7.8...a.......c.a.8.7.5......."}},
+            {"inst": "bass_clean", "mode": "chord", "octave": 0, "gain": 0.4, "dur": 2,
+             "pat": {"C": "0.0.0.0.0.0.0.0."}},
+            {"inst": "guitar_real", "mode": "chord", "octave": -1, "gain": 0.4, "dur": 2,
+             "pat": {"C": "0.0.0.0.0.0.0.0."}},
             {"inst": "synlead", "mode": "riff", "gain": 0.3, "octave": 1, "hold": 0.9,
              "pat": {"E": riff}},
             # The lead guitar: a line over the riff's last three bars, the melody over the breakdown.
@@ -2732,7 +2741,8 @@ def music_human_heavy():
         pad=[{"inst": "choir_real", "gain": 0.14, "vowel": "oh", "sections": "D"},
              {"inst": "choir_real", "gain": 0.2, "vowel": "ah", "sections": "E"},
              # The drone Ryan likes (human A), under everything but the clean bass's lead.
-             {"inst": "sweep", "gain": 0.34, "octave": 0, "rate": 0.08, "depth": 0.3, "open": 0.75, "sections": "AXDE", "chord": [0, 7, 12]}],
+             {"inst": "sweep", "gain": 0.34, "octave": 0, "rate": 0.08, "depth": 0.3, "open": 0.75, "sections": "AXDE", "chord": [0, 7, 12]},
+             {"inst": "sweep", "gain": 0.28, "octave": 0, "rate": 0.08, "depth": 0.3, "open": 0.75, "sections": "C"}],
         drum_gain={"A": 1.2, "C": 1.1, "X": 1.2, "D": 1.05, "E": 1.3},
         tilt=3.0, low=(150.0, -5.0), headroom=0.7, human=(0.005, 0.15))
 
