@@ -1471,7 +1471,7 @@ MUSIC = {
                             "D": "interlude: exposed chords, cellos late on the and, strings on two, timpani, sparse bells",
                             "Z": "a bar of 7/8 closing the interlude's half",
                             "E": "strings section, sixteen bars, minor throughout: the violins on the theme's rhythm then its melody, cellos in two-note chords, the drone swelling, the horns only in the second half, a roll into the interlude",
-                            "G": "climax, twenty-eight bars: eight level, then the leads swelling on bar lines, a bar up and two down: the horn peaking on the repeat edge (bar nine) as the whole steps up, then violin, harp and the low strings three bars apart, and round again two bars apart so each fall overlaps the next rise, the leads thinning into the closer"}},
+                            "G": "climax, twenty-eight bars: eight level, then the leads swelling on bar lines, a bar up, a bar at the top and two down: the horn peaking on the repeat edge (bar nine) as the whole steps up, then violin, harp and the low strings three bars apart, and round again two bars apart so each fall overlaps the next rise, the leads thinning into the closer"}},
     "music_rift_calm": {"bpm": 90, "form": "IIII AAAAAAAA BBBBBBBB CCCCCCCC DDDDDDDD EEEEEEEE FFFFFFFF OOOO",
                         "meter": {k: (12, 4.0 / 3.0) for k in "IABCDEFO"},
                         "names": {"I": "intro: the choir and a bell",
@@ -1647,15 +1647,19 @@ def music_map(bpm=MUSIC["music_map"]["bpm"], palette="real"):
 
     def swells(peaks, end, cut=None, floor=0.7):
         # A climax lead's curve on bar lines (Ryan, 25 September: a swell must hit the repeat
-        # edge): level at `floor`, each peak reached over the bar before it and left over
-        # the two after; `end` the level at the closer's door, or `cut` the bar it stops.
+        # edge): level at `floor`, each peak reached over the bar before it, held a bar, and
+        # left over the two after (the hold so the next lead peaks while this one is still
+        # falling: with no hold there was a moment between swells with nobody in the
+        # spotlight); `end` the level at the closer's door, or `cut` the bar it stops.
         pts = [(0.0, floor)]
         for bar, top in peaks:
-            pts += [(gb(bar - 1), floor), (gb(bar), top), (gb(bar + 2), floor)]
+            pts += [(gb(bar - 1), floor), (gb(bar), top), (gb(bar + 1), top)]
+            if gb(bar + 3) < 1.0:
+                pts.append((gb(bar + 3), floor))
         if cut:
             pts += [(gb(cut - 0.5), floor), (gb(cut), 0.0), (1.0, 0.0)]
-        else:
-            pts += [(1.0, end)]
+        elif pts[-1][0] < 1.0:
+            pts.append((1.0, end))
         return pts
     hit_pat = "".join("x" if i in doors else "." for i in range(total + (1 if total % 16 == 0 else 0)))
     # The strings section's horns: six three-note swells, every note on a beat, at the ends
