@@ -162,10 +162,13 @@ their calm siblings, and **the map's music for now** (Ryan, 25 September: both v
 `SET_FADE` seconds, and the set resumes its current loop where it left after a fight; a
 new battle restarts the set from rift B's top. The skirmish set is human A. Rift A is in
 the table, unhooked. The rift theme runs at 86 now. The interface effects are future-digital (a sine with a shimmer and air),
-not the pulse wave. Third tracks (25 September): `music_rift_drive` (112, an electronic
-chug on Ryan's kick-chug-snare pattern under the orchestra, 2:17; `e_chug`) and
-`music_human_heavy` (105, full Omnific, bass-led, a driven bass and a clean bass an
-octave up, a section in seven, 2:05; `bass_clean`), in the table, not hooked. The pure-synth versions survive as sketches
+not the pulse wave. Third tracks, both rebuilt after Ryan's first notes (25 September, unheard since):
+`music_rift_drive` (**rift C**: 126, E Phrygian, a pizzicato three-three-two over
+timpani as the engine, Ryan's kick-chug-snare pattern as one section, a new motif on horn
+and violins, eight bars of 3/4, 72 bars, 2:13) and `music_human_heavy` (**human C**: 105,
+the Omnific construction on the human sound leaning metal: the guitar chugging the riff's
+power chords with the driven bass, the clean bass melody doubled by the lead guitar, the
+drone, a section in seven, 66 bars, 2:06; `bass_clean`), in the table, not hooked. The pure-synth versions survive as sketches
 (`map_synth`, `skirmish_synth`), as do `map_86/88/92`, `map_outro` and `bass_samples`.
 
 *The effects.* Two registers: the interface sci-fi electronic (blips and chirps), combat
@@ -176,7 +179,7 @@ under big moments; `TONAL` sounds keep their pitch; a new battle restarts the ma
 from the top after the map is drawn, a fight's return resumes it. The display's scan and
 idle stay silent by decision.
 
-*To do, audio (25 September).* (1) Listen: rift A (**locked** at the twenty-second listen's build: the climax thirty-two bars, the rotation from the repeat edge; 89 bars, 3:56) and human A (twenty-third listen built: "almost there": the riff sixteen bars, the power chords four bars alone then four with a continuous E drone, the drone under the second riff and the whole climax, alone under its first set, the backing guitar from the second at 0.75; Ryan really likes the drone as a human-track element; a pad `skip` and `chord`, the sweep pad's `open` and `depth`; "everything else fixed, breaths and turns great"); human B
+*To do, audio (25 September).* (1) Listen: rift A (**locked** at the twenty-second listen's build: the climax thirty-two bars, the rotation from the repeat edge; 89 bars, 3:56) and human A (twenty-third listen built: **locked** at the twenty-sixth listen's build (the riff sixteen bars, the drone under its last four, the second riff and the whole climax, alone under the climax's first set); Ryan really likes the drone as a human-track element; a pad `skip` and `chord`, the sweep pad's `open` and `depth`; "everything else fixed, breaths and turns great"); human B
 (calm) and C (heavy) and rift B (calm, the ground bass) and C (drive) not yet heard at
 all beyond a first pass on the two calms; the interface effects since the third audition
 (an octave and a third down, glides cut, half again as long, darker: `UI_PITCH`, `UI_GLIDE`, `UI_LEN` and `blip` in the forge; `forge.py audition`). Expect a round of notes on each. (2) The

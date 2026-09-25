@@ -1503,21 +1503,23 @@ MUSIC = {
                                    "D": "the crunch synth dark and low on the riff, hats in sixteenths, knocks and a stack",
                                    "R": "the groove again",
                                    "O": "outro: the kick thinning, the pad fading, the chime"}},
-    "music_rift_drive": {"bpm": 112, "form": "IIII AAAAAAAAAAAAAAAA BBBBBBBBBBBBBBBB CCCCCCCC DDDDDDDDDDDDDDDD OOOO",
-                         "names": {"I": "the engine alone: kick on one, the chug on the and-two-and, kick and snare on three, the chug on the and-four-and",
-                                   "A": "the strings and the bells over the engine, cellos on the roots",
-                                   "B": "the horns and the violins' line, the engine on darker roots",
-                                   "C": "breakdown: the chug closed down under the choir, a timpani roll out",
-                                   "D": "the tutti: the bells' echo, the harp, the horns, the strings swelling",
-                                   "O": "outro: the engine and a bell, the strings fading, into the top"}},
+    "music_rift_drive": {"bpm": 126, "form": "IIII AAAAAAAAAAAAAAAA BBBBBBBBBBBBBBBB CCCCCCCC DDDDDDDDDDDDDDDD EEEEEEEE OOOO",
+                         "meter": {"E": 12},
+                         "names": {"I": "the engine: the plucked strings' three-three-two over the timpani",
+                                   "A": "the ostinato with the cellos on the roots and the choir pumping, the horn's motif from the ninth bar",
+                                   "B": "Ryan's pattern: kick on one, the electronic chug on the and-two-and, kick and snare on three, the chug on the and-four-and; horn stabs, the violins' line from the ninth bar",
+                                   "C": "breakdown: the harp's figure and the stuttering bell over the chug closed down, the choir, a timpani roll out",
+                                   "D": "the tutti: ostinato, cellos, the motif on horn and violins, brass stabs in three-three-two, the strings swelling",
+                                   "E": "the waltz drive: eight bars of 3/4, kick on one and three, the ostinato in eighths, horn and violins on the chord",
+                                   "O": "outro: the ostinato thinning over the cellos, the strings fading, into the top"}},
     "music_human_heavy": {"bpm": 105, "form": "AAAAAAAB CCCCCCCC XXXXXXXX AAAAAAAB DDDDDDDD EEEEEEEE AAAAAAAB",
                           "meter": {"X": 14},
-                          "names": {"A": "the riff on the driven bass, the clean bass answering an octave up",
-                                    "B": "a turn: the bass cut short, a tom fill, a china",
-                                    "C": "the clean bass leads in tapped sixteenths over a half-time floor and a ride",
-                                    "X": "the seven: the driven bass's riff for 7/8, the clean bass over the long beats",
-                                    "D": "breakdown: clean-bass chords held, a long crash, the choir",
-                                    "E": "the two basses in unison over double kicks, the drums up"}},
+                          "names": {"A": "the riff on the driven bass with the guitar chugging its power chords, the clean bass answering an octave up, the drone from the fifth bar, a china every other bar",
+                                    "B": "a turn: the bass and guitar cut short, a tom fill, a china",
+                                    "C": "the clean bass leads in tapped sixteenths over a half-time floor and a ride, the lead guitar doubling its second half, piano chords on the beat",
+                                    "X": "the seven: the driven bass's riff for 7/8 with the guitar and the crunch synth on it, the clean bass over the long beats, the drone",
+                                    "D": "breakdown: clean-bass chords and a guitar chord held, a long crash, the choir",
+                                    "E": "the two basses and the guitar in unison over double kicks, the drone under, the drums up"}},
     "music_skirmish": {"bpm": 100, "form": "AAAAAAAAAAAAAAAAB CCCCCCCC NNNN LLLLLLLL M XXXXXXXX UUUUUUUU FFFFFFFFFFFFFFFF WW SSSSSSSS RRRRRRRR ZZZZZZZZ Y KKKKKKKKKKKKKKKK V Q JJ",
                        "meter": {"X": 14, "K": (16, 1.06), "V": (16, 1.06)},
                        "names": {"A": "riff, sixteen bars: four bare, four with a low bass, four with bass power chords, four more with a low drone under them",
@@ -2471,74 +2473,101 @@ NOTE_INST["bass_clean"] = lambda f, d, p: bass_clean(f, d)
 
 
 def music_rift_drive():
-    # The rift at skirmish tempo, 112: the kick on one, an electronic chug on the "and, two,
-    # and", kick and snare on three, the chug on the "and, four, and" (Ryan's pattern), the
-    # orchestra's melancholy over it and the drive giving it the tension of conflict. Sixty-
-    # four bars: the engine alone (I), the strings and bells over it (A), the horns and the
-    # violins' line (B), a breakdown where the chug closes down under the choir (C), the
-    # tutti with the bells' echo and a crescendo (D), and an outro that strips to the engine
-    # and wraps.
+    # Rift C, rebuilt (Ryan, 25 September: faster, and an identity of its own away from rift
+    # A, more so than the calms). 126, E Phrygian rather than E minor (the flattened second,
+    # F, is its colour; rift A avoids it), the engine a plucked-string ostinato in
+    # three-three-two over timpani rather than the theme's groove, Ryan's kick-chug-snare
+    # pattern kept as one section rather than the whole, a new motif on horn and violins
+    # that never quotes the theme, and a stretch of 3/4 as its own flair. Seventy-two bars.
     m = MUSIC["music_rift_drive"]
-    drum = variants(bassdrum_real)
-    kit = {"kick": (variants(kick_real), 0.95), "snare": (variants(snare_real), 0.75), "hat": (variants(lambda p: hat_real(False, p)), 0.4),
-           "open": ([hat_real(True)], 0.3), "crash": ([crash_real()], 0.7), "glitch": (glitch_perc(), 0.35), "timp": (variants(lambda p: timpani_real()), 0.7),
-           "boom": (drum, 0.9)}
-    chug = "..0.0.0...0.0.0."   # the engine's bar: silent on one and three, three hits after each
+    kit = {"kick": (variants(bassdrum_real), 0.95), "snare": (variants(snare_real), 0.7), "hat": (variants(lambda p: hat_real(False, p)), 0.38),
+           "open": ([hat_real(True)], 0.3), "crash": ([crash_real()], 0.7), "glitch": (glitch_perc(), 0.3),
+           "timp": (variants(lambda p: timpani_real()), 0.8)}
+    chug = "..0.0.0...0.0.0."   # Ryan's bar: silent on one and three, three hits after each
+
     def chug_line(roots):
         return "".join(chug.replace("0", r) for r in roots)
-    roots_a = ["0", "0", "g", "3", "0", "5", "3", "g"]
-    roots_b = ["8", "5", "3", "7", "0", "8", "a", "7"]
     form = m["form"].replace(" ", "")
-    steps, starts, _ = _bars(form, None)
+    meter = m["meter"]
+    steps, starts, _ = _bars(form, meter)
     total = sum(steps)
-    doors = [starts[b] for b in range(len(form)) if form[b] in "ABD" and b > 0 and form[b - 1] != form[b]]
+    doors = [starts[b] for b in range(len(form)) if form[b] in "ABDE" and b > 0 and form[b - 1] != form[b]]
     door_pat = "".join("x" if i in doors else "." for i in range(total + (1 if total % 16 == 0 else 0)))
+    ostinato = "0..0..0.1..1..1.0..0..2.1..0..1."   # two bars, eighths in three-three-two, on the bar's chord
+    motif = ("0-------1-------3-------1-------0---------------a---------------"
+             "3-------5-------7-------5-------3-------1-------0---------------")   # E F G F E D, G A B A G F E
+    line1 = "0-.1-.3-..5-.3-.1-.0-..g-.0-...."
+    line2 = "3-.5-.7-..8-.7-.5-.3-..1-.0-...."
+    Em, F, G, Dm, Am = [0, 7, 15], [1, 8, 17], [3, 10, 19], [-2, 5, 8], [5, 12, 20]
     return groove(
-        bpm=m["bpm"], form=form, kit=kit,
+        bpm=m["bpm"], form=form, meter=meter, kit=kit,
         drums={
-            "kick": {"I": "x.......x.......", "A": "x.......x.......", "B": "x.......x.......", "C": "x...............", "D": "x.......x.......", "O": "x.......x......."},
-            "snare": {"I": "........x.......", "A": "........x.......", "B": "........x.......", "D": "........x.......", "O": "........x......."},
-            "hat": {"A": "..x...x...x...x.", "B": "x.x.x.x.x.x.x.x.", "D": "x.x.x.x.x.x.x.x."},
+            "kick": {"I": "x...............", "A": "x.......x.......", "B": "x.......x.......", "C": "x...............",
+                     "D": "x.......x.......", "E": "x.......x...", "O": "x..............."},
+            "snare": {"A": "....x.......x...", "B": "........x.......", "D": "....x.......x...", "E": "....x......."},
+            "hat": {"A": "..x...x...x...x.", "B": "x.x.x.x.x.x.x.x.", "C": "..x...x...x...x.", "D": "x.x.x.x.x.x.x.x.", "E": "..x...x...x."},
             "open": {"B": "..............x.", "D": "......x.......x."},
             "crash": {"*": door_pat},
             "glitch": {"C": "....x.......x...x......."},
-            "timp": {"C": "x" + "." * 63 + "x" + "." * 47 + "x.x.x.x.x.x.x.x.", "D": "x" + "." * 63},
-            "boom": {"D": "x...............", "O": "x..............."},
+            "timp": {"I": "x.......x..x....", "A": "x.......x..x....", "D": "x.......x..x....", "E": "x...........",
+                     "C": "x" + "." * 111 + "x.x.x.x.x.x.x.x.", "O": "x..............."},
         },
-        chords={"I": [[0, 7, 15]],
-                "A": [[0, 7, 15], [0, 7, 15], [-2, 5, 10], [3, 10, 17], [0, 7, 15], [5, 12, 20], [3, 10, 17], [-2, 5, 10]],
-                "B": [[8, 11, 15], [5, 12, 20], [3, 10, 17], [7, 14, 22], [0, 7, 15], [8, 11, 15], [10, 13, 17], [7, 14, 22]],
-                "C": [[0, 7, 15], [0, 6, 13], [-2, 5, 10], [0, 6, 13]],
-                "D": [[0, 7, 15], [0, 7, 15], [-2, 5, 10], [3, 10, 17], [0, 7, 15], [5, 12, 20], [3, 10, 17], [-2, 5, 10]],
-                "O": [[0, 7, 15], [0, 7, 15], [-2, 5, 10], [0, 7, 15]]},
+        chords={"I": [Em],
+                "A": [Em, F, Em, Dm, Em, F, G, F],
+                "B": [Em, Em, F, Em, Em, Em, Dm, F],
+                "C": [Em, F, Am, Em],
+                "D": [Em, F, G, F, Em, F, Dm, Em],
+                "E": [Em, F, G, Dm],
+                "O": [Em]},
         voices=[
-            # The engine: the electronic chug on Ryan's pattern, closing down in the breakdown.
+            # The engine: plucked strings in three-three-two, on the bar's chord.
+            {"inst": "pizz", "mode": "chord", "octave": 1, "gain": 0.42, "dur": 3,
+             "pat": {"I": ostinato, "A": ostinato, "D": ostinato, "E": "0.0.1.0.2.1.", "O": "0..0..0.1..1..1.0..0..2.1..0..1.0..0..0.1..1..1.0.....2........."}},
+            # Ryan's pattern on the electronic chug, closed down in the breakdown.
             {"inst": "e_chug", "mode": "riff", "gain": 0.6, "hold": 0.8, "octave": -1,
-             "pat": {"I": chug_line(roots_a), "A": chug_line(roots_a), "B": chug_line(roots_b), "D": chug_line(roots_a), "O": chug_line(["0", "0", "g", "0"])}},
-            {"inst": "e_chug", "mode": "riff", "gain": 0.5, "hold": 0.8, "octave": -1, "params": {"cutoff": 400.0},
-             "pat": {"C": chug_line(["0", "0", "g", "0"])}},
-            # The orchestra over it.
+             "pat": {"B": chug_line(["0", "0", "1", "0", "0", "0", "g", "1"])}},
+            {"inst": "e_chug", "mode": "riff", "gain": 0.45, "hold": 0.8, "octave": -1, "params": {"cutoff": 400.0},
+             "pat": {"C": chug_line(["0", "1", "5", "0"])}},
+            # The cellos on the roots.
             {"inst": "cello", "mode": "riff", "gain": 0.3, "legato": True,
-             "pat": {"A": "0---------------0---------------g---------------3---------------0---------------5---------------3---------------g---------------",
-                     "D": "0---------------0---------------g---------------3---------------0---------------5---------------3---------------g---------------"}},
-            {"inst": "bell", "mode": "chord", "octave": 2, "gain": 0.14, "echo": (3, 0.42, 3), "dur": 3.5,
-             "pat": {"A": "0...2...1...3...", "B": "0.2.1.3.0.2.1.2.", "C": "0...............2...............", "D": "0.2.1.3.0.2.1.2.0.3.2.1.0.3.2.3.", "O": "0...............2..............."}},
-            {"inst": "horn", "mode": "chord", "octave": 1, "gain": 0.24, "dur": 3.0,
-             "pat": {"B": "............2...............1...", "D": "........................2......."}},
-            {"inst": "violin", "mode": "riff", "gain": 0.3, "octave": 2, "hold": 1.3,
-             "pat": {"B": "7--.8-.7-..5.3-.0---....3-.5-.7-8--.a-.8-..7.5-.3---....5-.3-.0-",
-                     "D": "0------.3------.0---....1-------g------.3------.5---....3-------"}},
-            {"inst": "harp", "mode": "chord", "octave": 2, "gain": 0.2, "dur": 1.2,
-             "pat": {"D": "0.1.2.3.2.1.0.1."}},
-            {"inst": "swell_rev", "mode": "stab", "gain": 0.4, "dur": 2.0,
-             "pat": {"C": "." * 62 + "x.", "O": "." * 62 + "x."}},
-            {"inst": "hit", "mode": "stab", "gain": 0.35, "dur": 3.0,
-             "pat": {"D": "x" + "." * 127}},
+             "pat": {"A": "0---------------1---------------0---------------g---------------0---------------1---------------3---------------1---------------",
+                     "D": "0---------------1---------------3---------------1---------------0---------------1---------------g---------------0---------------",
+                     "O": "0---------------------------------------------------------------"}},
+            # The motif: the horn from the ostinato's ninth bar, horn and violins in the tutti.
+            {"inst": "horn", "mode": "riff", "gain": 0.28, "octave": 1, "hold": 1.0,
+             "pat": {"A": "." * 128 + motif, "D": motif}},
+            {"inst": "violin", "mode": "riff", "gain": 0.3, "octave": 2, "hold": 1.2,
+             "pat": {"D": "." * 128 + motif}},
+            # The engine section: horn stabs on one and three, the violins' line from its ninth bar.
+            {"inst": "horn", "mode": "chord", "octave": 1, "gain": 0.2, "dur": 4,
+             "pat": {"B": "0.......1......."}},
+            {"inst": "violin", "mode": "riff", "gain": 0.3, "octave": 2, "hold": 1.2,
+             "pat": {"B": "." * 128 + (line1 + line2) * 2}},
+            # The breakdown: the harp's figure, the stuttering bell.
+            {"inst": "harp", "mode": "chord", "octave": 2, "gain": 0.22, "dur": 2,
+             "pat": {"C": "0.1.2.3.2.1.0.1."}},
+            {"inst": "bell_stutter", "mode": "chord", "octave": 3, "gain": 0.1, "echo": (3, 0.3, 2), "dur": 3,
+             "pat": {"C": "0...............2..............."}},
+            # The tutti's brass in three-three-two, and its bells.
+            {"inst": "brass", "mode": "stab", "gain": 0.28, "dur": 2,
+             "pat": {"D": "x.....x.....x..."}},
+            {"inst": "bell", "mode": "chord", "octave": 2, "gain": 0.12, "echo": (3, 0.42, 3), "dur": 3.5,
+             "pat": {"D": "0.......2.......1.......3.......", "O": "0..............."}},
+            # The waltz: horn and violins on the chord, a bar each in turn.
+            {"inst": "horn", "mode": "chord", "octave": 1, "gain": 0.26, "dur": 12,
+             "pat": {"E": "0.......................", "O": "0..............."}},
+            {"inst": "violin", "mode": "chord", "octave": 2, "gain": 0.28, "dur": 12,
+             "pat": {"E": "............2..........."}},
+            {"inst": "swell_rev", "mode": "stab", "gain": 0.4, "dur": 2,
+             "pat": {"C": "." * 126 + "x.", "O": "." * 62 + "x."}},
+            {"inst": "hit", "mode": "stab", "gain": 0.35, "dur": 3,
+             "pat": {"D": "x" + "." * 255}},
         ],
-        pad=[{"inst": "strings", "gain": 0.16, "sections": "AB"},
+        pad=[{"inst": "choir", "gain": 0.2, "vowel": "oo", "pump": 0.25, "sections": "IA"},
+             {"inst": "strings", "gain": 0.14, "sections": "B"},
              {"inst": "choir", "gain": 0.22, "vowel": "oo", "pump": 0.25, "sections": "C"},
-             {"inst": "choir", "gain": 0.18, "vowel": "ah", "sections": "D"},
-             {"inst": "strings", "gain": 0.16, "sections": "D", "swell": (1.0, 1.6)},
+             {"inst": "choir", "gain": 0.18, "vowel": "ah", "sections": "DE"},
+             {"inst": "strings", "gain": 0.16, "sections": "D", "swell": (0.9, 1.5)},
              {"inst": "strings", "gain": 0.14, "sections": "O", "swell": (1.0, 0.3)}],
         crescendo={"D": (0.85, 1.25)},
         air=(0.25, 0.1), master=1.1, headroom=0.6, swap=REAL_MAP_SWAP, human=(0.006, 0.15))
@@ -2546,15 +2575,17 @@ def music_rift_drive():
 
 def music_human_heavy():
     # The human theme's third: full Omnific (Ryan, 25 September: Will-O'-the-Wisp,
-    # Matrices), bass-led, no guitar. A driven bass carries the riff and a clean bass an
-    # octave up carries the melody in tapped-style sixteenths, over a heavy kit with double
-    # kicks and many cymbals; a section in seven. Sixty-six bars at 105: the riff with the
+    # Matrices) in the construction, not the sound: the sound is the human context, leaning
+    # metal (Ryan, later that day: bass alone was empty). A driven bass carries the riff with
+    # the guitar chugging its power chords, a clean bass an octave up carries the melody in
+    # tapped-style sixteenths with the lead guitar doubling it, the drone under the riffs
+    # and the unison, over a heavy kit with double kicks and many cymbals; a section in seven. Sixty-six bars at 105: the riff with the
     # clean bass answering (A), a turn (B), the clean bass leading over a half-time floor
     # (C), the seven (X), a breakdown of clean-bass chords under cymbal swells (D), the two
     # basses in unison with double kicks (E), and the riff to close (A).
     m = MUSIC["music_human_heavy"]
-    kit = {"kick": (variants(kick_real), 1.1), "snare": (variants(snare_real), 1.05), "hat": (variants(lambda p: hat_real(False, p)), 0.45),
-           "open": ([hat_real(True)], 0.4), "crash": ([crash_real()], 0.9), "crash2": ([crash_low()], 0.9), "china": (china(), 0.8),
+    kit = {"kick": (variants(kick_real), 1.15), "snare": (variants(snare_real), 1.1), "hat": (variants(lambda p: hat_real(False, p)), 0.45),
+           "open": ([hat_real(True)], 0.4), "crash": ([crash_real()], 0.9), "crash2": ([crash_low()], 0.9), "china": (china(), 0.85),
            "splash": ([splash()], 0.7), "stack": ([stack()], 0.6), "ride": ([ride_real()], 0.4), "bell": ([ride_bell()], 0.45),
            "tom": (variants(lambda p: tom_real(150.0, p)), 0.9), "tom2": (variants(lambda p: tom_real(105.0, p)), 0.9), "crash_long": ([crash_long()], 0.9, 0.03)}
     form = m["form"].replace(" ", "")
@@ -2574,10 +2605,10 @@ def music_human_heavy():
             "ride": {"C": "x.x.x.x.x.xx.x.x", "D": "x...x...x...x..."},
             "bell": {"C": "x.......x.......x.......x...x..."},
             "open": {"A": "......x.......x.", "E": "......x.......x."},
-            "crash": {"*": door_pat, "E": "x" + "." * 31},
+            "crash": {"*": door_pat, "E": "x" + "." * 31, "A": "x" + "." * 63},
             "crash2": {"X": "x" + "." * 27},
             "crash_long": {"D": "x" + "." * 31},
-            "china": {"B": "..............x.", "E": "........x......................."},
+            "china": {"A": "." * 30 + "x.", "B": "..............x.", "E": "........x.......................", "X": "." * 26 + "x."},
             "splash": {"C": "..........x....."},
             "stack": {"E": "..x...x...x...x."},
             "tom": {"B": "....x.x.xx.x.x..", "D": "." * 62 + "x.", "E": "." * 120 + "x.x.xx.x"},
@@ -2589,9 +2620,14 @@ def music_human_heavy():
                 "D": [[0, 7, 15, 19], [8, 11, 15, 20], [5, 8, 12, 17], [7, 10, 14, 19]],
                 "E": [[0, 7, 15], [0, 7, 15], [3, 10, 17], [-2, 5, 10]]},
         voices=[
-            # The driven bass: the riff.
+            # The driven bass: the riff; the guitar chugs its power chords with it, and the
+            # crunch synth doubles the seven.
             {"inst": "bass_real", "mode": "riff", "gain": 0.6, "hold": 1.0, "params": {"drive": 4.0},
              "pat": {"A": riff, "B": "0---............", "X": "0.0-3.0-5.3-0.0.0-3.0-8.7-5.3.", "E": riff}},
+            {"inst": "guitar_real", "mode": "riff", "gain": 0.6, "octave": -1,
+             "pat": {"A": riff, "B": "0---............", "X": "0.0-3.0-5.3-0.0.0-3.0-8.7-5.3.", "E": riff}},
+            {"inst": "bass", "mode": "riff", "gain": 0.3, "params": {"drive": 3.5, "cutoff": 800.0},
+             "pat": {"X": "0.0-3.0-5.3-0.0.0-3.0-8.7-5.3."}},
             # The clean bass: answering the riff, then leading, then in unison an octave up.
             {"inst": "bass_clean", "mode": "riff", "gain": 0.5, "hold": 1.0, "octave": 1,
              "pat": {"A": "........7.8.7.5.........3.5.3.0.........a.c.a.8.........5.7.5.3.",
@@ -2599,18 +2635,28 @@ def music_human_heavy():
                           "c.a.8.7.5.7.8.a.a.8.7.5.3.5.7.8.8.7.5.3.1.3.5.7.7.4.0.4.7-------",
                      "X": "..7.8...a.......c.a.8.7.5.......",
                      "E": riff}},
-            # The breakdown: clean-bass chords held.
-            {"inst": "bass_clean", "mode": "chord", "octave": 1, "gain": 0.4, "dur": 8.0,
+            # The lead guitar doubling the clean bass's melody an octave up in its second half.
+            {"inst": "lead_real", "mode": "riff", "gain": 0.32, "octave": 2, "hold": 0.9,
+             "pat": {"C": "." * 64 + "c.a.8.7.5.7.8.a.a.8.7.5.3.5.7.8.8.7.5.3.1.3.5.7.7.4.0.4.7-------"}},
+            {"inst": "epiano", "mode": "stab", "gain": 0.22, "dur": 4,
+             "pat": {"C": "x...x...x...x..."}},
+            # The breakdown: clean-bass chords and a guitar chord held.
+            {"inst": "bass_clean", "mode": "chord", "octave": 1, "gain": 0.4, "dur": 16,
              "pat": {"D": "0.......2.......", "B": "0..............."}},
-            {"inst": "bass_clean", "mode": "chord", "octave": 1, "gain": 0.3, "dur": 8.0,
+            {"inst": "bass_clean", "mode": "chord", "octave": 1, "gain": 0.3, "dur": 16,
              "pat": {"D": "1.......3......."}},
+            {"inst": "guitar_hold", "mode": "stab", "gain": 0.45, "dur": 20,
+             "pat": {"D": "x..............."}},
             {"inst": "chime_metal", "mode": "chord", "octave": 2, "gain": 0.16, "echo": (3, 0.25, 2), "dur": 1.6,
              "pat": {"D": "0...........2...", "C": "................0..............."}},
-            {"inst": "epiano", "mode": "stab", "gain": 0.3, "dur": 4.0,
+            {"inst": "epiano", "mode": "stab", "gain": 0.3, "dur": 8,
              "pat": {"D": "x.......x......."}},
         ],
-        pad=[{"inst": "choir_real", "gain": 0.14, "vowel": "oh", "sections": "D"}],
-        drum_gain={"E": 1.15},
+        pad=[{"inst": "choir_real", "gain": 0.14, "vowel": "oh", "sections": "D"},
+             # The drone Ryan likes (human A): under the riffs after four bars alone, under
+             # the seven and the unison from their doors.
+             {"inst": "sweep", "gain": 0.34, "octave": 0, "rate": 0.08, "depth": 0.3, "open": 0.75, "sections": "AXE", "skip": {"A": 4}, "chord": [0, 7, 12]}],
+        drum_gain={"A": 1.1, "X": 1.1, "E": 1.25},
         tilt=3.0, low=(150.0, -5.0), human=(0.005, 0.15))
 
 
