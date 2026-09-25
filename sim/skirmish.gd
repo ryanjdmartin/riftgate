@@ -220,9 +220,11 @@ func incoming_for(ms: MechState) -> int:
 ## What the end of the round does to this mech if nothing else changes: the screen's warning
 ## signs and bar overlays. Recomputed after every action, so shielding or killing an attacker
 ## moves the numbers at once. `with_face` counts the heat of the die's showing component as
-## if spent; the screen asks for that only while the die is being dragged.
-func forecast(ms: MechState, with_face: bool = true) -> Dictionary:
-	var shield := ms.unit.shield
+## if spent; the screen asks for that only while the die is being dragged. `extra_shield`
+## asks the same question with that much more shield standing (a shield component about
+## to be spent here), for whoever weighs one.
+func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0) -> Dictionary:
+	var shield := mini(ms.unit.shield_max, ms.unit.shield + extra_shield)
 	var hull := ms.unit.hull
 	var incoming := 0
 	var component_risk := false
@@ -254,9 +256,14 @@ func forecast(ms: MechState, with_face: bool = true) -> Dictionary:
 
 ## Foes this mech's current face may be spent on.
 func targets_for(mech_index: int) -> Array[Foe]:
-	var out: Array[Foe] = []
 	var ms := mechs[mech_index]
-	var f := ms.face()
+	return targets_for_face(ms, ms.face())
+
+
+## Foes this mech could spend `f` on, whether or not the die shows it: the same reach rules,
+## asked about any entry (a player weighing a reroll, or a bot weighing a die).
+func targets_for_face(ms: MechState, f: Face) -> Array[Foe]:
+	var out: Array[Foe] = []
 	if f == null or not f.is_attack():
 		return out
 	# Reach: melee hits the front rank, and the back only when the whole front is empty;

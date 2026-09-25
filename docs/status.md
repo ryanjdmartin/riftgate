@@ -5,7 +5,7 @@ thing works lives in its file's comments; why it is that way lives in the bible.
 
 ## As of 25 September 2026 (evening)
 
-**State.** Tests: 189 tests, 2502 checks, green (`perl -e 'alarm 240; exec @ARGV' godot
+**State.** Tests: 199 tests, 2552 checks, green (`perl -e 'alarm 240; exec @ARGV' godot
 --headless --path . -s tests/run_tests.gd`). Ryan runs a second session on this repo at
 the same time (today: the HUD session and the audio session): check `git status` before
 committing and stage by path. Chassis ids: `badger`,
@@ -41,6 +41,25 @@ ticker names it during play.
 The enemy's turn replays blow by blow with the gauges stepping down, before the next dice
 or the outcome, a withdrawal included. The formation is four wide. A map groove plays on
 the field and a skirmish groove in the fight, crossfading.
+
+**Balance measured by machine (25 September; bible section 11 row).** `sim/policy.gd` is a
+player for the headless skirmish: RANDOM (the floor: never rerolls, any legal target) and
+GREEDY (the screen's own forecast, the best one-round trade, kinetic entries weighed across
+their roll at five points, chain links valued, a die held when every spend loses hull;
+rerolls entries under their die's average). `withdraw_below` is the first persona. Its
+weights (`HULL_WEIGHT`, `KILL_BONUS`, `DEATH_WEIGHT`...) are tool knobs. `tools/balance.gd`
+plays every chassis alone and the starting team against every pack a faction sends (spawn
+table entries and each boss), 200 seeds a cell, about 240 fights a second, into
+`docs/balance.md`: win rate per rung, rounds and hull per win, pick share per component.
+`--trace "sparrowhawk|brute x4|greedy|3"` prints one fight's log. First report, placeholder
+numbers: greedy meets or beats random everywhere; the team of three wins every single-pack
+fight at no cost (a contact against one squad is trivial); the Clydesdale and the Anvil
+alone lose to the front-rank packs (Ghoul x6, Brute x4, Spawn x4) at 100% hull under both
+rungs; the vents (Heat Sink, Coolant Dump) are spent 1 to 2% of the time, so heat is not
+yet a pressure on those dice; the Sparrowhawk is carried by the Arc Projector's chain
+(46% of its spends). Next rungs when greedy stops being enough: rollout (replay from the
+seed a few rounds ahead), a battle-level bot using the skirmish bot as auto-resolve, a
+CI band test (coarse, or it flakes). The tests never read content: synthetic dice only.
 
 **Done 22 September (late) and 23 September.** The map's draw calls: 5400 and 10.9 ms a
 frame at zoom 1 on the Mac became 1036 and about 3 ms by baking rims, columns, grid lines,
@@ -247,7 +266,10 @@ register.
 6. Art: enemy art for the eight foes still on sketch grids; the hangar as a model;
    Aphelion and Arsenal chassis once written; per-mech repaint (`Unit.paint` exists,
    nothing sets it). Sound: the real recordings and the real track, once the set is judged.
-7. Before a phone leaves the desk: save and resume mid-battle (nothing serialised);
+7. Balance: Ryan reads `docs/balance.md` against his own play; then either the numbers
+   move (content) or the bot's next rung is built (rollout, personas, the battle bot).
+   Rerun the report after every content change; it is 80 s.
+8. Before a phone leaves the desk: save and resume mid-battle (nothing serialised);
    onboarding (gesture tutorial, cheat sheet: reroll rule and zone of control first); the
    Android export checked on a device (everything it needs is on this Mac; bible section
    11 and the README say how); then play and tune numbers, map size, squad speeds, Rift

@@ -19,6 +19,8 @@ and open question from the design sessions.
   - `skirmish.gd` the dice skirmish: two-rank enemy formation fed from a pool, reach rules,
     keywords, heat, shields, injuries, withdraw, outcome
   - `loadouts.gd` sample dice and squads for prototypes and tests
+  - `policy.gd` a player for the headless skirmish, a ladder of skill (random, greedy) with
+    personas on top, so balance can be measured over thousands of fights
   - `passives.gd` runs the passive triggers the engine supports (the validator refuses others)
   - `content_db.gd` loads and validates `content/*.json`, builds dice, mechs, and foes
   - `battle.gd` one battle end to end: plot routes, resolve, open a skirmish per contact
@@ -36,7 +38,9 @@ and open question from the design sessions.
   - `main.tscn` the battlefield map viewer
 - `tests/` — headless tests. `run_tests.gd` discovers `test_*.gd` files and runs every
   `test_` method, including the content validator and a headless drive of the skirmish screen.
-- `tools/` — `export_vocabulary.gd` regenerates `docs/vocabulary.md`; `screenshot.gd` renders a
+- `tools/` — `export_vocabulary.gd` regenerates `docs/vocabulary.md`; `balance.gd` plays every
+  chassis and the team against every pack under each policy and writes `docs/balance.md`
+  (`--trace` prints one fight blow by blow); `screenshot.gd` renders a
   scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `perf_probe.gd` measures
   the battle map's frame cost; `lowforge/` builds the
   ally units by code from a brief (`models_low.py`, one function per chassis id) in the
@@ -69,6 +73,12 @@ godot --path .
 
 # regenerate docs/vocabulary.md from content/vocabulary.json
 godot --headless --path . -s tools/export_vocabulary.gd
+
+# the balance report: every chassis alone and the starting team against every pack, played by
+# random and by greedy over 200 seeds a cell, written to docs/balance.md (about 80 s).
+# --seeds N, --policies greedy, --withdraw 40 (a persona), --json out.json for every cell;
+# --trace "sparrowhawk|brute x4|greedy|3" plays that one fight and prints its log instead.
+perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
 
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument
 # poses the screen first. Skirmish: codex, mechcodex, hold, confirm, lock, strike,

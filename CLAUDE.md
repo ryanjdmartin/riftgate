@@ -10,6 +10,7 @@ godot --headless --path . --import                 # first run, and after adding
 perl -e 'alarm 240; exec @ARGV' godot --headless --path . -s tests/run_tests.gd   # tests (watchdog: no `timeout` on macOS)
 godot --path .                                     # harness: skirmish screen and map viewer
 godot --headless --path . -s tools/export_vocabulary.gd   # regenerate docs/vocabulary.md
+perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200   # balance report to docs/balance.md; --trace "row|pack|policy|seed" for one fight's log
 tools/spriter/.venv/bin/python tools/sheet_export.py      # export enemy grids to art/foes, then --import
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate <foe> --n 4   # model candidates (mflux, FLUX.2 Klein)
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut <png> <foe>        # cut one into art/foes, then --import
@@ -57,6 +58,12 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   component to apply one.
 - Keep the fun in mind: prefer one source of randomness, and push back on systems that add no
   decision. Slice and Dice is the touchstone.
+- Balance is measured, not guessed (decided 25 September): `sim/policy.gd` plays the skirmish
+  headless on a ladder of skill (random, greedy; personas on top) and `tools/balance.gd`
+  runs the matrix into `docs/balance.md`. Read bands, not numbers: random beating a pack
+  means too easy, greedy losing means a wall, both landing together means no decision.
+  Pick share is the component signal. Ryan's play tests decide feel and micro balance;
+  the runner decides macro. Never chase a simulated win rate to a decimal.
 - When Ryan suggests a rule or a change, look for holes in the argument and discuss them in
   chat before building. A suggestion opens a discussion; it is not a spec. If he reaffirms
   after hearing the holes, build it as he said.
