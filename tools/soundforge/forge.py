@@ -1679,7 +1679,8 @@ def music_map(bpm=MUSIC["music_map"]["bpm"], palette="real"):
             {"inst": "bell", "mode": "chord", "octave": 2, "gain": 0.2, "echo": (3, 0.42, 3), "dur": 3.5,
              "pat": {"C": "0.2.1.3.0.2.1.2.0.3.2.1.0.3.2.3."}},
             {"inst": "bell", "mode": "chord", "octave": 2, "gain": 0.13, "echo": (3, 0.42, 3), "dur": 3.5,
-             "shape": [(0.0, 1.0), (0.2, 1.0), (0.21, 0.6), (0.244, 0.6), (0.28, 1.8), (0.352, 0.6), (0.624, 0.6), (0.66, 1.7), (0.732, 0.6), (0.9, 0.7), (1.0, 1.3)],
+             # No curve of their own: the bells hold one level through the climax's rotation
+             # (Ryan, 25 September), riding only the section's crescendo.
              "pat": {"P": "." * 64 + "3.......1.......2.......0.......1.......3.......2.......0.......", "A": groove_bells, "B": groove_bells,
                      "T": "0..2..1..3..",
                      "D": "0...2...1...3...0...2...1.3.....0.2...1...3.....", "Z": "0...2...1.3...",
@@ -1707,7 +1708,7 @@ def music_map(bpm=MUSIC["music_map"]["bpm"], palette="real"):
             # The violins: the melody in the strings section, on the beat where it climbs,
             # their tails overlapping the next note as bows do.
             {"inst": "violin", "mode": "riff", "gain": 0.42, "octave": 2, "hold": 1.3,
-             "pat": {"E": "0------.3------.0---....1-------g------.3------.7---....3-------"
+             "pat": {"E": "0------.3------.0---....7-------g------.3------.7---....3-------"
                           "7------.a------.7---....8-------5------.7------.a---....8-------"
                           "7--.8-.7-..5.3-.0---....3-.5-.7-8--.a-.8-..7.5-.3---....5-.3-.0-"
                           "7------.a------.c---....a-------8------.7------.5---....3-------"}},
