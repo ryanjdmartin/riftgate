@@ -175,8 +175,8 @@ idle stay silent by decision.
 
 *To do, audio (25 September).* (1) Listen: rift A (twentieth listen built: the climax's swells on bar lines, the horn peaking on the repeat edge at 2:49.5 with the crescendo stepping there, round one three bars apart, round two two bars apart and overlapping) and human A (nineteenth listen built: stab lengths are steps, so the backing guitar and the second breath's chords now ring a whole bar; the third set's keys on chords on the beat; a voice's run curve now follows a held note, so the breath's bass fades); human B
 (calm) and C (heavy) and rift B (calm, the ground bass) and C (drive) not yet heard at
-all beyond a first pass on the two calms; the interface effects since they went
-future-digital (`forge.py audition`). Expect a round of notes on each. (2) Hook the
+all beyond a first pass on the two calms; the interface effects since the second audition
+(pitched down, glides halved, longer: `UI_PITCH`, `UI_GLIDE`, `UI_LEN` in the forge; `forge.py audition`). Expect a round of notes on each. (2) Hook the
 tracks: six sit in the table and only rift A and human A play; decide which track a
 screen gets, or a multi-track setup per screen (pick or crossfade), and whether the
 labels A B C map to map, fight and something else. (3) Loose ends inside the tracks:

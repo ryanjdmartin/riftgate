@@ -353,7 +353,7 @@ def write(name, x, level):
 # the map are over-the-top weighty: lasers, gunfire, explosions and melee of various kinds,
 # with Doom levels of punch, for both sides.
 
-def blip(f0, f1=None, dur=0.05, width=0.5, attack=0.004, decay=None, gain=1.0):
+def blip(f0, f1=None, dur=0.05, width=0.5, attack=0.006, decay=None, gain=1.0):
     """The interface's voice, future-digital rather than retro (Ryan, 24 September: the
     pulse wave read as Mario): a sine gliding from f0 to f1 with a faint shimmer bent onto
     it, a second harmonic, a breath of air, a soft front and a small space."""
@@ -362,20 +362,34 @@ def blip(f0, f1=None, dur=0.05, width=0.5, attack=0.004, decay=None, gain=1.0):
     f1 = f1 or f0
     f = f0 * (f1 / f0) ** (t / dur)
     ph = 2.0 * math.pi * np.cumsum(f) / SR
-    shimmer = 0.5 * np.exp(-t / max(dur * 0.4, 0.01)) * np.sin(ph * 3.01)
-    x = np.sin(ph + shimmer) + 0.25 * np.sin(2.0 * ph) + 0.08 * np.sin(4.0 * ph)
+    shimmer = 0.3 * np.exp(-t / max(dur * 0.4, 0.01)) * np.sin(ph * 3.01)
+    x = np.sin(ph + shimmer) + 0.25 * np.sin(2.0 * ph) + 0.04 * np.sin(4.0 * ph)
     air = bp(noise(n), 3000.0, 10000.0) * env_ad(n, 0.002, dur * 0.3) * 0.18
     x = (x + air) * env_ad(n, attack, decay or dur * 0.5, curve=2.5)
     return room(x, decay=0.09, mix=0.16, cut=9000.0) * gain
 
 
+# The interface's register (Ryan, 25 September: the electronic noises too high and still too
+# chirpy): every interface tone sits a little under an octave below where it was written,
+# glides half as far, and lasts a quarter longer, so it boops rather than chirps.
+UI_PITCH = 0.55
+UI_GLIDE = 0.5
+UI_LEN = 1.25
+
+
+def ui_blip(f0, f1=None, dur=0.05, **kw):
+    """`blip` in the interface's register: pitched down, the glide halved, a little longer."""
+    f1 = f1 or f0
+    return blip(f0 * UI_PITCH, f0 * UI_PITCH * (f1 / f0) ** UI_GLIDE, dur * UI_LEN, **kw)
+
+
 def chirp(notes, gap=0.0, gain=1.0):
-    """A sequence of blips: [(f0, f1, dur), ...] one after another."""
+    """A sequence of interface tones: [(f0, f1, dur), ...] one after another."""
     buf = np.zeros(1)
     when = 0.0
     for f0, f1, dur in notes:
-        buf = at(buf, blip(f0, f1, dur), when, gain)
-        when += dur + gap
+        buf = at(buf, ui_blip(f0, f1, dur), when, gain)
+        when += dur * UI_LEN + gap
     return buf
 
 
@@ -433,16 +447,16 @@ def codex_open():
     # out of the console.
     n = n_of(0.22)
     t = t_of(n)
-    sweep_ = blip(300.0, 2400.0, 0.22, decay=0.4)[:n]
-    air = lp_var(hp(noise(n), 800.0), 1500.0 + 6000.0 * t / 0.22) * env_ad(n, 0.02, 0.1) * 0.25
+    sweep_ = blip(260.0, 1300.0, 0.22, decay=0.4)[:n]
+    air = lp_var(hp(noise(n), 600.0), 1200.0 + 3500.0 * t / 0.22) * env_ad(n, 0.02, 0.1) * 0.25
     return at(mix(sweep_ * 0.6, air), chirp([(1600.0, 1900.0, 0.06)]) * 0.6, 0.2)
 
 
 def codex_close():
     n = n_of(0.18)
     t = t_of(n)
-    sweep_ = blip(2200.0, 320.0, 0.18, decay=0.3)[:n]
-    air = lp_var(hp(noise(n), 800.0), 7000.0 - 5500.0 * t / 0.18) * env_ad(n, 0.01, 0.08) * 0.22
+    sweep_ = blip(1300.0, 260.0, 0.18, decay=0.3)[:n]
+    air = lp_var(hp(noise(n), 600.0), 4500.0 - 3300.0 * t / 0.18) * env_ad(n, 0.01, 0.08) * 0.22
     return at(chirp([(1400.0, 1100.0, 0.05)]) * 0.5, mix(sweep_ * 0.5, air), 0.03)
 
 
@@ -476,7 +490,7 @@ def die_roll():
     when = 0.0
     for k in range(9):
         f = RNG.choice([660.0, 880.0, 1100.0, 1320.0, 1760.0, 2200.0])
-        buf = at(buf, blip(f, f * RNG.uniform(0.95, 1.08), 0.035, decay=0.014), when, 0.45)
+        buf = at(buf, ui_blip(f, f * RNG.uniform(0.95, 1.08), 0.035, decay=0.018), when, 0.45)
         buf = at(buf, glitch_perc() * 0.5, when + 0.008)
         when += RNG.uniform(0.028, 0.045)
     return at(buf, chirp([(600.0, 440.0, 0.1)]) * 0.7, when + 0.02)
@@ -504,7 +518,7 @@ def engage():
     wash = lp_var(noise(n), 600.0 + 2400.0 * (t / 2.2) ** 2) * (t / 2.2) ** 1.5 * 0.8
     b = mix(drive * 0.6, wash)
     for k, when in enumerate([0.9, 1.45, 1.8, 2.02]):
-        b = at(b, blip(1200.0 + 150.0 * k, 1200.0 + 150.0 * k, 0.06), when, 0.4)
+        b = at(b, ui_blip(1200.0 + 150.0 * k, 1200.0 + 150.0 * k, 0.06), when, 0.4)
     return room(b, decay=0.3, mix=0.12)
 
 
@@ -519,8 +533,8 @@ def contact():
     env = np.ones(n)
     env[-n_of(0.05):] = np.linspace(1.0, 0.0, n_of(0.05))
     b = mix(horn * env, thud(90.0, 40.0, 0.3, click=0.2, drive=2.0) * 0.4)
-    b = at(b, blip(1800.0, 1800.0, 0.12, width=0.5, decay=0.1), 0.05, 0.3)
-    b = at(b, blip(1800.0, 1800.0, 0.12, width=0.5, decay=0.1), 0.3, 0.3)
+    b = at(b, ui_blip(1800.0, 1800.0, 0.12, width=0.5, decay=0.1), 0.05, 0.3)
+    b = at(b, ui_blip(1800.0, 1800.0, 0.12, width=0.5, decay=0.1), 0.3, 0.3)
     return room(b, decay=0.3, mix=0.14)
 
 
