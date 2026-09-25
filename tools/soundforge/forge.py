@@ -1536,11 +1536,11 @@ MUSIC = {
                                    "O": "outro: the ostinato thinning over the cellos, the strings fading, into the top"}},
     "music_human_heavy": {"bpm": 105, "form": "AAAAAAAB CCCCCCCC XXXXXXXX AAAAAAAB DDDDDDDD EEEEEEEE AAAAAAAB",
                           "meter": {"X": 14},
-                          "names": {"A": "the riff on the driven bass, two guitars chugging its power chords and the fifth above, the sub and the drone under, the clean bass answering an octave up, the lead guitar's line over the last three bars; double kicks running, ghost snares, a china every other bar, a tom fill every four",
+                          "names": {"A": "the riff on the driven bass with the clean bass an octave up, two guitars chugging its power chords and the fifth above, the sub and the drone under, the basses answering in a pair and taking a line over the last three bars; double kicks running, ghost snares, a china every other bar, a tom fill every four",
                                     "B": "a turn: the bass and guitars cut short, a tom fill, a china",
-                                    "C": "the keys lead: the piano in tapped sixteenths with the synth lead doubling it, the clean bass and the guitar on the roots in eighths under, the drone, over a driving kick, the ride and its bell",
+                                    "C": "the keys lead: the piano in tapped sixteenths with the synth lead doubling it, both basses on the roots in eighths and a guitar chord held a bar under, the drone, over a driving kick, the ride and its bell",
                                     "X": "the seven: the driven bass's riff for 7/8 with both guitars and the crunch synth on it, a guitar chord held on the long beats, the clean bass and the synth lead over them, the drone",
-                                    "D": "the breakdown that does not let up: piano arpeggios in sixteenths, the lead guitar's melody, guitar chords held, the choir, half-time with double-kick fills, the ride bell",
+                                    "D": "the breakdown that does not let up: piano arpeggios in sixteenths, the melody on the paired basses, guitar chords held, the choir, half-time with double-kick fills, the ride bell",
                                     "E": "the two basses, both guitars and the synth lead in unison over a blast of double kicks, a china on every beat, a crash every bar, the choir, the drone, the drums up"}},
     "music_skirmish": {"bpm": 100, "form": "AAAAAAAAAAAAAAAAB CCCCCCCC NNNN LLLLLLLL M XXXXXXXX UUUUUUUU FFFFFFFFFFFFFFFF WW SSSSSSSS RRRRRRRR ZZZZZZZZ Y KKKKKKKKKKKKKKKK V Q JJ",
                        "meter": {"X": 14, "K": (16, 1.06), "V": (16, 1.06)},
@@ -2688,8 +2688,15 @@ def music_human_heavy():
         voices=[
             # The driven bass: the riff; two guitars chug its power chords and the fifth
             # above; the sub holds the root under; the crunch synth doubles the seven.
-            {"inst": "bass_real", "mode": "riff", "gain": 0.6, "hold": 1.0, "params": {"drive": 4.0},
+            {"inst": "bass_real", "mode": "riff", "gain": 0.8, "hold": 1.0, "params": {"drive": 5.0},
              "pat": {"A": riff, "B": "0---............", "X": seven, "E": riff}},
+            # Paired basses an octave apart, throughout (Ryan, 25 September, Omnific): the
+            # clean bass doubles the riff an octave up; the driven bass doubles the clean
+            # bass's answers and the breakdown's melody an octave down.
+            {"inst": "bass_clean", "mode": "riff", "gain": 0.35, "hold": 1.0, "octave": 1,
+             "pat": {"A": riff, "X": seven}},
+            {"inst": "bass_real", "mode": "riff", "gain": 0.4, "hold": 1.0, "params": {"drive": 4.0},
+             "pat": {"A": "........7.8.7.5.........3.5.3.0.........a.c.a.8.........5.7.5.3." + lead_a[64:], "D": lead_d}},
             {"inst": "guitar_real", "mode": "riff", "gain": 0.6, "octave": -1,
              "pat": {"A": riff, "B": "0---............", "X": seven, "E": riff}},
             {"inst": "guitar_real", "mode": "riff", "gain": 0.4, "octave": -1,
@@ -2703,8 +2710,8 @@ def music_human_heavy():
             # The clean bass: answering the riff, then leading, then in unison an octave up;
             # the synth lead doubles it where it leads and in the unison.
             {"inst": "bass_clean", "mode": "riff", "gain": 0.5, "hold": 1.0, "octave": 1,
-             "pat": {"A": "........7.8.7.5.........3.5.3.0.........a.c.a.8.........5.7.5.3.",
-                     "X": "..7.8...a.......c.a.8.7.5.......", "E": riff}},
+             "pat": {"A": "........7.8.7.5.........3.5.3.0.........a.c.a.8.........5.7.5.3." + lead_a[64:],
+                     "X": "..7.8...a.......c.a.8.7.5.......", "E": riff, "D": lead_d}},
             # The keys lead (Ryan: the clean bass leading was not great; keys): the piano
             # carries the tapped melody, the synth lead doubles it, the clean bass and the
             # guitar hold the roots in eighths under.
@@ -2714,13 +2721,14 @@ def music_human_heavy():
              "pat": {"C": melody_c, "X": "..7.8...a.......c.a.8.7.5......."}},
             {"inst": "bass_clean", "mode": "chord", "octave": 0, "gain": 0.4, "dur": 2,
              "pat": {"C": "0.0.0.0.0.0.0.0."}},
-            {"inst": "guitar_real", "mode": "chord", "octave": -1, "gain": 0.4, "dur": 2,
+            {"inst": "bass_real", "mode": "chord", "octave": 0, "gain": 0.45, "dur": 2, "params": {"drive": 4.0},
              "pat": {"C": "0.0.0.0.0.0.0.0."}},
+            {"inst": "guitar_hold", "mode": "stab", "gain": 0.65, "dur": 20,
+             "pat": {"C": "x..............."}},
             {"inst": "synlead", "mode": "riff", "gain": 0.3, "octave": 1, "hold": 0.9,
              "pat": {"E": riff}},
-            # The lead guitar: a line over the riff's last three bars, the melody over the breakdown.
-            {"inst": "lead_real", "mode": "riff", "gain": 0.34, "octave": 2, "hold": 0.95,
-             "pat": {"A": lead_a, "D": lead_d}},
+            # (the lead guitar's line here was too whiny: the paired basses carry it and the
+            # breakdown's melody instead)
             {"inst": "epiano", "mode": "stab", "gain": 0.22, "dur": 4,
              "pat": {"C": "x...x...x...x..."}},
             # The breakdown that keeps moving: piano arpeggios, clean-bass chords and a
@@ -2743,7 +2751,7 @@ def music_human_heavy():
              # The drone Ryan likes (human A), under everything but the clean bass's lead.
              {"inst": "sweep", "gain": 0.34, "octave": 0, "rate": 0.08, "depth": 0.3, "open": 0.75, "sections": "AXDE", "chord": [0, 7, 12]},
              {"inst": "sweep", "gain": 0.28, "octave": 0, "rate": 0.08, "depth": 0.3, "open": 0.75, "sections": "C"}],
-        drum_gain={"A": 1.2, "C": 1.1, "X": 1.2, "D": 1.05, "E": 1.3},
+        drum_gain={"A": 1.35, "B": 1.3, "C": 1.25, "X": 1.35, "D": 1.2, "E": 1.45},
         tilt=3.0, low=(150.0, -5.0), headroom=0.7, human=(0.005, 0.15))
 
 

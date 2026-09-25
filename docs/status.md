@@ -138,67 +138,75 @@ changes. Loops are levelled by mean RMS pinned where Ryan judged them (`LEVELS`)
 effects by their loudest 50 ms. Ryan's rule: the kick keeps its places for the whole
 track, whatever the meter.
 
-*The tracks.* `music_map` is the **rift theme** (90, 89 bars, 3:56): the real orchestral
-palette (bass drum, cellos, contrabass, violins, horns, harp, timpani, choir, strings
-pads, bells with a three-tap echo, glitch clicks and stutters), form P A C E D T V G H
-(a gradual build from the choir and kick alone through the groove to the lift, the
-bells' lift, minor strings, interlude with 7/8 closes, triplet turn, the quiet before, a
-twenty-eight-bar climax that starts level and then swells each voice in and out twice
-before thinning into the closer). Ryan: nearly perfect; the strings' chords and the
-build's bells were the last notes (25 September). A pattern whose length is no multiple
-of the bar walks round the bar by design: write section patterns in bar multiples unless
-that is wanted. `music_skirmish` is **human A** (100, 117 bars, 4:41; Ryan labels tracks by creation
-order now, human A B C and rift A B C, the screens unsettled): the hybrid palette (real
-drums with many cymbals, the real guitar's mechanical chug, the real bass driven, the
-soft sub, the crunch synth, the original piano, the synth lead), form A B C N L M X U F
-W S Z Y K J (the riff in three stages, a drum-fill turn, lift, riff on power chords,
-second lift, a bar down, the seven, the unison over a drum solo, keys, the keys' turn,
-the climax riff in unison then under a blast beat, a one-bar breath, the keyboard solo
-sixteen bars six percent slower over dark chords, a one-bar descent). `drum_gain` per
-section, a `clean` guitar voice and `fade` on the sub exist for it. `music_rift_calm` (90, 6/8 throughout, a ground bass under six
-variations, 2:29) and `music_human_calm` (94, four on the floor, industrial, 3:04) are
-their calm siblings, and **the map's music for now** (Ryan, 25 September: both very good):
-`Sound.SETS["map"]` plays them in turn, one full loop each, crossing over the seam for
-`SET_FADE` seconds, and the set resumes its current loop where it left after a fight; a
-new battle restarts the set from rift B's top. The skirmish set is human A and rift C,
-**picked** (`Sound.PICK`): one loop per fight, the next each fight, looped, never a
-crossfade mid-fight. Rift A is in the table, unhooked. The rift theme runs at 86 now. The interface effects are future-digital (a sine with a shimmer and air),
-not the pulse wave. Third tracks, both rebuilt after Ryan's first notes (25 September, unheard since):
-`music_rift_drive` (**rift C**, "pretty great", **in the skirmish set** with human A: 126,
-E Phrygian, a pizzicato three-three-two over timpani as the engine, Ryan's kick-chug-snare
-pattern as one section, a new motif on horn and violins, eight bars of 3/4, extended to a
-second developed pass, 144 bars, 4:27, at the skirmish level) and `music_human_heavy` (**human C**, rebuilt dense after
-"good bones, too empty": 105, the Omnific construction on the human sound leaning metal
-and never letting up: two chug guitars, the sub, the drone, the keys leading the tapped
-melody with the synth lead doubling, the lead guitar's own lines, piano arpeggios under the breakdown, a choir
-under the unison, drums running throughout, a section in seven, 66 bars, 2:06;
-`bass_clean`), in the table, not hooked. The pure-synth versions survive as sketches
-(`map_synth`, `skirmish_synth`), as do `map_86/88/92`, `map_outro` and `bass_samples`.
+*The tracks (25 September, evening).* Ryan labels tracks by creation order: human A B C,
+rift A B C. State of each:
 
-*The effects.* Two registers: the interface sci-fi electronic (blips and chirps), combat
-and the map over-the-top weighty (an explosion primitive; laser, gunfire, cannon, slash,
-slam; kills and the gate as explosions). The skirmish picks a machine's blow by its face
-(`_blow_sound`) and a foe's by its damage (`SLAM_DAMAGE`). `Sound.DIP` ducks the music
-under big moments; `TONAL` sounds keep their pitch; a new battle restarts the map loop
-from the top after the map is drawn, a fight's return resumes it. The display's scan and
-idle stay silent by decision.
+- **Rift A** `music_map` (86, 89 bars, 3:56): the real orchestral palette, form P A C E D
+  T V G H (a gradual build to the lift, the bells' lift, minor strings, an interlude with
+  7/8 closes, a triplet turn, the quiet 6/8, a thirty-two-bar climax whose leads swell on
+  bar lines from the repeat edge, a closer). **Locked** ("it's great"). In the table,
+  **not hooked to a screen** now that the calms hold the map.
+- **Human A** `music_skirmish` (100, 117 bars, 4:41): the hybrid palette, form A B C N L
+  M X U F W S R Z Y K V Q J (the riff in four stages with the drone under the last, turn,
+  lift, riff over the drone, second lift, a bar down, the seven, the unison over a drum
+  solo, keys, the keys' turn, the climax in three sets with the drone alone under the
+  first and the backing guitar from the second, a breath, the keyboard solo, a second
+  breath on the solo's instruments, a fill, the descent). **Locked** ("that drone was
+  exactly what we needed"). In the skirmish set.
+- **Rift B** `music_rift_calm` (90, 6/8, a ground bass under six variations, 2:29) and
+  **human B** `music_human_calm` (94, four on the floor, industrial, 3:04): **locked for
+  now**, both at the map's level (-24.9 dB mean RMS). They are the map's set.
+- **Rift C** `music_rift_drive` (126, E Phrygian, 144 bars, 4:27): a pizzicato
+  three-three-two over timpani as the engine, Ryan's kick-chug-snare pattern as one
+  section, a new motif on horn and violins, eight bars of 3/4, a second developed pass
+  after a bare reprieve. "Pretty great"; extended and levelled for the skirmish (-20.7);
+  in the skirmish set. The extension is unheard.
+- **Human C** `music_human_heavy` (105, 66 bars, 2:06): the Omnific construction on the
+  human sound leaning metal, never letting up: the driven bass heavy with the clean bass
+  an octave up (paired basses throughout, the pair carrying the answers and the
+  breakdown's melody), two chug guitars, the sub, the drone, the keys leading the tapped
+  melody with the synth lead doubling, guitar chords held under the keys, piano
+  arpeggios under the breakdown, a choir under the unison, drums running everywhere and
+  loud, a section in seven. Four listens in; the last notes (whiny upper voice, heavier
+  bass, paired basses, held guitars, louder drums) are built and **unheard**. Not hooked.
 
-*To do, audio (25 September).* (1) Listen: rift A (**locked** at the twenty-second listen's build: the climax thirty-two bars, the rotation from the repeat edge; 89 bars, 3:56) and human A (twenty-third listen built: **locked** at the twenty-sixth listen's build (the riff sixteen bars, the drone under its last four, the second riff and the whole climax, alone under the climax's first set); Ryan really likes the drone as a human-track element; a pad `skip` and `chord`, the sweep pad's `open` and `depth`; "everything else fixed, breaths and turns great"); human B
-(calm) and C (heavy) and rift B (calm, the ground bass) and C (drive) not yet heard at
-all beyond a first pass on the two calms; the interface effects since the fourth audition
-(retried from scratch as a Terran console: `relay`, `tone` and `chatter` in the forge, no glides; the brief is irony, not parody; `forge.py audition`) and the skirmish effects since their pitch glides went (laser, shield up and break, kill, withdraw, defeat: nothing sweeps in pitch any more); the map set's crossfade since it went equal-power (it had gapped). Expect a round of notes on each. (2) The
-screens: the map plays rift B and human B in turn (a set; judge the two-second crossfade
-at the seam), the skirmish human A; rift A, rift C and human C sit in the table unhooked;
-decide where they go and whether a set should pick rather than cycle. Both calms are rebuilt
-on the current engine (pad crossfades at their doors), pinned at one level, the map's
-(-24.9 dB mean RMS), and **locked for now** (Ryan, 25 September: both sound good); the
-other tracks' levels wait on where they end up. (3) Loose ends inside the tracks:
-four-three flair belongs to the prog track, human C (human A's and rift A's meters are
-settled). Human A's drum solo is the intensity Ryan wants wherever drums lead a human
-track. (4) The phone: nothing has been heard on a device;
-the mix was checked by measurement only (each section's low band against its lead band,
-the phone band of every blow). (5) The real recordings and the real track remain
-section 12's open question; everything here is a placeholder in the decided register.
+*The screens.* `Sound.SETS`: a screen asks for a set. The map's set cycles (rift B, human
+B, one full loop each, an equal-power crossfade of `SET_FADE` seconds at the seam,
+resuming its current loop where it left after a fight, restarting from rift B's top on a
+new battle). The skirmish's set **picks** (`Sound.PICK`): human A or rift C, the next one
+each fight, looped for the whole fight, fading in from the map at the door and back to
+the map on exit, never a crossfade mid-fight. The crossfade's gap-then-start was a
+decibel tween from silence; both crossfades are equal-power on linear gain now.
+
+*The drone* (Ryan really likes it as a human-track element): the `sweep` pad at octave 0
+with a `chord` of its own held across the run, `open` 0.75, `depth` 0.3, gain about 0.34
+(it needs more than seems right), entering after a riff has run alone a few bars (`skip`).
+
+*The effects.* Two registers. The interface is a **Terran console** (fourth try; the
+brief is irony, not parody): `relay`, `tone` (flat, no glide) and `chatter` (computer
+gibberish); every press a relay under a tone; the codex's plate on a servo. Combat and
+the map are over-the-top weighty (an explosion primitive; laser, gunfire, cannon, slash,
+slam; kills and the gate as explosions), and **nothing sweeps in pitch** any more (the
+glides read as Pac-Man). The skirmish picks a machine's blow by its face (`_blow_sound`)
+and a foe's by its damage (`SLAM_DAMAGE`). `Sound.DIP` ducks the music under big moments;
+`TONAL` sounds keep their pitch. Nothing mutes: the saved settings have music at 0.675
+and effects at the default full.
+
+*Engine lessons this week.* A stab's or chord note's `dur` is **steps**, not seconds (20
+rings a bar and a tail). A voice's `shape` follows a held note through its length. Pads
+crossfade across doors, can `skip` a run's first bars and hold a `chord` of their own. A
+pattern whose length is no multiple of the bar walks round the bar: write section
+patterns in bar multiples unless that is wanted.
+
+*To do, audio.* (1) Listen: human C as last built; rift C's extension; the Terran
+interface set and the glide-free skirmish set in the game (`forge.py audition` for the
+file); the map set's equal-power crossfade. Expect notes on each. (2) Rift A has no
+screen: decide where it goes (a third map track, a title, a victory?). (3) Levels: the
+map's two at -24.9, the skirmish's two at -20.7; anything moved to another screen needs
+its level moved with it (`LEVELS`). (4) The phone: nothing has been heard on a device;
+the mix was checked by measurement only. (5) The real recordings and the real track
+remain section 12's open question; everything here is a placeholder in the decided
+register.
 
 **Open, in the order I would take them.**
 
