@@ -30,7 +30,7 @@ const NAMES := [
 	"hit", "hit_crit", "block", "shield_break", "kill", "arrival", "step", "resolve",
 	"contact", "engage", "cut", "gate_hit", "spawn", "victory", "defeat", "withdraw",
 	"overheat", "laser", "gunfire", "cannon", "slash", "slam",
-	"music_map", "music_skirmish", "music_rift_calm", "music_human_calm", "music_rift_drive", "music_human_heavy",
+	"music_far_bank", "music_hold_the_line", "music_low_ground", "music_night_shift", "music_crossing", "music_full_bore",
 ]
 
 ## What a screen's music is: a set of loops. A cycling set plays them in turn, one full
@@ -42,21 +42,22 @@ const NAMES := [
 ## from the map, loop, fade back to the map on exit). The player may still skip: the pause
 ## menu's next and previous move within the screen's set (Ryan, 25 September).
 const SETS := {
-	"map": ["music_rift_calm", "music_human_calm"],
-	"skirmish": ["music_skirmish", "music_rift_drive", "music_human_heavy"],
+	"map": ["music_low_ground", "music_night_shift"],
+	"skirmish": ["music_hold_the_line", "music_crossing", "music_full_bore"],
 }
 const PICK := ["skirmish"]
 
-## Every loop's shown title and its working label (Ryan labels tracks by creation order,
-## human A B C and rift A B C; the titles are Ryan's picks of 25 September, rift C's still
-## a placeholder). The header's ticker shows the title; the pause menu shows both.
+## Every loop's shown title and its working label. The files are named for the titles
+## (Ryan's picks, 25 September); the labels are creation order, human A B C and rift A B C,
+## which is how listens are still discussed. The header's ticker shows the title; the
+## pause menu shows both.
 const TRACKS := {
-	"music_skirmish": {"title": "Hold The Line", "label": "Human A"},
-	"music_human_calm": {"title": "Night Shift", "label": "Human B"},
-	"music_human_heavy": {"title": "Full Bore", "label": "Human C"},
-	"music_map": {"title": "The Far Bank", "label": "Rift A"},
-	"music_rift_calm": {"title": "Low Ground", "label": "Rift B"},
-	"music_rift_drive": {"title": "Procession", "label": "Rift C"},
+	"music_hold_the_line": {"title": "Hold The Line", "label": "Human A"},
+	"music_night_shift": {"title": "Night Shift", "label": "Human B"},
+	"music_full_bore": {"title": "Full Bore", "label": "Human C"},
+	"music_far_bank": {"title": "The Far Bank", "label": "Rift A"},
+	"music_low_ground": {"title": "Low Ground", "label": "Rift B"},
+	"music_crossing": {"title": "The Crossing", "label": "Rift C"},
 }
 
 ## Pitched sounds (a horn, a chord, a drone) play at their written pitch; the rest get VARY.
@@ -76,7 +77,7 @@ static var muted := false   # tests and tools: nothing plays
 
 ## The loops' tempos, as tools/soundforge writes them, so a thing on screen can move on
 ## the beat (the rift's vortex, Ryan, 23 September: it had landed near the beat by chance).
-const TEMPO := {"music_map": 86.0, "music_skirmish": 100.0, "music_rift_calm": 90.0, "music_human_calm": 94.0, "music_rift_drive": 126.0, "music_human_heavy": 105.0}
+const TEMPO := {"music_far_bank": 86.0, "music_hold_the_line": 100.0, "music_low_ground": 90.0, "music_night_shift": 94.0, "music_crossing": 126.0, "music_full_bore": 105.0}
 
 
 ## Beats elapsed in the loop that is playing, or -1 when nothing is.
@@ -121,7 +122,7 @@ static func play_after(delay: float, name: String, db: float = 0.0, vary: float 
 
 
 ## The music a screen wants: a set from SETS ("map", "skirmish"), a loop's own name
-## ("rift_drive"), or "" for silence. Crossfades, and a set coming back resumes its current
+## ("crossing"), or "" for silence. Crossfades, and a set coming back resumes its current
 ## loop where it left (the map after a fight), unless `restart`: a new battle starts the set
 ## from its first loop's top (Ryan, 24 September: the map's music began mid-lift, where the
 ## last battle had left it). Asking for the set already playing does nothing.

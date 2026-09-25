@@ -1488,7 +1488,7 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
 
 # The loops' shape, for `forge.py sections`: bar counts and timestamps of every section.
 MUSIC = {
-    "music_map": {"bpm": 86, "form": "PPPPPPPP AAAAAAAB CCCCCCCB EEEEEEEEEEEEEEEE DDDZDDDZ T VVVV GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG HHHH",
+    "music_far_bank": {"bpm": 86, "form": "PPPPPPPP AAAAAAAB CCCCCCCB EEEEEEEEEEEEEEEE DDDZDDDZ T VVVV GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG HHHH",
                   "meter": {"Z": 14, "T": (12, 4.0 / 3.0), "V": (12, 4.0 / 3.0)},
                   "names": {"P": "the groove bare: the choir and the kick, the cellos from its second half",
                             "A": "groove: the bells arrive, then the horn answers from its second half",
@@ -1501,7 +1501,7 @@ MUSIC = {
                             "Z": "a bar of 7/8 closing the interlude's half",
                             "E": "strings section, sixteen bars, minor throughout: the violins on the theme's rhythm then its melody, cellos in two-note chords, the drone swelling, the horns only in the second half, a roll into the interlude",
                             "G": "climax, thirty-two bars: eight level, the whole stepping up at the repeat edge (bar nine) as the horn begins to rise, then the leads swelling on bar lines, a bar up, a bar at the top and two down: horn, violin, harp and the low strings three bars apart, and round again two bars apart so each fall overlaps the next rise, the leads thinning into the closer"}},
-    "music_rift_calm": {"bpm": 90, "form": "IIII AAAAAAAA BBBBBBBB CCCCCCCC DDDDDDDD EEEEEEEE FFFFFFFF OOOO",
+    "music_low_ground": {"bpm": 90, "form": "IIII AAAAAAAA BBBBBBBB CCCCCCCC DDDDDDDD EEEEEEEE FFFFFFFF OOOO",
                         "meter": {k: (12, 4.0 / 3.0) for k in "IABCDEFO"},
                         "names": {"I": "intro: the choir and a bell",
                                   "A": "the ground: cellos descending A G F E, the bells alone in threes",
@@ -1511,7 +1511,7 @@ MUSIC = {
                                   "E": "variation five: the tutti soft, the house kick on one and three, the sub pulsing, brushed hats",
                                   "F": "variation six: stripped back to the bells, the choir on ah and the ground",
                                   "O": "outro: the ground alone under the fading choir, into the intro"}},
-    "music_human_calm": {"bpm": 94, "form": "IIIIIIII AAAAAAAAAAAAAAAA BBBBBBBB CCCCCCCCCCCCCCCC DDDDDDDD RRRRRRRR OOOOOOOO",
+    "music_night_shift": {"bpm": 94, "form": "IIIIIIII AAAAAAAAAAAAAAAA BBBBBBBB CCCCCCCCCCCCCCCC DDDDDDDD RRRRRRRR OOOOOOOO",
                          "names": {"I": "intro: the kick on every beat, hats, the sub pulsing",
                                    "A": "groove: the piano off the beat, the chime's hook, a soft clap, the sub, the guitar muted low, knocks and ticks",
                                    "B": "breakdown: the choir, the piano holding chords, the sub in long notes",
@@ -1519,7 +1519,7 @@ MUSIC = {
                                    "D": "the crunch synth dark and low on the riff, hats in sixteenths, knocks and a stack",
                                    "R": "the groove again",
                                    "O": "outro: the kick thinning, the pad fading, the chime"}},
-    "music_rift_drive": {"bpm": 126, "form": "IIII AAAAAAAAAAAAAAAA BBBBBBBBBBBBBBBB CCCCCCCC DDDDDDDDDDDDDDDD EEEEEEEE FFFFFFFF GGGGGGGGGGGGGGGG HHHHHHHHHHHHHHHH JJJJJJJJ KKKKKKKKKKKKKKKK LLLLLLLL OOOO",
+    "music_crossing": {"bpm": 126, "form": "IIII AAAAAAAAAAAAAAAA BBBBBBBBBBBBBBBB CCCCCCCC DDDDDDDDDDDDDDDD EEEEEEEE FFFFFFFF GGGGGGGGGGGGGGGG HHHHHHHHHHHHHHHH JJJJJJJJ KKKKKKKKKKKKKKKK LLLLLLLL OOOO",
                          "meter": {"E": 12, "L": 12},
                          "names": {"I": "the engine: the plucked strings' three-three-two over the timpani",
                                    "A": "the ostinato with the cellos on the roots and the choir pumping, the horn's motif from the ninth bar",
@@ -1534,7 +1534,7 @@ MUSIC = {
                                    "K": "the last tutti: the motif on horn and violins in octaves, brass, bells, the strings swelling to the top of the track",
                                    "L": "the waltz again, brass on the chord with the horn, the violins high",
                                    "O": "outro: the ostinato thinning over the cellos, the strings fading, into the top"}},
-    "music_human_heavy": {"bpm": 105, "form": "AAAAAAAB CCCCCCCC XXXXXXXX AAAAAAAB DDDDDDDD EEEEEEEE AAAAAAAB",
+    "music_full_bore": {"bpm": 105, "form": "AAAAAAAB CCCCCCCC XXXXXXXX AAAAAAAB DDDDDDDD EEEEEEEE AAAAAAAB",
                           "meter": {"X": 14},
                           "names": {"A": "the riff on the driven bass with the clean bass an octave up, two guitars chugging its power chords and the fifth above, the sub and the drone under, the basses answering in a pair and taking a line over the last three bars; double kicks running, ghost snares, a china every other bar, a tom fill every four",
                                     "B": "a turn: the bass and guitars cut short, a tom fill, a china",
@@ -1542,7 +1542,7 @@ MUSIC = {
                                     "X": "the seven: the driven bass's riff for 7/8 with both guitars and the crunch synth on it, a guitar chord held on the long beats, the clean bass and the synth lead over them, the drone",
                                     "D": "the breakdown that does not let up: piano arpeggios in sixteenths, the melody on the paired basses, guitar chords held, the choir, half-time with double-kick fills, the ride bell",
                                     "E": "the two basses, both guitars and the synth lead in unison over a blast of double kicks, a china on every beat, a crash every bar, the choir, the drone, the drums up"}},
-    "music_skirmish": {"bpm": 100, "form": "AAAAAAAAAAAAAAAAB CCCCCCCC NNNN LLLLLLLL M XXXXXXXX UUUUUUUU FFFFFFFFFFFFFFFF WW SSSSSSSS RRRRRRRR ZZZZZZZZ Y KKKKKKKKKKKKKKKK V Q JJ",
+    "music_hold_the_line": {"bpm": 100, "form": "AAAAAAAAAAAAAAAAB CCCCCCCC NNNN LLLLLLLL M XXXXXXXX UUUUUUUU FFFFFFFFFFFFFFFF WW SSSSSSSS RRRRRRRR ZZZZZZZZ Y KKKKKKKKKKKKKKKK V Q JJ",
                        "meter": {"X": 14, "K": (16, 1.06), "V": (16, 1.06)},
                        "names": {"A": "riff, sixteen bars: four bare, four with a low bass, four with bass power chords, four more with a low drone under them",
                                  "N": "the riff again, on power chords over the drone",
@@ -1644,7 +1644,7 @@ OUTRO_VOICES = [
 OUTRO_CHORDS = {"R": [[0, 7, 15], [0, 7, 15], [-2, 5, 10], [3, 10, 17], [0, 7, 15], [8, 15, 19], [-2, 5, 10], [0, 7, 15]]}
 
 
-def music_map(bpm=MUSIC["music_map"]["bpm"], palette="real"):
+def music_far_bank(bpm=MUSIC["music_far_bank"]["bpm"], palette="real"):
     # The other world at 90, orchestral, wistful, on the real palette. The groove bare (P:
     # cellos low, the bells, the choir on "oo" pulsing, nothing in front), then the groove
     # with the horns answering (A), the lift (C: the contrabass in long bows, the bells
@@ -1669,8 +1669,8 @@ def music_map(bpm=MUSIC["music_map"]["bpm"], palette="real"):
     else:
         kit = {"kick": (taiko_soft(), 1.1), "kick_soft": (taiko_soft(), 0.8), "snare": (snare_drum(True), 0.7), "hat": (hat(False, True), 0.35),
                "open": (hat(True, True), 0.3), "glitch": (glitch_perc(), 0.4), "clank": (clank(), 0.25), "timp": (timpani(), 0.8)}
-    form = MUSIC["music_map"]["form"].replace(" ", "")
-    meter = MUSIC["music_map"]["meter"]
+    form = MUSIC["music_far_bank"]["form"].replace(" ", "")
+    meter = MUSIC["music_far_bank"]["meter"]
     steps, starts, _ = _bars(form, meter)
     total = sum(steps)
     # The orchestral hit at the interlude's door and the closer's front: patterns indexed by
@@ -2034,7 +2034,7 @@ def _drum_solo(bars):
     return {k: "".join(v) for k, v in parts.items()}
 
 
-def music_skirmish(palette="hybrid"):
+def music_hold_the_line(palette="hybrid"):
     # Human A (the fight loop) at 100 on the hybrid palette. A hundred and seventeen bars: the riff
     # (A: four bars bare, four with a low bass, eight with bass power chords), a turn (B: one
     # short hit and the drums filling), the lift (C: the soft sub takes the riff, piano
@@ -2073,8 +2073,8 @@ def music_skirmish(palette="hybrid"):
     backing = "guitar_real" if real else "chug"
     bass = "bass_real" if real else "bass_guitar"
     solo = _drum_solo(8)
-    form = MUSIC["music_skirmish"]["form"].replace(" ", "")
-    meter = MUSIC["music_skirmish"]["meter"]
+    form = MUSIC["music_hold_the_line"]["form"].replace(" ", "")
+    meter = MUSIC["music_hold_the_line"]["meter"]
     steps, starts, _ = _bars(form, meter)
     total = sum(steps)
     doors = [starts[b] for b in range(len(form)) if form[b] in "CLXFSJ" and b > 0 and form[b - 1] != form[b]]
@@ -2082,7 +2082,7 @@ def music_skirmish(palette="hybrid"):
     fill_tom = "....x.x.xx.x.x.."
     fill_tom2 = "......x.....x.xx"
     return groove(
-        bpm=MUSIC["music_skirmish"]["bpm"],
+        bpm=MUSIC["music_hold_the_line"]["bpm"],
         form=form,
         meter=meter,
         kit=kit,
@@ -2328,7 +2328,7 @@ def pad_sweep(semis, n, gain=0.14, octave=1, rate=0.05, depth=1.0, open_=0.5):
 PAD_INST["sweep"] = lambda c, n, p: pad_sweep(c, n, p.get("gain", 0.14), p.get("octave", 1), p.get("rate", 0.05), p.get("depth", 1.0), p.get("open", 0.5))
 
 
-def music_rift_calm():
+def music_low_ground():
     # The rift theme's calm sibling, with an identity of its own (Ryan, 24 September: it was
     # the main theme in 6/8): a ground bass. One eight-bar cello line, A G F E (the
     # Andalusian cadence, melancholy but not the theme's E minor), repeats under six
@@ -2336,7 +2336,7 @@ def music_rift_calm():
     # horn chorale (3), the violins (4), the tutti with the house kick and the sub arriving
     # late (5), stripped back to the bells and the choir (6), and an outro that thins to the
     # ground alone and wraps. Still 6/8 at the 4/4 bar's length, the pulse a triplet, at 90.
-    m = MUSIC["music_rift_calm"]
+    m = MUSIC["music_low_ground"]
     drum = variants(bassdrum_real)
     kit = {"kick": (drum, 0.95), "snare": (variants(snare_real), 0.3), "hat": (variants(lambda p: hat_real(False, p)), 0.28),
            "open": ([hat_real(True)], 0.2), "glitch": (glitch_perc(), 0.28), "timp": (variants(lambda p: timpani_real()), 0.6)}
@@ -2392,7 +2392,7 @@ def music_rift_calm():
         air=(0.35, 0.14), master=1.1, headroom=0.6, swap=REAL_MAP_SWAP, human=(0.007, 0.18))
 
 
-def music_human_calm():
+def music_night_shift():
     # The human theme's calm sibling at 96, four-on-the-floor and soft: the kick on every
     # beat, hats in eighths with the open on the off-beats, a clap-soft snare on two and
     # four, the sub pulsing in eighths, the electric piano stabbing off the beat (the house
@@ -2403,7 +2403,7 @@ def music_human_calm():
     # a rhythm through the groove, the crunch synth dark under the sub. Seventy-two bars: the intro (I), the groove (A), a
     # breakdown (B), the lead's section (C), the dark synth's section (D), the groove again
     # (R) and an outro that thins to the pad and the chime (O).
-    m = MUSIC["music_human_calm"]
+    m = MUSIC["music_night_shift"]
     kit = {"kick": (variants(kick_real), 0.75), "snare": (variants(snare_real), 0.45), "hat": (variants(lambda p: hat_real(False, p)), 0.4),
            "open": ([hat_real(True)], 0.3), "ride": ([ride_real()], 0.3), "clank": (clank(), 0.25), "knock": (knock_perc(), 0.45),
            "tick": (tick(), 0.25), "glitch": (glitch_perc(), 0.3), "stack": ([stack()], 0.5)}
@@ -2494,7 +2494,7 @@ NOTE_INST["e_chug"] = lambda f, d, p: e_chug(f, d, p.get("cutoff", 1400.0), p.ge
 NOTE_INST["bass_clean"] = lambda f, d, p: bass_clean(f, d)
 
 
-def music_rift_drive():
+def music_crossing():
     # Rift C, rebuilt (Ryan, 25 September: faster, and an identity of its own away from rift
     # A, more so than the calms). 126, E Phrygian rather than E minor (the flattened second,
     # F, is its colour; rift A avoids it), the engine a plucked-string ostinato in
@@ -2504,7 +2504,7 @@ def music_rift_drive():
     # day (Ryan: pretty great, it wins a slot in the skirmish; what would it sound like
     # extended?): a second pass through the whole shape after a bare reprieve, each section
     # developed, a hundred and forty-four bars.
-    m = MUSIC["music_rift_drive"]
+    m = MUSIC["music_crossing"]
     kit = {"kick": (variants(bassdrum_real), 0.95), "snare": (variants(snare_real), 0.7), "hat": (variants(lambda p: hat_real(False, p)), 0.38),
            "open": ([hat_real(True)], 0.3), "crash": ([crash_real()], 0.7), "glitch": (glitch_perc(), 0.3),
            "timp": (variants(lambda p: timpani_real()), 0.8)}
@@ -2629,7 +2629,7 @@ def music_rift_drive():
         air=(0.25, 0.1), master=1.1, headroom=0.6, swap=REAL_MAP_SWAP, human=(0.006, 0.15))
 
 
-def music_human_heavy():
+def music_full_bore():
     # The human theme's third: full Omnific (Ryan, 25 September: Will-O'-the-Wisp,
     # Matrices) in the construction, not the sound: the sound is the human context, leaning
     # metal, and it must not let up (Ryan, later that day, with Pentakill, Battle Beast,
@@ -2640,7 +2640,7 @@ def music_human_heavy():
     # lead doubling it; the lead guitar has a line of its own over the riff and the
     # breakdown; the breakdown keeps piano arpeggios and double-kick fills running; the
     # unison adds the synth lead and a choir over a blast; a section in seven.
-    m = MUSIC["music_human_heavy"]
+    m = MUSIC["music_full_bore"]
     kit = {"kick": (variants(kick_real), 1.15), "snare": (variants(snare_real), 1.1), "hat": (variants(lambda p: hat_real(False, p)), 0.45),
            "open": ([hat_real(True)], 0.4), "crash": ([crash_real()], 0.9), "crash2": ([crash_low()], 0.9), "china": (china(), 0.85),
            "splash": ([splash()], 0.7), "stack": ([stack()], 0.6), "ride": ([ride_real()], 0.4), "bell": ([ride_bell()], 0.45),
@@ -2840,7 +2840,7 @@ def sketch_djent():
 
 
 SKETCHES = {"human": sketch_human, "rift": sketch_rift, "djent": sketch_djent,
-            "map_86": lambda: music_map(86), "map_88": lambda: music_map(88), "map_92": lambda: music_map(92), "map_outro": sketch_map_outro}   # the map loop slightly slower, to compare (Ryan, 23 September)
+            "map_86": lambda: music_far_bank(86), "map_88": lambda: music_far_bank(88), "map_92": lambda: music_far_bank(92), "map_outro": sketch_map_outro}   # the map loop slightly slower, to compare (Ryan, 23 September)
 OUT_SKETCH = os.path.join(os.path.dirname(__file__), "out")
 
 
@@ -3202,7 +3202,7 @@ def sketch_meter_map():
         air=(0.3, 0.12))
 
 
-SKETCHES.update({"map_synth": lambda: music_map(palette="synth"), "skirmish_synth": lambda: music_skirmish(palette="synth"),
+SKETCHES.update({"map_synth": lambda: music_far_bank(palette="synth"), "skirmish_synth": lambda: music_hold_the_line(palette="synth"),
                  "bass_samples": sketch_bass_samples,
                  "meter_map": sketch_meter_map, "meter_skirmish": sketch_meter_skirmish})
 
@@ -3217,9 +3217,9 @@ SOUNDS = {
     "contact": contact, "engage": engage, "cut": cut, "gate_hit": gate_hit, "spawn": spawn,
     "victory": victory, "defeat": defeat, "withdraw": withdraw, "overheat": overheat,
     "laser": laser, "gunfire": gunfire, "cannon": cannon, "slash": slash, "slam": slam,
-    "music_map": music_map, "music_skirmish": music_skirmish,
-    "music_rift_calm": music_rift_calm, "music_human_calm": music_human_calm,
-    "music_rift_drive": music_rift_drive, "music_human_heavy": music_human_heavy,
+    "music_far_bank": music_far_bank, "music_hold_the_line": music_hold_the_line,
+    "music_low_ground": music_low_ground, "music_night_shift": music_night_shift,
+    "music_crossing": music_crossing, "music_full_bore": music_full_bore,
 }
 
 ## The mix: each sound's loudness (its loudest 50 ms, RMS dB). The music sits under the
@@ -3232,9 +3232,9 @@ LEVELS = {
     "contact": -10, "engage": -13, "cut": -8, "gate_hit": -8, "spawn": -12,
     "victory": -10, "defeat": -10, "withdraw": -11, "overheat": -12,
     "laser": -11, "gunfire": -11, "cannon": -8, "slash": -12, "slam": -9,
-    "music_map": -24.9, "music_skirmish": -20.7,   # mean RMS dB, pinned where Ryan judged them
-    "music_rift_calm": -24.9, "music_human_calm": -24.9,   # the map's two, at one level, the map's level (Ryan, 25 September)
-    "music_rift_drive": -20.7, "music_human_heavy": -20.7,   # rift C at the skirmish's level: it plays there (Ryan, 25 September)
+    "music_far_bank": -24.9, "music_hold_the_line": -20.7,   # mean RMS dB, pinned where Ryan judged them
+    "music_low_ground": -24.9, "music_night_shift": -24.9,   # the map's two, at one level, the map's level (Ryan, 25 September)
+    "music_crossing": -20.7, "music_full_bore": -20.7,   # rift C at the skirmish's level: it plays there (Ryan, 25 September)
 }
 
 

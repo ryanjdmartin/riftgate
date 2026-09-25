@@ -143,27 +143,27 @@ track, whatever the meter.
 *The tracks (25 September, evening).* Ryan labels tracks by creation order: human A B C,
 rift A B C. State of each:
 
-- **Rift A** `music_map` (86, 89 bars, 3:56): the real orchestral palette, form P A C E D
+- **Rift A** `music_far_bank` (86, 89 bars, 3:56): the real orchestral palette, form P A C E D
   T V G H (a gradual build to the lift, the bells' lift, minor strings, an interlude with
   7/8 closes, a triplet turn, the quiet 6/8, a thirty-two-bar climax whose leads swell on
   bar lines from the repeat edge, a closer). **Locked** ("it's great"). In the table,
   **not hooked to a screen** now that the calms hold the map.
-- **Human A** `music_skirmish` (100, 117 bars, 4:41): the hybrid palette, form A B C N L
+- **Human A** `music_hold_the_line` (100, 117 bars, 4:41): the hybrid palette, form A B C N L
   M X U F W S R Z Y K V Q J (the riff in four stages with the drone under the last, turn,
   lift, riff over the drone, second lift, a bar down, the seven, the unison over a drum
   solo, keys, the keys' turn, the climax in three sets with the drone alone under the
   first and the backing guitar from the second, a breath, the keyboard solo, a second
   breath on the solo's instruments, a fill, the descent). **Locked** ("that drone was
   exactly what we needed"). In the skirmish set.
-- **Rift B** `music_rift_calm` (90, 6/8, a ground bass under six variations, 2:29) and
-  **human B** `music_human_calm` (94, four on the floor, industrial, 3:04): **locked for
+- **Rift B** `music_low_ground` (90, 6/8, a ground bass under six variations, 2:29) and
+  **human B** `music_night_shift` (94, four on the floor, industrial, 3:04): **locked for
   now**, both at the map's level (-24.9 dB mean RMS). They are the map's set.
-- **Rift C** `music_rift_drive` (126, E Phrygian, 144 bars, 4:27): a pizzicato
+- **Rift C** `music_crossing` (126, E Phrygian, 144 bars, 4:27): a pizzicato
   three-three-two over timpani as the engine, Ryan's kick-chug-snare pattern as one
   section, a new motif on horn and violins, eight bars of 3/4, a second developed pass
   after a bare reprieve. "Pretty great"; extended and levelled for the skirmish (-20.7);
   in the skirmish set. The extension is unheard.
-- **Human C** `music_human_heavy` (105, 66 bars, 2:06): the Omnific construction on the
+- **Human C** `music_full_bore` (105, 66 bars, 2:06): the Omnific construction on the
   human sound leaning metal, never letting up: the driven bass heavy with the clean bass
   an octave up (paired basses throughout, the pair carrying the answers and the
   breakdown's melody), two chug guitars, the sub, the drone, the keys leading the tapped
@@ -175,7 +175,9 @@ rift A B C. State of each:
 
 *Titles (25 September, Ryan's picks from proposals; the one table is `Sound.TRACKS`).*
 Human A **Hold The Line**, human B **Night Shift**, human C **Full Bore**, rift A **The
-Far Bank**, rift B **Low Ground**, rift C **open** (Procession stands in until Ryan picks). Shown in the header's
+Far Bank**, rift B **Low Ground**, rift C **The Crossing**. The WAVs, the forge's
+builders, `MUSIC`, `SOUNDS` and `LEVELS` all use the title ids (`music_hold_the_line` and
+so on); nothing is named for a screen or a mood any more. Shown in the header's
 ticker (`game/ui/music_ticker.gd`: mono title right-aligned against MENU, a three-bar beat
 meter, a run-in on change, a crawl when too long) and on the pause menu's music plate
 under PAUSED (label over title, previous and next: `Sound.skip`, within the screen's set,
