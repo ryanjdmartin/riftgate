@@ -1536,12 +1536,12 @@ MUSIC = {
                                    "O": "outro: the ostinato thinning over the cellos, the strings fading, into the top"}},
     "music_human_heavy": {"bpm": 105, "form": "AAAAAAAB CCCCCCCC XXXXXXXX AAAAAAAB DDDDDDDD EEEEEEEE AAAAAAAB",
                           "meter": {"X": 14},
-                          "names": {"A": "the riff on the driven bass with the guitar chugging its power chords, the clean bass answering an octave up, the drone from the fifth bar, a china every other bar",
-                                    "B": "a turn: the bass and guitar cut short, a tom fill, a china",
-                                    "C": "the clean bass leads in tapped sixteenths over a half-time floor and a ride, the lead guitar doubling its second half, piano chords on the beat",
-                                    "X": "the seven: the driven bass's riff for 7/8 with the guitar and the crunch synth on it, the clean bass over the long beats, the drone",
-                                    "D": "breakdown: clean-bass chords and a guitar chord held, a long crash, the choir",
-                                    "E": "the two basses and the guitar in unison over double kicks, the drone under, the drums up"}},
+                          "names": {"A": "the riff on the driven bass, two guitars chugging its power chords and the fifth above, the sub and the drone under, the clean bass answering an octave up, the lead guitar's line over the last three bars; double kicks running, ghost snares, a china every other bar, a tom fill every four",
+                                    "B": "a turn: the bass and guitars cut short, a tom fill, a china",
+                                    "C": "the clean bass leads in tapped sixteenths with the synth lead doubling it, over a driving kick, the ride and its bell, piano chords on the beat",
+                                    "X": "the seven: the driven bass's riff for 7/8 with both guitars and the crunch synth on it, a guitar chord held on the long beats, the clean bass and the synth lead over them, the drone",
+                                    "D": "the breakdown that does not let up: piano arpeggios in sixteenths, the lead guitar's melody, guitar chords held, the choir, half-time with double-kick fills, the ride bell",
+                                    "E": "the two basses, both guitars and the synth lead in unison over a blast of double kicks, a china on every beat, a crash every bar, the choir, the drone, the drums up"}},
     "music_skirmish": {"bpm": 100, "form": "AAAAAAAAAAAAAAAAB CCCCCCCC NNNN LLLLLLLL M XXXXXXXX UUUUUUUU FFFFFFFFFFFFFFFF WW SSSSSSSS RRRRRRRR ZZZZZZZZ Y KKKKKKKKKKKKKKKK V Q JJ",
                        "meter": {"X": 14, "K": (16, 1.06), "V": (16, 1.06)},
                        "names": {"A": "riff, sixteen bars: four bare, four with a low bass, four with bass power chords, four more with a low drone under them",
@@ -2632,13 +2632,14 @@ def music_rift_drive():
 def music_human_heavy():
     # The human theme's third: full Omnific (Ryan, 25 September: Will-O'-the-Wisp,
     # Matrices) in the construction, not the sound: the sound is the human context, leaning
-    # metal (Ryan, later that day: bass alone was empty). A driven bass carries the riff with
-    # the guitar chugging its power chords, a clean bass an octave up carries the melody in
-    # tapped-style sixteenths with the lead guitar doubling it, the drone under the riffs
-    # and the unison, over a heavy kit with double kicks and many cymbals; a section in seven. Sixty-six bars at 105: the riff with the
-    # clean bass answering (A), a turn (B), the clean bass leading over a half-time floor
-    # (C), the seven (X), a breakdown of clean-bass chords under cymbal swells (D), the two
-    # basses in unison with double kicks (E), and the riff to close (A).
+    # metal, and it must not let up (Ryan, later that day, with Pentakill, Battle Beast,
+    # Omnific and Dream Theater's Train of Thought era as the bar: good bones, too empty,
+    # more of everything, definitely more drums). A driven bass carries the riff with two
+    # guitars chugging its power chords and the fifth above, the sub and the drone under; a
+    # clean bass an octave up carries the melody in tapped-style sixteenths with the synth
+    # lead doubling it; the lead guitar has a line of its own over the riff and the
+    # breakdown; the breakdown keeps piano arpeggios and double-kick fills running; the
+    # unison adds the synth lead and a choir over a blast; a section in seven.
     m = MUSIC["music_human_heavy"]
     kit = {"kick": (variants(kick_real), 1.15), "snare": (variants(snare_real), 1.1), "hat": (variants(lambda p: hat_real(False, p)), 0.45),
            "open": ([hat_real(True)], 0.4), "crash": ([crash_real()], 0.9), "crash2": ([crash_low()], 0.9), "china": (china(), 0.85),
@@ -2651,24 +2652,33 @@ def music_human_heavy():
     doors = [starts[b] for b in range(len(form)) if form[b] in "ACXDE" and b > 0 and form[b - 1] != form[b]]
     door_pat = "".join("x" if i in doors else "." for i in range(total + (1 if total % 16 == 0 else 0)))
     riff = "0.0.3.0.5-.3.0.0.0.0.3.0.7-.5.3."   # the driven bass's riff, two bars
+    riff_up = riff.translate(str.maketrans("0357", "7acd"))   # the fifth above: the second guitar
+    seven = "0.0-3.0-5.3-0.0.0-3.0-8.7-5.3."     # the riff for 7/8, two bars
+    melody_c = ("5.7.8.a.c.a.8.7.3.5.7.8.a.8.7.5.1.3.5.7.8.7.5.3.0.4.7.8.7.4.0.4."
+                "c.a.8.7.5.7.8.a.a.8.7.5.3.5.7.8.8.7.5.3.1.3.5.7.7.4.0.4.7-------")
+    lead_a = "." * 64 + "7---8---7---5---3---5---3-------0---3---5---7---"   # the lead's line over the riff's last three bars
+    lead_d = ("7-------8-------a-------8-------7-------5-------3-------5-------"
+              "7-------a-------c-------a-------8-------7-------5---------------")
     return groove(
         bpm=m["bpm"], form=form, meter=meter, kit=kit,
         drums={
-            "kick": {"A": "x.xx....x.xx..x.x.xx....x.x.xx..", "B": "x...............", "C": "x.......x.....x.", "X": "x...x.x.x.....",
-                     "D": "x...............", "E": "x.xx.xx.x.xx.xx.x.xx.xx.x.xxxxxx"},
-            "snare": {"A": "....x.......x...", "B": "....x...x.......", "C": "........x.......", "X": "......x.....x.", "E": "....x.......x..."},
-            "hat": {"A": "x.x.x.x.x.x.x.x.", "X": "x.x.x.x.x.x.x."},
+            "kick": {"A": "x.xx.x.xx.xx.x.xx.xx.x.xx.xxxxxx", "B": "x...............", "C": "x..x..x.x..x..x.", "X": "x.x.x.xx.x.x.x",
+                     "D": "x.......x...xxxx", "E": "x.xx.xx.x.xx.xx.x.xx.xx.x.xxxxxx"},
+            "snare": {"A": "....x..o....x..o", "B": "....x...x.......", "C": "....o...x....o..", "X": "......x.....x.",
+                      "D": "........x.......", "E": "....x..o....x..o"},
+            "hat": {"A": "x.x.x.x.x.x.x.x.", "X": "x.x.x.x.x.x.x.", "E": "x.x.x.x.x.x.x.x."},
             "ride": {"C": "x.x.x.x.x.xx.x.x", "D": "x...x...x...x..."},
-            "bell": {"C": "x.......x.......x.......x...x..."},
-            "open": {"A": "......x.......x.", "E": "......x.......x."},
-            "crash": {"*": door_pat, "E": "x" + "." * 31, "A": "x" + "." * 63},
-            "crash2": {"X": "x" + "." * 27},
+            "bell": {"C": "x.......x.......x.......x...x...", "D": "x.......x......."},
+            "open": {"A": "......x.......x.", "C": "..............x.", "E": "......x.......x."},
+            "crash": {"*": door_pat, "A": "x" + "." * 31, "E": "x" + "." * 15, "X": "x" + "." * 27},
+            "crash2": {"X": "." * 14 + "x" + "." * 13},
             "crash_long": {"D": "x" + "." * 31},
-            "china": {"A": "." * 30 + "x.", "B": "..............x.", "E": "........x.......................", "X": "." * 26 + "x."},
+            "china": {"A": "." * 30 + "x.", "B": "..............x.", "E": "x...x...x...x...", "X": "." * 26 + "x."},
             "splash": {"C": "..........x....."},
-            "stack": {"E": "..x...x...x...x."},
-            "tom": {"B": "....x.x.xx.x.x..", "D": "." * 62 + "x.", "E": "." * 120 + "x.x.xx.x"},
-            "tom2": {"B": "......x.....x.xx", "E": "." * 124 + "x.x."},
+            "stack": {"E": "..x...x...x...x.", "A": "..x...x...x...x."},
+            "tom": {"A": "." * 58 + "x.x.x.", "B": "....x.x.xx.x.x..", "C": "." * 60 + "x.x.", "D": "." * 26 + "x.x.x." + "." * 30 + "x.",
+                    "E": "." * 120 + "x.x.xx.x", "X": "." * 24 + "x.x."},
+            "tom2": {"A": "." * 62 + "x.", "B": "......x.....x.xx", "D": "." * 30 + "x." + "." * 28 + "x.x.", "E": "." * 124 + "x.x."},
         },
         chords={"A": [[0, 7, 15], [0, 7, 15], [3, 10, 17], [-2, 5, 10]], "B": [[0, 7, 15]],
                 "C": [[5, 8, 12], [3, 7, 10], [1, 5, 8], [0, 4, 7]],
@@ -2676,27 +2686,38 @@ def music_human_heavy():
                 "D": [[0, 7, 15, 19], [8, 11, 15, 20], [5, 8, 12, 17], [7, 10, 14, 19]],
                 "E": [[0, 7, 15], [0, 7, 15], [3, 10, 17], [-2, 5, 10]]},
         voices=[
-            # The driven bass: the riff; the guitar chugs its power chords with it, and the
-            # crunch synth doubles the seven.
+            # The driven bass: the riff; two guitars chug its power chords and the fifth
+            # above; the sub holds the root under; the crunch synth doubles the seven.
             {"inst": "bass_real", "mode": "riff", "gain": 0.6, "hold": 1.0, "params": {"drive": 4.0},
-             "pat": {"A": riff, "B": "0---............", "X": "0.0-3.0-5.3-0.0.0-3.0-8.7-5.3.", "E": riff}},
+             "pat": {"A": riff, "B": "0---............", "X": seven, "E": riff}},
             {"inst": "guitar_real", "mode": "riff", "gain": 0.6, "octave": -1,
-             "pat": {"A": riff, "B": "0---............", "X": "0.0-3.0-5.3-0.0.0-3.0-8.7-5.3.", "E": riff}},
+             "pat": {"A": riff, "B": "0---............", "X": seven, "E": riff}},
+            {"inst": "guitar_real", "mode": "riff", "gain": 0.4, "octave": -1,
+             "pat": {"A": riff_up, "X": seven.translate(str.maketrans("0357", "7acd")), "E": riff_up}},
+            {"inst": "sub_bass", "mode": "riff", "gain": 0.3, "legato": True, "params": {"res": 0.3, "punch": 1.5, "fade": 0.3},
+             "pat": {"A": "0---------------", "E": "0---------------", "X": "0-------------"}},
             {"inst": "bass", "mode": "riff", "gain": 0.3, "params": {"drive": 3.5, "cutoff": 800.0},
-             "pat": {"X": "0.0-3.0-5.3-0.0.0-3.0-8.7-5.3."}},
-            # The clean bass: answering the riff, then leading, then in unison an octave up.
+             "pat": {"X": seven}},
+            {"inst": "guitar_hold", "mode": "stab", "gain": 0.5, "dur": 14,
+             "pat": {"X": "x............."}},
+            # The clean bass: answering the riff, then leading, then in unison an octave up;
+            # the synth lead doubles it where it leads and in the unison.
             {"inst": "bass_clean", "mode": "riff", "gain": 0.5, "hold": 1.0, "octave": 1,
              "pat": {"A": "........7.8.7.5.........3.5.3.0.........a.c.a.8.........5.7.5.3.",
-                     "C": "5.7.8.a.c.a.8.7.3.5.7.8.a.8.7.5.1.3.5.7.8.7.5.3.0.4.7.8.7.4.0.4."
-                          "c.a.8.7.5.7.8.a.a.8.7.5.3.5.7.8.8.7.5.3.1.3.5.7.7.4.0.4.7-------",
-                     "X": "..7.8...a.......c.a.8.7.5.......",
-                     "E": riff}},
-            # The lead guitar doubling the clean bass's melody an octave up in its second half.
-            {"inst": "lead_real", "mode": "riff", "gain": 0.32, "octave": 2, "hold": 0.9,
-             "pat": {"C": "." * 64 + "c.a.8.7.5.7.8.a.a.8.7.5.3.5.7.8.8.7.5.3.1.3.5.7.7.4.0.4.7-------"}},
+                     "C": melody_c, "X": "..7.8...a.......c.a.8.7.5.......", "E": riff}},
+            {"inst": "synlead", "mode": "riff", "gain": 0.26, "octave": 2, "hold": 0.9,
+             "pat": {"C": melody_c, "X": "..7.8...a.......c.a.8.7.5......."}},
+            {"inst": "synlead", "mode": "riff", "gain": 0.3, "octave": 1, "hold": 0.9,
+             "pat": {"E": riff}},
+            # The lead guitar: a line over the riff's last three bars, the melody over the breakdown.
+            {"inst": "lead_real", "mode": "riff", "gain": 0.34, "octave": 2, "hold": 0.95,
+             "pat": {"A": lead_a, "D": lead_d}},
             {"inst": "epiano", "mode": "stab", "gain": 0.22, "dur": 4,
              "pat": {"C": "x...x...x...x..."}},
-            # The breakdown: clean-bass chords and a guitar chord held.
+            # The breakdown that keeps moving: piano arpeggios, clean-bass chords and a
+            # guitar chord held.
+            {"inst": "epiano", "mode": "chord", "octave": 2, "gain": 0.3, "dur": 2,
+             "pat": {"D": "0.1.2.3.2.1.0.1."}},
             {"inst": "bass_clean", "mode": "chord", "octave": 1, "gain": 0.4, "dur": 16,
              "pat": {"D": "0.......2.......", "B": "0..............."}},
             {"inst": "bass_clean", "mode": "chord", "octave": 1, "gain": 0.3, "dur": 16,
@@ -2709,11 +2730,11 @@ def music_human_heavy():
              "pat": {"D": "x.......x......."}},
         ],
         pad=[{"inst": "choir_real", "gain": 0.14, "vowel": "oh", "sections": "D"},
-             # The drone Ryan likes (human A): under the riffs after four bars alone, under
-             # the seven and the unison from their doors.
-             {"inst": "sweep", "gain": 0.34, "octave": 0, "rate": 0.08, "depth": 0.3, "open": 0.75, "sections": "AXE", "skip": {"A": 4}, "chord": [0, 7, 12]}],
-        drum_gain={"A": 1.1, "X": 1.1, "E": 1.25},
-        tilt=3.0, low=(150.0, -5.0), human=(0.005, 0.15))
+             {"inst": "choir_real", "gain": 0.2, "vowel": "ah", "sections": "E"},
+             # The drone Ryan likes (human A), under everything but the clean bass's lead.
+             {"inst": "sweep", "gain": 0.34, "octave": 0, "rate": 0.08, "depth": 0.3, "open": 0.75, "sections": "AXDE", "chord": [0, 7, 12]}],
+        drum_gain={"A": 1.2, "C": 1.1, "X": 1.2, "D": 1.05, "E": 1.3},
+        tilt=3.0, low=(150.0, -5.0), headroom=0.7, human=(0.005, 0.15))
 
 
 # ---- the sketches: eight bars each on one riff and one chord progression, so only the

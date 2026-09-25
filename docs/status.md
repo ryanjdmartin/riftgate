@@ -167,10 +167,12 @@ not the pulse wave. Third tracks, both rebuilt after Ryan's first notes (25 Sept
 `music_rift_drive` (**rift C**, "pretty great", **in the skirmish set** with human A: 126,
 E Phrygian, a pizzicato three-three-two over timpani as the engine, Ryan's kick-chug-snare
 pattern as one section, a new motif on horn and violins, eight bars of 3/4, extended to a
-second developed pass, 144 bars, 4:27, at the skirmish level) and `music_human_heavy` (**human C**: 105,
-the Omnific construction on the human sound leaning metal: the guitar chugging the riff's
-power chords with the driven bass, the clean bass melody doubled by the lead guitar, the
-drone, a section in seven, 66 bars, 2:06; `bass_clean`), in the table, not hooked. The pure-synth versions survive as sketches
+second developed pass, 144 bars, 4:27, at the skirmish level) and `music_human_heavy` (**human C**, rebuilt dense after
+"good bones, too empty": 105, the Omnific construction on the human sound leaning metal
+and never letting up: two chug guitars, the sub, the drone, the synth lead doubling the
+clean bass, the lead guitar's own lines, piano arpeggios under the breakdown, a choir
+under the unison, drums running throughout, a section in seven, 66 bars, 2:06;
+`bass_clean`), in the table, not hooked. The pure-synth versions survive as sketches
 (`map_synth`, `skirmish_synth`), as do `map_86/88/92`, `map_outro` and `bass_samples`.
 
 *The effects.* Two registers: the interface sci-fi electronic (blips and chirps), combat
