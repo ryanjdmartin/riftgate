@@ -173,7 +173,7 @@ under big moments; `TONAL` sounds keep their pitch; a new battle restarts the ma
 from the top after the map is drawn, a fight's return resumes it. The display's scan and
 idle stay silent by decision.
 
-*To do, audio (25 September).* (1) Listen: rift A (nineteenth listen built, "almost done": the climax's swell peaks up by half) and human A (seventeenth listen built: the keys' bass held with a soft touch on three, the climax's backing guitar on the ones, the breath as the climax's blend, a second breath V on the solo's instruments); human B
+*To do, audio (25 September).* (1) Listen: rift A (nineteenth listen built, "almost done": the climax's swell peaks up by half) and human A (eighteenth listen built: the keys' roots restored after a mistyped rewrite, the fifths louder, the climax's backing guitar a held chord and on the quarters under the sixteenths, the breath's bass fading, the second breath's notes as long as its bass); human B
 (calm) and C (heavy) and rift B (calm, the ground bass) and C (drive) not yet heard at
 all beyond a first pass on the two calms; the interface effects since they went
 future-digital (`forge.py audition`). Expect a round of notes on each. (2) Hook the

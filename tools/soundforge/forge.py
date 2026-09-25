@@ -1482,9 +1482,9 @@ MUSIC = {
                                  "X": "the seven: a riff for 7/8, power chords, the piano on the long beat, a chime, a guitar held through its second half",
                                  "U": "unison riff: chug, bass and lead in octaves, a drum solo behind them in threes and twos, the drums up",
                                  "F": "keys section: the sub punching once a bar then fading on the roots with a soft touch on three, a fifth under it late, the lead's tune and chord work",
-                                 "S": "the climax: a new unison riff on the lead guitar voice, the chug with a fifth and the driven bass, a backing guitar sustaining the chord from each one, intense drums",
+                                 "S": "the climax: a new unison riff on the lead guitar voice, the chug with a fifth and the driven bass, a backing guitar ringing the chord a whole bar from each one, intense drums",
                                  "R": "the climax's second set: the keys join the riff, the drums more intense",
-                                 "Z": "the climax's third set: double kicks on the sixteenths, nothing backed off",
+                                 "Z": "the climax's third set: double kicks on the sixteenths, the backing guitar on the quarters, nothing backed off",
                                  "K": "keyboard solo, sixteen bars, six percent slower: the piano in single notes drifting from the crunch synth's walk, dark chords held on guitar and piano changing with crashes that fade to nothing",
                                  "J": "the descent, two bars: chug, bass and lead down in a gallop with the toms and cymbals on its hits"}},
 }
@@ -1873,12 +1873,14 @@ def ride_bell():
                bp(noise(n_of(0.01)), 3000.0, 9000.0) * env_ad(n_of(0.01), 0.0002, 0.002) * 0.6) * 0.45
 
 
-def guitar_chord(semis, dur):
-    # The mechanical guitar on an extended chord, open, behind the keys.
-    return mix(*[guitar_real(E2 * 2.0 ** (s / 12.0), dur, mute=False) for s in semis]) / max(1, len(semis)) * 0.9
+def guitar_chord(semis, dur, damp=0.993):
+    # The mechanical guitar on an extended chord, open, behind the keys; `damp` nearer one
+    # lets the strings ring a whole bar (the climax's backing guitar).
+    return mix(*[guitar_real(E2 * 2.0 ** (s / 12.0), dur, mute=False, damp=damp) for s in semis]) / max(1, len(semis)) * 0.9
 
 
 STAB_INST["guitar_chord"] = guitar_chord
+STAB_INST["guitar_hold"] = lambda semis, dur: guitar_chord(semis, dur, damp=0.9985)
 
 
 def _drum_solo(bars):
@@ -1957,8 +1959,8 @@ def music_skirmish(palette="hybrid"):
     riff_up = "7--.a-.7-...8-..5--.a-.8-...7-.."  # a fifth above: the power chord
     rise_up = "7--.a-.7-...8-..5--.a-.c-...8-.."
     climax = "0..0..3.0..5..3.0..0..8.7..5..3.3..3..5.3..7..5.0..0..a.8..7..5."   # the new unison riff, four bars
-    keys_roots = list("08g70535" "0870g8g7")       # the keys' bass, one root a bar
-    keys_fifths = list("h3225h32")                 # the fifth under each second-half root
+    keys_roots = list("08g7053g" "087g08g7")       # the keys' bass, one root a bar: E C D B E A G D, E C B D E C D B
+    keys_fifths = list("h325h352")                 # the fifth under each second-half root ("5" is the octave-down one under the low D)
     if real:
         kit = {"kick": (variants(kick_real), 1.0), "snare": (variants(snare_real), 1.0), "hat": (variants(lambda p: hat_real(False, p)), 0.45),
                "open": ([hat_real(True)], 0.4), "crash": ([crash_real()], 0.9), "crash2": ([crash_low()], 0.9), "china": (china(), 0.8),
@@ -2081,9 +2083,9 @@ def music_skirmish(palette="hybrid"):
              "pat": {"F": "".join("." * 8 + r + "-" * 7 for r in keys_roots)}},
             # The fifth below each second-half root, in register, held with it; an octave down
             # only where the root is the low D.
-            {"inst": "sub_bass", "mode": "riff", "gain": 0.24, "legato": True, "params": {"res": 0.2, "fade": 0.4},
+            {"inst": "sub_bass", "mode": "riff", "gain": 0.34, "legato": True, "params": {"res": 0.35, "fade": 0.4},
              "pat": {"F": "." * 128 + "".join((r + "-" * 15) if r != "5" else "." * 16 for r in keys_fifths)}},
-            {"inst": "sub_bass", "mode": "riff", "gain": 0.24, "legato": True, "octave": -1, "params": {"res": 0.2, "fade": 0.4},
+            {"inst": "sub_bass", "mode": "riff", "gain": 0.34, "legato": True, "octave": -1, "params": {"res": 0.35, "fade": 0.4},
              "pat": {"F": "." * 128 + "".join((r + "-" * 15) if r == "5" else "." * 16 for r in keys_fifths)}},
             {"inst": "lead", "mode": "riff", "gain": 0.46, "octave": 2,
              "pat": {"F": "7--.8-.7-..5.3-.0-----..3---5---8--.a-.8-..7.5-.3---....5-.3-.0-"
@@ -2109,11 +2111,15 @@ def music_skirmish(palette="hybrid"):
             {"inst": backing, "mode": "riff", "gain": 0.4, "octave": -1,
              "pat": {**{k: climax.translate(str.maketrans("0357a8", "7ac0f3")) for k in "SRZ"}, "Y": "7---------------"}},
             {"inst": bass, "mode": "riff", "gain": 0.4, "hold": 1.0, "params": {"drive": 3.5},
-             "pat": {"S": climax, "R": climax, "Z": climax, "Y": "0---------------"}},
+             "pat": {"S": climax, "R": climax, "Z": climax}},
+            # In the breath the driven bass, which clips to one level, fades with the others.
+            {"inst": bass, "mode": "riff", "gain": 0.3, "hold": 1.0, "params": {"drive": 3.5},
+             "shape": [(0.0, 1.0), (0.3, 1.0), (1.0, 0.15)],
+             "pat": {"Y": "0---------------"}},
             # A backing guitar on the chord, filling the air; the keys on the riff from the
             # second set.
-            {"inst": "guitar_chord", "mode": "stab", "gain": 0.9, "dur": 8.0,
-             "pat": {"S": "x...............", "R": "x...............", "Z": "x...............", "Y": "x..............."}},
+            {"inst": "guitar_hold", "mode": "stab", "gain": 0.9, "dur": 8.0,
+             "pat": {"S": "x...............", "R": "x...............", "Z": "x...x...x...x...", "Y": "x..............."}},
             {"inst": backing, "mode": "riff", "gain": 0.3, "octave": -1,
              "pat": {"R": "0.0-3.0", "Z": "0.0-3.0"}},
             {"inst": "epiano", "mode": "riff", "gain": 0.4, "octave": 1, "hold": 0.9,
@@ -2128,11 +2134,11 @@ def music_skirmish(palette="hybrid"):
             # the guitar and piano chords.
             {"inst": "bass", "mode": "riff", "gain": 0.5, "legato": True, "params": {"drive": 3.5, "cutoff": 800.0},
              "pat": {"V": "0---------------"}},
-            {"inst": "epiano", "mode": "riff", "gain": 0.6, "octave": 2, "legato": True,
-             "pat": {"V": "7---------------"}},
-            {"inst": "guitar_chord", "mode": "stab", "gain": 0.55, "dur": 8.0,
+            {"inst": "epiano", "mode": "chord", "gain": 0.6, "octave": 2, "dur": 6.0,
+             "pat": {"V": "1..............."}},
+            {"inst": "guitar_hold", "mode": "stab", "gain": 0.55, "dur": 8.0,
              "pat": {"V": "x..............."}},
-            {"inst": "epiano", "mode": "stab", "gain": 0.55, "dur": 8.0,
+            {"inst": "epiano", "mode": "stab", "gain": 0.55, "dur": 14.0,
              "pat": {"V": "x..............."}},
             # The keyboard solo: the piano in single notes drifting from the crunch synth's
             # walk; the guitar and piano holding dark chords that change with the crashes.
@@ -2623,13 +2629,13 @@ def cabinet(x, peaks=((110.0, 1.0), (420.0, 0.9), (1150.0, 0.7), (2400.0, 0.5), 
     return lp(y / 2.2 + x * 0.15, 5000.0)
 
 
-def guitar_real(f, dur, mute=True, cutoff=None, clean=False):
+def guitar_real(f, dur, mute=True, cutoff=None, clean=False, damp=0.993):
     # A power chord on real-ish strings: root, fifth and octave as plucked strings a hair
     # apart, the pick's scrape, pre-emphasis into the gain, the cabinet, the palm.
     n = n_of(dur)
     x = np.zeros(n)
     for ratio, g in ((1.0, 1.0), (1.5, 0.7), (2.0, 0.5)):
-        x += pluck(f * ratio * RNG.uniform(0.998, 1.002), dur, bright=RNG.uniform(0.4, 0.6), damp=0.993)[:n] * g
+        x += pluck(f * ratio * RNG.uniform(0.998, 1.002), dur, bright=RNG.uniform(0.4, 0.6), damp=damp)[:n] * g
     scrape = bp(noise(n_of(0.012)), 2000.0, 7000.0) * env_ad(n_of(0.012), 0.0002, 0.003) * 0.6
     x = at(x, scrape, 0.0)[:n]
     if clean:
