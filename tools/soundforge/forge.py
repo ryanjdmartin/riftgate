@@ -1468,7 +1468,7 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
 
 # The loops' shape, for `forge.py sections`: bar counts and timestamps of every section.
 MUSIC = {
-    "music_map": {"bpm": 86, "form": "PPPPPPPP AAAAAAAB CCCCCCCB EEEEEEEEEEEEEEEE DDDZDDDZ T VVVV GGGGGGGGGGGGGGGGGGGGGGGGGGGG HHHH",
+    "music_map": {"bpm": 86, "form": "PPPPPPPP AAAAAAAB CCCCCCCB EEEEEEEEEEEEEEEE DDDZDDDZ T VVVV GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG HHHH",
                   "meter": {"Z": 14, "T": (12, 4.0 / 3.0), "V": (12, 4.0 / 3.0)},
                   "names": {"P": "the groove bare: the choir and the kick, the cellos from its second half",
                             "A": "groove: the bells arrive, then the horn answers from its second half",
@@ -1480,7 +1480,7 @@ MUSIC = {
                             "D": "interlude: exposed chords, cellos late on the and, strings on two, timpani, sparse bells",
                             "Z": "a bar of 7/8 closing the interlude's half",
                             "E": "strings section, sixteen bars, minor throughout: the violins on the theme's rhythm then its melody, cellos in two-note chords, the drone swelling, the horns only in the second half, a roll into the interlude",
-                            "G": "climax, twenty-eight bars: eight level, then the leads swelling on bar lines, a bar up, a bar at the top and two down: the horn peaking on the repeat edge (bar nine) as the whole steps up, then violin, harp and the low strings three bars apart, and round again two bars apart so each fall overlaps the next rise, the leads thinning into the closer"}},
+                            "G": "climax, thirty-two bars: eight level, the whole stepping up at the repeat edge (bar nine) as the horn begins to rise, then the leads swelling on bar lines, a bar up, a bar at the top and two down: horn, violin, harp and the low strings three bars apart, and round again two bars apart so each fall overlaps the next rise, the leads thinning into the closer"}},
     "music_rift_calm": {"bpm": 90, "form": "IIII AAAAAAAA BBBBBBBB CCCCCCCC DDDDDDDD EEEEEEEE FFFFFFFF OOOO",
                         "meter": {k: (12, 4.0 / 3.0) for k in "IABCDEFO"},
                         "names": {"I": "intro: the choir and a bell",
@@ -1732,7 +1732,7 @@ def music_map(bpm=MUSIC["music_map"]["bpm"], palette="real"):
             {"inst": "contrabass", "mode": "riff", "gain": 0.42, "hold": 1.0,
              "pat": {"E": "0..0..0.3..3..3.a..a..a.7..7..7.0..0..0.5..5..5.3..3..3.g..g..g."}},
             {"inst": "contrabass", "mode": "riff", "gain": 0.42, "hold": 1.0,
-             "shape": swells([(18, 2.1), (26, 2.0)], end=1.2),
+             "shape": swells([(19, 1.7), (28, 1.6)], end=1.2),
              "pat": {"G": "0..0..0.8..8..8.a..a..a.7..7..7.0..0..0.5..5..5.3..3..3.g..g..g."}},
             # The interlude's cellos, changing on the "and" of one; on the 7/8 bars they hold.
             {"inst": "cello", "mode": "riff", "gain": 0.32, "legato": True, "late": 2,
@@ -1742,7 +1742,7 @@ def music_map(bpm=MUSIC["music_map"]["bpm"], palette="real"):
             # The climax's cellos swell with the contrabass (the pair is one step of the
             # rotation) and cut before the closer.
             {"inst": "cello", "mode": "riff", "gain": 0.4, "legato": True,
-             "shape": swells([(18, 2.1), (26, 2.0)], end=0.0, cut=28.5),
+             "shape": swells([(19, 1.7), (28, 1.6)], end=0.0, cut=32.5),
              "pat": {"G": "0---------------8---------------a---------------7---------------0---------------5---------------3---------------g---------------",
                      "H": "0---------------------------------------------------------------"}},
             {"inst": "bell", "mode": "chord", "octave": 2, "gain": 0.13, "echo": (3, 0.42, 3), "dur": 3.5,
@@ -1774,7 +1774,7 @@ def music_map(bpm=MUSIC["music_map"]["bpm"], palette="real"):
             # The climax's melodies: each its own line and its own rhythm, none written to fit
             # the others; levelled so none leads.
             {"inst": "horn", "mode": "riff", "gain": 0.3, "octave": 1,
-             "shape": swells([(9, 2.3), (20, 2.1)], end=0.0, cut=28.5),
+             "shape": swells([(10, 1.9), (22, 1.7)], end=0.0, cut=32.5),
              "pat": {"G": "3-----5---7-----8-------7---5---3-----0---g-----0-------3---5---"}},
             # The violins: the melody in the strings section, on the beat where it climbs,
             # their tails overlapping the next note as bows do.
@@ -1791,7 +1791,7 @@ def music_map(bpm=MUSIC["music_map"]["bpm"], palette="real"):
             {"inst": "violin", "mode": "riff", "gain": 0.3, "octave": 2, "legato": True, "pat": {"E": "." * 248 + "6-------"}},
             {"inst": "cello", "mode": "riff", "gain": 0.3, "legato": True, "pat": {"E": "." * 248 + "6-------"}},
             {"inst": "violin", "mode": "riff", "gain": 0.44, "octave": 2, "hold": 1.3,
-             "shape": swells([(12, 2.4), (22, 2.1)], end=0.0, cut=27),
+             "shape": swells([(13, 2.0), (24, 1.7)], end=0.0, cut=31),
              "pat": {"G": "0.3.5.7.8-..7.5.3-..5.7.a---8.7.5.3.0.3.5---3.0.g.0.3---5-..7-..", "T": "3..5..7..a.."}},
             # The closer's violin: held, then let go before the loop's end, so its tail cannot
             # wrap onto the start (Ryan: the track began on a high violin).
@@ -1800,7 +1800,7 @@ def music_map(bpm=MUSIC["music_map"]["bpm"], palette="real"):
             {"inst": "harp", "mode": "chord", "octave": 2, "gain": 0.28, "dur": 1.2,
              "pat": {"E": "0.1.2.3.2.1.0.1."}},
             {"inst": "harp", "mode": "chord", "octave": 2, "gain": 0.28, "dur": 1.2,
-             "shape": swells([(15, 2.1), (24, 2.0)], end=1.1),
+             "shape": swells([(16, 1.7), (26, 1.6)], end=1.1),
              "pat": {"G": "0.1.2.3.2.1.0.1.3.2.1.0.1.2.3.2."}},
             {"inst": "swell_rev", "mode": "stab", "gain": 1.2, "dur": 3.0,
              "pat": {"B": ".............x..", "E": "." * 253 + "x..", "Z": "...........x..", "V": "." * 45 + "x..", "H": "." * 61 + "x.."}},
@@ -1810,12 +1810,12 @@ def music_map(bpm=MUSIC["music_map"]["bpm"], palette="real"):
         pad=[{"inst": "choir", "gain": 0.26, "vowel": "oo", "pump": 0.2, "sections": "PABC", "gains": {"C": 2.0}},   # one choir, louder in the lift
              {"inst": "choir", "gain": 0.2, "vowel": "oo", "sections": "V"},
              {"inst": "strings", "gain": 0.16, "sections": "TH"},
-             {"inst": "strings", "gain": 0.16, "sections": "G", "swell": [(0.0, 0.65), (gb(9) - 0.001, 0.65), (gb(9), 1.0), (gb(23), 1.4), (1.0, 1.2)]},
+             {"inst": "strings", "gain": 0.16, "sections": "G", "swell": [(0.0, 0.65), (gb(9) - 0.001, 0.65), (gb(9), 1.0), (gb(27), 1.4), (1.0, 1.2)]},
              {"inst": "strings", "gain": 0.16, "sections": "E", "swell": [(0.0, 1.0), (0.5, 1.0), (0.9, 1.9), (1.0, 0.5)]},   # swelling, then let go
              {"inst": "strings", "gain": 0.18, "sections": "DZ", "late": 4},   # the upper strings land on two
              {"inst": "choir", "gain": 0.18, "vowel": "ah", "sections": "DZEH"},
-             {"inst": "choir", "gain": 0.18, "vowel": "ah", "sections": "G", "swell": [(0.0, 0.65), (gb(9) - 0.001, 0.65), (gb(9), 1.0), (gb(23), 1.4), (1.0, 1.2)]}],
-        crescendo={"G": [(0.0, 0.7), (gb(9) - 0.001, 0.7), (gb(9), 0.95), (gb(23), 1.3), (1.0, 1.15)], "H": (0.9, 0.35)},
+             {"inst": "choir", "gain": 0.18, "vowel": "ah", "sections": "G", "swell": [(0.0, 0.65), (gb(9) - 0.001, 0.65), (gb(9), 1.0), (gb(27), 1.4), (1.0, 1.2)]}],
+        crescendo={"G": [(0.0, 0.7), (gb(9) - 0.001, 0.7), (gb(9), 0.95), (gb(27), 1.3), (1.0, 1.15)], "H": (0.9, 0.35)},
         air=(0.3, 0.12),
         master=1.1 if real else 1.25, headroom=0.6 if real else None,
         swap=REAL_MAP_SWAP if real else None,
