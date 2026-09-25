@@ -7,8 +7,8 @@ thing works lives in its file's comments; why it is that way lives in the bible.
 
 **State.** Tests: 199 tests, 2552 checks, green (`perl -e 'alarm 240; exec @ARGV' godot
 --headless --path . -s tests/run_tests.gd`). Ryan runs a second session on this repo at
-the same time (today: the HUD session and the audio session): check `git status` before
-committing and stage by path. Chassis ids: `badger`,
+the same time (today: the HUD session, the audio session and the balance session): check
+`git status` before committing and stage by path. Chassis ids: `badger`,
 `clydesdale`, `sparrowhawk`, `anvil`. Ryan writes `content/*.json` in his own voice; tests
 never hardcode an entry's passive name.
 
@@ -25,8 +25,9 @@ exports a Web build and serves it on the LAN for a phone; `tools/screenshot.gd` 
 screen (`README.md` lists the poses); `tools/perf_probe.gd` measures the map; the
 `map_tuner` knobs are behind `RIFTGATE_TUNE=1`. `docs/design-bible.html` records every
 decision; section 12 is the roadmap; it is published at
-https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ (v0.9, republished 23 September;
-republish the file to that URL after a bible change).
+https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ (v0.9, republished 25 September by
+the balance session, from the committed file; republish the file to that URL after a
+bible change).
 `docs/vocabulary.md` is generated from content.
 
 **What the game does today.** A battle: the map shows every squad's intent and the exact
