@@ -137,6 +137,22 @@ phone runs Compatibility); pinch (the map only hears the magnify gesture, which 
 never sends: handle two fingers directly). Not to chase on the web: missing hex outlines
 and general frame rate, which want a native build. Then the true Android export.
 
+**Starting cold on the audio (for a session or account with no memory of it).** Read
+`CLAUDE.md`, then this file's audio block below, then the bible's section 1 sound row
+(every listen and every decision, in order; it is long and it is the truth). How Ryan
+works on sound, learned over four days: he gives notes by section letter or timestamp
+after listening (`forge.py sections <name>` prints both); a note that can be read two
+ways is asked about, not guessed (he said so); a suggestion of his opens a discussion
+and holes are raised before building, but if he reaffirms it is built as he said; when
+he changes direction, the new direction is taken as given and the old bible line
+retired; content and voices are proposed in chat before they land; he leans hotter on
+effects than seems right and judges effects in motion, never from stills; the most
+recent messages beat the bible when they differ. Two sessions often run on this repo
+at once: stage by path, never `git add -A`, and the bible is published after each
+change to https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ (a different account cannot
+publish to that URL; publish a new artifact and record its link here). Commit after each
+verified chunk, from this folder, with the tests green.
+
 **Audio, handoff (24 September; the bible's section 1 sound row has every decision and
 the reasons, listen by listen).** Everything is `tools/soundforge/forge.py` (numpy only)
 writing WAVs into `art/audio/`, played by name from `game/audio/sound.gd`. Commands:
@@ -234,15 +250,36 @@ patterns in bar multiples unless that is wanted.
 
 *To do, audio.* (1) Listen: human C as last built; rift C's extension; the Terran
 interface set and the glide-free skirmish set in the game (`forge.py audition` for the
-file); the map set's equal-power crossfade; the ticker and the menu's skips in motion
-(the skips make every in-game track reachable from the pause menu now). Expect notes on
-each, and on the titles. (2) Rift A has no screen, so the controls never reach it: decide
-where it goes (a third map track, a title, a victory?). (3) Levels: the map's two at
--24.9, the skirmish's three at -20.7; anything moved to another screen needs its level
-moved with it (`LEVELS`). (4) The phone: nothing has been heard on a device;
-the mix was checked by measurement only. (5) The real recordings and the real track
-remain section 12's open question; everything here is a placeholder in the decided
-register.
+file); the map set's equal-power crossfade. Expect notes on each. (2) **Boss themes, the
+plan discussed 25 September (Ryan has not yet said build).** The structure: a run is
+about ten battles in three acts, one family per act (The Risen, then The Infernal
+Horde, then The Chorus); every battle ends by killing the boss that powers its rift, so
+a boss skirmish (one continuous fight of several rounds, Rift Pressure feeding squads
+in) happens three or four times per act against the same boss. Hence one boss theme per
+family, in the acts' order, each the act's identity. The Far Bank (rift A, locked, 86,
+3:56, in the table, hooked nowhere) is the third act's: it is the most choral track, its
+meters and wrong notes are rules being edited (The Chorus "edits the rules"), and it is
+the most symphonic, which belongs to the last act; bosses here are epic, not intense
+(Ryan: Clair Obscur), so its quiet build is a feature. Changes for the slot: level to
+about -22.5 dB (between the map's -24.9 and the skirmish's -20.7; `LEVELS`), loop from
+the groove at bar nine (Godot `loop_begin` in `Sound._stream`) so a long fight wraps
+into the groove rather than the bare opening, and one build with a light tight kick
+under the orchestral bass drum in the groove, lift and climax only, for Ryan to judge.
+The other two from seeds: The Risen from Low Ground (its A G F E ground bass is a dirge;
+"hard to keep down" as form, a theme returning after every breakdown, a bass drum
+march, horns, choir on oo; the least symphonic of the three, first act), The Infernal
+Horde from The Crossing's brass and timpani (loud, fire, telegraphed: brass stabs with a
+bar of air before each hit, the chug, a major-third mode). Each needs a melody of its
+own; estimate eight listening rounds each. Wiring: a boss set keyed by family
+(`Sound.SETS["boss"]` or a `music("boss", family)` form); the battle carries `faction`
+and the boss unit is `elite`, so the skirmish screen can ask for it; families without a
+theme fall back to the skirmish pick. Open: whether the final battle (sealing the
+source rift) has a boss of its own, and so a fourth piece or The Far Bank's climax cut.
+(3) Levels: the map's two at -24.9, the skirmish's three at -20.7; anything moved to
+another screen needs its level moved with it. (4) The phone: nothing has been heard on
+a device; the mix was checked by measurement only. (5) The real recordings and the real
+track remain section 12's open question; everything here is a placeholder in the
+decided register.
 
 **Open, in the order I would take them.**
 
