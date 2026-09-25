@@ -144,12 +144,14 @@ pads, bells with a three-tap echo, glitch clicks and stutters), form P A C E D T
 (a gradual build from the choir and kick alone through the groove to the lift, the
 bells' lift, minor strings, interlude with 7/8 closes, triplet turn, the quiet before, a
 twenty-eight-bar climax that starts level and then swells each voice in and out twice
-before thinning into the closer). Ryan: almost done. `music_skirmish` is the **human theme** (100, 83 bars, 3:16): the hybrid palette
+before thinning into the closer). Ryan: almost done. `music_skirmish` is the **human theme** (100, 86 bars, 3:25): the hybrid palette
 (real drums with many cymbals, the real guitar's mechanical chug, the real bass driven,
-the soft sub, the crunch synth, the original piano, the synth lead), form A C N L M X U F
-S K J (the riff in three stages, lift, riff, second lift, a bar down, the seven, the
-unison over a drum solo, keys, guitar solo, keyboard solo over two walking basses, a
-one-bar descent). `music_rift_calm` (90, 6/8 throughout, 3:11) and `music_human_calm`
+the soft sub, the crunch synth, the original piano, the synth lead), form A B C N L M X U
+F W S Y K J (the riff in three stages, a drum-fill turn, lift, riff on power chords,
+second lift, a bar down, the seven, the unison over a drum solo, keys, the keys' turn,
+guitar solo climbing to a held note, a two-bar breath, the keyboard solo six percent
+slower over dark chords, a one-bar descent). `drum_gain` per section and a `clean`
+guitar voice exist for it. `music_rift_calm` (90, 6/8 throughout, 3:11) and `music_human_calm`
 (96, four on the floor, industrial, 3:00) are their calm siblings, in `Sound.NAMES` and
 `TEMPO`, not hooked to a screen. The pure-synth versions survive as sketches
 (`map_synth`, `skirmish_synth`), as do `map_86/88/92`, `map_outro` and `bass_samples`.
