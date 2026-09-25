@@ -138,12 +138,13 @@ changes. Loops are levelled by mean RMS pinned where Ryan judged them (`LEVELS`)
 effects by their loudest 50 ms. Ryan's rule: the kick keeps its places for the whole
 track, whatever the meter.
 
-*The tracks.* `music_map` is the **rift theme** (90, 79 bars, 3:29): the real orchestral
+*The tracks.* `music_map` is the **rift theme** (90, 85 bars, 3:45): the real orchestral
 palette (bass drum, cellos, contrabass, violins, horns, harp, timpani, choir, strings
-pads, bells with a three-tap echo, glitch clicks and stutters), form P A C E Q D T V G H
-(groove bare, groove, lift, strings, bridge, interlude with 7/8 closes, triplet turn, the
-quiet before, a twenty-bar climax where each voice leads in turn, the closer). Ryan: almost
-done. `music_skirmish` is the **human theme** (100, 83 bars, 3:16): the hybrid palette
+pads, bells with a three-tap echo, glitch clicks and stutters), form P A C E D T V G H
+(a gradual build from the choir and kick alone through the groove to the lift, the
+bells' lift, minor strings, interlude with 7/8 closes, triplet turn, the quiet before, a
+twenty-eight-bar climax that starts level and then swells each voice in and out twice
+before thinning into the closer). Ryan: almost done. `music_skirmish` is the **human theme** (100, 83 bars, 3:16): the hybrid palette
 (real drums with many cymbals, the real guitar's mechanical chug, the real bass driven,
 the soft sub, the crunch synth, the original piano, the synth lead), form A C N L M X U F
 S K J (the riff in three stages, lift, riff, second lift, a bar down, the seven, the
