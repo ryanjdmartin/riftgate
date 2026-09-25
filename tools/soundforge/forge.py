@@ -1427,11 +1427,15 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
                     return r0
             return 0
         on = [bool(per_bar[i]) and form[i] in secs and i - run_start(i) >= int(skip.get(form[i], 0)) for i in range(bars)]
+        # A pad with a `chord` of its own holds it through the run, whatever the bars' chords
+        # do (a drone under a riff, Ryan, 25 September); otherwise it follows the bar.
+        own_chord = pad.get("chord")
+        pad_bar = [own_chord if (own_chord and per_bar[i]) else per_bar[i] for i in range(bars)]
         xf = 0.5   # seconds of crossfade between one chord and the next in a run
         b = 0
         while b < bars:
             e = b
-            while e < bars and per_bar[e] == per_bar[b] and form[e] == form[b] and on[e] == on[b]:
+            while e < bars and pad_bar[e] == pad_bar[b] and form[e] == form[b] and on[e] == on[b]:
                 e += 1
             if on[b]:
                 first = b == 0 or not on[b - 1]
@@ -1439,7 +1443,7 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
                 t0 = tm(starts[b])
                 t1 = tm(starts[e]) if e < bars else tm(total)
                 n_span = int(round((t1 - t0) * SR)) + (0 if last else n_of(xf))
-                p = PAD_INST[inst(pad["inst"])](per_bar[b], n_span, pad) * pad.get("gains", {}).get(form[b], 1.0)
+                p = PAD_INST[inst(pad["inst"])](pad_bar[b], n_span, pad) * pad.get("gains", {}).get(form[b], 1.0)
                 T = len(p) / SR
                 p *= env_pts(len(p), [(0.0, 0.0), (0.35 if first else xf, 1.0), (T - (0.25 if last else xf), 1.0), (T, 0.0)])
                 if pad.get("pump"):
@@ -2242,9 +2246,10 @@ def music_skirmish(palette="hybrid"):
         ],
         pad=[{"inst": "choir_real" if real else "choir", "gain": 0.18, "vowel": "oh", "sections": "C"},
              # A subtle drone under the power chords, for drive (Ryan, 25 September): the
-             # sweep pad's saws low on the bar's chord, from the riff's third stage and under
-             # the riff between the lifts.
-             {"inst": "sweep", "gain": 0.09, "octave": 0, "rate": 0.08, "sections": "AN", "skip": {"A": 8}}],
+             # sweep pad's saws low, held on E across the whole four-bar cycle rather than
+             # following the bars' chords (continuous, not part of the riff), from the riff's
+             # third stage and under the riff between the lifts.
+             {"inst": "sweep", "gain": 0.09, "octave": 0, "rate": 0.08, "sections": "AN", "skip": {"A": 8}, "chord": [0, 7, 12]}],
         drum_gain={"U": 1.3, "S": 1.15, "R": 1.25, "Z": 1.3, "W": 1.25, "Q": 1.2},
         crescendo={"S": (0.85, 1.0), "R": (1.0, 1.12), "Z": (1.12, 1.3)},
         tilt=3.0, low=(150.0, -6.0),
