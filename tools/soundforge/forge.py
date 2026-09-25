@@ -1271,6 +1271,7 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
         return tm(step) + (RNG.uniform(-slop_t, slop_t) if slop_t else 0.0)
 
     def span(step, length):
+        # Seconds for `length` steps from `step`; a stab's or chord note's `dur` is steps too.
         return tm(step + length) - tm(step)
 
     def vel():
@@ -1345,6 +1346,28 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
 
         def vs(step):
             return swell(step) * (shape(own, run_pos(step)) if own else 1.0)
+
+        def run_pos_f(step):
+            # `run_pos` for a fractional step (the end of a held note).
+            bar = step_bar[min(int(step), total - 1)]
+            for r0, r1 in runs:
+                if r0 <= bar < r1:
+                    s0 = starts[r0]
+                    s1 = starts[r1] if r1 < bars else total
+                    return min(1.0, (step - s0) / float(s1 - s0))
+            return 0.0
+
+        def along(note, i, length):
+            # The voice's own curve across a held note (a bass that clips to one level
+            # would otherwise ignore a fade written for its bar).
+            if not own or length < 2:
+                return note
+            pos = np.linspace(run_pos(i), run_pos_f(i + length), len(note))
+            if isinstance(own[0], (tuple, list)):
+                g = np.interp(pos, [p[0] for p in own], [p[1] for p in own])
+            else:
+                g = own[0] + (own[1] - own[0]) * pos
+            return note * (g / max(float(g[0]), 1e-6))
         if mode == "riff":
             i = 0
             while i < len(s):
@@ -1357,7 +1380,8 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
                 while i + length < len(s) and s[i + length] == "-":
                     length += 1
                 f = E2 * 2.0 ** ((semis + 12 * octave) / 12.0)
-                buf = at(buf, NOTE_INST[name](f, span(i, length) * hold, params), when(i + late), gain * vel() * vs(i), wrap=True)
+                note = along(NOTE_INST[name](f, span(i, length) * hold, params), i, length)
+                buf = at(buf, note, when(i + late), gain * vel() * vs(i), wrap=True)
                 i += length
         elif mode == "chord":
             for i, c in enumerate(s):
@@ -1484,7 +1508,7 @@ MUSIC = {
                                  "F": "keys section: the sub punching once a bar then fading on the roots with a soft touch on three, a fifth under it late, the lead's tune and chord work",
                                  "S": "the climax: a new unison riff on the lead guitar voice, the chug with a fifth and the driven bass, a backing guitar ringing the chord a whole bar from each one, intense drums",
                                  "R": "the climax's second set: the keys join the riff, the drums more intense",
-                                 "Z": "the climax's third set: double kicks on the sixteenths, the backing guitar on the quarters, nothing backed off",
+                                 "Z": "the climax's third set: double kicks on the sixteenths, the keys on simple chords on the beat, nothing backed off",
                                  "K": "keyboard solo, sixteen bars, six percent slower: the piano in single notes drifting from the crunch synth's walk, dark chords held on guitar and piano changing with crashes that fade to nothing",
                                  "J": "the descent, two bars: chug, bass and lead down in a gallop with the toms and cymbals on its hits"}},
 }
@@ -2118,8 +2142,10 @@ def music_skirmish(palette="hybrid"):
              "pat": {"Y": "0---------------"}},
             # A backing guitar on the chord, filling the air; the keys on the riff from the
             # second set.
-            {"inst": "guitar_hold", "mode": "stab", "gain": 0.9, "dur": 8.0,
-             "pat": {"S": "x...............", "R": "x...............", "Z": "x...x...x...x...", "Y": "x..............."}},
+            {"inst": "guitar_hold", "mode": "stab", "gain": 0.9, "dur": 20,
+             "pat": {"S": "x...............", "R": "x...............", "Z": "x...............", "Y": "x..............."}},
+            {"inst": "epiano", "mode": "stab", "gain": 0.28, "dur": 4,
+             "pat": {"Z": "x...x...x...x..."}},
             {"inst": backing, "mode": "riff", "gain": 0.3, "octave": -1,
              "pat": {"R": "0.0-3.0", "Z": "0.0-3.0"}},
             {"inst": "epiano", "mode": "riff", "gain": 0.4, "octave": 1, "hold": 0.9,
@@ -2134,11 +2160,11 @@ def music_skirmish(palette="hybrid"):
             # the guitar and piano chords.
             {"inst": "bass", "mode": "riff", "gain": 0.5, "legato": True, "params": {"drive": 3.5, "cutoff": 800.0},
              "pat": {"V": "0---------------"}},
-            {"inst": "epiano", "mode": "chord", "gain": 0.6, "octave": 2, "dur": 6.0,
+            {"inst": "epiano", "mode": "chord", "gain": 0.6, "octave": 2, "dur": 20,
              "pat": {"V": "1..............."}},
-            {"inst": "guitar_hold", "mode": "stab", "gain": 0.55, "dur": 8.0,
+            {"inst": "guitar_hold", "mode": "stab", "gain": 0.55, "dur": 20,
              "pat": {"V": "x..............."}},
-            {"inst": "epiano", "mode": "stab", "gain": 0.55, "dur": 14.0,
+            {"inst": "epiano", "mode": "stab", "gain": 0.55, "dur": 20,
              "pat": {"V": "x..............."}},
             # The keyboard solo: the piano in single notes drifting from the crunch synth's
             # walk; the guitar and piano holding dark chords that change with the crashes.
