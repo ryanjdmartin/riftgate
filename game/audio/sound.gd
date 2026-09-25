@@ -33,14 +33,18 @@ const NAMES := [
 	"music_map", "music_skirmish", "music_rift_calm", "music_human_calm", "music_rift_drive", "music_human_heavy",
 ]
 
-## What a screen's music is: a set of loops played in turn, one full loop each, the last
-## crossfading into the first again. The map plays the two calm tracks, rift B and human B
-## (Ryan, 25 September: both very good; one loop of each, then crossfade, to judge the
-## crossfade). The skirmish plays human A. A set of one loops as it always did.
+## What a screen's music is: a set of loops. A cycling set plays them in turn, one full
+## loop each, the last crossfading into the first again: the map's, the two calm tracks,
+## rift B and human B (Ryan, 25 September: both very good; one loop of each, then
+## crossfade, to judge the crossfade). A picking set (PICK) takes one loop per visit, the
+## next one each visit, and loops it: the skirmish's, human A and rift C, since a fight
+## must never crossfade tracks in the middle (Ryan, the same day: fade in from the map,
+## loop, fade back to the map on exit).
 const SETS := {
 	"map": ["music_rift_calm", "music_human_calm"],
-	"skirmish": ["music_skirmish"],
+	"skirmish": ["music_skirmish", "music_rift_drive"],
 }
+const PICK := ["skirmish"]
 
 ## Pitched sounds (a horn, a chord, a drone) play at their written pitch; the rest get VARY.
 const TONAL := ["contact", "victory", "defeat", "spawn", "engage", "overheat"]
@@ -226,6 +230,10 @@ func _music_to(name: String, restart: bool = false) -> void:
 	if name == _set:
 		return
 	_set = name
+	if PICK.has(name) and loops.size() > 1:
+		# The next loop each visit; it starts from its top.
+		_set_at[name] = (int(_set_at.get(name, -1)) + 1) % loops.size()
+		_pos.erase(loops[int(_set_at[name])])
 	_fade_to(loops[int(_set_at.get(name, 0)) % loops.size()], FADE_OUT, FADE_IN, FADE_IN_DELAY)
 
 
@@ -277,7 +285,7 @@ func _fade_to(full: String, fade_out: float, fade_in: float, delay: float) -> vo
 	var pos := fmod(float(_pos.get(full, 0.0)), maxf(s.get_length(), 0.001))
 	into.play(pos)
 	_fade.tween_method(_fade_in_gain.bind(into), 0.0, 1.0, fade_in).set_delay(delay)
-	if SETS.get(_set, []).size() > 1:
+	if SETS.get(_set, []).size() > 1 and not PICK.has(_set):
 		_advance.start(maxf(0.1, s.get_length() - pos - SET_FADE))
 
 

@@ -10,6 +10,8 @@ func test_every_named_sound_has_a_file() -> void:
 
 
 func test_every_set_names_known_loops() -> void:
+	for picked in Sound.PICK:
+		assert_true(Sound.SETS.has(picked), "picking set %s is a set" % picked)
 	for set_name in Sound.SETS:
 		assert_true(Sound.SETS[set_name].size() >= 1, "set %s has a loop" % set_name)
 		for loop in Sound.SETS[set_name]:

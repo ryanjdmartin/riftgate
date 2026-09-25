@@ -160,12 +160,14 @@ variations, 2:29) and `music_human_calm` (94, four on the floor, industrial, 3:0
 their calm siblings, and **the map's music for now** (Ryan, 25 September: both very good):
 `Sound.SETS["map"]` plays them in turn, one full loop each, crossing over the seam for
 `SET_FADE` seconds, and the set resumes its current loop where it left after a fight; a
-new battle restarts the set from rift B's top. The skirmish set is human A. Rift A is in
-the table, unhooked. The rift theme runs at 86 now. The interface effects are future-digital (a sine with a shimmer and air),
+new battle restarts the set from rift B's top. The skirmish set is human A and rift C,
+**picked** (`Sound.PICK`): one loop per fight, the next each fight, looped, never a
+crossfade mid-fight. Rift A is in the table, unhooked. The rift theme runs at 86 now. The interface effects are future-digital (a sine with a shimmer and air),
 not the pulse wave. Third tracks, both rebuilt after Ryan's first notes (25 September, unheard since):
-`music_rift_drive` (**rift C**: 126, E Phrygian, a pizzicato three-three-two over
-timpani as the engine, Ryan's kick-chug-snare pattern as one section, a new motif on horn
-and violins, eight bars of 3/4, 72 bars, 2:13) and `music_human_heavy` (**human C**: 105,
+`music_rift_drive` (**rift C**, "pretty great", **in the skirmish set** with human A: 126,
+E Phrygian, a pizzicato three-three-two over timpani as the engine, Ryan's kick-chug-snare
+pattern as one section, a new motif on horn and violins, eight bars of 3/4, extended to a
+second developed pass, 144 bars, 4:27, at the skirmish level) and `music_human_heavy` (**human C**: 105,
 the Omnific construction on the human sound leaning metal: the guitar chugging the riff's
 power chords with the driven bass, the clean bass melody doubled by the lead guitar, the
 drone, a section in seven, 66 bars, 2:06; `bass_clean`), in the table, not hooked. The pure-synth versions survive as sketches
