@@ -155,7 +155,10 @@ guitar voice exist for it. `music_rift_calm` (90, 6/8 throughout, a ground bass 
 variations, 2:29) and `music_human_calm` (94, four on the floor, industrial, 3:04) are
 their calm siblings, in `Sound.NAMES` and `TEMPO`, not hooked to a screen. The rift theme
 runs at 86 now. The interface effects are future-digital (a sine with a shimmer and air),
-not the pulse wave. The pure-synth versions survive as sketches
+not the pulse wave. Third tracks (25 September): `music_rift_drive` (112, an electronic
+chug on Ryan's kick-chug-snare pattern under the orchestra, 2:17; `e_chug`) and
+`music_human_heavy` (105, full Omnific, bass-led, a driven bass and a clean bass an
+octave up, a section in seven, 2:05; `bass_clean`), in the table, not hooked. The pure-synth versions survive as sketches
 (`map_synth`, `skirmish_synth`), as do `map_86/88/92`, `map_outro` and `bass_samples`.
 
 *The effects.* Two registers: the interface sci-fi electronic (blips and chirps), combat
