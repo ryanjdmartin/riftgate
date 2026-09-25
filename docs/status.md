@@ -176,7 +176,7 @@ under big moments; `TONAL` sounds keep their pitch; a new battle restarts the ma
 from the top after the map is drawn, a fight's return resumes it. The display's scan and
 idle stay silent by decision.
 
-*To do, audio (25 September).* (1) Listen: rift A (twenty-second listen built: the climax thirty-two bars, the rotation starting at the repeat edge and peaking from bar ten, peaks a fifth lower; 89 bars, 3:56) and human A (twenty-second listen built: the riff sixteen bars with a continuous E drone under its power chords and the second riff, a pad `skip` and `chord`; "everything else fixed, breaths and turns great"); human B
+*To do, audio (25 September).* (1) Listen: rift A (**locked** at the twenty-second listen's build: the climax thirty-two bars, the rotation from the repeat edge; 89 bars, 3:56) and human A (twenty-third listen built: the riff sixteen bars with a continuous E drone under its power chords and the second riff, its filter held open and the drone up so it reads through; a pad `skip` and `chord`, the sweep pad's `open` and `depth`; "everything else fixed, breaths and turns great"); human B
 (calm) and C (heavy) and rift B (calm, the ground bass) and C (drive) not yet heard at
 all beyond a first pass on the two calms; the interface effects since the third audition
 (an octave and a third down, glides cut, half again as long, darker: `UI_PITCH`, `UI_GLIDE`, `UI_LEN` and `blip` in the forge; `forge.py audition`). Expect a round of notes on each. (2) The

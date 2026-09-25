@@ -2249,7 +2249,9 @@ def music_skirmish(palette="hybrid"):
              # sweep pad's saws low, held on E across the whole four-bar cycle rather than
              # following the bars' chords (continuous, not part of the riff), from the riff's
              # third stage and under the riff between the lifts.
-             {"inst": "sweep", "gain": 0.09, "octave": 0, "rate": 0.08, "sections": "AN", "skip": {"A": 8}, "chord": [0, 7, 12]}],
+             # Its filter sits open and barely moves, and it is up, so the sustain reads through
+             # the riff (Ryan: not hearing it sustained; it was level but masked).
+             {"inst": "sweep", "gain": 0.16, "octave": 0, "rate": 0.08, "depth": 0.3, "open": 0.75, "sections": "AN", "skip": {"A": 8}, "chord": [0, 7, 12]}],
         drum_gain={"U": 1.3, "S": 1.15, "R": 1.25, "Z": 1.3, "W": 1.25, "Q": 1.2},
         crescendo={"S": (0.85, 1.0), "R": (1.0, 1.12), "Z": (1.12, 1.3)},
         tilt=3.0, low=(150.0, -6.0),
@@ -2280,9 +2282,10 @@ def sketch_bass_samples():
 # the house roots more (a steady soft kick, off-beat opens, a pulsing sub, pumped and swept
 # pads), each in its theme's palette. Not hooked in the game yet; a multi-track setup later.
 
-def pad_sweep(semis, n, gain=0.14, octave=1, rate=0.05):
+def pad_sweep(semis, n, gain=0.14, octave=1, rate=0.05, depth=1.0, open_=0.5):
     # A house pad: saws under a low-pass that opens and closes slowly (two fixed filters
-    # blended by a slow sine, so it costs nothing).
+    # blended by a slow sine, so it costs nothing). `open_` is where the blend sits (0 dark,
+    # 1 bright) and `depth` how far the sine swings it either way; a drone wants it steady.
     x = np.zeros(n)
     for s in semis:
         f = E2 * 2.0 ** (s / 12.0) * (2 ** octave)
@@ -2290,11 +2293,11 @@ def pad_sweep(semis, n, gain=0.14, octave=1, rate=0.05):
     x /= max(1, len(semis))
     x = sat(x, 1.4)
     dark, bright = lp(x, 420.0), lp(x, 2600.0)
-    m = 0.5 + 0.5 * np.sin(2.0 * math.pi * rate * t_of(n) + RNG.uniform(0.0, 6.0))
+    m = np.clip(open_ + 0.5 * depth * np.sin(2.0 * math.pi * rate * t_of(n) + RNG.uniform(0.0, 6.0)), 0.0, 1.0)
     return (dark * (1.0 - m) + bright * m) * gain
 
 
-PAD_INST["sweep"] = lambda c, n, p: pad_sweep(c, n, p.get("gain", 0.14), p.get("octave", 1), p.get("rate", 0.05))
+PAD_INST["sweep"] = lambda c, n, p: pad_sweep(c, n, p.get("gain", 0.14), p.get("octave", 1), p.get("rate", 0.05), p.get("depth", 1.0), p.get("open", 0.5))
 
 
 def music_rift_calm():
