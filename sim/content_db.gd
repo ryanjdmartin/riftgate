@@ -342,9 +342,11 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String]) -> void:
 	if Face.kind_from_name(kind) < 0 or kind == "blank":
 		errs.append("%s: bad face kind '%s'" % [where, kind])
 	if kind == "attack":
+		# Melee is authored too (26 September: a claw is a claw); until then it only ever
+		# came from a passive's set_reach.
 		var reach := str(fd.get("reach", ""))
-		if not ["line", "indirect"].has(reach):
-			errs.append("%s: attack face needs reach line or indirect, got '%s'" % [where, reach])
+		if not ["line", "indirect", "melee"].has(reach):
+			errs.append("%s: attack face needs reach line, indirect or melee, got '%s'" % [where, reach])
 	if int(fd.get("power", 0)) < 0:
 		errs.append("%s: power cannot be negative" % where)
 	if int(fd.get("strikes", 1)) < 1:

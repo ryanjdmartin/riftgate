@@ -1,8 +1,10 @@
 {
   "_about": "Components: the equipment a mech's die is made of. Each is exactly one entry on the die (its face: the engine's word for one entry). Nothing generic exists: every entry on a die is a component, or an empty hardpoint. A component a chassis lists under fixed is built in and is never bought or crafted, which is what makes it unique. Numbers are in tens. Kinetic entries carry power and power_max and roll between them, and may crit; energy entries are static and never crit. Keywords are a list; authored entries should stay under the validator's cap, upgrades may push past it. passive is null or one object, same shape as a chassis passive. Shown to the player: codex (the inspect entry), flavour (a quote); both still to be written. design is internal and never shown: fantasy, niche. Numbers are placeholders.",
   "entries": [
-    {"id": "chainsaw_claw", "name": "Chainsaw Claw", "maker": "minerva", "codex": "", "flavour": "", "design": {"fantasy": "Two swings a round if the dice agree. Ghouls in threes.", "niche": ""}, "face":
-      {"kind": "attack", "reach": "line", "power": 20, "power_max": 40, "crit": 10, "keywords": ["cleave"], "heat": 0}, "passive": null, "tags": ["kinetic", "melee", "horde"] },
+    {"id": "chainsaw_claw", "name": "Chainsaw Claw", "maker": "minerva", "codex": "", "flavour": "", "design": {"fantasy": "Two swings a round if the dice agree. Ghouls in threes.", "niche": "", "notes": "Reach melee since 26 September (authored melee is allowed now): the front rank, and the back only once the front is gone."}, "face":
+      {"kind": "attack", "reach": "melee", "power": 20, "power_max": 40, "crit": 10, "keywords": ["cleave"], "heat": 0}, "passive": null, "tags": ["kinetic", "melee", "horde"] },
+    {"id": "missile_rack", "name": "Missile Rack", "maker": "minerva", "codex": "", "flavour": "", "design": {"fantasy": "As many missiles as it could carry. The box on the Badger's deck.", "niche": "Minerva's indirect fire: the tank that reaches the back rank.", "notes": "Claude's fill, 26 September, so the Badger's missiles exist as a component."}, "face":
+      {"kind": "attack", "reach": "indirect", "power": 20, "power_max": 40, "crit": 10, "keywords": [], "heat": 10}, "passive": null, "tags": ["kinetic", "artillery"] },
     {"id": "slug_cannon", "name": "Slug Cannon", "maker": "minerva", "codex": "", "flavour": "", "design": {"fantasy": "One big round. Warm barrel.", "niche": ""}, "face":
       {"kind": "attack", "reach": "line", "power": 30, "power_max": 60, "crit": 15, "keywords": [], "heat": 10}, "passive": null, "tags": ["kinetic", "single"] },
     {"id": "ablative_plating", "name": "Ablative Plating", "maker": "minerva", "codex": "", "flavour": "", "design": {"fantasy": "Bolt-on armour that comes off in sheets so the hull does not.", "niche": ""}, "face":
@@ -32,6 +34,14 @@
     {"id": "arc_projector", "name": "Arc Projector", "maker": "kestrel", "codex": "", "flavour": "", "design": {"fantasy": "Lightning that picks its own second target.", "niche": ""}, "face":
       {"kind": "attack", "reach": "line", "power": 30, "keywords": ["chain"], "heat": 10}, "passive": null, "tags": ["energy", "multi"] },
     {"id": "deflector", "name": "Deflector", "maker": "kestrel", "codex": "", "flavour": "", "design": {"fantasy": "A very expensive bubble.", "niche": ""}, "face":
-      {"kind": "shield", "power": 30}, "passive": null, "tags": ["defense"] }
+      {"kind": "shield", "power": 30}, "passive": null, "tags": ["defense"] },
+    {"id": "umbra_projector", "name": "Umbra Projector", "maker": "aphelion", "codex": "", "flavour": "", "design": {"fantasy": "A shadow falls across the target and it forgets what it was about to do.", "niche": "Aphelion's suppress: a flat energy number on a line, so the control lands every time it comes up.", "notes": "Claude's fill, 26 September; name and numbers are Ryan's to move."}, "face":
+      {"kind": "attack", "reach": "line", "power": 20, "keywords": ["suppress"], "heat": 10}, "passive": null, "tags": ["energy", "control"] },
+    {"id": "solar_flare_array", "name": "Solar Flare Array", "maker": "aphelion", "codex": "", "flavour": "", "design": {"fantasy": "Lobbed light. It lands at the same brightness every time and keeps burning.", "niche": "Indirect burn with a steady roll: predictable stacks for the passive to read.", "notes": "Claude's fill, 26 September."}, "face":
+      {"kind": "attack", "reach": "indirect", "power": 10, "power_max": 30, "crit": 5, "keywords": ["burn", "steady"], "heat": 10}, "passive": null, "tags": ["kinetic", "artillery", "burn"] },
+    {"id": "corona_shield", "name": "Corona Shield", "maker": "aphelion", "codex": "", "flavour": "", "design": {"fantasy": "A ring of light that scours whatever the rift left on the metal.", "niche": "The cleanse carrier: shield an ally and clear its statuses.", "notes": "Claude's fill, 26 September."}, "face":
+      {"kind": "shield", "power": 20, "keywords": ["cleanse"]}, "passive": null, "tags": ["defense", "support"] },
+    {"id": "pulse_repeater", "name": "Pulse Repeater", "maker": "aphelion", "codex": "", "flavour": "", "design": {"fantasy": "A small fast gun that gives the machine its turn back.", "niche": "The tempo tool: a rapid entry so a control frame gets another look at its die.", "notes": "Claude's fill, 26 September; the first rapid component in the pool."}, "face":
+      {"kind": "attack", "reach": "line", "power": 10, "keywords": ["rapid"], "heat": 5}, "passive": null, "tags": ["energy", "single", "tempo"] }
   ]
 }

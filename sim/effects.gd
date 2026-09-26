@@ -68,7 +68,8 @@ const STATUS := {
 	"numbed": {"id": "numbed", "name": "Numbed", "description": "Resists being suppressed, 10% per stack.",
 		"effects": [{"trigger": "status", "effect": "resist_suppress", "value": 10}]},
 }
-const SUPPORTED_WHEN := ["component_cracked", "reach_melee", "reach_line", "reach_indirect"]
+## target_status: the foe struck carries any live status (burning, suppressed, numbed...).
+const SUPPORTED_WHEN := ["component_cracked", "reach_melee", "reach_line", "reach_indirect", "target_status"]
 ## Stats a static effect may change: the mech's base numbers by these names.
 const STATS := ["hull", "shield", "heat", "armour", "move", "recharge", "cooling"]
 ## Effects that are bonuses (a destroyed component keeps them) rather than abilities.
@@ -277,7 +278,8 @@ static func _fires(trigger: String, crit: bool) -> bool:
 
 ## Does an effect's `when` hold for the component in hand? Reach conditions read the
 ## effective reach, so "+10% melee" follows a component the same passive sent to melee.
-static func _holds(u, eff: Dictionary, face: Face) -> bool:
+## `target` is the foe an attack is aimed at, for conditions on it; null outside an attack.
+static func _holds(u, eff: Dictionary, face: Face, target = null) -> bool:
 	match str(eff.get("when", "")):
 		"":
 			return true
@@ -289,18 +291,20 @@ static func _holds(u, eff: Dictionary, face: Face) -> bool:
 			return face != null and effective_reach(u, face) == Face.Reach.LINE
 		"reach_indirect":
 			return face != null and effective_reach(u, face) == Face.Reach.INDIRECT
+		"target_status":
+			return target != null and target.get("modifiers") != null and not live(target).is_empty()
 	return false
 
 
 ## Every effect taking part in a query: [effect dictionary, modifier], gated as above.
-static func _taking_part(u, trigger: String, face: Face, crit: bool = false) -> Array:
+static func _taking_part(u, trigger: String, face: Face, crit: bool = false, target = null) -> Array:
 	var out: Array = []
 	for m in live(u):
 		for eff in m.effects:
 			if str(eff.get("trigger", "")) != trigger or not _fires(trigger, crit):
 				continue
 			var name := str(eff.get("effect", ""))
-			if not _usable(u, m, name) or not _holds(u, eff, face):
+			if not _usable(u, m, name) or not _holds(u, eff, face, target):
 				continue
 			out.append([eff, m])
 	return out
@@ -327,18 +331,19 @@ static func stat(u, name: String) -> int:
 
 
 ## What the pipeline adds to the crit multiplier (add_crit_damage, on a crit), summed.
-static func crit_bonus(u, face: Face) -> float:
+static func crit_bonus(u, face: Face, target = null) -> float:
 	var total := 0.0
-	for pair in _taking_part(u, "on_crit", face, true):
+	for pair in _taking_part(u, "on_crit", face, true, target):
 		if str(pair[0].get("effect", "")) == "add_crit_damage":
 			total += float(pair[0].get("value", 0)) * pair[1].stacks
 	return total
 
 
 ## An attack after the crit multiplier and the keyword rules: adds, then multiplies, then
-## floors, on damage and on heat; burn and vent from crit effects. Returns
+## floors, on damage and on heat; burn and vent from crit effects. `target` is the foe the
+## blow is aimed at, for conditions on it (null when only the heat is asked). Returns
 ## {damage, heat, burn, vent}.
-static func attack(u, face: Face, dmg: int, heat: int, crit: bool) -> Dictionary:
+static func attack(u, face: Face, dmg: int, heat: int, crit: bool, target = null) -> Dictionary:
 	var d_add := 0.0
 	var d_mult := 1.0
 	var d_floor := 0
@@ -346,8 +351,8 @@ static func attack(u, face: Face, dmg: int, heat: int, crit: bool) -> Dictionary
 	var h_mult := 1.0
 	var burn := 0
 	var vent := 0
-	var parts: Array = _taking_part(u, "on_attack", face, crit)
-	parts.append_array(_taking_part(u, "on_crit", face, crit))
+	var parts: Array = _taking_part(u, "on_attack", face, crit, target)
+	parts.append_array(_taking_part(u, "on_crit", face, crit, target))
 	for pair in parts:
 		var eff: Dictionary = pair[0]
 		var v: float = float(eff.get("value", 0))
@@ -503,6 +508,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"reach_melee": lead += "melee attacks: "
 		"reach_line": lead += "line-of-sight attacks: "
 		"reach_indirect": lead += "indirect attacks: "
+		"target_status": lead += "foes carrying a status: "
 	return lead + body
 
 
@@ -526,7 +532,9 @@ static func explain(u, face: Face) -> Array[String]:
 				if not str(eff.get("when", "")).begins_with("reach_") and _usable(u, m, name) and _holds(u, eff, face) and effective_reach(u, face) == Face.reach_from_name(str(eff.get("value", ""))) and effective_reach(u, face) != face.reach:
 					out.append("%s (%s)" % [effect_text(eff), m.name])
 			elif trig == "on_attack" or trig == "on_crit":
-				if _usable(u, m, name) and _holds(u, eff, face):
+				# A condition on the target is shown as a rule (its lead says when), since
+				# the row has no target in hand.
+				if _usable(u, m, name) and (str(eff.get("when", "")) == "target_status" or _holds(u, eff, face)):
 					out.append("%s (%s)" % [effect_text(eff), m.name])
 	return out
 

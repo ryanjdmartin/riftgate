@@ -3,18 +3,19 @@
   "makers": [
     { "id": "minerva", "name": "Minerva Heavy Works", "style": "Armour first. Everything is a tank, even the ones with legs.", "voice": "Maintenance manual. Terse, exact, proud of tolerances." },
     { "id": "kestrel", "name": "Kestrel Dynamics", "style": "Fast, fragile, over-tuned. Airframes and interceptors.", "voice": "Flight-test log. Clipped, numbers first." },
-    { "id": "wainwright_sutler", "name": "Wainwright & Sutler", "style": "Quads and artillery. Old firm, odd designs, everything works.", "voice": "Field notes. Dry and precise." }
+    { "id": "wainwright_sutler", "name": "Wainwright & Sutler", "style": "Quads and artillery. Old firm, odd designs, everything works.", "voice": "Field notes. Dry and precise." },
+    { "id": "aphelion", "name": "Aphelion", "style": "Descended from the deep-space programme, back since the rifts opened. Humanoid frames, hover platforms, variable geometry; high-tech suites over light hulls. White with a pearl sheen, red markings.", "voice": "Mission-control checklist. Callsigns, go and no-go, every line read back." }
   ],
   "entries": [
     {
       "id": "badger", "name": "Honey Badger", "designation": "EX-45XLE Combat Miner Frame", "maker": "minerva", "silhouette": "tracked",
       "design": { "fantasy": "A repurposed mining vehicle, designed to take severe punishment and keep on working. Refurbishments were minimal, basically bolting on weapons and armour, it keeps most of its utilitarian mining machinery flavour.", "niche": "tanky bruiser" },
       "codex": "The Minerva EX-45L (colloquially nicknamed the \"Badger\") was popular a mining mech widely praised for its reliability and durability, being designed to operate in the harshest, deepest environments imaginable. Reports exist of Badgers being caught in cave-ins while mining over 5 kilometers underground, only to dig their way out to the surface by nightfall, just in time for drinks with the crew. So naturally, when the Rifts opened, the ever-practical Minerva engineering team's first instinct was to finally give their prized Badger claws, teeth, and as many missiles as it could carry, putting its legendary longevity to work on the battlefield.",
-      "hull": 200, "shield": 30, "movespeed": 2, "heat_max": 100, "hardpoints": 4,
-      "armour": 10, "recharge_field": 15, "cooling": 10,
+      "hull": 160, "shield": 30, "movespeed": 2, "heat_max": 80, "hardpoints": 4,
+      "armour": 10, "recharge_field": 15, "cooling": 5,
       "traits": ["tank"],
       "fixed": ["chainsaw_claw", "chainsaw_claw"],
-      "loadout": ["slug_cannon", "slug_cannon", "twin_autoguns", "heat_sink"],
+      "loadout": ["slug_cannon", "missile_rack", "twin_autoguns", "ablative_plating"],
       "passive": {
         "id": "reinforced_skeleton", "name": "Reinforced Skeleton",
         "description": "Legendary Minervan strength. Components can be cracked but never destroyed. Melee attacks deal +10% damage. Cracked weapons become melee-typed, instead of their usual type.",
@@ -30,8 +31,8 @@
       "id": "clydesdale", "name": "Clydesdale", "maker": "wainwright_sutler", "silhouette": "quadruped",
       "design": { "fantasy": "A massive, boxy, heavily armoured, and utilitarian quadruped walker, designed to fill whatever niche the squad is lacking. Like its namesake, it has four thick legs and carries a massive payload on top.", "niche": "Heavy cavalry" },
       "codex": "Surprisingly, or perhaps not, the ever-pragmatic Wainwright & Sutler were the first surviving manufacturer to field a combat walker when the invasion first began. Not knowing the full scope of the threat, the Clydesdale was positioned as a rugged and effective jack-of-all trades, a true workhorse befitting its namesake. A hundred years later, and the original design is still barely changed, its signature W&S simplicity being favourited by pilots and maintenence crews alike. It also serves as an effective training vehicle, as its notoriously poor turning radius results in one less thing for a green pilot to worry about on the battlefield.",
-      "hull": 100, "shield": 40, "movespeed": 3, "heat_max": 60, "hardpoints": 6,
-      "armour": 0, "recharge_field": 20, "cooling": 10,
+      "hull": 140, "shield": 40, "movespeed": 3, "heat_max": 60, "hardpoints": 6,
+      "armour": 5, "recharge_field": 20, "cooling": 5,
       "traits": ["walker"],
       "fixed": [],
       "loadout": ["twin_autoguns", "twin_autoguns", "lance", "pocket_mortar", "ablative_plating", "heat_sink"],
@@ -43,7 +44,7 @@
       "design": { "fantasy": "A priority-target interceptor. Designed for speed and firepower and not much else, taking out a key asset and fleeing while its generous shields recharge.", "niche": "assassin" },
       "codex": "Shortly into the invasion, it was determined that the masses of zombies, demons, and otherwordly things were, frankly, quite dumb without a guiding intelligence coordinating them. Naturally, Kestrel won the bid to produce a small interceptor aircraft, designed to eliminate priority targets and disengage before getting overwhelmed. However, the weapons package traditionally mounted on such a small frame proved ineffective to the task. It wasn't until one inspired engineer suggested cutting all 'uneccesary' weight from the design that a breakthrough was achieved; Armour, heat sinks, weapon regulators, and padded seats were all deemed frivolous, and their omission skyrocketed the Sparrowhawk to excel in its role.",
       "hull": 60, "shield": 60, "movespeed": 5, "heat_max": 60, "hardpoints": 4,
-      "armour": 0, "recharge_field": 30, "cooling": 5,
+      "armour": 0, "recharge_field": 30, "cooling": 0,
       "traits": ["flyer"],
       "fixed": [],
       "loadout": ["overclocked_railgun", "headhunter_rifle", "arc_projector", "deflector"],
@@ -58,22 +59,22 @@
       "flavour": "There's lighting a fire under your ass, and then there's piloting a Sparrowhawk. I suggest a cold plunge before you strap in."
     },
     {
-      "id": "anvil", "name": "Anvil", "maker": "wainwright_sutler", "silhouette": "quadruped",
-      "design": { "fantasy": "Sits at the back of the fight and ruins the back of theirs.", "niche": "" },
-      "codex": "Wainwright & Sutler's fire-support walker. Reaches their back rank from ours, and what it sets alight stays alight.",
-      "hull": 120, "shield": 30, "movespeed": 2, "heat_max": 70, "hardpoints": 6,
-      "armour": 0, "recharge_field": 15, "cooling": 10,
+      "id": "mandrill", "name": "Mandrill", "designation": "SF-07 Perihelion Field Support Frame", "maker": "aphelion", "silhouette": "bipedal",
+      "design": { "fantasy": "A long-armed, stubby-legged plantigrade walker with a high tech suite of weapons and equipment mounted on its backpack. Not fast or heavily armoured, it specializes in battlefield control through status effects and high-tech equipment with complex effects.", "niche": "combat support", "notes": "Numbers, loadout, passive and designation are Claude's first fill (26 September) for Ryan to tweak: hull under the Clydesdale's, shield and field recharge a touch above, a big heat budget for an energy kit, walker legs at 2. The kit is Aphelion's own control suite (two Umbra Projectors to suppress, a Solar Flare Array to burn, a Corona Shield that cleanses, a Pulse Repeater for tempo) plus a borrowed Heat Sink. The passive turns a status on the target into damage." },
+      "codex": "Looking like a cross between an orangutan and a troll, ",
+      "hull": 100, "shield": 40, "movespeed": 2, "heat_max": 80, "hardpoints": 6,
+      "armour": 0, "recharge_field": 20, "cooling": 5,
       "traits": ["walker"],
       "fixed": [],
-      "loadout": ["howitzer", "howitzer", "incendiary_shells", "shock_barrage", "coolant_dump", "flak_skirt"],
+      "loadout": ["umbra_projector", "umbra_projector", "solar_flare_array", "corona_shield", "pulse_repeater", "heat_sink"],
       "passive": {
-        "id": "hot_load", "name": "Hot Load",
-        "description": "When an Wainwright & Sutler shell lands right, it keeps burning.",
+        "id": "subspace_solenoid", "name": "Subspace Solenoid",
+        "description": "Reads an affliction as a field and drives the shot along it. Attacks deal +50% damage to a foe carrying any status.",
         "effects": [
-          { "trigger": "on_crit", "effect": "add_burn", "value": 1 }
+          { "trigger": "on_attack", "effect": "multiply_damage", "value": 1.5, "when": "target_status" }
         ]
       },
-      "flavour": "Wainwright & Sutler fire-support walker. Sits behind the line and unmakes the far side of the fight."
+      "flavour": ""
     }
   ]
 }

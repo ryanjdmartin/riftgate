@@ -3,14 +3,14 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible.
 
-## As of 25 September 2026 (evening)
+## As of 26 September 2026 (midday)
 
-**State.** Tests: 203 tests, 2590 checks, green (`perl -e 'alarm 240; exec @ARGV' godot
+**State.** Tests: 214 tests, 2806 checks, green (`perl -e 'alarm 240; exec @ARGV' godot
 --headless --path . -s tests/run_tests.gd`). Ryan runs a second session on this repo at
 the same time (today: the HUD session, the audio session, the balance session and the
 boss-theme session, which was the audio session resumed from another account): check
 `git status` before committing and stage by path. Chassis ids: `badger`,
-`clydesdale`, `sparrowhawk`, `anvil`. Ryan writes `content/*.json` in his own voice; tests
+`clydesdale`, `sparrowhawk`, `mandrill` (the Anvil became Aphelion's Mandrill, 26 September). Ryan writes `content/*.json` in his own voice; tests
 never hardcode an entry's passive name.
 
 **Where things are.** `sim/` is the headless game (battle map, battlefield resolver,
@@ -73,6 +73,30 @@ yet a pressure on those dice; the Sparrowhawk is carried by the Arc Projector's 
 (46% of its spends). Next rungs when greedy stops being enough: rollout (replay from the
 seed a few rounds ahead), a battle-level bot using the skirmish bot as auto-resolve, a
 CI band test (coarse, or it flakes). The tests never read content: synthetic dice only.
+
+**The Mandrill and the chassis pass (26 September; bible section 7, two Recommended rows).**
+Ryan stubbed Aphelion's Mandrill in `chassis.json` and asked for its components, stats,
+passive and a model, the Aphelion maker entry, and a pass over the other three chassis.
+All of it is Claude's first fill, flagged in each entry's `design.notes`, for Ryan to move.
+Mandrill: hull 100, shield 40, move 2, heat 80, armour 0, recharge 20, cooling 5, six
+hardpoints; loadout two `umbra_projector` (energy line 20, suppress), `solar_flare_array`
+(indirect 10-30, burn, steady), `corona_shield` (shield 20, cleanse), `pulse_repeater`
+(energy line 10, rapid), `heat_sink`; passive Subspace Solenoid: on_attack ×1.5 `when`
+`target_status` (new condition: the foe struck carries any status; read on the primary
+target, passed through `Effects.attack` and `crit_bonus`; the bot passes it too). New
+Minerva `missile_rack` (indirect 20-40, 10 heat). Melee is authored now (the validator
+allows reach melee; `chainsaw_claw` is melee). The pass: Badger hull 160, heat 80, cooling
+5, loadout slug, missile rack, autoguns, ablative plating; Clydesdale hull 140, armour 5,
+cooling 5; Sparrowhawk cooling 0 (its codex cut the heat sinks). Balance rerun
+(`docs/balance.md`, 26 September): the Badger still wins every cell alone at almost no
+cost (armour 10 zeroes a ghoul's 10); the Clydesdale now beats ghouls under greedy and
+still walls at brutes and spawn; the Mandrill alone loses to front packs and beats back
+packs and bosses (Umbra Projector 55% of spends); the team wins everything at no cost,
+so the rank and file's numbers are the next lever, Ryan's call. Model: `mandrill(b)` in
+`tools/lowforge/models_low.py` (62 parts, 1048 triangles; pins hp_1..6 in loadout order:
+projectors on the pauldrons, the flare pods, the Corona dish, the repeater on the right
+forearm, the vent block), built and imported; judged from two hero shots only. Ryan's
+codex line for it is unfinished on purpose and the flavour empty: his voice.
 
 **Statuses and drawn routes (25 September, late; bible section 4 route row and section 7
 status row).** Ryan judged the in-game music controls "generally ok" (no notes). Then
@@ -348,7 +372,8 @@ decided register.
    If the floor is wrong on the device, `SAFE_FLOOR` is the knob. Still to judge on the
    phone: the frame rate, the sound set, and the black gap between the map's frame and
    the log on a tall screen (the map view grows but its frame does not fill it).
-   Badger tweaks in Blender, then joints and pins (`forge.py export badger`); notes on
+   Badger tweaks in Blender, then joints and pins (`forge.py export badger`); notes on the
+   Mandrill's model, numbers, kit and passive (all first fills); notes on
    the Clydesdale; the Anvil.
 2. Ryan's content: names for overheating and scorch; strikes, breach, scorch, disable and
    rapid placed on foes and components; Ablative Plating as armour or shield; the Badger's

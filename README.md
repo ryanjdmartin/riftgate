@@ -95,7 +95,7 @@ godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmis
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/battle_screen.tscn shot.png route
 
 # build ally units from their briefs (tools/lowforge/models_low.py), then re-import
-tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger sparrowhawk clydesdale
+tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger sparrowhawk clydesdale mandrill
 godot --headless --path . --import
 godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva hero.png front 480 480   # front, rear, or a yaw in degrees
 godot --path . --resolution 360x640 --disable-vsync -s tools/perf_probe.gd     # the battle map's ms per frame and draw calls, at zoom 1 and full zoom
@@ -161,7 +161,7 @@ of the player's turn; the enemy's parting blows replay before the team flees. Bl
 are discarded at end of turn. MENU pauses: resume, settings, or quit to the harness.
 
 The harness can add the faction's massive elite, which fills both ranks of a column. For the
-standalone screen, `RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,anvil` picks the team and
+standalone screen, `RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,mandrill` picks the team and
 `RIFTGATE_ELITE=1` adds the elite.
 
 The screens are laid out for 720 by 1280 and the window expands its height to the phone's

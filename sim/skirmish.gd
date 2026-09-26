@@ -531,14 +531,16 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 		var heat := f.heat if s == 0 else 0
 		var crit := f.crit > 0 and rng.randi_range(1, 100) <= f.crit
 		if crit:
-			dmg = int(roundf(dmg * (Face.CRIT_MULT + f.crit_bonus + Effects.crit_bonus(ms.unit, f))))
+			dmg = int(roundf(dmg * (Face.CRIT_MULT + f.crit_bonus + Effects.crit_bonus(ms.unit, f, target))))
 		if f.has(Face.Keyword.OVERCHARGE):
 			dmg *= 2
 			heat *= 2
 		if f.has(Face.Keyword.EXECUTE) and target.hp * 2 <= target.hp_max:
 			dmg = int(roundf(dmg * (1.5 if target.is_massive() else 2.0)))   # bosses and elites: half the bonus
 		# Then the pipeline: every live modifier's adds, multiplies and floors, in that order.
-		var modded := Effects.attack(ms.unit, f, dmg, heat, crit)
+		# Conditions on the foe read the primary target; a spread or a penetrate carries
+		# the same blow to the others.
+		var modded := Effects.attack(ms.unit, f, dmg, heat, crit, target)
 		dmg = modded["damage"]
 		heat_total += modded["heat"]
 		extra_burn += modded["burn"]

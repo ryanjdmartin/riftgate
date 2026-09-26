@@ -108,7 +108,7 @@ func _start_music() -> void:
 
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks).
-## RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,anvil overrides the team; RIFTGATE_FACTION picks
+## RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,mandrill overrides the team; RIFTGATE_FACTION picks
 ## the enemy.
 static func _default_battle() -> Battle:
 	var db := ContentDB.load_default()
@@ -816,7 +816,11 @@ func _portrait_mech(u: Unit, db: ContentDB) -> Control:
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
 	var maker := str(db.chassis.get(u.chassis_id, {}).get("maker", "minerva"))
 	var view := MechView3D.make(u.chassis_id, maker, "clean", "badger", MechView3D.YAW_FRONT, Vector2i(96, 96), false, u.paint)
-	add_child(view)
+	# The view lives in the portrait's own box, so it dies with the panel. It used to hang off
+	# the screen root: every contact, and every tap of the panel's arrows, left another pair of
+	# viewports rendering every frame for the rest of the battle, until the phone's GL driver
+	# ran out of memory (Ryan, 26 September: crashes after some minutes on Android).
+	box.add_child(view)
 	view.strip_silhouette()
 	var tr := TextureRect.new()
 	tr.texture = view.texture

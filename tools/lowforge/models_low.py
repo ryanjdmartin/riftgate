@@ -241,6 +241,99 @@ def clydesdale(b):
 clydesdale.maker = "wainwright_sutler"
 
 
+def mandrill(b):
+    """Aphelion "Mandrill": a long-armed, stubby-legged plantigrade walker, orangutan and
+    troll at once, its high-tech suite riding on a backpack (Ryan's brief, 26 September).
+    White pearl plate with red markings. Big flat feet and short legs under a squat pelvis;
+    a barrel torso leaning a little forward; no head to speak of, a sensor pod low between
+    the shoulders with one red eye under a brow; red pauldrons carrying the two Umbra
+    Projectors; arms as long as the machine is tall, knuckles on the ground ahead of the
+    feet, the Pulse Repeater on the right forearm; a tall rack on its back with the flare
+    pods, the Corona dish, the vent block and a mast. First pass from the brief; every
+    number is a proportion Ryan may change."""
+    # Feet and legs: plantigrade, the whole sole on the ground, heel to toe; short shins
+    # and thighs, the knees barely above the ankles. Nothing hangs below z = 0.
+    for s in (-1.0, 1.0):
+        cx = s * 13.0
+        b.loft([(-13.0, rect(cx, 14.0, 0.0, 7.0)), (2.0, rect(cx, 16.0, 0.0, 8.5)), (17.0, rect(cx, 14.0, 0.0, 4.0))], "steel.plate", "foot")
+        b.box(cx - 7.5, cx + 7.5, 14.0, 18.0, 0.0, 3.0, "steel.dark", "toe_cap")
+        ankle = (cx, 0.0, 8.0)
+        knee = (cx, -2.0, 22.0)
+        hip = (cx * 0.85, -6.0, 32.0)
+        b.prism("x", ankle[0], ankle[1], ankle[2], 4.0, 12.0, "steel.dark", 6, "ankle")
+        _beam(b, ankle, knee, _sq(9.0, 10.0), _sq(8.0, 9.0), "steel.panel", "shin")
+        b.box(cx - 5.0, cx + 5.0, 2.5, 5.5, 10.0, 20.0, "livery.livery2", "shin_plate")
+        b.prism("x", knee[0], knee[1], knee[2], 5.0, 11.0, "steel.dark", 6, "knee")
+        _beam(b, knee, hip, _sq(10.0, 11.0), _sq(11.0, 12.0), "steel.plate", "thigh")
+        b.prism("x", hip[0], hip[1], hip[2], 5.0, 8.0, "steel.dark", 6, "hip")
+    b.box(-16.0, 16.0, -12.0, 4.0, 28.0, 38.0, "steel.panel", "pelvis")
+    # The torso: a barrel of chamfered decks, widest at the chest, leaning forward as it
+    # rises, so the machine reads as hunched over its knuckles.
+    _rings(b, [_deck(30.0, 22.0, -4.0, 38.0, 4.0), _deck(40.0, 28.0, -2.0, 48.0, 5.0),
+               _deck(40.0, 28.0, 0.0, 58.0, 5.0), _deck(32.0, 22.0, 2.0, 64.0, 4.0)], "steel.panel", "torso")
+    b.box(-12.0, 12.0, 12.0, 15.0, 46.0, 60.0, "steel.plate", "chest_plate")
+    b.box(-10.0, 10.0, 15.0, 16.5, 50.0, 54.0, "livery.livery", "chevron")
+    # The sensor pod: low between the shoulders, one red eye, a brow plate over it.
+    b.box(-8.0, 8.0, 8.0, 22.0, 62.0, 70.0, "steel.dark", "sensor_pod")
+    b.box(-6.0, 6.0, 22.0, 23.0, 64.0, 68.0, "amber.engine", "eye")
+    b.box(-9.0, 9.0, 6.0, 24.0, 70.0, 72.5, "steel.plate", "brow")
+    # Shoulders: red pauldrons, a hex drum each, with an Umbra Projector riding on top
+    # (hp_1 left, hp_2 right) and its lit emitter at the muzzle.
+    for s in (-1.0, 1.0):
+        px = s * 27.0
+        b.prism("x", px, 0.0, 62.0, 10.0, 14.0, "livery.livery", 6, "pauldron", phase=math.pi / 6)
+        b.prism("x", px, 0.0, 62.0, 4.0, 15.0, "steel.dark", 6, "shoulder_pin")
+        b.box(px - 4.0, px + 4.0, -2.0, 6.0, 66.0, 71.0, "steel.plate", "projector_mount")
+        b.prism("y", px, 12.0, 69.0, 3.2, 20.0, "steel.dark", 6, "umbra_projector")
+        b.prism("y", px, 23.0, 69.0, 2.2, 3.0, "amber.engine", 6, "emitter")
+        b.pin("hp_%d" % (1 if s < 0 else 2), (px, 16.0, 69.0))
+        # The arm: a long upper arm down and forward, a long forearm to a fist on the
+        # ground ahead of the foot, knuckles down.
+        shoulder = (s * 33.0, 0.0, 58.0)
+        elbow = (s * 36.0, 14.0, 36.0)
+        wrist = (s * 36.0, 30.0, 10.0)
+        b.prism("x", shoulder[0], shoulder[1], shoulder[2], 5.0, 8.0, "steel.dark", 6, "shoulder_joint")
+        _beam(b, shoulder, elbow, _sq(10.0, 10.0), _sq(9.0, 9.0), "steel.plate", "upper_arm")
+        b.prism("x", elbow[0], elbow[1], elbow[2], 5.5, 12.0, "steel.dark", 6, "elbow")
+        _beam(b, elbow, wrist, _sq(9.0, 9.0), _sq(10.0, 10.0), "steel.panel", "forearm")
+        b.box(wrist[0] - 7.0, wrist[0] + 7.0, 26.0, 40.0, 0.0, 11.0, "steel.plate", "fist")
+        b.box(wrist[0] - 6.0, wrist[0] + 6.0, 38.0, 41.0, 2.0, 10.0, "steel.dark", "knuckles")
+        b.box(min(wrist[0] - 4.0, wrist[0] + 4.0), max(wrist[0] - 4.0, wrist[0] + 4.0), 18.0, 24.0, 22.0, 30.0, "livery.livery2", "forearm_plate")
+        if s > 0:
+            # The Pulse Repeater on the outside of the right forearm (hp_5).
+            b.box(wrist[0] + 4.5, wrist[0] + 7.5, 14.0, 26.0, 20.0, 26.0, "steel.plate", "repeater_mount")
+            b.prism("y", wrist[0] + 8.5, 24.0, 23.0, 2.0, 18.0, "steel.dark", 6, "pulse_repeater")
+            b.prism("y", wrist[0] + 8.5, 33.5, 23.0, 1.4, 1.5, "amber.engine", 6, "repeater_tip")
+            b.pin("hp_5", (wrist[0] + 8.5, 24.0, 23.0))
+    # The backpack: a tall rack, red stripes down its sides, two flare pods on top (hp_3),
+    # the Corona dish on its right rear (hp_4), the vent block on its left rear (hp_6), a
+    # mast with a red light between the pods.
+    b.box(-17.0, 17.0, -26.0, -14.0, 36.0, 70.0, "steel.panel", "rack")
+    for s in (-1.0, 1.0):
+        b.box(min(s * 17.0, s * 18.5), max(s * 17.0, s * 18.5), -25.0, -15.0, 40.0, 66.0, "livery.livery", "rack_stripe")
+        b.prism("z", s * 10.0, -20.0, 76.0, 5.0, 14.0, "steel.dark", 6, "flare_pod")
+        b.prism("z", s * 10.0, -20.0, 83.5, 5.5, 1.5, "steel.plate", 6, "pod_cap")
+    b.pin("hp_3", (-10.0, -20.0, 78.0))
+    b.prism("y", 11.0, -27.5, 56.0, 7.0, 3.0, "steel.plate", 8, "corona_dish")
+    b.prism("y", 11.0, -29.5, 56.0, 2.6, 1.0, "amber.engine", 8, "dish_core")
+    b.pin("hp_4", (11.0, -28.0, 56.0), forward=(0.0, -1.0, 0.0))
+    b.box(-16.0, -2.0, -28.5, -26.0, 40.0, 54.0, "steel.vent", "vent_block")
+    b.pin("hp_6", (-9.0, -27.0, 47.0), forward=(0.0, -1.0, 0.0))
+    b.prism("z", 0.0, -20.0, 82.0, 1.2, 24.0, "steel.dark", 6, "mast")
+    b.prism("z", 0.0, -20.0, 95.0, 2.0, 3.0, "amber.engine", 6, "mast_light")
+
+
+mandrill.maker = "aphelion"
+
+
+def _deck(w, d, cy, z, c):
+    """A chamfered rectangle lying flat at height `z`, centred on x = 0 and y = `cy`: eight
+    points, a torso's section for `_rings`."""
+    hw, hd = w / 2.0, d / 2.0
+    return [(-hw + c, cy - hd, z), (hw - c, cy - hd, z), (hw, cy - hd + c, z), (hw, cy + hd - c, z),
+            (hw - c, cy + hd, z), (-hw + c, cy + hd, z), (-hw, cy + hd - c, z), (-hw, cy - hd + c, z)]
+
+
 def _case(w, z0, z1, c):
     """An ironclad's casemate section: a rectangle with its top corners chamfered by `c`."""
     return [(-w / 2, z0), (w / 2, z0), (w / 2, z1 - c), (w / 2 - c, z1), (-w / 2 + c, z1), (-w / 2, z1 - c)]

@@ -232,7 +232,7 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null) -> Arr
 				dmg *= 2
 			if target != null and f.has(Face.Keyword.EXECUTE) and target.hp * 2 <= target.hp_max:
 				dmg = int(roundf(dmg * (1.5 if target.is_massive() else 2.0)))
-			dmg = int(Effects.attack(ms.unit, f, dmg, 0, crit)["damage"]) * maxi(1, f.strikes)
+			dmg = int(Effects.attack(ms.unit, f, dmg, 0, crit, target)["damage"]) * maxi(1, f.strikes)
 			out.append([dmg, w])
 	return out
 

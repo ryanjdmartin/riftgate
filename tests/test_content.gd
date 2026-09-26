@@ -244,9 +244,13 @@ func test_planned_passive_is_kept_but_not_run() -> void:
 	assert_true(hit, "the same passive marked implemented is refused until the engine has the trigger")
 
 
-func test_anvil_passive_burns_on_crit() -> void:
-	var db := _db()
-	var u := db.make_mech("anvil")
+func test_a_crit_burn_passive_from_content_adds_a_stack() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var c: Dictionary = db.chassis[db.chassis.keys()[0]].duplicate(true)
+	c["passive"] = {"id": "hot", "name": "Hot", "description": "Crits burn.", "effects": [{"trigger": "on_crit", "effect": "add_burn", "value": 1}]}
+	db.chassis["hot_one"] = c
+	var u := db.make_mech("hot_one")
 	u.die = Die.single(Face.attack(20, Face.Reach.INDIRECT, [], 0, 0, 100))
 	var sk := Skirmish.new(1)
 	sk.add_mech(u)
@@ -255,7 +259,19 @@ func test_anvil_passive_burns_on_crit() -> void:
 	sk.start_round()
 	sk.assign(0, sk.front[0])
 	assert_eq(sk.front[0].hp, 160, "20 crit for 40")
-	assert_eq(sk.front[0].burn_stacks(), 1, "Hot Load added a burn stack")
+	assert_eq(sk.front[0].burn_stacks(), 1, "the passive added a burn stack")
+
+
+func test_melee_reach_can_be_authored() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var claw: Dictionary = db.components["lance"].duplicate(true)
+	claw["face"]["reach"] = "melee"
+	db.components["fist"] = claw
+	for e in db.validate():
+		assert_false(e.begins_with("component fist"), "an authored melee component validates clean: %s" % e)
+	var f := Face.from_dict(claw["face"])
+	assert_eq(f.reach, Face.Reach.MELEE, "and builds with melee reach")
 
 
 func test_content_dice_are_sane_and_kinetic_faces_roll() -> void:

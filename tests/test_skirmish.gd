@@ -1291,3 +1291,27 @@ func test_the_die_row_names_a_components_own_passive() -> void:
 	assert_eq(Effects.explain(u, sink)[0], "passive: Fins", "by name")
 	assert_true(Effects.explain(u, gun).is_empty(), "another component's entry does not")
 	assert_eq(u.cooling, 5, "and the stat reads it")
+
+
+func test_a_target_status_condition_reads_the_foe_struck() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.attack(20, L)), 0, 100)
+	m.grant_passive({"id": "sol", "name": "Solenoid", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "multiply_damage", "value": 1.5, "when": "target_status"}]})
+	sk.add_mech(m)
+	var clean := _ghoul(200, 10)
+	var lit := _ghoul(200, 10)
+	sk.add_foes([clean, lit])
+	sk.begin()
+	sk.start_round()
+	sk.assign(0, clean)
+	assert_eq(clean.hp, 180, "a clean foe takes the plain 20")
+	sk.end_round()
+	sk.start_round()
+	Effects.stack(lit, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 1)
+	sk.assign(0, lit)
+	assert_eq(lit.hp, 170, "a burning foe takes 20 times 1.5")
+	var notes := Effects.explain(m, m.die.faces[0])
+	assert_eq(notes.size(), 1, "the die row shows the rule")
+	assert_true(notes[0].begins_with("foes carrying a status: damage ×1.5"), "with its condition as the lead: %s" % notes[0])
+	assert_eq(int(Effects.attack(m, m.die.faces[0], 20, 0, false)["damage"]), 20, "asked without a target, the condition does not hold")
