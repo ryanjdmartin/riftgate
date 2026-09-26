@@ -28,7 +28,9 @@ screen (`README.md` lists the poses); `tools/perf_probe.gd` measures the map; th
 decision; section 12 is the roadmap; it is published at
 https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ (v0.9, republished 25 September by
 the balance session, from the committed file; republish the file to that URL after a
-bible change).
+bible change) and, from the other account, at
+https://claude.ai/artifact/AdBTeE9px1Xvg5TKNjHjSP (25 September, evening, the boss-theme
+session; that account republishes to this second URL).
 `docs/vocabulary.md` is generated from content.
 
 **What the game does today.** A battle: the map shows every squad's intent and the exact
@@ -162,7 +164,8 @@ at once: stage by path, never `git add -A`, diff a shared file before staging it
 path still sweeps the other session's hunks in that file), never kill a bare
 `godot --path .` (it may be the other session's harness), and the bible is published
 after each change to https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ (a different
-account cannot publish to that URL; publish a new artifact and record its link here).
+account cannot publish to that URL; the second account's copy is
+https://claude.ai/artifact/AdBTeE9px1Xvg5TKNjHjSP, republished from there).
 Commit after each verified chunk, from this folder, with the tests green. Headless Godot
 runs go under a watchdog (`perl -e 'alarm 240; exec @ARGV' godot ...`; macOS has no
 `timeout`), and a new `class_name` script needs one `--import` before the tests see it.
