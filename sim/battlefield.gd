@@ -136,7 +136,7 @@ func nearest_standable(u: Unit, h: Vector2i) -> Vector2i:
 
 ## Every anchor hex a unit can end its move on this phase, mapped to the cost of getting there.
 func reachable(u: Unit) -> Dictionary:
-	var dist: Dictionary = _search(u)[0]
+	var dist: Dictionary = _search(u, u.pos, u.movespeed)[0]
 	dist.erase(u.pos)
 	return dist
 
@@ -144,24 +144,48 @@ func reachable(u: Unit) -> Dictionary:
 ## Cheapest route for `u` to `to` within its movespeed, as the hexes after its position.
 ## Empty when `to` is out of reach. What resolve_phase expects for a plotted mech.
 func route_to(u: Unit, to: Vector2i) -> Array[Vector2i]:
+	return route_from(u, u.pos, u.movespeed, to)
+
+
+## The cheapest continuation for `u` from `from` to `to` inside `budget` move points, as
+## the hexes after `from`; empty when `to` is out of reach. A route drawn by hand grows by
+## these, so a finger that skips a hex still leaves a walkable route.
+func route_from(u: Unit, from: Vector2i, budget: int, to: Vector2i) -> Array[Vector2i]:
 	var out: Array[Vector2i] = []
-	if to == u.pos:
+	if to == from:
 		return out
-	var prev: Dictionary = _search(u)[1]
+	var prev: Dictionary = _search(u, from, budget)[1]
 	if not prev.has(to):
 		return out
 	var c := to
-	while c != u.pos:
+	while c != from:
 		out.push_front(c)
 		c = prev[c]
 	return out
 
 
-## Dijkstra from the unit's hex, bounded by its movespeed. Returns [dist, prev].
-func _search(u: Unit) -> Array:
-	var dist := {u.pos: 0}
+## What a route costs `u` in move points, or -1 when it is not one it can walk: every step
+## adjacent to the last and standable, the whole within its movespeed. The rule Resolve
+## applies, asked ahead of time.
+func route_cost(u: Unit, route: Array) -> int:
+	var cost := 0
+	var cur := u.pos
+	for step in route:
+		var s: Vector2i = step
+		if not Hex.are_adjacent(cur, s) or not can_stand(u, s):
+			return -1
+		cost += BattleMap.move_cost(map.terrain[s], u.traits)
+		if cost > u.movespeed:
+			return -1
+		cur = s
+	return cost
+
+
+## Dijkstra from `from`, bounded by `budget` move points. Returns [dist, prev].
+func _search(u: Unit, from: Vector2i, budget: int) -> Array:
+	var dist := {from: 0}
 	var prev := {}
-	var frontier: Array = [[0, u.pos]]
+	var frontier: Array = [[0, from]]
 	while not frontier.is_empty():
 		var best := 0
 		for i in range(1, frontier.size()):
@@ -176,7 +200,7 @@ func _search(u: Unit) -> Array:
 			if not map.has(n) or not can_stand(u, n):
 				continue
 			var nd := d + BattleMap.move_cost(map.terrain[n], u.traits)
-			if nd > u.movespeed:
+			if nd > budget:
 				continue
 			if not dist.has(n) or nd < dist[n]:
 				dist[n] = nd
@@ -385,16 +409,9 @@ func with_plan(u: Unit, routes: Dictionary, fn: Callable) -> Variant:
 
 
 func _apply_route(u: Unit, route: Array) -> bool:
-	var cost := 0
-	var cur := u.pos
-	for step in route:
-		var s: Vector2i = step
-		if not Hex.are_adjacent(cur, s) or not can_stand(u, s):
-			return false
-		cost += BattleMap.move_cost(map.terrain[s], u.traits)
-		if cost > u.movespeed:
-			return false
-		cur = s
+	if route_cost(u, route) < 0:
+		return false
+	var cur: Vector2i = route[route.size() - 1] if not route.is_empty() else u.pos
 	if cur != u.pos:
 		u.facing = _direction_index(route[route.size() - 2] if route.size() >= 2 else u.pos, cur)
 	u.pos = cur

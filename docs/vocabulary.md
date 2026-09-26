@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 71 implemented, 24 planned, 0 idea.
+Status: 75 implemented, 21 planned, 0 idea.
 
 ## Resource
 
@@ -59,15 +59,15 @@ Status: 71 implemented, 24 planned, 0 idea.
 | **Overwhelm** | Player keyword. Hits that kill the front rank spill leftover damage to the back rank. | planned |
 | **Burn** | Player keyword. Burning enemies lose 5 HP per stack at the start of their action, then lose one stack. Bypasses armour. Can be resisted. | implemented |
 | **Corrode** | Player keyword. Corroding enemies lose 1% of their HP per stack at the start of their action, then lose one stack. Bypasses armour. Can be resisted. | planned |
-| **Suppress** | Player keyword. The target skips its telegraphed action this round, then gains a stack of Numbed. Bosses and elites gain two stacks. | implemented |
-| **Numbed** | Enemy status. Increases resistance to being Suppressed by 10% per stack. | planned |
+| **Suppress** | Player keyword. The target skips its telegraphed action this round, then gains a stack of Numbed. Bosses and elites gain two stacks. A Numbed foe may shrug it off. | implemented |
 | **Overcharge** | Double the component's damage and double its heat. | implemented |
 | **Execute** | +100% damage against a foe at or below half its health. Reduced to +50% against bosses and elites. | implemented |
 | **Chain** | If this attack kills an enemy, repeat it on a new, valid target. | implemented |
 | **Rapid** | After this component is spent, it is switched off for the rest of this round, the die rerolls for free (never the same entry), and the mech may act again. The switch-off only stops an infinite turn. | implemented |
 | **Steady** | A component with steady always uses its average damage as its base damage. It may still crit. | implemented |
 | **Disable** | Enemy keyword. The component the target's die is showing is switched off through the target's next turn: if the die lands on it, it comes up blank. | implemented |
-| **Corrupt** | Enemy keyword. Target unit's currently visible component deals damage to its owner whenever spent. Stacks. | planned |
+| **Corrupt** | Foe attack keyword. Each blow that lands leaves a stack of Corrupted on the component the target's die is showing: it deals damage to its owner whenever spent. | implemented |
+| **Cleanse** | Player keyword, on shield and vent components. Whoever the component is spent on also loses every Disabled, Corrupted and Overheating status. A rapid component's own switch-off is not a status a cleanse touches. | implemented |
 | **Energy Armour** | Player status. Until end of round, attacks that strike shield are reduced by a flat amount. Stacks. | planned |
 | **Scramble** | Player keyword. Randomize the enemy's intended target. | planned |
 | **Confuse** | Player keyword. Randomize the enemy's intended target to target another enemy instead. | planned |
@@ -76,9 +76,10 @@ Status: 71 implemented, 24 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
+| **Numbed** | Foe status. Each stack is 10% resistance to being Suppressed: a suppress it shrugs off does nothing, and adds no stack. Does not decay; clears at end of skirmish. | implemented |
 | **Retaliate** | Until the end of this round, foes that strike this unit lose HP equal to this component's power. Stacks. | planned |
-| **Disabled** | Component status. This die entry comes up blank while it lasts; the component itself is untouched. A foe's disable lasts through the mech's next turn; a rapid component's own switch-off ends with the round. Can be cleansed. | implemented |
-| **Corrupted** | Component status. Deals damage to this unit when spent. Stacks. Clears at end of skirmish. Can be cleansed. | planned |
+| **Disabled** | Component status. This die entry comes up blank while it lasts; the component itself is untouched. A foe's disable lasts through the mech's next turn and can be cleansed; a rapid component's own switch-off ends with the round. | implemented |
+| **Corrupted** | Component status. Every time this die entry is spent it bites its owner for 10 per stack, shield first, before the component acts. A blank is never spent, so a disabled entry does not bite. Stacks. Clears at end of skirmish. Can be cleansed. | implemented |
 | **Phased** | Player and enemy status. This unit cannot attack, nor can it be damaged by attacks, until end of round. | planned |
 | **Taunt** | Player status. Until end of round, all front-rank foes will target this unit. | planned |
 | **Beacon** | Player status. Until end of round, all back-rank foes will target this unit. | planned |
@@ -86,7 +87,7 @@ Status: 71 implemented, 24 planned, 0 idea.
 | **Suppressed** | Foe status. Skips its action this round, then clears. | implemented |
 | **Cracked component** | Mech status, global rule. When a blow lands on bare hull (no shield standing) and what gets past armour is at least a quarter of maximum hull, the mech's die is rolled and the component it lands on is injured. An intact component cracks: it loses its keywords and unique effects, but still does its basic action, can still crit, still generates heat, and still provides its passive bonuses and abilities. Any shield standing, however small, prevents injury, except against a breach; a foe's double strike is the other way past it. A cracked component stays cracked across skirmishes and battles until repaired in the hangar. | implemented |
 | **Destroyed component** | Mech status. When an injury lands on a component that is already cracked, it is destroyed: blank, it does nothing when it comes up, and provides its passive bonuses but not passive abilities. until the hangar repairs or replaces it. An injury that lands on a destroyed component or an empty hardpoint finds nothing to break, so a badly broken mech shrugs off more of them. | implemented |
-| **Overheating** | Mech status. Gains 5 heat per stack at the end of the round, after the enemy has struck, then loses one stack. The mech-side counterpart of Burning: metal does not burn, it heats. Applied by foe attacks that scorch. Clears at end of skirmish. | implemented |
+| **Overheating** | Mech status. Gains 5 heat per stack at the end of the round, after the enemy has struck, then loses one stack. The mech-side counterpart of Burning: metal does not burn, it heats. Applied by foe attacks that scorch. Clears at end of skirmish. Can be cleansed. | implemented |
 
 ## Formation
 
@@ -189,8 +190,11 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Gate Integrity** (implemented): Gate damage formula is a placeholder (strength divided by three).
 - **Damage range** (implemented): Ranges are content-authored per component; no upgrade path raises min or max yet.
 - **Critical hit** (implemented): The base is Face.CRIT_MULT, a balance knob; lower it if crit triggers make crits too strong at low chance.
+- **Numbed** (implemented): Numbers are placeholders; a boss at five suppresses is immune.
+- **Corrupt** (implemented): No foe carries it yet; Ryan places it (The Chorus, presumably).
+- **Cleanse** (implemented): No component carries it yet; Ryan places it.
 - **Retaliate** (planned): Would need shield sources to be tracked separately.
-- **Disabled** (implemented): Cleanse does not exist yet.
+- **Corrupted** (implemented): The bite is a placeholder number (Skirmish.CORRUPT_BITE_PER_STACK).
 - **Cracked component** (implemented): Threshold is a placeholder. Repair cost and the hangar screen are not built.
 - **Reinforcements** (implemented): Elites should surface at set points rather than in pool order.
 - **Massive** (implemented): Cleave treats it as a front-rank neighbour; pierce cannot hit anything behind it because nothing is.
@@ -214,6 +218,6 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Foe action** (implemented): Only attacks run; defend, buff and debuff actions stay planned. Weighted RNG is the whole brain for now.
 - **Strikes** (implemented): Heat is paid once per use, not per strike. Foes have no armour yet, so on the player side strikes only matter for procs until they do.
 - **Static** (implemented): Every read asks the pipeline; nothing is written to a stat or a component, so an effect that is gone stops answering. A static reach rule cannot be conditioned on reach.
-- **Order of operations** (implemented): Refit (the hangar) is what changes loadout-scoped effects; not built. Numbed stacks accrue but the resistance roll is not applied yet.
-- **Overheating** (implemented): Placeholder name and numbers, engine id overheating; Ryan is looking for the flavour. Nothing cleanses it yet.
+- **Order of operations** (implemented): Refit (the hangar) is what changes loadout-scoped effects; not built.
+- **Overheating** (implemented): Placeholder name and numbers, engine id overheating; Ryan is looking for the flavour.
 - **Scorch** (implemented): Placeholder name. No foe carries it yet; Ryan places it (fire demons, presumably).

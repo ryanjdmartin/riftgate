@@ -74,6 +74,30 @@ yet a pressure on those dice; the Sparrowhawk is carried by the Arc Projector's 
 seed a few rounds ahead), a battle-level bot using the skirmish bot as auto-resolve, a
 CI band test (coarse, or it flakes). The tests never read content: synthetic dice only.
 
+**Statuses and drawn routes (25 September, late; bible section 4 route row and section 7
+status row).** Ryan judged the in-game music controls "generally ok" (no notes). Then
+the engine gaps: **Numbed** rolls (a suppress lands at 100 minus 10 a stack on the
+skirmish's `rng`; a shrugged-off suppress does nothing and numbs no further; the bot
+values a suppress at its odds); **Corrupted** (`corrupt` in `Foe.ATTACK_KEYWORDS`: a stack
+on the entry the target's die shows, `Effects.corrupt_entry`; spending it bites the owner
+`CORRUPT_BITE_PER_STACK` a stack, shield first, no armour, before the component acts;
+`Skirmish.pending_bite` and the forecast's `bite`; the die shows a `corrupt` chip with the
+count, the die row says CORRUPTED ×n); **cleanse** (`Face.Keyword.CLEANSE`, in
+`Face.SUPPORT_KEYWORDS`: shield and vent only, the validator refuses it on attacks and
+attack keywords on supports; `Effects.cleanse` drops every modifier tagged
+`Effects.CLEANSABLE`: a foe's disable, Corrupted, Overheating; the rapid switch-off is
+untagged). Component passives already ran from content (`make_mech` grants them with the
+component as source); `Effects.explain` now names a component's own passive on its die
+row, and a content-path test covers a stat bonus surviving destruction. No content
+carries corrupt or cleanse yet; both wait on Ryan. **Routes drawn by hand:** drag from a
+machine and the route follows the finger (`BattleMapView` signals `route_drag_*`;
+`Battle.draft_step`, `draft_cost`, `set_route_path`; `Battlefield.route_from` and
+`route_cost`), each hex joining along the cheapest continuation that fits the move left, a
+hex already drawn cutting back, release keeping it as drawn; a plaque at the end counts
+the move. The tap is unchanged. Unjudged running by Ryan. The bible's formation figure
+draws four columns now. `docs/vocabulary.md` regenerated (numbed, corrupt, corrupted,
+cleanse implemented; numbed is a status, not a keyword).
+
 **Done 22 September (late) and 23 September.** The map's draw calls: 5400 and 10.9 ms a
 frame at zoom 1 on the Mac became 1036 and about 3 ms by baking rims, columns, grid lines,
 props, traces, roads, the gate and the walls into one mesh per material per band of rows;
@@ -337,9 +361,12 @@ decided register.
 4. The map: wreck death animation once decided; joint idle for grounded units once joints
    exist; corruption in squads' wake. If a phone still drops frames, the machines are the
    next lever (one mesh per material per machine, until joints).
-5. Engine gaps waiting on content: Numbed resistance roll; Corrupted; cleanse; foe roles;
-   the ten planned foe actions in `foes.json`; planned statuses as modifiers; component
-   stat modifiers; granted passives coloured on the codex; Ryan's cooling numbers.
+5. Engine gaps waiting on content: foe roles; the ten planned foe actions in `foes.json`;
+   the planned statuses still without an engine (Phased, Taunt, Beacon, Retaliate, Energy
+   Armour) and the planned triggers (on shield gain, on heat gain, on round start, on
+   skirmish start, on hull damage, out of combat); granted passives coloured on the codex;
+   Ryan's cooling numbers. Ryan's content for what landed 25 September: a foe with
+   `corrupt`, a shield or vent with `cleanse`, component passives with stat bonuses.
 6. Art: enemy art for the eight foes still on sketch grids; the hangar as a model;
    Aphelion and Arsenal chassis once written; per-mech repaint (`Unit.paint` exists,
    nothing sets it). Sound: the real recordings and the real track, once the set is judged.
@@ -358,7 +385,6 @@ Whoever publishes should commit first and publish from the committed file, and t
 in the repo is the superset either way. The published copy is a row or two behind the
 repo at the end of the day (the phone row in section 11, the frame and rift rows in 5).
 
-**Known rough edges.** Routes are tap-to-destination only. The bible's formation figure
-still draws three columns (the text says four). On the phone's browser the
+**Known rough edges.** On the phone's browser the
 address bar takes a strip until the first button press goes full screen. The engage pose
 of `tools/screenshot.gd` prints renderer leak warnings at exit (mid-tween quit), harmless.

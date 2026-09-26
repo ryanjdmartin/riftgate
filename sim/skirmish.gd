@@ -27,6 +27,7 @@ const REROLLS_PER_ROUND := 3
 const DANGER_CLOSE_DIVISOR := 2
 const BURN_DAMAGE_PER_STACK := 20   # damage dealt per stack applied
 const CRACK_MIN_HULL_PCT := 25      # a single hull hit this big (percent of max) injures a face
+const CORRUPT_BITE_PER_STACK := 10  # what a corrupted entry costs its owner each time it is spent, per stack (placeholder)
 
 
 class MechState:
@@ -217,6 +218,15 @@ func incoming_for(ms: MechState) -> int:
 	return total
 
 
+## What spending the entry showing would cost its owner through Corrupted stacks: nothing
+## for a blank (a blank is not spent) or a die already spent.
+func pending_bite(ms: MechState) -> int:
+	var f := ms.face()
+	if f == null or ms.assigned or f.kind == Face.Kind.BLANK:
+		return 0
+	return Effects.corrupt_stacks(ms.unit, ms.face_index) * CORRUPT_BITE_PER_STACK
+
+
 ## What the end of the round does to this mech if nothing else changes: the screen's warning
 ## signs and bar overlays. Recomputed after every action, so shielding or killing an attacker
 ## moves the numbers at once. `with_face` counts the heat of the die's showing component as
@@ -226,6 +236,12 @@ func incoming_for(ms: MechState) -> int:
 func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0) -> Dictionary:
 	var shield := mini(ms.unit.shield_max, ms.unit.shield + extra_shield)
 	var hull := ms.unit.hull
+	var bite := pending_bite(ms) if with_face else 0
+	if bite > 0:
+		# A corrupted entry bites the moment it is spent, shield first, before the enemy's blows.
+		var b := _bite(shield, hull, bite)
+		shield = b["shield"]
+		hull = b["hull"]
 	var incoming := 0
 	var component_risk := false
 	for f in attackers_of(ms):
@@ -244,6 +260,7 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0) -> D
 	hull -= over
 	return {
 		"incoming": incoming,
+		"bite": bite,
 		"shield_after": shield,
 		"hull_after": hull,
 		"heat_after": mini(heat_after, ms.heat_max),
@@ -365,6 +382,22 @@ func assign(mech_index: int, target = null) -> bool:
 	var f := ms.face()
 	if f == null:
 		return false
+	if f.is_attack() and (not (target is Foe) or not targets_for(mech_index).has(target)):
+		return false
+	# A corrupted entry bites its owner as it is spent (shield first, no armour: the rot is
+	# inside the machine), before the component does its work. A machine it finishes acts
+	# no further.
+	var bite := pending_bite(ms)
+	if bite > 0:
+		var b := _bite(ms.unit.shield, ms.unit.hull, bite)
+		log.append("%s: %s bites back, shield -%d, hull -%d" % [ms.unit.display_name, f.describe(), ms.unit.shield - int(b["shield"]), ms.unit.hull - int(b["hull"])])
+		ms.unit.shield = b["shield"]
+		ms.unit.hull = b["hull"]
+		if not ms.alive():
+			log.append("%s is wrecked by its own corrupted component" % ms.unit.display_name)
+			ms.assigned = true
+			_check_outcome()
+			return true
 	match f.kind:
 		Face.Kind.BLANK:
 			pass
@@ -372,13 +405,13 @@ func assign(mech_index: int, target = null) -> bool:
 			var who: MechState = target if target is MechState else ms
 			who.unit.shield = mini(who.unit.shield_max, who.unit.shield + f.power)
 			log.append("%s shields %s for %d" % [ms.unit.display_name, who.unit.display_name, f.power])
+			_cleanse_with(ms, who, f)
 		Face.Kind.VENT:
 			var who: MechState = target if target is MechState else ms
 			who.heat = maxi(0, who.heat - f.power)
 			log.append("%s vents %s by %d" % [ms.unit.display_name, who.unit.display_name, f.power])
+			_cleanse_with(ms, who, f)
 		Face.Kind.ATTACK:
-			if not (target is Foe) or not targets_for(mech_index).has(target):
-				return false
 			_resolve_attack(mech_index, ms, f, target)
 	ms.assigned = true
 	# Rapid: the component is switched off for the rest of this round, the die rerolls for
@@ -442,6 +475,10 @@ func _enemy_turn() -> void:
 				# The entry the die shows is switched off through the mech's next turn.
 				Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, round + 1)
 				log.append("%s disables %s's %s" % [f.display_name, t.unit.display_name, t.die.faces[t.face_index].describe()])
+			if f.has_keyword(f.action, "corrupt") and t.alive() and t.face_index >= 0:
+				# The entry the die shows is corrupted for the fight: it bites when spent.
+				Effects.corrupt_entry(t.unit, t.face_index, "foe:" + f.content_id)
+				log.append("%s corrupts %s's %s (×%d)" % [f.display_name, t.unit.display_name, t.die.faces[t.face_index].describe(), Effects.corrupt_stacks(t.unit, t.face_index)])
 	_clear_dead()
 	for ms in mechs:
 		Effects.end_round(ms.unit, round)   # timed effects run out
@@ -558,10 +595,36 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 
 
 ## Suppress: the foe skips its action this round, then grows Numbed (two stacks for a
-## massive foe). Resistance from Numbed is tracked, not yet rolled against (planned).
-func _suppress(foe: Foe) -> void:
+## massive foe). A Numbed foe resists at 10% a stack, on the skirmish's own die (25
+## September): a suppress it shrugs off does nothing at all, and numbs it no further, so
+## resistance plateaus where the suppresses stop landing rather than running away.
+func _suppress(foe: Foe) -> bool:
+	var resist := int(Effects.tick_preview(foe)["resist"])
+	if resist > 0 and rng.randi_range(1, 100) <= resist:
+		log.append("%s shrugs off the suppression (numbed %d%%)" % [foe.display_name, resist])
+		return false
 	Effects.grant_for_rounds(foe, Effects.STATUS["suppressed"], "mech", round)
 	Effects.stack(foe, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 2 if foe.is_massive() else 1, Effects.DECAY_NONE)
+	return true
+
+
+## The cleanse keyword on a shield or vent component: whoever it was spent on loses every
+## cleansable status (a foe's disable, Corrupted, Overheating), and the log says which.
+func _cleanse_with(ms: MechState, who: MechState, f: Face) -> void:
+	if not f.has(Face.Keyword.CLEANSE):
+		return
+	var gone := Effects.cleanse(who.unit)
+	if gone.is_empty():
+		log.append("%s cleanses %s: nothing to clear" % [ms.unit.display_name, who.unit.display_name])
+	else:
+		log.append("%s cleanses %s: %s cleared" % [ms.unit.display_name, who.unit.display_name, ", ".join(gone).to_lower()])
+
+
+## A corrupted entry's bite against a shield and a hull: shield first, whole, then hull,
+## never armoured and never an injury. Shared by the real bite and the forecast.
+static func _bite(shield: int, hull: int, amount: int) -> Dictionary:
+	var absorbed := mini(shield, amount)
+	return {"shield": shield - absorbed, "hull": hull - (amount - absorbed)}
 
 
 ## Heat only climbs here, past the maximum too. It burns at the end of the round (Ryan,

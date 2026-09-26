@@ -172,6 +172,9 @@ func _build() -> void:
 	_map.hex_tapped.connect(_on_hex_tapped)
 	_map.hex_double_tapped.connect(_on_hex_double_tapped)
 	_map.unit_held.connect(_on_unit_held)
+	_map.route_drag_started.connect(_on_route_drag_started)
+	_map.route_drag_to.connect(_on_route_drag_to)
+	_map.route_drag_ended.connect(_on_route_drag_ended)
 	_apply_display()
 	_map.hold_released.connect(_on_hold_released)
 
@@ -363,6 +366,51 @@ func _on_hex_tapped(h: Vector2i) -> void:
 		return
 	else:
 		_select(null)
+	_refresh()
+
+
+var _draft_unit: Unit = null   # the machine whose route is being drawn by hand
+
+
+## A route drawn by hand (Ryan, 25 September): drag from a machine through the hexes it
+## should walk. The tap keeps the cheapest route; the drag says which way round. Each hex
+## the finger reaches extends the draft along the cheapest continuation that fits the move
+## left, a hex already on it cuts back to there, and letting go keeps the route as drawn.
+func _on_route_drag_started(u: Unit) -> void:
+	if battle.state != Battle.State.PLAN or _map.is_playing():
+		return
+	_details.visible = false
+	_map.gate_selected = false
+	_select(u)   # its destinations light while the finger draws
+	_draft_unit = u
+	_map.draft = []
+	_map.draft_cost = 0
+	Sound.play("ui_tap", -4.0)
+
+
+func _on_route_drag_to(h: Vector2i) -> void:
+	if _draft_unit == null:
+		return
+	var before := _map.draft.size()
+	_map.draft = battle.draft_step(_draft_unit, _map.draft, h)
+	_map.draft_cost = battle.draft_cost(_draft_unit, _map.draft)
+	if _map.draft.size() != before:
+		Sound.play("ui_tap", -12.0)   # a tick per hex, so the line is heard growing
+	_map.queue_redraw()
+
+
+func _on_route_drag_ended(commit: bool) -> void:
+	var u := _draft_unit
+	var draft: Array = _map.draft
+	_draft_unit = null
+	_map.draft = []
+	_map.draft_cost = -1
+	if u != null and commit and not draft.is_empty():
+		if battle.set_route_path(u, draft):
+			Sound.play("plot")
+		else:
+			Sound.play("ui_back")
+	_select(null)
 	_refresh()
 
 

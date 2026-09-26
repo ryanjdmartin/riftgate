@@ -11,7 +11,7 @@ const CRIT_MULT := 2.0        # a crit multiplies the roll by this plus every cr
 
 enum Kind { ATTACK, SHIELD, VENT, BLANK }
 enum Reach { NONE, LINE, INDIRECT, MELEE }
-enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, OVERCHARGE, EXECUTE, CHAIN, STEADY, RAPID }
+enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, OVERCHARGE, EXECUTE, CHAIN, STEADY, RAPID, CLEANSE }
 
 const KIND_NAMES := {
 	Kind.ATTACK: "attack", Kind.SHIELD: "shield", Kind.VENT: "vent", Kind.BLANK: "blank",
@@ -22,10 +22,13 @@ const REACH_NAMES := {
 const KEYWORD_NAMES := {
 	Keyword.NONE: "", Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.BURN: "burn",
 	Keyword.SUPPRESS: "suppress", Keyword.OVERCHARGE: "overcharge", Keyword.EXECUTE: "execute",
-	Keyword.CHAIN: "chain", Keyword.STEADY: "steady", Keyword.RAPID: "rapid",
+	Keyword.CHAIN: "chain", Keyword.STEADY: "steady", Keyword.RAPID: "rapid", Keyword.CLEANSE: "cleanse",
 }
 ## What the player reads where it differs from the content id (the vocabulary's name).
 const KEYWORD_LABELS := { Keyword.CLEAVE: "spread" }
+## Keywords that ride on a shield or vent component (spent on a machine, not a foe); every
+## other keyword is an attack's. The validator holds content to this.
+const SUPPORT_KEYWORDS := [Keyword.CLEANSE]
 
 
 static func keyword_label(k: int) -> String:
@@ -238,10 +241,10 @@ func describe() -> String:
 			if disabled:
 				return "disabled"
 			return "empty hardpoint" if empty else "destroyed"
-		Kind.SHIELD:
-			s = "shield %d" % power
-		Kind.VENT:
-			s = "vent %d" % power
+		Kind.SHIELD, Kind.VENT:
+			s = "%s %d" % ["shield" if kind == Kind.SHIELD else "vent", power]
+			for k in keywords:
+				s += " " + keyword_label(k)
 		_:
 			# Line of fire is the default and goes unsaid; only indirect reach is called out.
 			s = number_text() if reach == Reach.LINE else "%s %s" % [REACH_NAMES[reach], number_text()]

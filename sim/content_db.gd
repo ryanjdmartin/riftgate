@@ -364,10 +364,15 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String]) -> void:
 	if kws.size() > MAX_AUTHORED_KEYWORDS:
 		errs.append("%s: %d keywords, authored cap is %d" % [where, kws.size(), MAX_AUTHORED_KEYWORDS])
 	for k in kws:
-		if Face.keyword_from_name(str(k)) <= 0:
+		var kw := Face.keyword_from_name(str(k))
+		if kw <= 0:
 			errs.append("%s: unknown keyword '%s'" % [where, k])
 		elif vocabulary.get(str(k), {}).get("status") != "implemented":
 			errs.append("%s: keyword '%s' is not implemented yet" % [where, k])
+		elif kind == "attack" and Face.SUPPORT_KEYWORDS.has(kw):
+			errs.append("%s: '%s' rides on a shield or vent component, not an attack" % [where, k])
+		elif kind != "attack" and not Face.SUPPORT_KEYWORDS.has(kw):
+			errs.append("%s: '%s' is an attack keyword; a %s component cannot carry it" % [where, k, kind])
 
 
 func _validate_passive(where: String, p, errs: Array[String]) -> void:

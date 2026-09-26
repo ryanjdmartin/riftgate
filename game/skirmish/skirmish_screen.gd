@@ -301,8 +301,8 @@ func _build() -> void:
 	# reach of the foes it concerns. The log strip stops short of it.
 	var menu_btn := HudButton.new("MENU", _open_menu)
 	menu_btn.sound = ""   # the menu's own breaker is the sound
-	_place(menu_btn, Vector2(W - 96, 10), Vector2(84, 34))
 	menu_btn.hit_pad = Vector2(12.0, 10.0)   # answers over the whole bar's height and out to the edge
+	_place(menu_btn, Vector2(W - 96, 10), Vector2(84, 34))
 	_eye = HudButton.new("")
 	_eye.glyph = "eye"
 	_eye.slant_px = 0.0
@@ -725,6 +725,7 @@ func _refresh() -> void:
 		v.queue_refresh()
 		var d := _dice[i]
 		d.set_face(sk.shown_face(ms, ms.face()))   # reach as the passive reads it now
+		d.corrupted = Effects.corrupt_stacks(ms.unit, ms.face_index) if ms.face_index >= 0 else 0
 		d.spent = ms.assigned
 		d.dead = not ms.alive()
 		d.locked = locked[i]
@@ -993,6 +994,9 @@ func _face_labels(ms: Skirmish.MechState, tags: bool) -> Array:
 		var label := db.component_name(f.component).to_upper() + (" // FIXED" if f.fixed else "")
 		if Effects.is_entry_disabled(ms.unit, i):
 			label += " // DISABLED"
+		var rot := Effects.corrupt_stacks(ms.unit, i)
+		if rot > 0:
+			label += " // CORRUPTED" + (" ×%d" % rot if rot > 1 else "")
 		if tags:
 			var notes: Array[String] = Effects.explain(ms.unit, f)
 			if not notes.is_empty():
@@ -1114,6 +1118,7 @@ func _on_drag_started(i: int) -> void:
 	_drag_from = i
 	Sound.play("die_pick")
 	_ghost.set_face(sk.shown_face(sk.mechs[i], sk.mechs[i].face()))
+	_ghost.corrupted = Effects.corrupt_stacks(sk.mechs[i].unit, sk.mechs[i].face_index)
 	_ghost.visible = true
 	_refresh()
 

@@ -65,6 +65,17 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 		"chain":
 			ci.draw_arc(c + Vector2(-s * 0.45, 0), s * 0.5, 0.0, TAU, 20, color, width)
 			ci.draw_arc(c + Vector2(s * 0.45, 0), s * 0.5, 0.0, TAU, 20, color, width)
+		"cleanse":
+			# A drop with a ring: what washes a status off.
+			ci.draw_arc(c, s * 0.95, 0.0, TAU, 28, color, width * 0.8)
+			ci.draw_polyline(PackedVector2Array([
+				c + Vector2(0, -s * 0.6), c + Vector2(s * 0.4, s * 0.1), c + Vector2(0, s * 0.55), c + Vector2(-s * 0.4, s * 0.1), c + Vector2(0, -s * 0.6),
+			]), color, width)
+		"corrupt":
+			# A jagged crack through the entry: the rot the Chorus leaves in a component.
+			ci.draw_polyline(PackedVector2Array([
+				c + Vector2(-s * 0.2, -s), c + Vector2(s * 0.3, -s * 0.3), c + Vector2(-s * 0.3, s * 0.1), c + Vector2(s * 0.2, s),
+			]), color, width)
 		"lock":
 			ci.draw_rect(Rect2(c + Vector2(-s * 0.8, -s * 0.1), Vector2(s * 1.6, s * 1.1)), color, false, width)
 			ci.draw_arc(c + Vector2(0, -s * 0.15), s * 0.5, PI, TAU, 16, color, width)
@@ -171,11 +182,11 @@ static func colour_for(id: String) -> Color:
 	match id:
 		"burn", "overcharge", "heat":
 			return Palette.HEAT
-		"execute", "skull", "shieldbreak":
+		"execute", "skull", "shieldbreak", "corrupt":
 			return Palette.ENEMY
 		"star":
 			return Palette.SELECT
-		"suppress", "chain":
+		"suppress", "chain", "cleanse":
 			return Palette.SHIELD
 		_:
 			return Palette.HUD

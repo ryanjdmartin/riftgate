@@ -1173,3 +1173,121 @@ func test_venting_before_the_end_of_the_round_prevents_the_burn() -> void:
 	assert_eq(sk.forecast(ms)["overheat"], 0, "nothing to burn")
 	sk.end_round()
 	assert_eq(hot.hull, 100, "no burn: the vent came in time")
+
+
+func test_a_numbed_foe_shrugs_off_a_suppress_at_its_odds() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.attack(10, L, K.SUPPRESS)), 0, 100)
+	sk.add_mech(m)
+	var g := _ghoul(500, 30)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(g, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 10, Effects.DECAY_NONE)
+	sk.assign(0, sk.front[0])
+	assert_false(g.is_suppressed(), "at ten stacks nothing lands")
+	assert_eq(Effects.stacks_of(g, "numbed"), 10, "a shrugged-off suppress numbs no further")
+	assert_true("\n".join(sk.log).contains("shrugs off"), "the log says so")
+	sk.end_round()
+	assert_eq(m.hull, 70, "it struck")
+	# Three stacks: about seven in ten land, on the skirmish's own die.
+	var landed := 0
+	for seed_value in range(200):
+		var s := Skirmish.new(seed_value)
+		s.add_mech(_mech("A", Die.single(Face.attack(10, L, K.SUPPRESS)), 0, 100))
+		var f := _ghoul(500, 30)
+		s.add_foes([f])
+		s.begin()
+		s.start_round()
+		Effects.stack(f, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 3, Effects.DECAY_NONE)
+		s.assign(0, s.front[0])
+		if f.is_suppressed():
+			landed += 1
+			assert_eq(Effects.stacks_of(f, "numbed"), 4, "a suppress that lands numbs one more")
+	assert_true(landed > 110 and landed < 170, "about 140 of 200 land at 30%% resistance, got %d" % landed)
+
+
+func test_a_corrupt_blow_rots_the_showing_entry_and_it_bites_when_spent() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.attack(30, L)), 0, 200)
+	sk.add_mech(m)
+	var chorister := Foe.make("chorister", 500, 10)
+	chorister.actions[0]["keywords"] = ["corrupt"]
+	sk.add_foes([chorister])
+	sk.begin()
+	sk.start_round()
+	assert_eq(sk.pending_bite(sk.mechs[0]), 0, "clean to begin with")
+	sk.end_round()
+	assert_eq(m.hull, 190, "the blow itself")
+	assert_eq(Effects.corrupt_stacks(m, 0), 1, "one stack on the entry that was showing")
+	assert_true("\n".join(sk.log).contains("corrupts A's 30"), "the log names the entry")
+	sk.start_round()
+	assert_eq(sk.pending_bite(sk.mechs[0]), 10, "spending it costs 10")
+	assert_eq(sk.forecast(sk.mechs[0], true)["hull_after"], 170, "the forecast counts the bite and the blow while the die is in hand")
+	assert_eq(sk.forecast(sk.mechs[0], false)["hull_after"], 180, "and only the blow otherwise")
+	sk.assign(0, sk.front[0])
+	assert_eq(m.hull, 180, "the bite lands as the entry is spent")
+	assert_eq(sk.front[0].hp, 470, "and the component still does its work")
+	sk.end_round()
+	assert_eq(Effects.corrupt_stacks(m, 0), 2, "it stacks")
+	sk.start_round()
+	assert_eq(sk.pending_bite(sk.mechs[0]), 20, "twenty a spend now")
+	sk._finish()
+	assert_eq(Effects.corrupt_stacks(m, 0), 0, "gone with the skirmish")
+
+
+func test_the_bite_takes_shield_first_and_never_armour() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.attack(30, L)), 5, 100)
+	m.armour = 50
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	Effects.corrupt_entry(m, 0, "foe:x", 2)
+	sk.assign(0, sk.front[0])
+	assert_eq(m.shield, 0, "the shield goes first")
+	assert_eq(m.hull, 85, "the rest reaches the hull, armour or no armour")
+	assert_eq(sk.front[0].hp, 470, "the attack still landed")
+
+
+func test_cleanse_clears_what_foes_did_and_not_the_rapid_switch_off() -> void:
+	var sk := Skirmish.new(1)
+	var scrubber := Face.shield(10)
+	scrubber.add_keyword(K.CLEANSE)
+	var a := _mech("A", Die.single(scrubber), 0, 100)
+	var b := _mech("B", Die.single(Face.attack(30, L)), 40, 100)
+	b.shield = 0
+	sk.add_mech(a)
+	sk.add_mech(b)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	Effects.corrupt_entry(b, 0, "foe:x", 2)
+	Effects.disable_entry(b, 0, "foe:x", sk.round + 1)
+	Effects.stack(b, Effects.STATUS["overheating"], Effects.SKIRMISH, "foe:x", 3)
+	assert_eq(scrubber.describe(), "shield 10 cleanse", "the keyword reads on the entry")
+	assert_true(sk.assign(0, sk.mechs[1]), "the shield is spent on B")
+	assert_eq(b.shield, 10, "shielded")
+	assert_eq(Effects.corrupt_stacks(b, 0), 0, "corruption gone")
+	assert_false(Effects.is_entry_disabled(b, 0), "the foe's disable gone")
+	assert_eq(Effects.stacks_of(b, "overheating"), 0, "overheating gone")
+	assert_true("\n".join(sk.log).contains("cleanses B: "), "the log says what went")
+	Effects.disable_entry(a, 0, "rapid", sk.round)
+	var gone := Effects.cleanse(a)
+	assert_true(gone.is_empty(), "a rapid switch-off is not the cleanse's to lift")
+	assert_true(Effects.is_entry_disabled(a, 0), "and it stays")
+
+
+func test_the_die_row_names_a_components_own_passive() -> void:
+	var u := Unit.mech(0, "A", Vector2i.ZERO)
+	u.grant_passive({"id": "fins", "name": "Fins", "description": "Cooling +5.",
+		"effects": [{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 5}]}, "heat_sink", "heat_sink")
+	var sink := Face.vent(20)
+	sink.component = "heat_sink"
+	var gun := Face.attack(20, L)
+	gun.component = "gun"
+	assert_eq(Effects.explain(u, sink).size(), 1, "a vent entry names its own passive")
+	assert_eq(Effects.explain(u, sink)[0], "passive: Fins", "by name")
+	assert_true(Effects.explain(u, gun).is_empty(), "another component's entry does not")
+	assert_eq(u.cooling, 5, "and the stat reads it")

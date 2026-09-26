@@ -304,3 +304,71 @@ func test_a_skirmish_is_fought_on_the_first_squads_ground() -> void:
 	assert_eq(b.ground_terrain(group), BattleMap.Terrain.RUINS, "and its terrain")
 	var sk := b._build_skirmish(group)
 	assert_eq(sk.terrain, BattleMap.Terrain.RUINS, "the skirmish is fought there, not on the machine's road")
+
+
+## A route drawn by hand goes the way it was drawn, where a tap would take the cheapest way.
+func test_a_drawn_route_is_kept_as_drawn() -> void:
+	var b := _battle()
+	var m: Unit = b.mechs()[1]
+	var n1 := Vector2i(-99, -99)
+	var dest := Vector2i(-99, -99)
+	for a in Hex.neighbors(m.pos):
+		if not b.field.can_stand(m, a):
+			continue
+		for d in Hex.neighbors(a):
+			if d != m.pos and Hex.are_adjacent(m.pos, d) and b.field.can_stand(m, d) and b.destinations_for(m).has(d):
+				n1 = a
+				dest = d
+				break
+		if dest != Vector2i(-99, -99):
+			break
+	assert_true(dest != Vector2i(-99, -99), "a neighbour reachable the long way round exists")
+	var draft: Array = b.draft_step(m, [], n1)
+	assert_eq(draft, [n1], "the first hex joins the draft")
+	draft = b.draft_step(m, draft, dest)
+	if draft.size() != 2:
+		return   # the detour does not fit this machine's move on this map; nothing to test
+	assert_eq(b.draft_cost(m, draft), b.field.route_cost(m, draft), "the draft's cost is the route's cost")
+	assert_true(b.set_route_path(m, draft), "the drawn route is accepted")
+	assert_eq(b.route_for(m.id).size(), 2, "and kept as drawn")
+	assert_eq(b.field.route_to(m, dest).size(), 1, "where the tap would have gone straight there")
+	assert_eq(b.draft_step(m, draft, n1), [n1], "back onto a drawn hex cuts the draft to it")
+	assert_true(b.draft_step(m, draft, m.pos).is_empty(), "back onto the machine clears it")
+	b.commit()
+	assert_eq(m.pos, dest, "Resolve walks the drawn route")
+
+
+func test_a_draft_never_outruns_the_move_or_lands_on_a_claimed_hex() -> void:
+	var b := _battle()
+	var a: Unit = b.mechs()[0]
+	var c: Unit = b.mechs()[1]
+	# Draw as far as the map allows in one direction: the draft stops growing at the move.
+	var draft: Array = []
+	var cur := c.pos
+	for i in range(c.movespeed + 3):
+		var stepped := false
+		for n in Hex.neighbors(cur):
+			if n != c.pos and not draft.has(n) and b.field.can_stand(c, n):
+				var next: Array = b.draft_step(c, draft, n)
+				if next.size() > draft.size():
+					draft = next
+					cur = n
+					stepped = true
+					break
+		if not stepped:
+			break
+	assert_true(not draft.is_empty(), "something was drawn")
+	var cost := b.draft_cost(c, draft)
+	assert_true(cost >= 0 and cost <= c.movespeed, "the draft fits the move: cost %d of %d" % [cost, c.movespeed])
+	# A hex another machine has claimed cannot end a drawn route either.
+	var shared := Vector2i(-99, -99)
+	for h in b.destinations_for(a).keys():
+		if b.destinations_for(c).has(h):
+			shared = h
+			break
+	assert_true(shared != Vector2i(-99, -99), "the two share a reachable hex")
+	var to_shared: Array = b.field.route_to(c, shared)
+	assert_true(not to_shared.is_empty(), "the second could walk there")
+	assert_true(b.set_route(a, shared), "the first claims it by tap")
+	assert_false(b.set_route_path(c, to_shared), "the second's drawn route to it is refused")
+	assert_true(b.set_route_path(c, []), "an empty draft clears")

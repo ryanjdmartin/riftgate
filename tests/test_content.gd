@@ -380,3 +380,55 @@ func test_chassis_cooling_is_read_and_never_negative() -> void:
 		if e.begins_with("chassis frozen") and e.contains("cooling"):
 			hit = true
 	assert_true(hit, "negative cooling is refused")
+
+
+func test_support_keywords_ride_on_shields_and_vents_only() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var scrubber: Dictionary = db.components["ablative_plating"].duplicate(true)
+	scrubber["face"]["keywords"] = ["cleanse"]
+	db.components["scrubber"] = scrubber
+	var gun: Dictionary = db.components["lance"].duplicate(true)
+	gun["face"]["keywords"] = ["cleanse"]
+	db.components["cleansing_gun"] = gun
+	var plate: Dictionary = db.components["ablative_plating"].duplicate(true)
+	plate["face"]["keywords"] = ["burn"]
+	db.components["burning_plate"] = plate
+	var bad_gun := false
+	var bad_plate := false
+	for e in db.validate():
+		assert_false(e.begins_with("component scrubber"), "cleanse on a shield validates clean: %s" % e)
+		if e.begins_with("component cleansing_gun") and e.contains("rides on a shield or vent"):
+			bad_gun = true
+		if e.begins_with("component burning_plate") and e.contains("attack keyword"):
+			bad_plate = true
+	assert_true(bad_gun, "cleanse on an attack is refused")
+	assert_true(bad_plate, "burn on a shield is refused")
+
+
+func test_a_component_passive_from_content_lands_on_the_mech() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var fins: Dictionary = db.components["heat_sink"].duplicate(true)
+	fins["name"] = "Finned Sink"
+	fins["passive"] = {"id": "fins", "name": "Fins", "description": "Cooling +5.",
+		"effects": [{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 5}]}
+	db.components["fins_pack"] = fins
+	var c: Dictionary = db.chassis["clydesdale"].duplicate(true)
+	c["loadout"] = ["fins_pack"]
+	c["passive"] = null
+	c["cooling"] = 10
+	db.chassis["finned"] = c
+	for e in db.validate():
+		assert_false(e.begins_with("chassis finned") or e.begins_with("component fins_pack"), "a stat passive on a component validates clean: %s" % e)
+	var u := db.make_mech("finned")
+	assert_eq(u.cooling, 15, "the chassis's cooling plus the component's")
+	var codex := db.codex_for_unit(u)
+	assert_true(str(codex["passive"]).contains("FINS (Finned Sink): Cooling +5."), "the codex names the passive and its component")
+	var sink: Face = u.die.faces[0]
+	assert_eq(sink.component, "fins_pack", "the first entry is the component")
+	assert_eq(Effects.explain(u, sink).size(), 1, "the die row names it")
+	# Destroyed, the component keeps its stat bonus (18 September).
+	u.die.faces[0] = Face.blank()
+	u.die.faces[0].component = "fins_pack"
+	assert_eq(u.cooling, 15, "a destroyed component keeps its stat bonus")

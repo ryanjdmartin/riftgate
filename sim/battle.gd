@@ -135,6 +135,65 @@ func set_route(u: Unit, to: Vector2i) -> bool:
 	return true
 
 
+## A route drawn by hand, kept as drawn (Ryan, 25 September: tap-to-destination alone
+## could not say which way round a squad to walk). Legal on the same terms as a tapped
+## one, planned last like a re-plot: every step adjacent and standable in the planned
+## view, the cost within the machine's move, and its last hex nobody else's destination.
+## An empty route clears. False when refused, and the machine's old route is gone either way.
+func set_route_path(u: Unit, route: Array) -> bool:
+	if state != State.PLAN:
+		return false
+	routes.erase(u.id)
+	if route.is_empty():
+		_drop_conflicts()
+		return true
+	var end: Vector2i = route[route.size() - 1]
+	if not destinations_for(u).has(end):
+		return false
+	var cost: int = field.with_plan(u, routes, func() -> int: return field.route_cost(u, route))
+	if cost < 0:
+		return false
+	var typed: Array[Vector2i] = []
+	for s in route:
+		typed.append(s)
+	routes[u.id] = typed
+	_drop_conflicts()
+	return true
+
+
+## One step of drawing a route by hand: `draft` is the route so far (hexes after the
+## machine's own), `h` the hex the finger has reached. Back on the machine clears; a hex
+## already on the draft cuts it back to there; anything else is joined by the cheapest
+## continuation that fits the move left (a finger that skips a hex still draws a walkable
+## route), or the draft stands when nothing fits. Planned as a re-plot: the machine last.
+func draft_step(u: Unit, draft: Array, h: Vector2i) -> Array:
+	if h == u.pos:
+		return []
+	var at := draft.find(h)
+	if at >= 0:
+		return draft.slice(0, at + 1)
+	var others := routes.duplicate()
+	others.erase(u.id)
+	var end: Vector2i = draft[draft.size() - 1] if not draft.is_empty() else u.pos
+	var ext: Array = field.with_plan(u, others, func() -> Array:
+		var spent := field.route_cost(u, draft)
+		if spent < 0:
+			return []
+		return field.route_from(u, end, u.movespeed - spent, h))
+	if ext.is_empty():
+		return draft
+	var out: Array = draft.duplicate()
+	out.append_array(ext)
+	return out
+
+
+## What a draft costs so far in the same planned view; -1 when it cannot be walked.
+func draft_cost(u: Unit, draft: Array) -> int:
+	var others := routes.duplicate()
+	others.erase(u.id)
+	return field.with_plan(u, others, func() -> int: return field.route_cost(u, draft))
+
+
 func clear_route(uid: int) -> void:
 	routes.erase(uid)
 	_drop_conflicts()

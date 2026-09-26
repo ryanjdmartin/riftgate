@@ -34,6 +34,7 @@ const CUT := 16.0
 const FLICKER_PERIOD := 4.5   # seconds between dips, per chip
 
 var face: Face = null
+var corrupted: int = 0       # Corrupted stacks on the entry showing: a chip in the enemy's colour, with the count
 var locked: bool = false
 var spent: bool = false
 var dead: bool = false
@@ -236,12 +237,16 @@ func _draw() -> void:
 		tags.append(Face.KEYWORD_NAMES[k])
 	if not face.label.is_empty():
 		tags.append("star")
+	if corrupted > 0 and face.kind != Face.Kind.BLANK:
+		tags.append("corrupt")   # what a foe did to the entry, last on the rail, in its colour
 	for i in range(tags.size()):
 		var col := Glyphs.colour_for(tags[i])
 		col.a = (_flicker(i) if animate else 1.0) * (0.45 if spent else 1.0)
 		var chip_rect := Rect2(Vector2(FACE - CHIP.x + RAIL - 2.0, 8.0 + i * TAG_STEP + bob * 0.5), CHIP)
 		Hud.box(self, chip_rect, 4.0, Color(Palette.BG, 0.94), col, 1.0)
 		Glyphs.draw(self, tags[i], chip_rect.get_center(), 13, col, 1.8)
+		if tags[i] == "corrupt" and corrupted > 1:
+			draw_string(mono, chip_rect.position + Vector2(CHIP.x + 2.0, CHIP.y - 7.0), "×%d" % corrupted, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, col)
 	if _recalc >= 0.0:
 		_draw_static(rect)
 

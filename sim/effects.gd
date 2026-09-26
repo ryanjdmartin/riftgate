@@ -47,10 +47,14 @@ const SUPPORTED_EFFECTS := {
 	"on_crit": ["multiply_damage", "add_damage", "add_burn", "vent_heat", "add_crit_damage"],
 	"on_injury": ["no_destroy"],
 	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress"],
-	"status": ["tick_hp", "tick_heat", "skip_action", "resist_suppress", "disable_entry"],
+	"status": ["tick_hp", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry"],
 }
 const DECAY_NONE := 0    # lives until its scope ends
 const DECAY_TICK := 1    # loses a stack each tick, gone at zero
+
+## The tag a cleanse clears (decided 25 September): what a foe did to a machine, never what
+## the machine did to itself (a rapid component's own switch-off keeps the turn finite).
+const CLEANSABLE := "cleansable"
 
 ## The engine's own statuses, granted by keywords and foe attacks. Names are placeholders
 ## for Ryan's vocabulary; ids are what the engine keys on.
@@ -58,7 +62,7 @@ const STATUS := {
 	"burning": {"id": "burning", "name": "Burning", "description": "Loses 5 HP per stack at the start of its action, then loses a stack.",
 		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_hp", "value": 5}]},
 	"overheating": {"id": "overheating", "name": "Overheating", "description": "Gains 5 heat per stack at the end of the round, then loses a stack.",
-		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_heat", "value": 5}]},
+		"tags": ["dot", CLEANSABLE], "effects": [{"trigger": "status", "effect": "tick_heat", "value": 5}]},
 	"suppressed": {"id": "suppressed", "name": "Suppressed", "description": "Skips its telegraphed action this round.",
 		"effects": [{"trigger": "status", "effect": "skip_action", "value": 1}]},
 	"numbed": {"id": "numbed", "name": "Numbed", "description": "Resists being suppressed, 10% per stack.",
@@ -414,8 +418,11 @@ static func no_destroy(u, face: Face) -> bool:
 ## Switch one die entry off until the end of `until_round`: the entry shows blank, the
 ## component itself is untouched. Applied to the target's showing entry by a foe's disable
 ## (through the mech's next turn) and by a mech's own rapid component (this round only).
+## A foe's disable can be cleansed; the rapid switch-off cannot (it only stops an infinite
+## turn, and a cleanse that lifted it would start one).
 static func disable_entry(u, index: int, source: String, until_round: int) -> Modifier:
 	var status := {"id": "disabled_%d" % index, "name": "Disabled", "description": "This component is switched off.",
+		"tags": [] if source == "rapid" else [CLEANSABLE],
 		"effects": [{"trigger": "status", "effect": "disable_entry", "value": index}]}
 	return grant_for_rounds(u, status, source, until_round)
 
@@ -425,6 +432,38 @@ static func is_entry_disabled(u, index: int) -> bool:
 		if str(pair[0].get("effect", "")) == "disable_entry" and int(pair[0].get("value", -1)) == index:
 			return true
 	return false
+
+
+## Corrupt one die entry for the skirmish (the corrupt foe keyword, 25 September): every
+## time the entry is spent it bites its owner, per stack. The component itself is untouched;
+## the same entry corrupted again stacks up. Cleansable.
+static func corrupt_entry(u, index: int, source: String, n: int = 1) -> Modifier:
+	var status := {"id": "corrupted_%d" % index, "name": "Corrupted", "description": "This component bites its owner when spent.",
+		"tags": [CLEANSABLE], "effects": [{"trigger": "status", "effect": "corrupt_entry", "value": index}]}
+	return stack(u, status, SKIRMISH, source, n, DECAY_NONE)
+
+
+static func corrupt_stacks(u, index: int) -> int:
+	var n := 0
+	for pair in _taking_part(u, "status", null):
+		if str(pair[0].get("effect", "")) == "corrupt_entry" and int(pair[0].get("value", -1)) == index:
+			n += pair[1].stacks
+	return n
+
+
+## Clear every cleansable status on a unit (the cleanse keyword, 25 September). Returns the
+## names of what went, once each, for the log; empty when there was nothing to clear.
+static func cleanse(u) -> Array[String]:
+	var gone: Array[String] = []
+	var keep: Array = []
+	for m in u.modifiers:
+		if m.tags.has(CLEANSABLE):
+			if not gone.has(m.name):
+				gone.append(m.name)
+		else:
+			keep.append(m)
+	u.modifiers = keep
+	return gone
 
 
 ## One effect in plain words, the way the die screen prints it: what it does, and when.
@@ -453,6 +492,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"skip_action": body = "skips its action"
 		"resist_suppress": body = "resists suppress %s%% per stack" % vs
 		"disable_entry": body = "die entry %s switched off" % str(int(v) + 1)
+		"corrupt_entry": body = "die entry %s bites its owner when spent" % str(int(v) + 1)
 		_: body = str(eff.get("effect", ""))
 	var lead := ""
 	match str(eff.get("trigger", "")):
@@ -467,10 +507,16 @@ static func effect_text(eff: Dictionary) -> String:
 
 
 ## The effects that apply to this component right now, as short tags with their source:
-## what the row on the die screen shows beside the component's name.
+## what the row on the die screen shows beside the component's name. A component's own
+## passive is named first (the codex has its description), on any kind of entry.
 static func explain(u, face: Face) -> Array[String]:
 	var out: Array[String] = []
-	if face == null or not face.is_attack():
+	if face == null:
+		return out
+	for m in live(u):
+		if m.scope == LOADOUT and not m.component.is_empty() and m.component == face.component and not face.empty:
+			out.append("passive: %s" % m.name)
+	if not face.is_attack():
 		return out
 	for m in live(u):
 		for eff in m.effects:

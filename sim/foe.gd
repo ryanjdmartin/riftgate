@@ -101,8 +101,10 @@ func strikes() -> int:
 ## Tags an attack action may carry. Anything true or false about a blow is a tag here, never
 ## a field of its own.
 ## breach: overflows shield into hull. scorch: stacks Overheating on the mech it hits (a
-## placeholder name; the mech-side heat DOT Ryan asked for).
-const ATTACK_KEYWORDS := ["breach", "scorch", "disable"]   # disable: switches off the entry the target's die shows, through its next turn
+## placeholder name; the mech-side heat DOT Ryan asked for). disable: switches off the entry
+## the target's die shows, through its next turn. corrupt: a stack of Corrupted on that
+## entry, for the skirmish: it bites its owner every time it is spent.
+const ATTACK_KEYWORDS := ["breach", "scorch", "disable", "corrupt"]
 
 
 func has_keyword(a: Dictionary, k: String) -> bool:

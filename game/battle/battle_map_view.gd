@@ -6,12 +6,17 @@ extends Control
 ## the selected mech can reach, and the units themselves.
 ##
 ## Gestures: drag to scroll; tap a hex (the screen decides what that means); hold a unit for
-## its readout. The view owns no game logic.
+## its readout; drag from one of the player's machines to draw its route by hand (Ryan, 25
+## September), the screen deciding what each hex the finger reaches does to the draft. The
+## view owns no game logic.
 
 signal hex_tapped(h: Vector2i)
 signal hex_double_tapped(h: Vector2i)
 signal unit_held(u: Unit)
 signal hold_released
+signal route_drag_started(u: Unit)
+signal route_drag_to(h: Vector2i)
+signal route_drag_ended(commit: bool)
 
 const DOUBLE_TAP_SECONDS := 0.35
 
@@ -69,6 +74,12 @@ var _last_tap_hex := Vector2i(-9999, -9999)
 var _touches: Dictionary = {}       # finger index -> position, for the pinch
 var _pinch_d := 0.0                 # the fingers' distance when the pinch last zoomed
 var _pinching := false
+var route_drawing := false          # the screen allows a route to be drawn from a machine (planning, nothing playing)
+var draft: Array = []               # the route being drawn, hexes after the machine's own; the screen keeps it legal
+var draft_cost := -1                # its cost so far, for the plaque at its end; -1 shows none
+var _press_unit: Unit = null        # the player's machine under the finger at press: a drag from it draws
+var _route_drag: Unit = null        # the machine whose route is being drawn, while it is
+var _draft_hex := Vector2i(-9999, -9999)   # the last hex the finger reported, so a hex is announced once
 
 
 func _init() -> void:
@@ -387,6 +398,18 @@ func _draw() -> void:
 			draw_line(prev, p, hud, 3.0)
 			prev = p
 		Hud.stroke_poly(self, Hex.corners(prev, HEX_SIZE * 0.45), hud, 2.0)
+
+	# The route being drawn by hand: the same line, heavier, with the move it has spent
+	# against the machine's whole move on a plaque at its end.
+	if _route_drag != null and not draft.is_empty():
+		var prev := center(_route_drag.pos)
+		for step in draft:
+			var p := center(step)
+			draw_line(prev, p, hud, 5.0)
+			prev = p
+		Hud.stroke_poly(self, Hex.corners(prev, HEX_SIZE * 0.45), hud, 2.5)
+		if draft_cost >= 0:
+			_plaque(prev + Vector2(0.0, -HEX_SIZE * 0.95), "%d/%d" % [draft_cost, _route_drag.movespeed], hud, 1.5)
 
 	# Contacts waiting to be fought (Ryan, 22 September): the map freezes on them, the
 	# units about to engage lit, and nothing of the next phase shows until they are done.
@@ -996,8 +1019,17 @@ func _gui_input(event: InputEvent) -> void:
 			_press_pos = event.position
 			_last_pos = event.position
 			_press_at = Time.get_ticks_msec() / 1000.0
+			# A press on one of the player's machines may become a route drawn from it.
+			_press_unit = null
+			if route_drawing and field != null and _tag_at(event.position) == null:
+				var pu := field.unit_at(hex_at(event.position))
+				if pu != null and pu.is_player() and not pu.is_static():
+					_press_unit = pu
 		else:
-			if _holding:
+			if _route_drag != null:
+				_route_drag = null
+				route_drag_ended.emit(true)
+			elif _holding:
 				hold_released.emit()
 			elif _pressed and not _dragged and field != null:
 				if _tag_at(event.position) == null:   # the edge tags only inform; no jump (Ryan, 21 September)
@@ -1013,6 +1045,7 @@ func _gui_input(event: InputEvent) -> void:
 							hex_tapped.emit(h)
 			_pressed = false
 			_holding = false
+			_press_unit = null
 		accept_event()
 	elif event is InputEventMouseButton and event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN]:
 		zoom_at(event.position, 1.15 if event.button_index == MOUSE_BUTTON_WHEEL_UP else 1.0 / 1.15)
@@ -1036,6 +1069,10 @@ func _gui_input(event: InputEvent) -> void:
 				_pinching = true
 				_pressed = false
 				_holding = false
+				_press_unit = null
+				if _route_drag != null:   # a second finger cancels the draft rather than zooming it
+					_route_drag = null
+					route_drag_ended.emit(false)
 			elif _pinch_d > 1.0:
 				zoom_at(mid, d / _pinch_d)
 			_pinch_d = d
@@ -1044,10 +1081,27 @@ func _gui_input(event: InputEvent) -> void:
 			_pressed = false
 		if _touches.size() >= 2 or _pinching:
 			accept_event()
-	elif event is InputEventMouseMotion and _pressed and not _holding and not _pinching:
+	elif event is InputEventMouseMotion and _pressed and not _pinching:
+		if _holding and (_press_unit == null or event.position.distance_to(_press_pos) <= DRAG_THRESHOLD):
+			accept_event()   # a hold stays a hold; a hold on a machine that then moves draws
+			return
 		if not _dragged and event.position.distance_to(_press_pos) > DRAG_THRESHOLD:
 			_dragged = true
-		if _dragged:
+			if _press_unit != null:
+				# Not a scroll: a route drawn from the machine under the finger.
+				if _holding:
+					_holding = false
+					hold_released.emit()
+				_route_drag = _press_unit
+				_draft_hex = _route_drag.pos
+				route_drag_started.emit(_route_drag)
+		if _dragged and _route_drag != null:
+			var h := hex_at(event.position)
+			if h != _draft_hex and field.map.has(h):
+				_draft_hex = h
+				route_drag_to.emit(h)
+			queue_redraw()
+		elif _dragged:
 			scroll_x += event.position.x - _last_pos.x
 			scroll_y += event.position.y - _last_pos.y
 			_clamp_scroll()
