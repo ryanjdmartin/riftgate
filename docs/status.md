@@ -292,8 +292,14 @@ decided register.
 
 **Open, in the order I would take them.**
 
-1. Ryan: plug the phone in with USB debugging on and run `tools/android.sh`; judge the
-   frame rate, the hex outlines, the sound set and the layout at the phone's height.
+1. Ryan: the native Android build runs (25 September). First note from it: the hex grid
+   was faint at rest. Cause: the grid was GL lines, one device pixel whatever the screen,
+   and the Compatibility renderer (the phone's) drew them thinner and with no bloom halo;
+   measured on the phone's screenshot, most grid pixels sat at 40 percent of the line's
+   peak. Fixed as ribbons `GRID_W` map pixels wide (`map_3d.gd`, `_grid_geo`), the same
+   width on both renderers. Ryan judges it on the phone; if still faint, the knobs are
+   `GRID_W` and the grid material's `gain` (0.7). Still to judge on the phone: the frame
+   rate, the sound set and the layout at the phone's height.
    Badger tweaks in Blender, then joints and pins (`forge.py export badger`); notes on
    the Clydesdale; the Anvil.
 2. Ryan's content: names for overheating and scorch; strikes, breach, scorch, disable and

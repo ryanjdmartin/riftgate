@@ -757,14 +757,26 @@ func _edge_mesh(y: float, edges: Array) -> ArrayMesh:
 	return st.commit()
 
 
-## The hex outline as segments at height `y`, for the glowing grid.
+## The hex outline as a ribbon just inside the column's edge at height `y`, for the glowing
+## grid. Geometry, not GL lines: a line primitive is one device pixel whatever the screen,
+## and on the phone (Ryan, 25 September: faint at rest on native Android) that is a
+## hairline on a small dense screen, thinner and dimmer still on the Compatibility
+## renderer. A ribbon of GRID_W map pixels scales with the hex, the zoom and the screen.
+const GRID_W := 1.5
+
 func _grid_geo(y: float) -> Dictionary:
-	var corners := Hex.corners(Vector2.ZERO, hex_px - 1.5)
+	var outer := Hex.corners(Vector2.ZERO, hex_px - 0.75)
+	var inner := Hex.corners(Vector2.ZERO, hex_px - 0.75 - GRID_W * 1.15)   # 1.15: a corner's inset is measured along the edge's normal, not the radius
 	var v := PackedVector3Array()
-	for i in range(corners.size()):
-		v.append(_world(corners[i], y))
-		v.append(_world(corners[(i + 1) % corners.size()], y))
-	return {"v": v, "lines": true}
+	for i in range(outer.size()):
+		var j := (i + 1) % outer.size()
+		var a := _world(outer[i], y)
+		var b := _world(outer[j], y)
+		var c := _world(inner[j], y)
+		var d := _world(inner[i], y)
+		v.append(a); v.append(b); v.append(c)
+		v.append(a); v.append(c); v.append(d)
+	return {"v": v}
 
 
 var _grid_mat: ShaderMaterial = null
