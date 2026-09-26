@@ -270,7 +270,7 @@ func _build() -> void:
 	for key in ROWS.keys():
 		set(key, float(ROWS[key]) * H / BASE_H)
 	custom_minimum_size = Vector2(W, H)
-	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	Hud.inset_screen(self)   # clear of the phone's corners, cutout and gesture zone
 
 	var bg := HudBackdrop.new()
 	var seam_y := REROLL_Y + REROLL_SIZE.y + REROLL_GAP
@@ -301,6 +301,7 @@ func _build() -> void:
 	var menu_btn := HudButton.new("MENU", _open_menu)
 	menu_btn.sound = ""   # the menu's own breaker is the sound
 	_place(menu_btn, Vector2(W - 96, 10), Vector2(84, 34))
+	menu_btn.hit_pad = Vector2(12.0, 10.0)   # answers over the whole bar's height and out to the edge
 	_eye = HudButton.new("")
 	_eye.glyph = "eye"
 	_eye.slant_px = 0.0

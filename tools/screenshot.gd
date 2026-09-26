@@ -23,7 +23,10 @@ func _init() -> void:
 	if args.size() >= 3:
 		_pose = args[2]
 	_vp = SubViewport.new()
-	_vp.size = Vector2i(720, 1280)
+	# RIFTGATE_SHOT_H=1616 renders at a taller phone's height (with RIFTGATE_SAFE=top,bottom
+	# for its safe bands): the phone's layout on the Mac.
+	var shot_h := OS.get_environment("RIFTGATE_SHOT_H")
+	_vp.size = Vector2i(720, int(shot_h) if not shot_h.is_empty() else 1280)
 	_vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	root.add_child(_vp)
 	var scene: PackedScene = load(scene_path)

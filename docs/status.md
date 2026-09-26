@@ -298,8 +298,16 @@ decided register.
    measured on the phone's screenshot, most grid pixels sat at 40 percent of the line's
    peak. Fixed as ribbons `GRID_W` map pixels wide (`map_3d.gd`, `_grid_geo`), the same
    width on both renderers. Ryan judges it on the phone; if still faint, the knobs are
-   `GRID_W` and the grid material's `gain` (0.7). Still to judge on the phone: the frame
-   rate, the sound set and the layout at the phone's height.
+   `GRID_W` and the grid material's `gain` (0.7). Second note: MENU cramped in the top
+   corner and the bottom buttons cut off. The export is edge to edge and immersive, so
+   the layout ran the whole glass; now both screens inset their root by the display's
+   safe area (`Hud.safe_insets`, `Hud.inset_screen`, floor `Hud.SAFE_FLOOR` = 40 top and
+   32 bottom design px for the corners and gesture zone the display does not report),
+   and MENU answers a touch over the whole bar (`HudButton.hit_pad`). To see the phone's
+   layout on the Mac: `RIFTGATE_SHOT_H=1616 RIFTGATE_SAFE=80,48` with `tools/screenshot.gd`.
+   If the floor is wrong on the device, `SAFE_FLOOR` is the knob. Still to judge on the
+   phone: the frame rate, the sound set, and the black gap between the map's frame and
+   the log on a tall screen (the map view grows but its frame does not fill it).
    Badger tweaks in Blender, then joints and pins (`forge.py export badger`); notes on
    the Clydesdale; the Anvil.
 2. Ryan's content: names for overheating and scorch; strikes, breach, scorch, disable and

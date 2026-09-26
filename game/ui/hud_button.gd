@@ -18,6 +18,13 @@ var slant_px: float = 10.0
 var mono: bool = false                      # mono face for readout tags
 var color_override: Color = Color(0, 0, 0, 0)   # zero alpha: use the HUD colour
 var sound: String = "ui_tap"                # heard on press; "" for a button whose action has its own sound
+var hit_pad: Vector2 = Vector2.ZERO         # how far past its drawing the button answers a touch, each side (MENU on a phone: the whole bar)
+
+
+## A touch a little off the drawing still lands (Ryan, 25 September: MENU on the phone was
+## hard to press); the drawing itself stays its size.
+func _has_point(point: Vector2) -> bool:
+	return Rect2(-hit_pad, size + hit_pad * 2.0).has_point(point)
 
 
 func _init(label: String = "", on_pressed: Callable = Callable()) -> void:

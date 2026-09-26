@@ -141,7 +141,7 @@ func _build() -> void:
 	LOG_Y = 1076.0 + (H - BASE_H)   # the map takes the extra height; the log and buttons keep to the bottom
 	BOTTOM_Y = 1196.0 + (H - BASE_H)
 	custom_minimum_size = Vector2(W, H)
-	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	Hud.inset_screen(self)   # clear of the phone's corners, cutout and gesture zone
 
 	var bg := HudBackdrop.new()
 	bg.scan = false   # this screen's one scan bar is drawn on top of everything, below
@@ -153,6 +153,7 @@ func _build() -> void:
 	_place(_header, Vector2(12, 14), Vector2(300, 28))
 	var menu_btn := HudButton.new("MENU", _open_menu)
 	menu_btn.sound = ""   # the menu's own breaker is the sound
+	menu_btn.hit_pad = Vector2(12.0, 10.0)   # answers over the whole bar's height and out to the edge
 	_place(menu_btn, Vector2(W - 96, 10), Vector2(84, 34))
 	if OS.get_environment("RIFTGATE_TUNE") == "1":
 		# The map's live knobs, a development tool; the player's knobs are in the menu.

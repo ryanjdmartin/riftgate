@@ -56,11 +56,69 @@ static func _load(path: String) -> Font:
 ## has glyphs that start left of their origin, so every label gets a few pixels of left
 ## padding rather than losing the first stem of an H.
 ## The height a screen should lay itself out to: the design's 1280 or, in the tree on a
-## taller phone (the window keeps the width and expands the height), the real one.
+## taller phone (the window keeps the width and expands the height), the real one less
+## the safe insets at its top and bottom.
 static func screen_height(screen: Control) -> float:
 	if screen.is_inside_tree():
-		return maxf(1280.0, screen.get_viewport_rect().size.y)
+		var ins := safe_insets(screen)
+		return maxf(1280.0, screen.get_viewport_rect().size.y - ins.x - ins.y)
 	return 1280.0
+
+
+## The band at the top and at the bottom of the glass a screen must keep clear, in design
+## pixels: (top, bottom). Ryan, 25 September, first native Android run: the build is edge
+## to edge and immersive, so the layout ran from the very top of the glass to the very
+## bottom, MENU sat in the rounded corner under the cutout and was hard to press, and the
+## bottom buttons were cut off by the corners and the gesture zone (the framebuffer showed
+## them whole; the panel did not). The display reports its cutouts; the corners and the
+## gesture zone it does not, so on a phone each band is at least SAFE_FLOOR. Desktop
+## windows keep no band. RIFTGATE_SAFE=top,bottom forces one anywhere, to see the phone's
+## layout on the Mac.
+const SAFE_FLOOR := Vector2(40.0, 32.0)
+
+static func safe_insets(screen: Control) -> Vector2:
+	if not screen.is_inside_tree():
+		return Vector2.ZERO
+	var view_h := screen.get_viewport_rect().size.y
+	var ins := Vector2.ZERO
+	var env := OS.get_environment("RIFTGATE_SAFE")
+	if not env.is_empty():
+		var parts := env.split(",")
+		ins = Vector2(float(parts[0]), float(parts[1]) if parts.size() > 1 else float(parts[0]))
+	elif OS.has_feature("mobile"):
+		var win := screen.get_window()
+		var win_pos := Vector2(DisplayServer.window_get_position(win.get_window_id()))
+		var win_h := float(win.size.y)
+		var safe := DisplayServer.get_display_safe_area()
+		var top := maxf(0.0, float(safe.position.y) - win_pos.y)
+		var bottom := maxf(0.0, win_pos.y + win_h - float(safe.end.y))
+		var scale := view_h / maxf(1.0, win_h)   # design pixels per device pixel
+		ins = Vector2(maxf(top * scale, SAFE_FLOOR.x), maxf(bottom * scale, SAFE_FLOOR.y))
+	# The layout is never shorter than the design: on glass too short to keep the whole
+	# band clear as well, the band gives way, both ends in proportion.
+	var spare := maxf(0.0, view_h - 1280.0)
+	var total := ins.x + ins.y
+	if total > spare and total > 0.0:
+		ins *= spare / total
+	return ins
+
+
+## Fit a screen's root to the glass less the safe bands: full rect, then the top and
+## bottom offsets pulled in by whatever of the band its parent does not already keep
+## clear (a skirmish opened inside the battle screen sits in a root that is inset already).
+static func inset_screen(screen: Control) -> void:
+	screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	if not screen.is_inside_tree():
+		return
+	var ins := safe_insets(screen)
+	if ins == Vector2.ZERO:
+		return
+	var parent := screen.get_parent_control()
+	var view_h := screen.get_viewport_rect().size.y
+	var parent_top := parent.get_global_rect().position.y if parent != null else 0.0
+	var parent_bottom := parent.get_global_rect().end.y if parent != null else view_h
+	screen.offset_top = maxf(0.0, ins.x - parent_top)
+	screen.offset_bottom = -maxf(0.0, ins.y - (view_h - parent_bottom))
 
 
 static func label(text: String, size_px: int, color: Color, font: Font = null) -> Label:
