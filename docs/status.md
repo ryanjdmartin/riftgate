@@ -362,7 +362,17 @@ battle (sealing the source rift) has a boss of its own, and so a fourth piece or
 Far Bank's climax cut. Judge the reveal running (`bosscontact` pose,
 `RIFTGATE_REVEAL_T`, `RIFTGATE_FACTION=eldritch` for the themed one): expect notes.
 (3) Levels: the map's two at -24.9, the skirmish's three at -20.7, the boss theme at
--22.5; anything moved to another screen needs its level moved with it. (4) The phone: nothing has been heard on
+-22.5; anything moved to another screen needs its level moved with it. (4) The phone, heard 26 September: the low end (kick, toms, unplucked bass) is hard to
+hear on the speaker and Hold The Line's driven bass is harsh and tinny, chip-tune and
+dubstep for extended listening. Measured: The Far Bank and The Crossing carry about
+three quarters of their power below 80 Hz, where a phone is silent, and levelling by
+whole-file RMS leaves The Far Bank 9.4 dB under Hold The Line through a phone-speaker
+model. `tools/soundforge/phone_sketches.py` renders A/B sketches into `out/phone/`
+(the driven bass five ways: shipped, cabinet, two asymmetric stages with no hard clip,
+clean-low/driven-high split, drive following the note; the mix with shadows under the
+low end, a sub cut, a gentler tilt, all three; the levelling gap) and they are published
+for the phone at https://claude.ai/artifact/FCaphxM3Y3SnRPdNnprpXc. Ryan's picks
+decide what lands in the forge. Before the phone: nothing had been heard on
 a device; the mix was checked by measurement only. (5) The real recordings and the real
 track remain section 12's open question; everything here is a placeholder in the
 decided register.

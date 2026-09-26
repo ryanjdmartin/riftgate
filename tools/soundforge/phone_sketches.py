@@ -1,0 +1,353 @@
+"""Sketches for the phone (Ryan, 26 September: on the phone's speaker the low end is hard to
+hear and the driven bass in Hold The Line is harsh and tinny).
+
+Two sets, rendered from Hold The Line's own opening with one thing changed at a time, so
+each file is an A/B against the first of its set; never written over a shipped track.
+
+  voices    the driven bass, five ways: as shipped; through a bass cabinet; cabinet and two
+            stages of asymmetric saturation with no hard clip; that split into a clean low
+            string under a driven upper one; and the split with the drive following the
+            note's own envelope and a little per-note variation. Each in the riff, and all
+            five alone in one file, four bars each.
+  balance   the mix for a phone speaker, one step at a time: as shipped; shadows the speaker
+            can play under the kick, the toms and the sub (a knock at 200 Hz and a band of
+            harmonics 150 to 600 Hz); the sub cut (below 45 Hz gone, below 80 Hz -6 dB);
+            a gentler master tilt with a narrow presence lift at 1 to 2 kHz; all three.
+            And the levelling gap: Hold The Line then The Far Bank, first at the shipped
+            levels, then levelled by what a phone speaker plays (a model: high-passed at
+            220 Hz twice, a presence bump, rolled off at 9 kHz).
+
+    tools/spriter/.venv/bin/python tools/soundforge/phone_sketches.py [voices|balance|levels]
+
+Writes WAVs and AAC (afconvert, macOS) into tools/soundforge/out/phone/ with a manifest.
+"""
+import json
+import math
+import os
+import subprocess
+import sys
+import wave
+
+import numpy as np
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import forge as F  # noqa: E402
+
+OUT = os.path.join(F.OUT_SKETCH, "phone")
+SKIRMISH_LEVEL = F.LEVELS["music_hold_the_line"]
+VOICE_FORM = "AAAAAAAAAAAAAAAA B NNNN"            # the riff (bass from bar 5), the turn, the riff on power chords
+BALANCE_FORM = "AAAAAAAAAAAAAAAA B CCCCCCCC"      # ... and the lift: the sub, and the tom fill closing it
+FAR_BANK_FORM = "PPPPPPPP AAAAAAAB CCCCCCCB"      # the groove bare, the groove, the lift
+
+
+# ---------------------------------------------------------------- the phone model
+
+def phone_model(x):
+    """What a phone speaker plays of a signal: nothing under about 200 Hz, a presence bump,
+    little above 9 kHz. For levelling and measurement, never for listening."""
+    y = F.hp(F.hp(x, 220.0), 220.0)
+    y = y + F.bp(y, 900.0, 2500.0) * 0.4
+    return F.lp(y, 9000.0)
+
+
+def phone_level(x):
+    return F.mean_level(phone_model(x))
+
+
+# ---------------------------------------------------------------- bass voices
+
+def bass_cabinet(x, jitter=1.0):
+    """A bass cabinet: a few resonant peaks (a 4x10's), closed steeply above 4 kHz."""
+    y = np.zeros(len(x))
+    for f, g in ((100.0, 1.0), (250.0, 0.9), (700.0, 0.7), (1600.0, 0.45)):
+        f *= jitter
+        y += F.bp(x, f * 0.75, f * 1.3) * g
+    return F.lp(F.lp(y / 2.0 + x * 0.2, 4000.0), 4000.0)
+
+
+def asat(x, drive, bias=0.25):
+    """Asymmetric soft saturation: tanh with a bias, so even harmonics appear (the tube's
+    warmth a symmetric clip never has); the DC it makes is removed."""
+    y = np.tanh(x * drive + bias) - math.tanh(bias)
+    y /= (math.tanh(drive + bias) - math.tanh(bias))
+    return y - F.lp(y, 15.0)
+
+
+def string_and_thump(f, dur, bright=0.5):
+    n = F.n_of(dur)
+    x = F.pluck(f, dur, bright=bright, damp=0.998)[:n] + F.pluck(f * 1.001, dur, bright=bright * 0.6, damp=0.998)[:n] * 0.5
+    x = x + F.bp(x, 80.0, 140.0) * 0.8
+    thump = F.lp(F.noise(F.n_of(0.02)), 900.0) * F.env_ad(F.n_of(0.02), 0.0005, 0.006) * 0.5
+    return F.at(x, thump, 0.0)[:n]
+
+
+def bass_shipped(f, dur, drive=2.6):
+    return F.bass_real(f, dur, drive)
+
+
+def bass_cab(f, dur, drive=2.6):
+    # The shipped chain (tanh, then the hard clip, then the growl) into a cabinet instead of
+    # the flat low-pass at 2.2 kHz.
+    x = string_and_thump(f, dur)
+    x = np.clip(F.sat(x * drive, drive) * (1.0 + 0.15 * drive), -1.0, 1.0)
+    x = x + F.bp(x, 200.0, 500.0) * 0.5
+    return F.hp(bass_cabinet(x), 40.0) * 0.85
+
+
+def drive_stages(x, drive):
+    """Pre-emphasis, a hot asymmetric stage, a tone control, a gentler second stage."""
+    pre = F.hp(x, 300.0) * 1.2 + x * 0.5
+    y = asat(pre * drive, 1.6)
+    y = F.lp(y, 1500.0) + F.bp(y, 500.0, 900.0) * 0.4
+    return asat(y * 1.4, 1.2)
+
+
+def bass_stage(f, dur, drive=2.6):
+    x = string_and_thump(f, dur)
+    return F.hp(bass_cabinet(drive_stages(x, drive)), 40.0) * 0.9
+
+
+def bass_split(f, dur, drive=2.6, jitter=1.0, bright=0.5):
+    # The bass recording's trick: the string under 250 Hz kept clean for pitch and body, the
+    # part above driven through the stages and the cabinet, blended.
+    x = string_and_thump(f, dur, bright)
+    clean = F.sat(F.lp(x, 250.0), 1.3) * 0.9
+    driven = bass_cabinet(drive_stages(F.hp(x, 250.0), drive), jitter) * 0.75
+    return F.hp(clean + driven, 40.0) * 0.95
+
+
+def bass_dyn(f, dur, drive=2.6):
+    # The split, with the drive following the note: hot at the front, cleaning up as the
+    # string decays, as an amp compresses; and the string's brightness and the cabinet's
+    # peaks a hair different every note, so no two notes share a waveform.
+    bright = F.RNG.uniform(0.4, 0.62)
+    jitter = F.RNG.uniform(0.95, 1.05)
+    x = string_and_thump(f, dur, bright)
+    env = F.lp(np.abs(x), 25.0)
+    env = np.clip(env / (np.max(env) + 1e-9), 0.0, 1.0)
+    d = drive * (0.35 + 0.65 * env ** 0.6)
+    upper = F.hp(x, 250.0)
+    pre = F.hp(upper, 300.0) * 1.2 + upper * 0.5
+    y = np.tanh(pre * d * 1.6 + 0.25) - math.tanh(0.25)
+    y = y - F.lp(y, 15.0)
+    y = F.lp(y, 1500.0) + F.bp(y, 500.0, 900.0) * 0.4
+    y = asat(y * 1.4, 1.2)
+    fret = F.bp(F.noise(F.n_of(0.015)), 1500.0, 4000.0) * F.env_ad(F.n_of(0.015), 0.0003, 0.004) * F.RNG.uniform(0.05, 0.2)
+    driven = bass_cabinet(F.at(y, fret, 0.0)[: len(y)], jitter) * 0.75
+    clean = F.sat(F.lp(x, 250.0), 1.3) * 0.9
+    return F.hp(clean + driven, 40.0) * 0.95
+
+
+BASS_VOICES = [
+    ("shipped", bass_shipped, "as shipped: tanh, a hard clip, a growl band, a flat low-pass at 2.2 kHz"),
+    ("cab", bass_cab, "the same chain into a bass cabinet (peaks at 100, 250, 700, 1600 Hz; closed above 4 kHz)"),
+    ("stage", bass_stage, "cabinet, and two stages of asymmetric saturation with a tone control between; no hard clip"),
+    ("split", bass_split, "the string under 250 Hz kept clean, only the part above driven; cabinet on the driven part"),
+    ("dyn", bass_dyn, "the split, the drive following the note's own envelope, brightness and cabinet a hair different per note"),
+]
+for _name, _fn, _ in BASS_VOICES:
+    F.NOTE_INST["bass_" + _name] = (lambda fn: (lambda f, d, p: fn(f, d, p.get("drive", 2.6))))(_fn)
+
+
+# ---------------------------------------------------------------- shadows for the speaker
+
+_KICK, _TOM, _SUB = F.kick_real, F.tom_real, F.sub_bass   # the shipped voices, kept while the module's names are swapped
+
+
+def kick_shadow(pitch=1.0):
+    k = _KICK(pitch)
+    knock = F.body(230.0 * pitch, 120.0 * pitch, 0.07, drive=2.2, click=0.35) * 0.55
+    harm = F.bp(F.sat(k, 3.0), 150.0, 600.0) * 0.35
+    return F.mix(k, knock, harm)
+
+
+def tom_shadow(f=150.0, pitch=1.0):
+    t = _TOM(f, pitch)
+    return F.mix(t, F.bp(F.sat(t, 3.0), 200.0, 800.0) * 0.4)
+
+
+def sub_shadow(f, dur, res=0.0, punch=0.0, fade=0.0):
+    s = _SUB(f, dur, res, punch, fade)
+    return s + F.bp(F.sat(s * 2.0, 3.0), 150.0, 600.0) * 0.35
+
+
+def sub_cut(x):
+    return F.low_shelf(F.hp(F.hp(x, 45.0), 45.0), 80.0, -6.0)
+
+
+def presence(x):
+    return x + F.bp(x, 1000.0, 2200.0) * 0.25
+
+
+# ---------------------------------------------------------------- rendering
+
+class Patched:
+    """Swap module globals for one render, and put them back."""
+
+    def __init__(self, **swaps):
+        self.swaps = swaps
+        self.saved = {}
+
+    def __enter__(self):
+        for k, v in self.swaps.items():
+            self.saved[k] = getattr(F, k)
+            setattr(F, k, v)
+
+    def __exit__(self, *a):
+        for k, v in self.saved.items():
+            setattr(F, k, v)
+
+
+def with_form(name, form):
+    saved = F.MUSIC[name]["form"]
+    F.MUSIC[name]["form"] = form
+    return saved
+
+
+def groove_with(overrides):
+    orig = F.groove
+
+    def g(*a, **kw):
+        kw.update(overrides)
+        return orig(*a, **kw)
+    return g
+
+
+def render_hold(form, swap=None, groove_kw=None, patches=None, post=None):
+    saved = with_form("music_hold_the_line", form)
+    try:
+        F.seed("music_hold_the_line")   # the same slop, the same drum picks: only the change is heard
+        kw = dict(groove_kw or {})
+        if swap:
+            kw["swap"] = swap
+        with Patched(groove=groove_with(kw), **(patches or {})):
+            x = F.music_hold_the_line()
+    finally:
+        F.MUSIC["music_hold_the_line"]["form"] = saved
+    return post(x) if post else x
+
+
+def render_far_bank():
+    # Whole: its builder sizes patterns from the form's sections, so the form cannot be cut.
+    F.seed("music_far_bank")
+    return F.music_far_bank()
+
+
+def level_to(x, target_db, measure=F.mean_level):
+    return F.limit(x * 10.0 ** ((target_db - measure(x)) / 20.0))
+
+
+def write(name, x):
+    os.makedirs(OUT, exist_ok=True)
+    wav = os.path.join(OUT, name + ".wav")
+    pcm = (np.clip(x, -1.0, 1.0) * 32767.0).astype("<i2")
+    with wave.open(wav, "wb") as w:
+        w.setnchannels(1)
+        w.setsampwidth(2)
+        w.setframerate(F.SR)
+        w.writeframes(pcm.tobytes())
+    m4a = os.path.join(OUT, name + ".mp4")   # AAC in an MP4 container: what the listening page serves
+    try:
+        subprocess.run(["afconvert", "-f", "mp4f", "-d", "aac", "-b", "128000", "-q", "127", wav, m4a], check=True, capture_output=True)
+    except (OSError, subprocess.CalledProcessError) as e:
+        print("  (no aac for %s: %s)" % (name, e))
+        m4a = None
+    return wav, m4a
+
+
+def bar_seconds(bpm):
+    return 4.0 * 60.0 / bpm
+
+
+def solo_bass_file():
+    """Every voice alone on the riff, four bars each, a bar's rest between."""
+    riff = "0--.3-.0-...1-..g--.3-.1-...0-.."
+    form = "".join("%s%s%s%sR" % ((chr(ord("A") + i),) * 4) for i in range(len(BASS_VOICES)))
+    vs = []
+    for i, (name, _, _) in enumerate(BASS_VOICES):
+        sec = chr(ord("A") + i)
+        vs.append({"inst": "bass_" + name, "mode": "riff", "gain": 0.6, "hold": 1.0, "pat": {sec: riff}})
+    drums = {"kick": {"*": "x.xx.x.", "R": "................"}, "hat": {"*": "x.x.x.x.x.x.x.x.", "R": "................"}}
+    kit = {"kick": (F.variants(F.kick_real), 0.5), "hat": (F.variants(lambda p: F.hat_real(False, p)), 0.3)}
+    F.seed("phone_bass_solo")
+    x = F.groove(bpm=100, form=form, kit=kit, drums=drums, chords={"*": [[0, 7, 12]]}, voices=vs, tilt=3.0, low=(150.0, -6.0), human=(0.005, 0.15))
+    marks = [(i * 5 * bar_seconds(100), name) for i, (name, _, _) in enumerate(BASS_VOICES)]
+    return x, marks
+
+
+def main(argv):
+    which = argv[0] if argv else "all"
+    manifest = {"voices": [], "balance": [], "levels": [], "notes": {}}
+    os.makedirs(OUT, exist_ok=True)
+    path = os.path.join(OUT, "manifest.json")
+    if which != "all" and os.path.exists(path):
+        with open(path) as fh:   # one set re-rendered keeps the others' entries
+            manifest.update(json.load(fh))
+        manifest[which] = []
+
+    def save():
+        with open(path, "w") as fh:
+            json.dump(manifest, fh, indent=1)
+    if which in ("voices", "all"):
+        print("voices")
+        for name, _, note in BASS_VOICES:
+            x = render_hold(VOICE_FORM, swap={"bass_real": "bass_" + name})
+            x = level_to(x, SKIRMISH_LEVEL)
+            wav, m4a = write("bass_" + name, x)
+            manifest["voices"].append({"name": "bass_" + name, "seconds": len(x) / F.SR, "note": note, "phone_db": round(phone_level(x), 1)})
+            print("  %-14s %5.1f s  phone %.1f dB" % (name, len(x) / F.SR, phone_level(x)))
+        x, marks = solo_bass_file()
+        x = level_to(x, SKIRMISH_LEVEL)
+        write("bass_solo", x)
+        manifest["voices"].append({"name": "bass_solo", "seconds": len(x) / F.SR, "note": "every voice alone on the riff, four bars each, in the order above", "marks": marks})
+        print("  solo: " + ", ".join("%s at %d:%04.1f" % (n, int(t // 60), t % 60) for t, n in marks))
+        save()
+    if which in ("balance", "all"):
+        print("balance")
+        steps = [
+            ("mix_shipped", "as shipped", {}, None, None),
+            ("mix_shadows", "shadows under the kick, the toms and the sub: a knock at 200 Hz and harmonics 150 to 600 Hz",
+             {}, dict(kick_real=kick_shadow, tom_real=tom_shadow, sub_bass=sub_shadow), None),
+            ("mix_subcut", "the sub cut: nothing below 45 Hz, -6 dB below 80; the RMS budget goes to the mids", {}, None, sub_cut),
+            ("mix_tilt", "a gentler master tilt (1.5 dB from 3) with a narrow presence lift at 1 to 2 kHz", {"tilt": 1.5}, None, presence),
+            ("mix_all", "all three", {"tilt": 1.5}, dict(kick_real=kick_shadow, tom_real=tom_shadow, sub_bass=sub_shadow), lambda x: presence(sub_cut(x))),
+        ]
+        for name, note, kw, patches, post in steps:
+            x = render_hold(BALANCE_FORM, groove_kw=kw, patches=patches, post=post)
+            x = level_to(x, SKIRMISH_LEVEL)
+            write(name, x)
+            manifest["balance"].append({"name": name, "seconds": len(x) / F.SR, "note": note, "phone_db": round(phone_level(x), 1)})
+            print("  %-14s %5.1f s  phone %.1f dB" % (name, len(x) / F.SR, phone_level(x)))
+        save()
+    if which in ("levels", "all"):
+        print("levels")
+        # The levelling gap: twenty seconds of each at the shipped levels, then by the phone model.
+        hold = render_hold(BALANCE_FORM)
+        far = render_far_bank()
+        hb, fb = bar_seconds(100), bar_seconds(86)
+        hold = hold[int(4 * hb * F.SR): int(4 * hb * F.SR) + 20 * F.SR]     # from the bass's entrance
+        far = far[int(8 * fb * F.SR): int(8 * fb * F.SR) + 20 * F.SR]       # from the groove
+        gap = np.zeros(F.SR)
+        h0 = level_to(hold, F.LEVELS["music_hold_the_line"])
+        f0 = level_to(far, F.LEVELS["music_far_bank"])
+        shipped = np.concatenate([h0, gap, f0])
+        write("level_shipped", shipped)
+        target = phone_level(h0)
+        f1 = level_to(far, target, phone_level)
+        h1 = h0
+        phone = np.concatenate([h1, gap, f1])
+        write("level_phone", phone)
+        gap_db = round(target - phone_level(f0), 1)
+        manifest["levels"].append({"name": "level_shipped", "seconds": len(shipped) / F.SR, "note": "Hold The Line, a second's gap, The Far Bank, at the shipped levels (-20.7 and -22.5 dB mean RMS)"})
+        manifest["levels"].append({"name": "level_phone", "seconds": len(phone) / F.SR, "note": "the same two levelled by what a phone speaker plays: The Far Bank comes up %.1f dB" % gap_db})
+        manifest["notes"]["level_gap_db"] = gap_db
+        manifest["notes"]["far_bank_full_vs_phone"] = [round(F.mean_level(f0), 1), round(phone_level(f0), 1)]
+        manifest["notes"]["hold_full_vs_phone"] = [round(F.mean_level(h0), 1), round(phone_level(h0), 1)]
+        print("  levelling gap on the phone: The Far Bank %.1f dB under Hold The Line at the shipped levels" % gap_db)
+        save()
+    print(os.path.relpath(OUT))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))
