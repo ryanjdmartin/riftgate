@@ -108,6 +108,26 @@ func test_contact_opens_the_skirmish_screen_and_back_applies_it() -> void:
 	s.free()
 
 
+## The boss's contact offers no panel: the fight opens on its own with every machine, and
+## the skirmish is told the family's theme when there is one (Ryan, 25 September).
+func test_boss_contact_opens_the_fight_at_once_with_every_machine() -> void:
+	var s := _screen()
+	var b := s.battle
+	_engage(b, b.boss, b.mechs()[0])
+	_engage(b, b.field.squads()[0], b.mechs()[1])
+	s._on_resolve()
+	assert_true(b.boss_contact, "boss contact")
+	assert_eq(s._contacts, null, "no contact panel: nothing to choose")
+	assert_true(s._skirmish != null, "the fight opens on its own")
+	assert_eq(s._sub_label.text, "BOSS CONTACT // ALL UNITS", "the readout says so")
+	assert_eq(s._skirmish.sk.mechs.size(), b.mechs().size(), "every machine is in it")
+	var want := Sound.boss_set(b.faction)
+	assert_eq(s._skirmish.music_set, want if not want.is_empty() else "skirmish", "the fight plays the family's theme, or the skirmish's pick without one")
+	s._on_skirmish_back()
+	assert_false(b.boss_contact, "the flag drops on the way back")
+	s.free()
+
+
 func test_offscreen_squads_get_edge_tags() -> void:
 	var s := _screen()
 	var tags: Array = s._map.offscreen_tags()

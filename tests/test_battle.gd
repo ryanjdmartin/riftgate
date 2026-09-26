@@ -206,6 +206,44 @@ func test_boss_death_seals_the_rift() -> void:
 	assert_eq(b.state, Battle.State.DONE, "battle over")
 
 
+## The boss's contact takes the phase (Ryan, 25 September): one fight, every machine in it,
+## the boss alone across from them, every other contact dropped.
+func test_boss_contact_commits_every_machine_and_drops_the_other_contacts() -> void:
+	var b := _battle()
+	var mechs := b.mechs()
+	var sq: Unit = b.field.squads()[0]
+	_engage(b, b.boss, mechs[0])
+	_engage(b, sq, mechs[2])
+	b.commit()
+	assert_true(b.boss_contact, "the boss was contacted")
+	assert_eq(b.state, Battle.State.SKIRMISH, "one fight pending")
+	assert_eq(b.pending.size(), 1, "the squad's contact is dropped")
+	var group: Array = b.pending[0]
+	for m in mechs:
+		assert_true(group.has(m), "%s is committed, in contact or not" % m.display_name)
+	assert_true(group.has(b.boss), "against the boss")
+	assert_false(group.has(sq), "the squad stays on the field")
+	var sk := b.open_next_skirmish()
+	assert_eq(sk.mechs.size(), mechs.size(), "every machine fights")
+	assert_eq(sk.squads, [b.boss], "the boss is the only squad in it")
+	assert_eq(Battle.ground_hex(group), b.boss.pos, "fought on the boss's ground")
+	_win(sk)
+	b.finish_skirmish()
+	assert_false(b.boss_contact, "the flag drops with the fight")
+	assert_eq(b.outcome, Battle.Outcome.VICTORY, "victory")
+	assert_true(b.field.units.has(sq), "the dropped squad was never fought")
+
+
+func test_a_plain_contact_is_not_a_boss_contact() -> void:
+	var b := _battle()
+	_engage(b, b.field.squads()[0], b.mechs()[0])
+	b.commit()
+	assert_false(b.boss_contact, "no boss in it")
+	assert_eq(b.pending.size(), 1, "the one contact stands")
+	assert_false(b.pending[0].has(b.boss), "the boss is not dragged in")
+	assert_true(b.pending[0].has(b.field.squads()[0]), "the squad is fought")
+
+
 ## Clear the team away from the gate and park a squad right in front of it.
 static func threaten_gate(b: Battle, sq: Unit) -> void:
 	var gate_o := Hex.axial_to_offset(b.map.gate)

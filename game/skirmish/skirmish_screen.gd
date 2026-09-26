@@ -28,6 +28,7 @@ signal back_requested
 signal quit_requested   # the menu's QUIT: the host leaves for the harness
 
 var back_label := "BACK"   # the outcome's button: the battle screen says where back leads
+var music_set := "skirmish"   # the set this fight plays: the skirmish's pick, or a family's boss theme the battle screen already started at contact
 
 const W := 720.0
 const BASE_H := 1280.0   # the design's height; on a taller phone the rows spread out to fill it
@@ -204,7 +205,7 @@ func _ready() -> void:
 		_refresh()
 	_scroll_to_end(_log_scroll)   # set up before entering the tree: the strip starts at its last line
 	_acquire_intents()
-	Sound.music("skirmish")
+	Sound.music(music_set)   # the set already playing (a boss theme from the field) carries on
 
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks): two

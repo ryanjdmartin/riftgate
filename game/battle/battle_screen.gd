@@ -277,11 +277,12 @@ func _refresh() -> void:
 		Battle.State.PLAN:
 			_sub_label.text = "ORDERS // %d OF %d SET" % [battle.routes.size(), battle.mechs().size()]
 		Battle.State.SKIRMISH:
-			_sub_label.text = "CONTACT"
+			_sub_label.text = "BOSS CONTACT // ALL UNITS" if battle.boss_contact else "CONTACT"
 		_:
 			_sub_label.text = "BATTLE OVER"
 	_map.routes = battle.routes
 	_map.pending = battle.pending if battle.state == Battle.State.SKIRMISH else []
+	_map.route_drawing = planning and not _map.is_playing()
 	_map.queue_redraw()
 	_refresh_log()
 	_resolve_btn.set_enabled(planning and not _map.is_playing())
@@ -550,7 +551,10 @@ func _after_step() -> void:
 	_spawned = false
 	match battle.state:
 		Battle.State.SKIRMISH:
-			_show_contacts()
+			if battle.boss_contact:
+				_show_boss_contact()
+			else:
+				_show_contacts()
 		Battle.State.DONE:
 			_refresh()
 			_show_outcome()
@@ -620,6 +624,52 @@ func _show_contacts() -> void:
 		tw.kill()
 		warn.queue_free()
 		_build_contact_panel()
+
+
+## The boss's contact (Ryan, 25 September): no panel and no choice. The family's theme starts
+## from its top, the map looks at the boss, the reveal plays over it (BossReveal), and the
+## handover runs on its own into the one fight with every machine in it. Headless, the
+## fight opens at once.
+var _reveal: BossReveal = null
+
+func _show_boss_contact() -> void:
+	_refresh()
+	if _contacts != null:
+		_contacts.queue_free()
+		_contacts = null
+	var bs := Sound.boss_set(battle.faction)
+	if not bs.is_empty():
+		Sound.music(bs, true)
+	if DisplayServer.get_name() == "headless":
+		_open_skirmish(0)
+		return
+	var boss := battle.boss
+	var group: Array = battle.pending[0] if not battle.pending.is_empty() else []
+	var hexes: Array = []
+	for u in group:
+		hexes.append(u.pos)
+	_map.set_highlight(hexes)
+	_map.focus_on(_map.center(boss.pos) + Vector2(0, 60.0), 1.6)
+	var reveal := BossReveal.new()
+	reveal.position = Vector2(0, MAP_Y)
+	reveal.size = Vector2(W, LOG_Y - 10.0 - INFO_H - MAP_Y)
+	reveal.boss_name = str(boss.display_name)
+	reveal.family = str(battle.db.factions.get(battle.faction, {}).get("name", battle.faction))
+	var fid := BattleMapView.foe_sprite_id(boss)
+	reveal.tex = Sprites.combat_foe(fid)
+	if reveal.tex == null:
+		reveal.tex = Sprites.map_foe(fid)
+	var map_tex := Sprites.map_foe(fid)
+	reveal.from = _map.position + _map.to_screen(_map.center(boss.pos)) - reveal.position
+	reveal.from_size = (map_tex.get_size() * BattleMapView.SPRITE_SCALE if map_tex != null else Vector2(40, 40)) * _map.zoom
+	reveal.finished.connect(func() -> void:
+		if _reveal != null:
+			_reveal.queue_free()
+			_reveal = null
+		_open_skirmish(0))
+	_reveal = reveal
+	add_child(reveal)
+	Sound.play("contact")
 
 
 ## The contact panel: one contact at a time, with portraits, paged with arrows; paging
@@ -766,6 +816,8 @@ func _open_skirmish(index: int = 0) -> void:
 	var screen: SkirmishScreen = SKIRMISH_SCENE.instantiate()
 	screen.sk = sk
 	screen.back_label = "BACK TO THE FIELD"
+	if battle.boss_contact and not Sound.boss_set(battle.faction).is_empty():
+		screen.music_set = Sound.boss_set(battle.faction)   # the theme already playing since contact carries on
 	screen.setup(sk)
 	screen.back_requested.connect(_on_skirmish_back)
 	screen.quit_requested.connect(func() -> void: quit_requested.emit())   # QUIT in the fight leaves the battle too, straight out to the harness

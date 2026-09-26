@@ -41,11 +41,25 @@ const NAMES := [
 ## fight must never crossfade tracks in the middle of itself (Ryan, the same day: fade in
 ## from the map, loop, fade back to the map on exit). The player may still skip: the pause
 ## menu's next and previous move within the screen's set (Ryan, 25 September).
+##
+## Boss themes (Ryan, 25 September): one per family, in the acts' order, since every battle
+## ends on the same family's boss three or four times an act and the theme is the act's
+## identity. A boss set is keyed "boss_<faction id>" and holds one loop; the battle screen
+## starts it on the field the moment the boss is contacted, from its top, so the intro bars
+## play under the reveal and the handover and the fight arrives in the groove. A family
+## without a set falls back to the skirmish's pick (`boss_set`). The Far Bank is The
+## Chorus's: the most choral and the most symphonic of the six, for the last act.
 const SETS := {
 	"map": ["music_low_ground", "music_night_shift"],
 	"skirmish": ["music_hold_the_line", "music_crossing", "music_full_bore"],
+	"boss_eldritch": ["music_far_bank"],
 }
 const PICK := ["skirmish"]
+
+## Where a loop wraps to, in bars from its top, when it is not the top: a boss theme's intro
+## plays once, under the reveal, and a long fight wraps into the groove instead (Ryan, 25
+## September). Bars are the 4/4 bar's length at the loop's TEMPO. Absent means the top.
+const LOOP_FROM := {"music_far_bank": 8}
 
 ## Every loop's shown title and its working label. The files are named for the titles
 ## (Ryan's picks, 25 September); the labels are creation order, human A B C and rift A B C,
@@ -156,6 +170,13 @@ static func set_playing() -> String:
 	return _node._set
 
 
+## The boss set for a family ("boss_eldritch"), or "" when the family has no theme yet and
+## the fight takes the skirmish's pick.
+static func boss_set(faction: String) -> String:
+	var name := "boss_" + faction
+	return name if SETS.has(name) else ""
+
+
 ## A loop's shown title, and its working label ("Human A"); "" for a loop without one.
 static func title(loop: String) -> String:
 	return str(TRACKS.get(loop, {}).get("title", ""))
@@ -228,10 +249,13 @@ func _stream(name: String) -> AudioStream:
 	var path := DIR + name + ".wav"
 	var s: AudioStream = load(path) if ResourceLoader.exists(path) else null
 	if s is AudioStreamWAV and name.begins_with("music_"):
-		# The loops play round: the forge renders their tails across the seam.
+		# The loops play round: the forge renders their tails across the seam. A loop with
+		# a LOOP_FROM wraps to that bar instead of its top (the forge's wrapped tail then
+		# lands on the intro, which plays once; the seam at the groove is bare).
 		var w := s as AudioStreamWAV
 		w.loop_mode = AudioStreamWAV.LOOP_FORWARD
-		w.loop_begin = 0
+		var bars := int(LOOP_FROM.get(name, 0))
+		w.loop_begin = int(round(bars * 4.0 * 60.0 / float(TEMPO.get(name, 120.0)) * w.mix_rate)) if bars > 0 else 0
 		w.loop_end = int(round(w.get_length() * w.mix_rate))
 	_streams[name] = s
 	return s

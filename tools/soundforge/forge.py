@@ -3232,7 +3232,7 @@ LEVELS = {
     "contact": -10, "engage": -13, "cut": -8, "gate_hit": -8, "spawn": -12,
     "victory": -10, "defeat": -10, "withdraw": -11, "overheat": -12,
     "laser": -11, "gunfire": -11, "cannon": -8, "slash": -12, "slam": -9,
-    "music_far_bank": -24.9, "music_hold_the_line": -20.7,   # mean RMS dB, pinned where Ryan judged them
+    "music_far_bank": -22.5, "music_hold_the_line": -20.7,   # mean RMS dB, pinned where Ryan judged them; rift A between the map's and the skirmish's: it is The Chorus's boss theme (25 September)
     "music_low_ground": -24.9, "music_night_shift": -24.9,   # the map's two, at one level, the map's level (Ryan, 25 September)
     "music_crossing": -20.7, "music_full_bore": -20.7,   # rift C at the skirmish's level: it plays there (Ryan, 25 September)
 }

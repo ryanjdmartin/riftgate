@@ -5,9 +5,10 @@ thing works lives in its file's comments; why it is that way lives in the bible.
 
 ## As of 25 September 2026 (evening)
 
-**State.** Tests: 199 tests, 2552 checks, green (`perl -e 'alarm 240; exec @ARGV' godot
+**State.** Tests: 203 tests, 2590 checks, green (`perl -e 'alarm 240; exec @ARGV' godot
 --headless --path . -s tests/run_tests.gd`). Ryan runs a second session on this repo at
-the same time (today: the HUD session, the audio session and the balance session): check
+the same time (today: the HUD session, the audio session, the balance session and the
+boss-theme session, which was the audio session resumed from another account): check
 `git status` before committing and stage by path. Chassis ids: `badger`,
 `clydesdale`, `sparrowhawk`, `anvil`. Ryan writes `content/*.json` in his own voice; tests
 never hardcode an entry's passive name.
@@ -41,7 +42,16 @@ under PAUSED a plate names the track playing, with previous and next, and the to
 ticker names it during play.
 The enemy's turn replays blow by blow with the gauges stepping down, before the next dice
 or the outcome, a withdrawal included. The formation is four wide. A map groove plays on
-the field and a skirmish groove in the fight, crossfading.
+the field and a skirmish groove in the fight, crossfading. The boss's contact is different
+(Ryan, 25 September; built the same evening): no contact panel and no choice; the phase's
+other contacts are dropped, every machine on the field is committed, the family's boss
+theme starts from its top on the field, a reveal plays over the map (`BossReveal`: the
+band, the boss's picture flying up out of its hex, brackets, the name resolving from a
+scramble, tears; a tap ends it) and the handover runs on its own into the one fight, the
+boss alone across from the whole team. `Battle.boss_contact` is the flag;
+`Sound.boss_set(faction)` the theme (`SETS["boss_<faction>"]`, one loop, wrapping to
+`LOOP_FROM` bars in rather than the top); a family without one takes the skirmish's pick.
+Only The Chorus has a theme today (The Far Bank).
 
 **Balance measured by machine (25 September; bible section 11 row).** `sim/policy.gd` is a
 player for the headless skirmish: RANDOM (the floor: never rerolls, any legal target) and
@@ -259,33 +269,36 @@ mid-fight, at the screen's fade times) and the header ticker's run-in and beat m
 both judged running, never from the `menu` pose alone. Expect notes on each; the six
 titles are Ryan's picks and may still move (one string each in `Sound.TRACKS`, plus the
 file id if he wants the file to follow). The ticker's crawl never fires today, since
-every title fits the box. (2) **Boss themes, the
-plan discussed 25 September (Ryan has not yet said build).** The structure: a run is
-about ten battles in three acts, one family per act (The Risen, then The Infernal
-Horde, then The Chorus); every battle ends by killing the boss that powers its rift, so
-a boss skirmish (one continuous fight of several rounds, Rift Pressure feeding squads
-in) happens three or four times per act against the same boss. Hence one boss theme per
-family, in the acts' order, each the act's identity. The Far Bank (rift A, locked, 86,
-3:56, in the table, hooked nowhere) is the third act's: it is the most choral track, its
-meters and wrong notes are rules being edited (The Chorus "edits the rules"), and it is
-the most symphonic, which belongs to the last act; bosses here are epic, not intense
-(Ryan: Clair Obscur), so its quiet build is a feature. Changes for the slot: level to
-about -22.5 dB (between the map's -24.9 and the skirmish's -20.7; `LEVELS`), loop from
-the groove at bar nine (Godot `loop_begin` in `Sound._stream`) so a long fight wraps
-into the groove rather than the bare opening, and one build with a light tight kick
-under the orchestral bass drum in the groove, lift and climax only, for Ryan to judge.
-The other two from seeds: The Risen from Low Ground (its A G F E ground bass is a dirge;
-"hard to keep down" as form, a theme returning after every breakdown, a bass drum
-march, horns, choir on oo; the least symphonic of the three, first act), The Infernal
-Horde from The Crossing's brass and timpani (loud, fire, telegraphed: brass stabs with a
-bar of air before each hit, the chug, a major-third mode). Each needs a melody of its
-own; estimate eight listening rounds each. Wiring: a boss set keyed by family
-(`Sound.SETS["boss"]` or a `music("boss", family)` form); the battle carries `faction`
-and the boss unit is `elite`, so the skirmish screen can ask for it; families without a
-theme fall back to the skirmish pick. Open: whether the final battle (sealing the
-source rift) has a boss of its own, and so a fourth piece or The Far Bank's climax cut.
-(3) Levels: the map's two at -24.9, the skirmish's three at -20.7; anything moved to
-another screen needs its level moved with it. (4) The phone: nothing has been heard on
+every title fits the box. (2) **Boss themes (decided and wired 25 September, evening;
+bible section 1 sound row and section 4 row).** The structure: a run is about ten
+battles in three acts, one family per act (The Risen, then The Infernal Horde, then The
+Chorus); every battle ends by killing the boss that powers its rift, so a boss skirmish
+happens three or four times per act against the same boss. Hence one boss theme per
+family, in the acts' order, each the act's identity; bosses are epic, not intense (Ryan:
+Clair Obscur), so a quiet build is a feature. **Built:** The Far Bank is The Chorus's
+(`SETS["boss_eldritch"]`), levelled to -22.5 (`LEVELS`; between the map's -24.9 and the
+skirmish's -20.7), wrapping to bar nine (`LOOP_FROM`, in bars; `_stream` sets
+`loop_begin`) so the eight-bar intro plays once under the reveal and the handover and a
+long fight wraps into the groove. The theme starts on the field at the boss's contact
+(`_show_boss_contact`), from its top; the skirmish screen's `music_set` keeps it; a
+family without a set takes the skirmish's pick. **Not built, for Ryan to judge or say
+build:** the one trial of a light tight kick under the orchestral bass drum in The Far
+Bank's groove, lift and climax (render it as a `sketch`, never over the locked file);
+the seam at bar nine is bare (the forge wraps the closer's room tail onto the intro,
+which the loop no longer reaches; if he hears the join, render the tail onto bar nine
+instead); Rift Pressure does not yet feed squads into the boss fight (the plan said it
+should; today the boss fights alone and the pressure ticks after). The other two themes
+from seeds: The Risen from Low Ground (its A G F E ground bass is a dirge; "hard to keep
+down" as form, a theme returning after every breakdown, a bass drum march, horns, choir
+on oo; the least symphonic of the three, first act), The Infernal Horde from The
+Crossing's brass and timpani (loud, fire, telegraphed: brass stabs with a bar of air
+before each hit, the chug, a major-third mode). Each needs a melody of its own,
+proposed in chat first; estimate eight listening rounds each. Open: whether the final
+battle (sealing the source rift) has a boss of its own, and so a fourth piece or The
+Far Bank's climax cut. Judge the reveal running (`bosscontact` pose,
+`RIFTGATE_REVEAL_T`, `RIFTGATE_FACTION=eldritch` for the themed one): expect notes.
+(3) Levels: the map's two at -24.9, the skirmish's three at -20.7, the boss theme at
+-22.5; anything moved to another screen needs its level moved with it. (4) The phone: nothing has been heard on
 a device; the mix was checked by measurement only. (5) The real recordings and the real
 track remain section 12's open question; everything here is a placeholder in the
 decided register.

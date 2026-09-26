@@ -188,6 +188,17 @@ func _apply_battle_pose() -> void:
 			sq.movespeed = 0
 			b.field.compute_intents()
 			s._on_resolve()
+		"bosscontact":
+			# The boss reached: the reveal over the map (RIFTGATE_REVEAL_T pins its second).
+			var m: Unit = b.mechs()[0]
+			var boss: Unit = b.boss
+			for n in Hex.neighbors(m.pos):
+				if b.field.can_stand(boss, n):
+					boss.pos = n
+					break
+			boss.movespeed = 0
+			b.field.compute_intents()
+			s._on_resolve()
 
 
 func _tick() -> void:

@@ -34,6 +34,7 @@ var state: int = State.PLAN
 var outcome: int = Outcome.NONE
 var routes: Dictionary = {}     # mech id -> Array[Vector2i]
 var pending: Array = []         # contact groups (Array[Unit]) waiting for a skirmish
+var boss_contact := false       # this phase's contact is the boss's: one fight, every machine in it
 var current: Skirmish = null
 var last_result: Battlefield.PhaseResult = null
 var skirmishes_fought: int = 0
@@ -173,6 +174,7 @@ func commit() -> Battlefield.PhaseResult:
 	last_result = field.resolve_phase(routes)
 	routes.clear()
 	pending = last_result.skirmishes.duplicate()
+	boss_contact = _take_boss_contact()
 	# A phase spent out of combat recharges shield at the field rate. A mech in contact this
 	# phase gets nothing here: its skirmish is its phase, and it recharges only at the combat
 	# rate inside it. So withdrawing buys a slower recharge, not a reset.
@@ -185,6 +187,30 @@ func commit() -> Battlefield.PhaseResult:
 			u.recharge_shield(u.recharge_field)
 	_after_phase()
 	return last_result
+
+
+## The boss's contact takes the phase (Ryan, 25 September): when any contact group holds the
+## boss, the phase has one fight, every machine on the field against the boss alone, and
+## the other contacts are dropped, squads in the boss's own group included. The player's
+## positioning no longer matters once the boss is reached; the fight is the battle's end
+## or a withdrawal. True when it happened; `pending` is then that one group.
+func _take_boss_contact() -> bool:
+	if boss == null:
+		return false
+	var found := false
+	for group in pending:
+		if group.has(boss):
+			found = true
+			break
+	if not found:
+		return false
+	var group: Array = []
+	for m in field.mechs():
+		if not m.is_static():
+			group.append(m)
+	group.append(boss)
+	pending = [group]
+	return true
 
 
 func has_pending() -> bool:
@@ -254,6 +280,7 @@ func finish_skirmish() -> void:
 		return
 	field.apply_skirmish_result(current)
 	current = null
+	boss_contact = false
 	if _check_outcome():
 		pending.clear()
 		return
