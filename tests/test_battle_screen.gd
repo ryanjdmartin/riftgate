@@ -108,6 +108,48 @@ func test_contact_opens_the_skirmish_screen_and_back_applies_it() -> void:
 	s.free()
 
 
+## The contact panel's portraits die with it (Ryan, 26 September: they hung off the screen
+## root, and every contact and every tap of the panel's arrows left another pair of
+## viewports rendering for the rest of the battle, until the phone's GL driver ran out
+## of memory). A view counts as live unless it, or something above it, is on its way out.
+func _live_portraits(s: BattleScreen) -> Array:
+	var out: Array = []
+	for v in s.find_children("*", "MechView3D", true, false):
+		if s._skirmish != null and s._skirmish.is_ancestor_of(v):
+			continue
+		var n: Node = v
+		var dying := false
+		while n != null and n != s:
+			if n.is_queued_for_deletion():
+				dying = true
+				break
+			n = n.get_parent()
+		if not dying:
+			out.append(v)
+	return out
+
+
+func test_contact_portraits_die_with_the_panel() -> void:
+	var s := _screen()
+	var b := s.battle
+	_engage(b, b.field.squads()[0], b.mechs()[0])
+	_engage(b, b.field.squads()[1], b.mechs()[1])
+	s._on_resolve()
+	assert_true(s._contacts != null, "contacts offered")
+	var before := _live_portraits(s)
+	assert_true(before.size() > 0, "a portrait per machine in the fight shown")
+	for v in before:
+		assert_true(s._contacts.is_ancestor_of(v), "a portrait belongs to the panel")
+	s._contact_index = 1
+	s._fill_contact_panel()
+	s._contact_index = 0
+	s._fill_contact_panel()
+	assert_eq(_live_portraits(s).size(), before.size(), "paging replaces the portraits, never adds")
+	s._open_skirmish(0)
+	assert_eq(_live_portraits(s).size(), 0, "the panel gone, no portrait outlives it")
+	s.free()
+
+
 ## The boss's contact offers no panel: the fight opens on its own with every machine, and
 ## the skirmish is told the family's theme when there is one (Ryan, 25 September).
 func test_boss_contact_opens_the_fight_at_once_with_every_machine() -> void:

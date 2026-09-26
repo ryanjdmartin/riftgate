@@ -369,9 +369,21 @@ decided register.
    32 bottom design px for the corners and gesture zone the display does not report),
    and MENU answers a touch over the whole bar (`HudButton.hit_pad`). To see the phone's
    layout on the Mac: `RIFTGATE_SHOT_H=1616 RIFTGATE_SAFE=80,48` with `tools/screenshot.gd`.
-   If the floor is wrong on the device, `SAFE_FLOOR` is the knob. Still to judge on the
-   phone: the frame rate, the sound set, and the black gap between the map's frame and
-   the log on a tall screen (the map view grows but its frame does not fill it).
+   If the floor is wrong on the device, `SAFE_FLOOR` is the knob. Third note (26
+   September): crashes after some minutes of play. The log (`adb logcat -b crash`) shows
+   three identical aborts on the GL thread, the Mali driver out of memory adding a
+   framebuffer to its pool. Two causes found and fixed: the contact panel's mech
+   portraits hung off the screen root and were never freed (every contact and every tap
+   of the panel's arrows left viewports rendering for the rest of the battle; now they
+   live in the portrait's box and die with the panel, `test_contact_portraits_die_with_the_panel`),
+   and Godot's Compatibility renderer leaks native memory every frame a 3D viewport draws
+   with MSAA on Android (godotengine/godot#97967, open), so `Hud.msaa_3d()` turns 3D MSAA
+   off on a phone (`RIFTGATE_MSAA=on` to compare). Ryan re-exports and plays a long
+   session; if it still dies, sample `adb shell dumpsys meminfo com.publabs.riftgate`
+   every minute and watch Native Heap and EGL mtrack. Still to judge on the phone: the
+   frame rate, the sound set, the machines' edges without MSAA, and the black gap between
+   the map's frame and the log on a tall screen (the map view grows but its frame does
+   not fill it).
    Badger tweaks in Blender, then joints and pins (`forge.py export badger`); notes on the
    Mandrill's model, numbers, kit and passive (all first fills); notes on
    the Clydesdale; the Anvil.

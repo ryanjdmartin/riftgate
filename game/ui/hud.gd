@@ -103,6 +103,20 @@ static func safe_insets(screen: Control) -> Vector2:
 	return ins
 
 
+## The 3D viewports' anti-aliasing: 4x on the desktop, none on a phone. Godot's
+## Compatibility renderer leaks native memory every frame a 3D viewport draws with MSAA
+## on Android (godotengine/godot#97967, open since October 2024; seen here on a Pixel 9,
+## Mali-G715: the GL driver aborts out of memory after some minutes, Ryan, 26 September).
+## The phone renders at the design's 720 and upscales nearest anyway, so MSAA bought
+## little there. RIFTGATE_MSAA=on or off forces it, to compare. Returns a
+## SubViewport.MSAA value, typed int (a class-scoped enum type fails in a headless runner).
+static func msaa_3d() -> int:
+	var env := OS.get_environment("RIFTGATE_MSAA")
+	if env == "off" or (env != "on" and OS.has_feature("mobile")):
+		return SubViewport.MSAA_DISABLED
+	return SubViewport.MSAA_4X
+
+
 ## Fit a screen's root to the glass less the safe bands: full rect, then the top and
 ## bottom offsets pulled in by whatever of the band its parent does not already keep
 ## clear (a skirmish opened inside the battle screen sits in a root that is inset already).
