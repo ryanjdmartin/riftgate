@@ -129,7 +129,12 @@ forearm, the vent block), built and imported; judged from two hero shots only. S
 on Ryan's notes (26 September): upright torso, squatting legs (knee forward, hip back),
 shorter arms with the fists at the knee, bowed octagonal tubes for arms and shins (`_bow`,
 `_tube`: Aphelion hates straight lines), a drum waist, knuckle plates, the repeater on the
-outside of the right hand, lower pauldrons. Every chassis carries a `designation` now (the
+outside of the right hand, lower pauldrons. Fourth pass (Ryan's notes, evening): stumpier legs, longer
+forearms; `Build._finish` takes a `frame` so a member's tiles map along its own axes
+(`_beam` passes one: panel seams ran diagonally across slanted limbs before); `_fist`
+builds a fist block whose front face carries exactly one `fist` tile (four fingers, the
+thumb across the bottom) plus a thumb block, for every chassis that needs fists. Every
+chassis carries a `designation` now (the
 validator requires it; the bible's section 7 row gives the shape per maker): Pattern 1
 Combat Walker, K-7 Mk III Interceptor, Perihelion Flight 7 Support Frame are Claude's fills.
 The passive is under discussion (Ryan: too plain; his idea is a chance to convert a foe's

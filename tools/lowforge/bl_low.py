@@ -167,14 +167,22 @@ class Tiles:
             # Bone is paint, not the maker's metal: the same white for everyone, no cast.
             img = self._seam(self.metal(0.74, self.p["streak"] * 0.5, tint=(0.96, 0.93, 0.85), mottle=0.012, cast=(1.0, 1.0, 1.0)))
         elif kind == "fist":
-            # A closed fist read through its texture (Ryan, 26 September: fists by texture,
-            # not geometry): three finger grooves across the face with a lit knuckle above
-            # each, and a deeper thumb seam down one side.
-            img = self._seam(self.metal(g * 1.04, self.p["streak"] * 0.6))
-            for y in (18, 32, 46):
-                img[y:y + 3, 6:TILE - 6, :] *= 0.35
-                img[y - 2:y, 6:TILE - 6, :] = np.minimum(img[y - 2:y, 6:TILE - 6, :] * 1.25, 1.0)
-            img[8:TILE - 8, 50:54, :] *= 0.3
+            # A closed fist read through its texture, knuckles forward (Ryan, 26 September):
+            # the face is one tile, mapped by the fist's own frame. Four fingers side by side
+            # split by three vertical grooves, a lit knuckle at the top of each, and the
+            # thumb as a band across the bottom, curled over the fingers. Image row 0 is the
+            # bottom of the tile.
+            img = self.metal(g * 1.04, self.p["streak"] * 0.5, mottle=0.008)
+            for x in (16, 32, 48):
+                img[14:TILE - 4, x - 1:x + 2, :] *= 0.3
+            for y in (TILE - 10, TILE - 9):
+                img[y:y + 1, 4:TILE - 4, :] = np.minimum(img[y:y + 1, 4:TILE - 4, :] * 1.3, 1.0)
+            img[TILE - 4:TILE, :, :] *= 0.45
+            img[0:13, :, :] = self.metal(g * 0.96, self.p["streak"] * 0.5, mottle=0.008)[0:13, :, :]
+            img[12:14, :, :] *= 0.3
+            img[3:5, 6:TILE - 6, :] = np.minimum(img[3:5, 6:TILE - 6, :] * 1.25, 1.0)
+            img[:, 0:2, :] *= 0.35
+            img[:, TILE - 2:TILE, :] *= 0.35
         elif kind == "hazard":
             img = self.metal(g, 0.05)
             img[26:38, :, :] = np.array([0.95, 0.75, 0.10], np.float32)
@@ -234,7 +242,14 @@ class Build:
         self.materials[name] = mat
         return mat
 
-    def _finish(self, bm, material, label, transform=None):
+    def _finish(self, bm, material, label, transform=None, frame=None):
+        """Tiles are mapped by projection. Without a `frame`, along the world axis nearest
+        each face's normal, which suits anything axis-aligned and puts seams at the same
+        world lines on every part. A `frame` (origin, along, across, over, scale) maps a
+        member in its own axes instead (Ryan, 26 September: on a slanted arm the world
+        seams cut diagonally across the plates), so panel lines run along and around the
+        member; `scale` is (u, v) world units per tile, so a fist's face can carry exactly
+        one tile of its own."""
         bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
         if transform is not None:
             bmesh.ops.transform(bm, matrix=transform, verts=bm.verts)
@@ -242,11 +257,25 @@ class Build:
         for f in bm.faces:
             f.smooth = False
             n = f.normal
-            ax = max(range(3), key=lambda i: abs(n[i]))
-            a, b = [i for i in range(3) if i != ax]
+            if frame is None:
+                ax = max(range(3), key=lambda i: abs(n[i]))
+                a, b = [i for i in range(3) if i != ax]
+                for loop in f.loops:
+                    co = loop.vert.co
+                    loop[uv].uv = (co[a] / self.tile_world, co[b] / self.tile_world)
+                continue
+            origin, along, across, over, scale = frame
+            su, sv = scale if scale is not None else (self.tile_world, self.tile_world)
+            dots = [abs(n.dot(along)), abs(n.dot(across)), abs(n.dot(over))]
+            if dots[0] >= dots[1] and dots[0] >= dots[2]:
+                ua, va = across, over          # a cap: across and over
+            elif dots[1] >= dots[2]:
+                ua, va = over, along           # a side face: over and along the member
+            else:
+                ua, va = across, along         # a front or back face: across and along
             for loop in f.loops:
-                co = loop.vert.co
-                loop[uv].uv = (co[a] / self.tile_world, co[b] / self.tile_world)
+                rel = loop.vert.co - origin
+                loop[uv].uv = (rel.dot(ua) / su, rel.dot(va) / sv)
         mesh = bpy.data.meshes.new(label)
         bm.to_mesh(mesh)
         bm.free()

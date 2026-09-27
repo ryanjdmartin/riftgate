@@ -244,88 +244,87 @@ clydesdale.maker = "wainwright_sutler"
 def mandrill(b):
     """Aphelion "Mandrill": a long-armed, stubby-legged plantigrade walker, orangutan and
     troll at once, its high-tech suite riding on a backpack (Ryan's brief, 26 September).
-    White pearl plate with red markings. Third pass on Ryan's notes the same day: upright
-    on stubby legs that squat like a troll's (knees forward, hips back); arms long but the
-    fists hang at the knee, never on the ground; the limbs are straight tapered octagonal
-    members (the register is low-poly, never curvy: Aphelion's "curves" are chamfers and
-    eight sides, not splines); the fists are plain blocks that read as closed fists through
-    their texture (finger grooves, a thumb seam), knuckles forward as a BattleTech mech
-    holds them, the Pulse Repeater on the outside of the right one; the waist a drum; the
-    pauldrons low. Kept: the barrel torso, the sensor pod with its red eye, the shoulder
-    cannons and the backpack. Every number is a proportion Ryan may change."""
+    White pearl plate with red markings. Fourth pass on Ryan's notes: stumpier legs and
+    longer forearms, to sell the proportions at the game's size; the limbs are straight
+    tapered octagonal members with their tiles mapped along the member (the world-axis
+    seams cut diagonally across them before); the fists are blocks whose front face
+    carries one fist tile, knuckles forward as a BattleTech mech holds them, a thumb block
+    proud on the outside, the Pulse Repeater on the right one. Kept: the barrel torso, the
+    sensor pod with its red eye, the shoulder cannons and the backpack. Every number is a
+    proportion Ryan may change."""
     OCT = lambda r: _poly(r, 8, math.pi / 8)
+    Z0 = -5.0   # the upper body rides this much lower than the third pass: the legs got shorter
     # Feet and legs: plantigrade, the whole sole on the ground; knee forward of the ankle,
-    # hip behind it, so the leg zigzags at rest: the squat.
+    # hip behind it, the leg a squat zigzag, thick and short.
     for s in (-1.0, 1.0):
         cx = s * 13.0
-        b.loft([(-13.0, rect(cx, 14.0, 0.0, 7.0)), (2.0, rect(cx, 16.0, 0.0, 8.5)), (17.0, rect(cx, 14.0, 0.0, 4.0))], "steel.plate", "foot")
-        b.box(cx - 7.5, cx + 7.5, 14.0, 18.0, 0.0, 3.0, "steel.dark", "toe_cap")
+        b.loft([(-13.0, rect(cx, 15.0, 0.0, 7.0)), (2.0, rect(cx, 17.0, 0.0, 8.5)), (17.0, rect(cx, 15.0, 0.0, 4.0))], "steel.plate", "foot")
+        b.box(cx - 8.0, cx + 8.0, 14.0, 18.0, 0.0, 3.0, "steel.dark", "toe_cap")
         ankle = (cx, -1.0, 8.0)
-        knee = (cx, 9.0, 23.0)
-        hip = (cx * 0.85, -5.0, 30.0)
-        b.prism("x", ankle[0], ankle[1], ankle[2], 4.0, 12.0, "steel.dark", 6, "ankle")
-        _beam(b, ankle, knee, OCT(4.6), OCT(4.2), "steel.panel", "shin")
-        b.prism("x", knee[0], knee[1], knee[2], 5.0, 11.0, "steel.dark", 6, "knee")
-        _beam(b, knee, hip, OCT(5.2), OCT(5.6), "steel.plate", "thigh")
-        b.box(cx - 4.5, cx + 4.5, 11.0, 14.0, 12.0, 20.0, "livery.livery2", "shin_plate")
-        b.prism("x", hip[0], hip[1], hip[2], 5.0, 8.0, "steel.dark", 6, "hip")
+        knee = (cx, 8.0, 19.0)
+        hip = (cx * 0.85, -4.0, 25.0)
+        b.prism("x", ankle[0], ankle[1], ankle[2], 4.4, 13.0, "steel.dark", 6, "ankle")
+        _beam(b, ankle, knee, OCT(5.4), OCT(4.8), "steel.panel", "shin")
+        b.prism("x", knee[0], knee[1], knee[2], 5.4, 12.0, "steel.dark", 6, "knee")
+        _beam(b, knee, hip, OCT(5.8), OCT(6.2), "steel.plate", "thigh")
+        b.box(cx - 5.0, cx + 5.0, 10.5, 13.5, 10.0, 17.0, "livery.livery2", "shin_plate")
+        b.prism("x", hip[0], hip[1], hip[2], 5.4, 8.0, "steel.dark", 6, "hip")
     # The waist: a drum.
-    b.prism("x", 0.0, -4.0, 32.0, 6.5, 32.0, "steel.panel", 8, "pelvis", phase=math.pi / 8)
+    b.prism("x", 0.0, -4.0, 32.0 + Z0, 6.5, 32.0, "steel.panel", 8, "pelvis", phase=math.pi / 8)
     # The torso: a barrel of chamfered decks, widest at the chest, upright.
-    _rings(b, [_deck(30.0, 22.0, -2.0, 36.0, 4.0), _deck(40.0, 28.0, 0.0, 46.0, 5.0),
-               _deck(40.0, 28.0, 0.0, 56.0, 5.0), _deck(32.0, 22.0, 0.0, 62.0, 4.0)], "steel.panel", "torso")
-    b.box(-12.0, 12.0, 12.0, 15.0, 44.0, 58.0, "steel.plate", "chest_plate")
-    b.box(-10.0, 10.0, 15.0, 16.5, 48.0, 52.0, "livery.livery", "chevron")
+    _rings(b, [_deck(30.0, 22.0, -2.0, 36.0 + Z0, 4.0), _deck(40.0, 28.0, 0.0, 46.0 + Z0, 5.0),
+               _deck(40.0, 28.0, 0.0, 56.0 + Z0, 5.0), _deck(32.0, 22.0, 0.0, 62.0 + Z0, 4.0)], "steel.panel", "torso")
+    b.box(-12.0, 12.0, 12.0, 15.0, 44.0 + Z0, 58.0 + Z0, "steel.plate", "chest_plate")
+    b.box(-10.0, 10.0, 15.0, 16.5, 48.0 + Z0, 52.0 + Z0, "livery.livery", "chevron")
     # The sensor pod: low between the shoulders, one red eye, a brow plate over it.
-    b.box(-8.0, 8.0, 8.0, 22.0, 60.0, 68.0, "steel.dark", "sensor_pod")
-    b.box(-6.0, 6.0, 22.0, 23.0, 62.0, 66.0, "amber.engine", "eye")
-    b.box(-9.0, 9.0, 6.0, 24.0, 68.0, 70.5, "steel.plate", "brow")
+    b.box(-8.0, 8.0, 8.0, 22.0, 60.0 + Z0, 68.0 + Z0, "steel.dark", "sensor_pod")
+    b.box(-6.0, 6.0, 22.0, 23.0, 62.0 + Z0, 66.0 + Z0, "amber.engine", "eye")
+    b.box(-9.0, 9.0, 6.0, 24.0, 68.0 + Z0, 70.5 + Z0, "steel.plate", "brow")
     # Shoulders: red pauldrons, an octagonal drum each, low on the torso's shoulder, with
     # an Umbra Projector riding on top (hp_1 left, hp_2 right).
     for s in (-1.0, 1.0):
         px = s * 25.0
-        b.prism("x", px, 0.0, 57.0, 9.0, 14.0, "livery.livery", 8, "pauldron", phase=math.pi / 8)
-        b.prism("x", px, 0.0, 57.0, 4.0, 15.0, "steel.dark", 6, "shoulder_pin")
-        b.box(px - 4.0, px + 4.0, -2.0, 6.0, 60.0, 65.0, "steel.plate", "projector_mount")
-        b.prism("y", px, 12.0, 63.0, 3.2, 20.0, "steel.dark", 6, "umbra_projector")
-        b.prism("y", px, 23.0, 63.0, 2.2, 3.0, "amber.engine", 6, "emitter")
-        b.pin("hp_%d" % (1 if s < 0 else 2), (px, 16.0, 63.0))
-        # The arm (the Pulse Repeater's pin on the right hand is hp_5): two straight tapered members with a joint drum between, the elbow out
-        # and a little forward, the wrist at the knee's height. The fist hangs there,
-        # knuckles forward.
-        shoulder = (s * 31.0, 0.0, 54.0)
-        elbow = (s * 39.0, 4.0, 38.0)
-        wrist = (s * 38.0, 12.0, 25.0)
+        b.prism("x", px, 0.0, 57.0 + Z0, 9.0, 14.0, "livery.livery", 8, "pauldron", phase=math.pi / 8)
+        b.prism("x", px, 0.0, 57.0 + Z0, 4.0, 15.0, "steel.dark", 6, "shoulder_pin")
+        b.box(px - 4.0, px + 4.0, -2.0, 6.0, 60.0 + Z0, 65.0 + Z0, "steel.plate", "projector_mount")
+        b.prism("y", px, 12.0, 63.0 + Z0, 3.2, 20.0, "steel.dark", 6, "umbra_projector")
+        b.prism("y", px, 23.0, 63.0 + Z0, 2.2, 3.0, "amber.engine", 6, "emitter")
+        b.pin("hp_%d" % (1 if s < 0 else 2), (px, 16.0, 63.0 + Z0))
+        # The arm (the Pulse Repeater's pin on the right hand is hp_5): a shortish upper arm
+        # out to an elbow, a long forearm down to a wrist by the knee. The fist hangs there.
+        shoulder = (s * 31.0, 0.0, 54.0 + Z0)
+        elbow = (s * 39.0, 2.0, 41.0 + Z0)
+        wrist = (s * 38.0, 13.0, 19.0 + Z0)
         b.prism("x", shoulder[0], shoulder[1], shoulder[2], 4.5, 8.0, "steel.dark", 6, "shoulder_joint")
         _beam(b, shoulder, elbow, OCT(5.2), OCT(4.6), "steel.plate", "upper_arm")
         b.prism("x", elbow[0], elbow[1], elbow[2], 5.5, 12.0, "steel.dark", 6, "elbow")
-        _beam(b, elbow, wrist, OCT(4.6), OCT(5.0), "steel.panel", "forearm")
-        b.box(min(wrist[0] - 4.0, wrist[0] + 4.0), max(wrist[0] - 4.0, wrist[0] + 4.0), 4.0, 9.0, 29.0, 37.0, "livery.livery2", "forearm_plate")
-        # The fist: one block, the closed hand read through its tile.
-        b.box(wrist[0] - 6.5, wrist[0] + 6.5, 6.0, 19.0, 14.0, 26.0, "steel.fist", "fist")
+        _beam(b, elbow, wrist, OCT(4.6), OCT(5.2), "steel.panel", "forearm")
+        _fist(b, wrist[0], 5.0, 19.0, 8.0 + Z0, 21.0 + Z0, 14.0, s)
         if s > 0:
-            # The Pulse Repeater on the outside of the right hand (hp_5).
-            gx = wrist[0] + 9.0
-            b.box(gx - 2.5, gx + 2.5, 8.0, 18.0, 17.0, 23.0, "steel.plate", "repeater_mount")
-            b.prism("y", gx, 18.0, 20.0, 2.0, 18.0, "steel.dark", 6, "pulse_repeater")
-            b.prism("y", gx, 27.5, 20.0, 1.4, 1.5, "amber.engine", 6, "repeater_tip")
-            b.pin("hp_5", (gx, 18.0, 20.0))
+            # The Pulse Repeater on the outside of the right hand (hp_5), above the thumb.
+            gx = wrist[0] + 9.5
+            b.box(gx - 2.5, gx + 2.5, 8.0, 18.0, 13.0 + Z0, 19.0 + Z0, "steel.plate", "repeater_mount")
+            b.prism("y", gx, 18.0, 16.0 + Z0, 2.0, 18.0, "steel.dark", 6, "pulse_repeater")
+            b.prism("y", gx, 27.5, 16.0 + Z0, 1.4, 1.5, "amber.engine", 6, "repeater_tip")
+            b.pin("hp_5", (gx, 18.0, 16.0 + Z0))
     # The backpack: a tall rack, red stripes down its sides, two flare pods on top (the
     # fixed component, the Solar Flare Array: built in, so no pin), the Corona dish on its
     # right rear (hp_3), the vent block on its left rear (hp_4), a mast with a red light
-    # between the pods.
-    b.box(-17.0, 17.0, -26.0, -14.0, 34.0, 68.0, "steel.panel", "rack")
+    # between the pods, and a row of small lit ports across the rack's back.
+    b.box(-17.0, 17.0, -26.0, -14.0, 34.0 + Z0, 68.0 + Z0, "steel.panel", "rack")
     for s in (-1.0, 1.0):
-        b.box(min(s * 17.0, s * 18.5), max(s * 17.0, s * 18.5), -25.0, -15.0, 38.0, 64.0, "livery.livery", "rack_stripe")
-        b.prism("z", s * 10.0, -20.0, 74.0, 5.0, 14.0, "steel.dark", 6, "flare_pod")
-        b.prism("z", s * 10.0, -20.0, 81.5, 5.5, 1.5, "steel.plate", 6, "pod_cap")
-    b.prism("y", 11.0, -27.5, 54.0, 7.0, 3.0, "steel.plate", 8, "corona_dish")
-    b.prism("y", 11.0, -29.5, 54.0, 2.6, 1.0, "amber.engine", 8, "dish_core")
-    b.pin("hp_3", (11.0, -28.0, 54.0), forward=(0.0, -1.0, 0.0))
-    b.box(-16.0, -2.0, -28.5, -26.0, 38.0, 52.0, "steel.vent", "vent_block")
-    b.pin("hp_4", (-9.0, -27.0, 45.0), forward=(0.0, -1.0, 0.0))
-    b.prism("z", 0.0, -20.0, 80.0, 1.2, 24.0, "steel.dark", 6, "mast")
-    b.prism("z", 0.0, -20.0, 93.0, 2.0, 3.0, "amber.engine", 6, "mast_light")
+        b.box(min(s * 17.0, s * 18.5), max(s * 17.0, s * 18.5), -25.0, -15.0, 38.0 + Z0, 64.0 + Z0, "livery.livery", "rack_stripe")
+        b.prism("z", s * 10.0, -20.0, 74.0 + Z0, 5.0, 14.0, "steel.dark", 6, "flare_pod")
+        b.prism("z", s * 10.0, -20.0, 81.5 + Z0, 5.5, 1.5, "steel.plate", 6, "pod_cap")
+    b.prism("y", 11.0, -27.5, 54.0 + Z0, 7.0, 3.0, "steel.plate", 8, "corona_dish")
+    b.prism("y", 11.0, -29.5, 54.0 + Z0, 2.6, 1.0, "amber.engine", 8, "dish_core")
+    b.pin("hp_3", (11.0, -28.0, 54.0 + Z0), forward=(0.0, -1.0, 0.0))
+    b.box(-16.0, -2.0, -28.5, -26.0, 38.0 + Z0, 52.0 + Z0, "steel.vent", "vent_block")
+    b.pin("hp_4", (-9.0, -27.0, 45.0 + Z0), forward=(0.0, -1.0, 0.0))
+    for i in range(3):
+        b.box(-12.0 + i * 8.0, -8.0 + i * 8.0, -27.0, -26.0, 60.0 + Z0, 62.0 + Z0, "amber.engine", "rack_port")
+    b.prism("z", 0.0, -20.0, 80.0 + Z0, 1.2, 24.0, "steel.dark", 6, "mast")
+    b.prism("z", 0.0, -20.0, 93.0 + Z0, 2.0, 3.0, "amber.engine", 6, "mast_light")
 
 
 mandrill.maker = "aphelion"
@@ -362,7 +361,20 @@ def _beam(b, p0, p1, ring0, ring1, material, label):
     side = Vector((1.0, 0.0, 0.0)) if abs(d.dot(up)) > 0.999 else d.cross(up).normalized()
     up = side.cross(d).normalized()
     rings = [[Vector(p) + side * u + up * v for u, v in ring] for p, ring in ((p0, ring0), (p1, ring1))]
-    return _rings(b, rings, material, label)
+    # Tiles run along the member, seams around it, so a slanted limb's plates read as plates.
+    return _rings(b, rings, material, label, (Vector(p0), d, side, up, None))
+
+
+def _fist(b, cx, y_back, y_front, z0, z1, w, thumb_side, material="steel.fist", label="fist"):
+    """A closed fist, knuckles forward (+y), as one block whose front face carries exactly one
+    fist tile (four fingers and the thumb across the bottom), the tile wrapping onto the
+    sides at the same scale; a small thumb block stands proud on the outer side."""
+    hw = w / 2.0
+    ring = lambda y: [Vector((cx - hw, y, z0)), Vector((cx + hw, y, z0)), Vector((cx + hw, y, z1)), Vector((cx - hw, y, z1))]
+    frame = (Vector((cx - hw, y_front, z0)), Vector((0.0, 0.0, 1.0)), Vector((1.0, 0.0, 0.0)), Vector((0.0, 1.0, 0.0)), (w, z1 - z0))
+    _rings(b, [ring(y_back), ring(y_front)], material, label, frame)
+    tx0, tx1 = (cx + hw, cx + hw + 2.5) if thumb_side > 0 else (cx - hw - 2.5, cx - hw)
+    b.box(tx0, tx1, y_front - 7.0, y_front - 1.0, z0 + 1.0, z0 + 5.0, "steel.plate", "thumb")
 
 
 def _fuse(w, top, bottom):
@@ -376,8 +388,9 @@ def _wing(b, root, tip, material, label):
     return _rings(b, [root, tip], material, label)
 
 
-def _rings(b, rings, material, label):
-    """A loft through any number of sections given as 3D point rings, capped at both ends."""
+def _rings(b, rings, material, label, frame=None):
+    """A loft through any number of sections given as 3D point rings, capped at both ends.
+    `frame` maps the tiles in the part's own axes (see Build._finish)."""
     bm = bmesh.new()
     vs = [[bm.verts.new(p) for p in ring] for ring in rings]
     n = len(vs[0])
@@ -392,7 +405,7 @@ def _rings(b, rings, material, label):
             bm.faces.new(ring)
         except ValueError:
             pass
-    return b._finish(bm, material, label)
+    return b._finish(bm, material, label, None, frame)
 
 
 def _tine(b, origin, side_x, pitch0, curve, length, w0, t0, material, label, n=5):
