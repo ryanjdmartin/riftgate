@@ -412,10 +412,19 @@ decided register.
    with MSAA on Android (godotengine/godot#97967, open), so `Hud.msaa_3d()` turns 3D MSAA
    off on a phone (`RIFTGATE_MSAA=on` to compare). Ryan re-exports and plays a long
    session; if it still dies, sample `adb shell dumpsys meminfo com.publabs.riftgate`
-   every minute and watch Native Heap and EGL mtrack. Still to judge on the phone: the
-   frame rate, the sound set, the machines' edges without MSAA, and the black gap between
-   the map's frame and the log on a tall screen (the map view grows but its frame does
-   not fill it).
+   every minute and watch Native Heap and EGL mtrack. Watched nine minutes on the
+   re-exported build while Ryan played: native heap flat at 136 MB, total up 21 MB in two
+   steps, no crash. Fourth note: the codex's small text jagged and hard to read. The
+   window's fonts were rasterised at the design's 720 and stretched nearest to the 1080
+   glass; the same screen rendered into a SubViewport with `size_2d_override` oversampled
+   and came out clean, so `Hud.oversample(window)` now sets the window's font
+   oversampling to its stretch scale (harness and both screens' `_ready`). To see a
+   screen at the phone's density on the Mac: `RIFTGATE_SHOT_SCALE=1.5` with
+   `tools/screenshot.gd` (a 1080-wide PNG). Fifth note: a dragged die read as a copy;
+   its slot now empties for the drag. Still to judge on the phone: the frame rate, the
+   sound set, the machines' edges without MSAA, the text after the oversampling change,
+   and the black gap between the map's frame and the log on a tall screen (the map view
+   grows but its frame does not fill it).
    Badger tweaks in Blender, then joints and pins (`forge.py export badger`); notes on the
    Mandrill's model, numbers, kit and passive (all first fills); notes on
    the Clydesdale; the Anvil.

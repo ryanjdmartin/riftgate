@@ -93,6 +93,7 @@ func setup(b: Battle) -> void:
 
 func _ready() -> void:
 	Settings.apply()
+	Hud.oversample(get_window())   # standalone runs too: text at the glass's density
 	if battle == null:
 		setup(_default_battle())
 	elif _header == null or H != Hud.screen_height(self):

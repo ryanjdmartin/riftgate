@@ -26,7 +26,19 @@ func _init() -> void:
 	# RIFTGATE_SHOT_H=1616 renders at a taller phone's height (with RIFTGATE_SAFE=top,bottom
 	# for its safe bands): the phone's layout on the Mac.
 	var shot_h := OS.get_environment("RIFTGATE_SHOT_H")
-	_vp.size = Vector2i(720, int(shot_h) if not shot_h.is_empty() else 1280)
+	var design := Vector2i(720, int(shot_h) if not shot_h.is_empty() else 1280)
+	# RIFTGATE_SHOT_SCALE=1.5 renders the design at a phone's pixel density (a 1080-wide
+	# phone is 1.5 design pixels per device pixel), the way the window's canvas_items stretch
+	# does on the device: the PNG comes out that many times larger, and shows how text and
+	# textures survive the scale.
+	var scale_env := OS.get_environment("RIFTGATE_SHOT_SCALE")
+	if not scale_env.is_empty():
+		var s := float(scale_env)
+		_vp.size = Vector2i(int(design.x * s), int(design.y * s))
+		_vp.size_2d_override = design
+		_vp.size_2d_override_stretch = true
+	else:
+		_vp.size = design
 	_vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	root.add_child(_vp)
 	var scene: PackedScene = load(scene_path)

@@ -198,6 +198,7 @@ func setup(skirmish: Skirmish) -> void:
 
 func _ready() -> void:
 	Settings.apply()
+	Hud.oversample(get_window())   # standalone runs too: text at the glass's density
 	if sk == null:
 		setup(_default_skirmish())
 	elif _header == null or H != Hud.screen_height(self):

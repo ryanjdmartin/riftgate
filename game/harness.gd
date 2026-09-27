@@ -22,6 +22,7 @@ var _current: Node = null
 
 func _ready() -> void:
 	Settings.apply()
+	Hud.oversample(get_window())   # text rasterised at the glass's density, not the design's
 	db = ContentDB.load_default()
 	_build_menu()
 

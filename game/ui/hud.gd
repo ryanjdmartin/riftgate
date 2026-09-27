@@ -103,6 +103,25 @@ static func safe_insets(screen: Control) -> Vector2:
 	return ins
 
 
+## Text at the glass's density. The window stretches the 720-wide design over the phone
+## (1.5 device pixels a design pixel on a 1080 phone), and its fonts were rasterised at the
+## design's size and stretched nearest with everything else: jagged, uneven strokes, the
+## small mono labels hard to read (Ryan, 26 September, the codex on the phone). Rendered
+## into a SubViewport with size_2d_override the same screen oversamples and comes out
+## clean, so the window's font oversampling is set here to its stretch scale outright,
+## and follows the window when it changes. Called once per window; later calls return.
+static func oversample(win: Window) -> void:
+	if win == null or win.has_meta("riftgate_oversampled"):
+		return
+	win.set_meta("riftgate_oversampled", true)
+	var apply := func() -> void:
+		var design_w := float(win.content_scale_size.x)
+		var scale := float(win.size.x) / design_w if design_w > 0.0 else 1.0
+		win.oversampling_override = maxf(1.0, scale)
+	apply.call()
+	win.size_changed.connect(apply)
+
+
 ## The 3D viewports' anti-aliasing: 4x on the desktop, none on a phone. Godot's
 ## Compatibility renderer leaks native memory every frame a 3D viewport draws with MSAA
 ## on Android (godotengine/godot#97967, open since October 2024; seen here on a Pixel 9,
