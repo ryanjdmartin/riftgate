@@ -453,7 +453,7 @@ func _build() -> void:
 	_ghost = DieFaceView.new()
 	_ghost.animate = false
 	_ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_ghost.modulate = Color(1, 1, 1, 0.85)
+	_ghost.modulate = Color.WHITE   # solid: with its slot emptied, this is the die itself
 	_ghost.visible = false
 	_place(_ghost, Vector2.ZERO, DieFaceView.view_size())
 	_roll_label = Hud.label("", 44, Palette.INK, Hud.mono())
@@ -731,6 +731,10 @@ func _refresh() -> void:
 		d.locked = locked[i]
 		d.can_tap = assigning and ms.alive() and not ms.assigned
 		d.can_drag = assigning and ms.alive() and not ms.assigned
+		# While a die is dragged, the one under the finger is the die: its slot goes empty
+		# (Ryan, 26 September: a copy dragged beside the original read as a copy). Modulate,
+		# not visible: the view must keep receiving the drag's motion.
+		d.modulate = Color(1, 1, 1, 0.0) if _drag_from == i else Color.WHITE
 		d.queue_redraw()
 
 	_refresh_log()
