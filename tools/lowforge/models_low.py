@@ -244,16 +244,18 @@ clydesdale.maker = "wainwright_sutler"
 def mandrill(b):
     """Aphelion "Mandrill": a long-armed, stubby-legged plantigrade walker, orangutan and
     troll at once, its high-tech suite riding on a backpack (Ryan's brief, 26 September).
-    White pearl plate with red markings. Second pass on Ryan's notes the same day: it walks
-    upright on its stubby legs, squatting like a troll (knees and ankles bent at rest);
-    the arms are long but the fists hang at the knee, never on the ground (it looks like a
-    knuckle-dragger, it is not one); Aphelion hates a straight line, so the arms are bent
-    tubes of octagonal rings and the waist a drum, and the fists carry knuckle plates with
-    the Pulse Repeater on the outside of the right hand; the pauldrons sit lower. Kept as
-    they were: the barrel torso, the sensor pod with its red eye, the shoulder cannons and
-    the backpack. Every number is a proportion Ryan may change."""
-    # Feet and legs: plantigrade, the whole sole on the ground. The knee sits forward of
-    # the ankle and the hip behind it, so the leg is a zigzag at rest: the squat.
+    White pearl plate with red markings. Third pass on Ryan's notes the same day: upright
+    on stubby legs that squat like a troll's (knees forward, hips back); arms long but the
+    fists hang at the knee, never on the ground; the limbs are straight tapered octagonal
+    members (the register is low-poly, never curvy: Aphelion's "curves" are chamfers and
+    eight sides, not splines); the fists are plain blocks that read as closed fists through
+    their texture (finger grooves, a thumb seam), knuckles forward as a BattleTech mech
+    holds them, the Pulse Repeater on the outside of the right one; the waist a drum; the
+    pauldrons low. Kept: the barrel torso, the sensor pod with its red eye, the shoulder
+    cannons and the backpack. Every number is a proportion Ryan may change."""
+    OCT = lambda r: _poly(r, 8, math.pi / 8)
+    # Feet and legs: plantigrade, the whole sole on the ground; knee forward of the ankle,
+    # hip behind it, so the leg zigzags at rest: the squat.
     for s in (-1.0, 1.0):
         cx = s * 13.0
         b.loft([(-13.0, rect(cx, 14.0, 0.0, 7.0)), (2.0, rect(cx, 16.0, 0.0, 8.5)), (17.0, rect(cx, 14.0, 0.0, 4.0))], "steel.plate", "foot")
@@ -262,12 +264,12 @@ def mandrill(b):
         knee = (cx, 9.0, 23.0)
         hip = (cx * 0.85, -5.0, 30.0)
         b.prism("x", ankle[0], ankle[1], ankle[2], 4.0, 12.0, "steel.dark", 6, "ankle")
-        _tube(b, [ankle, knee], [4.6, 4.2], "steel.panel", "shin")
+        _beam(b, ankle, knee, OCT(4.6), OCT(4.2), "steel.panel", "shin")
         b.prism("x", knee[0], knee[1], knee[2], 5.0, 11.0, "steel.dark", 6, "knee")
-        _tube(b, [knee, hip], [5.2, 5.6], "steel.plate", "thigh")
+        _beam(b, knee, hip, OCT(5.2), OCT(5.6), "steel.plate", "thigh")
         b.box(cx - 4.5, cx + 4.5, 11.0, 14.0, 12.0, 20.0, "livery.livery2", "shin_plate")
         b.prism("x", hip[0], hip[1], hip[2], 5.0, 8.0, "steel.dark", 6, "hip")
-    # The waist: a drum, not a box (Aphelion and its curves).
+    # The waist: a drum.
     b.prism("x", 0.0, -4.0, 32.0, 6.5, 32.0, "steel.panel", 8, "pelvis", phase=math.pi / 8)
     # The torso: a barrel of chamfered decks, widest at the chest, upright.
     _rings(b, [_deck(30.0, 22.0, -2.0, 36.0, 4.0), _deck(40.0, 28.0, 0.0, 46.0, 5.0),
@@ -278,8 +280,8 @@ def mandrill(b):
     b.box(-8.0, 8.0, 8.0, 22.0, 60.0, 68.0, "steel.dark", "sensor_pod")
     b.box(-6.0, 6.0, 22.0, 23.0, 62.0, 66.0, "amber.engine", "eye")
     b.box(-9.0, 9.0, 6.0, 24.0, 68.0, 70.5, "steel.plate", "brow")
-    # Shoulders: red pauldrons, an octagonal drum each, sitting lower on the torso's
-    # shoulder, with an Umbra Projector riding on top (hp_1 left, hp_2 right).
+    # Shoulders: red pauldrons, an octagonal drum each, low on the torso's shoulder, with
+    # an Umbra Projector riding on top (hp_1 left, hp_2 right).
     for s in (-1.0, 1.0):
         px = s * 25.0
         b.prism("x", px, 0.0, 57.0, 9.0, 14.0, "livery.livery", 8, "pauldron", phase=math.pi / 8)
@@ -288,26 +290,22 @@ def mandrill(b):
         b.prism("y", px, 12.0, 63.0, 3.2, 20.0, "steel.dark", 6, "umbra_projector")
         b.prism("y", px, 23.0, 63.0, 2.2, 3.0, "amber.engine", 6, "emitter")
         b.pin("hp_%d" % (1 if s < 0 else 2), (px, 16.0, 63.0))
-        # The arm: two bent tubes. The upper arm bows outward from the shoulder to an
-        # elbow out and a little forward; the forearm bows forward and down to a wrist at
-        # the knee's height. The fist hangs there, knuckles forward.
+        # The arm: two straight tapered members with a joint drum between, the elbow out
+        # and a little forward, the wrist at the knee's height. The fist hangs there,
+        # knuckles forward.
         shoulder = (s * 31.0, 0.0, 54.0)
         elbow = (s * 39.0, 4.0, 38.0)
-        wrist = (s * 38.0, 12.0, 24.0)
+        wrist = (s * 38.0, 12.0, 25.0)
         b.prism("x", shoulder[0], shoulder[1], shoulder[2], 4.5, 8.0, "steel.dark", 6, "shoulder_joint")
-        _tube(b, _bow(shoulder, elbow, (s * 5.0, -3.0, 2.0)), [4.8, 5.2, 5.2, 4.6], "steel.plate", "upper_arm")
+        _beam(b, shoulder, elbow, OCT(5.2), OCT(4.6), "steel.plate", "upper_arm")
         b.prism("x", elbow[0], elbow[1], elbow[2], 5.5, 12.0, "steel.dark", 6, "elbow")
-        _tube(b, _bow(elbow, wrist, (s * 3.0, 4.0, 0.0)), [4.6, 5.0, 5.0, 4.8], "steel.panel", "forearm")
-        b.box(min(wrist[0] - 4.0, wrist[0] + 4.0), max(wrist[0] - 4.0, wrist[0] + 4.0), 4.0, 9.0, 28.0, 36.0, "livery.livery2", "forearm_plate")
-        # The fist: a block with a rounded knuckle plate across its front and a plate on
-        # its back, so it reads as a hand and not a box.
-        fx0, fx1 = wrist[0] - 6.5, wrist[0] + 6.5
-        b.box(fx0, fx1, 8.0, 20.0, 14.0, 26.0, "steel.plate", "fist")
-        b.prism("x", wrist[0], 20.0, 20.0, 5.5, 13.0, "steel.dark", 8, "knuckles", phase=math.pi / 8)
-        b.box(min(s * (abs(wrist[0]) + 6.5), s * (abs(wrist[0]) + 8.0)), max(s * (abs(wrist[0]) + 6.5), s * (abs(wrist[0]) + 8.0)), 9.0, 19.0, 15.0, 25.0, "steel.plate", "hand_plate")
+        _beam(b, elbow, wrist, OCT(4.6), OCT(5.0), "steel.panel", "forearm")
+        b.box(min(wrist[0] - 4.0, wrist[0] + 4.0), max(wrist[0] - 4.0, wrist[0] + 4.0), 4.0, 9.0, 29.0, 37.0, "livery.livery2", "forearm_plate")
+        # The fist: one block, the closed hand read through its tile.
+        b.box(wrist[0] - 6.5, wrist[0] + 6.5, 6.0, 19.0, 14.0, 26.0, "steel.fist", "fist")
         if s > 0:
             # The Pulse Repeater on the outside of the right hand (hp_5).
-            gx = wrist[0] + 10.5
+            gx = wrist[0] + 9.0
             b.box(gx - 2.5, gx + 2.5, 8.0, 18.0, 17.0, 23.0, "steel.plate", "repeater_mount")
             b.prism("y", gx, 18.0, 20.0, 2.0, 18.0, "steel.dark", 6, "pulse_repeater")
             b.prism("y", gx, 27.5, 20.0, 1.4, 1.5, "amber.engine", 6, "repeater_tip")
@@ -328,36 +326,6 @@ def mandrill(b):
     b.pin("hp_6", (-9.0, -27.0, 45.0), forward=(0.0, -1.0, 0.0))
     b.prism("z", 0.0, -20.0, 80.0, 1.2, 24.0, "steel.dark", 6, "mast")
     b.prism("z", 0.0, -20.0, 93.0, 2.0, 3.0, "amber.engine", 6, "mast_light")
-
-
-def _bow(p0, p1, bulge, n=4):
-    """Points along a bent member from `p0` to `p1`: a quadratic curve whose middle is
-    pushed by `bulge`, so a limb can bow instead of running straight."""
-    a, c = Vector(p0), Vector(p1)
-    ctrl = (a + c) * 0.5 + Vector(bulge)
-    out = []
-    for i in range(n):
-        t = i / (n - 1.0)
-        p = (1 - t) * (1 - t) * a + 2 * (1 - t) * t * ctrl + t * t * c
-        out.append((p.x, p.y, p.z))
-    return out
-
-
-def _tube(b, pts, radii, material, label, sides=8):
-    """An octagonal tube through `pts`, one ring per point at that point's radius, each
-    ring square to the path there: the register's curve, in a few facets."""
-    up = Vector((0.0, 0.0, 1.0))
-    rings = []
-    for i, p in enumerate(pts):
-        p = Vector(p)
-        prev = Vector(pts[max(i - 1, 0)])
-        nxt = Vector(pts[min(i + 1, len(pts) - 1)])
-        d = (nxt - prev).normalized()
-        side = Vector((1.0, 0.0, 0.0)) if abs(d.dot(up)) > 0.999 else d.cross(up).normalized()
-        u2 = side.cross(d).normalized()
-        r = radii[i] if i < len(radii) else radii[-1]
-        rings.append([p + side * (r * math.cos(k * 2.0 * math.pi / sides + math.pi / sides)) + u2 * (r * math.sin(k * 2.0 * math.pi / sides + math.pi / sides)) for k in range(sides)])
-    return _rings(b, rings, material, label)
 
 
 mandrill.maker = "aphelion"

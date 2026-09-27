@@ -166,6 +166,15 @@ class Tiles:
         elif kind == "bone":
             # Bone is paint, not the maker's metal: the same white for everyone, no cast.
             img = self._seam(self.metal(0.74, self.p["streak"] * 0.5, tint=(0.96, 0.93, 0.85), mottle=0.012, cast=(1.0, 1.0, 1.0)))
+        elif kind == "fist":
+            # A closed fist read through its texture (Ryan, 26 September: fists by texture,
+            # not geometry): three finger grooves across the face with a lit knuckle above
+            # each, and a deeper thumb seam down one side.
+            img = self._seam(self.metal(g * 1.04, self.p["streak"] * 0.6))
+            for y in (18, 32, 46):
+                img[y:y + 3, 6:TILE - 6, :] *= 0.35
+                img[y - 2:y, 6:TILE - 6, :] = np.minimum(img[y - 2:y, 6:TILE - 6, :] * 1.25, 1.0)
+            img[8:TILE - 8, 50:54, :] *= 0.3
         elif kind == "hazard":
             img = self.metal(g, 0.05)
             img[26:38, :, :] = np.array([0.95, 0.75, 0.10], np.float32)
