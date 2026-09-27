@@ -421,7 +421,12 @@ decided register.
    oversampling to its stretch scale (harness and both screens' `_ready`). To see a
    screen at the phone's density on the Mac: `RIFTGATE_SHOT_SCALE=1.5` with
    `tools/screenshot.gd` (a 1080-wide PNG). Fifth note: a dragged die read as a copy;
-   its slot now empties for the drag. Still to judge on the phone: the frame rate, the
+   its slot now empties for the drag. Sixth note: the map's far blur too tall. The focus
+   band was measured from the view's middle, and the phone's taller map view moved the
+   middle south, so the blur grew past twice its height at full strength; it is now
+   measured from the design's map height (`BattleMapView.FOCUS_VIEW_H`), the Mac's
+   layout on any glass. The map screen watched three minutes on the phone: native heap
+   flat at 175 MB, GL memory flat at 254 MB. Still to judge on the phone: the frame rate, the
    sound set, the machines' edges without MSAA, the text after the oversampling change,
    and the black gap between the map's frame and the log on a tall screen (the map view
    grows but its frame does not fill it).

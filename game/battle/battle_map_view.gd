@@ -21,6 +21,7 @@ signal route_drag_ended(commit: bool)
 const DOUBLE_TAP_SECONDS := 0.35
 
 const HEX_SIZE := 48.0   # up from 44 (Ryan, 23 September: the map must not get smaller)
+const FOCUS_VIEW_H := 898.0   # the map view's height on the 1280 design: the tilt-shift's focus band is laid out for it, whatever the glass adds
 const DRAG_THRESHOLD := 12.0
 const HOLD_SECONDS := 0.45
 const SPRITE_SCALE := 2.0
@@ -321,7 +322,12 @@ func _draw() -> void:
 		mat.set_shader_parameter("source_count", src.size())
 		src.resize(Bleed.MAX_SOURCES)
 		mat.set_shader_parameter("sources", src)
-		mat.set_shader_parameter("focus_y", (size.y * 0.5 - scroll_y) / zoom)
+		# The focus band is laid out for the design's map height. A taller phone gives its
+		# extra height to the map, and measured from the taller view's middle the sharp
+		# zone's north edge slid south and the far blur grew to more than twice its height,
+		# at full strength (Ryan, 26 September: too tall on the phone, not so on the Mac).
+		# Measured from the design's middle it sits where it does on the Mac.
+		mat.set_shader_parameter("focus_y", (minf(size.y, FOCUS_VIEW_H) * 0.5 - scroll_y) / zoom)
 		mat.set_shader_parameter("scroll", Vector2(scroll_x, scroll_y))
 		mat.set_shader_parameter("zoom", zoom)
 		draw_texture_rect(_mix.get_texture(), Rect2(Vector2.ZERO, size), false)
