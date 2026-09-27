@@ -459,9 +459,13 @@ func _validate_chassis(errs: Array[String]) -> void:
 	for id in chassis.keys():
 		var c: Dictionary = chassis[id]
 		var where := "chassis %s" % id
-		for key in ["name", "codex", "flavour", "hull", "shield", "armour", "movespeed", "hardpoints", "loadout", "recharge_field"]:
+		# designation: the maker's long name on the spec plate (Ryan, 26 September: every
+		# chassis carries one; the bible's section 7 row says the shape per maker).
+		for key in ["name", "designation", "codex", "flavour", "hull", "shield", "armour", "movespeed", "hardpoints", "loadout", "recharge_field"]:
 			if not c.has(key):
 				errs.append("%s: missing %s" % [where, key])
+		if c.has("designation") and str(c["designation"]).strip_edges().is_empty():
+			errs.append("%s: designation is empty" % where)
 		if c.has("recharge_combat"):
 			errs.append("%s: recharge_combat is gone; in a fight shield comes only from components (a passive may say otherwise)" % where)
 		if int(c.get("recharge_field", 0)) < 0 or int(c.get("armour", 0)) < 0 or int(c.get("cooling", 0)) < 0:

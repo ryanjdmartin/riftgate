@@ -28,7 +28,7 @@
       "flavour": "Hey Russ, ain't that yer Badger over there, covered in demon innards? I thought they retired the ol' girl!"
     },
     {
-      "id": "clydesdale", "name": "Clydesdale", "maker": "wainwright_sutler", "silhouette": "quadruped",
+      "id": "clydesdale", "name": "Clydesdale", "designation": "Pattern 1 Combat Walker", "maker": "wainwright_sutler", "silhouette": "quadruped",
       "design": { "fantasy": "A massive, boxy, heavily armoured, and utilitarian quadruped walker, designed to fill whatever niche the squad is lacking. Like its namesake, it has four thick legs and carries a massive payload on top.", "niche": "Heavy cavalry" },
       "codex": "Surprisingly, or perhaps not, the ever-pragmatic Wainwright & Sutler were the first surviving manufacturer to field a combat walker when the invasion first began. Not knowing the full scope of the threat, the Clydesdale was positioned as a rugged and effective jack-of-all trades, a true workhorse befitting its namesake. A hundred years later, and the original design is still barely changed, its signature W&S simplicity being favourited by pilots and maintenence crews alike. It also serves as an effective training vehicle, as its notoriously poor turning radius results in one less thing for a green pilot to worry about on the battlefield.",
       "hull": 140, "shield": 40, "movespeed": 3, "heat_max": 60, "hardpoints": 6,
@@ -40,7 +40,7 @@
       "flavour": "Pilot manual footnotes: Most of the Clydesdale controls are just for show. The only ones you really need are accelerate and alpha strike."
     },
     {
-      "id": "sparrowhawk", "name": "Sparrowhawk", "maker": "kestrel", "silhouette": "aircraft",
+      "id": "sparrowhawk", "name": "Sparrowhawk", "designation": "K-7 Mk III Interceptor", "maker": "kestrel", "silhouette": "aircraft",
       "design": { "fantasy": "A priority-target interceptor. Designed for speed and firepower and not much else, taking out a key asset and fleeing while its generous shields recharge.", "niche": "assassin" },
       "codex": "Shortly into the invasion, it was determined that the masses of zombies, demons, and otherwordly things were, frankly, quite dumb without a guiding intelligence coordinating them. Naturally, Kestrel won the bid to produce a small interceptor aircraft, designed to eliminate priority targets and disengage before getting overwhelmed. However, the weapons package traditionally mounted on such a small frame proved ineffective to the task. It wasn't until one inspired engineer suggested cutting all 'uneccesary' weight from the design that a breakthrough was achieved; Armour, heat sinks, weapon regulators, and padded seats were all deemed frivolous, and their omission skyrocketed the Sparrowhawk to excel in its role.",
       "hull": 60, "shield": 60, "movespeed": 5, "heat_max": 60, "hardpoints": 4,
@@ -59,7 +59,7 @@
       "flavour": "There's lighting a fire under your ass, and then there's piloting a Sparrowhawk. I suggest a cold plunge before you strap in."
     },
     {
-      "id": "mandrill", "name": "Mandrill", "designation": "SF-07 Perihelion Field Support Frame", "maker": "aphelion", "silhouette": "bipedal",
+      "id": "mandrill", "name": "Mandrill", "designation": "Perihelion Flight 7 Support Frame", "maker": "aphelion", "silhouette": "bipedal",
       "design": { "fantasy": "A long-armed, stubby-legged plantigrade walker with a high tech suite of weapons and equipment mounted on its backpack. Not fast or heavily armoured, it specializes in battlefield control through status effects and high-tech equipment with complex effects.", "niche": "combat support", "notes": "Numbers, loadout, passive and designation are Claude's first fill (26 September) for Ryan to tweak: hull under the Clydesdale's, shield and field recharge a touch above, a big heat budget for an energy kit, walker legs at 2. The kit is Aphelion's own control suite (two Umbra Projectors to suppress, a Solar Flare Array to burn, a Corona Shield that cleanses, a Pulse Repeater for tempo) plus a borrowed Heat Sink. The passive turns a status on the target into damage." },
       "codex": "Looking like a cross between an orangutan and a troll, ",
       "hull": 100, "shield": 40, "movespeed": 2, "heat_max": 80, "hardpoints": 6,

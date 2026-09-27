@@ -5,7 +5,7 @@ thing works lives in its file's comments; why it is that way lives in the bible.
 
 ## As of 26 September 2026 (midday)
 
-**State.** Tests: 214 tests, 2806 checks, green (`perl -e 'alarm 240; exec @ARGV' godot
+**State.** Tests: 215 tests, 2813 checks, green (`perl -e 'alarm 240; exec @ARGV' godot
 --headless --path . -s tests/run_tests.gd`). Ryan runs a second session on this repo at
 the same time (today: the HUD session, the audio session, the balance session and the
 boss-theme session, which was the audio session resumed from another account): check
@@ -108,8 +108,17 @@ packs and bosses (Umbra Projector 55% of spends); the team wins everything at no
 so the rank and file's numbers are the next lever, Ryan's call. Model: `mandrill(b)` in
 `tools/lowforge/models_low.py` (62 parts, 1048 triangles; pins hp_1..6 in loadout order:
 projectors on the pauldrons, the flare pods, the Corona dish, the repeater on the right
-forearm, the vent block), built and imported; judged from two hero shots only. Ryan's
-codex line for it is unfinished on purpose and the flavour empty: his voice.
+forearm, the vent block), built and imported; judged from two hero shots only. Second pass
+on Ryan's notes (26 September): upright torso, squatting legs (knee forward, hip back),
+shorter arms with the fists at the knee, bowed octagonal tubes for arms and shins (`_bow`,
+`_tube`: Aphelion hates straight lines), a drum waist, knuckle plates, the repeater on the
+outside of the right hand, lower pauldrons. Every chassis carries a `designation` now (the
+validator requires it; the bible's section 7 row gives the shape per maker): Pattern 1
+Combat Walker, K-7 Mk III Interceptor, Perihelion Flight 7 Support Frame are Claude's fills.
+The passive is under discussion (Ryan: too plain; his idea is a chance to convert a foe's
+new status into Suppressed, rising with the Mandrill's missing shield); nothing built for
+it yet beyond the `target_status` condition. Ryan's codex line for it is unfinished on
+purpose and the flavour empty: his voice.
 
 **Statuses and drawn routes (25 September, late; bible section 4 route row and section 7
 status row).** Ryan judged the in-game music controls "generally ok" (no notes). Then
