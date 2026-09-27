@@ -237,6 +237,10 @@ func _draw() -> void:
 		tags.append(Face.KEYWORD_NAMES[k])
 	if not face.label.is_empty():
 		tags.append("star")
+	if face.targets == Face.Target.SELF:
+		tags.append("self")      # equipment that reaches only its own machine
+	elif face.targets == Face.Target.ALLY:
+		tags.append("ally")      # or only its allies
 	if corrupted > 0 and face.kind != Face.Kind.BLANK:
 		tags.append("corrupt")   # what a foe did to the entry, last on the rail, in its colour
 	for i in range(tags.size()):

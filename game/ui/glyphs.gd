@@ -71,6 +71,15 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_polyline(PackedVector2Array([
 				c + Vector2(0, -s * 0.6), c + Vector2(s * 0.4, s * 0.1), c + Vector2(0, s * 0.55), c + Vector2(-s * 0.4, s * 0.1), c + Vector2(0, -s * 0.6),
 			]), color, width)
+		"self":
+			# One machine, ringed: this component reaches only its own.
+			ci.draw_arc(c, s * 0.9, 0.0, TAU, 24, color, width * 0.8)
+			ci.draw_rect(Rect2(c + Vector2(-s * 0.35, -s * 0.35), Vector2(s * 0.7, s * 0.7)), color, true)
+		"ally":
+			# Two machines side by side, the near one hollow: it reaches the other.
+			ci.draw_rect(Rect2(c + Vector2(-s * 0.95, -s * 0.35), Vector2(s * 0.7, s * 0.7)), color, false, width * 0.8)
+			ci.draw_rect(Rect2(c + Vector2(s * 0.25, -s * 0.35), Vector2(s * 0.7, s * 0.7)), color, true)
+			ci.draw_line(c + Vector2(-s * 0.25, 0.0), c + Vector2(s * 0.25, 0.0), color, width * 0.8)
 		"corrupt":
 			# A jagged crack through the entry: the rot the Chorus leaves in a component.
 			ci.draw_polyline(PackedVector2Array([

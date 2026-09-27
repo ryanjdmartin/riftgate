@@ -127,15 +127,33 @@ func test_heat_overflow_damages_hull() -> void:
 	assert_eq(m.hull, 80, "and the twenty over it burnt the hull (the ghoul's blow was blocked by the shield)")
 
 
-func test_overcharge_doubles_damage_and_heat() -> void:
+func test_equipment_targets_are_the_components_to_set() -> void:
 	var sk := Skirmish.new(1)
-	sk.add_mech(_mech("A", Die.single(Face.attack(20, L, K.OVERCHARGE, 10))))
-	sk.add_foes([_ghoul(90)])
+	var own := Face.shield(10)
+	own.targets = Face.Target.SELF
+	var give := Face.vent(10)
+	give.targets = Face.Target.ALLY
+	var a := _mech("A", Die.single(own), 40, 100)
+	var b := _mech("B", Die.single(give), 40, 100)
+	a.shield = 0
+	sk.add_mech(a)
+	sk.add_mech(b)
+	sk.add_foes([_ghoul(500, 10)])
 	sk.begin()
 	sk.start_round()
-	sk.assign(0, sk.front[0])
-	assert_eq(sk.front[0].hp, 50, "took 40")
-	assert_eq(sk.mechs[0].heat, 20, "heat doubled")
+	assert_eq(own.describe(), "shield 10 (self only)", "the restriction reads on the entry")
+	assert_eq(sk.equipment_targets_for(sk.mechs[0], own).size(), 1, "a self-only shield offers one target")
+	assert_false(sk.assign(0, sk.mechs[1]), "and refuses an ally")
+	assert_true(sk.assign(0, null), "self is fine")
+	assert_eq(a.shield, 10, "shielded")
+	assert_false(sk.assign(1, null), "an allies-only vent refuses self")
+	assert_true(sk.assign(1, sk.mechs[0]), "and takes the ally")
+	var default_face := Face.shield(10)
+	assert_eq(sk.equipment_targets_for(sk.mechs[0], default_face).size(), 2, "the default reaches everyone alive")
+	assert_true(Face.attack(10, L).is_weapon() and not Face.attack(10, L).is_equipment(), "an attack is a weapon")
+	var d := Face.from_dict({"kind": "shield", "power": 20, "targets": "ally"})
+	assert_eq(d.targets, Face.Target.ALLY, "targets read from content")
+	assert_eq(d.to_dict().get("targets", ""), "ally", "and written back")
 
 
 func test_suppress_cancels_intent() -> void:

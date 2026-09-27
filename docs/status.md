@@ -5,7 +5,7 @@ thing works lives in its file's comments; why it is that way lives in the bible.
 
 ## As of 26 September 2026 (midday)
 
-**State.** Tests: 215 tests, 2813 checks, green (`perl -e 'alarm 240; exec @ARGV' godot
+**State.** Tests: 215 tests, 2822 checks, green (`perl -e 'alarm 240; exec @ARGV' godot
 --headless --path . -s tests/run_tests.gd`). Ryan runs a second session on this repo at
 the same time (today: the HUD session, the audio session, the balance session and the
 boss-theme session, which was the audio session resumed from another account): check
@@ -73,6 +73,23 @@ yet a pressure on those dice; the Sparrowhawk is carried by the Arc Projector's 
 (46% of its spends). Next rungs when greedy stops being enough: rollout (replay from the
 seed a few rounds ahead), a battle-level bot using the skirmish bot as auto-resolve, a
 CI band test (coarse, or it flakes). The tests never read content: synthetic dice only.
+
+**Weapons, equipment, targets, stages (26 September, afternoon; bible section 7 row).**
+`Face.is_weapon()` (an attack; spent on a foe, need not deal damage) and `is_equipment()`
+(shield, vent; spent on a machine). Equipment carries `targets` (`self_ally` default,
+`self`, `ally`; `Face.Target`, content `"targets"`), enforced in `Skirmish.assign` through
+`equipment_targets_for`, used by the bot, lit on the screen, shown as a `self`/`ally` chip
+on the die and as "(self only)" in the description. Overcharge is retired as a keyword
+(the Overclocked Railgun is 100 damage, 40 heat outright); the vocabulary keeps the word
+as a planned offensive buff. Every component's `design.stage` is `draft` (the validator
+allows `draft` or `final`); none is final. The Mandrill's pods are its fixed component
+(the Solar Flare Array for now): one fixed, five hardpoints, pins renumbered (hp_3 dish,
+hp_4 vent, hp_5 right hand). Under discussion: the passive (Ryan favours a version of
+"a foe gaining a status has a chance to also be Suppressed, rising with the Mandrill's
+missing shield"); whether Numbed should decay (Ryan asked for an analysis of scaling stun
+resistance against Darkest Dungeon's one-turn immunity plus base resistance); foe and
+player buffs as the next content class (foe buff, defend and debuff actions; a buff
+equipment kind).
 
 **Ryan's on-the-go pages (26 September).** The day's review is published at
 https://claude.ai/artifact/BeDtchGtS8H2oH3yij3ywX (this account). The **content editor** is at

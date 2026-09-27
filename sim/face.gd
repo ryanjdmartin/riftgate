@@ -11,7 +11,11 @@ const CRIT_MULT := 2.0        # a crit multiplies the roll by this plus every cr
 
 enum Kind { ATTACK, SHIELD, VENT, BLANK }
 enum Reach { NONE, LINE, INDIRECT, MELEE }
-enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, OVERCHARGE, EXECUTE, CHAIN, STEADY, RAPID, CLEANSE }
+enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, EXECUTE, CHAIN, STEADY, RAPID, CLEANSE }
+## Whom a component may be spent on (Ryan, 26 September): a weapon (an attack) targets foes;
+## equipment (a shield, a vent) targets self and allies by default, and content may narrow
+## one to self only or allies only, so the design space stays open.
+enum Target { SELF_ALLY, SELF, ALLY, FOE }
 
 const KIND_NAMES := {
 	Kind.ATTACK: "attack", Kind.SHIELD: "shield", Kind.VENT: "vent", Kind.BLANK: "blank",
@@ -21,11 +25,14 @@ const REACH_NAMES := {
 }
 const KEYWORD_NAMES := {
 	Keyword.NONE: "", Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.BURN: "burn",
-	Keyword.SUPPRESS: "suppress", Keyword.OVERCHARGE: "overcharge", Keyword.EXECUTE: "execute",
+	Keyword.SUPPRESS: "suppress", Keyword.EXECUTE: "execute",
 	Keyword.CHAIN: "chain", Keyword.STEADY: "steady", Keyword.RAPID: "rapid", Keyword.CLEANSE: "cleanse",
 }
 ## What the player reads where it differs from the content id (the vocabulary's name).
 const KEYWORD_LABELS := { Keyword.CLEAVE: "spread" }
+const TARGET_NAMES := {
+	Target.SELF_ALLY: "self_ally", Target.SELF: "self", Target.ALLY: "ally", Target.FOE: "foe",
+}
 ## Keywords that ride on a shield or vent component (spent on a machine, not a foe); every
 ## other keyword is an attack's. The validator holds content to this.
 const SUPPORT_KEYWORDS := [Keyword.CLEANSE]
@@ -51,12 +58,14 @@ var component: String = ""    # the component this entry is (content id); "" for
 var empty: bool = false       # an empty hardpoint: blank, and nothing was ever there to break
 var fixed: bool = false       # built into the chassis (no hardpoint); false means this entry is a hardpoint
 var disabled: bool = false    # a stand-in for an entry a status has switched off: blank for now, the real one is untouched
+var targets: int = Target.SELF_ALLY   # equipment: whom it may be spent on; an attack is always FOE
 
 
 ## `kws` may be a single Keyword or an Array of them. `pwr_max` of 0 means static.
 static func attack(pwr: int, rch: int = Reach.LINE, kws = [], ht: int = 0, pwr_max: int = 0, crit_pct: int = 0) -> Face:
 	var f := Face.new()
 	f.kind = Kind.ATTACK
+	f.targets = Target.FOE
 	f.reach = rch
 	f.power = pwr
 	f.power_max = maxi(pwr, pwr_max)
@@ -134,6 +143,13 @@ static func reach_from_name(name: String) -> int:
 	return -1
 
 
+static func target_from_name(name: String) -> int:
+	for t in TARGET_NAMES.keys():
+		if TARGET_NAMES[t] == name:
+			return t
+	return -1
+
+
 ## Build from content JSON: {"kind": "attack", "reach": "line", "power": 20, "power_max": 50,
 ## "crit": 15, "keywords": ["cleave"], "heat": 10}. Unknown names are ignored here; the
 ## content validator reports them.
@@ -149,6 +165,11 @@ static func from_dict(d: Dictionary) -> Face:
 	f.crit_bonus = float(d.get("crit_bonus", 0.0))
 	f.heat = int(d.get("heat", 0))
 	f.strikes = maxi(1, int(d.get("strikes", 1)))
+	if f.kind == Kind.ATTACK:
+		f.targets = Target.FOE
+	else:
+		var t := target_from_name(str(d.get("targets", "self_ally")))
+		f.targets = t if t >= 0 and t != Target.FOE else Target.SELF_ALLY
 	for name in d.get("keywords", []):
 		var kw := keyword_from_name(str(name))
 		if kw > 0:
@@ -173,6 +194,8 @@ func to_dict() -> Dictionary:
 		d["crit_bonus"] = crit_bonus
 	if strikes > 1:
 		d["strikes"] = strikes
+	if kind != Kind.ATTACK and targets != Target.SELF_ALLY:
+		d["targets"] = TARGET_NAMES[targets]
 	return d
 
 
@@ -187,6 +210,24 @@ func has(kw: int) -> bool:
 
 func is_attack() -> bool:
 	return kind == Kind.ATTACK
+
+
+## The two component types (Ryan, 26 September): a weapon is spent on a foe and need not
+## deal damage; equipment is spent on a machine. A blank is neither.
+func is_weapon() -> bool:
+	return kind == Kind.ATTACK
+
+
+func is_equipment() -> bool:
+	return kind == Kind.SHIELD or kind == Kind.VENT
+
+
+func can_target_self() -> bool:
+	return is_equipment() and (targets == Target.SELF_ALLY or targets == Target.SELF)
+
+
+func can_target_ally() -> bool:
+	return is_equipment() and (targets == Target.SELF_ALLY or targets == Target.ALLY)
 
 
 ## Kinetic: the face rolls when spent.
@@ -214,6 +255,7 @@ func duplicate_face() -> Face:
 	f.empty = empty
 	f.fixed = fixed
 	f.disabled = disabled
+	f.targets = targets
 	for k in keywords:
 		f.keywords.append(k)
 	return f
@@ -245,6 +287,10 @@ func describe() -> String:
 			s = "%s %d" % ["shield" if kind == Kind.SHIELD else "vent", power]
 			for k in keywords:
 				s += " " + keyword_label(k)
+			if targets == Target.SELF:
+				s += " (self only)"
+			elif targets == Target.ALLY:
+				s += " (allies only)"
 		_:
 			# Line of fire is the default and goes unsaid; only indirect reach is called out.
 			s = number_text() if reach == Reach.LINE else "%s %s" % [REACH_NAMES[reach], number_text()]

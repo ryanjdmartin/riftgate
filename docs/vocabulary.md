@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 75 implemented, 21 planned, 0 idea.
+Status: 77 implemented, 22 planned, 0 idea.
 
 ## Resource
 
@@ -33,6 +33,8 @@ Status: 75 implemented, 21 planned, 0 idea.
 | **Shield component** | Spend on self or an ally to add its power in shield, capped at that mech's shield maximum. | implemented |
 | **Vent component** | Spend on self or an ally to remove its power in heat. | implemented |
 | **Cracked component** | A cracked component still acts but loses all keywords and unique effects. Cracked compoents can still crit, still generate heat, and still provide their passive bonuses and abilities. A destroyed component is blank and does nothing when it comes up, and provides passive bonuses but not passive abilities. Both persist until repaired in the hangar. | implemented |
+| **Weapon** | A component spent on a foe within its reach. It need not deal damage. | implemented |
+| **Equipment** | A component spent on a machine: itself, an ally, or either, as the component says. Shields and vents are equipment. | implemented |
 
 ## Component Property
 
@@ -40,6 +42,7 @@ Status: 75 implemented, 21 planned, 0 idea.
 |---|---|---|
 | **Damage range** | A kinetic attack component shows a minimum and a maximum and rolls between them when spent, immediately and visibly. Energy components show one number and never roll. Numbers are in tens. | implemented |
 | **Critical hit** | A kinetic component may carry a crit chance. On a crit the roll is multiplied by the crit multiplier: a base of 2 for everyone, plus every crit damage bonus that applies, from the component itself or a passive. Bonuses add to the multiplier, never multiply each other, so a +0.5 weapon with a +0.5 passive crits for 3 times. The readout shows the resulting multiplier. Energy components never crit. Crits fire the on_crit passive trigger. | implemented |
+| **Targets** | Whom a piece of equipment may be spent on: self and allies, self only, or allies only. Shown as a chip on the die when narrowed. | implemented |
 | **Strikes** | An attack's blows per use. A weapon with three strikes lands three separate hits: each rolls its own damage, its own crit and its own effects, so a rapid-fire weapon procs often. Against a shield, every strike past the first reaches the hull; against armour, every small strike loses the armour, so many small hits are the wrong tool for a heavy target and the right one for a soft one. Foe attacks have strikes too. | implemented |
 
 ## Reach
@@ -60,7 +63,7 @@ Status: 75 implemented, 21 planned, 0 idea.
 | **Burn** | Player keyword. Burning enemies lose 5 HP per stack at the start of their action, then lose one stack. Bypasses armour. Can be resisted. | implemented |
 | **Corrode** | Player keyword. Corroding enemies lose 1% of their HP per stack at the start of their action, then lose one stack. Bypasses armour. Can be resisted. | planned |
 | **Suppress** | Player keyword. The target skips its telegraphed action this round, then gains a stack of Numbed. Bosses and elites gain two stacks. A Numbed foe may shrug it off. | implemented |
-| **Overcharge** | Double the component's damage and double its heat. | implemented |
+| **Overcharge** | Player equipment keyword. The machine it is spent on deals more damage with its attacks until the end of the round. | planned |
 | **Execute** | +100% damage against a foe at or below half its health. Reduced to +50% against bosses and elites. | implemented |
 | **Chain** | If this attack kills an enemy, repeat it on a new, valid target. | implemented |
 | **Rapid** | After this component is spent, it is switched off for the rest of this round, the die rerolls for free (never the same entry), and the mech may act again. The switch-off only stops an infinite turn. | implemented |
@@ -178,7 +181,7 @@ Status: 75 implemented, 21 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Order of operations** | Everything that changes a number goes through one pipeline, in one order. Sources: the chassis passive and each fitted component's passive (until refitted), skirmish rewards (until the battle ends), buffs and debuffs (until the skirmish ends, or until the end of a given round). First suppression, shortest-lived source to longest: a live effect that suppresses another by id or tag turns it off, and a suppressed effect suppresses nothing. Then the gate: an effect takes part only if it is live, its trigger fires now, its condition holds, and, for an ability, its component is not destroyed (a destroyed component keeps its stat bonuses and loses its abilities). Then adds, all sources summed; then multiplies, all sources multiplied; then floors and caps; then overrides, where the shortest-lived source wins and the latest granted breaks ties. In an attack, the crit multiplier and the fixed keyword rules (overcharge, execute) come before the pipeline's adds and multiplies. Nothing is ever stored as a total: every read asks again, so an effect that is gone stops answering. Statuses stack: the same status granted again adds stacks instead of a second copy; an add is worth its value per stack and a multiply is applied once per stack; a status that ticks applies its per-stack tick at its owner's turn, then loses one stack, and is gone at zero. | implemented |
+| **Order of operations** | Everything that changes a number goes through one pipeline, in one order. Sources: the chassis passive and each fitted component's passive (until refitted), skirmish rewards (until the battle ends), buffs and debuffs (until the skirmish ends, or until the end of a given round). First suppression, shortest-lived source to longest: a live effect that suppresses another by id or tag turns it off, and a suppressed effect suppresses nothing. Then the gate: an effect takes part only if it is live, its trigger fires now, its condition holds, and, for an ability, its component is not destroyed (a destroyed component keeps its stat bonuses and loses its abilities). Then adds, all sources summed; then multiplies, all sources multiplied; then floors and caps; then overrides, where the shortest-lived source wins and the latest granted breaks ties. In an attack, the crit multiplier and the fixed keyword rule (execute) come before the pipeline's adds and multiplies. Nothing is ever stored as a total: every read asks again, so an effect that is gone stops answering. Statuses stack: the same status granted again adds stacks instead of a second copy; an add is worth its value per stack and a multiply is applied once per stack; a status that ticks applies its per-stack tick at its owner's turn, then loses one stack, and is gone at zero. | implemented |
 
 ## Holes
 
@@ -191,6 +194,8 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Damage range** (implemented): Ranges are content-authored per component; no upgrade path raises min or max yet.
 - **Critical hit** (implemented): The base is Face.CRIT_MULT, a balance knob; lower it if crit triggers make crits too strong at low chance.
 - **Numbed** (implemented): Numbers are placeholders; a boss at five suppresses is immune.
+- **Overcharge** (planned): Retired as double damage and double heat on 26 September (the Sparrowhawk's passive already was that); Ryan wants the word for an offensive buff. Numbers and shape open; needs player buffs to exist.
+- **Equipment** (implemented): Buffs will be equipment too, once they exist.
 - **Corrupt** (implemented): No foe carries it yet; Ryan places it (The Chorus, presumably).
 - **Cleanse** (implemented): No component carries it yet; Ryan places it.
 - **Retaliate** (planned): Would need shield sources to be tracked separately.

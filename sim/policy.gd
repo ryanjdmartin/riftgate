@@ -134,10 +134,10 @@ func options_for(sk: Skirmish, i: int) -> Array:
 			for t in sk.targets_for(i):
 				out.append({"mech": i, "target": t, "score": attack_score(sk, ms, f, t)})
 		Face.Kind.SHIELD:
-			for who in sk.live_mechs():
+			for who in sk.equipment_targets_for(ms, f):
 				out.append({"mech": i, "target": who, "score": shield_score(sk, who, f.power)})
 		Face.Kind.VENT:
-			for who in sk.live_mechs():
+			for who in sk.equipment_targets_for(ms, f):
 				out.append({"mech": i, "target": who, "score": vent_score(sk, who, f.power)})
 	return out
 
@@ -197,10 +197,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 
 ## The heat one use of an attack entry adds, through the pipeline.
 static func heat_of(ms: Skirmish.MechState, f: Face) -> int:
-	var heat := f.heat
-	if f.has(Face.Keyword.OVERCHARGE):
-		heat *= 2
-	return int(Effects.attack(ms.unit, f, 0, heat, false)["heat"])
+	return int(Effects.attack(ms.unit, f, 0, f.heat, false)["heat"])
 
 
 ## What one use of an attack entry can land, with the odds of each: [[damage, weight], ...].
@@ -228,8 +225,6 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null) -> Arr
 			var dmg: int = v
 			if crit:
 				dmg = int(roundf(dmg * crit_mult))
-			if f.has(Face.Keyword.OVERCHARGE):
-				dmg *= 2
 			if target != null and f.has(Face.Keyword.EXECUTE) and target.hp * 2 <= target.hp_max:
 				dmg = int(roundf(dmg * (1.5 if target.is_massive() else 2.0)))
 			dmg = int(Effects.attack(ms.unit, f, dmg, 0, crit, target)["damage"]) * maxi(1, f.strikes)
@@ -303,12 +298,12 @@ func face_value(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
 			return best
 		Face.Kind.SHIELD:
 			var best := 0.0
-			for who in sk.live_mechs():
+			for who in sk.equipment_targets_for(ms, f):
 				best = maxf(best, shield_score(sk, who, f.power))
 			return best
 		Face.Kind.VENT:
 			var best := 0.0
-			for who in sk.live_mechs():
+			for who in sk.equipment_targets_for(ms, f):
 				best = maxf(best, vent_score(sk, who, f.power))
 			return best
 	return 0.0

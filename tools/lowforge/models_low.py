@@ -290,7 +290,7 @@ def mandrill(b):
         b.prism("y", px, 12.0, 63.0, 3.2, 20.0, "steel.dark", 6, "umbra_projector")
         b.prism("y", px, 23.0, 63.0, 2.2, 3.0, "amber.engine", 6, "emitter")
         b.pin("hp_%d" % (1 if s < 0 else 2), (px, 16.0, 63.0))
-        # The arm: two straight tapered members with a joint drum between, the elbow out
+        # The arm (the Pulse Repeater's pin on the right hand is hp_5): two straight tapered members with a joint drum between, the elbow out
         # and a little forward, the wrist at the knee's height. The fist hangs there,
         # knuckles forward.
         shoulder = (s * 31.0, 0.0, 54.0)
@@ -310,20 +310,20 @@ def mandrill(b):
             b.prism("y", gx, 18.0, 20.0, 2.0, 18.0, "steel.dark", 6, "pulse_repeater")
             b.prism("y", gx, 27.5, 20.0, 1.4, 1.5, "amber.engine", 6, "repeater_tip")
             b.pin("hp_5", (gx, 18.0, 20.0))
-    # The backpack: a tall rack, red stripes down its sides, two flare pods on top (hp_3),
-    # the Corona dish on its right rear (hp_4), the vent block on its left rear (hp_6), a
-    # mast with a red light between the pods.
+    # The backpack: a tall rack, red stripes down its sides, two flare pods on top (the
+    # fixed component, the Solar Flare Array: built in, so no pin), the Corona dish on its
+    # right rear (hp_3), the vent block on its left rear (hp_4), a mast with a red light
+    # between the pods.
     b.box(-17.0, 17.0, -26.0, -14.0, 34.0, 68.0, "steel.panel", "rack")
     for s in (-1.0, 1.0):
         b.box(min(s * 17.0, s * 18.5), max(s * 17.0, s * 18.5), -25.0, -15.0, 38.0, 64.0, "livery.livery", "rack_stripe")
         b.prism("z", s * 10.0, -20.0, 74.0, 5.0, 14.0, "steel.dark", 6, "flare_pod")
         b.prism("z", s * 10.0, -20.0, 81.5, 5.5, 1.5, "steel.plate", 6, "pod_cap")
-    b.pin("hp_3", (-10.0, -20.0, 76.0))
     b.prism("y", 11.0, -27.5, 54.0, 7.0, 3.0, "steel.plate", 8, "corona_dish")
     b.prism("y", 11.0, -29.5, 54.0, 2.6, 1.0, "amber.engine", 8, "dish_core")
-    b.pin("hp_4", (11.0, -28.0, 54.0), forward=(0.0, -1.0, 0.0))
+    b.pin("hp_3", (11.0, -28.0, 54.0), forward=(0.0, -1.0, 0.0))
     b.box(-16.0, -2.0, -28.5, -26.0, 38.0, 52.0, "steel.vent", "vent_block")
-    b.pin("hp_6", (-9.0, -27.0, 45.0), forward=(0.0, -1.0, 0.0))
+    b.pin("hp_4", (-9.0, -27.0, 45.0), forward=(0.0, -1.0, 0.0))
     b.prism("z", 0.0, -20.0, 80.0, 1.2, 24.0, "steel.dark", 6, "mast")
     b.prism("z", 0.0, -20.0, 93.0, 2.0, 3.0, "amber.engine", 6, "mast_light")
 

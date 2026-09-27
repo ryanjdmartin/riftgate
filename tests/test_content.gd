@@ -80,11 +80,6 @@ func test_sparrowhawk_loadout_matches_design() -> void:
 	assert_eq(u.movespeed, 5, "sparrowhawk is fast")
 	assert_true(u.traits.has("flyer"), "sparrowhawk flies")
 	assert_false(u.can_block(), "and therefore does not block")
-	var hot := 0
-	for f in u.die.faces:
-		if f.has(Face.Keyword.OVERCHARGE):
-			hot += 1
-	assert_eq(hot, 1, "one overcharge face")
 	var p: Dictionary = db.chassis["sparrowhawk"]["passive"]
 	assert_eq(p["effects"].size(), 2, "two effects, one idea")
 	assert_true(not p.has("rules"), "no rules text: the description says what it does")

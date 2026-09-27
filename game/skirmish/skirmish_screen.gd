@@ -667,13 +667,13 @@ func _refresh() -> void:
 	_view_foe.clear()
 
 	var targets: Array[Foe] = []
-	var support := false
+	var support: Array[Skirmish.MechState] = []   # the machines a dragged piece of equipment may land on
 	if _drag_from >= 0:
 		var f := sk.mechs[_drag_from].face()
 		if f != null and f.is_attack():
 			targets = sk.targets_for(_drag_from)
-		elif f != null and f.kind != Face.Kind.BLANK:
-			support = true
+		elif f != null and f.is_equipment():
+			support = sk.equipment_targets_for(sk.mechs[_drag_from], f)
 
 	for col in range(sk.columns):
 		var front_foe := sk.foe_at(0, col)
@@ -719,7 +719,7 @@ func _refresh() -> void:
 			[ms.heat, ms.heat_max, Palette.HEAT, fc.get("heat_after", ms.heat)],
 		]
 		v.dead = not ms.alive()
-		v.highlight = support and ms.alive()
+		v.highlight = support.has(ms)
 		v.statuses = []
 		for r in _mech_rows(i):
 			v.statuses.append([r[0], r[1], r[3]])

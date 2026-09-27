@@ -362,6 +362,12 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String]) -> void:
 		errs.append("%s: only attack faces crit" % where)
 	if float(fd.get("crit_bonus", 0.0)) <= -Face.CRIT_MULT:
 		errs.append("%s: crit_bonus would make crits do nothing or heal" % where)
+	if fd.has("targets"):
+		var t := Face.target_from_name(str(fd["targets"]))
+		if kind == "attack":
+			errs.append("%s: a weapon always targets foes; 'targets' is for equipment" % where)
+		elif t < 0 or t == Face.Target.FOE:
+			errs.append("%s: targets must be self_ally, self or ally, got '%s'" % [where, fd["targets"]])
 	var kws: Array = fd.get("keywords", [])
 	if kws.size() > MAX_AUTHORED_KEYWORDS:
 		errs.append("%s: %d keywords, authored cap is %d" % [where, kws.size(), MAX_AUTHORED_KEYWORDS])
@@ -433,6 +439,10 @@ func _validate_design(where: String, e: Dictionary, errs: Array[String], need_fa
 	for key in DESIGN_ONLY_KEYS:
 		if e.has(key):
 			errs.append("%s: '%s' at the top level would be shown; it belongs under design" % [where, key])
+	# design.stage says whether Ryan has signed the entry off (Ryan, 26 September: nothing is
+	# design-locked yet, and the flag saves the conversation): draft until he says final.
+	if d is Dictionary and d.has("stage") and not ["draft", "final"].has(str(d["stage"])):
+		errs.append("%s: design.stage must be draft or final" % where)
 
 
 func _validate_components(errs: Array[String]) -> void:

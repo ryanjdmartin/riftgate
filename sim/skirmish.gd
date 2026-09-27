@@ -181,10 +181,7 @@ func pending_heat(ms: MechState) -> int:
 	var f := ms.face()
 	if f == null or ms.assigned or not f.is_attack():
 		return 0
-	var heat := f.heat
-	if f.has(Face.Keyword.OVERCHARGE):
-		heat *= 2
-	return Effects.attack(ms.unit, f, 0, heat, false)["heat"]
+	return Effects.attack(ms.unit, f, 0, f.heat, false)["heat"]
 
 
 ## The foes that will strike this mech when the round ends, in the order they act: alive,
@@ -269,6 +266,18 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0) -> D
 		"component_risk": component_risk,
 		"destroyed": hull <= 0 and ms.alive(),
 	}
+
+
+## Machines a piece of equipment may be spent on: itself, its allies, or both, as the
+## component says (Ryan, 26 September: not every shield reaches an ally). Live machines only.
+func equipment_targets_for(ms: MechState, f: Face) -> Array[MechState]:
+	var out: Array[MechState] = []
+	if f == null or not f.is_equipment():
+		return out
+	for who in live_mechs():
+		if (who == ms and f.can_target_self()) or (who != ms and f.can_target_ally()):
+			out.append(who)
+	return out
 
 
 ## Foes this mech's current face may be spent on.
@@ -383,6 +392,8 @@ func assign(mech_index: int, target = null) -> bool:
 	if f == null:
 		return false
 	if f.is_attack() and (not (target is Foe) or not targets_for(mech_index).has(target)):
+		return false
+	if f.is_equipment() and not equipment_targets_for(ms, f).has(target if target is MechState else ms):
 		return false
 	# A corrupted entry bites its owner as it is spent (shield first, no armour: the rot is
 	# inside the machine), before the component does its work. A machine it finishes acts
@@ -532,9 +543,6 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 		var crit := f.crit > 0 and rng.randi_range(1, 100) <= f.crit
 		if crit:
 			dmg = int(roundf(dmg * (Face.CRIT_MULT + f.crit_bonus + Effects.crit_bonus(ms.unit, f, target))))
-		if f.has(Face.Keyword.OVERCHARGE):
-			dmg *= 2
-			heat *= 2
 		if f.has(Face.Keyword.EXECUTE) and target.hp * 2 <= target.hp_max:
 			dmg = int(roundf(dmg * (1.5 if target.is_massive() else 2.0)))   # bosses and elites: half the bonus
 		# Then the pipeline: every live modifier's adds, multiplies and floors, in that order.

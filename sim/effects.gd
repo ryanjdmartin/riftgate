@@ -27,7 +27,7 @@ extends RefCounted
 ##   3. multiplies, every source multiplied
 ##   4. floors and caps (min_damage; a stat never below zero)
 ##   5. overrides (set_reach): the shortest-lived source wins, then the latest granted
-## In an attack, the crit multiplier and the fixed keyword rules (overcharge, execute) are
+## In an attack, the crit multiplier and the fixed keyword rules (execute) are
 ## applied by the skirmish before step 2, so the pipeline's adds and multiplies come last.
 ##
 ## Stacking. A modifier has stacks (one by default). Granting the same id in the same scope
