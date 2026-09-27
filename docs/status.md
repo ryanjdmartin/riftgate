@@ -5,7 +5,7 @@ thing works lives in its file's comments; why it is that way lives in the bible.
 
 ## As of 26 September 2026 (midday)
 
-**State.** Tests: 215 tests, 2822 checks, green (`perl -e 'alarm 240; exec @ARGV' godot
+**State.** Tests: 215 tests, 2828 checks, green (`perl -e 'alarm 240; exec @ARGV' godot
 --headless --path . -s tests/run_tests.gd`). Ryan runs a second session on this repo at
 the same time (today: the HUD session, the audio session, the balance session and the
 boss-theme session, which was the audio session resumed from another account): check
@@ -73,6 +73,22 @@ yet a pressure on those dice; the Sparrowhawk is carried by the Arc Projector's 
 (46% of its spends). Next rungs when greedy stops being enough: rollout (replay from the
 seed a few rounds ahead), a battle-level bot using the skirmish bot as auto-resolve, a
 CI band test (coarse, or it flakes). The tests never read content: synthetic dice only.
+
+**Codex, Numbed, fists (26 September, late; bible section 7, two Decided rows).** The codex
+is the base state plus battle rewards, never combat effects: `Effects.stat(u, name, upto)`
+takes a scope and `codex_for_unit` asks with `Effects.BATTLE`; its passive list shows
+loadout and battle modifiers (REWARD). `Effects.describe` carries stacks and id; the
+mech's chips and hold rows (`_mech_rows`) list every skirmish- and round-scoped modifier;
+the foe's rows show Numbed with its resistance. **Numbed decays** (DECAY_TICK, a stack per
+foe turn), a landed suppress adds `NUMBED_PER_SUPPRESS` 2 (3 massive), and a foe's
+`stun_resist` (content, 0 to 100; 30 on the bosses as a placeholder) adds a base;
+`Foe.resist_total()` is the chance, read by `_suppress` and the bot. Iconography: one
+primary glyph, keywords as chips, never a combined symbol. The fist is six single-tile
+faces (`_quad`, `_fist`): fingers stacked across the front and outer side (`fist` tile,
+horizontal grooves), the thumb painted down the inner side (`thumb` tile), plate elsewhere.
+Under discussion: the Mandrill's passive (Ryan leans to "a foe gaining a status has a
+chance to also be Suppressed, rising with the Mandrill's missing shield"); foe and player
+buffs as the next content class.
 
 **Weapons, equipment, targets, stages (26 September, afternoon; bible section 7 row).**
 `Face.is_weapon()` (an attack; spent on a foe, need not deal damage) and `is_equipment()`

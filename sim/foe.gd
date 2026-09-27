@@ -17,6 +17,7 @@ var attack: int = 10             # base attack: the number the player reads as "
 var prefers_back: bool = false   # ranged types hold the back rank and never step up
 var squad_id: int = 0            # which battlefield squad this foe came from
 var size: int = 1                # 2 = massive: fills both slots of a column
+var stun_resist: int = 0         # base chance, percent, to shrug off a suppress (content; bosses carry some)
 var actions: Array = []          # implemented attack actions; at least the basic one
 
 # Live state.
@@ -34,6 +35,11 @@ func burn_stacks() -> int:
 
 func is_suppressed() -> bool:
 	return Effects.tick_preview(self)["skip"]
+
+
+## The chance a suppress fails against this foe right now: its own resistance plus Numbed.
+func resist_total() -> int:
+	return clampi(stun_resist + int(Effects.tick_preview(self)["resist"]), 0, 100)
 
 
 static func make(name: String, hp_value: int, attack_value: int, back: bool = false) -> Foe:

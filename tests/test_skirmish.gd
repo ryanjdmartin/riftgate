@@ -979,14 +979,21 @@ func test_suppress_skips_the_action_and_numbs() -> void:
 	sk.start_round()
 	sk.assign(0, sk.front[0])
 	assert_true(boss.is_suppressed(), "suppressed this round")
-	assert_eq(Effects.stacks_of(boss, "numbed"), 2, "a massive foe gains two Numbed stacks")
+	assert_eq(Effects.stacks_of(boss, "numbed"), 3, "a massive foe gains three Numbed stacks")
+	assert_eq(boss.resist_total(), 30, "which is 30% to shrug the next one off")
 	sk.end_round()
 	assert_eq(m.hull, 100, "it skipped")
 	assert_false(boss.is_suppressed(), "the suppression ran out with the round")
-	assert_eq(Effects.stacks_of(boss, "numbed"), 2, "Numbed does not decay")
+	assert_eq(Effects.stacks_of(boss, "numbed"), 2, "Numbed lost a stack at the foe's turn, suppressed or not")
 	sk.start_round()
 	sk.end_round()
 	assert_eq(m.hull, 70, "next round it strikes")
+	assert_eq(Effects.stacks_of(boss, "numbed"), 1, "and loses another")
+	sk.start_round()
+	sk.end_round()
+	sk.start_round()
+	sk.end_round()
+	assert_eq(Effects.stacks_of(boss, "numbed"), 0, "gone two turns later")
 
 
 func test_stacked_adds_scale_with_stacks() -> void:
@@ -1221,8 +1228,20 @@ func test_a_numbed_foe_shrugs_off_a_suppress_at_its_odds() -> void:
 		s.assign(0, s.front[0])
 		if f.is_suppressed():
 			landed += 1
-			assert_eq(Effects.stacks_of(f, "numbed"), 4, "a suppress that lands numbs one more")
+			assert_eq(Effects.stacks_of(f, "numbed"), 5, "a suppress that lands numbs two more")
 	assert_true(landed > 110 and landed < 170, "about 140 of 200 land at 30%% resistance, got %d" % landed)
+	# A foe's own resistance counts before any Numbed, and a full one never lands.
+	var s2 := Skirmish.new(3)
+	s2.add_mech(_mech("A", Die.single(Face.attack(10, L, K.SUPPRESS)), 0, 100))
+	var stubborn := _ghoul(500, 30)
+	stubborn.stun_resist = 100
+	s2.add_foes([stubborn])
+	s2.begin()
+	s2.start_round()
+	assert_eq(stubborn.resist_total(), 100, "base resistance reads")
+	s2.assign(0, s2.front[0])
+	assert_false(stubborn.is_suppressed(), "never suppressed")
+	assert_eq(Effects.stacks_of(stubborn, "numbed"), 0, "and never numbed")
 
 
 func test_a_corrupt_blow_rots_the_showing_entry_and_it_bites_when_spent() -> void:

@@ -28,6 +28,8 @@ const DANGER_CLOSE_DIVISOR := 2
 const BURN_DAMAGE_PER_STACK := 20   # damage dealt per stack applied
 const CRACK_MIN_HULL_PCT := 25      # a single hull hit this big (percent of max) injures a face
 const CORRUPT_BITE_PER_STACK := 10  # what a corrupted entry costs its owner each time it is spent, per stack (placeholder)
+const NUMBED_PER_SUPPRESS := 2       # Numbed stacks a landed suppress adds; one is lost at each of the foe's turns
+const NUMBED_PER_SUPPRESS_MASSIVE := 3
 
 
 class MechState:
@@ -604,17 +606,18 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 				break
 
 
-## Suppress: the foe skips its action this round, then grows Numbed (two stacks for a
-## massive foe). A Numbed foe resists at 10% a stack, on the skirmish's own die (25
-## September): a suppress it shrugs off does nothing at all, and numbs it no further, so
-## resistance plateaus where the suppresses stop landing rather than running away.
+## Suppress: the foe skips its action this round, then grows Numbed (two stacks, three for
+## a massive foe). It resists at its own base resistance plus 10% a stack, on the
+## skirmish's own die (Ryan, 26 September): a suppress it shrugs off does nothing at all
+## and numbs it no further, and Numbed loses a stack at each of the foe's turns, so a stun
+## repeated on one foe stops landing while stuns spread across the formation keep working.
 func _suppress(foe: Foe) -> bool:
-	var resist := int(Effects.tick_preview(foe)["resist"])
+	var resist := foe.resist_total()
 	if resist > 0 and rng.randi_range(1, 100) <= resist:
-		log.append("%s shrugs off the suppression (numbed %d%%)" % [foe.display_name, resist])
+		log.append("%s shrugs off the suppression (%d%% resistant)" % [foe.display_name, resist])
 		return false
 	Effects.grant_for_rounds(foe, Effects.STATUS["suppressed"], "mech", round)
-	Effects.stack(foe, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 2 if foe.is_massive() else 1, Effects.DECAY_NONE)
+	Effects.stack(foe, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", NUMBED_PER_SUPPRESS_MASSIVE if foe.is_massive() else NUMBED_PER_SUPPRESS, Effects.DECAY_TICK)
 	return true
 
 

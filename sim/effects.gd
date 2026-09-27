@@ -65,7 +65,7 @@ const STATUS := {
 		"tags": ["dot", CLEANSABLE], "effects": [{"trigger": "status", "effect": "tick_heat", "value": 5}]},
 	"suppressed": {"id": "suppressed", "name": "Suppressed", "description": "Skips its telegraphed action this round.",
 		"effects": [{"trigger": "status", "effect": "skip_action", "value": 1}]},
-	"numbed": {"id": "numbed", "name": "Numbed", "description": "Resists being suppressed, 10% per stack.",
+	"numbed": {"id": "numbed", "name": "Numbed", "description": "Resists a suppress, 10% per stack, on top of its own resistance; loses a stack each turn.",
 		"effects": [{"trigger": "status", "effect": "resist_suppress", "value": 10}]},
 }
 ## target_status: the foe struck carries any live status (burning, suppressed, numbed...).
@@ -312,15 +312,18 @@ static func _taking_part(u, trigger: String, face: Face, crit: bool = false, tar
 
 # ---------------------------------------------------------------- queries
 
-## A mech stat: its base, plus every add, times every multiplier, never below zero.
-static func stat(u, name: String) -> int:
+## A mech stat: its base, plus every add, times every multiplier, never below zero. `upto`
+## is the longest-lived scope that takes part, ROUNDS by default (everything live); the
+## codex asks with BATTLE (Ryan, 26 September: the codex is the machine's base state with
+## its battle rewards, never its combat effects).
+static func stat(u, name: String, upto: int = ROUNDS) -> int:
 	var base: float = float(u.base.get(name, 0))
 	var add := 0.0
 	var mult := 1.0
 	for pair in _taking_part(u, "static", null):
 		var eff: Dictionary = pair[0]
 		var n: int = pair[1].stacks
-		if str(eff.get("stat", "")) != name:
+		if str(eff.get("stat", "")) != name or pair[1].scope > upto:
 			continue
 		match str(eff.get("effect", "")):
 			"add_stat":
@@ -539,9 +542,10 @@ static func explain(u, face: Face) -> Array[String]:
 	return out
 
 
-## What the codex lists: every live modifier as [name, description, source, scope].
+## Every live modifier as [name, description, source, scope, stacks, id]: the codex lists
+## the loadout and battle ones, the hold popup the skirmish and round ones.
 static func describe(u) -> Array:
 	var out: Array = []
 	for m in live(u):
-		out.append([m.name, m.description, m.source, m.scope])
+		out.append([m.name, m.description, m.source, m.scope, m.stacks, m.id])
 	return out

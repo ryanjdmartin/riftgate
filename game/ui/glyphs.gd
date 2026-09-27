@@ -71,6 +71,10 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_polyline(PackedVector2Array([
 				c + Vector2(0, -s * 0.6), c + Vector2(s * 0.4, s * 0.1), c + Vector2(0, s * 0.55), c + Vector2(-s * 0.4, s * 0.1), c + Vector2(0, -s * 0.6),
 			]), color, width)
+		"numbed":
+			# A suppress ring with a bar across it: the stun it shrugs off.
+			ci.draw_arc(c, s * 0.9, 0.0, TAU, 28, color, width)
+			ci.draw_line(c + Vector2(-s * 0.55, 0.0), c + Vector2(s * 0.55, 0.0), color, width * 1.4)
 		"self":
 			# One machine, ringed: this component reaches only its own.
 			ci.draw_arc(c, s * 0.9, 0.0, TAU, 24, color, width * 0.8)
@@ -195,7 +199,7 @@ static func colour_for(id: String) -> Color:
 			return Palette.ENEMY
 		"star":
 			return Palette.SELECT
-		"suppress", "chain", "cleanse":
+		"suppress", "chain", "cleanse", "numbed":
 			return Palette.SHIELD
 		_:
 			return Palette.HUD

@@ -1,5 +1,5 @@
 {
-  "_about": "Enemies inside a skirmish. Numbers are in tens. Enemy damage is static and telegraphed exactly; only the player's kinetic faces roll. rank is where they prefer to stand: front foes step up, back foes hold. size 2 is massive and fills both slots of a column. Player-facing text: codex (what the codex says), flavour (an in-world quote, shown in italics), and each action's text. design is internal and never shown: fantasy (the pitch, inspiration, homages), niche (the tactical problem the foe poses), notes. actions is the foe's roster of things it can do, each kind attack, defend, buff or debuff, with status implemented or planned; only implemented actions appear in the codex, and today the engine runs only the basic attack. Component injuries are a global rule, not a foe property. An implemented attack action scales the base attack: factor (default 1.0; damage is attack times factor, rounded), strikes (default 1; each a separate blow, so a double strike breaks a shield and reaches the hull), keywords (tags on the blow; breach: its blows overflow shield into hull and can injure through it, dangerous and uncommon), weight (default 1; each round a foe picks one of its attacks by weight, announced before the player acts). Write {damage} in an action's text and the resulting number is shown. Foes stand and strike front rank left to right then back rank; the heaviest hitters deploy left. Numbers are placeholders.",
+  "_about": "Enemies inside a skirmish. Numbers are in tens. Enemy damage is static and telegraphed exactly; only the player's kinetic faces roll. rank is where they prefer to stand: front foes step up, back foes hold. size 2 is massive and fills both slots of a column. stun_resist (default 0) is the foe's base chance, percent, to shrug off a suppress; Numbed adds 10 a stack on top and decays a stack each turn; bosses carry 30 as a placeholder (26 September). Player-facing text: codex (what the codex says), flavour (an in-world quote, shown in italics), and each action's text. design is internal and never shown: fantasy (the pitch, inspiration, homages), niche (the tactical problem the foe poses), notes. actions is the foe's roster of things it can do, each kind attack, defend, buff or debuff, with status implemented or planned; only implemented actions appear in the codex, and today the engine runs only the basic attack. Component injuries are a global rule, not a foe property. An implemented attack action scales the base attack: factor (default 1.0; damage is attack times factor, rounded), strikes (default 1; each a separate blow, so a double strike breaks a shield and reaches the hull), keywords (tags on the blow; breach: its blows overflow shield into hull and can injure through it, dangerous and uncommon), weight (default 1; each round a foe picks one of its attacks by weight, announced before the player acts). Write {damage} in an action's text and the resulting number is shown. Foes stand and strike front rank left to right then back rank; the heaviest hitters deploy left. Numbers are placeholders.",
   "entries": [
     {
       "id": "ghoul", "name": "Ghoul", "faction": "undead",
@@ -72,7 +72,7 @@
       "id": "bone_colossus", "name": "Bone Colossus", "faction": "undead",
       "design": { "fantasy": "A cathedral of ribs that walks.", "niche": "Fills a whole column. Nothing behind it is reachable until it falls, and it does not fall quickly.", "notes": "Massive boss. On the battlefield it is a three-hex unit. Knit is not coded." },
       "codex": "A cathedral of ribs that walks. Fills a whole column; nothing behind it can be reached until it falls, and it does not fall quickly.",
-      "hp": 140, "attack": 30, "rank": "front", "size": 2,
+      "hp": 140, "attack": 30, "rank": "front", "size": 2, "stun_resist": 30,
       "actions": [
         { "id": "sweep", "name": "Sweep", "kind": "attack", "text": "A rib the size of a girder, for {damage}.", "status": "implemented" },
         { "id": "knit", "name": "Knit", "kind": "defend", "text": "Regrows 20 hull at the end of the round.", "status": "planned" }
@@ -83,7 +83,7 @@
       "id": "pit_lord", "name": "Pit Lord", "faction": "demonic",
       "design": { "fantasy": "The furnace has a face.", "niche": "The biggest telegraphed hit in the game. Suppress it or shield for it every round it stands.", "notes": "Massive boss. Kindle is not coded." },
       "codex": "The furnace has a face. The single biggest telegraphed hit in the campaign, every round, until it is dead.",
-      "hp": 160, "attack": 40, "rank": "front", "size": 2,
+      "hp": 160, "attack": 40, "rank": "front", "size": 2, "stun_resist": 30,
       "actions": [
         { "id": "furnace_blow", "name": "Furnace Blow", "kind": "attack", "text": "A fist of slag for {damage}.", "status": "implemented" },
         { "id": "kindle", "name": "Kindle", "kind": "buff", "text": "Every other demon on the field hits 10 harder next round.", "status": "planned" }
@@ -94,7 +94,7 @@
       "id": "the_maw", "name": "The Maw", "faction": "eldritch",
       "design": { "fantasy": "You do not see all of it. That is a mercy.", "niche": "Hits often enough that faces crack. Redundancy wins; burst loses.", "notes": "Massive boss. Unmake is not coded." },
       "codex": "You do not see all of it. The part you can see hits often enough that faces crack.",
-      "hp": 120, "attack": 20, "rank": "front", "size": 2,
+      "hp": 120, "attack": 20, "rank": "front", "size": 2, "stun_resist": 30,
       "actions": [
         { "id": "bite", "name": "Bite", "kind": "attack", "text": "The visible part closes, for {damage}.", "status": "implemented" },
         { "id": "unmake", "name": "Unmake", "kind": "debuff", "text": "Cracks one face outright, no hull hit needed.", "status": "planned" }

@@ -865,6 +865,9 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(["burn", str(foe.burn_stacks()), "Burning: %d damage a round, one stack less each round" % int(Effects.tick_preview(foe)["hp"]), Palette.HEAT])
 	if foe.is_suppressed():
 		rows.append(["suppress", "", "Suppressed: loses its action this round", Palette.HUD])
+	var numbed := Effects.stacks_of(foe, "numbed")
+	if numbed > 0 or foe.stun_resist > 0:
+		rows.append(["numbed", "%d%%" % foe.resist_total(), "Numbed: shrugs off a suppress %d%% of the time (%d%% its own, 10%% a stack, a stack less each turn)" % [foe.resist_total(), foe.stun_resist], Palette.SHIELD])
 	if foe.rank == 1 and sk.is_exposed(foe.column):
 		rows.append(["exposed", "", "Exposed: nothing in front, line weapons reach it", Palette.HUD])
 	return rows
@@ -882,6 +885,16 @@ func _mech_rows(i: int) -> Array:
 	var damaged := ms.unit.damaged_component_count()
 	if damaged > 0:
 		rows.append(["crack", str(damaged), "%d damaged component%s: repair in the hangar" % [damaged, "" if damaged == 1 else "s"], Palette.HUD])
+	# Every in-combat effect on the machine (Ryan, 26 September: the codex is the base state;
+	# the fight's statuses live here, as chips that the hold expands into their descriptions).
+	for d in Effects.describe(ms.unit):
+		if int(d[3]) < Effects.SKIRMISH:
+			continue
+		var id := str(d[5])
+		var glyph := "heat" if id == "overheating" else ("corrupt" if id.begins_with("corrupted") else ("blank" if id.begins_with("disabled") else "star"))
+		var colour: Color = Palette.HEAT if id == "overheating" else (Palette.ENEMY if id.begins_with("corrupted") else Palette.HUD)
+		var stacks := int(d[4])
+		rows.append([glyph, ("×%d" % stacks) if stacks > 1 else "", "%s: %s" % [str(d[0]), str(d[1])], colour])
 	if sk.state == Skirmish.State.ASSIGN:
 		var fc := sk.forecast(ms, _drag_from == i)
 		if int(fc["overheat"]) > 0:

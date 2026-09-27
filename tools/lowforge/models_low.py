@@ -299,7 +299,7 @@ def mandrill(b):
         _beam(b, shoulder, elbow, OCT(5.2), OCT(4.6), "steel.plate", "upper_arm")
         b.prism("x", elbow[0], elbow[1], elbow[2], 5.5, 12.0, "steel.dark", 6, "elbow")
         _beam(b, elbow, wrist, OCT(4.6), OCT(5.2), "steel.panel", "forearm")
-        _fist(b, wrist[0], 5.0, 19.0, 8.0 + Z0, 21.0 + Z0, 14.0, s)
+        _fist(b, wrist[0], 5.0, 19.0, 8.0 + Z0, 21.0 + Z0, 14.0, -s)   # the inner side faces the body
         if s > 0:
             # The Pulse Repeater on the outside of the right hand (hp_5), above the thumb.
             gx = wrist[0] + 9.5
@@ -365,16 +365,40 @@ def _beam(b, p0, p1, ring0, ring1, material, label):
     return _rings(b, rings, material, label, (Vector(p0), d, side, up, None))
 
 
-def _fist(b, cx, y_back, y_front, z0, z1, w, thumb_side, material="steel.fist", label="fist"):
-    """A closed fist, knuckles forward (+y), as one block whose front face carries exactly one
-    fist tile (four fingers and the thumb across the bottom), the tile wrapping onto the
-    sides at the same scale; a small thumb block stands proud on the outer side."""
+def _quad(b, pts, material, label, frame=None):
+    """One face on its own, from four points in world space, so a block can wear a
+    different tile on each side."""
+    bm = bmesh.new()
+    vs = [bm.verts.new(Vector(p)) for p in pts]
+    bm.faces.new(vs)
+    return b._finish(bm, material, label, None, frame)
+
+
+def _fist(b, cx, y_back, y_front, z0, z1, w, inner_side, label="fist"):
+    """A closed fist, knuckles forward (+y), hanging from the wrist above it: a block whose
+    faces each carry one tile of their own (Ryan, 26 September). The front and the outer
+    side wear the back of the hand, four fingers stacked with the knuckles lit; the inner
+    side (toward the body, `inner_side` is -1 for the right hand) wears the thumb, painted,
+    never modelled; the top, bottom and back are plain plate."""
     hw = w / 2.0
-    ring = lambda y: [Vector((cx - hw, y, z0)), Vector((cx + hw, y, z0)), Vector((cx + hw, y, z1)), Vector((cx - hw, y, z1))]
-    frame = (Vector((cx - hw, y_front, z0)), Vector((0.0, 0.0, 1.0)), Vector((1.0, 0.0, 0.0)), Vector((0.0, 1.0, 0.0)), (w, z1 - z0))
-    _rings(b, [ring(y_back), ring(y_front)], material, label, frame)
-    tx0, tx1 = (cx + hw, cx + hw + 2.5) if thumb_side > 0 else (cx - hw - 2.5, cx - hw)
-    b.box(tx0, tx1, y_front - 7.0, y_front - 1.0, z0 + 1.0, z0 + 5.0, "steel.plate", "thumb")
+    x0, x1 = cx - hw, cx + hw
+    up, right, fwd = Vector((0.0, 0.0, 1.0)), Vector((1.0, 0.0, 0.0)), Vector((0.0, 1.0, 0.0))
+    h, d = z1 - z0, y_front - y_back
+    # front: the knuckles
+    _quad(b, [(x0, y_front, z0), (x1, y_front, z0), (x1, y_front, z1), (x0, y_front, z1)], "steel.fist", label + "_front",
+          (Vector((x0, y_front, z0)), up, right, fwd, (w, h)))
+    outer_x = x1 if inner_side < 0 else x0
+    inner_x = x0 if inner_side < 0 else x1
+    # outer side: the fingers' backs, the same tile
+    _quad(b, [(outer_x, y_back, z0), (outer_x, y_front, z0), (outer_x, y_front, z1), (outer_x, y_back, z1)], "steel.fist", label + "_outer",
+          (Vector((outer_x, y_back, z0)), up, fwd, right, (d, h)))
+    # inner side: the thumb
+    _quad(b, [(inner_x, y_back, z0), (inner_x, y_front, z0), (inner_x, y_front, z1), (inner_x, y_back, z1)], "steel.thumb", label + "_inner",
+          (Vector((inner_x, y_back, z0)), up, fwd, right, (d, h)))
+    # top, bottom, back: plain plate
+    _quad(b, [(x0, y_back, z1), (x1, y_back, z1), (x1, y_front, z1), (x0, y_front, z1)], "steel.plate", label + "_top")
+    _quad(b, [(x0, y_back, z0), (x1, y_back, z0), (x1, y_front, z0), (x0, y_front, z0)], "steel.plate", label + "_bottom")
+    _quad(b, [(x0, y_back, z0), (x1, y_back, z0), (x1, y_back, z1), (x0, y_back, z1)], "steel.plate", label + "_back")
 
 
 def _fuse(w, top, bottom):

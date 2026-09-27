@@ -166,7 +166,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	score += p_kill * (KILL_BONUS + _threat_now(target) * HULL_WEIGHT)
 	if f.has(Face.Keyword.SUPPRESS):
 		# A Numbed foe shrugs it off at its resistance, so the stopped blow is worth its odds.
-		var lands := 1.0 - float(Effects.tick_preview(target)["resist"]) / 100.0
+		var lands := 1.0 - float(target.resist_total()) / 100.0
 		score += (1.0 - p_kill) * _threat_now(target) * HULL_WEIGHT * maxf(0.0, lands)
 	if f.has(Face.Keyword.BURN):
 		score += (1.0 - p_kill) * mean * BURN_WEIGHT

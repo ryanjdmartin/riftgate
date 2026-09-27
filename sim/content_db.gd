@@ -134,6 +134,7 @@ func make_foe(foe_id: String) -> Foe:
 	var d: Dictionary = foes[foe_id]
 	var f := Foe.make(str(d["name"]), int(d["hp"]), int(d["attack"]), str(d.get("rank", "front")) == "back")
 	f.size = int(d.get("size", 1))
+	f.stun_resist = clampi(int(d.get("stun_resist", 0)), 0, 100)
 	var acts: Array = []
 	for a in d.get("actions", []):
 		if str(a.get("status", "")) == "implemented" and str(a.get("kind", "")) == "attack":
@@ -191,8 +192,18 @@ func codex_for_foe(f: Foe) -> Dictionary:
 func codex_for_unit(u: Unit) -> Dictionary:
 	var c: Dictionary = chassis.get(u.chassis_id, {})
 	var maker: Dictionary = makers.get(str(c.get("maker", "")), {})
+	# The codex is the machine's base state with its battle rewards, never its combat effects
+	# (Ryan, 26 September): every number is asked up to the BATTLE scope, and the list below
+	# carries loadout and battle modifiers only; the hold popup in the fight has the rest.
+	var shield_max := Effects.stat(u, "shield", Effects.BATTLE)
+	var hull_max := Effects.stat(u, "hull", Effects.BATTLE)
+	var armour := Effects.stat(u, "armour", Effects.BATTLE)
+	var heat_max := Effects.stat(u, "heat", Effects.BATTLE)
+	var recharge := Effects.stat(u, "recharge", Effects.BATTLE)
+	var cooling := Effects.stat(u, "cooling", Effects.BATTLE)
+	var move := Effects.stat(u, "move", Effects.BATTLE)
 	var stats := "SHIELD %d (+%d A PHASE OUT OF COMBAT) // HULL %d // ARMOUR %d // HEAT %d (-%d A TURN) // MOVE %d // %d HARDPOINTS // D%d" % [
-		u.shield_max, u.recharge_field, u.hull_max, u.armour, u.heat_max, u.cooling, u.movespeed, u.hardpoints, u.die.size() if u.die != null else 0]
+		shield_max, recharge, hull_max, armour, heat_max, cooling, move, u.hardpoints, u.die.size() if u.die != null else 0]
 	var faces: Array = []
 	if u.die != null:
 		for f in u.die.faces:
@@ -203,14 +214,17 @@ func codex_for_unit(u: Unit) -> Dictionary:
 				faces.append(shown)
 			else:
 				faces.append(f)
-	# Every live loadout modifier: the chassis passive first, then what components grant.
+	# Every live loadout and battle modifier: the chassis passive first, then what
+	# components grant, then the battle's rewards; nothing from the fight itself.
 	var lines: Array[String] = []
 	for d in Effects.describe(u):
-		if d[3] != Effects.LOADOUT:
+		if d[3] != Effects.LOADOUT and d[3] != Effects.BATTLE:
 			continue
 		var head: String = str(d[0]).to_upper()
 		if d[2] != "chassis" and components.has(d[2]):
 			head += " (%s)" % str(components[d[2]].get("name", d[2]))
+		elif d[3] == Effects.BATTLE:
+			head += " (REWARD)"
 		lines.append("%s: %s" % [head, d[1]])
 	var passive := "\n".join(lines)
 	return {
@@ -222,8 +236,8 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		# Hardpoints are not a number here: the component list shows them as sockets.
 		# The machine's numbers, never its state (Ryan, 22 September: the codex is the spec
 		# plate; the gauges say how it is doing): maxima with their rates beside them.
-		"stat_items": [["shield max / recharge", "%d / +%d" % [u.shield_max, u.recharge_field]], ["hull max / armour", "%d / %d" % [u.hull_max, u.armour]],
-			["heat max / cooling", "%d / %d" % [u.heat_max, u.cooling]], ["move speed", str(u.movespeed)]],
+		"stat_items": [["shield max / recharge", "%d / +%d" % [shield_max, recharge]], ["hull max / armour", "%d / %d" % [hull_max, armour]],
+			["heat max / cooling", "%d / %d" % [heat_max, cooling]], ["move speed", str(move)]],
 		"actions": "",
 		"passive": passive,
 		"faces": faces,
@@ -578,6 +592,8 @@ func _validate_foes(errs: Array[String]) -> void:
 			errs.append("%s: a massive foe fills both ranks and must be rank front" % where)
 		if f.has("injures"):
 			errs.append("%s: 'injures' is gone; component injuries are a global rule" % where)
+		if f.has("stun_resist") and (int(f["stun_resist"]) < 0 or int(f["stun_resist"]) > 100):
+			errs.append("%s: stun_resist is a percent, 0 to 100" % where)
 		for key in ["strikes", "breach"]:
 			if f.has(key):
 				errs.append("%s: '%s' belongs on an attack action, not the foe" % [where, key])
