@@ -496,63 +496,23 @@ decided register.
 
 **Open, in the order I would take them.**
 
-1. Ryan: the native Android build runs (25 September). First note from it: the hex grid
-   was faint at rest. Cause: the grid was GL lines, one device pixel whatever the screen,
-   and the Compatibility renderer (the phone's) drew them thinner and with no bloom halo;
-   measured on the phone's screenshot, most grid pixels sat at 40 percent of the line's
-   peak. Fixed as ribbons `GRID_W` map pixels wide (`map_3d.gd`, `_grid_geo`), the same
-   width on both renderers. Ryan judges it on the phone; if still faint, the knobs are
-   `GRID_W` and the grid material's `gain` (0.7). Second note: MENU cramped in the top
-   corner and the bottom buttons cut off. The export is edge to edge and immersive, so
-   the layout ran the whole glass; now both screens inset their root by the display's
-   safe area (`Hud.safe_insets`, `Hud.inset_screen`, floor `Hud.SAFE_FLOOR` = 40 top and
-   32 bottom design px for the corners and gesture zone the display does not report),
-   and MENU answers a touch over the whole bar (`HudButton.hit_pad`). To see the phone's
-   layout on the Mac: `RIFTGATE_SHOT_H=1616 RIFTGATE_SAFE=80,48` with `tools/screenshot.gd`.
-   If the floor is wrong on the device, `SAFE_FLOOR` is the knob. Third note (26
-   September): crashes after some minutes of play. The log (`adb logcat -b crash`) shows
-   three identical aborts on the GL thread, the Mali driver out of memory adding a
-   framebuffer to its pool. Two causes found and fixed: the contact panel's mech
-   portraits hung off the screen root and were never freed (every contact and every tap
-   of the panel's arrows left viewports rendering for the rest of the battle; now they
-   live in the portrait's box and die with the panel, `test_contact_portraits_die_with_the_panel`),
-   and Godot's Compatibility renderer leaks native memory every frame a 3D viewport draws
-   with MSAA on Android (godotengine/godot#97967, open), so `Hud.msaa_3d()` turns 3D MSAA
-   off on a phone (`RIFTGATE_MSAA=on` to compare). Ryan re-exports and plays a long
-   session; if it still dies, sample `adb shell dumpsys meminfo com.publabs.riftgate`
-   every minute and watch Native Heap and EGL mtrack. Watched nine minutes on the
-   re-exported build while Ryan played: native heap flat at 136 MB, total up 21 MB in two
-   steps, no crash. Fourth note: the codex's small text jagged and hard to read. The
-   window's fonts were rasterised at the design's 720 and stretched nearest to the 1080
-   glass; the same screen rendered into a SubViewport with `size_2d_override` oversampled
-   and came out clean, so `Hud.oversample(window)` now sets the window's font
-   oversampling to its stretch scale (harness and both screens' `_ready`). To see a
-   screen at the phone's density on the Mac: `RIFTGATE_SHOT_SCALE=1.5` with
-   `tools/screenshot.gd` (a 1080-wide PNG). Fifth note: a dragged die read as a copy;
-   its slot now empties for the drag. Sixth note: the map's far blur too tall. The focus
-   band was measured from the view's middle, and the phone's taller map view moved the
-   middle south, so the blur grew past twice its height at full strength; it is now
-   measured from the design's map height (`BattleMapView.FOCUS_VIEW_H`), the Mac's
-   layout on any glass. The map screen watched three minutes on the phone: native heap
-   flat at 175 MB, GL memory flat at 254 MB. Seventh (28 September, screens in all three
-   HUD colours): the grid ribbons still dim at any zoom, so a phone rests hotter
-   (`Map3D.GRID_GAIN_PHONE` 1.5 against the Mac's 0.7); the skirmish's ground read as
-   janky stripes, which were the scanlines landing on one-and-a-half device pixels, so
-   `Hud.scanlines` now draws on the glass's pixels (one every three) on both screens; the
-   feed readout's and databox's leaders were hairlines at 0.7 and vanished on the ground,
-   now 2 px at 0.9. The dark legs from a machine's gauges down to it are the model's
-   unmounted hardpoint pins, not a leader. Eighth: the foes' gauge leaders (the
-   HUD-coloured ones Ryan meant) thicker, 3 px on a dark edge, so they hold on green.
-   Ninth: the seam band's hexes "aliased badly": the other world's hexes overhung the
-   seam line by up to a whole hex, and their bottoms, cut by the dither cells, read as
-   dark dashes along their edges; the phone's taller band met the lattice at a worse
-   phase and showed far more of it. `TerrainArt.draw_other_hex` now cuts a hex to its
-   clip (Geometry2D), so the seam is the straight dithered line the code always meant,
-   the same at any height. This changes the Mac's band too (less green in it): Ryan
-   judges. Still to judge on the phone: the frame rate,
-   the sound set, the machines' edges without MSAA, the text after the oversampling
-   change, the grid at the hotter gain, and the black gap between the map's frame and the
-   log on a tall screen (the map view grows but its frame does not fill it).
+1. The phone. The native build runs on Ryan's Pixel 9 since 25 September; nine reads from
+   it are fixed and recorded as one bible row (section 11, "the phone is the reference
+   glass"), each with its knob: the grid as ribbons (`Map3D.GRID_W`) resting hotter on a
+   phone (`GRID_GAIN_PHONE` 1.5 against the Mac's 0.7); the safe bands (`Hud.inset_screen`,
+   floor `Hud.SAFE_FLOOR`); fonts at the glass's density (`Hud.oversample`); scanlines on
+   device pixels (`Hud.scanlines`); the tilt-shift's band and the skirmish's seam laid out
+   for the design's height (`BattleMapView.FOCUS_VIEW_H`; `TerrainArt.draw_other_hex` cuts a
+   hex to its clip, which also took green out of the Mac's seam band: Ryan judges); the
+   leaders thicker; the die drags the die. The crash after some minutes was the contact
+   panel's portraits never freed plus Godot's 3D MSAA leak on Android (godot#97967), so
+   `Hud.msaa_3d` is off on a phone; two memory watches on the fixed build ran flat. How to
+   work a phone read: zoom the screenshot's crop with nearest, reproduce at the phone's
+   layout on the Mac (`RIFTGATE_SHOT_H=1616 RIFTGATE_SAFE=80,48 RIFTGATE_SHOT_SCALE=1.5`,
+   README), fix once for every glass. Still to judge on the device after a re-export: the
+   frame rate, the sound set, the machines' edges without MSAA, the text, the grid at the
+   hotter gain, the seam band, and the black gap between the map's frame and the log on a
+   tall screen (the map view grows but its frame does not fill it; untouched).
    Badger tweaks in Blender, then joints and pins (`forge.py export badger`); notes on the
    Mandrill's model, numbers, kit and passive (all first fills); notes on
    the Clydesdale; the Anvil.
