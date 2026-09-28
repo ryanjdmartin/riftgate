@@ -477,10 +477,17 @@ decided register.
    middle south, so the blur grew past twice its height at full strength; it is now
    measured from the design's map height (`BattleMapView.FOCUS_VIEW_H`), the Mac's
    layout on any glass. The map screen watched three minutes on the phone: native heap
-   flat at 175 MB, GL memory flat at 254 MB. Still to judge on the phone: the frame rate, the
-   sound set, the machines' edges without MSAA, the text after the oversampling change,
-   and the black gap between the map's frame and the log on a tall screen (the map view
-   grows but its frame does not fill it).
+   flat at 175 MB, GL memory flat at 254 MB. Seventh (28 September, screens in all three
+   HUD colours): the grid ribbons still dim at any zoom, so a phone rests hotter
+   (`Map3D.GRID_GAIN_PHONE` 1.5 against the Mac's 0.7); the skirmish's ground read as
+   janky stripes, which were the scanlines landing on one-and-a-half device pixels, so
+   `Hud.scanlines` now draws on the glass's pixels (one every three) on both screens; the
+   feed readout's and databox's leaders were hairlines at 0.7 and vanished on the ground,
+   now 2 px at 0.9. The dark legs from a machine's gauges down to it are the model's
+   unmounted hardpoint pins, not a leader. Still to judge on the phone: the frame rate,
+   the sound set, the machines' edges without MSAA, the text after the oversampling
+   change, the grid at the hotter gain, and the black gap between the map's frame and the
+   log on a tall screen (the map view grows but its frame does not fill it).
    Badger tweaks in Blender, then joints and pins (`forge.py export badger`); notes on the
    Mandrill's model, numbers, kit and passive (all first fills); notes on
    the Clydesdale; the Anvil.

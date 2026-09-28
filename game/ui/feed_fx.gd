@@ -208,7 +208,7 @@ func _draw_event(ev: Dictionary) -> void:
 			var from := Vector2(bx if right else bx + BOX.x, by + 9.0)
 			var reach := settle * fade
 			var to := from.lerp(spot, reach)
-			draw_line(from, to, Color(hud, 0.7 * fade), 1.0)
+			draw_line(from, to, Color(hud, 0.9 * fade), 2.0)   # a hairline at 0.7 vanished on the phone's ground (Ryan, 28 September)
 			if reach > 0.95:
 				Hud.brackets(self, Rect2(spot - Vector2(6.0, 6.0), Vector2(12.0, 12.0)), 4.0, Color(hud, fade), 1.2)
 			for i in range(lines.size()):
@@ -253,6 +253,6 @@ func _draw_event(ev: Dictionary) -> void:
 					draw_rect(Rect2(track.position, Vector2(track.size.x * (0.1 + 0.9 * level), track.size.y)), Color(hud, fade))
 			var from := Vector2(bx if right else bx + CHART.x, by + CHART.y * 0.5)
 			var to := Vector2(r.end.x if right else r.position.x, by + CHART.y * 0.5)
-			draw_line(from, from.lerp(to, settle), Color(hud, 0.7 * fade), 1.0)
+			draw_line(from, from.lerp(to, settle), Color(hud, 0.9 * fade), 2.0)   # the readout's leader: a hairline vanished on the phone (Ryan, 28 September)
 		_:
 			pass   # tear, signal, recalc: the unit or die draws itself

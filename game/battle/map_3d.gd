@@ -788,8 +788,16 @@ func _grid_material() -> ShaderMaterial:
 		_grid_mat = ShaderMaterial.new()
 		_grid_mat.shader = load("res://game/battle/trace.gdshader")
 		_grid_mat.set_shader_parameter("color", Palette.HUD)
-		_grid_mat.set_shader_parameter("gain", 0.7)
+		_grid_mat.set_shader_parameter("gain", GRID_GAIN_PHONE if OS.has_feature("mobile") else GRID_GAIN)
 	return _grid_mat
+
+
+## The grid's resting brightness (the tuner's GRID knob). The phone needs far more than
+## the Mac: the ribbons drawn at the Mac's gain were still dim on the phone at any zoom
+## (Ryan, 28 September; the Compatibility renderer adds no bloom halo to a line, and the
+## glass is small), so a phone rests hotter.
+const GRID_GAIN := 0.7
+const GRID_GAIN_PHONE := 1.5
 
 
 ## One hex of flat ground as a polygon: the dark rim under the columns, for the grid gaps.

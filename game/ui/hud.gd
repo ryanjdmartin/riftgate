@@ -228,12 +228,20 @@ static func gauge(ci: CanvasItem, rect: Rect2, frac: float, color: Color, k: flo
 
 
 ## Faint scanlines over a rect: the screen is a display, not paper.
+## Drawn on the glass's pixels, not the design's: one device pixel every three. Drawn in
+## design pixels they land unevenly on a phone (720 stretched to 1080: every line one and
+## a half device pixels, every third line two) and the ground read as janky stripes (Ryan,
+## 28 September). The scale is the item's, canvas and window stretch included.
 static func scanlines(ci: CanvasItem, rect: Rect2, alpha: float = 0.03) -> void:
-	var y := rect.position.y
 	var col := Color(1, 1, 1, alpha)
-	while y < rect.end.y:
-		ci.draw_rect(Rect2(rect.position.x, y, rect.size.x, 1.0), col)
-		y += 3.0
+	var xf := ci.get_viewport().get_final_transform() * ci.get_global_transform_with_canvas()
+	var s := maxf(0.01, xf.get_scale().y)   # device pixels per local pixel
+	var top_dev := (xf * rect.position).y   # the rect's top on the glass
+	var dy := ceilf(top_dev)                # the first device row inside it
+	var h := 1.0 / s
+	while (dy - top_dev) / s < rect.size.y:
+		ci.draw_rect(Rect2(rect.position.x, rect.position.y + (dy - top_dev) / s, rect.size.x, h), col)
+		dy += 3.0
 
 
 ## A readout's digits replaced by others, stable for a few frames at a time (`frame` is a
