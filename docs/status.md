@@ -93,7 +93,8 @@ oversampling, the drag ghost, the far blur, scanlines on device pixels, leaders,
 band's clipped hexes. Still to judge on the device: frame rate, the sound set, edges
 without MSAA, the text, the grid at the hotter gain, the black gap under a tall map.
 
-**Open, in order.**
+**Open, in order.** The task list itself is `docs/todo.md`, one line a task, grouped by
+who moves it; this is the order to take them in.
 
 1. Ryan's play test of the engagement range and tethers; then whether formations are
    still wanted. The Clydesdale's model needs nine pins; seven new machines have no

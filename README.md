@@ -57,7 +57,9 @@ and open question from the design sessions.
   them). A missing foe sprite falls back to a placeholder shape; a missing sound is silence.
 - `docs/` — design bible, generated vocabulary, concept intake in `docs/concepts/`,
   `sprites-enemies.html` (the enemy sheet the export reads), design canvases under
-  `canvas/`, and `status.md`, the handoff note updated at the end of every working session.
+  `canvas/`, `status.md`, the handoff note updated at the end of every working session,
+  and `todo.md`, the task list: one line a task, grouped by who moves it, ticked in the
+  commit that lands it.
 
 ## Running
 

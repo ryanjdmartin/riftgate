@@ -79,5 +79,9 @@ Sessions have died mid-flight before. To keep the next one cheap to start:
 - Before ending a session, or whenever a large task completes, update `docs/status.md`: what
   changed, what was decided, what is next. Keep it short and replace stale lines rather than
   appending forever.
+- `docs/todo.md` is the task list: one line per task, grouped by who moves it. A task that
+  lands or dies is ticked or struck in the same commit as the work; a new task goes in when
+  it is agreed, not when it is remembered. Status says how things stand; the to-do says what
+  is next; the bible says why.
 - Record decisions in `docs/design-bible.html` when they are made, not at the end.
 - Design canvases under `docs/canvas/` are not watched. Ryan says when one changes.
