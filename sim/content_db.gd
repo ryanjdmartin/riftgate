@@ -10,7 +10,7 @@ const DIR := "res://content/"
 # Design knobs. Loosen or tighten here; the validator and the bible should agree.
 const MAX_AUTHORED_KEYWORDS := 3    # per authored face; upgrades may exceed this at runtime
 const MIN_DIE := 4
-const MAX_DIE := 8
+const MAX_DIE := 10                 # the Clydesdale carries nine (Ryan, 28 September); ten leaves it room
 const MAX_PASSIVE_EFFECTS := 3      # effects in one passive; a benefit and its cost is one passive
 ## Internal design text lives under `design` and is never shown. These keys at the top level
 ## of an entry are the old layout, or a leak waiting to happen, so the validator refuses them.
@@ -377,7 +377,7 @@ func _validate_vocabulary(errs: Array[String]) -> void:
 				errs.append("vocabulary keyword '%s' is marked implemented but the engine has no such keyword" % id)
 
 
-func _validate_face(where: String, fd: Dictionary, errs: Array[String]) -> void:
+func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned: bool = false) -> void:
 	var kind := str(fd.get("kind", ""))
 	if Face.kind_from_name(kind) < 0 or kind == "blank":
 		errs.append("%s: bad face kind '%s'" % [where, kind])
@@ -412,6 +412,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String]) -> void:
 	if kws.size() > MAX_AUTHORED_KEYWORDS:
 		errs.append("%s: %d keywords, authored cap is %d" % [where, kws.size(), MAX_AUTHORED_KEYWORDS])
 	for k in kws:
+		# A planned component may carry a keyword the vocabulary names but the engine lacks
+		# (taunt, volatile, devour): Face.from_dict builds it without that keyword until it is coded.
+		if planned and vocabulary.has(str(k)) and vocabulary[str(k)].get("status") != "implemented":
+			continue
 		var kw := Face.keyword_from_name(str(k))
 		if kw <= 0:
 			errs.append("%s: unknown keyword '%s'" % [where, k])
@@ -496,8 +500,13 @@ func _validate_components(errs: Array[String]) -> void:
 			if c.has(key):
 				errs.append("%s: '%s' is gone; a component is exactly one entry, its 'face'" % [where, key])
 		_validate_design(where, c, errs)
+		# A component the engine cannot run yet carries "status": "planned" (like a passive or a
+		# foe action): kept, its face checked for shape, its unbuilt keywords allowed.
+		var status := str(c.get("status", "implemented"))
+		if not ACTION_STATUSES.has(status):
+			errs.append("%s: status must be implemented or planned" % where)
 		if c.get("face", null) is Dictionary:
-			_validate_face("%s face" % where, c["face"], errs)
+			_validate_face("%s face" % where, c["face"], errs, status == "planned")
 		else:
 			errs.append("%s: face must be an object" % where)
 		if c.has("maker") and not makers.has(c["maker"]):

@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 77 implemented, 22 planned, 0 idea.
+Status: 78 implemented, 27 planned, 0 idea.
 
 ## Resource
 
@@ -62,8 +62,10 @@ Status: 77 implemented, 22 planned, 0 idea.
 | **Overwhelm** | Player keyword. Hits that kill the front rank spill leftover damage to the back rank. | planned |
 | **Burn** | Player keyword. Burning enemies lose 5 HP per stack at the start of their action, then lose one stack. Bypasses armour. Can be resisted. | implemented |
 | **Corrode** | Player keyword. Corroding enemies lose 1% of their HP per stack at the start of their action, then lose one stack. Bypasses armour. Can be resisted. | planned |
-| **Suppress** | Player keyword. The target skips its telegraphed action this round, then gains a stack of Numbed. Bosses and elites gain two stacks. A Numbed foe may shrug it off. | implemented |
+| **Suppress** | Player keyword. The target skips its telegraphed action this round, then gains two stacks of Numbed (three if massive). A foe may shrug it off: its own stun resistance plus 10% a Numbed stack. | implemented |
 | **Overcharge** | Player equipment keyword. The machine it is spent on deals more damage with its attacks until the end of the round. | planned |
+| **Volatile** | Player keyword. Spending this component bites its owner for 10 hull, past shield and armour. | planned |
+| **Devour** | Player keyword. A kill with this component gives its owner a stack of Overcharged. | planned |
 | **Execute** | +100% damage against a foe at or below half its health. Reduced to +50% against bosses and elites. | implemented |
 | **Chain** | If this attack kills an enemy, repeat it on a new, valid target. | implemented |
 | **Rapid** | After this component is spent, it is switched off for the rest of this round, the die rerolls for free (never the same entry), and the mech may act again. The switch-off only stops an infinite turn. | implemented |
@@ -79,8 +81,10 @@ Status: 77 implemented, 22 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Numbed** | Foe status. Each stack is 10% resistance to being Suppressed: a suppress it shrugs off does nothing, and adds no stack. Does not decay; clears at end of skirmish. | implemented |
-| **Retaliate** | Until the end of this round, foes that strike this unit lose HP equal to this component's power. Stacks. | planned |
+| **Numbed** | Foe status. Each stack is 10% resistance to a suppress on top of the foe's own; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. | implemented |
+| **Retaliate** | Until the end of this round, a foe that strikes this unit's bare hull is Shocked. | planned |
+| **Shocked** | Foe status. The next blow this foe takes deals double damage, then the status clears. A Shocked foe that strikes bare hull again takes 10. | planned |
+| **Overcharged** | Mech status. Each stack is +10% damage on this machine's attacks. Loses a stack at the end of each round unless a passive says otherwise. | planned |
 | **Disabled** | Component status. This die entry comes up blank while it lasts; the component itself is untouched. A foe's disable lasts through the mech's next turn and can be cleansed; a rapid component's own switch-off ends with the round. | implemented |
 | **Corrupted** | Component status. Every time this die entry is spent it bites its owner for 10 per stack, shield first, before the component acts. A blank is never spent, so a disabled entry does not bite. Stacks. Clears at end of skirmish. Can be cleansed. | implemented |
 | **Phased** | Player and enemy status. This unit cannot attack, nor can it be damaged by attacks, until end of round. | planned |
@@ -137,6 +141,7 @@ Status: 77 implemented, 22 planned, 0 idea.
 | **Hover** | Crosses water. | implemented |
 | **Walker** | Rough and ruins cost 1. | implemented |
 | **Tank** | No effect yet. | planned |
+| **Stealth** | Controls no ground: packs do not stop beside it. Joins a fight only when an ally is in it, or when it stopped a pack in its path. | planned |
 | **City defense** | A static player-side unit. Packs path toward it, and it joins any skirmish it is adjacent to. | implemented |
 
 ## Trigger
@@ -173,6 +178,7 @@ Status: 77 implemented, 22 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
+| **Stun resistance** | A foe's base chance to shrug off a suppress, before Numbed. Rank and file have none; bosses carry some. | implemented |
 | **Breach** | A breaching blow overflows: what the shield cannot absorb reaches the hull, and if that is a quarter of maximum hull it injures a component like any bare-hull blow. It breaks the fundamental promise that a standing shield stops the big hit, so it is a dangerous, uncommon attack modifier, and its counterplay is not the shield: redirect it or interrupt it. | implemented |
 | **Foe action** | A foe has a base attack, the quick read of how hard it hits, and a list of attacks that scale it. Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number. | implemented |
 | **Scorch** | Foe attack keyword. Each blow that lands leaves one stack of Overheating on the mech it hit. | implemented |
@@ -193,13 +199,19 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Gate Integrity** (implemented): Gate damage formula is a placeholder (strength divided by three).
 - **Damage range** (implemented): Ranges are content-authored per component; no upgrade path raises min or max yet.
 - **Critical hit** (implemented): The base is Face.CRIT_MULT, a balance knob; lower it if crit triggers make crits too strong at low chance.
-- **Numbed** (implemented): Numbers are placeholders; a boss at five suppresses is immune.
-- **Overcharge** (planned): Retired as double damage and double heat on 26 September (the Sparrowhawk's passive already was that); Ryan wants the word for an offensive buff. Numbers and shape open; needs player buffs to exist.
+- **Numbed** (implemented): Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths.
+- **Stun resistance** (implemented): 30 on the three bosses as a placeholder.
+- **Overcharge** (planned): Retired as double damage and double heat on 26 September (the Sparrowhawk's passive already was that); Ryan wants the word for an offensive buff. Numbers and shape open; needs player buffs to exist. The stacking mech status is Overcharged (28 September).
+- **Volatile** (planned): The Arsenal's self-damage (Ryan, 28 September): the Corrupted bite's path under another name. It feeds the Nemesis's Crucible Capacitor and opens self-damaging shield and vent faces.
+- **Devour** (planned): The Ammit's talons (28 September). Needs an on-kill hook and the Overcharged status.
 - **Equipment** (implemented): Buffs will be equipment too, once they exist.
 - **Corrupt** (implemented): No foe carries it yet; Ryan places it (The Chorus, presumably).
 - **Cleanse** (implemented): No component carries it yet; Ryan places it.
-- **Retaliate** (planned): Would need shield sources to be tracked separately.
+- **Retaliate** (planned): Was flat damage equal to the component's power. Thorns scales with enemy blows and so inverts horde against boss; a debuff does not (Ryan, 28 September). The Armadillo's passive carries it always on.
+- **Shocked** (planned): The Armadillo's retaliation (Ryan, 28 September): the tank sets up kills instead of out-damaging area weapons against a horde, and it works on a boss. The discharge on a second strike is the small thorns left in. Numbers are placeholders.
+- **Overcharged** (planned): Stacked by devour; the Ammit's Quintessence Tap stops the decay and keeps the stacks for the battle. Battle scope, never campaign (28 September), so the snowball has an end.
 - **Corrupted** (implemented): The bite is a placeholder number (Skirmish.CORRUPT_BITE_PER_STACK).
+- **Taunt** (planned): Ryan, 28 September: an accessible keyword, not a locked one; the game needs more damage redirection or a tank has no reason to be in the fight. The family to build: taunt (front rank), beacon (back rank), a swap of targeting with an ally, an interpose that takes a blow aimed at an ally.
 - **Cracked component** (implemented): Threshold is a placeholder. Repair cost and the hangar screen are not built.
 - **Reinforcements** (implemented): Elites should surface at set points rather than in pool order.
 - **Massive** (implemented): Cleave treats it as a front-rank neighbour; pierce cannot hit anything behind it because nothing is.
@@ -212,6 +224,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Ruins** (implemented): Designed as cover for the pack inside a skirmish. Skirmish terrain conditions are not coded.
 - **Water** (implemented): Designed to dampen burn inside a skirmish. Not coded.
 - **Tank** (planned): Intended: faster on roads.
+- **Stealth** (planned): The Dingo (Ryan, 28 September): a support car that waits in the wings while the heavies get into position, then joins their fight, and never fights alone unless run into. Pays again when hunter packs exist.
 - **City defense** (implemented): Defenses have no die. They cannot act inside a skirmish yet.
 - **On hull damage** (planned): Hook for the pinned berserker idea.
 - **Command die** (planned): Open question: whether the command die exists at all, or one-shots only.

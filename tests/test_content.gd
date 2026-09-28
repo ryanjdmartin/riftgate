@@ -285,6 +285,26 @@ func test_planned_passive_is_kept_but_not_run() -> void:
 	assert_true(hit, "the same passive marked implemented is refused until the engine has the trigger")
 
 
+func test_planned_component_may_carry_a_planned_keyword() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var plate: Dictionary = db.components["ablative_plating"].duplicate(true)
+	plate["face"]["keywords"] = ["taunt"]
+	plate["status"] = "planned"
+	db.components["loud_plate"] = plate
+	for e in db.validate():
+		assert_false(e.begins_with("component loud_plate"), "a planned component with a planned keyword validates clean: %s" % e)
+	var f := Face.from_dict(plate["face"])
+	assert_true(f.keywords.is_empty(), "and builds without the keyword the engine lacks")
+	plate.erase("status")
+	db.components["loud_plate"] = plate
+	var hit := false
+	for e in db.validate():
+		if e.begins_with("component loud_plate") and e.contains("unknown keyword"):
+			hit = true
+	assert_true(hit, "the same component marked implemented is refused")
+
+
 func test_a_crit_burn_passive_from_content_adds_a_stack() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
