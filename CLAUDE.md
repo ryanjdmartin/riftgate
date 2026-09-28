@@ -17,6 +17,8 @@ tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut <png> <foe>        #
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build <chassis id>...   # ally units, and gate and wall, by code (tools/lowforge/models_low.py), then --import
 tools/spriter/.venv/bin/python tools/lowforge/forge.py export <chassis id>     # a hand-edited tools/lowforge/models/<id>.blend back to art/models, then --import
 godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- <chassis> <maker> out.png front 480 480   # one unit large (needs a window)
+RIFTGATE_SHOT_H=1616 RIFTGATE_SAFE=80,48 RIFTGATE_SHOT_SCALE=1.5 godot --path . --resolution 360x640 -s tools/screenshot.gd -- <scene> phone.png   # the phone's layout, safe bands and density on the Mac (add --rendering-method gl_compatibility for its renderer)
+tools/android.sh                                   # debug APK to the phone over USB (`log` tails it); a crash: ~/Library/Android/sdk/platform-tools/adb logcat -d -b crash
 ```
 
 Ally art (decided 21 September): the mid-nineties 3D register, built by `tools/lowforge`

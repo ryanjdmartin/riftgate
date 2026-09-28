@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible.
 
-## As of 26 September 2026 (midday)
+## As of 28 September 2026 (evening)
 
 **State.** Tests: 222 tests, 3034 checks, green (`perl -e 'alarm 240; exec @ARGV' godot
 --headless --path . -s tests/run_tests.gd`). Ryan runs a second session on this repo at
