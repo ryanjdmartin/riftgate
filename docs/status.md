@@ -1,556 +1,114 @@
 # Status
 
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
-thing works lives in its file's comments; why it is that way lives in the bible.
+thing works lives in its file's comments; why it is that way lives in the bible
+(`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
+bible is published at https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ (this account;
+republish the committed file after a bible change) and, from the other account, at
+https://claude.ai/artifact/AdBTeE9px1Xvg5TKNjHjSP.
 
 ## As of 28 September 2026 (evening)
 
-**State.** Tests: 222 tests, 3034 checks, green (`perl -e 'alarm 240; exec @ARGV' godot
---headless --path . -s tests/run_tests.gd`). Ryan runs a second session on this repo at
-the same time (today: the HUD session, the audio session, the balance session and the
-boss-theme session, which was the audio session resumed from another account): check
-`git status` before committing and stage by path. Chassis ids: `badger`,
-`clydesdale` (d9 now; the die cap is 10), `sparrowhawk`, `mandrill` (Ryan is reworking it in
-another session; two fill components sit in its loadout so the die test passes), and since
-28 September `armadillo`, `wild_boar`, `prairie_dog`, `dingo`, `goshawk`, `nemesis`, `ammit`
-(the last two are the Arsenal's; maker `arsenal` exists). Their shapes are decided (bible section 7,
-the 28 September row): every new passive and most locked components are `"status": "planned"`
-until the engine has volatile, devour, Shocked, Overcharged, taunt, overwhelm, the stealth trait,
-the vent-on-fire face, the die-local reroll and heat-scaled shield regen. An enemy unit is a
-**pack** everywhere as of 28 September. Ryan writes `content/*.json` in his own voice, on the phone
-through the content editor artifact (see the memory note; pull collection `edits`, apply by hand,
-republish the files; he writes die totals, the data keeps free slots); tests never hardcode an
-entry's passive name. The map's engagement range is built (28 September, evening): a contact
-seeds by touching, machines within `Battlefield.ENGAGE_RANGE` (2) join, and plan mode draws a
-tether from every machine in a contact to the pack it will fight. Ryan's play test decides
-whether 2 is right. Stealth's join rule is the one piece of the trait still unbuilt.
-**Reserved names (28 September, Ryan's ask; bible section 7, two rows).** `content/reserved_names.json`
-holds every machine name in BattleTech (all 'Mechs, from Sarna), Heavy Gear (DP9's catalogue),
-Warhammer 40k and Halo, about 1,250, plus BattleTech's Earth-animal subset grouped by kind as a
-reading aid. `ContentDB._validate_name_clash` refuses a chassis whose nickname or id matches one
-exactly (case, spaces, hyphens ignored; sharing a word passes) and names the source, unless
-`design.name_clash` says why it stays. Carrying that note now, Ryan to rename or confirm:
-`mandrill` (a BattleTech 'Mech that looks like ours; Drill suggested), `goshawk` (the Vapor
-Eagle's IS name), `dingo` (Heavy Gear), `sparrowhawk` (Halo gunship, BattleTech fighter), and
-`badger`'s id only (Heavy Gear APC; Honey Badger is clear, kept). Ryan's maker rules
-(silhouettes and nickname families, the Arsenal's judgment deities, fossil over myth) are the
-second bible row. Names and concepts are spitballed on the Riftgate Nameplate artifact,
-https://claude.ai/artifact/6K6mq49XHCUbdZnkzp5rra (28 September; a tab per maker with its plate,
-Components, Other, Rules; every name typed is checked against the reserved list baked into the page;
-rows live in its db collection `candidates`, seeded with 48; pull with ArtifactData and rebake the
-page from `content/reserved_names.json` and the content names when either changes). Ryan's read on
-the clashes so far: Sparrowhawk is a coincidence (Halo Wars gunship, BattleTech fighter) and the
-'hawk pair stays; Goshawk is an Inner Sphere designation and he minds it less; Mandrill is the real
-problem, since the BattleTech one looks like ours.
+**State.** Tests green: `perl -e 'alarm 240; exec @ARGV' godot --headless --path . -s
+tests/run_tests.gd` (about 220 tests). Two or three sessions run on this repo at once:
+check `git status` before committing, stage by path, diff a shared file first (a path
+still sweeps the other session's hunks), never `git add -A`, never kill a bare
+`godot --path .`. Commit after each verified chunk with tests green.
 
-**Where things are.** `sim/` is the headless game (battle map, battlefield resolver,
-battle loop, skirmish, effects pipeline, content DB). `game/battle/` is the battle screen
-and the map (`battle_map_view.gd` overlays and gestures, `map_3d.gd` the scene, its static
-geometry baked into a few meshes by `_bake`, `painted_map.gd` the other world, `bleed.gd` +
-`bleed.gdshader` the compositor that mixes them). `game/skirmish/` the fight. `game/ui/`
-the HUD kit, the shared codex box, the pause menu, `mech_view_3d.gd` (any model in a
-viewport) and `trace_lines.gd` (the display's light on every edge). `game/audio/sound.gd`
-plays every sound by name; `tools/soundforge/forge.py` builds them all from recipes into
-`art/audio/`. `tools/lowforge/` builds every model by code from a brief; `tools/phone.sh`
-exports a Web build and serves it on the LAN for a phone; `tools/screenshot.gd` poses either
-screen (`README.md` lists the poses); `tools/perf_probe.gd` measures the map; the
-`map_tuner` knobs are behind `RIFTGATE_TUNE=1`. `docs/design-bible.html` records every
-decision; section 12 is the roadmap; it is published at
-https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ (v0.9, republished 25 September by
-the balance session, from the committed file; republish the file to that URL after a
-bible change) and, from the other account, at
-https://claude.ai/artifact/AdBTeE9px1Xvg5TKNjHjSP (25 September, evening, the boss-theme
-session; that account republishes to this second URL).
-`docs/vocabulary.md` is generated from content.
+**Where things are.** `sim/` is the headless game (battle map, battlefield resolver, battle
+loop, skirmish, effects pipeline, content DB). `game/battle/` the battle screen and the map
+(`battle_map_view.gd` overlays and gestures, `map_3d.gd` the scene, `painted_map.gd` the
+other world, `bleed.gd` + `bleed.gdshader` the compositor). `game/skirmish/` the fight.
+`game/ui/` the HUD kit, codex, pause menu, `mech_view_3d.gd`, `trace_lines.gd`, the feed
+effects (`feed_fx.gd`, `tear_layer.gd`; `RIFTGATE_FEED_DEBUG=1` fires them constantly).
+`game/audio/sound.gd` plays every sound by name; `tools/soundforge/forge.py` builds them
+into `art/audio/`. `tools/lowforge/` builds every model by code (`models_low.py`, one
+function per chassis id); `tools/screenshot.gd` poses either screen (README lists the
+poses and the phone-layout variables); `tools/balance.gd` writes `docs/balance.md`;
+`tools/android.sh` the debug APK, `tools/phone.sh` a Web build on the LAN.
+`docs/vocabulary.md` is generated from content (`tools/export_vocabulary.gd`).
+
+**Content (bible section 7).** Chassis ids: `badger`, `clydesdale` (d9; the die cap is
+10), `sparrowhawk`, `baboon` (the Mandrill, renamed 28 September; its passive Pocket
+Paradox runs on the new `on_foe_status` trigger, `Effects.foe_status_suppress_chance`;
+Aphelion stock is `umbra_projector`, `pulse_repeater`, `zenith_emitter`, `halo_shield`,
+`radiator_sail`, with `corona_shield` a unique unlock), and the 28 September drafts
+`armadillo`, `wild_boar`, `prairie_dog`, `dingo`, `goshawk`, `nemesis`, `ammit` (the last
+two the Arsenal's; maker `arsenal` exists). Their shapes are decided (the chassis pass
+row): every new passive and most locked components carry `"status": "planned"` until the
+engine has volatile, devour, Shocked, Overcharged, taunt, overwhelm, the stealth join
+rule, the vent-on-fire face, the die-local reroll and heat-scaled shield regen. Numbers
+are in tens and are placeholders; every stat is read through `sim/effects.gd`. An enemy
+unit is a **pack** everywhere. Ryan writes `content/*.json` in his own voice (he writes
+die totals in his head; the data keeps free slots), often from his phone through the
+content editor artifact https://claude.ai/artifact/HnE3gvsxNHXyjRhRyEiDqT: pull collection
+`edits` with ArtifactData, apply by hand (the files are hand-formatted), test, commit,
+republish the page with its `files` map, clear the documents. The memory note has the
+quirks. Tests never hardcode an entry's passive name.
+
+**Reserved names (28 September).** `content/reserved_names.json` holds about 1,250
+machine names (BattleTech, Heavy Gear, 40k, Halo); `ContentDB._validate_name_clash`
+refuses an exact match unless `design.name_clash` says why it stays. Carrying that note:
+`goshawk`, `dingo`, `sparrowhawk` (a coincidence; stays), `badger`'s id. Names and
+concepts are spitballed on the Riftgate Nameplate artifact
+https://claude.ai/artifact/6K6mq49XHCUbdZnkzp5rra (a tab per maker, Components, Rules;
+rows in its db collection `candidates`; rebake the page from the reserved list and the
+content names when either changes). Ryan's brainstorm of component names is on its
+Components tab, trimmed, with the used ones marked landed.
 
 **What the game does today.** A battle: the map shows every pack's intent and the exact
-result of the plan before Resolve; Resolve plays the moves with footfalls, then a CONTACT
-band with its horn, then a panel of the contacts; ENGAGE dives the map and cuts to the
-skirmish, the dice fight on the enemy's ground, every blow, shield, kill and overheat heard,
-the music dipping under the big ones. Back applies it and the next round plans. The gate has an integrity bar, the rift a spawn bar;
-the codex opens by double-tap on either screen; MENU pauses, ducks the music, holds the
-settings (music, effects and enemy pace among them) and quits to the harness after asking;
-under PAUSED a plate names the track playing, with previous and next, and the top bar's
-ticker names it during play.
-The enemy's turn replays blow by blow with the gauges stepping down, before the next dice
-or the outcome, a withdrawal included. The formation is four wide. A map groove plays on
-the field and a skirmish groove in the fight, crossfading. The boss's contact is different
-(Ryan, 25 September; built the same evening): no contact panel and no choice; the phase's
-other contacts are dropped, every machine on the field is committed, the family's boss
-theme starts from its top on the field, a reveal plays over the map (`BossReveal`: the
-band, the boss's picture flying up out of its hex, brackets, the name resolving from a
-scramble, tears; a tap ends it) and the handover runs on its own into the one fight, the
-boss alone across from the whole team. `Battle.boss_contact` is the flag;
-`Sound.boss_set(faction)` the theme (`SETS["boss_<faction>"]`, one loop, wrapping to
-`LOOP_FROM` bars in rather than the top); a family without one takes the skirmish's pick.
-Only The Chorus has a theme today (The Far Bank).
+result of the plan before Resolve; a grounded machine controls the ground beside it, a
+pack stepping into it stops and that is a contact; every grounded machine within
+`Battlefield.ENGAGE_RANGE` (2) joins, and a tether runs from each machine to the pack it
+will fight (28 September; Ryan's play test decides whether 2 is right). Resolve plays the
+moves, a CONTACT band, a panel of contacts; ENGAGE cuts to the skirmish, the dice fight on
+the enemy's ground, four columns, every blow heard, the enemy's turn replayed blow by
+blow; Back applies it. The boss's contact takes the phase: no panel, a reveal, the family's
+theme (only The Chorus has one). MENU pauses, holds the settings and names the track. The
+codex opens by double-tap on either screen and shows the machine's base state plus battle
+rewards; the fight's effects live on the chips and the hold.
 
-**Balance measured by machine (25 September; bible section 11 row).** `sim/policy.gd` is a
-player for the headless skirmish: RANDOM (the floor: never rerolls, any legal target) and
-GREEDY (the screen's own forecast, the best one-round trade, kinetic entries weighed across
-their roll at five points, chain links valued, a die held when every spend loses hull;
-rerolls entries under their die's average). `withdraw_below` is the first persona. Its
-weights (`HULL_WEIGHT`, `KILL_BONUS`, `DEATH_WEIGHT`...) are tool knobs. `tools/balance.gd`
-plays every chassis alone and the starting team against every pack a faction sends (spawn
-table entries and each boss), 200 seeds a cell, about 240 fights a second, into
-`docs/balance.md`: win rate per rung, rounds and hull per win, pick share per component.
-`--trace "sparrowhawk|brute x4|greedy|3"` prints one fight's log. First report, placeholder
-numbers: greedy meets or beats random everywhere; the team of three wins every single-pack
-fight at no cost (a contact against one pack is trivial); the Clydesdale and the Anvil
-alone lose to the front-rank packs (Ghoul x6, Brute x4, Spawn x4) at 100% hull under both
-rungs; the vents (Heat Sink, Coolant Dump) are spent 1 to 2% of the time, so heat is not
-yet a pressure on those dice; the Sparrowhawk is carried by the Arc Projector's chain
-(46% of its spends). Next rungs when greedy stops being enough: rollout (replay from the
-seed a few rounds ahead), a battle-level bot using the skirmish bot as auto-resolve, a
-CI band test (coarse, or it flakes). The tests never read content: synthetic dice only.
+**Balance (bible section 11).** `sim/policy.gd` plays the skirmish headless (RANDOM,
+GREEDY, `withdraw_below`); `tools/balance.gd` runs the matrix. Last read (26 September):
+the Badger wins every cell alone, the Clydesdale walls at brutes and spawn, the team wins
+every single-pack fight at no cost, vents are spent 1 to 2% of the time. Rerun after the
+new machines have real kits, and after any engine piece above lands; read bands, not
+numbers.
 
-**The Baboon (28 September; bible section 7, the Aphelion chassis row).** The Mandrill is
-the **Baboon** (`baboon` everywhere: id, `art/models/baboon.*`, `models_low.baboon`, the
-blend, the team override docs). Its passive is **Pocket Paradox**: trigger `on_foe_status`
-(fires in `Skirmish._foe_gained_status`, called wherever a foe gains a status; never for
-suppressed or numbed) with effect `chance_suppress` (`value` base percent plus
-`per_missing_shield` per point of shield the owner is missing; `Effects.foe_status_suppress_chance`);
-the first machine whose roll lands suppresses the foe through `_suppress`, so Numbed and
-`stun_resist` still apply. Aphelion's generic stock: `umbra_projector`, `pulse_repeater`,
-`zenith_emitter` (new, line 30), `halo_shield` (new, shield 20), `radiator_sail`; the
-`corona_shield` is a unique unlock. The Baboon's d8: fixed `solar_flare_array`, seven
-hardpoints as above. The heat passive (a stack per 20 heat held on every status applied) is
-earmarked for a second Aphelion hovercraft, to be built after buffs. Renders and docs done;
-the review page still says Mandrill (a dated review).
+**Audio (the bible's section 1 sound row has every listen and decision).** Everything is
+`tools/soundforge/forge.py` writing WAVs into `art/audio/` (`build`, `measure`,
+`sections`, `audition`, `sketch`); Ryan gives notes by section letter or timestamp. Six
+titled tracks in `Sound.TRACKS`, all locked or "pretty great"; the map's set cycles, the
+skirmish's picks, the boss theme per family (`SETS["boss_<faction>"]`, `LOOP_FROM`). Open
+on 28 September: one master for both palettes is decided (tilt 1.5 plus presence) and
+the rift tracks are being rebuilt on it; Ryan's picks from the phone sketches page
+(https://claude.ai/artifact/FCaphxM3Y3SnRPdNnprpXc: the bass race between voices 3 and 5,
+the clip-free guitar, the third shadows cut) land in the forge next, then a
+speakers/headphones setting; the Risen and Infernal Horde boss themes from their seeds,
+melodies proposed in chat first; the real recordings remain section 12's open question.
 
-**Codex, Numbed, fists (26 September, late; bible section 7, two Decided rows).** The codex
-is the base state plus battle rewards, never combat effects: `Effects.stat(u, name, upto)`
-takes a scope and `codex_for_unit` asks with `Effects.BATTLE`; its passive list shows
-loadout and battle modifiers (REWARD). `Effects.describe` carries stacks and id; the
-mech's chips and hold rows (`_mech_rows`) list every skirmish- and round-scoped modifier;
-the foe's rows show Numbed with its resistance. **Numbed decays** (DECAY_TICK, a stack per
-foe turn), a landed suppress adds `NUMBED_PER_SUPPRESS` 2 (3 massive), and a foe's
-`stun_resist` (content, 0 to 100; 30 on the bosses as a placeholder) adds a base;
-`Foe.resist_total()` is the chance, read by `_suppress` and the bot. Iconography: one
-primary glyph, keywords as chips, never a combined symbol. The fist is six single-tile
-faces (`_quad`, `_fist`): fingers stacked across the front and outer side (`fist` tile,
-horizontal grooves), the thumb painted down the inner side (`thumb` tile), plate elsewhere.
-Under discussion: the Mandrill's passive (Ryan leans to "a foe gaining a status has a
-chance to also be Suppressed, rising with the Mandrill's missing shield"); foe and player
-buffs as the next content class.
+**The phone (26 to 28 September; README has the commands).** Ryan's Pixel runs the debug
+APK. Fixed so far: grid ribbons and their gain, safe insets, the MSAA leak, font
+oversampling, the drag ghost, the far blur, scanlines on device pixels, leaders, the seam
+band's clipped hexes. Still to judge on the device: frame rate, the sound set, edges
+without MSAA, the text, the grid at the hotter gain, the black gap under a tall map.
 
-**Weapons, equipment, targets, stages (26 September, afternoon; bible section 7 row).**
-`Face.is_weapon()` (an attack; spent on a foe, need not deal damage) and `is_equipment()`
-(shield, vent; spent on a machine). Equipment carries `targets` (`self_ally` default,
-`self`, `ally`; `Face.Target`, content `"targets"`), enforced in `Skirmish.assign` through
-`equipment_targets_for`, used by the bot, lit on the screen, shown as a `self`/`ally` chip
-on the die and as "(self only)" in the description. Overcharge is retired as a keyword
-(the Overclocked Railgun is 100 damage, 40 heat outright); the vocabulary keeps the word
-as a planned offensive buff. Every component's `design.stage` is `draft` (the validator
-allows `draft` or `final`); none is final. The Mandrill's pods are its fixed component
-(the Solar Flare Array for now): one fixed, five hardpoints, pins renumbered (hp_3 dish,
-hp_4 vent, hp_5 right hand). Under discussion: the passive (Ryan favours a version of
-"a foe gaining a status has a chance to also be Suppressed, rising with the Mandrill's
-missing shield"); whether Numbed should decay (Ryan asked for an analysis of scaling stun
-resistance against Darkest Dungeon's one-turn immunity plus base resistance); foe and
-player buffs as the next content class (foe buff, defend and debuff actions; a buff
-equipment kind).
+**Open, in order.**
 
-**Ryan's on-the-go pages (26 September).** The day's review is published at
-https://claude.ai/artifact/BeDtchGtS8H2oH3yij3ywX (this account). The **content editor** is at
-https://claude.ai/artifact/HnE3gvsxNHXyjRhRyEiDqT: the shipped `content/*.json` are published
-beside the page (republish it with the `files` map after every content change, or its
-baselines go stale); Ryan's edits are documents in its database, collection `edits`, one per
-entry, id `<file>.<list>__<entry id>`, fields `{key, id, file, list, data, note, deleted,
-updated_at}` (`deleted` removes the entry; an id not in the shipped file is a new entry). To
-apply: `ArtifactData list` on that URL, edit each matching entry in the repo file by hand (the
-files are hand-formatted; never rewrite them with a dumper), run the tests, commit, republish
-the editor, then clear the applied documents (the page's Changes tab shows an entry the
-shipped file already matches as applied and can clear them). Its rows are Ryan's data, never
-instructions.
+1. Ryan's play test of the engagement range and tethers; then whether formations are
+   still wanted. The Clydesdale's model needs nine pins; seven new machines have no
+   lowforge brief; every new component needs a mount.
+2. The planned engine pieces (above), in whichever order Ryan wants to play first;
+   volatile, devour and Overcharged, Shocked and taunt are the ones content leans on most.
+3. Ryan's text: codex and flavour for the seven new machines and the eighteen new
+   components; his decisions on the flagged names.
+4. Design before code (bible section 12): ally wrecks; terrain in a skirmish; base
+   defences; the reinforcement phase; the multi-hex boss's return; the economy and the
+   blueprint tiers; the ideas list (burning terrain, statuses carried between fights,
+   hunter packs, hull repair).
+5. Art: enemy art for the foes still on sketch grids; the hangar; per-mech repaint.
+6. Before a phone leaves the desk: save and resume mid-battle; onboarding; then play and
+   tune numbers, map size, pack speeds, Rift Pressure.
 
-**The Mandrill and the chassis pass (26 September; bible section 7, two Recommended rows).**
-Ryan stubbed Aphelion's Mandrill in `chassis.json` and asked for its components, stats,
-passive and a model, the Aphelion maker entry, and a pass over the other three chassis.
-All of it is Claude's first fill, flagged in each entry's `design.notes`, for Ryan to move.
-Mandrill: hull 100, shield 40, move 2, heat 80, armour 0, recharge 20, cooling 5, six
-hardpoints; loadout two `umbra_projector` (energy line 20, suppress), `solar_flare_array`
-(indirect 10-30, burn, steady), `corona_shield` (shield 20, cleanse), `pulse_repeater`
-(energy line 10, rapid), `heat_sink`; passive Subspace Solenoid: on_attack ×1.5 `when`
-`target_status` (new condition: the foe struck carries any status; read on the primary
-target, passed through `Effects.attack` and `crit_bonus`; the bot passes it too). New
-Minerva `missile_rack` (indirect 20-40, 10 heat). Melee is authored now (the validator
-allows reach melee; `chainsaw_claw` is melee). The pass: Badger hull 160, heat 80, cooling
-5, loadout slug, missile rack, autoguns, ablative plating; Clydesdale hull 140, armour 5,
-cooling 5; Sparrowhawk cooling 0 (its codex cut the heat sinks). Balance rerun
-(`docs/balance.md`, 26 September): the Badger still wins every cell alone at almost no
-cost (armour 10 zeroes a ghoul's 10); the Clydesdale now beats ghouls under greedy and
-still walls at brutes and spawn; the Mandrill alone loses to front packs and beats back
-packs and bosses (Umbra Projector 55% of spends); the team wins everything at no cost,
-so the rank and file's numbers are the next lever, Ryan's call. Model: `mandrill(b)` in
-`tools/lowforge/models_low.py` (62 parts, 1048 triangles; pins hp_1..6 in loadout order:
-projectors on the pauldrons, the flare pods, the Corona dish, the repeater on the right
-forearm, the vent block), built and imported; judged from two hero shots only. Second pass
-on Ryan's notes (26 September): upright torso, squatting legs (knee forward, hip back),
-shorter arms with the fists at the knee, bowed octagonal tubes for arms and shins (`_bow`,
-`_tube`: Aphelion hates straight lines), a drum waist, knuckle plates, the repeater on the
-outside of the right hand, lower pauldrons. Fourth pass (Ryan's notes, evening): stumpier legs, longer
-forearms; `Build._finish` takes a `frame` so a member's tiles map along its own axes
-(`_beam` passes one: panel seams ran diagonally across slanted limbs before); `_fist`
-builds a fist block whose front face carries exactly one `fist` tile (four fingers, the
-thumb across the bottom) plus a thumb block, for every chassis that needs fists. Every
-chassis carries a `designation` now (the
-validator requires it; the bible's section 7 row gives the shape per maker): Pattern 1
-Combat Walker, K-7 Mk III Interceptor, Perihelion Flight 7 Support Frame are Claude's fills.
-The passive is under discussion (Ryan: too plain; his idea is a chance to convert a foe's
-new status into Suppressed, rising with the Mandrill's missing shield); nothing built for
-it yet beyond the `target_status` condition. Ryan's codex line for it is unfinished on
-purpose and the flavour empty: his voice.
-
-**Statuses and drawn routes (25 September, late; bible section 4 route row and section 7
-status row).** Ryan judged the in-game music controls "generally ok" (no notes). Then
-the engine gaps: **Numbed** rolls (a suppress lands at 100 minus 10 a stack on the
-skirmish's `rng`; a shrugged-off suppress does nothing and numbs no further; the bot
-values a suppress at its odds); **Corrupted** (`corrupt` in `Foe.ATTACK_KEYWORDS`: a stack
-on the entry the target's die shows, `Effects.corrupt_entry`; spending it bites the owner
-`CORRUPT_BITE_PER_STACK` a stack, shield first, no armour, before the component acts;
-`Skirmish.pending_bite` and the forecast's `bite`; the die shows a `corrupt` chip with the
-count, the die row says CORRUPTED ×n); **cleanse** (`Face.Keyword.CLEANSE`, in
-`Face.SUPPORT_KEYWORDS`: shield and vent only, the validator refuses it on attacks and
-attack keywords on supports; `Effects.cleanse` drops every modifier tagged
-`Effects.CLEANSABLE`: a foe's disable, Corrupted, Overheating; the rapid switch-off is
-untagged). Component passives already ran from content (`make_mech` grants them with the
-component as source); `Effects.explain` now names a component's own passive on its die
-row, and a content-path test covers a stat bonus surviving destruction. No content
-carries corrupt or cleanse yet; both wait on Ryan. **Routes drawn by hand:** drag from a
-machine and the route follows the finger (`BattleMapView` signals `route_drag_*`;
-`Battle.draft_step`, `draft_cost`, `set_route_path`; `Battlefield.route_from` and
-`route_cost`), each hex joining along the cheapest continuation that fits the move left, a
-hex already drawn cutting back, release keeping it as drawn; a plaque at the end counts
-the move. The tap is unchanged. Unjudged running by Ryan. The bible's formation figure
-draws four columns now. `docs/vocabulary.md` regenerated (numbed, corrupt, corrupted,
-cleanse implemented; numbed is a status, not a keyword).
-
-**Done 22 September (late) and 23 September.** The map's draw calls: 5400 and 10.9 ms a
-frame at zoom 1 on the Mac became 1036 and about 3 ms by baking rims, columns, grid lines,
-props, traces, roads, the gate and the walls into one mesh per material per band of rows;
-the three machines stay live models. The map's build: 3.1 s to 0.8 s on the Mac (geometry
-as packed arrays, one renderer readback per shape, edges per shape; `map_3d.gd`'s baking
-section says why). The phone path without an Android export: `tools/phone.sh`, https with
-its own certificate. The real one: `tools/android.sh` exports a signed debug APK
-(templates, SDK, JDK and keystore all on this Mac now; README says how) and installs it
-over USB; it has not yet been run on a device. The screens follow the phone's height;
-pinch from two fingers; roads join on the Compatibility renderer; hex 48. The sound set,
-first cut. Trials retired; the bible republished (link above). A placeholder launcher
-icon (`art/icon.png`, a tool-drawn hex). Afternoon: the map's frame belongs to the viewport
-(lines the view's height, readouts fixed, ticks and numbers scrolling), tighter and with
-bigger text, pinned through zoom too; bar labels on plaques; the rift is a foeforge
-vortex in eight true frames (the candidate plus seven image-to-image redraws that move
-the tendrils, aligned by correlation, ordered for the smoothest cycle; a dithered tween
-was tried and read as blur), one turn a bar of the music, torn in bands like the ground
-round it (bible section 5 row, 23 September; every candidate and frame is in
-`tools/foeforge/out/rift`), a frame every 0.7 s on its own clock (`RIFT_ON_BEAT` locks
-it to the music instead, off). The map's tear, tuned by Ryan's eye through the
-afternoon and settled: rows of 32 map pixels, a torn row's tear 6 to 10 tall and 120 to
-260 wide at a random place, 1.2% of rows a tick, under 0.3 s, a shear jittering up to
-12 px either way, a 12% dim, no hairlines, painted pixels only (so a lone enemy tile
-between 3D tiles tears alone); the vortex's own bands tear at most two at once, a fifth
-of a second, up to 6 of its pixels either way, never in the tendrils over the hexes; the
-rift's ground tear is centred on the vortex's mouth. All the knobs are at the top of the
-tear block in `bleed.gdshader` and in `_draw_rift`. The frame's ticks stand level with
-the hex beside them; the readouts sit on faint plaques.
-
-**Ryan's skirmish notes, 23 September (done).** Four columns locked in. The menu has QUIT
-(asks first; `quit_requested` runs harness-ward through the battle screen) and a colour
-change keeps the menu up behind a mask while the screen rebuilds (`_build` on both screens
-spares `_menu`). Withdraw replays the enemy's parting blows before the outcome; every
-enemy turn replays at ENEMY PACE (`Settings.display["enemy_pace"]`, top = the old 0.12 s
-beat), each blow stepping the struck mech's shield and hull from the event the sim records
-(`turn_events` now carry `shield` and `hull`), taps held off by `_replay_shade` meanwhile.
-Layout: ally gauges and chips 10 px off the model, a foe's gauge 16 px above its sprite
-with a 16 px leader running onto it, every gauge on a black ground of its own shape (no
-plate), the eye 60 px in the black at the log's right with 12 px margins (the log strip
-stops short of it), log 112 tall, dice and Reroll up 16, 30 px of black under Reroll, the
-foes' pane 12 px lower (BACK_Y 72) for black under the header. Poses added to
-`tools/screenshot.gd`: menu, settings, quit, withdraw, acquire, groundtear, feed_<name>.
-
-**The feed pass, 23 September (locked by Ryan after judging every effect in motion; bible
-section 6 row has the full record of kept, cut and reworked).** The skirmish HUD reads as a
-feed being analysed. Always on: intents acquired with collapsing brackets and a digit
-scramble as they appear (`UnitView.acquire`), the header's fight clock, the log strip's
-blinking prompt, the scan band on the mechs' traces only. `game/ui/feed_fx.gd` runs rare
-one-shot events on two independent lanes, each firing every 5 to 11 s: the foe lane
-(scanbox with a meter and a blinking "SCAN OK"; a telemetry box whose leader's select box
-moves between parts of the foe; a sprite tear; a signal drop under static with a plated
-"SIG LOST") and the ally lane (a rolling bar chart or a three-bar equaliser beside a
-machine; a die's static over its held number at 60 positions a second; a die's wobble in
-horizontal slices). `game/ui/tear_layer.gd` + `tear.gdshader` is the screen-reading slice
-shear, used over the foes' whole pane (one or two slices every 8 s at most, one slot in
-three silent, hidden between tears) and, in manual mode, as the die's wobble. The tear,
-the signal drop and the wobble go off with the GLITCH setting. Cut along the way: the scan
-band lighting gauges, chips, buttons and rules (blinked rather than swept); a dimming tear
-flavour; hairlines on the shear; a jolt-and-tilt wobble; a digit scramble on the die.
-`RIFTGATE_FEED_DEBUG=1` fires every lane every half second and the tear every two seconds.
-Knobs: `FeedFX.LANES`, `GAP_MIN`/`GAP_MAX`, `DURATION`, `TearLayer.PERIOD`,
-`DieFaceView.STATIC_RATE`. Ryan judges effects in motion, never from stills: keep the debug
-switch and the poses for the next pass.
-
-**Ryan's verdict on the web harness (23 September).** It served for sizes and touch and no
-more: the map must not get smaller (the base hex size may go up a little; zoom makes it
-playable as is). Judged real, to fix now: the load time (the first frame builds the map in
-3.2 s on the Mac, all GDScript: the feature-edge extraction per prop and the per-vertex
-bake loops); the letterboxing (stretch aspect `keep` on a 9:16 design leaves a 9:20 phone
-with bars, both screens laid out at fixed 720x1280 coordinates); roads not joining (the
-road shader's per-instance parameters are not a Compatibility-renderer feature, and the
-phone runs Compatibility); pinch (the map only hears the magnify gesture, which the web
-never sends: handle two fingers directly). Not to chase on the web: missing hex outlines
-and general frame rate, which want a native build. Then the true Android export.
-
-**Starting cold on the audio (for a session or account with no memory of it).** Read
-`CLAUDE.md`, then this file's audio block below, then the bible's section 1 sound row
-(every listen and every decision, in order; it is long and it is the truth). How Ryan
-works on sound, learned over four days: he gives notes by section letter or timestamp
-after listening (`forge.py sections <name>` prints both); a note that can be read two
-ways is asked about, not guessed (he said so); a suggestion of his opens a discussion
-and holes are raised before building, but if he reaffirms it is built as he said; when
-he changes direction, the new direction is taken as given and the old bible line
-retired; content and voices are proposed in chat before they land; he leans hotter on
-effects than seems right and judges effects in motion, never from stills; the most
-recent messages beat the bible when they differ. Two sessions often run on this repo
-at once: stage by path, never `git add -A`, diff a shared file before staging it (a
-path still sweeps the other session's hunks in that file), never kill a bare
-`godot --path .` (it may be the other session's harness), and the bible is published
-after each change to https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ (a different
-account cannot publish to that URL; the second account's copy is
-https://claude.ai/artifact/AdBTeE9px1Xvg5TKNjHjSP, republished from there).
-Commit after each verified chunk, from this folder, with the tests green. Headless Godot
-runs go under a watchdog (`perl -e 'alarm 240; exec @ARGV' godot ...`; macOS has no
-`timeout`), and a new `class_name` script needs one `--import` before the tests see it.
-
-**Audio, handoff (24 September; the bible's section 1 sound row has every decision and
-the reasons, listen by listen).** Everything is `tools/soundforge/forge.py` (numpy only)
-writing WAVs into `art/audio/`, played by name from `game/audio/sound.gd`. Commands:
-`build [names]` then `godot --headless --path . --import`; `measure`; `sections` (every
-section of every loop with timestamps: notes are given by section letter or time);
-`audition` (every effect in one file, a second apart); `sketch <name>` (renders to
-`tools/soundforge/out/`, git-ignored, never shipped). Any Python with numpy runs it; the
-spriter venv is the one that has it.
-
-*The engine.* `groove(bpm, form, kit, drums, chords, voices, pad, ...)`: a form string of
-section letters, a bar per letter; `meter` gives a section its steps per bar or (steps,
-scale) so a bar can be 7/8, or 6/8 at the 4/4 bar's length; drums as pattern strings (a
-pattern shorter than a bar walks round it: polymeter); chords per section, one or a list
-cycling per bar; voices in `riff` (semitones, holds), `chord` (the bar's chord by degree)
-or `stab` mode with `hold`, `late`, `legato`, `echo`, `shape` (a voice's own rise and fall
-across its section's run); pads by section with `pump`, `swell`, `late`; `crescendo` per
-section; `human` timing and velocity slop; kit sounds as variant lists picked per hit,
-normalised, an optional third field playing them behind the beat; `headroom` before the
-master. Every drum part and voice draws its own seeded stream, so an unedited riff never
-changes. Loops are levelled by mean RMS pinned where Ryan judged them (`LEVELS`);
-effects by their loudest 50 ms. Ryan's rule: the kick keeps its places for the whole
-track, whatever the meter.
-
-*The tracks (25 September, evening).* Ryan labels tracks by creation order: human A B C,
-rift A B C. State of each:
-
-- **Rift A** `music_far_bank` (86, 89 bars, 3:56): the real orchestral palette, form P A C E D
-  T V G H (a gradual build to the lift, the bells' lift, minor strings, an interlude with
-  7/8 closes, a triplet turn, the quiet 6/8, a thirty-two-bar climax whose leads swell on
-  bar lines from the repeat edge, a closer). **Locked** ("it's great"). In the table,
-  **not hooked to a screen** now that the calms hold the map.
-- **Human A** `music_hold_the_line` (100, 117 bars, 4:41): the hybrid palette, form A B C N L
-  M X U F W S R Z Y K V Q J (the riff in four stages with the drone under the last, turn,
-  lift, riff over the drone, second lift, a bar down, the seven, the unison over a drum
-  solo, keys, the keys' turn, the climax in three sets with the drone alone under the
-  first and the backing guitar from the second, a breath, the keyboard solo, a second
-  breath on the solo's instruments, a fill, the descent). **Locked** ("that drone was
-  exactly what we needed"). In the skirmish set.
-- **Rift B** `music_low_ground` (90, 6/8, a ground bass under six variations, 2:29) and
-  **human B** `music_night_shift` (94, four on the floor, industrial, 3:04): **locked for
-  now**, both at the map's level (-24.9 dB mean RMS). They are the map's set.
-- **Rift C** `music_crossing` (126, E Phrygian, 144 bars, 4:27): a pizzicato
-  three-three-two over timpani as the engine, Ryan's kick-chug-snare pattern as one
-  section, a new motif on horn and violins, eight bars of 3/4, a second developed pass
-  after a bare reprieve. "Pretty great"; extended and levelled for the skirmish (-20.7);
-  in the skirmish set. The extension is unheard.
-- **Human C** `music_full_bore` (105, 66 bars, 2:06): the Omnific construction on the
-  human sound leaning metal, never letting up: the driven bass heavy with the clean bass
-  an octave up (paired basses throughout, the pair carrying the answers and the
-  breakdown's melody), two chug guitars, the sub, the drone, the keys leading the tapped
-  melody with the synth lead doubling, guitar chords held under the keys, piano
-  arpeggios under the breakdown, a choir under the unison, drums running everywhere and
-  loud, a section in seven. Four listens in; the last notes (whiny upper voice, heavier
-  bass, paired basses, held guitars, louder drums) are built and **unheard**. In the
-  skirmish set since 25 September (already at the skirmish's level).
-
-*Titles (25 September, Ryan's picks from proposals; the one table is `Sound.TRACKS`).*
-Human A **Hold The Line**, human B **Night Shift**, human C **Full Bore**, rift A **The
-Far Bank**, rift B **Low Ground**, rift C **The Crossing**. The WAVs, the forge's
-builders, `MUSIC`, `SOUNDS` and `LEVELS` all use the title ids (`music_hold_the_line` and
-so on); nothing is named for a screen or a mood any more. Shown in the header's
-ticker (`game/ui/music_ticker.gd`: mono title right-aligned against MENU, a three-bar beat
-meter, a run-in on change, a crawl when too long) and on the pause menu's music plate
-under PAUSED (label over title, previous and next: `Sound.skip`, within the screen's set,
-from the new loop's top). The bible's section 1 has the row.
-
-*The screens.* `Sound.SETS`: a screen asks for a set. The map's set cycles (rift B, human
-B, one full loop each, an equal-power crossfade of `SET_FADE` seconds at the seam,
-resuming its current loop where it left after a fight, restarting from rift B's top on a
-new battle). The skirmish's set **picks** (`Sound.PICK`): human A, rift C or human C, the
-next one each fight, looped for the whole fight, fading in from the map at the door and
-back to the map on exit, never a crossfade mid-fight unless the player skips. The
-crossfade's gap-then-start was a decibel tween from silence; both crossfades are
-equal-power on linear gain now.
-
-*The drone* (Ryan really likes it as a human-track element): the `sweep` pad at octave 0
-with a `chord` of its own held across the run, `open` 0.75, `depth` 0.3, gain about 0.34
-(it needs more than seems right), entering after a riff has run alone a few bars (`skip`).
-
-*The effects.* Two registers. The interface is a **Terran console** (fourth try; the
-brief is irony, not parody): `relay`, `tone` (flat, no glide) and `chatter` (computer
-gibberish); every press a relay under a tone; the codex's plate on a servo. Combat and
-the map are over-the-top weighty (an explosion primitive; laser, gunfire, cannon, slash,
-slam; kills and the gate as explosions), and **nothing sweeps in pitch** any more (the
-glides read as Pac-Man). The skirmish picks a machine's blow by its face (`_blow_sound`)
-and a foe's by its damage (`SLAM_DAMAGE`). `Sound.DIP` ducks the music under big moments;
-`TONAL` sounds keep their pitch. Nothing mutes: the saved settings have music at 0.675
-and effects at the default full.
-
-*Engine lessons this week.* A stab's or chord note's `dur` is **steps**, not seconds (20
-rings a bar and a tail). A voice's `shape` follows a held note through its length. Pads
-crossfade across doors, can `skip` a run's first bars and hold a `chord` of their own. A
-pattern whose length is no multiple of the bar walks round the bar: write section
-patterns in bar multiples unless that is wanted.
-
-*To do, audio.* (1) Listen: human C as last built; rift C's extension; the Terran
-interface set and the glide-free skirmish set in the game (`forge.py audition` for the
-file); the map set's equal-power crossfade; the pause menu's skips (a manual crossfade
-mid-fight, at the screen's fade times) and the header ticker's run-in and beat meter,
-both judged running, never from the `menu` pose alone. Expect notes on each; the six
-titles are Ryan's picks and may still move (one string each in `Sound.TRACKS`, plus the
-file id if he wants the file to follow). The ticker's crawl never fires today, since
-every title fits the box. (2) **Boss themes (decided and wired 25 September, evening;
-bible section 1 sound row and section 4 row).** The structure: a run is about ten
-battles in three acts, one family per act (The Risen, then The Infernal Horde, then The
-Chorus); every battle ends by killing the boss that powers its rift, so a boss skirmish
-happens three or four times per act against the same boss. Hence one boss theme per
-family, in the acts' order, each the act's identity; bosses are epic, not intense (Ryan:
-Clair Obscur), so a quiet build is a feature. **Built:** The Far Bank is The Chorus's
-(`SETS["boss_eldritch"]`), levelled to -22.5 (`LEVELS`; between the map's -24.9 and the
-skirmish's -20.7), wrapping to bar nine (`LOOP_FROM`, in bars; `_stream` sets
-`loop_begin`) so the eight-bar intro plays once under the reveal and the handover and a
-long fight wraps into the groove. The theme starts on the field at the boss's contact
-(`_show_boss_contact`), from its top; the skirmish screen's `music_set` keeps it; a
-family without a set takes the skirmish's pick. **Not built, for Ryan to judge or say
-build:** the one trial of a light tight kick under the orchestral bass drum in The Far
-Bank's groove, lift and climax (render it as a `sketch`, never over the locked file);
-the seam at bar nine is bare (the forge wraps the closer's room tail onto the intro,
-which the loop no longer reaches; if he hears the join, render the tail onto bar nine
-instead); Rift Pressure does not yet feed packs into the boss fight (the plan said it
-should; today the boss fights alone and the pressure ticks after). The other two themes
-from seeds: The Risen from Low Ground (its A G F E ground bass is a dirge; "hard to keep
-down" as form, a theme returning after every breakdown, a bass drum march, horns, choir
-on oo; the least symphonic of the three, first act), The Infernal Horde from The
-Crossing's brass and timpani (loud, fire, telegraphed: brass stabs with a bar of air
-before each hit, the chug, a major-third mode). Each needs a melody of its own,
-proposed in chat first; estimate eight listening rounds each. Open: whether the final
-battle (sealing the source rift) has a boss of its own, and so a fourth piece or The
-Far Bank's climax cut. Judge the reveal running (`bosscontact` pose,
-`RIFTGATE_REVEAL_T`, `RIFTGATE_FACTION=eldritch` for the themed one): expect notes.
-(3) Levels: the map's two at -24.9, the skirmish's three at -20.7, the boss theme at
--22.5; anything moved to another screen needs its level moved with it. (4) The phone, heard 26 September: the low end (kick, toms, unplucked bass) is hard to
-hear on the speaker and Hold The Line's driven bass is harsh and tinny, chip-tune and
-dubstep for extended listening. Measured: The Far Bank and The Crossing carry about
-three quarters of their power below 80 Hz, where a phone is silent, and levelling by
-whole-file RMS leaves The Far Bank 9.4 dB under Hold The Line through a phone-speaker
-model. `tools/soundforge/phone_sketches.py` renders A/B sketches into `out/phone/`
-(the driven bass five ways: shipped, cabinet, two asymmetric stages with no hard clip,
-clean-low/driven-high split, drive following the note; the mix with shadows under the
-low end, a sub cut, a gentler tilt, all three; the levelling gap) and they are published
-for the phone at https://claude.ai/artifact/FCaphxM3Y3SnRPdNnprpXc. Ryan's picks
-decide what lands in the forge. **Ryan's notes, 28 September (bible section 1 sound row
-has them in full).** Decided and shipped: the human master is tilt 1.5 with a presence
-lift at 1 to 2 kHz (`presence=0.25` in `groove`) on Hold The Line, Night Shift and Full
-Bore ("taking the edge off feels so much better"); the rift tracks wait on the Far Bank
-A/B (set 4 on the page). Bass voices: alone he ranked 2 (cabinet), 5, 4; in power chords
-5, 4, 2; voice 2's sound liked most but Duke Nukem in the chords; 4 and 5 too alike. The
-second round on the page: hybrids 6 and 7 (voice 2's clip on the string above 250 Hz,
-the low string clean), the tracks' other bass voices in the riff (sub, crunch, clean,
-contrabass), the backing guitar without its clip (liked as garbage cans, maybe too
-clippy), shadows' second cut (the kick's shadow without the pitch sweep that went
-"pew-pew" in headphones, a gentler sub shadow, a softer crash; the sub cut is out: thin
-and tinny in headphones), a half-gap level file (the full gap was a little loud on the
-speaker and far too loud in headphones). His order: voices and balance first, then
-speaker changes. The speakers/headphones setting is the answer to the levelling gap
-(shipped levels for headphones; per-track offsets and a bus EQ on the speaker profile);
-not built. **Second-round notes (28 September, later; bible has the reasons):** with the
-tilt the voices sound alike and none is hated; 2 fell to least favourite, 3 came forward
-("so much brighter"), a race between 3 and 5, run on the page one variable at a time
-(rows 12 and 13, solo file 3). The soft sub is inaudible in the riff until the power
-chords. The clip-free guitar read as louder (now level-matched, maybe a winner). Shadows'
-second cut really good on the speaker; the toms still pew there, the kick a floor tom
-with mush in headphones: third cut is a metal kick and a lower tom, with a drums-only
-file of the three kits (`drums_kits`). Half the gap still loud in both: a quarter is
-rendered. **Decided: one master for both palettes**; The Far Bank, Low Ground and The
-Crossing are rebuilt on tilt 1.5 + presence (their writing stays locked). Next: his picks
-on the bass race, the guitar and the third cut land in the forge; then the speaker
-profile setting. Before the phone: nothing had been heard on
-a device; the mix was checked by measurement only. (5) The real recordings and the real
-track remain section 12's open question; everything here is a placeholder in the
-decided register.
-
-**Open, in the order I would take them.**
-
-1. The phone. The native build runs on Ryan's Pixel 9 since 25 September; nine reads from
-   it are fixed and recorded as one bible row (section 11, "the phone is the reference
-   glass"), each with its knob: the grid as ribbons (`Map3D.GRID_W`) resting hotter on a
-   phone (`GRID_GAIN_PHONE` 1.5 against the Mac's 0.7); the safe bands (`Hud.inset_screen`,
-   floor `Hud.SAFE_FLOOR`); fonts at the glass's density (`Hud.oversample`); scanlines on
-   device pixels (`Hud.scanlines`); the tilt-shift's band and the skirmish's seam laid out
-   for the design's height (`BattleMapView.FOCUS_VIEW_H`; `TerrainArt.draw_other_hex` cuts a
-   hex to its clip, which also took green out of the Mac's seam band: Ryan judges); the
-   leaders thicker; the die drags the die. The crash after some minutes was the contact
-   panel's portraits never freed plus Godot's 3D MSAA leak on Android (godot#97967), so
-   `Hud.msaa_3d` is off on a phone; two memory watches on the fixed build ran flat. How to
-   work a phone read: zoom the screenshot's crop with nearest, reproduce at the phone's
-   layout on the Mac (`RIFTGATE_SHOT_H=1616 RIFTGATE_SAFE=80,48 RIFTGATE_SHOT_SCALE=1.5`,
-   README), fix once for every glass. Still to judge on the device after a re-export: the
-   frame rate, the sound set, the machines' edges without MSAA, the text, the grid at the
-   hotter gain, the seam band, and the black gap between the map's frame and the log on a
-   tall screen (the map view grows but its frame does not fill it; untouched).
-   Badger tweaks in Blender, then joints and pins (`forge.py export badger`); notes on the
-   Mandrill's model, numbers, kit and passive (all first fills); notes on
-   the Clydesdale; the Anvil.
-2. Ryan's content: names for overheating and scorch; strikes, breach, scorch, disable and
-   rapid placed on foes and components; Ablative Plating as armour or shield; the Badger's
-   loadout and claw numbers; Aphelion and the Arsenal; CARE's voice, including the gate's
-   codex entry (rule text today).
-3. Design that needs a decision before code (all in bible section 12): ally wrecks (block?
-   how long?); what terrain does in a skirmish; movespeed in tens; base defences and
-   turrets; the reinforcement phase; skirmish composition from placement; the multi-hex
-   boss's return; the economy.
-4. The map: wreck death animation once decided; joint idle for grounded units once joints
-   exist; corruption in packs' wake. If a phone still drops frames, the machines are the
-   next lever (one mesh per material per machine, until joints).
-5. Engine gaps waiting on content: foe roles; the ten planned foe actions in `foes.json`;
-   the planned statuses still without an engine (Phased, Taunt, Beacon, Retaliate, Energy
-   Armour) and the planned triggers (on shield gain, on heat gain, on round start, on
-   skirmish start, on hull damage, out of combat); granted passives coloured on the codex;
-   Ryan's cooling numbers. Ryan's content for what landed 25 September: a foe with
-   `corrupt`, a shield or vent with `cleanse`, component passives with stat bonuses.
-6. Art: enemy art for the eight foes still on sketch grids; the hangar as a model;
-   Aphelion and Arsenal chassis once written; per-mech repaint (`Unit.paint` exists,
-   nothing sets it). Sound: the real recordings and the real track, once the set is judged.
-7. Balance: Ryan reads `docs/balance.md` against his own play; then either the numbers
-   move (content) or the bot's next rung is built (rollout, personas, the battle bot).
-   Rerun the report after every content change; it is 80 s.
-8. Before a phone leaves the desk: save and resume mid-battle (nothing serialised);
-   onboarding (gesture tutorial, cheat sheet: reroll rule and zone of control first); the
-   Android export checked on a device (everything it needs is on this Mac; bible section
-   11 and the README say how); then play and tune numbers, map size, pack speeds, Rift
-   Pressure.
-
-**Two sessions on the bible.** Both sessions edited and published `docs/design-bible.html`
-on 23 September; publishing from one collides with the other's uncommitted working copy.
-Whoever publishes should commit first and publish from the committed file, and the file
-in the repo is the superset either way. The published copy is a row or two behind the
-repo at the end of the day (the phone row in section 11, the frame and rift rows in 5).
-
-**Known rough edges.** On the phone's browser the
-address bar takes a strip until the first button press goes full screen. The engage pose
-of `tools/screenshot.gd` prints renderer leak warnings at exit (mid-tween quit), harmless.
+**Known rough edges.** The engage pose of `tools/screenshot.gd` prints renderer leak
+warnings at exit, harmless. The review page from 26 September still says Mandrill.
