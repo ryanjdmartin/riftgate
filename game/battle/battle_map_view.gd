@@ -422,8 +422,11 @@ func _draw() -> void:
 	if not pending.is_empty() and _anim.is_empty():
 		for group in pending:
 			var lit := _highlight.is_empty() or _highlight.has((group[0] as Unit).pos)
+			var at: Dictionary = {}
 			for u in group:
+				at[u.id] = u.pos
 				_contact_effect(u.pos, lit, u.is_enemy())
+			_tethers(group, at, lit)
 	# The plan as it will resolve, from the resolver itself run dry (Ryan, 21 September:
 	# never ambiguous): every contact group, every pack stopped by a body block, every
 	# route that will be rejected.
@@ -443,6 +446,7 @@ func _draw() -> void:
 				mid += c
 				top_y = minf(top_y, c.y)
 				_contact_effect(ends[u.id], lit, u.is_enemy())
+			_tethers(group, ends, lit)
 			mid /= float(group.size())
 			# Who is in it: the machines against the packs, so the player knows what the
 			# skirmish will hold before locking in (Ryan, 22 September).
@@ -778,6 +782,47 @@ func _contact_effect(h: Vector2i, lit: bool, _at_base: bool = false) -> void:
 		var phase := fmod(_ring_t * 0.9 + k * 0.5, 1.0)
 		var r := HEX_SIZE * (0.3 + 1.1 * phase)
 		draw_arc(c, r, 0.0, TAU, 40, Color(col, (1.0 - phase) * a), 3.0 * (1.0 - phase * 0.5) + 1.0)
+
+
+## Who joins which fight, drawn live as the plan stands (Ryan, 28 September: a contact made
+## of touching units made who was in it a surprise, and the engagement range makes it
+## less obvious still): a dashed line from every machine in a contact to the nearest pack
+## it will fight, its dashes crawling toward the fight, dim when another contact is the one
+## being looked at. `at` is where each unit will stand: the preview's ends, or the positions
+## of a contact waiting to be fought.
+func _tethers(group: Array, at: Dictionary, lit: bool) -> void:
+	var a := 1.0 if lit else 0.35
+	var col := Color(_ring_colour(), 0.9 * a)
+	for u in group:
+		if not (u as Unit).is_player() or not at.has(u.id):
+			continue
+		var from := center(at[u.id])
+		var to := Vector2.ZERO
+		var best := INF
+		for other in group:
+			if not (other as Unit).is_enemy() or not at.has(other.id):
+				continue
+			var d := from.distance_squared_to(center(at[other.id]))
+			if d < best:
+				best = d
+				to = center(at[other.id])
+		if best == INF:
+			continue
+		_dashed_line(from, to, col, HEX_SIZE * 0.3, fmod(_ring_t * 1.4, 2.0))
+		draw_arc(from, HEX_SIZE * 0.22, 0.0, TAU, 20, col, 2.0)
+
+
+## A dashed line from `a` to `b`, dash and gap both `dash` long, the pattern shifted along
+## by `offset` dashes so it can crawl.
+func _dashed_line(a: Vector2, b: Vector2, col: Color, dash: float, offset: float = 0.0) -> void:
+	var n := maxi(1, int(a.distance_to(b) / dash))
+	var k := -2.0 + fmod(offset, 2.0)
+	while k < n:
+		var t0 := clampf(k / n, 0.0, 1.0)
+		var t1 := clampf((k + 1.0) / n, 0.0, 1.0)
+		if t1 > t0:
+			draw_line(a.lerp(b, t0), a.lerp(b, t1), col, 3.0)
+		k += 2.0
 
 
 ## A machine's zone: its six neighbours as one tinted flower with one outline round the

@@ -8,7 +8,8 @@ extends RefCounted
 ##   2. player plots routes        (outside the sim)
 ##   3. resolve_phase(routes)      player routes resolve first, then packs execute their
 ##                                 previewed moves and stop at the first blocked hex
-##   4. detect_skirmishes()        connected groups of touching units that mix both sides
+##   4. detect_skirmishes()        contacts: touching units that mix both sides, plus every
+##                                 grounded machine within ENGAGE_RANGE of a member
 ##
 ## Units may cover several hexes (Unit.footprint). Every footprint hex blocks, touches, and
 ## counts as occupied. The gate and the rift are structures wider than one hex; nobody stands
@@ -23,6 +24,11 @@ class PhaseResult:
 	var gate_damage: int = 0
 	var spawned: bool = false
 	var skirmishes: Array = []        # Array of Array[Unit]
+
+## How far a machine may stand from a fight and still be in it (Ryan, 28 September: a contact
+## made of touching units turned three slow walkers into a placement puzzle). Zone of control
+## stays at one hex: a contact still seeds where a pack and a machine touch.
+const ENGAGE_RANGE := 2
 
 var map: BattleMap
 var units: Array[Unit] = []
@@ -377,7 +383,8 @@ func _move_all(routes: Dictionary, result: PhaseResult, dry: bool) -> void:
 ## ending beside a pack.
 func controlled(h: Vector2i) -> bool:
 	for m in mechs():
-		if m.traits.has("flyer"):
+		# A flyer controls nothing; nor does a stealth machine (28 September): packs walk past it.
+		if m.traits.has("flyer") or m.traits.has("stealth"):
 			continue
 		if Hex.distance(m.pos, h) == 1:
 			return true
@@ -468,7 +475,12 @@ func _execute_pack(sq: Unit, result: PhaseResult, dry: bool = false) -> void:
 	sq.pos = landed
 
 
-## Connected groups of touching units that contain at least one unit from each side.
+## Contact groups. A fight seeds where units touch: connected groups of adjacent units with a
+## unit from each side, which is the zone-of-control contract (a pack stops beside a machine,
+## and a machine two hexes from a lone pack is no fight). Then the engagement range: every
+## grounded machine within ENGAGE_RANGE of any member joins, the nearest group first, until
+## nothing more joins, so a machine two hexes behind a joined one is in as well (Ryan, 28
+## September). A stealth machine is never pulled in by range; it fights only what it touches.
 func detect_skirmishes() -> Array:
 	var groups: Array = []
 	var seen := {}
@@ -492,7 +504,40 @@ func detect_skirmishes() -> Array:
 			has_enemy = has_enemy or g.is_enemy()
 		if has_player and has_enemy:
 			groups.append(group)
+	if groups.is_empty():
+		return groups
+	var placed := {}
+	for g in groups:
+		for m in g:
+			placed[m.id] = true
+	var joined := true
+	while joined:
+		joined = false
+		for m in mechs():
+			if placed.has(m.id) or m.traits.has("stealth"):
+				continue
+			var best := -1
+			var best_d := ENGAGE_RANGE + 1
+			for i in range(groups.size()):
+				for member in groups[i]:
+					var d := unit_distance(m, member)
+					if d < best_d:
+						best_d = d
+						best = i
+			if best >= 0:
+				(groups[best] as Array).append(m)
+				placed[m.id] = true
+				joined = true
 	return groups
+
+
+## The shortest hex distance between any hex of `a` and any hex of `b`.
+static func unit_distance(a: Unit, b: Unit) -> int:
+	var best := 1 << 30
+	for x in a.hexes():
+		for y in b.hexes():
+			best = mini(best, Hex.distance(x, y))
+	return best
 
 
 ## Feed the Rift Pressure clock. Spawns a pack at the rift when it fills. Returns true on spawn.

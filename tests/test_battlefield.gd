@@ -417,3 +417,79 @@ func test_a_pack_already_beside_a_machine_holds_its_ground() -> void:
 	var sq2 := f2.add_unit(Unit.pack(2, "ghouls", _o(3, 5), "undead", 3))
 	f2.compute_intents()
 	assert_false((f2.intents[sq2.id] as Array).is_empty(), "a flyer holds nobody")
+
+
+func test_a_machine_within_two_of_a_contact_joins_it() -> void:
+	# Engagement range (Ryan, 28 September): a contact seeds where a machine and a pack touch;
+	# then any grounded machine within two hexes of a member joins, and one two hexes behind
+	# a joined machine joins through it, so heavies need not touch to fight together.
+	var f := _field(9, 13)
+	var sq := f.add_unit(Unit.pack(1, "ghouls", _o(4, 6), "undead", 0, 4))
+	var a := f.add_unit(Unit.mech(2, "A", _o(5, 6), 0))
+	var b := f.add_unit(Unit.mech(3, "B", _o(4, 8), 0))
+	var c := f.add_unit(Unit.mech(4, "C", _o(4, 10), 0))
+	var d := f.add_unit(Unit.mech(5, "D", _o(0, 12), 0))
+	assert_true(a.touches(sq), "A touches the pack: the seed")
+	assert_eq(Battlefield.unit_distance(b, sq), 2, "B stands two from the pack")
+	assert_false(b.touches(a) or b.touches(sq), "and touches nobody")
+	assert_eq(Battlefield.unit_distance(c, b), 2, "C stands two behind B")
+	assert_true(Battlefield.unit_distance(c, sq) > Battlefield.ENGAGE_RANGE, "and out of range of the pack itself")
+	var groups := f.detect_skirmishes()
+	assert_eq(groups.size(), 1, "one contact")
+	assert_eq(groups[0].size(), 4, "the pack, the seed, the machine in range and the one behind it")
+	assert_true(groups[0].has(b) and groups[0].has(c), "B joined by range and C through B")
+	assert_false(groups[0].has(d), "D, far away, is not in it")
+
+
+func test_a_machine_two_from_a_lone_pack_is_no_contact() -> void:
+	# The zone-of-control contract holds: only touching seeds a fight.
+	var f := _field(9, 13)
+	var sq := f.add_unit(Unit.pack(1, "ghouls", _o(4, 6), "undead", 0, 4))
+	var b := f.add_unit(Unit.mech(2, "B", _o(4, 8), 0))
+	assert_eq(Battlefield.unit_distance(b, sq), 2, "two apart")
+	assert_eq(f.detect_skirmishes().size(), 0, "no touching, no contact")
+
+
+func test_a_machine_in_range_of_two_contacts_joins_exactly_one() -> void:
+	# Anything nearer than the range is touching, and so already seeded; the only choice
+	# left to the widening is a tie, and a machine is never in two fights.
+	var f := _field(9, 13)
+	var near := f.add_unit(Unit.pack(1, "ghouls", _o(4, 6), "undead", 0, 4))
+	f.add_unit(Unit.mech(2, "A", _o(5, 6), 0))
+	var far := f.add_unit(Unit.pack(3, "brutes", _o(4, 10), "demonic", 0, 4))
+	f.add_unit(Unit.mech(4, "B", _o(5, 10), 0))
+	var m := f.add_unit(Unit.mech(5, "M", _o(3, 8), 0))
+	assert_eq(Battlefield.unit_distance(m, near), 2, "two from one pack")
+	assert_eq(Battlefield.unit_distance(m, far), 2, "two from the other")
+	var groups := f.detect_skirmishes()
+	assert_eq(groups.size(), 2, "two contacts")
+	var with_m := 0
+	var members := 0
+	for g in groups:
+		members += g.size()
+		if g.has(m):
+			with_m += 1
+	assert_eq(with_m, 1, "M is in exactly one of them")
+	assert_eq(members, 5, "and nobody is counted twice")
+
+
+func test_stealth_controls_no_ground_and_is_not_pulled_in_by_range() -> void:
+	# The stealth trait (28 September), the half the engine has: packs walk past it, and a
+	# contact's engagement range never reaches it. Its join rule (beside an ally, or when it
+	# stopped a pack in its path) lands with the rest of the trait.
+	var f := _field(3, 14)
+	var s := f.add_unit(Unit.mech(1, "dingo", _o(1, 6), 0))
+	s.traits = ["stealth"]
+	var sq := f.add_unit(Unit.pack(2, "ghouls", _o(1, 2), "undead", 4))
+	f.compute_intents()
+	var res := f.resolve_phase({})
+	assert_false(res.intercepted.has(sq.id), "a stealth machine stops nobody")
+	var f2 := _field(9, 13)
+	var pack := f2.add_unit(Unit.pack(1, "ghouls", _o(4, 6), "undead", 0, 4))
+	f2.add_unit(Unit.mech(2, "A", _o(5, 6), 0))
+	var st := f2.add_unit(Unit.mech(3, "S", _o(4, 8), 0))
+	st.traits = ["stealth"]
+	assert_eq(Battlefield.unit_distance(st, pack), 2, "two from the pack")
+	var groups := f2.detect_skirmishes()
+	assert_eq(groups.size(), 1, "one contact")
+	assert_eq(groups[0].size(), 2, "the pack and A only: stealth is not pulled in by range")
