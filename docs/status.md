@@ -10,8 +10,12 @@ thing works lives in its file's comments; why it is that way lives in the bible.
 the same time (today: the HUD session, the audio session, the balance session and the
 boss-theme session, which was the audio session resumed from another account): check
 `git status` before committing and stage by path. Chassis ids: `badger`,
-`clydesdale`, `sparrowhawk`, `mandrill` (the Anvil became Aphelion's Mandrill, 26 September). Ryan writes `content/*.json` in his own voice; tests
-never hardcode an entry's passive name.
+`clydesdale`, `sparrowhawk`, `mandrill` (the Anvil became Aphelion's Mandrill, 26 September), and
+since 28 September six drafts from the content editor wearing the Mandrill's numbers and kit with
+planned passives: `tortoise`, `wild_boar`, `coyote`, `dingo`, `goshawk`, `nemesis`, `ammit` (the
+last two are the Arsenal's; maker `arsenal` exists now). Ryan writes `content/*.json` in his own
+voice, on the phone through the content editor artifact (see the memory note; pull collection
+`edits`, apply by hand, republish the files); tests never hardcode an entry's passive name.
 
 **Where things are.** `sim/` is the headless game (battle map, battlefield resolver,
 battle loop, skirmish, effects pipeline, content DB). `game/battle/` is the battle screen
