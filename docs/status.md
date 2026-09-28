@@ -93,23 +93,12 @@ oversampling, the drag ghost, the far blur, scanlines on device pixels, leaders,
 band's clipped hexes. Still to judge on the device: frame rate, the sound set, edges
 without MSAA, the text, the grid at the hotter gain, the black gap under a tall map.
 
-**Open, in order.** The task list itself is `docs/todo.md`, one line a task, grouped by
-who moves it; this is the order to take them in.
+**Open, in order.** The task list is `docs/todo.md`, one line a task, grouped by who
+moves it and ticked in the commit that lands it; this is the order to take them in.
 
-1. Ryan's play test of the engagement range and tethers; then whether formations are
-   still wanted. The Clydesdale's model needs nine pins; seven new machines have no
-   lowforge brief; every new component needs a mount.
-2. The planned engine pieces (above), in whichever order Ryan wants to play first;
-   volatile, devour and Overcharged, Shocked and taunt are the ones content leans on most.
-3. Ryan's text: codex and flavour for the seven new machines and the eighteen new
-   components; his decisions on the flagged names.
-4. Design before code (bible section 12): ally wrecks; terrain in a skirmish; base
-   defences; the reinforcement phase; the multi-hex boss's return; the economy and the
-   blueprint tiers; the ideas list (burning terrain, statuses carried between fights,
-   hunter packs, hull repair).
-5. Art: enemy art for the foes still on sketch grids; the hangar; per-mech repaint.
-6. Before a phone leaves the desk: save and resume mid-battle; onboarding; then play and
-   tune numbers, map size, pack speeds, Rift Pressure.
-
-**Known rough edges.** The engage pose of `tools/screenshot.gd` prints renderer leak
-warnings at exit, harmless. The review page from 26 September still says Mandrill.
+1. Ryan's play test of the engagement range and tethers, and his phone reads.
+2. The planned engine pieces, in whichever order he wants to play first.
+3. Ryan's text for the new machines and components, and the flagged names.
+4. The discuss-first decisions in the Ryan section, the economy last.
+5. Art: the seven new models, enemy art, the hangar.
+6. Before a phone leaves the desk: save and resume, onboarding, then tuning.

@@ -28,9 +28,23 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 
 ## Engine
 
-- [ ] The planned pieces the 28 September content leans on, in Ryan's order: volatile, devour, Overcharged, Shocked, taunt, overwhelm, the stealth join rule, the vent-on-fire face, the die-local reroll, heat-scaled shield regen
-- [ ] The planned statuses still without an engine: Phased, Beacon, Retaliate, Energy Armour
-- [ ] The planned player keywords: Overwhelm, Corrode, Scramble, Confuse
+The planned pieces the 28 September content leans on, one line each, in whichever order Ryan wants to play first (every one is `"status": "planned"` in content and flips to implemented in the same commit):
+
+- [ ] `volatile`: a spend bites its owner for 10 hull past shield and armour (the Corrupted bite's path); Gravity Knuckles
+- [ ] `devour` and the Overcharged status: a kill adds a stack, +10% damage a stack, decays a round at a time; needs an on-kill hook; Soulcutter Talons
+- [ ] Shocked (the next blow taken deals double; a Shocked foe striking bare hull again takes 10) and retaliate as the status that applies it; the Armadillo's Faraday Hull
+- [ ] `taunt` as a status a shield face applies (front-rank foes target the machine); Proximity Klaxon, Faraday Shutters, and the shutters' Live Shell that shocks through a blocked blow
+- [ ] `overwhelm` (damage past a kill spills into the rank behind) and its grant on every attack; Juggernaut Drive
+- [ ] The stealth join rule: in a fight only beside an ally or when it stopped a pack in its path; needs the blocked list to name the blocker; the Dingo
+- [ ] The vent-on-fire face (`vents_all`, `power_per_heat`); the Afterburner Cannon
+- [ ] Battery Director: rerolling only the Clydesdale's die is free once a round, on top of the team's three
+- [ ] Thermal Recoupler: shield regained per 10 heat at the start of the Goshawk's turn, the first in-fight regen
+- [ ] Static-screen Projector: on withdraw the Prairie Dog is out before the enemy strikes, each ally rolls an even chance, a blow at a covered machine is lost
+- [ ] Crucible Capacitor: melee damage per Overheating stack, a stack per blow that reaches hull from a foe or its own weapons, never from overheat burn
+- [ ] Tactical Databank: kinetic weapons roll their maximum with an ally in the fight; needs an ally-present condition
+- [ ] Glacis: the Breaching Plow's armour against front-rank blows only, once the engine knows which rank struck (flat +5 today)
+- [ ] The planned statuses still without an engine: Phased, Beacon, Energy Armour
+- [ ] The planned player keywords: Corrode, Scramble, Confuse
 - [ ] The planned triggers: on shield gain, on heat gain, on round start, on skirmish start, on hull damage, out of combat
 - [ ] Foe roles, and the ten planned foe actions in `content/foes.json`
 - [ ] Granted passives coloured on the codex
@@ -54,7 +68,12 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] The hangar as a model
 - [ ] Per-mech repaint (`Unit.paint` exists; nothing sets it)
 - [ ] A licensed icon set (game-icons.net, CC BY) rendered to textures, replacing the line-drawn glyphs in one pass
-- [ ] The content editor's review page still says Mandrill; it is the Baboon
+- [ ] The 26 September review page (https://claude.ai/artifact/BeDtchGtS8H2oH3yij3ywX) still says Mandrill; it is the Baboon, or the page is retired
+
+## Pages
+
+- [x] Republish the content editor (https://claude.ai/artifact/HnE3gvsxNHXyjRhRyEiDqT) with its `files` map after every content change, or its baselines go stale (done for the Baboon; a standing task)
+- [x] Rebake the nameplate page's baked-in current names (`CURRENT` in its script) when a chassis or component is added or renamed (done for the Baboon and the 28 September components; a standing task each time content names change)
 
 ## Audio
 
