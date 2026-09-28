@@ -190,7 +190,9 @@ plotted, so a later machine may end where an earlier one is leaving; re-plotting
 puts it last. Hold any unit for its numbers; double-tap it for its codex; tap the gate for
 its integrity. Red lines are where each pack goes this round, from the plan as it stands:
 a grounded machine controls the ground beside it (the tinted flower), a pack stepping into
-it stops there and that is a contact, marked before Resolve with who is in it and the ground
+it stops there and that is a contact; every grounded machine within two hexes of the fight
+joins it, and a dashed tether runs from each machine to the pack it will fight, so who is in
+is never a surprise. The contact is marked before Resolve with who is in it and the ground
 it will be fought on. Resolve plays the moves, then a CONTACT band, then a panel of the
 contacts with portraits; ENGAGE dives the map onto the fight and hands over to the skirmish
 screen. Its Back button applies the result: wrecks leave the map, packs shrink to their
