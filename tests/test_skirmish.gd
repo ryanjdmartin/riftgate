@@ -471,7 +471,7 @@ func test_massive_foe_death_clears_both_slots() -> void:
 	assert_true(sk.assign(0, sk.front[0]), "hit the colossus")
 	assert_eq(sk.front[0], null, "front slot cleared at once")
 	assert_eq(sk.back[0], null, "back slot cleared at once")
-	assert_eq(sk.outcome, Skirmish.Outcome.VICTORY, "and that was the whole squad")
+	assert_eq(sk.outcome, Skirmish.Outcome.VICTORY, "and that was the whole pack")
 
 
 func test_penetrate_hits_a_massive_foe_once() -> void:

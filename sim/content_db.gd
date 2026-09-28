@@ -274,15 +274,15 @@ func codex_for_unit(u: Unit) -> Dictionary:
 	}
 
 
-## Unpack a battlefield squad into skirmish foes: its foe type times its strength. A boss
-## (elite) unpacks into the faction's massive boss first. A squad with no foe type falls back
+## Unpack a battlefield pack into skirmish foes: its foe type times its strength. A boss
+## (elite) unpacks into the faction's massive boss first. A pack with no foe type falls back
 ## to the first entry of its faction's spawn list.
 func foes_for(sq: Unit) -> Array[Foe]:
 	var out: Array[Foe] = []
 	var fac: Dictionary = factions.get(sq.faction, {})
 	if sq.elite and fac.has("boss") and foes.has(fac["boss"]):
 		var b := make_foe(str(fac["boss"]))
-		b.squad_id = sq.id
+		b.pack_id = sq.id
 		out.append(b)
 	var fid := sq.foe_id
 	if fid.is_empty():
@@ -292,7 +292,7 @@ func foes_for(sq: Unit) -> Array[Foe]:
 	if foes.has(fid):
 		for i in range(sq.strength):
 			var f := make_foe(fid)
-			f.squad_id = sq.id
+			f.pack_id = sq.id
 			out.append(f)
 	return out
 
@@ -317,14 +317,14 @@ func spawn_foes(faction_id: String) -> Array:
 	return out
 
 
-## A boss squad for a faction, named after its massive elite.
+## A boss pack for a faction, named after its massive elite.
 func make_boss(uid: int, faction_id: String) -> Unit:
 	var boss_id := str(factions.get(faction_id, {}).get("boss", ""))
 	var boss_name := str(foes.get(boss_id, {}).get("name", "boss")).to_lower()
 	return Unit.boss(uid, boss_name, Vector2i.ZERO, faction_id)
 
 
-## The squads a faction sends through the rift together, as [[foe_id, strength], ...].
+## The packs a faction sends through the rift together, as [[foe_id, strength], ...].
 func spawn_table(faction_id: String) -> Array:
 	var out: Array = []
 	for e in factions.get(faction_id, {}).get("spawn", []):

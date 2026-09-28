@@ -17,7 +17,7 @@ func _battle(seed_value: int = 3) -> Battle:
 	return b
 
 
-## Park a squad next to a mech and root it so contact is certain after the phase.
+## Park a pack next to a mech and root it so contact is certain after the phase.
 func _engage(b: Battle, sq: Unit, m: Unit) -> void:
 	var spot := m.pos
 	for n in Hex.neighbors(m.pos):
@@ -42,7 +42,7 @@ func _win(sk: Skirmish) -> void:
 func test_setup_places_team_formation_and_boss() -> void:
 	var b := _battle()
 	assert_eq(b.mechs().size(), 3, "three mechs")
-	assert_eq(b.field.squads().size(), 4, "three squads from the spawn list plus the boss")
+	assert_eq(b.field.packs().size(), 4, "three packs from the spawn list plus the boss")
 	assert_true(b.boss != null and b.field.units.has(b.boss), "boss on the field")
 	assert_eq(b.boss.foe_id, "", "boss unpacks by faction, not foe id")
 	for u in b.field.units:
@@ -50,7 +50,7 @@ func test_setup_places_team_formation_and_boss() -> void:
 	var gate_row := Hex.axial_to_offset(b.map.gate).y
 	for m in b.mechs():
 		assert_true(Hex.axial_to_offset(m.pos).y >= gate_row - 3, "%s starts by the gate" % m.display_name)
-	for sq in b.field.squads():
+	for sq in b.field.packs():
 		assert_true(Hex.axial_to_offset(sq.pos).y < gate_row / 2, "%s starts in the north" % sq.display_name)
 	assert_eq(b.state, Battle.State.PLAN, "planning")
 	assert_true(b.field.intents.size() > 0, "enemy moves previewed")
@@ -120,7 +120,7 @@ func test_commit_without_contact_returns_to_plan() -> void:
 func test_contact_opens_a_skirmish_with_the_touching_units() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
-	var sq: Unit = b.field.squads()[0]
+	var sq: Unit = b.field.packs()[0]
 	_engage(b, sq, m)
 	b.commit()
 	assert_eq(b.state, Battle.State.SKIRMISH, "contact")
@@ -130,23 +130,23 @@ func test_contact_opens_a_skirmish_with_the_touching_units() -> void:
 	for ms in sk.mechs:
 		in_it = in_it or ms.unit == m
 	assert_true(in_it, "the touched mech fights")
-	assert_true(sk.squads.has(sq), "the squad is in it")
+	assert_true(sk.packs.has(sq), "the pack is in it")
 	assert_eq(sk.reinforcements.size(), sq.strength, "one foe per point of strength")
 
 
-func test_finish_skirmish_removes_the_squad_and_keeps_shields_as_they_were() -> void:
+func test_finish_skirmish_removes_the_pack_and_keeps_shields_as_they_were() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
-	var sq: Unit = b.field.squads()[0]
+	var sq: Unit = b.field.packs()[0]
 	_engage(b, sq, m)
 	b.commit()
 	var sk := b.open_next_skirmish()
 	m.shield = 0
 	_win(sk)
 	assert_eq(sk.outcome, Skirmish.Outcome.VICTORY, "won")
-	var squads_before := b.field.squads().size()
+	var packs_before := b.field.packs().size()
 	b.finish_skirmish()
-	assert_eq(b.field.squads().size(), squads_before - 1, "squad wiped from the map")
+	assert_eq(b.field.packs().size(), packs_before - 1, "pack wiped from the map")
 	assert_eq(m.shield, 0, "no free refill between skirmishes")
 	assert_eq(b.state, Battle.State.PLAN, "planning again")
 	assert_eq(b.current, null, "no skirmish open")
@@ -158,7 +158,7 @@ func test_shield_recharges_at_the_field_rate_only_out_of_combat() -> void:
 	m.shield = 0
 	m.recharge_field = 15
 	m.shield_max = 40
-	var sq: Unit = b.field.squads()[0]
+	var sq: Unit = b.field.packs()[0]
 	# Phase one: contact. The engaged mech gets nothing from the phase.
 	_engage(b, sq, m)
 	b.commit()
@@ -174,10 +174,10 @@ func test_shield_recharges_at_the_field_rate_only_out_of_combat() -> void:
 	assert_true(m.shield <= m.shield_max, "never above max")
 
 
-func test_survivors_shrink_the_squad() -> void:
+func test_survivors_shrink_the_pack() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
-	var sq: Unit = b.field.squads()[0]
+	var sq: Unit = b.field.packs()[0]
 	_engage(b, sq, m)
 	b.commit()
 	var sk := b.open_next_skirmish()
@@ -185,7 +185,7 @@ func test_survivors_shrink_the_squad() -> void:
 	sk.start_round()
 	sk.withdraw()
 	b.finish_skirmish()
-	assert_true(b.field.units.has(sq), "squad still on the map")
+	assert_true(b.field.units.has(sq), "pack still on the map")
 	assert_eq(sq.strength, sk.survivors_for(sq), "strength is what survived")
 
 
@@ -211,40 +211,40 @@ func test_boss_death_seals_the_rift() -> void:
 func test_boss_contact_commits_every_machine_and_drops_the_other_contacts() -> void:
 	var b := _battle()
 	var mechs := b.mechs()
-	var sq: Unit = b.field.squads()[0]
+	var sq: Unit = b.field.packs()[0]
 	_engage(b, b.boss, mechs[0])
 	_engage(b, sq, mechs[2])
 	b.commit()
 	assert_true(b.boss_contact, "the boss was contacted")
 	assert_eq(b.state, Battle.State.SKIRMISH, "one fight pending")
-	assert_eq(b.pending.size(), 1, "the squad's contact is dropped")
+	assert_eq(b.pending.size(), 1, "the pack's contact is dropped")
 	var group: Array = b.pending[0]
 	for m in mechs:
 		assert_true(group.has(m), "%s is committed, in contact or not" % m.display_name)
 	assert_true(group.has(b.boss), "against the boss")
-	assert_false(group.has(sq), "the squad stays on the field")
+	assert_false(group.has(sq), "the pack stays on the field")
 	var sk := b.open_next_skirmish()
 	assert_eq(sk.mechs.size(), mechs.size(), "every machine fights")
-	assert_eq(sk.squads, [b.boss], "the boss is the only squad in it")
+	assert_eq(sk.packs, [b.boss], "the boss is the only pack in it")
 	assert_eq(Battle.ground_hex(group), b.boss.pos, "fought on the boss's ground")
 	_win(sk)
 	b.finish_skirmish()
 	assert_false(b.boss_contact, "the flag drops with the fight")
 	assert_eq(b.outcome, Battle.Outcome.VICTORY, "victory")
-	assert_true(b.field.units.has(sq), "the dropped squad was never fought")
+	assert_true(b.field.units.has(sq), "the dropped pack was never fought")
 
 
 func test_a_plain_contact_is_not_a_boss_contact() -> void:
 	var b := _battle()
-	_engage(b, b.field.squads()[0], b.mechs()[0])
+	_engage(b, b.field.packs()[0], b.mechs()[0])
 	b.commit()
 	assert_false(b.boss_contact, "no boss in it")
 	assert_eq(b.pending.size(), 1, "the one contact stands")
 	assert_false(b.pending[0].has(b.boss), "the boss is not dragged in")
-	assert_true(b.pending[0].has(b.field.squads()[0]), "the squad is fought")
+	assert_true(b.pending[0].has(b.field.packs()[0]), "the pack is fought")
 
 
-## Clear the team away from the gate and park a squad right in front of it.
+## Clear the team away from the gate and park a pack right in front of it.
 static func threaten_gate(b: Battle, sq: Unit) -> void:
 	var gate_o := Hex.axial_to_offset(b.map.gate)
 	for m in b.mechs():
@@ -259,9 +259,9 @@ static func threaten_gate(b: Battle, sq: Unit) -> void:
 func test_gate_falling_ends_the_battle() -> void:
 	var b := _battle()
 	b.field.gate_hp = 5
-	var sq: Unit = b.field.squads()[0]
+	var sq: Unit = b.field.packs()[0]
 	threaten_gate(b, sq)
-	assert_true(b.map.gate_hexes.has(b.field.intents[sq.id][0]), "the squad previews a strike on the gate")
+	assert_true(b.map.gate_hexes.has(b.field.intents[sq.id][0]), "the pack previews a strike on the gate")
 	b.commit()
 	assert_eq(b.field.gate_hp, 0, "gate down")
 	assert_eq(b.outcome, Battle.Outcome.GATE_FALLEN, "gate fallen")
@@ -272,7 +272,7 @@ func test_gate_falling_ends_the_battle() -> void:
 func test_wrecked_mechs_leave_the_map() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
-	var sq: Unit = b.field.squads()[0]
+	var sq: Unit = b.field.packs()[0]
 	_engage(b, sq, m)
 	b.commit()
 	var sk := b.open_next_skirmish()
@@ -288,19 +288,19 @@ func test_wrecked_mechs_leave_the_map() -> void:
 	assert_true(b.state == Battle.State.PLAN or b.outcome == Battle.Outcome.WRECKED, "battle continues or ends")
 
 
-func test_a_skirmish_is_fought_on_the_first_squads_ground() -> void:
-	# Decided 22 September: the ground is the squad's hex, the first squad in field order
+func test_a_skirmish_is_fought_on_the_first_packs_ground() -> void:
+	# Decided 22 September: the ground is the pack's hex, the first pack in field order
 	# when there are several, whatever the machines stand on.
 	var b := _battle()
 	var f := b.field
 	var m: Unit = b.mechs()[0]
-	var sq: Unit = f.squads()[0]
-	var sq2: Unit = f.squads()[1]
+	var sq: Unit = f.packs()[0]
+	var sq2: Unit = f.packs()[1]
 	f.map.terrain[m.pos] = BattleMap.Terrain.ROAD
 	f.map.terrain[sq.pos] = BattleMap.Terrain.RUINS
 	f.map.terrain[sq2.pos] = BattleMap.Terrain.WATER
 	var group: Array = [m, sq, sq2]
-	assert_eq(Battle.ground_hex(group), sq.pos, "the first squad's hex")
+	assert_eq(Battle.ground_hex(group), sq.pos, "the first pack's hex")
 	assert_eq(b.ground_terrain(group), BattleMap.Terrain.RUINS, "and its terrain")
 	var sk := b._build_skirmish(group)
 	assert_eq(sk.terrain, BattleMap.Terrain.RUINS, "the skirmish is fought there, not on the machine's road")

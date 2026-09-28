@@ -1,7 +1,7 @@
 extends Node2D
 
-## Debug map viewer. Generates a taller-than-screen battlefield, places sample mechs, squads
-## and a three-hex boss, and draws terrain, the gate and rift structures, and every squad's
+## Debug map viewer. Generates a taller-than-screen battlefield, places sample mechs, packs
+## and a three-hex boss, and draws terrain, the gate and rift structures, and every pack's
 ## previewed move. Drag to scroll. Tap (without dragging) to cycle the seed.
 
 const HEX_SIZE := 44.0
@@ -54,7 +54,7 @@ func _build(s: int) -> void:
 		m.pos = field.nearest_standable(m, want)
 		field.add_unit(m)
 		i += 1
-	Loadouts.sample_squads(field, 3, rng)
+	Loadouts.sample_packs(field, 3, rng)
 	var boss := db.make_boss(0, field.spawn_faction)
 	boss.pos = field.nearest_standable(boss, Hex.offset_to_axial(MAP_W / 2 - 1, 3))
 	field.add_unit(boss)
@@ -81,7 +81,7 @@ func _draw() -> void:
 	for r in map.rift_hexes:
 		draw_colored_polygon(Hex.corners(_center(r), HEX_SIZE - 1.5), Color("2a1a3f"))
 		draw_polyline(Hex.corners(_center(r), HEX_SIZE - 4.0) + PackedVector2Array([Hex.corners(_center(r), HEX_SIZE - 4.0)[0]]), Color("a06be0"), 3.0)
-	for sq in field.squads():
+	for sq in field.packs():
 		var path: Array = field.intents.get(sq.id, [])
 		var prev := _center(sq.pos)
 		for step in path:
@@ -117,7 +117,7 @@ func _draw() -> void:
 		map_seed, field.gate_hp, field.gate_hp_max, field.rift_pressure, field.rift_pressure_max, map.width, map.height]
 	draw_string(font, Vector2(24.0, 60.0), header, HORIZONTAL_ALIGNMENT_LEFT, -1, 22, Color("e8e4d6"))
 	var y := 92.0
-	for sq in field.squads():
+	for sq in field.packs():
 		var line := "%s  x%d  %s" % [sq.display_name, sq.strength, "hunting" if sq.aggro else "to the gate"]
 		draw_string(font, Vector2(24.0, y), line, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color("c9a0a0"))
 		y += 18.0

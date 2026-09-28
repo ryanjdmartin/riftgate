@@ -117,7 +117,7 @@ func _apply_pose() -> void:
 
 
 ## Battle screen poses: select (a mech and its reach), route (two routes plotted), hold (a
-## squad's readout), codex / foecodex (a machine's or a squad's entry), resolve (one
+## pack's readout), codex / foecodex (a machine's or a pack's entry), resolve (one
 ## phase run), contact (a skirmish open over the map).
 func _apply_battle_pose() -> void:
 	var s: BattleScreen = _node
@@ -132,7 +132,7 @@ func _apply_battle_pose() -> void:
 				if not dests.is_empty():
 					s._on_hex_tapped(dests[dests.size() / 2])
 		"hold":
-			s._on_unit_held(b.field.squads()[0])
+			s._on_unit_held(b.field.packs()[0])
 		"north":
 			# The rift end of the map, where the other world bleeds in.
 			s._map.scroll_to_top()
@@ -145,10 +145,10 @@ func _apply_battle_pose() -> void:
 			s._open_menu()
 			s._menu._show_page("settings")
 		"predict":
-			# A squad parked beside the first mech and a route plotted: the plan's contact
+			# A pack parked beside the first mech and a route plotted: the plan's contact
 			# and block tags before resolve.
 			var m: Unit = b.mechs()[0]
-			var sq: Unit = b.field.squads()[0]
+			var sq: Unit = b.field.packs()[0]
 			for n in Hex.neighbors(m.pos):
 				if b.field.can_stand(sq, n):
 					sq.pos = n
@@ -174,13 +174,13 @@ func _apply_battle_pose() -> void:
 		"codex":
 			s._on_hex_double_tapped(b.mechs()[0].pos)
 		"foecodex":
-			s._on_hex_double_tapped(b.field.squads()[0].pos)
+			s._on_hex_double_tapped(b.field.packs()[0].pos)
 		"resolve":
 			s._on_resolve()
 		"engage":
 			# ENGAGE pressed: the handover into the skirmish, mid-flight (RIFTGATE_SHOT_FRAME).
 			var m: Unit = b.mechs()[0]
-			var sq: Unit = b.field.squads()[0]
+			var sq: Unit = b.field.packs()[0]
 			for n in Hex.neighbors(m.pos):
 				if b.field.can_stand(sq, n):
 					sq.pos = n
@@ -192,7 +192,7 @@ func _apply_battle_pose() -> void:
 			s._open_skirmish(0)
 		"contact":
 			var m: Unit = b.mechs()[0]
-			var sq: Unit = b.field.squads()[0]
+			var sq: Unit = b.field.packs()[0]
 			for n in Hex.neighbors(m.pos):
 				if b.field.can_stand(sq, n):
 					sq.pos = n

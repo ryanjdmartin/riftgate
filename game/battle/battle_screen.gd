@@ -299,8 +299,8 @@ func _refresh_log() -> void:
 	var count := lines.size() - start
 	var out := ""
 	if count == 0:
-		out = "[color=#%s]> round %d // %d squads on the field // give orders, then resolve[/color]" % [
-			Color(Palette.HUD, 0.45).to_html(true), battle.field.phase + 1, battle.field.squads().size()]
+		out = "[color=#%s]> round %d // %d packs on the field // give orders, then resolve[/color]" % [
+			Color(Palette.HUD, 0.45).to_html(true), battle.field.phase + 1, battle.field.packs().size()]
 	for j in range(start, lines.size()):
 		var age := j - start
 		var a := 1.0 if count <= 1 else lerpf(0.4, 1.0, float(age) / float(count - 1))
@@ -481,8 +481,8 @@ func _toggle_tuner() -> void:
 
 
 ## Double-tap a unit for its codex (Ryan, 22 September: the player needs that on the map
-## as much as in the fight). A machine's entry is its own; a squad's is its foe type's,
-## headed by the squad.
+## as much as in the fight). A machine's entry is its own; a pack's is its foe type's,
+## headed by the pack.
 func _on_hex_double_tapped(h: Vector2i) -> void:
 	if battle.state == Battle.State.DONE:
 		return
@@ -502,7 +502,7 @@ func _on_hex_double_tapped(h: Vector2i) -> void:
 ## The gate's readout and codex entry. The text is the rule, not lore: CARE's voice for
 ## the projector is Ryan's to write.
 static func gate_text(f: Battlefield) -> String:
-	return "THE GATE\nintegrity %d/%d\nfield projector · a squad on the apron strikes it" % [f.gate_hp, f.gate_hp_max]
+	return "THE GATE\nintegrity %d/%d\nfield projector · a pack on the apron strikes it" % [f.gate_hp, f.gate_hp_max]
 
 
 static func gate_codex_entry(f: Battlefield) -> Dictionary:
@@ -511,7 +511,7 @@ static func gate_codex_entry(f: Battlefield) -> Dictionary:
 		"designation": "CARE FIELD PROJECTOR",
 		"subtitle": "THE CITY'S ENCLOSURE // THE LINE THE MACHINES HOLD",
 		"stat_items": [["integrity", "%d/%d" % [f.gate_hp, f.gate_hp_max]], ["rows", str(BattleMap.GATE_ROWS)]],
-		"body": "The projector that holds the field over the city. A squad that reaches the apron strikes it for a third of its strength each phase, at least ten; when its integrity is gone the field is down and the battle is lost. Machines may stand on it; nothing else may.",
+		"body": "The projector that holds the field over the city. A pack that reaches the apron strikes it for a third of its strength each phase, at least ten; when its integrity is gone the field is down and the battle is lost. Machines may stand on it; nothing else may.",
 		"flavour": "",
 	}
 
@@ -559,9 +559,9 @@ func _on_resolve() -> void:
 	for m in battle.mechs():
 		planned[m.id] = [m.pos] + Array(battle.routes.get(m.id, []))
 	var starts: Dictionary = {}
-	for sq in battle.field.squads():
+	for sq in battle.field.packs():
 		starts[sq.id] = sq.pos
-	# The squads' paths are the resolve's own, planned after the machines moved.
+	# The packs' paths are the resolve's own, planned after the machines moved.
 	Sound.play("resolve")
 	var gate_before := battle.field.gate_hp
 	var result := battle.commit()
@@ -570,7 +570,7 @@ func _on_resolve() -> void:
 	for sid in starts.keys():
 		planned[sid] = [starts[sid]] + Array(result.intents.get(sid, []))
 	var mech_moves: Array = []
-	var squad_moves: Array = []
+	var pack_moves: Array = []
 	for u in battle.field.units:
 		if not planned.has(u.id):
 			continue
@@ -580,11 +580,11 @@ func _on_resolve() -> void:
 		if u.is_player():
 			mech_moves.append([u.id, played])
 		else:
-			squad_moves.append([u.id, played])
+			pack_moves.append([u.id, played])
 	if DisplayServer.get_name() == "headless":
 		_after_step()
 	else:
-		_map.play_moves(mech_moves, squad_moves, _after_step)
+		_map.play_moves(mech_moves, pack_moves, _after_step)
 		_refresh()   # the buttons grey until the move has played
 
 
@@ -770,7 +770,7 @@ func _fill_contact_panel() -> void:
 	next_btn.visible = n > 1
 	head.add_child(next_btn)
 	rows.add_child(head)
-	# Portraits: the machines, a VS, the squads.
+	# Portraits: the machines, a VS, the packs.
 	var faces := HBoxContainer.new()
 	faces.alignment = BoxContainer.ALIGNMENT_CENTER
 	faces.add_theme_constant_override("separation", 10)
@@ -787,7 +787,7 @@ func _fill_contact_panel() -> void:
 	for u in group:
 		if not u.is_enemy():
 			continue
-		faces.add_child(_portrait_squad(u))
+		faces.add_child(_portrait_pack(u))
 	rows.add_child(faces)
 	# The ground the fight is on, named before ENGAGE (decided 22 September).
 	var ground := Hud.label("GROUND // %s" % str(BattleMap.TERRAIN_NAMES.get(battle.ground_terrain(group), "plain")).to_upper(), 14, Palette.HUD, Hud.mono())
@@ -834,7 +834,7 @@ func _portrait_mech(u: Unit, db: ContentDB) -> Control:
 	return box
 
 
-func _portrait_squad(u: Unit) -> Control:
+func _portrait_pack(u: Unit) -> Control:
 	var box := VBoxContainer.new()
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
 	var tr := TextureRect.new()
@@ -884,7 +884,7 @@ func _open_skirmish(index: int = 0) -> void:
 
 
 ## The handover into the skirmish (decided 22 September): the reconstruction dives onto
-## the contact, the other world's bleed grows out of the squad until the ground there has
+## the contact, the other world's bleed grows out of the pack until the ground there has
 ## gone flat and bright, the display cuts to black, and the skirmish's feed fades up.
 const HANDOVER_DIVE := 1.0
 const HANDOVER_FLAT := 1.6      # the spread runs on past the dive before the cut (Ryan, 22 September)

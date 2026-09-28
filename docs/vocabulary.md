@@ -12,8 +12,8 @@ Status: 77 implemented, 22 planned, 0 idea.
 | **Shield** | Enemy damage hits shield before hull, and a standing shield blocks a blow whole: however small the shield and however big the blow, nothing bleeds through to the hull (a breaching foe is the exception). The blow still costs the shield its damage. Shield components add shield up to the chassis maximum; in a fight that is the only way shield comes back. Out of combat it returns each battlefield phase at the chassis's field rate. It never refills for free between skirmishes. | implemented |
 | **Heat** | Attack components may add heat. At the end of the round, heat above the chassis maximum burns hull one for one and the gauge settles at the maximum; until then a vent can still bring it down. Vent components remove heat. At the start of every turn a mech sheds its chassis's cooling rating in heat, so a round spent on ballistics or shields is a way of cooling down without a vent; Overheating ticks at the end of the round, after the enemy has struck, so a scorch lands on the round's peak heat before cooling relieves it. | implemented |
 | **Reroll** | Three rerolls per round, each rerolling every unlocked, unspent mech die. A reroll always lands on a different component: never the one showing, never one equivalent to it (a die whose components are all alike keeps what it shows). Rerolls may be spent before or after attacking, so a low damage roll is information for the rest of the round. Never pooled across rounds. | implemented |
-| **Rift Pressure** | Ticks once per battlefield phase and once per skirmish round. When full it resets and a fresh squad emerges at the rift. | implemented |
-| **Gate Integrity** | A squad whose path reaches the gate strikes it instead of moving. Gate integrity persists across battles and is repaired in the meta. | implemented |
+| **Rift Pressure** | Ticks once per battlefield phase and once per skirmish round. When full it resets and a fresh pack emerges at the rift. | implemented |
+| **Gate Integrity** | A pack whose path reaches the gate strikes it instead of moving. Gate integrity persists across battles and is repaired in the meta. | implemented |
 | **Armour** | A chassis number taken off every blow that lands on bare hull, flat, never a percentage. A blow smaller than the armour does nothing. Shield is not armoured: a blow on shield costs the shield its full damage. | implemented |
 
 ## Equipment
@@ -110,13 +110,13 @@ Status: 77 implemented, 22 planned, 0 idea.
 | Term | Codex | Status |
 |---|---|---|
 | **Movespeed** | Movement points per phase. Entering a hex costs its terrain's move cost for that unit's traits. | implemented |
-| **Intent** | Each squad's path for the phase is previewed exactly. It heads for the gate or the nearest city defense, or hunts mechs if aggro. Player routes resolve first. | implemented |
-| **Body block** | A squad stops at the first hex on its path occupied by a blocking unit. Flyers do not block; squads pass through their hex but never land on it. | implemented |
+| **Intent** | Each pack's path for the phase is previewed exactly. It heads for the gate or the nearest city defense, or hunts mechs if aggro. Player routes resolve first. | implemented |
+| **Body block** | A pack stops at the first hex on its path occupied by a blocking unit. Flyers do not block; packs pass through their hex but never land on it. | implemented |
 | **Contact** | After all movement, every connected group of adjacent units that contains both sides becomes one skirmish. Multiple skirmishes resolve one at a time. | implemented |
-| **Squad** | An enemy hex is a squad: one foe type times a strength. A skirmish's enemy composition is whatever squads are chained together at contact, so the rift's formation and the player's disruption of it decide what you fight. Bosses are single three-hex units. | implemented |
-| **Footprint** | A unit covers one or more hexes. A boss covers three in a triangle. Every footprint hex blocks, touches for contact, and is a tap target. Squads and mechs stay single-hex. | implemented |
-| **Structure** | Gate and rift hexes are structures wider than one hex. Nobody stands on them. A squad whose path reaches any gate hex strikes the gate. | implemented |
-| **Spawn** | When Rift Pressure fills, the next squad of the faction's spawn list appears on the nearest free hex to the rift. | implemented |
+| **Pack** | An enemy hex is a pack: one foe type times a strength. A skirmish's enemy composition is whatever packs are chained together at contact, so the rift's formation and the player's disruption of it decide what you fight. Bosses are single three-hex units. | implemented |
+| **Footprint** | A unit covers one or more hexes. A boss covers three in a triangle. Every footprint hex blocks, touches for contact, and is a tap target. Packs and mechs stay single-hex. | implemented |
+| **Structure** | Gate and rift hexes are structures wider than one hex. Nobody stands on them. A pack whose path reaches any gate hex strikes the gate. | implemented |
+| **Spawn** | When Rift Pressure fills, the next pack of the faction's spawn list appears on the nearest free hex to the rift. | implemented |
 
 ## Terrain
 
@@ -137,7 +137,7 @@ Status: 77 implemented, 22 planned, 0 idea.
 | **Hover** | Crosses water. | implemented |
 | **Walker** | Rough and ruins cost 1. | implemented |
 | **Tank** | No effect yet. | planned |
-| **City defense** | A static player-side unit. Squads path toward it, and it joins any skirmish it is adjacent to. | implemented |
+| **City defense** | A static player-side unit. Packs path toward it, and it joins any skirmish it is adjacent to. | implemented |
 
 ## Trigger
 
@@ -160,7 +160,7 @@ Status: 77 implemented, 22 planned, 0 idea.
 |---|---|---|
 | **Command die** | One die rolled alongside the mech dice each round. Its entries are rechargeable commander abilities and never deal damage. They come from the hangar, never from rewards. Die size is a research path. | planned |
 | **One-shot** | Consumable ability. Pouch of three. Picked up from skirmishes, expires when the battle ends. Starting stock restocks every battle. | planned |
-| **Reward pick** | After a skirmish victory: a modifier on a component you carry, a one-shot, or a battle-wide boon. Weighted by the squad's faction. | planned |
+| **Reward pick** | After a skirmish victory: a modifier on a component you carry, a one-shot, or a battle-wide boon. Weighted by the pack's faction. | planned |
 
 ## City
 
@@ -189,7 +189,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 
 - **Shield** (implemented): Rates and shield sizes are placeholders. Decided 18 September: block-the-blow replaced bleed-through, and the in-combat trickle was dropped the same day (a passive may bring it back for one chassis).
 - **Heat** (implemented): Heat does nothing below the cap. Consider effects at high heat short of overflow. Cooling numbers are placeholders; cooling must stay below a typical weapon's heat or heat never matters, and a vent component must be worth a whole turn (tuning).
-- **Rift Pressure** (implemented): Spawns a fixed squad. Should draw from the battle's faction(s) and escalate.
+- **Rift Pressure** (implemented): Spawns a fixed pack. Should draw from the battle's faction(s) and escalate.
 - **Gate Integrity** (implemented): Gate damage formula is a placeholder (strength divided by three).
 - **Damage range** (implemented): Ranges are content-authored per component; no upgrade path raises min or max yet.
 - **Critical hit** (implemented): The base is Face.CRIT_MULT, a balance knob; lower it if crit triggers make crits too strong at low chance.
@@ -206,10 +206,10 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Intent** (implemented): Aggro is a fixed flag. Should be a behaviour per foe type.
 - **Contact** (implemented): No participant cap. May need one for phone readability.
 - **Footprint** (implemented): Footprints do not rotate with facing.
-- **Structure** (implemented): The rift does nothing yet beyond marking where squads spawn.
-- **Spawn** (implemented): A full spawn list should arrive together as a formation; pressure currently sends one squad at a time.
+- **Structure** (implemented): The rift does nothing yet beyond marking where packs spawn.
+- **Spawn** (implemented): A full spawn list should arrive together as a formation; pressure currently sends one pack at a time.
 - **Road** (implemented): Tanks should move faster on roads. Not coded.
-- **Ruins** (implemented): Designed as cover for the squad inside a skirmish. Skirmish terrain conditions are not coded.
+- **Ruins** (implemented): Designed as cover for the pack inside a skirmish. Skirmish terrain conditions are not coded.
 - **Water** (implemented): Designed to dampen burn inside a skirmish. Not coded.
 - **Tank** (planned): Intended: faster on roads.
 - **City defense** (implemented): Defenses have no die. They cannot act inside a skirmish yet.

@@ -30,7 +30,7 @@
       "hp": 50, "attack": 20, "rank": "front",
       "actions": [
         { "id": "haymaker", "name": "Haymaker", "kind": "attack", "text": "One enormous swing for {damage}.", "status": "implemented" },
-        { "id": "roar", "name": "Roar", "kind": "debuff", "text": "Costs the squad one reroll next round.", "status": "planned" }
+        { "id": "roar", "name": "Roar", "kind": "debuff", "text": "Costs the pack one reroll next round.", "status": "planned" }
       ],
       "flavour": "Big, loud and honest. I've fought worse people."
     },

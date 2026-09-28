@@ -86,21 +86,21 @@ func test_sparrowhawk_loadout_matches_design() -> void:
 	assert_true(not db.chassis["sparrowhawk"].has("passives"), "still counts as one passive")
 
 
-func test_squads_unpack_by_foe_type() -> void:
+func test_packs_unpack_by_foe_type() -> void:
 	var db := _db()
-	var ghouls := Unit.squad(7, "ghouls", Vector2i.ZERO, "undead", 2, 6, "ghoul")
+	var ghouls := Unit.pack(7, "ghouls", Vector2i.ZERO, "undead", 2, 6, "ghoul")
 	var foes := db.foes_for(ghouls)
 	assert_eq(foes.size(), 6, "six ghouls from strength six")
 	for f in foes:
 		assert_eq(f.display_name, "Ghoul", "all the same type")
-		assert_eq(f.squad_id, 7, "foe remembers its squad")
-	var necros := Unit.squad(8, "necromancers", Vector2i.ZERO, "undead", 2, 2, "necromancer")
+		assert_eq(f.pack_id, 7, "foe remembers its pack")
+	var necros := Unit.pack(8, "necromancers", Vector2i.ZERO, "undead", 2, 2, "necromancer")
 	var backs := db.foes_for(necros)
 	assert_eq(backs.size(), 2, "two necromancers")
 	assert_true(backs[0].prefers_back, "necromancer holds the back")
-	var untyped := Unit.squad(9, "whatever", Vector2i.ZERO, "demonic", 2, 3)
+	var untyped := Unit.pack(9, "whatever", Vector2i.ZERO, "demonic", 2, 3)
 	var fallback := db.foes_for(untyped)
-	assert_eq(fallback.size(), 3, "a squad with no type falls back to the faction's first spawn entry")
+	assert_eq(fallback.size(), 3, "a pack with no type falls back to the faction's first spawn entry")
 	assert_eq(fallback[0].display_name, "Brute", "which is the brute for demons")
 
 
@@ -118,7 +118,7 @@ func test_boss_unpacks_to_the_faction_boss() -> void:
 func test_spawn_table_lists_the_factions_formation() -> void:
 	var db := _db()
 	var table := db.spawn_table("undead")
-	assert_eq(table.size(), 3, "three squads come through together")
+	assert_eq(table.size(), 3, "three packs come through together")
 	assert_eq(table[0][0], "ghoul", "ghouls first")
 	assert_eq(table[2][0], "necromancer", "necromancers behind them")
 	assert_eq(table[2][1], 3, "three of them")
@@ -130,7 +130,7 @@ func test_content_mech_survives_a_skirmish_round() -> void:
 	var sk := Skirmish.new(5)
 	sk.add_mech(db.make_mech("badger"))
 	sk.add_mech(db.make_mech("clydesdale"))
-	var sq := Unit.squad(1, "risen", Vector2i.ZERO, "undead", 2, 6)
+	var sq := Unit.pack(1, "risen", Vector2i.ZERO, "undead", 2, 6)
 	sk.add_foes(db.foes_for(sq), sq)
 	sk.begin()
 	sk.start_round()

@@ -1,7 +1,7 @@
 class_name Foe
 extends RefCounted
 
-## One enemy inside a skirmish. A squad on the battlefield unpacks into several of these.
+## One enemy inside a skirmish. A pack on the battlefield unpacks into several of these.
 ##
 ## A foe has a base attack number, the player's quick read of how hard it hits, and a list
 ## of attack actions that scale it: {id, name, factor, strikes, weight, keywords, text}.
@@ -15,7 +15,7 @@ var hp: int = 30
 var hp_max: int = 30
 var attack: int = 10             # base attack: the number the player reads as "how hard it hits"
 var prefers_back: bool = false   # ranged types hold the back rank and never step up
-var squad_id: int = 0            # which battlefield squad this foe came from
+var pack_id: int = 0            # which battlefield pack this foe came from
 var size: int = 1                # 2 = massive: fills both slots of a column
 var stun_resist: int = 0         # base chance, percent, to shrug off a suppress (content; bosses carry some)
 var actions: Array = []          # implemented attack actions; at least the basic one

@@ -11,14 +11,14 @@ and open question from the design sessions.
 - `sim/` — pure simulation. No scene dependencies. Seeded RNG. Everything here runs headless.
   - `hex.gd` axial/cube hex math, pointy-top pixel conversion
   - `battle_map.gd` terrain grid, gate, rift, procedural generation with a guaranteed ground path
-  - `unit.gd` mechs, squads, city defenses on the battlefield
+  - `unit.gd` mechs, packs, city defenses on the battlefield
   - `battlefield.gd` phase resolution: previewed enemy intents, player routes, body-blocking,
     connected-group skirmish detection, gate damage, Rift Pressure
   - `face.gd`, `die.gd` die faces and dice
   - `foe.gd` an enemy inside a skirmish
   - `skirmish.gd` the dice skirmish: two-rank enemy formation fed from a pool, reach rules,
     keywords, heat, shields, injuries, withdraw, outcome
-  - `loadouts.gd` sample dice and squads for prototypes and tests
+  - `loadouts.gd` sample dice and packs for prototypes and tests
   - `policy.gd` a player for the headless skirmish, a ladder of skill (random, greedy) with
     personas on top, so balance can be measured over thousands of fights
   - `passives.gd` runs the passive triggers the engine supports (the validator refuses others)
@@ -30,7 +30,7 @@ and open question from the design sessions.
   every machine name in BattleTech, Heavy Gear, Warhammer 40k and Halo; a chassis nickname or id
   on it fails the validator unless the entry records the clash under `design.name_clash`.
 - `game/` — scenes and presentation.
-  - `harness.tscn` is the main scene: pick a team, faction, squad size, seed, then Battle
+  - `harness.tscn` is the main scene: pick a team, faction, pack size, seed, then Battle
     (the whole loop), Fight (one skirmish), or the map viewer
   - `battle/battle_screen.gd` the battle screen: the map with the phase loop around it, and
     the skirmish screen hosted over it on contact; `battle/battle_map_view.gd` draws the
@@ -178,12 +178,12 @@ a mech to select it and the hexes it can reach light up; tap a lit hex to plot t
 there; tap the mech again to clear its route. Routes are planned in the order they are
 plotted, so a later machine may end where an earlier one is leaving; re-plotting a machine
 puts it last. Hold any unit for its numbers; double-tap it for its codex; tap the gate for
-its integrity. Red lines are where each squad goes this round, from the plan as it stands:
-a grounded machine controls the ground beside it (the tinted flower), a squad stepping into
+its integrity. Red lines are where each pack goes this round, from the plan as it stands:
+a grounded machine controls the ground beside it (the tinted flower), a pack stepping into
 it stops there and that is a contact, marked before Resolve with who is in it and the ground
 it will be fought on. Resolve plays the moves, then a CONTACT band, then a panel of the
 contacts with portraits; ENGAGE dives the map onto the fight and hands over to the skirmish
-screen. Its Back button applies the result: wrecks leave the map, squads shrink to their
+screen. Its Back button applies the result: wrecks leave the map, packs shrink to their
 survivors, surviving shields recharge, and Rift Pressure ticks once per round fought. The
 battle ends when the gate falls, every mech is wrecked, or the boss dies. MENU on either
 screen pauses and holds the settings (display colour, brightness, move pace, glitch, scan

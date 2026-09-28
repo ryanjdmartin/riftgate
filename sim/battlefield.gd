@@ -6,20 +6,20 @@ extends RefCounted
 ## A phase:
 ##   1. compute_intents()          enemy destinations are previewed for the player
 ##   2. player plots routes        (outside the sim)
-##   3. resolve_phase(routes)      player routes resolve first, then squads execute their
+##   3. resolve_phase(routes)      player routes resolve first, then packs execute their
 ##                                 previewed moves and stop at the first blocked hex
 ##   4. detect_skirmishes()        connected groups of touching units that mix both sides
 ##
 ## Units may cover several hexes (Unit.footprint). Every footprint hex blocks, touches, and
 ## counts as occupied. The gate and the rift are structures wider than one hex; nobody stands
-## on them and squads strike any gate hex.
+## on them and packs strike any gate hex.
 
 class PhaseResult:
 	var moved: Array[int] = []        # unit ids that moved
 	var rejected: Array[int] = []     # unit ids whose route was invalid
-	var blocked: Array[int] = []      # squad ids stopped by a body block
-	var intercepted: Array[int] = []  # squad ids stopped by a mech's control of the ground beside it
-	var intents: Dictionary = {}      # squad id -> the path it followed, planned after the mechs moved
+	var blocked: Array[int] = []      # pack ids stopped by a body block
+	var intercepted: Array[int] = []  # pack ids stopped by a mech's control of the ground beside it
+	var intents: Dictionary = {}      # pack id -> the path it followed, planned after the mechs moved
 	var gate_damage: int = 0
 	var spawned: bool = false
 	var skirmishes: Array = []        # Array of Array[Unit]
@@ -31,11 +31,11 @@ var gate_hp_max: int = 200
 var rift_pressure: int = 0
 var rift_pressure_max: int = 12
 var spawn_faction: String = "undead"
-## Squads the rift sends, cycled: [[foe_id, strength], ...]. The game fills this from content.
+## Packs the rift sends, cycled: [[foe_id, strength], ...]. The game fills this from content.
 var spawn_table: Array = [["ghoul", 6]]
 var _spawn_index: int = 0
 var phase: int = 0
-var intents: Dictionary = {}   # squad id -> Array[Vector2i], the affordable part of its path
+var intents: Dictionary = {}   # pack id -> Array[Vector2i], the affordable part of its path
 var log: Array[String] = []
 var _next_id: int = 1
 
@@ -74,7 +74,7 @@ func mechs() -> Array[Unit]:
 	return out
 
 
-func squads() -> Array[Unit]:
+func packs() -> Array[Unit]:
 	var out: Array[Unit] = []
 	for u in units:
 		if u.is_enemy():
@@ -96,7 +96,7 @@ func is_free(h: Vector2i) -> bool:
 
 ## Whether `u` could stand with its anchor at `at`: every footprint hex in the map, passable,
 ## not a structure, and not held by another unit. Flyers are ignored as blockers only when
-## `ignore_flyers` is set (squads pass through them).
+## `ignore_flyers` is set (packs pass through them).
 func can_stand(u: Unit, at: Vector2i, ignore_flyers: bool = false) -> bool:
 	for o in u.footprint:
 		var h: Vector2i = at + o
@@ -209,19 +209,19 @@ func _search(u: Unit, from: Vector2i, budget: int) -> Array:
 	return [dist, prev]
 
 
-## Where each squad intends to go this phase. Paths ignore mechs, so what the player sees is
-## "where they go unless you stop them". Other squads' current hexes are avoided.
+## Where each pack intends to go this phase. Paths ignore mechs, so what the player sees is
+## "where they go unless you stop them". Other packs' current hexes are avoided.
 func compute_intents() -> void:
-	# Squads plan in field order, each around where the squads before it will end and
-	# where the ones after it stand now (Ryan, 22 September), so a squad routes around a
+	# Packs plan in field order, each around where the packs before it will end and
+	# where the ones after it stand now (Ryan, 22 September), so a pack routes around a
 	# hex another is taking instead of walking into it and stopping short. The same order
 	# moves them at resolve, so an intent plays as shown unless a mech blocks it.
 	intents.clear()
-	var ends: Dictionary = {}   # squad id -> hexes it will hold, for the squads after it
-	for sq in squads():
+	var ends: Dictionary = {}   # pack id -> hexes it will hold, for the packs after it
+	for sq in packs():
 		var target := _pick_target(sq)
 		var blocked := {}
-		for other in squads():
+		for other in packs():
 			if other == sq:
 				continue
 			var held: Array = ends[other.id] if ends.has(other.id) else other.hexes()
@@ -235,9 +235,9 @@ func compute_intents() -> void:
 			intents[sq.id] = none
 			ends[sq.id] = sq.hexes()
 			continue
-		# Squads plan blind to the machines (Ryan, 22 September: a plot never makes a squad
+		# Packs plan blind to the machines (Ryan, 22 September: a plot never makes a pack
 		# swerve; the enemy's path is stable and only where it is cut changes). Control cuts
-		# the affordable path at the first controlled hex, where the squad will stop.
+		# the affordable path at the first controlled hex, where the pack will stop.
 		var full := map.find_path(sq.pos, target, sq.traits, blocked)
 		var path := _affordable(sq, full)
 		if not ignores_control:
@@ -257,7 +257,7 @@ func compute_intents() -> void:
 		ends[sq.id] = held_now
 
 
-## Where a squad heads this phase. A boss patrols its zone outside the rift (Ryan, 22
+## Where a pack heads this phase. A boss patrols its zone outside the rift (Ryan, 22
 ## September): one step to a standable hex within BOSS_ZONE of the rift, picked by the
 ## phase so the preview never disagrees with the resolve; nothing, when nothing fits.
 const BOSS_ZONE := 2
@@ -322,7 +322,7 @@ func resolve_phase(routes: Dictionary) -> PhaseResult:
 ## The phase as it would resolve right now, without resolving it (Ryan, 21 September: the
 ## plan must never be ambiguous). Runs the same movement as `resolve_phase`, dry, then puts
 ## every unit back. Returns {"result": PhaseResult, "ends": {unit id: hex}}. Only the
-## pressure tick and its spawn are left out: a squad that spawns at the rift this phase
+## pressure tick and its spawn are left out: a pack that spawns at the rift this phase
 ## cannot be in a contact, since nothing stands at the rift.
 func preview_phase(routes: Dictionary) -> Dictionary:
 	var saved: Dictionary = {}
@@ -342,10 +342,10 @@ func preview_phase(routes: Dictionary) -> Dictionary:
 	return {"result": result, "ends": ends}
 
 
-## The movement of one phase: the mechs' routes in the order given, then every squad in
+## The movement of one phase: the mechs' routes in the order given, then every pack in
 ## field order. Order matters twice, and this is the one place it is decided: a route
 ## through a hex another mech is leaving is rejected unless that mech went first, and a
-## squad stops short of a hex another squad has already taken. `dry` skips the gate
+## pack stops short of a hex another pack has already taken. `dry` skips the gate
 ## damage and the log.
 func _move_all(routes: Dictionary, result: PhaseResult, dry: bool) -> void:
 	# Mechs first, in the order the player plotted them (the dictionary's order). Routes
@@ -363,18 +363,18 @@ func _move_all(routes: Dictionary, result: PhaseResult, dry: bool) -> void:
 			result.rejected.append(uid)
 			if not dry:
 				log.append("%s: route rejected" % u.display_name)
-	# The squads plan against where the machines now stand (Ryan, 22 September: a route
-	# that cuts a squad off must show in that squad's path before Resolve), so their
+	# The packs plan against where the machines now stand (Ryan, 22 September: a route
+	# that cuts a pack off must show in that pack's path before Resolve), so their
 	# intents are recomputed here, in the preview and the resolve alike.
 	compute_intents()
 	result.intents = intents.duplicate(true)
-	for sq in squads():
-		_execute_squad(sq, result, dry)
+	for sq in packs():
+		_execute_pack(sq, result, dry)
 
 
-## Whether a grounded machine controls `h`: a squad that steps beside a mech stops there
+## Whether a grounded machine controls `h`: a pack that steps beside a mech stops there
 ## (decided 22 September). A flyer controls nothing; its edge is speed, and it engages by
-## ending beside a squad.
+## ending beside a pack.
 func controlled(h: Vector2i) -> bool:
 	for m in mechs():
 		if m.traits.has("flyer"):
@@ -426,7 +426,7 @@ func _direction_index(from: Vector2i, to: Vector2i) -> int:
 	return 0
 
 
-func _execute_squad(sq: Unit, result: PhaseResult, dry: bool = false) -> void:
+func _execute_pack(sq: Unit, result: PhaseResult, dry: bool = false) -> void:
 	var path: Array = intents.get(sq.id, [])
 	var budget := sq.movespeed
 	var landed := sq.pos
@@ -495,7 +495,7 @@ func detect_skirmishes() -> Array:
 	return groups
 
 
-## Feed the Rift Pressure clock. Spawns a squad at the rift when it fills. Returns true on spawn.
+## Feed the Rift Pressure clock. Spawns a pack at the rift when it fills. Returns true on spawn.
 func tick_pressure(ticks: int) -> bool:
 	rift_pressure += ticks
 	if rift_pressure < rift_pressure_max:
@@ -504,7 +504,7 @@ func tick_pressure(ticks: int) -> bool:
 	var at := nearest_free(map.rift, [])
 	var entry: Array = spawn_table[_spawn_index % spawn_table.size()] if not spawn_table.is_empty() else ["", 6]
 	_spawn_index += 1
-	var sq := Unit.squad(0, "%s squad" % str(entry[0]), at, spawn_faction, 2, int(entry[1]), str(entry[0]))
+	var sq := Unit.pack(0, "%s pack" % str(entry[0]), at, spawn_faction, 2, int(entry[1]), str(entry[0]))
 	add_unit(sq)
 	log.append("Rift pressure peaks: %s emerge at %s" % [sq.display_name, str(at)])
 	return true
@@ -516,7 +516,7 @@ func apply_skirmish_result(sk: Skirmish) -> void:
 		if ms.unit.hull <= 0:
 			log.append("%s is wrecked" % ms.unit.display_name)
 			units.erase(ms.unit)
-	for sq in sk.squads:
+	for sq in sk.packs:
 		var left := sk.survivors_for(sq)
 		if left <= 0:
 			log.append("%s destroyed" % sq.display_name)

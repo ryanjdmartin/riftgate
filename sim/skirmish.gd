@@ -56,7 +56,7 @@ class MechState:
 
 var rng := RandomNumberGenerator.new()
 var mechs: Array[MechState] = []
-var squads: Array[Unit] = []
+var packs: Array[Unit] = []
 var columns: int = DEFAULT_COLUMNS
 var terrain: int = BattleMap.Terrain.PLAIN   # the ground the fight is on (the contact hex), for the screen
 var front: Array = []
@@ -98,13 +98,13 @@ func add_mech(u: Unit, d: Die = null) -> MechState:
 	return ms
 
 
-func add_foes(list: Array, from_squad: Unit = null) -> void:
+func add_foes(list: Array, from_pack: Unit = null) -> void:
 	for f in list:
-		if from_squad != null:
-			f.squad_id = from_squad.id
+		if from_pack != null:
+			f.pack_id = from_pack.id
 		reinforcements.append(f)
-	if from_squad != null and not squads.has(from_squad):
-		squads.append(from_squad)
+	if from_pack != null and not packs.has(from_pack):
+		packs.append(from_pack)
 
 
 func begin() -> void:
@@ -156,10 +156,10 @@ func live_mechs() -> Array[MechState]:
 func survivors_for(sq: Unit) -> int:
 	var n := 0
 	for f in field_foes():
-		if f.squad_id == sq.id and f.alive():
+		if f.pack_id == sq.id and f.alive():
 			n += 1
 	for f in reinforcements:
-		if f.squad_id == sq.id:
+		if f.pack_id == sq.id:
 			n += 1
 	return n
 

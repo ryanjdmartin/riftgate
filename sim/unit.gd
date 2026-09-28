@@ -1,7 +1,7 @@
 class_name Unit
 extends RefCounted
 
-## A thing on the battlefield: a player mech, an enemy squad, or a city defense.
+## A thing on the battlefield: a player mech, an enemy pack, or a city defense.
 
 enum Side { PLAYER, ENEMY }
 
@@ -58,18 +58,18 @@ var cooling: int:
 ## Chassis traits: "flyer", "hover", "walker", "tank", "defense".
 var traits: Array[String] = []
 
-## Hexes this unit covers, as axial offsets from pos. Squads and mechs are one hex; a massive
+## Hexes this unit covers, as axial offsets from pos. Packs and mechs are one hex; a massive
 ## boss is three in a triangle. Every footprint hex blocks, touches, and is a tap target.
 var footprint: Array[Vector2i] = [Vector2i.ZERO]
 
 ## Presentation: index into Hex.DIRECTIONS of the last step taken.
 var facing: int = 0
 
-# Enemy squads only. A squad is one foe type times a strength; a boss is a squad with `elite`
+# Enemy packs only. A pack is one foe type times a strength; a boss is a pack with `elite`
 # set, which unpacks into the faction's massive boss.
 var faction: String = ""
-var foe_id: String = ""      # content id of the foe this squad is made of
-var strength: int = 6        # how many foes the squad holds
+var foe_id: String = ""      # content id of the foe this pack is made of
+var strength: int = 6        # how many foes the pack holds
 var aggro: bool = false      # hunts mechs instead of the gate
 var elite: bool = false      # this unit is the faction's boss
 
@@ -98,7 +98,7 @@ static func mech(uid: int, name: String, at: Vector2i, speed: int = 3) -> Unit:
 	return u
 
 
-static func squad(uid: int, name: String, at: Vector2i, fac: String = "undead", speed: int = 2, size: int = 6, foe: String = "") -> Unit:
+static func pack(uid: int, name: String, at: Vector2i, fac: String = "undead", speed: int = 2, size: int = 6, foe: String = "") -> Unit:
 	var u := Unit.new()
 	u.id = uid
 	u.display_name = name
@@ -118,7 +118,7 @@ static func squad(uid: int, name: String, at: Vector2i, fac: String = "undead", 
 ## through a field of hexes, and the boss guards the rift rather than marching). The
 ## multi-hex footprint (`TRIANGLE`) stays in the engine for later.
 static func boss(uid: int, name: String, at: Vector2i, fac: String = "undead", speed: int = 1) -> Unit:
-	var u := squad(uid, name, at, fac, speed, 0)
+	var u := pack(uid, name, at, fac, speed, 0)
 	u.elite = true
 	u.hull = 1
 	return u

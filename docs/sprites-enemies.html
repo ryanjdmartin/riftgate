@@ -128,10 +128,10 @@
 <section id="tokens">
   <span class="tag">Battlefield</span>
   <h2>Map tokens</h2>
-  <p style="margin-top:12px">One 16 &times; 16 chibi per foe type, one pixel ink outline, four to six colours, facing south or south-west. On the map they are squad tokens, so they carry a count chip in the hex corner; the Bone Colossus is a three-hex boss and gets a 40 &times; 40 sprite that overflows the centre hex of its triangle.</p>
+  <p style="margin-top:12px">One 16 &times; 16 chibi per foe type, one pixel ink outline, four to six colours, facing south or south-west. On the map they are pack tokens, so they carry a count chip in the hex corner; the Bone Colossus is a three-hex boss and gets a 40 &times; 40 sprite that overflows the centre hex of its triangle.</p>
   <div class="foes">
     <figure><canvas id="c-tokens"></canvas><figcaption><b>All nine at 3&times; and 1&times;.</b> Top row The Risen and the first of the Host; bottom row the rest. The 1&times; copy is what the player sees at arm's length; the test is whether faction reads before foe.</figcaption></figure>
-    <figure><canvas id="c-badges"></canvas><figcaption><b>Squad-count chip and boss footprint.</b> Left three: tokens in their hex with a count chip at the lower-right corner, as the battlefield will draw them. Right: the Bone Colossus on its three-hex triangle, 40 &times; 40 at 3&times;, anchored on the base hex and overflowing upward.</figcaption></figure>
+    <figure><canvas id="c-badges"></canvas><figcaption><b>Pack-count chip and boss footprint.</b> Left three: tokens in their hex with a count chip at the lower-right corner, as the battlefield will draw them. Right: the Bone Colossus on its three-hex triangle, 40 &times; 40 at 3&times;, anchored on the base hex and overflowing upward.</figcaption></figure>
   </div>
 </section>
 
@@ -1114,7 +1114,7 @@
     });
   })();
 
-  /* ---------- squad-count chips and the three-hex boss ---------- */
+  /* ---------- pack-count chips and the three-hex boss ---------- */
   function hexTile(ctx, cx, cy, R, fill){
     hexPath(ctx, cx, cy, R - 1, true);
     ctx.fillStyle = fill; ctx.fill();

@@ -2,7 +2,7 @@ class_name BattleMapView
 extends Control
 
 ## The battlefield as a scrolling, touchable map in the overlay style. Draws terrain, the gate
-## and the rift, every squad's previewed move, the routes the player has plotted, the hexes
+## and the rift, every pack's previewed move, the routes the player has plotted, the hexes
 ## the selected mech can reach, and the units themselves.
 ##
 ## Gestures: drag to scroll; tap a hex (the screen decides what that means); hold a unit for
@@ -201,7 +201,7 @@ func to_map(local: Vector2) -> Vector2:
 
 
 ## The base of a hex in map space: its grid cell before any height. The enemy's marks and
-## the squads themselves sit here (Ryan, 22 September: their world is flat, and they
+## the packs themselves sit here (Ryan, 22 September: their world is flat, and they
 ## flatten what they walk on).
 func base(h: Vector2i) -> Vector2:
 	return _origin + Hex.to_pixel(h, HEX_SIZE)
@@ -255,15 +255,15 @@ func zoom_at(local: Vector2, factor: float) -> void:
 	queue_redraw()
 
 
-## Squads outside the visible strip, with the edge tag each gets: [[Rect2, Unit], ...]. Tags
-## sit at the top or bottom edge at the squad's x, nudged right when two would overlap, so an
+## Packs outside the visible strip, with the edge tag each gets: [[Rect2, Unit], ...]. Tags
+## sit at the top or bottom edge at the pack's x, nudged right when two would overlap, so an
 ## intent line entering the view has a face at its source.
 func offscreen_tags() -> Array:
 	var out: Array = []
 	if field == null:
 		return out
 	var rows := {true: [], false: []}
-	for sq in field.squads():
+	for sq in field.packs():
 		var c := to_screen(center(sq.pos))
 		var above := c.y < -HEX_SIZE * 0.3
 		var below := c.y > size.y + HEX_SIZE * 0.3
@@ -356,9 +356,9 @@ func _draw() -> void:
 		draw_colored_polygon(pts, Color(hud, 0.26))
 		Hud.stroke_poly(self, pts, Color(hud, 0.8), 1.5)
 
-	# Enemy previews: where each squad goes given the plan as it stands, from the same dry
-	# run that finds the contacts (Ryan, 22 September: a route that cuts a squad off shows
-	# in that squad's path), and none at all while a move is playing.
+	# Enemy previews: where each pack goes given the plan as it stands, from the same dry
+	# run that finds the contacts (Ryan, 22 September: a route that cuts a pack off shows
+	# in that pack's path), and none at all while a move is playing.
 	var contact_hexes: Dictionary = {}
 	if _anim.is_empty() and pending.is_empty():
 		var pv := _preview()
@@ -374,7 +374,7 @@ func _draw() -> void:
 			if m.traits.has("flyer"):
 				continue
 			_zone(ends[m.id], hud)
-		for sq in field.squads():
+		for sq in field.packs():
 			var path: Array = res.intents.get(sq.id, [])
 			if path.is_empty():
 				continue
@@ -425,7 +425,7 @@ func _draw() -> void:
 			for u in group:
 				_contact_effect(u.pos, lit, u.is_enemy())
 	# The plan as it will resolve, from the resolver itself run dry (Ryan, 21 September:
-	# never ambiguous): every contact group, every squad stopped by a body block, every
+	# never ambiguous): every contact group, every pack stopped by a body block, every
 	# route that will be rejected.
 	if _anim.is_empty() and pending.is_empty():
 		var pv := _preview()
@@ -444,7 +444,7 @@ func _draw() -> void:
 				top_y = minf(top_y, c.y)
 				_contact_effect(ends[u.id], lit, u.is_enemy())
 			mid /= float(group.size())
-			# Who is in it: the machines against the squads, so the player knows what the
+			# Who is in it: the machines against the packs, so the player knows what the
 			# skirmish will hold before locking in (Ryan, 22 September).
 			_plaque(Vector2(mid.x, top_y - HEX_SIZE * 0.95), "CONTACT // " + contact_label(group, ends), Palette.ENEMY, 2.0)
 		for sid in res.blocked:
@@ -631,7 +631,7 @@ func _draw_rift(map: BattleMap) -> void:
 		draw_texture_rect_region(tex, dst, src, Color(1, 1, 1, 1) if not torn else Color(0.55, 0.55, 0.68, 1.0))   # dimmed hard: at 0.82 only the shear showed (Ryan, 23 September)
 
 
-## Off-screen squads get a portrait at the edge nearest them: the source of the intent line.
+## Off-screen packs get a portrait at the edge nearest them: the source of the intent line.
 
 
 ## A number on a dark plaque with a coloured border: legible on any tile, and the colour
@@ -672,7 +672,7 @@ func _draw_tags() -> void:
 			draw_string(Hud.mono(), c + Vector2(-4.0, 5.0), sq.display_name.substr(0, 1).to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Palette.BG)
 		var label := ("×%d" % sq.strength) if sq.strength > 0 else "BOSS"
 		draw_string(Hud.mono(), rect.position + Vector2(0, rect.size.y - 6.0), label, HORIZONTAL_ALIGNMENT_CENTER, rect.size.x, 12, Palette.INK)
-		# A chevron on the outer edge, pointing the way to the squad.
+		# A chevron on the outer edge, pointing the way to the pack.
 		var mid := rect.position.x + rect.size.x * 0.5
 		var edge_y := rect.position.y - 1.0 if above else rect.end.y + 1.0
 		var dir := -1.0 if above else 1.0
@@ -680,7 +680,7 @@ func _draw_tags() -> void:
 
 
 ## The effects, told apart by motion (Ryan, 22 September: a red outline alone never reads
-## against this ground, so tint the hex and move something). A squad's destination: a
+## against this ground, so tint the hex and move something). A pack's destination: a
 ## tinted hex with a target of concentric rings breathing inside it. A contact: a heavier
 ## tint that pulses, a thick outline, and rings bursting out past the hex's edge, again and
 ## again. Dimmed when another contact is the one being looked at.
@@ -842,13 +842,13 @@ func focus_on(p: Vector2, z: float) -> void:
 ## "Badger + Sparrowhawk vs ghouls ×6 + necromancers ×3": one contact group, in words.
 static func contact_text(group: Array) -> String:
 	var mechs: Array[String] = []
-	var squads: Array[String] = []
+	var packs: Array[String] = []
 	for u in group:
 		if u.is_player():
 			mechs.append(str(u.display_name))
 		else:
-			squads.append("%s ×%d" % [u.display_name, u.strength] if u.strength > 0 else str(u.display_name).to_upper())
-	return " + ".join(mechs) + " vs " + " + ".join(squads)
+			packs.append("%s ×%d" % [u.display_name, u.strength] if u.strength > 0 else str(u.display_name).to_upper())
+	return " + ".join(mechs) + " vs " + " + ".join(packs)
 
 
 ## The contact's words with the ground it is fought on (decided 22 September).
@@ -890,7 +890,7 @@ const MOVE_SECONDS_PER_HEX := 0.22   # the fastest anything ever moves (Ryan, 22
 static var pace := 1.0               # the player's setting: seconds per hex are divided by it
 const MOVE_REF_SPEED := 5.0          # a unit this quick moves at that pace; slower ones slower
 var _anim: Dictionary = {}      # unit id -> {path: Array[Vector2i], t: float}
-var _anim_queue: Array = []     # [[moves], ...] phases still to play: mechs, then squads
+var _anim_queue: Array = []     # [[moves], ...] phases still to play: mechs, then packs
 var _anim_done: Callable = Callable()
 
 
@@ -898,13 +898,13 @@ func is_playing() -> bool:
 	return not _anim.is_empty() or not _anim_queue.is_empty()
 
 
-## Play the phase's moves: the mechs along their routes, then the squads along their
+## Play the phase's moves: the mechs along their routes, then the packs along their
 ## intents, then `done`. Each move is [unit id, Array of hexes from start to end].
-func play_moves(mech_moves: Array, squad_moves: Array, done: Callable) -> void:
-	_anim_queue = [mech_moves, squad_moves]
+func play_moves(mech_moves: Array, pack_moves: Array, done: Callable) -> void:
+	_anim_queue = [mech_moves, pack_moves]
 	_anim_done = done
 	# Everyone who will move starts where they were, this frame, so nobody blinks to the
-	# end and rewinds (Ryan, 22 September); the squads wait there while the mechs play.
+	# end and rewinds (Ryan, 22 September); the packs wait there while the mechs play.
 	for moves in _anim_queue:
 		for mv in moves:
 			var path: Array = mv[1]
@@ -950,7 +950,7 @@ func _advance_anim(delta: float) -> void:
 		if i != int(a.get("i", -1)):
 			a["i"] = i
 			if i > 0 and field.unit_by_id(uid) != null and field.unit_by_id(uid).is_player():
-				Sound.play("step", 0.0, 0.1)   # a footfall a hex (quiet by its file); the squads are pictures and make none
+				Sound.play("step", 0.0, 0.1)   # a footfall a hex (quiet by its file); the packs are pictures and make none
 		var f: float = a["t"] - i
 		var from: Vector2 = Hex.to_pixel(path[i], HEX_SIZE)
 		var to: Vector2 = Hex.to_pixel(path[i + 1], HEX_SIZE)

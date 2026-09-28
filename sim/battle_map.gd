@@ -39,7 +39,7 @@ var map_seed: int = 0
 const STRUCTURE_HALF_WIDTH := 1   # gate and rift span centre plus this many hexes each side
 ## The gate and the walls are two rows deep: the models stand on the bottom row and the row
 ## above is their apron, so the wall never hides a unit behind it from the map camera
-## (Ryan, 20 September). A squad strikes the gate from the row above the apron.
+## (Ryan, 20 September). A pack strikes the gate from the row above the apron.
 const GATE_ROWS := 2
 
 
@@ -73,7 +73,7 @@ func _span(col: int, row: int) -> Array[Vector2i]:
 	return out
 
 
-## Gate, rift and wall hexes are structures: nobody stands on them. Squads strike the gate;
+## Gate, rift and wall hexes are structures: nobody stands on them. Packs strike the gate;
 ## the walls cannot be hurt.
 func is_structure(h: Vector2i) -> bool:
 	return gate_hexes.has(h) or rift_hexes.has(h) or wall_hexes.has(h)

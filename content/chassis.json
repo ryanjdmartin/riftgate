@@ -30,9 +30,9 @@
     },
     {
       "id": "clydesdale", "name": "Clydesdale", "designation": "Pattern 1 Combat Walker", "maker": "wainwright_sutler", "silhouette": "quadruped",
-      "design": { "fantasy": "A massive, boxy, heavily armoured, and utilitarian quadruped walker, designed to fill whatever niche the squad is lacking. Like its namesake, it has four thick legs and carries a massive payload on top.", "niche": "Heavy cavalry" },
+      "design": { "fantasy": "A massive, boxy, heavily armoured, and utilitarian quadruped walker, designed to fill whatever niche the team is lacking. Like its namesake, it has four thick legs and carries a massive payload on top.", "niche": "Heavy cavalry", "notes": "Not sure if this needs a passive, since by lore this probably doesn't want too many locked components. This design is intentionally vanilla, as it's a jack-of-all-trades horse that can mount a ton of stuff, but for gameplay purposes it might need something to prevent it from being actually lame and boring. If we make it unique in that it has a very high number of hardpoints, then a passive ability that helps control roll randomness somehow would probably be appropriate." },
       "codex": "Surprisingly, or perhaps not, the ever-pragmatic Wainwright & Sutler were the first surviving manufacturer to field a combat walker when the invasion first began. Not knowing the full scope of the threat, the Clydesdale was positioned as a rugged and effective jack-of-all trades, a true workhorse befitting its namesake. A hundred years later, and the original design is still barely changed, its signature W&S simplicity being favourited by pilots and maintenence crews alike. It also serves as an effective training vehicle, as its notoriously poor turning radius results in one less thing for a green pilot to worry about on the battlefield.",
-      "hull": 140, "shield": 40, "movespeed": 3, "heat_max": 60, "hardpoints": 6,
+      "hull": 140, "shield": 40, "movespeed": 3, "heat_max": 60, "hardpoints": 9,
       "armour": 5, "recharge_field": 20, "cooling": 5,
       "traits": ["walker"],
       "fixed": [],
@@ -63,7 +63,7 @@
       "id": "mandrill", "name": "Mandrill", "designation": "Perihelion Flight 7 Support Frame", "maker": "aphelion", "silhouette": "bipedal",
       "design": { "fantasy": "A long-armed, stubby-legged plantigrade walker with a high tech suite of weapons and equipment mounted on its backpack. Not fast or heavily armoured, it specializes in battlefield control through status effects and high-tech equipment with complex effects.", "niche": "combat support", "notes": "Numbers, loadout, passive and designation are Claude's first fill (26 September) for Ryan to tweak: hull under the Clydesdale's, shield and field recharge a touch above, a big heat budget for an energy kit, walker legs at 2. The kit is Aphelion's own control suite (two Umbra Projectors to suppress, a Solar Flare Array to burn, a Corona Shield that cleanses, a Pulse Repeater for tempo) plus a borrowed Heat Sink. The passive turns a status on the target into damage.", "name_clash": "Flagged 28 September: Mandrill is a BattleTech 'Mech (a 50-ton Clan Fire Mandrill design) and a Clan name, and Ryan says it looks like ours. Kept only so the build stays green; the Drill (the mandrill's cousin) is Claude's suggested rename." },
       "codex": "Looking like a cross between an orangutan and a troll, what the Mandrill lacks in speed or endurance it more than makes up for with high-tech Aphelion technomagic. After the rifts first opened (and upended everything mankind knew about the laws of physics and the nature of the universe), Aphelion set to work assimilating the torrent of new data, developing experimental countermeasures at a frenetic pace. One unlucky researcher managed to knock out his past self using a localized pocket paradoxical time loop. The effect was quickly weaponized and a frame built to lug the heavy device in into battle, nicknamed the \"Mandrill\" in the researcher's memory.",
-      "hull": 100, "shield": 40, "movespeed": 2, "heat_max": 80, "hardpoints": 5,
+      "hull": 100, "shield": 40, "movespeed": 2, "heat_max": 80, "hardpoints": 7,
       "armour": 0, "recharge_field": 20, "cooling": 5,
       "traits": ["walker"],
       "fixed": ["solar_flare_array"],
@@ -78,7 +78,7 @@
       "flavour": ""
     },
     {
-      "id": "tortoise", "name": "Tortoise", "designation": "HW-22T Heavy Weapons Carrier", "maker": "minerva", "silhouette": "quadrupedal",
+      "id": "armadillo", "name": "Armadillo", "designation": "HW-22T Heavy Weapons Carrier", "maker": "minerva", "silhouette": "quadrupedal",
       "design": { "fantasy": "A squat, heavily armoured walker with short, thick legs, its back bristling with weaponry from shielded ports that can seal for additional protection. The cockpit is tucked under the front armour, providing reduced visibility but extra protection. An internal electric generator shocks foes that strike is hull when activated.", "niche": "tank", "notes": "Probably needs taunt effects on one or more locked or stock components. Wants a retaliate ability that  damages and/or causes status on foes that hit hull, but not sure if that is a passive or component that needs activating. Landed from the content editor 28 September: numbers, fixed component and loadout are the Mandrill's (the editor's template shape), the designation is Claude's fill in Minerva's register, the sixth hardpoint takes Minerva's Ablative Plating because a shipped chassis fills every slot, and the passive is planned until the engine can run it. All Ryan's to move." },
       "codex": "",
       "hull": 100, "shield": 40, "movespeed": 2, "heat_max": 80, "hardpoints": 6,
@@ -107,8 +107,8 @@
       "flavour": ""
     },
     {
-      "id": "coyote", "name": "Coyote", "designation": "Pattern 9 Scout Car", "maker": "wainwright_sutler", "silhouette": "4 wheeled buggy",
-      "design": { "fantasy": "A fast, agile, and lightly armoured skirmisher, able to skim in and out of fights with ease. It's signature ability allows it to serve as both a potent scout and harasser before getting away with minimal damage.", "niche": "scout/harasser", "name_clash": "Flagged 28 September: Coyote is a Heavy Gear Peace River strider and a British reconnaissance vehicle. Another session is renaming it Prairie Dog the same afternoon; the note only keeps the build green until that lands.", "notes": "Landed from the content editor 28 September: numbers and fixed component are the Mandrill's (the editor's template shape), the loadout is the Mandrill's trimmed to four (the Heat Sink dropped) to fit the hardpoints, the designation is Claude's fill in Wainwright & Sutler's register, and the passive is planned until the engine can run it. All Ryan's to move." },
+      "id": "prairie_dog", "name": "Prairie Dog", "designation": "Pattern 9 Scout Car", "maker": "wainwright_sutler", "silhouette": "4 wheeled buggy",
+      "design": { "fantasy": "A fast, agile, and lightly armoured skirmisher, able to skim in and out of fights with ease. It's signature ability allows it to serve as both a potent scout and harasser before getting away with minimal damage.", "niche": "scout/harasser", "notes": "Landed from the content editor 28 September: numbers and fixed component are the Mandrill's (the editor's template shape), the loadout is the Mandrill's trimmed to four (the Heat Sink dropped) to fit the hardpoints, the designation is Claude's fill in Wainwright & Sutler's register, and the passive is planned until the engine can run it. All Ryan's to move." },
       "codex": "",
       "hull": 100, "shield": 40, "movespeed": 2, "heat_max": 80, "hardpoints": 4,
       "armour": 0, "recharge_field": 20, "cooling": 5,
@@ -116,8 +116,8 @@
       "fixed": ["solar_flare_array"],
       "loadout": ["umbra_projector", "umbra_projector", "corona_shield", "pulse_repeater"],
       "passive": {
-        "id": "coyote_howl", "name": "Coyote Howl",
-        "description": "Withdrawing from a skirmish occurs before the enemy takes their turn. This ability gains a 25% chance to fail for each additional ally in the skirmish.",
+        "id": "staticscreen_projector", "name": "Static-screen Projector",
+        "description": "A blast of dust, smoke and static electricity that confuses senses and sensors alike. Withdrawing from a skirmish occurs before the enemy takes their turn. This ability gains a 25% chance to fail for each additional ally in the skirmish.",
         "status": "planned",
         "effects": []
       },
@@ -144,7 +144,7 @@
       "id": "goshawk", "name": "Goshawk", "designation": "K-9 Mk II Attack Airframe", "maker": "kestrel", "silhouette": "Aircraft",
       "design": { "fantasy": "The larger cousin of the Sparrowhawk, trades explosiveness for longevity. Wide downturned wings evoking a hovering predator, weapon mounts mounted under the wings. Double boosters mounted on top of the tail section (similar to an A10 warthog).", "niche": "Ramping damage", "notes": "Locked weapon(s) should vent heat and deal increased damage proportional to heat vented. Landed from the content editor 28 September: numbers, fixed component and loadout are the Mandrill's (the editor's template shape), the designation is Claude's fill in Kestrel's register, and the passive is planned until the engine can run it. All Ryan's to move.", "name_clash": "Flagged 28 September: Goshawk is the Inner Sphere name of the Clan Vapor Eagle (a 55-ton 'Mech), and there is a Goshawk II. Kept for now so the build stays green; Ryan to rename or confirm." },
       "codex": "",
-      "hull": 100, "shield": 40, "movespeed": 2, "heat_max": 80, "hardpoints": 5,
+      "hull": 100, "shield": 40, "movespeed": 2, "heat_max": 80, "hardpoints": 6,
       "armour": 0, "recharge_field": 20, "cooling": 5,
       "traits": [],
       "fixed": ["solar_flare_array"],

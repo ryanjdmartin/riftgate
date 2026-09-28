@@ -18,7 +18,7 @@ extends RefCounted
 enum State { PLAN, SKIRMISH, DONE }
 enum Outcome { NONE, VICTORY, GATE_FALLEN, WRECKED }
 
-const SQUAD_SPEED := 2
+const PACK_SPEED := 2
 const BOSS_SPEED := 1
 const DEFAULT_WIDTH := 7
 const DEFAULT_HEIGHT := 20
@@ -73,7 +73,7 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 		var entry: Array = table[j]
 		var col := (w * (j + 1)) / (table.size() + 1)
 		var row := 3 + (j % 3)
-		var sq := Unit.squad(0, _squad_name(str(entry[0])), Vector2i.ZERO, faction, SQUAD_SPEED, int(entry[1]), str(entry[0]))
+		var sq := Unit.pack(0, _pack_name(str(entry[0])), Vector2i.ZERO, faction, PACK_SPEED, int(entry[1]), str(entry[0]))
 		sq.pos = field.nearest_standable(sq, Hex.offset_to_axial(col, row))
 		field.add_unit(sq)
 	var fac: Dictionary = db.factions.get(faction, {})
@@ -86,10 +86,10 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 	state = State.PLAN
 
 
-func _squad_name(foe_id: String) -> String:
+func _pack_name(foe_id: String) -> String:
 	if db.foes.has(foe_id):
-		return "%s squad" % str(db.foes[foe_id]["name"]).to_lower()
-	return "%s squad" % foe_id
+		return "%s pack" % str(db.foes[foe_id]["name"]).to_lower()
+	return "%s pack" % foe_id
 
 
 # ---------------------------------------------------------------- planning
@@ -136,7 +136,7 @@ func set_route(u: Unit, to: Vector2i) -> bool:
 
 
 ## A route drawn by hand, kept as drawn (Ryan, 25 September: tap-to-destination alone
-## could not say which way round a squad to walk). Legal on the same terms as a tapped
+## could not say which way round a pack to walk). Legal on the same terms as a tapped
 ## one, planned last like a re-plot: every step adjacent and standable in the planned
 ## view, the cost within the machine's move, and its last hex nobody else's destination.
 ## An empty route clears. False when refused, and the machine's old route is gone either way.
@@ -250,7 +250,7 @@ func commit() -> Battlefield.PhaseResult:
 
 ## The boss's contact takes the phase (Ryan, 25 September): when any contact group holds the
 ## boss, the phase has one fight, every machine on the field against the boss alone, and
-## the other contacts are dropped, squads in the boss's own group included. The player's
+## the other contacts are dropped, packs in the boss's own group included. The player's
 ## positioning no longer matters once the boss is reached; the fight is the battle's end
 ## or a withdrawal. True when it happened; `pending` is then that one group.
 func _take_boss_contact() -> bool:
@@ -299,10 +299,10 @@ func open_skirmish_at(index: int) -> Skirmish:
 	return null
 
 
-## The mechs of the group fight every foe the group's squads unpack into.
-## The hex a contact is fought on (decided 22 September): the squad's, since the fight
-## opens where the squad stands and its ground has already gone flat; with several
-## squads, the first in field order, the one the contact names first. One rule, used by
+## The mechs of the group fight every foe the group's packs unpack into.
+## The hex a contact is fought on (decided 22 September): the pack's, since the fight
+## opens where the pack stands and its ground has already gone flat; with several
+## packs, the first in field order, the one the contact names first. One rule, used by
 ## the skirmish's terrain, the handover's spread and every label, so the ground is never
 ## ambiguous.
 static func ground_hex(group: Array) -> Vector2i:
@@ -331,7 +331,7 @@ func _build_skirmish(group: Array) -> Skirmish:
 	return sk
 
 
-## Apply the finished skirmish: wrecks leave the map, squads shrink or vanish, and Rift
+## Apply the finished skirmish: wrecks leave the map, packs shrink or vanish, and Rift
 ## Pressure ticks once per round fought. Shields do not refill here: survivors carry what
 ## they had, and recharge at the field rate only in phases they spend out of combat.
 func finish_skirmish() -> void:

@@ -1,7 +1,7 @@
 extends Control
 
 ## Debug harness and main scene. Pick a team, then compose the enemy side the way the
-## battlefield would: one or two squads (a foe type times a count) and optionally the faction's
+## battlefield would: one or two packs (a foe type times a count) and optionally the faction's
 ## boss, all chained into one skirmish. Also opens the battlefield map viewer.
 
 const SKIRMISH_SCENE := preload("res://game/skirmish/skirmish_screen.tscn")
@@ -64,7 +64,7 @@ func _build_menu() -> void:
 		col.add_child(cb)
 		_chassis_checks[id] = cb
 
-	col.add_child(_label("Enemy squads in contact", 20, Palette.INK))
+	col.add_child(_label("Enemy packs in contact", 20, Palette.INK))
 	var regular: Array = []
 	var bosses: Array = []
 	var fids: Array = db.foes.keys()
@@ -182,17 +182,17 @@ func _on_fight() -> void:
 			uid += 1
 	if sk.mechs.is_empty():
 		return
-	var squads: Array = []
+	var packs: Array = []
 	var fa := str(_foe_a.get_item_metadata(_foe_a.selected))
 	if not fa.is_empty():
-		squads.append([fa, int(_count_a.value)])
+		packs.append([fa, int(_count_a.value)])
 	var fb := str(_foe_b.get_item_metadata(_foe_b.selected))
 	if not fb.is_empty():
-		squads.append([fb, int(_count_b.value)])
+		packs.append([fb, int(_count_b.value)])
 	var sid := 90
-	for s in squads:
+	for s in packs:
 		var fac := db.faction_of_foe(s[0])
-		var sq := Unit.squad(sid, "%s squad" % str(db.foes[s[0]]["name"]).to_lower(), Vector2i.ZERO, fac, 2, s[1], s[0])
+		var sq := Unit.pack(sid, "%s pack" % str(db.foes[s[0]]["name"]).to_lower(), Vector2i.ZERO, fac, 2, s[1], s[0])
 		sk.add_foes(db.foes_for(sq), sq)
 		sid += 1
 	var boss_id := str(_boss.get_item_metadata(_boss.selected))
@@ -209,7 +209,7 @@ func _on_fight() -> void:
 	_show(screen)
 
 
-## A whole battle: the checked team against the faction of the first squad picker, on a map
+## A whole battle: the checked team against the faction of the first pack picker, on a map
 ## generated from the seed.
 func _on_battle() -> void:
 	var team: Array = []

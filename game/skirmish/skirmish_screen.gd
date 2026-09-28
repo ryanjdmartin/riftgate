@@ -210,7 +210,7 @@ func _ready() -> void:
 
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks): two
-## chained squads of the first faction in content. RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,mandrill overrides the team;
+## chained packs of the first faction in content. RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,mandrill overrides the team;
 ## RIFTGATE_ELITE=1 adds the faction's boss as a third unit; RIFTGATE_COLUMNS=4 widens the formation.
 static func _default_skirmish() -> Skirmish:
 	var db := ContentDB.load_default()
@@ -240,7 +240,7 @@ static func _default_skirmish() -> Skirmish:
 	var table: Array = db.spawn_table(fac)
 	var uid := 1
 	for entry in [table[0], table[table.size() - 1]] if not table.is_empty() else []:
-		var sq := Unit.squad(uid, "%s squad" % str(entry[0]), Vector2i.ZERO, fac, 2, int(entry[1]), str(entry[0]))
+		var sq := Unit.pack(uid, "%s pack" % str(entry[0]), Vector2i.ZERO, fac, 2, int(entry[1]), str(entry[0]))
 		s.add_foes(db.foes_for(sq), sq)
 		uid += 1
 	if OS.get_environment("RIFTGATE_ELITE") == "1":
@@ -1557,7 +1557,7 @@ func _end_turn_now() -> void:
 func _on_withdraw() -> void:
 	if not sk.can_withdraw():
 		return
-	_ask("Withdraw? The enemy strikes once more as you pull out, and the squad keeps marching on the gate.", _withdraw_now)
+	_ask("Withdraw? The enemy strikes once more as you pull out, and the pack keeps marching on the gate.", _withdraw_now)
 
 
 ## The enemy's parting blows play out before the team is seen to flee (Ryan, 23 September:
@@ -1577,11 +1577,11 @@ func _show_outcome(outcome: int) -> void:
 		Skirmish.Outcome.VICTORY:
 			Sound.play("victory")
 			_overlay_title.text = "VICTORY"
-			_overlay_text.text = "The squad is gone. Rift pressure rose by %d." % sk.round
+			_overlay_text.text = "The pack is gone. Rift pressure rose by %d." % sk.round
 		Skirmish.Outcome.DEFEAT:
 			Sound.play("defeat")
 			_overlay_title.text = "WRECKED"
-			_overlay_text.text = "Every machine is down. Survivors of the squad march on."
+			_overlay_text.text = "Every machine is down. Survivors of the pack march on."
 		_:
 			Sound.play("withdraw")
 			_overlay_title.text = "WITHDREW"

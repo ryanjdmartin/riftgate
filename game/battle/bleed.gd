@@ -4,13 +4,13 @@ extends RefCounted
 ## The other world's bleed into the reconstruction (decided 19 September): how much of the
 ## third dimension is gone at a point of the map, from 0 (solid geometry) to 1 (the flat
 ## painted world). Two sources, and they stack: the rift's own bleed, a gradient that fades
-## out south of it, and a radius around every squad that moves with it. The same function
+## out south of it, and a radius around every pack that moves with it. The same function
 ## lives in `bleed.gdshader` for the pixels that turn 2D; keep the two identical.
 ##
 ## Later knobs: the gradient could grow with Rift Pressure, so the corruption spreads south
 ## as the clock runs.
 
-static var squad_radius_hex := 1.45   # a var, so the map tuner can move it live
+static var pack_radius_hex := 1.45   # a var, so the map tuner can move it live
 const BOSS_RADIUS_HEX := 2.6
 const RIFT_RADIUS_HEX := 2.6
 const GRADIENT_ROWS := 5.0      # the rift's bleed is total on its row and gone this many rows south
@@ -24,18 +24,18 @@ static func gradient(field: Battlefield, origin: Vector2, hex_px: float) -> Vect
 	return Vector2(y_full, y_full + GRADIENT_ROWS * 1.5 * hex_px)
 
 
-## The sources of bleed as (x, y, radius) in map pixels: the rift, then every squad.
+## The sources of bleed as (x, y, radius) in map pixels: the rift, then every pack.
 ## `moving` maps a unit id to its pixel offset from hex (0,0) while a move plays, so the
-## bleed travels with a squad (Ryan, 22 September).
+## bleed travels with a pack (Ryan, 22 September).
 static func sources(field: Battlefield, origin: Vector2, hex_px: float, moving: Dictionary = {}) -> PackedVector3Array:
 	var out := PackedVector3Array()
 	var r := origin + Hex.to_pixel(field.map.rift, hex_px)
 	out.append(Vector3(r.x, r.y, RIFT_RADIUS_HEX * hex_px))
-	for sq in field.squads():
+	for sq in field.packs():
 		if out.size() >= MAX_SOURCES:
 			break
 		var p: Vector2 = origin + (moving[sq.id] if moving.has(sq.id) else Hex.to_pixel(sq.pos, hex_px))
-		out.append(Vector3(p.x, p.y, (BOSS_RADIUS_HEX if sq.is_multi_hex() else squad_radius_hex) * hex_px))
+		out.append(Vector3(p.x, p.y, (BOSS_RADIUS_HEX if sq.is_multi_hex() else pack_radius_hex) * hex_px))
 	return out
 
 

@@ -1,5 +1,5 @@
 {
-  "_about": "Enemy factions. Archetype-based: each has a signature behaviour and a tactical answer, not an element. A squad on the battlefield is ONE foe type times a strength; mixed fights come from squads chained together on the map. spawn lists the squads the rift sends through together (the faction's formation as it appears on the map); boss names the massive foe a boss unit unpacks into. Shown to the player: name, flavour. design is internal and never shown: fantasy, signature (what the faction does), answer (how the player beats it).",
+  "_about": "Enemy factions. Archetype-based: each has a signature behaviour and a tactical answer, not an element. A pack on the battlefield is ONE foe type times a strength; mixed fights come from packs chained together on the map. spawn lists the packs the rift sends through together (the faction's formation as it appears on the map); boss names the massive foe a boss unit unpacks into. Shown to the player: name, flavour. design is internal and never shown: fantasy, signature (what the faction does), answer (how the player beats it).",
   "entries": [
     {
       "id": "undead",

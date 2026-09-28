@@ -49,7 +49,7 @@ https://claude.ai/artifact/AdBTeE9px1Xvg5TKNjHjSP (25 September, evening, the bo
 session; that account republishes to this second URL).
 `docs/vocabulary.md` is generated from content.
 
-**What the game does today.** A battle: the map shows every squad's intent and the exact
+**What the game does today.** A battle: the map shows every pack's intent and the exact
 result of the plan before Resolve; Resolve plays the moves with footfalls, then a CONTACT
 band with its horn, then a panel of the contacts; ENGAGE dives the map and cuts to the
 skirmish, the dice fight on the enemy's ground, every blow, shield, kill and overheat heard,
@@ -82,7 +82,7 @@ table entries and each boss), 200 seeds a cell, about 240 fights a second, into
 `docs/balance.md`: win rate per rung, rounds and hull per win, pick share per component.
 `--trace "sparrowhawk|brute x4|greedy|3"` prints one fight's log. First report, placeholder
 numbers: greedy meets or beats random everywhere; the team of three wins every single-pack
-fight at no cost (a contact against one squad is trivial); the Clydesdale and the Anvil
+fight at no cost (a contact against one pack is trivial); the Clydesdale and the Anvil
 alone lose to the front-rank packs (Ghoul x6, Brute x4, Spawn x4) at 100% hull under both
 rungs; the vents (Heat Sink, Coolant Dump) are spent 1 to 2% of the time, so heat is not
 yet a pressure on those dice; the Sparrowhawk is carried by the Arc Projector's chain
@@ -413,7 +413,7 @@ build:** the one trial of a light tight kick under the orchestral bass drum in T
 Bank's groove, lift and climax (render it as a `sketch`, never over the locked file);
 the seam at bar nine is bare (the forge wraps the closer's room tail onto the intro,
 which the loop no longer reaches; if he hears the join, render the tail onto bar nine
-instead); Rift Pressure does not yet feed squads into the boss fight (the plan said it
+instead); Rift Pressure does not yet feed packs into the boss fight (the plan said it
 should; today the boss fights alone and the pressure ticks after). The other two themes
 from seeds: The Risen from Low Ground (its A G F E ground bass is a dirge; "hard to keep
 down" as form, a theme returning after every breakdown, a bass drum march, horns, choir
@@ -529,7 +529,7 @@ decided register.
    turrets; the reinforcement phase; skirmish composition from placement; the multi-hex
    boss's return; the economy.
 4. The map: wreck death animation once decided; joint idle for grounded units once joints
-   exist; corruption in squads' wake. If a phone still drops frames, the machines are the
+   exist; corruption in packs' wake. If a phone still drops frames, the machines are the
    next lever (one mesh per material per machine, until joints).
 5. Engine gaps waiting on content: foe roles; the ten planned foe actions in `foes.json`;
    the planned statuses still without an engine (Phased, Taunt, Beacon, Retaliate, Energy
@@ -546,7 +546,7 @@ decided register.
 8. Before a phone leaves the desk: save and resume mid-battle (nothing serialised);
    onboarding (gesture tutorial, cheat sheet: reroll rule and zone of control first); the
    Android export checked on a device (everything it needs is on this Mac; bible section
-   11 and the README say how); then play and tune numbers, map size, squad speeds, Rift
+   11 and the README say how); then play and tune numbers, map size, pack speeds, Rift
    Pressure.
 
 **Two sessions on the bible.** Both sessions edited and published `docs/design-bible.html`

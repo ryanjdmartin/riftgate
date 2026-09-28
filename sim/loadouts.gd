@@ -1,7 +1,7 @@
 class_name Loadouts
 extends RefCounted
 
-## Sample dice, mechs, and squads. Placeholder numbers for prototypes and tests.
+## Sample dice, mechs, and packs. Placeholder numbers for prototypes and tests.
 ## None of these are balanced. They exist so there is something to roll.
 
 const L := Face.Reach.LINE
@@ -62,14 +62,14 @@ static func sample_mechs() -> Array[Unit]:
 	return out
 
 
-## Unpack a battlefield squad into foes for a skirmish, from content/factions.json.
+## Unpack a battlefield pack into foes for a skirmish, from content/factions.json.
 static func foes_for(sq: Unit) -> Array[Foe]:
 	return ContentDB.load_default().foes_for(sq)
 
 
-## Squads placed on open ground in the north third of the map, drawn from the factions'
+## Packs placed on open ground in the north third of the map, drawn from the factions'
 ## spawn lists so each is one foe type times a strength.
-static func sample_squads(field: Battlefield, count: int, rng: RandomNumberGenerator) -> Array[Unit]:
+static func sample_packs(field: Battlefield, count: int, rng: RandomNumberGenerator) -> Array[Unit]:
 	var db := ContentDB.load_default()
 	var out: Array[Unit] = []
 	var factions: Array = db.factions.keys()
@@ -88,7 +88,7 @@ static func sample_squads(field: Battlefield, count: int, rng: RandomNumberGener
 		if table.is_empty():
 			continue
 		var entry: Array = table[rng.randi_range(0, table.size() - 1)]
-		var sq := Unit.squad(0, "%s squad" % str(entry[0]), h, fac, 2, int(entry[1]), str(entry[0]))
+		var sq := Unit.pack(0, "%s pack" % str(entry[0]), h, fac, 2, int(entry[1]), str(entry[0]))
 		sq.aggro = rng.randf() < 0.2
 		field.add_unit(sq)
 		out.append(sq)
