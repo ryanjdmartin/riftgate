@@ -1850,6 +1850,7 @@ def music_far_bank(bpm=MUSIC["music_far_bank"]["bpm"], palette="real"):
         crescendo={"G": [(0.0, 0.7), (gb(9) - 0.001, 0.7), (gb(9), 0.95), (gb(27), 1.3), (1.0, 1.15)], "H": (0.9, 0.35)},
         air=(0.3, 0.12),
         master=1.1 if real else 1.25, headroom=0.6 if real else None,
+        tilt=1.5, presence=0.25,   # the one master for both palettes (Ryan, 28 September: a bit less edge, no effect lost)
         swap=REAL_MAP_SWAP if real else None,
         human=(0.007, 0.18) if real else None)
 
@@ -2393,7 +2394,7 @@ def music_low_ground():
              {"inst": "choir", "gain": 0.2, "vowel": "ah", "sections": "EF"},
              {"inst": "sweep", "gain": 0.08, "sections": "DE", "rate": 0.04},
              {"inst": "choir", "gain": 0.2, "vowel": "oo", "pump": 0.2, "sections": "O", "swell": (1.0, 0.3)}],
-        air=(0.35, 0.14), master=1.1, headroom=0.6, swap=REAL_MAP_SWAP, human=(0.007, 0.18))
+        air=(0.35, 0.14), master=1.1, headroom=0.6, tilt=1.5, presence=0.25, swap=REAL_MAP_SWAP, human=(0.007, 0.18))   # the one master, 28 September
 
 
 def music_night_shift():
@@ -2630,7 +2631,7 @@ def music_crossing():
              {"inst": "strings", "gain": 0.16, "sections": "K", "swell": (0.9, 1.7)},
              {"inst": "strings", "gain": 0.14, "sections": "O", "swell": (1.0, 0.3)}],
         crescendo={"D": (0.85, 1.25), "K": (0.9, 1.35), "F": (0.75, 0.85)},
-        air=(0.25, 0.1), master=1.1, headroom=0.6, swap=REAL_MAP_SWAP, human=(0.006, 0.15))
+        air=(0.25, 0.1), master=1.1, headroom=0.6, tilt=1.5, presence=0.25, swap=REAL_MAP_SWAP, human=(0.006, 0.15))   # the one master, 28 September
 
 
 def music_full_bore():

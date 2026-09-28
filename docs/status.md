@@ -450,7 +450,18 @@ and tinny in headphones), a half-gap level file (the full gap was a little loud 
 speaker and far too loud in headphones). His order: voices and balance first, then
 speaker changes. The speakers/headphones setting is the answer to the levelling gap
 (shipped levels for headphones; per-track offsets and a bus EQ on the speaker profile);
-not built. Before the phone: nothing had been heard on
+not built. **Second-round notes (28 September, later; bible has the reasons):** with the
+tilt the voices sound alike and none is hated; 2 fell to least favourite, 3 came forward
+("so much brighter"), a race between 3 and 5, run on the page one variable at a time
+(rows 12 and 13, solo file 3). The soft sub is inaudible in the riff until the power
+chords. The clip-free guitar read as louder (now level-matched, maybe a winner). Shadows'
+second cut really good on the speaker; the toms still pew there, the kick a floor tom
+with mush in headphones: third cut is a metal kick and a lower tom, with a drums-only
+file of the three kits (`drums_kits`). Half the gap still loud in both: a quarter is
+rendered. **Decided: one master for both palettes**; The Far Bank, Low Ground and The
+Crossing are rebuilt on tilt 1.5 + presence (their writing stays locked). Next: his picks
+on the bass race, the guitar and the third cut land in the forge; then the speaker
+profile setting. Before the phone: nothing had been heard on
 a device; the mix was checked by measurement only. (5) The real recordings and the real
 track remain section 12's open question; everything here is a placeholder in the
 decided register.

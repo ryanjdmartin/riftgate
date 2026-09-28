@@ -220,7 +220,108 @@ def guitar_soft(f, dur, mute=True, clean=False):
     return F.mix(y * env, F.body(200.0, 90.0, 0.05, drive=2.0, click=0.2) * 0.3)
 
 
-F.NOTE_INST["guitar_soft"] = lambda f, d, p: guitar_soft(f, d, p.get("mute", True), p.get("clean", False))
+def _rms(x):
+    return math.sqrt(float(np.mean(x ** 2)) + 1e-12)
+
+
+def _match_guitar():
+    # The soft guitar read as louder (Ryan, 28 September), so it is level-matched to the shipped
+    # one on a palm-muted low E before it goes into the mix.
+    F.seed("match_guitar")
+    a = F.guitar_real(82.41, 0.3)
+    F.seed("match_guitar")
+    b = guitar_soft(82.41, 0.3)
+    return _rms(a) / _rms(b)
+
+
+GUITAR_MATCH = _match_guitar()
+F.NOTE_INST["guitar_soft"] = lambda f, d, p: guitar_soft(f, d, p.get("mute", True), p.get("clean", False)) * GUITAR_MATCH
+
+
+# ---------------------------------------------------------------- round three (Ryan, 28 September, second notes)
+
+def bass_stagedyn(f, dur, drive=2.6):
+    # Voice 3 with the drive following the note (the whole string driven, no split).
+    x = string_and_thump(f, dur, F.RNG.uniform(0.42, 0.58))
+    env = F.lp(np.abs(x), 25.0)
+    env = np.clip(env / (np.max(env) + 1e-9), 0.0, 1.0)
+    d = drive * (0.35 + 0.65 * env ** 0.6)
+    pre = F.hp(x, 300.0) * 1.2 + x * 0.5
+    y = np.tanh(pre * d * 1.6 + 0.25) - math.tanh(0.25)
+    y = y - F.lp(y, 15.0)
+    y = F.lp(y, 1500.0) + F.bp(y, 500.0, 900.0) * 0.4
+    y = asat(y * 1.4, 1.2)
+    return F.hp(bass_cabinet(y), 40.0) * 0.9
+
+
+def bass_splitbright(f, dur, drive=2.6):
+    # Voice 5 with its driven part brought up to voice 3's weight, the clean low a little down.
+    bright = F.RNG.uniform(0.4, 0.62)
+    jitter = F.RNG.uniform(0.95, 1.05)
+    x = string_and_thump(f, dur, bright)
+    env = F.lp(np.abs(x), 25.0)
+    env = np.clip(env / (np.max(env) + 1e-9), 0.0, 1.0)
+    d = drive * (0.35 + 0.65 * env ** 0.6)
+    upper = F.hp(x, 250.0)
+    pre = F.hp(upper, 300.0) * 1.2 + upper * 0.5
+    y = np.tanh(pre * d * 1.6 + 0.25) - math.tanh(0.25)
+    y = y - F.lp(y, 15.0)
+    y = F.lp(y, 1500.0) + F.bp(y, 500.0, 900.0) * 0.4
+    y = asat(y * 1.4, 1.2)
+    driven = bass_cabinet(y, jitter) * 1.05
+    clean = F.sat(F.lp(x, 250.0), 1.3) * 0.8
+    return F.hp(clean + driven, 40.0) * 0.9
+
+
+BASS_VOICES_3 = [
+    ("stagedyn", bass_stagedyn, "voice 3 with the drive following the note"),
+    ("splitbright", bass_splitbright, "voice 5 with its driven part brought up to voice 3's weight"),
+]
+for _name, _fn, _ in BASS_VOICES_3:
+    F.NOTE_INST["bass_" + _name] = (lambda fn: (lambda f, d, p: fn(f, d, p.get("drive", 2.6))))(_fn)
+
+
+def kick_metal3(pitch=1.0):
+    # A metal kick rather than a club one (Ryan: a hit followed by mush, a floor tom): the
+    # skin's fall quicker and shorter, more beater, a short static knock at 190 Hz for the
+    # speaker in place of the sweep and the harmonics band, and less room.
+    n = F.n_of(0.3)
+    t = F.t_of(n)
+    f = (55.0 + 70.0 * np.exp(-t / 0.028)) * pitch
+    skin = np.sin(2.0 * math.pi * np.cumsum(f) / F.SR) * F.env_ad(n, 0.001, 0.075, curve=3.0)
+    beater = F.bp(F.noise(F.n_of(0.006)), 2500.0, 7000.0) * F.env_ad(F.n_of(0.006), 0.0002, 0.0015) * 1.1
+    knock = F.harmonics(190.0 * pitch, n, [1.0, 0.3]) * F.env_ad(n, 0.0008, 0.03, curve=3.0) * 0.5
+    shell = F.harmonics(180.0 * pitch, n, [0.5, 0.3, 0.15]) * F.env_ad(n, 0.001, 0.02) * 0.4
+    x = F.mix(F.sat(skin, 1.6), F.at(np.zeros(1), beater, 0.0), shell, knock)
+    return F.room(x, decay=0.06, mix=0.08, cut=3000.0)
+
+
+def tom_v2(f=150.0, pitch=1.0):
+    # The tom pitched lower and duller (Ryan: pew-pew on the speaker, too high or too bright):
+    # a smaller pitch fall, a lower shell, the stick low-passed, and its shadow at 120 to 500 Hz.
+    n = F.n_of(0.5)
+    t = F.t_of(n)
+    fr = f * pitch * (1.0 + 0.18 * np.exp(-t / 0.05))
+    skin = np.sin(2.0 * math.pi * np.cumsum(fr) / F.SR) * F.env_ad(n, 0.001, 0.15, curve=2.5)
+    sub = np.sin(2.0 * math.pi * f * pitch * 0.5 * t) * F.env_ad(n, 0.002, 0.12) * 0.5
+    shell = F.harmonics(f * pitch * 1.4, n, [0.5, 0.25, 0.1]) * F.env_ad(n, 0.001, 0.035) * 0.3
+    stick = F.lp(F.bp(F.noise(F.n_of(0.01)), 1200.0, 5000.0), 4000.0) * F.env_ad(F.n_of(0.01), 0.0002, 0.003) * 1.1
+    front = F.body(f * pitch * 1.6, f * pitch, 0.04, drive=2.0, click=0.5) * 0.8
+    shadow = F.bp(F.sat(skin + sub, 3.0), 120.0, 500.0) * 0.35
+    return F.room(F.mix(F.sat(skin + sub, 1.6), shell, front, F.at(np.zeros(1), stick, 0.0), shadow), decay=0.09, mix=0.1, cut=4000.0) * 1.1
+
+
+def drums_clip(patches):
+    """Four bars of the riff's drums alone (the kick's pattern, the snare, hats, a crash at the
+    top and the tom fill that closes the lift in the last bar), with the kit as patched."""
+    with Patched(**patches):
+        kit = {"kick": (F.variants(F.kick_real), 1.0), "snare": (F.variants(F.snare_real), 1.0),
+               "hat": (F.variants(lambda p: F.hat_real(False, p)), 0.45), "crash": ([F.crash_real()], 0.9),
+               "tom": (F.variants(lambda p: F.tom_real(150.0, p)), 0.9), "tom2": (F.variants(lambda p: F.tom_real(105.0, p)), 0.9)}
+        drums = {"kick": {"A": "x.xx.x."}, "snare": {"A": "....x.......x..."}, "hat": {"A": "x.x.x.x.x.x.x.x."},
+                 "crash": {"A": "x" + "." * 63}, "tom": {"A": "." * 48 + "....x.x.xx.x.x.."}, "tom2": {"A": "." * 48 + "......x.....x.xx"}}
+        F.seed("phone_drums")
+        return F.groove(bpm=100, form="AAAA", kit=kit, drums=drums, chords={"*": [[0, 7, 12]]}, voices=[], tilt=1.5, presence=0.25, low=(150.0, -6.0), human=(0.005, 0.15))
 
 
 # ---------------------------------------------------------------- shadows for the speaker
@@ -271,6 +372,10 @@ def crash_soft():
     wash = F.bp(F.noise(n), 1800.0, 9000.0) * F.env_ad(n, 0.003, 0.24, curve=2.0) * 0.75
     plate = F.knock([2900.0, 4300.0, 6400.0, 8100.0], [0.3, 0.22, 0.17, 0.14], [0.4, 0.3, 0.25, 0.2], noise_gain=0.0) * 0.45
     return F.sat(F.mix(wash, plate), 1.3) * 0.35
+
+
+SHADOWS_2 = dict(kick_real=kick_shadow2, tom_real=tom_shadow, sub_bass=sub_shadow2, crash_real=crash_soft)
+SHADOWS_3 = dict(kick_real=kick_metal3, tom_real=tom_v2, sub_bass=sub_shadow2, crash_real=crash_soft)
 
 
 def sub_cut(x):
@@ -389,7 +494,7 @@ def solo_bass_file(names=None, seed_name="phone_bass_solo"):
 
 def main(argv):
     which = argv[0] if argv else "all"
-    manifest = {"voices": [], "balance": [], "levels": [], "voices2": [], "guitar": [], "shadows2": [], "rift": [], "notes": {}}
+    manifest = {"voices": [], "balance": [], "levels": [], "voices2": [], "guitar": [], "shadows2": [], "rift": [], "round3": [], "notes": {}}
     os.makedirs(OUT, exist_ok=True)
     path = os.path.join(OUT, "manifest.json")
     if which != "all" and os.path.exists(path):
@@ -479,6 +584,40 @@ def main(argv):
             manifest["rift"].append({"name": name, "seconds": len(x) / F.SR, "note": note, "phone_db": round(phone_level(x), 1)})
             print("  %-14s %5.1f s  phone %.1f dB" % (name, len(x) / F.SR, phone_level(x)))
         save()
+    if which in ("round3", "all"):
+        print("round3")
+        for name, _, note in BASS_VOICES_3:
+            x = level_to(render_hold(VOICE_FORM, swap={"bass_real": "bass_" + name}), SKIRMISH_LEVEL)
+            write("bass_" + name, x)
+            manifest["round3"].append({"name": "bass_" + name, "seconds": len(x) / F.SR, "note": note, "phone_db": round(phone_level(x), 1)})
+            print("  %-14s %5.1f s  phone %.1f dB" % (name, len(x) / F.SR, phone_level(x)))
+        race = ["stage", "split", "stagedyn", "splitbright"]
+        x, marks = solo_bass_file(race, "phone_bass_solo3")
+        x = level_to(x, SKIRMISH_LEVEL)
+        write("bass_solo3", x)
+        manifest["round3"].append({"name": "bass_solo3", "seconds": len(x) / F.SR, "note": "3, 5, 3 with the drive following, 5 brought up: alone on the riff, four bars each", "marks": marks})
+        x = level_to(render_hold(VOICE_FORM, swap={"guitar_real": "guitar_soft"}), SKIRMISH_LEVEL)
+        write("guitar_soft", x)
+        manifest["round3"].append({"name": "guitar_soft", "seconds": len(x) / F.SR, "phone_db": round(phone_level(x), 1),
+                                   "note": "the backing guitar without its hard clip, level-matched to the shipped one (x%.2f)" % GUITAR_MATCH})
+        print("  guitar_soft    %5.1f s  phone %.1f dB  match x%.2f" % (len(x) / F.SR, phone_level(x), GUITAR_MATCH))
+        x = level_to(render_hold(BALANCE_FORM, patches=SHADOWS_3), SKIRMISH_LEVEL)
+        write("mix_shadows3", x)
+        manifest["round3"].append({"name": "mix_shadows3", "seconds": len(x) / F.SR, "phone_db": round(phone_level(x), 1),
+                                   "note": "the third cut: a metal kick (quicker fall, more beater, a short static knock, less room), the tom lower and duller, the gentler sub shadow, the softer crash"})
+        print("  mix_shadows3   %5.1f s  phone %.1f dB" % (len(x) / F.SR, phone_level(x)))
+        parts, marks, t = [], [], 0.0
+        for label, patches in [("shipped", {}), ("second cut", SHADOWS_2), ("third cut", SHADOWS_3)]:
+            d = level_to(drums_clip(patches), SKIRMISH_LEVEL)
+            marks.append((t, label))
+            parts.append(d)
+            parts.append(np.zeros(F.SR))
+            t += (len(d) + F.SR) / F.SR
+        x = np.concatenate(parts)
+        write("drums_kits", x)
+        manifest["round3"].append({"name": "drums_kits", "seconds": len(x) / F.SR, "marks": marks,
+                                   "note": "the riff's drums alone, four bars each: the shipped kit, the shadows' second cut, the third cut"})
+        save()
     if which in ("levels", "all"):
         print("levels")
         # The levelling gap: twenty seconds of each at the shipped levels, then by the phone model.
@@ -503,6 +642,9 @@ def main(argv):
         f2 = level_to(far, F.LEVELS["music_far_bank"] + gap_db / 2.0)
         write("level_half", np.concatenate([h0, gap, f2]))
         manifest["levels"].append({"name": "level_half", "seconds": len(phone) / F.SR, "note": "the same two, The Far Bank up by half the gap (%.1f dB)" % (gap_db / 2.0)})
+        f3 = level_to(far, F.LEVELS["music_far_bank"] + gap_db / 4.0)   # and a quarter (Ryan: half still loud in both)
+        write("level_quarter", np.concatenate([h0, gap, f3]))
+        manifest["levels"].append({"name": "level_quarter", "seconds": len(phone) / F.SR, "note": "the same two, The Far Bank up by a quarter of the gap (%.1f dB)" % (gap_db / 4.0)})
         manifest["levels"].append({"name": "level_shipped", "seconds": len(shipped) / F.SR, "note": "Hold The Line, a second's gap, The Far Bank, at the shipped levels (-20.7 and -22.5 dB mean RMS)"})
         manifest["levels"].append({"name": "level_phone", "seconds": len(phone) / F.SR, "note": "the same two levelled by what a phone speaker plays: The Far Bank comes up %.1f dB" % gap_db})
         manifest["notes"]["level_gap_db"] = gap_db
