@@ -16,14 +16,17 @@ planned passives: `tortoise`, `wild_boar`, `coyote`, `dingo`, `goshawk`, `nemesi
 last two are the Arsenal's; maker `arsenal` exists now). Ryan writes `content/*.json` in his own
 voice, on the phone through the content editor artifact (see the memory note; pull collection
 `edits`, apply by hand, republish the files); tests never hardcode an entry's passive name.
-**BattleTech names (28 September, Ryan's ask; bible section 7 row).** `content/battletech_names.json`
-lists every BattleTech 'Mech named for an Earth animal (from Sarna's full catalogue of 756);
-`ContentDB._validate_battletech_clash` refuses a chassis whose nickname or id matches one exactly
-(case, spaces and hyphens ignored) unless `design.battletech_clash` says why it stays. Two
-existing chassis clash and carry that note for now, Ryan to rename or confirm: `goshawk`
-(the Vapor Eagle's Inner Sphere name, and a Goshawk II) and `mandrill` (a Fire Mandrill 'Mech).
-Near misses, not flagged: Sparrowhawk and Kestrel are a BattleTech fighter and VTOL, Badger a
-Clan vehicle. Another session renamed `tortoise` to `armadillo` and `coyote` to `prairie_dog`
+**Reserved names (28 September, Ryan's ask; bible section 7, two rows).** `content/reserved_names.json`
+holds every machine name in BattleTech (all 'Mechs, from Sarna), Heavy Gear (DP9's catalogue),
+Warhammer 40k and Halo, about 1,250, plus BattleTech's Earth-animal subset grouped by kind as a
+reading aid. `ContentDB._validate_name_clash` refuses a chassis whose nickname or id matches one
+exactly (case, spaces, hyphens ignored; sharing a word passes) and names the source, unless
+`design.name_clash` says why it stays. Carrying that note now, Ryan to rename or confirm:
+`mandrill` (a BattleTech 'Mech that looks like ours; Drill suggested), `goshawk` (the Vapor
+Eagle's IS name), `dingo` (Heavy Gear), `sparrowhawk` (Halo gunship, BattleTech fighter), and
+`badger`'s id only (Heavy Gear APC; Honey Badger is clear, kept). Ryan's maker rules
+(silhouettes and nickname families, the Arsenal's judgment deities, fossil over myth) are the
+second bible row. Another session renamed `tortoise` to `armadillo` and `coyote` to `prairie_dog`
 the same afternoon; neither clashes.
 
 **Where things are.** `sim/` is the headless game (battle map, battlefield resolver,

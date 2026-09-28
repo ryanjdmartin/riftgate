@@ -195,36 +195,50 @@ func test_internal_text_cannot_sit_at_the_top_level() -> void:
 	assert_true(bare, "an entry without design is refused")
 
 
-func test_a_battletech_mech_name_is_refused_unless_the_clash_is_recorded() -> void:
+func test_a_reserved_machine_name_is_refused_unless_the_clash_is_recorded() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	assert_true(db.battletech_names.size() > 200, "the BattleTech animal list loaded (%d names)" % db.battletech_names.size())
+	assert_true(db.reserved_names.size() > 1000, "the reserved names loaded (%d)" % db.reserved_names.size())
 	assert_eq(ContentDB.normalise_name("Black Hawk-KU"), "blackhawkku", "spaces, hyphens and case fall away")
-	var wolf: Dictionary = db.chassis["sparrowhawk"].duplicate(true)
+	var wolf: Dictionary = db.chassis["clydesdale"].duplicate(true)
 	wolf["name"] = "timber wolf"      # case and spacing do not hide a clash
 	db.chassis["wolf"] = wolf
-	var by_id: Dictionary = db.chassis["sparrowhawk"].duplicate(true)
+	var by_id: Dictionary = db.chassis["clydesdale"].duplicate(true)
 	by_id["name"] = "Pale Rider"
 	db.chassis["king_crab"] = by_id    # the id clashes even when the nickname does not
-	var grey: Dictionary = db.chassis["sparrowhawk"].duplicate(true)
-	grey["name"] = "Grey Wolf"        # not a BattleTech 'Mech: the match is exact, not by word
+	var gear: Dictionary = db.chassis["clydesdale"].duplicate(true)
+	gear["name"] = "Black Mamba"      # Heavy Gear, and the message says so
+	db.chassis["gear"] = gear
+	var tank: Dictionary = db.chassis["clydesdale"].duplicate(true)
+	tank["name"] = "Warthog"          # Halo
+	db.chassis["tank"] = tank
+	var grey: Dictionary = db.chassis["clydesdale"].duplicate(true)
+	grey["name"] = "Grey Wolf"        # nobody's machine: the match is exact, not by word
 	db.chassis["grey"] = grey
-	var kept: Dictionary = db.chassis["sparrowhawk"].duplicate(true)
+	var kept: Dictionary = db.chassis["clydesdale"].duplicate(true)
 	kept["name"] = "Timber Wolf"
 	kept["design"] = kept["design"].duplicate(true)
-	kept["design"]["battletech_clash"] = "kept knowingly for the test"
+	kept["design"]["name_clash"] = "kept knowingly for the test"
 	db.chassis["kept"] = kept
 	var wolf_hit := false
 	var id_hit := false
+	var gear_hit := false
+	var tank_hit := false
 	for e in db.validate():
-		if e.begins_with("chassis wolf") and e.contains("Timber Wolf") and e.contains("BattleTech"):
+		if e.begins_with("chassis wolf") and e.contains("Timber Wolf (a BattleTech 'Mech)"):
 			wolf_hit = true
 		if e.begins_with("chassis king_crab") and e.contains("King Crab"):
 			id_hit = true
-		assert_false(e.begins_with("chassis grey"), "a name that merely shares a word passes: %s" % e)
-		assert_false(e.begins_with("chassis kept") and e.contains("BattleTech"), "a recorded clash passes: %s" % e)
-	assert_true(wolf_hit, "a BattleTech 'Mech nickname is refused")
-	assert_true(id_hit, "a BattleTech 'Mech id is refused")
+		if e.begins_with("chassis gear") and e.contains("Black Mamba (a Heavy Gear machine)"):
+			gear_hit = true
+		if e.begins_with("chassis tank") and e.contains("Warthog (a Halo vehicle)"):
+			tank_hit = true
+		assert_false(e.begins_with("chassis grey") and e.contains("clashes"), "a name that merely shares a word passes: %s" % e)
+		assert_false(e.begins_with("chassis kept") and e.contains("clashes"), "a recorded clash passes: %s" % e)
+	assert_true(wolf_hit, "a BattleTech 'Mech nickname is refused and named")
+	assert_true(id_hit, "a reserved id is refused")
+	assert_true(gear_hit, "a Heavy Gear name is refused and its source named")
+	assert_true(tank_hit, "a Halo name is refused and its source named")
 
 
 func test_sparrowhawk_passive_doubles_damage_and_heat() -> void:
