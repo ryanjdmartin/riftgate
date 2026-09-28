@@ -241,8 +241,8 @@ def clydesdale(b):
 clydesdale.maker = "wainwright_sutler"
 
 
-def mandrill(b):
-    """Aphelion "Mandrill": a long-armed, stubby-legged plantigrade walker, orangutan and
+def baboon(b):
+    """Aphelion "Baboon" (the Mandrill until 28 September): a long-armed, stubby-legged plantigrade walker, orangutan and
     troll at once, its high-tech suite riding on a backpack (Ryan's brief, 26 September).
     White pearl plate with red markings. Fourth pass on Ryan's notes: stumpier legs and
     longer forearms, to sell the proportions at the game's size; the limbs are straight
@@ -327,7 +327,7 @@ def mandrill(b):
     b.prism("z", 0.0, -20.0, 93.0 + Z0, 2.0, 3.0, "amber.engine", 6, "mast_light")
 
 
-mandrill.maker = "aphelion"
+baboon.maker = "aphelion"
 
 
 def _deck(w, d, cy, z, c):

@@ -5,7 +5,7 @@ thing works lives in its file's comments; why it is that way lives in the bible.
 
 ## As of 26 September 2026 (midday)
 
-**State.** Tests: 215 tests, 2828 checks, green (`perl -e 'alarm 240; exec @ARGV' godot
+**State.** Tests: 222 tests, 3034 checks, green (`perl -e 'alarm 240; exec @ARGV' godot
 --headless --path . -s tests/run_tests.gd`). Ryan runs a second session on this repo at
 the same time (today: the HUD session, the audio session, the balance session and the
 boss-theme session, which was the audio session resumed from another account): check
@@ -20,8 +20,10 @@ the vent-on-fire face, the die-local reroll and heat-scaled shield regen. An ene
 **pack** everywhere as of 28 September. Ryan writes `content/*.json` in his own voice, on the phone
 through the content editor artifact (see the memory note; pull collection `edits`, apply by hand,
 republish the files; he writes die totals, the data keeps free slots); tests never hardcode an
-entry's passive name. Next on the map: an engagement range of 2 for joining a fight and tethers
-drawn live in plan mode, then play-test the chaining.
+entry's passive name. The map's engagement range is built (28 September, evening): a contact
+seeds by touching, machines within `Battlefield.ENGAGE_RANGE` (2) join, and plan mode draws a
+tether from every machine in a contact to the pack it will fight. Ryan's play test decides
+whether 2 is right. Stealth's join rule is the one piece of the trait still unbuilt.
 **Reserved names (28 September, Ryan's ask; bible section 7, two rows).** `content/reserved_names.json`
 holds every machine name in BattleTech (all 'Mechs, from Sarna), Heavy Gear (DP9's catalogue),
 Warhammer 40k and Halo, about 1,250, plus BattleTech's Earth-animal subset grouped by kind as a
@@ -32,8 +34,14 @@ exactly (case, spaces, hyphens ignored; sharing a word passes) and names the sou
 Eagle's IS name), `dingo` (Heavy Gear), `sparrowhawk` (Halo gunship, BattleTech fighter), and
 `badger`'s id only (Heavy Gear APC; Honey Badger is clear, kept). Ryan's maker rules
 (silhouettes and nickname families, the Arsenal's judgment deities, fossil over myth) are the
-second bible row. Another session renamed `tortoise` to `armadillo` and `coyote` to `prairie_dog`
-the same afternoon; neither clashes.
+second bible row. Names and concepts are spitballed on the Riftgate Nameplate artifact,
+https://claude.ai/artifact/6K6mq49XHCUbdZnkzp5rra (28 September; a tab per maker with its plate,
+Components, Other, Rules; every name typed is checked against the reserved list baked into the page;
+rows live in its db collection `candidates`, seeded with 48; pull with ArtifactData and rebake the
+page from `content/reserved_names.json` and the content names when either changes). Ryan's read on
+the clashes so far: Sparrowhawk is a coincidence (Halo Wars gunship, BattleTech fighter) and the
+'hawk pair stays; Goshawk is an Inner Sphere designation and he minds it less; Mandrill is the real
+problem, since the BattleTech one looks like ours.
 
 **Where things are.** `sim/` is the headless game (battle map, battlefield resolver,
 battle loop, skirmish, effects pipeline, content DB). `game/battle/` is the battle screen
@@ -95,6 +103,20 @@ yet a pressure on those dice; the Sparrowhawk is carried by the Arc Projector's 
 (46% of its spends). Next rungs when greedy stops being enough: rollout (replay from the
 seed a few rounds ahead), a battle-level bot using the skirmish bot as auto-resolve, a
 CI band test (coarse, or it flakes). The tests never read content: synthetic dice only.
+
+**The Baboon (28 September; bible section 7, the Aphelion chassis row).** The Mandrill is
+the **Baboon** (`baboon` everywhere: id, `art/models/baboon.*`, `models_low.baboon`, the
+blend, the team override docs). Its passive is **Pocket Paradox**: trigger `on_foe_status`
+(fires in `Skirmish._foe_gained_status`, called wherever a foe gains a status; never for
+suppressed or numbed) with effect `chance_suppress` (`value` base percent plus
+`per_missing_shield` per point of shield the owner is missing; `Effects.foe_status_suppress_chance`);
+the first machine whose roll lands suppresses the foe through `_suppress`, so Numbed and
+`stun_resist` still apply. Aphelion's generic stock: `umbra_projector`, `pulse_repeater`,
+`zenith_emitter` (new, line 30), `halo_shield` (new, shield 20), `radiator_sail`; the
+`corona_shield` is a unique unlock. The Baboon's d8: fixed `solar_flare_array`, seven
+hardpoints as above. The heat passive (a stack per 20 heat held on every status applied) is
+earmarked for a second Aphelion hovercraft, to be built after buffs. Renders and docs done;
+the review page still says Mandrill (a dated review).
 
 **Codex, Numbed, fists (26 September, late; bible section 7, two Decided rows).** The codex
 is the base state plus battle rewards, never combat effects: `Effects.stat(u, name, upto)`

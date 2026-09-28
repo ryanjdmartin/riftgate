@@ -571,6 +571,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 			foe.hp -= dmg
 			if f.has(Face.Keyword.BURN):
 				Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", ceili(float(dmg) / BURN_DAMAGE_PER_STACK))
+				_foe_gained_status(foe, "burning")
 			if f.has(Face.Keyword.SUPPRESS):
 				_suppress(foe)
 		total += dmg
@@ -578,6 +579,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 		any_crit = any_crit or crit
 	if extra_burn > 0:
 		Effects.stack(target, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", extra_burn)
+		_foe_gained_status(target, "burning")
 	last_roll = {"mech": mech_index, "target": target, "rolled": rolled_total, "final": total, "crit": any_crit, "ranged": f.is_ranged()}
 	var how := f.describe()
 	if any_crit:
@@ -619,6 +621,22 @@ func _suppress(foe: Foe) -> bool:
 	Effects.grant_for_rounds(foe, Effects.STATUS["suppressed"], "mech", round)
 	Effects.stack(foe, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", NUMBED_PER_SUPPRESS_MASSIVE if foe.is_massive() else NUMBED_PER_SUPPRESS, Effects.DECAY_TICK)
 	return true
+
+
+## A foe has just gained a status (whoever applied it): every live machine's on_foe_status
+## passives get their roll, the first that lands suppressing the foe (the Baboon's Pocket
+## Paradox, 28 September). Never for Suppressed or Numbed themselves, or the loop would feed
+## itself; a foe already suppressed or dead has nothing to lose.
+func _foe_gained_status(foe: Foe, status_id: String) -> void:
+	if status_id == "suppressed" or status_id == "numbed" or not foe.alive() or foe.is_suppressed():
+		return
+	for ms in live_mechs():
+		var chance := Effects.foe_status_suppress_chance(ms.unit)
+		if chance <= 0 or rng.randi_range(1, 100) > chance:
+			continue
+		log.append("%s: the loop catches %s (%d%%)" % [ms.unit.display_name, foe.display_name, chance])
+		_suppress(foe)
+		return
 
 
 ## The cleanse keyword on a shield or vent component: whoever it was spent on loses every

@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://de5c70k3y1dg8"
-path="res://.godot/imported/mandrill_vent.png-100a2a187956636412024c07d43f6ccf.ctex"
+uid="uid://duwrvkf0288vu"
+path="res://.godot/imported/baboon_vent.png-ad32e8425fffc2194d22ccaead50d328.ctex"
 metadata={
 "vram_texture": false
 }
@@ -13,8 +13,8 @@ generator_parameters={
 
 [deps]
 
-source_file="res://art/models/mandrill_vent.png"
-dest_files=["res://.godot/imported/mandrill_vent.png-100a2a187956636412024c07d43f6ccf.ctex"]
+source_file="res://art/models/baboon_vent.png"
+dest_files=["res://.godot/imported/baboon_vent.png-ad32e8425fffc2194d22ccaead50d328.ctex"]
 
 [params]
 

@@ -1352,3 +1352,55 @@ func test_a_target_status_condition_reads_the_foe_struck() -> void:
 	assert_eq(notes.size(), 1, "the die row shows the rule")
 	assert_true(notes[0].begins_with("foes carrying a status: damage ×1.5"), "with its condition as the lead: %s" % notes[0])
 	assert_eq(int(Effects.attack(m, m.die.faces[0], 20, 0, false)["damage"]), 20, "asked without a target, the condition does not hold")
+
+
+func test_a_foe_gaining_a_status_may_be_caught_by_the_loop() -> void:
+	var loop := {"id": "loop", "name": "Pocket Paradox", "description": "", "effects": [
+		{"trigger": "on_foe_status", "effect": "chance_suppress", "value": 100, "per_missing_shield": 0}]}
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.attack(20, L, K.BURN)), 40, 100)
+	m.grant_passive(loop)
+	sk.add_mech(m)
+	var g := _ghoul(500, 30)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	assert_eq(Effects.foe_status_suppress_chance(m), 100, "a sure thing at 100")
+	sk.assign(0, sk.front[0])
+	assert_eq(Effects.stacks_of(g, "burning"), 1, "the burn landed")
+	assert_true(g.is_suppressed(), "and the loop caught it")
+	assert_eq(Effects.stacks_of(g, "numbed"), 2, "a caught foe is numbed like any suppressed one, once")
+	sk.end_round()
+	assert_eq(m.hull, 100, "it skipped its blow")
+	# Missing shield scales the chance, and a full resistance still shrugs it off.
+	var u := Unit.mech(1, "B", Vector2i.ZERO)
+	u.shield_max = 60
+	u.shield = 20
+	u.grant_passive({"id": "loop2", "name": "Loop", "description": "", "effects": [
+		{"trigger": "on_foe_status", "effect": "chance_suppress", "value": 20, "per_missing_shield": 1}]})
+	assert_eq(Effects.foe_status_suppress_chance(u), 60, "20 plus 40 missing shield")
+	u.shield = 60
+	assert_eq(Effects.foe_status_suppress_chance(u), 20, "the base alone when the shield is full")
+	assert_true(Effects.effect_text({"trigger": "on_foe_status", "effect": "chance_suppress", "value": 20, "per_missing_shield": 1}).begins_with("20% chance a foe gaining a status is also suppressed, +1% per shield point missing"), "reads as a sentence")
+	var s2 := Skirmish.new(2)
+	var m2 := _mech("C", Die.single(Face.attack(20, L, K.BURN)), 40, 100)
+	m2.grant_passive(loop)
+	s2.add_mech(m2)
+	var stubborn := _ghoul(500, 30)
+	stubborn.stun_resist = 100
+	s2.add_foes([stubborn])
+	s2.begin()
+	s2.start_round()
+	s2.assign(0, s2.front[0])
+	assert_false(stubborn.is_suppressed(), "a fully resistant foe shrugs the loop off too")
+	# A suppress itself never feeds the loop.
+	var s3 := Skirmish.new(3)
+	var m3 := _mech("D", Die.single(Face.attack(20, L, K.SUPPRESS)), 40, 100)
+	m3.grant_passive(loop)
+	s3.add_mech(m3)
+	var g3 := _ghoul(500, 30)
+	s3.add_foes([g3])
+	s3.begin()
+	s3.start_round()
+	s3.assign(0, s3.front[0])
+	assert_eq(Effects.stacks_of(g3, "numbed"), 2, "one suppress, one set of stacks: no loop on a suppress")

@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://byhpqw7hja4c"
-path="res://.godot/imported/mandrill_thumb.png-873db2894ce3ea819681a1d255b6a74c.ctex"
+uid="uid://d0fll4vopn570"
+path="res://.godot/imported/baboon_plate.png-eb97f5b870dae6ebceeda9b5bf914a94.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "6669b593b4d6f4caa6a46424752ffd46"
+"md5": "816ae361b13a25f61b81237d73da26fb"
 }
 
 [deps]
 
-source_file="res://art/models/mandrill_thumb.png"
-dest_files=["res://.godot/imported/mandrill_thumb.png-873db2894ce3ea819681a1d255b6a74c.ctex"]
+source_file="res://art/models/baboon_plate.png"
+dest_files=["res://.godot/imported/baboon_plate.png-eb97f5b870dae6ebceeda9b5bf914a94.ctex"]
 
 [params]
 

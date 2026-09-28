@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dcpbybjs0fo01"
-path="res://.godot/imported/mandrill.glb-08f6b10b085396ad43ff88ba264ce0f9.scn"
+uid="uid://bljksk07o6fev"
+path="res://.godot/imported/baboon.glb-e6f3ba8a958668484c383bcbb3256969.scn"
 
 [deps]
 
-source_file="res://art/models/mandrill.glb"
-dest_files=["res://.godot/imported/mandrill.glb-08f6b10b085396ad43ff88ba264ce0f9.scn"]
+source_file="res://art/models/baboon.glb"
+dest_files=["res://.godot/imported/baboon.glb-e6f3ba8a958668484c383bcbb3256969.scn"]
 
 [params]
 

@@ -210,7 +210,7 @@ func _ready() -> void:
 
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks): two
-## chained packs of the first faction in content. RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,mandrill overrides the team;
+## chained packs of the first faction in content. RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,baboon overrides the team;
 ## RIFTGATE_ELITE=1 adds the faction's boss as a third unit; RIFTGATE_COLUMNS=4 widens the formation.
 static func _default_skirmish() -> Skirmish:
 	var db := ContentDB.load_default()

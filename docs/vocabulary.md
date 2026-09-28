@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 78 implemented, 27 planned, 0 idea.
+Status: 79 implemented, 27 planned, 0 idea.
 
 ## Resource
 
@@ -153,6 +153,7 @@ Status: 78 implemented, 27 planned, 0 idea.
 | **On heat gain** | Passive trigger. Fires when this mech gains heat. | planned |
 | **On round start** | Passive trigger. Fires after the roll, before rerolls. | planned |
 | **On skirmish start** | Passive trigger. Fires once when the skirmish begins. | planned |
+| **On foe status** | Passive trigger. Fires when any foe gains a status (Burning today; the buffs and debuffs to come), whoever applied it, and never for Suppressed or Numbed themselves. Effects: chance_suppress (a chance the foe is also Suppressed, rising per point of shield the owner is missing). | implemented |
 | **On crit** | Passive trigger. Fires when an attack component crits. Effects: multiply or add damage, add burn to the target, vent the attacker's heat. | implemented |
 | **On hull damage** | Passive trigger. Fires when this mech loses hull. | planned |
 | **Out of combat** | Passive trigger. Fires at the end of a battlefield phase in which this mech had no skirmish. | planned |
@@ -226,6 +227,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Tank** (planned): Intended: faster on roads.
 - **Stealth** (planned): The Dingo (Ryan, 28 September): a support car that waits in the wings while the heavies get into position, then joins their fight, and never fights alone unless run into. Pays again when hunter packs exist.
 - **City defense** (implemented): Defenses have no die. They cannot act inside a skirmish yet.
+- **On foe status** (implemented): One machine's passive so far (the Baboon's Pocket Paradox).
 - **On hull damage** (planned): Hook for the pinned berserker idea.
 - **Command die** (planned): Open question: whether the command die exists at all, or one-shots only.
 - **City ability** (planned): Consider range limits from the gate so the push north leaves support behind.

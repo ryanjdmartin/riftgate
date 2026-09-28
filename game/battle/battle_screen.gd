@@ -109,7 +109,7 @@ func _start_music() -> void:
 
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks).
-## RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,mandrill overrides the team; RIFTGATE_FACTION picks
+## RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,baboon overrides the team; RIFTGATE_FACTION picks
 ## the enemy.
 static func _default_battle() -> Battle:
 	var db := ContentDB.load_default()

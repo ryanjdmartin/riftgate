@@ -48,6 +48,7 @@ const SUPPORTED_EFFECTS := {
 	"on_injury": ["no_destroy"],
 	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress"],
 	"status": ["tick_hp", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry"],
+	"on_foe_status": ["chance_suppress"],
 }
 const DECAY_NONE := 0    # lives until its scope ends
 const DECAY_TICK := 1    # loses a stack each tick, gone at zero
@@ -415,6 +416,21 @@ static func effective_reach(u, face: Face) -> int:
 	return face.reach
 
 
+## The chance, percent, that a foe gaining a status is also suppressed by this machine's
+## passives (the Baboon's Pocket Paradox, 28 September): each effect's base plus its
+## `per_missing_shield` for every point of shield the machine is missing, summed, capped.
+static func foe_status_suppress_chance(u) -> int:
+	var total := 0.0
+	var missing: int = maxi(0, int(u.shield_max) - int(u.shield))
+	for pair in _taking_part(u, "on_foe_status", null):
+		var eff: Dictionary = pair[0]
+		if str(eff.get("effect", "")) != "chance_suppress":
+			continue
+		var n: int = pair[1].stacks
+		total += (float(eff.get("value", 0)) + float(eff.get("per_missing_shield", 0)) * missing) * n
+	return clampi(int(roundf(total)), 0, 100)
+
+
 ## Does the pipeline hold a cracked component short of destruction?
 static func no_destroy(u, face: Face) -> bool:
 	for pair in _taking_part(u, "on_injury", face):
@@ -501,6 +517,10 @@ static func effect_text(eff: Dictionary) -> String:
 		"resist_suppress": body = "resists suppress %s%% per stack" % vs
 		"disable_entry": body = "die entry %s switched off" % str(int(v) + 1)
 		"corrupt_entry": body = "die entry %s bites its owner when spent" % str(int(v) + 1)
+		"chance_suppress":
+			body = "%s%% chance a foe gaining a status is also suppressed" % vs
+			if float(eff.get("per_missing_shield", 0)) > 0.0:
+				body += ", +%s%% per shield point missing" % _trim_num(float(eff.get("per_missing_shield", 0)))
 		_: body = str(eff.get("effect", ""))
 	var lead := ""
 	match str(eff.get("trigger", "")):
@@ -513,6 +533,10 @@ static func effect_text(eff: Dictionary) -> String:
 		"reach_indirect": lead += "indirect attacks: "
 		"target_status": lead += "foes carrying a status: "
 	return lead + body
+
+
+static func _trim_num(x: float) -> String:
+	return str(x) if x != floorf(x) else str(int(x))
 
 
 ## The effects that apply to this component right now, as short tags with their source:

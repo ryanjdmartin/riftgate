@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cbirkmgisqgr6"
-path="res://.godot/imported/mandrill_fist.png-c133f9cfbcbb35429e4e0dec04400ff9.ctex"
+uid="uid://dtj6c3qutwe1i"
+path="res://.godot/imported/baboon_fist.png-c67fd7539949f7c177e2df4e81f451b9.ctex"
 metadata={
 "vram_texture": false
 }
@@ -13,8 +13,8 @@ generator_parameters={
 
 [deps]
 
-source_file="res://art/models/mandrill_fist.png"
-dest_files=["res://.godot/imported/mandrill_fist.png-c133f9cfbcbb35429e4e0dec04400ff9.ctex"]
+source_file="res://art/models/baboon_fist.png"
+dest_files=["res://.godot/imported/baboon_fist.png-c67fd7539949f7c177e2df4e81f451b9.ctex"]
 
 [params]
 
