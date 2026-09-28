@@ -93,8 +93,14 @@ perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/balance.gd --
 # RIFTGATE_SHOT_FRAME=<n> picks the capture frame, to catch an animation mid-flight.
 # RIFTGATE_FEED_DEBUG=1 (any run) fires the skirmish feed's analysis events every half
 # second and the ground tears every couple of seconds, to judge them by eye.
+# The phone's layout on the Mac: RIFTGATE_SHOT_H=<design height> renders a taller glass
+# (a 1080x2424 phone is 1616), RIFTGATE_SAFE=<top>,<bottom> keeps its safe bands clear
+# (any run, not only the tool), RIFTGATE_SHOT_SCALE=1.5 renders at its pixel density (the
+# PNG comes out 1080 wide); add --rendering-method gl_compatibility for the phone's renderer.
+# RIFTGATE_MSAA=on|off forces the 3D viewports' anti-aliasing (any run; off on a phone by default).
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmish/skirmish_screen.tscn shot.png codex
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/battle_screen.tscn shot.png route
+RIFTGATE_SHOT_H=1616 RIFTGATE_SAFE=80,48 RIFTGATE_SHOT_SCALE=1.5 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/battle_screen.tscn phone.png
 
 # build ally units from their briefs (tools/lowforge/models_low.py), then re-import
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger sparrowhawk clydesdale mandrill
@@ -138,6 +144,10 @@ tools/phone.sh          # export then serve; `tools/phone.sh serve` serves the l
 # editor settings point export/android/java_sdk_path at it) and the debug keystore
 # (keytool, at the path Godot's editor settings name). All of that is set up on this Mac.
 tools/android.sh        # export, install, launch; `tools/android.sh log` tails the phone
+# after a crash on the phone: the abort and its backtrace; and the app's memory while it
+# runs (Native Heap and EGL/GL mtrack are the columns that climb when something leaks)
+~/Library/Android/sdk/platform-tools/adb logcat -d -b crash | grep -A 12 "Abort message"
+~/Library/Android/sdk/platform-tools/adb shell dumpsys meminfo com.publabs.riftgate
 ```
 
 The skirmish screen runs top to bottom: header with the round tag and MENU, enemies in two
