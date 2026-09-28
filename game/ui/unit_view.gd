@@ -337,7 +337,11 @@ func _draw() -> void:
 			var from := Vector2(bx + FLOAT_BAR_W / 3.0, y + BAR_H)
 			var reach := 1.0 if _acquire < 0.0 else clampf(_acquire / (ACQUIRE_SECONDS * 0.6), 0.0, 1.0)
 			if reach > 0.0:
-				draw_line(from, from + Vector2(-LEADER, LEADER) * reach, Color(hud, 0.85), 2.0)
+				# Thicker, on a dark edge, so it holds on the phone and on the other world's
+				# green when the HUD is green (Ryan, 28 September).
+				var tip := from + Vector2(-LEADER, LEADER) * reach
+				draw_line(from, tip, Color(Palette.BG, 0.7), 5.0)
+				draw_line(from, tip, Color(hud, 1.0), 3.0)
 			for b in bars:
 				_gauge(Rect2(bx, y, FLOAT_BAR_W, BAR_H), b)
 				y -= BAR_STEP

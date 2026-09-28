@@ -513,7 +513,15 @@ decided register.
    `Hud.scanlines` now draws on the glass's pixels (one every three) on both screens; the
    feed readout's and databox's leaders were hairlines at 0.7 and vanished on the ground,
    now 2 px at 0.9. The dark legs from a machine's gauges down to it are the model's
-   unmounted hardpoint pins, not a leader. Still to judge on the phone: the frame rate,
+   unmounted hardpoint pins, not a leader. Eighth: the foes' gauge leaders (the
+   HUD-coloured ones Ryan meant) thicker, 3 px on a dark edge, so they hold on green.
+   Ninth: the seam band's hexes "aliased badly": the other world's hexes overhung the
+   seam line by up to a whole hex, and their bottoms, cut by the dither cells, read as
+   dark dashes along their edges; the phone's taller band met the lattice at a worse
+   phase and showed far more of it. `TerrainArt.draw_other_hex` now cuts a hex to its
+   clip (Geometry2D), so the seam is the straight dithered line the code always meant,
+   the same at any height. This changes the Mac's band too (less green in it): Ryan
+   judges. Still to judge on the phone: the frame rate,
    the sound set, the machines' edges without MSAA, the text after the oversampling
    change, the grid at the hotter gain, and the black gap between the map's frame and the
    log on a tall screen (the map view grows but its frame does not fill it).

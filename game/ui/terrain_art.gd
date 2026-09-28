@@ -160,7 +160,7 @@ static func _overworld(ci: CanvasItem, rect: Rect2, terrain: int, seed_value: in
 	while y < rect.end.y + hex:
 		var x := rect.position.x + (w * 0.5 if row % 2 == 1 else 0.0)
 		while x < rect.end.x + w:
-			draw_other_hex(ci, Vector2(x, y), hex, terrain, seed_value + k * 7919, frame, Rect2(), 0.18, marks)
+			draw_other_hex(ci, Vector2(x, y), hex, terrain, seed_value + k * 7919, frame, rect, 0.18, marks)
 			x += w
 			k += 1
 		y += hex * 1.5
@@ -197,8 +197,16 @@ static func draw_other_hex(ci: CanvasItem, c: Vector2, hex_px: float, t: int, se
 	rng.seed = seed_value
 	var base: Color = OTHER.get(t, OTHER[BattleMap.Terrain.PLAIN])
 	var pts := Hex.corners(c, hex_px - 1.5)
-	if clip.size != Vector2.ZERO and not clip.has_point(c):
-		return
+	if clip.size != Vector2.ZERO:
+		# Cut to the clip, not merely skipped by centre: a hex on the edge of a band used to
+		# overhang it whole, and at the skirmish's seam the overhanging hex bottoms, cut by
+		# the dither cells, read as dark dashes along their edges, badly on the phone whose
+		# taller band met the lattice at a worse phase (Ryan, 28 September).
+		var frame_pts := PackedVector2Array([clip.position, Vector2(clip.end.x, clip.position.y), clip.end, Vector2(clip.position.x, clip.end.y)])
+		var cut := Geometry2D.intersect_polygons(pts, frame_pts)
+		if cut.is_empty():
+			return
+		pts = cut[0]
 	ci.draw_colored_polygon(pts, base)
 	var r := hex_px * 0.7
 	var f2 := float(frame)
