@@ -10,12 +10,18 @@ thing works lives in its file's comments; why it is that way lives in the bible.
 the same time (today: the HUD session, the audio session, the balance session and the
 boss-theme session, which was the audio session resumed from another account): check
 `git status` before committing and stage by path. Chassis ids: `badger`,
-`clydesdale`, `sparrowhawk`, `mandrill` (the Anvil became Aphelion's Mandrill, 26 September), and
-since 28 September six drafts from the content editor wearing the Mandrill's numbers and kit with
-planned passives: `tortoise`, `wild_boar`, `coyote`, `dingo`, `goshawk`, `nemesis`, `ammit` (the
-last two are the Arsenal's; maker `arsenal` exists now). Ryan writes `content/*.json` in his own
-voice, on the phone through the content editor artifact (see the memory note; pull collection
-`edits`, apply by hand, republish the files); tests never hardcode an entry's passive name.
+`clydesdale` (d9 now; the die cap is 10), `sparrowhawk`, `mandrill` (Ryan is reworking it in
+another session; two fill components sit in its loadout so the die test passes), and since
+28 September `armadillo`, `wild_boar`, `prairie_dog`, `dingo`, `goshawk`, `nemesis`, `ammit`
+(the last two are the Arsenal's; maker `arsenal` exists). Their shapes are decided (bible section 7,
+the 28 September row): every new passive and most locked components are `"status": "planned"`
+until the engine has volatile, devour, Shocked, Overcharged, taunt, overwhelm, the stealth trait,
+the vent-on-fire face, the die-local reroll and heat-scaled shield regen. An enemy unit is a
+**pack** everywhere as of 28 September. Ryan writes `content/*.json` in his own voice, on the phone
+through the content editor artifact (see the memory note; pull collection `edits`, apply by hand,
+republish the files; he writes die totals, the data keeps free slots); tests never hardcode an
+entry's passive name. Next on the map: an engagement range of 2 for joining a fight and tethers
+drawn live in plan mode, then play-test the chaining.
 **Reserved names (28 September, Ryan's ask; bible section 7, two rows).** `content/reserved_names.json`
 holds every machine name in BattleTech (all 'Mechs, from Sarna), Heavy Gear (DP9's catalogue),
 Warhammer 40k and Halo, about 1,250, plus BattleTech's Earth-animal subset grouped by kind as a
