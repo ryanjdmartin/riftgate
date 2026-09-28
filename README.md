@@ -26,7 +26,9 @@ and open question from the design sessions.
   - `battle.gd` one battle end to end: plot routes, resolve, open a skirmish per contact
     group, apply the result, until the gate falls, the team is wrecked, or the boss dies
 - `content/` — game data: `vocabulary.json` (every mechanic term; `codex` is the rule as the player reads it), `factions.json`,
-  `foes.json`, `chassis.json`, `components.json`. Placeholder numbers.
+  `foes.json`, `chassis.json`, `components.json`. Placeholder numbers. `battletech_names.json` is
+  every BattleTech 'Mech named for an Earth animal; a chassis nickname or id on it fails the
+  validator unless the entry records the clash under `design.battletech_clash`.
 - `game/` — scenes and presentation.
   - `harness.tscn` is the main scene: pick a team, faction, squad size, seed, then Battle
     (the whole loop), Fight (one skirmish), or the map viewer

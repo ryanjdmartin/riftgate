@@ -26,6 +26,10 @@ var chassis: Dictionary = {}
 var components: Dictionary = {}
 var makers: Dictionary = {}
 var categories: Array = []
+## BattleTech 'Mech names that are Earth animals (content/battletech_names.json), keyed by
+## their normalised form (see normalise_name) with the name as written for the message.
+## A chassis nickname or id that lands on one fails validation (Ryan, 28 September).
+var battletech_names: Dictionary = {}
 var load_errors: Array[String] = []
 
 
@@ -53,6 +57,24 @@ func load_dir(dir: String) -> void:
 	for m in c.get("makers", []):
 		makers[m["id"]] = m
 	components = _index(_read(dir + "components.json"))
+	battletech_names = {}
+	var bt := _read(dir + "battletech_names.json")
+	var groups: Dictionary = bt.get("groups", {})
+	for group in groups.keys():
+		for n in groups[group]:
+			battletech_names[normalise_name(str(n))] = str(n)
+	if not bt.is_empty() and battletech_names.size() < 100:
+		load_errors.append("battletech_names.json holds %d names; the catalogue had over two hundred" % battletech_names.size())
+
+
+## Letters and digits only, lower case, so "Black Hawk-KU", "black_hawk_ku" and "BlackHawk KU"
+## are one name. Accented letters are kept as they are.
+static func normalise_name(s: String) -> String:
+	var out := ""
+	for ch in s.to_lower():
+		if ch != " " and ch != "-" and ch != "_" and ch != "'" and ch != "." and ch != "," and ch != "(" and ch != ")":
+			out += ch
+	return out
 
 
 func _read(path: String) -> Dictionary:
@@ -490,6 +512,7 @@ func _validate_chassis(errs: Array[String]) -> void:
 				errs.append("%s: missing %s" % [where, key])
 		if c.has("designation") and str(c["designation"]).strip_edges().is_empty():
 			errs.append("%s: designation is empty" % where)
+		_validate_battletech_clash(where, str(id), c, errs)
 		if c.has("recharge_combat"):
 			errs.append("%s: recharge_combat is gone; in a fight shield comes only from components (a passive may say otherwise)" % where)
 		if int(c.get("recharge_field", 0)) < 0 or int(c.get("armour", 0)) < 0 or int(c.get("cooling", 0)) < 0:
@@ -521,6 +544,25 @@ func _validate_chassis(errs: Array[String]) -> void:
 		if c.has("passives"):
 			errs.append("%s: use 'passive' (zero or one), not 'passives'" % where)
 		_validate_passive(where, c.get("passive", null), errs)
+
+
+## A chassis nickname (or id) that is a BattleTech 'Mech's name is refused (Ryan, 28 September:
+## the animal-named ones, content/battletech_names.json). The match is exact after normalising,
+## so "Timber Wolf" and "timber_wolf" both trip and "Grey Wolf" does not. To keep a clashing
+## name knowingly, the entry records why under design.battletech_clash; the message stays in
+## the content, the build goes green.
+func _validate_battletech_clash(where: String, id: String, c: Dictionary, errs: Array[String]) -> void:
+	var hits := {}
+	for candidate in [str(c.get("name", "")), id]:
+		var key := normalise_name(candidate)
+		if not key.is_empty() and battletech_names.has(key):
+			hits[battletech_names[key]] = true
+	if hits.is_empty():
+		return
+	var d = c.get("design", null)
+	var waiver := str(d.get("battletech_clash", "")).strip_edges() if d is Dictionary else ""
+	if waiver.is_empty():
+		errs.append("%s: '%s' is a BattleTech 'Mech (%s); rename it, or record why it stays under design.battletech_clash" % [where, c.get("name", c.get("id", "")), ", ".join(hits.keys())])
 
 
 const ACTION_KINDS := ["attack", "defend", "buff", "debuff"]

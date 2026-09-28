@@ -1,0 +1,93 @@
+{
+  "note": "Every BattleTech 'Mech whose name is, or carries, a real Earth animal: English, Latin (Ursus, Lupus, Canis, Vulpes, Naja, Cygnus), or another language (Toro, Lobo, Tiburon, Araña, Karhu, Kontio, Kuma, Lao Hu, Sha Yu, Coyotl, Fwltur, Yinghuochong, Ryoken). Where a 'Mech has a Clan name and an Inner Sphere name both are listed. A Riftgate chassis whose name (or id) matches one of these fails the content validator unless its design object records the clash under battletech_clash. Names under also_battletech_not_flagged are for reference only: mythical beasts, fictional creatures, and BattleTech units that are not 'Mechs.",
+  "source": "Sarna.net, Category:BattleMechs, all 756 pages, read 28 September 2026. Compiled by Claude from the full catalogue; the grouping is a reading aid, the validator only needs the names.",
+  "groups": {
+    "birds": [
+      "Albatross", "Battle Hawk", "Black Hawk", "Black Hawk-KU", "Black Lanner", "Blood Kite", "Butcherbird",
+      "Carrion Crow", "Corvis", "Corvus", "Crimson Hawk", "Cygnus", "Dark Crow", "Drift Shag", "Eagle",
+      "Emerald Harrier", "Falcon", "Falcon Hawk", "Fire Falcon", "Fwltur", "Goshawk", "Goshawk II", "Gyrfalcon",
+      "HawkWolf", "Hierofalcon", "Horned Owl", "Ion Sparrow", "Jade Hawk", "Kingfisher", "Night Gyr", "Night Hawk",
+      "Osprey", "Peregrine", "Phoenix Hawk", "Phoenix Hawk IIC", "Phoenix Hawk L", "Phoenix Hawk LAM", "Raptor",
+      "Raptor II", "Raven", "Raven II", "Roadrunner", "Screaming Hawk", "Shadow Hawk", "Shadow Hawk IIC",
+      "Shadow Hawk LAM", "Shrike", "Starhawk", "Stooping Hawk", "Stormcrow", "Thunder Hawk", "Vapor Eagle",
+      "Vulture", "Vulture Mk III", "Vulture Mk IV", "War Crow", "Warhawk"
+    ],
+    "insects_and_arachnids": [
+      "Antlion", "Araña", "Cicada", "Cricket", "Dragonfly", "Fire Ant", "Fire Moth", "Fire Scorpion", "Firebee",
+      "Firefly", "Flea", "Glass Spider", "Grasshopper", "Harvester Ant", "Hornet", "Locust", "Locust IIC", "Mantis",
+      "Mayfly", "Mite", "Scarabus", "Scorpion", "Scorpion LAM", "Spider", "SpiderMech", "Stalking Spider",
+      "Stalking Spider II", "Sun Spider", "Super Wasp", "Tarantula", "Wasp", "Wasp LAM", "Yinghuochong"
+    ],
+    "reptiles_and_amphibians": [
+      "Adder", "Battle Cobra", "Black Python", "Blood Asp", "Chameleon", "Cobra", "Copperhead", "Great Turtle",
+      "Komodo", "Naja", "Rattlesnake", "Rattlesnake II", "Salamander", "Sidewinder", "Snake", "Star Adder",
+      "Star Python", "Sun Cobra", "Tree Frog", "Uraeus", "Viper"
+    ],
+    "fish_and_sea": [
+      "Bull Shark", "Crab", "Hammerhead", "Hermit Crab", "King Crab", "Orca", "Piranha", "Sha Yu", "Thresher",
+      "Thresher Mk II", "Tiburon"
+    ],
+    "cats": [
+      "Arctic Cheetah", "Cave Lion", "Cougar", "Ebon Jaguar", "Hellcat", "Iron Cheetah", "Jaguar", "Lao Hu", "Lynx",
+      "Mad Cat", "Mad Cat III", "Mad Cat Mk II", "Mad Cat Mk IV", "Mist Lynx", "Nova Cat", "Ocelot", "Panther",
+      "Puma", "Shadow Cat", "Shadow Cat II", "Shadow Cat III", "Temax Cat Ninjabolt"
+    ],
+    "dogs_wolves_and_foxes": [
+      "Alpha Wolf", "Arctic Fox", "Arctic Wolf", "Arctic Wolf II", "Bloodhound", "Canis", "Corgi", "Coyotl",
+      "Dire Wolf", "Fennec", "Fox", "Foxfire", "Hellhound", "Hound", "Hyena", "Jackal", "Kit Fox", "Lobo", "Lupus",
+      "Mad Dog", "Mad Dog Mk III", "Mad Dog Mk IV", "Mongrel", "Night Wolf", "Rabid Coyote", "Rock Hound", "Ryoken",
+      "Ryoken II", "Savage Coyote", "Savage Wolf", "Silver Fox", "Snow Fox", "Stormwolf", "Thunder Fox",
+      "Timber Wolf", "Tundra Wolf", "Vixen", "Vulpes", "War Dog", "Warwolf", "Wolf Trap", "Wolfhound", "Wolfhound IIC",
+      "Wulfen"
+    ],
+    "bears": [
+      "Bear Cub", "Bruin", "Grizzly", "Iron Bear", "Karhu", "Kodiak", "Kodiak II", "Kontio", "Kuma", "Sun Bear",
+      "Ursa", "Ursus", "Ursus II"
+    ],
+    "other_mammals": [
+      "Baboon", "Brahma", "CattleMaster", "Crimson Langur", "Hedgehog", "Howler", "Ice Ferret", "Jackrabbit",
+      "Mandrill", "Mastodon", "Merlin", "Mongoose", "Mongoose II", "Mule", "Onager", "Opossum", "Porcupine",
+      "Razorback", "Rhino", "Rime Otter", "Rook", "Stag", "Stone Rhino", "Thunder Stallion", "Toro", "Weasel",
+      "Wolverine"
+    ]
+  },
+  "borderline": {
+    "Merlin": "a falcon, though the 'Mech may be named for the wizard",
+    "Rook": "a corvid, though the 'Mech is likelier the chess piece",
+    "Brahma": "the Brahman cattle breed, or the god",
+    "Uraeus": "the rearing-cobra emblem of Egypt",
+    "Howler": "a howler monkey (the Clan name is Baboon)",
+    "Foxfire": "fungal glow, but carries fox",
+    "Rock Hound": "a geology hobbyist, but carries hound",
+    "Hellcat": "carries cat (Clan name Hellhound II)",
+    "Hellhound": "a mythical dog, but carries hound",
+    "CattleMaster": "an IndustrialMech for ranching",
+    "Temax Cat Ninjabolt": "an April Fools' 'Mech, listed for completeness",
+    "Corvus": "the MechAssault video game only",
+    "Ryoken": "Japanese for hunting dog; the Clan name of the Stormcrow"
+  },
+  "also_battletech_not_flagged": {
+    "mythical_or_fictional_beasts": [
+      "Amarok", "Anzu", "Bakeneko", "Balius", "Bandersnatch", "Banshee", "Barghest", "Basilisk", "Behemoth",
+      "Burrock", "Cerberus", "Chimera", "Cyclops", "Cyllaros", "Dragon", "Fafnir", "Fenris", "Garm", "Gargoyle",
+      "Great Wyrm", "Griffin", "Gulon", "Hellion", "Hydra", "Jackalope", "Jade Phoenix", "Kraken", "Man O' War",
+      "Naga", "Orochi", "Phoenix", "Pwwka", "Rakshasa", "Roc", "Sasquatch", "Scylla", "Skinwalker", "Sphinx",
+      "Turkina", "Volkh", "Wendigo", "Werewolf", "Wolfman", "Wyvern"
+    ],
+    "battletech_units_that_are_not_mechs": {
+      "Sparrowhawk": "aerospace fighter (SPR-H5); Riftgate's Sparrowhawk is Kestrel's interceptor",
+      "Kestrel": "VTOL; Riftgate's maker Kestrel Dynamics",
+      "Badger": "Clan tracked transport; Riftgate's Honey Badger",
+      "Cheetah": "aerospace fighter (F-10)",
+      "Hawk Moth": "VTOL gunship",
+      "Yellow Jacket": "VTOL gunship",
+      "Condor": "hovertank",
+      "Bulldog": "tank",
+      "Manticore": "tank",
+      "Leopard": "DropShip",
+      "Lion": "DropShip",
+      "Gazelle": "DropShip",
+      "Coyote": "a Clan, not a 'Mech; the 'Mechs are Coyotl, Rabid Coyote and Savage Coyote"
+    }
+  }
+}

@@ -16,6 +16,15 @@ planned passives: `tortoise`, `wild_boar`, `coyote`, `dingo`, `goshawk`, `nemesi
 last two are the Arsenal's; maker `arsenal` exists now). Ryan writes `content/*.json` in his own
 voice, on the phone through the content editor artifact (see the memory note; pull collection
 `edits`, apply by hand, republish the files); tests never hardcode an entry's passive name.
+**BattleTech names (28 September, Ryan's ask; bible section 7 row).** `content/battletech_names.json`
+lists every BattleTech 'Mech named for an Earth animal (from Sarna's full catalogue of 756);
+`ContentDB._validate_battletech_clash` refuses a chassis whose nickname or id matches one exactly
+(case, spaces and hyphens ignored) unless `design.battletech_clash` says why it stays. Two
+existing chassis clash and carry that note for now, Ryan to rename or confirm: `goshawk`
+(the Vapor Eagle's Inner Sphere name, and a Goshawk II) and `mandrill` (a Fire Mandrill 'Mech).
+Near misses, not flagged: Sparrowhawk and Kestrel are a BattleTech fighter and VTOL, Badger a
+Clan vehicle. Another session renamed `tortoise` to `armadillo` and `coyote` to `prairie_dog`
+the same afternoon; neither clashes.
 
 **Where things are.** `sim/` is the headless game (battle map, battlefield resolver,
 battle loop, skirmish, effects pipeline, content DB). `game/battle/` is the battle screen
