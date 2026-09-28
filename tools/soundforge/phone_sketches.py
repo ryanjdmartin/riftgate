@@ -17,7 +17,14 @@ each file is an A/B against the first of its set; never written over a shipped t
             levels, then levelled by what a phone speaker plays (a model: high-passed at
             220 Hz twice, a presence bump, rolled off at 9 kHz).
 
-    tools/spriter/.venv/bin/python tools/soundforge/phone_sketches.py [voices|balance|levels]
+    tools/spriter/.venv/bin/python tools/soundforge/phone_sketches.py [voices|balance|levels|voices2|guitar|shadows2|rift]
+
+Second round (28 September, from Ryan's notes on the first): voices2 (two hybrids of voice 2
+and the split, and the other bass voices the tracks use), guitar (the backing guitar without
+its hard clip), shadows2 (the kick's shadow without the pitch sweep, a gentler sub, a softer
+crash), rift (The Far Bank as shipped and on the human master), and a half-gap level file.
+The tilt was decided the same day and the human builders carry it, so every file renders on
+that master except where a row says "old master".
 
 Writes WAVs and AAC (afconvert, macOS) into tools/soundforge/out/phone/ with a manifest.
 """
@@ -145,8 +152,75 @@ BASS_VOICES = [
     ("split", bass_split, "the string under 250 Hz kept clean, only the part above driven; cabinet on the driven part"),
     ("dyn", bass_dyn, "the split, the drive following the note's own envelope, brightness and cabinet a hair different per note"),
 ]
-for _name, _fn, _ in BASS_VOICES:
+
+
+# Second round (Ryan, 28 September: voice 2's sound liked most, but Duke Nukem in the power
+# chords; 4 and 5 too alike to tell). Two hybrids keep voice 2's clip and cabinet and take the
+# split from 4, so the clipped part is only the string above 250 Hz; the low string stays clean
+# under the chord, which is where the chip-tune fifths came from.
+
+def bass_cabsplit(f, dur, drive=2.6):
+    x = string_and_thump(f, dur)
+    clean = F.sat(F.lp(x, 250.0), 1.3) * 0.9
+    hi = F.hp(x, 250.0)
+    hi = np.clip(F.sat(hi * drive, drive) * (1.0 + 0.15 * drive), -1.0, 1.0)
+    hi = hi + F.bp(hi, 200.0, 500.0) * 0.5
+    return F.hp(clean + bass_cabinet(hi) * 0.8, 40.0) * 0.9
+
+
+def bass_cabdyn(f, dur, drive=2.6):
+    # The hybrid, with the clip's drive following the note, so the buzz on a held note thins
+    # as the string decays.
+    x = string_and_thump(f, dur, F.RNG.uniform(0.42, 0.58))
+    env = F.lp(np.abs(x), 25.0)
+    env = np.clip(env / (np.max(env) + 1e-9), 0.0, 1.0)
+    d = drive * (0.45 + 0.55 * env ** 0.6)
+    clean = F.sat(F.lp(x, 250.0), 1.3) * 0.9
+    hi = F.hp(x, 250.0)
+    hi = np.clip(np.tanh(hi * d) / np.tanh(d) * (1.0 + 0.15 * d), -1.0, 1.0)
+    hi = hi + F.bp(hi, 200.0, 500.0) * 0.5
+    return F.hp(clean + bass_cabinet(hi, F.RNG.uniform(0.96, 1.04)) * 0.8, 40.0) * 0.9
+
+
+BASS_VOICES_2 = [
+    ("cabsplit", bass_cabsplit, "voice 2's clip and cabinet on the string above 250 Hz only; the low string clean under it"),
+    ("cabdyn", bass_cabdyn, "the same, the clip's drive following the note, so a held note's buzz thins as it decays"),
+]
+# The other bass voices the tracks already use, in the riff: the soft sub (the lift's and the
+# keys'), the crunch synth (the second lift's), the clean bass (Full Bore's melody voice) and,
+# for the record, the rift's contrabass.
+OTHER_VOICES = [
+    ("sub", "sub_bass", "the soft sub: a sine with a little saw, soft-edged; the lift's and the keys' bass"),
+    ("crunch", "bass", "the crunch synth: a saw with a shadow, driven and clipped, one fixed low-pass; the second lift's bass"),
+    ("cleanbass", "bass_clean", "the clean bass: the string with its harmonics open and no drive; Full Bore's melody voice"),
+    ("contra", "contrabass_real", "the rift's bowed contrabass, out of its world"),
+]
+for _name, _fn, _ in BASS_VOICES + BASS_VOICES_2:
     F.NOTE_INST["bass_" + _name] = (lambda fn: (lambda f, d, p: fn(f, d, p.get("drive", 2.6))))(_fn)
+for _name, _inst, _ in OTHER_VOICES:
+    # Bound to the forge's own function now, under a name of its own (a key that shadowed
+    # the forge's "bass_clean" called itself).
+    F.NOTE_INST["bass_" + _name] = (lambda fn: (lambda f, d, p: fn(f, d, {})))(F.NOTE_INST[_inst])
+
+
+def guitar_soft(f, dur, mute=True, clean=False):
+    # The backing guitar without its hard clip (Ryan, 28 September: liked as garbage cans,
+    # maybe too clippy): the same strings and pick scrape, then two asymmetric stages with a
+    # tone control between, and the guitar cabinet. The palm mute and the body knock as shipped.
+    n = F.n_of(dur)
+    x = np.zeros(n)
+    for ratio, g in ((1.0, 1.0), (1.5, 0.7), (2.0, 0.5)):
+        x += F.pluck(f * ratio * F.RNG.uniform(0.998, 1.002), dur, bright=F.RNG.uniform(0.4, 0.6), damp=0.993)[:n] * g
+    scrape = F.bp(F.noise(F.n_of(0.012)), 2000.0, 7000.0) * F.env_ad(F.n_of(0.012), 0.0002, 0.003) * 0.6
+    x = F.at(x, scrape, 0.0)[:n]
+    y = asat(F.hp(x, 600.0) * 3.5 + x * 1.2, 1.6)
+    y = F.lp(y, 3000.0) + F.bp(y, 700.0, 1400.0) * 0.3
+    y = F.cabinet(asat(y * 1.3, 1.2)) * 1.1
+    env = F.env_ad(n, 0.001, min(0.16, dur * 0.5), curve=3.0) if mute else F.env_ad(n, 0.001, dur * 0.7, curve=2.0)
+    return F.mix(y * env, F.body(200.0, 90.0, 0.05, drive=2.0, click=0.2) * 0.3)
+
+
+F.NOTE_INST["guitar_soft"] = lambda f, d, p: guitar_soft(f, d, p.get("mute", True), p.get("clean", False))
 
 
 # ---------------------------------------------------------------- shadows for the speaker
@@ -169,6 +243,34 @@ def tom_shadow(f=150.0, pitch=1.0):
 def sub_shadow(f, dur, res=0.0, punch=0.0, fade=0.0):
     s = _SUB(f, dur, res, punch, fade)
     return s + F.bp(F.sat(s * 2.0, 3.0), 150.0, 600.0) * 0.35
+
+
+# Second cut (Ryan, 28 September: in headphones the shadowed kick went "pew-pew", the sub a
+# little digital, the toms different but fine): the kick's shadow without the pitch sweep (a
+# static 200 Hz burst and the harmonics only), the sub's gentler and lower, and a softer
+# crash, since the shipped ones read as clipped and hissy on the speaker.
+
+def kick_shadow2(pitch=1.0):
+    k = _KICK(pitch)
+    n = len(k)
+    burst = F.harmonics(200.0 * pitch, n, [1.0, 0.35]) * F.env_ad(n, 0.001, 0.045, curve=3.0) * 0.4
+    harm = F.bp(F.sat(k, 3.0), 150.0, 600.0) * 0.4
+    return F.mix(k, burst, harm)
+
+
+def sub_shadow2(f, dur, res=0.0, punch=0.0, fade=0.0):
+    s = _SUB(f, dur, res, punch, fade)
+    return s + F.lp(F.bp(F.sat(s * 2.0, 2.5), 150.0, 400.0), 500.0) * 0.22
+
+
+_CRASH = F.crash_real
+
+
+def crash_soft():
+    n = F.n_of(1.0)
+    wash = F.bp(F.noise(n), 1800.0, 9000.0) * F.env_ad(n, 0.003, 0.24, curve=2.0) * 0.75
+    plate = F.knock([2900.0, 4300.0, 6400.0, 8100.0], [0.3, 0.22, 0.17, 0.14], [0.4, 0.3, 0.25, 0.2], noise_gain=0.0) * 0.45
+    return F.sat(F.mix(wash, plate), 1.3) * 0.35
 
 
 def sub_cut(x):
@@ -227,10 +329,19 @@ def render_hold(form, swap=None, groove_kw=None, patches=None, post=None):
     return post(x) if post else x
 
 
-def render_far_bank():
-    # Whole: its builder sizes patterns from the form's sections, so the form cannot be cut.
-    F.seed("music_far_bank")
-    return F.music_far_bank()
+OLD_MASTER = dict(tilt=3.0, presence=0.0)   # the human tracks' master before 28 September
+_FAR = {}
+
+
+def far_bank(groove_kw):
+    # Whole, and cached per master: its builder sizes patterns from the form's sections, so
+    # the form cannot be cut, and a render is minutes.
+    key = tuple(sorted(groove_kw.items()))
+    if key not in _FAR:
+        F.seed("music_far_bank")
+        with Patched(groove=groove_with(groove_kw)):
+            _FAR[key] = F.music_far_bank()
+    return _FAR[key]
 
 
 def level_to(x, target_db, measure=F.mean_level):
@@ -259,25 +370,26 @@ def bar_seconds(bpm):
     return 4.0 * 60.0 / bpm
 
 
-def solo_bass_file():
+def solo_bass_file(names=None, seed_name="phone_bass_solo"):
     """Every voice alone on the riff, four bars each, a bar's rest between."""
+    names = names or [n for n, _, _ in BASS_VOICES]
     riff = "0--.3-.0-...1-..g--.3-.1-...0-.."
-    form = "".join("%s%s%s%sR" % ((chr(ord("A") + i),) * 4) for i in range(len(BASS_VOICES)))
+    form = "".join("%s%s%s%sR" % ((chr(ord("A") + i),) * 4) for i in range(len(names)))
     vs = []
-    for i, (name, _, _) in enumerate(BASS_VOICES):
+    for i, name in enumerate(names):
         sec = chr(ord("A") + i)
         vs.append({"inst": "bass_" + name, "mode": "riff", "gain": 0.6, "hold": 1.0, "pat": {sec: riff}})
     drums = {"kick": {"*": "x.xx.x.", "R": "................"}, "hat": {"*": "x.x.x.x.x.x.x.x.", "R": "................"}}
     kit = {"kick": (F.variants(F.kick_real), 0.5), "hat": (F.variants(lambda p: F.hat_real(False, p)), 0.3)}
-    F.seed("phone_bass_solo")
-    x = F.groove(bpm=100, form=form, kit=kit, drums=drums, chords={"*": [[0, 7, 12]]}, voices=vs, tilt=3.0, low=(150.0, -6.0), human=(0.005, 0.15))
-    marks = [(i * 5 * bar_seconds(100), name) for i, (name, _, _) in enumerate(BASS_VOICES)]
+    F.seed(seed_name)
+    x = F.groove(bpm=100, form=form, kit=kit, drums=drums, chords={"*": [[0, 7, 12]]}, voices=vs, tilt=1.5, presence=0.25, low=(150.0, -6.0), human=(0.005, 0.15))
+    marks = [(i * 5 * bar_seconds(100), name) for i, name in enumerate(names)]
     return x, marks
 
 
 def main(argv):
     which = argv[0] if argv else "all"
-    manifest = {"voices": [], "balance": [], "levels": [], "notes": {}}
+    manifest = {"voices": [], "balance": [], "levels": [], "voices2": [], "guitar": [], "shadows2": [], "rift": [], "notes": {}}
     os.makedirs(OUT, exist_ok=True)
     path = os.path.join(OUT, "manifest.json")
     if which != "all" and os.path.exists(path):
@@ -304,13 +416,15 @@ def main(argv):
         save()
     if which in ("balance", "all"):
         print("balance")
+        # The first three on the old master (tilt 3, no presence lift), which the builders no
+        # longer carry since the tilt was decided (28 September).
         steps = [
-            ("mix_shipped", "as shipped", {}, None, None),
+            ("mix_shipped", "as shipped (the old master)", OLD_MASTER, None, None),
             ("mix_shadows", "shadows under the kick, the toms and the sub: a knock at 200 Hz and harmonics 150 to 600 Hz",
-             {}, dict(kick_real=kick_shadow, tom_real=tom_shadow, sub_bass=sub_shadow), None),
-            ("mix_subcut", "the sub cut: nothing below 45 Hz, -6 dB below 80; the RMS budget goes to the mids", {}, None, sub_cut),
-            ("mix_tilt", "a gentler master tilt (1.5 dB from 3) with a narrow presence lift at 1 to 2 kHz", {"tilt": 1.5}, None, presence),
-            ("mix_all", "all three", {"tilt": 1.5}, dict(kick_real=kick_shadow, tom_real=tom_shadow, sub_bass=sub_shadow), lambda x: presence(sub_cut(x))),
+             OLD_MASTER, dict(kick_real=kick_shadow, tom_real=tom_shadow, sub_bass=sub_shadow), None),
+            ("mix_subcut", "the sub cut: nothing below 45 Hz, -6 dB below 80; the RMS budget goes to the mids", OLD_MASTER, None, sub_cut),
+            ("mix_tilt", "a gentler master tilt (1.5 dB from 3) with a narrow presence lift at 1 to 2 kHz: now the human master", {}, None, None),
+            ("mix_all", "all three", {}, dict(kick_real=kick_shadow, tom_real=tom_shadow, sub_bass=sub_shadow), sub_cut),
         ]
         for name, note, kw, patches, post in steps:
             x = render_hold(BALANCE_FORM, groove_kw=kw, patches=patches, post=post)
@@ -319,11 +433,57 @@ def main(argv):
             manifest["balance"].append({"name": name, "seconds": len(x) / F.SR, "note": note, "phone_db": round(phone_level(x), 1)})
             print("  %-14s %5.1f s  phone %.1f dB" % (name, len(x) / F.SR, phone_level(x)))
         save()
+    if which in ("voices2", "all"):
+        print("voices2")
+        second = [(n, note) for n, _, note in BASS_VOICES_2] + [(n, note) for n, _, note in OTHER_VOICES]
+        for name, note in second:
+            x = level_to(render_hold(VOICE_FORM, swap={"bass_real": "bass_" + name}), SKIRMISH_LEVEL)
+            write("bass_" + name, x)
+            manifest["voices2"].append({"name": "bass_" + name, "seconds": len(x) / F.SR, "note": note, "phone_db": round(phone_level(x), 1)})
+            print("  %-14s %5.1f s  phone %.1f dB" % (name, len(x) / F.SR, phone_level(x)))
+        x, marks = solo_bass_file([n for n, _ in second], "phone_bass_solo2")
+        x = level_to(x, SKIRMISH_LEVEL)
+        write("bass_solo2", x)
+        manifest["voices2"].append({"name": "bass_solo2", "seconds": len(x) / F.SR, "note": "the six above alone on the riff, four bars each, in order", "marks": marks})
+        save()
+    if which in ("guitar", "all"):
+        print("guitar")
+        x = level_to(render_hold(VOICE_FORM, swap={"guitar_real": "guitar_soft"}), SKIRMISH_LEVEL)
+        write("guitar_soft", x)
+        manifest["guitar"].append({"name": "guitar_soft", "seconds": len(x) / F.SR, "phone_db": round(phone_level(x), 1),
+                                   "note": "the backing guitar without its hard clip: two asymmetric stages and the cabinet; the pick scrape and the palm as shipped"})
+        print("  guitar_soft    %5.1f s  phone %.1f dB" % (len(x) / F.SR, phone_level(x)))
+        save()
+    if which in ("shadows2", "all"):
+        print("shadows2")
+        p2 = dict(kick_real=kick_shadow2, tom_real=tom_shadow, sub_bass=sub_shadow2, crash_real=crash_soft)
+        for name, note, patches in [
+            ("mix_shadows2", "the shadows' second cut on the human master: the kick's without the pitch sweep, the sub's gentler, a softer crash; no sub cut", p2),
+            ("mix_crash", "the human master with only the softer crash, to hear that change alone", dict(crash_real=crash_soft)),
+        ]:
+            x = level_to(render_hold(BALANCE_FORM, patches=patches), SKIRMISH_LEVEL)
+            write(name, x)
+            manifest["shadows2"].append({"name": name, "seconds": len(x) / F.SR, "note": note, "phone_db": round(phone_level(x), 1)})
+            print("  %-14s %5.1f s  phone %.1f dB" % (name, len(x) / F.SR, phone_level(x)))
+        save()
+    if which in ("rift", "all"):
+        print("rift")
+        fb = bar_seconds(86)
+        for name, kw, note in [
+            ("far_shipped", {}, "The Far Bank from its groove, as shipped (tilt 4, no presence lift)"),
+            ("far_tilt", dict(tilt=1.5, presence=0.25), "the same bars on the human master (tilt 1.5, the presence lift)"),
+        ]:
+            far = far_bank(kw)
+            x = level_to(far[int(8 * fb * F.SR): int(8 * fb * F.SR) + 30 * F.SR], F.LEVELS["music_far_bank"])
+            write(name, x)
+            manifest["rift"].append({"name": name, "seconds": len(x) / F.SR, "note": note, "phone_db": round(phone_level(x), 1)})
+            print("  %-14s %5.1f s  phone %.1f dB" % (name, len(x) / F.SR, phone_level(x)))
+        save()
     if which in ("levels", "all"):
         print("levels")
         # The levelling gap: twenty seconds of each at the shipped levels, then by the phone model.
         hold = render_hold(BALANCE_FORM)
-        far = render_far_bank()
+        far = far_bank({})
         hb, fb = bar_seconds(100), bar_seconds(86)
         hold = hold[int(4 * hb * F.SR): int(4 * hb * F.SR) + 20 * F.SR]     # from the bass's entrance
         far = far[int(8 * fb * F.SR): int(8 * fb * F.SR) + 20 * F.SR]       # from the groove
@@ -338,6 +498,11 @@ def main(argv):
         phone = np.concatenate([h1, gap, f1])
         write("level_phone", phone)
         gap_db = round(target - phone_level(f0), 1)
+        # Half way (Ryan, 28 September: the full gap made The Far Bank a little loud on the
+        # speaker and far too loud in headphones): the same, up by half the gap.
+        f2 = level_to(far, F.LEVELS["music_far_bank"] + gap_db / 2.0)
+        write("level_half", np.concatenate([h0, gap, f2]))
+        manifest["levels"].append({"name": "level_half", "seconds": len(phone) / F.SR, "note": "the same two, The Far Bank up by half the gap (%.1f dB)" % (gap_db / 2.0)})
         manifest["levels"].append({"name": "level_shipped", "seconds": len(shipped) / F.SR, "note": "Hold The Line, a second's gap, The Far Bank, at the shipped levels (-20.7 and -22.5 dB mean RMS)"})
         manifest["levels"].append({"name": "level_phone", "seconds": len(phone) / F.SR, "note": "the same two levelled by what a phone speaker plays: The Far Bank comes up %.1f dB" % gap_db})
         manifest["notes"]["level_gap_db"] = gap_db

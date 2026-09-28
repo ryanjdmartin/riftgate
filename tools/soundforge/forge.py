@@ -1271,7 +1271,7 @@ def _chords_per_bar(form, chords):
 
 
 def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=None, air=(0.12, 0.06), low=None,
-           meter=None, human=None, swap=None, master=1.25, headroom=None, drum_gain=None):
+           meter=None, human=None, swap=None, master=1.25, headroom=None, drum_gain=None, presence=0.0):
     """`kit` maps a drum to (sound, gain) or ([variants], gain), a variant chosen per hit.
     `human` is (seconds of timing slop, fraction of velocity slop) for every hit and note.
     `swap` renames instruments (a realism pass: {"cello": "cello_real"}). A voice may carry
@@ -1477,6 +1477,10 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
     buf = r[:n]
     buf[: len(r) - n] += r[n:]   # the room's tail wraps to the top, so the seam is seamless
     buf = shelf(buf, 700.0, tilt)   # the master's tilt: the mids and highs up, for the phone
+    if presence:
+        # A narrow lift at 1 to 2 kHz in place of half the tilt (Ryan, 28 September, from the
+        # phone sketches: the same balance, less clipped and hollow; "taking the edge off").
+        buf = buf + bp(buf, 1000.0, 2200.0) * presence
     if low:
         buf = low_shelf(buf, low[0], low[1])   # and the low shelf cut, so the leads have room
     if headroom:
@@ -2282,7 +2286,7 @@ def music_hold_the_line(palette="hybrid"):
              {"inst": "sweep", "gain": 0.34, "octave": 0, "rate": 0.08, "depth": 0.3, "open": 0.75, "sections": "ANSRZ", "skip": {"A": 12}, "chord": [0, 7, 12]}],
         drum_gain={"U": 1.3, "S": 1.15, "R": 1.25, "Z": 1.3, "W": 1.25, "Q": 1.2},
         crescendo={"S": (0.85, 1.0), "R": (1.0, 1.12), "Z": (1.12, 1.3)},
-        tilt=3.0, low=(150.0, -6.0),
+        tilt=1.5, presence=0.25, low=(150.0, -6.0),   # the human master since 28 September: half the tilt, a presence lift
         human=(0.005, 0.15) if real else None)
 
 
@@ -2463,7 +2467,7 @@ def music_night_shift():
              {"inst": "choir_real", "gain": 0.2, "vowel": "oh", "sections": "B"},
              {"inst": "sweep", "gain": 0.14, "sections": "D", "rate": 0.12},
              {"inst": "sweep", "gain": 0.12, "sections": "O", "swell": (1.0, 0.3)}],
-        tilt=2.0, low=(150.0, -4.0), air=(0.2, 0.08), human=(0.005, 0.15))
+        tilt=1.5, presence=0.25, low=(150.0, -4.0), air=(0.2, 0.08), human=(0.005, 0.15))   # the human master, 28 September
 
 
 # ---- the third tracks (Ryan, 25 September): a rift track at skirmish tempo on an
@@ -2752,7 +2756,7 @@ def music_full_bore():
              {"inst": "sweep", "gain": 0.34, "octave": 0, "rate": 0.08, "depth": 0.3, "open": 0.75, "sections": "AXDE", "chord": [0, 7, 12]},
              {"inst": "sweep", "gain": 0.28, "octave": 0, "rate": 0.08, "depth": 0.3, "open": 0.75, "sections": "C"}],
         drum_gain={"A": 1.35, "B": 1.3, "C": 1.25, "X": 1.35, "D": 1.2, "E": 1.45},
-        tilt=3.0, low=(150.0, -5.0), headroom=0.7, human=(0.005, 0.15))
+        tilt=1.5, presence=0.25, low=(150.0, -5.0), headroom=0.7, human=(0.005, 0.15))   # the human master, 28 September
 
 
 # ---- the sketches: eight bars each on one riff and one chord progression, so only the

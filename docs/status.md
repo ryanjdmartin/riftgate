@@ -432,7 +432,22 @@ model. `tools/soundforge/phone_sketches.py` renders A/B sketches into `out/phone
 clean-low/driven-high split, drive following the note; the mix with shadows under the
 low end, a sub cut, a gentler tilt, all three; the levelling gap) and they are published
 for the phone at https://claude.ai/artifact/FCaphxM3Y3SnRPdNnprpXc. Ryan's picks
-decide what lands in the forge. Before the phone: nothing had been heard on
+decide what lands in the forge. **Ryan's notes, 28 September (bible section 1 sound row
+has them in full).** Decided and shipped: the human master is tilt 1.5 with a presence
+lift at 1 to 2 kHz (`presence=0.25` in `groove`) on Hold The Line, Night Shift and Full
+Bore ("taking the edge off feels so much better"); the rift tracks wait on the Far Bank
+A/B (set 4 on the page). Bass voices: alone he ranked 2 (cabinet), 5, 4; in power chords
+5, 4, 2; voice 2's sound liked most but Duke Nukem in the chords; 4 and 5 too alike. The
+second round on the page: hybrids 6 and 7 (voice 2's clip on the string above 250 Hz,
+the low string clean), the tracks' other bass voices in the riff (sub, crunch, clean,
+contrabass), the backing guitar without its clip (liked as garbage cans, maybe too
+clippy), shadows' second cut (the kick's shadow without the pitch sweep that went
+"pew-pew" in headphones, a gentler sub shadow, a softer crash; the sub cut is out: thin
+and tinny in headphones), a half-gap level file (the full gap was a little loud on the
+speaker and far too loud in headphones). His order: voices and balance first, then
+speaker changes. The speakers/headphones setting is the answer to the levelling gap
+(shipped levels for headphones; per-track offsets and a bus EQ on the speaker profile);
+not built. Before the phone: nothing had been heard on
 a device; the mix was checked by measurement only. (5) The real recordings and the real
 track remain section 12's open question; everything here is a placeholder in the
 decided register.
