@@ -19,19 +19,7 @@ earlier passes folded under each) and the phone sketches
 was deleted on Ryan's word this evening (the first bible link, the Second Passes page, the HUD
 swatches, a second codex, a second sketches page). **Sharing:** the nameplate, codex and
 sketches are shared to the work email as Editor and open there, so B republishes those three
-in place and its own copies retire. The bible's and the viewer's invites never arrive at the
-work mail (resent to the copied address, not in quarantine, the other three landed; cause
-unknown), so those two are parked: Ryan retries later, and until then **B keeps its own bible
-copy** (https://claude.ai/artifact/AdBTeE9px1Xvg5TKNjHjSP) republished from the committed file
-whenever a B session changes the bible, and needs no viewer of its own, since Ryan reads A's.
-**Account B owns three pages:** the bible copy (kept, above; republished from the committed file
-29 September, night, version 14); the content editor
-(https://claude.ai/artifact/HnE3gvsxNHXyjRhRyEiDqT, kept in B: Ryan's saved edits live in its
-database; its page source is committed at `tools/content_editor.html`, the README says how it is
-published); and the nameplate (https://claude.ai/artifact/6K6mq49XHCUbdZnkzp5rra), **kept until
-its rows reach A's:** a B session cannot read or write the database of a page shared from A
-(invited editors from another organisation get no artifact data from Claude Code), so B's 90
-`candidates` rows are exported to `docs/nameplate_candidates_b.json`. An A session merges them
+in place and its own copies retire. Account A merged B's 42 component rows into its nameplate on 29 September (90 rows now; A's Drill and Gelada wording kept as newer) and deleted the export; B's nameplate copy (6K6mq49XHCUbdZnkzp5rra) can go. An A session merges them
 into A's nameplate (the 42 `parts` rows of the Components tab are likely missing there; keep A's
 Gelada rejection), deletes that file, and then a B session deletes B's nameplate. B's phone
 sketches, both renders pages, codex and Baboon review were deleted 29 September, night, on
