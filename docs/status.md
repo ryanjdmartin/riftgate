@@ -11,8 +11,10 @@ committed file after a bible change.
 **The pages, one per account.** An artifact is republished only by the account that made
 it, so each keeps its own copy and records it here. **Account A** (the one that owns
 https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ, the bible) owns that bible and the HUD
-swatches (https://claude.ai/artifact/LY278Pf67FpQYArCgXAU8v) and nothing else; checked by
-listing on 29 September, after an earlier note credited it with pages it cannot open.
+swatches (https://claude.ai/artifact/LY278Pf67FpQYArCgXAU8v) and its own hangar codex
+(https://claude.ai/artifact/FqiH3b8ZZjxJaCJmWK71vj, generated with the pin check of 29
+September, so it flags a hardpoint the model has no socket for); checked by listing on 29
+September, twice, after an earlier note credited it with pages it cannot open.
 **Account B** owns everything else: the bible's other copy
 (https://claude.ai/artifact/AdBTeE9px1Xvg5TKNjHjSP), the content editor
 (https://claude.ai/artifact/HnE3gvsxNHXyjRhRyEiDqT), the nameplate
@@ -21,7 +23,8 @@ listing on 29 September, after an earlier note credited it with pages it cannot 
 (https://claude.ai/artifact/BeDtchGtS8H2oH3yij3ywX), the model renders
 (https://claude.ai/artifact/6FLunyt7J2ejC24yce76cM and
 https://claude.ai/artifact/UB2FcRAs9Z8k8ABwxVjjuC) and the hangar codex
-(https://claude.ai/artifact/EF74jFYCWWmA3rSJFYWpR1). **Confirm before trusting this list:**
+(https://claude.ai/artifact/EF74jFYCWWmA3rSJFYWpR1, which predates the pin check and
+claims sockets the Clydesdale and Sparrowhawk models lack until B regenerates it). **Confirm before trusting this list:**
 `Artifact` with `action: "list"` says what the account you are in actually owns, and a read
 of someone else's page comes back "not found". A new account publishes its own copies and
 adds the links. The editor is the one that bites: its `files` map holds the shipped content
