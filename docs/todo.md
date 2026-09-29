@@ -55,11 +55,11 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 - [ ] The planned player keywords: Corrode, Scramble, Confuse
 - [ ] The planned triggers: on shield gain, on heat gain, on round start, on skirmish start, on hull damage, out of combat
 - [ ] Foe roles, and the ten planned foe actions in `content/foes.json` (buff, defend and debuff kinds running; every foe status they grant fires `on_foe_status`)
-- [ ] Buff equipment: a component kind spent on a machine that grants a round-scoped modifier (damage up, damage taken down, a status on hit); Overcharge as the first, then the heat passive above
+- [x] Buff equipment (29 September): the `buff` kind grants a machine status for so many stacks and rounds; Overcharged, Braced and Primed as the first three; the Overcharge Coil as a draft component fitted to nothing; the heat passive above can now be built on it
 - [ ] Granted passives coloured on the codex
 - [ ] Save and resume mid-battle at any phase (nothing is serialised yet)
 - [ ] Onboarding: the gesture tutorial and the cheat sheet; the reroll rule and the zone of control first
-- [ ] The bot values a status for the stun it may cause (`policy.gd` ignores `on_foe_status`, so the Baboon's row understates it)
+- [x] The bot values a status for the stun it may cause (29 September: `_loop_chance` in `policy.gd`, at the loop's odds and the foe's resistance) and weighs a buff by what its status does to the machine it lands on
 - [ ] Rerun `tools/balance.gd` once the new machines have real kits, and after each engine piece above; read bands, not numbers
 
 ## Map and screens

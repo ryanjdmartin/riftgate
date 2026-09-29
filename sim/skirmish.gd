@@ -424,6 +424,16 @@ func assign(mech_index: int, target = null) -> bool:
 			who.heat = maxi(0, who.heat - f.power)
 			log.append("%s vents %s by %d" % [ms.unit.display_name, who.unit.display_name, f.power])
 			_cleanse_with(ms, who, f)
+		Face.Kind.BUFF:
+			# Equipment that grants a status for the round (or more): the pipeline reads it
+			# like any modifier, and end_round lets it go.
+			var who: MechState = target if target is MechState else ms
+			var until := round + f.buff_rounds - 1
+			var src := "buff:" + f.component if not f.component.is_empty() else "buff"
+			var m := Effects.grant_buff(who.unit, f.buff_status, f.buff_stacks, src, until)
+			if m != null:
+				log.append("%s buffs %s: %s ×%d%s" % [ms.unit.display_name, who.unit.display_name, m.name, f.buff_stacks, "" if f.buff_rounds == 1 else " for %d rounds" % f.buff_rounds])
+			_cleanse_with(ms, who, f)
 		Face.Kind.ATTACK:
 			_resolve_attack(mech_index, ms, f, target)
 	ms.assigned = true

@@ -187,6 +187,16 @@ the seven Aphelion components' text are his. The passive's numbers are unplayed,
 greedy bot does not value a status for the stun it may cause, so its balance row
 understates it.
 
+**Buff equipment (29 September; bible section 7 row).** A third equipment kind, `buff`:
+spent on a machine it grants one of `Effects.MECH_STATUSES` (`overcharged` +10% damage a
+stack, `braced` 15% less taken a stack, `primed` a Burning stack on every blow; names are
+placeholders) for `stacks` and `rounds` (`Face.buff`, `Effects.grant_buff`, ROUNDS scope).
+The validator holds a buff to a machine status. The old `overcharge` keyword is gone from
+the vocabulary; Overcharged is the status, and devour will stack the same one. One draft
+component, `overcharge_coil` (Kestrel), fitted to nothing. The bot weighs a buff
+(`Policy.buff_score`) and values a burn for the stun a loop passive may cause
+(`_loop_chance`), so the Baboon's row is honest now.
+
 **Balance (bible section 11).** `sim/policy.gd` plays the skirmish headless (RANDOM,
 GREEDY, `withdraw_below`); `tools/balance.gd` runs the matrix, about two minutes with
 eleven machines. Last read (28 September, after the Baboon, Pocket Paradox and the

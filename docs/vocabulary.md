@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 79 implemented, 27 planned, 0 idea.
+Status: 83 implemented, 25 planned, 0 idea.
 
 ## Resource
 
@@ -32,6 +32,7 @@ Status: 79 implemented, 27 planned, 0 idea.
 | **Attack component** | Spend on a foe within reach to deal its power in damage, then apply its keywords and heat. | implemented |
 | **Shield component** | Spend on self or an ally to add its power in shield, capped at that mech's shield maximum. | implemented |
 | **Vent component** | Spend on self or an ally to remove its power in heat. | implemented |
+| **Buff component** | Equipment spent on a machine (itself, an ally, or either, as the component says) that grants it a status, so many stacks deep, through the end of so many rounds: Overcharged for damage, Braced against damage, Primed to burn on hit. The die shows the status name and the stacks. | implemented |
 | **Cracked component** | A cracked component still acts but loses all keywords and unique effects. Cracked compoents can still crit, still generate heat, and still provide their passive bonuses and abilities. A destroyed component is blank and does nothing when it comes up, and provides passive bonuses but not passive abilities. Both persist until repaired in the hangar. | implemented |
 | **Weapon** | A component spent on a foe within its reach. It need not deal damage. | implemented |
 | **Equipment** | A component spent on a machine: itself, an ally, or either, as the component says. Shields and vents are equipment. | implemented |
@@ -63,7 +64,6 @@ Status: 79 implemented, 27 planned, 0 idea.
 | **Burn** | Player keyword. Burning enemies lose 5 HP per stack at the start of their action, then lose one stack. Bypasses armour. Can be resisted. | implemented |
 | **Corrode** | Player keyword. Corroding enemies lose 1% of their HP per stack at the start of their action, then lose one stack. Bypasses armour. Can be resisted. | planned |
 | **Suppress** | Player keyword. The target skips its telegraphed action this round, then gains two stacks of Numbed (three if massive). A foe may shrug it off: its own stun resistance plus 10% a Numbed stack. | implemented |
-| **Overcharge** | Player equipment keyword. The machine it is spent on deals more damage with its attacks until the end of the round. | planned |
 | **Volatile** | Player keyword. Spending this component bites its owner for 10 hull, past shield and armour. | planned |
 | **Devour** | Player keyword. A kill with this component gives its owner a stack of Overcharged. | planned |
 | **Execute** | +100% damage against a foe at or below half its health. Reduced to +50% against bosses and elites. | implemented |
@@ -84,7 +84,9 @@ Status: 79 implemented, 27 planned, 0 idea.
 | **Numbed** | Foe status. Each stack is 10% resistance to a suppress on top of the foe's own; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. | implemented |
 | **Retaliate** | Until the end of this round, a foe that strikes this unit's bare hull is Shocked. | planned |
 | **Shocked** | Foe status. The next blow this foe takes deals double damage, then the status clears. A Shocked foe that strikes bare hull again takes 10. | planned |
-| **Overcharged** | Mech status. Each stack is +10% damage on this machine's attacks. Loses a stack at the end of each round unless a passive says otherwise. | planned |
+| **Overcharged** | Mech status. Each stack is +10% damage on this machine's attacks. From buff equipment it lasts through the rounds the component says; from devour it lasts the skirmish and loses a stack at the end of each round unless a passive says otherwise. | implemented |
+| **Braced** | Mech status. Takes 15% less damage per stack. Granted by buff equipment for the rounds it says. | implemented |
+| **Primed** | Mech status. Every blow this machine lands leaves a stack of Burning per stack of Primed. Granted by buff equipment for the rounds it says. | implemented |
 | **Disabled** | Component status. This die entry comes up blank while it lasts; the component itself is untouched. A foe's disable lasts through the mech's next turn and can be cleansed; a rapid component's own switch-off ends with the round. | implemented |
 | **Corrupted** | Component status. Every time this die entry is spent it bites its owner for 10 per stack, shield first, before the component acts. A blank is never spent, so a disabled entry does not bite. Stacks. Clears at end of skirmish. Can be cleansed. | implemented |
 | **Phased** | Player and enemy status. This unit cannot attack, nor can it be damaged by attacks, until end of round. | planned |
@@ -198,11 +200,11 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Heat** (implemented): Heat does nothing below the cap. Consider effects at high heat short of overflow. Cooling numbers are placeholders; cooling must stay below a typical weapon's heat or heat never matters, and a vent component must be worth a whole turn (tuning).
 - **Rift Pressure** (implemented): Spawns a fixed pack. Should draw from the battle's faction(s) and escalate.
 - **Gate Integrity** (implemented): Gate damage formula is a placeholder (strength divided by three).
+- **Buff component** (implemented): Only one component carries it, a draft. Debuffs on foes stay weapons.
 - **Damage range** (implemented): Ranges are content-authored per component; no upgrade path raises min or max yet.
 - **Critical hit** (implemented): The base is Face.CRIT_MULT, a balance knob; lower it if crit triggers make crits too strong at low chance.
 - **Numbed** (implemented): Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths.
 - **Stun resistance** (implemented): 30 on the three bosses as a placeholder.
-- **Overcharge** (planned): Retired as double damage and double heat on 26 September (the Sparrowhawk's passive already was that); Ryan wants the word for an offensive buff. Numbers and shape open; needs player buffs to exist. The stacking mech status is Overcharged (28 September).
 - **Volatile** (planned): The Arsenal's self-damage (Ryan, 28 September): the Corrupted bite's path under another name. It feeds the Nemesis's Crucible Capacitor and opens self-damaging shield and vent faces.
 - **Devour** (planned): The Ammit's talons (28 September). Needs an on-kill hook and the Overcharged status.
 - **Equipment** (implemented): Buffs will be equipment too, once they exist.
@@ -210,7 +212,9 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Cleanse** (implemented): No component carries it yet; Ryan places it.
 - **Retaliate** (planned): Was flat damage equal to the component's power. Thorns scales with enemy blows and so inverts horde against boss; a debuff does not (Ryan, 28 September). The Armadillo's passive carries it always on.
 - **Shocked** (planned): The Armadillo's retaliation (Ryan, 28 September): the tank sets up kills instead of out-damaging area weapons against a horde, and it works on a boss. The discharge on a second strike is the small thorns left in. Numbers are placeholders.
-- **Overcharged** (planned): Stacked by devour; the Ammit's Quintessence Tap stops the decay and keeps the stacks for the battle. Battle scope, never campaign (28 September), so the snowball has an end.
+- **Overcharged** (implemented): The buff side runs (29 September). Devour and the Ammit's Quintessence Tap (which stops the decay and keeps the stacks for the battle, never the campaign) are planned. Name is a placeholder.
+- **Braced** (implemented): Placeholder name and number (29 September).
+- **Primed** (implemented): Placeholder name (29 September).
 - **Corrupted** (implemented): The bite is a placeholder number (Skirmish.CORRUPT_BITE_PER_STACK).
 - **Taunt** (planned): Ryan, 28 September: an accessible keyword, not a locked one; the game needs more damage redirection or a tank has no reason to be in the fight. The family to build: taunt (front rank), beacon (back rank), a swap of targeting with an ally, an interpose that takes a blow aimed at an ally.
 - **Cracked component** (implemented): Threshold is a placeholder. Repair cost and the hangar screen are not built.

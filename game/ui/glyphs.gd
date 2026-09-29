@@ -228,6 +228,8 @@ static func primary_for(face: Face) -> String:
 			return "vent"
 		Face.Kind.BLANK:
 			return "blank"
+		Face.Kind.BUFF:
+			return "buff"
 		_:
 			if face.reach == Face.Reach.INDIRECT:
 				return "indirect"

@@ -139,6 +139,9 @@ func options_for(sk: Skirmish, i: int) -> Array:
 		Face.Kind.VENT:
 			for who in sk.equipment_targets_for(ms, f):
 				out.append({"mech": i, "target": who, "score": vent_score(sk, who, f.power)})
+		Face.Kind.BUFF:
+			for who in sk.equipment_targets_for(ms, f):
+				out.append({"mech": i, "target": who, "score": buff_score(sk, who, f)})
 	return out
 
 
@@ -168,6 +171,13 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		# A Numbed foe shrugs it off at its resistance, so the stopped blow is worth its odds.
 		var lands := 1.0 - float(target.resist_total()) / 100.0
 		score += (1.0 - p_kill) * _threat_now(target) * HULL_WEIGHT * maxf(0.0, lands)
+	elif f.has(Face.Keyword.BURN) and not target.is_suppressed():
+		# A status this blow applies may knock the foe out through a machine's on_foe_status
+		# passive (the Baboon's Pocket Paradox): the stopped blow at the loop's odds, at the
+		# foe's odds of not shrugging it off.
+		var loop := _loop_chance(sk)
+		if loop > 0.0:
+			score += loop * maxf(0.0, 1.0 - float(target.resist_total()) / 100.0) * (1.0 - p_kill) * _threat_now(target) * HULL_WEIGHT
 	if f.has(Face.Keyword.BURN):
 		score += (1.0 - p_kill) * mean * BURN_WEIGHT
 	# A chain repeats on the next foe in reach while it keeps killing, heat and all: every
@@ -273,6 +283,62 @@ func shield_score(sk: Skirmish, who: Skirmish.MechState, power: int) -> float:
 	return score
 
 
+## A buff on a machine, from what its status does: more damage on the attack it has in hand
+## this round (and its die's mean for any further round), less of the incoming it faces, or
+## the burn its blows will leave. Nothing for a machine that has already spent its die.
+func buff_score(sk: Skirmish, who: Skirmish.MechState, f: Face) -> float:
+	var status: Dictionary = Effects.STATUS.get(f.buff_status, {})
+	var n := f.buff_stacks
+	var attack_now := 0.0
+	var shown := who.face()
+	if not who.assigned and shown != null and shown.is_attack():
+		for t in sk.targets_for_face(who, shown):
+			attack_now = maxf(attack_now, attack_score(sk, who, shown, t))
+	# Rounds beyond this one: the die's attack entries alone, on average, never its buffs
+	# (a buff that can land on its own machine would otherwise ask itself its worth forever).
+	var attack_later := 0.0
+	if f.buff_rounds > 1:
+		attack_later = _attack_mean(sk, who) * float(f.buff_rounds - 1)
+	var score := 0.0
+	for eff in status.get("effects", []):
+		var v := float(eff.get("value", 0))
+		match str(eff.get("effect", "")):
+			"multiply_damage":
+				score += (pow(v, n) - 1.0) * (attack_now + attack_later)
+			"add_damage":
+				score += v * n * (1.0 if attack_now > 0.0 else 0.0) + v * n * float(f.buff_rounds - 1)
+			"multiply_damage_taken":
+				score += (1.0 - pow(v, n)) * float(sk.incoming_for(who)) * HULL_WEIGHT * float(f.buff_rounds)
+			"add_burn":
+				var per := float(Effects.STATUS["burning"]["effects"][0]["value"])
+				score += per * v * n * BURN_WEIGHT * (1.0 if attack_now > 0.0 else 0.0) * float(f.buff_rounds)
+	return score
+
+
+## The mean of a machine's attack entries, each spent as well as it can be, over its die.
+func _attack_mean(sk: Skirmish, who: Skirmish.MechState) -> float:
+	if who.die.faces.is_empty():
+		return 0.0
+	var total := 0.0
+	for f in who.die.faces:
+		if not f.is_attack():
+			continue
+		var best := 0.0
+		for t in sk.targets_for_face(who, f):
+			best = maxf(best, attack_score(sk, who, f, t))
+		total += best
+	return total / float(who.die.faces.size())
+
+
+## The odds that a foe gaining a status is knocked out by some machine's on_foe_status
+## passive this round: one minus every machine missing.
+static func _loop_chance(sk: Skirmish) -> float:
+	var miss := 1.0
+	for ms in sk.live_mechs():
+		miss *= 1.0 - float(Effects.foe_status_suppress_chance(ms.unit)) / 100.0
+	return 1.0 - miss
+
+
 ## A vent on a machine: the hull its overheat would burn this round, and a little for the
 ## room it makes.
 func vent_score(sk: Skirmish, who: Skirmish.MechState, power: int) -> float:
@@ -305,6 +371,11 @@ func face_value(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
 			var best := 0.0
 			for who in sk.equipment_targets_for(ms, f):
 				best = maxf(best, vent_score(sk, who, f.power))
+			return best
+		Face.Kind.BUFF:
+			var best := 0.0
+			for who in sk.equipment_targets_for(ms, f):
+				best = maxf(best, buff_score(sk, who, f))
 			return best
 	return 0.0
 

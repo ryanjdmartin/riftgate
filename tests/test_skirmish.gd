@@ -1404,3 +1404,86 @@ func test_a_foe_gaining_a_status_may_be_caught_by_the_loop() -> void:
 	s3.start_round()
 	s3.assign(0, s3.front[0])
 	assert_eq(Effects.stacks_of(g3, "numbed"), 2, "one suppress, one set of stacks: no loop on a suppress")
+
+
+func test_a_buff_component_grants_its_status_through_the_round() -> void:
+	var sk := Skirmish.new(1)
+	var coil := Face.buff("overcharged", 2, 1)
+	var a := _mech("A", Die.single(coil), 40, 100)
+	var b := _mech("B", Die.single(Face.attack(20, L)), 40, 100)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	assert_eq(coil.describe(), "Overcharged ×2", "the entry names the status and its stacks")
+	assert_eq(coil.number_text(), "×2", "the die shows the stacks")
+	assert_true(coil.is_equipment(), "a buff is equipment")
+	assert_true(sk.assign(0, sk.mechs[1]), "spent on B")
+	assert_eq(Effects.stacks_of(b, "overcharged"), 2, "two stacks on B")
+	sk.assign(1, sk.front[0])
+	assert_eq(sk.front[0].hp, 500 - 24, "20 times 1.1 squared, rounded")
+	sk.end_round()
+	assert_eq(Effects.stacks_of(b, "overcharged"), 0, "gone with the round")
+	sk.start_round()
+	sk.assign(1, sk.front[0])
+	assert_eq(sk.front[0].hp, 500 - 24 - 20, "plain 20 the round after")
+	# A two-round buff outlasts the first end of round; targets are the component's to set.
+	var s2 := Skirmish.new(2)
+	var brace := Face.buff("braced", 1, 2)
+	brace.targets = Face.Target.ALLY
+	var c := _mech("C", Die.single(brace), 40, 100)
+	var d := _mech("D", Die.single(Face.attack(20, L)), 0, 100)
+	s2.add_mech(c)
+	s2.add_mech(d)
+	s2.add_foes([_ghoul(500, 20)])
+	s2.begin()
+	s2.start_round()
+	assert_false(s2.assign(0, null), "allies only: not on itself")
+	assert_true(s2.assign(0, s2.mechs[1]), "on the ally")
+	s2.end_round()
+	assert_eq(Effects.stacks_of(d, "braced"), 1, "still there after one round")
+	assert_eq(d.hull, 100 - 17, "20 times 0.85, rounded, on bare hull")
+	s2.start_round()
+	s2.end_round()
+	assert_eq(Effects.stacks_of(d, "braced"), 0, "gone after the second")
+	var rt := Face.from_dict({"kind": "buff", "status": "primed", "stacks": 3, "rounds": 2, "targets": "self"})
+	assert_eq(rt.to_dict(), {"kind": "buff", "reach": "none", "power": 0, "keywords": [], "heat": 0, "targets": "self", "status": "primed", "stacks": 3, "rounds": 2}, "a buff round-trips through content")
+
+
+func test_the_bot_values_a_burn_more_when_a_loop_may_catch_the_foe() -> void:
+	var loop := {"id": "loop", "name": "Pocket Paradox", "description": "", "effects": [
+		{"trigger": "on_foe_status", "effect": "chance_suppress", "value": 100, "per_missing_shield": 0}]}
+	var scores: Array[float] = []
+	for with_loop in [false, true]:
+		var sk := Skirmish.new(1)
+		var m := _mech("A", Die.single(Face.attack(20, L, K.BURN)), 40, 100)
+		if with_loop:
+			m.grant_passive(loop)
+		sk.add_mech(m)
+		sk.add_foes([_ghoul(500, 30)])
+		sk.begin()
+		sk.start_round()
+		var pol := Policy.make(Policy.GREEDY)
+		scores.append(pol.attack_score(sk, sk.mechs[0], sk.mechs[0].face(), sk.front[0]))
+	assert_true(scores[1] > scores[0] + 1.0, "the stopped blow counts: %s without the loop, %s with" % [scores[0], scores[1]])
+	# And a buff is an option the bot weighs: a coil on a machine holding an attack scores above zero.
+	var s2 := Skirmish.new(3)
+	var a := _mech("A", Die.single(Face.buff("overcharged", 2)), 40, 100)
+	var b := _mech("B", Die.single(Face.attack(30, L)), 40, 100)
+	s2.add_mech(a)
+	s2.add_mech(b)
+	s2.add_foes([_ghoul(500, 10)])
+	s2.begin()
+	s2.start_round()
+	var pol2 := Policy.make(Policy.GREEDY)
+	var opts: Array = pol2.options_for(s2, 0)
+	assert_eq(opts.size(), 2, "self and the ally")
+	var on_b := 0.0
+	var on_a := 0.0
+	for o in opts:
+		if o["target"] == s2.mechs[1]:
+			on_b = float(o["score"])
+		else:
+			on_a = float(o["score"])
+	assert_true(on_b > on_a, "the coil is worth more on the machine that can shoot this round (%s vs %s)" % [on_b, on_a])

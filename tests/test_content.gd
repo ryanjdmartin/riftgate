@@ -509,3 +509,29 @@ func test_a_component_passive_from_content_lands_on_the_mech() -> void:
 	u.die.faces[0] = Face.blank()
 	u.die.faces[0].component = "fins_pack"
 	assert_eq(u.cooling, 15, "a destroyed component keeps its stat bonus")
+
+
+func test_a_buff_face_names_a_machine_status() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var good: Dictionary = db.components["ablative_plating"].duplicate(true)
+	good["face"] = {"kind": "buff", "status": "overcharged", "stacks": 2}
+	db.components["coil_ok"] = good
+	var foe_status: Dictionary = good.duplicate(true)
+	foe_status["face"] = {"kind": "buff", "status": "burning"}
+	db.components["coil_foe"] = foe_status
+	var unknown: Dictionary = good.duplicate(true)
+	unknown["face"] = {"kind": "buff", "status": "haste", "rounds": 0}
+	db.components["coil_bad"] = unknown
+	var stray: Dictionary = good.duplicate(true)
+	stray["face"] = {"kind": "shield", "power": 10, "stacks": 2}
+	db.components["stray"] = stray
+	var hit := {"coil_foe": false, "coil_bad": false, "stray": false}
+	for e in db.validate():
+		assert_false(e.begins_with("component coil_ok"), "a buff granting a machine status validates clean: %s" % e)
+		for k in hit.keys():
+			if e.begins_with("component " + k):
+				hit[k] = true
+	assert_true(hit["coil_foe"], "a foe's status is refused on a buff")
+	assert_true(hit["coil_bad"], "an unknown status, or zero rounds, is refused")
+	assert_true(hit["stray"], "stacks on a shield is refused")

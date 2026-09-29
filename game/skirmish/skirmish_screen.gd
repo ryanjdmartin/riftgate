@@ -901,8 +901,8 @@ func _mech_rows(i: int) -> Array:
 		if int(d[3]) < Effects.SKIRMISH:
 			continue
 		var id := str(d[5])
-		var glyph := "heat" if id == "overheating" else ("corrupt" if id.begins_with("corrupted") else ("blank" if id.begins_with("disabled") else "star"))
-		var colour: Color = Palette.HEAT if id == "overheating" else (Palette.ENEMY if id.begins_with("corrupted") else Palette.HUD)
+		var glyph := "heat" if id == "overheating" else ("corrupt" if id.begins_with("corrupted") else ("blank" if id.begins_with("disabled") else ("overcharge" if id == "overcharged" else ("shield" if id == "braced" else ("burn" if id == "primed" else "star")))))
+		var colour: Color = Palette.HEAT if id in ["overheating", "overcharged", "primed"] else (Palette.ENEMY if id.begins_with("corrupted") else (Palette.SHIELD if id == "braced" else Palette.HUD))
 		var stacks := int(d[4])
 		rows.append([glyph, ("×%d" % stacks) if stacks > 1 else "", "%s: %s" % [str(d[0]), str(d[1])], colour])
 	if sk.state == Skirmish.State.ASSIGN:
@@ -1236,6 +1236,8 @@ func _use_die(i: int, target) -> bool:
 			Sound.play("shield_up")
 		elif spent.kind == Face.Kind.VENT:
 			Sound.play("vent")
+		elif spent.kind == Face.Kind.BUFF:
+			Sound.play("shield_up", -3.0)   # a placeholder until a buff has a sound of its own
 	if ok and sk.outcome != Skirmish.Outcome.NONE:
 		# Decided by this die: the fight ends now, after the last blow has played.
 		if is_inside_tree():

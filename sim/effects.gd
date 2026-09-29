@@ -43,7 +43,7 @@ const ROUNDS := 3
 
 ## What the content may ask for, by trigger. The validator refuses anything else.
 const SUPPORTED_EFFECTS := {
-	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat"],
+	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn"],
 	"on_crit": ["multiply_damage", "add_damage", "add_burn", "vent_heat", "add_crit_damage"],
 	"on_injury": ["no_destroy"],
 	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress"],
@@ -68,7 +68,17 @@ const STATUS := {
 		"effects": [{"trigger": "status", "effect": "skip_action", "value": 1}]},
 	"numbed": {"id": "numbed", "name": "Numbed", "description": "Resists a suppress, 10% per stack, on top of its own resistance; loses a stack each turn.",
 		"effects": [{"trigger": "status", "effect": "resist_suppress", "value": 10}]},
+	# The machines' buffs (29 September): what buff equipment grants for a round or more.
+	# Devour will stack Overcharged too, for the skirmish. Names are placeholders for Ryan.
+	"overcharged": {"id": "overcharged", "name": "Overcharged", "description": "Attacks deal +10% damage per stack.",
+		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "multiply_damage", "value": 1.1}]},
+	"braced": {"id": "braced", "name": "Braced", "description": "Takes 15% less damage per stack.",
+		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 0.85}]},
+	"primed": {"id": "primed", "name": "Primed", "description": "Every blow it lands leaves a stack of Burning, per stack.",
+		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_burn", "value": 1}]},
 }
+## The statuses a buff component may grant: the machines' own, never a foe's.
+const MECH_STATUSES := ["overcharged", "braced", "primed"]
 ## target_status: the foe struck carries any live status (burning, suppressed, numbed...).
 const SUPPORTED_WHEN := ["component_cracked", "reach_melee", "reach_line", "reach_indirect", "target_status"]
 ## Stats a static effect may change: the mech's base numbers by these names.
@@ -456,6 +466,14 @@ static func is_entry_disabled(u, index: int) -> bool:
 		if str(pair[0].get("effect", "")) == "disable_entry" and int(pair[0].get("value", -1)) == index:
 			return true
 	return false
+
+
+## A buff component's grant (29 September): `stacks` of a machine status through the end of
+## `until_round`. The same status from the same scope stacks up and keeps the later expiry.
+static func grant_buff(u, status_id: String, stacks: int, source: String, until_round: int) -> Modifier:
+	if not STATUS.has(status_id):
+		return null
+	return stack(u, STATUS[status_id], ROUNDS, source, stacks, DECAY_NONE, until_round)
 
 
 ## Corrupt one die entry for the skirmish (the corrupt foe keyword, 25 September): every

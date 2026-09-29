@@ -9,7 +9,7 @@ extends RefCounted
 
 const CRIT_MULT := 2.0        # a crit multiplies the roll by this plus every crit bonus (component, passives): additive, tunable
 
-enum Kind { ATTACK, SHIELD, VENT, BLANK }
+enum Kind { ATTACK, SHIELD, VENT, BLANK, BUFF }
 enum Reach { NONE, LINE, INDIRECT, MELEE }
 enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, EXECUTE, CHAIN, STEADY, RAPID, CLEANSE }
 ## Whom a component may be spent on (Ryan, 26 September): a weapon (an attack) targets foes;
@@ -18,7 +18,7 @@ enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, EXECUTE, CHAIN, STEADY, 
 enum Target { SELF_ALLY, SELF, ALLY, FOE }
 
 const KIND_NAMES := {
-	Kind.ATTACK: "attack", Kind.SHIELD: "shield", Kind.VENT: "vent", Kind.BLANK: "blank",
+	Kind.ATTACK: "attack", Kind.SHIELD: "shield", Kind.VENT: "vent", Kind.BLANK: "blank", Kind.BUFF: "buff",
 }
 const REACH_NAMES := {
 	Reach.NONE: "none", Reach.LINE: "line", Reach.INDIRECT: "indirect", Reach.MELEE: "melee",
@@ -59,6 +59,9 @@ var empty: bool = false       # an empty hardpoint: blank, and nothing was ever 
 var fixed: bool = false       # built into the chassis (no hardpoint); false means this entry is a hardpoint
 var disabled: bool = false    # a stand-in for an entry a status has switched off: blank for now, the real one is untouched
 var targets: int = Target.SELF_ALLY   # equipment: whom it may be spent on; an attack is always FOE
+var buff_status: String = ""  # a buff: the engine status it grants (Effects.STATUS id), with...
+var buff_stacks: int = 1      # ...this many stacks...
+var buff_rounds: int = 1      # ...through the end of this many rounds (1: this round)
 
 
 ## `kws` may be a single Keyword or an Array of them. `pwr_max` of 0 means static.
@@ -94,6 +97,20 @@ static func vent(pwr: int) -> Face:
 	f.reach = Reach.NONE
 	f.power = pwr
 	f.power_max = pwr
+	return f
+
+
+## A buff (decided 29 September): equipment that grants `status` to the machine it is spent
+## on, `stacks` deep, through the end of `rounds` rounds. The status names what it does.
+static func buff(status: String, stacks: int = 1, rounds: int = 1) -> Face:
+	var f := Face.new()
+	f.kind = Kind.BUFF
+	f.reach = Reach.NONE
+	f.power = 0
+	f.power_max = 0
+	f.buff_status = status
+	f.buff_stacks = maxi(1, stacks)
+	f.buff_rounds = maxi(1, rounds)
 	return f
 
 
@@ -170,6 +187,10 @@ static func from_dict(d: Dictionary) -> Face:
 	else:
 		var t := target_from_name(str(d.get("targets", "self_ally")))
 		f.targets = t if t >= 0 and t != Target.FOE else Target.SELF_ALLY
+	if f.kind == Kind.BUFF:
+		f.buff_status = str(d.get("status", ""))
+		f.buff_stacks = maxi(1, int(d.get("stacks", 1)))
+		f.buff_rounds = maxi(1, int(d.get("rounds", 1)))
 	for name in d.get("keywords", []):
 		var kw := keyword_from_name(str(name))
 		if kw > 0:
@@ -196,6 +217,10 @@ func to_dict() -> Dictionary:
 		d["strikes"] = strikes
 	if kind != Kind.ATTACK and targets != Target.SELF_ALLY:
 		d["targets"] = TARGET_NAMES[targets]
+	if kind == Kind.BUFF:
+		d["status"] = buff_status
+		d["stacks"] = buff_stacks
+		d["rounds"] = buff_rounds
 	return d
 
 
@@ -219,7 +244,7 @@ func is_weapon() -> bool:
 
 
 func is_equipment() -> bool:
-	return kind == Kind.SHIELD or kind == Kind.VENT
+	return kind == Kind.SHIELD or kind == Kind.VENT or kind == Kind.BUFF
 
 
 func can_target_self() -> bool:
@@ -256,6 +281,9 @@ func duplicate_face() -> Face:
 	f.fixed = fixed
 	f.disabled = disabled
 	f.targets = targets
+	f.buff_status = buff_status
+	f.buff_stacks = buff_stacks
+	f.buff_rounds = buff_rounds
 	for k in keywords:
 		f.keywords.append(k)
 	return f
@@ -273,6 +301,8 @@ func crack() -> void:
 func number_text() -> String:
 	if kind == Kind.BLANK:
 		return ""
+	if kind == Kind.BUFF:
+		return "×%d" % buff_stacks
 	return "%d–%d" % [power, power_max] if is_ranged() else str(power)
 
 
@@ -283,8 +313,14 @@ func describe() -> String:
 			if disabled:
 				return "disabled"
 			return "empty hardpoint" if empty else "destroyed"
-		Kind.SHIELD, Kind.VENT:
-			s = "%s %d" % ["shield" if kind == Kind.SHIELD else "vent", power]
+		Kind.SHIELD, Kind.VENT, Kind.BUFF:
+			if kind == Kind.BUFF:
+				var status_name := str(Effects.STATUS.get(buff_status, {}).get("name", buff_status))
+				s = "%s ×%d" % [status_name, buff_stacks]
+				if buff_rounds > 1:
+					s += " for %d rounds" % buff_rounds
+			else:
+				s = "%s %d" % ["shield" if kind == Kind.SHIELD else "vent", power]
 			for k in keywords:
 				s += " " + keyword_label(k)
 			if targets == Target.SELF:

@@ -52,6 +52,10 @@ def face_line(f):
         r = REACH.get(f.get("reach", ""), f.get("reach", ""))
         if r:
             bits.append(r)
+    elif kind == "buff":
+        bits.append("%s ×%d" % (vocab.get(f.get("status", ""), {}).get("name") or f.get("status", ""), int(f.get("stacks", 1))))
+        if int(f.get("rounds", 1)) > 1:
+            bits.append("%d rounds" % int(f["rounds"]))
     elif p is not None:
         bits.append(str(p))
     if f.get("power_per_heat"):

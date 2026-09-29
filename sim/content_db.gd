@@ -402,6 +402,17 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: only attack faces crit" % where)
 	if float(fd.get("crit_bonus", 0.0)) <= -Face.CRIT_MULT:
 		errs.append("%s: crit_bonus would make crits do nothing or heal" % where)
+	if kind == "buff":
+		# A buff grants one of the machines' statuses: it must exist and be theirs.
+		var st := str(fd.get("status", ""))
+		if not Effects.STATUS.has(st):
+			errs.append("%s: a buff needs 'status', one of %s" % [where, ", ".join(Effects.MECH_STATUSES)])
+		elif not Effects.MECH_STATUSES.has(st):
+			errs.append("%s: '%s' is a foe's status; a buff grants one of %s" % [where, st, ", ".join(Effects.MECH_STATUSES)])
+		if int(fd.get("stacks", 1)) < 1 or int(fd.get("rounds", 1)) < 1:
+			errs.append("%s: a buff's stacks and rounds are at least 1" % where)
+	elif fd.has("status") or fd.has("stacks") or fd.has("rounds"):
+		errs.append("%s: status, stacks and rounds belong to a buff face" % where)
 	if fd.has("targets"):
 		var t := Face.target_from_name(str(fd["targets"]))
 		if kind == "attack":
