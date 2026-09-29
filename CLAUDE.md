@@ -69,6 +69,23 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
 - When Ryan suggests a rule or a change, look for holes in the argument and discuss them in
   chat before building. A suggestion opens a discussion; it is not a spec. If he reaffirms
   after hearing the holes, build it as he said.
+- Judge a visual effect running, never from a still: Ryan does, and a screenshot of a
+  breathing mark says nothing about it. Ship a debug switch that fires the thing constantly
+  (`RIFTGATE_FEED_DEBUG=1` is the pattern), expect several rounds of small tweaks, and when
+  he asks for "faster" or "slower" confirm which direction he means before changing it.
+- Lean hotter than seems right on anything the player must see on a phone: every effect,
+  tint, line and glow Ryan has judged on a device has come back hotter, thicker or louder,
+  never quieter. Start at the exaggerated end and come down.
+- Ryan iterates tone and direction as the thing gets built. Adopt each new direction as
+  given, and retire the bible lines it supersedes in the same pass rather than leaving two
+  truths in the file. On resume the last exchanges are the truth: never re-run a pipeline or
+  restore a look the chat has already retired.
+- A phone read arrives as a screenshot. Work it this way: crop and zoom it with nearest
+  sampling to see the pixels, reproduce it on the Mac at the phone's layout and density
+  (`RIFTGATE_SHOT_H`, `RIFTGATE_SAFE`, `RIFTGATE_SHOT_SCALE`, and
+  `--rendering-method gl_compatibility` for its renderer; the README has them), then fix it
+  once for every glass rather than special-casing the phone. Several "phone bugs" have been
+  layout or arithmetic that the Mac was hiding, not renderer differences.
 
 ## Session handoff
 

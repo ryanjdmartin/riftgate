@@ -7,7 +7,17 @@ bible is published at https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ (this ac
 republish the committed file after a bible change) and, from the other account, at
 https://claude.ai/artifact/AdBTeE9px1Xvg5TKNjHjSP.
 
-## As of 28 September 2026 (evening)
+**Cold start, including from another account.** Nothing needed to work here lives outside
+the repo. Read this file, then `docs/todo.md` (the task list), then `CLAUDE.md` (the rules,
+the commands, and how Ryan works: he pressure-tests, judges effects running, leans hotter
+on a phone, and retires old directions as he goes). `README.md` has the layout and every
+command with its screenshot poses and phone-layout variables. The bible's sections hold the
+why; section 11 carries the two phone rows, section 12 the roadmap. Ryan may be running
+another session on this repo at the same time: `git status` first, stage by path, diff a
+shared file before staging it, and never `git add -A`. If a chat and the bible disagree,
+the chat is newer.
+
+## As of 29 September 2026 (evening)
 
 **State.** Tests green: `perl -e 'alarm 240; exec @ARGV' godot --headless --path . -s
 tests/run_tests.gd` (about 220 tests). Two or three sessions run on this repo at once:
@@ -81,7 +91,10 @@ the enemy's ground, four columns, every blow heard, the enemy's turn replayed bl
 blow; Back applies it. The boss's contact takes the phase: no panel, a reveal, the family's
 theme (only The Chorus has one). MENU pauses, holds the settings and names the track. The
 codex opens by double-tap on either screen and shows the machine's base state plus battle
-rewards; the fight's effects live on the chips and the hold.
+rewards; the fight's effects live on the chips and the hold. Under the map, the orders
+board (`game/battle/orders_board.gd`) carries every machine's gauges, its order and what
+it will meet while nothing is held; a held readout takes the same strip; the log is off
+the screen behind the board's LOG button.
 
 **Balance (bible section 11).** `sim/policy.gd` plays the skirmish headless (RANDOM,
 GREEDY, `withdraw_below`); `tools/balance.gd` runs the matrix, about two minutes with
@@ -116,7 +129,7 @@ Next: a speakers/headphones setting (offsets per track and a bus EQ on the speak
 profile); the Risen and Infernal Horde boss themes from their seeds, melodies proposed in
 chat first; the real recordings remain section 12's open question.
 
-**The phone (26 to 28 September; README has the commands).** Ryan's Pixel runs the debug
+**The phone (26 to 29 September; README has the commands).** Ryan's Pixel runs the debug
 APK. Fixed so far: grid ribbons and their gain, safe insets, the MSAA leak, font
 oversampling, the drag ghost, the far blur, scanlines on device pixels, leaders, the seam
 band's clipped hexes, the orders board in the readout's strip (29 September: gauges, the
