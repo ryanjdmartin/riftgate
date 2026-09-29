@@ -14,7 +14,14 @@ https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ, the bible) owns that bible an
 swatches (https://claude.ai/artifact/LY278Pf67FpQYArCgXAU8v) and its own hangar codex
 (https://claude.ai/artifact/FqiH3b8ZZjxJaCJmWK71vj, generated with the pin check of 29
 September, so it flags a hardpoint the model has no socket for); checked by listing on 29
-September, twice, after an earlier note credited it with pages it cannot open.
+September, twice, after an earlier note credited it with pages it cannot open. Also account
+A's since 29 September (Ryan: maintain both accounts' copies as needed; he tracks which is
+active): its nameplate (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; its database was
+seeded from the 28 September list of 48 with the Mustang and Gelada rejected, so anything Ryan
+added to B's copy after that is not in it) and its model renders
+(https://claude.ai/artifact/Lv4nXY98bCX5ATfQKiL6Ls). A second codex copy in A
+(https://claude.ai/artifact/Ku9GnhZ2jq37Z7aBTspW5F) was published by a parallel session the
+same hour before it saw the first; it is a duplicate, Ryan's to delete.
 **Account B** owns everything else: the bible's other copy
 (https://claude.ai/artifact/AdBTeE9px1Xvg5TKNjHjSP), the content editor
 (https://claude.ai/artifact/HnE3gvsxNHXyjRhRyEiDqT), the nameplate
@@ -31,6 +38,13 @@ adds the links. The editor is the one that bites: its `files` map holds the ship
 as the baselines Ryan edits against, and Ryan's saved edits live in that artifact's own
 database, so a fresh editor page starts empty and cannot see them. An account that cannot
 republish the editor says so rather than letting it drift.
+**Joining the accounts instead of maintaining two:** an artifact shared from its Share menu with
+the other account's email as Editor can be republished from either account (a read of it then
+says "writer"). Account A allows email invites outside its organisation; account B's
+organisation has them switched off, so sharing runs only from A to B. The way out is to treat
+A's copies as the originals, invite B's email to each as Editor, and retire B's copies once the
+invites are accepted; the content editor is the exception until its `edits` database is carried
+over, since Ryan's saved edits live in B's copy.
 
 **Cold start, including from another account.** Nothing needed to work here lives outside
 the repo. Read this file, then `docs/todo.md` (the task list), then `CLAUDE.md` (the rules,
@@ -121,9 +135,9 @@ armour, hard-lined, asymmetric, hooded helm with horns, a round lit core, the Ap
 asked for; the **Ammit** was right first time and needed only its spines laid flat, its upper
 arms raised and pointed forward, its eyes turned into long cockpit-glass strips down the
 snout, shoulder cannons in place of arm guns, and its heel spurs and throat vent actually
-attached. Facets: 676 to 928 each, the Nemesis 816, the Ammit 1,316. The register's stated ceiling
-is 900 and three machines already sit over it (Baboon 1,396, Ammit 1,316, Clydesdale 1,016),
-so the open question is whether the ceiling still holds, not whether the Ammit is special.
+attached. Facets: 676 to 928 each, the Nemesis 816, the Ammit 1,316, beside the Baboon's 1,396 and
+the Clydesdale's 1,016; the register's 900 is a first-pass guideline, not a rule (Ryan, 29
+September), so no facet count is an open question.
 Renders with the first passes beside them: https://claude.ai/artifact/6FLunyt7J2ejC24yce76cM
 (account B; the first passes alone at https://claude.ai/artifact/UB2FcRAs9Z8k8ABwxVjjuC).
 **Ryan judges a model only from a render**, never from code: `tools/hero_shot.gd` takes a
