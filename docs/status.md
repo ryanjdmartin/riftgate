@@ -19,11 +19,14 @@ earlier passes folded under each) and the phone sketches
 was deleted on Ryan's word this evening (the first bible link, the Second Passes page, the HUD
 swatches, a second codex, a second sketches page). **Sharing:** the nameplate, codex and
 sketches are shared to the work email as Editor and open there, so B republishes those three
-in place and its own copies retire. Account A merged B's 42 component rows into its nameplate on 29 September (90 rows now; A's Drill and Gelada wording kept as newer) and deleted the export; B's nameplate copy (6K6mq49XHCUbdZnkzp5rra) can go. An A session merges them
-into A's nameplate (the 42 `parts` rows of the Components tab are likely missing there; keep A's
-Gelada rejection), deletes that file, and then a B session deletes B's nameplate. B's phone
-sketches, both renders pages, codex and Baboon review were deleted 29 September, night, on
-Ryan's word. **Rules learned today:** a page's link goes into this file in the same commit as
+in place and its own copies retire. Account A merged B's 42 component rows into its nameplate on
+29 September (90 rows now; A's Drill and Gelada wording kept as newer) and deleted the export.
+**Account B keeps two pages on purpose:** its bible copy (above; republished from the committed
+file after any bible change a B session makes) and the content editor
+(https://claude.ai/artifact/HnE3gvsxNHXyjRhRyEiDqT; Ryan's saved edits live in its database, its
+page source is `tools/content_editor.html`, the README says how it is published). Every other B
+page was deleted 29 September, night, on Ryan's word: the phone sketches, both renders pages, the
+codex, the Baboon review and, once A had merged its rows, the nameplate copy. **Rules learned today:** a page's link goes into this file in the same commit as
 the publish, so a parallel session sees it before publishing a twin; `Artifact` with `action:
 "list"` says what the account you are in owns, and a read of another account's page comes back
 "not found"; a page shared as Editor across accounts republishes, but its database stays with
