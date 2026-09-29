@@ -42,7 +42,7 @@ another session on this repo at the same time: `git status` first, stage by path
 shared file before staging it, and never `git add -A`. If a chat and the bible disagree,
 the chat is newer.
 
-## As of 29 September 2026 (evening)
+## As of 29 September 2026 (night)
 
 **State.** Tests green: `perl -e 'alarm 240; exec @ARGV' godot --headless --path . -s
 tests/run_tests.gd` (225 tests, 3,061 checks on 29 September, night). Two or three sessions run on this repo at once:
@@ -87,8 +87,8 @@ refuses an exact match unless `design.name_clash` says why it stays. Ryan's verd
 September) are in the notes: `sparrowhawk` kept (a coincidence: a Halo Wars gunship and a
 BattleTech fighter, both obscure; the name conjures the bird), `goshawk` and `baboon` kept
 (designation-tier: the Vapor Eagle's Inner Sphere name, the Howler's Clan name), `badger`'s
-id kept (Honey Badger is clear); `dingo` (a Heavy Gear Northern gear) is still his to decide
-(todo). The tiers: iconic (the name conjures their machine: never), known (a hobbyist
+id kept (Honey Badger is clear); `dingo` kept too (29 September: an obscure Heavy Gear gear with
+no silhouette resemblance, the real ATF Dingo the closer match). Every flagged name is decided. The tiers: iconic (the name conjures their machine: never), known (a hobbyist
 recognises it: case by case), coincidence (keep). Names and concepts are spitballed on the
 Riftgate Nameplate artifact
 https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH (account A, shared to B as Editor; a tab per maker, Components, Rules;
