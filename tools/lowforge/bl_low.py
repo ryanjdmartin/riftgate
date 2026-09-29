@@ -167,26 +167,35 @@ class Tiles:
             # Bone is paint, not the maker's metal: the same white for everyone, no cast.
             img = self._seam(self.metal(0.74, self.p["streak"] * 0.5, tint=(0.96, 0.93, 0.85), mottle=0.012, cast=(1.0, 1.0, 1.0)))
         elif kind == "fist":
-            # The back of a closed fist, one tile a face (Ryan, 26 September): the arm hangs
-            # and the knuckles face forward, so the four fingers stack top to bottom and the
-            # grooves between them run across. A lit knuckle rides the top of each finger.
-            # Image row 0 is the bottom of the tile.
+            # The front of a closed fist, one tile a face (Ryan, 28 September, third try): the
+            # arm hangs, the knuckles face forward, so the four fingers stand side by side as
+            # columns down the face, split by three grooves, a lit knuckle at the top of each,
+            # and the thumb lies as a band across the bottom, curled over the fingers. Image
+            # row 0 is the bottom of the tile.
             img = self.metal(g * 1.04, self.p["streak"] * 0.5, mottle=0.008)
-            for y in (16, 32, 48):
-                img[y - 1:y + 2, 3:TILE - 3, :] *= 0.3
-                img[y + 2:y + 4, 3:TILE - 3, :] = np.minimum(img[y + 2:y + 4, 3:TILE - 3, :] * 1.3, 1.0)
+            for x in (16, 32, 48):
+                img[16:TILE - 3, x - 1:x + 2, :] *= 0.3
+            img[TILE - 8:TILE - 5, 3:TILE - 3, :] = np.minimum(img[TILE - 8:TILE - 5, 3:TILE - 3, :] * 1.3, 1.0)
             img[TILE - 3:TILE, :, :] *= 0.4
+            img[14:16, 2:TILE - 2, :] *= 0.3
+            img[2:14, :, :] = self.metal(g * 1.0, self.p["streak"] * 0.5, mottle=0.008)[2:14, :, :]
+            img[9:11, 2:TILE - 6, :] = np.minimum(img[9:11, 2:TILE - 6, :] * 1.25, 1.0)
+            img[2:14, TILE - 6:TILE - 4, :] *= 0.35
             img[0:2, :, :] *= 0.4
         elif kind == "thumb":
-            # The inside of the fist: the thumb as a band curled down over the fingers,
-            # lit along its ridge, a nail at its tip near the bottom; the rest plain metal.
+            # The inside of the fist: the thumb bent, coming down from the wrist and turning
+            # forward along the bottom (u runs back to front, v up), lit along its ridge; the
+            # rest plain metal.
             img = self.metal(g * 1.0, self.p["streak"] * 0.5, mottle=0.008)
-            img[6:TILE - 4, 20:22, :] *= 0.3
-            img[6:TILE - 4, 42:44, :] *= 0.3
-            img[6:TILE - 4, 22:42, :] = np.minimum(img[6:TILE - 4, 22:42, :] * 1.06, 1.0)
-            img[4:7, 20:44, :] *= 0.3
-            img[8:16, 24:40, :] = np.minimum(img[8:16, 24:40, :] * 1.2, 1.0)
-            img[30:33, 22:42, :] *= 0.55
+            band = self.metal(g * 1.06, self.p["streak"] * 0.5, mottle=0.008)
+            img[22:TILE, 34:48, :] = band[22:TILE, 34:48, :]          # down from the wrist
+            img[8:24, 34:TILE - 2, :] = band[8:24, 34:TILE - 2, :]    # the bend, forward
+            img[22:TILE, 32:34, :] *= 0.3
+            img[22:TILE, 48:50, :] *= 0.3
+            img[24:26, 48:TILE - 2, :] *= 0.3
+            img[6:8, 34:TILE - 2, :] *= 0.3
+            img[8:24, 32:34, :] *= 0.3
+            img[26:TILE, 40:42, :] = np.minimum(img[26:TILE, 40:42, :] * 1.2, 1.0)
         elif kind == "hazard":
             img = self.metal(g, 0.05)
             img[26:38, :, :] = np.array([0.95, 0.75, 0.10], np.float32)
