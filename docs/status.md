@@ -23,8 +23,8 @@ stands, earlier passes folded under each) and the phone sketches
 work mail and fresh links were issued: the bible's first copy
 (https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ, version 72) and the Second Passes page
 (https://claude.ai/artifact/Lv4nXY98bCX5ATfQKiL6Ls, superseded by the Model Viewer); both go on
-Ryan's word, as do the HUD swatches (https://claude.ai/artifact/LY278Pf67FpQYArCgXAU8v, 19
-September, whose palette the bible records). **Account B owns,** each to retire once its A twin
+Ryan's word. The HUD swatches page (19 September) was deleted on his word the same evening; its
+palette is in the bible. **Account B owns,** each to retire once its A twin
 is shared: the bible's other copy (https://claude.ai/artifact/AdBTeE9px1Xvg5TKNjHjSP), the
 nameplate (https://claude.ai/artifact/6K6mq49XHCUbdZnkzp5rra), the phone sketches
 (https://claude.ai/artifact/FCaphxM3Y3SnRPdNnprpXc), the renders
