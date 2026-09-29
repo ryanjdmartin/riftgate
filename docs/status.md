@@ -119,10 +119,13 @@ chat first; the real recordings remain section 12's open question.
 **The phone (26 to 28 September; README has the commands).** Ryan's Pixel runs the debug
 APK. Fixed so far: grid ribbons and their gain, safe insets, the MSAA leak, font
 oversampling, the drag ghost, the far blur, scanlines on device pixels, leaders, the seam
-band's clipped hexes, and the readout's strip under the map filled by the orders board
-while nothing is held (`game/battle/orders_board.gd`: a row a machine with its order and
-what the plan says it meets, the field at the right). Still to judge on the device: frame
-rate, the sound set, edges without MSAA, the text, the grid at the hotter gain, the board.
+band's clipped hexes, the orders board in the readout's strip (29 September: gauges, the
+order's hex, what it meets, packs and foes, contact or not; the log is behind its LOG
+button), a tap bracketing what it hit with gauges or strength over the unit, the gate's
+footprint and attack hexes, the current zone told from the predicted, the routes redrawn,
+props hidden under a standing machine (`Map3D._hide_props_under`; a passable hex's props
+bake by hex). Still to judge on the device: frame rate (the per-hex props added draw
+calls), the sound set, edges without MSAA, the text, the grid at the hotter gain.
 
 **Open, in order.** The task list is `docs/todo.md`, one line a task, grouped by who
 moves it and ticked in the commit that lands it; this is the order to take them in.

@@ -181,8 +181,27 @@ func _apply_battle_pose() -> void:
 			# The gate tapped: its footprint and the hexes it can be attacked from.
 			s._on_hex_tapped(b.field.map.gate_hexes[0])
 		"foe":
-			# A pack tapped: bracketed, its path heavy, its strength over it.
-			s._on_hex_tapped(b.field.squads()[0].pos)
+			# A pack tapped: bracketed, its path heavy, its strength over it; the map looks at it.
+			var fsq: Unit = b.field.squads()[0]
+			s._map.scroll_to_unit(fsq)
+			s._on_hex_tapped(fsq.pos)
+		"onprops":
+			# The first machine set down on the nearest hex with props (ruins, city, rough):
+			# the props there hide under it.
+			var fm: Unit = b.mechs()[0]
+			var bmap := b.field.map
+			var best := fm.pos
+			var best_d := 1 << 30
+			for hh in bmap.all_hexes():
+				var tt: int = bmap.terrain_of(hh)
+				if (tt == BattleMap.Terrain.RUINS or tt == BattleMap.Terrain.ROUGH or bmap.city.has(hh)) and b.field.can_stand(fm, hh):
+					var dd := Hex.distance(fm.pos, hh)
+					if dd < best_d:
+						best_d = dd
+						best = hh
+			fm.pos = best
+			s._refresh()
+			s._map.scroll_to_unit(fm)
 		"logfull":
 			# The battle's log, full screen, from the board's LOG button.
 			s._toggle_log_full()

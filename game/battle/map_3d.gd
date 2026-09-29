@@ -285,23 +285,26 @@ func _road_material() -> ShaderMaterial:
 func _box(col: Node3D, size: Vector3, material: Material, pos: Vector3, rot: Vector3 = Vector3.ZERO, traced: bool = true) -> void:
 	var xf := Transform3D(Basis.from_euler(rot), col.position + pos).scaled_local(size)
 	var band: int = col.get_meta("band", 0)
-	_bake(_unit_geo("box"), xf, material, band, true)
+	var hex = col.get_meta("prop_hex") if col.has_meta("prop_hex") else null
+	_bake(_unit_geo("box"), xf, material, band, true, "", 1, null, hex)
 	if traced:
-		_bake(_unit_geo("box_lines"), xf, _trace_material("prop"), band, false, "prop")
+		_bake(_unit_geo("box_lines"), xf, _trace_material("prop"), band, false, "prop", 1, null, hex)
 
 
 func _ball(col: Node3D, radius: float, material: Material, pos: Vector3, rot: Vector3 = Vector3.ZERO) -> void:
 	var xf := Transform3D(Basis.from_euler(rot), col.position + pos).scaled_local(Vector3.ONE * radius)
 	var band: int = col.get_meta("band", 0)
-	_bake(_unit_geo("ball"), xf, material, band, true)
-	_bake(_unit_geo("ball_lines"), xf, _trace_material("prop"), band, false, "prop")
+	var hex = col.get_meta("prop_hex") if col.has_meta("prop_hex") else null
+	_bake(_unit_geo("ball"), xf, material, band, true, "", 1, null, hex)
+	_bake(_unit_geo("ball_lines"), xf, _trace_material("prop"), band, false, "prop", 1, null, hex)
 
 
 func _cyl(col: Node3D, top: float, bottom: float, height: float, segments: int, material: Material, pos: Vector3, rot: Vector3 = Vector3.ZERO) -> void:
 	var xf := Transform3D(Basis.from_euler(rot), col.position + pos)
 	var band: int = col.get_meta("band", 0)
-	_bake(_cylinder_geo(top, bottom, height, segments), xf, material, band, true)
-	_bake(_cylinder_lines(top, bottom, height, segments), xf, _trace_material("prop"), band, false, "prop")
+	var hex = col.get_meta("prop_hex") if col.has_meta("prop_hex") else null
+	_bake(_cylinder_geo(top, bottom, height, segments), xf, material, band, true, "", 1, null, hex)
+	_bake(_cylinder_lines(top, bottom, height, segments), xf, _trace_material("prop"), band, false, "prop", 1, null, hex)
 
 
 # ---------------------------------------------------------------- baking
@@ -322,6 +325,7 @@ class Batch:
 	var kind: String            # "" for geometry, else a trace kind (set_trace_mode)
 	var lines: bool
 	var colours: bool
+	var hex = null              # a Vector2i when the batch is one hex's props, hidden while a machine stands there
 	var v := PackedVector3Array()
 	var n := PackedVector3Array()
 	var uv := PackedVector2Array()
@@ -455,12 +459,16 @@ func _cylinder_lines(top: float, bottom: float, height: float, segments: int) ->
 ## `key_of` names the batch when the material to draw with is not the one to group by: a
 ## model's surfaces each wear their own copy of a toon'd material, but the copies of one
 ## source are alike, so they group by the source and draw with the first copy seen.
-func _bake(geo: Dictionary, xf: Transform3D, material: Material, band: int, shadow: bool, kind: String = "", layers: int = 1, key_of: Object = null) -> void:
+func _bake(geo: Dictionary, xf: Transform3D, material: Material, band: int, shadow: bool, kind: String = "", layers: int = 1, key_of: Object = null, hex = null) -> void:
 	if not geo.has("v"):
 		return
 	var lines: bool = geo.get("lines", false)
 	var group := key_of if key_of != null else material
-	var key := "%d/%d/%s/%d" % [group.get_instance_id(), band, kind, layers]
+	# A prop on ground a machine can stand on bakes with its own hex, so the hex's props are
+	# a few meshes of their own and can hide while a machine stands there (Ryan, 29
+	# September: rubble and buildings came up through the machines' roofs and feet). The
+	# rest of the field stays in the big batches.
+	var key := "%d/%d/%s/%d/%s" % [group.get_instance_id(), band, kind, layers, str(hex) if hex != null else ""]
 	var b: Batch = _batches.get(key, null)
 	if b == null:
 		b = Batch.new()
@@ -470,6 +478,7 @@ func _bake(geo: Dictionary, xf: Transform3D, material: Material, band: int, shad
 		b.layers = layers
 		b.lines = lines
 		b.colours = geo.has("c")
+		b.hex = hex
 		_batches[key] = b
 	var src: PackedVector3Array = geo["v"]
 	b.v.append_array(xf * src)
@@ -529,8 +538,31 @@ func _flush_batches() -> void:
 			mi.set_meta("kind", b.kind)
 			mi.visible = _trace_mode != "off"
 			_trace_nodes.append(mi)
+		if b.hex != null:
+			if not _prop_meshes.has(b.hex):
+				_prop_meshes[b.hex] = []
+			(_prop_meshes[b.hex] as Array).append(mi)
 		add_child(mi)
 	_batches.clear()
+
+
+var _prop_meshes: Dictionary = {}   # hex -> the meshes of its props, hidden while a machine stands there
+var _props_hidden: Dictionary = {}  # hex -> true while hidden
+
+## Hide the props of every hex a grounded machine stands on (or is crossing), and show the
+## rest again. A flyer hides nothing: it rides over what stands there.
+func _hide_props_under(occupied: Dictionary) -> void:
+	for h in _prop_meshes.keys():
+		var hide: bool = occupied.has(h)
+		if _props_hidden.get(h, false) == hide:
+			continue
+		_props_hidden[h] = hide
+		for mi in _prop_meshes[h]:
+			var m: MeshInstance3D = mi
+			if hide:
+				m.visible = false
+			else:
+				m.visible = not m.has_meta("is_trace") or _trace_mode != "off"
 
 
 ## A static model (the gate, a wall segment) baked the same way at its current transform,
@@ -883,6 +915,8 @@ func _build_ground() -> void:
 		var col := Node3D.new()
 		col.position = at
 		col.set_meta("band", band)
+		if in_field and BattleMap.passable(t, []):
+			col.set_meta("prop_hex", h)   # its props bake by hex, to hide under a standing machine
 		add_child(col)
 		_columns[h] = col
 		# A crag keeps the ground it stands on (crag-water, crag-ruin, crag-field: the
@@ -1092,8 +1126,11 @@ func sync() -> void:
 	for h in _columns.keys():
 		_lift[h] = _height_of(h) * _cos * _ppu
 	var seen := {}
+	var occupied: Dictionary = {}
 	for u in field.units:
 		seen[u.id] = true
+		if u.is_player() and not u.traits.has("flyer"):
+			occupied[Hex.from_pixel(_anim_px[u.id], hex_px) if _anim_px.has(u.id) else u.pos] = true
 		var node: Node3D = _units.get(u.id, null)
 		if node == null:
 			node = _make_unit(u)
@@ -1138,6 +1175,7 @@ func sync() -> void:
 			# above it does not.
 			var d: Vector2 = Hex.to_pixel(Hex.DIRECTIONS[u.facing], 1.0).normalized()
 			(_pivots[u.id] as Node3D).rotation.y = atan2(-d.x, -d.y)
+	_hide_props_under(occupied)
 	for uid in _units.keys():
 		if not seen.has(uid):
 			_units[uid].queue_free()

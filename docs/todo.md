@@ -9,7 +9,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 ## Ryan
 
 - [ ] Play-test the engagement range (`Battlefield.ENGAGE_RANGE` = 2) and the tethers; say whether formations are still wanted
-- [ ] Judge on the phone after a re-export: frame rate, the sound set, the machines' edges without MSAA, the text, the grid at `GRID_GAIN_PHONE`, the seam band (less green than before), the far blur
+- [ ] Judge on the phone after a re-export: frame rate (the per-hex props added draw calls), the sound set, the machines' edges without MSAA, the text, the grid at `GRID_GAIN_PHONE`, the seam band (less green than before), the far blur, the board and the log button, the selection marks, the routes, props hiding under a machine
 - [ ] Codex and flavour for the seven new machines, the Baboon's flavour, and the 41 components whose codex is empty
 - [ ] Decide the Dingo's name (`design.name_clash`: a Heavy Gear Northern gear); the Sparrowhawk, Goshawk, Baboon and the badger id are kept
 - [ ] The Badger's joints and pins in Blender (`forge.py export badger`); the Clydesdale's nine pins
@@ -22,6 +22,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Discuss first, then decide: the reinforcement phase, and whether skirmish composition follows placement
 - [ ] Discuss first, then decide: when and how the multi-hex boss comes back (`Unit.TRIANGLE` waits)
 - [ ] Discuss first, then decide: the economy and the blueprint tiers (nothing that prices anything can be designed before this)
+- [ ] Discuss first, then decide: does a pack keep its foes' hull between fights (a withdrawal leaves them hurt today only in the count), and how the map shows it (the strength segments could show it)
 - [ ] The ideas list: burning terrain, statuses carried between fights, hunter packs, hull repair
 - [ ] Movespeed in tens like every other number, or in hexes as now
 - [ ] Enemy targeting among machines in a skirmish (lowest shield, highest heat, last attacker, random) and how it is telegraphed
