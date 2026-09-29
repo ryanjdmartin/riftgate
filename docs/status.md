@@ -20,9 +20,11 @@ active): its phone sketches (https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9, 
 round plus The Far Bank whole at 86, 90 and 92), its nameplate (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; its database was
 seeded from the 28 September list of 48 with the Mustang and Gelada rejected, so anything Ryan
 added to B's copy after that is not in it), its model renders
-(https://claude.ai/artifact/Lv4nXY98bCX5ATfQKiL6Ls) and its phone sketches
-(https://claude.ai/artifact/3JEi1kUT2sc2JZreWTs4Xq, published from the `out/phone` folder as it
-stood on this Mac on 29 September, the fourth round). Not copyable from A: the content editor
+(https://claude.ai/artifact/Lv4nXY98bCX5ATfQKiL6Ls). A second phone sketches copy
+(https://claude.ai/artifact/3JEi1kUT2sc2JZreWTs4Xq) was published minutes earlier by another
+session of this account from the same folder before the tempo set existed: superseded by
+the one above, to be deleted when Ryan says; two sessions published the same page because
+neither had committed its link yet. Not copyable from A: the content editor
 and the Baboon review page, whose page sources live only in B sessions' scratch, never in the
 repo; a B session commits the editor's `content_editor.html` beside `phone_page.html` in
 `tools/`, pulls and applies its `edits` database, and only then can A publish the editor and B
