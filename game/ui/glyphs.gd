@@ -84,6 +84,13 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_rect(Rect2(c + Vector2(-s * 0.95, -s * 0.35), Vector2(s * 0.7, s * 0.7)), color, false, width * 0.8)
 			ci.draw_rect(Rect2(c + Vector2(s * 0.25, -s * 0.35), Vector2(s * 0.7, s * 0.7)), color, true)
 			ci.draw_line(c + Vector2(-s * 0.25, 0.0), c + Vector2(s * 0.25, 0.0), color, width * 0.8)
+		"devour":
+			# Open jaws, teeth down: what takes something from a kill.
+			ci.draw_arc(c + Vector2(0, -s * 0.15), s * 0.85, PI * 1.05, PI * 1.95, 16, color, width)
+			for i in range(3):
+				var x := -s * 0.5 + i * s * 0.5
+				ci.draw_line(c + Vector2(x, -s * 0.1), c + Vector2(x, s * 0.55), color, width * 0.9)
+			ci.draw_line(c + Vector2(-s * 0.85, -s * 0.1), c + Vector2(s * 0.85, -s * 0.1), color, width)
 		"volatile":
 			# A burst with a spark at its heart: the component that costs its owner to use.
 			for i in range(8):
@@ -200,7 +207,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 ## can share a shape in different colours.
 static func colour_for(id: String) -> Color:
 	match id:
-		"burn", "overcharge", "heat":
+		"burn", "overcharge", "heat", "devour":
 			return Palette.HEAT
 		"execute", "skull", "shieldbreak", "corrupt", "volatile":
 			return Palette.ENEMY

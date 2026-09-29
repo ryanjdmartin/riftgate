@@ -25,6 +25,7 @@ const DEATH_WEIGHT := 60.0       # a machine kept alive through the round
 const BANK_WEIGHT := 0.2         # shield stood up or heat room made for a later round
 const BURN_WEIGHT := 0.5         # burn stacks pay out over the rounds to come
 const OPTION_GUARD := 64         # spends in one round, at most: rapid rerolls the die and acts again
+const DEVOUR_ROUNDS := 1.0       # rounds of the die's own damage a devoured stack is worth (it fades a stack a round)
 
 var kind: int = GREEDY
 var withdraw_below: int = 0      # persona: withdraw when the team's hull is under this percent (0: never)
@@ -180,6 +181,10 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 			score += loop * maxf(0.0, 1.0 - float(target.resist_total()) / 100.0) * (1.0 - p_kill) * _threat_now(target) * HULL_WEIGHT
 	if f.has(Face.Keyword.BURN):
 		score += (1.0 - p_kill) * mean * BURN_WEIGHT
+	if f.has(Face.Keyword.DEVOUR):
+		# A kill feeds a stack of Overcharged: what the status adds to the die's own damage,
+		# for about the rounds the stack lasts. Read from the status, never hardcoded.
+		score += p_kill * _stack_damage_gain("overcharged") * _raw_attack_mean(ms) * DEVOUR_ROUNDS
 	# A chain repeats on the next foe in reach while it keeps killing, heat and all: every
 	# link is worth its kill at the odds of reaching it.
 	var uses := 1.0
@@ -216,6 +221,31 @@ static func volatile_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: f
 	if not fc["destroyed"] and int(fc["hull_after"]) - int(roundf(bite * uses)) <= 0:
 		cost += DEATH_WEIGHT
 	return cost
+
+
+## What one stack of a status adds to an attack's damage, as a fraction (0.1 for +10%).
+static func _stack_damage_gain(status_id: String) -> float:
+	var gain := 0.0
+	for eff in Effects.STATUS.get(status_id, {}).get("effects", []):
+		if str(eff.get("trigger", "")) != "on_attack":
+			continue
+		match str(eff.get("effect", "")):
+			"multiply_damage":
+				gain += float(eff.get("value", 1)) - 1.0
+	return gain
+
+
+## The die's own average damage per entry, attack entries at their average times their
+## strikes, blanks and equipment at zero: a plain read with no scoring under it, so a
+## keyword that pays out on later attacks can be valued without asking the scorer again.
+static func _raw_attack_mean(ms: Skirmish.MechState) -> float:
+	if ms.die.faces.is_empty():
+		return 0.0
+	var total := 0.0
+	for f in ms.die.faces:
+		if f.is_attack():
+			total += float(f.average() * maxi(1, f.strikes))
+	return total / float(ms.die.faces.size())
 
 
 ## The heat one use of an attack entry adds, through the pipeline.

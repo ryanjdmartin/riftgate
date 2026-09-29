@@ -910,6 +910,8 @@ func _mech_rows(i: int) -> Array:
 		if int(fc["overheat"]) > 0:
 			# Overheating burns at the end of the round, so there is still time to vent.
 			rows.append(["heat", "-%d" % int(fc["overheat"]), "Overheating: hull -%d at the end of the round unless vented" % int(fc["overheat"]), Palette.HEAT])
+		if int(fc.get("volatile", 0)) > 0:
+			rows.append(["volatile", "-%d" % int(fc["volatile"]), "Volatile: spending this component costs hull -%d, past shield and armour" % int(fc["volatile"]), Palette.ENEMY])
 		if bool(fc["destroyed"]):
 			rows.append(["skull", "", "Wrecked this round: %d incoming" % int(fc["incoming"]), Palette.ENEMY])
 		elif bool(fc["component_risk"]):

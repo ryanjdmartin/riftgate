@@ -205,3 +205,19 @@ func test_greedy_holds_a_volatile_die_that_would_wreck_the_machine() -> void:
 	Policy.make(Policy.GREEDY).play_round(s2)
 	assert_eq(s2.front[0], null, "with hull to spare the kill is worth the bite")
 	assert_eq(s2.mechs[0].unit.hull, 90, "paid for")
+
+
+func test_greedy_values_the_kill_that_feeds_it() -> void:
+	var sk := Skirmish.new(3)
+	var plain := Face.attack(30, L)
+	var talon := Face.attack(30, L, K.DEVOUR)
+	sk.add_mech(_mech("A", Die.of([plain, talon]), 40, 100))
+	sk.add_foes([_ghoul(30, 10)])
+	sk.begin()
+	sk.start_round()
+	var pol := Policy.make(Policy.GREEDY)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var a := pol.attack_score(sk, ms, plain, sk.front[0])
+	var b := pol.attack_score(sk, ms, talon, sk.front[0])
+	assert_true(b > a, "a devouring kill is worth more than the same kill without it")
+	assert_true(b - a < 10.0, "and not by much: a stack is a tenth of the die's damage for about a round")

@@ -1552,3 +1552,53 @@ func test_a_disabled_volatile_entry_does_not_bite() -> void:
 	assert_eq(sk.pending_volatile(sk.mechs[0]), 0, "a blank is never spent")
 	assert_true(sk.assign(0, null), "the blank is discarded")
 	assert_eq(m.hull, 100, "and costs nothing")
+
+
+func test_devour_feeds_a_stack_of_overcharged_per_kill_and_it_fades_a_round_at_a_time() -> void:
+	var sk := Skirmish.new(3)
+	var talon := Face.attack(30, L, [K.CLEAVE, K.DEVOUR])
+	var m := _mech("A", Die.single(talon), 40, 100)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(30, 10), _ghoul(30, 10), _ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	assert_eq(talon.describe(), "30 spread devour", "the keyword reads on the entry")
+	# Column 1 (the middle) spreads to both neighbours: two ghouls at 30 die, the big one lives.
+	var middle: Foe = sk.front[1]
+	assert_true(sk.assign(0, middle), "spent on the middle")
+	var kills := 0
+	for col in range(3):
+		if sk.front[col] == null:
+			kills += 1
+	assert_eq(kills, 2, "two ghouls fell to the spread")
+	assert_eq(Effects.stacks_of(m, "overcharged"), 2, "one stack of Overcharged per kill")
+	assert_true("\n".join(sk.log).contains("devours ghoul: Overcharged"), "the log says what was taken")
+	sk.end_round()
+	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "a stack fades at the round's end")
+	sk.start_round()
+	var big: Foe = null
+	for col in range(3):
+		if sk.front[col] != null and sk.front[col].hp > 100:
+			big = sk.front[col]
+	var before := big.hp
+	sk.assign(0, big)
+	assert_eq(before - big.hp, 33, "30 times 1.1 with the stack left, rounded")
+	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "no kill, no new stack")
+	sk.end_round()
+	assert_eq(Effects.stacks_of(m, "overcharged"), 0, "and the last fades")
+
+
+func test_a_buffs_overcharged_and_devours_add_up() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.attack(20, L, K.DEVOUR)), 40, 100)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	Effects.grant_buff(m, "overcharged", 1, "buff", sk.round)
+	Effects.stack(m, Effects.STATUS["overcharged"], Effects.SKIRMISH, "devour", 2, Effects.DECAY_TICK)
+	assert_eq(Effects.stacks_of(m, "overcharged"), 3, "the round's stack and the skirmish's count together")
+	sk.assign(0, sk.front[0])
+	assert_eq(sk.front[0].hp, 500 - 27, "20 times 1.1 cubed, rounded")
+	sk.end_round()
+	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "the buff went with the round, devour's faded one")

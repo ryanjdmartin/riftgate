@@ -162,11 +162,14 @@ static func stack(u, passive: Dictionary, scope: int, source: String, n: int = 1
 	return grant(u, m)
 
 
+## Every live stack of a status, across scopes: a buff's Overcharged for the round and
+## devour's for the skirmish are the same status to the machine.
 static func stacks_of(u, id: String) -> int:
+	var n := 0
 	for m in live(u):
 		if m.id == id:
-			return m.stacks
-	return 0
+			n += m.stacks
+	return n
 
 
 static func has(u, id: String) -> bool:

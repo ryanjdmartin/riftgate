@@ -610,7 +610,10 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 			if other != null and not hit.has(other):
 				hit.append(other)
 		for foe in hit:
+			var was_alive := foe.alive()
 			foe.hp -= dmg
+			if was_alive and not foe.alive() and f.has(Face.Keyword.DEVOUR):
+				_devour(ms, foe)
 			if f.has(Face.Keyword.BURN):
 				Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", ceili(float(dmg) / BURN_DAMAGE_PER_STACK))
 				_foe_gained_status(foe, "burning")
@@ -648,6 +651,15 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 				log.append("%s chains to %s" % [ms.unit.display_name, cand.display_name])
 				_resolve_attack(mech_index, ms, f, cand)
 				break
+
+
+## Devour (the Ammit's talons, 28 September; built 29 September): a kill with the component
+## feeds its owner a stack of Overcharged for the skirmish, one per foe killed (a spread that
+## kills two feeds two, a chain feeds on every link). The stacks tick down one a round at the
+## round's end, the way Overheating does, so the ramp fades unless a passive keeps it.
+func _devour(ms: MechState, foe: Foe) -> void:
+	var m := Effects.stack(ms.unit, Effects.STATUS["overcharged"], Effects.SKIRMISH, "devour", 1, Effects.DECAY_TICK)
+	log.append("%s devours %s: %s ×%d" % [ms.unit.display_name, foe.display_name, m.name, Effects.stacks_of(ms.unit, "overcharged")])
 
 
 ## Suppress: the foe skips its action this round, then grows Numbed (two stacks, three for
