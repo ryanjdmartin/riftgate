@@ -17,7 +17,7 @@ each file is an A/B against the first of its set; never written over a shipped t
             levels, then levelled by what a phone speaker plays (a model: high-passed at
             220 Hz twice, a presence bump, rolled off at 9 kHz).
 
-    tools/spriter/.venv/bin/python tools/soundforge/phone_sketches.py [voices|balance|levels|voices2|guitar|shadows2|rift]
+    tools/spriter/.venv/bin/python tools/soundforge/phone_sketches.py [voices|balance|levels|voices2|guitar|shadows2|rift|round3|round4]
 
 Second round (28 September, from Ryan's notes on the first): voices2 (two hybrids of voice 2
 and the split, and the other bass voices the tracks use), guitar (the backing guitar without
@@ -32,7 +32,11 @@ tom, the softer crash, the sub's shadow, the rift levels up a quarter of their g
 "shipped" row rendered after that carries the new voices, and the first two rounds' files
 are history: re-render only to compare against what ships now.
 
-Writes WAVs and AAC (afconvert, macOS) into tools/soundforge/out/phone/ with a manifest.
+Writes WAVs and AAC (afconvert, macOS) into tools/soundforge/out/phone/ with a manifest,
+and copies the listening page (phone_page.html, committed beside this file) in beside them
+as index.html. The page is the thing to edit; out/phone/ is git-ignored scratch, so a new
+session renders the sets it wants and publishes out/phone/index.html with the .mp4 files
+and manifest.json as its `files`.
 """
 import json
 import math
@@ -392,6 +396,40 @@ def presence(x):
     return x + F.bp(x, 1000.0, 2200.0) * 0.25
 
 
+
+# ---------------------------------------------------------------- round four (the shipped build)
+# Ryan's picks are in the forge now, so a plain render is what ships. These are the two notes
+# left open (28 September): the kick's own size, which sounded high alone, and the toms, still
+# soft and echoey in headphones. Each variant is a step further in the direction he asked for,
+# so he can say "that one" or "further" rather than describing a pitch.
+
+def kick_at(mult):
+    """The shipped kick, pitched by `mult` (lower is a bigger drum). Calls the voice saved
+    above, never the module name, which is the one being patched."""
+    return lambda pitch=1.0: _KICK(pitch * mult)
+
+
+def tom_at(skin, room, front):
+    """The shipped tom with its skin's decay, its room and its front's hit scaled."""
+    def voice(f=150.0, pitch=1.0):
+        n = F.n_of(0.45)
+        t = F.t_of(n)
+        fr = f * pitch * (1.0 + 0.18 * F.np.exp(-t / 0.05))
+        sk = F.np.sin(2.0 * F.math.pi * F.np.cumsum(fr) / F.SR) * F.env_ad(n, 0.001, 0.11 * skin, curve=2.5)
+        sub = F.np.sin(2.0 * F.math.pi * f * pitch * 0.5 * t) * F.env_ad(n, 0.002, 0.09 * skin) * 0.5
+        shell = F.harmonics(f * pitch * 1.4, n, [0.5, 0.25, 0.1]) * F.env_ad(n, 0.001, 0.03) * 0.3
+        stick = F.lp(F.bp(F.noise(F.n_of(0.01)), 1500.0, 6000.0), 5000.0) * F.env_ad(F.n_of(0.01), 0.0002, 0.003) * 1.6
+        hit = F.body(f * pitch * 1.6, f * pitch, 0.04, drive=2.4, click=0.7) * front
+        shadow = F.bp(F.sat(sk + sub, 3.0), 120.0, 500.0) * 0.35
+        return F.room(F.mix(F.sat(sk + sub, 1.6), shell, hit, F.at(F.np.zeros(1), stick, 0.0), shadow),
+                      decay=0.05 * room, mix=0.06 * room, cut=4500.0) * 1.1
+    return voice
+
+
+KICK_SIZES = [("as ships", {}), ("lower", dict(kick_real=kick_at(0.9))), ("lowest", dict(kick_real=kick_at(0.82)))]
+TOM_TIGHTS = [("as ships", {}), ("tighter", dict(tom_real=tom_at(0.75, 0.6, 1.15))), ("tightest", dict(tom_real=tom_at(0.55, 0.3, 1.3)))]
+
+
 # ---------------------------------------------------------------- rendering
 
 class Patched:
@@ -500,7 +538,12 @@ def solo_bass_file(names=None, seed_name="phone_bass_solo"):
 
 def main(argv):
     which = argv[0] if argv else "all"
-    manifest = {"voices": [], "balance": [], "levels": [], "voices2": [], "guitar": [], "shadows2": [], "rift": [], "round3": [], "notes": {}}
+    os.makedirs(OUT, exist_ok=True)
+    page = os.path.join(os.path.dirname(os.path.abspath(__file__)), "phone_page.html")
+    if os.path.exists(page):   # the committed page, copied in so the publish has everything in one folder
+        with open(page) as src, open(os.path.join(OUT, "index.html"), "w") as dst:
+            dst.write(src.read())
+    manifest = {"voices": [], "balance": [], "levels": [], "voices2": [], "guitar": [], "shadows2": [], "rift": [], "round3": [], "round4": [], "notes": {}}
     os.makedirs(OUT, exist_ok=True)
     path = os.path.join(OUT, "manifest.json")
     if which != "all" and os.path.exists(path):
@@ -623,6 +666,28 @@ def main(argv):
         write("drums_kits", x)
         manifest["round3"].append({"name": "drums_kits", "seconds": len(x) / F.SR, "marks": marks,
                                    "note": "the riff's drums alone, four bars each: the shipped kit, the shadows' second cut, the third cut"})
+        save()
+    if which in ("round4", "all"):
+        print("round4")
+        # The excerpt exactly as it ships: every pick in the forge, nothing patched.
+        x = level_to(render_hold(BALANCE_FORM), SKIRMISH_LEVEL)
+        write("mix_ship", x)
+        manifest["round4"].append({"name": "mix_ship", "seconds": len(x) / F.SR, "phone_db": round(phone_level(x), 1),
+                                   "note": "the riff, the turn and the lift exactly as the track ships now: voice 12's bass, the clip-free guitar, the metal kick, the tightened tom, the softer crash, the sub's shadow, the one master"})
+        print("  mix_ship       %5.1f s  phone %.1f dB" % (len(x) / F.SR, phone_level(x)))
+        for name, variants, note in [("drums_kick", KICK_SIZES, "the kick's size: as it ships, then pitched down a tenth, then a fifth"),
+                                     ("drums_tom", TOM_TIGHTS, "the toms: as they ship, then tighter (a shorter skin, less room, a harder front), then tightest")]:
+            parts, marks, t = [], [], 0.0
+            for label, patches in variants:
+                d = level_to(drums_clip(patches), SKIRMISH_LEVEL)
+                marks.append((t, label))
+                parts.append(d)
+                parts.append(np.zeros(F.SR))
+                t += (len(d) + F.SR) / F.SR
+            x = np.concatenate(parts)
+            write(name, x)
+            manifest["round4"].append({"name": name, "seconds": len(x) / F.SR, "marks": marks, "note": note})
+            print("  %-14s %5.1f s  %s" % (name, len(x) / F.SR, ", ".join(l for l, _ in variants)))
         save()
     if which in ("levels", "all"):
         print("levels")

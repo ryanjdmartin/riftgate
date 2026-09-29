@@ -1,0 +1,298 @@
+<title>Phone Sketches</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --ground: #F2F3F5; --surface: #FFFFFF; --ink: #1A1E25; --muted: #5C6673;
+    --rule: #D5DAE1; --rule-strong: #B9C0CA; --accent: #B4501C; --accent-ink: #FFFFFF;
+    --steel: #2E5B87; --tint: #E9EBEF; --code-bg: #E6E9EE; --playing: #FBEFE6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --ground: #14171C; --surface: #1C2028; --ink: #E4E7EB; --muted: #97A1AD;
+      --rule: #2E343D; --rule-strong: #414955; --accent: #E3894B; --accent-ink: #14171C;
+      --steel: #7FAEDF; --tint: #232830; --code-bg: #262C35; --playing: #2A2320;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ground: #14171C; --surface: #1C2028; --ink: #E4E7EB; --muted: #97A1AD;
+    --rule: #2E343D; --rule-strong: #414955; --accent: #E3894B; --accent-ink: #14171C;
+    --steel: #7FAEDF; --tint: #232830; --code-bg: #262C35; --playing: #2A2320;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--ground); color: var(--ink); font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.55; padding-inline: 16px; padding-block: 0 120px; margin: 0; }
+  .page { max-width: 64ch; margin: 0 auto; }
+  h1, h2 { font-family: "Barlow Condensed", "Arial Narrow", Impact, sans-serif; text-wrap: balance; line-height: 1.05; margin: 0; text-transform: uppercase; }
+  h1 { font-size: clamp(38px, 9vw, 56px); font-weight: 700; }
+  h2 { font-size: 26px; font-weight: 700; margin-top: 40px; padding-bottom: 6px; border-bottom: 2px solid var(--ink); }
+  p { margin: 0 0 1em; max-width: 62ch; }
+  .mono, .num, .mark, .stamp { font-family: "IBM Plex Mono", Menlo, monospace; }
+  header { border-top: 6px solid var(--ink); border-bottom: 1px solid var(--rule-strong); padding-block: 22px 18px; margin-bottom: 28px; }
+  .stamp { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 10px; }
+  .lede { font-size: 17px; color: var(--ink); margin-top: 12px; }
+  .how { background: var(--tint); padding: 12px 16px; margin: 0 0 8px; font-size: 15px; }
+  .how p:last-child { margin: 0; }
+  .rows { display: grid; gap: 0; margin: 14px 0 6px; border-top: 1px solid var(--rule); }
+  .row { display: grid; grid-template-columns: 44px 1fr auto; gap: 4px 12px; align-items: start; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .row.playing { background: var(--playing); margin-inline: -8px; padding-inline: 8px; }
+  .row .btn { grid-row: 1 / span 2; width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--ink); background: var(--surface); color: var(--ink); cursor: pointer; font-size: 16px; display: grid; place-items: center; padding: 0; }
+  .row .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .row.playing .btn { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .row .name { font-weight: 600; }
+  .row .name .step { color: var(--muted); font-weight: 500; }
+  .row .note { grid-column: 2 / span 2; color: var(--muted); font-size: 14px; line-height: 1.45; }
+  .row .num { font-size: 13px; color: var(--muted); padding-top: 3px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .marks { display: flex; flex-wrap: wrap; gap: 8px; grid-column: 2 / span 2; margin-top: 6px; }
+  .mark { font-size: 12px; padding: 3px 9px; border: 1px solid var(--rule-strong); background: var(--surface); color: var(--ink); cursor: pointer; border-radius: 2px; }
+  .mark:focus-visible { outline: 2px solid var(--accent); }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; margin: 10px 0 18px; }
+  thead th { text-align: left; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 500; padding: 6px 8px; border-bottom: 2px solid var(--ink); }
+  tbody td { padding: 7px 8px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  td.n { font-family: "IBM Plex Mono", Menlo, monospace; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .listen { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; margin: 14px 0 6px; font-size: 15px; }
+  .listen p { margin: 0; }
+  /* the transport, fixed to the foot */
+  .bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--surface); border-top: 1px solid var(--rule-strong); padding: 10px 16px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); }
+  .bar .in { max-width: 64ch; margin: 0 auto; display: grid; grid-template-columns: auto 1fr auto; gap: 6px 12px; align-items: center; }
+  .bar .title { font-weight: 600; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar .time { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .bar .seek { grid-column: 1 / span 3; height: 6px; background: var(--rule); position: relative; cursor: pointer; }
+  .bar .seek .fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: var(--accent); }
+  .bar .pp { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--ink); background: var(--surface); color: var(--ink); cursor: pointer; padding: 0; font-size: 15px; }
+  .bar .pp:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .bar label { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--rule-strong); font-size: 13px; color: var(--muted); }
+  @media (prefers-reduced-motion: no-preference) { .bar .seek .fill { transition: width 0.25s linear; } }
+</style>
+
+<div class="page">
+<header>
+  <span class="stamp">Riftgate · soundforge · 26 September 2026</span>
+  <h1>Phone sketches</h1>
+  <p class="lede">Hold The Line's opening, rendered again with one thing changed at a time. Nothing here is a shipped file. Play these on the phone's own speaker, then once more in headphones.</p>
+  <p class="lede" style="font-size:15px;color:var(--muted)">Fourth round, 29 September: "Now" at the top is the shipped build and the drums bare. Second round, 28 September. The gentler tilt was decided from the first round and the three human tracks now ship with it, so every file here carries that master unless its row says "old master". New: set 1b (two hybrids and the other bass voices), set 1c (the backing guitar), set 2b (the shadows' second cut), a half-gap level file in set 3, and set 4 (The Far Bank on the human master).</p>
+</header>
+
+<div class="how">
+  <p><strong>How to A/B.</strong> Every file in a set is the same bars from the same seed, so switching between rows keeps your place: tap another row mid-riff and it carries on from the same beat with only the voice or the mix changed. Turn "keep my place" off at the foot to start each file from its top instead.</p>
+</div>
+
+<h2>Now: as it ships</h2>
+<p>Every pick from the rounds below is in the forge, and all six tracks are rebuilt on it. These three are the current state: the first is what the track sounds like now, the other two are the last two notes open, the drums bare so nothing covers them. Tap a step to jump to it.</p>
+<div class="rows" data-group="round4">
+  <div class="row" data-src="mix_ship.mp4" data-title="As it ships"><button class="btn" aria-label="play">&#9654;</button><div class="name">The track as it ships</div><div class="num" data-db="mix_ship"></div><div class="note">The riff, the turn and the lift with voice 12's bass, the clip-free guitar, the metal kick, the tightened tom, the softer crash, the sub's shadow and the one master. Compare with set 1 row 1 for how far it has come.</div></div>
+  <div class="row" data-src="drums_kick.mp4" data-title="Kick &middot; three sizes"><button class="btn" aria-label="play">&#9654;</button><div class="name">The kick's size, three steps</div><div class="num"></div><div class="note">Four bars of the riff's drums, three times: as it ships, then pitched down a tenth, then a fifth. You said it sounded high alone, a drum too small; this is the step you asked for, twice.</div>
+    <div class="marks" data-marks="kick"></div></div>
+  <div class="row" data-src="drums_tom.mp4" data-title="Toms &middot; three tightenings"><button class="btn" aria-label="play">&#9654;</button><div class="name">The toms, three steps tighter</div><div class="num"></div><div class="note">The same four bars with the lift's fill: as they ship, then tighter, then tightest, each a shorter skin with less room and a harder front. For the headphone note, that they sound soft and echoey, as if played gently.</div>
+    <div class="marks" data-marks="tomtight"></div></div>
+</div>
+<div class="listen"><p><strong>Listen for:</strong> on the kick, which size reads as a metal kick rather than a small drum, in headphones and on the speaker. On the toms, which step stops sounding gentle without turning into a click. Everything below this is the history that got here.</p></div>
+
+<h2>1. The driven bass</h2>
+<p>The riff, the turn and the riff on power chords (21 bars, the bass from bar 5). The shipped chain is a plucked string into tanh, then a hard clip, then a flat low-pass. Each row below changes that chain one step further.</p>
+<div class="rows" data-group="voices">
+  <div class="row" data-src="bass_shipped.mp4" data-title="Bass · as shipped"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">1</span> As shipped</div><div class="num" data-db="bass_shipped"></div><div class="note">tanh, a hard clip, a growl band 200 to 500 Hz, a flat low-pass at 2.2 kHz. The reference.</div></div>
+  <div class="row" data-src="bass_cab.mp4" data-title="Bass · cabinet"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">2</span> Through a bass cabinet</div><div class="num" data-db="bass_cab"></div><div class="note">The same chain, but the flat low-pass becomes a cabinet: resonant peaks at 100, 250, 700 and 1600 Hz, closed steeply above 4 kHz. The cheapest change.</div></div>
+  <div class="row" data-src="bass_stage.mp4" data-title="Bass · stages"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">3</span> Two stages, no hard clip</div><div class="num" data-db="bass_stage"></div><div class="note">Pre-emphasis, a hot asymmetric tanh stage (even harmonics, the tube's warmth), a tone control, a gentler second stage, the cabinet. The clip is gone.</div></div>
+  <div class="row" data-src="bass_split.mp4" data-title="Bass · split"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">4</span> Clean low, driven high</div><div class="num" data-db="bass_split"></div><div class="note">The string below 250 Hz kept clean for pitch and body; only the part above goes through the stages and the cabinet. The bass recording's usual trick, and the sub is never clipped.</div></div>
+  <div class="row" data-src="bass_dyn.mp4" data-title="Bass · dynamic"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">5</span> Drive follows the note</div><div class="num" data-db="bass_dyn"></div><div class="note">The split, with the drive riding the string's own envelope (hot at the front, cleaning up as it decays), and brightness, cabinet peaks and a little fret noise a hair different every note.</div></div>
+  <div class="row" data-src="bass_solo.mp4" data-title="Bass · alone, all five"><button class="btn" aria-label="play">▶</button><div class="name">All five alone</div><div class="num"></div><div class="note">Each voice on the riff by itself over a quiet kick and hat, four bars each with a bar's rest between, in the order above.</div>
+    <div class="marks" data-marks="solo"></div></div>
+</div>
+<div class="listen"><p><strong>Listen for:</strong> the buzz on a held note (the clip), whether the low E still has a fundamental on the speaker, and whether ten minutes of it would tire you. Fatigue lives at 2 to 5 kHz.</p></div>
+
+<h2>1b. Hybrids, and the other bass voices</h2>
+<p>Ryan's first-round ranking: voice 2's sound liked most, but in the power chords it turned Duke Nukem; 4 and 5 too alike to tell. The chip-tune fifths come from two hard-clipped strings a fifth apart, each clipped down to its fundamental. So the two hybrids keep voice 2's clip and cabinet but clip only the string above 250 Hz and leave the low string clean under the chord. Then the other bass voices the tracks already use, dropped into the same riff.</p>
+<div class="rows" data-group="voices2">
+  <div class="row" data-src="bass_cabsplit.mp4" data-title="Bass · voice 2 with the split"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">6</span> Voice 2 with the split</div><div class="num" data-db="bass_cabsplit"></div><div class="note">Voice 2's clip and cabinet on the string above 250 Hz only; the low string clean under it.</div></div>
+  <div class="row" data-src="bass_cabdyn.mp4" data-title="Bass · voice 2, split, drive follows"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">7</span> Voice 6, drive follows the note</div><div class="num" data-db="bass_cabdyn"></div><div class="note">The same, with the clip's drive riding the note, so a held note's buzz thins as the string decays.</div></div>
+  <div class="row" data-src="bass_sub.mp4" data-title="Bass · the soft sub"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">8</span> The soft sub</div><div class="num" data-db="bass_sub"></div><div class="note">A sine with a little saw, soft-edged. The lift's and the keys' bass, here on the riff.</div></div>
+  <div class="row" data-src="bass_crunch.mp4" data-title="Bass · the crunch synth"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">9</span> The crunch synth</div><div class="num" data-db="bass_crunch"></div><div class="note">A saw with a shadow, driven and clipped, one fixed low-pass. The second lift's bass.</div></div>
+  <div class="row" data-src="bass_cleanbass.mp4" data-title="Bass · the clean bass"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">10</span> The clean bass</div><div class="num" data-db="bass_cleanbass"></div><div class="note">The string with its harmonics open and no drive. Full Bore's melody voice, an octave up there; here on the riff's own notes.</div></div>
+  <div class="row" data-src="bass_contra.mp4" data-title="Bass · the rift's contrabass"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">11</span> The rift's contrabass</div><div class="num" data-db="bass_contra"></div><div class="note">The bowed contrabass from the rift palette, out of its world. For the record.</div></div>
+  <div class="row" data-src="bass_solo2.mp4" data-title="Bass · alone, 6 to 11"><button class="btn" aria-label="play">▶</button><div class="name">Voices 6 to 11 alone</div><div class="num"></div><div class="note">Each on the riff by itself, four bars each with a bar's rest between, in the order above.</div>
+    <div class="marks" data-marks="solo2"></div></div>
+</div>
+
+<h2>1d. The race: 3 against 5</h2>
+<p>After the tilt, 2 fell back and 3 came forward. Voices 3 and 5 differ in two things at once (5 keeps the low string clean and mixes its driven part lower, and its drive follows the note), so here is each with one of those changed toward the other.</p>
+<div class="rows" data-group="voices">
+  <div class="row" data-src="bass_stagedyn.mp4" data-title="Bass · 3, drive follows"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">12</span> Voice 3, drive follows the note</div><div class="num" data-db="bass_stagedyn"></div><div class="note">The whole string through the stages as in 3, with the drive riding the note's envelope as in 5.</div></div>
+  <div class="row" data-src="bass_splitbright.mp4" data-title="Bass · 5, driven part up"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">13</span> Voice 5, driven part up</div><div class="num" data-db="bass_splitbright"></div><div class="note">Voice 5 with its driven part brought up to voice 3's weight and the clean low a little down.</div></div>
+  <div class="row" data-src="bass_solo3.mp4" data-title="Bass · alone, 3, 5, 12, 13"><button class="btn" aria-label="play">▶</button><div class="name">3, 5, 12 and 13 alone</div><div class="num"></div><div class="note">Each on the riff by itself, four bars each, in that order.</div>
+    <div class="marks" data-marks="solo3"></div></div>
+</div>
+
+<h2>1c. The backing guitar</h2>
+<p>Ryan likes it as someone hitting metal garbage cans, and suspects it is too clippy too. The shipped chain hard-clips the strings after a hot tanh. This one keeps the strings, the pick scrape and the palm mute, and replaces the clip with two asymmetric stages and the cabinet. Level-matched to the shipped guitar on a palm-muted low E since the first cut read as louder. Compare with row 1 of set 1, which has the shipped guitar and the shipped bass.</p>
+<div class="rows" data-group="voices">
+  <div class="row" data-src="guitar_soft.mp4" data-title="Guitar · without the clip"><button class="btn" aria-label="play">▶</button><div class="name">Backing guitar without the clip</div><div class="num" data-db="guitar_soft"></div><div class="note">Two asymmetric stages with a tone control between, then the guitar cabinet, matched in level. The shipped driven bass under it, so only the guitar changes against row 1.</div></div>
+</div>
+<div class="listen"><p><strong>Listen for:</strong> whether the garbage-can attack survives without the clip, and whether the fatigue goes with it.</p></div>
+
+<h2>2. The mix on a speaker</h2>
+<p>The riff, the turn and the first lift (25 bars): kick, toms in the fill that closes the lift, the soft sub taking the riff, the driven bass. Every file is levelled back to the skirmish's loudness, so what a change frees is heard as mids, not as volume.</p>
+<div class="rows" data-group="balance">
+  <div class="row" data-src="mix_shipped.mp4" data-title="Mix · as shipped"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">1</span> As shipped</div><div class="num" data-db="mix_shipped"></div><div class="note">The reference, at the skirmish's level.</div></div>
+  <div class="row" data-src="mix_shadows.mp4" data-title="Mix · shadows"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">2</span> Shadows under the low end</div><div class="num" data-db="mix_shadows"></div><div class="note">A knock at 200 Hz and a band of generated harmonics (150 to 600 Hz) under the kick, the toms and the sub. The speaker plays the shadow; the ear infers the fundamental.</div></div>
+  <div class="row" data-src="mix_subcut.mp4" data-title="Mix · sub cut"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">3</span> The sub cut</div><div class="num" data-db="mix_subcut"></div><div class="note">Nothing below 45 Hz, 6 dB down below 80. What the speaker could never play stops spending the limiter's and the level's budget, so the mids come up.</div></div>
+  <div class="row" data-src="mix_tilt.mp4" data-title="Mix · tilt"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">4</span> Gentler tilt, a presence lift</div><div class="num" data-db="mix_tilt"></div><div class="note">The master's high shelf halved (1.5 dB from 3) and a narrow lift at 1 to 2 kHz instead. Presence without the sting.</div></div>
+  <div class="row" data-src="mix_all.mp4" data-title="Mix · all three"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">5</span> All three</div><div class="num" data-db="mix_all"></div><div class="note">Shadows, the sub cut and the tilt together. The shipped bass voice throughout, so this set and the last are separable.</div></div>
+</div>
+<div class="listen"><p><strong>Listen for:</strong> whether the kick and the tom fill exist at all on the speaker, whether the sub's riff in the lift can be followed, and whether the result then sounds thin in headphones.</p></div>
+
+<h2>2b. The shadows, second cut</h2>
+<p>First-round notes: the shadowed kick went "pew-pew" in headphones (its knock was a pitch sweep), the sub a little digital, the sub cut thin and tinny, the crashes clipped and hissy everywhere. So: the kick's shadow is a static 200 Hz burst plus the harmonics, no sweep; the sub's shadow is gentler and lower; a softer crash; no sub cut. Both rows are on the human master, so compare them with row 4 of set 2.</p>
+<div class="rows" data-group="balance">
+  <div class="row" data-src="mix_shadows2.mp4" data-title="Mix · shadows, second cut"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">6</span> Shadows, second cut</div><div class="num" data-db="mix_shadows2"></div><div class="note">Kick shadow without the sweep, sub shadow gentler, softer crash, the toms as in row 2. No sub cut.</div></div>
+  <div class="row" data-src="mix_crash.mp4" data-title="Mix · softer crash only"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">7</span> The softer crash alone</div><div class="num" data-db="mix_crash"></div><div class="note">Only the crash changed against row 4, to hear that one thing.</div></div>
+</div>
+<div class="listen"><p><strong>Listen for:</strong> in headphones, whether the kick still reads as the kick; on the speaker, whether row 6 keeps what row 5 did for the lift without the sub cut's thinness.</p></div>
+
+<h2>2c. The third cut, and the drums alone</h2>
+<p>Second-round notes: the second cut sounds really good on the speaker; the toms still pew a little there (too high or too bright); in headphones the kick is a floor tom, a hit followed by mush, a club bass rather than a metal kick. So the kick is rebuilt as a metal one (a quicker, shorter fall in pitch, more beater, a short static knock at 190 Hz in place of the sweep and the harmonics band, less room), and the tom is pitched lower and duller (a smaller fall, a lower shell, the stick low-passed, its shadow at 120 to 500 Hz). A drums-only file plays the three kits in turn, so the kick and the fill can be judged bare.</p>
+<div class="rows" data-group="balance">
+  <div class="row" data-src="mix_shadows3.mp4" data-title="Mix · third cut"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">8</span> Third cut</div><div class="num" data-db="mix_shadows3"></div><div class="note">The metal kick, the lower tom, the gentler sub shadow, the softer crash. Compare with row 6.</div></div>
+  <div class="row" data-src="drums_kits.mp4" data-title="Drums · three kits"><button class="btn" aria-label="play">▶</button><div class="name">The drums alone, three kits</div><div class="num"></div><div class="note">Four bars of the riff's drums with the lift's tom fill in the last bar: the shipped kit, the second cut, the third cut, a second's gap between.</div>
+    <div class="marks" data-marks="drums"></div></div>
+</div>
+<div class="listen"><p><strong>Listen for:</strong> in headphones, a kick with a front and a short body, no mush; on the speaker, whether the fill's toms stop pewing.</p></div>
+
+<h2>3. The levelling gap</h2>
+<p>The loops are levelled by whole-file RMS, and three quarters of The Far Bank's power sits below 80 Hz, where a phone is silent. So on the phone it plays far quieter than its number says. Each file is twenty seconds of Hold The Line from the bass's entrance, a second's gap, then twenty seconds of The Far Bank from its groove.</p>
+<div class="rows" data-group="level">
+  <div class="row" data-src="level_shipped.mp4" data-title="Levels · as shipped"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">1</span> At the shipped levels</div><div class="num">-20.7 / -22.5 dB</div><div class="note">Hold The Line at the skirmish's level, The Far Bank at the boss theme's.</div></div>
+  <div class="row" data-src="level_phone.mp4" data-title="Levels · by the phone model"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">2</span> Levelled by what a speaker plays</div><div class="num" data-db="gap"></div><div class="note">The same two, The Far Bank brought up until its loudness through a phone-speaker model (high-passed at 220 Hz, a presence bump, rolled off at 9 kHz) matches Hold The Line's.</div></div>
+  <div class="row" data-src="level_half.mp4" data-title="Levels · half the gap"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">3</span> Half the gap</div><div class="num" data-db="half"></div><div class="note">First round: the full gap left The Far Bank a little loud on the speaker and far too loud in headphones. The same two, The Far Bank up by half.</div></div>
+  <div class="row" data-src="level_quarter.mp4" data-title="Levels · a quarter of the gap"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">4</span> A quarter of the gap</div><div class="num" data-db="quarter"></div><div class="note">Second round: half still came across as loud in both. The same two, The Far Bank up by a quarter.</div></div>
+</div>
+<div class="listen"><p><strong>Listen for:</strong> where between rows 1 and 2 the speaker and the headphones both sit right. If no single point does, the answer is the speaker/headphones setting: shipped levels for headphones, an offset per track on the speaker profile.</p></div>
+
+<h2>4. The rift tracks on the human master</h2>
+<p>The tilt was decided from Hold The Line alone; the rift tracks ran a steeper tilt still (4 dB, no lift). Ryan's second-round verdict on this pair: about the same, a bit less edge, no effect lost, so the rift tracks now ship on the same master. The pair stays for the record.</p>
+<div class="rows" data-group="rift">
+  <div class="row" data-src="far_shipped.mp4" data-title="Far Bank · as shipped"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">1</span> As shipped</div><div class="num" data-db="far_shipped"></div><div class="note">Thirty seconds from the groove, tilt 4, no presence lift, at the boss theme's level.</div></div>
+  <div class="row" data-src="far_tilt.mp4" data-title="Far Bank · human master"><button class="btn" aria-label="play">▶</button><div class="name"><span class="step">2</span> On the human master</div><div class="num" data-db="far_tilt"></div><div class="note">The same bars, tilt 1.5 with the presence lift.</div></div>
+</div>
+<div class="listen"><p><strong>Listen for:</strong> whether the bells and the choir lose their air, or whether the edge comes off as it did for the fight.</p></div>
+
+<h2>Measured</h2>
+<p>Where each shipped loop's power sits, by band. A phone speaker plays little below 150 Hz and nothing below 80.</p>
+<div style="overflow-x:auto">
+<table>
+  <thead><tr><th>Track</th><th>under 80 Hz</th><th>80 to 150</th><th>150 to 800</th><th>above 800</th></tr></thead>
+  <tbody>
+    <tr><td>Hold The Line</td><td class="n">22%</td><td class="n">18%</td><td class="n">29%</td><td class="n">31%</td></tr>
+    <tr><td>Full Bore</td><td class="n">21%</td><td class="n">15%</td><td class="n">23%</td><td class="n">42%</td></tr>
+    <tr><td>The Crossing</td><td class="n">74%</td><td class="n">5%</td><td class="n">15%</td><td class="n">6%</td></tr>
+    <tr><td>Low Ground</td><td class="n">49%</td><td class="n">12%</td><td class="n">32%</td><td class="n">8%</td></tr>
+    <tr><td>Night Shift</td><td class="n">28%</td><td class="n">41%</td><td class="n">13%</td><td class="n">7%</td></tr>
+    <tr><td>The Far Bank</td><td class="n">77%</td><td class="n">6%</td><td class="n">13%</td><td class="n">4%</td></tr>
+  </tbody>
+</table>
+</div>
+<p>The figure beside each row above is that file's loudness through the phone-speaker model, in dB mean RMS: how loud the speaker will find it, all else equal.</p>
+
+<footer>Rendered by <span class="mono">tools/soundforge/phone_sketches.py</span> into <span class="mono">tools/soundforge/out/phone/</span> (git-ignored). AAC at 128 kbps, mono, 48 kHz. Notes go by row number and bar, as ever.</footer>
+</div>
+
+<div class="bar">
+  <div class="in">
+    <button class="pp" id="pp" aria-label="play or pause">▶</button>
+    <div>
+      <div class="title" id="title">Nothing playing</div>
+      <div class="time" id="time">0:00 / 0:00</div>
+    </div>
+    <label><input type="checkbox" id="keep" checked> keep my place</label>
+    <div class="seek" id="seek"><div class="fill" id="fill"></div></div>
+  </div>
+</div>
+<audio id="audio" preload="none"></audio>
+
+<script>
+(function () {
+  var audio = document.getElementById('audio');
+  var pp = document.getElementById('pp');
+  var title = document.getElementById('title');
+  var time = document.getElementById('time');
+  var keep = document.getElementById('keep');
+  var fill = document.getElementById('fill');
+  var seek = document.getElementById('seek');
+  var rows = Array.prototype.slice.call(document.querySelectorAll('.row[data-src]'));
+  var current = null;
+
+  try { keep.checked = localStorage.getItem('keep') !== '0'; } catch (e) {}
+  keep.addEventListener('change', function () { try { localStorage.setItem('keep', keep.checked ? '1' : '0'); } catch (e) {} });
+
+  function fmt(s) { if (!isFinite(s)) return '0:00'; s = Math.floor(s); return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
+
+  function mark(row) {
+    rows.forEach(function (r) { r.classList.remove('playing'); r.querySelector('.btn').textContent = '▶'; });
+    if (row) { row.classList.add('playing'); row.querySelector('.btn').textContent = audio.paused ? '▶' : '❚❚'; }
+    pp.textContent = audio.paused ? '▶' : '❚❚';
+  }
+
+  function play(row, at) {
+    var sameGroup = current && current.parentNode === row.parentNode;
+    var pos = (keep.checked && sameGroup && at === undefined) ? audio.currentTime : (at || 0);
+    if (current === row && at === undefined) {
+      if (audio.paused) audio.play(); else audio.pause();
+      mark(row);
+      return;
+    }
+    current = row;
+    audio.src = row.getAttribute('data-src');
+    title.textContent = row.getAttribute('data-title');
+    var seekTo = function () { audio.removeEventListener('loadedmetadata', seekTo); try { audio.currentTime = Math.min(pos, audio.duration || pos); } catch (e) {} audio.play(); mark(row); };
+    audio.addEventListener('loadedmetadata', seekTo);
+    audio.load();
+  }
+
+  rows.forEach(function (row) {
+    row.querySelector('.btn').addEventListener('click', function () { play(row); });
+  });
+  pp.addEventListener('click', function () { if (!current) { play(rows[0]); return; } if (audio.paused) audio.play(); else audio.pause(); mark(current); });
+  audio.addEventListener('play', function () { mark(current); });
+  audio.addEventListener('pause', function () { mark(current); });
+  audio.addEventListener('ended', function () { mark(current); });
+  audio.addEventListener('timeupdate', function () {
+    time.textContent = fmt(audio.currentTime) + ' / ' + fmt(audio.duration);
+    fill.style.width = (audio.duration ? (audio.currentTime / audio.duration * 100) : 0) + '%';
+  });
+  seek.addEventListener('click', function (e) {
+    if (!audio.duration) return;
+    var r = seek.getBoundingClientRect();
+    audio.currentTime = (e.clientX - r.left) / r.width * audio.duration;
+  });
+
+  // The solo file's marks, and each file's loudness through the phone model, from the manifest.
+  fetch('manifest.json').then(function (r) { return r.json(); }).then(function (m) {
+    var all = [];
+    ['round4', 'voices', 'voices2', 'guitar', 'balance', 'shadows2', 'rift', 'levels', 'round3'].forEach(function (k) { all = all.concat(m[k] || []); });
+    var markBoxes = {bass_solo: 'solo', bass_solo2: 'solo2', bass_solo3: 'solo3', drums_kits: 'drums', drums_kick: 'kick', drums_tom: 'tomtight'};
+    all.forEach(function (f) {
+      var el = document.querySelector('[data-db="' + f.name + '"]');
+      if (el && f.phone_db !== undefined) el.textContent = f.phone_db.toFixed(1) + ' dB on the speaker';
+      if (f.marks && markBoxes[f.name]) {
+        var box = document.querySelector('[data-marks="' + markBoxes[f.name] + '"]');
+        if (!box || box.children.length) return;
+        var row = box.closest('.row');
+        f.marks.forEach(function (mk) {
+          var b = document.createElement('button');
+          b.className = 'mark';
+          b.textContent = mk[1] + ' ' + fmt(mk[0]);
+          b.addEventListener('click', function () { play(row, mk[0]); });
+          box.appendChild(b);
+        });
+      }
+    });
+    var gap = document.querySelector('[data-db="gap"]');
+    if (gap && m.notes && m.notes.level_gap_db !== undefined) gap.textContent = 'The Far Bank +' + m.notes.level_gap_db.toFixed(1) + ' dB';
+    var half = document.querySelector('[data-db="half"]');
+    if (half && m.notes && m.notes.level_gap_db !== undefined) half.textContent = 'The Far Bank +' + (m.notes.level_gap_db / 2).toFixed(1) + ' dB';
+    var quarter = document.querySelector('[data-db="quarter"]');
+    if (quarter && m.notes && m.notes.level_gap_db !== undefined) quarter.textContent = 'The Far Bank +' + (m.notes.level_gap_db / 4).toFixed(1) + ' dB';
+  }).catch(function () {});
+})();
+</script>

@@ -159,6 +159,25 @@ Next: a speakers/headphones setting (offsets per track and a bus EQ on the speak
 profile); the Risen and Infernal Horde boss themes from their seeds, melodies proposed in
 chat first; the real recordings remain section 12's open question.
 
+**How the listening page works** (the phone sketches, account A's page, 29 September; the
+page block above owns the account rule). Ryan judges the music on his phone, not from the
+repo, so a change is heard as an A/B before it lands.
+`tools/soundforge/phone_sketches.py` renders one change at a time from Hold The Line's own
+bars into `tools/soundforge/out/phone/`: a WAV and an AAC copy in an `.mp4` container,
+which is the audio an artifact will serve (`afconvert`, macOS; `.m4a` is refused). It also
+copies `tools/soundforge/phone_page.html`, the committed listening page, in beside them as
+`index.html`. Publish that folder: `root` set to it, the `.mp4` files and `manifest.json`
+in `files`; the page reads each file's phone-speaker loudness and the level gap from the
+manifest. Every file in a set is the same bars from the same seed, so the player keeps its
+position when switching rows and the comparison is real. `out/phone/` is git-ignored
+scratch: render the sets you need (`voices`, `balance`, `levels`, `voices2`, `guitar`,
+`shadows2`, `rift`, `round3`, `round4`), then publish. Ryan's notes come by set and row
+number, speaker first and headphones second. Two are open, in `docs/todo.md`: the kick's
+size and the toms in headphones, whose answer files are round four's "Now" set
+(`mix_ship`, `drums_kick`, `drums_tom`, the drums bare in three marked steps each). A
+sketch never overwrites a shipped track: a pick lands in `forge.py`, then `build` and one
+`--import`.
+
 **The phone (26 to 29 September; README has the commands).** Ryan's Pixel runs the debug
 APK. Fixed so far: grid ribbons and their gain, safe insets, the MSAA leak, font
 oversampling, the drag ghost, the far blur, scanlines on device pixels, leaders, the seam
