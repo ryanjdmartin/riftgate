@@ -71,7 +71,7 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 
 - [x] lowforge briefs and models for the seven new machines (first passes, 29 September; every hardpoint has its pin, every fixed component is modelled in); Ryan iterates by render
 - [ ] Ryan: notes on the seven second-pass models (renders: the second-passes page in status)
-- [ ] Decide how a hardpoint looks when its component changes shape (a barrel becoming a missile rack): a model per component, a few silhouette classes, or the model never changes; then promote the bible's hardpoint-pin row to Decided and strike its stale 2D-versus-3D clause
+- [ ] Silhouette classes for components (decided 29 September): shape helpers in lowforge (barrel, twin barrel, rack, slab, vent block, dish), a validated `shape` field on every component, chassis pins parenting their stock shape so `MechView3D.mount()` hides it, and the skirmish and codex calling mount for the fitted loadout
 - [ ] Ryan: judge the Baboon's rear silhouette in the harness (the fists hang at knee height now, not on the ground); if it still reads as carrying two boxes, pick heavier hands carrying hardware or a standard forward pose with the fist tile turned 90 degrees
 - [ ] Enemy art through foeforge for the foes still on sketch grids
 - [ ] The hangar as a model

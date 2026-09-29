@@ -144,24 +144,17 @@ Renders with the first passes beside them: https://claude.ai/artifact/6FLunyt7J2
 chassis, a maker, an out file and `front`, `rear` or a yaw, and needs a window, so it cannot
 run headless.
 
-**What must be visible on a model, and the swapping question that is open.** The rule in
-force: every hardpoint carries an `hp_<n>` Empty at its socket with its +Y pointing where the
-weapon points, the count matching the chassis's `hardpoints`, and the stock component is
-modelled at that pin as a placeholder; every fixed component is modelled into the machine and
-carries no pin, since it can never be swapped. `MechView3D.mount()` hides the placeholder and
-hangs a component scene on the pin, `unmount()` restores it; both work and nothing calls them
-yet. That convention is only a **Recommended** row in bible section 7 ("Hardpoints are marked
-in the model, not guessed from it"), and one clause of it is stale, saying it waits on the
-2D-versus-3D decision that was settled in September; it wants promoting to Decided with that
-clause struck. **Ryan raised the real problem on 29 September and it is unanswered:** what a
-hardpoint looks like when the component in it changes shape, a barrel becoming a missile rack
-being the case he named. The options to put to him, since this decides how much art every
-future component needs: a model per component mounted at the pin (most work, most honest); a
-small set of silhouette classes, so every barrel weapon wears one of three barrels and every
-missile weapon one of two racks, the component's identity carried by the die entry rather
-than the model (cheapest, and the register's own answer, since a nineties machine reads by
-silhouette); or the model never changes and only the die does. Nothing should be built until
-he picks, because the middle option decides which helpers need to exist.
+**What must be visible on a model, and how a swapped component looks (decided 29 September).**
+Every hardpoint carries an `hp_<n>` Empty at its socket, +Y where the weapon points, one per
+hardpoint in the loadout's order; a fixed component is modelled in and has no pin. The bible
+row (section 7, "Hardpoints are marked in the model") is Decided now, its stale 2D-versus-3D
+clause struck. **Swapping: silhouette classes.** A component declares a `shape` and wears that
+shape at the pin in its maker's metal; the die carries the identity. About six shapes to start
+(barrel, twin barrel, rack, slab, vent block, dish), and the set may grow when a component
+really wants its own (Ryan: landing between classes and one-model-per-component is fine). Not
+built yet; the to-do has the three pieces (shape helpers in lowforge, the `shape` field with
+its validation, chassis pins parenting their stock shape so `MechView3D.mount()` hides it).
+`mount()` and `unmount()` exist and nothing calls them.
 
 **The hangar codex page (29 September).** Ryan asked for one surface showing a chassis and
 the components fitted to it instead of jumping between files. `tools/build_codex.py` reads
