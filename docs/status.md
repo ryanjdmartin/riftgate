@@ -3,61 +3,46 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published twice, once per account (the next block says which account owns
-which): https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ and
-https://claude.ai/artifact/AdBTeE9px1Xvg5TKNjHjSP. Republish your account's copy from the
-committed file after a bible change.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (account A, the home
+for every page; the pages block below has the rest). Republish it from the committed file after
+a bible change, passing the URL from any conversation that did not publish it.
 
-**The pages, one per account.** An artifact is republished only by the account that made
-it, so each keeps its own copy and records it here. **Account A** (the one that owns
-https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ, the bible) owns that bible and the HUD
-swatches (https://claude.ai/artifact/LY278Pf67FpQYArCgXAU8v) and its own hangar codex
-(https://claude.ai/artifact/FqiH3b8ZZjxJaCJmWK71vj, generated with the pin check of 29
-September, so it flags a hardpoint the model has no socket for); checked by listing on 29
-September, twice, after an earlier note credited it with pages it cannot open. Also account
-A's since 29 September (Ryan: maintain both accounts' copies as needed; he tracks which is
-active): its phone sketches (https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9, every
-round plus The Far Bank whole at 86, 90 and 92), its nameplate (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; its database was
-seeded from the 28 September list of 48 with the Mustang and Gelada rejected, so anything Ryan
-added to B's copy after that is not in it), its model renders
-(https://claude.ai/artifact/Lv4nXY98bCX5ATfQKiL6Ls). A duplicate phone sketches copy that
-another session of this account published minutes earlier from the same folder was deleted
-on Ryan's word (29 September); its old link is dead, and the lesson is that a page's link
-goes into this file in the same commit as the publish, so the next session sees it first.
-Not copyable from A: the content editor
-and the Baboon review page, whose page sources live only in B sessions' scratch, never in the
-repo; a B session commits the editor's `content_editor.html` beside `phone_page.html` in
-`tools/`, pulls and applies its `edits` database, and only then can A publish the editor and B
-retire its copy. A second codex copy in A
-(https://claude.ai/artifact/Ku9GnhZ2jq37Z7aBTspW5F) was published by a parallel session the
-same hour before it saw the first; it is a duplicate, Ryan's to delete.
-**Account B** owns everything else: the bible's other copy
-(https://claude.ai/artifact/AdBTeE9px1Xvg5TKNjHjSP), the content editor
-(https://claude.ai/artifact/HnE3gvsxNHXyjRhRyEiDqT), the nameplate
-(https://claude.ai/artifact/6K6mq49XHCUbdZnkzp5rra), the phone sketches
-(https://claude.ai/artifact/FCaphxM3Y3SnRPdNnprpXc), the Baboon review page
-(https://claude.ai/artifact/BeDtchGtS8H2oH3yij3ywX), the model renders
+**The pages: account A is home, and the list as of 29 September, evening.** An artifact is
+republished only by the account that made it, or by an account invited as Editor from its
+Share menu. Account A (personal) allows invites outward, account B (the organisation) does
+not, so A's pages are the originals and B is invited to them; both are maintained until the
+invites land, and Ryan tracks which account is active. **Account A owns:** the bible
+(https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF), the nameplate
+(https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; database seeded from the 28 September list
+of 48 with Mustang and Gelada rejected, so rows added to B's copy after that are not in it), the
+hangar codex (https://claude.ai/artifact/FqiH3b8ZZjxJaCJmWK71vj, generated with the pin check),
+the Model Viewer (https://claude.ai/artifact/HzF8K98MxgJP7kroxAuDMv: every chassis rendered as it
+stands, earlier passes folded under each) and the phone sketches
+(https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9, every round plus The Far Bank whole at 86,
+90 and 92). Two older A links exist only because their Editor invites were filtered by the
+work mail and fresh links were issued: the bible's first copy
+(https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ, version 72) and the Second Passes page
+(https://claude.ai/artifact/Lv4nXY98bCX5ATfQKiL6Ls, superseded by the Model Viewer); both go on
+Ryan's word, as do the HUD swatches (https://claude.ai/artifact/LY278Pf67FpQYArCgXAU8v, 19
+September, whose palette the bible records). **Account B owns,** each to retire once its A twin
+is shared: the bible's other copy (https://claude.ai/artifact/AdBTeE9px1Xvg5TKNjHjSP), the
+nameplate (https://claude.ai/artifact/6K6mq49XHCUbdZnkzp5rra), the phone sketches
+(https://claude.ai/artifact/FCaphxM3Y3SnRPdNnprpXc), the renders
 (https://claude.ai/artifact/6FLunyt7J2ejC24yce76cM and
-https://claude.ai/artifact/UB2FcRAs9Z8k8ABwxVjjuC) and the hangar codex
-(https://claude.ai/artifact/EF74jFYCWWmA3rSJFYWpR1, which predates the pin check and
-claims sockets the Clydesdale and Sparrowhawk models lack until B regenerates it). **Confirm before trusting this list:**
-`Artifact` with `action: "list"` says what the account you are in actually owns, and a read
-of someone else's page comes back "not found". A new account publishes its own copies and
-adds the links. The editor is the one that bites: its `files` map holds the shipped content
-as the baselines Ryan edits against, and Ryan's saved edits live in that artifact's own
-database, so a fresh editor page starts empty and cannot see them. An account that cannot
-republish the editor says so rather than letting it drift.
-**Joining the accounts instead of maintaining two:** an artifact shared from its Share menu with
-the other account's email as Editor can be republished from either account (a read of it then
-says "writer"). Account A allows email invites outside its organisation; account B's
-organisation has them switched off, so sharing runs only from A to B. The way out is to treat
-A's copies as the originals, invite B's email to each as Editor, and retire B's copies once the
-invites are accepted; the content editor is the exception until its `edits` database is carried
-over, since Ryan's saved edits live in B's copy.
-**Ryan agreed to this on 29 September.** His part, from each of A's pages' Share menu: invite
-the work email as Editor on the bible (UuMb), the nameplate (YAsw), the model renders (Lv4n),
-the codex (FqiH) and the phone sketches (3JEi). After that either account republishes them and
-B's copies of the same pages can go.
+https://claude.ai/artifact/UB2FcRAs9Z8k8ABwxVjjuC), the codex
+(https://claude.ai/artifact/EF74jFYCWWmA3rSJFYWpR1, older than the pin check), the Baboon review
+(https://claude.ai/artifact/BeDtchGtS8H2oH3yij3ywX, unneeded) and the content editor
+(https://claude.ai/artifact/HnE3gvsxNHXyjRhRyEiDqT), the one that bites: its `files` map holds
+the shipped content as the baselines Ryan edits against and his saved edits live in its
+database, and its page source lives only in a B session's scratch, so a B session must commit
+`content_editor.html` into `tools/`, apply the `edits` collection, and only then can A publish
+the editor and B retire its copy. **Where it stands:** Ryan invited the work email as Editor on
+the nameplate, the codex and the phone sketches on 29 September; the bible and the viewer were
+reissued on fresh links that evening for a second invite. **Rules learned today:** a page's
+link goes into this file in the same commit as the publish, so a parallel session sees it
+before publishing a twin (two duplicates were made and deleted this way); `Artifact` with
+`action: "list"` says what the account you are in owns, and a read of another account's page
+comes back "not found".
 
 **Cold start, including from another account.** Nothing needed to work here lives outside
 the repo. Read this file, then `docs/todo.md` (the task list), then `CLAUDE.md` (the rules,
