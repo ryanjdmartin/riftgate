@@ -75,6 +75,9 @@ godot --headless --path . -s tests/run_tests.gd
 # run the harness (skirmish screen and map viewer)
 godot --path .
 
+# the hangar codex page: every chassis with its die laid out, from content/*.json
+python3 tools/build_codex.py . codex.html    # then publish it as an artifact
+
 # regenerate docs/vocabulary.md from content/vocabulary.json
 godot --headless --path . -s tools/export_vocabulary.gd
 

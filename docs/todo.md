@@ -69,7 +69,8 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 ## Art
 
 - [x] lowforge briefs and models for the seven new machines (first passes, 29 September; every hardpoint has its pin, every fixed component is modelled in); Ryan iterates by render
-- [ ] Ryan: notes on the seven first-pass models (`tools/hero_shot.gd` renders one large; `forge.py build <id>` rebuilds it)
+- [ ] Ryan: notes on the seven second-pass models (renders: the second-passes page in status)
+- [ ] Decide how a hardpoint looks when its component changes shape (a barrel becoming a missile rack): a model per component, a few silhouette classes, or the model never changes; then promote the bible's hardpoint-pin row to Decided and strike its stale 2D-versus-3D clause
 - [ ] Ryan: judge the Baboon's rear silhouette in the harness (the fists hang at knee height now, not on the ground); if it still reads as carrying two boxes, pick heavier hands carrying hardware or a standard forward pose with the fist tile turned 90 degrees
 - [ ] Enemy art through foeforge for the foes still on sketch grids
 - [ ] The hangar as a model

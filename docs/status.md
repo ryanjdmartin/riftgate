@@ -83,15 +83,67 @@ rows in its db collection `candidates`; rebake the page from the reserved list a
 content names when either changes). Ryan's brainstorm of component names is on its
 Components tab, trimmed, with the used ones marked landed.
 
-**Models (29 September).** Every chassis has a lowforge model now: first passes of the seven
-28 September machines from their fantasies (`armadillo`, `wild_boar`, `prairie_dog`, `dingo`,
-`goshawk`, `nemesis`, `ammit` in `tools/lowforge/models_low.py`), every hardpoint with its `hp_<n>`
-pin and every fixed component modelled in with no pin (the Armadillo's shutters, the Boar's
-plow and tusks, the pintle Flakshot, the roof harpoon and its drum, the nose cannon, the
-Nemesis's fists, the Ammit's four talons). The two cars share `_buggy`. Facets: 500 to 830
-each, the Nemesis 990, the Ammit about 1,300 (four arms and twelve claws; the budget says 900,
-Ryan to say whether to cut claws or accept it). Render one with `tools/hero_shot.gd`; Ryan's
-notes move the numbers, then `forge.py build <id>` and `--import`.
+**Models (29 September).** Every chassis has a lowforge model. The seven 28 September
+machines were built from their fantasies and then rebuilt once on Ryan's notes;
+`tools/lowforge/models_low.py` holds one function per chassis id and every number in it is a
+proportion, so a note moves it and `forge.py build <id>` plus one `--import` is the whole
+loop. Fixed components are modelled into the machine with no pin, every hardpoint carries its
+`hp_<n>` pin, and the two cars share `_buggy`. What the second pass changed, so nobody redoes
+it: the **Armadillo** stands on long legs whose hips come out of the shell's flanks (it read
+as a beetle that would catch on rocks) and shows only its weapons' muzzles out of round ports
+in the shell, Blastoise-fashion, with a small snout of a head to sell its size, since it is
+meant to be the biggest land machine in the game; the **Wild Boar** is an H-tank so the
+treads carry the silhouette, with a spiked cowcatcher in a V and a double-barrelled turret
+(it read as a bulldozer); the **Prairie Dog** and **Dingo** had to separate, and vehicles
+never have open cockpits (Ryan, 29 September), so the Prairie Dog is a closed armoured buggy
+with arched wheels and a rotating roof turret and the Dingo a low flat wedge whose wheels
+ride out on cambered swing arms with lit hubs; the **Goshawk** lost its tail structure (the
+boosters are shoulder nacelles, each carrying a canted fin), gained span, lost length, and
+its cannon is a wide short bore tucked under the nose in a belly fairing that reads as
+drawing heat off the chassis; the **Nemesis** was rebuilt from nothing after Ryan called the
+first pass "a reskinned baboon without a head", and is now an almost-human brute in demonic
+armour, hard-lined, asymmetric, hooded helm with horns, a round lit core, the Apex homage he
+asked for; the **Ammit** was right first time and needed only its spines laid flat, its upper
+arms raised and pointed forward, its eyes turned into long cockpit-glass strips down the
+snout, shoulder cannons in place of arm guns, and its heel spurs and throat vent actually
+attached. Facets: 676 to 928 each, the Nemesis 816, the Ammit 1,316 against the register's
+900 (four arms and twelve claws; Ryan has not said whether to cut claws or accept it).
+Renders with the first passes beside them: https://claude.ai/artifact/6FLunyt7J2ejC24yce76cM
+(account B; the first passes alone at https://claude.ai/artifact/UB2FcRAs9Z8k8ABwxVjjuC).
+**Ryan judges a model only from a render**, never from code: `tools/hero_shot.gd` takes a
+chassis, a maker, an out file and `front`, `rear` or a yaw, and needs a window, so it cannot
+run headless.
+
+**What must be visible on a model, and the swapping question that is open.** The rule in
+force: every hardpoint carries an `hp_<n>` Empty at its socket with its +Y pointing where the
+weapon points, the count matching the chassis's `hardpoints`, and the stock component is
+modelled at that pin as a placeholder; every fixed component is modelled into the machine and
+carries no pin, since it can never be swapped. `MechView3D.mount()` hides the placeholder and
+hangs a component scene on the pin, `unmount()` restores it; both work and nothing calls them
+yet. That convention is only a **Recommended** row in bible section 7 ("Hardpoints are marked
+in the model, not guessed from it"), and one clause of it is stale, saying it waits on the
+2D-versus-3D decision that was settled in September; it wants promoting to Decided with that
+clause struck. **Ryan raised the real problem on 29 September and it is unanswered:** what a
+hardpoint looks like when the component in it changes shape, a barrel becoming a missile rack
+being the case he named. The options to put to him, since this decides how much art every
+future component needs: a model per component mounted at the pin (most work, most honest); a
+small set of silhouette classes, so every barrel weapon wears one of three barrels and every
+missile weapon one of two racks, the component's identity carried by the die entry rather
+than the model (cheapest, and the register's own answer, since a nineties machine reads by
+silhouette); or the model never changes and only the die does. Nothing should be built until
+he picks, because the middle option decides which helpers need to exist.
+
+**The hangar codex page (29 September).** Ryan asked for one surface showing a chassis and
+the components fitted to it instead of jumping between files. `tools/build_codex.py` reads
+`content/*.json` and writes a page: each chassis with its designation plate, maker,
+silhouette, traits, a stat grid, its passive, and its die laid out entry by entry, fixed
+first and then each hardpoint tagged with the model pin it mounts on, every entry showing its
+component's numbers, keywords (hover for the vocabulary rule), maker and own passive, with
+planned entries marked. Run `python3 tools/build_codex.py . <out.html>` and publish the
+result; regenerate after any content change. Account B's copy is
+https://claude.ai/artifact/EF74jFYCWWmA3rSJFYWpR1. It is generated and read-only on purpose:
+Ryan's editing surface is the content editor, and two pages that both write content would
+fight.
 
 **What the game does today.** A battle: the map shows every pack's intent and the exact
 result of the plan before Resolve; a grounded machine controls the ground beside it, a
