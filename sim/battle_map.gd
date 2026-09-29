@@ -24,7 +24,7 @@ var height: int = 14              # 14 rows: the rift, eleven of open ground, tw
 var terrain: Dictionary = {}  # Vector2i (axial) -> Terrain
 var gate: Vector2i            # centre of the gate structure
 var rift: Vector2i            # centre of the rift structure
-var gate_hexes: Array[Vector2i] = []   # the gate: three wide and GATE_ROWS deep, apron included
+var gate_hexes: Array[Vector2i] = []   # the gate: four wide on the apron row, three below, apron included
 var rift_hexes: Array[Vector2i] = []
 var wall_hexes: Array[Vector2i] = []   # the rest of the bottom GATE_ROWS rows: indestructible, nobody stands there
 var crag_base: Dictionary = {}         # crag hex -> the ground under the rock (water, ruins, ...): flavour only
@@ -56,6 +56,12 @@ static func flat(w: int, h: int) -> BattleMap:
 	m.rift_hexes = m._span(w / 2, 0)
 	for row in range(h - GATE_ROWS, h):
 		var span := m._span(w / 2, row)
+		if row == h - GATE_ROWS:
+			# The apron row is four wide: the gate's model covers the hex at its top right too
+			# (Ryan, 29 September), so a pack there strikes the gate rather than a wall.
+			var extra := Hex.offset_to_axial(w / 2 + STRUCTURE_HALF_WIDTH + 1, row)
+			if m.has(extra):
+				span.append(extra)
 		m.gate_hexes.append_array(span)
 		for col in range(w):
 			var hx := Hex.offset_to_axial(col, row)

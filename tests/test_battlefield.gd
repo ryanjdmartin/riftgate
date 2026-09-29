@@ -178,7 +178,7 @@ func test_boss_touches_from_any_of_its_hexes() -> void:
 
 func test_gate_is_wider_than_one_hex() -> void:
 	var f := _field()
-	assert_eq(f.map.gate_hexes.size(), 3 * BattleMap.GATE_ROWS, "three gate hexes per gate row")
+	assert_eq(f.map.gate_hexes.size(), 7, "four gate hexes on the apron row, three below")
 	assert_eq(f.map.rift_hexes.size(), 3, "three rift hexes")
 	var side: Vector2i = f.map.gate_hexes[0]   # the apron row comes first: a pack strikes from above it
 	var side_o := Hex.axial_to_offset(side)

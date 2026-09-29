@@ -182,7 +182,7 @@ func _apply_battle_pose() -> void:
 			s._on_hex_tapped(b.field.map.gate_hexes[0])
 		"foe":
 			# A pack tapped: bracketed, its path heavy, its strength over it; the map looks at it.
-			var fsq: Unit = b.field.squads()[0]
+			var fsq: Unit = b.field.packs()[0]
 			s._map.scroll_to_unit(fsq)
 			s._on_hex_tapped(fsq.pos)
 		"onprops":

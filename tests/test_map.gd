@@ -69,8 +69,8 @@ func test_path_respects_blocked() -> void:
 
 func test_walls_fill_the_bottom_row_beside_the_gate_and_block() -> void:
 	var m := BattleMap.flat(7, 20)
-	assert_eq(m.gate_hexes.size(), 6, "a three-hex gate, two rows deep with its apron")
-	assert_eq(m.wall_hexes.size(), 8, "walls on the other four hexes of both rows")
+	assert_eq(m.gate_hexes.size(), 7, "a four-hex apron over a three-hex gate")
+	assert_eq(m.wall_hexes.size(), 7, "walls on the other hexes of both rows: three beside the apron, four beside the gate")
 	for w in m.wall_hexes:
 		assert_true(m.is_structure(w), "a wall hex is a structure: nobody stands on it")
 		assert_false(m.gate_hexes.has(w), "and it is not the gate")
@@ -79,7 +79,7 @@ func test_walls_fill_the_bottom_row_beside_the_gate_and_block() -> void:
 		assert_true(m.is_structure(Hex.offset_to_axial(col, 18)), "so is the apron row above it")
 		assert_false(m.is_structure(Hex.offset_to_axial(col, 17)), "the row above the apron is open ground")
 	var g := BattleMap.generate(7, 20, 3)
-	assert_eq(g.wall_hexes.size(), 8, "generated maps have them too")
+	assert_eq(g.wall_hexes.size(), 7, "generated maps have them too")
 
 
 func test_roads_are_laid_as_paths_with_gaps() -> void:

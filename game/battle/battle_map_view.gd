@@ -383,18 +383,12 @@ func _draw() -> void:
 			if path.is_empty():
 				continue
 			var dest: Vector2i = path[path.size() - 1]
-			var pts: PackedVector2Array = [center(sq.pos)]
-			for step in path:
-				pts.append(center(step))
+			# The same route mark as the player's (Ryan, 29 September: the new one is so good
+			# it should be both sides'), in steady red; the colour breathes only on the pack
+			# that was tapped. A contact or the gate needs no target lock: its own mark says it.
 			var owned := not (contact_hexes.has(dest) or map.gate_hexes.has(dest))
-			if owned:
-				# The line runs over the outline to the target's centre: line, tint, outline
-				# and rings are one component, nothing translucent, the hex under the line
-				# so nothing cuts it (Ryan, 22 September).
-				_destination_hex(dest)
-			draw_polyline(pts, _ring_colour(), 4.0)   # the line breathes with the target (Ryan, 22 September)
-			if owned:
-				_destination_rings(center(dest))
+			var col := _ring_colour() if sq.pos == inspected else Palette.ENEMY
+			_route(sq.pos, path, col, owned)
 
 	# The gate selected: its footprint outlined, and the hexes it can be attacked from
 	# tinted (Ryan, 29 September: the bar lit alone did not say where the danger stands).
@@ -419,44 +413,19 @@ func _draw() -> void:
 	if ipack != null and ipack.is_enemy() and _anim.is_empty():
 		_pack_segments(ipack)
 
-	# The hex a tap asked about: bracketed in the display's light; a pack there has its
-	# path drawn heavier on top, so the tap shows what it hit (Ryan, 29 September).
+	# The hex a tap asked about: bracketed in the display's light (Ryan, 29 September); a
+	# pack there has its route breathing between red and salmon, drawn in the pack loop.
 	if map.has(inspected) and _anim.is_empty():
 		var ic := center(inspected)
 		Hud.brackets(self, Rect2(ic - Vector2(HEX_SIZE, HEX_SIZE) * 0.95, Vector2(HEX_SIZE, HEX_SIZE) * 1.9), HEX_SIZE * 0.45, Color(hud, 0.95), 2.5)
-		var iu := field.unit_at(inspected)
-		if iu != null and iu.is_enemy() and pending.is_empty():
-			var ipath: Array = _preview()["result"].intents.get(iu.id, [])
-			if not ipath.is_empty():
-				var ipts: PackedVector2Array = [ic]
-				for step in ipath:
-					ipts.append(center(step))
-				draw_polyline(ipts, Color(Palette.BG, 0.8), 9.0)
-				draw_polyline(ipts, ENEMY_LIT, 5.0)
 
-	# The player's plotted routes (Ryan, 29 September: as much care as the enemy's): the
-	# line on a dark edge with dashes crawling toward the destination, a chevron at each
-	# step pointing the way, and the display's target lock turning at the end.
+	# The player's plotted routes.
 	for uid in routes.keys():
 		var u := field.unit_by_id(uid)
 		var route: Array = routes[uid]
 		if u == null or route.is_empty():
 			continue
-		var pts: PackedVector2Array = [center(u.pos)]
-		for step in route:
-			pts.append(center(step))
-		draw_polyline(pts, Color(Palette.BG, 0.7), 7.0)
-		draw_polyline(pts, Color(hud, 0.55), 3.0)
-		for i in range(pts.size() - 1):
-			_dashed_line(pts[i], pts[i + 1], Color(hud, 1.0), HEX_SIZE * 0.22, fmod(_ring_t * 2.0, 2.0))
-			var dir := (pts[i + 1] - pts[i]).normalized()
-			var tip := pts[i].lerp(pts[i + 1], 0.55)
-			var side := Vector2(-dir.y, dir.x)
-			draw_polyline(PackedVector2Array([tip - dir * 6.0 + side * 6.0, tip, tip - dir * 6.0 - side * 6.0]), hud, 2.5)
-		var end := pts[pts.size() - 1]
-		var lock := hud.lerp(Color.WHITE, 0.25 + 0.25 * sin(_ring_t * 1.6))
-		_target_rings(end, lock, DEST_RING * 0.85, -1.0)
-		draw_circle(end, 3.5, lock)
+		_route(u.pos, route, hud, true)
 
 	# The route being drawn by hand: the same line, heavier, with the move it has spent
 	# against the machine's whole move on a plaque at its end.
@@ -779,18 +748,6 @@ func _mark(h: Vector2i) -> Dictionary:
 const DEST_RING := HEX_SIZE * 0.58   # the target's outer ring
 const ENEMY_LIT := Color("ffb3a6")    # the enemy marks' bright: red lifted well toward white, so the rings ride the tint
 
-## The target in the HUD's own weight (Ryan, 22 September: nothing translucent, nothing
-## abutting, the animation the thing you see): a tint on the ground and a thin outline
-## under the line, then three bright broken rings turning against each other around a
-## centre dot. On the ground's own height, like everything else (a trial at the hex's
-## base was worse, Ryan the same day).
-func _destination_hex(h: Vector2i) -> void:
-	# The tint pulses on the same clock as the line and rings (Ryan, 22 September).
-	var breath := 0.5 + 0.5 * sin(_ring_t * 1.6)
-	_fill(h, Color(Palette.ENEMY, 0.45 + 0.2 * breath))
-	Hud.stroke_poly(self, Hex.corners(center(h), HEX_SIZE - 3.0), _ring_colour(), 2.5)
-
-
 ## The enemy marks breathe between red and the bright, most of the way up and never
 ## quite down to the deep red, so on any ground, props or not, they pass through a
 ## colour that reads (Ryan, 22 September).
@@ -798,11 +755,6 @@ func _ring_colour() -> Color:
 	var breath := 0.5 + 0.5 * sin(_ring_t * 1.6)
 	return Palette.ENEMY.lerp(ENEMY_LIT, 0.35 + 0.65 * breath)
 
-
-func _destination_rings(c: Vector2) -> void:
-	var col := _ring_colour()
-	_target_rings(c, col, DEST_RING, 1.0)
-	draw_circle(c, 4.0, col)
 
 
 ## Three rings of broken arcs turning against each other: the display's own target lock.
@@ -866,6 +818,62 @@ func _tethers(group: Array, at: Dictionary, lit: bool) -> void:
 		draw_arc(from, HEX_SIZE * 0.22, 0.0, TAU, 20, col, 2.0)
 
 
+## A route, either side's (Ryan, 29 September): a quiet line with dashes crawling toward
+## the destination and a chevron a step, no dark edge. It leaves from the edge of the unit's
+## hex rather than its centre, so it never draws across the machine or the pack. `lock`
+## puts the target on its end: the display's rings turning and a dashed border crawling
+## round the hex.
+func _route(from: Vector2i, path: Array, col: Color, lock: bool) -> void:
+	var pts: PackedVector2Array = [center(from).lerp(center(path[0]), 0.5)]
+	for step in path:
+		pts.append(center(step))
+	draw_polyline(pts, Color(col, 0.5), 3.0)
+	for i in range(pts.size() - 1):
+		_dashed_line(pts[i], pts[i + 1], col, HEX_SIZE * 0.22, fmod(_ring_t * 2.0, 2.0))
+		var dir := (pts[i + 1] - pts[i]).normalized()
+		var tip := pts[i].lerp(pts[i + 1], 0.55)
+		var side := Vector2(-dir.y, dir.x)
+		draw_polyline(PackedVector2Array([tip - dir * 6.0 + side * 6.0, tip, tip - dir * 6.0 - side * 6.0]), col, 2.5)
+	if not lock:
+		return
+	var end := pts[pts.size() - 1]
+	var bright := col.lerp(Color.WHITE, 0.25 + 0.25 * sin(_ring_t * 1.6))
+	_target_rings(end, bright, DEST_RING * 0.85, -1.0)
+	draw_circle(end, 3.5, bright)
+	_crawl_poly(Hex.corners(end, HEX_SIZE - 3.0), col, HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0))
+
+
+## A closed outline drawn as dashes that crawl round it: `offset` in dashes, dash and gap
+## both `dash` long.
+func _crawl_poly(pts: PackedVector2Array, col: Color, dash: float, offset: float) -> void:
+	var per := 0.0
+	for i in range(pts.size()):
+		per += pts[i].distance_to(pts[(i + 1) % pts.size()])
+	var n := maxi(2, int(per / dash) & ~1)
+	var step := per / n
+	var k := -2.0 + offset
+	while k < n:
+		var d0 := maxf(0.0, k * step)
+		var d1 := minf(per, (k + 1.0) * step)
+		if d1 > d0:
+			_poly_segment(pts, d0, d1, col)
+		k += 2.0
+
+
+## The stretch of a closed outline between distances `d0` and `d1` along it.
+func _poly_segment(pts: PackedVector2Array, d0: float, d1: float, col: Color) -> void:
+	var walked := 0.0
+	for i in range(pts.size()):
+		var a := pts[i]
+		var b := pts[(i + 1) % pts.size()]
+		var len := a.distance_to(b)
+		var s0 := clampf(d0 - walked, 0.0, len)
+		var s1 := clampf(d1 - walked, 0.0, len)
+		if s1 > s0:
+			draw_line(a.lerp(b, s0 / len), a.lerp(b, s1 / len), col, 2.5)
+		walked += len
+
+
 ## A dashed line from `a` to `b`, dash and gap both `dash` long, the pattern shifted along
 ## by `offset` dashes so it can crawl.
 func _dashed_line(a: Vector2, b: Vector2, col: Color, dash: float, offset: float = 0.0) -> void:
@@ -892,7 +900,10 @@ func _zone(h: Vector2i, col: Color, current: bool = false) -> void:
 	# machine is leaving is quieter still and does not breathe: it is where the guns are,
 	# not where they will be.
 	var breath := 0.5 + 0.5 * sin(_ring_t * 2.2)
-	var fill_a := 0.10 if current else 0.16 + 0.08 * breath
+	# Ground marks land with their alpha raised to 2.2 (Map3D._scene_alpha), so 0.2 is barely
+	# there: the 29 September pull-back to 0.16 made the zone vanish. The peak is 0.36 now,
+	# down from 0.40; the zone a machine is leaving rests at 0.22.
+	var fill_a := 0.22 if current else 0.30 + 0.06 * breath
 	for n in cluster.keys():
 		if n != h:
 			_fill(n, Color(col, fill_a))
@@ -911,7 +922,7 @@ func _zone(h: Vector2i, col: Color, current: bool = false) -> void:
 			if not cluster.has(across) and field.map.has(across) and not field.map.is_structure(across):
 				edges.append(i)
 		if not edges.is_empty():
-			_edges(n, edges, Color(col, 0.3 if current else 0.55))
+			_edges(n, edges, Color(col, 0.45 if current else 0.7))
 
 
 ## A selected machine's shield and hull as two gauges floating over its hex.
