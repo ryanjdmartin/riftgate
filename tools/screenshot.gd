@@ -177,6 +177,12 @@ func _apply_battle_pose() -> void:
 			s._on_hex_double_tapped(b.field.packs()[0].pos)
 		"resolve":
 			s._on_resolve()
+		"gate":
+			# The gate tapped: its footprint and the hexes it can be attacked from.
+			s._on_hex_tapped(b.field.map.gate_hexes[0])
+		"foe":
+			# A pack tapped: bracketed, its path heavy, its strength over it.
+			s._on_hex_tapped(b.field.squads()[0].pos)
 		"logfull":
 			# The battle's log, full screen, from the board's LOG button.
 			s._toggle_log_full()

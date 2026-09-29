@@ -373,6 +373,10 @@ func _draw() -> void:
 		for m in field.mechs():
 			if m.traits.has("flyer"):
 				continue
+			# A machine with a route shows both: where its zone is now, quiet and dotted,
+			# and where it will be, breathing (Ryan, 29 September: the two must read apart).
+			if ends[m.id] != m.pos:
+				_zone(m.pos, hud, true)
 			_zone(ends[m.id], hud)
 		for sq in field.packs():
 			var path: Array = res.intents.get(sq.id, [])
@@ -392,6 +396,29 @@ func _draw() -> void:
 			if owned:
 				_destination_rings(center(dest))
 
+	# The gate selected: its footprint outlined, and the hexes it can be attacked from
+	# tinted (Ryan, 29 September: the bar lit alone did not say where the danger stands).
+	if gate_selected and _anim.is_empty():
+		var attack: Dictionary = {}
+		for g in map.gate_hexes:
+			for n in Hex.neighbors(g):
+				if map.has(n) and not map.is_structure(n):
+					attack[n] = true
+		for n in attack.keys():
+			_fill(n, Color(hud, 0.16))
+			_dotted_poly(Hex.corners(center(n), HEX_SIZE - 4.0), Color(hud, 0.8), 6.0)
+		for g in map.gate_hexes:
+			Hud.stroke_poly(self, Hex.corners(center(g), HEX_SIZE - 2.0), Color(hud, 0.95), 2.5)
+
+	# A selected machine wears its shield and hull over its hex; an inspected pack its
+	# strength as one segment a foe (Ryan, 29 September: a pack keeps only its count between
+	# fights, so every segment is whole; per-foe hull would need the pack to remember it).
+	if selected != null and _anim.is_empty():
+		_unit_gauges(selected)
+	var ipack := field.unit_at(inspected) if map.has(inspected) else null
+	if ipack != null and ipack.is_enemy() and _anim.is_empty():
+		_pack_segments(ipack)
+
 	# The hex a tap asked about: bracketed in the display's light; a pack there has its
 	# path drawn heavier on top, so the tap shows what it hit (Ryan, 29 September).
 	if map.has(inspected) and _anim.is_empty():
@@ -407,18 +434,29 @@ func _draw() -> void:
 				draw_polyline(ipts, Color(Palette.BG, 0.8), 9.0)
 				draw_polyline(ipts, ENEMY_LIT, 5.0)
 
-	# The player's plotted routes, ending in a small marker hex.
+	# The player's plotted routes (Ryan, 29 September: as much care as the enemy's): the
+	# line on a dark edge with dashes crawling toward the destination, a chevron at each
+	# step pointing the way, and the display's target lock turning at the end.
 	for uid in routes.keys():
 		var u := field.unit_by_id(uid)
 		var route: Array = routes[uid]
 		if u == null or route.is_empty():
 			continue
-		var prev := center(u.pos)
+		var pts: PackedVector2Array = [center(u.pos)]
 		for step in route:
-			var p := center(step)
-			draw_line(prev, p, hud, 3.0)
-			prev = p
-		Hud.stroke_poly(self, Hex.corners(prev, HEX_SIZE * 0.45), hud, 2.0)
+			pts.append(center(step))
+		draw_polyline(pts, Color(Palette.BG, 0.7), 7.0)
+		draw_polyline(pts, Color(hud, 0.55), 3.0)
+		for i in range(pts.size() - 1):
+			_dashed_line(pts[i], pts[i + 1], Color(hud, 1.0), HEX_SIZE * 0.22, fmod(_ring_t * 2.0, 2.0))
+			var dir := (pts[i + 1] - pts[i]).normalized()
+			var tip := pts[i].lerp(pts[i + 1], 0.55)
+			var side := Vector2(-dir.y, dir.x)
+			draw_polyline(PackedVector2Array([tip - dir * 6.0 + side * 6.0, tip, tip - dir * 6.0 - side * 6.0]), hud, 2.5)
+		var end := pts[pts.size() - 1]
+		var lock := hud.lerp(Color.WHITE, 0.25 + 0.25 * sin(_ring_t * 1.6))
+		_target_rings(end, lock, DEST_RING * 0.85, -1.0)
+		draw_circle(end, 3.5, lock)
 
 	# The route being drawn by hand: the same line, heavier, with the move it has spent
 	# against the machine's whole move on a plaque at its end.
@@ -843,17 +881,21 @@ func _dashed_line(a: Vector2, b: Vector2, col: Color, dash: float, offset: float
 
 ## A machine's zone: its six neighbours as one tinted flower with one outline round the
 ## outside, so the zone belongs visibly to the hex at its centre.
-func _zone(h: Vector2i, col: Color) -> void:
+func _zone(h: Vector2i, col: Color, current: bool = false) -> void:
 	var cluster: Dictionary = {h: true}
 	for n in Hex.neighbors(h):
 		if field.map.has(n) and not field.map.is_structure(n):
 			cluster[n] = true
 	# A real aura (Ryan, 22 September: the tints were far too subtle; the UX matters more
-	# than the ground under them), breathing so it reads as the machine's reach.
+	# than the ground under them), breathing so it reads as the machine's reach; its peak
+	# pulled back (Ryan, 29 September: the brightest moment was a bit much). The zone a
+	# machine is leaving is quieter still and does not breathe: it is where the guns are,
+	# not where they will be.
 	var breath := 0.5 + 0.5 * sin(_ring_t * 2.2)
+	var fill_a := 0.10 if current else 0.16 + 0.08 * breath
 	for n in cluster.keys():
 		if n != h:
-			_fill(n, Color(col, 0.28 + 0.12 * breath))
+			_fill(n, Color(col, fill_a))
 	for n in cluster.keys():
 		if n == h:
 			continue
@@ -869,7 +911,34 @@ func _zone(h: Vector2i, col: Color) -> void:
 			if not cluster.has(across) and field.map.has(across) and not field.map.is_structure(across):
 				edges.append(i)
 		if not edges.is_empty():
-			_edges(n, edges, Color(col, 0.7))
+			_edges(n, edges, Color(col, 0.3 if current else 0.55))
+
+
+## A selected machine's shield and hull as two gauges floating over its hex.
+func _unit_gauges(u: Unit) -> void:
+	var c := center(u.pos) + Vector2(0.0, -HEX_SIZE * 1.05)
+	var w := HEX_SIZE * 1.3
+	var r := Rect2(c.x - w * 0.5, c.y - 12.0, w, 6.0)
+	for pair in [[u.shield, u.shield_max, Palette.SHIELD], [u.hull, u.hull_max, Palette.HULL]]:
+		draw_rect(r.grow(1.5), Color(Palette.BG, 0.9))
+		draw_rect(r, Color(pair[2], 0.25))
+		draw_rect(Rect2(r.position, Vector2(r.size.x * clampf(float(pair[0]) / maxf(1.0, float(pair[1])), 0.0, 1.0), r.size.y)), pair[2])
+		r.position.y += 9.0
+
+
+## An inspected pack's strength: one segment a foe, so a pack thinned by a fight reads
+## thinner than a fresh one.
+func _pack_segments(p: Unit) -> void:
+	var n := maxi(1, p.strength)
+	var c := center(p.pos) + Vector2(0.0, -HEX_SIZE * 1.05)
+	var w := HEX_SIZE * 1.3
+	var gap := 2.0
+	var seg := (w - gap * (n - 1)) / n
+	var x := c.x - w * 0.5
+	draw_rect(Rect2(x - 1.5, c.y - 13.5, w + 3.0, 9.0), Color(Palette.BG, 0.9))
+	for i in range(n):
+		draw_rect(Rect2(x, c.y - 12.0, seg, 6.0), Palette.ENEMY)
+		x += seg + gap
 
 
 func _dotted_poly(pts: PackedVector2Array, col: Color, dash: float) -> void:
