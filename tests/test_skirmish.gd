@@ -1487,3 +1487,68 @@ func test_the_bot_values_a_burn_more_when_a_loop_may_catch_the_foe() -> void:
 		else:
 			on_a = float(o["score"])
 	assert_true(on_b > on_a, "the coil is worth more on the machine that can shoot this round (%s vs %s)" % [on_b, on_a])
+
+
+func test_a_volatile_spend_bites_hull_past_shield_and_armour() -> void:
+	var sk := Skirmish.new(1)
+	var fist := Face.attack(30, L, K.VOLATILE)
+	var m := _mech("A", Die.single(fist), 40, 100)
+	m.armour = 50
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	assert_eq(fist.describe(), "30 volatile", "the keyword reads on the entry")
+	assert_eq(sk.pending_volatile(sk.mechs[0]), 10, "spending it costs 10 hull")
+	assert_eq(sk.forecast(sk.mechs[0], true)["volatile"], 10, "the forecast names the cost while the die is in hand")
+	assert_eq(sk.forecast(sk.mechs[0], true)["hull_after"], 90, "and takes it off the hull, shield or no shield")
+	assert_eq(sk.forecast(sk.mechs[0], false)["hull_after"], 100, "nothing otherwise: the ghoul's blow is blocked")
+	assert_true(sk.assign(0, sk.front[0]), "spent")
+	assert_eq(m.hull, 90, "the bite lands on the hull as the entry is spent, past shield and armour")
+	assert_eq(m.shield, 40, "the shield never saw it")
+	assert_eq(sk.front[0].hp, 470, "and the component still does its work")
+	assert_true("\n".join(sk.log).contains("A: 30 volatile is volatile, hull -10"), "the log says so")
+	assert_eq(sk.pending_volatile(sk.mechs[0]), 0, "a spent die costs nothing more")
+
+
+func test_a_volatile_shield_costs_hull_to_raise() -> void:
+	var sk := Skirmish.new(1)
+	var plate := Face.shield(20)
+	plate.add_keyword(K.VOLATILE)
+	var m := _mech("A", Die.single(plate), 40, 100)
+	m.shield = 0
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, null), "raised on itself")
+	assert_eq(m.shield, 20, "the shield stands")
+	assert_eq(m.hull, 90, "and cost hull to raise")
+
+
+func test_a_volatile_component_can_wreck_its_owner_before_it_acts() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.attack(30, L, K.VOLATILE)), 40, 10)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.forecast(sk.mechs[0], true)["destroyed"], "the forecast warns")
+	assert_true(sk.assign(0, sk.front[0]), "the spend is legal")
+	assert_eq(m.hull, 0, "wrecked by its own component")
+	assert_eq(sk.front[0].hp, 500, "which never fired")
+	assert_eq(sk.outcome, Skirmish.Outcome.DEFEAT, "the fight is decided")
+	assert_true("\n".join(sk.log).contains("wrecked by its own volatile component"), "the log says why")
+
+
+func test_a_disabled_volatile_entry_does_not_bite() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.attack(30, L, K.VOLATILE)), 40, 100)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	Effects.disable_entry(m, 0, "foe:x", sk.round + 1)
+	assert_eq(sk.pending_volatile(sk.mechs[0]), 0, "a blank is never spent")
+	assert_true(sk.assign(0, null), "the blank is discarded")
+	assert_eq(m.hull, 100, "and costs nothing")

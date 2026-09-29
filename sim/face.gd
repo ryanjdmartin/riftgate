@@ -11,7 +11,7 @@ const CRIT_MULT := 2.0        # a crit multiplies the roll by this plus every cr
 
 enum Kind { ATTACK, SHIELD, VENT, BLANK, BUFF }
 enum Reach { NONE, LINE, INDIRECT, MELEE }
-enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, EXECUTE, CHAIN, STEADY, RAPID, CLEANSE }
+enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, EXECUTE, CHAIN, STEADY, RAPID, CLEANSE, VOLATILE }
 ## Whom a component may be spent on (Ryan, 26 September): a weapon (an attack) targets foes;
 ## equipment (a shield, a vent) targets self and allies by default, and content may narrow
 ## one to self only or allies only, so the design space stays open.
@@ -27,6 +27,7 @@ const KEYWORD_NAMES := {
 	Keyword.NONE: "", Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.BURN: "burn",
 	Keyword.SUPPRESS: "suppress", Keyword.EXECUTE: "execute",
 	Keyword.CHAIN: "chain", Keyword.STEADY: "steady", Keyword.RAPID: "rapid", Keyword.CLEANSE: "cleanse",
+	Keyword.VOLATILE: "volatile",
 }
 ## What the player reads where it differs from the content id (the vocabulary's name).
 const KEYWORD_LABELS := { Keyword.CLEAVE: "spread" }
@@ -34,8 +35,13 @@ const TARGET_NAMES := {
 	Target.SELF_ALLY: "self_ally", Target.SELF: "self", Target.ALLY: "ally", Target.FOE: "foe",
 }
 ## Keywords that ride on a shield or vent component (spent on a machine, not a foe); every
-## other keyword is an attack's. The validator holds content to this.
+## other keyword is an attack's, except the few that ride on anything. The validator holds
+## content to this.
 const SUPPORT_KEYWORDS := [Keyword.CLEANSE]
+## Keywords about the spend itself, not its target, so any kind of component may carry
+## them: volatile (the Arsenal's self-damage, 28 September) bites the owner whatever the
+## component does.
+const ANY_KEYWORDS := [Keyword.VOLATILE]
 
 
 static func keyword_label(k: int) -> String:

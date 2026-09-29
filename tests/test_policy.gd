@@ -183,3 +183,25 @@ func test_shield_only_die_is_spent_on_the_one_machine() -> void:
 	pol.play_round(sk)
 	assert_true(sk.mechs[0].assigned, "the shield was spent")
 	assert_eq(sk.mechs[0].unit.shield, 10, "on itself, the only machine")
+
+
+func test_greedy_holds_a_volatile_die_that_would_wreck_the_machine() -> void:
+	var sk := Skirmish.new(3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(30, L, K.VOLATILE)), 40, 10))
+	sk.add_foes([_ghoul(30, 10)])
+	sk.begin()
+	sk.start_round()
+	var pol := Policy.make(Policy.GREEDY)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	assert_true(Policy.volatile_cost(sk, ms, ms.face()) > Policy.DEATH_WEIGHT, "the bite would finish the machine, and the bot knows the price")
+	pol.play_round(sk)
+	assert_true(sk.front[0] != null and sk.front[0].alive(), "the kill is not taken")
+	assert_eq(sk.mechs[0].unit.hull, 10, "the machine stands")
+	var s2 := Skirmish.new(3)
+	s2.add_mech(_mech("B", Die.single(Face.attack(30, L, K.VOLATILE)), 40, 100))
+	s2.add_foes([_ghoul(30, 10)])
+	s2.begin()
+	s2.start_round()
+	Policy.make(Policy.GREEDY).play_round(s2)
+	assert_eq(s2.front[0], null, "with hull to spare the kill is worth the bite")
+	assert_eq(s2.mechs[0].unit.hull, 90, "paid for")

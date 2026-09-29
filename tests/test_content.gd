@@ -535,3 +535,21 @@ func test_a_buff_face_names_a_machine_status() -> void:
 	assert_true(hit["coil_foe"], "a foe's status is refused on a buff")
 	assert_true(hit["coil_bad"], "an unknown status, or zero rounds, is refused")
 	assert_true(hit["stray"], "stacks on a shield is refused")
+
+
+func test_a_spend_keyword_rides_on_any_kind_of_component() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var plate: Dictionary = db.components["ablative_plating"].duplicate(true)
+	plate["face"]["keywords"] = ["volatile"]
+	db.components["hot_plate"] = plate
+	var gun: Dictionary = db.components["lance"].duplicate(true)
+	gun["face"]["keywords"] = ["volatile"]
+	db.components["hot_gun"] = gun
+	var fins: Dictionary = db.components["heat_sink"].duplicate(true)
+	fins["face"]["keywords"] = ["volatile"]
+	db.components["hot_fins"] = fins
+	for e in db.validate():
+		assert_false(e.begins_with("component hot_"), "volatile validates on a shield, an attack and a vent alike: %s" % e)
+	var f := db.build_face(plate["face"])
+	assert_true(f.has(Face.Keyword.VOLATILE), "and builds onto the entry")

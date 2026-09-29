@@ -135,13 +135,13 @@ func options_for(sk: Skirmish, i: int) -> Array:
 				out.append({"mech": i, "target": t, "score": attack_score(sk, ms, f, t)})
 		Face.Kind.SHIELD:
 			for who in sk.equipment_targets_for(ms, f):
-				out.append({"mech": i, "target": who, "score": shield_score(sk, who, f.power)})
+				out.append({"mech": i, "target": who, "score": shield_score(sk, who, f.power) - volatile_cost(sk, ms, f)})
 		Face.Kind.VENT:
 			for who in sk.equipment_targets_for(ms, f):
-				out.append({"mech": i, "target": who, "score": vent_score(sk, who, f.power)})
+				out.append({"mech": i, "target": who, "score": vent_score(sk, who, f.power) - volatile_cost(sk, ms, f)})
 		Face.Kind.BUFF:
 			for who in sk.equipment_targets_for(ms, f):
-				out.append({"mech": i, "target": who, "score": buff_score(sk, who, f)})
+				out.append({"mech": i, "target": who, "score": buff_score(sk, who, f) - volatile_cost(sk, ms, f)})
 	return out
 
 
@@ -202,7 +202,20 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		score -= DEATH_WEIGHT
 	if sk.reach_of(ms, f) == Face.Reach.INDIRECT and target.rank == 0:
 		score -= ceilf(mean / Skirmish.DANGER_CLOSE_DIVISOR) * SHIELD_WEIGHT
-	return score
+	return score - volatile_cost(sk, ms, f, uses)
+
+
+## What a volatile entry costs its owner in the score: the hull it bites per use, and the
+## death it brings when the round's end would already leave nothing to bite.
+static func volatile_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: float = 1.0) -> float:
+	var bite := Skirmish.volatile_cost(f)
+	if bite <= 0:
+		return 0.0
+	var cost := float(bite) * uses * HULL_WEIGHT
+	var fc := sk.forecast(ms, false)
+	if not fc["destroyed"] and int(fc["hull_after"]) - int(roundf(bite * uses)) <= 0:
+		cost += DEATH_WEIGHT
+	return cost
 
 
 ## The heat one use of an attack entry adds, through the pipeline.
@@ -365,17 +378,17 @@ func face_value(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
 		Face.Kind.SHIELD:
 			var best := 0.0
 			for who in sk.equipment_targets_for(ms, f):
-				best = maxf(best, shield_score(sk, who, f.power))
+				best = maxf(best, shield_score(sk, who, f.power) - volatile_cost(sk, ms, f))
 			return best
 		Face.Kind.VENT:
 			var best := 0.0
 			for who in sk.equipment_targets_for(ms, f):
-				best = maxf(best, vent_score(sk, who, f.power))
+				best = maxf(best, vent_score(sk, who, f.power) - volatile_cost(sk, ms, f))
 			return best
 		Face.Kind.BUFF:
 			var best := 0.0
 			for who in sk.equipment_targets_for(ms, f):
-				best = maxf(best, buff_score(sk, who, f))
+				best = maxf(best, buff_score(sk, who, f) - volatile_cost(sk, ms, f))
 			return best
 	return 0.0
 

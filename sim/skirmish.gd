@@ -28,6 +28,7 @@ const DANGER_CLOSE_DIVISOR := 2
 const BURN_DAMAGE_PER_STACK := 20   # damage dealt per stack applied
 const CRACK_MIN_HULL_PCT := 25      # a single hull hit this big (percent of max) injures a face
 const CORRUPT_BITE_PER_STACK := 10  # what a corrupted entry costs its owner each time it is spent, per stack (placeholder)
+const VOLATILE_BITE := 10           # what a volatile component costs its owner each time it is spent: hull, past shield and armour (placeholder)
 const NUMBED_PER_SUPPRESS := 2       # Numbed stacks a landed suppress adds; one is lost at each of the foe's turns
 const NUMBED_PER_SUPPRESS_MASSIVE := 3
 
@@ -226,6 +227,21 @@ func pending_bite(ms: MechState) -> int:
 	return Effects.corrupt_stacks(ms.unit, ms.face_index) * CORRUPT_BITE_PER_STACK
 
 
+## What spending the entry showing costs its owner as a volatile component (the Arsenal's
+## keyword, 28 September): hull straight away, past shield and armour, whatever the
+## component does. Nothing for a die already spent or an entry that is not volatile.
+func pending_volatile(ms: MechState) -> int:
+	var f := ms.face()
+	if f == null or ms.assigned:
+		return 0
+	return volatile_cost(f)
+
+
+## The hull a volatile entry costs its owner per spend; zero for any other entry.
+static func volatile_cost(f: Face) -> int:
+	return VOLATILE_BITE if f != null and f.has(Face.Keyword.VOLATILE) else 0
+
+
 ## What the end of the round does to this mech if nothing else changes: the screen's warning
 ## signs and bar overlays. Recomputed after every action, so shielding or killing an attacker
 ## moves the numbers at once. `with_face` counts the heat of the die's showing component as
@@ -241,6 +257,9 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0) -> D
 		var b := _bite(shield, hull, bite)
 		shield = b["shield"]
 		hull = b["hull"]
+	# A volatile entry costs hull outright as it is spent, shield or no shield.
+	var volatile := pending_volatile(ms) if with_face else 0
+	hull -= volatile
 	var incoming := 0
 	var component_risk := false
 	for f in attackers_of(ms):
@@ -260,6 +279,7 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0) -> D
 	return {
 		"incoming": incoming,
 		"bite": bite,
+		"volatile": volatile,
 		"shield_after": shield,
 		"hull_after": hull,
 		"heat_after": mini(heat_after, ms.heat_max),
@@ -408,6 +428,18 @@ func assign(mech_index: int, target = null) -> bool:
 		ms.unit.hull = b["hull"]
 		if not ms.alive():
 			log.append("%s is wrecked by its own corrupted component" % ms.unit.display_name)
+			ms.assigned = true
+			_check_outcome()
+			return true
+	# A volatile component bites too, hull outright: shield and armour never see it (the
+	# Arsenal's keyword, 28 September). It fires whatever the component is, so a volatile
+	# shield costs hull to raise. A machine it finishes acts no further.
+	var volatile := pending_volatile(ms)
+	if volatile > 0:
+		ms.unit.hull -= volatile
+		log.append("%s: %s is volatile, hull -%d" % [ms.unit.display_name, f.describe(), volatile])
+		if not ms.alive():
+			log.append("%s is wrecked by its own volatile component" % ms.unit.display_name)
 			ms.assigned = true
 			_check_outcome()
 			return true

@@ -432,6 +432,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 			errs.append("%s: unknown keyword '%s'" % [where, k])
 		elif vocabulary.get(str(k), {}).get("status") != "implemented":
 			errs.append("%s: keyword '%s' is not implemented yet" % [where, k])
+		elif Face.ANY_KEYWORDS.has(kw):
+			pass   # about the spend, not its target: any kind of component may carry it
 		elif kind == "attack" and Face.SUPPORT_KEYWORDS.has(kw):
 			errs.append("%s: '%s' rides on a shield or vent component, not an attack" % [where, k])
 		elif kind != "attack" and not Face.SUPPORT_KEYWORDS.has(kw):

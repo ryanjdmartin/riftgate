@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 83 implemented, 25 planned, 0 idea.
+Status: 84 implemented, 24 planned, 0 idea.
 
 ## Resource
 
@@ -64,7 +64,7 @@ Status: 83 implemented, 25 planned, 0 idea.
 | **Burn** | Player keyword. Burning enemies lose 5 HP per stack at the start of their action, then lose one stack. Bypasses armour. Can be resisted. | implemented |
 | **Corrode** | Player keyword. Corroding enemies lose 1% of their HP per stack at the start of their action, then lose one stack. Bypasses armour. Can be resisted. | planned |
 | **Suppress** | Player keyword. The target skips its telegraphed action this round, then gains two stacks of Numbed (three if massive). A foe may shrug it off: its own stun resistance plus 10% a Numbed stack. | implemented |
-| **Volatile** | Player keyword. Spending this component bites its owner for 10 hull, past shield and armour. | planned |
+| **Volatile** | Player keyword, on any kind of component. Spending it bites its owner for 10 hull, past shield and armour, before the component acts. A blank is never spent, so a disabled entry does not bite. | implemented |
 | **Devour** | Player keyword. A kill with this component gives its owner a stack of Overcharged. | planned |
 | **Execute** | +100% damage against a foe at or below half its health. Reduced to +50% against bosses and elites. | implemented |
 | **Chain** | If this attack kills an enemy, repeat it on a new, valid target. | implemented |
@@ -205,7 +205,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Critical hit** (implemented): The base is Face.CRIT_MULT, a balance knob; lower it if crit triggers make crits too strong at low chance.
 - **Numbed** (implemented): Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths.
 - **Stun resistance** (implemented): 30 on the three bosses as a placeholder.
-- **Volatile** (planned): The Arsenal's self-damage (Ryan, 28 September): the Corrupted bite's path under another name. It feeds the Nemesis's Crucible Capacitor and opens self-damaging shield and vent faces.
+- **Volatile** (implemented): The Arsenal's self-damage (Ryan, 28 September), built 29 September: hull outright where the Corrupted bite takes shield first. The bite is a placeholder number (Skirmish.VOLATILE_BITE). It will feed the Nemesis's Crucible Capacitor once that counts blows that reach hull.
 - **Devour** (planned): The Ammit's talons (28 September). Needs an on-kill hook and the Overcharged status.
 - **Equipment** (implemented): Buffs will be equipment too, once they exist.
 - **Corrupt** (implemented): No foe carries it yet; Ryan places it (The Chorus, presumably).
