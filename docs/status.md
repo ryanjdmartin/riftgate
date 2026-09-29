@@ -18,8 +18,14 @@ September, twice, after an earlier note credited it with pages it cannot open. A
 A's since 29 September (Ryan: maintain both accounts' copies as needed; he tracks which is
 active): its nameplate (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; its database was
 seeded from the 28 September list of 48 with the Mustang and Gelada rejected, so anything Ryan
-added to B's copy after that is not in it) and its model renders
-(https://claude.ai/artifact/Lv4nXY98bCX5ATfQKiL6Ls). A second codex copy in A
+added to B's copy after that is not in it), its model renders
+(https://claude.ai/artifact/Lv4nXY98bCX5ATfQKiL6Ls) and its phone sketches
+(https://claude.ai/artifact/3JEi1kUT2sc2JZreWTs4Xq, published from the `out/phone` folder as it
+stood on this Mac on 29 September, the fourth round). Not copyable from A: the content editor
+and the Baboon review page, whose page sources live only in B sessions' scratch, never in the
+repo; a B session commits the editor's `content_editor.html` beside `phone_page.html` in
+`tools/`, pulls and applies its `edits` database, and only then can A publish the editor and B
+retire its copy. A second codex copy in A
 (https://claude.ai/artifact/Ku9GnhZ2jq37Z7aBTspW5F) was published by a parallel session the
 same hour before it saw the first; it is a duplicate, Ryan's to delete.
 **Account B** owns everything else: the bible's other copy
@@ -45,6 +51,10 @@ organisation has them switched off, so sharing runs only from A to B. The way ou
 A's copies as the originals, invite B's email to each as Editor, and retire B's copies once the
 invites are accepted; the content editor is the exception until its `edits` database is carried
 over, since Ryan's saved edits live in B's copy.
+**Ryan agreed to this on 29 September.** His part, from each of A's pages' Share menu: invite
+the work email as Editor on the bible (UuMb), the nameplate (YAsw), the model renders (Lv4n),
+the codex (FqiH) and the phone sketches (3JEi). After that either account republishes them and
+B's copies of the same pages can go.
 
 **Cold start, including from another account.** Nothing needed to work here lives outside
 the repo. Read this file, then `docs/todo.md` (the task list), then `CLAUDE.md` (the rules,

@@ -80,6 +80,7 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 
 ## Pages (standing, after every content change)
 
+- Joining the two accounts (agreed 29 September): Ryan invites the work email as Editor on each of account A's pages (bible, nameplate, renders, codex, phone sketches); a B session commits `content_editor.html` into `tools/`, applies the `edits` database, then A publishes the editor and B's copies retire
 - Republish the content editor (https://claude.ai/artifact/HnE3gvsxNHXyjRhRyEiDqT) with its `files` map, or its baselines go stale; read its files first if another session published since
 - Rebake the nameplate page's baked-in current names (`CURRENT` in its script) when a chassis or component is added or renamed
 - Republish the bible from the committed file (each account to its own URL, listed in status)
