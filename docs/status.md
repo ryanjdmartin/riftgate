@@ -45,7 +45,7 @@ the chat is newer.
 ## As of 29 September 2026 (evening)
 
 **State.** Tests green: `perl -e 'alarm 240; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (about 220 tests). Two or three sessions run on this repo at once:
+tests/run_tests.gd` (225 tests, 3,061 checks on 29 September, night). Two or three sessions run on this repo at once:
 check `git status` before committing, stage by path, diff a shared file first (a path
 still sweeps the other session's hunks), never `git add -A`, never kill a bare
 `godot --path .`. Commit after each verified chunk with tests green.
@@ -146,7 +146,9 @@ its validation, chassis pins parenting their stock shape so `MechView3D.mount()`
 the components fitted to it instead of jumping between files. `tools/build_codex.py` reads
 `content/*.json` and writes a page: each chassis with its designation plate, maker,
 silhouette, traits, a stat grid, its passive, and its die laid out entry by entry, fixed
-first and then each hardpoint tagged with the model pin it mounts on, every entry showing its
+first and then each hardpoint tagged with the model pin it mounts on, read from the built
+`.glb` so a hardpoint the model has no socket for is flagged rather than assumed (the Clydesdale
+and Sparrowhawk models are short today), every entry showing its
 component's numbers, keywords (hover for the vocabulary rule), maker and own passive, with
 planned entries marked. Run `python3 tools/build_codex.py . <out.html>` and publish the
 result; regenerate after any content change. Account B's copy is
