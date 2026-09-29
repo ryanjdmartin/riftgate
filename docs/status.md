@@ -48,9 +48,14 @@ quirks. Tests never hardcode an entry's passive name.
 
 **Reserved names (28 September).** `content/reserved_names.json` holds about 1,250
 machine names (BattleTech, Heavy Gear, 40k, Halo); `ContentDB._validate_name_clash`
-refuses an exact match unless `design.name_clash` says why it stays. Carrying that note:
-`goshawk`, `dingo`, `sparrowhawk` (a coincidence; stays), `badger`'s id. Names and
-concepts are spitballed on the Riftgate Nameplate artifact
+refuses an exact match unless `design.name_clash` says why it stays. Ryan's verdicts (28
+September) are in the notes: `sparrowhawk` kept (a coincidence: a Halo Wars gunship and a
+BattleTech fighter, both obscure; the name conjures the bird), `goshawk` and `baboon` kept
+(designation-tier: the Vapor Eagle's Inner Sphere name, the Howler's Clan name), `badger`'s
+id kept (Honey Badger is clear); `dingo` (a Heavy Gear Northern gear) is still his to decide
+(todo). The tiers: iconic (the name conjures their machine: never), known (a hobbyist
+recognises it: case by case), coincidence (keep). Names and concepts are spitballed on the
+Riftgate Nameplate artifact
 https://claude.ai/artifact/6K6mq49XHCUbdZnkzp5rra (a tab per maker, Components, Rules;
 rows in its db collection `candidates`; rebake the page from the reserved list and the
 content names when either changes). Ryan's brainstorm of component names is on its
