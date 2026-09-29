@@ -7,40 +7,35 @@ bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (account
 for every page; the pages block below has the rest). Republish it from the committed file after
 a bible change, passing the URL from any conversation that did not publish it.
 
-**The pages: account A is home, and the list as of 29 September, evening.** An artifact is
-republished only by the account that made it, or by an account invited as Editor from its
-Share menu. Account A (personal) allows invites outward, account B (the organisation) does
-not, so A's pages are the originals and B is invited to them; both are maintained until the
-invites land, and Ryan tracks which account is active. **Account A owns:** the bible
-(https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF), the nameplate
-(https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; database seeded from the 28 September list
-of 48 with Mustang and Gelada rejected, so rows added to B's copy after that are not in it), the
-hangar codex (https://claude.ai/artifact/FqiH3b8ZZjxJaCJmWK71vj, generated with the pin check),
-the Model Viewer (https://claude.ai/artifact/HzF8K98MxgJP7kroxAuDMv: every chassis rendered as it
-stands, earlier passes folded under each) and the phone sketches
-(https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9, every round plus The Far Bank whole at 86,
-90 and 92). Two older A links exist only because their Editor invites were filtered by the
-work mail and fresh links were issued: the bible's first copy
-(https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ, version 72) and the Second Passes page
-(https://claude.ai/artifact/Lv4nXY98bCX5ATfQKiL6Ls, superseded by the Model Viewer); both go on
-Ryan's word. The HUD swatches page (19 September) was deleted on his word the same evening; its
-palette is in the bible. **Account B owns,** each to retire once its A twin
-is shared: the bible's other copy (https://claude.ai/artifact/AdBTeE9px1Xvg5TKNjHjSP), the
-nameplate (https://claude.ai/artifact/6K6mq49XHCUbdZnkzp5rra), the phone sketches
-(https://claude.ai/artifact/FCaphxM3Y3SnRPdNnprpXc), the renders
+**The pages, as of 29 September, night.** An artifact is republished only by the account that
+made it, or by an account invited as Editor from its Share menu; the personal account (A) can
+invite outward, the organisation account (B) cannot. **Account A owns five pages and nothing
+else:** the bible (https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, v0.10), the nameplate
+(https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH), the hangar codex
+(https://claude.ai/artifact/FqiH3b8ZZjxJaCJmWK71vj), the Model Viewer
+(https://claude.ai/artifact/HzF8K98MxgJP7kroxAuDMv, every chassis rendered as it stands with
+earlier passes folded under each) and the phone sketches
+(https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9). Every duplicate and superseded page in A
+was deleted on Ryan's word this evening (the first bible link, the Second Passes page, the HUD
+swatches, a second codex, a second sketches page). **Sharing:** the nameplate, codex and
+sketches are shared to the work email as Editor and open there, so B republishes those three
+in place and its own copies retire. The bible's and the viewer's invites never arrive at the
+work mail (resent to the copied address, not in quarantine, the other three landed; cause
+unknown), so those two are parked: Ryan retries later, and until then **B keeps its own bible
+copy** (https://claude.ai/artifact/AdBTeE9px1Xvg5TKNjHjSP) republished from the committed file
+whenever a B session changes the bible, and needs no viewer of its own, since Ryan reads A's.
+**Account B owns,** with what becomes of each: the bible copy (kept, above); the content editor
+(https://claude.ai/artifact/HnE3gvsxNHXyjRhRyEiDqT, kept in B: Ryan's saved edits live in its
+database, its page source lives only in a B session's scratch and must be committed to
+`tools/content_editor.html`); the nameplate (https://claude.ai/artifact/6K6mq49XHCUbdZnkzp5rra,
+its `candidates` rows synced into A's then deleted); the phone sketches
+(https://claude.ai/artifact/FCaphxM3Y3SnRPdNnprpXc, deleted); the renders
 (https://claude.ai/artifact/6FLunyt7J2ejC24yce76cM and
-https://claude.ai/artifact/UB2FcRAs9Z8k8ABwxVjjuC), the codex
-(https://claude.ai/artifact/EF74jFYCWWmA3rSJFYWpR1, older than the pin check), the Baboon review
-(https://claude.ai/artifact/BeDtchGtS8H2oH3yij3ywX, unneeded) and the content editor
-(https://claude.ai/artifact/HnE3gvsxNHXyjRhRyEiDqT), the one that bites: its `files` map holds
-the shipped content as the baselines Ryan edits against and his saved edits live in its
-database, and its page source lives only in a B session's scratch, so a B session must commit
-`content_editor.html` into `tools/`, apply the `edits` collection, and only then can A publish
-the editor and B retire its copy. **Where it stands:** Ryan invited the work email as Editor on
-the nameplate, the codex and the phone sketches on 29 September; the bible and the viewer were
-reissued on fresh links that evening for a second invite. **Rules learned today:** a page's
-link goes into this file in the same commit as the publish, so a parallel session sees it
-before publishing a twin (two duplicates were made and deleted this way); `Artifact` with
+https://claude.ai/artifact/UB2FcRAs9Z8k8ABwxVjjuC, deleted); the codex
+(https://claude.ai/artifact/EF74jFYCWWmA3rSJFYWpR1, deleted); the Baboon review
+(https://claude.ai/artifact/BeDtchGtS8H2oH3yij3ywX, deleted, unneeded). Ryan confirmed those
+deletions 29 September. **Rules learned today:** a page's link goes into this file in the same
+commit as the publish, so a parallel session sees it before publishing a twin; `Artifact` with
 `action: "list"` says what the account you are in owns, and a read of another account's page
 comes back "not found".
 
