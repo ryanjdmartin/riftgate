@@ -50,7 +50,10 @@ and open question from the design sessions.
   in `docs/sprites-enemies.html` to `art/foes/`; `foeforge/` generates enemy candidates with
   an image model and cuts one into `art/foes/`; `soundforge/` builds every sound and the
   two music loops from written recipes (numpy); `phone.sh` puts a Web build on a phone
-  over the LAN, `android.sh` the real debug APK over USB; `spriter/.venv` is the Python
+  over the LAN, `android.sh` the real debug APK over USB; `content_editor.html` is the
+  page of the phone content editor artifact, published with a `files` map carrying each
+  `content/<file>.json` at that same path as the baselines it diffs against (Ryan's saved
+  edits live in its database, collection `edits`); `spriter/.venv` is the Python
   the tools run with. The gate and wall are lowforge models too (`gate`, `wall`).
 - `art/` — `models/` every glTF the engine draws (units, gate, wall), `foes/` from the sheet
   export, `fonts/` the HUD faces, `audio/` every sound by name (`game/audio/sound.gd` lists

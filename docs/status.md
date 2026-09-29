@@ -24,20 +24,22 @@ work mail (resent to the copied address, not in quarantine, the other three land
 unknown), so those two are parked: Ryan retries later, and until then **B keeps its own bible
 copy** (https://claude.ai/artifact/AdBTeE9px1Xvg5TKNjHjSP) republished from the committed file
 whenever a B session changes the bible, and needs no viewer of its own, since Ryan reads A's.
-**Account B owns,** with what becomes of each: the bible copy (kept, above); the content editor
+**Account B owns three pages:** the bible copy (kept, above; republished from the committed file
+29 September, night, version 14); the content editor
 (https://claude.ai/artifact/HnE3gvsxNHXyjRhRyEiDqT, kept in B: Ryan's saved edits live in its
-database, its page source lives only in a B session's scratch and must be committed to
-`tools/content_editor.html`); the nameplate (https://claude.ai/artifact/6K6mq49XHCUbdZnkzp5rra,
-its `candidates` rows synced into A's then deleted); the phone sketches
-(https://claude.ai/artifact/FCaphxM3Y3SnRPdNnprpXc, deleted); the renders
-(https://claude.ai/artifact/6FLunyt7J2ejC24yce76cM and
-https://claude.ai/artifact/UB2FcRAs9Z8k8ABwxVjjuC, deleted); the codex
-(https://claude.ai/artifact/EF74jFYCWWmA3rSJFYWpR1, deleted); the Baboon review
-(https://claude.ai/artifact/BeDtchGtS8H2oH3yij3ywX, deleted, unneeded). Ryan confirmed those
-deletions 29 September. **Rules learned today:** a page's link goes into this file in the same
-commit as the publish, so a parallel session sees it before publishing a twin; `Artifact` with
-`action: "list"` says what the account you are in owns, and a read of another account's page
-comes back "not found".
+database; its page source is committed at `tools/content_editor.html`, the README says how it is
+published); and the nameplate (https://claude.ai/artifact/6K6mq49XHCUbdZnkzp5rra), **kept until
+its rows reach A's:** a B session cannot read or write the database of a page shared from A
+(invited editors from another organisation get no artifact data from Claude Code), so B's 90
+`candidates` rows are exported to `docs/nameplate_candidates_b.json`. An A session merges them
+into A's nameplate (the 42 `parts` rows of the Components tab are likely missing there; keep A's
+Gelada rejection), deletes that file, and then a B session deletes B's nameplate. B's phone
+sketches, both renders pages, codex and Baboon review were deleted 29 September, night, on
+Ryan's word. **Rules learned today:** a page's link goes into this file in the same commit as
+the publish, so a parallel session sees it before publishing a twin; `Artifact` with `action:
+"list"` says what the account you are in owns, and a read of another account's page comes back
+"not found"; a page shared as Editor across accounts republishes, but its database stays with
+the owning account.
 
 **Cold start, including from another account.** Nothing needed to work here lives outside
 the repo. Read this file, then `docs/todo.md` (the task list), then `CLAUDE.md` (the rules,
@@ -98,7 +100,7 @@ id kept (Honey Badger is clear); `dingo` (a Heavy Gear Northern gear) is still h
 (todo). The tiers: iconic (the name conjures their machine: never), known (a hobbyist
 recognises it: case by case), coincidence (keep). Names and concepts are spitballed on the
 Riftgate Nameplate artifact
-https://claude.ai/artifact/6K6mq49XHCUbdZnkzp5rra (a tab per maker, Components, Rules;
+https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH (account A, shared to B as Editor; a tab per maker, Components, Rules;
 rows in its db collection `candidates`; rebake the page from the reserved list and the
 content names when either changes). Ryan's brainstorm of component names is on its
 Components tab, trimmed, with the used ones marked landed.
@@ -131,8 +133,8 @@ snout, shoulder cannons in place of arm guns, and its heel spurs and throat vent
 attached. Facets: 676 to 928 each, the Nemesis 816, the Ammit 1,316, beside the Baboon's 1,396 and
 the Clydesdale's 1,016; the register's 900 is a first-pass guideline, not a rule (Ryan, 29
 September), so no facet count is an open question.
-Renders with the first passes beside them: https://claude.ai/artifact/6FLunyt7J2ejC24yce76cM
-(account B; the first passes alone at https://claude.ai/artifact/UB2FcRAs9Z8k8ABwxVjjuC).
+Renders, with earlier passes folded under each chassis: the Model Viewer
+https://claude.ai/artifact/HzF8K98MxgJP7kroxAuDMv (account A; B's two renders pages are deleted).
 **Ryan judges a model only from a render**, never from code: `tools/hero_shot.gd` takes a
 chassis, a maker, an out file and `front`, `rear` or a yaw, and needs a window, so it cannot
 run headless.

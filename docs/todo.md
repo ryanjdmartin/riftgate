@@ -84,7 +84,7 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 
 ## Pages (standing, after every content change)
 
-- Joining the accounts (29 September): nameplate, codex and phone sketches are shared to the work email as Editor and open there; the bible's and viewer's invites do not arrive (Ryan retries later; B keeps its own bible copy meanwhile). B session: sync `candidates` into A's nameplate, commit `content_editor.html` into `tools/` and apply the `edits` database, delete B's superseded pages, republish B's bible from the committed file
+- Joining the accounts (29 September): nameplate, codex and phone sketches are shared to the work email as Editor and open there; the bible's and viewer's invites do not arrive (Ryan retries later; B keeps its own bible copy meanwhile). B session: ~~commit `content_editor.html` into `tools/` and apply the `edits` database~~ (29 September, night: committed; `edits` was empty), ~~delete B's superseded pages~~ (done, all but the nameplate), ~~republish B's bible from the committed file~~ (version 14). Left: B cannot reach A's nameplate database, so an **A session** merges `docs/nameplate_candidates_b.json` into A's `candidates` and deletes the file, then a B session deletes B's nameplate (6K6mq49XHCUbdZnkzp5rra)
 - Republish the content editor (https://claude.ai/artifact/HnE3gvsxNHXyjRhRyEiDqT) with its `files` map, or its baselines go stale; read its files first if another session published since
 - Rebake the nameplate page's baked-in current names (`CURRENT` in its script) when a chassis or component is added or renamed
 - Republish the bible from the committed file (each account to its own URL, listed in status)

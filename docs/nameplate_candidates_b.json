@@ -1,0 +1,815 @@
+{
+ "_about": "Account B's Riftgate Nameplate rows (collection candidates, https://claude.ai/artifact/6K6mq49XHCUbdZnkzp5rra), exported 29 September 2026 because B cannot read or write A's db. An account-A session writes into A's nameplate every row missing there or differing in status or concept (ArtifactData batch), keeping A's side where A is newer (Gelada rejected), then deletes this file and a B session deletes B's page.",
+ "candidates": {
+  "adrestia": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Greek: she who cannot be escaped, just retribution, Nemesis's companion. Greek again though.",
+   "created": "2026-09-28T17:04:03Z",
+   "name": "Adrestia",
+   "status": "idea",
+   "tab": "arsenal"
+  },
+  "alecto": {
+   "by": "claude",
+   "clash": "",
+   "concept": "The Fury of unceasing anger, with Tisiphone (avenger of murder) and Megaera beside her. Greek again.",
+   "created": "2026-09-28T17:04:08Z",
+   "name": "Alecto",
+   "status": "idea",
+   "tab": "arsenal"
+  },
+  "anglerfish": {
+   "by": "claude",
+   "clash": "",
+   "concept": "The lure. A frame that taunts or draws fire.",
+   "created": "2026-09-28T17:03:09Z",
+   "name": "Anglerfish",
+   "status": "idea",
+   "tab": "aphelion"
+  },
+  "ankylosaur": {
+   "by": "claude",
+   "clash": "",
+   "concept": "The one dinosaur that reads as a tank, not a toy: club tail as the fixed melee, plates everywhere.",
+   "created": "2026-09-28T17:00:03Z",
+   "name": "Ankylosaur",
+   "status": "idea",
+   "tab": "minerva"
+  },
+  "aurochs": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Ryan's pick over Mammoth (which is also a Heavy Gear strider). Horns as rams: the Wild Boar's bigger sibling, or the heavy plantigrade biped.",
+   "created": "2026-09-28T17:00:00Z",
+   "name": "Aurochs",
+   "status": "idea",
+   "tab": "minerva"
+  },
+  "bighorn": {
+   "by": "claude",
+   "clash": "",
+   "concept": "The ram. A quad that charges.",
+   "created": "2026-09-28T17:02:06Z",
+   "name": "Bighorn",
+   "status": "idea",
+   "tab": "ws"
+  },
+  "burro": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Small, stubborn, carries too much. A wheeled ammo carrier or support car.",
+   "created": "2026-09-28T17:02:03Z",
+   "name": "Burro",
+   "status": "idea",
+   "tab": "ws"
+  },
+  "camel_spider": {
+   "by": "claude",
+   "clash": "",
+   "concept": "The desert horror of soldiers' stories. A fast wheeled thing with too many guns forward.",
+   "created": "2026-09-28T17:02:08Z",
+   "name": "Camel Spider",
+   "status": "idea",
+   "tab": "ws"
+  },
+  "cane_toad": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Poisonous, invasive, everywhere. A cheap wheeled support car with a toxic payload. Funny in the Dodo way.",
+   "created": "2026-09-28T17:02:11Z",
+   "name": "Cane Toad",
+   "status": "idea",
+   "tab": "ws"
+  },
+  "colobus": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Black and white, no thumbs. An elegant light frame.",
+   "created": "2026-09-28T17:03:04Z",
+   "name": "Colobus",
+   "status": "idea",
+   "tab": "aphelion"
+  },
+  "cuttlefish": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Adaptive camouflage and a beak. The Dingo owns the camo passive today, so this needs another idea.",
+   "created": "2026-09-28T17:03:08Z",
+   "name": "Cuttlefish",
+   "status": "idea",
+   "tab": "aphelion"
+  },
+  "drill": {
+   "by": "claude",
+   "clash": "",
+   "concept": "The mandrill's cousin (Mandrillus leucophaeus): same face, same build. The word is a tool too. Claude's rename for the Mandrill.",
+   "created": "2026-09-28T17:03:00Z",
+   "name": "Drill",
+   "status": "liked",
+   "tab": "aphelion"
+  },
+  "dunkleosteus": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Armoured jaw, no teeth, shears. Could be Minerva's heavy flyer: a battlecruiser with a bite. Or it goes to Aphelion as a sea creature.",
+   "created": "2026-09-28T17:00:05Z",
+   "name": "Dunkleosteus",
+   "status": "idea",
+   "tab": "minerva"
+  },
+  "enma": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Japanese judge of the dead (Yama). Pairs with Ammit as a weigher of souls from another culture.",
+   "created": "2026-09-28T17:04:06Z",
+   "name": "Enma",
+   "status": "idea",
+   "tab": "arsenal"
+  },
+  "forseti": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Norse god of justice and reconciliation, the one Norse figure with no axe.",
+   "created": "2026-09-28T17:04:05Z",
+   "name": "Forseti",
+   "status": "idea",
+   "tab": "arsenal"
+  },
+  "frigatebird": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Huge wings, steals other birds' catches. An interceptor that strips shield or heat off its target.",
+   "created": "2026-09-28T17:01:04Z",
+   "name": "Frigatebird",
+   "status": "idea",
+   "tab": "kestrel"
+  },
+  "gelada": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Grass-eating baboon with a red chest patch. A heavy support biped, already in Aphelion white and red.",
+   "created": "2026-09-28T17:03:02Z",
+   "name": "Gelada",
+   "status": "idea",
+   "tab": "aphelion"
+  },
+  "gibbon": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Long arms, swings. A light hover-biped or a variable-geometry frame.",
+   "created": "2026-09-28T17:03:01Z",
+   "name": "Gibbon",
+   "status": "idea",
+   "tab": "aphelion"
+  },
+  "hippo": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Fat, fast in a straight line, murderous. A heavy wheeled breacher.",
+   "created": "2026-09-28T17:00:04Z",
+   "name": "Hippo",
+   "status": "idea",
+   "tab": "minerva"
+  },
+  "hobby": {
+   "by": "claude",
+   "clash": "",
+   "concept": "The small fast falcon that catches swifts on the wing. A lighter Sparrowhawk; the name reads as a pilots' joke.",
+   "created": "2026-09-28T17:01:01Z",
+   "name": "Hobby",
+   "status": "idea",
+   "tab": "kestrel"
+  },
+  "horned_lizard": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Squirts blood from its eyes when grabbed: the retaliate passive on a squat quad.",
+   "created": "2026-09-28T17:02:09Z",
+   "name": "Horned Lizard",
+   "status": "idea",
+   "tab": "ws"
+  },
+  "hoverfly": {
+   "by": "claude",
+   "clash": "",
+   "concept": "A hover platform that is literally a hoverfly. Red stripes on white.",
+   "created": "2026-09-28T17:03:05Z",
+   "name": "Hoverfly",
+   "status": "idea",
+   "tab": "aphelion"
+  },
+  "hubris": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "From the sins vein, unfleshed. The Council's own house naming a weapon for the sin that ends kings.",
+   "created": "2026-09-28T17:04:02Z",
+   "name": "Hubris",
+   "status": "idea",
+   "tab": "arsenal"
+  },
+  "kelpie": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Australian herding dog; a fast wheeled harasser that works the flank. Also a Scottish water spirit, which is a wrinkle against the myth rule.",
+   "created": "2026-09-28T17:02:04Z",
+   "name": "Kelpie",
+   "status": "idea",
+   "tab": "ws"
+  },
+  "kite": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Plain Kite is free (BattleTech has Blood Kite). Hangs in the wind: a loitering gunship.",
+   "created": "2026-09-28T17:01:06Z",
+   "name": "Kite",
+   "status": "idea",
+   "tab": "kestrel"
+  },
+  "kittum": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Mesopotamian truth and justice, Shamash's daughter. Obscure enough to fail the picture test in its own way.",
+   "created": "2026-09-28T17:04:10Z",
+   "name": "Kittum",
+   "status": "idea",
+   "tab": "arsenal"
+  },
+  "mantis_shrimp": {
+   "by": "claude",
+   "clash": "",
+   "concept": "The fastest punch in the sea. A strike frame with one big hit. Shares a word with the Mantis (BattleTech, Halo), which the check will show.",
+   "created": "2026-09-28T17:03:06Z",
+   "name": "Mantis Shrimp",
+   "status": "idea",
+   "tab": "aphelion"
+  },
+  "misaru": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Ryan's, to look at next.",
+   "created": "2026-09-28T17:04:00Z",
+   "name": "Misaru",
+   "status": "idea",
+   "tab": "arsenal"
+  },
+  "muskox": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Ryan gives this to W&S before Minerva. Shaggy heavy quad that forms a ring: a defensive line walker.",
+   "created": "2026-09-28T17:02:00Z",
+   "name": "Muskox",
+   "status": "idea",
+   "tab": "ws"
+  },
+  "mustang": {
+   "by": "claude",
+   "clash": "Mustang is a Heavy Gear machine",
+   "concept": "The obvious frontier horse, and Heavy Gear's Peace River already has one. Rejected as an example of the check working.",
+   "created": "2026-09-28T17:02:01Z",
+   "name": "Mustang",
+   "status": "rejected",
+   "tab": "ws"
+  },
+  "nautilus": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Spiral shell, jet propulsion. A hover platform with a shield spiral.",
+   "created": "2026-09-28T17:03:07Z",
+   "name": "Nautilus",
+   "status": "idea",
+   "tab": "aphelion"
+  },
+  "nightjar": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Camouflaged, crepuscular, silent. A stealth flyer, which sits oddly with Kestrel's chrome; maybe the point.",
+   "created": "2026-09-28T17:01:05Z",
+   "name": "Nightjar",
+   "status": "idea",
+   "tab": "kestrel"
+  },
+  "onryo": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Japanese vengeful spirit. Ryan's, to look at next. Fits vengeance exactly and opens a third culture.",
+   "created": "2026-09-28T17:04:01Z",
+   "name": "Onryo",
+   "status": "idea",
+   "tab": "arsenal"
+  },
+  "pangolin": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Armour that rolls: a tracked hull whose plates close into a shield stance. The shield-heavy Minerva.",
+   "created": "2026-09-28T17:00:01Z",
+   "name": "Pangolin",
+   "status": "idea",
+   "tab": "minerva"
+  },
+  "parts_antimatter_edges": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Arsenal. Melee execute without the devour: the plain version of the talons for a later machine.",
+   "created": "2026-09-28T18:00:41.000Z",
+   "name": "Antimatter Edges",
+   "status": "idea",
+   "tab": "parts"
+  },
+  "parts_blazethrower": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Arsenal's starter burn: energy line 20 with burn, 10 heat.",
+   "created": "2026-09-28T18:00:05.000Z",
+   "name": "Blazethrower",
+   "status": "landed",
+   "tab": "parts"
+  },
+  "parts_chemical_bomb": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "W&S. The carrier for the planned corrode keyword (percent damage over time). Wants a better name: Caustic Shells?",
+   "created": "2026-09-28T18:00:29.000Z",
+   "name": "Chemical Bomb",
+   "status": "idea",
+   "tab": "parts"
+  },
+  "parts_combustion_field": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Arsenal. Equipment: every foe in the front rank gains a burn stack. Area burn without a roll.",
+   "created": "2026-09-28T18:00:39.000Z",
+   "name": "Combustion Field",
+   "status": "idea",
+   "tab": "parts"
+  },
+  "parts_debris_integrator": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Minerva. Gains shield on a kill: the wreck becomes plating. Wants an on-kill hook, same as devour.",
+   "created": "2026-09-28T18:00:20.000Z",
+   "name": "Debris Integrator",
+   "status": "idea",
+   "tab": "parts"
+  },
+  "parts_density_press": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Minerva. One enormous melee crush, kinetic with a wide roll, the biggest single hit the treads carry.",
+   "created": "2026-09-28T18:00:18.000Z",
+   "name": "Density Press",
+   "status": "idea",
+   "tab": "parts"
+  },
+  "parts_disassembly_line": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Minerva. An industrial penetrate: a line that takes the column apart, front then back.",
+   "created": "2026-09-28T18:00:19.000Z",
+   "name": "Disassembly Line",
+   "status": "idea",
+   "tab": "parts"
+  },
+  "parts_entanglement_tether": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Aphelion. The damage-redirection family Ryan wants: swap targeting with an ally, or pull a blow aimed at an ally onto yourself. Equipment, ally-targeted.",
+   "created": "2026-09-28T18:00:12.000Z",
+   "name": "Entanglement Tether",
+   "status": "liked",
+   "tab": "parts"
+  },
+  "parts_entropy_condenser": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Arsenal's starter vent (30), and the Nemesis's relief valve.",
+   "created": "2026-09-28T18:00:07.000Z",
+   "name": "Entropy Condenser",
+   "status": "landed",
+   "tab": "parts"
+  },
+  "parts_feedback_probe": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Aphelion. A debuff: the foe's next blow also hurts itself. Retaliation moved onto the enemy.",
+   "created": "2026-09-28T18:00:37.000Z",
+   "name": "Feedback Probe",
+   "status": "idea",
+   "tab": "parts"
+  },
+  "parts_flakshot_repeater": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "W&S. The Prairie Dog's locked gun: line kinetic 10 to 30 with rapid, so its round is shoot, roll again, shoot, leave.",
+   "created": "2026-09-28T18:00:00.000Z",
+   "name": "Flakshot Repeater",
+   "status": "landed",
+   "tab": "parts"
+  },
+  "parts_fragmentation_probe": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "W&S or Aphelion. Indirect with cleave: it bursts in the rank it lands in.",
+   "created": "2026-09-28T18:00:28.000Z",
+   "name": "Fragmentation Probe",
+   "status": "idea",
+   "tab": "parts"
+  },
+  "parts_fusion_assimilator": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Arsenal. A vent that turns the heat it sheds into shield. Sanctified name, sinister effect.",
+   "created": "2026-09-28T18:00:38.000Z",
+   "name": "Fusion Assimilator",
+   "status": "idea",
+   "tab": "parts"
+  },
+  "parts_gatling_rockets": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "W&S. Indirect, three strikes of small numbers. Storm Rockets is the Kestrel air-to-ground twin.",
+   "created": "2026-09-28T18:00:23.000Z",
+   "name": "Gatling Rockets",
+   "status": "idea",
+   "tab": "parts"
+  },
+  "parts_gigawatt_thunderspear": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Kestrel. A penetrating energy lance at absurd heat: the Lance's over-tuned cousin. The name is the whole pitch.",
+   "created": "2026-09-28T18:00:30.000Z",
+   "name": "Gigawatt Thunderspear",
+   "status": "idea",
+   "tab": "parts"
+  },
+  "parts_gravity_knuckles": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Arsenal. The Nemesis's locked fists: energy melee 30 with burn and volatile, so every punch feeds the Crucible.",
+   "created": "2026-09-28T18:00:02.000Z",
+   "name": "Gravity Knuckles",
+   "status": "landed",
+   "tab": "parts"
+  },
+  "parts_hardlight_projector": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Aphelion. A shield cast on an ally that interposes: the next blow aimed at them is taken by the projector's owner. The other half of the redirection family.",
+   "created": "2026-09-28T18:00:13.000Z",
+   "name": "Hardlight Projector",
+   "status": "liked",
+   "tab": "parts"
+  },
+  "parts_ion_resonator": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Kestrel. Energy line that disables the showing entry of the target, the player's side of the foes' disable keyword.",
+   "created": "2026-09-28T18:00:31.000Z",
+   "name": "Ion Resonator",
+   "status": "idea",
+   "tab": "parts"
+  },
+  "parts_juggernaut_drive": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Passive, the Wild Boar: overwhelm on every attack, damage past a kill spills into the rank behind.",
+   "created": "2026-09-28T18:00:08.000Z",
+   "name": "Juggernaut Drive",
+   "status": "landed",
+   "tab": "parts"
+  },
+  "parts_laser_carbine": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Kestrel's starter gun: energy line 20, 5 heat.",
+   "created": "2026-09-28T18:00:04.000Z",
+   "name": "Laser Carbine",
+   "status": "landed",
+   "tab": "parts"
+  },
+  "parts_mag_field_projector": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Kestrel or Aphelion. The carrier for the planned energy_armour status: blows on shield reduced by a flat amount until end of round.",
+   "created": "2026-09-28T18:00:16.000Z",
+   "name": "Mag-field Projector",
+   "status": "liked",
+   "tab": "parts"
+  },
+  "parts_matter_recombinator": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Aphelion. If hull repair ever exists, this is its one carrier. Parked: shield recharge is the regen mechanic for now.",
+   "created": "2026-09-28T18:00:36.000Z",
+   "name": "Matter Recombinator",
+   "status": "idea",
+   "tab": "parts"
+  },
+  "parts_maxigun": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Minerva. A rotary cannon that strikes three times for small numbers. The horde gun.",
+   "created": "2026-09-28T18:00:22.000Z",
+   "name": "Maxigun",
+   "status": "idea",
+   "tab": "parts"
+  },
+  "parts_meathook": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "W&S or Minerva. Melee that drags a back-rank foe into the front rank. A new verb: rank manipulation.",
+   "created": "2026-09-28T18:00:15.000Z",
+   "name": "Meathook",
+   "status": "liked",
+   "tab": "parts"
+  },
+  "parts_megataser_harpoon": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "W&S. The Dingo's locked pin: line kinetic 10 to 20 with suppress at 10 heat.",
+   "created": "2026-09-28T18:00:01.000Z",
+   "name": "Megataser Harpoon",
+   "status": "landed",
+   "tab": "parts"
+  },
+  "parts_meteor_artillery": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Arsenal's advanced piece on the Nemesis: energy indirect 30 with burn, 15 heat.",
+   "created": "2026-09-28T18:00:06.000Z",
+   "name": "Meteor Artillery",
+   "status": "landed",
+   "tab": "parts"
+  },
+  "parts_nanobot_swarm": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Aphelion. A corrode carrier in the astronomical register, if corrode lands.",
+   "created": "2026-09-28T18:00:35.000Z",
+   "name": "Nanobot Swarm",
+   "status": "idea",
+   "tab": "parts"
+  },
+  "parts_neutrino_rifle": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Aphelion. Energy penetrate: it does not notice the front rank is there.",
+   "created": "2026-09-28T18:00:32.000Z",
+   "name": "Neutrino Rifle",
+   "status": "idea",
+   "tab": "parts"
+  },
+  "parts_paradox_generator": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Aphelion. The Mandrill's codex device: a suppress that lands on the target's next action as well. A locked candidate for the Mandrill.",
+   "created": "2026-09-28T18:00:34.000Z",
+   "name": "Paradox Generator",
+   "status": "idea",
+   "tab": "parts"
+  },
+  "parts_phase_shift_drive": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Aphelion. The carrier for the planned Phased status: cannot attack, cannot be hit, until end of round. A withdraw without leaving.",
+   "created": "2026-09-28T18:00:14.000Z",
+   "name": "Phase-shift Drive",
+   "status": "liked",
+   "tab": "parts"
+  },
+  "parts_quintessence_tap": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Passive, the Ammit: Overcharged never decays and lasts the battle. Sanctified on its face, sinister on reflection, which is the Arsenal naming rule.",
+   "created": "2026-09-28T18:00:10.000Z",
+   "name": "Quintessence Tap",
+   "status": "landed",
+   "tab": "parts"
+  },
+  "parts_rocket_punch": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Minerva. A melee blow with indirect reach: the fist leaves. Silly on purpose.",
+   "created": "2026-09-28T18:00:21.000Z",
+   "name": "Rocket Punch",
+   "status": "idea",
+   "tab": "parts"
+  },
+  "parts_sawed_off_flaregun": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "W&S. A cheap line burn for the cars: small numbers, one stack, 0 heat.",
+   "created": "2026-09-28T18:00:26.000Z",
+   "name": "Sawed-off Flaregun",
+   "status": "idea",
+   "tab": "parts"
+  },
+  "parts_scraptapult": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "W&S. The cheapest indirect there is: a huge kinetic roll, 0 heat, no keywords. Everything works.",
+   "created": "2026-09-28T18:00:25.000Z",
+   "name": "Scraptapult",
+   "status": "idea",
+   "tab": "parts"
+  },
+  "parts_singularity_cannon": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Aphelion. The biggest single energy hit in the game and the heat to match. Quark Imploder and Underspace Imploder folded into this.",
+   "created": "2026-09-28T18:00:33.000Z",
+   "name": "Singularity Cannon",
+   "status": "idea",
+   "tab": "parts"
+  },
+  "parts_sonic_ballista": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "W&S. A line suppress, the direct-fire cousin of the Shock Barrage.",
+   "created": "2026-09-28T18:00:27.000Z",
+   "name": "Sonic Ballista",
+   "status": "idea",
+   "tab": "parts"
+  },
+  "parts_soulcutter_talons": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Arsenal. The Ammit's four locked claws: energy melee 20 with execute and devour.",
+   "created": "2026-09-28T18:00:03.000Z",
+   "name": "Soulcutter Talons",
+   "status": "landed",
+   "tab": "parts"
+  },
+  "parts_storm_rockets": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Kestrel. Under-wing pods: line, multiple strikes, some heat. The Goshawk's natural second weapon.",
+   "created": "2026-09-28T18:00:24.000Z",
+   "name": "Storm Rockets",
+   "status": "idea",
+   "tab": "parts"
+  },
+  "parts_subspace_solenoid": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Passive, the Mandrill: +50% damage to a foe carrying any status.",
+   "created": "2026-09-28T18:00:11.000Z",
+   "name": "Subspace Solenoid",
+   "status": "landed",
+   "tab": "parts"
+  },
+  "parts_tactical_databank": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Passive, the Dingo: with an ally in the fight its kinetic weapons roll their maximum.",
+   "created": "2026-09-28T18:00:09.000Z",
+   "name": "Tactical Databank",
+   "status": "landed",
+   "tab": "parts"
+  },
+  "parts_tesla_gauntlets": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Minerva. Melee that Shocks the target, the Armadillo's status on a weapon. Electro-flail folded into this.",
+   "created": "2026-09-28T18:00:17.000Z",
+   "name": "Tesla Gauntlets",
+   "status": "idea",
+   "tab": "parts"
+  },
+  "parts_zero_point_reactor": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Arsenal or Aphelion. A passive name more than a component: cooling that rises with Overheating stacks, or heat that never burns hull.",
+   "created": "2026-09-28T18:00:40.000Z",
+   "name": "Zero-point Reactor",
+   "status": "idea",
+   "tab": "parts"
+  },
+  "percheron": {
+   "by": "claude",
+   "clash": "",
+   "concept": "The Clydesdale's French cousin; a second heavy quad or an artillery tractor.",
+   "created": "2026-09-28T17:02:02Z",
+   "name": "Percheron",
+   "status": "idea",
+   "tab": "ws"
+  },
+  "poena": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Roman spirit of punishment. The word is also pain.",
+   "created": "2026-09-28T17:04:09Z",
+   "name": "Poena",
+   "status": "idea",
+   "tab": "arsenal"
+  },
+  "pronghorn": {
+   "by": "claude",
+   "clash": "",
+   "concept": "The fastest quad on the plains. W&S's scout walker.",
+   "created": "2026-09-28T17:02:05Z",
+   "name": "Pronghorn",
+   "status": "idea",
+   "tab": "ws"
+  },
+  "puffin": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "The hovercraft Kestrel thought was very cool and the pilots named for a stubby seabird. Comic, loved, sells the maker.",
+   "created": "2026-09-28T17:01:00Z",
+   "name": "Puffin",
+   "status": "liked",
+   "tab": "kestrel"
+  },
+  "saker": {
+   "by": "claude",
+   "clash": "Saker is a Heavy Gear machine",
+   "concept": "The falconer's big desert falcon; a mid-size strike jet. Heavy Gear's Utopia has a Saker hover vehicle, obscure.",
+   "created": "2026-09-28T17:01:03Z",
+   "name": "Saker",
+   "status": "idea",
+   "tab": "kestrel"
+  },
+  "shamash": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Mesopotamian sun god who handed Hammurabi the law. A large aircraft as a sun.",
+   "created": "2026-09-28T17:04:07Z",
+   "name": "Shamash",
+   "status": "idea",
+   "tab": "arsenal"
+  },
+  "siamang": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Loud gibbon with a throat sac. A buff or suppress frame.",
+   "created": "2026-09-28T17:03:03Z",
+   "name": "Siamang",
+   "status": "idea",
+   "tab": "aphelion"
+  },
+  "smilodon": {
+   "by": "ryan",
+   "clash": "",
+   "concept": "Over Sabre-toothed Tiger. A big cat built Minerva-heavy: short legs, huge forequarters. Digitigrade, so check the flimsy rule.",
+   "created": "2026-09-28T17:00:06Z",
+   "name": "Smilodon",
+   "status": "idea",
+   "tab": "minerva"
+  },
+  "swift": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Never lands. Kestrel's whole brief in one bird; a fast hover-skimmer.",
+   "created": "2026-09-28T17:01:02Z",
+   "name": "Swift",
+   "status": "idea",
+   "tab": "kestrel"
+  },
+  "tern": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Small, sharp, dives. A light hover-bomber.",
+   "created": "2026-09-28T17:01:07Z",
+   "name": "Tern",
+   "status": "idea",
+   "tab": "kestrel"
+  },
+  "thorny_devil": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Spiked, slow, drinks through its skin. A spiky defensive quad.",
+   "created": "2026-09-28T17:02:10Z",
+   "name": "Thorny Devil",
+   "status": "idea",
+   "tab": "ws"
+  },
+  "varuna": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Vedic keeper of cosmic law who catches liars in his noose. Judgment without war; a new culture.",
+   "created": "2026-09-28T17:04:04Z",
+   "name": "Varuna",
+   "status": "idea",
+   "tab": "arsenal"
+  },
+  "vinegaroon": {
+   "by": "claude",
+   "clash": "",
+   "concept": "Whip scorpion that sprays acid. An artillery walker with a long tail mortar; a frontier threat that is not generic.",
+   "created": "2026-09-28T17:02:07Z",
+   "name": "Vinegaroon",
+   "status": "idea",
+   "tab": "ws"
+  },
+  "wombat": {
+   "by": "claude",
+   "clash": "Wombat is a Halo vehicle",
+   "concept": "Squat digger with a bony backside; a tank that backs into the enemy. Halo has a Wombat drone, an obscure one.",
+   "created": "2026-09-28T17:00:02Z",
+   "name": "Wombat",
+   "status": "idea",
+   "tab": "minerva"
+  }
+ }
+}

@@ -1,0 +1,427 @@
+<title>Riftgate Content Editor</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --ground: #F2F3F5; --surface: #FFFFFF; --ink: #1A1E25; --muted: #5C6673;
+    --rule: #D5DAE1; --rule-strong: #B9C0CA; --accent: #B4501C; --steel: #2E5B87;
+    --rift: #6E3FA6; --tint: #E9EBEF; --code-bg: #E6E9EE; --good: #2F7A4C; --bad: #A33A2C;
+    --field: #FFFFFF; --field-border: #B9C0CA;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --ground: #14171C; --surface: #1C2028; --ink: #E4E7EB; --muted: #97A1AD;
+      --rule: #2E343D; --rule-strong: #414955; --accent: #E3894B; --steel: #7FAEDF;
+      --rift: #B48CE3; --tint: #232830; --code-bg: #262C35; --good: #6CC08F; --bad: #E58273;
+      --field: #12151A; --field-border: #414955;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ground: #14171C; --surface: #1C2028; --ink: #E4E7EB; --muted: #97A1AD;
+    --rule: #2E343D; --rule-strong: #414955; --accent: #E3894B; --steel: #7FAEDF;
+    --rift: #B48CE3; --tint: #232830; --code-bg: #262C35; --good: #6CC08F; --bad: #E58273;
+    --field: #12151A; --field-border: #414955;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--ground); color: var(--ink); font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif; font-size: 15px; line-height: 1.5; padding-inline: 16px; padding-block: 0 24px; }
+  .mono, code, .tag, .tabs button, .id, textarea.json, .eyebrow { font-family: "IBM Plex Mono", Menlo, monospace; }
+  h1 { font-family: "Barlow Condensed", "Arial Narrow", Impact, sans-serif; font-weight: 800; text-transform: uppercase; font-size: 30px; margin: 0; line-height: 1; }
+  .eyebrow { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  header.bar { position: sticky; top: env(safe-area-inset-top, 0px); background: var(--ground); z-index: 5; border-top: 5px solid var(--ink); padding: 12px 0 8px; margin: 0 -16px; padding-inline: 16px; }
+  .head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .status { font-size: 12px; color: var(--muted); }
+  .status.warn { color: var(--bad); }
+  .tabs { display: flex; gap: 6px; overflow-x: auto; padding: 10px 0 4px; scrollbar-width: none; }
+  .tabs button { flex: 0 0 auto; border: 1.5px solid var(--rule-strong); background: transparent; color: var(--ink); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; padding: 6px 10px; cursor: pointer; }
+  .tabs button[aria-selected="true"] { border-color: var(--ink); background: var(--ink); color: var(--ground); }
+  .tabs button .count { color: var(--accent); margin-left: 6px; }
+  .tabs button[aria-selected="true"] .count { color: inherit; }
+  main { max-width: 76ch; margin: 0 auto; }
+  .list { border-top: 1px solid var(--rule); margin-top: 10px; }
+  .item { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; padding: 10px 4px; border-bottom: 1px solid var(--rule); cursor: pointer; }
+  .item:hover, .item:focus-visible { background: var(--tint); outline: none; }
+  .item .name { font-weight: 600; }
+  .item .id { font-size: 12px; color: var(--muted); }
+  .tag { display: inline-block; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; padding: 1px 6px; border: 1.5px solid currentColor; line-height: 1.5; white-space: nowrap; }
+  .tag.edited { color: var(--accent); } .tag.new { color: var(--steel); } .tag.del { color: var(--bad); } .tag.applied { color: var(--good); }
+  .toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 12px 0; }
+  button.act { border: 1.5px solid var(--ink); background: transparent; color: var(--ink); font: inherit; font-size: 13px; padding: 7px 12px; cursor: pointer; }
+  button.act.primary { background: var(--ink); color: var(--ground); }
+  button.act.danger { border-color: var(--bad); color: var(--bad); }
+  button.act:disabled { opacity: .45; cursor: default; }
+  button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .editor h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 26px; margin: 14px 0 2px; text-transform: uppercase; }
+  .fields { display: grid; gap: 12px; margin-top: 10px; }
+  .field label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 3px; }
+  .field label .type { color: var(--rule-strong); margin-left: 6px; }
+  .field input[type="text"], .field input[type="number"], .field textarea { width: 100%; font: inherit; font-size: 14.5px; color: var(--ink); background: var(--field); border: 1px solid var(--field-border); padding: 7px 9px; }
+  .field textarea { min-height: 38px; resize: vertical; line-height: 1.45; }
+  textarea.json { font-size: 13px; min-height: 90px; }
+  .field.invalid textarea, .field.invalid input { border-color: var(--bad); }
+  .field .err { color: var(--bad); font-size: 12px; margin-top: 3px; }
+  fieldset { border: 1px solid var(--rule-strong); padding: 10px 12px 12px; margin: 0; }
+  legend { font-size: 12px; color: var(--muted); padding: 0 6px; font-family: "IBM Plex Mono", Menlo, monospace; }
+  fieldset .fields { margin-top: 4px; }
+  .check { display: flex; gap: 8px; align-items: center; }
+  .check input { width: 18px; height: 18px; }
+  .note { margin-top: 14px; }
+  .diff { font-size: 13.5px; }
+  .diff .k { color: var(--muted); font-family: "IBM Plex Mono", Menlo, monospace; font-size: 12px; }
+  .diff .was { color: var(--bad); text-decoration: line-through; opacity: .8; }
+  .diff .now { color: var(--good); }
+  .card { background: var(--surface); border: 1px solid var(--rule-strong); padding: 12px 14px; margin: 10px 0; }
+  .card .name { font-weight: 600; }
+  .empty { color: var(--muted); padding: 20px 0; }
+  .toast { position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--ground); padding: 8px 14px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+  .toast.show { opacity: 1; }
+  .help { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
+  .newrow { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 10px 0; }
+  .newrow input { font: inherit; font-size: 14px; padding: 7px 9px; border: 1px solid var(--field-border); background: var(--field); color: var(--ink); }
+  @media (prefers-reduced-motion: reduce) { .toast { transition: none; } }
+</style>
+
+<header class="bar">
+  <div class="head">
+    <div><span class="eyebrow">Riftgate · content/*.json</span><h1>Content Editor</h1></div>
+    <div class="status" id="status">Loading the shipped files…</div>
+  </div>
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+</header>
+<main id="main"></main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+// The shipped content is published beside this page. Edits are documents in the
+// artifact's database, one per entry (collection "edits", id "<file>.<list>__<entry id>"),
+// holding the whole edited entry. A session pulls them with ArtifactData and applies them
+// to content/*.json; once the shipped file matches, the entry shows as applied and the
+// document can be cleared.
+const FILES = [
+  {key: "chassis.entries", label: "Chassis", file: "content/chassis.json", list: "entries"},
+  {key: "chassis.makers", label: "Makers", file: "content/chassis.json", list: "makers"},
+  {key: "components.entries", label: "Components", file: "content/components.json", list: "entries"},
+  {key: "foes.entries", label: "Foes", file: "content/foes.json", list: "entries"},
+  {key: "factions.entries", label: "Factions", file: "content/factions.json", list: "entries"},
+  {key: "vocabulary.entries", label: "Vocabulary", file: "content/vocabulary.json", list: "entries"},
+];
+const state = {
+  shipped: {},       // key -> [entries]
+  about: {},         // file -> _about
+  edits: {},         // doc id -> doc data
+  tab: "chassis.entries",
+  open: null,        // {key, id} when an entry is open
+  db: null,
+  dbState: "loading", // loading | ready | none
+  draft: null,       // the entry being edited, as an object
+  invalid: new Set(),
+};
+const $ = (s, el = document) => el.querySelector(s);
+const el = (tag, attrs = {}, ...kids) => {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") n.className = v;
+    else if (k.startsWith("on")) n.addEventListener(k.slice(2), v);
+    else if (v !== null && v !== undefined) n.setAttribute(k, v);
+  }
+  for (const kid of kids) if (kid !== null && kid !== undefined) n.append(kid);
+  return n;
+};
+const docId = (key, id) => `${key}__${id}`;
+const safeId = (s) => String(s).replace(/[^A-Za-z0-9_.~:@+-]/g, "-");
+const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+let toastT = null;
+function toast(msg) {
+  const t = $("#toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 1800);
+}
+function setStatus(msg, warn = false) { const s = $("#status"); s.textContent = msg; s.classList.toggle("warn", warn); }
+
+async function loadShipped() {
+  const seen = new Set();
+  for (const f of FILES) {
+    if (seen.has(f.file)) continue;
+    seen.add(f.file);
+    const r = await fetch(f.file, {cache: "no-store"});
+    if (!r.ok) throw new Error(`${f.file}: ${r.status}`);
+    const json = await r.json();
+    state.about[f.file] = json._about || "";
+    for (const g of FILES) if (g.file === f.file) state.shipped[g.key] = json[g.list] || [];
+  }
+}
+
+function shippedEntry(key, id) { return (state.shipped[key] || []).find(e => e.id === id) || null; }
+function editFor(key, id) { return state.edits[docId(key, id)] || null; }
+function entryState(key, id) {
+  const e = editFor(key, id), s = shippedEntry(key, id);
+  if (!e) return "";
+  if (e.deleted) return s ? "del" : "applied";
+  if (!s) return "new";
+  return same(e.data, s) ? "applied" : "edited";
+}
+function editedCount(key) {
+  return Object.values(state.edits).filter(e => e.key === key && entryState(key, e.id) !== "applied" && entryState(key, e.id) !== "").length;
+}
+
+// ---------------------------------------------------------------- rendering
+function render() {
+  renderTabs();
+  const main = $("#main");
+  main.replaceChildren();
+  if (state.tab === "changes") return renderChanges(main);
+  if (state.open) return renderEditor(main);
+  renderList(main);
+}
+function renderTabs() {
+  const tabs = $("#tabs"); tabs.replaceChildren();
+  for (const f of FILES) {
+    const n = editedCount(f.key);
+    const b = el("button", {role: "tab", "aria-selected": String(state.tab === f.key), onclick: () => { state.tab = f.key; state.open = null; render(); }}, f.label);
+    if (n) b.append(el("span", {class: "count"}, String(n)));
+    tabs.append(b);
+  }
+  const total = Object.values(state.edits).filter(e => { const st = entryState(e.key, e.id); return st && st !== "applied"; }).length;
+  const b = el("button", {role: "tab", "aria-selected": String(state.tab === "changes"), onclick: () => { state.tab = "changes"; state.open = null; render(); }}, "Changes");
+  if (total) b.append(el("span", {class: "count"}, String(total)));
+  tabs.append(b);
+}
+function renderList(main) {
+  const f = FILES.find(x => x.key === state.tab);
+  const shipped = state.shipped[f.key] || [];
+  const added = Object.values(state.edits).filter(e => e.key === f.key && !shippedEntry(f.key, e.id) && !e.deleted);
+  main.append(el("p", {class: "help"}, state.about[f.file] ? state.about[f.file].slice(0, 220) + (state.about[f.file].length > 220 ? "…" : "") : ""));
+  const list = el("div", {class: "list"});
+  const row = (id, name, sub) => {
+    const st = entryState(f.key, id);
+    const r = el("div", {class: "item", tabindex: "0", role: "button", onclick: () => openEntry(f.key, id), onkeydown: (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); openEntry(f.key, id); } }},
+      el("div", {}, el("div", {class: "name"}, name || id), el("div", {class: "id"}, sub || id)),
+      st ? el("span", {class: "tag " + st}, st === "del" ? "delete" : st) : el("span"));
+    list.append(r);
+  };
+  for (const e of shipped) row(e.id, e.name, e.id + (e.category ? " · " + e.category : "") + (e.maker ? " · " + e.maker : ""));
+  for (const e of added) row(e.id, e.data && e.data.name, e.id + " · new");
+  main.append(list);
+  const newrow = el("div", {class: "newrow"});
+  const input = el("input", {type: "text", id: "new-id-" + safeId(f.key), placeholder: "new id (snake_case)", "aria-label": "new entry id"});
+  const template = shipped[shipped.length - 1];
+  newrow.append(input, el("button", {class: "act", disabled: state.dbState !== "ready" ? "" : null, onclick: () => {
+    const id = input.value.trim();
+    if (!/^[a-z0-9_]+$/.test(id)) return toast("An id is lower-case letters, digits and underscores.");
+    if (shippedEntry(f.key, id) || editFor(f.key, id)) return toast("That id exists already.");
+    const data = template ? JSON.parse(JSON.stringify(template)) : {id};
+    data.id = id;
+    if ("name" in data) data.name = id.split("_").map(w => w[0].toUpperCase() + w.slice(1)).join(" ");
+    saveDoc(f.key, id, {data, note: "new entry, from the shape of " + (template ? template.id : "nothing")}).then(() => openEntry(f.key, id));
+  }}, "Add from the last entry's shape"));
+  main.append(newrow);
+  if (state.dbState === "none") main.append(el("p", {class: "help"}, "Saving is off in this view: the database did not load. Open the page signed in, from the artifact link."));
+}
+
+function openEntry(key, id) {
+  const e = editFor(key, id), s = shippedEntry(key, id);
+  state.open = {key, id};
+  state.draft = JSON.parse(JSON.stringify(e && !e.deleted ? e.data : (s || (e ? e.data : {id}))));
+  state.invalid = new Set();
+  render();
+  window.scrollTo(0, 0);
+}
+
+function renderEditor(main) {
+  const {key, id} = state.open;
+  const f = FILES.find(x => x.key === key);
+  const s = shippedEntry(key, id), e = editFor(key, id);
+  const st = entryState(key, id);
+  main.append(el("div", {class: "toolbar"},
+    el("button", {class: "act", onclick: () => { state.open = null; render(); }}, "‹ " + f.label),
+    st ? el("span", {class: "tag " + st}, st === "del" ? "marked for deletion" : st) : null));
+  main.append(el("h2", {}, state.draft.name || id));
+  main.append(el("div", {class: "id"}, `${f.file} › ${f.list} › ${id}`));
+  const fields = el("div", {class: "fields"});
+  renderObject(fields, state.draft, []);
+  main.append(fields);
+  const note = el("div", {class: "field note"});
+  note.append(el("label", {for: "note-field"}, "note to the session that applies this (optional)"));
+  const noteIn = el("input", {type: "text", id: "note-field", value: e && e.note && !e.note.startsWith("new entry") ? e.note : ""});
+  note.append(noteIn);
+  main.append(note);
+  const bar = el("div", {class: "toolbar"});
+  const dirty = !same(state.draft, e && !e.deleted ? e.data : s);
+  const canSave = state.dbState === "ready" && state.invalid.size === 0 && (dirty || (e && e.deleted));
+  bar.append(el("button", {class: "act primary", disabled: canSave ? null : "", onclick: async () => {
+    await saveDoc(key, id, {data: state.draft, note: noteIn.value.trim()});
+    toast("Saved to the artifact's database");
+    render();
+  }}, "Save edit"));
+  if (e) bar.append(el("button", {class: "act", onclick: async () => {
+    await state.db.doc("edits/" + docId(key, id)).delete();
+    delete state.edits[docId(key, id)];
+    toast(s ? "Back to the shipped entry" : "New entry dropped");
+    if (s) openEntry(key, id); else { state.open = null; render(); }
+  }}, s ? "Revert to shipped" : "Drop this new entry"));
+  if (s && !(e && e.deleted)) bar.append(el("button", {class: "act danger", disabled: state.dbState !== "ready" ? "" : null, onclick: async () => {
+    await saveDoc(key, id, {data: s, note: noteIn.value.trim(), deleted: true});
+    toast("Marked for deletion");
+    render();
+  }}, "Mark for deletion"));
+  main.append(bar);
+  if (state.invalid.size) main.append(el("p", {class: "help"}, "A JSON field does not parse; fix it to save."));
+  if (e && !e.deleted && s && !same(e.data, s)) {
+    main.append(el("h2", {}, "Your changes"));
+    main.append(diffView(s, e.data));
+  }
+}
+
+// One field per key. Strings are text areas, numbers number inputs, booleans checks,
+// arrays of strings a comma list, anything nested an object fieldset or a JSON box.
+function renderObject(container, obj, path) {
+  for (const [k, v] of Object.entries(obj)) {
+    const p = path.concat(k);
+    const fid = "f-" + safeId(p.join("."));
+    if (typeof v === "string") {
+      const ta = el("textarea", {id: fid, rows: v.length > 90 ? 4 : 1});
+      ta.value = v;
+      ta.addEventListener("input", () => { setAt(p, ta.value); autosize(ta); refreshSave(); });
+      const fld = el("div", {class: "field"}, el("label", {for: fid}, k, el("span", {class: "type"}, "text")), ta);
+      container.append(fld);
+      requestAnimationFrame(() => autosize(ta));
+    } else if (typeof v === "number") {
+      const inp = el("input", {type: "number", id: fid, step: "any", value: String(v)});
+      inp.addEventListener("input", () => { const n = Number(inp.value); if (inp.value !== "" && Number.isFinite(n)) setAt(p, n); refreshSave(); });
+      container.append(el("div", {class: "field"}, el("label", {for: fid}, k, el("span", {class: "type"}, "number")), inp));
+    } else if (typeof v === "boolean") {
+      const inp = el("input", {type: "checkbox", id: fid});
+      inp.checked = v;
+      inp.addEventListener("change", () => { setAt(p, inp.checked); refreshSave(); });
+      container.append(el("div", {class: "field check"}, inp, el("label", {for: fid}, k)));
+    } else if (Array.isArray(v) && v.every(x => typeof x === "string")) {
+      const inp = el("input", {type: "text", id: fid, value: v.join(", ")});
+      inp.addEventListener("input", () => { setAt(p, inp.value.split(",").map(s => s.trim()).filter(Boolean)); refreshSave(); });
+      container.append(el("div", {class: "field"}, el("label", {for: fid}, k, el("span", {class: "type"}, "list, comma separated")), inp));
+    } else if (v && typeof v === "object" && !Array.isArray(v) && Object.values(v).every(x => typeof x !== "object" || x === null || (Array.isArray(x) && x.every(y => typeof y === "string")))) {
+      const fs = el("fieldset", {}, el("legend", {}, k));
+      const inner = el("div", {class: "fields"});
+      renderObject(inner, v, p);
+      fs.append(inner);
+      container.append(fs);
+    } else {
+      // Nested lists of objects (a passive's effects, a foe's actions) and mixed shapes: JSON.
+      const ta = el("textarea", {id: fid, class: "json", spellcheck: "false"});
+      ta.value = JSON.stringify(v, null, 2);
+      const fld = el("div", {class: "field"}, el("label", {for: fid}, k, el("span", {class: "type"}, v === null ? "null or JSON" : "JSON")), ta);
+      const err = el("div", {class: "err"});
+      fld.append(err);
+      ta.addEventListener("input", () => {
+        try {
+          const parsed = ta.value.trim() === "" ? null : JSON.parse(ta.value);
+          setAt(p, parsed); state.invalid.delete(fid); fld.classList.remove("invalid"); err.textContent = "";
+        } catch (ex) {
+          state.invalid.add(fid); fld.classList.add("invalid"); err.textContent = "Not JSON yet: " + ex.message;
+        }
+        refreshSave();
+      });
+      container.append(fld);
+    }
+  }
+}
+function setAt(path, value) {
+  let o = state.draft;
+  for (const k of path.slice(0, -1)) o = o[k];
+  o[path[path.length - 1]] = value;
+}
+function autosize(ta) { ta.style.height = "auto"; ta.style.height = Math.max(38, ta.scrollHeight + 2) + "px"; }
+function refreshSave() {
+  const b = $("#main .toolbar:last-of-type .act.primary");
+  if (!b || !state.open) return;
+  const {key, id} = state.open;
+  const e = editFor(key, id), s = shippedEntry(key, id);
+  const dirty = !same(state.draft, e && !e.deleted ? e.data : s);
+  b.disabled = !(state.dbState === "ready" && state.invalid.size === 0 && (dirty || (e && e.deleted)));
+}
+
+function diffView(was, now) {
+  const box = el("div", {class: "diff"});
+  const keys = new Set([...Object.keys(was || {}), ...Object.keys(now || {})]);
+  for (const k of keys) {
+    if (same(was[k], now[k])) continue;
+    const show = (x) => x === undefined ? "(none)" : typeof x === "string" ? x : JSON.stringify(x);
+    box.append(el("div", {}, el("span", {class: "k"}, k + ": "), el("span", {class: "was"}, show(was[k])), " ", el("span", {class: "now"}, show(now[k]))));
+  }
+  if (!box.childElementCount) box.append(el("div", {class: "help"}, "No difference."));
+  return box;
+}
+
+function renderChanges(main) {
+  const docs = Object.values(state.edits).filter(e => { const st = entryState(e.key, e.id); return st && st !== "applied"; });
+  const applied = Object.values(state.edits).filter(e => entryState(e.key, e.id) === "applied");
+  main.append(el("p", {class: "help"}, "Everything saved here and not yet in the repo. A session pulls the collection \"edits\" with ArtifactData and applies each document to its file; an entry the shipped file already matches shows as applied below and can be cleared."));
+  if (!docs.length) main.append(el("p", {class: "empty"}, "No pending edits."));
+  for (const e of docs) {
+    const f = FILES.find(x => x.key === e.key), s = shippedEntry(e.key, e.id), st = entryState(e.key, e.id);
+    const card = el("div", {class: "card"});
+    card.append(el("div", {class: "toolbar", style: "margin:0 0 6px"}, el("span", {class: "name"}, (e.data && e.data.name) || e.id), el("span", {class: "tag " + st}, st === "del" ? "delete" : st), el("span", {class: "id"}, `${f.file} › ${f.list}`)));
+    if (st === "edited") card.append(diffView(s, e.data));
+    else if (st === "new") card.append(el("div", {class: "help"}, "A new entry: " + JSON.stringify(e.data).slice(0, 300)));
+    else if (st === "del") card.append(el("div", {class: "help"}, "Remove this entry from the file."));
+    if (e.note) card.append(el("div", {class: "help"}, "Note: " + e.note));
+    card.append(el("div", {class: "toolbar", style: "margin:8px 0 0"}, el("button", {class: "act", onclick: () => openEntry(e.key, e.id)}, "Open")));
+    main.append(card);
+  }
+  const bar = el("div", {class: "toolbar"});
+  bar.append(el("button", {class: "act", disabled: docs.length ? null : "", onclick: async () => {
+    const text = JSON.stringify(docs.map(e => ({file: FILES.find(x => x.key === e.key).file, list: FILES.find(x => x.key === e.key).list, id: e.id, deleted: !!e.deleted, note: e.note || "", data: e.data})), null, 2);
+    try { await navigator.clipboard.writeText(text); toast("Copied as JSON"); }
+    catch (ex) { const ta = el("textarea", {class: "json", style: "width:100%;min-height:200px"}); ta.value = text; main.append(ta); ta.select(); toast("Select and copy"); }
+  }}, "Copy all pending as JSON"));
+  if (applied.length) bar.append(el("button", {class: "act", onclick: async () => {
+    for (const e of applied) { await state.db.doc("edits/" + docId(e.key, e.id)).delete(); delete state.edits[docId(e.key, e.id)]; }
+    toast(`Cleared ${applied.length} applied`);
+    render();
+  }}, `Clear ${applied.length} applied`));
+  main.append(bar);
+}
+
+// ---------------------------------------------------------------- the database
+async function saveDoc(key, id, fields) {
+  if (!state.db) { toast("The database is not available in this view"); return; }
+  const doc = {key, id, file: FILES.find(x => x.key === key).file, list: FILES.find(x => x.key === key).list,
+    data: fields.data, note: fields.note || "", deleted: !!fields.deleted, updated_at: new Date().toISOString()};
+  try {
+    await state.db.doc("edits/" + docId(key, id)).set(doc);
+    state.edits[docId(key, id)] = doc;
+  } catch (ex) {
+    toast("Save refused: " + (ex && ex.code ? ex.code : "unknown"));
+    if (ex && ex.code === "invalid_argument") { state.dbState = "none"; setStatus("This view cannot write edits.", true); }
+  }
+}
+async function connectDb() {
+  const db = window.claude && window.claude.use ? await window.claude.use("db") : null;
+  if (!db) { state.dbState = "none"; setStatus("Read only: the database did not load in this view.", true); render(); return; }
+  state.db = db;
+  db.collection("edits").onSnapshot((snap) => {
+    state.edits = {};
+    for (const d of snap.docs) { const data = d.data(); if (data && data.key) state.edits[d.id] = data; }
+    state.dbState = "ready";
+    const n = Object.values(state.edits).filter(e => { const st = entryState(e.key, e.id); return st && st !== "applied"; }).length;
+    setStatus(n ? `${n} pending edit${n === 1 ? "" : "s"} saved` : "Saved edits sync live · none pending");
+    if (!state.open) render(); else renderTabs();
+  }, (err) => {
+    state.dbState = "none";
+    setStatus("Edits cannot sync: " + err.code, true);
+    render();
+  });
+}
+
+(async () => {
+  try {
+    await loadShipped();
+    setStatus("Shipped files loaded · connecting…");
+    render();
+  } catch (ex) {
+    setStatus("Could not load the shipped content: " + ex.message, true);
+    return;
+  }
+  connectDb();
+})();
+</script>
+
