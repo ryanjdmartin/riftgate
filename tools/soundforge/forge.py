@@ -2883,16 +2883,20 @@ def guitar_real(f, dur, mute=True, cutoff=None, clean=False, damp=0.993):
         # Less edge for a solo (Ryan): less gain, and a cabinet without its upper peaks.
         x = np.clip(sat(hp(x, 400.0) * 2.5 + x * 1.2, 2.0) * 1.2, -1.0, 1.0)
         x = cabinet(x, peaks=((110.0, 1.0), (420.0, 0.9), (1150.0, 0.6)))
+        match = 1.0   # the solo voice keeps its own level
     else:
         # No hard clip (Ryan, 28 September, from the phone sketches: liked as someone hitting
         # metal garbage cans, too clippy; the clip-free one "worth a try"): two asymmetric
-        # stages with a tone control between, then the cabinet, at the level the clipped
-        # chain had (measured on a palm-muted low E: 0.61).
+        # stages with a tone control between, then the cabinet.
         y = asat(hp(x, 600.0) * 3.5 + x * 1.2, 1.6)
         y = lp(y, 3000.0) + bp(y, 700.0, 1400.0) * 0.3
-        x = cabinet(asat(y * 1.3, 1.2)) * 1.1 * 0.61
+        x = cabinet(asat(y * 1.3, 1.2)) * 1.1
+        match = 0.61   # the level the clipped chain had, measured on a palm-muted low E
     env = env_ad(n, 0.001, min(0.16, dur * 0.5), curve=3.0) if mute else env_ad(n, 0.001, dur * 0.7, curve=2.0)
-    return mix(x * env, body(200.0, 90.0, 0.05, drive=2.0, click=0.2) * 0.3)
+    # The match scales the whole voice, the body's knock with it, as the audition did: applied
+    # to the strings alone it left the knock 4.3 dB hot against them (inaudible under the bass
+    # and the kick, 0.02 dB in the mix, but not the voice Ryan judged).
+    return mix(x * env, body(200.0, 90.0, 0.05, drive=2.0, click=0.2) * 0.3) * match
 
 
 def lead_real(f, dur):
