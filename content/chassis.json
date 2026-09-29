@@ -72,7 +72,7 @@
       "armour": 0, "recharge_field": 20, "cooling": 5,
       "traits": ["walker"],
       "fixed": ["solar_flare_array"],
-      "loadout": ["umbra_projector", "umbra_projector", "pulse_repeater", "pulse_repeater", "zenith_emitter", "halo_shield", "radiator_sail"],
+      "loadout": ["umbra_projector", "umbra_projector", "halo_shield", "radiator_sail", "pulse_repeater", "pulse_repeater", "zenith_emitter"],
       "passive": {
         "id": "pocket_paradox", "name": "Pocket Paradox",
         "description": "A localized paradoxical time loop, weaponized. When a foe gains a status there is a 20% chance its past self knocks it out as well (Suppressed), plus 10% for every 10 shield the Baboon is missing.",

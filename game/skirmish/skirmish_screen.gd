@@ -885,6 +885,16 @@ func _mech_rows(i: int) -> Array:
 	var damaged := ms.unit.damaged_component_count()
 	if damaged > 0:
 		rows.append(["crack", str(damaged), "%d damaged component%s: repair in the hangar" % [damaged, "" if damaged == 1 else "s"], Palette.HUD])
+	# An on_foe_status passive is live all fight and its chance moves with the shield, so it
+	# reads here as an active effect (Ryan, 28 September), the current percentage as the chip.
+	var loop_chance := Effects.foe_status_suppress_chance(ms.unit)
+	if loop_chance > 0:
+		var loop_names: Array[String] = []
+		for m in Effects.live(ms.unit):
+			for eff in m.effects:
+				if str(eff.get("trigger", "")) == "on_foe_status" and not loop_names.has(m.name):
+					loop_names.append(m.name)
+		rows.append(["suppress", "%d%%" % loop_chance, "%s: a foe gaining a status has a %d%% chance of being knocked out too; the chance rises as this machine's shield falls" % [", ".join(loop_names), loop_chance], Palette.SHIELD])
 	# Every in-combat effect on the machine (Ryan, 26 September: the codex is the base state;
 	# the fight's statuses live here, as chips that the hold expands into their descriptions).
 	for d in Effects.describe(ms.unit):

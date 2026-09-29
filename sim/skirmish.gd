@@ -634,7 +634,7 @@ func _foe_gained_status(foe: Foe, status_id: String) -> void:
 		var chance := Effects.foe_status_suppress_chance(ms.unit)
 		if chance <= 0 or rng.randi_range(1, 100) > chance:
 			continue
-		log.append("%s: the loop catches %s (%d%%)" % [ms.unit.display_name, foe.display_name, chance])
+		log.append("%s got trapped in a paradox! (%s, %d%%)" % [foe.display_name, ms.unit.display_name, chance])
 		_suppress(foe)
 		return
 
