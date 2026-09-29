@@ -7,6 +7,18 @@ bible is published at https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ (this ac
 republish the committed file after a bible change) and, from the other account, at
 https://claude.ai/artifact/AdBTeE9px1Xvg5TKNjHjSP.
 
+**The pages, one per account.** An artifact is republished only by the account that made
+it, so each keeps its own copy and records it here. Bible:
+https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ (account A) and
+https://claude.ai/artifact/AdBTeE9px1Xvg5TKNjHjSP (account B). Account A: the nameplate
+page (https://claude.ai/artifact/6K6mq49XHCUbdZnkzp5rra) and the phone sketches (below).
+Account B: the content editor (https://claude.ai/artifact/HnE3gvsxNHXyjRhRyEiDqT) and the
+Baboon review page (https://claude.ai/artifact/BeDtchGtS8H2oH3yij3ywX). A new account
+publishes its own copies and adds the links. The editor is the one that bites: its `files`
+map holds the shipped content as the baselines Ryan edits against, and Ryan's saved edits
+live in that artifact's own database, so a fresh editor page starts empty and cannot see
+them. An account that cannot republish the editor says so rather than letting it drift.
+
 **Cold start, including from another account.** Nothing needed to work here lives outside
 the repo. Read this file, then `docs/todo.md` (the task list), then `CLAUDE.md` (the rules,
 the commands, and how Ryan works: he pressure-tests, judges effects running, leans hotter
@@ -95,6 +107,24 @@ rewards; the fight's effects live on the chips and the hold. Under the map, the 
 board (`game/battle/orders_board.gd`) carries every machine's gauges, its order and what
 it will meet while nothing is held; a held readout takes the same strip; the log is off
 the screen behind the board's LOG button.
+
+**The Baboon (26 to 29 September; the bible's Aphelion row has the reasoning).** Aphelion's
+first machine, from Ryan's stub; the Mandrill until the reserved-names pass found
+BattleTech's. Passive **Pocket Paradox**, from Ryan's codex about a researcher who knocked
+out his past self: a foe gaining any status, from anyone, has a 20% chance of being
+Suppressed too, plus 10% per 10 shield the Baboon is missing. `on_foe_status` fires from
+`Skirmish._foe_gained_status` (never on suppressed or numbed, or it feeds itself),
+`Effects.foe_status_suppress_chance` reads it through the pipeline, and the roll goes
+through `_suppress`, so Numbed and `stun_resist` still apply; the live percentage is a hold
+row and the log says "<foe> got trapped in a paradox!". The fixed backpack pods carry
+`solar_flare_array` so the passive has a status source in stock kit, which is the loadout
+row's rule. Its loadout is ordered as the model's pins are. **Open:** Ryan judges the rear
+silhouette now the fists hang at knee height (they sat on the ground, which read as two
+boxes set down); if it still reads wrong, his two options are heavier hands carrying
+hardware or a standard forward pose with the fist tile turned 90 degrees. Its flavour and
+the seven Aphelion components' text are his. The passive's numbers are unplayed, and the
+greedy bot does not value a status for the stun it may cause, so its balance row
+understates it.
 
 **Balance (bible section 11).** `sim/policy.gd` plays the skirmish headless (RANDOM,
 GREEDY, `withdraw_below`); `tools/balance.gd` runs the matrix, about two minutes with

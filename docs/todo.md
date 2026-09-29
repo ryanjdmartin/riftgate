@@ -54,6 +54,7 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 - [ ] Granted passives coloured on the codex
 - [ ] Save and resume mid-battle at any phase (nothing is serialised yet)
 - [ ] Onboarding: the gesture tutorial and the cheat sheet; the reroll rule and the zone of control first
+- [ ] The bot values a status for the stun it may cause (`policy.gd` ignores `on_foe_status`, so the Baboon's row understates it)
 - [ ] Rerun `tools/balance.gd` once the new machines have real kits, and after each engine piece above; read bands, not numbers
 
 ## Map and screens
@@ -69,6 +70,7 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 
 - [x] lowforge briefs and models for the seven new machines (first passes, 29 September; every hardpoint has its pin, every fixed component is modelled in); Ryan iterates by render
 - [ ] Ryan: notes on the seven first-pass models (`tools/hero_shot.gd` renders one large; `forge.py build <id>` rebuilds it)
+- [ ] Ryan: judge the Baboon's rear silhouette in the harness (the fists hang at knee height now, not on the ground); if it still reads as carrying two boxes, pick heavier hands carrying hardware or a standard forward pose with the fist tile turned 90 degrees
 - [ ] Enemy art through foeforge for the foes still on sketch grids
 - [ ] The hangar as a model
 - [ ] Per-mech repaint (`Unit.paint` exists; nothing sets it)
