@@ -16,7 +16,8 @@ swatches (https://claude.ai/artifact/LY278Pf67FpQYArCgXAU8v) and its own hangar 
 September, so it flags a hardpoint the model has no socket for); checked by listing on 29
 September, twice, after an earlier note credited it with pages it cannot open. Also account
 A's since 29 September (Ryan: maintain both accounts' copies as needed; he tracks which is
-active): its nameplate (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; its database was
+active): its phone sketches (https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9, every
+round plus The Far Bank whole at 86, 90 and 92), its nameplate (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; its database was
 seeded from the 28 September list of 48 with the Mustang and Gelada rejected, so anything Ryan
 added to B's copy after that is not in it), its model renders
 (https://claude.ai/artifact/Lv4nXY98bCX5ATfQKiL6Ls) and its phone sketches
