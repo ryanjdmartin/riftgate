@@ -300,6 +300,10 @@ def baboon(b):
         b.prism("x", elbow[0], elbow[1], elbow[2], 5.5, 12.0, "steel.dark", 6, "elbow")
         _beam(b, elbow, wrist, OCT(4.6), OCT(5.2), "steel.panel", "forearm")
         _fist(b, wrist[0], 5.0, 19.0, 8.0 + Z0, 21.0 + Z0, 14.0, -s)   # the inner side faces the body
+        if s < 0:
+            # The left hand's outside is a socket too (hp_6): seven hardpoints need seven pins.
+            b.box(wrist[0] - 7.5, wrist[0] - 4.5, 8.0, 18.0, 13.0 + Z0, 19.0 + Z0, "steel.plate", "left_mount")
+            b.pin("hp_6", (wrist[0] - 9.5, 18.0, 16.0 + Z0))
         if s > 0:
             # The Pulse Repeater on the outside of the right hand (hp_5), above the thumb.
             gx = wrist[0] + 9.5
@@ -309,7 +313,7 @@ def baboon(b):
             b.pin("hp_5", (gx, 18.0, 16.0 + Z0))
     # The backpack: a tall rack, red stripes down its sides, two flare pods on top (the
     # fixed component, the Solar Flare Array: built in, so no pin), the Corona dish on its
-    # right rear (hp_3), the vent block on its left rear (hp_4), a mast with a red light
+    # right rear (hp_3), the vent block on its left rear (hp_4), a mount on its right flank (hp_7), a mast with a red light
     # between the pods, and a row of small lit ports across the rack's back.
     b.box(-17.0, 17.0, -26.0, -14.0, 34.0 + Z0, 68.0 + Z0, "steel.panel", "rack")
     for s in (-1.0, 1.0):
@@ -321,6 +325,9 @@ def baboon(b):
     b.pin("hp_3", (11.0, -28.0, 54.0 + Z0), forward=(0.0, -1.0, 0.0))
     b.box(-16.0, -2.0, -28.5, -26.0, 38.0 + Z0, 52.0 + Z0, "steel.vent", "vent_block")
     b.pin("hp_4", (-9.0, -27.0, 45.0 + Z0), forward=(0.0, -1.0, 0.0))
+    # A socket on the rack's right flank (hp_7), a small hard mount on the stripe.
+    b.box(18.5, 21.0, -23.0, -17.0, 46.0 + Z0, 54.0 + Z0, "steel.plate", "flank_mount")
+    b.pin("hp_7", (21.0, -20.0, 50.0 + Z0), forward=(1.0, 0.0, 0.0))
     for i in range(3):
         b.box(-12.0 + i * 8.0, -8.0 + i * 8.0, -27.0, -26.0, 60.0 + Z0, 62.0 + Z0, "amber.engine", "rack_port")
     b.prism("z", 0.0, -20.0, 80.0 + Z0, 1.2, 24.0, "steel.dark", 6, "mast")
