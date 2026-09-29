@@ -17,7 +17,7 @@ each file is an A/B against the first of its set; never written over a shipped t
             levels, then levelled by what a phone speaker plays (a model: high-passed at
             220 Hz twice, a presence bump, rolled off at 9 kHz).
 
-    tools/spriter/.venv/bin/python tools/soundforge/phone_sketches.py [voices|balance|levels|voices2|guitar|shadows2|rift|round3|round4|round5]
+    tools/spriter/.venv/bin/python tools/soundforge/phone_sketches.py [voices|balance|levels|voices2|guitar|shadows2|rift|round3|round4|round5|round6]
 
 Second round (28 September, from Ryan's notes on the first): voices2 (two hybrids of voice 2
 and the split, and the other bass voices the tracks use), guitar (the backing guitar without
@@ -430,6 +430,78 @@ KICK_SIZES = [("as ships", {}), ("lower", dict(kick_real=kick_at(0.9))), ("lowes
 TOM_TIGHTS = [("as ships", {}), ("tighter", dict(tom_real=tom_at(0.75, 0.6, 1.15))), ("tightest", dict(tom_real=tom_at(0.55, 0.3, 1.3)))]
 
 
+
+# ---------------------------------------------------------------- round six (Ryan, 29 September, on round four)
+# The kick: the middle size in the track, and the old kick (the one before the metal cut) in
+# the track, since "the original kick was better than I thought" could mean either. The toms:
+# not the voice but the playing ("the drummer is grooving instead of beating; hit it like you
+# mean it"), so the voice hits harder (more saturation in the body, a harder front and stick,
+# the body kept rather than tightened, which read as hollow) and the kit plays it louder.
+
+def kick_old(pitch=1.0):
+    n = F.n_of(0.45)
+    t = F.t_of(n)
+    f = (50.0 + 80.0 * F.np.exp(-t / 0.05)) * pitch
+    skin = F.np.sin(2.0 * F.math.pi * F.np.cumsum(f) / F.SR) * F.env_ad(n, 0.001, 0.14, curve=3.0)
+    beater = F.bp(F.noise(F.n_of(0.006)), 2000.0, 6000.0) * F.env_ad(F.n_of(0.006), 0.0002, 0.0015) * 0.9
+    shell = F.harmonics(180.0 * pitch, n, [0.5, 0.3, 0.15]) * F.env_ad(n, 0.001, 0.02) * 0.4
+    return F.room(F.mix(F.sat(skin, 1.6), F.at(F.np.zeros(1), beater, 0.0), shell), decay=0.12, mix=0.12, cut=3000.0)
+
+
+def tom_power(skin, drive, front, stick, room_decay, room_mix):
+    def voice(f=150.0, pitch=1.0):
+        n = F.n_of(0.5)
+        t = F.t_of(n)
+        fr = f * pitch * (1.0 + 0.18 * F.np.exp(-t / 0.05))
+        sk = F.np.sin(2.0 * F.math.pi * F.np.cumsum(fr) / F.SR) * F.env_ad(n, 0.001, skin, curve=2.5)
+        sub = F.np.sin(2.0 * F.math.pi * f * pitch * 0.5 * t) * F.env_ad(n, 0.002, skin * 0.8) * 0.5
+        shell = F.harmonics(f * pitch * 1.4, n, [0.5, 0.25, 0.1]) * F.env_ad(n, 0.001, 0.03) * 0.3
+        st = F.lp(F.bp(F.noise(F.n_of(0.01)), 1500.0, 6000.0), 5000.0) * F.env_ad(F.n_of(0.01), 0.0002, 0.003) * stick
+        hit = F.body(f * pitch * 1.6, f * pitch, 0.04, drive=2.6, click=0.8) * front
+        shadow = F.bp(F.sat(sk + sub, 3.0), 120.0, 500.0) * 0.35
+        return F.room(F.mix(F.sat(sk + sub, drive), shell, hit, F.at(F.np.zeros(1), st, 0.0), shadow),
+                      decay=room_decay, mix=room_mix, cut=4500.0) * 1.1
+    return voice
+
+
+TOM_POWER = [
+    ("as ships", {}, 1.0),
+    ("power one", dict(tom_real=tom_power(0.13, 2.2, 1.3, 1.8, 0.06, 0.07)), 1.4),
+    ("power two", dict(tom_real=tom_power(0.15, 2.6, 1.5, 2.0, 0.08, 0.09)), 1.8),
+]
+
+
+def groove_kit_gain(part_mult):
+    """A groove wrapper that scales named kit parts' gains: {"tom": 1.4} plays the toms harder."""
+    orig = F.groove
+
+    def g(*a, **kw):
+        kit = dict(kw["kit"])
+        for name, mult in part_mult.items():
+            if name in kit:
+                entry = kit[name]
+                kit[name] = (entry[0], entry[1] * mult) + tuple(entry[2:])
+        kw["kit"] = kit
+        return orig(*a, **kw)
+    return g
+
+
+def render_hold_kit(form, patches, part_mult):
+    saved = with_form("music_hold_the_line", form)
+    try:
+        F.seed("music_hold_the_line")
+        with Patched(groove=groove_kit_gain(part_mult), **patches):
+            x = F.music_hold_the_line()
+    finally:
+        F.MUSIC["music_hold_the_line"]["form"] = saved
+    return x
+
+
+def drums_clip_kit(patches, part_mult):
+    with Patched(groove=groove_kit_gain(part_mult)):
+        return drums_clip(patches)
+
+
 # ---------------------------------------------------------------- rendering
 
 class Patched:
@@ -543,7 +615,7 @@ def main(argv):
     if os.path.exists(page):   # the committed page, copied in so the publish has everything in one folder
         with open(page) as src, open(os.path.join(OUT, "index.html"), "w") as dst:
             dst.write(src.read())
-    manifest = {"voices": [], "balance": [], "levels": [], "voices2": [], "guitar": [], "shadows2": [], "rift": [], "round3": [], "round4": [], "round5": [], "notes": {}}
+    manifest = {"voices": [], "balance": [], "levels": [], "voices2": [], "guitar": [], "shadows2": [], "rift": [], "round3": [], "round4": [], "round5": [], "round6": [], "notes": {}}
     os.makedirs(OUT, exist_ok=True)
     path = os.path.join(OUT, "manifest.json")
     if which != "all" and os.path.exists(path):
@@ -702,6 +774,31 @@ def main(argv):
             write(name, x)
             manifest["round5"].append({"name": name, "seconds": len(x) / F.SR, "phone_db": round(phone_level(x), 1),
                                        "note": "The Far Bank whole at %d bpm%s" % (bpm, ", as it ships" if bpm == 86 else "")})
+            print("  %-14s %5.1f s  phone %.1f dB" % (name, len(x) / F.SR, phone_level(x)))
+        save()
+    if which in ("round6", "all"):
+        print("round6")
+        for name, patches, note in [
+            ("mix_kick_mid", dict(kick_real=kick_at(0.9)), "the track with the kick's middle size (pitched down a tenth)"),
+            ("mix_kick_old", dict(kick_real=kick_old), "the track with the old kick, the one before the metal cut, in case that is the original meant"),
+        ]:
+            x = level_to(render_hold(BALANCE_FORM, patches=patches), SKIRMISH_LEVEL)
+            write(name, x)
+            manifest["round6"].append({"name": name, "seconds": len(x) / F.SR, "phone_db": round(phone_level(x), 1), "note": note})
+            print("  %-14s %5.1f s  phone %.1f dB" % (name, len(x) / F.SR, phone_level(x)))
+        parts, marks, t = [], [], 0.0
+        for label, patches, mult in TOM_POWER:
+            d = level_to(drums_clip_kit(patches, {"tom": mult, "tom2": mult}), SKIRMISH_LEVEL)
+            marks.append((t, label)); parts.append(d); parts.append(np.zeros(F.SR)); t += (len(d) + F.SR) / F.SR
+        x = np.concatenate(parts)
+        write("drums_tom_power", x)
+        manifest["round6"].append({"name": "drums_tom_power", "seconds": len(x) / F.SR, "marks": marks,
+                                   "note": "the drums bare: the toms as they ship, then hit harder (more body saturation, a harder front and stick, played louder), then harder still with more body"})
+        print("  drums_tom_power %5.1f s" % (len(x) / F.SR))
+        for (label, patches, mult), name in zip(TOM_POWER[1:], ("mix_tom_power1", "mix_tom_power2")):
+            x = level_to(render_hold_kit(BALANCE_FORM, patches, {"tom": mult, "tom2": mult}), SKIRMISH_LEVEL)
+            write(name, x)
+            manifest["round6"].append({"name": name, "seconds": len(x) / F.SR, "phone_db": round(phone_level(x), 1), "note": "the track with the toms at " + label})
             print("  %-14s %5.1f s  phone %.1f dB" % (name, len(x) / F.SR, phone_level(x)))
         save()
     if which in ("levels", "all"):

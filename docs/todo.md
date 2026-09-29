@@ -15,9 +15,10 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] The Badger's joints and pins in Blender (`forge.py export badger`); the missing model pins: the Clydesdale has 6 for 9 hardpoints, the Sparrowhawk 2 for 4
 - [ ] The Sparrowhawk's model carries two pins for four hardpoints (wing pods only); two more sockets, and the codex page flags both it and the Clydesdale until then
 - [x] Picks from the phone sketches page: the bass voice (3 or 5), the clip-free guitar, the third shadows (28 September: voice 12, the guitar, the third cut, a quarter of the level gap; all in the forge)
-- [ ] Judge The Far Bank whole at 90 and 92 against 86 (the sketches page's tempo set), as a boss track rather than the map theme it was slowed for
+- [ ] Judge The Far Bank's tempo in the game: 86, 88 and 90 are all in the skirmish set (`The Far Bank`, `The Far Bank 88`, `The Far Bank 90`; skip between them from the pause menu); 92 lost the sinister, gloomy air. Say which stays
 - [ ] Hold The Line: the arrangement tweaks you have in mind (yours to describe by section letter)
-- [ ] Judge the drums' last dial-in from the sketches page's "Now" set: `mix_ship` (the track as it ships), `drums_kick` (the kick's size, three steps down) and `drums_tom` (the toms, three steps tighter); say which step, or further
+- [ ] Judge round six on the sketches page: the track with the middle kick and with the old kick (say which "original" meant), and the toms hit harder at two powers, bare and in the track
+- [x] Judge the drums' last dial-in from the sketches page's "Now" set: `mix_ship` (the track as it ships), `drums_kick` (the kick's size, three steps down) and `drums_tom` (the toms, three steps tighter); say which step, or further
 - [ ] Read `docs/balance.md` against your own play; then either the numbers move or the bot's next rung is built
 - [ ] Discuss first, then decide: ally wrecks (block a hex? a round or the battle?)
 - [ ] Discuss first, then decide: what terrain does in a skirmish (things the machines feel, never a bonus to the foes)
@@ -98,7 +99,7 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 - [ ] The Risen and Infernal Horde boss themes from their seeds; melodies proposed in chat first
 - [ ] The Far Bank's wrap at bar nine lands without the room's tail (the forge bakes it onto bar one, which the loop no longer reaches); render the tail onto bar nine only if Ryan hears the join in a fight longer than the track
 - ~~A light tight kick under The Far Bank's bass drum, as a sketch~~ (Ryan, 29 September: not missing any bass on the phone)
-- [ ] The real recordings and the real track: who makes them
+- ~~The real recordings and the real track: who makes them~~ (Ryan, 29 September: no decision needed, the forge on this computer is the instrument)
 
 ## Pinned, not now
 

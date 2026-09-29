@@ -3277,6 +3277,10 @@ SOUNDS = {
     "victory": victory, "defeat": defeat, "withdraw": withdraw, "overheat": overheat,
     "laser": laser, "gunfire": gunfire, "cannon": cannon, "slash": slash, "slam": slam,
     "music_far_bank": music_far_bank, "music_hold_the_line": music_hold_the_line,
+    # The Far Bank at 88 and 90 beside the shipped 86, in the skirmish set for Ryan to judge
+    # in the game as a boss track (29 September: 92 lost the sinister, gloomy air). Temporary;
+    # the winner becomes music_far_bank's tempo and these go.
+    "music_far_bank_88": lambda: music_far_bank(bpm=88), "music_far_bank_90": lambda: music_far_bank(bpm=90),
     "music_low_ground": music_low_ground, "music_night_shift": music_night_shift,
     "music_crossing": music_crossing, "music_full_bore": music_full_bore,
 }
@@ -3299,7 +3303,7 @@ LEVELS = {
     # sits below 80 Hz where a phone is silent. The Far Bank 9.2 dB under Hold The Line
     # (-22.5 to -20.2), The Crossing 5.9 under (-20.7 to -19.2), Low Ground already level
     # with Night Shift on the speaker (unchanged).
-    "music_far_bank": -20.2, "music_hold_the_line": -20.7,
+    "music_far_bank": -20.2, "music_hold_the_line": -20.7, "music_far_bank_88": -20.2, "music_far_bank_90": -20.2,
     "music_low_ground": -24.9, "music_night_shift": -24.9,   # the map's two, at one level, the map's level (Ryan, 25 September)
     "music_crossing": -19.2, "music_full_bore": -20.7,   # rift C in the skirmish set, up a quarter of its phone gap (see above)
 }

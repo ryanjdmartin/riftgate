@@ -186,6 +186,18 @@
 </div>
 <div class="listen"><p><strong>Listen for:</strong> whether the build and the climax carry a fight at the faster pace, and whether the bells and the choir keep their air. Switching rows keeps the bar you were at.</p></div>
 
+<h2>6. The kick in the track, and the toms hit like you mean it</h2>
+<p>From round four: the original kick was better than you thought, and you want the track on the middle size, since it may punch through on the speaker. On the toms the tightening made them hollow and was not the point: the drummer is grooving instead of beating. So the voice here hits harder and keeps its body, and the kit plays it louder.</p>
+<div class="rows" data-group="round6">
+  <div class="row" data-src="mix_kick_mid.mp4" data-title="Track &middot; middle kick"><button class="btn" aria-label="play">&#9654;</button><div class="name"><span class="step">1</span> The track with the middle kick</div><div class="num" data-db="mix_kick_mid"></div><div class="note">Round four's second size, pitched down a tenth, in the riff, the turn and the lift.</div></div>
+  <div class="row" data-src="mix_kick_old.mp4" data-title="Track &middot; the old kick"><button class="btn" aria-label="play">&#9654;</button><div class="name"><span class="step">2</span> The track with the old kick</div><div class="num" data-db="mix_kick_old"></div><div class="note">The kick from before the metal cut, in case that is the original you meant.</div></div>
+  <div class="row" data-src="drums_tom_power.mp4" data-title="Toms &middot; hit harder, bare"><button class="btn" aria-label="play">&#9654;</button><div class="name"><span class="step">3</span> The toms hit harder, bare</div><div class="num"></div><div class="note">Four bars with the lift's fill, three times: as they ship, then power one (more saturation in the body, a harder front and stick, the kit playing them louder), then power two (harder still, with more body and room, since tightening read as hollow).</div>
+    <div class="marks" data-marks="tompower"></div></div>
+  <div class="row" data-src="mix_tom_power1.mp4" data-title="Track &middot; toms power one"><button class="btn" aria-label="play">&#9654;</button><div class="name"><span class="step">4</span> The track with the toms at power one</div><div class="num" data-db="mix_tom_power1"></div><div class="note">The same bars as row 1, the shipped kick, the toms at power one.</div></div>
+  <div class="row" data-src="mix_tom_power2.mp4" data-title="Track &middot; toms power two"><button class="btn" aria-label="play">&#9654;</button><div class="name"><span class="step">5</span> The track with the toms at power two</div><div class="num" data-db="mix_tom_power2"></div><div class="note">The toms at power two.</div></div>
+</div>
+<div class="listen"><p><strong>Listen for:</strong> whether the middle kick punches through on the speaker without turning back into a small drum in headphones, and at which power the fill stops sounding gentle without going hollow. Everything switches at the same bar.</p></div>
+
 <h2>Measured</h2>
 <p>Where each shipped loop's power sits, by band. A phone speaker plays little below 150 Hz and nothing below 80.</p>
 <div style="overflow-x:auto">
@@ -278,8 +290,8 @@
   // The solo file's marks, and each file's loudness through the phone model, from the manifest.
   fetch('manifest.json').then(function (r) { return r.json(); }).then(function (m) {
     var all = [];
-    ['round4', 'round5', 'voices', 'voices2', 'guitar', 'balance', 'shadows2', 'rift', 'levels', 'round3'].forEach(function (k) { all = all.concat(m[k] || []); });
-    var markBoxes = {bass_solo: 'solo', bass_solo2: 'solo2', bass_solo3: 'solo3', drums_kits: 'drums', drums_kick: 'kick', drums_tom: 'tomtight'};
+    ['round4', 'round5', 'round6', 'voices', 'voices2', 'guitar', 'balance', 'shadows2', 'rift', 'levels', 'round3'].forEach(function (k) { all = all.concat(m[k] || []); });
+    var markBoxes = {bass_solo: 'solo', bass_solo2: 'solo2', bass_solo3: 'solo3', drums_kits: 'drums', drums_kick: 'kick', drums_tom: 'tomtight', drums_tom_power: 'tompower'};
     all.forEach(function (f) {
       var el = document.querySelector('[data-db="' + f.name + '"]');
       if (el && f.phone_db !== undefined) el.textContent = f.phone_db.toFixed(1) + ' dB on the speaker';

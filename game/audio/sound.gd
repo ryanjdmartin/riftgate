@@ -31,6 +31,7 @@ const NAMES := [
 	"contact", "engage", "cut", "gate_hit", "spawn", "victory", "defeat", "withdraw",
 	"overheat", "laser", "gunfire", "cannon", "slash", "slam",
 	"music_far_bank", "music_hold_the_line", "music_low_ground", "music_night_shift", "music_crossing", "music_full_bore",
+	"music_far_bank_88", "music_far_bank_90",   # The Far Bank at two more tempos, in the skirmish set while Ryan judges its pace in the game (29 September)
 ]
 
 ## What a screen's music is: a set of loops. A cycling set plays them in turn, one full
@@ -51,7 +52,7 @@ const NAMES := [
 ## Chorus's: the most choral and the most symphonic of the six, for the last act.
 const SETS := {
 	"map": ["music_low_ground", "music_night_shift"],
-	"skirmish": ["music_hold_the_line", "music_crossing", "music_full_bore"],
+	"skirmish": ["music_hold_the_line", "music_crossing", "music_full_bore", "music_far_bank", "music_far_bank_88", "music_far_bank_90"],   # the three Far Banks are temporary: judged in the game, then one tempo stays (29 September)
 	"boss_eldritch": ["music_far_bank"],
 }
 const PICK := ["skirmish"]
@@ -59,7 +60,7 @@ const PICK := ["skirmish"]
 ## Where a loop wraps to, in bars from its top, when it is not the top: a boss theme's intro
 ## plays once, under the reveal, and a long fight wraps into the groove instead (Ryan, 25
 ## September). Bars are the 4/4 bar's length at the loop's TEMPO. Absent means the top.
-const LOOP_FROM := {"music_far_bank": 8}
+const LOOP_FROM := {"music_far_bank": 8, "music_far_bank_88": 8, "music_far_bank_90": 8}
 
 ## Every loop's shown title and its working label. The files are named for the titles
 ## (Ryan's picks, 25 September); the labels are creation order, human A B C and rift A B C,
@@ -70,6 +71,8 @@ const TRACKS := {
 	"music_night_shift": {"title": "Night Shift", "label": "Human B"},
 	"music_full_bore": {"title": "Full Bore", "label": "Human C"},
 	"music_far_bank": {"title": "The Far Bank", "label": "Rift A"},
+	"music_far_bank_88": {"title": "The Far Bank 88", "label": "Rift A at 88"},
+	"music_far_bank_90": {"title": "The Far Bank 90", "label": "Rift A at 90"},
 	"music_low_ground": {"title": "Low Ground", "label": "Rift B"},
 	"music_crossing": {"title": "The Crossing", "label": "Rift C"},
 }
@@ -91,7 +94,7 @@ static var muted := false   # tests and tools: nothing plays
 
 ## The loops' tempos, as tools/soundforge writes them, so a thing on screen can move on
 ## the beat (the rift's vortex, Ryan, 23 September: it had landed near the beat by chance).
-const TEMPO := {"music_far_bank": 86.0, "music_hold_the_line": 100.0, "music_low_ground": 90.0, "music_night_shift": 94.0, "music_crossing": 126.0, "music_full_bore": 105.0}
+const TEMPO := {"music_far_bank": 86.0, "music_far_bank_88": 88.0, "music_far_bank_90": 90.0, "music_hold_the_line": 100.0, "music_low_ground": 90.0, "music_night_shift": 94.0, "music_crossing": 126.0, "music_full_bore": 105.0}
 
 
 ## Beats elapsed in the loop that is playing, or -1 when nothing is.

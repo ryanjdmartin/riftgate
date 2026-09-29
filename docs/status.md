@@ -216,9 +216,11 @@ level (the three human tracks), a metal kick and a tightened tom (the human trac
 softer crash, the soft sub's speaker shadow, and the rift tracks a quarter of their
 phone gap louder (The Far Bank -20.2, The Crossing -19.2; Low Ground unchanged). Still
 to judge: the kick's size alone and the toms in headphones (Ryan's last drum notes).
-Next: a speakers/headphones setting (offsets per track and a bus EQ on the speaker
-profile); the Risen and Infernal Horde boss themes from their seeds, melodies proposed in
-chat first; the real recordings remain section 12's open question.
+The Far Bank sits in the skirmish set three times over (86, 88, 90) while Ryan judges its
+pace in the game; then one tempo stays and the other two ids go. Next: a
+speakers/headphones setting (offsets per track and a bus EQ on the speaker profile); the
+Risen and Infernal Horde boss themes from their seeds, melodies proposed in chat first. The
+real recordings question is closed (29 September): the forge is the instrument.
 
 **How the listening page works** (the phone sketches, account A's page, 29 September; the
 page block above owns the account rule). Ryan judges the music on his phone, not from the
