@@ -1,6 +1,8 @@
 """Build the hangar codex page from content/*.json: every chassis with its plate, stats,
 passive, traits and its die laid out entry by entry, each entry's component with its
-numbers, keywords and maker. Read-only; regenerate and republish after a content change."""
+numbers, keywords and maker, and each hardpoint's pin checked against the built model so a
+missing socket is flagged rather than assumed. Read-only; regenerate and republish after a
+content or model change."""
 import json, os, sys, html
 
 ROOT = sys.argv[1] if len(sys.argv) > 1 else "."
@@ -19,6 +21,16 @@ REACH = {"melee": "melee", "line": "line of sight", "indirect": "indirect", "": 
 
 def esc(s):
     return html.escape(str(s or ""))
+
+def model_pins(cid):
+    """The hp_<n> pins the built model actually carries, read from art/models/<id>.glb, so
+    the page tags a hardpoint with a real socket and says so when the model has none yet.
+    None when there is no model."""
+    path = os.path.join(ROOT, "art", "models", cid + ".glb")
+    if not os.path.exists(path):
+        return None
+    import re
+    return sorted(set(int(n) for n in re.findall(rb'"hp_(\d+)"', open(path, "rb").read())))
 
 def kw_title(k):
     v = vocab.get(k)
@@ -50,7 +62,18 @@ def face_line(f):
         bits.append("%d heat" % f["heat"])
     return " · ".join(bits)
 
-def component_card(cid, slot, pin):
+def pin_html(pin, pins):
+    """The pin tag: the socket's name, or the same name flagged when the model lacks it."""
+    if not pin:
+        return ""
+    n = int(pin.split("_")[1])
+    if pins is None:
+        return '<span class="pin nopin" title="no model built for this chassis yet">%s · no model</span>' % esc(pin)
+    if n not in pins:
+        return '<span class="pin nopin" title="the model has no hp_%d Empty; the rule wants one per hardpoint">%s · not on the model</span>' % (n, esc(pin))
+    return '<span class="pin">%s</span>' % esc(pin)
+
+def component_card(cid, slot, pin, pins=None):
     c = comps.get(cid)
     if c is None:
         return '<div class="entry missing"><div class="slot">%s</div><div class="cname">unknown component %s</div></div>' % (esc(slot), esc(cid))
@@ -72,7 +95,7 @@ def component_card(cid, slot, pin):
             '<div class="kws">%s</div>'
             '<div class="cmaker">%s</div>%s</div>') % (
         esc(kind), " planned" if planned else "", esc(slot),
-        ('<span class="pin">%s</span>' % esc(pin)) if pin else "",
+        pin_html(pin, pins),
         esc(kind), esc(KIND_GLYPH.get(kind, kind.upper())),
         esc(c.get("name", cid)), tier_html + (' <span class="tag">planned</span>' if planned else ""),
         esc(face_line(f)), kws, esc(mk), pas)
@@ -84,16 +107,25 @@ for e in ch["entries"]:
     loadout = e.get("loadout", []) or []
     hp = int(e.get("hardpoints", 0))
     die = len(fixed) + hp
+    pins = model_pins(e["id"])
     entries = []
-    for i, cid in enumerate(fixed):
+    for cid in fixed:
         entries.append(component_card(cid, "fixed", None))
     for i in range(hp):
         cid = loadout[i] if i < len(loadout) else None
         pin = "hp_%d" % (i + 1)
         if cid is None:
-            entries.append('<div class="entry blank"><div class="slot">hardpoint<span class="pin">%s</span></div><div class="cname">empty</div></div>' % pin)
+            entries.append('<div class="entry blank"><div class="slot">hardpoint%s</div><div class="cname">empty</div></div>' % pin_html(pin, pins))
         else:
-            entries.append(component_card(cid, "hardpoint", pin))
+            entries.append(component_card(cid, "hardpoint", pin, pins))
+    # The model's pin count against the hardpoints, said once at the top of the die.
+    if pins is None:
+        pin_note = '<p class="pinnote">No model built yet.</p>'
+    elif len(pins) != hp or pins != list(range(1, hp + 1)):
+        pin_note = '<p class="pinnote">The model carries %d pin%s (%s) for %d hardpoint%s: the ones marked below are missing on it.</p>' % (
+            len(pins), "" if len(pins) == 1 else "s", ", ".join("hp_%d" % n for n in pins) or "none", hp, "" if hp == 1 else "s")
+    else:
+        pin_note = ""
     stats = [("hull", e.get("hull")), ("shield", e.get("shield")), ("field recharge", e.get("recharge_field")),
              ("armour", e.get("armour")), ("heat max", e.get("heat_max")), ("cooling", e.get("cooling")),
              ("move", e.get("movespeed")), ("die", "d%d" % die)]
@@ -114,12 +146,12 @@ for e in ch["entries"]:
         '<div class="head"><p class="desig">%s</p><h2>%s</h2>'
         '<p class="sub">%s · %s%s</p></div>'
         '<div class="stats">%s</div>%s%s'
-        '<h3>The die · %d entries</h3><div class="die">%s</div>%s</section>' % (
+        '<h3>The die · %d entries</h3>%s<div class="die">%s</div>%s</section>' % (
             MAKER_CLASS.get(e.get("maker", ""), "other"), esc(e["id"]),
             esc(e.get("designation", "")), esc(e.get("name", "")),
             esc(mk.get("name", "")), esc(e.get("silhouette", "")),
             (" · " + traits) if traits else "",
-            stat_html, pas, note, die, "".join(entries),
+            stat_html, pas, note, die, pin_note, "".join(entries),
             ('<p class="codex">%s</p>' % esc(e.get("codex"))) if e.get("codex") else ""))
 
 nav = "".join('<a href="#%s">%s</a>' % (esc(e["id"]), esc(e.get("name", ""))) for e in ch["entries"])
@@ -169,6 +201,8 @@ gap:1px 10px;align-items:baseline;background:var(--sunk);border:1px solid var(--
 .entry.blank,.entry.missing{opacity:.6}
 .slot{grid-area:slot;font:600 10px/1.4 "Barlow Condensed",Arial,sans-serif;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);min-width:64px}
 .slot .pin{display:block;font:400 10px/1.3 "IBM Plex Mono",Menlo,monospace;letter-spacing:0;text-transform:none;opacity:.8}
+.slot .pin.nopin{color:var(--atk);opacity:1;cursor:help}
+.pinnote{margin:0 0 6px;font-size:13px;color:var(--atk)}
 .kind{grid-area:kind;font:600 10px/1.4 "IBM Plex Mono",Menlo,monospace;letter-spacing:.06em;padding:1px 5px;border:1px solid currentColor;border-radius:2px;color:var(--ink-3)}
 .kind.attack{color:var(--atk)}.kind.shield{color:var(--shd)}.kind.vent{color:var(--vent)}
 .cname{grid-area:name;font-weight:600}
@@ -187,7 +221,7 @@ border:1px solid var(--ink-3);color:var(--ink-3);border-radius:2px;padding:0 4px
 </style>
 <div class="wrap">
 <header class="top"><h1>Hangar Codex</h1>
-<p class="lede">Every chassis with its die laid out entry by entry: fixed components first, then each hardpoint with the model pin it mounts on. Generated from <code>content/*.json</code>; hover a keyword for its rule. Numbers are placeholders.</p>
+<p class="lede">Every chassis with its die laid out entry by entry: fixed components first, then each hardpoint with the model pin it mounts on, read from the built model, so a hardpoint the model has no socket for yet says so. Generated from <code>content/*.json</code> and <code>art/models/*.glb</code>; hover a keyword for its rule. Numbers are placeholders.</p>
 <nav>__NAV__</nav></header>
 __CARDS__
 </div>"""
