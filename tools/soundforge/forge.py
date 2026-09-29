@@ -1896,7 +1896,11 @@ def sub_bass(f, dur, res=0.0, punch=0.0, fade=0.0):
         front = sweep(f * 3.0, f, n, tau=0.03) * env_ad(n, 0.001, 0.05, curve=3.0) * punch
         x = sat(x + lp(front, 900.0), 1.3)
     tail = 0.85 * (1.0 - fade)   # `fade` lets the note sink after its front (Ryan: punch, then ease)
-    return x * env_pts(n, [(0.0, 0.0), (0.012, 1.0), (min(0.25, dur * 0.4), 0.85), (max(dur - 0.04, 0.03), tail), (dur, 0.0)]) * 0.8
+    x = x * env_pts(n, [(0.0, 0.0), (0.012, 1.0), (min(0.25, dur * 0.4), 0.85), (max(dur - 0.04, 0.03), tail), (dur, 0.0)]) * 0.8
+    # Its shadow for a phone speaker (Ryan, 28 September, from the phone sketches: the sub in
+    # the lift was far too faint on the speaker, and this cut of the shadow did not read as
+    # digital in headphones): a quiet band of its own harmonics at 150 to 400 Hz.
+    return x + lp(bp(sat(x * 2.0, 2.5), 150.0, 400.0), 500.0) * 0.22
 
 
 NOTE_INST["sub_bass"] = lambda f, d, p: sub_bass(f, d, p.get("res", 0.0), p.get("punch", 0.0), p.get("fade", 0.0))
@@ -1929,17 +1933,22 @@ NOTE_INST["sub_pluck"] = lambda f, d, p: sub_pluck(f, d)
 # the toms wanted bottom end)
 
 def tom_real(f=150.0, pitch=1.0):
-    # A tom with weight: the skin's pitch falling, a sub under it, the shell's ring, the
-    # stick's front, a room.
-    n = n_of(0.55)
+    # A tom with weight, tightened (Ryan, 28 September, from the phone sketches: on the
+    # speaker the first cut pewed, too high or too bright; in headphones the second was
+    # soft and echoey, not rock enough, as if the player were being gentle). So: a smaller
+    # pitch fall and a lower shell than the first cut, and against the second a shorter
+    # skin, a harder stick and front, and a drier, shorter room. Its shadow (the harmonics
+    # a speaker can play) sits at 120 to 500 Hz.
+    n = n_of(0.45)
     t = t_of(n)
-    fr = f * pitch * (1.0 + 0.35 * np.exp(-t / 0.06))
-    skin = np.sin(2.0 * math.pi * np.cumsum(fr) / SR) * env_ad(n, 0.001, 0.15, curve=2.5)
-    sub = np.sin(2.0 * math.pi * f * pitch * 0.5 * t) * env_ad(n, 0.002, 0.12) * 0.5
-    shell = harmonics(f * pitch * 1.6, n, [0.5, 0.3, 0.15]) * env_ad(n, 0.001, 0.04) * 0.4
-    stick = bp(noise(n_of(0.01)), 1500.0, 7000.0) * env_ad(n_of(0.01), 0.0002, 0.003) * 1.6   # sharper, drier (Ryan: hollow)
-    front = body(f * pitch * 2.2, f * pitch, 0.04, drive=2.4, click=0.8) * 0.9   # more of a hit at the start
-    return room(mix(sat(skin + sub, 1.6), shell, front, at(np.zeros(1), stick, 0.0)), decay=0.09, mix=0.1, cut=5000.0) * 1.1
+    fr = f * pitch * (1.0 + 0.18 * np.exp(-t / 0.05))
+    skin = np.sin(2.0 * math.pi * np.cumsum(fr) / SR) * env_ad(n, 0.001, 0.11, curve=2.5)
+    sub = np.sin(2.0 * math.pi * f * pitch * 0.5 * t) * env_ad(n, 0.002, 0.09) * 0.5
+    shell = harmonics(f * pitch * 1.4, n, [0.5, 0.25, 0.1]) * env_ad(n, 0.001, 0.03) * 0.3
+    stick = lp(bp(noise(n_of(0.01)), 1500.0, 6000.0), 5000.0) * env_ad(n_of(0.01), 0.0002, 0.003) * 1.6
+    front = body(f * pitch * 1.6, f * pitch, 0.04, drive=2.4, click=0.7) * 1.0
+    shadow = bp(sat(skin + sub, 3.0), 120.0, 500.0) * 0.35
+    return room(mix(sat(skin + sub, 1.6), shell, front, at(np.zeros(1), stick, 0.0), shadow), decay=0.05, mix=0.06, cut=4500.0) * 1.1
 
 
 def splash():
@@ -2875,8 +2884,13 @@ def guitar_real(f, dur, mute=True, cutoff=None, clean=False, damp=0.993):
         x = np.clip(sat(hp(x, 400.0) * 2.5 + x * 1.2, 2.0) * 1.2, -1.0, 1.0)
         x = cabinet(x, peaks=((110.0, 1.0), (420.0, 0.9), (1150.0, 0.6)))
     else:
-        x = np.clip(sat(hp(x, 600.0) * 5.0 + x * 1.5, 3.0) * 1.3, -1.0, 1.0)
-        x = cabinet(x)
+        # No hard clip (Ryan, 28 September, from the phone sketches: liked as someone hitting
+        # metal garbage cans, too clippy; the clip-free one "worth a try"): two asymmetric
+        # stages with a tone control between, then the cabinet, at the level the clipped
+        # chain had (measured on a palm-muted low E: 0.61).
+        y = asat(hp(x, 600.0) * 3.5 + x * 1.2, 1.6)
+        y = lp(y, 3000.0) + bp(y, 700.0, 1400.0) * 0.3
+        x = cabinet(asat(y * 1.3, 1.2)) * 1.1 * 0.61
     env = env_ad(n, 0.001, min(0.16, dur * 0.5), curve=3.0) if mute else env_ad(n, 0.001, dur * 0.7, curve=2.0)
     return mix(x * env, body(200.0, 90.0, 0.05, drive=2.0, click=0.2) * 0.3)
 
@@ -2895,19 +2909,47 @@ def lead_real(f, dur):
     return cabinet(x) * env_pts(n, [(0.0, 0.0), (0.005, 1.0), (max(dur - 0.04, 0.02), 0.85), (dur, 0.0)]) * 0.9
 
 
+def bass_cabinet(x, jitter=1.0):
+    """A bass cabinet (a 4x10's): resonant peaks at 100, 250, 700 and 1600 Hz, closed steeply
+    above 4 kHz. Chosen over the flat low-pass from the phone sketches (Ryan, 28 September)."""
+    y = np.zeros(len(x))
+    for f, g in ((100.0, 1.0), (250.0, 0.9), (700.0, 0.7), (1600.0, 0.45)):
+        f *= jitter
+        y += bp(x, f * 0.75, f * 1.3) * g
+    return lp(lp(y / 2.0 + x * 0.2, 4000.0), 4000.0)
+
+
+def asat(x, drive, bias=0.25):
+    """Asymmetric soft saturation: tanh with a bias, so even harmonics appear (the tube's
+    warmth a symmetric clip never has); the DC it makes is removed."""
+    y = np.tanh(x * drive + bias) - math.tanh(bias)
+    y /= (math.tanh(drive + bias) - math.tanh(bias))
+    return y - lp(y, 15.0)
+
+
 def bass_real(f, dur, drive=2.6):
-    # A bass guitar: two strings' worth of pluck, the finger's thump, the body's peak, the
-    # amp's roll-off.
+    # A bass guitar: two strings' worth of pluck, the finger's thump, the body's peak, then
+    # the amp. Voice 12 of the phone sketches (Ryan, 28 September: "hands down"): no hard
+    # clip. Pre-emphasis into a hot asymmetric stage whose drive follows the string's own
+    # envelope (hot at the front, cleaning up as the note decays, as an amp compresses), a
+    # tone control, a gentler second stage, the cabinet; brightness a hair different per note.
+    # The clipped chain it replaces read as chip-tune on the phone and turned the power
+    # chords into Duke Nukem.
     n = n_of(dur)
-    x = pluck(f, dur, bright=0.5, damp=0.998)[:n] + pluck(f * 1.001, dur, bright=0.3, damp=0.998)[:n] * 0.5
+    bright = RNG.uniform(0.42, 0.58)
+    x = pluck(f, dur, bright=bright, damp=0.998)[:n] + pluck(f * 1.001, dur, bright=bright * 0.6, damp=0.998)[:n] * 0.5
     x = x + bp(x, 80.0, 140.0) * 0.8
     thump = lp(noise(n_of(0.02)), 900.0) * env_ad(n_of(0.02), 0.0005, 0.006) * 0.5
     x = at(x, thump, 0.0)[:n]
-    # More character than the first cut (Ryan: lame beside the guitar): driven harder, a
-    # growl in the low mids, the amp open a little wider.
-    x = np.clip(sat(x * drive, drive) * (1.0 + 0.15 * drive), -1.0, 1.0)   # the anger is the clip
-    x = x + bp(x, 200.0, 500.0) * 0.5
-    return hp(lp(x, 2200.0), 40.0) * 0.85
+    env = lp(np.abs(x), 25.0)
+    env = np.clip(env / (np.max(env) + 1e-9), 0.0, 1.0)
+    d = drive * (0.35 + 0.65 * env ** 0.6)
+    pre = hp(x, 300.0) * 1.2 + x * 0.5
+    y = np.tanh(pre * d * 1.6 + 0.25) - math.tanh(0.25)
+    y = y - lp(y, 15.0)
+    y = lp(y, 1500.0) + bp(y, 500.0, 900.0) * 0.4
+    y = asat(y * 1.4, 1.2)
+    return hp(bass_cabinet(y), 40.0) * 0.9
 
 
 def strings_real(semis, n, gain=0.15, octave=1):
@@ -2987,15 +3029,20 @@ def choir_real(semis, n, gain=0.2, vowel="ah", octave=1):
 
 
 def kick_real(pitch=1.0):
-    # A real kick: the skin's pitch falling from 130 to 50, the beater's click, the shell's
-    # tone, a little room.
-    n = n_of(0.45)
+    # A metal kick, the phone sketches' third cut (Ryan, 28 September: much better all
+    # around, sharp without being grating). The old one read as a floor tom in headphones, a
+    # hit followed by mush, and vanished on the speaker. The skin's fall is quick and short,
+    # the beater forward, a short static knock at 175 Hz gives the speaker something to play
+    # (a pitch sweep there went "pew-pew"), little room. Pitched a touch under the sketch
+    # (Ryan: alone it sounded high, a drum too small).
+    n = n_of(0.3)
     t = t_of(n)
-    f = (50.0 + 80.0 * np.exp(-t / 0.05)) * pitch
-    skin = np.sin(2.0 * math.pi * np.cumsum(f) / SR) * env_ad(n, 0.001, 0.14, curve=3.0)
-    beater = bp(noise(n_of(0.006)), 2000.0, 6000.0) * env_ad(n_of(0.006), 0.0002, 0.0015) * 0.9
-    shell = harmonics(180.0 * pitch, n, [0.5, 0.3, 0.15]) * env_ad(n, 0.001, 0.02) * 0.4
-    return room(mix(sat(skin, 1.6), at(np.zeros(1), beater, 0.0), shell), decay=0.12, mix=0.12, cut=3000.0)
+    f = (50.0 + 60.0 * np.exp(-t / 0.03)) * pitch
+    skin = np.sin(2.0 * math.pi * np.cumsum(f) / SR) * env_ad(n, 0.001, 0.08, curve=3.0)
+    beater = bp(noise(n_of(0.006)), 2500.0, 7000.0) * env_ad(n_of(0.006), 0.0002, 0.0015) * 1.1
+    knock_ = harmonics(175.0 * pitch, n, [1.0, 0.3]) * env_ad(n, 0.0008, 0.03, curve=3.0) * 0.5
+    shell = harmonics(165.0 * pitch, n, [0.5, 0.3, 0.15]) * env_ad(n, 0.001, 0.02) * 0.4
+    return room(mix(sat(skin, 1.6), at(np.zeros(1), beater, 0.0), shell, knock_), decay=0.06, mix=0.08, cut=3000.0)
 
 
 def snare_real(pitch=1.0):
@@ -3030,10 +3077,13 @@ def ride_real():
 
 
 def crash_real():
-    # Shorter than a real one (Ryan: it lasted way too long).
-    n = n_of(0.9)
-    return mix(bp(noise(n), 2000.0, 15000.0) * env_ad(n, 0.002, 0.2, curve=2.0),
-               knock([2900.0, 4300.0, 6400.0, 8100.0], [0.3, 0.22, 0.17, 0.14], [0.4, 0.3, 0.25, 0.2], noise_gain=0.0) * 0.4) * 0.35
+    # Shorter than a real one (Ryan: it lasted way too long), and softer since 28 September
+    # (the phone sketches: the first read as clipped and hissy on the speaker): the wash
+    # closed above 9 kHz and a little quieter, the plate up, a soft saturation over both.
+    n = n_of(1.0)
+    wash = bp(noise(n), 1800.0, 9000.0) * env_ad(n, 0.003, 0.24, curve=2.0) * 0.75
+    plate = knock([2900.0, 4300.0, 6400.0, 8100.0], [0.3, 0.22, 0.17, 0.14], [0.4, 0.3, 0.25, 0.2], noise_gain=0.0) * 0.45
+    return sat(mix(wash, plate), 1.3) * 0.35
 
 
 def timpani_real():
@@ -3237,9 +3287,17 @@ LEVELS = {
     "contact": -10, "engage": -13, "cut": -8, "gate_hit": -8, "spawn": -12,
     "victory": -10, "defeat": -10, "withdraw": -11, "overheat": -12,
     "laser": -11, "gunfire": -11, "cannon": -8, "slash": -12, "slam": -9,
-    "music_far_bank": -22.5, "music_hold_the_line": -20.7,   # mean RMS dB, pinned where Ryan judged them; rift A between the map's and the skirmish's: it is The Chorus's boss theme (25 September)
+    # Mean RMS dB, pinned where Ryan judged them. The rift tracks sit a quarter of their
+    # phone gap above where they were (Ryan, 28 September, from the phone sketches: the full
+    # gap was far too loud in headphones, half still loud, a quarter right): the gap is how
+    # far a track falls under its set's human partner through a phone-speaker model
+    # (tools/soundforge/phone_sketches.py), since three quarters of a rift track's power
+    # sits below 80 Hz where a phone is silent. The Far Bank 9.2 dB under Hold The Line
+    # (-22.5 to -20.2), The Crossing 5.9 under (-20.7 to -19.2), Low Ground already level
+    # with Night Shift on the speaker (unchanged).
+    "music_far_bank": -20.2, "music_hold_the_line": -20.7,
     "music_low_ground": -24.9, "music_night_shift": -24.9,   # the map's two, at one level, the map's level (Ryan, 25 September)
-    "music_crossing": -20.7, "music_full_bore": -20.7,   # rift C at the skirmish's level: it plays there (Ryan, 25 September)
+    "music_crossing": -19.2, "music_full_bore": -20.7,   # rift C in the skirmish set, up a quarter of its phone gap (see above)
 }
 
 

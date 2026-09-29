@@ -26,6 +26,12 @@ crash), rift (The Far Bank as shipped and on the human master), and a half-gap l
 The tilt was decided the same day and the human builders carry it, so every file renders on
 that master except where a row says "old master".
 
+Third round (28 September, later): Ryan's picks landed in the forge itself (voice 12 as
+bass_real, the clip-free guitar as guitar_real's driven branch, the metal kick, the tightened
+tom, the softer crash, the sub's shadow, the rift levels up a quarter of their gap). So a
+"shipped" row rendered after that carries the new voices, and the first two rounds' files
+are history: re-render only to compare against what ships now.
+
 Writes WAVs and AAC (afconvert, macOS) into tools/soundforge/out/phone/ with a manifest.
 """
 import json

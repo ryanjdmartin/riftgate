@@ -125,6 +125,7 @@ tools/spriter/.venv/bin/python tools/lowforge/forge.py build gate wall
 
 # every sound and the two music loops, from the recipes in tools/soundforge/forge.py, then re-import
 tools/spriter/.venv/bin/python tools/soundforge/forge.py build          # or: build hit kill music_far_bank
+tools/spriter/.venv/bin/python tools/soundforge/phone_sketches.py [set]  # A/B sketches of one change at a time for the phone's speaker, as AAC into tools/soundforge/out/phone/ with a listening page (index.html) to publish
 tools/spriter/.venv/bin/python tools/soundforge/forge.py measure        # each file's loudness, peak and share under 150 Hz
 tools/spriter/.venv/bin/python tools/soundforge/forge.py sections       # every section of both loops, with timestamps
 tools/spriter/.venv/bin/python tools/soundforge/forge.py sketch map_88  # eight-bar sketches and variants, to tools/soundforge/out (not shipped)
