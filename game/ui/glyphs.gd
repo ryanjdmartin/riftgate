@@ -84,6 +84,12 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_rect(Rect2(c + Vector2(-s * 0.95, -s * 0.35), Vector2(s * 0.7, s * 0.7)), color, false, width * 0.8)
 			ci.draw_rect(Rect2(c + Vector2(s * 0.25, -s * 0.35), Vector2(s * 0.7, s * 0.7)), color, true)
 			ci.draw_line(c + Vector2(-s * 0.25, 0.0), c + Vector2(s * 0.25, 0.0), color, width * 0.8)
+		"shocked":
+			# A bolt in a ring: the charge a foe carries until a blow spends it.
+			ci.draw_arc(c, s * 0.95, 0.0, TAU, 28, color, width * 0.8)
+			ci.draw_polyline(PackedVector2Array([
+				c + Vector2(s * 0.2, -s * 0.65), c + Vector2(-s * 0.3, s * 0.05), c + Vector2(s * 0.05, s * 0.05), c + Vector2(-s * 0.2, s * 0.65),
+			]), color, width)
 		"devour":
 			# Open jaws, teeth down: what takes something from a kill.
 			ci.draw_arc(c + Vector2(0, -s * 0.15), s * 0.85, PI * 1.05, PI * 1.95, 16, color, width)
@@ -207,7 +213,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 ## can share a shape in different colours.
 static func colour_for(id: String) -> Color:
 	match id:
-		"burn", "overcharge", "heat", "devour":
+		"burn", "overcharge", "heat", "devour", "shocked":
 			return Palette.HEAT
 		"execute", "skull", "shieldbreak", "corrupt", "volatile":
 			return Palette.ENEMY

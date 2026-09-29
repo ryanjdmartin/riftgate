@@ -865,6 +865,8 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(["burn", str(foe.burn_stacks()), "Burning: %d damage a round, one stack less each round" % int(Effects.tick_preview(foe)["hp"]), Palette.HEAT])
 	if foe.is_suppressed():
 		rows.append(["suppress", "", "Suppressed: loses its action this round", Palette.HUD])
+	if Effects.has(foe, "shocked"):
+		rows.append(["shocked", "×2", "Shocked: the next blow it takes lands double; striking bare hull again costs it %d" % Skirmish.SHOCK_DISCHARGE, Palette.HEAT])
 	var numbed := Effects.stacks_of(foe, "numbed")
 	if numbed > 0 or foe.stun_resist > 0:
 		rows.append(["numbed", "%d%%" % foe.resist_total(), "Numbed: shrugs off a suppress %d%% of the time (%d%% its own, 10%% a stack, a stack less each turn)" % [foe.resist_total(), foe.stun_resist], Palette.SHIELD])
@@ -901,8 +903,8 @@ func _mech_rows(i: int) -> Array:
 		if int(d[3]) < Effects.SKIRMISH:
 			continue
 		var id := str(d[5])
-		var glyph := "heat" if id == "overheating" else ("corrupt" if id.begins_with("corrupted") else ("blank" if id.begins_with("disabled") else ("overcharge" if id == "overcharged" else ("shield" if id == "braced" else ("burn" if id == "primed" else "star")))))
-		var colour: Color = Palette.HEAT if id in ["overheating", "overcharged", "primed"] else (Palette.ENEMY if id.begins_with("corrupted") else (Palette.SHIELD if id == "braced" else Palette.HUD))
+		var glyph := "heat" if id == "overheating" else ("corrupt" if id.begins_with("corrupted") else ("blank" if id.begins_with("disabled") else ("overcharge" if id == "overcharged" else ("shield" if id == "braced" else ("burn" if id == "primed" else ("shocked" if id == "retaliate" else "star"))))))
+		var colour: Color = Palette.HEAT if id in ["overheating", "overcharged", "primed"] else (Palette.ENEMY if id.begins_with("corrupted") else (Palette.SHIELD if id in ["braced", "retaliate"] else Palette.HUD))
 		var stacks := int(d[4])
 		rows.append([glyph, ("×%d" % stacks) if stacks > 1 else "", "%s: %s" % [str(d[0]), str(d[1])], colour])
 	if sk.state == Skirmish.State.ASSIGN:

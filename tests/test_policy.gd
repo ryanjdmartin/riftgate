@@ -221,3 +221,21 @@ func test_greedy_values_the_kill_that_feeds_it() -> void:
 	var b := pol.attack_score(sk, ms, talon, sk.front[0])
 	assert_true(b > a, "a devouring kill is worth more than the same kill without it")
 	assert_true(b - a < 10.0, "and not by much: a stack is a tenth of the die's damage for about a round")
+
+
+func test_the_bot_reads_a_shocked_foe_as_taking_double() -> void:
+	var sk := Skirmish.new(1)
+	var f := Face.attack(20, L)
+	sk.add_mech(_mech("A", Die.single(f), 40, 100))
+	var g := _ghoul(500, 10)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	var pol := Policy.make(Policy.GREEDY)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	assert_eq(pol.expected_damage(ms, f, g), 20.0, "plain")
+	Effects.stack(g, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	assert_eq(pol.expected_damage(ms, f, g), 40.0, "doubled while the shock stands")
+	var burst := Face.attack(20, L)
+	burst.strikes = 3
+	assert_eq(pol.expected_damage(ms, burst, g), 80.0, "only the first of three blows is doubled")

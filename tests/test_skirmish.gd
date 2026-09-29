@@ -1602,3 +1602,115 @@ func test_a_buffs_overcharged_and_devours_add_up() -> void:
 	assert_eq(sk.front[0].hp, 500 - 27, "20 times 1.1 cubed, rounded")
 	sk.end_round()
 	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "the buff went with the round, devour's faded one")
+
+
+func test_a_live_hull_shocks_the_foe_that_strikes_it_and_the_next_blow_lands_double() -> void:
+	var live := {"id": "live_hull", "name": "Faraday Hull", "description": "", "effects": [
+		{"trigger": "static", "effect": "shock_on_hull_strike", "value": 1}]}
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.attack(20, L)), 0, 200)
+	m.grant_passive(live)
+	sk.add_mech(m)
+	var g := _ghoul(500, 10)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	assert_true(Effects.shocks_striker(m, false), "the hull is live")
+	assert_false(Effects.shocks_striker(m, true), "but a blocked blow shocks nothing")
+	sk.end_round()
+	assert_eq(m.hull, 190, "the blow landed on bare hull")
+	assert_true(Effects.has(g, "shocked"), "and the ghoul is Shocked")
+	assert_true("\n".join(sk.log).contains("A shocks ghoul"), "the log says so")
+	sk.start_round()
+	sk.assign(0, g)
+	assert_eq(g.hp, 460, "20 lands double")
+	assert_false(Effects.has(g, "shocked"), "and the shock is spent")
+	assert_eq(sk.last_roll["final"], 40, "the blow's record carries what landed")
+	m.shield_max = 50
+	m.shield = 50   # the next strike is blocked, so nothing shocks it again
+	sk.end_round()
+	assert_false(Effects.has(g, "shocked"), "a blocked blow leaves it unshocked")
+	sk.start_round()
+	sk.assign(0, g)
+	assert_eq(g.hp, 440, "plain 20 after")
+
+
+func test_a_shocked_foe_that_reaches_hull_again_pays_the_discharge() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.shield(10)), 40, 200)
+	m.shield = 0
+	Effects.stack(m, Effects.STATUS["retaliate"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	sk.add_mech(m)
+	var g := _ghoul(500, 10)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	sk.end_round()
+	assert_true(Effects.has(g, "shocked"), "shocked by the first strike")
+	assert_eq(g.hp, 500, "no discharge on the strike that shocked it")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(g.hp, 500 - Skirmish.SHOCK_DISCHARGE, "the second strike on bare hull costs it the discharge")
+	assert_true(Effects.has(g, "shocked"), "and it stays Shocked, never doubly")
+	assert_true("\n".join(sk.log).contains("A discharges into ghoul: 10"), "the log says so")
+	# A blocked blow neither shocks nor discharges, unless a passive extends the shock to blocks.
+	sk.start_round()
+	sk.assign(0, null)
+	assert_eq(m.shield, 10, "shield up")
+	sk.end_round()
+	assert_eq(g.hp, 490, "the blocked blow cost the ghoul nothing")
+	var s2 := Skirmish.new(2)
+	var shutters := {"id": "live_shell", "name": "Live Shell", "description": "", "effects": [
+		{"trigger": "static", "effect": "shock_on_block", "value": 1}]}
+	var b := _mech("B", Die.single(Face.shield(10)), 40, 200)
+	b.grant_passive(shutters, "shutters", "shutters")
+	s2.add_mech(b)
+	var g2 := _ghoul(500, 10)
+	s2.add_foes([g2])
+	s2.begin()
+	s2.start_round()
+	s2.end_round()
+	assert_eq(b.hull, 200, "blocked")
+	assert_true(Effects.has(g2, "shocked"), "and shocked through the block all the same")
+
+
+func test_retaliate_is_a_buff_a_component_may_grant() -> void:
+	var sk := Skirmish.new(1)
+	var klaxon := Face.buff("retaliate", 1, 1)
+	var m := _mech("A", Die.single(klaxon), 0, 200)
+	sk.add_mech(m)
+	var g := _ghoul(500, 10)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	assert_eq(klaxon.describe(), "Retaliate ×1", "the entry names the status")
+	assert_true(sk.assign(0, null), "spent on itself")
+	assert_true(Effects.shocks_striker(m, false), "live for the round")
+	sk.end_round()
+	assert_true(Effects.has(g, "shocked"), "the striker is shocked")
+	assert_false(Effects.shocks_striker(m, false), "and the buff went with the round")
+	var f := Face.from_dict({"kind": "buff", "status": "retaliate"})
+	assert_eq(f.buff_status, "retaliate", "content may write it")
+
+
+func test_a_status_gained_after_a_foe_acted_suppresses_its_next_action() -> void:
+	var loop := {"id": "loop", "name": "Pocket Paradox", "description": "", "effects": [
+		{"trigger": "on_foe_status", "effect": "chance_suppress", "value": 100, "per_missing_shield": 0}]}
+	var live := {"id": "live_hull", "name": "Faraday Hull", "description": "", "effects": [
+		{"trigger": "static", "effect": "shock_on_hull_strike", "value": 1}]}
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.shield(10)), 0, 200)
+	m.grant_passive(loop)
+	m.grant_passive(live, "hull")
+	sk.add_mech(m)
+	var g := _ghoul(500, 10)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	sk.end_round()
+	assert_eq(m.hull, 190, "the blow landed")
+	assert_true(Effects.has(g, "shocked"), "shocked by it")
+	sk.start_round()
+	assert_true(g.is_suppressed(), "the loop's suppress holds for the round after, since the ghoul had already struck")
+	sk.end_round()
+	assert_eq(m.hull, 190, "and it skipped that blow")

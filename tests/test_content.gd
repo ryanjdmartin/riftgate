@@ -553,3 +553,20 @@ func test_a_spend_keyword_rides_on_any_kind_of_component() -> void:
 		assert_false(e.begins_with("component hot_"), "volatile validates on a shield, an attack and a vent alike: %s" % e)
 	var f := db.build_face(plate["face"])
 	assert_true(f.has(Face.Keyword.VOLATILE), "and builds onto the entry")
+
+
+func test_the_content_carries_a_live_hull_the_engine_runs() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var plate: Dictionary = db.components["ablative_plating"].duplicate(true)
+	plate["passive"] = {"id": "live_plate", "name": "Live Plate", "description": "", "effects": [
+		{"trigger": "static", "effect": "shock_on_block", "value": 1}]}
+	db.components["live_plate"] = plate
+	var coil: Dictionary = db.components["overcharge_coil"].duplicate(true)
+	coil["face"]["status"] = "retaliate"
+	db.components["klaxon_coil"] = coil
+	var errs := db.validate()
+	for e in errs:
+		assert_false(e.begins_with("component live_plate") or e.begins_with("component klaxon_coil"), "a shock passive and a retaliate buff validate: %s" % e)
+	assert_true(errs.is_empty(), "and the shipped content is clean with them: %s" % str(errs))
+	assert_eq(db.build_face(coil["face"]).buff_status, "retaliate", "the buff builds")

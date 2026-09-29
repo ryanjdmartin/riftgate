@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 85 implemented, 23 planned, 0 idea.
+Status: 87 implemented, 21 planned, 0 idea.
 
 ## Resource
 
@@ -82,8 +82,8 @@ Status: 85 implemented, 23 planned, 0 idea.
 | Term | Codex | Status |
 |---|---|---|
 | **Numbed** | Foe status. Each stack is 10% resistance to a suppress on top of the foe's own; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. | implemented |
-| **Retaliate** | Until the end of this round, a foe that strikes this unit's bare hull is Shocked. | planned |
-| **Shocked** | Foe status. The next blow this foe takes deals double damage, then the status clears. A Shocked foe that strikes bare hull again takes 10. | planned |
+| **Retaliate** | Mech status. While it lasts, a foe that strikes this machine's bare hull is Shocked. From buff equipment it lasts the rounds the component says; the Armadillo's Faraday Hull carries it always. | implemented |
+| **Shocked** | Foe status. The next blow this foe takes deals double damage, then the status clears. A Shocked foe that strikes bare hull again takes 10. Never stacks. | implemented |
 | **Overcharged** | Mech status. Each stack is +10% damage on this machine's attacks. From buff equipment it lasts through the rounds the component says; from devour it lasts the skirmish and loses a stack at the end of each round unless a passive says otherwise. | implemented |
 | **Braced** | Mech status. Takes 15% less damage per stack. Granted by buff equipment for the rounds it says. | implemented |
 | **Primed** | Mech status. Every blow this machine lands leaves a stack of Burning per stack of Primed. Granted by buff equipment for the rounds it says. | implemented |
@@ -210,8 +210,8 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Equipment** (implemented): Buffs will be equipment too, once they exist.
 - **Corrupt** (implemented): No foe carries it yet; Ryan places it (The Chorus, presumably).
 - **Cleanse** (implemented): No component carries it yet; Ryan places it.
-- **Retaliate** (planned): Was flat damage equal to the component's power. Thorns scales with enemy blows and so inverts horde against boss; a debuff does not (Ryan, 28 September). The Armadillo's passive carries it always on.
-- **Shocked** (planned): The Armadillo's retaliation (Ryan, 28 September): the tank sets up kills instead of out-damaging area weapons against a horde, and it works on a boss. The discharge on a second strike is the small thorns left in. Numbers are placeholders.
+- **Retaliate** (implemented): Was flat damage equal to the component's power. Thorns scales with enemy blows and so inverts horde against boss; a debuff does not (Ryan, 28 September). The Armadillo's passive carries it always on.
+- **Shocked** (implemented): The Armadillo's retaliation (Ryan, 28 September): the tank sets up kills instead of out-damaging area weapons against a horde, and it works on a boss. The discharge on a second strike is the small thorns left in. Numbers are placeholders.
 - **Overcharged** (implemented): The buff side and devour run (29 September); a buff's stacks and devour's are the same status to the machine and add up. The Ammit's Quintessence Tap (which stops the decay and keeps the stacks for the battle, never the campaign) is planned. Name is a placeholder.
 - **Braced** (implemented): Placeholder name and number (29 September).
 - **Primed** (implemented): Placeholder name (29 September).

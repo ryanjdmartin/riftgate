@@ -46,7 +46,7 @@ const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn"],
 	"on_crit": ["multiply_damage", "add_damage", "add_burn", "vent_heat", "add_crit_damage"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block"],
 	"status": ["tick_hp", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry"],
 	"on_foe_status": ["chance_suppress"],
 }
@@ -76,9 +76,16 @@ const STATUS := {
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 0.85}]},
 	"primed": {"id": "primed", "name": "Primed", "description": "Every blow it lands leaves a stack of Burning, per stack.",
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_burn", "value": 1}]},
+	# Retaliation as a debuff, not thorns (Ryan, 28 September): a foe that strikes this
+	# machine's bare hull is Shocked, and the team's next blow on it lands double.
+	"retaliate": {"id": "retaliate", "name": "Retaliate", "description": "A foe that strikes this machine's bare hull is Shocked.",
+		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "shock_on_hull_strike", "value": 1}]},
+	# The foe's side of it: one status, never stacked, spent by the blow it doubles.
+	"shocked": {"id": "shocked", "name": "Shocked", "description": "The next blow it takes deals double, then the shock is spent. Striking bare hull again costs it 10.",
+		"tags": ["shock"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 2}]},
 }
 ## The statuses a buff component may grant: the machines' own, never a foe's.
-const MECH_STATUSES := ["overcharged", "braced", "primed"]
+const MECH_STATUSES := ["overcharged", "braced", "primed", "retaliate"]
 ## target_status: the foe struck carries any live status (burning, suppressed, numbed...).
 const SUPPORTED_WHEN := ["component_cracked", "reach_melee", "reach_line", "reach_indirect", "target_status"]
 ## Stats a static effect may change: the mech's base numbers by these names.
@@ -174,6 +181,31 @@ static func stacks_of(u, id: String) -> int:
 
 static func has(u, id: String) -> bool:
 	return stacks_of(u, id) > 0
+
+
+## Drop every copy of a status, whatever its scope: a spent one-shot (Shocked, once the blow
+## it doubled has landed). Returns whether anything went.
+static func remove(u, id: String) -> bool:
+	var keep: Array = []
+	var gone := false
+	for m in u.modifiers:
+		if m.id == id:
+			gone = true
+		else:
+			keep.append(m)
+	u.modifiers = keep
+	return gone
+
+
+## Does this machine shock a foe that strikes it? `blocked` asks about a blow its shield
+## stopped whole (the Faraday Shutters' Live Shell); otherwise about one that reached hull
+## (the Armadillo's Faraday Hull, the Retaliate status).
+static func shocks_striker(u, blocked: bool) -> bool:
+	var want := "shock_on_block" if blocked else "shock_on_hull_strike"
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == want:
+			return true
+	return false
 
 
 ## What a status effect amounts to right now across live statuses: {hp, heat, skip,
@@ -532,6 +564,8 @@ static func effect_text(eff: Dictionary) -> String:
 		"add_damage_taken": body = "damage taken +%s" % vs
 		"multiply_damage_taken": body = "damage taken ×%s" % vs
 		"suppress": body = "turns off %s" % vs
+		"shock_on_hull_strike": body = "a foe that strikes bare hull is Shocked"
+		"shock_on_block": body = "a foe whose blow the shield blocks is Shocked"
 		"tick_hp": body = "%s damage per stack each turn" % vs
 		"tick_heat": body = "%s heat per stack each turn" % vs
 		"skip_action": body = "skips its action"

@@ -94,8 +94,9 @@
       "passive": {
         "id": "faraday_hull", "name": "Faraday Hull",
         "description": "The whole hull is live. A foe that strikes bare hull is Shocked: the next blow it takes deals double. A Shocked foe that strikes again takes 10.",
-        "status": "planned",
-        "effects": []
+        "effects": [
+          { "trigger": "static", "effect": "shock_on_hull_strike", "value": 1 }
+        ]
       },
       "flavour": ""
     },

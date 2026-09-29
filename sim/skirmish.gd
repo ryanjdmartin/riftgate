@@ -29,6 +29,7 @@ const BURN_DAMAGE_PER_STACK := 20   # damage dealt per stack applied
 const CRACK_MIN_HULL_PCT := 25      # a single hull hit this big (percent of max) injures a face
 const CORRUPT_BITE_PER_STACK := 10  # what a corrupted entry costs its owner each time it is spent, per stack (placeholder)
 const VOLATILE_BITE := 10           # what a volatile component costs its owner each time it is spent: hull, past shield and armour (placeholder)
+const SHOCK_DISCHARGE := 10         # what a Shocked foe pays for striking bare hull again (placeholder; the small thorns left in, Ryan, 28 September)
 const NUMBED_PER_SUPPRESS := 2       # Numbed stacks a landed suppress adds; one is lost at each of the foe's turns
 const NUMBED_PER_SUPPRESS_MASSIVE := 3
 
@@ -77,6 +78,10 @@ var turn_events: Array = []
 ## Every mech that burnt at the end of the last enemy turn, for the screen to land after
 ## the blows: {mech (index), over, hull}.
 var overheats: Array = []
+## The foes that have finished their action in the enemy turn under way, so a suppress that
+## lands on one of them afterwards (a machine's loop catching a status it just gained) skips
+## its next action rather than an action already taken.
+var _acted: Array = []
 
 
 func _init(seed_value: int = 0, columns_arg: int = DEFAULT_COLUMNS) -> void:
@@ -504,6 +509,7 @@ func _enemy_turn() -> void:
 	# foe's statuses tick at the start of its action (burning may kill it first), a
 	# suppressed foe skips, and a foe with two strikes lands two separate blows, so a shield
 	# stops the first and the second reaches the hull.
+	_acted.clear()
 	for f in field_foes():
 		if not f.alive():
 			continue   # killed by a die this round; it stands until the dead are cleared, and does nothing
@@ -520,10 +526,23 @@ func _enemy_turn() -> void:
 			t = _pick_mech_target()
 		if t == null:
 			break
+		_acted.append(f)   # from its first blow, a suppress landing on it costs its next action
 		for s in range(f.strikes()):
 			if not t.alive():
 				break
+			var was_shocked := Effects.has(f, "shocked")
 			_damage_mech(t, f.damage(), f)
+			var blocked: bool = turn_events[turn_events.size() - 1]["blocked"]
+			# The live hull (the Armadillo's, a machine under Retaliate): a blow that reaches
+			# hull shocks the foe that struck; a shutters' blocked blow shocks too. A foe already
+			# Shocked that reaches hull again pays the discharge, and may die of it.
+			if was_shocked and not blocked:
+				f.hp -= SHOCK_DISCHARGE
+				log.append("%s discharges into %s: %d" % [t.unit.display_name, f.display_name, SHOCK_DISCHARGE])
+				if not f.alive():
+					break
+			if Effects.shocks_striker(t.unit, blocked):
+				_shock(f, t)
 			if f.has_keyword(f.action, "scorch") and t.alive():
 				Effects.stack(t.unit, Effects.STATUS["overheating"], Effects.SKIRMISH, "foe:" + f.content_id)
 			if f.has_keyword(f.action, "disable") and t.alive() and t.face_index >= 0:
@@ -534,6 +553,7 @@ func _enemy_turn() -> void:
 				# The entry the die shows is corrupted for the fight: it bites when spent.
 				Effects.corrupt_entry(t.unit, t.face_index, "foe:" + f.content_id)
 				log.append("%s corrupts %s's %s (×%d)" % [f.display_name, t.unit.display_name, t.die.faces[t.face_index].describe(), Effects.corrupt_stacks(t.unit, t.face_index)])
+	_acted.clear()
 	_clear_dead()
 	for ms in mechs:
 		Effects.end_round(ms.unit, round)   # timed effects run out
@@ -609,9 +629,17 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 			var other := foe_at(1 - target.rank, target.column)
 			if other != null and not hit.has(other):
 				hit.append(other)
+		var landed := dmg
 		for foe in hit:
 			var was_alive := foe.alive()
-			foe.hp -= dmg
+			# What the foe takes of the blow: its own statuses read last (a Shocked foe takes
+			# double, and the shock is spent by the blow).
+			var taken := Effects.damage_taken(foe, dmg)
+			foe.hp -= taken
+			if foe == target:
+				landed = taken
+			if Effects.remove(foe, "shocked"):
+				log.append("%s: the shock lands, %d doubled" % [foe.display_name, dmg])
 			if was_alive and not foe.alive() and f.has(Face.Keyword.DEVOUR):
 				_devour(ms, foe)
 			if f.has(Face.Keyword.BURN):
@@ -619,7 +647,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 				_foe_gained_status(foe, "burning")
 			if f.has(Face.Keyword.SUPPRESS):
 				_suppress(foe)
-		total += dmg
+		total += landed
 		rolled_total += rolled
 		any_crit = any_crit or crit
 	if extra_burn > 0:
@@ -653,6 +681,17 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 				break
 
 
+## Shocked (the Armadillo's retaliation, 28 September; built 29 September): the foe that struck
+## carries one shock, never more, until a blow spends it double. A machine's loop passive
+## may catch the status like any other.
+func _shock(foe: Foe, by: MechState) -> void:
+	if not foe.alive() or Effects.has(foe, "shocked"):
+		return
+	Effects.stack(foe, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	log.append("%s shocks %s" % [by.unit.display_name, foe.display_name])
+	_foe_gained_status(foe, "shocked")
+
+
 ## Devour (the Ammit's talons, 28 September; built 29 September): a kill with the component
 ## feeds its owner a stack of Overcharged for the skirmish, one per foe killed (a spread that
 ## kills two feeds two, a chain feeds on every link). The stacks tick down one a round at the
@@ -672,7 +711,8 @@ func _suppress(foe: Foe) -> bool:
 	if resist > 0 and rng.randi_range(1, 100) <= resist:
 		log.append("%s shrugs off the suppression (%d%% resistant)" % [foe.display_name, resist])
 		return false
-	Effects.grant_for_rounds(foe, Effects.STATUS["suppressed"], "mech", round)
+	# A foe that has already acted this turn loses its next action instead of one it has taken.
+	Effects.grant_for_rounds(foe, Effects.STATUS["suppressed"], "mech", round + 1 if _acted.has(foe) else round)
 	Effects.stack(foe, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", NUMBED_PER_SUPPRESS_MASSIVE if foe.is_massive() else NUMBED_PER_SUPPRESS, Effects.DECAY_TICK)
 	return true
 

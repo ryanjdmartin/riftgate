@@ -26,6 +26,7 @@ const BANK_WEIGHT := 0.2         # shield stood up or heat room made for a later
 const BURN_WEIGHT := 0.5         # burn stacks pay out over the rounds to come
 const OPTION_GUARD := 64         # spends in one round, at most: rapid rerolls the die and acts again
 const DEVOUR_ROUNDS := 1.0       # rounds of the die's own damage a devoured stack is worth (it fades a stack a round)
+const SHOCK_WEIGHT := 0.6        # the doubled blow a Shocked foe will take, as a share of the die's own damage
 
 var kind: int = GREEDY
 var withdraw_below: int = 0      # persona: withdraw when the team's hull is under this percent (0: never)
@@ -280,8 +281,10 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null) -> Arr
 				dmg = int(roundf(dmg * crit_mult))
 			if target != null and f.has(Face.Keyword.EXECUTE) and target.hp * 2 <= target.hp_max:
 				dmg = int(roundf(dmg * (1.5 if target.is_massive() else 2.0)))
-			dmg = int(Effects.attack(ms.unit, f, dmg, 0, crit, target)["damage"]) * maxi(1, f.strikes)
-			out.append([dmg, w])
+			dmg = int(Effects.attack(ms.unit, f, dmg, 0, crit, target)["damage"])
+			# The foe's own statuses read last: a Shocked foe takes the first blow double.
+			var first := Effects.damage_taken(target, dmg) if target != null else dmg
+			out.append([first + dmg * (maxi(1, f.strikes) - 1), w])
 	return out
 
 
@@ -355,7 +358,24 @@ func buff_score(sk: Skirmish, who: Skirmish.MechState, f: Face) -> float:
 			"add_burn":
 				var per := float(Effects.STATUS["burning"]["effects"][0]["value"])
 				score += per * v * n * BURN_WEIGHT * (1.0 if attack_now > 0.0 else 0.0) * float(f.buff_rounds)
+			"shock_on_hull_strike":
+				# Every foe about to reach this machine's hull comes out Shocked: the team's
+				# next blow on it lands double, worth about the die's own damage again, capped
+				# at what the foe has left.
+				for a in sk.attackers_of(who):
+					if who.unit.shield <= 0 or a.breaches():
+						score += minf(float(a.hp), _team_raw_attack_mean(sk)) * SHOCK_WEIGHT
 	return score
+
+
+## The team's average attack entry, for what a doubled blow is worth.
+static func _team_raw_attack_mean(sk: Skirmish) -> float:
+	var total := 0.0
+	var n := 0
+	for ms in sk.live_mechs():
+		total += _raw_attack_mean(ms)
+		n += 1
+	return total / float(maxi(1, n))
 
 
 ## The mean of a machine's attack entries, each spent as well as it can be, over its die.
