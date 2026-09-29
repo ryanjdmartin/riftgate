@@ -721,8 +721,8 @@ def nemesis(b):
         b.box(-7.5, 7.5, 18.0, 18.8, z - 0.5, z + 0.5, "steel.dark", "core_rib")
     # Spikes: a row off each shoulder's crown and two up the back.
     for s in (-1.0, 1.0):
-        for k in range(3):
-            base = (s * (18.0 + k * 6.0), -2.0 + k * 1.0, 66.0 - k * 2.0)
+        for k in range(2):
+            base = (s * (18.0 + k * 7.0), -2.0 + k * 1.0, 66.0 - k * 2.0)
             _spike(b, base, (base[0] + s * 4.0, base[1] - 2.0, base[2] + 10.0 - k * 1.5), 2.4, "steel.dark", "spike")
     for y, z in ((-14.0, 62.0), (-12.0, 52.0)):
         _spike(b, (0.0, y, z), (0.0, y - 9.0, z + 7.0), 2.2, "steel.dark", "back_spike")
@@ -778,7 +778,6 @@ def ammit(b):
     left forearm (Blazethrower), hp_3 the back slab (Ward Plate), hp_4 the rear pelvis block
     (Entropy Condenser)."""
     OCT = lambda r: _poly(r, 8, math.pi / 8)
-    HEX = lambda r: _poly(r, 6)
     # Legs: digitigrade. Hip high and back, knee forward, ankle back and low, a long foot
     # forward onto two toes and a heel claw. Nothing below the ground.
     for s in (-1.0, 1.0):
@@ -788,14 +787,14 @@ def ammit(b):
         ankle = (cx + s * 2.0, -10.0, 12.0)
         toe = (cx + s * 2.0, 6.0, 2.0)
         b.prism("x", hip[0], hip[1], hip[2], 5.0, 9.0, "steel.dark", 6, "hip")
-        _beam(b, hip, knee, OCT(5.4), OCT(4.6), "steel.plate", "thigh")
+        _beam(b, hip, knee, _sq(10.0, 10.0), _sq(8.6, 8.6), "steel.plate", "thigh")
         b.prism("x", knee[0], knee[1], knee[2], 4.8, 10.0, "steel.dark", 6, "knee")
-        _beam(b, knee, ankle, OCT(4.2), OCT(3.6), "steel.panel", "shin")
+        _beam(b, knee, ankle, _sq(8.0, 8.0), _sq(6.8, 6.8), "steel.panel", "shin")
         b.prism("x", ankle[0], ankle[1], ankle[2], 3.8, 9.0, "steel.dark", 6, "ankle")
         _beam(b, ankle, toe, _sq(7.0, 6.0), _sq(8.0, 3.0), "steel.plate", "foot")
         for tx in (-3.0, 3.0):
-            _tine(b, (toe[0] + tx, toe[1], toe[2] + 1.0), 0.0, 10.0, -14.0, 9.0, 3.0, 2.4, "steel.dark", "toe")
-        _tine(b, (ankle[0], ankle[1] - 2.0, 6.0), 0.0, 200.0, 30.0, 7.0, 3.0, 2.2, "steel.dark", "heel_claw")
+            _tine(b, (toe[0] + tx, toe[1], toe[2] + 1.0), 0.0, 10.0, -14.0, 9.0, 3.0, 2.4, "steel.dark", "toe", n=2)
+        _tine(b, (ankle[0], ankle[1] - 2.0, 6.0), 0.0, 200.0, 30.0, 7.0, 3.0, 2.2, "steel.dark", "heel_claw", n=2)
     # The pelvis, and the torso leaning forward and low: decks stepping forward as they
     # rise, the chest at about the height of a man's shoulder.
     b.prism("x", 0.0, -12.0, 36.0, 6.5, 26.0, "steel.panel", 8, "pelvis", phase=math.pi / 8)
@@ -820,13 +819,13 @@ def ammit(b):
                 elbow = (s * 30.0, 14.0, 44.0)
                 wrist = (s * 30.0, 22.0, 26.0)
                 b.prism("x", shoulder[0], shoulder[1], shoulder[2], 4.6, 8.0, "steel.dark", 6, "shoulder")
-                _beam(b, shoulder, elbow, HEX(4.4), HEX(3.8), "steel.plate", "upper_arm")
+                _beam(b, shoulder, elbow, _sq(8.4, 8.4), _sq(7.2, 7.2), "steel.plate", "upper_arm")
                 b.prism("x", elbow[0], elbow[1], elbow[2], 4.4, 9.0, "steel.dark", 6, "elbow")
-                _beam(b, elbow, wrist, HEX(3.8), HEX(3.4), "steel.panel", "forearm")
+                _beam(b, elbow, wrist, _sq(7.2, 7.2), _sq(6.4, 6.4), "steel.panel", "forearm")
                 b.prism("x", wrist[0], wrist[1], wrist[2], 3.2, 8.0, "steel.dark", 6, "wrist")
                 # Talons hanging: three curved blades down and forward.
                 for tx in (-3.5, 0.0, 3.5):
-                    _tine(b, (wrist[0] + tx, wrist[1], wrist[2] - 2.0), 0.0, -70.0, -50.0, 14.0, 3.2, 2.4, "steel.dark", "talon")
+                    _tine(b, (wrist[0] + tx, wrist[1], wrist[2] - 2.0), 0.0, -70.0, -50.0, 14.0, 3.2, 2.4, "steel.dark", "talon", n=2)
                 if s > 0:
                     gx = wrist[0] + 6.0
                     b.box(gx - 2.0, gx + 2.0, wrist[1] - 6.0, wrist[1] + 4.0, 30.0, 40.0, "steel.plate", "carbine_mount")
@@ -845,13 +844,13 @@ def ammit(b):
                 elbow = (s * 26.0, 14.0, 26.0)
                 wrist = (s * 24.0, 26.0, 6.0)
                 b.prism("x", shoulder[0], shoulder[1], shoulder[2], 4.4, 8.0, "steel.dark", 6, "lower_shoulder")
-                _beam(b, shoulder, elbow, HEX(4.6), HEX(4.0), "steel.plate", "lower_upper_arm")
+                _beam(b, shoulder, elbow, _sq(8.8, 8.8), _sq(7.6, 7.6), "steel.plate", "lower_upper_arm")
                 b.prism("x", elbow[0], elbow[1], elbow[2], 4.6, 9.0, "steel.dark", 6, "lower_elbow")
-                _beam(b, elbow, wrist, HEX(4.0), HEX(3.6), "steel.panel", "lower_forearm")
+                _beam(b, elbow, wrist, _sq(7.6, 7.6), _sq(6.8, 6.8), "steel.panel", "lower_forearm")
                 b.prism("x", wrist[0], wrist[1], wrist[2], 3.4, 8.0, "steel.dark", 6, "lower_wrist")
                 # Talons planted: three blades splayed forward on the ground.
                 for k, tx in enumerate((-4.0, 0.0, 4.0)):
-                    _tine(b, (wrist[0] + tx, wrist[1] + 1.0, wrist[2] - 1.0), 0.0, -30.0 - abs(tx) * 2.0, 20.0, 10.0, 3.2, 2.4, "steel.dark", "talon")
+                    _tine(b, (wrist[0] + tx, wrist[1] + 1.0, wrist[2] - 1.0), 0.0, -30.0 - abs(tx) * 2.0, 20.0, 10.0, 3.2, 2.4, "steel.dark", "talon", n=2)
     # The Ward Plate: a slab down the spine (hp_3), and the Entropy Condenser at the rear
     # of the pelvis with lit slots (hp_4).
     b.box(-9.0, 9.0, -16.0, -12.0, 36.0, 54.0, "livery.livery2", "ward_plate")

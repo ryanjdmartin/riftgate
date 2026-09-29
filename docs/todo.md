@@ -66,7 +66,8 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 
 ## Art
 
-- [ ] lowforge briefs and models for the seven new machines; a mount for every new component
+- [x] lowforge briefs and models for the seven new machines (first passes, 29 September; every hardpoint has its pin, every fixed component is modelled in); Ryan iterates by render
+- [ ] Ryan: notes on the seven first-pass models (`tools/hero_shot.gd` renders one large; `forge.py build <id>` rebuilds it)
 - [ ] Enemy art through foeforge for the foes still on sketch grids
 - [ ] The hangar as a model
 - [ ] Per-mech repaint (`Unit.paint` exists; nothing sets it)

@@ -61,6 +61,16 @@ rows in its db collection `candidates`; rebake the page from the reserved list a
 content names when either changes). Ryan's brainstorm of component names is on its
 Components tab, trimmed, with the used ones marked landed.
 
+**Models (29 September).** Every chassis has a lowforge model now: first passes of the seven
+28 September machines from their fantasies (`armadillo`, `wild_boar`, `prairie_dog`, `dingo`,
+`goshawk`, `nemesis`, `ammit` in `tools/lowforge/models_low.py`), every hardpoint with its `hp_<n>`
+pin and every fixed component modelled in with no pin (the Armadillo's shutters, the Boar's
+plow and tusks, the pintle Flakshot, the roof harpoon and its drum, the nose cannon, the
+Nemesis's fists, the Ammit's four talons). The two cars share `_buggy`. Facets: 500 to 830
+each, the Nemesis 990, the Ammit about 1,300 (four arms and twelve claws; the budget says 900,
+Ryan to say whether to cut claws or accept it). Render one with `tools/hero_shot.gd`; Ryan's
+notes move the numbers, then `forge.py build <id>` and `--import`.
+
 **What the game does today.** A battle: the map shows every pack's intent and the exact
 result of the plan before Resolve; a grounded machine controls the ground beside it, a
 pack stepping into it stops and that is a contact; every grounded machine within
@@ -121,5 +131,5 @@ moves it and ticked in the commit that lands it; this is the order to take them 
 2. The planned engine pieces, in whichever order he wants to play first.
 3. Ryan's text for the new machines and components, and the flagged names.
 4. The discuss-first decisions in the Ryan section, the economy last.
-5. Art: the seven new models, enemy art, the hangar.
+5. Art: Ryan's notes on the seven first-pass models, enemy art, the hangar.
 6. Before a phone leaves the desk: save and resume, onboarding, then tuning.
