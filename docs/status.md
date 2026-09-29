@@ -3,21 +3,31 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ (this account;
-republish the committed file after a bible change) and, from the other account, at
-https://claude.ai/artifact/AdBTeE9px1Xvg5TKNjHjSP.
+bible is published twice, once per account (the next block says which account owns
+which): https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ and
+https://claude.ai/artifact/AdBTeE9px1Xvg5TKNjHjSP. Republish your account's copy from the
+committed file after a bible change.
 
 **The pages, one per account.** An artifact is republished only by the account that made
-it, so each keeps its own copy and records it here. Bible:
-https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ (account A) and
-https://claude.ai/artifact/AdBTeE9px1Xvg5TKNjHjSP (account B). Account A: the nameplate
-page (https://claude.ai/artifact/6K6mq49XHCUbdZnkzp5rra) and the phone sketches (below).
-Account B: the content editor (https://claude.ai/artifact/HnE3gvsxNHXyjRhRyEiDqT) and the
-Baboon review page (https://claude.ai/artifact/BeDtchGtS8H2oH3yij3ywX). A new account
-publishes its own copies and adds the links. The editor is the one that bites: its `files`
-map holds the shipped content as the baselines Ryan edits against, and Ryan's saved edits
-live in that artifact's own database, so a fresh editor page starts empty and cannot see
-them. An account that cannot republish the editor says so rather than letting it drift.
+it, so each keeps its own copy and records it here. **Account A** (the one that owns
+https://claude.ai/artifact/UuMbAAorUyZbtZ1aYKMWNZ, the bible) owns that bible and the HUD
+swatches (https://claude.ai/artifact/LY278Pf67FpQYArCgXAU8v) and nothing else; checked by
+listing on 29 September, after an earlier note credited it with pages it cannot open.
+**Account B** owns everything else: the bible's other copy
+(https://claude.ai/artifact/AdBTeE9px1Xvg5TKNjHjSP), the content editor
+(https://claude.ai/artifact/HnE3gvsxNHXyjRhRyEiDqT), the nameplate
+(https://claude.ai/artifact/6K6mq49XHCUbdZnkzp5rra), the phone sketches
+(https://claude.ai/artifact/FCaphxM3Y3SnRPdNnprpXc), the Baboon review page
+(https://claude.ai/artifact/BeDtchGtS8H2oH3yij3ywX), the model renders
+(https://claude.ai/artifact/6FLunyt7J2ejC24yce76cM and
+https://claude.ai/artifact/UB2FcRAs9Z8k8ABwxVjjuC) and the hangar codex
+(https://claude.ai/artifact/EF74jFYCWWmA3rSJFYWpR1). **Confirm before trusting this list:**
+`Artifact` with `action: "list"` says what the account you are in actually owns, and a read
+of someone else's page comes back "not found". A new account publishes its own copies and
+adds the links. The editor is the one that bites: its `files` map holds the shipped content
+as the baselines Ryan edits against, and Ryan's saved edits live in that artifact's own
+database, so a fresh editor page starts empty and cannot see them. An account that cannot
+republish the editor says so rather than letting it drift.
 
 **Cold start, including from another account.** Nothing needed to work here lives outside
 the repo. Read this file, then `docs/todo.md` (the task list), then `CLAUDE.md` (the rules,
@@ -87,8 +97,10 @@ Components tab, trimmed, with the used ones marked landed.
 machines were built from their fantasies and then rebuilt once on Ryan's notes;
 `tools/lowforge/models_low.py` holds one function per chassis id and every number in it is a
 proportion, so a note moves it and `forge.py build <id>` plus one `--import` is the whole
-loop. Fixed components are modelled into the machine with no pin, every hardpoint carries its
-`hp_<n>` pin, and the two cars share `_buggy`. What the second pass changed, so nobody redoes
+loop. Fixed components are modelled into the machine with no pin and every hardpoint carries its
+`hp_<n>` pin in the loadout's order, verified for all seven; two older models still break that
+rule and are in the to-do (the Clydesdale has 6 pins for 9 hardpoints since it went to a d9,
+the Sparrowhawk 2 for 4). What the second pass changed, so nobody redoes
 it: the **Armadillo** stands on long legs whose hips come out of the shell's flanks (it read
 as a beetle that would catch on rocks) and shows only its weapons' muzzles out of round ports
 in the shell, Blastoise-fashion, with a small snout of a head to sell its size, since it is
@@ -106,8 +118,9 @@ armour, hard-lined, asymmetric, hooded helm with horns, a round lit core, the Ap
 asked for; the **Ammit** was right first time and needed only its spines laid flat, its upper
 arms raised and pointed forward, its eyes turned into long cockpit-glass strips down the
 snout, shoulder cannons in place of arm guns, and its heel spurs and throat vent actually
-attached. Facets: 676 to 928 each, the Nemesis 816, the Ammit 1,316 against the register's
-900 (four arms and twelve claws; Ryan has not said whether to cut claws or accept it).
+attached. Facets: 676 to 928 each, the Nemesis 816, the Ammit 1,316. The register's stated ceiling
+is 900 and three machines already sit over it (Baboon 1,396, Ammit 1,316, Clydesdale 1,016),
+so the open question is whether the ceiling still holds, not whether the Ammit is special.
 Renders with the first passes beside them: https://claude.ai/artifact/6FLunyt7J2ejC24yce76cM
 (account B; the first passes alone at https://claude.ai/artifact/UB2FcRAs9Z8k8ABwxVjjuC).
 **Ryan judges a model only from a render**, never from code: `tools/hero_shot.gd` takes a

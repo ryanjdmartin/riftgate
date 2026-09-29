@@ -59,6 +59,8 @@ def component_card(cid, slot, pin):
     planned = c.get("status") == "planned"
     kws = "".join('<span class="kw" title="%s">%s</span>' % (esc(kw_title(k)), esc(vocab.get(k, {}).get("name", k))) for k in f.get("keywords", []))
     mk = makers.get(c.get("maker", ""), {}).get("name", "")
+    tier = c.get("tier")
+    tier_html = ('<span class="tier" title="Blueprint tier">T%s</span>' % esc(tier)) if tier else ""
     pas = ""
     if c.get("passive"):
         pas = '<div class="pas"><b>%s.</b> %s</div>' % (esc(c["passive"].get("name", "")), esc(c["passive"].get("description", "")))
@@ -72,7 +74,7 @@ def component_card(cid, slot, pin):
         esc(kind), " planned" if planned else "", esc(slot),
         ('<span class="pin">%s</span>' % esc(pin)) if pin else "",
         esc(kind), esc(KIND_GLYPH.get(kind, kind.upper())),
-        esc(c.get("name", cid)), ' <span class="tag">planned</span>' if planned else "",
+        esc(c.get("name", cid)), tier_html + (' <span class="tag">planned</span>' if planned else ""),
         esc(face_line(f)), kws, esc(mk), pas)
 
 cards = []
@@ -176,6 +178,7 @@ gap:1px 10px;align-items:baseline;background:var(--sunk);border:1px solid var(--
 text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2);cursor:help}
 .cmaker{grid-area:maker;font-size:11px;color:var(--ink-3);text-align:right}
 .pas{grid-area:pas;font-size:13px;color:var(--ink-2);border-top:1px dashed var(--rule);margin-top:5px;padding-top:5px}
+.tier{font:600 9px/1.6 "IBM Plex Mono",Menlo,monospace;letter-spacing:.06em;border:1px solid var(--rule);color:var(--ink-3);border-radius:2px;padding:0 4px;margin-left:5px;vertical-align:1px}
 .tag{font:600 9px/1.6 "Barlow Condensed",Arial,sans-serif;text-transform:uppercase;letter-spacing:.1em;
 border:1px solid var(--ink-3);color:var(--ink-3);border-radius:2px;padding:0 4px;vertical-align:1px}
 .codex{color:var(--ink-2);font-size:14px;margin:10px 0 0;max-width:70ch}
