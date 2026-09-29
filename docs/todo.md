@@ -12,8 +12,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Judge on the phone after a re-export: frame rate (the per-hex props added draw calls), the sound set, the machines' edges without MSAA, the text, the grid at `GRID_GAIN_PHONE`, the seam band (less green than before), the far blur, the board and the log button, the selection marks, the routes, props hiding under a machine
 - [ ] Codex and flavour for the seven new machines, the Baboon's flavour, and the 41 components whose codex is empty
 - [ ] Decide the Dingo's name (`design.name_clash`: a Heavy Gear Northern gear); the Sparrowhawk, Goshawk, Baboon and the badger id are kept
-- [ ] The Badger's joints and pins in Blender (`forge.py export badger`); the missing model pins: the Clydesdale has 6 for 9 hardpoints, the Sparrowhawk 2 for 4
-- [ ] The Sparrowhawk's model carries two pins for four hardpoints (wing pods only); two more sockets, and the codex page flags both it and the Clydesdale until then
+- [ ] The Badger's joints and pins in Blender (`forge.py export badger`); the missing model pins: the Clydesdale has 6 for 9 hardpoints, the Sparrowhawk 2 for 4 (wing pods only); the codex page flags both until then
 - [x] Picks from the phone sketches page: the bass voice (3 or 5), the clip-free guitar, the third shadows (28 September: voice 12, the guitar, the third cut, a quarter of the level gap; all in the forge)
 - [ ] Judge The Far Bank's tempo in the game: 86, 88 and 90 are all in the skirmish set (`The Far Bank`, `The Far Bank 88`, `The Far Bank 90`; skip between them from the pause menu); 92 lost the sinister, gloomy air. Say which stays
 - [ ] Hold The Line: the arrangement tweaks you have in mind (yours to describe by section letter)
@@ -75,7 +74,7 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 ## Art
 
 - [x] lowforge briefs and models for the seven new machines (first passes, 29 September; every hardpoint has its pin, every fixed component is modelled in); Ryan iterates by render
-- [ ] Ryan: notes on the seven second-pass models (renders: the second-passes page in status)
+- [ ] Ryan: notes on the seven second-pass models (renders: the Model Viewer, https://claude.ai/artifact/HzF8K98MxgJP7kroxAuDMv)
 - [ ] Silhouette classes for components (decided 29 September): shape helpers in lowforge (barrel, twin barrel, rack, slab, vent block, dish), a validated `shape` field on every component, chassis pins parenting their stock shape so `MechView3D.mount()` hides it, and the skirmish and codex calling mount for the fitted loadout
 - [ ] Ryan: judge the Baboon's rear silhouette in the harness (the fists hang at knee height now, not on the ground); if it still reads as carrying two boxes, pick heavier hands carrying hardware or a standard forward pose with the fist tile turned 90 degrees
 - [ ] Enemy art through foeforge for the foes still on sketch grids
