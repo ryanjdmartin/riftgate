@@ -91,7 +91,7 @@ perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/balance.gd --
 # and groundtear (the corrupted side's tear as it fires).
 # Battle: select, route, hold, north, zoom, zoomlast,
 # flyer, predict, resolve, contact, engage, codex, foecodex, menu, settings, tune, and
-# bosscontact (the boss reached: the reveal; RIFTGATE_REVEAL_T=<seconds> pins its frame).
+# bosscontact (the boss reached: the reveal; RIFTGATE_REVEAL_T=<seconds> pins its frame), logfull (the battle log full screen).
 # RIFTGATE_SHOT_FRAME=<n> picks the capture frame, to catch an animation mid-flight.
 # RIFTGATE_FEED_DEBUG=1 (any run) fires the skirmish feed's analysis events every half
 # second and the ground tears every couple of seconds, to judge them by eye.

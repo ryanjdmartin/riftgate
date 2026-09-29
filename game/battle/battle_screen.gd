@@ -25,7 +25,9 @@ var H := BASE_H
 const MAP_Y := 56.0
 var LOG_Y := 1076.0
 const INFO_H := 112.0   # the readout's own strip between the map and the log
-const LOG_H := 104.0
+const LOG_H := 104.0   # the log's old strip; the board and the readout have it now
+var STRIP_Y := 954.0
+var STRIP_H := 226.0
 var BOTTOM_Y := 1196.0
 const BOTTOM_BTN := Vector2(210, 60)
 const LOG_LINES := 4
@@ -35,7 +37,6 @@ var battle: Battle
 var _header: HudButton
 var _sub_label: Label
 var _map: BattleMapView
-var _log: RichTextLabel
 var _resolve_btn: HudButton
 var _clear_btn: HudButton
 var _details: HudPanel
@@ -140,14 +141,16 @@ func _build() -> void:
 		if c != _menu:   # the menu outlives a rebuild it asked for (a colour change)
 			c.queue_free()
 	H = Hud.screen_height(self)
-	LOG_Y = 1076.0 + (H - BASE_H)   # the map takes the extra height; the log and buttons keep to the bottom
+	LOG_Y = 1076.0 + (H - BASE_H)   # the map takes the extra height; the strip and buttons keep to the bottom
 	BOTTOM_Y = 1196.0 + (H - BASE_H)
+	STRIP_Y = LOG_Y - 10.0 - INFO_H          # the strip under the map: the orders board, or a held readout
+	STRIP_H = BOTTOM_Y - 16.0 - STRIP_Y      # down to the buttons' rule; the log's old space is in it
 	custom_minimum_size = Vector2(W, H)
 	Hud.inset_screen(self)   # clear of the phone's corners, cutout and gesture zone
 
 	var bg := HudBackdrop.new()
 	bg.scan = false   # this screen's one scan bar is drawn on top of everything, below
-	bg.rules = [MAP_Y - 6.0, LOG_Y - 10.0 - INFO_H, LOG_Y - 10.0, BOTTOM_Y - 16.0]
+	bg.rules = [MAP_Y - 6.0, LOG_Y - 10.0 - INFO_H, BOTTOM_Y - 16.0]
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
 
@@ -180,17 +183,6 @@ func _build() -> void:
 	_apply_display()
 	_map.hold_released.connect(_on_hold_released)
 
-	var log_tag := _tag("LOG", 10, true)
-	_place(log_tag, Vector2(12, LOG_Y), Vector2(52, 18))
-	_log = RichTextLabel.new()
-	_log.bbcode_enabled = true
-	_log.scroll_active = false
-	_log.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_log.add_theme_font_override("normal_font", Hud.mono())
-	_log.add_theme_font_size_override("normal_font_size", 14)
-	_log.add_theme_color_override("default_color", Palette.HUD)
-	_place(_log, Vector2(20, LOG_Y + 22), Vector2(W - 40, LOG_H - 22))
-
 	_resolve_btn = HudButton.new("RESOLVE", _on_resolve)
 	_resolve_btn.sound = ""   # the lever is the sound
 	_resolve_btn.filled = true
@@ -206,21 +198,38 @@ func _build() -> void:
 	_board.preview = _map._preview
 	_board.playing = _map.is_playing
 	_board.covered = func() -> bool: return _details != null and _details.visible
-	_place(_board, Vector2(12.0, LOG_Y - 10.0 - INFO_H + 6.0), Vector2(W - 24.0, INFO_H - 12.0))
+	_place(_board, Vector2(12.0, STRIP_Y + 6.0), Vector2(W - 24.0, STRIP_H - 12.0))
+	# The log is off the screen (Ryan, 29 September: only for debugging; the board took its
+	# strip): the LOG button at the board's corner opens every event full screen.
+	var log_btn := HudButton.new("LOG", _toggle_log_full)
+	log_btn.mono = true
+	log_btn.font_size = 10
+	log_btn.slant_px = 6.0
+	log_btn.hit_pad = Vector2(8.0, 8.0)
+	_place(log_btn, Vector2(W - 12.0 - 60.0, STRIP_Y + 8.0), Vector2(52.0, 18.0))
 
 	# The readout lives in one place, docked over the bottom of the map (thumbs, not a
 	# mouse: Ryan, 21 September), and a tap on it dismisses it.
 	_details = HudPanel.new(14.0)
 	_details.mouse_filter = Control.MOUSE_FILTER_STOP
 	_details.visible = false
-	_details.custom_minimum_size = Vector2(W - 24.0, 0)
+	_details.custom_minimum_size = Vector2(W - 24.0, STRIP_H - 12.0)   # fills its strip (Ryan, 29 September: short, it looked odd)
 	_details.gui_input.connect(func(ev: InputEvent) -> void:
 		if ev is InputEventMouseButton and ev.pressed:
+			# Dismissing the readout also drops the selection (Ryan, 29 September: the tap
+			# read as cancelling the unit, and the highlights staying read as a bug).
 			_details.visible = false
+			_select(null)
+			_map.gate_selected = false
+			_map.inspected = Vector2i(-9999, -9999)
+			_refresh()
 			_details.accept_event())
 	add_child(_details)
 	_details_label = Hud.label("", 16, Palette.INK)
+	_details_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	_details_label.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	_details.add_child(_details_label)
+	_build_log_full()
 	# One scan bar over the whole screen, on the top layer: it crosses the map and the
 	# controls alike, and whatever geometry lies under it lights (Ryan, 21 September).
 	_codex = CodexBox.new()
@@ -304,18 +313,73 @@ func _refresh() -> void:
 
 
 func _refresh_log() -> void:
+	if _log_full_text == null:
+		return
 	var lines: Array[String] = battle.field.log
-	var start := maxi(0, lines.size() - LOG_LINES)
-	var count := lines.size() - start
 	var out := ""
-	if count == 0:
+	if lines.is_empty():
 		out = "[color=#%s]> round %d // %d packs on the field // give orders, then resolve[/color]" % [
 			Color(Palette.HUD, 0.45).to_html(true), battle.field.phase + 1, battle.field.packs().size()]
-	for j in range(start, lines.size()):
-		var age := j - start
-		var a := 1.0 if count <= 1 else lerpf(0.4, 1.0, float(age) / float(count - 1))
-		out += "[color=#%s]> %s[/color]\n" % [Color(Palette.HUD, a).to_html(true), lines[j]]
-	_log.text = out
+	for line in lines:
+		out += "[color=#%s]> %s[/color]\n" % [Color(Palette.HUD, 1.0).to_html(true), line]
+	_log_full_text.text = out
+
+
+var _log_full: Control = null
+var _log_full_text: RichTextLabel = null
+var _log_full_scroll: ScrollContainer = null
+
+## Every event of the battle, full screen, from the board's LOG button; a tap outside or
+## CLOSE puts it away (the skirmish's log has the same shape).
+func _build_log_full() -> void:
+	var shade := ColorRect.new()
+	shade.color = Color(0, 0, 0, 0.82)
+	shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	shade.mouse_filter = Control.MOUSE_FILTER_STOP
+	shade.visible = false
+	shade.gui_input.connect(func(e: InputEvent) -> void:
+		if e is InputEventMouseButton and e.pressed:
+			_toggle_log_full())
+	add_child(shade)
+	_log_full = shade
+	var panel := HudPanel.new(18.0)
+	panel.position = Vector2(16, 40)
+	panel.size = Vector2(W - 32, H - 80)
+	shade.add_child(panel)
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", 10)
+	panel.add_child(col)
+	var head := _tag("LOG // EVERY EVENT", 12, true)
+	head.custom_minimum_size = Vector2(220, 26)
+	head.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	col.add_child(head)
+	_log_full_scroll = ScrollContainer.new()
+	_log_full_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_log_full_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	col.add_child(_log_full_scroll)
+	_log_full_text = RichTextLabel.new()
+	_log_full_text.bbcode_enabled = true
+	_log_full_text.fit_content = true
+	_log_full_text.scroll_active = false
+	_log_full_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_log_full_text.add_theme_font_override("normal_font", Hud.mono())
+	_log_full_text.add_theme_font_size_override("normal_font_size", 16)
+	_log_full_text.add_theme_color_override("default_color", Palette.HUD)
+	_log_full_scroll.add_child(_log_full_text)
+	var close := HudButton.new("CLOSE", _toggle_log_full)
+	close.custom_minimum_size = Vector2(0, 52)
+	col.add_child(close)
+
+
+func _toggle_log_full() -> void:
+	if _log_full == null:
+		return
+	_log_full.visible = not _log_full.visible
+	if _log_full.visible:
+		_refresh_log()
+		await get_tree().process_frame
+		if _log_full_scroll != null:
+			_log_full_scroll.scroll_vertical = int(_log_full_scroll.get_v_scroll_bar().max_value)
 
 
 func _select(u: Unit) -> void:
@@ -333,6 +397,7 @@ func _on_hex_tapped(h: Vector2i) -> void:
 	_details.visible = false
 	var u := battle.field.unit_at(h)
 	_map.gate_selected = false
+	_map.inspected = Vector2i(-9999, -9999)
 	if battle.field.map.gate_hexes.has(h) and (_map.selected == null or not _map.destinations.has(h)):
 		# The gate is selectable for its integrity (Ryan, 22 September).
 		_select(null)
@@ -358,6 +423,7 @@ func _on_hex_tapped(h: Vector2i) -> void:
 			_on_unit_held(u)   # its shield, hull and move, in the readout
 			Sound.play("ui_tap", -4.0)
 	elif u != null and u.is_enemy():
+		_map.inspected = h   # the pack lit, its path emphasised (Ryan, 29 September: show what was tapped)
 		_on_unit_held(u)   # a quick label for the enemy; double-tap for the codex
 		Sound.play("ui_tap", -8.0)
 	elif _map.selected != null and _map.destinations.has(h):
@@ -373,7 +439,9 @@ func _on_hex_tapped(h: Vector2i) -> void:
 			if BattleMap.passable(t, pair[1]):
 				who.append(pair[0])
 		var text := "%s\nmove %d · %s" % [str(BattleMap.TERRAIN_NAMES.get(t, "ground")).to_upper(), BattleMap.move_cost(t, []), " · ".join(who) if not who.is_empty() else "impassable"]
+		_map.inspected = h   # the hex lit, so what was tapped is plain (Ryan, 29 September)
 		_show_details(text, _map.position + _map.to_screen(_map.center(h)))
+		_map.queue_redraw()
 		return
 	else:
 		_select(null)
@@ -545,8 +613,8 @@ static func codex_entry_for(u: Unit) -> Dictionary:
 func _show_details(text: String, _near: Vector2) -> void:
 	_details_label.text = text
 	_details.visible = true
-	_details.reset_size()
-	_details.position = Vector2(12.0, LOG_Y - 10.0 - INFO_H + 6.0)
+	_details.size = Vector2(W - 24.0, STRIP_H - 12.0)
+	_details.position = Vector2(12.0, STRIP_Y + 6.0)
 
 
 # ---------------------------------------------------------------- the loop

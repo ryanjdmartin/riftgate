@@ -392,6 +392,21 @@ func _draw() -> void:
 			if owned:
 				_destination_rings(center(dest))
 
+	# The hex a tap asked about: bracketed in the display's light; a pack there has its
+	# path drawn heavier on top, so the tap shows what it hit (Ryan, 29 September).
+	if map.has(inspected) and _anim.is_empty():
+		var ic := center(inspected)
+		Hud.brackets(self, Rect2(ic - Vector2(HEX_SIZE, HEX_SIZE) * 0.95, Vector2(HEX_SIZE, HEX_SIZE) * 1.9), HEX_SIZE * 0.45, Color(hud, 0.95), 2.5)
+		var iu := field.unit_at(inspected)
+		if iu != null and iu.is_enemy() and pending.is_empty():
+			var ipath: Array = _preview()["result"].intents.get(iu.id, [])
+			if not ipath.is_empty():
+				var ipts: PackedVector2Array = [ic]
+				for step in ipath:
+					ipts.append(center(step))
+				draw_polyline(ipts, Color(Palette.BG, 0.8), 9.0)
+				draw_polyline(ipts, ENEMY_LIT, 5.0)
+
 	# The player's plotted routes, ending in a small marker hex.
 	for uid in routes.keys():
 		var u := field.unit_by_id(uid)
@@ -552,6 +567,7 @@ func _hud_bar(map_pos: Vector2, map_w: float, frac: float, col: Color, label: St
 ## The gate's integrity as a true bar (Ryan, 22 September), on the wall's face under the
 ## gate, always; brighter while the gate is selected.
 var gate_selected := false
+var inspected := Vector2i(-9999, -9999)   # the hex a tap asked about (a pack, the ground): lit while its readout is up
 
 func _draw_gate_bar() -> void:
 	var map := field.map

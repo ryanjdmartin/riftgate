@@ -177,6 +177,9 @@ func _apply_battle_pose() -> void:
 			s._on_hex_double_tapped(b.field.packs()[0].pos)
 		"resolve":
 			s._on_resolve()
+		"logfull":
+			# The battle's log, full screen, from the board's LOG button.
+			s._toggle_log_full()
 		"engage":
 			# ENGAGE pressed: the handover into the skirmish, mid-flight (RIFTGATE_SHOT_FRAME).
 			var m: Unit = b.mechs()[0]
