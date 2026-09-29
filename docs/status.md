@@ -91,19 +91,28 @@ each engine piece lands; read bands, not numbers.
 `tools/soundforge/forge.py` writing WAVs into `art/audio/` (`build`, `measure`,
 `sections`, `audition`, `sketch`); Ryan gives notes by section letter or timestamp. Six
 titled tracks in `Sound.TRACKS`, all locked or "pretty great"; the map's set cycles, the
-skirmish's picks, the boss theme per family (`SETS["boss_<faction>"]`, `LOOP_FROM`). Open
-on 28 September: one master for both palettes is decided (tilt 1.5 plus presence) and
-the rift tracks are being rebuilt on it; Ryan's picks from the phone sketches page
-(https://claude.ai/artifact/FCaphxM3Y3SnRPdNnprpXc: the bass race between voices 3 and 5,
-the clip-free guitar, the third shadows cut) land in the forge next, then a
-speakers/headphones setting; the Risen and Infernal Horde boss themes from their seeds,
-melodies proposed in chat first; the real recordings remain section 12's open question.
+skirmish's picks, the boss theme per family (`SETS["boss_<faction>"]`, `LOOP_FROM`). The
+phone pass (26 to 28 September, from the sketches page
+https://claude.ai/artifact/FCaphxM3Y3SnRPdNnprpXc, rendered by
+`tools/soundforge/phone_sketches.py`) is in the forge and all six tracks are rebuilt on
+it: one master for both palettes (tilt 1.5 plus a presence lift at 1 to 2 kHz), the driven
+bass without its hard clip (asymmetric stages, the drive following the note, a bass
+cabinet: Hold The Line and Full Bore), the backing guitar without its clip at the old
+level (the three human tracks), a metal kick and a tightened tom (the human tracks), a
+softer crash, the soft sub's speaker shadow, and the rift tracks a quarter of their
+phone gap louder (The Far Bank -20.2, The Crossing -19.2; Low Ground unchanged). Still
+to judge: the kick's size alone and the toms in headphones (Ryan's last drum notes).
+Next: a speakers/headphones setting (offsets per track and a bus EQ on the speaker
+profile); the Risen and Infernal Horde boss themes from their seeds, melodies proposed in
+chat first; the real recordings remain section 12's open question.
 
 **The phone (26 to 28 September; README has the commands).** Ryan's Pixel runs the debug
 APK. Fixed so far: grid ribbons and their gain, safe insets, the MSAA leak, font
 oversampling, the drag ghost, the far blur, scanlines on device pixels, leaders, the seam
-band's clipped hexes. Still to judge on the device: frame rate, the sound set, edges
-without MSAA, the text, the grid at the hotter gain, the black gap under a tall map.
+band's clipped hexes, and the readout's strip under the map filled by the orders board
+while nothing is held (`game/battle/orders_board.gd`: a row a machine with its order and
+what the plan says it meets, the field at the right). Still to judge on the device: frame
+rate, the sound set, edges without MSAA, the text, the grid at the hotter gain, the board.
 
 **Open, in order.** The task list is `docs/todo.md`, one line a task, grouped by who
 moves it and ticked in the commit that lands it; this is the order to take them in.

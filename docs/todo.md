@@ -13,7 +13,8 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Codex and flavour for the seven new machines, the Baboon's flavour, and the 41 components whose codex is empty
 - [ ] Decide the Dingo's name (`design.name_clash`: a Heavy Gear Northern gear); the Sparrowhawk, Goshawk, Baboon and the badger id are kept
 - [ ] The Badger's joints and pins in Blender (`forge.py export badger`); the Clydesdale's nine pins
-- [ ] Picks from the phone sketches page: the bass voice (3 or 5), the clip-free guitar, the third shadows
+- [x] Picks from the phone sketches page: the bass voice (3 or 5), the clip-free guitar, the third shadows (28 September: voice 12, the guitar, the third cut, a quarter of the level gap; all in the forge)
+- [ ] Judge the drums' last dial-in on the phone (the kick is pitched a touch lower than the sketch, the toms tightened and drier): the kick's size alone, the toms in headphones
 - [ ] Read `docs/balance.md` against your own play; then either the numbers move or the bot's next rung is built
 - [ ] Discuss first, then decide: ally wrecks (block a hex? a round or the battle?)
 - [ ] Discuss first, then decide: what terrain does in a skirmish (things the machines feel, never a bonus to the foes)
@@ -56,7 +57,7 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 
 ## Map and screens
 
-- [ ] Close the black gap between the map's frame and the log on a tall screen (the map view grows with the glass; its frame does not fill it)
+- [x] The black gap between the map's frame and the log was the readout's reserved strip, empty until a hold; it now carries the orders board (`OrdersBoard`, 28 September). Ryan judges it on the phone
 - [ ] The wreck's death animation on the map, once wrecks are decided
 - [ ] Joint idle for grounded machines, once joints exist
 - [ ] Corruption in a pack's wake, and the bleed growing with Rift Pressure (`bleed.gd` has the knob in mind), once decided
@@ -79,8 +80,9 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 
 ## Audio
 
-- [ ] Rebuild the rift tracks on the one master (tilt 1.5 plus presence)
-- [ ] Land Ryan's phone-sketch picks in the forge; then a speakers or headphones setting
+- [x] Rebuild the rift tracks on the one master (tilt 1.5 plus presence)
+- [x] Land Ryan's phone-sketch picks in the forge (28 September: the driven bass, the backing guitar, the kick, the toms, the crash, the sub's shadow, the rift levels)
+- [ ] A speakers or headphones setting (default speaker on a phone; Godot cannot tell what is plugged in): shipped levels for headphones, an offset per track and an EQ on the music bus for the speaker profile; discuss the offsets first
 - [ ] The Risen and Infernal Horde boss themes from their seeds; melodies proposed in chat first
 - [ ] The real recordings and the real track: who makes them
 

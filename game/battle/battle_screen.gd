@@ -40,6 +40,7 @@ var _resolve_btn: HudButton
 var _clear_btn: HudButton
 var _details: HudPanel
 var _details_label: Label
+var _board: OrdersBoard
 var _tuner: MapTuner = null
 var _scan: ScanBar = null
 
@@ -197,6 +198,15 @@ func _build() -> void:
 	_clear_btn = HudButton.new("CLEAR ROUTES", _on_clear)
 	_clear_btn.ghost = true
 	_place(_clear_btn, Vector2(W - 16 - BOTTOM_BTN.x, BOTTOM_Y), BOTTOM_BTN)
+
+	# The strip between the map and the log carries the orders board while no readout is
+	# held (Ryan, 28 September); the readout, when held, sits over it.
+	_board = OrdersBoard.new()
+	_board.battle = battle
+	_board.preview = _map._preview
+	_board.playing = _map.is_playing
+	_board.covered = func() -> bool: return _details != null and _details.visible
+	_place(_board, Vector2(12.0, LOG_Y - 10.0 - INFO_H + 6.0), Vector2(W - 24.0, INFO_H - 12.0))
 
 	# The readout lives in one place, docked over the bottom of the map (thumbs, not a
 	# mouse: Ryan, 21 September), and a tap on it dismisses it.
