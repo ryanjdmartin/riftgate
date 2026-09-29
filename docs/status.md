@@ -69,11 +69,18 @@ codex opens by double-tap on either screen and shows the machine's base state pl
 rewards; the fight's effects live on the chips and the hold.
 
 **Balance (bible section 11).** `sim/policy.gd` plays the skirmish headless (RANDOM,
-GREEDY, `withdraw_below`); `tools/balance.gd` runs the matrix. Last read (26 September):
-the Badger wins every cell alone, the Clydesdale walls at brutes and spawn, the team wins
-every single-pack fight at no cost, vents are spent 1 to 2% of the time. Rerun after the
-new machines have real kits, and after any engine piece above lands; read bands, not
-numbers.
+GREEDY, `withdraw_below`); `tools/balance.gd` runs the matrix, about two minutes with
+eleven machines. Last read (28 September, after the Baboon, Pocket Paradox and the
+drafts' stock; their passives are still planned, so their rows are kits alone): the
+Badger, Wild Boar, Nemesis and Armadillo each win nearly every cell alone at little cost,
+the runner's flag for too strong out of the box; the Clydesdale's d9 lifted it (beats
+ghouls, holds the Colossus); the Baboon beats the back-rank packs and the Colossus and
+loses to the Pit Lord half the time under greedy, the bosses' stun resistance biting the
+one machine built on suppress; the Dingo and Prairie Dog lose to nearly everything alone,
+as support cars might, but their hull is worth a look; the Sparrowhawk and Goshawk hold;
+the team of three still wins every single-pack fight at no cost, so the rank and file's
+numbers are the lever. Numbed decays now and bosses carry 30 stun resistance. Rerun after
+each engine piece lands; read bands, not numbers.
 
 **Audio (the bible's section 1 sound row has every listen and decision).** Everything is
 `tools/soundforge/forge.py` writing WAVs into `art/audio/` (`build`, `measure`,

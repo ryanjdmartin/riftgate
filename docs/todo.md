@@ -10,7 +10,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 
 - [ ] Play-test the engagement range (`Battlefield.ENGAGE_RANGE` = 2) and the tethers; say whether formations are still wanted
 - [ ] Judge on the phone after a re-export: frame rate, the sound set, the machines' edges without MSAA, the text, the grid at `GRID_GAIN_PHONE`, the seam band (less green than before), the far blur
-- [ ] Codex and flavour for the seven new machines and the eighteen new components
+- [ ] Codex and flavour for the seven new machines, the Baboon's flavour, and the 41 components whose codex is empty
 - [ ] Decide the flagged names (`design.name_clash` notes on goshawk, dingo, sparrowhawk, the badger id)
 - [ ] The Badger's joints and pins in Blender (`forge.py export badger`); the Clydesdale's nine pins
 - [ ] Picks from the phone sketches page: the bass voice (3 or 5), the clip-free guitar, the third shadows
@@ -25,6 +25,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Movespeed in tens like every other number, or in hexes as now
 - [ ] Enemy targeting among machines in a skirmish (lowest shield, highest heat, last attacker, random) and how it is telegraphed
 - [ ] The game's name
+- [ ] Name and brief the second Aphelion machine: a hovercraft that runs hot, with heat as the suite's power (a stack per 20 heat held on every status it applies); a venomous sea creature's name; built after buffs exist
 
 ## Engine
 
@@ -46,7 +47,8 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 - [ ] The planned statuses still without an engine: Phased, Beacon, Energy Armour
 - [ ] The planned player keywords: Corrode, Scramble, Confuse
 - [ ] The planned triggers: on shield gain, on heat gain, on round start, on skirmish start, on hull damage, out of combat
-- [ ] Foe roles, and the ten planned foe actions in `content/foes.json`
+- [ ] Foe roles, and the ten planned foe actions in `content/foes.json` (buff, defend and debuff kinds running; every foe status they grant fires `on_foe_status`)
+- [ ] Buff equipment: a component kind spent on a machine that grants a round-scoped modifier (damage up, damage taken down, a status on hit); Overcharge as the first, then the heat passive above
 - [ ] Granted passives coloured on the codex
 - [ ] Save and resume mid-battle at any phase (nothing is serialised yet)
 - [ ] Onboarding: the gesture tutorial and the cheat sheet; the reroll rule and the zone of control first
@@ -68,12 +70,12 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 - [ ] The hangar as a model
 - [ ] Per-mech repaint (`Unit.paint` exists; nothing sets it)
 - [ ] A licensed icon set (game-icons.net, CC BY) rendered to textures, replacing the line-drawn glyphs in one pass
-- [ ] The 26 September review page (https://claude.ai/artifact/BeDtchGtS8H2oH3yij3ywX) still says Mandrill; it is the Baboon, or the page is retired
 
-## Pages
+## Pages (standing, after every content change)
 
-- [x] Republish the content editor (https://claude.ai/artifact/HnE3gvsxNHXyjRhRyEiDqT) with its `files` map after every content change, or its baselines go stale (done for the Baboon; a standing task)
-- [x] Rebake the nameplate page's baked-in current names (`CURRENT` in its script) when a chassis or component is added or renamed (done for the Baboon and the 28 September components; a standing task each time content names change)
+- Republish the content editor (https://claude.ai/artifact/HnE3gvsxNHXyjRhRyEiDqT) with its `files` map, or its baselines go stale; read its files first if another session published since
+- Rebake the nameplate page's baked-in current names (`CURRENT` in its script) when a chassis or component is added or renamed
+- Republish the bible from the committed file (each account to its own URL, listed in status)
 
 ## Audio
 
