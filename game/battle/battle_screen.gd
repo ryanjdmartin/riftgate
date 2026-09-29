@@ -971,10 +971,17 @@ const HANDOVER_FLAT_HEX := 7.5
 func _play_handover(group: Array, screen: SkirmishScreen) -> void:
 	var hexes: Array = []
 	var mid := Vector2.ZERO
-	for u in group:
-		hexes.append(u.pos)
-		mid += _map.center(u.pos)
-	mid /= maxf(1.0, float(group.size()))
+	if battle.boss_contact and battle.boss != null:
+		# The boss's fight holds every machine, so the group's centroid is the middle of the
+		# field: the dive aims at the boss's hex alone (Ryan, 29 September: the spread came
+		# out of the centre of the map, not the boss's tile).
+		hexes.append(battle.boss.pos)
+		mid = _map.center(battle.boss.pos)
+	else:
+		for u in group:
+			hexes.append(u.pos)
+			mid += _map.center(u.pos)
+		mid /= maxf(1.0, float(group.size()))
 	_map.set_highlight(hexes)
 	_map.pending = [group]        # the map stays frozen on this fight until the cut
 	# The spread grows out of the ground the fight is on, the same hex the skirmish

@@ -177,6 +177,15 @@
 </div>
 <div class="listen"><p><strong>Listen for:</strong> whether the bells and the choir lose their air, or whether the edge comes off as it did for the fight.</p></div>
 
+<h2>5. The Far Bank as a battle track</h2>
+<p>It was slowed to 86 when it was to be the map's theme. As a boss track it should be judged at a fighting pace, so here is the whole track three ways: as it ships, and the original take's 90 and 92. Whole, so the climax is in each; four minutes apiece. The seam at the end is the file's, not the game's loop point.</p>
+<div class="rows" data-group="round5">
+  <div class="row" data-src="far_bank_86.mp4" data-title="Far Bank &middot; 86, as it ships"><button class="btn" aria-label="play">&#9654;</button><div class="name"><span class="step">1</span> 86, as it ships</div><div class="num" data-db="far_bank_86"></div><div class="note">The locked build on the one master at the boss theme's level.</div></div>
+  <div class="row" data-src="far_bank_90.mp4" data-title="Far Bank &middot; 90"><button class="btn" aria-label="play">&#9654;</button><div class="name"><span class="step">2</span> 90</div><div class="num" data-db="far_bank_90"></div><div class="note">The tempo the map ran at before it was slowed.</div></div>
+  <div class="row" data-src="far_bank_92.mp4" data-title="Far Bank &middot; 92"><button class="btn" aria-label="play">&#9654;</button><div class="name"><span class="step">3</span> 92</div><div class="num" data-db="far_bank_92"></div><div class="note">The original take's tempo.</div></div>
+</div>
+<div class="listen"><p><strong>Listen for:</strong> whether the build and the climax carry a fight at the faster pace, and whether the bells and the choir keep their air. Switching rows keeps the bar you were at.</p></div>
+
 <h2>Measured</h2>
 <p>Where each shipped loop's power sits, by band. A phone speaker plays little below 150 Hz and nothing below 80.</p>
 <div style="overflow-x:auto">
@@ -269,7 +278,7 @@
   // The solo file's marks, and each file's loudness through the phone model, from the manifest.
   fetch('manifest.json').then(function (r) { return r.json(); }).then(function (m) {
     var all = [];
-    ['round4', 'voices', 'voices2', 'guitar', 'balance', 'shadows2', 'rift', 'levels', 'round3'].forEach(function (k) { all = all.concat(m[k] || []); });
+    ['round4', 'round5', 'voices', 'voices2', 'guitar', 'balance', 'shadows2', 'rift', 'levels', 'round3'].forEach(function (k) { all = all.concat(m[k] || []); });
     var markBoxes = {bass_solo: 'solo', bass_solo2: 'solo2', bass_solo3: 'solo3', drums_kits: 'drums', drums_kick: 'kick', drums_tom: 'tomtight'};
     all.forEach(function (f) {
       var el = document.querySelector('[data-db="' + f.name + '"]');

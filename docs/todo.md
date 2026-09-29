@@ -15,6 +15,8 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] The Badger's joints and pins in Blender (`forge.py export badger`); the missing model pins: the Clydesdale has 6 for 9 hardpoints, the Sparrowhawk 2 for 4
 - [ ] The Sparrowhawk's model carries two pins for four hardpoints (wing pods only); two more sockets, and the codex page flags both it and the Clydesdale until then
 - [x] Picks from the phone sketches page: the bass voice (3 or 5), the clip-free guitar, the third shadows (28 September: voice 12, the guitar, the third cut, a quarter of the level gap; all in the forge)
+- [ ] Judge The Far Bank whole at 90 and 92 against 86 (the sketches page's tempo set), as a boss track rather than the map theme it was slowed for
+- [ ] Hold The Line: the arrangement tweaks you have in mind (yours to describe by section letter)
 - [ ] Judge the drums' last dial-in from the sketches page's "Now" set: `mix_ship` (the track as it ships), `drums_kick` (the kick's size, three steps down) and `drums_tom` (the toms, three steps tighter); say which step, or further
 - [ ] Read `docs/balance.md` against your own play; then either the numbers move or the bot's next rung is built
 - [ ] Discuss first, then decide: ally wrecks (block a hex? a round or the battle?)
@@ -22,6 +24,8 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Discuss first, then decide: base defences (gate guns, then turrets; `Battlefield.defenses()` is empty)
 - [ ] Discuss first, then decide: the reinforcement phase, and whether skirmish composition follows placement
 - [ ] Discuss first, then decide: when and how the multi-hex boss comes back (`Unit.TRIANGLE` waits)
+- [ ] Discuss first, then decide: Rift Pressure feeding packs into the boss fight, so bum-rushing the boss is a race between temporary power gained and the boss's reinforcements (Ryan, 29 September: valid, fits the complexity wanted, tight to balance; hinges on how strong the in-battle temporary upgrades are, which do not exist yet)
+- [ ] Discuss first, then decide: the final battle's source rift has a boss of its own (Ryan's lean, 29 September: probably yes, as the campaign's climax; The Far Bank may be that boss's track, being more doom-and-gloom than a fight, which would leave The Chorus wanting a theme from a seed)
 - [ ] Discuss first, then decide: the economy and the blueprint tiers (nothing that prices anything can be designed before this)
 - [ ] Discuss first, then decide: does a pack keep its foes' hull between fights (a withdrawal leaves them hurt today only in the count), and how the map shows it (the strength segments could show it)
 - [ ] The ideas list: burning terrain, statuses carried between fights, hunter packs, hull repair
@@ -92,6 +96,8 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 - [x] Land Ryan's phone-sketch picks in the forge (28 September: the driven bass, the backing guitar, the kick, the toms, the crash, the sub's shadow, the rift levels)
 - [ ] A speakers or headphones setting (default speaker on a phone; Godot cannot tell what is plugged in): shipped levels for headphones, an offset per track and an EQ on the music bus for the speaker profile; discuss the offsets first
 - [ ] The Risen and Infernal Horde boss themes from their seeds; melodies proposed in chat first
+- [ ] The Far Bank's wrap at bar nine lands without the room's tail (the forge bakes it onto bar one, which the loop no longer reaches); render the tail onto bar nine only if Ryan hears the join in a fight longer than the track
+- ~~A light tight kick under The Far Bank's bass drum, as a sketch~~ (Ryan, 29 September: not missing any bass on the phone)
 - [ ] The real recordings and the real track: who makes them
 
 ## Pinned, not now

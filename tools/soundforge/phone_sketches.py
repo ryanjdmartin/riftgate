@@ -17,7 +17,7 @@ each file is an A/B against the first of its set; never written over a shipped t
             levels, then levelled by what a phone speaker plays (a model: high-passed at
             220 Hz twice, a presence bump, rolled off at 9 kHz).
 
-    tools/spriter/.venv/bin/python tools/soundforge/phone_sketches.py [voices|balance|levels|voices2|guitar|shadows2|rift|round3|round4]
+    tools/spriter/.venv/bin/python tools/soundforge/phone_sketches.py [voices|balance|levels|voices2|guitar|shadows2|rift|round3|round4|round5]
 
 Second round (28 September, from Ryan's notes on the first): voices2 (two hybrids of voice 2
 and the split, and the other bass voices the tracks use), guitar (the backing guitar without
@@ -543,7 +543,7 @@ def main(argv):
     if os.path.exists(page):   # the committed page, copied in so the publish has everything in one folder
         with open(page) as src, open(os.path.join(OUT, "index.html"), "w") as dst:
             dst.write(src.read())
-    manifest = {"voices": [], "balance": [], "levels": [], "voices2": [], "guitar": [], "shadows2": [], "rift": [], "round3": [], "round4": [], "notes": {}}
+    manifest = {"voices": [], "balance": [], "levels": [], "voices2": [], "guitar": [], "shadows2": [], "rift": [], "round3": [], "round4": [], "round5": [], "notes": {}}
     os.makedirs(OUT, exist_ok=True)
     path = os.path.join(OUT, "manifest.json")
     if which != "all" and os.path.exists(path):
@@ -688,6 +688,21 @@ def main(argv):
             write(name, x)
             manifest["round4"].append({"name": name, "seconds": len(x) / F.SR, "marks": marks, "note": note})
             print("  %-14s %5.1f s  %s" % (name, len(x) / F.SR, ", ".join(l for l, _ in variants)))
+        save()
+    if which in ("round5", "all"):
+        print("round5")
+        # The Far Bank whole at three tempos (Ryan, 29 September: it was slowed to 86 when it
+        # was to be a map theme; as a boss track, hear 90 and 92, the original take, again).
+        # Each levelled to the shipped level; the wrap is the file's end, since a sketch has
+        # no loop point.
+        for bpm in (86, 90, 92):
+            F.seed("music_far_bank")
+            x = level_to(F.music_far_bank(bpm=bpm), F.LEVELS["music_far_bank"])
+            name = "far_bank_%d" % bpm
+            write(name, x)
+            manifest["round5"].append({"name": name, "seconds": len(x) / F.SR, "phone_db": round(phone_level(x), 1),
+                                       "note": "The Far Bank whole at %d bpm%s" % (bpm, ", as it ships" if bpm == 86 else "")})
+            print("  %-14s %5.1f s  phone %.1f dB" % (name, len(x) / F.SR, phone_level(x)))
         save()
     if which in ("levels", "all"):
         print("levels")
