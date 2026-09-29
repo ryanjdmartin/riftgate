@@ -21,12 +21,17 @@ swatches, a second codex, a second sketches page). **Sharing:** the nameplate, c
 sketches are shared to the work email as Editor and open there, so B republishes those three
 in place and its own copies retire. Account A merged B's 42 component rows into its nameplate on
 29 September (90 rows now; A's Drill and Gelada wording kept as newer) and deleted the export.
-**Account B keeps two pages on purpose:** its bible copy (above; republished from the committed
-file after any bible change a B session makes) and the content editor
-(https://claude.ai/artifact/HnE3gvsxNHXyjRhRyEiDqT; Ryan's saved edits live in its database, its
-page source is `tools/content_editor.html`, the README says how it is published). Every other B
-page was deleted 29 September, night, on Ryan's word: the phone sketches, both renders pages, the
-codex, the Baboon review and, once A had merged its rows, the nameplate copy. **Rules learned today:** a page's link goes into this file in the same commit as
+**Account B keeps two pages** (Ryan's correction, 29 September, late): its bible copy (above;
+republished from the committed file after any bible change a B session makes) and a Model Viewer
+of its own (a B session records its link here). **The content editor page no longer exists** in
+either account: B's copy (HnE3gvsxNHXyjRhRyEiDqT) is gone, its `edits` database was empty when B
+last read it and its baselines matched the shipped content, so nothing was lost. Its page source is
+`tools/content_editor.html` (the README says how it is published, with a `files` map carrying
+`content/*.json`); when Ryan wants to edit from his phone again, publish it from account A and
+share it to the work email as Editor, so an A session can pull the edits (a B session cannot use
+an A page's database from Claude Code, though Ryan can from the page). Every other B page was
+deleted 29 September, night, on Ryan's word: the phone sketches, both renders pages, the codex, the
+Baboon review and, once A had merged its rows, the nameplate copy. **Rules learned today:** a page's link goes into this file in the same commit as
 the publish, so a parallel session sees it before publishing a twin; `Artifact` with `action:
 "list"` says what the account you are in owns, and a read of another account's page comes back
 "not found"; a page shared as Editor across accounts republishes, but its database stays with
@@ -75,10 +80,11 @@ engine has volatile, devour, Shocked, Overcharged, taunt, overwhelm, the stealth
 rule, the vent-on-fire face, the die-local reroll and heat-scaled shield regen. Numbers
 are in tens and are placeholders; every stat is read through `sim/effects.gd`. An enemy
 unit is a **pack** everywhere. Ryan writes `content/*.json` in his own voice (he writes
-die totals in his head; the data keeps free slots), often from his phone through the
-content editor artifact https://claude.ai/artifact/HnE3gvsxNHXyjRhRyEiDqT: pull collection
-`edits` with ArtifactData, apply by hand (the files are hand-formatted), test, commit,
-republish the page with its `files` map, clear the documents. The memory note has the
+die totals in his head; the data keeps free slots), until 29 September from his phone through
+the content editor page, which no longer exists (source `tools/content_editor.html`; the pages
+block says how to bring it back). When it exists: pull collection `edits` with ArtifactData,
+apply by hand (the files are hand-formatted), test, commit, republish the page with its `files`
+map, clear the documents. The memory note has the
 quirks. Tests never hardcode an entry's passive name.
 
 **Reserved names (28 September).** `content/reserved_names.json` holds about 1,250
@@ -152,9 +158,9 @@ and Sparrowhawk models are short today), every entry showing its
 component's numbers, keywords (hover for the vocabulary rule), maker and own passive, with
 planned entries marked. Run `python3 tools/build_codex.py . <out.html>` and publish the
 result; regenerate after any content change. Account B's copy is
-https://claude.ai/artifact/EF74jFYCWWmA3rSJFYWpR1. It is generated and read-only on purpose:
-Ryan's editing surface is the content editor, and two pages that both write content would
-fight.
+account A's at https://claude.ai/artifact/FqiH3b8ZZjxJaCJmWK71vj. It is generated and read-only
+on purpose: the content editor is Ryan's writing surface when it exists, and two pages that both
+write content would fight.
 
 **What the game does today.** A battle: the map shows every pack's intent and the exact
 result of the plan before Resolve; a grounded machine controls the ground beside it, a

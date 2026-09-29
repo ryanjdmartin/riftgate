@@ -85,8 +85,8 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 ## Pages (standing, after every content change)
 
 - [x] Joining the accounts (29 September): done. Nameplate, codex and phone sketches are shared to the work email as Editor and open there; A merged B's 42 component rows into its nameplate (an invited editor from another organisation cannot use a page's database from Claude Code, so B exported and A imported); the bible's and viewer's invites do not arrive, Ryan retries later, B keeps its own bible copy meanwhile. B's nameplate copy is deleted (29 September, night); B keeps only its bible copy and the content editor
-- Republish the content editor (https://claude.ai/artifact/HnE3gvsxNHXyjRhRyEiDqT) with its `files` map, or its baselines go stale; read its files first if another session published since (a B session only: the page is B's and B cannot share outward; source `tools/content_editor.html`)
-- [ ] B: republish the content editor now; `content/components.json` and `content/vocabulary.json` changed on 29 September (the buff kind, Overcharged, Braced, Primed, the Overcharge Coil) and its baselines are stale
+- The content editor, when it exists again: republish it with its `files` map after every content change, or its baselines go stale (source `tools/content_editor.html`)
+- [ ] When Ryan wants to edit content from his phone again: publish the content editor from account A (`tools/content_editor.html` with its `files` map carrying `content/*.json`) and share it to the work email as Editor; the old B page is gone, its edits database was empty
 - Rebake the nameplate page's baked-in current names (`CURRENT` in its script) when a chassis or component is added or renamed
 - Republish the bible from the committed file (each account to its own URL, listed in status)
 - Regenerate the hangar codex (`python3 tools/build_codex.py . codex.html`) after a content or model change and republish it, each account to its own copy; it reads the built `.glb` files, so build and import first
