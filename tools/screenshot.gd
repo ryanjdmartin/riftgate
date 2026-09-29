@@ -11,6 +11,7 @@ var _vp: SubViewport
 var _out := "screenshot.png"
 var _pose := ""
 var _node: Node
+var _window := false
 
 
 func _init() -> void:
@@ -40,14 +41,22 @@ func _init() -> void:
 	else:
 		_vp.size = design
 	_vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS
-	root.add_child(_vp)
+	# RIFTGATE_SHOT_WINDOW=1 skips the SubViewport and puts the scene in the window itself,
+	# so the capture goes through the project's own stretch and font oversampling, the way
+	# the phone does: run with --resolution 1080x1920 for a 1080 phone's density.
+	_window = OS.get_environment("RIFTGATE_SHOT_WINDOW") == "1"
+	if not _window:
+		root.add_child(_vp)
 	var scene: PackedScene = load(scene_path)
 	if scene == null:
 		push_error("cannot load %s" % scene_path)
 		quit(2)
 		return
 	_node = scene.instantiate()
-	_vp.add_child(_node)
+	if _window:
+		root.add_child(_node)
+	else:
+		_vp.add_child(_node)
 	process_frame.connect(_tick)
 
 
@@ -253,7 +262,7 @@ func _tick() -> void:
 	if _frames < want:
 		return
 	process_frame.disconnect(_tick)
-	var img := _vp.get_texture().get_image()
+	var img := (root.get_viewport().get_texture() if _window else _vp.get_texture()).get_image()
 	var err := img.save_png(_out)
 	print("saved %s (%s)" % [_out, error_string(err)])
 	quit(0 if err == OK else 1)

@@ -9,7 +9,7 @@ render_mode unshaded, cull_disabled, blend_mix, depth_draw_never;
 
 uniform vec3 color : source_color = vec3(0.2, 1.0, 0.33);
 uniform float base = 0.42;       // steady brightness: 0 rests as ink
-uniform float pulse = 1.6;       // the extra at the scan's leading edge, past the bloom threshold
+uniform float pulse = 1.1;       // the extra at the scan's leading edge, past the bloom threshold (1.6 was a bit much on the phone: Ryan, 29 September)
 uniform float gain = 1.0;        // the tuner's overall multiplier
 uniform float sweep_p = -1.0e6;  // the scan band's projected depth along `screen_down`, in world units
 uniform vec3 screen_down = vec3(0.0, -0.743, 0.669);   // the world direction that runs down the screen, so height counts

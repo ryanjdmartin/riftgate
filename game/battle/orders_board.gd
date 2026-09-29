@@ -47,11 +47,11 @@ func _draw() -> void:
 	var frame := int(_t * 18.0)
 	Hud.brackets(self, Rect2(Vector2.ZERO, size), 12.0, Color(hud, 0.55), 1.0)
 	# Header: the board's name at the left, the display's bytes before the LOG button.
-	var y := 15.0
-	draw_string(mono, Vector2(10.0, y), _title(), HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color(hud, 0.7))
-	draw_string(mono, Vector2(0.0, y), Hud.hex_bytes(4, frame, 3), HORIZONTAL_ALIGNMENT_RIGHT, size.x - 76.0, 11, Color(hud, 0.35))
+	var y := 17.0   # the header two down and a size up, at full strength (Ryan, 29 September: its top half read dimmed on the phone)
+	draw_string(mono, Vector2(10.0, y), _title(), HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color(hud, 0.9))
+	draw_string(mono, Vector2(0.0, y), Hud.hex_bytes(4, frame, 3), HORIZONTAL_ALIGNMENT_RIGHT, size.x - 76.0, 12, Color(hud, 0.45))
 	draw_line(Vector2(10.0, y + 6.0), Vector2(size.x - 10.0, y + 6.0), Color(hud, 0.22), 1.0)
-	y += ROW_H + 2.0
+	y += ROW_H
 	# The machines, one row each, in the team's order: name, shield and hull, order, contact.
 	var split := size.x * 0.64   # the field column starts here
 	var rows := _rows()

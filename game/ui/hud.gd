@@ -115,11 +115,28 @@ static func oversample(win: Window) -> void:
 		return
 	win.set_meta("riftgate_oversampled", true)
 	var apply := func() -> void:
-		var design_w := float(win.content_scale_size.x)
-		var scale := float(win.size.x) / design_w if design_w > 0.0 else 1.0
+		# The stretch the window really applies, read from its own transform: the same
+		# number that put the scanlines on device pixels on the phone. Computed from the
+		# window's size and content scale, the text stayed unsampled on the device (Ryan,
+		# 29 September) while the Mac's window path was crisp; the log says which it took.
+		var scale := win.get_final_transform().get_scale().y
+		var fallback := float(win.size.x) / maxf(1.0, float(win.content_scale_size.x))
+		if scale <= 0.0:
+			scale = fallback
 		win.oversampling_override = maxf(1.0, scale)
+		print("riftgate: font oversampling %.2f (window %s, stretch %.2f, size ratio %.2f)" % [win.oversampling_override, str(win.size), scale, fallback])
 	apply.call()
 	win.size_changed.connect(apply)
+
+
+## The 3D viewports' screen-space anti-aliasing: FXAA on a phone, where MSAA is off (below)
+## and the machines' silhouettes came out stepped and grainy (Ryan, 29 September); none on
+## the desktop, where MSAA does the work. A post-process, so nothing for the Compatibility
+## renderer's MSAA leak to touch. Typed int: a SubViewport.ScreenSpaceAA value.
+static func screen_space_aa() -> int:
+	if msaa_3d() == SubViewport.MSAA_DISABLED:
+		return SubViewport.SCREEN_SPACE_AA_FXAA
+	return SubViewport.SCREEN_SPACE_AA_DISABLED
 
 
 ## The 3D viewports' anti-aliasing: 4x on the desktop, none on a phone. Godot's

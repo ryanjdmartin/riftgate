@@ -106,6 +106,9 @@ perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/balance.gd --
 # (any run, not only the tool), RIFTGATE_SHOT_SCALE=1.5 renders at its pixel density (the
 # PNG comes out 1080 wide); add --rendering-method gl_compatibility for the phone's renderer.
 # RIFTGATE_MSAA=on|off forces the 3D viewports' anti-aliasing (any run; off on a phone by default).
+# RIFTGATE_SHOT_WINDOW=1 puts the scene in the window itself instead of a SubViewport, so the
+# capture goes through the project's own stretch and font oversampling as the phone's does:
+# run with --resolution 1080x1920 for a 1080 phone's density (the Mac's screen caps the height).
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmish/skirmish_screen.tscn shot.png codex
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/battle_screen.tscn shot.png route
 RIFTGATE_SHOT_H=1616 RIFTGATE_SAFE=80,48 RIFTGATE_SHOT_SCALE=1.5 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/battle_screen.tscn phone.png
