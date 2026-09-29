@@ -129,16 +129,6 @@ static func oversample(win: Window) -> void:
 	win.size_changed.connect(apply)
 
 
-## The 3D viewports' screen-space anti-aliasing: FXAA on a phone, where MSAA is off (below)
-## and the machines' silhouettes came out stepped and grainy (Ryan, 29 September); none on
-## the desktop, where MSAA does the work. A post-process, so nothing for the Compatibility
-## renderer's MSAA leak to touch. Typed int: a SubViewport.ScreenSpaceAA value.
-static func screen_space_aa() -> int:
-	if msaa_3d() == SubViewport.MSAA_DISABLED:
-		return SubViewport.SCREEN_SPACE_AA_FXAA
-	return SubViewport.SCREEN_SPACE_AA_DISABLED
-
-
 ## The 3D viewports' anti-aliasing: 4x on the desktop, none on a phone. Godot's
 ## Compatibility renderer leaks native memory every frame a 3D viewport draws with MSAA
 ## on Android (godotengine/godot#97967, open since October 2024; seen here on a Pixel 9,
