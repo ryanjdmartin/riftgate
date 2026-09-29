@@ -34,7 +34,7 @@ the repo. Read this file, then `docs/todo.md` (the task list), then `CLAUDE.md` 
 the commands, and how Ryan works: he pressure-tests, judges effects running, leans hotter
 on a phone, and retires old directions as he goes). `README.md` has the layout and every
 command with its screenshot poses and phone-layout variables. The bible's sections hold the
-why; section 11 carries the two phone rows, section 12 the roadmap. Ryan may be running
+why; section 11 carries the phone rows (the two paths, the reference glass, the readout's strip, the second phone pass), section 12 the roadmap. Ryan may be running
 another session on this repo at the same time: `git status` first, stage by path, diff a
 shared file before staging it, and never `git add -A`. If a chat and the bible disagree,
 the chat is newer.

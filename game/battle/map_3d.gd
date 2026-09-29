@@ -539,6 +539,7 @@ func _flush_batches() -> void:
 			mi.visible = _trace_mode != "off"
 			_trace_nodes.append(mi)
 		if b.hex != null:
+			mi.set_meta("prop_hex", b.hex)   # so set_trace_mode can leave a hidden hex's traces hidden
 			if not _prop_meshes.has(b.hex):
 				_prop_meshes[b.hex] = []
 			(_prop_meshes[b.hex] as Array).append(mi)
@@ -624,7 +625,10 @@ func set_trace_mode(mode: String) -> void:
 	_trace_mode = mode
 	for em in _trace_nodes:
 		if is_instance_valid(em):
-			em.visible = mode != "off"
+			# A prop's traces stay hidden while a machine stands on its hex (audit, 29
+			# September: this used to show a hidden hex's outlines again, through the machine).
+			var under_machine: bool = em.has_meta("prop_hex") and _props_hidden.get(em.get_meta("prop_hex"), false)
+			em.visible = mode != "off" and not under_machine
 			if mode != "off":
 				em.material_override = _trace_material(str(em.get_meta("kind", "prop")))
 
