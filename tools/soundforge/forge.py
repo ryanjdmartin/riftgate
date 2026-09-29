@@ -1492,7 +1492,7 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
 
 # The loops' shape, for `forge.py sections`: bar counts and timestamps of every section.
 MUSIC = {
-    "music_far_bank": {"bpm": 86, "form": "PPPPPPPP AAAAAAAB CCCCCCCB EEEEEEEEEEEEEEEE DDDZDDDZ T VVVV GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG HHHH",
+    "music_far_bank": {"bpm": 88, "form": "PPPPPPPP AAAAAAAB CCCCCCCB EEEEEEEEEEEEEEEE DDDZDDDZ T VVVV GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG HHHH",
                   "meter": {"Z": 14, "T": (12, 4.0 / 3.0), "V": (12, 4.0 / 3.0)},
                   "names": {"P": "the groove bare: the choir and the kick, the cellos from its second half",
                             "A": "groove: the bells arrive, then the horn answers from its second half",
@@ -2135,7 +2135,7 @@ def music_hold_the_line(palette="hybrid"):
                 "B": [[0, 7, 15]], "W": [[7, 14, 22]], "M": [[8, 15, 19]], "Y": [[0, 7, 15]], "V": [[0, 7, 15]], "Q": [[0, 7, 15]],
                 "C": [[8, 15, 19], [5, 12, 19], [3, 10, 17], [7, 14, 22]],
                 "L": [[8, 15, 19], [5, 12, 19], [3, 10, 17], [7, 14, 22]],
-                "X": [[0, 7, 15], [0, 7, 15], [3, 10, 17], [-2, 5, 10]],
+                "X": [[0, 7, 15], [0, 7, 15], [3, 10, 17], [-2, 5, 10], [8, 15, 19], [7, 14, 22], [5, 12, 19], [3, 10, 17]],   # the second half descends under the held guitar
                 "U": [[0, 7, 15]],
                 "F": [[0, 7, 15], [8, 15, 19], [10, 17, 22], [7, 14, 22], [0, 7, 15], [5, 12, 19], [3, 10, 17], [-2, 5, 10],
                       [0, 7, 15], [8, 15, 19], [7, 14, 22], [-2, 5, 10], [0, 7, 15], [8, 15, 19], [10, 17, 22], [7, 14, 22]],
@@ -2162,7 +2162,7 @@ def music_hold_the_line(palette="hybrid"):
             # The lifts.
             {"inst": "sub_bass", "mode": "riff", "gain": 0.55, "hold": 1.0,
              "pat": {"C": "8-.c.8-a.8-.5-.38-.c.8-a.3-.5-.7"}},
-            {"inst": "bass", "mode": "riff", "gain": 0.5, "hold": 1.0, "params": {"drive": 3.5, "cutoff": 800.0},
+            {"inst": "bass", "mode": "riff", "gain": 0.4, "hold": 1.0, "params": {"drive": 3.5, "cutoff": 800.0},   # down a bit (Ryan, 29 September)
              "pat": {"L": "8-.c.8-a.8-.5-.38-.c.8-a.3-.5-.7"}},
             # The seven.
             {"inst": backing, "mode": "riff", "gain": 0.72, "octave": -1,
@@ -2174,8 +2174,11 @@ def music_hold_the_line(palette="hybrid"):
             {"inst": "epiano", "mode": "stab", "gain": 0.4, "dur": 3.0, "pat": {"X": "........x....."}},
             {"inst": "chime_metal", "mode": "chord", "octave": 2, "gain": 0.22, "echo": (3, 0.25, 2), "dur": 1.6,
              "pat": {"X": "....0.....2...1.......3.....", "W": "0..............................."}},
-            {"inst": backing, "mode": "riff", "gain": 0.3, "octave": 1, "params": {"mute": False, "cutoff": 2000.0}, "legato": True,
-             "pat": {"X": "." * 56 + "0-------------3-------------0-------------g-------------"}},
+            # The held guitar through the seven's second half comes in louder and walks a
+            # descending progression, C B A G, with the section's chords under it (Ryan, 29
+            # September; the first pass had it on the riff's own E G E D).
+            {"inst": backing, "mode": "riff", "gain": 0.45, "octave": 1, "params": {"mute": False, "cutoff": 2000.0}, "legato": True,
+             "pat": {"X": "." * 56 + "8-------------7-------------5-------------3-------------"}},
             # The unison: the lead on top, the chug and the bass behind it, the drums soloing.
             {"inst": backing, "mode": "riff", "gain": 0.55, "octave": -1, "params": {"cutoff": 1100.0},
              "pat": {"U": "0..0..0.3..3..3.5..5..5.3.0.g.0.5..5..5.8..8..8.a..a..a.8.5.3.0."}},
@@ -2204,10 +2207,12 @@ def music_hold_the_line(palette="hybrid"):
                           "7---8---a---c---a---8---7---5---3-------5---3---0-------3---5---"}},
             {"inst": "epiano", "mode": "stab", "gain": 0.5, "dur": 2.0,
              "pat": {"C": "..x...x...x...x.", "L": "..x...x...x...x.",
-                     "F": "............x..." "................" "............x..." "x..............."
-                          "............x..." "x.......x......." "............x..." "x...x...x......."
-                          "x...........x..." "x.......x......." "x...x.......x..." "x.......x...x..."
-                          "x...x...x...x..." "x.......x...x..." "x...x...x...x..." "x...x...x...x..."}},
+                     # The keys' chord work starts absent and grows through the section (Ryan,
+                     # 29 September: more chords by the lead, it is keys after all).
+                     "F": "................" "................" "............x..." "................"
+                          "x...........x..." "................" "x.......x......." "............x..."
+                          "x...x.......x..." "x.......x...x..." "x...x...x......." "x...x...x...x..."
+                          "x...x...x...x..." "x.x.x...x...x.x." "x...x.x.x...x..." "x.x.x.x.x.x.x.x."}},
             {"inst": "epiano", "mode": "riff", "gain": 0.5, "octave": 2, "legato": True,
              "pat": {"Y": "7---------------"}},
             # The climax: the lead guitar voice and the driven bass on a new riff in unison,
@@ -2293,7 +2298,8 @@ def music_hold_the_line(palette="hybrid"):
              # the riff (Ryan: not hearing it sustained; it was level but masked).
              # Ryan really likes this drone as an element for the human tracks; it also sits
              # under the whole climax, alone under the first set.
-             {"inst": "sweep", "gain": 0.34, "octave": 0, "rate": 0.08, "depth": 0.3, "open": 0.75, "sections": "ANSRZ", "skip": {"A": 12}, "chord": [0, 7, 12]}],
+             # Up a bit everywhere it plays (Ryan, 29 September).
+             {"inst": "sweep", "gain": 0.42, "octave": 0, "rate": 0.08, "depth": 0.3, "open": 0.75, "sections": "ANSRZ", "skip": {"A": 12}, "chord": [0, 7, 12]}],
         drum_gain={"U": 1.3, "S": 1.15, "R": 1.25, "Z": 1.3, "W": 1.25, "Q": 1.2},
         crescendo={"S": (0.85, 1.0), "R": (1.0, 1.12), "Z": (1.12, 1.3)},
         tilt=1.5, presence=0.25, low=(150.0, -6.0),   # the human master since 28 September: half the tilt, a presence lift
@@ -3277,10 +3283,6 @@ SOUNDS = {
     "victory": victory, "defeat": defeat, "withdraw": withdraw, "overheat": overheat,
     "laser": laser, "gunfire": gunfire, "cannon": cannon, "slash": slash, "slam": slam,
     "music_far_bank": music_far_bank, "music_hold_the_line": music_hold_the_line,
-    # The Far Bank at 88 and 90 beside the shipped 86, in the skirmish set for Ryan to judge
-    # in the game as a boss track (29 September: 92 lost the sinister, gloomy air). Temporary;
-    # the winner becomes music_far_bank's tempo and these go.
-    "music_far_bank_88": lambda: music_far_bank(bpm=88), "music_far_bank_90": lambda: music_far_bank(bpm=90),
     "music_low_ground": music_low_ground, "music_night_shift": music_night_shift,
     "music_crossing": music_crossing, "music_full_bore": music_full_bore,
 }
@@ -3295,17 +3297,17 @@ LEVELS = {
     "contact": -10, "engage": -13, "cut": -8, "gate_hit": -8, "spawn": -12,
     "victory": -10, "defeat": -10, "withdraw": -11, "overheat": -12,
     "laser": -11, "gunfire": -11, "cannon": -8, "slash": -12, "slam": -9,
-    # Mean RMS dB, pinned where Ryan judged them. The rift tracks sit a quarter of their
-    # phone gap above where they were (Ryan, 28 September, from the phone sketches: the full
-    # gap was far too loud in headphones, half still loud, a quarter right): the gap is how
-    # far a track falls under its set's human partner through a phone-speaker model
+    # Mean RMS dB, pinned where Ryan judged them. The rift tracks sit half their phone gap
+    # above where they were (Ryan, 28 September, a quarter from the phone sketches; 29
+    # September, in the game: the quarter was wrong, back to the half): the gap is how far a
+    # track falls under its set's human partner through a phone-speaker model
     # (tools/soundforge/phone_sketches.py), since three quarters of a rift track's power
     # sits below 80 Hz where a phone is silent. The Far Bank 9.2 dB under Hold The Line
-    # (-22.5 to -20.2), The Crossing 5.9 under (-20.7 to -19.2), Low Ground already level
+    # (-22.5 to -17.9), The Crossing 5.9 under (-20.7 to -17.7), Low Ground already level
     # with Night Shift on the speaker (unchanged).
-    "music_far_bank": -20.2, "music_hold_the_line": -20.7, "music_far_bank_88": -20.2, "music_far_bank_90": -20.2,
+    "music_far_bank": -17.9, "music_hold_the_line": -20.7,
     "music_low_ground": -24.9, "music_night_shift": -24.9,   # the map's two, at one level, the map's level (Ryan, 25 September)
-    "music_crossing": -19.2, "music_full_bore": -20.7,   # rift C in the skirmish set, up a quarter of its phone gap (see above)
+    "music_crossing": -17.7, "music_full_bore": -20.7,   # rift C in the skirmish set, up half its phone gap (see above)
 }
 
 

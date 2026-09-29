@@ -17,7 +17,7 @@ each file is an A/B against the first of its set; never written over a shipped t
             levels, then levelled by what a phone speaker plays (a model: high-passed at
             220 Hz twice, a presence bump, rolled off at 9 kHz).
 
-    tools/spriter/.venv/bin/python tools/soundforge/phone_sketches.py [voices|balance|levels|voices2|guitar|shadows2|rift|round3|round4|round5|round6]
+    tools/spriter/.venv/bin/python tools/soundforge/phone_sketches.py [voices|balance|levels|voices2|guitar|shadows2|rift|round3|round4|round5|round6|round7]
 
 Second round (28 September, from Ryan's notes on the first): voices2 (two hybrids of voice 2
 and the split, and the other bass voices the tracks use), guitar (the backing guitar without
@@ -615,7 +615,7 @@ def main(argv):
     if os.path.exists(page):   # the committed page, copied in so the publish has everything in one folder
         with open(page) as src, open(os.path.join(OUT, "index.html"), "w") as dst:
             dst.write(src.read())
-    manifest = {"voices": [], "balance": [], "levels": [], "voices2": [], "guitar": [], "shadows2": [], "rift": [], "round3": [], "round4": [], "round5": [], "round6": [], "notes": {}}
+    manifest = {"voices": [], "balance": [], "levels": [], "voices2": [], "guitar": [], "shadows2": [], "rift": [], "round3": [], "round4": [], "round5": [], "round6": [], "round7": [], "notes": {}}
     os.makedirs(OUT, exist_ok=True)
     path = os.path.join(OUT, "manifest.json")
     if which != "all" and os.path.exists(path):
@@ -800,6 +800,28 @@ def main(argv):
             write(name, x)
             manifest["round6"].append({"name": name, "seconds": len(x) / F.SR, "phone_db": round(phone_level(x), 1), "note": "the track with the toms at " + label})
             print("  %-14s %5.1f s  phone %.1f dB" % (name, len(x) / F.SR, phone_level(x)))
+        save()
+    if which in ("round7", "all"):
+        print("round7")
+        # Hold The Line a little faster (Ryan, 29 September), whole, on the arrangement as it
+        # ships; and its loop seam as the game plays it now: the last twelve bars, then the
+        # wrap into bar five, where the bass enters, rather than the bare top.
+        saved = F.MUSIC["music_hold_the_line"]["bpm"]
+        try:
+            F.MUSIC["music_hold_the_line"]["bpm"] = 104
+            F.seed("music_hold_the_line")
+            x = level_to(F.music_hold_the_line(), SKIRMISH_LEVEL)
+        finally:
+            F.MUSIC["music_hold_the_line"]["bpm"] = saved
+        write("hold_104", x)
+        manifest["round7"].append({"name": "hold_104", "seconds": len(x) / F.SR, "phone_db": round(phone_level(x), 1), "note": "Hold The Line whole at 104 (it ships at 100), on the 29 September arrangement"})
+        print("  hold_104       %5.1f s  phone %.1f dB" % (len(x) / F.SR, phone_level(x)))
+        y, sr = F.read("music_hold_the_line")
+        bar = int(bar_seconds(100) * F.SR)
+        seam = np.concatenate([y[-12 * bar:], y[4 * bar: 16 * bar]])
+        write("hold_seam", seam)
+        manifest["round7"].append({"name": "hold_seam", "seconds": len(seam) / F.SR, "marks": [(0.0, "the last twelve bars"), (12 * bar / F.SR, "the wrap into bar five")],
+                                   "note": "Hold The Line's loop as the game plays it now: the descent's last twelve bars, then bar five (the bass's entrance) onward"})
         save()
     if which in ("levels", "all"):
         print("levels")

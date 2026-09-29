@@ -14,8 +14,8 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Decide the Dingo's name (`design.name_clash`: a Heavy Gear Northern gear); the Sparrowhawk, Goshawk, Baboon and the badger id are kept
 - [ ] The Badger's joints and pins in Blender (`forge.py export badger`); the missing model pins: the Clydesdale has 6 for 9 hardpoints, the Sparrowhawk 2 for 4 (wing pods only); the codex page flags both until then
 - [x] Picks from the phone sketches page: the bass voice (3 or 5), the clip-free guitar, the third shadows (28 September: voice 12, the guitar, the third cut, a quarter of the level gap; all in the forge)
-- [ ] Judge The Far Bank's tempo in the game: 86, 88 and 90 are all in the skirmish set (`The Far Bank`, `The Far Bank 88`, `The Far Bank 90`; skip between them from the pause menu); 92 lost the sinister, gloomy air. Say which stays
-- [ ] Hold The Line: the arrangement tweaks you have in mind (yours to describe by section letter)
+- [x] Judge The Far Bank's tempo in the game (29 September: 88 stays; the temporary ids are gone)
+- [ ] Hold The Line: hear the 29 September arrangement in the game (the drone up, the second lift's bass down, the seven's held guitar louder on a descending C B A G, the keys' chords from nothing), the loop's wrap into bar five, and the 104 sketch on the page; notes by section letter
 - [ ] Judge round six on the sketches page: the track with the middle kick and with the old kick (say which "original" meant), and the toms hit harder at two powers, bare and in the track
 - [x] Judge the drums' last dial-in from the sketches page's "Now" set: `mix_ship` (the track as it ships), `drums_kick` (the kick's size, three steps down) and `drums_tom` (the toms, three steps tighter); say which step, or further
 - [ ] Read `docs/balance.md` against your own play; then either the numbers move or the bot's next rung is built
@@ -96,7 +96,7 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 - [x] Land Ryan's phone-sketch picks in the forge (28 September: the driven bass, the backing guitar, the kick, the toms, the crash, the sub's shadow, the rift levels)
 - [ ] A speakers or headphones setting (default speaker on a phone; Godot cannot tell what is plugged in): shipped levels for headphones, an offset per track and an EQ on the music bus for the speaker profile; discuss the offsets first
 - [ ] The Risen and Infernal Horde boss themes from their seeds; melodies proposed in chat first
-- [ ] The Far Bank's wrap at bar nine lands without the room's tail (the forge bakes it onto bar one, which the loop no longer reaches); render the tail onto bar nine only if Ryan hears the join in a fight longer than the track
+- ~~The Far Bank's wrap at bar nine lands without the room's tail~~ (Ryan, 29 September: the loop is fine)
 - ~~A light tight kick under The Far Bank's bass drum, as a sketch~~ (Ryan, 29 September: not missing any bass on the phone)
 - ~~The real recordings and the real track: who makes them~~ (Ryan, 29 September: no decision needed, the forge on this computer is the instrument)
 

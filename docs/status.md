@@ -216,8 +216,11 @@ level (the three human tracks), a metal kick and a tightened tom (the human trac
 softer crash, the soft sub's speaker shadow, and the rift tracks a quarter of their
 phone gap louder (The Far Bank -20.2, The Crossing -19.2; Low Ground unchanged). Still
 to judge: the kick's size alone and the toms in headphones (Ryan's last drum notes).
-The Far Bank sits in the skirmish set three times over (86, 88, 90) while Ryan judges its
-pace in the game; then one tempo stays and the other two ids go. Next: a
+The Far Bank runs at 88 (judged in the game, 29 September) and the rift levels are at the
+half gap (-17.9, The Crossing -17.7). Hold The Line wraps to bar five (`LOOP_FROM`) and
+carries the 29 September arrangement notes (drone up, second lift's bass down, the
+seven's held guitar louder on a descending C B A G, the keys' chords growing from
+nothing), unheard; a 104 render and the loop seam are on the listening page. Next: a
 speakers/headphones setting (offsets per track and a bus EQ on the speaker profile); the
 Risen and Infernal Horde boss themes from their seeds, melodies proposed in chat first. The
 real recordings question is closed (29 September): the forge is the instrument.

@@ -198,6 +198,15 @@
 </div>
 <div class="listen"><p><strong>Listen for:</strong> whether the middle kick punches through on the speaker without turning back into a small drum in headphones, and at which power the fill stops sounding gentle without going hollow. Everything switches at the same bar.</p></div>
 
+<h2>7. Hold The Line: faster, and its loop</h2>
+<p>The 29 September arrangement (the drone up everywhere, the second lift's synth bass down, the seven's held guitar louder on a descending C B A G, the keys' chords growing from nothing) is what ships now, and these are on it. The loop wraps to bar five, where the bass enters, as The Far Bank's wraps to its groove.</p>
+<div class="rows" data-group="round7">
+  <div class="row" data-src="hold_104.mp4" data-title="Hold The Line &middot; 104"><button class="btn" aria-label="play">&#9654;</button><div class="name"><span class="step">1</span> Whole, at 104</div><div class="num" data-db="hold_104"></div><div class="note">It ships at 100. Four beats a minute faster, the whole track, so the seven and the solo are in it.</div></div>
+  <div class="row" data-src="hold_seam.mp4" data-title="Hold The Line &middot; the loop"><button class="btn" aria-label="play">&#9654;</button><div class="name"><span class="step">2</span> The loop as the game plays it</div><div class="num"></div><div class="note">The descent's last twelve bars, then the wrap into bar five onward, at 100. The join is what a long fight hears.</div>
+    <div class="marks" data-marks="seam"></div></div>
+</div>
+<div class="listen"><p><strong>Listen for:</strong> whether 104 keeps the groove or starts to rush the seven; and whether the wrap into the bass reads as a return rather than a restart.</p></div>
+
 <h2>Measured</h2>
 <p>Where each shipped loop's power sits, by band. A phone speaker plays little below 150 Hz and nothing below 80.</p>
 <div style="overflow-x:auto">
@@ -290,8 +299,8 @@
   // The solo file's marks, and each file's loudness through the phone model, from the manifest.
   fetch('manifest.json').then(function (r) { return r.json(); }).then(function (m) {
     var all = [];
-    ['round4', 'round5', 'round6', 'voices', 'voices2', 'guitar', 'balance', 'shadows2', 'rift', 'levels', 'round3'].forEach(function (k) { all = all.concat(m[k] || []); });
-    var markBoxes = {bass_solo: 'solo', bass_solo2: 'solo2', bass_solo3: 'solo3', drums_kits: 'drums', drums_kick: 'kick', drums_tom: 'tomtight', drums_tom_power: 'tompower'};
+    ['round4', 'round5', 'round6', 'round7', 'voices', 'voices2', 'guitar', 'balance', 'shadows2', 'rift', 'levels', 'round3'].forEach(function (k) { all = all.concat(m[k] || []); });
+    var markBoxes = {bass_solo: 'solo', bass_solo2: 'solo2', bass_solo3: 'solo3', drums_kits: 'drums', drums_kick: 'kick', drums_tom: 'tomtight', drums_tom_power: 'tompower', hold_seam: 'seam'};
     all.forEach(function (f) {
       var el = document.querySelector('[data-db="' + f.name + '"]');
       if (el && f.phone_db !== undefined) el.textContent = f.phone_db.toFixed(1) + ' dB on the speaker';
