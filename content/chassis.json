@@ -131,8 +131,9 @@
       "passive": {
         "id": "staticscreen_projector", "name": "Static-screen Projector",
         "description": "A blast of dust, smoke and static electricity that confuses senses and sensors alike. When the team withdraws, the Prairie Dog is out before the enemy strikes, and each ally has an even chance of slipping out with it; a blow aimed at a machine the screen covers is lost.",
-        "status": "planned",
-        "effects": []
+        "effects": [
+          { "trigger": "static", "effect": "screen_withdraw", "value": 50 }
+        ]
       },
       "flavour": ""
     },
@@ -183,9 +184,11 @@
       "loadout": ["plasma_carbine", "meteor_artillery", "ward_plate", "entropy_condenser"],
       "passive": {
         "id": "crucible_capacitor", "name": "Crucible Capacitor",
-        "description": "The core feeds on punishment. Melee damage rises with every stack of Overheating, and any blow that reaches hull, from a foe or its own weapons, adds a stack.",
-        "status": "planned",
-        "effects": []
+        "description": "The core feeds on punishment. Melee damage rises 5 with every stack of Overheating, and any blow that reaches hull, from a foe or its own weapons, adds a stack.",
+        "effects": [
+          { "trigger": "on_attack", "effect": "add_damage", "value": 5, "per_stack": "overheating", "when": "reach_melee" },
+          { "trigger": "on_hull_damage", "effect": "stack_status", "value": "overheating" }
+        ]
       },
       "flavour": ""
     },
@@ -201,8 +204,9 @@
       "passive": {
         "id": "quintessence_tap", "name": "Quintessence Tap",
         "description": "What the talons take is kept. Overcharged never decays on this machine and lasts the battle.",
-        "status": "planned",
-        "effects": []
+        "effects": [
+          { "trigger": "static", "effect": "keep_status", "value": "overcharged" }
+        ]
       },
       "flavour": ""
     }

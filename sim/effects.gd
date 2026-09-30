@@ -46,8 +46,9 @@ const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "roll_max"],
 	"on_crit": ["multiply_damage", "add_damage", "add_burn", "vent_heat", "add_crit_damage"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "draw_rank", "grant_keyword", "free_reroll"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "draw_rank", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat"],
+	"on_hull_damage": ["stack_status"],
 	"status": ["tick_hp", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry"],
 	"on_foe_status": ["chance_suppress"],
 }
@@ -425,6 +426,10 @@ static func attack(u, face: Face, dmg: int, heat: int, crit: bool, target = null
 		var eff: Dictionary = pair[0]
 		var v: float = float(eff.get("value", 0))
 		var n: int = pair[1].stacks
+		# `per_stack` scales an effect by the machine's stacks of a status (the Nemesis's
+		# Crucible: melee damage per Overheating stack); none of the status, no effect.
+		if eff.has("per_stack"):
+			n *= stacks_of(u, str(eff["per_stack"]))
 		match str(eff.get("effect", "")):
 			"add_damage":
 				d_add += v * n
@@ -530,6 +535,57 @@ static func foe_status_suppress_chance(u) -> int:
 		var n: int = pair[1].stacks
 		total += (float(eff.get("value", 0)) + float(eff.get("per_missing_shield", 0)) * missing) * n
 	return clampi(int(roundf(total)), 0, 100)
+
+
+## Armour this machine has against blows from a rank (0 front, 1 back) on top of its stat
+## (add_armour_vs_rank, static; the Breaching Plow's Glacis against the front).
+static func armour_against(u, rank: int) -> int:
+	var n := 0
+	for pair in _taking_part(u, "static", null):
+		var eff: Dictionary = pair[0]
+		if str(eff.get("effect", "")) != "add_armour_vs_rank":
+			continue
+		var want := 0 if str(eff.get("rank", "front")) == "front" else 1
+		if want == rank:
+			n += int(eff.get("value", 0)) * int(pair[1].stacks)
+	return maxi(0, n)
+
+
+## Does a passive keep a status from fading on this machine and carry it through the battle
+## (keep_status, static; the Ammit's Quintessence Tap on Overcharged)?
+static func keeps(u, status_id: String) -> bool:
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "keep_status" and str(pair[0].get("value", "")) == status_id:
+			return true
+	return false
+
+
+## The chance, percent, that an ally slips out under this machine's screen when the team
+## withdraws (screen_withdraw, static; the Prairie Dog): zero when it has none.
+static func screen_chance(u) -> int:
+	var best := 0
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "screen_withdraw":
+			best = maxi(best, int(pair[0].get("value", 0)))
+	return clampi(best, 0, 100)
+
+
+## The machine has just lost hull to a blow or a bite (never to its own overheat): every
+## on_hull_damage passive fires. stack_status adds a stack of a status for the skirmish,
+## fading a stack a turn (the Crucible's Overheating). Returns the names granted, for the log.
+static func hull_damaged(u) -> Array[String]:
+	var out: Array[String] = []
+	for pair in _taking_part(u, "on_hull_damage", null):
+		var eff: Dictionary = pair[0]
+		if str(eff.get("effect", "")) != "stack_status":
+			continue
+		var id := str(eff.get("value", ""))
+		if not STATUS.has(id):
+			continue
+		var m := stack(u, STATUS[id], SKIRMISH, "passive:" + str(pair[1].id), int(pair[1].stacks), DECAY_TICK)
+		if m != null and not out.has(m.name):
+			out.append(m.name)
+	return out
 
 
 ## Does a kinetic attack roll its maximum (roll_max on_attack; the Dingo's Tactical Databank
@@ -664,6 +720,10 @@ static func effect_text(eff: Dictionary) -> String:
 			var kw := Face.keyword_from_name(str(v))
 			body = "gains %s" % (Face.keyword_label(kw) if kw > 0 else str(v))
 		"roll_max": body = "kinetic weapons roll their maximum"
+		"add_armour_vs_rank": body = "armour +%s against %s-rank blows" % [vs, str(eff.get("rank", "front"))]
+		"keep_status": body = "%s never fades and lasts the battle" % str(STATUS.get(str(v), {}).get("name", str(v)))
+		"screen_withdraw": body = "on a withdrawal this machine is out before the enemy strikes, and each ally has a %s%% chance to slip out with it; a blow at a covered machine is lost" % vs
+		"stack_status": body = "gains a stack of %s" % str(STATUS.get(str(v), {}).get("name", str(v)))
 		"free_reroll": body = "%s free reroll%s of this die a round" % [vs, "" if int(v) == 1 else "s"]
 		"shield_per_heat": body = "+%s shield for every 10 heat carried" % vs
 		"add_shield": body = "+%s shield" % vs
@@ -678,11 +738,14 @@ static func effect_text(eff: Dictionary) -> String:
 			if float(eff.get("per_missing_shield", 0)) > 0.0:
 				body += ", +%s%% per shield point missing" % _trim_num(float(eff.get("per_missing_shield", 0)))
 		_: body = str(eff.get("effect", ""))
+	if eff.has("per_stack"):
+		body += " per stack of %s" % str(STATUS.get(str(eff["per_stack"]), {}).get("name", str(eff["per_stack"])))
 	var lead := ""
 	match str(eff.get("trigger", "")):
 		"on_crit": lead = "on a crit: "
 		"on_injury": lead = "on an injury: "
 		"on_round_start": lead = "at the start of the round: "
+		"on_hull_damage": lead = "on losing hull: "
 	match str(eff.get("when", "")):
 		"component_cracked": lead += "cracked components: "
 		"reach_melee": lead += "melee attacks: "

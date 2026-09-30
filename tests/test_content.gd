@@ -631,3 +631,21 @@ func test_the_vent_on_fire_fields_belong_to_an_attack() -> void:
 			bad_gun = true
 	assert_true(bad_plate, "vents_all on a shield is refused")
 	assert_true(bad_gun, "power_per_heat without vents_all is refused")
+
+
+func test_the_new_passive_fields_are_checked() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var c: Dictionary = db.chassis["badger"].duplicate(true)
+	c["id"] = "odd"
+	c["name"] = "Odd Test"
+	c["passive"] = {"id": "odd", "name": "Odd", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "add_damage", "value": 5, "per_stack": "nonsense"},
+		{"trigger": "static", "effect": "keep_status", "value": "nonsense"},
+		{"trigger": "static", "effect": "add_armour_vs_rank", "value": 5, "rank": "sideways"}]}
+	db.chassis["odd"] = c
+	var hits := 0
+	for e in db.validate():
+		if e.begins_with("chassis odd") and (e.contains("per_stack") or e.contains("keep_status") or e.contains("front or back")):
+			hits += 1
+	assert_eq(hits, 3, "each bad field is named")

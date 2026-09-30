@@ -478,6 +478,12 @@ func _validate_passive(where: String, p, errs: Array[String]) -> void:
 			errs.append("%s: a stat effect needs 'stat', one of %s" % [where, ", ".join(Effects.STATS)])
 		if effect == "suppress" and str(eff.get("value", "")).is_empty():
 			errs.append("%s: suppress needs the id or tag it turns off as its value" % where)
+		if eff.has("per_stack") and not Effects.STATUS.has(str(eff["per_stack"])):
+			errs.append("%s: per_stack names no engine status ('%s')" % [where, eff["per_stack"]])
+		if (effect == "keep_status" or effect == "stack_status") and not Effects.STATUS.has(str(eff.get("value", ""))):
+			errs.append("%s: %s needs an engine status as its value" % [where, effect])
+		if effect == "add_armour_vs_rank" and not ["front", "back"].has(str(eff.get("rank", "front"))):
+			errs.append("%s: add_armour_vs_rank's rank is front or back" % where)
 		if effect == "grant_keyword":
 			var kw := str(eff.get("value", ""))
 			if Face.keyword_from_name(kw) <= 0:

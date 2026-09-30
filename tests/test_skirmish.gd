@@ -1971,3 +1971,142 @@ func test_a_free_reroll_of_one_die_spares_the_teams() -> void:
 	sk.end_round()
 	sk.start_round()
 	assert_eq(sk.mechs[0].free_rerolls, 1, "back each round")
+
+
+func test_the_crucible_stacks_overheating_on_hull_hits_and_melee_grows_with_it() -> void:
+	var crucible := {"id": "crucible", "name": "Crucible Capacitor", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "add_damage", "value": 5, "per_stack": "overheating", "when": "reach_melee"},
+		{"trigger": "on_hull_damage", "effect": "stack_status", "value": "overheating"}]}
+	var sk := Skirmish.new(1)
+	var fist := Face.attack(30, Face.Reach.MELEE)
+	var m := _mech("A", Die.single(fist), 0, 200)
+	m.grant_passive(crucible)
+	sk.add_mech(m)
+	var g := _ghoul(500, 10)
+	g.actions[0]["strikes"] = 2
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	sk.assign(0, g)
+	assert_eq(g.hp, 470, "cold: a plain 30")
+	sk.end_round()
+	assert_eq(m.hull, 180, "two blows reached hull")
+	assert_eq(Effects.stacks_of(m, "overheating"), 1, "two stacks from the hits, one ticked away at the round's end")
+	assert_true("\n".join(sk.log).contains("A: Overheating from the hit"), "the log says so")
+	sk.start_round()
+	Effects.stack(m, Effects.STATUS["overheating"], Effects.SKIRMISH, "test", 2)
+	assert_eq(Effects.stacks_of(m, "overheating"), 3, "three stacks now")
+	assert_eq(Effects.explain(m, fist), ["melee attacks: damage +5 per stack of Overheating (Crucible Capacitor)"], "the die row says so")
+	sk.assign(0, g)
+	assert_eq(g.hp, 470 - 45, "30 plus 5 a stack for three")
+	# A line weapon gains nothing, and the round's overheat burn never feeds it.
+	var gun := Face.attack(30, L)
+	assert_eq(int(Effects.attack(m, gun, 30, 0, false, g)["damage"]), 30, "not a melee blow")
+	var before := Effects.stacks_of(m, "overheating")
+	sk.mechs[0].heat = sk.mechs[0].heat_max + 20
+	sk._settle_heat()
+	assert_eq(Effects.stacks_of(m, "overheating"), before, "the burn is not a hit")
+	# A volatile bite is the machine's own weapon reaching hull: it counts.
+	var s2 := Skirmish.new(2)
+	var n := _mech("N", Die.single(Face.attack(30, Face.Reach.MELEE, K.VOLATILE)), 40, 200)
+	n.grant_passive(crucible)
+	s2.add_mech(n)
+	s2.add_foes([_ghoul(500, 10)])
+	s2.begin()
+	s2.start_round()
+	s2.assign(0, s2.front[0])
+	assert_eq(Effects.stacks_of(n, "overheating"), 1, "the bite fed the core")
+
+
+func test_glacis_armours_against_the_front_rank_only() -> void:
+	var glacis := {"id": "glacis", "name": "Glacis", "description": "", "effects": [
+		{"trigger": "static", "effect": "add_armour_vs_rank", "value": 5, "rank": "front"}]}
+	var sk := Skirmish.new(1, 1)
+	var m := _mech("A", Die.single(Face.blank()), 0, 200)
+	m.armour = 5
+	m.grant_passive(glacis, "plow", "plow")
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(500, 20), _archer(500, 20)])
+	sk.begin()
+	sk.start_round()
+	assert_eq(Effects.armour_against(m, 0), 5, "five more against the front")
+	assert_eq(Effects.armour_against(m, 1), 0, "none against the back")
+	assert_eq(m.armour, 5, "the stat itself is unchanged")
+	assert_eq(sk.forecast(sk.mechs[0], false)["hull_after"], 200 - 10 - 15, "the forecast: the ghoul's 20 less ten, the archer's 20 less five")
+	sk.end_round()
+	assert_eq(m.hull, 175, "and so it lands")
+	assert_eq(Effects.effect_text(glacis["effects"][0]), "armour +5 against front-rank blows", "reads as a sentence")
+
+
+func test_a_kept_status_never_fades_and_lasts_the_battle() -> void:
+	var tap := {"id": "tap", "name": "Quintessence Tap", "description": "", "effects": [
+		{"trigger": "static", "effect": "keep_status", "value": "overcharged"}]}
+	var sk := Skirmish.new(1, 2)
+	var m := _mech("A", Die.single(Face.attack(30, L, K.DEVOUR)), 40, 100)
+	m.grant_passive(tap)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(20, 10), _ghoul(20, 10), _ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	assert_true(Effects.keeps(m, "overcharged"), "the tap holds")
+	sk.assign(0, sk.front[0])
+	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "one kill, one stack")
+	sk.end_round()
+	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "it did not fade")
+	sk.start_round()
+	sk.assign(0, sk.front[0] if sk.front[0] != null and sk.front[0].hp <= 20 else sk.front[1])
+	assert_eq(Effects.stacks_of(m, "overcharged"), 2, "and grows")
+	sk._finish()
+	assert_eq(Effects.stacks_of(m, "overcharged"), 2, "kept past the skirmish")
+	Effects.end_battle(m)
+	assert_eq(Effects.stacks_of(m, "overcharged"), 0, "gone with the battle, never the campaign")
+
+
+func test_the_static_screen_covers_the_withdrawal() -> void:
+	var screen := {"id": "screen", "name": "Static-screen Projector", "description": "", "effects": [
+		{"trigger": "static", "effect": "screen_withdraw", "value": 50}]}
+	# A screener is always out; with the chance at 100 every ally is too, and no blow lands.
+	var sure := {"id": "screen", "name": "Static-screen Projector", "description": "", "effects": [
+		{"trigger": "static", "effect": "screen_withdraw", "value": 100}]}
+	var sk := Skirmish.new(1, 2)
+	var car := _mech("Car", Die.single(Face.blank()), 0, 260)   # the tank is the weaker target
+	car.grant_passive(sure)
+	var tank := _mech("Tank", Die.single(Face.blank()), 0, 200)
+	sk.add_mech(car)
+	sk.add_mech(tank)
+	sk.add_foes([_ghoul(500, 10), _ghoul(500, 10)])
+	sk.begin()
+	assert_true(sk.withdraw(), "withdrew")
+	assert_eq(car.hull, 260, "the car is out before the enemy strikes")
+	assert_eq(tank.hull, 200, "and covered the tank")
+	assert_eq(sk.outcome, Skirmish.Outcome.WITHDRAWN, "withdrawn")
+	assert_true("\n".join(sk.log).contains("the static screen covers Car, Tank"), "the log names the covered")
+	assert_true("\n".join(sk.log).contains("blow is lost in the static"), "and the lost blows")
+	assert_true(sk._screened.is_empty(), "the screen is down afterwards")
+	# At 50 the allies roll: over many seeds about half are covered, the screener always.
+	var covered := 0
+	var car_hit := 0
+	for seed in range(40):
+		var s2 := Skirmish.new(seed, 2)
+		var c2 := _mech("Car", Die.single(Face.blank()), 0, 260)
+		c2.grant_passive(screen)
+		var t2 := _mech("Tank", Die.single(Face.blank()), 0, 200)
+		s2.add_mech(c2)
+		s2.add_mech(t2)
+		s2.add_foes([_ghoul(500, 10), _ghoul(500, 10)])
+		s2.begin()
+		s2.withdraw()
+		if c2.hull < 260:
+			car_hit += 1
+		if t2.hull == 200:
+			covered += 1
+	assert_eq(car_hit, 0, "the screener is never struck")
+	assert_true(covered > 8 and covered < 32, "about half the tanks slipped out: %d of 40" % covered)
+	# No screener, no screen: the withdrawal costs what it always did.
+	var s3 := Skirmish.new(3, 1)
+	var plain := _mech("Plain", Die.single(Face.blank()), 0, 100)
+	s3.add_mech(plain)
+	s3.add_foes([_ghoul(500, 10)])
+	s3.begin()
+	s3.withdraw()
+	assert_eq(plain.hull, 90, "struck as the team pulls out")

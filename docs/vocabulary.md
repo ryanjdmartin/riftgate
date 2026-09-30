@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 92 implemented, 17 planned, 0 idea.
+Status: 93 implemented, 16 planned, 0 idea.
 
 ## Resource
 
@@ -158,7 +158,7 @@ Status: 92 implemented, 17 planned, 0 idea.
 | **On skirmish start** | Passive trigger. Fires once when the skirmish begins. | planned |
 | **On foe status** | Passive trigger. Fires when any foe gains a status (Burning today; the buffs and debuffs to come), whoever applied it, and never for Suppressed or Numbed themselves. Effects: chance_suppress (a chance the foe is also Suppressed, rising per point of shield the owner is missing). | implemented |
 | **On crit** | Passive trigger. Fires when an attack component crits. Effects: multiply or add damage, add burn to the target, vent the attacker's heat. | implemented |
-| **On hull damage** | Passive trigger. Fires when this mech loses hull. | planned |
+| **On hull damage** | Passive trigger. Fires when this mech loses hull to a blow or a bite, never to its own overheat. | implemented |
 | **Out of combat** | Passive trigger. Fires at the end of a battlefield phase in which this mech had no skirmish. | planned |
 | **on_injury** | Passive trigger. Fires when an injury lands on a component. Effects: no_destroy (a cracked component holds instead of being destroyed). | implemented |
 | **Static** | Passive trigger. Always on. Its effects change a mech's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; set_reach on a component (the Badger's cracked weapons become melee); suppress, which turns off another effect by id or tag. | implemented |
@@ -235,7 +235,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **City defense** (implemented): Defenses have no die. They cannot act inside a skirmish yet.
 - **On round start** (implemented): Built 30 September for the Thermal Recoupler; the heat it reads is the gauge after the turn's passive cooling.
 - **On foe status** (implemented): One machine's passive so far (the Baboon's Pocket Paradox).
-- **On hull damage** (planned): Hook for the pinned berserker idea.
+- **On hull damage** (implemented): Built 30 September for the Crucible Capacitor (stack_status). Still the hook for the pinned berserker idea.
 - **Command die** (planned): Open question: whether the command die exists at all, or one-shots only.
 - **City ability** (planned): Consider range limits from the gate so the push north leaves support behind.
 - **Component** (implemented): Multi-slot components were considered and scrapped on 18 September as invisible complexity.

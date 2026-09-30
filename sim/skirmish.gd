@@ -83,6 +83,9 @@ var overheats: Array = []
 ## lands on one of them afterwards (a machine's loop catching a status it just gained) skips
 ## its next action rather than an action already taken.
 var _acted: Array = []
+## The machines a static screen covers during a withdrawal (the Prairie Dog): a blow aimed at
+## one is lost. Empty outside a withdrawal.
+var _screened: Array = []
 
 
 func _init(seed_value: int = 0, columns_arg: int = DEFAULT_COLUMNS) -> void:
@@ -289,7 +292,7 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0) -> D
 	for f in attackers_of(ms):
 		for s in range(f.strikes()):
 			incoming += f.damage()
-			var r := _blow(shield, ms.unit.hull_max, ms.unit.armour, Effects.damage_taken(ms.unit, f.damage()), f.breaches())
+			var r := _blow(shield, ms.unit.hull_max, ms.unit.armour + Effects.armour_against(ms.unit, f.rank), Effects.damage_taken(ms.unit, f.damage()), f.breaches())
 			shield = r["shield"]
 			hull -= r["through"]
 			if r["injures"]:
@@ -478,8 +481,11 @@ func assign(mech_index: int, target = null) -> bool:
 	if bite > 0:
 		var b := _bite(ms.unit.shield, ms.unit.hull, bite)
 		log.append("%s: %s bites back, shield -%d, hull -%d" % [ms.unit.display_name, f.describe(), ms.unit.shield - int(b["shield"]), ms.unit.hull - int(b["hull"])])
+		var hull_lost: bool = int(b["hull"]) < ms.unit.hull
 		ms.unit.shield = b["shield"]
 		ms.unit.hull = b["hull"]
+		if hull_lost:
+			_hull_damaged(ms)
 		if not ms.alive():
 			log.append("%s is wrecked by its own corrupted component" % ms.unit.display_name)
 			ms.assigned = true
@@ -492,6 +498,7 @@ func assign(mech_index: int, target = null) -> bool:
 	if volatile > 0:
 		ms.unit.hull -= volatile
 		log.append("%s: %s is volatile, hull -%d" % [ms.unit.display_name, f.describe(), volatile])
+		_hull_damaged(ms)
 		if not ms.alive():
 			log.append("%s is wrecked by its own volatile component" % ms.unit.display_name)
 			ms.assigned = true
@@ -583,6 +590,9 @@ func _enemy_turn() -> void:
 		if t == null:
 			break
 		_acted.append(f)   # from its first blow, a suppress landing on it costs its next action
+		if _screened.has(t):
+			log.append("%s's blow is lost in the static" % f.display_name)
+			continue
 		for s in range(f.strikes()):
 			if not t.alive():
 				break
@@ -634,7 +644,9 @@ func withdraw() -> bool:
 	if state == State.ROUND_START:
 		start_round()
 	log.append("Withdrawing: the enemy strikes as the team pulls out")
+	_screen_cover()
 	_enemy_turn()
+	_screened.clear()
 	outcome = Outcome.DEFEAT if live_mechs().is_empty() else Outcome.WITHDRAWN
 	_finish()
 	if outcome == Outcome.WITHDRAWN:
@@ -763,6 +775,33 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 				break
 
 
+## The Prairie Dog's screen on a withdrawal (28 September; built 30 September): a machine with
+## the passive is out before the enemy strikes, every other live machine rolls the screen's
+## chance on the skirmish's die to slip out with it, and a blow aimed at a covered machine
+## is lost rather than retargeted. Nothing happens without a screener.
+func _screen_cover() -> void:
+	_screened.clear()
+	var chance := 0
+	for ms in live_mechs():
+		chance = maxi(chance, Effects.screen_chance(ms.unit))
+	if chance <= 0:
+		return
+	var names: Array[String] = []
+	for ms in live_mechs():
+		if Effects.screen_chance(ms.unit) > 0 or rng.randi_range(1, 100) <= chance:
+			_screened.append(ms)
+			names.append(ms.unit.display_name)
+	log.append("the static screen covers %s" % ", ".join(names))
+
+
+## Hull lost to a blow or a bite: the on_hull_damage passives fire (the Nemesis's Crucible
+## stacks Overheating). Never for the round's overheat burn, which would feed itself.
+func _hull_damaged(ms: MechState) -> void:
+	var gained := Effects.hull_damaged(ms.unit)
+	if not gained.is_empty():
+		log.append("%s: %s from the hit" % [ms.unit.display_name, ", ".join(gained)])
+
+
 ## Shocked (the Armadillo's retaliation, 28 September; built 29 September): the foe that struck
 ## carries one shock, never more, until a blow spends it double. A machine's loop passive
 ## may catch the status like any other.
@@ -779,7 +818,12 @@ func _shock(foe: Foe, by: MechState) -> void:
 ## kills two feeds two, a chain feeds on every link). The stacks tick down one a round at the
 ## round's end, the way Overheating does, so the ramp fades unless a passive keeps it.
 func _devour(ms: MechState, foe: Foe) -> void:
-	var m := Effects.stack(ms.unit, Effects.STATUS["overcharged"], Effects.SKIRMISH, "devour", 1, Effects.DECAY_TICK)
+	var m: Effects.Modifier
+	if Effects.keeps(ms.unit, "overcharged"):
+		# The Ammit's Quintessence Tap: what the talons take is kept, for the battle, never fading.
+		m = Effects.stack(ms.unit, Effects.STATUS["overcharged"], Effects.BATTLE, "devour", 1, Effects.DECAY_NONE)
+	else:
+		m = Effects.stack(ms.unit, Effects.STATUS["overcharged"], Effects.SKIRMISH, "devour", 1, Effects.DECAY_TICK)
 	log.append("%s devours %s: %s ×%d" % [ms.unit.display_name, foe.display_name, m.name, Effects.stacks_of(ms.unit, "overcharged")])
 
 
@@ -889,7 +933,7 @@ func _settle_heat() -> void:
 ## blow is the counterplay; a double strike is how a foe gets past it.
 func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	amount = Effects.damage_taken(ms.unit, amount)   # buffs and debuffs on damage taken, before shield and armour
-	var r := _blow(ms.unit.shield, ms.unit.hull_max, ms.unit.armour, amount, source.breaches())
+	var r := _blow(ms.unit.shield, ms.unit.hull_max, ms.unit.armour + Effects.armour_against(ms.unit, source.rank), amount, source.breaches())
 	var had_shield := ms.unit.shield > 0
 	ms.unit.shield = r["shield"]
 	ms.unit.hull -= r["through"]
@@ -905,6 +949,8 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 		log.append("%s hits %s: armour holds" % [source.display_name, ms.unit.display_name])
 	else:
 		log.append("%s hits %s: hull -%d%s" % [source.display_name, ms.unit.display_name, r["through"], " (armour -%d)" % r["armoured"] if r["armoured"] > 0 else ""])
+	if int(r["through"]) > 0:
+		_hull_damaged(ms)
 	if r["injures"]:
 		apply_injury(ms)
 
