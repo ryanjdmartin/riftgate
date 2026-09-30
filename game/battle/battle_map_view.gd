@@ -439,7 +439,7 @@ func _draw() -> void:
 		var blink := 0.55 + 0.45 * sin(_ring_t * 3.0)   # the glyphs pulse together
 		for n in attack.keys():
 			_fill(n, Color(Palette.ENEMY, 0.06))
-			_crawl_poly(Hex.corners(center(n), HEX_SIZE - 4.0), Palette.ENEMY, HEX_SIZE * 0.2, fmod(_ring_t * 1.2, 2.0), ENEMY_EDGE)
+			_crawl_poly(Hex.corners(center(n), HEX_SIZE - 8.0), Palette.ENEMY, HEX_SIZE * 0.2, fmod(_ring_t * 1.2, 2.0), ENEMY_EDGE)
 			Glyphs.draw(self, "warning", center(n), HEX_SIZE * (0.42 + 0.08 * blink), Color(ENEMY_HOT, 0.5 + 0.5 * blink), 2.5)
 		for g in map.gate_hexes:
 			# A light tint (ground marks land at alpha to the 2.2, so 0.3 is faint) under
@@ -798,8 +798,9 @@ const DEST_RING := HEX_SIZE * 0.58   # the target's outer ring
 # tritan vision. The rest sits 60 from its nearest neighbour (the blue HUD, deutan), the
 # bright 36; the rift's own pale (c9a6ff) was 7 from the blue HUD and a paler lavender 1,
 # so the pulse never goes that far, and plum went toward the red under red-green vision.
-const INTENT := Color("7a2ce6")       # a pack's route at rest (L 41)
-const INTENT_HOT := Color("a870ff")   # its bright, still plainly violet (L 59)
+const INTENT := Color("8438f0")       # a pack's route at rest (L 45; a touch brighter, Ryan, 30 September)
+const INTENT_HOT := Color("b88cff")   # the tapped pack's bright (L 67; 21 Lab from the blue HUD under deutan, the floor)
+const INTENT_DEEP := Color("5a1cb8")  # the tapped pack's dark: the pulse runs the whole way from deep to bright
 const INTENT_EDGE := Color("2a0e4a")  # the edge under every violet line and border: deep violet, not black
 ## Whether the intent marks wear that edge at all (Ryan, 30 September: trying them without);
 ## RIFTGATE_INTENT_EDGE=1 puts it back for a comparison. The solid line and its deep-violet
@@ -811,9 +812,12 @@ const ENEMY_EDGE := Color("5a0e0e")   # the edge under every red line and border
 
 ## The tapped pack's intent breathes between violet and the rift's pale, most of the way up
 ## and never quite down to the deep, so on any ground it passes through a colour that reads.
+func _intent_breath() -> float:
+	return 0.5 + 0.5 * sin(_ring_t * 2.4)   # a little quicker than the contact's (Ryan, 30 September)
+
+
 func _intent_colour() -> Color:
-	var breath := 0.5 + 0.5 * sin(_ring_t * 1.6)
-	return INTENT.lerp(INTENT_HOT, 0.35 + 0.65 * breath)
+	return INTENT_DEEP.lerp(INTENT_HOT, _intent_breath())
 
 
 ## The contact marks breathe between red and the bright (Ryan, 22 September).
@@ -903,8 +907,10 @@ func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool
 		if _intent_edged():
 			draw_polyline(pts, INTENT_EDGE, 7.0)
 		draw_polyline(pts, col, 3.5)
+		# The gaps breathe with the line on the tapped pack, deep to mid (Ryan, 30 September).
+		var gap := INTENT_EDGE.lerp(INTENT, _intent_breath()) if breathe else INTENT_EDGE
 		for i in range(pts.size() - 1):
-			_dashed_line(pts[i], pts[i + 1], INTENT_EDGE, HEX_SIZE * 0.22, fmod(_ring_t * 2.0, 2.0) + 1.0)
+			_dashed_line(pts[i], pts[i + 1], gap, HEX_SIZE * 0.22, fmod(_ring_t * 2.0, 2.0) + 1.0)
 	else:
 		draw_polyline(pts, Color(col, 0.5), 3.0)
 		for i in range(pts.size() - 1):
@@ -930,7 +936,7 @@ func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool
 		draw_circle(end, 5.5, INTENT_EDGE)
 	_target_rings(end, bright, DEST_RING * 0.85, -1.0)
 	draw_circle(end, 3.5, bright)
-	_crawl_poly(Hex.corners(end, HEX_SIZE - 3.0), col, HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0), INTENT_EDGE if edged and _intent_edged() else Color(0, 0, 0, 0))
+	_crawl_poly(Hex.corners(end, HEX_SIZE - 8.0), col, HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0), INTENT_EDGE if edged and _intent_edged() else Color(0, 0, 0, 0))   # inside the hex's own border, not on it (Ryan, 30 September)
 
 
 ## A closed outline drawn as dashes that crawl round it: `offset` in dashes, dash and gap
