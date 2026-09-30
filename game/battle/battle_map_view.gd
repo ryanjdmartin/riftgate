@@ -802,9 +802,10 @@ const DEST_RING := HEX_SIZE * 0.58   # the target's outer ring
 # bright; the deep one is the line's crawling gaps and the field's dark.
 const INTENT := Color("b88cff")       # a pack's route at rest, and the field's bright (L 67; 21 Lab from the blue HUD under deutan)
 const INTENT_HOT := Color("b88cff")   # the tapped pack's line at the top of its breath: the same
-const INTENT_DEEP := Color("4a1a8c")  # the field's dark and the line's gaps (up from 2a0e4a, Ryan, 30 September)
+const INTENT_DEEP := Color("6a30c0")  # the field's dark and the line's gaps (up again, Ryan, 30 September: it blended into the dark tiles)
 const INTENT_PALE := Color("d0b8ff")  # the top of the tapped pack's pulse, briefly
-const INTENT_DARK := Color("2a0e4a")  # the bottom of the tapped pack's pulse: the dark the resting mark used to have (Ryan, 30 September)
+const INTENT_DARK := Color("2a0e4a")  # the bottom of the tapped pack's pulse for the dark
+const INTENT_DIM := Color("9a68e0")   # the bottom of the pulse for the light: under its resting value (Ryan, 30 September)
 const INTENT_EDGE := Color("2a0e4a")  # the edge, if RIFTGATE_INTENT_EDGE puts it on
 
 # The pair the field and the line draw with right now: the constants for a pack at rest,
@@ -820,7 +821,7 @@ func _set_intent_pair(breathe: bool) -> void:
 		_field_deep = INTENT_DEEP
 		return
 	# The tapped pack swings the whole way: down to the old dark, up to the pale.
-	_field_hot = INTENT_HOT.lerp(INTENT_PALE, b)
+	_field_hot = INTENT_DIM.lerp(INTENT_PALE, b)
 	_field_deep = INTENT_DARK.lerp(INTENT_DEEP.lerp(INTENT_HOT, 0.5), b)
 ## Whether the intent marks wear that edge at all (Ryan, 30 September: trying them without);
 ## RIFTGATE_INTENT_EDGE=1 puts it back for a comparison. The solid line and its deep-violet
