@@ -81,6 +81,13 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   given, and retire the bible lines it supersedes in the same pass rather than leaving two
   truths in the file. On resume the last exchanges are the truth: never re-run a pipeline or
   restore a look the chat has already retired.
+- Ryan is colourblind (said 29 September; the type not stated). His colour words are
+  suggestions. Never separate two marks by hue alone: give them structure too (an edge,
+  dashes, motion, a glyph, a weight). Check a new colour by simulation (the Machado
+  protan, deutan and tritan matrices in a few lines of numpy) against every HUD option
+  and the enemy red, and pick by the worst case; report lightness and simulated distance,
+  not how it looks. Red against the green HUD and violet against the blue HUD are the
+  pairs that fold first.
 - A phone read arrives as a screenshot. Work it this way: crop and zoom it with nearest
   sampling to see the pixels, reproduce it on the Mac at the phone's layout and density
   (`RIFTGATE_SHOT_H`, `RIFTGATE_SAFE`, `RIFTGATE_SHOT_SCALE`, and

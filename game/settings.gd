@@ -45,6 +45,11 @@ static func apply() -> void:
 				hud = h
 			for key in DISPLAY_DEFAULTS.keys():
 				display[key] = cf.get_value("display", key, DISPLAY_DEFAULTS[key])
+	# RIFTGATE_HUD=<green|amber|blue> forces the colour for a run without touching the saved
+	# choice: the screenshot tool, to judge a mark against every HUD option.
+	var forced := OS.get_environment("RIFTGATE_HUD")
+	if HUD_OPTIONS.has(forced):
+		hud = forced
 	Palette.HUD = HUD_OPTIONS.get(hud, HUD_OPTIONS[DEFAULT_HUD])
 
 

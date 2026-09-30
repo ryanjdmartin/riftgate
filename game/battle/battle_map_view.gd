@@ -794,8 +794,13 @@ const DEST_RING := HEX_SIZE * 0.58   # the target's outer ring
 # violet, which nothing else on the field uses but the rift itself): the route, its target
 # and the tapped pack's pulse. Red stays for the contact, the gate's warning zones and the
 # tags: the engagement warning, not the plan.
-const INTENT := Color("9a5cff")       # a pack's route at rest
-const INTENT_HOT := Color("e0c8ff")   # its bright: the rift's own pale violet
+# Picked by simulation, not by eye (Ryan is colourblind, 29 September): each colour's
+# worst-case Lab distance from every HUD option and the enemy red under protan, deutan and
+# tritan vision. The rest sits 60 from its nearest neighbour (the blue HUD, deutan), the
+# bright 36; the rift's own pale (c9a6ff) was 7 from the blue HUD and a paler lavender 1,
+# so the pulse never goes that far, and plum went toward the red under red-green vision.
+const INTENT := Color("7a2ce6")       # a pack's route at rest (L 41)
+const INTENT_HOT := Color("a870ff")   # its bright, still plainly violet (L 59)
 const INTENT_EDGE := Color("2a0e4a")  # the edge under every violet line and border: deep violet, not black
 const ENEMY_HOT := Color("ff8a1e")    # the contact's bright: red toward orange
 const ENEMY_EDGE := Color("5a0e0e")   # the edge under every red line and border: deep red, not black (Ryan, 29 September: black made candy canes)
