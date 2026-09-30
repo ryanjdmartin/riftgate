@@ -2134,24 +2134,22 @@ def music_hold_the_line(palette="hybrid"):
     riff_up = "7--.a-.7-...8-..5--.a-.8-...7-.."  # a fifth above: the power chord
     rise_up = "7--.a-.7-...8-..5--.a-.c-...8-.."
     climax = "0..0..3.0..5..3.0..0..8.7..5..3.3..3..5.3..7..5.0..0..a.8..7..5."   # the new unison riff, four bars
-    # The keys' tune, its harmony lines and the sub bass's lines are Ryan's, scored on the Melody
-    # Desk against the latest mix (30 September, fifth melody, "the last try", s33z85bjwsha2yg7a2ek).
+    # The keys' tune, its harmony line and the sub bass's line are Ryan's, scored on the Melody
+    # Desk against the latest mix (30 September, sixth melody, 1ksj4ee30em8xgwxygpx: the tune as the
+    # fifth had it, a whole harmony voice cut, what is left of the two fitting one lane, and the
+    # sub's fifteenth bar a B held).
     keys_tune = ("7--.8-.7-..5.3-.0-----..3---5---8--.a-.8-..7.5-.3---....5-.3-.0-"
                  "7--.a-.c------.a--.8-.7-.5-----.3--.5-.7-..8.a-.2-----------...."
                  "7--.8-.7-..5.3-.0------.3---5---8--.a-.8-..7.5-.3------.5-.3-.0-"
                  "7---8---a---c---a---8---7---5---7---8---a---7---c---------------")
-    keys_harm1 = ("................................................................"
-                 "e-------------..c-------------..8-------------..5-----------...."
-                 "e--.f-.e-..d.a-.8------.c---d---e--.i-.e-..d.c-.c------.c-.a-.7-"
-                 "d-------d-------e-------e-------7-------7-------7---------------")
-    keys_harm2 = ("................................................................"
-                 "c-------------..8-------------..5-------------..a-----------...."
-                 "c--------------.3------.7---a---c--.d-.c-..a....3------.2------."
-                 "7-------5-------c-------b-------5-------2-------3---------------")
+    keys_harm = ("................................................................"
+                 "................................................................"
+                 "c--------------.3------.c---d---c--.d-.c-..a.c-.3------.2------."
+                 "a---------------e---------------c---------------i---------------")
     keys_sub = ("0---------------8---------------g---------------7---------------"
                  "0---------------5---------------3---------------g---------------"
                  "0---------------8---------------5---------------g---------------"
-                 "0-------0-------8-------8-------l-------l-------0---------------")
+                 "0---------------8---------------h---------------0---------------")
     keys_touch = ("................................................................"
                  "................................................................"
                  "................................................................"
@@ -2291,9 +2289,9 @@ def music_hold_the_line(palette="hybrid"):
             # The fifths under the second-half roots are gone (Ryan, 30 September: the bridge's
             # sub plays the roots alone under his melody).
             {"inst": "lead", "mode": "riff", "gain": 0.38, "octave": 2, "pat": {"F": keys_tune}},
-            # His harmony lines under it, soft, so the top line stays the lead.
-            {"inst": "lead", "mode": "riff", "gain": 0.15, "octave": 1, "pat": {"F": keys_harm1}},
-            {"inst": "lead", "mode": "riff", "gain": 0.13, "octave": 1, "pat": {"F": keys_harm2}},
+            # His harmony line under it, soft, so the top line stays the lead (one voice since
+            # the sixth melody: bars nine to twelve moving, then four held notes to the end).
+            {"inst": "lead", "mode": "riff", "gain": 0.15, "octave": 1, "pat": {"F": keys_harm}},
             {"inst": "epiano", "mode": "stab", "gain": 0.5, "dur": 2.0,
              "pat": {"C": "..x...x...x...x.", "L": "..x...x...x...x.",
                      "F": "............x..." "................" "............x..." "x..............."
