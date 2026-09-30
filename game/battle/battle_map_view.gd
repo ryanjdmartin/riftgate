@@ -820,20 +820,37 @@ const ENEMY_EDGE := Color("5a0e0e")   # the edge under every red line and border
 const STRIPE := HEX_SIZE * 0.26   # one stripe's width in map pixels
 const STRIPE_DIR := Vector2(0.8, 0.6)   # the stripes run across this direction
 
+## The stripe coordinate of a map point: the stripes are the integer steps of this.
+func _stripe_u(p: Vector2, phase: float) -> float:
+	return p.dot(STRIPE_DIR) / STRIPE + phase
+
+
 func _intent_at(p: Vector2, phase: float) -> Color:
-	# A smooth wave between the two, never a hard edge (Ryan, 30 September: the jumps were
-	# hard to look at); one full wave is two stripes wide.
-	var u := p.dot(STRIPE_DIR) / STRIPE + phase
-	return INTENT_DEEP.lerp(INTENT_HOT, 0.5 + 0.5 * sin(u * PI))
+	# Hard stripes (Ryan, 30 September: the hard boundary is what the line uses and it
+	# looks good); what has to be exact is where the boundary falls, below.
+	return INTENT_HOT if floori(_stripe_u(p, phase)) % 2 == 0 else INTENT_DEEP
 
 
-## A straight piece drawn in the field's colours, a few pixels at a time.
+## A straight piece in the field's colours, split exactly where the stripes change rather
+## than at fixed steps (Ryan, 30 September: a piece that could only be one colour snapped
+## the boundary to its own length).
 func _field_line(a: Vector2, b: Vector2, phase: float, width: float) -> void:
-	var n := maxi(1, int(a.distance_to(b) / 4.0))
-	for i in range(n):
-		var p0 := a.lerp(b, float(i) / n)
-		var p1 := a.lerp(b, float(i + 1) / n)
-		draw_line(p0, p1, _intent_at((p0 + p1) * 0.5, phase), width)
+	var u0 := _stripe_u(a, phase)
+	var u1 := _stripe_u(b, phase)
+	var lo := minf(u0, u1)
+	var hi := maxf(u0, u1)
+	var cuts: Array[float] = [0.0]
+	var k := floorf(lo) + 1.0
+	while k < hi:
+		cuts.append((k - u0) / (u1 - u0))
+		k += 1.0
+	cuts.append(1.0)
+	cuts.sort()
+	for i in range(cuts.size() - 1):
+		var p0 := a.lerp(b, cuts[i])
+		var p1 := a.lerp(b, cuts[i + 1])
+		if p0.distance_squared_to(p1) > 0.01:
+			draw_line(p0, p1, _intent_at((p0 + p1) * 0.5, phase), width)
 
 
 ## The target lock's three broken rings in the field's colours.
@@ -845,7 +862,7 @@ func _field_rings(c: Vector2, r: float, dir: float, phase: float, width: float =
 		for sgm in range(segs):
 			var a := a0 + TAU * float(sgm) / float(segs)
 			var span := TAU / float(segs) * 0.6
-			var pieces := 6
+			var pieces := maxi(4, int(span * rad / 1.5))   # arcs sampled to a pixel and a half, so a boundary lands where the field says
 			for q in range(pieces):
 				var b0 := a + span * float(q) / pieces
 				var b1 := a + span * float(q + 1) / pieces
