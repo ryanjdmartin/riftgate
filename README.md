@@ -134,6 +134,10 @@ tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut-rift tools/foeforge/
 
 # the gate and wall are built the same way
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build gate wall
+# the silhouette classes a swapped component wears (models_low.SHAPES), every maker's metal, then re-import
+tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes
+# one machine wearing swapped components ("2:" bares a socket); a class alone: <chassis> shapes/barrel_minerva
+RIFTGATE_FIT="1:lance,4:heat_sink" godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva fit.png front 480 480
 
 # every sound and the two music loops, from the recipes in tools/soundforge/forge.py, then re-import
 tools/spriter/.venv/bin/python tools/soundforge/forge.py build          # or: build hit kill music_far_bank

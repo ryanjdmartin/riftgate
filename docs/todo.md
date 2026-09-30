@@ -12,7 +12,9 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Judge on the phone after a re-export: frame rate (the per-hex props added draw calls), the sound set, the machines' edges without MSAA, the text, the grid at `GRID_GAIN_PHONE`, the seam band (less green than before), the far blur, the board and the log button, the selection marks, the routes, props hiding under a machine
 - [ ] Codex and flavour for the seven new machines, the Baboon's flavour, and the 41 components whose codex is empty
 - [x] Decide the Dingo's name (29 September: kept, the coincidence tier; every flagged name is now decided and every note says why it stays)
-- [ ] The Badger's joints and pins in Blender (`forge.py export badger`); the missing model pins: the Clydesdale has 6 for 9 hardpoints, the Sparrowhawk 2 for 4 (wing pods only); the codex page flags both until then
+- [ ] The Badger's joints in Blender (`forge.py export badger`)
+- [x] The missing model pins (29 September, night: the Clydesdale's nine and the Sparrowhawk's four, and the Badger's hp_4 as a slab where a second cannon stood; the codex page flags nothing now)
+- [ ] Judge the pins pass and the seven classes on the Model Viewer's Classes section: the Badger's right-pauldron slab, the Clydesdale's howitzer, barrage rack and flak skirt, the Sparrowhawk's spine dish; each class's size per machine (a pin's `scale` in `models_low.py`); and whether a stock part should be the class shape rather than the hand-modelled part
 - [x] Picks from the phone sketches page: the bass voice (3 or 5), the clip-free guitar, the third shadows (28 September: voice 12, the guitar, the third cut, a quarter of the level gap; all in the forge)
 - [x] Judge The Far Bank's tempo in the game (29 September: 88 stays; the temporary ids are gone)
 - [ ] Hold The Line: hear the 29 September arrangement in the game (the drone up, the second lift's bass down, the seven's held guitar louder on a descending C B A G, the keys' chords from nothing), the loop's wrap into bar five, and the 104 sketch on the page; notes by section letter
@@ -56,7 +58,7 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 - [ ] The planned triggers: on shield gain, on heat gain, on round start, on skirmish start, on hull damage, out of combat
 - [ ] Foe roles, and the ten planned foe actions in `content/foes.json` (buff, defend and debuff kinds running; every foe status they grant fires `on_foe_status`)
 - [x] Buff equipment (29 September): the `buff` kind grants a machine status for so many stacks and rounds; Overcharged, Braced and Primed as the first three; the Overcharge Coil as a draft component fitted to nothing; the heat passive above can now be built on it
-- [ ] Granted passives coloured on the codex
+- [x] Granted passives coloured on the codex (29 September, night: `passive_rows` by source; the chassis's own in the accent, a component's in the overlay colour, a reward in ink)
 - [ ] Save and resume mid-battle at any phase (nothing is serialised yet)
 - [ ] Onboarding: the gesture tutorial and the cheat sheet; the reroll rule and the zone of control first
 - [x] The bot values a status for the stun it may cause (29 September: `_loop_chance` in `policy.gd`, at the loop's odds and the foe's resistance) and weighs a buff by what its status does to the machine it lands on
@@ -70,13 +72,13 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 - [ ] Corruption in a pack's wake, and the bleed growing with Rift Pressure (`bleed.gd` has the knob in mind), once decided
 - [ ] Judge FINE MAP on the phone (settings toggle, 29 September): sharper machines at 2.25x the pixels; if the frame rate holds, make it the phone's default
 - [ ] If the phone drops frames: one mesh per material per machine, until joints
-- [ ] `tools/screenshot.gd`'s engage pose prints renderer leak warnings at exit (harmless; fix if cheap)
+- [x] `tools/screenshot.gd`'s engage pose prints renderer leak warnings at exit (29 September, night: the skirmish screen waiting on the handover tween was an orphan at exit; the battle screen frees it on predelete)
 
 ## Art
 
 - [x] lowforge briefs and models for the seven new machines (first passes, 29 September; every hardpoint has its pin, every fixed component is modelled in); Ryan iterates by render
 - [ ] Ryan: notes on the seven second-pass models (renders: the Model Viewer, https://claude.ai/artifact/HzF8K98MxgJP7kroxAuDMv)
-- [ ] Silhouette classes for components (decided 29 September): shape helpers in lowforge (barrel, twin barrel, rack, slab, vent block, dish), a validated `shape` field on every component, chassis pins parenting their stock shape so `MechView3D.mount()` hides it, and the skirmish and codex calling mount for the fitted loadout
+- [x] Silhouette classes for components (29 September, night: seven classes in `models_low.SHAPES`, a blade added for the melee arms; `forge.py shapes` builds every maker's metal into `art/models/shapes`; `shape` validated on every component; every chassis pin parents its stock part; `MechView3D.mount_plan` and `plan_for` from the skirmish, the codex and the portrait; `RIFTGATE_FIT` on the hero shot)
 - [ ] Ryan: judge the Baboon's rear silhouette in the harness (the fists hang at knee height now, not on the ground); if it still reads as carrying two boxes, pick heavier hands carrying hardware or a standard forward pose with the fist tile turned 90 degrees
 - [ ] Enemy art through foeforge for the foes still on sketch grids
 - [ ] The hangar as a model

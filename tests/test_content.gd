@@ -535,3 +535,23 @@ func test_a_buff_face_names_a_machine_status() -> void:
 	assert_true(hit["coil_foe"], "a foe's status is refused on a buff")
 	assert_true(hit["coil_bad"], "an unknown status, or zero rounds, is refused")
 	assert_true(hit["stray"], "stacks on a shield is refused")
+
+
+func test_every_component_names_a_silhouette_class() -> void:
+	var db := ContentDB.new()   # its own copy: the checks below break an entry
+	db.load_dir(ContentDB.DIR)
+	for id in db.components.keys():
+		assert_true(ContentDB.SHAPES.has(str(db.components[id].get("shape", ""))), "%s wears a class the model can build" % id)
+	var c: Dictionary = db.components["lance"]
+	c["shape"] = "teapot"
+	var hit := false
+	for e in db.validate():
+		if e.begins_with("component lance") and e.contains("silhouette class"):
+			hit = true
+	assert_true(hit, "an unknown class is refused")
+	c.erase("shape")
+	hit = false
+	for e in db.validate():
+		if e.begins_with("component lance") and e.contains("missing shape"):
+			hit = true
+	assert_true(hit, "and a component without one")

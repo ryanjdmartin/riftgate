@@ -4,17 +4,18 @@ Handoff note for the next session. Replace stale lines; keep it under a screen. 
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
 bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (account A, the home
-for every page; the pages block below has the rest). Republish it from the committed file after
+for every page; the pages block below has the rest; v0.11). Republish it from the committed file after
 a bible change, passing the URL from any conversation that did not publish it.
 
 **The pages, as of 29 September, night.** An artifact is republished only by the account that
 made it, or by an account invited as Editor from its Share menu; the personal account (A) can
 invite outward, the organisation account (B) cannot. **Account A owns five pages and nothing
-else:** the bible (https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, v0.10), the nameplate
+else:** the bible (https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, v0.11), the nameplate
 (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH), the hangar codex
 (https://claude.ai/artifact/FqiH3b8ZZjxJaCJmWK71vj), the Model Viewer
 (https://claude.ai/artifact/HzF8K98MxgJP7kroxAuDMv, every chassis rendered as it stands with
-earlier passes folded under each) and the phone sketches
+earlier passes folded under each, and a Classes section for the silhouette classes and three
+refits) and the phone sketches
 (https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9). Every duplicate and superseded page in A
 was deleted on Ryan's word this evening (the first bible link, the Second Passes page, the HUD
 swatches, a second codex, a second sketches page). **Sharing:** the nameplate, codex and
@@ -50,10 +51,17 @@ the chat is newer.
 ## As of 29 September 2026 (night)
 
 **State.** Tests green: `perl -e 'alarm 240; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (225 tests, 3,061 checks on 29 September, night). Two or three sessions run on this repo at once:
+tests/run_tests.gd` (229 tests, 3,150 checks on 29 September, late night). Two or three sessions run on this repo at once:
 check `git status` before committing, stage by path, diff a shared file first (a path
 still sweeps the other session's hunks), never `git add -A`, never kill a bare
 `godot --path .`. Commit after each verified chunk with tests green.
+
+**The cloud session (29 September, night).** Branch `ccr-23c2f18f-qlilnd` on origin, forked
+from 5222bdf, claimed the engine list (the to-do marks every claimed line; skip them unless it
+says it stopped): the planned pieces, the triggers and foe actions, save and resume, the codex
+republish. Its first commit built volatile (its tests green, 231 on its branch; a merge into main
+is clean). Ryan's word: wait to merge. Local main is ahead of origin by three commits (the Dingo's
+name, the account correction, the pins-and-shapes pass) and unpushed; pushing is his call.
 
 **Where things are.** `sim/` is the headless game (battle map, battlefield resolver, battle
 loop, skirmish, effects pipeline, content DB). `game/battle/` the battle screen and the map
@@ -107,9 +115,13 @@ machines were built from their fantasies and then rebuilt once on Ryan's notes;
 `tools/lowforge/models_low.py` holds one function per chassis id and every number in it is a
 proportion, so a note moves it and `forge.py build <id>` plus one `--import` is the whole
 loop. Fixed components are modelled into the machine with no pin and every hardpoint carries its
-`hp_<n>` pin in the loadout's order, verified for all seven; two older models still break that
-rule and are in the to-do (the Clydesdale has 6 pins for 9 hardpoints since it went to a d9,
-the Sparrowhawk 2 for 4). What the second pass changed, so nobody redoes
+`hp_<n>` pin in the loadout's order, verified for all eleven since 29 September, night: the
+Clydesdale's nine (a howitzer, a shock-barrage rack and a flak skirt were new) and the Sparrowhawk's
+four (the nose guns as the Arc Projector's socket, a deflector dish on the spine) were filled, and
+the Honey Badger's right pauldron carries its Ablative Plating as a slab where the first pass hung a
+second cannon the loadout never had. Every pin parents its stock part (`with b.socket(...)` in
+`models_low.py`) and carries the frame and scale a mounted part wears (a Sparrowhawk's pins are half
+size). Ryan judges the three changed machines on the viewer. What the second pass changed, so nobody redoes
 it: the **Armadillo** stands on long legs whose hips come out of the shell's flanks (it read
 as a beetle that would catch on rocks) and shows only its weapons' muzzles out of round ports
 in the shell, Blastoise-fashion, with a small snout of a head to sell its size, since it is
@@ -136,27 +148,31 @@ https://claude.ai/artifact/HzF8K98MxgJP7kroxAuDMv (account A; B's two renders pa
 chassis, a maker, an out file and `front`, `rear` or a yaw, and needs a window, so it cannot
 run headless.
 
-**What must be visible on a model, and how a swapped component looks (decided 29 September).**
-Every hardpoint carries an `hp_<n>` Empty at its socket, +Y where the weapon points, one per
-hardpoint in the loadout's order; a fixed component is modelled in and has no pin. The bible
-row (section 7, "Hardpoints are marked in the model") is Decided now, its stale 2D-versus-3D
-clause struck. **Swapping: silhouette classes.** A component declares a `shape` and wears that
-shape at the pin in its maker's metal; the die carries the identity. About six shapes to start
-(barrel, twin barrel, rack, slab, vent block, dish), and the set may grow when a component
-really wants its own (Ryan: landing between classes and one-model-per-component is fine). Not
-built yet; the to-do has the three pieces (shape helpers in lowforge, the `shape` field with
-its validation, chassis pins parenting their stock shape so `MechView3D.mount()` hides it).
-`mount()` and `unmount()` exist and nothing calls them.
+**Silhouette classes (decided 29 September, built that night; the bible row in section 7 has
+the reasoning).** A component declares a `shape` and wears that shape at the pin in its own maker's
+metal; the die carries the identity. Seven classes: barrel, twin barrel, rack, slab, vent block,
+dish, and a blade for the melee arms. They are lowforge helpers (`models_low.SHAPES`),
+`forge.py shapes` builds every class in every maker's metal into `art/models/shapes/`, every
+component's `shape` is validated (`ContentDB.SHAPES`) and a test refuses a class without a model
+in every metal. `MechView3D.mount_plan()` names only the pins whose component differs from the
+chassis's stock loadout (a swap mounts the class shape, an emptied socket bares the stock);
+`plan_for(unit, db)` is passed by the skirmish, the codex and the map portrait, so a refitted
+machine shows its kit, and a borrowed fallback model never wears another machine's. Every
+machine wears its stock today, so nothing on screen changed. `RIFTGATE_FIT="1:lance,4:heat_sink"`
+on `tools/hero_shot.gd` renders a swap; the Model Viewer's Classes section shows three, plus four
+classes alone. Ryan's call still open: whether a stock part should be the class shape rather than
+the hand-modelled part (the Clydesdale's three new parts and the Sparrowhawk's dish are the class
+shapes themselves, so he can compare on one machine).
 
 **The hangar codex page (29 September).** Ryan asked for one surface showing a chassis and
 the components fitted to it instead of jumping between files. `tools/build_codex.py` reads
 `content/*.json` and writes a page: each chassis with its designation plate, maker,
 silhouette, traits, a stat grid, its passive, and its die laid out entry by entry, fixed
 first and then each hardpoint tagged with the model pin it mounts on, read from the built
-`.glb` so a hardpoint the model has no socket for is flagged rather than assumed (the Clydesdale
-and Sparrowhawk models are short today), every entry showing its
+`.glb` so a hardpoint the model has no socket for is flagged rather than assumed (none is, since
+the pins pass), every entry showing its silhouette class (a dashed chip), its
 component's numbers, keywords (hover for the vocabulary rule), maker and own passive, with
-planned entries marked. Run `python3 tools/build_codex.py . <out.html>` and publish the
+planned entries marked. Republished 29 September, night, with the classes and the pins. Run `python3 tools/build_codex.py . <out.html>` and publish the
 result; regenerate after any content change. Account B's copy is
 account A's at https://claude.ai/artifact/FqiH3b8ZZjxJaCJmWK71vj. It is generated and read-only
 on purpose: the content editor is Ryan's writing surface when it exists, and two pages that both
@@ -174,7 +190,9 @@ the enemy's ground, four columns, every blow heard, the enemy's turn replayed bl
 blow; Back applies it. The boss's contact takes the phase: no panel, a reveal, the family's
 theme (only The Chorus has one). MENU pauses, holds the settings and names the track. The
 codex opens by double-tap on either screen and shows the machine's base state plus battle
-rewards; the fight's effects live on the chips and the hold. Under the map, the orders
+rewards, its passives one row each coloured by source (the chassis's own in the accent, a
+component's in the overlay colour, a reward in ink; 29 September, night); the fight's effects
+live on the chips and the hold. Under the map, the orders
 board (`game/battle/orders_board.gd`) carries every machine's gauges, its order and what
 it will meet while nothing is held; a held readout takes the same strip; the log is off
 the screen behind the board's LOG button.

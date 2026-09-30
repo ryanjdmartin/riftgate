@@ -85,6 +85,11 @@ def component_card(cid, slot, pin, pins=None):
     kind = f.get("kind", "")
     planned = c.get("status") == "planned"
     kws = "".join('<span class="kw" title="%s">%s</span>' % (esc(kw_title(k)), esc(vocab.get(k, {}).get("name", k))) for k in f.get("keywords", []))
+    # The silhouette class the model wears when this component is fitted to a hardpoint
+    # (decided 29 September): the die carries the identity, the model only its kind.
+    shape = c.get("shape", "")
+    if shape:
+        kws = ('<span class="kw shape" title="Silhouette class: what the model wears at the pin when this component is fitted (its own maker\'s metal)">%s</span>' % esc(shape.replace("_", " "))) + kws
     mk = makers.get(c.get("maker", ""), {}).get("name", "")
     tier = c.get("tier")
     tier_html = ('<span class="tier" title="Blueprint tier">T%s</span>' % esc(tier)) if tier else ""
@@ -214,6 +219,7 @@ gap:1px 10px;align-items:baseline;background:var(--sunk);border:1px solid var(--
 .kws{grid-area:kws;display:flex;gap:5px;flex-wrap:wrap}
 .kw{border:1px solid var(--rule);border-radius:999px;padding:0 7px;font:600 10px/1.7 "Barlow Condensed",Arial,sans-serif;
 text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2);cursor:help}
+.kw.shape{border-style:dashed;color:var(--ink-3)}
 .cmaker{grid-area:maker;font-size:11px;color:var(--ink-3);text-align:right}
 .pas{grid-area:pas;font-size:13px;color:var(--ink-2);border-top:1px dashed var(--rule);margin-top:5px;padding-top:5px}
 .tier{font:600 9px/1.6 "IBM Plex Mono",Menlo,monospace;letter-spacing:.06em;border:1px solid var(--rule);color:var(--ink-3);border-radius:2px;padding:0 4px;margin-left:5px;vertical-align:1px}
@@ -225,7 +231,7 @@ border:1px solid var(--ink-3);color:var(--ink-3);border-radius:2px;padding:0 4px
 </style>
 <div class="wrap">
 <header class="top"><h1>Hangar Codex</h1>
-<p class="lede">Every chassis with its die laid out entry by entry: fixed components first, then each hardpoint with the model pin it mounts on, read from the built model, so a hardpoint the model has no socket for yet says so. Generated from <code>content/*.json</code> and <code>art/models/*.glb</code>; hover a keyword for its rule. Numbers are placeholders.</p>
+<p class="lede">Every chassis with its die laid out entry by entry: fixed components first, then each hardpoint with the model pin it mounts on, read from the built model, so a hardpoint the model has no socket for yet says so. The dashed chip on a component is its silhouette class, the shape the model wears at the pin when it is fitted. Generated from <code>content/*.json</code> and <code>art/models/*.glb</code>; hover a keyword for its rule. Numbers are placeholders.</p>
 <nav>__NAV__</nav></header>
 __CARDS__
 </div>"""

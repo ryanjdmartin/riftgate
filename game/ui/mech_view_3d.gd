@@ -85,6 +85,8 @@ const SPIN_SPEED := 0.7           # radians per second
 # its placeholder under it. Both come through the glTF as plain Node3Ds by name.
 var joints: Dictionary = {}       # "shoulder_l" -> Node3D
 var hardpoints: Dictionary = {}   # 1 -> Node3D
+var plan: Array = []              # what the pins wear instead of their stock (mount_plan rows), applied in _setup
+var model_id: String = ""         # the glTF drawn: the chassis, or the fallback when it has no model
 var _rest: Dictionary = {}        # joint name -> rest rotation (Vector3)
 var _idle: Dictionary = {}        # joint name -> idle rotation offset, added on top of rest and strikes
 var _strike: Dictionary = {}      # joint name -> strike rotation offset (tweened)
@@ -203,15 +205,105 @@ static func look_setting() -> String:
 
 ## Build a view of a chassis in one of the two looks. Falls back to the given chassis when
 ## the wanted one has no model, so a screen can show one model in every slot.
-static func make(chassis_id: String, maker: String, look: String, fallback: String = "badger", yaw_deg: float = YAW_REAR, frame: Vector2i = Vector2i.ZERO, spinning: bool = false, paint_arg: Dictionary = {}) -> MechView3D:
+static func make(chassis_id: String, maker: String, look: String, fallback: String = "badger", yaw_deg: float = YAW_REAR, frame: Vector2i = Vector2i.ZERO, spinning: bool = false, paint_arg: Dictionary = {}, plan_arg: Array = []) -> MechView3D:
 	var v := MechView3D.new()
 	v.mode = look
 	v.yaw = yaw_deg
 	v.frame_override = frame
 	v.spin = spinning
 	v.paint = paint_arg
-	v._setup(model_for(chassis_id, fallback), maker)
+	var id := model_for(chassis_id, fallback)
+	v.model_id = id
+	v.plan = plan_arg if id == chassis_id else []   # a borrowed model never wears another machine's kit
+	v._setup(id, maker)
 	return v
+
+
+## The silhouette classes (decided 29 September; ContentDB.SHAPES is the list): a fitted
+## component wears its class at the pin, in its own maker's metal, from
+## art/models/shapes/<shape>_<maker>.glb.
+static func shape_model(shape: String, maker: String) -> String:
+	return "shapes/%s_%s" % [shape, maker]
+
+
+## What a machine's pins must change to show its fitted die instead of the chassis's
+## stock loadout: one row [n, component, shape, maker] per hardpoint whose component is
+## not the stock one, with an empty component for a socket left empty (the stock part
+## hides and nothing replaces it). Empty when the die is the stock kit, which every
+## machine's is today. Hardpoints are the die's non-fixed entries, in order, numbered from 1.
+static func mount_plan(die: Die, stock: Array, db: ContentDB) -> Array:
+	var out: Array = []
+	if die == null:
+		return out
+	var n := 0
+	for f in die.faces:
+		if f.fixed:
+			continue
+		n += 1
+		var stock_id := str(stock[n - 1]) if n - 1 < stock.size() else ""
+		if f.component == stock_id:
+			continue
+		if f.component.is_empty():
+			out.append([n, "", "", ""])
+		else:
+			var c: Dictionary = db.components.get(f.component, {})
+			out.append([n, f.component, str(c.get("shape", "")), str(c.get("maker", ""))])
+	return out
+
+
+## The plan for a unit against its chassis's stock loadout in content.
+static func plan_for(u: Unit, db: ContentDB) -> Array:
+	if u == null or db == null:
+		return []
+	var stock: Array = db.chassis.get(u.chassis_id, {}).get("loadout", [])
+	return mount_plan(u.die, stock, db)
+
+
+## A plan from a debug spec, "1:lance,4:heat_sink" (RIFTGATE_FIT in tools/hero_shot.gd):
+## the pin's number and the component to hang there, or "1:" to empty a socket.
+static func plan_from_spec(spec: String, db: ContentDB) -> Array:
+	var out: Array = []
+	for item in spec.split(",", false):
+		var parts := item.strip_edges().split(":")
+		if parts.size() != 2 or not parts[0].is_valid_int():
+			continue
+		var cid := parts[1].strip_edges()
+		if cid.is_empty():
+			out.append([int(parts[0]), "", "", ""])
+		elif db.components.has(cid):
+			var c: Dictionary = db.components[cid]
+			out.append([int(parts[0]), cid, str(c.get("shape", "")), str(c.get("maker", ""))])
+	return out
+
+
+## Wear the plan: each row hangs its class shape on its pin, or bares the socket.
+func _apply_plan() -> void:
+	for row in plan:
+		if row.size() < 4:
+			continue
+		var n := int(row[0])
+		if str(row[1]).is_empty():
+			hide_stock(n)
+		elif not mount_shape(n, str(row[2]), str(row[3])):
+			push_warning("no shape model for %s (%s) on hp_%d of %s" % [row[1], row[2], n, model_id])
+
+
+## Hang a silhouette class on a pin in a maker's metal; false when the pin or the shape's
+## model is missing.
+func mount_shape(n: int, shape: String, maker: String) -> bool:
+	var id := shape_model(shape, maker)
+	if not has_model(id):
+		return false
+	return mount(n, load("res://art/models/%s.glb" % id), maker)
+
+
+## Bare a socket: the stock part hides and nothing replaces it (an empty hardpoint).
+func hide_stock(n: int) -> void:
+	if not hardpoints.has(n):
+		return
+	for c in (hardpoints[n] as Node3D).get_children():
+		if c is Node3D:
+			c.visible = false
 
 
 var density := 1.0              # device pixels a design pixel: the render is this much larger than `frame_px` (the FINE MAP setting)
@@ -265,6 +357,7 @@ func _setup(chassis_id: String, maker: String) -> void:
 	_pivot.rotation.y = deg_to_rad(yaw)
 	_apply_materials(_model, maker)
 	_collect_tags(_model)
+	_apply_plan()   # before the traces attach and the camera frames, so a mounted shape gets both
 	if not token:
 		# The skirmish's machines carry the display's trace too (Ryan, 21 September); the
 		# screen's scan bar lights it through set_sweep_screen.
@@ -403,8 +496,9 @@ func _joint_of(node: Node) -> String:
 	return ""
 
 
-## Hang a component's model on a socket: the placeholder under `hp_<n>` is hidden and the
-## scene is added under the pin, so it points where the pin points. Returns false when the
+## Hang a component's model on a socket: the stock part under `hp_<n>` is hidden and the
+## scene is added under the pin, so it points where the pin points and wears the pin's
+## scale (lowforge sets both; a Sparrowhawk's pins are half size). Returns false when the
 ## model has no such socket.
 func mount(n: int, scene: PackedScene, maker: String) -> bool:
 	if not hardpoints.has(n):

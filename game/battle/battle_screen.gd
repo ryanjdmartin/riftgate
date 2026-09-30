@@ -908,7 +908,7 @@ func _portrait_mech(u: Unit, db: ContentDB) -> Control:
 	var box := VBoxContainer.new()
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
 	var maker := str(db.chassis.get(u.chassis_id, {}).get("maker", "minerva"))
-	var view := MechView3D.make(u.chassis_id, maker, "clean", "badger", MechView3D.YAW_FRONT, Vector2i(96, 96), false, u.paint)
+	var view := MechView3D.make(u.chassis_id, maker, "clean", "badger", MechView3D.YAW_FRONT, Vector2i(96, 96), false, u.paint, MechView3D.plan_for(u, db))
 	# The view lives in the portrait's own box, so it dies with the panel. It used to hang off
 	# the screen root: every contact, and every tap of the panel's arrows, left another pair of
 	# viewports rendering every frame for the rest of the battle, until the phone's GL driver
@@ -1031,6 +1031,15 @@ func _play_handover(group: Array, screen: SkirmishScreen) -> void:
 		_refresh())
 	tw.chain().tween_property(scrim, "modulate", Color(1, 1, 1, 0), 0.4)
 	tw.chain().tween_callback(scrim.queue_free)
+
+
+## Freed mid-handover (the screenshot tool's engage pose quits then), the skirmish screen
+## is still waiting in `_skirmish` for the tween to add it to the tree: an orphan with
+## three 3D worlds in it, which the renderer reported leaked at exit. Free it with us.
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE and _skirmish != null and is_instance_valid(_skirmish) and _skirmish.get_parent() == null:
+		_skirmish.free()
+		_skirmish = null
 
 
 ## The skirmish's Back button: apply the result, then the next contact or back to the plan.

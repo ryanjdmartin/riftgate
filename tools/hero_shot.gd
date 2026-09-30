@@ -3,6 +3,9 @@ extends SceneTree
 ## Renders one chassis model large through the game's own 3D view and saves a PNG, for
 ## judging polish and manner at a size the codex cannot show. Needs a window.
 ##   godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- <chassis> <maker> out.png [front|rear|<yaw degrees>] [width height]
+## RIFTGATE_FIT="1:lance,4:heat_sink" hangs components' silhouette classes on the pins in
+## place of the stock parts ("2:" bares a socket), to judge a swap; a class on its own is
+## a model too: <chassis> shapes/barrel_minerva.
 
 var _frames := 0
 var _view: MechView3D
@@ -26,7 +29,11 @@ func _init() -> void:
 	var frame := Vector2i(480, 576)
 	if args.size() >= 6:
 		frame = Vector2i(int(args[4]), int(args[5]))
-	_view = MechView3D.make(chassis, maker, "clean", "badger", yaw, frame, false)
+	var plan: Array = []
+	var fit := OS.get_environment("RIFTGATE_FIT")
+	if not fit.is_empty():
+		plan = MechView3D.plan_from_spec(fit, ContentDB.load_default())
+	_view = MechView3D.make(chassis, maker, "clean", "badger", yaw, frame, false, {}, plan)
 	root.add_child(_view)
 	process_frame.connect(_tick)
 
