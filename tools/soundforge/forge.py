@@ -789,7 +789,39 @@ def overheat():
 # `bass` and the `chime` and `stab` of the second cut stay available.
 
 E2 = 82.41
-NOTE = {"a": 10, "b": 11, "c": 12, "d": 14, "e": 15, "f": 17, "i": 19, "j": 22, "k": 24, "g": -2, "h": -5, "l": -1, "m": -3}   # l and m: the semitones under the root, for a chromatic descent
+NOTE = {"a": 10, "b": 11, "c": 12, "d": 14, "e": 15, "f": 17, "i": 19, "j": 22, "k": 24, "g": -2, "h": -5, "l": -1, "m": -3, "n": -4, "o": -7}   # l, m, n, o: notes under the root (Eb, Db, C, A)
+_E_MINOR = [0, 2, 3, 5, 7, 8, 10]
+_SPELL = {v: k for k, v in NOTE.items()}
+
+
+def _harmony(pat, steps, min_hold=1):
+    """A riff pattern's notes moved `steps` degrees along E natural minor, holds kept: a diatonic
+    harmony line under a tune. `min_hold` keeps only notes held that many steps, so a harmony
+    can join on the long notes first. A note off the scale is left as rest."""
+    out = []
+    i = 0
+    while i < len(pat):
+        c = pat[i]
+        if c in ".-":
+            out.append(c)
+            i += 1
+            continue
+        semis = int(c) if c.isdigit() else NOTE[c]
+        j = i + 1
+        while j < len(pat) and pat[j] == "-":
+            j += 1
+        hold = j - i
+        octave, pc = divmod(semis, 12)
+        if pc in _E_MINOR and hold >= min_hold:
+            o2, k = divmod(_E_MINOR.index(pc) + steps, 7)
+            new = _E_MINOR[k] + 12 * (octave + o2)
+            out.append(str(new) if 0 <= new <= 9 else _SPELL[new])
+            out.append("-" * (hold - 1))
+        else:
+            out.append("." * hold)
+        i = j
+    return "".join(out)
+
 
 
 # ---- the kit
@@ -2071,6 +2103,10 @@ def music_hold_the_line(palette="hybrid"):
     climax = "0..0..3.0..5..3.0..0..8.7..5..3.3..3..5.3..7..5.0..0..a.8..7..5."   # the new unison riff, four bars
     keys_roots = list("08g7053g" "087g08g7")       # the keys' bass, one root a bar: E C D B E A G D, E C B D E C D B
     keys_fifths = list("h325h352")                 # the fifth under each second-half root ("5" is the octave-down one under the low D)
+    keys_tune = ("7--.8-.7-..5.3-.0-----..3---5---8--.a-.8-..7.5-.3---....5-.3-.0-"
+                 "7--.a-.c---....a--.8-.7-.5---...3--.5-.7-..8.a-.7-------........"
+                 "7--.8-.7-..5.3-.0-----..3---5---8--.a-.8-..7.5-.3---....5-.3-.0-"
+                 "7---8---a---c---a---8---7---5---3-------5---3---0-------3---5---")   # the keys' tune, sixteen bars
     if real:
         kit = {"kick": (variants(kick_real), 1.0), "snare": (variants(snare_real), 1.0), "hat": (variants(lambda p: hat_real(False, p)), 0.45),
                "open": ([hat_real(True)], 0.4), "crash": ([crash_real()], 0.9), "crash2": ([crash_low()], 0.9), "china": (china(), 0.8),
@@ -2201,17 +2237,18 @@ def music_hold_the_line(palette="hybrid"):
              "pat": {"F": "." * 128 + "".join((r + "-" * 15) if r != "5" else "." * 16 for r in keys_fifths)}},
             {"inst": "sub_bass", "mode": "riff", "gain": 0.34, "legato": True, "octave": -1, "params": {"res": 0.35, "fade": 0.4},
              "pat": {"F": "." * 128 + "".join((r + "-" * 15) if r == "5" else "." * 16 for r in keys_fifths)}},
-            {"inst": "lead", "mode": "riff", "gain": 0.46, "octave": 2,
-             "pat": {"F": "7--.8-.7-..5.3-.0-----..3---5---8--.a-.8-..7.5-.3---....5-.3-.0-"
-                          "7--.a-.c---....a--.8-.7-.5---...3--.5-.7-..8.a-.7-------........"
-                          "7--.8-.7-..5.3-.0-----..3---5---8--.a-.8-..7.5-.3---....5-.3-.0-"
-                          "7---8---a---c---a---8---7---5---3-------5---3---0-------3---5---"}},
+            {"inst": "lead", "mode": "riff", "gain": 0.46, "octave": 2, "pat": {"F": keys_tune}},
+            # The lead harmonises its own tune as the section builds toward the climax (Ryan,
+            # 29 September: two- and three-note chords, none at first, more as it goes): the
+            # diatonic third below joins on the long notes from bar five and on every note from
+            # bar nine; the root under both (the tune the chord's fifth) on the long notes from
+            # bar nine and on every note from bar thirteen.
+            {"inst": "lead", "mode": "riff", "gain": 0.34, "octave": 2,
+             "pat": {"F": "." * 64 + _harmony(keys_tune[64:128], -2, 3) + _harmony(keys_tune[128:], -2)}},
+            {"inst": "lead", "mode": "riff", "gain": 0.3, "octave": 2,
+             "pat": {"F": "." * 128 + _harmony(keys_tune[128:192], -4, 3) + _harmony(keys_tune[192:], -4)}},
             {"inst": "epiano", "mode": "stab", "gain": 0.5, "dur": 2.0,
-             # The first lift's chord work starts absent and grows through its eight bars, on the
-             # off-beats it had (Ryan, 29 September: more chords by the lead, it is keys after all).
-             "pat": {"C": "................" "..............x." "......x.......x." "..x.......x...x."
-                          "..x...x...x....." "..x...x...x...x." "..x.x.x...x...x." "..x.x.x.x.x.x.x.",
-                     "L": "..x...x...x...x.",
+             "pat": {"C": "..x...x...x...x.", "L": "..x...x...x...x.",
                      "F": "............x..." "................" "............x..." "x..............."
                           "............x..." "x.......x......." "............x..." "x...x...x......."
                           "x...........x..." "x.......x......." "x...x.......x..." "x.......x...x..."
