@@ -800,8 +800,8 @@ const DEST_RING := HEX_SIZE * 0.58   # the target's outer ring
 # so the pulse never goes that far, and plum went toward the red under red-green vision.
 # Two violets in all (Ryan, 30 September): the light one is the route's line and the field's
 # bright; the deep one is the line's crawling gaps and the field's dark.
-const INTENT := Color("b88cff")       # a pack's route at rest, and the field's bright (L 67; 21 Lab from the blue HUD under deutan)
-const INTENT_HOT := Color("b88cff")   # the tapped pack's line at the top of its breath: the same
+const INTENT := Color("c8a4ff")       # a pack's route at rest, and the field's bright (L 73; Ryan, 30 September: room left on the phone; the striped structure carries it now, not the hue)
+const INTENT_HOT := Color("c8a4ff")   # the same
 const INTENT_DEEP := Color("6a30c0")  # the field's dark and the line's gaps (up again, Ryan, 30 September: it blended into the dark tiles)
 const INTENT_PALE := Color("d0b8ff")  # the top of the tapped pack's pulse, briefly
 const INTENT_DARK := Color("2a0e4a")  # the bottom of the tapped pack's pulse for the dark
