@@ -740,7 +740,7 @@ func _refresh() -> void:
 
 	_refresh_log()
 	_reroll_btn.badge = "×%d" % sk.rerolls_left
-	_reroll_btn.set_enabled(assigning and sk.rerolls_left > 0)
+	_reroll_btn.set_enabled(assigning and sk.can_reroll())
 	_end_btn.set_enabled(assigning)
 	_withdraw_btn.set_enabled(sk.can_withdraw())
 	_refresh_arrows()
@@ -884,6 +884,8 @@ func _mech_rows(i: int) -> Array:
 		return rows
 	if locked[i]:
 		rows.append(["lock", "", "Die locked: reroll skips it", Palette.HUD])
+	if ms.free_rerolls > 0 and not ms.assigned and sk.state == Skirmish.State.ASSIGN:
+		rows.append(["reroll", "×%d" % ms.free_rerolls, "A free reroll of this die alone this round: lock the others and press REROLL", Palette.HUD])
 	var damaged := ms.unit.damaged_component_count()
 	if damaged > 0:
 		rows.append(["crack", str(damaged), "%d damaged component%s: repair in the hangar" % [damaged, "" if damaged == 1 else "s"], Palette.HUD])

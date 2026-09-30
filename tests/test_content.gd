@@ -611,3 +611,23 @@ func test_grant_keyword_names_a_keyword_the_engine_runs() -> void:
 		if e.begins_with("chassis ram_bad") and e.contains("grant_keyword"):
 			hit = true
 	assert_true(hit, "a keyword the engine lacks is refused")
+
+
+func test_the_vent_on_fire_fields_belong_to_an_attack() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var plate: Dictionary = db.components["ablative_plating"].duplicate(true)
+	plate["face"]["vents_all"] = true
+	db.components["hot_plate"] = plate
+	var gun: Dictionary = db.components["lance"].duplicate(true)
+	gun["face"]["power_per_heat"] = 10
+	db.components["half_gun"] = gun
+	var bad_plate := false
+	var bad_gun := false
+	for e in db.validate():
+		if e.begins_with("component hot_plate") and e.contains("belong to an attack"):
+			bad_plate = true
+		if e.begins_with("component half_gun") and e.contains("needs vents_all"):
+			bad_gun = true
+	assert_true(bad_plate, "vents_all on a shield is refused")
+	assert_true(bad_gun, "power_per_heat without vents_all is refused")

@@ -44,12 +44,12 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 - [x] `taunt` as a status a shield face applies (front-rank foes target the machine); Proximity Klaxon, Faraday Shutters, and the shutters' Live Shell that shocks through a blocked blow (29 September, night: beacon draws the back rank the same way; both are buff statuses too)
 - [x] `overwhelm` (damage past a kill spills into the rank behind) and its grant on every attack; Juggernaut Drive (30 September: grant_keyword and the effective face)
 - [ ] The stealth join rule: in a fight only beside an ally or when it stopped a pack in its path; needs the blocked list to name the blocker; the Dingo **[claimed 29 September, night: the cloud session on branch `ccr-23c2f18f-qlilnd`; skip unless it says it stopped]**
-- [ ] The vent-on-fire face (`vents_all`, `power_per_heat`); the Afterburner Cannon **[claimed 29 September, night: the cloud session on branch `ccr-23c2f18f-qlilnd`; skip unless it says it stopped]**
-- [ ] Battery Director: rerolling only the Clydesdale's die is free once a round, on top of the team's three **[claimed 29 September, night: the cloud session on branch `ccr-23c2f18f-qlilnd`; skip unless it says it stopped]**
-- [ ] Thermal Recoupler: shield regained per 10 heat at the start of the Goshawk's turn, the first in-fight regen **[claimed 29 September, night: the cloud session on branch `ccr-23c2f18f-qlilnd`; skip unless it says it stopped]**
+- [x] The vent-on-fire face (`vents_all`, `power_per_heat`); the Afterburner Cannon (30 September)
+- [x] Battery Director: rerolling only the Clydesdale's die is free once a round, on top of the team's three (30 September: lock the others and press REROLL)
+- [x] Thermal Recoupler: shield regained per 10 heat at the start of the Goshawk's turn, the first in-fight regen (30 September: on the on_round_start trigger, 5 a ten as a placeholder)
 - [ ] Static-screen Projector: on withdraw the Prairie Dog is out before the enemy strikes, each ally rolls an even chance, a blow at a covered machine is lost **[claimed 29 September, night: the cloud session on branch `ccr-23c2f18f-qlilnd`; skip unless it says it stopped]**
 - [ ] Crucible Capacitor: melee damage per Overheating stack, a stack per blow that reaches hull from a foe or its own weapons, never from overheat burn **[claimed 29 September, night: the cloud session on branch `ccr-23c2f18f-qlilnd`; skip unless it says it stopped]**
-- [ ] Tactical Databank: kinetic weapons roll their maximum with an ally in the fight; needs an ally-present condition **[claimed 29 September, night: the cloud session on branch `ccr-23c2f18f-qlilnd`; skip unless it says it stopped]**
+- [x] Tactical Databank: kinetic weapons roll their maximum with an ally in the fight; needs an ally-present condition (30 September)
 - [ ] Glacis: the Breaching Plow's armour against front-rank blows only, once the engine knows which rank struck (flat +5 today) **[claimed 29 September, night: the cloud session on branch `ccr-23c2f18f-qlilnd`; skip unless it says it stopped]**
 - [ ] The planned statuses still without an engine: Phased, Energy Armour (Beacon landed with taunt, 29 September)
 - [ ] The planned player keywords: Corrode, Scramble, Confuse

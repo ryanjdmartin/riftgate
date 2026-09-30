@@ -1851,3 +1851,123 @@ func test_a_passive_may_grant_a_keyword_and_the_entry_wears_it() -> void:
 	assert_false(Effects.effective_face(m, gun).has(K.CLEANSE), "cleanse stays off the gun")
 	assert_true(Effects.effective_face(m, plate).has(K.CLEANSE), "and lands on the shield")
 	assert_false(Effects.effective_face(m, plate).has(K.OVERWHELM), "overwhelm stays off the shield")
+
+
+func test_a_vent_on_fire_attack_fires_the_heat_into_the_blow_and_empties_the_gauge() -> void:
+	var sk := Skirmish.new(1)
+	var cannon := Face.from_dict({"kind": "attack", "reach": "line", "power": 20, "heat": 0, "vents_all": true, "power_per_heat": 10})
+	var m := _mech("A", Die.single(cannon), 40, 100)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	sk.mechs[0].heat = 47
+	assert_eq(cannon.describe(), "20 vents all, +10 per 10 heat", "the entry says what it does")
+	assert_eq(cannon.to_dict()["power_per_heat"], 10, "and round-trips")
+	assert_eq(sk.heat_bonus(sk.mechs[0], cannon), 40, "four tens of heat: +40")
+	assert_eq(sk.pending_heat(sk.mechs[0]), -47, "the forecast sees the gauge emptying")
+	assert_eq(sk.forecast(sk.mechs[0], true)["heat_after"], 0, "and lands at zero")
+	sk.assign(0, sk.front[0])
+	assert_eq(sk.front[0].hp, 440, "20 plus the 40 fired")
+	assert_eq(sk.mechs[0].heat, 0, "the airframe is cold")
+	assert_true("\n".join(sk.log).contains("A fires its heat: -47, +40 to the blow"), "the log says so")
+	# Cold, it is a plain 20; its own heat cost still lands.
+	var hot := Face.from_dict({"kind": "attack", "reach": "line", "power": 20, "heat": 15, "vents_all": true, "power_per_heat": 10})
+	var s2 := Skirmish.new(2)
+	s2.add_mech(_mech("B", Die.single(hot), 40, 100))
+	s2.add_foes([_ghoul(500, 10)])
+	s2.begin()
+	s2.start_round()
+	s2.mechs[0].heat = 5
+	s2.assign(0, s2.front[0])
+	assert_eq(s2.front[0].hp, 480, "under ten heat adds nothing")
+	assert_eq(s2.mechs[0].heat, 15, "emptied, then the shot's own heat")
+
+
+func test_a_round_start_passive_regains_shield_from_heat() -> void:
+	var recoupler := {"id": "recoupler", "name": "Thermal Recoupler", "description": "", "effects": [
+		{"trigger": "on_round_start", "effect": "shield_per_heat", "value": 5}]}
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.attack(20, L, [], 30)), 60, 100)
+	m.shield = 10
+	m.grant_passive(recoupler)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	assert_eq(m.shield, 10, "no heat, no shield")
+	sk.assign(0, sk.front[0])
+	sk.end_round()
+	assert_eq(sk.mechs[0].heat, 30, "hot now")
+	sk.start_round()
+	assert_eq(m.shield, 10 - 10 + 15, "the ghoul's blow took ten, then three tens of heat gave fifteen")
+	assert_true("\n".join(sk.log).contains("A: round start, +15 shield"), "the log says so")
+	assert_eq(Effects.effect_text({"trigger": "on_round_start", "effect": "shield_per_heat", "value": 5}), "at the start of the round: +5 shield for every 10 heat carried", "reads as a sentence")
+	# Never over the maximum.
+	m.shield = 58
+	sk.mechs[0].heat = 40
+	sk.end_round()
+	sk.start_round()
+	assert_true(m.shield <= 60, "capped at the maximum")
+
+
+func test_a_kinetic_weapon_rolls_its_maximum_with_an_ally_in_the_fight() -> void:
+	var databank := {"id": "databank", "name": "Tactical Databank", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "roll_max", "value": 1, "when": "ally_present"}]}
+	var sk := Skirmish.new(1)
+	var gun := Face.attack(10, L, [], 0, 30)
+	var a := _mech("A", Die.single(gun), 40, 100)
+	a.grant_passive(databank)
+	var b := _mech("B", Die.single(Face.blank()), 40, 10)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	sk.add_foes([_ghoul(500, 30)])
+	sk.begin()
+	sk.start_round()
+	assert_eq(a.allies, 1, "the skirmish tells the unit who stands with it")
+	assert_true(Effects.rolls_max(a, gun), "the solution holds")
+	assert_eq(Effects.explain(a, gun), ["with an ally in the fight: kinetic weapons roll their maximum (Tactical Databank)"], "the die row says so")
+	sk.assign(0, sk.front[0])
+	assert_eq(sk.front[0].hp, 470, "the roll is its ceiling")
+	# Alone, it rolls as any gun does.
+	b.hull = 0
+	sk._refresh_allies()
+	assert_eq(a.allies, 0, "alone")
+	assert_false(Effects.rolls_max(a, gun), "and the solution is gone")
+	var pol := Policy.make(Policy.GREEDY)
+	assert_true(pol.expected_damage(sk.mechs[0], gun, sk.front[0]) < 30.0, "the bot reads the plain roll")
+	b.hull = 10
+	sk._refresh_allies()
+	assert_eq(pol.expected_damage(sk.mechs[0], gun, sk.front[0]), 30.0, "and the ceiling with the ally back")
+
+
+func test_a_free_reroll_of_one_die_spares_the_teams() -> void:
+	var director := {"id": "director", "name": "Battery Director", "description": "", "effects": [
+		{"trigger": "static", "effect": "free_reroll", "value": 1}]}
+	var sk := Skirmish.new(1)
+	var a := _mech("A", Die.of([Face.attack(10, L), Face.attack(20, L), Face.attack(30, L)]), 40, 100)
+	a.grant_passive(director)
+	var b := _mech("B", Die.of([Face.attack(10, L), Face.attack(20, L)]), 40, 100)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	assert_eq(sk.mechs[0].free_rerolls, 1, "one of its own this round")
+	assert_eq(sk.mechs[1].free_rerolls, 0, "none for the other")
+	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND, "the team's are untouched")
+	var before := sk.mechs[0].face_index
+	assert_true(sk.reroll([0]), "A alone rerolls")
+	assert_true(sk.mechs[0].face_index != before, "and the die moved")
+	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND, "for free")
+	assert_eq(sk.mechs[0].free_rerolls, 0, "once a round")
+	assert_true(sk.reroll([0]), "again, from the team's")
+	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND - 1, "which paid this time")
+	sk.rerolls_left = 0
+	assert_false(sk.can_reroll(), "nothing left")
+	sk.mechs[0].free_rerolls = 1
+	assert_true(sk.can_reroll(), "a free one is a reroll open")
+	assert_false(sk.reroll([0, 1]), "but not for two dice at once")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(sk.mechs[0].free_rerolls, 1, "back each round")

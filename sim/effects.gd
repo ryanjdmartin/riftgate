@@ -43,10 +43,11 @@ const ROUNDS := 3
 
 ## What the content may ask for, by trigger. The validator refuses anything else.
 const SUPPORTED_EFFECTS := {
-	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn"],
+	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "roll_max"],
 	"on_crit": ["multiply_damage", "add_damage", "add_burn", "vent_heat", "add_crit_damage"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "draw_rank", "grant_keyword"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "draw_rank", "grant_keyword", "free_reroll"],
+	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat"],
 	"status": ["tick_hp", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry"],
 	"on_foe_status": ["chance_suppress"],
 }
@@ -94,7 +95,8 @@ const STATUS := {
 ## The statuses a buff component may grant: the machines' own, never a foe's.
 const MECH_STATUSES := ["overcharged", "braced", "primed", "retaliate", "taunt", "beacon"]
 ## target_status: the foe struck carries any live status (burning, suppressed, numbed...).
-const SUPPORTED_WHEN := ["component_cracked", "reach_melee", "reach_line", "reach_indirect", "target_status"]
+## ally_present: another live machine is in the fight (the unit's `allies`, kept by the skirmish).
+const SUPPORTED_WHEN := ["component_cracked", "reach_melee", "reach_line", "reach_indirect", "target_status", "ally_present"]
 ## Stats a static effect may change: the mech's base numbers by these names.
 const STATS := ["hull", "shield", "heat", "armour", "move", "recharge", "cooling"]
 ## Effects that are bonuses (a destroyed component keeps them) rather than abilities.
@@ -354,6 +356,8 @@ static func _holds(u, eff: Dictionary, face: Face, target = null) -> bool:
 			return face != null and effective_reach(u, face) == Face.Reach.INDIRECT
 		"target_status":
 			return target != null and target.get("modifiers") != null and not live(target).is_empty()
+		"ally_present":
+			return u.get("allies") != null and int(u.allies) > 0
 	return false
 
 
@@ -528,6 +532,43 @@ static func foe_status_suppress_chance(u) -> int:
 	return clampi(int(roundf(total)), 0, 100)
 
 
+## Does a kinetic attack roll its maximum (roll_max on_attack; the Dingo's Tactical Databank
+## with an ally in the fight)?
+static func rolls_max(u, face: Face, target = null) -> bool:
+	for pair in _taking_part(u, "on_attack", face, false, target):
+		if str(pair[0].get("effect", "")) == "roll_max":
+			return true
+	return false
+
+
+## Free rerolls of this machine's own die each round, on top of the team's (free_reroll,
+## static; the Clydesdale's Battery Director).
+static func free_rerolls(u) -> int:
+	var n := 0
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "free_reroll":
+			n += int(pair[0].get("value", 0)) * pair[1].stacks
+	return maxi(0, n)
+
+
+## What the start of a round does for this machine (on_round_start, after the roll):
+## {shield, vent}. shield_per_heat pays its value for every 10 heat the machine carries
+## (the Goshawk's Thermal Recoupler); add_shield and vent_heat are flat.
+static func round_start(u, heat: int) -> Dictionary:
+	var out := {"shield": 0, "vent": 0}
+	for pair in _taking_part(u, "on_round_start", null):
+		var eff: Dictionary = pair[0]
+		var v: int = int(eff.get("value", 0)) * int(pair[1].stacks)
+		match str(eff.get("effect", "")):
+			"shield_per_heat":
+				out["shield"] += v * int(heat / 10)
+			"add_shield":
+				out["shield"] += v
+			"vent_heat":
+				out["vent"] += v
+	return out
+
+
 ## Does the pipeline hold a cracked component short of destruction?
 static func no_destroy(u, face: Face) -> bool:
 	for pair in _taking_part(u, "on_injury", face):
@@ -622,6 +663,10 @@ static func effect_text(eff: Dictionary) -> String:
 		"grant_keyword":
 			var kw := Face.keyword_from_name(str(v))
 			body = "gains %s" % (Face.keyword_label(kw) if kw > 0 else str(v))
+		"roll_max": body = "kinetic weapons roll their maximum"
+		"free_reroll": body = "%s free reroll%s of this die a round" % [vs, "" if int(v) == 1 else "s"]
+		"shield_per_heat": body = "+%s shield for every 10 heat carried" % vs
+		"add_shield": body = "+%s shield" % vs
 		"tick_hp": body = "%s damage per stack each turn" % vs
 		"tick_heat": body = "%s heat per stack each turn" % vs
 		"skip_action": body = "skips its action"
@@ -637,12 +682,14 @@ static func effect_text(eff: Dictionary) -> String:
 	match str(eff.get("trigger", "")):
 		"on_crit": lead = "on a crit: "
 		"on_injury": lead = "on an injury: "
+		"on_round_start": lead = "at the start of the round: "
 	match str(eff.get("when", "")):
 		"component_cracked": lead += "cracked components: "
 		"reach_melee": lead += "melee attacks: "
 		"reach_line": lead += "line-of-sight attacks: "
 		"reach_indirect": lead += "indirect attacks: "
 		"target_status": lead += "foes carrying a status: "
+		"ally_present": lead += "with an ally in the fight: "
 	return lead + body
 
 

@@ -17,6 +17,7 @@ var shield: int = 40
 ## armour sets the base. Nothing stores a total (decided 18 September).
 var base: Dictionary = {"hull": 100, "shield": 40, "heat": 60, "armour": 0, "move": 3, "recharge": 0, "cooling": 0}
 var modifiers: Array = []   # Effects.Modifier list: loadout, battle, skirmish and timed effects
+var allies: int = 0         # live allies in the fight this unit is in, kept by the skirmish, for passives that read it
 var hull_max: int:
 	get:
 		return Effects.stat(self, "hull")

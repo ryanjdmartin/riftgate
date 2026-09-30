@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 90 implemented, 18 planned, 0 idea.
+Status: 92 implemented, 17 planned, 0 idea.
 
 ## Resource
 
@@ -44,6 +44,7 @@ Status: 90 implemented, 18 planned, 0 idea.
 | **Damage range** | A kinetic attack component shows a minimum and a maximum and rolls between them when spent, immediately and visibly. Energy components show one number and never roll. Numbers are in tens. | implemented |
 | **Critical hit** | A kinetic component may carry a crit chance. On a crit the roll is multiplied by the crit multiplier: a base of 2 for everyone, plus every crit damage bonus that applies, from the component itself or a passive. Bonuses add to the multiplier, never multiply each other, so a +0.5 weapon with a +0.5 passive crits for 3 times. The readout shows the resulting multiplier. Energy components never crit. Crits fire the on_crit passive trigger. | implemented |
 | **Targets** | Whom a piece of equipment may be spent on: self and allies, self only, or allies only. Shown as a chip on the die when narrowed. | implemented |
+| **Vents all** | An attack that fires the machine's whole heat as it is spent: the heat gauge is empty after the shot, and every 10 heat fired adds the component's bonus to the blow before crits and passives. The shot's own heat cost still lands. | implemented |
 | **Strikes** | An attack's blows per use. A weapon with three strikes lands three separate hits: each rolls its own damage, its own crit and its own effects, so a rapid-fire weapon procs often. Against a shield, every strike past the first reaches the hull; against armour, every small strike loses the armour, so many small hits are the wrong tool for a heavy target and the right one for a soft one. Foe attacks have strikes too. | implemented |
 
 ## Reach
@@ -153,7 +154,7 @@ Status: 90 implemented, 18 planned, 0 idea.
 | **On attack** | Passive trigger. Fires after the damage roll on every attack. Effects: multiply or add damage or heat, or set a minimum damage. An effect may carry a when condition: component_cracked (only when the component being spent is cracked). | implemented |
 | **On shield gain** | Passive trigger. Fires when this mech gains shield from any source. | planned |
 | **On heat gain** | Passive trigger. Fires when this mech gains heat. | planned |
-| **On round start** | Passive trigger. Fires after the roll, before rerolls. | planned |
+| **On round start** | Passive trigger. Fires after the roll, before rerolls: shield from heat, a flat shield, a vent. | implemented |
 | **On skirmish start** | Passive trigger. Fires once when the skirmish begins. | planned |
 | **On foe status** | Passive trigger. Fires when any foe gains a status (Burning today; the buffs and debuffs to come), whoever applied it, and never for Suppressed or Numbed themselves. Effects: chance_suppress (a chance the foe is also Suppressed, rising per point of shield the owner is missing). | implemented |
 | **On crit** | Passive trigger. Fires when an attack component crits. Effects: multiply or add damage, add burn to the target, vent the attacker's heat. | implemented |
@@ -232,6 +233,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Tank** (planned): Intended: faster on roads.
 - **Stealth** (planned): The Dingo (Ryan, 28 September): a support car that waits in the wings while the heavies get into position, then joins their fight, and never fights alone unless run into. Pays again when hunter packs exist.
 - **City defense** (implemented): Defenses have no die. They cannot act inside a skirmish yet.
+- **On round start** (implemented): Built 30 September for the Thermal Recoupler; the heat it reads is the gauge after the turn's passive cooling.
 - **On foe status** (implemented): One machine's passive so far (the Baboon's Pocket Paradox).
 - **On hull damage** (planned): Hook for the pinned berserker idea.
 - **Command die** (planned): Open question: whether the command die exists at all, or one-shots only.
@@ -241,6 +243,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Armour** (implemented): Numbers are placeholders. Armour from components is content, not yet written.
 - **Breach** (implemented): A property of a foe's attack action. No foe carries it yet; Ryan places it. Redirect and interrupt do not exist yet. Name is a placeholder (pierce is taken by the player keyword).
 - **Foe action** (implemented): Only attacks run; defend, buff and debuff actions stay planned. Weighted RNG is the whole brain for now.
+- **Vents all** (implemented): Built 30 September for the Afterburner Cannon (vents_all and power_per_heat on the face). Only the first shot of a chain fires the heat.
 - **Strikes** (implemented): Heat is paid once per use, not per strike. Foes have no armour yet, so on the player side strikes only matter for procs until they do.
 - **Static** (implemented): Every read asks the pipeline; nothing is written to a stat or a component, so an effect that is gone stops answering. A static reach rule cannot be conditioned on reach.
 - **Order of operations** (implemented): Refit (the hangar) is what changes loadout-scoped effects; not built.

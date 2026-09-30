@@ -42,6 +42,7 @@ class MechState:
 	var face_index: int = -1
 	var locked: bool = false
 	var assigned: bool = false
+	var free_rerolls: int = 0   # rerolls of this die alone left this round, from a passive, on top of the team's
 
 	## The entry showing, as it is right now: a disabled one shows as blank (the component
 	## itself is untouched; the status is what says so).
@@ -126,6 +127,7 @@ func begin() -> void:
 	for r in ranked:
 		reinforcements.append(r[2])
 	_reinforce(false)
+	_refresh_allies()
 	state = State.ROUND_START
 
 
@@ -184,12 +186,29 @@ func can_withdraw() -> bool:
 	return state == State.ROUND_START or state == State.ASSIGN
 
 
-## Heat the mech's current face will add if it is spent as an attack.
+## Heat the mech's current face will add if it is spent as an attack: negative for one that
+## fires the gauge empty first.
 func pending_heat(ms: MechState) -> int:
 	var f := ms.face()
 	if f == null or ms.assigned or not f.is_attack():
 		return 0
-	return Effects.attack(ms.unit, f, 0, f.heat, false)["heat"]
+	var added: int = Effects.attack(ms.unit, f, 0, f.heat, false)["heat"]
+	return added - ms.heat if f.vents_all else added
+
+
+## What a vent-on-fire attack adds to every blow from the heat it fires: its power_per_heat
+## for each 10 heat the machine carries right now (the Afterburner Cannon, 28 September).
+func heat_bonus(ms: MechState, f: Face) -> int:
+	if f == null or not f.vents_all:
+		return 0
+	return f.power_per_heat * int(ms.heat / 10)
+
+
+## Every live machine learns how many allies stand with it, for passives that read it.
+func _refresh_allies() -> void:
+	var n := live_mechs().size()
+	for ms in mechs:
+		ms.unit.allies = maxi(0, n - 1) if ms.alive() else 0
 
 
 ## The foes that will strike this mech when the round ends, in the order they act: alive,
@@ -379,8 +398,19 @@ func start_round() -> void:
 			ms.heat -= drop
 			cooled.append("%s -%d" % [ms.unit.display_name, drop])
 		ms.face_index = ms.die.roll(rng)
+		ms.free_rerolls = Effects.free_rerolls(ms.unit)
 	if not cooled.is_empty():
 		log.append("cooling: " + ", ".join(cooled))
+	_refresh_allies()
+	# Passives that fire at the round's start, after the roll: shield from heat, a flat
+	# shield, a vent (the Goshawk's Thermal Recoupler reads the heat as it stands now).
+	for ms in live_mechs():
+		var rs := Effects.round_start(ms.unit, ms.heat)
+		var gained := ms.unit.recharge_shield(int(rs["shield"])) if int(rs["shield"]) > 0 else 0
+		var vented := mini(ms.heat, int(rs["vent"]))
+		ms.heat -= vented
+		if gained > 0 or vented > 0:
+			log.append("%s: round start, %s" % [ms.unit.display_name, ", ".join(([("+%d shield" % gained)] if gained > 0 else []) + ([("-%d heat" % vented)] if vented > 0 else []))])
 	# Every foe announces its move for the round: which action, at whom. Chosen now, before
 	# the player acts, so the intent chips and the forecast are exact.
 	for f in field_foes():
@@ -389,15 +419,40 @@ func start_round() -> void:
 	state = State.ASSIGN
 
 
+## Reroll the dice named. One die alone, on a machine with a free reroll of its own left
+## (the Clydesdale's Battery Director), spends that instead of the team's; anything else
+## spends one of the team's.
 func reroll(mech_indices: Array) -> bool:
-	if state != State.ASSIGN or rerolls_left <= 0:
+	if state != State.ASSIGN:
 		return false
+	var live: Array[MechState] = []
 	for i in mech_indices:
 		var ms := mechs[i]
 		if ms.alive() and not ms.assigned:
-			ms.face_index = ms.die.reroll(rng, ms.face_index)
+			live.append(ms)
+	if live.size() == 1 and live[0].free_rerolls > 0:
+		live[0].free_rerolls -= 1
+		live[0].face_index = live[0].die.reroll(rng, live[0].face_index)
+		log.append("%s rerolls its own die for free" % live[0].unit.display_name)
+		return true
+	if rerolls_left <= 0:
+		return false
+	for ms in live:
+		ms.face_index = ms.die.reroll(rng, ms.face_index)
 	rerolls_left -= 1
 	return true
+
+
+## Is any reroll open: the team's, or a machine's own?
+func can_reroll() -> bool:
+	if state != State.ASSIGN:
+		return false
+	if rerolls_left > 0:
+		return true
+	for ms in live_mechs():
+		if not ms.assigned and ms.free_rerolls > 0:
+			return true
+	return false
 
 
 ## Spend a mech's face. `target` is a Foe for attacks, a MechState (or null for self) for
@@ -483,6 +538,7 @@ func assign(mech_index: int, target = null) -> bool:
 		log.append("%s: rapid, rolls again" % ms.unit.display_name)
 	# The fight ends the moment it is decided (Ryan, 22 September): the last foe down, or
 	# the last machine burnt out by its own heat, and nobody waits for End turn.
+	_refresh_allies()
 	_check_outcome()
 	return true
 
@@ -493,6 +549,7 @@ func end_round() -> int:
 	_tick_mechs()
 	_settle_heat()
 	_reinforce(true)    # the reinforcement phase: a random waiting foe of the right rank per empty slot
+	_refresh_allies()
 	_check_outcome()
 	if outcome == Outcome.NONE:
 		state = State.ROUND_START
@@ -597,10 +654,20 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 	var heat_total := 0
 	var vent := 0
 	var extra_burn := 0
+	# A vent-on-fire attack fires the machine's whole heat into the blow: its bonus is read
+	# now and the gauge is emptied once the strikes have landed.
+	var fired := heat_bonus(ms, f)
+	var vented_all := ms.heat if f.vents_all else 0
+	if f.vents_all:
+		ms.heat = 0
 	for s in range(maxi(1, f.strikes)):
 		var rolled := f.power
 		if f.is_ranged():
-			rolled = f.average() if f.has(Face.Keyword.STEADY) else rng.randi_range(f.power, f.power_max)
+			if Effects.rolls_max(ms.unit, f, target):
+				rolled = f.power_max   # every ally's firing solution: the roll is its ceiling
+			else:
+				rolled = f.average() if f.has(Face.Keyword.STEADY) else rng.randi_range(f.power, f.power_max)
+		rolled += fired
 		var dmg := rolled
 		var heat := f.heat if s == 0 else 0
 		var crit := f.crit > 0 and rng.randi_range(1, 100) <= f.crit
@@ -673,6 +740,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 	elif f.is_ranged():
 		how = "rolled %d, " % rolled_total + how
 	log.append("%s hits %s for %d (%s)" % [ms.unit.display_name, target.display_name, total, how])
+	if vented_all > 0:
+		log.append("%s fires its heat: -%d, +%d to the blow" % [ms.unit.display_name, vented_all, fired])
 	var was_front := target.rank == 0
 	# A kill clears the slot at once (Ryan, 22 September): burning a hole through the front
 	# opens the back rank to line and melee until reinforcements plug it.

@@ -261,9 +261,11 @@ static func _raw_attack_mean(ms: Skirmish.MechState) -> float:
 	return total / float(ms.die.faces.size())
 
 
-## The heat one use of an attack entry adds, through the pipeline.
+## The heat one use of an attack entry adds, through the pipeline; negative for one that
+## fires the gauge empty first.
 static func heat_of(ms: Skirmish.MechState, f: Face) -> int:
-	return int(Effects.attack(ms.unit, f, 0, f.heat, false)["heat"])
+	var added := int(Effects.attack(ms.unit, f, 0, f.heat, false)["heat"])
+	return added - ms.heat if f.vents_all else added
 
 
 ## What one use of an attack entry can land, with the odds of each: [[damage, weight], ...].
@@ -275,6 +277,8 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null) -> Arr
 	var rolls: Array[int] = []
 	if not f.is_ranged():
 		rolls.append(f.power)
+	elif Effects.rolls_max(ms.unit, f, target):
+		rolls.append(f.power_max)
 	elif f.has(Face.Keyword.STEADY):
 		rolls.append(f.average())
 	else:
@@ -283,13 +287,14 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null) -> Arr
 			rolls.append(f.power + int(roundf(span * q)))
 	var crit_p := clampf(float(f.crit) / 100.0, 0.0, 1.0)
 	var crit_mult := Face.CRIT_MULT + f.crit_bonus + Effects.crit_bonus(ms.unit, f)
+	var fired := f.power_per_heat * int(ms.heat / 10) if f.vents_all else 0   # what the heat it fires adds
 	var out: Array = []
 	for v in rolls:
 		for crit in [false, true]:
 			var w := (crit_p if crit else 1.0 - crit_p) / rolls.size()
 			if w <= 0.0:
 				continue
-			var dmg: int = v
+			var dmg: int = v + fired
 			if crit:
 				dmg = int(roundf(dmg * crit_mult))
 			if target != null and f.has(Face.Keyword.EXECUTE) and target.hp * 2 <= target.hp_max:
@@ -521,6 +526,13 @@ static func hull_percent(sk: Skirmish) -> int:
 ## Reroll every unspent die showing less than its average, while rerolls last. A reroll
 ## never lands on the same entry, so this is a real second chance, not a coin flip.
 func _greedy_rerolls(sk: Skirmish) -> void:
+	# A machine's own free rerolls first, one die at a time, while it shows less than its mean.
+	for i in range(sk.mechs.size()):
+		var ms: Skirmish.MechState = sk.mechs[i]
+		while ms.alive() and not ms.assigned and ms.free_rerolls > 0 and face_value(sk, ms, ms.face()) + 0.001 < die_mean(sk, ms):
+			if not sk.reroll([i]):
+				break
+			rerolls += 1
 	while sk.rerolls_left > 0:
 		var idx: Array = []
 		for i in range(sk.mechs.size()):

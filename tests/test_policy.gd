@@ -273,3 +273,21 @@ func test_greedy_values_the_spill_behind_a_dying_foe() -> void:
 	var a := pol.attack_score(sk, ms, plain, sk.front[0])
 	var b := pol.attack_score(sk, ms, ram, sk.front[0])
 	assert_true(b > a + 29.0, "the thirty that spills into the archer counts")
+
+
+func test_greedy_spends_a_free_reroll_before_the_teams() -> void:
+	var director := {"id": "director", "name": "Battery Director", "description": "", "effects": [
+		{"trigger": "static", "effect": "free_reroll", "value": 1}]}
+	var sk := Skirmish.new(5)
+	var a := _mech("A", Die.of([Face.blank(), Face.attack(30, L), Face.attack(30, L), Face.attack(30, L)]), 40, 100)
+	a.grant_passive(director)
+	sk.add_mech(a)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	sk.mechs[0].face_index = 0   # the blank
+	var pol := Policy.make(Policy.GREEDY)
+	pol._greedy_rerolls(sk)
+	assert_true(sk.mechs[0].face_index != 0, "the blank was rerolled")
+	assert_eq(sk.mechs[0].free_rerolls, 0, "with the machine's own reroll")
+	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND, "the team's untouched")

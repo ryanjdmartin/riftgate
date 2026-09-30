@@ -396,6 +396,12 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: only attack faces crit" % where)
 	if float(fd.get("crit_bonus", 0.0)) <= -Face.CRIT_MULT:
 		errs.append("%s: crit_bonus would make crits do nothing or heal" % where)
+	if (fd.has("vents_all") or fd.has("power_per_heat")) and kind != "attack":
+		errs.append("%s: vents_all and power_per_heat belong to an attack" % where)
+	if fd.has("power_per_heat") and not bool(fd.get("vents_all", false)):
+		errs.append("%s: power_per_heat needs vents_all (the heat it adds for is the heat it fires)" % where)
+	if int(fd.get("power_per_heat", 0)) < 0:
+		errs.append("%s: power_per_heat cannot be negative" % where)
 	if kind == "buff":
 		# A buff grants one of the machines' statuses: it must exist and be theirs.
 		var st := str(fd.get("status", ""))

@@ -69,6 +69,8 @@ var targets: int = Target.SELF_ALLY   # equipment: whom it may be spent on; an a
 var buff_status: String = ""  # a buff: the engine status it grants (Effects.STATUS id), with...
 var buff_stacks: int = 1      # ...this many stacks...
 var buff_rounds: int = 1      # ...through the end of this many rounds (1: this round)
+var vents_all: bool = false   # an attack that fires the machine's whole heat: the gauge is empty after the shot...
+var power_per_heat: int = 0   # ...and each 10 heat it fired adds this to the blow (the Afterburner Cannon, 28 September)
 
 
 ## `kws` may be a single Keyword or an Array of them. `pwr_max` of 0 means static.
@@ -198,6 +200,9 @@ static func from_dict(d: Dictionary) -> Face:
 		f.buff_status = str(d.get("status", ""))
 		f.buff_stacks = maxi(1, int(d.get("stacks", 1)))
 		f.buff_rounds = maxi(1, int(d.get("rounds", 1)))
+	if f.kind == Kind.ATTACK:
+		f.vents_all = bool(d.get("vents_all", false))
+		f.power_per_heat = maxi(0, int(d.get("power_per_heat", 0))) if f.vents_all else 0
 	for name in d.get("keywords", []):
 		var kw := keyword_from_name(str(name))
 		if kw > 0:
@@ -228,6 +233,10 @@ func to_dict() -> Dictionary:
 		d["status"] = buff_status
 		d["stacks"] = buff_stacks
 		d["rounds"] = buff_rounds
+	if vents_all:
+		d["vents_all"] = true
+		if power_per_heat > 0:
+			d["power_per_heat"] = power_per_heat
 	return d
 
 
@@ -291,6 +300,8 @@ func duplicate_face() -> Face:
 	f.buff_status = buff_status
 	f.buff_stacks = buff_stacks
 	f.buff_rounds = buff_rounds
+	f.vents_all = vents_all
+	f.power_per_heat = power_per_heat
 	for k in keywords:
 		f.keywords.append(k)
 	return f
@@ -345,6 +356,8 @@ func describe() -> String:
 				s += " crit %d%%" % crit
 				if crit_bonus != 0.0:
 					s += " (×%s)" % _trim(CRIT_MULT + crit_bonus)   # the resulting multiplier, never the bonus
+			if vents_all:
+				s += " vents all" + (", +%d per 10 heat" % power_per_heat if power_per_heat > 0 else "")
 			if heat > 0:
 				s += " (+%d heat)" % heat
 	if cracked:

@@ -40,8 +40,9 @@
       "passive": {
         "id": "battery_director", "name": "Battery Director",
         "description": "Rerolling only the Clydesdale's die is free once a round, on top of the team's rerolls.",
-        "status": "planned",
-        "effects": []
+        "effects": [
+          { "trigger": "static", "effect": "free_reroll", "value": 1 }
+        ]
       },
       "flavour": "Pilot manual footnotes: Most of the Clydesdale controls are just for show. The only ones you really need are accelerate and alpha strike."
     },
@@ -147,8 +148,9 @@
       "passive": {
         "id": "tactical_databank", "name": "Tactical Databank",
         "description": "Every ally's firing solution, shared. With an ally in the fight, the Dingo's kinetic weapons roll their maximum.",
-        "status": "planned",
-        "effects": []
+        "effects": [
+          { "trigger": "on_attack", "effect": "roll_max", "value": 1, "when": "ally_present" }
+        ]
       },
       "flavour": ""
     },
@@ -163,9 +165,10 @@
       "loadout": ["laser_carbine", "headhunter_rifle", "arc_projector", "deflector", "ram_air_scoop"],
       "passive": {
         "id": "thermal_recoupler", "name": "Thermal Recoupler",
-        "description": "Heat is not waste. At the start of its turn the Goshawk regains shield for every 10 heat it carries.",
-        "status": "planned",
-        "effects": []
+        "description": "Heat is not waste. At the start of its turn the Goshawk regains 5 shield for every 10 heat it carries.",
+        "effects": [
+          { "trigger": "on_round_start", "effect": "shield_per_heat", "value": 5 }
+        ]
       },
       "flavour": ""
     },
