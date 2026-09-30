@@ -187,7 +187,7 @@ static func parse_tag(node_name: String) -> Array:
 
 ## The light outline's thickness (the stencil outline; thin was Ryan's call on 22 September).
 ## RIFTGATE_OUTLINE=<n> overrides it, to compare thicknesses by eye.
-const OUTLINE := 1.0
+const OUTLINE := 2.6   # Ryan, 29 September: trying it thick in game (1.0 was the 22 September thin)
 
 static func outline_thickness() -> float:
 	var env := OS.get_environment("RIFTGATE_OUTLINE")
