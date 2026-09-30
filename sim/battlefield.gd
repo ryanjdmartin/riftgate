@@ -19,6 +19,7 @@ class PhaseResult:
 	var moved: Array[int] = []        # unit ids that moved
 	var rejected: Array[int] = []     # unit ids whose route was invalid
 	var blocked: Array[int] = []      # pack ids stopped by a body block
+	var blockers: Dictionary = {}     # pack id -> the unit id that stood in its path (the stealth join rule reads it)
 	var intercepted: Array[int] = []  # pack ids stopped by a mech's control of the ground beside it
 	var intents: Dictionary = {}      # pack id -> the path it followed, planned after the mechs moved
 	var gate_damage: int = 0
@@ -321,7 +322,7 @@ func resolve_phase(routes: Dictionary) -> PhaseResult:
 	phase += 1
 	_move_all(routes, result, false)
 	result.spawned = tick_pressure(1)
-	result.skirmishes = detect_skirmishes()
+	result.skirmishes = detect_skirmishes(result.blockers)
 	return result
 
 
@@ -338,7 +339,7 @@ func preview_phase(routes: Dictionary) -> Dictionary:
 	phase += 1   # the phase the resolve will be, so a boss's patrol step is the same one
 	_move_all(routes, result, true)
 	phase -= 1
-	result.skirmishes = detect_skirmishes()
+	result.skirmishes = detect_skirmishes(result.blockers)
 	var ends: Dictionary = {}
 	for u in units:
 		ends[u.id] = u.pos
@@ -450,6 +451,7 @@ func _execute_pack(sq: Unit, result: PhaseResult, dry: bool = false) -> void:
 		var occ := unit_at(s)
 		if occ != null and occ != sq and (occ.can_block() or occ.is_enemy()):
 			result.blocked.append(sq.id)
+			result.blockers[sq.id] = occ.id
 			if not dry:
 				log.append("%s blocked at %s by %s" % [sq.display_name, str(s), occ.display_name])
 			break
@@ -480,8 +482,11 @@ func _execute_pack(sq: Unit, result: PhaseResult, dry: bool = false) -> void:
 ## and a machine two hexes from a lone pack is no fight). Then the engagement range: every
 ## grounded machine within ENGAGE_RANGE of any member joins, the nearest group first, until
 ## nothing more joins, so a machine two hexes behind a joined one is in as well (Ryan, 28
-## September). A stealth machine is never pulled in by range; it fights only what it touches.
-func detect_skirmishes() -> Array:
+## September). A stealth machine is never pulled in by range, and it fights only beside an
+## ally or when it stopped a pack in its path (the trait's join rule, 28 September; built 30
+## September): touching a pack that merely ended its move beside it is no contact, since
+## the pack walked past. `blockers` says which unit stopped which pack this phase.
+func detect_skirmishes(blockers: Dictionary = {}) -> Array:
 	var groups: Array = []
 	var seen := {}
 	for u in units:
@@ -497,6 +502,7 @@ func detect_skirmishes() -> Array:
 				if not seen.has(other.id) and cur.touches(other):
 					seen[other.id] = true
 					queue.append(other)
+		group = _stealth_join(group, blockers)
 		var has_player := false
 		var has_enemy := false
 		for g in group:
@@ -529,6 +535,27 @@ func detect_skirmishes() -> Array:
 				placed[m.id] = true
 				joined = true
 	return groups
+
+
+## A touching group with a stealth machine in it: the machine stays when another player unit
+## is in the group, or when a pack in the group was stopped by it this phase; otherwise it
+## steps out of the group, and the packs walk past.
+func _stealth_join(group: Array[Unit], blockers: Dictionary) -> Array[Unit]:
+	var out: Array[Unit] = []
+	for m in group:
+		if not (m.is_player() and m.traits.has("stealth")):
+			out.append(m)
+			continue
+		var beside_ally := false
+		var stopped_one := false
+		for g in group:
+			if g != m and g.is_player() and not g.is_static():
+				beside_ally = true
+			if g.is_enemy() and int(blockers.get(g.id, -1)) == m.id:
+				stopped_one = true
+		if beside_ally or stopped_one:
+			out.append(m)
+	return out
 
 
 ## The shortest hex distance between any hex of `a` and any hex of `b`.

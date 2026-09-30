@@ -493,3 +493,44 @@ func test_stealth_controls_no_ground_and_is_not_pulled_in_by_range() -> void:
 	var groups := f2.detect_skirmishes()
 	assert_eq(groups.size(), 1, "one contact")
 	assert_eq(groups[0].size(), 2, "the pack and A only: stealth is not pulled in by range")
+
+
+func test_stealth_joins_a_fight_only_beside_an_ally_or_when_it_stopped_the_pack() -> void:
+	# The join rule (28 September; built 30 September). A pack that walks into the stealth
+	# machine is stopped by it and that is a contact; one that merely ends its move beside it
+	# has walked past. A mountain wall either side of column 1 makes the pack's path certain.
+	var f := _field(3, 14)
+	for r in range(3, 9):
+		f.map.terrain[_o(0, r)] = BattleMap.Terrain.MOUNTAIN
+		f.map.terrain[_o(2, r)] = BattleMap.Terrain.MOUNTAIN
+	var s := f.add_unit(Unit.mech(1, "dingo", _o(1, 6), 0))
+	s.traits = ["stealth"]
+	var sq := f.add_unit(Unit.pack(2, "ghouls", _o(1, 2), "undead", 4))
+	f.compute_intents()
+	var pre: Battlefield.PhaseResult = f.preview_phase({})["result"]
+	assert_eq(pre.skirmishes.size(), 1, "the preview sees the pack run into the dingo")
+	var res := f.resolve_phase({})
+	assert_true(res.blocked.has(sq.id), "the pack was stopped")
+	assert_eq(int(res.blockers.get(sq.id, -1)), s.id, "by the dingo")
+	assert_eq(res.skirmishes.size(), 1, "so they fight")
+	assert_true(res.skirmishes.size() == 1 and res.skirmishes[0].has(s), "the dingo in it")
+	# Beside it by chance: a pack that stands touching the dingo without having been stopped
+	# by it has walked past, and there is no contact; named as its blocker, there is.
+	var f2 := _field(3, 14)
+	var s2 := f2.add_unit(Unit.mech(1, "dingo", _o(1, 7), 0))
+	s2.traits = ["stealth"]
+	var sq2 := f2.add_unit(Unit.pack(2, "ghouls", _o(1, 6), "undead", 0, 4))
+	assert_true(sq2.touches(s2), "touching")
+	assert_eq(f2.detect_skirmishes({}).size(), 0, "walked past: no contact")
+	assert_eq(f2.detect_skirmishes({sq2.id: s2.id}).size(), 1, "stopped by it: a contact")
+	assert_eq(f2.detect_skirmishes({sq2.id: 99}).size(), 0, "stopped by someone else: none")
+	# With an ally in the touching group, the dingo is in.
+	var f3 := _field(5, 14)
+	var s3 := f3.add_unit(Unit.mech(1, "dingo", _o(1, 7), 0))
+	s3.traits = ["stealth"]
+	var a3 := f3.add_unit(Unit.mech(2, "A", _o(3, 7), 0))
+	f3.add_unit(Unit.pack(3, "ghouls", _o(2, 7), "undead", 0, 4))
+	var groups := f3.detect_skirmishes()
+	assert_eq(groups.size(), 1, "one contact")
+	assert_true(groups.size() == 1 and groups[0].size() == 3, "the pack, A and the dingo beside its ally")
+	assert_true(groups.size() == 1 and groups[0].has(s3) and groups[0].has(a3), "both machines in")

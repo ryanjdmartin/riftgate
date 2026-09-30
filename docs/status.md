@@ -45,7 +45,7 @@ the chat is newer.
 ## As of 29 September 2026 (evening)
 
 **State.** Tests green: `perl -e 'alarm 240; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (225 tests, 3,061 checks on 29 September, night). Two or three sessions run on this repo at once:
+tests/run_tests.gd` (261 tests, 3,275 checks on 30 September). Two or three sessions run on this repo at once:
 check `git status` before committing, stage by path, diff a shared file first (a path
 still sweeps the other session's hunks), never `git add -A`, never kill a bare
 `godot --path .`. Commit after each verified chunk with tests green.
@@ -65,14 +65,28 @@ poses and the phone-layout variables); `tools/balance.gd` writes `docs/balance.m
 
 **Content (bible section 7).** Chassis ids: `badger`, `clydesdale` (d9; the die cap is
 10), `sparrowhawk`, `baboon` (the Mandrill, renamed 28 September; its passive Pocket
-Paradox runs on the new `on_foe_status` trigger, `Effects.foe_status_suppress_chance`;
+Paradox runs on the `on_foe_status` trigger, `Effects.foe_status_suppress_chance`;
 Aphelion stock is `umbra_projector`, `pulse_repeater`, `zenith_emitter`, `halo_shield`,
-`radiator_sail`, with `corona_shield` a unique unlock), and the 28 September drafts
+`radiator_sail`, with `corona_shield` a unique unlock), and the 28 September machines
 `armadillo`, `wild_boar`, `prairie_dog`, `dingo`, `goshawk`, `nemesis`, `ammit` (the last
-two the Arsenal's; maker `arsenal` exists). Their shapes are decided (the chassis pass
-row): every new passive and most locked components carry `"status": "planned"` until the
-engine has volatile, devour, Shocked, Overcharged, taunt, overwhelm, the stealth join
-rule, the vent-on-fire face, the die-local reroll and heat-scaled shield regen. Numbers
+two the Arsenal's; maker `arsenal` exists). **Every 28 September passive and locked
+component runs since 30 September** (the cloud session, branch `ccr-23c2f18f-qlilnd`,
+one commit each, the bible's section 7 row "The 28 September pieces, built" has the
+reasoning and the runner's first readings): volatile (`Face.ANY_KEYWORDS`, on any kind),
+devour (a stack of Overcharged per kill, fading a round at a time), Shocked and Retaliate
+(`shock_on_hull_strike`, `shock_on_block`, `SHOCK_DISCHARGE`), taunt and beacon
+(`draw_rank`, support keywords and buff statuses), overwhelm with `grant_keyword` and the
+effective face (`Effects.effective_face`: what the resolver spends, the bot weighs, the
+codex lists and the die draws), the vent-on-fire face (`vents_all`, `power_per_heat`),
+`on_round_start` (`shield_per_heat`), `ally_present` with `roll_max` (units carry
+`allies`), `free_reroll` (`MechState.free_rerolls`, `Skirmish.can_reroll`),
+`on_hull_damage` with `stack_status` and `per_stack`, `add_armour_vs_rank`,
+`keep_status`, `screen_withdraw`, and the stealth join rule (`PhaseResult.blockers`).
+Nothing in content is planned any more except the foe actions and the pinned ideas.
+Readings for Ryan from the runner: the Faraday Hull alone makes the Armadillo win every
+solo cell at both rungs; the Crucible costs the Nemesis under the bot (its Overheating
+burns hull); the Tap lifts the Ammit's ghoul cell to a greedy win; overwhelm and the
+Databank never fire in the runner's single-type, single-machine cells. Numbers
 are in tens and are placeholders; every stat is read through `sim/effects.gd`. An enemy
 unit is a **pack** everywhere. Ryan writes `content/*.json` in his own voice (he writes
 die totals in his head; the data keeps free slots), often from his phone through the

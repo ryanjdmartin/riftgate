@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 93 implemented, 16 planned, 0 idea.
+Status: 94 implemented, 15 planned, 0 idea.
 
 ## Resource
 
@@ -144,7 +144,7 @@ Status: 93 implemented, 16 planned, 0 idea.
 | **Hover** | Crosses water. | implemented |
 | **Walker** | Rough and ruins cost 1. | implemented |
 | **Tank** | No effect yet. | planned |
-| **Stealth** | Controls no ground: packs do not stop beside it. Joins a fight only when an ally is in it, or when it stopped a pack in its path. | planned |
+| **Stealth** | Controls no ground: packs do not stop beside it, and a contact's engagement range never reaches it. Joins a fight only when an ally is in it, or when it stopped a pack in its path; a pack that merely ends its move beside it has walked past. | implemented |
 | **City defense** | A static player-side unit. Packs path toward it, and it joins any skirmish it is adjacent to. | implemented |
 
 ## Trigger
@@ -231,7 +231,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Ruins** (implemented): Designed as cover for the pack inside a skirmish. Skirmish terrain conditions are not coded.
 - **Water** (implemented): Designed to dampen burn inside a skirmish. Not coded.
 - **Tank** (planned): Intended: faster on roads.
-- **Stealth** (planned): The Dingo (Ryan, 28 September): a support car that waits in the wings while the heavies get into position, then joins their fight, and never fights alone unless run into. Pays again when hunter packs exist.
+- **Stealth** (implemented): The Dingo (Ryan, 28 September): a support car that waits in the wings while the heavies get into position, then joins their fight, and never fights alone unless run into. Pays again when hunter packs exist.
 - **City defense** (implemented): Defenses have no die. They cannot act inside a skirmish yet.
 - **On round start** (implemented): Built 30 September for the Thermal Recoupler; the heat it reads is the gauge after the turn's passive cooling.
 - **On foe status** (implemented): One machine's passive so far (the Baboon's Pocket Paradox).
