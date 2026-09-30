@@ -22,7 +22,9 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [x] Judge round six (29 September: the middle kick ships; the powers were louder, not harder)
 - [x] Judge round eight (30 September: hard two ships, at its own pitch)
 - [x] Judge round nine (30 September: piano and second chug out, chimes in sets two and three at 0.3, drone throughout, the keys' lead on the riff from mid set two)
-- [ ] Judge round ten on the sketches page: the drum solo with fewer cymbals, and the climax's synth an octave higher; then the melody's next edit from the desk
+- [x] Judge round ten (30 September: fewer cymbals ships; the higher synth ships, two bars later)
+- [ ] Ryan's simplified bridge melody from the desk, when it is sent
+- [ ] Hear the climax's double kick as a two-bar burst at the end of the third set (read from "start it two bars later, so it runs two bars"); say if the burst should sit elsewhere
 - [x] Write the bridge's melody on the Melody Desk (30 September: sent, applied as the keys section's lead and two harmony voices, marked applied)
 - [x] Judge the drums' last dial-in from the sketches page's "Now" set: `mix_ship` (the track as it ships), `drums_kick` (the kick's size, three steps down) and `drums_tom` (the toms, three steps tighter); say which step, or further
 - [ ] Read `docs/balance.md` against your own play; then either the numbers move or the bot's next rung is built
@@ -97,6 +99,7 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 - [ ] When Ryan wants to edit content from his phone again: publish the content editor from account A (`tools/content_editor.html` with its `files` map carrying `content/*.json`) and share it to the work email as Editor; the old B page is gone, its edits database was empty
 - Rebake the nameplate page's baked-in current names (`CURRENT` in its script) when a chassis or component is added or renamed
 - Republish the bible from the committed file (each account to its own URL, listed in status)
+- Re-seed the Melody Desk's `parts` after a track's voices change: `desk_parts.py`, then a batch `set` of the six `parts/<track>` documents (pinned to their versions), or a loaded part is the track as it was
 - Regenerate the hangar codex (`python3 tools/build_codex.py . codex.html`) after a content or model change and republish it, each account to its own copy; it reads the built `.glb` files, so build and import first
 
 ## Audio

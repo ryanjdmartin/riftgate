@@ -617,11 +617,7 @@ _SOLO = F._drum_solo   # the forge's own, held while the module's name is patche
 
 
 def drum_solo_fewer(bars):
-    solo = _SOLO(bars)
-    for k in ("crash", "crash2", "china", "splash", "stack"):
-        if k in solo:
-            solo[k] = _thin_cymbals(solo[k])
-    return solo
+    return F._thin_cymbals(_SOLO(bars))   # what ships now; kept so the round re-renders
 
 
 UNISON_FORM = "UUUUUUUU"
