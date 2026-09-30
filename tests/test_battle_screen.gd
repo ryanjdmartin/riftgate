@@ -337,3 +337,58 @@ func test_a_skirmish_quit_leaves_the_battle_too() -> void:
 	s._skirmish.quit_requested.emit()
 	assert_eq(quits.size(), 1, "the skirmish's QUIT goes straight out to the harness")
 	s.free()
+
+
+func test_the_battle_is_saved_as_it_goes_and_resumes_into_the_fight() -> void:
+	const TMP := "user://test_screen_battle.json"
+	SaveGame.clear(TMP)
+	var s := _screen(4)
+	s.autosave_enabled = true
+	s.save_path = TMP
+	var b := s.battle
+	var m: Unit = b.mechs()[0]
+	var sq: Unit = b.field.packs()[0]
+	_engage(b, sq, m)
+	assert_false(SaveGame.exists(TMP), "nothing written until something changes")
+	s._on_resolve()
+	assert_true(SaveGame.exists(TMP), "the resolve is saved")
+	var loaded := SaveGame.load(TMP)
+	assert_eq(loaded.state, Battle.State.SKIRMISH, "with the contact waiting")
+	assert_true(loaded.current == null, "and no fight open yet")
+	# Resumed here, the screen offers the contacts again.
+	var r := BattleScreen.new()
+	r.setup(loaded)
+	r._resume_where_it_was()
+	assert_true(r._contacts != null, "the contact panel comes back")
+	assert_eq(r._skirmish, null, "no fight opened on its own")
+	r.free()
+	# Into the fight, a round played, and the save follows every change.
+	s._open_skirmish(0)
+	var sk: Skirmish = s._skirmish.sk
+	var before := FileAccess.get_file_as_string(TMP)
+	sk.reroll([0])
+	s._skirmish._refresh()
+	assert_true(FileAccess.get_file_as_string(TMP) != before, "a reroll in the fight is saved")
+	var mid := SaveGame.load(TMP)
+	assert_true(mid.current != null, "the fight is in the save")
+	assert_eq(mid.current.round, sk.round, "at its round")
+	assert_eq(mid.current.mechs[0].face_index, sk.mechs[0].face_index, "with the die as it shows")
+	var r2 := BattleScreen.new()
+	r2.setup(mid)
+	r2._resume_where_it_was()
+	assert_true(r2._skirmish != null, "resumed straight into the skirmish screen")
+	assert_eq(r2._skirmish.sk, mid.current, "on the saved fight")
+	assert_eq(r2._sub_label.text, "CONTACT", "the field reads as in contact")
+	r2.free()
+	# A decided battle clears the save.
+	sk.reinforcements.clear()
+	for f in sk.field_foes():
+		f.hp = 0
+	s._skirmish._end_turn_now()
+	s._on_skirmish_back()
+	b.field.gate_hp = 0
+	b._check_outcome()
+	s._after_step()
+	assert_eq(b.state, Battle.State.DONE, "over")
+	assert_false(SaveGame.exists(TMP), "and the save is gone")
+	s.free()

@@ -29,6 +29,7 @@ signal quit_requested   # the menu's QUIT: the host leaves for the harness
 
 var back_label := "BACK"   # the outcome's button: the battle screen says where back leads
 var music_set := "skirmish"   # the set this fight plays: the skirmish's pick, or a family's boss theme the battle screen already started at contact
+var autosave: Callable = Callable()   # the battle screen's save, called after every change to the fight, so a phone put down mid-fight resumes here
 
 const W := 720.0
 const BASE_H := 1280.0   # the design's height; on a taller phone the rows spread out to fill it
@@ -744,6 +745,8 @@ func _refresh() -> void:
 	_end_btn.set_enabled(assigning)
 	_withdraw_btn.set_enabled(sk.can_withdraw())
 	_refresh_arrows()
+	if autosave.is_valid():
+		autosave.call()
 
 
 func _refresh_log() -> void:

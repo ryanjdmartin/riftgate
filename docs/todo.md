@@ -57,7 +57,7 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 - [ ] Foe roles, and the ten planned foe actions in `content/foes.json` (buff, defend and debuff kinds running; every foe status they grant fires `on_foe_status`) **[claimed 29 September, night: the cloud session on branch `ccr-23c2f18f-qlilnd`; skip unless it says it stopped]**
 - [x] Buff equipment (29 September): the `buff` kind grants a machine status for so many stacks and rounds; Overcharged, Braced and Primed as the first three; the Overcharge Coil as a draft component fitted to nothing; the heat passive above can now be built on it
 - [ ] Granted passives coloured on the codex
-- [ ] Save and resume mid-battle at any phase (nothing is serialised yet) **[claimed 29 September, night: the cloud session on branch `ccr-23c2f18f-qlilnd`; skip unless it says it stopped]**
+- [x] Save and resume mid-battle at any phase (30 September: `sim/save.gd`, autosave after every change, Resume battle in the harness; bible section 11 row)
 - [ ] Onboarding: the gesture tutorial and the cheat sheet; the reroll rule and the zone of control first
 - [x] The bot values a status for the stun it may cause (29 September: `_loop_chance` in `policy.gd`, at the loop's odds and the foe's resistance) and weighs a buff by what its status does to the machine it lands on
 - [ ] Rerun `tools/balance.gd` once the new machines have real kits, and after each engine piece above; read bands, not numbers

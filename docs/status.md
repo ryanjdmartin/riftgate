@@ -45,7 +45,7 @@ the chat is newer.
 ## As of 29 September 2026 (evening)
 
 **State.** Tests green: `perl -e 'alarm 240; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (261 tests, 3,275 checks on 30 September). Two or three sessions run on this repo at once:
+tests/run_tests.gd` (266 tests, 3,391 checks on 30 September). Two or three sessions run on this repo at once:
 check `git status` before committing, stage by path, diff a shared file first (a path
 still sweeps the other session's hunks), never `git add -A`, never kill a bare
 `godot --path .`. Commit after each verified chunk with tests green.
@@ -82,7 +82,7 @@ codex lists and the die draws), the vent-on-fire face (`vents_all`, `power_per_h
 `allies`), `free_reroll` (`MechState.free_rerolls`, `Skirmish.can_reroll`),
 `on_hull_damage` with `stack_status` and `per_stack`, `add_armour_vs_rank`,
 `keep_status`, `screen_withdraw`, and the stealth join rule (`PhaseResult.blockers`).
-Nothing in content is planned any more except the foe actions and the pinned ideas.
+Nothing in content is planned any more except the foe actions and the pinned ideas. **Save and resume** (30 September): `sim/save.gd` writes the whole battle (map seed, units, dice, damage, modifiers, routes, contacts, the skirmish with its dice, foes and both random streams) to `user://battle.json` after every change when the harness started the battle; Resume battle in the harness opens it where it stood, straight into a fight that was on; a decided battle clears it; standalone runs and tests never write it (bible section 11 row).
 Readings for Ryan from the runner: the Faraday Hull alone makes the Armadillo win every
 solo cell at both rungs; the Crucible costs the Nemesis under the bot (its Overheating
 burns hull); the Tap lifts the Ammit's ghoul cell to a greedy win; overwhelm and the
