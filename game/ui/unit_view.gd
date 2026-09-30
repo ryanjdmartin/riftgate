@@ -35,6 +35,7 @@ var is_enemy: bool = false
 var massive: bool = false
 var bars: Array = []              # [[value, max, Color, (pending)], ...]
 var bars_above: bool = false      # true: full-width gauges above the sprite; false: floating
+var sprite_density := 1.0         # a machine's render is this much larger than the frame it stands for (MechView3D.density); pixel art is 1
 var intent_kind: String = ""      # "attack", "defend", "heal", "buff", "debuff", or ""
 var intent_value: int = 0
 var intent_note: String = ""      # after the number: "×2" for a double strike, "!" for a breach
@@ -84,15 +85,20 @@ func _scale() -> float:
 		return 1.0
 	var top := _bars_height() + 2.0
 	var avail := size.y - top - STATUS_H
-	var ts := sprite.get_size()
+	var ts := _sprite_size()
 	return maxf(1.0, floorf(minf(size.x / ts.x, avail / ts.y)))
+
+
+## The sprite's size in design pixels: its texture's, over the density it was rendered at.
+func _sprite_size() -> Vector2:
+	return sprite.get_size() / sprite_density
 
 
 ## The opaque part of the sprite, in sprite pixels: told by the caller, or read from the
 ## image (pixel art only; a viewport texture would be read back from the GPU every frame).
 func _used() -> Rect2:
 	if used_override.size.x > 0.0 and used_override.size.y > 0.0:
-		return used_override
+		return Rect2(used_override.position / sprite_density, used_override.size / sprite_density)
 	return Sprites.used_rect(sprite)
 
 
@@ -108,11 +114,11 @@ func _silhouette() -> Rect2:
 	var avail := size.y - top - STATUS_H
 	if sprite != null:
 		var s := _scale()
-		var ts := sprite.get_size() * s
+		var ts := _sprite_size() * s
 		var used := _used()
 		# Centre the drawing, not the frame: shift by the frame's own transparent margins.
 		var margin_top := used.position.y * s
-		var margin_bottom := (sprite.get_size().y - used.end.y) * s
+		var margin_bottom := (_sprite_size().y - used.end.y) * s
 		var y := top + (avail - ts.y) * 0.5 + (margin_bottom - margin_top) * 0.5
 		return Rect2(Vector2(floorf((size.x - ts.x) * 0.5), floorf(y)), ts)
 	var w := size.x * 0.46

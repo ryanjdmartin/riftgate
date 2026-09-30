@@ -138,9 +138,28 @@ static func oversample(win: Window) -> void:
 ## SubViewport.MSAA value, typed int (a class-scoped enum type fails in a headless runner).
 static func msaa_3d() -> int:
 	var env := OS.get_environment("RIFTGATE_MSAA")
-	if env == "off" or (env != "on" and OS.has_feature("mobile")):
+	if env == "off":
 		return SubViewport.MSAA_DISABLED
+	if env != "on" and OS.has_feature("mobile"):
+		# The MSAA setting (29 September): off by default for the leak; on for measuring it.
+		return SubViewport.MSAA_2X if bool(Settings.display.get("msaa", false)) else SubViewport.MSAA_DISABLED
 	return SubViewport.MSAA_4X
+
+
+## Device pixels per design pixel a 3D render should use: the window's stretch when the
+## FINE MAP setting is on (or RIFTGATE_FINE_MAP=1), else 1. From the node's own viewport
+## when it is in the tree, else the window's.
+static func density(node: Node) -> float:
+	if OS.get_environment("RIFTGATE_FINE_MAP") != "1" and not bool(Settings.display.get("fine_map", false)):
+		return 1.0
+	var vp: Viewport = node.get_viewport() if node != null and node.is_inside_tree() else null
+	if vp == null:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree:
+			vp = (loop as SceneTree).root
+	if vp == null:
+		return 1.0
+	return maxf(1.0, vp.get_final_transform().get_scale().y)
 
 
 ## Fit a screen's root to the glass less the safe bands: full rect, then the top and

@@ -144,11 +144,7 @@ func set_field(f: Battlefield) -> void:
 ## Device pixels per design pixel for the scene and the compositor: the window's stretch
 ## when the FINE MAP setting is on (or RIFTGATE_FINE_MAP=1), else 1.
 func _density() -> float:
-	if OS.get_environment("RIFTGATE_FINE_MAP") != "1" and not bool(Settings.display.get("fine_map", false)):
-		return 1.0
-	if not is_inside_tree():
-		return 1.0
-	return maxf(1.0, get_viewport().get_final_transform().get_scale().y)
+	return Hud.density(self)
 
 
 ## The other world's painted map, one frame of two, rendered once into a viewport the size
@@ -403,8 +399,10 @@ func _draw() -> void:
 			# it should be both sides'), in steady red; the colour breathes only on the pack
 			# that was tapped. A contact or the gate needs no target lock: its own mark says it.
 			var owned := not (contact_hexes.has(dest) or map.gate_hexes.has(dest))
-			var col := _ring_colour() if sq.pos == inspected else Palette.ENEMY
-			_route(sq.pos, path, col, owned)
+			# Bright and steady (Ryan, 29 September: the plain red was hard to see, and the
+			# rings' breathing read as selection); the tapped pack alone breathes.
+			var col := _ring_colour() if sq.pos == inspected else ENEMY_ROUTE
+			_route(sq.pos, path, col, owned, false, sq.pos == inspected)
 
 	# The gate selected: its footprint outlined, and the hexes it can be attacked from
 	# tinted (Ryan, 29 September: the bar lit alone did not say where the danger stands).
@@ -414,11 +412,13 @@ func _draw() -> void:
 			for n in Hex.neighbors(g):
 				if map.has(n) and not map.is_structure(n):
 					attack[n] = true
+		# The hexes a pack can strike from read as warning zones, the gate's own footprint
+		# faint (Ryan, 29 September): a red tint with a dashed border crawling round it.
 		for n in attack.keys():
-			_fill(n, Color(hud, 0.16))
-			_dotted_poly(Hex.corners(center(n), HEX_SIZE - 4.0), Color(hud, 0.8), 6.0)
+			_fill(n, Color(Palette.ENEMY, 0.2))
+			_crawl_poly(Hex.corners(center(n), HEX_SIZE - 4.0), Color(ENEMY_ROUTE, 0.9), HEX_SIZE * 0.2, fmod(_ring_t * 1.2, 2.0))
 		for g in map.gate_hexes:
-			Hud.stroke_poly(self, Hex.corners(center(g), HEX_SIZE - 2.0), Color(hud, 0.95), 2.5)
+			Hud.stroke_poly(self, Hex.corners(center(g), HEX_SIZE - 2.0), Color(hud, 0.35), 1.5)
 
 	# A selected machine wears its shield and hull over its hex; an inspected pack its
 	# strength as one segment a foe (Ryan, 29 September: a pack keeps only its count between
@@ -441,7 +441,7 @@ func _draw() -> void:
 		var route: Array = routes[uid]
 		if u == null or route.is_empty():
 			continue
-		_route(u.pos, route, hud, true)
+		_route(u.pos, route, hud, true, true, true)
 
 	# The route being drawn by hand: the same line, heavier, with the move it has spent
 	# against the machine's whole move on a plaque at its end.
@@ -763,6 +763,7 @@ func _mark(h: Vector2i) -> Dictionary:
 
 const DEST_RING := HEX_SIZE * 0.58   # the target's outer ring
 const ENEMY_LIT := Color("ffb3a6")    # the enemy marks' bright: red lifted well toward white, so the rings ride the tint
+const ENEMY_ROUTE := Color("ff6a5a")  # a pack's route at rest: red lifted toward the salmon, since the plain red vanished on the ground (Ryan, 29 September)
 
 ## The enemy marks breathe between red and the bright, most of the way up and never
 ## quite down to the deep red, so on any ground, props or not, they pass through a
@@ -839,8 +840,10 @@ func _tethers(group: Array, at: Dictionary, lit: bool) -> void:
 ## hex rather than its centre, so it never draws across the machine or the pack. `lock`
 ## puts the target on its end: the display's rings turning and a dashed border crawling
 ## round the hex.
-func _route(from: Vector2i, path: Array, col: Color, lock: bool) -> void:
-	var pts: PackedVector2Array = [center(from).lerp(center(path[0]), 0.5)]
+func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool = true, breathe: bool = true) -> void:
+	# A machine's route leaves from its hex's edge, so it never crosses the machine; a
+	# pack's comes out of the sprite (Ryan, 29 September).
+	var pts: PackedVector2Array = [center(from).lerp(center(path[0]), 0.5) if from_edge else center(from)]
 	for step in path:
 		pts.append(center(step))
 	draw_polyline(pts, Color(col, 0.5), 3.0)
@@ -853,7 +856,7 @@ func _route(from: Vector2i, path: Array, col: Color, lock: bool) -> void:
 	if not lock:
 		return
 	var end := pts[pts.size() - 1]
-	var bright := col.lerp(Color.WHITE, 0.25 + 0.25 * sin(_ring_t * 1.6))
+	var bright := col.lerp(Color.WHITE, 0.25 + 0.25 * sin(_ring_t * 1.6)) if breathe else col
 	_target_rings(end, bright, DEST_RING * 0.85, -1.0)
 	draw_circle(end, 3.5, bright)
 	_crawl_poly(Hex.corners(end, HEX_SIZE - 3.0), col, HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0))
@@ -1150,7 +1153,7 @@ func _draw_unit(u: Unit) -> void:
 		# base, no lighting. It is the other world showing through (decided 19 September).
 		# A small foe draws a little larger than its pixels, so it holds its own beside a mech.
 		var ts := tex.get_size() * SPRITE_SCALE * (1.3 if u.is_enemy() and not u.is_multi_hex() else 1.0)
-		draw_texture_rect(tex, Rect2((c - Vector2(ts.x * 0.5, ts.y - 8.0)).floor(), ts), false)
+		draw_texture_rect(tex, Rect2((c - Vector2(ts.x * 0.5, ts.y - 22.0)).floor(), ts), false)   # its feet 22 px below the hex's centre: a little lower toward the centre (Ryan, 29 September)
 	elif u.is_player():
 		draw_circle(c, 17.0, Palette.BG)
 		draw_circle(c, 14.0, Palette.INK)

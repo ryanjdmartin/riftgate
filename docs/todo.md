@@ -8,7 +8,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 
 ## Ryan
 
-- [ ] Play-test the engagement range (`Battlefield.ENGAGE_RANGE` = 2) and the tethers; say whether formations are still wanted
+- [ ] Decide the engagement rule (29 September: the range chains across the map and hides who joins; the bible's section 5 carries the proposal, a pack's capture zone of radius two with the zones always drawn and the tethers retired, and Ryan's three variants weighed); then build it
 - [ ] Judge on the phone after a re-export: frame rate (the per-hex props added draw calls), the sound set, the machines' edges without MSAA, the text, the grid at `GRID_GAIN_PHONE`, the seam band (less green than before), the far blur, the board and the log button, the selection marks, the routes, props hiding under a machine
 - [ ] Codex and flavour for the seven new machines, the Baboon's flavour, and the 41 components whose codex is empty
 - [x] Decide the Dingo's name (29 September: kept, the coincidence tier; every flagged name is now decided and every note says why it stays)

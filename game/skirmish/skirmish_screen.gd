@@ -414,6 +414,7 @@ func _build() -> void:
 			add_child(view)
 			_mech_3d[i] = view
 			v.sprite = view.texture
+			v.sprite_density = view.density
 			if look == "clean":
 				v.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		_place(v, Vector2(cx - MECH_SIZE.x * 0.5, MECH_Y), MECH_SIZE)

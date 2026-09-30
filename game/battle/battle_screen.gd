@@ -397,8 +397,17 @@ func _on_hex_tapped(h: Vector2i) -> void:
 		return
 	_details.visible = false
 	var u := battle.field.unit_at(h)
+	# A second tap on what is selected unselects it (Ryan, 29 September): the gate, a pack,
+	# a hex asked about. A machine's second tap clears its route, below, as before.
+	var was_gate := _map.gate_selected and battle.field.map.gate_hexes.has(h)
+	var was_inspected := _map.inspected == h
 	_map.gate_selected = false
 	_map.inspected = Vector2i(-9999, -9999)
+	if was_gate or was_inspected:
+		_select(null)
+		Sound.play("ui_back")
+		_refresh()
+		return
 	if battle.field.map.gate_hexes.has(h) and (_map.selected == null or not _map.destinations.has(h)):
 		# The gate is selectable for its integrity (Ryan, 22 September).
 		_select(null)
@@ -523,8 +532,8 @@ func _open_menu() -> void:
 	if _menu == null:
 		_menu = PauseMenu.new()
 		_menu.display_changed.connect(func(key: String, _value: Variant) -> void:
-			if key == "fine_map":
-				_map.set_field(battle.field)   # the scene and the compositor rebuilt at the new density
+			if key == "fine_map" or key == "msaa":
+				_map.set_field(battle.field)   # the scene and the compositor rebuilt at the new density or anti-aliasing
 				_refresh()
 			_apply_display())
 		_menu.hud_changed.connect(_rebuild)
@@ -909,6 +918,7 @@ func _portrait_mech(u: Unit, db: ContentDB) -> Control:
 	var tr := TextureRect.new()
 	tr.texture = view.texture
 	tr.custom_minimum_size = Vector2(96, 96)
+	tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE   # the render may be denser than 96 (FINE MAP); the box stays 96
 	tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	box.add_child(tr)
 	var lbl := Hud.label(str(u.display_name), 11, Palette.HUD, Hud.mono())
@@ -927,6 +937,7 @@ func _portrait_pack(u: Unit) -> Control:
 		tr.texture = Sprites.map_foe(fid)
 	tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	tr.custom_minimum_size = Vector2(96, 96)
+	tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE   # the render may be denser than 96 (FINE MAP); the box stays 96
 	tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	tr.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	box.add_child(tr)

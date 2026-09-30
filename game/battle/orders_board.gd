@@ -149,7 +149,8 @@ func _field_lines() -> Array:
 	var foes := 0
 	for p in packs:
 		foes += p.strength
-	var lines: Array = [["PACKS %02d // %d FOES" % [packs.size(), foes], Color(Palette.HUD, 0.75)]]
+	# The register is military (Ryan, 29 September): hostiles, not foes.
+	var lines: Array = [["PACKS %02d // %d HOSTILES" % [packs.size(), foes], Color(Palette.HUD, 0.75)]]
 	var n := _groups().size()
 	if battle.state == Battle.State.PLAN:
 		if n > 0:

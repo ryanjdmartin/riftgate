@@ -166,7 +166,9 @@ write content would fight.
 result of the plan before Resolve; a grounded machine controls the ground beside it, a
 pack stepping into it stops and that is a contact; every grounded machine within
 `Battlefield.ENGAGE_RANGE` (2) joins, and a tether runs from each machine to the pack it
-will fight (28 September; Ryan's play test decides whether 2 is right). Resolve plays the
+will fight (28 September). Ryan's 29 September play: the joins chain across the map and
+nothing shows who joins until a contact exists; the rule is to be replaced, proposal in
+the bible's section 5 (a pack's capture zone), decision his, in a session of its own. Resolve plays the
 moves, a CONTACT band, a panel of contacts; ENGAGE cuts to the skirmish, the dice fight on
 the enemy's ground, four columns, every blow heard, the enemy's turn replayed blow by
 blow; Back applies it. The boss's contact takes the phase: no panel, a reveal, the family's

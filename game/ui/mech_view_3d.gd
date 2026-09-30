@@ -183,6 +183,15 @@ static func parse_tag(node_name: String) -> Array:
 	return []
 
 
+## The light outline's thickness (the stencil outline; thin was Ryan's call on 22 September).
+## RIFTGATE_OUTLINE=<n> overrides it, to compare thicknesses by eye.
+const OUTLINE := 1.0
+
+static func outline_thickness() -> float:
+	var env := OS.get_environment("RIFTGATE_OUTLINE")
+	return float(env) if not env.is_empty() else OUTLINE
+
+
 ## Which look the screens use: "clean" by default, RIFTGATE_MECH3D=pixel for the pixel look,
 ## RIFTGATE_MECH3D=off for the 2D sprites.
 static func look_setting() -> String:
@@ -205,10 +214,18 @@ static func make(chassis_id: String, maker: String, look: String, fallback: Stri
 	return v
 
 
+var density := 1.0              # device pixels a design pixel: the render is this much larger than `frame_px` (the FINE MAP setting)
+var frame_px := Vector2i.ZERO   # the design-size frame the render stands for; a consumer draws the texture at this size
+
 func _setup(chassis_id: String, maker: String) -> void:
 	var frame := frame_override if frame_override != Vector2i.ZERO else PIXEL_FRAME * CLEAN_SCALE
-	# The outer viewport holds the outlined 2D result; the inner one renders the 3D.
-	size = frame
+	frame_px = frame
+	density = Hud.density(self)
+	var px := Vector2i((Vector2(frame) * density).round())
+	# The outer viewport holds the outlined 2D result; the inner one renders the 3D, both
+	# at the glass's density when FINE MAP is on (Ryan, 29 September: the skirmish's
+	# machines get the map's sharpness too).
+	size = px
 	transparent_bg = true
 	render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	canvas_item_default_texture_filter = SubViewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
@@ -216,7 +233,7 @@ func _setup(chassis_id: String, maker: String) -> void:
 	var nested := OS.get_environment("RIFTGATE_MECH3D_FLAT") != "1"   # debug: no outline pass, 3D straight into this viewport
 	if nested:
 		_inner = SubViewport.new()
-		_inner.size = frame
+		_inner.size = px
 		_inner.own_world_3d = true     # otherwise every mech view shares one world and the models overlap
 		_inner.transparent_bg = true
 		_inner.render_target_update_mode = SubViewport.UPDATE_ALWAYS
@@ -304,11 +321,11 @@ func _setup(chassis_id: String, maker: String) -> void:
 	if nested:
 		var rect := TextureRect.new()
 		rect.texture = _inner.get_texture()
-		rect.size = frame
+		rect.size = px
 		rect.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		var mat := ShaderMaterial.new()
 		mat.shader = load("res://game/ui/outline.gdshader")
-		mat.set_shader_parameter("width", float(CLEAN_SCALE))
+		mat.set_shader_parameter("width", float(CLEAN_SCALE) * density)
 		rect.material = mat
 		add_child(rect)
 	texture = get_texture()
@@ -465,7 +482,7 @@ static func toon(node: Node, maker: String, look: String, paint_arg: Dictionary 
 				tm.transparency = BaseMaterial3D.TRANSPARENCY_DISABLED
 				tm.depth_draw_mode = BaseMaterial3D.DEPTH_DRAW_ALWAYS
 				if TraceLines.mode() in ["assets", "pulse"]:
-					TraceLines.silhouette(tm, Palette.HUD, 1.0)   # the light outline around the whole machine, thin (Ryan, 22 September)
+					TraceLines.silhouette(tm, Palette.HUD, outline_thickness())   # the light outline around the whole machine
 				if role == "amber":
 					# Lamps, engines and light strips glow: the reconstruction's own light.
 					tm.emission_enabled = true
