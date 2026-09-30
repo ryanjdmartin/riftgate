@@ -2052,10 +2052,14 @@ def _drum_solo(bars):
                 bar["crash"][start] = "x"
             elif g == 1 and b % 4 == 2:
                 bar["china"][start] = "x"
+            elif g == 1 and b % 2 == 1:
+                bar["splash"][start] = "x"   # a touch more metal (Ryan, 30 September): a splash on the even bars' "and" of two
             for pos in range(start + 2, start + length, 2):
                 choice = RNG.integers(8)
                 if choice == 0:
-                    bar["snare"][pos] = "x"
+                    bar["tom"][pos] = "x"   # was a snare: too much snare (Ryan, 30 September)
+                    if pos + 1 < 16:
+                        bar["tom2"][pos + 1] = "x"
                 elif choice == 1:
                     bar["tom"][pos] = "x"
                 elif choice == 2:
@@ -2078,7 +2082,7 @@ def _drum_solo(bars):
                     bar["tom2"][pos] = "x"    # the low tom with the kick doubled under it
                     bar["kick"][pos] = "x"
                 if pos + 1 < 16 and bar["tom2"][pos + 1] == "." and bar["snare"][pos + 1] == "." and RNG.integers(4) != 0:
-                    bar[("tom2", "tom", "snare")[RNG.integers(3)]][pos + 1] = "x"   # fills the air
+                    bar[("tom2", "tom", "tom2")[RNG.integers(3)]][pos + 1] = "x"   # fills the air, on the toms
             if start + 1 < 16 and RNG.integers(2) == 0:
                 bar["snare"][start + 1] = "o"   # a ghost right after the Ba
         if b % 4 == 3:
@@ -2089,7 +2093,7 @@ def _drum_solo(bars):
         if b == bars - 1:
             # The run's closer: the whole second half a roll down the kit into the next section.
             for pos in range(8, 16):
-                bar[("snare", "snare", "tom", "tom", "tom2", "tom2", "snare", "tom2")[pos - 8]][pos] = "x"
+                bar[("snare", "tom", "tom", "tom2", "tom2", "tom", "snare", "tom2")[pos - 8]][pos] = "x"
             for pos in (8, 10, 12, 14):
                 bar["kick"][pos] = "x"
         for k in parts:
@@ -2118,9 +2122,8 @@ def music_hold_the_line(palette="hybrid"):
     riff_up = "7--.a-.7-...8-..5--.a-.8-...7-.."  # a fifth above: the power chord
     rise_up = "7--.a-.7-...8-..5--.a-.c-...8-.."
     climax = "0..0..3.0..5..3.0..0..8.7..5..3.3..3..5.3..7..5.0..0..a.8..7..5."   # the new unison riff, four bars
-    # The keys' tune, its two harmony lines and the sub bass's two lines are Ryan's, scored on
-    # the Melody Desk against the latest mix (30 September, third melody, bkg9zrrgnw0xr9mjt6wf,
-    # "Hold The Line · lead · F bars 59 to 74").
+    # The keys' tune, its harmony lines and the sub bass's lines are Ryan's, scored on the Melody
+    # Desk against the latest mix (30 September, fourth melody, 087znc0cvbmz1svqns29, "Hold The Line · lead · F bars 59 to 74").
     keys_tune = ("7--.8-.7-..5.3-.0-----..3---5---8--.a-.8-..7.5-.3---....5-.3-.0-"
                  "7--.a-.c------.a--.8-.7-.5-----.3--.5-.7-..8.a-.2-----------...."
                  "7--.8-.7-..5.3-.0------.3---5---8--.a-.8-..7.5-.3------.5-.3-.0-"
@@ -2128,19 +2131,19 @@ def music_hold_the_line(palette="hybrid"):
     keys_harm1 = ("................................................................"
                  "e-------------..c-------------..8-------------..5-----------...."
                  "e--.f-.e-..d.a-.8------.c---d---e--.i-.e-..d.c-.c------.c-.a-.7-"
-                 "d-------b-------e-------b-------c-------b-------7---------------")
+                 "d-------b-------e-------7-------7-------b-------7---------------")
     keys_harm2 = ("................................................................"
                  "c-------------..8-------------..5-------------..a-----------...."
                  "c--------------.3------.7---a---c--.d-.c-..a....3------.2------."
-                 "7-------2-------7-------5-------5-------7-------3---------------")
+                 "7-------2-------7-------2-------5-------7-------3---------------")
     keys_sub = ("0---------------8---------------g---------------7---------------"
                  "0---------------5---------------3---------------g---------------"
                  "0---------------8---------------5---------------g---------------"
-                 "0-------n-------2-------l-------2-------l-------0---------------")
-    keys_touch = ("........0-------........8-------........g-------........7-------"
-                 "........0-------........5-------........3-------........g-------"
-                 "........0-------........8-------........5-------........g-------"
-                 "................................................7---------------")
+                 "0-------n-------2-------h-------l-------2-------0---------------")
+    keys_touch = ("................................................................"
+                 "................................................................"
+                 "................................................................"
+                 "................................................................")
     if real:
         # Ryan, 30 September, from the phone: kick up, snare down, toms up, crashes down (and
         # the crash itself softer, since it broke up on the speaker).
@@ -2276,7 +2279,7 @@ def music_hold_the_line(palette="hybrid"):
             # The fifths under the second-half roots are gone (Ryan, 30 September: the bridge's
             # sub plays the roots alone under his melody).
             {"inst": "lead", "mode": "riff", "gain": 0.38, "octave": 2, "pat": {"F": keys_tune}},
-            # His two harmony lines under it, soft, so the top line stays the lead.
+            # His harmony lines under it, soft, so the top line stays the lead.
             {"inst": "lead", "mode": "riff", "gain": 0.15, "octave": 1, "pat": {"F": keys_harm1}},
             {"inst": "lead", "mode": "riff", "gain": 0.13, "octave": 1, "pat": {"F": keys_harm2}},
             {"inst": "epiano", "mode": "stab", "gain": 0.5, "dur": 2.0,
