@@ -47,8 +47,12 @@ const SUPPORTED_EFFECTS := {
 	"on_crit": ["multiply_damage", "add_damage", "add_burn", "vent_heat", "add_crit_damage"],
 	"on_injury": ["no_destroy"],
 	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "draw_rank", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack"],
-	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat"],
-	"on_hull_damage": ["stack_status"],
+	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
+	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
+	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
+	"on_shield_gain": ["vent_heat", "stack_status"],
+	"on_heat_gain": ["add_shield", "stack_status"],
+	"out_of_combat": ["add_shield"],
 	"status": ["tick_hp", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry", "scramble_reroll"],
 	"on_foe_status": ["chance_suppress"],
 }
@@ -599,20 +603,38 @@ static func screen_chance(u) -> int:
 
 
 ## The machine has just lost hull to a blow or a bite (never to its own overheat): every
-## on_hull_damage passive fires. stack_status adds a stack of a status for the skirmish,
-## fading a stack a turn (the Crucible's Overheating). Returns the names granted, for the log.
+## on_hull_damage passive fires (the Crucible's Overheating). Returns the names of the
+## statuses granted, for the log; shield and vent from it are the caller's to apply.
 static func hull_damaged(u) -> Array[String]:
-	var out: Array[String] = []
-	for pair in _taking_part(u, "on_hull_damage", null):
+	return fire(u, "on_hull_damage")["statuses"]
+
+
+## An event on a machine (on_skirmish_start as the fight begins, on_round_start after the
+## roll, on_shield_gain and on_heat_gain as the gauges move, on_hull_damage on a hit,
+## out_of_combat at the end of a phase spent out of a fight): every passive on that trigger
+## fires. `amount` is what the event carried (the heat carried for shield_per_heat, the
+## shield or heat gained). Returns {shield, vent, statuses}: shield to gain and heat to shed,
+## for the caller to apply where the gauges live, and the names of the statuses granted
+## (stack_status: a stack for the skirmish, fading a stack a turn). Nothing here can fire
+## itself: a shield gained here grants no more shield, heat shed here grants no heat.
+static func fire(u, trigger: String, amount: int = 0) -> Dictionary:
+	var out := {"shield": 0, "vent": 0, "statuses": [] as Array[String]}
+	for pair in _taking_part(u, trigger, null):
 		var eff: Dictionary = pair[0]
-		if str(eff.get("effect", "")) != "stack_status":
-			continue
-		var id := str(eff.get("value", ""))
-		if not STATUS.has(id):
-			continue
-		var m := stack(u, STATUS[id], SKIRMISH, "passive:" + str(pair[1].id), int(pair[1].stacks), DECAY_TICK)
-		if m != null and not out.has(m.name):
-			out.append(m.name)
+		var v: int = int(eff.get("value", 0)) * int(pair[1].stacks)
+		match str(eff.get("effect", "")):
+			"shield_per_heat":
+				out["shield"] += v * int(amount / 10)
+			"add_shield":
+				out["shield"] += v
+			"vent_heat":
+				out["vent"] += v
+			"stack_status":
+				var id := str(eff.get("value", ""))
+				if STATUS.has(id):
+					var m := stack(u, STATUS[id], SKIRMISH, "passive:" + str(pair[1].id), int(pair[1].stacks), DECAY_TICK)
+					if m != null and not (out["statuses"] as Array).has(m.name):
+						(out["statuses"] as Array).append(m.name)
 	return out
 
 
@@ -635,22 +657,10 @@ static func free_rerolls(u) -> int:
 	return maxi(0, n)
 
 
-## What the start of a round does for this machine (on_round_start, after the roll):
-## {shield, vent}. shield_per_heat pays its value for every 10 heat the machine carries
-## (the Goshawk's Thermal Recoupler); add_shield and vent_heat are flat.
+## What the start of a round does for this machine (on_round_start, after the roll), with
+## the heat it carries: the Goshawk's Thermal Recoupler.
 static func round_start(u, heat: int) -> Dictionary:
-	var out := {"shield": 0, "vent": 0}
-	for pair in _taking_part(u, "on_round_start", null):
-		var eff: Dictionary = pair[0]
-		var v: int = int(eff.get("value", 0)) * int(pair[1].stacks)
-		match str(eff.get("effect", "")):
-			"shield_per_heat":
-				out["shield"] += v * int(heat / 10)
-			"add_shield":
-				out["shield"] += v
-			"vent_heat":
-				out["vent"] += v
-	return out
+	return fire(u, "on_round_start", heat)
 
 
 ## Does the pipeline hold a cracked component short of destruction?
@@ -776,6 +786,10 @@ static func effect_text(eff: Dictionary) -> String:
 		"on_injury": lead = "on an injury: "
 		"on_round_start": lead = "at the start of the round: "
 		"on_hull_damage": lead = "on losing hull: "
+		"on_skirmish_start": lead = "as the fight begins: "
+		"on_shield_gain": lead = "on gaining shield: "
+		"on_heat_gain": lead = "on gaining heat: "
+		"out_of_combat": lead = "each phase out of combat: "
 	match str(eff.get("when", "")):
 		"component_cracked": lead += "cracked components: "
 		"reach_melee": lead += "melee attacks: "

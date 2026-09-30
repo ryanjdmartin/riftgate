@@ -2345,3 +2345,39 @@ func test_a_foes_special_action_is_picked_by_weight_and_shows_its_kind() -> void
 	assert_eq(Foe.kind_of(g.actions[1]), "defend", "its kind reads")
 	assert_eq(g.damage_of(g.actions[1]), 0, "and deals nothing")
 	assert_eq(g.threat(), 10, "the threat for deployment is the blow's")
+
+
+func test_the_gauge_triggers_fire_and_never_feed_themselves() -> void:
+	var opening := {"id": "opening", "name": "Opening", "description": "", "effects": [
+		{"trigger": "on_skirmish_start", "effect": "add_shield", "value": 15}]}
+	var breather := {"id": "breather", "name": "Breather", "description": "", "effects": [
+		{"trigger": "on_shield_gain", "effect": "vent_heat", "value": 10}]}
+	var flywheel := {"id": "flywheel", "name": "Flywheel", "description": "", "effects": [
+		{"trigger": "on_heat_gain", "effect": "add_shield", "value": 5}]}
+	var sk := Skirmish.new(1, 1)
+	var m := _mech("A", Die.of([Face.attack(20, L, [], 30), Face.shield(10)]), 60, 100)
+	m.shield = 10
+	m.grant_passive(opening)
+	m.grant_passive(breather, "b")
+	m.grant_passive(flywheel, "c")
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	assert_eq(m.shield, 25, "the opening's shield stood up as the fight began")
+	assert_true("\n".join(sk.log).contains("A: as the fight begins, +15 shield"), "the log says so")
+	sk.start_round()
+	sk.mechs[0].heat = 25
+	sk.mechs[0].face_index = 0
+	sk.assign(0, sk.front[0])
+	# The attack's 30 heat: the flywheel raises 5 shield, which the breather answers by
+	# venting 10, and the shield gained grants no more shield.
+	assert_eq(m.shield, 30, "5 shield from the heat gained")
+	assert_eq(sk.mechs[0].heat, 25 + 30 - 10, "and 10 heat shed for the shield gained")
+	assert_eq(Effects.effect_text({"trigger": "on_shield_gain", "effect": "vent_heat", "value": 10}), "on gaining shield: vents 10 heat", "reads as a sentence")
+	sk.end_round()
+	sk.start_round()
+	sk.mechs[0].face_index = 1
+	var heat_before: int = sk.mechs[0].heat
+	sk.assign(0, null)
+	assert_eq(m.shield, 30 - 10 + 10, "the ghoul's 10 came off, the plate's 10 went on")
+	assert_eq(sk.mechs[0].heat, maxi(0, heat_before - 10), "and the breather vented for it")

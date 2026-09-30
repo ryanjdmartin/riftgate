@@ -137,6 +137,9 @@ func begin() -> void:
 	_reinforce(false)
 	_refresh_allies()
 	state = State.ROUND_START
+	# Passives that fire once as the fight begins.
+	for ms in live_mechs():
+		_fired(ms, Effects.fire(ms.unit, "on_skirmish_start"), "as the fight begins")
 
 
 # ---------------------------------------------------------------- queries
@@ -430,12 +433,7 @@ func start_round() -> void:
 	# Passives that fire at the round's start, after the roll: shield from heat, a flat
 	# shield, a vent (the Goshawk's Thermal Recoupler reads the heat as it stands now).
 	for ms in live_mechs():
-		var rs := Effects.round_start(ms.unit, ms.heat)
-		var gained := ms.unit.recharge_shield(int(rs["shield"])) if int(rs["shield"]) > 0 else 0
-		var vented := mini(ms.heat, int(rs["vent"]))
-		ms.heat -= vented
-		if gained > 0 or vented > 0:
-			log.append("%s: round start, %s" % [ms.unit.display_name, ", ".join(([("+%d shield" % gained)] if gained > 0 else []) + ([("-%d heat" % vented)] if vented > 0 else []))])
+		_fired(ms, Effects.round_start(ms.unit, ms.heat), "round start")
 	# Every foe announces its move for the round: which action, at whom. Chosen now, before
 	# the player acts, so the intent chips and the forecast are exact.
 	for f in field_foes():
@@ -542,7 +540,7 @@ func assign(mech_index: int, target = null) -> bool:
 			pass
 		Face.Kind.SHIELD:
 			var who: MechState = target if target is MechState else ms
-			who.unit.shield = mini(who.unit.shield_max, who.unit.shield + f.power)
+			_gain_shield(who, f.power)
 			log.append("%s shields %s for %d" % [ms.unit.display_name, who.unit.display_name, f.power])
 			_cleanse_with(ms, who, f)
 			_draw_with(who, f)
@@ -998,10 +996,40 @@ static func _bite(shield: int, hull: int, amount: int) -> Dictionary:
 
 ## Heat only climbs here, past the maximum too. It burns at the end of the round (Ryan,
 ## 22 September: every overheat lands at once, never as a spike when a component is spent),
-## so a machine run hot can still be vented before it pays.
+## so a machine run hot can still be vented before it pays. Gaining heat fires the
+## on_heat_gain passives (which may raise shield, never heat).
 func _add_heat(ms: MechState, amount: int) -> void:
 	if amount > 0:
 		ms.heat += amount
+		_fired(ms, Effects.fire(ms.unit, "on_heat_gain", amount), "on the heat")
+
+
+## Shield gained from any source, capped at the maximum; gaining any fires the
+## on_shield_gain passives (which may shed heat, never raise shield). Returns what stood up.
+func _gain_shield(ms: MechState, amount: int) -> int:
+	if amount <= 0:
+		return 0
+	var gained := ms.unit.recharge_shield(amount)
+	if gained > 0:
+		_fired(ms, Effects.fire(ms.unit, "on_shield_gain", gained), "on the shield")
+	return gained
+
+
+## Apply what a trigger's passives gave a machine: shield up (which is a shield gain of its
+## own), heat off, and a log line naming it when anything happened.
+func _fired(ms: MechState, result: Dictionary, when: String) -> void:
+	var parts: Array[String] = []
+	var gained := _gain_shield(ms, int(result["shield"]))
+	if gained > 0:
+		parts.append("+%d shield" % gained)
+	var vented := mini(ms.heat, int(result["vent"]))
+	if vented > 0:
+		ms.heat -= vented
+		parts.append("-%d heat" % vented)
+	for name in result["statuses"]:
+		parts.append(str(name))
+	if not parts.is_empty():
+		log.append("%s: %s, %s" % [ms.unit.display_name, when, ", ".join(parts)])
 
 
 ## The end of the round: heat above the maximum burns hull one for one and the gauge

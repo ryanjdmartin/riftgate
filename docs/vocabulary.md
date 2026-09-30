@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 94 implemented, 15 planned, 0 idea.
+Status: 98 implemented, 11 planned, 0 idea.
 
 ## Resource
 
@@ -152,14 +152,14 @@ Status: 94 implemented, 15 planned, 0 idea.
 | Term | Codex | Status |
 |---|---|---|
 | **On attack** | Passive trigger. Fires after the damage roll on every attack. Effects: multiply or add damage or heat, or set a minimum damage. An effect may carry a when condition: component_cracked (only when the component being spent is cracked). | implemented |
-| **On shield gain** | Passive trigger. Fires when this mech gains shield from any source. | planned |
-| **On heat gain** | Passive trigger. Fires when this mech gains heat. | planned |
+| **On shield gain** | Passive trigger. Fires when this mech gains shield from any source, with the amount gained; it may shed heat or grant a status, never raise more shield. | implemented |
+| **On heat gain** | Passive trigger. Fires when this mech gains heat, with the amount; it may raise shield or grant a status, never add heat. | implemented |
 | **On round start** | Passive trigger. Fires after the roll, before rerolls: shield from heat, a flat shield, a vent. | implemented |
-| **On skirmish start** | Passive trigger. Fires once when the skirmish begins. | planned |
+| **On skirmish start** | Passive trigger. Fires once as the skirmish begins, before the first roll: a shield, a vent, a status. | implemented |
 | **On foe status** | Passive trigger. Fires when any foe gains a status (Burning today; the buffs and debuffs to come), whoever applied it, and never for Suppressed or Numbed themselves. Effects: chance_suppress (a chance the foe is also Suppressed, rising per point of shield the owner is missing). | implemented |
 | **On crit** | Passive trigger. Fires when an attack component crits. Effects: multiply or add damage, add burn to the target, vent the attacker's heat. | implemented |
 | **On hull damage** | Passive trigger. Fires when this mech loses hull to a blow or a bite, never to its own overheat. | implemented |
-| **Out of combat** | Passive trigger. Fires at the end of a battlefield phase in which this mech had no skirmish. | planned |
+| **Out of combat** | Passive trigger. Fires at the end of a battlefield phase in which this mech had no skirmish, after the field recharge: more shield. | implemented |
 | **on_injury** | Passive trigger. Fires when an injury lands on a component. Effects: no_destroy (a cracked component holds instead of being destroyed). | implemented |
 | **Static** | Passive trigger. Always on. Its effects change a mech's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; set_reach on a component (the Badger's cracked weapons become melee); suppress, which turns off another effect by id or tag. | implemented |
 
@@ -184,7 +184,7 @@ Status: 94 implemented, 15 planned, 0 idea.
 |---|---|---|
 | **Stun resistance** | A foe's base chance to shrug off a suppress, before Numbed. Rank and file have none; bosses carry some. | implemented |
 | **Breach** | A breaching blow overflows: what the shield cannot absorb reaches the hull, and if that is a quarter of maximum hull it injures a component like any bare-hull blow. It breaks the fundamental promise that a standing shield stops the big hit, so it is a dangerous, uncommon attack modifier, and its counterplay is not the shield: redirect it or interrupt it. | implemented |
-| **Foe action** | A foe has a base attack, the quick read of how hard it hits, and a list of attacks that scale it. Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number. | implemented |
+| **Foe action** | A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (folding against damage, regrowing, readying to get back up, calling up a foe, rallying the others, costing the team a reroll, stoking a machine's heat, scrambling a reroll, cracking a component). Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number. | implemented |
 | **Scorch** | Foe attack keyword. Each blow that lands leaves one stack of Overheating on the mech it hit. | implemented |
 
 ## Rules
@@ -233,9 +233,13 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Tank** (planned): Intended: faster on roads.
 - **Stealth** (implemented): The Dingo (Ryan, 28 September): a support car that waits in the wings while the heavies get into position, then joins their fight, and never fights alone unless run into. Pays again when hunter packs exist.
 - **City defense** (implemented): Defenses have no die. They cannot act inside a skirmish yet.
+- **On shield gain** (implemented): Built 30 September (Effects.fire); no content uses it yet.
+- **On heat gain** (implemented): Built 30 September (Effects.fire); no content uses it yet.
 - **On round start** (implemented): Built 30 September for the Thermal Recoupler; the heat it reads is the gauge after the turn's passive cooling.
+- **On skirmish start** (implemented): Built 30 September (Effects.fire); no content uses it yet.
 - **On foe status** (implemented): One machine's passive so far (the Baboon's Pocket Paradox).
 - **On hull damage** (implemented): Built 30 September for the Crucible Capacitor (stack_status). Still the hook for the pinned berserker idea.
+- **Out of combat** (implemented): Built 30 September (Effects.fire in Battle.commit); heat does not persist between fights, so a vent here would be nothing. No content uses it yet.
 - **Command die** (planned): Open question: whether the command die exists at all, or one-shots only.
 - **City ability** (planned): Consider range limits from the gate so the push north leaves support behind.
 - **Component** (implemented): Multi-slot components were considered and scrapped on 18 September as invisible complexity.

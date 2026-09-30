@@ -10,7 +10,7 @@ a bible change, passing the URL from any conversation that did not publish it.
 **The pages, as of 29 September, night.** An artifact is republished only by the account that
 made it, or by an account invited as Editor from its Share menu; the personal account (A) can
 invite outward, the organisation account (B) cannot. **Account A owns five pages and nothing
-else:** the bible (https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, v0.10), the nameplate
+else:** the bible (https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, v0.10 published; the file is v0.11 since 30 September and wants a republish from account A), the nameplate
 (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH), the hangar codex
 (https://claude.ai/artifact/FqiH3b8ZZjxJaCJmWK71vj), the Model Viewer
 (https://claude.ai/artifact/HzF8K98MxgJP7kroxAuDMv, every chassis rendered as it stands with
@@ -82,7 +82,7 @@ codex lists and the die draws), the vent-on-fire face (`vents_all`, `power_per_h
 `allies`), `free_reroll` (`MechState.free_rerolls`, `Skirmish.can_reroll`),
 `on_hull_damage` with `stack_status` and `per_stack`, `add_armour_vs_rank`,
 `keep_status`, `screen_withdraw`, and the stealth join rule (`PhaseResult.blockers`).
-Nothing in content is planned any more: the ten foe actions run too (30 September; `Foe.ACTION_EFFECTS`, a foe's special replaces its blow that turn, weights 3:1 attack to special as placeholders, bible section 9 row). **Save and resume** (30 September): `sim/save.gd` writes the whole battle (map seed, units, dice, damage, modifiers, routes, contacts, the skirmish with its dice, foes and both random streams) to `user://battle.json` after every change when the harness started the battle; Resume battle in the harness opens it where it stood, straight into a fight that was on; a decided battle clears it; standalone runs and tests never write it (bible section 11 row).
+Nothing in content is planned any more: the ten foe actions run too (30 September; `Foe.ACTION_EFFECTS`, a foe's special replaces its blow that turn, weights 3:1 attack to special as placeholders, bible section 9 row). Every trigger the vocabulary names runs (`Effects.fire`); only Phased, Energy Armour, Corrode, Scramble, Confuse and the tank trait remain planned, all waiting on design. **Save and resume** (30 September): `sim/save.gd` writes the whole battle (map seed, units, dice, damage, modifiers, routes, contacts, the skirmish with its dice, foes and both random streams) to `user://battle.json` after every change when the harness started the battle; Resume battle in the harness opens it where it stood, straight into a fight that was on; a decided battle clears it; standalone runs and tests never write it (bible section 11 row).
 Readings for Ryan from the runner: the Faraday Hull alone makes the Armadillo win every
 solo cell at both rungs; the Crucible costs the Nemesis under the bot (its Overheating
 burns hull); the Tap lifts the Ammit's ghoul cell to a greedy win; overwhelm and the

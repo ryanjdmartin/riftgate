@@ -244,6 +244,10 @@ func commit() -> Battlefield.PhaseResult:
 	for u in field.mechs():
 		if not engaged.has(u):
 			u.recharge_shield(u.recharge_field)
+			# Passives that fire at the end of a phase spent out of a fight (out_of_combat).
+			var fired := Effects.fire(u, "out_of_combat")
+			if int(fired["shield"]) > 0:
+				u.recharge_shield(int(fired["shield"]))
 	_after_phase()
 	return last_result
 

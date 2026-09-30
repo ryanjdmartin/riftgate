@@ -372,3 +372,14 @@ func test_a_draft_never_outruns_the_move_or_lands_on_a_claimed_hex() -> void:
 	assert_true(b.set_route(a, shared), "the first claims it by tap")
 	assert_false(b.set_route_path(c, to_shared), "the second's drawn route to it is refused")
 	assert_true(b.set_route_path(c, []), "an empty draft clears")
+
+
+func test_an_out_of_combat_passive_fires_after_a_quiet_phase() -> void:
+	var b := _battle()
+	var m: Unit = b.mechs()[0]
+	m.shield = 0
+	m.grant_passive({"id": "hum", "name": "Hum", "description": "", "effects": [
+		{"trigger": "out_of_combat", "effect": "add_shield", "value": 5}]}, "hum")
+	var rate := m.recharge_field
+	b.commit()
+	assert_eq(m.shield, mini(m.shield_max, rate + 5), "the field rate, then the passive's five")

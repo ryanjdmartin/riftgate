@@ -51,9 +51,9 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 - [x] Crucible Capacitor: melee damage per Overheating stack, a stack per blow that reaches hull from a foe or its own weapons, never from overheat burn (30 September: on_hull_damage and per_stack)
 - [x] Tactical Databank: kinetic weapons roll their maximum with an ally in the fight; needs an ally-present condition (30 September)
 - [x] Glacis: the Breaching Plow's armour against front-rank blows only, once the engine knows which rank struck (30 September: add_armour_vs_rank)
-- [ ] The planned statuses still without an engine: Phased, Energy Armour (Beacon landed with taunt, 29 September)
+- [ ] The planned statuses still without an engine: Phased, Energy Armour (Beacon landed with taunt, 29 September); both want a design line first (what applies Phased, what Energy Armour's flat number is)
 - [ ] The planned player keywords: Corrode, Scramble, Confuse
-- [ ] The planned triggers: on shield gain, on heat gain, on round start, on skirmish start, on hull damage, out of combat **[claimed 29 September, night: the cloud session on branch `ccr-23c2f18f-qlilnd`; skip unless it says it stopped]**
+- [x] The planned triggers: on shield gain, on heat gain, on round start, on skirmish start, on hull damage, out of combat (30 September: `Effects.fire`; no content uses the last four yet)
 - [x] The ten planned foe actions in `content/foes.json` (30 September: buff, defend and debuff kinds run as effects, `Foe.ACTION_EFFECTS`; attacks weigh 3 to a special's 1 as a placeholder; bible section 9 row). Foe roles: undefined anywhere, so nothing built; Ryan proposes what a role is before it is coded
 - [x] Buff equipment (29 September): the `buff` kind grants a machine status for so many stacks and rounds; Overcharged, Braced and Primed as the first three; the Overcharge Coil as a draft component fitted to nothing; the heat passive above can now be built on it
 - [ ] Granted passives coloured on the codex
