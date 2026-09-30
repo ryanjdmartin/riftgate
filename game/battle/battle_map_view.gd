@@ -401,8 +401,10 @@ func _draw() -> void:
 			var owned := not (contact_hexes.has(dest) or map.gate_hexes.has(dest))
 			# Bright and steady (Ryan, 29 September: the plain red was hard to see, and the
 			# rings' breathing read as selection); the tapped pack alone breathes.
-			var col := _ring_colour() if sq.pos == inspected else ENEMY_ROUTE
-			_route(sq.pos, path, col, owned, false, sq.pos == inspected)
+			# Saturated and edged (Ryan, 29 September: the salmon washed out on the ground):
+			# the line pure red on a dark edge, the crawling dashes the bright salmon over it.
+			var col := _ring_colour() if sq.pos == inspected else Palette.ENEMY
+			_route(sq.pos, path, col, owned, false, sq.pos == inspected, true)
 
 	# The gate selected: its footprint outlined, and the hexes it can be attacked from
 	# tinted (Ryan, 29 September: the bar lit alone did not say where the danger stands).
@@ -412,13 +414,16 @@ func _draw() -> void:
 			for n in Hex.neighbors(g):
 				if map.has(n) and not map.is_structure(n):
 					attack[n] = true
-		# The hexes a pack can strike from read as warning zones, the gate's own footprint
-		# faint (Ryan, 29 September): a red tint with a dashed border crawling round it.
+		# The hexes a pack can strike from read as warning zones (Ryan, 29 September): a red
+		# border crawling round each with a warning glyph at its centre; the gate's own
+		# footprint translucent but plain to see, a tint under a half-strength outline.
 		for n in attack.keys():
-			_fill(n, Color(Palette.ENEMY, 0.2))
-			_crawl_poly(Hex.corners(center(n), HEX_SIZE - 4.0), Color(ENEMY_ROUTE, 0.9), HEX_SIZE * 0.2, fmod(_ring_t * 1.2, 2.0))
+			_fill(n, Color(Palette.ENEMY, 0.1))
+			_crawl_poly(Hex.corners(center(n), HEX_SIZE - 4.0), Palette.ENEMY, HEX_SIZE * 0.2, fmod(_ring_t * 1.2, 2.0))
+			Glyphs.draw(self, "warning", center(n), HEX_SIZE * 0.5, ENEMY_LIT, 2.5)
 		for g in map.gate_hexes:
-			Hud.stroke_poly(self, Hex.corners(center(g), HEX_SIZE - 2.0), Color(hud, 0.35), 1.5)
+			_fill(g, Color(hud, 0.12))
+			Hud.stroke_poly(self, Hex.corners(center(g), HEX_SIZE - 2.0), Color(hud, 0.6), 2.0)
 
 	# A selected machine wears its shield and hull over its hex; an inspected pack its
 	# strength as one segment a foe (Ryan, 29 September: a pack keeps only its count between
@@ -840,15 +845,23 @@ func _tethers(group: Array, at: Dictionary, lit: bool) -> void:
 ## hex rather than its centre, so it never draws across the machine or the pack. `lock`
 ## puts the target on its end: the display's rings turning and a dashed border crawling
 ## round the hex.
-func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool = true, breathe: bool = true) -> void:
+func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool = true, breathe: bool = true, edged: bool = false) -> void:
 	# A machine's route leaves from its hex's edge, so it never crosses the machine; a
-	# pack's comes out of the sprite (Ryan, 29 September).
+	# pack's comes out of the sprite (Ryan, 29 September). An edged route (the enemy's)
+	# is a solid saturated line on a dark edge with the dashes bright over it: contrast
+	# both ways on any ground; a machine's stays the quiet line with no edge.
 	var pts: PackedVector2Array = [center(from).lerp(center(path[0]), 0.5) if from_edge else center(from)]
 	for step in path:
 		pts.append(center(step))
-	draw_polyline(pts, Color(col, 0.5), 3.0)
+	var dash_col := col
+	if edged:
+		draw_polyline(pts, Color(Palette.BG, 0.75), 7.0)
+		draw_polyline(pts, col, 3.5)
+		dash_col = col.lerp(Color.WHITE, 0.55)
+	else:
+		draw_polyline(pts, Color(col, 0.5), 3.0)
 	for i in range(pts.size() - 1):
-		_dashed_line(pts[i], pts[i + 1], col, HEX_SIZE * 0.22, fmod(_ring_t * 2.0, 2.0))
+		_dashed_line(pts[i], pts[i + 1], dash_col, HEX_SIZE * 0.22, fmod(_ring_t * 2.0, 2.0))
 		var dir := (pts[i + 1] - pts[i]).normalized()
 		var tip := pts[i].lerp(pts[i + 1], 0.55)
 		var side := Vector2(-dir.y, dir.x)
