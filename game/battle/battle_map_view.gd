@@ -443,8 +443,10 @@ func _draw() -> void:
 			_crawl_poly(Hex.corners(center(n), HEX_SIZE - 4.0), Palette.ENEMY, HEX_SIZE * 0.2, fmod(_ring_t * 1.2, 2.0), ENEMY_EDGE)
 			Glyphs.draw(self, "warning", center(n), HEX_SIZE * (0.42 + 0.08 * blink), Color(ENEMY_HOT, 0.5 + 0.5 * blink), 2.5)
 		for g in map.gate_hexes:
-			_fill(g, Color(hud, 0.12))
-			Hud.stroke_poly(self, Hex.corners(center(g), HEX_SIZE - 2.0), Color(hud, 0.6), 2.0)
+			# A light tint (ground marks land at alpha to the 2.2, so 0.3 is faint) under
+			# lines at a third (Ryan, 29 September).
+			_fill(g, Color(hud, 0.3))
+			Hud.stroke_poly(self, Hex.corners(center(g), HEX_SIZE - 2.0), Color(hud, 0.35), 1.5)
 
 	# A selected machine wears its shield and hull over its hex; an inspected pack its
 	# strength as one segment a foe (Ryan, 29 September: a pack keeps only its count between
@@ -788,7 +790,7 @@ func _mark(h: Vector2i) -> Dictionary:
 
 
 const DEST_RING := HEX_SIZE * 0.58   # the target's outer ring
-const ENEMY_HOT := Color("ff5a30")    # the enemy marks' bright: red toward orange, never the salmon (Ryan, 29 September: the salmon was weird)
+const ENEMY_HOT := Color("ff8a1e")    # the enemy marks' bright: orange, the free colour (violet is the rift's), never the salmon (Ryan, 29 September)
 const ENEMY_EDGE := Color("5a0e0e")   # the edge under every red line and border: deep red, not black (Ryan, 29 September: black made candy canes)
 
 ## The enemy marks breathe between red and the bright, most of the way up and never
@@ -897,7 +899,9 @@ func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool
 	if not lock:
 		return
 	var end := pts[pts.size() - 1]
-	var bright := col.lerp(Color.WHITE, 0.25 + 0.25 * sin(_ring_t * 1.6)) if breathe else col
+	# An enemy route's rings pulse in the line's own register (the selected pack's whole
+	# route breathes red to orange together, Ryan, 29 September); a machine's lift toward white.
+	var bright := col if edged else (col.lerp(Color.WHITE, 0.25 + 0.25 * sin(_ring_t * 1.6)) if breathe else col)
 	if edged:
 		# The rings and the border wear the line's edge, so the line runs into them as one.
 		_target_rings(end, ENEMY_EDGE, DEST_RING * 0.85, -1.0, 6.0)
