@@ -319,8 +319,8 @@ renderer has no anti-aliasing to give; MSAA measured leaking 170 MB every twenty
 and is unreachable). Text is clean. The marks are in three registers, green/violet/red,
 each carried by structure as well as hue, because Ryan is colourblind: check a new colour
 by simulation (CLAUDE.md has the rule; `RIFTGATE_HUD` renders against every HUD option).
-Still to judge on the device: the outline at 2.6, the violet intent marks, the sound set,
-the grid at the hotter gain.
+Still to judge on the device: the outline at 2.6, the intent field's stripe width and spoke
+count in motion (`STRIPE`, `SPOKES`), the sound set, the grid at the hotter gain.
 
 **Open, in order.** The task list is `docs/todo.md`, one line a task, grouped by who
 moves it and ticked in the commit that lands it; this is the order to take them in.
