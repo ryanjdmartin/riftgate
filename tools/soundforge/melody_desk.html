@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
 <style>
   /* Layout: one column, phone first. The roll scrolls sideways inside its own frame with a sticky pitch rail;
-     everything else stacks. Notes are carried by structure (solid block, bright head stripe), never by hue alone. */
+     everything else stacks. Layers are told apart by fill structure (solid, stripes, dots, bars, hollow), never by hue alone. */
   :root {
     --bg: #f3f1ec;
     --panel: #ffffff;
@@ -55,6 +55,7 @@
   input[type=number] { width: 84px; font-family: var(--font-mono); }
   button { font: inherit; font-weight: 600; color: var(--ink); background: var(--panel); border: 1px solid var(--line-strong); border-radius: 6px; padding: 8px 12px; min-height: 38px; cursor: pointer; }
   button:active { transform: translateY(1px); }
+  button:disabled { opacity: 0.5; cursor: default; }
   button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
   button.danger { color: var(--danger); }
   button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
@@ -64,15 +65,24 @@
   .seg button:last-child { border-right: 0; }
   .toolbar { display: grid; gap: 10px; }
 
+  /* Layers: chips above the roll; the active one takes new notes */
+  .layers { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line-strong); border-radius: 999px; padding: 4px 6px 4px 8px; background: var(--panel); font-size: 13px; }
+  .chip.active { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+  .chip.muted .nm { text-decoration: line-through; color: var(--muted); }
+  .chip .sw { width: 22px; height: 14px; border-radius: 3px; border: 1px solid var(--note-edge); flex: none; }
+  .chip button { min-height: 26px; padding: 2px 8px; font-size: 12px; border-radius: 999px; }
+  .chip .nm { max-width: 42vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+
   /* The roll */
   .roll-frame { border: 1px solid var(--line-strong); border-radius: 8px; background: var(--panel); overflow: hidden; }
   .roll-scroll { overflow-x: auto; overflow-y: hidden; position: relative; -webkit-overflow-scrolling: touch; }
-  .roll { position: relative; display: grid; grid-template-columns: 48px 1fr; width: max-content; user-select: none; -webkit-user-select: none; touch-action: pan-x pan-y; }
+  .roll { position: relative; display: grid; grid-template-columns: 48px 1fr; width: max-content; user-select: none; -webkit-user-select: none; }
   .rail { position: sticky; left: 0; z-index: 3; background: var(--panel); border-right: 1px solid var(--line-strong); }
   .rail div { height: var(--cell); display: flex; align-items: center; justify-content: flex-end; padding-right: 6px; font-family: var(--font-mono); font-size: 11px; color: var(--muted); border-bottom: 1px solid var(--line); }
   .rail div.root { color: var(--ink); font-weight: 600; }
   .rail div.root::before { content: ""; width: 4px; height: 4px; border-radius: 50%; background: var(--ink); margin-right: 5px; }
-  .grid { position: relative; }
+  .grid { position: relative; touch-action: pan-x pan-y; }
   .cells { display: grid; grid-template-columns: repeat(var(--steps), var(--cell)); }
   .cell { width: var(--cell); height: var(--cell); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
   .cell.beat { border-right-color: var(--line-strong); }
@@ -80,9 +90,19 @@
   .cell.scale { background: var(--row-scale); }
   .cell.root { background: var(--row-root); }
   .notes { position: absolute; inset: 0; pointer-events: none; }
-  .note { position: absolute; pointer-events: auto; background: var(--note); border: 1px solid var(--note-edge); border-radius: 4px; cursor: pointer; height: var(--cell); }
+  .note { position: absolute; pointer-events: auto; touch-action: none; background: var(--note); border: 1px solid var(--note-edge); border-radius: 4px; cursor: grab; height: var(--cell); color: var(--note); }
   .note::before { content: ""; position: absolute; left: 3px; top: 3px; bottom: 3px; width: 4px; background: var(--note-head); border-radius: 2px; }
+  .note::after { content: ""; position: absolute; right: 0; top: 0; bottom: 0; width: 12px; cursor: ew-resize; border-right: 3px solid var(--note-edge); border-radius: 0 4px 4px 0; opacity: 0.85; }
+  /* Layer fills: structure first. 0 solid, 1 diagonal stripes, 2 dots, 3 horizontal bars, 4 hollow, 5 cross-hatch; then round again. */
+  .note.v1 { background: repeating-linear-gradient(135deg, var(--note) 0 4px, var(--panel) 4px 7px); }
+  .note.v2 { background: radial-gradient(circle, var(--note) 0 2.2px, var(--panel) 2.6px) 0 0 / 7px 7px; }
+  .note.v3 { background: repeating-linear-gradient(0deg, var(--note) 0 3px, var(--panel) 3px 6px); }
+  .note.v4 { background: var(--panel); border-width: 2px; }
+  .note.v5 { background: repeating-linear-gradient(45deg, var(--note) 0 2px, transparent 2px 6px), repeating-linear-gradient(-45deg, var(--note) 0 2px, var(--panel) 2px 6px); }
+  .note.muted { opacity: 0.35; }
   .note.on { outline: 2px solid var(--note-head); outline-offset: -3px; }
+  .note.sel { outline: 3px dashed var(--play); outline-offset: 1px; z-index: 2; }
+  .note.dragging { cursor: grabbing; z-index: 4; box-shadow: 0 2px 8px rgba(0,0,0,0.35); }
   .playhead { position: absolute; top: 0; bottom: 0; width: 3px; margin-left: -1px; background: var(--play); pointer-events: none; display: none; z-index: 2; box-shadow: 0 0 0 1px var(--bg); }
   .playhead::before { content: ""; position: absolute; top: -1px; left: -5px; border: 6px solid transparent; border-top: 8px solid var(--play); }
   .ruler { display: grid; grid-template-columns: 48px 1fr; width: max-content; border-bottom: 1px solid var(--line-strong); }
@@ -111,7 +131,7 @@
 <div class="wrap">
   <header>
     <h1>Riftgate Melody Desk</h1>
-    <p class="sub">Tap a square to set a note, tap a note to clear it. Stack notes for chords. Plain piano. Rows are semitones above E2, the forge's root, with E minor shaded.</p>
+    <p class="sub">Tap a square to set a note. Drag a note to move it, drag its right edge to stretch it, tap it to select. Stack parts from the tracks as layers. Plain piano throughout. Rows are semitones above E2, the forge's root, with E minor shaded.</p>
   </header>
 
   <section class="toolbar" aria-label="Transport and grid">
@@ -133,14 +153,6 @@
       </label>
     </div>
     <div class="row">
-      <label class="f">Length
-        <span class="seg" id="len" role="group" aria-label="Note length">
-          <button type="button" data-len="1" aria-pressed="false">1/16</button>
-          <button type="button" data-len="2" aria-pressed="true">1/8</button>
-          <button type="button" data-len="4" aria-pressed="false">1/4</button>
-          <button type="button" data-len="8" aria-pressed="false">1/2</button>
-        </span>
-      </label>
       <label class="f">Bars
         <span class="seg" id="bars" role="group" aria-label="Bars">
           <button type="button" data-bars="1" aria-pressed="false">1</button>
@@ -166,8 +178,10 @@
         </select>
       </label>
       <button id="undo" type="button">Undo</button>
-      <button id="clear" type="button" class="danger">Clear</button>
+      <button id="delete" type="button" class="danger" disabled>Delete</button>
+      <button id="clear" type="button" class="danger">Clear all</button>
     </div>
+    <div class="layers" id="layers" aria-label="Layers"></div>
   </section>
 
   <section class="roll-frame" aria-label="Piano roll">
@@ -186,15 +200,15 @@
   <p class="hint" id="hint">Nothing placed yet. The first tap plays the note as it lands.</p>
 
   <section class="card" aria-label="Import a part from a track">
-    <h2>Start from a track</h2>
-    <p class="hint" id="importhint">Pick a track, one of its parts, then the stretch of bars. Load puts it in the roll to edit; the sent melody remembers where it came from.</p>
+    <h2>Add a part from a track</h2>
+    <p class="hint" id="importhint">Pick a track, one of its parts, then the stretch of bars. Add puts it in the roll as a new layer on top of what is there. Add as many as you want to edit together.</p>
     <div class="row">
       <label class="f">Track <select id="imptrack"><option value="">Loading…</option></select></label>
       <label class="f">Part <select id="imppart"><option value="">…</option></select></label>
     </div>
     <div class="row">
       <label class="f">Bars <select id="impsec"><option value="">…</option></select></label>
-      <button id="impload" type="button">Load into the roll</button>
+      <button id="impload" type="button">Add as a layer</button>
       <button id="impplay" type="button">Hear it</button>
     </div>
   </section>
@@ -202,7 +216,7 @@
   <section class="card" aria-label="Send to the forge">
     <h2>Send it to the forge</h2>
     <label class="f">Name <input id="title" type="text" placeholder="e.g. bridge lead, second lift" maxlength="80"></label>
-    <label class="f">Where it goes and how it should feel <textarea id="memo" placeholder="Which section, what instrument in the track should carry it, anything about the feel."></textarea></label>
+    <label class="f">Where it goes and how it should feel <textarea id="memo" placeholder="Which section, what should carry it, what changed and why. The session listens first, then applies."></textarea></label>
     <div class="row">
       <button id="send" class="primary" type="button">Send melody</button>
       <span class="status" id="sendstatus"></span>
@@ -215,7 +229,7 @@
 
   <section class="card" aria-label="Sent melodies">
     <h2>Sent</h2>
-    <div class="list" id="list"><p class="empty" id="listempty">Nothing sent yet. A sent melody lists here with its status; a session pulls it from here and applies it.</p></div>
+    <div class="list" id="list"><p class="empty" id="listempty">Nothing sent yet. A sent melody lists here with its status; a session pulls it from here, listens, and applies it.</p></div>
   </section>
 </div>
 
@@ -229,9 +243,13 @@
   const STEPS_PER_BAR = 16;
   const BAR_CHOICES = [1, 2, 4, 8, 16];
   const CELL = 28;
+  const RANGES = ["-12", "0", "12", "24", "wide"];
 
-  const state = { bars: 2, len: 2, base: 12, span: 24, rows: "scale", notes: [], loop: true, click: false, bpm: 104, track: "music_hold_the_line", source: null };
+  // A note is {s: step, p: semitones above E2, l: steps, v: layer index}. Layers are the piano's own
+  // (index 0) and one per part added from a track; a layer knows where it came from.
+  const state = { bars: 2, len: 2, base: 12, span: 24, rows: "scale", notes: [], layers: [{ name: "Piano", source: null, muted: false }], active: 0, loop: true, click: false, bpm: 104, track: "music_hold_the_line" };
   const history = [];
+  let selected = new Set();
 
   // ---------- helpers ----------
   const pitchName = (p) => NAMES[((p % 12) + 12) % 12] + (2 + Math.floor((p + 4) / 12));
@@ -255,21 +273,35 @@
     setRange(pick === undefined ? "wide" : String(pick));
     if (notes.some((n) => !SCALE.has(((n.p % 12) + 12) % 12))) { state.rows = "chromatic"; $("rows").value = "chromatic"; }
   }
-  function snapshot() { history.push(JSON.stringify(state.notes)); if (history.length > 50) history.shift(); }
+  function fitBars(notes) {
+    const end = Math.max(0, ...notes.map((n) => n.s + n.l));
+    const need = BAR_CHOICES.find((b) => b * STEPS_PER_BAR >= end) || 16;
+    if (need > state.bars) setBars(need);
+  }
+  function setBars(b) {
+    state.bars = b;
+    $("bars").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", +x.dataset.bars === b));
+  }
+  function snapshot() {
+    history.push(JSON.stringify({ notes: state.notes, layers: state.layers, active: state.active }));
+    if (history.length > 60) history.shift();
+  }
   function saveDraft() {
-    try { localStorage.setItem("melody-desk-draft", JSON.stringify({ notes: state.notes, bars: state.bars, range: $("range").value, rows: state.rows, bpm: state.bpm, track: state.track, source: state.source, title: $("title").value, memo: $("memo").value })); } catch (e) {}
+    try { localStorage.setItem("melody-desk-draft", JSON.stringify({ notes: state.notes, layers: state.layers, active: state.active, bars: state.bars, range: $("range").value, rows: state.rows, bpm: state.bpm, track: state.track, len: state.len, title: $("title").value, memo: $("memo").value })); } catch (e) {}
   }
   function loadDraft() {
     try {
       const d = JSON.parse(localStorage.getItem("melody-desk-draft") || "null");
       if (!d) return;
-      state.notes = Array.isArray(d.notes) ? d.notes : [];
+      state.notes = Array.isArray(d.notes) ? d.notes.map((n) => ({ s: n.s, p: n.p, l: n.l, v: n.v || 0 })) : [];
+      if (Array.isArray(d.layers) && d.layers.length) state.layers = d.layers;
+      state.active = Math.min(d.active || 0, state.layers.length - 1);
       if (BAR_CHOICES.includes(d.bars)) state.bars = d.bars;
-      if (["-12", "0", "12", "24", "wide"].includes(d.range)) setRange(d.range);
+      if (RANGES.includes(d.range)) setRange(d.range);
       if (d.rows === "chromatic" || d.rows === "scale") state.rows = d.rows;
       if (d.bpm) state.bpm = d.bpm;
       if (d.track) state.track = d.track;
-      state.source = d.source || null;
+      if (d.len) state.len = d.len;
       $("title").value = d.title || "";
       $("memo").value = d.memo || "";
     } catch (e) {}
@@ -281,7 +313,7 @@
     if (s >= 0 && s <= 9) return String(s);
     return LETTERS[s] || null;
   }
-  // The forge's riff grammar is one voice, so a chord is split into lanes: each note goes to
+  // The forge's riff grammar is one voice, so a layer is split into lanes: each note goes to
   // the first lane it does not overlap, highest pitch first, so lane 0 carries the top line.
   function toLanes(notes, bars) {
     const total = bars * STEPS_PER_BAR;
@@ -294,7 +326,7 @@
     }
     return lanes.map((lane) => {
       let best = null;
-      for (let oct = 0; oct <= 4; oct++) {
+      for (let oct = -1; oct <= 4; oct++) {
         const missing = lane.filter((n) => spell(n.p, oct) === null).length;
         if (best === null || missing < best.missing) best = { oct, missing };
         if (missing === 0) break;
@@ -302,24 +334,61 @@
       const chars = new Array(total).fill(".");
       const unspelled = [];
       for (const n of lane) {
+        if (n.s >= total) continue;
         const c = spell(n.p, best.oct);
         if (c === null) unspelled.push(pitchName(n.p));
         chars[n.s] = c === null ? "?" : c;
         for (let k = 1; k < n.l && n.s + k < total; k++) chars[n.s + k] = "-";
       }
-      return { riff: chars.join(""), octave: best.oct, unspelled: [...new Set(unspelled)] };
+      return { pat: chars.join(""), octave: best.oct, unspelled: [...new Set(unspelled)] };
     });
   }
+  function layerNotes(v) { return state.notes.filter((n) => n.v === v); }
   function renderRiff() {
-    const lanes = toLanes(state.notes, state.bars);
-    if (!lanes.length) { $("riff").textContent = "(empty)"; return; }
+    if (!state.notes.length) { $("riff").textContent = "(empty)"; return; }
     const out = [];
-    lanes.forEach((r, i) => {
-      out.push((lanes.length > 1 ? "lane " + (i + 1) + (i === 0 ? " (top line)" : "") + "\n" : "") + '"pat": "' + r.riff + '"  "octave": ' + r.octave);
-      if (r.unspelled.length) out.push("  no letter in the forge for: " + r.unspelled.join(", ") + " (sent as pitches anyway)");
+    state.layers.forEach((L, v) => {
+      const notes = layerNotes(v);
+      if (!notes.length) return;
+      const lanes = toLanes(notes, state.bars);
+      out.push("layer " + (v + 1) + ": " + L.name + (L.muted ? " (muted)" : "") + (L.source ? "   from " + L.source.trackName + " voice " + L.source.voice + " " + L.source.key + " bar " + L.source.bar : ""));
+      lanes.forEach((r, i) => {
+        out.push("  " + (lanes.length > 1 ? "lane " + (i + 1) + " " : "") + '"pat": "' + r.pat + '"  "octave": ' + r.octave);
+        if (r.unspelled.length) out.push("    no letter in the forge for: " + r.unspelled.join(", ") + " (sent as pitches anyway)");
+      });
     });
-    if (lanes.length > 1) out.push("\n" + lanes.length + " lanes: the widest chord has " + lanes.length + " notes at once");
     $("riff").textContent = out.join("\n");
+  }
+
+  // ---------- layers ----------
+  function renderLayers() {
+    const box = $("layers"); box.innerHTML = "";
+    state.layers.forEach((L, v) => {
+      const chip = document.createElement("div");
+      chip.className = "chip" + (v === state.active ? " active" : "") + (L.muted ? " muted" : "");
+      const sw = document.createElement("span"); sw.className = "sw note v" + (v % 6); sw.style.position = "static"; sw.style.height = "14px";
+      const nm = document.createElement("span"); nm.className = "nm"; nm.textContent = L.name; nm.title = L.source ? "From " + L.source.trackName + ", " + L.source.label + ", " + L.source.key + " bars " + L.source.bar + " to " + (L.source.bar + L.source.bars - 1) + ". Tap to make it the layer new notes go in." : "Tap to make it the layer new notes go in.";
+      nm.addEventListener("click", () => { state.active = v; renderLayers(); saveDraft(); });
+      const mute = document.createElement("button"); mute.type = "button"; mute.textContent = L.muted ? "Muted" : "Mute"; mute.setAttribute("aria-pressed", L.muted);
+      mute.addEventListener("click", () => { L.muted = !L.muted; renderLayers(); renderNotes(); });
+      chip.appendChild(sw); chip.appendChild(nm); chip.appendChild(mute);
+      if (state.layers.length > 1) {
+        const rm = document.createElement("button"); rm.type = "button"; rm.className = "danger"; rm.textContent = "×"; rm.title = "Remove this layer and its notes";
+        rm.addEventListener("click", () => {
+          snapshot();
+          state.notes = state.notes.filter((n) => n.v !== v).map((n) => ({ ...n, v: n.v > v ? n.v - 1 : n.v }));
+          state.layers.splice(v, 1);
+          state.active = Math.min(state.active, state.layers.length - 1);
+          selected = new Set();
+          renderLayers(); renderNotes();
+        });
+        chip.appendChild(rm);
+      }
+      box.appendChild(chip);
+    });
+    const add = document.createElement("button"); add.type = "button"; add.textContent = "+ Layer"; add.style.minHeight = "30px"; add.style.padding = "4px 10px"; add.style.fontSize = "13px";
+    add.addEventListener("click", () => { snapshot(); state.layers.push({ name: "Piano " + (state.layers.length + 1), source: null, muted: false }); state.active = state.layers.length - 1; renderLayers(); saveDraft(); });
+    box.appendChild(add);
   }
 
   // ---------- grid ----------
@@ -358,58 +427,139 @@
       }
     });
     cells.appendChild(frag);
+    renderLayers();
     renderNotes();
+  }
+  function placeEl(el, n, pitches) {
+    const total = totalSteps();
+    el.style.left = (n.s * CELL) + "px";
+    el.style.top = (pitches.indexOf(n.p) * CELL) + "px";
+    el.style.width = (Math.min(n.l, total - n.s) * CELL - 1) + "px";
   }
   function renderNotes() {
     const pitches = rowPitches();
     const total = totalSteps();
     const layer = $("notes"); layer.innerHTML = "";
     for (const n of state.notes) {
-      const r = pitches.indexOf(n.p);
-      if (r < 0 || n.s >= total) continue;
+      if (pitches.indexOf(n.p) < 0 || n.s >= total) continue;
       const d = document.createElement("div");
-      d.className = "note";
-      d.style.left = (n.s * CELL) + "px";
-      d.style.top = (r * CELL) + "px";
-      d.style.width = (Math.min(n.l, total - n.s) * CELL - 1) + "px";
-      d.dataset.s = n.s; d.dataset.p = n.p;
-      d.title = pitchName(n.p);
+      d.className = "note v" + (n.v % 6) + (state.layers[n.v] && state.layers[n.v].muted ? " muted" : "") + (selected.has(n) ? " sel" : "");
+      placeEl(d, n, pitches);
+      d.title = pitchName(n.p) + " · " + (state.layers[n.v] ? state.layers[n.v].name : "");
+      d._note = n;
       layer.appendChild(d);
     }
     const hidden = state.notes.filter((n) => pitches.indexOf(n.p) < 0 || n.s >= total).length;
-    const src = state.source;
     $("hint").textContent = !state.notes.length ? "Nothing placed yet. The first tap plays the note as it lands."
-      : state.notes.length + (state.notes.length === 1 ? " note" : " notes") + (hidden ? ", " + hidden + " outside this range or length (still kept, still sent)" : "")
-        + (src ? ". From " + src.trackName + ", " + src.label + ", " + src.key + " bars " + src.bar + " to " + (src.bar + src.bars - 1) + (src.stepsPerBar !== 16 ? " (" + src.stepsPerBar + " steps a bar there, so the bar lines here are off)" : "") : "") + ".";
+      : state.notes.length + (state.notes.length === 1 ? " note" : " notes") + (state.layers.length > 1 ? " in " + state.layers.length + " layers" : "")
+        + (hidden ? ", " + hidden + " outside this range or length (still kept, still sent)" : "")
+        + (selected.size ? ". " + selected.size + " selected: drag to move them, Delete to remove" : "") + ".";
+    $("delete").disabled = !selected.size;
     renderRiff();
     saveDraft();
+  }
+
+  // ---------- editing ----------
+  function soundNote(p, l, vel) {
+    ensureAudio();
+    pianoNote(ctx.currentTime + 0.01, freqOf(p), stepSeconds() * l, vel);
   }
   function addNote(s, p) {
     snapshot();
     const total = totalSteps();
-    const l = Math.min(state.len, total - s);
-    // Same pitch and overlapping: replaced. Another pitch: stacks into a chord.
-    state.notes = state.notes.filter((n) => n.p !== p || n.s + n.l <= s || n.s >= s + l);
-    state.notes.push({ s, p, l });
+    const l = Math.max(1, Math.min(state.len, total - s));
+    const v = state.active;
+    // Same layer, same pitch, overlapping: replaced. Otherwise it stacks.
+    state.notes = state.notes.filter((n) => n.v !== v || n.p !== p || n.s + n.l <= s || n.s >= s + l);
+    state.notes.push({ s, p, l, v });
     state.notes.sort((a, b) => a.s - b.s || b.p - a.p);
+    selected = new Set();
     renderNotes();
+    // Sound everything that starts here and is not muted, so a stacked voicing is heard as it builds.
     ensureAudio();
-    // Sound the whole chord that starts here, so a stacked voicing is heard as it builds.
     const t = ctx.currentTime + 0.01;
-    for (const n of state.notes) if (n.s === s) pianoNote(t, freqOf(n.p), stepSeconds() * n.l, n.p === p ? 0.9 : 0.5);
+    for (const n of state.notes) if (n.s === s && !(state.layers[n.v] && state.layers[n.v].muted)) pianoNote(t, freqOf(n.p), stepSeconds() * n.l, n.p === p && n.v === v ? 0.9 : 0.5);
   }
-  function removeNote(s, p) {
+  function deleteSelected() {
+    if (!selected.size) return;
     snapshot();
-    state.notes = state.notes.filter((n) => !(n.s === s && n.p === p));
+    state.notes = state.notes.filter((n) => !selected.has(n));
+    selected = new Set();
     renderNotes();
   }
-  $("grid").addEventListener("click", (e) => {
-    const note = e.target.closest(".note");
-    if (note) { removeNote(+note.dataset.s, +note.dataset.p); return; }
+  $("delete").addEventListener("click", deleteSelected);
+  document.addEventListener("keydown", (e) => {
+    if ((e.key === "Delete" || e.key === "Backspace") && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) { e.preventDefault(); deleteSelected(); }
+    if (e.key === "Escape") { selected = new Set(); renderNotes(); }
+  });
+
+  // Empty square: a new note in the active layer. Pointer down on a note: a drag (move, or stretch
+  // from the right edge) or, with no movement, a tap that toggles selection.
+  $("cells").addEventListener("click", (e) => {
     const cell = e.target.closest(".cell");
     if (!cell) return;
+    if (selected.size) { selected = new Set(); renderNotes(); return; }
     addNote(+cell.dataset.s, rowPitches()[+cell.dataset.r]);
   });
+  let drag = null;
+  $("notes").addEventListener("pointerdown", (e) => {
+    const el = e.target.closest(".note");
+    if (!el || !el._note) return;
+    e.preventDefault();
+    const n = el._note;
+    const rect = el.getBoundingClientRect();
+    const resize = rect.width >= 20 && e.clientX > rect.right - 12;
+    const group = selected.has(n) ? [...selected] : [n];
+    const pitches = rowPitches();
+    drag = {
+      el, n, resize, moved: false, lastDy: 0, x0: e.clientX, y0: e.clientY, pitches,
+      group: group.map((m) => ({ m, s0: m.s, r0: pitches.indexOf(m.p), l0: m.l })),
+    };
+    el.setPointerCapture(e.pointerId);
+    el.classList.add("dragging");
+  });
+  $("notes").addEventListener("pointermove", (e) => {
+    if (!drag) return;
+    const dxp = e.clientX - drag.x0, dyp = e.clientY - drag.y0;
+    if (!drag.moved && Math.abs(dxp) < 6 && Math.abs(dyp) < 6) return;
+    if (!drag.moved) { drag.moved = true; snapshot(); }
+    const total = totalSteps();
+    const dx = Math.round(dxp / CELL), dy = Math.round(dyp / CELL);
+    const els = new Map(); $("notes").querySelectorAll(".note").forEach((x) => els.set(x._note, x));
+    if (drag.resize) {
+      for (const g of drag.group) { g.m.l = Math.max(1, Math.min(g.l0 + dx, total - g.m.s)); const x = els.get(g.m); if (x) placeEl(x, g.m, drag.pitches); }
+      return;
+    }
+    // Move: every note in the group by the same steps and rows, clamped so none leaves the roll.
+    let minS = Infinity, maxS = -Infinity, minR = Infinity, maxR = -Infinity;
+    for (const g of drag.group) { minS = Math.min(minS, g.s0); maxS = Math.max(maxS, g.s0); minR = Math.min(minR, g.r0); maxR = Math.max(maxR, g.r0); }
+    const ddx = Math.max(-minS, Math.min(dx, total - 1 - maxS));
+    const ddy = Math.max(-minR, Math.min(dy, drag.pitches.length - 1 - maxR));
+    for (const g of drag.group) {
+      g.m.s = g.s0 + ddx;
+      g.m.p = drag.pitches[g.r0 + ddy];
+      g.m.l = Math.min(g.l0, total - g.m.s);
+      const x = els.get(g.m); if (x) { placeEl(x, g.m, drag.pitches); x.title = pitchName(g.m.p); }
+    }
+    if (ddy !== drag.lastDy) { drag.lastDy = ddy; soundNote(drag.n.p, 1, 0.5); }
+  });
+  function endDrag(e) {
+    if (!drag) return;
+    const d = drag; drag = null;
+    d.el.classList.remove("dragging");
+    if (d.moved) {
+      if (d.resize) state.len = d.n.l;
+      state.notes.sort((a, b) => a.s - b.s || b.p - a.p);
+      renderNotes();
+      if (!d.resize) soundNote(d.n.p, d.n.l, 0.7);
+    } else {
+      if (selected.has(d.n)) selected.delete(d.n); else selected.add(d.n);
+      renderNotes();
+      soundNote(d.n.p, d.n.l, 0.6);
+    }
+  }
+  $("notes").addEventListener("pointerup", endDrag);
+  $("notes").addEventListener("pointercancel", endDrag);
 
   // ---------- audio ----------
   let ctx = null, master = null;
@@ -462,6 +612,7 @@
   }
 
   let playing = false, passStart = 0, passTimer = null, raf = null, passNotes = null;
+  const audible = () => state.notes.filter((n) => !(state.layers[n.v] && state.layers[n.v].muted));
   function schedulePass(t0) {
     const sec = stepSeconds();
     const total = totalSteps();
@@ -476,15 +627,14 @@
     playing = true;
     $("play").textContent = "Stop";
     $("playhead").style.display = "block";
-    passNotes = state.notes.slice();
+    passNotes = audible().map((n) => ({ ...n }));
     passStart = ctx.currentTime + 0.08;
     const runPass = () => {
       if (!playing) return;
       schedulePass(passStart);
       const passLen = stepSeconds() * totalSteps();
       if (state.loop) {
-        passNotes = state.notes.slice();
-        passTimer = setTimeout(() => { passStart += passLen; runPass(); }, Math.max(20, (passStart + passLen - ctx.currentTime) * 1000 - 120));
+        passTimer = setTimeout(() => { passStart += passLen; passNotes = audible().map((n) => ({ ...n })); runPass(); }, Math.max(20, (passStart + passLen - ctx.currentTime) * 1000 - 120));
       } else {
         passTimer = setTimeout(stopPlay, (passStart + passLen - ctx.currentTime) * 1000 + 50);
       }
@@ -501,10 +651,10 @@
       // Keep the playhead in view: when it leaves the visible window, jump the roll a page along.
       const sc = $("scroll"), rail = 48, view = sc.clientWidth - rail;
       const vx = x - (sc.scrollLeft);
-      if (view > 0 && (vx > view - CELL || vx < 0)) sc.scrollLeft = Math.max(0, x - CELL);
+      if (view > 0 && (vx > view - CELL || vx < 0) && !drag) sc.scrollLeft = Math.max(0, x - CELL);
       document.querySelectorAll(".note").forEach((el) => {
-        const s = +el.dataset.s, w = parseFloat(el.style.width) / CELL;
-        el.classList.toggle("on", x >= s * CELL && x < (s + w) * CELL);
+        const n = el._note; if (!n) return;
+        el.classList.toggle("on", x >= n.s * CELL && x < (n.s + n.l) * CELL);
       });
       raf = requestAnimationFrame(draw);
     };
@@ -523,15 +673,9 @@
   $("click").addEventListener("click", (e) => { state.click = !state.click; e.currentTarget.setAttribute("aria-pressed", state.click); });
 
   // ---------- controls ----------
-  $("len").addEventListener("click", (e) => {
-    const b = e.target.closest("button"); if (!b) return;
-    state.len = +b.dataset.len;
-    $("len").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", x === b));
-  });
   $("bars").addEventListener("click", (e) => {
     const b = e.target.closest("button"); if (!b) return;
-    state.bars = +b.dataset.bars;
-    $("bars").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", x === b));
+    setBars(+b.dataset.bars);
     if (playing) stopPlay();
     buildGrid();
   });
@@ -552,15 +696,19 @@
   $("memo").addEventListener("input", saveDraft);
   $("undo").addEventListener("click", () => {
     if (!history.length) return;
-    state.notes = JSON.parse(history.pop());
-    renderNotes();
+    const h = JSON.parse(history.pop());
+    state.notes = h.notes; state.layers = h.layers; state.active = Math.min(h.active, h.layers.length - 1);
+    selected = new Set();
+    renderLayers(); renderNotes();
   });
   $("clear").addEventListener("click", () => {
-    if (!state.notes.length) return;
-    snapshot(); state.notes = []; state.source = null; renderNotes();
+    if (!state.notes.length && state.layers.length === 1) return;
+    snapshot();
+    state.notes = []; state.layers = [{ name: "Piano", source: null, muted: false }]; state.active = 0; selected = new Set();
+    renderLayers(); renderNotes();
   });
 
-  // ---------- import from a track ----------
+  // ---------- add a part from a track ----------
   const parts = {};   // track id -> its parts document
   function fillSelect(sel, options, placeholder) {
     sel.innerHTML = "";
@@ -598,18 +746,26 @@
     if (!pick) return;
     const { doc, part, sec } = pick;
     snapshot();
-    state.bars = BAR_CHOICES.find((b) => b >= sec.bars) || 16;
-    $("bars").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", +x.dataset.bars === state.bars));
+    const empty = !state.notes.length;
+    const spb = Array.isArray(sec.stepsPerBar) ? sec.stepsPerBar[0] : sec.stepsPerBar;
+    const source = { track: doc.track, trackName: doc.trackName, voice: part.voice, inst: part.inst, mode: part.mode, label: part.label, key: sec.key, bar: sec.bar, bars: sec.bars, stepsPerBar: spb };
+    // The first added part goes in the empty piano layer; the rest each get a layer of their own.
+    let v;
+    if (empty && state.layers.length === 1 && !state.layers[0].source) { v = 0; state.layers[0] = { name: part.label + " · " + sec.key + " " + sec.bar, source, muted: false }; }
+    else { state.layers.push({ name: part.label + " · " + sec.key + " " + sec.bar, source, muted: false }); v = state.layers.length - 1; }
+    state.active = v;
+    const added = sec.notes.map((n) => ({ s: n.s, p: n.p, l: Math.max(1, n.l), v }));
+    fitBars(added);
     const total = totalSteps();
-    state.notes = sec.notes.filter((n) => n.s < total).map((n) => ({ s: n.s, p: n.p, l: Math.max(1, Math.min(n.l, total - n.s)) }));
+    for (const n of added) if (n.s < total) { n.l = Math.min(n.l, total - n.s); state.notes.push(n); }
     state.notes.sort((a, b) => a.s - b.s || b.p - a.p);
-    state.source = { track: doc.track, trackName: doc.trackName, voice: part.voice, inst: part.inst, mode: part.mode, label: part.label, key: sec.key, bar: sec.bar, bars: sec.bars, stepsPerBar: Array.isArray(sec.stepsPerBar) ? sec.stepsPerBar[0] : sec.stepsPerBar };
-    state.track = doc.track; $("track").value = doc.track;
-    state.bpm = doc.bpm; $("bpm").value = doc.bpm;
+    selected = new Set();
+    if (empty) { state.track = doc.track; $("track").value = doc.track; state.bpm = doc.bpm; $("bpm").value = doc.bpm; }
     fitRange(state.notes);
-    if (!$("title").value.trim() || /^[A-Za-z ]+ · /.test($("title").value)) $("title").value = doc.trackName + " · " + part.label + " · " + sec.key + " bars " + sec.bar + " to " + (sec.bar + sec.bars - 1);
+    if (!$("title").value.trim()) $("title").value = doc.trackName + " · " + part.label + " · " + sec.key + " bars " + sec.bar + " to " + (sec.bar + sec.bars - 1);
     if (playing) stopPlay();
     buildGrid();
+    if (spb !== 16) $("hint").textContent += " That part runs " + spb + " steps a bar in its track, so the bar lines here are off for it.";
     $("scroll").scrollLeft = 0;
     document.querySelector(".roll-frame").scrollIntoView({ behavior: "smooth", block: "start" });
   });
@@ -634,7 +790,7 @@
     list.innerHTML = "";
     if (!docs.length) {
       const p = document.createElement("p"); p.className = "empty"; p.id = "listempty";
-      p.textContent = "Nothing sent yet. A sent melody lists here with its status; a session pulls it from here and applies it.";
+      p.textContent = "Nothing sent yet. A sent melody lists here with its status; a session pulls it from here, listens, and applies it.";
       list.appendChild(p); return;
     }
     for (const snap of docs) {
@@ -643,17 +799,19 @@
       const t = document.createElement("div"); t.className = "t"; t.textContent = d.title || "untitled";
       const pill = document.createElement("span"); pill.className = "pill " + (d.status === "applied" ? "applied" : ""); pill.textContent = d.status || "new";
       const m = document.createElement("div"); m.className = "m";
-      m.textContent = (d.trackName || d.track || "") + " · " + d.bpm + " bpm · " + d.bars + (d.bars === 1 ? " bar · " : " bars · ") + (d.notes ? d.notes.length : 0) + " notes" + (d.polyphony > 1 ? " · up to " + d.polyphony + " at once" : "") + " · " + fmtWhen(d.created);
+      const nl = d.layers ? d.layers.length : 1;
+      m.textContent = (d.trackName || d.track || "") + " · " + d.bpm + " bpm · " + d.bars + (d.bars === 1 ? " bar · " : " bars · ") + (d.notes ? d.notes.length : 0) + " notes" + (nl > 1 ? " · " + nl + " layers" : "") + " · " + fmtWhen(d.created);
       const acts = document.createElement("div"); acts.className = "acts";
       const load = document.createElement("button"); load.type = "button"; load.textContent = "Load";
       load.addEventListener("click", () => {
         snapshot();
-        state.notes = (d.notes || []).map((n) => ({ s: n.s, p: n.p, l: n.l }));
-        if (BAR_CHOICES.includes(d.bars)) { state.bars = d.bars; $("bars").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", +x.dataset.bars === d.bars)); }
+        state.layers = (d.layers && d.layers.length ? d.layers : [{ name: "Piano", source: d.source || null }]).map((L) => ({ name: L.name || "Piano", source: L.source || null, muted: !!L.muted }));
+        state.notes = (d.notes || []).map((n) => ({ s: n.s, p: n.p, l: n.l, v: Math.min(n.v || 0, state.layers.length - 1) }));
+        state.active = 0; selected = new Set();
+        if (BAR_CHOICES.includes(d.bars)) setBars(d.bars);
         if (d.bpm) { state.bpm = d.bpm; $("bpm").value = d.bpm; }
         if (d.track) { state.track = d.track; $("track").value = d.track; }
         fitRange(state.notes);
-        state.source = d.source || null;
         $("title").value = d.title || ""; $("memo").value = d.memo || "";
         if (playing) stopPlay();
         buildGrid();
@@ -667,7 +825,8 @@
       });
       acts.appendChild(load); acts.appendChild(del);
       item.appendChild(t); item.appendChild(pill); item.appendChild(m); item.appendChild(acts);
-      if (d.source) { const so = document.createElement("div"); so.className = "hint"; so.style.gridColumn = "1 / -1"; so.textContent = "From " + d.source.trackName + ", " + d.source.label + ", " + d.source.key + " bars " + d.source.bar + " to " + (d.source.bar + d.source.bars - 1); item.appendChild(so); }
+      const srcs = (d.layers || []).filter((L) => L.source).map((L) => L.source.trackName + " " + L.source.label + " " + L.source.key + " " + L.source.bar);
+      if (srcs.length) { const so = document.createElement("div"); so.className = "hint"; so.style.gridColumn = "1 / -1"; so.textContent = "From " + [...new Set(srcs)].join("; "); item.appendChild(so); }
       if (d.memo) { const memo = document.createElement("div"); memo.className = "hint"; memo.style.gridColumn = "1 / -1"; memo.textContent = d.memo; item.appendChild(memo); }
       if (d.reply) { const rep = document.createElement("div"); rep.className = "hint"; rep.style.gridColumn = "1 / -1"; rep.textContent = "Forge: " + d.reply; item.appendChild(rep); }
       list.appendChild(item);
@@ -676,8 +835,11 @@
   async function send() {
     if (!state.notes.length) { sendStatus("Place a note first.", "bad"); return; }
     if (!db) { sendStatus("The store is not available in this view, so it cannot be sent from here.", "bad"); return; }
-    const lanes = toLanes(state.notes, state.bars);
     const opt = $("track").selectedOptions[0];
+    const layers = state.layers.map((L, v) => {
+      const notes = layerNotes(v);
+      return { name: L.name, source: L.source, muted: !!L.muted, count: notes.length, lanes: toLanes(notes, state.bars) };
+    });
     const doc = {
       title: $("title").value.trim() || ("melody " + new Date().toISOString().slice(0, 16).replace("T", " ")),
       memo: $("memo").value.trim(),
@@ -685,10 +847,8 @@
       trackName: opt ? opt.textContent.split(" · ")[0] : state.track,
       bpm: state.bpm,
       bars: state.bars,
-      notes: state.notes.map((n) => ({ s: n.s, p: n.p, l: n.l, name: pitchName(n.p) })),
-      lanes: lanes.map((r) => ({ pat: r.riff, octave: r.octave, unspelled: r.unspelled })),
-      polyphony: lanes.length,
-      source: state.source,
+      notes: state.notes.map((n) => ({ s: n.s, p: n.p, l: n.l, v: n.v, name: pitchName(n.p) })),
+      layers,
       root: "E2",
       stepsPerBar: STEPS_PER_BAR,
       status: "new",
@@ -735,8 +895,8 @@
   $("bpm").value = state.bpm;
   $("track").value = state.track;
   $("rows").value = state.rows;
+  setBars(state.bars);
   fillParts();
-  $("bars").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", +x.dataset.bars === state.bars));
   buildGrid();
   connect();
 })();
