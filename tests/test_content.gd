@@ -379,13 +379,20 @@ func test_every_foe_has_an_action_roster_and_player_text() -> void:
 		for a in f.get("actions", []):
 			if a.get("status") == "implemented":
 				implemented += 1
-				assert_false(a.has("value"), "%s: an attack scales the base attack, it has no value of its own" % id)
+				if Foe.is_attack_action(a):
+					assert_false(a.has("value"), "%s: an attack scales the base attack, it has no value of its own" % id)
 		assert_true(implemented >= 1, "%s has at least one implemented action" % id)
 	var foe := db.make_foe("ghoul")
 	var entry := db.codex_for_foe(foe)
 	assert_true(entry["actions"].contains("CLAW // ATTACK 10"), "codex lists the implemented action with the resulting number")
 	assert_true(entry["actions"].contains("for 10."), "and fills {damage} into the text")
-	assert_false(entry["actions"].contains("GET BACK UP"), "and hides the planned one")
+	assert_true(entry["actions"].contains("GET BACK UP // BUFF"), "and lists the buff, live since 30 September")
+	var planned: Dictionary = db.foes["ghoul"].duplicate(true)
+	planned["actions"] = Array(planned["actions"]).duplicate(true)
+	planned["actions"].append({"id": "someday", "name": "Someday", "kind": "buff", "text": "", "status": "planned"})
+	db.foes["ghoul"] = planned
+	assert_false(db.codex_for_foe(db.make_foe("ghoul"))["actions"].contains("SOMEDAY"), "a planned action stays hidden")
+	ContentDB.reset_cache()
 	assert_eq(entry["flavour"], db.foes["ghoul"]["flavour"], "codex quotes the foe, not the faction")
 
 
@@ -426,13 +433,13 @@ func test_planned_actions_cannot_claim_to_be_implemented() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var f: Dictionary = db.foes["ghoul"].duplicate(true)
-	f["actions"][1]["status"] = "implemented"
+	f["actions"].append({"id": "someday", "name": "Someday", "kind": "buff", "text": "", "status": "implemented"})
 	db.foes["ghoul"] = f
 	var hit := false
 	for e in db.validate():
-		if e.begins_with("foe ghoul action get_back_up") and e.contains("only attack"):
+		if e.begins_with("foe ghoul action someday") and e.contains("effect must be"):
 			hit = true
-	assert_true(hit, "a non-attack action marked implemented is reported")
+	assert_true(hit, "a non-attack action marked implemented without an effect the engine runs is reported")
 
 
 func test_face_round_trips_through_json() -> void:
@@ -649,3 +656,35 @@ func test_the_new_passive_fields_are_checked() -> void:
 		if e.begins_with("chassis odd") and (e.contains("per_stack") or e.contains("keep_status") or e.contains("front or back")):
 			hits += 1
 	assert_eq(hits, 3, "each bad field is named")
+
+
+func test_the_foe_actions_run_and_the_validator_knows_their_shape() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var errs := db.validate()
+	assert_true(errs.is_empty(), "the shipped foes validate: %s" % str(errs))
+	var kinds := {}
+	for id in db.foes.keys():
+		var f := db.make_foe(id)
+		assert_true(Foe.is_attack_action(f.action), "%s opens with its blow" % id)
+		for a in f.actions:
+			kinds[Foe.kind_of(a)] = true
+			if not Foe.is_attack_action(a):
+				assert_true(Foe.ACTION_EFFECTS[Foe.kind_of(a)].has(str(a.get("effect", ""))), "%s's %s runs" % [id, a["id"]])
+	assert_true(kinds.has("defend") and kinds.has("buff") and kinds.has("debuff"), "every kind is in the content")
+	var g: Dictionary = db.foes["ghoul"].duplicate(true)
+	g["id"] = "odd_ghoul"
+	g["name"] = "Odd Ghoul"
+	g["actions"] = [{"id": "claw", "name": "Claw", "kind": "attack", "text": "", "status": "implemented"},
+		{"id": "odd", "name": "Odd", "kind": "buff", "effect": "nonsense", "text": "", "status": "implemented"},
+		{"id": "call", "name": "Call", "kind": "buff", "effect": "summon", "foe": "nobody", "text": "", "status": "implemented"},
+		{"id": "hit", "name": "Hit", "kind": "debuff", "effect": "add_heat", "factor": 2.0, "text": "", "status": "implemented"}]
+	db.foes["odd_ghoul"] = g
+	var hits := 0
+	for e in db.validate():
+		if e.begins_with("foe odd_ghoul") and (e.contains("effect must be") or e.contains("unknown foe") or e.contains("belongs to an attack")):
+			hits += 1
+	assert_eq(hits, 3, "a bad effect, an unknown summon and an attack field on a debuff are each named")
+	var entry := db.codex_for_foe(db.make_foe("bone_colossus"))
+	assert_true(entry["actions"].contains("KNIT // DEFEND"), "the codex lists the defend")
+	assert_true(entry["actions"].contains("Regrows 20 hull"), "with its number filled in")

@@ -163,9 +163,27 @@ func make_foe(foe_id: String) -> Foe:
 	f.stun_resist = clampi(int(d.get("stun_resist", 0)), 0, 100)
 	var acts: Array = []
 	for a in d.get("actions", []):
-		if str(a.get("status", "")) == "implemented" and str(a.get("kind", "")) == "attack":
-			acts.append({"id": str(a.get("id", "attack")), "name": str(a.get("name", "Attack")), "factor": float(a.get("factor", 1.0)),
+		if str(a.get("status", "")) != "implemented":
+			continue
+		var kind := str(a.get("kind", "attack"))
+		if kind == "attack":
+			acts.append({"id": str(a.get("id", "attack")), "name": str(a.get("name", "Attack")), "kind": "attack", "factor": float(a.get("factor", 1.0)),
 				"strikes": int(a.get("strikes", 1)), "weight": int(a.get("weight", 1)), "keywords": Array(a.get("keywords", [])), "text": str(a.get("text", ""))})
+		else:
+			# A defend, buff or debuff: its effect and the fields it reads (Foe.ACTION_EFFECTS).
+			var act := {"id": str(a.get("id", kind)), "name": str(a.get("name", kind.capitalize())), "kind": kind, "effect": str(a.get("effect", "")),
+				"value": int(a.get("value", 0)), "weight": int(a.get("weight", 1)), "text": str(a.get("text", ""))}
+			if a.has("foe"):
+				act["foe"] = str(a["foe"])
+			if a.has("count"):
+				act["count"] = int(a["count"])
+			acts.append(act)
+	# The first attack leads, so a foe's opening intent is its blow.
+	for i in range(acts.size()):
+		if str(acts[i].get("kind", "")) == "attack" and i > 0:
+			var lead: Dictionary = acts.pop_at(i)
+			acts.insert(0, lead)
+			break
 	if not acts.is_empty():
 		f.actions = acts
 		f.action = acts[0]
@@ -607,9 +625,9 @@ const ACTION_KINDS := ["attack", "defend", "buff", "debuff"]
 const ACTION_STATUSES := ["implemented", "planned"]
 
 
-## A foe's roster of actions. Today the engine runs only a basic attack, so exactly one
-## implemented attack action is required and its value must match the foe's attack; every
-## other action must be marked planned until the engine can run it.
+## A foe's roster of actions: at least one implemented attack (its blow, and the number the
+## player reads), and any defend, buff or debuff actions the engine runs, each picked by
+## weight in its turn; an action the engine cannot run yet is marked planned.
 func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> void:
 	var acts = f.get("actions", [])
 	if not (acts is Array):
@@ -630,7 +648,18 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 			errs.append("%s: status must be implemented or planned" % aw)
 		if str(a.get("status", "")) == "implemented":
 			if str(a.get("kind", "")) != "attack":
-				errs.append("%s: only attack actions are implemented by the engine so far" % aw)
+				# A defend, buff or debuff names an effect the engine runs and the fields it reads.
+				var kind := str(a.get("kind", ""))
+				var effect := str(a.get("effect", ""))
+				if not Foe.ACTION_EFFECTS.get(kind, []).has(effect):
+					errs.append("%s: a %s action's effect must be one of %s, got '%s'" % [aw, kind, ", ".join(Foe.ACTION_EFFECTS.get(kind, [])), effect])
+				if effect == "summon" and not foes.has(str(a.get("foe", ""))):
+					errs.append("%s: summon names unknown foe '%s'" % [aw, str(a.get("foe", ""))])
+				if int(a.get("value", 0)) < 0 or int(a.get("count", 1)) < 1 or int(a.get("weight", 1)) < 1:
+					errs.append("%s: value cannot be negative; count and weight are at least 1" % aw)
+				for key in ["factor", "strikes", "keywords"]:
+					if a.has(key):
+						errs.append("%s: '%s' belongs to an attack action" % [aw, key])
 			else:
 				implemented_attacks += 1
 				# An attack scales the foe's base attack: factor, not a value of its own, so the

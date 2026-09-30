@@ -2110,3 +2110,238 @@ func test_the_static_screen_covers_the_withdrawal() -> void:
 	s3.begin()
 	s3.withdraw()
 	assert_eq(plain.hull, 90, "struck as the team pulls out")
+
+
+func _special(kind: String, effect: String, extra: Dictionary = {}) -> Dictionary:
+	var a := {"id": effect, "name": effect.capitalize(), "kind": kind, "effect": effect, "weight": 1, "text": ""}
+	for k in extra.keys():
+		a[k] = extra[k]
+	return a
+
+
+func test_a_folding_foe_takes_half_until_its_next_action_and_a_knitting_one_regrows() -> void:
+	var sk := Skirmish.new(1, 1)
+	var m := _mech("A", Die.single(Face.attack(20, L)), 40, 100)
+	sk.add_mech(m)
+	var g := _ghoul(100, 10)
+	g.actions = [_special("defend", "halve_damage")]
+	g.action = g.actions[0]
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	assert_false(g.attacks(), "not a blow")
+	assert_eq(g.damage(), 0, "and no damage")
+	assert_eq(sk.attackers_of(sk.mechs[0]).size(), 0, "so it is no attacker")
+	assert_eq(sk.incoming_for(sk.mechs[0]), 0, "and the forecast is quiet")
+	sk.end_round()
+	assert_eq(m.shield, 40, "nothing struck")
+	assert_true(Effects.has(g, "folded"), "folded")
+	sk.start_round()
+	sk.assign(0, g)
+	assert_eq(g.hp, 90, "the 20 lands as 10")
+	g.actions = [Foe.basic_action()]
+	g.action = g.actions[0]
+	sk.end_round()   # its next action: the fold fades at its tick
+	assert_false(Effects.has(g, "folded"), "unfolded at its next action")
+	var s2 := Skirmish.new(2, 1)
+	s2.add_mech(_mech("B", Die.single(Face.attack(20, L)), 40, 100))
+	var k := _ghoul(100, 10)
+	k.hp = 50
+	k.actions = [_special("defend", "regrow", {"value": 20})]
+	k.action = k.actions[0]
+	s2.add_foes([k])
+	s2.begin()
+	s2.start_round()
+	assert_eq(k.text_of(k.action), "", "no text set")
+	s2.end_round()
+	assert_eq(k.hp, 70, "regrew 20")
+	k.hp = 95
+	s2.start_round()
+	s2.end_round()
+	assert_eq(k.hp, 100, "never past its maximum")
+
+
+func test_a_readied_foe_gets_back_up_once_unless_executed() -> void:
+	var sk := Skirmish.new(3, 1)
+	var m := _mech("A", Die.single(Face.attack(50, L)), 40, 100)
+	sk.add_mech(m)
+	var g := _ghoul(30, 10)
+	g.actions = [_special("buff", "revive_once")]
+	g.action = g.actions[0]
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	sk.end_round()
+	assert_true(Effects.has(g, "risen"), "readied")
+	sk.start_round()
+	sk.assign(0, g)
+	assert_eq(sk.front[0], null, "it fell")
+	assert_eq(sk.reinforcements.size(), 1, "and went back to the pool")
+	assert_eq(g.hp, 30, "whole")
+	assert_false(Effects.has(g, "risen"), "the charge spent")
+	assert_true("\n".join(sk.log).contains("gets back up into the pool"), "the log says so")
+	assert_eq(sk.outcome, Skirmish.Outcome.NONE, "the fight goes on")
+	sk.end_round()
+	assert_eq(sk.front[0], g, "it stepped back in")
+	sk.start_round()
+	sk.assign(0, g)
+	assert_eq(sk.reinforcements.size(), 0, "once only")
+	assert_eq(sk.outcome, Skirmish.Outcome.VICTORY, "and the second death holds")
+	# An executing blow at any point keeps it down.
+	var s2 := Skirmish.new(4, 1)
+	s2.add_mech(_mech("B", Die.single(Face.attack(50, L, K.EXECUTE)), 40, 100))
+	var e := _ghoul(30, 10)
+	e.actions = [_special("buff", "revive_once")]
+	e.action = e.actions[0]
+	s2.add_foes([e])
+	s2.begin()
+	s2.start_round()
+	s2.end_round()
+	s2.start_round()
+	s2.assign(0, e)
+	assert_true(e.executed, "marked by the execute")
+	assert_eq(s2.reinforcements.size(), 0, "it stays down")
+	assert_eq(s2.outcome, Skirmish.Outcome.VICTORY, "won")
+
+
+func test_a_summoning_foe_calls_up_reinforcements_through_the_factory() -> void:
+	var sk := Skirmish.new(5, 2)
+	sk.add_mech(_mech("A", Die.single(Face.attack(10, L)), 40, 100))
+	var n := _archer(30, 10)
+	n.pack_id = 7
+	n.actions = [_special("buff", "summon", {"foe": "ghoul", "count": 2})]
+	n.action = n.actions[0]
+	sk.add_foes([n])
+	sk.foe_factory = func(id: String) -> Foe: return Foe.make(id, 30, 10)
+	sk.begin()
+	sk.start_round()
+	sk.end_round()
+	assert_eq(sk.field_foes().size(), 3, "two ghouls stepped in at the round's end")
+	for f in sk.field_foes():
+		assert_eq(f.pack_id, 7, "in the summoner's pack")
+	var s2 := Skirmish.new(6, 1)
+	s2.add_mech(_mech("B", Die.single(Face.attack(10, L)), 40, 100))
+	var n2 := _archer(30, 10)
+	n2.actions = [_special("buff", "summon", {"foe": "ghoul"})]
+	n2.action = n2.actions[0]
+	s2.add_foes([n2])
+	s2.begin()
+	s2.start_round()
+	s2.end_round()
+	assert_eq(s2.field_foes().size(), 1, "with no factory, nothing answers")
+	assert_true("\n".join(s2.log).contains("nothing answers"), "and the log says so")
+
+
+func test_a_rally_makes_the_others_hit_harder_next_round_only() -> void:
+	var sk := Skirmish.new(7, 2)
+	var m := _mech("A", Die.single(Face.blank()), 0, 300)
+	sk.add_mech(m)
+	var lord := _ghoul(500, 10)
+	lord.actions = [_special("buff", "rally", {"value": 10})]
+	lord.action = lord.actions[0]
+	var g := _ghoul(500, 10)
+	sk.add_foes([lord, g])
+	sk.begin()
+	sk.start_round()
+	sk.end_round()
+	assert_eq(m.hull, 290, "the ghoul's plain 10 this round; the lord rallied")
+	assert_true(Effects.has(g, "kindled"), "the ghoul is kindled")
+	assert_false(Effects.has(lord, "kindled"), "not the lord itself")
+	sk.start_round()
+	assert_eq(g.damage(), 20, "its intent reads 20")
+	lord.actions = [Foe.basic_action()]
+	lord.action = lord.actions[0]
+	sk.end_round()
+	assert_eq(m.hull, 290 - 20 - 10, "20 from the kindled ghoul, 10 from the lord's blow")
+	assert_false(Effects.has(g, "kindled"), "gone with the round")
+	sk.start_round()
+	assert_eq(g.damage(), 10, "plain again")
+
+
+func test_the_debuffs_cost_rerolls_heat_a_reroll_and_a_component() -> void:
+	# Roar: the team has one reroll fewer next round.
+	var sk := Skirmish.new(8, 1)
+	var m := _mech("A", Die.single(Face.attack(10, L)), 40, 100)
+	sk.add_mech(m)
+	var b := _ghoul(500, 10)
+	b.actions = [_special("debuff", "drain_rerolls", {"value": 1})]
+	b.action = b.actions[0]
+	sk.add_foes([b])
+	sk.begin()
+	sk.start_round()
+	sk.end_round()
+	assert_eq(sk.reroll_debt, 1, "the debt is noted")
+	sk.start_round()
+	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND - 1, "and paid at the next round's start")
+	b.actions = [Foe.basic_action()]
+	b.action = b.actions[0]
+	sk.end_round()
+	sk.start_round()
+	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND, "then it is over")
+	# Stoke: heat on the target, and the forecast counts it.
+	var s2 := Skirmish.new(9, 1)
+	var m2 := _mech("B", Die.single(Face.attack(10, L)), 40, 100)
+	s2.add_mech(m2)
+	var h := _archer(500, 10)
+	h.actions = [_special("debuff", "add_heat", {"value": 10})]
+	h.action = h.actions[0]
+	s2.add_foes([h])
+	s2.begin()
+	s2.start_round()
+	assert_eq(s2.scorch_incoming(s2.mechs[0]), 10, "the heat is coming")
+	assert_eq(s2.forecast(s2.mechs[0], false)["heat_after"], 10, "and the forecast shows it")
+	s2.end_round()
+	assert_eq(s2.mechs[0].heat, 10, "landed")
+	assert_eq(m2.shield, 40, "no blow with it")
+	# Scramble: the next reroll of that die lands anywhere, then the scramble is spent.
+	var s3 := Skirmish.new(10, 1)
+	var m3 := _mech("C", Die.single(Face.attack(10, L)), 40, 100)
+	s3.add_mech(m3)
+	var w := _archer(500, 10)
+	w.actions = [_special("debuff", "scramble")]
+	w.action = w.actions[0]
+	s3.add_foes([w])
+	s3.begin()
+	s3.start_round()
+	s3.end_round()
+	assert_true(Effects.is_scrambled(m3), "scrambled")
+	s3.start_round()
+	assert_true(Effects.is_scrambled(m3), "still, until it rerolls")
+	assert_true(s3.reroll([0]), "the reroll happens")
+	assert_false(Effects.is_scrambled(m3), "and the scramble is spent")
+	assert_true("\n".join(s3.log).contains("C's reroll is scrambled"), "the log says so")
+	# Unmake: the showing component cracks with no hull lost.
+	var s4 := Skirmish.new(11, 1)
+	var m4 := _mech("D", Die.single(Face.attack(10, L, K.BURN)), 40, 100)
+	s4.add_mech(m4)
+	var maw := _ghoul(500, 10)
+	maw.actions = [_special("debuff", "crack")]
+	maw.action = maw.actions[0]
+	s4.add_foes([maw])
+	s4.begin()
+	s4.start_round()
+	s4.end_round()
+	assert_true(m4.die.faces[0].cracked, "cracked")
+	assert_eq(m4.hull, 100, "with no hull lost")
+	assert_eq(m4.shield, 40, "or shield")
+	assert_eq(m4.damaged_component_count(), 1, "one to repair")
+	s4.start_round()
+	s4.end_round()
+	assert_eq(m4.die.faces[0].kind, Face.Kind.BLANK, "cracked again: destroyed")
+
+
+func test_a_foes_special_action_is_picked_by_weight_and_shows_its_kind() -> void:
+	var g := _ghoul(30, 10)
+	g.actions = [Foe.basic_action(), _special("defend", "halve_damage")]
+	g.actions[0]["weight"] = 3
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 1
+	var specials := 0
+	for i in range(400):
+		g.choose_action(rng)
+		if not g.attacks():
+			specials += 1
+	assert_true(specials > 60 and specials < 140, "about one pick in four is the special: %d of 400" % specials)
+	assert_eq(Foe.kind_of(g.actions[1]), "defend", "its kind reads")
+	assert_eq(g.damage_of(g.actions[1]), 0, "and deals nothing")
+	assert_eq(g.threat(), 10, "the threat for deployment is the blow's")

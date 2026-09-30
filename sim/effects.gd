@@ -46,10 +46,10 @@ const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "roll_max"],
 	"on_crit": ["multiply_damage", "add_damage", "add_burn", "vent_heat", "add_crit_damage"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "draw_rank", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "draw_rank", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat"],
 	"on_hull_damage": ["stack_status"],
-	"status": ["tick_hp", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry"],
+	"status": ["tick_hp", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry", "scramble_reroll"],
 	"on_foe_status": ["chance_suppress"],
 }
 const DECAY_NONE := 0    # lives until its scope ends
@@ -92,6 +92,17 @@ const STATUS := {
 	# The foe's side of it: one status, never stacked, spent by the blow it doubles.
 	"shocked": {"id": "shocked", "name": "Shocked", "description": "The next blow it takes deals double, then the shock is spent. Striking bare hull again costs it 10.",
 		"tags": ["shock"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 2}]},
+	# What a foe's defend, buff and debuff actions leave (30 September). Folded fades at the
+	# foe's next action; Kindled lasts the next round; Risen is a charge spent by a death;
+	# Scrambled sits on a machine until its next reroll, and a cleanse clears it.
+	"folded": {"id": "folded", "name": "Folded", "description": "Takes half damage until its next action.",
+		"tags": ["guard"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 0.5}]},
+	"kindled": {"id": "kindled", "name": "Kindled", "description": "Hits 10 harder this round.",
+		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 10}]},
+	"risen": {"id": "risen", "name": "Getting Back Up", "description": "Returns from the pool once after dying, unless executed.",
+		"tags": ["revive"], "effects": []},
+	"scrambled": {"id": "scrambled", "name": "Scrambled", "description": "This die's next reroll lands anywhere, the same entry included.",
+		"tags": [CLEANSABLE], "effects": [{"trigger": "status", "effect": "scramble_reroll", "value": 1}]},
 }
 ## The statuses a buff component may grant: the machines' own, never a foe's.
 const MECH_STATUSES := ["overcharged", "braced", "primed", "retaliate", "taunt", "beacon"]
@@ -537,6 +548,23 @@ static func foe_status_suppress_chance(u) -> int:
 	return clampi(int(roundf(total)), 0, 100)
 
 
+## What a foe's blows gain from its statuses (add_attack, static; a Kindled foe), per stack.
+static func foe_attack_bonus(f) -> int:
+	var n := 0
+	for pair in _taking_part(f, "static", null):
+		if str(pair[0].get("effect", "")) == "add_attack":
+			n += int(pair[0].get("value", 0)) * int(pair[1].stacks)
+	return n
+
+
+## Is this machine's next reroll scrambled (a foe's debuff)?
+static func is_scrambled(u) -> bool:
+	for pair in _taking_part(u, "status", null):
+		if str(pair[0].get("effect", "")) == "scramble_reroll":
+			return true
+	return false
+
+
 ## Armour this machine has against blows from a rank (0 front, 1 back) on top of its stat
 ## (add_armour_vs_rank, static; the Breaching Plow's Glacis against the front).
 static func armour_against(u, rank: int) -> int:
@@ -724,6 +752,8 @@ static func effect_text(eff: Dictionary) -> String:
 		"keep_status": body = "%s never fades and lasts the battle" % str(STATUS.get(str(v), {}).get("name", str(v)))
 		"screen_withdraw": body = "on a withdrawal this machine is out before the enemy strikes, and each ally has a %s%% chance to slip out with it; a blow at a covered machine is lost" % vs
 		"stack_status": body = "gains a stack of %s" % str(STATUS.get(str(v), {}).get("name", str(v)))
+		"add_attack": body = "attack +%s" % vs
+		"scramble_reroll": body = "the next reroll of this die lands anywhere"
 		"free_reroll": body = "%s free reroll%s of this die a round" % [vs, "" if int(v) == 1 else "s"]
 		"shield_per_heat": body = "+%s shield for every 10 heat carried" % vs
 		"add_shield": body = "+%s shield" % vs

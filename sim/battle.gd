@@ -319,6 +319,7 @@ func ground_terrain(group: Array) -> int:
 func _build_skirmish(group: Array) -> Skirmish:
 	var sk := Skirmish.new(rng.randi(), columns)
 	sk.terrain = ground_terrain(group)
+	sk.foe_factory = func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null   # a summoning action calls up content
 	for u in group:
 		if not field.units.has(u):
 			continue

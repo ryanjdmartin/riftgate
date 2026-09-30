@@ -852,9 +852,9 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	# The intent is this round's chosen attack: a sword, its damage, and a mark for a double
 	# strike or a breach; a suppressed foe shows no intent, only the status; a dead one
 	# threatens nothing.
-	v.intent_kind = "" if (foe.is_suppressed() or foe.target == null or not foe.alive()) else "attack"
-	v.intent_value = foe.damage()
-	v.intent_note = ("×%d" % foe.strikes() if foe.strikes() > 1 else "") + ("!" if foe.breaches() else "")
+	v.intent_kind = "" if (foe.is_suppressed() or foe.target == null or not foe.alive()) else Foe.kind_of(foe.action)
+	v.intent_value = foe.damage() if foe.attacks() else int(foe.action.get("value", 0))
+	v.intent_note = (("×%d" % foe.strikes() if foe.strikes() > 1 else "") + ("!" if foe.breaches() else "")) if foe.attacks() else ""
 	v.statuses = []
 	for r in _foe_rows(foe):
 		v.statuses.append([r[0], r[1], r[3]])
@@ -868,6 +868,12 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(["burn", str(foe.burn_stacks()), "Burning: %d damage a round, one stack less each round" % int(Effects.tick_preview(foe)["hp"]), Palette.HEAT])
 	if foe.is_suppressed():
 		rows.append(["suppress", "", "Suppressed: loses its action this round", Palette.HUD])
+	if Effects.has(foe, "folded"):
+		rows.append(["shield", "×½", "Folded: takes half damage until its next action", Palette.SHIELD])
+	if Effects.has(foe, "kindled"):
+		rows.append(["overcharge", "+%d" % Effects.foe_attack_bonus(foe), "Kindled: hits %d harder this round" % Effects.foe_attack_bonus(foe), Palette.HEAT])
+	if Effects.has(foe, "risen"):
+		rows.append(["star", "", "Getting back up: returns from the pool once after dying, unless executed", Palette.ENEMY])
 	if Effects.has(foe, "shocked"):
 		rows.append(["shocked", "×2", "Shocked: the next blow it takes lands double; striking bare hull again costs it %d" % Skirmish.SHOCK_DISCHARGE, Palette.HEAT])
 	var numbed := Effects.stacks_of(foe, "numbed")
@@ -908,8 +914,8 @@ func _mech_rows(i: int) -> Array:
 		if int(d[3]) < Effects.SKIRMISH:
 			continue
 		var id := str(d[5])
-		var glyph := "heat" if id == "overheating" else ("corrupt" if id.begins_with("corrupted") else ("blank" if id.begins_with("disabled") else ("overcharge" if id == "overcharged" else ("shield" if id == "braced" else ("burn" if id == "primed" else ("shocked" if id == "retaliate" else (id if id in ["taunt", "beacon"] else "star")))))))
-		var colour: Color = Palette.HEAT if id in ["overheating", "overcharged", "primed"] else (Palette.ENEMY if id.begins_with("corrupted") else (Palette.SHIELD if id in ["braced", "retaliate", "taunt", "beacon"] else Palette.HUD))
+		var glyph := "heat" if id == "overheating" else ("corrupt" if id.begins_with("corrupted") else ("blank" if id.begins_with("disabled") else ("overcharge" if id == "overcharged" else ("shield" if id == "braced" else ("burn" if id == "primed" else ("shocked" if id == "retaliate" else (id if id in ["taunt", "beacon"] else ("reroll" if id == "scrambled" else "star"))))))))
+		var colour: Color = Palette.HEAT if id in ["overheating", "overcharged", "primed"] else (Palette.ENEMY if id.begins_with("corrupted") or id == "scrambled" else (Palette.SHIELD if id in ["braced", "retaliate", "taunt", "beacon"] else Palette.HUD))
 		var stacks := int(d[4])
 		rows.append([glyph, ("×%d" % stacks) if stacks > 1 else "", "%s: %s" % [str(d[0]), str(d[1])], colour])
 	if sk.state == Skirmish.State.ASSIGN:
@@ -1067,7 +1073,10 @@ func _on_foe_held(v: UnitView) -> void:
 		text += "\ndestroyed: cleared at the end of the round"
 	else:
 		if not foe.action.is_empty():
-			text += "\n%s %d%s" % [str(foe.action.get("name", "")), foe.damage(), v.intent_note]
+			if foe.attacks():
+				text += "\n%s %d%s" % [str(foe.action.get("name", "")), foe.damage(), v.intent_note]
+			else:
+				text += "\n%s: %s" % [str(foe.action.get("name", "")), foe.text_of(foe.action)]
 		if foe.target != null:
 			text += "\n→ %s" % foe.target.unit.display_name
 	if foe.is_massive():

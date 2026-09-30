@@ -86,6 +86,11 @@ var _acted: Array = []
 ## The machines a static screen covers during a withdrawal (the Prairie Dog): a blow aimed at
 ## one is lost. Empty outside a withdrawal.
 var _screened: Array = []
+## Rerolls a foe's roar has cost the team for the coming round.
+var reroll_debt: int = 0
+## Makes a foe from a content id, for a summoning action; set by the battle (the content
+## database), left empty by tests, in which case a summon calls nothing up.
+var foe_factory: Callable = Callable()
 
 
 func _init(seed_value: int = 0, columns_arg: int = DEFAULT_COLUMNS) -> void:
@@ -215,8 +220,19 @@ func _refresh_allies() -> void:
 
 
 ## The foes that will strike this mech when the round ends, in the order they act: alive,
-## not suppressed, aimed at it, and not about to die to burn first.
+## not suppressed, aimed at it with an attack (a foe folding, rallying or roaring lands no
+## blow), and not about to die to burn first.
 func attackers_of(ms: MechState) -> Array[Foe]:
+	var out: Array[Foe] = []
+	for f in acting_on(ms):
+		if f.attacks():
+			out.append(f)
+	return out
+
+
+## Every foe that will act on this mech when the round ends, whatever its action: alive, not
+## suppressed, aimed at it, not about to die to burn first.
+func acting_on(ms: MechState) -> Array[Foe]:
 	var out: Array[Foe] = []
 	for f in field_foes():
 		if not f.alive() or f.is_suppressed() or f.target != ms:
@@ -227,15 +243,18 @@ func attackers_of(ms: MechState) -> Array[Foe]:
 	return out
 
 
-## Heat the round's end will add from the scorching blows about to land: one stack each,
-## ticking at once.
+## Heat the round's end will add from the foes acting on this mech: a stack of Overheating
+## per scorching blow, ticking at once, and a stoking debuff's heat outright.
 func scorch_incoming(ms: MechState) -> int:
 	var per_stack := int(Effects.STATUS["overheating"]["effects"][0]["value"])
 	var stacks := 0
-	for f in attackers_of(ms):
-		if f.has_keyword(f.action, "scorch"):
+	var heat := 0
+	for f in acting_on(ms):
+		if f.attacks() and f.has_keyword(f.action, "scorch"):
 			stacks += f.strikes()
-	return stacks * per_stack
+		elif str(f.action.get("effect", "")) == "add_heat":
+			heat += int(f.action.get("value", 0))
+	return stacks * per_stack + heat
 
 
 func incoming_for(ms: MechState) -> int:
@@ -387,7 +406,10 @@ func shown_face(ms: MechState, f: Face) -> Face:
 func start_round() -> void:
 	assert(state == State.ROUND_START, "start_round called out of order")
 	round += 1
-	rerolls_left = REROLLS_PER_ROUND
+	rerolls_left = maxi(0, REROLLS_PER_ROUND - reroll_debt)   # a roar last round costs rerolls now
+	if reroll_debt > 0:
+		log.append("the roar costs the team %d reroll%s" % [reroll_debt, "" if reroll_debt == 1 else "s"])
+	reroll_debt = 0
 	last_roll.clear()
 	# The turn begins with passive cooling (Ryan, 22 September: cool at the start, heat at
 	# the end): every machine sheds its chassis's cooling rating, one log line for all.
@@ -435,15 +457,26 @@ func reroll(mech_indices: Array) -> bool:
 			live.append(ms)
 	if live.size() == 1 and live[0].free_rerolls > 0:
 		live[0].free_rerolls -= 1
-		live[0].face_index = live[0].die.reroll(rng, live[0].face_index)
+		_reroll_die(live[0])
 		log.append("%s rerolls its own die for free" % live[0].unit.display_name)
 		return true
 	if rerolls_left <= 0:
 		return false
 	for ms in live:
-		ms.face_index = ms.die.reroll(rng, ms.face_index)
+		_reroll_die(ms)
 	rerolls_left -= 1
 	return true
+
+
+## One die rerolled: never the same entry, unless a foe scrambled it, in which case it lands
+## anywhere and the scramble is spent.
+func _reroll_die(ms: MechState) -> void:
+	if Effects.is_scrambled(ms.unit):
+		ms.face_index = ms.die.roll(rng)
+		Effects.remove(ms.unit, "scrambled")
+		log.append("%s's reroll is scrambled" % ms.unit.display_name)
+		return
+	ms.face_index = ms.die.reroll(rng, ms.face_index)
 
 
 ## Is any reroll open: the team's, or a machine's own?
@@ -593,6 +626,9 @@ func _enemy_turn() -> void:
 		if _screened.has(t):
 			log.append("%s's blow is lost in the static" % f.display_name)
 			continue
+		if not f.attacks():
+			_foe_acts(f, t)   # a defend, buff or debuff instead of a blow
+			continue
 		for s in range(f.strikes()):
 			if not t.alive():
 				break
@@ -685,8 +721,10 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 		var crit := f.crit > 0 and rng.randi_range(1, 100) <= f.crit
 		if crit:
 			dmg = int(roundf(dmg * (Face.CRIT_MULT + f.crit_bonus + Effects.crit_bonus(ms.unit, f, target))))
-		if f.has(Face.Keyword.EXECUTE) and target.hp * 2 <= target.hp_max:
-			dmg = int(roundf(dmg * (1.5 if target.is_massive() else 2.0)))   # bosses and elites: half the bonus
+		if f.has(Face.Keyword.EXECUTE):
+			target.executed = true   # a foe that would get back up stays down
+			if target.hp * 2 <= target.hp_max:
+				dmg = int(roundf(dmg * (1.5 if target.is_massive() else 2.0)))   # bosses and elites: half the bonus
 		# Then the pipeline: every live modifier's adds, multiplies and floors, in that order.
 		# Conditions on the foe read the primary target; a spread or a penetrate carries
 		# the same blow to the others.
@@ -773,6 +811,60 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 				log.append("%s chains to %s" % [ms.unit.display_name, cand.display_name])
 				_resolve_attack(mech_index, ms, f, cand)
 				break
+
+
+## A foe's defend, buff or debuff action, resolved in its turn in place of a blow (the ten
+## planned actions of 14 September, built 30 September). Every field is the action's;
+## nothing here keys on a foe's id. `Foe.ACTION_EFFECTS` says what each kind may do.
+func _foe_acts(f: Foe, t: MechState) -> void:
+	var a := f.action
+	var effect := str(a.get("effect", ""))
+	var value := int(a.get("value", 0))
+	match effect:
+		"halve_damage":
+			Effects.stack(f, Effects.STATUS["folded"], Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_TICK)
+			log.append("%s: %s (takes half damage until its next action)" % [f.display_name, str(a.get("name", "defends"))])
+		"regrow":
+			var before := f.hp
+			f.hp = mini(f.hp_max, f.hp + value)
+			log.append("%s: %s, regrows %d" % [f.display_name, str(a.get("name", "regrows")), f.hp - before])
+		"revive_once":
+			Effects.stack(f, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_NONE)
+			log.append("%s: %s (it will return once, unless executed)" % [f.display_name, str(a.get("name", "readies"))])
+		"summon":
+			var count := maxi(1, int(a.get("count", 1)))
+			var who := str(a.get("foe", ""))
+			if foe_factory.is_valid() and not who.is_empty():
+				for i in range(count):
+					var n = foe_factory.call(who)
+					if n is Foe:
+						n.pack_id = f.pack_id
+						reinforcements.append(n)
+				log.append("%s: %s, %d %s answer%s the call" % [f.display_name, str(a.get("name", "calls")), count, who, "s" if count == 1 else ""])
+			else:
+				log.append("%s: %s, and nothing answers" % [f.display_name, str(a.get("name", "calls"))])
+		"rally":
+			var rallied := 0
+			for other in field_foes():
+				if other != f and other.alive():
+					Effects.grant_for_rounds(other, Effects.STATUS["kindled"], "foe:" + f.content_id, round + 1)
+					rallied += 1
+			log.append("%s: %s, %d hit %d harder next round" % [f.display_name, str(a.get("name", "rallies")), rallied, value])
+		"drain_rerolls":
+			reroll_debt += maxi(0, value)
+			log.append("%s: %s, the team loses %d reroll%s next round" % [f.display_name, str(a.get("name", "roars")), value, "" if value == 1 else "s"])
+		"add_heat":
+			_add_heat(t, value)
+			log.append("%s: %s, %s +%d heat" % [f.display_name, str(a.get("name", "stokes")), t.unit.display_name, value])
+		"scramble":
+			Effects.grant_for_rounds(t.unit, Effects.STATUS["scrambled"], "foe:" + f.content_id, round + 1)
+			log.append("%s: %s, %s's next reroll is scrambled" % [f.display_name, str(a.get("name", "scrambles")), t.unit.display_name])
+		"crack":
+			if t.face_index >= 0:
+				log.append("%s: %s, %s's showing component takes the blow" % [f.display_name, str(a.get("name", "unmakes")), t.unit.display_name])
+				_injure_entry(t, t.face_index)
+		_:
+			log.append("%s: %s" % [f.display_name, str(a.get("name", "acts"))])
 
 
 ## The Prairie Dog's screen on a withdrawal (28 September; built 30 September): a machine with
@@ -991,7 +1083,15 @@ static func _blow(shield: int, hull_max: int, armour: int, amount: int, breach: 
 func apply_injury(ms: MechState) -> void:
 	if ms.die.faces.is_empty():
 		return
-	var idx := ms.die.roll(rng)
+	_injure_entry(ms, ms.die.roll(rng))
+
+
+## The injury on one entry: intact cracks, cracked is destroyed (unless a passive holds it),
+## blank shrugs it off. The die's roll picks the entry for a hull hit; a foe's unmake picks
+## the one showing.
+func _injure_entry(ms: MechState, idx: int) -> void:
+	if idx < 0 or idx >= ms.die.faces.size():
+		return
 	var f := ms.die.faces[idx]
 	if f.kind == Face.Kind.BLANK:
 		log.append("%s: the blow lands on %s; nothing left to break" % [ms.unit.display_name, "an empty hardpoint" if f.empty else "a destroyed component"])
@@ -1038,7 +1138,19 @@ func _clear_dead() -> void:
 			var f: Foe = rank[col]
 			if f != null and not f.alive():
 				if f.rank >= 0:
-					log.append("%s destroyed" % f.display_name)
+					# A foe that readied itself to get back up returns to the pool once, whole,
+					# unless an executing blow touched it this fight.
+					if Effects.has(f, "risen") and not f.executed:
+						Effects.remove(f, "risen")
+						f.hp = f.hp_max
+						f.rank = -1
+						f.column = -1
+						f.target = null
+						f.modifiers.clear()
+						reinforcements.append(f)
+						log.append("%s falls, and gets back up into the pool" % f.display_name)
+					else:
+						log.append("%s destroyed" % f.display_name)
 				f.rank = -1
 				rank[col] = null
 

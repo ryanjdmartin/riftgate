@@ -550,7 +550,7 @@ func _greedy_rerolls(sk: Skirmish) -> void:
 
 ## The blow this foe is about to land, if it is aimed at anyone.
 static func _threat_now(f: Foe) -> float:
-	if f.target == null or f.is_suppressed():
+	if f.target == null or f.is_suppressed() or not f.attacks():
 		return 0.0
 	return float(f.damage() * f.strikes())
 
