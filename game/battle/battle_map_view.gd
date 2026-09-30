@@ -798,9 +798,9 @@ const DEST_RING := HEX_SIZE * 0.58   # the target's outer ring
 # tritan vision. The rest sits 60 from its nearest neighbour (the blue HUD, deutan), the
 # bright 36; the rift's own pale (c9a6ff) was 7 from the blue HUD and a paler lavender 1,
 # so the pulse never goes that far, and plum went toward the red under red-green vision.
-const INTENT := Color("9350ff")       # a pack's route at rest (L 52; brighter again, Ryan, 30 September)
+const INTENT := Color("a468ff")       # a pack's route at rest (L 58, Ryan, 30 September: up once more)
 const INTENT_HOT := Color("b88cff")   # the tapped pack's bright (L 67; 21 Lab from the blue HUD under deutan, the floor)
-const INTENT_DEEP := Color("6c28d0")  # the tapped pack's dark, a little up from the first cut
+const INTENT_DEEP := Color("5a1cb8")  # the tapped pack's dark, back down to the first cut (Ryan, 30 September)
 const INTENT_EDGE := Color("2a0e4a")  # the edge under every violet line and border: deep violet, not black
 ## Whether the intent marks wear that edge at all (Ryan, 30 September: trying them without);
 ## RIFTGATE_INTENT_EDGE=1 puts it back for a comparison. The solid line and its deep-violet
