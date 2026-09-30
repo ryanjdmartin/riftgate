@@ -2111,25 +2111,24 @@ def music_hold_the_line(palette="hybrid"):
     climax = "0..0..3.0..5..3.0..0..8.7..5..3.3..3..5.3..7..5.0..0..a.8..7..5."   # the new unison riff, four bars
     keys_roots = list("08g7053g" "087g08g7")       # the keys' bass, one root a bar: E C D B E A G D, E C B D E C D B
     keys_fifths = list("h325h352")                 # the fifth under each second-half root ("5" is the octave-down one under the low D)
-    # The keys' tune and its two harmony lines are Ryan's, scored on the Melody Desk (30
-    # September; melody jchounp1smurpipuvxpb, "Hold The Line · lead · F bars 59 to 74"),
-    # starting from the tune that was there and the thirds and roots derived under it.
+    # The keys' tune and its harmony lines are Ryan's, scored on the Melody Desk (30 September,
+    # second melody, njk8j93axhg89zbp3rxr, "Hold The Line · lead · F bars 59 to 74").
     keys_tune = ("7--.8-.7-..5.3-.0-----..3---5---8--.a-.8-..7.5-.3---....5-.3-.0-"
                  "7--.a-.c------.a--.8-.7-.5-----.3--.5-.7-..8.a-.2-----------...."
                  "7--.8-.7-..5.3-.0------.3---5---8--.a-.8-..7.5-.3------.5-.3-.0-"
                  "7---8---a---c---a---8---7---5---7---8---a---7---c---------------")
     keys_harm1 = ("................................................................"
-                 ".......e---------------..8-------------------...5-----------...."
-                 "e--.f-.e-..c.a-.8------.c---d---e--.i-.e-..d.c-.c------.c-.a-.7-"
-                 "d-------8-------e-------b-------c-------d-------7-------8-------")
+                 "e-------------..c-------------..8-------------..5-----------...."
+                 "e--.f-.e-..d.a-.8------.c---d---e--.i-.e-..d.c-.c------.c-.a-.7-"
+                 "d-------b-------e-------b-------c-------d-------7---------------")
     keys_harm2 = ("................................................................"
-                 ".......c---------------..5-------------------...a-----------...."
-                 "c-------8-------3------.7-------c--.d-.c-..a....7------.7-.5-.2-"
-                 "7-------2-------8-------2-------5-------7-------3-------5-------")
-    keys_harm2b = ("................................................................"
+                 "c-------------..8-------------..5-------------..a-----------...."
+                 "c--------------.3------.7-------c--.d-.c-..a....7------.5------."
+                 "7-------8-------a-------5-------5-------7-------3---------------")
+    keys_harm3 = ("................................................................"
                  "................................................................"
-                 "............................a---8-------5-------3------........."
-                 "................................................0-------1-------")
+                 "............................a---8--------------.3------.2------."
+                 "2-------2-------3-------2-------3-------2-------0---------------")
     if real:
         # Ryan, 30 September, from the phone: kick up, snare down, toms up, crashes down (and
         # the crash itself softer, since it broke up on the speaker).
@@ -2265,12 +2264,11 @@ def music_hold_the_line(palette="hybrid"):
             {"inst": "sub_bass", "mode": "riff", "gain": 0.34, "legato": True, "octave": -1, "params": {"res": 0.35, "fade": 0.4},
              "pat": {"F": "." * 128 + "".join((r + "-" * 15) if r == "5" else "." * 16 for r in keys_fifths)}},
             {"inst": "lead", "mode": "riff", "gain": 0.46, "octave": 2, "pat": {"F": keys_tune}},
-            # His harmony lines under it, the chords thickening toward the climax; the third
-            # line overlaps itself, so it is two voices.
-            # Down so the top line stays the lead (Ryan, 30 September).
+            # His harmony lines under it, down so the top line stays the lead (an overlapping
+            # line is two voices).
             {"inst": "lead", "mode": "riff", "gain": 0.22, "octave": 1, "pat": {"F": keys_harm1}},
             {"inst": "lead", "mode": "riff", "gain": 0.2, "octave": 1, "pat": {"F": keys_harm2}},
-            {"inst": "lead", "mode": "riff", "gain": 0.2, "octave": 1, "pat": {"F": keys_harm2b}},
+            {"inst": "lead", "mode": "riff", "gain": 0.2, "octave": 1, "pat": {"F": keys_harm3}},
             {"inst": "epiano", "mode": "stab", "gain": 0.5, "dur": 2.0,
              "pat": {"C": "..x...x...x...x.", "L": "..x...x...x...x.",
                      "F": "............x..." "................" "............x..." "x..............."
