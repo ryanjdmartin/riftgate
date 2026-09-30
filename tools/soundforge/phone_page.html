@@ -217,6 +217,17 @@
 </div>
 <div class="listen"><p><strong>Listen for:</strong> whether the fill now beats rather than grooves without getting louder, and whether the high tom's new pitch sits with the low one.</p></div>
 
+<h2>9. The climax, one voice at a time</h2>
+<p>The climax no longer grows in loudness through its three sets; the instruments make the build. These take one voice out at a time from the second set on, where the backing guitar comes in, so you can hear what each was doing, and one brings the chimes up. Same bars, same seed: switch rows mid-set.</p>
+<div class="rows" data-group="round9">
+  <div class="row" data-src="climax_ship.mp4" data-title="Climax &middot; as it ships"><button class="btn" aria-label="play">&#9654;</button><div class="name"><span class="step">1</span> As it ships</div><div class="num" data-db="climax_ship"></div><div class="note">The three sets and the breath, at one loudness, with the drums holding one level.</div></div>
+  <div class="row" data-src="climax_nodrone.mp4" data-title="Climax &middot; no drone from set two"><button class="btn" aria-label="play">&#9654;</button><div class="name"><span class="step">2</span> Drone out from the second set</div><div class="num" data-db="climax_nodrone"></div><div class="note">The drone stays under the first set alone and leaves when the backing guitar arrives.</div></div>
+  <div class="row" data-src="climax_nopiano.mp4" data-title="Climax &middot; no piano"><button class="btn" aria-label="play">&#9654;</button><div class="name"><span class="step">3</span> Piano out</div><div class="num" data-db="climax_nopiano"></div><div class="note">Its riff an octave up in the second and third sets, and its chords on the beat in the third, both gone.</div></div>
+  <div class="row" data-src="climax_nochug2.mp4" data-title="Climax &middot; no second chug"><button class="btn" aria-label="play">&#9654;</button><div class="name"><span class="step">4</span> Second chug out</div><div class="num" data-db="climax_nochug2"></div><div class="note">The riff's own seven-step chug that creeps in under the second and third sets, gone.</div></div>
+  <div class="row" data-src="climax_chimes.mp4" data-title="Climax &middot; chimes up"><button class="btn" aria-label="play">&#9654;</button><div class="name"><span class="step">5</span> Metal chimes up</div><div class="num" data-db="climax_chimes"></div><div class="note">The chime figure at 0.35 from 0.2.</div></div>
+</div>
+<div class="listen"><p><strong>Listen for:</strong> which of rows 2 to 4 you miss. A voice you cannot hear leaving is a voice that was only spending headroom.</p></div>
+
 <h2>Measured</h2>
 <p>Where each shipped loop's power sits, by band. A phone speaker plays little below 150 Hz and nothing below 80.</p>
 <div style="overflow-x:auto">
@@ -309,7 +320,7 @@
   // The solo file's marks, and each file's loudness through the phone model, from the manifest.
   fetch('manifest.json').then(function (r) { return r.json(); }).then(function (m) {
     var all = [];
-    ['round4', 'round5', 'round6', 'round7', 'round8', 'voices', 'voices2', 'guitar', 'balance', 'shadows2', 'rift', 'levels', 'round3'].forEach(function (k) { all = all.concat(m[k] || []); });
+    ['round4', 'round5', 'round6', 'round7', 'round8', 'round9', 'voices', 'voices2', 'guitar', 'balance', 'shadows2', 'rift', 'levels', 'round3'].forEach(function (k) { all = all.concat(m[k] || []); });
     var markBoxes = {bass_solo: 'solo', bass_solo2: 'solo2', bass_solo3: 'solo3', drums_kits: 'drums', drums_kick: 'kick', drums_tom: 'tomtight', drums_tom_power: 'tompower', hold_seam: 'seam', drums_tom_hard: 'tomhard'};
     all.forEach(function (f) {
       var el = document.querySelector('[data-db="' + f.name + '"]');

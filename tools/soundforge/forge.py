@@ -2351,8 +2351,9 @@ def music_hold_the_line(palette="hybrid"):
              # under the whole climax, alone under the first set.
              # Up a bit everywhere it plays (Ryan, 29 September).
              {"inst": "sweep", "gain": 0.5, "octave": 0, "rate": 0.08, "depth": 0.3, "open": 0.75, "sections": "ANSRZ", "skip": {"A": 12}, "chord": [0, 7, 12]}],
-        drum_gain={"U": 1.3, "S": 1.15, "R": 1.25, "Z": 1.3, "W": 1.25, "Q": 1.2},
-        crescendo={"S": (0.85, 1.0), "R": (1.0, 1.12), "Z": (1.12, 1.3)},
+        # The climax no longer grows in loudness through its three sets (Ryan, 30 September:
+        # instruments are added, it need not get louder too); the drums hold one level.
+        drum_gain={"U": 1.3, "S": 1.15, "R": 1.15, "Z": 1.15, "W": 1.25, "Q": 1.2},
         # Headroom before the master's saturator (Ryan, 30 September: the climax grew crackly
         # from the backing guitar's entry to the double kicks, and the lift's closing fill broke
         # up). Measured: every section peaked at the same -12.7 dB while the climax's loudness
