@@ -418,11 +418,10 @@ func _draw() -> void:
 			# The same route mark as the player's (Ryan, 29 September: the new one is so good
 			# it should be both sides'), in steady red; the colour breathes only on the pack
 			# that was tapped. A contact or the gate needs no target lock: its own mark says it.
-			var owned := not (contact_hexes.has(dest) or map.gate_hexes.has(dest))
-			# Bright and steady (Ryan, 29 September: the plain red was hard to see, and the
-			# rings' breathing read as selection); the tapped pack alone breathes.
-			# Saturated and edged (Ryan, 29 September: the salmon washed out on the ground):
-			# the line pure red on a dark edge, the crawling dashes the bright salmon over it.
+			# The target lock stays at a contact too (Ryan, 30 September: the machine's kept
+			# its own, the pack's vanished under the contact mark); only the gate, with its
+			# own bar, needs none. The tapped pack alone breathes.
+			var owned := not map.gate_hexes.has(dest)
 			var col := _intent_colour() if sq.pos == inspected else INTENT
 			_route(sq.pos, path, col, owned, false, sq.pos == inspected, true)
 
@@ -802,6 +801,11 @@ const DEST_RING := HEX_SIZE * 0.58   # the target's outer ring
 const INTENT := Color("7a2ce6")       # a pack's route at rest (L 41)
 const INTENT_HOT := Color("a870ff")   # its bright, still plainly violet (L 59)
 const INTENT_EDGE := Color("2a0e4a")  # the edge under every violet line and border: deep violet, not black
+## Whether the intent marks wear that edge at all (Ryan, 30 September: trying them without);
+## RIFTGATE_INTENT_EDGE=1 puts it back for a comparison. The solid line and its deep-violet
+## crawling gaps stay either way: the gaps are the motion, the edge was only the contrast.
+static func _intent_edged() -> bool:
+	return OS.get_environment("RIFTGATE_INTENT_EDGE") == "1"
 const ENEMY_HOT := Color("ff8a1e")    # the contact's bright: red toward orange
 const ENEMY_EDGE := Color("5a0e0e")   # the edge under every red line and border: deep red, not black (Ryan, 29 September: black made candy canes)
 
@@ -896,7 +900,8 @@ func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool
 	if edged:
 		# One red line: a deep-red edge, the red, and the motion as deep-red gaps crawling
 		# along it, so nothing alternates between two bright colours.
-		draw_polyline(pts, INTENT_EDGE, 7.0)
+		if _intent_edged():
+			draw_polyline(pts, INTENT_EDGE, 7.0)
 		draw_polyline(pts, col, 3.5)
 		for i in range(pts.size() - 1):
 			_dashed_line(pts[i], pts[i + 1], INTENT_EDGE, HEX_SIZE * 0.22, fmod(_ring_t * 2.0, 2.0) + 1.0)
@@ -910,7 +915,7 @@ func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool
 		var tip := pts[i].lerp(pts[i + 1], 0.55)
 		var side := Vector2(-dir.y, dir.x)
 		var chev := PackedVector2Array([tip - dir * 6.0 + side * 6.0, tip, tip - dir * 6.0 - side * 6.0])
-		if edged:
+		if edged and _intent_edged():
 			draw_polyline(chev, INTENT_EDGE, 5.0)
 		draw_polyline(chev, col, 2.5)
 	if not lock:
@@ -919,13 +924,13 @@ func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool
 	# An enemy route's rings pulse in the line's own register (the selected pack's whole
 	# route breathes red to orange together, Ryan, 29 September); a machine's lift toward white.
 	var bright := col if edged else (col.lerp(Color.WHITE, 0.25 + 0.25 * sin(_ring_t * 1.6)) if breathe else col)
-	if edged:
+	if edged and _intent_edged():
 		# The rings and the border wear the line's edge, so the line runs into them as one.
 		_target_rings(end, INTENT_EDGE, DEST_RING * 0.85, -1.0, 6.0)
 		draw_circle(end, 5.5, INTENT_EDGE)
 	_target_rings(end, bright, DEST_RING * 0.85, -1.0)
 	draw_circle(end, 3.5, bright)
-	_crawl_poly(Hex.corners(end, HEX_SIZE - 3.0), col, HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0), INTENT_EDGE if edged else Color(0, 0, 0, 0))
+	_crawl_poly(Hex.corners(end, HEX_SIZE - 3.0), col, HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0), INTENT_EDGE if edged and _intent_edged() else Color(0, 0, 0, 0))
 
 
 ## A closed outline drawn as dashes that crawl round it: `offset` in dashes, dash and gap
