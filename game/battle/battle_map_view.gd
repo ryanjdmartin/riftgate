@@ -898,6 +898,7 @@ func _field_rings(c: Vector2, r: float, dir: float, _phase: float, width: float 
 			while m * step + turn < b:
 				cuts.append(m * step + turn)
 				m += 1.0
+			cuts.sort()   # without this the first pair was the dash's own ends and the rest were skipped as backwards: one colour a dash, flipping (the blink)
 			for q in range(cuts.size() - 1):
 				var b0: float = cuts[q]
 				var b1: float = cuts[q + 1]
