@@ -9,7 +9,8 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 ## Ryan
 
 - [ ] Decide the engagement rule (29 September: the range chains across the map and hides who joins; the bible's section 5 carries the proposal, a pack's capture zone of radius two with the zones always drawn and the tethers retired, and Ryan's three variants weighed); then build it
-- [ ] Judge on the phone after a re-export: frame rate (the per-hex props added draw calls), the sound set, the machines' edges without MSAA, the text, the grid at `GRID_GAIN_PHONE`, the seam band (less green than before), the far blur, the board and the log button, the selection marks, the routes, props hiding under a machine
+- [ ] Judge on the phone after a re-export: the machines' outline at 2.6 (`MechView3D.OUTLINE`; 1.0 was the thin), the violet intent marks against the blue HUD, the orange pulse of the gate's hazard glyphs, the sound set, the grid at `GRID_GAIN_PHONE`
+- [x] Judged 29 September on the phone: 60 fps with the fine map and the per-hex props, the text clean, the board and log button, the selection marks, the routes, the props hiding, the seam band, the far blur
 - [ ] Codex and flavour for the seven new machines, the Baboon's flavour, and the 41 components whose codex is empty
 - [x] Decide the Dingo's name (29 September: kept, the coincidence tier; every flagged name is now decided and every note says why it stays)
 - [ ] The Badger's joints in Blender (`forge.py export badger`)
@@ -71,7 +72,7 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 - [ ] The wreck's death animation on the map, once wrecks are decided
 - [ ] Joint idle for grounded machines, once joints exist
 - [ ] Corruption in a pack's wake, and the bleed growing with Rift Pressure (`bleed.gd` has the knob in mind), once decided
-- [ ] Judge FINE MAP on the phone (settings toggle, 29 September): sharper machines at 2.25x the pixels; if the frame rate holds, make it the phone's default
+- [x] FINE MAP judged on the phone (29 September): 60 fps locked, now the default; MSAA measured leaking and is unreachable on a phone
 - [ ] If the phone drops frames: one mesh per material per machine, until joints
 - [x] `tools/screenshot.gd`'s engage pose prints renderer leak warnings at exit (29 September, night: the skirmish screen waiting on the handover tween was an orphan at exit; the battle screen frees it on predelete)
 

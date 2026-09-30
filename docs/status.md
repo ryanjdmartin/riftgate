@@ -284,19 +284,15 @@ size and the toms in headphones, whose answer files are round four's "Now" set
 sketch never overwrites a shipped track: a pick lands in `forge.py`, then `build` and one
 `--import`.
 
-**The phone (26 to 29 September; README has the commands).** Ryan's Pixel runs the debug
-APK. Fixed so far: grid ribbons and their gain, safe insets, the MSAA leak, font
-oversampling, the drag ghost, the far blur, scanlines on device pixels, leaders, the seam
-band's clipped hexes, the orders board in the readout's strip (29 September: gauges, the
-order's hex, what it meets, packs and foes, contact or not; the log is behind its LOG
-button), a tap bracketing what it hit with gauges or strength over the unit, the gate's
-footprint and attack hexes, the current zone told from the predicted, the routes redrawn,
-props hidden under a standing machine (`Map3D._hide_props_under`; a passable hex's props
-bake by hex). Judged 29 September: 60 fps locked with the fine map on (the default now), the text
-clean with linear sampling and subpixel positioning off; MSAA measured leaking about 170 MB
-every twenty seconds on the device until the driver aborted, so no setting reaches it.
-Still to judge: the sound set, the grid at the hotter gain, the outline thickness (three
-rendered for Ryan; RIFTGATE_OUTLINE).
+**The phone (26 to 29 September; README has the commands; the bible's section 11 has
+three rows on it).** Ryan's Pixel runs the debug APK at 60 fps with the fine map (the
+default: the map and the machines' views at the glass's density, since the Compatibility
+renderer has no anti-aliasing to give; MSAA measured leaking 170 MB every twenty seconds
+and is unreachable). Text is clean. The marks are in three registers, green/violet/red,
+each carried by structure as well as hue, because Ryan is colourblind: check a new colour
+by simulation (CLAUDE.md has the rule; `RIFTGATE_HUD` renders against every HUD option).
+Still to judge on the device: the outline at 2.6, the violet intent marks, the sound set,
+the grid at the hotter gain.
 
 **Open, in order.** The task list is `docs/todo.md`, one line a task, grouped by who
 moves it and ticked in the commit that lands it; this is the order to take them in.
