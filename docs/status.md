@@ -11,10 +11,16 @@ a bible change, passing the URL from any conversation that did not publish it.
 made it, or by an account invited as Editor from its Share menu; the personal account (A) can
 invite outward, the organisation account (B) cannot. **Account A owns six pages and nothing
 else:** the Melody Desk (https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV, 30 September:
-a piano roll with chords and playback, source `tools/soundforge/melody_desk.html`; Ryan
-starts from a shipped track's part (store collection `parts`, seeded from
-`tools/soundforge/desk_parts.py`) or from nothing, and sends a melody to collection
-`melodies`, which a session applies in the forge and marks `applied`), the bible (https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, v0.11), the nameplate
+a piano roll of up to sixteen bars on a plain piano, source
+`tools/soundforge/melody_desk.html`; notes drag to move and stretch, tap to select, a
+selection drags together; the shipped tracks' parts stack as layers over what is there
+(store collection `parts`, one document per track, seeded from
+`tools/soundforge/desk_parts.py`, which captures each builder's `groove` call; re-seed
+after a track's parts change), each layer with its source, a mute and a fill of its own;
+Play runs from a start marker tapped on the ruler; Send writes to collection `melodies`
+with every note, each layer's source and forge lanes, and Ryan's memo. A session pulls a
+`new` document, listens, applies it in the forge and marks it `applied` with a `reply`
+the page shows. Ryan's intent: the session interprets what he sends; it is not drop-in), the bible (https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, v0.11), the nameplate
 (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH), the hangar codex
 (https://claude.ai/artifact/FqiH3b8ZZjxJaCJmWK71vj), the Model Viewer
 (https://claude.ai/artifact/HzF8K98MxgJP7kroxAuDMv, every chassis rendered as it stands with
