@@ -17,7 +17,7 @@ each file is an A/B against the first of its set; never written over a shipped t
             levels, then levelled by what a phone speaker plays (a model: high-passed at
             220 Hz twice, a presence bump, rolled off at 9 kHz).
 
-    tools/spriter/.venv/bin/python tools/soundforge/phone_sketches.py [voices|balance|levels|voices2|guitar|shadows2|rift|round3|round4|round5|round6|round7]
+    tools/spriter/.venv/bin/python tools/soundforge/phone_sketches.py [voices|balance|levels|voices2|guitar|shadows2|rift|round3|round4|round5|round6|round7|round8]
 
 Second round (28 September, from Ryan's notes on the first): voices2 (two hybrids of voice 2
 and the split, and the other bass voices the tracks use), guitar (the backing guitar without
@@ -502,6 +502,36 @@ def drums_clip_kit(patches, part_mult):
         return drums_clip(patches)
 
 
+
+# ---------------------------------------------------------------- round eight (Ryan, 29 September, on round six)
+# The power cuts raised the toms' volume, which was not the ask: keep the harder stick and
+# front without playing them louder, with the middle tightening from round four, and the
+# high tom brought down in pitch toward the low one.
+
+def tom_hard(skin_mult, room_mult, drive, front, stick):
+    def voice(f=150.0, pitch=1.0):
+        f = 130.0 if f > 120.0 else f   # the high tom compressed down toward the low one
+        n = F.n_of(0.5)
+        t = F.t_of(n)
+        fr = f * pitch * (1.0 + 0.18 * F.np.exp(-t / 0.05))
+        sk = F.np.sin(2.0 * F.math.pi * F.np.cumsum(fr) / F.SR) * F.env_ad(n, 0.001, 0.11 * skin_mult, curve=2.5)
+        sub = F.np.sin(2.0 * F.math.pi * f * pitch * 0.5 * t) * F.env_ad(n, 0.002, 0.09 * skin_mult) * 0.5
+        shell = F.harmonics(f * pitch * 1.4, n, [0.5, 0.25, 0.1]) * F.env_ad(n, 0.001, 0.03) * 0.3
+        st = F.lp(F.bp(F.noise(F.n_of(0.01)), 1500.0, 6000.0), 5000.0) * F.env_ad(F.n_of(0.01), 0.0002, 0.003) * stick
+        hit = F.body(f * pitch * 1.6, f * pitch, 0.04, drive=2.6, click=0.8) * front
+        shadow = F.bp(F.sat(sk + sub, 3.0), 120.0, 500.0) * 0.35
+        return F.room(F.mix(F.sat(sk + sub, drive), shell, hit, F.at(F.np.zeros(1), st, 0.0), shadow),
+                      decay=0.05 * room_mult, mix=0.06 * room_mult, cut=4500.0) * 1.1
+    return voice
+
+
+TOM_HARD = [
+    ("as ships", {}),
+    ("hard one", dict(tom_real=tom_hard(0.75, 0.6, 2.2, 1.3, 1.8))),
+    ("hard two", dict(tom_real=tom_hard(0.75, 0.6, 2.6, 1.5, 2.0))),
+]
+
+
 # ---------------------------------------------------------------- rendering
 
 class Patched:
@@ -615,7 +645,7 @@ def main(argv):
     if os.path.exists(page):   # the committed page, copied in so the publish has everything in one folder
         with open(page) as src, open(os.path.join(OUT, "index.html"), "w") as dst:
             dst.write(src.read())
-    manifest = {"voices": [], "balance": [], "levels": [], "voices2": [], "guitar": [], "shadows2": [], "rift": [], "round3": [], "round4": [], "round5": [], "round6": [], "round7": [], "notes": {}}
+    manifest = {"voices": [], "balance": [], "levels": [], "voices2": [], "guitar": [], "shadows2": [], "rift": [], "round3": [], "round4": [], "round5": [], "round6": [], "round7": [], "round8": [], "notes": {}}
     os.makedirs(OUT, exist_ok=True)
     path = os.path.join(OUT, "manifest.json")
     if which != "all" and os.path.exists(path):
@@ -817,11 +847,28 @@ def main(argv):
         manifest["round7"].append({"name": "hold_104", "seconds": len(x) / F.SR, "phone_db": round(phone_level(x), 1), "note": "Hold The Line whole at 104 (it ships at 100), on the 29 September arrangement"})
         print("  hold_104       %5.1f s  phone %.1f dB" % (len(x) / F.SR, phone_level(x)))
         y, sr = F.read("music_hold_the_line")
-        bar = int(bar_seconds(100) * F.SR)
-        seam = np.concatenate([y[-12 * bar:], y[4 * bar: 16 * bar]])
+        bar = int(bar_seconds(F.MUSIC["music_hold_the_line"]["bpm"]) * F.SR)
+        seam = np.concatenate([y[-12 * bar:], y[8 * bar: 20 * bar]])
         write("hold_seam", seam)
         manifest["round7"].append({"name": "hold_seam", "seconds": len(seam) / F.SR, "marks": [(0.0, "the last twelve bars"), (12 * bar / F.SR, "the wrap into bar five")],
                                    "note": "Hold The Line's loop as the game plays it now: the descent's last twelve bars, then bar five (the bass's entrance) onward"})
+        save()
+    if which in ("round8", "all"):
+        print("round8")
+        parts, marks, t = [], [], 0.0
+        for label, patches in TOM_HARD:
+            d = level_to(drums_clip(patches), SKIRMISH_LEVEL)
+            marks.append((t, label)); parts.append(d); parts.append(np.zeros(F.SR)); t += (len(d) + F.SR) / F.SR
+        x = np.concatenate(parts)
+        write("drums_tom_hard", x)
+        manifest["round8"].append({"name": "drums_tom_hard", "seconds": len(x) / F.SR, "marks": marks,
+                                   "note": "the drums bare: the toms as they ship, then the harder stick and front at round six's two powers with the middle tightening and the high tom brought down to 130 Hz, played at the same volume"})
+        print("  drums_tom_hard %5.1f s" % (len(x) / F.SR))
+        for (label, patches), name in zip(TOM_HARD[1:], ("mix_tom_hard1", "mix_tom_hard2")):
+            x = level_to(render_hold(BALANCE_FORM, patches=patches), SKIRMISH_LEVEL)
+            write(name, x)
+            manifest["round8"].append({"name": name, "seconds": len(x) / F.SR, "phone_db": round(phone_level(x), 1), "note": "the track with the toms at " + label})
+            print("  %-14s %5.1f s  phone %.1f dB" % (name, len(x) / F.SR, phone_level(x)))
         save()
     if which in ("levels", "all"):
         print("levels")

@@ -198,14 +198,24 @@
 </div>
 <div class="listen"><p><strong>Listen for:</strong> whether the middle kick punches through on the speaker without turning back into a small drum in headphones, and at which power the fill stops sounding gentle without going hollow. Everything switches at the same bar.</p></div>
 
-<h2>7. Hold The Line: faster, and its loop</h2>
-<p>The 29 September arrangement (the drone up everywhere, the second lift's synth bass down, the seven's held guitar louder on a descending C B A G, the keys' chords growing from nothing) is what ships now, and these are on it. The loop wraps to bar five, where the bass enters, as The Far Bank's wraps to its groove.</p>
+<h2>7. Hold The Line: its loop</h2>
+<p>The track ships at 104 now, with the 29 September notes: the drone up, the second lift's synth bass down, the whole kit up a bit, the seven twelve bars with its held guitar sustaining a whole bar each on E, E flat, D, D flat, twice, and the first lift's piano chords growing from nothing. The loop wraps to bar nine, the power chords.</p>
 <div class="rows" data-group="round7">
-  <div class="row" data-src="hold_104.mp4" data-title="Hold The Line &middot; 104"><button class="btn" aria-label="play">&#9654;</button><div class="name"><span class="step">1</span> Whole, at 104</div><div class="num" data-db="hold_104"></div><div class="note">It ships at 100. Four beats a minute faster, the whole track, so the seven and the solo are in it.</div></div>
-  <div class="row" data-src="hold_seam.mp4" data-title="Hold The Line &middot; the loop"><button class="btn" aria-label="play">&#9654;</button><div class="name"><span class="step">2</span> The loop as the game plays it</div><div class="num"></div><div class="note">The descent's last twelve bars, then the wrap into bar five onward, at 100. The join is what a long fight hears.</div>
+  <div class="row" data-src="hold_104.mp4" data-title="Hold The Line &middot; whole"><button class="btn" aria-label="play">&#9654;</button><div class="name"><span class="step">1</span> Whole, as it ships</div><div class="num" data-db="hold_104"></div><div class="note">At 104, with every note above in it: the seven's descent and the first lift's chords are the parts to hear.</div></div>
+  <div class="row" data-src="hold_seam.mp4" data-title="Hold The Line &middot; the loop"><button class="btn" aria-label="play">&#9654;</button><div class="name"><span class="step">2</span> The loop as the game plays it</div><div class="num"></div><div class="note">The descent's last twelve bars, then the wrap into bar nine onward. The join is what a long fight hears.</div>
     <div class="marks" data-marks="seam"></div></div>
 </div>
-<div class="listen"><p><strong>Listen for:</strong> whether 104 keeps the groove or starts to rush the seven; and whether the wrap into the bass reads as a return rather than a restart.</p></div>
+<div class="listen"><p><strong>Listen for:</strong> the held guitar lasting its bar through the seven's descent, the first lift's chords arriving, and whether the wrap into the power chords reads as a return rather than a restart.</p></div>
+
+<h2>8. The toms: harder, not louder</h2>
+<p>Round six's powers raised the toms' volume, which was not the ask. These keep round six's harder stick, front and body saturation, add round four's middle tightening, bring the high tom down from 150 to 130 Hz, and play them at the volume they ship at.</p>
+<div class="rows" data-group="round8">
+  <div class="row" data-src="drums_tom_hard.mp4" data-title="Toms &middot; harder, not louder"><button class="btn" aria-label="play">&#9654;</button><div class="name"><span class="step">1</span> The drums bare, three toms</div><div class="num"></div><div class="note">Four bars with the lift's fill: as they ship, hard one, hard two. Same volume throughout.</div>
+    <div class="marks" data-marks="tomhard"></div></div>
+  <div class="row" data-src="mix_tom_hard1.mp4" data-title="Track &middot; toms hard one"><button class="btn" aria-label="play">&#9654;</button><div class="name"><span class="step">2</span> The track with hard one</div><div class="num" data-db="mix_tom_hard1"></div><div class="note">The riff, the turn and the lift as they ship, the toms at hard one.</div></div>
+  <div class="row" data-src="mix_tom_hard2.mp4" data-title="Track &middot; toms hard two"><button class="btn" aria-label="play">&#9654;</button><div class="name"><span class="step">3</span> The track with hard two</div><div class="num" data-db="mix_tom_hard2"></div><div class="note">The toms at hard two.</div></div>
+</div>
+<div class="listen"><p><strong>Listen for:</strong> whether the fill now beats rather than grooves without getting louder, and whether the high tom's new pitch sits with the low one.</p></div>
 
 <h2>Measured</h2>
 <p>Where each shipped loop's power sits, by band. A phone speaker plays little below 150 Hz and nothing below 80.</p>
@@ -299,8 +309,8 @@
   // The solo file's marks, and each file's loudness through the phone model, from the manifest.
   fetch('manifest.json').then(function (r) { return r.json(); }).then(function (m) {
     var all = [];
-    ['round4', 'round5', 'round6', 'round7', 'voices', 'voices2', 'guitar', 'balance', 'shadows2', 'rift', 'levels', 'round3'].forEach(function (k) { all = all.concat(m[k] || []); });
-    var markBoxes = {bass_solo: 'solo', bass_solo2: 'solo2', bass_solo3: 'solo3', drums_kits: 'drums', drums_kick: 'kick', drums_tom: 'tomtight', drums_tom_power: 'tompower', hold_seam: 'seam'};
+    ['round4', 'round5', 'round6', 'round7', 'round8', 'voices', 'voices2', 'guitar', 'balance', 'shadows2', 'rift', 'levels', 'round3'].forEach(function (k) { all = all.concat(m[k] || []); });
+    var markBoxes = {bass_solo: 'solo', bass_solo2: 'solo2', bass_solo3: 'solo3', drums_kits: 'drums', drums_kick: 'kick', drums_tom: 'tomtight', drums_tom_power: 'tompower', hold_seam: 'seam', drums_tom_hard: 'tomhard'};
     all.forEach(function (f) {
       var el = document.querySelector('[data-db="' + f.name + '"]');
       if (el && f.phone_db !== undefined) el.textContent = f.phone_db.toFixed(1) + ' dB on the speaker';

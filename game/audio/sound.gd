@@ -59,7 +59,7 @@ const PICK := ["skirmish"]
 ## Where a loop wraps to, in bars from its top, when it is not the top: a boss theme's intro
 ## plays once, under the reveal, and a long fight wraps into the groove instead (Ryan, 25
 ## September). Bars are the 4/4 bar's length at the loop's TEMPO. Absent means the top.
-const LOOP_FROM := {"music_far_bank": 8, "music_hold_the_line": 4}   # Hold The Line wraps to the bass's entrance (Ryan, 29 September: its seam was the janky one)
+const LOOP_FROM := {"music_far_bank": 8, "music_hold_the_line": 8}   # Hold The Line wraps to the power chords, bar nine (Ryan, 29 September: its seam was the janky one; the bass's entrance at five was tried first)
 
 ## Every loop's shown title and its working label. The files are named for the titles
 ## (Ryan's picks, 25 September); the labels are creation order, human A B C and rift A B C,
@@ -91,7 +91,7 @@ static var muted := false   # tests and tools: nothing plays
 
 ## The loops' tempos, as tools/soundforge writes them, so a thing on screen can move on
 ## the beat (the rift's vortex, Ryan, 23 September: it had landed near the beat by chance).
-const TEMPO := {"music_far_bank": 88.0, "music_hold_the_line": 100.0, "music_low_ground": 90.0, "music_night_shift": 94.0, "music_crossing": 126.0, "music_full_bore": 105.0}
+const TEMPO := {"music_far_bank": 88.0, "music_hold_the_line": 104.0, "music_low_ground": 90.0, "music_night_shift": 94.0, "music_crossing": 126.0, "music_full_bore": 105.0}
 
 
 ## Beats elapsed in the loop that is playing, or -1 when nothing is.
