@@ -18,7 +18,8 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Judge the pins pass and the seven classes on the Model Viewer's Classes section: the Badger's right-pauldron slab, the Clydesdale's howitzer, barrage rack and flak skirt, the Sparrowhawk's spine dish; each class's size per machine (a pin's `scale` in `models_low.py`); and whether a stock part should be the class shape rather than the hand-modelled part
 - [x] Picks from the phone sketches page: the bass voice (3 or 5), the clip-free guitar, the third shadows (28 September: voice 12, the guitar, the third cut, a quarter of the level gap; all in the forge)
 - [x] Judge The Far Bank's tempo in the game (29 September: 88 stays; the temporary ids are gone)
-- [ ] Hold The Line at 104 in the game: the seven's twelve bars with the held guitar a whole bar each on E, D, D flat, C (twice), the keys' lead adding thirds and roots under its tune as the bridge builds, the drone up, the second lift's bass down, the kit up, the wrap into bar nine; notes by section letter
+- [x] Hold The Line's 29 and 30 September pass (every note in on 30 September; the bible's sound row has the list)
+- [ ] A full play of Hold The Line in the game, start to wrap; notes by section letter
 - [x] Judge round six (29 September: the middle kick ships; the powers were louder, not harder)
 - [x] Judge round eight (30 September: hard two ships, at its own pitch)
 - [x] Judge round nine (30 September: piano and second chug out, chimes in sets two and three at 0.3, drone throughout, the keys' lead on the riff from mid set two)

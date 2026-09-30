@@ -265,11 +265,17 @@ softer crash, the soft sub's speaker shadow, and the rift tracks a quarter of th
 phone gap louder (The Far Bank -20.2, The Crossing -19.2; Low Ground unchanged). Still
 to judge: the kick's size alone and the toms in headphones (Ryan's last drum notes).
 The Far Bank runs at 88 (judged in the game, 29 September) and the rift levels are at the
-half gap (-17.9, The Crossing -17.7). Hold The Line runs at 104 now, wraps to bar nine (`LOOP_FROM`) and carries the 29
-September notes (drone up, second lift's bass down, the kit up, the seven twelve bars with
-its held guitar a whole bar each on E, D, D flat, C twice, the kit rebalanced on 30 September (kick up, snare and crashes down, the top tom at 140 Hz), the kick a tenth lower, the toms round eight's hard two with a clean sub, every cymbal closed above 7 to 9 kHz, and the master given headroom (0.6, drive 1.1, as the rift tracks: the climax's crackle was the saturator flattening a section that grew 2.5 dB into a fixed ceiling), the keys' lead
-playing Ryan's own bridge melody from the Melody Desk with his two harmony lines under it, the climax at one loudness and thinned: no piano, no second chug, chimes in sets two and three, the lead on the riff from mid set two), unheard in the game; The bridge's melody came from the Melody Desk and is applied (the document is marked applied). The track levels stay
-as they are until Ryan says otherwise. Next: a
+half gap (-17.9, The Crossing -17.7). Hold The Line shipped its 29 and 30 September pass on 30 September, every note in: 104, the wrap
+to bar nine, the master with headroom (the human tracks had run into the saturator; the
+climax's crackle was that), the kit rebalanced (kick up, snare and crashes down and softer,
+the toms hard with their body kept, at 130 and 98 Hz), the seven twelve bars with the held
+guitar a whole bar each on E, D, D flat, C twice, the bridge on Ryan's fifth Melody Desk
+melody (tune, two harmony lines, his sub root line; the desk's parts re-seeded), the drum
+solo a fresh pass with four cymbal kinds in turn and a closing snare run climbing from full,
+the climax at one loudness and thinned (no piano, no second chug, the drone throughout, the
+chimes from the second set's fifth bar, the riff's synth in the keys' register from the third
+set, the double kick the last four bars). Nothing of his is pending on it but a full play in
+the game. The track levels stay as they are until Ryan says otherwise. Next: a
 speakers/headphones setting (offsets per track and a bus EQ on the speaker profile); the
 Risen and Infernal Horde boss themes from their seeds, melodies proposed in chat first. The
 real recordings question is closed (29 September): the forge is the instrument.
