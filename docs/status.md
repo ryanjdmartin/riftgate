@@ -261,7 +261,7 @@ to judge: the kick's size alone and the toms in headphones (Ryan's last drum not
 The Far Bank runs at 88 (judged in the game, 29 September) and the rift levels are at the
 half gap (-17.9, The Crossing -17.7). Hold The Line runs at 104 now, wraps to bar nine (`LOOP_FROM`) and carries the 29
 September notes (drone up, second lift's bass down, the kit up, the seven twelve bars with
-its held guitar a whole bar each on E, D, D flat, C twice, the kit rebalanced on 30 September (kick up, snare down, toms up, crashes down and softer), the kick a tenth lower, the toms round eight's hard two, the keys' lead
+its held guitar a whole bar each on E, D, D flat, C twice, the kit rebalanced on 30 September (kick up, snare and crashes down, the top tom at 140 Hz), the kick a tenth lower, the toms round eight's hard two with a clean sub, every cymbal closed above 7 to 9 kHz, and the master given headroom (0.6, drive 1.1, as the rift tracks: the climax's crackle was the saturator flattening a section that grew 2.5 dB into a fixed ceiling), the keys' lead
 harmonising its own tune in thirds and roots as the bridge builds), unheard in the game; Ryan is writing the bridge's melody with a tool another session is building, and the keys' tune waits on it. The track levels stay
 as they are until Ryan says otherwise. Next: a
 speakers/headphones setting (offsets per track and a bus EQ on the speaker profile); the

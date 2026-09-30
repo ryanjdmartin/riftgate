@@ -1909,8 +1909,10 @@ def ride():
 
 def china():
     # A china: trashy, short, all splash and no bell.
+    # Closed above 8 kHz with less wash since 30 September (the crash's treatment: it broke
+    # up on the speaker).
     n = n_of(0.55)
-    return mix(bp(noise(n), 1500.0, 10000.0) * env_ad(n, 0.001, 0.13, curve=3.0),
+    return mix(bp(noise(n), 1500.0, 8000.0) * env_ad(n, 0.001, 0.13, curve=3.0) * 0.7,
                knock([2100.0, 3300.0, 5200.0], [0.12, 0.09, 0.06], [0.4, 0.3, 0.2], noise_gain=0.0) * 0.3) * 0.45
 
 
@@ -1982,12 +1984,14 @@ def tom_real(f=150.0, pitch=1.0):
     stick = lp(bp(noise(n_of(0.01)), 1500.0, 6000.0), 5000.0) * env_ad(n_of(0.01), 0.0002, 0.003) * 2.0
     front = body(f * pitch * 1.6, f * pitch, 0.04, drive=2.6, click=0.8) * 1.5
     shadow = bp(sat(skin + sub, 3.0), 120.0, 500.0) * 0.35
-    return room(mix(sat(skin + sub, 2.6), shell, front, at(np.zeros(1), stick, 0.0), shadow), decay=0.03, mix=0.036, cut=4500.0) * 1.1
+    # The skin saturates alone and the sub stays clean (30 September: the low tom crackled;
+    # a saturated 52 Hz sub is all harmonics on a phone).
+    return room(mix(sat(skin, 2.6) + sub, shell, front, at(np.zeros(1), stick, 0.0), shadow), decay=0.03, mix=0.036, cut=4500.0) * 1.1
 
 
 def splash():
     n = n_of(0.3)
-    return mix(bp(noise(n), 4000.0, 15000.0) * env_ad(n, 0.001, 0.07, curve=2.5),
+    return mix(bp(noise(n), 4000.0, 9000.0) * env_ad(n, 0.001, 0.07, curve=2.5) * 0.7,   # closed above 9 kHz (30 September)
                knock([5200.0, 7300.0, 9800.0], [0.12, 0.09, 0.07], [0.4, 0.3, 0.2], noise_gain=0.0) * 0.3) * 0.4
 
 
@@ -2000,15 +2004,16 @@ def crash_long():
 
 
 def crash_low():
+    # Closed above 8 kHz with less wash since 30 September (the crash's treatment).
     n = n_of(1.3)
-    return mix(bp(noise(n), 1200.0, 10000.0) * env_ad(n, 0.002, 0.32, curve=2.0),
+    return mix(bp(noise(n), 1200.0, 8000.0) * env_ad(n, 0.002, 0.32, curve=2.0) * 0.7,
                knock([1900.0, 2800.0, 4100.0, 5600.0], [0.5, 0.4, 0.3, 0.22], [0.4, 0.3, 0.25, 0.2], noise_gain=0.0) * 0.4) * 0.35
 
 
 def stack():
     # A stack: two cymbals clamped together, trashy and short.
     n = n_of(0.14)
-    return bp(noise(n), 2000.0, 9000.0) * env_ad(n, 0.0005, 0.03, curve=3.0) * (0.6 + 0.4 * np.sign(np.sin(2.0 * math.pi * 210.0 * t_of(n)))) * 0.5
+    return bp(noise(n), 2000.0, 7000.0) * env_ad(n, 0.0005, 0.03, curve=3.0) * (0.6 + 0.4 * np.sign(np.sin(2.0 * math.pi * 210.0 * t_of(n)))) * 0.45   # closed above 7 kHz (30 September)
 
 
 def ride_bell():
@@ -2112,11 +2117,13 @@ def music_hold_the_line(palette="hybrid"):
     if real:
         # Ryan, 30 September, from the phone: kick up, snare down, toms up, crashes down (and
         # the crash itself softer, since it broke up on the speaker).
-        kit = {"kick": (variants(kick_real), 1.2), "snare": (variants(snare_real), 0.85), "hat": (variants(lambda p: hat_real(False, p)), 0.45),
-               "open": ([hat_real(True)], 0.4), "crash": ([crash_real()], 0.65), "crash2": ([crash_low()], 0.7), "china": (china(), 0.8),
-               "crash_long": ([crash_long()], 0.7, 0.035),
-               "splash": ([splash()], 0.8), "stack": ([stack()], 0.7), "bell": ([ride_bell()], 0.6), "ride": ([ride_real()], 0.35),
-               "tom": (variants(lambda p: tom_real(150.0, p)), 1.15), "tom2": (variants(lambda p: tom_real(105.0, p)), 1.15), "clank": (clank(), 0.3),
+        # And again the same day: crash and snare down a little more, the toms down a touch,
+        # the top tom at 140 Hz, halfway to the low one.
+        kit = {"kick": (variants(kick_real), 1.2), "snare": (variants(snare_real), 0.75), "hat": (variants(lambda p: hat_real(False, p)), 0.45),
+               "open": ([hat_real(True)], 0.4), "crash": ([crash_real()], 0.55), "crash2": ([crash_low()], 0.6), "china": (china(), 0.7),
+               "crash_long": ([crash_long()], 0.6, 0.035),
+               "splash": ([splash()], 0.7), "stack": ([stack()], 0.6), "bell": ([ride_bell()], 0.6), "ride": ([ride_real()], 0.35),
+               "tom": (variants(lambda p: tom_real(140.0, p)), 1.05), "tom2": (variants(lambda p: tom_real(105.0, p)), 1.05), "clank": (clank(), 0.3),
                "knock": (knock_perc(), 0.5)}
     else:
         kit = {"kick": (kick_metal(), 1.0), "snare": (snare_metal(), 1.0), "hat": (hat(False, True), 0.45),
@@ -2346,6 +2353,13 @@ def music_hold_the_line(palette="hybrid"):
              {"inst": "sweep", "gain": 0.5, "octave": 0, "rate": 0.08, "depth": 0.3, "open": 0.75, "sections": "ANSRZ", "skip": {"A": 12}, "chord": [0, 7, 12]}],
         drum_gain={"U": 1.3, "S": 1.15, "R": 1.25, "Z": 1.3, "W": 1.25, "Q": 1.2},
         crescendo={"S": (0.85, 1.0), "R": (1.0, 1.12), "Z": (1.12, 1.3)},
+        # Headroom before the master's saturator (Ryan, 30 September: the climax grew crackly
+        # from the backing guitar's entry to the double kicks, and the lift's closing fill broke
+        # up). Measured: every section peaked at the same -12.7 dB while the climax's loudness
+        # climbed 2.5 dB into that ceiling, the saturator flattening more of the wave the busier
+        # it got. The mix is brought under the knee first and the master eased, as The Far Bank's
+        # is; the level pin keeps the loudness.
+        master=1.1, headroom=0.6,
         tilt=1.5, presence=0.25, low=(150.0, -6.0),   # the human master since 28 September: half the tilt, a presence lift
         human=(0.005, 0.15) if real else None)
 
