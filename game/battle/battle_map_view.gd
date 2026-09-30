@@ -885,10 +885,13 @@ const SPOKES := 16
 
 func _field_rings(c: Vector2, r: float, dir: float, _phase: float, width: float = 3.0) -> void:
 	var step := TAU / SPOKES
-	for k in range(3):
-		var rad := r * (0.42 + 0.29 * k)
-		var segs := 3 + k * 2
-		var a0 := _ring_t * dir * (1.0 - 0.25 * k) * (1.0 if k % 2 == 0 else -1.0)
+	# Two rings (Ryan, 30 September: the innermost of three was noise), the outer a little
+	# farther out: [radius as a share of r, dashes, turning rate, direction].
+	for k in range(2):
+		var spec: Array = [[0.62, 5, 0.75, -1.0], [1.0, 7, 0.5, 1.0]][k]
+		var rad: float = r * spec[0]
+		var segs: int = spec[1]
+		var a0: float = _ring_t * dir * spec[2] * spec[3]
 		for sgm in range(segs):
 			var a := a0 + TAU * float(sgm) / float(segs)
 			var b := a + TAU / float(segs) * 0.6
@@ -1028,14 +1031,18 @@ func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool
 		# The rings and the target's border in the field's stripes (crawling on the tapped pack).
 		var phase := 0.0   # the field never moves (Ryan, 30 September: a crawl under turning rings read as the map sliding); the pulse is the selection
 		if _intent_edged():
-			_field_rings(end, DEST_RING * 0.85, -1.0, phase, 6.0)
-		_field_rings(end, DEST_RING * 0.85, -1.0, phase)
+			_field_rings(end, DEST_RING, -1.0, phase, 6.0)
+		_field_rings(end, DEST_RING, -1.0, phase)
 		draw_circle(end, 3.5, col)
 		_crawl_poly(Hex.corners(end, HEX_SIZE - 5.5), Color(0, 0, 0, 0), HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0), INTENT_EDGE if _intent_edged() else Color(0, 0, 0, 0), phase)   # just inside the hex lines (Ryan, 30 September)
 		return
-	_target_rings(end, bright, DEST_RING * 0.85, -1.0)
+	# A machine's target lock in the same construction (Ryan, 30 September), over the same
+	# fields, in its line's two colours: the display's light, and the light at half.
+	_field_hot = bright
+	_field_deep = Color(bright, 0.5)
+	_field_rings(end, DEST_RING, -1.0, 0.0)
 	draw_circle(end, 3.5, bright)
-	_crawl_poly(Hex.corners(end, HEX_SIZE - 5.5), col, HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0))   # just inside the hex lines (Ryan, 30 September)
+	_crawl_poly(Hex.corners(end, HEX_SIZE - 5.5), Color(0, 0, 0, 0), HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0))   # just inside the hex lines (Ryan, 30 September)
 
 
 ## A closed outline drawn as dashes that crawl round it: `offset` in dashes, dash and gap
