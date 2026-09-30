@@ -1397,6 +1397,9 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
             elif c.isdigit() and c != "0":
                 # A hit at a written level, tenths of full: "2345678x" is a run growing to full.
                 buf = at(buf, pick(sound), when(i) + behind, gain * dg * vel() * (int(c) / 10.0), wrap=True)
+            elif c in "abcdefgh":
+                # And above full, a tenth a letter: "xabcdefg" is a run from full to 1.7.
+                buf = at(buf, pick(sound), when(i) + behind, gain * dg * vel() * (1.0 + (ord(c) - ord("a") + 1) / 10.0), wrap=True)
     per_bar = _chords_per_bar(form, chords)
     for vi, v in enumerate(voices):
         RNG = np.random.default_rng(zlib.crc32(("voice:%s:%d" % (v["inst"], vi)).encode()))
@@ -2095,11 +2098,12 @@ def _drum_solo(bars):
             bar["kick"][14] = "x"
         if b == bars - 1:
             # The run's closer (Ryan, 30 September): eight successive snare hits growing in
-            # volume through the last half-bar, the kick on its Ba alone under them.
+            # volume through the last half-bar, from full upward (not from under: his second
+            # note), the kick on its Ba alone under them.
             for k in ("tom", "tom2", "splash", "china", "crash"):
                 for pos in range(8, 16):
                     bar[k][pos] = "."
-            for pos, level in zip(range(8, 16), "2345678x"):
+            for pos, level in zip(range(8, 16), "xabcdefg"):
                 bar["snare"][pos] = level
             for pos in range(8, 16):
                 if pos != 12:
