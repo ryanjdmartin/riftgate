@@ -289,7 +289,7 @@ func test_planned_component_may_carry_a_planned_keyword() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var plate: Dictionary = db.components["ablative_plating"].duplicate(true)
-	plate["face"]["keywords"] = ["taunt"]
+	plate["face"]["keywords"] = ["corrode"]
 	plate["status"] = "planned"
 	db.components["loud_plate"] = plate
 	for e in db.validate():
@@ -570,3 +570,21 @@ func test_the_content_carries_a_live_hull_the_engine_runs() -> void:
 		assert_false(e.begins_with("component live_plate") or e.begins_with("component klaxon_coil"), "a shock passive and a retaliate buff validate: %s" % e)
 	assert_true(errs.is_empty(), "and the shipped content is clean with them: %s" % str(errs))
 	assert_eq(db.build_face(coil["face"]).buff_status, "retaliate", "the buff builds")
+
+
+func test_taunt_rides_on_shields_and_vents_and_never_on_an_attack() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var gun: Dictionary = db.components["lance"].duplicate(true)
+	gun["face"]["keywords"] = ["taunt"]
+	db.components["loud_gun"] = gun
+	var fins: Dictionary = db.components["heat_sink"].duplicate(true)
+	fins["face"]["keywords"] = ["beacon"]
+	db.components["lit_fins"] = fins
+	var bad_gun := false
+	for e in db.validate():
+		assert_false(e.begins_with("component lit_fins"), "a beacon on a vent validates: %s" % e)
+		if e.begins_with("component loud_gun") and e.contains("rides on a shield or vent"):
+			bad_gun = true
+	assert_true(bad_gun, "a taunt on an attack is refused")
+	assert_true(db.build_face(fins["face"]).has(Face.Keyword.BEACON), "and the vent builds with it")

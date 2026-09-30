@@ -456,11 +456,13 @@ func assign(mech_index: int, target = null) -> bool:
 			who.unit.shield = mini(who.unit.shield_max, who.unit.shield + f.power)
 			log.append("%s shields %s for %d" % [ms.unit.display_name, who.unit.display_name, f.power])
 			_cleanse_with(ms, who, f)
+			_draw_with(who, f)
 		Face.Kind.VENT:
 			var who: MechState = target if target is MechState else ms
 			who.heat = maxi(0, who.heat - f.power)
 			log.append("%s vents %s by %d" % [ms.unit.display_name, who.unit.display_name, f.power])
 			_cleanse_with(ms, who, f)
+			_draw_with(who, f)
 		Face.Kind.BUFF:
 			# Equipment that grants a status for the round (or more): the pipeline reads it
 			# like any modifier, and end_round lets it go.
@@ -470,6 +472,9 @@ func assign(mech_index: int, target = null) -> bool:
 			var m := Effects.grant_buff(who.unit, f.buff_status, f.buff_stacks, src, until)
 			if m != null:
 				log.append("%s buffs %s: %s ×%d%s" % [ms.unit.display_name, who.unit.display_name, m.name, f.buff_stacks, "" if f.buff_rounds == 1 else " for %d rounds" % f.buff_rounds])
+				for rank in [0, 1]:
+					if Effects.draws_rank(who.unit, rank):
+						_retarget_rank(rank, who)
 			_cleanse_with(ms, who, f)
 		Face.Kind.ATTACK:
 			_resolve_attack(mech_index, ms, f, target)
@@ -523,7 +528,7 @@ func _enemy_turn() -> void:
 			continue
 		var t := f.target as MechState
 		if t == null or not t.alive():
-			t = _pick_mech_target()
+			t = _pick_mech_target(f)
 		if t == null:
 			break
 		_acted.append(f)   # from its first blow, a suppress landing on it costs its next action
@@ -733,6 +738,32 @@ func _foe_gained_status(foe: Foe, status_id: String) -> void:
 		return
 
 
+## The taunt and beacon keywords on a shield or vent component (decided 28 September: damage
+## redirection is common, not locked): whoever it was spent on draws a rank of foes for the
+## round, taunt the front and beacon the back, and every foe of that rank on the field turns
+## on it now, intents and all. The status is the record; the retarget is the act.
+func _draw_with(who: MechState, f: Face) -> void:
+	for pair in [[Face.Keyword.TAUNT, "taunt", 0], [Face.Keyword.BEACON, "beacon", 1]]:
+		if not f.has(pair[0]):
+			continue
+		var src := "draw:" + f.component if not f.component.is_empty() else "draw"
+		Effects.grant_buff(who.unit, pair[1], 1, src, round)
+		_retarget_rank(pair[2], who)
+
+
+## Every live foe of a rank on the field turns on one machine, now. Massive foes stand in
+## both ranks and follow either draw.
+func _retarget_rank(rank: int, who: MechState) -> void:
+	var turned := 0
+	for f in field_foes():
+		if not f.alive() or (f.rank != rank and not f.is_massive()) or f.target == who:
+			continue
+		f.target = who
+		turned += 1
+	if turned > 0:
+		log.append("the %s rank turns on %s (%d)" % ["front" if rank == 0 else "back", who.unit.display_name, turned])
+
+
 ## The cleanse keyword on a shield or vent component: whoever it was spent on loses every
 ## cleansable status (a foe's disable, Corrupted, Overheating), and the log says which.
 func _cleanse_with(ms: MechState, who: MechState, f: Face) -> void:
@@ -860,7 +891,13 @@ func apply_injury(ms: MechState) -> void:
 		log.append("%s: a component cracks (%s)" % [ms.unit.display_name, what])
 
 
-func _pick_mech_target() -> MechState:
+## Whom a foe strikes: the machine drawing its rank if one is (a taunt or beacon standing),
+## else the weakest shield, then the weakest hull. Asked with no foe, the plain pick.
+func _pick_mech_target(f: Foe = null) -> MechState:
+	if f != null:
+		for ms in live_mechs():
+			if Effects.draws_rank(ms.unit, f.rank) or (f.is_massive() and Effects.draws_rank(ms.unit, 1)):
+				return ms
 	var best: MechState = null
 	for ms in live_mechs():
 		if best == null \

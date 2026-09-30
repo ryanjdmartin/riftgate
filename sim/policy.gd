@@ -137,10 +137,10 @@ func options_for(sk: Skirmish, i: int) -> Array:
 				out.append({"mech": i, "target": t, "score": attack_score(sk, ms, f, t)})
 		Face.Kind.SHIELD:
 			for who in sk.equipment_targets_for(ms, f):
-				out.append({"mech": i, "target": who, "score": shield_score(sk, who, f.power) - volatile_cost(sk, ms, f)})
+				out.append({"mech": i, "target": who, "score": shield_score(sk, who, f.power) + draw_score(sk, who, f, f.power) - volatile_cost(sk, ms, f)})
 		Face.Kind.VENT:
 			for who in sk.equipment_targets_for(ms, f):
-				out.append({"mech": i, "target": who, "score": vent_score(sk, who, f.power) - volatile_cost(sk, ms, f)})
+				out.append({"mech": i, "target": who, "score": vent_score(sk, who, f.power) + draw_score(sk, who, f) - volatile_cost(sk, ms, f)})
 		Face.Kind.BUFF:
 			for who in sk.equipment_targets_for(ms, f):
 				out.append({"mech": i, "target": who, "score": buff_score(sk, who, f) - volatile_cost(sk, ms, f)})
@@ -329,6 +329,44 @@ func shield_score(sk: Skirmish, who: Skirmish.MechState, power: int) -> float:
 	return score
 
 
+## A taunt or beacon spent on a machine: the team's hull the redirect saves this round, and
+## the deaths it prevents or causes, read by turning the rank on `who` in a what-if and
+## reading every machine's forecast, then putting the targets back. `extra_shield` is the
+## shield the same component raises on `who`, counted in both readings so only the redirect
+## is scored here (the shield itself is the shield's score).
+func draw_score(sk: Skirmish, who: Skirmish.MechState, f: Face, extra_shield: int = 0) -> float:
+	var ranks: Array[int] = []
+	if f.has(Face.Keyword.TAUNT):
+		ranks.append(0)
+	if f.has(Face.Keyword.BEACON):
+		ranks.append(1)
+	if ranks.is_empty():
+		return 0.0
+	var before := _team_outlook(sk, who, extra_shield)
+	var saved := {}
+	for foe in sk.field_foes():
+		if foe.alive() and (ranks.has(foe.rank) or foe.is_massive()):
+			saved[foe] = foe.target
+			foe.target = who
+	var after := _team_outlook(sk, who, extra_shield)
+	for foe in saved.keys():
+		foe.target = saved[foe]
+	return (float(after["hull"]) - float(before["hull"])) * HULL_WEIGHT + float(int(before["deaths"]) - int(after["deaths"])) * DEATH_WEIGHT
+
+
+## The team's hull at the round's end as the forecast sees it, and how many machines it
+## loses, with `extra_shield` standing on `who`.
+static func _team_outlook(sk: Skirmish, who: Skirmish.MechState, extra_shield: int) -> Dictionary:
+	var hull := 0
+	var deaths := 0
+	for ms in sk.live_mechs():
+		var fc := sk.forecast(ms, false, extra_shield if ms == who else 0)
+		hull += maxi(0, int(fc["hull_after"]))
+		if fc["destroyed"]:
+			deaths += 1
+	return {"hull": hull, "deaths": deaths}
+
+
 ## A buff on a machine, from what its status does: more damage on the attack it has in hand
 ## this round (and its die's mean for any further round), less of the incoming it faces, or
 ## the burn its blows will leave. Nothing for a machine that has already spent its die.
@@ -428,12 +466,12 @@ func face_value(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
 		Face.Kind.SHIELD:
 			var best := 0.0
 			for who in sk.equipment_targets_for(ms, f):
-				best = maxf(best, shield_score(sk, who, f.power) - volatile_cost(sk, ms, f))
+				best = maxf(best, shield_score(sk, who, f.power) + draw_score(sk, who, f, f.power) - volatile_cost(sk, ms, f))
 			return best
 		Face.Kind.VENT:
 			var best := 0.0
 			for who in sk.equipment_targets_for(ms, f):
-				best = maxf(best, vent_score(sk, who, f.power) - volatile_cost(sk, ms, f))
+				best = maxf(best, vent_score(sk, who, f.power) + draw_score(sk, who, f) - volatile_cost(sk, ms, f))
 			return best
 		Face.Kind.BUFF:
 			var best := 0.0

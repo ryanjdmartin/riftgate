@@ -239,3 +239,22 @@ func test_the_bot_reads_a_shocked_foe_as_taking_double() -> void:
 	var burst := Face.attack(20, L)
 	burst.strikes = 3
 	assert_eq(pol.expected_damage(ms, burst, g), 80.0, "only the first of three blows is doubled")
+
+
+func test_greedy_taunts_when_it_saves_the_glass_machine() -> void:
+	var sk := Skirmish.new(2, 2)
+	var klaxon := Face.shield(10)
+	klaxon.add_keyword(K.TAUNT)
+	var plain := Face.shield(10)
+	var tank := _mech("Tank", Die.of([klaxon, plain]), 40, 200)
+	var glass := _mech("Glass", Die.single(Face.blank()), 0, 15)
+	sk.add_mech(tank)
+	sk.add_mech(glass)
+	sk.add_foes([_ghoul(500, 10), _ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	var pol := Policy.make(Policy.GREEDY)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	assert_true(pol.draw_score(sk, ms, klaxon, 10) > Policy.DEATH_WEIGHT, "the taunt saves a machine, and the bot sees it")
+	assert_eq(pol.draw_score(sk, ms, plain, 10), 0.0, "a plain shield draws nothing")
+	assert_true(pol.face_value(sk, ms, klaxon) > pol.face_value(sk, ms, plain), "so the klaxon is the better entry")

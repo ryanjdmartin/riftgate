@@ -46,7 +46,7 @@ const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn"],
 	"on_crit": ["multiply_damage", "add_damage", "add_burn", "vent_heat", "add_crit_damage"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "draw_rank"],
 	"status": ["tick_hp", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry"],
 	"on_foe_status": ["chance_suppress"],
 }
@@ -80,12 +80,19 @@ const STATUS := {
 	# machine's bare hull is Shocked, and the team's next blow on it lands double.
 	"retaliate": {"id": "retaliate", "name": "Retaliate", "description": "A foe that strikes this machine's bare hull is Shocked.",
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "shock_on_hull_strike", "value": 1}]},
+	# Damage redirection, common not locked (Ryan, 28 September): a rank of foes turns on the
+	# machine for the round. From a shield or vent keyword, or a buff. draw_rank 0 is the
+	# front rank, 1 the back.
+	"taunt": {"id": "taunt", "name": "Taunt", "description": "Every front-rank foe targets this machine.",
+		"tags": ["buff", "draw"], "effects": [{"trigger": "static", "effect": "draw_rank", "value": 0}]},
+	"beacon": {"id": "beacon", "name": "Beacon", "description": "Every back-rank foe targets this machine.",
+		"tags": ["buff", "draw"], "effects": [{"trigger": "static", "effect": "draw_rank", "value": 1}]},
 	# The foe's side of it: one status, never stacked, spent by the blow it doubles.
 	"shocked": {"id": "shocked", "name": "Shocked", "description": "The next blow it takes deals double, then the shock is spent. Striking bare hull again costs it 10.",
 		"tags": ["shock"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 2}]},
 }
 ## The statuses a buff component may grant: the machines' own, never a foe's.
-const MECH_STATUSES := ["overcharged", "braced", "primed", "retaliate"]
+const MECH_STATUSES := ["overcharged", "braced", "primed", "retaliate", "taunt", "beacon"]
 ## target_status: the foe struck carries any live status (burning, suppressed, numbed...).
 const SUPPORTED_WHEN := ["component_cracked", "reach_melee", "reach_line", "reach_indirect", "target_status"]
 ## Stats a static effect may change: the mech's base numbers by these names.
@@ -195,6 +202,14 @@ static func remove(u, id: String) -> bool:
 			keep.append(m)
 	u.modifiers = keep
 	return gone
+
+
+## Does this machine draw the foes of `rank` (0 front, 1 back) onto itself right now?
+static func draws_rank(u, rank: int) -> bool:
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "draw_rank" and int(pair[0].get("value", -1)) == rank:
+			return true
+	return false
 
 
 ## Does this machine shock a foe that strikes it? `blocked` asks about a blow its shield
@@ -566,6 +581,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"suppress": body = "turns off %s" % vs
 		"shock_on_hull_strike": body = "a foe that strikes bare hull is Shocked"
 		"shock_on_block": body = "a foe whose blow the shield blocks is Shocked"
+		"draw_rank": body = "the %s rank targets this machine" % ("front" if int(v) == 0 else "back")
 		"tick_hp": body = "%s damage per stack each turn" % vs
 		"tick_heat": body = "%s heat per stack each turn" % vs
 		"skip_action": body = "skips its action"

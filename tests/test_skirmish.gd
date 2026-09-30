@@ -1714,3 +1714,83 @@ func test_a_status_gained_after_a_foe_acted_suppresses_its_next_action() -> void
 	assert_true(g.is_suppressed(), "the loop's suppress holds for the round after, since the ghoul had already struck")
 	sk.end_round()
 	assert_eq(m.hull, 190, "and it skipped that blow")
+
+
+func test_a_taunt_turns_the_front_rank_on_the_machine_for_the_round() -> void:
+	var sk := Skirmish.new(2, 2)
+	var klaxon := Face.shield(10)
+	klaxon.add_keyword(K.TAUNT)
+	var tank := _mech("Tank", Die.single(klaxon), 40, 200)
+	var glass := _mech("Glass", Die.single(Face.attack(10, L)), 0, 50)
+	sk.add_mech(tank)
+	sk.add_mech(glass)
+	sk.add_foes([_ghoul(500, 10), _ghoul(500, 10), _archer(500, 10)])
+	sk.begin()
+	sk.start_round()
+	assert_eq(klaxon.describe(), "shield 10 taunt", "the keyword reads on the entry")
+	for f in sk.field_foes():
+		assert_eq(f.target, sk.mechs[1], "every foe aims at the bare machine to begin with")
+	assert_true(sk.assign(0, null), "the tank raises its klaxon")
+	assert_true(Effects.draws_rank(tank, 0), "and draws the front rank")
+	for col in range(2):
+		assert_eq(sk.front[col].target, sk.mechs[0], "the front rank turned on the tank")
+	var archer: Foe = sk.back[0] if sk.back[0] != null else sk.back[1]
+	assert_eq(archer.target, sk.mechs[1], "the back rank kept its aim")
+	assert_eq(sk.incoming_for(sk.mechs[0]), 20, "the forecast follows the turn")
+	assert_true("\n".join(sk.log).contains("the front rank turns on Tank (2)"), "the log says so")
+	sk.end_round()
+	assert_eq(tank.shield, 20, "the tank took the front rank's blows on its shield (the klaxon's ten was over its maximum)")
+	assert_eq(glass.hull, 40, "the archer's blow reached the glass")
+	assert_false(Effects.draws_rank(tank, 0), "the taunt went with the round")
+	sk.start_round()
+	for f in sk.field_foes():
+		assert_eq(f.target, sk.mechs[1], "and the next round aims as it likes")
+
+
+func test_a_beacon_draws_the_back_rank_and_a_lost_target_picks_the_drawing_machine() -> void:
+	var sk := Skirmish.new(2, 2)
+	var flare := Face.vent(10)
+	flare.add_keyword(K.BEACON)
+	var tank := _mech("Tank", Die.single(flare), 40, 200)
+	var glass := _mech("Glass", Die.single(Face.attack(10, L)), 0, 50)
+	sk.add_mech(tank)
+	sk.add_mech(glass)
+	sk.add_foes([_ghoul(500, 10), _archer(500, 10), _archer(500, 10)])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, null), "the tank lights its beacon")
+	assert_eq(sk.front[0].target, sk.mechs[1], "the ghoul in front keeps its aim")
+	for col in range(2):
+		assert_eq(sk.back[col].target, sk.mechs[0], "both archers turned")
+	# A foe whose target dies picks whoever draws its rank, not the weakest machine.
+	var s2 := Skirmish.new(3, 1)
+	var t2 := _mech("Tank", Die.single(Face.shield(10)), 40, 200)
+	var g2 := _mech("Glass", Die.single(Face.attack(10, L)), 0, 10)
+	var g3 := _mech("Glass2", Die.single(Face.attack(10, L)), 0, 100)
+	s2.add_mech(t2)
+	s2.add_mech(g2)
+	s2.add_mech(g3)
+	s2.add_foes([_ghoul(500, 10), _ghoul(500, 10)])
+	s2.begin()
+	s2.start_round()
+	Effects.grant_buff(t2, "taunt", 1, "test", s2.round)
+	s2.front[0].target = s2.mechs[1]
+	s2.front[0].attack = 50
+	s2.reinforcements.clear()
+	assert_eq(s2._pick_mech_target(s2.front[0]), s2.mechs[0], "a front-rank foe asked again picks the taunting machine")
+
+
+func test_a_taunt_may_also_come_as_a_buff() -> void:
+	var f := Face.from_dict({"kind": "buff", "status": "taunt"})
+	assert_eq(f.buff_status, "taunt", "content may write it")
+	var sk := Skirmish.new(1, 1)
+	var a := _mech("A", Die.single(f), 40, 100)
+	var b := _mech("B", Die.single(Face.attack(10, L)), 0, 100)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	assert_eq(sk.front[0].target, sk.mechs[1], "the bare one first")
+	assert_true(sk.assign(0, null), "the buff is spent on itself")
+	assert_eq(sk.front[0].target, sk.mechs[0], "and the ghoul turns")
