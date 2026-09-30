@@ -109,18 +109,24 @@ func set_field(f: Battlefield) -> void:
 		# The 3D scene and the compositor are the size of this control, not the map: the
 		# camera follows the scroll and zoom, so a frame costs the same at any zoom and the
 		# scene runs every frame (sway, ripple, later the movement phase).
+		# The scene and the compositor render at the design's size, and the window stretches
+		# them to the glass (1.5 times on a 1080 phone, nearest): the machines' edges step.
+		# With the FINE MAP setting they render at the glass's density instead and the
+		# stretch lands one to one (Ryan, 29 September; the painted world keeps its pixels,
+		# sampled from the design-size paintings). Costs 2.25 times the pixels on that phone.
+		var density := _density()
 		_map3d = Map3D.new()
 		add_child(_map3d)
-		_map3d.setup(field, size, _origin, HEX_SIZE)
+		_map3d.setup(field, size, _origin, HEX_SIZE, density)
 		_mix = SubViewport.new()
-		_mix.size = Vector2i(size)
+		_mix.size = Vector2i((size * density).round())
 		_mix.transparent_bg = true
 		_mix.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 		_mix.canvas_item_default_texture_filter = SubViewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
 		add_child(_mix)
 		_composite = TextureRect.new()
 		_composite.texture = _map3d.get_texture()
-		_composite.size = size
+		_composite.size = (size * density).round()
 		var mat := ShaderMaterial.new()
 		mat.shader = load("res://game/battle/bleed.gdshader")
 		mat.set_shader_parameter("painted", _painted.get_texture())
@@ -133,6 +139,16 @@ func set_field(f: Battlefield) -> void:
 		_composite.material = mat
 		_mix.add_child(_composite)
 	queue_redraw()
+
+
+## Device pixels per design pixel for the scene and the compositor: the window's stretch
+## when the FINE MAP setting is on (or RIFTGATE_FINE_MAP=1), else 1.
+func _density() -> float:
+	if OS.get_environment("RIFTGATE_FINE_MAP") != "1" and not bool(Settings.display.get("fine_map", false)):
+		return 1.0
+	if not is_inside_tree():
+		return 1.0
+	return maxf(1.0, get_viewport().get_final_transform().get_scale().y)
 
 
 ## The other world's painted map, one frame of two, rendered once into a viewport the size

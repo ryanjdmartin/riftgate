@@ -78,15 +78,15 @@ var _materials: Dictionary = {} # tile name -> ShaderMaterial
 var _time: float = 0.0
 
 
-func setup(f: Battlefield, view_size: Vector2, origin: Vector2, hex_size: float) -> void:
+func setup(f: Battlefield, view_size: Vector2, origin: Vector2, hex_size: float, density: float = 1.0) -> void:
 	field = f
 	hex_px = hex_size
 	_origin = origin
-	_view = view_size
+	_view = view_size   # the screen area in design pixels: the camera's frame, whatever the density
 	_ppu = hex_px / HEX_WORLD
 	_sin = sin(deg_to_rad(PITCH))
 	_cos = cos(deg_to_rad(PITCH))
-	size = Vector2i(int(view_size.x), int(view_size.y))
+	size = Vector2i((view_size * density).round())   # the pixels rendered: the design's, or the glass's (the FINE MAP setting)
 	own_world_3d = true
 	transparent_bg = true
 	render_target_update_mode = SubViewport.UPDATE_ALWAYS   # alive: sway and ripple every frame

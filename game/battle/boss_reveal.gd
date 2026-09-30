@@ -43,6 +43,7 @@ var _sub_label: Label
 
 func _init() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST   # the boss's picture is pixel art
 	_family_label = Hud.label("", 15, Color(Palette.HUD, 0.85), Hud.mono())
 	_family_label.position = Vector2(TEXT_X, BAND_Y + 64.0)
 	_family_label.size = Vector2(TEXT_W, 22)

@@ -147,6 +147,7 @@ func _build() -> void:
 	STRIP_H = BOTTOM_Y - 16.0 - STRIP_Y      # down to the buttons' rule; the log's old space is in it
 	custom_minimum_size = Vector2(W, H)
 	Hud.inset_screen(self)   # clear of the phone's corners, cutout and gesture zone
+	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR   # text is sampled linear (Ryan, 29 September: nearest at a phone's stretch left the strokes uneven); the map and every sprite pin nearest on themselves
 
 	var bg := HudBackdrop.new()
 	bg.scan = false   # this screen's one scan bar is drawn on top of everything, below
@@ -521,7 +522,11 @@ var _built_hud := ""   # the HUD colour this screen was built with; a change reb
 func _open_menu() -> void:
 	if _menu == null:
 		_menu = PauseMenu.new()
-		_menu.display_changed.connect(func(_key: String, _value: Variant) -> void: _apply_display())
+		_menu.display_changed.connect(func(key: String, _value: Variant) -> void:
+			if key == "fine_map":
+				_map.set_field(battle.field)   # the scene and the compositor rebuilt at the new density
+				_refresh()
+			_apply_display())
 		_menu.hud_changed.connect(_rebuild)
 		_menu.quit_requested.connect(func() -> void: quit_requested.emit())
 		add_child(_menu)

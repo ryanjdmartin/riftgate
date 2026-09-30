@@ -66,6 +66,7 @@ var _t := 0.0
 
 func _init() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST   # the sprite is pixel art; the screen's text is linear
 	set_process(false)
 
 

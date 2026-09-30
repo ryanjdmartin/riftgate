@@ -29,6 +29,7 @@ func _ready() -> void:
 
 func _build_menu() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR   # text, see Hud.oversample; pixel art pins nearest on itself
 	# The harness must not swallow input meant for the scene it hosts (the map viewer reads
 	# unhandled mouse events), so the root and its backdrop ignore the mouse.
 	mouse_filter = Control.MOUSE_FILTER_IGNORE

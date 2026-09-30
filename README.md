@@ -106,6 +106,8 @@ perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/balance.gd --
 # (any run, not only the tool), RIFTGATE_SHOT_SCALE=1.5 renders at its pixel density (the
 # PNG comes out 1080 wide); add --rendering-method gl_compatibility for the phone's renderer.
 # RIFTGATE_MSAA=on|off forces the 3D viewports' anti-aliasing (any run; off on a phone by default).
+# RIFTGATE_FINE_MAP=1 forces the FINE MAP setting (the map's scene and compositor at the glass's
+# density; with RIFTGATE_SHOT_SCALE=1.5 that is a phone's).
 # RIFTGATE_SHOT_WINDOW=1 puts the scene in the window itself instead of a SubViewport, so the
 # capture goes through the project's own stretch and font oversampling as the phone's does:
 # run with --resolution 1080x1920 for a 1080 phone's density (the Mac's screen caps the height).

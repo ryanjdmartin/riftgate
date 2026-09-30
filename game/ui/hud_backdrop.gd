@@ -86,6 +86,7 @@ class GroundBand extends Control:
 
 	func _init() -> void:
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST   # the tile is pixel art; the screen's text is linear
 		clip_contents = true
 
 	func _draw() -> void:

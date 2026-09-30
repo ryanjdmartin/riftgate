@@ -68,6 +68,7 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 - [ ] The wreck's death animation on the map, once wrecks are decided
 - [ ] Joint idle for grounded machines, once joints exist
 - [ ] Corruption in a pack's wake, and the bleed growing with Rift Pressure (`bleed.gd` has the knob in mind), once decided
+- [ ] Judge FINE MAP on the phone (settings toggle, 29 September): sharper machines at 2.25x the pixels; if the frame rate holds, make it the phone's default
 - [ ] If the phone drops frames: one mesh per material per machine, until joints
 - [ ] `tools/screenshot.gd`'s engage pose prints renderer leak warnings at exit (harmless; fix if cheap)
 

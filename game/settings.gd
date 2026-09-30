@@ -25,6 +25,7 @@ static var _loaded := false
 const DISPLAY_DEFAULTS := {
 	"brightness": 1.0, "glitch": true, "pace": 1.0, "enemy_pace": 1.0, "scan": true,
 	"music": 0.8, "effects": 1.0,
+	"fine_map": false,   # the map's scene and compositor at the glass's density rather than the design's (a phone: sharper machines, 2.25x the pixels)
 }
 const DISPLAY_RANGES := {
 	"brightness": Vector2(0.5, 1.5), "pace": Vector2(0.5, 2.0), "enemy_pace": Vector2(0.5, 3.75),

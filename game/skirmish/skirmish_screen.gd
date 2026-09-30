@@ -273,6 +273,7 @@ func _build() -> void:
 		set(key, float(ROWS[key]) * H / BASE_H)
 	custom_minimum_size = Vector2(W, H)
 	Hud.inset_screen(self)   # clear of the phone's corners, cutout and gesture zone
+	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR   # text linear; the ground bands and the sprites pin nearest on themselves
 
 	var bg := HudBackdrop.new()
 	var seam_y := REROLL_Y + REROLL_SIZE.y + REROLL_GAP
