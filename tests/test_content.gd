@@ -588,3 +588,26 @@ func test_taunt_rides_on_shields_and_vents_and_never_on_an_attack() -> void:
 			bad_gun = true
 	assert_true(bad_gun, "a taunt on an attack is refused")
 	assert_true(db.build_face(fins["face"]).has(Face.Keyword.BEACON), "and the vent builds with it")
+
+
+func test_grant_keyword_names_a_keyword_the_engine_runs() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var c: Dictionary = db.chassis["badger"].duplicate(true)
+	c["id"] = "ram"
+	c["name"] = "Ram Test"
+	c["passive"] = {"id": "drive", "name": "Drive", "description": "", "effects": [
+		{"trigger": "static", "effect": "grant_keyword", "value": "overwhelm"}]}
+	db.chassis["ram"] = c
+	var bad: Dictionary = c.duplicate(true)
+	bad["id"] = "ram_bad"
+	bad["name"] = "Ram Bad"
+	bad["passive"] = {"id": "drive2", "name": "Drive", "description": "", "effects": [
+		{"trigger": "static", "effect": "grant_keyword", "value": "corrode"}]}
+	db.chassis["ram_bad"] = bad
+	var hit := false
+	for e in db.validate():
+		assert_false(e.begins_with("chassis ram:"), "a real keyword validates: %s" % e)
+		if e.begins_with("chassis ram_bad") and e.contains("grant_keyword"):
+			hit = true
+	assert_true(hit, "a keyword the engine lacks is refused")

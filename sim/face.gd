@@ -11,7 +11,7 @@ const CRIT_MULT := 2.0        # a crit multiplies the roll by this plus every cr
 
 enum Kind { ATTACK, SHIELD, VENT, BLANK, BUFF }
 enum Reach { NONE, LINE, INDIRECT, MELEE }
-enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, EXECUTE, CHAIN, STEADY, RAPID, CLEANSE, VOLATILE, DEVOUR, TAUNT, BEACON }
+enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, EXECUTE, CHAIN, STEADY, RAPID, CLEANSE, VOLATILE, DEVOUR, TAUNT, BEACON, OVERWHELM }
 ## Whom a component may be spent on (Ryan, 26 September): a weapon (an attack) targets foes;
 ## equipment (a shield, a vent) targets self and allies by default, and content may narrow
 ## one to self only or allies only, so the design space stays open.
@@ -28,6 +28,7 @@ const KEYWORD_NAMES := {
 	Keyword.SUPPRESS: "suppress", Keyword.EXECUTE: "execute",
 	Keyword.CHAIN: "chain", Keyword.STEADY: "steady", Keyword.RAPID: "rapid", Keyword.CLEANSE: "cleanse",
 	Keyword.VOLATILE: "volatile", Keyword.DEVOUR: "devour", Keyword.TAUNT: "taunt", Keyword.BEACON: "beacon",
+	Keyword.OVERWHELM: "overwhelm",
 }
 ## What the player reads where it differs from the content id (the vocabulary's name).
 const KEYWORD_LABELS := { Keyword.CLEAVE: "spread" }

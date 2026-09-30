@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 89 implemented, 19 planned, 0 idea.
+Status: 90 implemented, 18 planned, 0 idea.
 
 ## Resource
 
@@ -60,7 +60,7 @@ Status: 89 implemented, 19 planned, 0 idea.
 |---|---|---|
 | **Spread** | Player keyword. Also hits the foes in the neighbouring columns of the target's rank. | implemented |
 | **Penetrate** | Player keyword. Hits first the front, then the back rank of a single column. | implemented |
-| **Overwhelm** | Player keyword. Hits that kill the front rank spill leftover damage to the back rank. | planned |
+| **Overwhelm** | Player keyword. When a blow kills a front-rank foe, what it had past the kill carries into the foe behind it in the same column. Nothing stands behind a massive foe. | implemented |
 | **Burn** | Player keyword. Burning enemies lose 5 HP per stack at the start of their action, then lose one stack. Bypasses armour. Can be resisted. | implemented |
 | **Corrode** | Player keyword. Corroding enemies lose 1% of their HP per stack at the start of their action, then lose one stack. Bypasses armour. Can be resisted. | planned |
 | **Suppress** | Player keyword. The target skips its telegraphed action this round, then gains two stacks of Numbed (three if massive). A foe may shrug it off: its own stun resistance plus 10% a Numbed stack. | implemented |
@@ -203,6 +203,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Buff component** (implemented): Only one component carries it, a draft. Debuffs on foes stay weapons.
 - **Damage range** (implemented): Ranges are content-authored per component; no upgrade path raises min or max yet.
 - **Critical hit** (implemented): The base is Face.CRIT_MULT, a balance knob; lower it if crit triggers make crits too strong at low chance.
+- **Overwhelm** (implemented): Built 29 September. The spill is plain damage: it spends a shock and feeds a devour, and carries no other keyword of the blow. The Wild Boar's Juggernaut Drive grants it to every attack (grant_keyword, the first passive to add a keyword).
 - **Numbed** (implemented): Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths.
 - **Stun resistance** (implemented): 30 on the three bosses as a placeholder.
 - **Volatile** (implemented): The Arsenal's self-damage (Ryan, 28 September), built 29 September: hull outright where the Corrupted bite takes shield first. The bite is a placeholder number (Skirmish.VOLATILE_BITE). It will feed the Nemesis's Crucible Capacitor once that counts blows that reach hull.

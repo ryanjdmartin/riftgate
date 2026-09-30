@@ -112,8 +112,9 @@
       "passive": {
         "id": "juggernaut_drive", "name": "Juggernaut Drive",
         "description": "Momentum carries through. Damage past a kill spills into the rank behind, from any weapon.",
-        "status": "planned",
-        "effects": []
+        "effects": [
+          { "trigger": "static", "effect": "grant_keyword", "value": "overwhelm" }
+        ]
       },
       "flavour": ""
     },

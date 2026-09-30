@@ -354,17 +354,10 @@ func reach_of(ms: MechState, f: Face) -> int:
 	return Effects.effective_reach(ms.unit, f)
 
 
-## The component as the player should see it: a copy carrying the effective reach. For
-## drawing only; the die keeps the real one.
+## The component as the player should see it and as the resolver spends it: a copy carrying
+## the effective reach and any keyword a passive grants. The die keeps the real one.
 func shown_face(ms: MechState, f: Face) -> Face:
-	if f == null:
-		return null
-	var r := reach_of(ms, f)
-	if r == f.reach:
-		return f
-	var c := f.duplicate_face()
-	c.reach = r
-	return c
+	return Effects.effective_face(ms.unit, f)
 
 
 # ---------------------------------------------------------------- round flow
@@ -418,6 +411,7 @@ func assign(mech_index: int, target = null) -> bool:
 	var f := ms.face()
 	if f == null:
 		return false
+	f = Effects.effective_face(ms.unit, f)   # the entry as this machine's passives make it
 	if f.is_attack() and (not (target is Foe) or not targets_for(mech_index).has(target)):
 		return false
 	if f.is_equipment() and not equipment_targets_for(ms, f).has(target if target is MechState else ms):
@@ -637,6 +631,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 		var landed := dmg
 		for foe in hit:
 			var was_alive := foe.alive()
+			var hp_before := foe.hp
 			# What the foe takes of the blow: its own statuses read last (a Shocked foe takes
 			# double, and the shock is spent by the blow).
 			var taken := Effects.damage_taken(foe, dmg)
@@ -647,6 +642,19 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 				log.append("%s: the shock lands, %d doubled" % [foe.display_name, dmg])
 			if was_alive and not foe.alive() and f.has(Face.Keyword.DEVOUR):
 				_devour(ms, foe)
+			# Overwhelm: what the blow had past the kill of a front-rank foe carries into the
+			# foe behind it in the column, as plain damage that still spends a shock and
+			# feeds a devour. A massive foe fills its column, so nothing stands behind it.
+			if was_alive and not foe.alive() and f.has(Face.Keyword.OVERWHELM) and foe.rank == 0 and not foe.is_massive():
+				var spill := taken - hp_before
+				var behind: Foe = back[foe.column] if foe.column >= 0 and foe.column < columns else null
+				if spill > 0 and behind != null and behind.alive() and not hit.has(behind):
+					var behind_taken := Effects.damage_taken(behind, spill)
+					behind.hp -= behind_taken
+					Effects.remove(behind, "shocked")
+					log.append("%s overwhelms: %d spills into %s" % [ms.unit.display_name, behind_taken, behind.display_name])
+					if not behind.alive() and f.has(Face.Keyword.DEVOUR):
+						_devour(ms, behind)
 			if f.has(Face.Keyword.BURN):
 				Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", ceili(float(dmg) / BURN_DAMAGE_PER_STACK))
 				_foe_gained_status(foe, "burning")

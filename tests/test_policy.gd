@@ -258,3 +258,18 @@ func test_greedy_taunts_when_it_saves_the_glass_machine() -> void:
 	assert_true(pol.draw_score(sk, ms, klaxon, 10) > Policy.DEATH_WEIGHT, "the taunt saves a machine, and the bot sees it")
 	assert_eq(pol.draw_score(sk, ms, plain, 10), 0.0, "a plain shield draws nothing")
 	assert_true(pol.face_value(sk, ms, klaxon) > pol.face_value(sk, ms, plain), "so the klaxon is the better entry")
+
+
+func test_greedy_values_the_spill_behind_a_dying_foe() -> void:
+	var sk := Skirmish.new(1, 1)
+	var plain := Face.attack(50, L)
+	var ram := Face.attack(50, L, K.OVERWHELM)
+	sk.add_mech(_mech("A", Die.of([plain, ram]), 40, 100))
+	sk.add_foes([_ghoul(20, 10), _archer(40, 10)])
+	sk.begin()
+	sk.start_round()
+	var pol := Policy.make(Policy.GREEDY)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var a := pol.attack_score(sk, ms, plain, sk.front[0])
+	var b := pol.attack_score(sk, ms, ram, sk.front[0])
+	assert_true(b > a + 29.0, "the thirty that spills into the archer counts")

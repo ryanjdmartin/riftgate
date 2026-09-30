@@ -46,7 +46,7 @@ const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn"],
 	"on_crit": ["multiply_damage", "add_damage", "add_burn", "vent_heat", "add_crit_damage"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "draw_rank"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "draw_rank", "grant_keyword"],
 	"status": ["tick_hp", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry"],
 	"on_foe_status": ["chance_suppress"],
 }
@@ -476,6 +476,43 @@ static func effective_reach(u, face: Face) -> int:
 	return face.reach
 
 
+## Keywords a live passive grants this component beyond its own (grant_keyword, static, its
+## `when` honoured; the Wild Boar's Juggernaut Drive puts overwhelm on every attack). An
+## attack keyword lands on attacks only, a support keyword on equipment only, a spend
+## keyword on anything; a keyword the component already carries is not granted twice.
+static func granted_keywords(u, face: Face) -> Array[int]:
+	var out: Array[int] = []
+	if face == null or face.kind == Face.Kind.BLANK:
+		return out
+	for pair in _taking_part(u, "static", face):
+		if str(pair[0].get("effect", "")) != "grant_keyword":
+			continue
+		var kw := Face.keyword_from_name(str(pair[0].get("value", "")))
+		if kw <= 0 or face.has(kw) or out.has(kw):
+			continue
+		var fits := Face.ANY_KEYWORDS.has(kw) or (face.is_attack() != Face.SUPPORT_KEYWORDS.has(kw))
+		if fits:
+			out.append(kw)
+	return out
+
+
+## The component as it is right now for this machine: its own entry, unless a live passive
+## changes its reach or grants it a keyword, in which case a copy carrying both. What the
+## resolver spends, the bot weighs and the screen draws; the die keeps the real one.
+static func effective_face(u, face: Face) -> Face:
+	if face == null:
+		return null
+	var r := effective_reach(u, face)
+	var granted := granted_keywords(u, face)
+	if r == face.reach and granted.is_empty():
+		return face
+	var c := face.duplicate_face()
+	c.reach = r
+	for kw in granted:
+		c.add_keyword(kw)
+	return c
+
+
 ## The chance, percent, that a foe gaining a status is also suppressed by this machine's
 ## passives (the Baboon's Pocket Paradox, 28 September): each effect's base plus its
 ## `per_missing_shield` for every point of shield the machine is missing, summed, capped.
@@ -582,6 +619,9 @@ static func effect_text(eff: Dictionary) -> String:
 		"shock_on_hull_strike": body = "a foe that strikes bare hull is Shocked"
 		"shock_on_block": body = "a foe whose blow the shield blocks is Shocked"
 		"draw_rank": body = "the %s rank targets this machine" % ("front" if int(v) == 0 else "back")
+		"grant_keyword":
+			var kw := Face.keyword_from_name(str(v))
+			body = "gains %s" % (Face.keyword_label(kw) if kw > 0 else str(v))
 		"tick_hp": body = "%s damage per stack each turn" % vs
 		"tick_heat": body = "%s heat per stack each turn" % vs
 		"skip_action": body = "skips its action"
@@ -628,6 +668,10 @@ static func explain(u, face: Face) -> Array[String]:
 			var name := str(eff.get("effect", ""))
 			if trig == "static" and name == "set_reach":
 				if not str(eff.get("when", "")).begins_with("reach_") and _usable(u, m, name) and _holds(u, eff, face) and effective_reach(u, face) == Face.reach_from_name(str(eff.get("value", ""))) and effective_reach(u, face) != face.reach:
+					out.append("%s (%s)" % [effect_text(eff), m.name])
+			elif trig == "static" and name == "grant_keyword":
+				var kw := Face.keyword_from_name(str(eff.get("value", "")))
+				if kw > 0 and not face.has(kw) and granted_keywords(u, face).has(kw):
 					out.append("%s (%s)" % [effect_text(eff), m.name])
 			elif trig == "on_attack" or trig == "on_crit":
 				# A condition on the target is shown as a rule (its lead says when), since

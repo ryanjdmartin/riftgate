@@ -154,6 +154,7 @@ func options_for(sk: Skirmish, i: int) -> Array:
 ## chain adds, the burn it leaves, less the hull the heat will burn and the shield the
 ## splash will cost. Suppress counts the blow it stops.
 func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> float:
+	f = Effects.effective_face(ms.unit, f)
 	var outcomes := damage_outcomes(ms, f, target)
 	var mean := _mean(outcomes)
 	var p_kill := _kill_odds(outcomes, target.hp)
@@ -169,6 +170,17 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		if other != null and other != target and other.alive():
 			score += minf(mean, float(other.hp))
 	score += p_kill * (KILL_BONUS + _threat_now(target) * HULL_WEIGHT)
+	if f.has(Face.Keyword.OVERWHELM) and target.rank == 0 and not target.is_massive():
+		# What the roll has past the kill lands on the foe behind, and may kill it too.
+		var behind := sk.foe_at(1, target.column)
+		if behind != null and behind.alive() and behind != target:
+			for o in outcomes:
+				var spill := maxi(0, int(o[0]) - target.hp)
+				if spill <= 0:
+					continue
+				score += float(o[1]) * minf(float(spill), float(behind.hp))
+				if spill >= behind.hp:
+					score += float(o[1]) * (KILL_BONUS + _threat_now(behind) * HULL_WEIGHT)
 	if f.has(Face.Keyword.SUPPRESS):
 		# A Numbed foe shrugs it off at its resistance, so the stopped blow is worth its odds.
 		var lands := 1.0 - float(target.resist_total()) / 100.0
@@ -259,6 +271,7 @@ static func heat_of(ms: Skirmish.MechState, f: Face) -> int:
 ## without a crit; a static entry is one point. Overcharge, execute and the pipeline's
 ## modifiers apply as the resolver applies them; the strikes multiply the blow.
 func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null) -> Array:
+	f = Effects.effective_face(ms.unit, f)
 	var rolls: Array[int] = []
 	if not f.is_ranged():
 		rolls.append(f.power)

@@ -233,13 +233,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 	var faces: Array = []
 	if u.die != null:
 		for f in u.die.faces:
-			var r := Effects.effective_reach(u, f)
-			if r != f.reach:
-				var shown: Face = f.duplicate_face()
-				shown.reach = r
-				faces.append(shown)
-			else:
-				faces.append(f)
+			faces.append(Effects.effective_face(u, f))   # its reach and keywords as the passives make them
 	# Every live loadout and battle modifier: the chassis passive first, then what
 	# components grant, then the battle's rewards; nothing from the fight itself.
 	var lines: Array[String] = []
@@ -478,6 +472,12 @@ func _validate_passive(where: String, p, errs: Array[String]) -> void:
 			errs.append("%s: a stat effect needs 'stat', one of %s" % [where, ", ".join(Effects.STATS)])
 		if effect == "suppress" and str(eff.get("value", "")).is_empty():
 			errs.append("%s: suppress needs the id or tag it turns off as its value" % where)
+		if effect == "grant_keyword":
+			var kw := str(eff.get("value", ""))
+			if Face.keyword_from_name(kw) <= 0:
+				errs.append("%s: grant_keyword names no engine keyword ('%s')" % [where, kw])
+			elif vocabulary.get(kw, {}).get("status") != "implemented":
+				errs.append("%s: grant_keyword names '%s', which is not implemented yet" % [where, kw])
 		var when := str(eff.get("when", ""))
 		if not Effects.supports_when(when):
 			errs.append("%s: passive condition '%s' is not implemented by the engine" % [where, when])
