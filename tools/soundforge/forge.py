@@ -1394,6 +1394,9 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
                 buf = at(buf, pick(sound), when(i) + behind, gain * dg * vel() * (1.0 if not name.startswith("hat") or in_bar % 4 == 0 else 0.7), wrap=True)
             elif c == "o":
                 buf = at(buf, pick(sound), when(i) + behind, gain * dg * vel() * 0.45, wrap=True)
+            elif c.isdigit() and c != "0":
+                # A hit at a written level, tenths of full: "2345678x" is a run growing to full.
+                buf = at(buf, pick(sound), when(i) + behind, gain * dg * vel() * (int(c) / 10.0), wrap=True)
     per_bar = _chords_per_bar(form, chords)
     for vi, v in enumerate(voices):
         RNG = np.random.default_rng(zlib.crc32(("voice:%s:%d" % (v["inst"], vi)).encode()))
@@ -2091,11 +2094,16 @@ def _drum_solo(bars):
                 bar[("snare", "tom", "tom2")[pos % 3]][pos] = "x"
             bar["kick"][14] = "x"
         if b == bars - 1:
-            # The run's closer: the whole second half a roll down the kit into the next section.
+            # The run's closer (Ryan, 30 September): eight successive snare hits growing in
+            # volume through the last half-bar, the kick on its Ba alone under them.
+            for k in ("tom", "tom2", "splash", "china", "crash"):
+                for pos in range(8, 16):
+                    bar[k][pos] = "."
+            for pos, level in zip(range(8, 16), "2345678x"):
+                bar["snare"][pos] = level
             for pos in range(8, 16):
-                bar[("snare", "tom", "tom", "tom2", "tom2", "tom", "snare", "tom2")[pos - 8]][pos] = "x"
-            for pos in (8, 10, 12, 14):
-                bar["kick"][pos] = "x"
+                if pos != 12:
+                    bar["kick"][pos] = "."
         for k in parts:
             parts[k].append("".join(bar[k]))
     return {k: "".join(v) for k, v in parts.items()}
@@ -2123,7 +2131,7 @@ def music_hold_the_line(palette="hybrid"):
     rise_up = "7--.a-.7-...8-..5--.a-.c-...8-.."
     climax = "0..0..3.0..5..3.0..0..8.7..5..3.3..3..5.3..7..5.0..0..a.8..7..5."   # the new unison riff, four bars
     # The keys' tune, its harmony lines and the sub bass's lines are Ryan's, scored on the Melody
-    # Desk against the latest mix (30 September, fourth melody, 087znc0cvbmz1svqns29, "Hold The Line · lead · F bars 59 to 74").
+    # Desk against the latest mix (30 September, fifth melody, "the last try", s33z85bjwsha2yg7a2ek).
     keys_tune = ("7--.8-.7-..5.3-.0-----..3---5---8--.a-.8-..7.5-.3---....5-.3-.0-"
                  "7--.a-.c------.a--.8-.7-.5-----.3--.5-.7-..8.a-.2-----------...."
                  "7--.8-.7-..5.3-.0------.3---5---8--.a-.8-..7.5-.3------.5-.3-.0-"
@@ -2131,15 +2139,15 @@ def music_hold_the_line(palette="hybrid"):
     keys_harm1 = ("................................................................"
                  "e-------------..c-------------..8-------------..5-----------...."
                  "e--.f-.e-..d.a-.8------.c---d---e--.i-.e-..d.c-.c------.c-.a-.7-"
-                 "d-------b-------e-------7-------7-------b-------7---------------")
+                 "d-------d-------e-------e-------7-------7-------7---------------")
     keys_harm2 = ("................................................................"
                  "c-------------..8-------------..5-------------..a-----------...."
                  "c--------------.3------.7---a---c--.d-.c-..a....3------.2------."
-                 "7-------2-------7-------2-------5-------7-------3---------------")
+                 "7-------5-------c-------b-------5-------2-------3---------------")
     keys_sub = ("0---------------8---------------g---------------7---------------"
                  "0---------------5---------------3---------------g---------------"
                  "0---------------8---------------5---------------g---------------"
-                 "0-------n-------2-------h-------l-------2-------0---------------")
+                 "0-------0-------8-------8-------l-------l-------0---------------")
     keys_touch = ("................................................................"
                  "................................................................"
                  "................................................................"
