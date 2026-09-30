@@ -821,8 +821,10 @@ const STRIPE := HEX_SIZE * 0.26   # one stripe's width in map pixels
 const STRIPE_DIR := Vector2(0.8, 0.6)   # the stripes run across this direction
 
 func _intent_at(p: Vector2, phase: float) -> Color:
-	var k := floori((p.dot(STRIPE_DIR) / STRIPE) + phase)
-	return INTENT_HOT if k % 2 == 0 else INTENT_DEEP
+	# A smooth wave between the two, never a hard edge (Ryan, 30 September: the jumps were
+	# hard to look at); one full wave is two stripes wide.
+	var u := p.dot(STRIPE_DIR) / STRIPE + phase
+	return INTENT_DEEP.lerp(INTENT_HOT, 0.5 + 0.5 * sin(u * PI))
 
 
 ## A straight piece drawn in the field's colours, a few pixels at a time.
@@ -946,11 +948,10 @@ func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool
 		if _intent_edged():
 			draw_polyline(pts, INTENT_EDGE, 7.0)
 		draw_polyline(pts, col, 3.5)
-		# The moving dashes over the line take the field's stripes (the line under them stays
-		# the one colour, so the route still reads as one stroke).
-		var phase := fmod(_ring_t * 1.5, 2.0) if breathe else 0.0
+		# The moving dashes over the line stay one dark colour (Ryan, 30 September: the field
+		# on them made the line itself look striped); the field is for the rings and border.
 		for i in range(pts.size() - 1):
-			_dashed_line(pts[i], pts[i + 1], Color(0, 0, 0, 0), HEX_SIZE * 0.22, fmod(_ring_t * 2.0, 2.0) + 1.0, phase)
+			_dashed_line(pts[i], pts[i + 1], INTENT_EDGE, HEX_SIZE * 0.22, fmod(_ring_t * 2.0, 2.0) + 1.0)
 	else:
 		draw_polyline(pts, Color(col, 0.5), 3.0)
 		for i in range(pts.size() - 1):
@@ -972,7 +973,7 @@ func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool
 	var bright := col if edged else (col.lerp(Color.WHITE, 0.25 + 0.25 * sin(_ring_t * 1.6)) if breathe else col)
 	if edged:
 		# The rings and the target's border in the field's stripes (crawling on the tapped pack).
-		var phase := fmod(_ring_t * 1.5, 2.0) if breathe else 0.0
+		var phase := fmod(_ring_t * 0.8, 2.0) if breathe else 0.0   # a slow crawl on the tapped pack
 		if _intent_edged():
 			_field_rings(end, DEST_RING * 0.85, -1.0, phase, 6.0)
 		_field_rings(end, DEST_RING * 0.85, -1.0, phase)
