@@ -137,7 +137,7 @@ tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut-rift tools/foeforge/
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build gate wall
 # the silhouette classes a swapped component wears at a gun mount (models_low.SHAPES), every maker's metal, then re-import
 tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes
-# one machine wearing swapped components on its mounts ("2:" bares a mount; armour and vents show nowhere); a class alone: <chassis> shapes/barrel_minerva
+# one machine wearing swapped components on its mounts ("2:" bares a mount; armour and vents show nowhere); a class alone: <chassis> shapes/barrel_minerva; rendered bare (RIFTGATE_OUTLINE_KEEP=1 keeps the display's edge)
 RIFTGATE_FIT="1:lance,4:blazethrower" godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva fit.png front 480 480
 
 # every sound and the two music loops, from the recipes in tools/soundforge/forge.py, then re-import

@@ -141,8 +141,16 @@ guns, a rack on top, rear-quarter mounts); the Prairie Dog's mast lower and cent
 turret on a neck; the Dingo's rail into the drum, a tail vent, mirrored coolant tanks, longer
 glass; the Goshawk's cannon recessed as a wide oval blended into the belly; the Nemesis with forward
 spiked fists, a hip cannon, chest ports, traps, a vent-striped core; the Ammit with throat ports
-and its spines down the spine; red glass on every Arsenal machine. Ryan judges the pass on the
-viewer. What the second pass changed, so nobody redoes
+and its spines down the spine; red glass on every Arsenal machine. **The fourth round (30
+September, same day):** the Badger's arms clear of the body (wider cuffs, hinges, pauldrons); the
+Armadillo's first-pass cowl back over a smaller bay, its ports hollows with the mount at the floor
+(`_tube` in `models_low.py`), forward ports level, tail band fuller; the Boar's turret guns apart
+with the missile pod on a rear quarter; the Prairie Dog's back broken up; the Goshawk's fifth mount
+a stub under the fairing, its barrel glowing; the Nemesis's fists upright, traps meeting the helm,
+the cannon on the waist, ports up, the core vented over a glow; the Ammit's back panel flat on the
+back with the cannons along it and the spines rooted. `tools/hero_shot.gd` renders bare now
+(`RIFTGATE_OUTLINE_KEEP=1` keeps the display's edge), and the viewer shows every machine bare. Ryan
+judges the round on the viewer. What the second pass changed, so nobody redoes
 it: the **Armadillo** stands on long legs whose hips come out of the shell's flanks (it read
 as a beetle that would catch on rocks) and shows only its weapons' muzzles out of round ports
 in the shell, Blastoise-fashion, with a small snout of a head to sell its size, since it is
