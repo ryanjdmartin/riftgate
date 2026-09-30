@@ -24,7 +24,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [x] Judge round nine (30 September: piano and second chug out, chimes in sets two and three at 0.3, drone throughout, the keys' lead on the riff from mid set two)
 - [x] Judge round ten (30 September: fewer cymbals ships; the higher synth ships, two bars later)
 - [ ] Ryan's simplified bridge melody from the desk, when it is sent
-- [ ] Hear the climax's double kick as a two-bar burst at the end of the third set (read from "start it two bars later, so it runs two bars"); say if the burst should sit elsewhere
+- [x] The climax's entries in real bars (30 September: the synth from the third set, the chimes from the second set's fifth bar, the double kick the last four bars)
 - [x] Write the bridge's melody on the Melody Desk (30 September: sent, applied as the keys section's lead and two harmony voices, marked applied)
 - [x] Judge the drums' last dial-in from the sketches page's "Now" set: `mix_ship` (the track as it ships), `drums_kick` (the kick's size, three steps down) and `drums_tom` (the toms, three steps tighter); say which step, or further
 - [ ] Read `docs/balance.md` against your own play; then either the numbers move or the bot's next rung is built

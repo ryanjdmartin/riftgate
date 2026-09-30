@@ -2192,12 +2192,12 @@ def music_hold_the_line(palette="hybrid"):
                      "F": "x.......x...xx..x.....x.x...xx..",
                      "S": "x.xx..x.x.xx..x.x.xx..x.x.xx.xx.x.xx..x.x.xx..x.x.xx..x.x.xxxxxx",
                      "R": "x.xx.xx.x.xx.xx.x.xx.xx.x.xx.xx.x.xx.xx.x.xx.xx.x.xx.xx.x.xxxxxx",
-                     # The third set keeps the second's kick for six bars; the double kick is the
-                     # last two bars, on the hard kick below (Ryan, 30 September).
-                     "Z": "x.xx.xx.x.xx.xx.x.xx.xx.x.xx.xx.x.xx.xx.x.xx.xx.x.xx.xx.x.xxxxxx" + "x.xx.xx.x.xx.xx.x.xx.xx.x.xx.xx." + "." * 32,
+                     # The third set keeps the second's kick for four bars; the double kick is the
+                     # last four, on the hard kick below (Ryan, 30 September; "two bars" was half time).
+                     "Z": "x.xx.xx.x.xx.xx.x.xx.xx.x.xx.xx.x.xx.xx.x.xx.xx.x.xx.xx.x.xxxxxx" + "." * 64,
                      "Y": "x...............", "V": "x...............",
                      "K": "x.......x.......x.....x.x.......", "J": "x..x..x.x..x..x."},
-            "kick_hard": {"Z": "." * 96 + "x" * 32},
+            "kick_hard": {"Z": "." * 64 + "x" * 64},
             "snare": {"A": "....x.......x...", "N": "....x.......x...", "B": "....x.......x...", "W": "........x...x.x.x.x.x.x.x...x...", "Q": "....x.x.x.xx.x.x", "C": "....x..o.x..x..o", "L": "....x..o.x..x..o",
                       "M": "....x.......x...", "X": "......x.....x.",
                       "U": solo["snare"],
@@ -2325,11 +2325,12 @@ def music_hold_the_line(palette="hybrid"):
             # and come up in the second and third, the drone stays under all three, and the
             # keys' lead voice takes the riff an octave up from halfway through the second set.
             # The riff's synth in the keys' register (the listening page's tenth round: "perfect"),
-            # from the seventh bar of the second set; the chimes from its third bar (Ryan, 30 September).
+            # from the third set; the chimes from the second set's fifth bar (Ryan, 30 September:
+            # four bars later than they had been, in real bars).
             {"inst": "lead", "mode": "riff", "gain": 0.6, "octave": 2, "hold": 0.9,
-             "pat": {"R": "." * 96 + climax[:32], "Z": climax}},
+             "pat": {"Z": climax}},
             {"inst": "chime_metal", "mode": "chord", "octave": 2, "gain": 0.24, "echo": (3, 0.25, 2), "dur": 1.6,
-             "pat": {"R": "." * 32 + "0...2.1.....3..." * 6, "Z": "0...2.1.....3..."}},
+             "pat": {"R": "." * 64 + "0...2.1.....3..." * 4, "Z": "0...2.1.....3..."}},
             # The breath (Y) is the climax's blend on one E minor chord: the lead guitar voice
             # on the third, the chug and the driven bass in unison on the root, the fifth
             # chug, the backing guitar's chord, the piano on the fifth (above, with the
