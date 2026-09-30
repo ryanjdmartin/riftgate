@@ -613,8 +613,11 @@ def _thin_cymbals(pat):
     return "".join(out)
 
 
+_SOLO = F._drum_solo   # the forge's own, held while the module's name is patched
+
+
 def drum_solo_fewer(bars):
-    solo = F._drum_solo(bars)
+    solo = _SOLO(bars)
     for k in ("crash", "crash2", "china", "splash", "stack"):
         if k in solo:
             solo[k] = _thin_cymbals(solo[k])
