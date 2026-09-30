@@ -10,7 +10,7 @@ a bible change, passing the URL from any conversation that did not publish it.
 **The pages, as of 29 September, night.** An artifact is republished only by the account that
 made it, or by an account invited as Editor from its Share menu; the personal account (A) can
 invite outward, the organisation account (B) cannot. **Account A owns five pages and nothing
-else:** the bible (https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, v0.10 published; the file is v0.11 since 30 September and wants a republish from account A), the nameplate
+else:** the bible (https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF; **published 0.11 from a Mac session's unpushed commit, with a row this branch lacks, "Engagement by the pack's capture zone"; this branch's file is 0.12 and must not be republished until that commit is merged**), the nameplate
 (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH), the hangar codex
 (https://claude.ai/artifact/FqiH3b8ZZjxJaCJmWK71vj), the Model Viewer
 (https://claude.ai/artifact/HzF8K98MxgJP7kroxAuDMv, every chassis rendered as it stands with
@@ -69,7 +69,7 @@ Paradox runs on the `on_foe_status` trigger, `Effects.foe_status_suppress_chance
 Aphelion stock is `umbra_projector`, `pulse_repeater`, `zenith_emitter`, `halo_shield`,
 `radiator_sail`, with `corona_shield` a unique unlock), and the 28 September machines
 `armadillo`, `wild_boar`, `prairie_dog`, `dingo`, `goshawk`, `nemesis`, `ammit` (the last
-two the Arsenal's; maker `arsenal` exists). **Every 28 September passive and locked
+two the Arsenal's; maker `arsenal` exists). **Merge note for whoever lands `ccr-23c2f18f-qlilnd` on main:** a Mac session of 29 September has unpushed work the published pages already show (the Dingo's name-clash verdict in `content/chassis.json`, the silhouette classes and a capture-zone engagement row in the bible). The capture-zone rule touches `Battlefield.detect_skirmishes`, which this branch also changed for the stealth join rule (`_stealth_join`, `PhaseResult.blockers`): merge the two by hand and rerun the battlefield tests. **Every 28 September passive and locked
 component runs since 30 September** (the cloud session, branch `ccr-23c2f18f-qlilnd`,
 one commit each, the bible's section 7 row "The 28 September pieces, built" has the
 reasoning and the runner's first readings): volatile (`Face.ANY_KEYWORDS`, on any kind),
