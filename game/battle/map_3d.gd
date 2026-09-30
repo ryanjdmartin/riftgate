@@ -1155,7 +1155,7 @@ func sync() -> void:
 			# Whether the ground here is still the reconstruction's: the same threshold the
 			# compositor paints at, so the flyer clears the geometry wherever it can be seen
 			# and flies level only where the painting has taken it.
-			var solid := 1.0 - smoothstep(0.42, 0.58, Bleed.at(under_px, grad, src))
+			var solid := Bleed.solid(under_px, grad, src)
 			var clear := maxf(0.0, float(_top.get(under, 0.0)) - _height_of(under) + 6.0 - HOVER)
 			var want := (_height_of(under) + clear) * solid
 			var prev: float = _fly_y.get(u.id, want)
@@ -1258,7 +1258,8 @@ func _make_unit(u: Unit) -> Node3D:
 			sm.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 			sm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			sm.albedo_color = Color(0.0, 0.0, 0.0, 0.45)
-			sm.no_depth_test = true   # a soft disc on whatever is below, never lost inside a prop
+			# Depth-tested (Ryan, 29 September: drawn over everything it lay over the aircraft
+			# itself); a prop on the tile may cut into it, which a shadow can bear.
 			sm.render_priority = 2
 			sh.material_override = sm
 			sh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF

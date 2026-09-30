@@ -220,10 +220,28 @@ func base(h: Vector2i) -> Vector2:
 
 
 ## Centre of a hex in map space: its grid cell, lifted by the height of its column so the
-## overlays stand on the terrain.
+## overlays stand on the terrain. Under the painting the column is gone and the ground is
+## flat, so the lift goes with it (Ryan, 29 September: a pack on flattened ground was
+## placed by the height of the geometry the painting had replaced, and its marks with it).
 func center(h: Vector2i) -> Vector2:
-	var lift := _map3d.lift(h) if _map3d != null else 0.0
-	return _origin + Hex.to_pixel(h, HEX_SIZE) + Vector2(0, -lift)
+	return _origin + Hex.to_pixel(h, HEX_SIZE) + Vector2(0, -_lift_at(h))
+
+
+var _bleed_grad := Vector2.ZERO
+var _bleed_src := PackedVector3Array()
+
+## A hex's lift on screen: its column's height where the reconstruction stands, nothing
+## where the painting has taken it, with the compositor's own threshold between.
+func _lift_at(h: Vector2i) -> float:
+	if _map3d == null:
+		return 0.0
+	var lift := _map3d.lift(h)
+	if lift == 0.0:
+		return 0.0
+	if _bleed_src.is_empty():
+		_bleed_grad = Bleed.gradient(field, _origin, HEX_SIZE)
+		_bleed_src = Bleed.sources(field, _origin, HEX_SIZE, _anim_px)
+	return lift * Bleed.solid(base(h), _bleed_grad, _bleed_src)
 
 
 ## The hex under a screen point. A raised hex's top sits above its cell and covers part of
@@ -330,7 +348,9 @@ func _draw() -> void:
 		var src := Bleed.sources(field, _origin, HEX_SIZE, _anim_px)
 		if flatten_r > 0.0 and src.size() < Bleed.MAX_SOURCES:
 			src.append(Vector3(flatten_at.x, flatten_at.y, flatten_r * HEX_SIZE))
-		mat.set_shader_parameter("grad", Bleed.gradient(field, _origin, HEX_SIZE))
+		_bleed_grad = Bleed.gradient(field, _origin, HEX_SIZE)
+		_bleed_src = src.duplicate()   # what the overlays' lifts read this frame (_lift_at)
+		mat.set_shader_parameter("grad", _bleed_grad)
 		mat.set_shader_parameter("source_count", src.size())
 		src.resize(Bleed.MAX_SOURCES)
 		mat.set_shader_parameter("sources", src)
@@ -417,10 +437,11 @@ func _draw() -> void:
 		# The hexes a pack can strike from read as warning zones (Ryan, 29 September): a red
 		# border crawling round each with a warning glyph at its centre; the gate's own
 		# footprint translucent but plain to see, a tint under a half-strength outline.
+		var blink := 0.55 + 0.45 * sin(_ring_t * 3.0)   # the glyphs pulse together
 		for n in attack.keys():
-			_fill(n, Color(Palette.ENEMY, 0.1))
-			_crawl_poly(Hex.corners(center(n), HEX_SIZE - 4.0), Palette.ENEMY, HEX_SIZE * 0.2, fmod(_ring_t * 1.2, 2.0))
-			Glyphs.draw(self, "warning", center(n), HEX_SIZE * 0.5, ENEMY_LIT, 2.5)
+			_fill(n, Color(Palette.ENEMY, 0.06))
+			_crawl_poly(Hex.corners(center(n), HEX_SIZE - 4.0), Palette.ENEMY, HEX_SIZE * 0.2, fmod(_ring_t * 1.2, 2.0), ENEMY_EDGE)
+			Glyphs.draw(self, "warning", center(n), HEX_SIZE * (0.42 + 0.08 * blink), Color(ENEMY_HOT, 0.5 + 0.5 * blink), 2.5)
 		for g in map.gate_hexes:
 			_fill(g, Color(hud, 0.12))
 			Hud.stroke_poly(self, Hex.corners(center(g), HEX_SIZE - 2.0), Color(hud, 0.6), 2.0)
@@ -767,27 +788,27 @@ func _mark(h: Vector2i) -> Dictionary:
 
 
 const DEST_RING := HEX_SIZE * 0.58   # the target's outer ring
-const ENEMY_LIT := Color("ffb3a6")    # the enemy marks' bright: red lifted well toward white, so the rings ride the tint
-const ENEMY_ROUTE := Color("ff6a5a")  # a pack's route at rest: red lifted toward the salmon, since the plain red vanished on the ground (Ryan, 29 September)
+const ENEMY_HOT := Color("ff5a30")    # the enemy marks' bright: red toward orange, never the salmon (Ryan, 29 September: the salmon was weird)
+const ENEMY_EDGE := Color("5a0e0e")   # the edge under every red line and border: deep red, not black (Ryan, 29 September: black made candy canes)
 
 ## The enemy marks breathe between red and the bright, most of the way up and never
 ## quite down to the deep red, so on any ground, props or not, they pass through a
 ## colour that reads (Ryan, 22 September).
 func _ring_colour() -> Color:
 	var breath := 0.5 + 0.5 * sin(_ring_t * 1.6)
-	return Palette.ENEMY.lerp(ENEMY_LIT, 0.35 + 0.65 * breath)
+	return Palette.ENEMY.lerp(ENEMY_HOT, 0.35 + 0.65 * breath)
 
 
 
 ## Three rings of broken arcs turning against each other: the display's own target lock.
-func _target_rings(c: Vector2, col: Color, r: float, dir: float) -> void:
+func _target_rings(c: Vector2, col: Color, r: float, dir: float, width: float = 3.0) -> void:
 	for k in range(3):
 		var rad := r * (0.42 + 0.29 * k)
 		var segs := 3 + k * 2
 		var a0 := _ring_t * dir * (1.0 - 0.25 * k) * (1.0 if k % 2 == 0 else -1.0)
 		for sgm in range(segs):
 			var a := a0 + TAU * float(sgm) / float(segs)
-			draw_arc(c, rad, a, a + TAU / float(segs) * 0.6, 10, col, 3.0)
+			draw_arc(c, rad, a, a + TAU / float(segs) * 0.6, 10, col, width)
 
 
 ## Under a machine's own destination marker: two faint rings breathing, in the display's
@@ -853,47 +874,59 @@ func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool
 	var pts: PackedVector2Array = [center(from).lerp(center(path[0]), 0.5) if from_edge else center(from)]
 	for step in path:
 		pts.append(center(step))
-	var dash_col := col
 	if edged:
-		draw_polyline(pts, Color(Palette.BG, 0.75), 7.0)
+		# One red line: a deep-red edge, the red, and the motion as deep-red gaps crawling
+		# along it, so nothing alternates between two bright colours.
+		draw_polyline(pts, ENEMY_EDGE, 7.0)
 		draw_polyline(pts, col, 3.5)
-		dash_col = col.lerp(Color.WHITE, 0.55)
+		for i in range(pts.size() - 1):
+			_dashed_line(pts[i], pts[i + 1], ENEMY_EDGE, HEX_SIZE * 0.22, fmod(_ring_t * 2.0, 2.0) + 1.0)
 	else:
 		draw_polyline(pts, Color(col, 0.5), 3.0)
+		for i in range(pts.size() - 1):
+			_dashed_line(pts[i], pts[i + 1], col, HEX_SIZE * 0.22, fmod(_ring_t * 2.0, 2.0))
+	# A chevron a step, pointing the way (edged too, on the enemy's).
 	for i in range(pts.size() - 1):
-		_dashed_line(pts[i], pts[i + 1], dash_col, HEX_SIZE * 0.22, fmod(_ring_t * 2.0, 2.0))
 		var dir := (pts[i + 1] - pts[i]).normalized()
 		var tip := pts[i].lerp(pts[i + 1], 0.55)
 		var side := Vector2(-dir.y, dir.x)
-		draw_polyline(PackedVector2Array([tip - dir * 6.0 + side * 6.0, tip, tip - dir * 6.0 - side * 6.0]), col, 2.5)
+		var chev := PackedVector2Array([tip - dir * 6.0 + side * 6.0, tip, tip - dir * 6.0 - side * 6.0])
+		if edged:
+			draw_polyline(chev, ENEMY_EDGE, 5.0)
+		draw_polyline(chev, col, 2.5)
 	if not lock:
 		return
 	var end := pts[pts.size() - 1]
 	var bright := col.lerp(Color.WHITE, 0.25 + 0.25 * sin(_ring_t * 1.6)) if breathe else col
+	if edged:
+		# The rings and the border wear the line's edge, so the line runs into them as one.
+		_target_rings(end, ENEMY_EDGE, DEST_RING * 0.85, -1.0, 6.0)
+		draw_circle(end, 5.5, ENEMY_EDGE)
 	_target_rings(end, bright, DEST_RING * 0.85, -1.0)
 	draw_circle(end, 3.5, bright)
-	_crawl_poly(Hex.corners(end, HEX_SIZE - 3.0), col, HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0))
+	_crawl_poly(Hex.corners(end, HEX_SIZE - 3.0), col, HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0), ENEMY_EDGE if edged else Color(0, 0, 0, 0))
 
 
 ## A closed outline drawn as dashes that crawl round it: `offset` in dashes, dash and gap
 ## both `dash` long.
-func _crawl_poly(pts: PackedVector2Array, col: Color, dash: float, offset: float) -> void:
+func _crawl_poly(pts: PackedVector2Array, col: Color, dash: float, offset: float, edge: Color = Color(0, 0, 0, 0)) -> void:
 	var per := 0.0
 	for i in range(pts.size()):
 		per += pts[i].distance_to(pts[(i + 1) % pts.size()])
 	var n := maxi(2, int(per / dash) & ~1)
 	var step := per / n
-	var k := -2.0 + offset
-	while k < n:
-		var d0 := maxf(0.0, k * step)
-		var d1 := minf(per, (k + 1.0) * step)
-		if d1 > d0:
-			_poly_segment(pts, d0, d1, col)
-		k += 2.0
+	for pass_i in range(2 if edge.a > 0.0 else 1):
+		var k := -2.0 + offset
+		while k < n:
+			var d0 := maxf(0.0, k * step)
+			var d1 := minf(per, (k + 1.0) * step)
+			if d1 > d0:
+				_poly_segment(pts, d0, d1, edge if pass_i == 0 and edge.a > 0.0 else col, 5.0 if pass_i == 0 and edge.a > 0.0 else 2.5)
+			k += 2.0
 
 
 ## The stretch of a closed outline between distances `d0` and `d1` along it.
-func _poly_segment(pts: PackedVector2Array, d0: float, d1: float, col: Color) -> void:
+func _poly_segment(pts: PackedVector2Array, d0: float, d1: float, col: Color, width: float = 2.5) -> void:
 	var walked := 0.0
 	for i in range(pts.size()):
 		var a := pts[i]
@@ -902,7 +935,7 @@ func _poly_segment(pts: PackedVector2Array, d0: float, d1: float, col: Color) ->
 		var s0 := clampf(d0 - walked, 0.0, len)
 		var s1 := clampf(d1 - walked, 0.0, len)
 		if s1 > s0:
-			draw_line(a.lerp(b, s0 / len), a.lerp(b, s1 / len), col, 2.5)
+			draw_line(a.lerp(b, s0 / len), a.lerp(b, s1 / len), col, width)
 		walked += len
 
 
@@ -1147,8 +1180,7 @@ func _unit_center(u: Unit) -> Vector2:
 	if _anim_px.has(u.id):
 		var px: Vector2 = _anim_px[u.id]
 		var under := Hex.from_pixel(px, HEX_SIZE)
-		var lift := _map3d.lift(under) if _map3d != null else 0.0
-		return _origin + px + Vector2(0, -lift)
+		return _origin + px + Vector2(0, -_lift_at(under))
 	return center(u.pos)
 
 
