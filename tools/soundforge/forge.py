@@ -2288,14 +2288,14 @@ def music_hold_the_line(palette="hybrid"):
             # second set, a little under where it was (Ryan, 25 September).
             {"inst": "guitar_hold", "mode": "stab", "gain": 0.75, "dur": 20,
              "pat": {"R": "x...............", "Z": "x...............", "Y": "x..............."}},
-            {"inst": "epiano", "mode": "stab", "gain": 0.28, "dur": 4,
-             "pat": {"Z": "x...x...x...x..."}},
-            {"inst": backing, "mode": "riff", "gain": 0.3, "octave": -1,
-             "pat": {"R": "0.0-3.0", "Z": "0.0-3.0"}},
-            {"inst": "epiano", "mode": "riff", "gain": 0.4, "octave": 1, "hold": 0.9,
-             "pat": {"R": climax, "Z": climax}},
-            {"inst": "chime_metal", "mode": "chord", "octave": 2, "gain": 0.2, "echo": (3, 0.25, 2), "dur": 1.6,
-             "pat": {"S": "0.......2...1...", "R": "0...2.1.....3...", "Z": "0...2.1.....3..."}},
+            # Thinned on 30 September from the listening page's ninth round (Ryan): the piano
+            # and the riff's second chug are gone from the climax, the chimes leave the first set
+            # and come up in the second and third, the drone stays under all three, and the
+            # keys' lead voice takes the riff an octave up from halfway through the second set.
+            {"inst": "lead", "mode": "riff", "gain": 0.45, "octave": 1, "hold": 0.9,
+             "pat": {"R": "." * 64 + climax, "Z": climax}},
+            {"inst": "chime_metal", "mode": "chord", "octave": 2, "gain": 0.3, "echo": (3, 0.25, 2), "dur": 1.6,
+             "pat": {"R": "0...2.1.....3...", "Z": "0...2.1.....3..."}},
             # The breath (Y) is the climax's blend on one E minor chord: the lead guitar voice
             # on the third, the chug and the driven bass in unison on the root, the fifth
             # chug, the backing guitar's chord, the piano on the fifth (above, with the

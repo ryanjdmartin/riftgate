@@ -21,7 +21,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Hold The Line at 104 in the game: the seven's twelve bars with the held guitar a whole bar each on E, D, D flat, C (twice), the keys' lead adding thirds and roots under its tune as the bridge builds, the drone up, the second lift's bass down, the kit up, the wrap into bar nine; notes by section letter
 - [x] Judge round six (29 September: the middle kick ships; the powers were louder, not harder)
 - [x] Judge round eight (30 September: hard two ships, at its own pitch)
-- [ ] Judge round nine on the sketches page: the climax with the drone, the piano and the second chug each taken out from the second set, and with the chimes up; say which leave for good
+- [x] Judge round nine (30 September: piano and second chug out, chimes in sets two and three at 0.3, drone throughout, the keys' lead on the riff from mid set two)
 - [ ] Write the bridge's melody with the melody tool the other session is building, for the keys section's lead; the harmonies follow the tune
 - [x] Judge the drums' last dial-in from the sketches page's "Now" set: `mix_ship` (the track as it ships), `drums_kick` (the kick's size, three steps down) and `drums_tom` (the toms, three steps tighter); say which step, or further
 - [ ] Read `docs/balance.md` against your own play; then either the numbers move or the bot's next rung is built
