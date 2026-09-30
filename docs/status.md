@@ -4,7 +4,7 @@ Handoff note for the next session. Replace stale lines; keep it under a screen. 
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
 bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (account A, the home
-for every page; the pages block below has the rest; v0.11). Republish it from the committed file after
+for every page; the pages block below has the rest; v0.12). Republish it from the committed file after
 a bible change, passing the URL from any conversation that did not publish it.
 
 **The pages, as of 29 September, night.** An artifact is republished only by the account that
@@ -20,12 +20,12 @@ after a track's parts change), each layer with its source, a mute and a fill of 
 Play runs from a start marker tapped on the ruler; Send writes to collection `melodies`
 with every note, each layer's source and forge lanes, and Ryan's memo. A session pulls a
 `new` document, listens, applies it in the forge and marks it `applied` with a `reply`
-the page shows. Ryan's intent: the session interprets what he sends; it is not drop-in), the bible (https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, v0.11), the nameplate
+the page shows. Ryan's intent: the session interprets what he sends; it is not drop-in), the bible (https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, v0.12), the nameplate
 (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH), the hangar codex
 (https://claude.ai/artifact/FqiH3b8ZZjxJaCJmWK71vj), the Model Viewer
 (https://claude.ai/artifact/HzF8K98MxgJP7kroxAuDMv, every chassis rendered as it stands with
-earlier passes folded under each, and a Classes section for the silhouette classes and three
-refits) and the phone sketches
+earlier passes folded under each, and a Classes section for the silhouette classes and four
+refits; the third pass of 30 September is current) and the phone sketches
 (https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9). Every duplicate and superseded page in A
 was deleted on Ryan's word this evening (the first bible link, the Second Passes page, the HUD
 swatches, a second codex, a second sketches page). **Sharing:** the nameplate, codex and
@@ -58,10 +58,10 @@ another session on this repo at the same time: `git status` first, stage by path
 shared file before staging it, and never `git add -A`. If a chat and the bible disagree,
 the chat is newer.
 
-## As of 29 September 2026 (night)
+## As of 30 September 2026
 
 **State.** Tests green: `perl -e 'alarm 240; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (229 tests, 3,150 checks on 29 September, late night). Two or three sessions run on this repo at once:
+tests/run_tests.gd` (229 tests, 3,173 checks on 30 September). Two or three sessions run on this repo at once:
 check `git status` before committing, stage by path, diff a shared file first (a path
 still sweeps the other session's hunks), never `git add -A`, never kill a bare
 `godot --path .`. Commit after each verified chunk with tests green.
@@ -86,13 +86,17 @@ poses and the phone-layout variables); `tools/balance.gd` writes `docs/balance.m
 `tools/android.sh` the debug APK, `tools/phone.sh` a Web build on the LAN.
 `docs/vocabulary.md` is generated from content (`tools/export_vocabulary.gd`).
 
-**Content (bible section 7).** Chassis ids: `badger`, `clydesdale` (d9; the die cap is
-10), `sparrowhawk`, `baboon` (the Mandrill, renamed 28 September; its passive Pocket
-Paradox runs on the new `on_foe_status` trigger, `Effects.foe_status_suppress_chance`;
-Aphelion stock is `umbra_projector`, `pulse_repeater`, `zenith_emitter`, `halo_shield`,
-`radiator_sail`, with `corona_shield` a unique unlock), and the 28 September drafts
-`armadillo`, `wild_boar`, `prairie_dog`, `dingo`, `goshawk`, `nemesis`, `ammit` (the last
-two the Arsenal's; maker `arsenal` exists). Their shapes are decided (the chassis pass
+**Content (bible section 7).** Chassis ids: `badger` (its fourth stock entry the Proximity
+Klaxon since 30 September: tanks protect their team; an intercept component is the other
+candidate, unwritten), `clydesdale` (d9; the die cap is 10), `sparrowhawk`, `baboon` (the
+Mandrill, renamed 28 September; d7 since 30 September, the Halo Shield dropped; its passive
+Pocket Paradox runs on the new `on_foe_status` trigger, `Effects.foe_status_suppress_chance`;
+Aphelion stock is `umbra_projector`, `pulse_repeater`, `zenith_emitter`, `radiator_sail`, with
+`halo_shield` and `corona_shield` unlocks), and the 28 September drafts `armadillo` (its locked
+component the `lockdown_shutters` since 30 September: a taunt whose Sealed Live passive extends
+Faraday Hull to the shield; the Faraday Shutters are gone), `wild_boar` (five hardpoints, a
+second Slug Cannon), `prairie_dog`, `dingo`, `goshawk`, `nemesis`, `ammit` (the last two the
+Arsenal's; maker `arsenal` exists). Their shapes are decided (the chassis pass
 row): every new passive and most locked components carry `"status": "planned"` until the
 engine has volatile, devour, Shocked, Overcharged, taunt, overwhelm, the stealth join
 rule, the vent-on-fire face, the die-local reroll and heat-scaled shield regen. Numbers
@@ -125,13 +129,20 @@ machines were built from their fantasies and then rebuilt once on Ryan's notes;
 `tools/lowforge/models_low.py` holds one function per chassis id and every number in it is a
 proportion, so a note moves it and `forge.py build <id>` plus one `--import` is the whole
 loop. Fixed components are modelled into the machine with no pin and every hardpoint carries its
-`hp_<n>` pin in the loadout's order, verified for all eleven since 29 September, night: the
-Clydesdale's nine (a howitzer, a shock-barrage rack and a flak skirt were new) and the Sparrowhawk's
-four (the nose guns as the Arc Projector's socket, a deflector dish on the spine) were filled, and
-the Honey Badger's right pauldron carries its Ablative Plating as a slab where the first pass hung a
-second cannon the loadout never had. Every pin parents its stock part (`with b.socket(...)` in
-`models_low.py`) and carries the frame and scale a mounted part wears (a Sparrowhawk's pins are half
-size). Ryan judges the three changed machines on the viewer. What the second pass changed, so nobody redoes
+`hp_<n>` pin, one per hardpoint, every pin a gun mount pointing forward-ish (the rule, 30
+September, below). Every pin parents its stock part (`with b.socket(...)` in `models_low.py`) and
+carries the frame and scale a mounted part wears (a Sparrowhawk's pins are half size); a mount
+with no stock gun is a bare pad (`b.pad()`). **The third pass (30 September, all on Ryan's notes
+from the viewer):** the Baboon's fists on the ground again and armed (two mounts a hand, d7, the
+Halo Shield dropped, knee pads on the knees); the Armadillo longer than wide with a small nestled
+head, recessed rear ports, two sealed forward ports, the hatch pitched forward, its locked
+component the Lockdown Shutters; the Wild Boar to five hardpoints on a larger turret (two parallel
+guns, a rack on top, rear-quarter mounts); the Prairie Dog's mast lower and centred, visor flush,
+turret on a neck; the Dingo's rail into the drum, a tail vent, mirrored coolant tanks, longer
+glass; the Goshawk's cannon recessed as a wide oval blended into the belly; the Nemesis with forward
+spiked fists, a hip cannon, chest ports, traps, a vent-striped core; the Ammit with throat ports
+and its spines down the spine; red glass on every Arsenal machine. Ryan judges the pass on the
+viewer. What the second pass changed, so nobody redoes
 it: the **Armadillo** stands on long legs whose hips come out of the shell's flanks (it read
 as a beetle that would catch on rocks) and shows only its weapons' muzzles out of round ports
 in the shell, Blastoise-fashion, with a small snout of a head to sell its size, since it is
@@ -158,21 +169,23 @@ https://claude.ai/artifact/HzF8K98MxgJP7kroxAuDMv (account A; B's two renders pa
 chassis, a maker, an out file and `front`, `rear` or a yaw, and needs a window, so it cannot
 run headless.
 
-**Silhouette classes (decided 29 September, built that night; the bible row in section 7 has
-the reasoning).** A component declares a `shape` and wears that shape at the pin in its own maker's
-metal; the die carries the identity. Seven classes: barrel, twin barrel, rack, slab, vent block,
-dish, and a blade for the melee arms. They are lowforge helpers (`models_low.SHAPES`),
-`forge.py shapes` builds every class in every maker's metal into `art/models/shapes/`, every
-component's `shape` is validated (`ContentDB.SHAPES`) and a test refuses a class without a model
-in every metal. `MechView3D.mount_plan()` names only the pins whose component differs from the
-chassis's stock loadout (a swap mounts the class shape, an emptied socket bares the stock);
-`plan_for(unit, db)` is passed by the skirmish, the codex and the map portrait, so a refitted
-machine shows its kit, and a borrowed fallback model never wears another machine's. Every
-machine wears its stock today, so nothing on screen changed. `RIFTGATE_FIT="1:lance,4:heat_sink"`
-on `tools/hero_shot.gd` renders a swap; the Model Viewer's Classes section shows three, plus four
-classes alone. Ryan's call still open: whether a stock part should be the class shape rather than
-the hand-modelled part (the Clydesdale's three new parts and the Sparrowhawk's dish are the class
-shapes themselves, so he can compare on one machine).
+**The mount rule and the silhouette classes (decided 29 September, the rule settled 30 September;
+the bible row in section 7 has the reasoning).** Hardpoints are gun mounts on the model. A
+component with a `shape` takes the next mount in the die's order, in its own maker's metal; a
+component with shape `none` (armour panels, vents) takes a die entry and no mount, since it is
+applied to the whole machine. Equipment that can look like a gun keeps a shape: shield projectors
+and the Overcharge Coil are a `dish`. Five classes: barrel, twin barrel, rack, blade (katar-style,
+every one punches forward; wing blades on the flyers are wanted) and dish; slab and vent block are
+detail helpers. `models_low.SHAPES` builds them, `forge.py shapes` writes every maker's metal into
+`art/models/shapes/`, `ContentDB.SHAPES` validates (a weapon always has a shape, a vent never), and a
+test refuses a class without a model in every metal. `MechView3D.mount_plan()` counts mounts over
+the shaped entries of the die and of the stock loadout and names only the mounts that differ;
+`plan_for(unit, db)` is passed by the skirmish, the codex and the map portrait; a borrowed fallback
+model never wears another machine's kit. Every machine wears its stock today, so nothing on screen
+changed. `RIFTGATE_FIT="1:lance,4:blazethrower"` on `tools/hero_shot.gd` renders a swap (unshaped
+equipment in the spec is skipped); the Model Viewer's Classes section shows four refits and four
+classes. The codex page names no socket per entry (Ryan: the order is internal, the hangar will be
+visual); it checks the mount count once per die and shows each component's class as a dashed chip.
 
 **The hangar codex page (29 September).** Ryan asked for one surface showing a chassis and
 the components fitted to it instead of jumping between files. `tools/build_codex.py` reads

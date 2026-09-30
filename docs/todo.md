@@ -14,8 +14,10 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Codex and flavour for the seven new machines, the Baboon's flavour, and the 41 components whose codex is empty
 - [x] Decide the Dingo's name (29 September: kept, the coincidence tier; every flagged name is now decided and every note says why it stays)
 - [ ] The Badger's joints in Blender (`forge.py export badger`)
-- [x] The missing model pins (29 September, night: the Clydesdale's nine and the Sparrowhawk's four, and the Badger's hp_4 as a slab where a second cannon stood; the codex page flags nothing now)
-- [ ] Judge the pins pass and the seven classes on the Model Viewer's Classes section: the Badger's right-pauldron slab, the Clydesdale's howitzer, barrage rack and flak skirt, the Sparrowhawk's spine dish; each class's size per machine (a pin's `scale` in `models_low.py`); and whether a stock part should be the class shape rather than the hand-modelled part
+- [x] The missing model pins (29 September, night: the Clydesdale's nine and the Sparrowhawk's four; every pin a gun mount since 30 September)
+- [x] Judge the pins pass and the classes (30 September: notes on every machine, the mount rule settled; all built the same day)
+- [ ] Judge the third pass on the Model Viewer (30 September: every machine, the four refits, the katar blade): the Baboon's grounded armed fists, the Armadillo's length and head, the Boar's turret, the Nemesis's arms, hip cannon and traps, the Ammit's throat ports, the red glass; each class's size per machine (a pin's `scale` in `models_low.py`)
+- [ ] Propose in chat a Minerva intercept component for the starter set (Ryan, 30 September: tanks need class-based target-modification beyond the Proximity Klaxon)
 - [x] Picks from the phone sketches page: the bass voice (3 or 5), the clip-free guitar, the third shadows (28 September: voice 12, the guitar, the third cut, a quarter of the level gap; all in the forge)
 - [x] Judge The Far Bank's tempo in the game (29 September: 88 stays; the temporary ids are gone)
 - [x] Hold The Line's 29 and 30 September pass (every note in on 30 September; the bible's sound row has the list)

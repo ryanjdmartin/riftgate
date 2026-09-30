@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://co62wesofaxah"
-path="res://.godot/imported/slab_wainwright_sutler_plate.png-51063c1115abbb48a94f99832183adcb.ctex"
+uid="uid://12vnrsmbhvug"
+path="res://.godot/imported/blade_minerva_plate.png-8b2bbd447f49431f19df451cff26cdb4.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "757ff90b88f8003e549390903e0897fa"
+"md5": "5599827b43c7519203a40180424cd15c"
 }
 
 [deps]
 
-source_file="res://art/models/shapes/slab_wainwright_sutler_plate.png"
-dest_files=["res://.godot/imported/slab_wainwright_sutler_plate.png-51063c1115abbb48a94f99832183adcb.ctex"]
+source_file="res://art/models/shapes/blade_minerva_plate.png"
+dest_files=["res://.godot/imported/blade_minerva_plate.png-8b2bbd447f49431f19df451cff26cdb4.ctex"]
 
 [params]
 

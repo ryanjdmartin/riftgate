@@ -541,7 +541,14 @@ func test_every_component_names_a_silhouette_class() -> void:
 	var db := ContentDB.new()   # its own copy: the checks below break an entry
 	db.load_dir(ContentDB.DIR)
 	for id in db.components.keys():
-		assert_true(ContentDB.SHAPES.has(str(db.components[id].get("shape", ""))), "%s wears a class the model can build" % id)
+		var c0: Dictionary = db.components[id]
+		var shape := str(c0.get("shape", ""))
+		assert_true(ContentDB.SHAPES.has(shape), "%s wears a class the model can build" % id)
+		# The rule (30 September): a weapon always has a shape; armour and vents never do.
+		if c0["face"].get("kind") == "attack":
+			assert_true(shape != ContentDB.SHAPE_NONE, "%s is a weapon and takes a mount" % id)
+		if c0["face"].get("kind") == "vent":
+			assert_eq(shape, ContentDB.SHAPE_NONE, "%s is a vent and shows nowhere" % id)
 	var c: Dictionary = db.components["lance"]
 	c["shape"] = "teapot"
 	var hit := false

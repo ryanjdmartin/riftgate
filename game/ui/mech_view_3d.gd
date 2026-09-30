@@ -226,29 +226,45 @@ static func shape_model(shape: String, maker: String) -> String:
 	return "shapes/%s_%s" % [shape, maker]
 
 
-## What a machine's pins must change to show its fitted die instead of the chassis's
-## stock loadout: one row [n, component, shape, maker] per hardpoint whose component is
-## not the stock one, with an empty component for a socket left empty (the stock part
-## hides and nothing replaces it). Empty when the die is the stock kit, which every
-## machine's is today. Hardpoints are the die's non-fixed entries, in order, numbered from 1.
+## What a machine's mounts must change to show its fitted die instead of the chassis's
+## stock loadout (the rule, 30 September): the model's pins are gun mounts, hp_1 onward,
+## and the die's shaped components (a weapon, or equipment that looks like one) take them
+## in the die's order; a component with no shape (armour, a vent) takes a die entry and no
+## mount. One row [k, component, shape, maker] per mount whose component is not the one
+## the stock loadout put there, with an empty component for a mount left bare (the stock
+## part hides and nothing replaces it). Empty when the die is the stock kit, which every
+## machine's is today.
 static func mount_plan(die: Die, stock: Array, db: ContentDB) -> Array:
 	var out: Array = []
 	if die == null:
 		return out
-	var n := 0
+	var fitted: Array = []
 	for f in die.faces:
-		if f.fixed:
+		if f.fixed or f.component.is_empty():
 			continue
-		n += 1
-		var stock_id := str(stock[n - 1]) if n - 1 < stock.size() else ""
-		if f.component == stock_id:
+		if _shaped(f.component, db):
+			fitted.append(f.component)
+	var stock_mounts: Array = []
+	for cid in stock:
+		if _shaped(str(cid), db):
+			stock_mounts.append(str(cid))
+	for k in range(maxi(fitted.size(), stock_mounts.size())):
+		var want := str(fitted[k]) if k < fitted.size() else ""
+		var have := str(stock_mounts[k]) if k < stock_mounts.size() else ""
+		if want == have:
 			continue
-		if f.component.is_empty():
-			out.append([n, "", "", ""])
+		if want.is_empty():
+			out.append([k + 1, "", "", ""])
 		else:
-			var c: Dictionary = db.components.get(f.component, {})
-			out.append([n, f.component, str(c.get("shape", "")), str(c.get("maker", ""))])
+			var c: Dictionary = db.components.get(want, {})
+			out.append([k + 1, want, str(c.get("shape", "")), str(c.get("maker", ""))])
 	return out
+
+
+## Whether a component takes a mount: it has a shape other than none.
+static func _shaped(cid: String, db: ContentDB) -> bool:
+	var shape := str(db.components.get(cid, {}).get("shape", ContentDB.SHAPE_NONE))
+	return not shape.is_empty() and shape != ContentDB.SHAPE_NONE
 
 
 ## The plan for a unit against its chassis's stock loadout in content.
@@ -270,7 +286,7 @@ static func plan_from_spec(spec: String, db: ContentDB) -> Array:
 		var cid := parts[1].strip_edges()
 		if cid.is_empty():
 			out.append([int(parts[0]), "", "", ""])
-		elif db.components.has(cid):
+		elif db.components.has(cid) and _shaped(cid, db):
 			var c: Dictionary = db.components[cid]
 			out.append([int(parts[0]), cid, str(c.get("shape", "")), str(c.get("maker", ""))])
 	return out

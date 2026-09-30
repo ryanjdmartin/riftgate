@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bbfnuoue6vrsx"
-path="res://.godot/imported/vent_block_arsenal_vent.png-5720e960d830e2fcc41a6c8c232bdbd2.ctex"
+uid="uid://hs01dbm7d48n"
+path="res://.godot/imported/blade_arsenal_plate.png-dd4b5d506824a65ea4baabba0d6a6b60.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "5d19111ac379186e89d30209e7f224cc"
+"md5": "86943c54c93da21da07e5291b57bcc72"
 }
 
 [deps]
 
-source_file="res://art/models/shapes/vent_block_arsenal_vent.png"
-dest_files=["res://.godot/imported/vent_block_arsenal_vent.png-5720e960d830e2fcc41a6c8c232bdbd2.ctex"]
+source_file="res://art/models/shapes/blade_arsenal_plate.png"
+dest_files=["res://.godot/imported/blade_arsenal_plate.png-dd4b5d506824a65ea4baabba0d6a6b60.ctex"]
 
 [params]
 

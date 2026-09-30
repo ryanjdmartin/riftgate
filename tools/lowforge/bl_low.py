@@ -124,11 +124,17 @@ class Tiles:
             img[14:50, 10:54, :] = np.array([1.0, 0.92, 0.62], np.float32)
             img[18:46, 14:50, :] = np.array([1.0, 0.98, 0.85], np.float32)
         elif kind == "glass":
+            # Cockpit glass: a cool blue gradient with a diagonal glint, or red for the
+            # Arsenal (Ryan, 30 September: red glass is the Arsenal's staple).
             img = np.zeros((TILE, TILE, 3), np.float32)
+            red = self.maker == "arsenal"
             for y in range(TILE):
                 for x in range(TILE):
                     t = (x + y) / (2.0 * TILE)
-                    img[y, x, :] = np.array([0.10 + 0.25 * t, 0.30 + 0.35 * t, 0.42 + 0.45 * t], np.float32)
+                    if red:
+                        img[y, x, :] = np.array([0.45 + 0.50 * t, 0.04 + 0.10 * t, 0.06 + 0.10 * t], np.float32)
+                    else:
+                        img[y, x, :] = np.array([0.10 + 0.25 * t, 0.30 + 0.35 * t, 0.42 + 0.45 * t], np.float32)
             img[:, :, :] *= 0.85
             for d in range(-4, 4):
                 for y in range(TILE):
@@ -361,6 +367,20 @@ class Build:
         """`with b.socket("hp_1", at, forward): ...` builds the stock component inside the
         block and pins it: every object made in the block hangs under the pin."""
         return _Socket(self, name, at, forward, scale)
+
+    def pad(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, size=(8.0, 3.0), material="steel.panel"):
+        """A bare gun mount: a hardpoint whose stock loadout puts nothing there (the rule,
+        30 September: armour and vents show nowhere, so a machine with more hardpoints than
+        stock guns carries empty mounts). A low block at the socket so a fitted gun sits on
+        something, and the pin with no stock part under it. `size` is (across, thick) in
+        world units, the block lying under the pin along its forward."""
+        w, t = size
+        m = Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4()
+        start = len(self.objects)
+        self.box(-w / 2.0, w / 2.0, -w / 2.0, w / 2.0, -t, 0.0, material, "pad")
+        for ob in self.objects[start:]:
+            ob.matrix_world = m
+        return self.pin(name, at, forward, scale)
 
     def stock(self, name, at, shape, forward=(0.0, 1.0, 0.0), scale=1.0):
         """A pin whose stock component is one of the silhouette classes (models_low.SHAPES),

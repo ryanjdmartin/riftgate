@@ -509,11 +509,14 @@ func _validate_design(where: String, e: Dictionary, errs: Array[String], need_fa
 		errs.append("%s: design.stage must be draft or final" % where)
 
 
-## The silhouette classes a fitted component's model wears at its pin (decided 29
-## September): a component's `shape` names one, tools/lowforge builds each in every maker's
-## metal (art/models/shapes/<shape>_<maker>.glb), and MechView3D hangs it on the pin. The
-## same list, in the same order, is models_low.SHAPES.
-const SHAPES := ["barrel", "twin_barrel", "rack", "slab", "vent_block", "dish", "blade"]
+## The silhouette classes a fitted component's model wears (decided 29 September, the rule
+## settled 30 September): hardpoints are gun mounts on the model, and a component with a
+## shape takes the next mount in the die's order, in its own maker's metal
+## (art/models/shapes/<shape>_<maker>.glb, built by tools/lowforge; models_low.SHAPES is the
+## same list). "none" is for what is applied to the whole machine and shows nowhere: armour
+## panels and vents take a die entry and no mount.
+const SHAPES := ["barrel", "twin_barrel", "rack", "blade", "dish", "none"]
+const SHAPE_NONE := "none"
 
 
 func _validate_components(errs: Array[String]) -> void:
