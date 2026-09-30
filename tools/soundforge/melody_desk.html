@@ -105,10 +105,13 @@
   .note.dragging { cursor: grabbing; z-index: 4; box-shadow: 0 2px 8px rgba(0,0,0,0.35); }
   .playhead { position: absolute; top: 0; bottom: 0; width: 3px; margin-left: -1px; background: var(--play); pointer-events: none; display: none; z-index: 2; box-shadow: 0 0 0 1px var(--bg); }
   .playhead::before { content: ""; position: absolute; top: -1px; left: -5px; border: 6px solid transparent; border-top: 8px solid var(--play); }
+  .startmark { position: absolute; top: 0; bottom: 0; width: 0; border-left: 2px dashed var(--ink); pointer-events: none; z-index: 1; opacity: 0.7; }
   .ruler { display: grid; grid-template-columns: 48px 1fr; width: max-content; border-bottom: 1px solid var(--line-strong); }
-  .ruler .cells { height: 20px; }
-  .ruler .cell { height: 20px; font-family: var(--font-mono); font-size: 10px; color: var(--muted); padding-left: 3px; line-height: 20px; border-bottom: 0; }
-  .ruler .rail { height: 20px; }
+  .ruler .cells { height: 22px; cursor: pointer; }
+  .ruler .cell { height: 22px; font-family: var(--font-mono); font-size: 10px; color: var(--muted); padding-left: 3px; line-height: 22px; border-bottom: 0; position: relative; }
+  .ruler .cell.start { color: var(--ink); font-weight: 600; }
+  .ruler .cell.start::before { content: ""; position: absolute; left: -1px; top: 0; border: 5px solid transparent; border-top: 8px solid var(--ink); border-left: 5px solid var(--ink); }
+  .ruler .rail { height: 22px; font-size: 9px; color: var(--muted); display: flex; align-items: center; justify-content: flex-end; padding-right: 6px; font-family: var(--font-mono); }
   .hint { font-size: 13px; color: var(--muted); margin: 0; }
 
   .card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px; display: grid; gap: 10px; }
@@ -131,7 +134,7 @@
 <div class="wrap">
   <header>
     <h1>Riftgate Melody Desk</h1>
-    <p class="sub">Tap a square to set a note. Drag a note to move it, drag its right edge to stretch it, tap it to select. Stack parts from the tracks as layers. Plain piano throughout. Rows are semitones above E2, the forge's root, with E minor shaded.</p>
+    <p class="sub">Tap a square to set a note. Drag a note to move it, drag its right edge to stretch it, tap it to select. Tap the ruler to choose where Play starts. Stack parts from the tracks as layers. Plain piano throughout. Rows are semitones above E2, the forge's root, with E minor shaded.</p>
   </header>
 
   <section class="toolbar" aria-label="Transport and grid">
@@ -186,12 +189,13 @@
 
   <section class="roll-frame" aria-label="Piano roll">
     <div class="roll-scroll" id="scroll">
-      <div class="ruler"><div class="rail"></div><div class="cells" id="ruler"></div></div>
+      <div class="ruler"><div class="rail">start</div><div class="cells" id="ruler"></div></div>
       <div class="roll" id="roll">
         <div class="rail" id="rail"></div>
         <div class="grid" id="grid">
           <div class="cells" id="cells"></div>
           <div class="notes" id="notes"></div>
+          <div class="startmark" id="startmark"></div>
           <div class="playhead" id="playhead"></div>
         </div>
       </div>
@@ -247,7 +251,7 @@
 
   // A note is {s: step, p: semitones above E2, l: steps, v: layer index}. Layers are the piano's own
   // (index 0) and one per part added from a track; a layer knows where it came from.
-  const state = { bars: 2, len: 2, base: 12, span: 24, rows: "scale", notes: [], layers: [{ name: "Piano", source: null, muted: false }], active: 0, loop: true, click: false, bpm: 104, track: "music_hold_the_line" };
+  const state = { bars: 2, len: 2, base: 12, span: 24, rows: "scale", notes: [], layers: [{ name: "Piano", source: null, muted: false }], active: 0, start: 0, loop: true, click: false, bpm: 104, track: "music_hold_the_line" };
   const history = [];
   let selected = new Set();
 
@@ -280,14 +284,22 @@
   }
   function setBars(b) {
     state.bars = b;
+    if (state.start >= totalSteps()) state.start = 0;
     $("bars").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", +x.dataset.bars === b));
+  }
+  function setStart(s) {
+    state.start = Math.max(0, Math.min(Math.floor(s / 4) * 4, totalSteps() - 4));
+    $("startmark").style.left = (state.start * CELL) + "px";
+    $("ruler").querySelectorAll(".cell").forEach((c, i) => c.classList.toggle("start", i === state.start));
+    saveDraft();
+    if (playing && !previewing) { stopPlay(); startPlay(); }
   }
   function snapshot() {
     history.push(JSON.stringify({ notes: state.notes, layers: state.layers, active: state.active }));
     if (history.length > 60) history.shift();
   }
   function saveDraft() {
-    try { localStorage.setItem("melody-desk-draft", JSON.stringify({ notes: state.notes, layers: state.layers, active: state.active, bars: state.bars, range: $("range").value, rows: state.rows, bpm: state.bpm, track: state.track, len: state.len, title: $("title").value, memo: $("memo").value })); } catch (e) {}
+    try { localStorage.setItem("melody-desk-draft", JSON.stringify({ notes: state.notes, layers: state.layers, active: state.active, bars: state.bars, start: state.start, range: $("range").value, rows: state.rows, bpm: state.bpm, track: state.track, len: state.len, title: $("title").value, memo: $("memo").value })); } catch (e) {}
   }
   function loadDraft() {
     try {
@@ -297,6 +309,7 @@
       if (Array.isArray(d.layers) && d.layers.length) state.layers = d.layers;
       state.active = Math.min(d.active || 0, state.layers.length - 1);
       if (BAR_CHOICES.includes(d.bars)) state.bars = d.bars;
+      if (Number.isInteger(d.start)) state.start = d.start;
       if (RANGES.includes(d.range)) setRange(d.range);
       if (d.rows === "chromatic" || d.rows === "scale") state.rows = d.rows;
       if (d.bpm) state.bpm = d.bpm;
@@ -413,8 +426,10 @@
       const c = document.createElement("div");
       c.className = "cell" + ((s + 1) % 4 === 0 ? " beat" : "") + ((s + 1) % STEPS_PER_BAR === 0 ? " bar" : "");
       if (s % 4 === 0) c.textContent = (Math.floor(s / STEPS_PER_BAR) + 1) + "." + (Math.floor((s % STEPS_PER_BAR) / 4) + 1);
+      c.dataset.s = s;
       ruler.appendChild(c);
     }
+    setStart(state.start);
     const cells = $("cells"); cells.innerHTML = "";
     const frag = document.createDocumentFragment();
     pitches.forEach((p, r) => {
@@ -491,6 +506,11 @@
   document.addEventListener("keydown", (e) => {
     if ((e.key === "Delete" || e.key === "Backspace") && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) { e.preventDefault(); deleteSelected(); }
     if (e.key === "Escape") { selected = new Set(); renderNotes(); }
+  });
+
+  $("ruler").addEventListener("click", (e) => {
+    const cell = e.target.closest(".cell");
+    if (cell) setStart(+cell.dataset.s);
   });
 
   // Empty square: a new note in the active layer. Pointer down on a note: a drag (move, or stretch
@@ -574,10 +594,10 @@
   }
   const freqOf = (p) => E2 * Math.pow(2, p / 12);
   const stepSeconds = () => 60 / state.bpm / 4;
-  function pianoNote(t, f, dur, vel) {
+  function pianoNote(t, f, dur, vel, dest) {
     const g = ctx.createGain();
     const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = Math.min(9000, f * 9); lp.Q.value = 0.4;
-    g.connect(lp); lp.connect(master);
+    g.connect(lp); lp.connect(dest || master);
     const parts = [[1, 1.0], [2, 0.42], [3, 0.2], [4, 0.09], [5, 0.05], [6, 0.03]];
     const bright = Math.max(0.35, 1 - f / 1800);
     for (const [m, a] of parts) {
@@ -605,34 +625,51 @@
     g.gain.setValueAtTime(1, t + dur);
     g.gain.setTargetAtTime(0, t + dur, 0.09);
   }
-  function clickAt(t, strong) {
+  function clickAt(t, strong, dest) {
     const o = ctx.createOscillator(); o.type = "square"; o.frequency.value = strong ? 1800 : 1200;
     const g = ctx.createGain(); g.gain.setValueAtTime(strong ? 0.12 : 0.07, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.03);
-    o.connect(g); g.connect(master); o.start(t); o.stop(t + 0.04);
+    o.connect(g); g.connect(dest || master); o.start(t); o.stop(t + 0.04);
   }
 
-  let playing = false, passStart = 0, passTimer = null, raf = null, passNotes = null;
+  // Everything a pass schedules goes through one bus, so Stop can silence notes already booked
+  // (a whole pass is scheduled ahead; cancelling the timer alone left them ringing to the end).
+  let playing = false, previewing = false, bus = null, passStart = 0, passTimer = null, raf = null, passNotes = null;
   const audible = () => state.notes.filter((n) => !(state.layers[n.v] && state.layers[n.v].muted));
+  function openBus() {
+    killBus();
+    bus = ctx.createGain(); bus.gain.value = 1; bus.connect(master);
+    return bus;
+  }
+  function killBus() {
+    if (!bus) return;
+    const b = bus; bus = null;
+    b.gain.setTargetAtTime(0, ctx.currentTime, 0.02);
+    setTimeout(() => { try { b.disconnect(); } catch (e) {} }, 300);
+  }
   function schedulePass(t0) {
     const sec = stepSeconds();
     const total = totalSteps();
+    const from = state.start;
     for (const n of passNotes) {
-      if (n.s >= total) continue;
-      pianoNote(t0 + n.s * sec, freqOf(n.p), Math.min(n.l, total - n.s) * sec * 0.95, 0.85);
+      if (n.s < from || n.s >= total) continue;
+      pianoNote(t0 + (n.s - from) * sec, freqOf(n.p), Math.min(n.l, total - n.s) * sec * 0.95, 0.85, bus);
     }
-    if (state.click) for (let s = 0; s < total; s += 4) clickAt(t0 + s * sec, s % STEPS_PER_BAR === 0);
+    if (state.click) for (let s = from; s < total; s += 4) clickAt(t0 + (s - from) * sec, s % STEPS_PER_BAR === 0, bus);
   }
   function startPlay() {
     ensureAudio();
-    playing = true;
+    openBus();
+    playing = true; previewing = false;
     $("play").textContent = "Stop";
+    $("impplay").textContent = "Hear it";
     $("playhead").style.display = "block";
     passNotes = audible().map((n) => ({ ...n }));
     passStart = ctx.currentTime + 0.08;
+    const spanSteps = () => totalSteps() - state.start;
     const runPass = () => {
       if (!playing) return;
       schedulePass(passStart);
-      const passLen = stepSeconds() * totalSteps();
+      const passLen = stepSeconds() * spanSteps();
       if (state.loop) {
         passTimer = setTimeout(() => { passStart += passLen; passNotes = audible().map((n) => ({ ...n })); runPass(); }, Math.max(20, (passStart + passLen - ctx.currentTime) * 1000 - 120));
       } else {
@@ -642,11 +679,11 @@
     runPass();
     const draw = () => {
       if (!playing) return;
-      const passLen = stepSeconds() * totalSteps();
+      const passLen = stepSeconds() * spanSteps();
       let pos = (ctx.currentTime - passStart) / passLen;
       if (pos < 0) pos = 0;
       if (pos > 1) pos = state.loop ? pos % 1 : 1;
-      const x = pos * totalSteps() * CELL;
+      const x = (state.start + pos * spanSteps()) * CELL;
       $("playhead").style.left = x + "px";
       // Keep the playhead in view: when it leaves the visible window, jump the roll a page along.
       const sc = $("scroll"), rail = 48, view = sc.clientWidth - rail;
@@ -661,11 +698,14 @@
     draw();
   }
   function stopPlay() {
-    playing = false;
+    const wasPreview = previewing;
+    playing = false; previewing = false;
     clearTimeout(passTimer); cancelAnimationFrame(raf);
+    killBus();
     $("play").textContent = "Play";
+    $("impplay").textContent = "Hear it";
     $("playhead").style.display = "none";
-    $("scroll").scrollLeft = 0;
+    if (!wasPreview) $("scroll").scrollLeft = Math.max(0, state.start * CELL - CELL);
     document.querySelectorAll(".note.on").forEach((el) => el.classList.remove("on"));
   }
   $("play").addEventListener("click", () => (playing ? stopPlay() : startPlay()));
@@ -770,13 +810,20 @@
     document.querySelector(".roll-frame").scrollIntoView({ behavior: "smooth", block: "start" });
   });
   $("impplay").addEventListener("click", () => {
-    // Audition the picked bars without touching the roll.
+    // Audition the picked bars without touching the roll; a second press, or Stop, ends it.
+    if (previewing) { stopPlay(); return; }
     const pick = pickedSection();
     if (!pick) return;
     if (playing) stopPlay();
     ensureAudio();
+    openBus();
+    playing = true; previewing = true;
+    $("impplay").textContent = "Stop";
+    $("play").textContent = "Stop";
     const sec = 60 / pick.doc.bpm / 4, t0 = ctx.currentTime + 0.05;
-    for (const n of pick.sec.notes) pianoNote(t0 + n.s * sec, freqOf(n.p), n.l * sec * 0.95, 0.8);
+    let end = 0;
+    for (const n of pick.sec.notes) { pianoNote(t0 + n.s * sec, freqOf(n.p), n.l * sec * 0.95, 0.8, bus); end = Math.max(end, (n.s + n.l) * sec); }
+    passTimer = setTimeout(stopPlay, end * 1000 + 400);
   });
 
   // ---------- the store ----------
