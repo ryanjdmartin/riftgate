@@ -106,8 +106,6 @@ func _show_page(page: String) -> void:
 			_toggle("GLITCH", "glitch")
 			_toggle("SCAN BAR", "scan")
 			_toggle("FINE MAP", "fine_map")   # the map at the glass's density: sharper, costlier; a phone judges its frame rate
-			if OS.has_feature("mobile"):
-				_toggle("MSAA (LEAK TEST)", "msaa")   # for measuring the Compatibility renderer's leak on the device; a desktop always has it
 			_slider("MUSIC", "music")
 			_slider("EFFECTS", "effects")
 			_button("BACK", func() -> void: _show_page("paused"))

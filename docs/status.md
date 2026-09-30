@@ -272,8 +272,11 @@ order's hex, what it meets, packs and foes, contact or not; the log is behind it
 button), a tap bracketing what it hit with gauges or strength over the unit, the gate's
 footprint and attack hexes, the current zone told from the predicted, the routes redrawn,
 props hidden under a standing machine (`Map3D._hide_props_under`; a passable hex's props
-bake by hex). Still to judge on the device: frame rate (the per-hex props added draw
-calls), the sound set, edges without MSAA, the text, the grid at the hotter gain.
+bake by hex). Judged 29 September: 60 fps locked with the fine map on (the default now), the text
+clean with linear sampling and subpixel positioning off; MSAA measured leaking about 170 MB
+every twenty seconds on the device until the driver aborted, so no setting reaches it.
+Still to judge: the sound set, the grid at the hotter gain, the outline thickness (three
+rendered for Ryan; RIFTGATE_OUTLINE).
 
 **Open, in order.** The task list is `docs/todo.md`, one line a task, grouped by who
 moves it and ticked in the commit that lands it; this is the order to take them in.

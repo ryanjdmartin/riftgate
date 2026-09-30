@@ -25,7 +25,6 @@ static var _loaded := false
 const DISPLAY_DEFAULTS := {
 	"brightness": 1.0, "glitch": true, "pace": 1.0, "enemy_pace": 1.0, "scan": true,
 	"music": 0.8, "effects": 1.0,
-	"msaa": false,       # 3D anti-aliasing on a phone: off because the Compatibility renderer leaks with it (godot#97967); a toggle so the leak can be measured on the device
 	"fine_map": true,   # the map's scene and compositor at the glass's density rather than the design's (Ryan, 29 September: 60 fps locked on the Pixel with it, so it is the default)
 }
 const DISPLAY_RANGES := {

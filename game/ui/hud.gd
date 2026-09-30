@@ -141,8 +141,11 @@ static func msaa_3d() -> int:
 	if env == "off":
 		return SubViewport.MSAA_DISABLED
 	if env != "on" and OS.has_feature("mobile"):
-		# The MSAA setting (29 September): off by default for the leak; on for measuring it.
-		return SubViewport.MSAA_2X if bool(Settings.display.get("msaa", false)) else SubViewport.MSAA_DISABLED
+		# Measured on the Pixel 9 (29 September, MSAA 2x with the fine map): the native heap
+		# grew about 170 MB every twenty seconds until the GL driver aborted out of memory
+		# at 1.8 GB, three and a half minutes in. No setting reaches this; a phone never
+		# has MSAA until Godot fixes the leak.
+		return SubViewport.MSAA_DISABLED
 	return SubViewport.MSAA_4X
 
 

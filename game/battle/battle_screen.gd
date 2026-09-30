@@ -532,8 +532,8 @@ func _open_menu() -> void:
 	if _menu == null:
 		_menu = PauseMenu.new()
 		_menu.display_changed.connect(func(key: String, _value: Variant) -> void:
-			if key == "fine_map" or key == "msaa":
-				_map.set_field(battle.field)   # the scene and the compositor rebuilt at the new density or anti-aliasing
+			if key == "fine_map":
+				_map.set_field(battle.field)   # the scene and the compositor rebuilt at the new density
 				_refresh()
 			_apply_display())
 		_menu.hud_changed.connect(_rebuild)
