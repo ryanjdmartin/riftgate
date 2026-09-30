@@ -837,7 +837,7 @@ const ENEMY_EDGE := Color("5a0e0e")   # the edge under every red line and border
 ## sample as they pass over it. A striped mark is another kind of thing from the HUD's
 ## single-colour lines, so the whole range of violets can show at once. The stripes stand
 ## still for a pack at rest and crawl for the tapped one.
-const STRIPE := HEX_SIZE * 0.26   # one stripe's width in map pixels
+const STRIPE := HEX_SIZE * 0.52   # one stripe's width in map pixels (doubled, Ryan, 30 September: busy at max zoom on the phone)
 const STRIPE_DIR := Vector2(0.8, 0.6)   # the stripes run across this direction
 
 ## The stripe coordinate of a map point: the stripes are the integer steps of this.
@@ -881,7 +881,7 @@ func _field_line(a: Vector2, b: Vector2, phase: float, width: float) -> void:
 ## twelve (Ryan, 30 September: with twelve the inner ring's three dashes, 120 degrees
 ## apart, crossed spokes in step and the whole ring blinked), and each ring's spokes turned
 ## a third of a spoke from the last, so no two dashes anywhere change colour together.
-const SPOKES := 16
+const SPOKES := 8   # halved with the stripes (eight: neither ring's dash spacing, 72 and 51 degrees, is a multiple of 45, so no ring blinks in step)
 
 func _field_rings(c: Vector2, r: float, dir: float, _phase: float, width: float = 3.0) -> void:
 	var step := TAU / SPOKES
