@@ -9,8 +9,12 @@ a bible change, passing the URL from any conversation that did not publish it.
 
 **The pages, as of 29 September, night.** An artifact is republished only by the account that
 made it, or by an account invited as Editor from its Share menu; the personal account (A) can
-invite outward, the organisation account (B) cannot. **Account A owns five pages and nothing
-else:** the bible (https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, v0.11), the nameplate
+invite outward, the organisation account (B) cannot. **Account A owns six pages and nothing
+else:** the Melody Desk (https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV, 30 September:
+a piano roll with chords and playback, source `tools/soundforge/melody_desk.html`; Ryan
+starts from a shipped track's part (store collection `parts`, seeded from
+`tools/soundforge/desk_parts.py`) or from nothing, and sends a melody to collection
+`melodies`, which a session applies in the forge and marks `applied`), the bible (https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, v0.11), the nameplate
 (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH), the hangar codex
 (https://claude.ai/artifact/FqiH3b8ZZjxJaCJmWK71vj), the Model Viewer
 (https://claude.ai/artifact/HzF8K98MxgJP7kroxAuDMv, every chassis rendered as it stands with

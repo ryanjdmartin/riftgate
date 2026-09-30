@@ -1,0 +1,743 @@
+<title>Riftgate Melody Desk</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+  /* Layout: one column, phone first. The roll scrolls sideways inside its own frame with a sticky pitch rail;
+     everything else stacks. Notes are carried by structure (solid block, bright head stripe), never by hue alone. */
+  :root {
+    --bg: #f3f1ec;
+    --panel: #ffffff;
+    --ink: #1c1d22;
+    --muted: #6b6d75;
+    --line: #d9d6ce;
+    --line-strong: #a9a59a;
+    --row-scale: #e9e6df;
+    --row-root: #dcd8cf;
+    --note: #1f6f5a;
+    --note-head: #d9f3e6;
+    --note-edge: #0d3b30;
+    --play: #c8322b;
+    --accent: #1f6f5a;
+    --accent-ink: #ffffff;
+    --focus: #1f6f5a;
+    --danger: #a12822;
+    --font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
+    --font-body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+    --font-mono: "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17181c; --panel: #1f2126; --ink: #ecebe6; --muted: #9b9da6; --line: #33363d; --line-strong: #5a5e68;
+      --row-scale: #262930; --row-root: #30343c; --note: #4fc79d; --note-head: #eafff5; --note-edge: #0d3b30;
+      --play: #ff6a5c; --accent: #4fc79d; --accent-ink: #0f1a16; --focus: #4fc79d; --danger: #ff8a80;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #17181c; --panel: #1f2126; --ink: #ecebe6; --muted: #9b9da6; --line: #33363d; --line-strong: #5a5e68;
+    --row-scale: #262930; --row-root: #30343c; --note: #4fc79d; --note-head: #eafff5; --note-edge: #0d3b30;
+    --play: #ff6a5c; --accent: #4fc79d; --accent-ink: #0f1a16; --focus: #4fc79d; --danger: #ff8a80;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.45; }
+  .wrap { max-width: 760px; margin: 0 auto; padding-inline: 16px; padding-block: 18px 40px; display: grid; gap: 18px; }
+  h1 { font-family: var(--font-display); font-weight: 700; font-size: 26px; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+  h2 { font-family: var(--font-display); font-weight: 500; font-size: 17px; margin: 0; }
+  .sub { color: var(--muted); margin: 4px 0 0; font-size: 14px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .row > * { min-width: 0; }
+  label.f { display: grid; gap: 4px; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  select, input[type=text], input[type=number], textarea {
+    font: inherit; color: var(--ink); background: var(--panel); border: 1px solid var(--line-strong); border-radius: 6px; padding: 7px 9px; min-height: 38px;
+  }
+  textarea { width: 100%; resize: vertical; min-height: 70px; }
+  input[type=text] { width: 100%; }
+  input[type=number] { width: 84px; font-family: var(--font-mono); }
+  button { font: inherit; font-weight: 600; color: var(--ink); background: var(--panel); border: 1px solid var(--line-strong); border-radius: 6px; padding: 8px 12px; min-height: 38px; cursor: pointer; }
+  button:active { transform: translateY(1px); }
+  button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  button.danger { color: var(--danger); }
+  button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .seg { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 6px; overflow: hidden; }
+  .seg button { border: 0; border-radius: 0; border-right: 1px solid var(--line-strong); min-width: 44px; }
+  .seg button:last-child { border-right: 0; }
+  .toolbar { display: grid; gap: 10px; }
+
+  /* The roll */
+  .roll-frame { border: 1px solid var(--line-strong); border-radius: 8px; background: var(--panel); overflow: hidden; }
+  .roll-scroll { overflow-x: auto; overflow-y: hidden; position: relative; -webkit-overflow-scrolling: touch; }
+  .roll { position: relative; display: grid; grid-template-columns: 48px 1fr; width: max-content; user-select: none; -webkit-user-select: none; touch-action: pan-x pan-y; }
+  .rail { position: sticky; left: 0; z-index: 3; background: var(--panel); border-right: 1px solid var(--line-strong); }
+  .rail div { height: var(--cell); display: flex; align-items: center; justify-content: flex-end; padding-right: 6px; font-family: var(--font-mono); font-size: 11px; color: var(--muted); border-bottom: 1px solid var(--line); }
+  .rail div.root { color: var(--ink); font-weight: 600; }
+  .rail div.root::before { content: ""; width: 4px; height: 4px; border-radius: 50%; background: var(--ink); margin-right: 5px; }
+  .grid { position: relative; }
+  .cells { display: grid; grid-template-columns: repeat(var(--steps), var(--cell)); }
+  .cell { width: var(--cell); height: var(--cell); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .cell.beat { border-right-color: var(--line-strong); }
+  .cell.bar { border-right: 2px solid var(--line-strong); }
+  .cell.scale { background: var(--row-scale); }
+  .cell.root { background: var(--row-root); }
+  .notes { position: absolute; inset: 0; pointer-events: none; }
+  .note { position: absolute; pointer-events: auto; background: var(--note); border: 1px solid var(--note-edge); border-radius: 4px; cursor: pointer; height: var(--cell); }
+  .note::before { content: ""; position: absolute; left: 3px; top: 3px; bottom: 3px; width: 4px; background: var(--note-head); border-radius: 2px; }
+  .note.on { outline: 2px solid var(--note-head); outline-offset: -3px; }
+  .playhead { position: absolute; top: 0; bottom: 0; width: 3px; margin-left: -1px; background: var(--play); pointer-events: none; display: none; z-index: 2; box-shadow: 0 0 0 1px var(--bg); }
+  .playhead::before { content: ""; position: absolute; top: -1px; left: -5px; border: 6px solid transparent; border-top: 8px solid var(--play); }
+  .ruler { display: grid; grid-template-columns: 48px 1fr; width: max-content; border-bottom: 1px solid var(--line-strong); }
+  .ruler .cells { height: 20px; }
+  .ruler .cell { height: 20px; font-family: var(--font-mono); font-size: 10px; color: var(--muted); padding-left: 3px; line-height: 20px; border-bottom: 0; }
+  .ruler .rail { height: 20px; }
+  .hint { font-size: 13px; color: var(--muted); margin: 0; }
+
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px; display: grid; gap: 10px; }
+  pre.riff { margin: 0; font-family: var(--font-mono); font-size: 12px; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px; overflow-x: auto; white-space: pre; }
+  .status { font-size: 13px; color: var(--muted); min-height: 1.2em; }
+  .status.ok { color: var(--accent); }
+  .status.bad { color: var(--danger); }
+  .list { display: grid; gap: 8px; }
+  .item { display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; align-items: center; border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; background: var(--panel); }
+  .item .t { font-weight: 600; }
+  .item .m { font-size: 12px; color: var(--muted); font-family: var(--font-mono); }
+  .item .acts { display: flex; gap: 6px; grid-column: 1 / -1; }
+  .item .acts button { padding: 4px 10px; min-height: 32px; font-size: 13px; }
+  .pill { display: inline-block; font-size: 11px; font-family: var(--font-mono); border: 1px solid var(--line-strong); border-radius: 999px; padding: 1px 8px; }
+  .pill.applied { border-style: dashed; }
+  .empty { color: var(--muted); font-size: 14px; }
+  @media (prefers-reduced-motion: reduce) { button:active { transform: none; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Riftgate Melody Desk</h1>
+    <p class="sub">Tap a square to set a note, tap a note to clear it. Stack notes for chords. Plain piano. Rows are semitones above E2, the forge's root, with E minor shaded.</p>
+  </header>
+
+  <section class="toolbar" aria-label="Transport and grid">
+    <div class="row">
+      <button id="play" class="primary" type="button">Play</button>
+      <button id="loop" type="button" aria-pressed="true">Loop</button>
+      <button id="click" type="button" aria-pressed="false">Click</button>
+      <label class="f">Tempo <input id="bpm" type="number" min="40" max="220" value="104"></label>
+      <label class="f">Track
+        <select id="track">
+          <option value="music_hold_the_line" data-bpm="104">Hold The Line · 104</option>
+          <option value="music_full_bore" data-bpm="105">Full Bore · 105</option>
+          <option value="music_night_shift" data-bpm="94">Night Shift · 94</option>
+          <option value="music_low_ground" data-bpm="90">Low Ground · 90</option>
+          <option value="music_far_bank" data-bpm="88">The Far Bank · 88</option>
+          <option value="music_crossing" data-bpm="126">The Crossing · 126</option>
+          <option value="other" data-bpm="">Somewhere else</option>
+        </select>
+      </label>
+    </div>
+    <div class="row">
+      <label class="f">Length
+        <span class="seg" id="len" role="group" aria-label="Note length">
+          <button type="button" data-len="1" aria-pressed="false">1/16</button>
+          <button type="button" data-len="2" aria-pressed="true">1/8</button>
+          <button type="button" data-len="4" aria-pressed="false">1/4</button>
+          <button type="button" data-len="8" aria-pressed="false">1/2</button>
+        </span>
+      </label>
+      <label class="f">Bars
+        <span class="seg" id="bars" role="group" aria-label="Bars">
+          <button type="button" data-bars="1" aria-pressed="false">1</button>
+          <button type="button" data-bars="2" aria-pressed="true">2</button>
+          <button type="button" data-bars="4" aria-pressed="false">4</button>
+          <button type="button" data-bars="8" aria-pressed="false">8</button>
+          <button type="button" data-bars="16" aria-pressed="false">16</button>
+        </span>
+      </label>
+      <label class="f">Range
+        <select id="range">
+          <option value="-12">Deep · E1 to E3</option>
+          <option value="0">Low · E2 to E4</option>
+          <option value="12" selected>Mid · E3 to E5</option>
+          <option value="24">High · E4 to E6</option>
+          <option value="wide">Wide · E1 to E6</option>
+        </select>
+      </label>
+      <label class="f">Rows
+        <select id="rows">
+          <option value="scale" selected>E minor</option>
+          <option value="chromatic">Every semitone</option>
+        </select>
+      </label>
+      <button id="undo" type="button">Undo</button>
+      <button id="clear" type="button" class="danger">Clear</button>
+    </div>
+  </section>
+
+  <section class="roll-frame" aria-label="Piano roll">
+    <div class="roll-scroll" id="scroll">
+      <div class="ruler"><div class="rail"></div><div class="cells" id="ruler"></div></div>
+      <div class="roll" id="roll">
+        <div class="rail" id="rail"></div>
+        <div class="grid" id="grid">
+          <div class="cells" id="cells"></div>
+          <div class="notes" id="notes"></div>
+          <div class="playhead" id="playhead"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <p class="hint" id="hint">Nothing placed yet. The first tap plays the note as it lands.</p>
+
+  <section class="card" aria-label="Import a part from a track">
+    <h2>Start from a track</h2>
+    <p class="hint" id="importhint">Pick a track, one of its parts, then the stretch of bars. Load puts it in the roll to edit; the sent melody remembers where it came from.</p>
+    <div class="row">
+      <label class="f">Track <select id="imptrack"><option value="">Loading…</option></select></label>
+      <label class="f">Part <select id="imppart"><option value="">…</option></select></label>
+    </div>
+    <div class="row">
+      <label class="f">Bars <select id="impsec"><option value="">…</option></select></label>
+      <button id="impload" type="button">Load into the roll</button>
+      <button id="impplay" type="button">Hear it</button>
+    </div>
+  </section>
+
+  <section class="card" aria-label="Send to the forge">
+    <h2>Send it to the forge</h2>
+    <label class="f">Name <input id="title" type="text" placeholder="e.g. bridge lead, second lift" maxlength="80"></label>
+    <label class="f">Where it goes and how it should feel <textarea id="memo" placeholder="Which section, what instrument in the track should carry it, anything about the feel."></textarea></label>
+    <div class="row">
+      <button id="send" class="primary" type="button">Send melody</button>
+      <span class="status" id="sendstatus"></span>
+    </div>
+    <details>
+      <summary class="hint">As the forge will read it</summary>
+      <pre class="riff" id="riff"></pre>
+    </details>
+  </section>
+
+  <section class="card" aria-label="Sent melodies">
+    <h2>Sent</h2>
+    <div class="list" id="list"><p class="empty" id="listempty">Nothing sent yet. A sent melody lists here with its status; a session pulls it from here and applies it.</p></div>
+  </section>
+</div>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const E2 = 82.41;
+  const NAMES = ["E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D", "D#"];
+  const SCALE = new Set([0, 2, 3, 5, 7, 8, 10]);
+  const LETTERS = { 10: "a", 11: "b", 12: "c", 14: "d", 15: "e", 17: "f", 19: "i", 22: "j", 24: "k", "-2": "g", "-5": "h", "-1": "l", "-3": "m", "-4": "n", "-7": "o" };
+  const STEPS_PER_BAR = 16;
+  const BAR_CHOICES = [1, 2, 4, 8, 16];
+  const CELL = 28;
+
+  const state = { bars: 2, len: 2, base: 12, span: 24, rows: "scale", notes: [], loop: true, click: false, bpm: 104, track: "music_hold_the_line", source: null };
+  const history = [];
+
+  // ---------- helpers ----------
+  const pitchName = (p) => NAMES[((p % 12) + 12) % 12] + (2 + Math.floor((p + 4) / 12));
+  const totalSteps = () => state.bars * STEPS_PER_BAR;
+  function rowPitches() {
+    const out = [];
+    for (let p = state.base + state.span; p >= state.base; p--) {
+      if (state.rows === "chromatic" || SCALE.has(((p % 12) + 12) % 12)) out.push(p);
+    }
+    return out;
+  }
+  function setRange(value) {
+    if (value === "wide") { state.base = -12; state.span = 60; } else { state.base = +value; state.span = 24; }
+    $("range").value = value;
+  }
+  // The narrowest range that shows every note; wide when nothing narrower does.
+  function fitRange(notes) {
+    if (!notes.length) return;
+    const lo = Math.min(...notes.map((n) => n.p)), hi = Math.max(...notes.map((n) => n.p));
+    const pick = [-12, 0, 12, 24].find((b) => lo >= b && hi <= b + 24);
+    setRange(pick === undefined ? "wide" : String(pick));
+    if (notes.some((n) => !SCALE.has(((n.p % 12) + 12) % 12))) { state.rows = "chromatic"; $("rows").value = "chromatic"; }
+  }
+  function snapshot() { history.push(JSON.stringify(state.notes)); if (history.length > 50) history.shift(); }
+  function saveDraft() {
+    try { localStorage.setItem("melody-desk-draft", JSON.stringify({ notes: state.notes, bars: state.bars, range: $("range").value, rows: state.rows, bpm: state.bpm, track: state.track, source: state.source, title: $("title").value, memo: $("memo").value })); } catch (e) {}
+  }
+  function loadDraft() {
+    try {
+      const d = JSON.parse(localStorage.getItem("melody-desk-draft") || "null");
+      if (!d) return;
+      state.notes = Array.isArray(d.notes) ? d.notes : [];
+      if (BAR_CHOICES.includes(d.bars)) state.bars = d.bars;
+      if (["-12", "0", "12", "24", "wide"].includes(d.range)) setRange(d.range);
+      if (d.rows === "chromatic" || d.rows === "scale") state.rows = d.rows;
+      if (d.bpm) state.bpm = d.bpm;
+      if (d.track) state.track = d.track;
+      state.source = d.source || null;
+      $("title").value = d.title || "";
+      $("memo").value = d.memo || "";
+    } catch (e) {}
+  }
+
+  // ---------- riff export ----------
+  function spell(p, octave) {
+    const s = p - 12 * octave;
+    if (s >= 0 && s <= 9) return String(s);
+    return LETTERS[s] || null;
+  }
+  // The forge's riff grammar is one voice, so a chord is split into lanes: each note goes to
+  // the first lane it does not overlap, highest pitch first, so lane 0 carries the top line.
+  function toLanes(notes, bars) {
+    const total = bars * STEPS_PER_BAR;
+    const sorted = notes.slice().sort((a, b) => a.s - b.s || b.p - a.p);
+    const lanes = [];
+    for (const n of sorted) {
+      let lane = lanes.find((L) => L.every((m) => m.s + m.l <= n.s || m.s >= n.s + n.l));
+      if (!lane) { lane = []; lanes.push(lane); }
+      lane.push(n);
+    }
+    return lanes.map((lane) => {
+      let best = null;
+      for (let oct = 0; oct <= 4; oct++) {
+        const missing = lane.filter((n) => spell(n.p, oct) === null).length;
+        if (best === null || missing < best.missing) best = { oct, missing };
+        if (missing === 0) break;
+      }
+      const chars = new Array(total).fill(".");
+      const unspelled = [];
+      for (const n of lane) {
+        const c = spell(n.p, best.oct);
+        if (c === null) unspelled.push(pitchName(n.p));
+        chars[n.s] = c === null ? "?" : c;
+        for (let k = 1; k < n.l && n.s + k < total; k++) chars[n.s + k] = "-";
+      }
+      return { riff: chars.join(""), octave: best.oct, unspelled: [...new Set(unspelled)] };
+    });
+  }
+  function renderRiff() {
+    const lanes = toLanes(state.notes, state.bars);
+    if (!lanes.length) { $("riff").textContent = "(empty)"; return; }
+    const out = [];
+    lanes.forEach((r, i) => {
+      out.push((lanes.length > 1 ? "lane " + (i + 1) + (i === 0 ? " (top line)" : "") + "\n" : "") + '"pat": "' + r.riff + '"  "octave": ' + r.octave);
+      if (r.unspelled.length) out.push("  no letter in the forge for: " + r.unspelled.join(", ") + " (sent as pitches anyway)");
+    });
+    if (lanes.length > 1) out.push("\n" + lanes.length + " lanes: the widest chord has " + lanes.length + " notes at once");
+    $("riff").textContent = out.join("\n");
+  }
+
+  // ---------- grid ----------
+  function buildGrid() {
+    const pitches = rowPitches();
+    const total = totalSteps();
+    const roll = $("roll");
+    roll.style.setProperty("--cell", CELL + "px");
+    roll.style.setProperty("--steps", total);
+    document.querySelector(".ruler").style.setProperty("--cell", CELL + "px");
+    document.querySelector(".ruler").style.setProperty("--steps", total);
+
+    const rail = $("rail"); rail.innerHTML = "";
+    for (const p of pitches) {
+      const d = document.createElement("div");
+      d.textContent = pitchName(p);
+      if (((p % 12) + 12) % 12 === 0) d.classList.add("root");
+      rail.appendChild(d);
+    }
+    const ruler = $("ruler"); ruler.innerHTML = "";
+    for (let s = 0; s < total; s++) {
+      const c = document.createElement("div");
+      c.className = "cell" + ((s + 1) % 4 === 0 ? " beat" : "") + ((s + 1) % STEPS_PER_BAR === 0 ? " bar" : "");
+      if (s % 4 === 0) c.textContent = (Math.floor(s / STEPS_PER_BAR) + 1) + "." + (Math.floor((s % STEPS_PER_BAR) / 4) + 1);
+      ruler.appendChild(c);
+    }
+    const cells = $("cells"); cells.innerHTML = "";
+    const frag = document.createDocumentFragment();
+    pitches.forEach((p, r) => {
+      const pc = ((p % 12) + 12) % 12;
+      for (let s = 0; s < total; s++) {
+        const c = document.createElement("div");
+        c.className = "cell" + ((s + 1) % 4 === 0 ? " beat" : "") + ((s + 1) % STEPS_PER_BAR === 0 ? " bar" : "") + (pc === 0 ? " root" : SCALE.has(pc) ? " scale" : "");
+        c.dataset.s = s; c.dataset.r = r;
+        frag.appendChild(c);
+      }
+    });
+    cells.appendChild(frag);
+    renderNotes();
+  }
+  function renderNotes() {
+    const pitches = rowPitches();
+    const total = totalSteps();
+    const layer = $("notes"); layer.innerHTML = "";
+    for (const n of state.notes) {
+      const r = pitches.indexOf(n.p);
+      if (r < 0 || n.s >= total) continue;
+      const d = document.createElement("div");
+      d.className = "note";
+      d.style.left = (n.s * CELL) + "px";
+      d.style.top = (r * CELL) + "px";
+      d.style.width = (Math.min(n.l, total - n.s) * CELL - 1) + "px";
+      d.dataset.s = n.s; d.dataset.p = n.p;
+      d.title = pitchName(n.p);
+      layer.appendChild(d);
+    }
+    const hidden = state.notes.filter((n) => pitches.indexOf(n.p) < 0 || n.s >= total).length;
+    const src = state.source;
+    $("hint").textContent = !state.notes.length ? "Nothing placed yet. The first tap plays the note as it lands."
+      : state.notes.length + (state.notes.length === 1 ? " note" : " notes") + (hidden ? ", " + hidden + " outside this range or length (still kept, still sent)" : "")
+        + (src ? ". From " + src.trackName + ", " + src.label + ", " + src.key + " bars " + src.bar + " to " + (src.bar + src.bars - 1) + (src.stepsPerBar !== 16 ? " (" + src.stepsPerBar + " steps a bar there, so the bar lines here are off)" : "") : "") + ".";
+    renderRiff();
+    saveDraft();
+  }
+  function addNote(s, p) {
+    snapshot();
+    const total = totalSteps();
+    const l = Math.min(state.len, total - s);
+    // Same pitch and overlapping: replaced. Another pitch: stacks into a chord.
+    state.notes = state.notes.filter((n) => n.p !== p || n.s + n.l <= s || n.s >= s + l);
+    state.notes.push({ s, p, l });
+    state.notes.sort((a, b) => a.s - b.s || b.p - a.p);
+    renderNotes();
+    ensureAudio();
+    // Sound the whole chord that starts here, so a stacked voicing is heard as it builds.
+    const t = ctx.currentTime + 0.01;
+    for (const n of state.notes) if (n.s === s) pianoNote(t, freqOf(n.p), stepSeconds() * n.l, n.p === p ? 0.9 : 0.5);
+  }
+  function removeNote(s, p) {
+    snapshot();
+    state.notes = state.notes.filter((n) => !(n.s === s && n.p === p));
+    renderNotes();
+  }
+  $("grid").addEventListener("click", (e) => {
+    const note = e.target.closest(".note");
+    if (note) { removeNote(+note.dataset.s, +note.dataset.p); return; }
+    const cell = e.target.closest(".cell");
+    if (!cell) return;
+    addNote(+cell.dataset.s, rowPitches()[+cell.dataset.r]);
+  });
+
+  // ---------- audio ----------
+  let ctx = null, master = null;
+  function ensureAudio() {
+    if (ctx) { if (ctx.state === "suspended") ctx.resume(); return; }
+    const AC = window.AudioContext || window.webkitAudioContext;
+    ctx = new AC();
+    const comp = ctx.createDynamicsCompressor();
+    comp.threshold.value = -14; comp.ratio.value = 4; comp.attack.value = 0.003; comp.release.value = 0.15;
+    master = ctx.createGain(); master.gain.value = 0.6;
+    master.connect(comp); comp.connect(ctx.destination);
+  }
+  const freqOf = (p) => E2 * Math.pow(2, p / 12);
+  const stepSeconds = () => 60 / state.bpm / 4;
+  function pianoNote(t, f, dur, vel) {
+    const g = ctx.createGain();
+    const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = Math.min(9000, f * 9); lp.Q.value = 0.4;
+    g.connect(lp); lp.connect(master);
+    const parts = [[1, 1.0], [2, 0.42], [3, 0.2], [4, 0.09], [5, 0.05], [6, 0.03]];
+    const bright = Math.max(0.35, 1 - f / 1800);
+    for (const [m, a] of parts) {
+      const o = ctx.createOscillator();
+      o.type = "sine";
+      o.frequency.value = f * m * (1 + 0.0003 * m * m);
+      const pg = ctx.createGain();
+      const amp = a * vel * (m === 1 ? 1 : bright) * 0.5;
+      const tau = (2.4 / Math.pow(m, 0.9)) * (f < 200 ? 1.4 : 1) * (0.55 + 0.45 * Math.min(1, 220 / f));
+      pg.gain.setValueAtTime(0, t);
+      pg.gain.linearRampToValueAtTime(amp, t + 0.003 + 0.002 * m);
+      pg.gain.setTargetAtTime(0, t + 0.005, tau / 3);
+      o.connect(pg); pg.connect(g);
+      o.start(t); o.stop(t + dur + 1.2);
+    }
+    // the hammer: a tiny burst of noise under the attack
+    const nb = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.02), ctx.sampleRate);
+    const d = nb.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
+    const src = ctx.createBufferSource(); src.buffer = nb;
+    const ng = ctx.createGain(); ng.gain.value = 0.05 * vel;
+    const nf = ctx.createBiquadFilter(); nf.type = "bandpass"; nf.frequency.value = Math.min(6000, f * 4); nf.Q.value = 1;
+    src.connect(nf); nf.connect(ng); ng.connect(g); src.start(t);
+    g.gain.setValueAtTime(1, t);
+    g.gain.setValueAtTime(1, t + dur);
+    g.gain.setTargetAtTime(0, t + dur, 0.09);
+  }
+  function clickAt(t, strong) {
+    const o = ctx.createOscillator(); o.type = "square"; o.frequency.value = strong ? 1800 : 1200;
+    const g = ctx.createGain(); g.gain.setValueAtTime(strong ? 0.12 : 0.07, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.03);
+    o.connect(g); g.connect(master); o.start(t); o.stop(t + 0.04);
+  }
+
+  let playing = false, passStart = 0, passTimer = null, raf = null, passNotes = null;
+  function schedulePass(t0) {
+    const sec = stepSeconds();
+    const total = totalSteps();
+    for (const n of passNotes) {
+      if (n.s >= total) continue;
+      pianoNote(t0 + n.s * sec, freqOf(n.p), Math.min(n.l, total - n.s) * sec * 0.95, 0.85);
+    }
+    if (state.click) for (let s = 0; s < total; s += 4) clickAt(t0 + s * sec, s % STEPS_PER_BAR === 0);
+  }
+  function startPlay() {
+    ensureAudio();
+    playing = true;
+    $("play").textContent = "Stop";
+    $("playhead").style.display = "block";
+    passNotes = state.notes.slice();
+    passStart = ctx.currentTime + 0.08;
+    const runPass = () => {
+      if (!playing) return;
+      schedulePass(passStart);
+      const passLen = stepSeconds() * totalSteps();
+      if (state.loop) {
+        passNotes = state.notes.slice();
+        passTimer = setTimeout(() => { passStart += passLen; runPass(); }, Math.max(20, (passStart + passLen - ctx.currentTime) * 1000 - 120));
+      } else {
+        passTimer = setTimeout(stopPlay, (passStart + passLen - ctx.currentTime) * 1000 + 50);
+      }
+    };
+    runPass();
+    const draw = () => {
+      if (!playing) return;
+      const passLen = stepSeconds() * totalSteps();
+      let pos = (ctx.currentTime - passStart) / passLen;
+      if (pos < 0) pos = 0;
+      if (pos > 1) pos = state.loop ? pos % 1 : 1;
+      const x = pos * totalSteps() * CELL;
+      $("playhead").style.left = x + "px";
+      // Keep the playhead in view: when it leaves the visible window, jump the roll a page along.
+      const sc = $("scroll"), rail = 48, view = sc.clientWidth - rail;
+      const vx = x - (sc.scrollLeft);
+      if (view > 0 && (vx > view - CELL || vx < 0)) sc.scrollLeft = Math.max(0, x - CELL);
+      document.querySelectorAll(".note").forEach((el) => {
+        const s = +el.dataset.s, w = parseFloat(el.style.width) / CELL;
+        el.classList.toggle("on", x >= s * CELL && x < (s + w) * CELL);
+      });
+      raf = requestAnimationFrame(draw);
+    };
+    draw();
+  }
+  function stopPlay() {
+    playing = false;
+    clearTimeout(passTimer); cancelAnimationFrame(raf);
+    $("play").textContent = "Play";
+    $("playhead").style.display = "none";
+    $("scroll").scrollLeft = 0;
+    document.querySelectorAll(".note.on").forEach((el) => el.classList.remove("on"));
+  }
+  $("play").addEventListener("click", () => (playing ? stopPlay() : startPlay()));
+  $("loop").addEventListener("click", (e) => { state.loop = !state.loop; e.currentTarget.setAttribute("aria-pressed", state.loop); });
+  $("click").addEventListener("click", (e) => { state.click = !state.click; e.currentTarget.setAttribute("aria-pressed", state.click); });
+
+  // ---------- controls ----------
+  $("len").addEventListener("click", (e) => {
+    const b = e.target.closest("button"); if (!b) return;
+    state.len = +b.dataset.len;
+    $("len").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", x === b));
+  });
+  $("bars").addEventListener("click", (e) => {
+    const b = e.target.closest("button"); if (!b) return;
+    state.bars = +b.dataset.bars;
+    $("bars").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", x === b));
+    if (playing) stopPlay();
+    buildGrid();
+  });
+  $("range").addEventListener("change", (e) => { setRange(e.target.value); buildGrid(); });
+  $("rows").addEventListener("change", (e) => { state.rows = e.target.value; buildGrid(); });
+  $("bpm").addEventListener("change", (e) => {
+    const v = Math.max(40, Math.min(220, +e.target.value || 104));
+    e.target.value = v; state.bpm = v; saveDraft();
+    if (playing) { stopPlay(); startPlay(); }
+  });
+  $("track").addEventListener("change", (e) => {
+    state.track = e.target.value;
+    const bpm = e.target.selectedOptions[0].dataset.bpm;
+    if (bpm) { state.bpm = +bpm; $("bpm").value = bpm; if (playing) { stopPlay(); startPlay(); } }
+    saveDraft();
+  });
+  $("title").addEventListener("input", saveDraft);
+  $("memo").addEventListener("input", saveDraft);
+  $("undo").addEventListener("click", () => {
+    if (!history.length) return;
+    state.notes = JSON.parse(history.pop());
+    renderNotes();
+  });
+  $("clear").addEventListener("click", () => {
+    if (!state.notes.length) return;
+    snapshot(); state.notes = []; state.source = null; renderNotes();
+  });
+
+  // ---------- import from a track ----------
+  const parts = {};   // track id -> its parts document
+  function fillSelect(sel, options, placeholder) {
+    sel.innerHTML = "";
+    if (!options.length) { const o = document.createElement("option"); o.value = ""; o.textContent = placeholder; sel.appendChild(o); return; }
+    for (const [value, text] of options) { const o = document.createElement("option"); o.value = value; o.textContent = text; sel.appendChild(o); }
+  }
+  function fillTracks() {
+    const ids = Object.keys(parts).sort((a, b) => parts[a].trackName.localeCompare(parts[b].trackName));
+    fillSelect($("imptrack"), ids.map((id) => [id, parts[id].trackName + " · " + parts[id].bpm]), "No tracks in the store yet");
+    if (ids.includes(state.track)) $("imptrack").value = state.track;
+    fillParts();
+  }
+  function fillParts() {
+    const doc = parts[$("imptrack").value];
+    if (!doc) { fillSelect($("imppart"), [], "…"); fillSections(); return; }
+    fillSelect($("imppart"), doc.parts.map((p, i) => [String(i), p.label + " · " + [...new Set(p.sections.map((s) => s.key))].join("")]), "No parts");
+    fillSections();
+  }
+  function fillSections() {
+    const doc = parts[$("imptrack").value];
+    const part = doc && doc.parts[+$("imppart").value];
+    if (!part) { fillSelect($("impsec"), [], "…"); return; }
+    fillSelect($("impsec"), part.sections.map((s, i) => [String(i), s.key + " · bars " + s.bar + " to " + (s.bar + s.bars - 1) + " · " + s.notes.length + " notes"]), "No bars");
+  }
+  function pickedSection() {
+    const doc = parts[$("imptrack").value];
+    const part = doc && doc.parts[+$("imppart").value];
+    const sec = part && part.sections[+$("impsec").value];
+    return sec ? { doc, part, sec } : null;
+  }
+  $("imptrack").addEventListener("change", fillParts);
+  $("imppart").addEventListener("change", fillSections);
+  $("impload").addEventListener("click", () => {
+    const pick = pickedSection();
+    if (!pick) return;
+    const { doc, part, sec } = pick;
+    snapshot();
+    state.bars = BAR_CHOICES.find((b) => b >= sec.bars) || 16;
+    $("bars").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", +x.dataset.bars === state.bars));
+    const total = totalSteps();
+    state.notes = sec.notes.filter((n) => n.s < total).map((n) => ({ s: n.s, p: n.p, l: Math.max(1, Math.min(n.l, total - n.s)) }));
+    state.notes.sort((a, b) => a.s - b.s || b.p - a.p);
+    state.source = { track: doc.track, trackName: doc.trackName, voice: part.voice, inst: part.inst, mode: part.mode, label: part.label, key: sec.key, bar: sec.bar, bars: sec.bars, stepsPerBar: Array.isArray(sec.stepsPerBar) ? sec.stepsPerBar[0] : sec.stepsPerBar };
+    state.track = doc.track; $("track").value = doc.track;
+    state.bpm = doc.bpm; $("bpm").value = doc.bpm;
+    fitRange(state.notes);
+    if (!$("title").value.trim() || /^[A-Za-z ]+ · /.test($("title").value)) $("title").value = doc.trackName + " · " + part.label + " · " + sec.key + " bars " + sec.bar + " to " + (sec.bar + sec.bars - 1);
+    if (playing) stopPlay();
+    buildGrid();
+    $("scroll").scrollLeft = 0;
+    document.querySelector(".roll-frame").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  $("impplay").addEventListener("click", () => {
+    // Audition the picked bars without touching the roll.
+    const pick = pickedSection();
+    if (!pick) return;
+    if (playing) stopPlay();
+    ensureAudio();
+    const sec = 60 / pick.doc.bpm / 4, t0 = ctx.currentTime + 0.05;
+    for (const n of pick.sec.notes) pianoNote(t0 + n.s * sec, freqOf(n.p), n.l * sec * 0.95, 0.8);
+  });
+
+  // ---------- the store ----------
+  let db = null;
+  const sendStatus = (msg, cls) => { const el = $("sendstatus"); el.textContent = msg; el.className = "status " + (cls || ""); };
+  function fmtWhen(iso) {
+    try { const d = new Date(iso); return d.toLocaleDateString(undefined, { day: "numeric", month: "short" }) + " " + d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }); } catch (e) { return ""; }
+  }
+  function renderList(docs) {
+    const list = $("list");
+    list.innerHTML = "";
+    if (!docs.length) {
+      const p = document.createElement("p"); p.className = "empty"; p.id = "listempty";
+      p.textContent = "Nothing sent yet. A sent melody lists here with its status; a session pulls it from here and applies it.";
+      list.appendChild(p); return;
+    }
+    for (const snap of docs) {
+      const d = snap.data();
+      const item = document.createElement("div"); item.className = "item";
+      const t = document.createElement("div"); t.className = "t"; t.textContent = d.title || "untitled";
+      const pill = document.createElement("span"); pill.className = "pill " + (d.status === "applied" ? "applied" : ""); pill.textContent = d.status || "new";
+      const m = document.createElement("div"); m.className = "m";
+      m.textContent = (d.trackName || d.track || "") + " · " + d.bpm + " bpm · " + d.bars + (d.bars === 1 ? " bar · " : " bars · ") + (d.notes ? d.notes.length : 0) + " notes" + (d.polyphony > 1 ? " · up to " + d.polyphony + " at once" : "") + " · " + fmtWhen(d.created);
+      const acts = document.createElement("div"); acts.className = "acts";
+      const load = document.createElement("button"); load.type = "button"; load.textContent = "Load";
+      load.addEventListener("click", () => {
+        snapshot();
+        state.notes = (d.notes || []).map((n) => ({ s: n.s, p: n.p, l: n.l }));
+        if (BAR_CHOICES.includes(d.bars)) { state.bars = d.bars; $("bars").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", +x.dataset.bars === d.bars)); }
+        if (d.bpm) { state.bpm = d.bpm; $("bpm").value = d.bpm; }
+        if (d.track) { state.track = d.track; $("track").value = d.track; }
+        fitRange(state.notes);
+        state.source = d.source || null;
+        $("title").value = d.title || ""; $("memo").value = d.memo || "";
+        if (playing) stopPlay();
+        buildGrid();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+      const del = document.createElement("button"); del.type = "button"; del.className = "danger"; del.textContent = "Delete";
+      let armed = false;
+      del.addEventListener("click", async () => {
+        if (!armed) { armed = true; del.textContent = "Really delete"; setTimeout(() => { armed = false; del.textContent = "Delete"; }, 3000); return; }
+        try { await db.collection("melodies").doc(snap.id).delete(); } catch (e) { sendStatus("Could not delete: " + (e && e.message || e), "bad"); }
+      });
+      acts.appendChild(load); acts.appendChild(del);
+      item.appendChild(t); item.appendChild(pill); item.appendChild(m); item.appendChild(acts);
+      if (d.source) { const so = document.createElement("div"); so.className = "hint"; so.style.gridColumn = "1 / -1"; so.textContent = "From " + d.source.trackName + ", " + d.source.label + ", " + d.source.key + " bars " + d.source.bar + " to " + (d.source.bar + d.source.bars - 1); item.appendChild(so); }
+      if (d.memo) { const memo = document.createElement("div"); memo.className = "hint"; memo.style.gridColumn = "1 / -1"; memo.textContent = d.memo; item.appendChild(memo); }
+      if (d.reply) { const rep = document.createElement("div"); rep.className = "hint"; rep.style.gridColumn = "1 / -1"; rep.textContent = "Forge: " + d.reply; item.appendChild(rep); }
+      list.appendChild(item);
+    }
+  }
+  async function send() {
+    if (!state.notes.length) { sendStatus("Place a note first.", "bad"); return; }
+    if (!db) { sendStatus("The store is not available in this view, so it cannot be sent from here.", "bad"); return; }
+    const lanes = toLanes(state.notes, state.bars);
+    const opt = $("track").selectedOptions[0];
+    const doc = {
+      title: $("title").value.trim() || ("melody " + new Date().toISOString().slice(0, 16).replace("T", " ")),
+      memo: $("memo").value.trim(),
+      track: state.track,
+      trackName: opt ? opt.textContent.split(" · ")[0] : state.track,
+      bpm: state.bpm,
+      bars: state.bars,
+      notes: state.notes.map((n) => ({ s: n.s, p: n.p, l: n.l, name: pitchName(n.p) })),
+      lanes: lanes.map((r) => ({ pat: r.riff, octave: r.octave, unspelled: r.unspelled })),
+      polyphony: lanes.length,
+      source: state.source,
+      root: "E2",
+      stepsPerBar: STEPS_PER_BAR,
+      status: "new",
+      created: new Date().toISOString(),
+    };
+    $("send").disabled = true;
+    sendStatus("Sending…");
+    try {
+      await db.collection("melodies").add(doc);
+      sendStatus("Sent. It is in the list below.", "ok");
+    } catch (e) {
+      sendStatus("Could not send: " + (e && e.message || e), "bad");
+    } finally {
+      $("send").disabled = false;
+    }
+  }
+  $("send").addEventListener("click", send);
+
+  async function connect() {
+    if (!window.claude || !window.claude.use) return;
+    try { db = await window.claude.use("db"); } catch (e) { db = null; }
+    if (!db) {
+      $("listempty").textContent = "The store is not available in this view. Playback still works; sending does not.";
+      fillSelect($("imptrack"), [], "The store is not available here"); fillParts();
+      return;
+    }
+    db.collection("melodies").orderBy("created", "desc").limit(60).onSnapshot(
+      (snap) => renderList(snap.docs),
+      (e) => { $("listempty").textContent = "Could not read the sent list (" + e.code + ")."; }
+    );
+    try {
+      const snap = await db.collection("parts").get();
+      for (const d of snap.docs) parts[d.id] = d.data();
+      fillTracks();
+      if (!snap.docs.length) $("importhint").textContent = "No tracks in the store yet. A session seeds them from the forge (tools/soundforge/desk_parts.py).";
+    } catch (e) {
+      fillSelect($("imptrack"), [], "Could not read the tracks"); fillParts();
+    }
+  }
+
+  // ---------- boot ----------
+  setRange("12");
+  loadDraft();
+  $("bpm").value = state.bpm;
+  $("track").value = state.track;
+  $("rows").value = state.rows;
+  fillParts();
+  $("bars").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", +x.dataset.bars === state.bars));
+  buildGrid();
+  connect();
+})();
+</script>
