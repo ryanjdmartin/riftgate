@@ -798,10 +798,12 @@ const DEST_RING := HEX_SIZE * 0.58   # the target's outer ring
 # tritan vision. The rest sits 60 from its nearest neighbour (the blue HUD, deutan), the
 # bright 36; the rift's own pale (c9a6ff) was 7 from the blue HUD and a paler lavender 1,
 # so the pulse never goes that far, and plum went toward the red under red-green vision.
-const INTENT := Color("a468ff")       # a pack's route at rest (L 58, Ryan, 30 September: up once more)
-const INTENT_HOT := Color("b88cff")   # the tapped pack's bright (L 67; 21 Lab from the blue HUD under deutan, the floor)
-const INTENT_DEEP := Color("5a1cb8")  # the tapped pack's dark, back down to the first cut (Ryan, 30 September)
-const INTENT_EDGE := Color("2a0e4a")  # the edge under every violet line and border: deep violet, not black
+# Two violets in all (Ryan, 30 September): the light one is the route's line and the field's
+# bright; the deep one is the line's crawling gaps and the field's dark.
+const INTENT := Color("b88cff")       # a pack's route at rest, and the field's bright (L 67; 21 Lab from the blue HUD under deutan)
+const INTENT_HOT := Color("b88cff")   # the tapped pack's line at the top of its breath: the same
+const INTENT_DEEP := Color("2a0e4a")  # the field's dark and the line's gaps
+const INTENT_EDGE := Color("2a0e4a")  # the edge, if RIFTGATE_INTENT_EDGE puts it on: the same deep
 ## Whether the intent marks wear that edge at all (Ryan, 30 September: trying them without);
 ## RIFTGATE_INTENT_EDGE=1 puts it back for a comparison. The solid line and its deep-violet
 ## crawling gaps stay either way: the gaps are the motion, the edge was only the contrast.
@@ -853,21 +855,43 @@ func _field_line(a: Vector2, b: Vector2, phase: float, width: float) -> void:
 			draw_line(p0, p1, _intent_at((p0 + p1) * 0.5, phase), width)
 
 
-## The target lock's three broken rings in the field's colours.
+## The target lock's three broken rings in the field's colours, each arc split exactly
+## where it crosses a stripe (Ryan, 30 September: sampled arcs jittered, worst on the
+## small inner rings). Along an arc the stripe coordinate is A + B cos(theta - phi), so
+## the crossings are where that equals an integer.
 func _field_rings(c: Vector2, r: float, dir: float, phase: float, width: float = 3.0) -> void:
+	var phi := atan2(STRIPE_DIR.y, STRIPE_DIR.x)
+	var A := c.dot(STRIPE_DIR) / STRIPE + phase
 	for k in range(3):
 		var rad := r * (0.42 + 0.29 * k)
+		var B := rad * STRIPE_DIR.length() / STRIPE
 		var segs := 3 + k * 2
 		var a0 := _ring_t * dir * (1.0 - 0.25 * k) * (1.0 if k % 2 == 0 else -1.0)
 		for sgm in range(segs):
 			var a := a0 + TAU * float(sgm) / float(segs)
-			var span := TAU / float(segs) * 0.6
-			var pieces := maxi(4, int(span * rad / 1.5))   # arcs sampled to a pixel and a half, so a boundary lands where the field says
-			for q in range(pieces):
-				var b0 := a + span * float(q) / pieces
-				var b1 := a + span * float(q + 1) / pieces
+			var b := a + TAU / float(segs) * 0.6
+			var cuts: Array[float] = [a, b]
+			var kk := ceilf(A - B)
+			while kk <= A + B:
+				var cs := (kk - A) / B
+				if absf(cs) <= 1.0:
+					var d := acos(cs)
+					for root in [phi + d, phi - d]:
+						# every turn of the root that lands inside [a, b]
+						var th: float = root + TAU * floorf((a - root) / TAU)
+						while th <= b:
+							if th >= a:
+								cuts.append(th)
+							th += TAU
+				kk += 1.0
+			cuts.sort()
+			for q in range(cuts.size() - 1):
+				var b0: float = cuts[q]
+				var b1: float = cuts[q + 1]
+				if b1 - b0 < 0.002:
+					continue
 				var mid := c + Vector2(cos((b0 + b1) * 0.5), sin((b0 + b1) * 0.5)) * rad
-				draw_arc(c, rad, b0, b1, 3, _intent_at(mid, phase), width)
+				draw_arc(c, rad, b0, b1, maxi(2, int((b1 - b0) * rad / 3.0) + 1), _intent_at(mid, phase), width)
 
 
 func _intent_breath() -> float:
