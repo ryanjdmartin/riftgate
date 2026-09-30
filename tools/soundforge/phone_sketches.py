@@ -17,7 +17,7 @@ each file is an A/B against the first of its set; never written over a shipped t
             levels, then levelled by what a phone speaker plays (a model: high-passed at
             220 Hz twice, a presence bump, rolled off at 9 kHz).
 
-    tools/spriter/.venv/bin/python tools/soundforge/phone_sketches.py [voices|balance|levels|voices2|guitar|shadows2|rift|round3|round4|round5|round6|round7|round8|round9]
+    tools/spriter/.venv/bin/python tools/soundforge/phone_sketches.py [voices|balance|levels|voices2|guitar|shadows2|rift|round3|round4|round5|round6|round7|round8|round9|round10]
 
 Second round (28 September, from Ryan's notes on the first): voices2 (two hybrids of voice 2
 and the split, and the other bass voices the tracks use), guitar (the backing guitar without
@@ -594,6 +594,36 @@ CLIMAX_EDITS = [
 ]
 
 
+
+# ---------------------------------------------------------------- round ten (Ryan, 30 September)
+
+def _thin_cymbals(pat):
+    """Every other hit of a cymbal pattern dropped, the first of each bar kept: less metal, the
+    same hits underneath."""
+    out = list(pat)
+    keep = True
+    for i, c in enumerate(pat):
+        if c != "x":
+            continue
+        if i % 16 == 0:
+            keep = True
+        if not keep:
+            out[i] = "."
+        keep = not keep
+    return "".join(out)
+
+
+def drum_solo_fewer(bars):
+    solo = F._drum_solo(bars)
+    for k in ("crash", "crash2", "china", "splash", "stack"):
+        if k in solo:
+            solo[k] = _thin_cymbals(solo[k])
+    return solo
+
+
+UNISON_FORM = "UUUUUUUU"
+
+
 # ---------------------------------------------------------------- rendering
 
 class Patched:
@@ -707,7 +737,7 @@ def main(argv):
     if os.path.exists(page):   # the committed page, copied in so the publish has everything in one folder
         with open(page) as src, open(os.path.join(OUT, "index.html"), "w") as dst:
             dst.write(src.read())
-    manifest = {"voices": [], "balance": [], "levels": [], "voices2": [], "guitar": [], "shadows2": [], "rift": [], "round3": [], "round4": [], "round5": [], "round6": [], "round7": [], "round8": [], "round9": [], "notes": {}}
+    manifest = {"voices": [], "balance": [], "levels": [], "voices2": [], "guitar": [], "shadows2": [], "rift": [], "round3": [], "round4": [], "round5": [], "round6": [], "round7": [], "round8": [], "round9": [], "round10": [], "notes": {}}
     os.makedirs(OUT, exist_ok=True)
     path = os.path.join(OUT, "manifest.json")
     if which != "all" and os.path.exists(path):
@@ -939,6 +969,26 @@ def main(argv):
             write(name, x)
             manifest["round9"].append({"name": name, "seconds": len(x) / F.SR, "phone_db": round(phone_level(x), 1), "note": note})
             print("  %-16s %5.1f s  phone %.1f dB" % (name, len(x) / F.SR, phone_level(x)))
+        save()
+    if which in ("round10", "all"):
+        print("round10")
+        x = level_to(render_hold(UNISON_FORM), SKIRMISH_LEVEL)
+        write("unison_ship", x)
+        manifest["round10"].append({"name": "unison_ship", "seconds": len(x) / F.SR, "phone_db": round(phone_level(x), 1), "note": "the unison and its drum solo as they ship"})
+        x = level_to(render_hold(UNISON_FORM, patches=dict(_drum_solo=drum_solo_fewer)), SKIRMISH_LEVEL)
+        write("unison_fewer", x)
+        manifest["round10"].append({"name": "unison_fewer", "seconds": len(x) / F.SR, "phone_db": round(phone_level(x), 1), "note": "the drum solo with every other cymbal hit dropped (the first of each bar kept); kick, snare and toms untouched"})
+        def lead_up(voices, pads):
+            for v in voices:
+                if v["inst"] == "lead" and set(v["pat"]) == {"R", "Z"}:
+                    v["octave"] = 2
+                    v["gain"] = 0.6
+            return voices, pads
+        x = level_to(render_hold_edit(CLIMAX_FORM, lead_up), SKIRMISH_LEVEL)
+        write("climax_lead2", x)
+        manifest["round10"].append({"name": "climax_lead2", "seconds": len(x) / F.SR, "phone_db": round(phone_level(x), 1), "note": "the climax with the riff's synth lead an octave higher still (the keys' register), in case that is the octave meant"})
+        for n in ("unison_ship", "unison_fewer", "climax_lead2"):
+            print("  " + n)
         save()
     if which in ("levels", "all"):
         print("levels")

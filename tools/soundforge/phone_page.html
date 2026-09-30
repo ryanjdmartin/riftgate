@@ -224,6 +224,15 @@
 </div>
 <div class="listen"><p><strong>Listen for:</strong> whether the lead's entry lifts the second set the way the piano was meant to, and whether the chimes now read.</p></div>
 
+<h2>10. The drum solo's cymbals, and the climax's lead</h2>
+<p>Two of the 30 September notes want a choice. The unison's drum solo with less metal but the same hits underneath; and the climax's synth on the riff, which you could not hear: it ships louder at the octave you asked for, and here it is an octave higher again in case that was the octave meant.</p>
+<div class="rows" data-group="round10">
+  <div class="row" data-src="unison_ship.mp4" data-title="Unison &middot; as it ships"><button class="btn" aria-label="play">&#9654;</button><div class="name"><span class="step">1</span> The unison as it ships</div><div class="num" data-db="unison_ship"></div><div class="note">Eight bars: chug, bass and lead in octaves over the drum solo.</div></div>
+  <div class="row" data-src="unison_fewer.mp4" data-title="Unison &middot; fewer cymbals"><button class="btn" aria-label="play">&#9654;</button><div class="name"><span class="step">2</span> Fewer cymbals in the solo</div><div class="num" data-db="unison_fewer"></div><div class="note">Every other cymbal hit dropped, the first of each bar kept; the kick, snare and toms as they were.</div></div>
+  <div class="row" data-src="climax_lead2.mp4" data-title="Climax &middot; lead an octave higher"><button class="btn" aria-label="play">&#9654;</button><div class="name"><span class="step">3</span> The climax's synth an octave higher</div><div class="num" data-db="climax_lead2"></div><div class="note">The riff's synth lead in the keys' register. Set 9 row 1 has it at the shipped octave, now at 0.75.</div></div>
+</div>
+<div class="listen"><p><strong>Listen for:</strong> whether the solo keeps its explosion with half the metal, and which octave of the synth sits over the guitars without fighting the lead guitar.</p></div>
+
 <h2>Measured</h2>
 <p>Where each shipped loop's power sits, by band. A phone speaker plays little below 150 Hz and nothing below 80.</p>
 <div style="overflow-x:auto">
@@ -316,7 +325,7 @@
   // The solo file's marks, and each file's loudness through the phone model, from the manifest.
   fetch('manifest.json').then(function (r) { return r.json(); }).then(function (m) {
     var all = [];
-    ['round4', 'round5', 'round6', 'round7', 'round8', 'round9', 'voices', 'voices2', 'guitar', 'balance', 'shadows2', 'rift', 'levels', 'round3'].forEach(function (k) { all = all.concat(m[k] || []); });
+    ['round4', 'round5', 'round6', 'round7', 'round8', 'round9', 'round10', 'voices', 'voices2', 'guitar', 'balance', 'shadows2', 'rift', 'levels', 'round3'].forEach(function (k) { all = all.concat(m[k] || []); });
     var markBoxes = {bass_solo: 'solo', bass_solo2: 'solo2', bass_solo3: 'solo3', drums_kits: 'drums', drums_kick: 'kick', drums_tom: 'tomtight', drums_tom_power: 'tompower', hold_seam: 'seam', drums_tom_hard: 'tomhard'};
     all.forEach(function (f) {
       var el = document.querySelector('[data-db="' + f.name + '"]');

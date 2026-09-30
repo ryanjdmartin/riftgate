@@ -1978,15 +1978,16 @@ def tom_real(f=150.0, pitch=1.0):
     n = n_of(0.5)
     t = t_of(n)
     fr = f * pitch * (1.0 + 0.18 * np.exp(-t / 0.05))
-    skin = np.sin(2.0 * math.pi * np.cumsum(fr) / SR) * env_ad(n, 0.001, 0.0825, curve=2.5)
-    sub = np.sin(2.0 * math.pi * f * pitch * 0.5 * t) * env_ad(n, 0.002, 0.0675) * 0.5
+    # The tightening undone (Ryan, 30 September: a mistake); the body as it was, hit hard.
+    skin = np.sin(2.0 * math.pi * np.cumsum(fr) / SR) * env_ad(n, 0.001, 0.11, curve=2.5)
+    sub = np.sin(2.0 * math.pi * f * pitch * 0.5 * t) * env_ad(n, 0.002, 0.09) * 0.5
     shell = harmonics(f * pitch * 1.4, n, [0.5, 0.25, 0.1]) * env_ad(n, 0.001, 0.03) * 0.3
     stick = lp(bp(noise(n_of(0.01)), 1500.0, 6000.0), 5000.0) * env_ad(n_of(0.01), 0.0002, 0.003) * 2.0
     front = body(f * pitch * 1.6, f * pitch, 0.04, drive=2.6, click=0.8) * 1.5
     shadow = bp(sat(skin + sub, 3.0), 120.0, 500.0) * 0.35
     # The skin saturates alone and the sub stays clean (30 September: the low tom crackled;
     # a saturated 52 Hz sub is all harmonics on a phone).
-    return room(mix(sat(skin, 2.6) + sub, shell, front, at(np.zeros(1), stick, 0.0), shadow), decay=0.03, mix=0.036, cut=4500.0) * 1.1
+    return room(mix(sat(skin, 2.6) + sub, shell, front, at(np.zeros(1), stick, 0.0), shadow), decay=0.05, mix=0.06, cut=4500.0) * 1.1
 
 
 def splash():
@@ -2266,9 +2267,10 @@ def music_hold_the_line(palette="hybrid"):
             {"inst": "lead", "mode": "riff", "gain": 0.46, "octave": 2, "pat": {"F": keys_tune}},
             # His harmony lines under it, the chords thickening toward the climax; the third
             # line overlaps itself, so it is two voices.
-            {"inst": "lead", "mode": "riff", "gain": 0.34, "octave": 1, "pat": {"F": keys_harm1}},
-            {"inst": "lead", "mode": "riff", "gain": 0.3, "octave": 1, "pat": {"F": keys_harm2}},
-            {"inst": "lead", "mode": "riff", "gain": 0.3, "octave": 1, "pat": {"F": keys_harm2b}},
+            # Down so the top line stays the lead (Ryan, 30 September).
+            {"inst": "lead", "mode": "riff", "gain": 0.22, "octave": 1, "pat": {"F": keys_harm1}},
+            {"inst": "lead", "mode": "riff", "gain": 0.2, "octave": 1, "pat": {"F": keys_harm2}},
+            {"inst": "lead", "mode": "riff", "gain": 0.2, "octave": 1, "pat": {"F": keys_harm2b}},
             {"inst": "epiano", "mode": "stab", "gain": 0.5, "dur": 2.0,
              "pat": {"C": "..x...x...x...x.", "L": "..x...x...x...x.",
                      "F": "............x..." "................" "............x..." "x..............."
@@ -2303,9 +2305,9 @@ def music_hold_the_line(palette="hybrid"):
             # and the riff's second chug are gone from the climax, the chimes leave the first set
             # and come up in the second and third, the drone stays under all three, and the
             # keys' lead voice takes the riff an octave up from halfway through the second set.
-            {"inst": "lead", "mode": "riff", "gain": 0.45, "octave": 1, "hold": 0.9,
+            {"inst": "lead", "mode": "riff", "gain": 0.75, "octave": 1, "hold": 0.9,   # up (Ryan, 30 September: could not hear it at 0.45)
              "pat": {"R": "." * 64 + climax, "Z": climax}},
-            {"inst": "chime_metal", "mode": "chord", "octave": 2, "gain": 0.3, "echo": (3, 0.25, 2), "dur": 1.6,
+            {"inst": "chime_metal", "mode": "chord", "octave": 2, "gain": 0.24, "echo": (3, 0.25, 2), "dur": 1.6,   # down a little (30 September)
              "pat": {"R": "0...2.1.....3...", "Z": "0...2.1.....3..."}},
             # The breath (Y) is the climax's blend on one E minor chord: the lead guitar voice
             # on the third, the chug and the driven bass in unison on the root, the fifth
