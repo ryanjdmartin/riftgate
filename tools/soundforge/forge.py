@@ -2091,23 +2091,28 @@ def _drum_solo(bars):
 
 def _thin_cymbals(solo):
     """A drum solo with every other cymbal hit dropped, the first of each bar kept: less metal,
-    the same hits underneath (Ryan, 30 September, from the listening page's tenth round)."""
-    out = dict(solo)
+    the same hits underneath (Ryan, 30 September, from the listening page's tenth round).
+    Where a cymbal came out the toms take its weight (the same day: the thinning left holes),
+    a tom on the hit and the low tom right after, where the slots are free."""
+    out = {k: list(v) for k, v in solo.items()}
+    n = len(out["kick"])
     for k in ("crash", "crash2", "china", "splash", "stack"):
         if k not in out:
             continue
-        pat = list(out[k])
         keep = True
-        for i, c in enumerate(out[k]):
+        for i, c in enumerate(solo[k]):
             if c != "x":
                 continue
             if i % 16 == 0:
                 keep = True
             if not keep:
-                pat[i] = "."
+                out[k][i] = "."
+                if out["tom"][i] == "." and out["snare"][i] != "x":
+                    out["tom"][i] = "x"
+                if i + 1 < n and out["tom2"][i + 1] == "." and out["snare"][i + 1] == "." and out["tom"][i + 1] == ".":
+                    out["tom2"][i + 1] = "x"
             keep = not keep
-        out[k] = "".join(pat)
-    return out
+    return {k: "".join(v) for k, v in out.items()}
 
 def music_hold_the_line(palette="hybrid"):
     # Human A (the fight loop) at 100 on the hybrid palette. A hundred and seventeen bars: the riff
