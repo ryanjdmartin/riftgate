@@ -812,6 +812,45 @@ const ENEMY_EDGE := Color("5a0e0e")   # the edge under every red line and border
 
 ## The tapped pack's intent breathes between violet and the rift's pale, most of the way up
 ## and never quite down to the deep, so on any ground it passes through a colour that reads.
+## The intent field (Ryan, 30 September): a hidden static map of diagonal stripes in the
+## deep and the bright violet, which the rings, the target's border and the route's dashes
+## sample as they pass over it. A striped mark is another kind of thing from the HUD's
+## single-colour lines, so the whole range of violets can show at once. The stripes stand
+## still for a pack at rest and crawl for the tapped one.
+const STRIPE := HEX_SIZE * 0.26   # one stripe's width in map pixels
+const STRIPE_DIR := Vector2(0.8, 0.6)   # the stripes run across this direction
+
+func _intent_at(p: Vector2, phase: float) -> Color:
+	var k := floori((p.dot(STRIPE_DIR) / STRIPE) + phase)
+	return INTENT_HOT if k % 2 == 0 else INTENT_DEEP
+
+
+## A straight piece drawn in the field's colours, a few pixels at a time.
+func _field_line(a: Vector2, b: Vector2, phase: float, width: float) -> void:
+	var n := maxi(1, int(a.distance_to(b) / 4.0))
+	for i in range(n):
+		var p0 := a.lerp(b, float(i) / n)
+		var p1 := a.lerp(b, float(i + 1) / n)
+		draw_line(p0, p1, _intent_at((p0 + p1) * 0.5, phase), width)
+
+
+## The target lock's three broken rings in the field's colours.
+func _field_rings(c: Vector2, r: float, dir: float, phase: float, width: float = 3.0) -> void:
+	for k in range(3):
+		var rad := r * (0.42 + 0.29 * k)
+		var segs := 3 + k * 2
+		var a0 := _ring_t * dir * (1.0 - 0.25 * k) * (1.0 if k % 2 == 0 else -1.0)
+		for sgm in range(segs):
+			var a := a0 + TAU * float(sgm) / float(segs)
+			var span := TAU / float(segs) * 0.6
+			var pieces := 6
+			for q in range(pieces):
+				var b0 := a + span * float(q) / pieces
+				var b1 := a + span * float(q + 1) / pieces
+				var mid := c + Vector2(cos((b0 + b1) * 0.5), sin((b0 + b1) * 0.5)) * rad
+				draw_arc(c, rad, b0, b1, 3, _intent_at(mid, phase), width)
+
+
 func _intent_breath() -> float:
 	return 0.5 + 0.5 * sin(_ring_t * 2.0)   # a touch quicker than the contact's 1.6 (Ryan, 30 September: halfway back from 2.4)
 
@@ -907,10 +946,11 @@ func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool
 		if _intent_edged():
 			draw_polyline(pts, INTENT_EDGE, 7.0)
 		draw_polyline(pts, col, 3.5)
-		# The gaps breathe with the line on the tapped pack, deep to mid (Ryan, 30 September).
-		var gap := INTENT_EDGE.lerp(INTENT, _intent_breath()) if breathe else INTENT_EDGE
+		# The moving dashes over the line take the field's stripes (the line under them stays
+		# the one colour, so the route still reads as one stroke).
+		var phase := fmod(_ring_t * 1.5, 2.0) if breathe else 0.0
 		for i in range(pts.size() - 1):
-			_dashed_line(pts[i], pts[i + 1], gap, HEX_SIZE * 0.22, fmod(_ring_t * 2.0, 2.0) + 1.0)
+			_dashed_line(pts[i], pts[i + 1], Color(0, 0, 0, 0), HEX_SIZE * 0.22, fmod(_ring_t * 2.0, 2.0) + 1.0, phase)
 	else:
 		draw_polyline(pts, Color(col, 0.5), 3.0)
 		for i in range(pts.size() - 1):
@@ -930,18 +970,23 @@ func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool
 	# An enemy route's rings pulse in the line's own register (the selected pack's whole
 	# route breathes red to orange together, Ryan, 29 September); a machine's lift toward white.
 	var bright := col if edged else (col.lerp(Color.WHITE, 0.25 + 0.25 * sin(_ring_t * 1.6)) if breathe else col)
-	if edged and _intent_edged():
-		# The rings and the border wear the line's edge, so the line runs into them as one.
-		_target_rings(end, INTENT_EDGE, DEST_RING * 0.85, -1.0, 6.0)
-		draw_circle(end, 5.5, INTENT_EDGE)
+	if edged:
+		# The rings and the target's border in the field's stripes (crawling on the tapped pack).
+		var phase := fmod(_ring_t * 1.5, 2.0) if breathe else 0.0
+		if _intent_edged():
+			_field_rings(end, DEST_RING * 0.85, -1.0, phase, 6.0)
+		_field_rings(end, DEST_RING * 0.85, -1.0, phase)
+		draw_circle(end, 3.5, col)
+		_crawl_poly(Hex.corners(end, HEX_SIZE - 5.5), Color(0, 0, 0, 0), HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0), INTENT_EDGE if _intent_edged() else Color(0, 0, 0, 0), phase)   # just inside the hex lines (Ryan, 30 September)
+		return
 	_target_rings(end, bright, DEST_RING * 0.85, -1.0)
 	draw_circle(end, 3.5, bright)
-	_crawl_poly(Hex.corners(end, HEX_SIZE - 5.5), col, HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0), INTENT_EDGE if edged and _intent_edged() else Color(0, 0, 0, 0))   # inside the hex's own border, not on it (Ryan, 30 September)
+	_crawl_poly(Hex.corners(end, HEX_SIZE - 5.5), col, HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0))   # just inside the hex lines (Ryan, 30 September)
 
 
 ## A closed outline drawn as dashes that crawl round it: `offset` in dashes, dash and gap
 ## both `dash` long.
-func _crawl_poly(pts: PackedVector2Array, col: Color, dash: float, offset: float, edge: Color = Color(0, 0, 0, 0)) -> void:
+func _crawl_poly(pts: PackedVector2Array, col: Color, dash: float, offset: float, edge: Color = Color(0, 0, 0, 0), phase: float = 0.0) -> void:
 	var per := 0.0
 	for i in range(pts.size()):
 		per += pts[i].distance_to(pts[(i + 1) % pts.size()])
@@ -953,12 +998,13 @@ func _crawl_poly(pts: PackedVector2Array, col: Color, dash: float, offset: float
 			var d0 := maxf(0.0, k * step)
 			var d1 := minf(per, (k + 1.0) * step)
 			if d1 > d0:
-				_poly_segment(pts, d0, d1, edge if pass_i == 0 and edge.a > 0.0 else col, 5.0 if pass_i == 0 and edge.a > 0.0 else 2.5)
+				_poly_segment(pts, d0, d1, edge if pass_i == 0 and edge.a > 0.0 else col, 5.0 if pass_i == 0 and edge.a > 0.0 else 2.5, phase)
 			k += 2.0
 
 
 ## The stretch of a closed outline between distances `d0` and `d1` along it.
-func _poly_segment(pts: PackedVector2Array, d0: float, d1: float, col: Color, width: float = 2.5) -> void:
+## `col` at zero alpha means the intent field's colours, at `phase`.
+func _poly_segment(pts: PackedVector2Array, d0: float, d1: float, col: Color, width: float = 2.5, phase: float = 0.0) -> void:
 	var walked := 0.0
 	for i in range(pts.size()):
 		var a := pts[i]
@@ -967,20 +1013,26 @@ func _poly_segment(pts: PackedVector2Array, d0: float, d1: float, col: Color, wi
 		var s0 := clampf(d0 - walked, 0.0, len)
 		var s1 := clampf(d1 - walked, 0.0, len)
 		if s1 > s0:
-			draw_line(a.lerp(b, s0 / len), a.lerp(b, s1 / len), col, width)
+			if col.a == 0.0:
+				_field_line(a.lerp(b, s0 / len), a.lerp(b, s1 / len), phase, width)
+			else:
+				draw_line(a.lerp(b, s0 / len), a.lerp(b, s1 / len), col, width)
 		walked += len
 
 
 ## A dashed line from `a` to `b`, dash and gap both `dash` long, the pattern shifted along
 ## by `offset` dashes so it can crawl.
-func _dashed_line(a: Vector2, b: Vector2, col: Color, dash: float, offset: float = 0.0) -> void:
+func _dashed_line(a: Vector2, b: Vector2, col: Color, dash: float, offset: float = 0.0, phase: float = 0.0) -> void:
 	var n := maxi(1, int(a.distance_to(b) / dash))
 	var k := -2.0 + fmod(offset, 2.0)
 	while k < n:
 		var t0 := clampf(k / n, 0.0, 1.0)
 		var t1 := clampf((k + 1.0) / n, 0.0, 1.0)
 		if t1 > t0:
-			draw_line(a.lerp(b, t0), a.lerp(b, t1), col, 3.0)
+			if col.a == 0.0:   # the intent field's colours
+				_field_line(a.lerp(b, t0), a.lerp(b, t1), phase, 3.0)
+			else:
+				draw_line(a.lerp(b, t0), a.lerp(b, t1), col, 3.0)
 		k += 2.0
 
 
