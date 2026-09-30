@@ -617,7 +617,7 @@ _SOLO = F._drum_solo   # the forge's own, held while the module's name is patche
 
 
 def drum_solo_fewer(bars):
-    return F._thin_cymbals(_SOLO(bars))   # what ships now; kept so the round re-renders
+    return _SOLO(bars)   # the fresh pass is the forge's own generator now; kept so the round re-renders
 
 
 UNISON_FORM = "UUUUUUUU"

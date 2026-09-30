@@ -2034,22 +2034,24 @@ STAB_INST["guitar_hold"] = lambda semis, dur: guitar_chord(semis, dur, damp=0.99
 
 
 def _drum_solo(bars):
-    """A drum solo over `bars` bars in the Ba-ta-ta Ba-ta-ta Ba-ta framework (eighths
-    grouped three, three, two): the kick on every Ba, a crash on one and a china or the low
-    crash on the "and" of two, a ride bell on some of the last group's Ba, the ta-tas traded
-    between snare and toms with doubles and flams and the odd splash or stack, a sixteenth
-    fill closing every fourth bar, and never the same bar twice (Ryan: Peart)."""
+    """A drum solo over `bars` bars in the Ba-ta-ta Ba-ta-ta Ba-ta framework (eighths grouped
+    three, three, two): the kick on every Ba, the ta-tas traded between snare and toms with
+    doubles, flams and triplets, the air between filled three times in four, a sixteenth fill
+    closing every fourth bar and a longer one closing the run, and never the same bar twice
+    (Ryan: Peart). Rewritten 30 September with the metal cut back on Ryan's ear: a crash on
+    the one of the first and fifth bars only, a china on the "and" of two in the third and
+    seventh, nothing else on cymbals; the drums carry the explosion (the first cut hit a
+    crash every bar and a china or low crash on the "and" of two of every bar, with a
+    splash or stack in the ta-tas; halving that left holes, so this is a fresh pass)."""
     parts = {k: [] for k in ("kick", "snare", "tom", "tom2", "crash", "crash2", "china", "splash", "stack", "bell")}
     for b in range(bars):
         bar = {k: ["."] * 16 for k in parts}
         for g, (start, length) in enumerate([(0, 6), (6, 6), (12, 4)]):
             bar["kick"][start] = "x"
-            if g == 0:
+            if g == 0 and b % 4 == 0:
                 bar["crash"][start] = "x"
-            elif g == 1:
-                bar["china" if b % 2 == 0 else "crash2"][start] = "x"
-            elif RNG.integers(3) == 0:
-                bar["bell"][start] = "x"
+            elif g == 1 and b % 4 == 2:
+                bar["china"][start] = "x"
             for pos in range(start + 2, start + length, 2):
                 choice = RNG.integers(8)
                 if choice == 0:
@@ -2070,49 +2072,30 @@ def _drum_solo(bars):
                     bar["snare"][pos] = "o"
                     bar["tom2"][pos] = "x"
                 elif choice == 6:
-                    bar["splash"][pos] = "x"
-                    bar["snare"][pos] = "x"
-                else:
-                    bar["stack"][pos] = "x"
+                    bar["snare"][pos] = "x"   # a flam: the snare with the tom under it
                     bar["tom"][pos] = "x"
-                if pos + 1 < 16 and bar["tom2"][pos + 1] == "." and bar["snare"][pos + 1] == "." and RNG.integers(3) != 0:
-                    bar[("tom2", "tom", "snare")[RNG.integers(3)]][pos + 1] = "x"   # fills the air (Ryan: crazier)
+                else:
+                    bar["tom2"][pos] = "x"    # the low tom with the kick doubled under it
+                    bar["kick"][pos] = "x"
+                if pos + 1 < 16 and bar["tom2"][pos + 1] == "." and bar["snare"][pos + 1] == "." and RNG.integers(4) != 0:
+                    bar[("tom2", "tom", "snare")[RNG.integers(3)]][pos + 1] = "x"   # fills the air
             if start + 1 < 16 and RNG.integers(2) == 0:
                 bar["snare"][start + 1] = "o"   # a ghost right after the Ba
-        if b % 2 == 1:
+        if b % 4 == 3:
+            # The fill closing every fourth bar: sixteenths down the kit, the kick doubled under.
             for pos in range(12, 16):
                 bar[("snare", "tom", "tom2")[pos % 3]][pos] = "x"
             bar["kick"][14] = "x"
+        if b == bars - 1:
+            # The run's closer: the whole second half a roll down the kit into the next section.
+            for pos in range(8, 16):
+                bar[("snare", "snare", "tom", "tom", "tom2", "tom2", "snare", "tom2")[pos - 8]][pos] = "x"
+            for pos in (8, 10, 12, 14):
+                bar["kick"][pos] = "x"
         for k in parts:
             parts[k].append("".join(bar[k]))
     return {k: "".join(v) for k, v in parts.items()}
 
-
-
-def _thin_cymbals(solo):
-    """A drum solo with every other cymbal hit dropped, the first of each bar kept: less metal,
-    the same hits underneath (Ryan, 30 September, from the listening page's tenth round).
-    Where a cymbal came out the toms take its weight (the same day: the thinning left holes),
-    a tom on the hit and the low tom right after, where the slots are free."""
-    out = {k: list(v) for k, v in solo.items()}
-    n = len(out["kick"])
-    for k in ("crash", "crash2", "china", "splash", "stack"):
-        if k not in out:
-            continue
-        keep = True
-        for i, c in enumerate(solo[k]):
-            if c != "x":
-                continue
-            if i % 16 == 0:
-                keep = True
-            if not keep:
-                out[k][i] = "."
-                if out["tom"][i] == "." and out["snare"][i] != "x":
-                    out["tom"][i] = "x"
-                if i + 1 < n and out["tom2"][i + 1] == "." and out["snare"][i + 1] == "." and out["tom"][i + 1] == ".":
-                    out["tom2"][i + 1] = "x"
-            keep = not keep
-    return {k: "".join(v) for k, v in out.items()}
 
 def music_hold_the_line(palette="hybrid"):
     # Human A (the fight loop) at 100 on the hybrid palette. A hundred and seventeen bars: the riff
@@ -2135,10 +2118,9 @@ def music_hold_the_line(palette="hybrid"):
     riff_up = "7--.a-.7-...8-..5--.a-.8-...7-.."  # a fifth above: the power chord
     rise_up = "7--.a-.7-...8-..5--.a-.c-...8-.."
     climax = "0..0..3.0..5..3.0..0..8.7..5..3.3..3..5.3..7..5.0..0..a.8..7..5."   # the new unison riff, four bars
-    keys_roots = list("08g7053g" "087g08g7")       # the keys' bass, one root a bar: E C D B E A G D, E C B D E C D B
-    keys_fifths = list("h325h352")                 # the fifth under each second-half root ("5" is the octave-down one under the low D)
-    # The keys' tune and its harmony lines are Ryan's, scored on the Melody Desk (30 September,
-    # second melody, njk8j93axhg89zbp3rxr, "Hold The Line · lead · F bars 59 to 74").
+    # The keys' tune, its two harmony lines and the sub bass's two lines are Ryan's, scored on
+    # the Melody Desk against the latest mix (30 September, third melody, bkg9zrrgnw0xr9mjt6wf,
+    # "Hold The Line · lead · F bars 59 to 74").
     keys_tune = ("7--.8-.7-..5.3-.0-----..3---5---8--.a-.8-..7.5-.3---....5-.3-.0-"
                  "7--.a-.c------.a--.8-.7-.5-----.3--.5-.7-..8.a-.2-----------...."
                  "7--.8-.7-..5.3-.0------.3---5---8--.a-.8-..7.5-.3------.5-.3-.0-"
@@ -2146,15 +2128,19 @@ def music_hold_the_line(palette="hybrid"):
     keys_harm1 = ("................................................................"
                  "e-------------..c-------------..8-------------..5-----------...."
                  "e--.f-.e-..d.a-.8------.c---d---e--.i-.e-..d.c-.c------.c-.a-.7-"
-                 "d-------b-------e-------b-------c-------d-------7---------------")
+                 "d-------b-------e-------b-------c-------b-------7---------------")
     keys_harm2 = ("................................................................"
                  "c-------------..8-------------..5-------------..a-----------...."
-                 "c--------------.3------.7-------c--.d-.c-..a....7------.5------."
-                 "7-------8-------a-------5-------5-------7-------3---------------")
-    keys_harm3 = ("................................................................"
-                 "................................................................"
-                 "............................a---8--------------.3------.2------."
-                 "2-------2-------3-------2-------3-------2-------0---------------")
+                 "c--------------.3------.7---a---c--.d-.c-..a....3------.2------."
+                 "7-------2-------7-------5-------5-------7-------3---------------")
+    keys_sub = ("0---------------8---------------g---------------7---------------"
+                 "0---------------5---------------3---------------g---------------"
+                 "0---------------8---------------5---------------g---------------"
+                 "0-------n-------2-------l-------2-------l-------0---------------")
+    keys_touch = ("........0-------........8-------........g-------........7-------"
+                 "........0-------........5-------........3-------........g-------"
+                 "........0-------........8-------........5-------........g-------"
+                 "................................................7---------------")
     if real:
         # Ryan, 30 September, from the phone: kick up, snare down, toms up, crashes down (and
         # the crash itself softer, since it broke up on the speaker).
@@ -2176,7 +2162,7 @@ def music_hold_the_line(palette="hybrid"):
     kit = {k: (v[0], v[1] * 1.15) + tuple(v[2:]) for k, v in kit.items()}   # the whole kit up a bit (Ryan, 29 September)
     backing = "guitar_real" if real else "chug"
     bass = "bass_real" if real else "bass_guitar"
-    solo = _thin_cymbals(_drum_solo(8))   # every other cymbal hit dropped (Ryan, 30 September: a bit less metal, the same energy)
+    solo = _drum_solo(8)
     form = MUSIC["music_hold_the_line"]["form"].replace(" ", "")
     meter = MUSIC["music_hold_the_line"]["meter"]
     steps, starts, _ = _bars(form, meter)
@@ -2283,18 +2269,16 @@ def music_hold_the_line(palette="hybrid"):
             # second half, the piano's tune and its chord work; the turn is theirs.
             # The bass strikes once a bar and holds; on beat three a soft touch on the same
             # note lifts the held one rather than re-striking it (Ryan, 25 September).
-            {"inst": "sub_bass", "mode": "riff", "gain": 0.52, "legato": True, "params": {"res": 0.35, "punch": 2.4, "fade": 0.4},
-             "pat": {"F": "".join(r + "-" * 15 for r in keys_roots)}},
-            {"inst": "sub_bass", "mode": "riff", "gain": 0.22, "legato": True, "params": {"res": 0.35, "punch": 0.5, "fade": 0.4},
-             "pat": {"F": "".join("." * 8 + r + "-" * 7 for r in keys_roots)}},
+            {"inst": "sub_bass", "mode": "riff", "gain": 0.52, "legato": True, "octave": 0, "params": {"res": 0.35, "punch": 2.4, "fade": 0.4},
+             "pat": {"F": keys_sub}},
+            {"inst": "sub_bass", "mode": "riff", "gain": 0.22, "legato": True, "octave": 0, "params": {"res": 0.35, "punch": 0.5, "fade": 0.4},
+             "pat": {"F": keys_touch}},
             # The fifths under the second-half roots are gone (Ryan, 30 September: the bridge's
             # sub plays the roots alone under his melody).
-            {"inst": "lead", "mode": "riff", "gain": 0.38, "octave": 2, "pat": {"F": keys_tune}},   # a bit down (30 September)
-            # His harmony lines under it, down so the top line stays the lead (an overlapping
-            # line is two voices).
+            {"inst": "lead", "mode": "riff", "gain": 0.38, "octave": 2, "pat": {"F": keys_tune}},
+            # His two harmony lines under it, soft, so the top line stays the lead.
             {"inst": "lead", "mode": "riff", "gain": 0.15, "octave": 1, "pat": {"F": keys_harm1}},
             {"inst": "lead", "mode": "riff", "gain": 0.13, "octave": 1, "pat": {"F": keys_harm2}},
-            {"inst": "lead", "mode": "riff", "gain": 0.13, "octave": 1, "pat": {"F": keys_harm3}},
             {"inst": "epiano", "mode": "stab", "gain": 0.5, "dur": 2.0,
              "pat": {"C": "..x...x...x...x.", "L": "..x...x...x...x.",
                      "F": "............x..." "................" "............x..." "x..............."
