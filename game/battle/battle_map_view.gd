@@ -804,6 +804,7 @@ const INTENT := Color("b88cff")       # a pack's route at rest, and the field's 
 const INTENT_HOT := Color("b88cff")   # the tapped pack's line at the top of its breath: the same
 const INTENT_DEEP := Color("4a1a8c")  # the field's dark and the line's gaps (up from 2a0e4a, Ryan, 30 September)
 const INTENT_PALE := Color("d0b8ff")  # the top of the tapped pack's pulse, briefly
+const INTENT_DARK := Color("2a0e4a")  # the bottom of the tapped pack's pulse: the dark the resting mark used to have (Ryan, 30 September)
 const INTENT_EDGE := Color("2a0e4a")  # the edge, if RIFTGATE_INTENT_EDGE puts it on
 
 # The pair the field and the line draw with right now: the constants for a pack at rest,
@@ -814,8 +815,13 @@ var _field_deep: Color = INTENT_DEEP
 
 func _set_intent_pair(breathe: bool) -> void:
 	var b := _intent_breath() if breathe else 0.0
+	if not breathe:
+		_field_hot = INTENT_HOT
+		_field_deep = INTENT_DEEP
+		return
+	# The tapped pack swings the whole way: down to the old dark, up to the pale.
 	_field_hot = INTENT_HOT.lerp(INTENT_PALE, b)
-	_field_deep = INTENT_DEEP.lerp(INTENT_HOT, 0.5 * b)
+	_field_deep = INTENT_DARK.lerp(INTENT_DEEP.lerp(INTENT_HOT, 0.5), b)
 ## Whether the intent marks wear that edge at all (Ryan, 30 September: trying them without);
 ## RIFTGATE_INTENT_EDGE=1 puts it back for a comparison. The solid line and its deep-violet
 ## crawling gaps stay either way: the gaps are the motion, the edge was only the contrast.
@@ -871,8 +877,11 @@ func _field_line(a: Vector2, b: Vector2, phase: float, width: float) -> void:
 ## (Ryan, 30 September: over the diagonal stripes a turning ring crossed a boundary at a
 ## pace that changed round the ring and reversed at the tangents, which read as the map
 ## moving underneath). Over spokes a ring turning at a steady rate crosses one every so
-## many degrees, forward, always. Each arc is split exactly at the spokes.
-const SPOKES := 12
+## many degrees, forward, always. Each arc is split exactly at the spokes. Sixteen, not
+## twelve (Ryan, 30 September: with twelve the inner ring's three dashes, 120 degrees
+## apart, crossed spokes in step and the whole ring blinked), and each ring's spokes turned
+## a third of a spoke from the last, so no two dashes anywhere change colour together.
+const SPOKES := 16
 
 func _field_rings(c: Vector2, r: float, dir: float, _phase: float, width: float = 3.0) -> void:
 	var step := TAU / SPOKES
@@ -883,17 +892,18 @@ func _field_rings(c: Vector2, r: float, dir: float, _phase: float, width: float 
 		for sgm in range(segs):
 			var a := a0 + TAU * float(sgm) / float(segs)
 			var b := a + TAU / float(segs) * 0.6
+			var turn := step * float(k) / 3.0   # this ring's spokes, turned from the last ring's
 			var cuts: Array[float] = [a, b]
-			var m := floorf(a / step) + 1.0
-			while m * step < b:
-				cuts.append(m * step)
+			var m := floorf((a - turn) / step) + 1.0
+			while m * step + turn < b:
+				cuts.append(m * step + turn)
 				m += 1.0
 			for q in range(cuts.size() - 1):
 				var b0: float = cuts[q]
 				var b1: float = cuts[q + 1]
 				if b1 - b0 < 0.002:
 					continue
-				var colour := _field_hot if posmod(floori((b0 + b1) * 0.5 / step), 2) == 0 else _field_deep
+				var colour := _field_hot if posmod(floori(((b0 + b1) * 0.5 - turn) / step), 2) == 0 else _field_deep
 				draw_arc(c, rad, b0, b1, maxi(2, int((b1 - b0) * rad / 3.0) + 1), colour, width)
 
 
