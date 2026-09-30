@@ -422,7 +422,7 @@ func _draw() -> void:
 			# its own, the pack's vanished under the contact mark); only the gate, with its
 			# own bar, needs none. The tapped pack alone breathes.
 			var owned := not map.gate_hexes.has(dest)
-			var col := _intent_colour() if sq.pos == inspected else INTENT
+			var col := INTENT   # the tapped pack's pulse is set inside _route, on the whole mark
 			_route(sq.pos, path, col, owned, false, sq.pos == inspected, true)
 
 	# The gate selected: its footprint outlined, and the hexes it can be attacked from
@@ -802,8 +802,20 @@ const DEST_RING := HEX_SIZE * 0.58   # the target's outer ring
 # bright; the deep one is the line's crawling gaps and the field's dark.
 const INTENT := Color("b88cff")       # a pack's route at rest, and the field's bright (L 67; 21 Lab from the blue HUD under deutan)
 const INTENT_HOT := Color("b88cff")   # the tapped pack's line at the top of its breath: the same
-const INTENT_DEEP := Color("2a0e4a")  # the field's dark and the line's gaps
-const INTENT_EDGE := Color("2a0e4a")  # the edge, if RIFTGATE_INTENT_EDGE puts it on: the same deep
+const INTENT_DEEP := Color("4a1a8c")  # the field's dark and the line's gaps (up from 2a0e4a, Ryan, 30 September)
+const INTENT_PALE := Color("d0b8ff")  # the top of the tapped pack's pulse, briefly
+const INTENT_EDGE := Color("2a0e4a")  # the edge, if RIFTGATE_INTENT_EDGE puts it on
+
+# The pair the field and the line draw with right now: the constants for a pack at rest,
+# both lifted together on the tapped pack so the whole mark pulses (Ryan, 30 September:
+# the pulse had been on the line alone).
+var _field_hot: Color = INTENT_HOT
+var _field_deep: Color = INTENT_DEEP
+
+func _set_intent_pair(breathe: bool) -> void:
+	var b := _intent_breath() if breathe else 0.0
+	_field_hot = INTENT_HOT.lerp(INTENT_PALE, b)
+	_field_deep = INTENT_DEEP.lerp(INTENT_HOT, 0.5 * b)
 ## Whether the intent marks wear that edge at all (Ryan, 30 September: trying them without);
 ## RIFTGATE_INTENT_EDGE=1 puts it back for a comparison. The solid line and its deep-violet
 ## crawling gaps stay either way: the gaps are the motion, the edge was only the contrast.
@@ -830,7 +842,7 @@ func _stripe_u(p: Vector2, phase: float) -> float:
 func _intent_at(p: Vector2, phase: float) -> Color:
 	# Hard stripes (Ryan, 30 September: the hard boundary is what the line uses and it
 	# looks good); what has to be exact is where the boundary falls, below.
-	return INTENT_HOT if floori(_stripe_u(p, phase)) % 2 == 0 else INTENT_DEEP
+	return _field_hot if floori(_stripe_u(p, phase)) % 2 == 0 else _field_deep
 
 
 ## A straight piece in the field's colours, split exactly where the stripes change rather
@@ -855,51 +867,38 @@ func _field_line(a: Vector2, b: Vector2, phase: float, width: float) -> void:
 			draw_line(p0, p1, _intent_at((p0 + p1) * 0.5, phase), width)
 
 
-## The target lock's three broken rings in the field's colours, each arc split exactly
-## where it crosses a stripe (Ryan, 30 September: sampled arcs jittered, worst on the
-## small inner rings). Along an arc the stripe coordinate is A + B cos(theta - phi), so
-## the crossings are where that equals an integer.
-func _field_rings(c: Vector2, r: float, dir: float, phase: float, width: float = 3.0) -> void:
-	var phi := atan2(STRIPE_DIR.y, STRIPE_DIR.x)
-	var A := c.dot(STRIPE_DIR) / STRIPE + phase
+## The target lock's three broken rings over a static field of spokes about the target
+## (Ryan, 30 September: over the diagonal stripes a turning ring crossed a boundary at a
+## pace that changed round the ring and reversed at the tangents, which read as the map
+## moving underneath). Over spokes a ring turning at a steady rate crosses one every so
+## many degrees, forward, always. Each arc is split exactly at the spokes.
+const SPOKES := 12
+
+func _field_rings(c: Vector2, r: float, dir: float, _phase: float, width: float = 3.0) -> void:
+	var step := TAU / SPOKES
 	for k in range(3):
 		var rad := r * (0.42 + 0.29 * k)
-		var B := rad * STRIPE_DIR.length() / STRIPE
 		var segs := 3 + k * 2
 		var a0 := _ring_t * dir * (1.0 - 0.25 * k) * (1.0 if k % 2 == 0 else -1.0)
 		for sgm in range(segs):
 			var a := a0 + TAU * float(sgm) / float(segs)
 			var b := a + TAU / float(segs) * 0.6
 			var cuts: Array[float] = [a, b]
-			var kk := ceilf(A - B)
-			while kk <= A + B:
-				var cs := (kk - A) / B
-				if absf(cs) <= 1.0:
-					var d := acos(cs)
-					for root in [phi + d, phi - d]:
-						# every turn of the root that lands inside [a, b]
-						var th: float = root + TAU * floorf((a - root) / TAU)
-						while th <= b:
-							if th >= a:
-								cuts.append(th)
-							th += TAU
-				kk += 1.0
-			cuts.sort()
+			var m := floorf(a / step) + 1.0
+			while m * step < b:
+				cuts.append(m * step)
+				m += 1.0
 			for q in range(cuts.size() - 1):
 				var b0: float = cuts[q]
 				var b1: float = cuts[q + 1]
 				if b1 - b0 < 0.002:
 					continue
-				var mid := c + Vector2(cos((b0 + b1) * 0.5), sin((b0 + b1) * 0.5)) * rad
-				draw_arc(c, rad, b0, b1, maxi(2, int((b1 - b0) * rad / 3.0) + 1), _intent_at(mid, phase), width)
+				var colour := _field_hot if posmod(floori((b0 + b1) * 0.5 / step), 2) == 0 else _field_deep
+				draw_arc(c, rad, b0, b1, maxi(2, int((b1 - b0) * rad / 3.0) + 1), colour, width)
 
 
 func _intent_breath() -> float:
 	return 0.5 + 0.5 * sin(_ring_t * 2.0)   # a touch quicker than the contact's 1.6 (Ryan, 30 September: halfway back from 2.4)
-
-
-func _intent_colour() -> Color:
-	return INTENT_DEEP.lerp(INTENT_HOT, _intent_breath())
 
 
 ## The contact marks breathe between red and the bright (Ryan, 22 September).
@@ -986,13 +985,15 @@ func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool
 	if edged:
 		# One red line: a deep-red edge, the red, and the motion as deep-red gaps crawling
 		# along it, so nothing alternates between two bright colours.
+		_set_intent_pair(breathe)   # the tapped pack's whole mark pulses: line, gaps, rings, border
+		col = _field_hot
 		if _intent_edged():
 			draw_polyline(pts, INTENT_EDGE, 7.0)
 		draw_polyline(pts, col, 3.5)
 		# The moving dashes over the line stay one dark colour (Ryan, 30 September: the field
 		# on them made the line itself look striped); the field is for the rings and border.
 		for i in range(pts.size() - 1):
-			_dashed_line(pts[i], pts[i + 1], INTENT_EDGE, HEX_SIZE * 0.22, fmod(_ring_t * 2.0, 2.0) + 1.0)
+			_dashed_line(pts[i], pts[i + 1], _field_deep, HEX_SIZE * 0.22, fmod(_ring_t * 2.0, 2.0) + 1.0)
 	else:
 		draw_polyline(pts, Color(col, 0.5), 3.0)
 		for i in range(pts.size() - 1):
@@ -1014,7 +1015,7 @@ func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool
 	var bright := col if edged else (col.lerp(Color.WHITE, 0.25 + 0.25 * sin(_ring_t * 1.6)) if breathe else col)
 	if edged:
 		# The rings and the target's border in the field's stripes (crawling on the tapped pack).
-		var phase := fmod(_ring_t * 0.8, 2.0) if breathe else 0.0   # a slow crawl on the tapped pack
+		var phase := 0.0   # the field never moves (Ryan, 30 September: a crawl under turning rings read as the map sliding); the pulse is the selection
 		if _intent_edged():
 			_field_rings(end, DEST_RING * 0.85, -1.0, phase, 6.0)
 		_field_rings(end, DEST_RING * 0.85, -1.0, phase)
