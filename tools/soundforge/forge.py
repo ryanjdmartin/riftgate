@@ -1971,16 +1971,18 @@ def tom_real(f=150.0, pitch=1.0):
     # pitch fall and a lower shell than the first cut, and against the second a shorter
     # skin, a harder stick and front, and a drier, shorter room. Its shadow (the harmonics
     # a speaker can play) sits at 120 to 500 Hz.
-    n = n_of(0.45)
+    # Round eight's "hard two" (Ryan, 30 September: hit it like you mean it, at its own
+    # pitch): the middle tightening, more saturation in the body, a harder stick and front.
+    n = n_of(0.5)
     t = t_of(n)
     fr = f * pitch * (1.0 + 0.18 * np.exp(-t / 0.05))
-    skin = np.sin(2.0 * math.pi * np.cumsum(fr) / SR) * env_ad(n, 0.001, 0.11, curve=2.5)
-    sub = np.sin(2.0 * math.pi * f * pitch * 0.5 * t) * env_ad(n, 0.002, 0.09) * 0.5
+    skin = np.sin(2.0 * math.pi * np.cumsum(fr) / SR) * env_ad(n, 0.001, 0.0825, curve=2.5)
+    sub = np.sin(2.0 * math.pi * f * pitch * 0.5 * t) * env_ad(n, 0.002, 0.0675) * 0.5
     shell = harmonics(f * pitch * 1.4, n, [0.5, 0.25, 0.1]) * env_ad(n, 0.001, 0.03) * 0.3
-    stick = lp(bp(noise(n_of(0.01)), 1500.0, 6000.0), 5000.0) * env_ad(n_of(0.01), 0.0002, 0.003) * 1.6
-    front = body(f * pitch * 1.6, f * pitch, 0.04, drive=2.4, click=0.7) * 1.0
+    stick = lp(bp(noise(n_of(0.01)), 1500.0, 6000.0), 5000.0) * env_ad(n_of(0.01), 0.0002, 0.003) * 2.0
+    front = body(f * pitch * 1.6, f * pitch, 0.04, drive=2.6, click=0.8) * 1.5
     shadow = bp(sat(skin + sub, 3.0), 120.0, 500.0) * 0.35
-    return room(mix(sat(skin + sub, 1.6), shell, front, at(np.zeros(1), stick, 0.0), shadow), decay=0.05, mix=0.06, cut=4500.0) * 1.1
+    return room(mix(sat(skin + sub, 2.6), shell, front, at(np.zeros(1), stick, 0.0), shadow), decay=0.03, mix=0.036, cut=4500.0) * 1.1
 
 
 def splash():
@@ -2108,11 +2110,13 @@ def music_hold_the_line(palette="hybrid"):
                  "7--.8-.7-..5.3-.0-----..3---5---8--.a-.8-..7.5-.3---....5-.3-.0-"
                  "7---8---a---c---a---8---7---5---3-------5---3---0-------3---5---")   # the keys' tune, sixteen bars
     if real:
-        kit = {"kick": (variants(kick_real), 1.0), "snare": (variants(snare_real), 1.0), "hat": (variants(lambda p: hat_real(False, p)), 0.45),
-               "open": ([hat_real(True)], 0.4), "crash": ([crash_real()], 0.9), "crash2": ([crash_low()], 0.9), "china": (china(), 0.8),
-               "crash_long": ([crash_long()], 0.9, 0.035),
+        # Ryan, 30 September, from the phone: kick up, snare down, toms up, crashes down (and
+        # the crash itself softer, since it broke up on the speaker).
+        kit = {"kick": (variants(kick_real), 1.2), "snare": (variants(snare_real), 0.85), "hat": (variants(lambda p: hat_real(False, p)), 0.45),
+               "open": ([hat_real(True)], 0.4), "crash": ([crash_real()], 0.65), "crash2": ([crash_low()], 0.7), "china": (china(), 0.8),
+               "crash_long": ([crash_long()], 0.7, 0.035),
                "splash": ([splash()], 0.8), "stack": ([stack()], 0.7), "bell": ([ride_bell()], 0.6), "ride": ([ride_real()], 0.35),
-               "tom": (variants(lambda p: tom_real(150.0, p)), 0.9), "tom2": (variants(lambda p: tom_real(105.0, p)), 0.9), "clank": (clank(), 0.3),
+               "tom": (variants(lambda p: tom_real(150.0, p)), 1.15), "tom2": (variants(lambda p: tom_real(105.0, p)), 1.15), "clank": (clank(), 0.3),
                "knock": (knock_perc(), 0.5)}
     else:
         kit = {"kick": (kick_metal(), 1.0), "snare": (snare_metal(), 1.0), "hat": (hat(False, True), 0.45),
@@ -2172,7 +2176,7 @@ def music_hold_the_line(palette="hybrid"):
                 "B": [[0, 7, 15]], "W": [[7, 14, 22]], "M": [[8, 15, 19]], "Y": [[0, 7, 15]], "V": [[0, 7, 15]], "Q": [[0, 7, 15]],
                 "C": [[8, 15, 19], [5, 12, 19], [3, 10, 17], [7, 14, 22]],
                 "L": [[8, 15, 19], [5, 12, 19], [3, 10, 17], [7, 14, 22]],
-                "X": [[0, 7, 15], [0, 7, 15], [3, 10, 17], [-2, 5, 10]] + [[0, 7, 15], [-1, 6, 14], [-2, 5, 13], [-3, 4, 12]] * 2,   # E Eb D Db under the held guitar, twice (Ryan, 29 September)
+                "X": [[0, 7, 15], [0, 7, 15], [3, 10, 17], [-2, 5, 10]] + [[0, 7, 15], [-2, 5, 13], [-3, 4, 12], [-4, 3, 11]] * 2,   # E D Db C under the held guitar, twice (Ryan, 30 September)
                 "U": [[0, 7, 15]],
                 "F": [[0, 7, 15], [8, 15, 19], [10, 17, 22], [7, 14, 22], [0, 7, 15], [5, 12, 19], [3, 10, 17], [-2, 5, 10],
                       [0, 7, 15], [8, 15, 19], [7, 14, 22], [-2, 5, 10], [0, 7, 15], [8, 15, 19], [10, 17, 22], [7, 14, 22]],
@@ -2215,7 +2219,7 @@ def music_hold_the_line(palette="hybrid"):
             # descending progression, C B A G, with the section's chords under it (Ryan, 29
             # September; the first pass had it on the riff's own E G E D).
             {"inst": backing, "mode": "riff", "gain": 0.45, "octave": 1, "params": {"mute": False, "cutoff": 2000.0, "damp": 0.9985}, "legato": True, "hold": 1.0,
-             "pat": {"X": "." * 56 + "0-------------l-------------g-------------m-------------" * 2}},
+             "pat": {"X": "." * 56 + "0-------------g-------------m-------------n-------------" * 2}},   # E D Db C (Ryan, 30 September)
             # The unison: the lead on top, the chug and the bass behind it, the drums soloing.
             {"inst": backing, "mode": "riff", "gain": 0.55, "octave": -1, "params": {"cutoff": 1100.0},
              "pat": {"U": "0..0..0.3..3..3.5..5..5.3.0.g.0.5..5..5.8..8..8.a..a..a.8.5.3.0."}},
@@ -2339,7 +2343,7 @@ def music_hold_the_line(palette="hybrid"):
              # Ryan really likes this drone as an element for the human tracks; it also sits
              # under the whole climax, alone under the first set.
              # Up a bit everywhere it plays (Ryan, 29 September).
-             {"inst": "sweep", "gain": 0.42, "octave": 0, "rate": 0.08, "depth": 0.3, "open": 0.75, "sections": "ANSRZ", "skip": {"A": 12}, "chord": [0, 7, 12]}],
+             {"inst": "sweep", "gain": 0.5, "octave": 0, "rate": 0.08, "depth": 0.3, "open": 0.75, "sections": "ANSRZ", "skip": {"A": 12}, "chord": [0, 7, 12]}],
         drum_gain={"U": 1.3, "S": 1.15, "R": 1.25, "Z": 1.3, "W": 1.25, "Q": 1.2},
         crescendo={"S": (0.85, 1.0), "R": (1.0, 1.12), "Z": (1.12, 1.3)},
         tilt=1.5, presence=0.25, low=(150.0, -6.0),   # the human master since 28 September: half the tilt, a presence lift
@@ -3131,10 +3135,12 @@ def crash_real():
     # Shorter than a real one (Ryan: it lasted way too long), and softer since 28 September
     # (the phone sketches: the first read as clipped and hissy on the speaker): the wash
     # closed above 9 kHz and a little quieter, the plate up, a soft saturation over both.
+    # Softer again on 30 September (Ryan: breaking up on the speaker, hiss and crackle): less
+    # wash, closed above 8 kHz, and only a touch of saturation.
     n = n_of(1.0)
-    wash = bp(noise(n), 1800.0, 9000.0) * env_ad(n, 0.003, 0.24, curve=2.0) * 0.75
+    wash = bp(noise(n), 1800.0, 8000.0) * env_ad(n, 0.003, 0.24, curve=2.0) * 0.55
     plate = knock([2900.0, 4300.0, 6400.0, 8100.0], [0.3, 0.22, 0.17, 0.14], [0.4, 0.3, 0.25, 0.2], noise_gain=0.0) * 0.45
-    return sat(mix(wash, plate), 1.3) * 0.35
+    return sat(mix(wash, plate), 1.1) * 0.35
 
 
 def timpani_real():
