@@ -290,6 +290,11 @@ class Tiles:
             img = np.flipud(img)
         elif kind in ("fisttop", "fistpalm", "fistbase"):
             img = np.flipud(self._fist_side(kind, g))
+        elif kind == "lit":
+            # A lit slot: uniformly bright, so a thin box wearing it lights whole wherever it
+            # sits (the strip tile's one line only lit a slot that happened to cross it: Ryan,
+            # 1 October).
+            img = np.tile(np.array([1.0, 0.82, 0.32], np.float32), (TILE, TILE, 1))
         elif kind == "glow":
             # A fire behind a grille: solid, fiery, brighter at the centre, no pattern that
             # could read as a cross through slats (Ryan, 1 October).

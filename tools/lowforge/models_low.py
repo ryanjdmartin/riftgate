@@ -513,7 +513,7 @@ def wild_boar(b):
         cx = s * TX
         b.loft([(-40.0, rect(cx, TW, 6.0, 14.0)), (-32.0, rect(cx, TW, 0.0, TH)), (28.0, rect(cx, TW, 0.0, TH)), (38.0, rect(cx, TW, 6.0, 14.0))], "bore.tread", "tread")
         b.box(cx - TW / 2 - 1.0, cx + TW / 2 + 1.0, -34.0, 30.0, TH - 1.0, TH + 5.0, "steel.plate", "skirt")
-        b.box(cx - 8.0, cx + 8.0, -20.0, 16.0, TH + 5.0, TH + 9.0, "steel.panel", "tread_deck")
+        b.box(min(cx - s * 5.0, cx + s * 8.0), max(cx - s * 5.0, cx + s * 8.0), -20.0, 16.0, TH + 5.0, TH + 9.0, "steel.panel", "tread_deck")   # trimmed inboard, clear of the turret's drum
         b.box(cx - 6.0, cx + 6.0, 30.0, 34.0, TH - 6.0, TH + 4.0, "steel.stripe", "skirt_tip")
     # The hull slung low between the treads, its glacis sloping to the cowcatcher.
     b.loft([(-38.0, rect(0.0, 28.0, 6.0, 26.0)), (10.0, rect(0.0, 28.0, 6.0, 26.0)), (30.0, rect(0.0, 26.0, 8.0, 16.0))], "steel.panel", "hull")
@@ -523,29 +523,34 @@ def wild_boar(b):
     # The cowcatcher: two slabs in a V from a point ahead of the machine back to the tread
     # fronts, a hazard lip, a row of spikes leaning forward off each slab's top, two tusks
     # off the point, bars back to the hull.
+    # Ahead of the treads' fronts (they ran into it: Ryan, 1 October), and rooted: the
+    # spine runs back into the hull and the bars reach it from the glacis.
     for s in (-1.0, 1.0):
-        _rings(b, [[(0.0, 58.0, 2.0), (s * 38.0, 38.0, 2.0), (s * 38.0, 36.0, 2.0), (0.0, 56.0, 2.0)],
-                   [(0.0, 56.0, 20.0), (s * 38.0, 36.0, 20.0), (s * 38.0, 34.0, 20.0), (0.0, 54.0, 20.0)]], "steel.plate", "catcher")
+        _rings(b, [[(0.0, 63.0, 2.0), (s * 38.0, 43.0, 2.0), (s * 38.0, 41.0, 2.0), (0.0, 61.0, 2.0)],
+                   [(0.0, 61.0, 20.0), (s * 38.0, 41.0, 20.0), (s * 38.0, 39.0, 20.0), (0.0, 59.0, 20.0)]], "steel.plate", "catcher")
         for k in range(4):
             f = (k + 0.5) / 4.0
-            bx, by = s * 38.0 * f, 56.0 - 20.0 * f
+            bx, by = s * 38.0 * f, 61.0 - 20.0 * f
             _spike(b, (bx, by, 19.0), (bx + s * 2.0, by + 7.0, 27.0), 2.0, "steel.dark", "spike")
-        _beam(b, (s * 12.0, 36.0, 8.0), (s * 12.0, 46.0 - 6.0 * s * s, 8.0), _sq(5.0, 5.0), _sq(5.0, 5.0), "steel.dark", "bar")
-        _beam(b, (s * 5.0, 50.0, 6.0), (s * 7.0, 70.0, 12.0), _poly(3.2, 6), _poly(1.0, 6), "steel.dark", "tusk")
-    b.box(-2.0, 2.0, 40.0, 56.0, 2.0, 22.0, "steel.hazard", "catcher_spine")
+        _beam(b, (s * 12.0, 26.0, 8.0), (s * 12.0, 46.0, 8.0), _sq(5.0, 5.0), _sq(5.0, 5.0), "steel.dark", "bar")
+        _beam(b, (s * 5.0, 55.0, 6.0), (s * 7.0, 75.0, 12.0), _poly(3.2, 6), _poly(1.0, 6), "steel.dark", "tusk")
+    b.box(-2.0, 2.0, 20.0, 61.0, 2.0, 22.0, "steel.hazard", "catcher_spine")
     # The turret: a wide eight-sided drum on the hull, the machine's most prominent
     # feature, two parallel guns set well apart off a wide mantlet (hp_1 left, hp_2 right),
     # a hatch and a sight; a bare mount on its top (hp_4).
-    b.prism("z", 0.0, -6.0, 27.0, 19.0, 2.0, "steel.dark", 8, "ring")
-    b.prism("z", 0.0, -6.0, 33.0, 20.0, 10.0, "steel.panel", 8, "turret", phase=math.pi / 8)
-    b.box(-15.0, 15.0, 8.0, 14.0, 29.0, 37.0, "steel.plate", "mantlet")
+    # Up on a base so the drum turns clear of the skirts and the tread decks (Ryan, 1
+    # October, from his Blender view: it would have clipped the side panels).
+    b.prism("z", 0.0, -6.0, 28.0, 15.0, 4.0, "steel.panel", 8, "turret_base")
+    b.prism("z", 0.0, -6.0, 31.0, 19.0, 2.0, "steel.dark", 8, "ring")
+    b.prism("z", 0.0, -6.0, 37.0, 20.0, 10.0, "steel.panel", 8, "turret", phase=math.pi / 8)
+    b.box(-15.0, 15.0, 8.0, 14.0, 33.0, 41.0, "steel.plate", "mantlet")
     for s in (-1.0, 1.0):
-        with b.socket("hp_%d" % (1 if s < 0 else 2), (s * 9.0, 14.0, 33.0)):
-            b.prism("y", s * 9.0, 32.0, 33.0, 2.8, 40.0, "steel.dark", 6, "gun")
-            b.prism("y", s * 9.0, 51.0, 33.0, 3.4, 4.0, "steel.plate", 6, "muzzle")
-    b.box(-4.0, 4.0, -20.0, -14.0, 38.0, 40.0, "steel.plate", "hatch")
-    b.box(13.0, 16.0, -6.0, 0.0, 38.0, 41.0, "amber.light", "sight")
-    b.pad("hp_4", (0.0, 2.0, 40.0))
+        with b.socket("hp_%d" % (1 if s < 0 else 2), (s * 9.0, 14.0, 37.0)):
+            b.prism("y", s * 9.0, 32.0, 37.0, 2.8, 40.0, "steel.dark", 6, "gun")
+            b.prism("y", s * 9.0, 51.0, 37.0, 3.4, 4.0, "steel.plate", 6, "muzzle")
+    b.box(-4.0, 4.0, -20.0, -14.0, 42.0, 44.0, "steel.plate", "hatch")
+    b.box(13.0, 16.0, -6.0, 0.0, 42.0, 45.0, "amber.light", "sight")
+    b.pad("hp_4", (0.0, 2.0, 44.0))
     # The stock missile pod on the left rear quarter's deck (hp_3), its face forward.
     # Set back and out so the turret's drum and its guns sweep clear of it (Ryan, 1
     # October: the turret must look able to turn).
@@ -580,11 +585,12 @@ def prairie_dog(b):
     buggy rather than a dune buggy (Ryan, 29 September: no open cockpits; the Bilecka Panther
     as a reference). Big wheels under angular arches, a wedge of a body with a raked
     armoured windscreen, and on the roof a rotating turret carrying the pintle scattergun
-    (the Flakshot Repeater, fixed, no pin) with the twin autoguns on its cheeks (hp_1); a
-    sensor mast up out of the tail, the dog on watch. hp_2 the rear-left launcher
-    (Incendiary Shells), hp_3 bare on the rear-right corner (the Flak Skirt takes no mount;
-    the skirt plate is detail). Ryan's notes of 30 September: the mast lower, the visor
-    flush with the body, the turret's neck up out of the roof."""
+    (the Flakshot Repeater, fixed, no pin, the class barrel on the turret's left) with the
+    twin autoguns on the turret's right (hp_1, the class twin barrel); a sensor mast up out
+    of the tail, the dog on watch. hp_2 the rear-left launcher (Incendiary Shells), hp_3
+    bare on the rear-right corner (the Flak Skirt takes no mount; the skirt plate is
+    detail). Ryan, 30 September: the mast lower, the visor flush with the body; 1 October:
+    a squatter turret, a gun either side, none in the middle, nothing hand-modelled."""
     R = 10.0
     for yw in (18.0, -18.0):
         for s in (-1.0, 1.0):
@@ -601,18 +607,18 @@ def prairie_dog(b):
     _rings(b, [[(-10.0, 13.0, 23.6), (10.0, 13.0, 23.6), (10.0, 13.0, 24.8), (-10.0, 13.0, 24.8)],
                [(-9.0, 19.0, 20.9), (9.0, 19.0, 20.9), (9.0, 19.0, 22.1), (-9.0, 19.0, 22.1)]], "glass.glass", "windscreen")
     b.box(-12.0, 12.0, 10.5, 13.5, 23.5, 26.5, "steel.plate", "brow")
-    # The turret on the roof: a neck up out of the roof, a ring, a low drum, the scattergun
-    # forward out of it with its drum magazine, the twin autoguns on the drum's cheeks (hp_1).
-    b.prism("z", 0.0, -8.0, 28.75, 6.5, 2.5, "steel.dark", 8, "neck")   # shorter (Ryan, 1 October)
-    b.prism("z", 0.0, -8.0, 30.5, 8.0, 1.5, "steel.dark", 8, "ring")
-    b.prism("z", 0.0, -8.0, 34.5, 8.5, 7.0, "steel.panel", 8, "turret", phase=math.pi / 8)
-    b.prism("y", 0.0, 4.0, 35.5, 2.4, 20.0, "steel.dark", 6, "flak_barrel")
-    b.prism("y", 0.0, 14.5, 35.5, 3.0, 2.0, "steel.plate", 6, "flak_muzzle")
-    b.prism("x", 5.0, -6.0, 35.5, 3.4, 4.0, "steel.dark", 8, "flak_drum")
-    with b.socket("hp_1", (0.0, -4.0, 33.0), scale=0.7):
-        for s in (-1.0, 1.0):
-            b.prism("y", s * 8.5, 0.0, 33.0, 1.3, 16.0, "steel.dark", 6, "autogun")
-            b.box(s * 8.5 - 1.6, s * 8.5 + 1.6, -10.0, -4.0, 31.5, 34.5, "steel.plate", "autogun_mount")
+    # The turret on the roof (Ryan, 1 October): squatter, wider, a gun on either side and
+    # none in the middle, every gun the class shape and nothing hand-modelled. The left
+    # gun is the fixed Flakshot Repeater (a barrel, no pin); the right is hp_1, the Twin
+    # Autoguns (a twin barrel).
+    b.prism("z", 0.0, -8.0, 28.25, 6.5, 1.5, "steel.dark", 8, "neck")
+    b.prism("z", 0.0, -8.0, 29.75, 9.5, 1.5, "steel.dark", 8, "ring")
+    b.prism("z", 0.0, -8.0, 33.0, 10.0, 5.0, "steel.panel", 8, "turret", phase=math.pi / 8)
+    start = len(b.objects)
+    shape_barrel(b, 0.7)
+    for ob in b.objects[start:]:
+        ob.matrix_world = Matrix.Translation(Vector((-7.0, -2.0, 33.0)))
+    b.stock("hp_1", (7.0, -2.0, 33.0), "twin_barrel", scale=0.7)
     # The mast, out of the tail's centre, lower: a post, a sensor head, a red light.
     b.prism("z", 0.0, -27.0, 31.0, 1.2, 12.0, "steel.dark", 4, "mast")
     b.box(-2.5, 2.5, -29.5, -24.5, 37.0, 42.0, "steel.panel", "sensor_head")
@@ -727,7 +733,15 @@ def goshawk(b):
             (30.0, hexagon(0.0, -5.9, 10.5, 3.4))], "steel.dark", "cannon_fairing")
     # The barrel out of the fairing's mouth, glowing along its length (Ryan, 30 September),
     # still behind the nose tip.
-    b.loft([(29.0, hexagon(0.0, -6.0, 9.0, 3.0)), (40.0, hexagon(0.0, -6.0, 8.0, 2.6))], "amber.strip", "cannon_barrel", cap=False)
+    # The barrel (Ryan, 1 October: the strip tile read as plain dark metal): lit rings
+    # between dark ones along its length, a charged gun.
+    for k in range(5):
+        y0 = 29.0 + k * 2.2
+        lit = k % 2 == 1
+        w = 9.0 - (y0 - 29.0) * 0.09
+        b.loft([(y0, hexagon(0.0, -6.0, w + (0.4 if lit else 0.0), 3.0 - (y0 - 29.0) * 0.036 + (0.2 if lit else 0.0))),
+                (y0 + 2.2, hexagon(0.0, -6.0, w - 0.2 + (0.4 if lit else 0.0), 3.0 - (y0 + 2.2 - 29.0) * 0.036 + (0.2 if lit else 0.0)))],
+               "amber.lit" if lit else "steel.dark", "barrel_ring", cap=False)
     # The mouth: open, a rim, the bore tapering inward, the glow deep inside it (Ryan, 1
     # October: inset, not a nub).
     _rings(b, [[(x, 40.0, z) for x, z in hexagon(0.0, -6.0, 8.0, 2.6)], [(x, 40.0, z) for x, z in hexagon(0.0, -6.0, 6.8, 2.1)]], "steel.dark", "cannon_rim")
@@ -926,7 +940,7 @@ def nemesis(b):
     # The Entropy Condenser on the lower back, a dark block with lit slots (hp_4).
     b.box(-12.0, 12.0, -20.0, -10.0, 60.0, 74.0, "steel.dark", "condenser")   # detail: a vent takes no mount; up on the back (Ryan, 1 October)
     for z in (64.0, 68.0, 71.5):
-        b.box(-9.0, 9.0, -20.8, -20.0, z, z + 1.5, "amber.strip", "condenser_slot")
+        b.box(-9.0, 9.0, -20.8, -20.0, z, z + 1.5, "amber.lit", "condenser_slot")
 
 
 nemesis.maker = "arsenal"
@@ -968,7 +982,7 @@ def ammit(b):
     b.prism("x", 0.0, -12.0, 36.0, 6.5, 26.0, "steel.panel", 8, "pelvis", phase=math.pi / 8)
     b.box(-8.0, 8.0, -24.0, -12.0, 30.0, 40.0, "steel.dark", "tail_block")
     for z in (32.5, 35.5):   # lit slots on its back, the Nemesis's condenser's (Ryan, 1 October)
-        b.box(-6.0, 6.0, -24.8, -24.0, z, z + 1.3, "amber.strip", "tail_slot")
+        b.box(-6.0, 6.0, -24.8, -24.0, z, z + 1.3, "amber.lit", "tail_slot")
     _rings(b, [_deck(26.0, 20.0, -8.0, 38.0, 4.0), _deck(32.0, 24.0, 0.0, 44.0, 5.0),
                _deck(34.0, 24.0, 8.0, 50.0, 5.0), _deck(26.0, 18.0, 14.0, 54.0, 4.0)], "steel.panel", "torso")
     # The snout: a long hexagonal muzzle out of the chest's top, two long glass strips down
@@ -994,7 +1008,7 @@ def ammit(b):
     # The back panel (the Ward Plate, detail): a rectangular plate lying flat on the back's
     # slope from the shoulders to the tail, the shoulder cannons sitting on it and pointing
     # up the slope, so panel and guns lie parallel to the back (Ryan, 30 September).
-    P0 = [Vector((-13.0, 6.0, 56.0)), Vector((13.0, 6.0, 56.0)), Vector((13.0, -14.0, 40.0)), Vector((-13.0, -14.0, 40.0))]
+    P0 = [Vector((-13.0, 1.5, 52.4)), Vector((13.0, 1.5, 52.4)), Vector((13.0, -14.0, 40.0)), Vector((-13.0, -14.0, 40.0))]   # ends below the back's crown (Ryan, 1 October: it poked over the top)
     _rings(b, [P0, [p + N * 2.5 for p in P0]], "livery.livery2", "ward_plate")   # narrower than the torso (Ryan, 1 October)
     I0 = [Vector((-9.0, 0.0, 51.5)), Vector((9.0, 0.0, 51.5)), Vector((9.0, -10.0, 43.5)), Vector((-9.0, -10.0, 43.5))]
     _rings(b, [[p + N * 2.5 for p in I0], [p + N * 3.3 for p in I0]], "steel.plate", "ward_inscription")
@@ -1014,7 +1028,7 @@ def ammit(b):
                 _beam(b, gun + U * 19.0, gun + U * 20.5, _poly(2.6, 6), _poly(2.6, 6), "amber.engine", "pilot_flame")
     # The spines: a row down the panel's centre line, each rooted in the plate.
     for k in range(5):
-        root = Vector((0.0, 4.0, 54.4)) - U * (6.0 * k) + N * 2.0
+        root = Vector((0.0, 0.0, 51.2)) - U * (5.0 * k) + N * 2.0
         _spike(b, tuple(root), tuple(root - U * 5.0 + N * 5.0), 1.6, "steel.dark", "spine")
     # Four arms. The upper pair off the shoulders, held high and forward, forearms angled
     # down and ahead with the talons hanging clear of everything. The middle pair off the

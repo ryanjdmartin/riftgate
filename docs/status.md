@@ -188,7 +188,14 @@ a `_tube` lines the hole), its forward ports cut into the front band's crown fla
 fourth round's were buried inside the band), its bay out to the lip; the Badger's arms in a little;
 the Boar's pod out of the turret's sweep; the Prairie Dog's turret lower; the Goshawk's barrel mouth
 open with the glow inside; the Nemesis's core a plain fire (a `glow` tile) and its condenser up on
-the back; the Ammit's panel and cannons narrower, lit slots on its tail block. `tools/hero_shot.gd` renders bare now
+the back; the Ammit's panel and cannons narrower, lit slots on its tail block. **The sixth round (1
+October):** a `lit` tile for slots that must light whole; the Ammit's panel ending below the back's
+crown; the Boar's plow ahead of the treads and rooted in the hull, its turret up on a base clear of
+the skirts and decks; the Prairie Dog's turret squat with a class gun either side (the fixed repeater
+left, the autoguns right), nothing hand-modelled; the Goshawk's barrel lit in rings. Ryan asked
+whether hand edits in Blender can be taken: yes through `forge.py export <id>`, but the models are
+built from code and any rebuild overwrites the working file, so a hand edit has to be re-expressed in
+`models_low.py` to survive; the way that works is a note or a picture, as the Boar's clip was. `tools/hero_shot.gd` renders bare now
 (`RIFTGATE_OUTLINE_KEEP=1` keeps the display's edge), and the viewer shows every machine bare. Ryan
 judges the round on the viewer. What the second pass changed, so nobody redoes
 it: the **Armadillo** stands on long legs whose hips come out of the shell's flanks (it read

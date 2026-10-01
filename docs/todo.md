@@ -19,8 +19,9 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [x] Judge the third pass on the Model Viewer (30 September: notes on seven machines, all built the same day as the fourth round)
 - [ ] Judge the effects' second pass on the listening page (30 September, evening): the four rounds first, then by section and row; a pick lands in the forge and its hook
 - [x] Judge the fourth round on the Model Viewer (1 October: notes on seven machines, built the same day)
-- [ ] Judge the fifth round on the Model Viewer: the Armadillo's cut ports and the forward ports flanking the cowl, the Badger's arm clearance, the Boar's pod clear of the turret's sweep, the Prairie Dog's turret height, the Goshawk's barrel mouth, the Nemesis's core and condenser, the Ammit's panel width; each class's size per machine (a pin's `scale` in `models_low.py`)
-- [ ] Decide whether a hand-modelled stock twin (the Prairie Dog's autoguns on the drum's cheeks, the Clydesdale's turrets) should match the twin-barrel class's spacing, since on a swap the class is what shows
+- [x] Judge the fifth round on the Model Viewer (1 October: notes on five machines, built the same day)
+- [ ] Judge the sixth round on the Model Viewer: the Ammit's lit slots and panel, the Boar's plow and raised turret, the Prairie Dog's class-gun turret, the Goshawk's ringed barrel; each class's size per machine (a pin's `scale` in `models_low.py`)
+- [ ] Decide whether the Clydesdale's hand-modelled turret pairs should match the twin-barrel class's spacing, since on a swap the class is what shows (the Prairie Dog's are the class now)
 - [ ] Propose in chat a Minerva intercept component for the starter set (Ryan, 30 September: tanks need class-based target-modification beyond the Proximity Klaxon)
 - [x] Picks from the phone sketches page: the bass voice (3 or 5), the clip-free guitar, the third shadows (28 September: voice 12, the guitar, the third cut, a quarter of the level gap; all in the forge)
 - [x] Judge The Far Bank's tempo in the game (29 September: 88 stays; the temporary ids are gone)
