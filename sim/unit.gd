@@ -71,8 +71,9 @@ var facing: int = 0
 var faction: String = ""
 var foe_id: String = ""      # content id of the foe this pack is made of
 var strength: int = 6        # how many foes the pack holds
-var aggro: bool = false      # hunts mechs instead of the gate
+var aggro: bool = false      # a hunter: paths to the biggest catch its zone can make, not the gate
 var elite: bool = false      # this unit is the faction's boss
+var zone: int = 1            # the pack's engagement zone: it fights every machine within this many hexes of where it ends its move (decided 1 October)
 
 const TRIANGLE: Array[Vector2i] = [Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1)]
 

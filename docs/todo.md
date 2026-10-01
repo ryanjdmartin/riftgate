@@ -8,7 +8,9 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 
 ## Ryan
 
-- [ ] Decide the engagement rule: the whole discussion so far (the three cuts, Ryan's three variants, the capture-zone proposal and its holes, what to decide) is in `docs/engagement-rules.md`; then build it
+- [x] Decide the engagement rule (1 October: every pack has a zone from its foe type, a machine inside it fights it, a machine in two zones merges the fights, nothing chains, no zone of control, hunters path to the biggest catch; built the same day, bible section 5)
+- [ ] Play-test the engagement zones: the radii (front 1, back 3, boss 2 are placeholders), whether hunters need more move than a machine so a scout cannot dance-kite one, whether fights come out big enough; the sandbox at https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg draws the rule
+- [ ] Formations (Ryan, 1 October): seed the opening enemy formations as threatening shapes with a front and a back, and have the rift spawn formations rather than single packs; shapes proposed in chat first
 - [ ] Judge on the phone after a re-export: the machines' outline at 2.6 (`MechView3D.OUTLINE`; 1.0 was the thin), the intent field in motion (stripe width `STRIPE`, ring spokes `SPOKES`, the pulse), the machine's lock's contrast (the light at half), the orange pulse of the gate's hazard glyphs, the sound set, the grid at `GRID_GAIN_PHONE`
 - [x] Judged 29 September on the phone: 60 fps with the fine map and the per-hex props, the text clean, the board and log button, the selection marks, the routes, the props hiding, the seam band, the far blur
 - [ ] Codex and flavour for the seven new machines, the Baboon's flavour, and the 41 components whose codex is empty
@@ -78,7 +80,7 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 - [x] Buff equipment (29 September): the `buff` kind grants a machine status for so many stacks and rounds; Overcharged, Braced and Primed as the first three; the Overcharge Coil as a draft component fitted to nothing; the heat passive above can now be built on it
 - [x] Granted passives coloured on the codex (29 September, night: `passive_rows` by source; the chassis's own in the accent, a component's in the overlay colour, a reward in ink)
 - [x] Save and resume mid-battle at any phase (30 September: `sim/save.gd`, autosave after every change, Resume battle in the harness; bible section 11 row)
-- [ ] Onboarding: the gesture tutorial and the cheat sheet; the reroll rule and the zone of control first
+- [ ] Onboarding: the gesture tutorial and the cheat sheet; the reroll rule and the engagement zone first
 - [x] The bot values a status for the stun it may cause (29 September: `_loop_chance` in `policy.gd`, at the loop's odds and the foe's resistance) and weighs a buff by what its status does to the machine it lands on
 - [ ] Rerun `tools/balance.gd` once the new machines have real kits, and after each engine piece above; read bands, not numbers
 

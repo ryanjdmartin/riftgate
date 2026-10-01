@@ -540,9 +540,9 @@ func _on_unit_held(u: Unit) -> void:
 		var db := ContentDB.load_default()
 		var foe_name := str(db.foes.get(u.foe_id, {}).get("name", u.foe_id))
 		if u.elite:
-			text = "%s\nmassive · %s" % [u.display_name, "hunting" if u.aggro else "to the gate"]
+			text = "%s\nmassive · zone %d · %s" % [u.display_name, u.zone, "hunting" if u.aggro else "to the gate"]
 		else:
-			text = "%s\n%s ×%d · move %d\n%s" % [u.display_name, foe_name, u.strength, u.movespeed, "hunting the nearest machine" if u.aggro else "marching on the gate"]
+			text = "%s\n%s ×%d · move %d · zone %d\n%s" % [u.display_name, foe_name, u.strength, u.movespeed, u.zone, "hunter: goes where its zone catches most" if u.aggro else "marching on the gate"]
 	_show_details(text, _map.position + _map.to_screen(_map.center(u.pos)))
 
 

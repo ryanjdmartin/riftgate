@@ -155,13 +155,14 @@ func _apply_battle_pose() -> void:
 			s._menu._show_page("settings")
 		"predict":
 			# A pack parked beside the first mech and a route plotted: the plan's contact
-			# and block tags before resolve.
+			# and block tags before resolve. It stays put, so its zone holds the machine.
 			var m: Unit = b.mechs()[0]
 			var sq: Unit = b.field.packs()[0]
 			for n in Hex.neighbors(m.pos):
 				if b.field.can_stand(sq, n):
 					sq.pos = n
 					break
+			sq.movespeed = 0
 			b.field.compute_intents()
 			s._on_hex_tapped(b.mechs()[1].pos)
 			var dests: Array = s._map.destinations.keys()

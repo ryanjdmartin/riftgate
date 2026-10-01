@@ -259,12 +259,13 @@ on purpose: the content editor is Ryan's writing surface when it exists, and two
 write content would fight.
 
 **What the game does today.** A battle: the map shows every pack's intent and the exact
-result of the plan before Resolve; a grounded machine controls the ground beside it, a
-pack stepping into it stops and that is a contact; every grounded machine within
-`Battlefield.ENGAGE_RANGE` (2) joins, and a tether runs from each machine to the pack it
-will fight (28 September). Ryan's 29 September play: the joins chain across the map and
-nothing shows who joins until a contact exists; the rule is to be replaced, proposal in
-the bible's section 5 (a pack's capture zone), decision his, in a session of its own. Resolve plays the
+result of the plan before Resolve; every pack carries an engagement zone from its foe
+type (`zone` in `content/foes.json`; `Unit.zone`), drawn red where it will stop, and every
+machine inside it fights it, a machine inside two zones joining those fights into one; a
+pack stops only where a body stands in its path, and nothing else holds it; hunters
+(`hunts`) path to the hex whose zone catches most, the rest push for the gate (decided and
+built 1 October, bible section 5; the sandbox that drew the options is at
+https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg). Resolve plays the
 moves, a CONTACT band, a panel of contacts; ENGAGE cuts to the skirmish, the dice fight on
 the enemy's ground, four columns, every blow heard, the enemy's turn replayed blow by
 blow; Back applies it. The boss's contact takes the phase: no panel, a reveal, the family's
@@ -396,7 +397,7 @@ count in motion (`STRIPE`, `SPOKES`), the sound set, the grid at the hotter gain
 **Open, in order.** The task list is `docs/todo.md`, one line a task, grouped by who
 moves it and ticked in the commit that lands it; this is the order to take them in.
 
-1. The engagement rule, in a session of its own: `docs/engagement-rules.md` has the discussion; and Ryan's phone reads.
+1. Ryan's play test of the engagement zones (the radii, hunters' reach, how big fights come out), and his phone reads.
 2. The planned engine pieces, in whichever order he wants to play first.
 3. Ryan's text for the new machines and components, and the flagged names.
 4. The discuss-first decisions in the Ryan section, the economy last.

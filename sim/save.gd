@@ -169,7 +169,7 @@ static func _unit_dict(u: Unit) -> Dictionary:
 		"id": u.id, "name": u.display_name, "side": u.side, "pos": _hex(u.pos),
 		"hull": u.hull, "shield": u.shield, "base": u.base, "modifiers": mods, "allies": u.allies,
 		"traits": u.traits, "footprint": _hexes(u.footprint), "facing": u.facing,
-		"faction": u.faction, "foe_id": u.foe_id, "strength": u.strength, "aggro": u.aggro, "elite": u.elite,
+		"faction": u.faction, "foe_id": u.foe_id, "strength": u.strength, "aggro": u.aggro, "elite": u.elite, "zone": u.zone,
 		"die": faces, "paint": paint, "passive": u.passive, "chassis_id": u.chassis_id,
 		"hardpoints": u.hardpoints, "damaged_faces": damaged,
 	}
@@ -200,6 +200,7 @@ static func _unit_from(d: Dictionary) -> Unit:
 	u.foe_id = str(d.get("foe_id", ""))
 	u.strength = int(d.get("strength", 0))
 	u.aggro = bool(d.get("aggro", false))
+	u.zone = int(d.get("zone", 1))
 	u.elite = bool(d.get("elite", false))
 	var faces = d.get("die", null)
 	if faces is Array:

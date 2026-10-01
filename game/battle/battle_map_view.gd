@@ -398,18 +398,11 @@ func _draw() -> void:
 		for group in res.skirmishes:
 			for u in group:
 				contact_hexes[(pv["ends"] as Dictionary)[u.id]] = true
-		# The zone of control: the ground beside every grounded machine's destination, one
-		# tinted flower around the machine with a single outline, so whose it is reads at a
-		# glance and the field stays quiet (Ryan, 22 September).
+		# Every pack's engagement zone where it will stand (decided 1 October): the whole
+		# rule, drawn. A zone nobody stands in is a thin outline; one with a fight in it is
+		# tinted red under a heavy outline, and a fight's packs share one outline.
 		var ends: Dictionary = pv["ends"]
-		for m in field.mechs():
-			if m.traits.has("flyer"):
-				continue
-			# A machine with a route shows both: where its zone is now, quiet and dotted,
-			# and where it will be, breathing (Ryan, 29 September: the two must read apart).
-			if ends[m.id] != m.pos:
-				_zone(m.pos, hud, true)
-			_zone(ends[m.id], hud)
+		_pack_zones(res.skirmishes, ends, field.packs())
 		for sq in field.packs():
 			var path: Array = res.intents.get(sq.id, [])
 			if path.is_empty():
@@ -485,13 +478,14 @@ func _draw() -> void:
 	# Contacts waiting to be fought (Ryan, 22 September): the map freezes on them, the
 	# units about to engage lit, and nothing of the next phase shows until they are done.
 	if not pending.is_empty() and _anim.is_empty():
+		var now: Dictionary = {}
+		for u in field.units:
+			now[u.id] = u.pos
+		_pack_zones(pending, now, [])
 		for group in pending:
 			var lit := _highlight.is_empty() or _highlight.has((group[0] as Unit).pos)
-			var at: Dictionary = {}
 			for u in group:
-				at[u.id] = u.pos
 				_contact_effect(u.pos, lit, u.is_enemy())
-			_tethers(group, at, lit)
 	# The plan as it will resolve, from the resolver itself run dry (Ryan, 21 September:
 	# never ambiguous): every contact group, every pack stopped by a body block, every
 	# route that will be rejected.
@@ -511,7 +505,6 @@ func _draw() -> void:
 				mid += c
 				top_y = minf(top_y, c.y)
 				_contact_effect(ends[u.id], lit, u.is_enemy())
-			_tethers(group, ends, lit)
 			mid /= float(group.size())
 			# Who is in it: the machines against the packs, so the player knows what the
 			# skirmish will hold before locking in (Ryan, 22 September).
@@ -956,34 +949,6 @@ func _contact_effect(h: Vector2i, lit: bool, _at_base: bool = false) -> void:
 		draw_arc(c, r, 0.0, TAU, 40, Color(col, (1.0 - phase) * a), 3.0 * (1.0 - phase * 0.5) + 1.0)
 
 
-## Who joins which fight, drawn live as the plan stands (Ryan, 28 September: a contact made
-## of touching units made who was in it a surprise, and the engagement range makes it
-## less obvious still): a dashed line from every machine in a contact to the nearest pack
-## it will fight, its dashes crawling toward the fight, dim when another contact is the one
-## being looked at. `at` is where each unit will stand: the preview's ends, or the positions
-## of a contact waiting to be fought.
-func _tethers(group: Array, at: Dictionary, lit: bool) -> void:
-	var a := 1.0 if lit else 0.35
-	var col := Color(_ring_colour(), 0.9 * a)
-	for u in group:
-		if not (u as Unit).is_player() or not at.has(u.id):
-			continue
-		var from := center(at[u.id])
-		var to := Vector2.ZERO
-		var best := INF
-		for other in group:
-			if not (other as Unit).is_enemy() or not at.has(other.id):
-				continue
-			var d := from.distance_squared_to(center(at[other.id]))
-			if d < best:
-				best = d
-				to = center(at[other.id])
-		if best == INF:
-			continue
-		_dashed_line(from, to, col, HEX_SIZE * 0.3, fmod(_ring_t * 1.4, 2.0))
-		draw_arc(from, HEX_SIZE * 0.22, 0.0, TAU, 20, col, 2.0)
-
-
 ## A route, either side's (Ryan, 29 September): a quiet line with dashes crawling toward
 ## the destination and a chevron a step, no dark edge. It leaves from the edge of the unit's
 ## hex rather than its centre, so it never draws across the machine or the pack. `lock`
@@ -1098,42 +1063,73 @@ func _dashed_line(a: Vector2, b: Vector2, col: Color, dash: float, offset: float
 		k += 2.0
 
 
-## A machine's zone: its six neighbours as one tinted flower with one outline round the
-## outside, so the zone belongs visibly to the hex at its centre.
-func _zone(h: Vector2i, col: Color, current: bool = false) -> void:
-	var cluster: Dictionary = {h: true}
-	for n in Hex.neighbors(h):
-		if field.map.has(n) and not field.map.is_structure(n):
-			cluster[n] = true
-	# A real aura (Ryan, 22 September: the tints were far too subtle; the UX matters more
-	# than the ground under them), breathing so it reads as the machine's reach; its peak
-	# pulled back (Ryan, 29 September: the brightest moment was a bit much). The zone a
-	# machine is leaving is quieter still and does not breathe: it is where the guns are,
-	# not where they will be.
-	var breath := 0.5 + 0.5 * sin(_ring_t * 2.2)
-	# Ground marks land with their alpha raised to 2.2 (Map3D._scene_alpha), so 0.2 is barely
-	# there: the 29 September pull-back to 0.16 made the zone vanish. The peak is 0.36 now,
-	# down from 0.40; the zone a machine is leaving rests at 0.22.
-	var fill_a := 0.22 if current else 0.30 + 0.06 * breath
-	for n in cluster.keys():
-		if n != h:
-			_fill(n, Color(col, fill_a))
-	for n in cluster.keys():
-		if n == h:
+## The packs' engagement zones (decided 1 October), each where its pack will stand. A zone
+## with a fight in it is tinted and heavily outlined, a fight's packs sharing one outline so
+## a merged fight reads as one shape; a zone nobody stands in is a thin outline only, so the
+## two differ by weight and fill and never by hue alone (Ryan is colourblind). Empty zones
+## go down first, so a fight's marks win where they overlap. `at` is where each unit
+## stands; `free_packs` are drawn empty when they are in no fight.
+func _pack_zones(groups: Array, at: Dictionary, free_packs: Array) -> void:
+	var in_fight := {}
+	for group in groups:
+		for u in group:
+			if (u as Unit).is_enemy():
+				in_fight[u.id] = true
+	for sq in free_packs:
+		if in_fight.has(sq.id) or not at.has(sq.id):
 			continue
-		var nb := Hex.neighbors(n)
-		# Corner i to corner i+1 of a pointy hex (corners from -30 degrees) faces the
-		# direction at 60i degrees, which is DIRECTIONS[(6 - i) % 6]; the edges whose far
-		# side is outside the cluster make the flower's outline, on the ground so the
-		# machines standing in the zone hide it (Ryan, 22 September).
+		var region: Dictionary = {}
+		_zone_hexes(sq, at[sq.id], region)
+		_region_outline(region, Color(Palette.ENEMY, 0.4), 1.5)
+	var breath := 0.5 + 0.5 * sin(_ring_t * 2.2)
+	for group in groups:
+		var region: Dictionary = {}
+		for u in group:
+			if (u as Unit).is_enemy() and at.has(u.id):
+				_zone_hexes(u, at[u.id], region)
+		var first: Unit = group[0]
+		var lit := _highlight.is_empty() or _highlight.has(at.get(first.id, first.pos))
+		var a := 1.0 if lit else 0.4
+		# Ground marks land with their alpha raised to 2.2 (Map3D._scene_alpha), so these
+		# read far fainter on the scene than the numbers say; the old zone sat at 0.30.
+		for h in region.keys():
+			_fill(h, Color(Palette.ENEMY, (0.26 + 0.08 * breath) * a))
+		_region_outline(region, Color(Palette.ENEMY, 0.9 * a), 2.5)
+
+
+## The hexes within a pack's zone of its anchor at `anchor`: pure hex distance from any of
+## its footprint hexes, structures left out of the region but not of the count.
+func _zone_hexes(sq: Unit, anchor: Vector2i, region: Dictionary) -> void:
+	for o in sq.footprint:
+		var seed: Vector2i = anchor + o
+		var dist := {seed: 0}
+		var queue: Array[Vector2i] = [seed]
+		while not queue.is_empty():
+			var h: Vector2i = queue.pop_front()
+			if field.map.has(h) and not field.map.is_structure(h):
+				region[h] = true
+			if int(dist[h]) >= sq.zone:
+				continue
+			for n in Hex.neighbors(h):
+				if not dist.has(n):
+					dist[n] = int(dist[h]) + 1
+					queue.append(n)
+
+
+## One outline round the outside of a region of hexes, on the ground so the units standing
+## in it hide it. Corner i to corner i+1 of a pointy hex (corners from -30 degrees) faces
+## the direction at 60i degrees, which is DIRECTIONS[(6 - i) % 6]; the edges whose far side
+## is outside the region make the outline. No edge against the map's end.
+func _region_outline(region: Dictionary, col: Color, _thick: float) -> void:
+	for h in region.keys():
+		var nb := Hex.neighbors(h)
 		var edges: Array = []
 		for i in range(6):
 			var across: Vector2i = nb[(6 - i) % 6]
-			# No edge against the wall, the gate or the map's end: nothing comes from there.
-			if not cluster.has(across) and field.map.has(across) and not field.map.is_structure(across):
+			if not region.has(across) and field.map.has(across):
 				edges.append(i)
 		if not edges.is_empty():
-			_edges(n, edges, Color(col, 0.45 if current else 0.7))
+			_edges(h, edges, col)
 
 
 ## A selected machine's shield and hull as two gauges floating over its hex.

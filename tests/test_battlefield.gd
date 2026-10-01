@@ -63,14 +63,16 @@ func test_pack_marches_toward_gate() -> void:
 
 
 func test_mech_body_blocks_pack() -> void:
-	# A grounded machine in the middle of a corridor (three columns: every hex of its row
-	# is under its guns): the pack stops on the ground beside it, and that is the contact.
+	# A grounded machine standing in the pack's path: the pack stops in front of it, and
+	# the machine is inside its zone, so that is the contact (decided 1 October).
 	var f := _field(3, 13)
-	var m := f.add_unit(Unit.mech(2, "A", _o(1, 4), 0))
 	var sq := f.add_unit(Unit.pack(1, "ghouls", _o(1, 2), "undead", 3))
+	f.compute_intents()
+	var m := f.add_unit(Unit.mech(2, "A", f.intents[1][1], 0))   # on its second step
 	var res := f.resolve_phase({})
-	assert_eq(Hex.distance(sq.pos, m.pos), 1, "pack stopped beside the machine")
-	assert_true(res.intercepted.has(1), "pack reported as stopped by control")
+	assert_eq(Hex.distance(sq.pos, m.pos), 1, "pack stopped in front of the machine")
+	assert_true(res.blocked.has(1), "pack reported as blocked")
+	assert_eq(int(res.blockers.get(1, -1)), m.id, "by the machine")
 	assert_eq(res.skirmishes.size(), 1, "contact makes a skirmish")
 
 
@@ -340,27 +342,35 @@ func test_a_boss_patrols_its_zone_outside_the_rift() -> void:
 		assert_false(f.map.rift_hexes.has(boss.pos), "never on the rift itself")
 
 
-func test_a_pack_stepping_beside_a_mech_stops_there_and_a_flyer_stops_nobody() -> void:
-	# Control (decided 22 September): the ground beside a grounded machine stops a pack.
-	var f := _field(3, 14)   # a corridor: no way round
-	var m := f.add_unit(Unit.mech(1, "A", _o(1, 6), 0))
+func test_a_body_in_the_path_stops_a_pack_and_a_flyer_is_passed_through() -> void:
+	# No ground is controlled (decided 1 October): a pack stops only where something stands
+	# in its path. In a corridor the machine is in the way, the pack stops in front of it,
+	# and the machine is inside its zone.
+	var f := _field(3, 14)
 	var sq := f.add_unit(Unit.pack(2, "ghouls", _o(1, 2), "undead", 4))
 	f.compute_intents()
+	var free_path: Array = (f.intents[sq.id] as Array).duplicate()
+	var m := f.add_unit(Unit.mech(1, "A", free_path[3], 0))   # on its fourth step
+	f.compute_intents()
 	var path: Array = f.intents[sq.id]
-	assert_true(f.controlled(path[path.size() - 1]), "the intent ends on controlled ground")
+	assert_eq(path[path.size() - 1], m.pos, "the intent ends on the machine's hex: the block is shown")
 	var res := f.resolve_phase({})
-	assert_true(res.intercepted.has(sq.id), "stopped by control")
-	assert_eq(Hex.distance(sq.pos, m.pos), 1, "beside the machine")
+	assert_true(res.blocked.has(sq.id), "stopped by the body")
+	assert_eq(Hex.distance(sq.pos, m.pos), 1, "in front of the machine")
 	assert_eq(res.skirmishes.size(), 1, "and that is a contact")
-	# A flyer in the same spot controls nothing: the pack passes.
+	# A flyer in the same spot is passed through, and the pack goes on; but where it
+	# lands the flyer is inside its zone, so they fight: a flyer engages by the zone like
+	# anyone, it only cannot stop a pack.
 	var f2 := _field(3, 14)
-	var fly := f2.add_unit(Unit.mech(1, "hawk", _o(1, 6), 0))
+	var fly := f2.add_unit(Unit.mech(1, "hawk", free_path[2], 0))   # on its third step
 	fly.traits = ["flyer"]
 	var sq2 := f2.add_unit(Unit.pack(2, "ghouls", _o(1, 2), "undead", 4))
 	f2.compute_intents()
 	var res2 := f2.resolve_phase({})
-	assert_false(res2.intercepted.has(sq2.id), "a flyer stops nobody")
+	assert_false(res2.blocked.has(sq2.id), "a flyer stops nobody")
 	assert_true(Hex.distance(sq2.pos, f2.map.gate) < Hex.distance(_o(1, 2), f2.map.gate) - 2, "the pack kept going")
+	assert_eq(res2.skirmishes.size(), 1, "and fights the flyer, which stands in its zone")
+	assert_true(res2.skirmishes.size() == 1 and res2.skirmishes[0].has(fly), "the flyer is in it")
 
 
 func test_a_pack_never_swerves_for_a_machine_only_stops() -> void:
@@ -375,7 +385,7 @@ func test_a_pack_never_swerves_for_a_machine_only_stops() -> void:
 	assert_true(cut.size() <= free_path.size(), "the path is no longer than it was")
 	for i in range(cut.size()):
 		assert_eq(cut[i], free_path[i], "the same steps, up to the cut")
-	assert_true(f.controlled(cut[cut.size() - 1]), "and it ends on controlled ground")
+	assert_eq(cut[cut.size() - 1], m.pos, "and it ends on the machine's hex, where it will be blocked")
 	# A machine well off the path changes nothing at all.
 	m.pos = _o(0, 12)
 	f.compute_intents()
@@ -386,113 +396,184 @@ func test_the_preview_shows_a_pack_stopped_by_a_route_not_yet_resolved() -> void
 	# A mech's plotted route ends beside the pack's path: the preview's intents already
 	# stop there, before Resolve.
 	var f := _field(3, 14)
-	var m := f.add_unit(Unit.mech(1, "A", _o(1, 8), 3))
-	var sq := f.add_unit(Unit.pack(2, "ghouls", _o(1, 3), "undead", 4))   # wants past row 7
+	var m := f.add_unit(Unit.mech(1, "A", _o(1, 9), 3))
+	var sq := f.add_unit(Unit.pack(2, "ghouls", _o(1, 3), "undead", 4))
 	f.compute_intents()
 	var free_path: Array = f.intents[sq.id]
-	var routes := {m.id: f.map.find_path(m.pos, _o(1, 7), m.traits)}
+	var block: Vector2i = free_path[3]   # its fourth step, where the machine's route will end
+	var routes := {m.id: f.route_to(m, block)}
+	assert_false((routes[m.id] as Array).is_empty(), "the machine can get there")
 	var pv := f.preview_phase(routes)
 	var res: Battlefield.PhaseResult = pv["result"]
-	assert_true(res.intercepted.has(sq.id), "the preview stops the pack")
+	assert_true(res.blocked.has(sq.id), "the preview stops the pack")
+	assert_eq(int(res.blockers.get(sq.id, -1)), m.id, "with the machine's planned hex in its way")
 	var shown: Array = res.intents[sq.id]
-	assert_true(shown.size() <= free_path.size(), "its shown path is cut at the control")
+	assert_true(shown.size() <= free_path.size(), "its shown path is cut at the body")
+	assert_eq(res.skirmishes.size(), 1, "and the preview sees the contact")
 	assert_eq(sq.pos, _o(1, 3), "and nothing moved")
 
 
-func test_a_pack_already_beside_a_machine_holds_its_ground() -> void:
-	var f := _field(7, 14)
-	var m := f.add_unit(Unit.mech(1, "A", _o(3, 6), 0))
-	var sq := f.add_unit(Unit.pack(2, "ghouls", _o(3, 5), "undead", 3))
+func test_a_pack_walks_past_a_machine_beside_its_path_and_its_zone_decides_the_fight() -> void:
+	# Decided 1 October: nothing holds a pack but a body in its way. A machine beside the
+	# path is walked past, and whether they fight is whether the machine stands inside the
+	# pack's zone where the pack stops. A walled lane down column 1 makes the path certain,
+	# with one bay at (2, 5) for the machine to stand in.
+	var f := _lane()
+	var m := f.add_unit(Unit.mech(1, "A", _o(2, 5), 0))
+	var sq := f.add_unit(Unit.pack(2, "ghouls", _o(1, 5), "undead", 3))
+	assert_true(sq.touches(m), "beside the machine to start with")
 	f.compute_intents()
-	assert_true((f.intents[sq.id] as Array).is_empty(), "no intent: it is engaged where it stands")
+	assert_eq((f.intents[sq.id] as Array).size(), 3, "it does not hold: it marches")
 	var res := f.resolve_phase({})
-	assert_eq(sq.pos, _o(3, 5), "it did not move")
-	assert_false(res.blocked.has(sq.id), "and it is not a body block")
-	assert_eq(res.skirmishes.size(), 1, "the contact is the fight")
-	assert_eq(Hex.distance(sq.pos, m.pos), 1, "still beside the machine")
-	# Beside a flyer it moves on as if nothing were there.
-	var f2 := _field(7, 14)
-	var fly := f2.add_unit(Unit.mech(1, "hawk", _o(3, 6), 0))
-	fly.traits = ["flyer"]
-	var sq2 := f2.add_unit(Unit.pack(2, "ghouls", _o(3, 5), "undead", 3))
-	f2.compute_intents()
-	assert_false((f2.intents[sq2.id] as Array).is_empty(), "a flyer holds nobody")
+	assert_false(res.blocked.has(sq.id), "nothing in its way")
+	assert_eq(Battlefield.unit_distance(sq, m), 3, "it walked past")
+	assert_eq(res.skirmishes.size(), 0, "a zone of one does not reach back to the machine")
+	# The same walk with a zone of three: the machine is inside it where the pack stops.
+	var f2 := _lane()
+	f2.add_unit(Unit.mech(1, "A", _o(2, 5), 0))
+	var sq2 := f2.add_unit(Unit.pack(2, "casters", _o(1, 5), "undead", 3))
+	sq2.zone = 3
+	var res2 := f2.resolve_phase({})
+	assert_eq(res2.skirmishes.size(), 1, "so they fight")
 
 
-func test_a_machine_within_two_of_a_contact_joins_it() -> void:
-	# Engagement range (Ryan, 28 September): a contact seeds where a machine and a pack touch;
-	# then any grounded machine within two hexes of a member joins, and one two hexes behind
-	# a joined machine joins through it, so heavies need not touch to fight together.
+## A three-wide field walled down to column 1 from row 3 to row 9, with a bay at (2, 5).
+func _lane() -> Battlefield:
+	var f := _field(3, 14)
+	for r in range(3, 10):
+		f.map.terrain[_o(0, r)] = BattleMap.Terrain.MOUNTAIN
+		if r != 5:
+			f.map.terrain[_o(2, r)] = BattleMap.Terrain.MOUNTAIN
+	return f
+
+
+func test_machines_inside_a_packs_zone_fight_it_and_nothing_chains() -> void:
+	# The engagement zone (decided 1 October): every machine within the pack's zone of where
+	# it stands fights it. Machines never join through each other: one two hexes behind a
+	# machine that is in the fight is out unless the zone itself reaches it.
 	var f := _field(9, 13)
 	var sq := f.add_unit(Unit.pack(1, "ghouls", _o(4, 6), "undead", 0, 4))
+	sq.zone = 2
 	var a := f.add_unit(Unit.mech(2, "A", _o(5, 6), 0))
 	var b := f.add_unit(Unit.mech(3, "B", _o(4, 8), 0))
 	var c := f.add_unit(Unit.mech(4, "C", _o(4, 10), 0))
 	var d := f.add_unit(Unit.mech(5, "D", _o(0, 12), 0))
-	assert_true(a.touches(sq), "A touches the pack: the seed")
-	assert_eq(Battlefield.unit_distance(b, sq), 2, "B stands two from the pack")
-	assert_false(b.touches(a) or b.touches(sq), "and touches nobody")
+	assert_true(a.touches(sq), "A touches the pack")
+	assert_eq(Battlefield.unit_distance(b, sq), 2, "B stands two from the pack: inside the zone")
 	assert_eq(Battlefield.unit_distance(c, b), 2, "C stands two behind B")
-	assert_true(Battlefield.unit_distance(c, sq) > Battlefield.ENGAGE_RANGE, "and out of range of the pack itself")
+	assert_true(Battlefield.unit_distance(c, sq) > sq.zone, "and outside the zone")
 	var groups := f.detect_skirmishes()
 	assert_eq(groups.size(), 1, "one contact")
-	assert_eq(groups[0].size(), 4, "the pack, the seed, the machine in range and the one behind it")
-	assert_true(groups[0].has(b) and groups[0].has(c), "B joined by range and C through B")
+	assert_eq(groups[0].size(), 3, "the pack, A and B")
+	assert_true(groups[0].has(a) and groups[0].has(b), "both inside the zone")
+	assert_false(groups[0].has(c), "C is not pulled in through B")
 	assert_false(groups[0].has(d), "D, far away, is not in it")
+	assert_eq(groups[0][0], sq, "the pack comes first: the fight's ground is its hex")
 
 
-func test_a_machine_two_from_a_lone_pack_is_no_contact() -> void:
-	# The zone-of-control contract holds: only touching seeds a fight.
+func test_a_machine_outside_the_zone_is_no_contact() -> void:
 	var f := _field(9, 13)
 	var sq := f.add_unit(Unit.pack(1, "ghouls", _o(4, 6), "undead", 0, 4))
 	var b := f.add_unit(Unit.mech(2, "B", _o(4, 8), 0))
 	assert_eq(Battlefield.unit_distance(b, sq), 2, "two apart")
-	assert_eq(f.detect_skirmishes().size(), 0, "no touching, no contact")
+	assert_eq(f.detect_skirmishes().size(), 0, "outside a zone of one: no contact")
+	sq.zone = 2
+	assert_eq(f.detect_skirmishes().size(), 1, "inside a zone of two: a contact")
 
 
-func test_a_machine_in_range_of_two_contacts_joins_exactly_one() -> void:
-	# Anything nearer than the range is touching, and so already seeded; the only choice
-	# left to the widening is a tie, and a machine is never in two fights.
+func test_a_machine_inside_two_zones_joins_the_two_fights_into_one() -> void:
+	# The only way fights join (decided 1 October): a machine in both packs' zones.
 	var f := _field(9, 13)
 	var near := f.add_unit(Unit.pack(1, "ghouls", _o(4, 6), "undead", 0, 4))
+	near.zone = 2
 	f.add_unit(Unit.mech(2, "A", _o(5, 6), 0))
 	var far := f.add_unit(Unit.pack(3, "brutes", _o(4, 10), "demonic", 0, 4))
+	far.zone = 2
 	f.add_unit(Unit.mech(4, "B", _o(5, 10), 0))
+	assert_eq(f.detect_skirmishes().size(), 2, "two fights while nobody stands in both zones")
 	var m := f.add_unit(Unit.mech(5, "M", _o(3, 8), 0))
 	assert_eq(Battlefield.unit_distance(m, near), 2, "two from one pack")
 	assert_eq(Battlefield.unit_distance(m, far), 2, "two from the other")
 	var groups := f.detect_skirmishes()
-	assert_eq(groups.size(), 2, "two contacts")
-	var with_m := 0
-	var members := 0
-	for g in groups:
-		members += g.size()
-		if g.has(m):
-			with_m += 1
-	assert_eq(with_m, 1, "M is in exactly one of them")
-	assert_eq(members, 5, "and nobody is counted twice")
+	assert_eq(groups.size(), 1, "one fight")
+	assert_eq(groups[0].size(), 5, "both packs and all three machines")
 
 
-func test_stealth_controls_no_ground_and_is_not_pulled_in_by_range() -> void:
-	# The stealth trait (28 September), the half the engine has: packs walk past it, and a
-	# contact's engagement range never reaches it. Its join rule (beside an ally, or when it
-	# stopped a pack in its path) lands with the rest of the trait.
-	var f := _field(3, 14)
-	var s := f.add_unit(Unit.mech(1, "dingo", _o(1, 6), 0))
-	s.traits = ["stealth"]
-	var sq := f.add_unit(Unit.pack(2, "ghouls", _o(1, 2), "undead", 4))
+func test_packs_never_join_through_each_other() -> void:
+	# Two packs standing together are two fights unless one machine stands in both zones;
+	# a formation is unsplittable only by its zones, never by a touch rule.
+	var f := _field(9, 13)
+	var front := f.add_unit(Unit.pack(1, "ghouls", _o(4, 6), "undead", 0, 4))
+	var back := f.add_unit(Unit.pack(2, "necros", _o(4, 5), "undead", 0, 2))
+	assert_true(front.touches(back), "the packs touch")
+	var m := f.add_unit(Unit.mech(3, "A", _o(4, 7), 0))
+	assert_true(m.touches(front), "the machine touches the front pack")
+	assert_eq(Battlefield.unit_distance(m, back), 2, "and stands two from the back one")
+	var groups := f.detect_skirmishes()
+	assert_eq(groups.size(), 1, "one fight")
+	assert_eq(groups[0].size(), 2, "the front pack and the machine only")
+	assert_false(groups[0].has(back), "the back pack is not pulled in by touching the front")
+	back.zone = 3
+	groups = f.detect_skirmishes()
+	assert_eq(groups.size(), 1, "with a zone that reaches the machine, one fight")
+	assert_eq(groups[0].size(), 3, "of both packs and the machine: the formation's own depth")
+
+
+func test_a_hunter_goes_where_its_zone_catches_most() -> void:
+	# Hunters (decided 1 October): of the hexes it can reach, the one whose zone holds the
+	# most machines, ties toward the gate.
+	var f := _field(7, 14)
+	var sq := f.add_unit(Unit.pack(1, "ghouls", _o(3, 3), "undead", 2))
+	sq.aggro = true
+	var a := f.add_unit(Unit.mech(2, "A", _o(3, 6), 0))
+	var b := f.add_unit(Unit.mech(3, "B", _o(4, 6), 0))
+	f.add_unit(Unit.mech(4, "C", _o(1, 4), 0))   # nearer, but alone
 	f.compute_intents()
+	var path: Array = f.intents[sq.id]
+	assert_eq(path[path.size() - 1], _o(3, 5), "ends on the hex beside both A and B")
 	var res := f.resolve_phase({})
-	assert_false(res.intercepted.has(sq.id), "a stealth machine stops nobody")
-	var f2 := _field(9, 13)
-	var pack := f2.add_unit(Unit.pack(1, "ghouls", _o(4, 6), "undead", 0, 4))
-	f2.add_unit(Unit.mech(2, "A", _o(5, 6), 0))
-	var st := f2.add_unit(Unit.mech(3, "S", _o(4, 8), 0))
+	assert_eq(res.skirmishes.size(), 1, "one fight")
+	assert_true(res.skirmishes[0].has(a) and res.skirmishes[0].has(b), "with the pair, not the loner")
+	assert_eq(res.skirmishes[0].size(), 3, "the pack and the two")
+	# A hunter that can reach nobody pushes for the gate like the rest.
+	var f2 := _field(7, 14)
+	var sq2 := f2.add_unit(Unit.pack(1, "ghouls", _o(3, 2), "undead", 2))
+	sq2.aggro = true
+	f2.add_unit(Unit.mech(2, "A", _o(3, 11), 0))
+	var before := Hex.distance(sq2.pos, f2.map.gate)
+	f2.resolve_phase({})
+	assert_eq(Hex.distance(sq2.pos, f2.map.gate), before - 2, "two hexes nearer the gate")
+
+
+func test_a_pack_is_dressed_from_its_foe_type() -> void:
+	# Zone, hunting and move come from the content, never from a hardcoded id.
+	var f := _field(7, 14)
+	f.foe_profiles = {"caster": {"zone": 3, "hunts": true, "movespeed": 4}}
+	var sq := f.add_unit(f.dress_pack(Unit.pack(1, "casters", _o(3, 3), "undead", 2, 4, "caster")))
+	assert_eq(sq.zone, 3, "zone from the profile")
+	assert_true(sq.aggro, "hunts from the profile")
+	assert_eq(sq.movespeed, 4, "move from the profile")
+	var plain := f.add_unit(f.dress_pack(Unit.pack(2, "ghouls", _o(1, 3), "undead", 2, 4, "ghoul")))
+	assert_eq(plain.zone, 1, "no profile: the engine's default zone")
+	assert_false(plain.aggro, "and no hunting")
+	assert_eq(plain.movespeed, 2, "and its own move")
+
+
+func test_stealth_is_never_pulled_in_by_a_zone_alone() -> void:
+	# The stealth trait (28 September): a zone never pulls it in. Inside a zone with no ally
+	# in the fight there is no fight at all; with an ally in it, the stealth machine is in.
+	var f := _field(9, 13)
+	var pack := f.add_unit(Unit.pack(1, "casters", _o(4, 6), "undead", 0, 4))
+	pack.zone = 3
+	var st := f.add_unit(Unit.mech(3, "S", _o(4, 8), 0))
 	st.traits = ["stealth"]
-	assert_eq(Battlefield.unit_distance(st, pack), 2, "two from the pack")
-	var groups := f2.detect_skirmishes()
+	assert_eq(Battlefield.unit_distance(st, pack), 2, "two from the pack: inside its zone")
+	assert_eq(f.detect_skirmishes().size(), 0, "no fight: stealth alone is not pulled in")
+	var a := f.add_unit(Unit.mech(2, "A", _o(5, 6), 0))
+	var groups := f.detect_skirmishes()
 	assert_eq(groups.size(), 1, "one contact")
-	assert_eq(groups[0].size(), 2, "the pack and A only: stealth is not pulled in by range")
+	assert_eq(groups[0].size(), 3, "the pack, A and the stealth machine beside its ally")
+	assert_true(groups[0].has(st) and groups[0].has(a), "both machines in")
 
 
 func test_stealth_joins_a_fight_only_beside_an_ally_or_when_it_stopped_the_pack() -> void:
