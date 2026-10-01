@@ -16,7 +16,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Listen to the effects' second pass as re-cut 1 October on the listening page (console beeps, barrel, rack, blade, laser, plasma, deflector, the punch, blocks, the shield hit, the kills); picks land in `forge.py` with their hooks (shape, maker, faction, silhouette; the replay telling a shield hit from a block from a hit)
 - [ ] A content word for the blunt melee pieces (Gravity Knuckles, Breaching Plow, bare fists) so a punch plays instead of a blade; Ryan names it
 - [ ] Whether the seated die wants a voice (a low quiet E3 is the candidate) or stays toneless
-- [ ] Judge on the hangar page's Models tab: the Armadillo's seated collars, the Clydesdale's turret height and position; and the turrets traversing in the skirmish; each class's size per machine (a pin's `scale` in `models_low.py`)
+- [ ] Judge the turrets traversing and the limbs striking in the skirmish, running (idle scan, a flinch on a shot); and each class's size per machine on a refit (a pin's `scale` in `models_low.py`)
 - [ ] A turret joint that turns outward only (the Clydesdale's, beside the lance): the view's idle and flinch swing both ways today
 - [ ] Decide whether the Clydesdale's hand-modelled turret pairs should match the twin-barrel class's spacing, since on a swap the class is what shows (the Prairie Dog's are the class now)
 - [ ] Propose in chat a Minerva intercept component for the starter set (Ryan, 30 September: tanks need class-based target-modification beyond the Proximity Klaxon)

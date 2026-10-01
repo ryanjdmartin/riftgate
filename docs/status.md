@@ -126,11 +126,12 @@ metal (barrel, twin barrel, rack, blade, dish), armour and vents show nowhere. J
 joints are code too. The round-by-round history is retired (Ryan, 1 October); the code and the
 hangar page's Models tab are the record. **Ryan judges a model only from a render**, never from
 code (`tools/hero_shot.gd` renders bare and needs a window); a hand edit in Blender has to be
-re-expressed in the code to survive a rebuild. Open on the models: the Armadillo's seated collars
-and the Clydesdale's turret height (his look), the outward-only turret, each class's size per
-machine, the Clydesdale's twin spacing, and the Baboon's rear silhouette with the fists at knee
-height (if it still reads as two boxes: heavier hands carrying hardware, or a forward pose with
-the fist tile turned 90 degrees).
+re-expressed in the code to survive a rebuild. **Every machine is signed off for now** (Ryan,
+1 October); next on the art side is judging the joints and turrets running in the skirmish.
+Open on the models: the outward-only turret, each class's size per machine, the Clydesdale's
+twin spacing, and the Baboon's rear silhouette with the fists at knee height (if it still reads
+as two boxes: heavier hands carrying hardware, or a forward pose with the fist tile turned 90
+degrees).
 
 **The codex (29 September; a tab of the hangar page since 1 October).** One surface showing a
 chassis and the components fitted to it: the Codex tab renders it in the browser from the
@@ -201,7 +202,7 @@ sound set, the grid at the hotter gain.
 it and ticked in the commit that lands it; this is the order to take them in.
 
 1. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
-2. Ryan's text for the new machines and components; his look at the Armadillo's collars and the Clydesdale's turrets.
+2. Ryan's text for the new machines and components; with every machine signed off for now, the joints and turrets judged running in the skirmish.
 3. The discuss-first decisions in the Ryan section, the economy last.
 4. The engine gaps waiting on design (Phased, Energy Armour, Corrode, Scramble, Confuse, foe roles), and a dedicated hunter foe and spawned formations once proposed.
 5. Audio: a full play of Hold The Line, the effects' second pass, the speakers/headphones setting, the two boss themes.
