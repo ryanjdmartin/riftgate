@@ -1,0 +1,237 @@
+<title>Effects Pass</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --ground: #F2F3F5; --surface: #FFFFFF; --ink: #1A1E25; --muted: #5C6673;
+    --rule: #D5DAE1; --rule-strong: #B9C0CA; --accent: #B4501C; --accent-ink: #FFFFFF;
+    --steel: #2E5B87; --tint: #E9EBEF; --code-bg: #E6E9EE; --playing: #FBEFE6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --ground: #14171C; --surface: #1C2028; --ink: #E4E7EB; --muted: #97A1AD;
+      --rule: #2E343D; --rule-strong: #414955; --accent: #E3894B; --accent-ink: #14171C;
+      --steel: #7FAEDF; --tint: #232830; --code-bg: #262C35; --playing: #2A2320;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ground: #14171C; --surface: #1C2028; --ink: #E4E7EB; --muted: #97A1AD;
+    --rule: #2E343D; --rule-strong: #414955; --accent: #E3894B; --accent-ink: #14171C;
+    --steel: #7FAEDF; --tint: #232830; --code-bg: #262C35; --playing: #2A2320;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--ground); color: var(--ink); font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.55; padding-inline: 16px; padding-block: 0 120px; margin: 0; }
+  .page { max-width: 64ch; margin: 0 auto; }
+  h1, h2, h3 { font-family: "Barlow Condensed", "Arial Narrow", Impact, sans-serif; text-wrap: balance; line-height: 1.05; margin: 0; text-transform: uppercase; }
+  h1 { font-size: clamp(38px, 9vw, 56px); font-weight: 700; }
+  h2 { font-size: 26px; font-weight: 700; margin-top: 40px; padding-bottom: 6px; border-bottom: 2px solid var(--ink); }
+  h3 { font-size: 19px; font-weight: 600; margin-top: 22px; color: var(--muted); letter-spacing: 0.03em; }
+  p { margin: 0 0 1em; max-width: 62ch; }
+  .mono, .stamp { font-family: "IBM Plex Mono", Menlo, monospace; }
+  header { border-top: 6px solid var(--ink); border-bottom: 1px solid var(--rule-strong); padding-block: 22px 18px; margin-bottom: 28px; }
+  .stamp { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 10px; }
+  .lede { font-size: 17px; color: var(--ink); margin-top: 12px; }
+  .how { background: var(--tint); padding: 12px 16px; margin: 0 0 8px; font-size: 15px; }
+  .how p:last-child { margin: 0; }
+  .rows { display: grid; gap: 0; margin: 14px 0 6px; border-top: 1px solid var(--rule); }
+  .row { display: grid; grid-template-columns: 1fr; gap: 6px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .row.playing { background: var(--playing); margin-inline: -8px; padding-inline: 8px; }
+  .row .name { font-weight: 600; }
+  .row .name .step { color: var(--muted); font-weight: 500; margin-right: 6px; }
+  .row .note { color: var(--muted); font-size: 14px; line-height: 1.45; }
+  .alts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .alt { min-height: 40px; padding: 6px 14px; border-radius: 20px; border: 2px solid var(--ink); background: var(--surface); color: var(--ink); cursor: pointer; font: 600 14px "IBM Plex Sans", sans-serif; display: inline-flex; align-items: center; gap: 8px; }
+  .alt:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .alt.playing { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .alt.now { border-style: dashed; }
+  .alt.now.playing { border-style: solid; }
+  .listen { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; margin: 14px 0 6px; font-size: 15px; }
+  .listen p { margin: 0; }
+  .kept { font-size: 14px; color: var(--muted); }
+  .bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--surface); border-top: 1px solid var(--rule-strong); padding: 10px 16px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); }
+  .bar .in { max-width: 64ch; margin: 0 auto; display: grid; grid-template-columns: auto 1fr auto; gap: 6px 12px; align-items: center; }
+  .bar .title { font-weight: 600; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar .time { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .bar .seek { grid-column: 1 / span 3; height: 6px; background: var(--rule); position: relative; cursor: pointer; }
+  .bar .seek .fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: var(--accent); }
+  .bar .pp { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--ink); background: var(--surface); color: var(--ink); cursor: pointer; padding: 0; font-size: 15px; }
+  .bar label { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--rule-strong); font-size: 13px; color: var(--muted); }
+  @media (prefers-reduced-motion: no-preference) { .bar .seek .fill { transition: width 0.25s linear; } }
+</style>
+</head>
+<body>
+<div class="page">
+<header>
+  <span class="stamp">Riftgate · soundforge · 30 September 2026</span>
+  <h1>Effects, second pass</h1>
+  <p class="lede">A fresh page. Every effect the game plays, sketched again beside what ships, in the three registers the screen already has: the console's green, the iron of the player's machines, the violet of the other side, and the red where it is about to hurt. Nothing here is a shipped file.</p>
+  <p class="lede" style="font-size:15px;color:var(--muted)">Play on the phone's own speaker first, then once more in headphones. Notes by section and row, as ever: "console 3 new", "rift 2 keep the old one".</p>
+</header>
+
+<div class="how">
+  <p><strong>How to A/B.</strong> A dashed button is what ships now; a solid one is the sketch. In the four rounds at the top the two files are the same bars with the same moments, so tapping the other button mid-round keeps your place (turn that off at the foot). The single sounds start from their top each tap. Every file is written at the level its sound plays at in the game, so the mix between them is the real one.</p>
+</div>
+
+<h2>0. Four rounds</h2>
+<p>The set in context first, over the music the moment would have under it. Each is the shipped sounds, then the sketches in the same places.</p>
+<div class="rows">
+  <div class="row" data-keep="1"><div class="name"><span class="step">1</span>A round of the skirmish</div>
+    <div class="alts"><button class="alt now" data-src="seq_round_now.mp4" data-title="A round · now">Now</button><button class="alt" data-src="seq_round_new.mp4" data-title="A round · new">New</button></div>
+    <div class="note">Over Hold The Line's power chords: two dice picked, seated, rolled and locked; the plan committed; autoguns and a kill; a laser; a rack and two kills; the foe's intent settling; a ghoul's claw blocked; a brute's haymaker landing on a Kestrel; the deflector up, a vent, the coil; the stand held.</div></div>
+  <div class="row" data-keep="1"><div class="name"><span class="step">2</span>The map's turn and the handover</div>
+    <div class="alts"><button class="alt now" data-src="seq_contact_now.mp4" data-title="Contact · now">Now</button><button class="alt" data-src="seq_contact_new.mp4" data-title="Contact · new">New</button></div>
+    <div class="note">Over Night Shift: five footfalls (new: treads, treads, legs, wheels, a flyer), a foe into the line, the alarm twice, the dive, the cut, the Risen through a gate, the gate struck and the Horde through it, The Chorus through another, a boss revealed (new only), and the line broken.</div></div>
+  <div class="row" data-keep="1"><div class="name"><span class="step">3</span>The three families</div>
+    <div class="alts"><button class="alt now" data-src="seq_rift_now.mp4" data-title="Rift · now">Now</button><button class="alt" data-src="seq_rift_new.mp4" data-title="Rift · new">New</button></div>
+    <div class="note">Over The Crossing: the Risen, then the Infernal Horde, then The Chorus, each arriving, striking, and striking hard. Now, all three are the same spawn, slash and slam.</div></div>
+  <div class="row" data-keep="1"><div class="name"><span class="step">4</span>The iron</div>
+    <div class="alts"><button class="alt now" data-src="seq_iron_now.mp4" data-title="Iron · now">Now</button><button class="alt" data-src="seq_iron_new.mp4" data-title="Iron · new">New</button></div>
+    <div class="note">Over Hold The Line: the five weapon shapes (barrel, twin barrel, rack, blade, laser, plasma, the deflector dish, the coil), then each maker's machine struck, holding, and dying: Minerva, Kestrel, Wainwright &amp; Sutler, Aphelion, the Arsenal. Now, every blow is by damage type and every plate is the same steel.</div></div>
+</div>
+<div class="listen"><p><strong>Listen for:</strong> whether the new set reads as one world, and whether anything in it is quieter than it should be on the speaker. Then go by section.</p></div>
+
+<h2>1. The console</h2>
+<p>CARE's reconstruction, the green lines. One grammar for every press: a key (a membrane key under glass, a damped tuk, no relay spring), a reply (a flat tone tuned to the music's E: G3, B3 or E4, so it sits in every track), and work (chatter). The die is a mechanism, not a button.</p>
+<div class="rows">
+  <div class="row"><div class="name"><span class="step">1</span>A tap</div><div class="alts"><button class="alt now" data-src="now_ui_tap.mp4" data-title="Tap · now">Now</button><button class="alt" data-src="new_ui_tap.mp4" data-title="Tap · new">New</button></div><div class="note">The key and a short reply on B3. Now: a relay spring and a tone off the key.</div></div>
+  <div class="row"><div class="name"><span class="step">2</span>Back</div><div class="alts"><button class="alt now" data-src="now_ui_back.mp4" data-title="Back · now">Now</button><button class="alt" data-src="new_ui_back.mp4" data-title="Back · new">New</button></div><div class="note">The same key, the reply lower on G3 and a hair longer.</div></div>
+  <div class="row"><div class="name"><span class="step">3</span>Plot a route</div><div class="alts"><button class="alt now" data-src="now_plot.mp4" data-title="Plot · now">Now</button><button class="alt" data-src="new_plot.mp4" data-title="Plot · new">New</button></div><div class="note">The console works, the key, the reply on E4, and a second softer dot: a route has two ends.</div></div>
+  <div class="row"><div class="name"><span class="step">4</span>Die picked up</div><div class="alts"><button class="alt now" data-src="now_die_pick.mp4" data-title="Pick · now">Now</button><button class="alt" data-src="new_die_pick.mp4" data-title="Pick · new">New</button></div><div class="note">Lifted from its socket: the key, a small plate lift, a short high reply.</div></div>
+  <div class="row"><div class="name"><span class="step">5</span>Die seated</div><div class="alts"><button class="alt now" data-src="now_die_drop.mp4" data-title="Drop · now">Now</button><button class="alt" data-src="new_die_drop.mp4" data-title="Drop · new">New</button></div><div class="note">Seated back: no tone at all. A damped knock, a little body, the socket's click. The drop is the one press that should not chirp.</div></div>
+  <div class="row"><div class="name"><span class="step">6</span>The roll</div><div class="alts"><button class="alt now" data-src="now_die_roll.mp4" data-title="Roll · now">Now</button><button class="alt" data-src="new_die_roll.mp4" data-title="Roll · new">New</button></div><div class="note">The readout's own digit scramble: ticks at the flip rate, thinning, each with a flat tone off any scale; the console under load under it; then the brackets collapse shut (two knocks) and the number settles on G3. Now: chatter over crushed ticks.</div></div>
+  <div class="row"><div class="name"><span class="step">7</span>The lock</div><div class="alts"><button class="alt now" data-src="now_die_lock.mp4" data-title="Lock · now">Now</button><button class="alt" data-src="new_die_lock.mp4" data-title="Lock · new">New</button></div><div class="note">The corners snapping on: the key, a heavier key with the latch's casing, the reply on B3, a short hold hum on E3.</div></div>
+  <div class="row"><div class="name"><span class="step">8</span>Resolve</div><div class="alts"><button class="alt now" data-src="now_resolve.mp4" data-title="Resolve · now">Now</button><button class="alt" data-src="new_resolve.mp4" data-title="Resolve · new">New</button></div><div class="note">The plan committed: the console works, the lines lock in one by one (three keys), the heavy latch, the reply low and long on E3. Now: a swell under chatter and a thud.</div></div>
+  <div class="row"><div class="name"><span class="step">9</span>Intent (new)</div><div class="alts"><button class="alt" data-src="new_intent.mp4" data-title="Intent · new">New</button></div><div class="note">The brackets collapsing onto a foe's intent as its number settles out of the scramble: a crushed tick, the console reading the other side, and a small knock. Silent now.</div></div>
+</div>
+<p class="kept">Kept as they are: the codex opening and closing, the pause menu. They already speak this grammar.</p>
+<div class="listen"><p><strong>Listen for:</strong> whether the keys read as one console, whether the seated die is right with no tone, and whether the roll is the readout you watch.</p></div>
+
+<h2>2. The iron</h2>
+<p>The player's machines, nineties 3D in five makers' metals. A blow sounds by the weapon's shape, since the mount rule made the shape the thing on screen. A hit, a block and a kill sound in the metal of the machine struck. A footfall by silhouette.</p>
+<h3>By shape</h3>
+<div class="rows">
+  <div class="row"><div class="name"><span class="step">1</span>Barrel</div><div class="alts"><button class="alt now" data-src="now_gunfire.mp4" data-title="Gunfire · now">Now (gunfire)</button><button class="alt" data-src="new_w_barrel.mp4" data-title="Barrel · new">New</button></div><div class="note">A slug cannon, a railgun: one heavy report, the breech cycling after, the hit. Now, every kinetic line weapon is a burst of four.</div></div>
+  <div class="row"><div class="name"><span class="step">2</span>Twin barrel</div><div class="alts"><button class="alt now" data-src="now_gunfire.mp4" data-title="Gunfire · now">Now (gunfire)</button><button class="alt" data-src="new_w_twin.mp4" data-title="Twin · new">New</button></div><div class="note">Twin autoguns: three double-taps, the action clacking, the last pair landing.</div></div>
+  <div class="row"><div class="name"><span class="step">3</span>Rack</div><div class="alts"><button class="alt now" data-src="now_cannon.mp4" data-title="Cannon · now">Now (cannon)</button><button class="alt" data-src="new_w_rack.mp4" data-title="Rack · new">New</button></div><div class="note">A missile rack: four launches, each an ignition tonk and a whoosh (a band opening, not a pitch), then four impacts close together. Now, indirect fire is one cannon shell.</div></div>
+  <div class="row"><div class="name"><span class="step">4</span>Blade</div><div class="alts"><button class="alt now" data-src="now_slash.mp4" data-title="Slash · now">Now (slash)</button><button class="alt" data-src="new_w_blade.mp4" data-title="Blade · new">New</button></div><div class="note">A chainsaw claw: a motor at one speed (no glide), the teeth a flutter on it, the load dipping where it bites, the rip through plate.</div></div>
+  <div class="row"><div class="name"><span class="step">5</span>Laser</div><div class="alts"><button class="alt now" data-src="now_laser.mp4" data-title="Laser · now">Now</button><button class="alt" data-src="new_w_laser.mp4" data-title="Laser · new">New</button></div><div class="note">The capacitor's crack, a flat beam on B2 for a tenth of a second, and the hit a burn rather than a thud: a pop and a sizzle on the plate.</div></div>
+  <div class="row"><div class="name"><span class="step">6</span>Plasma (new)</div><div class="alts"><button class="alt now" data-src="now_laser.mp4" data-title="Laser · now">Now (laser)</button><button class="alt" data-src="new_w_plasma.mp4" data-title="Plasma · new">New</button></div><div class="note">The Arsenal's energy, which runs hot: a whoomp with a slow front, a sub hum on E1, a hint of a vowel under it (the manual written as liturgy), crackle, and the hit a hot splash. Now the Arsenal's guns sound like everyone's laser.</div></div>
+  <div class="row"><div class="name"><span class="step">7</span>Dish: the deflector</div><div class="alts"><button class="alt now" data-src="now_shield_up.mp4" data-title="Shield · now">Now</button><button class="alt" data-src="new_w_dish_shield.mp4" data-title="Deflector · new">New</button></div><div class="note">The key, the field's hum snapping on at B1 with E2 over it, a crack as it seals, a short bed, then the field settles and a relay cuts it.</div></div>
+  <div class="row"><div class="name"><span class="step">8</span>Dish: the coil (new)</div><div class="alts"><button class="alt now" data-src="now_shield_up.mp4" data-title="Shield · now">Now (shield, as the buff's placeholder)</button><button class="alt" data-src="new_w_dish_coil.mp4" data-title="Coil · new">New</button></div><div class="note">An overcharge coil, a buff: the bank charging as a buzz on E3 growing in loudness, never in pitch, ticking faster, then the discharge's crack and the key.</div></div>
+</div>
+<h3>By metal: struck, holding, dying</h3>
+<div class="rows">
+  <div class="row"><div class="name"><span class="step">9</span>Now: one steel for all</div><div class="alts"><button class="alt now" data-src="now_hit.mp4" data-title="Hit · now">Hit</button><button class="alt now" data-src="now_block.mp4" data-title="Block · now">Block</button><button class="alt now" data-src="now_kill.mp4" data-title="Kill · now">Kill</button></div><div class="note">What ships: the same plate under every machine.</div></div>
+  <div class="row"><div class="name"><span class="step">10</span>Minerva steel</div><div class="alts"><button class="alt" data-src="new_hit_minerva.mp4" data-title="Minerva · hit">Hit</button><button class="alt" data-src="new_block_minerva.mp4" data-title="Minerva · block">Block</button><button class="alt" data-src="new_kill_minerva.mp4" data-title="Minerva · kill">Kill</button></div><div class="note">Matte steel, the baseline: the plate as it is now, dull and firm.</div></div>
+  <div class="row"><div class="name"><span class="step">11</span>Kestrel chrome</div><div class="alts"><button class="alt" data-src="new_hit_kestrel.mp4" data-title="Kestrel · hit">Hit</button><button class="alt" data-src="new_block_kestrel.mp4" data-title="Kestrel · block">Block</button><button class="alt" data-src="new_kill_kestrel.mp4" data-title="Kestrel · kill">Kill</button></div><div class="note">Thin, glossy, higher partials that die faster, a bright front, less body: an airframe, not a hull.</div></div>
+  <div class="row"><div class="name"><span class="step">12</span>Wainwright iron</div><div class="alts"><button class="alt" data-src="new_hit_wainwright_sutler.mp4" data-title="Wainwright · hit">Hit</button><button class="alt" data-src="new_block_wainwright_sutler.mp4" data-title="Wainwright · block">Block</button><button class="alt" data-src="new_kill_wainwright_sutler.mp4" data-title="Wainwright · kill">Kill</button></div><div class="note">Lower, heavier, a touch more ring (still under a tenth of a second) and grit: old-West iron.</div></div>
+  <div class="row"><div class="name"><span class="step">13</span>Aphelion ceramic</div><div class="alts"><button class="alt" data-src="new_hit_aphelion.mp4" data-title="Aphelion · hit">Hit</button><button class="alt" data-src="new_block_aphelion.mp4" data-title="Aphelion · block">Block</button><button class="alt" data-src="new_kill_aphelion.mp4" data-title="Aphelion · kill">Kill</button></div><div class="note">A dead tok: high, very short, a dry click. Composite from the deep-space programme.</div></div>
+  <div class="row"><div class="name"><span class="step">14</span>Arsenal gunmetal</div><div class="alts"><button class="alt" data-src="new_hit_arsenal.mp4" data-title="Arsenal · hit">Hit</button><button class="alt" data-src="new_block_arsenal.mp4" data-title="Arsenal · block">Block</button><button class="alt" data-src="new_kill_arsenal.mp4" data-title="Arsenal · kill">Kill</button></div><div class="note">Dense and low, a sub hum on E1 under every strike (a little creepy), and the red glass ticking.</div></div>
+</div>
+<h3>Footfalls by silhouette</h3>
+<div class="rows">
+  <div class="row"><div class="name"><span class="step">15</span>A hex on the map</div><div class="alts"><button class="alt now" data-src="now_step.mp4" data-title="Step · now">Now</button><button class="alt" data-src="new_step_tracked.mp4" data-title="Tracked">Tracked</button><button class="alt" data-src="new_step_legged.mp4" data-title="Legged">Legged</button><button class="alt" data-src="new_step_wheeled.mp4" data-title="Wheeled">Wheeled</button><button class="alt" data-src="new_step_flyer.mp4" data-title="Flyer">Flyer</button></div><div class="note">Now, every machine stomps. Treads clatter, legs stomp (the shipped one), wheels grind on grit with the suspension knocking, a flyer passes.</div></div>
+</div>
+<div class="listen"><p><strong>Listen for:</strong> whether a shape is recognisable blind, whether the makers tell apart on the speaker (Kestrel against Wainwright is the pair most likely to), and whether the Arsenal's hum is creepy or just mud.</p></div>
+
+<h2>3. The rift</h2>
+<p>The other side, drawn flat and painterly against the player's 3D. Each family gets its own blow, heavy blow and arrival. The Risen are dry bone and grave-light. The Infernal Horde is fire, loud and telegraphed. The Chorus is geometry: the choir on a cluster, gated and crushed as if the feed cannot hold it, and it talks to the console's own ticks. Now, every foe is the same slash, slam and spawn.</p>
+<div class="rows">
+  <div class="row"><div class="name"><span class="step">1</span>Now: slash, slam, spawn</div><div class="alts"><button class="alt now" data-src="now_slash.mp4" data-title="Slash · now">Slash</button><button class="alt now" data-src="now_slam.mp4" data-title="Slam · now">Slam</button><button class="alt now" data-src="now_spawn.mp4" data-title="Spawn · now">Spawn</button></div><div class="note">What ships, for every family.</div></div>
+  <div class="row"><div class="name"><span class="step">2</span>The Risen</div><div class="alts"><button class="alt" data-src="new_foe_undead_hit.mp4" data-title="Risen · claw">Claw</button><button class="alt" data-src="new_foe_undead_heavy.mp4" data-title="Risen · heavy">Heavy</button><button class="alt" data-src="new_spawn_undead.mp4" data-title="Risen · arrival">Arrival</button></div><div class="note">A ghoul's claw: a brittle crack, a rattle, little weight. The heavy blow: grave-light held cold (a flat high hum with a tremolo on its loudness, and static) for a third of a second, then the crack and the ground taking it. The arrival: bone gathering, the cold hum swelling, the boom, the rattle settling.</div></div>
+  <div class="row"><div class="name"><span class="step">3</span>The Infernal Horde</div><div class="alts"><button class="alt" data-src="new_foe_demonic_hit.mp4" data-title="Horde · haymaker">Haymaker</button><button class="alt" data-src="new_foe_demonic_heavy.mp4" data-title="Horde · firebolt">Firebolt</button><button class="alt" data-src="new_spawn_demonic.mp4" data-title="Horde · arrival">Arrival</button></div><div class="note">A fist of slag: the thud with a whoomp of fire on it, embers after. The firebolt, lobbed: the whoosh of it coming, then the fireball with a roar in it. The arrival: a furnace door, the roar behind it, the door's iron knocking twice, the boom, the crackle.</div></div>
+  <div class="row"><div class="name"><span class="step">4</span>The Chorus</div><div class="alts"><button class="alt" data-src="new_foe_eldritch_hit.mp4" data-title="Chorus · lash">Lash</button><button class="alt" data-src="new_foe_eldritch_heavy.mp4" data-title="Chorus · murmur">Murmur</button><button class="alt" data-src="new_spawn_eldritch.mp4" data-title="Chorus · arrival">Arrival</button></div><div class="note">A lash: a geometric whip, a crushed rip gated hard with its halves flipped, a cold impact, two crushed ticks. The murmur, a word that hurts: the choir on a cluster (a minor second and a tritone over E) gated at 28 a second and crushed, cut dead, the impact crushed, and the console flinching: two of its own ticks. The arrival: the cluster swelling under a stutter that quickens, the boom with a crushed tail.</div></div>
+  <div class="row"><div class="name"><span class="step">5</span>A boss revealed (new)</div><div class="alts"><button class="alt now" data-src="now_contact.mp4" data-title="Contact · now">Now (contact)</button><button class="alt" data-src="new_reveal.mp4" data-title="Reveal · new">New</button></div><div class="note">The feed tears (a hard cut of static), the band's red rules (two knocks), the picture's afterimages (three crushed ticks), the name resolving out of a scramble (chatter), the order typing in, a low E1 swell under it all. Then the family's theme takes over. Now the reveal plays the contact alarm.</div></div>
+</div>
+<div class="listen"><p><strong>Listen for:</strong> whether the three families tell apart with your eyes shut, whether the Chorus's stutter reads as the feed failing or as a glitch effect, and whether the Risen have enough weight to hurt.</p></div>
+
+<h2>4. The red</h2>
+<p>Where it is about to hurt. Tuned to E so they sit in any of the six tracks; the dive counts in on the console's key; defeat ends on the feed losing signal.</p>
+<div class="rows">
+  <div class="row"><div class="name"><span class="step">1</span>Contact</div><div class="alts"><button class="alt now" data-src="now_contact.mp4" data-title="Contact · now">Now</button><button class="alt" data-src="new_contact.mp4" data-title="Contact · new">New</button></div><div class="note">The horn a power chord on E2 and B2, the klaxon the console's own tone on B4 twice, the thud bigger. Now the horn is E alone and the klaxon sits on A.</div></div>
+  <div class="row"><div class="name"><span class="step">2</span>The dive</div><div class="alts"><button class="alt now" data-src="now_engage.mp4" data-title="Engage · now">Now</button><button class="alt" data-src="new_engage.mp4" data-title="Engage · new">New</button></div><div class="note">No drive spinning down (that was a glide, the one left in the set). The feed's floor rises as a filter opening, the console arms with a key under each count-in beep on B3, the beeps closing in, the last long on E4, until the cut.</div></div>
+  <div class="row"><div class="name"><span class="step">3</span>The gate struck</div><div class="alts"><button class="alt now" data-src="now_gate_hit.mp4" data-title="Gate · now">Now</button><button class="alt" data-src="new_gate_hit.mp4" data-title="Gate · new">New</button></div><div class="note">The same explosion, the structure groaning on B1 with E1 under it, three knocks of a big plate. Now the groan sits between notes.</div></div>
+  <div class="row"><div class="name"><span class="step">4</span>Victory</div><div class="alts"><button class="alt now" data-src="now_victory.mp4" data-title="Victory · now">Now</button><button class="alt" data-src="new_victory.mp4" data-title="Victory · new">New</button></div><div class="note">The power chord on E, and CARE logging it: the console works, a key, and the all-clear as two flat tones, B3 up to E4.</div></div>
+  <div class="row"><div class="name"><span class="step">5</span>Defeat</div><div class="alts"><button class="alt now" data-src="now_defeat.mp4" data-title="Defeat · now">Now</button><button class="alt" data-src="new_defeat.mp4" data-title="Defeat · new">New</button></div><div class="note">The hum on E flickering out, the last thing to fall, then the reconstruction losing the signal: a crushed burst of static and two console ticks into silence.</div></div>
+</div>
+<p class="kept">Kept as they are: the cut, the vent, overheat, withdraw, a foe stepping into the line, and the shield breaking.</p>
+<div class="listen"><p><strong>Listen for:</strong> whether the dive still builds without its spin-down, whether the two-tone all-clear is irony or parody, and whether the signal loss lands as the end of the feed.</p></div>
+
+<h2>What a pick means</h2>
+<p>A console pick lands as its recipe in the forge. A shape pick means the blow's sound is chosen by the component's shape rather than its damage type, with plasma for the Arsenal's energy. A metal pick means a hit, block and kill carry the struck machine's maker. A family pick means a foe's blow and arrival carry its faction, and the reveal gets a sound of its own. A footfall pick means the map plays the mover's silhouette. Each is a small hook in the game; none is written yet.</p>
+
+<footer>Rendered by <span class="mono">tools/soundforge/fx_sketches.py</span> into <span class="mono">tools/soundforge/out/fx/</span> (git-ignored). AAC at 128 kbps, mono, 48 kHz. Every file at its sound's shipped level.</footer>
+</div>
+
+<div class="bar">
+  <div class="in">
+    <button class="pp" id="pp" aria-label="play or pause">▶</button>
+    <div>
+      <div class="title" id="title">Nothing playing</div>
+      <div class="time" id="time">0:00 / 0:00</div>
+    </div>
+    <label><input type="checkbox" id="keep" checked> keep my place</label>
+    <div class="seek" id="seek"><div class="fill" id="fill"></div></div>
+  </div>
+</div>
+<audio id="audio" preload="none"></audio>
+
+<script>
+(function () {
+  var audio = document.getElementById('audio');
+  var pp = document.getElementById('pp');
+  var title = document.getElementById('title');
+  var time = document.getElementById('time');
+  var keep = document.getElementById('keep');
+  var fill = document.getElementById('fill');
+  var seek = document.getElementById('seek');
+  var alts = Array.prototype.slice.call(document.querySelectorAll('.alt[data-src]'));
+  var current = null;
+
+  try { keep.checked = localStorage.getItem('keep') !== '0'; } catch (e) {}
+  keep.addEventListener('change', function () { try { localStorage.setItem('keep', keep.checked ? '1' : '0'); } catch (e) {} });
+
+  function fmt(s) { if (!isFinite(s)) return '0:00'; s = Math.floor(s); return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
+  function rowOf(b) { return b.closest('.row'); }
+
+  function mark() {
+    alts.forEach(function (b) { b.classList.remove('playing'); rowOf(b).classList.remove('playing'); });
+    if (current) { current.classList.toggle('playing', !audio.paused); rowOf(current).classList.add('playing'); }
+    pp.textContent = audio.paused ? '▶' : '❚❚';
+  }
+
+  function play(b) {
+    var row = rowOf(b);
+    var sameRow = current && rowOf(current) === row;
+    var pos = (keep.checked && sameRow && row.getAttribute('data-keep')) ? audio.currentTime : 0;
+    if (current === b) {
+      if (audio.ended || audio.paused) { if (audio.ended) audio.currentTime = 0; audio.play(); } else audio.pause();
+      mark();
+      return;
+    }
+    current = b;
+    audio.src = b.getAttribute('data-src');
+    title.textContent = b.getAttribute('data-title');
+    var seekTo = function () { audio.removeEventListener('loadedmetadata', seekTo); try { audio.currentTime = Math.min(pos, audio.duration || pos); } catch (e) {} audio.play(); mark(); };
+    audio.addEventListener('loadedmetadata', seekTo);
+    audio.load();
+  }
+
+  alts.forEach(function (b) { b.addEventListener('click', function () { play(b); }); });
+  pp.addEventListener('click', function () { if (!current) { play(alts[0]); return; } if (audio.paused) audio.play(); else audio.pause(); mark(); });
+  audio.addEventListener('play', mark);
+  audio.addEventListener('pause', mark);
+  audio.addEventListener('ended', mark);
+  audio.addEventListener('timeupdate', function () {
+    time.textContent = fmt(audio.currentTime) + ' / ' + fmt(audio.duration);
+    fill.style.width = (audio.duration ? (audio.currentTime / audio.duration * 100) : 0) + '%';
+  });
+  seek.addEventListener('click', function (e) {
+    if (!audio.duration) return;
+    var r = seek.getBoundingClientRect();
+    audio.currentTime = (e.clientX - r.left) / r.width * audio.duration;
+  });
+})();
+</script>

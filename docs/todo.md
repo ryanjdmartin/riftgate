@@ -17,6 +17,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [x] The missing model pins (29 September, night: the Clydesdale's nine and the Sparrowhawk's four; every pin a gun mount since 30 September)
 - [x] Judge the pins pass and the classes (30 September: notes on every machine, the mount rule settled; all built the same day)
 - [x] Judge the third pass on the Model Viewer (30 September: notes on seven machines, all built the same day as the fourth round)
+- [ ] Judge the effects' second pass on the listening page (30 September, evening): the four rounds first, then by section and row; a pick lands in the forge and its hook
 - [ ] Judge the fourth round on the Model Viewer (bare renders): the Badger's arm clearance, the Armadillo's cowl, hollow ports and tail, the Boar's turret and pod, the Prairie Dog's back, the Goshawk's glowing barrel and stub, the Nemesis's upright fists, traps, waist cannon and vented core, the Ammit's back panel and cannons; each class's size per machine (a pin's `scale` in `models_low.py`)
 - [ ] Propose in chat a Minerva intercept component for the starter set (Ryan, 30 September: tanks need class-based target-modification beyond the Proximity Klaxon)
 - [x] Picks from the phone sketches page: the bass voice (3 or 5), the clip-free guitar, the third shadows (28 September: voice 12, the guitar, the third cut, a quarter of the level gap; all in the forge)

@@ -25,8 +25,10 @@ the page shows. Ryan's intent: the session interprets what he sends; it is not d
 (https://claude.ai/artifact/FqiH3b8ZZjxJaCJmWK71vj), the Model Viewer
 (https://claude.ai/artifact/HzF8K98MxgJP7kroxAuDMv, every chassis rendered as it stands with
 earlier passes folded under each, and a Classes section for the silhouette classes and four
-refits; the third pass of 30 September is current) and the phone sketches
-(https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9). Every duplicate and superseded page in A
+refits; the third pass of 30 September is current) and the listening page
+(https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9; since 30 September, evening, the effects'
+second pass from `tools/soundforge/fx_sketches.py`, every music round's file removed from it;
+the music rounds re-render from `phone_sketches.py` if ever wanted again). Every duplicate and superseded page in A
 was deleted on Ryan's word this evening (the first bible link, the Second Passes page, the HUD
 swatches, a second codex, a second sketches page). **Sharing:** the nameplate, codex and
 sketches are shared to the work email as Editor and open there, so B republishes those three
@@ -301,9 +303,23 @@ speakers/headphones setting (offsets per track and a bus EQ on the speaker profi
 Risen and Infernal Horde boss themes from their seeds, melodies proposed in chat first. The
 real recordings question is closed (29 September): the forge is the instrument.
 
-**How the listening page works** (the phone sketches, account A's page, 29 September; the
-page block above owns the account rule). Ryan judges the music on his phone, not from the
-repo, so a change is heard as an A/B before it lands.
+**The effects' second pass** (30 September, evening; Ryan's ask: a new set that suits the
+game better, from the UI, the lore, the music and both sides' unit design; the bible's sound
+row has the design). `tools/soundforge/fx_sketches.py` renders every effect again beside the
+shipped one at the shipped level into `tools/soundforge/out/fx/`, plus four rounds in
+context over the tracks (a skirmish round, the map's handover, the three families, the
+iron), and copies `fx_page.html` in as `index.html`; the listening page now holds that and
+nothing else. Sections: the console (one key grammar, E-tuned replies, the die as a
+mechanism, an intent tick), the iron (blows by weapon shape with plasma for the Arsenal,
+hit/block/kill by the struck maker's metal, footfalls by silhouette), the rift (a blow, a
+heavy blow and an arrival per family, a boss reveal), the red (contact, dive, gate, victory,
+defeat). Nothing is shipped; a pick lands as a recipe in `forge.py` and, where the page says,
+a small hook (shape, maker, faction, silhouette) in `skirmish_screen.gd`, `battle_screen.gd`
+and `sound.gd`. Next: Ryan's notes by section and row.
+
+**How the listening page worked for the music** (the phone sketches, account A's page, 29
+September; the page block above owns the account rule). Ryan judges the music on his phone,
+not from the repo, so a change is heard as an A/B before it lands.
 `tools/soundforge/phone_sketches.py` renders one change at a time from Hold The Line's own
 bars into `tools/soundforge/out/phone/`: a WAV and an AAC copy in an `.mp4` container,
 which is the audio an artifact will serve (`afconvert`, macOS; `.m4a` is refused). It also
