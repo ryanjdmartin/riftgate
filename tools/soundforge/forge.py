@@ -9,7 +9,7 @@ real recordings and a real track when there are some. numpy only.
     tools/spriter/.venv/bin/python tools/soundforge/forge.py list
     tools/spriter/.venv/bin/python tools/soundforge/forge.py measure          # level and balance of every file
     tools/spriter/.venv/bin/python tools/soundforge/forge.py sketch [human rift djent]   # eight bars in a direction, to tools/soundforge/out
-    tools/spriter/.venv/bin/python tools/soundforge/forge.py sections                    # every section of both loops, with timestamps
+    tools/spriter/.venv/bin/python tools/soundforge/forge.py sections                    # every section of every track, with timestamps
     tools/spriter/.venv/bin/python tools/soundforge/forge.py audition                    # every effect in one file, a second apart, to tools/soundforge/out
 
 Then `godot --headless --path . --import`. `game/audio/sound.gd` plays them by name.

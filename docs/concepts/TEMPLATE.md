@@ -1,7 +1,7 @@
 # Batch: <short name>
 
 Category: chassis | component | foe | faction | mechanic
-Intent of this batch: <one line, e.g. "a melee line for Halvard", "the Chorus back rank">
+Intent of this batch: <one line, e.g. "a melee line for Minerva", "the Chorus back rank">
 
 ---
 

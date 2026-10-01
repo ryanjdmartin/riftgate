@@ -1,11 +1,15 @@
 # Concept intake
 
+The first day's intake template. No batch has been written to it: content is proposed in
+chat and lands in `content/*.json` directly (CLAUDE.md has the rule). Kept for a batch pass if
+one is ever wanted.
+
 Drop rough concepts here, in batches, by category. Batches of five to ten vet best because
 balance is relative within a category.
 
 Flow:
 
-1. Write a batch file in the right folder, e.g. `components/batch-01-halvard-melee.md`,
+1. Write a batch file in the right folder, e.g. `components/batch-01-minerva-melee.md`,
    using `TEMPLATE.md`. Fantasy first, numbers second. Rough is fine.
 2. Ask for the batch to be vetted. Each entry comes back as keep, revise, or cut, with the
    reason, checked against four things: does it break a design test, does it duplicate
