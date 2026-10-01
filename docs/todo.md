@@ -30,7 +30,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [x] Judge the tenth round on the Model Viewer (1 October: the Prairie Dog done, notes on five machines built the same day)
 - [x] Judge the eleventh round on the Model Viewer (1 October: the Badger and Goshawk done, three notes built the same day)
 - [x] Judge the twelfth round on the Model Viewer (1 October: the Boar done, two notes built the same day)
-- [ ] Judge the thirteenth round on the Model Viewer: the Armadillo's seated collars, the Clydesdale's turret height and position; and the turrets traversing in the skirmish; each class's size per machine (a pin's `scale` in `models_low.py`)
+- [ ] Judge the thirteenth round on the hangar page's Models tab: the Armadillo's seated collars, the Clydesdale's turret height and position; and the turrets traversing in the skirmish; each class's size per machine (a pin's `scale` in `models_low.py`)
 - [ ] A turret joint that turns outward only (the Clydesdale's, beside the lance): the view's idle and flinch swing both ways today
 - [ ] Decide whether the Clydesdale's hand-modelled turret pairs should match the twin-barrel class's spacing, since on a swap the class is what shows (the Prairie Dog's are the class now)
 - [ ] Propose in chat a Minerva intercept component for the starter set (Ryan, 30 September: tanks need class-based target-modification beyond the Proximity Klaxon)
@@ -105,7 +105,7 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 ## Art
 
 - [x] lowforge briefs and models for the seven new machines (first passes, 29 September; every hardpoint has its pin, every fixed component is modelled in); Ryan iterates by render
-- [ ] Ryan: notes on the seven second-pass models (renders: the Model Viewer, https://claude.ai/artifact/HzF8K98MxgJP7kroxAuDMv)
+- [ ] Ryan: notes on the seven second-pass models (renders: the hangar page's Models tab, https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH)
 - [x] Silhouette classes for components (29 September, night: seven classes in `models_low.SHAPES`, a blade added for the melee arms; `forge.py shapes` builds every maker's metal into `art/models/shapes`; `shape` validated on every component; every chassis pin parents its stock part; `MechView3D.mount_plan` and `plan_for` from the skirmish, the codex and the portrait; `RIFTGATE_FIT` on the hero shot)
 - [ ] Ryan: judge the Baboon's rear silhouette in the harness (the fists hang at knee height now, not on the ground); if it still reads as carrying two boxes, pick heavier hands carrying hardware or a standard forward pose with the fist tile turned 90 degrees
 - [ ] Rebuild the fists on the Mac (`forge.py build nemesis baboon`, then `--import`; no Blender in the cloud session): the top, palm and base tiles of 1 October and the per-face mapping that places them
@@ -118,10 +118,8 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 ## Pages (standing, after every content change)
 
 - [x] Joining the accounts (29 September): done. Nameplate, codex and phone sketches are shared to the work email as Editor and open there; A merged B's 42 component rows into its nameplate (an invited editor from another organisation cannot use a page's database from Claude Code, so B exported and A imported); the bible's and viewer's invites do not arrive, Ryan retries later, B keeps its own bible copy meanwhile. B's nameplate copy is deleted (29 September, night); B keeps only its bible copy and the content editor
-- The content editor (https://claude.ai/artifact/S5diME2tZa77P7JcaLTqzh): republish it with its `files` map after every content change, or its baselines go stale (source `tools/content_editor.html`)
-- [x] The content editor published again from account A (1 October, evening; its deletion was a mistake) with `content/*.json` at e87a8b8 as baselines, `edits` empty
-- [ ] Ryan shares the content editor to the work email as Editor from its Share menu
-- Rebake the nameplate page's baked-in current names (`CURRENT` in its script) when a chassis or component is added or renamed
+- The hangar page (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, the nameplate's link kept for its rows and its sharing): republish it with the `files` map `tools/hangar_data.py` prints after every content, model or render change, or its tabs go stale (source `tools/hangar.html`)
+- [x] One hangar page (1 October, evening): the codex, the content editor, the names list and the renders merged into one artifact on the nameplate's link; the separate codex, Model Viewer and content editor pages deleted; `tools/build_codex.py` retired, the renders committed under `docs/hangar/renders/`
 - Republish the bible from the committed file (each account to its own URL, listed in status)
 - Re-seed the Melody Desk's `parts` after a track's voices change: `desk_parts.py`, then a batch `set` of the six `parts/<track>` documents (pinned to their versions), or a loaded part is the track as it was
 - Regenerate the hangar codex (`python3 tools/build_codex.py . codex.html`) after a content or model change and republish it, each account to its own copy; it reads the built `.glb` files, so build and import first

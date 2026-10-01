@@ -20,23 +20,20 @@ after a track's parts change), each layer with its source, a mute and a fill of 
 Play runs from a start marker tapped on the ruler; Send writes to collection `melodies`
 with every note, each layer's source and forge lanes, and Ryan's memo. A session pulls a
 `new` document, listens, applies it in the forge and marks it `applied` with a `reply`
-the page shows. Ryan's intent: the session interprets what he sends; it is not drop-in), the bible (https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, v0.12), the nameplate
-(https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH), the hangar codex
-(https://claude.ai/artifact/FqiH3b8ZZjxJaCJmWK71vj), the Model Viewer
-(https://claude.ai/artifact/HzF8K98MxgJP7kroxAuDMv, every chassis rendered as it stands with
-earlier passes folded under each, and a Classes section for the silhouette classes and four
-refits; the third pass of 30 September is current) and the listening page
+the page shows. Ryan's intent: the session interprets what he sends; it is not drop-in), the bible (https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, v0.12), the hangar page
+(https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, four tabs: the codex, the content editor, the names, the
+renders with earlier passes folded under each chassis; the one page above says how it is
+published) and the listening page
 (https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9; since 30 September, evening, the effects'
 second pass from `tools/soundforge/fx_sketches.py`, every music round's file removed from it;
 the music rounds re-render from `phone_sketches.py` if ever wanted again). Every duplicate and superseded page in A
 was deleted on Ryan's word this evening (the first bible link, the Second Passes page, the HUD
-swatches, a second codex, a second sketches page). **Sharing:** the nameplate, codex and
-sketches are shared to the work email as Editor and open there, so B republishes those three
-in place and its own copies retire. Account A merged B's 42 component rows into its nameplate on
+swatches, a second codex, a second sketches page). **Sharing:** the hangar page (as the nameplate it grew from) is shared to the work email as Editor and opens there, so B republishes it
+in place; the codex and sketches shares are gone with their pages. Account A merged B's 42 component rows into its nameplate (now the hangar page's Names tab) on
 29 September (90 rows now; A's Drill and Gelada wording kept as newer) and deleted the export.
 **Account B keeps two pages** (Ryan's correction, 29 September, late): its bible copy (above;
 republished from the committed file after any bible change a B session makes) and a Model Viewer
-of its own (a B session records its link here). **The content editor is back** (1 October, evening, on Ryan's word: its deletion was a mistake): published from account A at https://claude.ai/artifact/S5diME2tZa77P7JcaLTqzh from `tools/content_editor.html` with its `files` map carrying `content/*.json` at commit e87a8b8 as the baselines, capabilities `db` and `user`, its `edits` collection empty. Ryan shares it to the work email as Editor from the page's Share menu (a session cannot). B's old copy (HnE3gvsxNHXyjRhRyEiDqT) is gone; its `edits` database was empty and its baselines matched the shipped content, so nothing was lost. Republish it with the same `files` map after every content change, or its baselines go stale. Every other B page was
+of its own (a B session records its link here). **One hangar page** (1 October, evening, Ryan: the pages overlapped, merge what makes sense and clean up): the codex, the content editor, the names list and the renders are four tabs of one artifact at https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH (the nameplate's link, kept for its `candidates` rows and its sharing), source `tools/hangar.html`, published with the `files` map `tools/hangar_data.py` prints: `content/*.json` (the shipped content every tab reads and the editor diffs against, the reserved names the check reads), `hangar/pins.json` (each model's mounts, the one thing the browser cannot read from a glTF) and `hangar/renders.json` with every render under `docs/hangar/renders/`. The codex renders in the browser from the live content, pending edits laid over and tagged, so it is no longer read-only by accident: tap a name or a die entry to edit it, the picture for its renders. Capabilities `db` and `user`; collections `edits` (the editor) and `candidates` (the names). The separate codex, Model Viewer and content editor pages were deleted the same evening and `tools/build_codex.py` retired. Republish after every content, model or render change. Every other B page was
 deleted 29 September, night, on Ryan's word: the phone sketches, both renders pages, the codex, the
 Baboon review and, once A had merged its rows, the nameplate copy. **Rules learned today:** a page's link goes into this file in the same commit as
 the publish, so a parallel session sees it before publishing a twin; `Artifact` with `action:
@@ -127,10 +124,10 @@ Databank never fire in the runner's single-type, single-machine cells. Numbers
 are in tens and are placeholders; every stat is read through `sim/effects.gd`. An enemy
 unit is a **pack** everywhere. Ryan writes `content/*.json` in his own voice (he writes
 die totals in his head; the data keeps free slots), until 29 September from his phone through
-the content editor page (https://claude.ai/artifact/S5diME2tZa77P7JcaLTqzh, republished 1 October;
-source `tools/content_editor.html`). After he edits: pull collection `edits` with ArtifactData,
-apply by hand (the files are hand-formatted), test, commit, republish the page with its `files`
-map, clear the documents. The memory note has the
+the hangar page's Content tab (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH;
+source `tools/hangar.html`). After he edits: pull collection `edits` with ArtifactData,
+apply by hand (the files are hand-formatted), test, commit, republish the page with the `files`
+map `tools/hangar_data.py` prints, clear the documents. The memory note has the
 quirks. Tests never hardcode an entry's passive name.
 
 **Reserved names (28 September).** `content/reserved_names.json` holds about 1,250
@@ -142,10 +139,10 @@ BattleTech fighter, both obscure; the name conjures the bird), `goshawk` and `ba
 id kept (Honey Badger is clear); `dingo` kept too (29 September: an obscure Heavy Gear gear with
 no silhouette resemblance, the real ATF Dingo the closer match). Every flagged name is decided. The tiers: iconic (the name conjures their machine: never), known (a hobbyist
 recognises it: case by case), coincidence (keep). Names and concepts are spitballed on the
-Riftgate Nameplate artifact
-https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH (account A, shared to B as Editor; a tab per maker, Components, Rules;
-rows in its db collection `candidates`; rebake the page from the reserved list and the
-content names when either changes). Ryan's brainstorm of component names is on its
+hangar page's Names tab
+(https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, shared to B as Editor; a tab per maker, Components, Rules;
+rows in the page's db collection `candidates`; the check reads the reserved list and the
+live content, so nothing is baked in). Ryan's brainstorm of component names is on its
 Components tab, trimmed, with the used ones marked landed.
 
 **Models (29 September).** Every chassis has a lowforge model. The seven 28 September
@@ -234,8 +231,9 @@ snout, shoulder cannons in place of arm guns, and its heel spurs and throat vent
 attached. Facets: 676 to 928 each, the Nemesis 816, the Ammit 1,316, beside the Baboon's 1,396 and
 the Clydesdale's 1,016; the register's 900 is a first-pass guideline, not a rule (Ryan, 29
 September), so no facet count is an open question.
-Renders, with earlier passes folded under each chassis: the Model Viewer
-https://claude.ai/artifact/HzF8K98MxgJP7kroxAuDMv (account A; B's two renders pages are deleted).
+Renders, with earlier passes folded under each chassis: the hangar page's Models tab
+(https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; the pictures under `docs/hangar/renders/`, the entries in
+`docs/hangar/renders.json`; B's two renders pages are deleted).
 **Ryan judges a model only from a render**, never from code: `tools/hero_shot.gd` takes a
 chassis, a maker, an out file and `front`, `rear` or a yaw, and needs a window, so it cannot
 run headless.
@@ -254,23 +252,19 @@ the shaped entries of the die and of the stock loadout and names only the mounts
 `plan_for(unit, db)` is passed by the skirmish, the codex and the map portrait; a borrowed fallback
 model never wears another machine's kit. Every machine wears its stock today, so nothing on screen
 changed. `RIFTGATE_FIT="1:lance,4:blazethrower"` on `tools/hero_shot.gd` renders a swap (unshaped
-equipment in the spec is skipped); the Model Viewer's Classes section shows four refits and four
+equipment in the spec is skipped); the Models tab's Classes section shows four refits and four
 classes. The codex page names no socket per entry (Ryan: the order is internal, the hangar will be
 visual); it checks the mount count once per die and shows each component's class as a dashed chip.
 
-**The hangar codex page (29 September).** Ryan asked for one surface showing a chassis and
-the components fitted to it instead of jumping between files. `tools/build_codex.py` reads
-`content/*.json` and writes a page: each chassis with its designation plate, maker,
-silhouette, traits, a stat grid, its passive, and its die laid out entry by entry, fixed
-first and then each hardpoint tagged with the model pin it mounts on, read from the built
-`.glb` so a hardpoint the model has no socket for is flagged rather than assumed (none is, since
-the pins pass), every entry showing its silhouette class (a dashed chip), its
-component's numbers, keywords (hover for the vocabulary rule), maker and own passive, with
-planned entries marked. Republished 29 September, night, with the classes and the pins. Run `python3 tools/build_codex.py . <out.html>` and publish the
-result; regenerate after any content change. Account B's copy is
-account A's at https://claude.ai/artifact/FqiH3b8ZZjxJaCJmWK71vj. It is generated and read-only
-on purpose: the content editor is Ryan's writing surface, and two pages that both
-write content would fight.
+**The codex (29 September, one page since 1 October).** Ryan asked for one surface showing a chassis and
+the components fitted to it instead of jumping between files. The hangar page's Codex tab renders
+it in the browser from the content files beside the page: each chassis with its designation plate,
+maker, silhouette, traits, a stat grid, its passive, its current render, and its die laid out entry
+by entry, fixed first and then each hardpoint, with the model's mount count (from `hangar/pins.json`,
+read from the built `.glb` by `tools/hangar_data.py`) checked against the hardpoints once per die;
+each component's class as a dashed chip, planned entries marked, pending edits laid over and tagged.
+Tapping a name or an entry opens it in the Content tab. It is the content editor's sibling, not a rival:
+one page, one database, so nothing fights.
 
 **What the game does today.** A battle: the map shows every pack's intent and the exact
 result of the plan before Resolve; every pack carries an engagement zone from its foe
