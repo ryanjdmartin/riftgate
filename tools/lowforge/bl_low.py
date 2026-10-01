@@ -131,25 +131,32 @@ class Tiles:
             dark(slice(0, T), slice(T - 3, T), 0.4)
             dark(slice(0, 2), slice(28, T), 0.4)           # the wrist
         elif kind == "fistpalm":
-            # The palm side: the thumb along the top, its root swelling toward the wrist;
-            # the other three fingers curled back from the front, their tips pressed into
-            # the palm; the heel of the hand behind them.
-            fill(slice(2, 14), slice(0, T))                # the thumb
+            # The palm side: the thumb forward along the top from its root at the wrist,
+            # then bent down beside the front edge (the band the front shows along its palm
+            # edge), its tip near the bottom; the other three fingers curled back in behind
+            # it, their tips pressed into the palm; the heel of the hand behind them.
+            fill(slice(2, 14), slice(0, T - 2))            # the thumb along the top
             fill(slice(2, 26), slice(0, 22))               # its root
+            fill(slice(2, 58), slice(50, T - 2))           # bent down beside the front
             for r0, r1 in ((18, 31), (34, 47), (50, T - 1)):
-                fill(slice(r0, r1), slice(32, T - 2))      # a finger from the front back to its tip
-                dark(slice(r0, r1), slice(46, 47), 0.55)   # the last joint
-                lit(slice(r0, r0 + 2), slice(34, T - 2), 1.15)
+                fill(slice(r0, r1), slice(32, 48))         # a finger from behind the thumb back to its tip
+                dark(slice(r0, r1), slice(40, 41), 0.55)   # the last joint
+                lit(slice(r0, r0 + 2), slice(34, 48), 1.15)
                 dark(slice(r0, r1), slice(30, 32))         # the tip against the palm
                 dark(slice(r0, r0 + 2), slice(32, 34), 0.5)
                 dark(slice(r1 - 2, r1), slice(32, 34), 0.5)
-            for r in (15, 31, 47):
-                dark(slice(r, r + 3), slice(30, T))        # the front's grooves, carried round
-            dark(slice(14, 16), slice(22, T))              # the thumb's crease
+            for r in (31, 47):
+                dark(slice(r, r + 3), slice(30, 48))       # the grooves between them
+            fill(slice(60, T), slice(50, T - 2))           # the little finger past the thumb's tip
+            dark(slice(58, 60), slice(50, T - 2))          # the thumb's tip, as on the front
+            dark(slice(14, 16), slice(22, 50))             # the thumb's crease
+            dark(slice(14, 58), slice(48, 50))
             dark(slice(26, 28), slice(0, 22))
             dark(slice(14, 26), slice(22, 24))
             dark(slice(2, 14), slice(34, 36), 0.35)        # the thumb's joint
-            lit(slice(9, 11), slice(0, T))                 # the thumb's ridge
+            lit(slice(9, 11), slice(0, 56))                # the thumb's ridge, round the bend
+            lit(slice(9, 58), slice(54, 56))
+            dark(slice(2, 5), slice(T - 5, T - 2), 0.5)    # the bend's outer corner, rounded
             dark(slice(0, 2), slice(0, T), 0.4)
             dark(slice(0, T), slice(T - 2, T), 0.4)
             dark(slice(0, T), slice(0, 2), 0.4)            # the wrist
