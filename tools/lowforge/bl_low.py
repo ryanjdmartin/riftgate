@@ -474,6 +474,22 @@ class Build:
         self.cuts.append((list(targets), cutter))
         return cutter
 
+    def cut_box(self, targets, x0, x1, y0, y1, z0, z1):
+        """A box subtracted from `targets` before export: a shallow one makes a pocket in
+        a surface (a vent cut into a fairing), a deep one a hole."""
+        bm = bmesh.new()
+        vs = [bm.verts.new(v) for v in ((x0, y0, z0), (x1, y0, z0), (x1, y1, z0), (x0, y1, z0), (x0, y0, z1), (x1, y0, z1), (x1, y1, z1), (x0, y1, z1))]
+        for f in ((0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)):
+            bm.faces.new([vs[i] for i in f])
+        bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+        mesh = bpy.data.meshes.new("cutter")
+        bm.to_mesh(mesh)
+        bm.free()
+        cutter = bpy.data.objects.new("cutter", mesh)
+        bpy.context.scene.collection.objects.link(cutter)
+        self.cuts.append((list(targets), cutter))
+        return cutter
+
     def apply_cuts(self):
         """Subtract every cutter from its targets and drop the cutters, before export."""
         for targets, cutter in self.cuts:

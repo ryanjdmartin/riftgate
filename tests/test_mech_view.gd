@@ -72,3 +72,9 @@ func test_plan_for_reads_the_chassis_stock_from_content() -> void:
 	u.die.faces[hp].component = "pocket_mortar"
 	assert_eq(MechView3D.plan_for(u, db), [[1, "pocket_mortar", "rack", "wainwright_sutler"]], "the first mount refitted")
 	assert_eq(MechView3D.plan_from_spec("1:lance, 2:, x:y, 3:no_such, 4:heat_sink", db), [[1, "lance", "barrel", "wainwright_sutler"], [2, "", "", ""]], "the debug spec: a fit, a bared mount, junk and unshaped equipment skipped")
+
+
+func test_a_turret_joint_traverses_and_a_limb_swings() -> void:
+	assert_eq(MechView3D.joint_axis("turret"), Vector3(0, 1, 0), "a turret turns about its up axis")
+	assert_eq(MechView3D.joint_axis("turret_l"), Vector3(0, 1, 0), "a named turret too")
+	assert_eq(MechView3D.joint_axis("shoulder_l"), Vector3(1, 0, 0), "a limb swings about the axle line")

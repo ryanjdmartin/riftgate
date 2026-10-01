@@ -194,7 +194,27 @@ crown; the Boar's plow ahead of the treads and rooted in the hull, its turret up
 the skirts and decks; the Prairie Dog's turret squat with a class gun either side (the fixed repeater
 left, the autoguns right), nothing hand-modelled; the Goshawk's barrel lit in rings, then (the seventh round) plain again
 with the glow in the mouth itself; the Prairie Dog's drum smaller with the guns on its flanks; the
-Boar's decks back to the tail under the pod and its plow taller and wider over the treads. Ryan asked
+Boar's decks back to the tail under the pod and its plow taller and wider over the treads; the
+eighth round: the Goshawk's muzzle open for real (`_rings` capped the rim's annulus with a disc
+since the fifth round; it takes `cap=False` now), rings and lit ports on the barrel; the Armadillo's
+ports deeper, its forward ports level in the step behind the front band, its hatch up and back; the
+Boar's plow raked and barely ahead of the treads with its bars meeting it and its tusks out of its
+face; the ninth round: the port rims floorless (`_tube(..., floor=False)`; the floor had been a lid
+over every port), the Boar's plow wider with a crest behind the spikes, the Prairie Dog's guns sunk
+into the drum's flanks, the Goshawk's cannon vented with cut pockets (`b.cut_box`) and a glowing
+groove, and **turret joints** (`joint_turret`, `_l`/`_r`) on the Boar, the Prairie Dog, the Clydesdale
+and the Badger, which the view traverses about their up axis (`MechView3D.joint_axis`); the tenth
+round: the Armadillo's insets halfway back up, the Badger's shoulders symmetrical gimbals (the deck
+box keeps no joint), the Clydesdale's mortar and howitzer out and gimballed with its bare mounts on
+the head's cheeks and behind the head, the Boar's crest leaning back, the Goshawk's vents deeper with
+a strip of glow at the floor, the Prairie Dog's launcher the class rack; the eleventh round: the
+Armadillo's rear barrels a fixed length from the mount, the Badger's mounts on the gimbals, the
+Clydesdale's turrets, mortar and howitzer on pedestals clear of the lance, the Boar's tusks grown,
+the Goshawk's glows filling their cuts; the twelfth: the Armadillo's rear ports shallow sockets, the
+Clydesdale's turrets back down (they turn outward only) with the mortar and howitzer on the deck, the
+Boar's tusks apart; the thirteenth: the Armadillo's collars seated in the shell, the Clydesdale's
+turrets lower and forward with the mortar and howitzer mounts at one height. The Prairie Dog, the
+Badger, the Goshawk and the Boar are done (Ryan). Ryan asked
 whether hand edits in Blender can be taken: yes through `forge.py export <id>`, but the models are
 built from code and any rebuild overwrites the working file, so a hand edit has to be re-expressed in
 `models_low.py` to survive; the way that works is a note or a picture, as the Boar's clip was. `tools/hero_shot.gd` renders bare now
