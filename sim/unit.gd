@@ -71,7 +71,9 @@ var facing: int = 0
 var faction: String = ""
 var foe_id: String = ""      # content id of the foe this pack is made of
 var strength: int = 6        # how many foes the pack holds
-var aggro: bool = false      # a hunter: paths to the biggest catch its zone can make, not the gate
+var behaviour: String = "push"   # push: the gate, committed at the round's start; aggressive: the gate, unless a machine ends within its reach; hunt: one machine, chased (decided 1 October)
+var hunts: String = "nearest"    # a hunter's caveat: nearest, weakest, strongest, slowest or fastest
+var prey: int = 0                # a hunter's locked machine, by unit id; 0 until it has picked one
 var elite: bool = false      # this unit is the faction's boss
 var zone: int = 1            # the pack's engagement zone: it fights every machine within this many hexes of where it ends its move (decided 1 October)
 

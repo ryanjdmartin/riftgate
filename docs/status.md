@@ -262,10 +262,12 @@ write content would fight.
 result of the plan before Resolve; every pack carries an engagement zone from its foe
 type (`zone` in `content/foes.json`; `Unit.zone`), drawn red where it will stop, and every
 machine inside it fights it, a machine inside two zones joining those fights into one; a
-pack stops only where a body stands in its path, and nothing else holds it; hunters
-(`hunts`) path to the hex whose zone catches most, the rest push for the gate (decided and
-built 1 October, bible section 5; the sandbox that drew the options is at
-https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg). Resolve plays the
+pack stops only where a body stands in its path, and nothing else holds it; every pack
+commits its route when the round opens (`behaviour`: a pusher walks it, an aggressive pack
+turns for a machine that ends inside its reach, the dashed ring, a hunter locks one machine
+by its caveat, `hunts`, and chases it; decided and built 1 October, bible section 5; the
+sandbox that drew the zone options is at https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg).
+Resolve plays the
 moves, a CONTACT band, a panel of contacts; ENGAGE cuts to the skirmish, the dice fight on
 the enemy's ground, four columns, every blow heard, the enemy's turn replayed blow by
 blow; Back applies it. The boss's contact takes the phase: no panel, a reveal, the family's
@@ -397,7 +399,7 @@ count in motion (`STRIPE`, `SPOKES`), the sound set, the grid at the hotter gain
 **Open, in order.** The task list is `docs/todo.md`, one line a task, grouped by who
 moves it and ticked in the commit that lands it; this is the order to take them in.
 
-1. Ryan's play test of the engagement zones (the radii, hunters' reach, how big fights come out), and his phone reads.
+1. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
 2. The planned engine pieces, in whichever order he wants to play first.
 3. Ryan's text for the new machines and components, and the flagged names.
 4. The discuss-first decisions in the Ryan section, the economy last.

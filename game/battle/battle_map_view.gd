@@ -404,6 +404,15 @@ func _draw() -> void:
 		var ends: Dictionary = pv["ends"]
 		_pack_zones(res.skirmishes, ends, field.packs())
 		for sq in field.packs():
+			# What a pack will react to (decided 1 October), drawn before the plan is touched:
+			# an aggressive pack's reach as a ring, a hunter's lock on its prey.
+			if sq.behaviour == "aggressive":
+				_reach_ring(sq)
+			elif sq.behaviour == "hunt":
+				var prey := field.unit_by_id(sq.prey)
+				var hunt_path: Array = res.intents.get(sq.id, [])
+				if prey != null and (hunt_path.is_empty() or hunt_path[hunt_path.size() - 1] != ends.get(prey.id, prey.pos)):
+					_prey_lock(ends.get(prey.id, prey.pos))
 			var path: Array = res.intents.get(sq.id, [])
 			if path.is_empty():
 				continue
@@ -1095,6 +1104,30 @@ func _pack_zones(groups: Array, at: Dictionary, free_packs: Array) -> void:
 		for h in region.keys():
 			_fill(h, Color(Palette.ENEMY, (0.26 + 0.08 * breath) * a))
 		_region_outline(region, Color(Palette.ENEMY, 0.9 * a), 2.5)
+
+
+## An aggressive pack's reach (decided 1 October): every hex its zone can fall on this
+## round, as a dashed red border crawling round the region, so it reads apart from a
+## zone's solid outline on the ground. End inside it and the pack comes for you.
+func _reach_ring(sq: Unit) -> void:
+	var region: Dictionary = field.reach_hexes(sq)
+	var col := Color(Palette.ENEMY, 0.75)
+	for h in region.keys():
+		var nb := Hex.neighbors(h)
+		var pts := Hex.corners(center(h), HEX_SIZE - 2.0)
+		for i in range(6):
+			var across: Vector2i = nb[(6 - i) % 6]
+			if not region.has(across) and field.map.has(across):
+				_dashed_line(pts[i], pts[(i + 1) % 6], col, HEX_SIZE * 0.18, fmod(_ring_t * 1.2, 2.0))
+
+
+## A hunter's lock on its prey: the display's target rings in the enemy's register on the
+## hex the prey will stand on, when the hunter's route does not already end there.
+func _prey_lock(h: Vector2i) -> void:
+	_field_hot = ENEMY_HOT
+	_field_deep = Color(Palette.ENEMY, 0.5)
+	_field_rings(center(h), DEST_RING, -1.0, 0.0)
+	draw_circle(center(h), 3.5, ENEMY_HOT)
 
 
 ## The hexes within a pack's zone of its anchor at `anchor`: pure hex distance from any of

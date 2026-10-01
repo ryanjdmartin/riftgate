@@ -119,7 +119,7 @@ func _draw() -> void:
 	draw_string(font, Vector2(24.0, 60.0), header, HORIZONTAL_ALIGNMENT_LEFT, -1, 22, Color("e8e4d6"))
 	var y := 92.0
 	for sq in field.packs():
-		var line := "%s  x%d  %s" % [sq.display_name, sq.strength, "hunting" if sq.aggro else "to the gate"]
+		var line := "%s  x%d  %s" % [sq.display_name, sq.strength, sq.behaviour]
 		draw_string(font, Vector2(24.0, y), line, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color("c9a0a0"))
 		y += 18.0
 	draw_string(font, Vector2(24.0, 1240.0), "drag: scroll   tap: next seed", HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color("8a94a0"))

@@ -118,16 +118,17 @@ func test_gate_takes_damage_when_pack_arrives() -> void:
 	assert_eq(sq.pos, front, "pack holds position at the gate")
 
 
-func test_aggro_pack_hunts_nearest_mech() -> void:
+func test_a_hunter_locks_the_nearest_mech_and_closes_on_it() -> void:
 	var f := _field()
 	var sq := f.add_unit(Unit.pack(1, "hunters", _o(3, 3), "demonic", 2))
-	sq.aggro = true
+	sq.behaviour = "hunt"
 	var near := f.add_unit(Unit.mech(2, "A", _o(3, 6), 0))
 	f.add_unit(Unit.mech(3, "B", _o(3, 11), 0))
 	f.compute_intents()
+	assert_eq(sq.prey, near.id, "locked on the nearer machine")
 	var path: Array = f.intents[1]
 	var last: Vector2i = path[path.size() - 1]
-	assert_true(Hex.distance(last, near.pos) < Hex.distance(sq.pos, near.pos), "closes on the nearer mech")
+	assert_true(Hex.distance(last, near.pos) < Hex.distance(sq.pos, near.pos), "closes on it")
 
 
 func test_skirmish_groups_connected_units() -> void:
@@ -519,43 +520,141 @@ func test_packs_never_join_through_each_other() -> void:
 	assert_eq(groups[0].size(), 3, "of both packs and the machine: the formation's own depth")
 
 
-func test_a_hunter_goes_where_its_zone_catches_most() -> void:
-	# Hunters (decided 1 October): of the hexes it can reach, the one whose zone holds the
-	# most machines, ties toward the gate.
+func test_an_aggressive_pack_commits_to_the_gate_and_turns_for_machines_in_its_reach() -> void:
+	# Decided 1 October: an aggressive pack commits to the gate when the round opens; at
+	# the move, a machine inside its reach (its move plus its zone) turns it toward the hex
+	# within its move whose zone holds the most machines, ties toward the gate.
 	var f := _field(7, 14)
 	var sq := f.add_unit(Unit.pack(1, "ghouls", _o(3, 3), "undead", 2))
-	sq.aggro = true
+	sq.behaviour = "aggressive"
 	var a := f.add_unit(Unit.mech(2, "A", _o(3, 6), 0))
 	var b := f.add_unit(Unit.mech(3, "B", _o(4, 6), 0))
 	f.add_unit(Unit.mech(4, "C", _o(1, 4), 0))   # nearer, but alone
 	f.compute_intents()
-	var path: Array = f.intents[sq.id]
-	assert_eq(path[path.size() - 1], _o(3, 5), "ends on the hex beside both A and B")
+	var committed: Array = f.intents[sq.id]
+	assert_true(Hex.distance(committed[committed.size() - 1], f.map.gate) < Hex.distance(sq.pos, f.map.gate), "the committed route heads for the gate")
+	var reach := f.reach_hexes(sq)
+	assert_true(reach.has(a.pos) and reach.has(b.pos), "the pair stands inside its reach")
 	var res := f.resolve_phase({})
+	var walked: Array = res.intents[sq.id]
+	assert_eq(walked[walked.size() - 1], _o(3, 5), "it turned for the hex beside both A and B")
 	assert_eq(res.skirmishes.size(), 1, "one fight")
 	assert_true(res.skirmishes[0].has(a) and res.skirmishes[0].has(b), "with the pair, not the loner")
 	assert_eq(res.skirmishes[0].size(), 3, "the pack and the two")
-	# A hunter that can reach nobody pushes for the gate like the rest.
+	# Nobody in reach: it walks the committed route.
 	var f2 := _field(7, 14)
 	var sq2 := f2.add_unit(Unit.pack(1, "ghouls", _o(3, 2), "undead", 2))
-	sq2.aggro = true
-	f2.add_unit(Unit.mech(2, "A", _o(3, 11), 0))
-	var before := Hex.distance(sq2.pos, f2.map.gate)
-	f2.resolve_phase({})
-	assert_eq(Hex.distance(sq2.pos, f2.map.gate), before - 2, "two hexes nearer the gate")
+	sq2.behaviour = "aggressive"
+	var far := f2.add_unit(Unit.mech(2, "A", _o(3, 11), 0))
+	f2.compute_intents()
+	assert_false(f2.reach_hexes(sq2).has(far.pos), "out of reach")
+	var committed2: Array = (f2.intents[sq2.id] as Array).duplicate()
+	var res2 := f2.resolve_phase({})
+	assert_eq(res2.intents[sq2.id], committed2, "the committed route, unchanged")
+	assert_eq(sq2.pos, committed2[committed2.size() - 1], "walked to its end")
+
+
+func test_a_pusher_walks_what_it_committed_to_whatever_the_machines_do() -> void:
+	# Decided 1 October: the enemy commits first. A machine that moves beside a pusher's
+	# path after the round opened changes nothing: the route the player read is the route.
+	var f := _field(7, 14)
+	var sq := f.add_unit(Unit.pack(1, "ghouls", _o(3, 2), "undead", 3))
+	var m := f.add_unit(Unit.mech(2, "A", _o(0, 12), 3))
+	f.compute_intents()
+	var committed: Array = (f.intents[sq.id] as Array).duplicate()
+	var beside: Vector2i = Vector2i(-9999, -9999)
+	for n in Hex.neighbors(committed[committed.size() - 1]):
+		if f.can_stand(m, n) and not committed.has(n):
+			beside = n
+			break
+	m.pos = _o(2, 8)   # within reach of the route's end, so an aggressive pack would turn
+	var res := f.resolve_phase({m.id: f.route_to(m, beside)})
+	assert_eq(res.intents[sq.id], committed, "the same route")
+	assert_eq(sq.pos, committed[committed.size() - 1], "walked to its end")
+
+
+func test_a_hunter_picks_its_prey_by_its_caveat_and_keeps_it() -> void:
+	var f := _field(7, 14)
+	var sq := f.add_unit(Unit.pack(1, "brutes", _o(3, 2), "demonic", 3))
+	sq.behaviour = "hunt"
+	var slow := f.add_unit(Unit.mech(2, "Armadillo", _o(1, 9), 1))
+	slow.hull = 90
+	slow.shield = 30
+	var weak := f.add_unit(Unit.mech(3, "Sparrowhawk", _o(3, 9), 5))
+	weak.hull = 20
+	weak.shield = 10
+	var mid := f.add_unit(Unit.mech(4, "Badger", _o(5, 9), 3))
+	mid.hull = 60
+	mid.shield = 20
+	sq.hunts = "slowest"
+	assert_eq(f.pick_prey(sq), slow, "the slowest")
+	sq.prey = 0
+	sq.hunts = "fastest"
+	assert_eq(f.pick_prey(sq), weak, "the fastest")
+	sq.prey = 0
+	sq.hunts = "weakest"
+	assert_eq(f.pick_prey(sq), weak, "the weakest, by hull and shield")
+	sq.prey = 0
+	sq.hunts = "strongest"
+	assert_eq(f.pick_prey(sq), slow, "the strongest")
+	sq.prey = 0
+	sq.hunts = "nearest"
+	weak.pos = _o(3, 7)   # a step nearer than the other two
+	assert_eq(f.pick_prey(sq), weak, "the nearest")
+	weak.pos = _o(3, 9)
+	# Single-minded: the lock holds while the prey lives, however the field changes.
+	sq.hunts = "weakest"
+	sq.prey = 0
+	f.pick_prey(sq)
+	weak.hull = 200
+	assert_eq(f.pick_prey(sq), weak, "still the Sparrowhawk, now the strongest")
+	f.units.erase(weak)
+	assert_eq(f.pick_prey(sq), mid, "the prey gone, it picks again: the weakest left")
+	# A stealth machine is never picked.
+	var f2 := _field(7, 14)
+	var sq2 := f2.add_unit(Unit.pack(1, "brutes", _o(3, 2), "demonic", 3))
+	sq2.behaviour = "hunt"
+	var st := f2.add_unit(Unit.mech(2, "Dingo", _o(3, 4), 3))
+	st.traits = ["stealth"]
+	var open := f2.add_unit(Unit.mech(3, "Badger", _o(3, 10), 3))
+	assert_eq(f2.pick_prey(sq2), open, "the nearest machine that can be seen")
+
+
+func test_a_hunter_chases_where_its_prey_ends() -> void:
+	# The lock is chosen when the round opens; the chase at the move goes to where the
+	# prey now stands. Prey within the hunter's move: it stops in front of it, and the
+	# zone makes the fight. The preview sees the same.
+	var f := _lane()
+	var sq := f.add_unit(Unit.pack(1, "brutes", _o(1, 2), "demonic", 3))
+	sq.behaviour = "hunt"
+	var prey := f.add_unit(Unit.mech(2, "Badger", _o(1, 5), 3))
+	f.compute_intents()
+	assert_eq(sq.prey, prey.id, "locked")
+	var routes := {prey.id: f.route_to(prey, _o(1, 6))}   # a step away down the lane
+	var pv: Battlefield.PhaseResult = f.preview_phase(routes)["result"]
+	var shown: Array = pv.intents[sq.id]
+	assert_eq(shown[shown.size() - 1], _o(1, 6), "the preview's chase ends on the prey's new hex")
+	assert_eq(pv.skirmishes.size(), 1, "and sees the fight")
+	var res := f.resolve_phase(routes)
+	assert_eq(prey.pos, _o(1, 6), "the prey moved")
+	assert_eq(sq.pos, _o(1, 5), "the hunter stopped in front of it")
+	assert_true(res.blocked.has(sq.id), "blocked by the prey's body")
+	assert_eq(res.skirmishes.size(), 1, "the fight")
+	assert_eq(sq.prey, prey.id, "the lock holds for next round")
 
 
 func test_a_pack_is_dressed_from_its_foe_type() -> void:
 	# Zone, hunting and move come from the content, never from a hardcoded id.
 	var f := _field(7, 14)
-	f.foe_profiles = {"caster": {"zone": 3, "hunts": true, "movespeed": 4}}
+	f.foe_profiles = {"caster": {"zone": 3, "behaviour": "hunt", "hunts": "slowest", "movespeed": 4}}
 	var sq := f.add_unit(f.dress_pack(Unit.pack(1, "casters", _o(3, 3), "undead", 2, 4, "caster")))
 	assert_eq(sq.zone, 3, "zone from the profile")
-	assert_true(sq.aggro, "hunts from the profile")
+	assert_eq(sq.behaviour, "hunt", "behaviour from the profile")
+	assert_eq(sq.hunts, "slowest", "and its caveat")
 	assert_eq(sq.movespeed, 4, "move from the profile")
 	var plain := f.add_unit(f.dress_pack(Unit.pack(2, "ghouls", _o(1, 3), "undead", 2, 4, "ghoul")))
 	assert_eq(plain.zone, 1, "no profile: the engine's default zone")
-	assert_false(plain.aggro, "and no hunting")
+	assert_eq(plain.behaviour, "push", "and it pushes")
 	assert_eq(plain.movespeed, 2, "and its own move")
 
 

@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 99 implemented, 11 planned, 0 idea.
+Status: 100 implemented, 11 planned, 0 idea.
 
 ## Resource
 
@@ -121,6 +121,7 @@ Status: 99 implemented, 11 planned, 0 idea.
 | **Body block** | A pack stops at the first hex on its path occupied by a blocking unit. Flyers do not block; packs pass through their hex but never land on it. | implemented |
 | **Contact** | After all movement, every machine standing inside a pack's zone fights that pack. A machine inside two packs' zones joins their fights into one; that is the only way fights join. Multiple skirmishes resolve one at a time, in the order you choose. | implemented |
 | **Engagement zone** | Every pack has a zone, a radius in hexes around where it ends its move, drawn on the map before Resolve. Stand inside it and you fight that pack. Nothing else decides who fights: a pack stops only where a body stands in its path, and a machine beside its path is walked past unless the zone reaches it. | implemented |
+| **Behaviour** | Every pack commits its route when the round opens; the route you read is the route, and only a body in its path cuts it. A pusher walks it to the gate whatever you do. An aggressive pack does the same unless a machine ends inside its reach, the dashed ring: then it comes for the biggest catch it can make. A hunter locks one machine when it spawns, by its caveat (the nearest, weakest, strongest, slowest or fastest), wears the target rings on it, and chases wherever that machine ends until one of them is dead. | implemented |
 | **Pack** | An enemy hex is a pack: one foe type times a strength. A skirmish's enemy composition is every pack whose zone your machines stand in, so the rift's formations and how you come at them decide what you fight. Bosses are single three-hex units. | implemented |
 | **Footprint** | A unit covers one or more hexes. A boss covers three in a triangle. Every footprint hex blocks, touches for contact, and is a tap target. Packs and mechs stay single-hex. | implemented |
 | **Structure** | Gate and rift hexes are structures wider than one hex. Nobody stands on them. A pack whose path reaches any gate hex strikes the gate. | implemented |
@@ -225,7 +226,8 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Massive** (implemented): Cleave treats it as a front-rank neighbour; pierce cannot hit anything behind it because nothing is.
 - **Intent** (implemented): Aggro is a fixed flag. Should be a behaviour per foe type.
 - **Contact** (implemented): No participant cap. May need one for phone readability. Decided 1 October: zones on the packs, measured from where each stops; nothing chains.
-- **Engagement zone** (implemented): Decided 1 October after the touching rule (22 September) and the engagement range (28 September). Radii are content on the foe type: front-rank 1, back-rank 3, bosses 2, placeholders. Hunters path to the hex whose zone catches most. Dropped on the way: chaining in any form, a touch rule between packs, double-booking a machine into two fights, the zone as the stop.
+- **Engagement zone** (implemented): Decided 1 October after the touching rule (22 September) and the engagement range (28 September). Radii are content on the foe type: front-rank 1, back-rank 3, bosses 2, placeholders. Dropped on the way: chaining in any form, a touch rule between packs, double-booking a machine into two fights, the zone as the stop.
+- **Behaviour** (implemented): Decided 1 October: the enemy commits first, so no pack re-aims at the plan without a drawn trigger. Placeholders: the ghoul aggressive, the brute hunts the strongest at move 3; a dedicated hunter is a foe to name.
 - **Pack** (implemented): The rift should seed and spawn formations, not single packs (Ryan, 1 October): to design.
 - **Footprint** (implemented): Footprints do not rotate with facing.
 - **Structure** (implemented): The rift does nothing yet beyond marking where packs spawn.

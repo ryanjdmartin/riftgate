@@ -8,8 +8,9 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 
 ## Ryan
 
-- [x] Decide the engagement rule (1 October: every pack has a zone from its foe type, a machine inside it fights it, a machine in two zones merges the fights, nothing chains, no zone of control, hunters path to the biggest catch; built the same day, bible section 5)
-- [ ] Play-test the engagement zones: the radii (front 1, back 3, boss 2 are placeholders), whether hunters need more move than a machine so a scout cannot dance-kite one, whether fights come out big enough; the sandbox at https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg draws the rule
+- [x] Decide the engagement rule (1 October: every pack has a zone from its foe type, a machine inside it fights it, a machine in two zones merges the fights, nothing chains, no zone of control; the enemy commits its routes first, aggressive packs turn for a machine inside their reach ring, hunters lock a machine by a caveat and chase it; built the same day, bible section 5)
+- [ ] Play-test the engagement zones and the behaviours: the radii (front 1, back 3, boss 2 are placeholders), the ghoul as aggressive and the brute hunting the strongest at move 3, whether a hunter needs more move than a machine, whether fights come out big enough; the sandbox at https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg draws the zone rule
+- [ ] Name a dedicated hunter foe (Ryan, 1 October: the brute's hunt is a placeholder; a stalker type with a caveat of its own, proposed in chat first)
 - [ ] Formations (Ryan, 1 October): seed the opening enemy formations as threatening shapes with a front and a back, and have the rift spawn formations rather than single packs; shapes proposed in chat first
 - [ ] Judge on the phone after a re-export: the machines' outline at 2.6 (`MechView3D.OUTLINE`; 1.0 was the thin), the intent field in motion (stripe width `STRIPE`, ring spokes `SPOKES`, the pulse), the machine's lock's contrast (the light at half), the orange pulse of the gate's hazard glyphs, the sound set, the grid at `GRID_GAIN_PHONE`
 - [x] Judged 29 September on the phone: 60 fps with the fine map and the per-hex props, the text clean, the board and log button, the selection marks, the routes, the props hiding, the seam band, the far blur

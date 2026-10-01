@@ -540,10 +540,22 @@ func _on_unit_held(u: Unit) -> void:
 		var db := ContentDB.load_default()
 		var foe_name := str(db.foes.get(u.foe_id, {}).get("name", u.foe_id))
 		if u.elite:
-			text = "%s\nmassive · zone %d · %s" % [u.display_name, u.zone, "hunting" if u.aggro else "to the gate"]
+			text = "%s\nmassive · zone %d · %s" % [u.display_name, u.zone, _behaviour_text(u)]
 		else:
-			text = "%s\n%s ×%d · move %d · zone %d\n%s" % [u.display_name, foe_name, u.strength, u.movespeed, u.zone, "hunter: goes where its zone catches most" if u.aggro else "marching on the gate"]
+			text = "%s\n%s ×%d · move %d · zone %d\n%s" % [u.display_name, foe_name, u.strength, u.movespeed, u.zone, _behaviour_text(u)]
 	_show_details(text, _map.position + _map.to_screen(_map.center(u.pos)))
+
+
+## What a pack is doing, in the hold's words: the three behaviours (decided 1 October).
+func _behaviour_text(u: Unit) -> String:
+	match u.behaviour:
+		"hunt":
+			var prey := battle.field.unit_by_id(u.prey)
+			return "hunts the %s: %s" % [u.hunts, prey.display_name if prey != null else "nobody yet"]
+		"aggressive":
+			return "aggressive: comes for anything within its reach"
+		_:
+			return "marching on the gate"
 
 
 func _on_hold_released() -> void:

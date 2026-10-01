@@ -218,11 +218,14 @@ there; tap the mech again to clear its route. Routes are planned in the order th
 plotted, so a later machine may end where an earlier one is leaving; re-plotting a machine
 puts it last. Hold any unit for its numbers; double-tap it for its codex; tap the gate for
 its integrity. Red lines are where each pack goes this round, from the plan as it stands:
+every pack commits its route when the round opens and only a body in its path cuts it;
 every pack carries an engagement zone (its foe type's radius, drawn red where the pack will
 stop: a thin outline when nobody stands in it, tinted and heavily outlined when a fight is
-in it), a pack stops only where a body stands in its path, every machine inside a pack's
-zone fights it, and a machine inside two zones joins those fights into one, so who is in
-is never a surprise. The contact is marked before Resolve with who is in it and the ground
+in it), every machine inside a pack's zone fights it, and a machine inside two zones joins
+those fights into one. Pushers walk their route whatever you do; an aggressive pack turns
+for anything that ends inside its reach, the dashed ring; a hunter wears the target rings
+on the machine it has locked and chases it. So who is in is never a surprise. The contact
+is marked before Resolve with who is in it and the ground
 it will be fought on. Resolve plays the moves, then a CONTACT band, then a panel of the
 contacts with portraits; ENGAGE dives the map onto the fight and hands over to the skirmish
 screen. Its Back button applies the result: wrecks leave the map, packs shrink to their
