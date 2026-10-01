@@ -27,7 +27,7 @@ the page shows. Ryan's intent: the session interprets what he sends; it is not d
 earlier passes folded under each, and a Classes section for the silhouette classes and four
 refits; the third pass of 30 September is current) and the listening page
 (https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9; since 30 September, evening, the effects'
-second pass from `tools/soundforge/fx_sketches.py`, every music round's file removed from it;
+second pass from `tools/soundforge/fx_sketches.py`, re-cut to Ryan's first notes on 1 October, every music round's file removed from it;
 the music rounds re-render from `phone_sketches.py` if ever wanted again). Every duplicate and superseded page in A
 was deleted on Ryan's word this evening (the first bible link, the Second Passes page, the HUD
 swatches, a second codex, a second sketches page). **Sharing:** the nameplate, codex and
@@ -383,9 +383,18 @@ nothing else. Sections: the console (one key grammar, E-tuned replies, the die a
 mechanism, an intent tick), the iron (blows by weapon shape with plasma for the Arsenal,
 hit/block/kill by the struck maker's metal, footfalls by silhouette), the rift (a blow, a
 heavy blow and an arrival per family, a boss reveal), the red (contact, dive, gate, victory,
-defeat). Nothing is shipped; a pick lands as a recipe in `forge.py` and, where the page says,
-a small hook (shape, maker, faction, silhouette) in `skirmish_screen.gd`, `battle_screen.gd`
-and `sound.gd`. Next: Ryan's notes by section and row.
+defeat). **Ryan's first notes landed 1 October as a re-cut on the same page** (the bible's
+sound row has them; rows wear a "re-cut" or "new" tag): the console with the beep leading
+and the key under it (more beeps, fewer clicks), the barrel's breech later, the rack's flight
+longer, the blade longer, the laser much longer, the plasma with a windup, the deflector
+ringing on, a punch (new; metal into flesh, no plate), blocks that glance instead of knocking
+hollow, a hit on a standing shield (new, `shield_hit`), and a two-second kill with a second
+blast and the hull hitting the ground. Nothing is shipped; a pick lands as a recipe in
+`forge.py` and, where the page says, a small hook (shape, maker, faction, silhouette, a word
+for blunt melee, the replay telling shield hit from block from hit) in `skirmish_screen.gd`,
+`battle_screen.gd` and `sound.gd`. The sketch script encodes AAC with `ffmpeg` where there
+is no `afconvert`, so a cloud session can render and republish the page (36 files changed on
+1 October; the rest kept). Next: Ryan's listen of the re-cut, then picks into the forge.
 
 **How the listening page worked for the music** (the phone sketches, account A's page, 29
 September; the page block above owns the account rule). Ryan judges the music on his phone,

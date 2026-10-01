@@ -28,6 +28,16 @@ The idea: one sound world in the three registers the screen already has.
 The rules kept: nothing sweeps in pitch (a filter may move, a loudness may grow); damped
 knocks, never a bell; weight in the 150 to 800 Hz band the phone can play.
 
+Ryan's first notes (1 October), each a change here, still nothing shipped: the console wants
+more beeps and fewer clicks (the clicks are rightly digital, just overused, and poor on the
+speaker), so the reply leads every press and the key sits under it, lower and softer, and the
+roll scrambles in tones; the barrel's breech cycles well after the shot; the rack's salvo
+flies before it lands; the blade runs longer; the laser much longer, a beam held on the plate;
+the plasma winds up before it fires; the deflector rings on after it seals; a punch for the
+blunt melee weapons (metal into flesh, hard); a block deflects rather than knocks hollow; a
+blow a standing shield takes has a sound of its own; and a machine dying is the big deal it
+should be.
+
     tools/spriter/.venv/bin/python tools/soundforge/fx_sketches.py            # everything into out/fx
     tools/spriter/.venv/bin/python tools/soundforge/fx_sketches.py singles    # the sounds alone
     tools/spriter/.venv/bin/python tools/soundforge/fx_sketches.py sequences  # the rounds over the music
@@ -60,48 +70,56 @@ mix, at, room = F.mix, F.at, F.room
 # ---------------------------------------------------------------- the console
 
 def key(weight=1.0, pitch=1.0):
-    """A membrane key under glass: a damped tuk with a dry front. No relay spring."""
-    k = F.knock([640.0 * pitch, 1180.0 * pitch], [0.007, 0.004], [1.0, 0.5], noise_gain=0.5)
-    return F.bp(k, 300.0, 5000.0) * 0.9 * weight
+    """A membrane key under glass: a damped tuk with a dry front. No relay spring. Since 1
+    October it sits under the reply rather than leading it: its partials lower, so the
+    speaker plays them, its front softer, and most presses use it once or not at all (Ryan:
+    the clicks are rightly digital, just overused, and poor on the speaker)."""
+    k = F.knock([420.0 * pitch, 760.0 * pitch], [0.009, 0.005], [1.0, 0.45], noise_gain=0.25)
+    return F.bp(k, 250.0, 3500.0) * 0.6 * weight
 
 
 def reply(f, dur, gain=0.5):
-    return F.tone(f, dur, gain, edge=0.35)
+    """The console's beep: a flat tone on the music's E, no glide, a soft front. Since 1
+    October the voice of every press; a second voice an octave up, quiet, so it carries on a
+    phone speaker without getting shrill."""
+    return mix(F.tone(f, dur, gain, edge=0.35), F.tone(f * 2.0, dur, gain * 0.18, edge=0.2))
 
 
 def c_ui_tap():
-    return mix(key(1.0), reply(B3, 0.045, 0.4))
+    # A beep on B3, the key under it, quiet.
+    return mix(reply(B3, 0.06, 0.5), key(0.5))
 
 
 def c_ui_back():
-    return mix(key(0.9, 0.85), reply(G3, 0.06, 0.4))
+    # The beep lower on G3 and a hair longer, the key quieter still.
+    return mix(reply(G3, 0.08, 0.5), key(0.4, 0.9))
 
 
 def c_plot():
-    # The route taken: the console works, the key, the reply, and a second softer dot (the
-    # route is two ends).
-    b = F.chatter(0.1, 0.7)
-    b = at(b, mix(key(1.0), reply(E4, 0.06, 0.45)), 0.11)
-    return at(b, reply(E4, 0.04, 0.25), 0.2)
+    # The route taken: two beeps, E4 then B3 (a route is two ends), a breath of the console
+    # working first, one key under the first beep.
+    b = F.chatter(0.06, 0.45)
+    b = at(b, mix(reply(E4, 0.05, 0.5), key(0.5)), 0.07)
+    return at(b, reply(B3, 0.05, 0.4), 0.15)
 
 
 def c_die_pick():
-    # Lifted from its socket: the key, a plate lift, a short high reply.
-    b = mix(key(1.1, 1.1), F.knock([900.0, 1500.0], [0.01, 0.006], [1.0, 0.4], noise_gain=0.3) * 0.5)
-    return at(b, reply(E4, 0.04, 0.35), 0.01)
+    # Lifted from its socket: a short high beep on E4, the plate lifting under it (a light
+    # knock, no key).
+    return mix(reply(E4, 0.05, 0.5), F.knock([700.0, 1200.0], [0.01, 0.006], [1.0, 0.4], noise_gain=0.2) * 0.35)
 
 
 def c_die_drop():
-    # Seated: no tone. A damped knock, a little body, the socket's click.
-    b = mix(F.knock([300.0, 520.0, 840.0], [0.02, 0.014, 0.01], [1.0, 0.6, 0.3], noise_gain=0.4) * 0.9,
-            F.body(260.0, 110.0, 0.05, click=0.4) * 0.45)
-    return at(b, key(0.6, 0.9), 0.012)
+    # Seated: still no tone (the one press that is a thing put down, not a press). The knock
+    # lower and rounder than it was, and the socket's click gone.
+    return mix(F.knock([240.0, 420.0, 700.0], [0.022, 0.015, 0.01], [1.0, 0.55, 0.25], noise_gain=0.2) * 0.9,
+               F.body(240.0, 105.0, 0.05, click=0.2) * 0.5)
 
 
 def c_die_roll():
-    # The readout's digit scramble: ticks at the flip rate, thinning, each with a flat
-    # tone off any scale; the console under load under it; then the brackets collapse
-    # shut, two knocks closing, and the number settles on a low reply.
+    # The readout's digit scramble as beeps: flat tones off any scale at the flip rate,
+    # thinning, no ticks under them; the console under load; then one knock as the brackets
+    # close and the number settles on G3.
     dur = 0.46
     n = n_of(dur)
     hum = F.lp(F.sat(F.saws(E2, n, (0.996, 1.0, 1.004)), 1.5), 700.0) * F.env_pts(n, [(0.0, 0.0), (0.03, 0.35), (0.3, 0.3), (0.42, 0.0)]) * 0.35
@@ -109,41 +127,40 @@ def c_die_roll():
     when = 0.0
     k = 0
     while when < 0.3:
-        tk = F.tick_click() * 1.4
-        tn = F.tone(float(F.RNG.choice(F.CHATTER_PITCHES)), 0.012, edge=0.6) * F.RNG.uniform(0.3, 0.7)
-        b = at(b, mix(tk, tn), when)
+        tn = F.tone(float(F.RNG.choice(F.CHATTER_PITCHES)) * 2.0, 0.02, edge=0.5) * F.RNG.uniform(0.35, 0.6)
+        b = at(b, tn, when)
         when += 0.028 + 0.004 * k
         k += 1
-    b = at(b, F.knock([480.0, 860.0], [0.012, 0.008], [1.0, 0.5], noise_gain=0.5) * 0.8, 0.33)
-    b = at(b, F.knock([380.0, 640.0], [0.014, 0.009], [1.0, 0.5], noise_gain=0.5) * 0.9, 0.355)
-    return at(b, reply(G3, 0.12, 0.6), 0.37)
+    b = at(b, F.knock([380.0, 640.0], [0.014, 0.009], [1.0, 0.5], noise_gain=0.3) * 0.7, 0.34)
+    return at(b, reply(G3, 0.14, 0.6), 0.36)
 
 
 def c_die_lock():
-    # The corners snap on: the key, then a heavier key with the latch's casing, the reply,
-    # and a short hold hum.
-    b = key(0.8)
-    b = at(b, mix(key(1.2, 0.8), F.knock([420.0, 700.0], [0.016, 0.01], [1.0, 0.5], noise_gain=0.2) * 0.6, reply(B3, 0.08, 0.5)), 0.04)
+    # The corners snap on: two beeps, B3 then E4 (the second the latch catching), one key
+    # with the latch's casing under the first, and a short hold hum on E3.
+    b = mix(reply(B3, 0.05, 0.5), key(0.9, 0.85), F.knock([420.0, 700.0], [0.016, 0.01], [1.0, 0.5], noise_gain=0.15) * 0.4)
+    b = at(b, reply(E4, 0.08, 0.5), 0.07)
     n = n_of(0.16)
     hold = F.lp(F.harmonics(E3, n, [1.0, 0.4, 0.2]), 1200.0) * F.env_pts(n, [(0.0, 0.0), (0.02, 0.3), (0.12, 0.25), (0.16, 0.0)]) * 0.3
-    return at(b, hold, 0.06)
+    return at(b, hold, 0.09)
 
 
 def c_resolve():
-    # The plan committed: the console works, the lines lock in one by one (three keys), the
-    # heavy latch, the reply low and long.
-    b = F.chatter(0.14, 0.8)
-    for k, when in enumerate([0.12, 0.16, 0.2]):
-        b = at(b, key(0.9 + 0.15 * k, 1.0 - 0.08 * k), when)
-    b = at(b, mix(F.thud(170.0, 50.0, 0.22, click=1.0, drive=3.5) * 0.75,
-                  F.knock([330.0, 560.0, 900.0], [0.03, 0.02, 0.012], [1.0, 0.5, 0.3], noise_gain=0.3) * 0.5), 0.25)
-    return room(at(b, reply(E3, 0.22, 0.55), 0.27), decay=0.16, mix=0.12)
+    # The plan committed: the console works, the lines lock in as three beeps climbing (G3,
+    # B3, E4) rather than three keys, the one heavy latch, the reply low and long on E3.
+    b = F.chatter(0.1, 0.6)
+    for k, (f, when) in enumerate([(G3, 0.1), (B3, 0.15), (E4, 0.2)]):
+        b = at(b, reply(f, 0.045, 0.4 + 0.05 * k), when)
+    b = at(b, mix(F.thud(170.0, 50.0, 0.22, click=0.8, drive=3.5) * 0.75,
+                  F.knock([330.0, 560.0, 900.0], [0.03, 0.02, 0.012], [1.0, 0.5, 0.3], noise_gain=0.25) * 0.5), 0.26)
+    return room(at(b, reply(E3, 0.26, 0.55), 0.28), decay=0.16, mix=0.12)
 
 
 def c_intent():
-    # The brackets collapsing onto a foe's intent as its number settles: a crushed tick
-    # (the console reading the other side) and a small knock.
-    return mix(F.glitch_perc() * 0.5, F.knock([520.0, 910.0], [0.008, 0.005], [1.0, 0.4], noise_gain=0.3) * 0.5)
+    # The brackets collapsing onto a foe's intent as its number settles: a crushed beep (the
+    # console reading the other side, and the other side in it) and a faint crushed tick.
+    beep = F.crush(F.tone(float(F.CHATTER_PITCHES[3]) * 2.0, 0.05, 0.5, edge=0.5), bits=6, hold=3)
+    return mix(beep, F.glitch_perc() * 0.3)
 
 
 # ---------------------------------------------------------------- the iron: makers' metals
@@ -187,18 +204,61 @@ def i_hit(maker):
 
 
 def i_block(maker):
-    _, _, _, body_gain, _ = PLATE[maker]
-    b = mix(plate(maker, 0.95), F.burst(0.05, 500.0, 3500.0, decay=0.015) * 0.5,
-            F.body(240.0, 100.0, 0.08, click=0.5) * 0.5 * body_gain, F.metal(0.25, 1.3))
-    return room(b, decay=0.12, mix=0.12)
+    # Armour turning a blow (Ryan, 1 October: the blocks were hollow, not deflecting). No
+    # body and no thud, which were the hollow: the blow glances. A scrape whose band climbs
+    # as it skids off (a filter moving, never a pitch), the plate's knock bright and short,
+    # the little metal allowed at a higher pitch for the ring of the deflection, and a dry
+    # snap at the front.
+    n = n_of(0.09)
+    t = t_of(n)
+    scrape = F.lp_var(F.hp(F.noise(n), 700.0), 1200.0 + 4000.0 * (t / 0.09)) * F.env_pts(n, [(0.0, 0.0), (0.004, 1.0), (0.05, 0.5), (0.09, 0.0)]) * 0.6
+    snap = F.burst(0.02, 2500.0, 9000.0, decay=0.004) * 0.6
+    b = mix(snap, scrape, plate(maker, 0.7), F.metal(0.5, 1.6))
+    b = at(b, F.metal(0.3, 2.1), 0.02)
+    return room(b, decay=0.1, mix=0.1)
+
+
+def i_shield_hit():
+    # A standing shield taking a blow (Ryan, 1 October: a sound for a hit on a shield). The
+    # blow never reaches the metal: a muted thump, the field's own hum (B1 with E2 over it,
+    # the deflector's) flaring and settling, an electric snap, static gated as the field
+    # strains, and a shimmer of E4 partials dying over a fifth of a second.
+    n = n_of(0.42)
+    hum = F.lp(F.sat(F.harmonics(61.74, n, [1.0, 0.8, 0.5, 0.4]) + F.harmonics(E2, n, [0.5, 0.4, 0.3]), 2.5), 1600.0)
+    hum = hum * F.env_pts(n, [(0.0, 0.0), (0.005, 1.0), (0.08, 0.8), (0.42, 0.0)]) * 0.7
+    tear_n = n_of(0.12)
+    static = F.bp(F.noise(tear_n), 500.0, 3500.0) * (0.5 + 0.5 * np.sign(np.sin(2.0 * math.pi * 90.0 * t_of(tear_n)))) * F.env_ad(tear_n, 0.001, 0.04) * 0.45
+    shimmer = F.knock([E4, E4 * 1.5, E4 * 2.0], [0.07, 0.05, 0.04], [1.0, 0.5, 0.3], noise_gain=0.0) * 0.25
+    b = mix(F.burst(0.03, 1500.0, 9000.0, decay=0.006) * 0.8, hum, static, shimmer,
+            F.thud(180.0, 60.0, 0.18, click=0.6, drive=2.5, body_gain=1.0) * 0.6)
+    return room(b, decay=0.14, mix=0.12)
 
 
 def i_kill(maker):
-    buf = F.explosion(1.2, 26.0, 1.0, debris=2)
-    buf = at(buf, F.hydraulic(0.5, 2500.0, 500.0, 0.35), 0.1)
-    for k, when in enumerate([0.3, 0.42, 0.58, 0.8]):
-        buf = at(buf, plate(maker, 0.6) * (1.0 - 0.2 * k), when)
-    return buf
+    # A machine scrapped (Ryan, 1 October: a big deal, and it should sound like one). Two
+    # seconds: the blast; hydraulics letting go; the frame groaning on E1 as it gives; the
+    # magazine going up as a second, lower blast; the maker's plate falling in pieces, more
+    # of them and later; sparks; the hull hitting the ground as the biggest thud of the set
+    # with a slab of plate under it; steam, and the last pieces.
+    n = n_of(1.3)
+    buf = F.explosion(1.4, 24.0, 1.1, debris=3)
+    buf = at(buf, F.hydraulic(0.7, 3000.0, 400.0, 0.4), 0.08)
+    groan = F.lp(F.sat(mix(F.saws(E1, n, (0.99, 1.0, 1.01)) * 0.6, F.harmonics(E1, n, [1.0, 0.5, 0.3])), 2.5), 900.0)
+    groan = groan * F.env_pts(n, [(0.0, 0.0), (0.12, 0.5), (0.6, 0.45), (1.3, 0.0)]) * 0.45
+    buf = at(buf, groan, 0.1)
+    buf = at(buf, F.explosion(1.2, 22.0, 0.95, debris=2), 0.34)
+    for k, when in enumerate([0.5, 0.62, 0.78, 0.95, 1.15, 1.4]):
+        buf = at(buf, plate(maker, 0.65) * (1.0 - 0.13 * k), when + F.RNG.uniform(0.0, 0.02))
+    sn = n_of(0.35)
+    sparks = F.bp(F.noise(sn), 2000.0, 8000.0) * (F.RNG.uniform(0.0, 1.0, sn) > 0.96) * F.env_ad(sn, 0.005, 0.12) * 0.5
+    buf = at(buf, sparks, 0.42)
+    ground = mix(F.thud(110.0, 32.0, 0.6, click=1.0, drive=3.5, body_gain=1.6),
+                 F.knock([120.0, 190.0, 310.0], [0.09, 0.07, 0.05], [1.0, 0.6, 0.3], noise_gain=0.3) * 0.5)
+    buf = at(buf, ground, 1.05)
+    steam = F.hp(F.noise(n_of(0.6)), 2500.0) * F.env_ad(n_of(0.6), 0.02, 0.18) * 0.22
+    buf = at(buf, steam, 1.1)
+    buf = at(buf, F.knock([F.RNG.uniform(500.0, 900.0), F.RNG.uniform(1200.0, 2000.0)], [0.03, 0.02], [0.6, 0.3]) * 0.3, 1.62)
+    return room(buf, decay=0.3, mix=0.12)
 
 
 # ---------------------------------------------------------------- the iron: weapons by shape
@@ -212,7 +272,10 @@ def w_barrel():
     front = mix(F.thud(300.0, 60.0, 0.12, click=1.4, drive=4.0, body_gain=1.3), F.burst(0.06, 400.0, 6000.0, decay=0.015) * 0.9,
                 F.bp(F.noise(n_of(0.02)), 2500.0, 10000.0) * F.env_ad(n_of(0.02), 0.0002, 0.004) * 0.9)
     b = at(front, armour_hit(0.85), 0.09)
-    b = at(b, mix(F.knock([900.0, 1500.0], [0.012, 0.008], [1.0, 0.4], noise_gain=0.5) * 0.5, F.hydraulic(0.12, 2500.0, 700.0, 0.25)), 0.16)
+    # The breech cycles well after the shot (Ryan, 1 October: it was too close): the case
+    # out, the hydraulics, the breech closing.
+    b = at(b, mix(F.knock([900.0, 1500.0], [0.012, 0.008], [1.0, 0.4], noise_gain=0.5) * 0.5, F.hydraulic(0.14, 2500.0, 700.0, 0.25)), 0.4)
+    b = at(b, F.knock([520.0, 900.0], [0.014, 0.009], [1.0, 0.5], noise_gain=0.35) * 0.5, 0.52)
     return room(b, decay=0.22, mix=0.16)
 
 
@@ -230,74 +293,127 @@ def w_twin():
 
 def w_rack():
     # A missile rack: four launches, each an ignition tonk and a whoosh (a noise band
-    # opening, not a pitch), then four impacts landing close together.
+    # opening, not a pitch), the salvo in flight (a thin noise falling away, the band
+    # closing), then four impacts landing close together. Ryan, 1 October: more gap between
+    # launching and landing; the flight is twice what it was.
     buf = np.zeros(1)
     for k in range(4):
         n = n_of(0.18)
         t = t_of(n)
         whoosh = F.lp_var(F.hp(F.noise(n), 300.0), 500.0 + 3500.0 * (t / 0.18)) * F.env_pts(n, [(0.0, 0.0), (0.02, 1.0), (0.12, 0.6), (0.18, 0.0)]) * 0.5
         tonk = F.knock([260.0, 520.0], [0.025, 0.015], [1.0, 0.5], noise_gain=0.4) * 0.5
-        buf = at(buf, mix(tonk, whoosh), k * 0.065)
+        buf = at(buf, mix(tonk, whoosh), k * 0.07)
+    fn = n_of(0.5)
+    ft = t_of(fn)
+    flight = F.lp_var(F.hp(F.noise(fn), 400.0), 3000.0 - 2200.0 * (ft / 0.5)) * F.env_pts(fn, [(0.0, 0.0), (0.05, 0.6), (0.4, 0.25), (0.5, 0.0)]) * 0.3
+    buf = at(buf, flight, 0.3)
     for k in range(4):
-        buf = at(buf, F.explosion(0.45, 40.0, 0.55, debris=0), 0.42 + k * 0.055, 1.0 - 0.1 * k)
+        buf = at(buf, F.explosion(0.45, 40.0, 0.55, debris=0), 0.86 + k * 0.06, 1.0 - 0.1 * k)
     return room(buf, decay=0.25, mix=0.16)
 
 
 def w_blade():
     # A chainsaw claw: a motor at one speed (no glide), teeth as a flutter on it, the load
-    # dipping where it bites, the rip through plate, the plate knocked.
-    n = n_of(0.36)
+    # dipping where it bites, the rip through plate, the plate knocked. Ryan, 1 October: a
+    # bit longer. The motor runs six tenths now and bites twice, the second bite deeper.
+    n = n_of(0.6)
     t = t_of(n)
     motor = F.lp(F.sat(F.saws(95.0, n, (0.99, 1.0, 1.01)) + np.sin(2.0 * math.pi * 190.0 * t) * 0.4, 2.5), 1800.0)
     teeth = 0.75 + 0.25 * np.sign(np.sin(2.0 * math.pi * 23.0 * t))
-    load = F.env_pts(n, [(0.0, 0.0), (0.02, 1.0), (0.1, 1.0), (0.13, 0.55), (0.2, 0.9), (0.3, 0.8), (0.36, 0.0)])
+    load = F.env_pts(n, [(0.0, 0.0), (0.02, 1.0), (0.12, 1.0), (0.15, 0.55), (0.24, 0.9), (0.34, 0.85), (0.37, 0.45), (0.48, 0.8), (0.6, 0.0)])
     b = motor * teeth * load * 0.5
-    rip = F.bp(F.noise(n_of(0.16)), 600.0, 5000.0) * (0.5 + 0.5 * np.sign(np.sin(2.0 * math.pi * 58.0 * t_of(n_of(0.16))))) * F.env_ad(n_of(0.16), 0.001, 0.05) * 0.8
-    b = at(b, rip, 0.11)
-    b = at(b, mix(F.thud(170.0, 50.0, 0.2, click=0.7, drive=3.0), plate("minerva", 0.4)), 0.13, 0.9)
+
+    def rip(dur):
+        m = n_of(dur)
+        return F.bp(F.noise(m), 600.0, 5000.0) * (0.5 + 0.5 * np.sign(np.sin(2.0 * math.pi * 58.0 * t_of(m)))) * F.env_ad(m, 0.001, dur * 0.3) * 0.8
+
+    b = at(b, rip(0.16), 0.13)
+    b = at(b, mix(F.thud(170.0, 50.0, 0.2, click=0.7, drive=3.0), plate("minerva", 0.4)), 0.15, 0.9)
+    b = at(b, rip(0.22), 0.35)
+    b = at(b, mix(F.thud(160.0, 48.0, 0.24, click=0.8, drive=3.0), plate("minerva", 0.45)), 0.37, 1.0)
+    return room(b, decay=0.18, mix=0.14)
+
+
+def w_fist():
+    # A punch (Ryan, 1 October: the blunt melee weapons, fists, should sound like metal
+    # hitting flesh, hard). The piston driving the arm, then the impact: the biggest thud
+    # of the blows with its click, a wet smack (a low noise burst with a slap's body on it),
+    # bone under it as a short high knock, no plate at all since nothing metal is struck,
+    # and the weight going down after: a second softer thud and the flesh settling.
+    drive = F.hydraulic(0.09, 1500.0, 600.0, 0.4)
+    smack = mix(F.burst(0.06, 150.0, 1400.0, decay=0.018) * 1.1, F.body(320.0, 120.0, 0.07, click=1.0, drive=3.5) * 0.8,
+                F.lp(F.noise(n_of(0.05)), 900.0) * F.env_ad(n_of(0.05), 0.001, 0.012) * 0.9)
+    bone = F.knock([1700.0, 2600.0], [0.012, 0.008], [1.0, 0.5], noise_gain=0.4) * 0.4
+    impact = mix(F.thud(140.0, 40.0, 0.4, click=1.2, drive=4.0, body_gain=1.5), smack, bone, F.metal(0.1, 0.8))
+    b = at(drive, impact, 0.08)
+    settle = mix(F.thud(120.0, 40.0, 0.25, click=0.3, drive=3.0, body_gain=1.2) * 0.5, F.lp(F.noise(n_of(0.12)), 600.0) * F.env_ad(n_of(0.12), 0.002, 0.04) * 0.4)
+    b = at(b, settle, 0.26)
     return room(b, decay=0.18, mix=0.14)
 
 
 def w_laser():
-    # A laser carbine: the capacitor dump's crack, a flat beam at B2 for a tenth of a
-    # second, and the hit a burn rather than a thud: a pop and a sizzle on the plate.
-    n = n_of(0.11)
+    # A laser carbine: the capacitor dump's crack, then the beam held on the plate: flat at
+    # B2 with a slow flutter on its loudness (never its pitch) for most of half a second,
+    # the plate burning under it the whole while (a sizzle, and pops as it spits), until
+    # the capacitor cuts and the burn dies away. Ryan, 1 October: way longer; it was a tenth
+    # of a second, it is four and a half now.
+    dur = 0.45
+    n = n_of(dur)
+    t = t_of(n)
     beam = F.lp(F.sat(F.saws(B2, n, (0.99, 1.0, 1.01)) + F.harmonics(B2 * 2, n, [0.5, 0.4, 0.3, 0.2]), 3.0), 3500.0)
-    beam = F.bp(beam, 250.0, 4000.0) * F.env_pts(n, [(0.0, 0.0), (0.003, 1.0), (0.09, 0.9), (0.11, 0.0)])
+    flutter = 0.88 + 0.12 * np.sin(2.0 * math.pi * 31.0 * t)
+    beam = F.bp(beam, 250.0, 4000.0) * flutter * F.env_pts(n, [(0.0, 0.0), (0.003, 1.0), (0.4, 0.9), (0.45, 0.0)])
     crack = F.bp(F.noise(n_of(0.03)), 1500.0, 9000.0) * F.env_ad(n_of(0.03), 0.0002, 0.006)
     b = mix(crack, beam * 0.8)
-    pop = mix(F.body(600.0, 180.0, 0.05, click=1.0, drive=3.0) * 0.7, F.burst(0.04, 800.0, 6000.0, decay=0.01) * 0.7)
-    sizzle = F.hp(F.noise(n_of(0.3)), 3000.0) * F.env_ad(n_of(0.3), 0.002, 0.09) * 0.3
-    b = at(b, mix(pop, sizzle, F.thud(140.0, 50.0, 0.18, click=0.3, drive=2.5) * 0.5), 0.04)
+    sizzle = F.hp(F.noise(n_of(0.75)), 3000.0) * F.env_pts(n_of(0.75), [(0.0, 0.0), (0.02, 1.0), (0.45, 0.9), (0.75, 0.0)]) * 0.28
+    b = at(b, mix(sizzle, F.thud(140.0, 50.0, 0.18, click=0.3, drive=2.5) * 0.5), 0.04)
+    for k, when in enumerate([0.04, 0.17, 0.29, 0.38]):
+        pop = mix(F.body(600.0, 180.0, 0.05, click=1.0, drive=3.0) * 0.7, F.burst(0.04, 800.0, 6000.0, decay=0.01) * 0.7)
+        b = at(b, pop, when, 1.0 if k == 0 else F.RNG.uniform(0.45, 0.7))
+    b = at(b, F.burst(0.02, 2000.0, 9000.0, decay=0.004) * 0.5, 0.45)   # the capacitor cuts
     return room(b, decay=0.2, mix=0.14)
 
 
 def w_plasma():
-    # The Arsenal's plasma, which runs hot: a whoomp with a slow front, a sub hum at E1
-    # under it, a hint of a vowel (the manual written as liturgy), crackle, and the hit a
-    # hot splash.
+    # The Arsenal's plasma, which runs hot. Ryan, 1 October: a bit of a windup. So the gun
+    # charges for a quarter of a second first: the sub hum at E1 growing in loudness with its
+    # filter opening (never a pitch), the crackle thickening, the vowel surfacing; then the
+    # whoomp with its slow front, and the hit a hot splash.
+    wind = 0.26
+    wn = n_of(wind)
+    wt = t_of(wn)
+    charge = F.lp_var(F.sat(F.harmonics(E1, wn, [1.0, 0.7, 0.5, 0.4, 0.3]), 3.0), 150.0 + 900.0 * (wt / wind) ** 2) * (wt / wind) ** 1.6 * 0.7
+    dens = 0.995 - 0.03 * (wt / wind) ** 2
+    crack_up = F.bp(F.noise(wn), 2000.0, 8000.0) * (F.RNG.uniform(0.0, 1.0, wn) > dens) * (wt / wind) * 0.5
+    voice_up = F.choir([0, 7], wn, gain=0.3, vowel="oh", octave=2)[:wn] * (wt / wind) ** 2
+    b = mix(charge, crack_up, voice_up)
     n = n_of(0.3)
     t = t_of(n)
     whoomp = F.lp(F.noise(n), 450.0) * F.env_pts(n, [(0.0, 0.0), (0.018, 1.0), (0.12, 0.5), (0.3, 0.0)]) * 1.2
     hum = F.lp(F.sat(F.harmonics(E1, n, [1.0, 0.7, 0.5, 0.3]), 3.0), 400.0) * F.env_ad(n, 0.01, 0.1) * 0.6
     voice = F.choir([0, 7], n_of(0.3), gain=0.35, vowel="oh", octave=2)[:n] * F.env_ad(n, 0.01, 0.08)
     crackle = F.bp(F.noise(n), 2000.0, 8000.0) * (F.RNG.uniform(0.0, 1.0, n) > 0.975) * F.env_ad(n, 0.02, 0.1) * 0.5
-    b = mix(whoomp, hum, voice, crackle)
+    b = at(b, mix(whoomp, hum, voice, crackle), wind)
     splash = mix(F.burst(0.2, 300.0, 3500.0, decay=0.06) * 0.8, F.thud(160.0, 48.0, 0.2, click=0.4, drive=3.0) * 0.6,
                  F.hp(F.noise(n_of(0.35)), 2500.0) * F.env_ad(n_of(0.35), 0.003, 0.1) * 0.3)
-    b = at(b, splash, 0.07)
+    b = at(b, splash, wind + 0.07)
     return room(b, decay=0.22, mix=0.16)
 
 
 def w_dish_shield():
     # The deflector raised: the key, the field's hum snapping on at B1 with E2 over it, a
-    # crack as it seals, a short bed, then the field settles and the relay cuts it.
-    n = n_of(0.34)
-    hum = F.lp(F.sat(F.harmonics(61.74, n, [1.0, 0.8, 0.5, 0.4, 0.3]) + F.harmonics(E2, n, [0.5, 0.4, 0.3]), 2.5), 1800.0)
-    hum = hum * F.env_pts(n, [(0.0, 0.0), (0.008, 1.0), (0.26, 0.7), (0.29, 0.7), (0.3, 0.0)])
-    b = mix(F.relay(0.8), hum * 0.7, F.burst(0.05, 1500.0, 9000.0, decay=0.012) * 0.6)
+    # crack as it seals, then the field rings on (Ryan, 1 October: more ring after firing
+    # on): the hum held and dying away over most of a second with a slow breath on its
+    # loudness, a shimmer of E4 partials on top of it fading first, and no relay cutting it.
+    dur = 1.0
+    n = n_of(dur)
+    t = t_of(n)
+    hum = F.lp(F.sat(F.harmonics(61.74, n, [1.0, 0.8, 0.5, 0.4, 0.3]) + F.harmonics(E2, n, [0.5, 0.4, 0.3]) + F.harmonics(B2, n, [0.25, 0.15]), 2.5), 1800.0)
+    breath = 0.85 + 0.15 * np.sin(2.0 * math.pi * 6.5 * t)
+    hum = hum * breath * F.env_pts(n, [(0.0, 0.0), (0.008, 1.0), (0.2, 0.8), (0.5, 0.5), (dur, 0.0)])
+    shimmer = F.lp(F.harmonics(E4, n, [1.0, 0.4, 0.2]), 5000.0) * F.env_pts(n, [(0.0, 0.0), (0.02, 1.0), (0.3, 0.4), (0.6, 0.0)]) * 0.14
+    b = mix(key(0.6), hum * 0.7, shimmer, F.burst(0.05, 1500.0, 9000.0, decay=0.012) * 0.6)
     b = at(b, mix(F.thud(200.0, 60.0, 0.2, click=0.9, drive=3.0) * 0.9, plate("minerva", 0.35)), 0.02)
-    b = at(b, F.relay(0.7, 0.9), 0.3)
     return room(b, decay=0.14, mix=0.12)
 
 
@@ -604,14 +720,14 @@ NEW = {
     "die_roll": (c_die_roll, "die_roll", "die_roll"), "die_lock": (c_die_lock, "die_lock", "die_lock"),
     "resolve": (c_resolve, "resolve", "resolve"), "intent": (c_intent, None, "die_lock"),
     "w_barrel": (w_barrel, "gunfire", "gunfire"), "w_twin": (w_twin, "gunfire", "gunfire"), "w_rack": (w_rack, "cannon", "cannon"),
-    "w_blade": (w_blade, "slash", "slash"), "w_laser": (w_laser, "laser", "laser"), "w_plasma": (w_plasma, "laser", "laser"),
+    "w_blade": (w_blade, "slash", "slash"), "w_fist": (w_fist, "slam", "slam"), "w_laser": (w_laser, "laser", "laser"), "w_plasma": (w_plasma, "laser", "laser"),
     "w_dish_shield": (w_dish_shield, "shield_up", "shield_up"), "w_dish_coil": (w_dish_coil, "shield_up", "shield_up"),
     "step_tracked": (s_tracked, "step", "step"), "step_legged": (s_legged, "step", "step"),
     "step_wheeled": (s_wheeled, "step", "step"), "step_flyer": (s_flyer, "step", "step"),
     "foe_undead_hit": (r_undead_hit, "slash", "slash"), "foe_undead_heavy": (r_undead_heavy, "slam", "slam"), "spawn_undead": (r_undead_spawn, "spawn", "spawn"),
     "foe_demonic_hit": (r_demonic_hit, "slash", "slash"), "foe_demonic_heavy": (r_demonic_heavy, "slam", "slam"), "spawn_demonic": (r_demonic_spawn, "spawn", "spawn"),
     "foe_eldritch_hit": (r_eldritch_hit, "slash", "slash"), "foe_eldritch_heavy": (r_eldritch_heavy, "slam", "slam"), "spawn_eldritch": (r_eldritch_spawn, "spawn", "spawn"),
-    "reveal": (r_reveal, None, "contact"),
+    "reveal": (r_reveal, None, "contact"), "shield_hit": (i_shield_hit, "block", "block"),
     "contact": (d_contact, "contact", "contact"), "engage": (d_engage, "engage", "engage"), "gate_hit": (d_gate_hit, "gate_hit", "gate_hit"),
     "victory": (d_victory, "victory", "victory"), "defeat": (d_defeat, "defeat", "defeat"),
 }
@@ -645,10 +761,16 @@ def write(name, x):
         w.setframerate(F.SR)
         w.writeframes(pcm.tobytes())
     m4a = os.path.join(OUT, name + ".mp4")
-    try:
-        subprocess.run(["afconvert", "-f", "mp4f", "-d", "aac", "-b", "128000", "-q", "127", wav, m4a], check=True, capture_output=True)
-    except (OSError, subprocess.CalledProcessError) as e:
-        print("  (no aac for %s: %s)" % (name, e))
+    # afconvert on the Mac; ffmpeg where there is none (a cloud session).
+    for cmd in (["afconvert", "-f", "mp4f", "-d", "aac", "-b", "128000", "-q", "127", wav, m4a],
+                ["ffmpeg", "-y", "-loglevel", "error", "-i", wav, "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", m4a]):
+        try:
+            subprocess.run(cmd, check=True, capture_output=True)
+            break
+        except (OSError, subprocess.CalledProcessError) as e:
+            err = e
+    else:
+        print("  (no aac for %s: %s)" % (name, err))
     return wav
 
 
@@ -698,8 +820,9 @@ ROUND = [   # a round of the skirmish: the die, the blows, the enemy's turn, the
     (10.3, None, "intent", 0.0), (10.5, None, "intent", 0.0),
     (10.8, "slash", "foe_undead_hit", 0.0), (10.9, "block", "block_minerva", -3.0),
     (12.0, "slam", "foe_demonic_heavy", 0.0), (12.3, "hit", "hit_kestrel", -3.0),
-    (13.6, "shield_up", "w_dish_shield", 0.0), (14.3, "vent", "vent", 0.0), (15.0, "shield_up", "w_dish_coil", -3.0),
-    (16.2, "victory", "victory", 0.0),
+    (13.1, "slash", "foe_undead_hit", 0.0), (13.2, "block", "shield_hit", -3.0),
+    (14.3, "shield_up", "w_dish_shield", 0.0), (15.2, "vent", "vent", 0.0), (15.9, "shield_up", "w_dish_coil", -3.0),
+    (17.0, "victory", "victory", 0.0),
 ]
 CONTACT = [   # the map: footfalls, a foe into the line, the alarm, the dive, the cut, the spawns, the gate, a boss
     (0.0, "step", "step_tracked", 0.0), (0.35, "step", "step_tracked", 0.0), (0.7, "step", "step_legged", 0.0), (1.05, "step", "step_wheeled", 0.0), (1.4, "step", "step_flyer", 0.0),
@@ -714,11 +837,12 @@ RIFT = [   # each family: its arrival, its blow, its heavy blow
     (4.8, "spawn", "spawn_demonic", 0.0), (6.5, "slash", "foe_demonic_hit", 0.0), (7.4, "slam", "foe_demonic_heavy", 0.0),
     (9.3, "spawn", "spawn_eldritch", 0.0), (11.0, "slash", "foe_eldritch_hit", 0.0), (11.9, "slam", "foe_eldritch_heavy", 0.0),
 ]
-IRON = [   # the shapes, then the makers struck: a hit, a block, a kill each
-    (0.3, "gunfire", "w_barrel", 0.0), (1.2, "gunfire", "w_twin", 0.0), (2.1, "cannon", "w_rack", 0.0), (3.4, "slash", "w_blade", 0.0),
-    (4.3, "laser", "w_laser", 0.0), (5.1, "laser", "w_plasma", 0.0), (6.0, "shield_up", "w_dish_shield", 0.0), (6.7, "shield_up", "w_dish_coil", -3.0),
-] + [(8.0 + k * 2.0 + d, now, new_, db) for k, m in enumerate(MAKERS) for d, now, new_, db in
-     [(0.0, "hit", "hit_" + m, 0.0), (0.45, "block", "block_" + m, -3.0), (0.9, "kill", "kill_" + m, 0.0)]]
+IRON = [   # the shapes, a shield taking a blow, then the makers struck: a hit, a block, a kill each
+    (0.3, "gunfire", "w_barrel", 0.0), (1.3, "gunfire", "w_twin", 0.0), (2.2, "cannon", "w_rack", 0.0), (3.7, "slash", "w_blade", 0.0),
+    (4.7, "slam", "w_fist", 0.0), (5.6, "laser", "w_laser", 0.0), (6.7, "laser", "w_plasma", 0.0), (7.8, "shield_up", "w_dish_shield", 0.0),
+    (9.0, "shield_up", "w_dish_coil", -3.0), (9.9, "block", "shield_hit", -3.0),
+] + [(10.8 + k * 2.7 + d, now, new_, db) for k, m in enumerate(MAKERS) for d, now, new_, db in
+     [(0.0, "hit", "hit_" + m, 0.0), (0.5, "block", "block_" + m, -3.0), (1.0, "kill", "kill_" + m, 0.0)]]
 
 
 def render_sequences(manifest):
@@ -729,7 +853,7 @@ def render_sequences(manifest):
         ("round", hold, ROUND, "a round over Hold The Line's power chords"),
         ("contact", night, CONTACT, "the map's turn and the handover over Night Shift"),
         ("rift", crossing, RIFT, "the three families over The Crossing"),
-        ("iron", hold, IRON, "the five shapes, then the five makers struck, over Hold The Line"),
+        ("iron", bed("music_hold_the_line", 8, 12, 104), IRON, "the shapes, a shield struck, then the five makers struck, over Hold The Line"),
     ]:
         for which in ("now", "new"):
             F.seed("fx_seq_" + key_ + which)
