@@ -519,6 +519,9 @@ def armadillo(b):
         # October: the barrels would have clipped the band in front).
         b.cut_box(band_obs, px - 4.6, px + 4.6, 30.0, 47.0, ZF - 4.0, Z0 + 30.0)
         b.pin("hp_%d" % n, (px, 24.5, ZF), forward=(0.0, 1.0, 0.0), scale=1.2)
+    # The slab between the two channels cut away too, so the front band steps down to one
+    # wide firing deck ahead of the ports (Ryan, 1 October).
+    b.cut_box(band_obs, -9.6, 9.6, 30.0, 47.0, ZF - 4.0, Z0 + 30.0)
     # Plating on the flanks between the hips and the blowout stack at the tail with vents
     # across the rear band: detail, no mounts.
     for s in (-1.0, 1.0):
