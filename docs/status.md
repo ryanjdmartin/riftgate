@@ -28,8 +28,8 @@ section; the nameplate's link kept for its `candidates` rows and its sharing; so
 with every render under `docs/hangar/renders/`; capabilities `db` and `user`, collections
 `edits` and `candidates`; republish after every content, model or render change, or its tabs
 go stale; the separate codex, Model Viewer and content editor pages are deleted and
-`tools/build_codex.py` retired) and the listening page (https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9; since 30
-September the effects' second pass from `tools/soundforge/fx_sketches.py` and nothing else;
+`tools/build_codex.py` retired) and the listening page (https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9; the effects' second pass from
+`tools/soundforge/fx_sketches.py`, re-cut 1 October, and nothing else;
 the music rounds re-render from `phone_sketches.py` if ever wanted again). The engagement
 sandbox that drew the zone options is https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg.
 **Sharing:** the hangar page (as the nameplate it grew from) and the listening page are shared
@@ -72,16 +72,12 @@ Nothing claims the engine list now; the engine section of the to-do is open.
 **The audit (1 October).** The bible, status, to-do, README and CLAUDE.md were read against
 each other and the code: stale rows retired or marked superseded, the bible's keyword table
 regenerated from the vocabulary, section 12 brought level with the to-do, the ticked to-do
-lines pruned, this file cut to what stands. One contradiction left for Ryan: the bible's HUD
+lines pruned, this file cut to what stands. On Ryan's word the listen-by-listen history of the
+tracks and the round-by-round history of the machines were retired from the bible, keeping the
+rules and each thing as it stands; the unused `docs/concepts/` intake is deleted. One contradiction left for Ryan: the bible's HUD
 palette row (18 September) read his swatch confusions as protanomalous, while the 29 September
 rule says he has not named the type; both rows now say so, and every colour is checked under
 all three simulations regardless.
-
-**Not rebuilt yet: the fists (1 October).** `bl_low.Tiles` draws `fisttop`, `fistpalm` and
-`fistbase` folded out from the front as a net, and `models_low._fist` places each tile by the
-hand's own axes, so the right hand wears the mirror; the `thumb` tile is retired. The Nemesis
-and the Baboon use it. No Blender in the cloud, so `forge.py build nemesis baboon` on the Mac,
-then `--import`.
 
 **Where things are.** `sim/` is the headless game (battle map, battlefield resolver, battle
 loop, skirmish, effects pipeline, content DB, save). `game/battle/` the battle screen and the
@@ -96,8 +92,7 @@ poses either screen (README lists the poses and the phone-layout variables);
 `tools/balance.gd` writes `docs/balance.md`; `tools/android.sh` the debug APK,
 `tools/phone.sh` a Web build on the LAN. `tools/hangar.html` is the hangar page and
 `tools/hangar_data.py` its pins file and publish map; the renders live under `docs/hangar/`. `docs/vocabulary.md` is generated from content
-(`tools/export_vocabulary.gd`). `docs/concepts/` holds the first day's batch template; no
-batch was ever written to it, content is proposed in chat and lands in the JSON.
+(`tools/export_vocabulary.gd`).
 
 **Content (bible section 7).** Eleven chassis: `badger` (d6; its fourth stock entry the
 Proximity Klaxon), `clydesdale` (d9; the die cap is 10), `sparrowhawk`, `baboon` (Aphelion's;
@@ -120,30 +115,20 @@ the hangar page's Names tab (a tab per maker, Components, Rules; rows in the pag
 collection `candidates`; the check reads the reserved list and the live content, so nothing is
 baked in).
 
-**Models (bible section 7, the mount-rule row carries every round).** Every chassis has a
-lowforge model; `tools/lowforge/models_low.py` holds one function per chassis id and every
-number in it is a proportion, so a note moves it and `forge.py build <id>` plus one
-`--import` is the whole loop. Fixed components are modelled in with no pin; every hardpoint
-carries its `hp_<n>` pin, a gun mount pointing forward-ish that parents its stock part
-(`with b.socket(...)`) or a bare pad (`b.pad()`). A component with a `shape` takes the next
-mount in the die's order in its maker's metal (five classes: barrel, twin barrel, rack,
-blade, dish; `models_low.SHAPES`, `forge.py shapes`, validated by `ContentDB.SHAPES`); shape
-`none` (armour, vents) shows nowhere. `MechView3D.mount_plan()` names only the mounts that
-differ from stock; `RIFTGATE_FIT="1:lance,4:blazethrower"` on `tools/hero_shot.gd` renders a
-swap. Joints are code too (`with b.joint(...)`: the five limbed machines' arms, booms and
-lance; turret joints on the Boar, Prairie Dog, Clydesdale and Badger, turned about their up
-axis); vehicles and aircraft have no limb joints. Lowforge has a boolean cutter (`b.cut`,
-`b.cut_box`), hollow tubes (`_tube(..., floor=False)`), open rings (`_rings(cap=False)`) and
-`lit` and `glow` tiles. Thirteen rounds of Ryan's notes from the renders (the hangar page's Models tab since 1 October) are built; the
-Prairie Dog, Badger, Goshawk and Boar are done; the thirteenth round (the Armadillo's seated
-collars, the Clydesdale's turret height) waits on his judgement. Hand edits in Blender can be
-taken through `forge.py export <id>`, but a rebuild overwrites the working file, so a hand
-edit has to be re-expressed in `models_low.py` to survive. `tools/hero_shot.gd` renders bare
-(`RIFTGATE_OUTLINE_KEEP=1` keeps the display's edge) and needs a window. **Ryan judges a
-model only from a render**, never from code. Facet counts are a guideline, not a rule.
-**Open on the Baboon:** Ryan judges the rear silhouette with the fists at knee height; if it
-still reads as two boxes, his options are heavier hands carrying hardware or a standard
-forward pose with the fist tile turned 90 degrees.
+**Models (bible section 7, the mount-rule row has the rule, the helpers and every machine as it
+stands).** Every chassis has a lowforge model; `tools/lowforge/models_low.py` holds one function
+per chassis id and every number in it is a proportion, so a note moves it and `forge.py build
+<id>` plus one `--import` is the whole loop. Hardpoints are gun mounts (`hp_<n>` pins, each
+parenting its stock part or a bare pad); a shaped component takes the next mount in its maker's
+metal (barrel, twin barrel, rack, blade, dish), armour and vents show nowhere. Joints and turret
+joints are code too. The round-by-round history is retired (Ryan, 1 October); the code and the
+hangar page's Models tab are the record. **Ryan judges a model only from a render**, never from
+code (`tools/hero_shot.gd` renders bare and needs a window); a hand edit in Blender has to be
+re-expressed in the code to survive a rebuild. Open on the models: the Armadillo's seated collars
+and the Clydesdale's turret height (his look), the outward-only turret, each class's size per
+machine, the Clydesdale's twin spacing, and the Baboon's rear silhouette with the fists at knee
+height (if it still reads as two boxes: heavier hands carrying hardware, or a forward pose with
+the fist tile turned 90 degrees).
 
 **The codex (29 September; a tab of the hangar page since 1 October).** One surface showing a
 chassis and the components fitted to it: the Codex tab renders it in the browser from the
@@ -185,28 +170,21 @@ alone, as support machines might; the Sparrowhawk and Goshawk hold. Overwhelm an
 Databank never fire in the runner's single-type, single-machine cells. Rerun after each
 engine piece lands; read bands, not numbers.
 
-**Audio (the bible's section 1 sound row has every listen and decision).** Everything is
-`tools/soundforge/forge.py` writing WAVs into `art/audio/` (`build`, `measure`, `sections`,
-`audition`, `sketch`); Ryan gives notes by section letter or timestamp. Six titled tracks in
-`Sound.TRACKS`, all locked or "pretty great"; the map's set cycles, the skirmish's picks, the
-boss theme per family (`SETS["boss_<faction>"]`, `LOOP_FROM`); one master for both palettes
-(tilt 1.5 plus a presence lift). The Far Bank runs at 88 and the rift levels sit at the half
-gap (-17.9, The Crossing -17.7). Hold The Line shipped its last pass on 30 September with
-Ryan's seventh bridge melody from the Melody Desk (1 October); nothing of his is pending on it
-but a full play in the game. The track levels stay until Ryan says otherwise. Ryan judges
-the music on his phone, so a change is heard as an A/B before it lands: a sketch never
-overwrites a shipped track, a pick lands in `forge.py`, then `build` and one `--import`.
-Next: a speakers/headphones setting (offsets per track and a bus EQ on the speaker profile);
-the Risen and Infernal Horde boss themes from their seeds, melodies proposed in chat first.
-
-**The effects' second pass** (30 September, evening; the bible's sound row has the design).
-`tools/soundforge/fx_sketches.py` renders every effect again beside the shipped one at the
-shipped level into `tools/soundforge/out/fx/`, plus four rounds in context over the tracks,
-and copies `fx_page.html` in as `index.html`; the listening page holds that and nothing else.
-Sections: the console, the iron, the rift, the red. Nothing is shipped; a pick lands as a
-recipe in `forge.py` and, where the page says, a small hook (shape, maker, faction,
-silhouette) in `skirmish_screen.gd`, `battle_screen.gd` and `sound.gd`. Next: Ryan's notes by
-section and row.
+**Audio (the bible's section 1 sound row has the direction, the palettes and every rule; the
+listen-by-listen history is retired).** Everything is `tools/soundforge/forge.py` writing WAVs
+into `art/audio/` (`build`, `measure`, `sections`, `audition`, `sketch`); the recipes are the
+record of each track. Six titled tracks in `Sound.TRACKS`, all locked or "pretty great"; the
+map's set cycles Low Ground and Night Shift, the skirmish's picks one of Hold The Line, The
+Crossing and Full Bore per visit, The Far Bank is The Chorus's boss theme (`SETS["boss_<faction>"]`,
+`LOOP_FROM`). The track levels stay until Ryan says otherwise. Ryan judges on his phone, so a
+change is heard as an A/B from the listening page before it lands; a sketch never overwrites a
+shipped track; his melodies come through the Melody Desk and the session interprets them. **The
+effects' second pass** is on the listening page (`tools/soundforge/fx_sketches.py`, re-cut to
+Ryan's first notes 1 October; the bible's sound row has the set), nothing shipped: a pick lands
+as a recipe in `forge.py` with its hook (shape, maker, faction, silhouette, a content word for
+blunt melee, the replay telling shield hit from block from hit). Next: Ryan's listen of the
+re-cut; the speakers/headphones setting; the Risen and Infernal Horde boss themes from their
+seeds, melodies proposed in chat first.
 
 **The phone (bible section 11 has four rows on it; README has the commands).** Ryan's Pixel
 runs the debug APK at 60 fps with the fine map (the default, since the Compatibility renderer
@@ -221,7 +199,7 @@ sound set, the grid at the hotter gain.
 it and ticked in the commit that lands it; this is the order to take them in.
 
 1. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
-2. Ryan's text for the new machines and components; his judgement of the thirteenth round and of the fists once rebuilt.
+2. Ryan's text for the new machines and components; his look at the Armadillo's collars and the Clydesdale's turrets.
 3. The discuss-first decisions in the Ryan section, the economy last.
 4. The engine gaps waiting on design (Phased, Energy Armour, Corrode, Scramble, Confuse, foe roles), and a dedicated hunter foe and spawned formations once proposed.
 5. Audio: a full play of Hold The Line, the effects' second pass, the speakers/headphones setting, the two boss themes.

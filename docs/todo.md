@@ -13,8 +13,10 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Formations (Ryan, 1 October): seed the opening enemy formations as threatening shapes with a front and a back, and have the rift spawn formations rather than single packs; shapes proposed in chat first
 - [ ] Judge on the phone after a re-export: the machines' outline at 2.6 (`MechView3D.OUTLINE`; 1.0 was the thin), the intent field in motion (stripe width `STRIPE`, ring spokes `SPOKES`, the pulse), the machine's lock's contrast (the light at half), the orange pulse of the gate's hazard glyphs, the sound set, the grid at `GRID_GAIN_PHONE`
 - [ ] Codex and flavour for the seven new machines, the Baboon's flavour, and the 42 components whose codex is empty
-- [ ] Judge the effects' second pass on the listening page (30 September, evening): the four rounds first, then by section and row; a pick lands in the forge and its hook
-- [ ] Judge the thirteenth round on the hangar page's Models tab: the Armadillo's seated collars, the Clydesdale's turret height and position; and the turrets traversing in the skirmish; each class's size per machine (a pin's `scale` in `models_low.py`)
+- [ ] Listen to the effects' second pass as re-cut 1 October on the listening page (console beeps, barrel, rack, blade, laser, plasma, deflector, the punch, blocks, the shield hit, the kills); picks land in `forge.py` with their hooks (shape, maker, faction, silhouette; the replay telling a shield hit from a block from a hit)
+- [ ] A content word for the blunt melee pieces (Gravity Knuckles, Breaching Plow, bare fists) so a punch plays instead of a blade; Ryan names it
+- [ ] Whether the seated die wants a voice (a low quiet E3 is the candidate) or stays toneless
+- [ ] Judge on the hangar page's Models tab: the Armadillo's seated collars, the Clydesdale's turret height and position; and the turrets traversing in the skirmish; each class's size per machine (a pin's `scale` in `models_low.py`)
 - [ ] A turret joint that turns outward only (the Clydesdale's, beside the lance): the view's idle and flinch swing both ways today
 - [ ] Decide whether the Clydesdale's hand-modelled turret pairs should match the twin-barrel class's spacing, since on a swap the class is what shows (the Prairie Dog's are the class now)
 - [ ] Propose in chat a Minerva intercept component for the starter set (Ryan, 30 September: tanks need class-based target-modification beyond the Proximity Klaxon)
@@ -57,8 +59,6 @@ Nothing in content is planned any more; every piece the 28 September content lea
 ## Art
 
 - [ ] Ryan: judge the Baboon's rear silhouette in the harness (the fists hang at knee height now, not on the ground); if it still reads as carrying two boxes, pick heavier hands carrying hardware or a standard forward pose with the fist tile turned 90 degrees
-- [x] Rebuild the fists on the Mac (`forge.py build nemesis baboon`, then `--import`; no Blender in the cloud session): the top, palm and base tiles of 1 October and the per-face mapping that places them
-- [x] Ryan: judge the fist's new faces (1 October: good) on the Nemesis and the Baboon (the top the thumb wrapping over and the index finger side on, the palm the thumb bent down beside the front with the fingertips behind it, the base the little finger across the front curling in, the thumb's tip at the palm edge and the palm)
 - [ ] Enemy art through foeforge for the foes still on sketch grids
 - [ ] The hangar as a model
 - [ ] Per-mech repaint (`Unit.paint` exists; nothing sets it)

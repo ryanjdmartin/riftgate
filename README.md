@@ -70,7 +70,7 @@ and open question from the design sessions.
 - `art/` — `models/` every glTF the engine draws (units, gate, wall), `foes/` from the sheet
   export, `fonts/` the HUD faces, `audio/` every sound by name (`game/audio/sound.gd` lists
   them). A missing foe sprite falls back to a placeholder shape; a missing sound is silence.
-- `docs/` — design bible, generated vocabulary, concept intake in `docs/concepts/`,
+- `docs/` — design bible, generated vocabulary, the hangar page's renders and pins under `hangar/`,
   `sprites-enemies.html` (the enemy sheet the export reads), design canvases under
   `canvas/`, `status.md`, the handoff note updated at the end of every working session,
   and `todo.md`, the task list: one line a task, grouped by who moves it, ticked in the
