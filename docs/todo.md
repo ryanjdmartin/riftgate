@@ -93,6 +93,8 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 - [ ] Ryan: notes on the seven second-pass models (renders: the Model Viewer, https://claude.ai/artifact/HzF8K98MxgJP7kroxAuDMv)
 - [x] Silhouette classes for components (29 September, night: seven classes in `models_low.SHAPES`, a blade added for the melee arms; `forge.py shapes` builds every maker's metal into `art/models/shapes`; `shape` validated on every component; every chassis pin parents its stock part; `MechView3D.mount_plan` and `plan_for` from the skirmish, the codex and the portrait; `RIFTGATE_FIT` on the hero shot)
 - [ ] Ryan: judge the Baboon's rear silhouette in the harness (the fists hang at knee height now, not on the ground); if it still reads as carrying two boxes, pick heavier hands carrying hardware or a standard forward pose with the fist tile turned 90 degrees
+- [ ] Rebuild the fists on the Mac (`forge.py build nemesis baboon`, then `--import`; no Blender in the cloud session): the top, palm and base tiles of 1 October and the per-face mapping that places them
+- [ ] Ryan: judge the fist's new faces on the Nemesis and the Baboon (the top the thumb wrapping over and the index finger side on, the palm the fingertips pressed in under the thumb, the base the little finger side on and the heel)
 - [ ] Enemy art through foeforge for the foes still on sketch grids
 - [ ] The hangar as a model
 - [ ] Per-mech repaint (`Unit.paint` exists; nothing sets it)

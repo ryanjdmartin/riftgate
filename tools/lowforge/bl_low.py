@@ -88,6 +88,90 @@ class Tiles:
                 img[y - 1:y, x:x + 2, :] = np.minimum(img[y - 1:y, x:x + 2, :] * 1.3, 1.0)
         return img
 
+    def _fist_side(self, kind, g):
+        """The fist's other faces, drawn the way the front is seen (image row 0 at the top)
+        and folded out from it as a net: the top (the thumb side) seen from above with the
+        front along its bottom edge, the palm side seen from the left with the front along
+        its right edge, the base (the little finger's side) seen from below with the front
+        along its top edge; the back of the hand on the right in all three. The finger
+        grooves, the thumb's band and ridge, the knuckles' light and the dark edges meet
+        the front's across every shared edge. The back of the hand and the wrist are plate."""
+        streak = self.p["streak"] * 0.5
+        img = self.metal(g * 0.92, streak, mottle=0.008)
+        pad = self.metal(g * 1.10, streak, mottle=0.008)
+        T = TILE
+
+        def dark(rows, cols, f=0.3):
+            img[rows, cols, :] *= f
+
+        def lit(rows, cols, f=1.25):
+            img[rows, cols, :] = np.minimum(img[rows, cols, :] * f, 1.0)
+
+        def fill(rows, cols):
+            img[rows, cols, :] = pad[rows, cols, :]
+
+        if kind == "fisttop":
+            # From above: the thumb down the palm edge, its root swelling toward the wrist;
+            # the index finger side on, along the front from the knuckle and turning back
+            # beside the thumb; the hand's body behind.
+            fill(slice(0, T), slice(2, 14))                # the thumb
+            fill(slice(0, 22), slice(2, 26))               # its root
+            fill(slice(46, T), slice(16, T - 3))           # the index finger along the front
+            fill(slice(24, 46), slice(16, 28))             # and turning back beside the thumb
+            dark(slice(22, T), slice(14, 16))              # the thumb's crease, the front's groove
+            dark(slice(22, 24), slice(14, 28))
+            dark(slice(0, 22), slice(26, 28))
+            dark(slice(34, 36), slice(2, 14), 0.35)        # the thumb's joint
+            lit(slice(0, T), slice(9, 11))                 # the thumb's ridge, as on the front
+            dark(slice(44, 46), slice(28, T - 3))          # the finger's back
+            dark(slice(24, 44), slice(28, 30))
+            lit(slice(46, 48), slice(16, T - 3), 1.15)
+            lit(slice(40, T), slice(56, 59), 1.3)          # the knuckle, carried round from the front
+            dark(slice(0, T), slice(0, 2), 0.4)
+            dark(slice(0, T), slice(T - 3, T), 0.4)
+            dark(slice(0, 2), slice(28, T), 0.4)           # the wrist
+        elif kind == "fistpalm":
+            # The palm side: the thumb along the top, its root swelling toward the wrist;
+            # the other three fingers curled back from the front, their tips pressed into
+            # the palm; the heel of the hand behind them.
+            fill(slice(2, 14), slice(0, T))                # the thumb
+            fill(slice(2, 26), slice(0, 22))               # its root
+            for r0, r1 in ((18, 31), (34, 47), (50, T - 1)):
+                fill(slice(r0, r1), slice(32, T - 2))      # a finger from the front back to its tip
+                dark(slice(r0, r1), slice(46, 47), 0.55)   # the last joint
+                lit(slice(r0, r0 + 2), slice(34, T - 2), 1.15)
+                dark(slice(r0, r1), slice(30, 32))         # the tip against the palm
+                dark(slice(r0, r0 + 2), slice(32, 34), 0.5)
+                dark(slice(r1 - 2, r1), slice(32, 34), 0.5)
+            for r in (15, 31, 47):
+                dark(slice(r, r + 3), slice(30, T))        # the front's grooves, carried round
+            dark(slice(14, 16), slice(22, T))              # the thumb's crease
+            dark(slice(26, 28), slice(0, 22))
+            dark(slice(14, 26), slice(22, 24))
+            dark(slice(2, 14), slice(34, 36), 0.35)        # the thumb's joint
+            lit(slice(9, 11), slice(0, T))                 # the thumb's ridge
+            dark(slice(0, 2), slice(0, T), 0.4)
+            dark(slice(0, T), slice(T - 2, T), 0.4)
+            dark(slice(0, T), slice(0, 2), 0.4)            # the wrist
+        else:
+            # From below: the little finger side on, along the front from the knuckle and
+            # turning back down the palm edge to its tip; the heel of the hand behind.
+            fill(slice(0, 18), slice(16, T - 3))           # the finger along the front
+            fill(slice(0, 40), slice(2, 14))               # and back down the palm edge
+            fill(slice(44, T - 2), slice(4, 40))           # the heel of the hand
+            dark(slice(0, 40), slice(14, 16))              # the front's groove, carried round
+            dark(slice(18, 20), slice(16, T - 3))
+            dark(slice(40, 42), slice(2, 16))              # the tip
+            dark(slice(42, 44), slice(4, 40), 0.5)
+            dark(slice(44, T - 2), slice(40, 42), 0.5)
+            dark(slice(26, 28), slice(2, 14), 0.35)        # its joint
+            lit(slice(16, 18), slice(16, T - 3), 1.15)
+            lit(slice(0, 24), slice(56, 59), 1.3)          # the knuckle, carried round from the front
+            dark(slice(0, T), slice(0, 2), 0.4)
+            dark(slice(0, T), slice(T - 3, T), 0.4)
+            dark(slice(T - 2, T), slice(0, T), 0.4)        # the wrist
+        return img
+
     def get(self, name):
         if name in self.images:
             return self.images[name]
@@ -173,11 +257,13 @@ class Tiles:
             # Bone is paint, not the maker's metal: the same white for everyone, no cast.
             img = self._seam(self.metal(0.74, self.p["streak"] * 0.5, tint=(0.96, 0.93, 0.85), mottle=0.012, cast=(1.0, 1.0, 1.0)))
         elif kind == "fist":
-            # The front of a closed fist, one tile a face (Ryan, 28 September, third try): the
-            # arm hangs, the knuckles face forward, so the four fingers stand side by side as
-            # columns down the face, split by three grooves, a lit knuckle at the top of each,
-            # and the thumb lies as a band across the bottom, curled over the fingers. Image
-            # row 0 is the bottom of the tile.
+            # The front of a closed fist, one tile a face (Ryan, 28 September, third try):
+            # the knuckles face forward, the fingers lie as four rows split by three
+            # grooves, each lit at its knuckle on the back-of-hand edge, and the thumb lies
+            # as a band down the palm edge, curled over the fingers. The fist tiles are
+            # drawn as Ryan sees them (1 October): the front with the thumb side up and the
+            # back of the hand to the right, the other faces folded out from it, so the
+            # four PNGs read as a net. `_fist` maps them by the hand's anatomy.
             img = self.metal(g * 1.04, self.p["streak"] * 0.5, mottle=0.008)
             for x in (16, 32, 48):
                 img[16:TILE - 3, x - 1:x + 2, :] *= 0.3
@@ -188,20 +274,10 @@ class Tiles:
             img[9:11, 2:TILE - 6, :] = np.minimum(img[9:11, 2:TILE - 6, :] * 1.25, 1.0)
             img[2:14, TILE - 6:TILE - 4, :] *= 0.35
             img[0:2, :, :] *= 0.4
-        elif kind == "thumb":
-            # The inside of the fist: the thumb bent, coming down from the wrist and turning
-            # forward along the bottom (u runs back to front, v up), lit along its ridge; the
-            # rest plain metal.
-            img = self.metal(g * 1.0, self.p["streak"] * 0.5, mottle=0.008)
-            band = self.metal(g * 1.06, self.p["streak"] * 0.5, mottle=0.008)
-            img[22:TILE, 34:48, :] = band[22:TILE, 34:48, :]          # down from the wrist
-            img[8:24, 34:TILE - 2, :] = band[8:24, 34:TILE - 2, :]    # the bend, forward
-            img[22:TILE, 32:34, :] *= 0.3
-            img[22:TILE, 48:50, :] *= 0.3
-            img[24:26, 48:TILE - 2, :] *= 0.3
-            img[6:8, 34:TILE - 2, :] *= 0.3
-            img[8:24, 32:34, :] *= 0.3
-            img[26:TILE, 40:42, :] = np.minimum(img[26:TILE, 40:42, :] * 1.2, 1.0)
+            # Drawn knuckles up, thumb down (the first cut's frame); turned into the net's.
+            img = np.flipud(np.rot90(np.flipud(img), 3))
+        elif kind in ("fisttop", "fistpalm", "fistbase"):
+            img = np.flipud(self._fist_side(kind, g))
         elif kind == "hazard":
             img = self.metal(g, 0.05)
             img[26:38, :, :] = np.array([0.95, 0.75, 0.10], np.float32)

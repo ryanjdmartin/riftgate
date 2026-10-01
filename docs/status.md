@@ -74,6 +74,17 @@ main through the fourth round itself, and main merged it at ee87e17 with tests g
 3,593 checks) and pushed. Main and origin match. The branch is left on origin until Ryan says to
 delete it; nothing else claims the engine list now, so the engine section of the to-do is open.
 
+**The fist's other faces (1 October).** Ryan gave the Nemesis's front fist tile turned the
+way he reads it (thumb side up, back of the hand right) and asked for the top, left and bottom.
+`bl_low.Tiles` draws `fisttop` (thumb over the top, index finger side on), `fistpalm`
+(fingertips curled in under the thumb, the heel) and `fistbase` (little finger side on, the
+heel) folded out from the front as a net, every groove, ridge, knuckle light and edge meeting
+across the shared edges; the `fist` tile is now stored in that frame too, and the `thumb` tile is
+retired. `models_low._fist` places each tile by the hand's own axes (forward, back of hand,
+thumb), so the edges meet on both hands and the right hand wears the mirror; the back of the
+hand and the wrist stay plate. Both the Nemesis and the Baboon use it. Not rebuilt yet: no
+Blender in the cloud, so `forge.py build nemesis baboon` on the Mac.
+
 **Where things are.** `sim/` is the headless game (battle map, battlefield resolver, battle
 loop, skirmish, effects pipeline, content DB). `game/battle/` the battle screen and the map
 (`battle_map_view.gd` overlays and gestures, `map_3d.gd` the scene, `painted_map.gd` the
