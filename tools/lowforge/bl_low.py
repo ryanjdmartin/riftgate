@@ -290,6 +290,13 @@ class Tiles:
             img = np.flipud(img)
         elif kind in ("fisttop", "fistpalm", "fistbase"):
             img = np.flipud(self._fist_side(kind, g))
+        elif kind == "glow":
+            # A fire behind a grille: solid, fiery, brighter at the centre, no pattern that
+            # could read as a cross through slats (Ryan, 1 October).
+            yy, xx = np.mgrid[0:TILE, 0:TILE]
+            r = np.sqrt((yy - TILE / 2) ** 2 + (xx - TILE / 2) ** 2) / (TILE / 2)
+            t = np.clip(1.0 - r, 0.0, 1.0)[..., None]
+            img = np.array([0.80, 0.12, 0.04], np.float32) * (1.0 - t) + np.array([1.0, 0.55, 0.18], np.float32) * t
         elif kind == "hazard":
             img = self.metal(g, 0.05)
             img[26:38, :, :] = np.array([0.95, 0.75, 0.10], np.float32)
@@ -332,6 +339,7 @@ class Build:
         self.materials = {}
         self.objects = []
         self.pins = []      # every hp_* and joint_* Empty made, in order, so a joint block can take the pins made inside it
+        self.cuts = []      # (targets, cutter) pairs: booleans applied before export (see cut)
         self.tile_world = TILE_WORLD   # a structure sets this higher: it is seen at true scale on the map
 
     def material(self, name):
@@ -434,6 +442,44 @@ class Build:
         else:
             m = Matrix.Translation((cx, cy, cz)) @ Matrix.Rotation(-math.pi / 2, 4, "X")
         return self.loft(sections, material, label, m)
+
+    def cut(self, targets, p0, p1, radius, sides=8):
+        """A hole: a cylinder from `p0` to `p1` subtracted from every object in `targets`
+        before export (a boolean modifier, applied), so a recessed port is a real hollow in
+        the chassis and nothing of the hull shows inside it (Ryan, 1 October). Pair it with
+        a `_tube` of the same axis a hair smaller, whose inner wall and floor line the hole."""
+        d = (Vector(p1) - Vector(p0)).normalized()
+        up = Vector((0.0, 0.0, 1.0))
+        side = Vector((1.0, 0.0, 0.0)) if abs(d.dot(up)) > 0.999 else d.cross(up).normalized()
+        over = side.cross(d).normalized()
+        bm = bmesh.new()
+        rings = []
+        for p in (Vector(p0) - d * 1.0, Vector(p1) + d * 4.0):
+            rings.append([bm.verts.new(p + side * (radius * math.cos(i * 2.0 * math.pi / sides)) + over * (radius * math.sin(i * 2.0 * math.pi / sides))) for i in range(sides)])
+        for i in range(sides):
+            bm.faces.new([rings[0][i], rings[0][(i + 1) % sides], rings[1][(i + 1) % sides], rings[1][i]])
+        bm.faces.new(rings[0])
+        bm.faces.new(list(reversed(rings[1])))
+        bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+        mesh = bpy.data.meshes.new("cutter")
+        bm.to_mesh(mesh)
+        bm.free()
+        cutter = bpy.data.objects.new("cutter", mesh)
+        bpy.context.scene.collection.objects.link(cutter)
+        self.cuts.append((list(targets), cutter))
+        return cutter
+
+    def apply_cuts(self):
+        """Subtract every cutter from its targets and drop the cutters, before export."""
+        for targets, cutter in self.cuts:
+            for ob in targets:
+                mod = ob.modifiers.new("cut", "BOOLEAN")
+                mod.operation = "DIFFERENCE"
+                mod.object = cutter
+                with bpy.context.temp_override(object=ob, active_object=ob, selected_objects=[ob], selected_editable_objects=[ob]):
+                    bpy.ops.object.modifier_apply(modifier=mod.name)
+            bpy.data.objects.remove(cutter, do_unlink=True)
+        self.cuts = []
 
     def pin(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, parts=()):
         """A socket: an Empty named `hp_<n>` at `at`, its own +y along `forward` (where the
@@ -681,6 +727,7 @@ def main():
     tiles = Tiles(a.get("tiles", os.path.join(HERE, "tiles")), getattr(fn, "maker", "minerva"))
     builder = Build(a["model"], tiles)
     fn(builder)
+    builder.apply_cuts()
     _export(out)
     if "blend" in a:
         # The working file for hand edits in Blender, tiles packed inside. A rebuild from

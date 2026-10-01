@@ -182,7 +182,13 @@ back with the cannons along it and the spines rooted. **Joints (1 October):** `w
 in `models_low.py` hangs a limb under a `joint_<name>` Empty by code; the Badger's booms, the
 Baboon's, Nemesis's and Ammit's upper arms and the Clydesdale's lance have them, the view's strike
 and idle read them (a mount under a joint recoils with its arm), vehicles and aircraft have none.
-Ryan judges the strike and the idle running in the skirmish. `tools/hero_shot.gd` renders bare now
+Ryan judges the strike and the idle running in the skirmish. **The fifth round (1 October):** the
+Armadillo's ports cut through the shell with a boolean (`b.cut` in `bl_low.py`, applied before export;
+a `_tube` lines the hole), its forward ports cut into the front band's crown flanking the cowl (the
+fourth round's were buried inside the band), its bay out to the lip; the Badger's arms in a little;
+the Boar's pod out of the turret's sweep; the Prairie Dog's turret lower; the Goshawk's barrel mouth
+open with the glow inside; the Nemesis's core a plain fire (a `glow` tile) and its condenser up on
+the back; the Ammit's panel and cannons narrower, lit slots on its tail block. `tools/hero_shot.gd` renders bare now
 (`RIFTGATE_OUTLINE_KEEP=1` keeps the display's edge), and the viewer shows every machine bare. Ryan
 judges the round on the viewer. What the second pass changed, so nobody redoes
 it: the **Armadillo** stands on long legs whose hips come out of the shell's flanks (it read

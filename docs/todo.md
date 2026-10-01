@@ -18,7 +18,9 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [x] Judge the pins pass and the classes (30 September: notes on every machine, the mount rule settled; all built the same day)
 - [x] Judge the third pass on the Model Viewer (30 September: notes on seven machines, all built the same day as the fourth round)
 - [ ] Judge the effects' second pass on the listening page (30 September, evening): the four rounds first, then by section and row; a pick lands in the forge and its hook
-- [ ] Judge the fourth round on the Model Viewer (bare renders): the Badger's arm clearance, the Armadillo's cowl, hollow ports and tail, the Boar's turret and pod, the Prairie Dog's back, the Goshawk's glowing barrel and stub, the Nemesis's upright fists, traps, waist cannon and vented core, the Ammit's back panel and cannons; each class's size per machine (a pin's `scale` in `models_low.py`)
+- [x] Judge the fourth round on the Model Viewer (1 October: notes on seven machines, built the same day)
+- [ ] Judge the fifth round on the Model Viewer: the Armadillo's cut ports and the forward ports flanking the cowl, the Badger's arm clearance, the Boar's pod clear of the turret's sweep, the Prairie Dog's turret height, the Goshawk's barrel mouth, the Nemesis's core and condenser, the Ammit's panel width; each class's size per machine (a pin's `scale` in `models_low.py`)
+- [ ] Decide whether a hand-modelled stock twin (the Prairie Dog's autoguns on the drum's cheeks, the Clydesdale's turrets) should match the twin-barrel class's spacing, since on a swap the class is what shows
 - [ ] Propose in chat a Minerva intercept component for the starter set (Ryan, 30 September: tanks need class-based target-modification beyond the Proximity Klaxon)
 - [x] Picks from the phone sketches page: the bass voice (3 or 5), the clip-free guitar, the third shadows (28 September: voice 12, the guitar, the third cut, a quarter of the level gap; all in the forge)
 - [x] Judge The Far Bank's tempo in the game (29 September: 88 stays; the temporary ids are gone)
