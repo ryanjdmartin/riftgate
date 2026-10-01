@@ -162,18 +162,22 @@ class Tiles:
             dark(slice(0, T), slice(T - 2, T), 0.4)
             dark(slice(0, T), slice(0, 2), 0.4)            # the wrist
         else:
-            # From below: the little finger side on, along the front from the knuckle and
-            # turning back down the palm edge to its tip; the heel of the hand behind.
-            fill(slice(0, 18), slice(16, T - 3))           # the finger along the front
-            fill(slice(0, 40), slice(2, 14))               # and back down the palm edge
-            fill(slice(44, T - 2), slice(4, 40))           # the heel of the hand
-            dark(slice(0, 40), slice(14, 16))              # the front's groove, carried round
-            dark(slice(18, 20), slice(16, T - 3))
-            dark(slice(40, 42), slice(2, 16))              # the tip
-            dark(slice(42, 44), slice(4, 40), 0.5)
-            dark(slice(44, T - 2), slice(40, 42), 0.5)
-            dark(slice(14, 16), slice(2, 14), 0.35)        # its joint, near the front
-            lit(slice(16, 18), slice(16, T - 3), 1.15)
+            # From below (Ryan, 1 October): the little finger across the top along the
+            # front, curling in at the palm edge; the thumb's tip at the palm edge behind
+            # it, lit along its ridge as on the other faces; the rest the heel of the palm.
+            fill(slice(0, 18), slice(4, T - 3))            # the little finger along the front
+            dark(slice(18, 20), slice(18, T - 3))
+            dark(slice(0, 20), slice(2, 4), 0.5)           # curling in, its tip at the palm edge
+            dark(slice(16, 20), slice(4, 18), 0.5)
+            dark(slice(0, 18), slice(28, 29), 0.55)        # its joint
+            lit(slice(0, 2), slice(4, T - 3), 1.15)
+            img[20:T, 2:T - 3, :] = self.metal(g * 1.0, streak, mottle=0.008)[20:T, 2:T - 3, :]   # the palm
+            fill(slice(22, 38), slice(2, 16))              # the thumb's tip
+            dark(slice(20, 22), slice(2, 16))
+            dark(slice(22, 38), slice(16, 18))
+            dark(slice(38, 40), slice(2, 18))
+            dark(slice(20, 23), slice(13, 16), 0.5)        # its end, rounded
+            lit(slice(23, 38), slice(9, 11))               # the thumb's ridge
             lit(slice(0, 24), slice(56, 59), 1.3)          # the knuckle, carried round from the front
             dark(slice(0, T), slice(0, 2), 0.4)
             dark(slice(0, T), slice(T - 3, T), 0.4)

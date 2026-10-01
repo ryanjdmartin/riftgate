@@ -77,8 +77,8 @@ delete it; nothing else claims the engine list now, so the engine section of the
 **The fist's other faces (1 October).** Ryan gave the Nemesis's front fist tile turned the
 way he reads it (thumb side up, back of the hand right) and asked for the top, left and bottom.
 `bl_low.Tiles` draws `fisttop` (thumb over the top, index finger side on), `fistpalm`
-(the thumb forward along the top and bent down beside the front, the fingertips behind it, the heel) and `fistbase` (little finger side on, the
-heel) folded out from the front as a net, every groove, ridge, knuckle light and edge meeting
+(the thumb forward along the top and bent down beside the front, the fingertips behind it, the heel) and `fistbase` (the little finger across the
+front curling in, the thumb's tip at the palm edge, the palm) folded out from the front as a net, every groove, ridge, knuckle light and edge meeting
 across the shared edges; the `fist` tile is now stored in that frame too, and the `thumb` tile is
 retired. `models_low._fist` places each tile by the hand's own axes (forward, back of hand,
 thumb), so the edges meet on both hands and the right hand wears the mirror; the back of the
