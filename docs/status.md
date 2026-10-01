@@ -313,8 +313,8 @@ half gap (-17.9, The Crossing -17.7). Hold The Line shipped its 29 and 30 Septem
 to bar nine, the master with headroom (the human tracks had run into the saturator; the
 climax's crackle was that), the kit rebalanced (kick up, snare and crashes down and softer,
 the toms hard with their body kept, at 130 and 98 Hz), the seven twelve bars with the held
-guitar a whole bar each on E, D, D flat, C twice, the bridge on Ryan's sixth Melody Desk
-melody (tune, one harmony line after he cut a voice, his sub root line; the desk's parts re-seeded), the drum
+guitar a whole bar each on E, D, D flat, C twice, the bridge on Ryan's seventh Melody Desk
+melody (1 October: the tune's last four bars rewritten over the sixth's one harmony line and his sub root line; the desk's parts re-seeded), the drum
 solo a fresh pass with four cymbal kinds in turn and a closing snare run climbing from full,
 the climax at one loudness and thinned (no piano, no second chug, the drone throughout, the
 chimes from the second set's fifth bar, the riff's synth in the keys' register from the third

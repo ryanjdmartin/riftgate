@@ -30,6 +30,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [x] Judge round ten (30 September: fewer cymbals ships; the higher synth ships, two bars later)
 - [x] Ryan's simplified bridge melody from the desk (30 September: applied, sub lines included)
 - [x] Ryan's sixth bridge melody, a harmony voice cut (30 September, evening: applied as one harmony lane, the sub's line taken too, marked applied)
+- [x] Ryan's seventh bridge melody, the tune's last four bars (1 October: applied, marked applied)
 - [x] The climax's entries in real bars (30 September: the synth from the third set, the chimes from the second set's fifth bar, the double kick the last four bars)
 - [x] Write the bridge's melody on the Melody Desk (30 September: sent, applied as the keys section's lead and two harmony voices, marked applied)
 - [x] Judge the drums' last dial-in from the sketches page's "Now" set: `mix_ship` (the track as it ships), `drums_kick` (the kick's size, three steps down) and `drums_tom` (the toms, three steps tighter); say which step, or further

@@ -2135,13 +2135,13 @@ def music_hold_the_line(palette="hybrid"):
     rise_up = "7--.a-.7-...8-..5--.a-.c-...8-.."
     climax = "0..0..3.0..5..3.0..0..8.7..5..3.3..3..5.3..7..5.0..0..a.8..7..5."   # the new unison riff, four bars
     # The keys' tune, its harmony line and the sub bass's line are Ryan's, scored on the Melody
-    # Desk against the latest mix (30 September, sixth melody, 1ksj4ee30em8xgwxygpx: the tune as the
-    # fifth had it, a whole harmony voice cut, what is left of the two fitting one lane, and the
-    # sub's fifteenth bar a B held).
+    # Desk against the latest mix (30 September, sixth melody, 1ksj4ee30em8xgwxygpx: a whole harmony
+    # voice cut, what is left of the two fitting one lane, and the sub's fifteenth bar a B held;
+    # 1 October, seventh, qx45x2piz3y2v8kh2huj: the tune's last four bars rewritten, the rest as it was).
     keys_tune = ("7--.8-.7-..5.3-.0-----..3---5---8--.a-.8-..7.5-.3---....5-.3-.0-"
                  "7--.a-.c------.a--.8-.7-.5-----.3--.5-.7-..8.a-.2-----------...."
                  "7--.8-.7-..5.3-.0------.3---5---8--.a-.8-..7.5-.3------.5-.3-.0-"
-                 "7---8---a---c---a---8---7---5---7---8---a---7---c---------------")
+                 "7--.8-.7-..5..3-a-------7---5---7-------d-------c---------------")   # the last four bars rewritten (seventh melody, 1 October: the opening figure again, then A, G, E, G up to C sharp, and the C held)
     keys_harm = ("................................................................"
                  "................................................................"
                  "c--------------.3------.c---d---c--.d-.c-..a.c-.3------.2------."
