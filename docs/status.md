@@ -396,7 +396,7 @@ count in motion (`STRIPE`, `SPOKES`), the sound set, the grid at the hotter gain
 **Open, in order.** The task list is `docs/todo.md`, one line a task, grouped by who
 moves it and ticked in the commit that lands it; this is the order to take them in.
 
-1. Ryan's play test of the engagement range and tethers, and his phone reads.
+1. The engagement rule, in a session of its own: `docs/engagement-rules.md` has the discussion; and Ryan's phone reads.
 2. The planned engine pieces, in whichever order he wants to play first.
 3. Ryan's text for the new machines and components, and the flagged names.
 4. The discuss-first decisions in the Ryan section, the economy last.
