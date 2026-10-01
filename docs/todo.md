@@ -57,8 +57,8 @@ Nothing in content is planned any more; every piece the 28 September content lea
 ## Art
 
 - [ ] Ryan: judge the Baboon's rear silhouette in the harness (the fists hang at knee height now, not on the ground); if it still reads as carrying two boxes, pick heavier hands carrying hardware or a standard forward pose with the fist tile turned 90 degrees
-- [ ] Rebuild the fists on the Mac (`forge.py build nemesis baboon`, then `--import`; no Blender in the cloud session): the top, palm and base tiles of 1 October and the per-face mapping that places them
-- [ ] Ryan: judge the fist's new faces on the Nemesis and the Baboon (the top the thumb wrapping over and the index finger side on, the palm the thumb bent down beside the front with the fingertips behind it, the base the little finger across the front curling in, the thumb's tip at the palm edge and the palm)
+- [x] Rebuild the fists on the Mac (`forge.py build nemesis baboon`, then `--import`; no Blender in the cloud session): the top, palm and base tiles of 1 October and the per-face mapping that places them
+- [x] Ryan: judge the fist's new faces (1 October: good) on the Nemesis and the Baboon (the top the thumb wrapping over and the index finger side on, the palm the thumb bent down beside the front with the fingertips behind it, the base the little finger across the front curling in, the thumb's tip at the palm edge and the palm)
 - [ ] Enemy art through foeforge for the foes still on sketch grids
 - [ ] The hangar as a model
 - [ ] Per-mech repaint (`Unit.paint` exists; nothing sets it)
