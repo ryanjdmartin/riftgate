@@ -460,7 +460,11 @@ func _process(delta: float) -> void:
 		var k := 0
 		for name in joints.keys():
 			var side := 1.0 if str(name).ends_with("_r") else -1.0
-			_idle[name] = Vector3(sin(_t * 0.7 + sway_phase + k * 1.3) * IDLE_SWING * side, 0.0, 0.0)
+			# A turret scans: a slower, wider traverse than a limb's settling.
+			var turret := str(name).begins_with("turret")
+			var amount := IDLE_SWING * (4.0 if turret else 1.0) * side
+			var rate := 0.35 if turret else 0.7
+			_idle[name] = joint_axis(name) * (sin(_t * rate + sway_phase + k * 1.3) * amount)
 			k += 1
 		_pose_joints()
 
@@ -473,8 +477,16 @@ func _pose_joints() -> void:
 		j.rotation = _rest[name] + _idle.get(name, Vector3.ZERO) + _strike.get(name, Vector3.ZERO)
 
 
+## The axis a joint turns about: a limb swings about its x (the axle line, forward and
+## back); a turret (`joint_turret`, `joint_turret_l`...) traverses about its up axis
+## (Ryan, 1 October: a way of showing movement on a vehicle).
+static func joint_axis(name: String) -> Vector3:
+	return Vector3(0.0, 1.0, 0.0) if name.begins_with("turret") else Vector3(1.0, 0.0, 0.0)
+
+
 ## A blow: the shoulders swing the arms forward and back. Ranged: only the arms with a
-## weapon socket kick back, a recoil. Does nothing on an untagged model.
+## weapon socket kick back, a recoil, and a turret with a mount flinches on its traverse.
+## A melee blow leaves turrets alone. Does nothing on an untagged model.
 func strike(ranged: bool) -> void:
 	if joints.is_empty() or not is_inside_tree():
 		return
@@ -484,16 +496,20 @@ func strike(ranged: bool) -> void:
 		if not owner.is_empty():
 			armed[owner] = true
 	for name in joints.keys():
+		var turret := str(name).begins_with("turret")
 		var swing: float
 		if ranged:
 			if not armed.has(name):
 				continue
 			swing = 0.09
+		elif turret:
+			continue
 		else:
 			swing = -0.5
+		var axis := joint_axis(name)
 		var tw := create_tween()
-		tw.tween_method(_set_strike.bind(name), Vector3.ZERO, Vector3(swing, 0.0, 0.0), 0.10 if not ranged else 0.05).set_ease(Tween.EASE_OUT)
-		tw.tween_method(_set_strike.bind(name), Vector3(swing, 0.0, 0.0), Vector3.ZERO, 0.28 if not ranged else 0.2).set_ease(Tween.EASE_IN_OUT)
+		tw.tween_method(_set_strike.bind(name), Vector3.ZERO, axis * swing, 0.10 if not ranged else 0.05).set_ease(Tween.EASE_OUT)
+		tw.tween_method(_set_strike.bind(name), axis * swing, Vector3.ZERO, 0.28 if not ranged else 0.2).set_ease(Tween.EASE_IN_OUT)
 
 
 func _set_strike(value: Vector3, name: String) -> void:
