@@ -253,6 +253,7 @@ static func threaten_gate(b: Battle, sq: Unit) -> void:
 		if b.field.can_stand(sq, n):
 			sq.pos = n
 			break
+	sq.behaviour = "push"   # a pusher: an aggressive pack would turn for a machine within its reach
 	b.field.compute_intents()
 
 

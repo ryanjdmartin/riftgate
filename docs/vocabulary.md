@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 98 implemented, 11 planned, 0 idea.
+Status: 100 implemented, 11 planned, 0 idea.
 
 ## Resource
 
@@ -119,8 +119,10 @@ Status: 98 implemented, 11 planned, 0 idea.
 | **Movespeed** | Movement points per phase. Entering a hex costs its terrain's move cost for that unit's traits. | implemented |
 | **Intent** | Each pack's path for the phase is previewed exactly. It heads for the gate or the nearest city defense, or hunts mechs if aggro. Player routes resolve first. | implemented |
 | **Body block** | A pack stops at the first hex on its path occupied by a blocking unit. Flyers do not block; packs pass through their hex but never land on it. | implemented |
-| **Contact** | After all movement, every connected group of adjacent units that contains both sides becomes one skirmish. Multiple skirmishes resolve one at a time. | implemented |
-| **Pack** | An enemy hex is a pack: one foe type times a strength. A skirmish's enemy composition is whatever packs are chained together at contact, so the rift's formation and the player's disruption of it decide what you fight. Bosses are single three-hex units. | implemented |
+| **Contact** | After all movement, every machine standing inside a pack's zone fights that pack. A machine inside two packs' zones joins their fights into one; that is the only way fights join. Multiple skirmishes resolve one at a time, in the order you choose. | implemented |
+| **Engagement zone** | Every pack has a zone, a radius in hexes around where it ends its move, drawn on the map before Resolve. Stand inside it and you fight that pack. Nothing else decides who fights: a pack stops only where a body stands in its path, and a machine beside its path is walked past unless the zone reaches it. | implemented |
+| **Behaviour** | Every pack commits its route when the round opens; the route you read is the route, and only a body in its path cuts it. A pusher walks it to the gate whatever you do. An aggressive pack does the same unless a machine ends inside its reach, the dashed ring: then it comes for the biggest catch it can make. A hunter locks one machine when it spawns, by its caveat (the nearest, weakest, strongest, slowest or fastest), wears the target rings on it, and chases wherever that machine ends until one of them is dead. | implemented |
+| **Pack** | An enemy hex is a pack: one foe type times a strength. A skirmish's enemy composition is every pack whose zone your machines stand in, so the rift's formations and how you come at them decide what you fight. Bosses are single three-hex units. | implemented |
 | **Footprint** | A unit covers one or more hexes. A boss covers three in a triangle. Every footprint hex blocks, touches for contact, and is a tap target. Packs and mechs stay single-hex. | implemented |
 | **Structure** | Gate and rift hexes are structures wider than one hex. Nobody stands on them. A pack whose path reaches any gate hex strikes the gate. | implemented |
 | **Spawn** | When Rift Pressure fills, the next pack of the faction's spawn list appears on the nearest free hex to the rift. | implemented |
@@ -140,11 +142,11 @@ Status: 98 implemented, 11 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Flyer** | Ignores terrain cost, crosses water and mountains, cannot body-block. | implemented |
+| **Flyer** | Ignores terrain cost, crosses water and mountains. Packs pass through it: it cannot stop one. It fights by the zone like any machine. | implemented |
 | **Hover** | Crosses water. | implemented |
 | **Walker** | Rough and ruins cost 1. | implemented |
 | **Tank** | No effect yet. | planned |
-| **Stealth** | Controls no ground: packs do not stop beside it, and a contact's engagement range never reaches it. Joins a fight only when an ally is in it, or when it stopped a pack in its path; a pack that merely ends its move beside it has walked past. | implemented |
+| **Stealth** | A pack's zone never pulls it in on its own. Joins a fight only when another machine is in it, or when it stopped a pack in its path; a pack whose zone merely falls on it has walked past. | implemented |
 | **City defense** | A static player-side unit. Packs path toward it, and it joins any skirmish it is adjacent to. | implemented |
 
 ## Trigger
@@ -223,7 +225,10 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Reinforcements** (implemented): Elites should surface at set points rather than in pool order.
 - **Massive** (implemented): Cleave treats it as a front-rank neighbour; pierce cannot hit anything behind it because nothing is.
 - **Intent** (implemented): Aggro is a fixed flag. Should be a behaviour per foe type.
-- **Contact** (implemented): No participant cap. May need one for phone readability.
+- **Contact** (implemented): No participant cap. May need one for phone readability. Decided 1 October: zones on the packs, measured from where each stops; nothing chains.
+- **Engagement zone** (implemented): Decided 1 October after the touching rule (22 September) and the engagement range (28 September). Radii are content on the foe type: front-rank 1, back-rank 3, bosses 2, placeholders. Dropped on the way: chaining in any form, a touch rule between packs, double-booking a machine into two fights, the zone as the stop.
+- **Behaviour** (implemented): Decided 1 October: the enemy commits first, so no pack re-aims at the plan without a drawn trigger. Placeholders: the ghoul aggressive, the brute hunts the strongest at move 3; a dedicated hunter is a foe to name.
+- **Pack** (implemented): The rift should seed and spawn formations, not single packs (Ryan, 1 October): to design.
 - **Footprint** (implemented): Footprints do not rotate with facing.
 - **Structure** (implemented): The rift does nothing yet beyond marking where packs spawn.
 - **Spawn** (implemented): A full spawn list should arrive together as a formation; pressure currently sends one pack at a time.

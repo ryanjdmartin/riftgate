@@ -295,6 +295,20 @@ func codex_for_unit(u: Unit) -> Dictionary:
 	}
 
 
+## What the map needs of a foe type (decided 1 October): its pack's engagement zone, its
+## behaviour and caveat, and its move. Keyed by foe id, for Battlefield.foe_profiles; a
+## boss's entry serves the boss unit. Defaults are the engine's when the content says nothing.
+func pack_profiles() -> Dictionary:
+	var out: Dictionary = {}
+	for id in foes.keys():
+		var f: Dictionary = foes[id]
+		var p: Dictionary = {"zone": int(f.get("zone", 1)), "behaviour": str(f.get("behaviour", "push")), "hunts": str(f.get("hunts", "nearest"))}
+		if f.has("movespeed"):
+			p["movespeed"] = int(f["movespeed"])
+		out[id] = p
+	return out
+
+
 ## Unpack a battlefield pack into skirmish foes: its foe type times its strength. A boss
 ## (elite) unpacks into the faction's massive boss first. A pack with no foe type falls back
 ## to the first entry of its faction's spawn list.
@@ -724,6 +738,16 @@ func _validate_foes(errs: Array[String]) -> void:
 			errs.append("%s: 'injures' is gone; component injuries are a global rule" % where)
 		if f.has("stun_resist") and (int(f["stun_resist"]) < 0 or int(f["stun_resist"]) > 100):
 			errs.append("%s: stun_resist is a percent, 0 to 100" % where)
+		if f.has("zone") and (int(f["zone"]) < 1 or int(f["zone"]) > 4):
+			errs.append("%s: zone is the pack's engagement radius in hexes, 1 to 4" % where)
+		if f.has("behaviour") and not ["push", "aggressive", "hunt"].has(str(f["behaviour"])):
+			errs.append("%s: behaviour is push, aggressive or hunt" % where)
+		if f.has("hunts") and not ["nearest", "weakest", "strongest", "slowest", "fastest"].has(str(f["hunts"])):
+			errs.append("%s: hunts is nearest, weakest, strongest, slowest or fastest" % where)
+		if f.has("hunts") and str(f.get("behaviour", "push")) != "hunt":
+			errs.append("%s: hunts is a hunter's caveat; set behaviour to hunt" % where)
+		if f.has("movespeed") and int(f["movespeed"]) < 1:
+			errs.append("%s: movespeed must be positive" % where)
 		for key in ["strikes", "breach"]:
 			if f.has(key):
 				errs.append("%s: '%s' belongs on an attack action, not the foe" % [where, key])

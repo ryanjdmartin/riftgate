@@ -58,6 +58,7 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 	field = Battlefield.new(map)
 	field.spawn_faction = faction
 	field.spawn_table = db.spawn_table(faction)
+	field.foe_profiles = db.pack_profiles()
 	var gate_o := Hex.axial_to_offset(map.gate)
 	var i := 0
 	var face_rng := RandomNumberGenerator.new()
@@ -75,13 +76,13 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 		var row := 3 + (j % 3)
 		var sq := Unit.pack(0, _pack_name(str(entry[0])), Vector2i.ZERO, faction, PACK_SPEED, int(entry[1]), str(entry[0]))
 		sq.pos = field.nearest_standable(sq, Hex.offset_to_axial(col, row))
-		field.add_unit(sq)
+		field.add_unit(field.dress_pack(sq))
 	var fac: Dictionary = db.factions.get(faction, {})
 	var boss_id := str(fac.get("boss", ""))
 	if db.foes.has(boss_id):
 		boss = Unit.boss(0, str(db.foes[boss_id]["name"]).to_lower(), Vector2i.ZERO, faction, BOSS_SPEED)
 		boss.pos = field.nearest_standable(boss, Hex.offset_to_axial(w / 2 - 1, 1))
-		field.add_unit(boss)
+		field.add_unit(field.dress_pack(boss, boss_id))
 	field.compute_intents()
 	state = State.PLAN
 

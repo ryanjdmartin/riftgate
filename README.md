@@ -12,8 +12,9 @@ and open question from the design sessions.
   - `hex.gd` axial/cube hex math, pointy-top pixel conversion
   - `battle_map.gd` terrain grid, gate, rift, procedural generation with a guaranteed ground path
   - `unit.gd` mechs, packs, city defenses on the battlefield
-  - `battlefield.gd` phase resolution: previewed enemy intents, player routes, body-blocking,
-    connected-group skirmish detection, gate damage, Rift Pressure
+  - `battlefield.gd` phase resolution: every pack's committed route and its behaviour (pusher,
+    aggressive, hunter), player routes, body-blocking, the engagement zones that decide who
+    fights, gate damage, Rift Pressure
   - `face.gd`, `die.gd` die faces and dice
   - `foe.gd` an enemy inside a skirmish
   - `skirmish.gd` the dice skirmish: two-rank enemy formation fed from a pool, reach rules,
@@ -22,7 +23,10 @@ and open question from the design sessions.
   - `policy.gd` a player for the headless skirmish, a ladder of skill (random, greedy) with
     personas on top, so balance can be measured over thousands of fights
   - `passives.gd` runs the passive triggers the engine supports (the validator refuses others)
+  - `effects.gd` the one pipeline every number is read through: base plus every live modifier
+    (passives, rewards, buffs, statuses) with a scope and a source
   - `content_db.gd` loads and validates `content/*.json`, builds dice, mechs, and foes
+  - `save.gd` writes the whole battle to `user://battle.json` and reads it back
   - `battle.gd` one battle end to end: plot routes, resolve, open a skirmish per contact
     group, apply the result, until the gate falls, the team is wrecked, or the boss dies
 - `content/` — game data: `vocabulary.json` (every mechanic term; `codex` is the rule as the player reads it), `factions.json`,
@@ -35,9 +39,13 @@ and open question from the design sessions.
     skirmish), or the map viewer
   - `battle/battle_screen.gd` the battle screen: the map with the phase loop around it, and
     the skirmish screen hosted over it on contact; `battle/battle_map_view.gd` draws the
-    field and reads the gestures
+    field and reads the gestures; `battle/orders_board.gd` the strip under the map;
+    `battle/boss_reveal.gd` the boss's contact; `battle/bleed.gd` composites the 3D field
+    with the painted other world
   - `skirmish/skirmish_screen.gd` the skirmish screen, built in code
-  - `ui/` die face view, bars, glyphs, palette
+  - `ui/` the HUD kit (bars, glyphs, palette, buttons), the die face view, the codex box, the
+    pause menu, `mech_view_3d.gd` (a machine's model with its mounts and joints), the feed
+    effects (`feed_fx.gd`, `tear_layer.gd`)
   - `main.tscn` the battlefield map viewer
 - `tests/` — headless tests. `run_tests.gd` discovers `test_*.gd` files and runs every
   `test_` method, including the content validator and a headless drive of the skirmish screen.
@@ -50,16 +58,19 @@ and open question from the design sessions.
   mid-nineties 3D register with generated tiles; `sheet_export.py` exports the enemy grids
   in `docs/sprites-enemies.html` to `art/foes/`; `foeforge/` generates enemy candidates with
   an image model and cuts one into `art/foes/`; `soundforge/` builds every sound and the
-  two music loops from written recipes (numpy); `phone.sh` puts a Web build on a phone
-  over the LAN, `android.sh` the real debug APK over USB; `content_editor.html` is the
-  page of the phone content editor artifact, published with a `files` map carrying each
-  `content/<file>.json` at that same path as the baselines it diffs against (Ryan's saved
-  edits live in its database, collection `edits`); `spriter/.venv` is the Python
+  six music tracks from written recipes (numpy); `phone.sh` puts a Web build on a phone
+  over the LAN, `android.sh` the real debug APK over USB; `hangar.html` is the
+  hangar page, one artifact with four tabs (the codex, the content editor, the names list, the
+  renders), published with the `files` map `hangar_data.py` prints: each `content/<file>.json`
+  at that same path as the shipped content every tab reads and the editor diffs against,
+  `hangar/pins.json` (the models' mounts) and `hangar/renders.json` with the renders under
+  `docs/hangar/`; Ryan's saved edits live in its database (collection `edits`), the name
+  candidates in `candidates`; `spriter/.venv` is the Python
   the tools run with. The gate and wall are lowforge models too (`gate`, `wall`).
 - `art/` — `models/` every glTF the engine draws (units, gate, wall), `foes/` from the sheet
   export, `fonts/` the HUD faces, `audio/` every sound by name (`game/audio/sound.gd` lists
   them). A missing foe sprite falls back to a placeholder shape; a missing sound is silence.
-- `docs/` — design bible, generated vocabulary, concept intake in `docs/concepts/`,
+- `docs/` — design bible, generated vocabulary, the hangar page's renders and pins under `hangar/`,
   `sprites-enemies.html` (the enemy sheet the export reads), design canvases under
   `canvas/`, `status.md`, the handoff note updated at the end of every working session,
   and `todo.md`, the task list: one line a task, grouped by who moves it, ticked in the
@@ -79,17 +90,19 @@ godot --headless --path . -s tests/run_tests.gd
 # run the harness (skirmish screen and map viewer)
 godot --path .
 
-# the hangar codex page: every chassis with its die laid out, from content/*.json
-python3 tools/build_codex.py . codex.html    # then publish it as an artifact
+# the hangar page: the codex, the content editor, the names and the renders in one artifact
+python3 tools/hangar_data.py        # writes docs/hangar/pins.json, checks the renders manifest, prints the files map
+# then publish tools/hangar.html to https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH with that map (a render round: pictures into
+# docs/hangar/renders/<chassis>/, the entry in docs/hangar/renders.json, republish)
 
 # regenerate docs/vocabulary.md from content/vocabulary.json
 godot --headless --path . -s tools/export_vocabulary.gd
 
 # the balance report: every chassis alone and the starting team against every pack, played by
-# random and by greedy over 200 seeds a cell, written to docs/balance.md (about 80 s).
+# random and by greedy over 200 seeds a cell, written to docs/balance.md (about fifteen minutes).
 # --seeds N, --policies greedy, --withdraw 40 (a persona), --json out.json for every cell;
 # --trace "sparrowhawk|brute x4|greedy|3" plays that one fight and prints its log instead.
-perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
+perl -e 'alarm 1800; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
 
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument
 # poses the screen first. Skirmish: codex, mechcodex, hold, confirm, lock, strike,
@@ -142,13 +155,13 @@ tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes
 # one machine wearing swapped components on its mounts ("2:" bares a mount; armour and vents show nowhere); a class alone: <chassis> shapes/barrel_minerva; rendered bare (RIFTGATE_OUTLINE_KEEP=1 keeps the display's edge)
 RIFTGATE_FIT="1:lance,4:blazethrower" godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva fit.png front 480 480
 
-# every sound and the two music loops, from the recipes in tools/soundforge/forge.py, then re-import
+# every sound and the six music tracks, from the recipes in tools/soundforge/forge.py, then re-import
 tools/spriter/.venv/bin/python tools/soundforge/forge.py build          # or: build hit kill music_far_bank
 tools/spriter/.venv/bin/python tools/soundforge/phone_sketches.py [set]  # A/B sketches of one change at a time for the phone's speaker, as AAC into tools/soundforge/out/phone/ with a listening page (index.html) to publish
-tools/spriter/.venv/bin/python tools/soundforge/fx_sketches.py [singles|sequences]   # every effect sketched again beside the shipped one, and four rounds in context, as AAC into tools/soundforge/out/fx/ with the listening page (index.html) to publish
+tools/spriter/.venv/bin/python tools/soundforge/fx_sketches.py [singles|sequences]   # every effect sketched again beside the shipped one, and four rounds in context, as AAC into tools/soundforge/out/fx/ with the listening page (index.html) to publish (AAC by afconvert on the Mac, by ffmpeg at 256 kbps elsewhere, since ffmpeg's encoder smears a transient's front at 128; numpy and scipy are all it needs)
 tools/spriter/.venv/bin/python tools/soundforge/desk_parts.py [track]   # every track's melodic parts as notes, one JSON per track into tools/soundforge/out/desk/, for the Melody Desk page's store (collection `parts`)
 tools/spriter/.venv/bin/python tools/soundforge/forge.py measure        # each file's loudness, peak and share under 150 Hz
-tools/spriter/.venv/bin/python tools/soundforge/forge.py sections       # every section of both loops, with timestamps
+tools/spriter/.venv/bin/python tools/soundforge/forge.py sections       # every section of every track, with timestamps
 tools/spriter/.venv/bin/python tools/soundforge/forge.py sketch map_88  # eight-bar sketches and variants, to tools/soundforge/out (not shipped)
 godot --headless --path . --import
 
@@ -218,10 +231,14 @@ there; tap the mech again to clear its route. Routes are planned in the order th
 plotted, so a later machine may end where an earlier one is leaving; re-plotting a machine
 puts it last. Hold any unit for its numbers; double-tap it for its codex; tap the gate for
 its integrity. Red lines are where each pack goes this round, from the plan as it stands:
-a grounded machine controls the ground beside it (the tinted flower), a pack stepping into
-it stops there and that is a contact; every grounded machine within two hexes of the fight
-joins it, and a dashed tether runs from each machine to the pack it will fight, so who is in
-is never a surprise. The contact is marked before Resolve with who is in it and the ground
+every pack commits its route when the round opens and only a body in its path cuts it;
+every pack carries an engagement zone (its foe type's radius, drawn red where the pack will
+stop: a thin outline when nobody stands in it, tinted and heavily outlined when a fight is
+in it), every machine inside a pack's zone fights it, and a machine inside two zones joins
+those fights into one. Pushers walk their route whatever you do; an aggressive pack turns
+for anything that ends inside its reach, the dashed ring; a hunter wears the target rings
+on the machine it has locked and chases it. So who is in is never a surprise. The contact
+is marked before Resolve with who is in it and the ground
 it will be fought on. Resolve plays the moves, then a CONTACT band, then a panel of the
 contacts with portraits; ENGAGE dives the map onto the fight and hands over to the skirmish
 screen. Its Back button applies the result: wrecks leave the map, packs shrink to their

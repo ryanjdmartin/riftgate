@@ -1,0 +1,937 @@
+<title>Riftgate Hangar</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* One page for the hangar (decided 1 October): the codex, the content editor, the names
+   list and the renders, each a tab, all reading the content files published beside this
+   page so one republish refreshes every tab. Edits and name candidates live in the
+   artifact's database (collections "edits" and "candidates"). */
+:root{
+  --ground:#ECE8DF; --paper:#F6F3EC; --sunk:#E2DDD2; --ink:#1F2226; --ink-2:#4B5058; --ink-3:#7C8189; --rule:#CFC9BC; --rule-strong:#B4AD9F;
+  --minerva:#4E6A3B; --kestrel:#33639C; --ws:#8A5730; --aphelion:#B3302C; --arsenal:#3E434D; --parts:#6A5B8E; --other:#6E7279;
+  --atk:#A8402F; --shd:#2F63A8; --vent:#8A6A12;
+  --ok:#3D7A4A; --warn:#A86A12; --bad:#B0352B; --new:#2F63A8; --edited:#A86A12;
+  --acc:var(--ink);
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#191B1F; --paper:#22252B; --sunk:#1D2025; --ink:#E6E2D8; --ink-2:#B6B1A6; --ink-3:#7F7B73; --rule:#383C44; --rule-strong:#4A505A;
+    --minerva:#8DB36F; --kestrel:#7FA9E0; --ws:#D39562; --aphelion:#E8756F; --arsenal:#A9B0BC; --parts:#B4A5E0; --other:#A0A5AD;
+    --atk:#E88870; --shd:#7FA9E0; --vent:#E0B44A;
+    --ok:#7BC48A; --warn:#E0A44A; --bad:#EE7A6E; --new:#7FA9E0; --edited:#E0A44A;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#191B1F; --paper:#22252B; --sunk:#1D2025; --ink:#E6E2D8; --ink-2:#B6B1A6; --ink-3:#7F7B73; --rule:#383C44; --rule-strong:#4A505A;
+  --minerva:#8DB36F; --kestrel:#7FA9E0; --ws:#D39562; --aphelion:#E8756F; --arsenal:#A9B0BC; --parts:#B4A5E0; --other:#A0A5AD;
+  --atk:#E88870; --shd:#7FA9E0; --vent:#E0B44A;
+  --ok:#7BC48A; --warn:#E0A44A; --bad:#EE7A6E; --new:#7FA9E0; --edited:#E0A44A;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:15px/1.45 var(--body)}
+.wrap{max-width:900px;margin:0 auto;padding-inline:16px;padding-block:0 56px}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);border-bottom:1px solid var(--rule);padding-block:10px 6px}
+.brand{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.brand h1{font:800 30px/1 var(--display);letter-spacing:.02em;text-transform:uppercase;margin:0}
+.eyebrow{font:500 11px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.status{font-size:12px;color:var(--ink-3)}
+.status.warn{color:var(--bad)}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;padding-block:8px 2px;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{flex:0 0 auto;border:1px solid var(--rule);background:var(--paper);color:var(--ink-2);padding:6px 11px;border-radius:4px;font:600 15px/1 var(--display);letter-spacing:.04em;text-transform:uppercase;cursor:pointer}
+nav.tabs button[aria-selected="true"]{background:var(--acc);border-color:var(--acc);color:var(--ground)}
+nav.tabs button .count{color:var(--edited);margin-left:6px;font-variant-numeric:tabular-nums}
+nav.tabs button[aria-selected="true"] .count{color:inherit}
+nav.sub{padding-block:4px 6px}
+nav.sub button{font-size:13px;padding:5px 9px;letter-spacing:.06em;background:transparent}
+nav.sub button[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--ground)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.lede{color:var(--ink-3);font-size:13px;margin:10px 0 0;max-width:70ch}
+.help{font-size:13px;color:var(--ink-3);margin:6px 0 0}
+.empty{color:var(--ink-3);padding:20px 0}
+.tag{display:inline-block;font:600 10px/1.6 var(--display);letter-spacing:.1em;text-transform:uppercase;padding:0 6px;border:1.5px solid currentColor;border-radius:2px;white-space:nowrap;vertical-align:1px}
+.tag.edited{color:var(--edited)} .tag.new{color:var(--new)} .tag.del{color:var(--bad)} .tag.applied{color:var(--ok)} .tag.planned{color:var(--ink-3)}
+.btn{border:1px solid var(--rule-strong);background:var(--paper);color:var(--ink);padding:7px 12px;border-radius:4px;font:600 14px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+.btn.primary{background:var(--acc);border-color:var(--acc);color:var(--ground)}
+.btn.danger{color:var(--bad);border-color:var(--bad)}
+.btn:disabled{opacity:.45;cursor:default}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--ground);padding:8px 14px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9;border-radius:3px}
+.toast.show{opacity:1}
+.tab-minerva{--acc:var(--minerva)} .tab-kestrel{--acc:var(--kestrel)} .tab-ws{--acc:var(--ws)} .tab-aphelion{--acc:var(--aphelion)} .tab-arsenal{--acc:var(--arsenal)} .tab-parts{--acc:var(--parts)} .tab-other{--acc:var(--other)}
+img{max-width:100%}
+
+/* ---- codex */
+nav.anchors{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-block:8px 0}
+nav.anchors::-webkit-scrollbar{display:none}
+nav.anchors a{flex:0 0 auto;border:1px solid var(--rule);border-radius:4px;padding:5px 10px;text-decoration:none;color:var(--ink-2);font:600 14px/1 var(--display);letter-spacing:.04em;text-transform:uppercase}
+nav.anchors a:hover{border-color:var(--acc);color:var(--ink)}
+.chassis{--acc:var(--other);background:var(--paper);border:1px solid var(--rule);border-left:4px solid var(--acc);border-radius:3px;padding:14px;margin-top:14px;scroll-margin-top:150px}
+.chassis.minerva{--acc:var(--minerva)} .chassis.kestrel{--acc:var(--kestrel)} .chassis.ws{--acc:var(--ws)} .chassis.aphelion{--acc:var(--aphelion)} .chassis.arsenal{--acc:var(--arsenal)}
+.chassis .head{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:start}
+.chassis .head .thumb{grid-row:1 / span 3;width:96px;height:96px;object-fit:contain;image-rendering:pixelated;background:var(--ground);border-radius:3px;cursor:pointer}
+.desig{font:500 12px/1.4 var(--mono);color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin:0}
+.chassis h2{font:700 27px/1 var(--display);text-transform:uppercase;letter-spacing:.02em;margin:1px 0 2px;color:var(--acc)}
+.chassis h2 .tag{margin-left:8px;vertical-align:4px}
+.sub{color:var(--ink-3);font-size:13px;margin:0 0 10px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:3px;overflow:hidden;margin-bottom:10px}
+.stat{background:var(--sunk);padding:5px 8px;display:flex;flex-direction:column;gap:1px}
+.stat .k{font:600 10px/1.3 var(--display);text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3)}
+.stat .v{font-variant-numeric:tabular-nums;font-weight:600;font-size:15px}
+.passive{border:1px dashed var(--rule-strong);border-radius:3px;padding:8px 10px;margin-bottom:10px}
+.passive h4{margin:0 0 2px;font:600 16px/1.2 var(--display);text-transform:uppercase;letter-spacing:.04em}
+.passive p{margin:0;color:var(--ink-2);font-size:14px;max-width:70ch}
+.passive.none h4,.passive.none p{color:var(--ink-3)}
+.chassis h3{font:600 13px/1 var(--display);text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);margin:12px 0 6px}
+.die{display:grid;gap:6px}
+.entry{display:grid;grid-template-columns:auto auto 1fr auto;grid-template-areas:"slot kind name maker" "slot kind nums nums" "slot kind kws kws" "pas pas pas pas";gap:1px 10px;align-items:baseline;background:var(--sunk);border:1px solid var(--rule);border-radius:3px;padding:7px 10px;cursor:pointer}
+.entry:hover,.entry:focus-visible{border-color:var(--acc)}
+.entry.blank,.entry.missing{opacity:.6;cursor:default}
+.slot{grid-area:slot;font:600 10px/1.4 var(--display);text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);min-width:64px}
+.pinnote{margin:0 0 6px;font-size:13px;color:var(--atk)}
+.kind{grid-area:kind;font:600 10px/1.4 var(--mono);letter-spacing:.06em;padding:1px 5px;border:1px solid currentColor;border-radius:2px;color:var(--ink-3)}
+.kind.attack{color:var(--atk)} .kind.shield{color:var(--shd)} .kind.vent{color:var(--vent)}
+.cname{grid-area:name;font-weight:600}
+.nums{grid-area:nums;font-variant-numeric:tabular-nums;font-size:13px;color:var(--ink-2)}
+.kws{grid-area:kws;display:flex;gap:5px;flex-wrap:wrap}
+.kw{border:1px solid var(--rule-strong);border-radius:999px;padding:0 7px;font:600 10px/1.7 var(--display);text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2);cursor:help}
+.kw.shape{border-style:dashed;color:var(--ink-3)}
+.cmaker{grid-area:maker;font-size:11px;color:var(--ink-3);text-align:right}
+.pas{grid-area:pas;font-size:13px;color:var(--ink-2);border-top:1px dashed var(--rule);margin-top:5px;padding-top:5px}
+.tier{font:600 9px/1.6 var(--mono);letter-spacing:.06em;border:1px solid var(--rule-strong);color:var(--ink-3);border-radius:2px;padding:0 4px;margin-left:5px;vertical-align:1px}
+.codex{color:var(--ink-2);font-size:14px;margin:10px 0 0;max-width:70ch}
+.clash{font-size:13px;color:var(--ink-2);background:var(--sunk);border-radius:3px;padding:6px 8px;margin:0 0 10px}
+@media (max-width:520px){.entry{grid-template-columns:auto 1fr;grid-template-areas:"slot kind" "name name" "nums nums" "kws kws" "maker maker" "pas pas"}.cmaker{text-align:left}.chassis .head .thumb{width:72px;height:72px}}
+
+/* ---- content editor */
+.list{border-top:1px solid var(--rule);margin-top:10px}
+.item{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:10px 4px;border-bottom:1px solid var(--rule);cursor:pointer}
+.item:hover,.item:focus-visible{background:var(--paper);outline:none}
+.item .name{font-weight:600}
+.item .id{font-size:12px;color:var(--ink-3);font-family:var(--mono)}
+.editor h2{font:700 26px/1 var(--display);margin:14px 0 2px;text-transform:uppercase}
+.editor .path{font:400 12px/1.4 var(--mono);color:var(--ink-3)}
+.fields{display:grid;gap:12px;margin-top:10px}
+.field label{display:block;font-size:12px;color:var(--ink-3);margin-bottom:3px;font-family:var(--mono)}
+.field label .type{color:var(--rule-strong);margin-left:6px}
+.field input[type="text"],.field input[type="number"],.field textarea{width:100%;font:inherit;font-size:14.5px;color:var(--ink);background:var(--paper);border:1px solid var(--rule-strong);border-radius:3px;padding:7px 9px}
+.field textarea{min-height:38px;resize:vertical;line-height:1.45}
+textarea.json{font-family:var(--mono);font-size:13px;min-height:90px}
+.field.invalid textarea,.field.invalid input{border-color:var(--bad)}
+.field .err{color:var(--bad);font-size:12px;margin-top:3px}
+fieldset{border:1px solid var(--rule-strong);border-radius:3px;padding:10px 12px 12px;margin:0}
+legend{font-size:12px;color:var(--ink-3);padding:0 6px;font-family:var(--mono)}
+fieldset .fields{margin-top:4px}
+.field.check{display:flex;gap:8px;align-items:center}
+.field.check input{width:18px;height:18px}
+.note{margin-top:14px}
+.diff{font-size:13.5px}
+.diff .k{color:var(--ink-3);font-family:var(--mono);font-size:12px}
+.diff .was{color:var(--bad);text-decoration:line-through;opacity:.8}
+.diff .now{color:var(--ok)}
+.card{background:var(--paper);border:1px solid var(--rule);border-radius:3px;padding:12px 14px;margin:10px 0}
+.card .name{font-weight:600}
+.newrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0}
+.newrow input{font:inherit;font-size:14px;padding:7px 9px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);color:var(--ink)}
+
+/* ---- names */
+.check{display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap}
+.check input{flex:1 1 200px;min-width:0;padding:8px 10px;border:1px solid var(--rule-strong);border-radius:4px;background:var(--paper);color:var(--ink);font:inherit}
+.check .verdict{flex:1 1 100%;min-height:22px;font-size:13px;color:var(--ink-2);display:flex;gap:6px;flex-wrap:wrap}
+.plate{margin-top:14px;padding:12px 14px;background:var(--paper);border-left:4px solid var(--acc);border-radius:2px}
+.plate h2{margin:0;font:700 22px/1.05 var(--display);text-transform:uppercase;letter-spacing:.03em;text-wrap:balance}
+.plate .voice{color:var(--ink-3);font-style:italic;font-size:13px;margin:2px 0 8px}
+.plate dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;font-size:14px}
+.plate dt{color:var(--ink-3);text-transform:uppercase;font:600 12px/1.5 var(--display);letter-spacing:.08em;padding-top:2px}
+.plate dd{margin:0;color:var(--ink-2)}
+.rows{margin-top:14px;display:flex;flex-direction:column;gap:6px}
+.row{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:9px 12px;background:var(--paper);border:1px solid var(--rule);border-radius:4px;cursor:pointer}
+.row.open{border-color:var(--acc)}
+.row .name{font:600 20px/1.1 var(--display);letter-spacing:.02em}
+.row .name small{font:500 13px/1 var(--body);color:var(--ink-3);letter-spacing:0;margin-left:8px}
+.row .concept{grid-column:1 / -1;color:var(--ink-2);font-size:14px}
+.row .chips{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.pill{border:1px solid var(--rule-strong);background:transparent;color:var(--ink-2);border-radius:999px;padding:2px 10px;font:600 12px/1.5 var(--display);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;align-self:start;white-space:nowrap}
+.pill.idea{border-color:var(--ink-3)}
+.pill.liked{border-color:var(--ok);color:var(--ok)}
+.pill.landed{background:var(--ok);border-color:var(--ok);color:var(--ground)}
+.pill.rejected{border-color:var(--rule);color:var(--ink-3);text-decoration:line-through}
+.pill.ghost{border-style:dashed;color:var(--ink-3)}
+.row.rejected{opacity:.55}
+.row.rejected .name{text-decoration:line-through;text-decoration-color:var(--ink-3)}
+.side{display:flex;gap:6px;align-items:flex-start;flex-wrap:wrap;justify-content:flex-end}
+.divider{display:flex;align-items:center;gap:10px;margin-top:10px;color:var(--ink-3);font:600 12px/1 var(--display);letter-spacing:.1em;text-transform:uppercase}
+.divider::before,.divider::after{content:"";flex:1;border-top:1px dashed var(--rule)}
+.chip{font-size:12px;padding:1px 8px;border-radius:3px;border:1px solid}
+.chip.bad{color:var(--bad);border-color:var(--bad)} .chip.warn{color:var(--warn);border-color:var(--warn)} .chip.ok{color:var(--ok);border-color:var(--ok)}
+.edit{grid-column:1 / -1;display:none;flex-direction:column;gap:8px;margin-top:8px;padding-top:8px;border-top:1px dashed var(--rule)}
+.row.open .edit{display:flex}
+.edit textarea,.edit input,.add input{width:100%;padding:8px 10px;border:1px solid var(--rule-strong);border-radius:4px;background:var(--ground);color:var(--ink);font:inherit;resize:vertical}
+.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.add{margin-top:16px;padding:12px 14px;border:1px dashed var(--rule-strong);border-radius:4px;display:flex;flex-direction:column;gap:8px}
+.add h3{margin:0;font:700 16px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.add .line{display:flex;gap:8px;flex-wrap:wrap}
+.add .line input{flex:1 1 160px}
+select{padding:8px;border:1px solid var(--rule-strong);border-radius:4px;background:var(--ground);color:var(--ink);font:inherit}
+.rules{margin-top:14px;display:flex;flex-direction:column;gap:12px;max-width:65ch}
+.rules h3{margin:14px 0 2px;font:700 18px/1.1 var(--display);text-transform:uppercase;letter-spacing:.04em}
+.rules p,.rules li{margin:0;color:var(--ink-2);font-size:14px}
+.rules ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.rules b{color:var(--ink)}
+.counts{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;color:var(--ink-3);font-size:13px}
+
+/* ---- models */
+section.model{background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:12px 14px;margin-top:12px;scroll-margin-top:150px}
+section.model h2{font:700 22px/1 var(--display);text-transform:uppercase;letter-spacing:.03em;margin:0}
+section.model .plate2{color:var(--ink-3);font-size:13px;margin:2px 0 4px}
+.when{font:600 11px/1.5 var(--display);text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);margin:0}
+.mnote{color:var(--ink-2);font-size:14px;margin:2px 0 8px;max-width:66ch}
+.pics{display:flex;gap:10px;flex-wrap:wrap}
+.pics img{width:min(100%,420px);max-width:100%;height:auto;image-rendering:pixelated;background:var(--ground);border-radius:3px}
+.pics.small img{width:min(100%,240px)}
+details{margin-top:8px} summary{cursor:pointer;color:var(--ink-3);font-size:13px}
+@media (prefers-reduced-motion: reduce){.toast{transition:none}}
+</style>
+
+<div class="wrap" id="app">
+  <header class="top">
+    <div class="brand">
+      <div><span class="eyebrow">Riftgate</span><h1>Hangar</h1></div>
+      <div class="status" id="status">Loading the shipped files…</div>
+    </div>
+    <nav class="tabs" id="tabs" role="tablist" aria-label="Sections"></nav>
+    <nav class="tabs sub" id="subtabs" role="tablist" aria-label="Within the section"></nav>
+  </header>
+  <main id="main"></main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+// ------------------------------------------------------------------ shared
+// The shipped content is published beside this page at content/<file>.json. Edits are
+// documents in the artifact's database (collection "edits", id "<file>.<list>__<entry id>",
+// the whole edited entry); name candidates are collection "candidates". A session pulls
+// "edits" with ArtifactData and applies them to content/*.json; once the shipped file
+// matches, the entry shows as applied and the document can be cleared.
+const FILES = [
+  {key: "chassis.entries", label: "Chassis", file: "content/chassis.json", list: "entries"},
+  {key: "chassis.makers", label: "Makers", file: "content/chassis.json", list: "makers"},
+  {key: "components.entries", label: "Components", file: "content/components.json", list: "entries"},
+  {key: "foes.entries", label: "Foes", file: "content/foes.json", list: "entries"},
+  {key: "factions.entries", label: "Factions", file: "content/factions.json", list: "entries"},
+  {key: "vocabulary.entries", label: "Vocabulary", file: "content/vocabulary.json", list: "entries"},
+];
+const SECTIONS = [
+  {id: "codex", label: "Codex"},
+  {id: "content", label: "Content"},
+  {id: "names", label: "Names"},
+  {id: "models", label: "Models"},
+];
+const MAKER_TAB = {minerva: "minerva", kestrel: "kestrel", wainwright_sutler: "ws", aphelion: "aphelion", arsenal: "arsenal"};
+const KIND_GLYPH = {attack: "ATK", shield: "SHD", vent: "VENT", buff: "BUFF"};
+const REACH = {melee: "melee", line: "line of sight", indirect: "indirect"};
+
+const state = {
+  shipped: {}, about: {}, edits: {},
+  section: "codex", sub: {content: "chassis.entries", names: "minerva"},
+  open: null, returnTo: null, draft: null, invalid: new Set(),
+  db: null, user: null, dbState: "loading", canWrite: true,
+  candidates: [], candState: "connecting", openCand: null,
+  reserved: null, pins: null, renders: null,
+};
+try {
+  const s = JSON.parse(localStorage.getItem("hangar.tabs") || "{}");
+  if (SECTIONS.some(x => x.id === s.section)) state.section = s.section;
+  if (s.sub) Object.assign(state.sub, s.sub);
+} catch (e) {}
+function remember() { try { localStorage.setItem("hangar.tabs", JSON.stringify({section: state.section, sub: state.sub})); } catch (e) {} }
+
+const $ = (s, root = document) => root.querySelector(s);
+const el = (tag, attrs = {}, ...kids) => {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") n.className = v;
+    else if (k.startsWith("on")) n.addEventListener(k.slice(2), v);
+    else if (k === "html") n.innerHTML = v;
+    else if (v !== null && v !== undefined && v !== false) n.setAttribute(k, v === true ? "" : v);
+  }
+  for (const kid of kids) if (kid !== null && kid !== undefined && kid !== false) n.append(kid);
+  return n;
+};
+const docId = (key, id) => `${key}__${id}`;
+const safeId = (s) => String(s).replace(/[^A-Za-z0-9_.~:@+-]/g, "-");
+const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+let toastT = null;
+function toast(msg) {
+  const t = $("#toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 1800);
+}
+function setStatus(msg, warn = false) { const s = $("#status"); s.textContent = msg; s.classList.toggle("warn", warn); }
+
+async function fetchJson(path) {
+  const r = await fetch(path, {cache: "no-store"});
+  if (!r.ok) throw new Error(`${path}: ${r.status}`);
+  return r.json();
+}
+async function loadShipped() {
+  const seen = new Set();
+  for (const f of FILES) {
+    if (seen.has(f.file)) continue;
+    seen.add(f.file);
+    const json = await fetchJson(f.file);
+    state.about[f.file] = json._about || "";
+    for (const g of FILES) if (g.file === f.file) state.shipped[g.key] = json[g.list] || [];
+  }
+}
+// The other files load when a tab first wants them; each is fetched once.
+const loaders = {};
+state.loaded = {};
+function ensure(name, path, apply) {
+  if (loaders[name]) return loaders[name];
+  loaders[name] = fetchJson(path).then(apply).catch(ex => { toast(`Could not load ${path}`); console.error(ex); }).then(() => { state.loaded[name] = true; });
+  return loaders[name];
+}
+// A tab asks for its file once and re-renders when it lands; after that, never again.
+function want(name, loader) { if (!state.loaded[name] && !loaders[name]) loader().then(() => render()); }
+const ensurePins = () => ensure("pins", "hangar/pins.json", j => { state.pins = j.pins || {}; });
+const ensureRenders = () => ensure("renders", "hangar/renders.json", j => { state.renders = j; });
+const ensureReserved = () => ensure("reserved", "content/reserved_names.json", j => {
+  const list = [];
+  for (const src of Object.values(j.sources || {})) for (const n of (src.names || [])) list.push({n, s: src.label || "reserved"});
+  state.reserved = list; buildIndex();
+});
+
+// ---- edits over the shipped content
+function shippedEntry(key, id) { return (state.shipped[key] || []).find(e => e.id === id) || null; }
+function editFor(key, id) { return state.edits[docId(key, id)] || null; }
+function entryState(key, id) {
+  const e = editFor(key, id), s = shippedEntry(key, id);
+  if (!e) return "";
+  if (e.deleted) return s ? "del" : "applied";
+  if (!s) return "new";
+  return same(e.data, s) ? "applied" : "edited";
+}
+function pendingCount(key) {
+  return Object.values(state.edits).filter(e => (key ? e.key === key : true) && !["", "applied"].includes(entryState(e.key, e.id))).length;
+}
+// The content as it will be once the edits land: every tab but the editor's own reads this.
+function liveEntries(key) {
+  const out = [];
+  for (const s of (state.shipped[key] || [])) {
+    const st = entryState(key, s.id);
+    if (st === "del") continue;
+    out.push({entry: st === "edited" ? editFor(key, s.id).data : s, st});
+  }
+  for (const e of Object.values(state.edits)) if (e.key === key && !e.deleted && !shippedEntry(key, e.id)) out.push({entry: e.data, st: "new"});
+  return out;
+}
+const liveMap = (key) => new Map(liveEntries(key).map(x => [x.entry.id, x]));
+
+// ------------------------------------------------------------------ render
+function render() {
+  VOCAB = null;
+  const app = $("#app");
+  const sub = state.sub[state.section];
+  app.className = "wrap" + (state.section === "names" && sub ? " tab-" + sub : "");
+  renderTabs();
+  const main = $("#main");
+  main.replaceChildren();
+  if (state.section === "codex") return renderCodex(main);
+  if (state.section === "content") return renderContent(main);
+  if (state.section === "names") return renderNames(main);
+  if (state.section === "models") return renderModels(main);
+}
+function setSection(id) { state.section = id; state.open = null; state.returnTo = null; remember(); render(); window.scrollTo(0, 0); }
+function setSub(id) { state.sub[state.section] = id; state.open = null; remember(); render(); }
+function renderTabs() {
+  const tabs = $("#tabs"); tabs.replaceChildren();
+  const pending = pendingCount();
+  for (const s of SECTIONS) {
+    const b = el("button", {role: "tab", "aria-selected": String(state.section === s.id), onclick: () => setSection(s.id)}, s.label);
+    if (s.id === "content" && pending) b.append(el("span", {class: "count"}, String(pending)));
+    tabs.append(b);
+  }
+  const subs = $("#subtabs"); subs.replaceChildren();
+  if (state.section === "content") {
+    for (const f of FILES) {
+      const n = pendingCount(f.key);
+      const b = el("button", {role: "tab", "aria-selected": String(state.sub.content === f.key), onclick: () => setSub(f.key)}, f.label);
+      if (n) b.append(el("span", {class: "count"}, String(n)));
+      subs.append(b);
+    }
+    const b = el("button", {role: "tab", "aria-selected": String(state.sub.content === "changes"), onclick: () => setSub("changes")}, "Changes");
+    if (pending) b.append(el("span", {class: "count"}, String(pending)));
+    subs.append(b);
+  } else if (state.section === "names") {
+    for (const t of NAME_TABS) {
+      const n = t.id === "rules" ? 0 : state.candidates.filter(d => d.tab === t.id && statusOf(d) !== "rejected").length;
+      subs.append(el("button", {role: "tab", "aria-selected": String(state.sub.names === t.id), onclick: () => setSub(t.id)}, t.label + (n ? " · " + n : "")));
+    }
+  }
+  subs.hidden = !subs.childElementCount;
+}
+
+// ------------------------------------------------------------------ codex
+let VOCAB = null;   // the live vocabulary, built once per render
+function vocabMap() { return VOCAB || (VOCAB = liveMap("vocabulary.entries")); }
+function vocabName(k) { const v = vocabMap().get(k); return v ? (v.entry.name || k) : k; }
+function vocabTitle(k) { const v = vocabMap().get(k); return v ? (v.entry.name || k) + " — " + (v.entry.codex || "") : k; }
+function faceLine(f) {
+  if (!f) return "";
+  const kind = f.kind || "", bits = [];
+  const p = f.power, pmax = f.power_max;
+  if (kind === "attack") {
+    bits.push(pmax && pmax !== p ? `${p}–${pmax}` : String(p));
+    if (f.crit) bits.push(`crit ${f.crit}%`);
+    const r = REACH[f.reach] || f.reach; if (r) bits.push(r);
+  } else if (kind === "buff") {
+    bits.push(`${vocabName(f.status || "")} ×${Number(f.stacks || 1)}`);
+    if (Number(f.rounds || 1) > 1) bits.push(`${Number(f.rounds)} rounds`);
+  } else if (p !== undefined && p !== null) bits.push(String(p));
+  if (f.power_per_heat) bits.push(`+${f.power_per_heat} per 10 heat`);
+  if (f.vents_all) bits.push("vents all");
+  if (f.heat) bits.push(`${f.heat} heat`);
+  return bits.join(" · ");
+}
+function kwChip(k, cls = "kw") { return el("span", {class: cls, title: vocabTitle(k)}, vocabName(k)); }
+function componentEntry(cid, slot, comps, makers) {
+  const c = comps.get(cid);
+  if (!c) return el("div", {class: "entry missing"}, el("div", {class: "slot"}, slot), el("div", {class: "cname"}, `unknown component ${cid}`));
+  const comp = c.entry, f = comp.face || {}, kind = f.kind || "", planned = comp.status === "planned";
+  const kws = el("div", {class: "kws"});
+  if (comp.shape) kws.append(el("span", {class: "kw shape", title: "Silhouette class: what the model wears at a gun mount when this component is fitted, in its own maker's metal; none means it shows nowhere (armour, a vent)"}, comp.shape.replace(/_/g, " ")));
+  for (const k of (f.keywords || [])) kws.append(kwChip(k));
+  const name = el("div", {class: "cname"}, comp.name || cid);
+  if (comp.tier) name.append(el("span", {class: "tier", title: "Blueprint tier"}, "T" + comp.tier));
+  if (planned) name.append(" ", el("span", {class: "tag planned"}, "planned"));
+  if (c.st) name.append(" ", el("span", {class: "tag " + c.st}, c.st));
+  const row = el("div", {class: "entry" + (planned ? " planned" : ""), tabindex: "0", role: "button", title: "Open in the editor",
+    onclick: () => openFromCodex("components.entries", cid), onkeydown: (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); openFromCodex("components.entries", cid); } }},
+    el("div", {class: "slot"}, slot),
+    el("div", {class: "kind " + kind}, KIND_GLYPH[kind] || kind.toUpperCase()),
+    name,
+    el("div", {class: "nums"}, faceLine(f)),
+    kws,
+    el("div", {class: "cmaker"}, (makers.get(comp.maker || "") || {}).name || ""));
+  if (comp.passive) row.append(el("div", {class: "pas"}, el("b", {}, (comp.passive.name || "") + "."), " " + (comp.passive.description || "")));
+  return row;
+}
+function renderCodex(main) {
+  want("pins", ensurePins); want("renders", ensureRenders);
+  const chassis = liveEntries("chassis.entries"), comps = liveMap("components.entries");
+  const makers = new Map(liveEntries("chassis.makers").map(x => [x.entry.id, x.entry]));
+  main.append(el("p", {class: "lede"}, "Every chassis with its die laid out entry by entry: fixed components first, then each hardpoint. The dashed chip on a component is its silhouette class, the shape the model wears at a gun mount when it is fitted. Pending edits are already laid over the shipped content here, tagged. Tap a name or an entry to edit it; tap the picture for its renders. Numbers are placeholders."));
+  const nav = el("nav", {class: "anchors"});
+  for (const {entry} of chassis) nav.append(el("a", {href: "#cx-" + entry.id}, entry.name || entry.id));
+  main.append(nav);
+  for (const {entry: e, st} of chassis) {
+    const mk = makers.get(e.maker || "") || {};
+    const fixed = e.fixed || [], loadout = e.loadout || [], hp = Number(e.hardpoints || 0), die = fixed.length + hp;
+    const pins = state.pins ? state.pins[e.id] : undefined;
+    const card = el("section", {class: "chassis " + (MAKER_TAB[e.maker] || "other"), id: "cx-" + e.id});
+    const head = el("div", {class: "head"});
+    const r = state.renders && state.renders.chassis[e.id];
+    if (r && r.images && r.images.length) head.append(el("img", {class: "thumb", src: "hangar/renders/" + r.images[0].file, alt: r.images[0].alt, title: "Renders", onclick: () => { setSection("models"); requestAnimationFrame(() => { const t = document.getElementById("md-" + e.id); if (t) t.scrollIntoView(); }); }}));
+    head.append(el("p", {class: "desig"}, e.designation || ""));
+    const h2 = el("h2", {}, el("span", {role: "button", tabindex: "0", title: "Open in the editor", style: "cursor:pointer", onclick: () => openFromCodex("chassis.entries", e.id), onkeydown: (ev) => { if (ev.key === "Enter") openFromCodex("chassis.entries", e.id); }}, e.name || e.id));
+    if (st) h2.append(el("span", {class: "tag " + st}, st));
+    head.append(h2);
+    const sub = el("p", {class: "sub"}, `${mk.name || ""} · ${e.silhouette || ""}`);
+    if ((e.traits || []).length) { sub.append(" · "); for (const t of e.traits) sub.append(kwChip(t), " "); }
+    head.append(sub);
+    card.append(head);
+    const stats = [["hull", e.hull], ["shield", e.shield], ["field recharge", e.recharge_field], ["armour", e.armour], ["heat max", e.heat_max], ["cooling", e.cooling], ["move", e.movespeed], ["die", "d" + die]];
+    card.append(el("div", {class: "stats"}, ...stats.map(([k, v]) => el("div", {class: "stat"}, el("span", {class: "k"}, k), el("span", {class: "v"}, String(v ?? ""))))));
+    const p = e.passive;
+    if (p) {
+      const planned = p.status === "planned";
+      const h4 = el("h4", {}, p.name || ""); if (planned) h4.append(" ", el("span", {class: "tag planned"}, "planned"));
+      card.append(el("div", {class: "passive" + (planned ? " planned" : "")}, h4, el("p", {}, p.description || "")));
+    } else card.append(el("div", {class: "passive none"}, el("h4", {}, "No passive"), el("p", {}, "Unwritten.")));
+    const clash = (e.design || {}).name_clash;
+    if (clash) card.append(el("p", {class: "clash"}, el("b", {}, "Name: "), clash));
+    card.append(el("h3", {}, `The die · ${die} entries`));
+    if (pins === null) card.append(el("p", {class: "pinnote"}, "No model built yet."));
+    else if (Array.isArray(pins) && (pins.length !== hp || pins.some((n, i) => n !== i + 1)))
+      card.append(el("p", {class: "pinnote"}, `The model carries ${pins.length} mount${pins.length === 1 ? "" : "s"} (${pins.map(n => "hp_" + n).join(", ") || "none"}) for ${hp} hardpoint${hp === 1 ? "" : "s"}: the rule wants one per hardpoint.`));
+    const dieBox = el("div", {class: "die"});
+    for (const cid of fixed) dieBox.append(componentEntry(cid, "fixed", comps, makers));
+    for (let i = 0; i < hp; i++) {
+      const cid = i < loadout.length ? loadout[i] : null;
+      dieBox.append(cid ? componentEntry(cid, "hardpoint", comps, makers) : el("div", {class: "entry blank"}, el("div", {class: "slot"}, "hardpoint"), el("div", {class: "cname"}, "empty")));
+    }
+    card.append(dieBox);
+    if (e.codex) card.append(el("p", {class: "codex"}, e.codex));
+    main.append(card);
+  }
+  if (location.hash && location.hash.startsWith("#cx-")) requestAnimationFrame(() => { const t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); });
+}
+function openFromCodex(key, id) {
+  state.section = "content"; state.sub.content = key; state.returnTo = "codex";
+  remember(); openEntry(key, id);
+}
+
+// ------------------------------------------------------------------ content editor
+function renderContent(main) {
+  if (state.sub.content === "changes") return renderChanges(main);
+  if (state.open) return renderEditor(main);
+  renderList(main);
+}
+function renderList(main) {
+  const f = FILES.find(x => x.key === state.sub.content) || FILES[0];
+  const shipped = state.shipped[f.key] || [];
+  const added = Object.values(state.edits).filter(e => e.key === f.key && !shippedEntry(f.key, e.id) && !e.deleted);
+  const about = state.about[f.file] || "";
+  main.append(el("p", {class: "help"}, about.slice(0, 220) + (about.length > 220 ? "…" : "")));
+  const list = el("div", {class: "list"});
+  const row = (id, name, sub) => {
+    const st = entryState(f.key, id);
+    list.append(el("div", {class: "item", tabindex: "0", role: "button", onclick: () => openEntry(f.key, id), onkeydown: (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); openEntry(f.key, id); } }},
+      el("div", {}, el("div", {class: "name"}, name || id), el("div", {class: "id"}, sub || id)),
+      st ? el("span", {class: "tag " + st}, st === "del" ? "delete" : st) : el("span")));
+  };
+  for (const e of shipped) row(e.id, e.name, e.id + (e.category ? " · " + e.category : "") + (e.maker ? " · " + e.maker : ""));
+  for (const e of added) row(e.id, e.data && e.data.name, e.id + " · new");
+  main.append(list);
+  const newrow = el("div", {class: "newrow"});
+  const input = el("input", {type: "text", id: "new-id-" + safeId(f.key), placeholder: "new id (snake_case)", "aria-label": "new entry id"});
+  const template = shipped[shipped.length - 1];
+  newrow.append(input, el("button", {class: "btn", disabled: state.dbState !== "ready", onclick: () => {
+    const id = input.value.trim();
+    if (!/^[a-z0-9_]+$/.test(id)) return toast("An id is lower-case letters, digits and underscores.");
+    if (shippedEntry(f.key, id) || editFor(f.key, id)) return toast("That id exists already.");
+    const data = template ? JSON.parse(JSON.stringify(template)) : {id};
+    data.id = id;
+    if ("name" in data) data.name = id.split("_").map(w => w[0].toUpperCase() + w.slice(1)).join(" ");
+    saveDoc(f.key, id, {data, note: "new entry, from the shape of " + (template ? template.id : "nothing")}).then(() => openEntry(f.key, id));
+  }}, "Add from the last entry's shape"));
+  main.append(newrow);
+  if (state.dbState === "none") main.append(el("p", {class: "help"}, "Saving is off in this view: the database did not load. Open the page signed in, from the artifact link."));
+}
+function openEntry(key, id) {
+  const e = editFor(key, id), s = shippedEntry(key, id);
+  state.open = {key, id};
+  state.draft = JSON.parse(JSON.stringify(e && !e.deleted ? e.data : (s || (e ? e.data : {id}))));
+  state.invalid = new Set();
+  render();
+  window.scrollTo(0, 0);
+}
+function closeEntry() {
+  state.open = null;
+  if (state.returnTo === "codex") { state.returnTo = null; state.section = "codex"; remember(); }
+  render();
+}
+function renderEditor(main) {
+  const {key, id} = state.open;
+  const f = FILES.find(x => x.key === key);
+  const s = shippedEntry(key, id), e = editFor(key, id);
+  const st = entryState(key, id);
+  main.classList.add("editor");
+  main.append(el("div", {class: "toolbar"},
+    el("button", {class: "btn", onclick: closeEntry}, "‹ " + (state.returnTo === "codex" ? "Codex" : f.label)),
+    st ? el("span", {class: "tag " + st}, st === "del" ? "marked for deletion" : st) : null));
+  main.append(el("h2", {}, state.draft.name || id));
+  main.append(el("div", {class: "path"}, `${f.file} › ${f.list} › ${id}`));
+  const fields = el("div", {class: "fields"});
+  renderObject(fields, state.draft, []);
+  main.append(fields);
+  const note = el("div", {class: "field note"});
+  note.append(el("label", {for: "note-field"}, "note to the session that applies this (optional)"));
+  const noteIn = el("input", {type: "text", id: "note-field", value: e && e.note && !e.note.startsWith("new entry") ? e.note : ""});
+  note.append(noteIn);
+  main.append(note);
+  const bar = el("div", {class: "toolbar", id: "savebar"});
+  const dirty = !same(state.draft, e && !e.deleted ? e.data : s);
+  const canSave = state.dbState === "ready" && state.invalid.size === 0 && (dirty || (e && e.deleted));
+  bar.append(el("button", {class: "btn primary", id: "savebtn", disabled: !canSave, onclick: async () => {
+    await saveDoc(key, id, {data: state.draft, note: noteIn.value.trim()});
+    toast("Saved to the page's database");
+    render();
+  }}, "Save edit"));
+  if (e) bar.append(el("button", {class: "btn", onclick: async () => {
+    await state.db.doc("edits/" + docId(key, id)).delete();
+    delete state.edits[docId(key, id)];
+    toast(s ? "Back to the shipped entry" : "New entry dropped");
+    if (s) openEntry(key, id); else closeEntry();
+  }}, s ? "Revert to shipped" : "Drop this new entry"));
+  if (s && !(e && e.deleted)) bar.append(el("button", {class: "btn danger", disabled: state.dbState !== "ready", onclick: async () => {
+    await saveDoc(key, id, {data: s, note: noteIn.value.trim(), deleted: true});
+    toast("Marked for deletion");
+    render();
+  }}, "Mark for deletion"));
+  main.append(bar);
+  if (state.invalid.size) main.append(el("p", {class: "help"}, "A JSON field does not parse; fix it to save."));
+  if (e && !e.deleted && s && !same(e.data, s)) {
+    main.append(el("h2", {}, "Your changes"));
+    main.append(diffView(s, e.data));
+  }
+}
+// One field per key. Strings are text areas, numbers number inputs, booleans checks,
+// arrays of strings a comma list, anything nested an object fieldset or a JSON box.
+function renderObject(container, obj, path) {
+  for (const [k, v] of Object.entries(obj)) {
+    const p = path.concat(k);
+    const fid = "f-" + safeId(p.join("."));
+    if (typeof v === "string") {
+      const ta = el("textarea", {id: fid, rows: v.length > 90 ? 4 : 1});
+      ta.value = v;
+      ta.addEventListener("input", () => { setAt(p, ta.value); autosize(ta); refreshSave(); });
+      container.append(el("div", {class: "field"}, el("label", {for: fid}, k, el("span", {class: "type"}, "text")), ta));
+      requestAnimationFrame(() => autosize(ta));
+    } else if (typeof v === "number") {
+      const inp = el("input", {type: "number", id: fid, step: "any", value: String(v)});
+      inp.addEventListener("input", () => { const n = Number(inp.value); if (inp.value !== "" && Number.isFinite(n)) setAt(p, n); refreshSave(); });
+      container.append(el("div", {class: "field"}, el("label", {for: fid}, k, el("span", {class: "type"}, "number")), inp));
+    } else if (typeof v === "boolean") {
+      const inp = el("input", {type: "checkbox", id: fid});
+      inp.checked = v;
+      inp.addEventListener("change", () => { setAt(p, inp.checked); refreshSave(); });
+      container.append(el("div", {class: "field check"}, inp, el("label", {for: fid}, k)));
+    } else if (Array.isArray(v) && v.every(x => typeof x === "string")) {
+      const inp = el("input", {type: "text", id: fid, value: v.join(", ")});
+      inp.addEventListener("input", () => { setAt(p, inp.value.split(",").map(s => s.trim()).filter(Boolean)); refreshSave(); });
+      container.append(el("div", {class: "field"}, el("label", {for: fid}, k, el("span", {class: "type"}, "list, comma separated")), inp));
+    } else if (v && typeof v === "object" && !Array.isArray(v) && Object.values(v).every(x => typeof x !== "object" || x === null || (Array.isArray(x) && x.every(y => typeof y === "string")))) {
+      const fs = el("fieldset", {}, el("legend", {}, k));
+      const inner = el("div", {class: "fields"});
+      renderObject(inner, v, p);
+      fs.append(inner);
+      container.append(fs);
+    } else {
+      const ta = el("textarea", {id: fid, class: "json", spellcheck: "false"});
+      ta.value = JSON.stringify(v, null, 2);
+      const fld = el("div", {class: "field"}, el("label", {for: fid}, k, el("span", {class: "type"}, v === null ? "null or JSON" : "JSON")), ta);
+      const err = el("div", {class: "err"});
+      fld.append(err);
+      ta.addEventListener("input", () => {
+        try {
+          const parsed = ta.value.trim() === "" ? null : JSON.parse(ta.value);
+          setAt(p, parsed); state.invalid.delete(fid); fld.classList.remove("invalid"); err.textContent = "";
+        } catch (ex) {
+          state.invalid.add(fid); fld.classList.add("invalid"); err.textContent = "Not JSON yet: " + ex.message;
+        }
+        refreshSave();
+      });
+      container.append(fld);
+    }
+  }
+}
+function setAt(path, value) {
+  let o = state.draft;
+  for (const k of path.slice(0, -1)) o = o[k];
+  o[path[path.length - 1]] = value;
+}
+function autosize(ta) { ta.style.height = "auto"; ta.style.height = Math.max(38, ta.scrollHeight + 2) + "px"; }
+function refreshSave() {
+  const b = $("#savebtn");
+  if (!b || !state.open) return;
+  const {key, id} = state.open;
+  const e = editFor(key, id), s = shippedEntry(key, id);
+  const dirty = !same(state.draft, e && !e.deleted ? e.data : s);
+  b.disabled = !(state.dbState === "ready" && state.invalid.size === 0 && (dirty || (e && e.deleted)));
+}
+function diffView(was, now) {
+  const box = el("div", {class: "diff"});
+  const keys = new Set([...Object.keys(was || {}), ...Object.keys(now || {})]);
+  for (const k of keys) {
+    if (same(was[k], now[k])) continue;
+    const show = (x) => x === undefined ? "(none)" : typeof x === "string" ? x : JSON.stringify(x);
+    box.append(el("div", {}, el("span", {class: "k"}, k + ": "), el("span", {class: "was"}, show(was[k])), " ", el("span", {class: "now"}, show(now[k]))));
+  }
+  if (!box.childElementCount) box.append(el("div", {class: "help"}, "No difference."));
+  return box;
+}
+function renderChanges(main) {
+  const docs = Object.values(state.edits).filter(e => !["", "applied"].includes(entryState(e.key, e.id)));
+  const applied = Object.values(state.edits).filter(e => entryState(e.key, e.id) === "applied");
+  main.append(el("p", {class: "help"}, "Everything saved here and not yet in the repo. A session pulls the collection \"edits\" with ArtifactData and applies each document to its file; an entry the shipped file already matches shows as applied below and can be cleared."));
+  if (!docs.length) main.append(el("p", {class: "empty"}, "No pending edits."));
+  for (const e of docs) {
+    const f = FILES.find(x => x.key === e.key), s = shippedEntry(e.key, e.id), st = entryState(e.key, e.id);
+    const card = el("div", {class: "card"});
+    card.append(el("div", {class: "toolbar", style: "margin:0 0 6px"}, el("span", {class: "name"}, (e.data && e.data.name) || e.id), el("span", {class: "tag " + st}, st === "del" ? "delete" : st), el("span", {class: "path"}, `${f.file} › ${f.list}`)));
+    if (st === "edited") card.append(diffView(s, e.data));
+    else if (st === "new") card.append(el("div", {class: "help"}, "A new entry: " + JSON.stringify(e.data).slice(0, 300)));
+    else if (st === "del") card.append(el("div", {class: "help"}, "Remove this entry from the file."));
+    if (e.note) card.append(el("div", {class: "help"}, "Note: " + e.note));
+    card.append(el("div", {class: "toolbar", style: "margin:8px 0 0"}, el("button", {class: "btn", onclick: () => openEntry(e.key, e.id)}, "Open")));
+    main.append(card);
+  }
+  const bar = el("div", {class: "toolbar"});
+  bar.append(el("button", {class: "btn", disabled: !docs.length, onclick: async () => {
+    const text = JSON.stringify(docs.map(e => ({file: FILES.find(x => x.key === e.key).file, list: FILES.find(x => x.key === e.key).list, id: e.id, deleted: !!e.deleted, note: e.note || "", data: e.data})), null, 2);
+    try { await navigator.clipboard.writeText(text); toast("Copied as JSON"); }
+    catch (ex) { const ta = el("textarea", {class: "json", style: "width:100%;min-height:200px"}); ta.value = text; main.append(ta); ta.select(); toast("Select and copy"); }
+  }}, "Copy all pending as JSON"));
+  if (applied.length) bar.append(el("button", {class: "btn", onclick: async () => {
+    for (const e of applied) { await state.db.doc("edits/" + docId(e.key, e.id)).delete(); delete state.edits[docId(e.key, e.id)]; }
+    toast(`Cleared ${applied.length} applied`);
+    render();
+  }}, `Clear ${applied.length} applied`));
+  main.append(bar);
+}
+async function saveDoc(key, id, fields) {
+  if (!state.db) { toast("The database is not available in this view"); return; }
+  const doc = {key, id, file: FILES.find(x => x.key === key).file, list: FILES.find(x => x.key === key).list,
+    data: fields.data, note: fields.note || "", deleted: !!fields.deleted, updated_at: new Date().toISOString()};
+  try {
+    await state.db.doc("edits/" + docId(key, id)).set(doc);
+    state.edits[docId(key, id)] = doc;
+  } catch (ex) {
+    toast("Save refused: " + (ex && ex.code ? ex.code : "unknown"));
+    if (ex && ex.code === "invalid_argument") { state.dbState = "none"; setStatus("This view cannot write edits.", true); }
+  }
+}
+
+// ------------------------------------------------------------------ names
+const NAME_TABS = [
+  {id: "minerva", label: "Minerva", name: "Minerva Heavy Works", voice: "Maintenance manual. Terse, exact, proud of tolerances.",
+   builds: "Tracked vehicles (the monopoly on treads), heavy wheeled vehicles, quad walkers, perhaps heavy plantigrade bipeds, perhaps one heavy flyer in the battlecruiser register. Heavy machinery is the root, not mining alone.",
+   names: "Rugged terrestrial mammals: Honey Badger, Armadillo, Wild Boar. Extinct is fine when the picture is common knowledge (Aurochs, Smilodon).",
+   avoid: "Digitigrade legs read too flimsy. Muskox goes to Wainwright & Sutler first."},
+  {id: "kestrel", label: "Kestrel", name: "Kestrel Dynamics", voice: "Flight-test log. Clipped, numbers first.",
+   builds: "Small and mid-sized flyers and hovercraft. Nothing that touches the ground, nothing big. The monopoly on fast jets.",
+   names: "Birds. Raptors first (Sparrowhawk, Goshawk), any bird with character after. A Puffin is wanted for the irony of what pilots called a hovercraft Kestrel thought was very cool.",
+   avoid: "BattleTech has eaten most raptors: Falcon, Gyrfalcon, Peregrine, Osprey, Shrike, Raven, Eagle, Vulture, Kingfisher."},
+  {id: "ws", label: "W&S", name: "Wainwright & Sutler", voice: "Field notes. Dry and precise.",
+   builds: "Wheeled vehicles and quads (the primary source of both), perhaps a large helicopter or VTOL. No bipeds, no fast flyers.",
+   names: "The frontier's working animals and beasts of burden (Clydesdale, Prairie Dog, Muskox), and the frontier's threats: insects, arachnids, reptiles.",
+   avoid: "Nothing as generic as Tarantula or Desert Scorpion. BattleTech and Heavy Gear own most snakes and spiders: Rattlesnake, Sidewinder, Copperhead, Cobra, Viper, Adder, Gila, Scorpion, Spider."},
+  {id: "aphelion", label: "Aphelion", name: "Aphelion", voice: "Haughty, elitist, technical, jargon.",
+   builds: "Hovercraft, bipeds of every kind, perhaps large aircraft. Transforming designs undecided. No wheels, no quads.",
+   names: "Primates for the humanoid frames (the Baboon's family). Perhaps some insects. The only sensible home for sea creatures.",
+   avoid: "Mandrill is a BattleTech 'Mech that looks like ours, so it became the Baboon; Baboon is the Howler's Clan name, kept as a designation-tier clash. Langur is BattleTech too. Manta and Orca are 40k."},
+  {id: "arsenal", label: "Arsenal", name: "The Arsenal", voice: "A manual written as liturgy.",
+   builds: "Bipedal-ish walkers first, some large aircraft or hovercraft, always a little creepy. Silhouettes cross the other makers' lines: leg counts convert, legs ride on hoverjets, aircraft carry arms.",
+   names: "Never animals. Deities and beings of myth that stand for divine justice, vengeance or retribution (Nemesis, Ammit). A second vein of sins (Hubris) is unfleshed.",
+   avoid: "Never outright war, so no Ares. Spread across cultures: Egypt and Greece would swallow the list on their own."},
+  {id: "parts", label: "Components", name: "Components", voice: "One piece of equipment, one entry on the die.",
+   builds: "Weapons, shields, vents, plating. Names proposed here check against the same lists as the machines.",
+   names: "The maker's register shows in the word: Minerva industrial (Slug Cannon, Ablative Plating), Kestrel aeronautical (Twin Autoguns), W&S artillery (Pocket Mortar, Howitzer), Aphelion astronomical (Umbra Projector, Solar Flare Array, Corona Shield).",
+   avoid: "The reserved lists are machines, not weapons, so a clash here is a softer signal."},
+  {id: "other", label: "Other", name: "Other", voice: "", builds: "Foes, factions, places, anything without a home yet.", names: "", avoid: ""},
+  {id: "rules", label: "Rules", name: "Rules"},
+];
+const STATUSES = ["idea", "liked", "landed", "rejected"];
+const CYCLE = ["idea", "liked", "landed"];
+function statusOf(d) { return d.status === "dropped" ? "rejected" : (STATUSES.includes(d.status) ? d.status : "idea"); }
+const COMMON = new Set(["fire","black","dark","war","night","storm","blood","iron","sun","star","great","mk","ii","iii","iv","lam","iic","mad","battle","thunder","arctic","shadow","savage","super","king","red","blue","white","grey","gray","silver","gold","snow","ice","stone","rock","sand","sea","sky","wild","dire","little","big","heavy","light","the","of","and","one","two","dog"]);
+function norm(s) { return (s || "").toLowerCase().replace(/[\s\-_'.,()]/g, ""); }
+function words(s) { return (s || "").toLowerCase().replace(/[^a-z0-9 \-]/g, " ").split(/[\s\-]+/).filter(w => w.length >= 4 && !COMMON.has(w)); }
+let EXACT = new Map(), BYWORD = new Map();
+function buildIndex() {
+  EXACT = new Map(); BYWORD = new Map();
+  for (const r of (state.reserved || [])) { const k = norm(r.n); if (!EXACT.has(k)) EXACT.set(k, r); for (const w of words(r.n)) { if (!BYWORD.has(w)) BYWORD.set(w, []); BYWORD.get(w).push(r); } }
+}
+// The names in content now, from the live content rather than a baked list, so a chassis or
+// component added or renamed in the editor is "already ours" at once.
+function currentNames() {
+  const makers = new Map(liveEntries("chassis.makers").map(x => [x.entry.id, x.entry]));
+  const out = [];
+  for (const {entry} of liveEntries("chassis.entries")) out.push({name: entry.name, maker: (makers.get(entry.maker) || {}).name || entry.maker, tab: MAKER_TAB[entry.maker] || "other"});
+  for (const {entry} of liveEntries("components.entries")) out.push({name: entry.name, maker: (makers.get(entry.maker) || {}).name || entry.maker || "", tab: "parts"});
+  for (const {entry} of liveEntries("foes.entries")) out.push({name: entry.name, maker: "foe", tab: "other"});
+  return out;
+}
+function check(name) {
+  const k = norm(name); if (!k) return [];
+  const hits = [];
+  const ours = currentNames().find(c => norm(c.name) === k);
+  if (ours) hits.push({kind: "ok", text: "already ours: " + ours.name + " (" + ours.maker + ")"});
+  if (!state.reserved) { hits.push({kind: "warn", text: "the reserved list is still loading"}); return hits; }
+  if (EXACT.has(k)) { const r = EXACT.get(k); hits.push({kind: "bad", text: "taken: " + r.n + " is " + r.s}); }
+  const seen = new Set(), soft = [];
+  for (const w of words(name)) for (const r of (BYWORD.get(w) || [])) { if (norm(r.n) === k || seen.has(r.n)) continue; seen.add(r.n); soft.push(r.n + " (" + r.s + ")"); }
+  if (soft.length) hits.push({kind: "warn", text: "shares a word with " + soft.slice(0, 3).join(", ") + (soft.length > 3 ? " and " + (soft.length - 3) + " more" : "")});
+  if (!hits.length) hits.push({kind: "ok", text: "free: not a machine in any of the four properties"});
+  return hits;
+}
+function chipsFor(name) { return check(name).map(h => el("span", {class: "chip " + h.kind}, h.text)); }
+function renderNames(main) {
+  want("reserved", ensureReserved);
+  const tab = state.sub.names;
+  const t = NAME_TABS.find(x => x.id === tab) || NAME_TABS[0];
+  const n = state.reserved ? state.reserved.length.toLocaleString("en-GB") : "the";
+  main.append(el("p", {class: "lede"}, `Spitball names and concepts per maker. Every name is checked against ${n} machines from BattleTech, Heavy Gear, 40k and Halo (content/reserved_names.json), and against what is in content now.`));
+  const checkBox = el("div", {class: "check"});
+  const ci = el("input", {type: "text", id: "checkName", placeholder: "Check a name: Puffin, Drill, Dunkleosteus", autocomplete: "off", "aria-label": "Check a name"});
+  const verdict = el("div", {class: "verdict", id: "verdict"});
+  ci.addEventListener("input", () => verdict.replaceChildren(...chipsFor(ci.value)));
+  checkBox.append(ci, verdict);
+  main.append(checkBox);
+  if (tab === "rules") { main.append(renderRules()); return; }
+  const plate = el("div", {class: "plate"}, el("h2", {}, t.name));
+  if (t.voice) plate.append(el("div", {class: "voice"}, t.voice));
+  const dl = el("dl");
+  if (t.builds) dl.append(el("dt", {}, "Builds"), el("dd", {}, t.builds));
+  if (t.names) dl.append(el("dt", {}, "Names"), el("dd", {}, t.names));
+  if (t.avoid) dl.append(el("dt", {}, "Avoid"), el("dd", {}, t.avoid));
+  plate.append(dl); main.append(plate);
+  const ours = currentNames().filter(c => c.tab === tab);
+  if (ours.length) main.append(el("div", {class: "counts"}, "In content now: " + ours.map(c => c.name).join(", ")));
+  const mine = state.candidates.filter(d => d.tab === tab).sort((a, b) => STATUSES.indexOf(statusOf(a)) - STATUSES.indexOf(statusOf(b)) || (a.created < b.created ? -1 : 1));
+  const live = mine.filter(d => statusOf(d) !== "rejected"), binned = mine.filter(d => statusOf(d) === "rejected");
+  const list = el("div", {class: "rows"});
+  if (state.candState === "connecting") list.append(el("div", {class: "help"}, "Connecting to the shared list…"));
+  else if (state.candState === "off") list.append(el("div", {class: "help"}, "The shared list is not available in this view. The name check above still works."));
+  else if (!mine.length) list.append(el("div", {class: "empty"}, "Nothing here yet. Add the first one below."));
+  for (const d of live) list.append(renderCandidate(d));
+  if (binned.length) { list.append(el("div", {class: "divider"}, "rejected · " + binned.length)); for (const d of binned) list.append(renderCandidate(d)); }
+  main.append(list);
+  if (state.candState === "on" && state.canWrite) {
+    const add = el("div", {class: "add"}, el("h3", {}, "Add to " + t.label));
+    const nm = el("input", {type: "text", id: "add-name", placeholder: "Name", autocomplete: "off", "aria-label": "Name"});
+    const cp = el("input", {type: "text", id: "add-concept", placeholder: "Concept, silhouette, why (optional)", "aria-label": "Concept"});
+    const by = el("select", {id: "add-by", "aria-label": "Who"}); by.append(el("option", {value: "ryan"}, "Ryan"), el("option", {value: "claude"}, "Claude"));
+    const chips = el("div", {class: "chips"});
+    nm.addEventListener("input", () => chips.replaceChildren(...chipsFor(nm.value)));
+    const go = async () => { const name = nm.value.trim(); if (!name) return; await addCandidate({name, concept: cp.value.trim(), tab, by: by.value}); nm.value = ""; cp.value = ""; chips.replaceChildren(); nm.focus(); };
+    nm.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); go(); } });
+    cp.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); go(); } });
+    add.append(el("div", {class: "line"}, nm, cp), chips, el("div", {class: "actions"}, el("button", {class: "btn primary", onclick: go}, "Add"), by));
+    main.append(add);
+  } else if (state.candState === "on") main.append(el("div", {class: "help"}, "You can read this list but not add to it."));
+}
+function renderCandidate(d) {
+  const st = statusOf(d);
+  const row = el("div", {class: "row" + (state.openCand === d.id ? " open" : "") + (st === "rejected" ? " rejected" : ""), onclick: (e) => { if (e.target.closest(".edit, .pill")) return; state.openCand = state.openCand === d.id ? null : d.id; render(); }});
+  row.append(el("div", {class: "name"}, d.name, el("small", {}, d.by === "ryan" ? "Ryan" : "Claude")));
+  const side = el("div", {class: "side"});
+  if (st === "rejected") {
+    side.append(el("button", {class: "pill rejected", title: "Rejected. Tap to restore as an idea", onclick: async (e) => { e.stopPropagation(); await saveCandidate(d.id, {status: "idea"}); }}, "rejected"),
+                el("button", {class: "pill ghost", onclick: async (e) => { e.stopPropagation(); await saveCandidate(d.id, {status: "idea"}); }}, "restore"));
+  } else {
+    side.append(el("button", {class: "pill " + st, title: "Tap to cycle: idea, liked, landed", onclick: async (e) => { e.stopPropagation(); const i = CYCLE.indexOf(st); await saveCandidate(d.id, {status: CYCLE[(i + 1) % CYCLE.length]}); }}, st),
+                el("button", {class: "pill ghost", title: "Reject: keeps the name on record at the bottom of the list", onclick: async (e) => { e.stopPropagation(); await saveCandidate(d.id, {status: "rejected"}); }}, "reject"));
+  }
+  row.append(side);
+  if (d.concept) row.append(el("div", {class: "concept"}, d.concept));
+  row.append(el("div", {class: "chips"}, ...chipsFor(d.name)));
+  if (state.openCand === d.id) {
+    const edit = el("div", {class: "edit"});
+    const ta = el("textarea", {rows: "3", id: "concept-" + d.id, "aria-label": "Concept"}); ta.value = d.concept || "";
+    const nm = el("input", {type: "text", id: "name-" + d.id, "aria-label": "Name"}); nm.value = d.name;
+    const move = el("select", {id: "move-" + d.id, "aria-label": "Move to"});
+    for (const t of NAME_TABS.filter(t => t.id !== "rules")) { const o = el("option", {value: t.id}, t.label); if (t.id === d.tab) o.selected = true; move.append(o); }
+    let confirming = false;
+    const del = el("button", {class: "btn danger", title: "Delete removes it from the record; Reject keeps it at the bottom", onclick: async () => { if (!confirming) { confirming = true; del.textContent = "Really delete"; return; } await removeCandidate(d.id); }}, "Delete");
+    edit.append(nm, ta, el("div", {class: "actions"},
+      el("button", {class: "btn primary", onclick: async () => { await saveCandidate(d.id, {name: nm.value.trim() || d.name, concept: ta.value.trim(), tab: move.value}); state.openCand = null; render(); }}, "Save"),
+      move, del));
+    row.append(edit);
+  }
+  return row;
+}
+function renderRules() {
+  return el("div", {class: "rules", html: `
+  <h3>What a nickname is</h3>
+  <p>A real Earth animal, living or extinct, whose silhouette the player can picture without looking it up. The name works because the picture rhymes with the machine: a Clydesdale is a big quad, a Sparrowhawk small and fast. Anomalocaris is real and fails the test; Aurochs passes.</p>
+  <h3>Fossil over trope</h3>
+  <p>The fossil record is on the table when it dodges the common trope. Dunkleosteus over Megalodon. Aurochs over Mammoth (which is also a Heavy Gear strider). Smilodon over Sabre-toothed Tiger. A Dodo because it is a funny thing for pilots to call a strange-looking machine. Dinosaurs sparingly: they pull toward the toy register.</p>
+  <h3>Myth is the Arsenal's alone</h3>
+  <p>The foes are all myth and religion (Ghoul, Necromancer, Pit Lord, the Maw). The line between Earth's creatures and the horrors is the game's cleanest, so allies do not take mythical names. The Arsenal is the deliberate exception: figures of divine justice, vengeance and retribution, never war, spread across cultures.</p>
+  <h3>Reading a clash</h3>
+  <ul>
+    <li><b>Iconic:</b> the name alone conjures their machine. Warthog, Timber Wolf, Rhino for a wargamer. Never.</li>
+    <li><b>Known:</b> a hobbyist recognises it, mostly a Clan or Inner Sphere designation rather than the name people use. Goshawk (the Vapor Eagle's IS name) and Baboon (the Howler's Clan name) are kept this way. Dingo (a Heavy Gear gear) is still open.</li>
+    <li><b>Coincidence:</b> a name every military reaches for, obscure in theirs. Sparrowhawk is a Halo Wars gunship and a BattleTech fighter, and it conjures a bird. Kept.</li>
+  </ul>
+  <p>The validator flags every exact match regardless of tier and the entry records why a kept one stays. The chips here go one step softer: <span class="chip warn">shares a word</span> is only a nudge.</p>
+  <h3>Makers by shape</h3>
+  <ul>
+    <li><b>Treads:</b> Minerva only. <b>Fast jets:</b> Kestrel only. <b>Quads and wheels:</b> W&amp;S first; Minerva may have both, Aphelion neither.</li>
+    <li><b>Bipeds:</b> Aphelion every kind, Minerva heavy plantigrade, the Arsenal bipedal-ish and creepy.</li>
+    <li><b>Hovercraft:</b> Kestrel small and fast, Aphelion platforms, the Arsenal legs on hoverjets. <b>Large aircraft:</b> Minerva a flying brick, Aphelion a deep-space thing, the Arsenal a creepy one; Kestrel never.</li>
+  </ul>
+  <h3>Designations</h3>
+  <p>Minerva an industrial catalogue code (EX-45XLE Combat Miner). Kestrel a type and mark (K-7 Mk III Interceptor). W&amp;S a pattern number (Pattern 1 Combat Walker). Aphelion a programme and flight (Perihelion Flight 7 Support Frame). The Arsenal a decree (Arsenal Instrument IV). Frame is Aphelion's word alone.</p>`});
+}
+function clashText(name) { return check(name).filter(h => h.kind === "bad").map(h => h.text).join("; "); }
+async function addCandidate(d) { if (!state.db) return; try { await state.db.collection("candidates").add({...d, status: "idea", created: new Date().toISOString(), clash: clashText(d.name)}); } catch (e) { writeFailed(e); } }
+async function saveCandidate(id, patch) { if (!state.db) return; try { if (patch.name) patch.clash = clashText(patch.name); await state.db.collection("candidates").doc(id).update(patch); } catch (e) { writeFailed(e); } }
+async function removeCandidate(id) { if (!state.db) return; try { await state.db.collection("candidates").doc(id).delete(); state.openCand = null; } catch (e) { writeFailed(e); } }
+function writeFailed(e) { toast("Write refused: " + (e && e.code ? e.code : "unknown")); if (e && e.code === "invalid_argument") { state.canWrite = false; render(); } }
+
+// ------------------------------------------------------------------ models
+function renderModels(main) {
+  want("renders", ensureRenders);
+  main.append(el("p", {class: "lede"}, "Every chassis as it stands, rendered bare through the game's own view. Every proportion lives in models_low.py; a note moves it and a rebuild takes a minute. Earlier passes fold under each machine. The classes section shows what a swapped component wears."));
+  const r = state.renders;
+  if (!r) { main.append(el("p", {class: "help"}, "Loading the renders…")); return; }
+  const chassis = liveEntries("chassis.entries");
+  const makers = new Map(liveEntries("chassis.makers").map(x => [x.entry.id, x.entry]));
+  const nav = el("nav", {class: "anchors"}, el("a", {href: "#md-shapes"}, "Classes"));
+  for (const {entry} of chassis) if (r.chassis[entry.id]) nav.append(el("a", {href: "#md-" + entry.id}, entry.name || entry.id));
+  main.append(nav);
+  const pics = (images, small) => el("div", {class: "pics" + (small ? " small" : "")}, ...images.map(im => el("img", {src: "hangar/renders/" + im.file, alt: im.alt, loading: "lazy"})));
+  const cls = r.classes || {blocks: []};
+  const sec = el("section", {class: "model", id: "md-shapes"}, el("h2", {}, cls.title || "Silhouette classes"), el("p", {class: "plate2"}, cls.plate || ""));
+  for (const b of cls.blocks) { sec.append(el("p", {class: "when"}, b.when || ""), el("p", {class: "mnote"}, b.note || ""), pics(b.images || [], b.small)); }
+  main.append(sec);
+  for (const {entry: e} of chassis) {
+    const d = r.chassis[e.id]; if (!d) continue;
+    const mk = makers.get(e.maker || "") || {};
+    const s = el("section", {class: "model", id: "md-" + e.id},
+      el("h2", {}, e.name || e.id),
+      el("p", {class: "plate2"}, `${mk.name || ""} · ${e.designation || ""} · ${e.silhouette || ""}`),
+      el("p", {class: "when"}, d.when || ""),
+      el("p", {class: "mnote"}, d.note || ""),
+      pics(d.images || [], false));
+    if (d.before && d.before.images && d.before.images.length) s.append(el("details", {}, el("summary", {}, d.before.summary || "Before"), pics(d.before.images, true)));
+    main.append(s);
+  }
+  for (const [id, d] of Object.entries(r.chassis)) if (!chassis.some(x => x.entry.id === id)) {
+    main.append(el("section", {class: "model", id: "md-" + id}, el("h2", {}, id), el("p", {class: "plate2"}, "Not in content"), el("p", {class: "when"}, d.when || ""), el("p", {class: "mnote"}, d.note || ""), pics(d.images || [], false)));
+  }
+  if (location.hash && location.hash.startsWith("#md-")) requestAnimationFrame(() => { const t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); });
+}
+
+// ------------------------------------------------------------------ the database
+function statusLine() {
+  const n = pendingCount();
+  const parts = [];
+  if (state.dbState === "ready") parts.push(n ? `${n} pending edit${n === 1 ? "" : "s"}` : "no pending edits");
+  if (state.candState === "on") parts.push(`${state.candidates.length} names`);
+  setStatus(parts.length ? parts.join(" · ") + " · synced live" : "Shipped files loaded");
+}
+async function connectDb() {
+  const db = window.claude && window.claude.use ? await window.claude.use("db") : null;
+  if (!db) { state.dbState = "none"; state.candState = "off"; setStatus("Read only: the database did not load in this view.", true); render(); return; }
+  state.db = db;
+  try { const user = await window.claude.use("user"); if (user) { const w = await user.can("data.write"); if (w === false) state.canWrite = false; } } catch (e) {}
+  db.collection("edits").onSnapshot((snap) => {
+    state.edits = {};
+    for (const d of snap.docs) { const data = d.data(); if (data && data.key) state.edits[d.id] = data; }
+    state.dbState = "ready";
+    statusLine();
+    if (!state.open) render(); else renderTabs();
+  }, (err) => { state.dbState = "none"; setStatus("Edits cannot sync: " + err.code, true); render(); });
+  db.collection("candidates").onSnapshot((snap) => {
+    state.candidates = snap.docs.map(s => ({id: s.id, ...s.data()}));
+    state.candState = "on";
+    statusLine();
+    if (state.section === "names") render(); else renderTabs();
+  }, (err) => { state.candState = "off"; render(); });
+}
+
+(async () => {
+  try {
+    await loadShipped();
+    setStatus("Shipped files loaded · connecting…");
+    render();
+  } catch (ex) {
+    setStatus("Could not load the shipped content: " + ex.message, true);
+    return;
+  }
+  connectDb();
+})();
+$("#tabs").addEventListener("keydown", e => {
+  if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+  const ids = SECTIONS.map(s => s.id); const i = ids.indexOf(state.section) + (e.key === "ArrowRight" ? 1 : -1);
+  setSection(ids[(i + ids.length) % ids.length]);
+});
+</script>

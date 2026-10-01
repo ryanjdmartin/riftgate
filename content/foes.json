@@ -1,11 +1,11 @@
 {
-  "_about": "Enemies inside a skirmish. Numbers are in tens. Enemy damage is static and telegraphed exactly; only the player's kinetic faces roll. rank is where they prefer to stand: front foes step up, back foes hold. size 2 is massive and fills both slots of a column. stun_resist (default 0) is the foe's base chance, percent, to shrug off a suppress; Numbed adds 10 a stack on top and decays a stack each turn; bosses carry 30 as a placeholder (26 September). Player-facing text: codex (what the codex says), flavour (an in-world quote, shown in italics), and each action's text. design is internal and never shown: fantasy (the pitch, inspiration, homages), niche (the tactical problem the foe poses), notes. actions is the foe's roster of things it can do, each kind attack, defend, buff or debuff, with status implemented or planned; only implemented actions appear in the codex. A defend, buff or debuff action names an effect the engine runs (Foe.ACTION_EFFECTS: halve_damage, regrow; revive_once, summon with foe and count, rally with value; drain_rerolls, add_heat, scramble, crack) and is picked by weight like an attack, in place of a blow that turn. Write {value} in its text for its number. Component injuries are a global rule, not a foe property. An implemented attack action scales the base attack: factor (default 1.0; damage is attack times factor, rounded), strikes (default 1; each a separate blow, so a double strike breaks a shield and reaches the hull), keywords (tags on the blow; breach: its blows overflow shield into hull and can injure through it, dangerous and uncommon), weight (default 1; each round a foe picks one of its attacks by weight, announced before the player acts). Write {damage} in an action's text and the resulting number is shown. Foes stand and strike front rank left to right then back rank; the heaviest hitters deploy left. Numbers are placeholders.",
+  "_about": "Enemies inside a skirmish. Numbers are in tens. Enemy damage is static and telegraphed exactly; only the player's kinetic faces roll. rank is where they prefer to stand: front foes step up, back foes hold. size 2 is massive and fills both slots of a column. stun_resist (default 0) is the foe's base chance, percent, to shrug off a suppress; Numbed adds 10 a stack on top and decays a stack each turn; bosses carry 30 as a placeholder (26 September). Player-facing text: codex (what the codex says), flavour (an in-world quote, shown in italics), and each action's text. design is internal and never shown: fantasy (the pitch, inspiration, homages), niche (the tactical problem the foe poses), notes. actions is the foe's roster of things it can do, each kind attack, defend, buff or debuff, with status implemented or planned; only implemented actions appear in the codex. A defend, buff or debuff action names an effect the engine runs (Foe.ACTION_EFFECTS: halve_damage, regrow; revive_once, summon with foe and count, rally with value; drain_rerolls, add_heat, scramble, crack) and is picked by weight like an attack, in place of a blow that turn. Write {value} in its text for its number. Component injuries are a global rule, not a foe property. On the map (decided 1 October): zone is the pack's engagement zone in hexes (default 1), the radius around where it ends its move inside which every machine fights it; behaviour is how its pack moves: push (default; the gate, its path committed when the round opens), aggressive (the gate, unless a machine ends within its reach, its move plus its zone, in which case it comes for the biggest catch it can make) or hunt (locks one machine when it spawns and chases it until one of them is dead); hunts is a hunter's caveat for picking that machine: nearest (default), weakest, strongest, slowest or fastest; movespeed is its move in hexes (default 2). An implemented attack action scales the base attack: factor (default 1.0; damage is attack times factor, rounded), strikes (default 1; each a separate blow, so a double strike breaks a shield and reaches the hull), keywords (tags on the blow; breach: its blows overflow shield into hull and can injure through it, dangerous and uncommon), weight (default 1; each round a foe picks one of its attacks by weight, announced before the player acts). Write {damage} in an action's text and the resulting number is shown. Foes stand and strike front rank left to right then back rank; the heaviest hitters deploy left. Numbers are placeholders.",
   "entries": [
     {
       "id": "ghoul", "name": "Ghoul", "faction": "undead",
       "design": { "fantasy": "A body that forgot to stop.", "niche": "There are six of them and three slots. Kill fast or be buried.", "notes": "Get Back Up runs since 30 September (revive_once); its 1:3 weight against the attack is a placeholder." },
       "codex": "The rank and file of the Risen. Slow, stupid and never alone: six arrive for every one you put down, and they walk straight at the nearest thing with a heartbeat.",
-      "hp": 30, "attack": 10, "rank": "front",
+      "hp": 30, "attack": 10, "rank": "front", "zone": 1, "behaviour": "aggressive",
       "actions": [
         { "id": "claw", "name": "Claw", "kind": "attack", "weight": 3, "text": "Tears at the nearest mech for {damage}.", "status": "implemented" },
         { "id": "get_back_up", "name": "Get Back Up", "kind": "buff", "effect": "revive_once", "weight": 1, "text": "Readies itself: returns from the pool once after dying, unless executed.", "status": "implemented" }
@@ -16,7 +16,7 @@
       "id": "necromancer", "name": "Necromancer", "faction": "undead",
       "design": { "fantasy": "The reason the ghouls keep coming.", "niche": "It hides behind the wall. Reach it, or chew through.", "notes": "Raise runs since 30 September (summon); its 1:3 weight against the attack is a placeholder." },
       "codex": "Keeps to the back rank behind a wall of ghouls and keeps the wall standing. Anything that can reach past the front is worth more here than anywhere else.",
-      "hp": 30, "attack": 10, "rank": "back",
+      "hp": 30, "attack": 10, "rank": "back", "zone": 3,
       "actions": [
         { "id": "hex_bolt", "name": "Hex Bolt", "kind": "attack", "weight": 3, "text": "A bolt of grave-light for {damage}.", "status": "implemented" },
         { "id": "raise", "name": "Raise", "kind": "buff", "effect": "summon", "foe": "ghoul", "count": 1, "weight": 1, "text": "Calls a ghoul up from the pool at the end of the round.", "status": "implemented" }
@@ -27,7 +27,7 @@
       "id": "brute", "name": "Brute", "faction": "demonic",
       "design": { "fantasy": "A wall that hits back.", "niche": "Its swing is telegraphed. Suppress it, shield for it, or eat it.", "notes": "Roar runs since 30 September (drain_rerolls); its 1:3 weight against the attack is a placeholder." },
       "codex": "A slab of muscle that swings once a round and means it. Everything it does is announced a round early, which is the only reason anyone survives it.",
-      "hp": 50, "attack": 20, "rank": "front",
+      "hp": 50, "attack": 20, "rank": "front", "zone": 1, "behaviour": "hunt", "hunts": "strongest", "movespeed": 3,
       "actions": [
         { "id": "haymaker", "name": "Haymaker", "kind": "attack", "weight": 3, "text": "One enormous swing for {damage}.", "status": "implemented" },
         { "id": "roar", "name": "Roar", "kind": "debuff", "effect": "drain_rerolls", "value": 1, "weight": 1, "text": "Costs the team one reroll next round.", "status": "implemented" }
@@ -38,7 +38,7 @@
       "id": "hellcaster", "name": "Hellcaster", "faction": "demonic",
       "design": { "fantasy": "Artillery with opinions.", "niche": "Big damage from the back rank. Priority target for indirect fire.", "notes": "Stoke runs since 30 September (add_heat); its 1:3 weight against the attack is a placeholder." },
       "codex": "Infernal artillery. Stands at the back and lobs fire over the front rank; the front rank exists so it can.",
-      "hp": 30, "attack": 30, "rank": "back",
+      "hp": 30, "attack": 30, "rank": "back", "zone": 3,
       "actions": [
         { "id": "firebolt", "name": "Firebolt", "kind": "attack", "weight": 3, "text": "Lobbed fire for 30, over the front rank.", "status": "implemented" },
         { "id": "stoke", "name": "Stoke", "kind": "debuff", "effect": "add_heat", "value": 10, "weight": 1, "text": "Adds {value} heat to the mech it is aimed at.", "status": "implemented" }
@@ -49,7 +49,7 @@
       "id": "spawn", "name": "Spawn", "faction": "eldritch",
       "design": { "fantasy": "It has too many angles.", "niche": "Unremarkable alone. Exists to shield the whisperer.", "notes": "Fold runs since 30 September (halve_damage); its 1:3 weight against the attack is a placeholder." },
       "codex": "Something like a body, folded wrong. Harmless enough on its own; in numbers it is a wall that keeps the Whisperer out of reach.",
-      "hp": 40, "attack": 20, "rank": "front",
+      "hp": 40, "attack": 20, "rank": "front", "zone": 1,
       "actions": [
         { "id": "lash", "name": "Lash", "kind": "attack", "weight": 3, "text": "A limb from an unexpected direction for {damage}.", "status": "implemented" },
         { "id": "fold", "name": "Fold", "kind": "defend", "effect": "halve_damage", "weight": 1, "text": "Folds in on itself: takes half damage until its next action.", "status": "implemented" }
@@ -60,7 +60,7 @@
       "id": "whisperer", "name": "Whisperer", "faction": "eldritch",
       "design": { "fantasy": "It talks to your dice.", "niche": "Its hits corrupt what you rolled. Kill it first or bring a spare.", "notes": "Corrupt runs since 30 September (scramble); its 1:3 weight against the attack is a placeholder." },
       "codex": "It does not hit hard. It hits your dice. A machine that has been whispered to does not roll what was installed.",
-      "hp": 30, "attack": 10, "rank": "back",
+      "hp": 30, "attack": 10, "rank": "back", "zone": 3,
       "actions": [
         { "id": "murmur", "name": "Murmur", "kind": "attack", "weight": 3, "text": "A word that hurts, for {damage}.", "status": "implemented" },
         { "id": "corrupt", "name": "Corrupt", "kind": "debuff", "effect": "scramble", "weight": 1, "text": "Scrambles one mech's next reroll: it lands anywhere, the same entry included.", "status": "implemented" }
@@ -72,7 +72,7 @@
       "id": "bone_colossus", "name": "Bone Colossus", "faction": "undead",
       "design": { "fantasy": "A cathedral of ribs that walks.", "niche": "Fills a whole column. Nothing behind it is reachable until it falls, and it does not fall quickly.", "notes": "Massive boss. On the battlefield it is a three-hex unit. Knit runs since 30 September (regrow); its 1:3 weight against the attack is a placeholder." },
       "codex": "A cathedral of ribs that walks. Fills a whole column; nothing behind it can be reached until it falls, and it does not fall quickly.",
-      "hp": 140, "attack": 30, "rank": "front", "size": 2, "stun_resist": 30,
+      "hp": 140, "attack": 30, "rank": "front", "size": 2, "zone": 2, "stun_resist": 30,
       "actions": [
         { "id": "sweep", "name": "Sweep", "kind": "attack", "weight": 3, "text": "A rib the size of a girder, for {damage}.", "status": "implemented" },
         { "id": "knit", "name": "Knit", "kind": "defend", "effect": "regrow", "value": 20, "weight": 1, "text": "Regrows {value} hull.", "status": "implemented" }
@@ -83,7 +83,7 @@
       "id": "pit_lord", "name": "Pit Lord", "faction": "demonic",
       "design": { "fantasy": "The furnace has a face.", "niche": "The biggest telegraphed hit in the game. Suppress it or shield for it every round it stands.", "notes": "Massive boss. Kindle runs since 30 September (rally); its 1:3 weight against the attack is a placeholder." },
       "codex": "The furnace has a face. The single biggest telegraphed hit in the campaign, every round, until it is dead.",
-      "hp": 160, "attack": 40, "rank": "front", "size": 2, "stun_resist": 30,
+      "hp": 160, "attack": 40, "rank": "front", "size": 2, "zone": 2, "stun_resist": 30,
       "actions": [
         { "id": "furnace_blow", "name": "Furnace Blow", "kind": "attack", "weight": 3, "text": "A fist of slag for {damage}.", "status": "implemented" },
         { "id": "kindle", "name": "Kindle", "kind": "buff", "effect": "rally", "value": 10, "weight": 1, "text": "Every other demon on the field hits {value} harder next round.", "status": "implemented" }
@@ -94,7 +94,7 @@
       "id": "the_maw", "name": "The Maw", "faction": "eldritch",
       "design": { "fantasy": "You do not see all of it. That is a mercy.", "niche": "Hits often enough that faces crack. Redundancy wins; burst loses.", "notes": "Massive boss. Unmake runs since 30 September (crack); its 1:3 weight against the attack is a placeholder." },
       "codex": "You do not see all of it. The part you can see hits often enough that faces crack.",
-      "hp": 120, "attack": 20, "rank": "front", "size": 2, "stun_resist": 30,
+      "hp": 120, "attack": 20, "rank": "front", "size": 2, "zone": 2, "stun_resist": 30,
       "actions": [
         { "id": "bite", "name": "Bite", "kind": "attack", "weight": 3, "text": "The visible part closes, for {damage}.", "status": "implemented" },
         { "id": "unmake", "name": "Unmake", "kind": "debuff", "effect": "crack", "weight": 1, "text": "Cracks the component one mech's die is showing, no hull hit needed.", "status": "implemented" }
