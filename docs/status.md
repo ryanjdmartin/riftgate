@@ -64,10 +64,12 @@ this repo at once: check `git status` before committing, stage by path, diff a s
 first (a path still sweeps the other session's hunks), never `git add -A`, never kill a bare
 `godot --path .`. Commit after each verified chunk with tests green.
 
-**The cloud session's branch is merged (1 October).** Branch `ccr-23c2f18f-qlilnd` carried the
-engine list (the planned pieces, the ten foe actions, every trigger, save and resume); main
-merged it at ee87e17 with tests green. It is left on origin until Ryan says to delete it.
-Nothing claims the engine list now; the engine section of the to-do is open.
+**Merged branches to delete (1 October, night).** Everything is on main: the cloud session's
+engine branch `ccr-23c2f18f-qlilnd` and the four `claude/*` branches of 1 October (the hangar
+page, the fists, the effects re-cut, the engagement zones) are all ancestors of main, and Ryan
+said to delete them. A cloud session cannot: its proxy refuses a ref deletion (403 on a
+delete-push and on the API), so delete them from GitHub's branches page or from the Mac
+(`git push origin --delete <branch>`). Nothing claims the engine list now.
 
 **The audit (1 October).** The bible, status, to-do, README and CLAUDE.md were read against
 each other and the code: stale rows retired or marked superseded, the bible's keyword table
