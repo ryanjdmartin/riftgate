@@ -243,6 +243,7 @@ class Build:
         self.tiles = tiles
         self.materials = {}
         self.objects = []
+        self.pins = []      # every hp_* and joint_* Empty made, in order, so a joint block can take the pins made inside it
         self.tile_world = TILE_WORLD   # a structure sets this higher: it is seen at true scale on the map
 
     def material(self, name):
@@ -357,11 +358,22 @@ class Build:
         m = Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4() @ Matrix.Scale(scale, 4)
         e.matrix_world = m
         bpy.context.scene.collection.objects.link(e)
+        self.pins.append(e)
         inv = m.inverted()
         for ob in parts:
             ob.parent = e
             ob.matrix_parent_inverse = inv
         return e
+
+    def joint(self, name, at):
+        """`with b.joint("shoulder_l", pivot): ...` builds a limb inside the block and hangs
+        everything made there, pins included, under an Empty named `joint_<name>` at the
+        pivot, its axes the world's: the engine swings a joint about its own x (the axle
+        line, forward and back) for the strike and the idle (MechView3D). A limb's socket
+        goes inside the block, so a mounted gun recoils with the arm. Only what is still
+        unparented at the block's end is taken, so a socket's stock parts stay under their
+        pin and the pin comes under the joint."""
+        return _Joint(self, name, at)
 
     def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0):
         """`with b.socket("hp_1", at, forward): ...` builds the stock component inside the
@@ -407,6 +419,32 @@ class _Socket:
     def __exit__(self, *exc):
         if exc[0] is None:
             self.b.pin(self.name, self.at, self.forward, self.scale, self.b.objects[self.start:])
+        return False
+
+
+class _Joint:
+    def __init__(self, b, name, at):
+        self.b, self.name, self.at = b, name, at
+
+    def __enter__(self):
+        self.start, self.pstart = len(self.b.objects), len(self.b.pins)
+        return self
+
+    def __exit__(self, *exc):
+        if exc[0] is not None:
+            return False
+        b = self.b
+        e = bpy.data.objects.new("joint_" + self.name, None)
+        e.empty_display_size = 3.0
+        m = Matrix.Translation(Vector(self.at))
+        e.matrix_world = m
+        bpy.context.scene.collection.objects.link(e)
+        inv = m.inverted()
+        for ob in b.objects[self.start:] + b.pins[self.pstart:]:
+            if ob.parent is None:
+                ob.parent = e
+                ob.matrix_parent_inverse = inv
+        b.pins.append(e)
         return False
 
 

@@ -167,7 +167,11 @@ Armadillo's first-pass cowl back over a smaller bay, its ports hollows with the 
 with the missile pod on a rear quarter; the Prairie Dog's back broken up; the Goshawk's fifth mount
 a stub under the fairing, its barrel glowing; the Nemesis's fists upright, traps meeting the helm,
 the cannon on the waist, ports up, the core vented over a glow; the Ammit's back panel flat on the
-back with the cannons along it and the spines rooted. `tools/hero_shot.gd` renders bare now
+back with the cannons along it and the spines rooted. **Joints (1 October):** `with b.joint(...)`
+in `models_low.py` hangs a limb under a `joint_<name>` Empty by code; the Badger's booms, the
+Baboon's, Nemesis's and Ammit's upper arms and the Clydesdale's lance have them, the view's strike
+and idle read them (a mount under a joint recoils with its arm), vehicles and aircraft have none.
+Ryan judges the strike and the idle running in the skirmish. `tools/hero_shot.gd` renders bare now
 (`RIFTGATE_OUTLINE_KEEP=1` keeps the display's edge), and the viewer shows every machine bare. Ryan
 judges the round on the viewer. What the second pass changed, so nobody redoes
 it: the **Armadillo** stands on long legs whose hips come out of the shell's flanks (it read

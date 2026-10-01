@@ -77,6 +77,11 @@ def badger(b):
             # is the Proximity Klaxon, which shows nowhere (armour and vents take no mount).
             b.pad("hp_4", (cx, -6.0, 63.0), size=(8.0, 3.0))
         start = (hinge_x, -6.0, 40.0)
+        # The whole boom hangs under a shoulder joint at the hinge: it swings on a melee
+        # blow and idles under power (the joints, decided earlier and on the to-do; built
+        # by code 1 October).
+        jt = b.joint("shoulder_%s" % ("l" if s < 0 else "r"), start)
+        jt.__enter__()
         elbow, _ = boom(b, start, 42.0, 6.0, 0.0, ARM, ARM, ARM, ARM, "livery.livery2", "upper_boom")   # straight ahead, no yaw
         b.prism("x", elbow[0], elbow[1], elbow[2], 10.0, ARM + 4.0, "steel.dark", 6, "elbow")
         wrist, rot = boom(b, elbow, 28.0, 36.0, 0.0, ARM, ARM, ARM, ARM, "steel.plate", "forearm")
@@ -100,6 +105,7 @@ def badger(b):
             b.box(wrist[0] - 3.0, wrist[0] + 3.0, wrist[1] + 10.0, wrist[1] + 16.0, wrist[2] + 6.0, wrist[2] + 9.0, "amber.light", "mount_light")
             with b.socket("hp_1", (wrist[0], wrist[1] + 12.0, wrist[2])):
                 b.prism("y", wrist[0], wrist[1] + 26.0, wrist[2], 3.2, 30.0, "steel.dark", 6, "barrel")
+        jt.__exit__(None, None, None)
     # Deck weapon: a missile box on a turret ring, right of centre. Its face is exactly one
     # tile (14 units) square on tile boundaries, so the box projection shows the nine tubes
     # whole rather than a slice of them.
@@ -248,10 +254,11 @@ def clydesdale(b):
     # six-sided rail out past the head, a collar, a lit emitter at the point.
     b.box(-5.0, 5.0, -24.0, -6.0, 48.0, 61.0, "steel.panel", "breech")
     b.box(-3.5, 3.5, 6.0, 10.0, 48.0, 54.0, "steel.dark", "saddle")
-    with b.socket("hp_3", (0.0, -15.0, 57.0)):
-        _beam(b, (0.0, -26.0, 57.0), (0.0, 64.0, 57.0), _poly(3.4, 6), _poly(2.8, 6), "steel.dark", "lance")
-        b.prism("y", 0.0, 24.0, 57.0, 4.8, 5.0, "steel.plate", 6, "guard")
-        _beam(b, (0.0, 64.0, 57.0), (0.0, 72.0, 57.0), _poly(2.8, 6), _poly(0.8, 6), "amber.light", "emitter")
+    with b.joint("lance", (0.0, -15.0, 57.0)):   # the lance pivots at the breech: it kicks on a shot
+        with b.socket("hp_3", (0.0, -15.0, 57.0)):
+            _beam(b, (0.0, -26.0, 57.0), (0.0, 64.0, 57.0), _poly(3.4, 6), _poly(2.8, 6), "steel.dark", "lance")
+            b.prism("y", 0.0, 24.0, 57.0, 4.8, 5.0, "steel.plate", 6, "guard")
+            _beam(b, (0.0, 64.0, 57.0), (0.0, 72.0, 57.0), _poly(2.8, 6), _poly(0.8, 6), "amber.light", "emitter")
     # The pocket mortar (hp_4) aft on the deck's left, a stubby tube pitched up and forward
     # on a base.
     b.prism("z", -9.0, -24.0, 49.5, 5.0, 3.0, "steel.dark", 8, "mortar_base")
@@ -346,6 +353,8 @@ def baboon(b):
         elbow = (s * 40.0, -12.0, 34.0)
         wrist = (s * 38.0, 4.0, 16.5)   # the fist's sole at z = 0
         b.prism("x", shoulder[0], shoulder[1], shoulder[2], 4.5, 8.0, "steel.dark", 6, "shoulder_joint")
+        jt = b.joint("shoulder_%s" % ("l" if s < 0 else "r"), shoulder)   # the arm swings from here
+        jt.__enter__()
         _beam(b, shoulder, elbow, OCT(5.2), OCT(4.6), "steel.plate", "upper_arm")
         b.prism("x", elbow[0], elbow[1], elbow[2], 5.5, 12.0, "steel.dark", 6, "elbow")
         _beam(b, elbow, wrist, OCT(4.6), OCT(5.0), "steel.panel", "forearm")
@@ -370,6 +379,7 @@ def baboon(b):
                 b.prism("y", top[0], top[1] + 22.5, top[2] + 3.0, 1.8, 1.5, "amber.engine", 6, "emitter_tip")
         else:
             b.pad("hp_6", (top[0], top[1] + 1.0, top[2] + 3.0), size=(7.0, 3.0))
+        jt.__exit__(None, None, None)
     # The backpack: a tall rack, red stripes down its sides, two flare pods on top (the
     # fixed component, the Solar Flare Array: built in, so no pin), the Radiator Sail's
     # vent block on its rear (a vent: detail, no mount), a mast with a red light between
@@ -865,6 +875,8 @@ def nemesis(b):
         wrist = (s * (38.0 if heavy else 42.0), 20.0, 48.0)
         w_up = 12.0 if heavy else 9.0
         w_fo = 14.0 if heavy else 9.5
+        jt = b.joint("shoulder_%s" % ("r" if heavy else "l"), shoulder)   # the arm swings from here
+        jt.__enter__()
         _beam(b, shoulder, elbow, _sq(w_up, w_up), _sq(w_up - 1.0, w_up - 1.0), "steel.panel", "upper_arm")
         b.box(elbow[0] - 6.5, elbow[0] + 6.5, elbow[1] - 6.0, elbow[1] + 6.0, elbow[2] - 6.0, elbow[2] + 6.0, "steel.dark", "elbow")
         _beam(b, elbow, wrist, _sq(w_fo - 1.0, w_fo - 1.0), _sq(w_fo, w_fo), "steel.plate", "forearm")
@@ -889,6 +901,7 @@ def nemesis(b):
                 py = elbow[1] + (wrist[1] - elbow[1]) * f
                 pz = elbow[2] + (wrist[2] - elbow[2]) * f + 5.0
                 _spike(b, (px, py, pz), (px - 7.0, py, pz + 5.0), 1.6, "steel.dark", "forearm_spike")
+        jt.__exit__(None, None, None)
     # The waist cannon (hp_1): a mount on the right of the waist, the Plasma Carbine
     # forward off it (Ryan, 30 September: on the waist, not the hip).
     b.box(13.0, 23.0, -7.0, 5.0, 51.0, 59.0, "steel.plate", "waist_mount")
@@ -994,12 +1007,13 @@ def ammit(b):
         elbow = (s * 30.0, 22.0, 56.0)
         wrist = (s * 30.0, 38.0, 42.0)
         b.prism("x", shoulder[0], shoulder[1], shoulder[2], 4.6, 8.0, "steel.dark", 6, "shoulder")
-        _beam(b, shoulder, elbow, _sq(8.4, 8.4), _sq(7.2, 7.2), "steel.plate", "upper_arm")
-        b.prism("x", elbow[0], elbow[1], elbow[2], 4.4, 9.0, "steel.dark", 6, "elbow")
-        _beam(b, elbow, wrist, _sq(7.2, 7.2), _sq(6.4, 6.4), "steel.panel", "forearm")
-        b.prism("x", wrist[0], wrist[1], wrist[2], 3.2, 8.0, "steel.dark", 6, "wrist")
-        for tx in (-3.5, 0.0, 3.5):
-            _tine(b, (wrist[0] + tx, wrist[1] + 1.0, wrist[2] - 2.0), 0.0, -60.0, -50.0, 13.0, 3.2, 2.4, "steel.dark", "talon", n=2)
+        with b.joint("shoulder_%s" % ("l" if s < 0 else "r"), shoulder):   # the upper arm swings; the lower pair are legs
+            _beam(b, shoulder, elbow, _sq(8.4, 8.4), _sq(7.2, 7.2), "steel.plate", "upper_arm")
+            b.prism("x", elbow[0], elbow[1], elbow[2], 4.4, 9.0, "steel.dark", 6, "elbow")
+            _beam(b, elbow, wrist, _sq(7.2, 7.2), _sq(6.4, 6.4), "steel.panel", "forearm")
+            b.prism("x", wrist[0], wrist[1], wrist[2], 3.2, 8.0, "steel.dark", 6, "wrist")
+            for tx in (-3.5, 0.0, 3.5):
+                _tine(b, (wrist[0] + tx, wrist[1] + 1.0, wrist[2] - 2.0), 0.0, -60.0, -50.0, 13.0, 3.2, 2.4, "steel.dark", "talon", n=2)
         shoulder = (s * 14.0, 2.0, 40.0)
         elbow = (s * 26.0, 14.0, 26.0)
         wrist = (s * 24.0, 26.0, 6.0)

@@ -13,7 +13,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [x] Judged 29 September on the phone: 60 fps with the fine map and the per-hex props, the text clean, the board and log button, the selection marks, the routes, the props hiding, the seam band, the far blur
 - [ ] Codex and flavour for the seven new machines, the Baboon's flavour, and the 41 components whose codex is empty
 - [x] Decide the Dingo's name (29 September: kept, the coincidence tier; every flagged name is now decided and every note says why it stays)
-- [ ] The Badger's joints in Blender (`forge.py export badger`)
+- [x] The joints (1 October, by code, no Blender hand work: `with b.joint(...)` in `models_low.py` hangs a limb under a `joint_<name>` Empty; the Badger's booms, the Baboon's, Nemesis's and Ammit's upper arms, the Clydesdale's lance; the view's strike and idle read them; vehicles and aircraft have none). Ryan judges the strike and the idle running in the skirmish
 - [x] The missing model pins (29 September, night: the Clydesdale's nine and the Sparrowhawk's four; every pin a gun mount since 30 September)
 - [x] Judge the pins pass and the classes (30 September: notes on every machine, the mount rule settled; all built the same day)
 - [x] Judge the third pass on the Model Viewer (30 September: notes on seven machines, all built the same day as the fourth round)
@@ -81,7 +81,7 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 
 - [x] The black gap between the map's frame and the log was the readout's reserved strip, empty until a hold; it now carries the orders board (`OrdersBoard`, 28 September). Ryan judges it on the phone
 - [ ] The wreck's death animation on the map, once wrecks are decided
-- [ ] Joint idle for grounded machines, once joints exist
+- [x] Joint idle for grounded machines (1 October: the view idles every joint; the five limbed machines have them)
 - [ ] Corruption in a pack's wake, and the bleed growing with Rift Pressure (`bleed.gd` has the knob in mind), once decided
 - [x] FINE MAP judged on the phone (29 September): 60 fps locked, now the default; MSAA measured leaking and is unreachable on a phone
 - [ ] If the phone drops frames: one mesh per material per machine, until joints
