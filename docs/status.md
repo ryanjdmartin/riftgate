@@ -192,7 +192,9 @@ the back; the Ammit's panel and cannons narrower, lit slots on its tail block. *
 October):** a `lit` tile for slots that must light whole; the Ammit's panel ending below the back's
 crown; the Boar's plow ahead of the treads and rooted in the hull, its turret up on a base clear of
 the skirts and decks; the Prairie Dog's turret squat with a class gun either side (the fixed repeater
-left, the autoguns right), nothing hand-modelled; the Goshawk's barrel lit in rings. Ryan asked
+left, the autoguns right), nothing hand-modelled; the Goshawk's barrel lit in rings, then (the seventh round) plain again
+with the glow in the mouth itself; the Prairie Dog's drum smaller with the guns on its flanks; the
+Boar's decks back to the tail under the pod and its plow taller and wider over the treads. Ryan asked
 whether hand edits in Blender can be taken: yes through `forge.py export <id>`, but the models are
 built from code and any rebuild overwrites the working file, so a hand edit has to be re-expressed in
 `models_low.py` to survive; the way that works is a note or a picture, as the Boar's clip was. `tools/hero_shot.gd` renders bare now
