@@ -33,6 +33,11 @@ const BOTTOM_BTN := Vector2(210, 60)
 const LOG_LINES := 4
 
 var battle: Battle
+## Save the battle after every change (user://battle.json, `SaveGame`), so it resumes where
+## it stood. On for a battle the harness starts or resumes; off for standalone runs and
+## tests, which must never overwrite a real one.
+var autosave_enabled := false
+var save_path: String = SaveGame.PATH   # where the autosave goes; the tests point it elsewhere
 
 var _header: HudButton
 var _sub_label: Label
@@ -104,6 +109,28 @@ func _ready() -> void:
 	# The loop from the top, and only once the map has been built and drawn (a new battle
 	# is not a fight's return, which resumes where the map's music left off).
 	_start_music.call_deferred()
+	_resume_where_it_was()
+	_autosave()
+
+
+## A battle handed over mid-flight (a save read back): a fight under way opens straight
+## into the skirmish, no handover, since a resume is not a contact; contacts waiting show
+## their panel; a decided battle shows its outcome. A battle in plan needs nothing.
+func _resume_where_it_was() -> void:
+	if battle.current != null:
+		_enter_skirmish(battle.current, [], false)
+	elif battle.state == Battle.State.SKIRMISH or battle.state == Battle.State.DONE:
+		_after_step()
+
+
+## The battle as it stands, to the save, when saving is on; a decided battle clears it.
+func _autosave() -> void:
+	if not autosave_enabled or battle == null:
+		return
+	if battle.state == Battle.State.DONE:
+		SaveGame.clear(save_path)
+	else:
+		SaveGame.save(battle, save_path)
 
 
 func _start_music() -> void:
@@ -701,6 +728,7 @@ func _after_step() -> void:
 			_show_outcome()
 		_:
 			_refresh()
+	_autosave()
 
 
 ## The contacts this phase, before any opens (Ryan, 22 September): how many, who is in
@@ -960,6 +988,12 @@ func _open_skirmish(index: int = 0) -> void:
 		_map.set_highlight([])
 		_after_step()
 		return
+	_enter_skirmish(sk, group, true)
+
+
+## Open the skirmish screen on a fight: with the handover for a contact just made, or
+## straight in for a fight resumed from a save.
+func _enter_skirmish(sk: Skirmish, group: Array, handover: bool) -> void:
 	var screen: SkirmishScreen = SKIRMISH_SCENE.instantiate()
 	screen.sk = sk
 	screen.back_label = "BACK TO THE FIELD"
@@ -968,8 +1002,10 @@ func _open_skirmish(index: int = 0) -> void:
 	screen.setup(sk)
 	screen.back_requested.connect(_on_skirmish_back)
 	screen.quit_requested.connect(func() -> void: quit_requested.emit())   # QUIT in the fight leaves the battle too, straight out to the harness
+	screen.autosave = _autosave
 	_skirmish = screen
-	if DisplayServer.get_name() == "headless":
+	_autosave()
+	if not handover or DisplayServer.get_name() == "headless":
 		_map.set_highlight([])
 		add_child(screen)
 		_refresh()

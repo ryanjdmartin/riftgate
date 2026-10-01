@@ -244,6 +244,10 @@ func commit() -> Battlefield.PhaseResult:
 	for u in field.mechs():
 		if not engaged.has(u):
 			u.recharge_shield(u.recharge_field)
+			# Passives that fire at the end of a phase spent out of a fight (out_of_combat).
+			var fired := Effects.fire(u, "out_of_combat")
+			if int(fired["shield"]) > 0:
+				u.recharge_shield(int(fired["shield"]))
 	_after_phase()
 	return last_result
 
@@ -319,6 +323,7 @@ func ground_terrain(group: Array) -> int:
 func _build_skirmish(group: Array) -> Skirmish:
 	var sk := Skirmish.new(rng.randi(), columns)
 	sk.terrain = ground_terrain(group)
+	sk.foe_factory = func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null   # a summoning action calls up content
 	for u in group:
 		if not field.units.has(u):
 			continue

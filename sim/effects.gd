@@ -43,11 +43,17 @@ const ROUNDS := 3
 
 ## What the content may ask for, by trigger. The validator refuses anything else.
 const SUPPORTED_EFFECTS := {
-	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn"],
+	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "roll_max"],
 	"on_crit": ["multiply_damage", "add_damage", "add_burn", "vent_heat", "add_crit_damage"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress"],
-	"status": ["tick_hp", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "draw_rank", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack"],
+	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
+	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
+	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
+	"on_shield_gain": ["vent_heat", "stack_status"],
+	"on_heat_gain": ["add_shield", "stack_status"],
+	"out_of_combat": ["add_shield"],
+	"status": ["tick_hp", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry", "scramble_reroll"],
 	"on_foe_status": ["chance_suppress"],
 }
 const DECAY_NONE := 0    # lives until its scope ends
@@ -76,11 +82,37 @@ const STATUS := {
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 0.85}]},
 	"primed": {"id": "primed", "name": "Primed", "description": "Every blow it lands leaves a stack of Burning, per stack.",
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_burn", "value": 1}]},
+	# Retaliation as a debuff, not thorns (Ryan, 28 September): a foe that strikes this
+	# machine's bare hull is Shocked, and the team's next blow on it lands double.
+	"retaliate": {"id": "retaliate", "name": "Retaliate", "description": "A foe that strikes this machine's bare hull is Shocked.",
+		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "shock_on_hull_strike", "value": 1}]},
+	# Damage redirection, common not locked (Ryan, 28 September): a rank of foes turns on the
+	# machine for the round. From a shield or vent keyword, or a buff. draw_rank 0 is the
+	# front rank, 1 the back.
+	"taunt": {"id": "taunt", "name": "Taunt", "description": "Every front-rank foe targets this machine.",
+		"tags": ["buff", "draw"], "effects": [{"trigger": "static", "effect": "draw_rank", "value": 0}]},
+	"beacon": {"id": "beacon", "name": "Beacon", "description": "Every back-rank foe targets this machine.",
+		"tags": ["buff", "draw"], "effects": [{"trigger": "static", "effect": "draw_rank", "value": 1}]},
+	# The foe's side of it: one status, never stacked, spent by the blow it doubles.
+	"shocked": {"id": "shocked", "name": "Shocked", "description": "The next blow it takes deals double, then the shock is spent. Striking bare hull again costs it 10.",
+		"tags": ["shock"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 2}]},
+	# What a foe's defend, buff and debuff actions leave (30 September). Folded fades at the
+	# foe's next action; Kindled lasts the next round; Risen is a charge spent by a death;
+	# Scrambled sits on a machine until its next reroll, and a cleanse clears it.
+	"folded": {"id": "folded", "name": "Folded", "description": "Takes half damage until its next action.",
+		"tags": ["guard"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 0.5}]},
+	"kindled": {"id": "kindled", "name": "Kindled", "description": "Hits 10 harder this round.",
+		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 10}]},
+	"risen": {"id": "risen", "name": "Getting Back Up", "description": "Returns from the pool once after dying, unless executed.",
+		"tags": ["revive"], "effects": []},
+	"scrambled": {"id": "scrambled", "name": "Scrambled", "description": "This die's next reroll lands anywhere, the same entry included.",
+		"tags": [CLEANSABLE], "effects": [{"trigger": "status", "effect": "scramble_reroll", "value": 1}]},
 }
 ## The statuses a buff component may grant: the machines' own, never a foe's.
-const MECH_STATUSES := ["overcharged", "braced", "primed"]
+const MECH_STATUSES := ["overcharged", "braced", "primed", "retaliate", "taunt", "beacon"]
 ## target_status: the foe struck carries any live status (burning, suppressed, numbed...).
-const SUPPORTED_WHEN := ["component_cracked", "reach_melee", "reach_line", "reach_indirect", "target_status"]
+## ally_present: another live machine is in the fight (the unit's `allies`, kept by the skirmish).
+const SUPPORTED_WHEN := ["component_cracked", "reach_melee", "reach_line", "reach_indirect", "target_status", "ally_present"]
 ## Stats a static effect may change: the mech's base numbers by these names.
 const STATS := ["hull", "shield", "heat", "armour", "move", "recharge", "cooling"]
 ## Effects that are bonuses (a destroyed component keeps them) rather than abilities.
@@ -162,15 +194,51 @@ static func stack(u, passive: Dictionary, scope: int, source: String, n: int = 1
 	return grant(u, m)
 
 
+## Every live stack of a status, across scopes: a buff's Overcharged for the round and
+## devour's for the skirmish are the same status to the machine.
 static func stacks_of(u, id: String) -> int:
+	var n := 0
 	for m in live(u):
 		if m.id == id:
-			return m.stacks
-	return 0
+			n += m.stacks
+	return n
 
 
 static func has(u, id: String) -> bool:
 	return stacks_of(u, id) > 0
+
+
+## Drop every copy of a status, whatever its scope: a spent one-shot (Shocked, once the blow
+## it doubled has landed). Returns whether anything went.
+static func remove(u, id: String) -> bool:
+	var keep: Array = []
+	var gone := false
+	for m in u.modifiers:
+		if m.id == id:
+			gone = true
+		else:
+			keep.append(m)
+	u.modifiers = keep
+	return gone
+
+
+## Does this machine draw the foes of `rank` (0 front, 1 back) onto itself right now?
+static func draws_rank(u, rank: int) -> bool:
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "draw_rank" and int(pair[0].get("value", -1)) == rank:
+			return true
+	return false
+
+
+## Does this machine shock a foe that strikes it? `blocked` asks about a blow its shield
+## stopped whole (the Faraday Shutters' Live Shell); otherwise about one that reached hull
+## (the Armadillo's Faraday Hull, the Retaliate status).
+static func shocks_striker(u, blocked: bool) -> bool:
+	var want := "shock_on_block" if blocked else "shock_on_hull_strike"
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == want:
+			return true
+	return false
 
 
 ## What a status effect amounts to right now across live statuses: {hp, heat, skip,
@@ -304,6 +372,8 @@ static func _holds(u, eff: Dictionary, face: Face, target = null) -> bool:
 			return face != null and effective_reach(u, face) == Face.Reach.INDIRECT
 		"target_status":
 			return target != null and target.get("modifiers") != null and not live(target).is_empty()
+		"ally_present":
+			return u.get("allies") != null and int(u.allies) > 0
 	return false
 
 
@@ -371,6 +441,10 @@ static func attack(u, face: Face, dmg: int, heat: int, crit: bool, target = null
 		var eff: Dictionary = pair[0]
 		var v: float = float(eff.get("value", 0))
 		var n: int = pair[1].stacks
+		# `per_stack` scales an effect by the machine's stacks of a status (the Nemesis's
+		# Crucible: melee damage per Overheating stack); none of the status, no effect.
+		if eff.has("per_stack"):
+			n *= stacks_of(u, str(eff["per_stack"]))
 		match str(eff.get("effect", "")):
 			"add_damage":
 				d_add += v * n
@@ -426,6 +500,43 @@ static func effective_reach(u, face: Face) -> int:
 	return face.reach
 
 
+## Keywords a live passive grants this component beyond its own (grant_keyword, static, its
+## `when` honoured; the Wild Boar's Juggernaut Drive puts overwhelm on every attack). An
+## attack keyword lands on attacks only, a support keyword on equipment only, a spend
+## keyword on anything; a keyword the component already carries is not granted twice.
+static func granted_keywords(u, face: Face) -> Array[int]:
+	var out: Array[int] = []
+	if face == null or face.kind == Face.Kind.BLANK:
+		return out
+	for pair in _taking_part(u, "static", face):
+		if str(pair[0].get("effect", "")) != "grant_keyword":
+			continue
+		var kw := Face.keyword_from_name(str(pair[0].get("value", "")))
+		if kw <= 0 or face.has(kw) or out.has(kw):
+			continue
+		var fits := Face.ANY_KEYWORDS.has(kw) or (face.is_attack() != Face.SUPPORT_KEYWORDS.has(kw))
+		if fits:
+			out.append(kw)
+	return out
+
+
+## The component as it is right now for this machine: its own entry, unless a live passive
+## changes its reach or grants it a keyword, in which case a copy carrying both. What the
+## resolver spends, the bot weighs and the screen draws; the die keeps the real one.
+static func effective_face(u, face: Face) -> Face:
+	if face == null:
+		return null
+	var r := effective_reach(u, face)
+	var granted := granted_keywords(u, face)
+	if r == face.reach and granted.is_empty():
+		return face
+	var c := face.duplicate_face()
+	c.reach = r
+	for kw in granted:
+		c.add_keyword(kw)
+	return c
+
+
 ## The chance, percent, that a foe gaining a status is also suppressed by this machine's
 ## passives (the Baboon's Pocket Paradox, 28 September): each effect's base plus its
 ## `per_missing_shield` for every point of shield the machine is missing, summed, capped.
@@ -439,6 +550,117 @@ static func foe_status_suppress_chance(u) -> int:
 		var n: int = pair[1].stacks
 		total += (float(eff.get("value", 0)) + float(eff.get("per_missing_shield", 0)) * missing) * n
 	return clampi(int(roundf(total)), 0, 100)
+
+
+## What a foe's blows gain from its statuses (add_attack, static; a Kindled foe), per stack.
+static func foe_attack_bonus(f) -> int:
+	var n := 0
+	for pair in _taking_part(f, "static", null):
+		if str(pair[0].get("effect", "")) == "add_attack":
+			n += int(pair[0].get("value", 0)) * int(pair[1].stacks)
+	return n
+
+
+## Is this machine's next reroll scrambled (a foe's debuff)?
+static func is_scrambled(u) -> bool:
+	for pair in _taking_part(u, "status", null):
+		if str(pair[0].get("effect", "")) == "scramble_reroll":
+			return true
+	return false
+
+
+## Armour this machine has against blows from a rank (0 front, 1 back) on top of its stat
+## (add_armour_vs_rank, static; the Breaching Plow's Glacis against the front).
+static func armour_against(u, rank: int) -> int:
+	var n := 0
+	for pair in _taking_part(u, "static", null):
+		var eff: Dictionary = pair[0]
+		if str(eff.get("effect", "")) != "add_armour_vs_rank":
+			continue
+		var want := 0 if str(eff.get("rank", "front")) == "front" else 1
+		if want == rank:
+			n += int(eff.get("value", 0)) * int(pair[1].stacks)
+	return maxi(0, n)
+
+
+## Does a passive keep a status from fading on this machine and carry it through the battle
+## (keep_status, static; the Ammit's Quintessence Tap on Overcharged)?
+static func keeps(u, status_id: String) -> bool:
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "keep_status" and str(pair[0].get("value", "")) == status_id:
+			return true
+	return false
+
+
+## The chance, percent, that an ally slips out under this machine's screen when the team
+## withdraws (screen_withdraw, static; the Prairie Dog): zero when it has none.
+static func screen_chance(u) -> int:
+	var best := 0
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "screen_withdraw":
+			best = maxi(best, int(pair[0].get("value", 0)))
+	return clampi(best, 0, 100)
+
+
+## The machine has just lost hull to a blow or a bite (never to its own overheat): every
+## on_hull_damage passive fires (the Crucible's Overheating). Returns the names of the
+## statuses granted, for the log; shield and vent from it are the caller's to apply.
+static func hull_damaged(u) -> Array[String]:
+	return fire(u, "on_hull_damage")["statuses"]
+
+
+## An event on a machine (on_skirmish_start as the fight begins, on_round_start after the
+## roll, on_shield_gain and on_heat_gain as the gauges move, on_hull_damage on a hit,
+## out_of_combat at the end of a phase spent out of a fight): every passive on that trigger
+## fires. `amount` is what the event carried (the heat carried for shield_per_heat, the
+## shield or heat gained). Returns {shield, vent, statuses}: shield to gain and heat to shed,
+## for the caller to apply where the gauges live, and the names of the statuses granted
+## (stack_status: a stack for the skirmish, fading a stack a turn). Nothing here can fire
+## itself: a shield gained here grants no more shield, heat shed here grants no heat.
+static func fire(u, trigger: String, amount: int = 0) -> Dictionary:
+	var out := {"shield": 0, "vent": 0, "statuses": [] as Array[String]}
+	for pair in _taking_part(u, trigger, null):
+		var eff: Dictionary = pair[0]
+		var v: int = int(eff.get("value", 0)) * int(pair[1].stacks)
+		match str(eff.get("effect", "")):
+			"shield_per_heat":
+				out["shield"] += v * int(amount / 10)
+			"add_shield":
+				out["shield"] += v
+			"vent_heat":
+				out["vent"] += v
+			"stack_status":
+				var id := str(eff.get("value", ""))
+				if STATUS.has(id):
+					var m := stack(u, STATUS[id], SKIRMISH, "passive:" + str(pair[1].id), int(pair[1].stacks), DECAY_TICK)
+					if m != null and not (out["statuses"] as Array).has(m.name):
+						(out["statuses"] as Array).append(m.name)
+	return out
+
+
+## Does a kinetic attack roll its maximum (roll_max on_attack; the Dingo's Tactical Databank
+## with an ally in the fight)?
+static func rolls_max(u, face: Face, target = null) -> bool:
+	for pair in _taking_part(u, "on_attack", face, false, target):
+		if str(pair[0].get("effect", "")) == "roll_max":
+			return true
+	return false
+
+
+## Free rerolls of this machine's own die each round, on top of the team's (free_reroll,
+## static; the Clydesdale's Battery Director).
+static func free_rerolls(u) -> int:
+	var n := 0
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "free_reroll":
+			n += int(pair[0].get("value", 0)) * pair[1].stacks
+	return maxi(0, n)
+
+
+## What the start of a round does for this machine (on_round_start, after the roll), with
+## the heat it carries: the Goshawk's Thermal Recoupler.
+static func round_start(u, heat: int) -> Dictionary:
+	return fire(u, "on_round_start", heat)
 
 
 ## Does the pipeline hold a cracked component short of destruction?
@@ -529,6 +751,22 @@ static func effect_text(eff: Dictionary) -> String:
 		"add_damage_taken": body = "damage taken +%s" % vs
 		"multiply_damage_taken": body = "damage taken ×%s" % vs
 		"suppress": body = "turns off %s" % vs
+		"shock_on_hull_strike": body = "a foe that strikes bare hull is Shocked"
+		"shock_on_block": body = "a foe whose blow the shield blocks is Shocked"
+		"draw_rank": body = "the %s rank targets this machine" % ("front" if int(v) == 0 else "back")
+		"grant_keyword":
+			var kw := Face.keyword_from_name(str(v))
+			body = "gains %s" % (Face.keyword_label(kw) if kw > 0 else str(v))
+		"roll_max": body = "kinetic weapons roll their maximum"
+		"add_armour_vs_rank": body = "armour +%s against %s-rank blows" % [vs, str(eff.get("rank", "front"))]
+		"keep_status": body = "%s never fades and lasts the battle" % str(STATUS.get(str(v), {}).get("name", str(v)))
+		"screen_withdraw": body = "on a withdrawal this machine is out before the enemy strikes, and each ally has a %s%% chance to slip out with it; a blow at a covered machine is lost" % vs
+		"stack_status": body = "gains a stack of %s" % str(STATUS.get(str(v), {}).get("name", str(v)))
+		"add_attack": body = "attack +%s" % vs
+		"scramble_reroll": body = "the next reroll of this die lands anywhere"
+		"free_reroll": body = "%s free reroll%s of this die a round" % [vs, "" if int(v) == 1 else "s"]
+		"shield_per_heat": body = "+%s shield for every 10 heat carried" % vs
+		"add_shield": body = "+%s shield" % vs
 		"tick_hp": body = "%s damage per stack each turn" % vs
 		"tick_heat": body = "%s heat per stack each turn" % vs
 		"skip_action": body = "skips its action"
@@ -540,16 +778,25 @@ static func effect_text(eff: Dictionary) -> String:
 			if float(eff.get("per_missing_shield", 0)) > 0.0:
 				body += ", +%s%% per shield point missing" % _trim_num(float(eff.get("per_missing_shield", 0)))
 		_: body = str(eff.get("effect", ""))
+	if eff.has("per_stack"):
+		body += " per stack of %s" % str(STATUS.get(str(eff["per_stack"]), {}).get("name", str(eff["per_stack"])))
 	var lead := ""
 	match str(eff.get("trigger", "")):
 		"on_crit": lead = "on a crit: "
 		"on_injury": lead = "on an injury: "
+		"on_round_start": lead = "at the start of the round: "
+		"on_hull_damage": lead = "on losing hull: "
+		"on_skirmish_start": lead = "as the fight begins: "
+		"on_shield_gain": lead = "on gaining shield: "
+		"on_heat_gain": lead = "on gaining heat: "
+		"out_of_combat": lead = "each phase out of combat: "
 	match str(eff.get("when", "")):
 		"component_cracked": lead += "cracked components: "
 		"reach_melee": lead += "melee attacks: "
 		"reach_line": lead += "line-of-sight attacks: "
 		"reach_indirect": lead += "indirect attacks: "
 		"target_status": lead += "foes carrying a status: "
+		"ally_present": lead += "with an ally in the fight: "
 	return lead + body
 
 
@@ -575,6 +822,10 @@ static func explain(u, face: Face) -> Array[String]:
 			var name := str(eff.get("effect", ""))
 			if trig == "static" and name == "set_reach":
 				if not str(eff.get("when", "")).begins_with("reach_") and _usable(u, m, name) and _holds(u, eff, face) and effective_reach(u, face) == Face.reach_from_name(str(eff.get("value", ""))) and effective_reach(u, face) != face.reach:
+					out.append("%s (%s)" % [effect_text(eff), m.name])
+			elif trig == "static" and name == "grant_keyword":
+				var kw := Face.keyword_from_name(str(eff.get("value", "")))
+				if kw > 0 and not face.has(kw) and granted_keywords(u, face).has(kw):
 					out.append("%s (%s)" % [effect_text(eff), m.name])
 			elif trig == "on_attack" or trig == "on_crit":
 				# A condition on the target is shown as a rule (its lead says when), since

@@ -51,28 +51,28 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 
 ## Engine
 
-The planned pieces the 28 September content leans on, one line each, in whichever order Ryan wants to play first (every one is `"status": "planned"` in content and flips to implemented in the same commit):
+The planned pieces the 28 September content leans on, one line each, in whichever order Ryan wants to play first (every one is `"status": "planned"` in content and flips to implemented in the same commit). **Claimed 29 September, night, by the cloud session on branch `ccr-23c2f18f-qlilnd` (Ryan: "work through 1-4"): the engine list below, save and resume, the triggers and foe actions, and the hangar codex republish, in that order; volatile, devour, Shocked, taunt, overwhelm first. Another session should take something else, or say so in this file.**
 
-- [ ] `volatile`: a spend bites its owner for 10 hull past shield and armour (the Corrupted bite's path); Gravity Knuckles
-- [ ] `devour` and the Overcharged status: a kill adds a stack, +10% damage a stack, decays a round at a time; needs an on-kill hook; Soulcutter Talons
-- [ ] Shocked (the next blow taken deals double; a Shocked foe striking bare hull again takes 10) and retaliate as the status that applies it; the Armadillo's Faraday Hull
-- [ ] `taunt` as a status a shield face applies (front-rank foes target the machine); Proximity Klaxon, Faraday Shutters, and the shutters' Live Shell that shocks through a blocked blow
-- [ ] `overwhelm` (damage past a kill spills into the rank behind) and its grant on every attack; Juggernaut Drive
-- [ ] The stealth join rule: in a fight only beside an ally or when it stopped a pack in its path; needs the blocked list to name the blocker; the Dingo
-- [ ] The vent-on-fire face (`vents_all`, `power_per_heat`); the Afterburner Cannon
-- [ ] Battery Director: rerolling only the Clydesdale's die is free once a round, on top of the team's three
-- [ ] Thermal Recoupler: shield regained per 10 heat at the start of the Goshawk's turn, the first in-fight regen
-- [ ] Static-screen Projector: on withdraw the Prairie Dog is out before the enemy strikes, each ally rolls an even chance, a blow at a covered machine is lost
-- [ ] Crucible Capacitor: melee damage per Overheating stack, a stack per blow that reaches hull from a foe or its own weapons, never from overheat burn
-- [ ] Tactical Databank: kinetic weapons roll their maximum with an ally in the fight; needs an ally-present condition
-- [ ] Glacis: the Breaching Plow's armour against front-rank blows only, once the engine knows which rank struck (flat +5 today)
-- [ ] The planned statuses still without an engine: Phased, Beacon, Energy Armour
+- [x] `volatile`: a spend bites its owner for 10 hull past shield and armour (the Corrupted bite's path); Gravity Knuckles (29 September, night: on any kind of component; the bot pays for it)
+- [x] `devour` and the Overcharged status: a kill adds a stack, +10% damage a stack, decays a round at a time; needs an on-kill hook; Soulcutter Talons (29 September, night: a stack per foe killed, buff and devour stacks add up)
+- [x] Shocked (the next blow taken deals double; a Shocked foe striking bare hull again takes 10) and retaliate as the status that applies it; the Armadillo's Faraday Hull (29 September, night: Retaliate is also a buff status a component may grant; shock_on_block exists for the Live Shell)
+- [x] `taunt` as a status a shield face applies (front-rank foes target the machine); Proximity Klaxon, Faraday Shutters, and the shutters' Live Shell that shocks through a blocked blow (29 September, night: beacon draws the back rank the same way; both are buff statuses too)
+- [x] `overwhelm` (damage past a kill spills into the rank behind) and its grant on every attack; Juggernaut Drive (30 September: grant_keyword and the effective face)
+- [x] The stealth join rule: in a fight only beside an ally or when it stopped a pack in its path; needs the blocked list to name the blocker; the Dingo (30 September: PhaseResult.blockers)
+- [x] The vent-on-fire face (`vents_all`, `power_per_heat`); the Afterburner Cannon (30 September)
+- [x] Battery Director: rerolling only the Clydesdale's die is free once a round, on top of the team's three (30 September: lock the others and press REROLL)
+- [x] Thermal Recoupler: shield regained per 10 heat at the start of the Goshawk's turn, the first in-fight regen (30 September: on the on_round_start trigger, 5 a ten as a placeholder)
+- [x] Static-screen Projector: on withdraw the Prairie Dog is out before the enemy strikes, each ally rolls an even chance, a blow at a covered machine is lost (30 September)
+- [x] Crucible Capacitor: melee damage per Overheating stack, a stack per blow that reaches hull from a foe or its own weapons, never from overheat burn (30 September: on_hull_damage and per_stack)
+- [x] Tactical Databank: kinetic weapons roll their maximum with an ally in the fight; needs an ally-present condition (30 September)
+- [x] Glacis: the Breaching Plow's armour against front-rank blows only, once the engine knows which rank struck (30 September: add_armour_vs_rank)
+- [ ] The planned statuses still without an engine: Phased, Energy Armour (Beacon landed with taunt, 29 September); both want a design line first (what applies Phased, what Energy Armour's flat number is)
 - [ ] The planned player keywords: Corrode, Scramble, Confuse
-- [ ] The planned triggers: on shield gain, on heat gain, on round start, on skirmish start, on hull damage, out of combat
-- [ ] Foe roles, and the ten planned foe actions in `content/foes.json` (buff, defend and debuff kinds running; every foe status they grant fires `on_foe_status`)
+- [x] The planned triggers: on shield gain, on heat gain, on round start, on skirmish start, on hull damage, out of combat (30 September: `Effects.fire`; no content uses the last four yet)
+- [x] The ten planned foe actions in `content/foes.json` (30 September: buff, defend and debuff kinds run as effects, `Foe.ACTION_EFFECTS`; attacks weigh 3 to a special's 1 as a placeholder; bible section 9 row). Foe roles: undefined anywhere, so nothing built; Ryan proposes what a role is before it is coded
 - [x] Buff equipment (29 September): the `buff` kind grants a machine status for so many stacks and rounds; Overcharged, Braced and Primed as the first three; the Overcharge Coil as a draft component fitted to nothing; the heat passive above can now be built on it
 - [x] Granted passives coloured on the codex (29 September, night: `passive_rows` by source; the chassis's own in the accent, a component's in the overlay colour, a reward in ink)
-- [ ] Save and resume mid-battle at any phase (nothing is serialised yet)
+- [x] Save and resume mid-battle at any phase (30 September: `sim/save.gd`, autosave after every change, Resume battle in the harness; bible section 11 row)
 - [ ] Onboarding: the gesture tutorial and the cheat sheet; the reroll rule and the zone of control first
 - [x] The bot values a status for the stun it may cause (29 September: `_loop_chance` in `policy.gd`, at the loop's odds and the foe's resistance) and weighs a buff by what its status does to the machine it lands on
 - [ ] Rerun `tools/balance.gd` once the new machines have real kits, and after each engine piece above; read bands, not numbers

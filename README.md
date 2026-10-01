@@ -31,7 +31,8 @@ and open question from the design sessions.
   on it fails the validator unless the entry records the clash under `design.name_clash`.
 - `game/` — scenes and presentation.
   - `harness.tscn` is the main scene: pick a team, faction, pack size, seed, then Battle
-    (the whole loop), Fight (one skirmish), or the map viewer
+    (the whole loop), Resume battle (the saved one, while one exists), Fight (one
+    skirmish), or the map viewer
   - `battle/battle_screen.gd` the battle screen: the map with the phase loop around it, and
     the skirmish screen hosted over it on contact; `battle/battle_map_view.gd` draws the
     field and reads the gestures
@@ -192,7 +193,12 @@ and then the next round's dice show. Numbers are in tens. Hold a foe or a mech f
 numbers, its statuses with icons and text, and the intent arrows that concern it; the eye
 shows every arrow; double-tap any unit for its codex entry. Withdraw is offered at any point
 of the player's turn; the enemy's parting blows replay before the team flees. Blank faces
-are discarded at end of turn. MENU pauses: resume, settings, or quit to the harness.
+are discarded at end of turn. MENU pauses: resume, settings, or quit to the harness. A
+battle started from the harness is saved after every change (`user://battle.json`, written
+by `sim/save.gd`: the map by its seed, every unit, the routes, the contacts waiting and the
+fight under way with its dice and random streams), so quitting or a phone killing the app
+loses nothing: Resume battle opens it where it stood, straight into the fight if one was
+on. A decided battle clears the save. Standalone scene runs and the tests never write it.
 
 The harness can add the faction's massive elite, which fills both ranks of a column. For the
 standalone screen, `RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,baboon` picks the team and

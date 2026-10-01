@@ -289,7 +289,7 @@ func test_planned_component_may_carry_a_planned_keyword() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var plate: Dictionary = db.components["ablative_plating"].duplicate(true)
-	plate["face"]["keywords"] = ["taunt"]
+	plate["face"]["keywords"] = ["corrode"]
 	plate["status"] = "planned"
 	db.components["loud_plate"] = plate
 	for e in db.validate():
@@ -379,13 +379,20 @@ func test_every_foe_has_an_action_roster_and_player_text() -> void:
 		for a in f.get("actions", []):
 			if a.get("status") == "implemented":
 				implemented += 1
-				assert_false(a.has("value"), "%s: an attack scales the base attack, it has no value of its own" % id)
+				if Foe.is_attack_action(a):
+					assert_false(a.has("value"), "%s: an attack scales the base attack, it has no value of its own" % id)
 		assert_true(implemented >= 1, "%s has at least one implemented action" % id)
 	var foe := db.make_foe("ghoul")
 	var entry := db.codex_for_foe(foe)
 	assert_true(entry["actions"].contains("CLAW // ATTACK 10"), "codex lists the implemented action with the resulting number")
 	assert_true(entry["actions"].contains("for 10."), "and fills {damage} into the text")
-	assert_false(entry["actions"].contains("GET BACK UP"), "and hides the planned one")
+	assert_true(entry["actions"].contains("GET BACK UP // BUFF"), "and lists the buff, live since 30 September")
+	var planned: Dictionary = db.foes["ghoul"].duplicate(true)
+	planned["actions"] = Array(planned["actions"]).duplicate(true)
+	planned["actions"].append({"id": "someday", "name": "Someday", "kind": "buff", "text": "", "status": "planned"})
+	db.foes["ghoul"] = planned
+	assert_false(db.codex_for_foe(db.make_foe("ghoul"))["actions"].contains("SOMEDAY"), "a planned action stays hidden")
+	ContentDB.reset_cache()
 	assert_eq(entry["flavour"], db.foes["ghoul"]["flavour"], "codex quotes the foe, not the faction")
 
 
@@ -426,13 +433,13 @@ func test_planned_actions_cannot_claim_to_be_implemented() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var f: Dictionary = db.foes["ghoul"].duplicate(true)
-	f["actions"][1]["status"] = "implemented"
+	f["actions"].append({"id": "someday", "name": "Someday", "kind": "buff", "text": "", "status": "implemented"})
 	db.foes["ghoul"] = f
 	var hit := false
 	for e in db.validate():
-		if e.begins_with("foe ghoul action get_back_up") and e.contains("only attack"):
+		if e.begins_with("foe ghoul action someday") and e.contains("effect must be"):
 			hit = true
-	assert_true(hit, "a non-attack action marked implemented is reported")
+	assert_true(hit, "a non-attack action marked implemented without an effect the engine runs is reported")
 
 
 func test_face_round_trips_through_json() -> void:
@@ -535,6 +542,152 @@ func test_a_buff_face_names_a_machine_status() -> void:
 	assert_true(hit["coil_foe"], "a foe's status is refused on a buff")
 	assert_true(hit["coil_bad"], "an unknown status, or zero rounds, is refused")
 	assert_true(hit["stray"], "stacks on a shield is refused")
+
+
+func test_a_spend_keyword_rides_on_any_kind_of_component() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var plate: Dictionary = db.components["ablative_plating"].duplicate(true)
+	plate["face"]["keywords"] = ["volatile"]
+	db.components["hot_plate"] = plate
+	var gun: Dictionary = db.components["lance"].duplicate(true)
+	gun["face"]["keywords"] = ["volatile"]
+	db.components["hot_gun"] = gun
+	var fins: Dictionary = db.components["heat_sink"].duplicate(true)
+	fins["face"]["keywords"] = ["volatile"]
+	db.components["hot_fins"] = fins
+	for e in db.validate():
+		assert_false(e.begins_with("component hot_"), "volatile validates on a shield, an attack and a vent alike: %s" % e)
+	var f := db.build_face(plate["face"])
+	assert_true(f.has(Face.Keyword.VOLATILE), "and builds onto the entry")
+
+
+func test_the_content_carries_a_live_hull_the_engine_runs() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var plate: Dictionary = db.components["ablative_plating"].duplicate(true)
+	plate["passive"] = {"id": "live_plate", "name": "Live Plate", "description": "", "effects": [
+		{"trigger": "static", "effect": "shock_on_block", "value": 1}]}
+	db.components["live_plate"] = plate
+	var coil: Dictionary = db.components["overcharge_coil"].duplicate(true)
+	coil["face"]["status"] = "retaliate"
+	db.components["klaxon_coil"] = coil
+	var errs := db.validate()
+	for e in errs:
+		assert_false(e.begins_with("component live_plate") or e.begins_with("component klaxon_coil"), "a shock passive and a retaliate buff validate: %s" % e)
+	assert_true(errs.is_empty(), "and the shipped content is clean with them: %s" % str(errs))
+	assert_eq(db.build_face(coil["face"]).buff_status, "retaliate", "the buff builds")
+
+
+func test_taunt_rides_on_shields_and_vents_and_never_on_an_attack() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var gun: Dictionary = db.components["lance"].duplicate(true)
+	gun["face"]["keywords"] = ["taunt"]
+	db.components["loud_gun"] = gun
+	var fins: Dictionary = db.components["heat_sink"].duplicate(true)
+	fins["face"]["keywords"] = ["beacon"]
+	db.components["lit_fins"] = fins
+	var bad_gun := false
+	for e in db.validate():
+		assert_false(e.begins_with("component lit_fins"), "a beacon on a vent validates: %s" % e)
+		if e.begins_with("component loud_gun") and e.contains("rides on a shield or vent"):
+			bad_gun = true
+	assert_true(bad_gun, "a taunt on an attack is refused")
+	assert_true(db.build_face(fins["face"]).has(Face.Keyword.BEACON), "and the vent builds with it")
+
+
+func test_grant_keyword_names_a_keyword_the_engine_runs() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var c: Dictionary = db.chassis["badger"].duplicate(true)
+	c["id"] = "ram"
+	c["name"] = "Ram Test"
+	c["passive"] = {"id": "drive", "name": "Drive", "description": "", "effects": [
+		{"trigger": "static", "effect": "grant_keyword", "value": "overwhelm"}]}
+	db.chassis["ram"] = c
+	var bad: Dictionary = c.duplicate(true)
+	bad["id"] = "ram_bad"
+	bad["name"] = "Ram Bad"
+	bad["passive"] = {"id": "drive2", "name": "Drive", "description": "", "effects": [
+		{"trigger": "static", "effect": "grant_keyword", "value": "corrode"}]}
+	db.chassis["ram_bad"] = bad
+	var hit := false
+	for e in db.validate():
+		assert_false(e.begins_with("chassis ram:"), "a real keyword validates: %s" % e)
+		if e.begins_with("chassis ram_bad") and e.contains("grant_keyword"):
+			hit = true
+	assert_true(hit, "a keyword the engine lacks is refused")
+
+
+func test_the_vent_on_fire_fields_belong_to_an_attack() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var plate: Dictionary = db.components["ablative_plating"].duplicate(true)
+	plate["face"]["vents_all"] = true
+	db.components["hot_plate"] = plate
+	var gun: Dictionary = db.components["lance"].duplicate(true)
+	gun["face"]["power_per_heat"] = 10
+	db.components["half_gun"] = gun
+	var bad_plate := false
+	var bad_gun := false
+	for e in db.validate():
+		if e.begins_with("component hot_plate") and e.contains("belong to an attack"):
+			bad_plate = true
+		if e.begins_with("component half_gun") and e.contains("needs vents_all"):
+			bad_gun = true
+	assert_true(bad_plate, "vents_all on a shield is refused")
+	assert_true(bad_gun, "power_per_heat without vents_all is refused")
+
+
+func test_the_new_passive_fields_are_checked() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var c: Dictionary = db.chassis["badger"].duplicate(true)
+	c["id"] = "odd"
+	c["name"] = "Odd Test"
+	c["passive"] = {"id": "odd", "name": "Odd", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "add_damage", "value": 5, "per_stack": "nonsense"},
+		{"trigger": "static", "effect": "keep_status", "value": "nonsense"},
+		{"trigger": "static", "effect": "add_armour_vs_rank", "value": 5, "rank": "sideways"}]}
+	db.chassis["odd"] = c
+	var hits := 0
+	for e in db.validate():
+		if e.begins_with("chassis odd") and (e.contains("per_stack") or e.contains("keep_status") or e.contains("front or back")):
+			hits += 1
+	assert_eq(hits, 3, "each bad field is named")
+
+
+func test_the_foe_actions_run_and_the_validator_knows_their_shape() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var errs := db.validate()
+	assert_true(errs.is_empty(), "the shipped foes validate: %s" % str(errs))
+	var kinds := {}
+	for id in db.foes.keys():
+		var f := db.make_foe(id)
+		assert_true(Foe.is_attack_action(f.action), "%s opens with its blow" % id)
+		for a in f.actions:
+			kinds[Foe.kind_of(a)] = true
+			if not Foe.is_attack_action(a):
+				assert_true(Foe.ACTION_EFFECTS[Foe.kind_of(a)].has(str(a.get("effect", ""))), "%s's %s runs" % [id, a["id"]])
+	assert_true(kinds.has("defend") and kinds.has("buff") and kinds.has("debuff"), "every kind is in the content")
+	var g: Dictionary = db.foes["ghoul"].duplicate(true)
+	g["id"] = "odd_ghoul"
+	g["name"] = "Odd Ghoul"
+	g["actions"] = [{"id": "claw", "name": "Claw", "kind": "attack", "text": "", "status": "implemented"},
+		{"id": "odd", "name": "Odd", "kind": "buff", "effect": "nonsense", "text": "", "status": "implemented"},
+		{"id": "call", "name": "Call", "kind": "buff", "effect": "summon", "foe": "nobody", "text": "", "status": "implemented"},
+		{"id": "hit", "name": "Hit", "kind": "debuff", "effect": "add_heat", "factor": 2.0, "text": "", "status": "implemented"}]
+	db.foes["odd_ghoul"] = g
+	var hits := 0
+	for e in db.validate():
+		if e.begins_with("foe odd_ghoul") and (e.contains("effect must be") or e.contains("unknown foe") or e.contains("belongs to an attack")):
+			hits += 1
+	assert_eq(hits, 3, "a bad effect, an unknown summon and an attack field on a debuff are each named")
+	var entry := db.codex_for_foe(db.make_foe("bone_colossus"))
+	assert_true(entry["actions"].contains("KNIT // DEFEND"), "the codex lists the defend")
+	assert_true(entry["actions"].contains("Regrows 20 hull"), "with its number filled in")
 
 
 func test_every_component_names_a_silhouette_class() -> void:

@@ -163,9 +163,27 @@ func make_foe(foe_id: String) -> Foe:
 	f.stun_resist = clampi(int(d.get("stun_resist", 0)), 0, 100)
 	var acts: Array = []
 	for a in d.get("actions", []):
-		if str(a.get("status", "")) == "implemented" and str(a.get("kind", "")) == "attack":
-			acts.append({"id": str(a.get("id", "attack")), "name": str(a.get("name", "Attack")), "factor": float(a.get("factor", 1.0)),
+		if str(a.get("status", "")) != "implemented":
+			continue
+		var kind := str(a.get("kind", "attack"))
+		if kind == "attack":
+			acts.append({"id": str(a.get("id", "attack")), "name": str(a.get("name", "Attack")), "kind": "attack", "factor": float(a.get("factor", 1.0)),
 				"strikes": int(a.get("strikes", 1)), "weight": int(a.get("weight", 1)), "keywords": Array(a.get("keywords", [])), "text": str(a.get("text", ""))})
+		else:
+			# A defend, buff or debuff: its effect and the fields it reads (Foe.ACTION_EFFECTS).
+			var act := {"id": str(a.get("id", kind)), "name": str(a.get("name", kind.capitalize())), "kind": kind, "effect": str(a.get("effect", "")),
+				"value": int(a.get("value", 0)), "weight": int(a.get("weight", 1)), "text": str(a.get("text", ""))}
+			if a.has("foe"):
+				act["foe"] = str(a["foe"])
+			if a.has("count"):
+				act["count"] = int(a["count"])
+			acts.append(act)
+	# The first attack leads, so a foe's opening intent is its blow.
+	for i in range(acts.size()):
+		if str(acts[i].get("kind", "")) == "attack" and i > 0:
+			var lead: Dictionary = acts.pop_at(i)
+			acts.insert(0, lead)
+			break
 	if not acts.is_empty():
 		f.actions = acts
 		f.action = acts[0]
@@ -233,13 +251,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 	var faces: Array = []
 	if u.die != null:
 		for f in u.die.faces:
-			var r := Effects.effective_reach(u, f)
-			if r != f.reach:
-				var shown: Face = f.duplicate_face()
-				shown.reach = r
-				faces.append(shown)
-			else:
-				faces.append(f)
+			faces.append(Effects.effective_face(u, f))   # its reach and keywords as the passives make them
 	# Every live loadout and battle modifier: the chassis passive first, then what
 	# components grant, then the battle's rewards; nothing from the fight itself. Each row
 	# says where it comes from ("chassis", "component", "reward"), and the codex colours
@@ -411,6 +423,12 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: only attack faces crit" % where)
 	if float(fd.get("crit_bonus", 0.0)) <= -Face.CRIT_MULT:
 		errs.append("%s: crit_bonus would make crits do nothing or heal" % where)
+	if (fd.has("vents_all") or fd.has("power_per_heat")) and kind != "attack":
+		errs.append("%s: vents_all and power_per_heat belong to an attack" % where)
+	if fd.has("power_per_heat") and not bool(fd.get("vents_all", false)):
+		errs.append("%s: power_per_heat needs vents_all (the heat it adds for is the heat it fires)" % where)
+	if int(fd.get("power_per_heat", 0)) < 0:
+		errs.append("%s: power_per_heat cannot be negative" % where)
 	if kind == "buff":
 		# A buff grants one of the machines' statuses: it must exist and be theirs.
 		var st := str(fd.get("status", ""))
@@ -441,6 +459,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 			errs.append("%s: unknown keyword '%s'" % [where, k])
 		elif vocabulary.get(str(k), {}).get("status") != "implemented":
 			errs.append("%s: keyword '%s' is not implemented yet" % [where, k])
+		elif Face.ANY_KEYWORDS.has(kw):
+			pass   # about the spend, not its target: any kind of component may carry it
 		elif kind == "attack" and Face.SUPPORT_KEYWORDS.has(kw):
 			errs.append("%s: '%s' rides on a shield or vent component, not an attack" % [where, k])
 		elif kind != "attack" and not Face.SUPPORT_KEYWORDS.has(kw):
@@ -485,6 +505,18 @@ func _validate_passive(where: String, p, errs: Array[String]) -> void:
 			errs.append("%s: a stat effect needs 'stat', one of %s" % [where, ", ".join(Effects.STATS)])
 		if effect == "suppress" and str(eff.get("value", "")).is_empty():
 			errs.append("%s: suppress needs the id or tag it turns off as its value" % where)
+		if eff.has("per_stack") and not Effects.STATUS.has(str(eff["per_stack"])):
+			errs.append("%s: per_stack names no engine status ('%s')" % [where, eff["per_stack"]])
+		if (effect == "keep_status" or effect == "stack_status") and not Effects.STATUS.has(str(eff.get("value", ""))):
+			errs.append("%s: %s needs an engine status as its value" % [where, effect])
+		if effect == "add_armour_vs_rank" and not ["front", "back"].has(str(eff.get("rank", "front"))):
+			errs.append("%s: add_armour_vs_rank's rank is front or back" % where)
+		if effect == "grant_keyword":
+			var kw := str(eff.get("value", ""))
+			if Face.keyword_from_name(kw) <= 0:
+				errs.append("%s: grant_keyword names no engine keyword ('%s')" % [where, kw])
+			elif vocabulary.get(kw, {}).get("status") != "implemented":
+				errs.append("%s: grant_keyword names '%s', which is not implemented yet" % [where, kw])
 		var when := str(eff.get("when", ""))
 		if not Effects.supports_when(when):
 			errs.append("%s: passive condition '%s' is not implemented by the engine" % [where, when])
@@ -614,9 +646,9 @@ const ACTION_KINDS := ["attack", "defend", "buff", "debuff"]
 const ACTION_STATUSES := ["implemented", "planned"]
 
 
-## A foe's roster of actions. Today the engine runs only a basic attack, so exactly one
-## implemented attack action is required and its value must match the foe's attack; every
-## other action must be marked planned until the engine can run it.
+## A foe's roster of actions: at least one implemented attack (its blow, and the number the
+## player reads), and any defend, buff or debuff actions the engine runs, each picked by
+## weight in its turn; an action the engine cannot run yet is marked planned.
 func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> void:
 	var acts = f.get("actions", [])
 	if not (acts is Array):
@@ -637,7 +669,18 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 			errs.append("%s: status must be implemented or planned" % aw)
 		if str(a.get("status", "")) == "implemented":
 			if str(a.get("kind", "")) != "attack":
-				errs.append("%s: only attack actions are implemented by the engine so far" % aw)
+				# A defend, buff or debuff names an effect the engine runs and the fields it reads.
+				var kind := str(a.get("kind", ""))
+				var effect := str(a.get("effect", ""))
+				if not Foe.ACTION_EFFECTS.get(kind, []).has(effect):
+					errs.append("%s: a %s action's effect must be one of %s, got '%s'" % [aw, kind, ", ".join(Foe.ACTION_EFFECTS.get(kind, [])), effect])
+				if effect == "summon" and not foes.has(str(a.get("foe", ""))):
+					errs.append("%s: summon names unknown foe '%s'" % [aw, str(a.get("foe", ""))])
+				if int(a.get("value", 0)) < 0 or int(a.get("count", 1)) < 1 or int(a.get("weight", 1)) < 1:
+					errs.append("%s: value cannot be negative; count and weight are at least 1" % aw)
+				for key in ["factor", "strikes", "keywords"]:
+					if a.has(key):
+						errs.append("%s: '%s' belongs to an attack action" % [aw, key])
 			else:
 				implemented_attacks += 1
 				# An attack scales the foe's base attack: factor, not a value of its own, so the

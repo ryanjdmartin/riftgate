@@ -154,7 +154,7 @@ func test_double_tap_opens_and_closes_the_codex() -> void:
 	assert_eq(s._codex._sub.text, "THE RISEN", "faction name as the subtitle")
 	assert_true(not s._codex._body.text.is_empty(), "foe codex text present")
 	assert_true(s._codex._actions.visible and s._codex._actions.text.contains("CLAW"), "implemented actions listed")
-	assert_false(s._codex._actions.text.contains("GET BACK UP"), "planned actions stay hidden")
+	assert_true(s._codex._actions.text.contains("GET BACK UP"), "the live buff action is listed too")
 	assert_true(s._codex._flavour.text.begins_with("“"), "flavour shown as a quote")
 	assert_true(s._codex._flavour.text.contains("tired"), "the foe's own line, not the faction's")
 	assert_false(s._codex._faces.visible, "no face list for a foe")

@@ -120,6 +120,8 @@ func _build_menu() -> void:
 
 	col.add_child(HSeparator.new())
 	col.add_child(_button("Battle", _on_battle))
+	if SaveGame.exists():
+		col.add_child(_button("Resume battle", _on_resume))
 	col.add_child(_button("Fight (skirmish only)", _on_fight))
 	col.add_child(_button("Battlefield viewer", _on_map))
 	col.add_child(_label("Tests: godot --headless --path . -s tests/run_tests.gd", 13, Palette.MUTED))
@@ -227,8 +229,21 @@ func _on_battle() -> void:
 		fac = db.default_faction()
 	var b := Battle.new(int(_seed.value))
 	b.setup(team, fac)
+	_show_battle(b)
+
+
+## The saved battle, where it stood (user://battle.json; the button shows while one exists).
+func _on_resume() -> void:
+	var b := SaveGame.load()
+	if b == null:
+		return
+	_show_battle(b)
+
+
+func _show_battle(b: Battle) -> void:
 	var screen: BattleScreen = BATTLE_SCENE.instantiate()
 	screen.battle = b   # built in its _ready, once, at the screen's real height
+	screen.autosave_enabled = true   # a real battle is kept where it stands; standalone runs and tests never write it
 	screen.back_requested.connect(_back)
 	screen.quit_requested.connect(_back)
 	_show(screen)

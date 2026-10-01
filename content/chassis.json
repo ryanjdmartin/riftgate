@@ -40,8 +40,9 @@
       "passive": {
         "id": "battery_director", "name": "Battery Director",
         "description": "Rerolling only the Clydesdale's die is free once a round, on top of the team's rerolls.",
-        "status": "planned",
-        "effects": []
+        "effects": [
+          { "trigger": "static", "effect": "free_reroll", "value": 1 }
+        ]
       },
       "flavour": "Pilot manual footnotes: Most of the Clydesdale controls are just for show. The only ones you really need are accelerate and alpha strike."
     },
@@ -94,8 +95,9 @@
       "passive": {
         "id": "faraday_hull", "name": "Faraday Hull",
         "description": "The whole hull is live. A foe that strikes bare hull is Shocked: the next blow it takes deals double. A Shocked foe that strikes again takes 10.",
-        "status": "planned",
-        "effects": []
+        "effects": [
+          { "trigger": "static", "effect": "shock_on_hull_strike", "value": 1 }
+        ]
       },
       "flavour": ""
     },
@@ -111,8 +113,9 @@
       "passive": {
         "id": "juggernaut_drive", "name": "Juggernaut Drive",
         "description": "Momentum carries through. Damage past a kill spills into the rank behind, from any weapon.",
-        "status": "planned",
-        "effects": []
+        "effects": [
+          { "trigger": "static", "effect": "grant_keyword", "value": "overwhelm" }
+        ]
       },
       "flavour": ""
     },
@@ -128,8 +131,9 @@
       "passive": {
         "id": "staticscreen_projector", "name": "Static-screen Projector",
         "description": "A blast of dust, smoke and static electricity that confuses senses and sensors alike. When the team withdraws, the Prairie Dog is out before the enemy strikes, and each ally has an even chance of slipping out with it; a blow aimed at a machine the screen covers is lost.",
-        "status": "planned",
-        "effects": []
+        "effects": [
+          { "trigger": "static", "effect": "screen_withdraw", "value": 50 }
+        ]
       },
       "flavour": ""
     },
@@ -145,8 +149,9 @@
       "passive": {
         "id": "tactical_databank", "name": "Tactical Databank",
         "description": "Every ally's firing solution, shared. With an ally in the fight, the Dingo's kinetic weapons roll their maximum.",
-        "status": "planned",
-        "effects": []
+        "effects": [
+          { "trigger": "on_attack", "effect": "roll_max", "value": 1, "when": "ally_present" }
+        ]
       },
       "flavour": ""
     },
@@ -161,9 +166,10 @@
       "loadout": ["laser_carbine", "headhunter_rifle", "arc_projector", "deflector", "ram_air_scoop"],
       "passive": {
         "id": "thermal_recoupler", "name": "Thermal Recoupler",
-        "description": "Heat is not waste. At the start of its turn the Goshawk regains shield for every 10 heat it carries.",
-        "status": "planned",
-        "effects": []
+        "description": "Heat is not waste. At the start of its turn the Goshawk regains 5 shield for every 10 heat it carries.",
+        "effects": [
+          { "trigger": "on_round_start", "effect": "shield_per_heat", "value": 5 }
+        ]
       },
       "flavour": ""
     },
@@ -178,9 +184,11 @@
       "loadout": ["plasma_carbine", "meteor_artillery", "ward_plate", "entropy_condenser"],
       "passive": {
         "id": "crucible_capacitor", "name": "Crucible Capacitor",
-        "description": "The core feeds on punishment. Melee damage rises with every stack of Overheating, and any blow that reaches hull, from a foe or its own weapons, adds a stack.",
-        "status": "planned",
-        "effects": []
+        "description": "The core feeds on punishment. Melee damage rises 5 with every stack of Overheating, and any blow that reaches hull, from a foe or its own weapons, adds a stack.",
+        "effects": [
+          { "trigger": "on_attack", "effect": "add_damage", "value": 5, "per_stack": "overheating", "when": "reach_melee" },
+          { "trigger": "on_hull_damage", "effect": "stack_status", "value": "overheating" }
+        ]
       },
       "flavour": ""
     },
@@ -196,8 +204,9 @@
       "passive": {
         "id": "quintessence_tap", "name": "Quintessence Tap",
         "description": "What the talons take is kept. Overcharged never decays on this machine and lasts the battle.",
-        "status": "planned",
-        "effects": []
+        "effects": [
+          { "trigger": "static", "effect": "keep_status", "value": "overcharged" }
+        ]
       },
       "flavour": ""
     }

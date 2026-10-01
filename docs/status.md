@@ -63,7 +63,7 @@ the chat is newer.
 ## As of 30 September 2026
 
 **State.** Tests green: `perl -e 'alarm 240; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (229 tests, 3,173 checks on 30 September). Two or three sessions run on this repo at once:
+tests/run_tests.gd` (279 tests, 3,593 checks on 1 October, after the merge of the cloud branch). Two or three sessions run on this repo at once:
 check `git status` before committing, stage by path, diff a shared file first (a path
 still sweeps the other session's hunks), never `git add -A`, never kill a bare
 `godot --path .`. Commit after each verified chunk with tests green.
@@ -102,6 +102,24 @@ Arsenal's; maker `arsenal` exists). Their shapes are decided (the chassis pass
 row): every new passive and most locked components carry `"status": "planned"` until the
 engine has volatile, devour, Shocked, Overcharged, taunt, overwhelm, the stealth join
 rule, the vent-on-fire face, the die-local reroll and heat-scaled shield regen. Numbers
+**Every 28 September passive and locked
+component runs since 30 September** (the cloud session, branch `ccr-23c2f18f-qlilnd`,
+one commit each, the bible's section 7 row "The 28 September pieces, built" has the
+reasoning and the runner's first readings): volatile (`Face.ANY_KEYWORDS`, on any kind),
+devour (a stack of Overcharged per kill, fading a round at a time), Shocked and Retaliate
+(`shock_on_hull_strike`, `shock_on_block`, `SHOCK_DISCHARGE`), taunt and beacon
+(`draw_rank`, support keywords and buff statuses), overwhelm with `grant_keyword` and the
+effective face (`Effects.effective_face`: what the resolver spends, the bot weighs, the
+codex lists and the die draws), the vent-on-fire face (`vents_all`, `power_per_heat`),
+`on_round_start` (`shield_per_heat`), `ally_present` with `roll_max` (units carry
+`allies`), `free_reroll` (`MechState.free_rerolls`, `Skirmish.can_reroll`),
+`on_hull_damage` with `stack_status` and `per_stack`, `add_armour_vs_rank`,
+`keep_status`, `screen_withdraw`, and the stealth join rule (`PhaseResult.blockers`).
+Nothing in content is planned any more: the ten foe actions run too (30 September; `Foe.ACTION_EFFECTS`, a foe's special replaces its blow that turn, weights 3:1 attack to special as placeholders, bible section 9 row). Every trigger the vocabulary names runs (`Effects.fire`); only Phased, Energy Armour, Corrode, Scramble, Confuse and the tank trait remain planned, all waiting on design. **Save and resume** (30 September): `sim/save.gd` writes the whole battle (map seed, units, dice, damage, modifiers, routes, contacts, the skirmish with its dice, foes and both random streams) to `user://battle.json` after every change when the harness started the battle; Resume battle in the harness opens it where it stood, straight into a fight that was on; a decided battle clears it; standalone runs and tests never write it (bible section 11 row).
+Readings for Ryan from the runner: the Faraday Hull alone makes the Armadillo win every
+solo cell at both rungs; the Crucible costs the Nemesis under the bot (its Overheating
+burns hull); the Tap lifts the Ammit's ghoul cell to a greedy win; overwhelm and the
+Databank never fire in the runner's single-type, single-machine cells. Numbers
 are in tens and are placeholders; every stat is read through `sim/effects.gd`. An enemy
 unit is a **pack** everywhere. Ryan writes `content/*.json` in his own voice (he writes
 die totals in his head; the data keeps free slots), until 29 September from his phone through

@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 83 implemented, 25 planned, 0 idea.
+Status: 98 implemented, 11 planned, 0 idea.
 
 ## Resource
 
@@ -44,6 +44,7 @@ Status: 83 implemented, 25 planned, 0 idea.
 | **Damage range** | A kinetic attack component shows a minimum and a maximum and rolls between them when spent, immediately and visibly. Energy components show one number and never roll. Numbers are in tens. | implemented |
 | **Critical hit** | A kinetic component may carry a crit chance. On a crit the roll is multiplied by the crit multiplier: a base of 2 for everyone, plus every crit damage bonus that applies, from the component itself or a passive. Bonuses add to the multiplier, never multiply each other, so a +0.5 weapon with a +0.5 passive crits for 3 times. The readout shows the resulting multiplier. Energy components never crit. Crits fire the on_crit passive trigger. | implemented |
 | **Targets** | Whom a piece of equipment may be spent on: self and allies, self only, or allies only. Shown as a chip on the die when narrowed. | implemented |
+| **Vents all** | An attack that fires the machine's whole heat as it is spent: the heat gauge is empty after the shot, and every 10 heat fired adds the component's bonus to the blow before crits and passives. The shot's own heat cost still lands. | implemented |
 | **Strikes** | An attack's blows per use. A weapon with three strikes lands three separate hits: each rolls its own damage, its own crit and its own effects, so a rapid-fire weapon procs often. Against a shield, every strike past the first reaches the hull; against armour, every small strike loses the armour, so many small hits are the wrong tool for a heavy target and the right one for a soft one. Foe attacks have strikes too. | implemented |
 
 ## Reach
@@ -60,12 +61,12 @@ Status: 83 implemented, 25 planned, 0 idea.
 |---|---|---|
 | **Spread** | Player keyword. Also hits the foes in the neighbouring columns of the target's rank. | implemented |
 | **Penetrate** | Player keyword. Hits first the front, then the back rank of a single column. | implemented |
-| **Overwhelm** | Player keyword. Hits that kill the front rank spill leftover damage to the back rank. | planned |
+| **Overwhelm** | Player keyword. When a blow kills a front-rank foe, what it had past the kill carries into the foe behind it in the same column. Nothing stands behind a massive foe. | implemented |
 | **Burn** | Player keyword. Burning enemies lose 5 HP per stack at the start of their action, then lose one stack. Bypasses armour. Can be resisted. | implemented |
 | **Corrode** | Player keyword. Corroding enemies lose 1% of their HP per stack at the start of their action, then lose one stack. Bypasses armour. Can be resisted. | planned |
 | **Suppress** | Player keyword. The target skips its telegraphed action this round, then gains two stacks of Numbed (three if massive). A foe may shrug it off: its own stun resistance plus 10% a Numbed stack. | implemented |
-| **Volatile** | Player keyword. Spending this component bites its owner for 10 hull, past shield and armour. | planned |
-| **Devour** | Player keyword. A kill with this component gives its owner a stack of Overcharged. | planned |
+| **Volatile** | Player keyword, on any kind of component. Spending it bites its owner for 10 hull, past shield and armour, before the component acts. A blank is never spent, so a disabled entry does not bite. | implemented |
+| **Devour** | Player keyword. Every foe this component kills gives its owner a stack of Overcharged for the skirmish; the stacks fade one a round at the round's end. | implemented |
 | **Execute** | +100% damage against a foe at or below half its health. Reduced to +50% against bosses and elites. | implemented |
 | **Chain** | If this attack kills an enemy, repeat it on a new, valid target. | implemented |
 | **Rapid** | After this component is spent, it is switched off for the rest of this round, the die rerolls for free (never the same entry), and the mech may act again. The switch-off only stops an infinite turn. | implemented |
@@ -82,16 +83,16 @@ Status: 83 implemented, 25 planned, 0 idea.
 | Term | Codex | Status |
 |---|---|---|
 | **Numbed** | Foe status. Each stack is 10% resistance to a suppress on top of the foe's own; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. | implemented |
-| **Retaliate** | Until the end of this round, a foe that strikes this unit's bare hull is Shocked. | planned |
-| **Shocked** | Foe status. The next blow this foe takes deals double damage, then the status clears. A Shocked foe that strikes bare hull again takes 10. | planned |
+| **Retaliate** | Mech status. While it lasts, a foe that strikes this machine's bare hull is Shocked. From buff equipment it lasts the rounds the component says; the Armadillo's Faraday Hull carries it always. | implemented |
+| **Shocked** | Foe status. The next blow this foe takes deals double damage, then the status clears. A Shocked foe that strikes bare hull again takes 10. Never stacks. | implemented |
 | **Overcharged** | Mech status. Each stack is +10% damage on this machine's attacks. From buff equipment it lasts through the rounds the component says; from devour it lasts the skirmish and loses a stack at the end of each round unless a passive says otherwise. | implemented |
 | **Braced** | Mech status. Takes 15% less damage per stack. Granted by buff equipment for the rounds it says. | implemented |
 | **Primed** | Mech status. Every blow this machine lands leaves a stack of Burning per stack of Primed. Granted by buff equipment for the rounds it says. | implemented |
 | **Disabled** | Component status. This die entry comes up blank while it lasts; the component itself is untouched. A foe's disable lasts through the mech's next turn and can be cleansed; a rapid component's own switch-off ends with the round. | implemented |
 | **Corrupted** | Component status. Every time this die entry is spent it bites its owner for 10 per stack, shield first, before the component acts. A blank is never spent, so a disabled entry does not bite. Stacks. Clears at end of skirmish. Can be cleansed. | implemented |
 | **Phased** | Player and enemy status. This unit cannot attack, nor can it be damaged by attacks, until end of round. | planned |
-| **Taunt** | Player status. Until end of round, all front-rank foes will target this unit. | planned |
-| **Beacon** | Player status. Until end of round, all back-rank foes will target this unit. | planned |
+| **Taunt** | Player keyword on shield and vent components, and the status it leaves. Until the end of the round every front-rank foe targets whoever the component was spent on; they turn at once, intents and all, and a foe that loses its target picks the taunting machine. A buff component may grant it too. | implemented |
+| **Beacon** | Player keyword on shield and vent components, and the status it leaves. Until the end of the round every back-rank foe targets whoever the component was spent on, the way a taunt draws the front. A massive foe stands in both ranks and follows either. | implemented |
 | **Burning** | Foe status. Loses 5 HP per stack at the start of its action, then loses one stack. Bypasses armour. Applied by the burn keyword, one stack per twenty damage dealt. | implemented |
 | **Suppressed** | Foe status. Skips its action this round, then clears. | implemented |
 | **Cracked component** | Mech status, global rule. When a blow lands on bare hull (no shield standing) and what gets past armour is at least a quarter of maximum hull, the mech's die is rolled and the component it lands on is injured. An intact component cracks: it loses its keywords and unique effects, but still does its basic action, can still crit, still generates heat, and still provides its passive bonuses and abilities. Any shield standing, however small, prevents injury, except against a breach; a foe's double strike is the other way past it. A cracked component stays cracked across skirmishes and battles until repaired in the hangar. | implemented |
@@ -143,7 +144,7 @@ Status: 83 implemented, 25 planned, 0 idea.
 | **Hover** | Crosses water. | implemented |
 | **Walker** | Rough and ruins cost 1. | implemented |
 | **Tank** | No effect yet. | planned |
-| **Stealth** | Controls no ground: packs do not stop beside it. Joins a fight only when an ally is in it, or when it stopped a pack in its path. | planned |
+| **Stealth** | Controls no ground: packs do not stop beside it, and a contact's engagement range never reaches it. Joins a fight only when an ally is in it, or when it stopped a pack in its path; a pack that merely ends its move beside it has walked past. | implemented |
 | **City defense** | A static player-side unit. Packs path toward it, and it joins any skirmish it is adjacent to. | implemented |
 
 ## Trigger
@@ -151,14 +152,14 @@ Status: 83 implemented, 25 planned, 0 idea.
 | Term | Codex | Status |
 |---|---|---|
 | **On attack** | Passive trigger. Fires after the damage roll on every attack. Effects: multiply or add damage or heat, or set a minimum damage. An effect may carry a when condition: component_cracked (only when the component being spent is cracked). | implemented |
-| **On shield gain** | Passive trigger. Fires when this mech gains shield from any source. | planned |
-| **On heat gain** | Passive trigger. Fires when this mech gains heat. | planned |
-| **On round start** | Passive trigger. Fires after the roll, before rerolls. | planned |
-| **On skirmish start** | Passive trigger. Fires once when the skirmish begins. | planned |
+| **On shield gain** | Passive trigger. Fires when this mech gains shield from any source, with the amount gained; it may shed heat or grant a status, never raise more shield. | implemented |
+| **On heat gain** | Passive trigger. Fires when this mech gains heat, with the amount; it may raise shield or grant a status, never add heat. | implemented |
+| **On round start** | Passive trigger. Fires after the roll, before rerolls: shield from heat, a flat shield, a vent. | implemented |
+| **On skirmish start** | Passive trigger. Fires once as the skirmish begins, before the first roll: a shield, a vent, a status. | implemented |
 | **On foe status** | Passive trigger. Fires when any foe gains a status (Burning today; the buffs and debuffs to come), whoever applied it, and never for Suppressed or Numbed themselves. Effects: chance_suppress (a chance the foe is also Suppressed, rising per point of shield the owner is missing). | implemented |
 | **On crit** | Passive trigger. Fires when an attack component crits. Effects: multiply or add damage, add burn to the target, vent the attacker's heat. | implemented |
-| **On hull damage** | Passive trigger. Fires when this mech loses hull. | planned |
-| **Out of combat** | Passive trigger. Fires at the end of a battlefield phase in which this mech had no skirmish. | planned |
+| **On hull damage** | Passive trigger. Fires when this mech loses hull to a blow or a bite, never to its own overheat. | implemented |
+| **Out of combat** | Passive trigger. Fires at the end of a battlefield phase in which this mech had no skirmish, after the field recharge: more shield. | implemented |
 | **on_injury** | Passive trigger. Fires when an injury lands on a component. Effects: no_destroy (a cracked component holds instead of being destroyed). | implemented |
 | **Static** | Passive trigger. Always on. Its effects change a mech's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; set_reach on a component (the Badger's cracked weapons become melee); suppress, which turns off another effect by id or tag. | implemented |
 
@@ -183,7 +184,7 @@ Status: 83 implemented, 25 planned, 0 idea.
 |---|---|---|
 | **Stun resistance** | A foe's base chance to shrug off a suppress, before Numbed. Rank and file have none; bosses carry some. | implemented |
 | **Breach** | A breaching blow overflows: what the shield cannot absorb reaches the hull, and if that is a quarter of maximum hull it injures a component like any bare-hull blow. It breaks the fundamental promise that a standing shield stops the big hit, so it is a dangerous, uncommon attack modifier, and its counterplay is not the shield: redirect it or interrupt it. | implemented |
-| **Foe action** | A foe has a base attack, the quick read of how hard it hits, and a list of attacks that scale it. Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number. | implemented |
+| **Foe action** | A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (folding against damage, regrowing, readying to get back up, calling up a foe, rallying the others, costing the team a reroll, stoking a machine's heat, scrambling a reroll, cracking a component). Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number. | implemented |
 | **Scorch** | Foe attack keyword. Each blow that lands leaves one stack of Overheating on the mech it hit. | implemented |
 
 ## Rules
@@ -203,20 +204,21 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Buff component** (implemented): Only one component carries it, a draft. Debuffs on foes stay weapons.
 - **Damage range** (implemented): Ranges are content-authored per component; no upgrade path raises min or max yet.
 - **Critical hit** (implemented): The base is Face.CRIT_MULT, a balance knob; lower it if crit triggers make crits too strong at low chance.
+- **Overwhelm** (implemented): Built 29 September. The spill is plain damage: it spends a shock and feeds a devour, and carries no other keyword of the blow. The Wild Boar's Juggernaut Drive grants it to every attack (grant_keyword, the first passive to add a keyword).
 - **Numbed** (implemented): Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths.
 - **Stun resistance** (implemented): 30 on the three bosses as a placeholder.
-- **Volatile** (planned): The Arsenal's self-damage (Ryan, 28 September): the Corrupted bite's path under another name. It feeds the Nemesis's Crucible Capacitor and opens self-damaging shield and vent faces.
-- **Devour** (planned): The Ammit's talons (28 September). Needs an on-kill hook and the Overcharged status.
+- **Volatile** (implemented): The Arsenal's self-damage (Ryan, 28 September), built 29 September: hull outright where the Corrupted bite takes shield first. The bite is a placeholder number (Skirmish.VOLATILE_BITE). It will feed the Nemesis's Crucible Capacitor once that counts blows that reach hull.
+- **Devour** (implemented): The Ammit's talons (28 September), built 29 September on the kill in the attack resolution: a spread that kills two feeds two, a chain feeds on every link. The Quintessence Tap, which stops the fade and keeps the stacks for the battle, is planned.
 - **Equipment** (implemented): Buffs will be equipment too, once they exist.
 - **Corrupt** (implemented): No foe carries it yet; Ryan places it (The Chorus, presumably).
 - **Cleanse** (implemented): No component carries it yet; Ryan places it.
-- **Retaliate** (planned): Was flat damage equal to the component's power. Thorns scales with enemy blows and so inverts horde against boss; a debuff does not (Ryan, 28 September). The Armadillo's passive carries it always on.
-- **Shocked** (planned): The Armadillo's retaliation (Ryan, 28 September): the tank sets up kills instead of out-damaging area weapons against a horde, and it works on a boss. The discharge on a second strike is the small thorns left in. Numbers are placeholders.
-- **Overcharged** (implemented): The buff side runs (29 September). Devour and the Ammit's Quintessence Tap (which stops the decay and keeps the stacks for the battle, never the campaign) are planned. Name is a placeholder.
+- **Retaliate** (implemented): Was flat damage equal to the component's power. Thorns scales with enemy blows and so inverts horde against boss; a debuff does not (Ryan, 28 September). The Armadillo's passive carries it always on.
+- **Shocked** (implemented): The Armadillo's retaliation (Ryan, 28 September): the tank sets up kills instead of out-damaging area weapons against a horde, and it works on a boss. The discharge on a second strike is the small thorns left in. Numbers are placeholders.
+- **Overcharged** (implemented): The buff side and devour run (29 September); a buff's stacks and devour's are the same status to the machine and add up. The Ammit's Quintessence Tap (which stops the decay and keeps the stacks for the battle, never the campaign) is planned. Name is a placeholder.
 - **Braced** (implemented): Placeholder name and number (29 September).
 - **Primed** (implemented): Placeholder name (29 September).
 - **Corrupted** (implemented): The bite is a placeholder number (Skirmish.CORRUPT_BITE_PER_STACK).
-- **Taunt** (planned): Ryan, 28 September: an accessible keyword, not a locked one; the game needs more damage redirection or a tank has no reason to be in the fight. The family to build: taunt (front rank), beacon (back rank), a swap of targeting with an ally, an interpose that takes a blow aimed at an ally.
+- **Taunt** (implemented): Ryan, 28 September: an accessible keyword, not a locked one; the game needs more damage redirection or a tank has no reason to be in the fight. The family to build: taunt (front rank), beacon (back rank), a swap of targeting with an ally, an interpose that takes a blow aimed at an ally.
 - **Cracked component** (implemented): Threshold is a placeholder. Repair cost and the hangar screen are not built.
 - **Reinforcements** (implemented): Elites should surface at set points rather than in pool order.
 - **Massive** (implemented): Cleave treats it as a front-rank neighbour; pierce cannot hit anything behind it because nothing is.
@@ -229,10 +231,15 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Ruins** (implemented): Designed as cover for the pack inside a skirmish. Skirmish terrain conditions are not coded.
 - **Water** (implemented): Designed to dampen burn inside a skirmish. Not coded.
 - **Tank** (planned): Intended: faster on roads.
-- **Stealth** (planned): The Dingo (Ryan, 28 September): a support car that waits in the wings while the heavies get into position, then joins their fight, and never fights alone unless run into. Pays again when hunter packs exist.
+- **Stealth** (implemented): The Dingo (Ryan, 28 September): a support car that waits in the wings while the heavies get into position, then joins their fight, and never fights alone unless run into. Pays again when hunter packs exist.
 - **City defense** (implemented): Defenses have no die. They cannot act inside a skirmish yet.
+- **On shield gain** (implemented): Built 30 September (Effects.fire); no content uses it yet.
+- **On heat gain** (implemented): Built 30 September (Effects.fire); no content uses it yet.
+- **On round start** (implemented): Built 30 September for the Thermal Recoupler; the heat it reads is the gauge after the turn's passive cooling.
+- **On skirmish start** (implemented): Built 30 September (Effects.fire); no content uses it yet.
 - **On foe status** (implemented): One machine's passive so far (the Baboon's Pocket Paradox).
-- **On hull damage** (planned): Hook for the pinned berserker idea.
+- **On hull damage** (implemented): Built 30 September for the Crucible Capacitor (stack_status). Still the hook for the pinned berserker idea.
+- **Out of combat** (implemented): Built 30 September (Effects.fire in Battle.commit); heat does not persist between fights, so a vent here would be nothing. No content uses it yet.
 - **Command die** (planned): Open question: whether the command die exists at all, or one-shots only.
 - **City ability** (planned): Consider range limits from the gate so the push north leaves support behind.
 - **Component** (implemented): Multi-slot components were considered and scrapped on 18 September as invisible complexity.
@@ -240,6 +247,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Armour** (implemented): Numbers are placeholders. Armour from components is content, not yet written.
 - **Breach** (implemented): A property of a foe's attack action. No foe carries it yet; Ryan places it. Redirect and interrupt do not exist yet. Name is a placeholder (pierce is taken by the player keyword).
 - **Foe action** (implemented): Only attacks run; defend, buff and debuff actions stay planned. Weighted RNG is the whole brain for now.
+- **Vents all** (implemented): Built 30 September for the Afterburner Cannon (vents_all and power_per_heat on the face). Only the first shot of a chain fires the heat.
 - **Strikes** (implemented): Heat is paid once per use, not per strike. Foes have no armour yet, so on the player side strikes only matter for procs until they do.
 - **Static** (implemented): Every read asks the pipeline; nothing is written to a stat or a component, so an effect that is gone stops answering. A static reach rule cannot be conditioned on reach.
 - **Order of operations** (implemented): Refit (the hangar) is what changes loadout-scoped effects; not built.

@@ -27,6 +27,7 @@ var target: RefCounted = null    # Skirmish.MechState, set when intents are tele
 var action: Dictionary = {}      # this round's chosen action
 var modifiers: Array = []        # statuses on this foe (burning, suppressed, numbed...): Effects.Modifier list
 var die = null                   # foes have no die; the pipeline asks, so the field exists
+var executed: bool = false       # struck by an executing blow this fight: a foe that would get back up stays down
 
 
 func burn_stacks() -> int:
@@ -90,10 +91,27 @@ func choose_action(rng: RandomNumberGenerator) -> void:
 	action = actions[actions.size() - 1]
 
 
-## What one blow of an action does: base attack times its factor, rounded to the nearest
-## whole number (numbers are in the magnitude of tens, not multiples of ten).
+## What one blow of an action does: base attack (plus what a rally adds for the round) times
+## its factor, rounded to the nearest whole number (numbers are in the magnitude of tens,
+## not multiples of ten). A defend, buff or debuff action deals nothing.
 func damage_of(a: Dictionary) -> int:
-	return int(roundf(attack * float(a.get("factor", 1.0))))
+	if not is_attack_action(a):
+		return 0
+	return int(roundf((attack + Effects.foe_attack_bonus(self)) * float(a.get("factor", 1.0))))
+
+
+## The action's kind: attack by default (the basic action), or defend, buff, debuff.
+static func kind_of(a: Dictionary) -> String:
+	return str(a.get("kind", "attack"))
+
+
+static func is_attack_action(a: Dictionary) -> bool:
+	return kind_of(a) == "attack"
+
+
+## Is this round's chosen action a blow at a machine?
+func attacks() -> bool:
+	return is_attack_action(action)
 
 
 func damage() -> int:
@@ -103,6 +121,23 @@ func damage() -> int:
 func strikes() -> int:
 	return maxi(1, int(action.get("strikes", 1)))
 
+
+## What a defend, buff or debuff action does (built 30 September; the ten planned actions in
+## content/foes.json). Each carries `effect` and, where it needs one, `value`, `foe`, `count`.
+##   defend  halve_damage: takes half damage until its next action (Fold)
+##           regrow: regains `value` hit points (Knit)
+##   buff    revive_once: comes back from the pool once after dying, unless executed (Get Back Up)
+##           summon: `count` foes of `foe` join the pool at the round's end (Raise)
+##           rally: every other foe on the field hits `value` harder next round (Kindle)
+##   debuff  drain_rerolls: the team has `value` fewer rerolls next round (Roar)
+##           add_heat: its target gains `value` heat (Stoke)
+##           scramble: its target's next reroll lands anywhere, the same entry included (Corrupt)
+##           crack: its target's showing entry cracks, no hull hit needed (Unmake)
+const ACTION_EFFECTS := {
+	"defend": ["halve_damage", "regrow"],
+	"buff": ["revive_once", "summon", "rally"],
+	"debuff": ["drain_rerolls", "add_heat", "scramble", "crack"],
+}
 
 ## Tags an attack action may carry. Anything true or false about a blow is a tag here, never
 ## a field of its own.
@@ -121,9 +156,10 @@ func breaches() -> bool:
 	return has_keyword(action, "breach")
 
 
-## The action's text with {damage} filled in, so "Jaw Rend for {damage}" reads as a number.
+## The action's text with {damage} and {value} filled in, so "Jaw Rend for {damage}" and
+## "Regrows {value} hull" read as numbers.
 func text_of(a: Dictionary) -> String:
-	return str(a.get("text", "")).replace("{damage}", str(damage_of(a)))
+	return str(a.get("text", "")).replace("{damage}", str(damage_of(a))).replace("{value}", str(int(a.get("value", 0))))
 
 
 ## How much this foe can threaten in a turn, for deployment order: the heaviest hitters stand

@@ -25,6 +25,8 @@ const DEATH_WEIGHT := 60.0       # a machine kept alive through the round
 const BANK_WEIGHT := 0.2         # shield stood up or heat room made for a later round
 const BURN_WEIGHT := 0.5         # burn stacks pay out over the rounds to come
 const OPTION_GUARD := 64         # spends in one round, at most: rapid rerolls the die and acts again
+const DEVOUR_ROUNDS := 1.0       # rounds of the die's own damage a devoured stack is worth (it fades a stack a round)
+const SHOCK_WEIGHT := 0.6        # the doubled blow a Shocked foe will take, as a share of the die's own damage
 
 var kind: int = GREEDY
 var withdraw_below: int = 0      # persona: withdraw when the team's hull is under this percent (0: never)
@@ -135,13 +137,13 @@ func options_for(sk: Skirmish, i: int) -> Array:
 				out.append({"mech": i, "target": t, "score": attack_score(sk, ms, f, t)})
 		Face.Kind.SHIELD:
 			for who in sk.equipment_targets_for(ms, f):
-				out.append({"mech": i, "target": who, "score": shield_score(sk, who, f.power)})
+				out.append({"mech": i, "target": who, "score": shield_score(sk, who, f.power) + draw_score(sk, who, f, f.power) - volatile_cost(sk, ms, f)})
 		Face.Kind.VENT:
 			for who in sk.equipment_targets_for(ms, f):
-				out.append({"mech": i, "target": who, "score": vent_score(sk, who, f.power)})
+				out.append({"mech": i, "target": who, "score": vent_score(sk, who, f.power) + draw_score(sk, who, f) - volatile_cost(sk, ms, f)})
 		Face.Kind.BUFF:
 			for who in sk.equipment_targets_for(ms, f):
-				out.append({"mech": i, "target": who, "score": buff_score(sk, who, f)})
+				out.append({"mech": i, "target": who, "score": buff_score(sk, who, f) - volatile_cost(sk, ms, f)})
 	return out
 
 
@@ -152,6 +154,7 @@ func options_for(sk: Skirmish, i: int) -> Array:
 ## chain adds, the burn it leaves, less the hull the heat will burn and the shield the
 ## splash will cost. Suppress counts the blow it stops.
 func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> float:
+	f = Effects.effective_face(ms.unit, f)
 	var outcomes := damage_outcomes(ms, f, target)
 	var mean := _mean(outcomes)
 	var p_kill := _kill_odds(outcomes, target.hp)
@@ -167,6 +170,17 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		if other != null and other != target and other.alive():
 			score += minf(mean, float(other.hp))
 	score += p_kill * (KILL_BONUS + _threat_now(target) * HULL_WEIGHT)
+	if f.has(Face.Keyword.OVERWHELM) and target.rank == 0 and not target.is_massive():
+		# What the roll has past the kill lands on the foe behind, and may kill it too.
+		var behind := sk.foe_at(1, target.column)
+		if behind != null and behind.alive() and behind != target:
+			for o in outcomes:
+				var spill := maxi(0, int(o[0]) - target.hp)
+				if spill <= 0:
+					continue
+				score += float(o[1]) * minf(float(spill), float(behind.hp))
+				if spill >= behind.hp:
+					score += float(o[1]) * (KILL_BONUS + _threat_now(behind) * HULL_WEIGHT)
 	if f.has(Face.Keyword.SUPPRESS):
 		# A Numbed foe shrugs it off at its resistance, so the stopped blow is worth its odds.
 		var lands := 1.0 - float(target.resist_total()) / 100.0
@@ -180,6 +194,10 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 			score += loop * maxf(0.0, 1.0 - float(target.resist_total()) / 100.0) * (1.0 - p_kill) * _threat_now(target) * HULL_WEIGHT
 	if f.has(Face.Keyword.BURN):
 		score += (1.0 - p_kill) * mean * BURN_WEIGHT
+	if f.has(Face.Keyword.DEVOUR):
+		# A kill feeds a stack of Overcharged: what the status adds to the die's own damage,
+		# for about the rounds the stack lasts. Read from the status, never hardcoded.
+		score += p_kill * _stack_damage_gain("overcharged") * _raw_attack_mean(ms) * DEVOUR_ROUNDS
 	# A chain repeats on the next foe in reach while it keeps killing, heat and all: every
 	# link is worth its kill at the odds of reaching it.
 	var uses := 1.0
@@ -202,12 +220,52 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		score -= DEATH_WEIGHT
 	if sk.reach_of(ms, f) == Face.Reach.INDIRECT and target.rank == 0:
 		score -= ceilf(mean / Skirmish.DANGER_CLOSE_DIVISOR) * SHIELD_WEIGHT
-	return score
+	return score - volatile_cost(sk, ms, f, uses)
 
 
-## The heat one use of an attack entry adds, through the pipeline.
+## What a volatile entry costs its owner in the score: the hull it bites per use, and the
+## death it brings when the round's end would already leave nothing to bite.
+static func volatile_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: float = 1.0) -> float:
+	var bite := Skirmish.volatile_cost(f)
+	if bite <= 0:
+		return 0.0
+	var cost := float(bite) * uses * HULL_WEIGHT
+	var fc := sk.forecast(ms, false)
+	if not fc["destroyed"] and int(fc["hull_after"]) - int(roundf(bite * uses)) <= 0:
+		cost += DEATH_WEIGHT
+	return cost
+
+
+## What one stack of a status adds to an attack's damage, as a fraction (0.1 for +10%).
+static func _stack_damage_gain(status_id: String) -> float:
+	var gain := 0.0
+	for eff in Effects.STATUS.get(status_id, {}).get("effects", []):
+		if str(eff.get("trigger", "")) != "on_attack":
+			continue
+		match str(eff.get("effect", "")):
+			"multiply_damage":
+				gain += float(eff.get("value", 1)) - 1.0
+	return gain
+
+
+## The die's own average damage per entry, attack entries at their average times their
+## strikes, blanks and equipment at zero: a plain read with no scoring under it, so a
+## keyword that pays out on later attacks can be valued without asking the scorer again.
+static func _raw_attack_mean(ms: Skirmish.MechState) -> float:
+	if ms.die.faces.is_empty():
+		return 0.0
+	var total := 0.0
+	for f in ms.die.faces:
+		if f.is_attack():
+			total += float(f.average() * maxi(1, f.strikes))
+	return total / float(ms.die.faces.size())
+
+
+## The heat one use of an attack entry adds, through the pipeline; negative for one that
+## fires the gauge empty first.
 static func heat_of(ms: Skirmish.MechState, f: Face) -> int:
-	return int(Effects.attack(ms.unit, f, 0, f.heat, false)["heat"])
+	var added := int(Effects.attack(ms.unit, f, 0, f.heat, false)["heat"])
+	return added - ms.heat if f.vents_all else added
 
 
 ## What one use of an attack entry can land, with the odds of each: [[damage, weight], ...].
@@ -215,9 +273,12 @@ static func heat_of(ms: Skirmish.MechState, f: Face) -> int:
 ## without a crit; a static entry is one point. Overcharge, execute and the pipeline's
 ## modifiers apply as the resolver applies them; the strikes multiply the blow.
 func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null) -> Array:
+	f = Effects.effective_face(ms.unit, f)
 	var rolls: Array[int] = []
 	if not f.is_ranged():
 		rolls.append(f.power)
+	elif Effects.rolls_max(ms.unit, f, target):
+		rolls.append(f.power_max)
 	elif f.has(Face.Keyword.STEADY):
 		rolls.append(f.average())
 	else:
@@ -226,19 +287,22 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null) -> Arr
 			rolls.append(f.power + int(roundf(span * q)))
 	var crit_p := clampf(float(f.crit) / 100.0, 0.0, 1.0)
 	var crit_mult := Face.CRIT_MULT + f.crit_bonus + Effects.crit_bonus(ms.unit, f)
+	var fired := f.power_per_heat * int(ms.heat / 10) if f.vents_all else 0   # what the heat it fires adds
 	var out: Array = []
 	for v in rolls:
 		for crit in [false, true]:
 			var w := (crit_p if crit else 1.0 - crit_p) / rolls.size()
 			if w <= 0.0:
 				continue
-			var dmg: int = v
+			var dmg: int = v + fired
 			if crit:
 				dmg = int(roundf(dmg * crit_mult))
 			if target != null and f.has(Face.Keyword.EXECUTE) and target.hp * 2 <= target.hp_max:
 				dmg = int(roundf(dmg * (1.5 if target.is_massive() else 2.0)))
-			dmg = int(Effects.attack(ms.unit, f, dmg, 0, crit, target)["damage"]) * maxi(1, f.strikes)
-			out.append([dmg, w])
+			dmg = int(Effects.attack(ms.unit, f, dmg, 0, crit, target)["damage"])
+			# The foe's own statuses read last: a Shocked foe takes the first blow double.
+			var first := Effects.damage_taken(target, dmg) if target != null else dmg
+			out.append([first + dmg * (maxi(1, f.strikes) - 1), w])
 	return out
 
 
@@ -283,6 +347,44 @@ func shield_score(sk: Skirmish, who: Skirmish.MechState, power: int) -> float:
 	return score
 
 
+## A taunt or beacon spent on a machine: the team's hull the redirect saves this round, and
+## the deaths it prevents or causes, read by turning the rank on `who` in a what-if and
+## reading every machine's forecast, then putting the targets back. `extra_shield` is the
+## shield the same component raises on `who`, counted in both readings so only the redirect
+## is scored here (the shield itself is the shield's score).
+func draw_score(sk: Skirmish, who: Skirmish.MechState, f: Face, extra_shield: int = 0) -> float:
+	var ranks: Array[int] = []
+	if f.has(Face.Keyword.TAUNT):
+		ranks.append(0)
+	if f.has(Face.Keyword.BEACON):
+		ranks.append(1)
+	if ranks.is_empty():
+		return 0.0
+	var before := _team_outlook(sk, who, extra_shield)
+	var saved := {}
+	for foe in sk.field_foes():
+		if foe.alive() and (ranks.has(foe.rank) or foe.is_massive()):
+			saved[foe] = foe.target
+			foe.target = who
+	var after := _team_outlook(sk, who, extra_shield)
+	for foe in saved.keys():
+		foe.target = saved[foe]
+	return (float(after["hull"]) - float(before["hull"])) * HULL_WEIGHT + float(int(before["deaths"]) - int(after["deaths"])) * DEATH_WEIGHT
+
+
+## The team's hull at the round's end as the forecast sees it, and how many machines it
+## loses, with `extra_shield` standing on `who`.
+static func _team_outlook(sk: Skirmish, who: Skirmish.MechState, extra_shield: int) -> Dictionary:
+	var hull := 0
+	var deaths := 0
+	for ms in sk.live_mechs():
+		var fc := sk.forecast(ms, false, extra_shield if ms == who else 0)
+		hull += maxi(0, int(fc["hull_after"]))
+		if fc["destroyed"]:
+			deaths += 1
+	return {"hull": hull, "deaths": deaths}
+
+
 ## A buff on a machine, from what its status does: more damage on the attack it has in hand
 ## this round (and its die's mean for any further round), less of the incoming it faces, or
 ## the burn its blows will leave. Nothing for a machine that has already spent its die.
@@ -312,7 +414,24 @@ func buff_score(sk: Skirmish, who: Skirmish.MechState, f: Face) -> float:
 			"add_burn":
 				var per := float(Effects.STATUS["burning"]["effects"][0]["value"])
 				score += per * v * n * BURN_WEIGHT * (1.0 if attack_now > 0.0 else 0.0) * float(f.buff_rounds)
+			"shock_on_hull_strike":
+				# Every foe about to reach this machine's hull comes out Shocked: the team's
+				# next blow on it lands double, worth about the die's own damage again, capped
+				# at what the foe has left.
+				for a in sk.attackers_of(who):
+					if who.unit.shield <= 0 or a.breaches():
+						score += minf(float(a.hp), _team_raw_attack_mean(sk)) * SHOCK_WEIGHT
 	return score
+
+
+## The team's average attack entry, for what a doubled blow is worth.
+static func _team_raw_attack_mean(sk: Skirmish) -> float:
+	var total := 0.0
+	var n := 0
+	for ms in sk.live_mechs():
+		total += _raw_attack_mean(ms)
+		n += 1
+	return total / float(maxi(1, n))
 
 
 ## The mean of a machine's attack entries, each spent as well as it can be, over its die.
@@ -365,17 +484,17 @@ func face_value(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
 		Face.Kind.SHIELD:
 			var best := 0.0
 			for who in sk.equipment_targets_for(ms, f):
-				best = maxf(best, shield_score(sk, who, f.power))
+				best = maxf(best, shield_score(sk, who, f.power) + draw_score(sk, who, f, f.power) - volatile_cost(sk, ms, f))
 			return best
 		Face.Kind.VENT:
 			var best := 0.0
 			for who in sk.equipment_targets_for(ms, f):
-				best = maxf(best, vent_score(sk, who, f.power))
+				best = maxf(best, vent_score(sk, who, f.power) + draw_score(sk, who, f) - volatile_cost(sk, ms, f))
 			return best
 		Face.Kind.BUFF:
 			var best := 0.0
 			for who in sk.equipment_targets_for(ms, f):
-				best = maxf(best, buff_score(sk, who, f))
+				best = maxf(best, buff_score(sk, who, f) - volatile_cost(sk, ms, f))
 			return best
 	return 0.0
 
@@ -407,6 +526,13 @@ static func hull_percent(sk: Skirmish) -> int:
 ## Reroll every unspent die showing less than its average, while rerolls last. A reroll
 ## never lands on the same entry, so this is a real second chance, not a coin flip.
 func _greedy_rerolls(sk: Skirmish) -> void:
+	# A machine's own free rerolls first, one die at a time, while it shows less than its mean.
+	for i in range(sk.mechs.size()):
+		var ms: Skirmish.MechState = sk.mechs[i]
+		while ms.alive() and not ms.assigned and ms.free_rerolls > 0 and face_value(sk, ms, ms.face()) + 0.001 < die_mean(sk, ms):
+			if not sk.reroll([i]):
+				break
+			rerolls += 1
 	while sk.rerolls_left > 0:
 		var idx: Array = []
 		for i in range(sk.mechs.size()):
@@ -424,7 +550,7 @@ func _greedy_rerolls(sk: Skirmish) -> void:
 
 ## The blow this foe is about to land, if it is aimed at anyone.
 static func _threat_now(f: Foe) -> float:
-	if f.target == null or f.is_suppressed():
+	if f.target == null or f.is_suppressed() or not f.attacks():
 		return 0.0
 	return float(f.damage() * f.strikes())
 

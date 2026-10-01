@@ -11,7 +11,7 @@ const CRIT_MULT := 2.0        # a crit multiplies the roll by this plus every cr
 
 enum Kind { ATTACK, SHIELD, VENT, BLANK, BUFF }
 enum Reach { NONE, LINE, INDIRECT, MELEE }
-enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, EXECUTE, CHAIN, STEADY, RAPID, CLEANSE }
+enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, EXECUTE, CHAIN, STEADY, RAPID, CLEANSE, VOLATILE, DEVOUR, TAUNT, BEACON, OVERWHELM }
 ## Whom a component may be spent on (Ryan, 26 September): a weapon (an attack) targets foes;
 ## equipment (a shield, a vent) targets self and allies by default, and content may narrow
 ## one to self only or allies only, so the design space stays open.
@@ -27,6 +27,8 @@ const KEYWORD_NAMES := {
 	Keyword.NONE: "", Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.BURN: "burn",
 	Keyword.SUPPRESS: "suppress", Keyword.EXECUTE: "execute",
 	Keyword.CHAIN: "chain", Keyword.STEADY: "steady", Keyword.RAPID: "rapid", Keyword.CLEANSE: "cleanse",
+	Keyword.VOLATILE: "volatile", Keyword.DEVOUR: "devour", Keyword.TAUNT: "taunt", Keyword.BEACON: "beacon",
+	Keyword.OVERWHELM: "overwhelm",
 }
 ## What the player reads where it differs from the content id (the vocabulary's name).
 const KEYWORD_LABELS := { Keyword.CLEAVE: "spread" }
@@ -34,8 +36,13 @@ const TARGET_NAMES := {
 	Target.SELF_ALLY: "self_ally", Target.SELF: "self", Target.ALLY: "ally", Target.FOE: "foe",
 }
 ## Keywords that ride on a shield or vent component (spent on a machine, not a foe); every
-## other keyword is an attack's. The validator holds content to this.
-const SUPPORT_KEYWORDS := [Keyword.CLEANSE]
+## other keyword is an attack's, except the few that ride on anything. The validator holds
+## content to this.
+const SUPPORT_KEYWORDS := [Keyword.CLEANSE, Keyword.TAUNT, Keyword.BEACON]
+## Keywords about the spend itself, not its target, so any kind of component may carry
+## them: volatile (the Arsenal's self-damage, 28 September) bites the owner whatever the
+## component does.
+const ANY_KEYWORDS := [Keyword.VOLATILE]
 
 
 static func keyword_label(k: int) -> String:
@@ -62,6 +69,8 @@ var targets: int = Target.SELF_ALLY   # equipment: whom it may be spent on; an a
 var buff_status: String = ""  # a buff: the engine status it grants (Effects.STATUS id), with...
 var buff_stacks: int = 1      # ...this many stacks...
 var buff_rounds: int = 1      # ...through the end of this many rounds (1: this round)
+var vents_all: bool = false   # an attack that fires the machine's whole heat: the gauge is empty after the shot...
+var power_per_heat: int = 0   # ...and each 10 heat it fired adds this to the blow (the Afterburner Cannon, 28 September)
 
 
 ## `kws` may be a single Keyword or an Array of them. `pwr_max` of 0 means static.
@@ -191,6 +200,9 @@ static func from_dict(d: Dictionary) -> Face:
 		f.buff_status = str(d.get("status", ""))
 		f.buff_stacks = maxi(1, int(d.get("stacks", 1)))
 		f.buff_rounds = maxi(1, int(d.get("rounds", 1)))
+	if f.kind == Kind.ATTACK:
+		f.vents_all = bool(d.get("vents_all", false))
+		f.power_per_heat = maxi(0, int(d.get("power_per_heat", 0))) if f.vents_all else 0
 	for name in d.get("keywords", []):
 		var kw := keyword_from_name(str(name))
 		if kw > 0:
@@ -221,6 +233,10 @@ func to_dict() -> Dictionary:
 		d["status"] = buff_status
 		d["stacks"] = buff_stacks
 		d["rounds"] = buff_rounds
+	if vents_all:
+		d["vents_all"] = true
+		if power_per_heat > 0:
+			d["power_per_heat"] = power_per_heat
 	return d
 
 
@@ -284,6 +300,8 @@ func duplicate_face() -> Face:
 	f.buff_status = buff_status
 	f.buff_stacks = buff_stacks
 	f.buff_rounds = buff_rounds
+	f.vents_all = vents_all
+	f.power_per_heat = power_per_heat
 	for k in keywords:
 		f.keywords.append(k)
 	return f
@@ -338,6 +356,8 @@ func describe() -> String:
 				s += " crit %d%%" % crit
 				if crit_bonus != 0.0:
 					s += " (×%s)" % _trim(CRIT_MULT + crit_bonus)   # the resulting multiplier, never the bonus
+			if vents_all:
+				s += " vents all" + (", +%d per 10 heat" % power_per_heat if power_per_heat > 0 else "")
 			if heat > 0:
 				s += " (+%d heat)" % heat
 	if cracked:

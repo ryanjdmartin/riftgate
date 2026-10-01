@@ -7,7 +7,7 @@ extends Control
 ## enemy's turn, the glitch, the scan bar; Ryan, 22 September: saturation and bloom made no
 ## difference a player would want), saved through `Settings` and applied live by the host
 ## screen. QUIT asks first, then `quit_requested` (Ryan, 23 September): the host leaves for
-## the harness, and nothing is saved.
+## the harness; a battle started from the harness is saved where it stands (SaveGame).
 ##
 ## A colour change rebuilds the host screen, which is not instant: the menu stays up, a
 ## mask says so, and the host must keep this node through its rebuild (it is a child).
@@ -111,7 +111,7 @@ func _show_page(page: String) -> void:
 			_button("BACK", func() -> void: _show_page("paused"))
 		"quit":
 			_title("QUIT?")
-			var l := Hud.label("Leave the fight for the harness. Nothing is kept.", 18, Palette.MUTED)
+			var l := Hud.label("Leave for the harness. A battle is kept where it stands.", 18, Palette.MUTED)
 			l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			l.autowrap_mode = TextServer.AUTOWRAP_WORD
 			_rows.add_child(l)
