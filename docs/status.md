@@ -82,8 +82,9 @@ front curling in, the thumb's tip at the palm edge, the palm) folded out from th
 across the shared edges; the `fist` tile is now stored in that frame too, and the `thumb` tile is
 retired. `models_low._fist` places each tile by the hand's own axes (forward, back of hand,
 thumb), so the edges meet on both hands and the right hand wears the mirror; the back of the
-hand and the wrist stay plate. Both the Nemesis and the Baboon use it. Not rebuilt yet: no
-Blender in the cloud, so `forge.py build nemesis baboon` on the Mac.
+hand and the wrist stay plate. Both the Nemesis and the Baboon use it. Ryan rebuilt both on the Mac and called it
+good; the built art (`art/models/*_fist*.png`, the two `.glb`) is committed from there, and the
+old `*_thumb.png` can go. The thumb's tip row is `FIST_TIP` in `bl_low.py`.
 
 **Where things are.** `sim/` is the headless game (battle map, battlefield resolver, battle
 loop, skirmish, effects pipeline, content DB). `game/battle/` the battle screen and the map
