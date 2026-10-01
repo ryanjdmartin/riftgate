@@ -207,7 +207,10 @@ and the Badger, which the view traverses about their up axis (`MechView3D.joint_
 round: the Armadillo's insets halfway back up, the Badger's shoulders symmetrical gimbals (the deck
 box keeps no joint), the Clydesdale's mortar and howitzer out and gimballed with its bare mounts on
 the head's cheeks and behind the head, the Boar's crest leaning back, the Goshawk's vents deeper with
-a strip of glow at the floor, the Prairie Dog's launcher the class rack. Ryan asked
+a strip of glow at the floor, the Prairie Dog's launcher the class rack; the eleventh round: the
+Armadillo's rear barrels a fixed length from the mount, the Badger's mounts on the gimbals, the
+Clydesdale's turrets, mortar and howitzer on pedestals clear of the lance, the Boar's tusks grown,
+the Goshawk's glows filling their cuts. The Prairie Dog is done (Ryan). Ryan asked
 whether hand edits in Blender can be taken: yes through `forge.py export <id>`, but the models are
 built from code and any rebuild overwrites the working file, so a hand edit has to be re-expressed in
 `models_low.py` to survive; the way that works is a note or a picture, as the Boar's clip was. `tools/hero_shot.gd` renders bare now

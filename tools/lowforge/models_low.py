@@ -74,12 +74,12 @@ def badger(b):
         with b.joint("turret_%s" % ("l" if s < 0 else "r"), (cx, -6.0, 55.0)):
             b.prism("z", cx, -6.0, 57.0, 4.4, 4.0, "steel.plate", 8, "gimbal", phase=math.pi / 8)
             if s < 0:
-                with b.socket("hp_3", (cx, -2.0, 58.0)):
-                    b.box(cx - 3.0, cx + 3.0, -6.0, 2.0, 57.0, 60.0, "steel.panel", "receiver")
+                with b.socket("hp_3", (cx, -6.0, 59.0)):   # on the gimbal's centre (Ryan, 1 October)
+                    b.box(cx - 3.0, cx + 3.0, -10.0, -2.0, 58.0, 61.0, "steel.panel", "receiver")
                     for s2 in (-1.0, 1.0):
-                        b.prism("y", cx + s2 * 2.4, 14.0, 58.5, 1.8, 26.0, "steel.dark", 6, "autogun")
+                        b.prism("y", cx + s2 * 2.4, 11.0, 59.5, 1.8, 26.0, "steel.dark", 6, "autogun")
             else:
-                b.pad("hp_4", (cx, -2.0, 60.0), size=(6.0, 1.0))
+                b.pad("hp_4", (cx, -6.0, 60.0), size=(6.0, 1.0))
         start = (hinge_x, -6.0, 40.0)
         # The whole boom hangs under a shoulder joint at the hinge: it swings on a melee
         # blow and idles under power (the joints, decided earlier and on the to-do; built
@@ -248,13 +248,16 @@ def clydesdale(b):
     # (hp_1 left, hp_2 right).
     for s in (-1.0, 1.0):
         tx = s * 12.0   # a touch outboard, so a traverse clears the lance (Ryan, 1 October)
-        b.prism("z", tx, 8.0, 49.0, 6.0, 2.0, "steel.dark", 8, "ring")
-        with b.joint("turret_%s" % ("l" if s < 0 else "r"), (tx, 8.0, 50.0)):   # each turret traverses
-            b.box(tx - 5.0, tx + 5.0, 3.0, 13.0, 50.0, 60.0, "steel.panel", "turret")
-            b.box(tx - 2.0, tx + 2.0, 13.0, 15.0, 57.0, 59.0, "amber.light", "sight")
-            with b.socket("hp_%d" % (1 if s < 0 else 2), (tx, 8.0, 56.0)):
+        # Up on a pedestal, so the guns traverse over the lance and its guard (Ryan, 1
+        # October: they would not have cleared the rail).
+        b.prism("z", tx, 8.0, 52.0, 5.0, 8.0, "steel.dark", 8, "pedestal")
+        b.prism("z", tx, 8.0, 57.0, 6.0, 2.0, "steel.dark", 8, "ring")
+        with b.joint("turret_%s" % ("l" if s < 0 else "r"), (tx, 8.0, 58.0)):   # each turret traverses
+            b.box(tx - 5.0, tx + 5.0, 3.0, 13.0, 58.0, 68.0, "steel.panel", "turret")
+            b.box(tx - 2.0, tx + 2.0, 13.0, 15.0, 65.0, 67.0, "amber.light", "sight")
+            with b.socket("hp_%d" % (1 if s < 0 else 2), (tx, 8.0, 64.0)):
                 for s2 in (-1.0, 1.0):
-                    b.prism("y", tx + s2 * 2.6, 24.0, 56.0, 1.8, 22.0, "steel.dark", 6, "autogun")
+                    b.prism("y", tx + s2 * 2.6, 24.0, 64.0, 1.8, 22.0, "steel.dark", 6, "autogun")
     # The lance (hp_3): a breech block aft of centre, saddles along the deck, one long
     # six-sided rail out past the head, a collar, a lit emitter at the point.
     b.box(-5.0, 5.0, -24.0, -6.0, 48.0, 61.0, "steel.panel", "breech")
@@ -268,22 +271,26 @@ def clydesdale(b):
     # on a base.
     # Out toward the bed's edge, away from the lance's breech, and on a gimbal that
     # traverses (Ryan, 1 October).
-    b.prism("z", -13.0, -24.0, 49.5, 5.0, 3.0, "steel.dark", 8, "mortar_base")
-    with b.joint("turret_mortar", (-13.0, -24.0, 51.0)):
-        with b.socket("hp_4", (-13.0, -20.0, 58.0), forward=(0.0, 0.5, 0.866)):
-            _beam(b, (-13.0, -24.0, 51.0), (-13.0, -16.0, 65.0), _poly(4.0, 6), _poly(4.4, 6), "steel.panel", "mortar")
-            _beam(b, (-13.0, -16.0, 65.0), (-13.0, -15.0, 66.8), _poly(4.4, 6), _poly(3.2, 6), "steel.dark", "muzzle")
+    # Both up on pedestals too, so their traverse clears the lance's breech and rail
+    # (Ryan, 1 October).
+    b.prism("z", -13.0, -24.0, 53.0, 4.0, 10.0, "steel.dark", 8, "mortar_pedestal")
+    b.prism("z", -13.0, -24.0, 59.5, 5.0, 3.0, "steel.dark", 8, "mortar_base")
+    with b.joint("turret_mortar", (-13.0, -24.0, 61.0)):
+        with b.socket("hp_4", (-13.0, -20.0, 68.0), forward=(0.0, 0.5, 0.866)):
+            _beam(b, (-13.0, -24.0, 61.0), (-13.0, -16.0, 75.0), _poly(4.0, 6), _poly(4.4, 6), "steel.panel", "mortar")
+            _beam(b, (-13.0, -16.0, 75.0), (-13.0, -15.0, 76.8), _poly(4.4, 6), _poly(3.2, 6), "steel.dark", "muzzle")
     # The howitzer (hp_5) on the deck's right: a fat short barrel pitched up out of a
     # breech on a ring, the mortar's big brother; a bit further out, and on its gimbal.
-    b.prism("z", 12.5, -14.0, 49.5, 6.0, 3.0, "steel.dark", 8, "howitzer_base")
-    with b.joint("turret_howitzer", (12.5, -14.0, 51.0)):
-        with b.socket("hp_5", (12.5, -14.0, 54.0), forward=(0.0, 0.866, 0.5)):
-            b.box(7.5, 17.5, -19.0, -9.0, 51.0, 59.0, "steel.panel", "howitzer_breech")
-            _beam(b, (12.5, -12.0, 55.0), (12.5, 6.0, 65.4), _poly(5.0, 6), _poly(4.4, 6), "steel.dark", "howitzer")
-            _beam(b, (12.5, 6.0, 65.4), (12.5, 8.6, 66.9), _poly(4.4, 6), _poly(5.2, 6), "steel.plate", "howitzer_muzzle")
+    b.prism("z", 12.5, -14.0, 53.0, 4.5, 10.0, "steel.dark", 8, "howitzer_pedestal")
+    b.prism("z", 12.5, -14.0, 59.5, 6.0, 3.0, "steel.dark", 8, "howitzer_base")
+    with b.joint("turret_howitzer", (12.5, -14.0, 61.0)):
+        with b.socket("hp_5", (12.5, -14.0, 64.0), forward=(0.0, 0.866, 0.5)):
+            b.box(7.5, 17.5, -19.0, -9.0, 61.0, 69.0, "steel.panel", "howitzer_breech")
+            _beam(b, (12.5, -12.0, 65.0), (12.5, 6.0, 75.4), _poly(5.0, 6), _poly(4.4, 6), "steel.dark", "howitzer")
+            _beam(b, (12.5, 6.0, 75.4), (12.5, 8.6, 76.9), _poly(4.4, 6), _poly(5.2, 6), "steel.plate", "howitzer_muzzle")
     # The shock barrage (hp_6): a rack of tubes on the deck's left between the turret and
     # the breech, pitched up; the class shape, since nothing was modelled there.
-    b.stock("hp_6", (-12.0, -6.0, 52.0), "rack", forward=(0.0, 0.707, 0.707), scale=0.8)
+    b.stock("hp_6", (-12.0, -10.0, 52.0), "rack", forward=(0.0, 0.707, 0.707), scale=0.8)   # aft a bit (Ryan, 1 October)
     # Ablative plating: two bolted slabs each flank, standing proud of the hull; the heat
     # sink across the tail, its stack up through the bed. Detail, no mounts: armour and
     # vents show nowhere (the rule, 30 September).
@@ -298,7 +305,7 @@ def clydesdale(b):
     for s, k in ((-1.0, 7), (1.0, 8)):
         b.box(min(s * 12.0, s * 14.5), max(s * 12.0, s * 14.5), 42.0, 48.0, 22.0, 28.0, "steel.panel", "cheek_bracket")
         b.pin("hp_%d" % k, (s * 14.5, 48.0, 25.0))
-    b.pad("hp_9", (0.0, 25.0, 47.5), size=(8.0, 2.0))
+    b.pad("hp_9", (0.0, 26.0, 45.6), size=(8.0, 2.0))   # down onto the hull's crown (Ryan, 1 October)
 
 
 clydesdale.maker = "wainwright_sutler"
@@ -467,20 +474,23 @@ def armadillo(b):
     D = (0.0, 0.707, 0.707)
     for s, kind in ((-1.0, "rivet"), (1.0, "slug")):
         px = s * 14.0
-        p0 = (px, -14.5, Z0 + 15.5)   # halfway back up from the ninth round's depth, now the hollow reads (Ryan, 1 October)
+        p0 = (px, -11.5, Z0 + 18.5)   # the fifth round's depth again (Ryan, 1 October: the tenth's move did not read)
         p1 = (px, 0.0, Z0 + 30.0)
         b.cut(band_obs, p0, p1, 6.6)
         _tube(b, p0, p1, 8.0, 6.4, 8, "steel.plate", "port")
         _tube(b, (px, -0.9, Z0 + 29.1), (px, 0.3, Z0 + 30.3), 8.7, 6.4, 8, "steel.stripe", "port_rim", floor=False)
-        mount = (px, -12.5, Z0 + 17.5)
+        mount = Vector((px, -9.7, Z0 + 20.3))
+        DV = Vector(D)
+        # The barrels a fixed length from the mount (they had run to a fixed muzzle point
+        # and grew with every push back: Ryan, 1 October).
         if kind == "rivet":
-            with b.socket("hp_1", mount, forward=D, scale=1.2):
-                _beam(b, mount, (px, 4.0, Z0 + 34.0), _poly(3.4, 6), _poly(3.4, 6), "steel.dark", "rivet_barrel")
-                _beam(b, (px, 4.0, Z0 + 34.0), (px, 6.0, Z0 + 36.0), _poly(4.0, 6), _poly(3.6, 6), "steel.plate", "rivet_muzzle")
+            with b.socket("hp_1", tuple(mount), forward=D, scale=1.2):
+                _beam(b, tuple(mount), tuple(mount + DV * 16.0), _poly(3.4, 6), _poly(3.4, 6), "steel.dark", "rivet_barrel")
+                _beam(b, tuple(mount + DV * 16.0), tuple(mount + DV * 18.5), _poly(4.0, 6), _poly(3.6, 6), "steel.plate", "rivet_muzzle")
         else:
-            with b.socket("hp_2", mount, forward=D, scale=1.2):
-                _beam(b, mount, (px, 10.0, Z0 + 40.0), _poly(3.0, 6), _poly(2.8, 6), "steel.dark", "slug_barrel")
-                _beam(b, (px, 10.0, Z0 + 40.0), (px, 13.0, Z0 + 43.0), _poly(3.8, 6), _poly(3.4, 6), "steel.plate", "slug_muzzle")
+            with b.socket("hp_2", tuple(mount), forward=D, scale=1.2):
+                _beam(b, tuple(mount), tuple(mount + DV * 23.0), _poly(3.0, 6), _poly(2.8, 6), "steel.dark", "slug_barrel")
+                _beam(b, tuple(mount + DV * 23.0), tuple(mount + DV * 26.5), _poly(3.8, 6), _poly(3.4, 6), "steel.plate", "slug_muzzle")
     # The hatch behind the ports: a missile cell in a stripe frame, pitched forward with
     # the ports so a cannon fitted there is a hull gun (hp_3).
     # Up and back a little, so a cannon fitted there clears the shell's crown ahead of it
@@ -561,7 +571,7 @@ def wild_boar(b):
             by = face(bx, 26.0) - T / 2.0
             _spike(b, (bx, by, 25.0), (bx + s * 2.0, by + 7.0, 33.0), 2.0, "steel.dark", "spike")
         _beam(b, (s * 12.0, 26.0, 8.0), (s * 12.0, face(12.0, 8.0, True) + 0.5, 8.0), _sq(5.0, 5.0), _sq(5.0, 5.0), "steel.dark", "bar")
-        _beam(b, (s * 5.0, face(5.0, 6.0) - 0.5, 6.0), (s * 7.0, face(5.0, 6.0) + 19.0, 12.0), _poly(3.2, 6), _poly(1.0, 6), "steel.dark", "tusk")
+        _beam(b, (s * 6.0, face(6.0, 7.0) - 0.5, 7.0), (s * 10.0, face(6.0, 7.0) + 30.0, 17.0), _poly(5.0, 6), _poly(1.4, 6), "steel.dark", "tusk")   # grown with the plow (Ryan, 1 October)
     b.box(-2.0, 2.0, 20.0, face(0.0, 22.0) - 1.5, 2.0, 22.0, "steel.hazard", "catcher_spine")   # a smidge back off the front (Ryan, 1 October)
     # The turret: a wide eight-sided drum on the hull, the machine's most prominent
     # feature, two parallel guns set well apart off a wide mantlet (hp_1 left, hp_2 right),
@@ -773,13 +783,13 @@ def goshawk(b):
             hw = 7.0 - abs(y0 + 2.0 - 12.0) * 0.02   # the flank's half width near the pocket
             x_in, x_out = s * (hw - 1.6), s * (hw + 1.0)   # deeper, longer, the glow a small strip at the floor so it reads as a light inside, not a slab (Ryan, 1 October)
             b.cut_box([fairing], min(x_in, x_out), max(x_in, x_out), y0, y0 + 4.4, -7.3, -5.3)
-            b.box(min(x_in, x_in + s * 0.2), max(x_in, x_in + s * 0.2), y0 + 0.8, y0 + 3.6, -6.8, -5.8, "amber.glow", "vent_glow")
+            b.box(min(x_in, x_in + s * 0.2), max(x_in, x_in + s * 0.2), y0 + 0.1, y0 + 4.3, -7.2, -5.4, "amber.glow", "vent_glow")   # the whole floor of the cut (Ryan, 1 October)
     b.loft([(29.0, hexagon(0.0, -6.0, 9.0, 3.0)), (33.4, hexagon(0.0, -6.0, 8.6, 2.85))], "steel.dark", "cannon_barrel", cap=False)
     b.loft([(33.4, hexagon(0.0, -6.0, 7.8, 2.4)), (34.6, hexagon(0.0, -6.0, 7.8, 2.4))], "amber.glow", "barrel_groove", cap=False)
     b.loft([(34.6, hexagon(0.0, -6.0, 8.5, 2.8)), (40.0, hexagon(0.0, -6.0, 8.0, 2.6))], "steel.dark", "cannon_barrel", cap=False)
     _rings(b, [[(x, 40.0, z) for x, z in hexagon(0.0, -6.0, 8.0, 2.6)], [(x, 40.0, z) for x, z in hexagon(0.0, -6.0, 6.8, 2.1)]], "steel.dark", "cannon_rim", cap=False)
-    b.loft([(40.0, hexagon(0.0, -6.0, 6.8, 2.1)), (38.6, hexagon(0.0, -6.0, 5.8, 1.8))], "amber.glow", "cannon_bore", cap=False)
-    b.loft([(38.7, hexagon(0.0, -6.0, 5.8, 1.8)), (39.0, hexagon(0.0, -6.0, 5.8, 1.8))], "amber.lit", "cannon_glow")   # nearer the mouth, so it reads at the game's angles
+    b.loft([(40.0, hexagon(0.0, -6.0, 6.8, 2.1)), (38.0, hexagon(0.0, -6.0, 5.6, 1.75))], "amber.glow", "cannon_bore", cap=False)
+    b.loft([(38.1, hexagon(0.0, -6.0, 5.6, 1.75)), (38.4, hexagon(0.0, -6.0, 5.6, 1.75))], "amber.lit", "cannon_glow")   # a touch back in from the tenth round (Ryan, 1 October)
     # Canopy: small and faired, forward.
     b.loft([(22.0, hexagon(0.0, 6.0, 6.0, 0.5)), (14.0, hexagon(0.0, 7.0, 7.4, 2.4)), (4.0, hexagon(0.0, 7.0, 7.4, 2.4)), (-2.0, hexagon(0.0, 6.6, 7.0, 1.8))], "glass.glass", "canopy")
     # The dorsal intake behind it (hp_5), its mouth forward.
