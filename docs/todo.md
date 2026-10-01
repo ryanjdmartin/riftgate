@@ -14,7 +14,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Judge on the phone after a re-export: the machines' outline at 2.6 (`MechView3D.OUTLINE`; 1.0 was the thin), the intent field in motion (stripe width `STRIPE`, ring spokes `SPOKES`, the pulse), the machine's lock's contrast (the light at half), the orange pulse of the gate's hazard glyphs, the sound set, the grid at `GRID_GAIN_PHONE`
 - [ ] Codex and flavour for the seven new machines, the Baboon's flavour, and the 42 components whose codex is empty
 - [ ] Judge the effects' second pass on the listening page (30 September, evening): the four rounds first, then by section and row; a pick lands in the forge and its hook
-- [ ] Judge the thirteenth round on the Model Viewer: the Armadillo's seated collars, the Clydesdale's turret height and position; and the turrets traversing in the skirmish; each class's size per machine (a pin's `scale` in `models_low.py`)
+- [ ] Judge the thirteenth round on the hangar page's Models tab: the Armadillo's seated collars, the Clydesdale's turret height and position; and the turrets traversing in the skirmish; each class's size per machine (a pin's `scale` in `models_low.py`)
 - [ ] A turret joint that turns outward only (the Clydesdale's, beside the lance): the view's idle and flinch swing both ways today
 - [ ] Decide whether the Clydesdale's hand-modelled turret pairs should match the twin-barrel class's spacing, since on a swap the class is what shows (the Prairie Dog's are the class now)
 - [ ] Propose in chat a Minerva intercept component for the starter set (Ryan, 30 September: tanks need class-based target-modification beyond the Proximity Klaxon)
@@ -66,12 +66,10 @@ Nothing in content is planned any more; every piece the 28 September content lea
 
 ## Pages (standing, after every content change)
 
-- [ ] When Ryan wants to edit content from his phone again: publish the content editor from account A (`tools/content_editor.html` with its `files` map carrying `content/*.json`) and share it to the work email as Editor; the old B page is gone, its edits database was empty. While it exists, republish it with its `files` map after every content change, or its baselines go stale
-- Rebake the nameplate page's baked-in current names (`CURRENT` in its script) when a chassis or component is added or renamed
+- The hangar page (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, the nameplate's link kept for its rows and its sharing): republish it with the `files` map `tools/hangar_data.py` prints after every content, model or render change, or its tabs go stale (source `tools/hangar.html`; a render round puts its pictures under `docs/hangar/renders/<chassis>/` and its entry in `docs/hangar/renders.json`)
+- After Ryan edits on its Content tab: pull collection `edits` with ArtifactData, apply by hand, test, commit, republish, clear the documents
 - Republish the bible from the committed file (each account to its own URL, listed in status)
 - Re-seed the Melody Desk's `parts` after a track's voices change: `desk_parts.py`, then a batch `set` of the six `parts/<track>` documents (pinned to their versions), or a loaded part is the track as it was
-- Regenerate the hangar codex (`python3 tools/build_codex.py . codex.html`) after a content or model change and republish it, each account to its own copy; it reads the built `.glb` files, so build and import first
-- Republish the Model Viewer after a model round; a B session records its own viewer's link in status
 
 ## Audio
 

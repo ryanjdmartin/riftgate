@@ -1,0 +1,79 @@
+{
+ "_about": "hp_<n> pins per chassis, read from art/models/<id>.glb by tools/hangar_data.py; null means no model built yet",
+ "pins": {
+  "badger": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "clydesdale": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9
+  ],
+  "sparrowhawk": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "baboon": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6
+  ],
+  "armadillo": [
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "wild_boar": [
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "prairie_dog": [
+   1,
+   2,
+   3
+  ],
+  "dingo": [
+   1,
+   2,
+   3
+  ],
+  "goshawk": [
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "nemesis": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "ammit": [
+   1,
+   2,
+   3,
+   4
+  ]
+ }
+}

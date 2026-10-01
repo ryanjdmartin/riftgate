@@ -8,33 +8,38 @@ for every page; the pages block below has the rest; v0.14 since the audit of 1 O
 Republish it from the committed file after a bible change, passing the URL from any
 conversation that did not publish it.
 
-**The pages, as of 1 October.** An artifact is republished only by the account that made it,
-or by an account invited as Editor from its Share menu; the personal account (A) can invite
-outward, the organisation account (B) cannot. **Account A owns six pages and nothing else:**
+**The pages, as of 1 October, evening.** An artifact is republished only by the account that made
+it, or by an account invited as Editor from its Share menu; the personal account (A) can invite
+outward, the organisation account (B) cannot. **Account A owns four pages and nothing else:**
 the Melody Desk (https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV: a piano roll of up to
 sixteen bars, source `tools/soundforge/melody_desk.html`; the shipped tracks' parts stack as
 layers from store collection `parts`, seeded by `tools/soundforge/desk_parts.py`, re-seed
 after a track's parts change; Send writes to collection `melodies` with every note, each
 layer's source and Ryan's memo; a session pulls a `new` document, listens, applies it in
 the forge and marks it `applied` with a `reply` the page shows. Ryan's intent: the session
-interprets what he sends; it is not drop-in), the bible (above), the nameplate
-(https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH), the hangar codex
-(https://claude.ai/artifact/FqiH3b8ZZjxJaCJmWK71vj), the Model Viewer
-(https://claude.ai/artifact/HzF8K98MxgJP7kroxAuDMv, every chassis rendered as it stands with
-earlier passes folded under each, and a Classes section for the silhouette classes and four
-refits) and the listening page (https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9; since 30
+interprets what he sends; it is not drop-in), the bible (above), **the hangar page**
+(https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; 1 October, evening, Ryan: the pages
+overlapped, merge what makes sense and clean up; four tabs: the codex, the content editor, the
+names list and the renders with earlier passes folded under each chassis and a Classes
+section; the nameplate's link kept for its `candidates` rows and its sharing; source
+`tools/hangar.html`, published with the `files` map `tools/hangar_data.py` prints:
+`content/*.json`, the shipped content every tab reads and the editor diffs against,
+`hangar/pins.json`, each model's mounts read from the built `.glb`, and `hangar/renders.json`
+with every render under `docs/hangar/renders/`; capabilities `db` and `user`, collections
+`edits` and `candidates`; republish after every content, model or render change, or its tabs
+go stale; the separate codex, Model Viewer and content editor pages are deleted and
+`tools/build_codex.py` retired) and the listening page (https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9; since 30
 September the effects' second pass from `tools/soundforge/fx_sketches.py` and nothing else;
 the music rounds re-render from `phone_sketches.py` if ever wanted again). The engagement
 sandbox that drew the zone options is https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg.
-**Sharing:** the nameplate, codex and listening page are shared to the work email as Editor
-and open there, so B republishes those three in place. **Account B keeps two pages:** its
-bible copy (republished from the committed file after any bible change a B session makes) and
-a Model Viewer of its own (a B session records its link here). **The content editor page no
-longer exists** in either account; nothing was lost (its edits database was empty). Its source
-is `tools/content_editor.html` (the README says how it is published, with a `files` map
-carrying `content/*.json`); when Ryan wants to edit from his phone again, publish it from
-account A and share it to the work email as Editor, so an A session can pull the edits (a B
-session cannot use an A page's database from Claude Code, though Ryan can from the page).
+**Sharing:** the hangar page (as the nameplate it grew from) and the listening page are shared
+to the work email as Editor and open there, so B republishes them in place; a B session cannot
+use an A page's database from Claude Code, though Ryan can from the page. **Account B keeps
+two pages:** its bible copy (republished from the committed file after any bible change a B
+session makes) and a Model Viewer of its own (a B session records its link here). Ryan edits
+content from his phone on the hangar page's Content tab; after he does, pull collection
+`edits` with ArtifactData, apply by hand (the files are hand-formatted), test, commit,
+republish the page with its map, clear the documents.
 **Rules learned:** a page's link goes into this file in the same commit as the publish, so a
 parallel session sees it before publishing a twin; `Artifact` with `action: "list"` says what
 the account you are in owns, and a read of another account's page comes back "not found"; a
@@ -89,7 +94,8 @@ name; `tools/soundforge/forge.py` builds them into `art/audio/`. `tools/lowforge
 every model by code (`models_low.py`, one function per chassis id); `tools/screenshot.gd`
 poses either screen (README lists the poses and the phone-layout variables);
 `tools/balance.gd` writes `docs/balance.md`; `tools/android.sh` the debug APK,
-`tools/phone.sh` a Web build on the LAN. `docs/vocabulary.md` is generated from content
+`tools/phone.sh` a Web build on the LAN. `tools/hangar.html` is the hangar page and
+`tools/hangar_data.py` its pins file and publish map; the renders live under `docs/hangar/`. `docs/vocabulary.md` is generated from content
 (`tools/export_vocabulary.gd`). `docs/concepts/` holds the first day's batch template; no
 batch was ever written to it, content is proposed in chat and lands in the JSON.
 
@@ -110,8 +116,9 @@ codex and flavour too: his to write. Tests never hardcode an entry's passive nam
 `content/reserved_names.json` holds about 1,250 machine names (BattleTech, Heavy Gear, 40k,
 Halo); the validator refuses an exact match unless `design.name_clash` says why it stays, and
 every flagged name is decided (the bible's naming row). Names and concepts are spitballed on
-the nameplate page (a tab per maker, Components, Rules; rows in its db collection
-`candidates`; rebake it from the reserved list and the content names when either changes).
+the hangar page's Names tab (a tab per maker, Components, Rules; rows in the page's db
+collection `candidates`; the check reads the reserved list and the live content, so nothing is
+baked in).
 
 **Models (bible section 7, the mount-rule row carries every round).** Every chassis has a
 lowforge model; `tools/lowforge/models_low.py` holds one function per chassis id and every
@@ -127,7 +134,7 @@ swap. Joints are code too (`with b.joint(...)`: the five limbed machines' arms, 
 lance; turret joints on the Boar, Prairie Dog, Clydesdale and Badger, turned about their up
 axis); vehicles and aircraft have no limb joints. Lowforge has a boolean cutter (`b.cut`,
 `b.cut_box`), hollow tubes (`_tube(..., floor=False)`), open rings (`_rings(cap=False)`) and
-`lit` and `glow` tiles. Thirteen rounds of Ryan's notes from the Model Viewer are built; the
+`lit` and `glow` tiles. Thirteen rounds of Ryan's notes from the renders (the hangar page's Models tab since 1 October) are built; the
 Prairie Dog, Badger, Goshawk and Boar are done; the thirteenth round (the Armadillo's seated
 collars, the Clydesdale's turret height) waits on his judgement. Hand edits in Blender can be
 taken through `forge.py export <id>`, but a rebuild overwrites the working file, so a hand
@@ -138,11 +145,13 @@ model only from a render**, never from code. Facet counts are a guideline, not a
 still reads as two boxes, his options are heavier hands carrying hardware or a standard
 forward pose with the fist tile turned 90 degrees.
 
-**The hangar codex page (29 September).** `python3 tools/build_codex.py . <out.html>` reads
-`content/*.json` and the built `.glb` files and writes one page: each chassis with its plate,
-stats, passive and die laid out entry by entry, each entry's silhouette class as a dashed
-chip, planned entries marked. Regenerate and republish after any content or model change. It
-is generated and read-only on purpose.
+**The codex (29 September; a tab of the hangar page since 1 October).** One surface showing a
+chassis and the components fitted to it: the Codex tab renders it in the browser from the
+content files beside the page, each chassis with its plate, stats, passive, current render and
+die laid out entry by entry, the model's mount count (from `hangar/pins.json`) checked against
+the hardpoints, each component's class as a dashed chip, planned entries marked, pending edits
+laid over and tagged; tapping a name or an entry opens it in the Content tab. One page, one
+database, so the codex and the editor never fight.
 
 **What the game does today.** A battle: the map shows every pack's intent and the exact
 result of the plan before Resolve; every pack carries an engagement zone from its foe type

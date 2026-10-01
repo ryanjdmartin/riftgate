@@ -59,11 +59,13 @@ and open question from the design sessions.
   in `docs/sprites-enemies.html` to `art/foes/`; `foeforge/` generates enemy candidates with
   an image model and cuts one into `art/foes/`; `soundforge/` builds every sound and the
   six music tracks from written recipes (numpy); `phone.sh` puts a Web build on a phone
-  over the LAN, `android.sh` the real debug APK over USB; `content_editor.html` is the
-  source of the phone content editor page (unpublished since 29 September; `docs/status.md`
-  says how to bring it back), published with a `files` map carrying each
-  `content/<file>.json` at that same path as the baselines it diffs against (Ryan's saved
-  edits live in its database, collection `edits`); `spriter/.venv` is the Python
+  over the LAN, `android.sh` the real debug APK over USB; `hangar.html` is the
+  hangar page, one artifact with four tabs (the codex, the content editor, the names list, the
+  renders), published with the `files` map `hangar_data.py` prints: each `content/<file>.json`
+  at that same path as the shipped content every tab reads and the editor diffs against,
+  `hangar/pins.json` (the models' mounts) and `hangar/renders.json` with the renders under
+  `docs/hangar/`; Ryan's saved edits live in its database (collection `edits`), the name
+  candidates in `candidates`; `spriter/.venv` is the Python
   the tools run with. The gate and wall are lowforge models too (`gate`, `wall`).
 - `art/` — `models/` every glTF the engine draws (units, gate, wall), `foes/` from the sheet
   export, `fonts/` the HUD faces, `audio/` every sound by name (`game/audio/sound.gd` lists
@@ -88,8 +90,10 @@ godot --headless --path . -s tests/run_tests.gd
 # run the harness (skirmish screen and map viewer)
 godot --path .
 
-# the hangar codex page: every chassis with its die laid out, from content/*.json
-python3 tools/build_codex.py . codex.html    # then publish it as an artifact
+# the hangar page: the codex, the content editor, the names and the renders in one artifact
+python3 tools/hangar_data.py        # writes docs/hangar/pins.json, checks the renders manifest, prints the files map
+# then publish tools/hangar.html to https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH with that map (a render round: pictures into
+# docs/hangar/renders/<chassis>/, the entry in docs/hangar/renders.json, republish)
 
 # regenerate docs/vocabulary.md from content/vocabulary.json
 godot --headless --path . -s tools/export_vocabulary.gd
