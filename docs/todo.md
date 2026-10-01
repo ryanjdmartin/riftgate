@@ -25,7 +25,9 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [x] Judge the eighth round on the Model Viewer (1 October: notes on four machines, built the same day)
 - [x] Judge the ninth round on the Model Viewer (1 October: notes on six machines, built the same day)
 - [x] Judge the tenth round on the Model Viewer (1 October: the Prairie Dog done, notes on five machines built the same day)
-- [ ] Judge the eleventh round on the Model Viewer: the Armadillo's rear ports and barrels, the Badger's gimbal mounts, the Clydesdale's pedestals (tall now: say if the mortar and howitzer should come down and move outboard instead), the Boar's tusks, the Goshawk's vent glows; and the turrets traversing in the skirmish; each class's size per machine (a pin's `scale` in `models_low.py`)
+- [x] Judge the eleventh round on the Model Viewer (1 October: the Badger and Goshawk done, three notes built the same day)
+- [ ] Judge the twelfth round on the Model Viewer: the Armadillo's shallow rear sockets, the Clydesdale's lowered turrets, the Boar's tusks; and the turrets traversing in the skirmish; each class's size per machine (a pin's `scale` in `models_low.py`)
+- [ ] A turret joint that turns outward only (the Clydesdale's, beside the lance): the view's idle and flinch swing both ways today
 - [ ] Decide whether the Clydesdale's hand-modelled turret pairs should match the twin-barrel class's spacing, since on a swap the class is what shows (the Prairie Dog's are the class now)
 - [ ] Propose in chat a Minerva intercept component for the starter set (Ryan, 30 September: tanks need class-based target-modification beyond the Proximity Klaxon)
 - [x] Picks from the phone sketches page: the bass voice (3 or 5), the clip-free guitar, the third shadows (28 September: voice 12, the guitar, the third cut, a quarter of the level gap; all in the forge)
