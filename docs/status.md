@@ -6,10 +6,11 @@ thing works lives in its file's comments; why it is that way lives in the bible
 bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.14 since the audit
 of 1 October); republish it from the committed file after every bible change, passing that URL.
 
-**The pages, as of 1 October, night: four, shared to both accounts.** Every page lives in the
-personal account (A) and is shared to the work email (B) as Editor, so a session in either
-account republishes it in place by its URL (a read first, then publish with `url`), and no
-account keeps a copy of its own: B's old bible copy and Model Viewer retire. The four:
+**The pages, as of 1 October, night.** Every page lives in the personal account (A). The three
+that last are shared to the work email (B) as Editor, so a session in either account republishes
+them in place by URL (a read first, then publish with `url`), and no account keeps a copy of its
+own: B's old bible copy and Model Viewer retire. The two that serve an ongoing task stay in A
+alone (Ryan, 1 October) and are republished from an A session. Shared:
 
 - **The bible** (above): `docs/design-bible.html`, published whole after every change.
 - **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH): four tabs, the
@@ -28,12 +29,16 @@ account keeps a copy of its own: B's old bible copy and Model Viewer retire. The
   source and Ryan's memo; a session pulls a `new` document, listens, applies it in the forge
   and marks it `applied` with a `reply` the page shows. The session interprets what he sends;
   it is not drop-in.
+
+In A alone, for the task each serves:
+
 - **The listening page** (https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9): the effects'
   second pass from `tools/soundforge/fx_sketches.py`, re-cut 1 October, and nothing else; the
   music rounds re-render from `phone_sketches.py` if ever wanted again.
+- **The engagement sandbox** (https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg) that drew the
+  zone options, for the play test of the engagement zones.
 
-The engagement sandbox that drew the zone options is
-https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg. **Rules learned:** a page's link goes into
+**Rules learned:** a page's link goes into
 this file in the same commit as the publish, so a parallel session sees it before publishing a
 twin; `Artifact` with `action: "list"` shows only what the account you are in owns, so a shared
 page is reached by its URL, never by listing; a page's database stays with the owning account,
