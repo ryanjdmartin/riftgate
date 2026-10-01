@@ -1102,26 +1102,44 @@ def _quad(b, pts, material, label, frame=None):
 
 
 def _fist(b, cx, y_back, y_front, z0, z1, w, inner_side, label="fist"):
-    """A closed fist hanging from the wrist, knuckles forward (+y): a block whose faces each
-    carry one tile of their own (Ryan, 28 September). Only the front wears the fingers
-    (four columns, the knuckles lit, the thumb curled across the bottom); the inner side
-    (toward the body, `inner_side` is -1 for the right hand) wears the bent thumb coming
-    down and turning forward; the outer side is the plain back of the hand, and the top,
-    bottom and back are plate."""
-    hw = w / 2.0
-    x0, x1 = cx - hw, cx + hw
-    up, right, fwd = Vector((0.0, 0.0, 1.0)), Vector((1.0, 0.0, 0.0)), Vector((0.0, 1.0, 0.0))
-    h, d = z1 - z0, y_front - y_back
-    _quad(b, [(x0, y_front, z0), (x1, y_front, z0), (x1, y_front, z1), (x0, y_front, z1)], "steel.fist", label + "_front",
-          (Vector((x0, y_front, z0)), up, right, fwd, (w, h)))
-    inner_x = x0 if inner_side < 0 else x1
-    outer_x = x1 if inner_side < 0 else x0
-    _quad(b, [(inner_x, y_back, z0), (inner_x, y_front, z0), (inner_x, y_front, z1), (inner_x, y_back, z1)], "steel.thumb", label + "_inner",
-          (Vector((inner_x, y_back, z0)), up, fwd, right, (d, h)))
-    _quad(b, [(outer_x, y_back, z0), (outer_x, y_front, z0), (outer_x, y_front, z1), (outer_x, y_back, z1)], "steel.plate", label + "_outer")
-    _quad(b, [(x0, y_back, z1), (x1, y_back, z1), (x1, y_front, z1), (x0, y_front, z1)], "steel.plate", label + "_top")
-    _quad(b, [(x0, y_back, z0), (x1, y_back, z0), (x1, y_front, z0), (x0, y_front, z0)], "steel.plate", label + "_bottom")
-    _quad(b, [(x0, y_back, z0), (x1, y_back, z0), (x1, y_back, z1), (x0, y_back, z1)], "steel.plate", label + "_back")
+    """A closed fist hanging from the wrist, knuckles forward (+y), the back of the hand up
+    and the thumb on the inner side (toward the body, `inner_side` is -1 for the right
+    hand): a block whose faces each carry one tile of their own (Ryan, 28 September). The
+    front wears the fingers; the thumb side, the palm side and the little finger's side
+    wear the faces folded out from it (Ryan, 1 October; see Tiles._fist_side); the back of
+    the hand and the wrist are plate. Each tile is placed by the hand's own axes, so the
+    shared edges meet and the other hand wears its mirror."""
+    fwd, back, thumb = Vector((0.0, 1.0, 0.0)), Vector((0.0, 0.0, 1.0)), Vector((float(inner_side), 0.0, 0.0))
+    centre = Vector((cx, (y_back + y_front) / 2.0, (z0 + z1) / 2.0))
+    half = {"fwd": (y_front - y_back) / 2.0, "back": (z1 - z0) / 2.0, "thumb": w / 2.0}
+    axis = {"fwd": fwd, "back": back, "thumb": thumb}
+    # (outward, image right, image up, tile) for each face, in the drawn hand's terms.
+    faces = [
+        ("fwd", "back", "thumb", "steel.fist", "_front"),
+        ("thumb", "back", "-fwd", "steel.fisttop", "_thumb"),
+        ("-back", "fwd", "thumb", "steel.fistpalm", "_palm"),
+        ("-thumb", "back", "fwd", "steel.fistbase", "_base"),
+        ("back", "fwd", "thumb", "steel.plate", "_back_of_hand"),
+        ("-fwd", "back", "thumb", "steel.plate", "_wrist"),
+    ]
+
+    def ax(name):
+        return -axis[name[1:]] if name.startswith("-") else axis[name]
+
+    def hx(name):
+        return half[name.lstrip("-")]
+
+    for n_name, u_name, v_name, material, suffix in faces:
+        n, u, v = ax(n_name), ax(u_name), ax(v_name)
+        c = centre + n * hx(n_name)
+        hu, hv = hx(u_name), hx(v_name)
+        pts = [c - u * hu - v * hv, c + u * hu - v * hv, c + u * hu + v * hv, c - u * hu + v * hv]
+        frame = None
+        if material != "steel.plate":
+            frame = (pts[0], v, u, n, (2.0 * hu, 2.0 * hv))
+        if u.cross(v).dot(n) < 0.0:
+            pts.reverse()   # the mirrored hand: keep the face turned outward
+        _quad(b, [tuple(p) for p in pts], material, label + suffix, frame)
 
 
 def _fuse(w, top, bottom):
