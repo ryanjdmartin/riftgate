@@ -514,6 +514,10 @@ def armadillo(b):
         b.cut(band_obs, p0, p1, 4.8)
         _tube(b, (px, 14.0, ZF), p1, 6.0, 4.6, 8, "steel.plate", "fore_port", floor_depth=8.0)
         _tube(b, (px, 30.1, ZF), (px, 31.3, ZF), 6.6, 4.6, 8, "steel.stripe", "fore_rim", floor=False)
+        # A firing channel cut down through the front band ahead of the port, so a gun
+        # fitted there lies in a trough instead of running into the shell (Ryan, 1
+        # October: the barrels would have clipped the band in front).
+        b.cut_box(band_obs, px - 4.6, px + 4.6, 30.0, 47.0, ZF - 4.0, Z0 + 30.0)
         b.pin("hp_%d" % n, (px, 24.5, ZF), forward=(0.0, 1.0, 0.0), scale=1.2)
     # Plating on the flanks between the hips and the blowout stack at the tail with vents
     # across the rear band: detail, no mounts.
