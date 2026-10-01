@@ -122,6 +122,8 @@ class Tiles:
             dark(slice(22, T), slice(14, 16))              # the thumb's crease, the front's groove
             dark(slice(22, 24), slice(14, 28))
             dark(slice(0, 22), slice(26, 28))
+            dark(slice(34, 36), slice(2, 14), 0.35)        # the thumb's joint
+            lit(slice(0, T), slice(9, 11))                 # the thumb's ridge, as on the front
             dark(slice(44, 46), slice(28, T - 3))          # the finger's back
             dark(slice(24, 44), slice(28, 30))
             lit(slice(46, 48), slice(16, T - 3), 1.15)
@@ -152,6 +154,9 @@ class Tiles:
             dark(slice(14, FIST_TIP), slice(48, 50))
             dark(slice(26, 28), slice(0, 22))
             dark(slice(14, 26), slice(22, 24))
+            dark(slice(2, 14), slice(34, 36), 0.35)        # the thumb's joint
+            lit(slice(9, 11), slice(0, 56))                # the thumb's ridge, round the bend
+            lit(slice(9, FIST_TIP), slice(54, 56))
             dark(slice(2, 5), slice(T - 5, T - 2), 0.5)    # the bend's outer corner, rounded
             dark(slice(0, 2), slice(0, T), 0.4)
             dark(slice(0, T), slice(T - 2, T), 0.4)
@@ -275,6 +280,7 @@ class Tiles:
             img[:, T - 3:T, :] *= 0.4                                 # the back of the hand's edge
             img[0:FIST_TIP, 2:14, :] = self.metal(g * 1.0, self.p["streak"] * 0.5, mottle=0.008)[0:FIST_TIP, 2:14, :]   # the thumb
             img[2:FIST_TIP + 2, 14:16, :] *= 0.3                      # its crease
+            img[2:FIST_TIP, 9:11, :] = np.minimum(img[2:FIST_TIP, 9:11, :] * 1.25, 1.0)   # its ridge
             img[FIST_TIP:FIST_TIP + 2, 2:16, :] *= 0.35               # its tip, the little finger below it
             img[:, 0:2, :] *= 0.4
             img = np.flipud(img)
