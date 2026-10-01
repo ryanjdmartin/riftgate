@@ -118,8 +118,9 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 ## Pages (standing, after every content change)
 
 - [x] Joining the accounts (29 September): done. Nameplate, codex and phone sketches are shared to the work email as Editor and open there; A merged B's 42 component rows into its nameplate (an invited editor from another organisation cannot use a page's database from Claude Code, so B exported and A imported); the bible's and viewer's invites do not arrive, Ryan retries later, B keeps its own bible copy meanwhile. B's nameplate copy is deleted (29 September, night); B keeps only its bible copy and the content editor
-- The content editor, when it exists again: republish it with its `files` map after every content change, or its baselines go stale (source `tools/content_editor.html`)
-- [ ] When Ryan wants to edit content from his phone again: publish the content editor from account A (`tools/content_editor.html` with its `files` map carrying `content/*.json`) and share it to the work email as Editor; the old B page is gone, its edits database was empty
+- The content editor (https://claude.ai/artifact/S5diME2tZa77P7JcaLTqzh): republish it with its `files` map after every content change, or its baselines go stale (source `tools/content_editor.html`)
+- [x] The content editor published again from account A (1 October, evening; its deletion was a mistake) with `content/*.json` at e87a8b8 as baselines, `edits` empty
+- [ ] Ryan shares the content editor to the work email as Editor from its Share menu
 - Rebake the nameplate page's baked-in current names (`CURRENT` in its script) when a chassis or component is added or renamed
 - Republish the bible from the committed file (each account to its own URL, listed in status)
 - Re-seed the Melody Desk's `parts` after a track's voices change: `desk_parts.py`, then a batch `set` of the six `parts/<track>` documents (pinned to their versions), or a loaded part is the track as it was

@@ -36,13 +36,7 @@ in place and its own copies retire. Account A merged B's 42 component rows into 
 29 September (90 rows now; A's Drill and Gelada wording kept as newer) and deleted the export.
 **Account B keeps two pages** (Ryan's correction, 29 September, late): its bible copy (above;
 republished from the committed file after any bible change a B session makes) and a Model Viewer
-of its own (a B session records its link here). **The content editor page no longer exists** in
-either account: B's copy (HnE3gvsxNHXyjRhRyEiDqT) is gone, its `edits` database was empty when B
-last read it and its baselines matched the shipped content, so nothing was lost. Its page source is
-`tools/content_editor.html` (the README says how it is published, with a `files` map carrying
-`content/*.json`); when Ryan wants to edit from his phone again, publish it from account A and
-share it to the work email as Editor, so an A session can pull the edits (a B session cannot use
-an A page's database from Claude Code, though Ryan can from the page). Every other B page was
+of its own (a B session records its link here). **The content editor is back** (1 October, evening, on Ryan's word: its deletion was a mistake): published from account A at https://claude.ai/artifact/S5diME2tZa77P7JcaLTqzh from `tools/content_editor.html` with its `files` map carrying `content/*.json` at commit e87a8b8 as the baselines, capabilities `db` and `user`, its `edits` collection empty. Ryan shares it to the work email as Editor from the page's Share menu (a session cannot). B's old copy (HnE3gvsxNHXyjRhRyEiDqT) is gone; its `edits` database was empty and its baselines matched the shipped content, so nothing was lost. Republish it with the same `files` map after every content change, or its baselines go stale. Every other B page was
 deleted 29 September, night, on Ryan's word: the phone sketches, both renders pages, the codex, the
 Baboon review and, once A had merged its rows, the nameplate copy. **Rules learned today:** a page's link goes into this file in the same commit as
 the publish, so a parallel session sees it before publishing a twin; `Artifact` with `action:
@@ -133,8 +127,8 @@ Databank never fire in the runner's single-type, single-machine cells. Numbers
 are in tens and are placeholders; every stat is read through `sim/effects.gd`. An enemy
 unit is a **pack** everywhere. Ryan writes `content/*.json` in his own voice (he writes
 die totals in his head; the data keeps free slots), until 29 September from his phone through
-the content editor page, which no longer exists (source `tools/content_editor.html`; the pages
-block says how to bring it back). When it exists: pull collection `edits` with ArtifactData,
+the content editor page (https://claude.ai/artifact/S5diME2tZa77P7JcaLTqzh, republished 1 October;
+source `tools/content_editor.html`). After he edits: pull collection `edits` with ArtifactData,
 apply by hand (the files are hand-formatted), test, commit, republish the page with its `files`
 map, clear the documents. The memory note has the
 quirks. Tests never hardcode an entry's passive name.
@@ -275,7 +269,7 @@ component's numbers, keywords (hover for the vocabulary rule), maker and own pas
 planned entries marked. Republished 29 September, night, with the classes and the pins. Run `python3 tools/build_codex.py . <out.html>` and publish the
 result; regenerate after any content change. Account B's copy is
 account A's at https://claude.ai/artifact/FqiH3b8ZZjxJaCJmWK71vj. It is generated and read-only
-on purpose: the content editor is Ryan's writing surface when it exists, and two pages that both
+on purpose: the content editor is Ryan's writing surface, and two pages that both
 write content would fight.
 
 **What the game does today.** A battle: the map shows every pack's intent and the exact
