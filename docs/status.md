@@ -3,47 +3,42 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (account A, the home
-for every page; the pages block below has the rest; v0.14 since the audit of 1 October).
-Republish it from the committed file after a bible change, passing the URL from any
-conversation that did not publish it.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.14 since the audit
+of 1 October); republish it from the committed file after every bible change, passing that URL.
 
-**The pages, as of 1 October, evening.** An artifact is republished only by the account that made
-it, or by an account invited as Editor from its Share menu; the personal account (A) can invite
-outward, the organisation account (B) cannot. **Account A owns four pages and nothing else:**
-the Melody Desk (https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV: a piano roll of up to
-sixteen bars, source `tools/soundforge/melody_desk.html`; the shipped tracks' parts stack as
-layers from store collection `parts`, seeded by `tools/soundforge/desk_parts.py`, re-seed
-after a track's parts change; Send writes to collection `melodies` with every note, each
-layer's source and Ryan's memo; a session pulls a `new` document, listens, applies it in
-the forge and marks it `applied` with a `reply` the page shows. Ryan's intent: the session
-interprets what he sends; it is not drop-in), the bible (above), **the hangar page**
-(https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; 1 October, evening, Ryan: the pages
-overlapped, merge what makes sense and clean up; four tabs: the codex, the content editor, the
-names list and the renders with earlier passes folded under each chassis and a Classes
-section; the nameplate's link kept for its `candidates` rows and its sharing; source
-`tools/hangar.html`, published with the `files` map `tools/hangar_data.py` prints:
-`content/*.json`, the shipped content every tab reads and the editor diffs against,
-`hangar/pins.json`, each model's mounts read from the built `.glb`, and `hangar/renders.json`
-with every render under `docs/hangar/renders/`; capabilities `db` and `user`, collections
-`edits` and `candidates`; republish after every content, model or render change, or its tabs
-go stale; the separate codex, Model Viewer and content editor pages are deleted and
-`tools/build_codex.py` retired) and the listening page (https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9; the effects' second pass from
-`tools/soundforge/fx_sketches.py`, re-cut 1 October, and nothing else;
-the music rounds re-render from `phone_sketches.py` if ever wanted again). The engagement
-sandbox that drew the zone options is https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg.
-**Sharing:** the hangar page (as the nameplate it grew from) and the listening page are shared
-to the work email as Editor and open there, so B republishes them in place; a B session cannot
-use an A page's database from Claude Code, though Ryan can from the page. **Account B keeps
-two pages:** its bible copy (republished from the committed file after any bible change a B
-session makes) and a Model Viewer of its own (a B session records its link here). Ryan edits
-content from his phone on the hangar page's Content tab; after he does, pull collection
-`edits` with ArtifactData, apply by hand (the files are hand-formatted), test, commit,
-republish the page with its map, clear the documents.
-**Rules learned:** a page's link goes into this file in the same commit as the publish, so a
-parallel session sees it before publishing a twin; `Artifact` with `action: "list"` says what
-the account you are in owns, and a read of another account's page comes back "not found"; a
-page shared as Editor across accounts republishes, but its database stays with the owner.
+**The pages, as of 1 October, night: four, shared to both accounts.** Every page lives in the
+personal account (A) and is shared to the work email (B) as Editor, so a session in either
+account republishes it in place by its URL (a read first, then publish with `url`), and no
+account keeps a copy of its own: B's old bible copy and Model Viewer retire. The four:
+
+- **The bible** (above): `docs/design-bible.html`, published whole after every change.
+- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH): four tabs, the
+  codex, the content editor, the names list and the renders (earlier passes folded under each
+  chassis, a Classes section). Source `tools/hangar.html`, published with the `files` map
+  `tools/hangar_data.py` prints (`content/*.json`, `hangar/pins.json`, `hangar/renders.json`
+  and every render under `docs/hangar/renders/`); republish after every content, model or
+  render change, or its tabs go stale. Capabilities `db` and `user`; collections `edits` (the
+  editor) and `candidates` (the names). Ryan edits content from his phone on its Content tab;
+  after he does, pull `edits` with ArtifactData, apply by hand (the files are hand-formatted),
+  test, commit, republish, clear the documents.
+- **The Melody Desk** (https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV): a piano roll of up
+  to sixteen bars, source `tools/soundforge/melody_desk.html`. The shipped tracks' parts stack
+  as layers from collection `parts` (seeded by `tools/soundforge/desk_parts.py`; re-seed after
+  a track's parts change). Send writes to collection `melodies` with every note, each layer's
+  source and Ryan's memo; a session pulls a `new` document, listens, applies it in the forge
+  and marks it `applied` with a `reply` the page shows. The session interprets what he sends;
+  it is not drop-in.
+- **The listening page** (https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9): the effects'
+  second pass from `tools/soundforge/fx_sketches.py`, re-cut 1 October, and nothing else; the
+  music rounds re-render from `phone_sketches.py` if ever wanted again.
+
+The engagement sandbox that drew the zone options is
+https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg. **Rules learned:** a page's link goes into
+this file in the same commit as the publish, so a parallel session sees it before publishing a
+twin; `Artifact` with `action: "list"` shows only what the account you are in owns, so a shared
+page is reached by its URL, never by listing; a page's database stays with the owning account,
+so pulling `edits` or `melodies` from Claude Code works from an A session (Ryan can use every
+page's database from the page itself in either account).
 
 **Cold start, including from another account.** Nothing needed to work here lives outside
 the repo. Read this file, then `docs/todo.md` (the task list), then `CLAUDE.md` (the rules,
