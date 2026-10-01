@@ -25,6 +25,7 @@ static var _loaded := false
 const DISPLAY_DEFAULTS := {
 	"brightness": 1.0, "glitch": true, "pace": 1.0, "enemy_pace": 1.0, "scan": true,
 	"music": 0.8, "effects": 1.0,
+	"fine_map": true,   # the map's scene and compositor at the glass's density rather than the design's (Ryan, 29 September: 60 fps locked on the Pixel with it, so it is the default)
 }
 const DISPLAY_RANGES := {
 	"brightness": Vector2(0.5, 1.5), "pace": Vector2(0.5, 2.0), "enemy_pace": Vector2(0.5, 3.75),
@@ -44,6 +45,11 @@ static func apply() -> void:
 				hud = h
 			for key in DISPLAY_DEFAULTS.keys():
 				display[key] = cf.get_value("display", key, DISPLAY_DEFAULTS[key])
+	# RIFTGATE_HUD=<green|amber|blue> forces the colour for a run without touching the saved
+	# choice: the screenshot tool, to judge a mark against every HUD option.
+	var forced := OS.get_environment("RIFTGATE_HUD")
+	if HUD_OPTIONS.has(forced):
+		hud = forced
 	Palette.HUD = HUD_OPTIONS.get(hud, HUD_OPTIONS[DEFAULT_HUD])
 
 

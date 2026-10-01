@@ -16,6 +16,7 @@ tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate <foe> --n 4   #
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut <png> <foe>        # cut one into art/foes, then --import
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build <chassis id>...   # ally units, and gate and wall, by code (tools/lowforge/models_low.py), then --import
 tools/spriter/.venv/bin/python tools/lowforge/forge.py export <chassis id>     # a hand-edited tools/lowforge/models/<id>.blend back to art/models, then --import
+tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes                # the five silhouette classes in every maker's metal (art/models/shapes), then --import
 godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- <chassis> <maker> out.png front 480 480   # one unit large (needs a window)
 RIFTGATE_SHOT_H=1616 RIFTGATE_SAFE=80,48 RIFTGATE_SHOT_SCALE=1.5 godot --path . --resolution 360x640 -s tools/screenshot.gd -- <scene> phone.png   # the phone's layout, safe bands and density on the Mac (add --rendering-method gl_compatibility for its renderer)
 tools/android.sh                                   # debug APK to the phone over USB (`log` tails it); a crash: ~/Library/Android/sdk/platform-tools/adb logcat -d -b crash
@@ -80,6 +81,13 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   given, and retire the bible lines it supersedes in the same pass rather than leaving two
   truths in the file. On resume the last exchanges are the truth: never re-run a pipeline or
   restore a look the chat has already retired.
+- Ryan is colourblind (said 29 September; the type not stated). His colour words are
+  suggestions. Never separate two marks by hue alone: give them structure too (an edge,
+  dashes, motion, a glyph, a weight). Check a new colour by simulation (the Machado
+  protan, deutan and tritan matrices in a few lines of numpy) against every HUD option
+  and the enemy red, and pick by the worst case; report lightness and simulated distance,
+  not how it looks. Red against the green HUD and violet against the blue HUD are the
+  pairs that fold first.
 - A phone read arrives as a screenshot. Work it this way: crop and zoom it with nearest
   sampling to see the pixels, reproduce it on the Mac at the phone's layout and density
   (`RIFTGATE_SHOT_H`, `RIFTGATE_SAFE`, `RIFTGATE_SHOT_SCALE`, and

@@ -85,6 +85,8 @@ const SPIN_SPEED := 0.7           # radians per second
 # its placeholder under it. Both come through the glTF as plain Node3Ds by name.
 var joints: Dictionary = {}       # "shoulder_l" -> Node3D
 var hardpoints: Dictionary = {}   # 1 -> Node3D
+var plan: Array = []              # what the pins wear instead of their stock (mount_plan rows), applied in _setup
+var model_id: String = ""         # the glTF drawn: the chassis, or the fallback when it has no model
 var _rest: Dictionary = {}        # joint name -> rest rotation (Vector3)
 var _idle: Dictionary = {}        # joint name -> idle rotation offset, added on top of rest and strikes
 var _strike: Dictionary = {}      # joint name -> strike rotation offset (tweened)
@@ -183,6 +185,15 @@ static func parse_tag(node_name: String) -> Array:
 	return []
 
 
+## The light outline's thickness (the stencil outline; thin was Ryan's call on 22 September).
+## RIFTGATE_OUTLINE=<n> overrides it, to compare thicknesses by eye.
+const OUTLINE := 2.6   # Ryan, 29 September: trying it thick in game (1.0 was the 22 September thin)
+
+static func outline_thickness() -> float:
+	var env := OS.get_environment("RIFTGATE_OUTLINE")
+	return float(env) if not env.is_empty() else OUTLINE
+
+
 ## Which look the screens use: "clean" by default, RIFTGATE_MECH3D=pixel for the pixel look,
 ## RIFTGATE_MECH3D=off for the 2D sprites.
 static func look_setting() -> String:
@@ -194,21 +205,135 @@ static func look_setting() -> String:
 
 ## Build a view of a chassis in one of the two looks. Falls back to the given chassis when
 ## the wanted one has no model, so a screen can show one model in every slot.
-static func make(chassis_id: String, maker: String, look: String, fallback: String = "badger", yaw_deg: float = YAW_REAR, frame: Vector2i = Vector2i.ZERO, spinning: bool = false, paint_arg: Dictionary = {}) -> MechView3D:
+static func make(chassis_id: String, maker: String, look: String, fallback: String = "badger", yaw_deg: float = YAW_REAR, frame: Vector2i = Vector2i.ZERO, spinning: bool = false, paint_arg: Dictionary = {}, plan_arg: Array = []) -> MechView3D:
 	var v := MechView3D.new()
 	v.mode = look
 	v.yaw = yaw_deg
 	v.frame_override = frame
 	v.spin = spinning
 	v.paint = paint_arg
-	v._setup(model_for(chassis_id, fallback), maker)
+	var id := model_for(chassis_id, fallback)
+	v.model_id = id
+	v.plan = plan_arg if id == chassis_id else []   # a borrowed model never wears another machine's kit
+	v._setup(id, maker)
 	return v
 
 
+## The silhouette classes (decided 29 September; ContentDB.SHAPES is the list): a fitted
+## component wears its class at the pin, in its own maker's metal, from
+## art/models/shapes/<shape>_<maker>.glb.
+static func shape_model(shape: String, maker: String) -> String:
+	return "shapes/%s_%s" % [shape, maker]
+
+
+## What a machine's mounts must change to show its fitted die instead of the chassis's
+## stock loadout (the rule, 30 September): the model's pins are gun mounts, hp_1 onward,
+## and the die's shaped components (a weapon, or equipment that looks like one) take them
+## in the die's order; a component with no shape (armour, a vent) takes a die entry and no
+## mount. One row [k, component, shape, maker] per mount whose component is not the one
+## the stock loadout put there, with an empty component for a mount left bare (the stock
+## part hides and nothing replaces it). Empty when the die is the stock kit, which every
+## machine's is today.
+static func mount_plan(die: Die, stock: Array, db: ContentDB) -> Array:
+	var out: Array = []
+	if die == null:
+		return out
+	var fitted: Array = []
+	for f in die.faces:
+		if f.fixed or f.component.is_empty():
+			continue
+		if _shaped(f.component, db):
+			fitted.append(f.component)
+	var stock_mounts: Array = []
+	for cid in stock:
+		if _shaped(str(cid), db):
+			stock_mounts.append(str(cid))
+	for k in range(maxi(fitted.size(), stock_mounts.size())):
+		var want := str(fitted[k]) if k < fitted.size() else ""
+		var have := str(stock_mounts[k]) if k < stock_mounts.size() else ""
+		if want == have:
+			continue
+		if want.is_empty():
+			out.append([k + 1, "", "", ""])
+		else:
+			var c: Dictionary = db.components.get(want, {})
+			out.append([k + 1, want, str(c.get("shape", "")), str(c.get("maker", ""))])
+	return out
+
+
+## Whether a component takes a mount: it has a shape other than none.
+static func _shaped(cid: String, db: ContentDB) -> bool:
+	var shape := str(db.components.get(cid, {}).get("shape", ContentDB.SHAPE_NONE))
+	return not shape.is_empty() and shape != ContentDB.SHAPE_NONE
+
+
+## The plan for a unit against its chassis's stock loadout in content.
+static func plan_for(u: Unit, db: ContentDB) -> Array:
+	if u == null or db == null:
+		return []
+	var stock: Array = db.chassis.get(u.chassis_id, {}).get("loadout", [])
+	return mount_plan(u.die, stock, db)
+
+
+## A plan from a debug spec, "1:lance,4:heat_sink" (RIFTGATE_FIT in tools/hero_shot.gd):
+## the pin's number and the component to hang there, or "1:" to empty a socket.
+static func plan_from_spec(spec: String, db: ContentDB) -> Array:
+	var out: Array = []
+	for item in spec.split(",", false):
+		var parts := item.strip_edges().split(":")
+		if parts.size() != 2 or not parts[0].is_valid_int():
+			continue
+		var cid := parts[1].strip_edges()
+		if cid.is_empty():
+			out.append([int(parts[0]), "", "", ""])
+		elif db.components.has(cid) and _shaped(cid, db):
+			var c: Dictionary = db.components[cid]
+			out.append([int(parts[0]), cid, str(c.get("shape", "")), str(c.get("maker", ""))])
+	return out
+
+
+## Wear the plan: each row hangs its class shape on its pin, or bares the socket.
+func _apply_plan() -> void:
+	for row in plan:
+		if row.size() < 4:
+			continue
+		var n := int(row[0])
+		if str(row[1]).is_empty():
+			hide_stock(n)
+		elif not mount_shape(n, str(row[2]), str(row[3])):
+			push_warning("no shape model for %s (%s) on hp_%d of %s" % [row[1], row[2], n, model_id])
+
+
+## Hang a silhouette class on a pin in a maker's metal; false when the pin or the shape's
+## model is missing.
+func mount_shape(n: int, shape: String, maker: String) -> bool:
+	var id := shape_model(shape, maker)
+	if not has_model(id):
+		return false
+	return mount(n, load("res://art/models/%s.glb" % id), maker)
+
+
+## Bare a socket: the stock part hides and nothing replaces it (an empty hardpoint).
+func hide_stock(n: int) -> void:
+	if not hardpoints.has(n):
+		return
+	for c in (hardpoints[n] as Node3D).get_children():
+		if c is Node3D:
+			c.visible = false
+
+
+var density := 1.0              # device pixels a design pixel: the render is this much larger than `frame_px` (the FINE MAP setting)
+var frame_px := Vector2i.ZERO   # the design-size frame the render stands for; a consumer draws the texture at this size
+
 func _setup(chassis_id: String, maker: String) -> void:
 	var frame := frame_override if frame_override != Vector2i.ZERO else PIXEL_FRAME * CLEAN_SCALE
-	# The outer viewport holds the outlined 2D result; the inner one renders the 3D.
-	size = frame
+	frame_px = frame
+	density = Hud.density(self)
+	var px := Vector2i((Vector2(frame) * density).round())
+	# The outer viewport holds the outlined 2D result; the inner one renders the 3D, both
+	# at the glass's density when FINE MAP is on (Ryan, 29 September: the skirmish's
+	# machines get the map's sharpness too).
+	size = px
 	transparent_bg = true
 	render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	canvas_item_default_texture_filter = SubViewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
@@ -216,18 +341,17 @@ func _setup(chassis_id: String, maker: String) -> void:
 	var nested := OS.get_environment("RIFTGATE_MECH3D_FLAT") != "1"   # debug: no outline pass, 3D straight into this viewport
 	if nested:
 		_inner = SubViewport.new()
-		_inner.size = frame
+		_inner.size = px
 		_inner.own_world_3d = true     # otherwise every mech view shares one world and the models overlap
 		_inner.transparent_bg = true
 		_inner.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 		_inner.msaa_3d = Hud.msaa_3d()   # none on a phone: the Compatibility renderer leaks with it (Hud.msaa_3d)
-		_inner.screen_space_aa = Hud.screen_space_aa()   # FXAA where MSAA is off
+		_inner.screen_space_aa = SubViewport.SCREEN_SPACE_AA_DISABLED   # FXAA is refused by the Compatibility renderer (the phone's), so no screen-space AA anywhere
 		add_child(_inner)
 	else:
 		_inner = self
 		own_world_3d = true
 		msaa_3d = Hud.msaa_3d()
-		screen_space_aa = Hud.screen_space_aa()
 
 	var scene: PackedScene = load("res://art/models/%s.glb" % chassis_id)
 	_model = scene.instantiate()
@@ -249,6 +373,7 @@ func _setup(chassis_id: String, maker: String) -> void:
 	_pivot.rotation.y = deg_to_rad(yaw)
 	_apply_materials(_model, maker)
 	_collect_tags(_model)
+	_apply_plan()   # before the traces attach and the camera frames, so a mounted shape gets both
 	if not token:
 		# The skirmish's machines carry the display's trace too (Ryan, 21 September); the
 		# screen's scan bar lights it through set_sweep_screen.
@@ -305,11 +430,11 @@ func _setup(chassis_id: String, maker: String) -> void:
 	if nested:
 		var rect := TextureRect.new()
 		rect.texture = _inner.get_texture()
-		rect.size = frame
+		rect.size = px
 		rect.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		var mat := ShaderMaterial.new()
 		mat.shader = load("res://game/ui/outline.gdshader")
-		mat.set_shader_parameter("width", float(CLEAN_SCALE))
+		mat.set_shader_parameter("width", float(CLEAN_SCALE) * density)
 		rect.material = mat
 		add_child(rect)
 	texture = get_texture()
@@ -387,8 +512,9 @@ func _joint_of(node: Node) -> String:
 	return ""
 
 
-## Hang a component's model on a socket: the placeholder under `hp_<n>` is hidden and the
-## scene is added under the pin, so it points where the pin points. Returns false when the
+## Hang a component's model on a socket: the stock part under `hp_<n>` is hidden and the
+## scene is added under the pin, so it points where the pin points and wears the pin's
+## scale (lowforge sets both; a Sparrowhawk's pins are half size). Returns false when the
 ## model has no such socket.
 func mount(n: int, scene: PackedScene, maker: String) -> bool:
 	if not hardpoints.has(n):
@@ -466,7 +592,7 @@ static func toon(node: Node, maker: String, look: String, paint_arg: Dictionary 
 				tm.transparency = BaseMaterial3D.TRANSPARENCY_DISABLED
 				tm.depth_draw_mode = BaseMaterial3D.DEPTH_DRAW_ALWAYS
 				if TraceLines.mode() in ["assets", "pulse"]:
-					TraceLines.silhouette(tm, Palette.HUD, 1.0)   # the light outline around the whole machine, thin (Ryan, 22 September)
+					TraceLines.silhouette(tm, Palette.HUD, outline_thickness())   # the light outline around the whole machine
 				if role == "amber":
 					# Lamps, engines and light strips glow: the reconstruction's own light.
 					tm.emission_enabled = true

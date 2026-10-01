@@ -78,20 +78,19 @@ var _materials: Dictionary = {} # tile name -> ShaderMaterial
 var _time: float = 0.0
 
 
-func setup(f: Battlefield, view_size: Vector2, origin: Vector2, hex_size: float) -> void:
+func setup(f: Battlefield, view_size: Vector2, origin: Vector2, hex_size: float, density: float = 1.0) -> void:
 	field = f
 	hex_px = hex_size
 	_origin = origin
-	_view = view_size
+	_view = view_size   # the screen area in design pixels: the camera's frame, whatever the density
 	_ppu = hex_px / HEX_WORLD
 	_sin = sin(deg_to_rad(PITCH))
 	_cos = cos(deg_to_rad(PITCH))
-	size = Vector2i(int(view_size.x), int(view_size.y))
+	size = Vector2i((view_size * density).round())   # the pixels rendered: the design's, or the glass's (the FINE MAP setting)
 	own_world_3d = true
 	transparent_bg = true
 	render_target_update_mode = SubViewport.UPDATE_ALWAYS   # alive: sway and ripple every frame
 	msaa_3d = Hud.msaa_3d()   # none on a phone: the Compatibility renderer leaks with it (Hud.msaa_3d)
-	screen_space_aa = Hud.screen_space_aa()   # FXAA where MSAA is off
 	canvas_item_default_texture_filter = SubViewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
 	_build_light()
 	_build_ground()
@@ -138,7 +137,6 @@ func _build_units_layer() -> void:
 	_units_vp.world_3d = world_3d
 	_units_vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	_units_vp.msaa_3d = msaa_3d
-	_units_vp.screen_space_aa = screen_space_aa
 	add_child(_units_vp)
 	_units_cam = Camera3D.new()
 	_units_cam.projection = Camera3D.PROJECTION_ORTHOGONAL
@@ -1157,7 +1155,7 @@ func sync() -> void:
 			# Whether the ground here is still the reconstruction's: the same threshold the
 			# compositor paints at, so the flyer clears the geometry wherever it can be seen
 			# and flies level only where the painting has taken it.
-			var solid := 1.0 - smoothstep(0.42, 0.58, Bleed.at(under_px, grad, src))
+			var solid := Bleed.solid(under_px, grad, src)
 			var clear := maxf(0.0, float(_top.get(under, 0.0)) - _height_of(under) + 6.0 - HOVER)
 			var want := (_height_of(under) + clear) * solid
 			var prev: float = _fly_y.get(u.id, want)
@@ -1260,7 +1258,8 @@ func _make_unit(u: Unit) -> Node3D:
 			sm.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 			sm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			sm.albedo_color = Color(0.0, 0.0, 0.0, 0.45)
-			sm.no_depth_test = true   # a soft disc on whatever is below, never lost inside a prop
+			# Depth-tested (Ryan, 29 September: drawn over everything it lay over the aircraft
+			# itself); a prop on the tile may cut into it, which a shadow can bear.
 			sm.render_priority = 2
 			sh.material_override = sm
 			sh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF

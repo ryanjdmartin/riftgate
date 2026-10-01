@@ -688,3 +688,30 @@ func test_the_foe_actions_run_and_the_validator_knows_their_shape() -> void:
 	var entry := db.codex_for_foe(db.make_foe("bone_colossus"))
 	assert_true(entry["actions"].contains("KNIT // DEFEND"), "the codex lists the defend")
 	assert_true(entry["actions"].contains("Regrows 20 hull"), "with its number filled in")
+
+
+func test_every_component_names_a_silhouette_class() -> void:
+	var db := ContentDB.new()   # its own copy: the checks below break an entry
+	db.load_dir(ContentDB.DIR)
+	for id in db.components.keys():
+		var c0: Dictionary = db.components[id]
+		var shape := str(c0.get("shape", ""))
+		assert_true(ContentDB.SHAPES.has(shape), "%s wears a class the model can build" % id)
+		# The rule (30 September): a weapon always has a shape; armour and vents never do.
+		if c0["face"].get("kind") == "attack":
+			assert_true(shape != ContentDB.SHAPE_NONE, "%s is a weapon and takes a mount" % id)
+		if c0["face"].get("kind") == "vent":
+			assert_eq(shape, ContentDB.SHAPE_NONE, "%s is a vent and shows nowhere" % id)
+	var c: Dictionary = db.components["lance"]
+	c["shape"] = "teapot"
+	var hit := false
+	for e in db.validate():
+		if e.begins_with("component lance") and e.contains("silhouette class"):
+			hit = true
+	assert_true(hit, "an unknown class is refused")
+	c.erase("shape")
+	hit = false
+	for e in db.validate():
+		if e.begins_with("component lance") and e.contains("missing shape"):
+			hit = true
+	assert_true(hit, "and a component without one")

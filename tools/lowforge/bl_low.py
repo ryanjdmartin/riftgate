@@ -124,11 +124,17 @@ class Tiles:
             img[14:50, 10:54, :] = np.array([1.0, 0.92, 0.62], np.float32)
             img[18:46, 14:50, :] = np.array([1.0, 0.98, 0.85], np.float32)
         elif kind == "glass":
+            # Cockpit glass: a cool blue gradient with a diagonal glint, or red for the
+            # Arsenal (Ryan, 30 September: red glass is the Arsenal's staple).
             img = np.zeros((TILE, TILE, 3), np.float32)
+            red = self.maker == "arsenal"
             for y in range(TILE):
                 for x in range(TILE):
                     t = (x + y) / (2.0 * TILE)
-                    img[y, x, :] = np.array([0.10 + 0.25 * t, 0.30 + 0.35 * t, 0.42 + 0.45 * t], np.float32)
+                    if red:
+                        img[y, x, :] = np.array([0.45 + 0.50 * t, 0.04 + 0.10 * t, 0.06 + 0.10 * t], np.float32)
+                    else:
+                        img[y, x, :] = np.array([0.10 + 0.25 * t, 0.30 + 0.35 * t, 0.42 + 0.45 * t], np.float32)
             img[:, :, :] *= 0.85
             for d in range(-4, 4):
                 for y in range(TILE):
@@ -340,12 +346,81 @@ class Build:
             m = Matrix.Translation((cx, cy, cz)) @ Matrix.Rotation(-math.pi / 2, 4, "X")
         return self.loft(sections, material, label, m)
 
-    def pin(self, name, at, forward=(0.0, 1.0, 0.0)):
+    def pin(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, parts=()):
+        """A socket: an Empty named `hp_<n>` at `at`, its own +y along `forward` (where the
+        weapon points) and its scale the size a mounted component wears there, so the
+        engine can hang a component's shape under it with no arithmetic. `parts` are the
+        stock component's objects: parented under the pin, keeping their world transform,
+        so MechView3D.mount() hides them when another component is fitted."""
         e = bpy.data.objects.new(name, None)
         e.empty_display_size = 2.0
-        e.location = at
+        m = Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4() @ Matrix.Scale(scale, 4)
+        e.matrix_world = m
         bpy.context.scene.collection.objects.link(e)
+        inv = m.inverted()
+        for ob in parts:
+            ob.parent = e
+            ob.matrix_parent_inverse = inv
         return e
+
+    def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0):
+        """`with b.socket("hp_1", at, forward): ...` builds the stock component inside the
+        block and pins it: every object made in the block hangs under the pin."""
+        return _Socket(self, name, at, forward, scale)
+
+    def pad(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, size=(8.0, 3.0), material="steel.panel"):
+        """A bare gun mount: a hardpoint whose stock loadout puts nothing there (the rule,
+        30 September: armour and vents show nowhere, so a machine with more hardpoints than
+        stock guns carries empty mounts). A low block at the socket so a fitted gun sits on
+        something, and the pin with no stock part under it. `size` is (across, thick) in
+        world units, the block lying under the pin along its forward."""
+        w, t = size
+        m = Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4()
+        start = len(self.objects)
+        self.box(-w / 2.0, w / 2.0, -w / 2.0, w / 2.0, -t, 0.0, material, "pad")
+        for ob in self.objects[start:]:
+            ob.matrix_world = m
+        return self.pin(name, at, forward, scale)
+
+    def stock(self, name, at, shape, forward=(0.0, 1.0, 0.0), scale=1.0):
+        """A pin whose stock component is one of the silhouette classes (models_low.SHAPES),
+        built at the origin along +y and moved onto the pin's frame at its scale: the way a
+        swapped component will sit there, so the machine is judged wearing one."""
+        import models_low
+        start = len(self.objects)
+        models_low.SHAPES[shape](self, 1.0)
+        m = Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4() @ Matrix.Scale(scale, 4)
+        parts = self.objects[start:]
+        for ob in parts:
+            ob.matrix_world = m
+        return self.pin(name, at, forward, scale, parts)
+
+
+class _Socket:
+    def __init__(self, b, name, at, forward, scale):
+        self.b, self.name, self.at, self.forward, self.scale = b, name, at, forward, scale
+
+    def __enter__(self):
+        self.start = len(self.b.objects)
+        return self
+
+    def __exit__(self, *exc):
+        if exc[0] is None:
+            self.b.pin(self.name, self.at, self.forward, self.scale, self.b.objects[self.start:])
+        return False
+
+
+def pin_frame(forward):
+    """The rotation that turns +y onto `forward`, keeping +z as up where it can (a pin
+    pointing straight up or down takes -y or +y as its up, so a rack firing upward wears
+    its top toward the tail)."""
+    f = Vector(forward).normalized()
+    hint = Vector((0.0, 0.0, 1.0))
+    if abs(f.dot(hint)) > 0.999:
+        hint = Vector((0.0, -1.0, 0.0)) if f.z > 0 else Vector((0.0, 1.0, 0.0))
+    z = (hint - f * hint.dot(f)).normalized()
+    x = f.cross(z).normalized()
+    return Matrix(((x.x, f.x, z.x), (x.y, f.y, z.y), (x.z, f.z, z.z)))
 
 
 def boom(b, start, length, pitch_deg, yaw_deg, w0, h0, w1, h1, material, label):
@@ -450,6 +525,19 @@ def main():
     if "terrain" in a:
         bpy.ops.wm.read_factory_settings(use_empty=True)
         terrain_tiles(a["terrain"])
+        return
+    if "shapes" in a:
+        # The silhouette classes (decided 29 September), one file a class a maker, so a
+        # swapped component wears its own maker's metal: art/models/shapes/<shape>_<maker>.glb.
+        import models_low
+        for maker in MAKERS:
+            for shape, fn in models_low.SHAPES.items():
+                bpy.ops.wm.read_factory_settings(use_empty=True)
+                tiles = Tiles(a.get("tiles", os.path.join(HERE, "tiles")), maker)
+                builder = Build("%s_%s" % (shape, maker), tiles)
+                fn(builder, 1.0)
+                _export(os.path.join(a["shapes"], "%s_%s.glb" % (shape, maker)))
+        print(f"lowforge: {len(MAKERS) * len(models_low.SHAPES)} shapes -> {a['shapes']}")
         return
     out = a["out"]
     if "blend" in a and "model" not in a:

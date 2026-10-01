@@ -789,7 +789,39 @@ def overheat():
 # `bass` and the `chime` and `stab` of the second cut stay available.
 
 E2 = 82.41
-NOTE = {"a": 10, "b": 11, "c": 12, "d": 14, "e": 15, "f": 17, "i": 19, "j": 22, "k": 24, "g": -2, "h": -5}
+NOTE = {"a": 10, "b": 11, "c": 12, "d": 14, "e": 15, "f": 17, "i": 19, "j": 22, "k": 24, "g": -2, "h": -5, "l": -1, "m": -3, "n": -4, "o": -7}   # l, m, n, o: notes under the root (Eb, Db, C, A)
+_E_MINOR = [0, 2, 3, 5, 7, 8, 10]
+_SPELL = {v: k for k, v in NOTE.items()}
+
+
+def _harmony(pat, steps, min_hold=1):
+    """A riff pattern's notes moved `steps` degrees along E natural minor, holds kept: a diatonic
+    harmony line under a tune. `min_hold` keeps only notes held that many steps, so a harmony
+    can join on the long notes first. A note off the scale is left as rest."""
+    out = []
+    i = 0
+    while i < len(pat):
+        c = pat[i]
+        if c in ".-":
+            out.append(c)
+            i += 1
+            continue
+        semis = int(c) if c.isdigit() else NOTE[c]
+        j = i + 1
+        while j < len(pat) and pat[j] == "-":
+            j += 1
+        hold = j - i
+        octave, pc = divmod(semis, 12)
+        if pc in _E_MINOR and hold >= min_hold:
+            o2, k = divmod(_E_MINOR.index(pc) + steps, 7)
+            new = _E_MINOR[k] + 12 * (octave + o2)
+            out.append(str(new) if 0 <= new <= 9 else _SPELL[new])
+            out.append("-" * (hold - 1))
+        else:
+            out.append("." * hold)
+        i = j
+    return "".join(out)
+
 
 
 # ---- the kit
@@ -1362,6 +1394,12 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
                 buf = at(buf, pick(sound), when(i) + behind, gain * dg * vel() * (1.0 if not name.startswith("hat") or in_bar % 4 == 0 else 0.7), wrap=True)
             elif c == "o":
                 buf = at(buf, pick(sound), when(i) + behind, gain * dg * vel() * 0.45, wrap=True)
+            elif c.isdigit() and c != "0":
+                # A hit at a written level, tenths of full: "2345678x" is a run growing to full.
+                buf = at(buf, pick(sound), when(i) + behind, gain * dg * vel() * (int(c) / 10.0), wrap=True)
+            elif c in "abcdefgh":
+                # And above full, a tenth a letter: "xabcdefg" is a run from full to 1.7.
+                buf = at(buf, pick(sound), when(i) + behind, gain * dg * vel() * (1.0 + (ord(c) - ord("a") + 1) / 10.0), wrap=True)
     per_bar = _chords_per_bar(form, chords)
     for vi, v in enumerate(voices):
         RNG = np.random.default_rng(zlib.crc32(("voice:%s:%d" % (v["inst"], vi)).encode()))
@@ -1546,7 +1584,7 @@ MUSIC = {
                                     "X": "the seven: the driven bass's riff for 7/8 with both guitars and the crunch synth on it, a guitar chord held on the long beats, the clean bass and the synth lead over them, the drone",
                                     "D": "the breakdown that does not let up: piano arpeggios in sixteenths, the melody on the paired basses, guitar chords held, the choir, half-time with double-kick fills, the ride bell",
                                     "E": "the two basses, both guitars and the synth lead in unison over a blast of double kicks, a china on every beat, a crash every bar, the choir, the drone, the drums up"}},
-    "music_hold_the_line": {"bpm": 100, "form": "AAAAAAAAAAAAAAAAB CCCCCCCC NNNN LLLLLLLL M XXXXXXXX UUUUUUUU FFFFFFFFFFFFFFFF WW SSSSSSSS RRRRRRRR ZZZZZZZZ Y KKKKKKKKKKKKKKKK V Q JJ",
+    "music_hold_the_line": {"bpm": 104, "form": "AAAAAAAAAAAAAAAAB CCCCCCCC NNNN LLLLLLLL M XXXXXXXXXXXX UUUUUUUU FFFFFFFFFFFFFFFF WW SSSSSSSS RRRRRRRR ZZZZZZZZ Y KKKKKKKKKKKKKKKK V Q JJ",
                        "meter": {"X": 14, "K": (16, 1.06), "V": (16, 1.06)},
                        "names": {"A": "riff, sixteen bars: four bare, four with a low bass, four with bass power chords, four more with a low drone under them",
                                  "N": "the riff again, on power chords over the drone",
@@ -1877,8 +1915,10 @@ def ride():
 
 def china():
     # A china: trashy, short, all splash and no bell.
+    # Closed above 8 kHz with less wash since 30 September (the crash's treatment: it broke
+    # up on the speaker).
     n = n_of(0.55)
-    return mix(bp(noise(n), 1500.0, 10000.0) * env_ad(n, 0.001, 0.13, curve=3.0),
+    return mix(bp(noise(n), 1500.0, 8000.0) * env_ad(n, 0.001, 0.13, curve=3.0) * 0.7,
                knock([2100.0, 3300.0, 5200.0], [0.12, 0.09, 0.06], [0.4, 0.3, 0.2], noise_gain=0.0) * 0.3) * 0.45
 
 
@@ -1939,21 +1979,26 @@ def tom_real(f=150.0, pitch=1.0):
     # pitch fall and a lower shell than the first cut, and against the second a shorter
     # skin, a harder stick and front, and a drier, shorter room. Its shadow (the harmonics
     # a speaker can play) sits at 120 to 500 Hz.
-    n = n_of(0.45)
+    # Round eight's "hard two" (Ryan, 30 September: hit it like you mean it, at its own
+    # pitch): the middle tightening, more saturation in the body, a harder stick and front.
+    n = n_of(0.5)
     t = t_of(n)
     fr = f * pitch * (1.0 + 0.18 * np.exp(-t / 0.05))
+    # The tightening undone (Ryan, 30 September: a mistake); the body as it was, hit hard.
     skin = np.sin(2.0 * math.pi * np.cumsum(fr) / SR) * env_ad(n, 0.001, 0.11, curve=2.5)
     sub = np.sin(2.0 * math.pi * f * pitch * 0.5 * t) * env_ad(n, 0.002, 0.09) * 0.5
     shell = harmonics(f * pitch * 1.4, n, [0.5, 0.25, 0.1]) * env_ad(n, 0.001, 0.03) * 0.3
-    stick = lp(bp(noise(n_of(0.01)), 1500.0, 6000.0), 5000.0) * env_ad(n_of(0.01), 0.0002, 0.003) * 1.6
-    front = body(f * pitch * 1.6, f * pitch, 0.04, drive=2.4, click=0.7) * 1.0
+    stick = lp(bp(noise(n_of(0.01)), 1500.0, 6000.0), 5000.0) * env_ad(n_of(0.01), 0.0002, 0.003) * 2.0
+    front = body(f * pitch * 1.6, f * pitch, 0.04, drive=2.6, click=0.8) * 1.5
     shadow = bp(sat(skin + sub, 3.0), 120.0, 500.0) * 0.35
-    return room(mix(sat(skin + sub, 1.6), shell, front, at(np.zeros(1), stick, 0.0), shadow), decay=0.05, mix=0.06, cut=4500.0) * 1.1
+    # The skin saturates alone and the sub stays clean (30 September: the low tom crackled;
+    # a saturated 52 Hz sub is all harmonics on a phone).
+    return room(mix(sat(skin, 2.6) + sub, shell, front, at(np.zeros(1), stick, 0.0), shadow), decay=0.05, mix=0.06, cut=4500.0) * 1.1
 
 
 def splash():
     n = n_of(0.3)
-    return mix(bp(noise(n), 4000.0, 15000.0) * env_ad(n, 0.001, 0.07, curve=2.5),
+    return mix(bp(noise(n), 4000.0, 9000.0) * env_ad(n, 0.001, 0.07, curve=2.5) * 0.7,   # closed above 9 kHz (30 September)
                knock([5200.0, 7300.0, 9800.0], [0.12, 0.09, 0.07], [0.4, 0.3, 0.2], noise_gain=0.0) * 0.3) * 0.4
 
 
@@ -1966,15 +2011,16 @@ def crash_long():
 
 
 def crash_low():
+    # Closed above 8 kHz with less wash since 30 September (the crash's treatment).
     n = n_of(1.3)
-    return mix(bp(noise(n), 1200.0, 10000.0) * env_ad(n, 0.002, 0.32, curve=2.0),
+    return mix(bp(noise(n), 1200.0, 8000.0) * env_ad(n, 0.002, 0.32, curve=2.0) * 0.7,
                knock([1900.0, 2800.0, 4100.0, 5600.0], [0.5, 0.4, 0.3, 0.22], [0.4, 0.3, 0.25, 0.2], noise_gain=0.0) * 0.4) * 0.35
 
 
 def stack():
     # A stack: two cymbals clamped together, trashy and short.
     n = n_of(0.14)
-    return bp(noise(n), 2000.0, 9000.0) * env_ad(n, 0.0005, 0.03, curve=3.0) * (0.6 + 0.4 * np.sign(np.sin(2.0 * math.pi * 210.0 * t_of(n)))) * 0.5
+    return bp(noise(n), 2000.0, 7000.0) * env_ad(n, 0.0005, 0.03, curve=3.0) * (0.6 + 0.4 * np.sign(np.sin(2.0 * math.pi * 210.0 * t_of(n)))) * 0.45   # closed above 7 kHz (30 September)
 
 
 def ride_bell():
@@ -1994,26 +2040,32 @@ STAB_INST["guitar_hold"] = lambda semis, dur: guitar_chord(semis, dur, damp=0.99
 
 
 def _drum_solo(bars):
-    """A drum solo over `bars` bars in the Ba-ta-ta Ba-ta-ta Ba-ta framework (eighths
-    grouped three, three, two): the kick on every Ba, a crash on one and a china or the low
-    crash on the "and" of two, a ride bell on some of the last group's Ba, the ta-tas traded
-    between snare and toms with doubles and flams and the odd splash or stack, a sixteenth
-    fill closing every fourth bar, and never the same bar twice (Ryan: Peart)."""
+    """A drum solo over `bars` bars in the Ba-ta-ta Ba-ta-ta Ba-ta framework (eighths grouped
+    three, three, two): the kick on every Ba, the ta-tas traded between snare and toms with
+    doubles, flams and triplets, the air between filled three times in four, a sixteenth fill
+    closing every fourth bar and a longer one closing the run, and never the same bar twice
+    (Ryan: Peart). Rewritten 30 September with the metal cut back on Ryan's ear: a crash on
+    the one of the first and fifth bars only, a china on the "and" of two in the third and
+    seventh, nothing else on cymbals; the drums carry the explosion (the first cut hit a
+    crash every bar and a china or low crash on the "and" of two of every bar, with a
+    splash or stack in the ta-tas; halving that left holes, so this is a fresh pass)."""
     parts = {k: [] for k in ("kick", "snare", "tom", "tom2", "crash", "crash2", "china", "splash", "stack", "bell")}
     for b in range(bars):
         bar = {k: ["."] * 16 for k in parts}
         for g, (start, length) in enumerate([(0, 6), (6, 6), (12, 4)]):
             bar["kick"][start] = "x"
-            if g == 0:
+            if g == 0 and b % 4 == 0:
                 bar["crash"][start] = "x"
-            elif g == 1:
-                bar["china" if b % 2 == 0 else "crash2"][start] = "x"
-            elif RNG.integers(3) == 0:
-                bar["bell"][start] = "x"
+            elif g == 1 and b % 4 == 2:
+                bar["china"][start] = "x"
+            elif g == 1 and b % 2 == 1:
+                bar["splash"][start] = "x"   # a touch more metal (Ryan, 30 September): a splash on the even bars' "and" of two
             for pos in range(start + 2, start + length, 2):
                 choice = RNG.integers(8)
                 if choice == 0:
-                    bar["snare"][pos] = "x"
+                    bar["tom"][pos] = "x"   # was a snare: too much snare (Ryan, 30 September)
+                    if pos + 1 < 16:
+                        bar["tom2"][pos + 1] = "x"
                 elif choice == 1:
                     bar["tom"][pos] = "x"
                 elif choice == 2:
@@ -2030,19 +2082,32 @@ def _drum_solo(bars):
                     bar["snare"][pos] = "o"
                     bar["tom2"][pos] = "x"
                 elif choice == 6:
-                    bar["splash"][pos] = "x"
-                    bar["snare"][pos] = "x"
-                else:
-                    bar["stack"][pos] = "x"
+                    bar["snare"][pos] = "x"   # a flam: the snare with the tom under it
                     bar["tom"][pos] = "x"
-                if pos + 1 < 16 and bar["tom2"][pos + 1] == "." and bar["snare"][pos + 1] == "." and RNG.integers(3) != 0:
-                    bar[("tom2", "tom", "snare")[RNG.integers(3)]][pos + 1] = "x"   # fills the air (Ryan: crazier)
+                else:
+                    bar["tom2"][pos] = "x"    # the low tom with the kick doubled under it
+                    bar["kick"][pos] = "x"
+                if pos + 1 < 16 and bar["tom2"][pos + 1] == "." and bar["snare"][pos + 1] == "." and RNG.integers(4) != 0:
+                    bar[("tom2", "tom", "tom2")[RNG.integers(3)]][pos + 1] = "x"   # fills the air, on the toms
             if start + 1 < 16 and RNG.integers(2) == 0:
                 bar["snare"][start + 1] = "o"   # a ghost right after the Ba
-        if b % 2 == 1:
+        if b % 4 == 3:
+            # The fill closing every fourth bar: sixteenths down the kit, the kick doubled under.
             for pos in range(12, 16):
                 bar[("snare", "tom", "tom2")[pos % 3]][pos] = "x"
             bar["kick"][14] = "x"
+        if b == bars - 1:
+            # The run's closer (Ryan, 30 September): eight successive snare hits growing in
+            # volume through the last half-bar, from full upward (not from under: his second
+            # note), the kick on its Ba alone under them.
+            for k in ("tom", "tom2", "splash", "china", "crash"):
+                for pos in range(8, 16):
+                    bar[k][pos] = "."
+            for pos, level in zip(range(8, 16), "xabcdefg"):
+                bar["snare"][pos] = level
+            for pos in range(8, 16):
+                if pos != 12:
+                    bar["kick"][pos] = "."
         for k in parts:
             parts[k].append("".join(bar[k]))
     return {k: "".join(v) for k, v in parts.items()}
@@ -2069,21 +2134,45 @@ def music_hold_the_line(palette="hybrid"):
     riff_up = "7--.a-.7-...8-..5--.a-.8-...7-.."  # a fifth above: the power chord
     rise_up = "7--.a-.7-...8-..5--.a-.c-...8-.."
     climax = "0..0..3.0..5..3.0..0..8.7..5..3.3..3..5.3..7..5.0..0..a.8..7..5."   # the new unison riff, four bars
-    keys_roots = list("08g7053g" "087g08g7")       # the keys' bass, one root a bar: E C D B E A G D, E C B D E C D B
-    keys_fifths = list("h325h352")                 # the fifth under each second-half root ("5" is the octave-down one under the low D)
+    # The keys' tune, its harmony line and the sub bass's line are Ryan's, scored on the Melody
+    # Desk against the latest mix (30 September, sixth melody, 1ksj4ee30em8xgwxygpx: the tune as the
+    # fifth had it, a whole harmony voice cut, what is left of the two fitting one lane, and the
+    # sub's fifteenth bar a B held).
+    keys_tune = ("7--.8-.7-..5.3-.0-----..3---5---8--.a-.8-..7.5-.3---....5-.3-.0-"
+                 "7--.a-.c------.a--.8-.7-.5-----.3--.5-.7-..8.a-.2-----------...."
+                 "7--.8-.7-..5.3-.0------.3---5---8--.a-.8-..7.5-.3------.5-.3-.0-"
+                 "7---8---a---c---a---8---7---5---7---8---a---7---c---------------")
+    keys_harm = ("................................................................"
+                 "................................................................"
+                 "c--------------.3------.c---d---c--.d-.c-..a.c-.3------.2------."
+                 "a---------------e---------------c---------------i---------------")
+    keys_sub = ("0---------------8---------------g---------------7---------------"
+                 "0---------------5---------------3---------------g---------------"
+                 "0---------------8---------------5---------------g---------------"
+                 "0---------------8---------------h---------------0---------------")
+    keys_touch = ("................................................................"
+                 "................................................................"
+                 "................................................................"
+                 "................................................................")
     if real:
-        kit = {"kick": (variants(kick_real), 1.0), "snare": (variants(snare_real), 1.0), "hat": (variants(lambda p: hat_real(False, p)), 0.45),
-               "open": ([hat_real(True)], 0.4), "crash": ([crash_real()], 0.9), "crash2": ([crash_low()], 0.9), "china": (china(), 0.8),
-               "crash_long": ([crash_long()], 0.9, 0.035),
-               "splash": ([splash()], 0.8), "stack": ([stack()], 0.7), "bell": ([ride_bell()], 0.6), "ride": ([ride_real()], 0.35),
-               "tom": (variants(lambda p: tom_real(150.0, p)), 0.9), "tom2": (variants(lambda p: tom_real(105.0, p)), 0.9), "clank": (clank(), 0.3),
-               "knock": (knock_perc(), 0.5)}
+        # Ryan, 30 September, from the phone: kick up, snare down, toms up, crashes down (and
+        # the crash itself softer, since it broke up on the speaker).
+        # And again the same day: crash and snare down a little more, the toms down a touch,
+        # the top tom at 140 Hz, halfway to the low one.
+        kit = {"kick": (variants(kick_real), 1.2), "snare": (variants(snare_real), 0.75), "hat": (variants(lambda p: hat_real(False, p)), 0.45),
+               "open": ([hat_real(True)], 0.4), "crash": ([crash_real()], 0.55), "crash2": ([crash_low()], 0.6), "china": (china(), 0.7),
+               "crash_long": ([crash_long()], 0.6, 0.035),
+               "splash": ([splash()], 0.7), "stack": ([stack()], 0.6), "bell": ([ride_bell()], 0.6), "ride": ([ride_real()], 0.35),
+               "tom": (variants(lambda p: tom_real(130.0, p)), 1.05), "tom2": (variants(lambda p: tom_real(98.0, p)), 1.05), "clank": (clank(), 0.3),
+               "knock": (knock_perc(), 0.5),
+               "kick_hard": (variants(kick_real), 1.9)}   # the climax's double kick, two bars, hit hard (Ryan, 30 September)
     else:
         kit = {"kick": (kick_metal(), 1.0), "snare": (snare_metal(), 1.0), "hat": (hat(False, True), 0.45),
                "open": (hat(True, True), 0.4), "crash": (crash(), 1.0), "crash2": (crash(), 0.9), "china": (china(), 0.9),
                "crash_long": (crash(), 1.0, 0.035),
                "splash": (splash(), 0.8), "stack": (stack(), 0.7), "bell": (ride_bell(), 0.6), "ride": (ride(), 0.5),
                "tom": (tom(150.0), 0.8), "tom2": (tom(110.0), 0.8), "clank": (clank(), 0.3), "knock": (knock_perc(), 0.5)}
+    kit = {k: (v[0], v[1] * 1.15) + tuple(v[2:]) for k, v in kit.items()}   # the whole kit up a bit (Ryan, 29 September)
     backing = "guitar_real" if real else "chug"
     bass = "bass_real" if real else "bass_guitar"
     solo = _drum_solo(8)
@@ -2107,9 +2196,12 @@ def music_hold_the_line(palette="hybrid"):
                      "F": "x.......x...xx..x.....x.x...xx..",
                      "S": "x.xx..x.x.xx..x.x.xx..x.x.xx.xx.x.xx..x.x.xx..x.x.xx..x.x.xxxxxx",
                      "R": "x.xx.xx.x.xx.xx.x.xx.xx.x.xx.xx.x.xx.xx.x.xx.xx.x.xx.xx.x.xxxxxx",
-                     "Z": "xxxxxxxxxxxxxxxx",
+                     # The third set keeps the second's kick for four bars; the double kick is the
+                     # last four, on the hard kick below (Ryan, 30 September; "two bars" was half time).
+                     "Z": "x.xx.xx.x.xx.xx.x.xx.xx.x.xx.xx.x.xx.xx.x.xx.xx.x.xx.xx.x.xxxxxx" + "." * 64,
                      "Y": "x...............", "V": "x...............",
                      "K": "x.......x.......x.....x.x.......", "J": "x..x..x.x..x..x."},
+            "kick_hard": {"Z": "." * 64 + "x" * 64},
             "snare": {"A": "....x.......x...", "N": "....x.......x...", "B": "....x.......x...", "W": "........x...x.x.x.x.x.x.x...x...", "Q": "....x.x.x.xx.x.x", "C": "....x..o.x..x..o", "L": "....x..o.x..x..o",
                       "M": "....x.......x...", "X": "......x.....x.",
                       "U": solo["snare"],
@@ -2135,7 +2227,7 @@ def music_hold_the_line(palette="hybrid"):
                 "B": [[0, 7, 15]], "W": [[7, 14, 22]], "M": [[8, 15, 19]], "Y": [[0, 7, 15]], "V": [[0, 7, 15]], "Q": [[0, 7, 15]],
                 "C": [[8, 15, 19], [5, 12, 19], [3, 10, 17], [7, 14, 22]],
                 "L": [[8, 15, 19], [5, 12, 19], [3, 10, 17], [7, 14, 22]],
-                "X": [[0, 7, 15], [0, 7, 15], [3, 10, 17], [-2, 5, 10], [8, 15, 19], [7, 14, 22], [5, 12, 19], [3, 10, 17]],   # the second half descends under the held guitar
+                "X": [[0, 7, 15], [0, 7, 15], [3, 10, 17], [-2, 5, 10]] + [[0, 7, 15], [-2, 5, 13], [-3, 4, 12], [-4, 3, 11]] * 2,   # E D Db C under the held guitar, twice (Ryan, 30 September)
                 "U": [[0, 7, 15]],
                 "F": [[0, 7, 15], [8, 15, 19], [10, 17, 22], [7, 14, 22], [0, 7, 15], [5, 12, 19], [3, 10, 17], [-2, 5, 10],
                       [0, 7, 15], [8, 15, 19], [7, 14, 22], [-2, 5, 10], [0, 7, 15], [8, 15, 19], [10, 17, 22], [7, 14, 22]],
@@ -2177,8 +2269,8 @@ def music_hold_the_line(palette="hybrid"):
             # The held guitar through the seven's second half comes in louder and walks a
             # descending progression, C B A G, with the section's chords under it (Ryan, 29
             # September; the first pass had it on the riff's own E G E D).
-            {"inst": backing, "mode": "riff", "gain": 0.45, "octave": 1, "params": {"mute": False, "cutoff": 2000.0}, "legato": True,
-             "pat": {"X": "." * 56 + "8-------------7-------------5-------------3-------------"}},
+            {"inst": backing, "mode": "riff", "gain": 0.45, "octave": 1, "params": {"mute": False, "cutoff": 2000.0, "damp": 0.9985}, "legato": True, "hold": 1.0,
+             "pat": {"X": "." * 56 + "0-------------g-------------m-------------n-------------" * 2}},   # E D Db C (Ryan, 30 September)
             # The unison: the lead on top, the chug and the bass behind it, the drums soloing.
             {"inst": backing, "mode": "riff", "gain": 0.55, "octave": -1, "params": {"cutoff": 1100.0},
              "pat": {"U": "0..0..0.3..3..3.5..5..5.3.0.g.0.5..5..5.8..8..8.a..a..a.8.5.3.0."}},
@@ -2190,29 +2282,22 @@ def music_hold_the_line(palette="hybrid"):
             # second half, the piano's tune and its chord work; the turn is theirs.
             # The bass strikes once a bar and holds; on beat three a soft touch on the same
             # note lifts the held one rather than re-striking it (Ryan, 25 September).
-            {"inst": "sub_bass", "mode": "riff", "gain": 0.52, "legato": True, "params": {"res": 0.35, "punch": 2.4, "fade": 0.4},
-             "pat": {"F": "".join(r + "-" * 15 for r in keys_roots)}},
-            {"inst": "sub_bass", "mode": "riff", "gain": 0.22, "legato": True, "params": {"res": 0.35, "punch": 0.5, "fade": 0.4},
-             "pat": {"F": "".join("." * 8 + r + "-" * 7 for r in keys_roots)}},
-            # The fifth below each second-half root, in register, held with it; an octave down
-            # only where the root is the low D.
-            {"inst": "sub_bass", "mode": "riff", "gain": 0.34, "legato": True, "params": {"res": 0.35, "fade": 0.4},
-             "pat": {"F": "." * 128 + "".join((r + "-" * 15) if r != "5" else "." * 16 for r in keys_fifths)}},
-            {"inst": "sub_bass", "mode": "riff", "gain": 0.34, "legato": True, "octave": -1, "params": {"res": 0.35, "fade": 0.4},
-             "pat": {"F": "." * 128 + "".join((r + "-" * 15) if r == "5" else "." * 16 for r in keys_fifths)}},
-            {"inst": "lead", "mode": "riff", "gain": 0.46, "octave": 2,
-             "pat": {"F": "7--.8-.7-..5.3-.0-----..3---5---8--.a-.8-..7.5-.3---....5-.3-.0-"
-                          "7--.a-.c---....a--.8-.7-.5---...3--.5-.7-..8.a-.7-------........"
-                          "7--.8-.7-..5.3-.0-----..3---5---8--.a-.8-..7.5-.3---....5-.3-.0-"
-                          "7---8---a---c---a---8---7---5---3-------5---3---0-------3---5---"}},
+            {"inst": "sub_bass", "mode": "riff", "gain": 0.52, "legato": True, "octave": 0, "params": {"res": 0.35, "punch": 2.4, "fade": 0.4},
+             "pat": {"F": keys_sub}},
+            {"inst": "sub_bass", "mode": "riff", "gain": 0.22, "legato": True, "octave": 0, "params": {"res": 0.35, "punch": 0.5, "fade": 0.4},
+             "pat": {"F": keys_touch}},
+            # The fifths under the second-half roots are gone (Ryan, 30 September: the bridge's
+            # sub plays the roots alone under his melody).
+            {"inst": "lead", "mode": "riff", "gain": 0.38, "octave": 2, "pat": {"F": keys_tune}},
+            # His harmony line under it, soft, so the top line stays the lead (one voice since
+            # the sixth melody: bars nine to twelve moving, then four held notes to the end).
+            {"inst": "lead", "mode": "riff", "gain": 0.15, "octave": 1, "pat": {"F": keys_harm}},
             {"inst": "epiano", "mode": "stab", "gain": 0.5, "dur": 2.0,
              "pat": {"C": "..x...x...x...x.", "L": "..x...x...x...x.",
-                     # The keys' chord work starts absent and grows through the section (Ryan,
-                     # 29 September: more chords by the lead, it is keys after all).
-                     "F": "................" "................" "............x..." "................"
-                          "x...........x..." "................" "x.......x......." "............x..."
-                          "x...x.......x..." "x.......x...x..." "x...x...x......." "x...x...x...x..."
-                          "x...x...x...x..." "x.x.x...x...x.x." "x...x.x.x...x..." "x.x.x.x.x.x.x.x."}},
+                     "F": "............x..." "................" "............x..." "x..............."
+                          "............x..." "x.......x......." "............x..." "x...x...x......."
+                          "x...........x..." "x.......x......." "x...x.......x..." "x.......x...x..."
+                          "x...x...x...x..." "x.......x...x..." "x...x...x...x..." "x...x...x...x..."}},
             {"inst": "epiano", "mode": "riff", "gain": 0.5, "octave": 2, "legato": True,
              "pat": {"Y": "7---------------"}},
             # The climax: the lead guitar voice and the driven bass on a new riff in unison,
@@ -2237,14 +2322,17 @@ def music_hold_the_line(palette="hybrid"):
             # second set, a little under where it was (Ryan, 25 September).
             {"inst": "guitar_hold", "mode": "stab", "gain": 0.75, "dur": 20,
              "pat": {"R": "x...............", "Z": "x...............", "Y": "x..............."}},
-            {"inst": "epiano", "mode": "stab", "gain": 0.28, "dur": 4,
-             "pat": {"Z": "x...x...x...x..."}},
-            {"inst": backing, "mode": "riff", "gain": 0.3, "octave": -1,
-             "pat": {"R": "0.0-3.0", "Z": "0.0-3.0"}},
-            {"inst": "epiano", "mode": "riff", "gain": 0.4, "octave": 1, "hold": 0.9,
-             "pat": {"R": climax, "Z": climax}},
-            {"inst": "chime_metal", "mode": "chord", "octave": 2, "gain": 0.2, "echo": (3, 0.25, 2), "dur": 1.6,
-             "pat": {"S": "0.......2...1...", "R": "0...2.1.....3...", "Z": "0...2.1.....3..."}},
+            # Thinned on 30 September from the listening page's ninth round (Ryan): the piano
+            # and the riff's second chug are gone from the climax, the chimes leave the first set
+            # and come up in the second and third, the drone stays under all three, and the
+            # keys' lead voice takes the riff an octave up from halfway through the second set.
+            # The riff's synth in the keys' register (the listening page's tenth round: "perfect"),
+            # from the third set; the chimes from the second set's fifth bar (Ryan, 30 September:
+            # four bars later than they had been, in real bars).
+            {"inst": "lead", "mode": "riff", "gain": 0.6, "octave": 2, "hold": 0.9,
+             "pat": {"Z": climax}},
+            {"inst": "chime_metal", "mode": "chord", "octave": 2, "gain": 0.24, "echo": (3, 0.25, 2), "dur": 1.6,
+             "pat": {"R": "." * 64 + "0...2.1.....3..." * 4, "Z": "0...2.1.....3..."}},
             # The breath (Y) is the climax's blend on one E minor chord: the lead guitar voice
             # on the third, the chug and the driven bass in unison on the root, the fifth
             # chug, the backing guitar's chord, the piano on the fifth (above, with the
@@ -2299,9 +2387,17 @@ def music_hold_the_line(palette="hybrid"):
              # Ryan really likes this drone as an element for the human tracks; it also sits
              # under the whole climax, alone under the first set.
              # Up a bit everywhere it plays (Ryan, 29 September).
-             {"inst": "sweep", "gain": 0.42, "octave": 0, "rate": 0.08, "depth": 0.3, "open": 0.75, "sections": "ANSRZ", "skip": {"A": 12}, "chord": [0, 7, 12]}],
-        drum_gain={"U": 1.3, "S": 1.15, "R": 1.25, "Z": 1.3, "W": 1.25, "Q": 1.2},
-        crescendo={"S": (0.85, 1.0), "R": (1.0, 1.12), "Z": (1.12, 1.3)},
+             {"inst": "sweep", "gain": 0.5, "octave": 0, "rate": 0.08, "depth": 0.3, "open": 0.75, "sections": "ANSRZ", "skip": {"A": 12}, "chord": [0, 7, 12]}],
+        # The climax no longer grows in loudness through its three sets (Ryan, 30 September:
+        # instruments are added, it need not get louder too); the drums hold one level.
+        drum_gain={"U": 1.3, "S": 1.15, "R": 1.15, "Z": 1.15, "W": 1.25, "Q": 1.2},
+        # Headroom before the master's saturator (Ryan, 30 September: the climax grew crackly
+        # from the backing guitar's entry to the double kicks, and the lift's closing fill broke
+        # up). Measured: every section peaked at the same -12.7 dB while the climax's loudness
+        # climbed 2.5 dB into that ceiling, the saturator flattening more of the wave the busier
+        # it got. The mix is brought under the knee first and the master eased, as The Far Bank's
+        # is; the level pin keeps the loudness.
+        master=1.1, headroom=0.6,
         tilt=1.5, presence=0.25, low=(150.0, -6.0),   # the human master since 28 September: half the tilt, a presence lift
         human=(0.005, 0.15) if real else None)
 
@@ -3045,6 +3141,7 @@ def kick_real(pitch=1.0):
     # the beater forward, a short static knock at 175 Hz gives the speaker something to play
     # (a pitch sweep there went "pew-pew"), little room. Pitched a touch under the sketch
     # (Ryan: alone it sounded high, a drum too small).
+    pitch *= 0.9   # the middle size of the phone sketches' fourth round (Ryan, 29 September: the one moving forward)
     n = n_of(0.3)
     t = t_of(n)
     f = (50.0 + 60.0 * np.exp(-t / 0.03)) * pitch
@@ -3090,10 +3187,12 @@ def crash_real():
     # Shorter than a real one (Ryan: it lasted way too long), and softer since 28 September
     # (the phone sketches: the first read as clipped and hissy on the speaker): the wash
     # closed above 9 kHz and a little quieter, the plate up, a soft saturation over both.
+    # Softer again on 30 September (Ryan: breaking up on the speaker, hiss and crackle): less
+    # wash, closed above 8 kHz, and only a touch of saturation.
     n = n_of(1.0)
-    wash = bp(noise(n), 1800.0, 9000.0) * env_ad(n, 0.003, 0.24, curve=2.0) * 0.75
+    wash = bp(noise(n), 1800.0, 8000.0) * env_ad(n, 0.003, 0.24, curve=2.0) * 0.55
     plate = knock([2900.0, 4300.0, 6400.0, 8100.0], [0.3, 0.22, 0.17, 0.14], [0.4, 0.3, 0.25, 0.2], noise_gain=0.0) * 0.45
-    return sat(mix(wash, plate), 1.3) * 0.35
+    return sat(mix(wash, plate), 1.1) * 0.35
 
 
 def timpani_real():
@@ -3110,7 +3209,7 @@ def variants(fn, k=3):
     return [fn(RNG.uniform(0.96, 1.04)) for _ in range(k)]
 
 
-NOTE_INST["guitar_real"] = lambda f, d, p: guitar_real(f, d, p.get("mute", True), clean=p.get("clean", False))
+NOTE_INST["guitar_real"] = lambda f, d, p: guitar_real(f, d, p.get("mute", True), clean=p.get("clean", False), damp=p.get("damp", 0.993))
 NOTE_INST["lead_real"] = lambda f, d, p: lead_real(f, d)
 NOTE_INST["bass_real"] = lambda f, d, p: bass_real(f, d, p.get("drive", 2.6))
 NOTE_INST["violin_real"] = lambda f, d, p: violin_real(f, d)

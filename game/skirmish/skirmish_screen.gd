@@ -274,6 +274,7 @@ func _build() -> void:
 		set(key, float(ROWS[key]) * H / BASE_H)
 	custom_minimum_size = Vector2(W, H)
 	Hud.inset_screen(self)   # clear of the phone's corners, cutout and gesture zone
+	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR   # text linear; the ground bands and the sprites pin nearest on themselves
 
 	var bg := HudBackdrop.new()
 	var seam_y := REROLL_Y + REROLL_SIZE.y + REROLL_GAP
@@ -390,8 +391,9 @@ func _build() -> void:
 		var look := MechView3D.look_setting()
 		_mech_3d.append(null)
 		if not look.is_empty():
-			var maker := str(ContentDB.load_default().chassis.get(ms.unit.chassis_id, {}).get("maker", "minerva"))
-			var view := MechView3D.make(ms.unit.chassis_id, maker, look, "badger", MechView3D.YAW_SKIRMISH, Vector2i.ZERO, false, ms.unit.paint)
+			var db := ContentDB.load_default()
+			var maker := str(db.chassis.get(ms.unit.chassis_id, {}).get("maker", "minerva"))
+			var view := MechView3D.make(ms.unit.chassis_id, maker, look, "badger", MechView3D.YAW_SKIRMISH, Vector2i.ZERO, false, ms.unit.paint, MechView3D.plan_for(ms.unit, db))
 			view.set_sheen(MechView3D.SHEEN_SKIRMISH)   # the rear pose needs more to shine like the codex
 			# Idle: an aircraft hovers, a hover chassis skims, a ground machine stands still
 			# (its idle is limb movement, which waits on annotated joints).
@@ -414,6 +416,7 @@ func _build() -> void:
 			add_child(view)
 			_mech_3d[i] = view
 			v.sprite = view.texture
+			v.sprite_density = view.density
 			if look == "clean":
 				v.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		_place(v, Vector2(cx - MECH_SIZE.x * 0.5, MECH_Y), MECH_SIZE)

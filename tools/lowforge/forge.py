@@ -2,6 +2,7 @@
 
     tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger sparrowhawk   # from models_low.py
     tools/spriter/.venv/bin/python tools/lowforge/forge.py export badger              # from a hand-edited .blend
+    tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes                     # the component silhouette classes, every maker
     godot --headless --path . --import
 
 `build` writes art/models/<id>.glb with the tiles embedded, the tiles as PNGs under
@@ -50,6 +51,14 @@ def export(names):
     print("now: godot --headless --path . --import")
 
 
+def shapes(_names):
+    """The silhouette classes every swapped component wears (models_low.SHAPES), one file a
+    class a maker, into art/models/shapes."""
+    _run([BLENDER, "-b", "-P", str(HERE / "bl_low.py"), "--", "--shapes", str(ROOT / "art" / "models" / "shapes"),
+          "--tiles", str(HERE / "tiles")])
+    print("now: godot --headless --path . --import")
+
+
 def terrain(_names):
     """The battlefield's material tiles, into art/terrain for the 3D columns."""
     _run([BLENDER, "-b", "-P", str(HERE / "bl_low.py"), "--", "--terrain", str(ROOT / "art" / "terrain")])
@@ -57,7 +66,7 @@ def terrain(_names):
 
 
 if __name__ == "__main__":
-    cmds = {"build": build, "export": export, "terrain": terrain}
-    if len(sys.argv) < 2 or sys.argv[1] not in cmds or (sys.argv[1] != "terrain" and len(sys.argv) < 3):
+    cmds = {"build": build, "export": export, "terrain": terrain, "shapes": shapes}
+    if len(sys.argv) < 2 or sys.argv[1] not in cmds or (sys.argv[1] in ("build", "export") and len(sys.argv) < 3):
         raise SystemExit(__doc__)
     cmds[sys.argv[1]](sys.argv[2:])

@@ -253,17 +253,24 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		for f in u.die.faces:
 			faces.append(Effects.effective_face(u, f))   # its reach and keywords as the passives make them
 	# Every live loadout and battle modifier: the chassis passive first, then what
-	# components grant, then the battle's rewards; nothing from the fight itself.
+	# components grant, then the battle's rewards; nothing from the fight itself. Each row
+	# says where it comes from ("chassis", "component", "reward"), and the codex colours
+	# it by that, so a granted passive never reads as the machine's own.
 	var lines: Array[String] = []
+	var rows: Array = []
 	for d in Effects.describe(u):
 		if d[3] != Effects.LOADOUT and d[3] != Effects.BATTLE:
 			continue
 		var head: String = str(d[0]).to_upper()
+		var kind := "chassis"
 		if d[2] != "chassis" and components.has(d[2]):
 			head += " (%s)" % str(components[d[2]].get("name", d[2]))
+			kind = "component"
 		elif d[3] == Effects.BATTLE:
 			head += " (REWARD)"
+			kind = "reward"
 		lines.append("%s: %s" % [head, d[1]])
+		rows.append([lines[lines.size() - 1], kind])
 	var passive := "\n".join(lines)
 	return {
 		"title": u.display_name,
@@ -278,11 +285,13 @@ func codex_for_unit(u: Unit) -> Dictionary:
 			["heat max / cooling", "%d / %d" % [heat_max, cooling]], ["move speed", str(move)]],
 		"actions": "",
 		"passive": passive,
+		"passive_rows": rows,   # [text, "chassis" | "component" | "reward"]
 		"faces": faces,
 		"current": -1,
 		"flavour": str(c.get("flavour", "")),
 		"sprite_id": u.chassis_id,
 		"paint": u.paint,
+		"unit": u,   # the model shows the fitted loadout (MechView3D.plan_for)
 	}
 
 
@@ -532,13 +541,25 @@ func _validate_design(where: String, e: Dictionary, errs: Array[String], need_fa
 		errs.append("%s: design.stage must be draft or final" % where)
 
 
+## The silhouette classes a fitted component's model wears (decided 29 September, the rule
+## settled 30 September): hardpoints are gun mounts on the model, and a component with a
+## shape takes the next mount in the die's order, in its own maker's metal
+## (art/models/shapes/<shape>_<maker>.glb, built by tools/lowforge; models_low.SHAPES is the
+## same list). "none" is for what is applied to the whole machine and shows nowhere: armour
+## panels and vents take a die entry and no mount.
+const SHAPES := ["barrel", "twin_barrel", "rack", "blade", "dish", "none"]
+const SHAPE_NONE := "none"
+
+
 func _validate_components(errs: Array[String]) -> void:
 	for id in components.keys():
 		var c: Dictionary = components[id]
 		var where := "component %s" % id
-		for key in ["name", "codex", "flavour", "face"]:
+		for key in ["name", "codex", "flavour", "face", "shape"]:
 			if not c.has(key):
 				errs.append("%s: missing %s" % [where, key])
+		if c.has("shape") and not SHAPES.has(str(c["shape"])):
+			errs.append("%s: shape '%s' is not a silhouette class (%s)" % [where, c["shape"], ", ".join(SHAPES)])
 		for key in ["hardpoints", "slots", "faces"]:
 			if c.has(key):
 				errs.append("%s: '%s' is gone; a component is exactly one entry, its 'face'" % [where, key])

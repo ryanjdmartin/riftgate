@@ -174,6 +174,7 @@ func _build() -> void:
 	STRIP_H = BOTTOM_Y - 16.0 - STRIP_Y      # down to the buttons' rule; the log's old space is in it
 	custom_minimum_size = Vector2(W, H)
 	Hud.inset_screen(self)   # clear of the phone's corners, cutout and gesture zone
+	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR   # text is sampled linear (Ryan, 29 September: nearest at a phone's stretch left the strokes uneven); the map and every sprite pin nearest on themselves
 
 	var bg := HudBackdrop.new()
 	bg.scan = false   # this screen's one scan bar is drawn on top of everything, below
@@ -423,8 +424,17 @@ func _on_hex_tapped(h: Vector2i) -> void:
 		return
 	_details.visible = false
 	var u := battle.field.unit_at(h)
+	# A second tap on what is selected unselects it (Ryan, 29 September): the gate, a pack,
+	# a hex asked about. A machine's second tap clears its route, below, as before.
+	var was_gate := _map.gate_selected and battle.field.map.gate_hexes.has(h)
+	var was_inspected := _map.inspected == h
 	_map.gate_selected = false
 	_map.inspected = Vector2i(-9999, -9999)
+	if was_gate or was_inspected:
+		_select(null)
+		Sound.play("ui_back")
+		_refresh()
+		return
 	if battle.field.map.gate_hexes.has(h) and (_map.selected == null or not _map.destinations.has(h)):
 		# The gate is selectable for its integrity (Ryan, 22 September).
 		_select(null)
@@ -548,7 +558,11 @@ var _built_hud := ""   # the HUD colour this screen was built with; a change reb
 func _open_menu() -> void:
 	if _menu == null:
 		_menu = PauseMenu.new()
-		_menu.display_changed.connect(func(_key: String, _value: Variant) -> void: _apply_display())
+		_menu.display_changed.connect(func(key: String, _value: Variant) -> void:
+			if key == "fine_map":
+				_map.set_field(battle.field)   # the scene and the compositor rebuilt at the new density
+				_refresh()
+			_apply_display())
 		_menu.hud_changed.connect(_rebuild)
 		_menu.quit_requested.connect(func() -> void: quit_requested.emit())
 		add_child(_menu)
@@ -922,7 +936,7 @@ func _portrait_mech(u: Unit, db: ContentDB) -> Control:
 	var box := VBoxContainer.new()
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
 	var maker := str(db.chassis.get(u.chassis_id, {}).get("maker", "minerva"))
-	var view := MechView3D.make(u.chassis_id, maker, "clean", "badger", MechView3D.YAW_FRONT, Vector2i(96, 96), false, u.paint)
+	var view := MechView3D.make(u.chassis_id, maker, "clean", "badger", MechView3D.YAW_FRONT, Vector2i(96, 96), false, u.paint, MechView3D.plan_for(u, db))
 	# The view lives in the portrait's own box, so it dies with the panel. It used to hang off
 	# the screen root: every contact, and every tap of the panel's arrows, left another pair of
 	# viewports rendering every frame for the rest of the battle, until the phone's GL driver
@@ -932,6 +946,7 @@ func _portrait_mech(u: Unit, db: ContentDB) -> Control:
 	var tr := TextureRect.new()
 	tr.texture = view.texture
 	tr.custom_minimum_size = Vector2(96, 96)
+	tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE   # the render may be denser than 96 (FINE MAP); the box stays 96
 	tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	box.add_child(tr)
 	var lbl := Hud.label(str(u.display_name), 11, Palette.HUD, Hud.mono())
@@ -950,6 +965,7 @@ func _portrait_pack(u: Unit) -> Control:
 		tr.texture = Sprites.map_foe(fid)
 	tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	tr.custom_minimum_size = Vector2(96, 96)
+	tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE   # the render may be denser than 96 (FINE MAP); the box stays 96
 	tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	tr.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	box.add_child(tr)
@@ -1051,6 +1067,15 @@ func _play_handover(group: Array, screen: SkirmishScreen) -> void:
 		_refresh())
 	tw.chain().tween_property(scrim, "modulate", Color(1, 1, 1, 0), 0.4)
 	tw.chain().tween_callback(scrim.queue_free)
+
+
+## Freed mid-handover (the screenshot tool's engage pose quits then), the skirmish screen
+## is still waiting in `_skirmish` for the tween to add it to the tree: an orphan with
+## three 3D worlds in it, which the renderer reported leaked at exit. Free it with us.
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE and _skirmish != null and is_instance_valid(_skirmish) and _skirmish.get_parent() == null:
+		_skirmish.free()
+		_skirmish = null
 
 
 ## The skirmish's Back button: apply the result, then the next contact or back to the plan.

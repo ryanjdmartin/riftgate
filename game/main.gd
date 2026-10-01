@@ -35,6 +35,7 @@ var _last_pos := Vector2.ZERO
 
 
 func _ready() -> void:
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST   # sprites
 	font = ThemeDB.fallback_font
 	_build(map_seed)
 

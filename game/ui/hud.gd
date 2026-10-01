@@ -129,16 +129,6 @@ static func oversample(win: Window) -> void:
 	win.size_changed.connect(apply)
 
 
-## The 3D viewports' screen-space anti-aliasing: FXAA on a phone, where MSAA is off (below)
-## and the machines' silhouettes came out stepped and grainy (Ryan, 29 September); none on
-## the desktop, where MSAA does the work. A post-process, so nothing for the Compatibility
-## renderer's MSAA leak to touch. Typed int: a SubViewport.ScreenSpaceAA value.
-static func screen_space_aa() -> int:
-	if msaa_3d() == SubViewport.MSAA_DISABLED:
-		return SubViewport.SCREEN_SPACE_AA_FXAA
-	return SubViewport.SCREEN_SPACE_AA_DISABLED
-
-
 ## The 3D viewports' anti-aliasing: 4x on the desktop, none on a phone. Godot's
 ## Compatibility renderer leaks native memory every frame a 3D viewport draws with MSAA
 ## on Android (godotengine/godot#97967, open since October 2024; seen here on a Pixel 9,
@@ -148,9 +138,31 @@ static func screen_space_aa() -> int:
 ## SubViewport.MSAA value, typed int (a class-scoped enum type fails in a headless runner).
 static func msaa_3d() -> int:
 	var env := OS.get_environment("RIFTGATE_MSAA")
-	if env == "off" or (env != "on" and OS.has_feature("mobile")):
+	if env == "off":
+		return SubViewport.MSAA_DISABLED
+	if env != "on" and OS.has_feature("mobile"):
+		# Measured on the Pixel 9 (29 September, MSAA 2x with the fine map): the native heap
+		# grew about 170 MB every twenty seconds until the GL driver aborted out of memory
+		# at 1.8 GB, three and a half minutes in. No setting reaches this; a phone never
+		# has MSAA until Godot fixes the leak.
 		return SubViewport.MSAA_DISABLED
 	return SubViewport.MSAA_4X
+
+
+## Device pixels per design pixel a 3D render should use: the window's stretch when the
+## FINE MAP setting is on (or RIFTGATE_FINE_MAP=1), else 1. From the node's own viewport
+## when it is in the tree, else the window's.
+static func density(node: Node) -> float:
+	if OS.get_environment("RIFTGATE_FINE_MAP") != "1" and not bool(Settings.display.get("fine_map", false)):
+		return 1.0
+	var vp: Viewport = node.get_viewport() if node != null and node.is_inside_tree() else null
+	if vp == null:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree:
+			vp = (loop as SceneTree).root
+	if vp == null:
+		return 1.0
+	return maxf(1.0, vp.get_final_transform().get_scale().y)
 
 
 ## Fit a screen's root to the glass less the safe bands: full rect, then the top and

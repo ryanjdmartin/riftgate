@@ -40,6 +40,13 @@ static func sources(field: Battlefield, origin: Vector2, hex_px: float, moving: 
 
 
 ## The bleed at a map pixel, 0 to 1.
+## How much of the reconstruction is left at a map pixel: 1 on solid ground, 0 under the
+## painting, across the compositor's own threshold. The one place the question is answered
+## (a flyer's height, a hex's lift, a mark's height all ask it).
+static func solid(px: Vector2, grad: Vector2, src: PackedVector3Array) -> float:
+	return 1.0 - smoothstep(0.42, 0.58, at(px, grad, src))
+
+
 static func at(px: Vector2, grad: Vector2, src: PackedVector3Array) -> float:
 	var m := 1.0 - clampf((px.y - grad.x) / maxf(1.0, grad.y - grad.x), 0.0, 1.0)
 	for s in src:

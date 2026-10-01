@@ -107,6 +107,10 @@ perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/balance.gd --
 # (any run, not only the tool), RIFTGATE_SHOT_SCALE=1.5 renders at its pixel density (the
 # PNG comes out 1080 wide); add --rendering-method gl_compatibility for the phone's renderer.
 # RIFTGATE_MSAA=on|off forces the 3D viewports' anti-aliasing (any run; off on a phone by default).
+# RIFTGATE_OUTLINE=<n> sets the machines' light outline thickness for a comparison (MechView3D.OUTLINE is the default).
+# RIFTGATE_HUD=<green|amber|blue> forces the HUD colour for a run (any run), to judge a mark against every option.
+# RIFTGATE_FINE_MAP=1 forces the FINE MAP setting (the map's scene and compositor at the glass's
+# density; with RIFTGATE_SHOT_SCALE=1.5 that is a phone's).
 # RIFTGATE_SHOT_WINDOW=1 puts the scene in the window itself instead of a SubViewport, so the
 # capture goes through the project's own stretch and font oversampling as the phone's does:
 # run with --resolution 1080x1920 for a 1080 phone's density (the Mac's screen caps the height).
@@ -132,10 +136,15 @@ tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut-rift tools/foeforge/
 
 # the gate and wall are built the same way
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build gate wall
+# the silhouette classes a swapped component wears at a gun mount (models_low.SHAPES), every maker's metal, then re-import
+tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes
+# one machine wearing swapped components on its mounts ("2:" bares a mount; armour and vents show nowhere); a class alone: <chassis> shapes/barrel_minerva; rendered bare (RIFTGATE_OUTLINE_KEEP=1 keeps the display's edge)
+RIFTGATE_FIT="1:lance,4:blazethrower" godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva fit.png front 480 480
 
 # every sound and the two music loops, from the recipes in tools/soundforge/forge.py, then re-import
 tools/spriter/.venv/bin/python tools/soundforge/forge.py build          # or: build hit kill music_far_bank
 tools/spriter/.venv/bin/python tools/soundforge/phone_sketches.py [set]  # A/B sketches of one change at a time for the phone's speaker, as AAC into tools/soundforge/out/phone/ with a listening page (index.html) to publish
+tools/spriter/.venv/bin/python tools/soundforge/desk_parts.py [track]   # every track's melodic parts as notes, one JSON per track into tools/soundforge/out/desk/, for the Melody Desk page's store (collection `parts`)
 tools/spriter/.venv/bin/python tools/soundforge/forge.py measure        # each file's loudness, peak and share under 150 Hz
 tools/spriter/.venv/bin/python tools/soundforge/forge.py sections       # every section of both loops, with timestamps
 tools/spriter/.venv/bin/python tools/soundforge/forge.py sketch map_88  # eight-bar sketches and variants, to tools/soundforge/out (not shipped)

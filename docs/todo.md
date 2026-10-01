@@ -8,15 +8,29 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 
 ## Ryan
 
-- [ ] Play-test the engagement range (`Battlefield.ENGAGE_RANGE` = 2) and the tethers; say whether formations are still wanted
-- [ ] Judge on the phone after a re-export: frame rate (the per-hex props added draw calls), the sound set, the machines' edges without MSAA, the text, the grid at `GRID_GAIN_PHONE`, the seam band (less green than before), the far blur, the board and the log button, the selection marks, the routes, props hiding under a machine
+- [ ] Decide the engagement rule (29 September: the range chains across the map and hides who joins; the bible's section 5 carries the proposal, a pack's capture zone of radius two with the zones always drawn and the tethers retired, and Ryan's three variants weighed); then build it
+- [ ] Judge on the phone after a re-export: the machines' outline at 2.6 (`MechView3D.OUTLINE`; 1.0 was the thin), the intent field in motion (stripe width `STRIPE`, ring spokes `SPOKES`, the pulse), the machine's lock's contrast (the light at half), the orange pulse of the gate's hazard glyphs, the sound set, the grid at `GRID_GAIN_PHONE`
+- [x] Judged 29 September on the phone: 60 fps with the fine map and the per-hex props, the text clean, the board and log button, the selection marks, the routes, the props hiding, the seam band, the far blur
 - [ ] Codex and flavour for the seven new machines, the Baboon's flavour, and the 41 components whose codex is empty
-- [ ] Decide the Dingo's name (`design.name_clash`: a Heavy Gear Northern gear); the Sparrowhawk, Goshawk, Baboon and the badger id are kept
-- [ ] The Badger's joints and pins in Blender (`forge.py export badger`); the missing model pins: the Clydesdale has 6 for 9 hardpoints, the Sparrowhawk 2 for 4 (wing pods only); the codex page flags both until then
+- [x] Decide the Dingo's name (29 September: kept, the coincidence tier; every flagged name is now decided and every note says why it stays)
+- [ ] The Badger's joints in Blender (`forge.py export badger`)
+- [x] The missing model pins (29 September, night: the Clydesdale's nine and the Sparrowhawk's four; every pin a gun mount since 30 September)
+- [x] Judge the pins pass and the classes (30 September: notes on every machine, the mount rule settled; all built the same day)
+- [x] Judge the third pass on the Model Viewer (30 September: notes on seven machines, all built the same day as the fourth round)
+- [ ] Judge the fourth round on the Model Viewer (bare renders): the Badger's arm clearance, the Armadillo's cowl, hollow ports and tail, the Boar's turret and pod, the Prairie Dog's back, the Goshawk's glowing barrel and stub, the Nemesis's upright fists, traps, waist cannon and vented core, the Ammit's back panel and cannons; each class's size per machine (a pin's `scale` in `models_low.py`)
+- [ ] Propose in chat a Minerva intercept component for the starter set (Ryan, 30 September: tanks need class-based target-modification beyond the Proximity Klaxon)
 - [x] Picks from the phone sketches page: the bass voice (3 or 5), the clip-free guitar, the third shadows (28 September: voice 12, the guitar, the third cut, a quarter of the level gap; all in the forge)
 - [x] Judge The Far Bank's tempo in the game (29 September: 88 stays; the temporary ids are gone)
-- [ ] Hold The Line: hear the 29 September arrangement in the game (the drone up, the second lift's bass down, the seven's held guitar louder on a descending C B A G, the keys' chords from nothing), the loop's wrap into bar five, and the 104 sketch on the page; notes by section letter
-- [ ] Judge round six on the sketches page: the track with the middle kick and with the old kick (say which "original" meant), and the toms hit harder at two powers, bare and in the track
+- [x] Hold The Line's 29 and 30 September pass (every note in on 30 September; the bible's sound row has the list)
+- [ ] A full play of Hold The Line in the game, start to wrap; notes by section letter
+- [x] Judge round six (29 September: the middle kick ships; the powers were louder, not harder)
+- [x] Judge round eight (30 September: hard two ships, at its own pitch)
+- [x] Judge round nine (30 September: piano and second chug out, chimes in sets two and three at 0.3, drone throughout, the keys' lead on the riff from mid set two)
+- [x] Judge round ten (30 September: fewer cymbals ships; the higher synth ships, two bars later)
+- [x] Ryan's simplified bridge melody from the desk (30 September: applied, sub lines included)
+- [x] Ryan's sixth bridge melody, a harmony voice cut (30 September, evening: applied as one harmony lane, the sub's line taken too, marked applied)
+- [x] The climax's entries in real bars (30 September: the synth from the third set, the chimes from the second set's fifth bar, the double kick the last four bars)
+- [x] Write the bridge's melody on the Melody Desk (30 September: sent, applied as the keys section's lead and two harmony voices, marked applied)
 - [x] Judge the drums' last dial-in from the sketches page's "Now" set: `mix_ship` (the track as it ships), `drums_kick` (the kick's size, three steps down) and `drums_tom` (the toms, three steps tighter); say which step, or further
 - [ ] Read `docs/balance.md` against your own play; then either the numbers move or the bot's next rung is built
 - [ ] Discuss first, then decide: ally wrecks (block a hex? a round or the battle?)
@@ -56,7 +70,7 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 - [x] The planned triggers: on shield gain, on heat gain, on round start, on skirmish start, on hull damage, out of combat (30 September: `Effects.fire`; no content uses the last four yet)
 - [x] The ten planned foe actions in `content/foes.json` (30 September: buff, defend and debuff kinds run as effects, `Foe.ACTION_EFFECTS`; attacks weigh 3 to a special's 1 as a placeholder; bible section 9 row). Foe roles: undefined anywhere, so nothing built; Ryan proposes what a role is before it is coded
 - [x] Buff equipment (29 September): the `buff` kind grants a machine status for so many stacks and rounds; Overcharged, Braced and Primed as the first three; the Overcharge Coil as a draft component fitted to nothing; the heat passive above can now be built on it
-- [ ] Granted passives coloured on the codex
+- [x] Granted passives coloured on the codex (29 September, night: `passive_rows` by source; the chassis's own in the accent, a component's in the overlay colour, a reward in ink)
 - [x] Save and resume mid-battle at any phase (30 September: `sim/save.gd`, autosave after every change, Resume battle in the harness; bible section 11 row)
 - [ ] Onboarding: the gesture tutorial and the cheat sheet; the reroll rule and the zone of control first
 - [x] The bot values a status for the stun it may cause (29 September: `_loop_chance` in `policy.gd`, at the loop's odds and the foe's resistance) and weighs a buff by what its status does to the machine it lands on
@@ -68,14 +82,15 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 - [ ] The wreck's death animation on the map, once wrecks are decided
 - [ ] Joint idle for grounded machines, once joints exist
 - [ ] Corruption in a pack's wake, and the bleed growing with Rift Pressure (`bleed.gd` has the knob in mind), once decided
+- [x] FINE MAP judged on the phone (29 September): 60 fps locked, now the default; MSAA measured leaking and is unreachable on a phone
 - [ ] If the phone drops frames: one mesh per material per machine, until joints
-- [ ] `tools/screenshot.gd`'s engage pose prints renderer leak warnings at exit (harmless; fix if cheap)
+- [x] `tools/screenshot.gd`'s engage pose prints renderer leak warnings at exit (29 September, night: the skirmish screen waiting on the handover tween was an orphan at exit; the battle screen frees it on predelete)
 
 ## Art
 
 - [x] lowforge briefs and models for the seven new machines (first passes, 29 September; every hardpoint has its pin, every fixed component is modelled in); Ryan iterates by render
 - [ ] Ryan: notes on the seven second-pass models (renders: the Model Viewer, https://claude.ai/artifact/HzF8K98MxgJP7kroxAuDMv)
-- [ ] Silhouette classes for components (decided 29 September): shape helpers in lowforge (barrel, twin barrel, rack, slab, vent block, dish), a validated `shape` field on every component, chassis pins parenting their stock shape so `MechView3D.mount()` hides it, and the skirmish and codex calling mount for the fitted loadout
+- [x] Silhouette classes for components (29 September, night: seven classes in `models_low.SHAPES`, a blade added for the melee arms; `forge.py shapes` builds every maker's metal into `art/models/shapes`; `shape` validated on every component; every chassis pin parents its stock part; `MechView3D.mount_plan` and `plan_for` from the skirmish, the codex and the portrait; `RIFTGATE_FIT` on the hero shot)
 - [ ] Ryan: judge the Baboon's rear silhouette in the harness (the fists hang at knee height now, not on the ground); if it still reads as carrying two boxes, pick heavier hands carrying hardware or a standard forward pose with the fist tile turned 90 degrees
 - [ ] Enemy art through foeforge for the foes still on sketch grids
 - [ ] The hangar as a model
@@ -85,10 +100,11 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 ## Pages (standing, after every content change)
 
 - [x] Joining the accounts (29 September): done. Nameplate, codex and phone sketches are shared to the work email as Editor and open there; A merged B's 42 component rows into its nameplate (an invited editor from another organisation cannot use a page's database from Claude Code, so B exported and A imported); the bible's and viewer's invites do not arrive, Ryan retries later, B keeps its own bible copy meanwhile. B's nameplate copy is deleted (29 September, night); B keeps only its bible copy and the content editor
-- Republish the content editor (https://claude.ai/artifact/HnE3gvsxNHXyjRhRyEiDqT) with its `files` map, or its baselines go stale; read its files first if another session published since (a B session only: the page is B's and B cannot share outward; source `tools/content_editor.html`)
-- [ ] B: republish the content editor now; `content/components.json` and `content/vocabulary.json` changed on 29 September (the buff kind, Overcharged, Braced, Primed, the Overcharge Coil) and its baselines are stale
+- The content editor, when it exists again: republish it with its `files` map after every content change, or its baselines go stale (source `tools/content_editor.html`)
+- [ ] When Ryan wants to edit content from his phone again: publish the content editor from account A (`tools/content_editor.html` with its `files` map carrying `content/*.json`) and share it to the work email as Editor; the old B page is gone, its edits database was empty
 - Rebake the nameplate page's baked-in current names (`CURRENT` in its script) when a chassis or component is added or renamed
 - Republish the bible from the committed file (each account to its own URL, listed in status)
+- Re-seed the Melody Desk's `parts` after a track's voices change: `desk_parts.py`, then a batch `set` of the six `parts/<track>` documents (pinned to their versions), or a loaded part is the track as it was
 - Regenerate the hangar codex (`python3 tools/build_codex.py . codex.html`) after a content or model change and republish it, each account to its own copy; it reads the built `.glb` files, so build and import first
 
 ## Audio

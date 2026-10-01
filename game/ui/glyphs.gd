@@ -31,6 +31,12 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 		"blank":
 			ci.draw_line(c + Vector2(-s, -s), c + Vector2(s, s), color, width)
 			ci.draw_line(c + Vector2(-s, s), c + Vector2(s, -s), color, width)
+		"warning":
+			# A hazard triangle with its bar and dot: the hexes a pack can strike the gate from.
+			var tri := PackedVector2Array([c + Vector2(0, -s), c + Vector2(s * 0.95, s * 0.75), c + Vector2(-s * 0.95, s * 0.75), c + Vector2(0, -s)])
+			ci.draw_polyline(tri, color, width)
+			ci.draw_line(c + Vector2(0, -s * 0.35), c + Vector2(0, s * 0.2), color, width)
+			ci.draw_circle(c + Vector2(0, s * 0.45), width * 0.6, color)
 		"melee":
 			# Three claw strokes, raking down and right.
 			for i in range(3):

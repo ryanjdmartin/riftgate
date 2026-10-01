@@ -8,7 +8,9 @@ extends Control
 ##
 ## Entry keys (see `ContentDB.codex_for_unit` / `codex_for_foe`): title, designation,
 ## subtitle, body, stat_items, actions, passive, faces (Array of Face), face_columns,
-## face_labels, current (index), modifiers, flavour, sprite_id (a chassis or foe id), paint.
+## face_labels, current (index), modifiers, flavour, sprite_id (a chassis or foe id), paint,
+## passive_rows ([text, source] pairs, coloured by source) and unit (the machine, so the
+## model can wear its fitted loadout).
 
 const WIDTH := 640.0
 const TOP := 150.0
@@ -23,10 +25,29 @@ var _designation: HudButton   # a stamped tag, not a label, so the plate does no
 var _stats: StatBlock
 var _view: MechView3D = null   # the spinning model, when mechs are 3D
 var _actions: Label
-var _passive: Label
+var _passives: VBoxContainer   # one label a passive, coloured by its source: the chassis's own, a component's, a reward
 var _faces: FaceListView
 var _modifiers: Label            # every live effect on the mech, on the die screen
 var _flavour: Label
+
+
+## The colour a passive's row takes from its source.
+static func passive_colour(kind: String) -> Color:
+	match kind:
+		"component":
+			return Palette.HUD
+		"reward":
+			return Palette.INK
+	return Palette.ACCENT
+
+
+## A wrapping label needs a width before its first layout pass, or it reports the height
+## of every word on its own line and the panel opens far too tall the first time.
+static func _wrap(l: Label) -> void:
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD
+	l.custom_minimum_size = Vector2(560, 0)
+	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 
 
 func _init() -> void:
@@ -88,25 +109,23 @@ func _init() -> void:
 	_stats = StatBlock.new()
 	_stats.custom_minimum_size = Vector2(340, 0)
 	_stats.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_passive = Hud.label("", 17, Palette.ACCENT)
+	_passives = VBoxContainer.new()
+	_passives.add_theme_constant_override("separation", 3)
+	_passives.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_passives.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_actions = Hud.label("", 14, Palette.INK, Hud.mono())
 	_body = Hud.label("", 19, Palette.INK)
 	_faces = FaceListView.new()
 	_faces.columns = 2
 	_modifiers = Hud.label("", 14, Palette.INK, Hud.mono())
 	_flavour = Hud.label("", 18, Palette.MUTED, Hud.quote())
-	# Wrapping labels need a width before their first layout pass, or they report the height
-	# of every word on its own line and the panel opens far too tall the first time.
 	var spacer := Control.new()
 	spacer.custom_minimum_size = Vector2(0, 10)
 	head.add_child(spacer)
 	head.add_child(_stats)
-	for l in [_passive, _actions, _modifiers]:
-		l.autowrap_mode = TextServer.AUTOWRAP_WORD
-		l.custom_minimum_size = Vector2(560, 0)
-		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	cv.add_child(_passive)
+	for l in [_actions, _modifiers]:
+		_wrap(l)
+	cv.add_child(_passives)
 	cv.add_child(_actions)
 	cv.add_child(_faces)
 	cv.add_child(_modifiers)
@@ -146,9 +165,11 @@ func open(entry: Dictionary) -> void:
 	var look := MechView3D.look_setting()
 	if not sid.is_empty() and not look.is_empty() and MechView3D.has_model(sid):
 		# Mechs in 3D: the codex gets the model itself, turning slowly.
-		var maker := str(ContentDB.load_default().chassis.get(sid, {}).get("maker", "minerva"))
+		var db := ContentDB.load_default()
+		var maker := str(db.chassis.get(sid, {}).get("maker", "minerva"))
 		var paint: Dictionary = entry.get("paint", {})
-		_view = MechView3D.make(sid, maker, "clean", "badger", MechView3D.YAW_FRONT, Vector2i(200, 240), true, paint)
+		var plan: Array = MechView3D.plan_for(entry.get("unit", null), db)   # the fitted loadout, where it differs from stock
+		_view = MechView3D.make(sid, maker, "clean", "badger", MechView3D.YAW_FRONT, Vector2i(200, 240), true, paint, plan)
 		add_child(_view)
 		tex = _view.texture
 	elif not sid.is_empty():
@@ -156,10 +177,24 @@ func open(entry: Dictionary) -> void:
 	_sprite.texture = tex
 	_sprite.visible = tex != null
 	_stats.set_items(entry.get("stat_items", []))
-	for pair in [[_body, "body"], [_actions, "actions"], [_passive, "passive"]]:
+	for pair in [[_body, "body"], [_actions, "actions"]]:
 		var l: Label = pair[0]
 		l.text = str(entry.get(pair[1], ""))
 		l.visible = not l.text.is_empty()
+	# The passives, one row each in its source's colour (Ryan's to-do: granted passives
+	# coloured): the chassis's own in the accent, a component's in the overlay colour, a
+	# battle reward in ink. A foe's entry carries one block of text and no rows.
+	for c in _passives.get_children():
+		_passives.remove_child(c)   # out of the tree now, so the rows below are the only children
+		c.queue_free()
+	var rows: Array = entry.get("passive_rows", [])
+	if rows.is_empty() and not str(entry.get("passive", "")).is_empty():
+		rows = [[str(entry.get("passive", "")), "chassis"]]
+	for row in rows:
+		var l := Hud.label(str(row[0]), 17, passive_colour(str(row[1])))
+		_wrap(l)
+		_passives.add_child(l)
+	_passives.visible = not rows.is_empty()
 	var faces: Array = entry.get("faces", [])
 	_faces.visible = not faces.is_empty()
 	_faces.columns = int(entry.get("face_columns", 2))
