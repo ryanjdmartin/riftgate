@@ -68,12 +68,11 @@ check `git status` before committing, stage by path, diff a shared file first (a
 still sweeps the other session's hunks), never `git add -A`, never kill a bare
 `godot --path .`. Commit after each verified chunk with tests green.
 
-**The cloud session (29 September, night).** Branch `ccr-23c2f18f-qlilnd` on origin, forked
-from 5222bdf, claimed the engine list (the to-do marks every claimed line; skip them unless it
-says it stopped): the planned pieces, the triggers and foe actions, save and resume, the codex
-republish. Its first commit built volatile (its tests green, 231 on its branch; a merge into main
-is clean). Ryan's word: wait to merge. Local main is ahead of origin by three commits (the Dingo's
-name, the account correction, the pins-and-shapes pass) and unpushed; pushing is his call.
+**The cloud session's branch is merged (1 October).** Branch `ccr-23c2f18f-qlilnd` carried the
+engine list (the planned pieces, the ten foe actions, every trigger, save and resume); it merged
+main through the fourth round itself, and main merged it at ee87e17 with tests green (279 tests,
+3,593 checks) and pushed. Main and origin match. The branch is left on origin until Ryan says to
+delete it; nothing else claims the engine list now, so the engine section of the to-do is open.
 
 **Where things are.** `sim/` is the headless game (battle map, battlefield resolver, battle
 loop, skirmish, effects pipeline, content DB). `game/battle/` the battle screen and the map
