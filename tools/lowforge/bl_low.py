@@ -172,7 +172,7 @@ class Tiles:
             dark(slice(40, 42), slice(2, 16))              # the tip
             dark(slice(42, 44), slice(4, 40), 0.5)
             dark(slice(44, T - 2), slice(40, 42), 0.5)
-            dark(slice(26, 28), slice(2, 14), 0.35)        # its joint
+            dark(slice(14, 16), slice(2, 14), 0.35)        # its joint, near the front
             lit(slice(16, 18), slice(16, T - 3), 1.15)
             lit(slice(0, 24), slice(56, 59), 1.3)          # the knuckle, carried round from the front
             dark(slice(0, T), slice(0, 2), 0.4)
