@@ -214,8 +214,10 @@ the Goshawk's glows filling their cuts; the twelfth: the Armadillo's rear ports 
 Clydesdale's turrets back down (they turn outward only) with the mortar and howitzer on the deck, the
 Boar's tusks apart; the thirteenth: the Armadillo's collars seated in the shell, the Clydesdale's
 turrets lower and forward with the mortar and howitzer mounts at one height. The fourteenth: firing channels
-through the Armadillo's front band ahead of its forward ports. The Prairie Dog, the Badger, the
-Goshawk, the Boar and the Clydesdale are done (Ryan). Ryan asked
+through the Armadillo's front band ahead of its forward ports, then the slab between them cut away
+to one firing deck; boolean cuts re-tiled so they wear the part's metal. **Every machine is signed
+off for now (Ryan, 1 October)**; next on the art side is judging the joints and turrets running in
+the skirmish, and the outward-only turret in the to-do. Ryan asked
 whether hand edits in Blender can be taken: yes through `forge.py export <id>`, but the models are
 built from code and any rebuild overwrites the working file, so a hand edit has to be re-expressed in
 `models_low.py` to survive; the way that works is a note or a picture, as the Boar's clip was. `tools/hero_shot.gd` renders bare now
