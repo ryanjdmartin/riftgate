@@ -412,9 +412,10 @@ def armadillo(b):
     port is a hollow of chassis with the mount at its floor, so a fitted gun rises out of
     it. Mounts (the loadout's order): hp_1 the left rear port (Rivet Gun), hp_2 the right
     rear port (Slug Cannon), hp_3 the hatch behind them, pitched forward (Missile Rack),
-    hp_4 and hp_5 two forward ports cut into the front band's crown flanking the cowl,
-    bare; the plating on the flanks and the stack at the tail are detail. The ports are
-    real holes: b.cut subtracts them from the bands before export. The Lockdown Shutters are
+    hp_4 and hp_5 two forward ports flanking the cowl, level with the ground, cut back
+    into the step behind the front band, bare; the plating on the flanks and the stack at
+    the tail are detail. The ports are real holes: b.cut subtracts them from the bands
+    before export. The Lockdown Shutters are
     the ports' stripe rims (fixed, no pin)."""
     Z0 = 26.0   # the shell's floor: the legs lift it this high
     # The shell: six bands from tail to brow, a dome in section, each proud of the last;
@@ -431,10 +432,10 @@ def armadillo(b):
     # far enough to be seen at the game's size (Ryan, 1 October).
     b.loft([(46.0, _case(40.0, Z0 + 1.0, Z0 + 13.0, 5.0)), (56.0, _case(32.0, Z0 + 3.0, Z0 + 10.0, 4.0))], "steel.plate", "cowl")
     b.box(-11.0, 11.0, 55.0, 56.5, Z0 + 3.0, Z0 + 5.5, "steel.hazard", "cowl_lip")
-    b.box(-9.0, 9.0, 46.0, 55.0, Z0 - 4.0, Z0 + 3.0, "steel.dark", "cockpit_bay")
-    b.box(-6.0, 6.0, 54.5, 55.5, Z0 - 1.5, Z0 + 1.5, "glass.glass", "visor")
+    b.box(-9.0, 9.0, 46.0, 54.0, Z0 - 4.0, Z0 + 3.0, "steel.dark", "cockpit_bay")
+    b.box(-6.0, 6.0, 53.5, 54.5, Z0 - 1.5, Z0 + 1.5, "glass.glass", "visor")   # a touch back in (Ryan, 1 October)
     for s in (-1.0, 1.0):
-        b.box(s * 11.0 - 1.2, s * 11.0 + 1.2, 53.0, 55.5, Z0 - 0.5, Z0 + 1.5, "amber.light", "lamp")
+        b.box(s * 11.0 - 1.2, s * 11.0 + 1.2, 52.0, 54.5, Z0 - 0.5, Z0 + 1.5, "amber.light", "lamp")
     # The legs: a heavy hip cuff standing out of each flank, a hinge, a thick thigh out and
     # down, a knee, a shin down onto a broad flat foot with toe plates. Long enough to stride.
     for yh in (22.0, -26.0):
@@ -455,12 +456,12 @@ def armadillo(b):
     D = (0.0, 0.707, 0.707)
     for s, kind in ((-1.0, "rivet"), (1.0, "slug")):
         px = s * 14.0
-        p0 = (px, -14.0, Z0 + 16.0)
+        p0 = (px, -17.0, Z0 + 13.0)   # deeper again (Ryan, 1 October)
         p1 = (px, 0.0, Z0 + 30.0)
         b.cut(band_obs, p0, p1, 6.6)
         _tube(b, p0, p1, 8.0, 6.4, 8, "steel.plate", "port")
         _tube(b, (px, -0.9, Z0 + 29.1), (px, 0.3, Z0 + 30.3), 8.7, 6.4, 8, "steel.stripe", "port_rim", floor_material="bore.dark", floor_depth=0.1)
-        mount = (px, -11.9, Z0 + 18.1)
+        mount = (px, -15.2, Z0 + 14.8)
         if kind == "rivet":
             with b.socket("hp_1", mount, forward=D, scale=1.2):
                 _beam(b, mount, (px, 4.0, Z0 + 34.0), _poly(3.4, 6), _poly(3.4, 6), "steel.dark", "rivet_barrel")
@@ -471,21 +472,23 @@ def armadillo(b):
                 _beam(b, (px, 10.0, Z0 + 40.0), (px, 13.0, Z0 + 43.0), _poly(3.8, 6), _poly(3.4, 6), "steel.plate", "slug_muzzle")
     # The hatch behind the ports: a missile cell in a stripe frame, pitched forward with
     # the ports so a cannon fitted there is a hull gun (hp_3).
-    _beam(b, (0.0, -32.0, Z0 + 18.0), (0.0, -24.0, Z0 + 26.0), _sq(16.0, 16.0), _sq(16.0, 16.0), "steel.stripe", "hatch_frame")
-    with b.socket("hp_3", (0.0, -24.0, Z0 + 26.0), forward=D, scale=1.2):
-        _beam(b, (0.0, -30.0, Z0 + 20.0), (0.0, -22.5, Z0 + 27.5), _sq(13.0, 13.0), _sq(13.0, 13.0), "steel.missile", "missile_cell")
-    # Two forward ports flanking the cowl, cut into the front band's crown and pitched
-    # forward, the rear ports' smaller twins (the first cut of these sat buried inside the
-    # band: Ryan, 1 October): bare mounts on their floors (hp_4, hp_5).
-    F = Vector((0.0, 11.0, 8.0)).normalized()
+    # Up and back a little, so a cannon fitted there clears the shell's crown ahead of it
+    # (Ryan, 1 October).
+    _beam(b, (0.0, -34.0, Z0 + 20.0), (0.0, -26.0, Z0 + 28.0), _sq(16.0, 16.0), _sq(16.0, 16.0), "steel.stripe", "hatch_frame")
+    with b.socket("hp_3", (0.0, -26.0, Z0 + 28.0), forward=D, scale=1.2):
+        _beam(b, (0.0, -32.0, Z0 + 22.0), (0.0, -24.5, Z0 + 29.5), _sq(13.0, 13.0), _sq(13.0, 13.0), "steel.missile", "missile_cell")
+    # Two forward ports flanking the cowl: level with the ground, cut straight back into
+    # the step behind the front band (the fifth band's front face stands seven above the
+    # sixth's crown), so a gun comes out of that plate and runs forward over the cowl's
+    # band (Ryan, 1 October). Bare mounts on their floors, deep (hp_4, hp_5).
     for s, n in ((-1.0, 4), (1.0, 5)):
         px = s * 14.0
-        p0 = Vector((px, 31.0, Z0 + 8.0))
-        p1 = p0 + F * 14.5
-        b.cut(band_obs, tuple(p0), tuple(p1), 4.8)
-        _tube(b, tuple(p0), tuple(p1), 6.0, 4.6, 8, "steel.plate", "fore_port")
-        _tube(b, tuple(p1 - F * 0.9), tuple(p1 + F * 0.3), 6.6, 4.6, 8, "steel.stripe", "fore_rim", floor_depth=0.1)
-        b.pin("hp_%d" % n, tuple(p0 + F * 2.5), forward=tuple(F), scale=1.2)
+        p0 = (px, 14.0, Z0 + 20.5)
+        p1 = (px, 31.0, Z0 + 20.5)
+        b.cut(band_obs, p0, p1, 4.8)
+        _tube(b, p0, p1, 6.0, 4.6, 8, "steel.plate", "fore_port")
+        _tube(b, (px, 30.1, Z0 + 20.5), (px, 31.3, Z0 + 20.5), 6.6, 4.6, 8, "steel.stripe", "fore_rim", floor_depth=0.1)
+        b.pin("hp_%d" % n, (px, 16.5, Z0 + 20.5), forward=(0.0, 1.0, 0.0), scale=1.2)
     # Plating on the flanks between the hips and the blowout stack at the tail with vents
     # across the rear band: detail, no mounts.
     for s in (-1.0, 1.0):
@@ -525,18 +528,23 @@ def wild_boar(b):
     # off the point, bars back to the hull.
     # Ahead of the treads' fronts (they ran into it: Ryan, 1 October), and rooted: the
     # spine runs back into the hull and the bars reach it from the glacis.
-    # Taller and wider than the sixth round's, overhanging the treads (Ryan, 1 October);
-    # the spine's height is unchanged.
+    # Tall and wide, overhanging the treads, its ends barely ahead of their fronts, raked
+    # back so the face reads at an angle, the two support bars meeting its back and the
+    # tusks growing out of its face (Ryan, 1 October). The spine's height is unchanged.
+    APEX, SPAN, SWEEP, RAKE, T = 63.0, 44.0, 22.0, 7.0, 2.0   # the point's y, the half width, the y the ends sit behind the point, the top's set-back, the thickness
+    def face(x, z, back=False):
+        return APEX - SWEEP * abs(x) / SPAN - RAKE * (z - 2.0) / 24.0 - (T if back else 0.0)
     for s in (-1.0, 1.0):
-        _rings(b, [[(0.0, 65.0, 2.0), (s * 44.0, 43.0, 2.0), (s * 44.0, 41.0, 2.0), (0.0, 63.0, 2.0)],
-                   [(0.0, 63.0, 26.0), (s * 44.0, 41.0, 26.0), (s * 44.0, 39.0, 26.0), (0.0, 61.0, 26.0)]], "steel.plate", "catcher")
+        _rings(b, [[(0.0, face(0.0, 2.0), 2.0), (s * SPAN, face(SPAN, 2.0), 2.0), (s * SPAN, face(SPAN, 2.0, True), 2.0), (0.0, face(0.0, 2.0, True), 2.0)],
+                   [(0.0, face(0.0, 26.0), 26.0), (s * SPAN, face(SPAN, 26.0), 26.0), (s * SPAN, face(SPAN, 26.0, True), 26.0), (0.0, face(0.0, 26.0, True), 26.0)]], "steel.plate", "catcher")
         for k in range(5):
             f = (k + 0.5) / 5.0
-            bx, by = s * 44.0 * f, 63.0 - 22.0 * f
+            bx = s * SPAN * f
+            by = face(bx, 26.0) - T / 2.0
             _spike(b, (bx, by, 25.0), (bx + s * 2.0, by + 7.0, 33.0), 2.0, "steel.dark", "spike")
-        _beam(b, (s * 12.0, 26.0, 8.0), (s * 12.0, 46.0, 8.0), _sq(5.0, 5.0), _sq(5.0, 5.0), "steel.dark", "bar")
-        _beam(b, (s * 5.0, 55.0, 6.0), (s * 7.0, 75.0, 12.0), _poly(3.2, 6), _poly(1.0, 6), "steel.dark", "tusk")
-    b.box(-2.0, 2.0, 20.0, 63.0, 2.0, 22.0, "steel.hazard", "catcher_spine")
+        _beam(b, (s * 12.0, 26.0, 8.0), (s * 12.0, face(12.0, 8.0, True) + 0.5, 8.0), _sq(5.0, 5.0), _sq(5.0, 5.0), "steel.dark", "bar")
+        _beam(b, (s * 5.0, face(5.0, 6.0) - 0.5, 6.0), (s * 7.0, face(5.0, 6.0) + 19.0, 12.0), _poly(3.2, 6), _poly(1.0, 6), "steel.dark", "tusk")
+    b.box(-2.0, 2.0, 20.0, face(0.0, 22.0), 2.0, 22.0, "steel.hazard", "catcher_spine")
     # The turret: a wide eight-sided drum on the hull, the machine's most prominent
     # feature, two parallel guns set well apart off a wide mantlet (hp_1 left, hp_2 right),
     # a hatch and a sight; a bare mount on its top (hp_4).
@@ -735,11 +743,19 @@ def goshawk(b):
             (30.0, hexagon(0.0, -5.9, 10.5, 3.4))], "steel.dark", "cannon_fairing")
     # The barrel out of the fairing's mouth, glowing along its length (Ryan, 30 September),
     # still behind the nose tip.
-    # The barrel plain and dark; the glow is in the mouth itself (Ryan, 1 October): the
-    # muzzle open with a rim, the bore tapering inward with glowing walls and a glowing
-    # floor just inside, so the mouth reads lit from any angle that sees it.
+    # The barrel: dark, two lit rings for interest (Ryan liked them), and lit ports down
+    # each side running back from the muzzle; the muzzle open with a rim (an annulus, no
+    # cap: the sixth round's rim was capped and hid the mouth), the bore tapering inward
+    # with glowing walls and a glowing floor just inside (Ryan, 1 October).
     b.loft([(29.0, hexagon(0.0, -6.0, 9.0, 3.0)), (40.0, hexagon(0.0, -6.0, 8.0, 2.6))], "steel.dark", "cannon_barrel", cap=False)
-    _rings(b, [[(x, 40.0, z) for x, z in hexagon(0.0, -6.0, 8.0, 2.6)], [(x, 40.0, z) for x, z in hexagon(0.0, -6.0, 6.8, 2.1)]], "steel.dark", "cannon_rim")
+    for y0 in (31.5, 36.5):
+        w = 9.0 - (y0 - 29.0) * 0.09
+        b.loft([(y0, hexagon(0.0, -6.0, w + 0.5, 3.0 - (y0 - 29.0) * 0.036 + 0.25)), (y0 + 1.2, hexagon(0.0, -6.0, w + 0.4, 3.0 - (y0 + 1.2 - 29.0) * 0.036 + 0.25))], "amber.lit", "barrel_ring", cap=False)
+    for s in (-1.0, 1.0):
+        for y0 in (33.4, 34.6, 35.8):
+            x = s * (4.4 - (y0 - 29.0) * 0.045)
+            b.box(min(x - 0.3, x + s * 0.3), max(x - 0.3, x + s * 0.3), y0, y0 + 0.7, -6.9, -5.1, "amber.lit", "barrel_port")
+    _rings(b, [[(x, 40.0, z) for x, z in hexagon(0.0, -6.0, 8.0, 2.6)], [(x, 40.0, z) for x, z in hexagon(0.0, -6.0, 6.8, 2.1)]], "steel.dark", "cannon_rim", cap=False)
     b.loft([(40.0, hexagon(0.0, -6.0, 6.8, 2.1)), (37.5, hexagon(0.0, -6.0, 5.4, 1.7))], "amber.glow", "cannon_bore", cap=False)
     b.loft([(37.6, hexagon(0.0, -6.0, 5.4, 1.7)), (37.9, hexagon(0.0, -6.0, 5.4, 1.7))], "amber.glow", "cannon_glow")
     # Canopy: small and faired, forward.
@@ -1179,9 +1195,11 @@ def _wing(b, root, tip, material, label):
     return _rings(b, [root, tip], material, label)
 
 
-def _rings(b, rings, material, label, frame=None):
-    """A loft through any number of sections given as 3D point rings, capped at both ends.
-    `frame` maps the tiles in the part's own axes (see Build._finish)."""
+def _rings(b, rings, material, label, frame=None, cap=True):
+    """A loft through any number of sections given as 3D point rings, capped at both ends
+    unless `cap` is False (an annulus or an open tube: a cap would be a disc over the
+    hole, which is what hid the Goshawk's muzzle until 1 October). `frame` maps the tiles
+    in the part's own axes (see Build._finish)."""
     bm = bmesh.new()
     vs = [[bm.verts.new(p) for p in ring] for ring in rings]
     n = len(vs[0])
@@ -1191,11 +1209,12 @@ def _rings(b, rings, material, label, frame=None):
                 bm.faces.new([r0[i], r0[(i + 1) % n], r1[(i + 1) % n], r1[i]])
             except ValueError:
                 pass
-    for ring in (vs[0], vs[-1]):
-        try:
-            bm.faces.new(ring)
-        except ValueError:
-            pass
+    if cap:
+        for ring in (vs[0], vs[-1]):
+            try:
+                bm.faces.new(ring)
+            except ValueError:
+                pass
     return b._finish(bm, material, label, None, frame)
 
 
