@@ -212,7 +212,9 @@ Armadillo's rear barrels a fixed length from the mount, the Badger's mounts on t
 Clydesdale's turrets, mortar and howitzer on pedestals clear of the lance, the Boar's tusks grown,
 the Goshawk's glows filling their cuts; the twelfth: the Armadillo's rear ports shallow sockets, the
 Clydesdale's turrets back down (they turn outward only) with the mortar and howitzer on the deck, the
-Boar's tusks apart. The Prairie Dog, the Badger and the Goshawk are done (Ryan). Ryan asked
+Boar's tusks apart; the thirteenth: the Armadillo's collars seated in the shell, the Clydesdale's
+turrets lower and forward with the mortar and howitzer mounts at one height. The Prairie Dog, the
+Badger, the Goshawk and the Boar are done (Ryan). Ryan asked
 whether hand edits in Blender can be taken: yes through `forge.py export <id>`, but the models are
 built from code and any rebuild overwrites the working file, so a hand edit has to be re-expressed in
 `models_low.py` to survive; the way that works is a note or a picture, as the Boar's clip was. `tools/hero_shot.gd` renders bare now

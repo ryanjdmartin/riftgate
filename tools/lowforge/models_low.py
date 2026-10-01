@@ -250,16 +250,15 @@ def clydesdale(b):
         tx = s * 12.0   # a touch outboard, so a traverse clears the lance (Ryan, 1 October)
         # Up on a pedestal, so the guns traverse over the lance and its guard (Ryan, 1
         # October: they would not have cleared the rail).
-        # A little above where they first sat, enough to clear the bed's rail; a turret
-        # here only turns outward, so the lance is never in its way (Ryan, 1 October).
-        b.prism("z", tx, 8.0, 49.5, 5.0, 3.0, "steel.dark", 8, "pedestal")
-        b.prism("z", tx, 8.0, 52.0, 6.0, 2.0, "steel.dark", 8, "ring")
-        with b.joint("turret_%s" % ("l" if s < 0 else "r"), (tx, 8.0, 53.0)):   # each turret traverses, outward only
-            b.box(tx - 5.0, tx + 5.0, 3.0, 13.0, 53.0, 63.0, "steel.panel", "turret")
-            b.box(tx - 2.0, tx + 2.0, 13.0, 15.0, 60.0, 62.0, "amber.light", "sight")
-            with b.socket("hp_%d" % (1 if s < 0 else 2), (tx, 8.0, 59.0)):
+        # Low, the guns barely clearing the bed's rail, and forward a little; a turret here
+        # only turns outward, so the lance is never in its way (Ryan, 1 October).
+        b.prism("z", tx, 12.0, 50.0, 6.0, 2.0, "steel.dark", 8, "ring")
+        with b.joint("turret_%s" % ("l" if s < 0 else "r"), (tx, 12.0, 51.0)):   # each turret traverses, outward only
+            b.box(tx - 5.0, tx + 5.0, 7.0, 17.0, 51.0, 61.0, "steel.panel", "turret")
+            b.box(tx - 2.0, tx + 2.0, 17.0, 18.0, 58.0, 60.0, "amber.light", "sight")
+            with b.socket("hp_%d" % (1 if s < 0 else 2), (tx, 12.0, 58.0)):
                 for s2 in (-1.0, 1.0):
-                    b.prism("y", tx + s2 * 2.6, 24.0, 59.0, 1.8, 22.0, "steel.dark", 6, "autogun")
+                    b.prism("y", tx + s2 * 2.6, 28.0, 58.0, 1.8, 22.0, "steel.dark", 6, "autogun")
     # The lance (hp_3): a breech block aft of centre, saddles along the deck, one long
     # six-sided rail out past the head, a collar, a lit emitter at the point.
     b.box(-5.0, 5.0, -24.0, -6.0, 48.0, 61.0, "steel.panel", "breech")
@@ -277,14 +276,14 @@ def clydesdale(b):
     # of the eleventh round came back down).
     b.prism("z", -13.0, -24.0, 49.5, 5.0, 3.0, "steel.dark", 8, "mortar_base")
     with b.joint("turret_mortar", (-13.0, -24.0, 51.0)):
-        with b.socket("hp_4", (-13.0, -20.0, 58.0), forward=(0.0, 0.5, 0.866)):
+        with b.socket("hp_4", (-13.0, -24.0, 55.0), forward=(0.0, 0.5, 0.866)):   # the same height as the howitzer's mount (Ryan, 1 October)
             _beam(b, (-13.0, -24.0, 51.0), (-13.0, -16.0, 65.0), _poly(4.0, 6), _poly(4.4, 6), "steel.panel", "mortar")
             _beam(b, (-13.0, -16.0, 65.0), (-13.0, -15.0, 66.8), _poly(4.4, 6), _poly(3.2, 6), "steel.dark", "muzzle")
     # The howitzer (hp_5) on the deck's right: a fat short barrel pitched up out of a
     # breech on a ring, the mortar's big brother; a bit further out, and on its gimbal.
     b.prism("z", 12.5, -14.0, 49.5, 6.0, 3.0, "steel.dark", 8, "howitzer_base")
     with b.joint("turret_howitzer", (12.5, -14.0, 51.0)):
-        with b.socket("hp_5", (12.5, -14.0, 54.0), forward=(0.0, 0.866, 0.5)):
+        with b.socket("hp_5", (12.5, -14.0, 55.0), forward=(0.0, 0.866, 0.5)):
             b.box(7.5, 17.5, -19.0, -9.0, 51.0, 59.0, "steel.panel", "howitzer_breech")
             _beam(b, (12.5, -12.0, 55.0), (12.5, 6.0, 65.4), _poly(5.0, 6), _poly(4.4, 6), "steel.dark", "howitzer")
             _beam(b, (12.5, 6.0, 65.4), (12.5, 8.6, 66.9), _poly(4.4, 6), _poly(5.2, 6), "steel.plate", "howitzer_muzzle")
@@ -474,10 +473,13 @@ def armadillo(b):
     D = (0.0, 0.707, 0.707)
     for s, kind in ((-1.0, "rivet"), (1.0, "slug")):
         px = s * 14.0
-        p0 = (px, -4.5, Z0 + 25.5)   # a shallow socket now (Ryan, 1 October: a rack fitted deep would be invisible)
+        # A shallow socket (a rack fitted deep would be invisible), but the collar's outer
+        # wall runs deep into the shell so its tilted base never stands proud of it (Ryan,
+        # 1 October: the tube and the body did not meet).
+        p0 = (px, -4.5, Z0 + 25.5)
         p1 = (px, 0.0, Z0 + 30.0)
         b.cut(band_obs, p0, p1, 6.6)
-        _tube(b, p0, p1, 8.0, 6.4, 8, "steel.plate", "port")
+        _tube(b, (px, -11.5, Z0 + 18.5), p1, 8.0, 6.4, 8, "steel.plate", "port", floor_depth=9.9)
         _tube(b, (px, -0.9, Z0 + 29.1), (px, 0.3, Z0 + 30.3), 8.7, 6.4, 8, "steel.stripe", "port_rim", floor=False)
         mount = Vector((px, -3.5, Z0 + 26.5))
         DV = Vector(D)
@@ -504,12 +506,15 @@ def armadillo(b):
     # band (Ryan, 1 October). Bare mounts on their floors, deep (hp_4, hp_5).
     for s, n in ((-1.0, 4), (1.0, 5)):
         px = s * 14.0
-        p0 = (px, 22.0, Z0 + 20.5)   # halfway back up (Ryan, 1 October)
-        p1 = (px, 31.0, Z0 + 20.5)
+        # Lowered so the collar sits inside the plate behind the cowl, its wall run back
+        # into the band (Ryan, 1 October: the tube and the body did not meet).
+        ZF = Z0 + 17.5
+        p0 = (px, 22.0, ZF)
+        p1 = (px, 31.0, ZF)
         b.cut(band_obs, p0, p1, 4.8)
-        _tube(b, p0, p1, 6.0, 4.6, 8, "steel.plate", "fore_port")
-        _tube(b, (px, 30.1, Z0 + 20.5), (px, 31.3, Z0 + 20.5), 6.6, 4.6, 8, "steel.stripe", "fore_rim", floor=False)
-        b.pin("hp_%d" % n, (px, 24.5, Z0 + 20.5), forward=(0.0, 1.0, 0.0), scale=1.2)
+        _tube(b, (px, 14.0, ZF), p1, 6.0, 4.6, 8, "steel.plate", "fore_port", floor_depth=8.0)
+        _tube(b, (px, 30.1, ZF), (px, 31.3, ZF), 6.6, 4.6, 8, "steel.stripe", "fore_rim", floor=False)
+        b.pin("hp_%d" % n, (px, 24.5, ZF), forward=(0.0, 1.0, 0.0), scale=1.2)
     # Plating on the flanks between the hips and the blowout stack at the tail with vents
     # across the rear band: detail, no mounts.
     for s in (-1.0, 1.0):
