@@ -393,8 +393,10 @@ blast and the hull hitting the ground. Nothing is shipped; a pick lands as a rec
 `forge.py` and, where the page says, a small hook (shape, maker, faction, silhouette, a word
 for blunt melee, the replay telling shield hit from block from hit) in `skirmish_screen.gd`,
 `battle_screen.gd` and `sound.gd`. The sketch script encodes AAC with `ffmpeg` where there
-is no `afconvert`, so a cloud session can render and republish the page (36 files changed on
-1 October; the rest kept). Next: Ryan's listen of the re-cut, then picks into the forge.
+is no `afconvert`, at 256 kbps because ffmpeg's own encoder smears the first 30 ms of a
+transient at 128 (measured 1 October against the Mac's files: 12 dB signal to noise on a
+tap's front against Apple's 33; 256 brings it to 27), so a cloud session can render and
+republish the page (36 files changed on 1 October; the rest kept, Apple encodes). Next: Ryan's listen of the re-cut, then picks into the forge.
 
 **How the listening page worked for the music** (the phone sketches, account A's page, 29
 September; the page block above owns the account rule). Ryan judges the music on his phone,

@@ -761,9 +761,12 @@ def write(name, x):
         w.setframerate(F.SR)
         w.writeframes(pcm.tobytes())
     m4a = os.path.join(OUT, name + ".mp4")
-    # afconvert on the Mac; ffmpeg where there is none (a cloud session).
+    # afconvert on the Mac; ffmpeg where there is none (a cloud session). ffmpeg's own AAC
+    # encoder smears the first 30 ms of a transient at 128 kbps (measured 1 October: 12 dB
+    # signal to noise on a tap's front against Apple's 33), and these are files of fronts,
+    # so it runs at 256, which brings it within a few dB of Apple at 128.
     for cmd in (["afconvert", "-f", "mp4f", "-d", "aac", "-b", "128000", "-q", "127", wav, m4a],
-                ["ffmpeg", "-y", "-loglevel", "error", "-i", wav, "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", m4a]):
+                ["ffmpeg", "-y", "-loglevel", "error", "-i", wav, "-c:a", "aac", "-b:a", "256k", "-movflags", "+faststart", m4a]):
         try:
             subprocess.run(cmd, check=True, capture_output=True)
             break
