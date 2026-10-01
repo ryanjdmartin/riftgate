@@ -491,7 +491,11 @@ class Build:
         return cutter
 
     def apply_cuts(self):
-        """Subtract every cutter from its targets and drop the cutters, before export."""
+        """Subtract every cutter from its targets and drop the cutters, before export. The
+        faces a boolean makes carry no texture coordinates and sampled the tile's dark seam
+        (Ryan, 1 October: the Armadillo's channels read black), so every cut object is
+        re-tiled afterwards by the same world-axis projection _finish gives an unframed part."""
+        touched = []
         for targets, cutter in self.cuts:
             for ob in targets:
                 mod = ob.modifiers.new("cut", "BOOLEAN")
@@ -499,8 +503,25 @@ class Build:
                 mod.object = cutter
                 with bpy.context.temp_override(object=ob, active_object=ob, selected_objects=[ob], selected_editable_objects=[ob]):
                     bpy.ops.object.modifier_apply(modifier=mod.name)
+                if ob not in touched:
+                    touched.append(ob)
             bpy.data.objects.remove(cutter, do_unlink=True)
         self.cuts = []
+        for ob in touched:
+            bm = bmesh.new()
+            bm.from_mesh(ob.data)
+            uv = bm.loops.layers.uv.verify()
+            for f in bm.faces:
+                f.smooth = False
+                n = f.normal
+                ax = max(range(3), key=lambda i: abs(n[i]))
+                a, b2 = [i for i in range(3) if i != ax]
+                for loop in f.loops:
+                    co = loop.vert.co
+                    loop[uv].uv = (co[a] / self.tile_world, co[b2] / self.tile_world)
+                f.material_index = 0
+            bm.to_mesh(ob.data)
+            bm.free()
 
     def pin(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, parts=()):
         """A socket: an Empty named `hp_<n>` at `at`, its own +y along `forward` (where the
