@@ -69,7 +69,7 @@ calls: the d4 question is closed (die size is a balance lever like every base st
 skirmish participant cap (four columns is the most a formation will be); the commander layer
 (reward pick, one-shots, city abilities, the command die) is important but waits on a baseline
 balance; a prototype hangar in the game, no economy, is agreed (paints and loadouts, carried
-into a battle for play tests); the traits' terrain rules hinge on movespeed in tens; enemy
+into a battle for play tests); the move system goes to finer steps, a must (tens preferred, the presentation in discussion; today's is a placeholder), and the traits' terrain rules ride on it; the seated die is in the new effects pass; enemy
 targeting and the horde hooks go to a design session of his own. Eight of nine foes are still
 their sketch grids; the ghoul is the one foeforge cut.
 
