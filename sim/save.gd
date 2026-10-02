@@ -358,7 +358,7 @@ static func _foe_dict(f: Foe, sk: Skirmish) -> Dictionary:
 		target = sk.mechs.find(f.target)
 	return {
 		"name": f.display_name, "content_id": f.content_id, "hp": f.hp, "hp_max": f.hp_max, "attack": f.attack,
-		"prefers_back": f.prefers_back, "pack_id": f.pack_id, "size": f.size, "stun_resist": f.stun_resist,
+		"prefers_back": f.prefers_back, "pack_id": f.pack_id, "size": f.size, "stun_resist": f.stun_resist, "armour": f.armour,
 		"actions": f.actions, "rank": f.rank, "column": f.column, "target": target,
 		"action": f.actions.find(f.action), "modifiers": mods,
 	}
@@ -375,6 +375,7 @@ static func _foe_from(d: Dictionary, sk: Skirmish) -> Foe:
 	f.pack_id = int(d.get("pack_id", 0))
 	f.size = int(d.get("size", 1))
 	f.stun_resist = int(d.get("stun_resist", 0))
+	f.armour = int(d.get("armour", 0))
 	f.actions = []
 	for a in d.get("actions", []):
 		var act: Dictionary = a.duplicate()

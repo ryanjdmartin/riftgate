@@ -700,6 +700,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 	var heat_total := 0
 	var vent := 0
 	var extra_burn := 0
+	var armoured_total := 0   # what the primary target's armour took off, for the log
 	# A vent-on-fire attack fires the machine's whole heat into the blow: its bonus is read
 	# now and the gauge is emptied once the strikes have landed.
 	var fired := heat_bonus(ms, f)
@@ -748,11 +749,15 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 			var was_alive := foe.alive()
 			var hp_before := foe.hp
 			# What the foe takes of the blow: its own statuses read last (a Shocked foe takes
-			# double, and the shock is spent by the blow).
+			# double, and the shock is spent by the blow), then its armour comes off, flat, so
+			# small blows bounce off a hardened foe the way they do off a heavy machine.
 			var taken := Effects.damage_taken(foe, dmg)
+			var foe_armoured := mini(taken, foe.armour_total())
+			taken -= foe_armoured
 			foe.hp -= taken
 			if foe == target:
 				landed = taken
+				armoured_total += foe_armoured
 			if Effects.remove(foe, "shocked"):
 				log.append("%s: the shock lands, %d doubled" % [foe.display_name, dmg])
 			if was_alive and not foe.alive() and f.has(Face.Keyword.DEVOUR):
@@ -764,7 +769,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 				var spill := taken - hp_before
 				var behind: Foe = back[foe.column] if foe.column >= 0 and foe.column < columns else null
 				if spill > 0 and behind != null and behind.alive() and not hit.has(behind):
-					var behind_taken := Effects.damage_taken(behind, spill)
+					var behind_taken := maxi(0, Effects.damage_taken(behind, spill) - behind.armour_total())
 					behind.hp -= behind_taken
 					Effects.remove(behind, "shocked")
 					log.append("%s overwhelms: %d spills into %s" % [ms.unit.display_name, behind_taken, behind.display_name])
@@ -787,7 +792,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 		how = "CRIT " + how
 	elif f.is_ranged():
 		how = "rolled %d, " % rolled_total + how
-	log.append("%s hits %s for %d (%s)" % [ms.unit.display_name, target.display_name, total, how])
+	log.append("%s hits %s for %d (%s)%s" % [ms.unit.display_name, target.display_name, total, how, " (armour -%d)" % armoured_total if armoured_total > 0 else ""])
 	if vented_all > 0:
 		log.append("%s fires its heat: -%d, +%d to the blow" % [ms.unit.display_name, vented_all, fired])
 	var was_front := target.rank == 0
@@ -819,9 +824,14 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 	var effect := str(a.get("effect", ""))
 	var value := int(a.get("value", 0))
 	match effect:
-		"halve_damage":
-			Effects.stack(f, Effects.STATUS["folded"], Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_TICK)
-			log.append("%s: %s (takes half damage until its next action)" % [f.display_name, str(a.get("name", "defends"))])
+		"harden":
+			# Armour for a turn: the status carries the action's own number, flat off every blow,
+			# and fades at the foe's next action like the half it replaced.
+			var guard: Dictionary = Effects.STATUS["folded"].duplicate(true)
+			guard["effects"][0]["value"] = maxi(0, value)
+			guard["description"] = "Armour +%d until its next action." % maxi(0, value)
+			Effects.stack(f, guard, Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_TICK)
+			log.append("%s: %s (armour +%d until its next action)" % [f.display_name, str(a.get("name", "hardens")), maxi(0, value)])
 		"regrow":
 			var before := f.hp
 			f.hp = mini(f.hp_max, f.hp + value)

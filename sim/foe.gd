@@ -14,6 +14,7 @@ var content_id: String = ""      # id in content/foes.json, for the codex
 var hp: int = 30
 var hp_max: int = 30
 var attack: int = 10             # base attack: the number the player reads as "how hard it hits"
+var armour: int = 0              # flat off every blow that lands on it (content; 2 October: the one enemy mitigation besides recovery)
 var prefers_back: bool = false   # ranged types hold the back rank and never step up
 var pack_id: int = 0            # which battlefield pack this foe came from
 var size: int = 1                # 2 = massive: fills both slots of a column
@@ -65,6 +66,12 @@ func alive() -> bool:
 
 func is_massive() -> bool:
 	return size >= 2
+
+
+## Armour right now: the foe's own plus what a defend left on it (a hardened Spawn), read
+## through the pipeline like a machine's.
+func armour_total() -> int:
+	return maxi(0, armour + Effects.foe_armour_bonus(self))
 
 
 func on_field() -> bool:
@@ -124,7 +131,8 @@ func strikes() -> int:
 
 ## What a defend, buff or debuff action does (built 30 September; the ten planned actions in
 ## content/foes.json). Each carries `effect` and, where it needs one, `value`, `foe`, `count`.
-##   defend  halve_damage: takes half damage until its next action (Fold)
+##   defend  harden: armour +`value` until its next action (Fold; flat since 2 October, one word
+##           and one icon for both sides, the half it was is gone)
 ##           regrow: regains `value` hit points (Knit)
 ##   buff    revive_once: comes back from the pool once after dying, unless executed (Get Back Up)
 ##           summon: `count` foes of `foe` join the pool at the round's end (Raise)
@@ -134,7 +142,7 @@ func strikes() -> int:
 ##           scramble: its target's next reroll lands anywhere, the same entry included (Corrupt)
 ##           crack: its target's showing entry cracks, no hull hit needed (Unmake)
 const ACTION_EFFECTS := {
-	"defend": ["halve_damage", "regrow"],
+	"defend": ["harden", "regrow"],
 	"buff": ["revive_once", "summon", "rally"],
 	"debuff": ["drain_rerolls", "add_heat", "scramble", "crack"],
 }

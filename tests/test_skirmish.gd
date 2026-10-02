@@ -1443,7 +1443,7 @@ func test_a_buff_component_grants_its_status_through_the_round() -> void:
 	assert_true(s2.assign(0, s2.mechs[1]), "on the ally")
 	s2.end_round()
 	assert_eq(Effects.stacks_of(d, "braced"), 1, "still there after one round")
-	assert_eq(d.hull, 100 - 17, "20 times 0.85, rounded, on bare hull")
+	assert_eq(d.hull, 100 - 10, "20 less the brace's armour 10, on bare hull")
 	s2.start_round()
 	s2.end_round()
 	assert_eq(Effects.stacks_of(d, "braced"), 0, "gone after the second")
@@ -2124,7 +2124,7 @@ func test_a_folding_foe_takes_half_until_its_next_action_and_a_knitting_one_regr
 	var m := _mech("A", Die.single(Face.attack(20, L)), 40, 100)
 	sk.add_mech(m)
 	var g := _ghoul(100, 10)
-	g.actions = [_special("defend", "halve_damage")]
+	g.actions = [_special("defend", "harden", {"value": 10})]
 	g.action = g.actions[0]
 	sk.add_foes([g])
 	sk.begin()
@@ -2138,7 +2138,8 @@ func test_a_folding_foe_takes_half_until_its_next_action_and_a_knitting_one_regr
 	assert_true(Effects.has(g, "folded"), "folded")
 	sk.start_round()
 	sk.assign(0, g)
-	assert_eq(g.hp, 90, "the 20 lands as 10")
+	assert_eq(g.hp, 90, "the 20 lands as 10: the fold is armour 10, flat")
+	assert_eq(g.armour_total(), 10, "read through the pipeline")
 	g.actions = [Foe.basic_action()]
 	g.action = g.actions[0]
 	sk.end_round()   # its next action: the fold fades at its tick
@@ -2332,7 +2333,7 @@ func test_the_debuffs_cost_rerolls_heat_a_reroll_and_a_component() -> void:
 
 func test_a_foes_special_action_is_picked_by_weight_and_shows_its_kind() -> void:
 	var g := _ghoul(30, 10)
-	g.actions = [Foe.basic_action(), _special("defend", "halve_damage")]
+	g.actions = [Foe.basic_action(), _special("defend", "harden", {"value": 10})]
 	g.actions[0]["weight"] = 3
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 1
@@ -2381,3 +2382,58 @@ func test_the_gauge_triggers_fire_and_never_feed_themselves() -> void:
 	sk.assign(0, null)
 	assert_eq(m.shield, 30 - 10 + 10, "the ghoul's 10 came off, the plate's 10 went on")
 	assert_eq(sk.mechs[0].heat, maxi(0, heat_before - 10), "and the breather vented for it")
+
+
+func test_a_foes_armour_comes_off_every_blow_but_never_a_burn() -> void:
+	var sk := Skirmish.new(1, 2)
+	var burst := Face.attack(15, L)
+	burst.strikes = 2
+	var m := _mech("A", Die.single(burst), 40, 100)
+	sk.add_mech(m)
+	var g := _ghoul(100, 10)
+	g.armour = 10
+	var n := _ghoul(100, 10)
+	n.armour = 5
+	sk.add_foes([g, n])
+	sk.begin()
+	sk.start_round()
+	var first: Foe = sk.front[0]
+	var second: Foe = sk.front[1]
+	assert_true(sk.assign(0, first), "two blows of 15")
+	assert_eq(first.hp, 100 - 2 * (15 - first.armour), "each blow loses the armour, flat")
+	assert_true("\n".join(sk.log).contains("(armour -%d)" % (2 * first.armour)), "the log says what the armour took: %s" % sk.log[sk.log.size() - 1])
+	# Armour read by the bot too: the expected damage is what gets past it.
+	var pol := Policy.make(Policy.GREEDY)
+	assert_eq(pol.expected_damage(sk.mechs[0], burst, second), float(2 * (15 - second.armour)), "the bot reads the armour")
+	# A blow smaller than the armour does nothing; a burn ignores it.
+	var tap := Face.attack(5, L, K.BURN)
+	var s2 := Skirmish.new(1, 1)
+	s2.add_mech(_mech("B", Die.single(tap), 40, 100))
+	var h := _ghoul(100, 10)
+	h.armour = 10
+	s2.add_foes([h])
+	s2.begin()
+	s2.start_round()
+	assert_true(s2.assign(0, h), "a tap with a burn")
+	assert_eq(h.hp, 100, "the armour holds the tap whole")
+	assert_true(h.burn_stacks() > 0, "but the burn is on")
+	s2.end_round()
+	assert_true(h.hp < 100, "and the burn ticks past the armour")
+
+
+func test_brace_is_flat_armour_for_the_rounds_it_says() -> void:
+	var sk := Skirmish.new(1, 1)
+	var brace := Face.buff("braced", 1, 1)
+	var m := _mech("A", Die.single(brace), 0, 100)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(500, 30)])
+	sk.begin()
+	sk.start_round()
+	assert_eq(m.armour, 0, "bare")
+	assert_true(sk.assign(0, null), "braces itself")
+	assert_eq(m.armour, 10, "braced is armour +10, read through the stat")
+	assert_eq(int(sk.forecast(sk.mechs[0], false)["hull_after"]), 80, "the forecast takes the armour off the 30")
+	sk.end_round()
+	assert_eq(m.hull, 80, "and so does the blow")
+	sk.start_round()
+	assert_eq(m.armour, 0, "gone with the round")

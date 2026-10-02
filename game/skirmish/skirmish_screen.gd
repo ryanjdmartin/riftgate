@@ -872,7 +872,7 @@ func _foe_rows(foe: Foe) -> Array:
 	if foe.is_suppressed():
 		rows.append(["suppress", "", "Suppressed: loses its action this round", Palette.HUD])
 	if Effects.has(foe, "folded"):
-		rows.append(["shield", "×½", "Folded: takes half damage until its next action", Palette.SHIELD])
+		rows.append(["shield", "+%d" % Effects.foe_armour_bonus(foe), "Folded: armour +%d until its next action" % Effects.foe_armour_bonus(foe), Palette.SHIELD])
 	if Effects.has(foe, "kindled"):
 		rows.append(["overcharge", "+%d" % Effects.foe_attack_bonus(foe), "Kindled: hits %d harder this round" % Effects.foe_attack_bonus(foe), Palette.HEAT])
 	if Effects.has(foe, "risen"):

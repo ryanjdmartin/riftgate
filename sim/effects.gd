@@ -78,8 +78,10 @@ const STATUS := {
 	# Devour will stack Overcharged too, for the skirmish. Names are placeholders for Ryan.
 	"overcharged": {"id": "overcharged", "name": "Overcharged", "description": "Attacks deal +10% damage per stack.",
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "multiply_damage", "value": 1.1}]},
-	"braced": {"id": "braced", "name": "Braced", "description": "Takes 15% less damage per stack.",
-		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 0.85}]},
+	# Brace is temporary armour (2 October): flat off every blow, the same word and icon as the
+	# chassis stat, never a percentage.
+	"braced": {"id": "braced", "name": "Braced", "description": "Armour +10 per stack.",
+		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 10}]},
 	"primed": {"id": "primed", "name": "Primed", "description": "Every blow it lands leaves a stack of Burning, per stack.",
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_burn", "value": 1}]},
 	# Retaliation as a debuff, not thorns (Ryan, 28 September): a foe that strikes this
@@ -99,8 +101,8 @@ const STATUS := {
 	# What a foe's defend, buff and debuff actions leave (30 September). Folded fades at the
 	# foe's next action; Kindled lasts the next round; Risen is a charge spent by a death;
 	# Scrambled sits on a machine until its next reroll, and a cleanse clears it.
-	"folded": {"id": "folded", "name": "Folded", "description": "Takes half damage until its next action.",
-		"tags": ["guard"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 0.5}]},
+	"folded": {"id": "folded", "name": "Folded", "description": "Armour +10 until its next action.",
+		"tags": ["guard"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 10}]},
 	"kindled": {"id": "kindled", "name": "Kindled", "description": "Hits 10 harder this round.",
 		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 10}]},
 	"risen": {"id": "risen", "name": "Getting Back Up", "description": "Returns from the pool once after dying, unless executed.",
@@ -558,6 +560,17 @@ static func foe_attack_bonus(f) -> int:
 	for pair in _taking_part(f, "static", null):
 		if str(pair[0].get("effect", "")) == "add_attack":
 			n += int(pair[0].get("value", 0)) * int(pair[1].stacks)
+	return n
+
+
+## What a foe's armour gains from its statuses (add_stat armour, static; a hardened foe), per
+## stack. A foe has no base dictionary, so this is its half of `stat`.
+static func foe_armour_bonus(f) -> int:
+	var n := 0
+	for pair in _taking_part(f, "static", null):
+		var eff: Dictionary = pair[0]
+		if str(eff.get("effect", "")) == "add_stat" and str(eff.get("stat", "")) == "armour":
+			n += int(eff.get("value", 0)) * int(pair[1].stacks)
 	return n
 
 

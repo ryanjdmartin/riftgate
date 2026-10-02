@@ -160,6 +160,7 @@ func make_foe(foe_id: String) -> Foe:
 	var d: Dictionary = foes[foe_id]
 	var f := Foe.make(str(d["name"]), int(d["hp"]), int(d["attack"]), str(d.get("rank", "front")) == "back")
 	f.size = int(d.get("size", 1))
+	f.armour = maxi(0, int(d.get("armour", 0)))
 	f.stun_resist = clampi(int(d.get("stun_resist", 0)), 0, 100)
 	var acts: Array = []
 	for a in d.get("actions", []):
@@ -197,6 +198,8 @@ func codex_for_foe(f: Foe) -> Dictionary:
 	var d: Dictionary = foes.get(f.content_id, {})
 	var fac: Dictionary = factions.get(str(d.get("faction", "")), {})
 	var stats := "HP %d // ATK %d // %s RANK" % [f.hp_max, f.attack, "BACK" if f.prefers_back else "FRONT"]
+	if f.armour > 0:
+		stats += " // ARM %d" % f.armour
 	if f.is_massive():
 		stats += " // MASSIVE"
 	var acts: Array[String] = []
@@ -220,7 +223,7 @@ func codex_for_foe(f: Foe) -> Dictionary:
 		"subtitle": faction_name.to_upper(),
 		"body": str(d.get("codex", "")),
 		"stats": stats,
-		"stat_items": [["hp", str(f.hp_max)], ["attack", str(f.attack)],
+		"stat_items": [["hp", str(f.hp_max)], ["attack", str(f.attack)]] + ([["armour", str(f.armour)]] if f.armour > 0 else []) + [
 			["rank", "BACK" if f.prefers_back else "FRONT"]] + ([["size", "MASSIVE"]] if f.is_massive() else []),
 		"actions": "\n".join(acts),
 		"passive": "",
@@ -748,6 +751,8 @@ func _validate_foes(errs: Array[String]) -> void:
 		_validate_design(where, f, errs)
 		if int(f.get("hp", 0)) <= 0:
 			errs.append("%s: hp must be positive" % where)
+		if int(f.get("armour", 0)) < 0:
+			errs.append("%s: armour cannot be negative" % where)
 		_validate_actions(where, f, errs)
 		if not ["front", "back"].has(str(f.get("rank", ""))):
 			errs.append("%s: rank must be front or back" % where)
