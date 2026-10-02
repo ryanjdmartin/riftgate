@@ -99,12 +99,11 @@ move binary: every land hex 10, water and mountains walls. Water gets built arou
 feature a map, with foe crossings two or three hexes wide, judged with Ryan's hovercraft).
 Pacing is open for Ryan's session: a threat bar whose marks are prizes and one of which
 unseals the boss, an elite tier, Rift Pressure escalating, the flattening reaching the gate as
-the hard backstop. **Next: the build**, in the to-do's Engine line "Movement by way of moving",
-which carries the words, the code sites and the map fixes binary foes need; it was measured in
-a cloud session on 200 generated 7x20 maps (rush wins in 3 to 9 phases, a flyer starts the boss
-fight by phase 3, a team that never moves holds the undead for 300 phases, 210 of 1,400 packs
-stuck at a shore today). Those probe scripts lived in the cloud scratchpad and are gone; the
-method is in the to-do's water-feature line.
+the hard backstop. The discussion was measured in a cloud session on 200 generated 7x20 maps
+(a rush wins in 3 to 9 phases, a flyer starts the boss fight by phase 3, a team that never
+moves holds the undead for 300 phases, 210 of 1,400 packs stuck at a shore under the old
+costs). Those probe scripts lived in the cloud scratchpad and are gone; the method is in the
+to-do's water-feature line. The build landed the same night (next paragraph).
 
 **Movement by way of moving is built** (2 October, night; bible section 4, the movement row
 ends with what stands; the to-do's ticked line lists the pieces). What the next session
