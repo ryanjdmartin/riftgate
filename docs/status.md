@@ -446,6 +446,13 @@ count in motion (`STRIPE`, `SPOKES`), the sound set, the grid at the hotter gain
 **Open, in order.** The task list is `docs/todo.md`, one line a task, grouped by who
 moves it and ticked in the commit that lands it; this is the order to take them in.
 
+0. **First, on the Mac:** run the tests. The `sound` label's validation in `sim/content_db.gd`
+   (a word or a list of words) landed from a cloud session with no Godot; the two content
+   entries that carry it are the Breaching Plow and the Gravity Knuckles. Then the effects:
+   Ryan listens to the page (the third cut of the weapons, the fourth cut of the console, the
+   blunt impact with its plasma layer, the voice in two registers, the level offsets) and his
+   notes drive the next round in `tools/soundforge/fx_sketches.py`; a pick lands in `forge.py`
+   with its hook. The page republishes from `tools/soundforge/out/fx/` with `root` set to it.
 1. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
 2. The planned engine pieces, in whichever order he wants to play first.
 3. Ryan's text for the new machines and components, and the flagged names.
