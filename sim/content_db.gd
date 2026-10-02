@@ -256,6 +256,20 @@ func codex_for_foe(f: Foe) -> Dictionary:
 
 ## Codex text for a mech: chassis codex, maker, numbers, faces (for a visual list), passive,
 ## and flavour.
+## The name plate's subtitle, part by part: the maker, the chassis's traits by their shown
+## names (Ryan, 2 October: the traits are rules the player needs, a silhouette word beside a
+## turning model was not), and the die. A chassis with no trait shows no traits part.
+func _plate_parts(c: Dictionary, maker: Dictionary, u: Unit) -> Array[String]:
+	var parts: Array[String] = [str(maker.get("name", "")).to_upper()]
+	var names: Array[String] = []
+	for t in c.get("traits", []):
+		names.append(str(vocabulary.get(str(t), {}).get("name", str(t))).to_upper())
+	if not names.is_empty():
+		parts.append(", ".join(names))
+	parts.append("D%d" % (u.die.size() if u.die != null else 0))
+	return parts
+
+
 func codex_for_unit(u: Unit) -> Dictionary:
 	var c: Dictionary = chassis.get(u.chassis_id, {})
 	var maker: Dictionary = makers.get(str(c.get("maker", "")), {})
@@ -297,7 +311,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 	var passive := "\n".join(lines)
 	return {
 		"title": u.display_name,
-		"subtitle": "%s // %s // D%d" % [str(maker.get("name", "")).to_upper(), str(c.get("silhouette", "")).to_upper(), u.die.size() if u.die != null else 0],
+		"subtitle": " // ".join(_plate_parts(c, maker, u)),
 		"designation": str(c.get("designation", "")),   # the maker's long name; the title is the nickname
 		"body": str(c.get("codex", "")),   # never fantasy: that field is design notes and homages
 		"stats": stats,
