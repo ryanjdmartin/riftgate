@@ -131,9 +131,10 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 - [x] Land Ryan's phone-sketch picks in the forge (28 September: the driven bass, the backing guitar, the kick, the toms, the crash, the sub's shadow, the rift levels)
 - [ ] A speakers or headphones setting (default speaker on a phone; Godot cannot tell what is plugged in): shipped levels for headphones, an offset per track and an EQ on the music bus for the speaker profile; discuss the offsets first
 - [ ] The Risen and Infernal Horde boss themes from their seeds; melodies proposed in chat first
-- [ ] The effects' second pass: Ryan listens to the 1 October re-cut (console beeps, barrel, rack, blade, laser, plasma, deflector, the punch, blocks, the shield hit, the kills) on the listening page; picks land in `forge.py` with their hooks (shape, maker, faction, silhouette; the replay telling a shield hit from a block from a hit, which `_land_blow` now plays as two)
+- [ ] The effects' second pass: Ryan listens to the third cut of 2 October (the 90s console, every weapon drawn out with heft, shields and buffs, the shield hit and break, the kills, the level offsets) on the listening page; picks land in `forge.py` with their hooks (shape, maker, faction, silhouette; the replay telling a shield hit from a block from a hit, which `_land_blow` now plays as two)
 - [ ] A content word for the blunt melee pieces (Gravity Knuckles, Breaching Plow, bare fists) so a punch plays instead of a blade; Ryan names it
-- [ ] Whether the seated die wants a voice (a low quiet E3 is the candidate) or stays toneless
+- [x] Whether the seated die wants a voice (2 October: it has one, a low E3, since the console is deliberate now)
+- [ ] The codex's open and close and the pause menu in the 90s console grammar, once the console picks land
 - ~~The Far Bank's wrap at bar nine lands without the room's tail~~ (Ryan, 29 September: the loop is fine)
 - ~~A light tight kick under The Far Bank's bass drum, as a sketch~~ (Ryan, 29 September: not missing any bass on the phone)
 - ~~The real recordings and the real track: who makes them~~ (Ryan, 29 September: no decision needed, the forge on this computer is the instrument)

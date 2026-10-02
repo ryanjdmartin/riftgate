@@ -389,14 +389,22 @@ and the key under it (more beeps, fewer clicks), the barrel's breech later, the 
 longer, the blade longer, the laser much longer, the plasma with a windup, the deflector
 ringing on, a punch (new; metal into flesh, no plate), blocks that glance instead of knocking
 hollow, a hit on a standing shield (new, `shield_hit`), and a two-second kill with a second
-blast and the hull hitting the ground. Nothing is shipped; a pick lands as a recipe in
+blast and the hull hitting the ground. **The third cut landed 2 October** on Ryan's direction of the night before (the bible's sound
+row has it): more oomph; the weapons over-the-top Doom energy, drawn out since each die is
+deliberate, every blow with its weight in the speaker's band (`heft`) and a boom tail,
+measured through the phone model against the shipped sound; shields and buffs the same (the
+shield breaking joins the page); the console a 90s computer (a clack, a thick square-and-saw
+voice with an octave under it, data bursts, stepped confirms, the seated die with a voice,
+resolve on a power chord), which retired the 24 September "future-digital, not retro" line in
+the bible; the sketches written over the shipped levels (console +4 dB, blows +2, shields and
+buffs +2, kills +1, `BOOST`), said on the page. Nothing is shipped; a pick lands as a recipe in
 `forge.py` and, where the page says, a small hook (shape, maker, faction, silhouette, a word
 for blunt melee, the replay telling shield hit from block from hit) in `skirmish_screen.gd`,
 `battle_screen.gd` and `sound.gd`. The sketch script encodes AAC with `ffmpeg` where there
 is no `afconvert`, at 256 kbps because ffmpeg's own encoder smears the first 30 ms of a
 transient at 128 (measured 1 October against the Mac's files: 12 dB signal to noise on a
 tap's front against Apple's 33; 256 brings it to 27), so a cloud session can render and
-republish the page (36 files changed on 1 October; the rest kept, Apple encodes). Next: Ryan's listen of the re-cut, then picks into the forge.
+republish the page (every file re-rendered 2 October). Next: Ryan's listen of the third cut, then picks into the forge.
 
 **How the listening page worked for the music** (the phone sketches, account A's page, 29
 September; the page block above owns the account rule). Ryan judges the music on his phone,
