@@ -18,7 +18,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Judge the turrets traversing and the limbs striking in the skirmish, running (idle scan, a flinch on a shot); and each class's size per machine on a refit (a pin's `scale` in `models_low.py`)
 - [ ] A turret joint that turns outward only (the Clydesdale's, beside the lance): the view's idle and flinch swing both ways today
 - [ ] Decide whether the Clydesdale's hand-modelled turret pairs should match the twin-barrel class's spacing, since on a swap the class is what shows (the Prairie Dog's are the class now)
-- [ ] Propose in chat a Minerva intercept component for the starter set (Ryan, 30 September: tanks need class-based target-modification beyond the Proximity Klaxon)
+- [ ] Propose in chat a Minerva intercept component for the starter set (Ryan, 30 September: tanks need class-based target-modification beyond the Proximity Klaxon; since 2 October the Klaxon is a lure with an area, and a lure on a weapon may be the intercept)
 - [ ] A full play of Hold The Line in the game, start to wrap; notes by section letter
 - [ ] Read `docs/balance.md` (1 October, every engine piece in) against your own play; then either the numbers move or the bot's next rung is built
 - [ ] Discuss first, then decide: ally wrecks (block a hex? a round or the battle?)
@@ -32,7 +32,8 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Discuss first, then decide: does a pack keep its foes' hull between fights (a withdrawal leaves them hurt today only in the count), and how the map shows it (the strength segments could show it)
 - [ ] The ideas list: burning terrain, statuses carried between fights, hull repair
 - [ ] Movespeed in tens like every other number, or in hexes as now
-- [ ] Enemy targeting among machines in a skirmish (lowest shield, highest heat, last attacker, random) and how it is telegraphed
+- [x] Enemy targeting among machines in a skirmish (2 October: every foe picks its own target by its aim, weighted and shown; the counterplay is Lure, Suppress and Disrupt, Shield, Armour and Brace; bible section 5)
+- [ ] Confirm the ghoul's one move (2 October, proposed: Claw, 5 plus 5 for every other ghoul on the field, in place of Get Back Up)
 - [ ] The game's name
 - [ ] Name and brief the second Aphelion machine: a hovercraft that runs hot, with heat as the suite's power (a stack per 20 heat held on every status it applies); a venomous sea creature's name; buffs exist now, so it can be built when briefed
 
@@ -40,8 +41,9 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 
 Nothing in content is planned any more; every piece the 28 September content leaned on runs since 30 September (bible section 7, "The 28 September pieces, built"). What is left waits on a design line from Ryan first. Nothing here is claimed by another session; a session that takes a line says so in this file.
 
-- [ ] The planned statuses still without an engine: Phased, Energy Armour; both want a design line first (what applies Phased, what Energy Armour's flat number is)
-- [ ] The planned player keywords: Corrode, Scramble, Confuse
+- [ ] The targeting pass (2 October, bible sections 5 and 9), in order, with tests on the Mac: armour on foes as a stat; `aim` on a foe type and a move with the per-foe weighted pick (exposed, anything, heat, armed, focus); `when` on a move with the validator's list, the no-repeat rule and attacks at 2 to a special's 1; Lure as a retarget riding on any foe-targeted entry, no status; Disrupt (the other move, the next in a boss's pattern); Brace as flat temporary armour; the vocabulary (Taunt, Beacon, Scramble, Confuse, Energy Armour out; Lure, Disrupt, Aim in; Phased parked); then the nine foes rewritten as the section 9 row says
+- [ ] The runner reads targeting on the team cells: today's lowest shield against independent weighted picks against a focused back rank, as team hull lost and rounds per fight
+- [ ] Phased (parked) and Corrode still want a design line first
 - [ ] The tank trait (planned in the vocabulary; nothing defines what it does)
 - [ ] Foe roles: undefined anywhere, so nothing built; Ryan proposes what a role is before it is coded
 - [ ] A dedicated hunter foe and the rift spawning formations, once Ryan has proposed them (the Ryan section)

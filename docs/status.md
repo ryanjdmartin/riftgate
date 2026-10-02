@@ -201,6 +201,17 @@ because Ryan is colourblind: check a new colour by simulation (CLAUDE.md has the
 2.6, the intent field's stripe width and spoke count in motion (`STRIPE`, `SPOKES`), the
 sound set, the grid at the hotter gain.
 
+**Enemy targeting (2 October; bible section 5, the playtest set in section 9).** Decided in a
+cloud session with no Godot, so nothing is built: every foe picks its own target at round start
+by its `aim` (exposed, anything, heat, armed, focus), weighted and shown; the counterplay is
+Lure (rides on any foe-targeted entry, retargets every foe it reaches, no chip), Suppress
+(unchanged), Disrupt (the foe's other move), Shield, Armour and a flat Brace. Taunt, Beacon,
+Scramble, Confuse and Energy Armour are cut; Phased parked. Foes carry armour; every special
+has a `when`; a special never fires twice running; bosses get a third move below half; the
+nine foes are rewritten in the bible row and the ghoul's swarm claw awaits Ryan's word. Until
+the engine pass lands, the game still runs the lowest-shield rule and the old keywords; the
+content and vocabulary are untouched so the build stays green.
+
 **Open, in order.** The task list is `docs/todo.md`, one line a task, grouped by who moves
 it and ticked in the commit that lands it; this is the order to take them in.
 
@@ -211,10 +222,9 @@ it and ticked in the commit that lands it; this is the order to take them in.
    blunt impact with its plasma layer, the voice in two registers, the level offsets) and his
    notes drive the next round in `tools/soundforge/fx_sketches.py`; a pick lands in `forge.py`
    with its hook. The page republishes from `tools/soundforge/out/fx/` with `root` set to it.
-0. First, on the Mac: run the tests. The `sound` label's validation in `sim/content_db.gd` landed from a cloud session with no Godot (the carriers are the Breaching Plow and the Gravity Knuckles).
 1. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
 2. Ryan's text for the new machines and components; with every machine signed off for now, the joints and turrets judged running in the skirmish.
 3. The discuss-first decisions in the Ryan section, the economy last.
-4. The engine gaps waiting on design (Phased, Energy Armour, Corrode, Scramble, Confuse, foe roles), and a dedicated hunter foe and spawned formations once proposed.
+4. The targeting pass (below): the engine in the to-do's order, with tests on the Mac, then the runner's read on the team cells. The engine gaps still waiting on design (Phased parked, Corrode, foe roles), and a dedicated hunter foe and spawned formations once proposed.
 5. Audio: a full play of Hold The Line, the console's fresh pass and the effects' picks, the two boss themes.
 6. Art: enemy art through foeforge, the hangar. Before a phone leaves the desk: onboarding, then tuning.
