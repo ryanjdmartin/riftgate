@@ -100,7 +100,7 @@ var _focus: Dictionary = {}
 ## A machine runs hot, for a foe's condition, from this much heat on.
 const HOT_HEAT := 20
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn.
-const UNTARGETED_EFFECTS := ["harden", "regrow", "revive_once", "summon", "rally", "drain_rerolls"]
+const UNTARGETED_EFFECTS := ["harden", "regrow", "revive_once", "summon", "rally", "drain_rerolls", "heat_all", "corrupt_all"]
 
 
 func _init(seed_value: int = 0, columns_arg: int = DEFAULT_COLUMNS) -> void:
@@ -266,6 +266,10 @@ func scorch_incoming(ms: MechState) -> int:
 		if f.attacks() and f.has_keyword(f.action, "scorch"):
 			stacks += f.strikes()
 		elif str(f.action.get("effect", "")) == "add_heat":
+			heat += int(f.action.get("value", 0))
+	# A move that heats every machine counts whoever it is aimed at.
+	for f in field_foes():
+		if f.alive() and not f.is_suppressed() and str(f.action.get("effect", "")) == "heat_all" and f.hp - int(Effects.tick_preview(f)["hp"]) > 0:
 			heat += int(f.action.get("value", 0))
 	return stacks * per_stack + heat
 
@@ -991,6 +995,24 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			if t.face_index >= 0:
 				log.append("%s: %s, %s's showing component takes the blow" % [f.display_name, str(a.get("name", "unmakes")), t.unit.display_name])
 				_injure_entry(t, t.face_index)
+		"disable":
+			# The entry the die shows is switched off through the machine's next turn, no blow.
+			if t.face_index >= 0:
+				Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, round + 1)
+				log.append("%s: %s, %s's %s is switched off" % [f.display_name, str(a.get("name", "hushes")), t.unit.display_name, t.die.faces[t.face_index].describe()])
+		"heat_all":
+			var names: Array[String] = []
+			for ms in live_mechs():
+				_add_heat(ms, value)
+				names.append(ms.unit.display_name)
+			log.append("%s: %s, +%d heat to %s" % [f.display_name, str(a.get("name", "erupts")), value, ", ".join(names)])
+		"corrupt_all":
+			var hit_names: Array[String] = []
+			for ms in live_mechs():
+				if ms.face_index >= 0:
+					Effects.corrupt_entry(ms.unit, ms.face_index, "foe:" + f.content_id)
+					hit_names.append(ms.unit.display_name)
+			log.append("%s: %s, the showing component of %s is corrupted" % [f.display_name, str(a.get("name", "unravels")), ", ".join(hit_names) if not hit_names.is_empty() else "nobody"])
 		_:
 			log.append("%s: %s" % [f.display_name, str(a.get("name", "acts"))])
 

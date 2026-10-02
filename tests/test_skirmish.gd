@@ -2681,3 +2681,54 @@ func test_brace_is_flat_armour_for_the_rounds_it_says() -> void:
 	assert_eq(m.hull, 80, "and so does the blow")
 	sk.start_round()
 	assert_eq(m.armour, 0, "gone with the round")
+
+
+func test_the_hush_the_eruption_and_the_unravel_run() -> void:
+	# Hush: the showing weapon is switched off through the machine's next turn, no blow.
+	var sk := Skirmish.new(1, 1)
+	var m := _mech("A", Die.single(Face.attack(10, L)), 40, 100)
+	sk.add_mech(m)
+	var w := _ghoul(500, 10)
+	w.actions = [_special("debuff", "disable", {"aim": "armed", "when": "machine_armed"})]
+	w.action = w.actions[0]
+	sk.add_foes([w])
+	sk.begin()
+	sk.start_round()
+	assert_false(w.attacks(), "a gun is showing, so the hush is open")
+	sk.end_round()
+	assert_eq(m.shield, 40, "no blow")
+	sk.start_round()
+	assert_eq(sk.mechs[0].face().kind, Face.Kind.BLANK, "the entry shows blank the next turn")
+	assert_true("\n".join(sk.log).contains("is switched off"), "the log says so")
+	# Eruption: heat to every machine, whoever it was aimed at, and the forecast says so for all.
+	var s2 := Skirmish.new(1, 1)
+	var a := _mech("A", Die.single(Face.shield(10)), 40, 100)
+	var b := _mech("B", Die.single(Face.shield(10)), 40, 100)
+	s2.add_mech(a)
+	s2.add_mech(b)
+	var lord := _ghoul(500, 10)
+	lord.actions = [_special("debuff", "heat_all", {"value": 10})]
+	lord.action = lord.actions[0]
+	s2.add_foes([lord])
+	s2.begin()
+	s2.start_round()
+	assert_eq(s2.scorch_incoming(s2.mechs[0]), 10, "the forecast heats the first")
+	assert_eq(s2.scorch_incoming(s2.mechs[1]), 10, "and the second, whoever the arrow points at")
+	s2.end_round()
+	assert_eq(s2.mechs[0].heat, 10, "both machines")
+	assert_eq(s2.mechs[1].heat, 10, "took the heat")
+	# Unravel: every machine's showing component is corrupted.
+	var s3 := Skirmish.new(1, 1)
+	var c := _mech("C", Die.single(Face.attack(10, L)), 40, 100)
+	var d := _mech("D", Die.single(Face.attack(10, L)), 40, 100)
+	s3.add_mech(c)
+	s3.add_mech(d)
+	var maw := _ghoul(500, 10)
+	maw.actions = [_special("debuff", "corrupt_all")]
+	maw.action = maw.actions[0]
+	s3.add_foes([maw])
+	s3.begin()
+	s3.start_round()
+	s3.end_round()
+	assert_eq(Effects.corrupt_stacks(c, s3.mechs[0].face_index), 1, "the first machine's showing entry is corrupted")
+	assert_eq(Effects.corrupt_stacks(d, s3.mechs[1].face_index), 1, "and the second's")

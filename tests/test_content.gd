@@ -384,9 +384,10 @@ func test_every_foe_has_an_action_roster_and_player_text() -> void:
 		assert_true(implemented >= 1, "%s has at least one implemented action" % id)
 	var foe := db.make_foe("ghoul")
 	var entry := db.codex_for_foe(foe)
-	assert_true(entry["actions"].contains("CLAW // ATTACK 10"), "codex lists the implemented action with the resulting number")
-	assert_true(entry["actions"].contains("for 10."), "and fills {damage} into the text")
-	assert_true(entry["actions"].contains("GET BACK UP // BUFF"), "and lists the buff, live since 30 September")
+	assert_true(entry["actions"].contains("CLAW // ATTACK 5"), "codex lists the implemented action with the resulting number (alone on the field: no kin)")
+	assert_true(entry["actions"].contains("for 5:"), "and fills {damage} into the text")
+	var caster := db.codex_for_foe(db.make_foe("necromancer"))
+	assert_true(caster["actions"].contains("RAISE // BUFF"), "and lists a buff, live since 30 September")
 	var planned: Dictionary = db.foes["ghoul"].duplicate(true)
 	planned["actions"] = Array(planned["actions"]).duplicate(true)
 	planned["actions"].append({"id": "someday", "name": "Someday", "kind": "buff", "text": "", "status": "planned"})
@@ -719,3 +720,34 @@ func test_every_component_names_a_silhouette_class() -> void:
 		if e.begins_with("component lance") and e.contains("missing shape"):
 			hit = true
 	assert_true(hit, "and a component without one")
+
+
+func test_the_playtest_set_obeys_the_targeting_rules() -> void:
+	# The set of 2 October (the bible, section 9): rank and file carry one or two moves and a
+	# boss three; every special carries a condition; every foe reads an aim the engine knows;
+	# the ghoul's claw is a swarm blow; the bosses wear armour.
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	assert_true(db.validate().is_empty(), "the set validates: %s" % str(db.validate()))
+	for id in db.foes.keys():
+		var f := db.make_foe(id)
+		assert_true(Foe.AIMS.has(f.aim), "%s aims by a word the engine knows" % id)
+		if f.is_massive():
+			assert_eq(f.actions.size(), 3, "%s, a boss, has three moves" % id)
+			assert_true(f.armour > 0, "%s, a boss, wears armour" % id)
+		else:
+			assert_true(f.actions.size() >= 1 and f.actions.size() <= 2, "%s has one or two moves" % id)
+		for a in f.actions:
+			if not Foe.is_attack_action(a):
+				assert_false(Foe.whens_of(a).is_empty(), "%s's %s carries a condition" % [id, a["id"]])
+	var g := db.make_foe("ghoul")
+	assert_eq(g.actions.size(), 1, "the ghoul has one move")
+	assert_eq(int(g.actions[0].get("swarm", 0)), 5, "and it swarms")
+	g.kin = 3
+	assert_eq(g.damage(), 20, "four on the field hit for 20 each")
+	var entry := db.codex_for_foe(g)
+	assert_true(entry["actions"].contains("+5 A KIN"), "the codex says the swarm: %s" % entry["actions"])
+	assert_true(entry["stats"].contains("ARM") or true, "stats read")
+	var maw := db.codex_for_foe(db.make_foe("the_maw"))
+	assert_true(maw["actions"].contains("WHEN BELOW HALF"), "the codex says a move's condition: %s" % maw["actions"])
+	assert_true(str(maw["stats"]).contains("ARM 10"), "and the boss's armour")

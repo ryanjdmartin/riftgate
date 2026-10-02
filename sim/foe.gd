@@ -188,10 +188,13 @@ func strikes() -> int:
 ##           add_heat: its target gains `value` heat (Stoke)
 ##           scramble: its target's next reroll lands anywhere, the same entry included (Corrupt)
 ##           crack: its target's showing entry cracks, no hull hit needed (Unmake)
+##           disable: its target's showing entry is switched off through its next turn (Hush)
+##           heat_all: every machine gains `value` heat (Eruption; nobody in particular)
+##           corrupt_all: every machine's showing entry is corrupted (Unravel; nobody in particular)
 const ACTION_EFFECTS := {
 	"defend": ["harden", "regrow"],
 	"buff": ["revive_once", "summon", "rally"],
-	"debuff": ["drain_rerolls", "add_heat", "scramble", "crack"],
+	"debuff": ["drain_rerolls", "add_heat", "scramble", "crack", "disable", "heat_all", "corrupt_all"],
 }
 
 ## Tags an attack action may carry. Anything true or false about a blow is a tag here, never
