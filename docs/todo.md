@@ -72,7 +72,7 @@ Nothing in content is planned any more; every piece the 28 September content lea
 
 ## Audio
 
-- [ ] A speakers or headphones setting (default speaker on a phone; Godot cannot tell what is plugged in): shipped levels for headphones, an offset per track and an EQ on the music bus for the speaker profile; discuss the offsets first
+- [x] A speakers or headphones setting (2 October: not needed; the one master balances for both for now, Ryan)
 - [ ] The Risen and Infernal Horde boss themes from their seeds; melodies proposed in chat first
 - [ ] The effects' pass: Ryan's picks from the listening page land in `forge.py` with their hooks (shape, maker, faction, silhouette, the `sound` label; the replay telling a shield hit from a block from a hit, which `_land_blow` now plays as two)
 - Stretch, not now: a modification that adds burn or shock to a component adds its sound layer

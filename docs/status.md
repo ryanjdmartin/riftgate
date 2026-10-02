@@ -194,8 +194,9 @@ Content carries a `sound` label on a component (a word or a list meaning layers,
 lands as a recipe in `forge.py` with its hook (shape, maker, faction, silhouette, the label, the
 replay telling shield hit from block from hit). The sketch script encodes AAC with `ffmpeg` at
 256 kbps where there is no `afconvert` (its encoder smears a transient's front at 128). Next:
-Ryan's listen of the fresh console (the verbs first, then the climax row); the speakers/headphones setting; the Risen and Infernal
-Horde boss themes from their seeds, melodies proposed in chat first.
+Ryan's listen of the fresh console (the verbs first, then the climax row); the Risen and Infernal
+Horde boss themes from their seeds, melodies proposed in chat first. The speakers/headphones
+setting is dropped (Ryan, 2 October): the one master balances for both for now.
 
 **The phone (bible section 11 has four rows on it; README has the commands).** Ryan's Pixel
 runs the debug APK at 60 fps with the fine map (the default, since the Compatibility renderer
@@ -221,5 +222,5 @@ it and ticked in the commit that lands it; this is the order to take them in.
 2. Ryan's text for the new machines and components; with every machine signed off for now, the joints and turrets judged running in the skirmish.
 3. The discuss-first decisions in the Ryan section, the economy last.
 4. The engine gaps waiting on design (Phased, Energy Armour, Corrode, Scramble, Confuse, foe roles), and a dedicated hunter foe and spawned formations once proposed.
-5. Audio: a full play of Hold The Line, the console's fresh pass and the effects' picks, the speakers/headphones setting, the two boss themes.
+5. Audio: a full play of Hold The Line, the console's fresh pass and the effects' picks, the two boss themes.
 6. Art: enemy art through foeforge, the hangar. Before a phone leaves the desk: onboarding, then tuning.
