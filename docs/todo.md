@@ -12,13 +12,13 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Name a dedicated hunter foe (Ryan, 1 October: the brute's hunt is a placeholder; a stalker type with a caveat of its own, proposed in chat first)
 - [ ] Formations (Ryan, 1 October): seed the opening enemy formations as threatening shapes with a front and a back, and have the rift spawn formations rather than single packs; shapes proposed in chat first
 - [ ] Judge on the phone after a re-export: the machines' outline at 2.6 (`MechView3D.OUTLINE`; 1.0 was the thin), the intent field in motion (stripe width `STRIPE`, ring spokes `SPOKES`, the pulse), the machine's lock's contrast (the light at half), the orange pulse of the gate's hazard glyphs, the sound set, the grid at `GRID_GAIN_PHONE`
-- [ ] Codex and flavour for the seven new machines, the Baboon's flavour, and the 42 components whose codex is empty
+- [ ] Codex and flavour for the nine new machines, the Baboon's flavour, and the 45 components whose codex is empty
 - [ ] Listen to the effects' second pass as re-cut 1 October on the listening page (console beeps, barrel, rack, blade, laser, plasma, deflector, the punch, blocks, the shield hit, the kills); picks land in `forge.py` with their hooks (shape, maker, faction, way of moving and leg count; the replay telling a shield hit from a block from a hit)
 - [ ] A content word for the blunt melee pieces (Gravity Knuckles, Breaching Plow, bare fists) so a punch plays instead of a blade; Ryan names it
 - [ ] Judge the limbs striking and the turrets flinching in the skirmish, running, and each machine's acts, movement and cornering once built; and each class's size per machine on a refit (a pin's `scale` in `models_low.py`)
 - [ ] Propose in chat a Minerva intercept component for the starter set (Ryan, 30 September: tanks need class-based target-modification beyond the Proximity Klaxon)
 - [ ] A full play of Hold The Line in the game, start to wrap; notes by section letter
-- [ ] Read `docs/balance.md` (1 October, every engine piece in) against your own play; then either the numbers move or the bot's next rung is built
+- [ ] Read `docs/balance.md` (2 October, thirteen machines) against your own play; then either the numbers move or the bot's next rung is built
 - [ ] Discuss first, then decide: ally wrecks (block a hex? a round or the battle?)
 - [ ] Discuss first, then decide: what terrain does in a skirmish (things the machines feel, never a bonus to the foes; burning terrain a candidate)
 - [ ] Discuss first, then decide: base defences (gate guns, then turrets; `Battlefield.defenses()` is empty)
@@ -32,12 +32,16 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Judge the move prices in play once movement in tens lands
 - [ ] Enemy targeting and the horde hooks, in a design session Ryan is starting (2 October). Built: a foe strikes the machine drawing its rank (taunt or beacon), else the weakest shield, then the weakest hull; holding a foe draws its arrows. Open: whether foe types vary from that (highest heat, last attacker, random), a commander unit whose death scrambles a pack, how stupid the rank and file may be
 - [ ] The game's name
-- [ ] Name and brief the second Aphelion machine: a hovercraft that runs hot, with heat as the suite's power (a stack per 20 heat held on every status it applies); a venomous sea creature's name; buffs exist now, so it can be built when briefed
+- [x] Name and brief the second Aphelion machine: the Stingray, built 2 October with the Puffin
+- [ ] Judge the Stingray's and the Puffin's first renders on the hangar's Models tab (notes by part; a note moves a number in `models_low.py`, then `forge.py build` and one `--import`)
+- [ ] Decide the Puffin's passive (discuss first): the overshield, shield an ally past its maximum, with its cost or second effect; Claude's shape is Overpressure, the excess fading at the end of the round, the fixed Prow Projector outward-only; then it gets built, with the gauges showing the excess
+- [ ] Judge the hover idle running in the skirmish: the pitch (`sway_pitch` 0.06, new 2 October) and the bob (0.6), hotter or quieter
 
 ## Engine
 
 Nothing in content is planned any more; every piece the 28 September content leaned on runs since 30 September (bible section 7, "The 28 September pieces, built"). Movement in tens, the machine weld, the joint pass and the idle acts are decided and ready to build ; the rest waits on a design line from Ryan first. Nothing here is claimed by another session; a session that takes a line says so in this file.
 
+- [ ] The Puffin's Overpressure, once Ryan decides it (the Ryan section): shield past maximum at the cap site when the Puffin's shield component is spent on an ally, a round-end trim, the gauges showing the excess
 - [ ] The planned statuses still without an engine: Phased, Energy Armour; both want a design line first (what applies Phased, what Energy Armour's flat number is)
 - [ ] The planned player keywords: Corrode, Scramble, Confuse
 - [ ] Movement in tens (decided 2 October; bible section 4, the movement-in-tens row has the price table). Moves and costs become tens: every chassis's and foe's `movespeed` times ten in content (and the `3` default in `sim/content_db.gd`), `BattleMap.move_cost` returns the row's price by way of moving (tracked, wheeled, walker, hover, flyer; the tracked trait was tank until 2 October), `Battlefield` budgets read the new numbers unchanged. Wheeled is in the vocabulary and on the Prairie Dog and the Dingo since 2 October (planned, no effect yet); flip it to implemented when its prices land. Leftover move is stranded; the one-hex fallback (a machine that has not moved may always enter one adjacent hex) only if Ryan finds stranding mean in play. Presentation: a move gauge the drawn route drains, each step's cost visible, the route plaque in tens, the codex's move with its plain-ground hex count, the terrain codex entries rewritten per way of moving (water's says impassable today, which is wrong since the fording row). Zones stay in hexes; an aggressive pack's reach is its move by cost then its zone in hexes (check the ring). Rescale the movement phase's pace by movespeed, the validator's floor, the hangar page's move column, and bump `Save.VERSION`. Tests in `tests/test_battlefield.gd`, `test_battle.gd`, `test_battle_screen.gd`, `test_save.gd`, `test_content.gd`
@@ -49,6 +53,7 @@ Nothing in content is planned any more; every piece the 28 September content lea
 - [ ] A dedicated hunter foe and the rift spawning formations, once Ryan has proposed them (the Ryan section)
 - [ ] Onboarding: the gesture tutorial and the cheat sheet; the reroll rule and the engagement zone first
 - [ ] A mixed-pack cell in `tools/balance.gd` (two packs in one contact), so overwhelm and the Databank can be read; then rerun after each engine piece, and read bands, not numbers
+- [ ] Read the Stingray's and the Puffin's bands in `docs/balance.md` (2 October, thirteen machines): whether cooling 0 with the Lance's heat 20 walls the Stingray or runs away, and the Primed double-dip
 
 ## Map and screens
 
