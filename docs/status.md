@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.17 since 2 October, late); republish it from the committed file after every bible change, passing that URL.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.18 since 2 October, late); republish it from the committed file after every bible change, passing that URL.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -91,7 +91,7 @@ code. Ryan's calls, each in the bible:
   Honey Badger cannot ford today; water's terrain codex wrongly says impassable.
 
 **2 October, late: movement by way of moving and the pacing direction** (bible section 4, the
-movement row decided and the pacing row open; bible v0.17). The day's price table is retired:
+movement row decided and the pacing row open; bible v0.18). The day's price table is retired:
 a bigger move bought back any price, so a wheeled 60 reached everything a walker 30 did.
 Instead each way of moving calls each ground fast (5), normal (10) or slow (enterable with any
 move left, and it ends the move), on four grounds: open (plain and road; road is art only),
@@ -107,6 +107,13 @@ a cloud session on 200 generated 7x20 maps (rush wins in 3 to 9 phases, a flyer 
 fight by phase 3, a team that never moves holds the undead for 300 phases, 210 of 1,400 packs
 stuck at a shore today). Those probe scripts lived in the cloud scratchpad and are gone; the
 method is in the to-do's water-feature line.
+
+**The bible is v0.18 and carries rows not yet on main.** Another session built the two
+hovercraft on 2 October (the Stingray and the Puffin, the `on_stack` trigger, Numbed exempt from
+every interaction, propulsion reading the maker) and published the bible as v0.17 without
+pushing its branch; this session merged its movement rows onto that published copy and
+committed the result, so the bible here describes the hovercraft whose content and models
+are still on that session's branch. When that branch lands, its bible resolves to main's copy.
 
 **Open from the audit (1 October).** The bible's HUD palette row (18 September) read Ryan's
 swatch confusions as protanomalous, while the 29 September rule says he has not named the
