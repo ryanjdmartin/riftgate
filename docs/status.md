@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.16 since 2 October); republish it from the committed file after every bible change, passing that URL.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.17 since 2 October, late); republish it from the committed file after every bible change, passing that URL.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -75,8 +75,6 @@ code. Ryan's calls, each in the bible:
 - Closed: the d4 question (die size is a balance lever like any base stat), the participant
   cap (four columns is the most a formation will be), the Baboon's rear silhouette and the
   Clydesdale's twin spacing. The seated die is in the new effects pass.
-- Movement in tens, with a price table by way of moving, a Wheeled trait for the cars,
-  stranded leftover move and a move gauge (section 4). Ready to build.
 - Idle acts and movement (section 7): a pilot drives every machine, never an animal; several
   acts per machine; grounded machines never sway; cockpits fixed but the Clydesdale's head;
   the joints each machine needs are listed; the Dingo drifts through one cornering module
@@ -91,6 +89,24 @@ code. Ryan's calls, each in the bible:
   trait, both planned.
 - Found: eight of nine foes are still their sketch grids (the ghoul is the foeforge cut); the
   Honey Badger cannot ford today; water's terrain codex wrongly says impassable.
+
+**2 October, late: movement by way of moving and the pacing direction** (bible section 4, the
+movement row decided and the pacing row open; bible v0.17). The day's price table is retired:
+a bigger move bought back any price, so a wheeled 60 reached everything a walker 30 did.
+Instead each way of moving calls each ground fast (5), normal (10) or slow (enterable with any
+move left, and it ends the move), on four grounds: open (plain and road; road is art only),
+rough, ruins and water. Moves follow size and role; the content check flags, never refuses, a
+chassis at least as fast as another on every ground (Ryan: a slow wheeled APC is valid). Foes
+move binary: every land hex 10, water and mountains walls. Water gets built around (one real
+feature a map, with foe crossings two or three hexes wide, judged with Ryan's hovercraft).
+Pacing is open for Ryan's session: a threat bar whose marks are prizes and one of which
+unseals the boss, an elite tier, Rift Pressure escalating, the flattening reaching the gate as
+the hard backstop. **Next: the build**, in the to-do's Engine line "Movement by way of moving",
+which carries the words, the code sites and the map fixes binary foes need; it was measured in
+a cloud session on 200 generated 7x20 maps (rush wins in 3 to 9 phases, a flyer starts the boss
+fight by phase 3, a team that never moves holds the undead for 300 phases, 210 of 1,400 packs
+stuck at a shore today). Those probe scripts lived in the cloud scratchpad and are gone; the
+method is in the to-do's water-feature line.
 
 **Open from the audit (1 October).** The bible's HUD palette row (18 September) read Ryan's
 swatch confusions as protanomalous, while the 29 September rule says he has not named the
@@ -217,6 +233,6 @@ it and ticked in the commit that lands it; this is the order to take them in.
 1. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
 2. Ryan's text for the new machines and components; the machines' scale on the map; the strikes, then the acts and movement, judged running.
 3. The discuss-first decisions in the Ryan section, the economy last; enemy targeting in Ryan's own design session; the commander layer once the balance has a baseline.
-4. Ready to build: movement in tens; the joint pass, then the idle acts, then the movement animations; the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased, Energy Armour, Corrode, Scramble, Confuse, foe roles), and a dedicated hunter foe and spawned formations once proposed.
+4. Ready to build: movement by way of moving (the to-do's Engine line); the pacing pieces after Ryan's session; the joint pass, then the idle acts, then the movement animations; the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased, Energy Armour, Corrode, Scramble, Confuse, foe roles), and a dedicated hunter foe and spawned formations once proposed.
 5. Audio: a full play of Hold The Line, the effects' third cut (merge `claude/sweet-goldberg-m588er` first), the speakers/headphones setting, the two boss themes.
 6. A prototype hangar in the game (paints and loadouts, no economy). Art: enemy art through foeforge, the hangar as a model. Before a phone leaves the desk: onboarding, then tuning.
