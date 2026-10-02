@@ -95,19 +95,20 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_line(c + Vector2(-s * 0.8, -s * 0.15), c + Vector2(s * 0.8, -s * 0.15), color, width)
 			ci.draw_line(c + Vector2(0, -s), c + Vector2(0, s * 0.9), color, width)
 			ci.draw_polyline(PackedVector2Array([c + Vector2(-s * 0.5, s * 0.35), c + Vector2(0, s * 0.9), c + Vector2(s * 0.5, s * 0.35)]), color, width)
-		"taunt":
-			# A siren: a bell on a base with two rays, what the front rank comes for.
+		"lure":
+			# A siren: a bell on a base with two rays, what a monster comes for.
 			ci.draw_arc(c + Vector2(0, s * 0.25), s * 0.6, PI, TAU, 16, color, width)
 			ci.draw_line(c + Vector2(-s * 0.85, s * 0.3), c + Vector2(s * 0.85, s * 0.3), color, width)
 			ci.draw_line(c + Vector2(-s * 0.55, -s * 0.5), c + Vector2(-s * 0.85, -s * 0.85), color, width * 0.8)
 			ci.draw_line(c + Vector2(s * 0.55, -s * 0.5), c + Vector2(s * 0.85, -s * 0.85), color, width * 0.8)
 			ci.draw_line(c + Vector2(0, -s * 0.5), c + Vector2(0, -s * 0.95), color, width * 0.8)
-		"beacon":
-			# A lit diamond with a ring: what the back rank sights on.
+		"disrupt":
+			# An arrow knocked off its line: a shaft that kinks and comes out another way.
 			ci.draw_polyline(PackedVector2Array([
-				c + Vector2(0, -s * 0.6), c + Vector2(s * 0.45, 0), c + Vector2(0, s * 0.6), c + Vector2(-s * 0.45, 0), c + Vector2(0, -s * 0.6),
+				c + Vector2(-s * 0.95, s * 0.3), c + Vector2(-s * 0.15, s * 0.3), c + Vector2(0.1 * s, -s * 0.35), c + Vector2(s * 0.85, -s * 0.35),
 			]), color, width)
-			ci.draw_arc(c, s * 0.95, 0.0, TAU, 28, color, width * 0.8)
+			ci.draw_polyline(PackedVector2Array([c + Vector2(s * 0.45, -s * 0.75), c + Vector2(s * 0.9, -s * 0.35), c + Vector2(s * 0.45, s * 0.05)]), color, width)
+			ci.draw_line(c + Vector2(-s * 0.3, -s * 0.2), c + Vector2(0.25 * s, s * 0.6), color, width * 0.7)
 		"shocked":
 			# A bolt in a ring: the charge a foe carries until a blow spends it.
 			ci.draw_arc(c, s * 0.95, 0.0, TAU, 28, color, width * 0.8)
@@ -243,7 +244,7 @@ static func colour_for(id: String) -> Color:
 			return Palette.ENEMY
 		"star":
 			return Palette.SELECT
-		"suppress", "chain", "cleanse", "numbed", "taunt", "beacon":
+		"suppress", "chain", "cleanse", "numbed", "lure", "disrupt":
 			return Palette.SHIELD
 		_:
 			return Palette.HUD

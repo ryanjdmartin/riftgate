@@ -1926,84 +1926,118 @@ func test_a_status_gained_after_a_foe_acted_suppresses_its_next_action() -> void
 	assert_eq(m.hull, 190, "and it skipped that blow")
 
 
-func test_a_taunt_turns_the_front_rank_on_the_machine_for_the_round() -> void:
-	var sk := Skirmish.new(2, 2)
-	var klaxon := Face.shield(10)
-	klaxon.add_keyword(K.TAUNT)
+func test_a_lure_turns_every_foe_the_entry_reaches_on_the_spender_for_the_round() -> void:
+	var sk := Skirmish.new(2, 3)
+	var klaxon := Face.attack(0, I, K.LURE)
+	klaxon.add_keyword(K.CLEAVE)
 	var tank := _mech("Tank", Die.single(klaxon), 40, 200)
 	var glass := _mech("Glass", Die.single(Face.attack(10, L)), 0, 50)
 	sk.add_mech(tank)
 	sk.add_mech(glass)
-	sk.add_foes([_ghoul(500, 10), _ghoul(500, 10), _archer(500, 10)])
+	sk.add_foes([_ghoul(500, 10), _ghoul(500, 10), _ghoul(500, 10), _archer(500, 10)])
 	sk.begin()
 	sk.start_round()
-	assert_eq(klaxon.describe(), "shield 10 taunt", "the keyword reads on the entry")
+	assert_eq(klaxon.describe(), "indirect 0 lure spread", "the keyword reads on the entry")
 	for f in sk.field_foes():
-		assert_eq(f.target, sk.mechs[1], "every foe aims at the bare machine to begin with")
-	assert_true(sk.assign(0, null), "the tank raises its klaxon")
-	assert_true(Effects.draws_rank(tank, 0), "and draws the front rank")
-	for col in range(2):
+		f.target = sk.mechs[1]   # every foe on the glass, whatever the dice said
+	# Spent on the middle ghoul: the spread reaches its neighbours, so the whole front turns;
+	# the archer behind is out of the spread and keeps its aim.
+	assert_true(sk.assign(0, sk.front[1]), "the tank sounds its klaxon at the middle ghoul")
+	for col in range(3):
 		assert_eq(sk.front[col].target, sk.mechs[0], "the front rank turned on the tank")
-	var archer: Foe = sk.back[0] if sk.back[0] != null else sk.back[1]
-	assert_eq(archer.target, sk.mechs[1], "the back rank kept its aim")
-	assert_eq(sk.incoming_for(sk.mechs[0]), 20, "the forecast follows the turn")
-	assert_true("\n".join(sk.log).contains("the front rank turns on Tank (2)"), "the log says so")
+	var archer: Foe = sk.back[0] if sk.back[0] != null else (sk.back[1] if sk.back[1] != null else sk.back[2])
+	assert_eq(archer.target, sk.mechs[1], "the archer kept its aim")
+	assert_eq(sk.incoming_for(sk.mechs[0]), 30, "the forecast follows the turn")
+	assert_true("\n".join(sk.log).contains("Tank lures ghoul, ghoul, ghoul"), "the log says so: %s" % sk.log[sk.log.size() - 1])
+	assert_false(Effects.describe(tank).any(func(d): return str(d[5]) == "lure"), "no status on the machine: the arrows are the record")
 	sk.end_round()
-	assert_eq(tank.shield, 20, "the tank took the front rank's blows on its shield (the klaxon's ten was over its maximum)")
+	assert_eq(tank.shield, 10, "the tank took the front rank's three blows on its shield")
 	assert_eq(glass.hull, 40, "the archer's blow reached the glass")
-	assert_false(Effects.draws_rank(tank, 0), "the taunt went with the round")
-	sk.start_round()
-	for f in sk.field_foes():
-		assert_eq(f.target, sk.mechs[1], "and the next round aims as it likes")
-
-
-func test_a_beacon_draws_the_back_rank_and_a_lost_target_picks_the_drawing_machine() -> void:
-	var sk := Skirmish.new(2, 2)
-	var flare := Face.vent(10)
-	flare.add_keyword(K.BEACON)
-	var tank := _mech("Tank", Die.single(flare), 40, 200)
-	var glass := _mech("Glass", Die.single(Face.attack(10, L)), 0, 50)
-	sk.add_mech(tank)
-	sk.add_mech(glass)
-	sk.add_foes([_ghoul(500, 10), _archer(500, 10), _archer(500, 10)])
-	sk.begin()
-	sk.start_round()
-	assert_true(sk.assign(0, null), "the tank lights its beacon")
-	assert_eq(sk.front[0].target, sk.mechs[1], "the ghoul in front keeps its aim")
-	for col in range(2):
-		assert_eq(sk.back[col].target, sk.mechs[0], "both archers turned")
-	# A foe whose target dies picks whoever draws its rank, not the weakest machine.
-	var s2 := Skirmish.new(3, 1)
-	var t2 := _mech("Tank", Die.single(Face.shield(10)), 40, 200)
-	var g2 := _mech("Glass", Die.single(Face.attack(10, L)), 0, 10)
-	var g3 := _mech("Glass2", Die.single(Face.attack(10, L)), 0, 100)
+	# A lure on a damage weapon: the foe it hits turns, if it lives.
+	var s2 := Skirmish.new(1, 2)
+	var hook := Face.attack(10, L, K.LURE)
+	var t2 := _mech("Tank", Die.single(hook), 40, 200)
+	var g2 := _mech("Glass", Die.single(Face.attack(10, L)), 0, 50)
 	s2.add_mech(t2)
 	s2.add_mech(g2)
-	s2.add_mech(g3)
 	s2.add_foes([_ghoul(500, 10), _ghoul(500, 10)])
 	s2.begin()
 	s2.start_round()
-	Effects.grant_buff(t2, "taunt", 1, "test", s2.round)
-	s2.front[0].target = s2.mechs[1]
-	s2.front[0].attack = 50
-	s2.reinforcements.clear()
-	assert_eq(s2._pick_mech_target(s2.front[0]), s2.mechs[0], "a front-rank foe asked again picks the taunting machine")
+	for f in s2.field_foes():
+		f.target = s2.mechs[1]
+	assert_true(s2.assign(0, s2.front[0]), "hooks the first ghoul")
+	assert_eq(s2.front[0].hp, 490, "the blow lands")
+	assert_eq(s2.front[0].target, s2.mechs[0], "and the ghoul turns")
+	assert_eq(s2.front[1].target, s2.mechs[1], "the other does not")
+	s2.end_round()
+	s2.start_round()
+	assert_true(s2.front[0].target != null, "the next round it aims as it likes")
+	# A lure lands on a foe whose move has no target: the blow still lands, the log says so.
+	var s3 := Skirmish.new(1, 1)
+	s3.add_mech(_mech("Tank", Die.single(Face.attack(10, L, K.LURE)), 40, 200))
+	s3.add_mech(_mech("Glass", Die.single(Face.attack(10, L)), 0, 50))
+	var r := _ghoul(500, 10)
+	r.actions = [_special("buff", "rally", {"value": 10})]
+	r.action = r.actions[0]
+	s3.add_foes([r])
+	s3.begin()
+	s3.start_round()
+	assert_true(s3.assign(0, r), "lures the rallying foe")
+	assert_eq(r.hp, 490, "the damage lands anyway")
+	assert_true("\n".join(s3.log).contains("has nothing to turn"), "and the log says the lure moved nothing")
 
 
-func test_a_taunt_may_also_come_as_a_buff() -> void:
-	var f := Face.from_dict({"kind": "buff", "status": "taunt"})
-	assert_eq(f.buff_status, "taunt", "content may write it")
+func test_a_disrupt_makes_the_foe_do_its_other_move_and_the_new_move_aims_for_itself() -> void:
 	var sk := Skirmish.new(1, 1)
-	var a := _mech("A", Die.single(f), 40, 100)
-	var b := _mech("B", Die.single(Face.attack(10, L)), 0, 100)
-	sk.add_mech(a)
-	sk.add_mech(b)
-	sk.add_foes([_ghoul(500, 10)])
+	var jam := Face.attack(10, L, K.DISRUPT)
+	var cold := _mech("Cold", Die.single(jam), 40, 200)
+	var hot := _mech("Hot", Die.single(Face.attack(10, L)), 0, 50)
+	sk.add_mech(cold)
+	sk.add_mech(hot)
+	var h := _ghoul(500, 20)
+	h.actions = [Foe.basic_action(), _special("debuff", "add_heat", {"value": 10, "aim": "heat"})]
+	h.actions[0]["weight"] = 1000
+	h.action = h.actions[0]
+	sk.add_foes([h])
 	sk.begin()
+	sk.mechs[1].heat = 30
 	sk.start_round()
-	assert_eq(sk.front[0].target, sk.mechs[1], "the bare one first")
-	assert_true(sk.assign(0, null), "the buff is spent on itself")
-	assert_eq(sk.front[0].target, sk.mechs[0], "and the ghoul turns")
+	assert_true(h.attacks(), "the blow, at that weight")
+	h.target = sk.mechs[0]
+	assert_true(sk.assign(0, h), "disrupted")
+	assert_false(h.attacks(), "it does its other move instead")
+	assert_eq(str(h.action.get("effect", "")), "add_heat", "the stoke")
+	assert_eq(h.target, sk.mechs[1], "which aims for itself: at heat")
+	assert_eq(h.last_special, "add_heat", "and counts as the special announced")
+	assert_true("\n".join(sk.log).contains("is disrupted: Add Heat instead of Attack"), "the log names both: %s" % sk.log[sk.log.size() - 1])
+	sk.end_round()
+	assert_eq(sk.mechs[1].heat, 40, "the stoke landed")
+	assert_eq(cold.shield, 40, "and no blow did")
+	# Nothing else open: a foe with one move, or whose other move's condition fails, is not moved.
+	var s2 := Skirmish.new(1, 1)
+	s2.add_mech(_mech("A", Die.single(Face.attack(10, L, K.DISRUPT)), 40, 200))
+	var lone := _ghoul(500, 20)
+	lone.actions = [Foe.basic_action(), _special("defend", "regrow", {"value": 20, "when": "below_half"})]
+	lone.action = lone.actions[0]
+	s2.add_foes([lone])
+	s2.begin()
+	s2.start_round()
+	assert_true(s2.assign(0, lone), "disrupted at full health")
+	assert_true(lone.attacks(), "the regrow is not open, so the blow stands")
+	assert_true("\n".join(s2.log).contains("has nothing else to do"), "the log says so")
+	# Three moves: the next in the pattern, wrapping.
+	var s3 := Skirmish.new(1, 1)
+	s3.add_mech(_mech("A", Die.single(Face.attack(10, L, K.DISRUPT)), 40, 200))
+	var boss := _ghoul(500, 20)
+	boss.actions = [Foe.basic_action(), _special("defend", "regrow", {"value": 20}), _special("buff", "rally", {"value": 10})]
+	boss.action = boss.actions[2]
+	boss.last_special = "rally"
+	s3.add_foes([boss])
+	s3.begin()
+	s3.start_round()
+	boss.action = boss.actions[2]
+	assert_true(s3.assign(0, boss), "disrupted on its rally")
+	assert_true(boss.attacks(), "the next in its list after the rally is the blow, wrapping")
 
 
 func test_overwhelm_carries_the_damage_past_a_kill_into_the_foe_behind() -> void:

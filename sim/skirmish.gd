@@ -99,6 +99,8 @@ var targeting_override: String = ""
 var _focus: Dictionary = {}
 ## A machine runs hot, for a foe's condition, from this much heat on.
 const HOT_HEAT := 20
+## Foe effects that act on nobody in particular, so a lure has nothing to turn.
+const UNTARGETED_EFFECTS := ["harden", "regrow", "revive_once", "summon", "rally", "drain_rerolls"]
 
 
 func _init(seed_value: int = 0, columns_arg: int = DEFAULT_COLUMNS) -> void:
@@ -657,13 +659,11 @@ func assign(mech_index: int, target = null) -> bool:
 			_gain_shield(who, f.power)
 			log.append("%s shields %s for %d" % [ms.unit.display_name, who.unit.display_name, f.power])
 			_cleanse_with(ms, who, f)
-			_draw_with(who, f)
 		Face.Kind.VENT:
 			var who: MechState = target if target is MechState else ms
 			who.heat = maxi(0, who.heat - f.power)
 			log.append("%s vents %s by %d" % [ms.unit.display_name, who.unit.display_name, f.power])
 			_cleanse_with(ms, who, f)
-			_draw_with(who, f)
 		Face.Kind.BUFF:
 			# Equipment that grants a status for the round (or more): the pipeline reads it
 			# like any modifier, and end_round lets it go.
@@ -673,9 +673,6 @@ func assign(mech_index: int, target = null) -> bool:
 			var m := Effects.grant_buff(who.unit, f.buff_status, f.buff_stacks, src, until)
 			if m != null:
 				log.append("%s buffs %s: %s ×%d%s" % [ms.unit.display_name, who.unit.display_name, m.name, f.buff_stacks, "" if f.buff_rounds == 1 else " for %d rounds" % f.buff_rounds])
-				for rank in [0, 1]:
-					if Effects.draws_rank(who.unit, rank):
-						_retarget_rank(rank, who)
 			_cleanse_with(ms, who, f)
 		Face.Kind.ATTACK:
 			_resolve_attack(mech_index, ms, f, target)
@@ -815,6 +812,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 	var vent := 0
 	var extra_burn := 0
 	var armoured_total := 0   # what the primary target's armour took off, for the log
+	var touched: Array = []    # every foe the blows reached and left alive, for a lure or a disrupt
 	# A vent-on-fire attack fires the machine's whole heat into the blow: its bonus is read
 	# now and the gauge is emptied once the strikes have landed.
 	var fired := heat_bonus(ms, f)
@@ -894,12 +892,20 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 				_foe_gained_status(foe, "burning")
 			if f.has(Face.Keyword.SUPPRESS):
 				_suppress(foe)
+			if foe.alive() and not touched.has(foe):
+				touched.append(foe)
 		total += landed
 		rolled_total += rolled
 		any_crit = any_crit or crit
 	if extra_burn > 0:
 		Effects.stack(target, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", extra_burn)
 		_foe_gained_status(target, "burning")
+	# Disrupt first, then lure, so an entry carrying both ends with the foe's new move aimed at
+	# the spender.
+	if f.has(Face.Keyword.DISRUPT):
+		_disrupt(touched)
+	if f.has(Face.Keyword.LURE):
+		_lure(ms, touched)
 	last_roll = {"mech": mech_index, "target": target, "rolled": rolled_total, "final": total, "crit": any_crit, "ranged": f.is_ranged()}
 	var how := f.describe()
 	if any_crit:
@@ -1073,30 +1079,55 @@ func _foe_gained_status(foe: Foe, status_id: String) -> void:
 		return
 
 
-## The taunt and beacon keywords on a shield or vent component (decided 28 September: damage
-## redirection is common, not locked): whoever it was spent on draws a rank of foes for the
-## round, taunt the front and beacon the back, and every foe of that rank on the field turns
-## on it now, intents and all. The status is the record; the retarget is the act.
-func _draw_with(who: MechState, f: Face) -> void:
-	for pair in [[Face.Keyword.TAUNT, "taunt", 0], [Face.Keyword.BEACON, "beacon", 1]]:
-		if not f.has(pair[0]):
+## Lure (decided 2 October, in place of taunt and beacon): every foe this entry reached turns
+## on the spender for the round, intents and all. No status and no chip: the arrow changing
+## is the record. A lured foe whose move has no target keeps doing it, and the log says so.
+func _lure(ms: MechState, foes: Array) -> void:
+	var turned: Array[String] = []
+	var idle: Array[String] = []
+	for foe in foes:
+		if not foe.alive():
 			continue
-		var src := "draw:" + f.component if not f.component.is_empty() else "draw"
-		Effects.grant_buff(who.unit, pair[1], 1, src, round)
-		_retarget_rank(pair[2], who)
+		if not foe.attacks() and str(foe.action.get("effect", "")) in UNTARGETED_EFFECTS:
+			idle.append(foe.display_name)
+		if foe.target != ms:
+			foe.target = ms
+			turned.append(foe.display_name)
+	if not turned.is_empty():
+		log.append("%s lures %s" % [ms.unit.display_name, ", ".join(turned)])
+	if not idle.is_empty():
+		log.append("lured, but %s %s nothing to turn" % [", ".join(idle), "has" if idle.size() == 1 else "have"])
 
 
-## Every live foe of a rank on the field turns on one machine, now. Massive foes stand in
-## both ranks and follow either draw.
-func _retarget_rank(rank: int, who: MechState) -> void:
-	var turned := 0
-	for f in field_foes():
-		if not f.alive() or (f.rank != rank and not f.is_massive()) or f.target == who:
+## Disrupt (decided 2 October, in place of the planned scramble and confuse): the foe does its
+## other move instead, this round, the new intent shown at once. Deterministic: the next move
+## in its list that its conditions allow, so a boss with three moves steps through its
+## pattern; a foe with nothing else open is not moved. The new move picks its own target.
+func _disrupt(foes: Array) -> void:
+	for foe in foes:
+		if not foe.alive():
 			continue
-		f.target = who
-		turned += 1
-	if turned > 0:
-		log.append("the %s rank turns on %s (%d)" % ["front" if rank == 0 else "back", who.unit.display_name, turned])
+		var legal := legal_actions(foe)
+		var others: Array = []
+		for a in legal:
+			if a != foe.action:
+				others.append(a)
+		if others.is_empty():
+			log.append("%s is disrupted, and has nothing else to do" % foe.display_name)
+			continue
+		# The next in its pattern: the first legal move after the current one, wrapping.
+		var start: int = foe.actions.find(foe.action)
+		var next: Dictionary = others[0]
+		for k in range(1, foe.actions.size() + 1):
+			var cand: Dictionary = foe.actions[(start + k) % foe.actions.size()]
+			if others.has(cand):
+				next = cand
+				break
+		var was := str(foe.action.get("name", ""))
+		foe.action = next
+		foe.last_special = "" if foe.attacks() else str(foe.action.get("id", ""))
+		foe.target = _pick_mech_target(foe)
+		log.append("%s is disrupted: %s instead of %s" % [foe.display_name, str(next.get("name", "")), was])
 
 
 ## The cleanse keyword on a shield or vent component: whoever it was spent on loses every
@@ -1266,9 +1297,7 @@ func _injure_entry(ms: MechState, idx: int) -> void:
 		log.append("%s: a component cracks (%s)" % [ms.unit.display_name, what])
 
 
-## Whom a foe strikes (decided 2 October): its own pick, by the sense its move follows. The
-## machine drawing its rank if one is (a taunt or beacon standing) comes first while those
-## keywords exist. Then the aim: the exposed, weighted by the hull its blow would reach, so a
+## Whom a foe strikes (decided 2 October): its own pick, by the sense its move follows. The aim: the exposed, weighted by the hull its blow would reach, so a
 ## shield standing lowers the draw and a shield down raises it; anything, uniform; heat, the
 ## hottest machine; the armed, a machine showing an intact weapon (the exposed when none
 ## does); fires as one, the rank's shared pick. The pick is a commitment: a foe whose target
@@ -1278,10 +1307,6 @@ func _pick_mech_target(f: Foe = null) -> MechState:
 	var live := live_mechs()
 	if live.is_empty():
 		return null
-	if f != null:
-		for ms in live:
-			if Effects.draws_rank(ms.unit, f.rank) or (f.is_massive() and Effects.draws_rank(ms.unit, 1)):
-				return ms
 	if f == null or targeting_override == "lowest":
 		return _lowest_shield(live)
 	match f.aim_of():
