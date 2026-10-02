@@ -398,7 +398,13 @@ MechWarrior 2, Descent, retro-future not retro; a dry plastic click, clean choru
 gliding into the note through a resonant filter, the computer talking in fast runs, air
 sweeps, a synth thump under confirms; the square-and-saw first try read as retro), which
 retired the 24 September "future-digital, not retro" line in the bible; the sketches written over the shipped levels (console +4 dB, blows +2, shields and
-buffs +2, kills +1, `BOOST`), said on the page. Nothing is shipped; a pick lands as a recipe in
+buffs +2, kills +1, `BOOST`), said on the page; later that night the punch became a blunt
+impact for the plow and the knuckles alike (a car into a wall), content grew a `sound` word
+on a component (validated against a vocabulary in `content_db.gd`; the two blunt pieces carry
+it, nothing else needs to), and a formant voice (`tools/soundforge/speech.py`, crude by
+design) says eight console lines as a Betty and as a VEGA in a new section of the page, to
+judge whether the console should speak at all. Godot was not available in the cloud session
+that made the validator change: run the tests on the Mac first thing. Nothing is shipped; a pick lands as a recipe in
 `forge.py` and, where the page says, a small hook (shape, maker, faction, silhouette, a word
 for blunt melee, the replay telling shield hit from block from hit) in `skirmish_screen.gd`,
 `battle_screen.gd` and `sound.gd`. The sketch script encodes AAC with `ffmpeg` where there

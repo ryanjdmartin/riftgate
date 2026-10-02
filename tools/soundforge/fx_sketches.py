@@ -74,6 +74,7 @@ import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import forge as F  # noqa: E402
+import speech  # noqa: E402
 
 OUT = os.path.join(F.OUT_SKETCH, "fx")
 PAGE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fx_page.html")
@@ -136,7 +137,8 @@ def thock(weight=1.0, pitch=1.0):
     return F.lp(k, 5000.0) * weight
 
 
-key = thock   # earlier cuts' name, for the rows that still call it
+key = thock     # earlier cuts' names, for the rows that still call them
+clack = thock
 
 
 def bleep(f, dur, gain=0.5, glide=1.0, q=0.6, bright=1.0):
@@ -493,23 +495,37 @@ def w_blade():
     return room(b, decay=0.2, mix=0.14)
 
 
-def w_fist():
-    # A punch (Ryan, 1 October: the blunt melee weapons, fists, should sound like metal
-    # hitting flesh, hard). The arm drawing back on its servo and the piston driving it, then
-    # the impact: the biggest thud of the blows with its click, a wet smack (a low noise burst
-    # with a slap's body on it), bone under it as a short high knock, no plate at all since
-    # nothing metal is struck, a boom of its own, and the weight going down after: a second
-    # thud, a second crack, the flesh settling.
-    wind = mix(F.servo(140.0, 260.0, 0.2, gain=0.35, band=(400.0, 2500.0)), F.hydraulic(0.22, 800.0, 2500.0, 0.4))
-    smack = mix(F.burst(0.07, 150.0, 1400.0, decay=0.02) * 1.3, F.body(320.0, 120.0, 0.08, click=1.0, drive=3.5) * 1.0,
-                F.lp(F.noise(n_of(0.05)), 900.0) * F.env_ad(n_of(0.05), 0.001, 0.012) * 1.0)
-    bone = F.knock([1700.0, 2600.0], [0.012, 0.008], [1.0, 0.5], noise_gain=0.4) * 0.5
-    impact = mix(F.thud(130.0, 36.0, 0.5, click=1.4, drive=4.5, body_gain=1.8), smack, bone, F.metal(0.1, 0.8), boom_tail(0.5, 0.5))
-    b = at(wind, heft(impact, 0.7), 0.24)
-    settle = mix(F.thud(120.0, 40.0, 0.3, click=0.4, drive=3.0, body_gain=1.4) * 0.6, F.lp(F.noise(n_of(0.14)), 600.0) * F.env_ad(n_of(0.14), 0.002, 0.05) * 0.5,
-                 F.knock([1500.0, 2300.0], [0.01, 0.007], [1.0, 0.5], noise_gain=0.3) * 0.3)
-    b = at(b, heft(settle, 0.5), 0.6)
-    return room(b, decay=0.2, mix=0.14)
+def w_blunt():
+    # A blunt impact (Ryan, 2 October: one sound for the plow and the knuckles alike; these
+    # are multi-ton war machines, so a blunt blow is a car hitting a wall). The mass coming:
+    # a low rumble rising with the hydraulics driving; the impact: the biggest thud of the
+    # blows, the crumple (a dense run of plate knocks over a sixth of a second, saturated in
+    # the speaker's band), a broadband crack, glass going; then the boom behind it, debris,
+    # a rattle settling, the hydraulics venting, and a little of the wet under it for the
+    # flesh it hit.
+    n = n_of(0.3)
+    t = t_of(n)
+    rumble = heft(F.lp(F.sat(F.lp(F.noise(n), 150.0) * 2.5, 3.0), 900.0) * (t / 0.3) ** 2 * 0.7, 0.8)
+    b = mix(rumble, F.hydraulic(0.3, 700.0, 2800.0, 0.45))
+    crumple = np.zeros(n_of(0.22))
+    when = 0.0
+    while when < 0.17:
+        kn = F.knock([F.RNG.uniform(300.0, 900.0), F.RNG.uniform(900.0, 2500.0)], [0.012, 0.007], [1.0, 0.5], noise_gain=0.6)
+        crumple = at(crumple, kn, when, F.RNG.uniform(0.5, 1.0) * (1.0 - when * 2.5))[:len(crumple)]
+        when += F.RNG.uniform(0.005, 0.011)
+    crumple = heft(crumple, 0.9, 4.0)
+    glass = np.zeros(n_of(0.3))
+    for k in range(10):
+        glass = at(glass, F.knock([F.RNG.uniform(3000.0, 5000.0), F.RNG.uniform(5000.0, 8000.0)], [0.01, 0.006], [0.6, 0.3], noise_gain=0.3) * 0.3, 0.02 + k * F.RNG.uniform(0.012, 0.03))[:len(glass)]
+    impact = mix(F.thud(120.0, 30.0, 0.6, click=1.5, drive=4.5, body_gain=1.8), crumple, glass,
+                 F.burst(0.12, 150.0, 6000.0, decay=0.03) * 1.0, boom_tail(0.8, 0.7),
+                 F.burst(0.06, 150.0, 1400.0, decay=0.02) * 0.5)   # the wet, under it
+    b = at(b, heft(impact, 0.7), 0.3)
+    for k, when in enumerate([0.55, 0.68, 0.84]):
+        b = at(b, mix(F.body(F.RNG.uniform(220.0, 340.0), 90.0, 0.07, click=0.6) * 0.5, F.knock([F.RNG.uniform(500.0, 1000.0), F.RNG.uniform(1200.0, 2200.0)], [0.03, 0.02], [0.6, 0.3]) * 0.4), when, 1.0 - 0.2 * k)
+    b = at(b, F.ratchet(7, 0.35, 700.0, 0.4, jitter=0.3), 0.75)
+    b = at(b, F.hydraulic(0.3, 3000.0, 600.0, 0.3), 0.7)
+    return room(b, decay=0.25, mix=0.16)
 
 
 def w_laser():
@@ -895,6 +911,20 @@ def d_defeat():
     return room(b, decay=0.5, mix=0.18)
 
 
+# ---------------------------------------------------------------- the voice
+
+LINES = {"target_locked": "target locked", "weapons_online": "weapons online", "incoming": "incoming", "shield_up": "shield up",
+         "machine_lost": "machine lost", "nominal": "all systems nominal", "gate_breached": "gate breached", "line_held": "line held"}
+
+
+def v_line(voice, key_):
+    # The console speaking (Ryan's references, 2 October: Bitching Betty, the Adjutant, VEGA):
+    # the channel opens on a click, the line, and the channel closes on a tick of static.
+    b = thock(0.6, 1.1)
+    b = at(b, speech.say(LINES[key_], voice), 0.06)
+    return at(b, F.glitch_perc() * 0.25, len(b) / F.SR + 0.02)
+
+
 # ---------------------------------------------------------------- the set
 
 # name -> (builder, the shipped name it stands beside or replaces, the level it is written at)
@@ -904,7 +934,7 @@ NEW = {
     "die_roll": (c_die_roll, "die_roll", "die_roll"), "die_lock": (c_die_lock, "die_lock", "die_lock"),
     "resolve": (c_resolve, "resolve", "resolve"), "intent": (c_intent, None, "die_lock"),
     "w_barrel": (w_barrel, "gunfire", "gunfire"), "w_twin": (w_twin, "gunfire", "gunfire"), "w_rack": (w_rack, "cannon", "cannon"),
-    "w_blade": (w_blade, "slash", "slash"), "w_fist": (w_fist, "slam", "slam"), "w_laser": (w_laser, "laser", "laser"), "w_plasma": (w_plasma, "laser", "laser"),
+    "w_blade": (w_blade, "slash", "slash"), "w_blunt": (w_blunt, "slam", "slam"), "w_laser": (w_laser, "laser", "laser"), "w_plasma": (w_plasma, "laser", "laser"),
     "w_dish_shield": (w_dish_shield, "shield_up", "shield_up"), "w_dish_coil": (w_dish_coil, "shield_up", "shield_up"),
     "step_tracked": (s_tracked, "step", "step"), "step_legged": (s_legged, "step", "step"),
     "step_wheeled": (s_wheeled, "step", "step"), "step_flyer": (s_flyer, "step", "step"),
@@ -915,6 +945,9 @@ NEW = {
     "contact": (d_contact, "contact", "contact"), "engage": (d_engage, "engage", "engage"), "gate_hit": (d_gate_hit, "gate_hit", "gate_hit"),
     "victory": (d_victory, "victory", "victory"), "defeat": (d_defeat, "defeat", "defeat"),
 }
+for v in speech.VOICES:
+    for k in LINES:
+        NEW["v_%s_%s" % (v, k)] = ((lambda v=v, k=k: v_line(v, k)), None, "die_lock")
 for m in MAKERS:
     NEW["hit_" + m] = ((lambda m=m: i_hit(m)), "hit", "hit")
     NEW["block_" + m] = ((lambda m=m: i_block(m)), "block", "block")
@@ -928,6 +961,8 @@ BOOST = {"console": 4.0, "blow": 2.0, "shield": 2.0, "kill": 1.0}
 
 def boost(name):
     if name in ("ui_tap", "ui_back", "plot", "die_pick", "die_drop", "die_roll", "die_lock", "resolve", "intent"):
+        return BOOST["console"]
+    if name.startswith("v_"):
         return BOOST["console"]
     if name.startswith("w_dish") or name in ("shield_hit", "shield_break"):
         return BOOST["shield"]
@@ -1043,7 +1078,7 @@ RIFT = [   # each family: its arrival, its blow, its heavy blow
 ]
 IRON = [   # the shapes, a shield taking a blow and breaking, then the makers struck: a hit, a block, a kill each
     (0.3, "gunfire", "w_barrel", 0.0), (2.2, "gunfire", "w_twin", 0.0), (4.0, "cannon", "w_rack", 0.0), (6.6, "slash", "w_blade", 0.0),
-    (8.2, "slam", "w_fist", 0.0), (9.8, "laser", "w_laser", 0.0), (11.6, "laser", "w_plasma", 0.0), (13.6, "shield_up", "w_dish_shield", 0.0),
+    (8.2, "slam", "w_blunt", 0.0), (9.8, "laser", "w_laser", 0.0), (11.6, "laser", "w_plasma", 0.0), (13.6, "shield_up", "w_dish_shield", 0.0),
     (15.6, "shield_up", "w_dish_coil", -3.0), (17.4, "block", "shield_hit", -3.0), (18.4, "shield_break", "shield_break", 0.0),
 ] + [(20.2 + k * 3.4 + d, now, new_, db) for k, m in enumerate(MAKERS) for d, now, new_, db in
      [(0.0, "hit", "hit_" + m, 0.0), (0.6, "block", "block_" + m, -3.0), (1.2, "kill", "kill_" + m, 0.0)]]

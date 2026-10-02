@@ -564,6 +564,14 @@ func _validate_design(where: String, e: Dictionary, errs: Array[String], need_fa
 const SHAPES := ["barrel", "twin_barrel", "rack", "blade", "dish", "none"]
 const SHAPE_NONE := "none"
 
+## The sound a component's blow plays, where its shape and face are not enough to say
+## (decided 2 October: content carries a label for the effects): a word from SOUNDS under
+## `sound`. Absent, the game derives it: a barrel is a barrel, a twin a twin, a rack a rack,
+## a blade a blade, a dish a deflector or a coil by its face, an energy barrel a laser and the
+## Arsenal's a plasma. Content names only the exceptions: the blunt melee pieces (the plow,
+## the knuckles) say "blunt", a multi-ton machine's mass arriving rather than a cut.
+const SOUNDS := ["barrel", "twin_barrel", "rack", "blade", "blunt", "laser", "plasma", "deflector", "coil"]
+
 
 func _validate_components(errs: Array[String]) -> void:
 	for id in components.keys():
@@ -574,6 +582,8 @@ func _validate_components(errs: Array[String]) -> void:
 				errs.append("%s: missing %s" % [where, key])
 		if c.has("shape") and not SHAPES.has(str(c["shape"])):
 			errs.append("%s: shape '%s' is not a silhouette class (%s)" % [where, c["shape"], ", ".join(SHAPES)])
+		if c.has("sound") and not SOUNDS.has(str(c["sound"])):
+			errs.append("%s: sound '%s' is not one the forge builds (%s)" % [where, c["sound"], ", ".join(SOUNDS)])
 		for key in ["hardpoints", "slots", "faces"]:
 			if c.has(key):
 				errs.append("%s: '%s' is gone; a component is exactly one entry, its 'face'" % [where, key])

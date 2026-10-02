@@ -132,7 +132,9 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 - [ ] A speakers or headphones setting (default speaker on a phone; Godot cannot tell what is plugged in): shipped levels for headphones, an offset per track and an EQ on the music bus for the speaker profile; discuss the offsets first
 - [ ] The Risen and Infernal Horde boss themes from their seeds; melodies proposed in chat first
 - [ ] The effects' second pass: Ryan listens to the third cut of 2 October (the 90s console, every weapon drawn out with heft, shields and buffs, the shield hit and break, the kills, the level offsets) on the listening page; picks land in `forge.py` with their hooks (shape, maker, faction, silhouette; the replay telling a shield hit from a block from a hit, which `_land_blow` now plays as two)
-- [ ] A content word for the blunt melee pieces so a punch plays instead of a blade (the four melee components are all shape `blade` and all fixed: Chainsaw Claw on the Honey Badger, Breaching Plow on the Wild Boar, Gravity Knuckles on the Nemesis, Soulcutter Talons on the Ammit; the Knuckles are the punch, the Plow may want a ram of its own); Ryan names it
+- [x] A content word for the blunt melee pieces (2 October: `sound` on a component, validated; the Breaching Plow and the Gravity Knuckles say `blunt`; the Chainsaw Claw and the Soulcutter Talons stay blades)
+- [ ] Run the tests on the Mac: the `sound` validation in `content_db.gd` landed from a cloud session with no Godot
+- [ ] The voice: Ryan's verdict on the page's section 5 (speak at all; Betty or VEGA; which lines), then a real pass on the words if yes
 - [x] Whether the seated die wants a voice (2 October: it has one, a low E3, since the console is deliberate now)
 - [ ] The codex's open and close and the pause menu in the 90s console grammar, once the console picks land
 - ~~The Far Bank's wrap at bar nine lands without the room's tail~~ (Ryan, 29 September: the loop is fine)
