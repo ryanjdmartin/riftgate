@@ -3,8 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.15 since the to-do review
-of 2 October); republish it from the committed file after every bible change, passing that URL.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.16 since 2 October); republish it from the committed file after every bible change, passing that URL.
 
 **The pages, as of 1 October, night.** Every page lives in the personal account (A). The three
 that last are shared to the work email (B) as Editor, so a session in either account republishes
@@ -69,7 +68,7 @@ calls: the d4 question is closed (die size is a balance lever like every base st
 skirmish participant cap (four columns is the most a formation will be); the commander layer
 (reward pick, one-shots, city abilities, the command die) is important but waits on a baseline
 balance; a prototype hangar in the game, no economy, is agreed (paints and loadouts, carried
-into a battle for play tests); the move system goes to finer steps, a must (tens preferred, the presentation in discussion; today's is a placeholder), and the traits' terrain rules ride on it; the seated die is in the new effects pass; enemy
+into a battle for play tests); movement in tens is decided with its price table, a wheels trait for the cars (its name Ryan's) and a move gauge, ready to build (bible section 4); every machine gets its own idle acts on both screens, grounded ones never swaying (section 7); the battery plan is decided: weld the machines, props by hex with a fade, the 3D at 30 while planning (section 11); the seated die is in the new effects pass; enemy
 targeting and the horde hooks go to a design session of his own. Eight of nine foes are still
 their sketch grids; the ghoul is the one foeforge cut.
 
@@ -205,6 +204,6 @@ it and ticked in the commit that lands it; this is the order to take them in.
 1. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
 2. Ryan's text for the new machines and components; with every machine signed off for now, the joints and turrets judged running in the skirmish, and the machines' scale on the map.
 3. The discuss-first decisions in the Ryan section, the economy last; enemy targeting in Ryan's own design session; the commander layer once the balance has a baseline.
-4. The engine gaps waiting on design (Phased, Energy Armour, Corrode, Scramble, Confuse, foe roles), and a dedicated hunter foe and spawned formations once proposed.
+4. Ready to build: movement in tens (once the wheels trait is named), the machine weld, every machine's idle acts, then the prop fade and the 3D at 30. The engine gaps waiting on design (Phased, Energy Armour, Corrode, Scramble, Confuse, foe roles), and a dedicated hunter foe and spawned formations once proposed.
 5. Audio: a full play of Hold The Line, the effects' second pass, the speakers/headphones setting, the two boss themes.
 6. A prototype hangar in the game (paints and loadouts, no economy). Art: enemy art through foeforge, the hangar as a model. Before a phone leaves the desk: onboarding, then tuning.
