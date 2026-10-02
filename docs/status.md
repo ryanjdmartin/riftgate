@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.18 since 2 October, late); republish it from the committed file after every bible change, passing that URL.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.19 since 2 October, late, the effects branch merged); republish it from the committed file after every bible change, passing that URL.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -13,7 +13,7 @@ stays in A alone (Ryan, 1 October: it serves one ongoing task) and is republishe
 session; a B session cannot read it. Shared:
 
 - **The bible** (above): `docs/design-bible.html`, published whole after every change.
-- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH): four tabs, the
+- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 2 October with the targeting pass's content): four tabs, the
   codex, the content editor, the names list and the renders (earlier passes folded under each
   chassis, a Classes section). Source `tools/hangar.html`, published with the `files` map
   `tools/hangar_data.py` prints (`content/*.json`, `hangar/pins.json`, `hangar/renders.json`
@@ -30,9 +30,12 @@ session; a B session cannot read it. Shared:
   and marks it `applied` with a `reply` the page shows. The session interprets what he sends;
   it is not drop-in.
 - **The listening page** (https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9): the effects'
-  passes from `tools/soundforge/fx_sketches.py`, published with `root` set to
-  `tools/soundforge/out/fx/`; the music rounds re-render from `phone_sketches.py` if ever wanted
-  again.
+  pass from `tools/soundforge/fx_sketches.py` (the weapons' third cut, the console, the blunt
+  impact with its plasma layer, the voice in two registers; every file re-rendered 2 October),
+  the console derived again that night, the voice re-rendered), and nothing else; render with
+  `fx_sketches.py`, then `console_sketches.py`, then `warroom_sketches.py`, copy `fx_page.html` in as `index.html`, and
+  republish from `tools/soundforge/out/fx/` with `root` set to it (numpy and scipy, plus ffmpeg). The music
+  rounds re-render from `phone_sketches.py` if ever wanted again.
 
 In A alone: **the engagement sandbox** (https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg) that
 drew the zone options, for the play test of the engagement zones.
@@ -58,17 +61,12 @@ the chat is newer.
 ## As of 2 October 2026
 
 **State.** Tests green: `perl -e 'alarm 240; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (287 tests, 3,653 checks on 2 October, on main after the to-do review's
-branch merged; a cloud session fetches Godot 4.7.2's Linux build to run them). Two or three
+tests/run_tests.gd` (293 tests, 3,899 checks on 2 October, after the targeting pass merged main;
+a cloud session fetches Godot 4.7's Linux build from the GitHub release asset to run them, since
+the proxy serves the asset though not the release page). Two or three
 sessions run on this repo at once: check `git status` before committing, stage by path, diff a
 shared file first (a path still sweeps the other session's hunks), never `git add -A`, never
 kill a bare `godot --path .`. Commit after each verified chunk with tests green.
-
-**Unmerged:** `claude/sweet-goldberg-m588er` carries the effects' third cut, the console's
-fourth, the blunt impact, a `sound` label on components (validated in `sim/content_db.gd`,
-never yet tested) and the console voice (`tools/soundforge/speech.py`). It branched before the
-clean slate, so its `docs/` resolve to main's copies with its facts ported, and its tests run
-on the merge.
 
 **2 October: the to-do review and what came of it.** Every to-do line was checked against the
 code. Ryan's calls, each in the bible:
@@ -91,7 +89,7 @@ code. Ryan's calls, each in the bible:
   Honey Badger cannot ford today; water's terrain codex wrongly says impassable.
 
 **2 October, late: movement by way of moving and the pacing direction** (bible section 4, the
-movement row decided and the pacing row open; bible v0.18). The day's price table is retired:
+movement row decided and the pacing row open; bible v0.19). The day's price table is retired:
 a bigger move bought back any price, so a wheeled 60 reached everything a walker 30 did.
 Instead each way of moving calls each ground fast (5), normal (10) or slow (enterable with any
 move left, and it ends the move), on four grounds: open (plain and road; road is art only),
@@ -108,7 +106,7 @@ fight by phase 3, a team that never moves holds the undead for 300 phases, 210 o
 stuck at a shore today). Those probe scripts lived in the cloud scratchpad and are gone; the
 method is in the to-do's water-feature line.
 
-**The bible is v0.18 and carries rows not yet on main.** Another session built the two
+**The bible carries rows not yet on main.** Another session built the two
 hovercraft on 2 October (the Stingray and the Puffin, the `on_stack` trigger, Numbed exempt from
 every interaction, propulsion reading the maker) and published the bible as v0.17 without
 pushing its branch; this session merged its movement rows onto that published copy and
@@ -197,17 +195,24 @@ started from the harness is saved after every change (`sim/save.gd`, `user://bat
 and Resume battle opens it where it stood; standalone runs and tests never write it.
 
 **Balance (bible section 11).** `sim/policy.gd` plays the skirmish headless (RANDOM, GREEDY,
-`withdraw_below`); `tools/balance.gd` runs the matrix, about fifteen minutes at 200 seeds
-with eleven machines (`docs/balance.md`, generated 1 October with every engine piece in).
-Its bands: the Honey Badger, Armadillo and Wild Boar win nearly every cell alone at little
-cost (too strong out of the box; the Faraday Hull alone makes the Armadillo's), and the team
-of three wins every single-pack fight at no cost, so the rank and file's numbers are the
-lever; the Clydesdale and Ammit beat the ghouls under greedy and wall at the brutes and the
-spawn; the Nemesis beats most packs but the Crucible costs it (its Overheating burns hull and
-the bot does not vent for it); the Baboon, Prairie Dog and Dingo lose to the front-rank packs
-alone, as support machines might; the Sparrowhawk and Goshawk hold. Overwhelm and the
-Databank never fire in the runner's single-type, single-machine cells. Rerun after each
-engine piece lands; read bands, not numbers.
+`withdraw_below`); `tools/balance.gd` runs the matrix, about half an hour at 200 seeds with
+eleven machines, twelve packs (the nine plus each faction's whole formation in one fight, since
+2 October) and the team row run twice for the targeting comparison (`docs/balance.md`, generated
+2 October with the targeting pass and the playtest set in). **The baseline reading, for Ryan's
+question of whether 80 a round is average or game-losing:** the team of three still wins every
+cell, the formations included, in about a round and at no cost, under the aims and under the
+lowest-shield rule alike (the Risen formation, fifteen foes, is the one fight that lasts: 4.6
+rounds, 17% hull, both rules). Targeting cannot read on the team cells yet because the foes die
+before they swing: the team's damage dwarfs every pack's hit points, so that, not the
+targeting rule, is the first number to move. Alone, the playtest set bit hard where it was meant
+to: the ghoul swarm turned the easiest pack into a wall for the light machines (the Ammit 95 to
+0 under greedy, the Nemesis 100 to 27, the Clydesdale 96 to 54; the Badger, Armadillo and Boar
+still clear it at little cost, which is armour against volume doing its job), the breaching Pit
+Lord and the double-biting Maw cut the solo win rates of everything but the three heavies, and
+the Colossus barely moved. The Badger, Armadillo and Wild Boar still win nearly every solo cell;
+the Baboon, Prairie Dog and Dingo lose to every front-rank pack alone, as support machines
+might. Pick share: the Klaxon's lure is spent 1% of the time, since the team never needs it;
+the Shutters 2%. Rerun after each engine piece lands; read bands, not numbers.
 
 **Audio (the bible's section 1 sound row has the direction, the palettes and every rule; the
 listen-by-listen history is retired).** Everything is `tools/soundforge/forge.py` writing WAVs
@@ -218,12 +223,26 @@ Crossing and Full Bore per visit, The Far Bank is The Chorus's boss theme (`SETS
 `LOOP_FROM`). The track levels stay until Ryan says otherwise. Ryan judges on his phone, so a
 change is heard as an A/B from the listening page before it lands; a sketch never overwrites a
 shipped track; his melodies come through the Melody Desk and the session interprets them. **The
-effects' second pass** is on the listening page (`tools/soundforge/fx_sketches.py`, re-cut to
-Ryan's first notes 1 October; the bible's sound row has the set), nothing shipped: a pick lands
-as a recipe in `forge.py` with its hook (shape, maker, faction, way of moving, a content word for
-blunt melee, the replay telling shield hit from block from hit). Next: Ryan's listen of the
-re-cut; the speakers/headphones setting; the Risen and Infernal Horde boss themes from their
-seeds, melodies proposed in chat first.
+effects' pass** is on the listening page (`tools/soundforge/fx_sketches.py`; the bible's sound
+row has the set and the 2 October decisions), nothing shipped. Where it stands (Ryan, 2 October):
+the weapons' third cut (every blow drawn out with `heft` and a boom tail, measured through the
+phone model) is acceptable and parked; the voice section (`tools/soundforge/speech.py`, a Betty
+and a VEGA) is too faint under noise, cracks and pops to judge; the console was derived again
+that night from the UI design, Hold The Line and the direction notes, not from the existing
+sounds (`tools/soundforge/console_sketches.py`, section 1 of the page, in its fourth cut, the war room
+(`warroom_sketches.py`: low, slow, vocoded and broken up; a carrier, a vocoded grunt per maker, digital
+breakup; piercing measured and held 10 dB under the body), with the FM terminal and its operations
+channel (`console_sketches.py`) kept beside it for the comparison; the music under the sequences
+4 dB down; the morning's fourth cut folded away at the page's foot); the voice is re-rendered judgeable (a smooth glottal pulse,
+the vowels levelled over the bursts, the contact's level).
+Content carries a `sound` label on a component (a word or a list meaning layers, validated in
+`content_db.gd`; the Breaching Plow says blunt, the Gravity Knuckles blunt and plasma). A pick
+lands as a recipe in `forge.py` with its hook (shape, maker, faction, silhouette, the label, the
+replay telling shield hit from block from hit). The sketch script encodes AAC with `ffmpeg` at
+256 kbps where there is no `afconvert` (its encoder smears a transient's front at 128). Next:
+Ryan's listen of the fresh console (the verbs first, then the climax row); the Risen and Infernal
+Horde boss themes from their seeds, melodies proposed in chat first. The speakers/headphones
+setting is dropped (Ryan, 2 October): the one master balances for both for now.
 
 **The phone (bible section 11 has four rows on it; README has the commands).** Ryan's Pixel
 runs the debug APK at 60 fps with the fine map (the default, since the Compatibility renderer
@@ -234,12 +253,41 @@ because Ryan is colourblind: check a new colour by simulation (CLAUDE.md has the
 2.6, the intent field's stripe width and spoke count in motion (`STRIPE`, `SPOKES`), the
 sound set, the grid at the hotter gain.
 
+**Enemy targeting (2 October; bible section 5, the playtest set in section 9). Built the same
+day, in the cloud, tests green.** Every foe picks its own target at round start by its `aim`
+(exposed: weighted by the hull its blows would reach plus half of any shield they would break;
+anything; heat; the armed; fires as one), drawn on the skirmish's die and shown as the arrows,
+the pick a commitment; the lowest-shield rule stays as `Skirmish.targeting_override` for the
+runner's comparison and nothing else. The counterplay is Lure (a keyword on any foe-targeted
+entry; every foe the blows reach and leave alive turns on the spender, no chip, the arrow is
+the record), Suppress (unchanged), Disrupt (the foe's other move, the next in its list that its
+conditions allow, the new move picking its own target), Shield, Armour and a flat Brace. Taunt,
+Beacon, Scramble, Confuse and Energy Armour are gone from the engine and the vocabulary; Phased
+is parked. Foes carry armour (flat off every blow, never off a burn); a move may carry a `when`
+(eight words, `Foe.WHENS`) and is not rolled when it fails; a special never fires twice running;
+a blow may carry `swarm`, so much more per kin on the field. The nine foes are rewritten as the
+bible row says: the ghoul's one move is the swarm claw, the bosses wear armour 10 and carry a
+third move that opens below half (Bone Storm, Eruption, Unravel), the Pit Lord's blow breaches,
+the Whisperer's Hush switches off the showing weapon (new effects `disable`, `heat_all`,
+`corrupt_all`). The Proximity Klaxon is an indirect entry of no damage that lures with a
+spread; the Lockdown Shutters keep their shield and passive and lose the draw. The hangar page
+is republished with the content. Still to judge in play (the to-do): whether the exposed
+weighting leans hard enough, whether the swarm's opening reads as pressure or a wall, whether a
+disrupt into a boss's signature is a trick or a trap.
+
 **Open, in order.** The task list is `docs/todo.md`, one line a task, grouped by who moves
 it and ticked in the commit that lands it; this is the order to take them in.
 
+0. **First, on the Mac:** run the tests. The `sound` label's validation in `sim/content_db.gd`
+   (a word or a list of words) landed from a cloud session with no Godot; the two content
+   entries that carry it are the Breaching Plow and the Gravity Knuckles. Then the effects:
+   Ryan listens to the page (the third cut of the weapons, the fourth cut of the console, the
+   blunt impact with its plasma layer, the voice in two registers, the level offsets) and his
+   notes drive the next round in `tools/soundforge/fx_sketches.py`; a pick lands in `forge.py`
+   with its hook. The page republishes from `tools/soundforge/out/fx/` with `root` set to it.
 1. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
 2. Ryan's text for the new machines and components; the machines' scale on the map; the strikes, then the acts and movement, judged running.
-3. The discuss-first decisions in the Ryan section, the economy last; enemy targeting in Ryan's own design session; the commander layer once the balance has a baseline.
-4. Ready to build: movement by way of moving (the to-do's Engine line); the pacing pieces after Ryan's session; the joint pass, then the idle acts, then the movement animations; the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased, Energy Armour, Corrode, Scramble, Confuse, foe roles), and a dedicated hunter foe and spawned formations once proposed.
-5. Audio: a full play of Hold The Line, the effects' third cut (merge `claude/sweet-goldberg-m588er` first), the speakers/headphones setting, the two boss themes.
+3. The discuss-first decisions in the Ryan section, the economy last; enemy targeting decided and built 2 October (the paragraph above; the runner's read is the baseline question); the commander layer once the balance has a baseline.
+4. Ready to build: movement by way of moving (the to-do's Engine line); the pacing pieces after Ryan's session; the joint pass, then the idle acts, then the movement animations; the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased parked, Corrode, foe roles), and a dedicated hunter foe and spawned formations once proposed.
+5. Audio: a full play of Hold The Line, the console's fresh pass and the effects' picks, the two boss themes.
 6. A prototype hangar in the game (paints and loadouts, no economy). Art: enemy art through foeforge, the hangar as a model. Before a phone leaves the desk: onboarding, then tuning.

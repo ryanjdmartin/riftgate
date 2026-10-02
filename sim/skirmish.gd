@@ -91,6 +91,16 @@ var reroll_debt: int = 0
 ## Makes a foe from a content id, for a summoning action; set by the battle (the content
 ## database), left empty by tests, in which case a summon calls nothing up.
 var foe_factory: Callable = Callable()
+## The targeting rule: empty for the aims (decided 2 October), "lowest" for the rule before
+## it (every foe on the machine with the lowest shield, then the lowest hull), kept for the
+## balance runner's comparison and nothing else.
+var targeting_override: String = ""
+## The shared pick of a rank that fires as one this round, by rank; cleared as the round opens.
+var _focus: Dictionary = {}
+## A machine runs hot, for a foe's condition, from this much heat on.
+const HOT_HEAT := 20
+## Foe effects that act on nobody in particular, so a lure has nothing to turn.
+const UNTARGETED_EFFECTS := ["harden", "regrow", "revive_once", "summon", "rally", "drain_rerolls", "heat_all", "corrupt_all"]
 
 
 func _init(seed_value: int = 0, columns_arg: int = DEFAULT_COLUMNS) -> void:
@@ -256,6 +266,10 @@ func scorch_incoming(ms: MechState) -> int:
 		if f.attacks() and f.has_keyword(f.action, "scorch"):
 			stacks += f.strikes()
 		elif str(f.action.get("effect", "")) == "add_heat":
+			heat += int(f.action.get("value", 0))
+	# A move that heats every machine counts whoever it is aimed at.
+	for f in field_foes():
+		if f.alive() and not f.is_suppressed() and str(f.action.get("effect", "")) == "heat_all" and f.hp - int(Effects.tick_preview(f)["hp"]) > 0:
 			heat += int(f.action.get("value", 0))
 	return stacks * per_stack + heat
 
@@ -435,11 +449,117 @@ func start_round() -> void:
 	for ms in live_mechs():
 		_fired(ms, Effects.round_start(ms.unit, ms.heat), "round start")
 	# Every foe announces its move for the round: which action, at whom. Chosen now, before
-	# the player acts, so the intent chips and the forecast are exact.
+	# the player acts, so the intent chips and the forecast are exact. The move first, from
+	# the ones its conditions allow (never the same special twice running), then the pick by
+	# the move's aim, each foe on its own; a rank that fires as one shares its pick.
+	_focus.clear()
+	_refresh_kin()
 	for f in field_foes():
-		f.choose_action(rng)
-		f.target = _pick_mech_target()
+		_choose_foe_action(f)
+		f.target = _pick_mech_target(f)
 	state = State.ASSIGN
+
+
+## The moves a foe may announce this round: those whose conditions hold, less the special
+## it announced last round when anything else is open (a special never fires twice running,
+## so the swing after the roar can be counted on). Nothing legal falls back to its blow.
+func legal_actions(f: Foe) -> Array:
+	var legal: Array = []
+	for a in f.actions:
+		if _when_holds(f, a):
+			legal.append(a)
+	if legal.size() > 1 and not f.last_special.is_empty():
+		var kept: Array = []
+		for a in legal:
+			if Foe.is_attack_action(a) or str(a.get("id", "")) != f.last_special:
+				kept.append(a)
+		if not kept.is_empty():
+			legal = kept
+	if legal.is_empty():
+		for a in f.actions:
+			if Foe.is_attack_action(a):
+				legal.append(a)
+	return legal
+
+
+func _choose_foe_action(f: Foe) -> void:
+	f.choose_from(legal_actions(f), rng)
+	f.last_special = "" if f.attacks() else str(f.action.get("id", ""))
+
+
+## Does a move's condition hold right now? One word or a list meaning any (Foe.WHENS).
+func _when_holds(f: Foe, a: Dictionary) -> bool:
+	var whens := Foe.whens_of(a)
+	if whens.is_empty():
+		return true
+	for w in whens:
+		if _when_word_holds(f, a, str(w)):
+			return true
+	return false
+
+
+func _when_word_holds(f: Foe, a: Dictionary, w: String) -> bool:
+	match w:
+		"below_half":
+			return f.hp * 2 <= f.hp_max
+		"missing_hull":
+			return f.hp <= f.hp_max - maxi(1, int(a.get("value", 0)))
+		"few_waiting":
+			# Fewer than two of the foe a summon calls (or of anyone, when it names none) wait.
+			var who := str(a.get("foe", ""))
+			var n := 0
+			for r in reinforcements:
+				if who.is_empty() or r.content_id == who:
+					n += 1
+			return n < 2
+		"rerolls_left":
+			return reroll_debt < REROLLS_PER_ROUND
+		"machine_hot":
+			for ms in live_mechs():
+				if ms.heat >= HOT_HEAT:
+					return true
+			return false
+		"machine_armed":
+			return not _armed_mechs().is_empty()
+		"back_behind":
+			if f.rank != 0 or f.column < 0 or f.column >= columns:
+				return false
+			var behind: Foe = back[f.column]
+			return behind != null and behind != f and behind.alive()
+		"others_on_field":
+			for o in field_foes():
+				if o != f and o.alive():
+					return true
+			return false
+	return true
+
+
+## The live machines showing an intact weapon: what a foe that aims at the armed looks for.
+func _armed_mechs() -> Array[MechState]:
+	var out: Array[MechState] = []
+	for ms in live_mechs():
+		var face := ms.face()
+		if face != null and face.is_attack() and not face.cracked:
+			out.append(ms)
+	return out
+
+
+## Every foe on the field learns how many of its kind stand with it, for a swarm blow. Kept
+## current as foes fall and step in, so the intent chips drop as the pack thins.
+func _refresh_kin() -> void:
+	var live := field_foes()
+	for f in live:
+		var n := 0
+		for o in live:
+			if o != f and o.alive() and _same_kind(o, f):
+				n += 1
+		f.kin = n
+
+
+static func _same_kind(a: Foe, b: Foe) -> bool:
+	if not a.content_id.is_empty() or not b.content_id.is_empty():
+		return a.content_id == b.content_id
+	return a.display_name == b.display_name
 
 
 ## Reroll the dice named. One die alone, on a machine with a free reroll of its own left
@@ -543,13 +663,11 @@ func assign(mech_index: int, target = null) -> bool:
 			_gain_shield(who, f.power)
 			log.append("%s shields %s for %d" % [ms.unit.display_name, who.unit.display_name, f.power])
 			_cleanse_with(ms, who, f)
-			_draw_with(who, f)
 		Face.Kind.VENT:
 			var who: MechState = target if target is MechState else ms
 			who.heat = maxi(0, who.heat - f.power)
 			log.append("%s vents %s by %d" % [ms.unit.display_name, who.unit.display_name, f.power])
 			_cleanse_with(ms, who, f)
-			_draw_with(who, f)
 		Face.Kind.BUFF:
 			# Equipment that grants a status for the round (or more): the pipeline reads it
 			# like any modifier, and end_round lets it go.
@@ -559,9 +677,6 @@ func assign(mech_index: int, target = null) -> bool:
 			var m := Effects.grant_buff(who.unit, f.buff_status, f.buff_stacks, src, until)
 			if m != null:
 				log.append("%s buffs %s: %s ×%d%s" % [ms.unit.display_name, who.unit.display_name, m.name, f.buff_stacks, "" if f.buff_rounds == 1 else " for %d rounds" % f.buff_rounds])
-				for rank in [0, 1]:
-					if Effects.draws_rank(who.unit, rank):
-						_retarget_rank(rank, who)
 			_cleanse_with(ms, who, f)
 		Face.Kind.ATTACK:
 			_resolve_attack(mech_index, ms, f, target)
@@ -700,6 +815,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 	var heat_total := 0
 	var vent := 0
 	var extra_burn := 0
+	var armoured_total := 0   # what the primary target's armour took off, for the log
+	var touched: Array = []    # every foe the blows reached and left alive, for a lure or a disrupt
 	# A vent-on-fire attack fires the machine's whole heat into the blow: its bonus is read
 	# now and the gauge is emptied once the strikes have landed.
 	var fired := heat_bonus(ms, f)
@@ -748,11 +865,15 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 			var was_alive := foe.alive()
 			var hp_before := foe.hp
 			# What the foe takes of the blow: its own statuses read last (a Shocked foe takes
-			# double, and the shock is spent by the blow).
+			# double, and the shock is spent by the blow), then its armour comes off, flat, so
+			# small blows bounce off a hardened foe the way they do off a heavy machine.
 			var taken := Effects.damage_taken(foe, dmg)
+			var foe_armoured := mini(taken, foe.armour_total())
+			taken -= foe_armoured
 			foe.hp -= taken
 			if foe == target:
 				landed = taken
+				armoured_total += foe_armoured
 			if Effects.remove(foe, "shocked"):
 				log.append("%s: the shock lands, %d doubled" % [foe.display_name, dmg])
 			if was_alive and not foe.alive() and f.has(Face.Keyword.DEVOUR):
@@ -764,7 +885,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 				var spill := taken - hp_before
 				var behind: Foe = back[foe.column] if foe.column >= 0 and foe.column < columns else null
 				if spill > 0 and behind != null and behind.alive() and not hit.has(behind):
-					var behind_taken := Effects.damage_taken(behind, spill)
+					var behind_taken := maxi(0, Effects.damage_taken(behind, spill) - behind.armour_total())
 					behind.hp -= behind_taken
 					Effects.remove(behind, "shocked")
 					log.append("%s overwhelms: %d spills into %s" % [ms.unit.display_name, behind_taken, behind.display_name])
@@ -775,19 +896,27 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 				_foe_gained_status(foe, "burning")
 			if f.has(Face.Keyword.SUPPRESS):
 				_suppress(foe)
+			if foe.alive() and not touched.has(foe):
+				touched.append(foe)
 		total += landed
 		rolled_total += rolled
 		any_crit = any_crit or crit
 	if extra_burn > 0:
 		Effects.stack(target, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", extra_burn)
 		_foe_gained_status(target, "burning")
+	# Disrupt first, then lure, so an entry carrying both ends with the foe's new move aimed at
+	# the spender.
+	if f.has(Face.Keyword.DISRUPT):
+		_disrupt(touched)
+	if f.has(Face.Keyword.LURE):
+		_lure(ms, touched)
 	last_roll = {"mech": mech_index, "target": target, "rolled": rolled_total, "final": total, "crit": any_crit, "ranged": f.is_ranged()}
 	var how := f.describe()
 	if any_crit:
 		how = "CRIT " + how
 	elif f.is_ranged():
 		how = "rolled %d, " % rolled_total + how
-	log.append("%s hits %s for %d (%s)" % [ms.unit.display_name, target.display_name, total, how])
+	log.append("%s hits %s for %d (%s)%s" % [ms.unit.display_name, target.display_name, total, how, " (armour -%d)" % armoured_total if armoured_total > 0 else ""])
 	if vented_all > 0:
 		log.append("%s fires its heat: -%d, +%d to the blow" % [ms.unit.display_name, vented_all, fired])
 	var was_front := target.rank == 0
@@ -819,9 +948,14 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 	var effect := str(a.get("effect", ""))
 	var value := int(a.get("value", 0))
 	match effect:
-		"halve_damage":
-			Effects.stack(f, Effects.STATUS["folded"], Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_TICK)
-			log.append("%s: %s (takes half damage until its next action)" % [f.display_name, str(a.get("name", "defends"))])
+		"harden":
+			# Armour for a turn: the status carries the action's own number, flat off every blow,
+			# and fades at the foe's next action like the half it replaced.
+			var guard: Dictionary = Effects.STATUS["folded"].duplicate(true)
+			guard["effects"][0]["value"] = maxi(0, value)
+			guard["description"] = "Armour +%d until its next action." % maxi(0, value)
+			Effects.stack(f, guard, Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_TICK)
+			log.append("%s: %s (armour +%d until its next action)" % [f.display_name, str(a.get("name", "hardens")), maxi(0, value)])
 		"regrow":
 			var before := f.hp
 			f.hp = mini(f.hp_max, f.hp + value)
@@ -861,6 +995,24 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			if t.face_index >= 0:
 				log.append("%s: %s, %s's showing component takes the blow" % [f.display_name, str(a.get("name", "unmakes")), t.unit.display_name])
 				_injure_entry(t, t.face_index)
+		"disable":
+			# The entry the die shows is switched off through the machine's next turn, no blow.
+			if t.face_index >= 0:
+				Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, round + 1)
+				log.append("%s: %s, %s's %s is switched off" % [f.display_name, str(a.get("name", "hushes")), t.unit.display_name, t.die.faces[t.face_index].describe()])
+		"heat_all":
+			var names: Array[String] = []
+			for ms in live_mechs():
+				_add_heat(ms, value)
+				names.append(ms.unit.display_name)
+			log.append("%s: %s, +%d heat to %s" % [f.display_name, str(a.get("name", "erupts")), value, ", ".join(names)])
+		"corrupt_all":
+			var hit_names: Array[String] = []
+			for ms in live_mechs():
+				if ms.face_index >= 0:
+					Effects.corrupt_entry(ms.unit, ms.face_index, "foe:" + f.content_id)
+					hit_names.append(ms.unit.display_name)
+			log.append("%s: %s, the showing component of %s is corrupted" % [f.display_name, str(a.get("name", "unravels")), ", ".join(hit_names) if not hit_names.is_empty() else "nobody"])
 		_:
 			log.append("%s: %s" % [f.display_name, str(a.get("name", "acts"))])
 
@@ -949,30 +1101,55 @@ func _foe_gained_status(foe: Foe, status_id: String) -> void:
 		return
 
 
-## The taunt and beacon keywords on a shield or vent component (decided 28 September: damage
-## redirection is common, not locked): whoever it was spent on draws a rank of foes for the
-## round, taunt the front and beacon the back, and every foe of that rank on the field turns
-## on it now, intents and all. The status is the record; the retarget is the act.
-func _draw_with(who: MechState, f: Face) -> void:
-	for pair in [[Face.Keyword.TAUNT, "taunt", 0], [Face.Keyword.BEACON, "beacon", 1]]:
-		if not f.has(pair[0]):
+## Lure (decided 2 October, in place of taunt and beacon): every foe this entry reached turns
+## on the spender for the round, intents and all. No status and no chip: the arrow changing
+## is the record. A lured foe whose move has no target keeps doing it, and the log says so.
+func _lure(ms: MechState, foes: Array) -> void:
+	var turned: Array[String] = []
+	var idle: Array[String] = []
+	for foe in foes:
+		if not foe.alive():
 			continue
-		var src := "draw:" + f.component if not f.component.is_empty() else "draw"
-		Effects.grant_buff(who.unit, pair[1], 1, src, round)
-		_retarget_rank(pair[2], who)
+		if not foe.attacks() and str(foe.action.get("effect", "")) in UNTARGETED_EFFECTS:
+			idle.append(foe.display_name)
+		if foe.target != ms:
+			foe.target = ms
+			turned.append(foe.display_name)
+	if not turned.is_empty():
+		log.append("%s lures %s" % [ms.unit.display_name, ", ".join(turned)])
+	if not idle.is_empty():
+		log.append("lured, but %s %s nothing to turn" % [", ".join(idle), "has" if idle.size() == 1 else "have"])
 
 
-## Every live foe of a rank on the field turns on one machine, now. Massive foes stand in
-## both ranks and follow either draw.
-func _retarget_rank(rank: int, who: MechState) -> void:
-	var turned := 0
-	for f in field_foes():
-		if not f.alive() or (f.rank != rank and not f.is_massive()) or f.target == who:
+## Disrupt (decided 2 October, in place of the planned scramble and confuse): the foe does its
+## other move instead, this round, the new intent shown at once. Deterministic: the next move
+## in its list that its conditions allow, so a boss with three moves steps through its
+## pattern; a foe with nothing else open is not moved. The new move picks its own target.
+func _disrupt(foes: Array) -> void:
+	for foe in foes:
+		if not foe.alive():
 			continue
-		f.target = who
-		turned += 1
-	if turned > 0:
-		log.append("the %s rank turns on %s (%d)" % ["front" if rank == 0 else "back", who.unit.display_name, turned])
+		var legal := legal_actions(foe)
+		var others: Array = []
+		for a in legal:
+			if a != foe.action:
+				others.append(a)
+		if others.is_empty():
+			log.append("%s is disrupted, and has nothing else to do" % foe.display_name)
+			continue
+		# The next in its pattern: the first legal move after the current one, wrapping.
+		var start: int = foe.actions.find(foe.action)
+		var next: Dictionary = others[0]
+		for k in range(1, foe.actions.size() + 1):
+			var cand: Dictionary = foe.actions[(start + k) % foe.actions.size()]
+			if others.has(cand):
+				next = cand
+				break
+		var was := str(foe.action.get("name", ""))
+		foe.action = next
+		foe.last_special = "" if foe.attacks() else str(foe.action.get("id", ""))
+		foe.target = _pick_mech_target(foe)
+		log.append("%s is disrupted: %s instead of %s" % [foe.display_name, str(next.get("name", "")), was])
 
 
 ## The cleanse keyword on a shield or vent component: whoever it was spent on loses every
@@ -1142,15 +1319,47 @@ func _injure_entry(ms: MechState, idx: int) -> void:
 		log.append("%s: a component cracks (%s)" % [ms.unit.display_name, what])
 
 
-## Whom a foe strikes: the machine drawing its rank if one is (a taunt or beacon standing),
-## else the weakest shield, then the weakest hull. Asked with no foe, the plain pick.
+## Whom a foe strikes (decided 2 October): its own pick, by the sense its move follows. The aim: the exposed, weighted by the hull its blow would reach, so a
+## shield standing lowers the draw and a shield down raises it; anything, uniform; heat, the
+## hottest machine; the armed, a machine showing an intact weapon (the exposed when none
+## does); fires as one, the rank's shared pick. The pick is a commitment: a foe whose target
+## shields up still swings at it. With the override set, or asked with no foe, the rule
+## before: the lowest shield, then the lowest hull.
 func _pick_mech_target(f: Foe = null) -> MechState:
-	if f != null:
-		for ms in live_mechs():
-			if Effects.draws_rank(ms.unit, f.rank) or (f.is_massive() and Effects.draws_rank(ms.unit, 1)):
-				return ms
+	var live := live_mechs()
+	if live.is_empty():
+		return null
+	if f == null or targeting_override == "lowest":
+		return _lowest_shield(live)
+	match f.aim_of():
+		"anything":
+			return live[rng.randi_range(0, live.size() - 1)]
+		"heat":
+			var hottest: Array[MechState] = []
+			for ms in live:
+				if hottest.is_empty() or ms.heat > hottest[0].heat:
+					hottest = [ms]
+				elif ms.heat == hottest[0].heat:
+					hottest.append(ms)
+			return hottest[rng.randi_range(0, hottest.size() - 1)]
+		"armed":
+			var armed := _armed_mechs()
+			if armed.is_empty():
+				return _pick_exposed(f, live)
+			return armed[rng.randi_range(0, armed.size() - 1)]
+		"focus":
+			var shared = _focus.get(f.rank, null)
+			if shared != null and shared.alive():
+				return shared
+			var pick := _pick_exposed(f, live)
+			_focus[f.rank] = pick
+			return pick
+	return _pick_exposed(f, live)
+
+
+static func _lowest_shield(live: Array[MechState]) -> MechState:
 	var best: MechState = null
-	for ms in live_mechs():
+	for ms in live:
 		if best == null \
 				or ms.unit.shield < best.unit.shield \
 				or (ms.unit.shield == best.unit.shield and ms.unit.hull < best.unit.hull):
@@ -1158,9 +1367,60 @@ func _pick_mech_target(f: Foe = null) -> MechState:
 	return best
 
 
+## The exposed: each machine weighs one, plus the hull this foe's blows would reach through
+## its shield and armour as they stand, plus half of any shield they would break (a standing
+## shield blocks a blow whole here, so without that a shield of 10 would read as safe as one
+## of 40; a shield about to fail is exposure too), and the pick is drawn by weight.
+func _pick_exposed(f: Foe, live: Array[MechState]) -> MechState:
+	var weights: Array[float] = []
+	var total := 0.0
+	for ms in live:
+		var w := 1.0 + float(hull_reached(f, ms)) + float(shield_broken(f, ms)) * 0.5
+		weights.append(w)
+		total += w
+	var roll := rng.randf() * total
+	for i in range(live.size()):
+		roll -= weights[i]
+		if roll <= 0.0:
+			return live[i]
+	return live[live.size() - 1]
+
+
+## The shield this foe's blows would take off a machine, when they would take all of it;
+## zero when the shield holds.
+func shield_broken(f: Foe, ms: MechState) -> int:
+	var dmg := f.damage()
+	if dmg <= 0 or ms.unit.shield <= 0:
+		return 0
+	var shield := ms.unit.shield
+	for s in range(f.strikes()):
+		shield = int(_blow(shield, ms.unit.hull_max, 0, Effects.damage_taken(ms.unit, dmg), f.breaches())["shield"])
+	return ms.unit.shield if shield <= 0 else 0
+
+
+## The hull this foe's blows would reach on a machine as it stands: its damage, its strikes,
+## its breach, against the shield, armour and damage taken the forecast reads.
+func hull_reached(f: Foe, ms: MechState) -> int:
+	var dmg := f.damage()
+	if dmg <= 0:
+		return 0
+	var shield := ms.unit.shield
+	var through := 0
+	for s in range(f.strikes()):
+		var r := _blow(shield, ms.unit.hull_max, ms.unit.armour + Effects.armour_against(ms.unit, f.rank), Effects.damage_taken(ms.unit, dmg), f.breaches())
+		shield = r["shield"]
+		through += int(r["through"])
+	return mini(through, maxi(0, ms.unit.hull))
+
+
 # ---------------------------------------------------------------- formation
 
 func _clear_dead() -> void:
+	_clear_dead_slots()
+	_refresh_kin()
+
+
+func _clear_dead_slots() -> void:
 	for col in range(columns):
 		for rank in [front, back]:
 			var f: Foe = rank[col]
@@ -1217,6 +1477,7 @@ func _reinforce(random: bool = true) -> void:
 		placed += 1
 	if placed > 0 and round > 0:
 		log.append("%d reinforcement%s step%s in" % [placed, "s" if placed != 1 else "", "" if placed != 1 else "s"])
+	_refresh_kin()
 
 
 func _reinforcement_index_massive() -> int:

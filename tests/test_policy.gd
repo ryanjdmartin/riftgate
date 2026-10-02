@@ -241,11 +241,11 @@ func test_the_bot_reads_a_shocked_foe_as_taking_double() -> void:
 	assert_eq(pol.expected_damage(ms, burst, g), 80.0, "only the first of three blows is doubled")
 
 
-func test_greedy_taunts_when_it_saves_the_glass_machine() -> void:
+func test_greedy_lures_when_it_saves_the_glass_machine() -> void:
 	var sk := Skirmish.new(2, 2)
-	var klaxon := Face.shield(10)
-	klaxon.add_keyword(K.TAUNT)
-	var plain := Face.shield(10)
+	var klaxon := Face.attack(0, I, K.LURE)
+	klaxon.add_keyword(K.CLEAVE)
+	var plain := Face.attack(0, I)
 	var tank := _mech("Tank", Die.of([klaxon, plain]), 40, 200)
 	var glass := _mech("Glass", Die.single(Face.blank()), 0, 15)
 	sk.add_mech(tank)
@@ -253,11 +253,20 @@ func test_greedy_taunts_when_it_saves_the_glass_machine() -> void:
 	sk.add_foes([_ghoul(500, 10), _ghoul(500, 10)])
 	sk.begin()
 	sk.start_round()
+	for f in sk.field_foes():
+		f.target = sk.mechs[1]   # both on the glass
 	var pol := Policy.make(Policy.GREEDY)
 	var ms: Skirmish.MechState = sk.mechs[0]
-	assert_true(pol.draw_score(sk, ms, klaxon, 10) > Policy.DEATH_WEIGHT, "the taunt saves a machine, and the bot sees it")
-	assert_eq(pol.draw_score(sk, ms, plain, 10), 0.0, "a plain shield draws nothing")
+	assert_true(pol.lure_score(sk, ms, sk.field_foes()) > Policy.DEATH_WEIGHT, "the lure saves a machine, and the bot sees it")
+	assert_true(pol.attack_score(sk, ms, klaxon, sk.front[0]) > Policy.DEATH_WEIGHT, "so the klaxon spent on either ghoul is worth a life")
+	assert_eq(pol.attack_score(sk, ms, plain, sk.front[0]), 0.0, "a plain entry of no damage is worth nothing")
 	assert_true(pol.face_value(sk, ms, klaxon) > pol.face_value(sk, ms, plain), "so the klaxon is the better entry")
+	# A disrupt is worth the blow it turns into a quieter move, and nothing when there is none.
+	var g: Foe = sk.front[0]
+	g.actions = [Foe.basic_action(), {"id": "roar", "name": "Roar", "kind": "debuff", "effect": "drain_rerolls", "value": 1, "weight": 1, "text": ""}]
+	g.action = g.actions[0]
+	assert_eq(Policy.disrupt_score(sk, g), 10.0 * Policy.HULL_WEIGHT, "the roar is quieter than the blow")
+	assert_eq(Policy.disrupt_score(sk, sk.front[1]), 0.0, "a foe with only its blow cannot be moved")
 
 
 func test_greedy_values_the_spill_behind_a_dying_foe() -> void:
