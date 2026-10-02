@@ -91,6 +91,14 @@ var reroll_debt: int = 0
 ## Makes a foe from a content id, for a summoning action; set by the battle (the content
 ## database), left empty by tests, in which case a summon calls nothing up.
 var foe_factory: Callable = Callable()
+## The targeting rule: empty for the aims (decided 2 October), "lowest" for the rule before
+## it (every foe on the machine with the lowest shield, then the lowest hull), kept for the
+## balance runner's comparison and nothing else.
+var targeting_override: String = ""
+## The shared pick of a rank that fires as one this round, by rank; cleared as the round opens.
+var _focus: Dictionary = {}
+## A machine runs hot, for a foe's condition, from this much heat on.
+const HOT_HEAT := 20
 
 
 func _init(seed_value: int = 0, columns_arg: int = DEFAULT_COLUMNS) -> void:
@@ -435,11 +443,117 @@ func start_round() -> void:
 	for ms in live_mechs():
 		_fired(ms, Effects.round_start(ms.unit, ms.heat), "round start")
 	# Every foe announces its move for the round: which action, at whom. Chosen now, before
-	# the player acts, so the intent chips and the forecast are exact.
+	# the player acts, so the intent chips and the forecast are exact. The move first, from
+	# the ones its conditions allow (never the same special twice running), then the pick by
+	# the move's aim, each foe on its own; a rank that fires as one shares its pick.
+	_focus.clear()
+	_refresh_kin()
 	for f in field_foes():
-		f.choose_action(rng)
-		f.target = _pick_mech_target()
+		_choose_foe_action(f)
+		f.target = _pick_mech_target(f)
 	state = State.ASSIGN
+
+
+## The moves a foe may announce this round: those whose conditions hold, less the special
+## it announced last round when anything else is open (a special never fires twice running,
+## so the swing after the roar can be counted on). Nothing legal falls back to its blow.
+func legal_actions(f: Foe) -> Array:
+	var legal: Array = []
+	for a in f.actions:
+		if _when_holds(f, a):
+			legal.append(a)
+	if legal.size() > 1 and not f.last_special.is_empty():
+		var kept: Array = []
+		for a in legal:
+			if Foe.is_attack_action(a) or str(a.get("id", "")) != f.last_special:
+				kept.append(a)
+		if not kept.is_empty():
+			legal = kept
+	if legal.is_empty():
+		for a in f.actions:
+			if Foe.is_attack_action(a):
+				legal.append(a)
+	return legal
+
+
+func _choose_foe_action(f: Foe) -> void:
+	f.choose_from(legal_actions(f), rng)
+	f.last_special = "" if f.attacks() else str(f.action.get("id", ""))
+
+
+## Does a move's condition hold right now? One word or a list meaning any (Foe.WHENS).
+func _when_holds(f: Foe, a: Dictionary) -> bool:
+	var whens := Foe.whens_of(a)
+	if whens.is_empty():
+		return true
+	for w in whens:
+		if _when_word_holds(f, a, str(w)):
+			return true
+	return false
+
+
+func _when_word_holds(f: Foe, a: Dictionary, w: String) -> bool:
+	match w:
+		"below_half":
+			return f.hp * 2 <= f.hp_max
+		"missing_hull":
+			return f.hp <= f.hp_max - maxi(1, int(a.get("value", 0)))
+		"few_waiting":
+			# Fewer than two of the foe a summon calls (or of anyone, when it names none) wait.
+			var who := str(a.get("foe", ""))
+			var n := 0
+			for r in reinforcements:
+				if who.is_empty() or r.content_id == who:
+					n += 1
+			return n < 2
+		"rerolls_left":
+			return reroll_debt < REROLLS_PER_ROUND
+		"machine_hot":
+			for ms in live_mechs():
+				if ms.heat >= HOT_HEAT:
+					return true
+			return false
+		"machine_armed":
+			return not _armed_mechs().is_empty()
+		"back_behind":
+			if f.rank != 0 or f.column < 0 or f.column >= columns:
+				return false
+			var behind: Foe = back[f.column]
+			return behind != null and behind != f and behind.alive()
+		"others_on_field":
+			for o in field_foes():
+				if o != f and o.alive():
+					return true
+			return false
+	return true
+
+
+## The live machines showing an intact weapon: what a foe that aims at the armed looks for.
+func _armed_mechs() -> Array[MechState]:
+	var out: Array[MechState] = []
+	for ms in live_mechs():
+		var face := ms.face()
+		if face != null and face.is_attack() and not face.cracked:
+			out.append(ms)
+	return out
+
+
+## Every foe on the field learns how many of its kind stand with it, for a swarm blow. Kept
+## current as foes fall and step in, so the intent chips drop as the pack thins.
+func _refresh_kin() -> void:
+	var live := field_foes()
+	for f in live:
+		var n := 0
+		for o in live:
+			if o != f and o.alive() and _same_kind(o, f):
+				n += 1
+		f.kin = n
+
+
+static func _same_kind(a: Foe, b: Foe) -> bool:
+	if not a.content_id.is_empty() or not b.content_id.is_empty():
+		return a.content_id == b.content_id
+	return a.display_name == b.display_name
 
 
 ## Reroll the dice named. One die alone, on a machine with a free reroll of its own left
@@ -1152,15 +1266,53 @@ func _injure_entry(ms: MechState, idx: int) -> void:
 		log.append("%s: a component cracks (%s)" % [ms.unit.display_name, what])
 
 
-## Whom a foe strikes: the machine drawing its rank if one is (a taunt or beacon standing),
-## else the weakest shield, then the weakest hull. Asked with no foe, the plain pick.
+## Whom a foe strikes (decided 2 October): its own pick, by the sense its move follows. The
+## machine drawing its rank if one is (a taunt or beacon standing) comes first while those
+## keywords exist. Then the aim: the exposed, weighted by the hull its blow would reach, so a
+## shield standing lowers the draw and a shield down raises it; anything, uniform; heat, the
+## hottest machine; the armed, a machine showing an intact weapon (the exposed when none
+## does); fires as one, the rank's shared pick. The pick is a commitment: a foe whose target
+## shields up still swings at it. With the override set, or asked with no foe, the rule
+## before: the lowest shield, then the lowest hull.
 func _pick_mech_target(f: Foe = null) -> MechState:
+	var live := live_mechs()
+	if live.is_empty():
+		return null
 	if f != null:
-		for ms in live_mechs():
+		for ms in live:
 			if Effects.draws_rank(ms.unit, f.rank) or (f.is_massive() and Effects.draws_rank(ms.unit, 1)):
 				return ms
+	if f == null or targeting_override == "lowest":
+		return _lowest_shield(live)
+	match f.aim_of():
+		"anything":
+			return live[rng.randi_range(0, live.size() - 1)]
+		"heat":
+			var hottest: Array[MechState] = []
+			for ms in live:
+				if hottest.is_empty() or ms.heat > hottest[0].heat:
+					hottest = [ms]
+				elif ms.heat == hottest[0].heat:
+					hottest.append(ms)
+			return hottest[rng.randi_range(0, hottest.size() - 1)]
+		"armed":
+			var armed := _armed_mechs()
+			if armed.is_empty():
+				return _pick_exposed(f, live)
+			return armed[rng.randi_range(0, armed.size() - 1)]
+		"focus":
+			var shared = _focus.get(f.rank, null)
+			if shared != null and shared.alive():
+				return shared
+			var pick := _pick_exposed(f, live)
+			_focus[f.rank] = pick
+			return pick
+	return _pick_exposed(f, live)
+
+
+static func _lowest_shield(live: Array[MechState]) -> MechState:
 	var best: MechState = null
-	for ms in live_mechs():
+	for ms in live:
 		if best == null \
 				or ms.unit.shield < best.unit.shield \
 				or (ms.unit.shield == best.unit.shield and ms.unit.hull < best.unit.hull):
@@ -1168,9 +1320,60 @@ func _pick_mech_target(f: Foe = null) -> MechState:
 	return best
 
 
+## The exposed: each machine weighs one, plus the hull this foe's blows would reach through
+## its shield and armour as they stand, plus half of any shield they would break (a standing
+## shield blocks a blow whole here, so without that a shield of 10 would read as safe as one
+## of 40; a shield about to fail is exposure too), and the pick is drawn by weight.
+func _pick_exposed(f: Foe, live: Array[MechState]) -> MechState:
+	var weights: Array[float] = []
+	var total := 0.0
+	for ms in live:
+		var w := 1.0 + float(hull_reached(f, ms)) + float(shield_broken(f, ms)) * 0.5
+		weights.append(w)
+		total += w
+	var roll := rng.randf() * total
+	for i in range(live.size()):
+		roll -= weights[i]
+		if roll <= 0.0:
+			return live[i]
+	return live[live.size() - 1]
+
+
+## The shield this foe's blows would take off a machine, when they would take all of it;
+## zero when the shield holds.
+func shield_broken(f: Foe, ms: MechState) -> int:
+	var dmg := f.damage()
+	if dmg <= 0 or ms.unit.shield <= 0:
+		return 0
+	var shield := ms.unit.shield
+	for s in range(f.strikes()):
+		shield = int(_blow(shield, ms.unit.hull_max, 0, Effects.damage_taken(ms.unit, dmg), f.breaches())["shield"])
+	return ms.unit.shield if shield <= 0 else 0
+
+
+## The hull this foe's blows would reach on a machine as it stands: its damage, its strikes,
+## its breach, against the shield, armour and damage taken the forecast reads.
+func hull_reached(f: Foe, ms: MechState) -> int:
+	var dmg := f.damage()
+	if dmg <= 0:
+		return 0
+	var shield := ms.unit.shield
+	var through := 0
+	for s in range(f.strikes()):
+		var r := _blow(shield, ms.unit.hull_max, ms.unit.armour + Effects.armour_against(ms.unit, f.rank), Effects.damage_taken(ms.unit, dmg), f.breaches())
+		shield = r["shield"]
+		through += int(r["through"])
+	return mini(through, maxi(0, ms.unit.hull))
+
+
 # ---------------------------------------------------------------- formation
 
 func _clear_dead() -> void:
+	_clear_dead_slots()
+	_refresh_kin()
+
+
+func _clear_dead_slots() -> void:
 	for col in range(columns):
 		for rank in [front, back]:
 			var f: Foe = rank[col]
@@ -1227,6 +1430,7 @@ func _reinforce(random: bool = true) -> void:
 		placed += 1
 	if placed > 0 and round > 0:
 		log.append("%d reinforcement%s step%s in" % [placed, "s" if placed != 1 else "", "" if placed != 1 else "s"])
+	_refresh_kin()
 
 
 func _reinforcement_index_massive() -> int:

@@ -97,8 +97,39 @@ func test_cleave_hits_neighbours() -> void:
 		assert_eq(sk.front[c].hp, 30, "front %d took 20" % c)
 
 
-func test_enemy_targets_lowest_shield() -> void:
+func test_a_foe_aims_at_the_exposed_by_weight_and_the_old_rule_is_an_override() -> void:
+	# A blow of 20: the tough machine's shield of 40 holds (weight 1); the weak one's shield of
+	# 10 blocks the blow whole too, this being the shield rule, but it breaks, and a shield
+	# about to fail is exposure (half of it: weight 6), so the weak one is picked six times
+	# in seven.
+	var weak_picks := 0
+	for seed_value in range(120):
+		var sk := Skirmish.new(seed_value)
+		var tough := _mech("Tough", Die.single(Face.shield(10)), 40, 100)
+		var weak := _mech("Weak", Die.single(Face.shield(10)), 10, 100)
+		sk.add_mech(tough)
+		sk.add_mech(weak)
+		sk.add_foes([_ghoul(30, 20)])
+		sk.begin()
+		sk.start_round()
+		assert_eq(sk.front[0].aim_of(), "exposed", "the default sense")
+		if sk.front[0].target == sk.mechs[1]:
+			weak_picks += 1
+	assert_true(weak_picks > 88 and weak_picks < 120, "the exposed machine draws most of the picks, never all: %d of 120" % weak_picks)
+	var s0 := Skirmish.new(1)
+	s0.add_mech(_mech("Bare", Die.single(Face.shield(10)), 0, 100))
+	s0.add_mech(_mech("Thin", Die.single(Face.shield(10)), 10, 100))
+	s0.add_mech(_mech("Thick", Die.single(Face.shield(10)), 40, 100))
+	s0.add_foes([_ghoul(30, 20)])
+	s0.begin()
+	var g0: Foe = s0.front[0]
+	assert_eq(s0.hull_reached(g0, s0.mechs[0]), 20, "bare: the whole blow reaches hull")
+	assert_eq(s0.hull_reached(g0, s0.mechs[1]), 0, "a standing shield blocks it whole")
+	assert_eq(s0.shield_broken(g0, s0.mechs[1]), 10, "but the thin shield breaks")
+	assert_eq(s0.shield_broken(g0, s0.mechs[2]), 0, "and the thick one holds")
+	# The rule before 2 October, kept for the runner's comparison: every blow on the lowest shield.
 	var sk := Skirmish.new(1)
+	sk.targeting_override = "lowest"
 	var tough := _mech("Tough", Die.single(Face.shield(10)), 40, 100)
 	var weak := _mech("Weak", Die.single(Face.shield(10)), 10, 100)
 	sk.add_mech(tough)
@@ -110,6 +141,185 @@ func test_enemy_targets_lowest_shield() -> void:
 	assert_eq(tough.shield, 40, "tough untouched")
 	assert_eq(weak.shield, 0, "weak lost its shield")
 	assert_eq(weak.hull, 100, "and no hull: a standing shield blocks the blow whole")
+	# The pick is a commitment: a shield raised on the target does not move the blow.
+	var s2 := Skirmish.new(3)
+	s2.targeting_override = "lowest"
+	var a := _mech("A", Die.single(Face.shield(30)), 0, 100)
+	var b := _mech("B", Die.single(Face.shield(10)), 40, 100)
+	s2.add_mech(a)
+	s2.add_mech(b)
+	s2.add_foes([_ghoul(30, 20)])
+	s2.begin()
+	s2.start_round()
+	assert_eq(s2.front[0].target, s2.mechs[0], "the bare machine")
+	assert_true(s2.assign(0, null), "it shields up")
+	assert_eq(s2.front[0].target, s2.mechs[0], "and the foe still swings at it")
+
+
+func test_the_other_aims_anything_heat_armed_and_fires_as_one() -> void:
+	# Anything: uniform, so over many seeds both machines are picked and neither nearly always.
+	var first := 0
+	for seed_value in range(100):
+		var sk := Skirmish.new(seed_value)
+		sk.add_mech(_mech("A", Die.single(Face.shield(10)), 40, 100))
+		sk.add_mech(_mech("B", Die.single(Face.shield(10)), 0, 100))
+		var g := _ghoul(30, 20)
+		g.aim = "anything"
+		sk.add_foes([g])
+		sk.begin()
+		sk.start_round()
+		if sk.front[0].target == sk.mechs[0]:
+			first += 1
+	assert_true(first > 30 and first < 70, "anything spreads the picks: %d of 100 on the shielded machine" % first)
+	# Heat: the hottest machine, however bare the other.
+	var s2 := Skirmish.new(1)
+	var cold := _mech("Cold", Die.single(Face.shield(10)), 0, 100)
+	var hot := _mech("Hot", Die.single(Face.shield(10)), 40, 100)
+	s2.add_mech(cold)
+	s2.add_mech(hot)
+	var h := _ghoul(30, 20)
+	h.aim = "heat"
+	s2.add_foes([h])
+	s2.begin()
+	s2.mechs[1].heat = 30
+	s2.start_round()
+	assert_eq(s2.front[0].target, s2.mechs[1], "the hot machine draws the heat seeker")
+	# Armed: a machine showing an intact weapon; a move may carry the aim on its own.
+	var s3 := Skirmish.new(1)
+	var gunner := _mech("Gunner", Die.single(Face.attack(10, L)), 40, 100)
+	var medic := _mech("Medic", Die.single(Face.shield(10)), 0, 100)
+	s3.add_mech(gunner)
+	s3.add_mech(medic)
+	var w := _ghoul(30, 20)
+	w.actions = [Foe.basic_action()]
+	w.actions[0]["aim"] = "armed"
+	w.action = w.actions[0]
+	s3.add_foes([w])
+	s3.begin()
+	s3.start_round()
+	assert_eq(s3.front[0].aim_of(), "armed", "the move's own sense")
+	assert_eq(s3.front[0].target, s3.mechs[0], "the machine showing a gun")
+	var cracked := Face.attack(10, L)
+	cracked.crack()
+	var s4 := Skirmish.new(1)
+	s4.add_mech(_mech("Broken", Die.single(cracked), 40, 100))
+	s4.add_mech(_mech("Bare", Die.single(Face.shield(10)), 0, 100))
+	var w2 := _ghoul(30, 20)
+	w2.aim = "armed"
+	s4.add_foes([w2])
+	s4.begin()
+	s4.start_round()
+	assert_eq(s4.front[0].target, s4.mechs[1], "nobody armed: the exposed, and the bare machine is all of it")
+	# Fires as one: every foe of the rank with the aim shares one pick; the front picks alone.
+	var shared := 0
+	var same_as_front := 0
+	for seed_value in range(60):
+		var s5 := Skirmish.new(seed_value, 3)
+		s5.add_mech(_mech("A", Die.single(Face.shield(10)), 0, 100))
+		s5.add_mech(_mech("B", Die.single(Face.shield(10)), 0, 100))
+		s5.add_mech(_mech("C", Die.single(Face.shield(10)), 0, 100))
+		var casters: Array = [_archer(30, 10), _archer(30, 10), _archer(30, 10)]
+		for c in casters:
+			c.aim = "focus"
+		s5.add_foes([_ghoul(30, 10), _ghoul(30, 10), _ghoul(30, 10)] + casters)
+		s5.begin()
+		s5.start_round()
+		if s5.back[0].target == s5.back[1].target and s5.back[1].target == s5.back[2].target:
+			shared += 1
+		if s5.front[0].target == s5.front[1].target and s5.front[1].target == s5.front[2].target:
+			same_as_front += 1
+	assert_eq(shared, 60, "the back rank fires as one every time")
+	assert_true(same_as_front < 30, "the front rank picks on its own: all three agree in %d of 60" % same_as_front)
+
+
+func test_a_moves_condition_gates_it_and_a_special_never_fires_twice_running() -> void:
+	var sk := Skirmish.new(1, 1)
+	sk.add_mech(_mech("A", Die.single(Face.attack(10, L)), 40, 100))
+	var g := _ghoul(100, 10)
+	g.actions = [Foe.basic_action(), _special("defend", "regrow", {"value": 20, "when": "below_half"})]
+	g.actions[1]["weight"] = 1000
+	g.action = g.actions[0]
+	sk.add_foes([g])
+	sk.begin()
+	for i in range(5):
+		sk.start_round()
+		assert_true(g.attacks(), "at full health the regrow is not open, whatever its weight")
+		sk.end_round()
+	g.hp = 40
+	sk.start_round()
+	assert_false(g.attacks(), "below half it opens, and the weight carries it")
+	assert_eq(g.last_special, "regrow", "and it is on record")
+	sk.end_round()
+	assert_eq(g.hp, 60, "it regrew")
+	sk.start_round()
+	assert_true(g.attacks(), "never twice running: the swing after the roar")
+	sk.end_round()
+	g.hp = 40
+	sk.start_round()
+	assert_false(g.attacks(), "then the special is open again")
+	# A list of conditions means any; a foe whose only move is a special keeps it.
+	var s2 := Skirmish.new(2, 2)
+	s2.add_mech(_mech("B", Die.single(Face.attack(10, L)), 40, 100))
+	var sp := _ghoul(100, 10)
+	sp.actions = [_special("defend", "harden", {"value": 10, "when": ["below_half", "back_behind"]})]
+	sp.action = sp.actions[0]
+	s2.add_foes([sp, _archer(30, 10)])
+	s2.begin()
+	s2.start_round()
+	assert_false(sp.attacks(), "something stands behind it, so the fold is open")
+	s2.end_round()
+	s2.start_round()
+	assert_false(sp.attacks(), "its only move repeats: the rule needs something else to pick")
+	assert_eq(Foe.whens_of(sp.actions[0]), ["below_half", "back_behind"], "the list reads back")
+	assert_eq(Foe.whens_of({"when": "machine_hot"}), ["machine_hot"], "a word reads as a list of one")
+	# The other words, each on its own skirmish state.
+	var s3 := Skirmish.new(3, 2)
+	var hot := _mech("C", Die.single(Face.attack(10, L)), 40, 100)
+	s3.add_mech(hot)
+	var hc := _ghoul(100, 10)
+	s3.add_foes([hc, _ghoul(30, 10), _ghoul(30, 10)])
+	s3.begin()
+	s3.start_round()
+	assert_false(s3._when_holds(hc, {"when": "machine_hot"}), "nobody runs hot")
+	s3.mechs[0].heat = Skirmish.HOT_HEAT
+	assert_true(s3._when_holds(hc, {"when": "machine_hot"}), "now one does")
+	assert_true(s3._when_holds(hc, {"when": "machine_armed"}), "a gun is showing")
+	assert_true(s3._when_holds(hc, {"when": "rerolls_left"}), "the team has rerolls to lose")
+	s3.reroll_debt = Skirmish.REROLLS_PER_ROUND
+	assert_false(s3._when_holds(hc, {"when": "rerolls_left"}), "not when a roar has taken them all")
+	assert_true(s3._when_holds(hc, {"when": "others_on_field"}), "another stands with it")
+	assert_true(s3._when_holds(hc, {"when": "few_waiting"}), "one waits, which is few")
+	s3.reinforcements.append(_ghoul(30, 10))
+	s3.reinforcements.append(_ghoul(30, 10))
+	assert_false(s3._when_holds(hc, {"when": "few_waiting"}), "three wait: not few")
+	assert_true(s3._when_holds(hc, {"when": "few_waiting", "foe": "nobody"}), "none of a named foe waits")
+	assert_false(s3._when_holds(hc, {"when": "missing_hull", "value": 20}), "whole")
+	hc.hp = 80
+	assert_true(s3._when_holds(hc, {"when": "missing_hull", "value": 20}), "missing the value")
+
+
+func test_a_swarm_blow_grows_with_its_kin_on_the_field_and_falls_as_they_die() -> void:
+	var sk := Skirmish.new(1, 4)
+	var m := _mech("A", Die.single(Face.attack(40, L)), 40, 100)
+	sk.add_mech(m)
+	var pack: Array = []
+	for i in range(6):
+		var g := _ghoul(30, 5)
+		g.actions = [{"id": "claw", "name": "Claw", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": [], "text": "", "swarm": 5}]
+		g.action = g.actions[0]
+		pack.append(g)
+	sk.add_foes(pack)
+	sk.begin()
+	sk.start_round()
+	assert_eq(sk.front[0].kin, 3, "four on the field: three kin each")
+	assert_eq(sk.front[0].damage(), 20, "5 plus 5 a kin")
+	assert_eq(sk.front[0].text_of(sk.front[0].action), "", "no text set")
+	assert_true(sk.assign(0, sk.front[1]), "one dies")
+	assert_eq(sk.front[0].kin, 2, "the kin count drops at once")
+	assert_eq(sk.front[0].damage(), 15, "and so does every claw, before the blows land")
+	sk.end_round()
+	assert_eq(sk.front[1].kin, 3, "a reinforcement stepped in: four again")
+	assert_eq(sk.front[1].damage(), 20, "and the swarm is back to 20")
 
 
 func test_heat_overflow_damages_hull() -> void:

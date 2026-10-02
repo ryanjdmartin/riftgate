@@ -6,6 +6,13 @@ extends RefCounted
 ## A foe has a base attack number, the player's quick read of how hard it hits, and a list
 ## of attack actions that scale it: {id, name, factor, strikes, weight, keywords, text}.
 ## Each round it picks one by weight before the player acts, so the intent shown is exact.
+##
+## Targeting (decided 2 October): machines do not taunt, monsters hunt by sense. A foe type
+## carries an `aim`, the sense its pick follows, and a move may carry its own; the skirmish
+## makes the pick (`Skirmish._pick_mech_target`), weighted and shown before the player acts.
+## A move may carry a `when`, the condition that lets the foe pick it this round, and a
+## special never fires twice running (`last_special`). A blow may carry `swarm`: so much more
+## per other foe of its type on the field (`kin`, kept by the skirmish), the ghoul's threat.
 ## Damage is base attack times the action's factor; strikes are separate blows; keywords are
 ## tags on the blow (breach: overflows shield into hull).
 
@@ -15,6 +22,7 @@ var hp: int = 30
 var hp_max: int = 30
 var attack: int = 10             # base attack: the number the player reads as "how hard it hits"
 var armour: int = 0              # flat off every blow that lands on it (content; 2 October: the one enemy mitigation besides recovery)
+var aim: String = AIM_EXPOSED    # the sense its target pick follows (content; a move may override it)
 var prefers_back: bool = false   # ranged types hold the back rank and never step up
 var pack_id: int = 0            # which battlefield pack this foe came from
 var size: int = 1                # 2 = massive: fills both slots of a column
@@ -29,6 +37,25 @@ var action: Dictionary = {}      # this round's chosen action
 var modifiers: Array = []        # statuses on this foe (burning, suppressed, numbed...): Effects.Modifier list
 var die = null                   # foes have no die; the pipeline asks, so the field exists
 var executed: bool = false       # struck by an executing blow this fight: a foe that would get back up stays down
+var last_special: String = ""    # the special it announced last round, so none fires twice running
+var kin: int = 0                 # other live foes of its type on the field, for a swarm blow; the skirmish keeps it
+
+## The aims a foe type or a move may name, and how the codex says each.
+const AIM_EXPOSED := "exposed"
+const AIMS := ["exposed", "anything", "heat", "armed", "focus"]
+const AIM_TEXT := {
+	"exposed": "aims at the exposed", "anything": "aims at anything", "heat": "aims at heat",
+	"armed": "aims at the armed", "focus": "fires as one",
+}
+## The conditions a move may carry (`when`, one word or a list meaning any), and how the
+## codex says each. The skirmish reads them (`Skirmish._when_holds`).
+const WHENS := ["below_half", "missing_hull", "few_waiting", "rerolls_left", "machine_hot", "machine_armed", "back_behind", "others_on_field"]
+const WHEN_TEXT := {
+	"below_half": "when below half", "missing_hull": "when hurt", "few_waiting": "when few wait behind it",
+	"rerolls_left": "when the team has rerolls to lose", "machine_hot": "when a machine runs hot",
+	"machine_armed": "when a machine shows a weapon", "back_behind": "when something stands behind it",
+	"others_on_field": "when another stands with it",
+}
 
 
 func burn_stacks() -> int:
@@ -78,24 +105,43 @@ func on_field() -> bool:
 	return rank >= 0
 
 
-## Pick this round's action by weight. One action needs no roll.
+## Pick this round's action by weight from every action, no conditions read. The skirmish
+## narrows the list first (`choose_from`); this is the plain roll.
 func choose_action(rng: RandomNumberGenerator) -> void:
-	if actions.is_empty():
-		action = basic_action()
+	choose_from(actions, rng)
+
+
+## Pick this round's action by weight from the moves given. One move needs no roll.
+func choose_from(legal: Array, rng: RandomNumberGenerator) -> void:
+	if legal.is_empty():
+		action = basic_action() if actions.is_empty() else actions[0]
 		return
-	if actions.size() == 1:
-		action = actions[0]
+	if legal.size() == 1:
+		action = legal[0]
 		return
 	var total := 0
-	for a in actions:
+	for a in legal:
 		total += maxi(1, int(a.get("weight", 1)))
 	var pick := rng.randi_range(1, total)
-	for a in actions:
+	for a in legal:
 		pick -= maxi(1, int(a.get("weight", 1)))
 		if pick <= 0:
 			action = a
 			return
-	action = actions[actions.size() - 1]
+	action = legal[legal.size() - 1]
+
+
+## The sense a move's pick follows: its own, else the foe's.
+func aim_of(a: Dictionary = action) -> String:
+	return str(a.get("aim", aim))
+
+
+## The conditions on a move, as a list (content writes one word or a list meaning any).
+static func whens_of(a: Dictionary) -> Array:
+	var w = a.get("when", [])
+	if w is String:
+		return [] if str(w).is_empty() else [str(w)]
+	return Array(w) if w is Array else []
 
 
 ## What one blow of an action does: base attack (plus what a rally adds for the round) times
@@ -104,7 +150,8 @@ func choose_action(rng: RandomNumberGenerator) -> void:
 func damage_of(a: Dictionary) -> int:
 	if not is_attack_action(a):
 		return 0
-	return int(roundf((attack + Effects.foe_attack_bonus(self)) * float(a.get("factor", 1.0))))
+	# A swarm blow grows with the foe's kin on the field: the ghoul's threat is its numbers.
+	return int(roundf((attack + Effects.foe_attack_bonus(self)) * float(a.get("factor", 1.0)))) + int(a.get("swarm", 0)) * kin
 
 
 ## The action's kind: attack by default (the basic action), or defend, buff, debuff.

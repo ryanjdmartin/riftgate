@@ -243,6 +243,7 @@ func test_the_bot_reads_a_shocked_foe_as_taking_double() -> void:
 
 func test_greedy_taunts_when_it_saves_the_glass_machine() -> void:
 	var sk := Skirmish.new(2, 2)
+	sk.targeting_override = "lowest"
 	var klaxon := Face.shield(10)
 	klaxon.add_keyword(K.TAUNT)
 	var plain := Face.shield(10)
