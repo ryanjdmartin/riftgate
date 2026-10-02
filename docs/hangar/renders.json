@@ -1,0 +1,358 @@
+{
+ "_about": "The Models tab of the hangar page (tools/hangar.html): every render Ryan judges, by chassis. A round adds its pictures under docs/hangar/renders/<chassis>/, moves the previous 'images' to 'before' with a summary, and writes 'when' and 'note'; then the page is republished with the new files (tools/hangar_data.py prints the files map). 'classes' is the silhouette classes section, a list of blocks shown in order.",
+ "classes": {
+  "title": "Silhouette classes",
+  "plate": "What a swapped component wears at a gun mount · the rule settled 30 September",
+  "blocks": [
+   {
+    "when": "The rule.",
+    "note": "Hardpoints are gun mounts. A weapon, or equipment that can look like one (a shield projector, a buff coil), wears its class at the next mount in the die's order, in its own maker's metal; armour panels and vents take a die entry and no mount, since they are applied to the whole machine. Five classes: barrel, twin barrel, rack, blade (katar-style, punching forward) and dish. A machine with more hardpoints than stock guns carries bare mount pads. Shown: a Minerva barrel, a Wainwright & Sutler rack, a Kestrel dish, an Arsenal blade.",
+    "small": true,
+    "images": [
+     {
+      "file": "shapes/barrel_minerva.png",
+      "alt": "barrel, Minerva"
+     },
+     {
+      "file": "shapes/rack_wainwright_sutler.png",
+      "alt": "rack, Wainwright & Sutler"
+     },
+     {
+      "file": "shapes/dish_kestrel.png",
+      "alt": "dish, Kestrel"
+     },
+     {
+      "file": "shapes/blade_the_arsenal.png",
+      "alt": "blade, the Arsenal"
+     }
+    ]
+   },
+   {
+    "when": "Worn on a machine.",
+    "note": "Four refits rendered with <code>RIFTGATE_FIT</code>: the Honey Badger with a W&S Lance on the wrist, a Heat Sink (which shows nowhere), an Arsenal Blazethrower on the left pauldron and a Kestrel Deflector's dish on the right; the Clydesdale with an Arc Projector in place of the Lance and, on its bare mounts, a Missile Rack, Soulcutter Talons and an Overcharge Coil; the Sparrowhawk with Soulcutter Talons as a wing blade and Meteor Artillery on the other tip; the Wild Boar with a Plasma Carbine and a Blazethrower on its rear quarters.",
+    "small": false,
+    "images": [
+     {
+      "file": "shapes/honey_badger_refitted.png",
+      "alt": "Honey Badger refitted"
+     },
+     {
+      "file": "shapes/clydesdale_refitted.png",
+      "alt": "Clydesdale refitted"
+     },
+     {
+      "file": "shapes/sparrowhawk_refitted.png",
+      "alt": "Sparrowhawk refitted"
+     },
+     {
+      "file": "shapes/wild_boar_refitted.png",
+      "alt": "Wild Boar refitted"
+     }
+    ]
+   }
+  ]
+ },
+ "chassis": {
+  "badger": {
+   "when": "Eleventh round, 1 October.",
+   "note": "The shoulder mounts on the gimbals' centres, not ahead of them.",
+   "images": [
+    {
+     "file": "badger/badger_front.png",
+     "alt": "badger, front"
+    },
+    {
+     "file": "badger/badger_rear.png",
+     "alt": "badger, rear"
+    }
+   ],
+   "before": {
+    "summary": "Before: Tenth round, 1 October",
+    "images": [
+     {
+      "file": "badger/before_badger_front.png",
+      "alt": "Earlier: badger, front"
+     },
+     {
+      "file": "badger/before_badger_rear.png",
+      "alt": "Earlier: badger, rear"
+     }
+    ]
+   }
+  },
+  "clydesdale": {
+   "when": "Thirteenth round, 1 October.",
+   "note": "The autogun turrets lower, the guns barely clearing the rail, and forward a little. The mortar's and the howitzer's mounts at one height.",
+   "images": [
+    {
+     "file": "clydesdale/clydesdale_front.png",
+     "alt": "clydesdale, front"
+    },
+    {
+     "file": "clydesdale/clydesdale_rear.png",
+     "alt": "clydesdale, rear"
+    }
+   ],
+   "before": {
+    "summary": "Before: Twelfth round, 1 October",
+    "images": [
+     {
+      "file": "clydesdale/before_clydesdale_front.png",
+      "alt": "Earlier: clydesdale, front"
+     },
+     {
+      "file": "clydesdale/before_clydesdale_rear.png",
+      "alt": "Earlier: clydesdale, rear"
+     }
+    ]
+   }
+  },
+  "sparrowhawk": {
+   "when": "Fourth round, 30 September.",
+   "note": "Unchanged; rendered bare.",
+   "images": [
+    {
+     "file": "sparrowhawk/sparrowhawk_front.png",
+     "alt": "sparrowhawk, front"
+    },
+    {
+     "file": "sparrowhawk/sparrowhawk_rear.png",
+     "alt": "sparrowhawk, rear"
+    }
+   ],
+   "before": {
+    "summary": "Before: Mount rule, 30 September",
+    "images": [
+     {
+      "file": "sparrowhawk/before_sparrowhawk_front.png",
+      "alt": "Earlier: sparrowhawk, front"
+     },
+     {
+      "file": "sparrowhawk/before_sparrowhawk_rear.png",
+      "alt": "Earlier: sparrowhawk, rear"
+     }
+    ]
+   }
+  },
+  "baboon": {
+   "when": "Fourth round, 30 September.",
+   "note": "Unchanged (good); rendered bare.",
+   "images": [
+    {
+     "file": "baboon/baboon_front.png",
+     "alt": "baboon, front"
+    },
+    {
+     "file": "baboon/baboon_rear.png",
+     "alt": "baboon, rear"
+    }
+   ],
+   "before": {
+    "summary": "Before: Fifth pass, 30 September",
+    "images": [
+     {
+      "file": "baboon/before_baboon_front.png",
+      "alt": "Earlier: baboon, front"
+     },
+     {
+      "file": "baboon/before_baboon_rear.png",
+      "alt": "Earlier: baboon, rear"
+     }
+    ]
+   }
+  },
+  "armadillo": {
+   "when": "Fourteenth round, 1 October.",
+   "note": "A firing channel cut through the front band ahead of each forward port, so a gun fitted there lies in a trough instead of running into the shell; the channel in the base metal, and the slab between the two channels cut away, so the front band steps down to one wide firing deck. The last picture is the machine with a Slug Cannon and a Missile Rack fitted to those two ports.",
+   "images": [
+    {
+     "file": "armadillo/armadillo_front.png",
+     "alt": "armadillo, front"
+    },
+    {
+     "file": "armadillo/armadillo_rear.png",
+     "alt": "armadillo, rear"
+    },
+    {
+     "file": "armadillo/armadillo_forward_ports_fitted.png",
+     "alt": "armadillo, forward ports fitted"
+    }
+   ],
+   "before": {
+    "summary": "Before: Thirteenth round, 1 October",
+    "images": [
+     {
+      "file": "armadillo/before_armadillo_front.png",
+      "alt": "Earlier: armadillo, front"
+     },
+     {
+      "file": "armadillo/before_armadillo_rear.png",
+      "alt": "Earlier: armadillo, rear"
+     }
+    ]
+   }
+  },
+  "wild_boar": {
+   "when": "Twelfth round, 1 October.",
+   "note": "The tusks apart.",
+   "images": [
+    {
+     "file": "wild_boar/wild_boar_front.png",
+     "alt": "wild_boar, front"
+    },
+    {
+     "file": "wild_boar/wild_boar_rear.png",
+     "alt": "wild_boar, rear"
+    }
+   ],
+   "before": {
+    "summary": "Before: Eleventh round, 1 October",
+    "images": [
+     {
+      "file": "wild_boar/before_wild_boar_front.png",
+      "alt": "Earlier: wild_boar, front"
+     },
+     {
+      "file": "wild_boar/before_wild_boar_rear.png",
+      "alt": "Earlier: wild_boar, rear"
+     }
+    ]
+   }
+  },
+  "prairie_dog": {
+   "when": "Tenth round, 1 October.",
+   "note": "The launcher is the class rack now, its tube face one whole tile (the hand-built box showed a quarter of the tile). The mast a little shorter.",
+   "images": [
+    {
+     "file": "prairie_dog/prairie_dog_front.png",
+     "alt": "prairie_dog, front"
+    },
+    {
+     "file": "prairie_dog/prairie_dog_rear.png",
+     "alt": "prairie_dog, rear"
+    }
+   ],
+   "before": {
+    "summary": "Before: Ninth round, 1 October",
+    "images": [
+     {
+      "file": "prairie_dog/before_prairie_dog_front.png",
+      "alt": "Earlier: prairie_dog, front"
+     },
+     {
+      "file": "prairie_dog/before_prairie_dog_rear.png",
+      "alt": "Earlier: prairie_dog, rear"
+     }
+    ]
+   }
+  },
+  "dingo": {
+   "when": "Fourth round, 30 September.",
+   "note": "Unchanged (great); rendered bare.",
+   "images": [
+    {
+     "file": "dingo/dingo_front.png",
+     "alt": "dingo, front"
+    },
+    {
+     "file": "dingo/dingo_rear.png",
+     "alt": "dingo, rear"
+    }
+   ],
+   "before": {
+    "summary": "Before: Third pass, 30 September",
+    "images": [
+     {
+      "file": "dingo/before_dingo_front.png",
+      "alt": "Earlier: dingo, front"
+     },
+     {
+      "file": "dingo/before_dingo_rear.png",
+      "alt": "Earlier: dingo, rear"
+     }
+    ]
+   }
+  },
+  "goshawk": {
+   "when": "Eleventh round, 1 October.",
+   "note": "The vent glows fill their cuts; the muzzle's hot floor a touch back in.",
+   "images": [
+    {
+     "file": "goshawk/goshawk_front.png",
+     "alt": "goshawk, front"
+    },
+    {
+     "file": "goshawk/goshawk_rear.png",
+     "alt": "goshawk, rear"
+    }
+   ],
+   "before": {
+    "summary": "Before: Tenth round, 1 October",
+    "images": [
+     {
+      "file": "goshawk/before_goshawk_front.png",
+      "alt": "Earlier: goshawk, front"
+     },
+     {
+      "file": "goshawk/before_goshawk_rear.png",
+      "alt": "Earlier: goshawk, rear"
+     }
+    ]
+   }
+  },
+  "nemesis": {
+   "when": "Sixth round, 1 October.",
+   "note": "The condenser's slots on the lit tile too. Otherwise as the fifth round.",
+   "images": [
+    {
+     "file": "nemesis/nemesis_front.png",
+     "alt": "nemesis, front"
+    },
+    {
+     "file": "nemesis/nemesis_rear.png",
+     "alt": "nemesis, rear"
+    }
+   ],
+   "before": {
+    "summary": "Before: Fifth round, 1 October",
+    "images": [
+     {
+      "file": "nemesis/before_nemesis_front.png",
+      "alt": "Earlier: nemesis, front"
+     },
+     {
+      "file": "nemesis/before_nemesis_rear.png",
+      "alt": "Earlier: nemesis, rear"
+     }
+    ]
+   }
+  },
+  "ammit": {
+   "when": "Sixth round, 1 October.",
+   "note": "Both tail slots lit whole (a new lit tile; the strip tile only lit a slot that happened to cross its one line). The back panel ends below the back's crown.",
+   "images": [
+    {
+     "file": "ammit/ammit_front.png",
+     "alt": "ammit, front"
+    },
+    {
+     "file": "ammit/ammit_rear.png",
+     "alt": "ammit, rear"
+    }
+   ],
+   "before": {
+    "summary": "Before: Fifth round, 1 October",
+    "images": [
+     {
+      "file": "ammit/before_ammit_front.png",
+      "alt": "Earlier: ammit, front"
+     },
+     {
+      "file": "ammit/before_ammit_rear.png",
+      "alt": "Earlier: ammit, rear"
+     }
+    ]
+   }
+  }
+ }
+}
