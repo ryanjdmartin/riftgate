@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 100 implemented, 11 planned, 0 idea.
+Status: 101 implemented, 11 planned, 0 idea.
 
 ## Resource
 
@@ -82,7 +82,7 @@ Status: 100 implemented, 11 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Numbed** | Foe status. Each stack is 10% resistance to a suppress on top of the foe's own; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. | implemented |
+| **Numbed** | Foe status. Each stack is 10% resistance to a suppress on top of the foe's own; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. Numbed is exempt from every other interaction: nothing deepens it, spreads it, cleanses it or reads it beyond suppress itself and its own decay. | implemented |
 | **Retaliate** | Mech status. While it lasts, a foe that strikes this machine's bare hull is Shocked. From buff equipment it lasts the rounds the component says; the Armadillo's Faraday Hull carries it always. | implemented |
 | **Shocked** | Foe status. The next blow this foe takes deals double damage, then the status clears. A Shocked foe that strikes bare hull again takes 10. Never stacks. | implemented |
 | **Overcharged** | Mech status. Each stack is +10% damage on this machine's attacks. From buff equipment it lasts through the rounds the component says; from devour it lasts the skirmish and loses a stack at the end of each round unless a passive says otherwise. | implemented |
@@ -133,9 +133,9 @@ Status: 100 implemented, 11 planned, 0 idea.
 |---|---|---|
 | **Plain** | Cost 1. | implemented |
 | **Road** | Cost 1. | implemented |
-| **Rough** | Cost 2. Cost 1 for quads and flyers. | implemented |
-| **Ruins** | Cost 2. Cost 1 for quads and flyers. | implemented |
-| **Water** | Impassable except for hover and flyer. | implemented |
+| **Rough** | Cost 2; 1 for a walker or a flyer. | implemented |
+| **Ruins** | Cost 2; 1 for a walker or a flyer, 3 for hover. | implemented |
+| **Water** | Fordable by machines this size: cost 1 for hover, 2 for a walker, 3 for anything else on the ground; a flyer ignores it. | implemented |
 | **Mountain** | Impassable except for flyer. | implemented |
 
 ## Trait
@@ -143,7 +143,7 @@ Status: 100 implemented, 11 planned, 0 idea.
 | Term | Codex | Status |
 |---|---|---|
 | **Flyer** | Ignores terrain cost, crosses water and mountains. Packs pass through it: it cannot stop one. It fights by the zone like any machine. | implemented |
-| **Hover** | Crosses water. | implemented |
+| **Hover** | Skims water at cost 1 and chokes on ruins at cost 3. Stops a pack in its path like any ground machine. | implemented |
 | **Walker** | Rough and ruins cost 1. | implemented |
 | **Tank** | No effect yet. | planned |
 | **Stealth** | A pack's zone never pulls it in on its own. Joins a fight only when another machine is in it, or when it stopped a pack in its path; a pack whose zone merely falls on it has walked past. | implemented |
@@ -159,6 +159,7 @@ Status: 100 implemented, 11 planned, 0 idea.
 | **On round start** | Passive trigger. Fires after the roll, before rerolls: shield from heat, a flat shield, a vent. | implemented |
 | **On skirmish start** | Passive trigger. Fires once as the skirmish begins, before the first roll: a shield, a vent, a status. | implemented |
 | **On foe status** | Passive trigger. Fires when any foe gains a status (Burning today; the buffs and debuffs to come), whoever applied it, and never for Suppressed or Numbed themselves. Effects: chance_suppress (a chance the foe is also Suppressed, rising per point of shield the owner is missing). | implemented |
+| **On applying stacks** | Passive trigger. Fires when this machine applies stacks of a status to anyone: a foe's Burning (from a burn or from Primed), an ally's or its own buff, its own Overcharged from a devour. Effects: add_stacks (so many stacks more, flat or for every so much heat the machine carries). Never for Numbed, which is exempt from every interaction. | implemented |
 | **On crit** | Passive trigger. Fires when an attack component crits. Effects: multiply or add damage, add burn to the target, vent the attacker's heat. | implemented |
 | **On hull damage** | Passive trigger. Fires when this mech loses hull to a blow or a bite, never to its own overheat. | implemented |
 | **Out of combat** | Passive trigger. Fires at the end of a battlefield phase in which this mech had no skirmish, after the field recharge: more shield. | implemented |
@@ -207,7 +208,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Damage range** (implemented): Ranges are content-authored per component; no upgrade path raises min or max yet.
 - **Critical hit** (implemented): The base is Face.CRIT_MULT, a balance knob; lower it if crit triggers make crits too strong at low chance.
 - **Overwhelm** (implemented): Built 29 September. The spill is plain damage: it spends a shock and feeds a devour, and carries no other keyword of the blow. The Wild Boar's Juggernaut Drive grants it to every attack (grant_keyword, the first passive to add a keyword).
-- **Numbed** (implemented): Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths.
+- **Numbed** (implemented): Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths. Exempt from everything (Ryan, 2 October): a stun resist that passives or cleanses could touch is where other games' combat loops broke.
 - **Stun resistance** (implemented): 30 on the three bosses as a placeholder.
 - **Volatile** (implemented): The Arsenal's self-damage (Ryan, 28 September), built 29 September: hull outright where the Corrupted bite takes shield first. The bite is a placeholder number (Skirmish.VOLATILE_BITE). It will feed the Nemesis's Crucible Capacitor once that counts blows that reach hull.
 - **Devour** (implemented): The Ammit's talons (28 September), built 29 September on the kill in the attack resolution: a spread that kills two feeds two, a chain feeds on every link. The Quintessence Tap, which stops the fade and keeps the stacks for the battle, is planned.
@@ -243,6 +244,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **On round start** (implemented): Built 30 September for the Thermal Recoupler; the heat it reads is the gauge after the turn's passive cooling.
 - **On skirmish start** (implemented): Built 30 September (Effects.fire); no content uses it yet.
 - **On foe status** (implemented): One machine's passive so far (the Baboon's Pocket Paradox).
+- **On applying stacks** (implemented): One machine's passive so far (the Stingray's Exothermic Suite). Shocked and Suppressed are not stacks, so it never touches them.
 - **On hull damage** (implemented): Built 30 September for the Crucible Capacitor (stack_status). Still the hook for the pinned berserker idea.
 - **Out of combat** (implemented): Built 30 September (Effects.fire in Battle.commit); heat does not persist between fights, so a vent here would be nothing. No content uses it yet.
 - **Command die** (planned): Open question: whether the command die exists at all, or one-shots only.

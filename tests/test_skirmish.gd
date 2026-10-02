@@ -1354,6 +1354,60 @@ func test_a_target_status_condition_reads_the_foe_struck() -> void:
 	assert_eq(int(Effects.attack(m, m.die.faces[0], 20, 0, false)["damage"]), 20, "asked without a target, the condition does not hold")
 
 
+func test_stacks_a_hot_machine_applies_run_deeper() -> void:
+	# The Stingray's Exothermic Suite (2 October): every stack this machine applies is one
+	# deeper per 20 heat it carries, on a foe's burn, an ally's buff or its own devour;
+	# Numbed never (exempt from every interaction).
+	var hot := {"id": "hot", "name": "Exothermic Suite", "description": "", "effects": [
+		{"trigger": "on_stack", "effect": "add_stacks", "value": 1, "per_heat": 20}]}
+	var sk := Skirmish.new(1)
+	var m := _mech("Ray", Die.single(Face.attack(20, L, K.BURN)), 40, 100)
+	m.grant_passive(hot)
+	sk.add_mech(m)
+	var g := _ghoul(500, 0)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	sk.assign(0, sk.front[0])
+	assert_eq(Effects.stacks_of(g, "burning"), 1, "cold, a 20 burn is one stack")
+	sk.end_round()
+	sk.start_round()
+	sk.mechs[0].heat = 45
+	sk.assign(0, sk.front[0])
+	assert_eq(Effects.stacks_of(g, "burning"), 1 + 2, "at 45 heat the same burn is two deeper, two whole steps of 20 (the first round's stack burned off at the ghoul's turn)")
+	assert_true(sk.log[sk.log.size() - 2].contains("runs hot: +2 Burning"), "and the log says so: %s" % sk.log[sk.log.size() - 2])
+	# A buff on an ally is deepened the same way; Numbed from a suppress is not.
+	var s2 := Skirmish.new(2)
+	var buff := Face.buff("primed", 1, 1)
+	var a := _mech("Ray", Die.single(buff), 40, 100)
+	a.grant_passive(hot)
+	var ally := _mech("Friend", Die.single(Face.attack(10, L, K.SUPPRESS)), 40, 100)
+	s2.add_mech(a)
+	s2.add_mech(ally)
+	var g2 := _ghoul(500, 0)
+	s2.add_foes([g2])
+	s2.begin()
+	s2.start_round()
+	s2.mechs[0].heat = 60
+	s2.assign(0, s2.mechs[1])
+	assert_eq(Effects.stacks_of(ally, "primed"), 1 + 3, "a one-stack buff at 60 heat lands four deep")
+	var s3 := Skirmish.new(3)
+	var z := _mech("Ray", Die.single(Face.attack(10, L, K.SUPPRESS)), 40, 100)
+	z.grant_passive(hot)
+	s3.add_mech(z)
+	var g3 := _ghoul(500, 0)
+	s3.add_foes([g3])
+	s3.begin()
+	s3.start_round()
+	s3.mechs[0].heat = 60
+	s3.assign(0, s3.front[0])
+	assert_eq(Effects.stacks_of(g3, "numbed"), 2, "Numbed is exempt: the suppress leaves its two, no more")
+	assert_eq(Effects.extra_stacks(z, "numbed", 100), 0, "asked directly, Numbed gains nothing")
+	assert_eq(Effects.extra_stacks(z, "burning", 19), 0, "under one step, nothing")
+	assert_eq(Effects.extra_stacks(z, "burning", 100), 5, "five steps at 100")
+	assert_true(Effects.effect_text({"trigger": "on_stack", "effect": "add_stacks", "value": 1, "per_heat": 20}).begins_with("every stack this machine applies is 1 deeper for every 20 heat it carries"), "reads as a sentence")
+
+
 func test_a_foe_gaining_a_status_may_be_caught_by_the_loop() -> void:
 	var loop := {"id": "loop", "name": "Pocket Paradox", "description": "", "effects": [
 		{"trigger": "on_foe_status", "effect": "chance_suppress", "value": 100, "per_missing_shield": 0}]}

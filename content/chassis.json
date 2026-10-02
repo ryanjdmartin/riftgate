@@ -209,6 +209,41 @@
         ]
       },
       "flavour": ""
+    },
+    {
+      "id": "stingray", "name": "Stingray", "designation": "Perigee Flight 4 Strike Skimmer", "maker": "aphelion", "silhouette": "hovercraft",
+      "design": { "fantasy": "A flat pearl-white lens of a hull that rides on lift fans sunk flush into its wings and pitches like a helicopter to move. Its heat suite is its weapon: the hotter it runs, the deeper every burn and every buff it lays. The ray's barb is its tail, lit at the tip; its mouth is the lance under the nose.", "niche": "hot status amplifier", "notes": "Proposed and decided 2 October (Ryan picked Stingray over Lionfish and Sea Wasp; Lionfish was Claude's lead). The second Aphelion machine, carrying the heat idea weighed and parked when the Baboon's passive was chosen (28 September). Cooling 0 by design: it never cools on its own, the Radiator Sail is its only brake, so every round is a heat decision; heat_max 100 so the suite has five steps to climb. Propulsion by maker (Ryan, 2 October): Aphelion's hovers and aircraft are aquatic, fans and rotors in places, so the Stingray's lift is ducted fans flush in the wing discs; Kestrel keeps the big boosters; the exposed-rotor fan-copter (the Banshee register) is kept free for a later Aphelion flyer, and W&S flyers would be traditional helicopter profiles. Numbers, designation and kit are Claude's fills, Ryan's to move. Ryan, 2 October: five extra Burning at 100 heat is probably silly, and easy to tune; the passive double-dips through Primed (the Primed stacks it lays are deepened, and so are the burns those blows lay), a knob for the runner." },
+      "codex": "",
+      "hull": 80, "shield": 50, "movespeed": 4, "heat_max": 100, "hardpoints": 5,
+      "armour": 0, "recharge_field": 25, "cooling": 0,
+      "traits": ["hover"],
+      "fixed": ["photosphere_lance"],
+      "loadout": ["solar_flare_array", "pulse_repeater", "zenith_emitter", "aurora_lattice", "radiator_sail"],
+      "passive": {
+        "id": "exothermic_suite", "name": "Exothermic Suite",
+        "description": "Heat is the suite's power. Every stack this machine applies, to a foe, an ally or itself, is one deeper for every 20 heat it carries. Numbed excepted, as always.",
+        "effects": [
+          { "trigger": "on_stack", "effect": "add_stacks", "value": 1, "per_heat": 20 }
+        ]
+      },
+      "flavour": ""
+    },
+    {
+      "id": "puffin", "name": "Puffin", "designation": "K-11 Mk I Ground-Effect Escort", "maker": "kestrel", "silhouette": "hovercraft",
+      "design": { "fantasy": "Kestrel's one machine that touches the ground, and so the one Kestrel that can stop a pack. A short deep body in chrome on two boosters far too big for it, stubby wings, tail fins, and the whole front one shield projector, a great faired beak. Kestrel called it a very cool ground-effect escort; pilots took one look and called it the Puffin.", "niche": "shield specialist", "notes": "Proposed and decided 2 October: the Puffin the bible's makers row wanted (28 September). The slowest Kestrel (Ryan: allowed, since lore-wise they loaded it with tech instead of guns), so movespeed 3; hover, so it skims water and chokes on ruins. Boosters, never fans: Ryan, 2 October, anything but big boosters is off-brand for Kestrel. Passive open: Ryan's lean is an overshield (shield allies past their maximum) with a cost or a second effect; Claude's shape, 2 October, is overshield that fades at the end of the round with the fixed projector pointing outward only, since shield-the-Puffin-every-turn would be a shield-bot. Planned until he decides. The Overcharge Coil gets its first chassis here. Numbers, designation and kit are Claude's fills, Ryan's to move." },
+      "codex": "",
+      "hull": 50, "shield": 30, "movespeed": 3, "heat_max": 60, "hardpoints": 4,
+      "armour": 0, "recharge_field": 30, "cooling": 5,
+      "traits": ["hover"],
+      "fixed": ["prow_projector"],
+      "loadout": ["laser_carbine", "deflector", "overcharge_coil", "ram_air_scoop"],
+      "passive": {
+        "id": "overpressure", "name": "Overpressure",
+        "description": "The Puffin's shield components may raise an ally's shield past its maximum. Shield past maximum fades at the end of the round.",
+        "status": "planned",
+        "effects": []
+      },
+      "flavour": ""
     }
   ]
 }
