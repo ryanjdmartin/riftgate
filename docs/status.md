@@ -227,10 +227,17 @@ started from the harness is saved after every change (`sim/save.gd`, `user://bat
 and Resume battle opens it where it stood; standalone runs and tests never write it.
 
 **Balance (bible section 11).** `sim/policy.gd` plays the skirmish headless (RANDOM, GREEDY,
-`withdraw_below`); `tools/balance.gd` runs the matrix, about half an hour at 200 seeds with
-eleven machines, twelve packs (the nine plus each faction's whole formation in one fight, since
+`withdraw_below`); `tools/balance.gd` runs the matrix, about fourteen minutes on the Mac at 200 seeds with
+thirteen machines, twelve packs (the nine plus each faction's whole formation in one fight, since
 2 October) and the team row run twice for the targeting comparison (`docs/balance.md`, generated
-2 October with the targeting pass and the playtest set in). **The baseline reading, for Ryan's
+2 October, night, with the targeting pass, the playtest set and the two hovercraft in).
+**The hovercraft's first read:** the Stingray alone sits in the support band beside the Baboon,
+beating the back-rank packs under greedy and losing to every front-rank pack and formation; the
+flare, the emitter and the lance share its spends about a third each and the Radiator Sail takes
+2%, so the bot runs it hot and never vents (the Nemesis's problem again) and cooling 0 is the
+knob to watch. The Puffin alone loses nearly everything, as an escort with an allies-only locked
+shield and a planned passive must (its Prow Projector is never spendable in a solo cell; greedy
+still takes the necromancers at 71%); it reads only once a team cell carries it. **The baseline reading, for Ryan's
 question of whether 80 a round is average or game-losing:** the team of three still wins every
 cell, the formations included, in about a round and at no cost, under the aims and under the
 lowest-shield rule alike (the Risen formation, fifteen foes, is the one fight that lasts: 4.6

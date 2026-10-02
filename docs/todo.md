@@ -18,7 +18,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Judge the limbs striking and the turrets flinching in the skirmish, running, and each machine's acts, movement and cornering once built; and each class's size per machine on a refit (a pin's `scale` in `models_low.py`)
 - [ ] Propose in chat a Minerva intercept component for the starter set (Ryan, 30 September: tanks need class-based target-modification beyond the Proximity Klaxon; since 2 October the Klaxon is a lure with an area, and a lure on a weapon may be the intercept)
 - [ ] A full play of Hold The Line in the game, start to wrap; notes by section letter
-- [ ] Read `docs/balance.md` (2 October: the targeting pass and the playtest set in, the formation cells and the targeting comparison added) against your own play; then either the numbers move or the bot's next rung is built. This is the baseline question: whether 80 a round from a ghoul swarm is average or game-losing
+- [ ] Read `docs/balance.md` (2 October, night: the targeting pass, the playtest set, the formation cells, the targeting comparison and the two hovercraft in; the Stingray in the support band with its vent never spent, the Puffin unreadable alone) against your own play; then either the numbers move or the bot's next rung is built. This is the baseline question: whether 80 a round from a ghoul swarm is average or game-losing
 - [ ] Discuss first, then decide: ally wrecks (block a hex? a round or the battle?)
 - [ ] Discuss first, then decide: what terrain does in a skirmish (things the machines feel, never a bonus to the foes; burning terrain a candidate)
 - [ ] Discuss first, then decide: base defences (gate guns, then turrets; `Battlefield.defenses()` is empty)
