@@ -872,7 +872,7 @@ func _foe_rows(foe: Foe) -> Array:
 	if foe.is_suppressed():
 		rows.append(["suppress", "", "Suppressed: loses its action this round", Palette.HUD])
 	if Effects.has(foe, "folded"):
-		rows.append(["shield", "×½", "Folded: takes half damage until its next action", Palette.SHIELD])
+		rows.append(["shield", "+%d" % Effects.foe_armour_bonus(foe), "Folded: armour +%d until its next action" % Effects.foe_armour_bonus(foe), Palette.SHIELD])
 	if Effects.has(foe, "kindled"):
 		rows.append(["overcharge", "+%d" % Effects.foe_attack_bonus(foe), "Kindled: hits %d harder this round" % Effects.foe_attack_bonus(foe), Palette.HEAT])
 	if Effects.has(foe, "risen"):
@@ -917,8 +917,8 @@ func _mech_rows(i: int) -> Array:
 		if int(d[3]) < Effects.SKIRMISH:
 			continue
 		var id := str(d[5])
-		var glyph := "heat" if id == "overheating" else ("corrupt" if id.begins_with("corrupted") else ("blank" if id.begins_with("disabled") else ("overcharge" if id == "overcharged" else ("shield" if id == "braced" else ("burn" if id == "primed" else ("shocked" if id == "retaliate" else (id if id in ["taunt", "beacon"] else ("reroll" if id == "scrambled" else "star"))))))))
-		var colour: Color = Palette.HEAT if id in ["overheating", "overcharged", "primed"] else (Palette.ENEMY if id.begins_with("corrupted") or id == "scrambled" else (Palette.SHIELD if id in ["braced", "retaliate", "taunt", "beacon"] else Palette.HUD))
+		var glyph := "heat" if id == "overheating" else ("corrupt" if id.begins_with("corrupted") else ("blank" if id.begins_with("disabled") else ("overcharge" if id == "overcharged" else ("shield" if id == "braced" else ("burn" if id == "primed" else ("shocked" if id == "retaliate" else ("reroll" if id == "scrambled" else "star")))))))
+		var colour: Color = Palette.HEAT if id in ["overheating", "overcharged", "primed"] else (Palette.ENEMY if id.begins_with("corrupted") or id == "scrambled" else (Palette.SHIELD if id in ["braced", "retaliate"] else Palette.HUD))
 		var stacks := int(d[4])
 		rows.append([glyph, ("×%d" % stacks) if stacks > 1 else "", "%s: %s" % [str(d[0]), str(d[1])], colour])
 	if sk.state == Skirmish.State.ASSIGN:
@@ -1081,7 +1081,7 @@ func _on_foe_held(v: UnitView) -> void:
 			else:
 				text += "\n%s: %s" % [str(foe.action.get("name", "")), foe.text_of(foe.action)]
 		if foe.target != null:
-			text += "\n→ %s" % foe.target.unit.display_name
+			text += "\n→ %s (%s)" % [foe.target.unit.display_name, str(Foe.AIM_TEXT.get(foe.aim_of(), foe.aim_of()))]
 	if foe.is_massive():
 		text += "\nmassive: fills the column"
 	_show_details(text, v, [], -1, _readout_rows(_foe_rows(foe)))

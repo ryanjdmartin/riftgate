@@ -160,24 +160,34 @@ func make_foe(foe_id: String) -> Foe:
 	var d: Dictionary = foes[foe_id]
 	var f := Foe.make(str(d["name"]), int(d["hp"]), int(d["attack"]), str(d.get("rank", "front")) == "back")
 	f.size = int(d.get("size", 1))
+	f.armour = maxi(0, int(d.get("armour", 0)))
+	f.aim = str(d.get("aim", Foe.AIM_EXPOSED))
 	f.stun_resist = clampi(int(d.get("stun_resist", 0)), 0, 100)
 	var acts: Array = []
 	for a in d.get("actions", []):
 		if str(a.get("status", "")) != "implemented":
 			continue
 		var kind := str(a.get("kind", "attack"))
+		var act: Dictionary
 		if kind == "attack":
-			acts.append({"id": str(a.get("id", "attack")), "name": str(a.get("name", "Attack")), "kind": "attack", "factor": float(a.get("factor", 1.0)),
-				"strikes": int(a.get("strikes", 1)), "weight": int(a.get("weight", 1)), "keywords": Array(a.get("keywords", [])), "text": str(a.get("text", ""))})
+			act = {"id": str(a.get("id", "attack")), "name": str(a.get("name", "Attack")), "kind": "attack", "factor": float(a.get("factor", 1.0)),
+				"strikes": int(a.get("strikes", 1)), "weight": int(a.get("weight", 1)), "keywords": Array(a.get("keywords", [])), "text": str(a.get("text", ""))}
+			if a.has("swarm"):
+				act["swarm"] = int(a["swarm"])
 		else:
 			# A defend, buff or debuff: its effect and the fields it reads (Foe.ACTION_EFFECTS).
-			var act := {"id": str(a.get("id", kind)), "name": str(a.get("name", kind.capitalize())), "kind": kind, "effect": str(a.get("effect", "")),
+			act = {"id": str(a.get("id", kind)), "name": str(a.get("name", kind.capitalize())), "kind": kind, "effect": str(a.get("effect", "")),
 				"value": int(a.get("value", 0)), "weight": int(a.get("weight", 1)), "text": str(a.get("text", ""))}
 			if a.has("foe"):
 				act["foe"] = str(a["foe"])
 			if a.has("count"):
 				act["count"] = int(a["count"])
-			acts.append(act)
+		# The move's own sense and condition (2 October), when it has them.
+		if a.has("aim"):
+			act["aim"] = str(a["aim"])
+		if a.has("when"):
+			act["when"] = Foe.whens_of(a)
+		acts.append(act)
 	# The first attack leads, so a foe's opening intent is its blow.
 	for i in range(acts.size()):
 		if str(acts[i].get("kind", "")) == "attack" and i > 0:
@@ -197,6 +207,8 @@ func codex_for_foe(f: Foe) -> Dictionary:
 	var d: Dictionary = foes.get(f.content_id, {})
 	var fac: Dictionary = factions.get(str(d.get("faction", "")), {})
 	var stats := "HP %d // ATK %d // %s RANK" % [f.hp_max, f.attack, "BACK" if f.prefers_back else "FRONT"]
+	if f.armour > 0:
+		stats += " // ARM %d" % f.armour
 	if f.is_massive():
 		stats += " // MASSIVE"
 	var acts: Array[String] = []
@@ -209,8 +221,19 @@ func codex_for_foe(f: Foe) -> Dictionary:
 			head += " %d" % f.damage_of(a)
 			if int(a.get("strikes", 1)) > 1:
 				head += " ×%d" % int(a["strikes"])
+			if int(a.get("swarm", 0)) > 0:
+				head += " // +%d A KIN" % int(a["swarm"])
 			for k in a.get("keywords", []):
 				head += " // %s" % str(k).to_upper()
+		# A move's own sense, where it differs from the foe's, and its condition.
+		if a.has("aim") and str(a["aim"]) != f.aim:
+			head += " // %s" % str(Foe.AIM_TEXT.get(str(a["aim"]), str(a["aim"]))).to_upper()
+		var whens := Foe.whens_of(a)
+		if not whens.is_empty():
+			var said: Array[String] = []
+			for w in whens:
+				said.append(str(Foe.WHEN_TEXT.get(str(w), str(w))))
+			head += " // %s" % " OR ".join(said).to_upper()
 		acts.append("%s\n  %s" % [head, f.text_of(a)])
 	var faction_name := str(fac.get("name", "")).strip_edges()
 	if faction_name.is_empty():
@@ -220,8 +243,8 @@ func codex_for_foe(f: Foe) -> Dictionary:
 		"subtitle": faction_name.to_upper(),
 		"body": str(d.get("codex", "")),
 		"stats": stats,
-		"stat_items": [["hp", str(f.hp_max)], ["attack", str(f.attack)],
-			["rank", "BACK" if f.prefers_back else "FRONT"]] + ([["size", "MASSIVE"]] if f.is_massive() else []),
+		"stat_items": [["hp", str(f.hp_max)], ["attack", str(f.attack)]] + ([["armour", str(f.armour)]] if f.armour > 0 else []) + [
+			["rank", "BACK" if f.prefers_back else "FRONT"], ["sense", str(Foe.AIM_TEXT.get(f.aim, f.aim)).to_upper()]] + ([["size", "MASSIVE"]] if f.is_massive() else []),
 		"actions": "\n".join(acts),
 		"passive": "",
 		"faces": [],
@@ -233,6 +256,20 @@ func codex_for_foe(f: Foe) -> Dictionary:
 
 ## Codex text for a mech: chassis codex, maker, numbers, faces (for a visual list), passive,
 ## and flavour.
+## The name plate's subtitle, part by part: the maker, the chassis's traits by their shown
+## names (Ryan, 2 October: the traits are rules the player needs, a silhouette word beside a
+## turning model was not), and the die. A chassis with no trait shows no traits part.
+func _plate_parts(c: Dictionary, maker: Dictionary, u: Unit) -> Array[String]:
+	var parts: Array[String] = [str(maker.get("name", "")).to_upper()]
+	var names: Array[String] = []
+	for t in c.get("traits", []):
+		names.append(str(vocabulary.get(str(t), {}).get("name", str(t))).to_upper())
+	if not names.is_empty():
+		parts.append(", ".join(names))
+	parts.append("D%d" % (u.die.size() if u.die != null else 0))
+	return parts
+
+
 func codex_for_unit(u: Unit) -> Dictionary:
 	var c: Dictionary = chassis.get(u.chassis_id, {})
 	var maker: Dictionary = makers.get(str(c.get("maker", "")), {})
@@ -274,7 +311,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 	var passive := "\n".join(lines)
 	return {
 		"title": u.display_name,
-		"subtitle": "%s // %s // D%d" % [str(maker.get("name", "")).to_upper(), str(c.get("silhouette", "")).to_upper(), u.die.size() if u.die != null else 0],
+		"subtitle": " // ".join(_plate_parts(c, maker, u)),
 		"designation": str(c.get("designation", "")),   # the maker's long name; the title is the nickname
 		"body": str(c.get("codex", "")),   # never fantasy: that field is design notes and homages
 		"stats": stats,
@@ -703,6 +740,18 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 			errs.append("%s: kind must be one of %s" % [aw, ", ".join(ACTION_KINDS)])
 		if not ACTION_STATUSES.has(str(a.get("status", ""))):
 			errs.append("%s: status must be implemented or planned" % aw)
+		# A move's own sense and its condition (2 October), checked whatever its status.
+		if a.has("aim") and not Foe.AIMS.has(str(a["aim"])):
+			errs.append("%s: aim must be one of %s, got '%s'" % [aw, ", ".join(Foe.AIMS), str(a["aim"])])
+		if a.has("when"):
+			var whens := Foe.whens_of(a)
+			if whens.is_empty():
+				errs.append("%s: when must be a word or a list of words from %s" % [aw, ", ".join(Foe.WHENS)])
+			for w in whens:
+				if not Foe.WHENS.has(str(w)):
+					errs.append("%s: unknown condition '%s' (moves know %s)" % [aw, str(w), ", ".join(Foe.WHENS)])
+		if a.has("swarm") and (str(a.get("kind", "")) != "attack" or int(a["swarm"]) < 0):
+			errs.append("%s: swarm is an attack's, so much more per kin on the field, never negative" % aw)
 		if str(a.get("status", "")) == "implemented":
 			if str(a.get("kind", "")) != "attack":
 				# A defend, buff or debuff names an effect the engine runs and the fields it reads.
@@ -748,6 +797,10 @@ func _validate_foes(errs: Array[String]) -> void:
 		_validate_design(where, f, errs)
 		if int(f.get("hp", 0)) <= 0:
 			errs.append("%s: hp must be positive" % where)
+		if int(f.get("armour", 0)) < 0:
+			errs.append("%s: armour cannot be negative" % where)
+		if f.has("aim") and not Foe.AIMS.has(str(f["aim"])):
+			errs.append("%s: aim must be one of %s, got '%s'" % [where, ", ".join(Foe.AIMS), str(f["aim"])])
 		_validate_actions(where, f, errs)
 		if not ["front", "back"].has(str(f.get("rank", ""))):
 			errs.append("%s: rank must be front or back" % where)

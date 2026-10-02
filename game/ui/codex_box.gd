@@ -78,7 +78,7 @@ func _init() -> void:
 	head.add_theme_constant_override("separation", 4)
 	top.add_child(head)
 	# Name plate: the maker's designation as a stamped tag, the nickname big in quotes, then
-	# maker and silhouette as the subtitle. Like a spec plate on the hull.
+	# maker, traits and die as the subtitle. Like a spec plate on the hull.
 	_designation = HudButton.new("")
 	_designation.filled = true
 	_designation.mono = true

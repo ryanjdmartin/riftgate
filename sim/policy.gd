@@ -137,10 +137,10 @@ func options_for(sk: Skirmish, i: int) -> Array:
 				out.append({"mech": i, "target": t, "score": attack_score(sk, ms, f, t)})
 		Face.Kind.SHIELD:
 			for who in sk.equipment_targets_for(ms, f):
-				out.append({"mech": i, "target": who, "score": shield_score(sk, who, f.power) + draw_score(sk, who, f, f.power) - volatile_cost(sk, ms, f)})
+				out.append({"mech": i, "target": who, "score": shield_score(sk, who, f.power) - volatile_cost(sk, ms, f)})
 		Face.Kind.VENT:
 			for who in sk.equipment_targets_for(ms, f):
-				out.append({"mech": i, "target": who, "score": vent_score(sk, who, f.power) + draw_score(sk, who, f) - volatile_cost(sk, ms, f)})
+				out.append({"mech": i, "target": who, "score": vent_score(sk, who, f.power) - volatile_cost(sk, ms, f)})
 		Face.Kind.BUFF:
 			for who in sk.equipment_targets_for(ms, f):
 				out.append({"mech": i, "target": who, "score": buff_score(sk, who, f) - volatile_cost(sk, ms, f)})
@@ -170,6 +170,25 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		if other != null and other != target and other.alive():
 			score += minf(mean, float(other.hp))
 	score += p_kill * (KILL_BONUS + _threat_now(target) * HULL_WEIGHT)
+	if f.has(Face.Keyword.LURE) or f.has(Face.Keyword.DISRUPT):
+		# Every foe the blows reach: the target, the neighbours of a spread, the column of a
+		# penetrate; the ones that survive the blow are the ones a lure or a disrupt moves.
+		var hit: Array = [target]
+		if f.has(Face.Keyword.CLEAVE):
+			for c in [target.column - 1, target.column + 1]:
+				if c >= 0 and c < sk.columns:
+					var n := sk.foe_at(target.rank, c)
+					if n != null and n.alive() and not hit.has(n):
+						hit.append(n)
+		if f.has(Face.Keyword.PENETRATE):
+			var other := sk.foe_at(1 - target.rank, target.column)
+			if other != null and other.alive() and not hit.has(other):
+				hit.append(other)
+		if f.has(Face.Keyword.DISRUPT):
+			for foe in hit:
+				score += ((1.0 - p_kill) if foe == target else 1.0) * disrupt_score(sk, foe)
+		if f.has(Face.Keyword.LURE):
+			score += (1.0 - p_kill) * lure_score(sk, ms, hit)
 	if f.has(Face.Keyword.OVERWHELM) and target.rank == 0 and not target.is_massive():
 		# What the roll has past the kill lands on the foe behind, and may kill it too.
 		var behind := sk.foe_at(1, target.column)
@@ -300,9 +319,11 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null) -> Arr
 			if target != null and f.has(Face.Keyword.EXECUTE) and target.hp * 2 <= target.hp_max:
 				dmg = int(roundf(dmg * (1.5 if target.is_massive() else 2.0)))
 			dmg = int(Effects.attack(ms.unit, f, dmg, 0, crit, target)["damage"])
-			# The foe's own statuses read last: a Shocked foe takes the first blow double.
-			var first := Effects.damage_taken(target, dmg) if target != null else dmg
-			out.append([first + dmg * (maxi(1, f.strikes) - 1), w])
+			# The foe's own statuses read last: a Shocked foe takes the first blow double. Then its
+			# armour comes off every blow, so a hardened foe is worth less to a volume weapon.
+			var arm := target.armour_total() if target != null else 0
+			var first := maxi(0, (Effects.damage_taken(target, dmg) if target != null else dmg) - arm)
+			out.append([first + maxi(0, dmg - arm) * (maxi(1, f.strikes) - 1), w])
 	return out
 
 
@@ -347,29 +368,33 @@ func shield_score(sk: Skirmish, who: Skirmish.MechState, power: int) -> float:
 	return score
 
 
-## A taunt or beacon spent on a machine: the team's hull the redirect saves this round, and
-## the deaths it prevents or causes, read by turning the rank on `who` in a what-if and
-## reading every machine's forecast, then putting the targets back. `extra_shield` is the
-## shield the same component raises on `who`, counted in both readings so only the redirect
-## is scored here (the shield itself is the shield's score).
-func draw_score(sk: Skirmish, who: Skirmish.MechState, f: Face, extra_shield: int = 0) -> float:
-	var ranks: Array[int] = []
-	if f.has(Face.Keyword.TAUNT):
-		ranks.append(0)
-	if f.has(Face.Keyword.BEACON):
-		ranks.append(1)
-	if ranks.is_empty():
-		return 0.0
-	var before := _team_outlook(sk, who, extra_shield)
+## A lure on the foes an entry reaches: the team's hull the redirect saves this round, and
+## the deaths it prevents or causes, read by turning those foes on `who` in a what-if and
+## reading every machine's forecast, then putting the targets back.
+func lure_score(sk: Skirmish, who: Skirmish.MechState, foes: Array) -> float:
+	var before := _team_outlook(sk, who, 0)
 	var saved := {}
-	for foe in sk.field_foes():
-		if foe.alive() and (ranks.has(foe.rank) or foe.is_massive()):
+	for foe in foes:
+		if foe.alive() and foe.target != who:
 			saved[foe] = foe.target
 			foe.target = who
-	var after := _team_outlook(sk, who, extra_shield)
+	if saved.is_empty():
+		return 0.0
+	var after := _team_outlook(sk, who, 0)
 	for foe in saved.keys():
 		foe.target = saved[foe]
 	return (float(after["hull"]) - float(before["hull"])) * HULL_WEIGHT + float(int(before["deaths"]) - int(after["deaths"])) * DEATH_WEIGHT
+
+
+## A disrupt on a foe about to strike: the blow it will not land, when it has a quieter move
+## open to switch to (a disrupt into another blow is worth nothing here).
+static func disrupt_score(sk: Skirmish, foe: Foe) -> float:
+	if not foe.attacks() or foe.is_suppressed() or foe.target == null:
+		return 0.0
+	for a in sk.legal_actions(foe):
+		if a != foe.action and not Foe.is_attack_action(a):
+			return _threat_now(foe) * HULL_WEIGHT
+	return 0.0
 
 
 ## The team's hull at the round's end as the forecast sees it, and how many machines it
@@ -484,12 +509,12 @@ func face_value(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
 		Face.Kind.SHIELD:
 			var best := 0.0
 			for who in sk.equipment_targets_for(ms, f):
-				best = maxf(best, shield_score(sk, who, f.power) + draw_score(sk, who, f, f.power) - volatile_cost(sk, ms, f))
+				best = maxf(best, shield_score(sk, who, f.power) - volatile_cost(sk, ms, f))
 			return best
 		Face.Kind.VENT:
 			var best := 0.0
 			for who in sk.equipment_targets_for(ms, f):
-				best = maxf(best, vent_score(sk, who, f.power) + draw_score(sk, who, f) - volatile_cost(sk, ms, f))
+				best = maxf(best, vent_score(sk, who, f.power) - volatile_cost(sk, ms, f))
 			return best
 		Face.Kind.BUFF:
 			var best := 0.0

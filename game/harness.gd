@@ -59,7 +59,7 @@ func _build_menu() -> void:
 		var c: Dictionary = db.chassis[id]
 		var cb := CheckBox.new()
 		var fixed_n: int = c.get("fixed", []).size()
-		cb.text = "%s   (%s, %d hardpoints%s, move %d)" % [c["name"], c.get("silhouette", ""), int(c["hardpoints"]), " + %d fixed" % fixed_n if fixed_n > 0 else "", int(c["movespeed"])]
+		cb.text = "%s   (%s, %d hardpoints%s, move %d)" % [c["name"], ", ".join(c.get("traits", [])), int(c["hardpoints"]), " + %d fixed" % fixed_n if fixed_n > 0 else "", int(c["movespeed"])]
 		cb.add_theme_font_size_override("font_size", 18)
 		cb.button_pressed = id in db.default_team()
 		col.add_child(cb)

@@ -6,6 +6,9 @@ extends SceneTree
 ##   perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
 ## Options: --seeds N (200), --policies random,greedy (both), --out path (docs/balance.md),
 ## --json path (none), --withdraw N (a persona that withdraws under N percent hull; 0 never),
+## --targeting aim|lowest (the foes' targeting rule for the matrix: the aims as shipped, or
+## the lowest-shield rule from before 2 October; the team cells are always run under both
+## and compared in their own section, since a single machine cannot see targeting),
 ## --trace "<row id>|<pack id>|<policy>|<seed>" (play that one fight and print its log
 ## instead of the matrix; ids as the JSON names them, e.g. "sparrowhawk|brute x4|greedy|3").
 ##
@@ -22,11 +25,13 @@ var out_path := OUT
 var json_path := ""
 var withdraw_below := 0
 var trace := ""
+var targeting := ""   # "" is the aims; "lowest" the rule before 2 October
 
 var db: ContentDB
 var rows: Array = []      # {id, name, chassis: [ids]}
 var packs: Array = []     # {id, name, foe, strength}
 var cells: Dictionary = {}   # "row|pack|policy" -> aggregate
+var compare: Dictionary = {}   # the team row under the other targeting rule, same keys
 
 
 func _init() -> void:
@@ -46,6 +51,15 @@ func _init() -> void:
 		for p in packs:
 			for k in policies:
 				cells[_key(r, p, k)] = _run_cell(r, p, k)
+				fights += seeds
+	# The team row again under the other targeting rule, for the comparison section.
+	var other := "lowest" if targeting.is_empty() else ""
+	for r in rows:
+		if r["id"] != "team":
+			continue
+		for p in packs:
+			for k in policies:
+				compare[_key(r, p, k)] = _run_cell(r, p, k, other)
 				fights += seeds
 	var secs := (Time.get_ticks_msec() - t0) / 1000.0
 	var report := _report(fights, secs)
@@ -89,6 +103,9 @@ func _parse_args() -> void:
 			"--json":
 				json_path = v
 				i += 1
+			"--targeting":
+				targeting = "" if v == "aim" else v
+				i += 1
 			"--withdraw":
 				withdraw_below = int(v)
 				i += 1
@@ -119,6 +136,19 @@ func _build_matrix() -> void:
 		if boss.is_empty() or not db.foes.has(boss) or _has_pack(boss + " x1"):
 			continue
 		packs.append({"id": boss + " x1", "name": str(db.foes[boss].get("name", boss)), "foe": boss, "strength": 1})
+	# The mixed cells (the to-do, 2 October): every pack a faction sends through the rift in
+	# one fight, a front and a back together, which is where targeting, overwhelm and the
+	# Databank can be read at all.
+	for fac in db.factions.keys():
+		var mix: Array = []
+		var names: Array[String] = []
+		for entry in db.spawn_table(fac):
+			if db.foes.has(entry[0]):
+				mix.append([str(entry[0]), int(entry[1])])
+				names.append("%s x%d" % [str(db.foes[entry[0]].get("name", entry[0])), int(entry[1])])
+		if mix.size() < 2:
+			continue
+		packs.append({"id": fac + " formation", "name": "%s formation (%s)" % [str(db.factions[fac].get("name", fac)), ", ".join(names)], "foe": "", "strength": 0, "mix": mix})
 
 
 func _has_pack(pid: String) -> bool:
@@ -132,9 +162,11 @@ static func _key(r: Dictionary, p: Dictionary, k: int) -> String:
 	return "%s|%s|%s" % [r["id"], p["id"], Policy.kind_name(k)]
 
 
-## One fight, played to its end: {sk, pol, hull_max, foes, outcome}.
-func _fight(r: Dictionary, p: Dictionary, k: int, seed_value: int) -> Dictionary:
+## One fight, played to its end: {sk, pol, hull_max, foes, outcome}. `rule` is the targeting
+## rule, the runner's unless the comparison asks for the other.
+func _fight(r: Dictionary, p: Dictionary, k: int, seed_value: int, rule: String = "\u0001") -> Dictionary:
 	var sk := Skirmish.new(seed_value)
+	sk.targeting_override = targeting if rule == "\u0001" else rule
 	var hull_max := 0
 	var uid := 0
 	for cid in r["chassis"]:
@@ -143,8 +175,13 @@ func _fight(r: Dictionary, p: Dictionary, k: int, seed_value: int) -> Dictionary
 		hull_max += u.hull_max
 		sk.add_mech(u)
 	var foes: Array = []
-	for n in range(int(p["strength"])):
-		foes.append(db.make_foe(p["foe"]))
+	if p.has("mix"):
+		for entry in p["mix"]:
+			for n in range(int(entry[1])):
+				foes.append(db.make_foe(str(entry[0])))
+	else:
+		for n in range(int(p["strength"])):
+			foes.append(db.make_foe(p["foe"]))
 	sk.add_foes(foes)
 	sk.begin()
 	var pol := Policy.make(k, seed_value)
@@ -195,12 +232,12 @@ static func _ids(list: Array) -> String:
 
 
 ## One cell: `seeds` fights of a row against a pack under one policy, summed.
-func _run_cell(r: Dictionary, p: Dictionary, k: int) -> Dictionary:
+func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") -> Dictionary:
 	var agg := {"fights": 0, "victory": 0, "defeat": 0, "withdrawn": 0, "stalled": 0,
 		"rounds": 0, "hull_lost_pct": 0.0, "mechs_lost": 0, "foes_killed_pct": 0.0,
 		"overheat_hull": 0, "rerolls": 0, "spends": {}}
 	for s in range(seeds):
-		var fight := _fight(r, p, k, s + 1)
+		var fight := _fight(r, p, k, s + 1, rule)
 		var sk: Skirmish = fight["sk"]
 		var pol: Policy = fight["pol"]
 		var hull_max: int = fight["hull_max"]
@@ -281,6 +318,26 @@ func _report(fights: int, secs: float) -> String:
 				flags += " s"
 			cell.append("%.1f r, %d%% hull%s" % [float(a["rounds"]) / n, int(roundf(a["hull_lost_pct"] / n)), flags])
 		L.append("| " + " | ".join(cell) + " |")
+	L.append("")
+	L.append("## Targeting rules on the team cells, %s" % " / ".join(_policy_names()))
+	L.append("")
+	L.append("The team against every pack under the shipped rule (every foe picks its own target by its aim, 2 October) and under the rule before it (every foe on the machine with the lowest shield): win rate per policy, then mean rounds and mean hull lost under %s. A single machine cannot see targeting, so this is the only place the rule reads. The matrix above ran under %s." % [Policy.kind_name(top), "the aims" if targeting.is_empty() else "the lowest-shield rule"])
+	L.append("")
+	L.append(_header())
+	for r in rows:
+		if r["id"] != "team":
+			continue
+		for pair in [["aims", cells if targeting.is_empty() else compare], ["lowest shield", compare if targeting.is_empty() else cells]]:
+			var cell: Array[String] = ["**%s**" % pair[0]]
+			for p in packs:
+				var parts: Array[String] = []
+				for k in policies:
+					var a: Dictionary = pair[1][_key(r, p, k)]
+					parts.append("%d" % _pct(a["victory"], a["fights"]))
+				var t: Dictionary = pair[1][_key(r, p, top)]
+				var n: int = maxi(1, t["fights"])
+				cell.append("%s; %.1f r, %d%% hull" % [" / ".join(parts), float(t["rounds"]) / n, int(roundf(t["hull_lost_pct"] / n))])
+			L.append("| " + " | ".join(cell) + " |")
 	L.append("")
 	L.append("## Pick share, %s" % Policy.kind_name(top))
 	L.append("")
