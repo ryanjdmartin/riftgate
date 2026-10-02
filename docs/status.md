@@ -13,7 +13,7 @@ stays in A alone (Ryan, 1 October: it serves one ongoing task) and is republishe
 session; a B session cannot read it. Shared:
 
 - **The bible** (above): `docs/design-bible.html`, published whole after every change.
-- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH): four tabs, the
+- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 2 October with the targeting pass's content): four tabs, the
   codex, the content editor, the names list and the renders (earlier passes folded under each
   chassis, a Classes section). Source `tools/hangar.html`, published with the `files` map
   `tools/hangar_data.py` prints (`content/*.json`, `hangar/pins.json`, `hangar/renders.json`
@@ -61,8 +61,9 @@ the chat is newer.
 ## As of 2 October 2026
 
 **State.** Tests green: `perl -e 'alarm 240; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (287 tests, 3,653 checks on 2 October, on main after the to-do review's
-branch merged; a cloud session fetches Godot 4.7.2's Linux build to run them). Two or three
+tests/run_tests.gd` (293 tests, 3,899 checks on 2 October, after the targeting pass merged main;
+a cloud session fetches Godot 4.7's Linux build from the GitHub release asset to run them, since
+the proxy serves the asset though not the release page). Two or three
 sessions run on this repo at once: check `git status` before committing, stage by path, diff a
 shared file first (a path still sweeps the other session's hunks), never `git add -A`, never
 kill a bare `godot --path .`. Commit after each verified chunk with tests green.
@@ -177,17 +178,24 @@ started from the harness is saved after every change (`sim/save.gd`, `user://bat
 and Resume battle opens it where it stood; standalone runs and tests never write it.
 
 **Balance (bible section 11).** `sim/policy.gd` plays the skirmish headless (RANDOM, GREEDY,
-`withdraw_below`); `tools/balance.gd` runs the matrix, about fifteen minutes at 200 seeds
-with eleven machines (`docs/balance.md`, generated 1 October with every engine piece in).
-Its bands: the Honey Badger, Armadillo and Wild Boar win nearly every cell alone at little
-cost (too strong out of the box; the Faraday Hull alone makes the Armadillo's), and the team
-of three wins every single-pack fight at no cost, so the rank and file's numbers are the
-lever; the Clydesdale and Ammit beat the ghouls under greedy and wall at the brutes and the
-spawn; the Nemesis beats most packs but the Crucible costs it (its Overheating burns hull and
-the bot does not vent for it); the Baboon, Prairie Dog and Dingo lose to the front-rank packs
-alone, as support machines might; the Sparrowhawk and Goshawk hold. Overwhelm and the
-Databank never fire in the runner's single-type, single-machine cells. Rerun after each
-engine piece lands; read bands, not numbers.
+`withdraw_below`); `tools/balance.gd` runs the matrix, about half an hour at 200 seeds with
+eleven machines, twelve packs (the nine plus each faction's whole formation in one fight, since
+2 October) and the team row run twice for the targeting comparison (`docs/balance.md`, generated
+2 October with the targeting pass and the playtest set in). **The baseline reading, for Ryan's
+question of whether 80 a round is average or game-losing:** the team of three still wins every
+cell, the formations included, in about a round and at no cost, under the aims and under the
+lowest-shield rule alike (the Risen formation, fifteen foes, is the one fight that lasts: 4.6
+rounds, 17% hull, both rules). Targeting cannot read on the team cells yet because the foes die
+before they swing: the team's damage dwarfs every pack's hit points, so that, not the
+targeting rule, is the first number to move. Alone, the playtest set bit hard where it was meant
+to: the ghoul swarm turned the easiest pack into a wall for the light machines (the Ammit 95 to
+0 under greedy, the Nemesis 100 to 27, the Clydesdale 96 to 54; the Badger, Armadillo and Boar
+still clear it at little cost, which is armour against volume doing its job), the breaching Pit
+Lord and the double-biting Maw cut the solo win rates of everything but the three heavies, and
+the Colossus barely moved. The Badger, Armadillo and Wild Boar still win nearly every solo cell;
+the Baboon, Prairie Dog and Dingo lose to every front-rank pack alone, as support machines
+might. Pick share: the Klaxon's lure is spent 1% of the time, since the team never needs it;
+the Shutters 2%. Rerun after each engine piece lands; read bands, not numbers.
 
 **Audio (the bible's section 1 sound row has the direction, the palettes and every rule; the
 listen-by-listen history is retired).** Everything is `tools/soundforge/forge.py` writing WAVs
@@ -228,16 +236,27 @@ because Ryan is colourblind: check a new colour by simulation (CLAUDE.md has the
 2.6, the intent field's stripe width and spoke count in motion (`STRIPE`, `SPOKES`), the
 sound set, the grid at the hotter gain.
 
-**Enemy targeting (2 October; bible section 5, the playtest set in section 9).** Decided in a
-cloud session with no Godot, so nothing is built: every foe picks its own target at round start
-by its `aim` (exposed, anything, heat, armed, focus), weighted and shown; the counterplay is
-Lure (rides on any foe-targeted entry, retargets every foe it reaches, no chip), Suppress
-(unchanged), Disrupt (the foe's other move), Shield, Armour and a flat Brace. Taunt, Beacon,
-Scramble, Confuse and Energy Armour are cut; Phased parked. Foes carry armour; every special
-has a `when`; a special never fires twice running; bosses get a third move below half; the
-nine foes are rewritten in the bible row and the ghoul's swarm claw awaits Ryan's word. Until
-the engine pass lands, the game still runs the lowest-shield rule and the old keywords; the
-content and vocabulary are untouched so the build stays green.
+**Enemy targeting (2 October; bible section 5, the playtest set in section 9). Built the same
+day, in the cloud, tests green.** Every foe picks its own target at round start by its `aim`
+(exposed: weighted by the hull its blows would reach plus half of any shield they would break;
+anything; heat; the armed; fires as one), drawn on the skirmish's die and shown as the arrows,
+the pick a commitment; the lowest-shield rule stays as `Skirmish.targeting_override` for the
+runner's comparison and nothing else. The counterplay is Lure (a keyword on any foe-targeted
+entry; every foe the blows reach and leave alive turns on the spender, no chip, the arrow is
+the record), Suppress (unchanged), Disrupt (the foe's other move, the next in its list that its
+conditions allow, the new move picking its own target), Shield, Armour and a flat Brace. Taunt,
+Beacon, Scramble, Confuse and Energy Armour are gone from the engine and the vocabulary; Phased
+is parked. Foes carry armour (flat off every blow, never off a burn); a move may carry a `when`
+(eight words, `Foe.WHENS`) and is not rolled when it fails; a special never fires twice running;
+a blow may carry `swarm`, so much more per kin on the field. The nine foes are rewritten as the
+bible row says: the ghoul's one move is the swarm claw, the bosses wear armour 10 and carry a
+third move that opens below half (Bone Storm, Eruption, Unravel), the Pit Lord's blow breaches,
+the Whisperer's Hush switches off the showing weapon (new effects `disable`, `heat_all`,
+`corrupt_all`). The Proximity Klaxon is an indirect entry of no damage that lures with a
+spread; the Lockdown Shutters keep their shield and passive and lose the draw. The hangar page
+is republished with the content. Still to judge in play (the to-do): whether the exposed
+weighting leans hard enough, whether the swarm's opening reads as pressure or a wall, whether a
+disrupt into a boss's signature is a trick or a trap.
 
 **Open, in order.** The task list is `docs/todo.md`, one line a task, grouped by who moves
 it and ticked in the commit that lands it; this is the order to take them in.
