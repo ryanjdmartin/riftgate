@@ -54,7 +54,7 @@ another session on this repo at the same time: `git status` first, stage by path
 shared file before staging it, and never `git add -A`. If a chat and the bible disagree,
 the chat is newer.
 
-## As of 1 October 2026
+## As of 2 October 2026
 
 **State.** Tests green: `perl -e 'alarm 240; exec @ARGV' godot --headless --path . -s
 tests/run_tests.gd` (279 tests, 3,593 checks on 1 October, after the merge of the cloud
@@ -63,14 +63,25 @@ this repo at once: check `git status` before committing, stage by path, diff a s
 first (a path still sweeps the other session's hunks), never `git add -A`, never kill a bare
 `godot --path .`. Commit after each verified chunk with tests green.
 
-**The to-do review (2 October).** Every to-do line was checked against the code. Ryan's
-calls: the d4 question is closed (die size is a balance lever like every base stat), so is a
-skirmish participant cap (four columns is the most a formation will be); the commander layer
-(reward pick, one-shots, city abilities, the command die) is important but waits on a baseline
-balance; a prototype hangar in the game, no economy, is agreed (paints and loadouts, carried
-into a battle for play tests); movement in tens is decided with its price table, a wheels trait for the cars (its name Ryan's) and a move gauge, ready to build (bible section 4); every machine gets its own idle acts and movement on both screens, done by a pilot and never an animal, grounded ones never swaying, the joints each needs listed machine by machine (section 7; cockpits fixed but the Clydesdale's head); the battery plan is decided: weld the machines, props by hex with a fade, the 3D at 30 while planning (section 11); the seated die is in the new effects pass; enemy
-targeting and the horde hooks go to a design session of his own. Eight of nine foes are still
-their sketch grids; the ghoul is the one foeforge cut.
+**2 October: the to-do review and what came of it.** Docs only, on the branch
+`ccr-7821fbf8-eim14f` (not yet merged to main; no code changed, so the tests were not rerun).
+Every to-do line was checked against the code. Ryan's calls, each in the bible:
+- Closed: the d4 question (die size is a balance lever like any base stat), the participant
+  cap (four columns is the most a formation will be), the Baboon's rear silhouette and the
+  Clydesdale's twin spacing. The seated die is in the new effects pass.
+- Movement in tens, with a price table by way of moving, a wheels trait for the cars (name
+  Ryan's), stranded leftover move and a move gauge (section 4). Ready once the trait is named.
+- Idle acts and movement (section 7): a pilot drives every machine, never an animal; several
+  acts per machine; grounded machines never sway; cockpits fixed but the Clydesdale's head;
+  the joints each machine needs are listed; the Dingo drifts through one cornering module
+  shared with flyers and hovercraft, its slide and bank tuned per machine.
+- Battery (section 11): weld the machines at load, props by hex with a dither fade, the 3D at
+  30 while planning, which comes after the animations so it can be judged against them.
+- Later: a prototype hangar (paints and loadouts, no economy); the commander layer once the
+  balance has a baseline; enemy targeting and the horde hooks in Ryan's own design session;
+  the Armadillo sealing its ports, to consider once the acts run.
+- Found: eight of nine foes are still their sketch grids (the ghoul is the foeforge cut); the
+  Honey Badger cannot ford today; water's terrain codex wrongly says impassable.
 
 **The audit (1 October).** The bible, status, to-do, README and CLAUDE.md were read against
 each other and the code: stale rows retired or marked superseded, the bible's keyword table
@@ -128,10 +139,9 @@ joints are code too. The round-by-round history is retired (Ryan, 1 October); th
 hangar page's Models tab are the record. **Ryan judges a model only from a render**, never from
 code (`tools/hero_shot.gd` renders bare and needs a window); a hand edit in Blender has to be
 re-expressed in the code to survive a rebuild. **Every machine is signed off for now** (Ryan,
-1 October); next on the art side is judging the joints and turrets running in the skirmish.
-Open on the models: the outward-only turret, each class's size per machine, and the machines'
-scale on the map's hexes (Ryan, 2 October: needs adjusting; all are fitted to one width today).
-The Clydesdale's twin spacing and the Baboon's rear silhouette are closed as they stand (2 October).
+1 October); next on the art side is the joint pass (bible section 7, the joints row), then the
+acts and movement. Open on the models: each class's size per machine, and the machines' scale
+on the map's hexes (Ryan, 2 October: needs adjusting; all are fitted to one width today).
 
 **The codex (29 September; a tab of the hangar page since 1 October).** One surface showing a
 chassis and the components fitted to it: the Codex tab renders it in the browser from the
@@ -202,7 +212,7 @@ sound set, the grid at the hotter gain.
 it and ticked in the commit that lands it; this is the order to take them in.
 
 1. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
-2. Ryan's text for the new machines and components; with every machine signed off for now, the joints and turrets judged running in the skirmish, and the machines' scale on the map.
+2. Ryan's text for the new machines and components; the wheels trait's name; the machines' scale on the map; the strikes, then the acts and movement, judged running.
 3. The discuss-first decisions in the Ryan section, the economy last; enemy targeting in Ryan's own design session; the commander layer once the balance has a baseline.
 4. Ready to build: movement in tens (once the wheels trait is named); the joint pass, then the idle acts, then the movement animations; the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased, Energy Armour, Corrode, Scramble, Confuse, foe roles), and a dedicated hunter foe and spawned formations once proposed.
 5. Audio: a full play of Hold The Line, the effects' second pass, the speakers/headphones setting, the two boss themes.
