@@ -1,61 +1,49 @@
-"""The console, a fresh pass (Ryan, 2 October: the rounds since 30 September were incremental
-adjustments, not a shift in direction; derive the interface's sound again from the UI design,
-the music, Hold The Line above all, and the direction notes, without the existing sounds or
-the existing choice of what sounds). Nothing here is shipped; a pick lands in forge.py.
+"""The console, derived again (Ryan, 2 October: the rounds since 30 September were increments,
+not a shift; derive the interface's sound from the UI design, the music's atmosphere and the
+direction notes, not from the existing sounds). Nothing here is shipped; a pick lands in forge.py.
 
-What the UI is. CARE's tactical display is a feed being analysed, not a panel of buttons: a
-vector HUD of bracketed readouts, slanted gauges, a terminal log and dice with corner
-brackets. Its motion has four verbs, all already on screen: brackets collapse onto a thing
-over a third of a second as the display acquires it; digits scramble and settle (45 ms
-frames on an intent, 18 fps on the orders board) as it works; text types in at 12 ms a
-character; and a thing lands (the SETTLE, 0.35 s; a reroll's flip, 0.22 s; the contact
-panel's slide, 0.22 s). Buttons never take an effect (the bible's rule), and the code blanks
-the button sound on MENU, END TURN, RESOLVE and ENGAGE because the action carries its own.
-Nothing moves while the player is thinking; a constant sound on a phone is fatigue.
+What the UI is. CARE's tactical display is a feed being analysed: a vector HUD of bracketed
+readouts, slanted gauges, a terminal log and dice with corner brackets, whose motion has four
+verbs already on screen. Brackets collapse onto a thing over a third of a second as the display
+acquires it; digits scramble (45 ms frames on an intent, 18 fps on the orders board) and
+settle; text types at 12 ms a character; a thing lands (0.35 s; a reroll's flip 0.22 s). Every
+button plays a tap on press (`hud_button.gd`), and four of them, MENU, END TURN, RESOLVE and
+ENGAGE, are blanked because their action plays its own sound. It is a digital feed: it
+quantises, holds, drops frames and resolves; it never hisses.
 
-So the sound follows the display, not the finger. The finger is nearly nothing: a dry
-contact on glass, the same for every press. Everything else is the display answering, and
-each answer is one of five verbs that twin the four motions plus a refusal:
+Its own instrument (Ryan, 2 October, after the first cut of this pass: the console needs an
+identity of its own that sits in the music's atmosphere without drawing on its instruments,
+since the skirmish rotates three tracks and the map two more; no static, since the feed is
+digital not analog; no knock, since the human register has a digital softness beside its heavy
+gain, and only the weapons hit hard). So the console is an FM terminal: that era's cockpits
+and consoles were FM synths and sample cards, retro-future digital, and FM's glassy, faintly
+metallic tones are a timbre no instrument in the music uses (saws, guitars, piano, orchestra),
+so the separation is in kind, not level. Its motions are digital: a tone that starts coarse
+(a high modulation index, a shallow bit depth) and resolves to clean as the brackets land; the
+same run backward for a thing let go; pitches that step, never glide. Four verbs:
 
-  touch     the finger on the glass. Dry, mid, fifteen milliseconds. Weight is the only
-            variation (a primary press is heavier).
-  acquire   the display grabbing something: a band of static narrowing onto a pitch over the
-            time the brackets take to land, ending as the brackets land. The filter moves;
-            the pitch does not. Selecting, lifting a die, a readout opening, a foe's intent
-            locking on, and the round opening with every intent at once.
-  work      the display computing: ticks at the scramble's own frame rate, filtered noise a
-            few milliseconds long, thinning as the digits settle; typing is the same at the
-            log's rate. The Terran console's data. A reroll, a route set, a line typing.
-  confirm   a thing committed: a thump in the band a speaker plays (the weight) under a
-            short chord from the drone's own voice with its filter closing (MechWarrior 2's
-            confirm). Small for a lock, medium for a die spent, large for RESOLVE and END
-            TURN: three stepped notes, E, B, E, the last held and closing; weapons online.
-  refuse    the one dissonance: the Phrygian second, F falling to E, both dull, a muted knock
-            under. NO ROUTE, a drop that lands on nothing valid, a disabled press.
+  touch     every button: a short soft FM tick, a slow enough front that it is a key, not a click.
+  acquire   the display grabbing something: a tone resolving from coarse to clean over the time
+            the brackets take, landing with them. Selecting, lifting a die, a readout opening, a
+            foe's intent locking, the round opening with every intent at once (the console's
+            signature line, with a short falling figure after it).
+  confirm   a thing committed: a soft bloom, a low body with a brief FM burst on its front, then
+            a dyad sustained and closing under a filter. Weight from depth, not from a hit. Small
+            for a lock, medium for a die spent, large for RESOLVE and END TURN as three stepped
+            notes, E, B, E, the last held.
+  refuse    the one wrong note: F falling to E, dry and short.
 
-Where it comes from. Hold The Line is in E Phrygian (E F G A B C D) at 104, and Ryan singled
-out its drone, the sweep pad's saws held on one chord with the filter three quarters open, as
-the element for every human track; the interface is CARE's and human, so the console's
-pitched voice is that drone's saws through that filter (`pad_sweep`'s dark and bright pair),
-chorused as that era's cockpits were, on E and B, with F for no. The direction notes: a 90s
-computer game's cockpit (StarCraft 1's panel, MechWarrior 2's targeting computer, Descent's
-menus), retro-future not retro, deliberate and with intent, weighty, irony not parody.
+And a scramble: the orders board's line or a reroll's flips as quantised pitches stepping at
+the display's own frame rate and landing on the note. The digit scramble made audible as
+pitch, and the only "work" the console does out loud.
 
-The phone decides the pitches and the levels. A speaker plays nothing under about 220 Hz,
-so an E3 (165 Hz) is silent there and E4 (330) is thin; the chug guitar fills everything to
-1,500 Hz in E, so a console tone inside that band is masked by the music it is tuned to.
-Hence: identity lives from 2 kHz up (the static of an acquire, the ticks of work), the
-pitched voice sits at E5 and B5 with E6 over it, the weight of a confirm is a knock at 300
-to 600 Hz rather than a sub, and an E3 rides under for headphones only. Every sound here is
-levelled by what the phone model plays of it (its loudness through `phone_model`), so a
-sound heavy in the lows is written hotter rather than vanishing on the speaker; the page
-says both figures.
-
-Gaps the code has today, which a pick would add a hook for: no "seated over a target" state
-during a drag (lift, move and drop are the only events), so the bible's seated-die voice has
-nothing to hang on; nothing animates when a round deals its dice; a drop on an invalid unit
-is silent and invisible; a disabled button emits nothing; the codex, the confirm panel, the
-hold readout and the menu appear and vanish with no transition.
+Pitches are E and B (every track is E-centred, so they sit under all five), E5 and B5 for the
+speaker with an E4 or E3 body for headphones; a speaker plays nothing under about 220 Hz and
+the guitars fill the band to 1,500 Hz, so the identity lives above that. Every file is
+levelled by what the phone model plays of it. Gaps the code has, which a pick adds a hook for:
+no "seated over a target" state during a drag; nothing animates when a round deals its dice;
+an invalid drop and a disabled press are silent; the codex, confirm panel, hold readout and
+menu appear with no transition.
 
     python3 tools/soundforge/console_sketches.py          # the console into out/fx (after fx_sketches.py)
 """
@@ -73,10 +61,8 @@ from phone_sketches import phone_model  # noqa: E402
 
 SR = F.SR
 n_of, t_of, mix, at = F.n_of, F.t_of, F.mix, F.at
-RNG = lambda: F.RNG  # noqa: E731  (seeded per sound by F.seed)
 
 # ---------------------------------------------------------------- the key
-# Hold The Line's E. Semitones from E; octave 0 is E2 (82 Hz), so octave 3 puts E at 659 Hz.
 E2 = 82.41
 
 
@@ -84,387 +70,312 @@ def hz(semis, octave):
     return E2 * 2.0 ** (semis / 12.0) * 2.0 ** octave
 
 
-E4, E5, B5, E6, F5 = hz(0, 2), hz(0, 3), hz(7, 3), hz(0, 4), hz(1, 3)
+E3, E4, B4, E5, B5, E6, F5 = hz(0, 1), hz(0, 2), hz(7, 2), hz(0, 3), hz(7, 3), hz(0, 4), hz(1, 3)
 SCRAMBLE = 1.0 / 0.045   # the intent acquire's digit frames
 BOARD = 18.0             # the orders board's scramble
-TYPING = 1.0 / 0.012     # the log
-
-
-# ---------------------------------------------------------------- the voice: the drone's saws
-
-def drone(semis, dur, octave=3, open_=0.75, detune=(0.994, 1.0, 1.006)):
-    """Hold The Line's drone: detuned saws through the sweep pad's two filters blended (dark
-    420 Hz, bright 2,600 Hz), `open_` where the blend sits, a number or a per-sample array.
-    The filter may move; the pitch never does."""
-    n = n_of(dur)
-    x = np.zeros(n)
-    for s in semis:
-        x += F.saws(hz(s, octave), n, detune)
-    x /= max(1, len(semis))
-    x = F.sat(x, 1.4)
-    dark, bright = F.lp(x, 420.0), F.lp(x, 2600.0)
-    o = np.clip(np.broadcast_to(np.asarray(open_, dtype=float), (n,)), 0.0, 1.0)
-    return dark * (1.0 - o) + bright * o
-
-
-def chorus(x, depth=0.0028, rate=0.7, wet=0.55):
-    """The era's gloss: two copies on slowly moving short delays."""
-    n = len(x)
-    t = t_of(n)
-    idx = np.arange(n)
-    out = np.array(x, dtype=float)
-    for r, ph in ((rate, 0.0), (rate * 1.37, 2.1)):
-        d = 0.007 + depth * np.sin(2.0 * math.pi * r * t + ph)
-        out += np.interp(idx - d * SR, idx, x, left=0.0) * (wet / 2.0)
-    return out
-
-
-def closing(n, a=0.75, b=0.12, curve=1.6):
-    """A filter position falling from a to b over the buffer, fast first."""
-    p = np.linspace(0.0, 1.0, n) ** (1.0 / curve)
-    return a + (b - a) * p
+BED_DB = -4.0            # the music under the sequences, pulled down (Ryan, 2 October: too loud against the UI)
 
 
 def shape(n, points):
     return F.env_pts(n, points)
 
 
-# ---------------------------------------------------------------- the five verbs
+def curve(n, a, b, power=1.6):
+    """From a to b over the buffer, fast first."""
+    return a + (b - a) * np.linspace(0.0, 1.0, n) ** (1.0 / power)
+
+
+# ---------------------------------------------------------------- the instrument
+
+def fm(f, dur, ratio=2.0, index=1.0, amp=None, feedback=0.0):
+    """One FM voice: a sine carrier at `f` phase-modulated by a sine at `f * ratio` with
+    `index` (a number or a per-sample array; high is coarse and metallic, zero is a pure
+    sine). `amp` is the envelope; a touch of feedback on the modulator adds edge."""
+    n = n_of(dur)
+    t = t_of(n)
+    idx = np.broadcast_to(np.asarray(index, dtype=float), (n,))
+    ph_m = 2.0 * math.pi * f * ratio * t
+    mod = np.sin(ph_m + feedback * np.sin(ph_m))
+    x = np.sin(2.0 * math.pi * f * t + idx * mod)
+    if amp is None:
+        amp = shape(n, [(0.0, 0.0), (0.004, 1.0), (dur * 0.6, 0.7), (dur, 0.0)])
+    return x * amp
+
+
+def bits(x, depth):
+    """Bit depth per sample: coarse (3 or 4 bits) is the feed not yet resolved; 16 is clean."""
+    d = np.broadcast_to(np.asarray(depth, dtype=float), (len(x),))
+    steps = 2.0 ** d
+    return np.round(x * steps) / steps
+
+
+def glass(x, decay=0.07, mixv=0.14):
+    """The terminal's small digital room: short and bright."""
+    return F.room(x, decay=decay, mix=mixv, cut=7000.0, pre=0.003)
+
+
+def lowpass_closing(x, c0, c1):
+    return F.lp_var(x, np.geomspace(c0, c1, len(x)), passes=1)
+
+
+# ---------------------------------------------------------------- the verbs
 
 def touch(weight=1.0):
-    """The finger on the glass: a dry contact, a little body under it so it exists on a
-    speaker, fifteen milliseconds, no spring and no casing ring."""
-    c = F.knock([2600.0, 4100.0], [0.003, 0.002], [1.0, 0.6], noise_gain=0.8) * 0.8
-    b = F.knock([640.0, 980.0], [0.007, 0.005], [1.0, 0.5], noise_gain=0.15) * 0.5 * weight
-    u = F.body(520.0, 330.0, 0.03, drive=1.5, click=0.0) * 0.2 * weight
-    return F.lp(mix(c, b, u), 6000.0)
+    """Every button: a soft FM tick. Inharmonic ratio so it is glass, not a note; a 3 ms
+    front so it is a key under a finger, not a relay."""
+    n = n_of(0.045)
+    amp = shape(n, [(0.0, 0.0), (0.003, 1.0), (0.012, 0.5), (0.045, 0.0)])
+    x = fm(1760.0, 0.045, ratio=1.414, index=curve(n, 2.2, 0.3), amp=amp)
+    under = fm(440.0, 0.045, ratio=2.0, index=0.4, amp=amp * 0.5) * weight
+    return glass(mix(x, under), decay=0.04, mixv=0.1) * 0.8
 
 
-def converge(dur=0.3, note=B5, gain=1.0, start_width=1.8, end_width=0.03, rise=0.25, under=0.35):
-    """Acquire: static narrowing onto the note over `dur`. A Hann-windowed band-pass, frame
-    by frame, whose width (in octaves either side of the note) falls from `start_width` to
-    `end_width`, its level held as it narrows so the noise becomes the pitch; the drone's E
-    opens under it (E4 for the speaker, E3 for headphones) at `under`."""
+def acquire(dur=0.3, note=B5, gain=1.0, body=0.5, coarse=5.0):
+    """The display grabbing something: a tone resolving from coarse to clean over `dur`, the
+    FM index falling from `coarse` to nothing and the bit depth climbing from 3 bits to 16
+    on the same curve, landing clean as the brackets land. A body an octave or two under
+    for headphones. No glide: the pitch is the note from the first sample."""
     n = n_of(dur)
-    frame = n_of(0.012)
-    hop = frame // 2
-    win = np.hanning(frame)
-    src = F.noise(n + frame)
-    out = np.zeros(n + frame)
-    w0 = start_width
-    for start in range(0, n, hop):
-        p = start / float(n)
-        w = (w0 - end_width) * (1.0 - p) ** 2.2 + end_width
-        lo, hi = note * 2.0 ** (-w), note * 2.0 ** w
-        seg = src[start:start + frame] * win
-        y = F.bp(seg, max(lo, 150.0), min(hi, 12000.0), order=2)
-        bw = min(hi, 12000.0) - max(lo, 150.0)
-        bw0 = note * (2.0 ** w0 - 2.0 ** -w0)
-        y *= 1.0 / math.sqrt(max(bw, note * 0.04) / bw0)
-        out[start:start + frame] += y
-    x = out[:n] * shape(n, [(0.0, 0.0), (dur * rise, 1.0), (dur * 0.85, 1.0), (dur, 0.0)])
-    x = F.lp(x, 9000.0) * 0.9
-    if under > 0.0:
-        o = shape(n, [(0.0, 0.15), (dur, 0.75)])
-        d = mix(drone([0], dur, 2, o) * 0.7, drone([0], dur, 1, o) * 0.5)
-        d *= shape(n, [(0.0, 0.0), (dur * 0.3, 1.0), (dur, 0.6)])
-        x = mix(x, chorus(d) * under)
-    return x * gain
+    p = np.linspace(0.0, 1.0, n) ** 0.7
+    index = coarse * (1.0 - p) ** 2.0
+    depth = 3.0 + 13.0 * p
+    amp = shape(n, [(0.0, 0.0), (dur * 0.12, 0.8), (dur * 0.9, 1.0), (dur, 0.0)])
+    x = bits(fm(note, dur, ratio=2.0, index=index, amp=amp), depth)
+    x = mix(x, bits(fm(note * 0.5, dur, ratio=3.0, index=index * 0.6, amp=amp * 0.6), depth) * body,
+            fm(note * 0.25, dur, ratio=2.0, index=0.3, amp=amp * 0.5) * body * 0.8)
+    land = fm(note * 2.0, 0.05, ratio=1.414, index=1.2, amp=shape(n_of(0.05), [(0.0, 0.0), (0.002, 1.0), (0.05, 0.0)])) * 0.5
+    return glass(at(x, land, dur - 0.04)) * gain
 
 
 def release(dur=0.18, note=B5, gain=1.0):
-    """The reverse of an acquire: the note dissolving back into static and gone over `dur`.
-    A cancel, a dismiss, a die set back. No tick at the end: nothing landed."""
+    """The reverse: a clean note going coarse and out. A thing let go. Nothing lands."""
     n = n_of(dur)
-    frame = n_of(0.012)
-    hop = frame // 2
-    win = np.hanning(frame)
-    src = F.noise(n + frame)
-    out = np.zeros(n + frame)
-    for start in range(0, n, hop):
-        p = start / float(n)
-        w = 0.03 + 1.6 * p ** 1.6
-        lo, hi = note * 2.0 ** (-w), note * 2.0 ** w
-        y = F.bp(src[start:start + frame] * win, max(lo, 150.0), min(hi, 12000.0), order=2)
-        bw = min(hi, 12000.0) - max(lo, 150.0)
-        y *= 1.0 / math.sqrt(max(bw, note * 0.04) / (note * 2.9))
-        out[start:start + frame] += y
-    x = out[:n] * shape(n, [(0.0, 1.0), (dur * 0.4, 0.8), (dur, 0.0)])
-    d = drone([0], dur, 2, shape(n, [(0.0, 0.6), (dur, 0.1)])) * shape(n, [(0.0, 0.5), (dur, 0.0)])
-    return F.lp(mix(x * 0.8, chorus(d) * 0.25), 9000.0) * gain
+    p = np.linspace(0.0, 1.0, n) ** 1.4
+    amp = shape(n, [(0.0, 1.0), (dur * 0.5, 0.7), (dur, 0.0)])
+    x = bits(fm(note, dur, ratio=2.0, index=4.0 * p, amp=amp), 16.0 - 12.0 * p)
+    x = mix(x, fm(note * 0.5, dur, ratio=2.0, index=0.3 + 2.0 * p, amp=amp * 0.5))
+    return glass(x, decay=0.05) * gain
 
 
-def tick(pitch=1.0, gain=1.0):
-    """A bracket landing: a tiny dry knock, high."""
-    return F.knock([3100.0 * pitch, 4700.0 * pitch], [0.0035, 0.0025], [1.0, 0.5], noise_gain=0.6) * gain
-
-
-def work(dur, rate=SCRAMBLE, gain=1.0, jitter=0.35, fade=(0.55, 1.0), band=(1800.0, 5600.0), blips=0.25):
-    """The display computing: ticks at the scramble's frame rate with jitter, each a few
-    milliseconds of filtered noise, one in four a saw blip on E or B, thinning as the digits
-    settle (from `fade[0]` of the way through to `fade[1]`)."""
-    buf = np.zeros(n_of(dur) + n_of(0.04))
-    t = 0.0
-    while t < dur:
-        d = F.RNG.uniform(0.003, 0.008)
-        m = n_of(d)
-        lo = F.RNG.uniform(band[0], band[1] * 0.6)
-        hi = min(lo * F.RNG.uniform(1.4, 2.2), 11000.0)
-        x = F.bp(F.noise(m), lo, hi) * F.env_ad(m, 0.0003, d * 0.5)
-        if F.RNG.uniform() < blips:
-            note = (E5, B5, E6)[int(F.RNG.integers(0, 3))]
-            x = mix(x, drone([0], 0.007, 3, 0.9) * F.env_ad(n_of(0.007), 0.0005, 0.003) * 0.5 * (note / E5))
-        p = t / dur
-        g = 1.0 if p < fade[0] else max(0.0, 1.0 - (p - fade[0]) / max(fade[1] - fade[0], 1e-3))
-        buf = at(buf, x, t, gain * g * F.RNG.uniform(0.55, 1.0))
-        t += (1.0 / rate) * F.RNG.uniform(1.0 - jitter, 1.0 + jitter)
-    return F.lp(buf, 11000.0)
-
-
-def typing(dur=0.4, gain=1.0):
-    """Text typing in: work at the log's rate, higher and quieter, no blips."""
-    return work(dur, TYPING, gain, jitter=0.2, fade=(0.8, 1.0), band=(3000.0, 7000.0), blips=0.0)
-
-
-def thump(weight=1.0, dull=False):
-    """The weight a speaker can play: a knock falling through 560 to 320 Hz, saturated, a
-    click on its front, dead in a tenth of a second. Not a sub."""
-    k = F.body(560.0 if not dull else 420.0, 320.0 if not dull else 260.0, 0.09, drive=2.2, click=0.0 if dull else 0.5)
-    sub = F.thud(120.0, 48.0, 0.18, click=0.0, drive=2.0, body_gain=0.0) * 0.35   # headphones only
-    return mix(k, sub) * weight
-
-
-def stab(semis, dur, octave=3, open_=(0.8, 0.12), hold=0.35, under=0.5):
-    """Confirm's voice: the drone's saws on the notes, chorused, the filter closing over the
-    note; an E two octaves under for headphones."""
+def bloom(f=E4, dur=0.22, burst=3.0, gain=1.0):
+    """Confirm's weight: a low sine body with a brief FM burst on its front (the index falls
+    from `burst` to nothing in the first sixty milliseconds), soft, deep, no hit."""
     n = n_of(dur)
-    o = closing(n, open_[0], open_[1])
-    x = drone(semis, dur, octave, o)
-    env = shape(n, [(0.0, 0.0), (0.006, 1.0), (dur * hold, 0.85), (dur, 0.0)])
-    low = drone([0], dur, 1, 0.35) * env * under
-    # The glint: the same saws with the filter wide open, high-passed, dying fast on the
-    # front, so a confirm keeps an edge above the guitar's band on the speaker (measured:
-    # the filtered saws alone put one percent of their power above 2 kHz).
-    raw = np.zeros(n)
-    for s_ in semis:
-        raw += F.saws(hz(s_, octave), n, (0.994, 1.0, 1.006))
-    glint = F.hp(raw / max(1, len(semis)), 1800.0) * F.env_ad(n, 0.004, dur * 0.18) * 0.9
-    return chorus(mix(x * env, low, glint))
+    t = t_of(n)
+    index = burst * np.exp(-t / 0.02)
+    amp = shape(n, [(0.0, 0.0), (0.012, 1.0), (dur * 0.5, 0.6), (dur, 0.0)])
+    x = fm(f, dur, ratio=3.0, index=index, amp=amp)
+    x = mix(x, fm(f * 0.5, dur, ratio=2.0, index=0.2, amp=amp) * 0.7)   # headphones
+    return x * gain
+
+
+def dyad(semis, dur, octave=3, c0=6000.0, c1=900.0, hold=0.4, gain=1.0):
+    """The sustained part of a confirm: two clean FM notes, a slow front, closing under a
+    low-pass over the hold."""
+    n = n_of(dur)
+    amp = shape(n, [(0.0, 0.0), (0.018, 1.0), (dur * hold, 0.9), (dur, 0.0)])
+    x = np.zeros(n)
+    for s in semis:
+        x += fm(hz(s, octave), dur, ratio=2.0, index=0.7, amp=amp, feedback=0.3)
+    x /= max(1, len(semis))
+    return lowpass_closing(x, c0, c1) * gain
 
 
 def confirm(weight="medium"):
     """Something committed. Small: a lock. Medium: a die spent. Large: RESOLVE and END TURN,
-    three stepped notes E, B, E with the last held and closing (weapons online). Steps, not
-    a glide."""
+    three stepped notes E, B, E, the last held: weapons online. Steps, never a glide."""
     if weight == "small":
-        return mix(thump(0.45), stab([0, 7], 0.16, 3, (0.7, 0.1), hold=0.3) * 0.8)
+        return glass(mix(bloom(E4, 0.16, 2.0, 0.6), dyad([0, 7], 0.18, 3, hold=0.3, gain=0.7)))
     if weight == "medium":
-        return mix(thump(0.85), stab([0, 7], 0.26, 3, (0.8, 0.1), hold=0.35))
-    buf = thump(1.25)
-    buf = at(buf, stab([0], 0.1, 2, (0.6, 0.4), hold=0.6, under=0.0) * 0.9, 0.0)
-    buf = at(buf, stab([7], 0.1, 2, (0.7, 0.5), hold=0.6, under=0.0) * 0.95, 0.09)
-    buf = at(buf, stab([0, 7, 12], 0.55, 3, (0.9, 0.08), hold=0.4), 0.18)
-    buf = at(buf, thump(0.5), 0.18)
-    return buf
+        return glass(mix(bloom(E4, 0.26, 3.0, 0.9), dyad([0, 7], 0.3, 3, hold=0.4)))
+    buf = bloom(E3, 0.5, 3.5, 1.0)
+    buf = at(buf, dyad([0], 0.11, 2, c0=4000.0, c1=2500.0, hold=0.7, gain=0.8), 0.0)
+    buf = at(buf, dyad([7], 0.11, 2, c0=4500.0, c1=2800.0, hold=0.7, gain=0.85), 0.1)
+    buf = at(buf, bloom(E4, 0.4, 2.5, 0.7), 0.2)
+    buf = at(buf, dyad([0, 7, 12], 0.6, 3, c0=7000.0, c1=700.0, hold=0.45), 0.2)
+    return glass(buf, decay=0.09, mixv=0.18)
 
 
 def refuse():
-    """No: the Phrygian second, F falling to E, both dull with the filter shut, a muted
-    knock under, no chorus. The console's one dissonance."""
-    a = drone([1], 0.1, 2, 0.1) * shape(n_of(0.1), [(0.0, 0.0), (0.005, 1.0), (0.08, 0.8), (0.1, 0.0)])
-    b = drone([0], 0.16, 2, 0.06) * shape(n_of(0.16), [(0.0, 0.0), (0.005, 1.0), (0.1, 0.7), (0.16, 0.0)])
-    buf = thump(0.6, dull=True)
-    buf = at(buf, a, 0.0)
-    buf = at(buf, b, 0.095)
-    buf = at(buf, thump(0.3, dull=True), 0.095)
+    """The one wrong note: F falling to E, dry, a slightly sour ratio, short."""
+    n1, n2 = n_of(0.1), n_of(0.16)
+    a = fm(F5, 0.1, ratio=1.5, index=1.4, amp=shape(n1, [(0.0, 0.0), (0.005, 1.0), (0.08, 0.7), (0.1, 0.0)]))
+    b = fm(E5, 0.16, ratio=1.5, index=1.0, amp=shape(n2, [(0.0, 0.0), (0.005, 1.0), (0.1, 0.6), (0.16, 0.0)]))
+    buf = at(a, b, 0.095)
+    buf = at(buf, fm(E4, 0.2, ratio=2.0, index=0.5) * 0.5, 0.095)
     return buf
 
 
-def air(dur=0.25, down=True, gain=0.4):
-    """Descent's menus: filtered air for a panel arriving (down) or leaving (up); a low-pass
-    moving, nothing pitched."""
-    n = n_of(dur)
-    cut = np.geomspace(5000.0, 500.0, n) if down else np.geomspace(500.0, 5000.0, n)
-    x = F.lp_var(F.hp(F.noise(n), 250.0), cut)
-    return x * shape(n, [(0.0, 0.0), (dur * 0.2, 1.0), (dur * 0.7, 0.7), (dur, 0.0)]) * gain
+def scramble(dur, note=B5, rate=BOARD, gain=1.0, pool=(0, 3, 7, 10, 12, 15)):
+    """Digits flipping as pitch: quantised notes from the E set stepping at `rate`, each a
+    clean short FM tone, the pool narrowing toward the note, landing on it."""
+    buf = np.zeros(n_of(dur) + n_of(0.08))
+    step = 1.0 / rate
+    t = 0.0
+    k = 0
+    total = int(dur / step)
+    while t < dur - step * 0.5:
+        p = k / max(total - 1, 1)
+        choices = pool if p < 0.5 else pool[-3:]
+        s = choices[int(F.RNG.integers(0, len(choices)))]
+        f = E5 * 2.0 ** (s / 12.0)
+        d = step * 0.9
+        n = n_of(d)
+        x = fm(f, d, ratio=2.0, index=0.6 + 1.5 * (1.0 - p), amp=shape(n, [(0.0, 0.0), (0.004, 1.0), (d * 0.7, 0.6), (d, 0.0)]))
+        buf = at(buf, x, t, gain * (0.5 + 0.5 * p))
+        t += step
+        k += 1
+    n = n_of(0.08)
+    land = fm(note, 0.08, ratio=2.0, index=0.3, amp=shape(n, [(0.0, 0.0), (0.004, 1.0), (0.05, 0.7), (0.08, 0.0)]))
+    return glass(at(buf, land, dur)) * gain
+
+
+def steps(notes, each=0.06, octave=3, gain=0.6, index=0.5):
+    """A short figure of clean notes: the console's own line."""
+    buf = np.zeros(1)
+    for k, s in enumerate(notes):
+        n = n_of(each * 1.6)
+        x = fm(hz(s, octave), each * 1.6, ratio=2.0, index=index, amp=shape(n, [(0.0, 0.0), (0.004, 1.0), (each, 0.7), (each * 1.6, 0.0)]))
+        buf = at(buf, x, k * each, gain)
+    return glass(buf)
 
 
 # ---------------------------------------------------------------- the events
-# Each is a recipe of verbs timed to the motion it twins. The display's own events carry no
-# touch; the player's begin with one.
 
 def e_touch():
     return touch(1.0)
 
 
 def e_touch_heavy():
-    return touch(1.7)
+    return touch(1.6)
 
 
-def e_select():      # a machine, a pack or a hex tapped on the map: brackets land on it
-    buf = touch(1.0)
-    buf = at(buf, converge(0.2, B5, 0.8), 0.0)
-    return at(buf, tick(), 0.19)
+def e_select():      # a machine, a pack or a hex tapped on the map: the brackets land on it
+    return at(touch(1.0), acquire(0.2, B5, 0.8), 0.0)
 
 
 def e_dismiss():     # the second tap, or the readout dismissed: the brackets let go
-    buf = touch(0.8)
-    return at(buf, release(0.18, B5), 0.0)
+    return at(touch(0.8), release(0.18, B5), 0.0)
 
 
-def e_die_lift():    # the slot goes clear, the ghost follows the finger, the targets light
-    buf = touch(0.9)
-    return at(buf, converge(0.22, E5, 0.75, under=0.3), 0.0)
+def e_die_lift():    # the slot clears, the ghost follows the finger, the targets light
+    return at(touch(0.9), acquire(0.22, E5, 0.75), 0.0)
 
 
-def e_die_drop_back():   # dropped on nothing: the ghost vanishes, the die is back in its slot
+def e_die_drop_back():   # dropped on nothing: the ghost vanishes
     return release(0.16, E5, 0.9)
 
 
 def e_die_lock():    # corners snap on, LOCKED under it
     buf = touch(1.0)
-    buf = at(buf, tick(1.0, 0.9), 0.0)
-    buf = at(buf, tick(0.85, 0.8), 0.03)
-    return at(buf, confirm("small"), 0.03)
+    buf = at(buf, acquire(0.1, B5, 0.6, body=0.3, coarse=3.0), 0.0)
+    return at(buf, confirm("small"), 0.08)
 
 
 def e_die_unlock():
-    buf = touch(0.9)
-    return at(buf, release(0.14, B5, 0.7), 0.0)
+    return at(touch(0.9), release(0.14, B5, 0.7), 0.0)
 
 
 def e_die_spend():   # a die spent on a foe: the die greys, the blow follows (the iron's)
     return confirm("medium")
 
 
-def e_die_spend_self():   # on a machine: a shield, a vent, a buff; the gauges update
-    buf = confirm("medium")
-    return at(buf, air(0.22, down=False, gain=0.3), 0.08)
+def e_die_spend_self():   # on a machine: a shield, a vent, a buff; something going up on it
+    return at(confirm("medium"), steps([0, 7, 12], 0.055, 3, 0.35), 0.12)
 
 
-def e_reroll(dice=3):   # the press, the flips (0.22 s, a back-ease landing), each die landing
-    buf = touch(1.1)
-    buf = at(buf, work(0.22, 30.0, 0.9, fade=(0.7, 1.0)), 0.0)
+def e_reroll(dice=3):   # the press, the flips as a scramble for the 0.22 s they take, each die landing
+    buf = at(touch(1.1), scramble(0.22, E5, 30.0, 0.8), 0.0)
     for k in range(dice):
-        when = 0.21 + k * 0.045
-        buf = at(buf, tick(1.0 - k * 0.08, 0.9), when)
-        buf = at(buf, stab([0 if k % 2 == 0 else 7], 0.07, 3, (0.8, 0.3), hold=0.5, under=0.0) * 0.5, when)
+        f = (E5, B5, E6)[k % 3]
+        n = n_of(0.12)
+        buf = at(buf, fm(f, 0.12, ratio=2.0, index=0.4, amp=shape(n, [(0.0, 0.0), (0.004, 1.0), (0.08, 0.6), (0.12, 0.0)])) * 0.5, 0.22 + k * 0.045)
     return buf
 
 
-def e_round_acquire():   # the round opens: every foe's intent acquired at once, 0.3 s, the
-    buf = work(0.165, SCRAMBLE, 0.8, fade=(0.7, 1.0))   # digits scrambling for the first 55%
-    buf = at(buf, converge(0.3, B5, 1.3, start_width=2.2, under=0.5), 0.0)
-    for k, p in enumerate((1.0, 0.92, 1.08)):   # the brackets land, one foe after another
-        buf = at(buf, tick(p, 1.0), 0.29 + k * 0.012)
-    return at(buf, stab([7, 12], 0.22, 3, (0.85, 0.1), hold=0.3, under=0.4) * 0.7, 0.3)
+def e_round_acquire():   # the round opens: every intent acquired at once over 0.3 s, then the console's line
+    buf = scramble(0.165, B5, SCRAMBLE, 0.5)
+    buf = at(buf, acquire(0.3, B5, 1.2, body=0.7, coarse=6.0), 0.0)
+    return at(buf, steps([12, 7, 0], 0.07, 3, 0.55, index=0.4), 0.32)
 
 
 def e_end_turn():    # the primary press, weapons online, then the readout to ENEMY PHASE
-    buf = touch(1.7)
-    buf = at(buf, confirm("large"), 0.0)
-    return at(buf, work(0.3, BOARD, 0.45), 0.72)
+    buf = at(touch(1.6), confirm("large"), 0.0)
+    return at(buf, scramble(0.3, E5, BOARD, 0.35), 0.78)
 
 
 def e_resolve():     # the map's commit
-    buf = touch(1.7)
-    return at(buf, confirm("large"), 0.0)
+    return at(touch(1.6), confirm("large"), 0.0)
 
 
-def e_route_set():   # a hex tapped: the orders board's line scrambles 0.45 s, then a tick
-    buf = touch(1.0)
-    buf = at(buf, work(0.45, BOARD, 0.75), 0.0)
-    buf = at(buf, tick(), 0.45)
-    return at(buf, stab([0], 0.09, 3, (0.7, 0.2), hold=0.4, under=0.0) * 0.5, 0.45)
+def e_route_set():   # a lit hex tapped: the orders board's line scrambles 0.45 s and settles
+    return at(touch(1.0), scramble(0.45, B5, BOARD, 0.7), 0.0)
 
 
 def e_route_clear():
-    buf = touch(0.9)
-    return at(buf, release(0.2, E5, 0.8), 0.0)
+    return at(touch(0.9), release(0.2, E5, 0.8), 0.0)
 
 
-def e_hold_readout():   # the finger is already down; at 0.45 s the panel opens above the thing
-    buf = converge(0.2, B5, 0.6, under=0.25)
-    return at(buf, tick(1.0, 0.7), 0.19)
+def e_hold_readout():   # at 0.45 s of a hold the panel opens; no touch, the finger is down
+    return acquire(0.2, B5, 0.6, body=0.3)
 
 
 def e_codex_open():   # the shade, the plate acquired, its text typing in
-    buf = touch(1.0)
-    buf = at(buf, air(0.2, down=True, gain=0.35), 0.0)
-    buf = at(buf, converge(0.3, B5, 0.9), 0.05)
-    buf = at(buf, tick(), 0.34)
-    return at(buf, typing(0.45, 0.6), 0.36)
+    buf = at(touch(1.0), steps([12, 7, 0], 0.05, 3, 0.3, index=0.3), 0.0)
+    buf = at(buf, acquire(0.3, B5, 0.9), 0.1)
+    return at(buf, scramble(0.4, E6, 1.0 / 0.012 / 3.0, 0.2, pool=(12, 15, 19)), 0.42)
 
 
 def e_codex_close():
-    buf = touch(0.8)
-    buf = at(buf, release(0.18, B5, 0.8), 0.0)
-    return at(buf, air(0.2, down=False, gain=0.3), 0.02)
+    return at(at(touch(0.8), release(0.18, B5, 0.8), 0.0), steps([0, 7, 12], 0.05, 3, 0.25, index=0.3), 0.06)
 
 
-def e_menu_open():    # MENU: the scrim, PAUSED
-    buf = touch(1.5)
-    buf = at(buf, air(0.3, down=True, gain=0.45), 0.0)
-    return at(buf, confirm("small"), 0.1)
+def e_menu_open():    # MENU: the scrim comes down, PAUSED
+    buf = at(touch(1.4), steps([12, 7, 0], 0.07, 3, 0.45, index=0.4), 0.0)
+    return at(buf, confirm("small"), 0.2)
 
 
 def e_menu_close():
-    buf = touch(1.0)
-    return at(buf, air(0.25, down=False, gain=0.4), 0.0)
+    return at(touch(1.0), steps([0, 7, 12], 0.06, 3, 0.4, index=0.4), 0.0)
 
 
 def e_refuse():      # NO ROUTE, a drop on nothing valid, a disabled press
     return refuse()
 
 
-def e_log_type():    # a log line typing in; on every event, so quiet, and optional
-    return typing(0.4, 0.5)
-
-
-def e_track_runin():   # the ticker's new title running in over 0.55 s
-    buf = work(0.55, BOARD, 0.5, fade=(0.5, 1.0), band=(2500.0, 6000.0), blips=0.15)
-    return at(buf, tick(1.0, 0.6), 0.55)
-
-
-def verb_acquire():
-    return at(converge(0.3, B5, 1.0), tick(), 0.29)
-
-
 # name: (recipe, target dB as the phone plays it, the shipped sound it would replace, the row's note)
 CONSOLE = {
-    # the five verbs alone
+    # the verbs alone
     "verb_touch": ((lambda: touch(1.0)), -24.0, None, "touch"),
-    "verb_acquire": (verb_acquire, -16.0, None, "acquire: static narrowing onto B over a third of a second, the brackets landing"),
-    "verb_work": ((lambda: work(0.45)), -18.0, None, "work: the scramble's ticks, thinning as the digits settle"),
+    "verb_acquire": ((lambda: acquire(0.3, B5, 1.0)), -16.0, None, "acquire: coarse to clean over a third of a second, landing on B"),
+    "verb_scramble": ((lambda: scramble(0.45, B5, BOARD, 0.8)), -17.0, None, "the scramble: digits flipping as pitch, landing"),
     "verb_confirm_small": ((lambda: confirm("small")), -16.0, None, "confirm, small"),
     "verb_confirm_medium": ((lambda: confirm("medium")), -14.0, None, "confirm, medium"),
     "verb_confirm_large": ((lambda: confirm("large")), -11.0, None, "confirm, large: E, B, E, weapons online"),
-    "verb_refuse": (refuse, -15.0, None, "refuse: F to E, dull"),
+    "verb_refuse": (refuse, -15.0, None, "refuse: F to E"),
     # the events
-    "touch": (e_touch, -24.0, "ui_tap", "the finger on the glass; every ordinary press: the eye, clear routes, log, a swatch"),
+    "touch": (e_touch, -24.0, "ui_tap", "any ordinary press"),
     "touch_heavy": (e_touch_heavy, -21.0, "ui_tap", "a primary press, before its confirm"),
-    "select": (e_select, -17.0, "ui_tap", "a machine, a pack or a hex tapped on the map: the brackets land"),
-    "dismiss": (e_dismiss, -21.0, "ui_back", "the second tap or the readout dismissed: the brackets let go"),
-    "die_lift": (e_die_lift, -17.0, "die_pick", "the die lifted: the slot clears, the targets light"),
-    "die_drop_back": (e_die_drop_back, -21.0, "die_drop", "dropped on nothing: the ghost vanishes"),
-    "die_lock": (e_die_lock, -16.0, "die_lock", "tap to lock: the corners snap on"),
-    "die_unlock": (e_die_unlock, -20.0, "die_lock", "the lock let go"),
-    "die_spend": (e_die_spend, -14.0, "die_drop", "a die spent on a foe; the blow follows"),
-    "die_spend_self": (e_die_spend_self, -14.0, "die_drop", "a die spent on a machine: shield, vent, buff"),
+    "select": (e_select, -17.0, "ui_tap", "a machine, a pack or a hex tapped on the map"),
+    "dismiss": (e_dismiss, -21.0, "ui_back", "the second tap or the readout dismissed"),
+    "die_lift": (e_die_lift, -17.0, "die_pick", "the die lifted"),
+    "die_drop_back": (e_die_drop_back, -21.0, "die_drop", "dropped on nothing"),
+    "die_lock": (e_die_lock, -16.0, "die_lock", "tap to lock"),
+    "die_unlock": (e_die_unlock, -20.0, "die_lock", ""),
+    "die_spend": (e_die_spend, -14.0, "die_drop", "a die spent on a foe"),
+    "die_spend_self": (e_die_spend_self, -14.0, "die_drop", "a die spent on a machine"),
     "reroll": (e_reroll, -16.0, "die_roll", "the press, the flips, each die landing"),
-    "round_acquire": (e_round_acquire, -12.0, None, "the round opens: every intent acquired at once; the display's own, no touch"),
-    "end_turn": (e_end_turn, -11.0, "resolve", "weapons online, then the readout to ENEMY PHASE"),
+    "round_acquire": (e_round_acquire, -12.0, None, "the round opens"),
+    "end_turn": (e_end_turn, -11.0, "resolve", "weapons online, then ENEMY PHASE"),
     "resolve": (e_resolve, -11.0, "resolve", "the map's commit"),
-    "route_set": (e_route_set, -16.0, "plot", "a hex tapped: the orders board's line scrambles and settles"),
-    "route_clear": (e_route_clear, -20.0, "ui_back", "the selected machine tapped again"),
-    "hold_readout": (e_hold_readout, -19.0, None, "at 0.45 s of a hold the panel opens; no touch, the finger is down"),
-    "codex_open": (e_codex_open, -15.0, "codex_open", "the shade, the plate acquired, its text typing"),
+    "route_set": (e_route_set, -16.0, "plot", "a hex tapped"),
+    "route_clear": (e_route_clear, -20.0, "ui_back", ""),
+    "hold_readout": (e_hold_readout, -19.0, None, "a hold's readout"),
+    "codex_open": (e_codex_open, -15.0, "codex_open", ""),
     "codex_close": (e_codex_close, -18.0, "codex_close", ""),
-    "menu_open": (e_menu_open, -14.0, "menu_open", "MENU: the scrim comes down"),
+    "menu_open": (e_menu_open, -14.0, "menu_open", ""),
     "menu_close": (e_menu_close, -17.0, "menu_open", ""),
-    "refuse": (e_refuse, -15.0, "ui_back", "NO ROUTE; a drop on nothing valid; a disabled press (no hook yet)"),
-    "log_type": (e_log_type, -27.0, None, "a log line typing; on every event, so quiet; optional"),
-    "track_runin": (e_track_runin, -25.0, None, "a new title running into the ticker; optional"),
+    "refuse": (e_refuse, -15.0, "ui_back", "NO ROUTE; an invalid drop; a disabled press"),
 }
 
 
@@ -475,8 +386,7 @@ def phone_loudness(x):
 
 
 def level_for_phone(x, db):
-    """Scale so the phone model's loudest 50 ms sits at `db`: a sound heavy in the lows is
-    written hotter rather than vanishing on the speaker."""
+    """Scale so the phone model's loudest 50 ms sits at `db`."""
     return x * 10.0 ** ((db - phone_loudness(x)) / 20.0)
 
 
@@ -503,7 +413,7 @@ TURN = [
     (14.3, "round_acquire", None, 0.0),
     (15.6, "die_lift", "die_pick", 0.0), (16.1, "die_spend", "die_drop", 0.0), (16.15, None, "cannon", 0.0), (16.9, None, "kill", 0.0),
 ]
-MAP = [   # the map: select, routes, a refusal, the commit, the moves, the menu, over Night Shift
+MAP = [   # the map: select, routes, a refusal, the commit, the moves, the menu, the codex, over Night Shift
     (0.4, "select", "ui_tap", 0.0), (1.0, "route_set", "plot", 0.0),
     (1.9, "select", "ui_tap", 0.0), (2.6, "route_set", "plot", 0.0),
     (3.5, "refuse", "ui_back", 0.0), (4.1, "route_set", "plot", 0.0),
@@ -515,7 +425,7 @@ MAP = [   # the map: select, routes, a refusal, the commit, the moves, the menu,
 
 
 def lay(base, events, which):
-    buf = np.array(base)
+    buf = np.array(base) * 10.0 ** (BED_DB / 20.0)
     for when, con, now, db in events:
         if which == "new":
             if con is not None:
@@ -533,12 +443,11 @@ def lay(base, events, which):
 
 
 def climax_bar():
-    """Hold The Line's first climax bar (S), in 4/4 bars from the top: the form before it is
-    sixteen-step bars except the twelve bars of seven (fourteen steps)."""
+    """Hold The Line's first climax bar (S), in 4/4 bars from the top: sixteen-step bars
+    except the twelve bars of seven (fourteen steps)."""
     form = F.MUSIC["music_hold_the_line"]["form"].replace(" ", "")
     before = form[:form.index("S")]
-    steps = sum(14 if c == "X" else 16 for c in before)
-    return steps / 16.0
+    return sum(14 if c == "X" else 16 for c in before) / 16.0
 
 
 def main(argv):
@@ -556,7 +465,7 @@ def main(argv):
         full = F.loudness(x)
         manifest["console"].append({"name": "con_" + name, "beside": beside, "seconds": round(len(x) / SR, 2),
                                     "phone_db": db, "full_db": round(full, 1), "note": note})
-        print("  con_%-16s %5.2f s  phone %6.1f  full %6.1f  (%+.1f)" % (name, len(x) / SR, db, full, full - db))
+        print("  con_%-18s %5.2f s  phone %6.1f  full %6.1f  (%+.1f)" % (name, len(x) / SR, db, full, full - db))
         if beside and not os.path.exists(os.path.join(X.OUT, "now_%s.mp4" % beside)):
             y = X.level(X.shipped(beside), F.LEVELS[beside])
             X.write("now_" + beside, X.tail(y))
