@@ -63,8 +63,8 @@ this repo at once: check `git status` before committing, stage by path, diff a s
 first (a path still sweeps the other session's hunks), never `git add -A`, never kill a bare
 `godot --path .`. Commit after each verified chunk with tests green.
 
-**2 October: the to-do review and what came of it.** Docs only, on the branch
-`ccr-7821fbf8-eim14f` (not yet merged to main; no code changed, so the tests were not rerun).
+**2 October: the to-do review and what came of it.** On the branch
+`ccr-7821fbf8-eim14f` (not yet merged to main; tests green on it: 287 tests, 3,653 checks, run in the cloud on Godot 4.7.2).
 Every to-do line was checked against the code. Ryan's calls, each in the bible:
 - Closed: the d4 question (die size is a balance lever like any base stat), the participant
   cap (four columns is the most a formation will be), the Baboon's rear silhouette and the
@@ -80,6 +80,9 @@ Every to-do line was checked against the code. Ryan's calls, each in the bible:
 - Later: a prototype hangar (paints and loadouts, no economy); the commander layer once the
   balance has a baseline; enemy targeting and the horde hooks in Ryan's own design session;
   the Armadillo sealing its ports, to consider once the acts run.
+- The plate shows traits, not a silhouette (built 2 October, tests green here on Godot 4.7.2):
+  the field is gone from the content, the codex subtitle reads maker, traits, die; Wheeled is
+  on both cars, planned; the tank trait is Tracked.
 - Found: eight of nine foes are still their sketch grids (the ghoul is the foeforge cut); the
   Honey Badger cannot ford today; water's terrain codex wrongly says impassable.
 
@@ -194,7 +197,7 @@ change is heard as an A/B from the listening page before it lands; a sketch neve
 shipped track; his melodies come through the Melody Desk and the session interprets them. **The
 effects' second pass** is on the listening page (`tools/soundforge/fx_sketches.py`, re-cut to
 Ryan's first notes 1 October; the bible's sound row has the set), nothing shipped: a pick lands
-as a recipe in `forge.py` with its hook (shape, maker, faction, silhouette, a content word for
+as a recipe in `forge.py` with its hook (shape, maker, faction, way of moving, a content word for
 blunt melee, the replay telling shield hit from block from hit). Next: Ryan's listen of the
 re-cut; the speakers/headphones setting; the Risen and Infernal Horde boss themes from their
 seeds, melodies proposed in chat first.

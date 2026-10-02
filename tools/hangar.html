@@ -440,7 +440,7 @@ function renderCodex(main) {
     const h2 = el("h2", {}, el("span", {role: "button", tabindex: "0", title: "Open in the editor", style: "cursor:pointer", onclick: () => openFromCodex("chassis.entries", e.id), onkeydown: (ev) => { if (ev.key === "Enter") openFromCodex("chassis.entries", e.id); }}, e.name || e.id));
     if (st) h2.append(el("span", {class: "tag " + st}, st));
     head.append(h2);
-    const sub = el("p", {class: "sub"}, `${mk.name || ""} · ${e.silhouette || ""}`);
+    const sub = el("p", {class: "sub"}, mk.name || "");
     if ((e.traits || []).length) { sub.append(" · "); for (const t of e.traits) sub.append(kwChip(t), " "); }
     head.append(sub);
     card.append(head);
@@ -877,7 +877,7 @@ function renderModels(main) {
     const mk = makers.get(e.maker || "") || {};
     const s = el("section", {class: "model", id: "md-" + e.id},
       el("h2", {}, e.name || e.id),
-      el("p", {class: "plate2"}, `${mk.name || ""} · ${e.designation || ""} · ${e.silhouette || ""}`),
+      el("p", {class: "plate2"}, [mk.name || "", e.designation || "", ...(e.traits || []).map(vocabName)].filter(Boolean).join(" · ")),
       el("p", {class: "when"}, d.when || ""),
       el("p", {class: "mnote"}, d.note || ""),
       pics(d.images || [], false));

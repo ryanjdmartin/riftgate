@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 100 implemented, 11 planned, 0 idea.
+Status: 100 implemented, 12 planned, 0 idea.
 
 ## Resource
 
@@ -146,6 +146,7 @@ Status: 100 implemented, 11 planned, 0 idea.
 | **Hover** | Crosses water. | implemented |
 | **Walker** | Rough and ruins cost 1. | implemented |
 | **Tracked** | No effect yet. | planned |
+| **Wheeled** | No effect yet. | planned |
 | **Stealth** | A pack's zone never pulls it in on its own. Joins a fight only when another machine is in it, or when it stopped a pack in its path; a pack whose zone merely falls on it has walked past. | implemented |
 | **City defense** | A static player-side unit. Packs path toward it, and it joins any skirmish it is adjacent to. | implemented |
 
@@ -236,6 +237,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Ruins** (implemented): Designed as cover for the pack inside a skirmish. Skirmish terrain conditions are not coded.
 - **Water** (implemented): Designed to dampen burn inside a skirmish. Not coded.
 - **Tracked** (planned): Intended: faster on roads; its prices come with movement in tens (bible section 4). Was tank until 2 October (Ryan).
+- **Wheeled** (planned): The cars (Ryan, 2 October: the Prairie Dog and the Dingo): faster on roads, slow in rough ground and water; its prices come with movement in tens (bible section 4).
 - **Stealth** (implemented): The Dingo (Ryan, 28 September): a support car that waits in the wings while the heavies get into position, then joins their fight, and never fights alone unless run into. Pays again when hunter packs exist.
 - **City defense** (implemented): Defenses have no die. They cannot act inside a skirmish yet.
 - **On shield gain** (implemented): Built 30 September (Effects.fire); no content uses it yet.
