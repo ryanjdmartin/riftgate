@@ -201,14 +201,28 @@ def say_word(word, voice_name="betty", f0_mult=1.0):
     contour = f0 * np.interp(t, [0.0, total * 0.25, total], [0.95, 1.06, voice["fall"]])
     contour *= 1.0 + 0.006 * np.sin(2.0 * math.pi * 5.5 * t) + F.RNG.normal(0.0, 0.004, n)
     ph = np.cumsum(contour) / SR
-    pulses = np.zeros(n)
-    idx = np.where(np.diff(np.floor(ph)) > 0)[0]
-    pulses[idx] = 1.0
-    glottal = F.lp(pulses, 2500.0, order=1) * 6.0
+    # The glottal pulse is a smooth flow pulse (a Rosenberg shape: a half-cosine opening over
+    # 40% of the period, a quarter-cosine closing over 16%, closed for the rest), not an
+    # impulse train: the impulses read as cracks and pops on the phone (Ryan, 2 October),
+    # since every period was a click. Its slope falls on its own; the closing edge keeps the
+    # formants bright.
+    p = ph % 1.0
+    opening = 0.5 * (1.0 - np.cos(math.pi * p / 0.4))
+    closing = np.cos(0.5 * math.pi * (p - 0.4) / 0.16)
+    pulse = np.where(p < 0.4, opening, np.where(p < 0.56, closing, 0.0))
+    glottal = F.hp(np.diff(pulse, prepend=pulse[0]) * SR / 220.0, 60.0, order=1)   # the vowels had sat 10 to 17 dB under the consonants (measured 2 October): a faint voice under bursts
     breath = F.bp(F.noise(n), 500.0, 4000.0) * voice["breath"]
     src = (glottal + breath) * voiced * amp
     voice_part = _tract(src, f_tracks)
-    out = voice_part + noise_src * 1.6
+    # Even the voiced part out (the liquids' stacked formants had come out 10 dB over the
+    # vowels): a slow levelling over 15 ms toward one level where the voice sounds, gain
+    # capped, which is also how that era's speech sounded, vocoder-flat.
+    win = F.n_of(0.015)
+    env = np.sqrt(np.convolve(voice_part ** 2, np.ones(win) / win, mode="same")) + 1e-6
+    gain = np.clip(0.12 / env, 0.0, 6.0) * voiced
+    gain = np.convolve(gain, np.ones(win) / win, mode="same")
+    voice_part = voice_part * np.where(voiced > 0.0, gain, 1.0)
+    out = voice_part + noise_src * 0.8
     return out * F.env_pts(n, [(0.0, 0.0), (0.01, 1.0), (total - 0.03, 1.0), (total, 0.0)])
 
 
@@ -224,5 +238,5 @@ def say(line, voice_name="betty", gap=0.09):
         pos += len(x) / SR + gap * voice["pace"]
     lo, hi = voice["band"]
     x = F.bp(buf, lo, hi)
-    x = F.sat(x / (np.max(np.abs(x)) + 1e-9) * 1.2, 1.6)
+    x = F.sat(x / (np.max(np.abs(x)) + 1e-9) * 1.1, 1.3)   # a touch of the channel's compression, less than before (2 October: the crackle)
     return F.room(x, decay=0.1, mix=0.08, cut=4500.0)
