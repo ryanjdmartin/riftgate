@@ -715,3 +715,24 @@ func test_every_component_names_a_silhouette_class() -> void:
 		if e.begins_with("component lance") and e.contains("missing shape"):
 			hit = true
 	assert_true(hit, "and a component without one")
+
+
+# The name plate shows the traits, not a silhouette word (Ryan, 2 October): maker, then
+# every trait by its shown name, then the die. Synthetic traits and a synthetic chassis, so
+# no entry's content is asserted on.
+func test_the_codex_plate_lists_the_traits() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	db.vocabulary["test_skids"] = {"id": "test_skids", "category": "trait", "name": "Skids"}
+	db.vocabulary["test_quiet"] = {"id": "test_quiet", "category": "trait", "name": "Quiet"}
+	var c: Dictionary = db.chassis["clydesdale"].duplicate(true)
+	c["traits"] = ["test_skids", "test_quiet"]
+	db.chassis["plated"] = c
+	var u := db.make_mech("plated")
+	var maker := str(db.makers[c["maker"]]["name"]).to_upper()
+	assert_eq(str(db.codex_for_unit(u)["subtitle"]), "%s // SKIDS, QUIET // D%d" % [maker, u.die.size()], "maker, the traits by name, the die")
+	c["traits"] = []
+	db.chassis["bare"] = c
+	assert_eq(str(db.codex_for_unit(db.make_mech("bare"))["subtitle"]), "%s // D%d" % [maker, u.die.size()], "no traits, no traits part")
+	for e in db.validate():
+		assert_false(e.contains("silhouette"), "no chassis needs a silhouette: %s" % e)

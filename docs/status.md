@@ -3,14 +3,14 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.14 since the audit
-of 1 October); republish it from the committed file after every bible change, passing that URL.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.16 since 2 October); republish it from the committed file after every bible change, passing that URL.
 
-**The pages, as of 1 October, night.** Every page lives in the personal account (A). The three
-that last are shared to the work email (B) as Editor, so a session in either account republishes
-them in place by URL (a read first, then publish with `url`), and no account keeps a copy of its
-own: B's old bible copy and Model Viewer retire. The two that serve an ongoing task stay in A
-alone (Ryan, 1 October) and are republished from an A session. Shared:
+**The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
+to the work email (B) as Editor, so a session in either account republishes them in place by
+URL (a read first, then publish with `url`; checked from a B session on 2 October, the Melody
+Desk republished unchanged), and no account keeps a copy of its own. The engagement sandbox
+stays in A alone (Ryan, 1 October: it serves one ongoing task) and is republished from an A
+session; a B session cannot read it. Shared:
 
 - **The bible** (above): `docs/design-bible.html`, published whole after every change.
 - **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH): four tabs, the
@@ -29,21 +29,21 @@ alone (Ryan, 1 October) and are republished from an A session. Shared:
   source and Ryan's memo; a session pulls a `new` document, listens, applies it in the forge
   and marks it `applied` with a `reply` the page shows. The session interprets what he sends;
   it is not drop-in.
-
-In A alone, for the task each serves:
-
 - **The listening page** (https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9): the effects'
-  second pass from `tools/soundforge/fx_sketches.py`, re-cut 1 October, and nothing else; the
-  music rounds re-render from `phone_sketches.py` if ever wanted again.
-- **The engagement sandbox** (https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg) that drew the
-  zone options, for the play test of the engagement zones.
+  passes from `tools/soundforge/fx_sketches.py`, published with `root` set to
+  `tools/soundforge/out/fx/`; the music rounds re-render from `phone_sketches.py` if ever wanted
+  again.
+
+In A alone: **the engagement sandbox** (https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg) that
+drew the zone options, for the play test of the engagement zones.
 
 **Rules learned:** a page's link goes into
 this file in the same commit as the publish, so a parallel session sees it before publishing a
 twin; `Artifact` with `action: "list"` shows only what the account you are in owns, so a shared
-page is reached by its URL, never by listing; a page's database stays with the owning account,
-so pulling `edits` or `melodies` from Claude Code works from an A session (Ryan can use every
-page's database from the page itself in either account).
+page is reached by its URL, never by listing; a page's database stays with the owning account:
+from a B session ArtifactData is refused on every collection (checked 2 October on `edits` and
+`melodies`), so pulling `edits` or `melodies`, re-seeding `parts` and clearing documents happen
+in an A session (Ryan can use every page's database from the page itself in either account).
 
 **Cold start, including from another account.** Nothing needed to work here lives outside
 the repo. Read this file, then `docs/todo.md` (the task list), then `CLAUDE.md` (the rules,
@@ -55,24 +55,46 @@ another session on this repo at the same time: `git status` first, stage by path
 shared file before staging it, and never `git add -A`. If a chat and the bible disagree,
 the chat is newer.
 
-## As of 1 October 2026
+## As of 2 October 2026
 
 **State.** Tests green: `perl -e 'alarm 240; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (279 tests, 3,593 checks on 1 October, after the merge of the cloud
-branch; the engagement zones and behaviours added more that day). Two or three sessions run on
-this repo at once: check `git status` before committing, stage by path, diff a shared file
-first (a path still sweeps the other session's hunks), never `git add -A`, never kill a bare
-`godot --path .`. Commit after each verified chunk with tests green.
+tests/run_tests.gd` (287 tests, 3,653 checks on 2 October, on main after the to-do review's
+branch merged; a cloud session fetches Godot 4.7.2's Linux build to run them). Two or three
+sessions run on this repo at once: check `git status` before committing, stage by path, diff a
+shared file first (a path still sweeps the other session's hunks), never `git add -A`, never
+kill a bare `godot --path .`. Commit after each verified chunk with tests green.
 
-**The audit (1 October).** The bible, status, to-do, README and CLAUDE.md were read against
-each other and the code: stale rows retired or marked superseded, the bible's keyword table
-regenerated from the vocabulary, section 12 brought level with the to-do, the ticked to-do
-lines pruned, this file cut to what stands. On Ryan's word the listen-by-listen history of the
-tracks and the round-by-round history of the machines were retired from the bible, keeping the
-rules and each thing as it stands; the unused `docs/concepts/` intake is deleted. One contradiction left for Ryan: the bible's HUD
-palette row (18 September) read his swatch confusions as protanomalous, while the 29 September
-rule says he has not named the type; both rows now say so, and every colour is checked under
-all three simulations regardless.
+**Unmerged:** `claude/sweet-goldberg-m588er` carries the effects' third cut, the console's
+fourth, the blunt impact, a `sound` label on components (validated in `sim/content_db.gd`,
+never yet tested) and the console voice (`tools/soundforge/speech.py`). It branched before the
+clean slate, so its `docs/` resolve to main's copies with its facts ported, and its tests run
+on the merge.
+
+**2 October: the to-do review and what came of it.** Every to-do line was checked against the
+code. Ryan's calls, each in the bible:
+- Closed: the d4 question (die size is a balance lever like any base stat), the participant
+  cap (four columns is the most a formation will be), the Baboon's rear silhouette and the
+  Clydesdale's twin spacing. The seated die is in the new effects pass.
+- Movement in tens, with a price table by way of moving, a Wheeled trait for the cars,
+  stranded leftover move and a move gauge (section 4). Ready to build.
+- Idle acts and movement (section 7): a pilot drives every machine, never an animal; several
+  acts per machine; grounded machines never sway; cockpits fixed but the Clydesdale's head;
+  the joints each machine needs are listed; the Dingo drifts through one cornering module
+  shared with flyers and hovercraft, its slide and bank tuned per machine.
+- Battery (section 11): weld the machines at load, props by hex with a dither fade, the 3D at
+  30 while planning, which comes after the animations so it can be judged against them.
+- Later: a prototype hangar (paints and loadouts, no economy); the commander layer once the
+  balance has a baseline; enemy targeting and the horde hooks in Ryan's own design session;
+  the Armadillo sealing its ports, to consider once the acts run.
+- Built: the plate lists traits, not a silhouette; the field is gone from the content, the
+  codex subtitle reads maker, traits, die; Wheeled is on both cars and Tracked is the tank
+  trait, both planned.
+- Found: eight of nine foes are still their sketch grids (the ghoul is the foeforge cut); the
+  Honey Badger cannot ford today; water's terrain codex wrongly says impassable.
+
+**Open from the audit (1 October).** The bible's HUD palette row (18 September) read Ryan's
+swatch confusions as protanomalous, while the 29 September rule says he has not named the
+type; both rows say so, and every colour is checked under all three simulations regardless.
 
 **Where things are.** `sim/` is the headless game (battle map, battlefield resolver, battle
 loop, skirmish, effects pipeline, content DB, save). `game/battle/` the battle screen and the
@@ -98,7 +120,7 @@ planned any more: every passive, keyword, status and trigger the vocabulary name
 (`Effects.fire`; the bible's section 7 row "The 28 September pieces, built" has each one), and
 the ten foe actions run (`Foe.ACTION_EFFECTS`, weights 3:1 attack to special as placeholders,
 section 9 row). Still planned in the vocabulary, all waiting on design: Phased, Energy
-Armour, Corrode, Scramble, Confuse, the tank trait. Numbers are in tens and are placeholders;
+Armour, Corrode, Scramble, Confuse, and the Tracked and Wheeled traits. Numbers are in tens and are placeholders;
 every stat is read through `sim/effects.gd`. An enemy unit is a **pack** everywhere. Ryan
 writes `content/*.json` in his own voice (he writes die totals in his head; the data keeps
 free slots). Every component's codex and flavour are empty (42), and the seven new machines'
@@ -120,11 +142,9 @@ joints are code too. The round-by-round history is retired (Ryan, 1 October); th
 hangar page's Models tab are the record. **Ryan judges a model only from a render**, never from
 code (`tools/hero_shot.gd` renders bare and needs a window); a hand edit in Blender has to be
 re-expressed in the code to survive a rebuild. **Every machine is signed off for now** (Ryan,
-1 October); next on the art side is judging the joints and turrets running in the skirmish.
-Open on the models: the outward-only turret, each class's size per machine, the Clydesdale's
-twin spacing, and the Baboon's rear silhouette with the fists at knee height (if it still reads
-as two boxes: heavier hands carrying hardware, or a forward pose with the fist tile turned 90
-degrees).
+1 October); next on the art side is the joint pass (bible section 7, the joints row), then the
+acts and movement. Open on the models: each class's size per machine, and the machines' scale
+on the map's hexes (Ryan, 2 October: needs adjusting; all are fitted to one width today).
 
 **The codex (29 September; a tab of the hangar page since 1 October).** One surface showing a
 chassis and the components fitted to it: the Codex tab renders it in the browser from the
@@ -177,7 +197,7 @@ change is heard as an A/B from the listening page before it lands; a sketch neve
 shipped track; his melodies come through the Melody Desk and the session interprets them. **The
 effects' second pass** is on the listening page (`tools/soundforge/fx_sketches.py`, re-cut to
 Ryan's first notes 1 October; the bible's sound row has the set), nothing shipped: a pick lands
-as a recipe in `forge.py` with its hook (shape, maker, faction, silhouette, a content word for
+as a recipe in `forge.py` with its hook (shape, maker, faction, way of moving, a content word for
 blunt melee, the replay telling shield hit from block from hit). Next: Ryan's listen of the
 re-cut; the speakers/headphones setting; the Risen and Infernal Horde boss themes from their
 seeds, melodies proposed in chat first.
@@ -195,8 +215,8 @@ sound set, the grid at the hotter gain.
 it and ticked in the commit that lands it; this is the order to take them in.
 
 1. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
-2. Ryan's text for the new machines and components; with every machine signed off for now, the joints and turrets judged running in the skirmish.
-3. The discuss-first decisions in the Ryan section, the economy last.
-4. The engine gaps waiting on design (Phased, Energy Armour, Corrode, Scramble, Confuse, foe roles), and a dedicated hunter foe and spawned formations once proposed.
-5. Audio: a full play of Hold The Line, the effects' second pass, the speakers/headphones setting, the two boss themes.
-6. Art: enemy art through foeforge, the hangar. Before a phone leaves the desk: onboarding, then tuning.
+2. Ryan's text for the new machines and components; the machines' scale on the map; the strikes, then the acts and movement, judged running.
+3. The discuss-first decisions in the Ryan section, the economy last; enemy targeting in Ryan's own design session; the commander layer once the balance has a baseline.
+4. Ready to build: movement in tens; the joint pass, then the idle acts, then the movement animations; the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased, Energy Armour, Corrode, Scramble, Confuse, foe roles), and a dedicated hunter foe and spawned formations once proposed.
+5. Audio: a full play of Hold The Line, the effects' third cut (merge `claude/sweet-goldberg-m588er` first), the speakers/headphones setting, the two boss themes.
+6. A prototype hangar in the game (paints and loadouts, no economy). Art: enemy art through foeforge, the hangar as a model. Before a phone leaves the desk: onboarding, then tuning.

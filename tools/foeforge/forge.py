@@ -497,7 +497,7 @@ def load_chassis():
 def mech_prompt(c):
     body = " ".join(s for s in [c.get("design", {}).get("fantasy", ""), c.get("codex", "")] if s)
     look = MAKER_LOOK.get(c.get("maker", ""), "cold steel")
-    return f"{MECH_STYLE} Subject: the {c['name']}, a {c.get('silhouette', '')} war machine. {body} Colours: {look}."
+    return f"{MECH_STYLE} Subject: the {c['name']}, a war machine. {body} Colours: {look}."
 
 
 def mech_reference(chassis_id, turn, src=""):
