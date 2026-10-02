@@ -35,7 +35,9 @@ In A alone, for the task each serves:
 - **The listening page** (https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9): the effects'
   pass from `tools/soundforge/fx_sketches.py` (the weapons' third cut, the console, the blunt
   impact with its plasma layer, the voice in two registers; every file re-rendered 2 October),
-  and nothing else; republish from `tools/soundforge/out/fx/` with `root` set to it. The music
+  the console derived again that night, the voice re-rendered), and nothing else; render with
+  `fx_sketches.py` then `console_sketches.py`, copy `fx_page.html` in as `index.html`, and
+  republish from `tools/soundforge/out/fx/` with `root` set to it (numpy and scipy, plus ffmpeg). The music
   rounds re-render from `phone_sketches.py` if ever wanted again.
 - **The engagement sandbox** (https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg) that drew the
   zone options, for the play test of the engagement zones.
@@ -181,16 +183,22 @@ effects' pass** is on the listening page (`tools/soundforge/fx_sketches.py`; the
 row has the set and the 2 October decisions), nothing shipped. Where it stands (Ryan, 2 October):
 the weapons' third cut (every blow drawn out with `heft` and a boom tail, measured through the
 phone model) is acceptable and parked; the voice section (`tools/soundforge/speech.py`, a Betty
-and a VEGA) is too faint under noise, cracks and pops to judge; the console is getting a fresh
-pass from the UI design, Hold The Line and the direction notes, not from the existing sounds.
+and a VEGA) is too faint under noise, cracks and pops to judge; the console was derived again
+that night from the UI design, Hold The Line and the direction notes, not from the existing
+sounds (`tools/soundforge/console_sketches.py`, section 1 of the page, in its second and third cuts side
+by side: the FM terminal, the console's own instrument apart from the music's, with digital
+motions, and the same terminal through an operations channel after Ryan's RTS thought experiment,
+orders out and each maker's machine answering, the field reporting; the music under the sequences
+4 dB down; the fourth cut folded away at the page's foot); the voice is re-rendered judgeable (a smooth glottal pulse,
+the vowels levelled over the bursts, the contact's level).
 Content carries a `sound` label on a component (a word or a list meaning layers, validated in
 `content_db.gd`; the Breaching Plow says blunt, the Gravity Knuckles blunt and plasma). A pick
 lands as a recipe in `forge.py` with its hook (shape, maker, faction, silhouette, the label, the
 replay telling shield hit from block from hit). The sketch script encodes AAC with `ffmpeg` at
 256 kbps where there is no `afconvert` (its encoder smears a transient's front at 128). Next:
-the fresh console pass on the page; the Risen and Infernal Horde boss themes from their
-seeds, melodies proposed in chat first. The speakers/headphones setting is dropped (Ryan, 2
-October): the one master balances for both for now.
+Ryan's listen of the fresh console (the verbs first, then the climax row); the Risen and Infernal
+Horde boss themes from their seeds, melodies proposed in chat first. The speakers/headphones
+setting is dropped (Ryan, 2 October): the one master balances for both for now.
 
 **The phone (bible section 11 has four rows on it; README has the commands).** Ryan's Pixel
 runs the debug APK at 60 fps with the fine map (the default, since the Compatibility renderer

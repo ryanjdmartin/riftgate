@@ -958,7 +958,7 @@ NEW = {
 }
 for v in speech.VOICES:
     for k in LINES:
-        NEW["v_%s_%s" % (v, k)] = ((lambda v=v, k=k: v_line(v, k)), None, "die_lock")
+        NEW["v_%s_%s" % (v, k)] = ((lambda v=v, k=k: v_line(v, k)), None, "contact")   # speech sits at the contact's level: a call over the music, not a console tone (2 October: too faint to judge at the lock's)
 for m in MAKERS:
     NEW["hit_" + m] = ((lambda m=m: i_hit(m)), "hit", "hit")
     NEW["block_" + m] = ((lambda m=m: i_block(m)), "block", "block")
@@ -974,7 +974,7 @@ def boost(name):
     if name in ("ui_tap", "ui_back", "plot", "die_pick", "die_drop", "die_roll", "die_lock", "resolve", "intent"):
         return BOOST["console"]
     if name.startswith("v_"):
-        return BOOST["console"]
+        return 0.0
     if name.startswith("w_dish") or name in ("shield_hit", "shield_break"):
         return BOOST["shield"]
     if name.startswith("w_"):
