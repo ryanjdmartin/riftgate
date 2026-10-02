@@ -56,7 +56,7 @@ var cooling: int:
 	set(v):
 		base["cooling"] = v
 
-## Chassis traits: "flyer", "hover", "walker", "tank", "defense".
+## Chassis traits: "flyer", "hover", "walker", "tracked", "defense".
 var traits: Array[String] = []
 
 ## Hexes this unit covers, as axial offsets from pos. Packs and mechs are one hex; a massive

@@ -117,7 +117,7 @@ planned any more: every passive, keyword, status and trigger the vocabulary name
 (`Effects.fire`; the bible's section 7 row "The 28 September pieces, built" has each one), and
 the ten foe actions run (`Foe.ACTION_EFFECTS`, weights 3:1 attack to special as placeholders,
 section 9 row). Still planned in the vocabulary, all waiting on design: Phased, Energy
-Armour, Corrode, Scramble, Confuse, the tank trait. Numbers are in tens and are placeholders;
+Armour, Corrode, Scramble, Confuse, the tracked trait. Numbers are in tens and are placeholders;
 every stat is read through `sim/effects.gd`. An enemy unit is a **pack** everywhere. Ryan
 writes `content/*.json` in his own voice (he writes die totals in his head; the data keeps
 free slots). Every component's codex and flavour are empty (42), and the seven new machines'
