@@ -61,7 +61,7 @@ the chat is newer.
 ## As of 2 October 2026
 
 **State.** Tests green: `perl -e 'alarm 240; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (293 tests, 3,899 checks on 2 October, after the targeting pass merged main;
+tests/run_tests.gd` (302 tests, 4,873 checks on 2 October, late, after the damage scale merged main;
 a cloud session fetches Godot 4.7's Linux build from the GitHub release asset to run them, since
 the proxy serves the asset though not the release page). Two or three
 sessions run on this repo at once: check `git status` before committing, stage by path, diff a
@@ -209,25 +209,27 @@ and what it will meet while nothing is held; the log is behind its LOG button. A
 started from the harness is saved after every change (`sim/save.gd`, `user://battle.json`)
 and Resume battle opens it where it stood; standalone runs and tests never write it.
 
-**Balance (bible section 11).** `sim/policy.gd` plays the skirmish headless (RANDOM, GREEDY,
-`withdraw_below`); `tools/balance.gd` runs the matrix, about half an hour at 200 seeds with
-eleven machines, twelve packs (the nine plus each faction's whole formation in one fight, since
-2 October) and the team row run twice for the targeting comparison (`docs/balance.md`, generated
-2 October with the targeting pass and the playtest set in). **The baseline reading, for Ryan's
-question of whether 80 a round is average or game-losing:** the team of three still wins every
-cell, the formations included, in about a round and at no cost, under the aims and under the
-lowest-shield rule alike (the Risen formation, fifteen foes, is the one fight that lasts: 4.6
-rounds, 17% hull, both rules). Targeting cannot read on the team cells yet because the foes die
-before they swing: the team's damage dwarfs every pack's hit points, so that, not the
-targeting rule, is the first number to move. Alone, the playtest set bit hard where it was meant
-to: the ghoul swarm turned the easiest pack into a wall for the light machines (the Ammit 95 to
-0 under greedy, the Nemesis 100 to 27, the Clydesdale 96 to 54; the Badger, Armadillo and Boar
-still clear it at little cost, which is armour against volume doing its job), the breaching Pit
-Lord and the double-biting Maw cut the solo win rates of everything but the three heavies, and
-the Colossus barely moved. The Badger, Armadillo and Wild Boar still win nearly every solo cell;
-the Baboon, Prairie Dog and Dingo lose to every front-rank pack alone, as support machines
-might. Pick share: the Klaxon's lure is spent 1% of the time, since the team never needs it;
-the Shutters 2%. Rerun after each engine piece lands; read bands, not numbers.
+**Balance (bible section 11; the damage scale row).** `sim/policy.gd` plays the skirmish
+headless (RANDOM, GREEDY, `withdraw_below`); `tools/balance.gd` runs the matrix, about three
+quarters of an hour at 200 seeds now the fights last: eleven machines, twelve packs (the nine
+plus each faction's whole formation in one fight) and the team row run twice for the targeting
+comparison; `--damage F` asks a scale of the player's blows without writing it (`docs/balance.md`,
+generated 2 October, late, with the player's damage halved). **The baseline, after the halving
+(Ryan's call: move the player's numbers, not the foes' hit points; measured at 0.67 and 0.5 first,
+0.5 taken):** the team of three still wins every single-pack cell under both rungs, but in two or
+three rounds and at 3 to 5 percent hull rather than one round at nothing; the formations are the
+fights that bite (the Risen's fifteen: 7.3 rounds, 28% hull, random wins 78; the Horde's: 4 rounds,
+11%; the Chorus's: 3.5 rounds, 5%). The two targeting rules read for the first time, on the
+formations only, and the aims are the easier rule for the team (random 78 against 69 on the Risen,
+11% against 14% hull on the Horde), as a spread should be against focus. **The next axis is enemy
+damage against the team's durability:** a team that loses 5% hull in three rounds against a pack
+is not threatened, so the packs' blows or the team's shields are the next number, and the
+formations say which (the bible's shields-as-a-timer rule wants a shield gone in two or three
+rounds). Alone, the three heavies still clear the rank and file (the Armadillo nearly every cell;
+the Badger and Boar fall to the breaching Pit Lord), every light machine loses to every front-rank
+pack, and the Clydesdale cannot out-damage the Colossus's knitting (26 rounds). Pick share: the
+team never lures (the Klaxon 1%), since it never needs to, and rerolls 2.2 a round. Rerun after each
+engine piece lands; read bands, not numbers.
 
 **Audio (the bible's section 1 sound row has the direction, the palettes and every rule; the
 listen-by-listen history is retired).** Everything is `tools/soundforge/forge.py` writing WAVs
