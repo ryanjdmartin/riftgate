@@ -133,8 +133,12 @@ pending. Both modelled (`stingray(b)`, `puffin(b)` in `models_low.py`; propulsio
 maker: the Stingray on lift fans flush in its wings, the Puffin on boosters far too big for it)
 and rendered to the hangar page's Models tab as first passes for his look. The skirmish's hover
 idle gained a slow pitch (`sway_pitch`), to judge running. The merge took the tens for both
-moves, the hangar page is republished from main so its content and the repo agree again, and
-the balance matrix is rerun with thirteen machines (the Balance paragraph).
+moves and the balance matrix is rerun with thirteen machines (the Balance paragraph). **The
+hangar page's content is ahead of main again** (2 October, night): another session is tuning
+numbers on the page from a tree not yet committed (its components, foes and vocabulary files
+match no commit: the Chainsaw Claw at 10 to 20, the Pit Lord's armour at 5, among others), so
+this session republished only the page's chassis file, with the hovercraft, and left those
+three alone; the page's numbers are not the repo's until that work lands on main.
 
 
 **Open from the audit (1 October).** The bible's HUD palette row (18 September) read Ryan's
