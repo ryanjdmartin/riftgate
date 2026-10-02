@@ -71,6 +71,7 @@ var sway: bool = false            # a slow idle: a breath of yaw and a bob, for 
 var sway_phase: float = 0.0
 var sway_bob: float = 0.35        # model units of vertical drift; a flyer hovers, a tank does not
 var sway_yaw: float = 0.035       # radians of yaw drift
+var sway_pitch: float = 0.0       # radians of pitch drift: a hover chassis noses down and up as it holds station (the Stingray pitches like a helicopter, Ryan, 2 October)
 var _t := 0.0
 var yaw: float = YAW_FRONT
 var pitch: float = PITCH          # camera tilt down; the map tokens look steeper (tools/map_tokens.gd)
@@ -453,6 +454,7 @@ func _process(delta: float) -> void:
 		_pivot.rotation.y += SPIN_SPEED * delta
 	elif sway:
 		_pivot.rotation.y = deg_to_rad(yaw) + sin(_t * 0.9 + sway_phase) * sway_yaw
+		_pivot.rotation.x = sin(_t * 0.7 + sway_phase * 0.5) * sway_pitch
 		_pivot.position.y = sin(_t * 1.9 + sway_phase) * sway_bob + sin(_t * 0.6 + sway_phase) * sway_bob * 0.5
 	if not joints.is_empty():
 		# A ground machine's idle is its limbs: each joint settles slowly about its pivot,

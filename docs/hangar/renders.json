@@ -353,6 +353,34 @@
      }
     ]
    }
+  },
+  "stingray": {
+   "when": "First pass, 2 October.",
+   "note": "Aphelion's second machine, the hot hovercraft (Stingray over Lionfish and Sea Wasp: Ryan). A flat pearl lens, the outer wings red, a ducted lift fan sunk flush through each wing (Aphelion's lift is fans, Ryan, 2 October; the exposed-rotor fan-copter stays free for a later flyer), the tail flicked up to a lit barb, the Photosphere Lance under the nose. Mounts: the flare pods and the Pulse Repeater on the shoulders, the Zenith Emitter on a turret joint behind the canopy, the Aurora Lattice's dish on the right rear wing, a bare pad on the left. Rendered bare.",
+   "images": [
+    {
+     "file": "stingray/stingray_front.png",
+     "alt": "stingray, front"
+    },
+    {
+     "file": "stingray/stingray_rear.png",
+     "alt": "stingray, rear"
+    }
+   ]
+  },
+  "puffin": {
+   "when": "First pass, 2 October.",
+   "note": "Kestrel's ground-effect escort, the Puffin the makers row wanted. A short deep chrome body under a dark cap, a tall flat cobalt beak banded with light whose edge is the Prow Projector's emitter, a glass eye each side, stubby wings, two canted fins, and two boosters far too big for it with their nozzles turned down (Kestrel moves everything on boosters: Ryan, 2 October). Mounts: the Laser Carbine under the left wing, the Deflector's dish under the right, the Overcharge Coil's dish on the back, a bare pad on the tail boom. Rendered bare.",
+   "images": [
+    {
+     "file": "puffin/puffin_front.png",
+     "alt": "puffin, front"
+    },
+    {
+     "file": "puffin/puffin_rear.png",
+     "alt": "puffin, rear"
+    }
+   ]
   }
  }
 }
