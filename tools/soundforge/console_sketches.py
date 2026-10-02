@@ -379,6 +379,188 @@ CONSOLE = {
 }
 
 
+# ---------------------------------------------------------------- the operations channel (third cut)
+#
+# Ryan, 2 October, on the FM cut: the direction holds and it reads well over the music, but
+# it is an arcade cabinet, not the grimdark future. His thought experiment: a war-game RTS.
+# An RTS interface is not a cockpit you sit in; it is an operations channel. Its sounds are
+# traffic, not feedback: an order goes out and the unit answers, the field reports back. So
+# the third cut keeps the FM terminal as the instrument and runs it through a digital comm
+# channel: a hard band from 300 Hz to 4 kHz, compression, codec grain (a low sample rate and
+# bit depth), a squelch as each transmission opens and closes. Nothing in it is musical
+# except the two lines a round earns (the round opening, the commit). A confirm becomes an
+# order sent and, a beat later, the machine's acknowledgement in its maker's colour. The key
+# is the channel opening; a dismiss is it closing. Ryan freed this cut from the "no static"
+# note: a squelch is a transmission's edge, not a hiss under anything.
+
+MAKER_ACK = {   # the acknowledgement's colour per maker: (two notes in semitones from E, octave, FM ratio, index)
+    "minerva": ((7, 0), 2, 2.0, 0.8),          # B4 E4: plain, square, the baseline
+    "kestrel": ((12, 7), 3, 2.5, 1.0),         # E6 B5: high, quick, an airframe
+    "wainwright_sutler": ((0, 7), 2, 1.5, 1.2),   # E4 B4: low, a touch sour, old iron
+    "aphelion": ((12, 12), 3, 3.0, 0.5),       # E6 twice: glassy, clean, the deep-space programme
+    "arsenal": ((7, 7), 2, 1.414, 1.6),        # B4 twice, inharmonic: not quite right, the Arsenal's
+}
+
+
+def squelch(dur=0.014, gain=1.0, close=False):
+    """The channel opening or closing: a short burst in the channel's band with a click on
+    its front; a close is a hair longer and darker."""
+    n = n_of(dur * (1.4 if close else 1.0))
+    x = F.bp(F.noise(n), 400.0, 2600.0 if close else 3800.0, order=3) * F.env_ad(n, 0.0005, dur * 0.35)
+    c = F.knock([1900.0, 3100.0], [0.002, 0.0015], [1.0, 0.5], noise_gain=0.3) * 0.6
+    return mix(x, c) * gain
+
+
+def comm(x, grain=11.0, rate=9000.0, drive=2.2, carrier=0.0):
+    """The digital comm channel: a hard band from 300 Hz to 4 kHz, compression, codec grain
+    (held samples at `rate`, `grain` bits), a faint carrier if asked."""
+    y = F.bp(x, 300.0, 4000.0, order=4)
+    y = F.sat(y * 1.5, drive)
+    hold = max(1, int(round(SR / rate)))
+    y = np.repeat(y[::hold], hold)[:len(x)]
+    y = bits(y, grain)
+    if carrier > 0.0:
+        y = y + np.sin(2.0 * math.pi * 1210.0 * t_of(len(y))) * carrier * (np.abs(y) > 0.002)
+    return F.lp(y, 4200.0)
+
+
+def transmit(x, gain=1.0, open_=True, close=True, pre=0.012, post=0.02):
+    """A transmission: the channel opens, the signal, the channel closes."""
+    buf = np.zeros(1)
+    if open_:
+        buf = at(buf, squelch(0.012, 0.9), 0.0)
+    buf = at(buf, comm(x), pre if open_ else 0.0)
+    if close:
+        buf = at(buf, squelch(0.014, 0.7, close=True), (pre if open_ else 0.0) + len(x) / SR + post)
+    return buf * gain
+
+
+def o_key(weight=1.0):
+    """Every button: the channel opening, nothing said. A primary press holds it open a
+    moment with the carrier under it."""
+    if weight <= 1.0:
+        return squelch(0.012, 0.9 * weight)
+    n = n_of(0.06)
+    carrier = comm(np.zeros(n) + 1e-3, carrier=0.0)
+    hum = np.sin(2.0 * math.pi * 1210.0 * t_of(n)) * shape(n, [(0.0, 0.0), (0.005, 0.25), (0.05, 0.2), (0.06, 0.0)])
+    return at(squelch(0.012, 1.0), comm(hum), 0.01)
+
+
+def o_dismiss(dur=0.14, note=B5):
+    """A thing let go: the channel closing on a short coarse tail."""
+    return transmit(release(dur, note, 0.8), 0.9, open_=False)
+
+
+def o_acquire(dur=0.3, note=B5, gain=1.0, coarse=5.0):
+    """The display grabbing something: the FM resolve, coarse to clean, sent on the channel;
+    no dyad, no room; the channel closes as the brackets land."""
+    return transmit(acquire(dur, note, 1.0, body=0.0, coarse=coarse), gain)
+
+
+def o_sent(notes=(7, 7), octave=3, each=0.05, gain=1.0):
+    """An order going out: two quick notes on one pitch, the sender's signature."""
+    n = n_of(each * 1.4)
+    buf = np.zeros(1)
+    for k, s in enumerate(notes):
+        x = fm(hz(s, octave), each * 1.4, ratio=2.0, index=0.9, amp=shape(n, [(0.0, 0.0), (0.003, 1.0), (each * 0.8, 0.6), (each * 1.4, 0.0)]))
+        buf = at(buf, x, k * each)
+    return transmit(buf, gain)
+
+
+def o_ack(maker="minerva", gain=1.0):
+    """The machine answering, in its maker's colour: the channel opens on a lower carrier,
+    two notes, the channel closes. A beat after the order."""
+    notes, octave, ratio, index = MAKER_ACK[maker]
+    each = 0.07
+    n = n_of(each * 1.5)
+    buf = np.zeros(1)
+    for k, s in enumerate(notes):
+        x = fm(hz(s, octave), each * 1.5, ratio=ratio, index=index, amp=shape(n, [(0.0, 0.0), (0.004, 1.0), (each, 0.7), (each * 1.5, 0.0)]), feedback=0.2)
+        buf = at(buf, x, k * each)
+    return transmit(comm(buf, grain=9.0, rate=7000.0), gain * 0.9)
+
+
+def o_order(weight="medium", maker="minerva"):
+    """A thing committed. Small (a lock): the order sent, nothing answers. Medium (a die
+    spent): the order, then the machine's acknowledgement a beat later. Large (RESOLVE, END
+    TURN): the stepped line E, B, E goes out as one transmission, then every machine answers
+    in a staggered run: all units committed."""
+    if weight == "small":
+        return o_sent((7,), 3, 0.05, 0.9)
+    if weight == "medium":
+        return at(o_sent((7, 7), 3, 0.05, 1.0), o_ack(maker, 0.9), 0.3)
+    n = n_of(0.9)
+    line = np.zeros(n)
+    for k, (s, o) in enumerate(((0, 2), (7, 2), (0, 3))):
+        d = 0.14 if k < 2 else 0.5
+        m = n_of(d)
+        x = fm(hz(s, o), d, ratio=2.0, index=0.9 if k < 2 else 0.6, amp=shape(m, [(0.0, 0.0), (0.006, 1.0), (d * 0.6, 0.75), (d, 0.0)]), feedback=0.3)
+        line = at(line, x, k * 0.13)
+    buf = at(squelch(0.012, 1.0), comm(line * 0.9, carrier=0.03), 0.012)
+    buf = at(buf, squelch(0.014, 0.8, close=True), 0.012 + 0.78)
+    for k, m in enumerate(("minerva", "kestrel", "wainwright_sutler")):
+        buf = at(buf, o_ack(m, 0.75), 1.0 + k * 0.17)
+    return buf
+
+
+def o_refuse():
+    """Denied: the channel opens on a harsh two-tone F to E, crushed hard, and cuts."""
+    x = refuse()
+    return transmit(comm(x, grain=6.0, rate=5500.0, drive=3.5), 1.0)
+
+
+def o_scramble(dur, note=B5, rate=BOARD, gain=1.0):
+    return transmit(scramble(dur, note, rate, 0.8), gain * 0.8)
+
+
+def o_report():
+    """The round opening: the field reports. The channel opens, the resolve at full size
+    over the digits scrambling, then the report line E, B, E falling, and the channel closes."""
+    inner = scramble(0.165, B5, SCRAMBLE, 0.4)
+    inner = at(inner, acquire(0.3, B5, 1.2, body=0.3, coarse=6.0), 0.0)
+    inner = at(inner, steps([12, 7, 0], 0.08, 3, 0.6, index=0.5), 0.34)
+    return transmit(inner, 1.0, pre=0.015, post=0.03)
+
+
+def o_steps(notes, each=0.06, octave=3, gain=0.5):
+    return transmit(steps(notes, each, octave, gain, index=0.4), 1.0)
+
+
+OPS = {
+    "verb_key": ((lambda: o_key(1.0)), -24.0, None, "the key: the channel opening"),
+    "verb_acquire": ((lambda: o_acquire(0.3, B5, 1.0)), -16.0, None, "acquire on the channel"),
+    "verb_scramble": ((lambda: o_scramble(0.45, B5, BOARD, 1.0)), -17.0, None, "the scramble on the channel"),
+    "verb_order_small": ((lambda: o_order("small")), -17.0, None, "an order sent, nothing answers: a lock"),
+    "verb_order_medium": ((lambda: o_order("medium")), -14.0, None, "an order sent, the machine answers"),
+    "verb_order_large": ((lambda: o_order("large")), -11.0, None, "the commit: E, B, E out, every machine answering"),
+    "verb_refuse": (o_refuse, -15.0, None, "denied"),
+    "key": ((lambda: o_key(1.0)), -24.0, "ui_tap", ""),
+    "key_heavy": ((lambda: o_key(1.6)), -21.0, "ui_tap", ""),
+    "select": ((lambda: at(o_key(1.0), o_acquire(0.2, B5, 0.8), 0.0)), -17.0, "ui_tap", ""),
+    "dismiss": ((lambda: o_dismiss(0.16, B5)), -21.0, "ui_back", ""),
+    "die_lift": ((lambda: at(o_key(0.9), o_acquire(0.22, E5, 0.75), 0.0)), -17.0, "die_pick", ""),
+    "die_drop_back": ((lambda: o_dismiss(0.14, E5)), -21.0, "die_drop", ""),
+    "die_lock": ((lambda: at(o_key(1.0), o_order("small"), 0.02)), -16.0, "die_lock", ""),
+    "die_unlock": ((lambda: o_dismiss(0.12, B5)), -20.0, "die_lock", ""),
+    "die_spend": ((lambda: o_order("medium", "minerva")), -14.0, "die_drop", "a die spent: the order, a Minerva machine answering"),
+    "die_spend_self": ((lambda: at(o_order("medium", "minerva"), o_steps([0, 7, 12], 0.05, 3, 0.35), 0.62)), -14.0, "die_drop", ""),
+    "reroll": ((lambda: at(o_key(1.1), o_scramble(0.22, E5, 30.0, 0.9), 0.0)), -16.0, "die_roll", ""),
+    "round_acquire": (o_report, -12.0, None, "the field reports"),
+    "end_turn": ((lambda: at(at(o_key(1.6), o_order("large"), 0.0), o_scramble(0.3, E5, BOARD, 0.4), 1.6)), -11.0, "resolve", ""),
+    "resolve": ((lambda: at(o_key(1.6), o_order("large"), 0.0)), -11.0, "resolve", ""),
+    "route_set": ((lambda: at(o_key(1.0), o_scramble(0.45, B5, BOARD, 0.8), 0.0)), -16.0, "plot", ""),
+    "route_clear": ((lambda: o_dismiss(0.18, E5)), -20.0, "ui_back", ""),
+    "hold_readout": ((lambda: o_acquire(0.2, B5, 0.6, coarse=3.0)), -19.0, None, ""),
+    "codex_open": ((lambda: at(at(o_key(1.0), o_steps([12, 7, 0], 0.05, 3, 0.3), 0.0), o_acquire(0.3, B5, 0.9), 0.12)), -15.0, "codex_open", ""),
+    "codex_close": ((lambda: at(o_dismiss(0.16, B5), o_steps([0, 7, 12], 0.05, 3, 0.25), 0.04)), -18.0, "codex_close", ""),
+    "menu_open": ((lambda: at(at(o_key(1.6), o_steps([12, 7, 0], 0.07, 3, 0.45), 0.02), o_order("small"), 0.26)), -14.0, "menu_open", ""),
+    "menu_close": ((lambda: at(o_key(1.0), o_steps([0, 7, 12], 0.06, 3, 0.4), 0.0)), -17.0, "menu_open", ""),
+    "refuse": (o_refuse, -15.0, "ui_back", ""),
+}
+for _m in MAKER_ACK:
+    OPS["ack_" + _m] = ((lambda m=_m: o_ack(m, 1.0)), -16.0, None, "the %s acknowledgement" % _m)
+
+
 # ---------------------------------------------------------------- levels and writing
 
 def phone_loudness(x):
@@ -390,9 +572,10 @@ def level_for_phone(x, db):
     return x * 10.0 ** ((db - phone_loudness(x)) / 20.0)
 
 
-def render_one(name):
-    F.seed("con_" + name)
-    fn, db, beside, note = CONSOLE[name]
+def render_one(name, table=None, prefix="con_"):
+    table = CONSOLE if table is None else table
+    F.seed(prefix + name)
+    fn, db, beside, note = table[name]
     x = level_for_phone(fn(), db)
     return x, db, beside, note
 
@@ -424,12 +607,19 @@ MAP = [   # the map: select, routes, a refusal, the commit, the moves, the menu,
 ]
 
 
+OPS_NAMES = {"touch": "key", "touch_heavy": "key_heavy"}
+
+
 def lay(base, events, which):
+    """`which`: 'now' (the shipped sounds), 'new' (the FM cut) or 'ops' (the channel)."""
     buf = np.array(base) * 10.0 ** (BED_DB / 20.0)
     for when, con, now, db in events:
-        if which == "new":
+        if which in ("new", "ops"):
             if con is not None:
-                x, _, _, _ = render_one(con)
+                if which == "ops":
+                    x, _, _, _ = render_one(OPS_NAMES.get(con, con), OPS, "ops_")
+                else:
+                    x, _, _, _ = render_one(con)
             elif now is not None:
                 x = X.level(X.shipped(now), F.LEVELS[now])
             else:
@@ -458,17 +648,18 @@ def main(argv):
         with open(path) as fh:
             manifest.update(json.load(fh))
     manifest["console"] = []
-    print("console")
-    for name in CONSOLE:
-        x, db, beside, note = render_one(name)
-        X.write("con_" + name, X.tail(x, 0.3))
-        full = F.loudness(x)
-        manifest["console"].append({"name": "con_" + name, "beside": beside, "seconds": round(len(x) / SR, 2),
-                                    "phone_db": db, "full_db": round(full, 1), "note": note})
-        print("  con_%-18s %5.2f s  phone %6.1f  full %6.1f  (%+.1f)" % (name, len(x) / SR, db, full, full - db))
-        if beside and not os.path.exists(os.path.join(X.OUT, "now_%s.mp4" % beside)):
-            y = X.level(X.shipped(beside), F.LEVELS[beside])
-            X.write("now_" + beside, X.tail(y))
+    for table, prefix in ((CONSOLE, "con_"), (OPS, "ops_")):
+        print(prefix)
+        for name in table:
+            x, db, beside, note = render_one(name, table, prefix)
+            X.write(prefix + name, X.tail(x, 0.3))
+            full = F.loudness(x)
+            manifest["console"].append({"name": prefix + name, "beside": beside, "seconds": round(len(x) / SR, 2),
+                                        "phone_db": db, "full_db": round(full, 1), "note": note})
+            print("  %s%-18s %5.2f s  phone %6.1f  full %6.1f  (%+.1f)" % (prefix, name, len(x) / SR, db, full, full - db))
+            if beside and not os.path.exists(os.path.join(X.OUT, "now_%s.mp4" % beside)):
+                y = X.level(X.shipped(beside), F.LEVELS[beside])
+                X.write("now_" + beside, X.tail(y))
     print("sequences")
     seqs = [
         ("con_turn", X.bed("music_hold_the_line", 8, 8, 104), TURN, "a turn over Hold The Line's riff, bar nine on"),
@@ -476,7 +667,7 @@ def main(argv):
         ("con_map", X.bed("music_night_shift", 8, 6, 94), MAP, "the map over Night Shift"),
     ]
     for key_, base, events, note in seqs:
-        for which in ("now", "new"):
+        for which in ("now", "new", "ops"):
             F.seed("con_seq_" + key_ + which)
             x = lay(base, events, which)
             name = "seq_%s_%s" % (key_, which)

@@ -185,10 +185,11 @@ the weapons' third cut (every blow drawn out with `heft` and a boom tail, measur
 phone model) is acceptable and parked; the voice section (`tools/soundforge/speech.py`, a Betty
 and a VEGA) is too faint under noise, cracks and pops to judge; the console was derived again
 that night from the UI design, Hold The Line and the direction notes, not from the existing
-sounds (`tools/soundforge/console_sketches.py`, section 1 of the page, in its second cut after Ryan's
-notes on the first: an FM terminal, the console's own instrument apart from the music's; digital
-motions, coarse resolving to clean; no static, no knock, no work ticks; the music under the
-sequences 4 dB down; the fourth cut folded away at the page's foot); the voice is re-rendered judgeable (a smooth glottal pulse,
+sounds (`tools/soundforge/console_sketches.py`, section 1 of the page, in its second and third cuts side
+by side: the FM terminal, the console's own instrument apart from the music's, with digital
+motions, and the same terminal through an operations channel after Ryan's RTS thought experiment,
+orders out and each maker's machine answering, the field reporting; the music under the sequences
+4 dB down; the fourth cut folded away at the page's foot); the voice is re-rendered judgeable (a smooth glottal pulse,
 the vowels levelled over the bursts, the contact's level).
 Content carries a `sound` label on a component (a word or a list meaning layers, validated in
 `content_db.gd`; the Breaching Plow says blunt, the Gravity Knuckles blunt and plasma). A pick
