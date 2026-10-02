@@ -57,15 +57,20 @@ the chat is newer.
 ## As of 2 October 2026
 
 **State.** Tests green: `perl -e 'alarm 240; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (279 tests, 3,593 checks on 1 October, after the merge of the cloud
-branch; the engagement zones and behaviours added more that day). Two or three sessions run on
-this repo at once: check `git status` before committing, stage by path, diff a shared file
-first (a path still sweeps the other session's hunks), never `git add -A`, never kill a bare
-`godot --path .`. Commit after each verified chunk with tests green.
+tests/run_tests.gd` (287 tests, 3,653 checks on 2 October, on main after the to-do review's
+branch merged; a cloud session fetches Godot 4.7.2's Linux build to run them). Two or three
+sessions run on this repo at once: check `git status` before committing, stage by path, diff a
+shared file first (a path still sweeps the other session's hunks), never `git add -A`, never
+kill a bare `godot --path .`. Commit after each verified chunk with tests green.
 
-**2 October: the to-do review and what came of it.** On the branch
-`ccr-7821fbf8-eim14f` (not yet merged to main; tests green on it: 287 tests, 3,653 checks, run in the cloud on Godot 4.7.2).
-Every to-do line was checked against the code. Ryan's calls, each in the bible:
+**Unmerged:** `claude/sweet-goldberg-m588er` carries the effects' third cut, the console's
+fourth, the blunt impact, a `sound` label on components (validated in `sim/content_db.gd`,
+never yet tested) and the console voice (`tools/soundforge/speech.py`). It branched before the
+clean slate, so its `docs/` resolve to main's copies with its facts ported, and its tests run
+on the merge.
+
+**2 October: the to-do review and what came of it.** Every to-do line was checked against the
+code. Ryan's calls, each in the bible:
 - Closed: the d4 question (die size is a balance lever like any base stat), the participant
   cap (four columns is the most a formation will be), the Baboon's rear silhouette and the
   Clydesdale's twin spacing. The seated die is in the new effects pass.
@@ -80,21 +85,15 @@ Every to-do line was checked against the code. Ryan's calls, each in the bible:
 - Later: a prototype hangar (paints and loadouts, no economy); the commander layer once the
   balance has a baseline; enemy targeting and the horde hooks in Ryan's own design session;
   the Armadillo sealing its ports, to consider once the acts run.
-- The plate shows traits, not a silhouette (built 2 October, tests green here on Godot 4.7.2):
-  the field is gone from the content, the codex subtitle reads maker, traits, die; Wheeled is
-  on both cars, planned; the tank trait is Tracked.
+- Built: the plate lists traits, not a silhouette; the field is gone from the content, the
+  codex subtitle reads maker, traits, die; Wheeled is on both cars and Tracked is the tank
+  trait, both planned.
 - Found: eight of nine foes are still their sketch grids (the ghoul is the foeforge cut); the
   Honey Badger cannot ford today; water's terrain codex wrongly says impassable.
 
-**The audit (1 October).** The bible, status, to-do, README and CLAUDE.md were read against
-each other and the code: stale rows retired or marked superseded, the bible's keyword table
-regenerated from the vocabulary, section 12 brought level with the to-do, the ticked to-do
-lines pruned, this file cut to what stands. On Ryan's word the listen-by-listen history of the
-tracks and the round-by-round history of the machines were retired from the bible, keeping the
-rules and each thing as it stands; the unused `docs/concepts/` intake is deleted. One contradiction left for Ryan: the bible's HUD
-palette row (18 September) read his swatch confusions as protanomalous, while the 29 September
-rule says he has not named the type; both rows now say so, and every colour is checked under
-all three simulations regardless.
+**Open from the audit (1 October).** The bible's HUD palette row (18 September) read Ryan's
+swatch confusions as protanomalous, while the 29 September rule says he has not named the
+type; both rows say so, and every colour is checked under all three simulations regardless.
 
 **Where things are.** `sim/` is the headless game (battle map, battlefield resolver, battle
 loop, skirmish, effects pipeline, content DB, save). `game/battle/` the battle screen and the
@@ -120,7 +119,7 @@ planned any more: every passive, keyword, status and trigger the vocabulary name
 (`Effects.fire`; the bible's section 7 row "The 28 September pieces, built" has each one), and
 the ten foe actions run (`Foe.ACTION_EFFECTS`, weights 3:1 attack to special as placeholders,
 section 9 row). Still planned in the vocabulary, all waiting on design: Phased, Energy
-Armour, Corrode, Scramble, Confuse, the tracked trait. Numbers are in tens and are placeholders;
+Armour, Corrode, Scramble, Confuse, and the Tracked and Wheeled traits. Numbers are in tens and are placeholders;
 every stat is read through `sim/effects.gd`. An enemy unit is a **pack** everywhere. Ryan
 writes `content/*.json` in his own voice (he writes die totals in his head; the data keeps
 free slots). Every component's codex and flavour are empty (42), and the seven new machines'
@@ -218,5 +217,5 @@ it and ticked in the commit that lands it; this is the order to take them in.
 2. Ryan's text for the new machines and components; the machines' scale on the map; the strikes, then the acts and movement, judged running.
 3. The discuss-first decisions in the Ryan section, the economy last; enemy targeting in Ryan's own design session; the commander layer once the balance has a baseline.
 4. Ready to build: movement in tens; the joint pass, then the idle acts, then the movement animations; the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased, Energy Armour, Corrode, Scramble, Confuse, foe roles), and a dedicated hunter foe and spawned formations once proposed.
-5. Audio: a full play of Hold The Line, the effects' second pass, the speakers/headphones setting, the two boss themes.
+5. Audio: a full play of Hold The Line, the effects' third cut (merge `claude/sweet-goldberg-m588er` first), the speakers/headphones setting, the two boss themes.
 6. A prototype hangar in the game (paints and loadouts, no economy). Art: enemy art through foeforge, the hangar as a model. Before a phone leaves the desk: onboarding, then tuning.
