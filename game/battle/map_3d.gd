@@ -919,7 +919,7 @@ func _build_ground() -> void:
 		var col := Node3D.new()
 		col.position = at
 		col.set_meta("band", band)
-		if in_field and BattleMap.passable(t, []):
+		if in_field and t != BattleMap.Terrain.MOUNTAIN:
 			col.set_meta("prop_hex", h)   # its props bake by hex, to hide under a standing machine
 		add_child(col)
 		_columns[h] = col

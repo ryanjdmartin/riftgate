@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.19 since 2 October, late, the effects branch merged); republish it from the committed file after every bible change, passing that URL.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.20 since 2 October, night, movement built); republish it from the committed file after every bible change, passing that URL.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -89,7 +89,7 @@ code. Ryan's calls, each in the bible:
   Honey Badger cannot ford today; water's terrain codex wrongly says impassable.
 
 **2 October, late: movement by way of moving and the pacing direction** (bible section 4, the
-movement row decided and the pacing row open; bible v0.19). The day's price table is retired:
+movement row decided and the pacing row open; bible v0.20). The day's price table is retired:
 a bigger move bought back any price, so a wheeled 60 reached everything a walker 30 did.
 Instead each way of moving calls each ground fast (5), normal (10) or slow (enterable with any
 move left, and it ends the move), on four grounds: open (plain and road; road is art only),
@@ -106,12 +106,27 @@ fight by phase 3, a team that never moves holds the undead for 300 phases, 210 o
 stuck at a shore today). Those probe scripts lived in the cloud scratchpad and are gone; the
 method is in the to-do's water-feature line.
 
-**The bible carries rows not yet on main.** Another session built the two
-hovercraft on 2 October (the Stingray and the Puffin, the `on_stack` trigger, Numbed exempt from
-every interaction, propulsion reading the maker) and published the bible as v0.17 without
-pushing its branch; this session merged its movement rows onto that published copy and
-committed the result, so the bible here describes the hovercraft whose content and models
-are still on that session's branch. When that branch lands, its bible resolves to main's copy.
+**Movement by way of moving is built** (2 October, night; bible section 4, the movement row
+ends with what stands; the to-do's ticked line lists the pieces). What the next session
+should know: moves are in tens everywhere (`Unit.MECH_MOVE` 30, `PACK_MOVE` 20, `BOSS_MOVE`
+10 are the defaults before content dresses a unit); `BattleMap.move_cost` returns a word
+(`FAST` 5, `NORMAL` 10, `SLOW`, `WALL`) and `BattleMap.spend(t, traits, left)` is what every
+budget site calls; a unit with no way of moving moves by the horde's rule (normal on land,
+water and crags walls); the generator's `_ensure_ground_path` carves with that rule and
+widens every single-hex plug (`BattleMap.plugs()` is the test); `Battlefield.hunt_target`
+aims a hunter at the shore when its prey stands in water; `ContentDB.movement_flags()`
+prints, never fails. Measured on 200 seeds at 7x20: 0 cut, 0 plugs, 21 with a two-hex cut,
+46 ms a map to generate. Open from it: the move gauge, a three-wide crossing, the water
+feature with the hovercraft, and the hangar page's republish (below).
+
+**The bible carries rows not yet on main, and so does the hangar page.** Another session
+built the two hovercraft on 2 October (the Stingray and the Puffin, the `on_stack` trigger,
+Numbed exempt from every interaction, propulsion reading the maker), published the bible as
+v0.17 and the hangar page with their renders and content, and has not pushed its branch.
+This session merged its own rows onto the published bible (v0.20 now) and left the hangar
+page alone: a republish from main would drop the hovercraft from its content. When that
+branch lands, its docs resolve to main's copies with its facts ported, its content takes
+the tens (movespeed times ten, foe moves present), and the hangar page is republished.
 
 **Open from the audit (1 October).** The bible's HUD palette row (18 September) read Ryan's
 swatch confusions as protanomalous, while the 29 September rule says he has not named the
@@ -288,6 +303,6 @@ it and ticked in the commit that lands it; this is the order to take them in.
 1. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
 2. Ryan's text for the new machines and components; the machines' scale on the map; the strikes, then the acts and movement, judged running.
 3. The discuss-first decisions in the Ryan section, the economy last; enemy targeting decided and built 2 October (the paragraph above; the runner's read is the baseline question); the commander layer once the balance has a baseline.
-4. Ready to build: movement by way of moving (the to-do's Engine line); the pacing pieces after Ryan's session; the joint pass, then the idle acts, then the movement animations; the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased parked, Corrode, foe roles), and a dedicated hunter foe and spawned formations once proposed.
+4. Ready to build: the pacing pieces after Ryan's session; the movement leftovers (the gauge, a three-wide crossing); the joint pass, then the idle acts, then the movement animations; the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased parked, Corrode, foe roles), and a dedicated hunter foe and spawned formations once proposed.
 5. Audio: a full play of Hold The Line, the console's fresh pass and the effects' picks, the two boss themes.
 6. A prototype hangar in the game (paints and loadouts, no economy). Art: enemy art through foeforge, the hangar as a model. Before a phone leaves the desk: onboarding, then tuning.

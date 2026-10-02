@@ -74,10 +74,67 @@ func test_chassis_validator_guards_hardpoints() -> void:
 	assert_true(stuffed, "filler is refused")
 
 
+func test_chassis_validator_wants_one_way_of_moving_and_moves_in_tens() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var two: Dictionary = db.chassis["badger"].duplicate(true)
+	two["traits"] = ["tracked", "walker"]
+	db.chassis["twoways"] = two
+	var none: Dictionary = db.chassis["badger"].duplicate(true)
+	none["traits"] = ["stealth"]
+	db.chassis["noway"] = none
+	var odd: Dictionary = db.chassis["badger"].duplicate(true)
+	odd["movespeed"] = 7
+	db.chassis["odd"] = odd
+	var twoways := false
+	var noway := false
+	var odd_move := false
+	for e in db.validate():
+		if e.begins_with("chassis twoways") and e.contains("exactly one way of moving"):
+			twoways = true
+		if e.begins_with("chassis noway") and e.contains("exactly one way of moving"):
+			noway = true
+		if e.begins_with("chassis odd") and e.contains("in tens"):
+			odd_move = true
+	assert_true(twoways, "two ways of moving are refused")
+	assert_true(noway, "no way of moving is refused")
+	assert_true(odd_move, "a move that is not in tens is refused")
+
+
+func test_movement_flags_name_a_chassis_faster_on_every_ground_and_never_refuse() -> void:
+	# Ryan, 2 October: a flag, never a refusal; a slow wheeled APC is a valid design.
+	var db := _db()
+	var synthetic: Array = [
+		{"name": "Fast Tank", "traits": ["tracked"], "movespeed": 40},
+		{"name": "Slow Car", "traits": ["wheeled"], "movespeed": 20},
+		{"name": "Walker A", "traits": ["walker"], "movespeed": 30},
+		{"name": "Walker B", "traits": ["walker"], "movespeed": 20},
+		{"name": "Bird", "traits": ["flyer"], "movespeed": 50},
+	]
+	var flags := db.movement_flags(synthetic)
+	var tank_over_car := false
+	var walker_tie := false
+	var bird := false
+	for f in flags:
+		if f.begins_with("Fast Tank is at least as fast as Slow Car"):
+			tank_over_car = true
+		if f.begins_with("Walker A is at least as fast as Walker B") or f.begins_with("Walker B is at least as fast as Walker A"):
+			walker_tie = true
+		if f.contains("Bird"):
+			bird = true
+	assert_true(tank_over_car, "a tank at 40 matches the car's open ground and beats it elsewhere: flagged (%s)" % str(flags))
+	assert_false(walker_tie, "two walkers a weight class apart are weight, not a flag")
+	assert_false(bird, "flyers are exempt: they pay by not blocking")
+	assert_eq(db.validate().size(), 0, "the content still validates clean whatever the flags")
+	for f in db.movement_flags():
+		print("  movement flag: %s" % f)
+
+
 func test_sparrowhawk_loadout_matches_design() -> void:
 	var db := _db()
 	var u := db.make_mech("sparrowhawk")
-	assert_eq(u.movespeed, 5, "sparrowhawk is fast")
+	assert_eq(u.movespeed, int(db.chassis["sparrowhawk"]["movespeed"]), "the move is the content's, in tens")
+	assert_true(u.movespeed % 5 == 0 and u.movespeed > 0, "moves are in tens")
 	assert_true(u.traits.has("flyer"), "sparrowhawk flies")
 	assert_false(u.can_block(), "and therefore does not block")
 	var p: Dictionary = db.chassis["sparrowhawk"]["passive"]
@@ -88,17 +145,17 @@ func test_sparrowhawk_loadout_matches_design() -> void:
 
 func test_packs_unpack_by_foe_type() -> void:
 	var db := _db()
-	var ghouls := Unit.pack(7, "ghouls", Vector2i.ZERO, "undead", 2, 6, "ghoul")
+	var ghouls := Unit.pack(7, "ghouls", Vector2i.ZERO, "undead", 20, 6, "ghoul")
 	var foes := db.foes_for(ghouls)
 	assert_eq(foes.size(), 6, "six ghouls from strength six")
 	for f in foes:
 		assert_eq(f.display_name, "Ghoul", "all the same type")
 		assert_eq(f.pack_id, 7, "foe remembers its pack")
-	var necros := Unit.pack(8, "necromancers", Vector2i.ZERO, "undead", 2, 2, "necromancer")
+	var necros := Unit.pack(8, "necromancers", Vector2i.ZERO, "undead", 20, 2, "necromancer")
 	var backs := db.foes_for(necros)
 	assert_eq(backs.size(), 2, "two necromancers")
 	assert_true(backs[0].prefers_back, "necromancer holds the back")
-	var untyped := Unit.pack(9, "whatever", Vector2i.ZERO, "demonic", 2, 3)
+	var untyped := Unit.pack(9, "whatever", Vector2i.ZERO, "demonic", 20, 3)
 	var fallback := db.foes_for(untyped)
 	assert_eq(fallback.size(), 3, "a pack with no type falls back to the faction's first spawn entry")
 	assert_eq(fallback[0].display_name, "Brute", "which is the brute for demons")
@@ -130,7 +187,7 @@ func test_content_mech_survives_a_skirmish_round() -> void:
 	var sk := Skirmish.new(5)
 	sk.add_mech(db.make_mech("badger"))
 	sk.add_mech(db.make_mech("clydesdale"))
-	var sq := Unit.pack(1, "risen", Vector2i.ZERO, "undead", 2, 6)
+	var sq := Unit.pack(1, "risen", Vector2i.ZERO, "undead", 20, 6)
 	sk.add_foes(db.foes_for(sq), sq)
 	sk.begin()
 	sk.start_round()

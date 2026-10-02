@@ -69,7 +69,7 @@ func test_route_to_reaches_every_reachable_hex() -> void:
 		var cost := 0
 		for step in route:
 			assert_true(Hex.are_adjacent(prev, step), "steps are adjacent")
-			cost += BattleMap.move_cost(b.map.terrain[step], m.traits)
+			cost += BattleMap.spend(b.map.terrain[step], m.traits, m.movespeed - cost)
 			prev = step
 		assert_eq(cost, dests[h], "route cost matches the reachable cost")
 	assert_true(b.field.route_to(m, m.pos).is_empty(), "no route to itself")
