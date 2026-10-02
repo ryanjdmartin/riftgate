@@ -68,11 +68,11 @@ func add_unit(u: Unit) -> Unit:
 func dress_pack(sq: Unit, foe: String = "") -> Unit:
 	var p: Dictionary = foe_profiles.get(foe if not foe.is_empty() else sq.foe_id, {})
 	sq.zone = int(p.get("zone", sq.zone))
+	if p.has("movespeed"):
+		sq.movespeed = int(p["movespeed"])   # the boss's too: its patrol step is content
 	if not sq.elite:
 		sq.behaviour = str(p.get("behaviour", sq.behaviour))
 		sq.hunts = str(p.get("hunts", sq.hunts))
-		if p.has("movespeed"):
-			sq.movespeed = int(p["movespeed"])
 	return sq
 
 
@@ -189,8 +189,8 @@ func route_from(u: Unit, from: Vector2i, budget: int, to: Vector2i) -> Array[Vec
 
 
 ## What a route costs `u` in move points, or -1 when it is not one it can walk: every step
-## adjacent to the last and standable, the whole within its movespeed. The rule Resolve
-## applies, asked ahead of time.
+## adjacent to the last and standable, each paid for out of what is left (a slow hex takes
+## the rest and so must be the last step). The rule Resolve applies, asked ahead of time.
 func route_cost(u: Unit, route: Array) -> int:
 	var cost := 0
 	var cur := u.pos
@@ -198,15 +198,18 @@ func route_cost(u: Unit, route: Array) -> int:
 		var s: Vector2i = step
 		if not Hex.are_adjacent(cur, s) or not can_stand(u, s):
 			return -1
-		cost += BattleMap.move_cost(map.terrain[s], u.traits)
-		if cost > u.movespeed:
+		var c := BattleMap.spend(map.terrain[s], u.traits, u.movespeed - cost)
+		if c < 0:
 			return -1
+		cost += c
 		cur = s
 	return cost
 
 
 ## Dijkstra from `from`, bounded by `budget` move points. Returns [dist, prev]. `blocked`
 ## hexes are not entered; `through_flyers` lets a pack pass a flyer's hex without landing.
+## A slow hex (BattleMap.SLOW) is entered with whatever is left and spends it all, so it
+## is reached at the budget and nothing is reached through it: the stop that no move buys.
 func _search(u: Unit, from: Vector2i, budget: int, blocked: Dictionary = {}, through_flyers: bool = false) -> Array:
 	var dist := {from: 0}
 	var prev := {}
@@ -224,9 +227,10 @@ func _search(u: Unit, from: Vector2i, budget: int, blocked: Dictionary = {}, thr
 		for n in Hex.neighbors(h):
 			if not map.has(n) or blocked.has(n) or not can_stand(u, n, through_flyers):
 				continue
-			var nd := d + BattleMap.move_cost(map.terrain[n], u.traits)
-			if nd > budget:
+			var c := BattleMap.spend(map.terrain[n], u.traits, budget - d)
+			if c < 0:
 				continue
+			var nd := d + c
 			if not dist.has(n) or nd < dist[n]:
 				dist[n] = nd
 				prev[n] = h
@@ -329,8 +333,31 @@ func _pick_target(sq: Unit) -> Vector2i:
 	if sq.behaviour == "hunt":
 		var prey := pick_prey(sq)
 		if prey != null:
-			return prey.pos
+			return hunt_target(sq, prey)
 	return _gate_target(sq)
+
+
+## Where a hunter heads for its prey: the prey's own hex when the pack could stand there
+## (the path stops at the body, which is the strike), else the nearest hex inside the
+## pack's zone of the prey that the pack can reach, nearest to the pack. A prey standing in
+## water (a wall to the horde) would otherwise give the planner an impassable goal and the
+## pack would stand still with no mark (found 2 October).
+func hunt_target(sq: Unit, prey: Unit) -> Vector2i:
+	if BattleMap.passable(map.terrain[prey.pos], sq.traits):
+		return prey.pos
+	var ring: Dictionary = {}
+	_ring_into(prey.pos, sq.zone, ring)
+	var best := prey.pos
+	var best_d := 1 << 30
+	for h in ring.keys():
+		var hx: Vector2i = h
+		if hx == prey.pos or not BattleMap.passable(map.terrain[hx], sq.traits):
+			continue
+		var d := Hex.distance(sq.pos, hx)
+		if d < best_d or (d == best_d and (hx.y < best.y or (hx.y == best.y and hx.x < best.x))):
+			best = hx
+			best_d = d
+	return best
 
 
 ## Each pack's path for this phase's movement, the machines having moved: the committed
@@ -353,7 +380,7 @@ func _react() -> Dictionary:
 		elif sq.behaviour == "hunt":
 			var prey := pick_prey(sq)
 			if prey != null:
-				path = _affordable(sq, map.find_path(sq.pos, prey.pos, sq.traits, blocked))
+				path = _affordable(sq, map.find_path(sq.pos, hunt_target(sq, prey), sq.traits, blocked))
 		plans[sq.id] = path
 		ends[sq.id] = _held_after(sq, path)
 	return plans
@@ -451,8 +478,8 @@ func _affordable(sq: Unit, path: Array[Vector2i]) -> Array[Vector2i]:
 		if map.gate_hexes.has(step) or (occ != null and occ.is_player() and occ.can_block()):
 			out.append(step)
 			break
-		var c := BattleMap.move_cost(map.terrain[step], sq.traits)
-		if c > budget:
+		var c := BattleMap.spend(map.terrain[step], sq.traits, budget)
+		if c < 0:
 			break
 		budget -= c
 		out.append(step)
@@ -589,8 +616,8 @@ func _execute_pack(sq: Unit, path: Array, result: PhaseResult, dry: bool = false
 			if not dry:
 				log.append("%s cannot fit at %s" % [sq.display_name, str(s)])
 			break
-		var c := BattleMap.move_cost(map.terrain[s], sq.traits)
-		if c > budget:
+		var c := BattleMap.spend(map.terrain[s], sq.traits, budget)
+		if c < 0:
 			break
 		budget -= c
 		# A flyer's hex is passed through but never landed on.
@@ -697,7 +724,7 @@ func tick_pressure(ticks: int) -> bool:
 	var at := nearest_free(map.rift, [])
 	var entry: Array = spawn_table[_spawn_index % spawn_table.size()] if not spawn_table.is_empty() else ["", 6]
 	_spawn_index += 1
-	var sq := Unit.pack(0, "%s pack" % str(entry[0]), at, spawn_faction, 2, int(entry[1]), str(entry[0]))
+	var sq := Unit.pack(0, "%s pack" % str(entry[0]), at, spawn_faction, Unit.PACK_MOVE, int(entry[1]), str(entry[0]))
 	add_unit(dress_pack(sq))
 	log.append("Rift pressure peaks: %s emerge at %s" % [sq.display_name, str(at)])
 	return true

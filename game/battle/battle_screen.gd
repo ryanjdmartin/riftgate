@@ -471,11 +471,8 @@ func _on_hex_tapped(h: Vector2i) -> void:
 		# Nothing to route: the tap asks what the ground is (Ryan, 21 September). Its
 		# properties will grow with the terrain rules.
 		var t: int = battle.field.map.terrain[h]
-		var who: Array[String] = []
-		for pair in [["ground", []], ["hover", ["hover"]], ["flyer", ["flyer"]]]:
-			if BattleMap.passable(t, pair[1]):
-				who.append(pair[0])
-		var text := "%s\nmove %d · %s" % [str(BattleMap.TERRAIN_NAMES.get(t, "ground")).to_upper(), BattleMap.move_cost(t, []), " · ".join(who) if not who.is_empty() else "impassable"]
+		# Each way of moving's word for this ground (decided 2 October), then the horde's rule.
+		var text := "%s\n%s" % [str(BattleMap.TERRAIN_NAMES.get(t, "ground")).to_upper(), BattleMap.ground_words(t)]
 		_map.inspected = h   # the hex lit, so what was tapped is plain (Ryan, 29 September)
 		_show_details(text, _map.position + _map.to_screen(_map.center(h)))
 		_map.queue_redraw()

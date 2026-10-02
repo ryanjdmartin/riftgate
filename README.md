@@ -98,11 +98,13 @@ python3 tools/hangar_data.py        # writes docs/hangar/pins.json, checks the r
 # regenerate docs/vocabulary.md from content/vocabulary.json
 godot --headless --path . -s tools/export_vocabulary.gd
 
-# the balance report: every chassis alone and the starting team against every pack, played by
-# random and by greedy over 200 seeds a cell, written to docs/balance.md (about fifteen minutes).
-# --seeds N, --policies greedy, --withdraw 40 (a persona), --json out.json for every cell;
+# the balance report: every chassis alone and the starting team against every pack and against
+# each faction's whole formation in one fight, played by random and by greedy over 200 seeds a
+# cell, written to docs/balance.md (about half an hour); the team cells run under both targeting
+# rules and a section compares them. --seeds N, --policies greedy, --withdraw 40 (a persona),
+# --targeting lowest (the rule before 2 October for the matrix), --json out.json for every cell;
 # --trace "sparrowhawk|brute x4|greedy|3" plays that one fight and prints its log instead.
-perl -e 'alarm 1800; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
+perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
 
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument
 # poses the screen first. Skirmish: codex, mechcodex, hold, confirm, lock, strike,

@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 101 implemented, 12 planned, 0 idea.
+Status: 104 implemented, 7 planned, 0 idea.
 
 ## Resource
 
@@ -64,6 +64,8 @@ Status: 101 implemented, 12 planned, 0 idea.
 | **Overwhelm** | Player keyword. When a blow kills a front-rank foe, what it had past the kill carries into the foe behind it in the same column. Nothing stands behind a massive foe. | implemented |
 | **Burn** | Player keyword. Burning enemies lose 5 HP per stack at the start of their action, then lose one stack. Bypasses armour. Can be resisted. | implemented |
 | **Corrode** | Player keyword. Corroding enemies lose 1% of their HP per stack at the start of their action, then lose one stack. Bypasses armour. Can be resisted. | planned |
+| **Lure** | Player keyword, on any entry aimed at a foe: a weapon, a status, or an entry that does nothing else. Every foe the entry reaches turns on this machine for the round, intents and all; reach and area decide who and how many. A lured foe whose move has no target keeps doing it. | implemented |
+| **Disrupt** | Player keyword, on any entry aimed at a foe. The foe does its other move instead, this round, and its new intent shows at once. A foe with nothing else open is not moved. | implemented |
 | **Suppress** | Player keyword. The target skips its telegraphed action this round, then gains two stacks of Numbed (three if massive). A foe may shrug it off: its own stun resistance plus 10% a Numbed stack. | implemented |
 | **Volatile** | Player keyword, on any kind of component. Spending it bites its owner for 10 hull, past shield and armour, before the component acts. A blank is never spent, so a disabled entry does not bite. | implemented |
 | **Devour** | Player keyword. Every foe this component kills gives its owner a stack of Overcharged for the skirmish; the stacks fade one a round at the round's end. | implemented |
@@ -74,9 +76,6 @@ Status: 101 implemented, 12 planned, 0 idea.
 | **Disable** | Enemy keyword. The component the target's die is showing is switched off through the target's next turn: if the die lands on it, it comes up blank. | implemented |
 | **Corrupt** | Foe attack keyword. Each blow that lands leaves a stack of Corrupted on the component the target's die is showing: it deals damage to its owner whenever spent. | implemented |
 | **Cleanse** | Player keyword, on shield and vent components. Whoever the component is spent on also loses every Disabled, Corrupted and Overheating status. A rapid component's own switch-off is not a status a cleanse touches. | implemented |
-| **Energy Armour** | Player status. Until end of round, attacks that strike shield are reduced by a flat amount. Stacks. | planned |
-| **Scramble** | Player keyword. Randomize the enemy's intended target. | planned |
-| **Confuse** | Player keyword. Randomize the enemy's intended target to target another enemy instead. | planned |
 
 ## Status
 
@@ -86,13 +85,11 @@ Status: 101 implemented, 12 planned, 0 idea.
 | **Retaliate** | Mech status. While it lasts, a foe that strikes this machine's bare hull is Shocked. From buff equipment it lasts the rounds the component says; the Armadillo's Faraday Hull carries it always. | implemented |
 | **Shocked** | Foe status. The next blow this foe takes deals double damage, then the status clears. A Shocked foe that strikes bare hull again takes 10. Never stacks. | implemented |
 | **Overcharged** | Mech status. Each stack is +10% damage on this machine's attacks. From buff equipment it lasts through the rounds the component says; from devour it lasts the skirmish and loses a stack at the end of each round unless a passive says otherwise. | implemented |
-| **Braced** | Mech status. Takes 15% less damage per stack. Granted by buff equipment for the rounds it says. | implemented |
+| **Braced** | Mech status. Armour +10 per stack: that much off every blow on bare hull, flat. Granted by buff equipment for the rounds it says. | implemented |
 | **Primed** | Mech status. Every blow this machine lands leaves a stack of Burning per stack of Primed. Granted by buff equipment for the rounds it says. | implemented |
 | **Disabled** | Component status. This die entry comes up blank while it lasts; the component itself is untouched. A foe's disable lasts through the mech's next turn and can be cleansed; a rapid component's own switch-off ends with the round. | implemented |
 | **Corrupted** | Component status. Every time this die entry is spent it bites its owner for 10 per stack, shield first, before the component acts. A blank is never spent, so a disabled entry does not bite. Stacks. Clears at end of skirmish. Can be cleansed. | implemented |
 | **Phased** | Player and enemy status. This unit cannot attack, nor can it be damaged by attacks, until end of round. | planned |
-| **Taunt** | Player keyword on shield and vent components, and the status it leaves. Until the end of the round every front-rank foe targets whoever the component was spent on; they turn at once, intents and all, and a foe that loses its target picks the taunting machine. A buff component may grant it too. | implemented |
-| **Beacon** | Player keyword on shield and vent components, and the status it leaves. Until the end of the round every back-rank foe targets whoever the component was spent on, the way a taunt draws the front. A massive foe stands in both ranks and follows either. | implemented |
 | **Burning** | Foe status. Loses 5 HP per stack at the start of its action, then loses one stack. Bypasses armour. Applied by the burn keyword, one stack per twenty damage dealt. | implemented |
 | **Suppressed** | Foe status. Skips its action this round, then clears. | implemented |
 | **Cracked component** | Mech status, global rule. When a blow lands on bare hull (no shield standing) and what gets past armour is at least a quarter of maximum hull, the mech's die is rolled and the component it lands on is injured. An intact component cracks: it loses its keywords and unique effects, but still does its basic action, can still crit, still generates heat, and still provides its passive bonuses and abilities. Any shield standing, however small, prevents injury, except against a breach; a foe's double strike is the other way past it. A cracked component stays cracked across skirmishes and battles until repaired in the hangar. | implemented |
@@ -116,8 +113,8 @@ Status: 101 implemented, 12 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Movespeed** | Movement points per phase. Entering a hex costs its terrain's move cost for that unit's traits. | implemented |
-| **Intent** | Each pack's path for the phase is previewed exactly. It heads for the gate or the nearest city defense, or hunts mechs if aggro. Player routes resolve first. | implemented |
+| **Movespeed** | Move in tens: how far a machine goes in a phase. A normal hex costs 10, so MOVE 40 is four hexes on open ground. Each way of moving calls each ground fast (5), normal (10) or slow: a slow hex can always be entered with any move left, and the step ends the move. Move left at the end of a phase is lost. | implemented |
+| **Intent** | Each pack commits its path when the round opens and the map shows it exactly: a pusher walks to the gate or the nearest city defense, an aggressive pack turns for a machine that ends inside its reach, a hunter chases the machine it has locked. Player routes resolve first. | implemented |
 | **Body block** | A pack stops at the first hex on its path occupied by a blocking unit. Flyers do not block; packs pass through their hex but never land on it. | implemented |
 | **Contact** | After all movement, every machine standing inside a pack's zone fights that pack. A machine inside two packs' zones joins their fights into one; that is the only way fights join. Multiple skirmishes resolve one at a time, in the order you choose. | implemented |
 | **Engagement zone** | Every pack has a zone, a radius in hexes around where it ends its move, drawn on the map before Resolve. Stand inside it and you fight that pack. Nothing else decides who fights: a pack stops only where a body stands in its path, and a machine beside its path is walked past unless the zone reaches it. | implemented |
@@ -131,22 +128,22 @@ Status: 101 implemented, 12 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Plain** | Cost 1. | implemented |
-| **Road** | Cost 1. | implemented |
-| **Rough** | Cost 2; 1 for a walker or a flyer. | implemented |
-| **Ruins** | Cost 2; 1 for a walker or a flyer, 3 for hover. | implemented |
-| **Water** | Fordable by machines this size: cost 1 for hover, 2 for a walker, 3 for anything else on the ground; a flyer ignores it. | implemented |
-| **Mountain** | Impassable except for flyer. | implemented |
+| **Plain** | Open ground. Normal pace for every machine; wheels run fast. Packs cross it. | implemented |
+| **Road** | Open ground, the same as plain: the road is art. Normal pace for every machine; wheels run fast. Packs cross it. | implemented |
+| **Rough** | Forest and scrub. Normal pace for tracks, walkers and flyers; slow for wheels and hovercraft, which can enter it but end their move there. Packs cross it at full pace. | implemented |
+| **Ruins** | Rubble. Normal pace for walkers and flyers; slow for tracks, wheels and hovercraft, which can enter it but end their move there. Packs cross it at full pace. | implemented |
+| **Water** | Hovercraft skim it fast and tracks ford at normal pace; walkers and wheels can enter it but end their move there; flyers pass over. Packs never enter it. | implemented |
+| **Mountain** | Impassable except for flyers, which cross at normal pace. Packs go around. | implemented |
 
 ## Trait
 
 | Term | Codex | Status |
 |---|---|---|
-| **Flyer** | Ignores terrain cost, crosses water and mountains. Packs pass through it: it cannot stop one. It fights by the zone like any machine. | implemented |
-| **Hover** | Skims water at cost 1 and chokes on ruins at cost 3. Stops a pack in its path like any ground machine. | implemented |
-| **Walker** | Rough and ruins cost 1. | implemented |
-| **Tracked** | No effect yet. | planned |
-| **Wheeled** | No effect yet. | planned |
+| **Flyer** | Normal pace over every ground, mountains included. Packs pass through it: it cannot stop one. It fights by the zone like any machine. | implemented |
+| **Hover** | Skims water fast. Rough ground and ruins are slow: it can enter them, and the step ends its move. Stops a pack in its path like any ground machine. | implemented |
+| **Walker** | Legs. Rough ground and ruins at normal pace; water is slow: it can enter it, and the step ends its move. | implemented |
+| **Tracked** | Tracks. Ploughs through forest and fords water at normal pace; rubble is slow: it can enter ruins, and the step ends its move. | implemented |
+| **Wheeled** | Wheels. Fast on open ground. Rough ground, ruins and water are slow: it can enter them, and the step ends its move. | implemented |
 | **Stealth** | A pack's zone never pulls it in on its own. Joins a fight only when another machine is in it, or when it stopped a pack in its path; a pack whose zone merely falls on it has walked past. | implemented |
 | **City defense** | A static player-side unit. Packs path toward it, and it joins any skirmish it is adjacent to. | implemented |
 
@@ -187,6 +184,7 @@ Status: 101 implemented, 12 planned, 0 idea.
 | Term | Codex | Status |
 |---|---|---|
 | **Stun resistance** | A foe's base chance to shrug off a suppress, before Numbed. Rank and file have none; bosses carry some. | implemented |
+| **Aim** | What a foe's sense goes for when it picks whom to strike, chosen for every foe on its own as the round opens and shown as its arrow before you act. The exposed: weighted toward the machine its blow would hurt most, a shield standing lowering the draw and a shield about to break raising it. Anything: any machine alike. Heat: the hottest machine. The armed: a machine showing an intact weapon. Fires as one: the rank shares a pick. A move may aim differently from its foe. The pick is a commitment: a foe whose target shields up still swings at it. | implemented |
 | **Breach** | A breaching blow overflows: what the shield cannot absorb reaches the hull, and if that is a quarter of maximum hull it injures a component like any bare-hull blow. It breaks the fundamental promise that a standing shield stops the big hit, so it is a dangerous, uncommon attack modifier, and its counterplay is not the shield: redirect it or interrupt it. | implemented |
 | **Foe action** | A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (folding against damage, regrowing, readying to get back up, calling up a foe, rallying the others, costing the team a reroll, stoking a machine's heat, scrambling a reroll, cracking a component). Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number. | implemented |
 | **Scorch** | Foe attack keyword. Each blow that lands leaves one stack of Overheating on the mech it hit. | implemented |
@@ -209,6 +207,8 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Damage range** (implemented): Ranges are content-authored per component; no upgrade path raises min or max yet.
 - **Critical hit** (implemented): The base is Face.CRIT_MULT, a balance knob; lower it if crit triggers make crits too strong at low chance.
 - **Overwhelm** (implemented): Built 29 September. The spill is plain damage: it spends a shock and feeds a devour, and carries no other keyword of the blow. The Wild Boar's Juggernaut Drive grants it to every attack (grant_keyword, the first passive to add a keyword).
+- **Lure** (implemented): Decided 2 October in place of Taunt and Beacon (bible, section 5). No status and no chip: the arrow is the record. A draw by ally (cover) is parked until a support role proves to need it.
+- **Disrupt** (implemented): Decided 2 October in place of the planned Scramble and Confuse (bible, section 5). Deterministic: the next move in the foe's list that its conditions allow, so a boss steps through its pattern.
 - **Numbed** (implemented): Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths. Exempt from everything (Ryan, 2 October): a stun resist that passives or cleanses could touch is where other games' combat loops broke.
 - **Stun resistance** (implemented): 30 on the three bosses as a placeholder.
 - **Volatile** (implemented): The Arsenal's self-damage (Ryan, 28 September), built 29 September: hull outright where the Corrupted bite takes shield first. The bite is a placeholder number (Skirmish.VOLATILE_BITE). It will feed the Nemesis's Crucible Capacitor once that counts blows that reach hull.
@@ -219,14 +219,13 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Retaliate** (implemented): Was flat damage equal to the component's power. Thorns scales with enemy blows and so inverts horde against boss; a debuff does not (Ryan, 28 September). The Armadillo's passive carries it always on.
 - **Shocked** (implemented): The Armadillo's retaliation (Ryan, 28 September): the tank sets up kills instead of out-damaging area weapons against a horde, and it works on a boss. The discharge on a second strike is the small thorns left in. Numbers are placeholders.
 - **Overcharged** (implemented): The buff side and devour run (29 September); a buff's stacks and devour's are the same status to the machine and add up. The Ammit's Quintessence Tap (which stops the decay and keeps the stacks for the battle, never the campaign) is planned. Name is a placeholder.
-- **Braced** (implemented): Placeholder name and number (29 September).
+- **Braced** (implemented): Placeholder name and number (29 September). Flat since 2 October; it was 15% less damage a stack.
 - **Primed** (implemented): Placeholder name (29 September).
 - **Corrupted** (implemented): The bite is a placeholder number (Skirmish.CORRUPT_BITE_PER_STACK).
-- **Taunt** (implemented): Ryan, 28 September: an accessible keyword, not a locked one; the game needs more damage redirection or a tank has no reason to be in the fight. The family to build: taunt (front rank), beacon (back rank), a swap of targeting with an ally, an interpose that takes a blow aimed at an ally.
 - **Cracked component** (implemented): Threshold is a placeholder. Repair cost and the hangar screen are not built.
 - **Reinforcements** (implemented): Elites should surface at set points rather than in pool order.
 - **Massive** (implemented): Cleave treats it as a front-rank neighbour; pierce cannot hit anything behind it because nothing is.
-- **Intent** (implemented): Aggro is a fixed flag. Should be a behaviour per foe type.
+- **Movespeed** (implemented): Built 2 October (bible section 4). Every chassis's move is a placeholder Ryan sets by size and role; the content check flags a chassis at least as fast as another on every ground, never refuses it.
 - **Contact** (implemented): No participant cap. May need one for phone readability. Decided 1 October: zones on the packs, measured from where each stops; nothing chains.
 - **Engagement zone** (implemented): Decided 1 October after the touching rule (22 September) and the engagement range (28 September). Radii are content on the foe type: front-rank 1, back-rank 3, bosses 2, placeholders. Dropped on the way: chaining in any form, a touch rule between packs, double-booking a machine into two fights, the zone as the stop.
 - **Behaviour** (implemented): Decided 1 October: the enemy commits first, so no pack re-aims at the plan without a drawn trigger. Placeholders: the ghoul aggressive, the brute hunts the strongest at move 3; a dedicated hunter is a foe to name.
@@ -234,11 +233,10 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Footprint** (implemented): Footprints do not rotate with facing.
 - **Structure** (implemented): The rift does nothing yet beyond marking where packs spawn.
 - **Spawn** (implemented): A full spawn list should arrive together as a formation; pressure currently sends one pack at a time.
-- **Road** (implemented): Tracked and wheeled machines should move faster on roads. Not coded; movement in tens brings it.
 - **Ruins** (implemented): Designed as cover for the pack inside a skirmish. Skirmish terrain conditions are not coded.
-- **Water** (implemented): Designed to dampen burn inside a skirmish. Not coded.
-- **Tracked** (planned): Intended: faster on roads; its prices come with movement in tens (bible section 4). Was tank until 2 October (Ryan).
-- **Wheeled** (planned): The cars (Ryan, 2 October: the Prairie Dog and the Dingo): faster on roads, slow in rough ground and water; its prices come with movement in tens (bible section 4).
+- **Water** (implemented): Designed to dampen burn inside a skirmish. Not coded. The generator gives one real water feature a map with crossings for the horde, with the hovercraft (bible section 4).
+- **Tracked** (implemented): Was tank until 2 October (Ryan). Built 2 October.
+- **Wheeled** (implemented): The cars (Ryan, 2 October: the Prairie Dog and the Dingo). Built 2 October.
 - **Stealth** (implemented): The Dingo (Ryan, 28 September): a support car that waits in the wings while the heavies get into position, then joins their fight, and never fights alone unless run into. Pays again when hunter packs exist.
 - **City defense** (implemented): Defenses have no die. They cannot act inside a skirmish yet.
 - **On shield gain** (implemented): Built 30 September (Effects.fire); no content uses it yet.
@@ -254,6 +252,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Component** (implemented): Multi-slot components were considered and scrapped on 18 September as invisible complexity.
 - **Fixed component** (implemented): Decided against unlocking fixed slots for money (18 September).
 - **Armour** (implemented): Numbers are placeholders. Armour from components is content, not yet written.
+- **Aim** (implemented): Decided 2 October (bible, section 5). Content: `aim` on a foe type and on a move; `when` on a move is the condition that lets a foe pick it, and a special never fires twice running.
 - **Breach** (implemented): A property of a foe's attack action. No foe carries it yet; Ryan places it. Redirect and interrupt do not exist yet. Name is a placeholder (pierce is taken by the player keyword).
 - **Foe action** (implemented): Only attacks run; defend, buff and debuff actions stay planned. Weighted RNG is the whole brain for now.
 - **Vents all** (implemented): Built 30 September for the Afterburner Cannon (vents_all and power_per_heat on the face). Only the first shot of a chain fires the heat.

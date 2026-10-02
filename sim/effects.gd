@@ -46,7 +46,7 @@ const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "roll_max"],
 	"on_crit": ["multiply_damage", "add_damage", "add_burn", "vent_heat", "add_crit_damage"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "draw_rank", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
@@ -79,29 +79,24 @@ const STATUS := {
 	# Devour will stack Overcharged too, for the skirmish. Names are placeholders for Ryan.
 	"overcharged": {"id": "overcharged", "name": "Overcharged", "description": "Attacks deal +10% damage per stack.",
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "multiply_damage", "value": 1.1}]},
-	"braced": {"id": "braced", "name": "Braced", "description": "Takes 15% less damage per stack.",
-		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 0.85}]},
+	# Brace is temporary armour (2 October): flat off every blow, the same word and icon as the
+	# chassis stat, never a percentage.
+	"braced": {"id": "braced", "name": "Braced", "description": "Armour +10 per stack.",
+		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 10}]},
 	"primed": {"id": "primed", "name": "Primed", "description": "Every blow it lands leaves a stack of Burning, per stack.",
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_burn", "value": 1}]},
 	# Retaliation as a debuff, not thorns (Ryan, 28 September): a foe that strikes this
 	# machine's bare hull is Shocked, and the team's next blow on it lands double.
 	"retaliate": {"id": "retaliate", "name": "Retaliate", "description": "A foe that strikes this machine's bare hull is Shocked.",
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "shock_on_hull_strike", "value": 1}]},
-	# Damage redirection, common not locked (Ryan, 28 September): a rank of foes turns on the
-	# machine for the round. From a shield or vent keyword, or a buff. draw_rank 0 is the
-	# front rank, 1 the back.
-	"taunt": {"id": "taunt", "name": "Taunt", "description": "Every front-rank foe targets this machine.",
-		"tags": ["buff", "draw"], "effects": [{"trigger": "static", "effect": "draw_rank", "value": 0}]},
-	"beacon": {"id": "beacon", "name": "Beacon", "description": "Every back-rank foe targets this machine.",
-		"tags": ["buff", "draw"], "effects": [{"trigger": "static", "effect": "draw_rank", "value": 1}]},
 	# The foe's side of it: one status, never stacked, spent by the blow it doubles.
 	"shocked": {"id": "shocked", "name": "Shocked", "description": "The next blow it takes deals double, then the shock is spent. Striking bare hull again costs it 10.",
 		"tags": ["shock"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 2}]},
 	# What a foe's defend, buff and debuff actions leave (30 September). Folded fades at the
 	# foe's next action; Kindled lasts the next round; Risen is a charge spent by a death;
 	# Scrambled sits on a machine until its next reroll, and a cleanse clears it.
-	"folded": {"id": "folded", "name": "Folded", "description": "Takes half damage until its next action.",
-		"tags": ["guard"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 0.5}]},
+	"folded": {"id": "folded", "name": "Folded", "description": "Armour +10 until its next action.",
+		"tags": ["guard"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 10}]},
 	"kindled": {"id": "kindled", "name": "Kindled", "description": "Hits 10 harder this round.",
 		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 10}]},
 	"risen": {"id": "risen", "name": "Getting Back Up", "description": "Returns from the pool once after dying, unless executed.",
@@ -110,7 +105,7 @@ const STATUS := {
 		"tags": [CLEANSABLE], "effects": [{"trigger": "status", "effect": "scramble_reroll", "value": 1}]},
 }
 ## The statuses a buff component may grant: the machines' own, never a foe's.
-const MECH_STATUSES := ["overcharged", "braced", "primed", "retaliate", "taunt", "beacon"]
+const MECH_STATUSES := ["overcharged", "braced", "primed", "retaliate"]
 ## target_status: the foe struck carries any live status (burning, suppressed, numbed...).
 ## ally_present: another live machine is in the fight (the unit's `allies`, kept by the skirmish).
 const SUPPORTED_WHEN := ["component_cracked", "reach_melee", "reach_line", "reach_indirect", "target_status", "ally_present"]
@@ -221,14 +216,6 @@ static func remove(u, id: String) -> bool:
 			keep.append(m)
 	u.modifiers = keep
 	return gone
-
-
-## Does this machine draw the foes of `rank` (0 front, 1 back) onto itself right now?
-static func draws_rank(u, rank: int) -> bool:
-	for pair in _taking_part(u, "static", null):
-		if str(pair[0].get("effect", "")) == "draw_rank" and int(pair[0].get("value", -1)) == rank:
-			return true
-	return false
 
 
 ## Does this machine shock a foe that strikes it? `blocked` asks about a blow its shield
@@ -582,6 +569,17 @@ static func foe_attack_bonus(f) -> int:
 	return n
 
 
+## What a foe's armour gains from its statuses (add_stat armour, static; a hardened foe), per
+## stack. A foe has no base dictionary, so this is its half of `stat`.
+static func foe_armour_bonus(f) -> int:
+	var n := 0
+	for pair in _taking_part(f, "static", null):
+		var eff: Dictionary = pair[0]
+		if str(eff.get("effect", "")) == "add_stat" and str(eff.get("stat", "")) == "armour":
+			n += int(eff.get("value", 0)) * int(pair[1].stacks)
+	return n
+
+
 ## Is this machine's next reroll scrambled (a foe's debuff)?
 static func is_scrambled(u) -> bool:
 	for pair in _taking_part(u, "status", null):
@@ -774,7 +772,6 @@ static func effect_text(eff: Dictionary) -> String:
 		"suppress": body = "turns off %s" % vs
 		"shock_on_hull_strike": body = "a foe that strikes bare hull is Shocked"
 		"shock_on_block": body = "a foe whose blow the shield blocks is Shocked"
-		"draw_rank": body = "the %s rank targets this machine" % ("front" if int(v) == 0 else "back")
 		"grant_keyword":
 			var kw := Face.keyword_from_name(str(v))
 			body = "gains %s" % (Face.keyword_label(kw) if kw > 0 else str(v))
