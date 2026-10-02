@@ -495,7 +495,7 @@ def w_blade():
     return room(b, decay=0.2, mix=0.14)
 
 
-def w_blunt():
+def w_blunt(layers=()):
     # A blunt impact (Ryan, 2 October: one sound for the plow and the knuckles alike; these
     # are multi-ton war machines, so a blunt blow is a car hitting a wall). The mass coming:
     # a low rumble rising with the hydraulics driving; the impact: the biggest thud of the
@@ -525,6 +525,9 @@ def w_blunt():
         b = at(b, mix(F.body(F.RNG.uniform(220.0, 340.0), 90.0, 0.07, click=0.6) * 0.5, F.knock([F.RNG.uniform(500.0, 1000.0), F.RNG.uniform(1200.0, 2200.0)], [0.03, 0.02], [0.6, 0.3]) * 0.4), when, 1.0 - 0.2 * k)
     b = at(b, F.ratchet(7, 0.35, 700.0, 0.4, jitter=0.3), 0.75)
     b = at(b, F.hydraulic(0.3, 3000.0, 600.0, 0.3), 0.7)
+    # the layers a `sound` list puts on the landing (the first word is the blow)
+    if "plasma" in layers:
+        b = at(b, plasma_splash(0.9), 0.33)
     return room(b, decay=0.25, mix=0.16)
 
 
@@ -581,10 +584,18 @@ def w_plasma():
     voice = F.choir([0, 7], n, gain=0.4, vowel="oh", octave=2)[:n] * F.env_ad(n, 0.01, 0.1)
     crackle = F.bp(F.noise(n), 2000.0, 8000.0) * (F.RNG.uniform(0.0, 1.0, n) > 0.975) * F.env_ad(n, 0.02, 0.12) * 0.5
     b = at(b, heft(mix(whoomp, hum, voice, crackle, boom_tail(0.6, 0.6)), 0.6), wind)
+    b = at(b, plasma_splash(), wind + 0.09)
+    return room(b, decay=0.25, mix=0.16)
+
+
+def plasma_splash(gain=1.0):
+    """The hot splash where plasma lands: a burst, a small blast, steam. The plasma's own hit,
+    and the layer a `sound` list puts on another blow (the Gravity Knuckles: blunt, plasma)."""
     splash = mix(F.burst(0.25, 300.0, 3500.0, decay=0.07) * 0.9, F.explosion(0.5, 40.0, 0.6, debris=0),
                  F.hp(F.noise(n_of(0.6)), 2500.0) * F.env_ad(n_of(0.6), 0.003, 0.16) * 0.35)
-    b = at(b, heft(splash, 0.5), wind + 0.09)
-    return room(b, decay=0.25, mix=0.16)
+    n = n_of(0.5)
+    crackle = F.bp(F.noise(n), 2000.0, 8000.0) * (F.RNG.uniform(0.0, 1.0, n) > 0.975) * F.env_ad(n, 0.02, 0.15) * 0.5
+    return heft(mix(splash, crackle), 0.5) * gain
 
 
 def w_dish_shield():
@@ -934,7 +945,7 @@ NEW = {
     "die_roll": (c_die_roll, "die_roll", "die_roll"), "die_lock": (c_die_lock, "die_lock", "die_lock"),
     "resolve": (c_resolve, "resolve", "resolve"), "intent": (c_intent, None, "die_lock"),
     "w_barrel": (w_barrel, "gunfire", "gunfire"), "w_twin": (w_twin, "gunfire", "gunfire"), "w_rack": (w_rack, "cannon", "cannon"),
-    "w_blade": (w_blade, "slash", "slash"), "w_blunt": (w_blunt, "slam", "slam"), "w_laser": (w_laser, "laser", "laser"), "w_plasma": (w_plasma, "laser", "laser"),
+    "w_blade": (w_blade, "slash", "slash"), "w_blunt": (w_blunt, "slam", "slam"), "w_blunt_plasma": ((lambda: w_blunt(("plasma",))), "slam", "slam"), "w_laser": (w_laser, "laser", "laser"), "w_plasma": (w_plasma, "laser", "laser"),
     "w_dish_shield": (w_dish_shield, "shield_up", "shield_up"), "w_dish_coil": (w_dish_coil, "shield_up", "shield_up"),
     "step_tracked": (s_tracked, "step", "step"), "step_legged": (s_legged, "step", "step"),
     "step_wheeled": (s_wheeled, "step", "step"), "step_flyer": (s_flyer, "step", "step"),

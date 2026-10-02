@@ -132,7 +132,8 @@ The planned pieces the 28 September content leans on, one line each, in whicheve
 - [ ] A speakers or headphones setting (default speaker on a phone; Godot cannot tell what is plugged in): shipped levels for headphones, an offset per track and an EQ on the music bus for the speaker profile; discuss the offsets first
 - [ ] The Risen and Infernal Horde boss themes from their seeds; melodies proposed in chat first
 - [ ] The effects' second pass: Ryan listens to the third cut of 2 October (the 90s console, every weapon drawn out with heft, shields and buffs, the shield hit and break, the kills, the level offsets) on the listening page; picks land in `forge.py` with their hooks (shape, maker, faction, silhouette; the replay telling a shield hit from a block from a hit, which `_land_blow` now plays as two)
-- [x] A content word for the blunt melee pieces (2 October: `sound` on a component, validated; the Breaching Plow and the Gravity Knuckles say `blunt`; the Chainsaw Claw and the Soulcutter Talons stay blades)
+- [x] A content label for the effects (2 October: `sound` on a component, a word or a list meaning layers, validated; the Breaching Plow says blunt, the Gravity Knuckles blunt and plasma; the Chainsaw Claw and the Soulcutter Talons stay blades)
+- Stretch, not now: a modification that adds burn or shock to a component adds its sound layer
 - [ ] Run the tests on the Mac: the `sound` validation in `content_db.gd` landed from a cloud session with no Godot
 - [ ] The voice: Ryan's verdict on the page's section 5 (speak at all; Betty or VEGA; which lines), then a real pass on the words if yes
 - [x] Whether the seated die wants a voice (2 October: it has one, a low E3, since the console is deliberate now)

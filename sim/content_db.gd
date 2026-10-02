@@ -565,11 +565,15 @@ const SHAPES := ["barrel", "twin_barrel", "rack", "blade", "dish", "none"]
 const SHAPE_NONE := "none"
 
 ## The sound a component's blow plays, where its shape and face are not enough to say
-## (decided 2 October: content carries a label for the effects): a word from SOUNDS under
-## `sound`. Absent, the game derives it: a barrel is a barrel, a twin a twin, a rack a rack,
-## a blade a blade, a dish a deflector or a coil by its face, an energy barrel a laser and the
-## Arsenal's a plasma. Content names only the exceptions: the blunt melee pieces (the plow,
-## the knuckles) say "blunt", a multi-ton machine's mass arriving rather than a cut.
+## (decided 2 October: content carries a label for the effects): `sound`, a word from SOUNDS
+## or a list of them. A list means layers (Ryan, 2 October): the first word is the blow and
+## every word after it rides on the landing, so the Gravity Knuckles say ["blunt", "plasma"],
+## the mass arriving with the hot splash on it. The list is game effects, never gameplay
+## properties: it is not derived from keywords or tags and does not feed them (a stretch goal:
+## a modification that adds burn or shock could add its layer). Absent, the game derives one
+## word: a barrel is a barrel, a twin a twin, a rack a rack, a blade a blade, a dish a
+## deflector or a coil by its face, an energy barrel a laser and the Arsenal's a plasma.
+## Content names only the exceptions.
 const SOUNDS := ["barrel", "twin_barrel", "rack", "blade", "blunt", "laser", "plasma", "deflector", "coil"]
 
 
@@ -582,8 +586,16 @@ func _validate_components(errs: Array[String]) -> void:
 				errs.append("%s: missing %s" % [where, key])
 		if c.has("shape") and not SHAPES.has(str(c["shape"])):
 			errs.append("%s: shape '%s' is not a silhouette class (%s)" % [where, c["shape"], ", ".join(SHAPES)])
-		if c.has("sound") and not SOUNDS.has(str(c["sound"])):
-			errs.append("%s: sound '%s' is not one the forge builds (%s)" % [where, c["sound"], ", ".join(SOUNDS)])
+		if c.has("sound"):
+			var layers: Array = c["sound"] if c["sound"] is Array else [c["sound"]]
+			if layers.is_empty():
+				errs.append("%s: sound is an empty list; leave it out to derive the sound" % where)
+			for k in range(layers.size()):
+				var w := str(layers[k])
+				if not SOUNDS.has(w):
+					errs.append("%s: sound '%s' is not one the forge builds (%s)" % [where, w, ", ".join(SOUNDS)])
+				elif layers.find(w) != k:
+					errs.append("%s: sound lists '%s' twice" % [where, w])
 		for key in ["hardpoints", "slots", "faces"]:
 			if c.has(key):
 				errs.append("%s: '%s' is gone; a component is exactly one entry, its 'face'" % [where, key])

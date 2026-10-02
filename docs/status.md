@@ -399,9 +399,10 @@ gliding into the note through a resonant filter, the computer talking in fast ru
 sweeps, a synth thump under confirms; the square-and-saw first try read as retro), which
 retired the 24 September "future-digital, not retro" line in the bible; the sketches written over the shipped levels (console +4 dB, blows +2, shields and
 buffs +2, kills +1, `BOOST`), said on the page; later that night the punch became a blunt
-impact for the plow and the knuckles alike (a car into a wall), content grew a `sound` word
-on a component (validated against a vocabulary in `content_db.gd`; the two blunt pieces carry
-it, nothing else needs to), and a formant voice (`tools/soundforge/speech.py`, crude by
+impact for the plow and the knuckles alike (a car into a wall), content grew a `sound` label
+on a component, a word or a list meaning layers (the first word the blow, the rest riding on
+the landing; validated against a vocabulary in `content_db.gd`; game effects only, never tied
+to keywords; the plow says blunt, the knuckles blunt and plasma, nothing else needs to), and a formant voice (`tools/soundforge/speech.py`, crude by
 design) says eight console lines as a Betty and as a VEGA in a new section of the page, to
 judge whether the console should speak at all. Godot was not available in the cloud session
 that made the validator change: run the tests on the Mac first thing. Nothing is shipped; a pick lands as a recipe in
