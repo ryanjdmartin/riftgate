@@ -25,7 +25,7 @@ enum Outcome { NONE, VICTORY, DEFEAT, WITHDRAWN }
 const DEFAULT_COLUMNS := 4   # the formation's width (Ryan, 23 September: four plays better than three)
 const REROLLS_PER_ROUND := 3
 const DANGER_CLOSE_DIVISOR := 2
-const BURN_DAMAGE_PER_STACK := 20   # damage dealt per stack applied
+const BURN_DAMAGE_PER_STACK := 10   # damage dealt per stack applied (halved 2 October with the player's damage)
 const CRACK_MIN_HULL_PCT := 25      # a single hull hit this big (percent of max) injures a face
 const CORRUPT_BITE_PER_STACK := 10  # what a corrupted entry costs its owner each time it is spent, per stack (placeholder)
 const VOLATILE_BITE := 10           # what a volatile component costs its owner each time it is spent: hull, past shield and armour (placeholder)

@@ -51,7 +51,7 @@
       "hp": 40, "attack": 20, "rank": "front", "zone": 1,
       "actions": [
         { "id": "lash", "name": "Lash", "kind": "attack", "weight": 2, "text": "A limb from an unexpected direction for {damage}.", "status": "implemented" },
-        { "id": "fold", "name": "Fold", "kind": "defend", "effect": "harden", "value": 10, "weight": 1, "when": ["back_behind", "below_half"], "text": "Folds in on itself: armour +{value} until its next action.", "status": "implemented" }
+        { "id": "fold", "name": "Fold", "kind": "defend", "effect": "harden", "value": 5, "weight": 1, "when": ["back_behind", "below_half"], "text": "Folds in on itself: armour +{value} until its next action.", "status": "implemented" }
       ],
       "flavour": "Count the limbs. Now count again."
     },
@@ -70,7 +70,7 @@
       "id": "bone_colossus", "name": "Bone Colossus", "faction": "undead",
       "design": { "fantasy": "A cathedral of ribs that walks.", "niche": "Fills a whole column. Nothing behind it is reachable until it falls, and it does not fall quickly: burst and burn against the knitting, armour against the storm.", "notes": "Massive boss. On the battlefield it is a three-hex unit. Knit runs since 30 September (regrow); since 2 October only when missing 20 or more. Armour 10. The third move, Bone Storm, opens below half: three blows of 10 at anything, the volume answer to a machine that armoured for the sweep." },
       "codex": "A cathedral of ribs that walks. Fills a whole column; nothing behind it can be reached until it falls, and it does not fall quickly. Hurt it badly enough and the ribs start to fly.",
-      "hp": 140, "attack": 30, "armour": 10, "rank": "front", "size": 2, "zone": 2, "stun_resist": 30,
+      "hp": 140, "attack": 30, "armour": 5, "rank": "front", "size": 2, "zone": 2, "stun_resist": 30,
       "actions": [
         { "id": "sweep", "name": "Sweep", "kind": "attack", "weight": 2, "text": "A rib the size of a girder, for {damage}.", "status": "implemented" },
         { "id": "knit", "name": "Knit", "kind": "defend", "effect": "regrow", "value": 20, "weight": 1, "when": "missing_hull", "text": "Regrows {value} hull.", "status": "implemented" },
@@ -82,7 +82,7 @@
       "id": "pit_lord", "name": "Pit Lord", "faction": "demonic",
       "design": { "fantasy": "The furnace has a face.", "niche": "The biggest telegraphed hit in the game, and it breaches, so no shield answers it: suppress it, lure it onto hull that can take it, or disrupt it into a Kindle when another demon stands.", "notes": "Massive boss. Furnace Blow carries Breach since 2 October. Kindle runs since 30 September (rally); since 2 October only when another demon stands, so it never rallies an empty field. Armour 10. The third move, Eruption, opens below half: 10 heat to every machine." },
       "codex": "The furnace has a face. The single biggest telegraphed hit in the campaign, every round, until it is dead, and a shield does not stop it. When it is hurt the furnace vents on everyone.",
-      "hp": 160, "attack": 40, "armour": 10, "rank": "front", "size": 2, "zone": 2, "stun_resist": 30,
+      "hp": 160, "attack": 40, "armour": 5, "rank": "front", "size": 2, "zone": 2, "stun_resist": 30,
       "actions": [
         { "id": "furnace_blow", "name": "Furnace Blow", "kind": "attack", "weight": 2, "keywords": ["breach"], "text": "A fist of slag for {damage}, through the shield.", "status": "implemented" },
         { "id": "kindle", "name": "Kindle", "kind": "buff", "effect": "rally", "value": 10, "weight": 1, "when": "others_on_field", "text": "Every other demon on the field hits {value} harder next round.", "status": "implemented" },
@@ -94,7 +94,7 @@
       "id": "the_maw", "name": "The Maw", "faction": "eldritch",
       "design": { "fantasy": "You do not see all of it. That is a mercy.", "niche": "Bites twice a round at whoever shows it a weapon, and cracks what it sees. Redundancy wins; burst loses; a blank or a shield showing is a kind of armour.", "notes": "Massive boss. Bite strikes twice since 2 October and aims at the armed, like Unmake (crack, since 30 September; since 2 October only when a machine shows an intact component). Armour 10. The third move, Unravel, opens below half: every machine's showing component corrupted." },
       "codex": "You do not see all of it. The part you can see bites twice, at whatever is pointing a gun at it, and what it bites cracks. Hurt it and everything you rolled goes wrong at once.",
-      "hp": 120, "attack": 20, "armour": 10, "rank": "front", "size": 2, "zone": 2, "stun_resist": 30, "aim": "armed",
+      "hp": 120, "attack": 20, "armour": 5, "rank": "front", "size": 2, "zone": 2, "stun_resist": 30, "aim": "armed",
       "actions": [
         { "id": "bite", "name": "Bite", "kind": "attack", "strikes": 2, "weight": 2, "text": "The visible part closes, twice, for {damage} each.", "status": "implemented" },
         { "id": "unmake", "name": "Unmake", "kind": "debuff", "effect": "crack", "weight": 1, "when": "machine_armed", "text": "Cracks the component one mech's die is showing, no hull hit needed.", "status": "implemented" },

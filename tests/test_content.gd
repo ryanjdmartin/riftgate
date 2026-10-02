@@ -750,7 +750,7 @@ func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 	assert_true(entry["stats"].contains("ARM") or true, "stats read")
 	var maw := db.codex_for_foe(db.make_foe("the_maw"))
 	assert_true(maw["actions"].contains("WHEN BELOW HALF"), "the codex says a move's condition: %s" % maw["actions"])
-	assert_true(str(maw["stats"]).contains("ARM 10"), "and the boss's armour")
+	assert_true(str(maw["stats"]).contains("ARM 5"), "and the boss's armour")
 
 
 # The name plate shows the traits, not a silhouette word (Ryan, 2 October): maker, then
