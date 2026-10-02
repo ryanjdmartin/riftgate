@@ -68,7 +68,7 @@ calls: the d4 question is closed (die size is a balance lever like every base st
 skirmish participant cap (four columns is the most a formation will be); the commander layer
 (reward pick, one-shots, city abilities, the command die) is important but waits on a baseline
 balance; a prototype hangar in the game, no economy, is agreed (paints and loadouts, carried
-into a battle for play tests); movement in tens is decided with its price table, a wheels trait for the cars (its name Ryan's) and a move gauge, ready to build (bible section 4); every machine gets its own idle acts on both screens, grounded ones never swaying (section 7); the battery plan is decided: weld the machines, props by hex with a fade, the 3D at 30 while planning (section 11); the seated die is in the new effects pass; enemy
+into a battle for play tests); movement in tens is decided with its price table, a wheels trait for the cars (its name Ryan's) and a move gauge, ready to build (bible section 4); every machine gets its own idle acts and movement on both screens, done by a pilot and never an animal, grounded ones never swaying, the joints each needs listed machine by machine (section 7; cockpits fixed but the Clydesdale's head); the battery plan is decided: weld the machines, props by hex with a fade, the 3D at 30 while planning (section 11); the seated die is in the new effects pass; enemy
 targeting and the horde hooks go to a design session of his own. Eight of nine foes are still
 their sketch grids; the ghoul is the one foeforge cut.
 
@@ -204,6 +204,6 @@ it and ticked in the commit that lands it; this is the order to take them in.
 1. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
 2. Ryan's text for the new machines and components; with every machine signed off for now, the joints and turrets judged running in the skirmish, and the machines' scale on the map.
 3. The discuss-first decisions in the Ryan section, the economy last; enemy targeting in Ryan's own design session; the commander layer once the balance has a baseline.
-4. Ready to build: movement in tens (once the wheels trait is named), the machine weld, every machine's idle acts, then the prop fade and the 3D at 30. The engine gaps waiting on design (Phased, Energy Armour, Corrode, Scramble, Confuse, foe roles), and a dedicated hunter foe and spawned formations once proposed.
+4. Ready to build: movement in tens (once the wheels trait is named); the joint pass, then the idle acts, then the movement animations; the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased, Energy Armour, Corrode, Scramble, Confuse, foe roles), and a dedicated hunter foe and spawned formations once proposed.
 5. Audio: a full play of Hold The Line, the effects' second pass, the speakers/headphones setting, the two boss themes.
 6. A prototype hangar in the game (paints and loadouts, no economy). Art: enemy art through foeforge, the hangar as a model. Before a phone leaves the desk: onboarding, then tuning.
