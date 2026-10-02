@@ -69,8 +69,8 @@ Every to-do line was checked against the code. Ryan's calls, each in the bible:
 - Closed: the d4 question (die size is a balance lever like any base stat), the participant
   cap (four columns is the most a formation will be), the Baboon's rear silhouette and the
   Clydesdale's twin spacing. The seated die is in the new effects pass.
-- Movement in tens, with a price table by way of moving, a wheels trait for the cars (name
-  Ryan's), stranded leftover move and a move gauge (section 4). Ready once the trait is named.
+- Movement in tens, with a price table by way of moving, a Wheeled trait for the cars,
+  stranded leftover move and a move gauge (section 4). Ready to build.
 - Idle acts and movement (section 7): a pilot drives every machine, never an animal; several
   acts per machine; grounded machines never sway; cockpits fixed but the Clydesdale's head;
   the joints each machine needs are listed; the Dingo drifts through one cornering module
@@ -212,8 +212,8 @@ sound set, the grid at the hotter gain.
 it and ticked in the commit that lands it; this is the order to take them in.
 
 1. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
-2. Ryan's text for the new machines and components; the wheels trait's name; the machines' scale on the map; the strikes, then the acts and movement, judged running.
+2. Ryan's text for the new machines and components; the machines' scale on the map; the strikes, then the acts and movement, judged running.
 3. The discuss-first decisions in the Ryan section, the economy last; enemy targeting in Ryan's own design session; the commander layer once the balance has a baseline.
-4. Ready to build: movement in tens (once the wheels trait is named); the joint pass, then the idle acts, then the movement animations; the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased, Energy Armour, Corrode, Scramble, Confuse, foe roles), and a dedicated hunter foe and spawned formations once proposed.
+4. Ready to build: movement in tens; the joint pass, then the idle acts, then the movement animations; the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased, Energy Armour, Corrode, Scramble, Confuse, foe roles), and a dedicated hunter foe and spawned formations once proposed.
 5. Audio: a full play of Hold The Line, the effects' second pass, the speakers/headphones setting, the two boss themes.
 6. A prototype hangar in the game (paints and loadouts, no economy). Art: enemy art through foeforge, the hangar as a model. Before a phone leaves the desk: onboarding, then tuning.
