@@ -51,6 +51,11 @@ gets its weight in the band a speaker plays (`heft`: its own mids saturated and 
 and a boom tail, and runs longer; the levels the sketches are written at carry an offset
 (`BOOST`) over the shipped ones, said on the page, for Ryan to pull back.
 
+The console's fourth cut (Ryan, 2 October): "90s computer" meant 90s computer game, StarCraft
+1, MechWarrior 2, Descent; retro-future, not retro. The voice is clean tones with a chorus and
+a glide into the note through a resonant filter, the button a dry plastic click, the computer
+talking a fast run of clean tones, a synth thump under every confirmation.
+
     tools/spriter/.venv/bin/python tools/soundforge/fx_sketches.py            # everything into out/fx
     tools/spriter/.venv/bin/python tools/soundforge/fx_sketches.py singles    # the sounds alone
     tools/spriter/.venv/bin/python tools/soundforge/fx_sketches.py sequences  # the rounds over the music
@@ -101,151 +106,172 @@ def big_blast(dur=1.4, low=24.0, gain=1.0, debris=4):
 
 # ---------------------------------------------------------------- the console
 #
-# The third cut (Ryan, 1 October): retro 90s game flair, super stereotypical computer sounds,
-# deliberate, weighty, ironically edgy. A clack (a mechanical key with its casing), a voice (a
-# square and a saw, an octave under them for weight, thick not chirpy), data (a two-tone burst,
-# the machine working), and steps (discrete tones in a row: the confirm, the grant). Kept low:
-# G3 to E4 for the tones, nothing above B4 (Ryan, 25 September: too high and too chirpy).
+# The fourth cut of the console (Ryan, 2 October: "90s computer" meant 90s computer game,
+# StarCraft 1, MechWarrior 2, Descent; retro-future, not retro; the square-and-saw voice of
+# the third cut read as retro). That era's interface was sampled synths, not chips: a dry
+# plastic button click (StarCraft's Terran panel), clean tones with a chorus on them and a
+# short glide into the note through a resonant filter (MechWarrior 2's cockpit, "target
+# locked"), the computer talking as a fast run of clean tones (Descent's messages), menu
+# sweeps of filtered air, and a synth thump under anything confirmed. Weight is the thump
+# and an octave under every tone. Pitches stay low (Ryan, 25 September): G3 to E4 for the
+# voice, the run up to E5. Glides are back in the console only, short and into a note; a
+# blow still never glides (the Pac-Man ruling).
 
-def clack(weight=1.0, pitch=1.0):
-    """A mechanical key: the switch's click and the casing under it. Heavier than the membrane
-    key of the second cut; a thing pressed with intent."""
-    k = mix(F.knock([1100.0 * pitch, 1900.0 * pitch], [0.006, 0.004], [1.0, 0.5], noise_gain=0.6) * 0.6,
-            F.knock([310.0 * pitch, 540.0 * pitch], [0.018, 0.012], [1.0, 0.5], noise_gain=0.2) * 0.7)
-    return F.bp(k, 200.0, 6000.0) * weight
+def chorus(x, depth=0.0035, rate=0.9, voices=2, wet=0.6):
+    """The era's gloss: copies of the signal on a slowly moving short delay."""
+    n = len(x)
+    t = t_of(n)
+    idx = np.arange(n)
+    out = np.array(x, dtype=float)
+    for v in range(voices):
+        d = 0.006 + depth * np.sin(2.0 * math.pi * rate * t + v * 2.1)
+        out += np.interp(idx - d * F.SR, idx, x, left=0.0) * (wet / voices)
+    return out
 
 
-key = clack   # the second cut's name, for the rows that still call it
+def thock(weight=1.0, pitch=1.0):
+    """A StarCraft button: a dry plastic click, short and mid, no spring and no casing ring."""
+    k = mix(F.knock([1500.0 * pitch, 2600.0 * pitch], [0.004, 0.003], [1.0, 0.5], noise_gain=0.7) * 0.6,
+            F.knock([520.0 * pitch, 820.0 * pitch], [0.009, 0.006], [1.0, 0.5], noise_gain=0.2) * 0.7)
+    return F.lp(k, 5000.0) * weight
 
 
-def voice(f, dur, gain=0.5, edge=0.6):
-    """The 90s computer's voice: a square (the edge) over a sine, a detuned saw an octave up
-    at a quarter, a sine an octave under for weight, low-passed so it is thick rather than
-    chirpy, a hard front, a short hold."""
+key = thock   # earlier cuts' name, for the rows that still call it
+
+
+def bleep(f, dur, gain=0.5, glide=1.0, q=0.6, bright=1.0):
+    """The cockpit's tone: a sine with a triangle edge, an octave over and an octave under,
+    a short glide into the note over its first 30 ms (`glide` under 1 rises in, over 1
+    falls in), through a resonant low-pass that opens with the note and closes with it,
+    then the chorus. MechWarrior 2's beeps, Descent's menu."""
     n = n_of(dur)
     t = t_of(n)
-    ph = 2.0 * math.pi * f * t
-    x = np.sign(np.sin(ph)) * edge * 0.6 + np.sin(ph) * (1.0 - edge) + F.saws(f * 2.0, n, (0.996, 1.0, 1.004)) * 0.25 + np.sin(ph * 0.5) * 0.5
-    x = F.lp(x, 2800.0)
-    return x * F.env_pts(n, [(0.0, 0.0), (0.003, 1.0), (max(dur - 0.015, 0.01), 0.85), (dur, 0.0)]) * gain
+    g = np.where(t < 0.03, glide + (1.0 - glide) * (t / 0.03), 1.0)
+    ph = 2.0 * math.pi * np.cumsum(f * g) / F.SR
+    tri = 2.0 / math.pi * np.arcsin(np.sin(ph))
+    x = np.sin(ph) * 0.7 + tri * 0.3 + np.sin(2.0 * ph) * 0.25 * bright + np.sin(ph * 0.5) * 0.35
+    cut = F.env_pts(n, [(0.0, 900.0), (0.02, 3500.0 * bright), (dur * 0.6, 2500.0 * bright), (dur, 700.0)])
+    x = F.svf(x, cut, q)
+    env = F.env_pts(n, [(0.0, 0.0), (0.004, 1.0), (max(dur - 0.02, 0.01), 0.8), (dur, 0.0)])
+    return chorus(x * env) * gain
 
 
 def reply(f, dur, gain=0.5):
-    return voice(f, dur, gain)
+    return bleep(f, dur, gain)
 
 
-def steps(freqs, each=0.06, gap=0.05, gain=0.5):
-    """Discrete tones in a row, no glide between them: the confirm, the grant, the countdown."""
-    buf = np.zeros(1)
-    for k, f in enumerate(freqs):
-        buf = at(buf, voice(f, each, gain), k * gap)
-    return buf
+def burble(dur, gain=0.45, pitches=(E4, G4, B4, E5)):
+    """The computer talking: a fast run of clean tones on a few pitches around E, each a
+    few ms, no glide, a soft tick on each, the whole through a filter opening over the run
+    and a chorus. Descent's messages, the readout working."""
+    n = n_of(dur)
+    buf = np.zeros(n)
+    when = 0.0
+    while when < dur - 0.015:
+        d = F.RNG.uniform(0.012, 0.022)
+        m = n_of(d)
+        f = float(F.RNG.choice(pitches))
+        ph = 2.0 * math.pi * f * t_of(m)
+        tone = (np.sin(ph) * 0.8 + np.sin(ph * 0.5) * 0.4) * F.env_pts(m, [(0.0, 0.0), (0.002, 1.0), (d - 0.004, 0.8), (d, 0.0)])
+        buf = at(buf, mix(tone, F.tick_click() * 0.5), when, F.RNG.uniform(0.5, 1.0))[:n]
+        when += d + F.RNG.uniform(0.004, 0.014)
+    t = t_of(n)
+    buf = F.lp_var(buf, 900.0 + 3200.0 * np.clip(t / (dur * 0.6), 0.0, 1.0))
+    return chorus(buf) * gain
 
 
-def data(dur, gain=0.5, lo=620.0, hi=930.0, rate=55.0):
-    """The machine working: a two-tone burst flipping at `rate`, the modem's grammar, kept
-    low and filtered so it reads as work rather than a whistle; a few clacks of the keys in it."""
+def thump(gain=0.6, f0=140.0, f1=70.0, dur=0.14):
+    """A synth thump under a confirmation: the weight of the era's panel, with its mids
+    saturated so a phone speaker plays it."""
+    n = n_of(dur)
+    x = F.sweep(f0, f1, n, tau=dur * 0.3) * F.env_ad(n, 0.002, dur * 0.3)
+    return heft(F.lp(F.sat(x, 2.0), 600.0), 0.8, 3.5) * gain
+
+
+def ui_sweep(dur=0.12, down=True, gain=0.3):
+    """Descent's menu: filtered air sweeping through, chorused."""
     n = n_of(dur)
     t = t_of(n)
-    f = np.where(np.sign(np.sin(2.0 * math.pi * rate * t + F.RNG.uniform(0.0, 6.28))) > 0, lo, hi)
-    flip = F.RNG.uniform(0.0, 1.0, n) > 0.5
-    ph = 2.0 * math.pi * np.cumsum(f) / F.SR
-    x = (np.sign(np.sin(ph)) * 0.5 + np.sin(ph) * 0.5) * (0.6 + 0.4 * (np.sign(np.sin(2.0 * math.pi * rate * 2.0 * t)) > 0))
-    x = F.lp(x, 3200.0) * F.env_pts(n, [(0.0, 0.0), (0.005, 1.0), (dur - 0.01, 0.9), (dur, 0.0)]) * gain * 0.6
-    when = 0.0
-    while when < dur - 0.03:
-        x = at(x, clack(0.35, F.RNG.uniform(0.9, 1.1)), when)[:n]
-        when += F.RNG.uniform(0.045, 0.09)
-    return x
+    cut = 4000.0 - 3300.0 * (t / dur) if down else 700.0 + 3300.0 * (t / dur)
+    x = F.lp_var(F.hp(F.noise(n), 500.0), cut) * F.env_pts(n, [(0.0, 0.0), (dur * 0.2, 1.0), (dur, 0.0)])
+    return chorus(x) * gain
 
 
 def c_ui_tap():
-    # A clack and a thick beep on B3, long enough to mean it.
-    return room(mix(clack(1.0), voice(B3, 0.09, 0.55)), decay=0.08, mix=0.1)
+    # The panel button: a dry click and a clean tone rising into B3.
+    return room(mix(thock(1.0), bleep(B3, 0.08, 0.55, glide=0.85)), decay=0.09, mix=0.14, cut=7000.0)
 
 
 def c_ui_back():
-    # The cancel: two tones down, E4 to B3, the clack under the first.
-    b = mix(clack(1.0, 0.9), voice(E4, 0.06, 0.5))
-    return room(at(b, voice(B3, 0.1, 0.5), 0.07), decay=0.08, mix=0.1)
+    # The cancel: the click, a tone falling into B3, a sweep of air going out.
+    return room(mix(thock(0.9), bleep(B3, 0.11, 0.5, glide=1.4), ui_sweep(0.1, True, 0.25)), decay=0.09, mix=0.14, cut=7000.0)
 
 
 def c_plot():
-    # The route taken: the machine works on it (a data burst with the keys going), then the
-    # confirm as two tones up, B3 to E4, under a clack.
-    b = data(0.22, 0.5)
-    b = at(b, mix(clack(1.1), steps([B3, E4], 0.07, 0.06, 0.5)), 0.24)
-    return room(b, decay=0.1, mix=0.1)
+    # Waypoint set: the computer talks, the click, two tones up B3 to E4 with a thump under.
+    b = burble(0.18, 0.4)
+    b = at(b, mix(thock(1.0), bleep(B3, 0.06, 0.5, glide=0.9), thump(0.4)), 0.2)
+    b = at(b, bleep(E4, 0.09, 0.5), 0.27)
+    return room(b, decay=0.1, mix=0.14, cut=7000.0)
 
 
 def c_die_pick():
-    # Lifted from its socket: the clack, the servo of the arm lifting it (a small whine,
-    # mechanical, allowed since 23 September), two tones up, G3 to B3.
-    b = mix(clack(1.0, 1.1), F.servo(220.0, 300.0, 0.12, gain=0.3, band=(400.0, 2500.0)))
-    return room(at(b, steps([G3, B3], 0.05, 0.045, 0.5), 0.03), decay=0.08, mix=0.1)
+    # Lifted: the click, air sweeping up as it leaves the panel, the arm's servo, a tone
+    # rising into E4.
+    b = mix(thock(0.8, 1.1), ui_sweep(0.1, False, 0.3), F.servo(220.0, 300.0, 0.12, gain=0.25, band=(400.0, 2500.0)))
+    return room(at(b, bleep(E4, 0.07, 0.5, glide=0.8), 0.03), decay=0.09, mix=0.14, cut=7000.0)
 
 
 def c_die_drop():
-    # Seated, with a voice now (Ryan: deliberate, not understated): a heavy seat (a small
-    # thud with the socket's knock), the clack, and a low confirm on E3.
-    b = mix(F.thud(200.0, 70.0, 0.15, click=1.0, drive=3.0, body_gain=1.2) * 0.6,
-            F.knock([240.0, 420.0, 700.0], [0.022, 0.015, 0.01], [1.0, 0.55, 0.25], noise_gain=0.3) * 0.8, clack(1.2, 0.8))
-    return room(at(b, voice(E3, 0.11, 0.45), 0.02), decay=0.1, mix=0.1)
+    # Seated: the thump, a heavier click, a hiss of the seat, and a low tone falling into E3.
+    b = mix(thump(0.8, 160.0, 75.0), thock(1.2, 0.8), F.hydraulic(0.08, 2500.0, 900.0, 0.25))
+    return room(at(b, bleep(E3, 0.12, 0.45, glide=1.15, bright=0.7), 0.01), decay=0.1, mix=0.12)
 
 
 def c_die_roll():
-    # The computer computing, seven tenths of it: a data burst with the keys typing under
-    # it, the readout's scramble as fast square beeps off any scale over it, the console under
-    # load; then the hard stop: a heavy clack, a low thud, and the number on G3 with its octave
-    # under, long.
-    dur = 0.72
+    # The readout working for half a second: the console under load, the computer talking
+    # fast with its filter opening, then the stop: a heavy click, the thump, and the number
+    # held on G3 with its filter closing over it.
+    dur = 0.52
     n = n_of(dur)
-    hum = F.lp(F.sat(F.saws(E2, n, (0.996, 1.0, 1.004)), 1.5), 700.0) * F.env_pts(n, [(0.0, 0.0), (0.03, 0.4), (0.44, 0.35), (0.5, 0.0)]) * 0.4
-    b = mix(hum, data(0.46, 0.4, 560.0, 840.0, 48.0))
-    when = 0.0
-    k = 0
-    while when < 0.44:
-        b = at(b, voice(float(F.RNG.choice(F.CHATTER_PITCHES)) * 1.5, 0.022, 0.4, edge=0.8), when)
-        when += 0.03 + 0.003 * k
-        k += 1
-    stop = mix(clack(1.4, 0.85), F.thud(180.0, 60.0, 0.16, click=0.8, drive=3.0) * 0.6,
-               F.knock([380.0, 640.0], [0.016, 0.01], [1.0, 0.5], noise_gain=0.3) * 0.7)
-    b = at(b, stop, 0.48)
-    return room(at(b, voice(G3, 0.22, 0.6), 0.5), decay=0.12, mix=0.12)
+    hum = F.lp(F.sat(F.saws(E2, n, (0.996, 1.0, 1.004)), 1.5), 700.0) * F.env_pts(n, [(0.0, 0.0), (0.03, 0.4), (0.46, 0.35), (0.52, 0.0)]) * 0.4
+    b = mix(hum, burble(0.5, 0.5))
+    b = at(b, mix(thock(1.4, 0.85), thump(0.7)), 0.52)
+    return room(at(b, bleep(G3, 0.28, 0.6, q=0.5), 0.53), decay=0.12, mix=0.14, cut=7000.0)
 
 
 def c_die_lock():
-    # Access granted: a heavy clack with the latch's casing, three tones up (G3, B3, E4), the
-    # latch's thud under the last, and a hold hum on E3 after.
-    b = mix(clack(1.3, 0.85), F.knock([420.0, 700.0], [0.016, 0.01], [1.0, 0.5], noise_gain=0.15) * 0.5)
-    b = at(b, steps([G3, B3, E4], 0.07, 0.065, 0.5), 0.02)
-    b = at(b, F.thud(190.0, 65.0, 0.16, click=0.9, drive=3.0, body_gain=1.2) * 0.6, 0.15)
+    # Target locked: two clicks under two tones up, B3 then E4, the second held with the
+    # filter closing over it, a thump under it, and a quiet hold hum on E3 after.
+    b = mix(thock(1.0), bleep(B3, 0.08, 0.5, glide=0.9))
+    b = at(b, mix(thock(1.2, 0.9), bleep(E4, 0.3, 0.5, glide=0.95, q=0.5), thump(0.6)), 0.1)
     n = n_of(0.3)
-    hold = F.lp(F.harmonics(E3, n, [1.0, 0.4, 0.2]) + np.sin(2.0 * math.pi * E2 * t_of(n)) * 0.4, 1200.0) * F.env_pts(n, [(0.0, 0.0), (0.02, 0.35), (0.2, 0.3), (0.3, 0.0)]) * 0.35
-    return room(at(b, hold, 0.2), decay=0.12, mix=0.12)
+    hold = F.lp(F.harmonics(E3, n, [1.0, 0.4, 0.2]) + np.sin(2.0 * math.pi * E2 * t_of(n)) * 0.4, 1200.0) * F.env_pts(n, [(0.0, 0.0), (0.02, 0.3), (0.2, 0.25), (0.3, 0.0)]) * 0.3
+    return room(at(b, hold, 0.25), decay=0.12, mix=0.14, cut=7000.0)
 
 
 def c_resolve():
-    # The plan committed, and the console makes a thing of it: the machine working (data,
-    # the keys typing), four tones climbing E3, G3, B3, E4, the slam (the console's heavy
-    # latch with a thud under it), and the confirm held as a power chord, E3 and B3 with E2
-    # under them, for most of half a second.
-    b = data(0.3, 0.5, 560.0, 840.0, 50.0)
-    b = at(b, steps([E3, G3, B3, E4], 0.075, 0.07, 0.5), 0.3)
-    slam = mix(F.thud(160.0, 45.0, 0.32, click=1.3, drive=4.0, body_gain=1.5) * 0.9, clack(1.4, 0.8),
-               F.knock([330.0, 560.0, 900.0], [0.03, 0.02, 0.012], [1.0, 0.5, 0.3], noise_gain=0.3) * 0.6)
-    b = at(b, heft(slam, 0.5), 0.6)
-    n = n_of(0.5)
-    chord = mix(voice(E3, 0.5, 0.45), voice(B3, 0.5, 0.3), F.lp(F.sat(F.saws(E2, n, (0.995, 1.0, 1.005)), 2.0), 900.0) * F.env_pts(n, [(0.0, 0.0), (0.02, 0.5), (0.4, 0.4), (0.5, 0.0)]))
-    b = at(b, chord, 0.63)
-    return room(b, decay=0.2, mix=0.14)
+    # Weapons online: the computer talks, three tones climb E3, G3, B3, the slam (the
+    # console's heavy latch, the thump, the click), then the chord held, E3 and B3 chorused
+    # through the filter with E2 under them, for six tenths.
+    b = burble(0.28, 0.5)
+    for k, (f, when) in enumerate([(E3, 0.3), (G3, 0.38), (B3, 0.46)]):
+        b = at(b, mix(bleep(f, 0.07, 0.5, glide=0.9), thock(0.6)), when)
+    slam = mix(F.thud(160.0, 45.0, 0.32, click=1.3, drive=4.0, body_gain=1.5) * 0.9, thock(1.4, 0.8), thump(0.8),
+               F.knock([330.0, 560.0, 900.0], [0.03, 0.02, 0.012], [1.0, 0.5, 0.3], noise_gain=0.3) * 0.5)
+    b = at(b, heft(slam, 0.5), 0.56)
+    n = n_of(0.6)
+    chord = mix(bleep(E3, 0.6, 0.45, q=0.5), bleep(B3, 0.6, 0.28, q=0.5),
+                F.lp(F.sat(F.saws(E2, n, (0.995, 1.0, 1.005)), 2.0), 900.0) * F.env_pts(n, [(0.0, 0.0), (0.02, 0.5), (0.45, 0.4), (0.6, 0.0)]))
+    b = at(b, chord, 0.6)
+    return room(b, decay=0.2, mix=0.16, cut=7000.0)
 
 
 def c_intent():
-    # The warning on a foe's intent as its number settles: two crushed beeps down (the
-    # stereotype's alarm, "doo-doo") on pitches off the scale, and a crushed tick.
-    b = mix(F.crush(voice(float(F.CHATTER_PITCHES[5]), 0.05, 0.5, edge=0.8), bits=6, hold=3), F.glitch_perc() * 0.3)
-    return at(b, F.crush(voice(float(F.CHATTER_PITCHES[3]), 0.07, 0.5, edge=0.8), bits=6, hold=3), 0.07)
+    # The warning on a foe's intent: two tones falling in, off the scale, a step apart,
+    # lightly crushed, with a tick. The cockpit's "incoming".
+    b = mix(F.crush(bleep(float(F.CHATTER_PITCHES[5]), 0.06, 0.5, glide=1.2, bright=0.6), bits=7, hold=2), F.glitch_perc() * 0.3)
+    return at(b, F.crush(bleep(float(F.CHATTER_PITCHES[3]), 0.08, 0.5, glide=1.2, bright=0.6), bits=7, hold=2), 0.08)
 
 
 # ---------------------------------------------------------------- the iron: makers' metals

@@ -393,10 +393,11 @@ blast and the hull hitting the ground. **The third cut landed 2 October** on Rya
 row has it): more oomph; the weapons over-the-top Doom energy, drawn out since each die is
 deliberate, every blow with its weight in the speaker's band (`heft`) and a boom tail,
 measured through the phone model against the shipped sound; shields and buffs the same (the
-shield breaking joins the page); the console a 90s computer (a clack, a thick square-and-saw
-voice with an octave under it, data bursts, stepped confirms, the seated die with a voice,
-resolve on a power chord), which retired the 24 September "future-digital, not retro" line in
-the bible; the sketches written over the shipped levels (console +4 dB, blows +2, shields and
+shield breaking joins the page); the console a 90s computer game's cockpit (Ryan's correction later that day: StarCraft 1,
+MechWarrior 2, Descent, retro-future not retro; a dry plastic click, clean chorused tones
+gliding into the note through a resonant filter, the computer talking in fast runs, air
+sweeps, a synth thump under confirms; the square-and-saw first try read as retro), which
+retired the 24 September "future-digital, not retro" line in the bible; the sketches written over the shipped levels (console +4 dB, blows +2, shields and
 buffs +2, kills +1, `BOOST`), said on the page. Nothing is shipped; a pick lands as a recipe in
 `forge.py` and, where the page says, a small hook (shape, maker, faction, silhouette, a word
 for blunt melee, the replay telling shield hit from block from hit) in `skirmish_screen.gd`,
