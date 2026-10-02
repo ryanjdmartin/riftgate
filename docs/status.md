@@ -5,11 +5,12 @@ thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
 bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.16 since 2 October); republish it from the committed file after every bible change, passing that URL.
 
-**The pages, as of 1 October, night.** Every page lives in the personal account (A). The three
-that last are shared to the work email (B) as Editor, so a session in either account republishes
-them in place by URL (a read first, then publish with `url`), and no account keeps a copy of its
-own: B's old bible copy and Model Viewer retire. The two that serve an ongoing task stay in A
-alone (Ryan, 1 October) and are republished from an A session. Shared:
+**The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
+to the work email (B) as Editor, so a session in either account republishes them in place by
+URL (a read first, then publish with `url`; checked from a B session on 2 October, the Melody
+Desk republished unchanged), and no account keeps a copy of its own. The engagement sandbox
+stays in A alone (Ryan, 1 October: it serves one ongoing task) and is republished from an A
+session; a B session cannot read it. Shared:
 
 - **The bible** (above): `docs/design-bible.html`, published whole after every change.
 - **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH): four tabs, the
@@ -28,21 +29,21 @@ alone (Ryan, 1 October) and are republished from an A session. Shared:
   source and Ryan's memo; a session pulls a `new` document, listens, applies it in the forge
   and marks it `applied` with a `reply` the page shows. The session interprets what he sends;
   it is not drop-in.
-
-In A alone, for the task each serves:
-
 - **The listening page** (https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9): the effects'
-  second pass from `tools/soundforge/fx_sketches.py`, re-cut 1 October, and nothing else; the
-  music rounds re-render from `phone_sketches.py` if ever wanted again.
-- **The engagement sandbox** (https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg) that drew the
-  zone options, for the play test of the engagement zones.
+  passes from `tools/soundforge/fx_sketches.py`, published with `root` set to
+  `tools/soundforge/out/fx/`; the music rounds re-render from `phone_sketches.py` if ever wanted
+  again.
+
+In A alone: **the engagement sandbox** (https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg) that
+drew the zone options, for the play test of the engagement zones.
 
 **Rules learned:** a page's link goes into
 this file in the same commit as the publish, so a parallel session sees it before publishing a
 twin; `Artifact` with `action: "list"` shows only what the account you are in owns, so a shared
-page is reached by its URL, never by listing; a page's database stays with the owning account,
-so pulling `edits` or `melodies` from Claude Code works from an A session (Ryan can use every
-page's database from the page itself in either account).
+page is reached by its URL, never by listing; a page's database stays with the owning account:
+from a B session ArtifactData is refused on every collection (checked 2 October on `edits` and
+`melodies`), so pulling `edits` or `melodies`, re-seeding `parts` and clearing documents happen
+in an A session (Ryan can use every page's database from the page itself in either account).
 
 **Cold start, including from another account.** Nothing needed to work here lives outside
 the repo. Read this file, then `docs/todo.md` (the task list), then `CLAUDE.md` (the rules,
