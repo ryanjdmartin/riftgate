@@ -3,8 +3,8 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.14 since the audit
-of 1 October); republish it from the committed file after every bible change, passing that URL.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.15 since the to-do review
+of 2 October); republish it from the committed file after every bible change, passing that URL.
 
 **The pages, as of 1 October, night.** Every page lives in the personal account (A). The three
 that last are shared to the work email (B) as Editor, so a session in either account republishes
@@ -64,6 +64,15 @@ this repo at once: check `git status` before committing, stage by path, diff a s
 first (a path still sweeps the other session's hunks), never `git add -A`, never kill a bare
 `godot --path .`. Commit after each verified chunk with tests green.
 
+**The to-do review (2 October).** Every to-do line was checked against the code. Ryan's
+calls: the d4 question is closed (die size is a balance lever like every base stat), so is a
+skirmish participant cap (four columns is the most a formation will be); the commander layer
+(reward pick, one-shots, city abilities, the command die) is important but waits on a baseline
+balance; a prototype hangar in the game, no economy, is agreed (paints and loadouts, carried
+into a battle for play tests); the traits' terrain rules hinge on movespeed in tens; enemy
+targeting and the horde hooks go to a design session of his own. Eight of nine foes are still
+their sketch grids; the ghoul is the one foeforge cut.
+
 **The audit (1 October).** The bible, status, to-do, README and CLAUDE.md were read against
 each other and the code: stale rows retired or marked superseded, the bible's keyword table
 regenerated from the vocabulary, section 12 brought level with the to-do, the ticked to-do
@@ -121,10 +130,9 @@ hangar page's Models tab are the record. **Ryan judges a model only from a rende
 code (`tools/hero_shot.gd` renders bare and needs a window); a hand edit in Blender has to be
 re-expressed in the code to survive a rebuild. **Every machine is signed off for now** (Ryan,
 1 October); next on the art side is judging the joints and turrets running in the skirmish.
-Open on the models: the outward-only turret, each class's size per machine, the Clydesdale's
-twin spacing, and the Baboon's rear silhouette with the fists at knee height (if it still reads
-as two boxes: heavier hands carrying hardware, or a forward pose with the fist tile turned 90
-degrees).
+Open on the models: the outward-only turret, each class's size per machine, and the machines'
+scale on the map's hexes (Ryan, 2 October: needs adjusting; all are fitted to one width today).
+The Clydesdale's twin spacing and the Baboon's rear silhouette are closed as they stand (2 October).
 
 **The codex (29 September; a tab of the hangar page since 1 October).** One surface showing a
 chassis and the components fitted to it: the Codex tab renders it in the browser from the
@@ -195,8 +203,8 @@ sound set, the grid at the hotter gain.
 it and ticked in the commit that lands it; this is the order to take them in.
 
 1. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
-2. Ryan's text for the new machines and components; with every machine signed off for now, the joints and turrets judged running in the skirmish.
-3. The discuss-first decisions in the Ryan section, the economy last.
+2. Ryan's text for the new machines and components; with every machine signed off for now, the joints and turrets judged running in the skirmish, and the machines' scale on the map.
+3. The discuss-first decisions in the Ryan section, the economy last; enemy targeting in Ryan's own design session; the commander layer once the balance has a baseline.
 4. The engine gaps waiting on design (Phased, Energy Armour, Corrode, Scramble, Confuse, foe roles), and a dedicated hunter foe and spawned formations once proposed.
 5. Audio: a full play of Hold The Line, the effects' second pass, the speakers/headphones setting, the two boss themes.
-6. Art: enemy art through foeforge, the hangar. Before a phone leaves the desk: onboarding, then tuning.
+6. A prototype hangar in the game (paints and loadouts, no economy). Art: enemy art through foeforge, the hangar as a model. Before a phone leaves the desk: onboarding, then tuning.
