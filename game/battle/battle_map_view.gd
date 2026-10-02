@@ -382,11 +382,18 @@ func _draw() -> void:
 			Hud.stroke_poly(self, pts, Color(hud, 0.85), 2.0)
 	_draw_rift(map)
 
-	# Where the selected mech may end its move.
+	# Where the selected mech may end its move. A slow hex for it (water for a walker,
+	# rubble for tracks) is an end hex: it can be entered with any move left and the step
+	# ends the move, so it wears a dashed edge where the others are solid (decided 2
+	# October; structure, never hue, since Ryan is colourblind).
 	for h in destinations.keys():
 		var pts := Hex.corners(center(h), HEX_SIZE - 5.0)
 		draw_colored_polygon(pts, Color(hud, 0.26))
-		Hud.stroke_poly(self, pts, Color(hud, 0.8), 1.5)
+		if selected != null and BattleMap.move_cost(map.terrain[h], selected.traits) == BattleMap.SLOW:
+			for i in range(6):
+				_dashed_line(pts[i], pts[(i + 1) % 6], Color(hud, 0.9), HEX_SIZE * 0.16)
+		else:
+			Hud.stroke_poly(self, pts, Color(hud, 0.8), 1.5)
 
 	# Enemy previews: where each pack goes given the plan as it stands, from the same dry
 	# run that finds the contacts (Ryan, 22 September: a route that cuts a pack off shows
@@ -1269,7 +1276,7 @@ func _preview() -> Dictionary:
 
 const MOVE_SECONDS_PER_HEX := 0.22   # the fastest anything ever moves (Ryan, 22 September)
 static var pace := 1.0               # the player's setting: seconds per hex are divided by it
-const MOVE_REF_SPEED := 5.0          # a unit this quick moves at that pace; slower ones slower
+const MOVE_REF_SPEED := 50.0         # a unit this quick (moves are in tens) moves at that pace; slower ones slower
 var _anim: Dictionary = {}      # unit id -> {path: Array[Vector2i], t: float}
 var _anim_queue: Array = []     # [[moves], ...] phases still to play: mechs, then packs
 var _anim_done: Callable = Callable()

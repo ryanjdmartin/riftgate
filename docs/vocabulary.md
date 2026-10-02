@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 101 implemented, 9 planned, 0 idea.
+Status: 103 implemented, 7 planned, 0 idea.
 
 ## Resource
 
@@ -113,8 +113,8 @@ Status: 101 implemented, 9 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Movespeed** | Movement points per phase. Entering a hex costs its terrain's move cost for that unit's traits. | implemented |
-| **Intent** | Each pack's path for the phase is previewed exactly. It heads for the gate or the nearest city defense, or hunts mechs if aggro. Player routes resolve first. | implemented |
+| **Movespeed** | Move in tens: how far a machine goes in a phase. A normal hex costs 10, so MOVE 40 is four hexes on open ground. Each way of moving calls each ground fast (5), normal (10) or slow: a slow hex can always be entered with any move left, and the step ends the move. Move left at the end of a phase is lost. | implemented |
+| **Intent** | Each pack commits its path when the round opens and the map shows it exactly: a pusher walks to the gate or the nearest city defense, an aggressive pack turns for a machine that ends inside its reach, a hunter chases the machine it has locked. Player routes resolve first. | implemented |
 | **Body block** | A pack stops at the first hex on its path occupied by a blocking unit. Flyers do not block; packs pass through their hex but never land on it. | implemented |
 | **Contact** | After all movement, every machine standing inside a pack's zone fights that pack. A machine inside two packs' zones joins their fights into one; that is the only way fights join. Multiple skirmishes resolve one at a time, in the order you choose. | implemented |
 | **Engagement zone** | Every pack has a zone, a radius in hexes around where it ends its move, drawn on the map before Resolve. Stand inside it and you fight that pack. Nothing else decides who fights: a pack stops only where a body stands in its path, and a machine beside its path is walked past unless the zone reaches it. | implemented |
@@ -128,22 +128,22 @@ Status: 101 implemented, 9 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Plain** | Cost 1. | implemented |
-| **Road** | Cost 1. | implemented |
-| **Rough** | Cost 2. Cost 1 for quads and flyers. | implemented |
-| **Ruins** | Cost 2. Cost 1 for quads and flyers. | implemented |
-| **Water** | Impassable except for hover and flyer. | implemented |
-| **Mountain** | Impassable except for flyer. | implemented |
+| **Plain** | Open ground. Normal pace for every machine; wheels run fast. Packs cross it. | implemented |
+| **Road** | Open ground, the same as plain: the road is art. Normal pace for every machine; wheels run fast. Packs cross it. | implemented |
+| **Rough** | Forest and scrub. Normal pace for tracks, walkers and flyers; slow for wheels and hovercraft, which can enter it but end their move there. Packs cross it at full pace. | implemented |
+| **Ruins** | Rubble. Normal pace for walkers and flyers; slow for tracks, wheels and hovercraft, which can enter it but end their move there. Packs cross it at full pace. | implemented |
+| **Water** | Hovercraft skim it fast and tracks ford at normal pace; walkers and wheels can enter it but end their move there; flyers pass over. Packs never enter it. | implemented |
+| **Mountain** | Impassable except for flyers, which cross at normal pace. Packs go around. | implemented |
 
 ## Trait
 
 | Term | Codex | Status |
 |---|---|---|
-| **Flyer** | Ignores terrain cost, crosses water and mountains. Packs pass through it: it cannot stop one. It fights by the zone like any machine. | implemented |
-| **Hover** | Crosses water. | implemented |
-| **Walker** | Rough and ruins cost 1. | implemented |
-| **Tracked** | No effect yet. | planned |
-| **Wheeled** | No effect yet. | planned |
+| **Flyer** | Normal pace over every ground, mountains included. Packs pass through it: it cannot stop one. It fights by the zone like any machine. | implemented |
+| **Hover** | Skims water fast. Rough ground and ruins are slow: it can enter them, and the step ends its move. Stops a pack in its path like any ground machine. | implemented |
+| **Walker** | Legs. Rough ground and ruins at normal pace; water is slow: it can enter it, and the step ends its move. | implemented |
+| **Tracked** | Tracks. Ploughs through forest and fords water at normal pace; rubble is slow: it can enter ruins, and the step ends its move. | implemented |
+| **Wheeled** | Wheels. Fast on open ground. Rough ground, ruins and water are slow: it can enter them, and the step ends its move. | implemented |
 | **Stealth** | A pack's zone never pulls it in on its own. Joins a fight only when another machine is in it, or when it stopped a pack in its path; a pack whose zone merely falls on it has walked past. | implemented |
 | **City defense** | A static player-side unit. Packs path toward it, and it joins any skirmish it is adjacent to. | implemented |
 
@@ -224,7 +224,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Cracked component** (implemented): Threshold is a placeholder. Repair cost and the hangar screen are not built.
 - **Reinforcements** (implemented): Elites should surface at set points rather than in pool order.
 - **Massive** (implemented): Cleave treats it as a front-rank neighbour; pierce cannot hit anything behind it because nothing is.
-- **Intent** (implemented): Aggro is a fixed flag. Should be a behaviour per foe type.
+- **Movespeed** (implemented): Built 2 October (bible section 4). Every chassis's move is a placeholder Ryan sets by size and role; the content check flags a chassis at least as fast as another on every ground, never refuses it.
 - **Contact** (implemented): No participant cap. May need one for phone readability. Decided 1 October: zones on the packs, measured from where each stops; nothing chains.
 - **Engagement zone** (implemented): Decided 1 October after the touching rule (22 September) and the engagement range (28 September). Radii are content on the foe type: front-rank 1, back-rank 3, bosses 2, placeholders. Dropped on the way: chaining in any form, a touch rule between packs, double-booking a machine into two fights, the zone as the stop.
 - **Behaviour** (implemented): Decided 1 October: the enemy commits first, so no pack re-aims at the plan without a drawn trigger. Placeholders: the ghoul aggressive, the brute hunts the strongest at move 3; a dedicated hunter is a foe to name.
@@ -232,11 +232,10 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Footprint** (implemented): Footprints do not rotate with facing.
 - **Structure** (implemented): The rift does nothing yet beyond marking where packs spawn.
 - **Spawn** (implemented): A full spawn list should arrive together as a formation; pressure currently sends one pack at a time.
-- **Road** (implemented): Tracked and wheeled machines should move faster on roads. Not coded; movement in tens brings it.
 - **Ruins** (implemented): Designed as cover for the pack inside a skirmish. Skirmish terrain conditions are not coded.
-- **Water** (implemented): Designed to dampen burn inside a skirmish. Not coded.
-- **Tracked** (planned): Intended: faster on roads; its prices come with movement in tens (bible section 4). Was tank until 2 October (Ryan).
-- **Wheeled** (planned): The cars (Ryan, 2 October: the Prairie Dog and the Dingo): faster on roads, slow in rough ground and water; its prices come with movement in tens (bible section 4).
+- **Water** (implemented): Designed to dampen burn inside a skirmish. Not coded. The generator gives one real water feature a map with crossings for the horde, with the hovercraft (bible section 4).
+- **Tracked** (implemented): Was tank until 2 October (Ryan). Built 2 October.
+- **Wheeled** (implemented): The cars (Ryan, 2 October: the Prairie Dog and the Dingo). Built 2 October.
 - **Stealth** (implemented): The Dingo (Ryan, 28 September): a support car that waits in the wings while the heavies get into position, then joins their fight, and never fights alone unless run into. Pays again when hunter packs exist.
 - **City defense** (implemented): Defenses have no die. They cannot act inside a skirmish yet.
 - **On shield gain** (implemented): Built 30 September (Effects.fire); no content uses it yet.

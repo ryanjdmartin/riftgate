@@ -444,7 +444,7 @@ function renderCodex(main) {
     if ((e.traits || []).length) { sub.append(" · "); for (const t of e.traits) sub.append(kwChip(t), " "); }
     head.append(sub);
     card.append(head);
-    const stats = [["hull", e.hull], ["shield", e.shield], ["field recharge", e.recharge_field], ["armour", e.armour], ["heat max", e.heat_max], ["cooling", e.cooling], ["move", e.movespeed], ["die", "d" + die]];
+    const stats = [["hull", e.hull], ["shield", e.shield], ["field recharge", e.recharge_field], ["armour", e.armour], ["heat max", e.heat_max], ["cooling", e.cooling], ["move", e.movespeed + " (" + Math.floor(e.movespeed / ((e.traits || []).includes("wheeled") ? 5 : 10)) + " open)"], ["die", "d" + die]];
     card.append(el("div", {class: "stats"}, ...stats.map(([k, v]) => el("div", {class: "stat"}, el("span", {class: "k"}, k), el("span", {class: "v"}, String(v ?? ""))))));
     const p = e.passive;
     if (p) {

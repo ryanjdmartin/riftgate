@@ -13,7 +13,7 @@ extends RefCounted
 ## it travels as a string. Nothing here is shown to the player.
 
 const PATH := "user://battle.json"
-const VERSION := 1
+const VERSION := 2   # 2: moves in tens (2 October)
 
 
 # ---------------------------------------------------------------- the file

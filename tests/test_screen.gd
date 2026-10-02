@@ -9,9 +9,9 @@ func _screen(seed_value: int = 3, elite: bool = false) -> SkirmishScreen:
 	var sk := Skirmish.new(seed_value)
 	for id in ["badger", "clydesdale", "sparrowhawk"]:
 		sk.add_mech(db.make_mech(id))
-	var ghouls := Unit.pack(1, "ghouls", Vector2i.ZERO, "undead", 2, 4, "ghoul")
+	var ghouls := Unit.pack(1, "ghouls", Vector2i.ZERO, "undead", 20, 4, "ghoul")
 	sk.add_foes(db.foes_for(ghouls), ghouls)
-	var necros := Unit.pack(2, "necromancers", Vector2i.ZERO, "undead", 2, 2, "necromancer")
+	var necros := Unit.pack(2, "necromancers", Vector2i.ZERO, "undead", 20, 2, "necromancer")
 	sk.add_foes(db.foes_for(necros), necros)
 	if elite:
 		var boss := Unit.boss(3, "colossus", Vector2i.ZERO, "undead")
@@ -279,9 +279,9 @@ func test_screen_lays_out_four_columns() -> void:
 	for id in ["badger", "clydesdale"]:
 		sk.add_mech(db.make_mech(id))
 	# Ranks hold: four front-rank ghouls fill the front, four back-rank necromancers the back.
-	var ghouls := Unit.pack(1, "ghouls", Vector2i.ZERO, "undead", 2, 4, "ghoul")
+	var ghouls := Unit.pack(1, "ghouls", Vector2i.ZERO, "undead", 20, 4, "ghoul")
 	sk.add_foes(db.foes_for(ghouls), ghouls)
-	var necros := Unit.pack(2, "necromancers", Vector2i.ZERO, "undead", 2, 4, "necromancer")
+	var necros := Unit.pack(2, "necromancers", Vector2i.ZERO, "undead", 20, 4, "necromancer")
 	sk.add_foes(db.foes_for(necros), necros)
 	var s := SkirmishScreen.new()
 	s.setup(sk)
