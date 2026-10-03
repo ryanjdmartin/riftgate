@@ -44,7 +44,8 @@ and open question from the design sessions.
     with the painted other world
   - `skirmish/skirmish_screen.gd` the skirmish screen, built in code
   - `ui/` the HUD kit (bars, glyphs, palette, buttons), the die face view, the codex box, the
-    pause menu, `mech_view_3d.gd` (a machine's model with its mounts and joints), the feed
+    pause menu, `mech_view_3d.gd` (a machine's model with its mounts and joints), `mech_rig.gd`
+    (its joints, idle acts and strikes from the model's sidecar), the feed
     effects (`feed_fx.gd`, `tear_layer.gd`)
   - `main.tscn` the battlefield map viewer
 - `tests/` — headless tests. `run_tests.gd` discovers `test_*.gd` files and runs every
@@ -67,7 +68,9 @@ and open question from the design sessions.
   `docs/hangar/`; Ryan's saved edits live in its database (collection `edits`), the name
   candidates in `candidates`; `spriter/.venv` is the Python
   the tools run with. The gate and wall are lowforge models too (`gate`, `wall`).
-- `art/` — `models/` every glTF the engine draws (units, gate, wall), `foes/` from the sheet
+- `art/` — `models/` every glTF the engine draws (units, gate, wall) with a `<id>.rig.json`
+  sidecar beside each machine (its joints' axes and limits, its idle acts, its cornering
+  numbers; written by lowforge, read by `mech_rig.gd`), `foes/` from the sheet
   export, `fonts/` the HUD faces, `audio/` every sound by name (`game/audio/sound.gd` lists
   them). A missing foe sprite falls back to a placeholder shape; a missing sound is silence.
 - `docs/` — design bible, generated vocabulary, the hangar page's renders and pins under `hangar/`,
@@ -151,7 +154,15 @@ tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut-rift tools/foeforge/
 
 # the gate and wall are built the same way
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build gate wall
-# joints are code too: `with b.joint("shoulder_l", pivot):` in models_low.py hangs a limb under a joint_<name> Empty the view swings
+# joints are code too: `with b.joint("shoulder_l", pivot, axis="pitch", limits=(-12, 40)):` in models_low.py hangs a limb under a
+# joint_<name> Empty, nested where it rides another; `b.act(name, seconds, {joint: [(t, degrees), ...]}, body=, glow=)` at the end of a
+# machine writes its idle acts to art/models/<id>.rig.json with the joints. Judge them running:
+RIFTGATE_ACTS_DEBUG=1 godot --path .            # every act back to back in the skirmish and on the map (=<act name> loops one)
+RIFTGATE_MOVE_DEBUG=1 godot --path .            # every machine driven constantly: the walks, wheels, treads and held poses (`b.gait(...)` in models_low.py); the cornering (the Dingo's drift, the banks) needs a real move
+godot --path . --resolution 360x640 --position 2000,2000 -s tools/act_shot.gd -- badger minerva test_claw 1.4 claw.png front   # one act frozen 1.4 s in; "gait 0.5" freezes a stride
+# with no Blender installed (a cloud session): a python3.11 venv with `pip install bpy==5.0.1`, then
+BPY_PYTHON=.bpy/bin/python tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger
+tools/spriter/.venv/bin/python tools/lowforge/glbcmp.py art/models/badger.glb /tmp/badger.glb   # a rebuild's geometry against the committed file
 # the silhouette classes a swapped component wears at a gun mount (models_low.SHAPES), every maker's metal, then re-import
 tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes
 # one machine wearing swapped components on its mounts ("2:" bares a mount; armour and vents show nowhere); a class alone: <chassis> shapes/barrel_minerva; rendered bare (RIFTGATE_OUTLINE_KEEP=1 keeps the display's edge)

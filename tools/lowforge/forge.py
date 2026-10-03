@@ -8,9 +8,13 @@
 `build` writes art/models/<id>.glb with the tiles embedded, the tiles as PNGs under
 tools/lowforge/tiles/<maker>/ for review, and a working file tools/lowforge/models/<id>.blend
 for hand edits in Blender (a rebuild overwrites it; save an edited copy under another name
-or stop rebuilding that unit). `export` turns a working file back into the glTF as it is:
-add joint_* and hp_* Empties in Blender and they come through, since the engine reads them.
-Needs Blender (BLENDER=/path if not in /Applications).
+or stop rebuilding that unit), and art/models/<id>.rig.json beside the glTF: the joints'
+axes and limits and the idle acts (`b.joint(..., axis=, limits=)`, `b.act(...)`), which
+MechRig reads. `export` turns a working file back into the glTF as it is: add joint_* and
+hp_* Empties in Blender and they come through, since the engine reads them (no sidecar).
+Needs Blender (BLENDER=/path if not in /Applications), or BPY_PYTHON=<a python with the bpy
+wheel> where there is none (bl_bpy.py; a cloud session). glbcmp.py shows a rebuilt model's
+geometry unchanged.
 """
 
 import os
@@ -21,9 +25,12 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 BLENDER = os.environ.get("BLENDER", "/Applications/Blender.app/Contents/MacOS/Blender")
+BPY_PYTHON = os.environ.get("BPY_PYTHON", "")   # a Python with the `bpy` wheel, in place of a Blender binary (bl_bpy.py)
 
 
 def _run(cmd):
+    if BPY_PYTHON:
+        cmd = [BPY_PYTHON, str(HERE / "bl_bpy.py"), "--"] + cmd[cmd.index("--") + 1:]
     r = subprocess.run(cmd, capture_output=True, text=True)
     for line in (r.stdout + r.stderr).splitlines():
         if "lowforge" in line or "Traceback" in line or "  File" in line or "Error:" in line:
