@@ -73,7 +73,7 @@
     {
      "parts": [
       "projector_slot",
-      "bill_band"
+      "prow_band"
      ],
      "keys": [
       [
@@ -208,10 +208,10 @@
   "strafe": 0.0
  },
  "glow_parts": [
-  "bill_band",
   "exhaust",
   "lift_nozzle",
   "nozzle_ring",
-  "projector_slot"
+  "projector_slot",
+  "prow_band"
  ]
 }

@@ -355,8 +355,8 @@
    }
   },
   "stingray": {
-   "when": "Third pass, 2 October, late.",
-   "note": "Ryan on the second: the centre turret is the focal point and read as a gun slapped on a jeep, not a high-tech Aphelion machine; the rear mounts still janky, two of them could go under the wings so the deck breathes; the stern's two glowing slabs served no purpose. So: a wide low dome turret faired to the crown on a dark ring, turning whole, the Zenith Emitter leaving a dark slot in its forward slope above the canopy; the two rear mounts on pylons under the wings aft of the fans (the Aurora Lattice's dish right, a bare pod left); the stern a dark shroud with two hollow exhaust nozzles, fire at their floors. The helicopter-style movement is being built in the movement session. Rendered bare.",
+   "when": "Fourth pass, 3 October.",
+   "note": "Ryan on the third: the under-wing mounts to the forewings, poking out of the wing's lower front surface; the top turret good but its hardpoint back into the dome; the front mounts sleeker and back a bit; the tail a single exhaust the whole width, tapered out more, the tail itself the port rather than a nozzle on it. So: the pods lie under each forewing and emerge from the leading edge's lower slope, muzzles ahead of the edge (the Aurora Lattice's dish right, bare left); the Zenith Emitter's pin sits back inside the dome and the gun leaves its slot from deeper; the shoulder mounts low and set back beside the canopy, the flare pods short, the repeater on a slim fairing; the body's taper runs on past the stern as one wide open duct, flaring a little, dark inside with fire at its floor. Rendered bare.",
    "images": [
     {
      "file": "stingray/stingray_front.png",
@@ -368,7 +368,7 @@
     }
    ],
    "before": {
-    "summary": "Before: second pass, 2 October, night (the gun on a gimbal, the deck mounts, the slab stern)",
+    "summary": "Before: third pass, 2 October, late (the aft under-wing pods, the twin nozzles)",
     "images": [
      {
       "file": "stingray/before_stingray_front.png",
@@ -382,8 +382,8 @@
    }
   },
   "puffin": {
-   "when": "Third pass, 2 October, late.",
-   "note": "Ryan on the second: the proportions better but the oval body went past funny into lame, and it looked as if it could fly outright; the first pass had the charm and was only too portly; a Kestrel hovercraft has plane ancestry but is definitely a hovercraft, oblong and wide, hovering over land, never taking off. So: a wide low oblong hull of chamfered sections with a dark lip round its foot; the first pass's head back on top (the chrome face, round glass eyes in dark rings, the tall flat cobalt bill dipping forward under its band, the projector's lit slot at its edge); the dark cap over the head running back as the bird's back; two big boosters buried in the rear sponsons with lit exhausts and vents; two canted fins on the rear deck for the ancestry; no wings. Mounts: the Laser Carbine and the Deflector's dish on the fore deck's shoulders, the Overcharge Coil's dish and the bare mount on the rear deck beside the cap. Rendered bare.",
+   "when": "Fourth pass, 3 October.",
+   "note": "Ryan on the third: the shape better but too goofy, a duck; ditch the explicit head, give it a real canopy cockpit and maybe side wings; the giant boosters with the vents on top and the skirt are what works, bring them out; a little rounding under the hull. So: the wide low oblong hull with its dark lip and a softened underside (flat for the middle third, rising to the chamfers); a chined cobalt prow with the band and the projector's lit slot at its edge; a fighter canopy of glass with a frame bar and a dark fairing running back along the spine; short swept side wings with the Laser Carbine and the Deflector's dish in pods under their tips; two giant boosters half out of the rear sponsons, intakes forward, louvred vent housings standing proud of the deck, lit rings and exhausts past the stern; two canted fins; the Overcharge Coil's dish and the bare mount on the rear deck. No head, no eyes, no bill. Rendered bare.",
    "images": [
     {
      "file": "puffin/puffin_front.png",
@@ -395,7 +395,7 @@
     }
    ],
    "before": {
-    "summary": "Before: second pass, 2 October, night (the oval body, the wings and nacelles)",
+    "summary": "Before: third pass, 2 October, late (the head, the eyes and the bill on the hull)",
     "images": [
      {
       "file": "puffin/before_puffin_front.png",

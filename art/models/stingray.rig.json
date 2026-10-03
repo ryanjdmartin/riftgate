@@ -116,7 +116,7 @@
    "glow": [
     {
      "parts": [
-      "exhaust_nozzle_floor"
+      "nozzle_glow"
      ],
      "keys": [
       [
@@ -152,7 +152,7 @@
   "treads": {},
   "glow": {
    "parts": [
-    "exhaust_nozzle_floor"
+    "nozzle_glow"
    ],
    "k": 2.0
   },
@@ -169,7 +169,7 @@
   ]
  },
  "glow_parts": [
-  "exhaust_nozzle_floor",
-  "lance_muzzle"
+  "lance_muzzle",
+  "nozzle_glow"
  ]
 }
