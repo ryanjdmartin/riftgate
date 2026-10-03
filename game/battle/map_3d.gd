@@ -69,6 +69,12 @@ var _camera: Camera3D
 var _units: Dictionary = {}     # unit id -> Node3D, the seat at the hex (set south a little); the pivot under it turns
 var _pivots: Dictionary = {}    # unit id -> the pivot that turns to the facing; the model hangs off it centred by its bounds
 var _shadows: Dictionary = {}   # unit id -> the ground disc under a flyer
+var _rigs: Dictionary = {}      # unit id -> MechRig: the machine's joints, its idle acts and strikes (the same as the skirmish's)
+var _scale: Dictionary = {}     # unit id -> the model's scale on the map (model units to world units)
+var _heading: Dictionary = {}   # unit id -> the yaw the move is heading, radians, while a move plays
+var _last_pos: Dictionary = {}  # unit id -> the seat's position last frame, for the speed
+const SLIDE_RATE_SNAP := 30.0   # per second: a machine with no slide faces its heading at once
+const SLIDE_RATE_FULL := 2.2    # per second: a slide of 1 (the Dingo) lets the facing lag the path through a corner
 var _base: Dictionary = {}      # unit id -> resting position, which the idle sway plays around
 var _phase: Dictionary = {}     # unit id -> idle phase, so the team does not sway in step
 var _columns: Dictionary = {}   # hex -> Node3D at the hex's ground: the marks hang off it
@@ -653,15 +659,74 @@ func set_sweep(map_y: float) -> void:
 
 var _anim_px: Dictionary = {}   # unit id -> map pixel while a move plays, in place of its hex
 
-## While a phase plays, a unit is where its animation says, not on its hex.
+## While a phase plays, a unit is where its animation says, not on its hex. The heading is
+## where the move is going; the facing follows it through the cornering module (_corner),
+## at once for most machines and lagging for one with a slide.
 func set_anim(uid: int, px: Vector2, heading: Vector2) -> void:
 	_anim_px[uid] = px
-	if _pivots.has(uid) and heading.length_squared() > 0.001:
-		(_pivots[uid] as Node3D).rotation.y = atan2(-heading.x, -heading.y)
+	if heading.length_squared() > 0.001:
+		_heading[uid] = atan2(-heading.x, -heading.y)
 
 
 func clear_anim(uid: int) -> void:
 	_anim_px.erase(uid)
+	_heading.erase(uid)
+	_last_pos.erase(uid)
+
+
+## The cornering module (the joints row, 2 October): one piece for the Dingo's drift and the
+## banking of flyers and hovercraft. The body's facing and its path are separate: the facing
+## eases toward the heading at a rate the machine's `slide` sets (0 snaps, 1 lags), and the
+## rig is told the speed, the bearing of the travel against the facing (the casters point
+## along it) and the turn (the steering and the bank). A helicopter-style machine (Ryan, 3
+## October; `strafe`) faces where it will end up facing instead, turning there first and
+## then translating, so its travel can be sideways or backward and its rig tilts it that
+## way. A standing machine is driven at zero, so its gait settles.
+func _corner(uid: int, rig: MechRig, delta: float) -> void:
+	if not _pivots.has(uid) or delta <= 0.0:
+		return
+	var pivot: Node3D = _pivots[uid]
+	var k: float = float(_scale.get(uid, 1.0))
+	if not _anim_px.has(uid) or not _heading.has(uid):
+		rig.drive(0.0, 0.0, 0.0, delta)
+		return
+	var node: Node3D = _units[uid]
+	var pos := node.position
+	var speed := 0.0
+	if _last_pos.has(uid):
+		speed = (pos - (_last_pos[uid] as Vector3)).length() / delta / maxf(0.001, k)
+	_last_pos[uid] = pos
+	var slide := clampf(float(rig.move.get("slide", 0.0)), 0.0, 1.0)
+	var strafe := clampf(float(rig.move.get("strafe", 0.0)), 0.0, 1.0)
+	var rate := lerpf(SLIDE_RATE_SNAP, SLIDE_RATE_FULL, slide)
+	var heading: float = _heading[uid]
+	var want := heading
+	if strafe > 0.0:
+		var u := field.unit_by_id(uid)
+		if u != null:
+			want = facing_target(heading, facing_yaw(u.facing), strafe)
+			rate = lerpf(rate, STRAFE_TURN_RATE, strafe)
+	var facing := pivot.rotation.y
+	var diff := wrapf(want - facing, -PI, PI)
+	var step := diff * (1.0 - exp(-delta * rate))
+	pivot.rotation.y = facing + step
+	rig.drive(speed, wrapf(heading - pivot.rotation.y, -PI, PI), step / delta, delta)
+
+
+const STRAFE_TURN_RATE := 6.0   # per second: a helicopter yaws to where it will face in the first moment of a move, then translates
+
+
+## The pivot's yaw for one of the six facings: the model faces -Z (north) at rest and
+## screen-down is +Z, so the facing turns the other way from the pixel direction.
+static func facing_yaw(facing: int) -> float:
+	var d: Vector2 = Hex.to_pixel(Hex.DIRECTIONS[facing], 1.0).normalized()
+	return atan2(-d.x, -d.y)
+
+
+## Where a moving machine turns its nose: its heading, or, by its `strafe`, the facing it
+## will end the move with, so it travels sideways or backward holding that.
+static func facing_target(heading: float, final_facing: float, strafe: float) -> float:
+	return lerp_angle(heading, final_facing, clampf(strafe, 0.0, 1.0))
 
 
 var _env: Environment = null
@@ -1177,14 +1242,17 @@ func sync() -> void:
 			# The model faces -Z (north) at rest; screen-down is +Z, so the facing turns the
 			# other way from the pixel direction. The pivot turns; the seat's southward set
 			# above it does not.
-			var d: Vector2 = Hex.to_pixel(Hex.DIRECTIONS[u.facing], 1.0).normalized()
-			(_pivots[u.id] as Node3D).rotation.y = atan2(-d.x, -d.y)
+			(_pivots[u.id] as Node3D).rotation.y = facing_yaw(u.facing)
 	_hide_props_under(occupied)
 	for uid in _units.keys():
 		if not seen.has(uid):
 			_units[uid].queue_free()
 			_units.erase(uid)
 			_pivots.erase(uid)
+			_rigs.erase(uid)
+			_scale.erase(uid)
+			_heading.erase(uid)
+			_last_pos.erase(uid)
 			_base.erase(uid)
 			_fly_y.erase(uid)
 			if _shadows.has(uid):
@@ -1192,15 +1260,19 @@ func sync() -> void:
 				_shadows.erase(uid)
 
 
-## Only a flyer moves at rest: it rides a slow swell, each on its own beat. A grounded
-## machine holds still; its idle will be joint motion, the same as the skirmish's, once the
-## joints exist (Ryan, 21 September).
+## Only a flyer sways at rest: it rides a slow swell, each on its own beat. A grounded
+## machine holds still and every few seconds plays one of its own idle acts through its rig,
+## the same as the skirmish's (Ryan, 2 October).
 var _fly_y: Dictionary = {}   # unit id -> the eased height a flyer is at
 var _dt := 1.0 / 60.0
 
 func _process(delta: float) -> void:
 	_time += delta
 	_dt = delta
+	for uid in _rigs.keys():
+		var rig: MechRig = _rigs[uid]
+		rig.tick(delta)
+		_corner(uid, rig, delta)
 	for uid in _units.keys():
 		var u := field.unit_by_id(uid)
 		if u == null or not u.traits.has("flyer"):
@@ -1218,7 +1290,8 @@ func _process(delta: float) -> void:
 func _make_unit(u: Unit) -> Node3D:
 	if u.is_player() and not u.is_static():
 		var maker := str(ContentDB.load_default().chassis.get(u.chassis_id, {}).get("maker", "minerva"))
-		var node := _model(MechView3D.model_for(u.chassis_id, "badger"), maker, u.paint)
+		var model_id := MechView3D.model_for(u.chassis_id, "badger")
+		var node := _model(model_id, maker, u.paint)
 		_marker(node)
 		# Mechs are the reconstruction's markers, drawn at marker size: whatever the model's
 		# true size, its footprint is fitted to about one hex. The model hangs off a pivot
@@ -1241,6 +1314,12 @@ func _make_unit(u: Unit) -> Node3D:
 		var south := (hover + (aabb.end.y * k) * 0.5) * _cos / _sin
 		node.position = Vector3(-aabb.get_center().x, 0.0, -aabb.get_center().z * 0.5) * k + Vector3(0.0, hover, 0.0)
 		pivot.add_child(node)
+		# The rig after the materials and the seat: a body track moves the model under its
+		# pivot, so the facing and the idle never fight; seeded by the unit, so no two act in step.
+		var rig := MechRig.new()
+		rig.setup(node, model_id, node, u.id)
+		_rigs[u.id] = rig
+		_scale[u.id] = k
 		var seat := Node3D.new()   # the pivot turns to the facing; the seat's southward set does not
 		seat.position = Vector3(0.0, 0.0, south)
 		seat.add_child(pivot)

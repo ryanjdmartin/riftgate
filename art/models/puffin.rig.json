@@ -1,0 +1,217 @@
+{
+ "_about": "the rig of art/models/puffin.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
+ "joints": {},
+ "acts": [
+  {
+   "name": "boosters_flare",
+   "duration": 2.4,
+   "ease": "smooth",
+   "tracks": {},
+   "body": [
+    [
+     0.5,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     1.0,
+     0.0,
+     3.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     2.2,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   ],
+   "glow": [
+    {
+     "parts": [
+      "nozzle_ring",
+      "exhaust"
+     ],
+     "keys": [
+      [
+       0.3,
+       0.0
+      ],
+      [
+       0.9,
+       2.5
+      ],
+      [
+       1.5,
+       2.5
+      ],
+      [
+       2.2,
+       0.0
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "name": "prow_pulse",
+   "duration": 2.6,
+   "ease": "smooth",
+   "tracks": {},
+   "body": [],
+   "glow": [
+    {
+     "parts": [
+      "projector_slot",
+      "bill_band"
+     ],
+     "keys": [
+      [
+       0.3,
+       0.0
+      ],
+      [
+       0.7,
+       3.5
+      ],
+      [
+       1.1,
+       0.5
+      ],
+      [
+       1.5,
+       3.5
+      ],
+      [
+       1.9,
+       0.5
+      ],
+      [
+       2.4,
+       0.0
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "name": "lift_hop",
+   "duration": 2.4,
+   "ease": "smooth",
+   "tracks": {},
+   "body": [
+    [
+     0.5,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     1.0,
+     0.0,
+     0.0,
+     3.0,
+     0.0,
+     0.0,
+     6.0
+    ],
+    [
+     1.6,
+     0.0,
+     0.0,
+     1.0,
+     0.0,
+     0.0,
+     -4.0
+    ],
+    [
+     2.2,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   ],
+   "glow": [
+    {
+     "parts": [
+      "lift_nozzle"
+     ],
+     "keys": [
+      [
+       0.3,
+       0.0
+      ],
+      [
+       0.9,
+       3.0
+      ],
+      [
+       1.6,
+       1.0
+      ],
+      [
+       2.2,
+       0.0
+      ]
+     ]
+    }
+   ]
+  }
+ ],
+ "gait": {
+  "stride": 40.0,
+  "ease": "smooth",
+  "tracks": {},
+  "body": [],
+  "wheels": {},
+  "steer": {},
+  "aim": {},
+  "hold": {},
+  "treads": {},
+  "glow": {
+   "parts": [
+    "nozzle_ring",
+    "exhaust"
+   ],
+   "k": 2.0
+  },
+  "rock": 2.0,
+  "hold_aim": {},
+  "body_hold": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   -4.0,
+   0.0
+  ]
+ },
+ "move": {
+  "slide": 0.6,
+  "bank": 22.0,
+  "strafe": 0.0
+ },
+ "glow_parts": [
+  "bill_band",
+  "exhaust",
+  "lift_nozzle",
+  "nozzle_ring",
+  "projector_slot"
+ ]
+}

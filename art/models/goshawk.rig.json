@@ -1,0 +1,270 @@
+{
+ "_about": "the rig of art/models/goshawk.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
+ "joints": {
+  "nacelle_l": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -14.0,
+     40.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "nacelle_r": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -14.0,
+     40.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  }
+ },
+ "acts": [
+  {
+   "name": "check_nacelles",
+   "duration": 3.4,
+   "ease": "smooth",
+   "tracks": {
+    "nacelle_l": [
+     [
+      0.7,
+      36.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.9,
+      36.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      3.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "nacelle_r": [
+     [
+      0.7,
+      36.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.9,
+      36.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      3.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "body": [
+    [
+     0.8,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     10.0
+    ],
+    [
+     2.4,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     -6.0
+    ],
+    [
+     3.2,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   ],
+   "glow": [
+    {
+     "parts": [
+      "joint_nacelle_l",
+      "joint_nacelle_r"
+     ],
+     "keys": [
+      [
+       0.8,
+       0.0
+      ],
+      [
+       1.4,
+       2.0
+      ],
+      [
+       2.0,
+       2.0
+      ],
+      [
+       2.9,
+       0.0
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "name": "charge_cannon",
+   "duration": 3.0,
+   "ease": "smooth",
+   "tracks": {},
+   "body": [],
+   "glow": [
+    {
+     "parts": [
+      "vent_glow",
+      "barrel_groove",
+      "cannon_bore",
+      "cannon_glow"
+     ],
+     "keys": [
+      [
+       0.3,
+       0.0
+      ],
+      [
+       1.4,
+       3.5
+      ],
+      [
+       2.0,
+       3.5
+      ],
+      [
+       2.8,
+       0.0
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "name": "bank",
+   "duration": 2.6,
+   "ease": "smooth",
+   "tracks": {},
+   "body": [
+    [
+     0.6,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     -14.0
+    ],
+    [
+     1.6,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     14.0
+    ],
+    [
+     2.4,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   ],
+   "glow": []
+  }
+ ],
+ "gait": {
+  "stride": 40.0,
+  "ease": "smooth",
+  "tracks": {},
+  "body": [],
+  "wheels": {},
+  "steer": {},
+  "aim": {},
+  "hold": {
+   "nacelle_l": [
+    -10.0,
+    0.0,
+    0.0
+   ],
+   "nacelle_r": [
+    -10.0,
+    0.0,
+    0.0
+   ]
+  },
+  "treads": {},
+  "glow": {
+   "parts": [
+    "joint_nacelle_l",
+    "joint_nacelle_r"
+   ],
+   "k": 2.0
+  },
+  "rock": 0.0,
+  "body_hold": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   -4.0,
+   0.0
+  ]
+ },
+ "move": {
+  "slide": 0.3,
+  "bank": 18.0
+ },
+ "glow_parts": [
+  "barrel_groove",
+  "cannon_bore",
+  "cannon_glow",
+  "joint_nacelle_l",
+  "joint_nacelle_r",
+  "vent_glow"
+ ]
+}
