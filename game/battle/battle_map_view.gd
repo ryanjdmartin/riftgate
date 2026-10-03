@@ -77,7 +77,7 @@ var _pinch_d := 0.0                 # the fingers' distance when the pinch last 
 var _pinching := false
 var route_drawing := false          # the screen allows a route to be drawn from a machine (planning, nothing playing)
 var draft: Array = []               # the route being drawn, hexes after the machine's own; the screen keeps it legal
-var draft_cost := -1                # its cost so far, for the plaque at its end; -1 shows none
+var draft_spend := Vector2i(-1, 0)  # what it has spent and what a slow last step took (Battle.draft_spend), for the gauge at its end; x -1 shows none
 var _press_unit: Unit = null        # the player's machine under the finger at press: a drag from it draws
 var _route_drag: Unit = null        # the machine whose route is being drawn, while it is
 var _draft_hex := Vector2i(-9999, -9999)   # the last hex the finger reported, so a hex is announced once
@@ -479,8 +479,9 @@ func _draw() -> void:
 			continue
 		_route(u.pos, route, hud, true, true, true)
 
-	# The route being drawn by hand: the same line, heavier, with the move it has spent
-	# against the machine's whole move on a plaque at its end.
+	# The route being drawn by hand: the same line, heavier, with the machine's move as a
+	# gauge at its end that the route drains (decided 2 October: the player never does
+	# arithmetic, so no numbers).
 	if _route_drag != null and not draft.is_empty():
 		var prev := center(_route_drag.pos)
 		for step in draft:
@@ -488,8 +489,8 @@ func _draw() -> void:
 			draw_line(prev, p, hud, 5.0)
 			prev = p
 		Hud.stroke_poly(self, Hex.corners(prev, HEX_SIZE * 0.45), hud, 2.5)
-		if draft_cost >= 0:
-			_plaque(prev + Vector2(0.0, -HEX_SIZE * 0.95), "%d/%d" % [draft_cost, _route_drag.movespeed], hud, 1.5)
+		if draft_spend.x >= 0:
+			_move_gauge(prev + Vector2(0.0, -HEX_SIZE * 1.0), gauge_cells(_route_drag.movespeed, draft_spend), hud)
 
 	# Contacts waiting to be fought (Ryan, 22 September): the map freezes on them, the
 	# units about to engage lit, and nothing of the next phase shows until they are done.
@@ -717,14 +718,91 @@ func _draw_rift(map: BattleMap) -> void:
 ## carries the side without asking coloured text to survive the ground.
 func _plaque(at: Vector2, text: String, border: Color, thick: float = 1.5) -> void:
 	var w := Hud.mono().get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x + 10.0
-	# Kept inside the visible width, so a zoomed-in plaque never runs off the screen.
-	var left := (4.0 - scroll_x) / zoom
-	var right := (size.x - 4.0 - scroll_x) / zoom
-	var x := clampf(at.x, left + w * 0.5, right - w * 0.5) if right - left > w else at.x
-	var rect := Rect2(Vector2(x, at.y) - Vector2(w * 0.5, 9.0), Vector2(w, 18.0))
+	var rect := _plaque_rect(at, Vector2(w, 18.0))
 	draw_rect(rect, Palette.BG, true)
 	draw_rect(rect, border, false, thick)
 	draw_string(Hud.mono(), rect.position + Vector2(5.0, 13.0), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color.WHITE)
+
+
+## A plaque's rect centred on `at`, kept inside the visible width so a zoomed-in plaque
+## never runs off the screen.
+func _plaque_rect(at: Vector2, sz: Vector2) -> Rect2:
+	var left := (4.0 - scroll_x) / zoom
+	var right := (size.x - 4.0 - scroll_x) / zoom
+	var x := clampf(at.x, left + sz.x * 0.5, right - sz.x * 0.5) if right - left > sz.x else at.x
+	return Rect2(Vector2(x, at.y) - sz * 0.5, sz)
+
+
+## The move gauge's cells: one per 5 of move, two to a pip, a pip being one normal hex and
+## a half one fast hex. A cell is LEFT, SPENT by the route's steps, or STOPPED: taken by a
+## slow last step, which spends whatever is left (Battle.draft_spend). It fills from the
+## left like every gauge on the HUD, so the route drains it from the right.
+enum Cell { LEFT, SPENT, STOPPED }
+const GAUGE_PIP := Vector2(20.0, 28.0)   # a pip on the map, before zoom: big, since a finger sits beside it
+const GAUGE_GAP := 6.0
+
+
+static func gauge_cells(move: int, spend: Vector2i) -> Array[int]:
+	var out: Array[int] = []
+	var n := int(ceil(float(maxi(move, 0)) / float(BattleMap.FAST)))
+	for i in range(n):
+		var from_end := (n - 1 - i) * BattleMap.FAST
+		if from_end < spend.x:
+			out.append(Cell.SPENT)
+		elif from_end < spend.x + spend.y:
+			out.append(Cell.STOPPED)
+		else:
+			out.append(Cell.LEFT)
+	return out
+
+
+## The gauge on its plaque, told apart by structure, never hue (Ryan is colourblind): a pip
+## still to spend is solid, a spent one an empty outline, and one a slow step took is
+## hatched, so a route that ended on rubble with move to spare never reads as one that ran
+## its move out. The hatching rhymes with the dashed edge a slow end hex wears.
+func _move_gauge(at: Vector2, cells: Array[int], col: Color) -> void:
+	var pips := (cells.size() + 1) / 2
+	if pips == 0:
+		return
+	var pad := 5.0
+	var sz := Vector2(pips * GAUGE_PIP.x + (pips - 1) * GAUGE_GAP + pad * 2.0, GAUGE_PIP.y + pad * 2.0)
+	var rect := _plaque_rect(at, sz)
+	draw_rect(rect, Palette.BG, true)
+	draw_rect(rect, col, false, 2.0)
+	var half := GAUGE_PIP.x * 0.5
+	for p in range(pips):
+		var pip := Rect2(rect.position + Vector2(pad + p * (GAUGE_PIP.x + GAUGE_GAP), pad), GAUGE_PIP)
+		var live := false
+		for k in range(2):
+			var i := p * 2 + k
+			if i >= cells.size():
+				continue
+			var cell := Rect2(pip.position + Vector2(k * half, 0.0), Vector2(half, GAUGE_PIP.y)).grow(-1.5)
+			match cells[i]:
+				Cell.LEFT:
+					draw_rect(cell, col, true)
+					live = true
+				Cell.STOPPED:
+					_hatch(cell, col, 2.5)
+					live = true
+		# A pip's outline is bright while any of it counts and faint once it is all spent,
+		# and the split between its halves shows where a fast hex would end.
+		draw_rect(pip, Color(col, 1.0 if live else 0.45), false, 2.0 if live else 1.5)
+		if cells.size() > p * 2 + 1:
+			draw_line(pip.position + Vector2(half, 2.0), pip.position + Vector2(half, GAUGE_PIP.y - 2.0), Color(Palette.BG, 0.9), 1.0)
+
+
+## Diagonal stripes across a rect, clipped to it.
+func _hatch(r: Rect2, col: Color, width: float) -> void:
+	var box := PackedVector2Array([r.position, Vector2(r.end.x, r.position.y), r.end, Vector2(r.position.x, r.end.y)])
+	var step := 5.0
+	var x := r.position.x - r.size.y
+	while x < r.end.x:
+		var line := PackedVector2Array([Vector2(x, r.end.y), Vector2(x + r.size.y, r.position.y)])
+		for seg in Geometry2D.intersect_polyline_with_polygon(line, box):
+			if seg.size() >= 2:
+				draw_line(seg[0], seg[seg.size() - 1], col, width)
+		x += step
 
 
 func _draw_tags() -> void:

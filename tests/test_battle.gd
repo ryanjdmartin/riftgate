@@ -339,6 +339,49 @@ func test_a_drawn_route_is_kept_as_drawn() -> void:
 	assert_eq(m.pos, dest, "Resolve walks the drawn route")
 
 
+func test_the_gauge_tells_a_slow_stop_from_a_spent_move() -> void:
+	# Decided 3 October: the move gauge the drawn route drains. A slow last step takes
+	# whatever move is left, and the gauge says so apart from the steps' own spending.
+	var b := _battle()
+	var m: Unit = null
+	var slow_ground := -1
+	for c in b.mechs():
+		for t in [BattleMap.Terrain.WATER, BattleMap.Terrain.RUINS, BattleMap.Terrain.ROUGH]:
+			if BattleMap.move_cost(t, c.traits) == BattleMap.SLOW:
+				m = c
+				slow_ground = t
+				break
+		if m != null:
+			break
+	assert_true(m != null, "the team has a machine with a slow ground")
+	var n1 := Vector2i(-99, -99)
+	var n2 := Vector2i(-99, -99)
+	for a in Hex.neighbors(m.pos):
+		if not b.field.can_stand(m, a):
+			continue
+		for d in Hex.neighbors(a):
+			if d != m.pos and not Hex.are_adjacent(m.pos, d) and b.field.can_stand(m, d):
+				n1 = a
+				n2 = d
+				break
+		if n2 != Vector2i(-99, -99):
+			break
+	assert_true(n2 != Vector2i(-99, -99), "two free hexes in a line")
+	b.field.map.terrain[n1] = BattleMap.Terrain.PLAIN
+	b.field.map.terrain[n2] = slow_ground
+	var open_cost := BattleMap.move_cost(BattleMap.Terrain.PLAIN, m.traits)
+	assert_eq(b.draft_spend(m, []), Vector2i(0, 0), "nothing drawn spends nothing")
+	assert_eq(b.draft_spend(m, [n1]), Vector2i(open_cost, 0), "an open step spends its price and stops nothing")
+	assert_eq(b.draft_spend(m, [n1, n2]), Vector2i(open_cost, m.movespeed - open_cost), "the slow step takes the rest")
+	# The cells: one per 5 of move, filling from the left, so what is left comes first, then
+	# what the slow step took, then what the steps spent.
+	var C := BattleMapView.Cell
+	assert_eq(BattleMapView.gauge_cells(40, Vector2i(10, 30)), [C.STOPPED, C.STOPPED, C.STOPPED, C.STOPPED, C.STOPPED, C.STOPPED, C.SPENT, C.SPENT], "a slow step after one hex")
+	assert_eq(BattleMapView.gauge_cells(40, Vector2i(40, 0)), [C.SPENT, C.SPENT, C.SPENT, C.SPENT, C.SPENT, C.SPENT, C.SPENT, C.SPENT], "the move run out")
+	assert_eq(BattleMapView.gauge_cells(30, Vector2i(15, 0)), [C.LEFT, C.LEFT, C.LEFT, C.SPENT, C.SPENT, C.SPENT], "a fast hex is half a pip")
+	assert_eq(BattleMapView.gauge_cells(0, Vector2i(0, 0)).size(), 0, "no move, no gauge")
+
+
 func test_a_draft_never_outruns_the_move_or_lands_on_a_claimed_hex() -> void:
 	var b := _battle()
 	var a: Unit = b.mechs()[0]

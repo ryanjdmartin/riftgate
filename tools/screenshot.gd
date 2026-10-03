@@ -125,7 +125,8 @@ func _apply_pose() -> void:
 			s._toggle_all_arrows(true)
 
 
-## Battle screen poses: select (a mech and its reach), route (two routes plotted), hold (a
+## Battle screen poses: select (a mech and its reach), route (two routes plotted), draft and
+## draftslow (a route drawn by hand, its move gauge spent or stopped by a slow hex), hold (a
 ## pack's readout), codex / foecodex (a machine's or a pack's entry), resolve (one
 ## phase run), contact (a skirmish open over the map).
 func _apply_battle_pose() -> void:
@@ -142,6 +143,29 @@ func _apply_battle_pose() -> void:
 					s._on_hex_tapped(dests[dests.size() / 2])
 		"hold":
 			s._on_unit_held(b.field.packs()[0])
+		"draft", "draftslow":
+			# A route being drawn by hand, the move gauge at its end (decided 3 October): draft
+			# stops about halfway through the move on open ground, draftslow ends on a slow hex,
+			# whose step takes the rest (the hatched pips). The first machine that has one.
+			for m in b.mechs():
+				s._on_route_drag_started(m)
+				s._map._route_drag = m
+				var pick := Vector2i(-9999, -9999)
+				for h in s._map.destinations.keys():
+					var slow := BattleMap.move_cost(b.field.map.terrain[h], m.traits) == BattleMap.SLOW
+					var cost := b.field.route_cost(m, b.field.route_to(m, h))
+					if _pose == "draftslow" and slow and cost > 0 and b.draft_spend(m, b.field.route_to(m, h)).x > 0:
+						pick = h
+						break
+					if _pose == "draft" and not slow and cost >= m.movespeed / 2 and cost < m.movespeed:
+						pick = h
+						break
+				if pick != Vector2i(-9999, -9999):
+					s._on_route_drag_to(pick)
+					s._map.scroll_to_unit(m)
+					break
+				s._on_route_drag_ended(false)
+				s._map._route_drag = null
 		"north":
 			# The rift end of the map, where the other world bleeds in.
 			s._map.scroll_to_top()

@@ -497,7 +497,7 @@ func _on_route_drag_started(u: Unit) -> void:
 	_select(u)   # its destinations light while the finger draws
 	_draft_unit = u
 	_map.draft = []
-	_map.draft_cost = 0
+	_map.draft_spend = Vector2i(0, 0)
 	Sound.play("ui_tap", -4.0)
 
 
@@ -506,7 +506,7 @@ func _on_route_drag_to(h: Vector2i) -> void:
 		return
 	var before := _map.draft.size()
 	_map.draft = battle.draft_step(_draft_unit, _map.draft, h)
-	_map.draft_cost = battle.draft_cost(_draft_unit, _map.draft)
+	_map.draft_spend = battle.draft_spend(_draft_unit, _map.draft)
 	if _map.draft.size() != before:
 		Sound.play("ui_tap", -12.0)   # a tick per hex, so the line is heard growing
 	_map.queue_redraw()
@@ -517,7 +517,7 @@ func _on_route_drag_ended(commit: bool) -> void:
 	var draft: Array = _map.draft
 	_draft_unit = null
 	_map.draft = []
-	_map.draft_cost = -1
+	_map.draft_spend = Vector2i(-1, 0)
 	if u != null and commit and not draft.is_empty():
 		if battle.set_route_path(u, draft):
 			Sound.play("plot")
