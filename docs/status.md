@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.20 since 2 October, night, movement built); republish it from the committed file after every bible change, passing that URL.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.21 since 3 October, the joints and acts built; the committed file is ahead of the page until a session with the account republishes it); republish it from the committed file after every bible change, passing that URL.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -63,7 +63,10 @@ the chat is newer.
 **State.** Tests green: `perl -e 'alarm 240; exec @ARGV' godot --headless --path . -s
 tests/run_tests.gd` (293 tests, 3,899 checks on 2 October, after the targeting pass merged main;
 a cloud session fetches Godot 4.7's Linux build from the GitHub release asset to run them, since
-the proxy serves the asset though not the release page). Two or three
+the proxy serves the asset though not the release page; it builds models too, with
+`BPY_PYTHON` naming a python3.11 venv holding `pip install bpy==5.0.1`, blender.org being
+unreachable there, and renders through `xvfb-run` on Mesa's software GL, so `tools/hero_shot.gd`
+and `tools/act_shot.gd` work there). Two or three
 sessions run on this repo at once: check `git status` before committing, stage by path, diff a
 shared file first (a path still sweeps the other session's hunks), never `git add -A`, never
 kill a bare `godot --path .`. Commit after each verified chunk with tests green.
@@ -172,14 +175,46 @@ stands).** Every chassis has a lowforge model; `tools/lowforge/models_low.py` ho
 per chassis id and every number in it is a proportion, so a note moves it and `forge.py build
 <id>` plus one `--import` is the whole loop. Hardpoints are gun mounts (`hp_<n>` pins, each
 parenting its stock part or a bare pad); a shaped component takes the next mount in its maker's
-metal (barrel, twin barrel, rack, blade, dish), armour and vents show nowhere. Joints and turret
-joints are code too. The round-by-round history is retired (Ryan, 1 October); the code and the
+metal (barrel, twin barrel, rack, blade, dish), armour and vents show nowhere. Joints are code
+too, nested where one rides another (`with b.joint(name, pivot, axis=, limits=)`), and so are
+the idle acts (`b.act(...)` at the end of each machine), both written to the model's sidecar
+`art/models/<id>.rig.json` by the build. The round-by-round history is retired (Ryan, 1 October); the code and the
 hangar page's Models tab are the record. **Ryan judges a model only from a render**, never from
 code (`tools/hero_shot.gd` renders bare and needs a window); a hand edit in Blender has to be
 re-expressed in the code to survive a rebuild. **Every machine is signed off for now** (Ryan,
-1 October); next on the art side is the joint pass (bible section 7, the joints row), then the
-acts and movement. Open on the models: each class's size per machine, and the machines' scale
+1 October); the joint pass and the idle acts landed 3 October (the paragraph below); next on
+the art side is Ryan judging the acts running, then the movement animations. Open on the models: each class's size per machine, and the machines' scale
 on the map's hexes (Ryan, 2 October: needs adjusting; all are fitted to one width today).
+
+**Joints and idle acts, built 3 October (a cloud session; bible section 7, the idle-acts row
+and the joints row).** Every joint the joints row asked for is in `models_low.py`: elbows in
+the Badger's booms with the claw's jaw as two halves on its pin; the Clydesdale's head (the
+cheek mounts on it), hips and knees, elevation inside the mortar and howitzer turrets; the
+Baboon's elbows, hips, knees, ankles and projector elevation; the Armadillo's hips, knees, port
+guns and missile cell; the Wild Boar's mantlet, plow and pod; the Prairie Dog's wheels,
+steering, sensor head and chassis; the Dingo's casters carrying wheel spin, harpoon, chassis
+and mortar; the Goshawk's nacelles; the Nemesis's elbows, hips, knees and Meteor tubes; the
+Ammit's elbows, hands, legs, planted lower pair and cannons. Each joint names its axis
+(pitch, yaw, roll; a turret, caster, steer, head or sensor yaws by name) and its limits (the
+Clydesdale's turrets outward only, the casters' swing); the build writes them with the acts to
+`art/models/<id>.rig.json`. The rebuilt glTFs were checked geometry-identical to the committed
+ones (a scratch comparer: world-space vertex hashes per mesh), so no render should differ;
+they were built with Blender 5.0.1 as a Python module (`pip install bpy`), since the cloud
+cannot reach blender.org, so the Mac's next `forge.py build` rewrites the files differently
+byte for byte and identically in content. The engine: `game/ui/mech_rig.gd` (MechRig) reads a
+model's tags and sidecar, picks an act every 2.5 to 6.5 seconds (never the same twice running,
+each instance seeded apart), samples keyframes per joint (degrees in the machine's own terms,
+eased or linear, a slide for a chassis squat), a body track for revs and strafes, a glow track
+scaling the emission of named lit parts or a joint's or socket's group, clamps to the limits,
+and plays the strikes (melee swings the `swing` joints, the shoulders; ranged kicks whatever
+carries a socket, toward the side its limits allow). `MechView3D` and `Map3D` each own a rig
+per machine; the limb-settle idle and the turret scan are gone; flyers and hovercraft still
+sway on the pivot and their acts ride the body. `RIFTGATE_ACTS_DEBUG=1` plays the acts back to
+back, `=<act name>` loops one. Every act's numbers are a first cut for Ryan to judge running
+(the to-do has the doubtful signs). Tests: `tests/test_mech_rig.gd` instantiates every model
+headless and checks the sidecar against it, the nesting the bible asked for, the picking, the
+limits, the strikes and an act's motion. The cornering numbers (`b.move(slide, bank)`) are in
+the sidecars for the movement animations, which are next.
 
 **The codex (29 September; a tab of the hangar page since 1 October).** One surface showing a
 chassis and the components fitted to it: the Codex tab renders it in the browser from the
@@ -302,6 +337,6 @@ it and ticked in the commit that lands it; this is the order to take them in.
 1. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
 2. Ryan's text for the new machines and components; the machines' scale on the map; the strikes, then the acts and movement, judged running.
 3. The discuss-first decisions in the Ryan section, the economy last; enemy targeting decided and built 2 October (the paragraph above; the runner's read is the baseline question); the commander layer once the balance has a baseline.
-4. Ready to build: the pacing pieces after Ryan's session; the movement leftovers (the gauge, a three-wide crossing); the joint pass, then the idle acts, then the movement animations; the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased parked, Corrode, foe roles), and a dedicated hunter foe and spawned formations once proposed.
+4. Ready to build: the pacing pieces after Ryan's session; the movement leftovers (the gauge, a three-wide crossing); the movement animations (the joints and the idle acts landed 3 October; Ryan judges the acts running first); the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased parked, Corrode, foe roles), and a dedicated hunter foe and spawned formations once proposed.
 5. Audio: a full play of Hold The Line, the console's fresh pass and the effects' picks, the two boss themes.
 6. A prototype hangar in the game (paints and loadouts, no economy). Art: enemy art through foeforge, the hangar as a model. Before a phone leaves the desk: onboarding, then tuning.

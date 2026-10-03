@@ -69,6 +69,7 @@ var _camera: Camera3D
 var _units: Dictionary = {}     # unit id -> Node3D, the seat at the hex (set south a little); the pivot under it turns
 var _pivots: Dictionary = {}    # unit id -> the pivot that turns to the facing; the model hangs off it centred by its bounds
 var _shadows: Dictionary = {}   # unit id -> the ground disc under a flyer
+var _rigs: Dictionary = {}      # unit id -> MechRig: the machine's joints, its idle acts and strikes (the same as the skirmish's)
 var _base: Dictionary = {}      # unit id -> resting position, which the idle sway plays around
 var _phase: Dictionary = {}     # unit id -> idle phase, so the team does not sway in step
 var _columns: Dictionary = {}   # hex -> Node3D at the hex's ground: the marks hang off it
@@ -1185,6 +1186,7 @@ func sync() -> void:
 			_units[uid].queue_free()
 			_units.erase(uid)
 			_pivots.erase(uid)
+			_rigs.erase(uid)
 			_base.erase(uid)
 			_fly_y.erase(uid)
 			if _shadows.has(uid):
@@ -1192,15 +1194,17 @@ func sync() -> void:
 				_shadows.erase(uid)
 
 
-## Only a flyer moves at rest: it rides a slow swell, each on its own beat. A grounded
-## machine holds still; its idle will be joint motion, the same as the skirmish's, once the
-## joints exist (Ryan, 21 September).
+## Only a flyer sways at rest: it rides a slow swell, each on its own beat. A grounded
+## machine holds still and every few seconds plays one of its own idle acts through its rig,
+## the same as the skirmish's (Ryan, 2 October).
 var _fly_y: Dictionary = {}   # unit id -> the eased height a flyer is at
 var _dt := 1.0 / 60.0
 
 func _process(delta: float) -> void:
 	_time += delta
 	_dt = delta
+	for rig in _rigs.values():
+		(rig as MechRig).tick(delta)
 	for uid in _units.keys():
 		var u := field.unit_by_id(uid)
 		if u == null or not u.traits.has("flyer"):
@@ -1218,7 +1222,8 @@ func _process(delta: float) -> void:
 func _make_unit(u: Unit) -> Node3D:
 	if u.is_player() and not u.is_static():
 		var maker := str(ContentDB.load_default().chassis.get(u.chassis_id, {}).get("maker", "minerva"))
-		var node := _model(MechView3D.model_for(u.chassis_id, "badger"), maker, u.paint)
+		var model_id := MechView3D.model_for(u.chassis_id, "badger")
+		var node := _model(model_id, maker, u.paint)
 		_marker(node)
 		# Mechs are the reconstruction's markers, drawn at marker size: whatever the model's
 		# true size, its footprint is fitted to about one hex. The model hangs off a pivot
@@ -1241,6 +1246,11 @@ func _make_unit(u: Unit) -> Node3D:
 		var south := (hover + (aabb.end.y * k) * 0.5) * _cos / _sin
 		node.position = Vector3(-aabb.get_center().x, 0.0, -aabb.get_center().z * 0.5) * k + Vector3(0.0, hover, 0.0)
 		pivot.add_child(node)
+		# The rig after the materials and the seat: a body track moves the model under its
+		# pivot, so the facing and the idle never fight; seeded by the unit, so no two act in step.
+		var rig := MechRig.new()
+		rig.setup(node, model_id, node, u.id)
+		_rigs[u.id] = rig
 		var seat := Node3D.new()   # the pivot turns to the facing; the seat's southward set does not
 		seat.position = Vector3(0.0, 0.0, south)
 		seat.add_child(pivot)

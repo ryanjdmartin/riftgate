@@ -80,17 +80,15 @@ var paint: Dictionary = {}        # optional repaint: {"primary": Color, "second
 var frame_override: Vector2i = Vector2i.ZERO
 const SPIN_SPEED := 0.7           # radians per second
 
-# The model's tags, from the Empties in the Blender file (tools/blendforge/README.md):
-# `joint_<name>` is a pivot with the limb's parts under it, `hp_<n>` is a weapon socket with
-# its placeholder under it. Both come through the glTF as plain Node3Ds by name.
-var joints: Dictionary = {}       # "shoulder_l" -> Node3D
-var hardpoints: Dictionary = {}   # 1 -> Node3D
+# The model's tags (tools/lowforge/bl_low.py): `joint_<name>` is a pivot with the limb's
+# parts under it, `hp_<n>` is a weapon socket with its stock part under it. Both come
+# through the glTF as plain Node3Ds by name. The rig reads them and the model's sidecar
+# (art/models/<id>.rig.json) and plays the idle acts and the strikes (MechRig).
+var rig := MechRig.new()
+var joints: Dictionary = {}       # "shoulder_l" -> Node3D (the rig's)
+var hardpoints: Dictionary = {}   # 1 -> Node3D (the rig's)
 var plan: Array = []              # what the pins wear instead of their stock (mount_plan rows), applied in _setup
 var model_id: String = ""         # the glTF drawn: the chassis, or the fallback when it has no model
-var _rest: Dictionary = {}        # joint name -> rest rotation (Vector3)
-var _idle: Dictionary = {}        # joint name -> idle rotation offset, added on top of rest and strikes
-var _strike: Dictionary = {}      # joint name -> strike rotation offset (tweened)
-const IDLE_SWING := 0.022         # radians: a shoulder settling, barely there
 
 var _inner: SubViewport
 var _camera: Camera3D
@@ -167,22 +165,10 @@ static func model_for(chassis_id: String, fallback: String) -> String:
 	return chassis_id if has_model(chassis_id) else fallback
 
 
-## What a node name in the model means: ["joint", "shoulder_l"], ["hp", 1], or [] for a part.
-## Godot's importer may append a suffix to keep names unique; the tag survives that.
+## What a node name in the model means: ["joint", "shoulder_l"], ["hp", 1], or [] for a part
+## (MechRig.parse_tag; kept here for the tools that read it).
 static func parse_tag(node_name: String) -> Array:
-	if node_name.begins_with("joint_") and node_name.length() > 6:
-		return ["joint", node_name.substr(6)]
-	if node_name.begins_with("hp_"):
-		var rest := node_name.substr(3)
-		var digits := ""
-		for ch in rest:
-			if ch.is_valid_int():
-				digits += ch
-			else:
-				break
-		if not digits.is_empty():
-			return ["hp", int(digits)]
-	return []
+	return MechRig.parse_tag(node_name)
 
 
 ## The light outline's thickness (the stencil outline; thin was Ryan's call on 22 September).
@@ -372,7 +358,9 @@ func _setup(chassis_id: String, maker: String) -> void:
 		_model.position = -Vector3((lo.x + hi.x) * 0.5, 0.0, (lo.z + hi.z) * 0.5)
 	_pivot.rotation.y = deg_to_rad(yaw)
 	_apply_materials(_model, maker)
-	_collect_tags(_model)
+	rig.setup(_model, chassis_id)   # after the materials: the acts' glows look for the lit surfaces
+	joints = rig.joints
+	hardpoints = rig.hardpoints
 	_apply_plan()   # before the traces attach and the camera frames, so a mounted shape gets both
 	if not token:
 		# The skirmish's machines carry the display's trace too (Ryan, 21 September); the
@@ -442,7 +430,7 @@ func _setup(chassis_id: String, maker: String) -> void:
 
 func _ready() -> void:
 	_frame_camera()
-	set_process(spin or sway or not joints.is_empty())
+	set_process(spin or sway or rig.alive())
 
 
 func _process(delta: float) -> void:
@@ -454,78 +442,27 @@ func _process(delta: float) -> void:
 	elif sway:
 		_pivot.rotation.y = deg_to_rad(yaw) + sin(_t * 0.9 + sway_phase) * sway_yaw
 		_pivot.position.y = sin(_t * 1.9 + sway_phase) * sway_bob + sin(_t * 0.6 + sway_phase) * sway_bob * 0.5
-	if not joints.is_empty():
-		# A ground machine's idle is its limbs: each joint settles slowly about its pivot,
-		# left and right out of step, so the mech stands like a machine under power.
-		var k := 0
-		for name in joints.keys():
-			var side := 1.0 if str(name).ends_with("_r") else -1.0
-			# A turret scans: a slower, wider traverse than a limb's settling.
-			var turret := str(name).begins_with("turret")
-			var amount := IDLE_SWING * (4.0 if turret else 1.0) * side
-			var rate := 0.35 if turret else 0.7
-			_idle[name] = joint_axis(name) * (sin(_t * rate + sway_phase + k * 1.3) * amount)
-			k += 1
-		_pose_joints()
+	# A grounded machine's idle is its acts, what the pilot does with it every few seconds
+	# (the idle-acts row, 2 October); the rig plays them and the strikes from the model's
+	# sidecar. It never sways.
+	rig.tick(delta)
 
 
-## Rest plus idle plus strike, applied to every joint. Rotations are about the joint's own
-## axes: x swings a limb forward and back (Blender's X, the axle line), y turns it in.
-func _pose_joints() -> void:
-	for name in joints.keys():
-		var j: Node3D = joints[name]
-		j.rotation = _rest[name] + _idle.get(name, Vector3.ZERO) + _strike.get(name, Vector3.ZERO)
-
-
-## The axis a joint turns about: a limb swings about its x (the axle line, forward and
-## back); a turret (`joint_turret`, `joint_turret_l`...) traverses about its up axis
-## (Ryan, 1 October: a way of showing movement on a vehicle).
+## The node-space axis a joint turns about when its sidecar names none: a turret
+## (`joint_turret`, `joint_turret_l`...), a caster, a steering knuckle, a head or a sensor
+## about its up axis; a limb about its x, the axle line (MechRig.axis_for).
 static func joint_axis(name: String) -> Vector3:
-	return Vector3(0.0, 1.0, 0.0) if name.begins_with("turret") else Vector3(1.0, 0.0, 0.0)
+	return MechRig.axis_vector(MechRig.axis_for(name))
 
 
-## A blow: the shoulders swing the arms forward and back. Ranged: only the arms with a
-## weapon socket kick back, a recoil, and a turret with a mount flinches on its traverse.
-## A melee blow leaves turrets alone. Does nothing on an untagged model.
+## A blow: the shoulders swing the arms forward and back. Ranged: every joint carrying a
+## weapon socket kicks about its own axis, a recoil; a turret with a mount flinches on its
+## traverse. A melee blow leaves turrets alone. Does nothing on an untagged model (MechRig).
 func strike(ranged: bool) -> void:
-	if joints.is_empty() or not is_inside_tree():
+	if not is_inside_tree():
 		return
-	var armed := {}
-	for n in hardpoints.keys():
-		var owner := _joint_of(hardpoints[n])
-		if not owner.is_empty():
-			armed[owner] = true
-	for name in joints.keys():
-		var turret := str(name).begins_with("turret")
-		var swing: float
-		if ranged:
-			if not armed.has(name):
-				continue
-			swing = 0.09
-		elif turret:
-			continue
-		else:
-			swing = -0.5
-		var axis := joint_axis(name)
-		var tw := create_tween()
-		tw.tween_method(_set_strike.bind(name), Vector3.ZERO, axis * swing, 0.10 if not ranged else 0.05).set_ease(Tween.EASE_OUT)
-		tw.tween_method(_set_strike.bind(name), axis * swing, Vector3.ZERO, 0.28 if not ranged else 0.2).set_ease(Tween.EASE_IN_OUT)
-
-
-func _set_strike(value: Vector3, name: String) -> void:
-	_strike[name] = value
-	_pose_joints()
-
-
-## The joint a node hangs under, by name, or "" when it is on the body.
-func _joint_of(node: Node) -> String:
-	var p := node.get_parent()
-	while p != null and p != _model:
-		var tag := parse_tag(p.name)
-		if tag.size() == 2 and tag[0] == "joint":
-			return str(tag[1])
-		p = p.get_parent()
-	return ""
+	rig.strike(ranged)
+	set_process(true)
 
 
 ## Hang a component's model on a socket: the stock part under `hp_<n>` is hidden and the
@@ -556,18 +493,6 @@ func unmount(n: int) -> void:
 			c.queue_free()
 		elif c is Node3D:
 			c.visible = true
-
-
-func _collect_tags(node: Node) -> void:
-	var tag := parse_tag(node.name)
-	if tag.size() == 2 and node is Node3D:
-		if tag[0] == "joint":
-			joints[tag[1]] = node
-			_rest[tag[1]] = (node as Node3D).rotation
-		else:
-			hardpoints[tag[1]] = node
-	for c in node.get_children():
-		_collect_tags(c)
 
 
 func _apply_materials(node: Node, maker: String) -> void:

@@ -14,7 +14,9 @@ perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/balance.gd -
 tools/spriter/.venv/bin/python tools/sheet_export.py      # export enemy grids to art/foes, then --import
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate <foe> --n 4   # model candidates (mflux, FLUX.2 Klein)
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut <png> <foe>        # cut one into art/foes, then --import
-tools/spriter/.venv/bin/python tools/lowforge/forge.py build <chassis id>...   # ally units, and gate and wall, by code (tools/lowforge/models_low.py), then --import
+tools/spriter/.venv/bin/python tools/lowforge/forge.py build <chassis id>...   # ally units, and gate and wall, by code (tools/lowforge/models_low.py), with their rig sidecars (joints, acts), then --import
+BPY_PYTHON=<python with the bpy wheel> tools/spriter/.venv/bin/python tools/lowforge/forge.py build <id>   # the same with no Blender installed (a cloud session: python3.11 venv, pip install bpy==5.0.1); tools/lowforge/glbcmp.py old.glb new.glb proves the geometry unchanged
+RIFTGATE_ACTS_DEBUG=1 godot --path .               # every idle act back to back, in the skirmish and on the map (=<act name> loops one); tools/act_shot.gd freezes one frame of one act to a PNG
 tools/spriter/.venv/bin/python tools/lowforge/forge.py export <chassis id>     # a hand-edited tools/lowforge/models/<id>.blend back to art/models, then --import
 tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes                # the five silhouette classes in every maker's metal (art/models/shapes), then --import
 godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- <chassis> <maker> out.png front 480 480   # one unit large (needs a window)

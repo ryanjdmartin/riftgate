@@ -1,0 +1,147 @@
+{
+ "_about": "the rig of art/models/sparrowhawk.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units) and the cornering numbers; MechRig reads it",
+ "joints": {},
+ "acts": [
+  {
+   "name": "dip_wings",
+   "duration": 2.4,
+   "ease": "smooth",
+   "tracks": {},
+   "body": [
+    [
+     0.5,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     16.0
+    ],
+    [
+     1.3,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     -16.0
+    ],
+    [
+     2.1,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   ],
+   "glow": []
+  },
+  {
+   "name": "nose_down",
+   "duration": 2.6,
+   "ease": "smooth",
+   "tracks": {},
+   "body": [
+    [
+     0.6,
+     0.0,
+     0.0,
+     -1.5,
+     0.0,
+     -12.0,
+     0.0
+    ],
+    [
+     1.5,
+     0.0,
+     0.0,
+     0.8,
+     0.0,
+     7.0,
+     0.0
+    ],
+    [
+     2.3,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   ],
+   "glow": []
+  },
+  {
+   "name": "flare_boosters",
+   "duration": 2.2,
+   "ease": "smooth",
+   "tracks": {},
+   "body": [
+    [
+     0.5,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     1.0,
+     0.0,
+     2.5,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     1.9,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   ],
+   "glow": [
+    {
+     "parts": [
+      "booster_ring",
+      "exhaust"
+     ],
+     "keys": [
+      [
+       0.3,
+       0.0
+      ],
+      [
+       0.8,
+       2.5
+      ],
+      [
+       1.2,
+       2.5
+      ],
+      [
+       1.9,
+       0.0
+      ]
+     ]
+    }
+   ]
+  }
+ ],
+ "move": {
+  "slide": 0.6,
+  "bank": 30.0
+ },
+ "glow_parts": [
+  "booster_ring",
+  "exhaust"
+ ]
+}

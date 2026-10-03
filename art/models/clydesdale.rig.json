@@ -1,0 +1,591 @@
+{
+ "_about": "the rig of art/models/clydesdale.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units) and the cornering numbers; MechRig reads it",
+ "joints": {
+  "head": {
+   "axis": "yaw",
+   "limits": {
+    "yaw": [
+     -30.0,
+     30.0
+    ],
+    "pitch": [
+     -10.0,
+     8.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "hip_fl": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -30.0,
+     30.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "knee_fl": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -45.0,
+     20.0
+    ]
+   },
+   "swing": false,
+   "parent": "hip_fl"
+  },
+  "hip_fr": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -30.0,
+     30.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "knee_fr": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -45.0,
+     20.0
+    ]
+   },
+   "swing": false,
+   "parent": "hip_fr"
+  },
+  "hip_hl": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -30.0,
+     30.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "knee_hl": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -45.0,
+     20.0
+    ]
+   },
+   "swing": false,
+   "parent": "hip_hl"
+  },
+  "hip_hr": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -30.0,
+     30.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "knee_hr": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -45.0,
+     20.0
+    ]
+   },
+   "swing": false,
+   "parent": "hip_hr"
+  },
+  "turret_l": {
+   "axis": "yaw",
+   "limits": {
+    "yaw": [
+     0.0,
+     110.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "turret_r": {
+   "axis": "yaw",
+   "limits": {
+    "yaw": [
+     -110.0,
+     0.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "lance": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -4.0,
+     18.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "turret_mortar": {
+   "axis": "yaw",
+   "limits": {
+    "yaw": [
+     0.0,
+     150.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "elev_mortar": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -12.0,
+     20.0
+    ]
+   },
+   "swing": false,
+   "parent": "turret_mortar"
+  },
+  "turret_howitzer": {
+   "axis": "yaw",
+   "limits": {
+    "yaw": [
+     -150.0,
+     0.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "elev_howitzer": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -15.0,
+     20.0
+    ]
+   },
+   "swing": false,
+   "parent": "turret_howitzer"
+  }
+ },
+ "acts": [
+  {
+   "name": "swivel_weapons",
+   "duration": 4.0,
+   "ease": "smooth",
+   "tracks": {
+    "turret_l": [
+     [
+      0.6,
+      0.0,
+      75.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.0,
+      0.0,
+      75.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      3.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "turret_r": [
+     [
+      0.6,
+      0.0,
+      -75.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.0,
+      0.0,
+      -75.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      3.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "turret_mortar": [
+     [
+      0.8,
+      0.0,
+      120.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.6,
+      0.0,
+      120.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      3.8,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "turret_howitzer": [
+     [
+      0.8,
+      0.0,
+      -120.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.6,
+      0.0,
+      -120.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      3.8,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "elev_mortar": [
+     [
+      1.0,
+      16.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.4,
+      16.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      3.6,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "elev_howitzer": [
+     [
+      1.0,
+      16.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.4,
+      16.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      3.6,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "lance": [
+     [
+      1.2,
+      14.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.4,
+      14.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      3.6,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "body": [],
+   "glow": []
+  },
+  {
+   "name": "look_around",
+   "duration": 3.6,
+   "ease": "smooth",
+   "tracks": {
+    "head": [
+     [
+      0.6,
+      -5.0,
+      28.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.5,
+      -5.0,
+      28.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.4,
+      5.0,
+      -28.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      3.1,
+      5.0,
+      -28.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      3.6,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "body": [],
+   "glow": []
+  },
+  {
+   "name": "shift_weight_fore",
+   "duration": 2.6,
+   "ease": "smooth",
+   "tracks": {
+    "hip_fl": [
+     [
+      0.5,
+      16.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.5,
+      16.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.3,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "knee_fl": [
+     [
+      0.5,
+      -32.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.5,
+      -32.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.3,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "body": [],
+   "glow": []
+  },
+  {
+   "name": "shift_weight_hind",
+   "duration": 2.6,
+   "ease": "smooth",
+   "tracks": {
+    "hip_hr": [
+     [
+      0.5,
+      -14.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.5,
+      -14.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.3,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "knee_hr": [
+     [
+      0.5,
+      18.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.5,
+      18.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.3,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "body": [],
+   "glow": []
+  }
+ ],
+ "move": {},
+ "glow_parts": []
+}

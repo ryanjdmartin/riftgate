@@ -345,6 +345,10 @@ class Build:
         self.objects = []
         self.pins = []      # every hp_* and joint_* Empty made, in order, so a joint block can take the pins made inside it
         self.cuts = []      # (targets, cutter) pairs: booleans applied before export (see cut)
+        self.joint_meta = {}   # joint name -> {"axis", "limits", "parent"}: the rig sidecar (see rig())
+        self.acts = []         # the machine's idle acts, in authoring order (see act())
+        self.tuning = {}       # the cornering module's per-machine numbers (see move())
+        self._joint_stack = []   # the joint blocks open right now, outermost first
         self.tile_world = TILE_WORLD   # a structure sets this higher: it is seen at true scale on the map
 
     def material(self, name):
@@ -541,15 +545,97 @@ class Build:
             ob.matrix_parent_inverse = inv
         return e
 
-    def joint(self, name, at):
+    def joint(self, name, at, axis=None, limits=None, swing=None):
         """`with b.joint("shoulder_l", pivot): ...` builds a limb inside the block and hangs
         everything made there, pins included, under an Empty named `joint_<name>` at the
-        pivot, its axes the world's: the engine swings a joint about its own x (the axle
-        line, forward and back) for the strike and the idle (MechView3D). A limb's socket
-        goes inside the block, so a mounted gun recoils with the arm. Only what is still
-        unparented at the block's end is taken, so a socket's stock parts stay under their
-        pin and the pin comes under the joint."""
-        return _Joint(self, name, at)
+        pivot, its axes the world's. A joint inside another joint's block nests under it
+        (an elbow in a shoulder, a wheel's spin in its caster, a gun's elevation in its
+        turret), so a limb bends from the outer pivot and the inner one both. Only what is
+        still unparented at the block's end is taken, so a socket's stock parts stay under
+        their pin and the pin comes under the joint, and an inner joint keeps its own.
+
+        `axis` is the turn the joint is for, in the machine's own terms: "pitch" (about the
+        axle line, x: a limb swinging, a gun elevating, a wheel spinning; positive raises
+        the forward end), "yaw" (about up: a turret, a caster, a head turning; positive
+        turns left) or "roll" (about forward; positive drops the right side). Unnamed, it
+        follows the name: turret_, caster_, steer_, head and sensor yaw, the rest pitch.
+        `limits` clamp what the engine may add to the rest pose, in degrees: a (lo, hi)
+        pair on the joint's own axis, or {"pitch": (lo, hi), "yaw": (lo, hi)} for more
+        than one. `swing` says whether a melee blow swings this joint (the arms); unnamed,
+        a joint named shoulder_* swings. All of it goes to the rig sidecar (see rig()); the
+        engine (MechRig) reads it."""
+        return _Joint(self, name, at, axis, limits, swing)
+
+    @staticmethod
+    def axis_for(name):
+        """The axis a joint turns about when the model names none: the engine's rule too."""
+        for prefix in ("turret", "caster", "steer", "head", "sensor"):
+            if name.startswith(prefix):
+                return "yaw"
+        return "pitch"
+
+    def act(self, name, duration, tracks=None, body=None, glow=None, ease="smooth"):
+        """One idle act, what the pilot does with the machine every few seconds (the
+        idle-acts row, 2 October). `tracks` maps a joint name to keyframes, each
+        (t, value) on the joint's own axis, or (t, pitch, yaw, roll), or
+        (t, pitch, yaw, roll, dx, dy, dz) with a slide in world units (x right, y forward,
+        z up: a chassis squatting). `body` moves the whole machine the same way:
+        (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll), a rev or a strafe. `glow` is
+        a list of (parts, keys): the lit parts named by prefix (their lowforge labels) and
+        (t, k) keys scaling their light, 1 at rest, so a weapon's tip charges. Degrees and
+        seconds throughout; every track starts and ends at rest. `ease` is "smooth"
+        (eased between keys) or "linear" (a wheel spinning)."""
+        out = {"name": name, "duration": float(duration), "ease": ease, "tracks": {}, "body": [], "glow": []}
+        for jn, keys in (tracks or {}).items():
+            if jn not in self.joint_meta:
+                raise ValueError("act %r of %s keys a joint the model has not got: %s" % (name, self.name, jn))
+            axis_i = ("pitch", "yaw", "roll").index(self.joint_meta[jn]["axis"])
+            rows = []
+            for key in keys:
+                key = [float(v) for v in key]
+                if len(key) == 2:
+                    row = [key[0], 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+                    row[1 + axis_i] = key[1]
+                elif len(key) == 4:
+                    row = key + [0.0, 0.0, 0.0]
+                elif len(key) == 7:
+                    row = key
+                else:
+                    raise ValueError("act %r of %s: a key is (t, v), (t, pitch, yaw, roll) or 7 wide" % (name, self.name))
+                for ax, (lo, hi) in self.joint_meta[jn]["limits"].items():
+                    v = row[1 + ("pitch", "yaw", "roll").index(ax)]
+                    if not lo <= v <= hi:
+                        raise ValueError("act %r of %s asks %s for %s %g, outside its limits %g..%g" % (name, self.name, jn, ax, v, lo, hi))
+                rows.append(row)
+            out["tracks"][jn] = rows
+        for key in body or []:
+            key = [float(v) for v in key]
+            if len(key) == 4:
+                key = key + [0.0, 0.0, 0.0]
+            if len(key) != 7:
+                raise ValueError("act %r of %s: a body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll)" % (name, self.name))
+            out["body"].append(key)
+        for parts, keys in glow or []:
+            parts = [parts] if isinstance(parts, str) else list(parts)
+            out["glow"].append({"parts": parts, "keys": [[float(t), float(k)] for t, k in keys]})
+        self.acts.append(out)
+        return out
+
+    def move(self, slide=0.0, bank=0.0):
+        """The cornering module's numbers for this machine (the joints row, 2 October):
+        `slide`, how far the body drifts from its path on a turn and how slowly its heading
+        catches up, 0 for a machine that corners on rails; `bank`, how far a flyer or
+        hovercraft rolls into the turn, in degrees."""
+        self.tuning = {"slide": float(slide), "bank": float(bank)}
+
+    def rig(self):
+        """The rig sidecar: every joint's axis, limits and parent, the acts and the
+        cornering numbers, written beside the glTF as art/models/<id>.rig.json so no
+        runtime code keys on a chassis id. The names the acts' glows look up are listed
+        for the weld, which must keep those parts apart."""
+        glow_parts = sorted({p for a in self.acts for g in a["glow"] for p in g["parts"]})
+        return {"_about": "the rig of art/models/%s.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units) and the cornering numbers; MechRig reads it" % self.name,
+                "joints": self.joint_meta, "acts": self.acts, "move": self.tuning, "glow_parts": glow_parts}
 
     def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0):
         """`with b.socket("hp_1", at, forward): ...` builds the stock component inside the
@@ -599,14 +685,30 @@ class _Socket:
 
 
 class _Joint:
-    def __init__(self, b, name, at):
+    def __init__(self, b, name, at, axis=None, limits=None, swing=None):
         self.b, self.name, self.at = b, name, at
+        self.axis = axis or Build.axis_for(name)
+        self.swing = bool(name.startswith("shoulder")) if swing is None else bool(swing)
+        if self.axis not in ("pitch", "yaw", "roll"):
+            raise ValueError("joint %s of %s: axis is pitch, yaw or roll" % (name, b.name))
+        if limits is None:
+            self.limits = {}
+        elif isinstance(limits, dict):
+            self.limits = {k: [float(lo), float(hi)] for k, (lo, hi) in limits.items()}
+        else:
+            self.limits = {self.axis: [float(limits[0]), float(limits[1])]}
 
     def __enter__(self):
         self.start, self.pstart = len(self.b.objects), len(self.b.pins)
+        if self.name in self.b.joint_meta:
+            raise ValueError("joint %s of %s is made twice" % (self.name, self.b.name))
+        self.b.joint_meta[self.name] = {"axis": self.axis, "limits": self.limits, "swing": self.swing,
+                                        "parent": self.b._joint_stack[-1] if self.b._joint_stack else ""}
+        self.b._joint_stack.append(self.name)
         return self
 
     def __exit__(self, *exc):
+        self.b._joint_stack.pop()
         if exc[0] is not None:
             return False
         b = self.b
@@ -771,6 +873,15 @@ def main():
     fn(builder)
     builder.apply_cuts()
     _export(out)
+    rig_path = os.path.splitext(out)[0] + ".rig.json"
+    if builder.joint_meta or builder.acts or builder.tuning:
+        import json
+        with open(rig_path, "w") as f:
+            json.dump(builder.rig(), f, indent=1)
+            f.write("\n")
+        print(f"lowforge: {len(builder.joint_meta)} joints, {len(builder.acts)} acts -> {rig_path}")
+    elif os.path.exists(rig_path):
+        os.remove(rig_path)
     if "blend" in a:
         # The working file for hand edits in Blender, tiles packed inside. A rebuild from
         # code overwrites it: save a hand-edited copy under another name.

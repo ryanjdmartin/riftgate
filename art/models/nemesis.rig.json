@@ -1,0 +1,367 @@
+{
+ "_about": "the rig of art/models/nemesis.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units) and the cornering numbers; MechRig reads it",
+ "joints": {
+  "hip_l": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -40.0,
+     40.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "knee_l": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -60.0,
+     12.0
+    ]
+   },
+   "swing": false,
+   "parent": "hip_l"
+  },
+  "hip_r": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -40.0,
+     40.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "knee_r": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -60.0,
+     12.0
+    ]
+   },
+   "swing": false,
+   "parent": "hip_r"
+  },
+  "elev_meteor": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -18.0,
+     16.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "shoulder_l": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -50.0,
+     70.0
+    ],
+    "yaw": [
+     -80.0,
+     80.0
+    ]
+   },
+   "swing": true,
+   "parent": ""
+  },
+  "elbow_l": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -70.0,
+     25.0
+    ]
+   },
+   "swing": false,
+   "parent": "shoulder_l"
+  },
+  "shoulder_r": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -50.0,
+     70.0
+    ],
+    "yaw": [
+     -80.0,
+     80.0
+    ]
+   },
+   "swing": true,
+   "parent": ""
+  },
+  "elbow_r": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -70.0,
+     25.0
+    ]
+   },
+   "swing": false,
+   "parent": "shoulder_r"
+  }
+ },
+ "acts": [
+  {
+   "name": "pound_fists",
+   "duration": 3.2,
+   "ease": "smooth",
+   "tracks": {
+    "shoulder_l": [
+     [
+      0.7,
+      30.0,
+      -55.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.1,
+      40.0,
+      -72.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.4,
+      32.0,
+      -58.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.7,
+      40.0,
+      -72.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.0,
+      32.0,
+      -58.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.9,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "shoulder_r": [
+     [
+      0.7,
+      30.0,
+      55.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.1,
+      40.0,
+      72.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.4,
+      32.0,
+      58.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.7,
+      40.0,
+      72.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.0,
+      32.0,
+      58.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.9,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "elbow_l": [
+     [
+      0.7,
+      20.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.0,
+      20.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.9,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "elbow_r": [
+     [
+      0.7,
+      20.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.0,
+      20.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.9,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "body": [],
+   "glow": []
+  },
+  {
+   "name": "core_flare",
+   "duration": 2.4,
+   "ease": "smooth",
+   "tracks": {},
+   "body": [],
+   "glow": [
+    {
+     "parts": [
+      "core_fire"
+     ],
+     "keys": [
+      [
+       0.3,
+       0.0
+      ],
+      [
+       1.0,
+       4.0
+      ],
+      [
+       1.5,
+       4.0
+      ],
+      [
+       2.2,
+       0.0
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "name": "raise_meteor",
+   "duration": 3.0,
+   "ease": "smooth",
+   "tracks": {
+    "elev_meteor": [
+     [
+      0.6,
+      14.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.9,
+      14.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.8,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "body": [],
+   "glow": []
+  }
+ ],
+ "move": {},
+ "glow_parts": [
+  "core_fire"
+ ]
+}

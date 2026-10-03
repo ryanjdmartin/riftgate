@@ -1,0 +1,379 @@
+{
+ "_about": "the rig of art/models/baboon.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units) and the cornering numbers; MechRig reads it",
+ "joints": {
+  "hip_l": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -40.0,
+     40.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "knee_l": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -60.0,
+     20.0
+    ]
+   },
+   "swing": false,
+   "parent": "hip_l"
+  },
+  "ankle_l": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -30.0,
+     30.0
+    ]
+   },
+   "swing": false,
+   "parent": "knee_l"
+  },
+  "hip_r": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -40.0,
+     40.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "knee_r": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -60.0,
+     20.0
+    ]
+   },
+   "swing": false,
+   "parent": "hip_r"
+  },
+  "ankle_r": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -30.0,
+     30.0
+    ]
+   },
+   "swing": false,
+   "parent": "knee_r"
+  },
+  "elev_l": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -6.0,
+     50.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "shoulder_l": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -45.0,
+     60.0
+    ],
+    "yaw": [
+     -30.0,
+     30.0
+    ]
+   },
+   "swing": true,
+   "parent": ""
+  },
+  "elbow_l": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -70.0,
+     45.0
+    ]
+   },
+   "swing": false,
+   "parent": "shoulder_l"
+  },
+  "elev_r": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -6.0,
+     50.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "shoulder_r": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -45.0,
+     60.0
+    ],
+    "yaw": [
+     -30.0,
+     30.0
+    ]
+   },
+   "swing": true,
+   "parent": ""
+  },
+  "elbow_r": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -70.0,
+     45.0
+    ]
+   },
+   "swing": false,
+   "parent": "shoulder_r"
+  }
+ },
+ "acts": [
+  {
+   "name": "raise_arms",
+   "duration": 3.8,
+   "ease": "smooth",
+   "tracks": {
+    "shoulder_l": [
+     [
+      0.9,
+      42.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.5,
+      42.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      3.6,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "shoulder_r": [
+     [
+      0.9,
+      42.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.5,
+      42.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      3.6,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "elbow_l": [
+     [
+      0.9,
+      34.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.5,
+      34.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      3.6,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "elbow_r": [
+     [
+      0.9,
+      34.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.5,
+      34.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      3.6,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "body": [],
+   "glow": []
+  },
+  {
+   "name": "raise_projectors",
+   "duration": 3.2,
+   "ease": "smooth",
+   "tracks": {
+    "elev_l": [
+     [
+      0.5,
+      42.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.7,
+      42.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.7,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "elev_r": [
+     [
+      0.9,
+      42.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.1,
+      42.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      3.1,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "body": [],
+   "glow": []
+  },
+  {
+   "name": "charge_emitters",
+   "duration": 2.6,
+   "ease": "smooth",
+   "tracks": {},
+   "body": [],
+   "glow": [
+    {
+     "parts": [
+      "hp_5",
+      "hp_3",
+      "hp_4"
+     ],
+     "keys": [
+      [
+       0.3,
+       0.0
+      ],
+      [
+       1.1,
+       3.0
+      ],
+      [
+       1.7,
+       3.0
+      ],
+      [
+       2.4,
+       0.0
+      ]
+     ]
+    }
+   ]
+  }
+ ],
+ "move": {},
+ "glow_parts": [
+  "hp_3",
+  "hp_4",
+  "hp_5"
+ ]
+}

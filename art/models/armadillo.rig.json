@@ -1,0 +1,302 @@
+{
+ "_about": "the rig of art/models/armadillo.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units) and the cornering numbers; MechRig reads it",
+ "joints": {
+  "hip_fl": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -35.0,
+     35.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "knee_fl": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -45.0,
+     30.0
+    ]
+   },
+   "swing": false,
+   "parent": "hip_fl"
+  },
+  "hip_fr": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -35.0,
+     35.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "knee_fr": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -45.0,
+     30.0
+    ]
+   },
+   "swing": false,
+   "parent": "hip_fr"
+  },
+  "hip_hl": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -35.0,
+     35.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "knee_hl": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -45.0,
+     30.0
+    ]
+   },
+   "swing": false,
+   "parent": "hip_hl"
+  },
+  "hip_hr": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -35.0,
+     35.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "knee_hr": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -45.0,
+     30.0
+    ]
+   },
+   "swing": false,
+   "parent": "hip_hr"
+  },
+  "elev_l": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -12.0,
+     28.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "elev_r": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -12.0,
+     28.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "elev_cell": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -4.0,
+     28.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  }
+ },
+ "acts": [
+  {
+   "name": "weapons_check",
+   "duration": 4.0,
+   "ease": "smooth",
+   "tracks": {
+    "elev_l": [
+     [
+      0.4,
+      26.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.4,
+      26.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.2,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "elev_r": [
+     [
+      1.7,
+      26.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.7,
+      26.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      3.5,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "body": [],
+   "glow": []
+  },
+  {
+   "name": "tilt_cell",
+   "duration": 3.0,
+   "ease": "smooth",
+   "tracks": {
+    "elev_cell": [
+     [
+      0.6,
+      26.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.0,
+      26.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.8,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "body": [],
+   "glow": []
+  },
+  {
+   "name": "shift_weight",
+   "duration": 2.8,
+   "ease": "smooth",
+   "tracks": {
+    "hip_fr": [
+     [
+      0.5,
+      18.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.6,
+      18.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.5,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "knee_fr": [
+     [
+      0.5,
+      -34.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.6,
+      -34.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.5,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "body": [],
+   "glow": []
+  }
+ ],
+ "move": {},
+ "glow_parts": []
+}

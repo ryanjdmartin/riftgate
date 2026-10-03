@@ -1,0 +1,512 @@
+{
+ "_about": "the rig of art/models/ammit.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units) and the cornering numbers; MechRig reads it",
+ "joints": {
+  "hip_l": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -40.0,
+     40.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "knee_l": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -45.0,
+     45.0
+    ]
+   },
+   "swing": false,
+   "parent": "hip_l"
+  },
+  "ankle_l": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -35.0,
+     35.0
+    ]
+   },
+   "swing": false,
+   "parent": "knee_l"
+  },
+  "hip_r": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -40.0,
+     40.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "knee_r": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -45.0,
+     45.0
+    ]
+   },
+   "swing": false,
+   "parent": "hip_r"
+  },
+  "ankle_r": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -35.0,
+     35.0
+    ]
+   },
+   "swing": false,
+   "parent": "knee_r"
+  },
+  "elev_l": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -12.0,
+     18.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "elev_r": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -12.0,
+     18.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "shoulder_l": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -45.0,
+     50.0
+    ],
+    "yaw": [
+     -40.0,
+     40.0
+    ]
+   },
+   "swing": true,
+   "parent": ""
+  },
+  "elbow_l": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -60.0,
+     30.0
+    ]
+   },
+   "swing": false,
+   "parent": "shoulder_l"
+  },
+  "hand_l": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -55.0,
+     25.0
+    ]
+   },
+   "swing": false,
+   "parent": "elbow_l"
+  },
+  "shoulder_low_l": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -35.0,
+     35.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "elbow_low_l": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -35.0,
+     35.0
+    ]
+   },
+   "swing": false,
+   "parent": "shoulder_low_l"
+  },
+  "shoulder_r": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -45.0,
+     50.0
+    ],
+    "yaw": [
+     -40.0,
+     40.0
+    ]
+   },
+   "swing": true,
+   "parent": ""
+  },
+  "elbow_r": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -60.0,
+     30.0
+    ]
+   },
+   "swing": false,
+   "parent": "shoulder_r"
+  },
+  "hand_r": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -55.0,
+     25.0
+    ]
+   },
+   "swing": false,
+   "parent": "elbow_r"
+  },
+  "shoulder_low_r": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -35.0,
+     35.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "elbow_low_r": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -35.0,
+     35.0
+    ]
+   },
+   "swing": false,
+   "parent": "shoulder_low_r"
+  }
+ },
+ "acts": [
+  {
+   "name": "flex_talons",
+   "duration": 3.2,
+   "ease": "smooth",
+   "tracks": {
+    "hand_l": [
+     [
+      0.4,
+      -52.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.0,
+      -52.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.5,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "hand_r": [
+     [
+      1.6,
+      -52.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.2,
+      -52.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.8,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "body": [],
+   "glow": []
+  },
+  {
+   "name": "raise_cannons",
+   "duration": 2.8,
+   "ease": "smooth",
+   "tracks": {
+    "elev_l": [
+     [
+      0.6,
+      16.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.8,
+      16.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.6,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "elev_r": [
+     [
+      0.6,
+      16.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.8,
+      16.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.6,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "body": [],
+   "glow": []
+  },
+  {
+   "name": "pilot_flame",
+   "duration": 2.4,
+   "ease": "smooth",
+   "tracks": {},
+   "body": [],
+   "glow": [
+    {
+     "parts": [
+      "hp_2"
+     ],
+     "keys": [
+      [
+       0.3,
+       0.0
+      ],
+      [
+       0.8,
+       4.0
+      ],
+      [
+       1.2,
+       1.0
+      ],
+      [
+       1.6,
+       4.0
+      ],
+      [
+       2.2,
+       0.0
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "name": "shift_weight",
+   "duration": 3.0,
+   "ease": "smooth",
+   "tracks": {
+    "shoulder_low_l": [
+     [
+      0.6,
+      -9.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.7,
+      -9.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.7,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "elbow_low_l": [
+     [
+      0.6,
+      12.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.7,
+      12.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.7,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "hip_r": [
+     [
+      0.8,
+      7.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.9,
+      7.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.8,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "knee_r": [
+     [
+      0.8,
+      -12.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.9,
+      -12.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.8,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "body": [],
+   "glow": []
+  }
+ ],
+ "move": {},
+ "glow_parts": [
+  "hp_2"
+ ]
+}
