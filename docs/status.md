@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.27 since 3 October: the movement leftovers, the move gauge, the three-wide crossing and the water feature, on top of the joints, acts and movement and the hovercraft's third pass); republish it from the committed file after every bible change, passing that URL.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.28 since 3 October: the movement leftovers and the hovercraft's fourth pass); republish it from the committed file after every bible change, passing that URL.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -164,8 +164,10 @@ Stingray: too literal and floating, so no tail and every part seated on the skin
 edge, the rear mounts under the wings, the stern two hollow exhausts; the Puffin: hilarious
 and floating, so a sleek escort; then that read as a thing that could fly and had lost the
 charm, so a wide oblong hover hull wearing the first pass's head, bill and dark back, boosters
-in the sponsons, fins for the ancestry, no wings), the earlier passes folded under each on
-the Models tab, for his third look. The Stingray's helicopter-style movement is being built
+in the sponsons, fins for the ancestry, no wings), then a fourth pass on 3 October (the Stingray's pods under the forewings, its turret pin back
+into the dome, its tail one wide exhaust duct; the Puffin without its head, with a fighter canopy,
+side wings and the giant louvred boosters brought out), the earlier passes folded under each on
+the Models tab, for his fourth look. The Stingray's helicopter-style movement is being built
 in the movement session; when it lands, the skirmish's `sway_pitch` idle is to be judged
 against it or retired. The skirmish's hover
 idle gained a slow pitch (`sway_pitch`), to judge running. The merge took the tens for both
@@ -232,8 +234,8 @@ the idle acts (`b.act(...)` at the end of each machine), both written to the mod
 hangar page's Models tab are the record. **Ryan judges a model only from a render**, never from
 code (`tools/hero_shot.gd` renders bare and needs a window); a hand edit in Blender has to be
 re-expressed in the code to survive a rebuild. **The eleven machines of 1 October are signed off for
-now** (Ryan); the two hovercraft of 2 October are third passes (on his notes) waiting on his look on the
-Models tab, carrying the acts and gaits the animation session wrote for their second pass (the part
+now** (Ryan); the two hovercraft of 2 October are fourth passes (3 October, on his third notes) waiting on his look on
+the Models tab, carrying the acts and gaits the animation session wrote for their second pass (the part
 names brought over to the third); the joint pass, the idle acts and the movement animations landed
 3 October (the paragraphs below); next on the art side is Ryan judging the acts and the movement
 running. Open on the models: each class's size per machine, and the machines' scale
@@ -425,7 +427,7 @@ disrupt into a boss's signature is a trick or a trap.
 **Open, in order.** The task list is `docs/todo.md`, one line a task, grouped by who moves
 it and ticked in the commit that lands it; this is the order to take them in.
 
-1. Ryan's third look at the Stingray and the Puffin on the hangar's Models tab, and his decision on the Puffin's passive (the overshield), which then gets built.
+1. Ryan's fourth look at the Stingray and the Puffin on the hangar's Models tab, and his decision on the Puffin's passive (the overshield), which then gets built.
 2. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
 3. Ryan's text for the new machines and components; the machines' scale on the map; the strikes, the hover idle's pitch, the idle acts (`RIFTGATE_ACTS_DEBUG=1`) and the gaits (`RIFTGATE_MOVE_DEBUG=1`, and a real move for the Dingo's drift, the Stingray's helicopter strafe and the banks), judged running; the movement branch merged on his word.
 4. The discuss-first decisions in the Ryan section, the economy last; enemy targeting decided and built 2 October (the paragraph above; the runner's read is the baseline question); the commander layer once the balance has a baseline.
