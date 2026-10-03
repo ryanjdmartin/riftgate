@@ -1123,10 +1123,11 @@ ammit.maker = "arsenal"
 # flyer; a W&S flyer would be a traditional helicopter profile. Both float: nothing of
 # either touches z = 0, the ground.
 
-def _oct(cz, w, h, cx=0.0):
-    """An eight-sided section as (x, z) points, `w` across and `h` tall, flat on top: a round
-    body or a bell."""
-    return [(cx + w / 2 * math.cos(math.pi / 8 + i * math.pi / 4), cz + h / 2 * math.sin(math.pi / 8 + i * math.pi / 4)) for i in range(8)]
+def _oct(cz, w, h, cx=0.0, n=8):
+    """An `n`-sided section as (x, z) points, `w` across and `h` tall, flat on top: a round
+    body or a bell. Twelve sides for a chrome body, so no one flank facet mirrors the whole sky
+    (the Puffin's second pass showed a white patch where one did)."""
+    return [(cx + w / 2 * math.cos(math.pi / n + i * 2 * math.pi / n), cz + h / 2 * math.sin(math.pi / n + i * 2 * math.pi / n)) for i in range(n)]
 
 
 def _wing_section(x, y_back, y_front, z_bottom, z_top, shoulder):
@@ -1345,15 +1346,15 @@ def puffin(b):
         for (y0, cz0, w0, h0), (y1, cz1, w1, h1) in zip(BODY, BODY[1:]):
             if y1 <= y <= y0:
                 t = (y0 - y) / (y0 - y1)
-                return (cz0 + (cz1 - cz0) * t) + (h0 + (h1 - h0) * t) / 2.0 * math.sin(3.0 * math.pi / 8.0)
+                return (cz0 + (cz1 - cz0) * t) + (h0 + (h1 - h0) * t) / 2.0 * math.sin(5.0 * math.pi / 12.0)
         return BODY[-1][1]
-    # The body: a round section, long and low, a blunt nose where the prow begins.
-    b.loft([(y, _oct(cz, w, h)) for (y, cz, w, h) in BODY], "steel.plate", "body")
+    # The body: a round section of twelve sides, long and low, a blunt nose where the prow begins.
+    b.loft([(y, _oct(cz, w, h, n=12)) for (y, cz, w, h) in BODY], "steel.plate", "body")
     # The prow: a chined wedge out of the nose, flat from side to side, narrowing to its edge,
     # which is the projector's emitter, a tall lit slot; one hard band of light across it.
-    b.loft([(26.0, _oct(17.0, 10.0, 10.0)), (34.0, _oct(16.6, 7.0, 11.0)), (41.0, _oct(16.2, 3.6, 8.5)), (44.0, _oct(16.0, 2.0, 5.5))], "livery.livery", "prow")
-    b.loft([(31.0, _oct(16.8, 7.8, 11.8)), (32.6, _oct(16.75, 7.4, 11.4))], "amber.light", "prow_band")
-    b.loft([(44.0, _oct(16.0, 1.8, 5.0)), (44.9, _oct(16.0, 1.3, 4.2))], "amber.engine", "projector_slot")
+    b.loft([(26.0, _oct(17.0, 10.0, 10.0, n=12)), (34.0, _oct(16.6, 7.0, 11.0, n=12)), (41.0, _oct(16.2, 3.6, 8.5, n=12)), (44.0, _oct(16.0, 2.0, 5.5, n=12))], "livery.livery", "prow")
+    b.loft([(31.0, _oct(16.8, 7.8, 11.8, n=12)), (32.6, _oct(16.75, 7.4, 11.4, n=12))], "amber.light", "prow_band")
+    b.loft([(44.0, _oct(16.0, 1.8, 5.0, n=12)), (44.9, _oct(16.0, 1.3, 4.2, n=12))], "amber.engine", "projector_slot")
     # The canopy: a glass slit on the crown ahead of the spine (no open cockpit, no eyes).
     b.loft([(22.0, hexagon(0.0, btop(22.0) - 0.4, 5.0, 1.2)), (17.0, hexagon(0.0, btop(17.0) + 0.3, 9.0, 3.2)),
             (10.0, hexagon(0.0, btop(10.0) + 0.5, 9.5, 3.4)), (5.0, hexagon(0.0, btop(5.0) + 0.2, 8.0, 2.6))], "glass.glass", "canopy")
