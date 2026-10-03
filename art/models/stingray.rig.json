@@ -8,7 +8,138 @@
    "parent": ""
   }
  },
- "acts": [],
+ "acts": [
+  {
+   "name": "scan_emitter",
+   "duration": 3.2,
+   "ease": "smooth",
+   "tracks": {
+    "turret": [
+     [
+      0.7,
+      0.0,
+      70.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.8,
+      0.0,
+      -70.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.9,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "body": [],
+   "glow": []
+  },
+  {
+   "name": "lance_charge",
+   "duration": 2.6,
+   "ease": "smooth",
+   "tracks": {},
+   "body": [],
+   "glow": [
+    {
+     "parts": [
+      "lance_muzzle"
+     ],
+     "keys": [
+      [
+       0.3,
+       0.0
+      ],
+      [
+       1.2,
+       4.0
+      ],
+      [
+       1.8,
+       4.0
+      ],
+      [
+       2.4,
+       0.0
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "name": "thrusters_surge",
+   "duration": 2.4,
+   "ease": "smooth",
+   "tracks": {},
+   "body": [
+    [
+     0.5,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     1.0,
+     0.0,
+     3.0,
+     -1.0,
+     0.0,
+     -6.0,
+     0.0
+    ],
+    [
+     2.2,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   ],
+   "glow": [
+    {
+     "parts": [
+      "thruster_slit"
+     ],
+     "keys": [
+      [
+       0.3,
+       0.0
+      ],
+      [
+       0.9,
+       3.0
+      ],
+      [
+       1.5,
+       3.0
+      ],
+      [
+       2.2,
+       0.0
+      ]
+     ]
+    }
+   ]
+  }
+ ],
  "gait": {
   "stride": 40.0,
   "ease": "smooth",
@@ -19,8 +150,14 @@
   "aim": {},
   "hold": {},
   "treads": {},
-  "glow": {},
+  "glow": {
+   "parts": [
+    "thruster_slit"
+   ],
+   "k": 2.0
+  },
   "rock": 0.0,
+  "hold_aim": {},
   "body_hold": [
    0.0,
    0.0,
@@ -34,5 +171,8 @@
   "slide": 0.3,
   "bank": 12.0
  },
- "glow_parts": []
+ "glow_parts": [
+  "lance_muzzle",
+  "thruster_slit"
+ ]
 }

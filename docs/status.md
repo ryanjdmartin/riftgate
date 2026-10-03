@@ -263,10 +263,16 @@ settles out over a third. `RIFTGATE_MOVE_DEBUG=1` drives every machine constantl
 reference speed on both screens; `tools/act_shot.gd <chassis> <maker> gait <seconds> out.png`
 freezes a stride, and the frames checked here read right (the diagonal pairs, the lifted
 fist, the swinging arms, the carried claw, the tilted nacelles). Every number is a first cut.
-Not done: the turrets holding aim as a hull turns (a proposal), a sideways offset from the
-path for the Dingo's slide (today the slide is the facing's lag alone), the hovercraft's
-acts. Tests cover the cycle sampling, a walker stepping and settling, wheels and casters,
-holds, rock and bank, the gaits against the models, and no act under way (321 tests).
+Then, on Ryan's word (3 October, later): the Wild Boar's and the Prairie Dog's turrets hold
+their aim while the hull turns under them (`hold_aim` in the gait: the turret winds against
+the turn, up to 170 degrees, and relaxes to centre over most of a second once the hull runs
+straight); a machine with a slide sits off its path on the outside, by how square its travel
+is to its facing (`DRIFT_UNITS`, 12 model units for the Dingo at a right angle, eased), on top
+of the facing's lag; the Stingray and the Puffin have three first-cut acts each and brighten
+their thrusters under way. Not done: the feet arcing a little through the stance. Tests cover
+the cycle sampling, a walker stepping and settling, wheels and casters, holds, rock and bank,
+the held aim, the drift, the hovercraft's sidecars, every gait against its model, and no act
+under way.
 
 **The codex (29 September; a tab of the hangar page since 1 October).** One surface showing a
 chassis and the components fitted to it: the Codex tab renders it in the browser from the
@@ -390,6 +396,6 @@ it and ticked in the commit that lands it; this is the order to take them in.
 2. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
 3. Ryan's text for the new machines and components; the machines' scale on the map; the strikes, the hover idle's pitch, the idle acts (`RIFTGATE_ACTS_DEBUG=1`) and the gaits (`RIFTGATE_MOVE_DEBUG=1`, and a real move for the Dingo's drift and the banks), judged running; the movement branch merged on his word.
 4. The discuss-first decisions in the Ryan section, the economy last; enemy targeting decided and built 2 October (the paragraph above; the runner's read is the baseline question); the commander layer once the balance has a baseline.
-5. Ready to build: the pacing pieces after Ryan's session; the movement leftovers (the gauge, a three-wide crossing); the animation leftovers (the turrets holding aim, the Dingo's sideways slide, the hovercraft's acts); the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased parked, Corrode, foe roles), and a dedicated hunter foe and spawned formations once proposed.
+5. Ready to build: the pacing pieces after Ryan's session; the movement leftovers (the gauge, a three-wide crossing); the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased parked, Corrode, foe roles), and a dedicated hunter foe and spawned formations once proposed.
 6. Audio: a full play of Hold The Line, the console's fresh pass and the effects' picks, the two boss themes.
 7. A prototype hangar in the game (paints and loadouts, no economy). Art: enemy art through foeforge, the hangar as a model. Before a phone leaves the desk: onboarding, then tuning.

@@ -786,7 +786,8 @@ def wild_boar(b):
     b.act("tilt_pod", 2.6, {"elev_pod": [(0.6, 15.0), (1.8, 15.0), (2.5, 0.0)]})
 
     # Movement: the treads scroll; a rock on pulling away and stopping.
-    b.gait(treads={"parts": ["tread"], "scroll": 1.0}, rock=5.0)
+    # The turret holds its aim while the hull turns under it (the joints row's proposal).
+    b.gait(treads={"parts": ["tread"], "scroll": 1.0}, rock=5.0, hold_aim={"turret": 1.0})
 
 
 wild_boar.maker = "minerva"
@@ -904,7 +905,8 @@ def prairie_dog(b):
 
     # Movement: the wheels spin by their radius, the fronts steer into turns, the body rocks
     # on pulling away.
-    b.gait(wheels={"wheel_fl": R, "wheel_fr": R, "wheel_rl": R, "wheel_rr": R}, steer={"steer_fl": 10.0, "steer_fr": 10.0}, rock=4.0)
+    b.gait(wheels={"wheel_fl": R, "wheel_fr": R, "wheel_rl": R, "wheel_rr": R}, steer={"steer_fl": 10.0, "steer_fr": 10.0}, rock=4.0,
+           hold_aim={"turret": 1.0})   # the turret holds its aim while the hull turns under it (the joints row's proposal)
 
 
 prairie_dog.maker = "wainwright_sutler"
@@ -1664,10 +1666,16 @@ def stingray(b):
         else:
             b.pad("hp_5", (rx, ry + 4.0, mt + 0.5), scale=0.7, size=(6.0, 2.0))
 
+    # Idle acts (first cuts, 3 October; a hovercraft sways and bobs on the pivot too): the
+    # emitter's turret scans; the lance charges; the thrusters surge and the body noses down
+    # under it. A body key is (t, dx, dy, dz, yaw, pitch, roll).
+    b.act("scan_emitter", 3.2, {"turret": [(0.7, 70.0), (1.8, -70.0), (2.9, 0.0)]})
+    b.act("lance_charge", 2.6, glow=[(["lance_muzzle"], [(0.3, 0.0), (1.2, 4.0), (1.8, 4.0), (2.4, 0.0)])])
+    b.act("thrusters_surge", 2.4, body=[(0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (1.0, 0.0, 3.0, -1.0, 0.0, -6.0, 0.0), (2.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
+          glow=[(["thruster_slit"], [(0.3, 0.0), (0.9, 3.0), (1.5, 3.0), (2.2, 0.0)])])
     # Movement (first numbers, the joints row): a hovercraft slides a little, more controlled
-    # than the Dingo, and banks some; the nose drops a touch under way. No acts yet: they
-    # are proposed once Ryan has looked at the machine.
-    b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, -3.0, 0.0))
+    # than the Dingo, and banks some; the nose drops a touch under way.
+    b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, -3.0, 0.0), glow={"parts": ["thruster_slit"], "k": 2.0})
     b.move(slide=0.3, bank=12.0)
 
 
@@ -1761,8 +1769,15 @@ def puffin(b):
         _wing(b, root, tip, "livery.livery", "fin")
     b.pad("hp_4", (0.0, -38.0, 21.4), scale=0.6, size=(4.0, 1.5))
 
-    # Movement (first numbers, the joints row): the same as the Stingray's; no acts yet.
-    b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, -3.0, 0.0))
+    # Idle acts (first cuts, 3 October): the boosters flare and the body surges; the prow
+    # projector pulses twice; a hop on the lift nozzles with a roll.
+    b.act("boosters_flare", 2.4, body=[(0.5, 0.0, 0.0, 0.0), (1.0, 0.0, 3.0, 0.0), (2.2, 0.0, 0.0, 0.0)],
+          glow=[(["nozzle_ring", "exhaust"], [(0.3, 0.0), (0.9, 2.5), (1.5, 2.5), (2.2, 0.0)])])
+    b.act("prow_pulse", 2.6, glow=[(["projector_slot", "prow_band"], [(0.3, 0.0), (0.7, 3.5), (1.1, 0.5), (1.5, 3.5), (1.9, 0.5), (2.4, 0.0)])])
+    b.act("lift_hop", 2.4, body=[(0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (1.0, 0.0, 0.0, 3.0, 0.0, 0.0, 6.0), (1.6, 0.0, 0.0, 1.0, 0.0, 0.0, -4.0), (2.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
+          glow=[(["lift_nozzle"], [(0.3, 0.0), (0.9, 3.0), (1.6, 1.0), (2.2, 0.0)])])
+    # Movement (first numbers, the joints row): the same as the Stingray's.
+    b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, -3.0, 0.0), glow={"parts": ["nozzle_ring", "exhaust"], "k": 2.0})
     b.move(slide=0.3, bank=12.0)
 
 

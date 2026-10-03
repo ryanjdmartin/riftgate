@@ -656,7 +656,7 @@ class Build:
         return rows
 
     def gait(self, stride=40.0, tracks=None, body=None, body_hold=None, wheels=None, steer=None, aim=None,
-             treads=None, hold=None, glow=None, rock=0.0, ease="smooth"):
+             treads=None, hold=None, glow=None, rock=0.0, hold_aim=None, ease="smooth"):
         """How the machine moves while the map moves it (the joints row, 2 October; MechRig.drive).
         `stride` is the model units one cycle covers. `tracks` maps a joint to cyclic keys
         over a phase of 0 to 1 (the same shapes as an act's keys), or to (keys, phase) with
@@ -668,9 +668,11 @@ class Build:
         to its share of the travel's bearing against the facing (1 points along it).
         `treads` is {"parts": [labels], "scroll": 1.0} to run the tread tiles; `glow`
         {"parts": [labels or groups], "k": 2.0} to brighten boosters by that much on the
-        move; `rock` the degrees the nose comes up on pulling away and dips on stopping."""
+        move; `rock` the degrees the nose comes up on pulling away and dips on stopping;
+        `hold_aim` maps a turret to its share of the hull's turning it winds against, so it
+        holds its aim while the hull turns under it (1 holds it exactly)."""
         out = {"stride": float(stride), "ease": ease, "tracks": {}, "body": [], "wheels": {}, "steer": {}, "aim": {},
-               "hold": {}, "treads": {}, "glow": {}, "rock": float(rock)}
+               "hold": {}, "treads": {}, "glow": {}, "rock": float(rock), "hold_aim": {}}
         for jn, spec in (tracks or {}).items():
             keys, phase = (spec if isinstance(spec, tuple) and len(spec) == 2 and not isinstance(spec[0], (int, float)) else (spec, 0.0))
             out["tracks"][jn] = {"keys": self._keys("the gait", keys, jn), "phase": float(phase)}
@@ -680,7 +682,7 @@ class Build:
             if len(bh) != 6:
                 raise ValueError("the gait of %s: body_hold is (dx, dy, dz, yaw, pitch, roll)" % self.name)
             out["body_hold"] = bh
-        for d, src in (("wheels", wheels), ("steer", steer), ("aim", aim)):
+        for d, src in (("wheels", wheels), ("steer", steer), ("aim", aim), ("hold_aim", hold_aim)):
             for jn, v in (src or {}).items():
                 if jn not in self.joint_meta:
                     raise ValueError("the gait of %s names a joint the model has not got: %s" % (self.name, jn))

@@ -471,7 +471,10 @@
   "hold": {},
   "treads": {},
   "glow": {},
-  "rock": 4.0
+  "rock": 4.0,
+  "hold_aim": {
+   "turret": 1.0
+  }
  },
  "move": {},
  "glow_parts": []

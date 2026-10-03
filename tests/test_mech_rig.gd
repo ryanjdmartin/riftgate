@@ -5,7 +5,7 @@ extends TestCase
 ## renderer, so the joints' nesting and the sidecars are checked against the real files;
 ## only the drawing needs a window.
 
-const MACHINES := ["badger", "sparrowhawk", "clydesdale", "baboon", "armadillo", "wild_boar", "prairie_dog", "dingo", "goshawk", "nemesis", "ammit"]
+const MACHINES := ["badger", "sparrowhawk", "clydesdale", "baboon", "armadillo", "wild_boar", "prairie_dog", "dingo", "goshawk", "nemesis", "ammit", "stingray", "puffin"]
 
 
 func _rig_for(model_id: String, seed_value: int = 1) -> Array:
@@ -355,7 +355,7 @@ func test_held_offsets_rock_and_bank() -> void:
 
 
 func test_every_gait_names_joints_and_parts_the_model_has() -> void:
-	for id in MACHINES + ["stingray", "puffin"]:
+	for id in MACHINES:
 		var side := MechRig.load_sidecar(id)
 		var g: Dictionary = side.get("gait", {})
 		var pair := _rig_for(id)
@@ -392,3 +392,43 @@ func test_a_pilot_on_the_move_starts_no_act() -> void:
 		rig.tick(1.0 / 60.0)
 	assert_ne(rig.last_act, "", "standing again, the acts resume")
 	pair[1].free()
+
+
+func test_a_turret_holds_its_aim_while_the_hull_turns() -> void:
+	var pair := _rig_for("wild_boar", 2)
+	var rig: MechRig = pair[0]
+	var turret: Node3D = rig.joints["turret"]
+	_drive(rig, MechRig.MOVE_REF_SPEED, 0.5, 0.0, 1.0)   # half a second turning left at a radian a second
+	assert_true(turret.rotation.y < -deg_to_rad(20.0), "the turret winds right against a left turn, keeping its aim (%f)" % rad_to_deg(turret.rotation.y))
+	_drive(rig, MechRig.MOVE_REF_SPEED, 4.0)
+	assert_true(absf(turret.rotation.y) < deg_to_rad(1.0), "and relaxes back to centre once the hull runs straight")
+	pair[1].free()
+	pair = _rig_for("clydesdale", 2)
+	rig = pair[0]
+	_drive(rig, MechRig.MOVE_REF_SPEED, 0.5, 0.0, 1.0)
+	assert_true(is_zero_approx((rig.joints["turret_l"] as Node3D).rotation.y), "a machine without the proposal keeps its turrets with the hull")
+	pair[1].free()
+
+
+func test_a_slide_drifts_the_body_off_its_path() -> void:
+	var pair := _rig_for("dingo", 2)
+	var rig: MechRig = pair[0]
+	var model: Node3D = pair[1]
+	_drive(rig, MechRig.MOVE_REF_SPEED, 1.0, deg_to_rad(90.0))   # a step square to the left of its facing
+	assert_true(model.position.x > 8.0, "the body sits off the path on the outside, to the right (%f)" % model.position.x)
+	_drive(rig, MechRig.MOVE_REF_SPEED, 1.5, 0.0)
+	assert_true(absf(model.position.x) < 0.3, "back over its path once the travel is straight ahead")
+	pair[1].free()
+	pair = _rig_for("clydesdale", 2)
+	rig = pair[0]
+	_drive(rig, MechRig.MOVE_REF_SPEED, 1.0, deg_to_rad(90.0))
+	assert_true(is_zero_approx(pair[1].position.x), "a machine with no slide never drifts")
+	pair[1].free()
+
+
+func test_the_hovercraft_have_acts_and_cornering_numbers() -> void:
+	for id in ["stingray", "puffin"]:
+		var side := MechRig.load_sidecar(id)
+		assert_true(side.get("acts", []).size() >= 3, "%s has several acts" % id)
+		assert_true(float(side.get("move", {}).get("bank", 0.0)) > 0.0, "%s banks" % id)
+		assert_true(float(side.get("move", {}).get("slide", 0.0)) > 0.0, "%s slides a little" % id)

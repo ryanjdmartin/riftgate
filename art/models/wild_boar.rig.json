@@ -256,7 +256,10 @@
    "scroll": 1.0
   },
   "glow": {},
-  "rock": 5.0
+  "rock": 5.0,
+  "hold_aim": {
+   "turret": 1.0
+  }
  },
  "move": {},
  "glow_parts": [

@@ -42,6 +42,9 @@ const MOVE_BLEND_IN := 0.25   # seconds a gait takes to come up from standing
 const MOVE_BLEND_OUT := 0.35  # and to settle back when the machine stops
 const ROCK_ACCEL := 1500.0    # model units a second squared that earns the whole rock
 const BANK_TURN := 2.0        # radians a second of turning that earns the whole bank
+const DRIFT_UNITS := 12.0     # model units a machine with a slide of 1 drifts off its path when the travel is square to its facing
+const AIM_HOLD_MAX := 170.0   # degrees a turret may wind up holding its aim against a turning hull
+const AIM_RELAX := 0.8        # seconds for a held aim to come back to centre once the hull stops turning
 
 var joints: Dictionary = {}        # "shoulder_l" -> Node3D
 var hardpoints: Dictionary = {}    # 1 -> Node3D
@@ -76,6 +79,8 @@ var _speed := 0.0                  # model units a second, smoothed
 var _blend := 0.0                  # 0 standing, 1 moving: the gait's weight
 var _accel := 0.0                  # the smoothed change of speed, for the rock
 var _bank := 0.0                   # degrees of roll into the turn, eased
+var _drift := 0.0                  # model units the body sits off its path, right positive, eased (the slide)
+var _aim_hold: Dictionary = {}     # joint -> degrees of yaw a turret holds against the hull's turning
 var _tread_mats: Array = []        # [[StandardMaterial3D, base uv offset]] the treads scroll
 var _move_glow: Array = []         # [[StandardMaterial3D, base]] the boosters brighten
 var _current: Dictionary = {}      # the act playing, or empty
@@ -233,6 +238,8 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 	_blend = 0.0
 	_accel = 0.0
 	_bank = 0.0
+	_drift = 0.0
+	_aim_hold.clear()
 	_gait_rot.clear()
 	_gait_slide.clear()
 	var treads: Dictionary = gait.get("treads", {})
@@ -432,6 +439,19 @@ func drive(speed: float, aim: float, turn: float, delta: float) -> void:
 	_dist += _speed * delta
 	var bank_want := float(move.get("bank", 0.0)) * clampf(-turn / BANK_TURN, -1.0, 1.0)   # a left turn drops the left wing: roll negative
 	_bank = lerpf(_bank, bank_want, 1.0 - exp(-delta / 0.3))
+	# The slide: a body with inertia sits off a path that turned under it, on the outside,
+	# by how square the travel is to its facing (the Dingo's drift; a hovercraft's a little).
+	var drift_want := float(move.get("slide", 0.0)) * DRIFT_UNITS * sin(aim) * clampf(_speed / MOVE_REF_SPEED, 0.0, 1.0)
+	_drift = lerpf(_drift, drift_want, 1.0 - exp(-delta / 0.3))
+	# A turret holding its aim while the hull turns under it: it winds against the turn and
+	# relaxes back to centre once the hull runs straight (the Wild Boar, the Prairie Dog).
+	for name in gait.get("hold_aim", {}).keys():
+		var held := float(_aim_hold.get(name, 0.0))
+		if absf(turn) > 0.15:
+			held = clampf(held - rad_to_deg(turn) * delta * float(gait["hold_aim"][name]), -AIM_HOLD_MAX, AIM_HOLD_MAX)
+		else:
+			held = lerpf(held, 0.0, 1.0 - exp(-delta / AIM_RELAX))
+		_aim_hold[name] = held
 	_evaluate_gait(aim, turn)
 	_pose()
 
@@ -468,6 +488,9 @@ func _evaluate_gait(aim: float, turn: float) -> void:
 	for name in casters.keys():
 		if joints.has(name):
 			_gait_rot[name] = _gait_rot.get(name, Vector3.ZERO) + Vector3(0.0, rad_to_deg(aim) * float(casters[name]) * _blend, 0.0)
+	for name in _aim_hold.keys():
+		if joints.has(name):
+			_gait_rot[name] = _gait_rot.get(name, Vector3.ZERO) + Vector3(0.0, float(_aim_hold[name]), 0.0)
 	# Offsets held while moving: a claw carried clear of the ground, nacelles tilted.
 	var hold: Dictionary = gait.get("hold", {})
 	for name in hold.keys():
@@ -492,6 +515,7 @@ func _evaluate_gait(aim: float, turn: float) -> void:
 	if rock != 0.0:
 		body_rot.x += rock * clampf(_accel / ROCK_ACCEL, -1.0, 1.0)   # pulling away rocks the nose up
 	body_rot.z += _bank
+	body_slide.x += _drift
 	_body_move_rot = body_rot
 	_body_move_slide = body_slide
 	# Treads scroll with the distance; boosters brighten with the move.
