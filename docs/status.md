@@ -238,7 +238,7 @@ headless (RANDOM, GREEDY, `withdraw_below`); `tools/balance.gd` runs the matrix,
 quarters of an hour at 200 seeds now the fights last: thirteen machines (the two hovercraft since 2 October, night), twelve packs (the nine
 plus each faction's whole formation in one fight) and the team row run twice for the targeting
 comparison; `--damage F` asks a scale of the player's blows without writing it (`docs/balance.md`,
-generated 3 October with the player's damage halved and the two hovercraft in). **The baseline, after the halving
+generated 3 October with the player's damage halved and the two hovercraft in, 72,000 fights in fifty minutes in the cloud). **The baseline, after the halving
 (Ryan's call: move the player's numbers, not the foes' hit points; measured at 0.67 and 0.5 first,
 0.5 taken):** the team of three still wins every single-pack cell under both rungs, but in two or
 three rounds and at 3 to 5 percent hull rather than one round at nothing; the formations are the
@@ -253,7 +253,7 @@ rounds). Alone, the three heavies still clear the rank and file (the Armadillo n
 the Badger and Boar fall to the breaching Pit Lord), every light machine loses to every front-rank
 pack, and the Clydesdale cannot out-damage the Colossus's knitting (26 rounds). Pick share: the
 team never lures (the Klaxon 1%), since it never needs to, and rerolls 2.2 a round. Rerun after each
-engine piece lands; read bands, not numbers. **The hovercraft's first read (at the old damage, 2 October, night; the rerun below re-reads them at the half):** the Stingray alone sits in the support band beside the Baboon,
+engine piece lands; read bands, not numbers. **The hovercraft at the half (3 October):** the Stingray alone holds the support band (the back-rank packs under greedy, nothing with a front rank; the emitter, the flare and the lance a third each, the sail 3%, so it still runs hot and never vents) and the Puffin alone still reads as nothing but the necromancers at 22, as an escort with an allies-only shield must; the team cells are unchanged by them since neither is in the default team. **Their first read at the old damage (2 October, night), for the record:** the Stingray alone sits in the support band beside the Baboon,
 beating the back-rank packs under greedy and losing to every front-rank pack and formation; the
 flare, the emitter and the lance share its spends about a third each and the Radiator Sail takes
 2%, so the bot runs it hot and never vents (the Nemesis's problem again) and cooling 0 is the
