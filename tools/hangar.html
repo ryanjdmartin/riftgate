@@ -107,6 +107,31 @@ nav.anchors a:hover{border-color:var(--acc);color:var(--ink)}
 .clash{font-size:13px;color:var(--ink-2);background:var(--sunk);border-radius:3px;padding:6px 8px;margin:0 0 10px}
 @media (max-width:520px){.entry{grid-template-columns:auto 1fr;grid-template-areas:"slot kind" "name name" "nums nums" "kws kws" "maker maker" "pas pas"}.cmaker{text-align:left}.chassis .head .thumb{width:72px;height:72px}}
 
+/* ---- filters and sorts: a pressed chip is filled, so on and off differ by weight, not hue */
+.filters{display:flex;flex-direction:column;gap:8px;margin:12px 0 0;padding-block:10px;border-block:1px solid var(--rule)}
+.frow{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.frow input[type="search"]{flex:1 1 220px;min-width:0;padding:7px 10px;border:1px solid var(--rule-strong);border-radius:4px;background:var(--paper);color:var(--ink);font:inherit;font-size:14.5px}
+.fsort{display:flex;gap:6px;align-items:center;font:600 11px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.fsort select{padding:6px 8px;font:500 14px/1.2 var(--body);letter-spacing:0;text-transform:none}
+.btn[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--ground)}
+.fgroups{display:grid;gap:6px}
+.fgroup{display:grid;grid-template-columns:84px 1fr;gap:6px;align-items:start}
+.fgroup .glabel{font:600 11px/1.2 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);padding-top:8px}
+.fchips{display:flex;gap:5px;flex-wrap:wrap;min-width:0}
+.fchip{display:inline-flex;gap:6px;align-items:baseline;border:1px solid var(--rule-strong);background:transparent;color:var(--ink-2);border-radius:999px;padding:6px 11px;font:600 13px/1.1 var(--display);letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
+.fchip .n{font:500 11px/1 var(--mono);color:var(--ink-3);font-variant-numeric:tabular-nums}
+.fchip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--ground)}
+.fchip[aria-pressed="true"] .n{color:inherit;opacity:.75}
+.fchip.zero{opacity:.4}
+.fchip.mk{border-left:5px solid var(--mk)}
+.fcount{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;font-size:12.5px;color:var(--ink-3)}
+.linkbtn{border:0;background:none;padding:0;font:inherit;color:var(--ink);text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+.stat.sorted{background:var(--ink);color:var(--ground)}
+.stat.sorted .k{color:inherit;opacity:.8}
+.sortval{font:500 12px/1.3 var(--mono);color:var(--ink);border:1px solid var(--rule-strong);border-radius:3px;padding:1px 6px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.item .end{display:flex;gap:6px;align-items:center;justify-content:flex-end;flex-wrap:wrap}
+@media (max-width:520px){.fgroup{grid-template-columns:1fr;gap:4px}.fgroup .glabel{padding-top:0}}
+
 /* ---- content editor */
 .list{border-top:1px solid var(--rule);margin-top:10px}
 .item{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:10px 4px;border-bottom:1px solid var(--rule);cursor:pointer}
@@ -218,12 +243,12 @@ details{margin-top:8px} summary{cursor:pointer;color:var(--ink-3);font-size:13px
 // "edits" with ArtifactData and applies them to content/*.json; once the shipped file
 // matches, the entry shows as applied and the document can be cleared.
 const FILES = [
-  {key: "chassis.entries", label: "Chassis", file: "content/chassis.json", list: "entries"},
-  {key: "chassis.makers", label: "Makers", file: "content/chassis.json", list: "makers"},
-  {key: "components.entries", label: "Components", file: "content/components.json", list: "entries"},
-  {key: "foes.entries", label: "Foes", file: "content/foes.json", list: "entries"},
-  {key: "factions.entries", label: "Factions", file: "content/factions.json", list: "entries"},
-  {key: "vocabulary.entries", label: "Vocabulary", file: "content/vocabulary.json", list: "entries"},
+  {key: "chassis.entries", label: "Chassis", file: "content/chassis.json", list: "entries", filter: "chassis"},
+  {key: "chassis.makers", label: "Makers", file: "content/chassis.json", list: "makers", filter: "makers"},
+  {key: "components.entries", label: "Components", file: "content/components.json", list: "entries", filter: "components"},
+  {key: "foes.entries", label: "Foes", file: "content/foes.json", list: "entries", filter: "foes"},
+  {key: "factions.entries", label: "Factions", file: "content/factions.json", list: "entries", filter: "factions"},
+  {key: "vocabulary.entries", label: "Vocabulary", file: "content/vocabulary.json", list: "entries", filter: "vocabulary"},
 ];
 const SECTIONS = [
   {id: "codex", label: "Codex"},
@@ -242,13 +267,19 @@ const state = {
   db: null, user: null, dbState: "loading", canWrite: true,
   candidates: [], candState: "connecting", openCand: null,
   reserved: null, pins: null, renders: null,
+  filters: {},
 };
 try {
   const s = JSON.parse(localStorage.getItem("hangar.tabs") || "{}");
   if (SECTIONS.some(x => x.id === s.section)) state.section = s.section;
   if (s.sub) Object.assign(state.sub, s.sub);
 } catch (e) {}
+try {
+  const f = JSON.parse(localStorage.getItem("hangar.filters") || "{}");
+  if (f && typeof f === "object" && !Array.isArray(f)) state.filters = f;
+} catch (e) {}
 function remember() { try { localStorage.setItem("hangar.tabs", JSON.stringify({section: state.section, sub: state.sub})); } catch (e) {} }
+function rememberFilters() { try { localStorage.setItem("hangar.filters", JSON.stringify(state.filters)); } catch (e) {} }
 
 const $ = (s, root = document) => root.querySelector(s);
 const el = (tag, attrs = {}, ...kids) => {
@@ -331,19 +362,248 @@ function liveEntries(key) {
 }
 const liveMap = (key) => new Map(liveEntries(key).map(x => [x.entry.id, x]));
 
+// The lookups every tab shares, built once per render from the live content.
+let CTX = null;
+function ctx() {
+  if (CTX) return CTX;
+  const byId = (key) => new Map(liveEntries(key).map(x => [x.entry.id, x.entry]));
+  const fitted = new Map(), byMaker = new Map();
+  for (const {entry: e} of liveEntries("chassis.entries")) {
+    for (const cid of new Set(dieIds(e))) fitted.set(cid, (fitted.get(cid) || 0) + 1);
+    byMaker.set(e.maker, (byMaker.get(e.maker) || 0) + 1);
+  }
+  return CTX = {makers: byId("chassis.makers"), comps: liveMap("components.entries"), factions: byId("factions.entries"), foes: byId("foes.entries"), fitted, byMaker};
+}
+// The components on a chassis's die: fixed first, then one per hardpoint.
+function dieIds(e) { return [...(e.fixed || []), ...(e.loadout || []).slice(0, Number(e.hardpoints || 0))]; }
+function dieComps(e) { return dieIds(e).map(id => ctx().comps.get(id)).filter(Boolean).map(x => x.entry); }
+const faceKeywords = (c) => ((c && c.face) || {}).keywords || [];
+const kindOf = (c) => ((c && c.face) || {}).kind || "";
+function makerShort(id) { const t = NAME_TABS.find(t => t.id === MAKER_TAB[id]); return t ? t.label : ((ctx().makers.get(id) || {}).name || id || ""); }
+const factionName = (id) => (ctx().factions.get(id) || {}).name || id || "";
+const plain = (s) => String(s ?? "").replace(/_/g, " ");
+
+// ------------------------------------------------------------------ filters and sorts
+// One filter per kind of thing, wherever it is listed: the codex, the models and the
+// editor's chassis list share the chassis filter. Chips within a group are alternatives
+// (any of them); groups narrow each other (all of them); the search wants every word typed
+// somewhere in the entry's names, ids and keywords. A chip's count is what tapping it would
+// show given everything else set. Kept per viewer in this browser.
+function num(v) { const n = Number(v); return v === null || v === undefined || v === "" || !Number.isFinite(n) ? null : n; }
+const stat = (id, label, of) => ({id, label, of: (e, x) => num(of(e, x)), numeric: true, start: -1, stat: id});
+const BY_ORDER = {id: "order", label: "File order", of: (e, x) => x.i, numeric: true, dirs: ["File order", "Reversed"]};
+const BY_NAME = {id: "name", label: "Name", of: e => e.name || e.id};
+const BY_MAKER = {id: "maker", label: "Maker", of: e => makerShort(e.maker)};
+const EDIT_WORDS = {edited: "Edited", new: "New", del: "To delete", applied: "Applied"};
+const EDITS = {id: "edit", label: "Edits", of: (e, x) => x.st ? [x.st] : [], name: v => EDIT_WORDS[v] || v, order: Object.keys(EDIT_WORDS), keep: true};
+const MAKER_GROUP = {id: "maker", label: "Maker", of: e => [e.maker], name: makerShort, order: () => [...ctx().makers.keys()], maker: true};
+const dieSize = (e) => (e.fixed || []).length + Number(e.hardpoints || 0);
+const FILTER_SPECS = {
+  chassis: {
+    noun: ["chassis", "chassis"], placeholder: "Name, component or keyword",
+    text: e => [e.name, e.id, e.designation, makerShort(e.maker), ...(e.traits || []).map(vocabName), e.passive && e.passive.name,
+      ...dieComps(e).flatMap(c => [c.name, ...faceKeywords(c).map(vocabName)])],
+    groups: [
+      MAKER_GROUP,
+      {id: "trait", label: "Traits", of: e => e.traits || [], name: vocabName},
+      {id: "kw", label: "On the die", of: e => dieComps(e).flatMap(faceKeywords), name: vocabName},
+      {id: "passive", label: "Passive", of: e => [!e.passive ? "none" : e.passive.status === "planned" ? "planned" : "written"], order: ["written", "planned", "none"]},
+      EDITS,
+    ],
+    sorts: [BY_ORDER, BY_NAME, BY_MAKER,
+      stat("hull", "Hull", e => e.hull), stat("shield", "Shield", e => e.shield), stat("recharge_field", "Field recharge", e => e.recharge_field),
+      stat("armour", "Armour", e => e.armour ?? 0), stat("heat_max", "Heat max", e => e.heat_max), stat("cooling", "Cooling", e => e.cooling ?? 0),
+      stat("movespeed", "Move", e => e.movespeed), stat("die", "Die entries", dieSize)],
+    line: e => [makerShort(e.maker), (e.traits || []).map(vocabName).join(", "), `hull ${e.hull}`, `shield ${e.shield}`, `move ${e.movespeed}`, "d" + dieSize(e)],
+  },
+  components: {
+    noun: ["component", "components"], placeholder: "Name, keyword or maker",
+    text: e => [e.name, e.id, makerShort(e.maker), kindOf(e), KIND_GLYPH[kindOf(e)], ...faceKeywords(e).map(vocabName), plain(e.shape), e.passive && e.passive.name],
+    groups: [
+      MAKER_GROUP,
+      {id: "kind", label: "Kind", of: e => [kindOf(e)], name: v => KIND_GLYPH[v] || v, order: Object.keys(KIND_GLYPH)},
+      {id: "reach", label: "Reach", of: e => [(e.face || {}).reach], name: v => REACH[v] || v, order: Object.keys(REACH)},
+      {id: "kw", label: "Keywords", of: faceKeywords, name: vocabName},
+      {id: "shape", label: "Silhouette", of: e => [e.shape], name: plain},
+      {id: "tier", label: "Tier", of: e => [e.tier ? "T" + e.tier : "none"], name: v => v === "none" ? "No tier" : v},
+      {id: "fit", label: "Dice", of: e => [ctx().fitted.get(e.id) ? "fitted" : "spare"], name: v => v === "fitted" ? "On a die" : "On none", order: ["fitted", "spare"]},
+      {id: "status", label: "Status", of: e => e.status === "planned" ? ["planned"] : [], keep: true},
+      EDITS,
+    ],
+    sorts: [BY_ORDER, BY_NAME, BY_MAKER,
+      stat("power", "Power", e => (e.face || {}).power), stat("power_max", "Top power", e => (e.face || {}).power_max ?? (e.face || {}).power),
+      stat("crit", "Crit", e => (e.face || {}).crit), stat("heat", "Heat", e => (e.face || {}).heat ?? 0), stat("tier", "Tier", e => e.tier),
+      stat("fitted", "Dice carrying it", e => ctx().fitted.get(e.id) || 0)],
+    line: e => {
+      const n = ctx().fitted.get(e.id) || 0;
+      return [makerShort(e.maker), ((KIND_GLYPH[kindOf(e)] || kindOf(e)) + " " + faceLine(e.face)).trim(), faceKeywords(e).map(vocabName).join(", "), n ? `on ${n} ${n === 1 ? "die" : "dice"}` : "on no die"];
+    },
+  },
+  foes: {
+    noun: ["foe", "foes"], placeholder: "Name or faction",
+    text: e => [e.name, e.id, factionName(e.faction), e.rank, e.aim, e.hunts, e.behaviour],
+    groups: [
+      {id: "faction", label: "Faction", of: e => [e.faction], name: factionName, order: () => [...ctx().factions.keys()]},
+      {id: "rank", label: "Rank", of: e => [e.rank], order: ["front", "back"]},
+      {id: "size", label: "Size", of: e => [String(e.size || 1)], name: v => v === "2" ? "Massive" : "Size " + v},
+      {id: "aim", label: "Aim", of: e => [e.aim || "exposed"]},
+      EDITS,
+    ],
+    sorts: [BY_ORDER, BY_NAME, stat("hp", "HP", e => e.hp), stat("attack", "Attack", e => e.attack), stat("armour", "Armour", e => e.armour ?? 0),
+      stat("movespeed", "Move", e => e.movespeed), stat("zone", "Zone", e => e.zone), stat("size", "Size", e => e.size ?? 1), stat("stun_resist", "Stun resist", e => e.stun_resist ?? 0)],
+    line: e => [factionName(e.faction), e.rank, `${e.hp} hp`, `attack ${e.attack}`, e.armour ? `armour ${e.armour}` : "", `move ${e.movespeed}`, `zone ${e.zone}`],
+  },
+  factions: {
+    noun: ["faction", "factions"], placeholder: "Name",
+    text: e => [e.name, e.id], groups: [EDITS], sorts: [BY_ORDER, BY_NAME],
+    line: e => [e.boss ? "boss " + ((ctx().foes.get(e.boss) || {}).name || e.boss) : "", e.reward_bias ? "rewards lean " + plain(e.reward_bias) : ""],
+  },
+  makers: {
+    noun: ["maker", "makers"], placeholder: "Name",
+    text: e => [e.name, e.id], groups: [EDITS], sorts: [BY_ORDER, BY_NAME],
+    line: e => { const n = ctx().byMaker.get(e.id) || 0; return [n + " chassis"]; },
+  },
+  vocabulary: {
+    noun: ["entry", "entries"], placeholder: "Word or category",
+    text: e => [e.name, e.id, plain(e.category)],
+    groups: [
+      {id: "category", label: "Category", of: e => [e.category], name: plain},
+      {id: "status", label: "Status", of: e => e.status === "planned" ? ["planned"] : [], keep: true},
+      EDITS,
+    ],
+    sorts: [BY_ORDER, BY_NAME, {id: "category", label: "Category", of: e => plain(e.category)}],
+    line: e => [plain(e.category), e.status === "planned" ? "planned" : ""],
+  },
+  names: {
+    noun: ["name", "names"], placeholder: "Name or concept",
+    text: d => [d.name, d.concept],
+    groups: [
+      {id: "status", label: "Status", of: d => [statusOf(d)], order: () => STATUSES},
+      {id: "by", label: "By", of: d => [d.by === "ryan" ? "ryan" : "claude"], name: v => v === "ryan" ? "Ryan" : "Claude", order: ["ryan", "claude"]},
+    ],
+    sorts: [{...BY_ORDER, label: "Status", dirs: ["Status order", "Reversed"]}, BY_NAME, {id: "created", label: "Added", of: d => d.created || null, start: -1, dirs: ["Oldest first", "Newest first"]}],
+  },
+};
+function fstate(kind) {
+  let f = state.filters[kind];
+  if (!f || typeof f !== "object") f = state.filters[kind] = {};
+  if (typeof f.q !== "string") f.q = "";
+  if (!f.on || typeof f.on !== "object") f.on = {};
+  if (typeof f.sort !== "string") f.sort = "order";
+  if (f.dir !== -1) f.dir = 1;
+  if (typeof f.open !== "boolean") f.open = !window.matchMedia || window.matchMedia("(min-width: 700px)").matches;   // a phone starts folded
+  return f;
+}
+const chipName = (g, v) => g.name ? g.name(v) : v;
+// rows are {entry, st, ...}; returns them filtered and sorted, with the chips to draw.
+function runFilter(kind, rows) {
+  const spec = FILTER_SPECS[kind], f = fstate(kind);
+  const words = f.q.toLowerCase().split(/\s+/).filter(Boolean);
+  const items = rows.map((x, i) => {
+    const it = {...x, i, vals: {}};
+    for (const g of spec.groups) it.vals[g.id] = [...new Set((g.of(x.entry, it) || []).filter(v => v !== undefined && v !== null && v !== "").map(String))];
+    it.hay = words.length ? spec.text(x.entry, it).filter(Boolean).join(" ").toLowerCase() : "";
+    return it;
+  });
+  const sel = (g) => Array.isArray(f.on[g.id]) ? f.on[g.id] : [];
+  const textOk = (it) => words.every(w => it.hay.includes(w));
+  const groupOk = (it, g) => !sel(g).length || it.vals[g.id].some(v => sel(g).includes(v));
+  const shown = items.filter(it => textOk(it) && spec.groups.every(g => groupOk(it, g)));
+  const sort = spec.sorts.find(s => s.id === f.sort) || spec.sorts[0];
+  const key = (it) => { const v = sort.of(it.entry, it); return v === undefined || v === null || v === "" ? null : v; };
+  shown.sort((a, b) => {
+    const va = key(a), vb = key(b);
+    if (va === null || vb === null) return va === vb ? a.i - b.i : va === null ? 1 : -1;   // no value sinks, either way round
+    const c = sort.numeric ? va - vb : String(va).localeCompare(String(vb), "en", {sensitivity: "base", numeric: true});
+    return c * f.dir || a.i - b.i;
+  });
+  const chips = [];
+  for (const g of spec.groups) {
+    const counts = new Map();
+    for (const it of items) if (textOk(it) && spec.groups.every(h => h === g || groupOk(it, h))) for (const v of it.vals[g.id]) counts.set(v, (counts.get(v) || 0) + 1);
+    const seen = new Set(items.flatMap(it => it.vals[g.id]).concat(sel(g)));
+    const first = (typeof g.order === "function" ? g.order() : (g.order || [])).map(String).filter(v => seen.has(v));
+    const rest = [...seen].filter(v => !first.includes(v)).sort((a, b) => String(chipName(g, a)).localeCompare(String(chipName(g, b))));
+    const values = [...first, ...rest].map(v => ({v, n: counts.get(v) || 0, on: sel(g).includes(v)}));
+    if (values.length >= (g.keep ? 1 : 2) || values.some(c => c.on)) chips.push({g, values});
+  }
+  const picked = spec.groups.reduce((n, g) => n + sel(g).length, 0);
+  return {kind, spec, f, sort, shown, total: rows.length, chips, picked, active: picked + words.length > 0};
+}
+function setFilter(kind, fn) { fn(fstate(kind)); rememberFilters(); render(); }
+function clearFilters(kind) { setFilter(kind, f => { f.q = ""; f.on = {}; }); }
+function toggleChip(f, gid, v) {
+  const a = Array.isArray(f.on[gid]) ? f.on[gid] : [];
+  f.on[gid] = a.includes(v) ? a.filter(x => x !== v) : a.concat(v);
+  if (!f.on[gid].length) delete f.on[gid];
+}
+// What the sort reads, for a row that does not show it already.
+function sortNote(view, x) {
+  const s = view.sort;
+  if (!s.numeric || s.id === "order") return "";
+  const v = s.of(x.entry, x);
+  return v === null || v === undefined ? "" : s.label.toLowerCase() + " " + v;
+}
+function filterBar(view, opts = {}) {
+  const {kind, spec, f, sort} = view;
+  const bar = el("div", {class: "filters", role: "search", "aria-label": "Filter and sort " + spec.noun[1]});
+  const q = el("input", {type: "search", id: "flt-q-" + kind, placeholder: spec.placeholder, value: f.q, autocomplete: "off", spellcheck: "false", "aria-label": "Search " + spec.noun[1]});
+  q.addEventListener("input", () => setFilter(kind, f => { f.q = q.value; }));
+  q.addEventListener("keydown", ev => { if (ev.key === "Escape" && q.value) { ev.preventDefault(); setFilter(kind, f => { f.q = ""; }); } });
+  const pick = el("select", {id: "flt-sort-" + kind, "aria-label": "Sort by"});
+  for (const s of spec.sorts) { const o = el("option", {value: s.id}, s.label); if (s === sort) o.selected = true; pick.append(o); }
+  pick.addEventListener("change", () => setFilter(kind, f => { f.sort = pick.value; f.dir = (spec.sorts.find(s => s.id === pick.value) || {}).start || 1; }));
+  const dirs = sort.dirs || (sort.numeric ? ["Low first", "High first"] : ["A to Z", "Z to A"]);
+  const row = el("div", {class: "frow"}, q,
+    el("label", {class: "fsort", for: "flt-sort-" + kind}, "Sort", pick),
+    el("button", {class: "btn", id: "flt-dir-" + kind, title: "Reverse the order", onclick: () => setFilter(kind, f => { f.dir = -f.dir; })}, f.dir === 1 ? dirs[0] : dirs[1]));
+  if (view.chips.length) row.append(el("button", {class: "btn", id: "flt-open-" + kind, "aria-expanded": String(f.open), "aria-controls": "flt-groups-" + kind,
+    onclick: () => setFilter(kind, f => { f.open = !f.open; })}, "Filters" + (view.picked ? " · " + view.picked : "")));
+  if (opts.compact) row.append(el("button", {class: "btn", id: "flt-compact-" + kind, "aria-pressed": String(!!f.compact), title: "Stats only, no dice",
+    onclick: () => setFilter(kind, f => { f.compact = !f.compact; })}, "Compact"));
+  bar.append(row);
+  const chip = (g, c) => {
+    const attrs = {class: "fchip" + (c.n || c.on ? "" : " zero") + (g.maker ? " mk" : ""), id: `flt-c-${kind}-${g.id}-${safeId(c.v)}`, "aria-pressed": String(c.on),
+      onclick: () => setFilter(kind, f => toggleChip(f, g.id, c.v))};
+    if (g.maker) attrs.style = `--mk:var(--${MAKER_TAB[c.v] || "other"})`;
+    return el("button", attrs, chipName(g, c.v), el("span", {class: "n"}, String(c.n)));
+  };
+  const groups = el("div", {class: "fgroups", id: "flt-groups-" + kind});
+  for (const {g, values} of view.chips) {
+    const show = f.open ? values : values.filter(c => c.on);   // folded, only what is set stays, to be tapped off
+    if (show.length) groups.append(el("div", {class: "fgroup"}, el("span", {class: "glabel"}, g.label), el("div", {class: "fchips"}, ...show.map(c => chip(g, c)))));
+  }
+  if (groups.childElementCount) bar.append(groups);
+  const [one, many] = spec.noun;
+  const count = el("div", {class: "fcount", role: "status"}, view.active ? `${view.shown.length} of ${view.total} ${view.total === 1 ? one : many}` : `${view.total} ${view.total === 1 ? one : many}`);
+  if (view.active) count.append(el("button", {class: "linkbtn", id: "flt-clear-" + kind, onclick: () => clearFilters(kind)}, "Clear filters"));
+  bar.append(count);
+  return bar;
+}
+function noMatch(view) {
+  return el("p", {class: "empty"}, `No ${view.spec.noun[1]} match. `, el("button", {class: "linkbtn", onclick: () => clearFilters(view.kind)}, "Clear the filters"));
+}
+
 // ------------------------------------------------------------------ render
 function render() {
-  VOCAB = null;
+  VOCAB = null; CTX = null;
+  // A filter control keeps focus (and the caret) across the redraw it causes.
+  const act = document.activeElement;
+  const keep = act && act.id && act.id.startsWith("flt-") ? {id: act.id, a: act.selectionStart, b: act.selectionEnd} : null;
   const app = $("#app");
   const sub = state.sub[state.section];
   app.className = "wrap" + (state.section === "names" && sub ? " tab-" + sub : "");
   renderTabs();
   const main = $("#main");
   main.replaceChildren();
-  if (state.section === "codex") return renderCodex(main);
-  if (state.section === "content") return renderContent(main);
-  if (state.section === "names") return renderNames(main);
-  if (state.section === "models") return renderModels(main);
+  if (state.section === "codex") renderCodex(main);
+  else if (state.section === "content") renderContent(main);
+  else if (state.section === "names") renderNames(main);
+  else if (state.section === "models") renderModels(main);
+  if (keep) {
+    const n = document.getElementById(keep.id);
+    if (n) { n.focus({preventScroll: true}); if (typeof keep.a === "number" && n.setSelectionRange) try { n.setSelectionRange(keep.a, keep.b); } catch (e) {} }
+  }
 }
 function setSection(id) { state.section = id; state.open = null; state.returnTo = null; remember(); render(); window.scrollTo(0, 0); }
 function setSub(id) { state.sub[state.section] = id; state.open = null; remember(); render(); }
@@ -422,13 +682,16 @@ function componentEntry(cid, slot, comps, makers) {
 }
 function renderCodex(main) {
   want("pins", ensurePins); want("renders", ensureRenders);
-  const chassis = liveEntries("chassis.entries"), comps = liveMap("components.entries");
-  const makers = new Map(liveEntries("chassis.makers").map(x => [x.entry.id, x.entry]));
-  main.append(el("p", {class: "lede"}, "Every chassis with its die laid out entry by entry: fixed components first, then each hardpoint. The dashed chip on a component is its silhouette class, the shape the model wears at a gun mount when it is fitted. Pending edits are already laid over the shipped content here, tagged. Tap a name or an entry to edit it; tap the picture for its renders. Numbers are placeholders."));
+  const {comps, makers} = ctx();
+  const view = runFilter("chassis", liveEntries("chassis.entries"));
+  const compact = !!view.f.compact, sorted = view.sort.stat;
+  main.append(el("p", {class: "lede"}, "Every chassis with its die laid out entry by entry: fixed components first, then each hardpoint. The dashed chip on a component is its silhouette class, the shape the model wears at a gun mount when it is fitted. Pending edits are already laid over the shipped content here, tagged. Tap a name or an entry to edit it; tap the picture for its renders. The filter is shared with the Models tab and the editor's chassis list. Numbers are placeholders."));
+  main.append(filterBar(view, {compact: true}));
   const nav = el("nav", {class: "anchors"});
-  for (const {entry} of chassis) nav.append(el("a", {href: "#cx-" + entry.id}, entry.name || entry.id));
-  main.append(nav);
-  for (const {entry: e, st} of chassis) {
+  for (const {entry} of view.shown) nav.append(el("a", {href: "#cx-" + entry.id}, entry.name || entry.id));
+  if (view.shown.length > 1) main.append(nav);
+  if (!view.shown.length) main.append(noMatch(view));
+  for (const {entry: e, st} of view.shown) {
     const mk = makers.get(e.maker || "") || {};
     const fixed = e.fixed || [], loadout = e.loadout || [], hp = Number(e.hardpoints || 0), die = fixed.length + hp;
     const pins = state.pins ? state.pins[e.id] : undefined;
@@ -444,8 +707,9 @@ function renderCodex(main) {
     if ((e.traits || []).length) { sub.append(" · "); for (const t of e.traits) sub.append(kwChip(t), " "); }
     head.append(sub);
     card.append(head);
-    const stats = [["hull", e.hull], ["shield", e.shield], ["field recharge", e.recharge_field], ["armour", e.armour], ["heat max", e.heat_max], ["cooling", e.cooling], ["move", e.movespeed + " (" + Math.floor(e.movespeed / ((e.traits || []).includes("wheeled") ? 5 : 10)) + " open)"], ["die", "d" + die]];
-    card.append(el("div", {class: "stats"}, ...stats.map(([k, v]) => el("div", {class: "stat"}, el("span", {class: "k"}, k), el("span", {class: "v"}, String(v ?? ""))))));
+    const stats = [["hull", "hull", e.hull], ["shield", "shield", e.shield], ["recharge_field", "field recharge", e.recharge_field], ["armour", "armour", e.armour], ["heat_max", "heat max", e.heat_max], ["cooling", "cooling", e.cooling], ["movespeed", "move", e.movespeed + " (" + Math.floor(e.movespeed / ((e.traits || []).includes("wheeled") ? 5 : 10)) + " open)"], ["die", "die", "d" + die]];
+    card.append(el("div", {class: "stats"}, ...stats.map(([id, k, v]) => el("div", {class: "stat" + (id === sorted ? " sorted" : "")}, el("span", {class: "k"}, k), el("span", {class: "v"}, String(v ?? ""))))));
+    if (compact) { main.append(card); continue; }
     const p = e.passive;
     if (p) {
       const planned = p.status === "planned";
@@ -487,16 +751,22 @@ function renderList(main) {
   const added = Object.values(state.edits).filter(e => e.key === f.key && !shippedEntry(f.key, e.id) && !e.deleted);
   const about = state.about[f.file] || "";
   main.append(el("p", {class: "help"}, about.slice(0, 220) + (about.length > 220 ? "…" : "")));
+  // Rows read the entry as edited, so the filter and the sort see what the save will ship.
+  const rows = shipped.map(s => { const st = entryState(f.key, s.id); return {id: s.id, st, entry: st === "edited" ? editFor(f.key, s.id).data : s}; });
+  for (const e of added) rows.push({id: e.id, st: "new", entry: e.data || {id: e.id}});
+  const view = runFilter(f.filter, rows);
+  const spec = view.spec;
+  main.append(filterBar(view));
   const list = el("div", {class: "list"});
-  const row = (id, name, sub) => {
-    const st = entryState(f.key, id);
+  for (const x of view.shown) {
+    const {id, st, entry} = x, note = sortNote(view, x);
+    const sub = [id, ...(spec.line ? spec.line(entry, x) : [])].filter(Boolean).join(" · ");
     list.append(el("div", {class: "item", tabindex: "0", role: "button", onclick: () => openEntry(f.key, id), onkeydown: (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); openEntry(f.key, id); } }},
-      el("div", {}, el("div", {class: "name"}, name || id), el("div", {class: "id"}, sub || id)),
-      st ? el("span", {class: "tag " + st}, st === "del" ? "delete" : st) : el("span")));
-  };
-  for (const e of shipped) row(e.id, e.name, e.id + (e.category ? " · " + e.category : "") + (e.maker ? " · " + e.maker : ""));
-  for (const e of added) row(e.id, e.data && e.data.name, e.id + " · new");
+      el("div", {}, el("div", {class: "name"}, entry.name || id), el("div", {class: "id"}, sub)),
+      el("div", {class: "end"}, note ? el("span", {class: "sortval"}, note) : null, st ? el("span", {class: "tag " + st}, st === "del" ? "delete" : st) : null)));
+  }
   main.append(list);
+  if (!view.shown.length) main.append(noMatch(view));
   const newrow = el("div", {class: "newrow"});
   const input = el("input", {type: "text", id: "new-id-" + safeId(f.key), placeholder: "new id (snake_case)", "aria-label": "new entry id"});
   const template = shipped[shipped.length - 1];
@@ -774,11 +1044,16 @@ function renderNames(main) {
   const ours = currentNames().filter(c => c.tab === tab);
   if (ours.length) main.append(el("div", {class: "counts"}, "In content now: " + ours.map(c => c.name).join(", ")));
   const mine = state.candidates.filter(d => d.tab === tab).sort((a, b) => STATUSES.indexOf(statusOf(a)) - STATUSES.indexOf(statusOf(b)) || (a.created < b.created ? -1 : 1));
-  const live = mine.filter(d => statusOf(d) !== "rejected"), binned = mine.filter(d => statusOf(d) === "rejected");
+  const view = runFilter("names", mine.map(d => ({entry: d, st: ""})));
+  if (mine.length) main.append(filterBar(view));
+  // Rejected names stay under their divider whatever the sort.
+  const shown = view.shown.map(x => x.entry);
+  const live = shown.filter(d => statusOf(d) !== "rejected"), binned = shown.filter(d => statusOf(d) === "rejected");
   const list = el("div", {class: "rows"});
   if (state.candState === "connecting") list.append(el("div", {class: "help"}, "Connecting to the shared list…"));
   else if (state.candState === "off") list.append(el("div", {class: "help"}, "The shared list is not available in this view. The name check above still works."));
   else if (!mine.length) list.append(el("div", {class: "empty"}, "Nothing here yet. Add the first one below."));
+  else if (!shown.length) list.append(noMatch(view));
   for (const d of live) list.append(renderCandidate(d));
   if (binned.length) { list.append(el("div", {class: "divider"}, "rejected · " + binned.length)); for (const d of binned) list.append(renderCandidate(d)); }
   main.append(list);
@@ -859,32 +1134,35 @@ function writeFailed(e) { toast("Write refused: " + (e && e.code ? e.code : "unk
 // ------------------------------------------------------------------ models
 function renderModels(main) {
   want("renders", ensureRenders);
-  main.append(el("p", {class: "lede"}, "Every chassis as it stands, rendered bare through the game's own view. Every proportion lives in models_low.py; a note moves it and a rebuild takes a minute. Earlier passes fold under each machine. The classes section shows what a swapped component wears."));
+  main.append(el("p", {class: "lede"}, "Every chassis as it stands, rendered bare through the game's own view. Every proportion lives in models_low.py; a note moves it and a rebuild takes a minute. Earlier passes fold under each machine. The classes section shows what a swapped component wears. The filter is the codex's."));
   const r = state.renders;
   if (!r) { main.append(el("p", {class: "help"}, "Loading the renders…")); return; }
   const chassis = liveEntries("chassis.entries");
-  const makers = new Map(liveEntries("chassis.makers").map(x => [x.entry.id, x.entry]));
+  const {makers} = ctx();
+  const view = runFilter("chassis", chassis);
+  main.append(filterBar(view));
+  if (!view.shown.length) main.append(noMatch(view));
   const nav = el("nav", {class: "anchors"}, el("a", {href: "#md-shapes"}, "Classes"));
-  for (const {entry} of chassis) if (r.chassis[entry.id]) nav.append(el("a", {href: "#md-" + entry.id}, entry.name || entry.id));
+  for (const {entry} of view.shown) if (r.chassis[entry.id]) nav.append(el("a", {href: "#md-" + entry.id}, entry.name || entry.id));
   main.append(nav);
   const pics = (images, small) => el("div", {class: "pics" + (small ? " small" : "")}, ...images.map(im => el("img", {src: "hangar/renders/" + im.file, alt: im.alt, loading: "lazy"})));
   const cls = r.classes || {blocks: []};
   const sec = el("section", {class: "model", id: "md-shapes"}, el("h2", {}, cls.title || "Silhouette classes"), el("p", {class: "plate2"}, cls.plate || ""));
   for (const b of cls.blocks) { sec.append(el("p", {class: "when"}, b.when || ""), el("p", {class: "mnote"}, b.note || ""), pics(b.images || [], b.small)); }
   main.append(sec);
-  for (const {entry: e} of chassis) {
-    const d = r.chassis[e.id]; if (!d) continue;
+  for (const x of view.shown) {
+    const e = x.entry, d = r.chassis[e.id]; if (!d) continue;
     const mk = makers.get(e.maker || "") || {};
     const s = el("section", {class: "model", id: "md-" + e.id},
       el("h2", {}, e.name || e.id),
-      el("p", {class: "plate2"}, [mk.name || "", e.designation || "", ...(e.traits || []).map(vocabName)].filter(Boolean).join(" · ")),
+      el("p", {class: "plate2"}, [mk.name || "", e.designation || "", ...(e.traits || []).map(vocabName), sortNote(view, x)].filter(Boolean).join(" · ")),
       el("p", {class: "when"}, d.when || ""),
       el("p", {class: "mnote"}, d.note || ""),
       pics(d.images || [], false));
     if (d.before && d.before.images && d.before.images.length) s.append(el("details", {}, el("summary", {}, d.before.summary || "Before"), pics(d.before.images, true)));
     main.append(s);
   }
-  for (const [id, d] of Object.entries(r.chassis)) if (!chassis.some(x => x.entry.id === id)) {
+  if (!view.active) for (const [id, d] of Object.entries(r.chassis)) if (!chassis.some(x => x.entry.id === id)) {
     main.append(el("section", {class: "model", id: "md-" + id}, el("h2", {}, id), el("p", {class: "plate2"}, "Not in content"), el("p", {class: "when"}, d.when || ""), el("p", {class: "mnote"}, d.note || ""), pics(d.images || [], false)));
   }
   if (location.hash && location.hash.startsWith("#md-")) requestAnimationFrame(() => { const t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); });

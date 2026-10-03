@@ -15,7 +15,10 @@ session; a B session cannot read it. Shared:
 - **The bible** (above): `docs/design-bible.html`, published whole after every change.
 - **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 2 October with the targeting pass's content): four tabs, the
   codex, the content editor, the names list and the renders (earlier passes folded under each
-  chassis, a Classes section). Source `tools/hangar.html`, published with the `files` map
+  chassis, a Classes section). Since 2 October, night, every list carries a filter and sort bar (search,
+  chips per group, a sort with its direction); the codex, the models and the editor's chassis
+  list share one chassis filter, and the codex has a Compact view of stats alone. Filters are
+  kept per viewer in the browser, not in the database. Source `tools/hangar.html`, published with the `files` map
   `tools/hangar_data.py` prints (`content/*.json`, `hangar/pins.json`, `hangar/renders.json`
   and every render under `docs/hangar/renders/`); republish after every content, model or
   render change, or its tabs go stale. Capabilities `db` and `user`; collections `edits` (the
