@@ -104,6 +104,44 @@ func test_the_horde_always_has_a_way_three_hexes_wide() -> void:
 		assert_true(m.narrowest_crossing() >= BattleMap.CROSSING_WIDTH, "the narrowest crossing is three wide for seed %d: %d, cut by %s" % [s, m.narrowest_crossing(), str(m.horde_cut(9))])
 
 
+func test_one_water_feature_a_map() -> void:
+	# Decided 2 October, built 3 October: one river or lake band a map in place of puddles.
+	# A river runs off both edges of the field, a lake band off the side it reaches in from,
+	# or off neither when it lies in the middle; none of it in the rift's mouth or on the
+	# team's ground.
+	var kinds := {}
+	for s in range(1, 41):
+		var m := BattleMap.generate(7, 20, s)
+		kinds[m.water_feature] = true
+		var field_water := 0
+		for hx in m.all_hexes():
+			if m.terrain[hx] == BattleMap.Terrain.WATER:
+				field_water += 1
+				var row := Hex.axial_to_offset(hx).y
+				assert_true(row >= 4 and row <= 20 - BattleMap.GATE_ROWS - 3, "seed %d: water on row %d" % [s, row])
+		assert_true(field_water > 0, "seed %d has water on the field" % s)
+		var west := false
+		var east := false
+		for hx in m.margin.keys():
+			if m.margin[hx] == BattleMap.Terrain.WATER:
+				var col := Hex.axial_to_offset(hx).x
+				west = west or col < 0
+				east = east or col >= 7
+		match m.water_feature:
+			"river":
+				assert_true(west and east, "seed %d: a river runs off both edges" % s)
+			"lake west":
+				assert_true(west and not east, "seed %d: a lake from the west runs off the west edge only" % s)
+			"lake east":
+				assert_true(east and not west, "seed %d: a lake from the east runs off the east edge only" % s)
+			"lake middle":
+				assert_true(not west and not east, "seed %d: a lake in the middle stays on the field" % s)
+			_:
+				assert_true(false, "seed %d has a water feature: %s" % [s, m.water_feature])
+	assert_true(kinds.has("river"), "rivers come up")
+	assert_true(kinds.size() >= 3, "and lakes too: %s" % str(kinds.keys()))
+
+
 func test_the_narrowest_crossing_counts_the_cut() -> void:
 	# A wall of crags across the field with gaps: the crossing's width is the gaps' total,
 	# and the cut is exactly the gap hexes.

@@ -61,11 +61,12 @@ another session on this repo at the same time: `git status` first, stage by path
 shared file before staging it, and never `git add -A`. If a chat and the bible disagree,
 the chat is newer.
 
-## As of 2 October 2026
+## As of 3 October 2026
 
-**State.** Tests green: `perl -e 'alarm 240; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (303 tests, 4,913 checks on 2 October, night, on the Mac after the hovercraft merged with the targeting pass and movement;
-a cloud session fetches Godot 4.7's Linux build from the GitHub release asset to run them, since
+**State.** Tests green: `perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s
+tests/run_tests.gd` (329 tests, 6,847 checks on 3 October in a cloud session, after the movement leftovers;
+a cloud session fetches Godot 4.7's Linux build from the GitHub release asset to run them
+(`Godot_v4.7-stable_linux.x86_64.zip`, and `xvfb-run` for screenshots), since
 the proxy serves the asset though not the release page; it builds models too, with
 `BPY_PYTHON` naming a python3.11 venv holding `pip install bpy==5.0.1`, blender.org being
 unreachable there, and renders through `xvfb-run` on Mesa's software GL, so `tools/hero_shot.gd`
@@ -117,12 +118,24 @@ should know: moves are in tens everywhere (`Unit.MECH_MOVE` 30, `PACK_MOVE` 20, 
 10 are the defaults before content dresses a unit); `BattleMap.move_cost` returns a word
 (`FAST` 5, `NORMAL` 10, `SLOW`, `WALL`) and `BattleMap.spend(t, traits, left)` is what every
 budget site calls; a unit with no way of moving moves by the horde's rule (normal on land,
-water and crags walls); the generator's `_ensure_ground_path` carves with that rule and
-widens every single-hex plug (`BattleMap.plugs()` is the test); `Battlefield.hunt_target`
-aims a hunter at the shore when its prey stands in water; `ContentDB.movement_flags()`
-prints, never fails. Measured on 200 seeds at 7x20: 0 cut, 0 plugs, 21 with a two-hex cut,
-46 ms a map to generate. Open from it: the move gauge, a three-wide crossing, the water
-feature with the hovercraft, and the hangar page's republish (below).
+water and crags walls); `Battlefield.hunt_target` aims a hunter at the shore when its prey
+stands in water; `ContentDB.movement_flags()` prints, never fails.
+
+**The movement leftovers, built 3 October** (bible section 4, the movement row; v0.27). The
+**move gauge**: pips at the end of a route being drawn, one a normal hex split in halves for
+fast, filling from the left; solid while left, a faint outline when spent, hatched when a slow
+last step took them (`Battle.draft_spend`, `BattleMapView.gauge_cells`; the `draft` and
+`draftslow` screenshot poses). The **horde's crossing three wide** (Ryan's call over waiting
+for the water): `BattleMap.CROSSING_WIDTH`, max flow reads `narrowest_crossing()` and
+`horde_cut()`, and `_ensure_ground_path` routes the horde round each narrower cut by the
+cheapest openings, a crag before water (`opened` records what it opened). The **water
+feature**: `_lay_water`, one a map, a river through the field with fords along its line or a
+lake band from the west, the east or in the middle (`water_feature` names it); the wetness
+field is gone. `tools/map_survey.gd` measures 200 seeds into `docs/map_survey.md`: every map
+three wide or more, water 6% of the field in 1.7 bodies (3.9 with the puddles), 16 ms a map;
+`--show SEED` prints a map as text. Its phases to the rift barely move by way of moving, so the
+river's bite is where the horde crosses and where a walker off a ford stops; Ryan judges it with
+the hovercraft. Left: the small finds and the hangar page's other content files (the to-do).
 
 **The hovercraft are on main** (2 October, night, merged from the Mac session; bible section 7,
 the hovercraft row). The **Stingray** (Aphelion, `stingray`): hull 80, shield 50, move 40, heat
@@ -408,6 +421,6 @@ it and ticked in the commit that lands it; this is the order to take them in.
 2. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
 3. Ryan's text for the new machines and components; the machines' scale on the map; the strikes, the hover idle's pitch, the idle acts (`RIFTGATE_ACTS_DEBUG=1`) and the gaits (`RIFTGATE_MOVE_DEBUG=1`, and a real move for the Dingo's drift, the Stingray's helicopter strafe and the banks), judged running; the movement branch merged on his word.
 4. The discuss-first decisions in the Ryan section, the economy last; enemy targeting decided and built 2 October (the paragraph above; the runner's read is the baseline question); the commander layer once the balance has a baseline.
-5. Ready to build: the pacing pieces after Ryan's session; the movement leftovers (the gauge, a three-wide crossing); the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased parked, Corrode, foe roles), and a dedicated hunter foe and spawned formations once proposed.
+5. Ready to build: the pacing pieces after Ryan's session; the movement's small finds (the frozen packs' missing mark, the road's first slab); the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased parked, Corrode, foe roles), and a dedicated hunter foe and spawned formations once proposed.
 6. Audio: a full play of Hold The Line, the console's fresh pass and the effects' picks, the two boss themes.
 7. A prototype hangar in the game (paints and loadouts, no economy). Art: enemy art through foeforge, the hangar as a model. Before a phone leaves the desk: onboarding, then tuning.

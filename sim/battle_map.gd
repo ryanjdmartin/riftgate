@@ -30,7 +30,8 @@ const MARGIN_COLS := 4
 const MARGIN_ROWS := 3                 # scenery rows beyond the rift
 const CITY_ROWS := 2                   # city rows behind the wall
 var map_seed: int = 0
-var opened_by_guarantee := 0          # hexes the horde's guarantee opened (the map survey reads it)
+var opened: Dictionary = {}            # hex -> the ground the horde's guarantee opened there (the map survey reads it)
+var water_feature := ""               # "river", "lake west", "lake east" or "lake middle" (_lay_water)
 
 const STRUCTURE_HALF_WIDTH := 1   # gate and rift span centre plus this many hexes each side
 ## The gate and the walls are two rows deep: the models stand on the bottom row and the row
@@ -87,6 +88,7 @@ static func generate(w: int, h: int, seed_value: int) -> BattleMap:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value
 	m._lay_landscape(rng)
+	m._lay_water(rng)
 	m._lay_roads(rng)
 	# The gate, the rift, and the ground right in front of each are always open, and the
 	# two rows above the gate's apron are the team's ground: never water or crag, so a
@@ -116,14 +118,11 @@ static func generate(w: int, h: int, seed_value: int) -> BattleMap:
 	return m
 
 
-## A believable landscape rather than per-hex rolls (Ryan, 21 September): water as bodies
-## with shores from a wetness field, gravel as belts from a roughness field, ruins in a few
-## clusters, crags along ridge lines (the ground under a crag is kept as its flavour). The
-## fields are seeded noise, so the same seed is the same map.
+## A believable landscape rather than per-hex rolls (Ryan, 21 September): gravel as belts
+## from a roughness field, ruins in a few clusters, crags along ridge lines (the ground
+## under a crag is kept as its flavour). The fields are seeded noise, so the same seed is
+## the same map. Water is laid after, as one feature (`_lay_water`).
 func _lay_landscape(rng: RandomNumberGenerator) -> void:
-	var wet := FastNoiseLite.new()   # slow, so water gathers into a few bodies
-	wet.seed = map_seed
-	wet.frequency = 0.12
 	var rough := FastNoiseLite.new()
 	rough.seed = map_seed + 101
 	rough.frequency = 0.30
@@ -151,22 +150,19 @@ func _lay_landscape(rng: RandomNumberGenerator) -> void:
 			margin[hx] = Terrain.ROAD
 			elevation[hx] = 0
 			city[hx] = true
-	# The ground from the fields: water where it is wet, wasteland across the rougher
-	# half of what is left, plain in between, ruins in clusters with a dense core.
+	# The ground from the fields: wasteland across the rougher half, plain in between, ruins
+	# in clusters with a dense core.
 	for hx in all:
 		var p := Hex.to_pixel(hx, 1.0)
 		var t := Terrain.PLAIN
-		if wet.get_noise_2d(p.x, p.y) < -0.34:
-			t = Terrain.WATER
-		elif rough.get_noise_2d(p.x, p.y) > 0.02:
+		if rough.get_noise_2d(p.x, p.y) > 0.02:
 			t = Terrain.ROUGH
-		if t != Terrain.WATER:
-			for c in centres:
-				var d := Hex.distance(hx, c)
-				if d <= 2 and rng.randf() < (0.9 if d <= 1 else 0.5):
-					t = Terrain.RUINS
+		for c in centres:
+			var d := Hex.distance(hx, c)
+			if d <= 2 and rng.randf() < (0.9 if d <= 1 else 0.5):
+				t = Terrain.RUINS
 		var crag := absf(ridge.get_noise_2d(p.x, p.y)) < 0.075 and rng.randf() < 0.85 and not is_structure(hx)
-		elevation[hx] = -1 if t == Terrain.WATER else clampi(int(floor((relief.get_noise_2d(p.x, p.y) + 0.45) * 3.4)), 0, 3)
+		elevation[hx] = clampi(int(floor((relief.get_noise_2d(p.x, p.y) + 0.45) * 3.4)), 0, 3)
 		if has(hx):
 			terrain[hx] = t
 			if crag:
@@ -182,6 +178,130 @@ func _lay_landscape(rng: RandomNumberGenerator) -> void:
 				margin[hx] = Terrain.PLAIN
 				crag_base.erase(hx)
 				elevation[hx] = 0
+
+
+## One real water feature a map (decided 2 October, bible section 4: water is built around,
+## and the generator changes for it), in place of the puddles a wetness field used to
+## scatter (6% of the field in bodies of three hexes or so, never across it). Either a river
+## that runs through the whole field and on past both edges, with fords, or a lake band:
+## reaching in from one side, or lying in the middle with ground either side. The horde
+## crosses where the land is: a river's fords are open ground anyone may use, one three
+## wide or two two wide, and a lake leaves CROSSING_WIDTH columns dry or more, so the
+## crossing guarantee seldom has to widen anything. Rows stay clear of the rift's mouth and
+## of the team's ground. A hex chain is a wall to a hex chain, so a river one hex thick
+## stops every foe that is not at a ford.
+const RIVER_CHANCE := 0.6     # otherwise a lake band
+const RIVER_THICK := 0.3      # a river hex with a second hex below it
+const LAKE_DEEP := 0.5        # a lake hex with a third row below it
+
+
+func _lay_water(rng: RandomNumberGenerator) -> void:
+	var lo := 4                              # the rift's mouth stays dry
+	var hi := height - GATE_ROWS - 5         # and clear of the team's ground, thickening included
+	var river := rng.randf() < RIVER_CHANCE
+	if not river:
+		hi -= 2                              # a lake runs two rows deeper than its line
+	if hi < lo:
+		return
+	var base := rng.randi_range(lo, hi)
+	var c0 := -MARGIN_COLS - 1               # past the west edge
+	var c1 := width + MARGIN_COLS            # past the east edge
+	var taper_west := false
+	var taper_east := false
+	water_feature = "river"
+	if not river:
+		match rng.randi_range(0, 2):
+			0:   # from the west, the east columns dry
+				c1 = width - 1 - CROSSING_WIDTH
+				taper_east = true
+				water_feature = "lake west"
+			1:   # from the east
+				c0 = CROSSING_WIDTH
+				taper_west = true
+				water_feature = "lake east"
+			_:   # in the middle, ground either side
+				c0 = rng.randi_range(1, 2)
+				c1 = mini(width - 2, c0 + 2)
+				taper_west = true
+				taper_east = true
+				water_feature = "lake middle"
+	# The line: eastward one hex at a time (east, or half a step north-east or south-east),
+	# drifting about its row but never far.
+	var line: Array[Vector2i] = []
+	var cur := Hex.offset_to_axial(c0, base)
+	while Hex.axial_to_offset(cur).x <= c1:
+		line.append(cur)
+		var steps: Array[Vector2i] = [Vector2i(1, 0), Vector2i(1, 0)]
+		if cur.y > lo and cur.y > base - 2:
+			steps.append(Vector2i(1, -1))
+		if cur.y < hi and cur.y < base + 2:
+			steps.append(Vector2i(0, 1))
+		cur += steps[rng.randi_range(0, steps.size() - 1)]
+	var wet: Array[Vector2i] = []
+	var below := {}   # a river's line hex -> the hex thickening it, when it has one
+	for i in range(line.size()):
+		var hx: Vector2i = line[i]
+		wet.append(hx)
+		var col := Hex.axial_to_offset(hx).x
+		if river:
+			if rng.randf() < RIVER_THICK:
+				wet.append(hx + Vector2i(0, 1))
+				below[hx] = hx + Vector2i(0, 1)
+			continue
+		# A lake is two rows deep and three in places, rounded where it ends in the field.
+		var end := (taper_west and col <= c0) or (taper_east and col >= c1)
+		if end:
+			continue
+		wet.append(hx + Vector2i(0, 1))
+		wet.append(hx + Vector2i(-1, 1))
+		var near_end := (taper_west and col <= c0 + 1) or (taper_east and col >= c1 - 1)
+		if not near_end and rng.randf() < LAKE_DEEP:
+			wet.append(hx + Vector2i(-1, 2))
+	for hx in wet:
+		_flood(hx)
+	if not river:
+		return
+	# The fords: runs of the line inside the field, one of CROSSING_WIDTH hexes or two of
+	# two, back to open ground with whatever thickened them. Along the line, so a ford is as
+	# many hexes wide as it is long, whichever way the river bends there.
+	var inside: Array[Vector2i] = []
+	for hx in line:
+		if has(hx):
+			inside.append(hx)
+	var picks: Array[int] = []
+	var n := inside.size()
+	if n < CROSSING_WIDTH + 4 or rng.randf() < 0.5:
+		var j := rng.randi_range(0, maxi(0, n - CROSSING_WIDTH))
+		for k in range(CROSSING_WIDTH):
+			picks.append(j + k)
+	else:
+		var a := rng.randi_range(0, n - 5)
+		var b := rng.randi_range(a + 3, n - 2)
+		picks.append_array([a, a + 1, b, b + 1])
+	for j in picks:
+		if j >= n:
+			continue
+		for hx in [inside[j], below.get(inside[j], inside[j])]:
+			if has(hx) and terrain[hx] == Terrain.WATER:
+				terrain[hx] = Terrain.PLAIN
+				elevation[hx] = 0
+
+
+## Water on a hex of the field or of the scenery beside it, never on a structure, the
+## city or the wall's rows.
+func _flood(hx: Vector2i) -> void:
+	if Hex.axial_to_offset(hx).y >= height - GATE_ROWS:
+		return
+	if has(hx):
+		if is_structure(hx):
+			return
+		terrain[hx] = Terrain.WATER
+	elif margin.has(hx) and not city.has(hx):
+		margin[hx] = Terrain.WATER
+	else:
+		return
+	crag_base.erase(hx)
+	elevation[hx] = -1
 
 
 ## A paved road runs north from the gate as a connected path with drift, most of the way
@@ -558,29 +678,33 @@ func _horde_flow(limit: int) -> Array:
 	return [flow, reached]
 
 
-## Route the horde round a cut by the fewest openings: the cheapest way from the rift to the
-## gate where the horde's ground costs nothing, a hex that can be opened (water, a crag) costs
-## one, and the cut's own hexes are refused; its blocked hexes are opened. Seeded ties, so the
-## same map widens the same way. False when there is no such way (the field's own edge).
+## Route the horde round a cut by the cheapest openings: the cheapest way from the rift to
+## the gate where the horde's ground costs nothing, a crag costs one and water two (a gap
+## in a ridge before another ford in the river, which is the map's one water feature), and
+## the cut's own hexes are refused; its blocked hexes are opened. Seeded ties, so the same
+## map widens the same way. False when there is no such way (the field's own edge).
 func _carve_around(cut: Array[Vector2i], rng: RandomNumberGenerator) -> bool:
 	var refused := {}
 	for h in cut:
 		refused[h] = true
 	var dist := {}
 	var prev := {}
-	var deque: Array = []
+	var frontier: Array = []
 	for r in rift_hexes:
 		for n in Hex.neighbors(r):
 			if has(n) and not is_structure(n) and not refused.has(n) and not dist.has(n):
-				var c := 0 if passable(terrain[n], []) else 1
-				dist[n] = c
-				if c == 0:
-					deque.push_front(n)
-				else:
-					deque.push_back(n)
+				dist[n] = _opening_cost(n)
+				frontier.append([dist[n], n])
 	var goal := Vector2i(1 << 20, 0)
-	while not deque.is_empty():
-		var h: Vector2i = deque.pop_front()
+	while not frontier.is_empty():
+		var best := 0
+		for i in range(1, frontier.size()):
+			if frontier[i][0] < frontier[best][0]:
+				best = i
+		var top: Array = frontier.pop_at(best)
+		var h: Vector2i = top[1]
+		if int(top[0]) > int(dist[h]):
+			continue
 		var at_gate := false
 		for n in Hex.neighbors(h):
 			if gate_hexes.has(n):
@@ -597,15 +721,11 @@ func _carve_around(cut: Array[Vector2i], rng: RandomNumberGenerator) -> bool:
 		for n in around:
 			if not has(n) or is_structure(n) or refused.has(n):
 				continue
-			var c := 0 if passable(terrain[n], []) else 1
-			var nd: int = int(dist[h]) + c
+			var nd: int = int(dist[h]) + _opening_cost(n)
 			if not dist.has(n) or nd < int(dist[n]):
 				dist[n] = nd
 				prev[n] = h
-				if c == 0:
-					deque.push_front(n)
-				else:
-					deque.push_back(n)
+				frontier.append([nd, n])
 	if not dist.has(goal):
 		return false
 	var opened := false
@@ -620,9 +740,15 @@ func _carve_around(cut: Array[Vector2i], rng: RandomNumberGenerator) -> bool:
 	return opened
 
 
+func _opening_cost(h: Vector2i) -> int:
+	if passable(terrain[h], []):
+		return 0
+	return 2 if terrain[h] == Terrain.WATER else 1
+
+
 ## Open a hex to the horde: plain ground, no crag, level.
 func _open(h: Vector2i) -> void:
-	opened_by_guarantee += 1
+	opened[h] = terrain[h]
 	terrain[h] = Terrain.PLAIN
 	crag_base.erase(h)
 	elevation[h] = 0

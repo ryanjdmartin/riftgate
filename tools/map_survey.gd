@@ -62,8 +62,10 @@ func _survey() -> String:
 	var bodies: Array[int] = []
 	var biggest: Array[int] = []
 	var spans := 0
+	var kinds := {}
 	var widths := {}
 	var opened: Array[int] = []
+	var opened_water: Array[int] = []
 	var ms: Array[float] = []
 	var horde_len: Array[int] = []
 	var phases := {}   # way -> [phases per seed]
@@ -85,20 +87,23 @@ func _survey() -> String:
 		var comps := _bodies(m, water)
 		bodies.append(comps.size())
 		var big := 0
-		var spanned := false
 		for c in comps:
 			big = maxi(big, c.size())
-			var cols := {}
-			for hx in c:
-				cols[Hex.axial_to_offset(hx).x] = true
-			if cols.has(0) and cols.has(w - 1):
-				spanned = true
+		var edges := {}
+		for hx in water:
+			edges[Hex.axial_to_offset(hx).x] = true
 		biggest.append(big)
-		if spanned:
+		if edges.has(0) and edges.has(w - 1):
 			spans += 1
+		kinds[m.water_feature] = int(kinds.get(m.water_feature, 0)) + 1
 		var cw := m.narrowest_crossing()
 		widths[cw] = int(widths.get(cw, 0)) + 1
-		opened.append(m.opened_by_guarantee)
+		opened.append(m.opened.size())
+		var ow := 0
+		for hx in m.opened.keys():
+			if int(m.opened[hx]) == BattleMap.Terrain.WATER:
+				ow += 1
+		opened_water.append(ow)
 		horde_len.append(m.find_path(m.gate, m.rift, []).size())
 		var start := Hex.offset_to_axial(w / 2, h - BattleMap.GATE_ROWS - 1)
 		for way in WAYS:
@@ -117,10 +122,16 @@ func _survey() -> String:
 	lines.append("| Water bodies | %.1f | %d to %d |" % [_mean_i(bodies), bodies.min(), bodies.max()])
 	lines.append("| The biggest body, hexes | %.1f | %d to %d |" % [_mean_i(biggest), biggest.min(), biggest.max()])
 	lines.append("| Hexes the crossing guarantee opened | %.1f | %d to %d |" % [_mean_i(opened), opened.min(), opened.max()])
+	lines.append("| of them water | %.1f | %d to %d |" % [_mean_i(opened_water), opened_water.min(), opened_water.max()])
 	lines.append("| The horde's route, hexes | %.1f | %d to %d |" % [_mean_i(horde_len), horde_len.min(), horde_len.max()])
 	lines.append("| Generation, ms a map | %.0f | %.0f to %.0f |" % [_mean_f(ms), ms.min(), ms.max()])
 	lines.append("")
-	lines.append("Water spans the field from edge to edge on %d of %d maps." % [spans, seeds])
+	var kind_names: Array[String] = []
+	var ks := kinds.keys()
+	ks.sort()
+	for k in ks:
+		kind_names.append("%s %d" % [k if k != "" else "none", kinds[k]])
+	lines.append("The water feature: %s. Water reaches both edges of the field on %d of %d maps (a river's fords split it into bodies)." % [", ".join(kind_names), spans, seeds])
 	lines.append("")
 	lines.append("## The horde's narrowest crossing")
 	lines.append("")
@@ -221,7 +232,7 @@ func _picture(m: BattleMap) -> String:
 		BattleMap.Terrain.PLAIN: ".", BattleMap.Terrain.ROAD: "=", BattleMap.Terrain.ROUGH: "\"",
 		BattleMap.Terrain.RUINS: "#", BattleMap.Terrain.WATER: "~", BattleMap.Terrain.MOUNTAIN: "^",
 	}
-	var rows: Array[String] = ["seed %d, narrowest crossing %d, the guarantee opened %d" % [m.map_seed, m.narrowest_crossing(), m.opened_by_guarantee]]
+	var rows: Array[String] = ["seed %d, %s, narrowest crossing %d, the guarantee opened %d" % [m.map_seed, m.water_feature, m.narrowest_crossing(), m.opened.size()]]
 	for row in range(-BattleMap.MARGIN_ROWS, m.height):
 		var line := " " if row & 1 else ""
 		for col in range(-BattleMap.MARGIN_COLS, m.width + BattleMap.MARGIN_COLS):

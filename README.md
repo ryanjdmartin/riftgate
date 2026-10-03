@@ -52,7 +52,8 @@ and open question from the design sessions.
   `test_` method, including the content validator and a headless drive of the skirmish screen.
 - `tools/` — `export_vocabulary.gd` regenerates `docs/vocabulary.md`; `balance.gd` plays every
   chassis and the team against every pack under each policy and writes `docs/balance.md`
-  (`--trace` prints one fight blow by blow); `screenshot.gd` renders a
+  (`--trace` prints one fight blow by blow); `map_survey.gd` measures the map generator over
+  many seeds and writes `docs/map_survey.md`; `screenshot.gd` renders a
   scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `perf_probe.gd` measures
   the battle map's frame cost; `lowforge/` builds the
   ally units by code from a brief (`models_low.py`, one function per chassis id) in the
@@ -109,12 +110,19 @@ godot --headless --path . -s tools/export_vocabulary.gd
 # --trace "sparrowhawk|brute x4|greedy|3" plays that one fight and prints its log instead.
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
 
+# the map survey: 200 generated maps at the game's 7x20, measuring the water (share, bodies,
+# which feature), the horde's narrowest crossing and what the guarantee opened, and the phases
+# each way of moving takes to the rift at move 30; written to docs/map_survey.md (under a
+# minute). --seeds N, --move M, --w/--h for another size; --show SEED prints one map as text.
+perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/map_survey.gd -- --seeds 200
+
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument
 # poses the screen first. Skirmish: codex, mechcodex, hold, confirm, lock, strike,
 # enemyturn, withdraw, rounds, logfull, killed, acquire, menu, settings, quit, and the feed's
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
 # and groundtear (the corrupted side's tear as it fires).
-# Battle: select, route, hold, north, zoom, zoomlast,
+# Battle: select, route, draft and draftslow (a route drawn by hand, its move gauge spent or
+# stopped by a slow hex), hold, north, zoom, zoomlast,
 # flyer, predict, resolve, contact, engage, codex, foecodex, menu, settings, tune, and
 # bosscontact (the boss reached: the reveal; RIFTGATE_REVEAL_T=<seconds> pins its frame), logfull (the battle log full screen), gate and foe (the gate or a pack tapped).
 # RIFTGATE_SHOT_FRAME=<n> picks the capture frame, to catch an animation mid-flight.
