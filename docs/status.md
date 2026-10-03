@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.26 since 3 October: the joints, acts and movement built on top of the hovercraft, and the hovercraft's third pass); republish it from the committed file after every bible change, passing that URL.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.27 since 3 October: the movement leftovers, the move gauge, the three-wide crossing and the water feature, on top of the joints, acts and movement and the hovercraft's third pass); republish it from the committed file after every bible change, passing that URL.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
