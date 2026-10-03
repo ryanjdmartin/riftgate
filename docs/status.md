@@ -36,7 +36,7 @@ session; a B session cannot read it. Shared:
   pass from `tools/soundforge/fx_sketches.py` (the weapons' third cut, the console, the blunt
   impact with its plasma layer, the voice in two registers; every file re-rendered 2 October),
   the console derived again that night, the voice re-rendered), and nothing else; render with
-  `fx_sketches.py`, then `console_sketches.py`, `warroom_sketches.py` and `audition_sketches.py`, copy `fx_page.html` in as `index.html`, and
+  `fx_sketches.py`, then `console_sketches.py`, `warroom_sketches.py`, `audition_sketches.py`, `boop_sketches.py` and `fresh_sketches.py`, copy `fx_page.html` in as `index.html`, and
   republish from `tools/soundforge/out/fx/` with `root` set to it (numpy and scipy, plus ffmpeg). The music
   rounds re-render from `phone_sketches.py` if ever wanted again.
 
@@ -276,18 +276,20 @@ the weapons' third cut (every blow drawn out with `heft` and a boom tail, measur
 phone model) is acceptable and parked; the voice section (`tools/soundforge/speech.py`, a Betty
 and a VEGA) is too faint under noise, cracks and pops to judge; the console was derived again
 that night from the UI design, Hold The Line and the direction notes, not from the existing
-sounds (`tools/soundforge/console_sketches.py`, section 1 of the page, and is now chosen by audition
-(3 October, after four cuts Ryan heard as one skeleton re-timbred: `audition_sketches.py`, three moments in
-six directions that share nothing, teletype, weight, words, breakers, Nostromo pings, data bursts; Ryan
-picks a direction or one per moment, then the set is built from the pick; the war room
-`warroom_sketches.py`, the FM terminal and its channel `console_sketches.py` stay on the page for the record); the voice is re-rendered judgeable (a smooth glottal pulse,
+sounds (`tools/soundforge/console_sketches.py`, section 1 of the page, and was chosen by audition
+(3 October: `audition_sketches.py`, six directions that share nothing; Ryan picked the weight, the breakers,
+the pings pitched down, the data burst as a comms static, the voice in unintelligible words in small doses,
+and asked for the Terran nuke warning's boops; a set built from those picks (`boop_sketches.py`) is parked
+unheard on Ryan's word to start fresh; two fresh sets sharing nothing (`fresh_sketches.py`: pulse code,
+rhythm first in one dry voice; the modal shell, a plate and a glass tapped or bowed) are at the top of
+the page's section 1; the parked set, the audition and the four earlier cuts stay below for the record); the voice is re-rendered judgeable (a smooth glottal pulse,
 the vowels levelled over the bursts, the contact's level).
 Content carries a `sound` label on a component (a word or a list meaning layers, validated in
 `content_db.gd`; the Breaching Plow says blunt, the Gravity Knuckles blunt and plasma). A pick
 lands as a recipe in `forge.py` with its hook (shape, maker, faction, silhouette, the label, the
 replay telling shield hit from block from hit). The sketch script encodes AAC with `ffmpeg` at
 256 kbps where there is no `afconvert` (its encoder smears a transient's front at 128). Next:
-Ryan's pick from the console audition (a direction, or one per moment), then the set built from it; the Risen and Infernal
+Ryan's listen of the two fresh console sets (pulse code against the shell: which principle first); the Risen and Infernal
 Horde boss themes from their seeds, melodies proposed in chat first. The speakers/headphones
 setting is dropped (Ryan, 2 October): the one master balances for both for now.
 
