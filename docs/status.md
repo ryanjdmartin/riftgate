@@ -13,9 +13,17 @@ stays in A alone (Ryan, 1 October: it serves one ongoing task) and is republishe
 session; a B session cannot read it. Shared:
 
 - **The bible** (above): `docs/design-bible.html`, published whole after every change.
-- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 2 October with the targeting pass's content): four tabs, the
-  codex, the content editor, the names list and the renders (earlier passes folded under each
-  chassis, a Classes section). Since 2 October, night, every list carries a filter and sort bar (search,
+- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 2 October with the targeting pass's content): five tabs, the
+  codex, the content editor, the names list, the renders (earlier passes folded under each
+  chassis, a Classes section) and, since 3 October, Animation: each machine's acts, walk and
+  cornering played from its rig sidecar on its model by `tools/hangar_motion.js` (published
+  as `hangar/motion.js`), a port of `game/ui/mech_rig.gd` and `Map3D._corner` that must move
+  with them in the same commit; Acts (in turn or one looped, a scrubber, melee and shot blows),
+  Walk (the RIFTGATE_MOVE_DEBUG drive) and Route (a four-move loop on hexes sized and paced as
+  the map's, which shows the drift, the banks and the helicopter strafe the debug switches
+  cannot). Artifacts do not serve .glb, so `hangar_data.py` writes each model as glTF JSON
+  into `build/hangar/models` (git ignores it) and maps it; the 3 October republish sent only
+  the page and those files, leaving the content files as they were. Since 2 October, night, every list carries a filter and sort bar (search,
   chips per group, a sort with its direction); the codex, the models and the editor's chassis
   list share one chassis filter, and the codex has a Compact view of stats alone. Filters are
   kept per viewer in the browser, not in the database. Source `tools/hangar.html`, published with the `files` map

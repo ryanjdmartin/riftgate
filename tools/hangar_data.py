@@ -5,13 +5,18 @@ and the renders from files published beside it, so one republish refreshes every
 This writes the one piece the browser cannot read for itself, the hp_<n> pins each built
 model carries (docs/hangar/pins.json, from art/models/<chassis>.glb), checks the renders
 manifest (docs/hangar/renders.json) against the files on disk, and prints the `files` map
-to pass to the Artifact tool, published path to source path. Run it after a content, model
+to pass to the Artifact tool, published path to source path. The map carries the Animation
+tab too: its script (tools/hangar_motion.js as hangar/motion.js) and every built machine's
+model and rig sidecar. An artifact does not serve .glb files, so each model is written as
+the same glTF in JSON with its binary embedded (build/hangar/models/<id>.model.json, git
+ignores build/; three.js loads it as it would the .glb), and the sidecar goes as it is
+(art/models/<id>.rig.json as hangar/models/<id>.rig.json). Run it after a content, model
 or render change, then publish tools/hangar.html with the printed map to the page's URL.
 
-    python3 tools/hangar_data.py            # write pins.json, check the manifest, print the map
+    python3 tools/hangar_data.py            # write pins.json and the models' JSON, check the manifest, print the map
     python3 tools/hangar_data.py --check    # check only, no write
 """
-import json, os, re, sys
+import base64, json, os, re, struct, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONTENT = ["chassis", "components", "foes", "factions", "vocabulary", "reserved_names"]
@@ -23,6 +28,29 @@ def model_pins(cid):
     if not os.path.exists(path):
         return None
     return sorted(set(int(n) for n in re.findall(rb'"hp_(\d+)"', open(path, "rb").read())))
+
+
+def glb_to_json(src, dst):
+    """The glTF in a .glb as one JSON file, its binary chunk a base64 data URI (images stay
+    in buffer views, so nothing else moves)."""
+    data = open(src, "rb").read()
+    if data[:4] != b"glTF":
+        raise SystemExit("not a glb: " + src)
+    off, doc, binary = 12, None, b""
+    while off < len(data):
+        length, kind = struct.unpack_from("<II", data, off)
+        chunk = data[off + 8:off + 8 + length]
+        off += 8 + length
+        if kind == 0x4E4F534A:
+            doc = json.loads(chunk)
+        elif kind == 0x004E4942:
+            binary = chunk
+    if doc.get("buffers"):
+        doc["buffers"][0]["uri"] = "data:application/octet-stream;base64," + base64.b64encode(binary).decode("ascii")
+        doc["buffers"][0]["byteLength"] = len(binary)
+    os.makedirs(os.path.dirname(dst), exist_ok=True)
+    with open(dst, "w") as f:
+        json.dump(doc, f, separators=(",", ":"))
 
 
 def main():
@@ -39,6 +67,16 @@ def main():
         files["content/%s.json" % n] = "content/%s.json" % n
     files["hangar/pins.json"] = "docs/hangar/pins.json"
     files["hangar/renders.json"] = "docs/hangar/renders.json"
+    files["hangar/motion.js"] = "tools/hangar_motion.js"
+    for cid, p in pins.items():
+        if p is None:
+            continue
+        built = os.path.join("build", "hangar", "models", cid + ".model.json")
+        if not check_only:
+            glb_to_json(os.path.join(ROOT, "art", "models", cid + ".glb"), os.path.join(ROOT, built))
+        files["hangar/models/%s.model.json" % cid] = built
+        if os.path.exists(os.path.join(ROOT, "art", "models", cid + ".rig.json")):
+            files["hangar/models/%s.rig.json" % cid] = "art/models/%s.rig.json" % cid
     missing = []
     groups = [b["images"] for b in manifest["classes"]["blocks"]]
     for cid, d in manifest["chassis"].items():
