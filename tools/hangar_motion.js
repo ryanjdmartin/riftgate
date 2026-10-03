@@ -480,7 +480,10 @@ class Stage {
     if (this.id === id && this.rig) return;
     this.id = id;
     this.note.textContent = "Loading " + id + "…";
-    const [gltf, side] = await Promise.all([this.loadModel(id), fetch("hangar/models/" + id + ".rig.json", {cache: "no-store"}).then(r => r.ok ? r.json() : {})]);
+    const [gltf, side] = await Promise.all([this.loadModel(id), fetch("hangar/models/" + id + ".rig.json", {cache: "no-store"}).then(r => {
+      if (!r.ok) throw new Error("hangar/models/" + id + ".rig.json: " + r.status);
+      return r.json();
+    })]);
     if (this.id !== id) return;
     const T = window.THREE;
     if (this.modelRoot) this.pivot.remove(this.modelRoot);
@@ -514,9 +517,20 @@ class Stage {
     this.emit();
     this.start();
   }
-  loadModel(id) {
-    // The glTF as JSON with its binary embedded: an artifact does not serve .glb (tools/hangar_data.py).
-    return new Promise((ok, bad) => new window.THREE.GLTFLoader().load("hangar/models/" + id + ".model.json", ok, undefined, bad));
+  // The glTF as JSON with its binary embedded: an artifact does not serve .glb (tools/hangar_data.py).
+  // The page fetches it itself, as it fetches the content files, and three.js only parses it.
+  // Its textures sit in the embedded binary, and r128 decodes those by fetch() on a blob:
+  // address wherever createImageBitmap exists (Chrome, Safari); the artifact viewer's content
+  // policy refuses that fetch ("Failed to fetch", 3 October). The plugin hands the parser an
+  // image-element loader instead, which the policy allows for blob: images.
+  async loadModel(id) {
+    const r = await fetch("hangar/models/" + id + ".model.json", {cache: "no-store"});
+    if (!r.ok) throw new Error("hangar/models/" + id + ".model.json: " + r.status);
+    const text = await r.text();
+    const T = window.THREE;
+    const loader = new T.GLTFLoader();
+    loader.register(parser => { parser.textureLoader = new T.TextureLoader(parser.options.manager); return {name: "riftgate_image_element_textures"}; });
+    return new Promise((ok, bad) => loader.parse(text, "", ok, bad));
   }
   setMode(mode) {
     this.mode = mode;

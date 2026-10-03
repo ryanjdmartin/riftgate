@@ -23,7 +23,11 @@ session; a B session cannot read it. Shared:
   the map's, which shows the drift, the banks and the helicopter strafe the debug switches
   cannot). Artifacts do not serve .glb, so `hangar_data.py` writes each model as glTF JSON
   into `build/hangar/models` (git ignores it) and maps it; the 3 October republish sent only
-  the page and those files, leaving the content files as they were. Since 2 October, night, every list carries a filter and sort bar (search,
+  the page and those files, leaving the content files as they were. The viewer's content policy
+  refuses `fetch` on a `blob:` address, which three.js r128 uses to decode embedded textures
+  ("Could not load the model: Failed to fetch", fixed 3 October): the page fetches each model
+  itself and a loader plugin decodes textures through image elements. A local test of the
+  page needs the policy too (`connect-src 'self'`), or it passes where the viewer fails. Since 2 October, night, every list carries a filter and sort bar (search,
   chips per group, a sort with its direction); the codex, the models and the editor's chassis
   list share one chassis filter, and the codex has a Compact view of stats alone. Filters are
   kept per viewer in the browser, not in the database. Source `tools/hangar.html`, published with the `files` map

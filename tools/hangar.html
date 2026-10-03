@@ -1200,7 +1200,7 @@ function renderModels(main) {
 
 // ------------------------------------------------------------------ animation
 // The machines' idle acts, gaits and cornering, played from the sidecars the game reads
-// (hangar/models/<id>.rig.json beside hangar/models/<id>.glb). The stage and its controls
+// (hangar/models/<id>.rig.json beside the model as glTF JSON, hangar/models/<id>.model.json). The stage and its controls
 // are built once and moved into the page on every redraw, so a database update never
 // restarts the animation. hangar/motion.js holds the port of the game's rig.
 const MOTION = {stage: null, wrap: null, panel: null, id: "", key: ""};
