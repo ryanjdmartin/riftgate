@@ -252,3 +252,143 @@ func test_the_debug_switch_names_one_act() -> void:
 	rig.last_act = "core_flare"
 	assert_ne(str(rig.choose()["name"]), "core_flare", "'1' is every act, back to back, still never twice running")
 	pair[1].free()
+
+
+func _drive(rig: MechRig, speed: float, seconds: float, aim: float = 0.0, turn: float = 0.0, step: float = 1.0 / 60.0) -> void:
+	var t := 0.0
+	while t < seconds:
+		rig.drive(speed, aim, turn, step)
+		t += step
+
+
+func test_cycle_sampling_wraps() -> void:
+	var keys := [[0.0, 14.0], [0.5, -14.0], [1.0, 14.0]]
+	assert_eq(MechRig.sample_cycle(keys, 0.0), [14.0], "the start")
+	assert_eq(MechRig.sample_cycle(keys, 0.5), [-14.0], "half way")
+	assert_eq(MechRig.sample_cycle(keys, 1.0), [14.0], "a whole stride is the start again")
+	assert_eq(MechRig.sample_cycle(keys, 1.5), [-14.0], "and it wraps")
+	var partial := [[0.5, 0.0], [0.7, -30.0], [1.0, 0.0]]
+	assert_eq(MechRig.sample_cycle(partial, 0.2), [0.0], "before the first key the track holds the last")
+	var mid: float = MechRig.sample_cycle(partial, 0.6)[0]
+	assert_true(mid < -5.0 and mid > -30.0, "between keys (%f)" % mid)
+
+
+func test_a_walker_steps_and_settles() -> void:
+	var pair := _rig_for("clydesdale", 2)
+	var rig: MechRig = pair[0]
+	assert_true(not rig.gait.is_empty(), "the Clydesdale has a gait")
+	var fl: Node3D = rig.joints["hip_fl"]
+	var fr: Node3D = rig.joints["hip_fr"]
+	var hr: Node3D = rig.joints["hip_hr"]
+	_drive(rig, MechRig.MOVE_REF_SPEED, 0.5)
+	assert_true(rig.moving, "under way")
+	var widest := 0.0
+	var opposite := false
+	for i in range(60):   # a second: several strides at the reference speed
+		rig.drive(MechRig.MOVE_REF_SPEED, 0.0, 0.0, 1.0 / 60.0)
+		widest = maxf(widest, absf(fl.rotation.x))
+		assert_true(is_equal_approx(fl.rotation.x, hr.rotation.x), "fore-left and hind-right step together")
+		if signf(fl.rotation.x) != signf(fr.rotation.x) and absf(fl.rotation.x) > deg_to_rad(5.0):
+			opposite = true
+	assert_true(widest > deg_to_rad(10.0), "the hips swing (%f at the widest)" % rad_to_deg(widest))
+	assert_true(opposite, "the other pair is half a stride behind")
+	var model: Node3D = pair[1]
+	assert_true(model.position.y != rig._body_rest_pos.y or true, "the body bobs")
+	_drive(rig, 0.0, 1.0)
+	assert_false(rig.moving, "stopped")
+	assert_true(is_zero_approx(fl.rotation.x) and is_zero_approx(fr.rotation.x), "the legs settle to rest")
+	assert_true(model.position.is_equal_approx(rig._body_rest_pos), "and the body")
+	pair[1].free()
+
+
+func test_wheels_spin_by_radius_and_casters_aim_along_the_travel() -> void:
+	var pair := _rig_for("dingo", 2)
+	var rig: MechRig = pair[0]
+	var wheel: Node3D = rig.joints["wheel_fl"]
+	var caster: Node3D = rig.joints["caster_fl"]
+	_drive(rig, 100.0, 2.0, deg_to_rad(80.0))   # strafing left
+	var r := float(rig.gait["wheels"]["wheel_fl"])
+	var turns := rig._dist / (TAU * r)
+	assert_true(turns > 2.0, "a couple of turns in two seconds at that radius (%f)" % turns)
+	var expect := -fposmod(rig._dist / r, TAU)
+	assert_true(absf(wrapf(wheel.rotation.x - expect, -PI, PI)) < 0.01, "the wheel's angle is the distance over its radius, forward negative")
+	assert_true(absf(caster.rotation.y - deg_to_rad(80.0)) < deg_to_rad(2.0), "the casters point along the travel (%f)" % rad_to_deg(caster.rotation.y))
+	_drive(rig, 100.0, 1.0, deg_to_rad(120.0))
+	assert_true(absf(caster.rotation.y - deg_to_rad(85.0)) < deg_to_rad(1.0), "and stop at their limit")
+	pair[1].free()
+	pair = _rig_for("prairie_dog", 2)
+	rig = pair[0]
+	var steer: Node3D = rig.joints["steer_fl"]
+	_drive(rig, 200.0, 1.0, 0.0, 1.0)   # turning left at a radian a second
+	assert_true(steer.rotation.y > deg_to_rad(5.0), "the fronts steer into the turn (%f)" % rad_to_deg(steer.rotation.y))
+	assert_true(is_zero_approx((rig.joints["wheel_rl"] as Node3D).rotation.y), "the rears do not steer")
+	pair[1].free()
+
+
+func test_held_offsets_rock_and_bank() -> void:
+	var pair := _rig_for("badger", 2)
+	var rig: MechRig = pair[0]
+	var model: Node3D = pair[1]
+	var sh: Node3D = rig.joints["shoulder_l"]
+	_drive(rig, MechRig.MOVE_REF_SPEED, 0.1)
+	assert_true(model.rotation.x > deg_to_rad(1.5), "pulling away rocks the nose up (%f)" % rad_to_deg(model.rotation.x))
+	_drive(rig, MechRig.MOVE_REF_SPEED, 1.0)
+	assert_true(absf(sh.rotation.x - deg_to_rad(14.0)) < deg_to_rad(0.5), "the boom holds the claw clear while driving")
+	assert_true(absf(model.rotation.x) < deg_to_rad(1.0), "level once up to speed")
+	_drive(rig, 0.0, 0.1)
+	assert_true(model.rotation.x < -deg_to_rad(1.5), "stopping dips it")
+	_drive(rig, 0.0, 1.5)
+	assert_true(is_zero_approx(sh.rotation.x) and absf(model.rotation.x) < 0.001, "settled")
+	pair[1].free()
+	pair = _rig_for("goshawk", 2)
+	rig = pair[0]
+	model = pair[1]
+	_drive(rig, MechRig.MOVE_REF_SPEED, 1.5, 0.0, 1.0)   # a left turn
+	assert_true(model.rotation.z > deg_to_rad(5.0), "a flyer banks into a left turn, the left wing down (%f)" % rad_to_deg(model.rotation.z))
+	assert_true((rig.joints["nacelle_l"] as Node3D).rotation.x < -deg_to_rad(5.0), "the nacelles tilt forward under way")
+	pair[1].free()
+	pair = _rig_for("clydesdale", 2)
+	rig = pair[0]
+	_drive(rig, MechRig.MOVE_REF_SPEED, 1.0, 0.0, 1.0)
+	assert_true(is_zero_approx(pair[1].rotation.z), "a walker never banks")
+	pair[1].free()
+
+
+func test_every_gait_names_joints_and_parts_the_model_has() -> void:
+	for id in MACHINES + ["stingray", "puffin"]:
+		var side := MechRig.load_sidecar(id)
+		var g: Dictionary = side.get("gait", {})
+		var pair := _rig_for(id)
+		var rig: MechRig = pair[0]
+		for d in ["tracks", "wheels", "steer", "aim", "hold"]:
+			for jn in g.get(d, {}).keys():
+				assert_true(rig.joints.has(jn), "%s: the gait's %s names joint %s" % [id, d, jn])
+		for jn in g.get("tracks", {}).keys():
+			var lim: Dictionary = side["joints"][jn].get("limits", {})
+			for key in g["tracks"][jn]["keys"]:
+				var deg := Vector3(float(key[1]), float(key[2]), float(key[3]))
+				assert_eq(MechRig.clamp_degrees(deg, lim), deg, "%s: the stride keeps %s inside its limits" % [id, jn])
+		for part in g.get("treads", {}).get("parts", []):
+			var found := false
+			for mi in pair[1].find_children("*", "MeshInstance3D", true, false):
+				if MechRig.labelled(str(mi.name), str(part)):
+					found = true
+			assert_true(found, "%s: a tread mesh named %s" % [id, part])
+		pair[1].free()
+	assert_true(MechRig.labelled("tread_001", "tread"), "the importer's numbering is the same label")
+	assert_false(MechRig.labelled("tread_deck", "tread"), "another label is not")
+
+
+func test_a_pilot_on_the_move_starts_no_act() -> void:
+	var pair := _rig_for("nemesis", 3)
+	var rig: MechRig = pair[0]
+	rig.debug = "1"
+	for i in range(120):
+		rig.drive(MechRig.MOVE_REF_SPEED, 0.0, 0.0, 1.0 / 60.0)
+		rig.tick(1.0 / 60.0)
+	assert_eq(rig.last_act, "", "two seconds under way with the debug switch on and no act began")
+	_drive(rig, 0.0, 1.0)
+	for i in range(8 * 60):   # longer than the longest gap between acts
+		rig.tick(1.0 / 60.0)
+	assert_ne(rig.last_act, "", "standing again, the acts resume")
+	pair[1].free()

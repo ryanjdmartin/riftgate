@@ -141,6 +141,10 @@ def badger(b):
         "turret_r": [(0.8, -65.0), (1.8, 40.0), (2.7, 0.0)],
     })
 
+    # Movement (the joints row, 2 October): the treads scroll, the booms carry the claw clear
+    # of the ground while it drives, a rock back on pulling away and forward on stopping.
+    b.gait(treads={"parts": ["tread"], "scroll": 1.0}, hold={"shoulder_l": 14.0, "elbow_l": 12.0, "shoulder_r": 6.0}, rock=6.0)
+
 
 badger.maker = "minerva"
 
@@ -221,6 +225,10 @@ def sparrowhawk(b):
     b.act("flare_boosters", 2.2, body=[(0.5, 0.0, 0.0, 0.0), (1.0, 0.0, 2.5, 0.0), (1.9, 0.0, 0.0, 0.0)],
           glow=[(["booster_ring", "exhaust"], [(0.3, 0.0), (0.8, 2.5), (1.2, 2.5), (1.9, 0.0)])])
     b.move(slide=0.6, bank=30.0)   # strafes most of the aircraft, banks hard (the joints row)
+
+    # Movement: the boosters brighten, the nose drops a little, and it banks into turns (the
+    # bank is in b.move above; the map's cornering module applies it).
+    b.gait(glow={"parts": ["booster_ring", "exhaust"], "k": 2.5}, body_hold=(0.0, 0.0, 0.0, 0.0, -5.0, 0.0))
 
 
 sparrowhawk.maker = "kestrel"
@@ -373,6 +381,16 @@ def clydesdale(b):
         "knee_hr": [(0.5, 18.0), (1.5, 18.0), (2.3, 0.0)],
     })
 
+    # Movement: a slow four-legged walk in diagonal pairs (fore-left with hind-right), the
+    # hip swinging the leg from forward to back over the stance and the knee bending to
+    # lift the hoof through the swing; the body rising twice a stride. Keys run over one
+    # stride, 0 to 1; a pair shares one shape half a stride apart.
+    step = _step(14.0, 30.0)
+    b.gait(stride=44.0, tracks={
+        "hip_fl": (step["hip"], 0.0), "knee_fl": (step["knee"], 0.0), "hip_hr": (step["hip"], 0.0), "knee_hr": (step["knee"], 0.0),
+        "hip_fr": (step["hip"], 0.5), "knee_fr": (step["knee"], 0.5), "hip_hl": (step["hip"], 0.5), "knee_hl": (step["knee"], 0.5),
+    }, body=_bob(1.2))
+
 
 clydesdale.maker = "wainwright_sutler"
 
@@ -503,6 +521,17 @@ def baboon(b):
         "elev_r": [(0.9, 42.0), (2.1, 42.0), (3.1, 0.0)],
     })
     b.act("charge_emitters", 2.6, glow=[(["hp_5", "hp_3", "hp_4"], [(0.3, 0.0), (1.1, 3.0), (1.7, 3.0), (2.4, 0.0)])])
+
+    # Movement: a knuckle-walk, the fists planting ahead in step with the legs (left arm
+    # with right leg), the elbow lifting the fist through its swing.
+    step = _step(18.0, 34.0, 10.0)
+    arm = [(0.0, -6.0), (0.5, 22.0), (1.0, -6.0)]
+    lift = [(0.2, 0.0), (0.4, 28.0), (0.5, 0.0)]
+    b.gait(stride=36.0, tracks={
+        "hip_l": (step["hip"], 0.0), "knee_l": (step["knee"], 0.0), "ankle_l": (step["ankle"], 0.0),
+        "hip_r": (step["hip"], 0.5), "knee_r": (step["knee"], 0.5), "ankle_r": (step["ankle"], 0.5),
+        "shoulder_l": (arm, 0.0), "elbow_l": (lift, 0.0), "shoulder_r": (arm, 0.5), "elbow_r": (lift, 0.5),
+    }, body=_bob(1.0))
 
 
 baboon.maker = "aphelion"
@@ -642,6 +671,14 @@ def armadillo(b):
         "knee_fr": [(0.5, -34.0), (1.6, -34.0), (2.5, 0.0)],
     })
 
+    # Movement: a heavy four-legged walk in diagonal pairs, the shell riding level but for a
+    # slow roll side to side.
+    step = _step(12.0, 26.0)
+    b.gait(stride=52.0, tracks={
+        "hip_fl": (step["hip"], 0.0), "knee_fl": (step["knee"], 0.0), "hip_hr": (step["hip"], 0.0), "knee_hr": (step["knee"], 0.0),
+        "hip_fr": (step["hip"], 0.5), "knee_fr": (step["knee"], 0.5), "hip_hl": (step["hip"], 0.5), "knee_hl": (step["knee"], 0.5),
+    }, body=[(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0), (0.25, 0.0, 0.0, 0.8, 0.0, 0.0, 0.0), (0.5, 0.0, 0.0, 0.0, 0.0, 0.0, -2.0), (0.75, 0.0, 0.0, 0.8, 0.0, 0.0, 0.0)])
+
 
 armadillo.maker = "minerva"
 
@@ -747,6 +784,9 @@ def wild_boar(b):
     b.act("test_plow", 3.0, {"plow": [(0.8, 16.0), (1.7, 16.0), (2.1, -2.0), (2.6, 0.0)]})
     b.act("rev", 2.4, body=[(0.4, 0.0, 3.0, 0.0, 0.0, 2.0, 0.0), (0.9, 0.0, 3.0, 0.0, 0.0, -2.5, 0.0), (1.5, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0), (2.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)])
     b.act("tilt_pod", 2.6, {"elev_pod": [(0.6, 15.0), (1.8, 15.0), (2.5, 0.0)]})
+
+    # Movement: the treads scroll; a rock on pulling away and stopping.
+    b.gait(treads={"parts": ["tread"], "scroll": 1.0}, rock=5.0)
 
 
 wild_boar.maker = "minerva"
@@ -862,6 +902,10 @@ def prairie_dog(b):
         "steer_fr": [(0.4, 30.0), (1.1, -30.0), (1.7, 0.0)],
     })
 
+    # Movement: the wheels spin by their radius, the fronts steer into turns, the body rocks
+    # on pulling away.
+    b.gait(wheels={"wheel_fl": R, "wheel_fr": R, "wheel_rl": R, "wheel_rr": R}, steer={"steer_fl": 10.0, "steer_fr": 10.0}, rock=4.0)
+
 
 prairie_dog.maker = "wainwright_sutler"
 
@@ -960,6 +1004,13 @@ def dingo(b):
           glow=[(["capacitor_ring"], [(0.4, 0.0), (1.4, 3.0), (2.0, 3.0), (2.9, 0.0)])])
     b.act("mortar_check", 2.4, {"elev_mortar": [(0.5, 26.0), (1.5, 26.0), (2.2, 0.0)]})
     b.move(slide=1.0, bank=0.0)   # drifts wildly on the map and does not bank (Ryan, 2 October)
+
+    # Movement (Ryan, 2 October): it drifts. The casters point along the travel while the
+    # body's facing lags the path (the slide in b.move below), so on a sideways step or
+    # through a corner the wheels turn toward the move and the car slides, keeping its
+    # facing; the wheels spin by their radius.
+    b.gait(wheels={"wheel_fl": R, "wheel_fr": R, "wheel_rl": R, "wheel_rr": R},
+           aim={"caster_fl": 1.0, "caster_fr": 1.0, "caster_rl": 1.0, "caster_rr": 1.0}, rock=3.0)
 
 
 dingo.maker = "wainwright_sutler"
@@ -1066,6 +1117,11 @@ def goshawk(b):
     b.act("charge_cannon", 3.0, glow=[(["vent_glow", "barrel_groove", "cannon_bore", "cannon_glow"], [(0.3, 0.0), (1.4, 3.5), (2.0, 3.5), (2.8, 0.0)])])
     b.act("bank", 2.6, body=[(0.6, 0.0, 0.0, 0.0, 0.0, 0.0, -14.0), (1.6, 0.0, 0.0, 0.0, 0.0, 0.0, 14.0), (2.4, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)])
     b.move(slide=0.3, bank=18.0)   # larger and slower than the Sparrowhawk: slides less, banks moderately
+
+    # Movement: the nacelles tilt forward, the exhausts flare, the nose drops; it banks into
+    # turns (b.move).
+    b.gait(hold={"nacelle_l": -10.0, "nacelle_r": -10.0}, glow={"parts": ["joint_nacelle_l", "joint_nacelle_r"], "k": 2.0},
+           body_hold=(0.0, 0.0, 0.0, 0.0, -4.0, 0.0))
 
 
 goshawk.maker = "kestrel"
@@ -1232,6 +1288,15 @@ def nemesis(b):
     b.act("core_flare", 2.4, glow=[(["core_fire"], [(0.3, 0.0), (1.0, 4.0), (1.5, 4.0), (2.2, 0.0)])])
     b.act("raise_meteor", 3.0, {"elev_meteor": [(0.6, 14.0), (1.9, 14.0), (2.8, 0.0)]})
 
+    # Movement: a heavy stride, the arms swinging against the legs, the forearms carried up
+    # a touch.
+    step = _step(20.0, 38.0)
+    arm = [(0.0, -18.0), (0.5, 18.0), (1.0, -18.0)]
+    b.gait(stride=40.0, tracks={
+        "hip_l": (step["hip"], 0.0), "knee_l": (step["knee"], 0.0), "hip_r": (step["hip"], 0.5), "knee_r": (step["knee"], 0.5),
+        "shoulder_l": (arm, 0.0), "shoulder_r": (arm, 0.5),
+    }, hold={"elbow_l": 12.0, "elbow_r": 12.0}, body=_bob(1.4))
+
 
 nemesis.maker = "arsenal"
 
@@ -1381,6 +1446,18 @@ def ammit(b):
         "hip_r": [(0.8, 7.0), (1.9, 7.0), (2.8, 0.0)],
         "knee_r": [(0.8, -12.0), (1.9, -12.0), (2.8, 0.0)],
     })
+
+    # Movement: a four-limbed gait, the legs and the planted lower arms in diagonal pairs
+    # (left arm with right leg), the lower elbow lifting its talons through the swing; the
+    # upper arms held up out of the way.
+    step = _step(16.0, 30.0, 8.0)
+    arm = [(0.0, -12.0), (0.5, 12.0), (1.0, -12.0)]
+    lift = [(0.1, 0.0), (0.3, 22.0), (0.5, 0.0)]
+    b.gait(stride=38.0, tracks={
+        "hip_l": (step["hip"], 0.0), "knee_l": (step["knee"], 0.0), "ankle_l": (step["ankle"], 0.0),
+        "hip_r": (step["hip"], 0.5), "knee_r": (step["knee"], 0.5), "ankle_r": (step["ankle"], 0.5),
+        "shoulder_low_l": (arm, 0.0), "elbow_low_l": (lift, 0.0), "shoulder_low_r": (arm, 0.5), "elbow_low_r": (lift, 0.5),
+    }, hold={"shoulder_l": 10.0, "shoulder_r": 10.0}, body=_bob(1.0))
 
 
 ammit.maker = "arsenal"
@@ -1587,6 +1664,12 @@ def stingray(b):
         else:
             b.pad("hp_5", (rx, ry + 4.0, mt + 0.5), scale=0.7, size=(6.0, 2.0))
 
+    # Movement (first numbers, the joints row): a hovercraft slides a little, more controlled
+    # than the Dingo, and banks some; the nose drops a touch under way. No acts yet: they
+    # are proposed once Ryan has looked at the machine.
+    b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, -3.0, 0.0))
+    b.move(slide=0.3, bank=12.0)
+
 
 stingray.maker = "aphelion"
 
@@ -1677,6 +1760,10 @@ def puffin(b):
                (s * 1.4 + 11.0 * math.sin(a), -45.0, 21.2 + 11.0 * math.cos(a)), (s * 1.4 + 11.0 * math.sin(a), -50.0, 21.2 + 11.0 * math.cos(a))]
         _wing(b, root, tip, "livery.livery", "fin")
     b.pad("hp_4", (0.0, -38.0, 21.4), scale=0.6, size=(4.0, 1.5))
+
+    # Movement (first numbers, the joints row): the same as the Stingray's; no acts yet.
+    b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, -3.0, 0.0))
+    b.move(slide=0.3, bank=12.0)
 
 
 puffin.maker = "kestrel"
@@ -1852,6 +1939,26 @@ def _tine(b, origin, side_x, pitch0, curve, length, w0, t0, material, label, n=5
             th2 = math.radians(pitch0 + curve * (k + 0.5) / n)
             pos = pos + Vector((0.0, math.cos(th2), math.sin(th2))) * (length / n)
     return _rings(b, rings, material, label)
+
+
+# ---------------------------------------------------------------- gait helpers (the joints row, 2 October)
+
+def _step(hip_amp, knee_amp, ankle_amp=0.0):
+    """One leg's cycle over a stride: the hip swings the leg from forward (phase 0) to back
+    (0.5) over the stance and forward again over the swing, the knee bending through the
+    swing to lift the foot (a negative pitch on a hanging shin swings the foot back and
+    up), the ankle flexing with it. Degrees; a diagonal pair shares the shape half a stride
+    apart (the `phase` of a gait track)."""
+    return {
+        "hip": [(0.0, hip_amp), (0.5, -hip_amp), (1.0, hip_amp)],
+        "knee": [(0.5, 0.0), (0.7, -knee_amp), (0.9, -knee_amp * 0.3), (1.0, 0.0)],
+        "ankle": [(0.5, 0.0), (0.75, ankle_amp), (1.0, 0.0)],
+    }
+
+
+def _bob(height):
+    """The body rising twice a stride, lowest with the legs spread (phases 0 and 0.5)."""
+    return [(0.0, 0.0, 0.0, 0.0), (0.25, 0.0, 0.0, height), (0.5, 0.0, 0.0, 0.0), (0.75, 0.0, 0.0, height)]
 
 
 # ---------------------------------------------------------------- silhouette classes

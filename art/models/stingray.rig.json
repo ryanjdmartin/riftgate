@@ -1,5 +1,5 @@
 {
- "_about": "the rig of art/models/stingray.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units) and the cornering numbers; MechRig reads it",
+ "_about": "the rig of art/models/stingray.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
  "joints": {
   "turret": {
    "axis": "yaw",
@@ -9,6 +9,30 @@
   }
  },
  "acts": [],
- "move": {},
+ "gait": {
+  "stride": 40.0,
+  "ease": "smooth",
+  "tracks": {},
+  "body": [],
+  "wheels": {},
+  "steer": {},
+  "aim": {},
+  "hold": {},
+  "treads": {},
+  "glow": {},
+  "rock": 0.0,
+  "body_hold": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   -3.0,
+   0.0
+  ]
+ },
+ "move": {
+  "slide": 0.3,
+  "bank": 12.0
+ },
  "glow_parts": []
 }

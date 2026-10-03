@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.23 since 3 October, the joints and acts built on top of the hovercraft's v0.22; the committed file is ahead of the page until a session with the account republishes it); republish it from the committed file after every bible change, passing that URL.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.24 since 3 October, the joints, acts and movement built on top of the hovercraft's v0.22; the committed file is ahead of the page until a session with the account republishes it); republish it from the committed file after every bible change, passing that URL.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -239,8 +239,34 @@ sway on the pivot and their acts ride the body. `RIFTGATE_ACTS_DEBUG=1` plays th
 back, `=<act name>` loops one. Every act's numbers are a first cut for Ryan to judge running
 (the to-do has the doubtful signs). Tests: `tests/test_mech_rig.gd` instantiates every model
 headless and checks the sidecar against it, the nesting the bible asked for, the picking, the
-limits, the strikes and an act's motion. The cornering numbers (`b.move(slide, bank)`) are in
-the sidecars for the movement animations, which are next.
+limits, the strikes and an act's motion.
+
+**Movement animations, built 3 October, later (the same session; on the branch
+`ccr-680ee66c-a60c1u`, not yet on main, for Ryan to judge).** Each machine's gait is authored
+beside its model (`b.gait(...)`) and written to the same sidecar; `MechRig.drive(speed, aim,
+turn, dt)` plays it: cycles keyed by distance travelled (a stride in model units, so a slow
+machine steps slowly), the walkers in diagonal pairs through one `_step` shape (hip forward
+to back over the stance, the knee bending through the swing to lift the foot), the Baboon's
+fists planting in step, the Nemesis's arms swinging against its legs, the Ammit's planted
+lower arms stepping; wheels spun by their radius and never unwinding; treads scrolling their
+tiles (`uv1_offset` on the tread meshes, per instance); the Prairie Dog's steering knuckles
+turning with the turn and the Dingo's casters pointing along the travel; offsets held while
+moving (the Badger's booms carrying the claw clear, the Goshawk's nacelles tilted forward, a
+flyer's nose down); boosters brightening; a rock on pulling away and stopping from the
+smoothed acceleration; and a bank into turns. The cornering module is `Map3D._corner`: the
+facing eases toward the move's heading at a rate from the machine's `slide` (0 snaps, as
+every machine did before; the Dingo's 1.0 lags through corners and sideways steps, so its
+casters swing toward the move and the body keeps its facing), and the rig is told the
+speed (from the seat's motion, in model units), the travel's bearing against the facing and
+the turn. A pilot on the move starts no act; the gait blends in over a quarter second and
+settles out over a third. `RIFTGATE_MOVE_DEBUG=1` drives every machine constantly at the
+reference speed on both screens; `tools/act_shot.gd <chassis> <maker> gait <seconds> out.png`
+freezes a stride, and the frames checked here read right (the diagonal pairs, the lifted
+fist, the swinging arms, the carried claw, the tilted nacelles). Every number is a first cut.
+Not done: the turrets holding aim as a hull turns (a proposal), a sideways offset from the
+path for the Dingo's slide (today the slide is the facing's lag alone), the hovercraft's
+acts. Tests cover the cycle sampling, a walker stepping and settling, wheels and casters,
+holds, rock and bank, the gaits against the models, and no act under way (321 tests).
 
 **The codex (29 September; a tab of the hangar page since 1 October).** One surface showing a
 chassis and the components fitted to it: the Codex tab renders it in the browser from the
@@ -362,8 +388,8 @@ it and ticked in the commit that lands it; this is the order to take them in.
 
 1. Ryan's second look at the Stingray and the Puffin on the hangar's Models tab, and his decision on the Puffin's passive (the overshield), which then gets built.
 2. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
-3. Ryan's text for the new machines and components; the machines' scale on the map; the strikes, the hover idle's pitch and the idle acts (`RIFTGATE_ACTS_DEBUG=1`), judged running; the movement animations after.
+3. Ryan's text for the new machines and components; the machines' scale on the map; the strikes, the hover idle's pitch, the idle acts (`RIFTGATE_ACTS_DEBUG=1`) and the gaits (`RIFTGATE_MOVE_DEBUG=1`, and a real move for the Dingo's drift and the banks), judged running; the movement branch merged on his word.
 4. The discuss-first decisions in the Ryan section, the economy last; enemy targeting decided and built 2 October (the paragraph above; the runner's read is the baseline question); the commander layer once the balance has a baseline.
-5. Ready to build: the pacing pieces after Ryan's session; the movement leftovers (the gauge, a three-wide crossing); the movement animations (the joints and the idle acts landed 3 October; Ryan judges the acts running first); the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased parked, Corrode, foe roles), and a dedicated hunter foe and spawned formations once proposed.
+5. Ready to build: the pacing pieces after Ryan's session; the movement leftovers (the gauge, a three-wide crossing); the animation leftovers (the turrets holding aim, the Dingo's sideways slide, the hovercraft's acts); the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased parked, Corrode, foe roles), and a dedicated hunter foe and spawned formations once proposed.
 6. Audio: a full play of Hold The Line, the console's fresh pass and the effects' picks, the two boss themes.
 7. A prototype hangar in the game (paints and loadouts, no economy). Art: enemy art through foeforge, the hangar as a model. Before a phone leaves the desk: onboarding, then tuning.

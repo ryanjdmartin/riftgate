@@ -1,5 +1,5 @@
 {
- "_about": "the rig of art/models/goshawk.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units) and the cornering numbers; MechRig reads it",
+ "_about": "the rig of art/models/goshawk.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
  "joints": {
   "nacelle_l": {
    "axis": "pitch",
@@ -217,6 +217,44 @@
    "glow": []
   }
  ],
+ "gait": {
+  "stride": 40.0,
+  "ease": "smooth",
+  "tracks": {},
+  "body": [],
+  "wheels": {},
+  "steer": {},
+  "aim": {},
+  "hold": {
+   "nacelle_l": [
+    -10.0,
+    0.0,
+    0.0
+   ],
+   "nacelle_r": [
+    -10.0,
+    0.0,
+    0.0
+   ]
+  },
+  "treads": {},
+  "glow": {
+   "parts": [
+    "joint_nacelle_l",
+    "joint_nacelle_r"
+   ],
+   "k": 2.0
+  },
+  "rock": 0.0,
+  "body_hold": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   -4.0,
+   0.0
+  ]
+ },
  "move": {
   "slide": 0.3,
   "bank": 18.0

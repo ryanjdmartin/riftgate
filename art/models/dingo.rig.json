@@ -1,5 +1,5 @@
 {
- "_about": "the rig of art/models/dingo.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units) and the cornering numbers; MechRig reads it",
+ "_about": "the rig of art/models/dingo.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
  "joints": {
   "caster_fl": {
    "axis": "yaw",
@@ -525,6 +525,29 @@
    "glow": []
   }
  ],
+ "gait": {
+  "stride": 40.0,
+  "ease": "smooth",
+  "tracks": {},
+  "body": [],
+  "wheels": {
+   "wheel_fl": 8.0,
+   "wheel_fr": 8.0,
+   "wheel_rl": 8.0,
+   "wheel_rr": 8.0
+  },
+  "steer": {},
+  "aim": {
+   "caster_fl": 1.0,
+   "caster_fr": 1.0,
+   "caster_rl": 1.0,
+   "caster_rr": 1.0
+  },
+  "hold": {},
+  "treads": {},
+  "glow": {},
+  "rock": 3.0
+ },
  "move": {
   "slide": 1.0,
   "bank": 0.0

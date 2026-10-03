@@ -1,5 +1,5 @@
 {
- "_about": "the rig of art/models/sparrowhawk.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units) and the cornering numbers; MechRig reads it",
+ "_about": "the rig of art/models/sparrowhawk.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
  "joints": {},
  "acts": [
   {
@@ -136,6 +136,33 @@
    ]
   }
  ],
+ "gait": {
+  "stride": 40.0,
+  "ease": "smooth",
+  "tracks": {},
+  "body": [],
+  "wheels": {},
+  "steer": {},
+  "aim": {},
+  "hold": {},
+  "treads": {},
+  "glow": {
+   "parts": [
+    "booster_ring",
+    "exhaust"
+   ],
+   "k": 2.5
+  },
+  "rock": 0.0,
+  "body_hold": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   -5.0,
+   0.0
+  ]
+ },
  "move": {
   "slide": 0.6,
   "bank": 30.0

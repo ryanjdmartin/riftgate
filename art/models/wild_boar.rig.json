@@ -1,5 +1,5 @@
 {
- "_about": "the rig of art/models/wild_boar.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units) and the cornering numbers; MechRig reads it",
+ "_about": "the rig of art/models/wild_boar.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
  "joints": {
   "plow": {
    "axis": "pitch",
@@ -240,6 +240,26 @@
    "glow": []
   }
  ],
+ "gait": {
+  "stride": 40.0,
+  "ease": "smooth",
+  "tracks": {},
+  "body": [],
+  "wheels": {},
+  "steer": {},
+  "aim": {},
+  "hold": {},
+  "treads": {
+   "parts": [
+    "tread"
+   ],
+   "scroll": 1.0
+  },
+  "glow": {},
+  "rock": 5.0
+ },
  "move": {},
- "glow_parts": []
+ "glow_parts": [
+  "tread"
+ ]
 }

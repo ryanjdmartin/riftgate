@@ -1,5 +1,5 @@
 {
- "_about": "the rig of art/models/badger.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units) and the cornering numbers; MechRig reads it",
+ "_about": "the rig of art/models/badger.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
  "joints": {
   "turret_l": {
    "axis": "yaw",
@@ -369,6 +369,42 @@
    "glow": []
   }
  ],
+ "gait": {
+  "stride": 40.0,
+  "ease": "smooth",
+  "tracks": {},
+  "body": [],
+  "wheels": {},
+  "steer": {},
+  "aim": {},
+  "hold": {
+   "shoulder_l": [
+    14.0,
+    0.0,
+    0.0
+   ],
+   "elbow_l": [
+    12.0,
+    0.0,
+    0.0
+   ],
+   "shoulder_r": [
+    6.0,
+    0.0,
+    0.0
+   ]
+  },
+  "treads": {
+   "parts": [
+    "tread"
+   ],
+   "scroll": 1.0
+  },
+  "glow": {},
+  "rock": 6.0
+ },
  "move": {},
- "glow_parts": []
+ "glow_parts": [
+  "tread"
+ ]
 }

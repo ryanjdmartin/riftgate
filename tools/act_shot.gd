@@ -5,7 +5,8 @@ extends SceneTree
 ## build. Judge the acts running where you can (RIFTGATE_ACTS_DEBUG=1 godot --path .); this
 ## is for a sign or a reach, one frame at a time.
 ##   godot --path . --resolution 360x640 --position 2000,2000 -s tools/act_shot.gd -- <chassis> <maker> <act> <seconds> out.png [front|rear|<yaw degrees>]
-## An act name of "-" renders the rest pose. Needs a window (xvfb-run does, on a Linux box).
+## An act name of "-" renders the rest pose; "gait" renders the machine that many seconds
+## into a straight run at the reference speed (its stride). Needs a window (xvfb-run does, on a Linux box).
 
 var _frames := 0
 var _view: MechView3D
@@ -24,7 +25,13 @@ func _init() -> void:
 	_view.strip_silhouette()
 	root.add_child(_view)
 	_view.set_process(false)
-	if args[2] != "-":
+	if args[2] == "gait":
+		# Under way at the reference speed for that long, frame by frame: a stride's pose.
+		var t := 0.0
+		while t < float(args[3]):
+			_view.rig.drive(MechRig.MOVE_REF_SPEED, 0.0, 0.0, 1.0 / 60.0)
+			t += 1.0 / 60.0
+	elif args[2] != "-":
 		if not _view.rig.play(args[2]):
 			push_error("no act " + args[2])
 		_view.rig.tick(float(args[3]))

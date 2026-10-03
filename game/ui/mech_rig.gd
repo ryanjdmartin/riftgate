@@ -22,11 +22,26 @@ extends RefCounted
 ## of its own acts, never the same one twice running, each instance on its own clock so a
 ## team is never in step. RIFTGATE_ACTS_DEBUG=1 plays the acts back to back for judging
 ## them running; RIFTGATE_ACTS_DEBUG=<act name> loops that one act.
+##
+## Movement (the joints row, 2 October): while the map moves a machine, `drive` feeds the rig
+## its speed, the bearing it is travelling on relative to its facing, and how fast its facing
+## is turning, and the sidecar's gait answers: cycles keyed by distance travelled (a walk,
+## stride by stride, so a slow machine steps slowly), wheels spun by their radius, treads
+## scrolled, steering knuckles turned with the turn and casters pointed along the travel,
+## offsets held while moving (the Badger's booms lifting the claw), boosters brightening, a
+## rock on pulling away and stopping, and a bank into turns for what flies. The map's
+## cornering module owes the rig the numbers (Map3D). RIFTGATE_MOVE_DEBUG=1 drives every
+## machine constantly at the reference speed, on both screens, for judging a gait running.
 
 const GAP_MIN := 2.5          # seconds between acts, at least
 const GAP_MAX := 6.5          # and at most
 const GAP_DEBUG := 0.4        # with the debug switch on
 const GLOW_BASE := 1.8        # the amber role's emission at rest (MechView3D.toon)
+const MOVE_REF_SPEED := 300.0 # model units a second: about a hex in the map's fastest step (BattleMapView.MOVE_SECONDS_PER_HEX)
+const MOVE_BLEND_IN := 0.25   # seconds a gait takes to come up from standing
+const MOVE_BLEND_OUT := 0.35  # and to settle back when the machine stops
+const ROCK_ACCEL := 1500.0    # model units a second squared that earns the whole rock
+const BANK_TURN := 2.0        # radians a second of turning that earns the whole bank
 
 var joints: Dictionary = {}        # "shoulder_l" -> Node3D
 var hardpoints: Dictionary = {}    # 1 -> Node3D
@@ -35,8 +50,11 @@ var acts: Array = []               # the sidecar's acts, in authoring order
 var move: Dictionary = {}          # the cornering numbers: {"slide", "bank"}
 var model: Node3D = null           # the glTF's root
 var body: Node3D = null            # the node a body track moves (the model root unless told otherwise)
+var gait: Dictionary = {}          # the sidecar's gait: how this machine moves (see drive)
 var debug: String = ""             # RIFTGATE_ACTS_DEBUG, read at setup
+var debug_move: bool = false       # RIFTGATE_MOVE_DEBUG: driven constantly
 var last_act: String = ""          # the act played last (never played twice running)
+var moving: bool = false           # whether the last drive had any speed
 
 var _rest: Dictionary = {}         # joint -> rest rotation
 var _rest_pos: Dictionary = {}     # joint -> rest position
@@ -47,6 +65,19 @@ var _act_slide: Dictionary = {}    # joint -> world-unit slide (dx, dy, dz, Blen
 var _strikes: Array = []           # [{joint, vec (degrees), up, down, t}]
 var _glow: Array = []              # [{mats: [StandardMaterial3D], base: [float]}] per glow track of the act playing
 var _glow_cache: Dictionary = {}   # part prefix -> [StandardMaterial3D]
+var _body_act_rot := Vector3.ZERO  # the act's body track, degrees (pitch, yaw, roll)
+var _body_act_slide := Vector3.ZERO
+var _body_move_rot := Vector3.ZERO # the gait's body: bob, rock, bank
+var _body_move_slide := Vector3.ZERO
+var _gait_rot: Dictionary = {}     # joint -> degrees from the gait (cycles, wheels, steering, holds)
+var _gait_slide: Dictionary = {}
+var _dist := 0.0                   # model units travelled since setup (wheels and strides read it)
+var _speed := 0.0                  # model units a second, smoothed
+var _blend := 0.0                  # 0 standing, 1 moving: the gait's weight
+var _accel := 0.0                  # the smoothed change of speed, for the rock
+var _bank := 0.0                   # degrees of roll into the turn, eased
+var _tread_mats: Array = []        # [[StandardMaterial3D, base uv offset]] the treads scroll
+var _move_glow: Array = []         # [[StandardMaterial3D, base]] the boosters brighten
 var _current: Dictionary = {}      # the act playing, or empty
 var _t := 0.0                      # time into the act playing
 var _wait := 0.0                   # seconds until the next act starts
@@ -187,12 +218,30 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 		if a is Dictionary and a.has("name"):
 			acts.append(a)
 	move = side.get("move", {})
+	gait = side.get("gait", {}) if side.get("gait", {}) is Dictionary else {}
 	_body_rest_pos = body.position
 	_body_rest_rot = body.rotation
 	_rng.seed = hash(model_id) ^ (randi() if phase < 0 else phase * 7919)
 	debug = OS.get_environment("RIFTGATE_ACTS_DEBUG")
+	debug_move = OS.get_environment("RIFTGATE_MOVE_DEBUG") == "1"
 	_wait = GAP_DEBUG if not debug.is_empty() else _rng.randf_range(0.6, GAP_MAX)
 	_glow_cache.clear()
+	_tread_mats = []
+	_move_glow = []
+	_dist = 0.0
+	_speed = 0.0
+	_blend = 0.0
+	_accel = 0.0
+	_bank = 0.0
+	_gait_rot.clear()
+	_gait_slide.clear()
+	var treads: Dictionary = gait.get("treads", {})
+	for part in treads.get("parts", []):
+		_tread_named(root, str(part))
+	var mg: Dictionary = gait.get("glow", {})
+	for part in mg.get("parts", []):
+		for m in _lit_materials(str(part)):
+			_move_glow.append([m, (m as StandardMaterial3D).emission_energy_multiplier])
 
 
 func _collect(node: Node) -> void:
@@ -208,9 +257,10 @@ func _collect(node: Node) -> void:
 		_collect(c)
 
 
-## Whether anything here moves on its own: acts to play, or a strike still swinging.
+## Whether anything here moves on its own: acts to play, a strike still swinging, a gait
+## under the debug switch.
 func alive() -> bool:
-	return not acts.is_empty() or not _strikes.is_empty() or not _current.is_empty()
+	return not acts.is_empty() or not _strikes.is_empty() or not _current.is_empty() or (debug_move and not gait.is_empty())
 
 
 ## Advance the clock: the act playing, the gap to the next one, and the strikes.
@@ -224,7 +274,7 @@ func tick(delta: float) -> void:
 		moved = true
 		if _t >= float(_current.get("duration", 0.0)):
 			_end_act()
-	elif not acts.is_empty():
+	elif not acts.is_empty() and not moving:   # a pilot on the move has no hands free for an act
 		_wait -= delta
 		if _wait <= 0.0:
 			var next := choose()
@@ -237,7 +287,9 @@ func tick(delta: float) -> void:
 			st["t"] = float(st["t"]) + delta
 		_strikes = _strikes.filter(func(st): return float(st["t"]) < float(st["up"]) + float(st["down"]))
 		moved = true
-	if moved:
+	if debug_move and not gait.is_empty():
+		drive(MOVE_REF_SPEED, 0.0, 0.0, delta)
+	elif moved:
 		_pose()
 
 
@@ -290,6 +342,8 @@ func _end_act() -> void:
 	_current = {}
 	_act_rot.clear()
 	_act_slide.clear()
+	_body_act_rot = Vector3.ZERO
+	_body_act_slide = Vector3.ZERO
 	_wait = GAP_DEBUG if not debug.is_empty() else _rng.randf_range(GAP_MIN, GAP_MAX)
 	_pose()
 
@@ -305,30 +359,164 @@ func _evaluate_act() -> void:
 		_act_rot[name] = Vector3(float(v[0]), float(v[1]), float(v[2]))
 		_act_slide[name] = Vector3(float(v[3]), float(v[4]), float(v[5])) if v.size() >= 6 else Vector3.ZERO
 	var body_keys: Array = _current.get("body", [])
-	if not body_keys.is_empty() and body != null:
+	if not body_keys.is_empty():
 		var v := sample(body_keys, _t, duration, ease)
-		body.position = _body_rest_pos + offset_of(Vector3(float(v[0]), float(v[1]), float(v[2])))
-		body.rotation = _body_rest_rot + euler_of(Vector3(float(v[4]), float(v[3]), float(v[5])))   # authored (yaw, pitch, roll)
+		_body_act_slide = Vector3(float(v[0]), float(v[1]), float(v[2]))
+		_body_act_rot = Vector3(float(v[4]), float(v[3]), float(v[5]))   # authored (yaw, pitch, roll)
 	for g in _glow:
 		var k := float(sample(g["keys"], _t, duration, ease)[0]) + 1.0   # the keys are offsets from rest: 0 is the base light
 		for i in range(g["mats"].size()):
 			(g["mats"][i] as StandardMaterial3D).emission_energy_multiplier = float(g["base"][i]) * maxf(0.0, k)
 
 
-## Rest plus the act plus the strikes, clamped to the joint's limits, on every joint.
+## Rest plus the act plus the gait plus the strikes, clamped to the joint's limits, on every
+## joint; the body's rest plus its act and gait tracks.
 func _pose() -> void:
 	for name in joints.keys():
 		var j: Node3D = joints[name]
-		var deg: Vector3 = _act_rot.get(name, Vector3.ZERO)
+		var deg: Vector3 = _act_rot.get(name, Vector3.ZERO) + _gait_rot.get(name, Vector3.ZERO)
 		for st in _strikes:
 			if st["joint"] == name:
 				deg += (st["vec"] as Vector3) * _strike_envelope(st)
 		var m: Dictionary = meta.get(name, {})
 		deg = clamp_degrees(deg, m.get("limits", {}))
 		j.rotation = _rest[name] + euler_of(deg)
-		var slide: Vector3 = _act_slide.get(name, Vector3.ZERO)
+		var slide: Vector3 = _act_slide.get(name, Vector3.ZERO) + _gait_slide.get(name, Vector3.ZERO)
 		if slide != Vector3.ZERO or j.position != _rest_pos[name]:
 			j.position = _rest_pos[name] + offset_of(slide)
+	if body != null:
+		body.position = _body_rest_pos + offset_of(_body_act_slide + _body_move_slide)
+		body.rotation = _body_rest_rot + euler_of(_body_act_rot + _body_move_rot)
+
+
+# ---------------------------------------------------------------- movement
+
+## Cyclic keys sampled at a phase in [0, 1): the track wraps, so the key at 1 is the key at 0
+## unless one is authored there; eased between keys like an act's.
+static func sample_cycle(keys: Array, phase: float, ease: String = "smooth") -> Array:
+	if keys.is_empty():
+		return []
+	var pts: Array = []
+	for k in keys:
+		pts.append((k as Array).duplicate())
+	pts.sort_custom(func(a, b): return float(a[0]) < float(b[0]))
+	var first: Array = pts[0]
+	if float(first[0]) > 0.0:
+		var k0 := first.duplicate()
+		k0[0] = float(pts[pts.size() - 1][0]) - 1.0   # the last key, wrapped round before the start
+		for i in range(1, k0.size()):
+			k0[i] = pts[pts.size() - 1][i]
+		pts.push_front(k0)
+	if float(pts[pts.size() - 1][0]) < 1.0:
+		var k1: Array = pts[0].duplicate() if float(pts[0][0]) >= 0.0 else pts[1].duplicate()
+		k1[0] = float(k1[0]) + 1.0
+		pts.append(k1)
+	var p := fposmod(phase, 1.0)
+	return sample(pts, p, 2.0, ease)
+
+
+## One frame of movement. `speed` is model units a second along the travel; `aim` the bearing
+## of the travel relative to the body's facing, radians, positive left (a Dingo strafing
+## left aims its casters +90 degrees); `turn` how fast the facing is turning, radians a
+## second, positive left. Zero speed is standing, and the gait settles back over a moment.
+func drive(speed: float, aim: float, turn: float, delta: float) -> void:
+	if model == null or delta <= 0.0:
+		return
+	var prev := _speed
+	_speed = lerpf(_speed, maxf(0.0, speed), 1.0 - exp(-delta / 0.12))
+	_accel = lerpf(_accel, (_speed - prev) / delta, 1.0 - exp(-delta / 0.15))
+	moving = speed > 0.5
+	var target := 1.0 if moving else 0.0
+	var rate := MOVE_BLEND_IN if moving else MOVE_BLEND_OUT
+	_blend = move_toward(_blend, target, delta / rate)
+	_dist += _speed * delta
+	var bank_want := float(move.get("bank", 0.0)) * clampf(-turn / BANK_TURN, -1.0, 1.0)   # a left turn drops the left wing: roll negative
+	_bank = lerpf(_bank, bank_want, 1.0 - exp(-delta / 0.3))
+	_evaluate_gait(aim, turn)
+	_pose()
+
+
+func _evaluate_gait(aim: float, turn: float) -> void:
+	_gait_rot.clear()
+	_gait_slide.clear()
+	var stride := maxf(1.0, float(gait.get("stride", 40.0)))
+	var phase := fposmod(_dist / stride, 1.0)
+	var ease := str(gait.get("ease", "smooth"))
+	# The cycles: a walk, stride by stride.
+	var tracks: Dictionary = gait.get("tracks", {})
+	for name in tracks.keys():
+		if not joints.has(name):
+			continue
+		var tr: Dictionary = tracks[name]
+		var v := sample_cycle(tr.get("keys", []), phase + float(tr.get("phase", 0.0)), ease)
+		if v.size() >= 3:
+			_gait_rot[name] = Vector3(float(v[0]), float(v[1]), float(v[2])) * _blend
+		if v.size() >= 6:
+			_gait_slide[name] = Vector3(float(v[3]), float(v[4]), float(v[5])) * _blend
+	# Wheels spin by their radius, forward a negative pitch, and never unwind.
+	var wheels: Dictionary = gait.get("wheels", {})
+	for name in wheels.keys():
+		if joints.has(name):
+			var r := maxf(0.1, float(wheels[name]))
+			_gait_rot[name] = _gait_rot.get(name, Vector3.ZERO) + Vector3(-fposmod(rad_to_deg(_dist / r), 360.0), 0.0, 0.0)
+	# Steering knuckles turn with the turn; casters point along the travel.
+	var steer: Dictionary = gait.get("steer", {})
+	for name in steer.keys():
+		if joints.has(name):
+			_gait_rot[name] = _gait_rot.get(name, Vector3.ZERO) + Vector3(0.0, rad_to_deg(turn) * float(steer[name]) * _blend, 0.0)
+	var casters: Dictionary = gait.get("aim", {})
+	for name in casters.keys():
+		if joints.has(name):
+			_gait_rot[name] = _gait_rot.get(name, Vector3.ZERO) + Vector3(0.0, rad_to_deg(aim) * float(casters[name]) * _blend, 0.0)
+	# Offsets held while moving: a claw carried clear of the ground, nacelles tilted.
+	var hold: Dictionary = gait.get("hold", {})
+	for name in hold.keys():
+		if joints.has(name):
+			var h: Array = hold[name]
+			_gait_rot[name] = _gait_rot.get(name, Vector3.ZERO) + Vector3(float(h[0]), float(h[1]), float(h[2])) * _blend
+	# The body: a bob over the cycle, a held attitude, the rock on pulling away and
+	# stopping, and the bank into a turn.
+	var body_rot := Vector3.ZERO
+	var body_slide := Vector3.ZERO
+	var body_keys: Array = gait.get("body", [])
+	if not body_keys.is_empty():
+		var v := sample_cycle(body_keys, phase, ease)
+		if v.size() >= 6:
+			body_slide += Vector3(float(v[0]), float(v[1]), float(v[2])) * _blend
+			body_rot += Vector3(float(v[4]), float(v[3]), float(v[5])) * _blend   # authored (yaw, pitch, roll)
+	var bh: Array = gait.get("body_hold", [])
+	if bh.size() >= 6:
+		body_slide += Vector3(float(bh[0]), float(bh[1]), float(bh[2])) * _blend
+		body_rot += Vector3(float(bh[4]), float(bh[3]), float(bh[5])) * _blend
+	var rock := float(gait.get("rock", 0.0))
+	if rock != 0.0:
+		body_rot.x += rock * clampf(_accel / ROCK_ACCEL, -1.0, 1.0)   # pulling away rocks the nose up
+	body_rot.z += _bank
+	_body_move_rot = body_rot
+	_body_move_slide = body_slide
+	# Treads scroll with the distance; boosters brighten with the move.
+	var treads: Dictionary = gait.get("treads", {})
+	if not _tread_mats.is_empty():
+		var scroll := float(treads.get("scroll", 1.0)) * _dist / 14.0   # one tile (TILE_WORLD) per fourteen model units
+		for row in _tread_mats:
+			var m: StandardMaterial3D = row[0]
+			m.uv1_offset = (row[1] as Vector3) + Vector3(fposmod(scroll, 1.0), 0.0, 0.0)
+	if not _move_glow.is_empty():
+		var k := 1.0 + float(gait.get("glow", {}).get("k", 1.0)) * _blend
+		for row in _move_glow:
+			(row[0] as StandardMaterial3D).emission_energy_multiplier = float(row[1]) * k
+
+
+## The tread materials, by the meshes' names: scrolling their first UV runs the tread.
+func _tread_named(node: Node, part: String) -> void:
+	if node is MeshInstance3D and labelled(node.name, part):
+		var mi: MeshInstance3D = node
+		for i in range(mi.get_surface_override_material_count()):
+			var sm := mi.get_surface_override_material(i)
+			if sm is StandardMaterial3D:
+				_tread_mats.append([sm, (sm as StandardMaterial3D).uv1_offset])
+	for c in node.get_children():
+		_tread_named(c, part)
 
 
 static func _strike_envelope(st: Dictionary) -> float:
@@ -409,8 +597,20 @@ func _lit_materials(part: String) -> Array:
 	return out
 
 
+## Whether a node carries a lowforge label: the label itself, or the label with the
+## importer's numbering ("tread_001"), never another label that merely starts the same
+## ("tread_deck").
+static func labelled(node_name: String, part: String) -> bool:
+	if node_name == part:
+		return true
+	if not node_name.begins_with(part):
+		return false
+	var rest := node_name.substr(part.length())
+	return rest.begins_with("_") and rest.substr(1).is_valid_int() or (rest.begins_with(".") and rest.substr(1).is_valid_int())
+
+
 func _lit_named(node: Node, part: String, out: Array) -> void:
-	if node is MeshInstance3D and node.name.begins_with(part):
+	if node is MeshInstance3D and labelled(node.name, part):
 		_lit_under(node, out)
 	else:
 		for c in node.get_children():

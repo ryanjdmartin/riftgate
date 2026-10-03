@@ -348,6 +348,7 @@ class Build:
         self.joint_meta = {}   # joint name -> {"axis", "limits", "parent"}: the rig sidecar (see rig())
         self.acts = []         # the machine's idle acts, in authoring order (see act())
         self.tuning = {}       # the cornering module's per-machine numbers (see move())
+        self.gait_spec = {}    # how the machine moves (see gait())
         self._joint_stack = []   # the joint blocks open right now, outermost first
         self.tile_world = TILE_WORLD   # a structure sets this higher: it is seen at true scale on the map
 
@@ -621,6 +622,86 @@ class Build:
         self.acts.append(out)
         return out
 
+    def _keys(self, name, keys, jn=None):
+        """Keyframes widened to (t, pitch, yaw, roll, dx, dy, dz) and checked against a
+        joint's limits; `jn` None means a body track, whose keys are (t, dx, dy, dz) or
+        (t, dx, dy, dz, yaw, pitch, roll)."""
+        rows = []
+        for key in keys:
+            key = [float(v) for v in key]
+            if jn is None:
+                if len(key) == 4:
+                    key = key + [0.0, 0.0, 0.0]
+                if len(key) != 7:
+                    raise ValueError("%s of %s: a body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll)" % (name, self.name))
+                rows.append(key)
+                continue
+            if jn not in self.joint_meta:
+                raise ValueError("%s of %s keys a joint the model has not got: %s" % (name, self.name, jn))
+            axis_i = ("pitch", "yaw", "roll").index(self.joint_meta[jn]["axis"])
+            if len(key) == 2:
+                row = [key[0], 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+                row[1 + axis_i] = key[1]
+            elif len(key) == 4:
+                row = key + [0.0, 0.0, 0.0]
+            elif len(key) == 7:
+                row = key
+            else:
+                raise ValueError("%s of %s: a key is (t, v), (t, pitch, yaw, roll) or 7 wide" % (name, self.name))
+            for ax, (lo, hi) in self.joint_meta[jn]["limits"].items():
+                v = row[1 + ("pitch", "yaw", "roll").index(ax)]
+                if not lo <= v <= hi:
+                    raise ValueError("%s of %s asks %s for %s %g, outside its limits %g..%g" % (name, self.name, jn, ax, v, lo, hi))
+            rows.append(row)
+        return rows
+
+    def gait(self, stride=40.0, tracks=None, body=None, body_hold=None, wheels=None, steer=None, aim=None,
+             treads=None, hold=None, glow=None, rock=0.0, ease="smooth"):
+        """How the machine moves while the map moves it (the joints row, 2 October; MechRig.drive).
+        `stride` is the model units one cycle covers. `tracks` maps a joint to cyclic keys
+        over a phase of 0 to 1 (the same shapes as an act's keys), or to (keys, phase) with
+        an offset so a diagonal pair shares one shape; `body` the same for the whole body
+        (a bob). `body_hold` is (dx, dy, dz, yaw, pitch, roll) held while moving (a flyer's
+        nose down) and `hold` maps a joint to (pitch, yaw, roll) held while moving (the
+        Badger's booms carrying the claw clear). `wheels` maps a spin joint to its radius;
+        `steer` a knuckle to degrees of yaw per radian a second of turning; `aim` a caster
+        to its share of the travel's bearing against the facing (1 points along it).
+        `treads` is {"parts": [labels], "scroll": 1.0} to run the tread tiles; `glow`
+        {"parts": [labels or groups], "k": 2.0} to brighten boosters by that much on the
+        move; `rock` the degrees the nose comes up on pulling away and dips on stopping."""
+        out = {"stride": float(stride), "ease": ease, "tracks": {}, "body": [], "wheels": {}, "steer": {}, "aim": {},
+               "hold": {}, "treads": {}, "glow": {}, "rock": float(rock)}
+        for jn, spec in (tracks or {}).items():
+            keys, phase = (spec if isinstance(spec, tuple) and len(spec) == 2 and not isinstance(spec[0], (int, float)) else (spec, 0.0))
+            out["tracks"][jn] = {"keys": self._keys("the gait", keys, jn), "phase": float(phase)}
+        out["body"] = self._keys("the gait's body", body or [])
+        if body_hold is not None:
+            bh = [float(v) for v in body_hold]
+            if len(bh) != 6:
+                raise ValueError("the gait of %s: body_hold is (dx, dy, dz, yaw, pitch, roll)" % self.name)
+            out["body_hold"] = bh
+        for d, src in (("wheels", wheels), ("steer", steer), ("aim", aim)):
+            for jn, v in (src or {}).items():
+                if jn not in self.joint_meta:
+                    raise ValueError("the gait of %s names a joint the model has not got: %s" % (self.name, jn))
+                out[d][jn] = float(v)
+        for jn, v in (hold or {}).items():
+            vals = [float(x) for x in (v if isinstance(v, (list, tuple)) else (v,))]
+            if len(vals) == 1:
+                row = [0.0, 0.0, 0.0]
+                row[("pitch", "yaw", "roll").index(self.joint_meta[jn]["axis"])] = vals[0]
+                vals = row
+            self._keys("the gait's hold", [[0.0] + vals], jn)   # the limits check
+            out["hold"][jn] = vals
+        if treads:
+            parts = treads.get("parts", ["tread"])
+            out["treads"] = {"parts": [parts] if isinstance(parts, str) else list(parts), "scroll": float(treads.get("scroll", 1.0))}
+        if glow:
+            parts = glow.get("parts", [])
+            out["glow"] = {"parts": [parts] if isinstance(parts, str) else list(parts), "k": float(glow.get("k", 1.0))}
+        self.gait_spec = out
+        return out
+
     def move(self, slide=0.0, bank=0.0):
         """The cornering module's numbers for this machine (the joints row, 2 October):
         `slide`, how far the body drifts from its path on a turn and how slowly its heading
@@ -633,9 +714,10 @@ class Build:
         cornering numbers, written beside the glTF as art/models/<id>.rig.json so no
         runtime code keys on a chassis id. The names the acts' glows look up are listed
         for the weld, which must keep those parts apart."""
-        glow_parts = sorted({p for a in self.acts for g in a["glow"] for p in g["parts"]})
-        return {"_about": "the rig of art/models/%s.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units) and the cornering numbers; MechRig reads it" % self.name,
-                "joints": self.joint_meta, "acts": self.acts, "move": self.tuning, "glow_parts": glow_parts}
+        glow_parts = sorted({p for a in self.acts for g in a["glow"] for p in g["parts"]}
+                            | set(self.gait_spec.get("glow", {}).get("parts", [])) | set(self.gait_spec.get("treads", {}).get("parts", [])))
+        return {"_about": "the rig of art/models/%s.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it" % self.name,
+                "joints": self.joint_meta, "acts": self.acts, "gait": self.gait_spec, "move": self.tuning, "glow_parts": glow_parts}
 
     def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0):
         """`with b.socket("hp_1", at, forward): ...` builds the stock component inside the
@@ -874,7 +956,7 @@ def main():
     builder.apply_cuts()
     _export(out)
     rig_path = os.path.splitext(out)[0] + ".rig.json"
-    if builder.joint_meta or builder.acts or builder.tuning:
+    if builder.joint_meta or builder.acts or builder.tuning or builder.gait_spec:
         import json
         with open(rig_path, "w") as f:
             json.dump(builder.rig(), f, indent=1)
