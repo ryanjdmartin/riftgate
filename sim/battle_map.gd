@@ -2,7 +2,8 @@ class_name BattleMap
 extends RefCounted
 
 ## The battlefield terrain. Rows run north (row 0, the rift) to south (last row, the gate).
-## Generation is seeded and guarantees a ground-passable path from gate to rift.
+## Generation is seeded and guarantees the horde a way from the rift to the gate that no
+## single hex plugs (the foe crossings, decided 2 October).
 
 enum Terrain { PLAIN, ROAD, ROUGH, RUINS, WATER, MOUNTAIN }
 
@@ -11,16 +12,10 @@ const TERRAIN_NAMES := {
 	Terrain.RUINS: "ruins", Terrain.WATER: "water", Terrain.MOUNTAIN: "mountain",
 }
 
-## Weighted roll. Plain dominates so the map reads as a field with features on it.
-## Roads are never rolled: they are laid as paths (see `_lay_roads`).
-const TERRAIN_WEIGHTS := {
-	Terrain.PLAIN: 50, Terrain.ROAD: 0, Terrain.ROUGH: 14,
-	Terrain.RUINS: 10, Terrain.WATER: 12, Terrain.MOUNTAIN: 8,
-}
 const ROAD_GAP_CHANCE := 0.18   # a laid road is missing this share of its slabs: nobody paves between attacks
 
 var width: int = 7
-var height: int = 14              # 14 rows: the rift, eleven of open ground, two of gate and wall
+var height: int = 20              # the game's field (Battle.DEFAULT_HEIGHT): the rift, seventeen rows of ground, two of gate and wall
 var terrain: Dictionary = {}  # Vector2i (axial) -> Terrain
 var gate: Vector2i            # centre of the gate structure
 var rift: Vector2i            # centre of the rift structure
@@ -261,18 +256,6 @@ func _lay_roads(rng: RandomNumberGenerator) -> void:
 			elevation[h] = 0
 
 
-static func _roll_terrain(rng: RandomNumberGenerator) -> int:
-	var total := 0
-	for wgt in TERRAIN_WEIGHTS.values():
-		total += wgt
-	var pick := rng.randi_range(1, total)
-	for t in TERRAIN_WEIGHTS.keys():
-		pick -= TERRAIN_WEIGHTS[t]
-		if pick <= 0:
-			return t
-	return Terrain.PLAIN
-
-
 func has(h: Vector2i) -> bool:
 	return terrain.has(h)
 
@@ -285,34 +268,100 @@ func all_hexes() -> Array:
 	return terrain.keys()
 
 
-## Whether a unit with these traits can enter this terrain at all.
-## Only a crag stops anyone but a flyer. Water is fordable by machines this size (Ryan, 21
-## September): it costs, by how the machine moves.
-static func passable(t: int, traits: Array) -> bool:
-	match t:
-		Terrain.MOUNTAIN:
-			return traits.has("flyer")
-		_:
-			return true
+## Movement by way of moving (decided 2 October, bible section 4). Each way of moving calls
+## each ground a word: FAST costs 5 a hex, NORMAL 10, SLOW can always be entered with any
+## move left and the step ends the move, WALL cannot be entered. The grounds are open (plain
+## and road are the same ground; the road is art), rough, ruins and water; a crag is a wall
+## to all but a flyer. Prices are never weighed against each other by the player: a hex is
+## one of three words, and the map draws the reach. A unit with no way of moving (every
+## pack and boss; the foes carry no trait) moves as the horde does: normal on any land,
+## water and mountains walls, since it flattens the ground it crosses (Ryan, 2 October:
+## the Final Fantasy overworld rule). A bigger move buys back any price, so a slow hex is
+## the one thing no move buys through, which is what gives each way of moving a ground
+## where it loses whatever its move.
+const FAST := 5
+const NORMAL := 10
+const SLOW := -1          # the rest of the move, however much is left
+const WALL := -2
+## A slow hex on an unbounded path (`find_path`, which only the packs use today, and nothing
+## is slow for a pack) counts as three normal hexes.
+const SLOW_PATH_COST := 30
+const WAYS := ["tracked", "walker", "wheeled", "hover", "flyer"]
+## The table: way of moving -> [open, rough, ruins, water]. Mountains are a wall to every
+## way but the flyer, which pays normal.
+const WORDS := {
+	"tracked": [NORMAL, NORMAL, SLOW, NORMAL],
+	"walker": [NORMAL, NORMAL, NORMAL, SLOW],
+	"wheeled": [FAST, SLOW, SLOW, SLOW],
+	"hover": [NORMAL, SLOW, SLOW, FAST],
+	"flyer": [NORMAL, NORMAL, NORMAL, NORMAL],
+	"": [NORMAL, NORMAL, NORMAL, WALL],
+}
+const WORD_NAMES := {FAST: "fast", NORMAL: "normal", SLOW: "slow", WALL: "wall"}
 
 
-## Movement points spent to enter this terrain. Each way of moving has its own worst
-## ground: tracks wade slowly, walkers hate nothing but water, hover skims water and
-## chokes on rubble, flyers ignore it all.
+## The way of moving among a unit's traits, or "" for none (the horde's rule).
+static func way_of(traits: Array) -> String:
+	for w in WAYS:
+		if traits.has(w):
+			return w
+	return ""
+
+
+## The word for this terrain under this way of moving: FAST, NORMAL, SLOW or WALL.
 static func move_cost(t: int, traits: Array) -> int:
-	if traits.has("flyer"):
-		return 1
-	var walker := traits.has("walker")
-	var hover := traits.has("hover")
+	var way := way_of(traits)
+	if t == Terrain.MOUNTAIN:
+		return NORMAL if way == "flyer" else WALL
+	var row: Array = WORDS[way]
 	match t:
-		Terrain.WATER:
-			return 1 if hover else (2 if walker else 3)
 		Terrain.ROUGH:
-			return 1 if walker else 2
+			return row[1]
 		Terrain.RUINS:
-			return 1 if walker else (3 if hover else 2)
+			return row[2]
+		Terrain.WATER:
+			return row[3]
 		_:
-			return 1
+			return row[0]
+
+
+static func move_word(t: int, traits: Array) -> String:
+	return WORD_NAMES[move_cost(t, traits)]
+
+
+## Whether a unit with these traits can enter this terrain at all.
+static func passable(t: int, traits: Array) -> bool:
+	return move_cost(t, traits) != WALL
+
+
+## What entering this terrain spends of `left` move points, or -1 when it cannot be
+## entered: a wall, a priced hex dearer than what is left, or a slow hex with nothing left.
+## A slow hex spends everything left, which is how it ends the move.
+static func spend(t: int, traits: Array, left: int) -> int:
+	var c := move_cost(t, traits)
+	if c == WALL:
+		return -1
+	if c == SLOW:
+		return left if left > 0 else -1
+	return c if c <= left else -1
+
+
+## The terrain's word for every way of moving, for the terrain tap and the codex: the ways
+## grouped by word, then the horde's rule.
+static func ground_words(t: int) -> String:
+	var by_word := {}
+	for w in WAYS:
+		var word := move_word(t, [w])
+		if not by_word.has(word):
+			by_word[word] = []
+		by_word[word].append(w)
+	var parts: Array[String] = []
+	for word in ["fast", "normal", "slow", "wall"]:
+		if by_word.has(word):
+			parts.append("%s for %s" % [word, ", ".join(by_word[word])])
+	var horde := move_cost(t, [])
+	parts.append("packs cross" if horde != WALL else "packs never enter")
+	return " · ".join(parts)
 
 
 ## The ground of a hex on or beside the field: the margin columns exist to be seen, not
@@ -353,7 +402,8 @@ func find_path(from: Vector2i, to: Vector2i, traits: Array, blocked: Dictionary 
 			var t: int = terrain[n]
 			if not passable(t, traits):
 				continue
-			var nd := d + move_cost(t, traits)
+			var c := move_cost(t, traits)
+			var nd := d + (SLOW_PATH_COST if c == SLOW else c)
 			if not dist.has(n) or nd < dist[n]:
 				dist[n] = nd
 				prev[n] = h
@@ -367,7 +417,39 @@ func find_path(from: Vector2i, to: Vector2i, traits: Array, blocked: Dictionary 
 	return path
 
 
+## The horde's way to the gate (decided 2 October, with the binary foe rule: water and crags
+## are walls to a pack). Two guarantees. A path exists: when water and crags together cut the
+## rift from the gate (7 of 200 seeds at the game's size), a corridor is carved, opening
+## whatever is in the way. No single hex plugs it: a hex every foe route must cross would let
+## one machine hold every pack (49 of 193 maps before this), so each plug is widened by
+## opening a blocked hex beside it until the route survives the loss of any one hex. Only a
+## hex on the current cheapest route can be a plug, so those are the ones tested.
 func _ensure_ground_path(rng: RandomNumberGenerator) -> void:
+	_carve_corridor(rng)
+	for round in range(width * height):
+		var plug := _find_plug()
+		if plug == Vector2i(1 << 20, 0):
+			return
+		var opened := false
+		var around := Hex.neighbors(plug)
+		# Open blocked neighbours in a seeded order until the plug stops being one.
+		for k in range(around.size() - 1, 0, -1):
+			var j := rng.randi_range(0, k)
+			var tmp: Vector2i = around[k]
+			around[k] = around[j]
+			around[j] = tmp
+		for n in around:
+			if not has(n) or is_structure(n) or passable(terrain[n], []):
+				continue
+			_open(n)
+			opened = true
+			if not _is_plug(plug):
+				break
+		if not opened:
+			break   # a plug with nothing to open beside it: the field's own edge
+
+
+func _carve_corridor(rng: RandomNumberGenerator) -> void:
 	if not find_path(gate, rift, []).is_empty():
 		return
 	# Carve a corridor: walk from the gate toward the rift, always reducing distance,
@@ -384,5 +466,35 @@ func _ensure_ground_path(rng: RandomNumberGenerator) -> void:
 		if options.is_empty():
 			break
 		cur = options[rng.randi_range(0, options.size() - 1)]
-		if not passable(terrain[cur], []):
-			terrain[cur] = Terrain.PLAIN
+		if not is_structure(cur) and not passable(terrain[cur], []):
+			_open(cur)
+
+
+## A hex on the horde's cheapest route whose loss would cut it, or the sentinel when none.
+func _find_plug() -> Vector2i:
+	for h in find_path(gate, rift, []):
+		if is_structure(h):
+			continue
+		if _is_plug(h):
+			return h
+	return Vector2i(1 << 20, 0)
+
+
+func _is_plug(h: Vector2i) -> bool:
+	return find_path(gate, rift, [], {h: true}).is_empty()
+
+
+## Open a hex to the horde: plain ground, no crag, level.
+func _open(h: Vector2i) -> void:
+	terrain[h] = Terrain.PLAIN
+	crag_base.erase(h)
+	elevation[h] = 0
+
+
+## Every hex whose loss alone would cut the horde's route: the test of the guarantee.
+func plugs() -> Array[Vector2i]:
+	var out: Array[Vector2i] = []
+	for h in find_path(gate, rift, []):
+		if not is_structure(h) and _is_plug(h):
+			out.append(h)
+	return out

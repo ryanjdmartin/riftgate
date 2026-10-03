@@ -5,6 +5,12 @@ extends RefCounted
 
 enum Side { PLAYER, ENEMY }
 
+## Moves are in tens (decided 2 October): a normal hex costs 10. The defaults a unit is
+## made with before content dresses it; the content carries every real number.
+const MECH_MOVE := 30
+const PACK_MOVE := 20
+const BOSS_MOVE := 10
+
 var id: int = 0
 var display_name: String = ""
 var side: int = Side.PLAYER
@@ -56,7 +62,9 @@ var cooling: int:
 	set(v):
 		base["cooling"] = v
 
-## Chassis traits: "flyer", "hover", "walker", "tracked", "defense".
+## Chassis traits: a way of moving ("flyer", "hover", "walker", "tracked", "wheeled";
+## BattleMap.WAYS), "stealth", or "defense" for a static unit. A pack carries none and
+## moves by the horde's rule.
 var traits: Array[String] = []
 
 ## Hexes this unit covers, as axial offsets from pos. Packs and mechs are one hex; a massive
@@ -92,7 +100,7 @@ var hardpoints: int = 0          # free slots; the die is these plus the chassis
 var damaged_faces: Dictionary = {}
 
 
-static func mech(uid: int, name: String, at: Vector2i, speed: int = 3) -> Unit:
+static func mech(uid: int, name: String, at: Vector2i, speed: int = MECH_MOVE) -> Unit:
 	var u := Unit.new()
 	u.id = uid
 	u.display_name = name
@@ -102,7 +110,7 @@ static func mech(uid: int, name: String, at: Vector2i, speed: int = 3) -> Unit:
 	return u
 
 
-static func pack(uid: int, name: String, at: Vector2i, fac: String = "undead", speed: int = 2, size: int = 6, foe: String = "") -> Unit:
+static func pack(uid: int, name: String, at: Vector2i, fac: String = "undead", speed: int = PACK_MOVE, size: int = 6, foe: String = "") -> Unit:
 	var u := Unit.new()
 	u.id = uid
 	u.display_name = name
@@ -121,7 +129,7 @@ static func pack(uid: int, name: String, at: Vector2i, fac: String = "undead", s
 ## A boss stands on one hex for now (Ryan, 22 September: a wider footprint cannot path
 ## through a field of hexes, and the boss guards the rift rather than marching). The
 ## multi-hex footprint (`TRIANGLE`) stays in the engine for later.
-static func boss(uid: int, name: String, at: Vector2i, fac: String = "undead", speed: int = 1) -> Unit:
+static func boss(uid: int, name: String, at: Vector2i, fac: String = "undead", speed: int = BOSS_MOVE) -> Unit:
 	var u := pack(uid, name, at, fac, speed, 0)
 	u.elite = true
 	u.hull = 1

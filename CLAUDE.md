@@ -7,7 +7,7 @@ and every command; `docs/design-bible.html` records every decision and section 1
 
 ```sh
 godot --headless --path . --import                 # first run, and after adding PNGs
-perl -e 'alarm 240; exec @ARGV' godot --headless --path . -s tests/run_tests.gd   # tests (watchdog: no `timeout` on macOS)
+perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s tests/run_tests.gd   # tests, about four minutes (watchdog: no `timeout` on macOS)
 godot --path .                                     # harness: skirmish screen and map viewer
 godot --headless --path . -s tools/export_vocabulary.gd   # regenerate docs/vocabulary.md
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200   # balance report to docs/balance.md (about half an hour); --trace "row|pack|policy|seed" for one fight's log
