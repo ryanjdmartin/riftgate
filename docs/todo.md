@@ -12,13 +12,13 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Name a dedicated hunter foe (Ryan, 1 October: the brute's hunt is a placeholder; a stalker type with a caveat of its own, proposed in chat first)
 - [ ] Formations (Ryan, 1 October): seed the opening enemy formations as threatening shapes with a front and a back, and have the rift spawn formations rather than single packs; shapes proposed in chat first
 - [ ] Judge on the phone after a re-export: the machines' outline at 2.6 (`MechView3D.OUTLINE`; 1.0 was the thin), the intent field in motion (stripe width `STRIPE`, ring spokes `SPOKES`, the pulse), the machine's lock's contrast (the light at half), the orange pulse of the gate's hazard glyphs, the sound set, the grid at `GRID_GAIN_PHONE`
-- [ ] Codex and flavour for the seven new machines, the Baboon's flavour, and the 42 components whose codex is empty
+- [ ] Codex and flavour for the nine new machines, the Baboon's flavour, and the 45 components whose codex is empty
 - [ ] Listen to the console's war room cut (2 October, night; section 1 of the listening page, the FM terminal and the channel beside it): the verbs alone first on the speaker, the grunts by maker, then the turn over the climax, then the events, then the turn over the climax; and the voice re-rendered judgeable (section 5: speak at all, Betty or VEGA, which lines). The weapons' third cut is parked as acceptable.
 - [x] Run the tests on the Mac: the `sound` label's validation in `content_db.gd` landed from a cloud session with no Godot (2 October: green in the cloud too, Godot fetched into the session)
 - [ ] Judge the limbs striking and the turrets flinching in the skirmish, running, and each machine's acts, movement and cornering once built; and each class's size per machine on a refit (a pin's `scale` in `models_low.py`)
 - [ ] Propose in chat a Minerva intercept component for the starter set (Ryan, 30 September: tanks need class-based target-modification beyond the Proximity Klaxon; since 2 October the Klaxon is a lure with an area, and a lure on a weapon may be the intercept)
 - [ ] A full play of Hold The Line in the game, start to wrap; notes by section letter
-- [ ] Read `docs/balance.md` (2 October: the player's damage halved, the targeting pass and the playtest set in, the formation cells and the targeting comparison added) against your own play. The next axis to read is enemy damage against the team's durability, now that fights last: whether 80 a round from a ghoul swarm is average or game-losing
+- [ ] Read `docs/balance.md` (2 October: the player's damage halved, the targeting pass and the playtest set in, the formation cells, the targeting comparison and the two hovercraft in; the Stingray in the support band with its vent never spent, the Puffin unreadable alone) against your own play. The next axis to read is enemy damage against the team's durability, now that fights last: whether 80 a round from a ghoul swarm is average or game-losing
 - [ ] Judge the halved numbers in play (2 October): a 10 to 20 kinetic beside a flat 15 energy, armour 5 on a boss, Overcharged +5 a stack; whether the die reads easier and whether anything feels like a tap
 - [ ] Discuss first, then decide: ally wrecks (block a hex? a round or the battle?)
 - [ ] Discuss first, then decide: what terrain does in a skirmish (things the machines feel, never a bonus to the foes; burning terrain a candidate)
@@ -32,11 +32,14 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Discuss first, then decide: does a pack keep its foes' hull and statuses between fights (a withdrawal leaves them hurt today only in the count), and how the map shows it (the strength segments could show it)
 - [ ] Judge the movement words and every chassis's move in play once movement by way of moving lands (bible section 4, the movement row); the moves follow size and role, the content check only flags a chassis at least as fast as another on every ground
 - [ ] Pacing, in a design session (bible section 4, the pacing row, open 2 October): the threat bar (its name, the marks and their prizes, the mark that unseals the boss, the extra marks past it), the elite tier (what elites are; costly for the Sparrowhawk to stay on, not unreachable), Rift Pressure's escalation (faster, worse packs), and the flattening reaching the gate as the hard backstop (or a Loop Hero forced boss; one, not both)
-- [ ] The generator's water feature judged with the two hovercraft, the Stingray and the Puffin (bible section 7, the hovercraft row; built 2 October in another session whose branch is not on main yet: merge it when it lands)
+- [ ] The generator's water feature judged with the two hovercraft, the Stingray and the Puffin (bible section 7, the hovercraft row; on main since 2 October, night)
 - [x] Enemy targeting among machines in a skirmish (2 October: every foe picks its own target by its aim, weighted and shown; the counterplay is Lure, Suppress and Disrupt, Shield, Armour and Brace; bible section 5)
 - [x] Confirm the ghoul's one move (2 October: agreed and built; Claw, 5 plus 5 a kin on the field)
 - [ ] The game's name
-- [ ] Name and brief the second Aphelion machine: a hovercraft that runs hot, with heat as the suite's power (a stack per 20 heat held on every status it applies); a venomous sea creature's name; buffs exist now, so it can be built when briefed
+- [x] Name and brief the second Aphelion machine: the Stingray, built 2 October with the Puffin
+- [ ] Judge the Stingray's and the Puffin's second renders on the hangar's Models tab (the first notes applied 2 October, night: the Stingray's tail gone and every part seated, the Puffin recut as a sleek escort; notes by part, a note moves a number in `models_low.py`, then `forge.py build` and one `--import`)
+- [ ] Decide the Puffin's passive (discuss first): the overshield, shield an ally past its maximum, with its cost or second effect; Claude's shape is Overpressure, the excess fading at the end of the round, the fixed Prow Projector outward-only; then it gets built, with the gauges showing the excess
+- [ ] Judge the hover idle running in the skirmish: the pitch (`sway_pitch` 0.06, new 2 October) and the bob (0.6), hotter or quieter
 
 ## Engine
 
@@ -44,6 +47,7 @@ Nothing in content is planned any more; every piece the 28 September content lea
 
 - [x] The targeting pass (2 October, bible sections 5 and 9; built the same day with tests green): armour on foes; `aim` and the per-foe weighted pick; `when`, the no-repeat rule and attacks at 2 to a special's 1; Lure as a retarget on any foe-targeted entry; Disrupt; Brace as flat armour; the vocabulary; the nine foes rewritten
 - [x] The runner reads targeting on the team cells (2 October: the shipped aims against the lowest-shield rule, in their own section of `docs/balance.md`)
+- [ ] The Puffin's Overpressure, once Ryan decides it (the Ryan section): shield past maximum at the cap site when the Puffin's shield component is spent on an ally, a round-end trim, the gauges showing the excess
 - [ ] Phased (parked) and Corrode still want a design line first
 - [ ] Judge the aims, the lure and the disrupt in play: whether the exposed weighting (hull reached plus half a breaking shield) leans hard enough, whether the swarm's opening 80 reads as pressure or as a wall, whether a disrupt into a boss's signature feels like a trick or a trap
 - [x] Movement by way of moving (decided and built 2 October; bible section 4, the movement row ends with what stands): the words and `BattleMap.spend`, moves in tens in content with the foes' in `foes.json`, the horde's rule, the hunter's shore target, the validator and the flag, the generator's guarantee under the horde's rule with no single-hex plug, the terrain tap, the codex's open-ground count, the dashed slow end hexes, the pace, `Save.VERSION` 2

@@ -674,9 +674,10 @@ func assign(mech_index: int, target = null) -> bool:
 			var who: MechState = target if target is MechState else ms
 			var until := round + f.buff_rounds - 1
 			var src := "buff:" + f.component if not f.component.is_empty() else "buff"
-			var m := Effects.grant_buff(who.unit, f.buff_status, f.buff_stacks, src, until)
+			var stacks := _stacks_from(ms, f.buff_status, f.buff_stacks)
+			var m := Effects.grant_buff(who.unit, f.buff_status, stacks, src, until)
 			if m != null:
-				log.append("%s buffs %s: %s ×%d%s" % [ms.unit.display_name, who.unit.display_name, m.name, f.buff_stacks, "" if f.buff_rounds == 1 else " for %d rounds" % f.buff_rounds])
+				log.append("%s buffs %s: %s ×%d%s" % [ms.unit.display_name, who.unit.display_name, m.name, stacks, "" if f.buff_rounds == 1 else " for %d rounds" % f.buff_rounds])
 			_cleanse_with(ms, who, f)
 		Face.Kind.ATTACK:
 			_resolve_attack(mech_index, ms, f, target)
@@ -892,7 +893,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 					if not behind.alive() and f.has(Face.Keyword.DEVOUR):
 						_devour(ms, behind)
 			if f.has(Face.Keyword.BURN):
-				Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", ceili(float(dmg) / BURN_DAMAGE_PER_STACK))
+				Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", _stacks_from(ms, "burning", ceili(float(dmg) / BURN_DAMAGE_PER_STACK)))
 				_foe_gained_status(foe, "burning")
 			if f.has(Face.Keyword.SUPPRESS):
 				_suppress(foe)
@@ -902,7 +903,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 		rolled_total += rolled
 		any_crit = any_crit or crit
 	if extra_burn > 0:
-		Effects.stack(target, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", extra_burn)
+		Effects.stack(target, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", _stacks_from(ms, "burning", extra_burn))
 		_foe_gained_status(target, "burning")
 	# Disrupt first, then lure, so an entry carrying both ends with the foe's new move aimed at
 	# the spender.
@@ -1061,12 +1062,26 @@ func _shock(foe: Foe, by: MechState) -> void:
 ## round's end, the way Overheating does, so the ramp fades unless a passive keeps it.
 func _devour(ms: MechState, foe: Foe) -> void:
 	var m: Effects.Modifier
+	var stacks := _stacks_from(ms, "overcharged", 1)
 	if Effects.keeps(ms.unit, "overcharged"):
 		# The Ammit's Quintessence Tap: what the talons take is kept, for the battle, never fading.
-		m = Effects.stack(ms.unit, Effects.STATUS["overcharged"], Effects.BATTLE, "devour", 1, Effects.DECAY_NONE)
+		m = Effects.stack(ms.unit, Effects.STATUS["overcharged"], Effects.BATTLE, "devour", stacks, Effects.DECAY_NONE)
 	else:
-		m = Effects.stack(ms.unit, Effects.STATUS["overcharged"], Effects.SKIRMISH, "devour", 1, Effects.DECAY_TICK)
+		m = Effects.stack(ms.unit, Effects.STATUS["overcharged"], Effects.SKIRMISH, "devour", stacks, Effects.DECAY_TICK)
 	log.append("%s devours %s: %s ×%d" % [ms.unit.display_name, foe.display_name, m.name, Effects.stacks_of(ms.unit, "overcharged")])
+
+
+## Stacks this machine is applying, deepened by its on_stack passives (the Stingray's
+## Exothermic Suite: a stack per 20 heat carried, on every stack it applies, to a foe, an
+## ally or itself). Numbed is never deepened: it is exempt from every interaction (Ryan,
+## 2 October), and Effects.extra_stacks says so.
+func _stacks_from(ms: MechState, status_id: String, n: int) -> int:
+	if n <= 0:
+		return n
+	var extra := Effects.extra_stacks(ms.unit, status_id, ms.heat)
+	if extra > 0:
+		log.append("%s runs hot: +%d %s" % [ms.unit.display_name, extra, str(Effects.STATUS.get(status_id, {}).get("name", status_id))])
+	return n + extra
 
 
 ## Suppress: the foe skips its action this round, then grows Numbed (two stacks, three for
