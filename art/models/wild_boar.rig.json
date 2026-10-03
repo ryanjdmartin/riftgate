@@ -1,0 +1,268 @@
+{
+ "_about": "the rig of art/models/wild_boar.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
+ "joints": {
+  "plow": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -2.0,
+     18.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "turret": {
+   "axis": "yaw",
+   "limits": {},
+   "swing": false,
+   "parent": ""
+  },
+  "elev": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -6.0,
+     22.0
+    ]
+   },
+   "swing": false,
+   "parent": "turret"
+  },
+  "elev_pod": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     0.0,
+     16.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  }
+ },
+ "acts": [
+  {
+   "name": "sweep_turret",
+   "duration": 4.0,
+   "ease": "smooth",
+   "tracks": {
+    "turret": [
+     [
+      0.8,
+      0.0,
+      55.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.2,
+      0.0,
+      -55.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      3.4,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "elev": [
+     [
+      0.6,
+      18.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.6,
+      18.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      3.6,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "body": [],
+   "glow": []
+  },
+  {
+   "name": "test_plow",
+   "duration": 3.0,
+   "ease": "smooth",
+   "tracks": {
+    "plow": [
+     [
+      0.8,
+      16.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.7,
+      16.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.1,
+      -2.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.6,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "body": [],
+   "glow": []
+  },
+  {
+   "name": "rev",
+   "duration": 2.4,
+   "ease": "smooth",
+   "tracks": {},
+   "body": [
+    [
+     0.4,
+     0.0,
+     3.0,
+     0.0,
+     0.0,
+     2.0,
+     0.0
+    ],
+    [
+     0.9,
+     0.0,
+     3.0,
+     0.0,
+     0.0,
+     -2.5,
+     0.0
+    ],
+    [
+     1.5,
+     0.0,
+     -1.0,
+     0.0,
+     0.0,
+     -1.0,
+     0.0
+    ],
+    [
+     2.2,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   ],
+   "glow": []
+  },
+  {
+   "name": "tilt_pod",
+   "duration": 2.6,
+   "ease": "smooth",
+   "tracks": {
+    "elev_pod": [
+     [
+      0.6,
+      15.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.8,
+      15.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.5,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "body": [],
+   "glow": []
+  }
+ ],
+ "gait": {
+  "stride": 40.0,
+  "ease": "smooth",
+  "tracks": {},
+  "body": [],
+  "wheels": {},
+  "steer": {},
+  "aim": {},
+  "hold": {},
+  "treads": {
+   "parts": [
+    "tread"
+   ],
+   "scroll": 1.0
+  },
+  "glow": {},
+  "rock": 5.0,
+  "hold_aim": {
+   "turret": 1.0
+  }
+ },
+ "move": {},
+ "glow_parts": [
+  "tread"
+ ]
+}

@@ -1,0 +1,410 @@
+{
+ "_about": "the rig of art/models/badger.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
+ "joints": {
+  "turret_l": {
+   "axis": "yaw",
+   "limits": {
+    "yaw": [
+     -80.0,
+     80.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "shoulder_l": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -12.0,
+     40.0
+    ]
+   },
+   "swing": true,
+   "parent": ""
+  },
+  "elbow_l": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -35.0,
+     30.0
+    ]
+   },
+   "swing": false,
+   "parent": "shoulder_l"
+  },
+  "jaw_upper": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     0.0,
+     45.0
+    ]
+   },
+   "swing": false,
+   "parent": "elbow_l"
+  },
+  "jaw_lower": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -45.0,
+     0.0
+    ]
+   },
+   "swing": false,
+   "parent": "elbow_l"
+  },
+  "turret_r": {
+   "axis": "yaw",
+   "limits": {
+    "yaw": [
+     -80.0,
+     80.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "shoulder_r": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -12.0,
+     40.0
+    ]
+   },
+   "swing": true,
+   "parent": ""
+  },
+  "elbow_r": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -35.0,
+     30.0
+    ]
+   },
+   "swing": false,
+   "parent": "shoulder_r"
+  }
+ },
+ "acts": [
+  {
+   "name": "test_claw",
+   "duration": 3.2,
+   "ease": "smooth",
+   "tracks": {
+    "shoulder_l": [
+     [
+      0.6,
+      24.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.3,
+      24.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      3.1,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "elbow_l": [
+     [
+      0.6,
+      14.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.3,
+      14.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      3.1,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "jaw_upper": [
+     [
+      0.9,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.4,
+      42.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.9,
+      42.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.05,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "jaw_lower": [
+     [
+      0.9,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.4,
+      -42.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.9,
+      -42.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.05,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "body": [],
+   "glow": []
+  },
+  {
+   "name": "sight_gun",
+   "duration": 3.0,
+   "ease": "smooth",
+   "tracks": {
+    "shoulder_r": [
+     [
+      0.7,
+      18.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.3,
+      18.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      3.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "elbow_r": [
+     [
+      0.7,
+      24.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.3,
+      24.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      3.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "body": [],
+   "glow": []
+  },
+  {
+   "name": "sweep_gimbals",
+   "duration": 3.0,
+   "ease": "smooth",
+   "tracks": {
+    "turret_l": [
+     [
+      0.8,
+      0.0,
+      65.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.8,
+      0.0,
+      -40.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.7,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "turret_r": [
+     [
+      0.8,
+      0.0,
+      -65.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.8,
+      0.0,
+      40.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.7,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "body": [],
+   "glow": []
+  }
+ ],
+ "gait": {
+  "stride": 40.0,
+  "ease": "smooth",
+  "tracks": {},
+  "body": [],
+  "wheels": {},
+  "steer": {},
+  "aim": {},
+  "hold": {
+   "shoulder_l": [
+    14.0,
+    0.0,
+    0.0
+   ],
+   "elbow_l": [
+    12.0,
+    0.0,
+    0.0
+   ],
+   "shoulder_r": [
+    6.0,
+    0.0,
+    0.0
+   ]
+  },
+  "treads": {
+   "parts": [
+    "tread"
+   ],
+   "scroll": 1.0
+  },
+  "glow": {},
+  "rock": 6.0
+ },
+ "move": {},
+ "glow_parts": [
+  "tread"
+ ]
+}
