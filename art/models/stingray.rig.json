@@ -1,0 +1,14 @@
+{
+ "_about": "the rig of art/models/stingray.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units) and the cornering numbers; MechRig reads it",
+ "joints": {
+  "turret": {
+   "axis": "yaw",
+   "limits": {},
+   "swing": false,
+   "parent": ""
+  }
+ },
+ "acts": [],
+ "move": {},
+ "glow_parts": []
+}

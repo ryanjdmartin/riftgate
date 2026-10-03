@@ -55,6 +55,7 @@ const SUPPORTED_EFFECTS := {
 	"out_of_combat": ["add_shield"],
 	"status": ["tick_hp", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry", "scramble_reroll"],
 	"on_foe_status": ["chance_suppress"],
+	"on_stack": ["add_stacks"],
 }
 const DECAY_NONE := 0    # lives until its scope ends
 const DECAY_TICK := 1    # loses a stack each tick, gone at zero
@@ -539,6 +540,26 @@ static func foe_status_suppress_chance(u) -> int:
 	return clampi(int(roundf(total)), 0, 100)
 
 
+## Stacks a status this machine applies gains from its passives (add_stacks on on_stack;
+## the Stingray's Exothermic Suite, 2 October): `value` per stack of the passive, times
+## the machine's heat over `per_heat` when the effect carries one. It reads any stack the
+## machine applies, on a foe, an ally or itself (a burn, a buff, a devour), never Numbed,
+## which is exempt from every interaction but suppress and its own decay (Ryan, 2 October:
+## a touchable stun resist is where other games' combat loops broke).
+static func extra_stacks(u, status_id: String, heat: int) -> int:
+	if status_id == "numbed":
+		return 0
+	var n := 0
+	for pair in _taking_part(u, "on_stack", null):
+		var eff: Dictionary = pair[0]
+		if str(eff.get("effect", "")) != "add_stacks":
+			continue
+		var v: int = int(eff.get("value", 0)) * int(pair[1].stacks)
+		var per := int(eff.get("per_heat", 0))
+		n += v * int(maxi(0, heat) / per) if per > 0 else v
+	return maxi(0, n)
+
+
 ## What a foe's blows gain from its statuses (add_attack, static; a Kindled foe), per stack.
 static func foe_attack_bonus(f) -> int:
 	var n := 0
@@ -774,6 +795,10 @@ static func effect_text(eff: Dictionary) -> String:
 			body = "%s%% chance a foe gaining a status is also suppressed" % vs
 			if float(eff.get("per_missing_shield", 0)) > 0.0:
 				body += ", +%s%% per shield point missing" % _trim_num(float(eff.get("per_missing_shield", 0)))
+		"add_stacks":
+			body = "every stack this machine applies is %s deeper" % vs
+			if int(eff.get("per_heat", 0)) > 0:
+				body += " for every %s heat it carries" % str(int(eff["per_heat"]))
 		_: body = str(eff.get("effect", ""))
 	if eff.has("per_stack"):
 		body += " per stack of %s" % str(STATUS.get(str(eff["per_stack"]), {}).get("name", str(eff["per_stack"])))

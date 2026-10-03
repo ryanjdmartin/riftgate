@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.21 since 3 October, the joints and acts built; the committed file is ahead of the page until a session with the account republishes it); republish it from the committed file after every bible change, passing that URL.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.23 since 3 October, the joints and acts built on top of the hovercraft's v0.22; the committed file is ahead of the page until a session with the account republishes it); republish it from the committed file after every bible change, passing that URL.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -15,7 +15,10 @@ session; a B session cannot read it. Shared:
 - **The bible** (above): `docs/design-bible.html`, published whole after every change.
 - **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 2 October with the targeting pass's content): four tabs, the
   codex, the content editor, the names list and the renders (earlier passes folded under each
-  chassis, a Classes section). Source `tools/hangar.html`, published with the `files` map
+  chassis, a Classes section). Since 2 October, night, every list carries a filter and sort bar (search,
+  chips per group, a sort with its direction); the codex, the models and the editor's chassis
+  list share one chassis filter, and the codex has a Compact view of stats alone. Filters are
+  kept per viewer in the browser, not in the database. Source `tools/hangar.html`, published with the `files` map
   `tools/hangar_data.py` prints (`content/*.json`, `hangar/pins.json`, `hangar/renders.json`
   and every render under `docs/hangar/renders/`); republish after every content, model or
   render change, or its tabs go stale. Capabilities `db` and `user`; collections `edits` (the
@@ -61,7 +64,7 @@ the chat is newer.
 ## As of 2 October 2026
 
 **State.** Tests green: `perl -e 'alarm 240; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (293 tests, 3,899 checks on 2 October, after the targeting pass merged main;
+tests/run_tests.gd` (303 tests, 4,913 checks on 2 October, night, on the Mac after the hovercraft merged with the targeting pass and movement;
 a cloud session fetches Godot 4.7's Linux build from the GitHub release asset to run them, since
 the proxy serves the asset though not the release page; it builds models too, with
 `BPY_PYTHON` naming a python3.11 venv holding `pip install bpy==5.0.1`, blender.org being
@@ -121,14 +124,32 @@ prints, never fails. Measured on 200 seeds at 7x20: 0 cut, 0 plugs, 21 with a tw
 46 ms a map to generate. Open from it: the move gauge, a three-wide crossing, the water
 feature with the hovercraft, and the hangar page's republish (below).
 
-**The bible carries rows not yet on main, and so does the hangar page.** Another session
-built the two hovercraft on 2 October (the Stingray and the Puffin, the `on_stack` trigger,
-Numbed exempt from every interaction, propulsion reading the maker), published the bible as
-v0.17 and the hangar page with their renders and content, and has not pushed its branch.
-This session merged its own rows onto the published bible (v0.20 now) and left the hangar
-page alone: a republish from main would drop the hovercraft from its content. When that
-branch lands, its docs resolve to main's copies with its facts ported, its content takes
-the tens (movespeed times ten, foe moves present), and the hangar page is republished.
+**The hovercraft are on main** (2 October, night, merged from the Mac session; bible section 7,
+the hovercraft row). The **Stingray** (Aphelion, `stingray`): hull 80, shield 50, move 40, heat
+max 100, cooling 0 by design, a d6 of the locked Photosphere Lance (hot energy burn) and five
+hardpoints with the new Aurora Lattice (Aphelion's buff, Primed) in stock; its Exothermic Suite
+deepens every stack it applies by one per 20 heat carried, through the `on_stack` trigger and
+`add_stacks` effect (`Effects.extra_stacks`, read at the burn, Primed, buff and devour sites in
+`sim/skirmish.gd`). **Numbed is exempt from every interaction** (Ryan, a general rule). The
+**Puffin** (Kestrel, `puffin`): hull 50, shield 30, move 30 (the slowest Kestrel), a d5 of the
+locked Prow Projector (shield 30, allies only) and four hardpoints, the Overcharge Coil's first
+chassis; its passive Overpressure is **planned**: Ryan leans to an overshield (shield an ally
+past its maximum) with a cost, Claude's shape fades the excess at the round's end, his decision
+pending. Both modelled (`stingray(b)`, `puffin(b)` in `models_low.py`; propulsion reads the
+maker: the Stingray on lift fans flush in its wings, the Puffin on boosters far too big for it)
+and rendered to the hangar page's Models tab; rebuilt the same night on his first notes (the
+Stingray too literal and floating: no tail, every part seated on the skin through
+`_ray_top`, `_seat` and `_ridge`; the Puffin hilarious and floating: recut as the sleek
+escort Kestrel meant, the bird left for the pilots to see) and rendered again, the first
+passes folded under each on the Models tab, for his second look. The skirmish's hover
+idle gained a slow pitch (`sway_pitch`), to judge running. The merge took the tens for both
+moves and the balance matrix is rerun with thirteen machines (the Balance paragraph). **The
+hangar page's content is ahead of main again** (2 October, night): another session is tuning
+numbers on the page from a tree not yet committed (its components, foes and vocabulary files
+match no commit: the Chainsaw Claw at 10 to 20, the Pit Lord's armour at 5, among others), so
+this session republished only the page's chassis file, with the hovercraft, and left those
+three alone; the page's numbers are not the repo's until that work lands on main.
+
 
 **Open from the audit (1 October).** The bible's HUD palette row (18 September) read Ryan's
 swatch confusions as protanomalous, while the 29 September rule says he has not named the
@@ -149,19 +170,22 @@ poses either screen (README lists the poses and the phone-layout variables);
 `tools/hangar_data.py` its pins file and publish map; the renders live under `docs/hangar/`. `docs/vocabulary.md` is generated from content
 (`tools/export_vocabulary.gd`).
 
-**Content (bible section 7).** Eleven chassis: `badger` (d6; its fourth stock entry the
+**Content (bible section 7).** Thirteen chassis: `badger` (d6; its fourth stock entry the
 Proximity Klaxon), `clydesdale` (d9; the die cap is 10), `sparrowhawk`, `baboon` (Aphelion's;
 d7, the Halo Shield dropped; passive Pocket Paradox on `on_foe_status`), `armadillo` (its
 locked component the Lockdown Shutters), `wild_boar` (five hardpoints), `prairie_dog`,
-`dingo`, `goshawk`, `nemesis`, `ammit` (the last two the Arsenal's). Nothing in content is
-planned any more: every passive, keyword, status and trigger the vocabulary names runs
+`dingo`, `goshawk`, `nemesis`, `ammit` (the last two the Arsenal's), and since 2 October the
+hovercraft `stingray` (Aphelion's, d6, passive Exothermic Suite on `on_stack`) and `puffin`
+(Kestrel's, d5, passive Overpressure planned, waiting on Ryan's overshield decision). Nothing
+else in content is planned: every passive, keyword, status and trigger the vocabulary names runs
 (`Effects.fire`; the bible's section 7 row "The 28 September pieces, built" has each one), and
 the ten foe actions run (`Foe.ACTION_EFFECTS`, weights 3:1 attack to special as placeholders,
-section 9 row). Still planned in the vocabulary, all waiting on design: Phased, Energy
-Armour, Corrode, Scramble, Confuse, and the Tracked and Wheeled traits. Numbers are in tens and are placeholders;
+section 9 row). Still planned in the vocabulary, waiting on design: Phased (parked), Corrode, and the
+commander and city pieces (the command die, one-shots, the reward pick, city abilities,
+cooldowns). Numbers are in tens and are placeholders;
 every stat is read through `sim/effects.gd`. An enemy unit is a **pack** everywhere. Ryan
 writes `content/*.json` in his own voice (he writes die totals in his head; the data keeps
-free slots). Every component's codex and flavour are empty (42), and the seven new machines'
+free slots). Every component's codex and flavour are empty (45), and the nine new machines'
 codex and flavour too: his to write. Tests never hardcode an entry's passive name.
 `content/reserved_names.json` holds about 1,250 machine names (BattleTech, Heavy Gear, 40k,
 Halo); the validator refuses an exact match unless `design.name_clash` says why it stays, and
@@ -181,9 +205,11 @@ the idle acts (`b.act(...)` at the end of each machine), both written to the mod
 `art/models/<id>.rig.json` by the build. The round-by-round history is retired (Ryan, 1 October); the code and the
 hangar page's Models tab are the record. **Ryan judges a model only from a render**, never from
 code (`tools/hero_shot.gd` renders bare and needs a window); a hand edit in Blender has to be
-re-expressed in the code to survive a rebuild. **Every machine is signed off for now** (Ryan,
-1 October); the joint pass and the idle acts landed 3 October (the paragraph below); next on
-the art side is Ryan judging the acts running, then the movement animations. Open on the models: each class's size per machine, and the machines' scale
+re-expressed in the code to survive a rebuild. **The eleven machines of 1 October are signed off for
+now** (Ryan); the two hovercraft of 2 October are second passes (on his first notes) waiting on his look
+on the Models tab, and have no acts yet (the Stingray's turret joint alone; their acts are proposed once
+Ryan has looked); the joint pass and the idle acts landed 3 October (the paragraph below); next on the art
+side is Ryan judging the acts running, then the movement animations. Open on the models: each class's size per machine, and the machines' scale
 on the map's hexes (Ryan, 2 October: needs adjusting; all are fitted to one width today).
 
 **Joints and idle acts, built 3 October (a cloud session; bible section 7, the idle-acts row
@@ -244,10 +270,17 @@ started from the harness is saved after every change (`sim/save.gd`, `user://bat
 and Resume battle opens it where it stood; standalone runs and tests never write it.
 
 **Balance (bible section 11).** `sim/policy.gd` plays the skirmish headless (RANDOM, GREEDY,
-`withdraw_below`); `tools/balance.gd` runs the matrix, about half an hour at 200 seeds with
-eleven machines, twelve packs (the nine plus each faction's whole formation in one fight, since
+`withdraw_below`); `tools/balance.gd` runs the matrix, about fourteen minutes on the Mac at 200 seeds with
+thirteen machines, twelve packs (the nine plus each faction's whole formation in one fight, since
 2 October) and the team row run twice for the targeting comparison (`docs/balance.md`, generated
-2 October with the targeting pass and the playtest set in). **The baseline reading, for Ryan's
+2 October, night, with the targeting pass, the playtest set and the two hovercraft in).
+**The hovercraft's first read:** the Stingray alone sits in the support band beside the Baboon,
+beating the back-rank packs under greedy and losing to every front-rank pack and formation; the
+flare, the emitter and the lance share its spends about a third each and the Radiator Sail takes
+2%, so the bot runs it hot and never vents (the Nemesis's problem again) and cooling 0 is the
+knob to watch. The Puffin alone loses nearly everything, as an escort with an allies-only locked
+shield and a planned passive must (its Prow Projector is never spendable in a solo cell; greedy
+still takes the necromancers at 71%); it reads only once a team cell carries it. **The baseline reading, for Ryan's
 question of whether 80 a round is average or game-losing:** the team of three still wins every
 cell, the formations included, in about a round and at no cost, under the aims and under the
 lowest-shield rule alike (the Risen formation, fifteen foes, is the one fight that lasts: 4.6
@@ -327,16 +360,10 @@ disrupt into a boss's signature is a trick or a trap.
 **Open, in order.** The task list is `docs/todo.md`, one line a task, grouped by who moves
 it and ticked in the commit that lands it; this is the order to take them in.
 
-0. **First, on the Mac:** run the tests. The `sound` label's validation in `sim/content_db.gd`
-   (a word or a list of words) landed from a cloud session with no Godot; the two content
-   entries that carry it are the Breaching Plow and the Gravity Knuckles. Then the effects:
-   Ryan listens to the page (the third cut of the weapons, the fourth cut of the console, the
-   blunt impact with its plasma layer, the voice in two registers, the level offsets) and his
-   notes drive the next round in `tools/soundforge/fx_sketches.py`; a pick lands in `forge.py`
-   with its hook. The page republishes from `tools/soundforge/out/fx/` with `root` set to it.
-1. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
-2. Ryan's text for the new machines and components; the machines' scale on the map; the strikes, then the acts and movement, judged running.
-3. The discuss-first decisions in the Ryan section, the economy last; enemy targeting decided and built 2 October (the paragraph above; the runner's read is the baseline question); the commander layer once the balance has a baseline.
-4. Ready to build: the pacing pieces after Ryan's session; the movement leftovers (the gauge, a three-wide crossing); the movement animations (the joints and the idle acts landed 3 October; Ryan judges the acts running first); the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased parked, Corrode, foe roles), and a dedicated hunter foe and spawned formations once proposed.
-5. Audio: a full play of Hold The Line, the console's fresh pass and the effects' picks, the two boss themes.
-6. A prototype hangar in the game (paints and loadouts, no economy). Art: enemy art through foeforge, the hangar as a model. Before a phone leaves the desk: onboarding, then tuning.
+1. Ryan's second look at the Stingray and the Puffin on the hangar's Models tab, and his decision on the Puffin's passive (the overshield), which then gets built.
+2. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
+3. Ryan's text for the new machines and components; the machines' scale on the map; the strikes, the hover idle's pitch and the idle acts (`RIFTGATE_ACTS_DEBUG=1`), judged running; the movement animations after.
+4. The discuss-first decisions in the Ryan section, the economy last; enemy targeting decided and built 2 October (the paragraph above; the runner's read is the baseline question); the commander layer once the balance has a baseline.
+5. Ready to build: the pacing pieces after Ryan's session; the movement leftovers (the gauge, a three-wide crossing); the movement animations (the joints and the idle acts landed 3 October; Ryan judges the acts running first); the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased parked, Corrode, foe roles), and a dedicated hunter foe and spawned formations once proposed.
+6. Audio: a full play of Hold The Line, the console's fresh pass and the effects' picks, the two boss themes.
+7. A prototype hangar in the game (paints and loadouts, no economy). Art: enemy art through foeforge, the hangar as a model. Before a phone leaves the desk: onboarding, then tuning.
