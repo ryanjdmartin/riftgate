@@ -1167,7 +1167,7 @@ def _lift_fan(b, targets, cx, cy, z0, z1, r=8.6, blades=5):
 # is a loft of flattened hexagons along y; each wing a loft of flat-topped six-point sections
 # along x. `_ray_top(x, y)` is the higher of the two skins at a point, or None off the machine.
 _RAY_BODY = [(44.0, 12.0, 4.0, 3.0), (36.0, 13.0, 14.0, 9.0), (20.0, 14.0, 22.0, 16.0), (0.0, 14.0, 24.0, 18.0),
-             (-20.0, 14.0, 22.0, 15.0), (-36.0, 14.5, 14.0, 9.0), (-44.0, 15.0, 8.0, 5.0)]   # (y, cz, w, h), nose to stern
+             (-20.0, 14.0, 22.0, 15.0), (-36.0, 14.5, 16.0, 9.5), (-44.0, 15.0, 13.0, 6.5)]   # (y, cz, w, h), nose to stern; the stern wide enough for two nozzles
 _RAY_WING = [(9.0, -34.0, 38.0, 6.5, 21.5, 16.0), (22.0, -24.0, 30.0, 8.0, 19.0, 12.0), (36.0, -12.0, 8.0, 12.5, 15.5, 4.0)]   # (x, y_back, y_front, z_bottom, z_top, shoulder)
 
 
@@ -1243,13 +1243,18 @@ def stingray(b):
     lift fan sunk flush through each wing where it is thickest, and the Photosphere Lance
     (fixed, no pin) under the nose where a ray's mouth is. Second pass (Ryan, 2 October: too
     literal, it needs no whippy tail; the mounts floated; a livery spot floated ahead of the
-    cockpit): no tail, the body ends in a stern plate with two lit thruster slits; every
-    mount, the canopy, the eye and the spine stripe are seated on the skin through
-    `_ray_top`; the nose chevron is gone. Mounts, in the die's order: hp_1 left shoulder
-    (the Solar Flare Array, two pods), hp_2 right shoulder (the Pulse Repeater), hp_3 dorsal
-    on a turret joint (the Zenith Emitter), hp_4 right wing root behind the gimbal (the
-    Aurora Lattice, a dish), hp_5 bare on the left (the Radiator Sail is a vent and shows
-    nowhere). Floats: the belly at z = 6. Every number is a proportion Ryan may change."""
+    cockpit): no tail; every mount, the canopy, the eye and the spine stripe are seated on
+    the skin through `_ray_top`; the nose chevron is gone. Third pass (Ryan, 2 October, late: the
+    centre turret is the focal point and read as a gun slapped on a jeep, not a high-tech
+    Aphelion machine; the rear mounts still janky; the stern's two glowing slabs served no
+    purpose): the turret is a wide low dome faired to the crown with the Zenith Emitter
+    leaving a slot in its forward edge; the two rear mounts hang under the wings aft of the
+    fans, so the deck breathes; the stern is two hollow exhaust nozzles with fire inside.
+    Mounts, in the die's order: hp_1 left shoulder (the Solar Flare Array, two pods), hp_2
+    right shoulder (the Pulse Repeater), hp_3 the dome (the Zenith Emitter), hp_4 under the
+    right wing (the Aurora Lattice, a dish), hp_5 bare under the left (the Radiator Sail is
+    a vent and shows nowhere). Floats: the belly at z = 6. Every number is a proportion Ryan
+    may change."""
     top = _ray_top
     # The body: a flattened hexagonal section lofted nose to stern, widest amidships.
     b.loft([(y, hexagon(0.0, cz, w, h)) for (y, cz, w, h) in _RAY_BODY], "steel.plate", "body")
@@ -1268,10 +1273,12 @@ def stingray(b):
         inner = _rings(b, [secs[0], secs[1]], "steel.plate", "wing_inner")
         outer = _rings(b, [secs[1], secs[2]], "livery.livery", "wing_outer")
         _lift_fan(b, [inner, outer], s * 23.0, 2.0, 7.5, 20.5)
-    # The stern: no tail. A dark plate closes the body, two lit thruster slits in its face.
-    b.loft([(-44.0, hexagon(0.0, 15.0, 8.0, 5.0)), (-47.0, hexagon(0.0, 15.0, 6.0, 3.8))], "steel.dark", "stern")
+    # The stern: no tail. A dark shroud closes the body and two hollow exhaust nozzles come
+    # out of it, each an open tube with fire at its floor (Ryan, 2 October, late: the slabs served
+    # no purpose; hollow it out into an exhaust).
+    b.loft([(-44.0, hexagon(0.0, 15.0, 13.0, 6.5)), (-46.5, hexagon(0.0, 15.0, 11.5, 6.0))], "steel.dark", "stern_shroud")
     for s in (-1.0, 1.0):
-        b.box(min(s * 0.9, s * 2.4), max(s * 0.9, s * 2.4), -47.4, -46.9, 13.8, 16.2, "amber.lit", "thruster_slit")
+        _tube(b, (s * 3.2, -45.0, 15.0), (s * 3.2, -50.0, 15.0), 2.6, 2.0, 8, "steel.dark", "exhaust_nozzle", floor_material="amber.glow", floor_depth=0.5)
     # The Photosphere Lance under the nose (fixed, no pin): a long emitter along the keel,
     # a red collar at its root and a lit muzzle.
     b.box(-4.0, 4.0, 10.0, 24.0, 5.5, 9.5, "steel.panel", "lance_mount")
@@ -1294,118 +1301,147 @@ def stingray(b):
                 b.box(mx - 2.0, mx + 2.0, my - 1.0, my + 6.0, mt, mt + 3.0, "steel.plate", "repeater_body")
                 b.prism("y", mx, my + 14.0, mt + 1.5, 1.6, 18.0, "steel.dark", 6, "pulse_repeater")
                 b.prism("y", mx, my + 23.4, mt + 1.5, 1.2, 1.2, "amber.engine", 6, "repeater_tip")
-    # The dorsal mount (hp_3) on a turret joint behind the canopy, its ring set on the crown.
-    gz = top(0.0, -8.0)
-    b.prism("z", 0.0, -8.0, gz + 0.4, 5.0, 1.4, "steel.dark", 8, "gimbal_ring")
-    with b.joint("turret", (0.0, -8.0, gz + 1.0)):
-        b.prism("z", 0.0, -8.0, gz + 2.6, 4.0, 3.2, "steel.plate", 8, "gimbal", phase=math.pi / 8)
-        with b.socket("hp_3", (0.0, -4.0, gz + 5.0)):
-            b.box(-2.6, 2.6, -11.0, -1.0, gz + 3.6, gz + 6.6, "steel.panel", "emitter_body")
-            b.prism("y", 0.0, 9.0, gz + 5.0, 2.2, 20.0, "steel.dark", 6, "zenith_emitter")
-            b.prism("y", 0.0, 19.6, gz + 5.0, 1.6, 1.4, "amber.engine", 6, "emitter_tip")
-    # The rear mounts, seated on the wing roots behind the gimbal, clear of the fans: hp_4 the
-    # Aurora Lattice (a dish) on the right, hp_5 bare on the left.
+    # The turret (hp_3) behind the canopy: a wide low dome faired to the crown on a dark ring,
+    # turning on its joint, and the Zenith Emitter leaving a dark slot in the dome's forward
+    # slope above the canopy's height (Ryan, 2 October, late: the gun comes out of the edge of
+    # something sleek, it is not slapped on top). The whole dome turns.
+    gz = top(0.0, -10.0)
+    b.prism("z", 0.0, -10.0, gz + 0.5, 9.0, 1.6, "steel.dark", 8, "turret_ring", phase=math.pi / 8)
+    with b.joint("turret", (0.0, -10.0, gz + 1.3)):
+        b.loft([(gz + 1.2, _poly(8.6, 8, math.pi / 8)), (gz + 3.0, _poly(8.0, 8, math.pi / 8)), (gz + 5.2, _poly(4.6, 8, math.pi / 8))],
+               "steel.plate", "turret_dome", Matrix.Translation((0.0, -10.0, 0.0)) @ Matrix.Rotation(math.pi / 2, 4, "X"))
+        b.box(-2.8, 2.8, -4.6, -1.4, gz + 2.6, gz + 5.4, "steel.dark", "emitter_slot")
+        b.prism("z", 0.0, -10.0, gz + 5.4, 2.0, 0.8, "amber.engine", 8, "dome_light", phase=math.pi / 8)
+        with b.socket("hp_3", (0.0, -2.0, gz + 4.0)):
+            b.prism("y", 0.0, 8.0, gz + 4.0, 2.0, 20.0, "steel.dark", 6, "zenith_emitter")
+            b.prism("y", 0.0, 18.6, gz + 4.0, 1.5, 1.4, "amber.engine", 6, "emitter_tip")
+    # The rear mounts hang under the wings aft of the fans (Ryan, 2 October, late), on pylons from
+    # the wing's underside: hp_4 the Aurora Lattice (a dish) under the right, hp_5 bare under
+    # the left. The underside mirrors the top about the section's mid-height.
     for s in (-1.0, 1.0):
-        rx, ry = s * 11.0, -16.0
-        mt = _seat(b, top, rx, ry, 6.0, 8.0, 1.6, "steel.panel", "rear_mount")
+        rx, ry = s * 20.0, -15.0
+        wt = _ray_wing_top(rx, ry)
+        x_row = [r for r in _RAY_WING]
+        zb = None
+        for r0, r1 in zip(x_row, x_row[1:]):
+            if r0[0] <= abs(rx) <= r1[0]:
+                t = (abs(rx) - r0[0]) / (r1[0] - r0[0])
+                zb0, zt0 = r0[3] + (r1[3] - r0[3]) * t, r0[4] + (r1[4] - r0[4]) * t
+                zb = (zb0 + zt0) - wt   # the bottom at this point, the top reflected about the mid-height
+        b.box(rx - 1.2, rx + 1.2, ry - 3.0, ry + 3.0, zb - 3.0, zb + 1.5, "steel.plate", "wing_pylon")
         if s > 0:
-            with b.socket("hp_4", (rx, ry + 4.0, mt + 1.0), scale=0.7):
-                b.prism("y", rx, ry + 5.5, mt + 1.0, 0.9, 3.5, "steel.dark", 6, "lattice_mast")
-                b.loft([(ry + 7.5, _poly(5.0, 8, math.pi / 8)), (ry + 9.0, _poly(1.8, 8, math.pi / 8))], "steel.plate", "lattice_dish", Matrix.Translation((rx, 0.0, mt + 1.0)))
-                b.prism("y", rx, ry + 9.4, mt + 1.0, 1.5, 0.8, "amber.engine", 8, "lattice_core")
+            with b.socket("hp_4", (rx, ry + 3.0, zb - 3.6), scale=0.7):
+                b.prism("y", rx, ry - 1.0, zb - 3.6, 1.8, 10.0, "steel.dark", 6, "lattice_pod")
+                b.prism("y", rx, ry + 4.8, zb - 3.6, 0.9, 2.5, "steel.dark", 6, "lattice_mast")
+                b.loft([(ry + 6.0, _poly(4.6, 8, math.pi / 8)), (ry + 7.4, _poly(1.6, 8, math.pi / 8))], "steel.plate", "lattice_dish", Matrix.Translation((rx, 0.0, zb - 3.6)))
+                b.prism("y", rx, ry + 7.8, zb - 3.6, 1.4, 0.8, "amber.engine", 8, "lattice_core")
         else:
-            b.pad("hp_5", (rx, ry + 4.0, mt + 0.5), scale=0.7, size=(6.0, 2.0))
+            b.prism("y", rx, ry - 1.0, zb - 3.6, 1.8, 10.0, "steel.dark", 6, "bare_pod")
+            b.pad("hp_5", (rx, ry + 4.0, zb - 3.6), scale=0.7, size=(4.0, 1.5))
 
 
 stingray.maker = "aphelion"
 
 
+def _hull_section(z0, z1, w, c, cx=0.0):
+    """A chamfered rectangle as (x, z) points, counter-clockwise: a hovercraft hull's section,
+    wide and low, its four corners cut by `c`."""
+    hw = w / 2.0
+    return [(cx - hw + c, z0), (cx + hw - c, z0), (cx + hw, z0 + c), (cx + hw, z1 - c), (cx + hw - c, z1), (cx - hw + c, z1), (cx - hw, z1 - c), (cx - hw, z0 + c)]
+
+
 def puffin(b):
     """Kestrel "Puffin" (K-11 Mk I Ground-Effect Escort): Kestrel's one machine that touches
     the ground, the escort they thought was very cool and pilots named for the bird (the
-    bible's makers row, 28 September; built 2 October). Second pass (Ryan, 2 October, on the
-    first: hilarious, with floating geometry; make it tryhard-cool rather than funny): the
-    machine Kestrel meant, with the bird left for the pilots to see. A longer, lower chrome
-    body; a chined prow in place of the bill, its edge the Prow Projector's lit slot (fixed,
-    no pin) under one hard band of light; a slit canopy in place of the round eyes; a dark
-    dorsal spine for the bird's back; swept stubby wings rooted inside the body; two nacelle
-    boosters slung under them on pylons, intakes forward and lit nozzles aft (Kestrel moves
-    on boosters); a tail boom with two canted fins; two lit lift nozzles under the belly.
-    Every part is seated: nothing hangs in the air. Mounts, in the die's order: hp_1 a pod
-    under the left wing (the Laser Carbine), hp_2 under the right (the Deflector, a dish),
-    hp_3 on the spine (the Overcharge Coil, a dish), hp_4 bare on the boom (the Ram-air Scoop
-    is a vent and shows nowhere). Floats on its boosters: nothing below z = 4."""
-    # Stations every seven units or so: a long flat flank facet took the chrome sky as one white
-    # patch in the second pass's render, and smaller facets break the mirror up.
-    BODY = [(26.0, 17.0, 10.0, 10.0), (20.0, 17.6, 18.0, 16.0), (14.0, 18.0, 24.0, 20.0), (7.0, 18.0, 25.4, 21.4), (0.0, 18.0, 26.0, 22.0),
-            (-7.0, 18.0, 25.4, 21.4), (-14.0, 18.0, 24.0, 20.0), (-21.0, 18.2, 20.4, 17.2), (-28.0, 18.5, 16.0, 14.0), (-33.0, 18.8, 12.0, 10.4),
-            (-38.0, 19.0, 8.0, 7.0)]   # (y, cz, w, h), nose to stern
+    bible's makers row, 28 September; built 2 October). Third pass (Ryan, 2 October, late, on the
+    second: the proportions better but the oval body past funny into lame, and it looked as
+    if it could fly outright; the first pass had the charm, it was only too portly; a Kestrel
+    hovercraft has plane ancestry but is definitely a hovercraft, oblong and wide, something
+    that hovers over land and never takes off). So: a wide, low, oblong hull of chamfered
+    sections with a dark lip round its foot, the first pass's head back on top of it (a
+    rounded chrome head, round glass eyes in dark rings, the tall flat cobalt bill dipping
+    forward under a band of light, its edge the Prow Projector's lit slot, fixed, no pin), the
+    dark cap over the head running back as the bird's black back, two big boosters buried in
+    the hull's rear sponsons with lit exhausts, two canted fins on the rear deck for the
+    ancestry, and lift nozzles under the belly. No wings. Mounts, in the die's order: hp_1 on
+    the left shoulder of the deck (the Laser Carbine), hp_2 on the right (the Deflector, a
+    dish), hp_3 on the rear deck right (the Overcharge Coil, a dish), hp_4 bare on the rear
+    deck left (the Ram-air Scoop is a vent and shows nowhere). Floats: the lip at z = 6.5."""
+    # The hull: wide and low, nose to stern, as (y, w, z0, z1, chamfer).
+    HULL = [(30.0, 14.0, 10.0, 15.0, 2.0), (20.0, 30.0, 8.0, 19.0, 3.0), (6.0, 40.0, 7.0, 21.0, 3.5), (-12.0, 40.0, 7.0, 21.0, 3.5),
+            (-26.0, 34.0, 8.0, 19.5, 3.0), (-36.0, 22.0, 10.0, 17.0, 2.5)]
 
-    def btop(y):
-        """The body's crown at x = 0: an eight-sided section's flat top sits at cz + h/2 sin 67.5."""
-        for (y0, cz0, w0, h0), (y1, cz1, w1, h1) in zip(BODY, BODY[1:]):
+    def deck(y):
+        """The hull's flat top at a station between the chamfers."""
+        for (y0, w0, a0, z0, c0), (y1, w1, a1, z1, c1) in zip(HULL, HULL[1:]):
             if y1 <= y <= y0:
                 t = (y0 - y) / (y0 - y1)
-                return (cz0 + (cz1 - cz0) * t) + (h0 + (h1 - h0) * t) / 2.0 * math.sin(5.0 * math.pi / 12.0)
-        return BODY[-1][1]
-    # The body: a round section of twelve sides, long and low, a blunt nose where the prow begins.
-    b.loft([(y, _oct(cz, w, h, n=12)) for (y, cz, w, h) in BODY], "steel.plate", "body")
-    # The prow: a chined wedge out of the nose, flat from side to side, narrowing to its edge,
-    # which is the projector's emitter, a tall lit slot; one hard band of light across it.
-    b.loft([(26.0, _oct(17.0, 10.0, 10.0, n=12)), (34.0, _oct(16.6, 7.0, 11.0, n=12)), (41.0, _oct(16.2, 3.6, 8.5, n=12)), (44.0, _oct(16.0, 2.0, 5.5, n=12))], "livery.livery", "prow")
-    b.loft([(31.0, _oct(16.8, 7.8, 11.8, n=12)), (32.6, _oct(16.75, 7.4, 11.4, n=12))], "amber.light", "prow_band")
-    b.loft([(44.0, _oct(16.0, 1.8, 5.0, n=12)), (44.9, _oct(16.0, 1.3, 4.2, n=12))], "amber.engine", "projector_slot")
-    # The canopy: a glass slit on the crown ahead of the spine (no open cockpit, no eyes).
-    b.loft([(22.0, hexagon(0.0, btop(22.0) - 0.4, 5.0, 1.2)), (17.0, hexagon(0.0, btop(17.0) + 0.3, 9.0, 3.2)),
-            (10.0, hexagon(0.0, btop(10.0) + 0.5, 9.5, 3.4)), (5.0, hexagon(0.0, btop(5.0) + 0.2, 8.0, 2.6))], "glass.glass", "canopy")
-    # The dorsal spine: the bird's dark back, a flattened tube seated on the crown to the tail.
-    b.loft([(4.0, hexagon(0.0, btop(4.0) - 0.6, 10.0, 4.0)), (-6.0, hexagon(0.0, btop(-6.0) - 0.6, 11.0, 4.4)),
-            (-20.0, hexagon(0.0, btop(-20.0) - 0.6, 9.0, 3.8)), (-30.0, hexagon(0.0, btop(-30.0) - 0.6, 6.0, 3.0))], "steel.dark", "spine")
-    # The coil's mount on the spine (hp_3), its dish facing forward over the canopy.
-    sz = btop(-8.0) - 0.6 + 2.2
-    b.box(-2.5, 2.5, -11.0, -5.0, sz - 1.0, sz + 1.2, "steel.panel", "coil_base")
-    with b.socket("hp_3", (0.0, -5.0, sz + 2.0), scale=0.6):
-        b.prism("y", 0.0, -3.5, sz + 2.0, 0.8, 3.0, "steel.dark", 6, "coil_mast")
-        b.prism("y", 0.0, -1.4, sz + 2.0, 3.6, 1.2, "steel.plate", 8, "coil_dish")
-        b.prism("y", 0.0, -0.5, sz + 2.0, 1.3, 0.8, "amber.engine", 8, "coil_core")
+                return z0 + (z1 - z0) * t
+        return HULL[-1][3]
+    b.loft([(y, _hull_section(z0, z1, w, c)) for (y, w, z0, z1, c) in HULL], "steel.plate", "hull")
+    # The dark lip round the hull's foot: the plenum's armoured rim, a hovercraft's mark.
+    b.loft([(y, _hull_section(z0 - 0.5, z0 + 2.4, w + 1.4, 1.2)) for (y, w, z0, z1, c) in HULL[1:]], "steel.dark", "lip")
+    # The head: a rounded chrome block on the fore deck, the bird's white face; eyes either side.
+    HEAD = [(24.0, 23.0, 10.0, 6.0), (18.0, 25.0, 15.0, 11.0), (8.0, 25.5, 16.0, 12.0), (0.0, 25.0, 14.0, 10.0), (-6.0, 24.0, 10.0, 7.0)]
+    b.loft([(y, _oct(cz, w, h)) for (y, cz, w, h) in HEAD], "steel.plate", "head")
     for s in (-1.0, 1.0):
-        # Stubby wings swept back, a knife edge forward, rooted inside the body's flank.
-        root = [(s * 11.5, -14.0, 17.5), (s * 11.5, -14.0, 19.5), (s * 11.5, 4.0, 18.5)]
-        tip = [(s * 31.0, -16.0, 16.0), (s * 31.0, -16.0, 16.8), (s * 31.0, -8.0, 16.4)]
-        _wing(b, root, tip, "livery.livery", "wing")
-        # A nacelle booster under each wing on a pylon through the wing: a dark intake
-        # forward, a lit ring and exhaust aft; big for the body on purpose.
-        nx, nz = s * 17.5, 11.0
-        b.box(min(nx - 1.6, nx + 1.6), max(nx - 1.6, nx + 1.6), -12.0, -2.0, nz + 4.0, 19.0, "steel.plate", "pylon")
-        b.prism("y", nx, -11.0, nz, 7.0, 32.0, "steel.dark", 6, "nacelle", phase=math.pi / 6)
-        b.loft([(5.2, hexagon(nx, nz, 12.2, 10.8)), (5.7, hexagon(nx, nz, 10.6, 9.4))], "bore.dark", "intake")
-        b.prism("y", nx, -27.6, nz, 7.3, 1.4, "amber.engine", 6, "nozzle_ring", phase=math.pi / 6)
-        b.loft([(-28.4, hexagon(nx, nz, 11.8, 10.4)), (-28.9, hexagon(nx, nz, 10.4, 9.2))], "amber.engine", "exhaust")
-        # A weapon pod under the wing outboard of the nacelle: hp_1 the Laser Carbine left,
-        # hp_2 the Deflector's dish right; the pylon runs up through the wing.
-        px = s * 28.5
-        b.box(min(px - 1.1, px + 1.1), max(px - 1.1, px + 1.1), -13.0, -7.0, 14.6, 17.6, "steel.plate", "pod_pylon")
-        with b.socket("hp_%d" % (1 if s < 0 else 2), (px, -5.0, 13.5), scale=0.6):
-            b.prism("y", px, -9.0, 13.5, 2.0, 14.0, "steel.dark", 6, "pod")
+        b.prism("x", s * 7.9, 12.0, 26.0, 3.4, 1.0, "steel.dark", 8, "eye_ring", phase=math.pi / 8)
+        b.prism("x", s * 8.3, 12.0, 26.0, 2.7, 1.0, "glass.glass", 8, "eye", phase=math.pi / 8)
+    # The bill: tall and flat, dipping forward out of the head, a band of light where a bill
+    # is striped, its edge the projector's lit slot.
+    b.loft([(24.0, _oct(23.0, 9.0, 7.0)), (31.0, _oct(22.0, 6.0, 9.0)), (38.0, _oct(20.5, 4.0, 8.0)), (43.0, _oct(19.5, 2.5, 5.5))], "livery.livery", "bill")
+    b.loft([(33.0, _oct(21.6, 5.8, 9.0)), (35.0, _oct(21.2, 5.4, 8.6))], "amber.light", "bill_band")
+    b.loft([(43.0, _oct(19.5, 2.2, 5.0)), (43.9, _oct(19.4, 1.6, 4.2))], "amber.engine", "projector_slot")
+    # The cap: the bird's black, over the crown of the head and back along the spine to the stern.
+    b.loft([(20.0, hexagon(0.0, 29.9, 11.0, 3.0)), (10.0, hexagon(0.0, 31.1, 14.0, 3.6)), (0.0, hexagon(0.0, 29.6, 13.0, 3.4)), (-7.0, hexagon(0.0, 25.4, 11.0, 3.6)),
+            (-16.0, hexagon(0.0, deck(-16.0) - 0.2, 10.0, 3.2)), (-28.0, hexagon(0.0, deck(-28.0) - 0.2, 8.0, 2.8)), (-35.0, hexagon(0.0, deck(-35.0) - 0.2, 5.0, 2.2))], "steel.dark", "cap")
+    # The shoulder mounts on the fore deck either side of the head: hp_1 the Laser Carbine
+    # left, hp_2 the Deflector's dish right, both low and forward.
+    for s in (-1.0, 1.0):
+        mx, my = s * 13.5, 12.0
+        dz = deck(my)
+        b.box(mx - 3.0, mx + 3.0, my - 4.0, my + 4.0, dz - 1.0, dz + 1.6, "steel.panel", "shoulder_mount")
+        with b.socket("hp_%d" % (1 if s < 0 else 2), (mx, my + 4.0, dz + 2.6), scale=0.6):
+            b.prism("y", mx, my + 2.0, dz + 2.6, 1.8, 10.0, "steel.dark", 6, "pod")
             if s < 0:
-                b.prism("y", px, 3.0, 13.5, 0.9, 12.0, "steel.dark", 6, "laser_carbine")
-                b.prism("y", px, 9.4, 13.5, 1.2, 1.0, "steel.plate", 6, "muzzle")
+                b.prism("y", mx, my + 13.0, dz + 2.6, 0.9, 12.0, "steel.dark", 6, "laser_carbine")
+                b.prism("y", mx, my + 19.4, dz + 2.6, 1.2, 1.0, "steel.plate", 6, "muzzle")
             else:
-                b.prism("y", px, -0.5, 13.5, 3.4, 1.2, "steel.plate", 8, "dish")
-                b.prism("y", px, 0.4, 13.5, 1.3, 0.8, "amber.engine", 8, "dish_core")
-    # Two lit lift nozzles under the belly: the ground effect.
+                b.prism("y", mx, my + 7.6, dz + 2.6, 3.4, 1.2, "steel.plate", 8, "dish")
+                b.prism("y", mx, my + 8.5, dz + 2.6, 1.3, 0.8, "amber.engine", 8, "dish_core")
+    # The boosters: two big six-sided drums buried in the hull's rear sponsons and running out
+    # past the stern, a fairing bridging each to the hull, a vent on the fairing, the exhausts lit.
     for s in (-1.0, 1.0):
-        b.prism("z", s * 6.0, -2.0, 6.6, 2.6, 1.6, "amber.engine", 6, "lift_nozzle")
-    # The tail: a boom out of the stern, two fins canted outward at its end, the bare fourth
-    # mount (hp_4) on the boom ahead of them.
-    b.loft([(-36.0, rect(0.0, 6.0, 16.5, 21.5)), (-48.0, rect(0.0, 3.5, 18.0, 21.0))], "steel.plate", "tail_boom")
+        bx, bz = s * 16.5, 13.5
+        b.box(min(s * 11.0, s * 20.0), max(s * 11.0, s * 20.0), -32.0, -6.0, 9.0, 19.0, "steel.plate", "sponson")
+        b.box(min(s * 12.5, s * 18.5), max(s * 12.5, s * 18.5), -24.0, -12.0, 19.0, 19.8, "steel.vent", "sponson_vent")
+        b.prism("y", bx, -22.0, bz, 6.5, 30.0, "steel.dark", 6, "booster", phase=math.pi / 6)
+        b.prism("y", bx, -37.6, bz, 6.8, 1.4, "amber.engine", 6, "nozzle_ring", phase=math.pi / 6)
+        b.loft([(-38.4, hexagon(bx, bz, 11.0, 9.6)), (-38.9, hexagon(bx, bz, 9.8, 8.6))], "amber.engine", "exhaust")
+    # Two canted fins on the rear deck: the airframe ancestry, not wings.
     for s in (-1.0, 1.0):
-        a = math.radians(s * 40.0)
-        root = [(s * 1.4, -48.0, 20.8), (s * 1.4, -40.0, 20.8), (s * 1.4, -40.0, 21.6), (s * 1.4, -48.0, 21.6)]
-        tip = [(s * 1.4 + 11.0 * math.sin(a), -50.0, 20.8 + 11.0 * math.cos(a)), (s * 1.4 + 11.0 * math.sin(a), -45.0, 20.8 + 11.0 * math.cos(a)),
-               (s * 1.4 + 11.0 * math.sin(a), -45.0, 21.2 + 11.0 * math.cos(a)), (s * 1.4 + 11.0 * math.sin(a), -50.0, 21.2 + 11.0 * math.cos(a))]
+        a = math.radians(s * 35.0)
+        fx, fz = s * 7.0, deck(-30.0)
+        root = [(fx, -35.0, fz - 0.8), (fx, -24.0, fz - 0.8), (fx, -24.0, fz + 0.2), (fx, -35.0, fz + 0.2)]
+        tip = [(fx + 10.0 * math.sin(a), -37.0, fz + 10.0 * math.cos(a)), (fx + 10.0 * math.sin(a), -31.0, fz + 10.0 * math.cos(a)),
+               (fx + 10.0 * math.sin(a), -31.0, fz + 0.5 + 10.0 * math.cos(a)), (fx + 10.0 * math.sin(a), -37.0, fz + 0.5 + 10.0 * math.cos(a))]
         _wing(b, root, tip, "livery.livery", "fin")
-    b.pad("hp_4", (0.0, -38.0, 21.4), scale=0.6, size=(4.0, 1.5))
+    # The rear deck mounts beside the cap: hp_3 the Overcharge Coil's dish on the right, hp_4
+    # bare on the left.
+    for s in (-1.0, 1.0):
+        rx, ry = s * 9.0, -16.0
+        dz = deck(ry)
+        b.box(rx - 2.5, rx + 2.5, ry - 3.0, ry + 3.0, dz - 1.0, dz + 1.4, "steel.panel", "deck_mount")
+        if s > 0:
+            with b.socket("hp_3", (rx, ry + 3.0, dz + 2.4), scale=0.6):
+                b.prism("y", rx, ry + 4.5, dz + 2.4, 0.8, 3.0, "steel.dark", 6, "coil_mast")
+                b.prism("y", rx, ry + 6.6, dz + 2.4, 3.6, 1.2, "steel.plate", 8, "coil_dish")
+                b.prism("y", rx, ry + 7.5, dz + 2.4, 1.3, 0.8, "amber.engine", 8, "coil_core")
+        else:
+            b.pad("hp_4", (rx, ry + 3.0, dz + 1.9), scale=0.6, size=(4.0, 1.5))
+    # Lift nozzles under the belly, lit: the ground effect.
+    for (nx, ny) in ((-8.0, 10.0), (8.0, 10.0), (-8.0, -16.0), (8.0, -16.0)):
+        b.prism("z", nx, ny, 6.6, 2.4, 1.4, "amber.engine", 6, "lift_nozzle")
 
 
 puffin.maker = "kestrel"

@@ -355,8 +355,8 @@
    }
   },
   "stingray": {
-   "when": "Second pass, 2 October, night.",
-   "note": "Ryan on the first pass: too literal, it does not need a whippy tail; most mounts floating; a floating livery spot in front of the cockpit. So: no tail, the body ends in a stern plate with two lit thruster slits; every mount, the canopy, the eye and the spine stripe seated on the skin by a function of the hull and wing lofts (the rear mounts moved onto the wing roots behind the gimbal, the nose chevron dropped); the fans, the lance and the red outer wings as before. Rendered bare.",
+   "when": "Third pass, 2 October, late.",
+   "note": "Ryan on the second: the centre turret is the focal point and read as a gun slapped on a jeep, not a high-tech Aphelion machine; the rear mounts still janky, two of them could go under the wings so the deck breathes; the stern's two glowing slabs served no purpose. So: a wide low dome turret faired to the crown on a dark ring, turning whole, the Zenith Emitter leaving a dark slot in its forward slope above the canopy; the two rear mounts on pylons under the wings aft of the fans (the Aurora Lattice's dish right, a bare pod left); the stern a dark shroud with two hollow exhaust nozzles, fire at their floors. The helicopter-style movement is being built in the movement session. Rendered bare.",
    "images": [
     {
      "file": "stingray/stingray_front.png",
@@ -368,7 +368,7 @@
     }
    ],
    "before": {
-    "summary": "Before: first pass, 2 October (the tail, the floating mounts)",
+    "summary": "Before: second pass, 2 October, night (the gun on a gimbal, the deck mounts, the slab stern)",
     "images": [
      {
       "file": "stingray/before_stingray_front.png",
@@ -382,8 +382,8 @@
    }
   },
   "puffin": {
-   "when": "Second pass, 2 October, night.",
-   "note": "Ryan on the first pass: hilarious, with floating geometry; make it tryhard-cool rather than funny. So: a longer, lower body; a chined prow in place of the bill, its edge the Prow Projector's lit slot, one hard band of light; a slit canopy in place of the round eyes; a dark dorsal spine for the bird's back; swept stubby wings rooted inside the body; two nacelle boosters slung under them on pylons, intakes forward, lit nozzles aft; a tail boom with two canted fins; the Laser Carbine and the Deflector's dish in pods outboard of the nacelles, the Overcharge Coil's dish on the spine, the bare mount on the boom. Every part seated. Rendered bare.",
+   "when": "Third pass, 2 October, late.",
+   "note": "Ryan on the second: the proportions better but the oval body went past funny into lame, and it looked as if it could fly outright; the first pass had the charm and was only too portly; a Kestrel hovercraft has plane ancestry but is definitely a hovercraft, oblong and wide, hovering over land, never taking off. So: a wide low oblong hull of chamfered sections with a dark lip round its foot; the first pass's head back on top (the chrome face, round glass eyes in dark rings, the tall flat cobalt bill dipping forward under its band, the projector's lit slot at its edge); the dark cap over the head running back as the bird's back; two big boosters buried in the rear sponsons with lit exhausts and vents; two canted fins on the rear deck for the ancestry; no wings. Mounts: the Laser Carbine and the Deflector's dish on the fore deck's shoulders, the Overcharge Coil's dish and the bare mount on the rear deck beside the cap. Rendered bare.",
    "images": [
     {
      "file": "puffin/puffin_front.png",
@@ -395,7 +395,7 @@
     }
    ],
    "before": {
-    "summary": "Before: first pass, 2 October (the bill, the eyes, the cap)",
+    "summary": "Before: second pass, 2 October, night (the oval body, the wings and nacelles)",
     "images": [
      {
       "file": "puffin/before_puffin_front.png",
