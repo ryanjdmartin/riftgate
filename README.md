@@ -62,8 +62,10 @@ and open question from the design sessions.
   an image model and cuts one into `art/foes/`; `soundforge/` builds every sound and the
   six music tracks from written recipes (numpy); `phone.sh` puts a Web build on a phone
   over the LAN, `android.sh` the real debug APK over USB; `hangar.html` is the
-  hangar page, one artifact with four tabs (the codex, the content editor, the names list, the
-  renders), published with the `files` map `hangar_data.py` prints: each `content/<file>.json`
+  hangar page, one artifact with five tabs (the codex, the content editor, the names list, the
+  renders, and the animation viewer, whose script is `hangar_motion.js`, a port of the game's
+  rig), published with the `files` map `hangar_data.py` prints (it also writes each built
+  model as glTF JSON into `build/hangar/models`, since an artifact serves no .glb): each `content/<file>.json`
   at that same path as the shipped content every tab reads and the editor diffs against,
   `hangar/pins.json` (the models' mounts) and `hangar/renders.json` with the renders under
   `docs/hangar/`; Ryan's saved edits live in its database (collection `edits`), the name

@@ -2,9 +2,10 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* One page for the hangar (decided 1 October): the codex, the content editor, the names
-   list and the renders, each a tab, all reading the content files published beside this
-   page so one republish refreshes every tab. Edits and name candidates live in the
-   artifact's database (collections "edits" and "candidates"). */
+   list, the renders and the animation viewer, each a tab, all reading the files published
+   beside this page so one republish refreshes every tab. Edits and name candidates live in
+   the artifact's database (collections "edits" and "candidates"). The animation tab's
+   script is hangar/motion.js (tools/hangar_motion.js), a port of the game's rig. */
 :root{
   --ground:#ECE8DF; --paper:#F6F3EC; --sunk:#E2DDD2; --ink:#1F2226; --ink-2:#4B5058; --ink-3:#7C8189; --rule:#CFC9BC; --rule-strong:#B4AD9F;
   --minerva:#4E6A3B; --kestrel:#33639C; --ws:#8A5730; --aphelion:#B3302C; --arsenal:#3E434D; --parts:#6A5B8E; --other:#6E7279;
@@ -219,6 +220,32 @@ section.model .plate2{color:var(--ink-3);font-size:13px;margin:2px 0 4px}
 .pics img{width:min(100%,420px);max-width:100%;height:auto;image-rendering:pixelated;background:var(--ground);border-radius:3px}
 .pics.small img{width:min(100%,240px)}
 details{margin-top:8px} summary{cursor:pointer;color:var(--ink-3);font-size:13px}
+
+/* ---- animation: the stage keeps its canvas across redraws; the machine wears its maker's rule */
+.mpick{display:flex;gap:4px;flex-wrap:wrap;margin-top:12px}
+.mpick button{border:1px solid var(--rule);border-left:4px solid var(--mk);background:var(--paper);color:var(--ink-2);padding:6px 10px;border-radius:3px;font:600 14px/1 var(--display);letter-spacing:.04em;text-transform:uppercase;cursor:pointer}
+.mpick button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);border-left-color:var(--mk);color:var(--ground)}
+.motion{--acc:var(--other);display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:12px;margin-top:12px;align-items:start}
+.motion.minerva{--acc:var(--minerva)} .motion.kestrel{--acc:var(--kestrel)} .motion.ws{--acc:var(--ws)} .motion.aphelion{--acc:var(--aphelion)} .motion.arsenal{--acc:var(--arsenal)}
+.stage{position:relative;aspect-ratio:4 / 3;max-width:100%;max-height:68vh;background:var(--sunk);border:1px solid var(--rule);border-top:4px solid var(--acc);border-radius:3px;overflow:hidden;touch-action:none}
+.stage canvas{display:block;width:100%;height:100%}
+.stage-note{position:absolute;inset:auto 10px 8px 10px;font:500 12px/1.4 var(--mono);color:var(--ink-3);pointer-events:none}
+.mpanel{display:flex;flex-direction:column;gap:12px;min-width:0}
+.mpanel h2{font:700 26px/1 var(--display);text-transform:uppercase;letter-spacing:.03em;margin:0;color:var(--acc)}
+.mpanel .plate2{color:var(--ink-3);font-size:13px;margin:2px 0 0}
+.mgroup{display:flex;flex-direction:column;gap:6px}
+.mgroup .glabel{font:600 11px/1.2 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.seg{display:flex;gap:4px;flex-wrap:wrap}
+.seg .btn{padding:6px 10px}
+.acts{display:flex;gap:5px;flex-wrap:wrap}
+.scrub{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}
+.scrub input{width:100%;accent-color:var(--acc)}
+.scrub output{font:500 12px/1 var(--mono);color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.mfacts{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;margin:0;font-size:13px}
+.mfacts dt{font:600 11px/1.6 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.mfacts dd{margin:0;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.mhelp{font-size:13px;color:var(--ink-3);margin:0;max-width:60ch}
+@media (max-width:760px){.motion{grid-template-columns:1fr}}
 @media (prefers-reduced-motion: reduce){.toast{transition:none}}
 </style>
 
@@ -235,6 +262,7 @@ details{margin-top:8px} summary{cursor:pointer;color:var(--ink-3);font-size:13px
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<script src="hangar/motion.js"></script>
 <script>
 // ------------------------------------------------------------------ shared
 // The shipped content is published beside this page at content/<file>.json. Edits are
@@ -255,6 +283,7 @@ const SECTIONS = [
   {id: "content", label: "Content"},
   {id: "names", label: "Names"},
   {id: "models", label: "Models"},
+  {id: "motion", label: "Animation"},
 ];
 const MAKER_TAB = {minerva: "minerva", kestrel: "kestrel", wainwright_sutler: "ws", aphelion: "aphelion", arsenal: "arsenal"};
 const KIND_GLYPH = {attack: "ATK", shield: "SHD", vent: "VENT", buff: "BUFF"};
@@ -600,6 +629,7 @@ function render() {
   else if (state.section === "content") renderContent(main);
   else if (state.section === "names") renderNames(main);
   else if (state.section === "models") renderModels(main);
+  else if (state.section === "motion") renderMotion(main);
   if (keep) {
     const n = document.getElementById(keep.id);
     if (n) { n.focus({preventScroll: true}); if (typeof keep.a === "number" && n.setSelectionRange) try { n.setSelectionRange(keep.a, keep.b); } catch (e) {} }
@@ -1166,6 +1196,105 @@ function renderModels(main) {
     main.append(el("section", {class: "model", id: "md-" + id}, el("h2", {}, id), el("p", {class: "plate2"}, "Not in content"), el("p", {class: "when"}, d.when || ""), el("p", {class: "mnote"}, d.note || ""), pics(d.images || [], false)));
   }
   if (location.hash && location.hash.startsWith("#md-")) requestAnimationFrame(() => { const t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); });
+}
+
+// ------------------------------------------------------------------ animation
+// The machines' idle acts, gaits and cornering, played from the sidecars the game reads
+// (hangar/models/<id>.rig.json beside hangar/models/<id>.glb). The stage and its controls
+// are built once and moved into the page on every redraw, so a database update never
+// restarts the animation. hangar/motion.js holds the port of the game's rig.
+const MOTION = {stage: null, wrap: null, panel: null, id: "", key: ""};
+try { const m = JSON.parse(localStorage.getItem("hangar.motion") || "{}"); if (m && typeof m.id === "string") MOTION.id = m.id; } catch (e) {}
+function rememberMotion() { try { localStorage.setItem("hangar.motion", JSON.stringify({id: MOTION.id})); } catch (e) {} }
+const MODE_HELP = {
+  acts: "Every act in turn, back to back, as RIFTGATE_ACTS_DEBUG=1 plays them. Tap one to loop it; drag the bar to hold a moment. The blows layer over whatever is playing.",
+  walk: "Driven straight ahead at the reference speed, as RIFTGATE_MOVE_DEBUG=1 does: the stride, the wheels, the treads and the held poses.",
+  route: "A loop of four moves on the map's hexes: two steps north, a corner east, two steps south, a corner back. The facing follows the cornering module: the Dingo's lag, the banks, a helicopter turning first and then strafing. At each move's end the map snaps the machine to its last step's facing, as the game does.",
+};
+function motionMachines() {
+  return liveEntries("chassis.entries").map(x => x.entry).filter(e => state.pins && Array.isArray(state.pins[e.id]));
+}
+function renderMotion(main) {
+  want("pins", ensurePins);
+  main.append(el("p", {class: "lede"}, "Each machine's idle acts, its walk and its cornering, played from the same files the game reads, so a rebuild and a republish show the numbers as they stand. The look here is the page's own; the game is the judge of the look and of the feel. Drag to turn the view, pinch or scroll to zoom."));
+  if (!state.pins) { main.append(el("p", {class: "help"}, "Loading the machines…")); return; }
+  const list = motionMachines();
+  if (!list.length) { main.append(el("p", {class: "empty"}, "No machine has a model yet.")); return; }
+  if (!list.some(e => e.id === MOTION.id)) MOTION.id = list[0].id;
+  const pick = el("div", {class: "mpick", role: "group", "aria-label": "Machine"});
+  for (const e of list) pick.append(el("button", {id: "mo-pick-" + e.id, "aria-pressed": String(e.id === MOTION.id), style: `--mk:var(--${MAKER_TAB[e.maker] || "other"})`,
+    onclick: () => { MOTION.id = e.id; rememberMotion(); render(); }}, e.name || e.id));
+  main.append(pick);
+  if (!window.HangarMotion) { main.append(el("p", {class: "help"}, "The animation script did not load.")); return; }
+  if (!MOTION.stage) {
+    MOTION.stage = new HangarMotion.Stage();
+    MOTION.panel = el("div", {class: "mpanel"});
+    MOTION.wrap = el("div", {class: "motion"}, MOTION.stage.el, MOTION.panel);
+    MOTION.stage.on(() => paintMotion());
+  }
+  const entry = list.find(e => e.id === MOTION.id);
+  MOTION.wrap.className = "motion " + (MAKER_TAB[entry.maker] || "other");
+  MOTION.stage.movespeed = Number(entry.movespeed) || 50;
+  MOTION.stage.flyer = (entry.traits || []).includes("flyer");
+  main.append(MOTION.wrap);
+  paintMotion(true);
+  MOTION.stage.show(entry.id).then(() => MOTION.stage.start()).catch(ex => { MOTION.stage.note.textContent = "Could not load the model: " + ex.message; console.error(ex); });
+  MOTION.stage.start && MOTION.stage.renderer && MOTION.stage.start();
+}
+const actWords = (n) => String(n).replace(/_/g, " ");
+// The panel redraws whole when its shape changes (a machine, a mode, an act looped) and
+// only moves the scrubber otherwise, so dragging it never loses the handle.
+function paintMotion(force) {
+  const st = MOTION.stage, rig = st.rig, panel = MOTION.panel;
+  const key = [st.id, st.mode, st.loop, st.playing, st.speedK, rig ? rig.acts.length : -1, rig && rig.current ? rig.current.name : ""].join("|");
+  if (!force && key === MOTION.key) {
+    const r = $("#mo-scrub"), o = $("#mo-scrub-out");
+    if (r && rig && rig.current) { if (document.activeElement !== r) r.value = String(rig.t); o.textContent = `${rig.t.toFixed(2)} s of ${rig.current.duration}`; }
+    return;
+  }
+  MOTION.key = key;
+  panel.replaceChildren();
+  const entry = liveEntries("chassis.entries").map(x => x.entry).find(e => e.id === MOTION.id) || {};
+  const mk = ctx().makers.get(entry.maker || "") || {};
+  panel.append(el("div", {}, el("h2", {}, entry.name || MOTION.id), el("p", {class: "plate2"}, [mk.name, ...(entry.traits || []).map(vocabName)].filter(Boolean).join(" · "))));
+  const mode = (id, label) => el("button", {class: "btn", id: "mo-mode-" + id, "aria-pressed": String(st.mode === id), onclick: () => { st.setMode(id); }}, label);
+  panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Show"), el("div", {class: "seg"}, mode("acts", "Acts"), mode("walk", "Walk"), mode("route", "Route")), el("p", {class: "mhelp"}, MODE_HELP[st.mode])));
+  const speed = el("select", {id: "mo-speed", "aria-label": "Playback speed"});
+  for (const k of [0.25, 0.5, 1]) { const o = el("option", {value: String(k)}, k === 1 ? "Full speed" : k + "×"); if (k === st.speedK) o.selected = true; speed.append(o); }
+  speed.addEventListener("change", () => { st.speedK = Number(speed.value); st.emit(); });
+  panel.append(el("div", {class: "seg"},
+    el("button", {class: "btn primary", id: "mo-play", onclick: () => { st.playing = !st.playing; st.emit(); }}, st.playing ? "Pause" : "Play"),
+    speed));
+  if (!rig) { panel.append(el("p", {class: "mhelp"}, "Loading…")); return; }
+  if (st.mode === "acts") {
+    const acts = el("div", {class: "acts"});
+    acts.append(el("button", {class: "fchip", id: "mo-act-all", "aria-pressed": String(!st.loop), onclick: () => st.setLoop("")}, "All, in turn"));
+    for (const a of rig.acts) acts.append(el("button", {class: "fchip", id: "mo-act-" + safeId(a.name), "aria-pressed": String(st.loop === a.name), onclick: () => st.setLoop(a.name)}, actWords(a.name)));
+    panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, rig.acts.length ? `Acts · ${rig.acts.length}` : "Acts"), rig.acts.length ? acts : el("p", {class: "mhelp"}, "This machine has no acts yet.")));
+    if (rig.current) {
+      const r = el("input", {type: "range", id: "mo-scrub", min: "0", max: String(rig.current.duration), step: "0.01", value: String(rig.t), "aria-label": "Time into " + actWords(rig.current.name)});
+      r.addEventListener("input", () => { st.playing = false; st.seek(Number(r.value)); });
+      panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Playing · " + actWords(rig.current.name)),
+        el("div", {class: "scrub"}, r, el("output", {id: "mo-scrub-out", for: "mo-scrub"}, `${rig.t.toFixed(2)} s of ${rig.current.duration}`))));
+    }
+    panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Blows"), el("div", {class: "seg"},
+      el("button", {class: "btn", id: "mo-melee", onclick: () => st.strike(false)}, "Melee"),
+      el("button", {class: "btn", id: "mo-shot", onclick: () => st.strike(true)}, "Shot"))));
+  }
+  const mv = rig.move || {}, g = rig.gait || {};
+  const facts = el("dl", {class: "mfacts"});
+  const fact = (k, v) => { if (v !== "" && v !== null && v !== undefined) facts.append(el("dt", {}, k), el("dd", {}, String(v))); };
+  fact("Joints", Object.keys(rig.joints).length);
+  fact("Move", entry.movespeed);
+  if ((g.tracks && Object.keys(g.tracks).length) || g.stride) fact("Stride", Object.keys(g.tracks || {}).length ? `${g.stride} units` : "");
+  fact("Wheels", Object.keys(g.wheels || {}).length || "");
+  fact("Treads", (g.treads && (g.treads.parts || []).length) ? "scroll" : "");
+  fact("Slide", mv.slide ? mv.slide : "");
+  fact("Bank", mv.bank ? mv.bank + "°" : "");
+  fact("Strafe", mv.strafe ? "turns first, then translates" : "");
+  fact("Tilt", Array.isArray(mv.tilt) ? `${mv.tilt[0]}° forward, ${mv.tilt[1]}° across` : "");
+  fact("Turret", Object.keys(g.hold_aim || {}).length ? "holds its aim" : "");
+  panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "From its sidecar"), facts));
 }
 
 // ------------------------------------------------------------------ the database
