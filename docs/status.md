@@ -36,7 +36,7 @@ session; a B session cannot read it. Shared:
   pass from `tools/soundforge/fx_sketches.py` (the weapons' third cut, the console, the blunt
   impact with its plasma layer, the voice in two registers; every file re-rendered 2 October),
   the console derived again that night, the voice re-rendered), and nothing else; render with
-  `fx_sketches.py`, then `console_sketches.py`, `warroom_sketches.py`, `audition_sketches.py`, `boop_sketches.py` and `fresh_sketches.py`, copy `fx_page.html` in as `index.html`, and
+  `fx_sketches.py`, then `console_sketches.py`, `warroom_sketches.py`, `audition_sketches.py`, `boop_sketches.py`, `fresh_sketches.py` and `assembled_sketches.py`, copy `fx_page.html` in as `index.html`, and
   republish from `tools/soundforge/out/fx/` with `root` set to it (numpy and scipy, plus ffmpeg). The music
   rounds re-render from `phone_sketches.py` if ever wanted again.
 
@@ -361,15 +361,18 @@ sounds (`tools/soundforge/console_sketches.py`, section 1 of the page, and was c
 the pings pitched down, the data burst as a comms static, the voice in unintelligible words in small doses,
 and asked for the Terran nuke warning's boops; a set built from those picks (`boop_sketches.py`) is parked
 unheard on Ryan's word to start fresh; two fresh sets sharing nothing (`fresh_sketches.py`: pulse code,
-rhythm first in one dry voice; the modal shell, a plate and a glass tapped or bowed) are at the top of
-the page's section 1; the parked set, the audition and the four earlier cuts stay below for the record); the voice is re-rendered judgeable (a smooth glottal pulse,
+rhythm first in one dry voice; the modal shell, a plate and a glass tapped or bowed) were judged by
+principle the same day, pulse for the hand and targeting, the shell for the body and the menus, the boop's
+warning and menu figures and the voice on real words from the parked set; the console assembled to those
+verdicts (`assembled_sketches.py`, one primary per event, variants where he said mixed) is at the top of
+the page's section 1; everything earlier stays below for the record); the voice is re-rendered judgeable (a smooth glottal pulse,
 the vowels levelled over the bursts, the contact's level).
 Content carries a `sound` label on a component (a word or a list meaning layers, validated in
 `content_db.gd`; the Breaching Plow says blunt, the Gravity Knuckles blunt and plasma). A pick
 lands as a recipe in `forge.py` with its hook (shape, maker, faction, silhouette, the label, the
 replay telling shield hit from block from hit). The sketch script encodes AAC with `ffmpeg` at
 256 kbps where there is no `afconvert` (its encoder smears a transient's front at 128). Next:
-Ryan's listen of the two fresh console sets (pulse code against the shell: which principle first); the Risen and Infernal
+Ryan's listen of the assembled console (do the two principles sit as one; the voice at two fidelities), then picks into the forge with their hooks; the Risen and Infernal
 Horde boss themes from their seeds, melodies proposed in chat first. The speakers/headphones
 setting is dropped (Ryan, 2 October): the one master balances for both for now.
 
