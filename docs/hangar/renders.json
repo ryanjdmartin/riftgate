@@ -355,8 +355,8 @@
    }
   },
   "stingray": {
-   "when": "First pass, 2 October.",
-   "note": "Aphelion's second machine, the hot hovercraft (Stingray over Lionfish and Sea Wasp: Ryan). A flat pearl lens, the outer wings red, a ducted lift fan sunk flush through each wing (Aphelion's lift is fans, Ryan, 2 October; the exposed-rotor fan-copter stays free for a later flyer), the tail flicked up to a lit barb, the Photosphere Lance under the nose. Mounts: the flare pods and the Pulse Repeater on the shoulders, the Zenith Emitter on a turret joint behind the canopy, the Aurora Lattice's dish on the right rear wing, a bare pad on the left. Rendered bare.",
+   "when": "Second pass, 2 October, night.",
+   "note": "Ryan on the first pass: too literal, it does not need a whippy tail; most mounts floating; a floating livery spot in front of the cockpit. So: no tail, the body ends in a stern plate with two lit thruster slits; every mount, the canopy, the eye and the spine stripe seated on the skin by a function of the hull and wing lofts (the rear mounts moved onto the wing roots behind the gimbal, the nose chevron dropped); the fans, the lance and the red outer wings as before. Rendered bare.",
    "images": [
     {
      "file": "stingray/stingray_front.png",
@@ -366,11 +366,24 @@
      "file": "stingray/stingray_rear.png",
      "alt": "stingray, rear"
     }
-   ]
+   ],
+   "before": {
+    "summary": "Before: first pass, 2 October (the tail, the floating mounts)",
+    "images": [
+     {
+      "file": "stingray/before_stingray_front.png",
+      "alt": "Earlier: stingray, front"
+     },
+     {
+      "file": "stingray/before_stingray_rear.png",
+      "alt": "Earlier: stingray, rear"
+     }
+    ]
+   }
   },
   "puffin": {
-   "when": "First pass, 2 October.",
-   "note": "Kestrel's ground-effect escort, the Puffin the makers row wanted. A short deep chrome body under a dark cap, a tall flat cobalt beak banded with light whose edge is the Prow Projector's emitter, a glass eye each side, stubby wings, two canted fins, and two boosters far too big for it with their nozzles turned down (Kestrel moves everything on boosters: Ryan, 2 October). Mounts: the Laser Carbine under the left wing, the Deflector's dish under the right, the Overcharge Coil's dish on the back, a bare pad on the tail boom. Rendered bare.",
+   "when": "Second pass, 2 October, night.",
+   "note": "Ryan on the first pass: hilarious, with floating geometry; make it tryhard-cool rather than funny. So: a longer, lower body; a chined prow in place of the bill, its edge the Prow Projector's lit slot, one hard band of light; a slit canopy in place of the round eyes; a dark dorsal spine for the bird's back; swept stubby wings rooted inside the body; two nacelle boosters slung under them on pylons, intakes forward, lit nozzles aft; a tail boom with two canted fins; the Laser Carbine and the Deflector's dish in pods outboard of the nacelles, the Overcharge Coil's dish on the spine, the bare mount on the boom. Every part seated. Rendered bare.",
    "images": [
     {
      "file": "puffin/puffin_front.png",
@@ -380,7 +393,20 @@
      "file": "puffin/puffin_rear.png",
      "alt": "puffin, rear"
     }
-   ]
+   ],
+   "before": {
+    "summary": "Before: first pass, 2 October (the bill, the eyes, the cap)",
+    "images": [
+     {
+      "file": "puffin/before_puffin_front.png",
+      "alt": "Earlier: puffin, front"
+     },
+     {
+      "file": "puffin/before_puffin_rear.png",
+      "alt": "Earlier: puffin, rear"
+     }
+    ]
+   }
   }
  }
 }

@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.21 since 2 October, night, the hovercraft on main); republish it from the committed file after every bible change, passing that URL.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.22 since 2 October, night, the hovercraft's second pass); republish it from the committed file after every bible change, passing that URL.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -134,7 +134,11 @@ chassis; its passive Overpressure is **planned**: Ryan leans to an overshield (s
 past its maximum) with a cost, Claude's shape fades the excess at the round's end, his decision
 pending. Both modelled (`stingray(b)`, `puffin(b)` in `models_low.py`; propulsion reads the
 maker: the Stingray on lift fans flush in its wings, the Puffin on boosters far too big for it)
-and rendered to the hangar page's Models tab as first passes for his look. The skirmish's hover
+and rendered to the hangar page's Models tab; rebuilt the same night on his first notes (the
+Stingray too literal and floating: no tail, every part seated on the skin through
+`_ray_top`, `_seat` and `_ridge`; the Puffin hilarious and floating: recut as the sleek
+escort Kestrel meant, the bird left for the pilots to see) and rendered again, the first
+passes folded under each on the Models tab, for his second look. The skirmish's hover
 idle gained a slow pitch (`sway_pitch`), to judge running. The merge took the tens for both
 moves and the balance matrix is rerun with thirteen machines (the Balance paragraph). **The
 hangar page's content is ahead of main again** (2 October, night): another session is tuning
@@ -197,8 +201,8 @@ joints are code too. The round-by-round history is retired (Ryan, 1 October); th
 hangar page's Models tab are the record. **Ryan judges a model only from a render**, never from
 code (`tools/hero_shot.gd` renders bare and needs a window); a hand edit in Blender has to be
 re-expressed in the code to survive a rebuild. **The eleven machines of 1 October are signed off for
-now** (Ryan); the two hovercraft of 2 October are first passes waiting on his look on the Models
-tab; next on the art side is the joint pass (bible section 7, the joints row), then the acts and
+now** (Ryan); the two hovercraft of 2 October are second passes (on his first notes) waiting on his look
+on the Models tab; next on the art side is the joint pass (bible section 7, the joints row), then the acts and
 movement. Open on the models: each class's size per machine, and the machines' scale
 on the map's hexes (Ryan, 2 October: needs adjusting; all are fitted to one width today).
 
@@ -320,7 +324,7 @@ disrupt into a boss's signature is a trick or a trap.
 **Open, in order.** The task list is `docs/todo.md`, one line a task, grouped by who moves
 it and ticked in the commit that lands it; this is the order to take them in.
 
-1. Ryan's first look at the Stingray and the Puffin on the hangar's Models tab, and his decision on the Puffin's passive (the overshield), which then gets built.
+1. Ryan's second look at the Stingray and the Puffin on the hangar's Models tab, and his decision on the Puffin's passive (the overshield), which then gets built.
 2. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
 3. Ryan's text for the new machines and components; the machines' scale on the map; the strikes, the hover idle's pitch, then the acts and movement, judged running.
 4. The discuss-first decisions in the Ryan section, the economy last; enemy targeting decided and built 2 October (the paragraph above; the runner's read is the baseline question); the commander layer once the balance has a baseline.

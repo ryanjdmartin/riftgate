@@ -36,7 +36,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [x] Confirm the ghoul's one move (2 October: agreed and built; Claw, 5 plus 5 a kin on the field)
 - [ ] The game's name
 - [x] Name and brief the second Aphelion machine: the Stingray, built 2 October with the Puffin
-- [ ] Judge the Stingray's and the Puffin's first renders on the hangar's Models tab (notes by part; a note moves a number in `models_low.py`, then `forge.py build` and one `--import`)
+- [ ] Judge the Stingray's and the Puffin's second renders on the hangar's Models tab (the first notes applied 2 October, night: the Stingray's tail gone and every part seated, the Puffin recut as a sleek escort; notes by part, a note moves a number in `models_low.py`, then `forge.py build` and one `--import`)
 - [ ] Decide the Puffin's passive (discuss first): the overshield, shield an ally past its maximum, with its cost or second effect; Claude's shape is Overpressure, the excess fading at the end of the round, the fixed Prow Projector outward-only; then it gets built, with the gauges showing the excess
 - [ ] Judge the hover idle running in the skirmish: the pitch (`sway_pitch` 0.06, new 2 October) and the bob (0.6), hotter or quieter
 
