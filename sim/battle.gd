@@ -193,6 +193,22 @@ func draft_cost(u: Unit, draft: Array) -> int:
 	return field.with_plan(u, others, func() -> int: return field.route_cost(u, draft))
 
 
+## The move gauge's reading of a draft (decided 3 October, bible section 4): the move its
+## steps spent, and the move a slow last step took when it ends on one, as (spent, stopped).
+## A slow step takes whatever is left, so a route that ends on rubble and one that ran its
+## move out on open ground both leave nothing; the gauge tells them apart by what took it.
+## (-1, 0) when the draft cannot be walked.
+func draft_spend(u: Unit, draft: Array) -> Vector2i:
+	var cost := draft_cost(u, draft)
+	if cost < 0 or draft.is_empty():
+		return Vector2i(cost, 0)
+	var last: Vector2i = draft[draft.size() - 1]
+	if BattleMap.move_cost(field.map.terrain_at(last), u.traits) != BattleMap.SLOW:
+		return Vector2i(cost, 0)
+	var before := draft_cost(u, draft.slice(0, draft.size() - 1))
+	return Vector2i(before, cost - before)
+
+
 func clear_route(uid: int) -> void:
 	routes.erase(uid)
 	_drop_conflicts()

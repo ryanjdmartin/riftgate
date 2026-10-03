@@ -86,11 +86,11 @@ func test_spend_ends_the_move_on_a_slow_hex() -> void:
 		assert_false(m.has(hx), "margin hex %s is not part of the field" % str(hx))
 
 
-func test_the_horde_always_has_a_way_no_single_hex_plugs() -> void:
+func test_the_horde_always_has_a_way_three_hexes_wide() -> void:
 	# At the game's size (7x20). Water and crags together cut the rift from the gate on seven
 	# of the first 200 seeds before the guarantee read the horde's rule (36, 37, 51, 92, 113,
 	# 165, 199), and one land hex was the only route on a quarter of maps, so one machine
-	# would have held every pack (measured 2 October).
+	# would have held every pack (measured 2 October). Since 3 October no two hexes cut it.
 	var seeds: Array = [36, 37, 51, 92, 113, 165, 199]
 	for s in range(1, 41):
 		seeds.append(s)
@@ -101,7 +101,74 @@ func test_the_horde_always_has_a_way_no_single_hex_plugs() -> void:
 		for h in path:
 			if not m.is_structure(h):
 				assert_true(BattleMap.passable(m.terrain[h], []), "the horde's route never crosses water for seed %d" % s)
-		assert_eq(m.plugs().size(), 0, "no single hex plugs the horde's route for seed %d: %s" % [s, str(m.plugs())])
+		assert_true(m.narrowest_crossing() >= BattleMap.CROSSING_WIDTH, "the narrowest crossing is three wide for seed %d: %d, cut by %s" % [s, m.narrowest_crossing(), str(m.horde_cut(9))])
+
+
+func test_one_water_feature_a_map() -> void:
+	# Decided 2 October, built 3 October: one river or lake band a map in place of puddles.
+	# A river runs off both edges of the field, a lake band off the side it reaches in from,
+	# or off neither when it lies in the middle; none of it in the rift's mouth or on the
+	# team's ground.
+	var kinds := {}
+	for s in range(1, 41):
+		var m := BattleMap.generate(7, 20, s)
+		kinds[m.water_feature] = true
+		var field_water := 0
+		for hx in m.all_hexes():
+			if m.terrain[hx] == BattleMap.Terrain.WATER:
+				field_water += 1
+				var row := Hex.axial_to_offset(hx).y
+				assert_true(row >= 4 and row <= 20 - BattleMap.GATE_ROWS - 3, "seed %d: water on row %d" % [s, row])
+		assert_true(field_water > 0, "seed %d has water on the field" % s)
+		var west := false
+		var east := false
+		for hx in m.margin.keys():
+			if m.margin[hx] == BattleMap.Terrain.WATER:
+				var col := Hex.axial_to_offset(hx).x
+				west = west or col < 0
+				east = east or col >= 7
+		match m.water_feature:
+			"river":
+				assert_true(west and east, "seed %d: a river runs off both edges" % s)
+			"lake west":
+				assert_true(west and not east, "seed %d: a lake from the west runs off the west edge only" % s)
+			"lake east":
+				assert_true(east and not west, "seed %d: a lake from the east runs off the east edge only" % s)
+			"lake middle":
+				assert_true(not west and not east, "seed %d: a lake in the middle stays on the field" % s)
+			_:
+				assert_true(false, "seed %d has a water feature: %s" % [s, m.water_feature])
+	assert_true(kinds.has("river"), "rivers come up")
+	assert_true(kinds.size() >= 3, "and lakes too: %s" % str(kinds.keys()))
+
+
+func test_the_narrowest_crossing_counts_the_cut() -> void:
+	# A wall of crags across the field with gaps: the crossing's width is the gaps' total,
+	# and the cut is exactly the gap hexes.
+	var m := BattleMap.flat(7, 20)
+	for col in range(7):
+		m.terrain[Hex.offset_to_axial(col, 9)] = BattleMap.Terrain.MOUNTAIN
+	assert_eq(m.narrowest_crossing(), 0, "a full wall cuts the horde off")
+	var gap := [Hex.offset_to_axial(2, 9), Hex.offset_to_axial(5, 9)]
+	for h in gap:
+		m.terrain[h] = BattleMap.Terrain.PLAIN
+	assert_eq(m.narrowest_crossing(), 2, "two gaps, two routes")
+	var cut := m.horde_cut(3)
+	cut.sort()
+	gap.sort()
+	assert_eq(cut, gap, "and the gaps are the cut")
+	assert_eq(m.horde_cut(2).size(), 0, "no cut narrower than two")
+	assert_eq(BattleMap.flat(7, 20).narrowest_crossing(), 5, "an open field is as wide as the rift's open hexes allow")
+	# Widened: the guarantee opens the fewest crags to route the horde round the cut.
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 5
+	m._ensure_ground_path(rng)
+	assert_eq(m.narrowest_crossing(), 3, "one crag opened makes it three")
+	var crags := 0
+	for col in range(7):
+		if m.terrain[Hex.offset_to_axial(col, 9)] == BattleMap.Terrain.MOUNTAIN:
+			crags += 1
+	assert_eq(crags, 4, "and only one")
 
 
 func test_path_respects_blocked() -> void:

@@ -3,7 +3,7 @@ extends RefCounted
 
 ## The battlefield terrain. Rows run north (row 0, the rift) to south (last row, the gate).
 ## Generation is seeded and guarantees the horde a way from the rift to the gate that no
-## single hex plugs (the foe crossings, decided 2 October).
+## fewer than three hexes cut (the foe crossings: decided 2 October, three wide 3 October).
 
 enum Terrain { PLAIN, ROAD, ROUGH, RUINS, WATER, MOUNTAIN }
 
@@ -30,6 +30,8 @@ const MARGIN_COLS := 4
 const MARGIN_ROWS := 3                 # scenery rows beyond the rift
 const CITY_ROWS := 2                   # city rows behind the wall
 var map_seed: int = 0
+var opened: Dictionary = {}            # hex -> the ground the horde's guarantee opened there (the map survey reads it)
+var water_feature := ""               # "river", "lake west", "lake east" or "lake middle" (_lay_water)
 
 const STRUCTURE_HALF_WIDTH := 1   # gate and rift span centre plus this many hexes each side
 ## The gate and the walls are two rows deep: the models stand on the bottom row and the row
@@ -86,6 +88,7 @@ static func generate(w: int, h: int, seed_value: int) -> BattleMap:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value
 	m._lay_landscape(rng)
+	m._lay_water(rng)
 	m._lay_roads(rng)
 	# The gate, the rift, and the ground right in front of each are always open, and the
 	# two rows above the gate's apron are the team's ground: never water or crag, so a
@@ -115,14 +118,11 @@ static func generate(w: int, h: int, seed_value: int) -> BattleMap:
 	return m
 
 
-## A believable landscape rather than per-hex rolls (Ryan, 21 September): water as bodies
-## with shores from a wetness field, gravel as belts from a roughness field, ruins in a few
-## clusters, crags along ridge lines (the ground under a crag is kept as its flavour). The
-## fields are seeded noise, so the same seed is the same map.
+## A believable landscape rather than per-hex rolls (Ryan, 21 September): gravel as belts
+## from a roughness field, ruins in a few clusters, crags along ridge lines (the ground
+## under a crag is kept as its flavour). The fields are seeded noise, so the same seed is
+## the same map. Water is laid after, as one feature (`_lay_water`).
 func _lay_landscape(rng: RandomNumberGenerator) -> void:
-	var wet := FastNoiseLite.new()   # slow, so water gathers into a few bodies
-	wet.seed = map_seed
-	wet.frequency = 0.12
 	var rough := FastNoiseLite.new()
 	rough.seed = map_seed + 101
 	rough.frequency = 0.30
@@ -150,22 +150,19 @@ func _lay_landscape(rng: RandomNumberGenerator) -> void:
 			margin[hx] = Terrain.ROAD
 			elevation[hx] = 0
 			city[hx] = true
-	# The ground from the fields: water where it is wet, wasteland across the rougher
-	# half of what is left, plain in between, ruins in clusters with a dense core.
+	# The ground from the fields: wasteland across the rougher half, plain in between, ruins
+	# in clusters with a dense core.
 	for hx in all:
 		var p := Hex.to_pixel(hx, 1.0)
 		var t := Terrain.PLAIN
-		if wet.get_noise_2d(p.x, p.y) < -0.34:
-			t = Terrain.WATER
-		elif rough.get_noise_2d(p.x, p.y) > 0.02:
+		if rough.get_noise_2d(p.x, p.y) > 0.02:
 			t = Terrain.ROUGH
-		if t != Terrain.WATER:
-			for c in centres:
-				var d := Hex.distance(hx, c)
-				if d <= 2 and rng.randf() < (0.9 if d <= 1 else 0.5):
-					t = Terrain.RUINS
+		for c in centres:
+			var d := Hex.distance(hx, c)
+			if d <= 2 and rng.randf() < (0.9 if d <= 1 else 0.5):
+				t = Terrain.RUINS
 		var crag := absf(ridge.get_noise_2d(p.x, p.y)) < 0.075 and rng.randf() < 0.85 and not is_structure(hx)
-		elevation[hx] = -1 if t == Terrain.WATER else clampi(int(floor((relief.get_noise_2d(p.x, p.y) + 0.45) * 3.4)), 0, 3)
+		elevation[hx] = clampi(int(floor((relief.get_noise_2d(p.x, p.y) + 0.45) * 3.4)), 0, 3)
 		if has(hx):
 			terrain[hx] = t
 			if crag:
@@ -181,6 +178,130 @@ func _lay_landscape(rng: RandomNumberGenerator) -> void:
 				margin[hx] = Terrain.PLAIN
 				crag_base.erase(hx)
 				elevation[hx] = 0
+
+
+## One real water feature a map (decided 2 October, bible section 4: water is built around,
+## and the generator changes for it), in place of the puddles a wetness field used to
+## scatter (6% of the field in bodies of three hexes or so, never across it). Either a river
+## that runs through the whole field and on past both edges, with fords, or a lake band:
+## reaching in from one side, or lying in the middle with ground either side. The horde
+## crosses where the land is: a river's fords are open ground anyone may use, one three
+## wide or two two wide, and a lake leaves CROSSING_WIDTH columns dry or more, so the
+## crossing guarantee seldom has to widen anything. Rows stay clear of the rift's mouth and
+## of the team's ground. A hex chain is a wall to a hex chain, so a river one hex thick
+## stops every foe that is not at a ford.
+const RIVER_CHANCE := 0.6     # otherwise a lake band
+const RIVER_THICK := 0.3      # a river hex with a second hex below it
+const LAKE_DEEP := 0.5        # a lake hex with a third row below it
+
+
+func _lay_water(rng: RandomNumberGenerator) -> void:
+	var lo := 4                              # the rift's mouth stays dry
+	var hi := height - GATE_ROWS - 5         # and clear of the team's ground, thickening included
+	var river := rng.randf() < RIVER_CHANCE
+	if not river:
+		hi -= 2                              # a lake runs two rows deeper than its line
+	if hi < lo:
+		return
+	var base := rng.randi_range(lo, hi)
+	var c0 := -MARGIN_COLS - 1               # past the west edge
+	var c1 := width + MARGIN_COLS            # past the east edge
+	var taper_west := false
+	var taper_east := false
+	water_feature = "river"
+	if not river:
+		match rng.randi_range(0, 2):
+			0:   # from the west, the east columns dry
+				c1 = width - 1 - CROSSING_WIDTH
+				taper_east = true
+				water_feature = "lake west"
+			1:   # from the east
+				c0 = CROSSING_WIDTH
+				taper_west = true
+				water_feature = "lake east"
+			_:   # in the middle, ground either side
+				c0 = rng.randi_range(1, 2)
+				c1 = mini(width - 2, c0 + 2)
+				taper_west = true
+				taper_east = true
+				water_feature = "lake middle"
+	# The line: eastward one hex at a time (east, or half a step north-east or south-east),
+	# drifting about its row but never far.
+	var line: Array[Vector2i] = []
+	var cur := Hex.offset_to_axial(c0, base)
+	while Hex.axial_to_offset(cur).x <= c1:
+		line.append(cur)
+		var steps: Array[Vector2i] = [Vector2i(1, 0), Vector2i(1, 0)]
+		if cur.y > lo and cur.y > base - 2:
+			steps.append(Vector2i(1, -1))
+		if cur.y < hi and cur.y < base + 2:
+			steps.append(Vector2i(0, 1))
+		cur += steps[rng.randi_range(0, steps.size() - 1)]
+	var wet: Array[Vector2i] = []
+	var below := {}   # a river's line hex -> the hex thickening it, when it has one
+	for i in range(line.size()):
+		var hx: Vector2i = line[i]
+		wet.append(hx)
+		var col := Hex.axial_to_offset(hx).x
+		if river:
+			if rng.randf() < RIVER_THICK:
+				wet.append(hx + Vector2i(0, 1))
+				below[hx] = hx + Vector2i(0, 1)
+			continue
+		# A lake is two rows deep and three in places, rounded where it ends in the field.
+		var end := (taper_west and col <= c0) or (taper_east and col >= c1)
+		if end:
+			continue
+		wet.append(hx + Vector2i(0, 1))
+		wet.append(hx + Vector2i(-1, 1))
+		var near_end := (taper_west and col <= c0 + 1) or (taper_east and col >= c1 - 1)
+		if not near_end and rng.randf() < LAKE_DEEP:
+			wet.append(hx + Vector2i(-1, 2))
+	for hx in wet:
+		_flood(hx)
+	if not river:
+		return
+	# The fords: runs of the line inside the field, one of CROSSING_WIDTH hexes or two of
+	# two, back to open ground with whatever thickened them. Along the line, so a ford is as
+	# many hexes wide as it is long, whichever way the river bends there.
+	var inside: Array[Vector2i] = []
+	for hx in line:
+		if has(hx):
+			inside.append(hx)
+	var picks: Array[int] = []
+	var n := inside.size()
+	if n < CROSSING_WIDTH + 4 or rng.randf() < 0.5:
+		var j := rng.randi_range(0, maxi(0, n - CROSSING_WIDTH))
+		for k in range(CROSSING_WIDTH):
+			picks.append(j + k)
+	else:
+		var a := rng.randi_range(0, n - 5)
+		var b := rng.randi_range(a + 3, n - 2)
+		picks.append_array([a, a + 1, b, b + 1])
+	for j in picks:
+		if j >= n:
+			continue
+		for hx in [inside[j], below.get(inside[j], inside[j])]:
+			if has(hx) and terrain[hx] == Terrain.WATER:
+				terrain[hx] = Terrain.PLAIN
+				elevation[hx] = 0
+
+
+## Water on a hex of the field or of the scenery beside it, never on a structure, the
+## city or the wall's rows.
+func _flood(hx: Vector2i) -> void:
+	if Hex.axial_to_offset(hx).y >= height - GATE_ROWS:
+		return
+	if has(hx):
+		if is_structure(hx):
+			return
+		terrain[hx] = Terrain.WATER
+	elif margin.has(hx) and not city.has(hx):
+		margin[hx] = Terrain.WATER
+	else:
+		return
+	crag_base.erase(hx)
+	elevation[hx] = -1
 
 
 ## A paved road runs north from the gate as a connected path with drift, most of the way
@@ -417,36 +538,19 @@ func find_path(from: Vector2i, to: Vector2i, traits: Array, blocked: Dictionary 
 	return path
 
 
-## The horde's way to the gate (decided 2 October, with the binary foe rule: water and crags
-## are walls to a pack). Two guarantees. A path exists: when water and crags together cut the
-## rift from the gate (7 of 200 seeds at the game's size), a corridor is carved, opening
-## whatever is in the way. No single hex plugs it: a hex every foe route must cross would let
-## one machine hold every pack (49 of 193 maps before this), so each plug is widened by
-## opening a blocked hex beside it until the route survives the loss of any one hex. Only a
-## hex on the current cheapest route can be a plug, so those are the ones tested.
+## The horde's way to the gate (decided 2 October with the binary foe rule, widened 3
+## October: water and crags are walls to a pack). Two guarantees. A path exists: when water
+## and crags together cut the rift from the gate (7 of 200 seeds at the game's size), a
+## corridor is carved, opening whatever is in the way. The narrowest crossing is at least
+## CROSSING_WIDTH hexes: fewer than that many hexes never cut every foe route, so holding
+## all the packs takes a line of three machines, never one or two. Each cut found is
+## widened by the fewest openings that route the horde round it, until none is left.
 func _ensure_ground_path(rng: RandomNumberGenerator) -> void:
 	_carve_corridor(rng)
 	for round in range(width * height):
-		var plug := _find_plug()
-		if plug == Vector2i(1 << 20, 0):
+		var cut := horde_cut(CROSSING_WIDTH)
+		if cut.is_empty() or not _carve_around(cut, rng):
 			return
-		var opened := false
-		var around := Hex.neighbors(plug)
-		# Open blocked neighbours in a seeded order until the plug stops being one.
-		for k in range(around.size() - 1, 0, -1):
-			var j := rng.randi_range(0, k)
-			var tmp: Vector2i = around[k]
-			around[k] = around[j]
-			around[j] = tmp
-		for n in around:
-			if not has(n) or is_structure(n) or passable(terrain[n], []):
-				continue
-			_open(n)
-			opened = true
-			if not _is_plug(plug):
-				break
-		if not opened:
-			break   # a plug with nothing to open beside it: the field's own edge
 
 
 func _carve_corridor(rng: RandomNumberGenerator) -> void:
@@ -470,31 +574,181 @@ func _carve_corridor(rng: RandomNumberGenerator) -> void:
 			_open(cur)
 
 
-## A hex on the horde's cheapest route whose loss would cut it, or the sentinel when none.
-func _find_plug() -> Vector2i:
-	for h in find_path(gate, rift, []):
-		if is_structure(h):
+## The horde's narrowest crossing in hexes (Ryan, 3 October; two until then): no fewer
+## hexes than this together cut every foe route from the rift to the gate.
+const CROSSING_WIDTH := 3
+
+
+## The ground a pack may stand on between the rift and the gate: field, not structure,
+## passable by the horde's rule.
+func _horde_ground(h: Vector2i) -> bool:
+	return has(h) and not is_structure(h) and passable(terrain[h], [])
+
+
+## How many routes the horde has from the rift to the gate with no hex in common, counted up
+## to `limit`: the width of the narrowest crossing, since that many hexes are the fewest
+## that cut them all (Menger). Packs strike the gate from beside its apron, and come out of
+## the rift onto the hexes around it.
+func narrowest_crossing(limit: int = 9) -> int:
+	return int(_horde_flow(limit)[0])
+
+
+## The fewest hexes whose loss together cuts every foe route, when there are fewer than
+## `limit` of them; empty when the crossing is at least that wide (or there is no route at
+## all, which `_carve_corridor` mends first).
+func horde_cut(limit: int = CROSSING_WIDTH) -> Array[Vector2i]:
+	var res := _horde_flow(limit)
+	var cut: Array[Vector2i] = []
+	if int(res[0]) >= limit:
+		return cut
+	var reached: Dictionary = res[1]
+	for h in terrain.keys():
+		if reached.has(_flow_in(h)) and not reached.has(_flow_out(h)):
+			cut.append(h)
+	return cut
+
+
+## Max flow with every hex of the horde's ground carrying one route: each hex is split into
+## an in node and an out node joined by one unit of capacity. Returns [flow, the nodes the
+## source still reaches in the residual graph]; that reach's edge is the minimum cut.
+const _SOURCE := -1
+const _SINK := -2
+
+
+func _flow_in(h: Vector2i) -> Vector3i:
+	return Vector3i(h.x, h.y, 0)
+
+
+func _flow_out(h: Vector2i) -> Vector3i:
+	return Vector3i(h.x, h.y, 1)
+
+
+func _horde_flow(limit: int) -> Array:
+	var src := Vector3i(0, 0, _SOURCE)
+	var snk := Vector3i(0, 0, _SINK)
+	var cap := {}    # [from, to] -> capacity left
+	var adj := {}    # node -> the nodes an edge runs to, either way
+	var link := func(a: Vector3i, b: Vector3i, c: int) -> void:
+		cap[[a, b]] = int(cap.get([a, b], 0)) + c
+		if not cap.has([b, a]):
+			cap[[b, a]] = 0
+		if not adj.has(a):
+			adj[a] = []
+		if not adj.has(b):
+			adj[b] = []
+		if not (adj[a] as Array).has(b):
+			adj[a].append(b)
+			adj[b].append(a)
+	var big := width * height
+	for h in terrain.keys():
+		if not _horde_ground(h):
 			continue
-		if _is_plug(h):
-			return h
-	return Vector2i(1 << 20, 0)
+		link.call(_flow_in(h), _flow_out(h), 1)
+		for n in Hex.neighbors(h):
+			if _horde_ground(n):
+				link.call(_flow_out(h), _flow_in(n), big)
+			elif rift_hexes.has(n):
+				link.call(src, _flow_in(h), big)
+			elif gate_hexes.has(n):
+				link.call(_flow_out(h), snk, big)
+	var flow := 0
+	var reached := {src: true}
+	while true:
+		# Breadth first through what capacity is left; every augmenting route carries one,
+		# since every route crosses a hex.
+		reached = {src: true}
+		var prev := {}
+		var queue: Array = [src]
+		while not queue.is_empty() and not reached.has(snk):
+			var cur: Vector3i = queue.pop_front()
+			for nxt in adj.get(cur, []):
+				if not reached.has(nxt) and int(cap[[cur, nxt]]) > 0:
+					reached[nxt] = true
+					prev[nxt] = cur
+					queue.append(nxt)
+		if not reached.has(snk) or flow >= limit:
+			break
+		var v := snk
+		while v != src:
+			var u: Vector3i = prev[v]
+			cap[[u, v]] = int(cap[[u, v]]) - 1
+			cap[[v, u]] = int(cap[[v, u]]) + 1
+			v = u
+		flow += 1
+	return [flow, reached]
 
 
-func _is_plug(h: Vector2i) -> bool:
-	return find_path(gate, rift, [], {h: true}).is_empty()
+## Route the horde round a cut by the cheapest openings: the cheapest way from the rift to
+## the gate where the horde's ground costs nothing, a crag costs one and water two (a gap
+## in a ridge before another ford in the river, which is the map's one water feature), and
+## the cut's own hexes are refused; its blocked hexes are opened. Seeded ties, so the same
+## map widens the same way. False when there is no such way (the field's own edge).
+func _carve_around(cut: Array[Vector2i], rng: RandomNumberGenerator) -> bool:
+	var refused := {}
+	for h in cut:
+		refused[h] = true
+	var dist := {}
+	var prev := {}
+	var frontier: Array = []
+	for r in rift_hexes:
+		for n in Hex.neighbors(r):
+			if has(n) and not is_structure(n) and not refused.has(n) and not dist.has(n):
+				dist[n] = _opening_cost(n)
+				frontier.append([dist[n], n])
+	var goal := Vector2i(1 << 20, 0)
+	while not frontier.is_empty():
+		var best := 0
+		for i in range(1, frontier.size()):
+			if frontier[i][0] < frontier[best][0]:
+				best = i
+		var top: Array = frontier.pop_at(best)
+		var h: Vector2i = top[1]
+		if int(top[0]) > int(dist[h]):
+			continue
+		var at_gate := false
+		for n in Hex.neighbors(h):
+			if gate_hexes.has(n):
+				at_gate = true
+		if at_gate:
+			goal = h
+			break
+		var around := Hex.neighbors(h)
+		for k in range(around.size() - 1, 0, -1):
+			var j := rng.randi_range(0, k)
+			var tmp: Vector2i = around[k]
+			around[k] = around[j]
+			around[j] = tmp
+		for n in around:
+			if not has(n) or is_structure(n) or refused.has(n):
+				continue
+			var nd: int = int(dist[h]) + _opening_cost(n)
+			if not dist.has(n) or nd < int(dist[n]):
+				dist[n] = nd
+				prev[n] = h
+				frontier.append([nd, n])
+	if not dist.has(goal):
+		return false
+	var opened := false
+	var cur := goal
+	while true:
+		if not passable(terrain[cur], []):
+			_open(cur)
+			opened = true
+		if not prev.has(cur):
+			break
+		cur = prev[cur]
+	return opened
+
+
+func _opening_cost(h: Vector2i) -> int:
+	if passable(terrain[h], []):
+		return 0
+	return 2 if terrain[h] == Terrain.WATER else 1
 
 
 ## Open a hex to the horde: plain ground, no crag, level.
 func _open(h: Vector2i) -> void:
+	opened[h] = terrain[h]
 	terrain[h] = Terrain.PLAIN
 	crag_base.erase(h)
 	elevation[h] = 0
-
-
-## Every hex whose loss alone would cut the horde's route: the test of the guarantee.
-func plugs() -> Array[Vector2i]:
-	var out: Array[Vector2i] = []
-	for h in find_path(gate, rift, []):
-		if not is_structure(h) and _is_plug(h):
-			out.append(h)
-	return out
