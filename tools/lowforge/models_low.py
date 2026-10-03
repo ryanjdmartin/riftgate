@@ -1673,10 +1673,12 @@ def stingray(b):
     b.act("lance_charge", 2.6, glow=[(["lance_muzzle"], [(0.3, 0.0), (1.2, 4.0), (1.8, 4.0), (2.4, 0.0)])])
     b.act("thrusters_surge", 2.4, body=[(0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (1.0, 0.0, 3.0, -1.0, 0.0, -6.0, 0.0), (2.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
           glow=[(["thruster_slit"], [(0.3, 0.0), (0.9, 3.0), (1.5, 3.0), (2.2, 0.0)])])
-    # Movement (first numbers, the joints row): a hovercraft slides a little, more controlled
-    # than the Dingo, and banks some; the nose drops a touch under way.
-    b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, -3.0, 0.0), glow={"parts": ["thruster_slit"], "k": 2.0})
-    b.move(slide=0.3, bank=12.0)
+    # Movement (Ryan, 3 October): the first of the helicopter-style machines, on its fans. It
+    # keeps its facing and leans into its travel: nose down to go forward, nose up to go
+    # back, a side down to strafe; no bank, no rock, the tilt does both. The map turns it
+    # to where it will end up facing first, then translates it there.
+    b.gait(glow={"parts": ["thruster_slit"], "k": 2.0})
+    b.move(slide=0.0, bank=0.0, strafe=1.0, tilt=(14.0, 12.0))
 
 
 stingray.maker = "aphelion"
@@ -1776,9 +1778,11 @@ def puffin(b):
     b.act("prow_pulse", 2.6, glow=[(["projector_slot", "prow_band"], [(0.3, 0.0), (0.7, 3.5), (1.1, 0.5), (1.5, 3.5), (1.9, 0.5), (2.4, 0.0)])])
     b.act("lift_hop", 2.4, body=[(0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (1.0, 0.0, 0.0, 3.0, 0.0, 0.0, 6.0), (1.6, 0.0, 0.0, 1.0, 0.0, 0.0, -4.0), (2.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
           glow=[(["lift_nozzle"], [(0.3, 0.0), (0.9, 3.0), (1.6, 1.0), (2.2, 0.0)])])
-    # Movement (first numbers, the joints row): the same as the Stingray's.
-    b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, -3.0, 0.0), glow={"parts": ["nozzle_ring", "exhaust"], "k": 2.0})
-    b.move(slide=0.3, bank=12.0)
+    # Movement (Ryan, 3 October): a cross between a jet and the Dingo, on its boosters: it
+    # banks into turns like the Sparrowhawk and its facing lags the path like the Dingo's,
+    # less wildly, so it drifts through corners; the nose drops under way.
+    b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, -4.0, 0.0), glow={"parts": ["nozzle_ring", "exhaust"], "k": 2.0}, rock=2.0)
+    b.move(slide=0.6, bank=22.0)
 
 
 puffin.maker = "kestrel"

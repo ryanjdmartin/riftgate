@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.24 since 3 October, the joints, acts and movement built on top of the hovercraft's v0.22; the committed file is ahead of the page until a session with the account republishes it); republish it from the committed file after every bible change, passing that URL.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.25 since 3 October, the joints, acts and movement built on top of the hovercraft's v0.22; the committed file is ahead of the page until a session with the account republishes it); republish it from the committed file after every bible change, passing that URL.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -272,7 +272,13 @@ of the facing's lag; the Stingray and the Puffin have three first-cut acts each 
 their thrusters under way. Not done: the feet arcing a little through the stance. Tests cover
 the cycle sampling, a walker stepping and settling, wheels and casters, holds, rock and bank,
 the held aim, the drift, the hovercraft's sidecars, every gait against its model, and no act
-under way.
+under way. **Movement styles (Ryan, 3 October):** the Stingray is the first helicopter-style
+machine, on its fans, with one or two more to come: it keeps its facing through a move (the
+map's `strafe`: it yaws to the facing it will end with in the first moment, then translates
+there, sideways or backward as the path demands) and leans into its travel by its speed
+(`tilt`: nose down going forward, up going back, a side down going that way; no bank, no
+rock). The Puffin is a jet crossed with the Dingo, on its boosters: it banks into turns and
+its facing lags the path, less wildly than the Dingo's. Both for Ryan to judge on a real move.
 
 **The codex (29 September; a tab of the hangar page since 1 October).** One surface showing a
 chassis and the components fitted to it: the Codex tab renders it in the browser from the
@@ -394,7 +400,7 @@ it and ticked in the commit that lands it; this is the order to take them in.
 
 1. Ryan's second look at the Stingray and the Puffin on the hangar's Models tab, and his decision on the Puffin's passive (the overshield), which then gets built.
 2. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
-3. Ryan's text for the new machines and components; the machines' scale on the map; the strikes, the hover idle's pitch, the idle acts (`RIFTGATE_ACTS_DEBUG=1`) and the gaits (`RIFTGATE_MOVE_DEBUG=1`, and a real move for the Dingo's drift and the banks), judged running; the movement branch merged on his word.
+3. Ryan's text for the new machines and components; the machines' scale on the map; the strikes, the hover idle's pitch, the idle acts (`RIFTGATE_ACTS_DEBUG=1`) and the gaits (`RIFTGATE_MOVE_DEBUG=1`, and a real move for the Dingo's drift, the Stingray's helicopter strafe and the banks), judged running; the movement branch merged on his word.
 4. The discuss-first decisions in the Ryan section, the economy last; enemy targeting decided and built 2 October (the paragraph above; the runner's read is the baseline question); the commander layer once the balance has a baseline.
 5. Ready to build: the pacing pieces after Ryan's session; the movement leftovers (the gauge, a three-wide crossing); the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased parked, Corrode, foe roles), and a dedicated hunter foe and spawned formations once proposed.
 6. Audio: a full play of Hold The Line, the console's fresh pass and the effects' picks, the two boss themes.

@@ -704,12 +704,20 @@ class Build:
         self.gait_spec = out
         return out
 
-    def move(self, slide=0.0, bank=0.0):
+    def move(self, slide=0.0, bank=0.0, strafe=0.0, tilt=None):
         """The cornering module's numbers for this machine (the joints row, 2 October):
         `slide`, how far the body drifts from its path on a turn and how slowly its heading
         catches up, 0 for a machine that corners on rails; `bank`, how far a flyer or
-        hovercraft rolls into the turn, in degrees."""
-        self.tuning = {"slide": float(slide), "bank": float(bank)}
+        hovercraft rolls into the turn, in degrees. A helicopter-style machine (Ryan, 3
+        October) keeps its facing and leans into its travel instead: `strafe` is how much
+        of its facing it holds through a move (1 turns to where it will end up facing
+        first, then translates there, sideways or backward as the path demands; 0 faces its
+        heading like everything else), and `tilt` is (pitch, roll) in degrees at the
+        reference speed: nose down going forward and up going back, a side down going that
+        way. A helicopter banks 0 and rocks 0; the tilt does both."""
+        self.tuning = {"slide": float(slide), "bank": float(bank), "strafe": float(strafe)}
+        if tilt is not None:
+            self.tuning["tilt"] = [float(tilt[0]), float(tilt[1])]
 
     def rig(self):
         """The rig sidecar: every joint's axis, limits and parent, the acts and the

@@ -157,19 +157,16 @@
    "k": 2.0
   },
   "rock": 0.0,
-  "hold_aim": {},
-  "body_hold": [
-   0.0,
-   0.0,
-   0.0,
-   0.0,
-   -3.0,
-   0.0
-  ]
+  "hold_aim": {}
  },
  "move": {
-  "slide": 0.3,
-  "bank": 12.0
+  "slide": 0.0,
+  "bank": 0.0,
+  "strafe": 1.0,
+  "tilt": [
+   14.0,
+   12.0
+  ]
  },
  "glow_parts": [
   "lance_muzzle",

@@ -678,8 +678,10 @@ func clear_anim(uid: int) -> void:
 ## banking of flyers and hovercraft. The body's facing and its path are separate: the facing
 ## eases toward the heading at a rate the machine's `slide` sets (0 snaps, 1 lags), and the
 ## rig is told the speed, the bearing of the travel against the facing (the casters point
-## along it) and the turn (the steering and the bank). A standing machine is driven at zero,
-## so its gait settles.
+## along it) and the turn (the steering and the bank). A helicopter-style machine (Ryan, 3
+## October; `strafe`) faces where it will end up facing instead, turning there first and
+## then translating, so its travel can be sideways or backward and its rig tilts it that
+## way. A standing machine is driven at zero, so its gait settles.
 func _corner(uid: int, rig: MechRig, delta: float) -> void:
 	if not _pivots.has(uid) or delta <= 0.0:
 		return
@@ -695,13 +697,36 @@ func _corner(uid: int, rig: MechRig, delta: float) -> void:
 		speed = (pos - (_last_pos[uid] as Vector3)).length() / delta / maxf(0.001, k)
 	_last_pos[uid] = pos
 	var slide := clampf(float(rig.move.get("slide", 0.0)), 0.0, 1.0)
+	var strafe := clampf(float(rig.move.get("strafe", 0.0)), 0.0, 1.0)
 	var rate := lerpf(SLIDE_RATE_SNAP, SLIDE_RATE_FULL, slide)
 	var heading: float = _heading[uid]
+	var want := heading
+	if strafe > 0.0:
+		var u := field.unit_by_id(uid)
+		if u != null:
+			want = facing_target(heading, facing_yaw(u.facing), strafe)
+			rate = lerpf(rate, STRAFE_TURN_RATE, strafe)
 	var facing := pivot.rotation.y
-	var diff := wrapf(heading - facing, -PI, PI)
+	var diff := wrapf(want - facing, -PI, PI)
 	var step := diff * (1.0 - exp(-delta * rate))
 	pivot.rotation.y = facing + step
 	rig.drive(speed, wrapf(heading - pivot.rotation.y, -PI, PI), step / delta, delta)
+
+
+const STRAFE_TURN_RATE := 6.0   # per second: a helicopter yaws to where it will face in the first moment of a move, then translates
+
+
+## The pivot's yaw for one of the six facings: the model faces -Z (north) at rest and
+## screen-down is +Z, so the facing turns the other way from the pixel direction.
+static func facing_yaw(facing: int) -> float:
+	var d: Vector2 = Hex.to_pixel(Hex.DIRECTIONS[facing], 1.0).normalized()
+	return atan2(-d.x, -d.y)
+
+
+## Where a moving machine turns its nose: its heading, or, by its `strafe`, the facing it
+## will end the move with, so it travels sideways or backward holding that.
+static func facing_target(heading: float, final_facing: float, strafe: float) -> float:
+	return lerp_angle(heading, final_facing, clampf(strafe, 0.0, 1.0))
 
 
 var _env: Environment = null
@@ -1217,8 +1242,7 @@ func sync() -> void:
 			# The model faces -Z (north) at rest; screen-down is +Z, so the facing turns the
 			# other way from the pixel direction. The pivot turns; the seat's southward set
 			# above it does not.
-			var d: Vector2 = Hex.to_pixel(Hex.DIRECTIONS[u.facing], 1.0).normalized()
-			(_pivots[u.id] as Node3D).rotation.y = atan2(-d.x, -d.y)
+			(_pivots[u.id] as Node3D).rotation.y = facing_yaw(u.facing)
 	_hide_props_under(occupied)
 	for uid in _units.keys():
 		if not seen.has(uid):

@@ -430,5 +430,48 @@ func test_the_hovercraft_have_acts_and_cornering_numbers() -> void:
 	for id in ["stingray", "puffin"]:
 		var side := MechRig.load_sidecar(id)
 		assert_true(side.get("acts", []).size() >= 3, "%s has several acts" % id)
-		assert_true(float(side.get("move", {}).get("bank", 0.0)) > 0.0, "%s banks" % id)
-		assert_true(float(side.get("move", {}).get("slide", 0.0)) > 0.0, "%s slides a little" % id)
+	var puffin: Dictionary = MechRig.load_sidecar("puffin")["move"]
+	assert_true(float(puffin.get("bank", 0.0)) > 0.0 and float(puffin.get("slide", 0.0)) > 0.0, "the Puffin banks and slides, the jet and the Dingo crossed")
+	var stingray: Dictionary = MechRig.load_sidecar("stingray")["move"]
+	assert_true(float(stingray.get("strafe", 0.0)) > 0.0 and stingray.has("tilt"), "the Stingray strafes and tilts, a helicopter")
+
+
+func test_a_helicopter_tilts_into_its_travel_and_holds_its_facing() -> void:
+	var pair := _rig_for("stingray", 2)
+	var rig: MechRig = pair[0]
+	var model: Node3D = pair[1]
+	assert_true(float(rig.move.get("strafe", 0.0)) >= 1.0, "the Stingray holds its facing")
+	assert_true(is_zero_approx(float(rig.move.get("bank", 0.0))), "and never banks: the tilt does it")
+	_drive(rig, MechRig.MOVE_REF_SPEED, 1.5)   # straight ahead
+	assert_true(model.rotation.x < -deg_to_rad(8.0), "forward: the nose drops (%f)" % rad_to_deg(model.rotation.x))
+	assert_true(absf(model.rotation.z) < deg_to_rad(0.5), "level across")
+	_drive(rig, MechRig.MOVE_REF_SPEED, 1.5, PI)   # backing
+	assert_true(model.rotation.x > deg_to_rad(8.0), "backward: the nose comes up (%f)" % rad_to_deg(model.rotation.x))
+	_drive(rig, MechRig.MOVE_REF_SPEED, 1.5, deg_to_rad(90.0))   # strafing left
+	# The node's z points backward, so a positive turn about it drops the left side (the same
+	# sign the Goshawk's bank into a left turn reads).
+	assert_true(model.rotation.z > deg_to_rad(6.0), "left: the left side drops (%f)" % rad_to_deg(model.rotation.z))
+	assert_true(absf(model.rotation.x) < deg_to_rad(1.0), "and the nose levels")
+	_drive(rig, MechRig.MOVE_REF_SPEED, 1.5, deg_to_rad(-90.0))
+	assert_true(model.rotation.z < -deg_to_rad(6.0), "right: the right side")
+	_drive(rig, 0.0, 3.0)
+	assert_true((model.rotation - rig._body_rest_rot).length() < deg_to_rad(0.3), "level again on station")
+	pair[1].free()
+	# The Puffin is the jet and the Dingo crossed: it banks and its facing lags the path.
+	pair = _rig_for("puffin", 2)
+	rig = pair[0]
+	assert_true(float(rig.move.get("bank", 0.0)) > 15.0 and float(rig.move.get("slide", 0.0)) > 0.4, "the Puffin banks and slides")
+	assert_true(is_zero_approx(float(rig.move.get("strafe", 0.0))), "and faces its heading")
+	_drive(rig, MechRig.MOVE_REF_SPEED, 1.5, 0.0, 1.0)
+	assert_true(pair[1].rotation.z > deg_to_rad(8.0), "banking into a left turn")
+	pair[1].free()
+
+
+func test_the_map_turns_a_strafing_machine_to_its_final_facing() -> void:
+	var heading := 1.0
+	var final := -2.0
+	assert_true(is_equal_approx(Map3D.facing_target(heading, final, 0.0), heading), "no strafe: the nose follows the heading")
+	assert_true(is_equal_approx(Map3D.facing_target(heading, final, 1.0), final), "a full strafe: the nose goes where the move ends facing")
+	var yaw_north := Map3D.facing_yaw(1)
+	var yaw_south := Map3D.facing_yaw(4)
+	assert_true(absf(wrapf(yaw_north - yaw_south, -PI, PI)) > PI - 0.01, "the six facings are yaws, opposite ones half a turn apart")

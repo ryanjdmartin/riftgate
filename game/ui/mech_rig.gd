@@ -30,8 +30,12 @@ extends RefCounted
 ## scrolled, steering knuckles turned with the turn and casters pointed along the travel,
 ## offsets held while moving (the Badger's booms lifting the claw), boosters brightening, a
 ## rock on pulling away and stopping, and a bank into turns for what flies. The map's
-## cornering module owes the rig the numbers (Map3D). RIFTGATE_MOVE_DEBUG=1 drives every
-## machine constantly at the reference speed, on both screens, for judging a gait running.
+## cornering module owes the rig the numbers (Map3D). A helicopter-style machine (Ryan, 3
+## October: the Stingray, and one or two more to come) keeps its facing and tilts toward
+## its travel instead: nose down to go forward, nose up to go back, a side down to go that
+## way (`tilt` in its cornering numbers; the map holds its facing through `strafe`).
+## RIFTGATE_MOVE_DEBUG=1 drives every machine constantly at the reference speed, on both
+## screens, for judging a gait running.
 
 const GAP_MIN := 2.5          # seconds between acts, at least
 const GAP_MAX := 6.5          # and at most
@@ -79,6 +83,7 @@ var _speed := 0.0                  # model units a second, smoothed
 var _blend := 0.0                  # 0 standing, 1 moving: the gait's weight
 var _accel := 0.0                  # the smoothed change of speed, for the rock
 var _bank := 0.0                   # degrees of roll into the turn, eased
+var _tilt := Vector2.ZERO          # degrees of (pitch, roll) toward the travel, a helicopter's, eased
 var _drift := 0.0                  # model units the body sits off its path, right positive, eased (the slide)
 var _aim_hold: Dictionary = {}     # joint -> degrees of yaw a turret holds against the hull's turning
 var _tread_mats: Array = []        # [[StandardMaterial3D, base uv offset]] the treads scroll
@@ -238,6 +243,7 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 	_blend = 0.0
 	_accel = 0.0
 	_bank = 0.0
+	_tilt = Vector2.ZERO
 	_drift = 0.0
 	_aim_hold.clear()
 	_gait_rot.clear()
@@ -439,6 +445,13 @@ func drive(speed: float, aim: float, turn: float, delta: float) -> void:
 	_dist += _speed * delta
 	var bank_want := float(move.get("bank", 0.0)) * clampf(-turn / BANK_TURN, -1.0, 1.0)   # a left turn drops the left wing: roll negative
 	_bank = lerpf(_bank, bank_want, 1.0 - exp(-delta / 0.3))
+	# A helicopter's tilt: it leans into its travel by its speed, nose down going forward,
+	# nose up going back, the left side down going left (the roll is positive right-down).
+	var tilt_spec: Array = move.get("tilt", [])
+	if tilt_spec.size() >= 2:
+		var share := clampf(_speed / MOVE_REF_SPEED, 0.0, 1.0)
+		var want := Vector2(-float(tilt_spec[0]) * cos(aim), -float(tilt_spec[1]) * sin(aim)) * share
+		_tilt = _tilt.lerp(want, 1.0 - exp(-delta / 0.35))
 	# The slide: a body with inertia sits off a path that turned under it, on the outside,
 	# by how square the travel is to its facing (the Dingo's drift; a hovercraft's a little).
 	var drift_want := float(move.get("slide", 0.0)) * DRIFT_UNITS * sin(aim) * clampf(_speed / MOVE_REF_SPEED, 0.0, 1.0)
@@ -514,7 +527,8 @@ func _evaluate_gait(aim: float, turn: float) -> void:
 	var rock := float(gait.get("rock", 0.0))
 	if rock != 0.0:
 		body_rot.x += rock * clampf(_accel / ROCK_ACCEL, -1.0, 1.0)   # pulling away rocks the nose up
-	body_rot.z += _bank
+	body_rot.z += _bank + _tilt.y
+	body_rot.x += _tilt.x
 	body_slide.x += _drift
 	_body_move_rot = body_rot
 	_body_move_slide = body_slide

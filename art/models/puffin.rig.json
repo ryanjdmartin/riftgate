@@ -191,20 +191,21 @@
    ],
    "k": 2.0
   },
-  "rock": 0.0,
+  "rock": 2.0,
   "hold_aim": {},
   "body_hold": [
    0.0,
    0.0,
    0.0,
    0.0,
-   -3.0,
+   -4.0,
    0.0
   ]
  },
  "move": {
-  "slide": 0.3,
-  "bank": 12.0
+  "slide": 0.6,
+  "bank": 22.0,
+  "strafe": 0.0
  },
  "glow_parts": [
   "exhaust",
