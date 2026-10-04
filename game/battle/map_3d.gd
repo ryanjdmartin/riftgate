@@ -73,7 +73,9 @@ var _rigs: Dictionary = {}      # unit id -> MechRig: the machine's joints, its 
 var _scale: Dictionary = {}     # unit id -> the model's scale on the map (model units to world units)
 var _heading: Dictionary = {}   # unit id -> the yaw the move is heading, radians, while a move plays
 var _last_pos: Dictionary = {}  # unit id -> the seat's position last frame, for the speed
-const SLIDE_RATE_SNAP := 30.0   # per second: a machine with no slide faces its heading at once
+var _rest_yaw: Dictionary = {}  # unit id -> the facing it settles to at rest; eased, never snapped (Ryan, 4 October)
+const REST_TURN_RATE := 4.0     # per second: a standing machine turns to its recorded facing this briskly
+const SLIDE_RATE_SNAP := 12.0   # per second: a machine with no slide follows its heading round the curve, smoothly (Ryan, 4 October: was 30, a snap)
 const SLIDE_RATE_FULL := 2.2    # per second: a slide of 1 (the Dingo) lets the facing lag the path through a corner
 var _base: Dictionary = {}      # unit id -> resting position, which the idle sway plays around
 var _phase: Dictionary = {}     # unit id -> idle phase, so the team does not sway in step
@@ -688,7 +690,15 @@ func _corner(uid: int, rig: MechRig, delta: float) -> void:
 	var pivot: Node3D = _pivots[uid]
 	var k: float = float(_scale.get(uid, 1.0))
 	if not _anim_px.has(uid) or not _heading.has(uid):
-		rig.drive(0.0, 0.0, 0.0, delta)
+		# At rest: settle to the facing the simulation records, eased, so a move that ended on
+		# a lagging facing (the Dingo's drift) never snaps round.
+		var turn := 0.0
+		if _rest_yaw.has(uid):
+			var diff := wrapf(float(_rest_yaw[uid]) - pivot.rotation.y, -PI, PI)
+			var step := diff * (1.0 - exp(-delta * REST_TURN_RATE))
+			pivot.rotation.y += step
+			turn = step / delta
+		rig.drive(0.0, 0.0, turn, delta)
 		return
 	var node: Node3D = _units[uid]
 	var pos := node.position
@@ -714,6 +724,12 @@ func _corner(uid: int, rig: MechRig, delta: float) -> void:
 
 
 const STRAFE_TURN_RATE := 6.0   # per second: a helicopter yaws to where it will face in the first moment of a move, then translates
+
+
+## The motion numbers in a machine's rig sidecar (`move`: slide, bank, strafe, tilt, accel,
+## corner), for the map view's curve; empty for a unit with no rig.
+func motion_of(uid: int) -> Dictionary:
+	return (_rigs[uid] as MechRig).move if _rigs.has(uid) else {}
 
 
 ## The pivot's yaw for one of the six facings: the model faces -Z (north) at rest and
@@ -1242,7 +1258,11 @@ func sync() -> void:
 			# The model faces -Z (north) at rest; screen-down is +Z, so the facing turns the
 			# other way from the pixel direction. The pivot turns; the seat's southward set
 			# above it does not.
-			(_pivots[u.id] as Node3D).rotation.y = facing_yaw(u.facing)
+			# Eased there by the cornering module (_corner) once it has a rig; set outright the
+			# first time, so a machine never turns in from north on arrival.
+			if not _rest_yaw.has(u.id) or not _rigs.has(u.id):
+				(_pivots[u.id] as Node3D).rotation.y = facing_yaw(u.facing)
+			_rest_yaw[u.id] = facing_yaw(u.facing)
 	_hide_props_under(occupied)
 	for uid in _units.keys():
 		if not seen.has(uid):
@@ -1251,6 +1271,7 @@ func sync() -> void:
 			_pivots.erase(uid)
 			_rigs.erase(uid)
 			_scale.erase(uid)
+			_rest_yaw.erase(uid)
 			_heading.erase(uid)
 			_last_pos.erase(uid)
 			_base.erase(uid)

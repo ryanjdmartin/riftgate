@@ -1193,7 +1193,7 @@ const ensureShapes = () => ensure("shapes", "hangar/shapes.json", j => { state.s
 const MODE_HELP = {
   acts: "Every act in turn, back to back, as RIFTGATE_ACTS_DEBUG=1 plays them. Tap one to loop it; drag the bar to hold a moment. The blows layer over whatever is playing.",
   walk: "Driven straight ahead at the reference speed, as RIFTGATE_MOVE_DEBUG=1 does: the stride, the wheels, the treads and the held poses.",
-  route: "A loop of four moves on the map's hexes: two steps north, a corner east, two steps south, a corner back. The facing follows the cornering module: the Dingo's lag, the banks, a helicopter turning first and then strafing. At each move's end the map snaps the machine to its last step's facing, as the game does.",
+  route: "A loop of four moves on the map's hexes: two steps north, a corner east, two steps south, a corner back. The facing follows the cornering module: the Dingo's lag, the banks, a helicopter turning first and then strafing. Each move runs as the map runs it: one smooth curve, from rest to full speed, braking into corners, easing to a stop and then to its recorded facing.",
 };
 function motionMachines() {
   return liveEntries("chassis.entries").map(x => x.entry).filter(e => state.pins && Array.isArray(state.pins[e.id]));

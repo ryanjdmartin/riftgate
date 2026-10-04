@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.29 since 3 October, evening: the hovercraft's fifth pass); republish it from the committed file after every bible change, passing that URL.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.30 since 4 October: the acts and the movement's second pass); republish it from the committed file after every bible change, passing that URL.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -13,7 +13,7 @@ stays in A alone (Ryan, 1 October: it serves one ongoing task) and is republishe
 session; a B session cannot read it. Shared:
 
 - **The bible** (above): `docs/design-bible.html`, published whole after every change.
-- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 2 October with the targeting pass's content): four tabs, the
+- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 4 October with the acts and movement's second pass): four tabs, the
   codex, the content editor, the names list and Models. Models (the renders and the Animation
   tab merged, Ryan, 3 October) puts each machine live in 3D on top: its acts, walk and
   cornering played from its rig sidecar by `tools/hangar_motion.js` (published as
@@ -286,8 +286,8 @@ back, `=<act name>` loops one. Every act's numbers are a first cut for Ryan to j
 headless and checks the sidecar against it, the nesting the bible asked for, the picking, the
 limits, the strikes and an act's motion.
 
-**Movement animations, built 3 October, later (the same session; on the branch
-`ccr-680ee66c-a60c1u`, not yet on main, for Ryan to judge).** Each machine's gait is authored
+**Movement animations, built 3 October, later (the same session; on main, for Ryan to
+judge).** Each machine's gait is authored
 beside its model (`b.gait(...)`) and written to the same sidecar; `MechRig.drive(speed, aim,
 turn, dt)` plays it: cycles keyed by distance travelled (a stride in model units, so a slow
 machine steps slowly), the walkers in diagonal pairs through one `_step` shape (hip forward
@@ -324,6 +324,21 @@ there, sideways or backward as the path demands) and leans into its travel by it
 (`tilt`: nose down going forward, up going back, a side down going that way; no bank, no
 rock). The Puffin is a jet crossed with the Dingo, on its boosters: it banks into turns and
 its facing lags the path, less wildly than the Dingo's. Both for Ryan to judge on a real move.
+
+**The second pass, 4 October (Ryan: acts too subtle, moves too fast with hard corners; bible
+section 7, the joints row).** Every machine's acts are rewritten in `models_low.py`: four to
+six seconds each, several joints at once, the body moving with them, and glows at six to ten
+so they read from across the map (the Sparrowhawk strafes as it dips its wings, the Baboon
+inspects each arm, the Puffin's hop leaps, the Ammit rears, the Armadillo presents its back
+guns). Moves on the map are `game/battle/move_path.gd` (MovePath): the hex route cut into
+one curve with arcs at the corners, speed from rest to rest under each machine's `accel`
+(seconds to full speed) and slowing into corners by its `corner` (the share given up at
+sixty degrees), both from `b.move` in the sidecar. Machines run at
+`MECH_SECONDS_PER_HEX` 0.55 (was 0.22); the packs keep 0.22 and their straight steps, my
+call, which Ryan can reverse. The rock, bank and drift are eased softer to match, and a
+machine at rest turns to its recorded facing rather than snapping. The hangar's Route runs
+the same curve (the JS port matches the GDScript's durations). Tests: `test_move_path.gd`, and
+the rig tests now read their numbers from the sidecars. Ryan judges it all running.
 
 **The codex (29 September; a tab of the hangar page since 1 October).** One surface showing a
 chassis and the components fitted to it: the Codex tab renders it in the browser from the
