@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.27 since 3 October: the movement leftovers, the move gauge, the three-wide crossing and the water feature, on top of the joints, acts and movement and the hovercraft's third pass); republish it from the committed file after every bible change, passing that URL.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.28 since 4 October: the map types; v0.27 the movement leftovers); republish it from the committed file after every bible change, passing that URL.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -64,7 +64,7 @@ the chat is newer.
 ## As of 3 October 2026
 
 **State.** Tests green: `perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (329 tests, 6,847 checks on 3 October in a cloud session, after the movement leftovers;
+tests/run_tests.gd` (330 tests, 7,692 checks on 4 October in a cloud session, after the map types;
 a cloud session fetches Godot 4.7's Linux build from the GitHub release asset to run them
 (`Godot_v4.7-stable_linux.x86_64.zip`, and `xvfb-run` for screenshots), since
 the proxy serves the asset though not the release page; it builds models too, with
@@ -136,6 +136,23 @@ three wide or more, water 6% of the field in 1.7 bodies (3.9 with the puddles), 
 `--show SEED` prints a map as text. Its phases to the rift barely move by way of moving, so the
 river's bite is where the horde crosses and where a walker off a ford stops; Ryan judges it with
 the hovercraft. Left: the small finds and the hangar page's other content files (the to-do).
+
+**Map types, 4 October** (bible section 4, the map types row; v0.28). Ryan asked for the optimal
+tile distribution and whether the player could see a map's composition before choosing units.
+Measured first: the generator made one map with cosmetic variation and nothing in its
+composition changed the trip north (a walker six phases on every one of 200 maps); terrain shows
+only in two-phase reach and in where the horde's crossing falls. So the mean does not matter and
+the spread does: `BattleMap.KINDS` has five map types as presets of the knobs (mixed, steppe,
+rubble, badlands, flooded; `generate(w, h, seed, kind)`, `Battle.map_kind`, saved as `kind`,
+`Save.VERSION` 3), the map's header names the type ("SEC 07 // RUBBLE FIELD // RECON"), the
+harness has a picker and `RIFTGATE_MAP_KIND` sets one for a standalone run. The survey compares
+them (`docs/map_survey.md`): legible by composition, the crossing kept on every seed, but the
+best-lane trip north barely moves and reach moves only for wheels and hover; the rubble belt's
+road is a lane through it, so its bite is a funnel play can see and the survey cannot. Every
+share is a placeholder for Ryan's play per type. Where the intel sits is the campaign's battle
+choice beside the faction, which does not exist; Ryan's campaign questions (one faction or a
+mix, three acts, a battlefront select) are in the to-do as discuss-first and in the bible's open
+list.
 
 **The hovercraft are on main** (2 October, night, merged from the Mac session; bible section 7,
 the hovercraft row). The **Stingray** (Aphelion, `stingray`): hull 80, shield 50, move 40, heat

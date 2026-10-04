@@ -31,7 +31,27 @@ const MARGIN_ROWS := 3                 # scenery rows beyond the rift
 const CITY_ROWS := 2                   # city rows behind the wall
 var map_seed: int = 0
 var opened: Dictionary = {}            # hex -> the ground the horde's guarantee opened there (the map survey reads it)
-var water_feature := ""               # "river", "lake west", "lake east" or "lake middle" (_lay_water)
+var water_feature := ""               # "river", "lake west", "lake east", "lake middle", or two joined by " + " (_lay_water)
+var kind := "mixed"                    # the map's type, a key of KINDS: the intel the player will read
+
+## Map types (4 October, Claude's proposal on Ryan's go; every share a placeholder, Ryan's
+## to move): the generator's knobs as presets, so maps differ enough that the ground is a
+## decision before the battle and the type's name is the whole intel ("RUBBLE FIELD"), never
+## a percentage. Each is still a seeded noise map, so no two are alike. The 200-seed survey
+## measures each (tools/map_survey.gd --type). `mixed` is the generator as it was.
+##   rough_t: the roughness noise above which ground is rough (lower is more rough);
+##   ruins: how many clusters, `ruins_r` their radius, and `belt` lays them across one band of rows;
+##   crag_t: the ridge noise within which ground is a crag (higher is more crags);
+##   water: "either" (a river six in ten, else a lake), "river", "lake", or "both";
+##   river_thick: the share of river hexes with a second hex below them;
+##   puddles_t: a wetness noise below which a hex is a puddle, or 1.0 for none.
+const KINDS := {
+	"mixed": {"name": "MIXED GROUND", "rough_t": 0.02, "ruins": [2, 4], "ruins_r": 2, "belt": false, "crag_t": 0.075, "water": "either", "river_thick": 0.3, "puddles_t": -1.0},
+	"steppe": {"name": "OPEN STEPPE", "rough_t": 0.30, "ruins": [1, 2], "ruins_r": 2, "belt": false, "crag_t": 0.035, "water": "lake", "river_thick": 0.3, "puddles_t": -1.0},
+	"rubble": {"name": "RUBBLE FIELD", "rough_t": 0.12, "ruins": [3, 5], "ruins_r": 2, "belt": true, "crag_t": 0.04, "water": "either", "river_thick": 0.3, "puddles_t": -1.0},
+	"badlands": {"name": "BADLANDS", "rough_t": 0.02, "ruins": [1, 2], "ruins_r": 2, "belt": false, "crag_t": 0.12, "water": "either", "river_thick": 0.3, "puddles_t": -1.0},
+	"flooded": {"name": "FLOODED", "rough_t": 0.08, "ruins": [1, 2], "ruins_r": 2, "belt": false, "crag_t": 0.05, "water": "both", "river_thick": 0.8, "puddles_t": -0.38},
+}
 
 const STRUCTURE_HALF_WIDTH := 1   # gate and rift span centre plus this many hexes each side
 ## The gate and the walls are two rows deep: the models stand on the bottom row and the row
@@ -82,9 +102,10 @@ func is_structure(h: Vector2i) -> bool:
 	return gate_hexes.has(h) or rift_hexes.has(h) or wall_hexes.has(h)
 
 
-static func generate(w: int, h: int, seed_value: int) -> BattleMap:
+static func generate(w: int, h: int, seed_value: int, map_kind: String = "mixed") -> BattleMap:
 	var m := flat(w, h)
 	m.map_seed = seed_value
+	m.kind = map_kind if KINDS.has(map_kind) else "mixed"
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value
 	m._lay_landscape(rng)
@@ -132,10 +153,24 @@ func _lay_landscape(rng: RandomNumberGenerator) -> void:
 	var relief := FastNoiseLite.new()   # terraces, decoupled from what the ground is
 	relief.seed = map_seed + 303
 	relief.frequency = 0.16
+	var knobs: Dictionary = KINDS[kind]
 	var centres: Array[Vector2i] = []
 	var keys := terrain.keys()
-	for k in range(rng.randi_range(2, 4)):
-		centres.append(keys[rng.randi_range(0, keys.size() - 1)])
+	var n_ruins: int = rng.randi_range(knobs["ruins"][0], knobs["ruins"][1])
+	var belt_rows := {}
+	if knobs["belt"]:
+		# A belt of rubble across the whole field, two or three rows deep, so the ruins lie
+		# in the way of every lane (patches leave a lane, measured 4 October); the clusters
+		# then fray its edges. A road through it is the one open lane, and the horde does
+		# not care, since rubble is normal ground to a pack.
+		var band := rng.randi_range(5, height - GATE_ROWS - 7)
+		for r in range(band, band + rng.randi_range(2, 3)):
+			belt_rows[r] = true
+		for k in range(n_ruins):
+			centres.append(Hex.offset_to_axial(rng.randi_range(0, width - 1), band + rng.randi_range(-2, 3)))
+	else:
+		for k in range(n_ruins):
+			centres.append(keys[rng.randi_range(0, keys.size() - 1)])
 	# The field, then the margin columns either side of it: seen past the edge, never played.
 	var all: Array = keys.duplicate()
 	for row in range(-MARGIN_ROWS, height):
@@ -155,13 +190,15 @@ func _lay_landscape(rng: RandomNumberGenerator) -> void:
 	for hx in all:
 		var p := Hex.to_pixel(hx, 1.0)
 		var t := Terrain.PLAIN
-		if rough.get_noise_2d(p.x, p.y) > 0.02:
+		if rough.get_noise_2d(p.x, p.y) > float(knobs["rough_t"]):
 			t = Terrain.ROUGH
 		for c in centres:
 			var d := Hex.distance(hx, c)
-			if d <= 2 and rng.randf() < (0.9 if d <= 1 else 0.5):
+			if d <= int(knobs["ruins_r"]) and rng.randf() < (0.9 if d <= 1 else (0.5 if d <= 2 else 0.4)):
 				t = Terrain.RUINS
-		var crag := absf(ridge.get_noise_2d(p.x, p.y)) < 0.075 and rng.randf() < 0.85 and not is_structure(hx)
+		if belt_rows.has(Hex.axial_to_offset(hx).y) and rng.randf() < 0.92:
+			t = Terrain.RUINS
+		var crag := absf(ridge.get_noise_2d(p.x, p.y)) < float(knobs["crag_t"]) and rng.randf() < 0.85 and not is_structure(hx)
 		elevation[hx] = clampi(int(floor((relief.get_noise_2d(p.x, p.y) + 0.45) * 3.4)), 0, 3)
 		if has(hx):
 			terrain[hx] = t
@@ -190,41 +227,70 @@ func _lay_landscape(rng: RandomNumberGenerator) -> void:
 ## crossing guarantee seldom has to widen anything. Rows stay clear of the rift's mouth and
 ## of the team's ground. A hex chain is a wall to a hex chain, so a river one hex thick
 ## stops every foe that is not at a ford.
-const RIVER_CHANCE := 0.6     # otherwise a lake band
-const RIVER_THICK := 0.3      # a river hex with a second hex below it
+const RIVER_CHANCE := 0.6     # otherwise a lake band, when the kind says either
 const LAKE_DEEP := 0.5        # a lake hex with a third row below it
+const FEATURE_GAP := 4        # rows between two features' lines, when a kind has both
 
 
 func _lay_water(rng: RandomNumberGenerator) -> void:
+	var knobs: Dictionary = KINDS[kind]
+	var mode: String = knobs["water"]
+	var river := rng.randf() < RIVER_CHANCE if mode == "either" else mode != "lake"
+	var first := _lay_feature(rng, river, float(knobs["river_thick"]), -99)
+	if mode == "both" and first >= 0:
+		# A lake as well as the river, on rows clear of it.
+		_lay_feature(rng, false, 0.0, first)
+	# Puddles from a wetness field, where the kind wants them: the odd one or two hexes the
+	# 21 September landscape used to scatter, on top of the feature.
+	if float(knobs["puddles_t"]) > -1.0:
+		var wet := FastNoiseLite.new()
+		wet.seed = map_seed
+		wet.frequency = 0.14
+		for hx in terrain.keys():
+			var row := Hex.axial_to_offset(hx).y
+			if row < 3 or row >= height - GATE_ROWS - 2 or is_structure(hx):
+				continue
+			var p := Hex.to_pixel(hx, 1.0)
+			if wet.get_noise_2d(p.x, p.y) < float(knobs["puddles_t"]) and terrain[hx] != Terrain.MOUNTAIN:
+				_flood(hx)
+
+
+## One feature, a river or a lake band, its line on a row clear of `avoid_row` by
+## FEATURE_GAP. Returns the line's row, or -1 when there was nowhere to put it.
+func _lay_feature(rng: RandomNumberGenerator, river: bool, river_thick: float, avoid_row: int) -> int:
 	var lo := 4                              # the rift's mouth stays dry
 	var hi := height - GATE_ROWS - 5         # and clear of the team's ground, thickening included
-	var river := rng.randf() < RIVER_CHANCE
 	if not river:
 		hi -= 2                              # a lake runs two rows deeper than its line
-	if hi < lo:
-		return
-	var base := rng.randi_range(lo, hi)
+	var rows: Array[int] = []
+	for r in range(lo, hi + 1):
+		if absi(r - avoid_row) >= FEATURE_GAP:
+			rows.append(r)
+	if rows.is_empty():
+		return -1
+	var base: int = rows[rng.randi_range(0, rows.size() - 1)]
 	var c0 := -MARGIN_COLS - 1               # past the west edge
 	var c1 := width + MARGIN_COLS            # past the east edge
 	var taper_west := false
 	var taper_east := false
-	water_feature = "river"
+	var feature := "river"
 	if not river:
 		match rng.randi_range(0, 2):
 			0:   # from the west, the east columns dry
 				c1 = width - 1 - CROSSING_WIDTH
 				taper_east = true
-				water_feature = "lake west"
+				feature = "lake west"
 			1:   # from the east
 				c0 = CROSSING_WIDTH
 				taper_west = true
-				water_feature = "lake east"
+				feature = "lake east"
 			_:   # in the middle, ground either side
 				c0 = rng.randi_range(1, 2)
 				c1 = mini(width - 2, c0 + 2)
 				taper_west = true
 				taper_east = true
-				water_feature = "lake middle"
+				feature = "lake middle"
+	water_feature = feature if water_feature.is_empty() else water_feature + " + " + feature
 	# The line: eastward one hex at a time (east, or half a step north-east or south-east),
 	# drifting about its row but never far.
 	var line: Array[Vector2i] = []
@@ -244,7 +310,7 @@ func _lay_water(rng: RandomNumberGenerator) -> void:
 		wet.append(hx)
 		var col := Hex.axial_to_offset(hx).x
 		if river:
-			if rng.randf() < RIVER_THICK:
+			if rng.randf() < river_thick:
 				wet.append(hx + Vector2i(0, 1))
 				below[hx] = hx + Vector2i(0, 1)
 			continue
@@ -260,7 +326,7 @@ func _lay_water(rng: RandomNumberGenerator) -> void:
 	for hx in wet:
 		_flood(hx)
 	if not river:
-		return
+		return base
 	# The fords: runs of the line inside the field, one of CROSSING_WIDTH hexes or two of
 	# two, back to open ground with whatever thickened them. Along the line, so a ford is as
 	# many hexes wide as it is long, whichever way the river bends there.
@@ -285,6 +351,7 @@ func _lay_water(rng: RandomNumberGenerator) -> void:
 			if has(hx) and terrain[hx] == Terrain.WATER:
 				terrain[hx] = Terrain.PLAIN
 				elevation[hx] = 0
+	return base
 
 
 ## Water on a hex of the field or of the scenery beside it, never on a structure, the
