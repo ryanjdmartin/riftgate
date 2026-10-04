@@ -200,7 +200,7 @@ func test_a_body_track_moves_the_model_and_a_wheel_never_unwinds() -> void:
 	assert_true(chassis.position.y < rig._rest_pos["chassis"].y, "the body squats on its wheels")
 	rig.tick(1.5)
 	assert_true(wheel.rotation.x < -5.0 or is_equal_approx(fmod(wheel.rotation.x, TAU), 0.0), "at the end the wheel sits a whole turn on, not unwound")
-	rig.tick(1.0)
+	rig.tick(float(rig._current.get("duration", 0.0)) if not rig._current.is_empty() else 1.0)
 	assert_true(model.position.is_equal_approx(base), "and the car is back on its hex")
 	pair[1].free()
 
@@ -245,12 +245,13 @@ func test_a_model_without_a_sidecar_has_no_acts_and_stands_still() -> void:
 func test_the_debug_switch_names_one_act() -> void:
 	var pair := _rig_for("nemesis", 7)
 	var rig: MechRig = pair[0]
-	rig.debug = "core_flare"
+	var named := str(rig.acts[rig.acts.size() - 1]["name"])   # whichever act the model lists last
+	rig.debug = named
 	for i in range(5):
-		assert_eq(str(rig.choose()["name"]), "core_flare", "the named act, every time")
+		assert_eq(str(rig.choose()["name"]), named, "the named act, every time")
 	rig.debug = "1"
-	rig.last_act = "core_flare"
-	assert_ne(str(rig.choose()["name"]), "core_flare", "'1' is every act, back to back, still never twice running")
+	rig.last_act = named
+	assert_ne(str(rig.choose()["name"]), named, "'1' is every act, back to back, still never twice running")
 	pair[1].free()
 
 
@@ -333,7 +334,8 @@ func test_held_offsets_rock_and_bank() -> void:
 	_drive(rig, MechRig.MOVE_REF_SPEED, 0.1)
 	assert_true(model.rotation.x > deg_to_rad(1.5), "pulling away rocks the nose up (%f)" % rad_to_deg(model.rotation.x))
 	_drive(rig, MechRig.MOVE_REF_SPEED, 1.0)
-	assert_true(absf(sh.rotation.x - deg_to_rad(14.0)) < deg_to_rad(0.5), "the boom holds the claw clear while driving")
+	var held := float(rig.gait["hold"]["shoulder_l"][0])
+	assert_true(absf(sh.rotation.x - deg_to_rad(held)) < deg_to_rad(0.5), "the boom holds the claw clear while driving (%s degrees)" % held)
 	assert_true(absf(model.rotation.x) < deg_to_rad(1.0), "level once up to speed")
 	_drive(rig, 0.0, 0.1)
 	assert_true(model.rotation.x < -deg_to_rad(1.5), "stopping dips it")
@@ -349,8 +351,15 @@ func test_held_offsets_rock_and_bank() -> void:
 	pair[1].free()
 	pair = _rig_for("clydesdale", 2)
 	rig = pair[0]
-	_drive(rig, MechRig.MOVE_REF_SPEED, 1.0, 0.0, 1.0)
-	assert_true(is_zero_approx(pair[1].rotation.z), "a walker never banks")
+	assert_eq(float(rig.move.get("bank", 0.0)), 0.0, "a walker never banks")
+	var sway := 0.0
+	for key in rig.gait.get("body", []):
+		sway = maxf(sway, absf(float(key[6])))
+	var widest := 0.0
+	for i in range(90):
+		rig.drive(MechRig.MOVE_REF_SPEED, 0.0, 1.0, 1.0 / 60.0)
+		widest = maxf(widest, absf(pair[1].rotation.z))
+	assert_true(widest <= deg_to_rad(sway) + 0.001, "through a hard turn it only rolls its own sway (%f, sway %f)" % [rad_to_deg(widest), sway])
 	pair[1].free()
 
 

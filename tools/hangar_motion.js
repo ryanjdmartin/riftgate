@@ -23,9 +23,9 @@ const THREE_URLS = [
 
 // ---------------------------------------------------------------- the rig (MechRig's numbers)
 const GAP_MIN = 2.5, GAP_MAX = 6.5, GAP_DEBUG = 0.4;
-const MOVE_REF_SPEED = 300.0, MOVE_BLEND_IN = 0.25, MOVE_BLEND_OUT = 0.35;
-const ROCK_ACCEL = 1500.0, BANK_TURN = 2.0, DRIFT_UNITS = 12.0, AIM_HOLD_MAX = 170.0, AIM_RELAX = 0.8;
-const SLIDE_RATE_SNAP = 30.0, SLIDE_RATE_FULL = 2.2, STRAFE_TURN_RATE = 6.0;   // Map3D
+const MOVE_REF_SPEED = 150.0, MOVE_BLEND_IN = 0.25, MOVE_BLEND_OUT = 0.35;
+const ROCK_ACCEL = 200.0, BANK_TURN = 1.2, DRIFT_UNITS = 12.0, AIM_HOLD_MAX = 170.0, AIM_RELAX = 0.8;
+const SLIDE_RATE_SNAP = 12.0, SLIDE_RATE_FULL = 2.2, STRAFE_TURN_RATE = 6.0, REST_TURN_RATE = 4.0;   // Map3D
 const GLOW_PAGE = 0.9;   // this page's emission for a lit part at rest (the game's is 1.8 under its own glow pass)
 const AXES = ["pitch", "yaw", "roll"];
 const D2R = Math.PI / 180;
@@ -306,69 +306,125 @@ class Rig {
   }
 }
 
+// ---------------------------------------------------------------- the move (MovePath)
+// A port of game/battle/move_path.gd (Ryan, 4 October: too fast, no acceleration, hard
+// corners): the hex centres become one smooth curve, each interior corner cut by a quadratic
+// arc; along it the speed starts at rest, accelerates at the machine's rate, brakes into each
+// corner by its sharpness and the machine's `corner` share, and comes to rest at the end.
+// Points are {x, z} on the ground plane, in model units.
+const MP_CUT = 0.42, MP_ARC_STEPS = 8, MP_FINE = 24, MP_ACCEL = 0.6, MP_CORNER = 0.35, MP_FLOOR = 0.2;
+const pAdd = (a, b, k = 1) => ({x: a.x + b.x * k, z: a.z + b.z * k});
+const pSub = (a, b) => ({x: a.x - b.x, z: a.z - b.z});
+const pLerp = (a, b, t) => ({x: a.x + (b.x - a.x) * t, z: a.z + (b.z - a.z) * t});
+const pLen = (a) => Math.hypot(a.x, a.z);
+const pNorm = (a) => { const l = pLen(a) || 1; return {x: a.x / l, z: a.z / l}; };
+class MovePath {
+  static build(centres, top, accelS = MP_ACCEL, corner = MP_CORNER) {
+    const mp = new MovePath();
+    // The curve: corners cut by arcs, each sample carrying its corner's turn.
+    const coarse = [centres[0]], cturn = [0];
+    for (let i = 1; i < centres.length - 1; i++) {
+      const a = centres[i - 1], p = centres[i], b = centres[i + 1];
+      const din = pNorm(pSub(p, a)), dout = pNorm(pSub(b, p));
+      const turn = Math.abs(Math.atan2(din.x * dout.z - din.z * dout.x, din.x * dout.x + din.z * dout.z));
+      if (turn < 0.01) { coarse.push(p); cturn.push(0); continue; }
+      const p1 = pLerp(p, a, MP_CUT), p2 = pLerp(p, b, MP_CUT);
+      for (let k = 0; k <= MP_ARC_STEPS; k++) { const t = k / MP_ARC_STEPS; coarse.push(pLerp(pLerp(p1, p, t), pLerp(p, p2, t), t)); cturn.push(turn); }
+    }
+    coarse.push(centres[centres.length - 1]); cturn.push(0);
+    const pts = [], turns = [];
+    for (let i = 0; i < coarse.length; i++) {
+      if (i > 0 && cturn[i] === 0 && cturn[i - 1] === 0) for (let k = 1; k < MP_FINE; k++) { pts.push(pLerp(coarse[i - 1], coarse[i], k / MP_FINE)); turns.push(0); }
+      if (!pts.length || pLen(pSub(coarse[i], pts[pts.length - 1])) > 0.001) { pts.push(coarse[i]); turns.push(cturn[i]); }
+    }
+    const n = pts.length;
+    mp.points = pts; mp.arc = [0]; mp.speed = []; mp.time = [0];
+    for (let i = 1; i < n; i++) mp.arc.push(mp.arc[i - 1] + pLen(pSub(pts[i], pts[i - 1])));
+    const a = top / Math.max(0.05, accelS);
+    const v = turns.map(t => top * Math.max(MP_FLOOR, 1 - clamp(corner, 0, 1) * clamp(t / (Math.PI / 3), 0, 2)));
+    v[0] = 0; v[n - 1] = 0;
+    for (let i = 1; i < n; i++) v[i] = Math.min(v[i], Math.sqrt(v[i - 1] * v[i - 1] + 2 * a * (mp.arc[i] - mp.arc[i - 1])));
+    for (let i = n - 2; i >= 0; i--) v[i] = Math.min(v[i], Math.sqrt(v[i + 1] * v[i + 1] + 2 * a * (mp.arc[i + 1] - mp.arc[i])));
+    mp.speed = v;
+    for (let i = 1; i < n; i++) mp.time.push(mp.time[i - 1] + (mp.arc[i] - mp.arc[i - 1]) / Math.max(0.5 * (v[i - 1] + v[i]), top * 0.02));
+    mp.duration = n > 1 ? mp.time[n - 1] : 0;
+    return mp;
+  }
+  tangent(i) { i = clamp(i, 0, this.points.length - 2); return pNorm(pSub(this.points[i + 1], this.points[i])); }
+  // [position, unit tangent, speed, distance along it] at time t
+  at(t) {
+    const n = this.points.length;
+    if (t <= 0) return [this.points[0], this.tangent(0), 0, 0];
+    if (t >= this.duration) return [this.points[n - 1], this.tangent(n - 2), 0, this.arc[n - 1]];
+    let i = 0; while (i < n - 2 && this.time[i + 1] < t) i++;
+    const dt = this.time[i + 1] - this.time[i], u = dt <= 0 ? 0 : (t - this.time[i]) / dt;
+    const ds = this.arc[i + 1] - this.arc[i];
+    const d = (this.speed[i] * u + 0.5 * (this.speed[i + 1] - this.speed[i]) * u * u) * dt;
+    return [pLerp(this.points[i], this.points[i + 1], ds <= 0 ? 0 : clamp(d / ds, 0, 1)), this.tangent(i), lerp(this.speed[i], this.speed[i + 1], u), this.arc[i] + d];
+  }
+}
+
 // ---------------------------------------------------------------- the route (Map3D._corner)
 // Flat-topped hexes, the map's: neighbours at 90, 30, -30, -90, -150 and 150 degrees, a
 // step of sqrt(3) circumradii. Four moves that close a loop: two steps north; a corner
 // through north-east and south-east; two steps south; a corner back through south-west and
-// north-west. A machine ends each move facing its last step, as the simulation records it,
-// and the map snaps it there when the move ends (Map3D.sync). The hex is sized to the
-// machine as the map fits it (Map3D: its widest extent is MARKER_FIT hex widths, a flyer
-// FIT_FLYER of that) and a step takes the map's time (BattleMapView: MOVE_SECONDS_PER_HEX,
-// slower below MOVE_REF_SPEED), so the pace on the route is the pace on the map.
-const MARKER_FIT = 1.05, FIT_FLYER = 0.8, MOVE_SECONDS_PER_HEX = 0.22, MAP_REF_SPEED = 50;
+// north-west. Each move runs along its MovePath curve; between moves the machine eases to
+// the facing the simulation records, its last step's (Map3D, REST_TURN_RATE). The hex is
+// sized to the machine as the map fits it (Map3D: its widest extent is MARKER_FIT hex
+// widths, a flyer FIT_FLYER of that) and a step takes the map's time (BattleMapView:
+// MECH_SECONDS_PER_HEX, slower below MOVE_REF_SPEED), so the pace here is the pace on the map.
+const MARKER_FIT = 1.05, FIT_FLYER = 0.8, MECH_SECONDS_PER_HEX = 0.55, MAP_REF_SPEED = 50;
 const DIRS = {N: 90, NE: 30, SE: -30, S: -90, SW: -150, NW: 150};
 const ROUTE = [["N", "N"], ["NE", "SE"], ["S", "S"], ["SW", "NW"]];
-const PAUSE = 0.9;
+const PAUSE = 1.2;
 // A direction in degrees (0 east, 90 north) to the ground plane: x east, -z north.
 const dirVec = (deg) => ({x: Math.cos(deg * D2R), z: -Math.sin(deg * D2R)});
 const yawOf = (d) => Math.atan2(-d.x, -d.z);
 
 class Route {
   constructor(hexR = 60) { this.R = hexR; this.STEP = hexR * Math.sqrt(3); this.reset(); }
-  reset() { this.move = 0; this.step = 0; this.along = 0; this.pause = 0.6; this.pos = {x: 0, z: 0}; this.facing = yawOf(dirVec(DIRS.N)); this.lastPos = null; }
+  reset() { this.move = 0; this.t = 0; this.curve = null; this.pause = 0.6; this.pos = {x: 0, z: 0}; this.facing = yawOf(dirVec(DIRS.N)); this.rest = this.facing; }
   points() {
     const pts = [{x: 0, z: 0}]; let p = {x: 0, z: 0};
-    for (const mv of ROUTE) for (const d of mv) { const v = dirVec(DIRS[d]); p = {x: p.x + v.x * this.STEP, z: p.z + v.z * this.STEP}; pts.push(p); }
+    for (const mv of ROUTE) for (const d of mv) { p = pAdd(p, dirVec(DIRS[d]), this.STEP); pts.push(p); }
     return pts;
   }
-  // Advance by dt at `speed`; returns what the rig is told, and sets this.pos and this.facing.
-  advance(dt, speed, move) {
+  // Advance by dt; `top` is full speed in model units a second, `move` the machine's motion
+  // numbers. Returns what the rig is told, and sets this.pos and this.facing.
+  advance(dt, top, move) {
     const mv = ROUTE[this.move];
-    if (this.pause > 0) {
+    if (!this.curve) {
+      // At rest between moves: ease to the recorded facing, then set off.
+      const step = wrapPi(this.rest - this.facing) * (1 - Math.exp(-dt * REST_TURN_RATE));
+      this.facing += step;
       this.pause -= dt;
-      this.lastPos = null;
+      if (this.pause <= 0) {
+        const centres = [this.pos]; let p = this.pos;
+        for (const d of mv) { p = pAdd(p, dirVec(DIRS[d]), this.STEP); centres.push(p); }
+        this.curve = MovePath.build(centres, top, move.accel ?? MP_ACCEL, move.corner ?? MP_CORNER);
+        this.t = 0;
+      }
+      return {speed: 0, aim: 0, turn: dt > 0 ? step / dt : 0};
+    }
+    this.t += dt;
+    if (this.t >= this.curve.duration) {
+      this.pos = this.curve.points[this.curve.points.length - 1];
+      this.rest = yawOf(dirVec(DIRS[mv[mv.length - 1]]));
+      this.move = (this.move + 1) % ROUTE.length; this.curve = null; this.pause = PAUSE;
+      if (this.move === 0) this.pos = {x: 0, z: 0};
       return {speed: 0, aim: 0, turn: 0};
     }
-    const d = dirVec(DIRS[mv[this.step]]), STEP = this.STEP;
-    this.along += speed * dt;
-    while (this.along >= STEP) {
-      this.along -= STEP;
-      this.pos = {x: this.pos.x + d.x * STEP, z: this.pos.z + d.z * STEP};
-      this.step += 1;
-      if (this.step >= mv.length) {
-        // The move ends: the map clears the animation and snaps the facing to the last step.
-        this.facing = yawOf(dirVec(DIRS[mv[mv.length - 1]]));
-        this.move = (this.move + 1) % ROUTE.length; this.step = 0; this.along = 0; this.pause = PAUSE;
-        if (this.move === 0) this.pos = {x: 0, z: 0};
-        return {speed: 0, aim: 0, turn: 0};
-      }
-      return this.advance(0, speed, move);
-    }
-    const dd = dirVec(DIRS[mv[this.step]]);
-    const here = {x: this.pos.x + dd.x * this.along, z: this.pos.z + dd.z * this.along};
-    const heading = yawOf(dd);
+    const [here, tan, sp] = this.curve.at(this.t);
+    this.here = here;
+    const heading = yawOf(tan);
     const slide = clamp(move.slide || 0, 0, 1), strafe = clamp(move.strafe || 0, 0, 1);
     let rate = lerp(SLIDE_RATE_SNAP, SLIDE_RATE_FULL, slide), want = heading;
     if (strafe > 0) { want = lerpAngle(heading, yawOf(dirVec(DIRS[mv[mv.length - 1]])), strafe); rate = lerp(rate, STRAFE_TURN_RATE, strafe); }
     const step = wrapPi(want - this.facing) * (1 - Math.exp(-dt * rate));
     this.facing += step;
-    let sp = speed;
-    if (this.lastPos && dt > 0) sp = Math.hypot(here.x - this.lastPos.x, here.z - this.lastPos.z) / dt;
-    this.lastPos = here;
-    this.here = here;
     return {speed: sp, aim: wrapPi(heading - this.facing), turn: dt > 0 ? step / dt : 0};
   }
-  where() { return this.pause > 0 || !this.here ? this.pos : this.here; }
+  where() { return this.curve && this.here ? this.here : this.pos; }
 }
 
 // ---------------------------------------------------------------- the stage
@@ -609,7 +665,7 @@ class Stage {
     else if (this.mode === "walk") { rig.tick(dt, false); rig.drive(MOVE_REF_SPEED, 0, 0, dt); }
     else {
       rig.tick(dt, false);
-      const speed = this.route.STEP / (MOVE_SECONDS_PER_HEX * Math.max(1, MAP_REF_SPEED / Math.max(1, this.movespeed || MAP_REF_SPEED)));
+      const speed = this.route.STEP / (MECH_SECONDS_PER_HEX * Math.max(1, MAP_REF_SPEED / Math.max(1, this.movespeed || MAP_REF_SPEED)));
       const d = this.route.advance(dt, speed, rig.move);
       rig.drive(d.speed, d.aim, d.turn, dt);
       const p = this.route.where();
@@ -623,5 +679,5 @@ class Stage {
   seek(t) { if (this.rig && this.rig.current) { this.rig.seek(t); this.renderer && this.renderer.render(this.scene, this.camera); this.emit(); } }
 }
 
-window.HangarMotion = {Rig, Route, Stage, sample, sampleCycle, clampDegrees, labelled, MOVE_REF_SPEED};
+window.HangarMotion = {Rig, Route, Stage, MovePath, sample, sampleCycle, clampDegrees, labelled, MOVE_REF_SPEED};
 })();

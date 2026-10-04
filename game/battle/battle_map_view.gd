@@ -1352,10 +1352,11 @@ func _preview() -> Dictionary:
 
 # ---------------------------------------------------------------- the movement phase
 
-const MOVE_SECONDS_PER_HEX := 0.22   # the fastest anything ever moves (Ryan, 22 September)
+const MOVE_SECONDS_PER_HEX := 0.22   # the packs' step: the fastest anything moves (Ryan, 22 September); they are pictures with nothing to show
+const MECH_SECONDS_PER_HEX := 0.55   # a machine's step at full speed (Ryan, 4 October: slower, so the walks and the corners breathe)
 static var pace := 1.0               # the player's setting: seconds per hex are divided by it
 const MOVE_REF_SPEED := 50.0         # a unit this quick (moves are in tens) moves at that pace; slower ones slower
-var _anim: Dictionary = {}      # unit id -> {path: Array[Vector2i], t: float}
+var _anim: Dictionary = {}      # unit id -> {path, t, curve: MovePath, hex: the step reached}
 var _anim_queue: Array = []     # [[moves], ...] phases still to play: mechs, then packs
 var _anim_done: Callable = Callable()
 
@@ -1388,8 +1389,7 @@ func _next_anim_phase() -> void:
 		var moves: Array = _anim_queue.pop_front()
 		for mv in moves:
 			if (mv[1] as Array).size() >= 2:
-				var u := field.unit_by_id(mv[0])
-				_anim[mv[0]] = {"path": mv[1], "t": 0.0, "speed": u.movespeed if u != null else MOVE_REF_SPEED}
+				_anim[mv[0]] = {"path": mv[1], "t": 0.0, "curve": _curve_for(mv[0], mv[1]), "hex": 0}
 	if _anim.is_empty():
 		for uid in _anim_px.keys():
 			if _map3d != null:
@@ -1402,28 +1402,41 @@ func _next_anim_phase() -> void:
 	queue_redraw()
 
 
+## A move as a curve with a speed along it (MovePath). A machine takes its own step and its
+## acceleration and cornering from its rig sidecar through the 3D map; the packs keep the old
+## straight hex-to-hex lines at their fixed step. Slower units move slower either way.
+func _curve_for(uid: int, path: Array) -> MovePath:
+	var u := field.unit_by_id(uid)
+	var centres: Array = path.map(func(h): return Hex.to_pixel(h, HEX_SIZE))
+	var step_px := Hex.to_pixel(Vector2i(0, 0), HEX_SIZE).distance_to(Hex.to_pixel(Hex.DIRECTIONS[0], HEX_SIZE))
+	var slow := maxf(1.0, MOVE_REF_SPEED / maxf(1.0, float(u.movespeed if u != null else MOVE_REF_SPEED)))
+	if u != null and u.is_player():
+		var mv: Dictionary = _map3d.motion_of(uid) if _map3d != null else {}
+		var top := step_px / (MECH_SECONDS_PER_HEX * slow)
+		return MovePath.build(centres, top, float(mv.get("accel", MovePath.ACCEL_DEFAULT)), float(mv.get("corner", MovePath.CORNER_DEFAULT)))
+	return MovePath.build(centres, step_px / (MOVE_SECONDS_PER_HEX * slow), 0.001, 0.0, false)
+
+
 func _advance_anim(delta: float) -> void:
 	var finished: Array = []
 	for uid in _anim.keys():
 		var a: Dictionary = _anim[uid]
-		var path: Array = a["path"]
-		a["t"] += delta * pace / (MOVE_SECONDS_PER_HEX * maxf(1.0, MOVE_REF_SPEED / maxf(1.0, float(a["speed"]))))
-		var last := float(path.size() - 1)
-		if a["t"] >= last:
+		var curve: MovePath = a["curve"]
+		a["t"] += delta * pace
+		if a["t"] >= curve.duration:
 			finished.append(uid)
 			continue
-		var i := int(floor(a["t"]))
-		if i != int(a.get("i", -1)):
-			a["i"] = i
-			if i > 0 and field.unit_by_id(uid) != null and field.unit_by_id(uid).is_player():
+		var here: Array = curve.at(a["t"])
+		var step_px := Hex.to_pixel(Vector2i(0, 0), HEX_SIZE).distance_to(Hex.to_pixel(Hex.DIRECTIONS[0], HEX_SIZE))
+		var hex := int(floor(float(here[3]) / step_px + 0.5))
+		if hex != int(a["hex"]):
+			a["hex"] = hex
+			if field.unit_by_id(uid) != null and field.unit_by_id(uid).is_player():
 				Sound.play("step", 0.0, 0.1)   # a footfall a hex (quiet by its file); the packs are pictures and make none
-		var f: float = a["t"] - i
-		var from: Vector2 = Hex.to_pixel(path[i], HEX_SIZE)
-		var to: Vector2 = Hex.to_pixel(path[i + 1], HEX_SIZE)
-		var px := from.lerp(to, f)
+		var px: Vector2 = here[0]
 		_anim_px[uid] = px
 		if _map3d != null:
-			_map3d.set_anim(uid, px, (to - from).normalized())
+			_map3d.set_anim(uid, px, here[1])
 	for uid in finished:
 		_anim.erase(uid)
 		_anim_px.erase(uid)
