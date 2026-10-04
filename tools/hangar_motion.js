@@ -372,6 +372,22 @@ class Route {
 }
 
 // ---------------------------------------------------------------- the stage
+// The models' own tiles, nearest sampled on flat facets; the amber role lights, as the game's
+// toon pass makes it (MechView3D.toon), each material its own so a glow is per instance.
+function prepareMaterials(root) {
+  const T = window.THREE;
+  root.traverse(n => {
+    if (!n.isMesh) return;
+    n.material = [].concat(n.material).map(src => {
+      const m = src.clone();
+      m.flatShading = true; m.side = T.DoubleSide; m.roughness = 0.85; m.metalness = 0.1;
+      if (m.map) { m.map = m.map.clone(); m.map.needsUpdate = true; m.map.magFilter = T.NearestFilter; m.map.minFilter = T.NearestFilter; m.map.wrapS = m.map.wrapT = T.RepeatWrapping; }
+      if ((src.name || "").startsWith("amber")) { m.emissive = new T.Color(1, 1, 1); m.emissiveMap = m.map; m.emissiveIntensity = GLOW_PAGE; m.userData.lit = true; }
+      return m;
+    });
+    if (n.material.length === 1) n.material = n.material[0];
+  });
+}
 let THREE_READY = null;
 function loadScript(src) {
   return new Promise((ok, bad) => { const s = document.createElement("script"); s.src = src; s.async = false; s.onload = ok; s.onerror = () => bad(new Error("could not load " + src)); document.head.append(s); });
@@ -475,37 +491,37 @@ class Stage {
       this.controls.update();
     }
   }
-  async show(id) {
+  // A machine by its chassis id, with its rig sidecar; or, with `shape` set, one silhouette
+  // class alone in a maker's metal (shapes/<class>_<maker>), which has no rig and only turns.
+  async show(id, shape = false) {
     await this.init();
     if (this.id === id && this.rig) return;
     this.id = id;
-    this.note.textContent = "Loading " + id + "…";
-    const [gltf, side] = await Promise.all([this.loadModel(id), fetch("hangar/models/" + id + ".rig.json", {cache: "no-store"}).then(r => r.ok ? r.json() : {})]);
+    this.isShape = shape;
+    this.fits = {};
+    this.note.textContent = "Loading " + id.replace("shapes/", "").replace(/_/g, " ") + "…";
+    const side = shape ? Promise.resolve({}) : fetch("hangar/models/" + id + ".rig.json", {cache: "no-store"}).then(r => {
+      if (!r.ok) throw new Error("hangar/models/" + id + ".rig.json: " + r.status);
+      return r.json();
+    });
+    const [gltf, sidecar] = await Promise.all([this.loadModel(id), side]);
     if (this.id !== id) return;
     const T = window.THREE;
     if (this.modelRoot) this.pivot.remove(this.modelRoot);
     const root = gltf.scene;   // a fresh parse each time, so materials are never shared between visits
-    root.traverse(n => {
-      if (!n.isMesh) return;
-      n.material = [].concat(n.material).map(src => {
-        const m = src.clone();
-        m.flatShading = true; m.side = T.DoubleSide; m.roughness = 0.85; m.metalness = 0.1;
-        if (m.map) { m.map = m.map.clone(); m.map.needsUpdate = true; m.map.magFilter = T.NearestFilter; m.map.minFilter = T.NearestFilter; m.map.wrapS = m.map.wrapT = T.RepeatWrapping; }
-        if ((src.name || "").startsWith("amber")) { m.emissive = new T.Color(1, 1, 1); m.emissiveMap = m.map; m.emissiveIntensity = GLOW_PAGE; m.userData.lit = true; }
-        return m;
-      });
-      if (n.material.length === 1) n.material = n.material[0];
-    });
-    // Hang the model off the pivot centred by its bounds, the ground at its own y = 0.
+    prepareMaterials(root);
+    // Hang the model off the pivot centred by its bounds, the ground at its own y = 0 (a class
+    // sits on the ground by its lowest point, since it has no ground of its own).
     const box = new T.Box3().setFromObject(root), c = box.getCenter(new T.Vector3()), s = box.getSize(new T.Vector3());
-    root.position.set(-c.x, 0, -c.z);
+    root.position.set(-c.x, shape ? -box.min.y : 0, -c.z);
     this.size = Math.max(s.x, s.y, s.z);
     this.widest = Math.max(s.x, s.z);
     this.modelRoot = root;
     this.pivot.add(root);
-    this.rig = new Rig(root, side, 7);
+    this.rig = new Rig(root, sidecar, 7);
     this.rig.debug = this.loop || "1";
-    this.side = side;
+    this.side = sidecar;
+    if (shape && this.mode !== "acts") this.mode = "acts";
     this.route = new Route(this.widest / (2 * MARKER_FIT * (this.flyer ? FIT_FLYER : 1)));
     this.buildGround();
     this.pivot.position.set(0, 0, 0); this.pivot.rotation.set(0, this.route.facing, 0);
@@ -514,11 +530,49 @@ class Stage {
     this.emit();
     this.start();
   }
-  loadModel(id) {
-    // The glTF as JSON with its binary embedded: an artifact does not serve .glb (tools/hangar_data.py).
-    return new Promise((ok, bad) => new window.THREE.GLTFLoader().load("hangar/models/" + id + ".model.json", ok, undefined, bad));
+  // Fit a mount as the game does (MechView3D.mount): the stock part under hp_<n> hides and a
+  // silhouette class in a maker's metal hangs under the pin, wearing its frame and scale, so it
+  // swings and recoils with whatever joint carries the pin. `shape` "" bares the mount; null
+  // puts the stock part back.
+  async fit(n, shape, maker) {
+    const rig = this.rig, pin = rig && rig.hardpoints[n];
+    if (!pin) return;
+    const id = this.id;
+    let part = null;
+    if (shape) {
+      const gltf = await this.loadModel("shapes/" + shape + "_" + maker);
+      if (this.id !== id) return;
+      part = gltf.scene;
+      prepareMaterials(part);
+      part.userData.mounted = true;
+    }
+    for (const c of pin.children.slice()) {
+      if (c.userData.mounted) pin.remove(c);
+      else c.visible = shape === null;
+    }
+    if (part) pin.add(part);
+    rig.glowCache = {};   // a fitted part's lights now answer the mount's glow
+    if (shape === null) delete this.fits[n]; else this.fits[n] = shape ? shape + ":" + maker : "bare";
+    this.emit();
+  }
+  resetFits() { for (const n of Object.keys(this.fits)) this.fit(Number(n), null); }
+  // The glTF as JSON with its binary embedded: an artifact does not serve .glb (tools/hangar_data.py).
+  // The page fetches it itself, as it fetches the content files, and three.js only parses it.
+  // Its textures sit in the embedded binary, and r128 decodes those by fetch() on a blob:
+  // address wherever createImageBitmap exists (Chrome, Safari); the artifact viewer's content
+  // policy refuses that fetch ("Failed to fetch", 3 October). The plugin hands the parser an
+  // image-element loader instead, which the policy allows for blob: images.
+  async loadModel(id) {
+    const r = await fetch("hangar/models/" + id + ".model.json", {cache: "no-store"});
+    if (!r.ok) throw new Error("hangar/models/" + id + ".model.json: " + r.status);
+    const text = await r.text();
+    const T = window.THREE;
+    const loader = new T.GLTFLoader();
+    loader.register(parser => { parser.textureLoader = new T.TextureLoader(parser.options.manager); return {name: "riftgate_image_element_textures"}; });
+    return new Promise((ok, bad) => loader.parse(text, "", ok, bad));
   }
   setMode(mode) {
+    if (this.isShape) mode = "acts";
     this.mode = mode;
     if (this.rig) { this.rig.endAct(true); this.rig.strikes = []; this.rig.drive(0, 0, 0, 10); this.rig.pose(); }
     this.route.reset();
@@ -550,6 +604,7 @@ class Stage {
   }
   advance(dt) {
     const rig = this.rig;
+    if (this.isShape) { this.pivot.rotation.y += 0.5 * dt; return; }   // a class alone turns on its stand
     if (this.mode === "acts") rig.tick(dt, true);
     else if (this.mode === "walk") { rig.tick(dt, false); rig.drive(MOVE_REF_SPEED, 0, 0, dt); }
     else {

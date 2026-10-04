@@ -10,7 +10,11 @@ tab too: its script (tools/hangar_motion.js as hangar/motion.js) and every built
 model and rig sidecar. An artifact does not serve .glb files, so each model is written as
 the same glTF in JSON with its binary embedded (build/hangar/models/<id>.model.json, git
 ignores build/; three.js loads it as it would the .glb), and the sidecar goes as it is
-(art/models/<id>.rig.json as hangar/models/<id>.rig.json). Run it after a content, model
+(art/models/<id>.rig.json as hangar/models/<id>.rig.json). The silhouette classes go the same
+way (art/models/shapes/<class>_<maker>.glb as hangar/models/shapes/<class>_<maker>.model.json),
+with a manifest naming them (build/hangar/shapes.json as hangar/shapes.json: the classes in
+the engine's order from sim/content_db.gd's SHAPES, the makers from the content), so the
+Models tab can show a class alone or fit it to any mount. Run it after a content, model
 or render change, then publish tools/hangar.html with the printed map to the page's URL.
 
     python3 tools/hangar_data.py            # write pins.json and the models' JSON, check the manifest, print the map
@@ -77,6 +81,30 @@ def main():
         files["hangar/models/%s.model.json" % cid] = built
         if os.path.exists(os.path.join(ROOT, "art", "models", cid + ".rig.json")):
             files["hangar/models/%s.rig.json" % cid] = "art/models/%s.rig.json" % cid
+    # The silhouette classes, every class in every maker's metal, and their manifest.
+    shapes_src = open(os.path.join(ROOT, "sim", "content_db.gd")).read()
+    classes = [c for c in json.loads(re.search(r'const SHAPES := (\[[^\]]*\])', shapes_src).group(1)) if c != "none"]
+    makers = [m["id"] for m in json.load(open(os.path.join(ROOT, "content", "chassis.json")))["makers"]]
+    present = {"classes": [], "makers": []}
+    for c in classes:
+        for m in makers:
+            src = os.path.join(ROOT, "art", "models", "shapes", "%s_%s.glb" % (c, m))
+            if not os.path.exists(src):
+                continue
+            built = os.path.join("build", "hangar", "models", "shapes", "%s_%s.model.json" % (c, m))
+            if not check_only:
+                glb_to_json(src, os.path.join(ROOT, built))
+            files["hangar/models/shapes/%s_%s.model.json" % (c, m)] = built
+            if c not in present["classes"]:
+                present["classes"].append(c)
+            if m not in present["makers"]:
+                present["makers"].append(m)
+    manifest_path = os.path.join("build", "hangar", "shapes.json")
+    if not check_only:
+        os.makedirs(os.path.dirname(os.path.join(ROOT, manifest_path)), exist_ok=True)
+        json.dump({"_about": "the silhouette classes published beside the hangar page, written by tools/hangar_data.py", **present},
+                  open(os.path.join(ROOT, manifest_path), "w"), indent=1)
+    files["hangar/shapes.json"] = manifest_path
     missing = []
     groups = [b["images"] for b in manifest["classes"]["blocks"]]
     for cid, d in manifest["chassis"].items():
