@@ -1711,15 +1711,14 @@ def stingray(b):
     kept; and two of the front mounts to the wing tips, since the front carried too many.
     Sixth pass (Ryan, 3 October, almost perfect): the tail thinner and shorter, the third
     pass's shape, a few units of taper to a mouth two thirds the stern's width.
-    Which two is Ryan's call and both are rendered for his look: RIFTGATE_STINGRAY_TIPS=top
-    (the default, Claude's pick: the shoulder pods go to the tips and the deck keeps only
-    the dome) or =under (the forewing pods go to the tips, the shoulder mounts stay beside
-    the canopy). Mounts, in the die's order: hp_1 (the Solar Flare Array, two pods) and hp_2
-    (the Pulse Repeater) at the wing tips or on the shoulders, hp_3 the dome (the Zenith
-    Emitter), hp_4 (the Aurora Lattice, a dish, right) and hp_5 (bare, left; the Radiator
-    Sail is a vent and shows nowhere) out of the forewings' undersides or at the tips.
+    Ryan picked the shoulder pods at the tips (3 October, night), so the deck keeps the dome
+    alone and the forewing pods stay. Seventh pass (the same night): the tail narrows in one
+    quick stage from the stern to the mouth, the exhaust itself kept. Mounts, in the die's
+    order: hp_1 (the Solar Flare Array, two pods) at the left wing tip and hp_2 (the Pulse
+    Repeater) at the right, hp_3 the dome (the Zenith Emitter), hp_4 (the Aurora Lattice, a
+    dish) out of the right forewing's underside and hp_5 bare out of the left (the Radiator
+    Sail is a vent and shows nowhere).
     Floats: the belly at z = 6. Every number is a proportion Ryan may change."""
-    tips = os.environ.get("RIFTGATE_STINGRAY_TIPS", "top")
     top = _ray_top
     # The body: a flattened hexagonal section lofted nose to stern, widest amidships.
     b.loft([(y, hexagon(0.0, cz, w, h)) for (y, cz, w, h) in _RAY_BODY], "steel.plate", "body")
@@ -1738,40 +1737,23 @@ def stingray(b):
         inner = _rings(b, [secs[0], secs[1]], "steel.plate", "wing_inner")
         outer = _rings(b, [secs[1], secs[2]], "livery.livery", "wing_outer")
         _lift_fan(b, [inner, outer], s * 23.0, 2.0, 7.5, 20.5)
-    # The tail is the exhaust, short and thin (Ryan, 3 October, sixth pass: the shape two
-    # iterations ago was great): the body's own taper runs on past the stern in its pearl
-    # for a few units, closing fast to a mouth two thirds the stern's width, one open duct;
-    # a thin dark rim at the mouth is all the grey there is; a dark lining inside and fire
-    # at its floor. Nothing is mounted on it.
-    b.loft([(-44.0, hexagon(0.0, 15.0, 16.0, 7.0)), (-47.0, hexagon(0.0, 15.0, 12.6, 5.6)), (-49.0, hexagon(0.0, 15.0, 10.6, 4.7))], "steel.plate", "tail", cap=False)
-    b.loft([(-49.0, hexagon(0.0, 15.0, 10.6, 4.7)), (-50.0, hexagon(0.0, 15.0, 10.0, 4.4))], "steel.dark", "tail_rim", cap=False)
-    _rings(b, [[(x, -50.0, z) for x, z in hexagon(0.0, 15.0, 10.0, 4.4)], [(x, -50.0, z) for x, z in hexagon(0.0, 15.0, 8.6, 3.2)]], "steel.dark", "duct_rim", cap=False)
-    b.loft([(-50.0, hexagon(0.0, 15.0, 8.6, 3.2)), (-46.0, hexagon(0.0, 15.0, 9.0, 3.3))], "steel.dark", "duct_lining", cap=False)
-    b.loft([(-46.0, hexagon(0.0, 15.0, 9.0, 3.3)), (-45.7, hexagon(0.0, 15.0, 9.0, 3.3))], "amber.glow", "nozzle_glow")
+    # The tail is the exhaust, short and thin (Ryan, 3 October, sixth and seventh passes:
+    # the shape two iterations ago was great; then it must narrow quicker, in one stage, not
+    # two): the body's own taper runs on past the stern in its pearl as one straight loft,
+    # closing fast to a mouth two thirds the stern's width, one open duct; a thin dark rim
+    # at the mouth is all the grey there is; a dark lining inside and fire at its floor.
+    # Nothing is mounted on it.
+    b.loft([(-44.0, hexagon(0.0, 15.0, 16.0, 7.0)), (-47.5, hexagon(0.0, 15.0, 10.6, 4.7))], "steel.plate", "tail", cap=False)
+    b.loft([(-47.5, hexagon(0.0, 15.0, 10.6, 4.7)), (-48.5, hexagon(0.0, 15.0, 10.0, 4.4))], "steel.dark", "tail_rim", cap=False)
+    _rings(b, [[(x, -48.5, z) for x, z in hexagon(0.0, 15.0, 10.0, 4.4)], [(x, -48.5, z) for x, z in hexagon(0.0, 15.0, 8.6, 3.2)]], "steel.dark", "duct_rim", cap=False)
+    b.loft([(-48.5, hexagon(0.0, 15.0, 8.6, 3.2)), (-45.5, hexagon(0.0, 15.0, 9.0, 3.3))], "steel.dark", "duct_lining", cap=False)
+    b.loft([(-45.5, hexagon(0.0, 15.0, 9.0, 3.3)), (-45.2, hexagon(0.0, 15.0, 9.0, 3.3))], "amber.glow", "nozzle_glow")
     # The Photosphere Lance under the nose (fixed, no pin): a long emitter along the keel,
     # a red collar at its root and a lit muzzle.
     b.box(-4.0, 4.0, 10.0, 24.0, 5.5, 9.5, "steel.panel", "lance_mount")
     b.prism("y", 0.0, 32.0, 7.5, 2.6, 36.0, "steel.dark", 6, "lance")
     b.prism("y", 0.0, 22.0, 7.5, 3.1, 4.0, "livery.livery2", 6, "lance_collar")
     b.prism("y", 0.0, 50.5, 7.5, 2.0, 1.4, "amber.engine", 6, "lance_muzzle")
-
-    def shoulder(s, name):
-        """A mount low and set back beside the canopy, seated on the wing root: hp_1 the
-        Solar Flare Array (two short flare pods pitched up), hp_2 the Pulse Repeater on a
-        slim fairing."""
-        mx, my = s * 12.0, 13.0
-        mt = _seat(b, top, mx, my, 7.0, 9.0, 1.2, "steel.panel", "shoulder_mount")
-        if name == "hp_1":
-            with b.socket(name, (mx, my + 4.0, mt + 0.4), forward=(0.0, 0.866, 0.5)):
-                b.box(mx - 4.2, mx + 4.2, my - 3.0, my - 0.5, mt, mt + 1.8, "steel.plate", "pod_cradle")
-                for s2 in (-1.0, 1.0):
-                    _beam(b, (mx + s2 * 2.4, my - 2.0, mt), (mx + s2 * 2.4, my + 6.0, mt + 4.6), _poly(1.6, 6), _poly(1.8, 6), "steel.dark", "flare_pod")
-                    b.prism("y", mx + s2 * 2.4, my + 6.4, mt + 4.8, 1.2, 0.8, "amber.engine", 6, "pod_mouth")
-        else:
-            with b.socket(name, (mx, my + 4.0, mt + 0.8)):
-                b.loft([(my - 2.5, rect(mx, 3.6, mt, mt + 2.2)), (my + 5.0, rect(mx, 2.8, mt, mt + 1.8))], "steel.plate", "repeater_fairing")
-                b.prism("y", mx, my + 13.0, mt + 1.1, 1.5, 18.0, "steel.dark", 6, "pulse_repeater")
-                b.prism("y", mx, my + 22.4, mt + 1.1, 1.1, 1.2, "amber.engine", 6, "repeater_tip")
 
     def forewing_pod(s, name):
         """A pod lying along a forewing's underside, buried under the plateau and emerging
@@ -1803,33 +1785,22 @@ def stingray(b):
         b.prism("y", px, 7.4, pz, 2.3, 1.2, "steel.plate", 6, "tip_collar")
         return px, 8.0, pz
 
-    if tips == "top":
-        # The deck keeps only the dome: hp_1 at the left tip (the flare pods pitched up off
-        # the pod's mouth), hp_2 at the right (the repeater running on from the pod); the
-        # forewing pods stay.
-        for s in (-1.0, 1.0):
-            px, py, pz = tip_pod(s)
-            if s < 0:
-                with b.socket("hp_1", (px, py, pz), forward=(0.0, 0.866, 0.5), scale=0.8):
-                    for s2 in (-1.0, 1.0):
-                        _beam(b, (px + s2 * 1.7, py - 1.5, pz - 0.4), (px + s2 * 1.7, py + 6.0, pz + 3.6), _poly(1.3, 6), _poly(1.5, 6), "steel.dark", "flare_pod")
-                        b.prism("y", px + s2 * 1.7, py + 6.4, pz + 3.8, 1.0, 0.8, "amber.engine", 6, "pod_mouth")
-            else:
-                with b.socket("hp_2", (px, py, pz), scale=0.8):
-                    b.prism("y", px, py + 8.0, pz, 1.4, 16.0, "steel.dark", 6, "pulse_repeater")
-                    b.prism("y", px, py + 16.4, pz, 1.0, 1.2, "amber.engine", 6, "repeater_tip")
-            forewing_pod(s, "hp_4" if s > 0 else "hp_5")
-    else:
-        # The shoulders stay beside the canopy; the forewing pods go to the tips: hp_4 the
-        # lattice at the right tip, hp_5 bare at the left.
-        for s in (-1.0, 1.0):
-            shoulder(s, "hp_1" if s < 0 else "hp_2")
-            px, py, pz = tip_pod(s)
-            if s > 0:
-                with b.socket("hp_4", (px, py, pz), scale=0.7):
-                    lattice(px, py, pz)
-            else:
-                b.pad("hp_5", (px, py, pz), scale=0.7, size=(3.6, 1.4))
+    # The wing tips carry the shoulder pods (Ryan's pick, 3 October, night: keep this
+    # layout): hp_1 at the left tip, the flare pods pitched up off the pod's mouth, hp_2 at
+    # the right, the repeater running on from the pod; the deck keeps the dome alone; the
+    # forewing pods stay.
+    for s in (-1.0, 1.0):
+        px, py, pz = tip_pod(s)
+        if s < 0:
+            with b.socket("hp_1", (px, py, pz), forward=(0.0, 0.866, 0.5), scale=0.8):
+                for s2 in (-1.0, 1.0):
+                    _beam(b, (px + s2 * 1.7, py - 1.5, pz - 0.4), (px + s2 * 1.7, py + 6.0, pz + 3.6), _poly(1.3, 6), _poly(1.5, 6), "steel.dark", "flare_pod")
+                    b.prism("y", px + s2 * 1.7, py + 6.4, pz + 3.8, 1.0, 0.8, "amber.engine", 6, "pod_mouth")
+        else:
+            with b.socket("hp_2", (px, py, pz), scale=0.8):
+                b.prism("y", px, py + 8.0, pz, 1.4, 16.0, "steel.dark", 6, "pulse_repeater")
+                b.prism("y", px, py + 16.4, pz, 1.0, 1.2, "amber.engine", 6, "repeater_tip")
+        forewing_pod(s, "hp_4" if s > 0 else "hp_5")
     # The turret (hp_3) behind the canopy: a wide dome faired to the crown on a dark ring,
     # turning whole on its joint, the Zenith Emitter leaving a dark slot in the dome's
     # forward slope (Ryan, 2 October, late: the gun comes out of the edge of something
@@ -1880,6 +1851,18 @@ def _hull_section(z0, z1, w, c, cx=0.0, belly=0.8):
             (cx + hw - c, z1), (cx - hw + c, z1), (cx - hw, z1 - c), (cx - hw, z0 + c + belly), (cx - hw + c, z0 + belly)]
 
 
+def _chine_section(z0, z1, w, c, cx=0.0, belly=0.6):
+    """A hovercraft hull's section with a hard chine: widest at a crease below mid-height,
+    the flank leaning in to a narrower deck above it and tucking under to the skirt below,
+    the belly flat for its middle third. A stealth airframe's facet rather than a chamfered
+    box: a trial for the Puffin's Kestrel read (3 October, night), not the model."""
+    hw = w / 2.0
+    zc = z0 + (z1 - z0) * 0.42
+    dw = hw * 0.74
+    return [(cx - hw / 3.0, z0), (cx + hw / 3.0, z0), (cx + hw * 0.82, z0 + belly), (cx + hw, zc), (cx + dw, z1),
+            (cx - dw, z1), (cx - hw, zc), (cx - hw * 0.82, z0 + belly)]
+
+
 def puffin(b):
     """Kestrel "Puffin" (K-11 Mk I Ground-Effect Escort): Kestrel's one machine that touches
     the ground, the escort they thought was very cool and pilots named for the bird (the
@@ -1908,10 +1891,21 @@ def puffin(b):
     Mounts, in the die's order: hp_1 under the left wing tip (the Laser Carbine), hp_2 under
     the right (the Deflector, a dish), hp_3 on the right shoulder (the Overcharge Coil, a
     dish), hp_4 bare on the left shoulder (the Ram-air Scoop is a vent and shows nowhere).
-    Floats: the lip at z = 6.5."""
+    Floats: the lip at z = 6.5. RIFTGATE_PUFFIN_SLEEK=1 builds a trial for the Kestrel
+    read (Ryan, 3 October, night: cohesive but not quite sleek enough, not quite Kestrel),
+    rendered beside the model and not the model: the hull's chamfered box becomes a chined
+    airframe facet (_chine_section) widest at a crease and leaning in to a narrower deck,
+    the deck a step lower, the waist pinched so the nacelles stand proud of a fuselage, the
+    fins taller and swept back."""
+    sleek = os.environ.get("RIFTGATE_PUFFIN_SLEEK") == "1"
     # The hull: wide and low, nose to stern, as (y, w, z0, z1, chamfer), tapering to the stern.
-    HULL = [(30.0, 14.0, 10.0, 15.0, 2.0), (20.0, 30.0, 8.0, 19.0, 3.0), (6.0, 40.0, 7.0, 21.0, 3.5), (-12.0, 40.0, 7.0, 21.0, 3.5),
-            (-26.0, 34.0, 8.0, 20.2, 3.0), (-36.0, 22.0, 10.0, 18.4, 2.5)]
+    if sleek:
+        HULL = [(30.0, 14.0, 10.0, 14.6, 2.0), (20.0, 28.0, 8.0, 17.6, 3.0), (6.0, 36.0, 7.0, 19.4, 3.5), (-12.0, 34.0, 7.0, 19.4, 3.5),
+                (-26.0, 30.0, 8.0, 18.8, 3.0), (-36.0, 22.0, 10.0, 17.4, 2.5)]
+    else:
+        HULL = [(30.0, 14.0, 10.0, 15.0, 2.0), (20.0, 30.0, 8.0, 19.0, 3.0), (6.0, 40.0, 7.0, 21.0, 3.5), (-12.0, 40.0, 7.0, 21.0, 3.5),
+                (-26.0, 34.0, 8.0, 20.2, 3.0), (-36.0, 22.0, 10.0, 18.4, 2.5)]
+    section = _chine_section if sleek else _hull_section
 
     def deck(y):
         """The hull's flat top at a station between the chamfers."""
@@ -1920,11 +1914,11 @@ def puffin(b):
                 t = (y0 - y) / (y0 - y1)
                 return z0 + (z1 - z0) * t
         return HULL[0][3] if y > HULL[0][0] else HULL[-1][3]
-    b.loft([(y, _hull_section(z0, z1, w, c)) for (y, w, z0, z1, c) in HULL], "steel.plate", "hull")
+    b.loft([(y, section(z0, z1, w, c)) for (y, w, z0, z1, c) in HULL], "steel.plate", "hull")
     # The prow: a chined cobalt wedge out of the nose, the band of light across it, its edge
     # the projector's lit slot.
-    PROW = [(30.0, 14.0, 10.0, 15.0, 2.0), (37.0, 9.0, 11.0, 15.0, 1.6), (43.0, 4.6, 12.0, 14.6, 1.0), (46.0, 2.0, 12.6, 14.2, 0.5)]
-    b.loft([(y, _hull_section(z0, z1, w, c)) for (y, w, z0, z1, c) in PROW], "livery.livery", "prow")
+    PROW = [HULL[0], (37.0, 9.0, 11.0, HULL[0][3], 1.6), (43.0, 4.6, 12.0, HULL[0][3] - 0.4, 1.0), (46.0, 2.0, 12.6, HULL[0][3] - 0.8, 0.5)]
+    b.loft([(y, section(z0, z1, w, c)) for (y, w, z0, z1, c) in PROW], "livery.livery", "prow")
     b.loft([(38.5, _hull_section(10.6, 15.3, 9.2, 1.4)), (40.0, _hull_section(10.8, 15.2, 8.4, 1.3))], "amber.light", "prow_band")
     b.loft([(46.0, _hull_section(12.7, 14.1, 1.8, 0.4)), (46.9, _hull_section(12.9, 13.9, 1.2, 0.3))], "amber.engine", "projector_slot")
     # The skirt: the dark lip round the hull's foot, the plenum's armoured rim, carried up the
@@ -1960,7 +1954,8 @@ def puffin(b):
     def nac_top(y):
         """The nacelle's top: the deck carried out over the booster, 21 at its front and
         sloping down with the hull's taper to the drum's crown at the stern."""
-        return 21.0 + (19.8 - 21.0) * (-6.0 - y) / 27.0
+        top0, top1 = (19.4, 18.4) if sleek else (21.0, 19.8)
+        return top0 + (top1 - top0) * (-6.0 - y) / 27.0
 
     def mirror(pts, s):
         """A section drawn for the right side, mirrored for the left with its winding kept."""
@@ -1974,12 +1969,12 @@ def puffin(b):
         # drum, a giant six-sided drum, pokes out of the nacelle's flank and below it, its
         # mouth ahead of the nacelle as the intake, bare for its last stretch, its lit ring
         # and exhaust past the stern; a narrow, low louvred housing lies along the top.
-        bx, bz = s * 17.0, 13.0
+        bx, bz, br = s * 17.0, (12.4 if sleek else 13.0), (6.4 if sleek else 6.8)
         def nac(y, x_out):
             t = nac_top(y)
             return mirror([(10.0, 8.6), (x_out, 8.6), (x_out, t - 1.6), (x_out - 1.6, t), (10.0, t)], s)
         b.loft([(-6.0, nac(-6.0, 22.2)), (-20.0, nac(-20.0, 22.0)), (-33.0, nac(-33.0, 21.2))], "steel.plate", "nacelle")
-        b.prism("y", bx, -20.5, bz, 6.8, 31.0, "steel.dark", 6, "booster", phase=math.pi / 6)
+        b.prism("y", bx, -20.5, bz, br, 31.0, "steel.dark", 6, "booster", phase=math.pi / 6)
         b.loft([(-5.0, hexagon(bx, bz, 12.0, 10.6)), (-4.4, hexagon(bx, bz, 10.6, 9.4))], "bore.dark", "intake")
         b.prism("y", bx, -4.8, bz, 7.2, 1.2, "steel.plate", 6, "intake_lip", phase=math.pi / 6)
         hx0, hx1 = min(s * 13.0, s * 19.0), max(s * 13.0, s * 19.0)
@@ -2007,20 +2002,21 @@ def puffin(b):
             else:
                 b.prism("y", px, 4.5, 9.2, 3.4, 1.2, "steel.plate", 8, "dish")
                 b.prism("y", px, 5.4, 9.2, 1.3, 0.8, "amber.engine", 8, "dish_core")
-    # Two canted fins on the rear deck: the airframe ancestry.
+    # Two canted fins on the rear deck: the airframe ancestry (taller and swept back in the trial).
+    fh, fy0, fy1 = (13.0, -42.0, -34.0) if sleek else (10.0, -37.0, -31.0)
     for s in (-1.0, 1.0):
         a = math.radians(s * 35.0)
         fx, fz = s * 7.0, deck(-30.0)
         root = [(fx, -35.0, fz - 0.8), (fx, -24.0, fz - 0.8), (fx, -24.0, fz + 0.2), (fx, -35.0, fz + 0.2)]
-        tip = [(fx + 10.0 * math.sin(a), -37.0, fz + 10.0 * math.cos(a)), (fx + 10.0 * math.sin(a), -31.0, fz + 10.0 * math.cos(a)),
-               (fx + 10.0 * math.sin(a), -31.0, fz + 0.5 + 10.0 * math.cos(a)), (fx + 10.0 * math.sin(a), -37.0, fz + 0.5 + 10.0 * math.cos(a))]
+        tip = [(fx + fh * math.sin(a), fy0, fz + fh * math.cos(a)), (fx + fh * math.sin(a), fy1, fz + fh * math.cos(a)),
+               (fx + fh * math.sin(a), fy1, fz + 0.5 + fh * math.cos(a)), (fx + fh * math.sin(a), fy0, fz + 0.5 + fh * math.cos(a))]
         _wing(b, root, tip, "livery.livery", "fin")
     # The shoulder mounts behind the canopy (Ryan, 3 October: the rear deck mounts were
     # janky): a low fairing lying along each shoulder, rising to its front where the pin is,
     # so a fitted part rides the deck: hp_3 the Overcharge Coil's dish on the right, hp_4
     # bare on the left.
     for s in (-1.0, 1.0):
-        rx, ry = s * 12.0, 0.0
+        rx, ry = s * (10.5 if sleek else 12.0), 0.0
         dz = deck(ry)
         b.loft([(ry - 8.0, rect(rx, 3.2, dz - 0.6, dz + 1.2)), (ry + 6.0, rect(rx, 4.6, dz - 0.6, dz + 2.4))], "steel.panel", "shoulder_fairing")
         if s > 0:
