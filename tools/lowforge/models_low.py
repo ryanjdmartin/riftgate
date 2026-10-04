@@ -1607,6 +1607,8 @@ def stingray(b):
     so the emitter clears the canopy; the tail back to the tapering shape, the body's pearl
     running to the end and the grey one thin rim at the mouth, the one wide open exhaust
     kept; and two of the front mounts to the wing tips, since the front carried too many.
+    Sixth pass (Ryan, 3 October, almost perfect): the tail thinner and shorter, the third
+    pass's shape, a few units of taper to a mouth two thirds the stern's width.
     Which two is Ryan's call and both are rendered for his look: RIFTGATE_STINGRAY_TIPS=top
     (the default, Claude's pick: the shoulder pods go to the tips and the deck keeps only
     the dome) or =under (the forewing pods go to the tips, the shoulder mounts stay beside
@@ -1634,16 +1636,16 @@ def stingray(b):
         inner = _rings(b, [secs[0], secs[1]], "steel.plate", "wing_inner")
         outer = _rings(b, [secs[1], secs[2]], "livery.livery", "wing_outer")
         _lift_fan(b, [inner, outer], s * 23.0, 2.0, 7.5, 20.5)
-    # The tail is the exhaust and it tapers (Ryan, 3 October: the tapering shape was right,
-    # keep the one wide exhaust, only a small stripe of the grey at the end): the body's
-    # own taper runs on past the stern in its pearl, closing toward the mouth, one open duct
-    # the width of the tail; a thin dark rim at the mouth is all the grey there is; a dark
-    # lining inside and fire at its floor. Nothing is mounted on it.
-    b.loft([(-44.0, hexagon(0.0, 15.0, 16.0, 7.0)), (-52.0, hexagon(0.0, 15.0, 13.2, 5.6)), (-56.0, hexagon(0.0, 15.0, 11.4, 4.8))], "steel.plate", "tail", cap=False)
-    b.loft([(-56.0, hexagon(0.0, 15.0, 11.4, 4.8)), (-57.4, hexagon(0.0, 15.0, 10.8, 4.5))], "steel.dark", "tail_rim", cap=False)
-    _rings(b, [[(x, -57.4, z) for x, z in hexagon(0.0, 15.0, 10.8, 4.5)], [(x, -57.4, z) for x, z in hexagon(0.0, 15.0, 9.4, 3.3)]], "steel.dark", "duct_rim", cap=False)
-    b.loft([(-57.4, hexagon(0.0, 15.0, 9.4, 3.3)), (-50.5, hexagon(0.0, 15.0, 9.8, 3.4))], "steel.dark", "duct_lining", cap=False)
-    b.loft([(-50.5, hexagon(0.0, 15.0, 9.8, 3.4)), (-50.2, hexagon(0.0, 15.0, 9.8, 3.4))], "amber.glow", "nozzle_glow")
+    # The tail is the exhaust, short and thin (Ryan, 3 October, sixth pass: the shape two
+    # iterations ago was great): the body's own taper runs on past the stern in its pearl
+    # for a few units, closing fast to a mouth two thirds the stern's width, one open duct;
+    # a thin dark rim at the mouth is all the grey there is; a dark lining inside and fire
+    # at its floor. Nothing is mounted on it.
+    b.loft([(-44.0, hexagon(0.0, 15.0, 16.0, 7.0)), (-47.0, hexagon(0.0, 15.0, 12.6, 5.6)), (-49.0, hexagon(0.0, 15.0, 10.6, 4.7))], "steel.plate", "tail", cap=False)
+    b.loft([(-49.0, hexagon(0.0, 15.0, 10.6, 4.7)), (-50.0, hexagon(0.0, 15.0, 10.0, 4.4))], "steel.dark", "tail_rim", cap=False)
+    _rings(b, [[(x, -50.0, z) for x, z in hexagon(0.0, 15.0, 10.0, 4.4)], [(x, -50.0, z) for x, z in hexagon(0.0, 15.0, 8.6, 3.2)]], "steel.dark", "duct_rim", cap=False)
+    b.loft([(-50.0, hexagon(0.0, 15.0, 8.6, 3.2)), (-46.0, hexagon(0.0, 15.0, 9.0, 3.3))], "steel.dark", "duct_lining", cap=False)
+    b.loft([(-46.0, hexagon(0.0, 15.0, 9.0, 3.3)), (-45.7, hexagon(0.0, 15.0, 9.0, 3.3))], "amber.glow", "nozzle_glow")
     # The Photosphere Lance under the nose (fixed, no pin): a long emitter along the keel,
     # a red collar at its root and a lit muzzle.
     b.box(-4.0, 4.0, 10.0, 24.0, 5.5, 9.5, "steel.panel", "lance_mount")
@@ -1779,23 +1781,29 @@ def puffin(b):
     skirt are what he loves, bring them out; a little rounding under the hull): the wide low
     oblong hull with its dark lip, a chined cobalt prow carrying the band of light and the
     Prow Projector's lit slot (fixed, no pin), a fighter canopy, side wings with a pod under
-    each tip, two giant boosters in the rear sponsons, two canted fins, lift nozzles. Fifth
-    pass (Ryan, 3 October, on the fourth, looking good): the wings flipped to the reverse
-    sweep (Kestrel's, the Sparrowhawk's), with a negative attitude, the tips dropping, their
-    pods clear of the blade; the canopy carried farther back and settled onto the hull, its
-    frame a band round the glass rather than a block through it; the skirt carried up the
-    prow to the nose, tapering in to blend; the deck carried over the boosters on purpose,
-    a lid the hull's own metal, with the louvred vent housings standing on it (the third
-    pass had the deck over them by accident); the rear mounts, janky between the spine and
-    the housings, moved up to the shoulders behind the canopy as low fairings. Mounts, in
-    the die's order: hp_1 under the left wing tip (the Laser Carbine), hp_2 under the right
-    (the Deflector, a dish), hp_3 on the right shoulder (the Overcharge Coil, a dish), hp_4
-    bare on the left shoulder (the Ram-air Scoop is a vent and shows nowhere). Floats: the
-    lip at z = 6.5."""
-    # The hull: wide and low, nose to stern, as (y, w, z0, z1, chamfer); the deck flat at 21
-    # back to the sponsons so the lid over the boosters lies flush with it.
+    each tip, two giant boosters half out of the rear sponsons, two canted fins, lift nozzles.
+    Fifth pass (Ryan, 3 October, on the fourth, looking good): the wings flipped to the reverse
+    sweep (Kestrel's, the Sparrowhawk's), with a negative attitude, the tips dropping; the
+    canopy carried farther back and settled onto the hull, its frame a band round the glass;
+    the skirt carried up the prow; the deck carried over the boosters with the vent housings
+    on it; the rear mounts moved up to the shoulders as low fairings. Sixth pass (Ryan, 3
+    October, on the fifth: the back too boxy, the hull top overhanging the boosters, the
+    vents to be narrower and lower; the fourth's overall shape was better, the back taper,
+    the boosters poking out the side and the wings attached to them; the skirt to taper up
+    before the beak): the two reconciled. The hull tapers to the stern as in the fourth pass;
+    each sponson is a faired nacelle whose top is the deck itself, sloping down with the
+    hull's taper and closing on the drum's crown, so the deck is carried over the booster
+    without a lid; the drum pokes out of the nacelle's flank and below it; a narrow low
+    louvred housing lies on each nacelle's top; the intake is the drum's mouth ahead of the
+    nacelle; and the wings grow out of the nacelles' flanks, reverse-swept and dropping, their
+    tips ahead of the intakes. The skirt climbs the prow's chine and ends before the band.
+    Mounts, in the die's order: hp_1 under the left wing tip (the Laser Carbine), hp_2 under
+    the right (the Deflector, a dish), hp_3 on the right shoulder (the Overcharge Coil, a
+    dish), hp_4 bare on the left shoulder (the Ram-air Scoop is a vent and shows nowhere).
+    Floats: the lip at z = 6.5."""
+    # The hull: wide and low, nose to stern, as (y, w, z0, z1, chamfer), tapering to the stern.
     HULL = [(30.0, 14.0, 10.0, 15.0, 2.0), (20.0, 30.0, 8.0, 19.0, 3.0), (6.0, 40.0, 7.0, 21.0, 3.5), (-12.0, 40.0, 7.0, 21.0, 3.5),
-            (-26.0, 36.0, 8.0, 21.0, 3.0), (-36.0, 26.0, 10.0, 19.5, 2.5)]
+            (-26.0, 34.0, 8.0, 20.2, 3.0), (-36.0, 22.0, 10.0, 18.4, 2.5)]
 
     def deck(y):
         """The hull's flat top at a station between the chamfers."""
@@ -1811,9 +1819,10 @@ def puffin(b):
     b.loft([(y, _hull_section(z0, z1, w, c)) for (y, w, z0, z1, c) in PROW], "livery.livery", "prow")
     b.loft([(38.5, _hull_section(10.6, 15.3, 9.2, 1.4)), (40.0, _hull_section(10.8, 15.2, 8.4, 1.3))], "amber.light", "prow_band")
     b.loft([(46.0, _hull_section(12.7, 14.1, 1.8, 0.4)), (46.9, _hull_section(12.9, 13.9, 1.2, 0.3))], "amber.engine", "projector_slot")
-    # The skirt: the dark lip round the hull's foot, the plenum's armoured rim, carried all
-    # the way up the prow to the nose and tapering in with it so it blends (Ryan, 3 October).
-    SKIRT = [(y, w + 0.4 + 1.0 * min(1.0, w / 10.0), z0 - 0.5, z0 + 1.0 + 1.9 * min(1.0, w / 10.0), 0.3 + 0.9 * min(1.0, w / 10.0)) for (y, w, z0, z1, c) in reversed(PROW)] \
+    # The skirt: the dark lip round the hull's foot, the plenum's armoured rim, carried up the
+    # prow and tapering up onto its chine, ending short of the band (Ryan, 3 October: it need
+    # not run under the beak).
+    SKIRT = [(37.0, 10.0, 11.4, 12.4, 0.5), (34.0, 12.6, 10.3, 12.6, 0.9), (30.0, 15.4, 9.5, 12.4, 1.2)] \
         + [(y, w + 1.4, z0 - 0.5, z0 + 2.4, 1.2) for (y, w, z0, z1, c) in HULL[1:]]
     b.loft([(y, _hull_section(z0, z1, w, c, belly=0.3)) for (y, w, z0, z1, c) in SKIRT], "steel.dark", "lip")
     # The canopy: a fighter's glass settled onto the fore deck (Ryan, 3 October: carried
@@ -1839,40 +1848,57 @@ def puffin(b):
     b.loft([(16.4, cab(16.4, 0.35)), (15.2, cab(15.2, 0.35))], "steel.dark", "canopy_frame")
     b.loft([(-4.0, cab(-4.0, 0.3)), (-14.0, [(-4.2, deck(-14.0) - 0.6), (4.2, deck(-14.0) - 0.6), (4.2, deck(-14.0) + 0.9), (2.1, deck(-14.0) + 2.0), (-2.1, deck(-14.0) + 2.0), (-4.2, deck(-14.0) + 0.9)]),
             (-30.0, [(-2.6, deck(-30.0) - 0.6), (2.6, deck(-30.0) - 0.6), (2.6, deck(-30.0) + 0.6), (1.3, deck(-30.0) + 1.4), (-1.3, deck(-30.0) + 1.4), (-2.6, deck(-30.0) + 0.6)])], "steel.dark", "fairing")
+
+    def nac_top(y):
+        """The nacelle's top: the deck carried out over the booster, 21 at its front and
+        sloping down with the hull's taper to the drum's crown at the stern."""
+        return 21.0 + (19.8 - 21.0) * (-6.0 - y) / 27.0
+
+    def mirror(pts, s):
+        """A section drawn for the right side, mirrored for the left with its winding kept."""
+        return [(s * x, z) for (x, z) in (pts if s > 0 else list(reversed(pts)))]
+
     for s in (-1.0, 1.0):
-        # The wings (Ryan, 3 October: flipped to face reverse, a negative attitude): reverse-
-        # swept like the Sparrowhawk's, the tips ahead of the roots, dropping toward the tips,
-        # a diamond in section (thickest at mid-chord, a knife both ways), rooted inside the
-        # hull's flank ahead of the sponsons; a pod hangs under each tip on a pylon that
-        # reaches the blade's underside and no further: hp_1 the Laser Carbine left, hp_2 the
-        # Deflector's dish right.
-        root = [(s * 17.5, -6.0, 15.8), (s * 17.5, 3.0, 18.0), (s * 17.5, 12.0, 15.8), (s * 17.5, 3.0, 13.6)]
-        tip = [(s * 33.0, 4.0, 12.0), (s * 33.0, 10.0, 12.8), (s * 33.0, 16.0, 12.0), (s * 33.0, 10.0, 11.2)]
+        # The nacelles (Ryan, 3 October, sixth pass): each sponson is a faired housing whose
+        # top is the deck itself, from the hull's flank out over the booster drum, its outer
+        # top edge chamfered and its whole top sloping down toward the stern with the hull's
+        # taper, so the deck is carried over the booster without a lid overhanging it; the
+        # drum, a giant six-sided drum, pokes out of the nacelle's flank and below it, its
+        # mouth ahead of the nacelle as the intake, bare for its last stretch, its lit ring
+        # and exhaust past the stern; a narrow, low louvred housing lies along the top.
+        bx, bz = s * 17.0, 13.0
+        def nac(y, x_out):
+            t = nac_top(y)
+            return mirror([(10.0, 8.6), (x_out, 8.6), (x_out, t - 1.6), (x_out - 1.6, t), (10.0, t)], s)
+        b.loft([(-6.0, nac(-6.0, 22.2)), (-20.0, nac(-20.0, 22.0)), (-33.0, nac(-33.0, 21.2))], "steel.plate", "nacelle")
+        b.prism("y", bx, -20.5, bz, 6.8, 31.0, "steel.dark", 6, "booster", phase=math.pi / 6)
+        b.loft([(-5.0, hexagon(bx, bz, 12.0, 10.6)), (-4.4, hexagon(bx, bz, 10.6, 9.4))], "bore.dark", "intake")
+        b.prism("y", bx, -4.8, bz, 7.2, 1.2, "steel.plate", 6, "intake_lip", phase=math.pi / 6)
+        hx0, hx1 = min(s * 13.0, s * 19.0), max(s * 13.0, s * 19.0)
+        b.loft([(-9.0, rect((hx0 + hx1) / 2.0, hx1 - hx0, nac_top(-9.0) - 0.3, nac_top(-9.0) + 1.0)), (-29.0, rect((hx0 + hx1) / 2.0, hx1 - hx0, nac_top(-29.0) - 0.3, nac_top(-29.0) + 1.0))], "steel.dark", "vent_housing")
+        lx0, lx1 = min(s * 13.5, s * 18.5), max(s * 13.5, s * 18.5)
+        b.loft([(-10.0, rect((lx0 + lx1) / 2.0, lx1 - lx0, nac_top(-10.0) + 1.0, nac_top(-10.0) + 1.5)), (-28.0, rect((lx0 + lx1) / 2.0, lx1 - lx0, nac_top(-28.0) + 1.0, nac_top(-28.0) + 1.5))], "steel.vent", "vent_louvres")
+        b.prism("y", bx, -36.0, bz, 7.3, 1.2, "steel.plate", 6, "exhaust_lip", phase=math.pi / 6)
+        b.prism("y", bx, -36.9, bz, 6.9, 1.4, "amber.engine", 6, "nozzle_ring", phase=math.pi / 6)
+        b.loft([(-37.6, hexagon(bx, bz, 11.2, 9.8)), (-38.1, hexagon(bx, bz, 10.0, 8.6))], "amber.engine", "exhaust")
+        # The wings grow out of the nacelles' flanks (Ryan, 3 October: attached to the
+        # boosters), reverse-swept like the Sparrowhawk's, the tips ahead of the roots and
+        # ahead of the intakes, dropping toward the tips, a diamond in section; a pod hangs
+        # under each tip on a pylon that reaches the blade's underside and no further: hp_1
+        # the Laser Carbine left, hp_2 the Deflector's dish right.
+        root = [(s * 20.5, -22.0, 15.8), (s * 20.5, -14.0, 18.0), (s * 20.5, -6.0, 15.8), (s * 20.5, -14.0, 13.6)]
+        tip = [(s * 33.0, -8.0, 12.0), (s * 33.0, -3.0, 12.8), (s * 33.0, 2.0, 12.0), (s * 33.0, -3.0, 11.2)]
         _wing(b, root, tip, "livery.livery", "wing")
         px = s * 30.0
-        b.box(min(px - 0.9, px + 0.9), max(px - 0.9, px + 0.9), 5.0, 12.0, 9.6, 12.0, "steel.plate", "pod_pylon")
-        with b.socket("hp_%d" % (1 if s < 0 else 2), (px, 14.5, 9.2), scale=0.6):
-            b.prism("y", px, 8.5, 9.2, 1.6, 12.0, "steel.dark", 6, "pod")
+        b.box(min(px - 0.9, px + 0.9), max(px - 0.9, px + 0.9), -9.0, -2.0, 9.6, 12.0, "steel.plate", "pod_pylon")
+        with b.socket("hp_%d" % (1 if s < 0 else 2), (px, 1.5, 9.2), scale=0.6):
+            b.prism("y", px, -4.5, 9.2, 1.6, 12.0, "steel.dark", 6, "pod")
             if s < 0:
-                b.prism("y", px, 20.5, 9.2, 0.9, 12.0, "steel.dark", 6, "laser_carbine")
-                b.prism("y", px, 26.9, 9.2, 1.2, 1.0, "steel.plate", 6, "muzzle")
+                b.prism("y", px, 7.5, 9.2, 0.9, 12.0, "steel.dark", 6, "laser_carbine")
+                b.prism("y", px, 13.9, 9.2, 1.2, 1.0, "steel.plate", 6, "muzzle")
             else:
-                b.prism("y", px, 17.5, 9.2, 3.4, 1.2, "steel.plate", 8, "dish")
-                b.prism("y", px, 18.4, 9.2, 1.3, 0.8, "amber.engine", 8, "dish_core")
-        # The boosters (Ryan, 3 October: the deck carried over them and the vents on top of
-        # the deck, deliberate this time): a giant six-sided drum in each rear sponson, its
-        # outer flank out of the sponson's side under a lid of the hull's own metal that
-        # carries the deck out over it, the louvred vent housing standing proud on the lid,
-        # the drum bare for its last stretch and its lit ring and exhaust past the stern.
-        bx, bz = s * 17.0, 13.5
-        b.box(min(s * 10.0, s * 21.0), max(s * 10.0, s * 21.0), -33.0, -6.0, 8.0, 19.6, "steel.plate", "sponson")
-        b.prism("y", bx, -22.0, bz, 7.0, 28.0, "steel.dark", 6, "booster", phase=math.pi / 6)
-        b.box(min(s * 9.0, s * 24.0), max(s * 9.0, s * 24.0), -34.0, -5.0, 19.6, 21.0, "steel.plate", "deck_lid")
-        b.box(min(s * 12.0, s * 22.0), max(s * 12.0, s * 22.0), -31.0, -8.0, 21.0, 22.8, "steel.dark", "vent_housing")
-        b.box(min(s * 12.5, s * 21.5), max(s * 12.5, s * 21.5), -30.0, -9.0, 22.8, 23.5, "steel.vent", "vent_louvres")
-        b.prism("y", bx, -36.0, bz, 7.5, 1.2, "steel.plate", 6, "exhaust_lip", phase=math.pi / 6)
-        b.prism("y", bx, -36.9, bz, 7.1, 1.4, "amber.engine", 6, "nozzle_ring", phase=math.pi / 6)
-        b.loft([(-37.6, hexagon(bx, bz, 11.6, 10.2)), (-38.1, hexagon(bx, bz, 10.4, 9.0))], "amber.engine", "exhaust")
+                b.prism("y", px, 4.5, 9.2, 3.4, 1.2, "steel.plate", 8, "dish")
+                b.prism("y", px, 5.4, 9.2, 1.3, 0.8, "amber.engine", 8, "dish_core")
     # Two canted fins on the rear deck: the airframe ancestry.
     for s in (-1.0, 1.0):
         a = math.radians(s * 35.0)

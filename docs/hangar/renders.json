@@ -355,8 +355,8 @@
    }
   },
   "stingray": {
-   "when": "Fifth pass, 3 October.",
-   "note": "Ryan on the fourth: the turret's pin back and down into the dome a touch more and the gimbal up so the emitter clears the canopy; the tail back to the tapering shape, the one exhaust kept, only a small stripe of the grey at the end; two of the front mounts to the wing tips, which two open. So: the dome taller and the pin two units deeper, the gun leaving the slot from inside and passing over the canopy's crown; the tail runs on in the body's pearl and closes toward the mouth, a dark rim the width of a stripe, the lining and the fire inside; the shoulder pods go to the wing tips, a pod along each tip's edge on a fairing, the flare pods at the left tip and the repeater at the right, so the deck keeps the dome alone (Claude's pick: Ryan called the dome the focal point, and the forewing pods were his own idea last round). The third and fourth pictures are the other pick for him to choose from: the forewing pods at the tips (the lattice right, bare left) with the shoulder mounts kept beside the canopy; one switch in models_low.py swaps them.",
+   "when": "Sixth pass, 3 October, night.",
+   "note": "Ryan on the fifth: almost perfect; the tail thinner and shorter, the shape two iterations ago was great. So: the tail is the third pass's short taper, a few units past the stern closing fast to a mouth two thirds the stern's width, in the body's pearl, the thin dark rim and the fire inside kept. The tip-mount pick is still open: the model as built has the shoulder pods at the wing tips, so the deck keeps the dome alone; the third and fourth pictures have the forewing pods there instead with the shoulder mounts kept beside the canopy; one switch in models_low.py swaps them.",
    "images": [
     {
      "file": "stingray/stingray_front.png",
@@ -376,22 +376,22 @@
     }
    ],
    "before": {
-    "summary": "Before: fourth pass, 3 October (the flaring tail, both mounts on the shoulders)",
+    "summary": "Before: fifth pass, 3 October, evening (the long tapering tail)",
     "images": [
      {
       "file": "stingray/before_stingray_front.png",
-      "alt": "stingray, fourth pass, front"
+      "alt": "stingray, fifth pass, front"
      },
      {
       "file": "stingray/before_stingray_rear.png",
-      "alt": "stingray, fourth pass, rear"
+      "alt": "stingray, fifth pass, rear"
      }
     ]
    }
   },
   "puffin": {
-   "when": "Fifth pass, 3 October.",
-   "note": "Ryan on the fourth (looking good): the wings flipped to face reverse with a negative attitude, their mounts not clipping; the canopy farther back and settled onto the fuselage, the block through it gone; the skirt carried up to the nose, tapering in; the rear mounts less janky; the deck carried over the boosters with the vents on top of it, deliberate this time. So: reverse-swept wings (Kestrel's, the Sparrowhawk's) dropping toward the tips, a diamond in section, rooted in the flank ahead of the sponsons, each pod under its tip on a pylon that stops at the blade's underside; the glass runs from the prow to behind the shoulders on a section that sits down into the hull with vertical sides and a flat crown, a frame band round it where the windscreen meets the hood; the lip climbs the prow and thins to nothing at the nose; a lid of the hull's own metal carries the deck out over each booster drum, whose flank shows under it, with the louvred housing standing on the lid and the lit ring and exhaust past the stern; the rear mounts are low fairings on the shoulders behind the canopy now; the forward intakes went, the housings are the engines' breath.",
+   "when": "Sixth pass, 3 October, night.",
+   "note": "Ryan on the fifth: the back too boxy, the hull top overhanging the boosters, the vents narrower and lower; the fourth's overall shape was better (the back taper, the boosters poking out the side, the wings attached to them) and he was not sure how to reconcile that with the deck carried over the boosters; the skirt to taper up before the beak. So, the two reconciled: the hull tapers to the stern as in the fourth pass; each sponson is a faired nacelle whose top is the deck itself, sloping down with the hull's taper and closing on the drum's crown, so the deck is carried over the booster with no lid overhanging it; the drum pokes out of the nacelle's flank and below it, its intake mouth ahead of the nacelle; a narrow, low louvred housing lies along each nacelle's top; the wings grow out of the nacelles' flanks, reverse-swept and dropping, their tips ahead of the intakes, the pods under them clear of the blade; the skirt climbs onto the prow's chine and ends short of the band.",
    "images": [
     {
      "file": "puffin/puffin_front.png",
@@ -403,15 +403,15 @@
     }
    ],
    "before": {
-    "summary": "Before: fourth pass, 3 October (the swept wings, the lens canopy, the half-out boosters)",
+    "summary": "Before: fifth pass, 3 October, evening (the widened stern, the flat lids over the boosters)",
     "images": [
      {
       "file": "puffin/before_puffin_front.png",
-      "alt": "puffin, fourth pass, front"
+      "alt": "puffin, fifth pass, front"
      },
      {
       "file": "puffin/before_puffin_rear.png",
-      "alt": "puffin, fourth pass, rear"
+      "alt": "puffin, fifth pass, rear"
      }
     ]
    }
