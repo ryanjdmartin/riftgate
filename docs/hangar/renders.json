@@ -355,8 +355,8 @@
    }
   },
   "stingray": {
-   "when": "Third pass, 2 October, late.",
-   "note": "Ryan on the second: the centre turret is the focal point and read as a gun slapped on a jeep, not a high-tech Aphelion machine; the rear mounts still janky, two of them could go under the wings so the deck breathes; the stern's two glowing slabs served no purpose. So: a wide low dome turret faired to the crown on a dark ring, turning whole, the Zenith Emitter leaving a dark slot in its forward slope above the canopy; the two rear mounts on pylons under the wings aft of the fans (the Aurora Lattice's dish right, a bare pod left); the stern a dark shroud with two hollow exhaust nozzles, fire at their floors. The helicopter-style movement is being built in the movement session. Rendered bare.",
+   "when": "Sixth pass, 3 October, night.",
+   "note": "Ryan on the fifth: almost perfect; the tail thinner and shorter, the shape two iterations ago was great. So: the tail is the third pass's short taper, a few units past the stern closing fast to a mouth two thirds the stern's width, in the body's pearl, the thin dark rim and the fire inside kept. The tip-mount pick is still open: the model as built has the shoulder pods at the wing tips, so the deck keeps the dome alone; the third and fourth pictures have the forewing pods there instead with the shoulder mounts kept beside the canopy; one switch in models_low.py swaps them.",
    "images": [
     {
      "file": "stingray/stingray_front.png",
@@ -365,25 +365,33 @@
     {
      "file": "stingray/stingray_rear.png",
      "alt": "stingray, rear"
+    },
+    {
+     "file": "stingray/stingray_tips_under_front.png",
+     "alt": "stingray, the other pick: forewing pods at the tips, front"
+    },
+    {
+     "file": "stingray/stingray_tips_under_rear.png",
+     "alt": "stingray, the other pick: forewing pods at the tips, rear"
     }
    ],
    "before": {
-    "summary": "Before: second pass, 2 October, night (the gun on a gimbal, the deck mounts, the slab stern)",
+    "summary": "Before: fifth pass, 3 October, evening (the long tapering tail)",
     "images": [
      {
       "file": "stingray/before_stingray_front.png",
-      "alt": "Earlier: stingray, front"
+      "alt": "stingray, fifth pass, front"
      },
      {
       "file": "stingray/before_stingray_rear.png",
-      "alt": "Earlier: stingray, rear"
+      "alt": "stingray, fifth pass, rear"
      }
     ]
    }
   },
   "puffin": {
-   "when": "Third pass, 2 October, late.",
-   "note": "Ryan on the second: the proportions better but the oval body went past funny into lame, and it looked as if it could fly outright; the first pass had the charm and was only too portly; a Kestrel hovercraft has plane ancestry but is definitely a hovercraft, oblong and wide, hovering over land, never taking off. So: a wide low oblong hull of chamfered sections with a dark lip round its foot; the first pass's head back on top (the chrome face, round glass eyes in dark rings, the tall flat cobalt bill dipping forward under its band, the projector's lit slot at its edge); the dark cap over the head running back as the bird's back; two big boosters buried in the rear sponsons with lit exhausts and vents; two canted fins on the rear deck for the ancestry; no wings. Mounts: the Laser Carbine and the Deflector's dish on the fore deck's shoulders, the Overcharge Coil's dish and the bare mount on the rear deck beside the cap. Rendered bare.",
+   "when": "Sixth pass, 3 October, night.",
+   "note": "Ryan on the fifth: the back too boxy, the hull top overhanging the boosters, the vents narrower and lower; the fourth's overall shape was better (the back taper, the boosters poking out the side, the wings attached to them) and he was not sure how to reconcile that with the deck carried over the boosters; the skirt to taper up before the beak. So, the two reconciled: the hull tapers to the stern as in the fourth pass; each sponson is a faired nacelle whose top is the deck itself, sloping down with the hull's taper and closing on the drum's crown, so the deck is carried over the booster with no lid overhanging it; the drum pokes out of the nacelle's flank and below it, its intake mouth ahead of the nacelle; a narrow, low louvred housing lies along each nacelle's top; the wings grow out of the nacelles' flanks, reverse-swept and dropping, their tips ahead of the intakes, the pods under them clear of the blade; the skirt climbs onto the prow's chine and ends short of the band.",
    "images": [
     {
      "file": "puffin/puffin_front.png",
@@ -395,15 +403,15 @@
     }
    ],
    "before": {
-    "summary": "Before: second pass, 2 October, night (the oval body, the wings and nacelles)",
+    "summary": "Before: fifth pass, 3 October, evening (the widened stern, the flat lids over the boosters)",
     "images": [
      {
       "file": "puffin/before_puffin_front.png",
-      "alt": "Earlier: puffin, front"
+      "alt": "puffin, fifth pass, front"
      },
      {
       "file": "puffin/before_puffin_rear.png",
-      "alt": "Earlier: puffin, rear"
+      "alt": "puffin, fifth pass, rear"
      }
     ]
    }

@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.28 since 4 October: the map types; v0.27 the movement leftovers); republish it from the committed file after every bible change, passing that URL.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.32 since 4 October: the map types, over v0.31's acts and movement second pass and the hovercraft's sixth pass); republish it from the committed file after every bible change, passing that URL.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -13,9 +13,28 @@ stays in A alone (Ryan, 1 October: it serves one ongoing task) and is republishe
 session; a B session cannot read it. Shared:
 
 - **The bible** (above): `docs/design-bible.html`, published whole after every change.
-- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 2 October with the targeting pass's content): four tabs, the
-  codex, the content editor, the names list and the renders (earlier passes folded under each
-  chassis, a Classes section). Since 2 October, night, every list carries a filter and sort bar (search,
+- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 4 October with the acts and movement's second pass): four tabs, the
+  codex, the content editor, the names list and Models. Models (the renders and the Animation
+  tab merged, Ryan, 3 October) puts each machine live in 3D on top: its acts, walk and
+  cornering played from its rig sidecar by `tools/hangar_motion.js` (published as
+  `hangar/motion.js`), a port of `game/ui/mech_rig.gd` and `Map3D._corner` that must move with
+  them in the same commit; Acts (in turn or one looped, a scrubber, melee and shot blows), Walk
+  (the RIFTGATE_MOVE_DEBUG drive) and Route (a four-move loop on hexes sized and paced as the
+  map's, which shows the drift, the banks and the helicopter strafe the debug switches cannot);
+  every mount takes stock, bare or any silhouette class in any maker's metal, fitted live as
+  `MechView3D.mount` does. Under the stage sit the game's own renders of that machine, with the
+  pass's note and the earlier passes folded: those carry the look to judge, since the 3D view's
+  lighting is the page's own. Classes in the picker shows one class alone in any metal, turning,
+  over the game's renders of the classes and the refits. The codex thumbnails open the machine
+  there. The tab no longer carries the codex's filter (thirteen machines fit the picker).
+  Artifacts do not serve .glb, so `hangar_data.py` writes each model and each class as glTF
+  JSON into `build/hangar/models` (git ignores it), with `build/hangar/shapes.json` naming the
+  classes (the engine's SHAPES) and makers, and maps them all; the 3 October republish sent only
+  the page and those files, leaving the content files as they were. The viewer's content policy
+  refuses `fetch` on a `blob:` address, which three.js r128 uses to decode embedded textures
+  ("Could not load the model: Failed to fetch", fixed 3 October): the page fetches each model
+  itself and a loader plugin decodes textures through image elements. A local test of the
+  page needs the policy too (`connect-src 'self'`), or it passes where the viewer fails. Since 2 October, night, every list carries a filter and sort bar (search,
   chips per group, a sort with its direction); the codex, the models and the editor's chassis
   list share one chassis filter, and the codex has a Compact view of stats alone. Filters are
   kept per viewer in the browser, not in the database. Source `tools/hangar.html`, published with the `files` map
@@ -137,7 +156,7 @@ three wide or more, water 6% of the field in 1.7 bodies (3.9 with the puddles), 
 river's bite is where the horde crosses and where a walker off a ford stops; Ryan judges it with
 the hovercraft. Left: the small finds and the hangar page's other content files (the to-do).
 
-**Map types, 4 October** (bible section 4, the map types row; v0.28). Ryan asked for the optimal
+**Map types, 4 October** (bible section 4, the map types row; v0.32). Ryan asked for the optimal
 tile distribution and whether the player could see a map's composition before choosing units.
 Measured first: the generator made one map with cosmetic variation and nothing in its
 composition changed the trip north (a walker six phases on every one of 200 maps); terrain shows
@@ -173,8 +192,19 @@ Stingray: too literal and floating, so no tail and every part seated on the skin
 edge, the rear mounts under the wings, the stern two hollow exhausts; the Puffin: hilarious
 and floating, so a sleek escort; then that read as a thing that could fly and had lost the
 charm, so a wide oblong hover hull wearing the first pass's head, bill and dark back, boosters
-in the sponsons, fins for the ancestry, no wings), the earlier passes folded under each on
-the Models tab, for his third look. The Stingray's helicopter-style movement is being built
+in the sponsons, fins for the ancestry, no wings), then a fourth pass on 3 October (the Stingray's pods under the forewings, its turret pin back
+into the dome, its tail one wide exhaust duct; the Puffin without its head, with a fighter canopy,
+side wings and the giant louvred boosters brought out), then a fifth pass the same evening on his fourth
+notes (the Stingray's turret pin deeper under a taller dome, its tail tapering again with the grey one thin
+rim, two front mounts to the wing tips, the shoulder pods by Claude's pick with the other pick, the forewing
+pods, rendered beside it under `RIFTGATE_STINGRAY_TIPS=under`; the Puffin's wings reverse-swept and drooping
+with their pods clear of the blade, the canopy carried back and settled with a frame band, the skirt up the
+prow to the nose, the deck carried over the boosters as lids with the vent housings on them, the rear mounts
+moved to the shoulders), then a sixth pass that night on his fifth notes (the Stingray's tail short and
+thin, the third pass's shape; the Puffin's back too boxy, so the fourth pass's taper and half-out drums came
+back, each sponson a faired nacelle whose top is the deck itself sloping with the hull, a narrow low vent
+housing on it, the wings grown out of the nacelles' flanks, the skirt ending on the prow's chine), the
+earlier passes folded under each on the Models tab, for his sixth look. The Stingray's helicopter-style movement is being built
 in the movement session; when it lands, the skirmish's `sway_pitch` idle is to be judged
 against it or retired. The skirmish's hover
 idle gained a slow pitch (`sway_pitch`), to judge running. The merge took the tens for both
@@ -241,8 +271,8 @@ the idle acts (`b.act(...)` at the end of each machine), both written to the mod
 hangar page's Models tab are the record. **Ryan judges a model only from a render**, never from
 code (`tools/hero_shot.gd` renders bare and needs a window); a hand edit in Blender has to be
 re-expressed in the code to survive a rebuild. **The eleven machines of 1 October are signed off for
-now** (Ryan); the two hovercraft of 2 October are third passes (on his notes) waiting on his look on the
-Models tab, carrying the acts and gaits the animation session wrote for their second pass (the part
+now** (Ryan); the two hovercraft of 2 October are sixth passes (3 October, night, on his fifth notes) waiting on his look on
+the Models tab, carrying the acts and gaits the animation session wrote for their second pass (the part
 names brought over to the third); the joint pass, the idle acts and the movement animations landed
 3 October (the paragraphs below); next on the art side is Ryan judging the acts and the movement
 running. Open on the models: each class's size per machine, and the machines' scale
@@ -277,8 +307,8 @@ back, `=<act name>` loops one. Every act's numbers are a first cut for Ryan to j
 headless and checks the sidecar against it, the nesting the bible asked for, the picking, the
 limits, the strikes and an act's motion.
 
-**Movement animations, built 3 October, later (the same session; on the branch
-`ccr-680ee66c-a60c1u`, not yet on main, for Ryan to judge).** Each machine's gait is authored
+**Movement animations, built 3 October, later (the same session; on main, for Ryan to
+judge).** Each machine's gait is authored
 beside its model (`b.gait(...)`) and written to the same sidecar; `MechRig.drive(speed, aim,
 turn, dt)` plays it: cycles keyed by distance travelled (a stride in model units, so a slow
 machine steps slowly), the walkers in diagonal pairs through one `_step` shape (hip forward
@@ -315,6 +345,21 @@ there, sideways or backward as the path demands) and leans into its travel by it
 (`tilt`: nose down going forward, up going back, a side down going that way; no bank, no
 rock). The Puffin is a jet crossed with the Dingo, on its boosters: it banks into turns and
 its facing lags the path, less wildly than the Dingo's. Both for Ryan to judge on a real move.
+
+**The second pass, 4 October (Ryan: acts too subtle, moves too fast with hard corners; bible
+section 7, the joints row).** Every machine's acts are rewritten in `models_low.py`: four to
+six seconds each, several joints at once, the body moving with them, and glows at six to ten
+so they read from across the map (the Sparrowhawk strafes as it dips its wings, the Baboon
+inspects each arm, the Puffin's hop leaps, the Ammit rears, the Armadillo presents its back
+guns). Moves on the map are `game/battle/move_path.gd` (MovePath): the hex route cut into
+one curve with arcs at the corners, speed from rest to rest under each machine's `accel`
+(seconds to full speed) and slowing into corners by its `corner` (the share given up at
+sixty degrees), both from `b.move` in the sidecar. Machines run at
+`MECH_SECONDS_PER_HEX` 0.55 (was 0.22); the packs keep 0.22 and their straight steps, my
+call, which Ryan can reverse. The rock, bank and drift are eased softer to match, and a
+machine at rest turns to its recorded facing rather than snapping. The hangar's Route runs
+the same curve (the JS port matches the GDScript's durations). Tests: `test_move_path.gd`, and
+the rig tests now read their numbers from the sidecars. Ryan judges it all running.
 
 **The codex (29 September; a tab of the hangar page since 1 October).** One surface showing a
 chassis and the components fitted to it: the Codex tab renders it in the browser from the
@@ -434,7 +479,7 @@ disrupt into a boss's signature is a trick or a trap.
 **Open, in order.** The task list is `docs/todo.md`, one line a task, grouped by who moves
 it and ticked in the commit that lands it; this is the order to take them in.
 
-1. Ryan's third look at the Stingray and the Puffin on the hangar's Models tab, and his decision on the Puffin's passive (the overshield), which then gets built.
+1. Ryan's fourth look at the Stingray and the Puffin on the hangar's Models tab, and his decision on the Puffin's passive (the overshield), which then gets built.
 2. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
 3. Ryan's text for the new machines and components; the machines' scale on the map; the strikes, the hover idle's pitch, the idle acts (`RIFTGATE_ACTS_DEBUG=1`) and the gaits (`RIFTGATE_MOVE_DEBUG=1`, and a real move for the Dingo's drift, the Stingray's helicopter strafe and the banks), judged running; the movement branch merged on his word.
 4. The discuss-first decisions in the Ryan section, the economy last; enemy targeting decided and built 2 October (the paragraph above; the runner's read is the baseline question); the commander layer once the balance has a baseline.
