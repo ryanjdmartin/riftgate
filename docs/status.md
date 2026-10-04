@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.28 since 3 October: the movement leftovers and the hovercraft's fourth pass); republish it from the committed file after every bible change, passing that URL.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.29 since 3 October, evening: the hovercraft's fifth pass); republish it from the committed file after every bible change, passing that URL.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -166,8 +166,13 @@ and floating, so a sleek escort; then that read as a thing that could fly and ha
 charm, so a wide oblong hover hull wearing the first pass's head, bill and dark back, boosters
 in the sponsons, fins for the ancestry, no wings), then a fourth pass on 3 October (the Stingray's pods under the forewings, its turret pin back
 into the dome, its tail one wide exhaust duct; the Puffin without its head, with a fighter canopy,
-side wings and the giant louvred boosters brought out), the earlier passes folded under each on
-the Models tab, for his fourth look. The Stingray's helicopter-style movement is being built
+side wings and the giant louvred boosters brought out), then a fifth pass the same evening on his fourth
+notes (the Stingray's turret pin deeper under a taller dome, its tail tapering again with the grey one thin
+rim, two front mounts to the wing tips, the shoulder pods by Claude's pick with the other pick, the forewing
+pods, rendered beside it under `RIFTGATE_STINGRAY_TIPS=under`; the Puffin's wings reverse-swept and drooping
+with their pods clear of the blade, the canopy carried back and settled with a frame band, the skirt up the
+prow to the nose, the deck carried over the boosters as lids with the vent housings on them, the rear mounts
+moved to the shoulders), the earlier passes folded under each on the Models tab, for his fifth look. The Stingray's helicopter-style movement is being built
 in the movement session; when it lands, the skirmish's `sway_pitch` idle is to be judged
 against it or retired. The skirmish's hover
 idle gained a slow pitch (`sway_pitch`), to judge running. The merge took the tens for both
@@ -234,7 +239,7 @@ the idle acts (`b.act(...)` at the end of each machine), both written to the mod
 hangar page's Models tab are the record. **Ryan judges a model only from a render**, never from
 code (`tools/hero_shot.gd` renders bare and needs a window); a hand edit in Blender has to be
 re-expressed in the code to survive a rebuild. **The eleven machines of 1 October are signed off for
-now** (Ryan); the two hovercraft of 2 October are fourth passes (3 October, on his third notes) waiting on his look on
+now** (Ryan); the two hovercraft of 2 October are fifth passes (3 October, evening, on his fourth notes) waiting on his look on
 the Models tab, carrying the acts and gaits the animation session wrote for their second pass (the part
 names brought over to the third); the joint pass, the idle acts and the movement animations landed
 3 October (the paragraphs below); next on the art side is Ryan judging the acts and the movement

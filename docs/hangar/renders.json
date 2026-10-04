@@ -355,8 +355,8 @@
    }
   },
   "stingray": {
-   "when": "Fourth pass, 3 October.",
-   "note": "Ryan on the third: the under-wing mounts to the forewings, poking out of the wing's lower front surface; the top turret good but its hardpoint back into the dome; the front mounts sleeker and back a bit; the tail a single exhaust the whole width, tapered out more, the tail itself the port rather than a nozzle on it. So: the pods lie under each forewing and emerge from the leading edge's lower slope, muzzles ahead of the edge (the Aurora Lattice's dish right, bare left); the Zenith Emitter's pin sits back inside the dome and the gun leaves its slot from deeper; the shoulder mounts low and set back beside the canopy, the flare pods short, the repeater on a slim fairing; the body's taper runs on past the stern as one wide open duct, flaring a little, dark inside with fire at its floor. Rendered bare.",
+   "when": "Fifth pass, 3 October.",
+   "note": "Ryan on the fourth: the turret's pin back and down into the dome a touch more and the gimbal up so the emitter clears the canopy; the tail back to the tapering shape, the one exhaust kept, only a small stripe of the grey at the end; two of the front mounts to the wing tips, which two open. So: the dome taller and the pin two units deeper, the gun leaving the slot from inside and passing over the canopy's crown; the tail runs on in the body's pearl and closes toward the mouth, a dark rim the width of a stripe, the lining and the fire inside; the shoulder pods go to the wing tips, a pod along each tip's edge on a fairing, the flare pods at the left tip and the repeater at the right, so the deck keeps the dome alone (Claude's pick: Ryan called the dome the focal point, and the forewing pods were his own idea last round). The third and fourth pictures are the other pick for him to choose from: the forewing pods at the tips (the lattice right, bare left) with the shoulder mounts kept beside the canopy; one switch in models_low.py swaps them.",
    "images": [
     {
      "file": "stingray/stingray_front.png",
@@ -365,25 +365,33 @@
     {
      "file": "stingray/stingray_rear.png",
      "alt": "stingray, rear"
+    },
+    {
+     "file": "stingray/stingray_tips_under_front.png",
+     "alt": "stingray, the other pick: forewing pods at the tips, front"
+    },
+    {
+     "file": "stingray/stingray_tips_under_rear.png",
+     "alt": "stingray, the other pick: forewing pods at the tips, rear"
     }
    ],
    "before": {
-    "summary": "Before: third pass, 2 October, late (the aft under-wing pods, the twin nozzles)",
+    "summary": "Before: fourth pass, 3 October (the flaring tail, both mounts on the shoulders)",
     "images": [
      {
       "file": "stingray/before_stingray_front.png",
-      "alt": "Earlier: stingray, front"
+      "alt": "stingray, fourth pass, front"
      },
      {
       "file": "stingray/before_stingray_rear.png",
-      "alt": "Earlier: stingray, rear"
+      "alt": "stingray, fourth pass, rear"
      }
     ]
    }
   },
   "puffin": {
-   "when": "Fourth pass, 3 October.",
-   "note": "Ryan on the third: the shape better but too goofy, a duck; ditch the explicit head, give it a real canopy cockpit and maybe side wings; the giant boosters with the vents on top and the skirt are what works, bring them out; a little rounding under the hull. So: the wide low oblong hull with its dark lip and a softened underside (flat for the middle third, rising to the chamfers); a chined cobalt prow with the band and the projector's lit slot at its edge; a fighter canopy of glass with a frame bar and a dark fairing running back along the spine; short swept side wings with the Laser Carbine and the Deflector's dish in pods under their tips; two giant boosters half out of the rear sponsons, intakes forward, louvred vent housings standing proud of the deck, lit rings and exhausts past the stern; two canted fins; the Overcharge Coil's dish and the bare mount on the rear deck. No head, no eyes, no bill. Rendered bare.",
+   "when": "Fifth pass, 3 October.",
+   "note": "Ryan on the fourth (looking good): the wings flipped to face reverse with a negative attitude, their mounts not clipping; the canopy farther back and settled onto the fuselage, the block through it gone; the skirt carried up to the nose, tapering in; the rear mounts less janky; the deck carried over the boosters with the vents on top of it, deliberate this time. So: reverse-swept wings (Kestrel's, the Sparrowhawk's) dropping toward the tips, a diamond in section, rooted in the flank ahead of the sponsons, each pod under its tip on a pylon that stops at the blade's underside; the glass runs from the prow to behind the shoulders on a section that sits down into the hull with vertical sides and a flat crown, a frame band round it where the windscreen meets the hood; the lip climbs the prow and thins to nothing at the nose; a lid of the hull's own metal carries the deck out over each booster drum, whose flank shows under it, with the louvred housing standing on the lid and the lit ring and exhaust past the stern; the rear mounts are low fairings on the shoulders behind the canopy now; the forward intakes went, the housings are the engines' breath.",
    "images": [
     {
      "file": "puffin/puffin_front.png",
@@ -395,15 +403,15 @@
     }
    ],
    "before": {
-    "summary": "Before: third pass, 2 October, late (the head, the eyes and the bill on the hull)",
+    "summary": "Before: fourth pass, 3 October (the swept wings, the lens canopy, the half-out boosters)",
     "images": [
      {
       "file": "puffin/before_puffin_front.png",
-      "alt": "Earlier: puffin, front"
+      "alt": "puffin, fourth pass, front"
      },
      {
       "file": "puffin/before_puffin_rear.png",
-      "alt": "Earlier: puffin, rear"
+      "alt": "puffin, fourth pass, rear"
      }
     ]
    }
