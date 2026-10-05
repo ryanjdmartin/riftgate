@@ -4,8 +4,8 @@
    JSON). Published beside the page as hangar/motion.js, the models and sidecars as
    hangar/models/<id>.model.json and <id>.rig.json (tools/hangar_data.py prints the map).
 
-   The motion is a port of game/ui/mech_rig.gd (MechRig: sample, sample_cycle, the acts, the
-   strikes, drive and its gait) and of Map3D._corner (the facing against the path). Keep the
+   The motion is a port of game/ui/mech_rig.gd (MechRig: curve, cycle_curve, the acts and
+   their servos, the strikes, drive and its gait) and of Map3D._corner (the facing against the path). Keep the
    two in step: a change to the rig's maths lands here in the same commit. The look is this
    page's own (three.js, the models' tiles, flat light); the game is the judge of the look.
 
@@ -24,7 +24,8 @@ const THREE_URLS = [
 // ---------------------------------------------------------------- the rig (MechRig's numbers)
 const GAP_MIN = 2.5, GAP_MAX = 6.5, GAP_DEBUG = 0.4;
 const MOVE_REF_SPEED = 150.0, MOVE_BLEND_IN = 0.25, MOVE_BLEND_OUT = 0.35;
-const ROCK_ACCEL = 200.0, BANK_TURN = 1.2, DRIFT_UNITS = 12.0, AIM_HOLD_MAX = 170.0, AIM_RELAX = 0.8;
+const ROCK_ACCEL = 200.0, BANK_TURN = 1.2, DRIFT_UNITS = 12.0;
+const HEFT_DEFAULT = 0.12, DAMPING = 0.7, STEP = 1 / 60;   // the servos (MechRig._follow) and the longest step anything advances by
 const SLIDE_RATE_SNAP = 12.0, SLIDE_RATE_FULL = 2.2, STRAFE_TURN_RATE = 6.0, REST_TURN_RATE = 4.0;   // Map3D
 const GLOW_PAGE = 0.9;   // this page's emission for a lit part at rest (the game's is 1.8 under its own glow pass)
 const AXES = ["pitch", "yaw", "roll"];
@@ -40,8 +41,10 @@ const v3 = (x = 0, y = 0, z = 0) => ({x, y, z});
 const add3 = (a, b) => v3(a.x + b.x, a.y + b.y, a.z + b.z);
 const mul3 = (a, k) => v3(a.x * k, a.y * k, a.z * k);
 
-// Keys [t, v1, v2...] sampled at t; the track rests at 0 and at the act's end (MechRig.sample).
-function sample(keys, t, duration, ease = "smooth") {
+// An act's keys as a curve (MechRig.curve): [t, v1, v2...] rows, resting at 0 and at the act's
+// end unless a key is authored there; "smooth" a monotone cubic through the keys, so a part
+// keeps its speed through a key it passes and stops only to turn or hold; "linear" straight.
+function curve(keys, duration, ease = "smooth") {
   let width = 1;
   for (const k of keys) width = Math.max(width, k.length);
   const zero = new Array(width).fill(0);
@@ -49,28 +52,60 @@ function sample(keys, t, duration, ease = "smooth") {
   if (!keys.length || keys[0][0] > 0) pts.push(zero.slice());
   for (const k of keys) { const r = k.slice(); while (r.length < width) r.push(0); pts.push(r); }
   if (pts[pts.length - 1][0] < duration) { const e = zero.slice(); e[0] = duration; pts.push(e); }
-  if (t <= pts[0][0]) return pts[0].slice(1);
-  for (let i = 1; i < pts.length; i++) {
-    const a = pts[i - 1], b = pts[i];
-    if (t <= b[0]) {
-      const span = b[0] - a[0];
-      let f = span <= 0 ? 1 : (t - a[0]) / span;
-      if (ease !== "linear") f = f * f * (3 - 2 * f);
-      const out = [];
-      for (let j = 1; j < width; j++) out.push(lerp(a[j], b[j], f));
-      return out;
+  return through(pts, ease);
+}
+// Cyclic keys over a phase of 0 to 1 (MechRig.cycle_curve): two keys of the cycle padded on each
+// side, so the curve runs through the wrap without a stop.
+function cycleCurve(keys, ease = "smooth") {
+  if (!keys.length) return null;
+  const rows = [], at = new Set(), snap = (t) => Math.round(t * 10000);
+  for (const k of keys) if (k[0] < 1) { rows.push(k.slice()); at.add(snap(k[0])); }
+  for (const k of keys) if (k[0] >= 1 && !at.has(snap(k[0] - 1))) { const r = k.slice(); r[0] -= 1; rows.push(r); }
+  rows.sort((a, b) => a[0] - b[0]);
+  let width = 1;
+  for (const r of rows) width = Math.max(width, r.length);
+  for (const r of rows) while (r.length < width) r.push(0);
+  const n = rows.length, pts = [];
+  for (let i = -2; i < n + 2; i++) { const r = rows[fposmod(i, n)].slice(); r[0] += Math.floor(i / n); pts.push(r); }
+  return through(pts, ease);
+}
+// The slopes of a monotone cubic (MechRig._through): zero at a turn, a hold and the ends, the
+// weighted harmonic mean of the neighbouring secants where the track runs on (Fritsch and Butland).
+function through(pts, ease) {
+  const n = pts.length, width = pts[0].length - 1, linear = ease === "linear";
+  const t = pts.map(p => p[0]), v = pts.map(p => p.slice(1)), m = [];
+  for (let i = 0; i < n; i++) {
+    const row = new Array(width).fill(0);
+    if (!linear && i > 0 && i < n - 1) {
+      const h0 = t[i] - t[i - 1], h1 = t[i + 1] - t[i];
+      if (h0 > 0 && h1 > 0) for (let j = 0; j < width; j++) {
+        const d0 = (v[i][j] - v[i - 1][j]) / h0, d1 = (v[i + 1][j] - v[i][j]) / h1;
+        if (d0 * d1 <= 0) continue;
+        const w0 = 2 * h1 + h0, w1 = h1 + 2 * h0;
+        row[j] = (w0 + w1) / (w0 / d0 + w1 / d1);
+      }
     }
+    m.push(row);
   }
-  return pts[pts.length - 1].slice(1);
+  return {t, v, m, linear, width};
 }
-// Cyclic keys over a phase in [0, 1) (MechRig.sample_cycle).
-function sampleCycle(keys, phase, ease = "smooth") {
-  if (!keys.length) return [];
-  const pts = keys.map(k => k.slice()).sort((a, b) => a[0] - b[0]);
-  if (pts[0][0] > 0) { const k0 = pts[pts.length - 1].slice(); k0[0] = pts[pts.length - 1][0] - 1; pts.unshift(k0); }
-  if (pts[pts.length - 1][0] < 1) { const k1 = (pts[0][0] >= 0 ? pts[0] : pts[1]).slice(); k1[0] += 1; pts.push(k1); }
-  return sample(pts, fposmod(phase, 1), 2, ease);
+// A curve's values at time t (MechRig.curve_at), held at its first and last keys outside them.
+function curveAt(c, time) {
+  if (!c) return [];
+  const {t, v, m, width} = c, n = t.length;
+  if (time <= t[0]) return v[0].slice();
+  if (time >= t[n - 1]) return v[n - 1].slice();
+  let i = 0, hi = n - 1;
+  while (hi - i > 1) { const mid = (i + hi) >> 1; if (t[mid] <= time) i = mid; else hi = mid; }
+  const h = t[i + 1] - t[i], u = h <= 0 ? 1 : (time - t[i]) / h, a = v[i], b = v[i + 1], out = [];
+  if (c.linear) { for (let j = 0; j < width; j++) out.push(lerp(a[j], b[j], u)); return out; }
+  const u2 = u * u, u3 = u2 * u;
+  const h00 = 2 * u3 - 3 * u2 + 1, h10 = u3 - 2 * u2 + u, h01 = -2 * u3 + 3 * u2, h11 = u3 - u2;
+  for (let j = 0; j < width; j++) out.push(h00 * a[j] + h10 * h * m[i][j] + h01 * b[j] + h11 * h * m[i + 1][j]);
+  return out;
 }
+const sample = (keys, t, duration, ease = "smooth") => curveAt(curve(keys, duration, ease), t);
+const sampleCycle = (keys, phase, ease = "smooth") => keys.length ? curveAt(cycleCurve(keys, ease), fposmod(phase, 1)) : [];
 function clampDegrees(deg, limits) {
   const out = v3(deg.x, deg.y, deg.z), keys = ["x", "y", "z"];
   for (let i = 0; i < 3; i++) {
@@ -112,7 +147,12 @@ class Rig {
     }
     this.acts = (side.acts || []).filter(a => a && a.name);
     this.move = side.move || {};
+    this.heft = this.move.heft ?? HEFT_DEFAULT;
     this.gait = side.gait || {};
+    this.spin = new Set(Object.keys(this.gait.wheels || {}));   // an act turns a wheel directly, never through a servo
+    this.gaitCurves = {};
+    for (const [name, tr] of Object.entries(this.gait.tracks || {})) this.gaitCurves[name] = cycleCurve(tr.keys || [], this.gait.ease || "smooth");
+    if ((this.gait.body || []).length) this.gaitCurves["@body"] = cycleCurve(this.gait.body, this.gait.ease || "smooth");
     root.rotation.order = "YXZ";
     this.bodyRestPos = root.position.clone();
     this.bodyRestRot = v3(root.rotation.x, root.rotation.y, root.rotation.z);
@@ -122,8 +162,9 @@ class Rig {
     this.current = null; this.t = 0;
     this.actRot = {}; this.actSlide = {}; this.gaitRot = {}; this.gaitSlide = {};
     this.bodyActRot = v3(); this.bodyActSlide = v3(); this.bodyMoveRot = v3(); this.bodyMoveSlide = v3();
+    this.curves = {}; this.wantRot = {}; this.wantSlide = {}; this.bodyWantRot = v3(); this.bodyWantSlide = v3(); this.servo = {};
     this.strikes = []; this.glow = []; this.glowCache = {};
-    this.dist = 0; this.speed = 0; this.blend = 0; this.accel = 0; this.bank = 0; this.tiltP = 0; this.tiltR = 0; this.drift = 0; this.aimHold = {};
+    this.dist = 0; this.speed = 0; this.blend = 0; this.accel = 0; this.bank = 0; this.tiltP = 0; this.tiltR = 0; this.drift = 0;
     this.treadMats = []; this.moveGlow = [];
     for (const part of ((this.gait.treads || {}).parts || [])) root.traverse(n => {
       if (n.isMesh && labelled(n.name, part)) for (const m of [].concat(n.material)) if (m.map) this.treadMats.push([m, m.map.offset.x]);
@@ -131,7 +172,7 @@ class Rig {
     for (const part of ((this.gait.glow || {}).parts || [])) for (const m of this.litMaterials(part)) this.moveGlow.push([m, m.emissiveIntensity]);
   }
   random() { this.seed = (this.seed * 1103515245 + 12345) % 2147483648; return this.seed / 2147483648; }
-  alive() { return this.acts.length > 0 || this.strikes.length > 0 || !!this.current; }
+  alive() { return this.acts.length > 0 || this.strikes.length > 0 || !!this.current || Object.keys(this.servo).length > 0; }
   litMaterials(part) {
     if (this.glowCache[part]) return this.glowCache[part];
     const out = [], tag = parseTag(part);
@@ -155,53 +196,94 @@ class Rig {
   play(name) { const a = this.acts.find(x => x.name === name); if (!a) return false; this.endAct(true); this.start(a); this.evaluateAct(); this.pose(); return true; }
   start(a) {
     this.current = a; this.t = 0; this.lastAct = a.name; this.glow = [];
+    const d = a.duration || 0, ease = a.ease || "smooth";
+    this.curves = {};
+    for (const [name, keys] of Object.entries(a.tracks || {})) if (this.joints[name]) this.curves[name] = curve(keys, d, ease);
+    if ((a.body || []).length) this.curves["@body"] = curve(a.body, d, ease);
     for (const g of (a.glow || [])) {
       const mats = []; for (const p of g.parts || []) mats.push(...this.litMaterials(p));
-      this.glow.push({keys: g.keys || [], mats, base: mats.map(m => m.emissiveIntensity)});
+      this.glow.push({curve: curve(g.keys || [], d, ease), mats, base: mats.map(m => m.emissiveIntensity)});
     }
   }
+  restoreGlow() { for (const g of this.glow) g.mats.forEach((m, i) => { m.emissiveIntensity = g.base[i]; }); this.glow = []; }
+  // The act is over (MechRig._end_act): its asks go to nothing and the servos bring every part home.
   endAct(quiet) {
-    for (const g of this.glow) g.mats.forEach((m, i) => { m.emissiveIntensity = g.base[i]; });
-    this.glow = []; this.current = null; this.actRot = {}; this.actSlide = {};
-    this.bodyActRot = v3(); this.bodyActSlide = v3();
+    this.restoreGlow();
+    this.current = null; this.curves = {}; this.wantRot = {}; this.wantSlide = {}; this.bodyWantRot = v3(); this.bodyWantSlide = v3();
     this.wait = this.debug ? GAP_DEBUG : lerp(GAP_MIN, GAP_MAX, this.random());
     if (!quiet) this.pose();
   }
+  // Every part home at once, no settling (a change of mode).
+  settle() { this.servo = {}; this.actRot = {}; this.actSlide = {}; this.bodyActRot = v3(); this.bodyActSlide = v3(); }
   evaluateAct() {
-    const a = this.current, duration = a.duration || 0, ease = a.ease || "smooth";
-    for (const [name, keys] of Object.entries(a.tracks || {})) {
-      if (!this.joints[name]) continue;
-      const v = sample(keys, this.t, duration, ease);
-      this.actRot[name] = v3(v[0], v[1], v[2]);
-      this.actSlide[name] = v.length >= 6 ? v3(v[3], v[4], v[5]) : v3();
-    }
-    if ((a.body || []).length) {
-      const v = sample(a.body, this.t, duration, ease);
-      this.bodyActSlide = v3(v[0], v[1], v[2]);
-      this.bodyActRot = v3(v[4], v[3], v[5]);   // authored (yaw, pitch, roll)
+    for (const [name, c] of Object.entries(this.curves)) {
+      const v = curveAt(c, this.t);
+      if (name === "@body") { this.bodyWantSlide = v3(v[0], v[1], v[2]); this.bodyWantRot = v.length >= 6 ? v3(v[4], v[3], v[5]) : v3(); continue; }   // authored (yaw, pitch, roll)
+      this.wantRot[name] = v3(v[0], v[1], v[2]);
+      this.wantSlide[name] = v.length >= 6 ? v3(v[3], v[4], v[5]) : v3();
     }
     for (const g of this.glow) {
-      const k = sample(g.keys, this.t, duration, ease)[0] + 1;
+      const k = curveAt(g.curve, this.t)[0] + 1;
       g.mats.forEach((m, i) => { m.emissiveIntensity = g.base[i] * Math.max(0, k); });
     }
   }
-  // The act playing at a time of the viewer's choosing (the scrubber), without advancing it.
-  seek(t) { if (!this.current) return; this.t = clamp(t, 0, this.current.duration || 0); this.evaluateAct(); this.pose(); }
+  // The servos (MechRig._follow): each part a mass on a damped spring chasing what the act asks,
+  // the machine's heft its time constant; a part home and still drops out.
+  follow(dt) {
+    const w = 1 / Math.max(0.02, this.heft), len = (a) => Math.hypot(a.x, a.y, a.z);
+    const names = new Set([...Object.keys(this.servo), ...Object.keys(this.wantRot)]);
+    if (len(this.bodyWantRot) || len(this.bodyWantSlide)) names.add("@body");
+    const chase = (x, v, want) => { const nv = add3(v, mul3(add3(mul3(add3(want, mul3(x, -1)), w * w), mul3(v, -2 * DAMPING * w)), dt)); return [add3(x, mul3(nv, dt)), nv]; };
+    for (const name of names) {
+      const body = name === "@body";
+      const wr = body ? this.bodyWantRot : (this.wantRot[name] || v3()), ws = body ? this.bodyWantSlide : (this.wantSlide[name] || v3());
+      let st;
+      if (this.spin.has(name)) st = [wr, v3(), ws, v3()];
+      else {
+        const o = this.servo[name] || [v3(), v3(), v3(), v3()];
+        const [r, vr] = chase(o[0], o[1], wr), [sl, vs] = chase(o[2], o[3], ws);
+        st = [r, vr, sl, vs];
+      }
+      const home = !len(wr) && !len(ws) && len(st[0]) < 0.02 && len(st[1]) < 0.05 && len(st[2]) < 0.005 && len(st[3]) < 0.01;
+      if (home) { delete this.servo[name]; st = [v3(), v3(), v3(), v3()]; } else this.servo[name] = st;
+      if (body) { this.bodyActRot = st[0]; this.bodyActSlide = st[2]; }
+      else if (home) { delete this.actRot[name]; delete this.actSlide[name]; }
+      else { this.actRot[name] = st[0]; this.actSlide[name] = st[2]; }
+    }
+  }
+  // The act playing at a time of the viewer's choosing (the scrubber): replayed from its start,
+  // servos and all, without ending it.
+  seek(t) {
+    const a = this.current;
+    if (!a) return;
+    this.restoreGlow(); this.settle(); this.start(a);
+    let left = clamp(t, 0, a.duration || 0);
+    while (left > 1e-9) { const dt = Math.min(left, STEP); left -= dt; this.t += dt; this.evaluateAct(); this.follow(dt); }
+    this.pose();
+  }
+  // Advance (MechRig.tick): in steps no longer than STEP, so a slow frame lands where frames would.
   tick(delta, acting = true) {
+    let moved = false, left = delta;
+    while (left > 0) { const dt = Math.min(left, STEP); left -= dt; if (this.step(dt, acting)) moved = true; }
+    if (moved) this.pose();
+  }
+  step(dt, acting) {
     let moved = false;
     if (this.current) {
-      this.t += delta; this.evaluateAct(); moved = true;
-      if (this.t >= (this.current.duration || 0)) this.endAct();
+      this.t += dt; this.evaluateAct(); moved = true;
+      if (this.t >= (this.current.duration || 0)) this.endAct(true);
     } else if (acting && this.acts.length && !this.moving) {
-      this.wait -= delta;
+      this.wait -= dt;
       if (this.wait <= 0) { const next = this.choose(); if (next) { this.start(next); this.evaluateAct(); moved = true; } }
     }
+    const bw = this.bodyWantRot, bs = this.bodyWantSlide;
+    if (Object.keys(this.servo).length || Object.keys(this.wantRot).length || bw.x || bw.y || bw.z || bs.x || bs.y || bs.z) { this.follow(dt); moved = true; }
     if (this.strikes.length) {
-      for (const st of this.strikes) st.t += delta;
+      for (const st of this.strikes) st.t += dt;
       this.strikes = this.strikes.filter(st => st.t < st.up + st.down);
       moved = true;
     }
-    if (moved) this.pose();
+    return moved;
   }
   strike(ranged) {
     const armed = {};
@@ -259,33 +341,26 @@ class Rig {
       this.tiltR = lerp(this.tiltR, -mv.tilt[1] * Math.sin(aim) * share, f);
     }
     this.drift = lerp(this.drift, (mv.slide || 0) * DRIFT_UNITS * Math.sin(aim) * clamp(this.speed / MOVE_REF_SPEED, 0, 1), 1 - Math.exp(-delta / 0.3));
-    for (const [name, share] of Object.entries(this.gait.hold_aim || {})) {
-      let held = this.aimHold[name] || 0;
-      if (Math.abs(turn) > 0.15) held = clamp(held - turn / D2R * delta * share, -AIM_HOLD_MAX, AIM_HOLD_MAX);
-      else held = lerp(held, 0, 1 - Math.exp(-delta / AIM_RELAX));
-      this.aimHold[name] = held;
-    }
     this.evaluateGait(aim, turn);
     this.pose();
   }
   evaluateGait(aim, turn) {
     const g = this.gait, gr = {}, gs = {};
-    const phase = fposmod(this.dist / Math.max(1, g.stride || 40), 1), ease = g.ease || "smooth", b = this.blend;
+    const phase = fposmod(this.dist / Math.max(1, g.stride || 40), 1), b = this.blend;
     const addRot = (name, v) => { gr[name] = add3(gr[name] || v3(), v); };
     for (const [name, tr] of Object.entries(g.tracks || {})) {
-      if (!this.joints[name]) continue;
-      const v = sampleCycle(tr.keys || [], phase + (tr.phase || 0), ease);
+      if (!this.joints[name] || !this.gaitCurves[name]) continue;
+      const v = curveAt(this.gaitCurves[name], fposmod(phase + (tr.phase || 0), 1));
       if (v.length >= 3) gr[name] = mul3(v3(v[0], v[1], v[2]), b);
       if (v.length >= 6) gs[name] = mul3(v3(v[3], v[4], v[5]), b);
     }
     for (const [name, r] of Object.entries(g.wheels || {})) if (this.joints[name]) addRot(name, v3(-fposmod(this.dist / Math.max(0.1, r) / D2R, 360), 0, 0));
     for (const [name, k] of Object.entries(g.steer || {})) if (this.joints[name]) addRot(name, v3(0, turn / D2R * k * b, 0));
     for (const [name, k] of Object.entries(g.aim || {})) if (this.joints[name]) addRot(name, v3(0, aim / D2R * k * b, 0));
-    for (const [name, h] of Object.entries(this.aimHold)) if (this.joints[name]) addRot(name, v3(0, h, 0));
     for (const [name, h] of Object.entries(g.hold || {})) if (this.joints[name]) addRot(name, mul3(v3(h[0], h[1], h[2]), b));
     let rot = v3(), slide = v3();
-    if ((g.body || []).length) {
-      const v = sampleCycle(g.body, phase, ease);
+    if (this.gaitCurves["@body"]) {
+      const v = curveAt(this.gaitCurves["@body"], phase);
       if (v.length >= 6) { slide = add3(slide, mul3(v3(v[0], v[1], v[2]), b)); rot = add3(rot, mul3(v3(v[4], v[3], v[5]), b)); }
     }
     const bh = g.body_hold || [];
@@ -309,17 +384,17 @@ class Rig {
 // ---------------------------------------------------------------- the move (MovePath)
 // A port of game/battle/move_path.gd (Ryan, 4 October: too fast, no acceleration, hard
 // corners): the hex centres become one smooth curve, each interior corner cut by a quadratic
-// arc; along it the speed starts at rest, accelerates at the machine's rate, brakes into each
-// corner by its sharpness and the machine's `corner` share, and comes to rest at the end.
+// arc; along it the speed starts at rest, accelerates at the machine's rate, holds full speed
+// through the corners (the third pass: no braking for them) and comes to rest at the end.
 // Points are {x, z} on the ground plane, in model units.
-const MP_CUT = 0.42, MP_ARC_STEPS = 8, MP_FINE = 24, MP_ACCEL = 0.6, MP_CORNER = 0.35, MP_FLOOR = 0.2;
+const MP_CUT = 0.42, MP_ARC_STEPS = 8, MP_FINE = 24, MP_ACCEL = 0.6;
 const pAdd = (a, b, k = 1) => ({x: a.x + b.x * k, z: a.z + b.z * k});
 const pSub = (a, b) => ({x: a.x - b.x, z: a.z - b.z});
 const pLerp = (a, b, t) => ({x: a.x + (b.x - a.x) * t, z: a.z + (b.z - a.z) * t});
 const pLen = (a) => Math.hypot(a.x, a.z);
 const pNorm = (a) => { const l = pLen(a) || 1; return {x: a.x / l, z: a.z / l}; };
 class MovePath {
-  static build(centres, top, accelS = MP_ACCEL, corner = MP_CORNER) {
+  static build(centres, top, accelS = MP_ACCEL) {
     const mp = new MovePath();
     // The curve: corners cut by arcs, each sample carrying its corner's turn.
     const coarse = [centres[0]], cturn = [0];
@@ -341,7 +416,7 @@ class MovePath {
     mp.points = pts; mp.arc = [0]; mp.speed = []; mp.time = [0];
     for (let i = 1; i < n; i++) mp.arc.push(mp.arc[i - 1] + pLen(pSub(pts[i], pts[i - 1])));
     const a = top / Math.max(0.05, accelS);
-    const v = turns.map(t => top * Math.max(MP_FLOOR, 1 - clamp(corner, 0, 1) * clamp(t / (Math.PI / 3), 0, 2)));
+    const v = turns.map(() => top);
     v[0] = 0; v[n - 1] = 0;
     for (let i = 1; i < n; i++) v[i] = Math.min(v[i], Math.sqrt(v[i - 1] * v[i - 1] + 2 * a * (mp.arc[i] - mp.arc[i - 1])));
     for (let i = n - 2; i >= 0; i--) v[i] = Math.min(v[i], Math.sqrt(v[i + 1] * v[i + 1] + 2 * a * (mp.arc[i + 1] - mp.arc[i])));
@@ -366,16 +441,17 @@ class MovePath {
 
 // ---------------------------------------------------------------- the route (Map3D._corner)
 // Flat-topped hexes, the map's: neighbours at 90, 30, -30, -90, -150 and 150 degrees, a
-// step of sqrt(3) circumradii. Four moves that close a loop: two steps north; a corner
-// through north-east and south-east; two steps south; a corner back through south-west and
-// north-west. Each move runs along its MovePath curve; between moves the machine eases to
-// the facing the simulation records, its last step's (Map3D, REST_TURN_RATE). The hex is
-// sized to the machine as the map fits it (Map3D: its widest extent is MARKER_FIT hex
-// widths, a flyer FIT_FLYER of that) and a step takes the map's time (BattleMapView:
-// MECH_SECONDS_PER_HEX, slower below MOVE_REF_SPEED), so the pace here is the pace on the map.
+// step of sqrt(3) circumradii. Two long moves that close a loop (Ryan, 4 October: a longer
+// run to judge, fewer stops): three steps north and a turn through north-east and south-east;
+// three steps south and a turn back through south-west and north-west. Each move runs along
+// its MovePath curve; between moves the machine eases to the facing the simulation records,
+// its last step's (Map3D, REST_TURN_RATE). The hex is sized to the machine as the map fits it
+// (Map3D: its widest extent is MARKER_FIT hex widths, a flyer FIT_FLYER of that) and a step
+// takes the map's time (BattleMapView: MECH_SECONDS_PER_HEX, slower below MOVE_REF_SPEED),
+// so the pace here is the pace on the map (MechRig.map_speed).
 const MARKER_FIT = 1.05, FIT_FLYER = 0.8, MECH_SECONDS_PER_HEX = 0.55, MAP_REF_SPEED = 50;
 const DIRS = {N: 90, NE: 30, SE: -30, S: -90, SW: -150, NW: 150};
-const ROUTE = [["N", "N"], ["NE", "SE"], ["S", "S"], ["SW", "NW"]];
+const ROUTE = [["N", "N", "N", "NE", "SE"], ["S", "S", "S", "SW", "NW"]];
 const PAUSE = 1.2;
 // A direction in degrees (0 east, 90 north) to the ground plane: x east, -z north.
 const dirVec = (deg) => ({x: Math.cos(deg * D2R), z: -Math.sin(deg * D2R)});
@@ -401,7 +477,7 @@ class Route {
       if (this.pause <= 0) {
         const centres = [this.pos]; let p = this.pos;
         for (const d of mv) { p = pAdd(p, dirVec(DIRS[d]), this.STEP); centres.push(p); }
-        this.curve = MovePath.build(centres, top, move.accel ?? MP_ACCEL, move.corner ?? MP_CORNER);
+        this.curve = MovePath.build(centres, top, move.accel ?? MP_ACCEL);
         this.t = 0;
       }
       return {speed: 0, aim: 0, turn: dt > 0 ? step / dt : 0};
@@ -534,12 +610,12 @@ class Stage {
   // to the whole route.
   frame(keepDir) {
     if (!this.camera || !this.size) return;
-    const STEP = this.route.STEP, half = this.mode === "route" ? STEP * 1.75 + this.size * 0.3 : this.size * 0.75;
+    const STEP = this.route.STEP, half = this.mode === "route" ? STEP * 2.3 + this.size * 0.3 : this.size * 0.75;
     const a = this.aspect || 1;
     this.camera.left = -half * a; this.camera.right = half * a; this.camera.top = half; this.camera.bottom = -half;
     this.camera.updateProjectionMatrix();
     if (!keepDir) {
-      const target = this.mode === "route" ? new window.THREE.Vector3(STEP * 0.866, 0, -STEP) : new window.THREE.Vector3(0, this.size * 0.3, 0);
+      const target = this.mode === "route" ? new window.THREE.Vector3(STEP * 0.866, 0, -STEP * 1.5) : new window.THREE.Vector3(0, this.size * 0.3, 0);
       const pitch = 42 * D2R, yaw = (this.mode === "route" ? 20 : 35) * D2R;
       this.camera.position.set(target.x - Math.sin(yaw) * Math.cos(pitch) * 1200, target.y + Math.sin(pitch) * 1200, target.z + Math.cos(yaw) * Math.cos(pitch) * 1200);
       this.camera.zoom = 1; this.camera.updateProjectionMatrix();
@@ -630,7 +706,7 @@ class Stage {
   setMode(mode) {
     if (this.isShape) mode = "acts";
     this.mode = mode;
-    if (this.rig) { this.rig.endAct(true); this.rig.strikes = []; this.rig.drive(0, 0, 0, 10); this.rig.pose(); }
+    if (this.rig) { this.rig.endAct(true); this.rig.settle(); this.rig.strikes = []; this.rig.drive(0, 0, 0, 10); this.rig.pose(); }
     this.route.reset();
     if (this.pivot) { this.pivot.position.set(0, 0, 0); this.pivot.rotation.set(0, this.route.facing, 0); }
     if (this.routeLine) this.routeLine.visible = mode === "route";
@@ -662,11 +738,10 @@ class Stage {
     const rig = this.rig;
     if (this.isShape) { this.pivot.rotation.y += 0.5 * dt; return; }   // a class alone turns on its stand
     if (this.mode === "acts") rig.tick(dt, true);
-    else if (this.mode === "walk") { rig.tick(dt, false); rig.drive(MOVE_REF_SPEED, 0, 0, dt); }
+    else if (this.mode === "walk") { rig.tick(dt, false); rig.drive(this.topSpeed(), 0, 0, dt); }
     else {
       rig.tick(dt, false);
-      const speed = this.route.STEP / (MECH_SECONDS_PER_HEX * Math.max(1, MAP_REF_SPEED / Math.max(1, this.movespeed || MAP_REF_SPEED)));
-      const d = this.route.advance(dt, speed, rig.move);
+      const d = this.route.advance(dt, this.topSpeed(), rig.move);
       rig.drive(d.speed, d.aim, d.turn, dt);
       const p = this.route.where();
       this.pivot.position.set(p.x, 0, p.z);
@@ -674,10 +749,13 @@ class Stage {
     }
     if (rig.current) this.emitTick();
   }
+  // The machine's full speed on the map in its own model units a second (MechRig.map_speed):
+  // the route's step, which the map fits to it, at the map's time for its move.
+  topSpeed() { return this.route.STEP / (MECH_SECONDS_PER_HEX * Math.max(1, MAP_REF_SPEED / Math.max(1, this.movespeed || MAP_REF_SPEED))); }
   emitTick() { const now = performance.now(); if (!this.lastTick || now - this.lastTick > 90) { this.lastTick = now; this.emit(); } }
   strike(ranged) { if (this.rig) this.rig.strike(ranged); }
   seek(t) { if (this.rig && this.rig.current) { this.rig.seek(t); this.renderer && this.renderer.render(this.scene, this.camera); this.emit(); } }
 }
 
-window.HangarMotion = {Rig, Route, Stage, MovePath, sample, sampleCycle, clampDegrees, labelled, MOVE_REF_SPEED};
+window.HangarMotion = {Rig, Route, Stage, MovePath, curve, cycleCurve, curveAt, sample, sampleCycle, clampDegrees, labelled, MOVE_REF_SPEED};
 })();

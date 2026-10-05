@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.33 since 4 October: the Stingray's seventh pass and the Puffin's sleek trial, over the other session's map types); republish it from the committed file after every bible change, passing that URL.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.34 since 4 October: the acts and movement's third pass, over the Stingray's seventh pass and the map types); republish it from the committed file after every bible change, passing that URL.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -13,7 +13,7 @@ stays in A alone (Ryan, 1 October: it serves one ongoing task) and is republishe
 session; a B session cannot read it. Shared:
 
 - **The bible** (above): `docs/design-bible.html`, published whole after every change.
-- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 4 October with the acts and movement's second pass): four tabs, the
+- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 5 October with the acts and movement's third pass): four tabs, the
   codex, the content editor, the names list and Models. Models (the renders and the Animation
   tab merged, Ryan, 3 October) puts each machine live in 3D on top: its acts, walk and
   cornering played from its rig sidecar by `tools/hangar_motion.js` (published as
@@ -83,7 +83,7 @@ the chat is newer.
 ## As of 3 October 2026
 
 **State.** Tests green: `perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (329 tests, 6,847 checks on 3 October in a cloud session, after the movement leftovers;
+tests/run_tests.gd` (338 tests, 10,477 checks on 5 October in a cloud session, after the acts and movement's third pass;
 a cloud session fetches Godot 4.7's Linux build from the GitHub release asset to run them
 (`Godot_v4.7-stable_linux.x86_64.zip`, and `xvfb-run` for screenshots), since
 the proxy serves the asset though not the release page; it builds models too, with
@@ -298,10 +298,8 @@ limits, the strikes and an act's motion.
 judge).** Each machine's gait is authored
 beside its model (`b.gait(...)`) and written to the same sidecar; `MechRig.drive(speed, aim,
 turn, dt)` plays it: cycles keyed by distance travelled (a stride in model units, so a slow
-machine steps slowly), the walkers in diagonal pairs through one `_step` shape (hip forward
-to back over the stance, the knee bending through the swing to lift the foot), the Baboon's
-fists planting in step, the Nemesis's arms swinging against its legs, the Ammit's planted
-lower arms stepping; wheels spun by their radius and never unwinding; treads scrolling their
+machine steps slowly), the walkers' legs worked out foot by foot since the third pass (below);
+wheels spun by their radius and never unwinding; treads scrolling their
 tiles (`uv1_offset` on the tread meshes, per instance); the Prairie Dog's steering knuckles
 turning with the turn and the Dingo's casters pointing along the travel; offsets held while
 moving (the Badger's booms carrying the claw clear, the Goshawk's nacelles tilted forward, a
@@ -312,20 +310,17 @@ every machine did before; the Dingo's 1.0 lags through corners and sideways step
 casters swing toward the move and the body keeps its facing), and the rig is told the
 speed (from the seat's motion, in model units), the travel's bearing against the facing and
 the turn. A pilot on the move starts no act; the gait blends in over a quarter second and
-settles out over a third. `RIFTGATE_MOVE_DEBUG=1` drives every machine constantly at the
-reference speed on both screens; `tools/act_shot.gd <chassis> <maker> gait <seconds> out.png`
+settles out over a third. `RIFTGATE_MOVE_DEBUG=1` drives every machine constantly at its own
+full speed on the map, on both screens; `tools/act_shot.gd <chassis> <maker> gait <seconds> out.png`
 freezes a stride, and the frames checked here read right (the diagonal pairs, the lifted
 fist, the swinging arms, the carried claw, the tilted nacelles). Every number is a first cut.
-Then, on Ryan's word (3 October, later): the Wild Boar's and the Prairie Dog's turrets hold
-their aim while the hull turns under them (`hold_aim` in the gait: the turret winds against
-the turn, up to 170 degrees, and relaxes to centre over most of a second once the hull runs
-straight); a machine with a slide sits off its path on the outside, by how square its travel
-is to its facing (`DRIFT_UNITS`, 12 model units for the Dingo at a right angle, eased), on top
-of the facing's lag; the Stingray and the Puffin have three first-cut acts each and brighten
-their thrusters under way. Not done: the feet arcing a little through the stance. Tests cover
-the cycle sampling, a walker stepping and settling, wheels and casters, holds, rock and bank,
-the held aim, the drift, the hovercraft's sidecars, every gait against its model, and no act
-under way. **Movement styles (Ryan, 3 October):** the Stingray is the first helicopter-style
+Then, on Ryan's word (3 October, later): a machine with a slide sits off its path on the
+outside, by how square its travel is to its facing (`DRIFT_UNITS`, 12 model units for the Dingo
+at a right angle, eased), on top of the facing's lag; the Stingray and the Puffin have their
+first acts and brighten their thrusters under way. (The turrets' held aim built then is retired
+by the third pass.) Tests cover the cycle sampling, a walker stepping, planting and settling,
+wheels and casters, holds, rock and bank, the drift, the hovercraft's sidecars, every gait
+against its model, and no act under way. **Movement styles (Ryan, 3 October):** the Stingray is the first helicopter-style
 machine, on its fans, with one or two more to come: it keeps its facing through a move (the
 map's `strafe`: it yaws to the facing it will end with in the first moment, then translates
 there, sideways or backward as the path demands) and leans into its travel by its speed
@@ -340,13 +335,34 @@ so they read from across the map (the Sparrowhawk strafes as it dips its wings, 
 inspects each arm, the Puffin's hop leaps, the Ammit rears, the Armadillo presents its back
 guns). Moves on the map are `game/battle/move_path.gd` (MovePath): the hex route cut into
 one curve with arcs at the corners, speed from rest to rest under each machine's `accel`
-(seconds to full speed) and slowing into corners by its `corner` (the share given up at
-sixty degrees), both from `b.move` in the sidecar. Machines run at
+(seconds to full speed, `b.move` in the sidecar); the corner braking built here went in the
+third pass. Machines run at
 `MECH_SECONDS_PER_HEX` 0.55 (was 0.22); the packs keep 0.22 and their straight steps, my
 call, which Ryan can reverse. The rock, bank and drift are eased softer to match, and a
 machine at rest turns to its recorded facing rather than snapping. The hangar's Route runs
 the same curve (the JS port matches the GDScript's durations). Tests: `test_move_path.gd`, and
-the rig tests now read their numbers from the sidecars. Ryan judges it all running.
+the rig tests now read their numbers from the sidecars.
+
+**The third pass, 4 October (Ryan judged the second running; bible section 7, the joints row,
+v0.34; resumed in a fresh cloud session on 5 October after the first died on an account
+switch).** Weight: an act's keys are a monotone cubic a part runs on through (it stops only
+to turn or hold), chased by a servo per part and for the body (`MechRig._follow`, a damped
+spring, `heft` per machine from `b.move(heft=)`, 0.08 to 0.26 seconds), stepped at most a
+sixtieth of a second so a frozen frame (`act_shot.gd`) and the hangar's scrubber land where
+frames would; a wheel the gait spins skips the servo. Acts: all thirteen rewritten (held poses
+drift, banks swing through, slower beats). Turrets: 70 degrees, 35 a second, 0.6 seconds'
+pause before turning back, refused by lowforge (`TURRET_*` in `bl_low.py`) and checked by a
+test; `hold_aim` is gone, a turret turns with the hull. Walkers: `_plant` in `models_low.py`
+solves each leg (`_ik2`) so a foot stays planted through its stance, lifts straight, stomps
+down, the body vaulting over near-straight legs and dropping as each foot lands, never
+rolling; ankles added to the Clydesdale, Armadillo and Nemesis (geometry checked identical
+with `glbcmp.py`); acts that move a walker's body solve the legs over planted feet
+(`_planted`). Movement: no corner braking (`corner` gone from MovePath, the sidecars and the
+hangar); the debug walk and the hangar's Walk run each machine at its own map pace
+(`MechRig.map_speed`, `top_speed`), where before they ran everything at 150 model units a
+second; the hangar's Route is two long moves. Built and rebuilt here with the bpy wheel; the
+regenerated tiles and working files were not committed, as before. Open with Ryan: whether
+walkers move slower on the map (the to-do).
 
 **The codex (29 September; a tab of the hangar page since 1 October).** One surface showing a
 chassis and the components fitted to it: the Codex tab renders it in the browser from the

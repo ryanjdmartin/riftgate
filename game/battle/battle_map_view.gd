@@ -1403,8 +1403,8 @@ func _next_anim_phase() -> void:
 
 
 ## A move as a curve with a speed along it (MovePath). A machine takes its own step and its
-## acceleration and cornering from its rig sidecar through the 3D map; the packs keep the old
-## straight hex-to-hex lines at their fixed step. Slower units move slower either way.
+## acceleration from its rig sidecar through the 3D map; the packs keep the old straight
+## hex-to-hex lines at their fixed step. Slower units move slower either way.
 func _curve_for(uid: int, path: Array) -> MovePath:
 	var u := field.unit_by_id(uid)
 	var centres: Array = path.map(func(h): return Hex.to_pixel(h, HEX_SIZE))
@@ -1413,8 +1413,8 @@ func _curve_for(uid: int, path: Array) -> MovePath:
 	if u != null and u.is_player():
 		var mv: Dictionary = _map3d.motion_of(uid) if _map3d != null else {}
 		var top := step_px / (MECH_SECONDS_PER_HEX * slow)
-		return MovePath.build(centres, top, float(mv.get("accel", MovePath.ACCEL_DEFAULT)), float(mv.get("corner", MovePath.CORNER_DEFAULT)))
-	return MovePath.build(centres, step_px / (MOVE_SECONDS_PER_HEX * slow), 0.001, 0.0, false)
+		return MovePath.build(centres, top, float(mv.get("accel", MovePath.ACCEL_DEFAULT)))
+	return MovePath.build(centres, step_px / (MOVE_SECONDS_PER_HEX * slow), 0.001, false)
 
 
 func _advance_anim(delta: float) -> void:

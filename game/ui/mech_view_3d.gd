@@ -350,6 +350,7 @@ func _setup(chassis_id: String, maker: String) -> void:
 	_pivot.add_child(_model)
 	var corners: Array[Vector3] = []
 	_collect_corners_local(_model, _model, corners)   # before the tree: relative transforms, never global
+	var widest := 0.0
 	if not corners.is_empty():
 		var lo := corners[0]
 		var hi := corners[0]
@@ -357,9 +358,14 @@ func _setup(chassis_id: String, maker: String) -> void:
 			lo = Vector3(minf(lo.x, c.x), minf(lo.y, c.y), minf(lo.z, c.z))
 			hi = Vector3(maxf(hi.x, c.x), maxf(hi.y, c.y), maxf(hi.z, c.z))
 		_model.position = -Vector3((lo.x + hi.x) * 0.5, 0.0, (lo.z + hi.z) * 0.5)
+		widest = maxf(hi.x - lo.x, hi.z - lo.z)
 	_pivot.rotation.y = deg_to_rad(yaw)
 	_apply_materials(_model, maker)
 	rig.setup(_model, chassis_id)   # after the materials: the acts' glows look for the lit surfaces
+	if widest > 0.0:
+		# The debug drive (RIFTGATE_MOVE_DEBUG) runs at the machine's own pace on the map.
+		var c: Dictionary = ContentDB.load_default().chassis.get(chassis_id, {})
+		rig.top_speed = MechRig.map_speed(widest, int(c.get("movespeed", Unit.MECH_MOVE)), (c.get("traits", []) as Array).has("flyer"))
 	joints = rig.joints
 	hardpoints = rig.hardpoints
 	_apply_plan()   # before the traces attach and the camera frames, so a mounted shape gets both

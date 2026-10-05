@@ -608,6 +608,8 @@ class Build:
                     if not lo <= v <= hi:
                         raise ValueError("act %r of %s asks %s for %s %g, outside its limits %g..%g" % (name, self.name, jn, ax, v, lo, hi))
                 rows.append(row)
+            if jn.startswith("turret"):
+                self._turret_rule(name, jn, rows, float(duration))
             out["tracks"][jn] = rows
         for key in body or []:
             key = [float(v) for v in key]
@@ -621,6 +623,35 @@ class Build:
             out["glow"].append({"parts": parts, "keys": [[float(t), float(k)] for t, k in keys]})
         self.acts.append(out)
         return out
+
+    # A turret's traverse in an act (Ryan, 4 October, the third pass: too fast and wild; not so
+    # far, not nearly as fast, and a pause before it swings back, so it carries its weight).
+    TURRET_REACH = 70.0   # degrees from the bow at most
+    TURRET_SLEW = 35.0    # degrees a second at most between two keys, on average
+    TURRET_PAUSE = 0.6    # seconds a turret holds still before it turns back
+
+    def _turret_rule(self, name, jn, rows, duration):
+        """Refuse an act that swings a turret too far or too fast, or turns it back without a
+        pause: rest at the act's start and end counts as a key."""
+        axis_i = ("pitch", "yaw", "roll").index(self.joint_meta[jn]["axis"])
+        pts = [(0.0, 0.0)] if rows[0][0] > 0.0 else []
+        pts += [(r[0], r[1 + axis_i]) for r in rows]
+        if pts[-1][0] < duration:
+            pts.append((duration, 0.0))
+        where = "act %r of %s, %s" % (name, self.name, jn)
+        for t, v in pts:
+            if abs(v) > self.TURRET_REACH + 1e-6:
+                raise ValueError("%s: %g degrees at %gs, past the turret's reach of %g" % (where, v, t, self.TURRET_REACH))
+        moves = []   # (t0, t1, direction) of each leg that moves
+        for (t0, v0), (t1, v1) in zip(pts, pts[1:]):
+            if v1 == v0:
+                continue
+            if t1 <= t0 or abs(v1 - v0) / (t1 - t0) > self.TURRET_SLEW + 1e-6:
+                raise ValueError("%s: %g to %g degrees in %gs, faster than %g a second" % (where, v0, v1, t1 - t0, self.TURRET_SLEW))
+            moves.append((t0, t1, 1 if v1 > v0 else -1))
+        for (a0, a1, da), (b0, b1, db) in zip(moves, moves[1:]):
+            if da != db and b0 - a1 < self.TURRET_PAUSE - 1e-6:
+                raise ValueError("%s: turns back at %gs after %gs still, under the %gs pause" % (where, b0, b0 - a1, self.TURRET_PAUSE))
 
     def _keys(self, name, keys, jn=None):
         """Keyframes widened to (t, pitch, yaw, roll, dx, dy, dz) and checked against a
@@ -656,7 +687,7 @@ class Build:
         return rows
 
     def gait(self, stride=40.0, tracks=None, body=None, body_hold=None, wheels=None, steer=None, aim=None,
-             treads=None, hold=None, glow=None, rock=0.0, hold_aim=None, ease="smooth"):
+             treads=None, hold=None, glow=None, rock=0.0, ease="smooth"):
         """How the machine moves while the map moves it (the joints row, 2 October; MechRig.drive).
         `stride` is the model units one cycle covers. `tracks` maps a joint to cyclic keys
         over a phase of 0 to 1 (the same shapes as an act's keys), or to (keys, phase) with
@@ -668,11 +699,12 @@ class Build:
         to its share of the travel's bearing against the facing (1 points along it).
         `treads` is {"parts": [labels], "scroll": 1.0} to run the tread tiles; `glow`
         {"parts": [labels or groups], "k": 2.0} to brighten boosters by that much on the
-        move; `rock` the degrees the nose comes up on pulling away and dips on stopping;
-        `hold_aim` maps a turret to its share of the hull's turning it winds against, so it
-        holds its aim while the hull turns under it (1 holds it exactly)."""
+        move; `rock` the degrees the nose comes up on pulling away and dips on stopping. A
+        turret turns with the hull on the move (Ryan, 4 October: holding its aim was not worth
+        the complexity). `ease` "linear" plays dense keys as they are (a walk worked out
+        foot by foot, _plant), "smooth" runs a curve through them."""
         out = {"stride": float(stride), "ease": ease, "tracks": {}, "body": [], "wheels": {}, "steer": {}, "aim": {},
-               "hold": {}, "treads": {}, "glow": {}, "rock": float(rock), "hold_aim": {}}
+               "hold": {}, "treads": {}, "glow": {}, "rock": float(rock)}
         for jn, spec in (tracks or {}).items():
             keys, phase = (spec if isinstance(spec, tuple) and len(spec) == 2 and not isinstance(spec[0], (int, float)) else (spec, 0.0))
             out["tracks"][jn] = {"keys": self._keys("the gait", keys, jn), "phase": float(phase)}
@@ -682,7 +714,7 @@ class Build:
             if len(bh) != 6:
                 raise ValueError("the gait of %s: body_hold is (dx, dy, dz, yaw, pitch, roll)" % self.name)
             out["body_hold"] = bh
-        for d, src in (("wheels", wheels), ("steer", steer), ("aim", aim), ("hold_aim", hold_aim)):
+        for d, src in (("wheels", wheels), ("steer", steer), ("aim", aim)):
             for jn, v in (src or {}).items():
                 if jn not in self.joint_meta:
                     raise ValueError("the gait of %s names a joint the model has not got: %s" % (self.name, jn))
@@ -704,7 +736,7 @@ class Build:
         self.gait_spec = out
         return out
 
-    def move(self, slide=0.0, bank=0.0, strafe=0.0, tilt=None, accel=None, corner=None):
+    def move(self, slide=0.0, bank=0.0, strafe=0.0, tilt=None, accel=None, heft=None):
         """The cornering module's numbers for this machine (the joints row, 2 October):
         `slide`, how far the body drifts from its path on a turn and how slowly its heading
         catches up, 0 for a machine that corners on rails; `bank`, how far a flyer or
@@ -715,15 +747,18 @@ class Build:
         heading like everything else), and `tilt` is (pitch, roll) in degrees at the
         reference speed: nose down going forward and up going back, a side down going that
         way. A helicopter banks 0 and rocks 0; the tilt does both. The map's curve (Ryan, 4
-        October; MovePath) reads `accel`, the seconds from rest to full speed, and `corner`,
-        the share of its speed the machine gives up for a sixty-degree corner."""
+        October; MovePath) reads `accel`, the seconds from rest to full speed; it holds full
+        speed through corners (the third pass). `heft` is the machine's weight in its acts
+        (Ryan, 4 October, the third pass: heavy, with inertia): the seconds a joint or the body
+        takes to catch up with what an act asks, the servos' time constant (MechRig._follow);
+        a light craft 0.08, a heavy walker 0.25."""
         self.tuning = {"slide": float(slide), "bank": float(bank), "strafe": float(strafe)}
         if tilt is not None:
             self.tuning["tilt"] = [float(tilt[0]), float(tilt[1])]
         if accel is not None:
             self.tuning["accel"] = float(accel)
-        if corner is not None:
-            self.tuning["corner"] = float(corner)
+        if heft is not None:
+            self.tuning["heft"] = float(heft)
 
     def rig(self):
         """The rig sidecar: every joint's axis, limits and parent, the acts and the

@@ -1,7 +1,7 @@
 extends TestCase
 
 ## A machine's move on the map (MovePath, Ryan, 4 October): a smooth curve through the hex
-## centres, a speed that starts and ends at rest, brakes into corners and never jumps.
+## centres, a speed that starts and ends at rest, holds through corners and never jumps.
 
 const STEP := 60.0
 
@@ -28,7 +28,7 @@ func test_the_curve_keeps_the_ends_and_the_last_direction() -> void:
 
 
 func test_the_speed_starts_and_ends_at_rest_and_never_jumps() -> void:
-	var mp := MovePath.build(_route([90, 90, 90, 90]), 120.0, 0.8, 0.35)
+	var mp := MovePath.build(_route([90, 90, 90, 90]), 120.0, 0.8)
 	assert_eq(mp.speed[0], 0.0, "at rest at the start")
 	assert_eq(mp.speed[mp.speed.size() - 1], 0.0, "and at the end")
 	var a := 120.0 / 0.8
@@ -44,21 +44,15 @@ func test_the_speed_starts_and_ends_at_rest_and_never_jumps() -> void:
 	assert_true(mp.duration > linear, "accelerating and braking take longer than a flat run (%f against %f)" % [mp.duration, linear])
 
 
-func test_a_machine_brakes_into_a_corner_by_its_own_share() -> void:
-	var centres := _route([90, 90, -30, -30])   # a sharp corner, 120 degrees
-	var heavy := MovePath.build(centres, 120.0, 0.4, 0.6)
-	var light := MovePath.build(centres, 120.0, 0.4, 0.0)
-	var slowest_heavy := 1e9
-	var slowest_light := 1e9
-	for i in range(2, heavy.points.size() - 2):
-		if heavy.arc[i] > STEP * 1.5 and heavy.arc[i] < STEP * 2.3:
-			slowest_heavy = minf(slowest_heavy, heavy.speed[i])
-	for i in range(2, light.points.size() - 2):
-		if light.arc[i] > STEP * 1.5 and light.arc[i] < STEP * 2.3:
-			slowest_light = minf(slowest_light, light.speed[i])
-	assert_true(slowest_heavy < slowest_light * 0.7, "a machine that brakes for corners slows through this one (%f against %f)" % [slowest_heavy, slowest_light])
-	assert_true(slowest_heavy >= 120.0 * MovePath.CORNER_FLOOR - 0.01, "never below the floor")
-	assert_true(heavy.duration > light.duration, "and takes longer over the route")
+func test_a_machine_keeps_its_speed_through_a_corner() -> void:
+	# Ryan, 4 October, the third pass: no braking for corners.
+	var centres := _route([90, 90, 90, -30, -30, -30])   # a sharp corner, 120 degrees, in the middle of a long move
+	var mp := MovePath.build(centres, 120.0, 0.4)
+	var slowest := 1e9
+	for i in range(mp.points.size()):
+		if mp.arc[i] > STEP * 2.2 and mp.arc[i] < STEP * 3.4:
+			slowest = minf(slowest, mp.speed[i])
+	assert_true(slowest > 120.0 * 0.999, "full speed through the corner (%f)" % slowest)
 
 
 func test_at_moves_forward_continuously_and_the_packs_keep_their_lines() -> void:
@@ -75,7 +69,7 @@ func test_at_moves_forward_continuously_and_the_packs_keep_their_lines() -> void
 		prev = here[0]
 		t += 1.0 / 60.0
 	assert_true(biggest < 100.0 / 60.0 * 1.2, "no frame jumps further than full speed allows (%f)" % biggest)
-	var pack := MovePath.build(_route([90, 30]), 100.0, 0.001, 0.0, false)
+	var pack := MovePath.build(_route([90, 30]), 100.0, 0.001, false)
 	assert_eq(pack.points.size(), 3, "the packs keep the hex-to-hex lines, no arcs")
 	assert_true(absf(pack.duration - 2.0 * STEP / 100.0) < 0.05, "at their flat step (%f)" % pack.duration)
 	var still := MovePath.build([Vector2.ONE], 100.0)

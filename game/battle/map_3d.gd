@@ -727,7 +727,7 @@ const STRAFE_TURN_RATE := 6.0   # per second: a helicopter yaws to where it will
 
 
 ## The motion numbers in a machine's rig sidecar (`move`: slide, bank, strafe, tilt, accel,
-## corner), for the map view's curve; empty for a unit with no rig.
+## heft), for the map view's curve; empty for a unit with no rig.
 func motion_of(uid: int) -> Dictionary:
 	return (_rigs[uid] as MechRig).move if _rigs.has(uid) else {}
 
@@ -1339,6 +1339,7 @@ func _make_unit(u: Unit) -> Node3D:
 		# pivot, so the facing and the idle never fight; seeded by the unit, so no two act in step.
 		var rig := MechRig.new()
 		rig.setup(node, model_id, node, u.id)
+		rig.top_speed = MechRig.map_speed(widest, u.movespeed, flyer)   # the debug drive's pace (RIFTGATE_MOVE_DEBUG)
 		_rigs[u.id] = rig
 		_scale[u.id] = k
 		var seat := Node3D.new()   # the pivot turns to the facing; the seat's southward set does not

@@ -5,21 +5,19 @@ extends RefCounted
 ## acceleration, hard corners). The hex centres of the route become one smooth curve: each
 ## interior corner is cut by a quadratic arc, the endpoints and the last step's direction kept,
 ## so the machine ends on its hex facing the way the simulation records. Along the curve the
-## speed starts at rest, accelerates at the machine's rate, brakes into each corner by how
-## sharp it is and how much this machine slows for corners, and comes to rest at the end: the
-## classic forward and backward pass over a speed limit. Pure arithmetic in map pixels, so it
-## runs headless and the hangar page ports it (tools/hangar_motion.js, Route) line for line.
+## speed starts at rest, accelerates at the machine's rate, holds its full speed through the
+## corners (Ryan, 4 October, the third pass: braking for them was not needed) and comes to
+## rest at the end: the classic forward and backward pass over a speed limit. Pure arithmetic
+## in map pixels, so it runs headless and the hangar page ports it (tools/hangar_motion.js,
+## Route) line for line.
 ##
-## The numbers per machine live in its rig sidecar's `move` (written by lowforge's b.move):
-## `accel`, the seconds it takes from rest to full speed, and `corner`, how much of its speed
-## it gives up for a sixty-degree corner (0 none, 1 all of it). A machine without them takes
-## the defaults below.
+## The number per machine lives in its rig sidecar's `move` (written by lowforge's b.move):
+## `accel`, the seconds it takes from rest to full speed. A machine without it takes the
+## default below.
 
 const CUT := 0.42            # each corner's arc starts this share of the way along its legs (at most half)
 const ARC_STEPS := 8         # samples per corner arc
 const ACCEL_DEFAULT := 0.6   # seconds from rest to full speed
-const CORNER_DEFAULT := 0.35 # the share of speed given up for a sixty-degree corner
-const CORNER_FLOOR := 0.2    # no corner slows a machine below this share of its speed
 const FINE := 24             # samples a straight span is cut into, so the speed profile is smooth within a hex
 
 var points: PackedVector2Array = PackedVector2Array()   # the curve, sampled
@@ -64,13 +62,12 @@ static func smooth(centres: Array) -> Array:
 
 
 ## The move: `centres` in map pixels, `top` the full speed in pixels a second, `accel_s` the
-## seconds from rest to full speed, `corner` the share of speed given up for a sixty-degree
-## corner. `smooth_corners` false keeps the hex-to-hex lines (the packs, which are pictures).
-static func build(centres: Array, top: float, accel_s: float = ACCEL_DEFAULT, corner: float = CORNER_DEFAULT, smooth_corners: bool = true) -> MovePath:
+## seconds from rest to full speed. `smooth_corners` false keeps the hex-to-hex lines (the
+## packs, which are pictures).
+static func build(centres: Array, top: float, accel_s: float = ACCEL_DEFAULT, smooth_corners: bool = true) -> MovePath:
 	var mp := MovePath.new()
 	var sm: Array = smooth(centres) if smooth_corners else [centres, centres.map(func(_c): return 0.0)]
 	var pts: Array = []
-	var turns: Array = []
 	# Long straight spans cut fine, so a machine reaching full speed partway along one is timed
 	# by the samples, not by a whole hex's average.
 	var coarse: Array = sm[0]
@@ -80,16 +77,12 @@ static func build(centres: Array, top: float, accel_s: float = ACCEL_DEFAULT, co
 			var b0: Vector2 = coarse[i]
 			for k in range(1, FINE):
 				pts.append(a0.lerp(b0, float(k) / FINE))
-				turns.append(0.0)
 		pts.append(coarse[i])
-		turns.append(sm[1][i])
 	# Drop repeated points, so no segment has zero length.
 	var clean: Array = []
-	var cturn: Array = []
 	for i in range(pts.size()):
 		if clean.is_empty() or (pts[i] as Vector2).distance_to(clean[clean.size() - 1]) > 0.001:
 			clean.append(pts[i])
-			cturn.append(turns[i])
 	mp.points = PackedVector2Array(clean)
 	var n := clean.size()
 	mp.arc.resize(n)
@@ -101,11 +94,10 @@ static func build(centres: Array, top: float, accel_s: float = ACCEL_DEFAULT, co
 	for i in range(1, n):
 		mp.arc[i] = mp.arc[i - 1] + (clean[i] as Vector2).distance_to(clean[i - 1])
 	var a := top / maxf(0.05, accel_s)
-	# The limit at each sample: full speed, less the corner's share by its sharpness.
+	# The limit at each sample: full speed, corners and all.
 	var lim: Array = []
 	for i in range(n):
-		var sharp := clampf(float(cturn[i]) / (PI / 3.0), 0.0, 2.0)
-		lim.append(top * maxf(CORNER_FLOOR, 1.0 - clampf(corner, 0.0, 1.0) * sharp))
+		lim.append(top)
 	if smooth_corners:   # a machine starts and ends at rest; a pack keeps its flat step
 		lim[0] = 0.0
 		lim[n - 1] = 0.0

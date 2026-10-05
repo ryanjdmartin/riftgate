@@ -124,41 +124,43 @@ def badger(b):
         b.box(0.0, 14.0, -22.0, -4.0, 42.0, 56.0, "steel.panel", "turret")
         b.box(0.0, 14.0, -4.6, -3.6, 42.0, 56.0, "steel.missile", "missile_face")
 
-    # Idle acts, second pass (Ryan, 4 October: too subtle; longer, louder, several joints at
-    # once, glows that read from across the map). Degrees and seconds; a key is (t, value) on
-    # the joint's own axis or (t, pitch, yaw, roll); a body key is (t, dx, dy, dz) or
-    # (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k), k the light added over rest.
-    b.act("test_claw", 5.0, {   # the boom hoists the claw high and it snaps three times, the gimbals watching
-        "shoulder_l": [(0.8, 38.0), (4.0, 38.0), (4.8, 0.0)],
-        "elbow_l": [(0.8, 26.0), (4.0, 26.0), (4.8, 0.0)],
-        "jaw_upper": [(1.1, 0.0), (1.5, 44.0), (1.9, 0.0), (2.3, 44.0), (2.7, 0.0), (3.1, 44.0), (3.5, 0.0)],
-        "jaw_lower": [(1.1, 0.0), (1.5, -44.0), (1.9, 0.0), (2.3, -44.0), (2.7, 0.0), (3.1, -44.0), (3.5, 0.0)],
-        "turret_l": [(0.8, 30.0), (4.0, 30.0), (4.8, 0.0)],
-        "turret_r": [(0.8, 30.0), (4.0, 30.0), (4.8, 0.0)],
-    }, body=[(0.6, 0.0, 0.0, 0.0, 0.0, 3.0, 2.0), (4.0, 0.0, 0.0, 0.0, 0.0, 3.0, 2.0), (4.8, 0.0, 0.0, 0.0)])
-    b.act("dig", 5.2, {   # the claw drops open to the ground, bites, and hauls up a load
-        "shoulder_l": [(0.8, -10.0), (1.8, -10.0), (2.8, 36.0), (4.2, 36.0), (5.0, 0.0)],
-        "elbow_l": [(0.8, -30.0), (1.8, -30.0), (2.8, 24.0), (4.2, 24.0), (5.0, 0.0)],
-        "jaw_upper": [(0.6, 44.0), (1.6, 44.0), (1.9, 0.0)],
-        "jaw_lower": [(0.6, -44.0), (1.6, -44.0), (1.9, 0.0)],
-    }, body=[(0.8, 0.0, 0.0, 0.0, 0.0, -4.0, 0.0), (1.9, 0.0, 0.0, 0.0, 0.0, -4.0, 0.0), (2.8, 0.0, 0.0, 0.0, 0.0, 3.0, 0.0), (5.0, 0.0, 0.0, 0.0)])
-    b.act("sight_gun", 4.6, {   # the gun boom rises and swings to sight, the floodlights hot
-        "shoulder_r": [(0.8, 30.0), (3.6, 30.0), (4.4, 0.0)],
-        "elbow_r": [(0.8, 28.0), (3.6, 28.0), (4.4, 0.0)],
-        "turret_l": [(0.9, -60.0), (2.0, 50.0), (3.2, -20.0), (4.2, 0.0)],
-        "turret_r": [(0.9, -60.0), (2.0, 50.0), (3.2, -20.0), (4.2, 0.0)],
-    }, body=[(0.9, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0), (2.2, 0.0, 0.0, 0.0, -10.0, 0.0, 0.0), (3.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
-       glow=[(["floodlight", "mount_light"], [(0.5, 0.0), (1.0, 6.0), (3.6, 6.0), (4.4, 0.0)])])
-    b.act("flex_booms", 4.0, {   # each boom in turn, a full stroke
-        "shoulder_l": [(0.6, 36.0), (1.4, -10.0), (2.0, 0.0)],
-        "elbow_l": [(0.6, 20.0), (1.4, -25.0), (2.0, 0.0)],
-        "shoulder_r": [(2.0, 0.0), (2.6, 36.0), (3.4, -10.0), (4.0, 0.0)],
-        "elbow_r": [(2.0, 0.0), (2.6, 20.0), (3.4, -25.0), (4.0, 0.0)],
-    })
+    # Idle acts, third pass (Ryan, 4 October: some stilted, turrets too fast and wild; heavy,
+    # with inertia): curves a part runs on through, the servos' heft (b.move), held poses that
+    # drift, turrets slow and short with a pause before they turn back (the builder's rule).
+    # Degrees and seconds; a key is (t, value) on the joint's own axis or (t, pitch, yaw,
+    # roll); a body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll); a glow key is
+    # (t, k), k the light added over rest.
+    b.act("test_claw", 6.2, {   # the boom hoists the claw high and it bites twice, the gimbals watching
+        "shoulder_l": [(1.5, 36.0), (3.4, 38.0), (4.8, 35.0), (6.0, 0.0)],
+        "elbow_l": [(1.3, 24.0), (3.4, 27.0), (4.8, 24.0), (5.9, 0.0)],
+        "jaw_upper": [(1.7, 0.0), (2.2, 44.0), (2.5, 44.0), (2.85, 0.0), (3.2, 0.0), (3.7, 44.0), (4.0, 44.0), (4.35, 0.0)],
+        "jaw_lower": [(1.7, 0.0), (2.2, -44.0), (2.5, -44.0), (2.85, 0.0), (3.2, 0.0), (3.7, -44.0), (4.0, -44.0), (4.35, 0.0)],
+        "turret_l": [(0.4, 0.0), (1.3, 28.0), (4.8, 28.0), (5.8, 0.0)],
+        "turret_r": [(0.6, 0.0), (1.5, 28.0), (4.8, 28.0), (5.8, 0.0)],
+    }, body=[(1.4, 0.0, 0.0, 0.0, 0.0, 3.0, 2.0), (3.6, 0.0, 0.0, 0.0, 0.0, 3.6, 2.4), (4.9, 0.0, 0.0, 0.0, 0.0, 3.0, 2.0), (6.2, 0.0, 0.0, 0.0)])
+    b.act("dig", 6.0, {   # the claw drops open to the ground, bites, and hauls up a load
+        "shoulder_l": [(1.3, -10.0), (2.3, -11.0), (3.6, 36.0), (4.8, 34.0), (5.8, 0.0)],
+        "elbow_l": [(1.3, -30.0), (2.3, -32.0), (3.6, 24.0), (4.8, 22.0), (5.8, 0.0)],
+        "jaw_upper": [(0.9, 44.0), (2.1, 44.0), (2.5, 0.0)],
+        "jaw_lower": [(0.9, -44.0), (2.1, -44.0), (2.5, 0.0)],
+    }, body=[(1.3, 0.0, 0.0, 0.0, 0.0, -4.0, 0.0), (2.4, 0.0, 0.0, 0.0, 0.0, -4.6, 0.0), (3.6, 0.0, 0.0, 0.0, 0.0, 3.0, 0.0), (4.8, 0.0, 0.0, 0.0, 0.0, 2.4, 0.0), (6.0, 0.0, 0.0, 0.0)])
+    b.act("sight_gun", 6.6, {   # the gun boom rises and the gimbals swing to sight one way, then the other, the floodlights hot
+        "shoulder_r": [(1.3, 30.0), (3.4, 32.0), (5.2, 30.0), (6.4, 0.0)],
+        "elbow_r": [(1.3, 28.0), (5.2, 29.0), (6.4, 0.0)],
+        "turret_l": [(0.6, 0.0), (1.8, -40.0), (2.6, -40.0), (4.4, 20.0), (5.2, 20.0), (5.8, 0.0)],
+        "turret_r": [(0.6, 0.0), (1.8, -40.0), (2.6, -40.0), (4.4, 20.0), (5.2, 20.0), (5.8, 0.0)],
+    }, body=[(1.8, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0), (2.6, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0), (4.4, 0.0, 0.0, 0.0, -4.0, 0.0, 0.0), (5.2, 0.0, 0.0, 0.0, -4.0, 0.0, 0.0), (6.4, 0.0, 0.0, 0.0)],
+       glow=[(["floodlight", "mount_light"], [(0.6, 0.0), (1.2, 6.0), (5.6, 6.0), (6.4, 0.0)])])
+    b.act("flex_booms", 5.2, {   # each boom in turn, a full heavy stroke
+        "shoulder_l": [(1.0, 36.0), (2.1, -10.0), (2.8, 0.0)],
+        "elbow_l": [(1.0, 20.0), (2.1, -25.0), (2.8, 0.0)],
+        "shoulder_r": [(2.4, 0.0), (3.4, 36.0), (4.5, -10.0), (5.2, 0.0)],
+        "elbow_r": [(2.4, 0.0), (3.4, 20.0), (4.5, -25.0), (5.2, 0.0)],
+    }, body=[(1.0, 0.0, 0.0, 0.0, 0.0, 1.5, 0.0), (2.1, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0), (3.4, 0.0, 0.0, 0.0, 0.0, 1.5, 0.0), (4.5, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0), (5.2, 0.0, 0.0, 0.0)])
     # Movement: the treads scroll, the booms carry the claw clear, a rock on pulling away
-    # and stopping; heavy to start and slow into corners.
+    # and stopping; heavy to start.
     b.gait(treads={"parts": ["tread"], "scroll": 1.0}, hold={"shoulder_l": 16.0, "elbow_l": 14.0, "shoulder_r": 8.0}, rock=7.0)
-    b.move(accel=1.2, corner=0.4)
+    b.move(accel=1.2, heft=0.2)
 
 badger.maker = "minerva"
 
@@ -232,24 +234,25 @@ def sparrowhawk(b):
                (s * 1.5 + 14.0 * math.sin(a), -55.0, 10.9 + 14.0 * math.cos(a)), (s * 1.5 + 14.0 * math.sin(a), -62.0, 10.9 + 14.0 * math.cos(a))]
         _wing(b, root, tip, "livery.livery", "stabiliser")
 
-    # Idle acts, second pass (Ryan, 4 October: too subtle; longer, louder, several joints at
-    # once, glows that read from across the map). Degrees and seconds; a key is (t, value) on
-    # the joint's own axis or (t, pitch, yaw, roll); a body key is (t, dx, dy, dz) or
-    # (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k), k the light added over rest.
-    b.act("dip_wings", 4.4, body=[   # a wing down and a skid that way, then the other, impatient
-        (0.6, -10.0, 0.0, 0.0, 0.0, 0.0, -24.0), (1.4, -10.0, 0.0, 0.0, 0.0, 0.0, -24.0), (2.2, 10.0, 0.0, 0.0, 0.0, 0.0, 24.0),
-        (3.0, 10.0, 0.0, 0.0, 0.0, 0.0, 24.0), (3.8, 0.0, 0.0, 0.0, 0.0, 0.0, -6.0), (4.4, 0.0, 0.0, 0.0)])
-    b.act("nose_down", 4.0, body=[   # noses down and drops, then pulls up hard
-        (0.8, 0.0, 4.0, -4.0, 0.0, -20.0, 0.0), (1.6, 0.0, 4.0, -4.0, 0.0, -20.0, 0.0), (2.6, 0.0, -4.0, 4.0, 0.0, 14.0, 0.0), (4.0, 0.0, 0.0, 0.0)])
-    b.act("flare_boosters", 3.6, body=[(0.5, 0.0, 0.0, 0.0), (1.0, 0.0, 10.0, 0.0, 0.0, -6.0, 0.0), (2.6, 0.0, 10.0, 0.0, 0.0, -6.0, 0.0), (3.6, 0.0, 0.0, 0.0)],
+    # Idle acts, third pass (Ryan, 4 October: the wing dip was bank, hard stop, bank, hard
+    # stop; it should feel agile): every move flows into the next through its keys, the light
+    # servos (b.move heft) giving a touch of give at each turn, and nothing holds dead still.
+    # Degrees and seconds; a body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll);
+    # a glow key is (t, k), k the light added over rest.
+    b.act("dip_wings", 4.4, body=[   # a wing down and a skid that way, swinging straight through into the other, impatient
+        (0.9, -9.0, 0.0, 0.0, 0.0, 0.0, -24.0), (1.5, -11.0, 0.0, 0.5, 0.0, 0.0, -19.0), (2.5, 9.0, 0.0, 0.0, 0.0, 0.0, 24.0),
+        (3.1, 11.0, 0.0, 0.5, 0.0, 0.0, 19.0), (3.9, -2.0, 0.0, 0.0, 0.0, 0.0, -5.0), (4.4, 0.0, 0.0, 0.0)])
+    b.act("nose_down", 4.0, body=[   # noses down and drops, then pulls up hard and settles
+        (0.8, 0.0, 4.0, -4.0, 0.0, -20.0, 0.0), (1.4, 0.0, 5.0, -5.0, 0.0, -16.0, 0.0), (2.4, 0.0, -4.0, 4.0, 0.0, 14.0, 0.0), (3.2, 0.0, -1.0, 1.0, 0.0, -3.0, 0.0), (4.0, 0.0, 0.0, 0.0)])
+    b.act("flare_boosters", 3.8, body=[(0.5, 0.0, 0.0, 0.0), (1.1, 0.0, 9.0, 0.0, 0.0, -6.0, 0.0), (2.5, 0.0, 12.0, 0.5, 0.0, -7.0, 0.0), (3.8, 0.0, 0.0, 0.0)],
           glow=[(["booster_ring", "exhaust"], [(0.3, 0.0), (0.8, 8.0), (1.2, 4.0), (1.6, 8.0), (2.6, 8.0), (3.4, 0.0)])])
-    b.act("hover_turn", 4.6, body=[   # a slow pirouette on the spot, looking about
-        (1.2, 0.0, 0.0, 2.0, 40.0, 0.0, -10.0), (2.4, 0.0, 0.0, 2.0, -40.0, 0.0, 10.0), (3.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
-          glow=[(["dish_core"], [(0.6, 0.0), (1.2, 5.0), (2.4, 5.0), (3.4, 0.0)])])
+    b.act("hover_turn", 4.8, body=[   # a slow pirouette on the spot, looking about
+        (1.3, 0.0, 0.0, 2.0, 38.0, 0.0, -9.0), (2.6, 0.0, 0.0, 2.0, -36.0, 0.0, 9.0), (3.8, 0.0, 0.0, 0.5, 4.0, 0.0, -1.0), (4.8, 0.0, 0.0, 0.0)],
+          glow=[(["dish_core"], [(0.6, 0.0), (1.2, 5.0), (2.6, 5.0), (3.6, 0.0)])])
     # Movement: the boosters brighten, the nose drops; it banks and slides through corners
-    # (b.move), slowing into them.
+    # (b.move) at full speed.
     b.gait(glow={"parts": ["booster_ring", "exhaust"], "k": 5.0}, body_hold=(0.0, 0.0, 0.0, 0.0, -6.0, 0.0))
-    b.move(slide=0.6, bank=34.0, accel=0.7, corner=0.45)   # strafes most of the aircraft, banks hard
+    b.move(slide=0.6, bank=34.0, accel=0.7, heft=0.08)   # strafes most of the aircraft, banks hard; the lightest in its acts
 
 sparrowhawk.maker = "kestrel"
 
@@ -294,7 +297,10 @@ def clydesdale(b):
     # forward or (hind pair) back, a knee, a shin straight down into a flared bone skirt
     # and a broad hoof. Nothing hangs below z = 0, the ground.
     # Hip and knee on every leg, fore and aft only (the joint pass, 2 October): the thigh
-    # under the hip, the shin and hoof under the knee inside it.
+    # under the hip, the shin under the knee inside it; and an ankle at the shin's foot
+    # (Ryan, 4 October, the third pass: more joints if a plod needs them) carrying the
+    # feathering and the hoof, so the hoof stays flat to the ground through a stride.
+    legs = {}
     for (yh, splay), fa in (((16.0, 6.0), "f"), ((-24.0, -6.0), "h")):
         for s in (-1.0, 1.0):
             leg = fa + ("l" if s < 0 else "r")
@@ -303,14 +309,17 @@ def clydesdale(b):
             ankle = (s * 30.0, yh + splay * 1.5, 6.0)
             b.box(min(s * 18.0, s * 24.0), max(s * 18.0, s * 24.0), yh - 7.0, yh + 7.0, 30.0, 44.0, "steel.panel", "hip")
             b.prism("x", hip[0], hip[1], hip[2], 6.0, 6.0, "steel.dark", 6, "hip_pin")
-            with b.joint("hip_%s" % leg, hip, limits=(-30.0, 30.0)):
+            legs[leg] = (hip, knee, ankle)
+            fore = fa == "f"
+            with b.joint("hip_%s" % leg, hip, limits=(-60.0, 60.0)):
                 _beam(b, hip, knee, _sq(10.0, 12.0), _sq(9.0, 10.0), "steel.plate", "thigh")
                 b.prism("x", knee[0], knee[1], knee[2], 5.5, 12.0, "steel.dark", 6, "knee")
-                with b.joint("knee_%s" % leg, knee, limits=(-45.0, 20.0)):
+                with b.joint("knee_%s" % leg, knee, limits=(-115.0, 20.0) if fore else (-20.0, 115.0)):
                     _beam(b, knee, ankle, _sq(8.0, 9.0), _sq(8.0, 8.0), "steel.panel", "shin")
-                    _rings(b, [[(ankle[0] + u, ankle[1] + v, 12.0) for u, v in _sq(9.0, 9.0)],
-                               [(ankle[0] + u, ankle[1] + v, 3.0) for u, v in _sq(16.0, 16.0)]], "bone.bone", "feather")
-                    b.box(ankle[0] - 7.0, ankle[0] + 7.0, ankle[1] - 8.0, ankle[1] + 8.0, 0.0, 5.0, "steel.dark", "hoof")
+                    with b.joint("ankle_%s" % leg, ankle, limits=(-30.0, 115.0) if fore else (-115.0, 30.0)):
+                        _rings(b, [[(ankle[0] + u, ankle[1] + v, 12.0) for u, v in _sq(9.0, 9.0)],
+                                   [(ankle[0] + u, ankle[1] + v, 3.0) for u, v in _sq(16.0, 16.0)]], "bone.bone", "feather")
+                        b.box(ankle[0] - 7.0, ankle[0] + 7.0, ankle[1] - 8.0, ankle[1] + 8.0, 0.0, 5.0, "steel.dark", "hoof")
     # The bed: a deck plate and low boards round it in the maker's brown, the wagon's own.
     b.box(-19.0, 19.0, -34.0, 20.0, 46.0, 48.0, "steel.plate", "deck")
     for s in (-1.0, 1.0):
@@ -378,43 +387,47 @@ def clydesdale(b):
     # behind the head on the hull's front, under the lance (Ryan, 1 October).
     b.pad("hp_9", (0.0, 26.0, 45.6), size=(8.0, 2.0))   # down onto the hull's crown (Ryan, 1 October)
 
-    # Idle acts, second pass (Ryan, 4 October: too subtle; longer, louder, several joints at
-    # once, glows that read from across the map). Degrees and seconds; a key is (t, value) on
-    # the joint's own axis or (t, pitch, yaw, roll); a body key is (t, dx, dy, dz) or
-    # (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k), k the light added over rest.
-    b.act("swivel_weapons", 6.4, {   # every gun in sequence: the turrets out, the lance up, the mortar and howitzer round
-        "turret_l": [(0.8, 100.0), (2.0, 100.0), (2.8, 0.0)],
-        "turret_r": [(1.2, -100.0), (2.4, -100.0), (3.2, 0.0)],
-        "lance": [(2.4, 0.0), (3.2, 17.0), (4.4, 17.0), (5.2, 0.0)],
-        "turret_mortar": [(3.0, 0.0), (4.2, 140.0), (5.2, 140.0), (6.2, 0.0)],
-        "elev_mortar": [(3.6, 0.0), (4.4, 19.0), (5.2, 19.0), (6.0, 0.0)],
-        "turret_howitzer": [(3.2, 0.0), (4.4, -140.0), (5.4, -140.0), (6.4, 0.0)],
-        "elev_howitzer": [(3.8, 0.0), (4.6, 19.0), (5.4, 19.0), (6.2, 0.0)],
-    }, glow=[(["emitter"], [(3.0, 0.0), (3.4, 6.0), (4.4, 6.0), (5.0, 0.0)])])
-    b.act("look_around", 5.2, {   # the head sweeps slowly, lamps up, and stops to stare
-        "head": [(1.0, -8.0, 30.0, 0.0), (2.0, -8.0, 30.0, 0.0), (3.0, 6.0, -30.0, 0.0), (4.0, 6.0, -30.0, 0.0), (5.0, 0.0, 0.0, 0.0)],
-    }, glow=[(["lamp"], [(0.4, 0.0), (1.0, 6.0), (4.2, 6.0), (5.0, 0.0)])])
-    b.act("stamp", 4.2, {   # the fore-left hoof lifts high and stamps, the body dipping onto it
-        "hip_fl": [(0.8, 26.0), (1.6, 26.0), (1.9, 0.0)],
-        "knee_fl": [(0.8, -44.0), (1.6, -44.0), (1.9, 0.0)],
-        "head": [(0.8, -8.0, 12.0, 0.0), (1.9, 6.0, 0.0, 0.0), (3.4, 0.0, 0.0, 0.0)],
-    }, body=[(0.8, 0.0, 0.0, 0.8, 0.0, 3.0, 3.0), (1.6, 0.0, 0.0, 0.8, 0.0, 3.0, 3.0), (1.9, 0.0, 0.0, -1.5, 0.0, -2.0, -1.0), (2.4, 0.0, 0.0, 0.0), (4.2, 0.0, 0.0, 0.0)])
-    b.act("shift_weight", 5.0, {   # the weight rolls onto one side, the other pair easing off
-        "hip_hr": [(0.8, -16.0), (2.2, -16.0), (3.0, 0.0)],
-        "knee_hr": [(0.8, 20.0), (2.2, 20.0), (3.0, 0.0)],
-        "hip_fr": [(1.6, 0.0), (2.4, 18.0), (3.6, 18.0), (4.4, 0.0)],
-        "knee_fr": [(1.6, 0.0), (2.4, -36.0), (3.6, -36.0), (4.4, 0.0)],
-    }, body=[(1.0, -1.5, 0.0, 0.0, 0.0, 0.0, -4.0), (3.6, -1.5, 0.0, 0.0, 0.0, 0.0, -4.0), (4.6, 0.0, 0.0, 0.0)])
-    # Movement: a slow, heavy four-legged walk in diagonal pairs (fore-left with hind-right),
-    # the hip swinging the leg from forward to back over the stance and the knee lifting the
-    # hoof high through the swing; the body rising and rolling with each pair.
-    step = _step(18.0, 40.0)
-    b.gait(stride=48.0, tracks={
-        "hip_fl": (step["hip"], 0.0), "knee_fl": (step["knee"], 0.0), "hip_hr": (step["hip"], 0.0), "knee_hr": (step["knee"], 0.0),
-        "hip_fr": (step["hip"], 0.5), "knee_fr": (step["knee"], 0.5), "hip_hl": (step["hip"], 0.5), "knee_hl": (step["knee"], 0.5),
-        "head": ([(0.0, 3.0, 4.0, 0.0), (0.5, 3.0, -4.0, 0.0), (1.0, 3.0, 4.0, 0.0)], 0.0),
-    }, body=_sway(2.2, 3.0))
-    b.move(accel=1.4, corner=0.45)
+    # Idle acts, third pass (Ryan, 4 October: some stilted, turrets too fast and wild, the
+    # weight thrown side to side; heavy, with inertia): curves a part runs on through, the
+    # servos' heft (b.move), held poses that drift, every gun turning slowly and not far with
+    # a pause before it turns back (the builder's rule), and the hooves planted while the
+    # body settles over them (_planted). Degrees and seconds; a key is (t, value) on the
+    # joint's own axis or (t, pitch, yaw, roll); a body key is (t, dx, dy, dz) or (t, dx, dy,
+    # dz, yaw, pitch, roll); a glow key is (t, k), k the light added over rest.
+    limb = lambda leg: {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg]}
+    b.act("swivel_weapons", 8.4, {   # every gun in sequence: the turrets out, the lance up, the mortar and the howitzer round
+        "turret_l": [(0.5, 0.0), (2.3, 60.0), (3.3, 60.0), (5.1, 0.0)],
+        "turret_r": [(1.0, 0.0), (2.8, -60.0), (3.8, -60.0), (5.6, 0.0)],
+        "lance": [(2.6, 0.0), (3.6, 16.0), (5.2, 17.0), (6.2, 0.0)],
+        "turret_mortar": [(3.4, 0.0), (5.4, 65.0), (6.1, 65.0), (8.0, 0.0)],
+        "elev_mortar": [(4.4, 0.0), (5.4, 18.0), (6.4, 19.0), (7.4, 0.0)],
+        "turret_howitzer": [(3.6, 0.0), (5.6, -65.0), (6.3, -65.0), (8.3, 0.0)],
+        "elev_howitzer": [(4.8, 0.0), (5.8, 18.0), (6.6, 19.0), (7.6, 0.0)],
+    }, glow=[(["emitter"], [(3.4, 0.0), (4.0, 6.0), (6.6, 6.0), (7.4, 0.0)])])
+    b.act("look_around", 6.0, {   # the head sweeps slowly one way, lamps up, then the other, staring
+        "head": [(1.4, -6.0, 26.0, 0.0), (2.4, -7.0, 28.0, 0.0), (3.8, 5.0, -26.0, 0.0), (4.7, 6.0, -28.0, 0.0), (5.8, 0.0, 0.0, 0.0)],
+    }, glow=[(["lamp"], [(0.4, 0.0), (1.0, 6.0), (5.0, 6.0), (5.8, 0.0)])])
+    b.act("stamp", 5.0, {   # the fore-left hoof lifts high and stamps, the body dropping onto it
+        "hip_fl": [(0.9, 26.0), (1.8, 28.0), (2.05, 0.0)],
+        "knee_fl": [(0.9, -44.0), (1.8, -46.0), (2.05, 0.0)],
+        "ankle_fl": [(0.9, 18.0), (1.8, 18.0), (2.05, 0.0)],
+        "head": [(0.9, -8.0, 12.0, 0.0), (2.05, 6.0, 0.0, 0.0), (3.4, 0.0, 0.0, 0.0)],
+    }, body=[(0.9, 0.0, 0.0, 0.8, 0.0, 2.5, 1.0), (1.8, 0.0, 0.0, 0.9, 0.0, 2.8, 1.1), (2.05, 0.0, 0.0, -1.6, 0.0, -2.0, -0.3), (2.6, 0.0, 0.0, 0.2), (3.4, 0.0, 0.0, 0.0)])
+    tracks, body = _planted([limb(leg) for leg in ("fl", "fr", "hl", "hr")],
+                            [(1.6, 0.0, -4.0, 0.0), (3.8, 0.0, -4.5, 0.0), (5.4, 0.0, 0.0, 0.0)])
+    tracks["head"] = [(1.6, -6.0, 0.0, 0.0), (3.8, -7.0, 0.0, 0.0), (5.4, 0.0, 0.0, 0.0)]
+    b.act("settle", 5.8, tracks, body=body)   # the hydraulics let the body down onto its hooves, the head dropping, and heave it up again
+    # Movement (Ryan, 4 October, the third pass: stomp and plod, no weight thrown side to
+    # side): a heavy walk in diagonal pairs (fore-left with hind-right), each hoof planted
+    # flat while the body passes over it, then lifted high and stamped down; the body sunk a
+    # little into the walk, dropping and nodding as each pair lands; the head nodding with it.
+    tracks, body, stride = _plant([
+        {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
+         "phase": 0.0 if leg in ("fl", "hr") else 0.5, "shift": legs[leg][0][1] - legs[leg][2][1]}
+        for leg in ("fl", "fr", "hl", "hr")], sweep=28.0, lift=6.0, crouch=0.5, dip=1.4, nod=0.8)
+    tracks["head"] = ([(i / 40.0, round(-2.0 * abs(math.sin(2.0 * math.pi * i / 40.0)), 3)) for i in range(41)], 0.0)
+    b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
+    b.move(accel=1.4, heft=0.24)
 
 clydesdale.maker = "wainwright_sutler"
 
@@ -439,21 +452,23 @@ def baboon(b):
     # Feet and legs: plantigrade, the whole sole on the ground; knee forward of the ankle,
     # hip behind it, the leg a squat zigzag, thick and short.
     # Hip, knee and ankle on both legs (the joint pass, 2 October), each inside the last.
+    legs, arms = {}, {}
     for s in (-1.0, 1.0):
         cx = s * 13.0
         side = "l" if s < 0 else "r"
         ankle = (cx, -1.0, 8.0)
         knee = (cx, 8.0, 19.0)
         hip = (cx * 0.85, -4.0, 25.0)
+        legs[side] = (hip, knee, ankle)
         b.prism("x", hip[0], hip[1], hip[2], 5.4, 8.0, "steel.dark", 6, "hip")
-        with b.joint("hip_%s" % side, hip, limits=(-40.0, 40.0)):
+        with b.joint("hip_%s" % side, hip, limits=(-60.0, 60.0)):
             _beam(b, knee, hip, OCT(5.8), OCT(6.2), "steel.plate", "thigh")
             b.prism("x", knee[0], knee[1], knee[2], 5.4, 12.0, "steel.dark", 6, "knee")
-            with b.joint("knee_%s" % side, knee, limits=(-60.0, 20.0)):
+            with b.joint("knee_%s" % side, knee, limits=(-60.0, 50.0)):
                 _beam(b, ankle, knee, OCT(5.4), OCT(4.8), "steel.panel", "shin")
                 b.box(cx - 5.0, cx + 5.0, 12.5, 15.5, 14.5, 23.5, "livery.livery2", "knee_pad")   # on the knee, not hung under it (Ryan, 30 September)
                 b.prism("x", ankle[0], ankle[1], ankle[2], 4.4, 13.0, "steel.dark", 6, "ankle")
-                with b.joint("ankle_%s" % side, ankle, limits=(-30.0, 30.0)):
+                with b.joint("ankle_%s" % side, ankle, limits=(-70.0, 70.0)):
                     b.loft([(-13.0, rect(cx, 15.0, 0.0, 7.0)), (2.0, rect(cx, 17.0, 0.0, 8.5)), (17.0, rect(cx, 15.0, 0.0, 4.0))], "steel.plate", "foot")
                     b.box(cx - 8.0, cx + 8.0, 14.0, 18.0, 0.0, 3.0, "steel.dark", "toe_cap")
     # The waist: a drum.
@@ -485,6 +500,7 @@ def baboon(b):
         shoulder = (s * 31.0, 0.0, 54.0 + Z0)
         elbow = (s * 40.0, -12.0, 34.0)
         wrist = (s * 38.0, 4.0, 16.5)   # the fist's sole at z = 0
+        arms[side] = (shoulder, elbow, wrist)
         b.prism("x", shoulder[0], shoulder[1], shoulder[2], 4.5, 8.0, "steel.dark", 6, "shoulder_joint")
         jt = b.joint("shoulder_%s" % side, shoulder, limits={"pitch": (-45.0, 60.0), "yaw": (-30.0, 30.0)})   # the arm swings from here
         jt.__enter__()
@@ -531,42 +547,46 @@ def baboon(b):
     b.prism("z", 0.0, -20.0, 80.0 + Z0, 1.2, 24.0, "steel.dark", 6, "mast")
     b.prism("z", 0.0, -20.0, 93.0 + Z0, 2.0, 3.0, "amber.engine", 6, "mast_light")
 
-    # Idle acts, second pass (Ryan, 4 October: too subtle; longer, louder, several joints at
-    # once, glows that read from across the map). Degrees and seconds; a key is (t, value) on
-    # the joint's own axis or (t, pitch, yaw, roll); a body key is (t, dx, dy, dz) or
-    # (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k), k the light added over rest.
-    b.act("inspect_left", 5.6, {   # the left fist comes up before the sensor pod and turns over, inspected
-        "shoulder_l": [(1.0, 56.0, -26.0, 0.0), (2.0, 56.0, -26.0, -30.0), (3.0, 56.0, -26.0, 30.0), (4.0, 56.0, -26.0, 0.0), (5.4, 0.0, 0.0, 0.0)],
-        "elbow_l": [(1.0, 44.0), (4.0, 44.0), (5.4, 0.0)],
-    }, body=[(1.0, 0.0, 0.0, 0.0, 8.0, 3.0, 0.0), (4.0, 0.0, 0.0, 0.0, 8.0, 3.0, 0.0), (5.4, 0.0, 0.0, 0.0)])
-    b.act("inspect_right", 5.6, {   # then the right
-        "shoulder_r": [(1.0, 56.0, 26.0, 0.0), (2.0, 56.0, 26.0, 30.0), (3.0, 56.0, 26.0, -30.0), (4.0, 56.0, 26.0, 0.0), (5.4, 0.0, 0.0, 0.0)],
-        "elbow_r": [(1.0, 44.0), (4.0, 44.0), (5.4, 0.0)],
-    }, body=[(1.0, 0.0, 0.0, 0.0, -8.0, 3.0, 0.0), (4.0, 0.0, 0.0, 0.0, -8.0, 3.0, 0.0), (5.4, 0.0, 0.0, 0.0)],
-       glow=[(["hp_5", "hp_3"], [(1.4, 0.0), (2.0, 6.0), (3.6, 6.0), (4.2, 0.0)])])
-    b.act("raise_arms", 5.0, {   # both arms high, a stretch, the body rising on its legs
-        "shoulder_l": [(1.0, 58.0), (3.4, 58.0), (4.6, 0.0)],
-        "shoulder_r": [(1.0, 58.0), (3.4, 58.0), (4.6, 0.0)],
-        "elbow_l": [(1.0, 40.0), (3.4, 40.0), (4.6, 0.0)],
-        "elbow_r": [(1.0, 40.0), (3.4, 40.0), (4.6, 0.0)],
-        "knee_l": [(1.0, 10.0), (3.4, 10.0), (4.6, 0.0)],
-        "knee_r": [(1.0, 10.0), (3.4, 10.0), (4.6, 0.0)],
-    }, body=[(1.0, 0.0, 0.0, 2.0, 0.0, 4.0, 0.0), (3.4, 0.0, 0.0, 2.0, 0.0, 4.0, 0.0), (4.6, 0.0, 0.0, 0.0)])
-    b.act("charge_projectors", 4.8, {   # the projectors raise and sweep while the emitters charge hot
-        "elev_l": [(0.8, 48.0), (3.6, 48.0), (4.6, 0.0)],
-        "elev_r": [(1.2, 48.0), (3.8, 48.0), (4.8, 0.0)],
+    # Idle acts, third pass (Ryan, 4 October: some stilted; heavy, with inertia): curves a
+    # part runs on through, the servos' heft (b.move), held poses that drift, and the feet
+    # planted while the body rises over them (_planted). Degrees and seconds; a key is (t,
+    # value) on the joint's own axis or (t, pitch, yaw, roll); a body key is (t, dx, dy, dz)
+    # or (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k), k the light added over rest.
+    b.act("inspect_left", 6.0, {   # the left fist comes up before the sensor pod and turns over, inspected
+        "shoulder_l": [(1.4, 56.0, -26.0, 0.0), (2.3, 56.0, -26.0, -30.0), (3.3, 56.0, -26.0, 30.0), (4.2, 57.0, -24.0, 0.0), (5.6, 0.0, 0.0, 0.0)],
+        "elbow_l": [(1.4, 43.0), (4.2, 45.0), (5.6, 0.0)],
+    }, body=[(1.4, 0.0, 0.0, 0.0, 8.0, 3.0, 0.0), (4.2, 0.0, 0.0, 0.0, 9.0, 3.5, 0.0), (5.8, 0.0, 0.0, 0.0)])
+    b.act("inspect_right", 6.0, {   # then the right
+        "shoulder_r": [(1.4, 56.0, 26.0, 0.0), (2.3, 56.0, 26.0, 30.0), (3.3, 56.0, 26.0, -30.0), (4.2, 57.0, 24.0, 0.0), (5.6, 0.0, 0.0, 0.0)],
+        "elbow_r": [(1.4, 43.0), (4.2, 45.0), (5.6, 0.0)],
+    }, body=[(1.4, 0.0, 0.0, 0.0, -8.0, 3.0, 0.0), (4.2, 0.0, 0.0, 0.0, -9.0, 3.5, 0.0), (5.8, 0.0, 0.0, 0.0)],
+       glow=[(["hp_5", "hp_3"], [(1.6, 0.0), (2.2, 6.0), (3.8, 6.0), (4.4, 0.0)])])
+    tracks, body = _planted([{"hip": "hip_" + side, "knee": "knee_" + side, "ankle": "ankle_" + side, "at": legs[side]} for side in ("l", "r")],
+                            [(1.4, 0.0, 2.0, 4.0), (3.8, 0.0, 2.4, 4.5), (5.2, 0.0, 0.0, 0.0)])
+    tracks.update({
+        "shoulder_l": [(1.4, 58.0), (3.8, 60.0), (5.2, 0.0)],
+        "shoulder_r": [(1.4, 58.0), (3.8, 60.0), (5.2, 0.0)],
+        "elbow_l": [(1.4, 40.0), (3.8, 42.0), (5.2, 0.0)],
+        "elbow_r": [(1.4, 40.0), (3.8, 42.0), (5.2, 0.0)],
+    })
+    b.act("raise_arms", 5.6, tracks, body=body)   # both arms high, a stretch, the body rising on its planted legs
+    b.act("charge_projectors", 5.4, {   # the projectors raise and sweep while the emitters charge hot
+        "elev_l": [(1.0, 48.0), (3.8, 49.0), (4.9, 0.0)],
+        "elev_r": [(1.4, 48.0), (4.0, 49.0), (5.2, 0.0)],
     }, glow=[(["emitter", "hp_5", "hp_3", "hp_4"], [(0.6, 0.0), (1.6, 4.0), (2.2, 8.0), (2.6, 4.0), (3.0, 8.0), (3.8, 8.0), (4.6, 0.0)])])
-    # Movement: a heavy knuckle-walk, the fists planting ahead in step with the legs (left
-    # arm with right leg), the elbow lifting the fist through its swing; the body rolling.
-    step = _step(22.0, 40.0, 12.0)
-    arm = [(0.0, -8.0), (0.5, 26.0), (1.0, -8.0)]
-    lift = [(0.2, 0.0), (0.4, 34.0), (0.5, 0.0)]
-    b.gait(stride=38.0, tracks={
-        "hip_l": (step["hip"], 0.0), "knee_l": (step["knee"], 0.0), "ankle_l": (step["ankle"], 0.0),
-        "hip_r": (step["hip"], 0.5), "knee_r": (step["knee"], 0.5), "ankle_r": (step["ankle"], 0.5),
-        "shoulder_l": (arm, 0.0), "elbow_l": (lift, 0.0), "shoulder_r": (arm, 0.5), "elbow_r": (lift, 0.5),
-    }, body=_sway(1.6, 4.0))
-    b.move(accel=1.1, corner=0.4)
+    # Movement (Ryan, 4 October, the third pass: stomp and plod, no weight thrown side to
+    # side): a heavy knuckle-walk, every foot and fist planted while the body passes over it,
+    # the left fist with the right foot; the fists roll over their knuckles, since the wrist
+    # is the forearm's; the body dropping and nodding as each pair lands.
+    limbs = []
+    for side, other in (("l", "r"), ("r", "l")):
+        limbs.append({"hip": "hip_" + side, "knee": "knee_" + side, "ankle": "ankle_" + side, "at": legs[side],
+                      "phase": 0.0 if side == "l" else 0.5})
+        limbs.append({"hip": "shoulder_" + side, "knee": "elbow_" + side, "ankle": None, "at": arms[side],
+                      "phase": 0.0 if side == "r" else 0.5})
+    tracks, body, stride = _plant(limbs, sweep=26.0, lift=6.0, crouch=0.5, dip=1.2, nod=1.0)
+    b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
+    b.move(accel=1.1, heft=0.2)
 
 baboon.maker = "aphelion"
 
@@ -610,7 +630,9 @@ def armadillo(b):
         b.box(s * 11.0 - 1.2, s * 11.0 + 1.2, 52.0, 54.5, Z0 - 0.5, Z0 + 1.5, "amber.light", "lamp")
     # The legs: a heavy hip cuff standing out of each flank, a hinge, a thick thigh out and
     # down, a knee, a shin down onto a broad flat foot with toe plates. Long enough to stride.
-    # Hip and knee on every leg (the joint pass, 2 October).
+    # Hip and knee on every leg (the joint pass, 2 October), and an ankle carrying the foot
+    # flat through a stride (Ryan, 4 October, the third pass).
+    legs = {}
     for yh in (22.0, -26.0):
         for s in (-1.0, 1.0):
             leg = ("f" if yh > 0 else "h") + ("l" if s < 0 else "r")
@@ -619,13 +641,16 @@ def armadillo(b):
             knee = (s * 44.0, yh + (4.0 if yh > 0 else -4.0), 18.0)
             ankle = (s * 42.0, yh + (6.0 if yh > 0 else -6.0), 6.0)
             b.prism("x", hip[0], hip[1], hip[2], 6.5, 8.0, "steel.dark", 6, "hip_pin")
-            with b.joint("hip_%s" % leg, hip, limits=(-35.0, 35.0)):
+            legs[leg] = (hip, knee, ankle)
+            fore = yh > 0
+            with b.joint("hip_%s" % leg, hip, limits=(-60.0, 60.0)):
                 _beam(b, hip, knee, _sq(13.0, 14.0), _sq(11.0, 12.0), "steel.plate", "thigh")
                 b.prism("x", knee[0], knee[1], knee[2], 6.0, 13.0, "steel.dark", 6, "knee")
-                with b.joint("knee_%s" % leg, knee, limits=(-45.0, 30.0)):
+                with b.joint("knee_%s" % leg, knee, limits=(-115.0, 30.0) if fore else (-30.0, 115.0)):
                     _beam(b, knee, ankle, _sq(10.0, 11.0), _sq(10.0, 10.0), "steel.panel", "shin")
-                    b.box(ankle[0] - 9.0, ankle[0] + 9.0, ankle[1] - 10.0, ankle[1] + 10.0, 0.0, 6.0, "steel.dark", "foot")
-                    b.box(ankle[0] - 9.0, ankle[0] + 9.0, ankle[1] + (10.0 if yh > 0 else -13.0), ankle[1] + (13.0 if yh > 0 else -10.0), 0.0, 4.0, "steel.stripe", "toe_plate")
+                    with b.joint("ankle_%s" % leg, ankle, limits=(-40.0, 115.0) if fore else (-115.0, 40.0)):
+                        b.box(ankle[0] - 9.0, ankle[0] + 9.0, ankle[1] - 10.0, ankle[1] + 10.0, 0.0, 6.0, "steel.dark", "foot")
+                        b.box(ankle[0] - 9.0, ankle[0] + 9.0, ankle[1] + (10.0 if yh > 0 else -13.0), ankle[1] + (13.0 if yh > 0 else -10.0), 0.0, 4.0, "steel.stripe", "toe_plate")
     # The rear ports: a hollow cut right through the shell (b.cut: a boolean on the bands),
     # pitched up and forward, lined by a tube with a dark floor and a stripe rim at the
     # mouth; the mount on the floor, deep, the barrel out of it (Ryan, 1 October).
@@ -693,42 +718,45 @@ def armadillo(b):
     b.prism("z", 9.0, -44.0, Z0 + 24.0, 4.4, 16.0, "steel.dark", 6, "stack")
     b.prism("z", 9.0, -44.0, Z0 + 33.0, 5.4, 2.0, "steel.plate", 6, "stack_cap")
 
-    # Idle acts, second pass (Ryan, 4 October: too subtle; longer, louder, several joints at
-    # once, glows that read from across the map). Degrees and seconds; a key is (t, value) on
-    # the joint's own axis or (t, pitch, yaw, roll); a body key is (t, dx, dy, dz) or
-    # (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k), k the light added over rest.
-    b.act("present_guns", 6.0, {   # the forefeet plant wide, the shell tips forward and every back gun comes up to bear
-        "hip_fl": [(1.0, 0.0, 0.0, 14.0), (4.8, 0.0, 0.0, 14.0), (5.8, 0.0, 0.0, 0.0)],
-        "hip_fr": [(1.0, 0.0, 0.0, -14.0), (4.8, 0.0, 0.0, -14.0), (5.8, 0.0, 0.0, 0.0)],
-        "knee_fl": [(1.0, 16.0), (4.8, 16.0), (5.8, 0.0)],
-        "knee_fr": [(1.0, 16.0), (4.8, 16.0), (5.8, 0.0)],
-        "hip_hl": [(1.4, -12.0), (4.8, -12.0), (5.8, 0.0)],
-        "hip_hr": [(1.4, -12.0), (4.8, -12.0), (5.8, 0.0)],
-        "elev_l": [(1.8, 0.0), (2.6, 28.0), (4.6, 28.0), (5.4, 0.0)],
-        "elev_r": [(2.0, 0.0), (2.8, 28.0), (4.6, 28.0), (5.4, 0.0)],
-        "elev_cell": [(2.2, 0.0), (3.0, 28.0), (4.6, 28.0), (5.4, 0.0)],
-    }, body=[(1.6, 0.0, 2.0, 1.5, 0.0, -9.0, 0.0), (4.8, 0.0, 2.0, 1.5, 0.0, -9.0, 0.0), (5.8, 0.0, 0.0, 0.0)],
-       glow=[(["lamp"], [(1.8, 0.0), (2.4, 8.0), (4.6, 8.0), (5.4, 0.0)])])   # the cowl lamps burn: the guns are up
-    b.act("weapons_check", 5.0, {   # each port gun rises and drops in turn, then the cell
-        "elev_l": [(0.4, 28.0), (1.2, 28.0), (1.8, -10.0), (2.2, 0.0)],
-        "elev_r": [(1.6, 0.0), (2.0, 28.0), (2.8, 28.0), (3.4, -10.0), (3.8, 0.0)],
-        "elev_cell": [(3.2, 0.0), (3.8, 28.0), (4.4, 28.0), (5.0, 0.0)],
+    # Idle acts, third pass (Ryan, 4 October: some stilted, the weight thrown side to side;
+    # heavy, with inertia): curves a part runs on through, the servos' heft (b.move), held
+    # poses that drift, and the feet planted while the shell tips over them (_planted).
+    # Degrees and seconds; a key is (t, value) on the joint's own axis or (t, pitch, yaw,
+    # roll); a body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll); a glow key is
+    # (t, k), k the light added over rest.
+    limb = lambda leg: {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg]}
+    tracks, body = _planted([limb(leg) for leg in ("fl", "fr", "hl", "hr")],
+                            [(1.6, 0.0, -4.0, -5.0), (4.8, 0.0, -4.3, -5.4), (6.2, 0.0, 0.0, 0.0)])
+    tracks.update({
+        "elev_l": [(1.8, 0.0), (2.8, 28.0), (4.6, 27.0), (5.6, 0.0)],
+        "elev_r": [(2.0, 0.0), (3.0, 28.0), (4.6, 27.0), (5.6, 0.0)],
+        "elev_cell": [(2.2, 0.0), (3.2, 28.0), (4.6, 27.0), (5.6, 0.0)],
     })
-    b.act("shift_weight", 5.0, {   # a forefoot lifts high and stamps down, the shell rocking onto it
-        "hip_fr": [(0.8, 30.0), (1.8, 30.0), (2.1, 0.0)],
-        "knee_fr": [(0.8, -44.0), (1.8, -44.0), (2.1, 0.0)],
-        "hip_hl": [(2.6, 0.0), (3.2, 22.0), (3.8, 22.0), (4.1, 0.0)],
-        "knee_hl": [(2.6, 0.0), (3.2, -40.0), (3.8, -40.0), (4.1, 0.0)],
-    }, body=[(0.8, -2.0, 0.0, 0.0, 0.0, 2.0, -4.0), (1.8, -2.0, 0.0, 0.0, 0.0, 2.0, -4.0), (2.1, 0.0, 0.0, -1.0, 0.0, -1.0, 1.0),
-             (3.2, 2.0, 0.0, 0.0, 0.0, -1.0, 4.0), (3.8, 2.0, 0.0, 0.0, 0.0, -1.0, 4.0), (4.1, 0.0, 0.0, -1.0), (5.0, 0.0, 0.0, 0.0)])
-    # Movement: a heavy four-legged walk in diagonal pairs, the shell riding level but for a
-    # slow roll and a settle onto each step.
-    step = _step(14.0, 32.0)
-    b.gait(stride=56.0, tracks={
-        "hip_fl": (step["hip"], 0.0), "knee_fl": (step["knee"], 0.0), "hip_hr": (step["hip"], 0.0), "knee_hr": (step["knee"], 0.0),
-        "hip_fr": (step["hip"], 0.5), "knee_fr": (step["knee"], 0.5), "hip_hl": (step["hip"], 0.5), "knee_hl": (step["knee"], 0.5),
-    }, body=_sway(1.6, 3.5))
-    b.move(accel=1.6, corner=0.45)
+    b.act("present_guns", 6.6, tracks, body=body,   # the shell tips forward over its planted feet and every back gun comes up to bear
+          glow=[(["lamp"], [(1.8, 0.0), (2.4, 8.0), (4.8, 8.0), (5.6, 0.0)])])   # the cowl lamps burn: the guns are up
+    b.act("weapons_check", 6.0, {   # each port gun rises and drops in turn, then the cell
+        "elev_l": [(1.0, 28.0), (1.6, 27.0), (2.4, -10.0), (2.9, 0.0)],
+        "elev_r": [(2.0, 0.0), (3.0, 28.0), (3.6, 27.0), (4.4, -10.0), (4.9, 0.0)],
+        "elev_cell": [(3.8, 0.0), (4.6, 28.0), (5.1, 27.0), (5.9, 0.0)],
+    })
+    b.act("stamp", 5.6, {   # a forefoot lifts high and stamps down, then a hind one, the shell dropping onto each
+        "hip_fr": [(0.9, 30.0), (1.8, 31.0), (2.1, 0.0)],
+        "knee_fr": [(0.9, -44.0), (1.8, -45.0), (2.1, 0.0)],
+        "ankle_fr": [(0.9, 14.0), (1.8, 14.0), (2.1, 0.0)],
+        "hip_hl": [(2.8, 0.0), (3.5, 22.0), (4.1, 23.0), (4.4, 0.0)],
+        "knee_hl": [(2.8, 0.0), (3.5, 40.0), (4.1, 41.0), (4.4, 0.0)],
+        "ankle_hl": [(2.8, 0.0), (3.5, -62.0), (4.1, -64.0), (4.4, 0.0)],
+    }, body=[(0.9, 0.0, 0.0, 0.5, 0.0, 1.5, 0.0), (1.8, 0.0, 0.0, 0.6, 0.0, 1.7, 0.0), (2.1, 0.0, 0.0, -1.4, 0.0, -0.8, 0.0), (2.6, 0.0, 0.0, 0.0),
+             (3.5, 0.0, 0.0, 0.5, 0.0, -1.2, 0.0), (4.1, 0.0, 0.0, 0.6, 0.0, -1.3, 0.0), (4.4, 0.0, 0.0, -1.4, 0.0, 0.6, 0.0), (5.0, 0.0, 0.0, 0.0)])
+    # Movement (Ryan, 4 October, the third pass: stomp and plod, no weight thrown side to
+    # side): a heavy walk in diagonal pairs, each foot planted flat while the shell passes
+    # over it, lifted and stamped down; the shell level but for its drop onto each pair.
+    tracks, body, stride = _plant([
+        {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
+         "phase": 0.0 if leg in ("fl", "hr") else 0.5, "shift": legs[leg][0][1] - legs[leg][2][1]}
+        for leg in ("fl", "fr", "hl", "hr")], sweep=30.0, lift=7.0, crouch=0.5, dip=1.6, nod=0.6)
+    b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
+    b.move(accel=1.6, heft=0.26)
 
 armadillo.maker = "minerva"
 
@@ -825,25 +853,31 @@ def wild_boar(b):
     # A bare mount on the right rear quarter's deck (hp_5).
     b.pad("hp_5", (TX, -14.0, TH + 12.0))
 
-    # Idle acts, second pass (Ryan, 4 October: too subtle; longer, louder, several joints at
-    # once, glows that read from across the map). Degrees and seconds; a key is (t, value) on
-    # the joint's own axis or (t, pitch, yaw, roll); a body key is (t, dx, dy, dz) or
-    # (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k), k the light added over rest.
-    b.act("sweep_turret", 6.0, {   # a full sweep round each way, the guns climbing and dropping, the sight hot
-        "turret": [(1.4, 130.0), (3.0, -130.0), (4.6, 30.0), (5.8, 0.0)],
-        "elev": [(0.8, 20.0), (2.2, -4.0), (3.4, 20.0), (5.6, 0.0)],
-    }, glow=[(["sight"], [(0.4, 0.0), (0.9, 7.0), (5.0, 7.0), (5.8, 0.0)])])
-    b.act("test_plow", 4.6, {   # the plow pumps three times and slams down, the hull bucking
-        "plow": [(0.6, 18.0), (1.0, 0.0), (1.6, 18.0), (2.0, 0.0), (2.6, 18.0), (3.2, 18.0), (3.4, -2.0), (4.0, 0.0)],
-    }, body=[(3.2, 0.0, 0.0, 0.0, 0.0, 2.0, 0.0), (3.4, 0.0, 0.0, -1.0, 0.0, -3.0, 0.0), (3.9, 0.0, 0.0, 0.0)])
-    b.act("rev", 4.0, body=[   # lurches forward, rocks, backs off, lurches again
-        (0.5, 0.0, 9.0, 0.0, 0.0, 4.0, 0.0), (1.0, 0.0, 9.0, 0.0, 0.0, -4.0, 0.0), (1.8, 0.0, -4.0, 0.0, 0.0, -2.0, 0.0),
-        (2.4, 0.0, 6.0, 0.0, 0.0, 3.0, 0.0), (3.0, 0.0, 6.0, 0.0, 0.0, -3.0, 0.0), (4.0, 0.0, 0.0, 0.0)])
-    b.act("tilt_pod", 4.0, {"elev_pod": [(0.6, 16.0), (3.0, 16.0), (3.8, 0.0)], "turret": [(0.8, -45.0), (3.0, -45.0), (3.8, 0.0)], "elev": [(0.8, 14.0), (3.0, 14.0), (3.8, 0.0)]})
-    # Movement: the treads scroll; a rock on pulling away and stopping; the turret holds its
-    # aim while the hull turns under it.
-    b.gait(treads={"parts": ["tread"], "scroll": 1.0}, rock=7.0, hold_aim={"turret": 1.0})
-    b.move(accel=1.1, corner=0.4)
+    # Idle acts, third pass (Ryan, 4 October: turrets too fast and wild; heavy, with
+    # inertia): curves a part runs on through, the servos' heft (b.move), held poses that
+    # drift, and the turret slow and short with a pause before it turns back (the builder's
+    # rule). Degrees and seconds; a key is (t, value) on the joint's own axis or (t, pitch,
+    # yaw, roll); a body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll); a glow
+    # key is (t, k), k the light added over rest.
+    b.act("sweep_turret", 8.0, {   # a slow sweep out one way, a pause, across to the other, a pause, home; the guns climbing and dropping, the sight hot
+        "turret": [(0.5, 0.0), (2.1, 55.0), (2.8, 55.0), (5.7, -45.0), (6.4, -45.0), (7.8, 0.0)],
+        "elev": [(1.4, 16.0), (2.8, 18.0), (4.3, -2.0), (5.8, 14.0), (7.6, 0.0)],
+    }, glow=[(["sight"], [(0.4, 0.0), (0.9, 7.0), (7.2, 7.0), (8.0, 0.0)])])
+    b.act("test_plow", 5.0, {   # the plow pumps three times and slams down, the hull bucking
+        "plow": [(0.8, 18.0), (1.3, 2.0), (1.9, 18.0), (2.4, 2.0), (3.0, 18.0), (3.6, 18.0), (3.85, -2.0), (4.6, 0.0)],
+    }, body=[(3.0, 0.0, 0.0, 0.0, 0.0, 1.6, 0.0), (3.6, 0.0, 0.0, 0.0, 0.0, 2.0, 0.0), (3.85, 0.0, 0.0, -1.0, 0.0, -3.0, 0.0), (4.6, 0.0, 0.0, 0.0)])
+    b.act("rev", 4.6, body=[   # lurches forward, rocks, backs off, lurches again
+        (0.6, 0.0, 9.0, 0.0, 0.0, 4.0, 0.0), (1.2, 0.0, 8.0, 0.0, 0.0, -3.0, 0.0), (2.0, 0.0, -4.0, 0.0, 0.0, -2.0, 0.0),
+        (2.7, 0.0, 6.0, 0.0, 0.0, 3.0, 0.0), (3.4, 0.0, 5.0, 0.0, 0.0, -2.0, 0.0), (4.6, 0.0, 0.0, 0.0)])
+    b.act("tilt_pod", 5.4, {   # the pod tilts up on its deck while the turret turns aside to clear it
+        "elev_pod": [(1.2, 16.0), (3.8, 15.5), (4.8, 0.0)],
+        "turret": [(0.6, 0.0), (2.0, -45.0), (3.6, -45.0), (5.0, 0.0)],
+        "elev": [(1.4, 14.0), (3.6, 13.0), (4.8, 0.0)],
+    })
+    # Movement: the treads scroll; a rock on pulling away and stopping; the turret turns
+    # with the hull (Ryan, 4 October: holding its aim was not worth the complexity).
+    b.gait(treads={"parts": ["tread"], "scroll": 1.0}, rock=7.0)
+    b.move(accel=1.1, heft=0.18)
 
 wild_boar.maker = "minerva"
 
@@ -939,32 +973,36 @@ def prairie_dog(b):
         b.box(s * 7.0 - 2.0, s * 7.0 + 2.0, 32.5, 33.5, 12.0, 14.0, "amber.light", "lamp")
     chassis.__exit__(None, None, None)
 
-    # Idle acts, second pass (Ryan, 4 October: too subtle; longer, louder, several joints at
-    # once, glows that read from across the map). Degrees and seconds; a key is (t, value) on
-    # the joint's own axis or (t, pitch, yaw, roll); a body key is (t, dx, dy, dz) or
-    # (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k), k the light added over rest.
-    b.act("rev", 4.0, {   # revs eagerly: a jump forward, a squat, back, and again; the wheels spin hard
-        "wheel_fl": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.0, -1080.0)],
-        "wheel_fr": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.0, -1080.0)],
-        "wheel_rl": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.0, -1080.0)],
-        "wheel_rr": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.0, -1080.0)],
+    # Idle acts, third pass (Ryan, 4 October: turrets too fast and wild; real machines with
+    # inertia): curves a part runs on through, the servos' heft (b.move), and the turret slow
+    # and short with a pause before it turns back (the builder's rule); the wheels spin as
+    # keyed. Degrees and seconds; a key is (t, value) on the joint's own axis or (t, pitch,
+    # yaw, roll); a body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll); a glow
+    # key is (t, k), k the light added over rest.
+    b.act("rev", 4.2, {   # revs eagerly: a jump forward, a squat, back, and again; the wheels spin hard
+        "wheel_fl": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.2, -1080.0)],
+        "wheel_fr": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.2, -1080.0)],
+        "wheel_rl": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.2, -1080.0)],
+        "wheel_rr": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.2, -1080.0)],
         "chassis": [(0.5, 6.0, 0.0, 0.0, 0.0, 0.0, -2.5), (1.2, -6.0, 0.0, 0.0, 0.0, 0.0, -2.0), (2.2, 5.0, 0.0, 0.0, 0.0, 0.0, -1.5), (3.0, -6.0, 0.0, 0.0, 0.0, 0.0, -2.0), (3.8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
-    }, body=[(0.6, 0.0, 10.0, 0.0), (1.4, 0.0, 10.0, 0.0), (2.2, 0.0, -4.0, 0.0), (3.0, 0.0, 6.0, 0.0), (4.0, 0.0, 0.0, 0.0)])
-    b.act("scout", 5.0, {   # the sensor head and turret look about together, the mast light hot
-        "sensor": [(0.8, 70.0), (2.0, 70.0), (3.0, -70.0), (4.0, -70.0), (4.8, 0.0)],
-        "turret": [(1.0, 80.0), (2.2, 80.0), (3.2, -80.0), (4.2, -80.0), (5.0, 0.0)],
-    }, glow=[(["mast_light", "lamp"], [(0.4, 0.0), (0.8, 7.0), (1.2, 2.0), (1.6, 7.0), (4.2, 7.0), (5.0, 0.0)])])
-    b.act("traverse_turret", 4.6, {"turret": [(1.2, 160.0), (2.8, -120.0), (4.4, 0.0)], "chassis": [(1.2, 0.0, 0.0, 4.0), (2.8, 0.0, 0.0, -4.0), (4.4, 0.0, 0.0, 0.0)]})
-    b.act("steer", 3.4, {   # the fronts lock over each way, the body leaning with them
-        "steer_fl": [(0.6, 32.0), (1.4, 32.0), (2.2, -32.0), (2.8, -32.0), (3.4, 0.0)],
-        "steer_fr": [(0.6, 32.0), (1.4, 32.0), (2.2, -32.0), (2.8, -32.0), (3.4, 0.0)],
-        "chassis": [(0.6, 0.0, 0.0, -4.0), (1.4, 0.0, 0.0, -4.0), (2.2, 0.0, 0.0, 4.0), (2.8, 0.0, 0.0, 4.0), (3.4, 0.0, 0.0, 0.0)],
+    }, body=[(0.6, 0.0, 10.0, 0.0), (1.3, 0.0, 9.0, 0.0), (2.2, 0.0, -4.0, 0.0), (3.0, 0.0, 6.0, 0.0), (4.2, 0.0, 0.0, 0.0)])
+    b.act("scout", 6.0, {   # the sensor head looks about while the turret turns out and waits, the mast light hot
+        "sensor": [(1.0, 60.0), (2.0, 62.0), (3.2, -55.0), (4.2, -58.0), (5.4, 0.0)],
+        "turret": [(0.6, 0.0), (2.0, 45.0), (4.4, 45.0), (5.8, 0.0)],
+    }, glow=[(["mast_light", "lamp"], [(0.4, 0.0), (0.8, 7.0), (1.2, 2.0), (1.6, 7.0), (4.6, 7.0), (5.4, 0.0)])])
+    b.act("traverse_turret", 5.6, {   # the turret traverses out to one side, holds, and comes home, the body leaning under it
+        "turret": [(0.5, 0.0), (2.4, 65.0), (3.2, 65.0), (5.1, 0.0)],
+        "chassis": [(2.4, 0.0, 0.0, 4.0), (3.2, 0.0, 0.0, 4.2), (5.2, 0.0, 0.0, 0.0)],
+    })
+    b.act("steer", 3.8, {   # the fronts lock over each way, the body leaning with them
+        "steer_fl": [(0.7, 32.0), (1.3, 30.0), (2.3, -32.0), (2.9, -30.0), (3.6, 0.0)],
+        "steer_fr": [(0.7, 32.0), (1.3, 30.0), (2.3, -32.0), (2.9, -30.0), (3.6, 0.0)],
+        "chassis": [(0.7, 0.0, 0.0, -3.0), (1.3, 0.0, 0.0, -2.6), (2.3, 0.0, 0.0, 3.0), (2.9, 0.0, 0.0, 2.6), (3.6, 0.0, 0.0, 0.0)],
     })
     # Movement: the wheels spin by their radius, the fronts steer into turns, the body rocks
-    # on pulling away; the turret holds its aim while the hull turns under it.
-    b.gait(wheels={"wheel_fl": R, "wheel_fr": R, "wheel_rl": R, "wheel_rr": R}, steer={"steer_fl": 14.0, "steer_fr": 14.0}, rock=5.0,
-           hold_aim={"turret": 1.0})
-    b.move(accel=0.6, corner=0.3)
+    # on pulling away; the turret turns with the hull.
+    b.gait(wheels={"wheel_fl": R, "wheel_fr": R, "wheel_rl": R, "wheel_rr": R}, steer={"steer_fl": 14.0, "steer_fr": 14.0}, rock=5.0)
+    b.move(accel=0.6, heft=0.1)
 
 prairie_dog.maker = "wainwright_sutler"
 
@@ -1044,40 +1082,41 @@ def dingo(b):
         b.prism("z", s * 11.0, -29.0, 22.0, 0.5, 12.0, "steel.dark", 4, "antenna")
     chassis.__exit__(None, None, None)
 
-    # Idle acts, second pass (Ryan, 4 October: too subtle; longer, louder, several joints at
-    # once, glows that read from across the map). Degrees and seconds; a key is (t, value) on
-    # the joint's own axis or (t, pitch, yaw, roll); a body key is (t, dx, dy, dz) or
-    # (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k), k the light added over rest.
-    b.act("strafe", 5.6, {   # every wheel swings sideways and the car slides a full step left, then right, then home
+    # Idle acts, third pass (Ryan, 4 October: some stilted; real machines with inertia; the
+    # Dingo was alright): curves a part runs on through and the light servos' heft (b.move);
+    # the wheels spin as keyed. Degrees and seconds; a key is (t, value) on the joint's own
+    # axis or (t, pitch, yaw, roll); a body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw,
+    # pitch, roll); a glow key is (t, k), k the light added over rest.
+    b.act("strafe", 5.6, {   # every wheel swings sideways and the car slides a full step left, straight across to the right, and home
         "caster_fl": [(0.5, 84.0), (4.8, 84.0), (5.4, 0.0)],
         "caster_fr": [(0.5, 84.0), (4.8, 84.0), (5.4, 0.0)],
         "caster_rl": [(0.5, 84.0), (4.8, 84.0), (5.4, 0.0)],
         "caster_rr": [(0.5, 84.0), (4.8, 84.0), (5.4, 0.0)],
-        "wheel_fl": [(0.7, 0.0), (1.8, -300.0), (3.4, 300.0), (4.6, 0.0)],
-        "wheel_fr": [(0.7, 0.0), (1.8, -300.0), (3.4, 300.0), (4.6, 0.0)],
-        "wheel_rl": [(0.7, 0.0), (1.8, -300.0), (3.4, 300.0), (4.6, 0.0)],
-        "wheel_rr": [(0.7, 0.0), (1.8, -300.0), (3.4, 300.0), (4.6, 0.0)],
-        "chassis": [(1.0, 0.0, 0.0, 7.0, 0.0, 0.0, -1.0), (1.8, 0.0, 0.0, 0.0), (2.6, 0.0, 0.0, -7.0, 0.0, 0.0, -1.0), (3.4, 0.0, 0.0, 0.0), (4.0, 0.0, 0.0, 6.0), (4.6, 0.0, 0.0, 0.0)],
-    }, body=[(0.7, 0.0, 0.0, 0.0), (1.8, -16.0, 0.0, 0.0), (2.2, -16.0, 0.0, 0.0), (3.4, 16.0, 0.0, 0.0), (3.8, 16.0, 0.0, 0.0), (4.6, 0.0, 0.0, 0.0)])
-    b.act("harpoon", 5.0, {   # the harpoon lifts and levels while the ring charges, pulse on pulse, then stands down
-        "harpoon": [(0.8, 24.0), (2.0, 24.0), (2.6, 8.0), (3.8, 8.0), (4.6, 0.0)],
-        "chassis": [(2.6, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0), (3.8, -2.0, 0.0, 0.0, 0.0, 0.0, -1.0), (4.6, 0.0, 0.0, 0.0)],
-    }, glow=[(["capacitor_ring"], [(0.4, 0.0), (1.2, 4.0), (1.6, 9.0), (2.0, 4.0), (2.4, 9.0), (3.8, 9.0), (4.6, 0.0)])])
-    b.act("mortar_check", 3.6, {"elev_mortar": [(0.5, 28.0), (1.6, 28.0), (2.0, -6.0), (2.6, 28.0), (3.4, 0.0)]},
-          body=[(2.0, 0.0, 0.0, -1.0, 0.0, 2.0, 0.0), (2.4, 0.0, 0.0, 0.0)])
-    b.act("spin_out", 4.6, {   # a twitch: the casters slew and the car pivots on the spot and back, prowling
-        "caster_fl": [(0.5, 50.0), (2.0, 50.0), (2.4, -50.0), (3.8, -50.0), (4.4, 0.0)],
-        "caster_fr": [(0.5, 50.0), (2.0, 50.0), (2.4, -50.0), (3.8, -50.0), (4.4, 0.0)],
-        "caster_rl": [(0.5, -50.0), (2.0, -50.0), (2.4, 50.0), (3.8, 50.0), (4.4, 0.0)],
-        "caster_rr": [(0.5, -50.0), (2.0, -50.0), (2.4, 50.0), (3.8, 50.0), (4.4, 0.0)],
-    }, body=[(0.6, 0.0, 0.0, 0.0), (2.0, 0.0, 0.0, 0.0, 35.0, 0.0, 0.0), (3.8, 0.0, 0.0, 0.0, -20.0, 0.0, 0.0), (4.6, 0.0, 0.0, 0.0)])
+        "wheel_fl": [(0.8, 0.0), (1.9, -300.0), (3.5, 300.0), (4.6, 0.0)],
+        "wheel_fr": [(0.8, 0.0), (1.9, -300.0), (3.5, 300.0), (4.6, 0.0)],
+        "wheel_rl": [(0.8, 0.0), (1.9, -300.0), (3.5, 300.0), (4.6, 0.0)],
+        "wheel_rr": [(0.8, 0.0), (1.9, -300.0), (3.5, 300.0), (4.6, 0.0)],
+        "chassis": [(1.3, 0.0, 0.0, 6.0, 0.0, 0.0, -1.0), (2.7, 0.0, 0.0, -6.0, 0.0, 0.0, -1.0), (4.0, 0.0, 0.0, 4.0), (4.6, 0.0, 0.0, 0.0)],
+    }, body=[(0.8, 0.0, 0.0, 0.0), (1.9, -15.0, 0.0, 0.0), (3.5, 15.0, 0.0, 0.0), (4.6, 0.0, 0.0, 0.0)])
+    b.act("harpoon", 5.4, {   # the harpoon lifts and levels while the ring charges, pulse on pulse, then stands down
+        "harpoon": [(1.0, 24.0), (2.2, 23.0), (2.9, 8.0), (4.0, 9.0), (4.8, 0.0)],
+        "chassis": [(2.9, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0), (4.0, -2.0, 0.0, 0.0, 0.0, 0.0, -1.0), (4.8, 0.0, 0.0, 0.0)],
+    }, glow=[(["capacitor_ring"], [(0.4, 0.0), (1.2, 4.0), (1.6, 9.0), (2.0, 4.0), (2.4, 9.0), (4.0, 9.0), (4.8, 0.0)])])
+    b.act("mortar_check", 4.0, {"elev_mortar": [(0.7, 28.0), (1.5, 27.0), (1.95, -6.0), (2.6, 26.0), (3.4, 0.0)]},
+          body=[(1.95, 0.0, 0.0, -1.0, 0.0, 2.0, 0.0), (2.5, 0.0, 0.0, 0.0)])
+    b.act("spin_out", 5.0, {   # a twitch: the casters slew and the car pivots on the spot and back, prowling
+        "caster_fl": [(0.6, 50.0), (2.0, 48.0), (2.5, -50.0), (3.8, -48.0), (4.4, 0.0)],
+        "caster_fr": [(0.6, 50.0), (2.0, 48.0), (2.5, -50.0), (3.8, -48.0), (4.4, 0.0)],
+        "caster_rl": [(0.6, -50.0), (2.0, -48.0), (2.5, 50.0), (3.8, 48.0), (4.4, 0.0)],
+        "caster_rr": [(0.6, -50.0), (2.0, -48.0), (2.5, 50.0), (3.8, 48.0), (4.4, 0.0)],
+    }, body=[(0.7, 0.0, 0.0, 0.0), (2.1, 0.0, 0.0, 0.0, 35.0, 0.0, 0.0), (3.9, 0.0, 0.0, 0.0, -20.0, 0.0, 0.0), (4.8, 0.0, 0.0, 0.0)])
     # Movement (Ryan, 2 October): it drifts. The casters point along the travel while the
     # body's facing lags the path and sits off it on the outside, so on a sideways step or
     # through a corner the wheels turn toward the move and the car slides, keeping its
-    # facing; it barely brakes for a corner.
+    # facing.
     b.gait(wheels={"wheel_fl": R, "wheel_fr": R, "wheel_rl": R, "wheel_rr": R},
            aim={"caster_fl": 1.0, "caster_fr": 1.0, "caster_rl": 1.0, "caster_rr": 1.0}, rock=4.0)
-    b.move(slide=1.0, bank=0.0, accel=0.5, corner=0.15)   # drifts wildly on the map and does not bank (Ryan, 2 October)
+    b.move(slide=1.0, bank=0.0, accel=0.5, heft=0.09)   # drifts wildly on the map and does not bank (Ryan, 2 October)
 
 dingo.maker = "wainwright_sutler"
 
@@ -1172,25 +1211,27 @@ def goshawk(b):
     b.loft([(-42.0, rect(0.0, 1.2, -6.0, -2.4)), (-30.0, rect(0.0, 1.6, -7.5, -3.5))], "steel.dark", "strake")
     b.box(-2.0, 2.0, -20.0, 22.0, 6.8, 7.4, "livery.livery", "spine_stripe")
 
-    # Idle acts, second pass (Ryan, 4 October: too subtle; longer, louder, several joints at
-    # once, glows that read from across the map). Degrees and seconds; a key is (t, value) on
-    # the joint's own axis or (t, pitch, yaw, roll); a body key is (t, dx, dy, dz) or
-    # (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k), k the light added over rest.
-    b.act("check_nacelles", 5.0, {   # a bank, the nacelles tilting down and back with a long flare
-        "nacelle_l": [(0.8, 40.0), (2.0, 40.0), (2.8, -14.0), (3.6, -14.0), (4.6, 0.0)],
-        "nacelle_r": [(0.8, 40.0), (2.0, 40.0), (2.8, -14.0), (3.6, -14.0), (4.6, 0.0)],
-    }, body=[(1.0, -6.0, 0.0, 0.0, 0.0, 0.0, -18.0), (2.6, 6.0, 0.0, 0.0, 0.0, 0.0, 14.0), (3.6, 0.0, 6.0, 0.0, 0.0, -6.0, 0.0), (4.8, 0.0, 0.0, 0.0)],
+    # Idle acts, third pass (Ryan, 4 October: the nacelle check was smooth; some others
+    # stilted): curves a part runs on through, the servos' heft (b.move), and nothing holding
+    # dead still. Degrees and seconds; a key is (t, value) on the joint's own axis or (t,
+    # pitch, yaw, roll); a body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll); a
+    # glow key is (t, k), k the light added over rest.
+    b.act("check_nacelles", 5.2, {   # a bank, the nacelles tilting down and back with a long flare
+        "nacelle_l": [(0.9, 40.0), (1.9, 38.0), (2.9, -14.0), (3.7, -12.0), (4.7, 0.0)],
+        "nacelle_r": [(0.9, 40.0), (1.9, 38.0), (2.9, -14.0), (3.7, -12.0), (4.7, 0.0)],
+    }, body=[(1.0, -6.0, 0.0, 0.0, 0.0, 0.0, -18.0), (2.6, 6.0, 0.0, 0.0, 0.0, 0.0, 14.0), (3.6, 0.0, 6.0, 0.0, 0.0, -6.0, 0.0), (4.9, 0.0, 0.0, 0.0)],
        glow=[(["joint_nacelle_l", "joint_nacelle_r"], [(0.6, 0.0), (1.2, 7.0), (2.8, 3.0), (3.4, 8.0), (4.2, 8.0), (4.8, 0.0)])])
-    b.act("charge_cannon", 4.4, glow=[(["vent_glow", "barrel_groove", "cannon_bore", "cannon_glow"], [   # the cannon charges in three rising pulses and holds
+    b.act("charge_cannon", 4.6, glow=[(["vent_glow", "barrel_groove", "cannon_bore", "cannon_glow"], [   # the cannon charges in three rising pulses and holds
         (0.3, 0.0), (0.9, 4.0), (1.2, 1.0), (1.7, 6.0), (2.0, 2.0), (2.6, 10.0), (3.6, 10.0), (4.3, 0.0)])],
-          body=[(2.4, 0.0, 0.0, 0.0), (2.6, 0.0, -4.0, 0.0, 0.0, 3.0, 0.0), (3.6, 0.0, -4.0, 0.0, 0.0, 3.0, 0.0), (4.4, 0.0, 0.0, 0.0)])
-    b.act("bank", 4.6, body=[   # a skid and bank each way, holding station
-        (0.8, -10.0, 0.0, 0.0, 0.0, 0.0, -22.0), (1.8, -10.0, 0.0, 0.0, 0.0, 0.0, -22.0), (2.8, 10.0, 0.0, 0.0, 0.0, 0.0, 22.0), (3.6, 10.0, 0.0, 0.0, 0.0, 0.0, 22.0), (4.6, 0.0, 0.0, 0.0)])
+          body=[(2.4, 0.0, 0.0, 0.0), (2.7, 0.0, -4.0, 0.0, 0.0, 3.0, 0.0), (3.6, 0.0, -4.6, 0.0, 0.0, 3.4, 0.0), (4.6, 0.0, 0.0, 0.0)])
+    b.act("bank", 4.6, body=[   # a skid and bank one way, swinging straight through into the other, holding station
+        (0.9, -10.0, 0.0, 0.0, 0.0, 0.0, -22.0), (1.7, -11.0, 0.0, 0.5, 0.0, 0.0, -18.0), (2.8, 10.0, 0.0, 0.0, 0.0, 0.0, 22.0),
+        (3.5, 11.0, 0.0, 0.5, 0.0, 0.0, 18.0), (4.6, 0.0, 0.0, 0.0)])
     # Movement: the nacelles tilt forward, the exhausts flare, the nose drops; it banks into
-    # turns (b.move), slowing into them.
+    # turns (b.move).
     b.gait(hold={"nacelle_l": -12.0, "nacelle_r": -12.0}, glow={"parts": ["joint_nacelle_l", "joint_nacelle_r"], "k": 5.0},
            body_hold=(0.0, 0.0, 0.0, 0.0, -5.0, 0.0))
-    b.move(slide=0.3, bank=22.0, accel=0.9, corner=0.45)   # larger and slower than the Sparrowhawk: slides less, banks moderately
+    b.move(slide=0.3, bank=22.0, accel=0.9, heft=0.12)   # larger and slower than the Sparrowhawk: slides less, banks moderately
 
 goshawk.maker = "kestrel"
 
@@ -1224,18 +1265,22 @@ def nemesis(b):
     the core, bare; the Ward Plate stays on the left pauldron and the Entropy Condenser on
     the back as detail (armour and vents take no mount)."""
     # Legs: plantigrade, long, in angular greaves; a heavy sabaton with a toe wedge.
-    # Hip and knee on both legs (the joint pass, 2 October).
+    # Hip and knee on both legs (the joint pass, 2 October), and an ankle carrying the
+    # sabaton flat through a stride (Ryan, 4 October, the third pass).
+    legs = {}
     for s in (-1.0, 1.0):
         cx = s * 12.0
         side = "l" if s < 0 else "r"
         ankle = (cx, -1.0, 8.0)
         knee = (cx, 5.0, 30.0)
         hip = (cx * 0.8, -3.0, 46.0)
-        with b.joint("hip_%s" % side, hip, limits=(-40.0, 40.0)):
+        legs[side] = (hip, knee, ankle)
+        with b.joint("hip_%s" % side, hip, limits=(-60.0, 60.0)):
             _beam(b, knee, hip, _sq(12.0, 13.0), _sq(13.0, 14.0), "steel.panel", "thigh")
             b.loft([(-2.0, rect(cx, 14.0, 34.0, 44.0)), (6.0, rect(cx, 11.0, 36.0, 42.0))], "steel.plate", "cuisse")
-            with b.joint("knee_%s" % side, knee, limits=(-60.0, 12.0)):
-                b.loft([(-12.0, rect(cx, 15.0, 0.0, 6.0)), (4.0, rect(cx, 16.0, 0.0, 8.0)), (18.0, rect(cx, 13.0, 0.0, 3.0))], "steel.plate", "sabaton")
+            with b.joint("knee_%s" % side, knee, limits=(-100.0, 20.0)):
+                with b.joint("ankle_%s" % side, ankle, limits=(-45.0, 100.0)):
+                    b.loft([(-12.0, rect(cx, 15.0, 0.0, 6.0)), (4.0, rect(cx, 16.0, 0.0, 8.0)), (18.0, rect(cx, 13.0, 0.0, 3.0))], "steel.plate", "sabaton")
                 _beam(b, ankle, knee, _sq(10.0, 11.0), _sq(9.0, 10.0), "steel.panel", "shin")
                 b.loft([(2.0, rect(cx, 13.0, 12.0, 26.0)), (9.0, rect(cx, 10.0, 14.0, 24.0))], "steel.plate", "greave")
                 b.box(cx - 5.0, cx + 5.0, 6.0, 12.0, 27.0, 34.0, "steel.dark", "knee_cap")
@@ -1344,45 +1389,52 @@ def nemesis(b):
     for z in (64.0, 68.0, 71.5):
         b.box(-9.0, 9.0, -20.8, -20.0, z, z + 1.5, "amber.lit", "condenser_slot")
 
-    # Idle acts, second pass (Ryan, 4 October: too subtle; longer, louder, several joints at
-    # once, glows that read from across the map). Degrees and seconds; a key is (t, value) on
-    # the joint's own axis or (t, pitch, yaw, roll); a body key is (t, dx, dy, dz) or
-    # (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k), k the light added over rest.
-    b.act("pound_fists", 4.6, {   # the fists slam together four times, the shoulders turning in, the body dropping onto each blow
-        "shoulder_l": [(0.6, 30.0, -55.0, 0.0), (0.9, 42.0, -74.0, 0.0), (1.3, 30.0, -55.0, 0.0), (1.6, 42.0, -74.0, 0.0), (2.0, 30.0, -55.0, 0.0), (2.3, 42.0, -74.0, 0.0), (2.7, 30.0, -55.0, 0.0), (3.0, 42.0, -74.0, 0.0), (4.2, 0.0, 0.0, 0.0)],
-        "shoulder_r": [(0.6, 30.0, 55.0, 0.0), (0.9, 42.0, 74.0, 0.0), (1.3, 30.0, 55.0, 0.0), (1.6, 42.0, 74.0, 0.0), (2.0, 30.0, 55.0, 0.0), (2.3, 42.0, 74.0, 0.0), (2.7, 30.0, 55.0, 0.0), (3.0, 42.0, 74.0, 0.0), (4.2, 0.0, 0.0, 0.0)],
-        "elbow_l": [(0.6, 22.0), (3.0, 22.0), (4.2, 0.0)],
-        "elbow_r": [(0.6, 22.0), (3.0, 22.0), (4.2, 0.0)],
-        "knee_l": [(0.6, -10.0), (3.0, -10.0), (4.2, 0.0)],
-        "knee_r": [(0.6, -10.0), (3.0, -10.0), (4.2, 0.0)],
-    }, body=[(0.6, 0.0, 0.0, -1.5), (0.9, 0.0, 0.0, -3.0, 0.0, -3.0, 0.0), (1.3, 0.0, 0.0, -1.5), (1.6, 0.0, 0.0, -3.0, 0.0, -3.0, 0.0), (2.0, 0.0, 0.0, -1.5),
-             (2.3, 0.0, 0.0, -3.0, 0.0, -3.0, 0.0), (2.7, 0.0, 0.0, -1.5), (3.0, 0.0, 0.0, -3.0, 0.0, -3.0, 0.0), (4.2, 0.0, 0.0, 0.0)],
-       glow=[(["core_fire"], [(0.9, 2.0), (1.6, 4.0), (2.3, 6.0), (3.0, 9.0), (3.6, 4.0), (4.4, 0.0)])])
-    b.act("roar", 5.0, {   # the arms flung wide and up, the body rearing back, the core blazing
-        "shoulder_l": [(1.0, 60.0, 60.0, 0.0), (3.4, 60.0, 60.0, 0.0), (4.6, 0.0, 0.0, 0.0)],
-        "shoulder_r": [(1.0, 60.0, -60.0, 0.0), (3.4, 60.0, -60.0, 0.0), (4.6, 0.0, 0.0, 0.0)],
-        "elbow_l": [(1.0, -20.0), (3.4, -20.0), (4.6, 0.0)],
-        "elbow_r": [(1.0, -20.0), (3.4, -20.0), (4.6, 0.0)],
-    }, body=[(1.0, 0.0, -3.0, 1.0, 0.0, 9.0, 0.0), (3.4, 0.0, -3.0, 1.0, 0.0, 9.0, 0.0), (4.6, 0.0, 0.0, 0.0)],
-       glow=[(["core_fire"], [(0.6, 0.0), (1.2, 10.0), (3.4, 10.0), (4.4, 0.0)])])
-    b.act("raise_meteor", 4.4, {   # the tubes rise to bear, the arm clearing them, the mouths glowing
-        "elev_meteor": [(0.8, 16.0), (3.2, 16.0), (4.2, 0.0)],
-        "shoulder_r": [(0.6, 0.0, -40.0, 0.0), (3.2, 0.0, -40.0, 0.0), (4.2, 0.0, 0.0, 0.0)],
-    }, body=[(0.8, 0.0, 0.0, 0.0, -10.0, 0.0, 0.0), (3.2, 0.0, 0.0, 0.0, -10.0, 0.0, 0.0), (4.2, 0.0, 0.0, 0.0)],
-       glow=[(["tube_mouth"], [(0.8, 0.0), (1.4, 7.0), (3.2, 7.0), (4.0, 0.0)])])
-    b.act("crack_shoulders", 4.4, {   # each arm rolled round in a slow circle, a fighter loosening up
-        "shoulder_l": [(0.6, 40.0, 0.0, 0.0), (1.2, 20.0, 40.0, 0.0), (1.8, -30.0, 0.0, 0.0), (2.4, 0.0, 0.0, 0.0)],
-        "shoulder_r": [(2.0, 0.0, 0.0, 0.0), (2.6, 40.0, 0.0, 0.0), (3.2, 20.0, -40.0, 0.0), (3.8, -30.0, 0.0, 0.0), (4.4, 0.0, 0.0, 0.0)],
-    }, body=[(1.2, 0.0, 0.0, 0.0, 6.0, 0.0, 2.0), (3.2, 0.0, 0.0, 0.0, -6.0, 0.0, -2.0), (4.4, 0.0, 0.0, 0.0)])
-    # Movement: a heavy stride, the arms swinging against the legs, the forearms carried up;
-    # the body dropping onto each foot and rolling over it.
-    step = _step(22.0, 42.0)
-    arm = [(0.0, -20.0), (0.5, 20.0), (1.0, -20.0)]
-    b.gait(stride=44.0, tracks={
-        "hip_l": (step["hip"], 0.0), "knee_l": (step["knee"], 0.0), "hip_r": (step["hip"], 0.5), "knee_r": (step["knee"], 0.5),
-        "shoulder_l": (arm, 0.0), "shoulder_r": (arm, 0.5),
-    }, hold={"elbow_l": 14.0, "elbow_r": 14.0}, body=_sway(2.6, 4.0))
-    b.move(accel=1.2, corner=0.4)
+    # Idle acts, third pass (Ryan, 4 October: some stilted; heavy, with inertia; MechWarrior,
+    # not Gundam): curves a part runs on through, the servos' heft (b.move), held poses that
+    # drift, fewer and heavier blows, and the feet planted while the body drops or rears over
+    # them (_planted). Degrees and seconds; a key is (t, value) on the joint's own axis or (t,
+    # pitch, yaw, roll); a body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll); a
+    # glow key is (t, k), k the light added over rest.
+    feet = [{"hip": "hip_" + side, "knee": "knee_" + side, "ankle": "ankle_" + side, "at": legs[side]} for side in ("l", "r")]
+    tracks, body = _planted(feet, [(0.8, 0.0, -1.5, 0.0), (1.3, 0.0, -3.0, -3.0), (1.8, 0.0, -1.5, 0.0), (2.3, 0.0, -3.0, -3.0),
+                                   (2.8, 0.0, -1.5, 0.0), (3.3, 0.0, -3.2, -3.2), (4.6, 0.0, 0.0, 0.0)])
+    tracks.update({
+        "shoulder_l": [(0.8, 30.0, -55.0, 0.0), (1.3, 42.0, -74.0, 0.0), (1.8, 30.0, -55.0, 0.0), (2.3, 42.0, -74.0, 0.0), (2.8, 30.0, -55.0, 0.0), (3.3, 42.0, -74.0, 0.0), (4.6, 0.0, 0.0, 0.0)],
+        "shoulder_r": [(0.8, 30.0, 55.0, 0.0), (1.3, 42.0, 74.0, 0.0), (1.8, 30.0, 55.0, 0.0), (2.3, 42.0, 74.0, 0.0), (2.8, 30.0, 55.0, 0.0), (3.3, 42.0, 74.0, 0.0), (4.6, 0.0, 0.0, 0.0)],
+        "elbow_l": [(0.8, 22.0), (3.3, 23.0), (4.6, 0.0)],
+        "elbow_r": [(0.8, 22.0), (3.3, 23.0), (4.6, 0.0)],
+    })
+    b.act("pound_fists", 5.2, tracks, body=body,   # the fists slam together three times, the shoulders turning in, the body dropping onto each blow
+          glow=[(["core_fire"], [(1.3, 3.0), (2.3, 6.0), (3.3, 9.0), (3.9, 4.0), (4.8, 0.0)])])
+    tracks, body = _planted(feet, [(1.2, -2.0, 0.0, 7.0), (3.8, -2.2, 0.0, 7.5), (5.2, 0.0, 0.0, 0.0)])
+    tracks.update({
+        "shoulder_l": [(1.2, 60.0, 60.0, 0.0), (3.8, 62.0, 62.0, 0.0), (5.0, 0.0, 0.0, 0.0)],
+        "shoulder_r": [(1.2, 60.0, -60.0, 0.0), (3.8, 62.0, -62.0, 0.0), (5.0, 0.0, 0.0, 0.0)],
+        "elbow_l": [(1.2, -20.0), (3.8, -22.0), (5.0, 0.0)],
+        "elbow_r": [(1.2, -20.0), (3.8, -22.0), (5.0, 0.0)],
+    })
+    b.act("roar", 5.6, tracks, body=body,   # the arms flung wide and up, the body rearing back on its planted feet, the core blazing
+          glow=[(["core_fire"], [(0.6, 0.0), (1.2, 10.0), (3.8, 10.0), (4.8, 0.0)])])
+    b.act("raise_meteor", 5.0, {   # the tubes rise to bear, the arm clearing them, the mouths glowing
+        "elev_meteor": [(1.0, 16.0), (3.6, 15.0), (4.7, 0.0)],
+        "shoulder_r": [(0.8, 0.0, -40.0, 0.0), (3.6, 0.0, -42.0, 0.0), (4.6, 0.0, 0.0, 0.0)],
+    }, body=[(1.0, 0.0, 0.0, 0.0, -6.0, 0.0, 0.0), (3.6, 0.0, 0.0, 0.0, -6.5, 0.0, 0.0), (4.8, 0.0, 0.0, 0.0)],
+       glow=[(["tube_mouth"], [(0.8, 0.0), (1.4, 7.0), (3.6, 7.0), (4.4, 0.0)])])
+    b.act("crack_shoulders", 5.2, {   # each arm rolled round in a slow circle, a fighter loosening up
+        "shoulder_l": [(0.8, 40.0, 0.0, 0.0), (1.6, 20.0, 40.0, 0.0), (2.4, -30.0, 0.0, 0.0), (3.0, 0.0, 0.0, 0.0)],
+        "shoulder_r": [(2.4, 0.0, 0.0, 0.0), (3.2, 40.0, 0.0, 0.0), (4.0, 20.0, -40.0, 0.0), (4.8, -30.0, 0.0, 0.0), (5.2, 0.0, 0.0, 0.0)],
+    }, body=[(1.6, 0.0, 0.0, 0.0, 5.0, 0.0, 0.0), (4.0, 0.0, 0.0, 0.0, -5.0, 0.0, 0.0), (5.2, 0.0, 0.0, 0.0)])
+    # Movement (Ryan, 4 October, the third pass: stomp and plod, MechWarrior and not Gundam,
+    # no weight thrown side to side): a long heavy stride, each sabaton planted flat while
+    # the body passes over it, lifted and stamped down; the arms swinging evenly against the
+    # legs, the forearms carried up; the body dropping and nodding onto each foot.
+    tracks, body, stride = _plant([
+        {"hip": "hip_" + side, "knee": "knee_" + side, "ankle": "ankle_" + side, "at": legs[side], "phase": 0.0 if side == "l" else 0.5}
+        for side in ("l", "r")], sweep=30.0, lift=8.0, crouch=0.5, dip=1.8, nod=1.2)
+    tracks["shoulder_l"] = (_swing(12.0, 0.5), 0.0)
+    tracks["shoulder_r"] = (_swing(12.0, 0.0), 0.0)
+    b.gait(stride=stride, tracks=tracks, hold={"elbow_l": 14.0, "elbow_r": 14.0}, body=body, ease="linear")
+    b.move(accel=1.2, heft=0.24)
 
 nemesis.maker = "arsenal"
 
@@ -1404,6 +1456,7 @@ def ammit(b):
     # Legs: digitigrade. Hip high and back, knee forward, ankle back and low, a long foot
     # forward onto two toes; a heel spur growing back out of the ankle joint itself.
     # Hip, knee and ankle on both legs (the joint pass, 2 October).
+    legs, arms = {}, {}
     for s in (-1.0, 1.0):
         cx = s * 12.0
         side = "l" if s < 0 else "r"
@@ -1411,14 +1464,15 @@ def ammit(b):
         knee = (cx + s * 2.0, 2.0, 26.0)
         ankle = (cx + s * 2.0, -10.0, 12.0)
         toe = (cx + s * 2.0, 6.0, 2.0)
+        legs[side] = (hip, knee, ankle)
         b.prism("x", hip[0], hip[1], hip[2], 5.0, 9.0, "steel.dark", 6, "hip")
-        with b.joint("hip_%s" % side, hip, limits=(-40.0, 40.0)):
+        with b.joint("hip_%s" % side, hip, limits=(-60.0, 60.0)):
             _beam(b, hip, knee, _sq(10.0, 10.0), _sq(8.6, 8.6), "steel.plate", "thigh")
             b.prism("x", knee[0], knee[1], knee[2], 4.8, 10.0, "steel.dark", 6, "knee")
-            with b.joint("knee_%s" % side, knee, limits=(-45.0, 45.0)):
+            with b.joint("knee_%s" % side, knee, limits=(-50.0, 45.0)):
                 _beam(b, knee, ankle, _sq(8.0, 8.0), _sq(6.8, 6.8), "steel.panel", "shin")
                 b.prism("x", ankle[0], ankle[1], ankle[2], 3.8, 9.0, "steel.dark", 6, "ankle")
-                with b.joint("ankle_%s" % side, ankle, limits=(-35.0, 35.0)):
+                with b.joint("ankle_%s" % side, ankle, limits=(-60.0, 75.0)):
                     _beam(b, ankle, toe, _sq(7.0, 6.0), _sq(8.0, 3.0), "steel.plate", "foot")
                     for tx in (-3.0, 3.0):
                         _tine(b, (toe[0] + tx, toe[1], toe[2] + 1.0), 0.0, 10.0, -14.0, 9.0, 3.0, 2.4, "steel.dark", "toe", n=2)
@@ -1503,67 +1557,72 @@ def ammit(b):
         shoulder = (s * 14.0, 2.0, 40.0)
         elbow = (s * 26.0, 14.0, 26.0)
         wrist = (s * 24.0, 26.0, 6.0)
+        arms[side] = (shoulder, elbow, wrist)
         b.prism("x", shoulder[0], shoulder[1], shoulder[2], 4.4, 8.0, "steel.dark", 6, "lower_shoulder")
-        with b.joint("shoulder_low_%s" % side, shoulder, limits=(-35.0, 35.0), swing=False):
+        with b.joint("shoulder_low_%s" % side, shoulder, limits=(-40.0, 60.0), swing=False):
             _beam(b, shoulder, elbow, _sq(8.8, 8.8), _sq(7.6, 7.6), "steel.plate", "lower_upper_arm")
             b.prism("x", elbow[0], elbow[1], elbow[2], 4.6, 9.0, "steel.dark", 6, "lower_elbow")
-            with b.joint("elbow_low_%s" % side, elbow, limits=(-35.0, 35.0)):
+            with b.joint("elbow_low_%s" % side, elbow, limits=(-110.0, 35.0)):
                 _beam(b, elbow, wrist, _sq(7.6, 7.6), _sq(6.8, 6.8), "steel.panel", "lower_forearm")
                 b.prism("x", wrist[0], wrist[1], wrist[2], 3.4, 8.0, "steel.dark", 6, "lower_wrist")
                 for tx in (-4.0, 0.0, 4.0):
                     _tine(b, (wrist[0] + tx, wrist[1] + 1.0, wrist[2] - 1.0), 0.0, -30.0 - abs(tx) * 2.0, 20.0, 10.0, 3.2, 2.4, "steel.dark", "talon", n=2)
 
-    # Idle acts, second pass (Ryan, 4 October: too subtle; longer, louder, several joints at
-    # once, glows that read from across the map). Degrees and seconds; a key is (t, value) on
-    # the joint's own axis or (t, pitch, yaw, roll); a body key is (t, dx, dy, dz) or
-    # (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k), k the light added over rest.
-    b.act("rear", 6.0, {   # rears onto its hind legs, the planted arms lifting, the upper arms raised and the talons flexing
-        "hip_l": [(1.2, -18.0), (4.4, -18.0), (5.6, 0.0)],
-        "hip_r": [(1.2, -18.0), (4.4, -18.0), (5.6, 0.0)],
-        "knee_l": [(1.2, 10.0), (4.4, 10.0), (5.6, 0.0)],
-        "knee_r": [(1.2, 10.0), (4.4, 10.0), (5.6, 0.0)],
-        "shoulder_low_l": [(1.2, 30.0), (4.4, 30.0), (5.6, 0.0)],
-        "shoulder_low_r": [(1.2, 30.0), (4.4, 30.0), (5.6, 0.0)],
-        "elbow_low_l": [(1.2, 20.0), (4.4, 20.0), (5.6, 0.0)],
-        "elbow_low_r": [(1.2, 20.0), (4.4, 20.0), (5.6, 0.0)],
-        "shoulder_l": [(1.2, 48.0, 30.0, 0.0), (4.4, 48.0, 30.0, 0.0), (5.6, 0.0, 0.0, 0.0)],
-        "shoulder_r": [(1.2, 48.0, -30.0, 0.0), (4.4, 48.0, -30.0, 0.0), (5.6, 0.0, 0.0, 0.0)],
-        "elbow_l": [(1.2, 28.0), (4.4, 28.0), (5.6, 0.0)],
-        "elbow_r": [(1.2, 28.0), (4.4, 28.0), (5.6, 0.0)],
-        "hand_l": [(1.6, -54.0), (2.0, 20.0), (2.4, -54.0), (2.8, 20.0), (3.2, -54.0), (4.4, -54.0), (5.6, 0.0)],
-        "hand_r": [(1.8, -54.0), (2.2, 20.0), (2.6, -54.0), (3.0, 20.0), (3.4, -54.0), (4.4, -54.0), (5.6, 0.0)],
-    }, body=[(1.2, 0.0, -4.0, 5.0, 0.0, 18.0, 0.0), (4.4, 0.0, -4.0, 5.0, 0.0, 18.0, 0.0), (5.6, 0.0, 0.0, 0.0)])
-    b.act("flex_talons", 4.6, {   # one upper arm reaches out and its talons work, then the other
-        "shoulder_l": [(0.6, 40.0, 30.0, 0.0), (2.0, 40.0, 30.0, 0.0), (2.6, 0.0, 0.0, 0.0)],
-        "elbow_l": [(0.6, 28.0), (2.0, 28.0), (2.6, 0.0)],
-        "hand_l": [(0.8, -54.0), (1.1, 20.0), (1.4, -54.0), (1.7, 20.0), (2.4, 0.0)],
-        "shoulder_r": [(2.0, 0.0, 0.0, 0.0), (2.6, 40.0, -30.0, 0.0), (4.0, 40.0, -30.0, 0.0), (4.6, 0.0, 0.0, 0.0)],
-        "elbow_r": [(2.0, 0.0), (2.6, 28.0), (4.0, 28.0), (4.6, 0.0)],
-        "hand_r": [(2.8, -54.0), (3.1, 20.0), (3.4, -54.0), (3.7, 20.0), (4.4, 0.0)],
-    }, body=[(1.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0), (3.0, 0.0, 0.0, 0.0, -10.0, 0.0, 0.0), (4.6, 0.0, 0.0, 0.0)])
-    b.act("raise_cannons", 4.4, {"elev_l": [(0.6, 18.0), (3.2, 18.0), (4.0, 0.0)], "elev_r": [(0.8, 18.0), (3.4, 18.0), (4.2, 0.0)]},
-          body=[(0.8, 0.0, 0.0, 0.0, 0.0, -6.0, 0.0), (3.4, 0.0, 0.0, 0.0, 0.0, -6.0, 0.0), (4.4, 0.0, 0.0, 0.0)],
+    # Idle acts, third pass (Ryan, 4 October: some stilted, the weight thrown side to side;
+    # heavy, with inertia): curves a part runs on through, the servos' heft (b.move), held
+    # poses that drift, the talons working in slower beats, and the hind feet planted while
+    # the body rears over them (_planted). Degrees and seconds; a key is (t, value) on the
+    # joint's own axis or (t, pitch, yaw, roll); a body key is (t, dx, dy, dz) or (t, dx, dy,
+    # dz, yaw, pitch, roll); a glow key is (t, k), k the light added over rest.
+    tracks, body = _planted([{"hip": "hip_" + side, "knee": "knee_" + side, "ankle": "ankle_" + side, "at": legs[side]} for side in ("l", "r")],
+                            [(1.4, -4.0, 5.0, 18.0), (4.6, -4.4, 5.4, 19.0), (6.0, 0.0, 0.0, 0.0)])
+    tracks.update({
+        "shoulder_low_l": [(1.4, 30.0), (4.6, 32.0), (5.8, 0.0)],
+        "shoulder_low_r": [(1.4, 30.0), (4.6, 32.0), (5.8, 0.0)],
+        "elbow_low_l": [(1.4, 20.0), (4.6, 22.0), (5.8, 0.0)],
+        "elbow_low_r": [(1.4, 20.0), (4.6, 22.0), (5.8, 0.0)],
+        "shoulder_l": [(1.4, 48.0, 30.0, 0.0), (4.6, 50.0, 32.0, 0.0), (5.8, 0.0, 0.0, 0.0)],
+        "shoulder_r": [(1.4, 48.0, -30.0, 0.0), (4.6, 50.0, -32.0, 0.0), (5.8, 0.0, 0.0, 0.0)],
+        "elbow_l": [(1.4, 28.0), (4.6, 30.0), (5.8, 0.0)],
+        "elbow_r": [(1.4, 28.0), (4.6, 30.0), (5.8, 0.0)],
+        "hand_l": [(1.8, -54.0), (2.3, 20.0), (2.8, -54.0), (3.3, 20.0), (3.8, -54.0), (4.6, -54.0), (5.8, 0.0)],
+        "hand_r": [(2.0, -54.0), (2.5, 20.0), (3.0, -54.0), (3.5, 20.0), (4.0, -54.0), (4.6, -54.0), (5.8, 0.0)],
+    })
+    b.act("rear", 6.4, tracks, body=body)   # rears up over its planted hind feet, the planted arms lifting, the upper arms raised and the talons flexing
+    b.act("flex_talons", 5.2, {   # one upper arm reaches out and its talons work, then the other
+        "shoulder_l": [(0.8, 40.0, 30.0, 0.0), (2.2, 42.0, 31.0, 0.0), (2.9, 0.0, 0.0, 0.0)],
+        "elbow_l": [(0.8, 28.0), (2.2, 29.0), (2.9, 0.0)],
+        "hand_l": [(1.0, -54.0), (1.45, 20.0), (1.9, -54.0), (2.35, 20.0), (2.8, 0.0)],
+        "shoulder_r": [(2.3, 0.0, 0.0, 0.0), (3.1, 40.0, -30.0, 0.0), (4.5, 42.0, -31.0, 0.0), (5.2, 0.0, 0.0, 0.0)],
+        "elbow_r": [(2.3, 0.0), (3.1, 28.0), (4.5, 29.0), (5.2, 0.0)],
+        "hand_r": [(3.3, -54.0), (3.75, 20.0), (4.2, -54.0), (4.65, 20.0), (5.1, 0.0)],
+    }, body=[(1.1, 0.0, 0.0, 0.0, 7.0, 0.0, 0.0), (3.4, 0.0, 0.0, 0.0, -7.0, 0.0, 0.0), (5.2, 0.0, 0.0, 0.0)])
+    b.act("raise_cannons", 4.8, {"elev_l": [(0.8, 18.0), (3.4, 17.5), (4.3, 0.0)], "elev_r": [(1.0, 18.0), (3.6, 17.5), (4.5, 0.0)]},
+          body=[(1.0, 0.0, 0.0, 0.0, 0.0, -5.0, 0.0), (3.6, 0.0, 0.0, 0.0, 0.0, -5.5, 0.0), (4.8, 0.0, 0.0, 0.0)],
           glow=[(["carbine_tip", "hp_1"], [(0.8, 0.0), (1.4, 8.0), (3.2, 8.0), (4.0, 0.0)])])
-    b.act("pilot_flame", 3.6, glow=[(["hp_2"], [(0.3, 0.0), (0.6, 9.0), (0.9, 2.0), (1.2, 9.0), (1.5, 3.0), (1.8, 10.0), (2.8, 10.0), (3.4, 0.0)])],
-          body=[(0.6, 0.0, 0.0, 0.0, -8.0, 0.0, 0.0), (2.8, 0.0, 0.0, 0.0, -8.0, 0.0, 0.0), (3.6, 0.0, 0.0, 0.0)])
-    b.act("stalk", 5.0, {   # shifts its weight across its four planted limbs, one lifting at a time
-        "shoulder_low_l": [(0.6, 20.0), (1.2, 0.0)], "elbow_low_l": [(0.6, 24.0), (1.2, 0.0)],
-        "shoulder_low_r": [(1.4, 0.0), (2.0, 20.0), (2.6, 0.0)], "elbow_low_r": [(1.4, 0.0), (2.0, 24.0), (2.6, 0.0)],
-        "hip_l": [(2.8, 0.0), (3.4, 16.0), (4.0, 0.0)], "knee_l": [(2.8, 0.0), (3.4, -30.0), (4.0, 0.0)],
-        "hip_r": [(3.8, 0.0), (4.4, 16.0), (5.0, 0.0)], "knee_r": [(3.8, 0.0), (4.4, -30.0), (5.0, 0.0)],
-    }, body=[(0.6, 2.0, 0.0, 0.0, 0.0, 0.0, 3.0), (2.0, -2.0, 0.0, 0.0, 0.0, 0.0, -3.0), (3.4, 2.0, 0.0, 0.0, 0.0, 0.0, 3.0), (4.4, -2.0, 0.0, 0.0, 0.0, 0.0, -3.0), (5.0, 0.0, 0.0, 0.0)])
-    # Movement: a four-limbed gait, the legs and the planted lower arms in diagonal pairs
-    # (left arm with right leg), the lower elbow lifting its talons through the swing; the
-    # upper arms held up out of the way; a low roll.
-    step = _step(18.0, 34.0, 10.0)
-    arm = [(0.0, -14.0), (0.5, 14.0), (1.0, -14.0)]
-    lift = [(0.1, 0.0), (0.3, 26.0), (0.5, 0.0)]
-    b.gait(stride=40.0, tracks={
-        "hip_l": (step["hip"], 0.0), "knee_l": (step["knee"], 0.0), "ankle_l": (step["ankle"], 0.0),
-        "hip_r": (step["hip"], 0.5), "knee_r": (step["knee"], 0.5), "ankle_r": (step["ankle"], 0.5),
-        "shoulder_low_l": (arm, 0.0), "elbow_low_l": (lift, 0.0), "shoulder_low_r": (arm, 0.5), "elbow_low_r": (lift, 0.5),
-    }, hold={"shoulder_l": 12.0, "shoulder_r": 12.0}, body=_sway(1.4, 3.0))
-    b.move(accel=1.0, corner=0.35)
+    b.act("pilot_flame", 3.8, glow=[(["hp_2"], [(0.3, 0.0), (0.6, 9.0), (0.9, 2.0), (1.2, 9.0), (1.5, 3.0), (1.8, 10.0), (2.8, 10.0), (3.4, 0.0)])],
+          body=[(0.7, 0.0, 0.0, 0.0, -5.0, 0.0, 0.0), (2.8, 0.0, 0.0, 0.0, -5.5, 0.0, 0.0), (3.8, 0.0, 0.0, 0.0)])
+    b.act("stalk", 5.8, {   # one limb at a time lifts and comes down hard, the body dropping onto it: testing the ground
+        "shoulder_low_l": [(0.5, 0.0), (1.0, 22.0), (1.3, 22.0), (1.5, 0.0)], "elbow_low_l": [(0.5, 0.0), (1.0, 28.0), (1.3, 28.0), (1.5, 0.0)],
+        "shoulder_low_r": [(1.8, 0.0), (2.3, 22.0), (2.6, 22.0), (2.8, 0.0)], "elbow_low_r": [(1.8, 0.0), (2.3, 28.0), (2.6, 28.0), (2.8, 0.0)],
+        "hip_l": [(3.1, 0.0), (3.6, 16.0), (3.9, 16.0), (4.1, 0.0)], "knee_l": [(3.1, 0.0), (3.6, -30.0), (3.9, -30.0), (4.1, 0.0)],
+        "hip_r": [(4.4, 0.0), (4.9, 16.0), (5.2, 16.0), (5.4, 0.0)], "knee_r": [(4.4, 0.0), (4.9, -30.0), (5.2, -30.0), (5.4, 0.0)],
+    }, body=[(1.5, 0.0, 0.0, 0.0), (1.6, 0.0, 0.0, -1.2), (1.9, 0.0, 0.0, 0.0), (2.8, 0.0, 0.0, 0.0), (2.9, 0.0, 0.0, -1.2), (3.2, 0.0, 0.0, 0.0),
+             (4.1, 0.0, 0.0, 0.0), (4.2, 0.0, 0.0, -1.2), (4.5, 0.0, 0.0, 0.0), (5.4, 0.0, 0.0, 0.0), (5.5, 0.0, 0.0, -1.2), (5.8, 0.0, 0.0, 0.0)])
+    # Movement (Ryan, 4 October, the third pass: stomp and plod, no weight thrown side to
+    # side): a four-limbed gait, the legs and the planted lower arms in diagonal pairs (left
+    # arm with right leg), every foot and talon planted while the body passes over it, the
+    # lower arms reaching from further back under the chest; the upper arms held up out of
+    # the way; the body dropping onto each pair.
+    limbs = []
+    for side in ("l", "r"):
+        limbs.append({"hip": "hip_" + side, "knee": "knee_" + side, "ankle": "ankle_" + side, "at": legs[side],
+                      "phase": 0.0 if side == "l" else 0.5})
+        limbs.append({"hip": "shoulder_low_" + side, "knee": "elbow_low_" + side, "ankle": None, "at": arms[side],
+                      "phase": 0.0 if side == "r" else 0.5, "shift": -12.0})
+    tracks, body, stride = _plant(limbs, sweep=30.0, lift=8.0, crouch=0.5, dip=1.4, nod=0.8)
+    b.gait(stride=stride, tracks=tracks, hold={"shoulder_l": 12.0, "shoulder_r": 12.0}, body=body, ease="linear")
+    b.move(accel=1.0, heft=0.2)
 
 ammit.maker = "arsenal"
 
@@ -1817,26 +1876,29 @@ def stingray(b):
             b.prism("y", 0.0, 4.0, gz + 5.0, 2.0, 24.0, "steel.dark", 6, "zenith_emitter")
             b.prism("y", 0.0, 16.6, gz + 5.0, 1.5, 1.4, "amber.engine", 6, "emitter_tip")
 
-    # Idle acts, second pass (Ryan, 4 October: too subtle; longer, louder, several joints at
-    # once, glows that read from across the map). Degrees and seconds; a key is (t, value) on
-    # the joint's own axis or (t, pitch, yaw, roll); a body key is (t, dx, dy, dz) or
-    # (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k), k the light added over rest.
-    b.act("scan_emitter", 5.0, {"turret": [(1.0, 90.0), (2.4, -90.0), (3.8, 30.0), (4.8, 0.0)]},   # the emitter scans, the ray tilting after it like a helicopter
-          body=[(1.0, 4.0, 0.0, 0.0, 0.0, 0.0, 8.0), (2.4, -4.0, 0.0, 0.0, 0.0, 0.0, -8.0), (3.8, 0.0, 0.0, 0.0, 0.0, 0.0, 3.0), (5.0, 0.0, 0.0, 0.0)],
-          glow=[(["emitter_tip", "dome_light"], [(0.6, 0.0), (1.0, 6.0), (4.0, 6.0), (4.8, 0.0)])])
-    b.act("lance_charge", 4.4, glow=[(["lance_muzzle", "eye"], [(0.3, 0.0), (1.0, 4.0), (1.4, 1.0), (2.0, 7.0), (2.4, 3.0), (3.0, 10.0), (3.6, 10.0), (4.3, 0.0)])],
-          body=[(1.8, 0.0, 0.0, 0.0, 0.0, -4.0, 0.0), (3.6, 0.0, -3.0, 0.0, 0.0, -6.0, 0.0), (4.4, 0.0, 0.0, 0.0)])
-    b.act("thrusters_surge", 4.0, body=[   # surges forward nose down, brakes nose up, settles: a helicopter's
-        (0.5, 0.0, 0.0, 0.0), (1.2, 0.0, 12.0, -1.0, 0.0, -12.0, 0.0), (2.2, 0.0, 12.0, 0.0, 0.0, 10.0, 0.0), (3.0, 0.0, 0.0, 0.0, 0.0, -3.0, 0.0), (4.0, 0.0, 0.0, 0.0)],
+    # Idle acts, third pass (Ryan, 4 October: turrets too fast and wild; real machines with
+    # inertia): curves a part runs on through, the servos' heft (b.move), and the emitter's
+    # turret slow and short with a pause before it turns back (the builder's rule). Degrees
+    # and seconds; a key is (t, value) on the joint's own axis or (t, pitch, yaw, roll); a
+    # body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k),
+    # k the light added over rest.
+    b.act("scan_emitter", 7.8, {"turret": [(0.5, 0.0), (2.1, 55.0), (2.8, 55.0), (5.7, -45.0), (6.4, -45.0), (7.7, 0.0)]},   # the emitter scans out one way, pauses, across to the other, pauses, home, the ray leaning after it like a helicopter
+          body=[(2.1, 2.5, 0.0, 0.0, 0.0, 0.0, 5.0), (2.8, 2.5, 0.0, 0.0, 0.0, 0.0, 5.0), (5.7, -2.0, 0.0, 0.0, 0.0, 0.0, -4.0), (6.4, -2.0, 0.0, 0.0, 0.0, 0.0, -4.0), (7.8, 0.0, 0.0, 0.0)],
+          glow=[(["emitter_tip", "dome_light"], [(0.6, 0.0), (1.0, 6.0), (7.0, 6.0), (7.8, 0.0)])])
+    b.act("lance_charge", 4.6, glow=[(["lance_muzzle", "eye"], [(0.3, 0.0), (1.0, 4.0), (1.4, 1.0), (2.0, 7.0), (2.4, 3.0), (3.0, 10.0), (3.6, 10.0), (4.3, 0.0)])],
+          body=[(1.8, 0.0, 0.0, 0.0, 0.0, -4.0, 0.0), (3.6, 0.0, -3.0, 0.0, 0.0, -6.0, 0.0), (4.6, 0.0, 0.0, 0.0)])
+    b.act("thrusters_surge", 4.4, body=[   # surges forward nose down, brakes nose up, settles: a helicopter's
+        (0.5, 0.0, 0.0, 0.0), (1.3, 0.0, 12.0, -1.0, 0.0, -12.0, 0.0), (2.3, 0.0, 12.0, 0.0, 0.0, 10.0, 0.0), (3.1, 0.0, 0.0, 0.0, 0.0, -3.0, 0.0), (4.4, 0.0, 0.0, 0.0)],
           glow=[(["nozzle_glow"], [(0.3, 0.0), (0.9, 8.0), (1.6, 8.0), (2.4, 2.0), (3.6, 0.0)])])
-    b.act("sidestep", 4.6, body=[   # slides a step to each side, rolling into it
-        (1.0, -14.0, 0.0, 0.0, 0.0, 0.0, -12.0), (1.8, -14.0, 0.0, 0.0, 0.0, 0.0, 2.0), (3.0, 14.0, 0.0, 0.0, 0.0, 0.0, 12.0), (3.8, 14.0, 0.0, 0.0, 0.0, 0.0, -2.0), (4.6, 0.0, 0.0, 0.0)])
+    b.act("sidestep", 4.8, body=[   # slides a step to one side, rolling into it, and straight on across to the other
+        (0.9, -6.0, 0.0, 0.0, 0.0, 0.0, -12.0), (1.6, -14.0, 0.0, 0.0, 0.0, 0.0, 2.0), (2.6, 2.0, 0.0, 0.0, 0.0, 0.0, 12.0),
+        (3.4, 14.0, 0.0, 0.0, 0.0, 0.0, -2.0), (4.8, 0.0, 0.0, 0.0)])
     # Movement (Ryan, 3 October): the first of the helicopter-style machines, on its fans. It
     # keeps its facing and leans into its travel: nose down to go forward, nose up to go
     # back, a side down to strafe; no bank, no rock, the tilt does both. The map turns it to
     # where it will end up facing first, then translates it there.
     b.gait(glow={"parts": ["nozzle_glow"], "k": 5.0})
-    b.move(slide=0.0, bank=0.0, strafe=1.0, tilt=(16.0, 14.0), accel=0.9, corner=0.35)
+    b.move(slide=0.0, bank=0.0, strafe=1.0, tilt=(16.0, 14.0), accel=0.9, heft=0.12)
 
 stingray.maker = "aphelion"
 
@@ -2030,27 +2092,27 @@ def puffin(b):
     for (nx, ny) in ((-8.0, 10.0), (8.0, 10.0), (-8.0, -16.0), (8.0, -16.0)):
         b.prism("z", nx, ny, 6.6, 2.4, 1.4, "amber.engine", 6, "lift_nozzle")
 
-    # Idle acts, second pass (Ryan, 4 October: too subtle; longer, louder, several joints at
-    # once, glows that read from across the map). Degrees and seconds; a key is (t, value) on
-    # the joint's own axis or (t, pitch, yaw, roll); a body key is (t, dx, dy, dz) or
-    # (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k), k the light added over rest.
-    b.act("boosters_flare", 4.0, body=[(0.5, 0.0, 0.0, 0.0), (1.0, 0.0, 12.0, 1.0, 0.0, 6.0, 0.0), (2.6, 0.0, 12.0, 1.0, 0.0, 6.0, 0.0), (3.6, 0.0, 0.0, 0.0)],
+    # Idle acts, third pass (Ryan, 4 October: some stilted; real machines with inertia):
+    # curves a part runs on through, the servos' heft (b.move), and nothing holding dead
+    # still. Degrees and seconds; a body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch,
+    # roll); a glow key is (t, k), k the light added over rest.
+    b.act("boosters_flare", 4.0, body=[(0.5, 0.0, 0.0, 0.0), (1.1, 0.0, 11.0, 1.0, 0.0, 6.0, 0.0), (2.6, 0.0, 13.0, 1.2, 0.0, 6.5, 0.0), (4.0, 0.0, 0.0, 0.0)],
           glow=[(["nozzle_ring", "exhaust"], [(0.3, 0.0), (0.8, 8.0), (1.2, 4.0), (1.6, 9.0), (2.6, 9.0), (3.4, 0.0)])])
     b.act("prow_pulse", 4.0, glow=[(["projector_slot", "prow_band"], [   # the prow projector beats three times, hard
         (0.3, 0.0), (0.6, 9.0), (1.0, 0.5), (1.4, 9.0), (1.8, 0.5), (2.2, 10.0), (3.0, 10.0), (3.8, 0.0)])],
-          body=[(0.6, 0.0, 2.0, 0.0, 0.0, 3.0, 0.0), (1.4, 0.0, 2.0, 0.0, 0.0, 3.0, 0.0), (2.2, 0.0, 4.0, 0.0, 0.0, 4.0, 0.0), (3.8, 0.0, 0.0, 0.0)])
-    b.act("lift_hop", 4.4, body=[   # a big hop on the lift nozzles: up hard, a roll at the top, down onto a squash, a bounce
+          body=[(0.6, 0.0, 2.0, 0.0, 0.0, 3.0, 0.0), (1.4, 0.0, 2.5, 0.0, 0.0, 3.2, 0.0), (2.2, 0.0, 4.0, 0.0, 0.0, 4.0, 0.0), (4.0, 0.0, 0.0, 0.0)])
+    b.act("lift_hop", 4.6, body=[   # a big hop on the lift nozzles: up hard, a roll at the top, down onto a squash, a bounce
         (0.5, 0.0, 0.0, -2.0, 0.0, 0.0, 0.0), (1.2, 0.0, 0.0, 18.0, 0.0, 6.0, 14.0), (1.8, 0.0, 0.0, 16.0, 0.0, -4.0, -12.0), (2.5, 0.0, 0.0, -3.0, 0.0, 0.0, 0.0),
-        (2.9, 0.0, 0.0, 4.0, 0.0, 0.0, 0.0), (3.4, 0.0, 0.0, -1.0), (4.4, 0.0, 0.0, 0.0)],
+        (2.9, 0.0, 0.0, 4.0, 0.0, 0.0, 0.0), (3.4, 0.0, 0.0, -1.0), (4.6, 0.0, 0.0, 0.0)],
           glow=[(["lift_nozzle"], [(0.3, 0.0), (0.6, 10.0), (1.2, 10.0), (1.8, 3.0), (2.5, 8.0), (3.2, 0.0)])])
-    b.act("sideslip", 4.6, body=[   # slips sideways each way on its skirt, nose swinging after
-        (1.0, -14.0, 0.0, 0.0, 12.0, 0.0, -8.0), (1.8, -14.0, 0.0, 0.0, 0.0, 0.0, 0.0), (3.0, 14.0, 0.0, 0.0, -12.0, 0.0, 8.0), (3.8, 14.0, 0.0, 0.0, 0.0, 0.0, 0.0), (4.6, 0.0, 0.0, 0.0)],
+    b.act("sideslip", 4.8, body=[   # slips sideways on its skirt, nose swinging after, and straight on across to the other side
+        (1.0, -12.0, 0.0, 0.0, 12.0, 0.0, -8.0), (1.7, -14.0, 0.0, 0.0, 1.0, 0.0, -1.0), (3.0, 12.0, 0.0, 0.0, -12.0, 0.0, 8.0), (3.7, 14.0, 0.0, 0.0, -1.0, 0.0, 1.0), (4.8, 0.0, 0.0, 0.0)],
           glow=[(["lift_nozzle"], [(0.6, 0.0), (1.0, 5.0), (3.4, 5.0), (4.2, 0.0)])])
     # Movement (Ryan, 3 October): a cross between a jet and the Dingo, on its boosters: it
     # banks into turns and its facing lags the path, less wildly than the Dingo's, so it
-    # drifts through corners with its nose down a touch; it slows into them.
+    # drifts through corners with its nose down a touch.
     b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, -5.0, 0.0), glow={"parts": ["nozzle_ring", "exhaust"], "k": 5.0}, rock=3.0)
-    b.move(slide=0.6, bank=26.0, accel=0.8, corner=0.5)
+    b.move(slide=0.6, bank=26.0, accel=0.8, heft=0.13)
 
 puffin.maker = "kestrel"
 
@@ -2229,31 +2291,164 @@ def _tine(b, origin, side_x, pitch0, curve, length, w0, t0, material, label, n=5
 
 # ---------------------------------------------------------------- gait helpers (the joints row, 2 October)
 
-def _step(hip_amp, knee_amp, ankle_amp=0.0):
-    """One leg's cycle over a stride: the hip swings the leg from forward (phase 0) to back
-    (0.5) over the stance and forward again over the swing, the knee bending through the
-    swing to lift the foot (a negative pitch on a hanging shin swings the foot back and
-    up), the ankle flexing with it. Degrees; a diagonal pair shares the shape half a stride
-    apart (the `phase` of a gait track)."""
-    return {
-        "hip": [(0.0, hip_amp), (0.5, -hip_amp), (1.0, hip_amp)],
-        "knee": [(0.5, 0.0), (0.7, -knee_amp), (0.9, -knee_amp * 0.3), (1.0, 0.0)],
-        "ankle": [(0.5, 0.0), (0.75, ankle_amp), (1.0, 0.0)],
-    }
+def _ik2(h, k, e, target, bend):
+    """The two angles (degrees, the joints' pitch: positive raises the forward end) that put a
+    two-link limb's end on `target`: `h`, `k`, `e` the hip, knee and end at rest and `target`
+    as (y, z) pairs in the limb's plane, `bend` the side the knee folds to at rest (+1 or -1),
+    kept so the knee never flips through."""
+    l1 = math.hypot(k[0] - h[0], k[1] - h[1])
+    l2 = math.hypot(e[0] - k[0], e[1] - k[1])
+    phi1 = math.atan2(k[1] - h[1], k[0] - h[0])
+    phi2 = math.atan2(e[1] - k[1], e[0] - k[0])
+    dy, dz = target[0] - h[0], target[1] - h[1]
+    d = math.hypot(dy, dz)
+    if d > l1 + l2 - 1e-6 or d < abs(l1 - l2) + 1e-6:
+        raise ValueError("a planted foot out of reach: %.2f from the hip, the limb spans %.2f to %.2f" % (d, abs(l1 - l2), l1 + l2))
+    delta = math.atan2(dz, dy)
+    gamma = math.acos(max(-1.0, min(1.0, (l1 * l1 + d * d - l2 * l2) / (2.0 * l1 * d))))
+    for sgn in (1.0, -1.0):
+        a1 = delta + sgn * gamma
+        ky, kz = h[0] + l1 * math.cos(a1), h[1] + l1 * math.sin(a1)
+        a2 = math.atan2(target[1] - kz, target[0] - ky)
+        if math.sin(a2 - a1) * bend >= 0.0:
+            break
+    wrap = lambda a: (a + math.pi) % (2.0 * math.pi) - math.pi
+    hip = wrap(a1 - phi1)
+    knee = wrap(a2 - phi2 - (a1 - phi1))
+    return math.degrees(hip), math.degrees(knee)
 
 
-def _sway(height, roll):
-    """A heavy walker's body over a stride (Ryan, 4 October: slow, heavy, mechanical): it
-    settles onto each foot and rolls over it, rising between, lowest and most rolled with the
-    legs spread (phases 0 and 0.5)."""
-    return [(0.0, 0.0, 0.0, -height * 0.4, 0.0, 0.0, roll), (0.25, 0.0, 0.0, height, 0.0, 0.0, 0.0),
-            (0.5, 0.0, 0.0, -height * 0.4, 0.0, 0.0, -roll), (0.75, 0.0, 0.0, height, 0.0, 0.0, 0.0)]
+def _to_body(y, z, dy, dz, pitch):
+    """A point fixed on the ground, (y, z) in the model's rest frame, as the body sees it when
+    the body has slid (dy, dz) and pitched `pitch` degrees about its origin."""
+    c, s = math.cos(math.radians(pitch)), math.sin(math.radians(pitch))
+    y, z = y - dy, z - dz
+    return (y * c + z * s, -y * s + z * c)
 
 
-def _bob(height):
-    """The body rising twice a stride, lowest with the legs spread (phases 0 and 0.5)."""
-    return [(0.0, 0.0, 0.0, 0.0), (0.25, 0.0, 0.0, height), (0.5, 0.0, 0.0, 0.0), (0.75, 0.0, 0.0, height)]
+def _limb_angles(l, target, pitch):
+    """A limb's hip, knee and ankle (degrees) putting its end on `target` (the body's frame),
+    the foot kept flat to the ground under a body pitched `pitch`."""
+    h3, k3, e3 = l["at"]
+    h, k, e = (h3[1], h3[2]), (k3[1], k3[2]), (e3[1], e3[2])
+    bend = 1.0 if math.sin(math.atan2(e[1] - k[1], e[0] - k[0]) - math.atan2(k[1] - h[1], k[0] - h[0])) >= 0.0 else -1.0
+    a, b = _ik2(h, k, e, target, bend)
+    return a, b, -(a + b + pitch)
 
+
+def _planted(limbs, body):
+    """Leg keys for an act that moves the body of a walker (Ryan, 4 October, the third pass:
+    the weight of the machine believable): `body` the act's keys as (t, dy, dz, pitch), and
+    each limb's foot stays where it stands while the body squats, rears or tips over it. A
+    limb is a dict as _plant takes ("hip", "knee", "ankle", "at"). Returns joint -> keys,
+    to merge into the act's tracks, and the body keys in the act's own shape."""
+    tracks = {}
+    for l in limbs:
+        e = l["at"][2]
+        rows = {"hip": [], "knee": [], "ankle": []}
+        for t, dy, dz, pitch in body:
+            a, b, c = _limb_angles(l, _to_body(e[1], e[2], dy, dz, pitch), pitch)
+            rows["hip"].append((t, round(a, 3)))
+            rows["knee"].append((t, round(b, 3)))
+            rows["ankle"].append((t, round(c, 3)))
+        tracks[l["hip"]] = rows["hip"]
+        tracks[l["knee"]] = rows["knee"]
+        if l.get("ankle"):
+            tracks[l["ankle"]] = rows["ankle"]
+    return tracks, [(t, 0.0, dy, dz, 0.0, pitch, 0.0) for t, dy, dz, pitch in body]
+
+
+def _plant(limbs, sweep, duty=0.55, lift=8.0, crouch=0.0, dip=1.2, nod=0.0, reach=0.96, n=40):
+    """A walk worked out foot by foot (Ryan, 4 October, the third pass: legs too fast, the
+    weight shift far too pronounced; stomp and plod, mechanical, MechWarrior or Star Wars, not
+    Gundam or Evangelion). Each limb's foot stays planted on the ground through its stance,
+    the leg sweeping back under the body at an even rate while the body travels over it, then
+    lifts straight up, carries forward and comes down hard. The body vaults over its legs as
+    a heavy walker does: it rides as high as its stance legs allow kept `reach` of straight,
+    rising as a leg passes under its hip and settling as the feet spread (so the knees never
+    fold into a crouch mid-stride), `crouch` units lower than that, and drops `dip` units more
+    as each foot lands, recovering before the next, its nose dipping `nod` degrees with it; it
+    never rolls side to side. A limb with an ankle keeps its foot flat to the ground, and the
+    body's travel is the legs' to take, so no planted foot sinks or slides.
+
+    `limbs` is a list of dicts: "hip", "knee" and "ankle" the joint names ("ankle" None when
+    the foot rides the knee joint), "at" the (hip, knee, end) points of the model, the end
+    being the ankle's pivot or the point the foot meets the ground through; "phase" the share
+    of the stride its stance starts at; "shift" moves the stance forward (+) or back under
+    the body, units. `sweep` is how far each foot travels back through its stance; the stride
+    is sweep over `duty`, the share of the stride a foot is down, so the feet never slide.
+    `lift` raises a foot off the ground in the swing. Returns (tracks, body, stride) for
+    b.gait with ease "linear" (dense keys, n a stride)."""
+    stride = sweep / duty
+    landings = sorted({round(l["phase"] % 1.0, 4) for l in limbs})
+
+    def foot(l, p):
+        """Where a limb's end goes at phase p, in the model's rest frame: (y, z, down)."""
+        e = l["at"][2]
+        y0 = e[1] + l.get("shift", 0.0)
+        q = (p - l["phase"]) % 1.0
+        if q < duty:
+            return y0 + sweep * 0.5 - sweep * (q / duty), e[2], True
+        s = (q - duty) / (1.0 - duty)
+        u = min(1.0, max(0.0, (s - 0.12) / 0.76))
+        y = y0 - sweep * 0.5 + sweep * u * u * (3.0 - 2.0 * u)
+        if s < 0.3:
+            r = s / 0.3
+            z = e[2] + lift * (1.0 - (1.0 - r) * (1.0 - r))   # up briskly, easing at the top
+        elif s < 0.62:
+            z = e[2] + lift
+        else:
+            r = (s - 0.62) / 0.38
+            z = e[2] + lift * (1.0 - r * r)                   # down gathering speed: the stomp
+        return y, z, False
+
+    # The body first: as high as its planted legs allow kept short of straight, lower by the
+    # crouch, dropping and nodding as each foot lands and taking most of the stride between
+    # landings to come back up.
+    pose = []
+    for i in range(n + 1):
+        p = i / float(n)
+        ride = 0.0
+        for l in limbs:
+            y, z, down = foot(l, p)
+            if not down:
+                continue
+            h3, k3, e3 = l["at"]
+            span = reach * (math.hypot(k3[1] - h3[1], k3[2] - h3[2]) + math.hypot(e3[1] - k3[1], e3[2] - k3[2]))
+            dy = y - h3[1]
+            ride = min(ride, z + math.sqrt(max(0.0, span * span - dy * dy)) - h3[2])
+        jolt = 0.0
+        for land in landings:
+            x = (p - land) % 1.0
+            if x < 0.05:
+                jolt += x / 0.05
+            elif x < 0.4:
+                r = (x - 0.05) / 0.35
+                jolt += (1.0 - r) * (1.0 - r)
+        pose.append((ride - crouch - dip * jolt, -nod * jolt))
+    tracks = {}
+    for l in limbs:
+        rows = {"hip": [], "knee": [], "ankle": []}
+        for i in range(n + 1):
+            p = i / float(n)
+            y, z, _down = foot(l, p)
+            dz, pitch = pose[i]
+            a, b, c = _limb_angles(l, _to_body(y, z, 0.0, dz, pitch), pitch)
+            rows["hip"].append((p, round(a, 3)))
+            rows["knee"].append((p, round(b, 3)))
+            rows["ankle"].append((p, round(c, 3)))
+        tracks[l["hip"]] = (rows["hip"], 0.0)
+        tracks[l["knee"]] = (rows["knee"], 0.0)
+        if l.get("ankle"):
+            tracks[l["ankle"]] = (rows["ankle"], 0.0)
+    body = [(i / float(n), 0.0, 0.0, round(dz, 3), 0.0, round(pitch, 3), 0.0) for i, (dz, pitch) in enumerate(pose)]
+    return tracks, body, stride
+
+
+def _swing(amp, phase=0.0, n=40):
+    """A limb swung evenly fore and aft over a stride, at its most forward at `phase`: dense
+    keys for a gait played "linear"."""
+    return [(i / float(n), round(amp * math.cos(2.0 * math.pi * (i / float(n) - phase)), 3)) for i in range(n + 1)]
 
 # ---------------------------------------------------------------- silhouette classes
 # What a swapped component wears at a mount (decided 29 September, the rule 30 September:
