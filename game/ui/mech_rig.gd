@@ -438,6 +438,11 @@ func _collect(node: Node) -> void:
 
 ## Whether anything here moves on its own: acts to play, a part still settling, a strike
 ## still swinging, a gait under the debug switch.
+## Whether an act is playing now (a hovercraft's balance quietens through one).
+func in_act() -> bool:
+	return not _current.is_empty()
+
+
 func alive() -> bool:
 	return not acts.is_empty() or not _strikes.is_empty() or not _current.is_empty() or not _servo.is_empty() or (debug_move and not gait.is_empty())
 

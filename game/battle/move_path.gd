@@ -123,6 +123,15 @@ static func build(centres: Array, top: float, accel_s: float = ACCEL_DEFAULT, sm
 
 ## Where the move is at time `t`: [position, unit tangent, speed, distance along it]. Within
 ## a span the speed changes evenly with time, so the distance follows the area under it.
+## The direction from where the curve is at `t0` to where it is at `t1` (times clamped to the
+## curve): the path's heading averaged over that stretch, which turns smoothly through a corner
+## where the tangent swings at once (Ryan, 5 October, the sixth notes: the drifting nose took
+## each corner's start as a jolt). Zero when the stretch has no length.
+func chord(t0: float, t1: float) -> Vector2:
+	var d: Vector2 = (at(t1)[0] as Vector2) - (at(t0)[0] as Vector2)
+	return d.normalized() if d.length() > 0.001 else Vector2.ZERO
+
+
 func at(t: float) -> Array:
 	var n := points.size()
 	if n == 0:

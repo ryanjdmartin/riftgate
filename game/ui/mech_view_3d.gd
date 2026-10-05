@@ -457,6 +457,7 @@ func _process(delta: float) -> void:
 	elif sway:
 		_pivot.rotation.y = deg_to_rad(yaw) + sin(_t * 0.9 + sway_phase) * sway_yaw
 		if balance != null:
+			balance.quiet = rig.in_act()
 			balance.step(delta)
 			_pivot.rotation.x = balance.pitch
 			_pivot.rotation.z = balance.roll

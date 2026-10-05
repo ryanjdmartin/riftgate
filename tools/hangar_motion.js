@@ -27,7 +27,21 @@ const MOVE_REF_SPEED = 150.0, MOVE_BLEND_IN = 0.25, MOVE_BLEND_OUT = 0.35;
 const ROCK_ACCEL = 200.0, BANK_TURN = 1.2, DRIFT_UNITS = 12.0;
 const HEFT_DEFAULT = 0.12, DAMPING = 0.7, STEP = 1 / 60;   // the servos (MechRig._follow) and the longest step anything advances by
 const SLIDE_RATE_SNAP = 12.0, SLIDE_RATE_FULL = 2.2, STRAFE_TURN_RATE = 6.0, REST_TURN_RATE = 4.0;   // Map3D
-const OVERSTEER_AHEAD = 0.4, OVERSTEER_GAIN = 1.4, OVERSTEER_MAX = 0.8, OVERSTEER_RATE = 7.0;   // Map3D: the nose leads the path into a corner, from the heading a moment ahead
+const OVERSTEER_AHEAD = 0.4, OVERSTEER_GAIN = 1.4, OVERSTEER_MAX = 0.95, OVERSTEER_RATE = 7.0, OVERSTEER_WINDOW = 0.5;   // Map3D: the nose leads the path into a corner, from the heading a moment ahead
+// Map3D.oversteer_lead: eased toward the limit, never stopped at it hard.
+const oversteerLead = (turnAhead, over) => OVERSTEER_MAX * Math.tanh(turnAhead * OVERSTEER_GAIN * over / OVERSTEER_MAX);
+// Map3D.turn_toward: a critically damped spring turning the facing toward `want`, its natural
+// frequency twice the first-order rate so it lags as long, so the turn rate eases in and out and
+// a corner's start never jolts the nose. Returns [facing, turn rate].
+const TURN_RATE_MAX = 5.0, TURN_ACCEL_MAX = 30.0;   // Map3D: the turn rate and its change, capped
+function turnToward(facing, vel, want, rate, dt) {
+  const w = 2 * rate, n = Math.max(1, Math.ceil(dt * w / 0.25)), h = dt / n;
+  for (let i = 0; i < n; i++) {
+    const acc = clamp(wrapPi(want - facing) * w * w - 2 * w * vel, -TURN_ACCEL_MAX, TURN_ACCEL_MAX);
+    vel = clamp(vel + acc * h, -TURN_RATE_MAX, TURN_RATE_MAX); facing += vel * h;
+  }
+  return [facing, vel];
+}
 const GLOW_PAGE = 0.9;   // this page's emission for a lit part at rest (the game's is 1.8 under its own glow pass)
 const AXES = ["pitch", "yaw", "roll"];
 const D2R = Math.PI / 180;
@@ -453,6 +467,12 @@ class MovePath {
   }
   tangentAt(i, f) { const t = pLerp(this.sampleTangent(i), this.sampleTangent(i + 1), f); return pLen(t) > 1e-4 ? pNorm(t) : this.tangent(i); }
   // [position, unit tangent, speed, distance along it] at time t
+  // MovePath.chord: the direction from the curve at t0 to the curve at t1, the heading averaged
+  // over that stretch; null when it has no length.
+  chord(t0, t1) {
+    const a = this.at(t0)[0], b = this.at(t1)[0], dx = b.x - a.x, dz = b.z - a.z, l = Math.hypot(dx, dz);
+    return l > 0.001 ? {x: dx / l, z: dz / l} : null;
+  }
   at(t) {
     const n = this.points.length;
     if (t <= 0) return [this.points[0], this.tangent(0), 0, 0];
@@ -496,7 +516,7 @@ const yawOf = (d) => Math.atan2(-d.x, -d.z);
 
 class Route {
   constructor(hexR = 60) { this.R = hexR; this.STEP = hexR * Math.sqrt(3); this.reset(); }
-  reset() { this.move = 0; this.t = 0; this.curve = null; this.pause = 0.6; this.pos = {x: 0, z: 0}; this.facing = yawOf(dirVec(DIRS.N)); this.rest = this.facing; }
+  reset() { this.move = 0; this.t = 0; this.curve = null; this.pause = 0.6; this.pos = {x: 0, z: 0}; this.facing = yawOf(dirVec(DIRS.N)); this.rest = this.facing; this.turnVel = 0; }
   points() {
     const pts = [{x: 0, z: 0}]; let p = {x: 0, z: 0};
     for (const mv of ROUTE) for (const d of mv) { p = pAdd(p, dirVec(DIRS[d]), this.STEP); pts.push(p); }
@@ -508,16 +528,15 @@ class Route {
     const mv = ROUTE[this.move];
     if (!this.curve) {
       // At rest between moves: ease to the recorded facing, then set off.
-      const step = wrapPi(this.rest - this.facing) * (1 - Math.exp(-dt * REST_TURN_RATE));
-      this.facing += step;
+      [this.facing, this.turnVel] = turnToward(this.facing, this.turnVel, this.rest, REST_TURN_RATE, dt);
       this.pause -= dt;
       if (this.pause <= 0) {
         const centres = [this.pos]; let p = this.pos;
         for (const d of mv) { p = pAdd(p, dirVec(DIRS[d]), this.STEP); centres.push(p); }
         this.curve = MovePath.build(centres, top, move.accel ?? MP_ACCEL);
-        this.t = 0;
+        this.t = 0; this.base = null; this.ahead = null;
       }
-      return {speed: 0, aim: 0, turn: dt > 0 ? step / dt : 0};
+      return {speed: 0, aim: 0, turn: this.turnVel};
     }
     this.t += dt;
     if (this.t >= this.curve.duration) {
@@ -525,22 +544,26 @@ class Route {
       this.rest = yawOf(dirVec(DIRS[mv[mv.length - 1]]));
       this.move = (this.move + 1) % ROUTE.length; this.curve = null; this.pause = PAUSE;
       if (this.move === 0) this.pos = {x: 0, z: 0};
-      return {speed: 0, aim: 0, turn: 0};
+      return {speed: 0, aim: 0, turn: this.turnVel};
     }
     const [here, tan, sp] = this.curve.at(this.t);
     this.here = here;
     const heading = yawOf(tan);
-    const slide = clamp(move.slide || 0, 0, 1), strafe = clamp(move.strafe || 0, 0, 1), over = clamp(move.oversteer || 0, 0, 1);
+    const slide = clamp(move.slide || 0, 0, 1), strafe = clamp(move.strafe || 0, 0, 1), over = Math.max(0, move.oversteer || 0);
     let rate = lerp(SLIDE_RATE_SNAP, SLIDE_RATE_FULL, slide), want = heading;
     if (over > 0) {
-      const ahead = yawOf(this.curve.at(this.t + OVERSTEER_AHEAD)[1]);
-      want = heading + clamp(wrapPi(ahead - heading) * OVERSTEER_GAIN * over, -OVERSTEER_MAX, OVERSTEER_MAX);
-      rate = lerp(rate, OVERSTEER_RATE, over);
+      // The headings averaged about now and a moment ahead (Map3D: MovePath.chord), held when
+      // the stretch runs off the curve's end.
+      const w = OVERSTEER_WINDOW / 2, cb = this.curve.chord(this.t - w, this.t + w), ca = this.curve.chord(this.t + OVERSTEER_AHEAD - w, this.t + OVERSTEER_AHEAD + w);
+      if (cb) this.base = yawOf(cb);
+      if (ca) this.ahead = yawOf(ca);
+      const base = this.base ?? heading, ahead = this.ahead ?? base;
+      want = base + oversteerLead(wrapPi(ahead - base), over);
+      rate = lerp(rate, OVERSTEER_RATE, Math.min(over, 1));
     }
     if (strafe > 0) { want = lerpAngle(heading, yawOf(dirVec(DIRS[mv[mv.length - 1]])), strafe); rate = lerp(rate, STRAFE_TURN_RATE, strafe); }
-    const step = wrapPi(want - this.facing) * (1 - Math.exp(-dt * rate));
-    this.facing += step;
-    return {speed: sp, aim: wrapPi(heading - this.facing), turn: dt > 0 ? step / dt : 0};
+    [this.facing, this.turnVel] = turnToward(this.facing, this.turnVel, want, rate, dt);
+    return {speed: sp, aim: wrapPi(heading - this.facing), turn: this.turnVel};
   }
   where() { return this.curve && this.here ? this.here : this.pos; }
 }
@@ -578,11 +601,13 @@ const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyV
 // knocked now and then by a gust, so it tips, catches itself and settles with a touch of
 // overshoot; a heave with a slow swell and a dip at each gust (Ryan, 5 October: a platform
 // on the water, trying to stay level). Stepped at a fixed rate.
-const HB = {OMEGA: 3.2, ZETA: 0.3, CURRENT: 0.05, GUST: 0.22, GUST_GAP: [1.3, 3.4], HEAVE_OMEGA: 2.6, HEAVE_ZETA: 0.4, SWELL: 0.8, HEAVE_GUST: 3.0, STEP: 1 / 120};
+const HB = {OMEGA: 3.2, ZETA: 0.3, CURRENT: 0.05, GUST: 0.22, GUST_GAP: [1.3, 3.4], HEAVE_OMEGA: 2.6, HEAVE_ZETA: 0.4, SWELL: 0.8, HEAVE_GUST: 3.0, STEP: 1 / 120,
+            GUST_TIME: 0.5, QUIET: 0.35, QUIET_RATE: 1.5};   // a gust a push over half a second; quiet in an act
 class HoverBalance {
   constructor(seed = 1) {
     this.seed = seed;
-    this.pitch = 0; this.roll = 0; this.heave = 0;
+    this.pitch = 0; this.roll = 0; this.heave = 0; this.quiet = false;
+    this.p = 0; this.r = 0; this.h = 0; this.k = 1; this.push = [0, 0, 0]; this.pushT = HB.GUST_TIME;
     this.rate = [0, 0]; this.heaveRate = 0; this.t = 0; this.acc = 0;
     this.phase = [0, 1, 2, 3, 4].map(() => this.random() * Math.PI * 2);
     this.nextGust = 0.4 + this.random() * (HB.GUST_GAP[1] - 0.4);
@@ -598,19 +623,28 @@ class HoverBalance {
     const w = HB.OMEGA, d = 2 * HB.ZETA * HB.OMEGA, hw = HB.HEAVE_OMEGA, hd = 2 * HB.HEAVE_ZETA * HB.HEAVE_OMEGA;
     while (this.acc >= HB.STEP) {
       this.acc -= HB.STEP; this.t += HB.STEP;
+      const kWant = this.quiet ? HB.QUIET : 1, kStep = HB.QUIET_RATE * HB.STEP;
+      this.k += Math.max(-kStep, Math.min(kStep, kWant - this.k));
       if (this.t >= this.nextGust) {
-        const a = this.random() * Math.PI * 2, k = 0.6 + this.random() * 0.4;
-        this.rate[0] += Math.cos(a) * HB.GUST * k; this.rate[1] += Math.sin(a) * HB.GUST * k;
-        this.heaveRate -= HB.HEAVE_GUST * k;
+        if (!this.quiet) {
+          const a = this.random() * Math.PI * 2, k = 0.6 + this.random() * 0.4;
+          this.push = [Math.cos(a) * HB.GUST * k, Math.sin(a) * HB.GUST * k, -HB.HEAVE_GUST * k]; this.pushT = 0;
+        }
         this.nextGust = this.t + HB.GUST_GAP[0] + this.random() * (HB.GUST_GAP[1] - HB.GUST_GAP[0]);
       }
+      let shove = [0, 0, 0];
+      if (this.pushT < HB.GUST_TIME) {
+        const f = Math.sin(Math.PI * this.pushT / HB.GUST_TIME) * Math.PI / (2 * HB.GUST_TIME);
+        shove = this.push.map(v => v * f); this.pushT += HB.STEP;
+      }
       const c = this.current(this.t);
-      this.rate[0] += ((c[0] - this.pitch) * w * w - this.rate[0] * d) * HB.STEP;
-      this.rate[1] += ((c[1] - this.roll) * w * w - this.rate[1] * d) * HB.STEP;
-      this.pitch += this.rate[0] * HB.STEP; this.roll += this.rate[1] * HB.STEP;
+      this.rate[0] += ((c[0] - this.p) * w * w - this.rate[0] * d + shove[0]) * HB.STEP;
+      this.rate[1] += ((c[1] - this.r) * w * w - this.rate[1] * d + shove[1]) * HB.STEP;
+      this.p += this.rate[0] * HB.STEP; this.r += this.rate[1] * HB.STEP;
       const swell = Math.sin(this.t * 0.9 + this.phase[4]) * HB.SWELL;
-      this.heaveRate += ((swell - this.heave) * hw * hw - this.heaveRate * hd) * HB.STEP;
-      this.heave += this.heaveRate * HB.STEP;
+      this.heaveRate += ((swell - this.h) * hw * hw - this.heaveRate * hd + shove[2]) * HB.STEP;
+      this.h += this.heaveRate * HB.STEP;
+      this.pitch = this.p * this.k; this.roll = this.r * this.k; this.heave = this.h * this.k;
     }
   }
 }
@@ -843,6 +877,7 @@ class Stage {
       this.pivot.rotation.set(0, this.route.facing, 0);
     }
     if (this.balance) {   // a hovercraft balancing on its cushion, as the map and the skirmish draw it
+      this.balance.quiet = !!rig.current;
       this.balance.step(dt);
       this.pivot.rotation.order = "YXZ";
       this.pivot.rotation.x = this.balance.pitch;

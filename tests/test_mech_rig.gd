@@ -758,3 +758,32 @@ func test_a_machine_is_drawn_as_big_as_its_class() -> void:
 	var shown := MechView3D.view_height(extent, 160.0 / 192.0, float(MechView3D.SIZE_FILL["light"]))
 	assert_true(is_equal_approx(extent.y / shown, MechView3D.FILL * float(MechView3D.SIZE_FILL["light"])), "a light machine fills that share of its slot's height in the skirmish")
 	assert_true(is_equal_approx(MechView3D.view_height(extent, 160.0 / 192.0), extent.y / MechView3D.FILL), "and the codex frames it whole")
+
+
+func test_a_hovercraft_eases_down_and_takes_no_gust_through_an_act() -> void:
+	# Ryan, 5 October, the sixth notes: a gust jerked the Stingray in the middle of its scan. A
+	# gust is a push over half a second, never a knock in a frame, and through an act none comes
+	# and the balance eases down to a share of itself.
+	var free := HoverBalance.new(9)
+	var calm := HoverBalance.new(9)
+	calm.quiet = true
+	var dt := 1.0 / 60.0
+	var widest_free := 0.0
+	var widest_calm := 0.0
+	var worst_jolt := 0.0
+	var last := Vector2.ZERO
+	var last_rate := Vector2.ZERO
+	for i in range(60 * 20):
+		free.step(dt)
+		calm.step(dt)
+		if i > 120:
+			widest_free = maxf(widest_free, Vector2(free.pitch, free.roll).length())
+			widest_calm = maxf(widest_calm, Vector2(calm.pitch, calm.roll).length())
+		var now := Vector2(free.pitch, free.roll)
+		var rate := (now - last) / dt
+		if i > 2:
+			worst_jolt = maxf(worst_jolt, (rate - last_rate).length())
+		last = now
+		last_rate = rate
+	assert_true(widest_calm < widest_free * 0.5, "an act's balance is a share of the free one (%f against %f)" % [widest_calm, widest_free])
+	assert_true(worst_jolt < 0.02, "and a gust never changes the attitude's rate at a stroke (%f radians a second in a frame)" % worst_jolt)

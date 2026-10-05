@@ -82,10 +82,15 @@ const REST_TURN_RATE := 4.0     # per second: a standing machine turns to its re
 const SLIDE_RATE_SNAP := 12.0   # per second: a machine with no slide follows its heading round the curve, smoothly (Ryan, 4 October: was 30, a snap)
 const SLIDE_RATE_FULL := 2.2    # per second: a slide of 1 lets the facing lag the path through a corner
 const OVERSTEER_AHEAD := 0.4    # seconds along the path an oversteering nose looks ahead, so it turns in before the corner
+const OVERSTEER_WINDOW := 0.5   # seconds of path an oversteering nose averages its headings over (MovePath.chord), now and ahead
+const TURN_RATE_MAX := 5.0      # radians a second a machine's facing turns at most (turn_toward)
+const TURN_ACCEL_MAX := 30.0    # radians a second a second its turn rate changes at most
 const OVERSTEER_GAIN := 1.4     # how far past the heading ahead an oversteer of 1 swings the nose, into the corner
-const OVERSTEER_MAX := 0.8      # radians the nose may lead the path by, at most
+const OVERSTEER_MAX := 0.95     # radians the nose may lead the path by, at most (eased toward)
 const OVERSTEER_RATE := 7.0     # per second: how briskly an oversteering nose chases its lead
 var _heading_ahead: Dictionary = {}  # unit id -> the yaw the path heads OVERSTEER_AHEAD seconds on
+var _turn_vel: Dictionary = {}       # unit id -> how fast its facing is turning, radians a second (turn_toward)
+var _heading_smooth: Dictionary = {} # unit id -> the path's heading averaged over OVERSTEER_WINDOW about now (MovePath.chord)
 var _base: Dictionary = {}      # unit id -> resting position, which the idle sway plays around
 var _phase: Dictionary = {}     # unit id -> idle phase, so the team does not sway in step
 var _columns: Dictionary = {}   # hex -> Node3D at the hex's ground: the marks hang off it
@@ -673,12 +678,14 @@ var _anim_px: Dictionary = {}   # unit id -> map pixel while a move plays, in pl
 ## While a phase plays, a unit is where its animation says, not on its hex. The heading is
 ## where the move is going; the facing follows it through the cornering module (_corner),
 ## at once for most machines and lagging for one with a slide.
-func set_anim(uid: int, px: Vector2, heading: Vector2, ahead: Vector2 = Vector2.ZERO) -> void:
+func set_anim(uid: int, px: Vector2, heading: Vector2, ahead: Vector2 = Vector2.ZERO, smooth: Vector2 = Vector2.ZERO) -> void:
 	_anim_px[uid] = px
 	if heading.length_squared() > 0.001:
 		_heading[uid] = atan2(-heading.x, -heading.y)
 	if ahead.length_squared() > 0.001:
 		_heading_ahead[uid] = atan2(-ahead.x, -ahead.y)
+	if smooth.length_squared() > 0.001:
+		_heading_smooth[uid] = atan2(-smooth.x, -smooth.y)
 
 
 func clear_anim(uid: int) -> void:
@@ -686,6 +693,7 @@ func clear_anim(uid: int) -> void:
 	_heading.erase(uid)
 	_last_pos.erase(uid)
 	_heading_ahead.erase(uid)
+	_heading_smooth.erase(uid)
 
 
 ## The cornering module (the joints row, 2 October): one piece for the Dingo's drift and the
@@ -711,10 +719,10 @@ func _corner(uid: int, rig: MechRig, delta: float) -> void:
 		# a lagging facing (the Dingo's drift) never snaps round.
 		var turn := 0.0
 		if _rest_yaw.has(uid):
-			var diff := wrapf(float(_rest_yaw[uid]) - pivot.rotation.y, -PI, PI)
-			var step := diff * (1.0 - exp(-delta * REST_TURN_RATE))
-			pivot.rotation.y += step
-			turn = step / delta
+			var settled := turn_toward(pivot.rotation.y, float(_turn_vel.get(uid, 0.0)), float(_rest_yaw[uid]), REST_TURN_RATE, delta)
+			pivot.rotation.y = settled.x
+			_turn_vel[uid] = settled.y
+			turn = settled.y
 		rig.drive(0.0, 0.0, turn, delta)
 		return
 	var node: Node3D = _units[uid]
@@ -725,24 +733,26 @@ func _corner(uid: int, rig: MechRig, delta: float) -> void:
 	_last_pos[uid] = pos
 	var slide := clampf(float(rig.move.get("slide", 0.0)), 0.0, 1.0)
 	var strafe := clampf(float(rig.move.get("strafe", 0.0)), 0.0, 1.0)
-	var over := clampf(float(rig.move.get("oversteer", 0.0)), 0.0, 1.0)
+	var over := maxf(0.0, float(rig.move.get("oversteer", 0.0)))
 	var rate := lerpf(SLIDE_RATE_SNAP, SLIDE_RATE_FULL, slide)
 	var heading: float = _heading[uid]
 	var want := heading
 	if over > 0.0:
-		var ahead := float(_heading_ahead.get(uid, heading))
-		want = heading + oversteer_lead(wrapf(ahead - heading, -PI, PI), over)
-		rate = lerpf(rate, OVERSTEER_RATE, over)
+		# The path's heading averaged about now and a moment ahead, so the nose swings through
+		# a corner as one smooth motion (the tangent swings at once where a corner's arc begins).
+		var base := float(_heading_smooth.get(uid, heading))
+		var ahead := float(_heading_ahead.get(uid, base))
+		want = base + oversteer_lead(wrapf(ahead - base, -PI, PI), over)
+		rate = lerpf(rate, OVERSTEER_RATE, minf(over, 1.0))
 	if strafe > 0.0:
 		var u := field.unit_by_id(uid)
 		if u != null:
 			want = facing_target(heading, facing_yaw(u.facing), strafe)
 			rate = lerpf(rate, STRAFE_TURN_RATE, strafe)
-	var facing := pivot.rotation.y
-	var diff := wrapf(want - facing, -PI, PI)
-	var step := diff * (1.0 - exp(-delta * rate))
-	pivot.rotation.y = facing + step
-	rig.drive(speed, wrapf(heading - pivot.rotation.y, -PI, PI), step / delta, delta)
+	var turned := turn_toward(pivot.rotation.y, float(_turn_vel.get(uid, 0.0)), want, rate, delta)
+	pivot.rotation.y = turned.x
+	_turn_vel[uid] = turned.y
+	rig.drive(speed, wrapf(heading - pivot.rotation.y, -PI, PI), turned.y, delta)
 
 
 const STRAFE_TURN_RATE := 6.0   # per second: a helicopter yaws to where it will face in the first moment of a move, then translates
@@ -755,9 +765,29 @@ static func fit_for(size: String) -> float:
 
 
 ## How far an oversteering nose leads its path, radians: past the turn the path makes over
-## the next OVERSTEER_AHEAD seconds (`turn_ahead`, radians), up to OVERSTEER_MAX.
+## the next OVERSTEER_AHEAD seconds (`turn_ahead`, radians), easing toward OVERSTEER_MAX
+## rather than stopping hard at it (a hard stop was a kink the nose showed).
 static func oversteer_lead(turn_ahead: float, oversteer: float) -> float:
-	return clampf(turn_ahead * OVERSTEER_GAIN * oversteer, -OVERSTEER_MAX, OVERSTEER_MAX)
+	return OVERSTEER_MAX * tanh(turn_ahead * OVERSTEER_GAIN * oversteer / OVERSTEER_MAX)
+
+
+## A facing turned toward `want` over `delta` seconds, from `facing` turning at `vel` radians a
+## second: (the new facing, the new turn rate). A critically damped spring (Ryan, 5 October, the
+## sixth notes: the drift's rear swung out with a jerk at every corner's start, three for the
+## three turns of the hangar's route): the turn rate itself eases in and out, so a corner
+## beginning, which bends where the nose should point, never shows as a jolt. `rate` is a first
+## order chase's, the spring set to lag as long (its natural frequency twice the rate). Its
+## turn rate and how fast that changes are capped, so a move that sets off a long way from the
+## machine's facing swings it round at a pace and not in a frame.
+static func turn_toward(facing: float, vel: float, want: float, rate: float, delta: float) -> Vector2:
+	var w := 2.0 * rate
+	var n := maxi(1, int(ceil(delta * w / 0.25)))
+	var h := delta / float(n)
+	for i in range(n):
+		var acc := clampf(wrapf(want - facing, -PI, PI) * w * w - 2.0 * w * vel, -TURN_ACCEL_MAX, TURN_ACCEL_MAX)
+		vel = clampf(vel + acc * h, -TURN_RATE_MAX, TURN_RATE_MAX)
+		facing += vel * h
+	return Vector2(facing, vel)
 
 
 ## The motion numbers in a machine's rig sidecar (`move`: slide, bank, strafe, tilt, accel,
@@ -1304,6 +1334,7 @@ func sync() -> void:
 			_units.erase(uid)
 			_pivots.erase(uid)
 			_balance.erase(uid)
+			_turn_vel.erase(uid)
 			_rigs.erase(uid)
 			_scale.erase(uid)
 			_rest_yaw.erase(uid)
@@ -1341,6 +1372,7 @@ func _process(delta: float) -> void:
 			if not _balance.has(uid):
 				_balance[uid] = HoverBalance.new(uid + 1)
 			var hb: HoverBalance = _balance[uid]
+			hb.quiet = _rigs.has(uid) and (_rigs[uid] as MechRig).in_act()
 			hb.step(delta)
 			var hp: Node3D = _pivots[uid]
 			hp.rotation.x = hb.pitch

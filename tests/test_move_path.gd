@@ -93,3 +93,55 @@ func test_the_heading_turns_evenly_round_a_corner() -> void:
 		prev_turn = turn
 		t += 1.0 / 60.0
 	assert_true(worst_jerk < 0.01, "the heading's turn a frame never leaps (%f radians)" % worst_jerk)
+
+
+func test_an_oversteering_nose_swings_into_each_corner_without_a_jolt() -> void:
+	# Ryan, 5 October, the sixth notes: the drift's rear swung out with a jerk as each corner
+	# began, three for the hangar's three turns. The tangent swings at once where a corner's arc
+	# begins; the nose now aims at the path's heading averaged about now and a moment ahead
+	# (MovePath.chord) and turns there on a spring, so its turn rate eases in and out, where the
+	# old aim (the tangents) and chase (first order) changed it by a jump a frame.
+	var mp := MovePath.build(_route([0, 0, 60, 60, 0, -60]), 120.0, 0.7)   # a quick machine, three corners
+	var dt := 1.0 / 60.0
+	var yaw := func(v: Vector2) -> float: return atan2(-v.x, -v.y)
+	var start: float = yaw.call(mp.at(0.0)[1])
+	var facing := start
+	var vel := 0.0
+	var old := start
+	var prev_vel := 0.0
+	var prev_old_vel := 0.0
+	var worst := 0.0
+	var worst_old := 0.0
+	var widest := 0.0
+	var w := Map3D.OVERSTEER_WINDOW * 0.5
+	var base := start
+	var ahead := start
+	var t := 0.0
+	while t < mp.duration:
+		var heading: float = yaw.call(mp.at(t)[1])
+		var cb := mp.chord(t - w, t + w)
+		var ca := mp.chord(t + Map3D.OVERSTEER_AHEAD - w, t + Map3D.OVERSTEER_AHEAD + w)
+		if cb != Vector2.ZERO:
+			base = yaw.call(cb)   # off the curve's end the chord has no length, and the map keeps the last
+		if ca != Vector2.ZERO:
+			ahead = yaw.call(ca)
+		var want := base + Map3D.oversteer_lead(wrapf(ahead - base, -PI, PI), 1.0)
+		var turned := Map3D.turn_toward(facing, vel, want, Map3D.OVERSTEER_RATE, dt)
+		facing = turned.x
+		vel = turned.y
+		worst = maxf(worst, absf(vel - prev_vel))
+		prev_vel = vel
+		var old_ahead: float = yaw.call(mp.at(t + Map3D.OVERSTEER_AHEAD)[1])
+		var old_want := heading + clampf(wrapf(old_ahead - heading, -PI, PI) * Map3D.OVERSTEER_GAIN, -0.8, 0.8)
+		var step := wrapf(old_want - old, -PI, PI) * (1.0 - exp(-dt * Map3D.OVERSTEER_RATE))
+		old += step
+		worst_old = maxf(worst_old, absf(step / dt - prev_old_vel))
+		prev_old_vel = step / dt
+		widest = maxf(widest, absf(wrapf(facing - heading, -PI, PI)))
+		t += dt
+	assert_true(widest > 0.15, "the nose does lead the path into its corners (%f radians at most)" % widest)
+	assert_true(worst < worst_old * 0.5, "its turn rate eases where the old aim and chase jumped (%f against %f a frame)" % [worst, worst_old])
+	var settled := Vector2(0.0, 0.0)
+	for i in range(240):
+		settled = Map3D.turn_toward(settled.x, settled.y, 1.0, 4.0, dt)
+	assert_true(absf(settled.x - 1.0) < 0.001 and absf(settled.y) < 0.001, "and it settles where it is sent, without ringing")

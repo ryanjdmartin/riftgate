@@ -1454,7 +1454,9 @@ func _advance_anim(delta: float) -> void:
 		var px: Vector2 = here[0]
 		_anim_px[uid] = px
 		if _map3d != null:
-			_map3d.set_anim(uid, px, here[1], curve.at(float(a["t"]) + Map3D.OVERSTEER_AHEAD)[1])
+			var t := float(a["t"])
+			var w := Map3D.OVERSTEER_WINDOW * 0.5
+			_map3d.set_anim(uid, px, here[1], curve.chord(t + Map3D.OVERSTEER_AHEAD - w, t + Map3D.OVERSTEER_AHEAD + w), curve.chord(t - w, t + w))
 	for uid in finished:
 		_anim.erase(uid)
 		_anim_px.erase(uid)
