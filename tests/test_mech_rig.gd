@@ -487,13 +487,15 @@ func test_a_walker_plants_its_feet_and_never_rolls() -> void:
 				(runs[runs.size() - 1] as Array).append(float(sm[1]))
 			elif not (runs[runs.size() - 1] as Array).is_empty():
 				runs.append([])
-		var longest := 0
+		# Its share down over the gait's whole cycle, however many steps it takes in it (the
+		# Ammit's legs take two to a cycle, its hands three: Ryan, 5 October, the sixth notes).
+		var down := 0
 		for run in runs:
-			longest = maxi(longest, (run as Array).size())
+			down += (run as Array).size()
 			if (run as Array).size() >= 5:
 				var slide: float = (run as Array).max() - (run as Array).min()
 				assert_true(slide < 0.8, "%s: a planted foot stays put while the body passes over it (%f units)" % [id, slide])
-		assert_true(longest > samples.size() / 3, "%s: the foot is down for a good share of the stride (%d of %d)" % [id, longest, samples.size()])
+		assert_true(down > samples.size() / 3, "%s: the foot is down for a good share of the stride (%d of %d)" % [id, down, samples.size()])
 		assert_true(absf(lowest - rest_h) < 0.6, "%s: down on the ground where it stands at rest (%f against %f)" % [id, lowest, rest_h])
 		pair[1].free()
 

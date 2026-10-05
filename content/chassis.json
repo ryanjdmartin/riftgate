@@ -55,7 +55,7 @@
    "traits": [
     "tracked"
    ],
-   "size": "assault",
+   "size": "heavy",
    "fixed": [
     "chainsaw_claw",
     "chainsaw_claw"
@@ -114,7 +114,7 @@
    "traits": [
     "walker"
    ],
-   "size": "heavy",
+   "size": "assault",
    "fixed": [],
    "loadout": [
     "twin_autoguns",

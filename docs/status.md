@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.41 since 5 October, evening: the runner's maker team rows and the Kestrel team's reading, over the movement session's v0.40, the machines' scale by class); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.42 since 5 October, late: the sixth notes on the machines, over v0.41's runner's maker team rows and the Kestrel team's reading); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -13,7 +13,7 @@ stays in A alone (Ryan, 1 October: it serves one ongoing task) and is republishe
 session; a B session cannot read it. Shared:
 
 - **The bible** (above): `docs/design-bible.html`, published whole after every change.
-- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 5 October with the fifth notes and the hovercraft's last passes): four tabs, the
+- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 5 October, late, with the sixth notes): four tabs, the
   codex, the content editor, the names list and Models. Models (the renders and the Animation
   tab merged, Ryan, 3 October) puts each machine live in 3D on top: its acts, walk and
   cornering played from its rig sidecar by `tools/hangar_motion.js` (published as
@@ -83,7 +83,7 @@ the chat is newer.
 ## As of 3 October 2026
 
 **State.** Tests green: `perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (346 tests, 13,509 checks on 5 October in a cloud session, after the machines' scale by class merged with main;
+tests/run_tests.gd` (348 tests, 14,743 checks on 5 October in a cloud session, after the sixth notes;
 a cloud session fetches Godot 4.7's Linux build from the GitHub release asset to run them
 (`Godot_v4.7-stable_linux.x86_64.zip`, and `xvfb-run` for screenshots), since
 the proxy serves the asset though not the release page; it builds models too, with
@@ -427,7 +427,24 @@ often, the Armadillo an eighth less. The Ammit's offbeat walk (three hand steps 
 `_plant`'s per-limb `cycles`) is a gait option in its sidecar (`b.gait_option`,
 `MechRig.use_gait`), shown by the hangar's Gait switch and `tools/gait_clip.gd` (frames of a
 machine walking at its map pace, for ffmpeg). Open with Ryan: the classes and their numbers on
-the phone, the Badger's booms in its width, and whether the offbeat walk replaces the ripple.
+the phone (the Badger heavy and the Clydesdale assault since the sixth notes), the Badger's booms in its width.
+
+**The sixth notes, 5 October, late (bible v0.42).** Engine: the oversteering nose aims at the
+path's heading averaged about now and 0.4 s ahead (`MovePath.chord`) and every facing turns on a
+critically damped spring with capped rate and acceleration (`Map3D.turn_toward`, `_turn_vel`), so
+corners and move starts no longer jolt; the Dingo oversteers 1.4, the Puffin 1.0. A hovercraft's
+gust pushes over half a second and none comes through an act (`HoverBalance.quiet`,
+`MechRig.in_act`). All ported to `hangar_motion.js`. Models: the Prairie Dog's skirts both sides
+and arches 5.5 over the tyre; the Armadillo's cell in a channel (`b.cut` and `_tube` take a
+`phase`); the Ammit's middle talons jointed. Acts: the Dingo an antsy pilot and its strafe
+map-only; the Badger's elbows both ways (shoulder limit 18), its gun level in raise_booms; the
+Baboon's mark_target on the right arm; the Sparrowhawk's `_barrel_roll` (overshoot, no
+corkscrew), `_loop` (back off, run in) and `_s_circle` (break right, circle left ahead); the
+Goshawk's charge without the roll (Ryan to judge in game); the Nemesis's double pound; the
+Ammit's waggling talons, higher fold and the offbeat walk as its gait (`_plant` dip 1.5, nod
+0.9; the option gone). Clearance was measured, not eyeballed, with a scratch script counting
+one part set's vertices inside another's convex pieces through an act (not committed; easy to
+rewrite from `tools/act_shot.gd`). Attack acts: wanted, a session of their own.
 
 **The codex (29 September; a tab of the hangar page since 1 October).** One surface showing a
 chassis and the components fitted to it: the Codex tab renders it in the browser from the

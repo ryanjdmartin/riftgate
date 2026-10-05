@@ -162,8 +162,8 @@
    }
   },
   "armadillo": {
-   "when": "Fourteenth round, 1 October.",
-   "note": "A firing channel cut through the front band ahead of each forward port, so a gun fitted there lies in a trough instead of running into the shell; the channel in the base metal, and the slab between the two channels cut away, so the front band steps down to one wide firing deck. The last picture is the machine with a Slug Cannon and a Missile Rack fitted to those two ports.",
+   "when": "The sixth notes, 5 October.",
+   "note": "A square channel cut through the shell along the missile cell's own line, so the cell slides up out of it instead of through the top panel; the stripe frame a sleeve over its lower part, floored dark deep in the shell. The last picture is still the fourteenth round's, with a Slug Cannon and a Missile Rack fitted to the forward ports.",
    "images": [
     {
      "file": "armadillo/armadillo_front.png",
@@ -179,7 +179,7 @@
     }
    ],
    "before": {
-    "summary": "Before: Thirteenth round, 1 October",
+    "summary": "Before: the fifth notes, 5 October (the cell's frame sitting on the shell)",
     "images": [
      {
       "file": "armadillo/before_armadillo_front.png",
@@ -220,8 +220,8 @@
    }
   },
   "prairie_dog": {
-   "when": "The fifth notes, 5 October.",
-   "note": "The arches their old shape again, raised clear of the tyres (Ryan, 5 October: deepened, they read far too thick).",
+   "when": "The sixth notes, 5 October.",
+   "note": "The skirt plate on both sides now (Ryan: it is unique), and the arches raised clear of the tyres again, five and a half units of air over a wheel's crown, so the rev's rock leaves a gap (measured: no arch inside a tyre through any act).",
    "images": [
     {
      "file": "prairie_dog/prairie_dog_front.png",
@@ -233,7 +233,7 @@
     }
    ],
    "before": {
-    "summary": "Before: fourth acts pass, 5 October (the deep, wide arches)",
+    "summary": "Before: the fifth notes, 5 October (the arches just over the tyres, the skirt on one side)",
     "images": [
      {
       "file": "prairie_dog/before_prairie_dog_front.png",

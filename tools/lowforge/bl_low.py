@@ -481,11 +481,13 @@ class Build:
             m = Matrix.Translation((cx, cy, cz)) @ Matrix.Rotation(-math.pi / 2, 4, "X")
         return self.loft(sections, material, label, m)
 
-    def cut(self, targets, p0, p1, radius, sides=8):
+    def cut(self, targets, p0, p1, radius, sides=8, phase=0.0):
         """A hole: a cylinder from `p0` to `p1` subtracted from every object in `targets`
         before export (a boolean modifier, applied), so a recessed port is a real hollow in
         the chassis and nothing of the hull shows inside it (Ryan, 1 October). Pair it with
-        a `_tube` of the same axis a hair smaller, whose inner wall and floor line the hole."""
+        a `_tube` of the same axis a hair smaller, whose inner wall and floor line the hole.
+        `phase` turns the section about the axis: four sides at a quarter pi is a square
+        with its sides across and over the axis."""
         d = (Vector(p1) - Vector(p0)).normalized()
         up = Vector((0.0, 0.0, 1.0))
         side = Vector((1.0, 0.0, 0.0)) if abs(d.dot(up)) > 0.999 else d.cross(up).normalized()
@@ -493,7 +495,7 @@ class Build:
         bm = bmesh.new()
         rings = []
         for p in (Vector(p0) - d * 1.0, Vector(p1) + d * 4.0):
-            rings.append([bm.verts.new(p + side * (radius * math.cos(i * 2.0 * math.pi / sides)) + over * (radius * math.sin(i * 2.0 * math.pi / sides))) for i in range(sides)])
+            rings.append([bm.verts.new(p + side * (radius * math.cos(phase + i * 2.0 * math.pi / sides)) + over * (radius * math.sin(phase + i * 2.0 * math.pi / sides))) for i in range(sides)])
         for i in range(sides):
             bm.faces.new([rings[0][i], rings[0][(i + 1) % sides], rings[1][(i + 1) % sides], rings[1][i]])
         bm.faces.new(rings[0])
