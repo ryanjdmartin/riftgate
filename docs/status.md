@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.38 since 5 October, evening: the machines' scale by class and the Ammit's offbeat option, over the fifth notes, the hovercraft's last passes and the map types); republish it from the committed file after every bible change, passing that URL.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.40 since 5 October, evening: the machines' scale by class and the Ammit's offbeat option, over the campaign and the economy decided, the Puffin's passive and the fifth notes); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -83,7 +83,7 @@ the chat is newer.
 ## As of 3 October 2026
 
 **State.** Tests green: `perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (344 tests, 13,485 checks on 5 October in a cloud session, after the machines' scale by class;
+tests/run_tests.gd` (346 tests, 13,509 checks on 5 October in a cloud session, after the machines' scale by class merged with main;
 a cloud session fetches Godot 4.7's Linux build from the GitHub release asset to run them
 (`Godot_v4.7-stable_linux.x86_64.zip`, and `xvfb-run` for screenshots), since
 the proxy serves the asset though not the release page; it builds models too, with
@@ -165,9 +165,12 @@ deepens every stack it applies by one per 20 heat carried, through the `on_stack
 `sim/skirmish.gd`). **Numbed is exempt from every interaction** (Ryan, a general rule). The
 **Puffin** (Kestrel, `puffin`): hull 50, shield 30, move 30 (the slowest Kestrel), a d5 of the
 locked Prow Projector (shield 30, allies only) and four hardpoints, the Overcharge Coil's first
-chassis; its passive Overpressure is **planned**: Ryan leans to an overshield (shield an ally
-past its maximum) with a cost, Claude's shape fades the excess at the round's end, his decision
-pending. Both modelled (`stingray(b)`, `puffin(b)` in `models_low.py`; propulsion reads the
+chassis; its passive **Slipstream** (decided and built 5 October; the name a placeholder): an ally it
+shields also sheds 10 heat, through the new `on_shield_granted` trigger (fires on the granter with the
+recipient, on the spend); and the Prow Projector carries **Overshield**, a new rare support keyword
+(shields only): the shield may pass the target's maximum and the excess fades at the round's end
+(`Skirmish._trim_overshield`), shown on the gauge as a hatched block beyond the bar's end. No penalty:
+the die is the brake. The bot weighs both (`Policy.shield_score`). Both modelled (`stingray(b)`, `puffin(b)` in `models_low.py`; propulsion reads the
 maker: the Stingray on lift fans flush in its wings, the Puffin on boosters far too big for it)
 and rendered to the hangar page's Models tab; rebuilt twice the same night on his notes (the
 Stingray: too literal and floating, so no tail and every part seated on the skin through
@@ -233,7 +236,7 @@ d7, the Halo Shield dropped; passive Pocket Paradox on `on_foe_status`), `armadi
 locked component the Lockdown Shutters), `wild_boar` (five hardpoints), `prairie_dog`,
 `dingo`, `goshawk`, `nemesis`, `ammit` (the last two the Arsenal's), and since 2 October the
 hovercraft `stingray` (Aphelion's, d6, passive Exothermic Suite on `on_stack`) and `puffin`
-(Kestrel's, d5, passive Overpressure planned, waiting on Ryan's overshield decision). Nothing
+(Kestrel's, d5, passive Slipstream on `on_shield_granted`; its Prow Projector the first Overshield). Nothing
 else in content is planned: every passive, keyword, status and trigger the vocabulary names runs
 (`Effects.fire`; the bible's section 7 row "The 28 September pieces, built" has each one), and
 the ten foe actions run (`Foe.ACTION_EFFECTS`, weights 3:1 attack to special as placeholders,
@@ -464,7 +467,7 @@ flare, the emitter and the lance share its spends about a third each and the Rad
 2%, so the bot runs it hot and never vents (the Nemesis's problem again) and cooling 0 is the
 knob to watch. The Puffin alone loses nearly everything, as an escort with an allies-only locked
 shield and a planned passive must (its Prow Projector is never spendable in a solo cell; greedy
-still takes the necromancers at 71%); it reads only once a team cell carries it. **The baseline reading, for Ryan's
+still takes the necromancers at 71%); it reads only once a team cell carries it. The rerun of 5 October after its passive and the overshield landed moved not a cell, as it must: the runner's one team row is the first three chassis, so neither ran in any fight; a row that carries the Puffin (a Kestrel team, or an escort row with the Stingray) is the open proposal. **The baseline reading, for Ryan's
 question of whether 80 a round is average or game-losing:** the team of three still wins every
 cell, the formations included, in about a round and at no cost, under the aims and under the
 lowest-shield rule alike (the Risen formation, fifteen foes, is the one fight that lasts: 4.6
@@ -541,13 +544,15 @@ is republished with the content. Still to judge in play (the to-do): whether the
 weighting leans hard enough, whether the swarm's opening reads as pressure or a wall, whether a
 disrupt into a boss's signature is a trick or a trap.
 
+**5 October: the campaign and the economy decided** (a design session, Ryan and Claude, in a cloud session resumed from the VS Code one that died when the account switched; bible v0.34, sections 3 and 10 rewritten, the budget in section 2, the damage rows in section 7, the open list in 12). Five cities as five lives, each under its maker, gate integrity carried between battles and bleeding when a front is ignored; a city falls only by losing a battle there and costs its salvage, its maker's new blueprints and its rift staying open, never the player's kit. The capital's gate is the life bar in the Into the Breach shape: every fallen city drains it, zero loses the run mid-campaign, and the finale is fought on what is left; repairing it is the one priced repair. Track B: the finale is inevitable, faction finals are prizes. Difficulty by smarter foes and compositions, one lead faction and at most one guest until the last tier. The hangar: hull and cracked repair free, a destroyed hardpoint component gone, a destroyed fixed one rebuilt, wrecks back after one battle in the shop, refit instant, resources only on builds, modules and the capital's gate. Components flat, never modified; a chassis carries module slots with rule text in four archetypes (stats and text traded), the hard cap retired for a budget of about three texts a machine, the Clydesdale the sandbox that overruns it; passives never swapped. Offers over trees, the host maker's catalogue after a won battle, the Arsenal's trickle at the capital. Between campaigns the pool, the codex, tiers and the makers' favour (decided: one rare piece in the maker's voice from a maker whose own measure the player topped, one offer taken; the measures recommended, relative per maker, the Arsenal's absolute), never power; livery decided as the cheap carrot (colours unlocked by a maker's favour, free on any machine; later, after the hangar); the makers' voice rule loosened to "no in-your-face advertising" from "maintenance-manual voice"; carrying a machine refused as Into the Breach's gimmick. Twelve battles the working length. Nothing built: the to-do has the save's campaign state, the mission map and the hangar screens, and the runner's destroyed count, which the destroyed-is-gone rule depends on: its first reading (greedy, 20 seeds, the cost-of-a-win table) is nearly zero per won fight, the team losing none and a single machine losing one only against a boss, so the rule is safe from the spiral and may be too gentle; a per-battle count waits on a runner that plays whole battles. The word: the campaign is the run.
+
 **Open, in order.** The task list is `docs/todo.md`, one line a task, grouped by who moves
 it and ticked in the commit that lands it; this is the order to take them in.
 
-1. Ryan's decision on the Puffin's passive (the overshield), which then gets built (both hovercraft models called good, 5 October).
+1. The Puffin's Slipstream and Overshield read in play (built 5 October; the hovercraft models are called good); the runner cannot read them until a team row carries the Puffin (the 5 October rerun moved nothing); its name, a placeholder, is Ryan's.
 2. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
-3. Ryan's text for the new machines and components; the machines' scale on the map; the strikes, the hovercraft's balancing idle, the idle acts (`RIFTGATE_ACTS_DEBUG=1`) and the gaits (`RIFTGATE_MOVE_DEBUG=1`, and a real move for the Dingo's drift, the Stingray's helicopter strafe and the banks), judged running; the movement branch merged on his word.
-4. The discuss-first decisions in the Ryan section, the economy last; enemy targeting decided and built 2 October (the paragraph above; the runner's read is the baseline question); the commander layer once the balance has a baseline.
+3. Ryan's text for the new machines and components; the size classes on the phone and the Ammit's offbeat walk (the hangar's Walk); the strikes, the hovercraft's balancing idle, the idle acts (`RIFTGATE_ACTS_DEBUG=1`) and the gaits (`RIFTGATE_MOVE_DEBUG=1`, and a real move for the Dingo's drift, the Stingray's helicopter strafe and the banks), judged running; the movement branch merged on his word.
+4. The discuss-first decisions left in the Ryan section (the campaign and the economy are decided, 5 October, the paragraph above; what remains of them is the makers' measures and notices, and the in-battle ones: ally wrecks, terrain, base defences, reinforcements, the multi-hex boss, Rift Pressure in the boss fight, packs keeping hull between fights); enemy targeting decided and built 2 October (the paragraph above; the runner's read is the baseline question); the commander layer once the balance has a baseline.
 5. Ready to build: the pacing pieces after Ryan's session; the movement's small finds (the frozen packs' missing mark, the road's first slab); the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased parked, Corrode, foe roles), and a dedicated hunter foe and spawned formations once proposed.
 6. Audio: a full play of Hold The Line, the console's fresh pass and the effects' picks, the two boss themes.
-7. A prototype hangar in the game (paints and loadouts, no economy). Art: enemy art through foeforge, the hangar as a model. Before a phone leaves the desk: onboarding, then tuning.
+7. A prototype hangar in the game (paints and loadouts, no economy), now with a design to grow into (the hangar and the mission map in the to-do's screens section, the campaign state in the engine's). Art: enemy art through foeforge, the hangar as a model. Before a phone leaves the desk: onboarding, then tuning.

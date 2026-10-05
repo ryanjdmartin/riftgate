@@ -200,9 +200,14 @@ func touches(other: Unit) -> bool:
 ## Shield comes back each battlefield phase spent out of combat, at the chassis's field
 ## rate, and inside a fight only from shield components. Never a full refill for free, so
 ## withdrawing and re-engaging is not a way to reset (Ryan, 18 September).
-func recharge_shield(amount: int) -> int:
+func recharge_shield(amount: int, overshield: bool = false) -> int:
 	var before := shield
-	shield = mini(shield_max, shield + maxi(0, amount))
+	if overshield:
+		# Overshield (5 October): the shield may pass its maximum; the excess fades at the
+		# round's end (Skirmish._trim_overshield). A shield already past it still gains.
+		shield = shield + maxi(0, amount)
+	else:
+		shield = mini(shield_max, shield + maxi(0, amount)) if shield < shield_max else shield
 	return shield - before
 
 

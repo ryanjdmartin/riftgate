@@ -1,262 +1,676 @@
 {
-  "_about": "Chassis. Not classes: any silhouette, any component in any slot. Numbers are in tens. movespeed is the move in tens: a normal hex costs 10, a fast one 5, and a slow hex can always be entered and ends the move; which ground is which word is the way of moving among traits (tracked, walker, wheeled, hover, flyer; exactly one), bible section 4. size is the machine's class by mass (light, medium, heavy, assault), which sets how big it is drawn on the map and in the skirmish (bible section 7). armour is taken off every blow that lands on bare hull, flat, so small hits bounce off a heavy machine (a standing shield blocks a blow whole; nothing bleeds through). recharge_field is shield regained each battlefield phase spent out of combat; in a fight shield comes only from components (never a free refill, so withdrawing is not a reset). cooling is heat shed at the start of every skirmish turn (0 if absent): venting is a tactic, but a round of ballistics or shields is a way of cooling too. hardpoints is the number of free slots (and of hp_<n> pins on the model); fixed lists the components built into the chassis (always on the die, never removed, no hardpoint used); loadout is the components fitted to the hardpoints by default, and a hardpoint left empty is an entry on the die that does nothing. Every component is one entry, so die size is fixed count plus hardpoints. passive is zero or one object: name and description are shown (the codex prints NAME: description), effects are what the engine runs, at most three, one idea (an upside and its cost count as one passive); the validator refuses effects the engine cannot execute. Shown to the player: codex (the inspect entry, combat and hangar), flavour (an in-world quote), the passive's name and description. design is internal and never shown: fantasy (pitch, inspiration, homages), niche (the role it is meant to fill). Makers are placeholders.",
-  "makers": [
-    { "id": "minerva", "name": "Minerva Heavy Works", "style": "Armour first. Everything is a tank, even the ones with legs.", "voice": "Maintenance manual. Terse, exact, proud of tolerances." },
-    { "id": "kestrel", "name": "Kestrel Dynamics", "style": "Fast, fragile, over-tuned. Airframes and interceptors.", "voice": "Flight-test log. Clipped, numbers first." },
-    { "id": "wainwright_sutler", "name": "Wainwright & Sutler", "style": "Quads and artillery. Old firm, odd designs, everything works.", "voice": "Field notes. Dry and precise." },
-    { "id": "aphelion", "name": "Aphelion", "style": "Descended from the deep-space programme, back since before the rifts opened. Humanoid frames, hover platforms, variable geometry; high-tech suites over light hulls. White with a pearl sheen, red markings.", "voice": "Haughty, elitist, technical, jargon" },
-    { "id": "arsenal", "name": "The Arsenal", "style": "The Council's own R&D house, which need not compete for favour. Heavy walkers, plasma and energy that runs hot and never crits, big single hits, execute, burn. Dark steel and gunmetal, black chrome.", "voice": "A manual written as liturgy." }
-  ],
-  "entries": [
-    {
-      "id": "badger", "name": "Honey Badger", "designation": "EX-45XLE Combat Miner", "maker": "minerva",
-      "design": { "fantasy": "A repurposed mining vehicle, designed to take severe punishment and keep on working. Refurbishments were minimal, basically bolting on weapons and armour, it keeps most of its utilitarian mining machinery flavour.", "niche": "tanky bruiser", "name_clash": "Flagged 28 September: the id badger is Heavy Gear's Badger APC and BattleTech's Badger transport; the nickname Honey Badger is nobody's. Kept: the shown name is clear." },
-      "codex": "The Minerva EX-45L (colloquially nicknamed the \"Badger\") was popular a mining mech widely praised for its reliability and durability, being designed to operate in the harshest, deepest environments imaginable. Reports exist of Badgers being caught in cave-ins while mining over 5 kilometers underground, only to dig their way out to the surface by nightfall, just in time for drinks with the crew. So naturally, when the Rifts opened, the ever-practical Minerva engineering team's first instinct was to finally give their prized Badger claws, teeth, and as many missiles as it could carry, putting its legendary longevity to work on the battlefield.",
-      "hull": 160, "shield": 30, "movespeed": 20, "heat_max": 80, "hardpoints": 4,
-      "armour": 10, "recharge_field": 15, "cooling": 5,
-      "traits": ["tracked"],
-      "size": "assault",
-      "fixed": ["chainsaw_claw", "chainsaw_claw"],
-      "loadout": ["slug_cannon", "missile_rack", "twin_autoguns", "proximity_klaxon"],
-      "passive": {
-        "id": "reinforced_skeleton", "name": "Reinforced Skeleton",
-        "description": "Legendary Minervan strength. Components can be cracked but never destroyed. Melee attacks deal +10% damage. Cracked weapons become melee-typed, instead of their usual type.",
-        "effects": [
-          { "trigger": "on_injury", "effect": "no_destroy", "value": 1 },
-          { "trigger": "on_attack", "effect": "multiply_damage", "value": 1.1, "when": "reach_melee" },
-          { "trigger": "static", "effect": "set_reach", "value": "melee", "when": "component_cracked" }
-        ]
-      },
-      "flavour": "Hey Russ, ain't that yer Badger over there, covered in demon innards? I thought they retired the ol' girl!"
-    },
-    {
-      "id": "clydesdale", "name": "Clydesdale", "designation": "Pattern 1 Combat Walker", "maker": "wainwright_sutler",
-      "design": { "fantasy": "A massive, boxy, heavily armoured, and utilitarian quadruped walker, designed to fill whatever niche the team is lacking. Like its namesake, it has four thick legs and carries a massive payload on top.", "niche": "Heavy cavalry", "notes": "Not sure if this needs a passive, since by lore this probably doesn't want too many locked components. This design is intentionally vanilla, as it's a jack-of-all-trades horse that can mount a ton of stuff, but for gameplay purposes it might need something to prevent it from being actually lame and boring. If we make it unique in that it has a very high number of hardpoints, then a passive ability that helps control roll randomness somehow would probably be appropriate. Decided 28 September: the d9 stays (the die cap is 10 now) and the passive is Battery Director, a free reroll of its own die once a round, die-local so the team gets no knock-on; if it feels thin it gets two, or ten entries. Its identity is capacity, which the hangar will show. Shock Barrage is its advanced piece." },
-      "codex": "Surprisingly, or perhaps not, the ever-pragmatic Wainwright & Sutler were the first surviving manufacturer to field a combat walker when the invasion first began. Not knowing the full scope of the threat, the Clydesdale was positioned as a rugged and effective jack-of-all trades, a true workhorse befitting its namesake. A hundred years later, and the original design is still barely changed, its signature W&S simplicity being favourited by pilots and maintenence crews alike. It also serves as an effective training vehicle, as its notoriously poor turning radius results in one less thing for a green pilot to worry about on the battlefield.",
-      "hull": 140, "shield": 40, "movespeed": 30, "heat_max": 60, "hardpoints": 9,
-      "armour": 5, "recharge_field": 20, "cooling": 5,
-      "traits": ["walker"],
-      "size": "heavy",
-      "fixed": [],
-      "loadout": ["twin_autoguns", "twin_autoguns", "lance", "pocket_mortar", "howitzer", "shock_barrage", "ablative_plating", "flak_skirt", "heat_sink"],
-      "passive": {
-        "id": "battery_director", "name": "Battery Director",
-        "description": "Rerolling only the Clydesdale's die is free once a round, on top of the team's rerolls.",
-        "effects": [
-          { "trigger": "static", "effect": "free_reroll", "value": 1 }
-        ]
-      },
-      "flavour": "Pilot manual footnotes: Most of the Clydesdale controls are just for show. The only ones you really need are accelerate and alpha strike."
-    },
-    {
-      "id": "sparrowhawk", "name": "Sparrowhawk", "designation": "K-7 Mk III Interceptor", "maker": "kestrel",
-      "design": { "fantasy": "A priority-target interceptor. Designed for speed and firepower and not much else, taking out a key asset and fleeing while its generous shields recharge.", "niche": "assassin", "name_clash": "Kept (Ryan, 28 September). Sparrowhawk is a Halo Wars gunship and a BattleTech aerospace fighter, both obscure in their own properties; the name conjures the bird, not their machine. A coincidence, not a lift, and the 'hawk pair with the Goshawk is the point." },
-      "codex": "Shortly into the invasion, it was determined that the masses of zombies, demons, and otherwordly things were, frankly, quite dumb without a guiding intelligence coordinating them. Naturally, Kestrel won the bid to produce a small interceptor aircraft, designed to eliminate priority targets and disengage before getting overwhelmed. However, the weapons package traditionally mounted on such a small frame proved ineffective to the task. It wasn't until one inspired engineer suggested cutting all 'uneccesary' weight from the design that a breakthrough was achieved; Armour, weapon regulators, ejection systems, and padded seats were all deemed frivolous, and their omission skyrocketed the Sparrowhawk to excel in its role.",
-      "hull": 60, "shield": 60, "movespeed": 50, "heat_max": 60, "hardpoints": 4,
-      "armour": 0, "recharge_field": 30, "cooling": 0,
-      "traits": ["flyer"],
-      "size": "light",
-      "fixed": [],
-      "loadout": ["overclocked_railgun", "headhunter_rifle", "arc_projector", "deflector"],
-      "passive": {
-        "id": "disabled_regulators", "name": "Disabled Weapon Regulators",
-        "description": "Premium Kestrel \"feature.\" Double damage and double heat for all weapons.",
-        "effects": [
-          { "trigger": "on_attack", "effect": "multiply_damage", "value": 2},
-          { "trigger": "on_attack", "effect": "multiply_heat", "value": 2 }
-        ]
-      },
-      "flavour": "There's lighting a fire under your ass, and then there's piloting a Sparrowhawk. I suggest a cold plunge before you strap in."
-    },
-    {
-      "id": "baboon", "name": "Baboon", "designation": "Perihelion Flight 7 Support Frame", "maker": "aphelion",
-      "design": { "fantasy": "A long-armed, stubby-legged plantigrade walker with a high tech suite of weapons and equipment mounted on its backpack. Not fast or heavily armoured, it specializes in battlefield control through status effects and high-tech equipment with complex effects.", "niche": "combat support", "notes": "Numbers and designation are Claude's first fill (26 September), the passive and stock re-cut 28 September, all Ryan's to move. Stock is Aphelion's generic kit (two Umbra Projectors on the shoulders, two Pulse Repeaters and the Zenith Emitter on the fists, a Radiator Sail); the Corona Shield is a unique unlock now, not stock. A d7 since 30 September (Ryan: the fists rest on the ground and carry the guns, two mounts a hand): the Halo Shield was dropped, since Pocket Paradox pays for missing shield and a shield component fights it. The fixed pods carry the Solar Flare Array so the passive has a status to read alone.", "name_clash": "Was the Mandrill (a BattleTech 'Mech that looks like ours); renamed the Baboon 28 September, Ryan's pick: a funny name for a funky machine Aphelion thought was cool. Gelada was too obscure for pilots to have coined, Silverback implied a fighter. Baboon is itself the Clan designation of BattleTech's Howler (a 20-ton light 'Mech); Ryan keeps it, a designation-tier clash like the Goshawk's." },
-      "codex": "Looking like a cross between an orangutan and a troll, what the Baboon lacks in speed or endurance it more than makes up for with high-tech Aphelion technomagic. After the rifts first opened (and upended everything mankind knew about the laws of physics and the nature of the universe), Aphelion set to work assimilating the torrent of new data, developing experimental countermeasures at a frenetic pace. One unlucky researcher managed to knock out his past self using a localized pocket paradoxical time loop. The effect was quickly weaponized and a frame built to lug the heavy device in into battle, nicknamed the \"Baboon\" in the researcher's memory.",
-      "hull": 100, "shield": 40, "movespeed": 20, "heat_max": 80, "hardpoints": 6,
-      "armour": 0, "recharge_field": 20, "cooling": 5,
-      "traits": ["walker"],
-      "size": "medium",
-      "fixed": ["solar_flare_array"],
-      "loadout": ["umbra_projector", "umbra_projector", "pulse_repeater", "pulse_repeater", "zenith_emitter", "radiator_sail"],
-      "passive": {
-        "id": "pocket_paradox", "name": "Pocket Paradox",
-        "description": "A localized paradoxical time loop, weaponized. When a foe gains a status there is a 20% chance its past self knocks it out as well (Suppressed), plus 10% for every 10 shield the Baboon is missing.",
-        "effects": [
-          { "trigger": "on_foe_status", "effect": "chance_suppress", "value": 20, "per_missing_shield": 1 }
-        ]
-      },
-      "flavour": ""
-    },
-    {
-      "id": "armadillo", "name": "Armadillo", "designation": "HW-22T Heavy Weapons Carrier", "maker": "minerva",
-      "design": { "fantasy": "A squat, heavily armoured walker with short, thick legs, its back bristling with weaponry from shielded ports that can seal for additional protection. The cockpit is tucked under the front armour, providing reduced visibility but extra protection. An internal electric generator shocks foes that strike is hull when activated.", "niche": "tank", "notes": "Probably needs taunt effects on one or more locked or stock components. Wants a retaliate ability that  damages and/or causes status on foes that hit hull, but not sure if that is a passive or component that needs activating. Decided 28 September: the tankiest machine in the game, its toughness in the numbers and the passive and never in locked plating, so the free die is the player's. Faraday Hull is retaliation as a debuff, not thorns (thorns scales with enemy blows and inverts horde against boss); the locked Faraday Shutters are its taunt and extend the shock to blocked blows; the crack threshold needs no help at this hull. Numbers, designation and kit are Claude's fills, Ryan's to move." },
-      "codex": "",
-      "hull": 150, "shield": 30, "movespeed": 20, "heat_max": 60, "hardpoints": 5,
-      "armour": 15, "recharge_field": 15, "cooling": 5,
-      "traits": ["walker"],
-      "size": "assault",
-      "fixed": ["lockdown_shutters"],
-      "loadout": ["rivet_gun", "slug_cannon", "missile_rack", "ablative_plating", "blowout_stack"],
-      "passive": {
-        "id": "faraday_hull", "name": "Faraday Hull",
-        "description": "The whole hull is live. A foe that strikes bare hull is Shocked: the next blow it takes deals double. A Shocked foe that strikes again takes 10.",
-        "effects": [
-          { "trigger": "static", "effect": "shock_on_hull_strike", "value": 1 }
-        ]
-      },
-      "flavour": ""
-    },
-    {
-      "id": "wild_boar", "name": "Wild Boar", "designation": "AB-70R Assault Breacher", "maker": "minerva",
-      "design": { "fantasy": "An unstoppable assault tank, complete with front rams and plows, designed for breaching reinforced emplacements - or plowing over and through fodder monsters.", "niche": "Vanguard tank", "notes": "Passive should be something about being able to access the backline, or some other vanguard-punch-through ability. Decided 28 September: a diver, not a bruiser (that is the Badger). Juggernaut Drive puts overwhelm on every attack, so a kill's spare damage reaches the back rank from any gun; the locked Breaching Plow is its one melee hit, cleaving, and carries the front armour as its own passive. Five hardpoints since 30 September (Ryan): two parallel turret guns, a mount on the turret's top and one on each rear quarter; a second Slug Cannon fills the turret pair. Numbers, designation and kit are Claude's fills, Ryan's to move." },
-      "codex": "",
-      "hull": 130, "shield": 30, "movespeed": 30, "heat_max": 60, "hardpoints": 5,
-      "armour": 10, "recharge_field": 20, "cooling": 5,
-      "traits": ["tracked"],
-      "size": "heavy",
-      "fixed": ["breaching_plow"],
-      "loadout": ["slug_cannon", "slug_cannon", "missile_rack", "ablative_plating", "blowout_stack"],
-      "passive": {
-        "id": "juggernaut_drive", "name": "Juggernaut Drive",
-        "description": "Momentum carries through. Damage past a kill spills into the rank behind, from any weapon.",
-        "effects": [
-          { "trigger": "static", "effect": "grant_keyword", "value": "overwhelm" }
-        ]
-      },
-      "flavour": ""
-    },
-    {
-      "id": "prairie_dog", "name": "Prairie Dog", "designation": "Pattern 9 Scout Car", "maker": "wainwright_sutler",
-      "design": { "fantasy": "A fast, agile, and lightly armoured skirmisher, able to skim in and out of fights with ease. It's signature ability allows it to serve as both a potent scout and harasser before getting away with minimal damage.", "niche": "scout/harasser", "notes": "Decided 28 September: the passive as Ryan wrote it, resolved per ally with a flat chance and no new UI: the Prairie Dog is always out before the enemy strikes, each ally rolls an even chance to slip out with it, and a blow aimed at a covered machine is lost rather than retargeted. The locked Flakshot Repeater makes its round shoot, roll again, shoot, leave; Incendiary Shells because it leaves them burning (burning carried between fights is on the ideas list). Numbers, designation and kit are Claude's fills, Ryan's to move." },
-      "codex": "",
-      "hull": 60, "shield": 40, "movespeed": 50, "heat_max": 60, "hardpoints": 3,
-      "armour": 0, "recharge_field": 30, "cooling": 5,
-      "traits": ["wheeled"],
-      "size": "light",
-      "fixed": ["flakshot_repeater"],
-      "loadout": ["twin_autoguns", "incendiary_shells", "flak_skirt"],
-      "passive": {
-        "id": "staticscreen_projector", "name": "Static-screen Projector",
-        "description": "A blast of dust, smoke and static electricity that confuses senses and sensors alike. When the team withdraws, the Prairie Dog is out before the enemy strikes, and each ally has an even chance of slipping out with it; a blow aimed at a machine the screen covers is lost.",
-        "effects": [
-          { "trigger": "static", "effect": "screen_withdraw", "value": 50 }
-        ]
-      },
-      "flavour": ""
-    },
-    {
-      "id": "dingo", "name": "Dingo", "designation": "Pattern 12 Support Car", "maker": "wainwright_sutler",
-      "design": { "fantasy": "A small, nimble, lightly armoured vehicle designed to support heavy armour in combat. Able to stealthily avoid combat until its allies are in position for a flanking or pincer attack, then capitalize on openings in combat.", "niche": "combat support", "name_clash": "Kept (Ryan, 29 September). Dingo is a Heavy Gear Northern gear, an obscure resin-era release in a niche property and a biped, so no silhouette resemblance; the Bundeswehr's ATF Dingo, a four-wheeled armoured car, is the closer match and the homage W&S's register is built on. Say Dingo and people picture the dog: the coincidence tier.", "notes": "Decided 28 September: stealth is a trait, not a passive (like flyer): it controls no ground and joins a fight only when an ally is in it or when it stopped a pack in its path, so it waits in the wings and never fights alone unless run into. The passive is the other half of Ryan's Adaptive Camouflage, the flanking bonus, as Tactical Databank. The locked Megataser Harpoon is a cheap pin for the foe an ally is about to eat; Coolant Dump because it can be spent on a friend. Numbers, designation and kit are Claude's fills, Ryan's to move." },
-      "codex": "",
-      "hull": 60, "shield": 40, "movespeed": 40, "heat_max": 60, "hardpoints": 3,
-      "armour": 0, "recharge_field": 25, "cooling": 5,
-      "traits": ["wheeled", "stealth"],
-      "size": "light",
-      "fixed": ["megataser_harpoon"],
-      "loadout": ["twin_autoguns", "pocket_mortar", "coolant_dump"],
-      "passive": {
-        "id": "tactical_databank", "name": "Tactical Databank",
-        "description": "Every ally's firing solution, shared. With an ally in the fight, the Dingo's kinetic weapons roll their maximum.",
-        "effects": [
-          { "trigger": "on_attack", "effect": "roll_max", "value": 1, "when": "ally_present" }
-        ]
-      },
-      "flavour": ""
-    },
-    {
-      "id": "goshawk", "name": "Goshawk", "designation": "K-9 Mk II Attack Airframe", "maker": "kestrel",
-      "design": { "fantasy": "The larger cousin of the Sparrowhawk, trades explosiveness for longevity. Wide downturned wings evoking a hovering predator, weapon mounts mounted under the wings. Double boosters mounted on top of the tail section (similar to an A10 warthog).", "niche": "Ramping damage", "notes": "Locked weapon(s) should vent heat and deal increased damage proportional to heat vented. Decided 28 September: split, not stacked. The passive is sustain from heat (Thermal Recoupler regains shield per 10 heat at the start of its turn, the game's first in-fight regen, safe on one chassis) and the locked Afterburner Cannon is the burst that spends it: ride hot for regen or dump for the hit. Damage scaling dropped; the Sparrowhawk owns that. Arc Projector is its advanced piece. Numbers, designation and kit are Claude's fills, Ryan's to move.", "name_clash": "Kept (Ryan, 28 September). Goshawk is the Inner Sphere designation of the Clan Vapor Eagle (a 55-ton 'Mech), and there is a Goshawk II. A designation few know, not the name people use; Ryan minds a designation-tier clash less, and the 'hawk pair with the Sparrowhawk stays." },
-      "codex": "",
-      "hull": 100, "shield": 50, "movespeed": 40, "heat_max": 100, "hardpoints": 5,
-      "armour": 0, "recharge_field": 25, "cooling": 5,
-      "traits": ["flyer"],
-      "size": "medium",
-      "fixed": ["afterburner_cannon"],
-      "loadout": ["laser_carbine", "headhunter_rifle", "arc_projector", "deflector", "ram_air_scoop"],
-      "passive": {
-        "id": "thermal_recoupler", "name": "Thermal Recoupler",
-        "description": "Heat is not waste. At the start of its turn the Goshawk regains 5 shield for every 10 heat it carries.",
-        "effects": [
-          { "trigger": "on_round_start", "effect": "shield_per_heat", "value": 5 }
-        ]
-      },
-      "flavour": ""
-    },
-    {
-      "id": "nemesis", "name": "Nemesis", "designation": "Arsenal Instrument IV", "maker": "arsenal",
-      "design": { "fantasy": "A hulking, neckless, spiked brute. Thick arms made for pummeling. A glowing firey core in its torso that lights up as the mech takes damage and heats up.", "niche": "Sustained damage bruiser", "notes": "One or more locked components should grant overheating, or deal self -damage. Decided 28 September: Crucible Capacitor counts blows that reach hull from foes or its own weapons, never overheat burn (that loop has no brake), and the stacks decay as Overheating does; a plain vent is its relief. The locked Gravity Knuckles are volatile, so every punch feeds it, and volatile is the general Arsenal self-damage keyword for later shield and vent faces. Meteor Artillery is its advanced piece. Numbers, designation and kit are Claude's fills, Ryan's to move." },
-      "codex": "",
-      "hull": 140, "shield": 20, "movespeed": 20, "heat_max": 100, "hardpoints": 4,
-      "armour": 10, "recharge_field": 15, "cooling": 5,
-      "traits": ["walker"],
-      "size": "heavy",
-      "fixed": ["gravity_knuckles", "gravity_knuckles"],
-      "loadout": ["plasma_carbine", "meteor_artillery", "ward_plate", "entropy_condenser"],
-      "passive": {
-        "id": "crucible_capacitor", "name": "Crucible Capacitor",
-        "description": "The core feeds on punishment. Melee damage rises 5 with every stack of Overheating, and any blow that reaches hull, from a foe or its own weapons, adds a stack.",
-        "effects": [
-          { "trigger": "on_attack", "effect": "add_damage", "value": 5, "per_stack": "overheating", "when": "reach_melee" },
-          { "trigger": "on_hull_damage", "effect": "stack_status", "value": "overheating" }
-        ]
-      },
-      "flavour": ""
-    },
-    {
-      "id": "ammit", "name": "Ammit", "designation": "Arsenal Instrument VII", "maker": "arsenal",
-      "design": { "fantasy": "A sinister digitigrade figure, with 4 clawed arms, the middle set which can be used as an additional pair of legs. A low-set snout like cockpit with burning \"eyes.\" Absorbs energy from units it defeats with its 4 signature locked claw weapons, granting permanent overcharge.", "niche": "Scaling damage", "notes": "Needs 4 locked components: melee weapons that grant overcharge on kill. Not sure of name, something sinister about assimilation or draining or attuning or something. Decided 28 September: four locked Soulcutter Talons (execute to finish, devour to grow) and four hardpoints, the d8 Ryan wrote as a total. Quintessence Tap keeps the Overcharged stacks for the battle, never the campaign, so the snowball has an end. Arsenal names stay sanctified on their face and sinister on reflection. Numbers, designation and kit are Claude's fills, Ryan's to move." },
-      "codex": "",
-      "hull": 120, "shield": 40, "movespeed": 30, "heat_max": 80, "hardpoints": 4,
-      "armour": 5, "recharge_field": 20, "cooling": 5,
-      "traits": ["walker"],
-      "size": "medium",
-      "fixed": ["soulcutter_talons", "soulcutter_talons", "soulcutter_talons", "soulcutter_talons"],
-      "loadout": ["plasma_carbine", "blazethrower", "ward_plate", "entropy_condenser"],
-      "passive": {
-        "id": "quintessence_tap", "name": "Quintessence Tap",
-        "description": "What the talons take is kept. Overcharged never decays on this machine and lasts the battle.",
-        "effects": [
-          { "trigger": "static", "effect": "keep_status", "value": "overcharged" }
-        ]
-      },
-      "flavour": ""
-    },
-    {
-      "id": "stingray", "name": "Stingray", "designation": "Perigee Flight 4 Strike Skimmer", "maker": "aphelion",
-      "design": { "fantasy": "A flat pearl-white lens of a hull that rides on lift fans sunk flush into its wings and pitches like a helicopter to move. Its heat suite is its weapon: the hotter it runs, the deeper every burn and every buff it lays. The ray's barb is its tail, lit at the tip; its mouth is the lance under the nose.", "niche": "hot status amplifier", "notes": "Proposed and decided 2 October (Ryan picked Stingray over Lionfish and Sea Wasp; Lionfish was Claude's lead). The second Aphelion machine, carrying the heat idea weighed and parked when the Baboon's passive was chosen (28 September). Cooling 0 by design: it never cools on its own, the Radiator Sail is its only brake, so every round is a heat decision; heat_max 100 so the suite has five steps to climb. Propulsion by maker (Ryan, 2 October): Aphelion's hovers and aircraft are aquatic, fans and rotors in places, so the Stingray's lift is ducted fans flush in the wing discs; Kestrel keeps the big boosters; the exposed-rotor fan-copter (the Banshee register) is kept free for a later Aphelion flyer, and W&S flyers would be traditional helicopter profiles. Numbers, designation and kit are Claude's fills, Ryan's to move. Ryan, 2 October: five extra Burning at 100 heat is probably silly, and easy to tune; the passive double-dips through Primed (the Primed stacks it lays are deepened, and so are the burns those blows lay), a knob for the runner." },
-      "codex": "",
-      "hull": 80, "shield": 50, "movespeed": 40, "heat_max": 100, "hardpoints": 5,
-      "armour": 0, "recharge_field": 25, "cooling": 0,
-      "traits": ["hover"],
-      "size": "medium",
-      "fixed": ["photosphere_lance"],
-      "loadout": ["solar_flare_array", "pulse_repeater", "zenith_emitter", "aurora_lattice", "radiator_sail"],
-      "passive": {
-        "id": "exothermic_suite", "name": "Exothermic Suite",
-        "description": "Heat is the suite's power. Every stack this machine applies, to a foe, an ally or itself, is one deeper for every 20 heat it carries. Numbed excepted, as always.",
-        "effects": [
-          { "trigger": "on_stack", "effect": "add_stacks", "value": 1, "per_heat": 20 }
-        ]
-      },
-      "flavour": ""
-    },
-    {
-      "id": "puffin", "name": "Puffin", "designation": "K-11 Mk I Ground-Effect Escort", "maker": "kestrel",
-      "design": { "fantasy": "Kestrel's one machine that touches the ground, and so the one Kestrel that can stop a pack. A short deep body in chrome on two boosters far too big for it, stubby wings, tail fins, and the whole front one shield projector, a great faired beak. Kestrel called it a very cool ground-effect escort; pilots took one look and called it the Puffin.", "niche": "shield specialist", "notes": "Proposed and decided 2 October: the Puffin the bible's makers row wanted (28 September). The slowest Kestrel (Ryan: allowed, since lore-wise they loaded it with tech instead of guns), so movespeed 3; hover, so it skims water and chokes on ruins. Boosters, never fans: Ryan, 2 October, anything but big boosters is off-brand for Kestrel. Passive open: Ryan's lean is an overshield (shield allies past their maximum) with a cost or a second effect; Claude's shape, 2 October, is overshield that fades at the end of the round with the fixed projector pointing outward only, since shield-the-Puffin-every-turn would be a shield-bot. Planned until he decides. The Overcharge Coil gets its first chassis here. Numbers, designation and kit are Claude's fills, Ryan's to move." },
-      "codex": "",
-      "hull": 50, "shield": 30, "movespeed": 30, "heat_max": 60, "hardpoints": 4,
-      "armour": 0, "recharge_field": 30, "cooling": 5,
-      "traits": ["hover"],
-      "size": "light",
-      "fixed": ["prow_projector"],
-      "loadout": ["laser_carbine", "deflector", "overcharge_coil", "ram_air_scoop"],
-      "passive": {
-        "id": "overpressure", "name": "Overpressure",
-        "description": "The Puffin's shield components may raise an ally's shield past its maximum. Shield past maximum fades at the end of the round.",
-        "status": "planned",
-        "effects": []
-      },
-      "flavour": ""
-    }
-  ]
+ "_about": "Chassis. Not classes: any silhouette, any component in any slot. Numbers are in tens. movespeed is the move in tens: a normal hex costs 10, a fast one 5, and a slow hex can always be entered and ends the move; which ground is which word is the way of moving among traits (tracked, walker, wheeled, hover, flyer; exactly one), bible section 4. size is the machine's class by mass (light, medium, heavy, assault), which sets how big it is drawn on the map and in the skirmish (bible section 7). armour is taken off every blow that lands on bare hull, flat, so small hits bounce off a heavy machine (a standing shield blocks a blow whole; nothing bleeds through). recharge_field is shield regained each battlefield phase spent out of combat; in a fight shield comes only from components (never a free refill, so withdrawing is not a reset). cooling is heat shed at the start of every skirmish turn (0 if absent): venting is a tactic, but a round of ballistics or shields is a way of cooling too. hardpoints is the number of free slots (and of hp_<n> pins on the model); fixed lists the components built into the chassis (always on the die, never removed, no hardpoint used); loadout is the components fitted to the hardpoints by default, and a hardpoint left empty is an entry on the die that does nothing. Every component is one entry, so die size is fixed count plus hardpoints. passive is zero or one object: name and description are shown (the codex prints NAME: description), effects are what the engine runs, at most three, one idea (an upside and its cost count as one passive); the validator refuses effects the engine cannot execute. Shown to the player: codex (the inspect entry, combat and hangar), flavour (an in-world quote), the passive's name and description. design is internal and never shown: fantasy (pitch, inspiration, homages), niche (the role it is meant to fill). Makers are placeholders.",
+ "makers": [
+  {
+   "id": "minerva",
+   "name": "Minerva Heavy Works",
+   "style": "Armour first. Everything is a tank, even the ones with legs.",
+   "voice": "Maintenance manual. Terse, exact, proud of tolerances."
+  },
+  {
+   "id": "kestrel",
+   "name": "Kestrel Dynamics",
+   "style": "Fast, fragile, over-tuned. Airframes and interceptors.",
+   "voice": "Flight-test log. Clipped, numbers first."
+  },
+  {
+   "id": "wainwright_sutler",
+   "name": "Wainwright & Sutler",
+   "style": "Quads and artillery. Old firm, odd designs, everything works.",
+   "voice": "Field notes. Dry and precise."
+  },
+  {
+   "id": "aphelion",
+   "name": "Aphelion",
+   "style": "Descended from the deep-space programme, back since before the rifts opened. Humanoid frames, hover platforms, variable geometry; high-tech suites over light hulls. White with a pearl sheen, red markings.",
+   "voice": "Haughty, elitist, technical, jargon"
+  },
+  {
+   "id": "arsenal",
+   "name": "The Arsenal",
+   "style": "The Council's own R&D house, which need not compete for favour. Heavy walkers, plasma and energy that runs hot and never crits, big single hits, execute, burn. Dark steel and gunmetal, black chrome.",
+   "voice": "A manual written as liturgy."
+  }
+ ],
+ "entries": [
+  {
+   "id": "badger",
+   "name": "Honey Badger",
+   "designation": "EX-45XLE Combat Miner",
+   "maker": "minerva",
+   "design": {
+    "fantasy": "A repurposed mining vehicle, designed to take severe punishment and keep on working. Refurbishments were minimal, basically bolting on weapons and armour, it keeps most of its utilitarian mining machinery flavour.",
+    "niche": "tanky bruiser",
+    "name_clash": "Flagged 28 September: the id badger is Heavy Gear's Badger APC and BattleTech's Badger transport; the nickname Honey Badger is nobody's. Kept: the shown name is clear."
+   },
+   "codex": "The Minerva EX-45L (colloquially nicknamed the \"Badger\") was popular a mining mech widely praised for its reliability and durability, being designed to operate in the harshest, deepest environments imaginable. Reports exist of Badgers being caught in cave-ins while mining over 5 kilometers underground, only to dig their way out to the surface by nightfall, just in time for drinks with the crew. So naturally, when the Rifts opened, the ever-practical Minerva engineering team's first instinct was to finally give their prized Badger claws, teeth, and as many missiles as it could carry, putting its legendary longevity to work on the battlefield.",
+   "hull": 160,
+   "shield": 30,
+   "movespeed": 20,
+   "heat_max": 80,
+   "hardpoints": 4,
+   "armour": 10,
+   "recharge_field": 15,
+   "cooling": 5,
+   "traits": [
+    "tracked"
+   ],
+   "size": "assault",
+   "fixed": [
+    "chainsaw_claw",
+    "chainsaw_claw"
+   ],
+   "loadout": [
+    "slug_cannon",
+    "missile_rack",
+    "twin_autoguns",
+    "proximity_klaxon"
+   ],
+   "passive": {
+    "id": "reinforced_skeleton",
+    "name": "Reinforced Skeleton",
+    "description": "Legendary Minervan strength. Components can be cracked but never destroyed. Melee attacks deal +10% damage. Cracked weapons become melee-typed, instead of their usual type.",
+    "effects": [
+     {
+      "trigger": "on_injury",
+      "effect": "no_destroy",
+      "value": 1
+     },
+     {
+      "trigger": "on_attack",
+      "effect": "multiply_damage",
+      "value": 1.1,
+      "when": "reach_melee"
+     },
+     {
+      "trigger": "static",
+      "effect": "set_reach",
+      "value": "melee",
+      "when": "component_cracked"
+     }
+    ]
+   },
+   "flavour": "Hey Russ, ain't that yer Badger over there, covered in demon innards? I thought they retired the ol' girl!"
+  },
+  {
+   "id": "clydesdale",
+   "name": "Clydesdale",
+   "designation": "Pattern 1 Combat Walker",
+   "maker": "wainwright_sutler",
+   "design": {
+    "fantasy": "A massive, boxy, heavily armoured, and utilitarian quadruped walker, designed to fill whatever niche the team is lacking. Like its namesake, it has four thick legs and carries a massive payload on top.",
+    "niche": "Heavy cavalry",
+    "notes": "Not sure if this needs a passive, since by lore this probably doesn't want too many locked components. This design is intentionally vanilla, as it's a jack-of-all-trades horse that can mount a ton of stuff, but for gameplay purposes it might need something to prevent it from being actually lame and boring. If we make it unique in that it has a very high number of hardpoints, then a passive ability that helps control roll randomness somehow would probably be appropriate. Decided 28 September: the d9 stays (the die cap is 10 now) and the passive is Battery Director, a free reroll of its own die once a round, die-local so the team gets no knock-on; if it feels thin it gets two, or ten entries. Its identity is capacity, which the hangar will show. Shock Barrage is its advanced piece."
+   },
+   "codex": "Surprisingly, or perhaps not, the ever-pragmatic Wainwright & Sutler were the first surviving manufacturer to field a combat walker when the invasion first began. Not knowing the full scope of the threat, the Clydesdale was positioned as a rugged and effective jack-of-all trades, a true workhorse befitting its namesake. A hundred years later, and the original design is still barely changed, its signature W&S simplicity being favourited by pilots and maintenence crews alike. It also serves as an effective training vehicle, as its notoriously poor turning radius results in one less thing for a green pilot to worry about on the battlefield.",
+   "hull": 140,
+   "shield": 40,
+   "movespeed": 30,
+   "heat_max": 60,
+   "hardpoints": 9,
+   "armour": 5,
+   "recharge_field": 20,
+   "cooling": 5,
+   "traits": [
+    "walker"
+   ],
+   "size": "heavy",
+   "fixed": [],
+   "loadout": [
+    "twin_autoguns",
+    "twin_autoguns",
+    "lance",
+    "pocket_mortar",
+    "howitzer",
+    "shock_barrage",
+    "ablative_plating",
+    "flak_skirt",
+    "heat_sink"
+   ],
+   "passive": {
+    "id": "battery_director",
+    "name": "Battery Director",
+    "description": "Rerolling only the Clydesdale's die is free once a round, on top of the team's rerolls.",
+    "effects": [
+     {
+      "trigger": "static",
+      "effect": "free_reroll",
+      "value": 1
+     }
+    ]
+   },
+   "flavour": "Pilot manual footnotes: Most of the Clydesdale controls are just for show. The only ones you really need are accelerate and alpha strike."
+  },
+  {
+   "id": "sparrowhawk",
+   "name": "Sparrowhawk",
+   "designation": "K-7 Mk III Interceptor",
+   "maker": "kestrel",
+   "design": {
+    "fantasy": "A priority-target interceptor. Designed for speed and firepower and not much else, taking out a key asset and fleeing while its generous shields recharge.",
+    "niche": "assassin",
+    "name_clash": "Kept (Ryan, 28 September). Sparrowhawk is a Halo Wars gunship and a BattleTech aerospace fighter, both obscure in their own properties; the name conjures the bird, not their machine. A coincidence, not a lift, and the 'hawk pair with the Goshawk is the point."
+   },
+   "codex": "Shortly into the invasion, it was determined that the masses of zombies, demons, and otherwordly things were, frankly, quite dumb without a guiding intelligence coordinating them. Naturally, Kestrel won the bid to produce a small interceptor aircraft, designed to eliminate priority targets and disengage before getting overwhelmed. However, the weapons package traditionally mounted on such a small frame proved ineffective to the task. It wasn't until one inspired engineer suggested cutting all 'uneccesary' weight from the design that a breakthrough was achieved; Armour, weapon regulators, ejection systems, and padded seats were all deemed frivolous, and their omission skyrocketed the Sparrowhawk to excel in its role.",
+   "hull": 60,
+   "shield": 60,
+   "movespeed": 50,
+   "heat_max": 60,
+   "hardpoints": 4,
+   "armour": 0,
+   "recharge_field": 30,
+   "cooling": 0,
+   "traits": [
+    "flyer"
+   ],
+   "size": "light",
+   "fixed": [],
+   "loadout": [
+    "overclocked_railgun",
+    "headhunter_rifle",
+    "arc_projector",
+    "deflector"
+   ],
+   "passive": {
+    "id": "disabled_regulators",
+    "name": "Disabled Weapon Regulators",
+    "description": "Premium Kestrel \"feature.\" Double damage and double heat for all weapons.",
+    "effects": [
+     {
+      "trigger": "on_attack",
+      "effect": "multiply_damage",
+      "value": 2
+     },
+     {
+      "trigger": "on_attack",
+      "effect": "multiply_heat",
+      "value": 2
+     }
+    ]
+   },
+   "flavour": "There's lighting a fire under your ass, and then there's piloting a Sparrowhawk. I suggest a cold plunge before you strap in."
+  },
+  {
+   "id": "baboon",
+   "name": "Baboon",
+   "designation": "Perihelion Flight 7 Support Frame",
+   "maker": "aphelion",
+   "design": {
+    "fantasy": "A long-armed, stubby-legged plantigrade walker with a high tech suite of weapons and equipment mounted on its backpack. Not fast or heavily armoured, it specializes in battlefield control through status effects and high-tech equipment with complex effects.",
+    "niche": "combat support",
+    "notes": "Numbers and designation are Claude's first fill (26 September), the passive and stock re-cut 28 September, all Ryan's to move. Stock is Aphelion's generic kit (two Umbra Projectors on the shoulders, two Pulse Repeaters and the Zenith Emitter on the fists, a Radiator Sail); the Corona Shield is a unique unlock now, not stock. A d7 since 30 September (Ryan: the fists rest on the ground and carry the guns, two mounts a hand): the Halo Shield was dropped, since Pocket Paradox pays for missing shield and a shield component fights it. The fixed pods carry the Solar Flare Array so the passive has a status to read alone.",
+    "name_clash": "Was the Mandrill (a BattleTech 'Mech that looks like ours); renamed the Baboon 28 September, Ryan's pick: a funny name for a funky machine Aphelion thought was cool. Gelada was too obscure for pilots to have coined, Silverback implied a fighter. Baboon is itself the Clan designation of BattleTech's Howler (a 20-ton light 'Mech); Ryan keeps it, a designation-tier clash like the Goshawk's."
+   },
+   "codex": "Looking like a cross between an orangutan and a troll, what the Baboon lacks in speed or endurance it more than makes up for with high-tech Aphelion technomagic. After the rifts first opened (and upended everything mankind knew about the laws of physics and the nature of the universe), Aphelion set to work assimilating the torrent of new data, developing experimental countermeasures at a frenetic pace. One unlucky researcher managed to knock out his past self using a localized pocket paradoxical time loop. The effect was quickly weaponized and a frame built to lug the heavy device in into battle, nicknamed the \"Baboon\" in the researcher's memory.",
+   "hull": 100,
+   "shield": 40,
+   "movespeed": 20,
+   "heat_max": 80,
+   "hardpoints": 6,
+   "armour": 0,
+   "recharge_field": 20,
+   "cooling": 5,
+   "traits": [
+    "walker"
+   ],
+   "size": "medium",
+   "fixed": [
+    "solar_flare_array"
+   ],
+   "loadout": [
+    "umbra_projector",
+    "umbra_projector",
+    "pulse_repeater",
+    "pulse_repeater",
+    "zenith_emitter",
+    "radiator_sail"
+   ],
+   "passive": {
+    "id": "pocket_paradox",
+    "name": "Pocket Paradox",
+    "description": "A localized paradoxical time loop, weaponized. When a foe gains a status there is a 20% chance its past self knocks it out as well (Suppressed), plus 10% for every 10 shield the Baboon is missing.",
+    "effects": [
+     {
+      "trigger": "on_foe_status",
+      "effect": "chance_suppress",
+      "value": 20,
+      "per_missing_shield": 1
+     }
+    ]
+   },
+   "flavour": ""
+  },
+  {
+   "id": "armadillo",
+   "name": "Armadillo",
+   "designation": "HW-22T Heavy Weapons Carrier",
+   "maker": "minerva",
+   "design": {
+    "fantasy": "A squat, heavily armoured walker with short, thick legs, its back bristling with weaponry from shielded ports that can seal for additional protection. The cockpit is tucked under the front armour, providing reduced visibility but extra protection. An internal electric generator shocks foes that strike is hull when activated.",
+    "niche": "tank",
+    "notes": "Probably needs taunt effects on one or more locked or stock components. Wants a retaliate ability that  damages and/or causes status on foes that hit hull, but not sure if that is a passive or component that needs activating. Decided 28 September: the tankiest machine in the game, its toughness in the numbers and the passive and never in locked plating, so the free die is the player's. Faraday Hull is retaliation as a debuff, not thorns (thorns scales with enemy blows and inverts horde against boss); the locked Faraday Shutters are its taunt and extend the shock to blocked blows; the crack threshold needs no help at this hull. Numbers, designation and kit are Claude's fills, Ryan's to move."
+   },
+   "codex": "",
+   "hull": 150,
+   "shield": 30,
+   "movespeed": 20,
+   "heat_max": 60,
+   "hardpoints": 5,
+   "armour": 15,
+   "recharge_field": 15,
+   "cooling": 5,
+   "traits": [
+    "walker"
+   ],
+   "size": "assault",
+   "fixed": [
+    "lockdown_shutters"
+   ],
+   "loadout": [
+    "rivet_gun",
+    "slug_cannon",
+    "missile_rack",
+    "ablative_plating",
+    "blowout_stack"
+   ],
+   "passive": {
+    "id": "faraday_hull",
+    "name": "Faraday Hull",
+    "description": "The whole hull is live. A foe that strikes bare hull is Shocked: the next blow it takes deals double. A Shocked foe that strikes again takes 10.",
+    "effects": [
+     {
+      "trigger": "static",
+      "effect": "shock_on_hull_strike",
+      "value": 1
+     }
+    ]
+   },
+   "flavour": ""
+  },
+  {
+   "id": "wild_boar",
+   "name": "Wild Boar",
+   "designation": "AB-70R Assault Breacher",
+   "maker": "minerva",
+   "design": {
+    "fantasy": "An unstoppable assault tank, complete with front rams and plows, designed for breaching reinforced emplacements - or plowing over and through fodder monsters.",
+    "niche": "Vanguard tank",
+    "notes": "Passive should be something about being able to access the backline, or some other vanguard-punch-through ability. Decided 28 September: a diver, not a bruiser (that is the Badger). Juggernaut Drive puts overwhelm on every attack, so a kill's spare damage reaches the back rank from any gun; the locked Breaching Plow is its one melee hit, cleaving, and carries the front armour as its own passive. Five hardpoints since 30 September (Ryan): two parallel turret guns, a mount on the turret's top and one on each rear quarter; a second Slug Cannon fills the turret pair. Numbers, designation and kit are Claude's fills, Ryan's to move."
+   },
+   "codex": "",
+   "hull": 130,
+   "shield": 30,
+   "movespeed": 30,
+   "heat_max": 60,
+   "hardpoints": 5,
+   "armour": 10,
+   "recharge_field": 20,
+   "cooling": 5,
+   "traits": [
+    "tracked"
+   ],
+   "size": "heavy",
+   "fixed": [
+    "breaching_plow"
+   ],
+   "loadout": [
+    "slug_cannon",
+    "slug_cannon",
+    "missile_rack",
+    "ablative_plating",
+    "blowout_stack"
+   ],
+   "passive": {
+    "id": "juggernaut_drive",
+    "name": "Juggernaut Drive",
+    "description": "Momentum carries through. Damage past a kill spills into the rank behind, from any weapon.",
+    "effects": [
+     {
+      "trigger": "static",
+      "effect": "grant_keyword",
+      "value": "overwhelm"
+     }
+    ]
+   },
+   "flavour": ""
+  },
+  {
+   "id": "prairie_dog",
+   "name": "Prairie Dog",
+   "designation": "Pattern 9 Scout Car",
+   "maker": "wainwright_sutler",
+   "design": {
+    "fantasy": "A fast, agile, and lightly armoured skirmisher, able to skim in and out of fights with ease. It's signature ability allows it to serve as both a potent scout and harasser before getting away with minimal damage.",
+    "niche": "scout/harasser",
+    "notes": "Decided 28 September: the passive as Ryan wrote it, resolved per ally with a flat chance and no new UI: the Prairie Dog is always out before the enemy strikes, each ally rolls an even chance to slip out with it, and a blow aimed at a covered machine is lost rather than retargeted. The locked Flakshot Repeater makes its round shoot, roll again, shoot, leave; Incendiary Shells because it leaves them burning (burning carried between fights is on the ideas list). Numbers, designation and kit are Claude's fills, Ryan's to move."
+   },
+   "codex": "",
+   "hull": 60,
+   "shield": 40,
+   "movespeed": 50,
+   "heat_max": 60,
+   "hardpoints": 3,
+   "armour": 0,
+   "recharge_field": 30,
+   "cooling": 5,
+   "traits": [
+    "wheeled"
+   ],
+   "size": "light",
+   "fixed": [
+    "flakshot_repeater"
+   ],
+   "loadout": [
+    "twin_autoguns",
+    "incendiary_shells",
+    "flak_skirt"
+   ],
+   "passive": {
+    "id": "staticscreen_projector",
+    "name": "Static-screen Projector",
+    "description": "A blast of dust, smoke and static electricity that confuses senses and sensors alike. When the team withdraws, the Prairie Dog is out before the enemy strikes, and each ally has an even chance of slipping out with it; a blow aimed at a machine the screen covers is lost.",
+    "effects": [
+     {
+      "trigger": "static",
+      "effect": "screen_withdraw",
+      "value": 50
+     }
+    ]
+   },
+   "flavour": ""
+  },
+  {
+   "id": "dingo",
+   "name": "Dingo",
+   "designation": "Pattern 12 Support Car",
+   "maker": "wainwright_sutler",
+   "design": {
+    "fantasy": "A small, nimble, lightly armoured vehicle designed to support heavy armour in combat. Able to stealthily avoid combat until its allies are in position for a flanking or pincer attack, then capitalize on openings in combat.",
+    "niche": "combat support",
+    "name_clash": "Kept (Ryan, 29 September). Dingo is a Heavy Gear Northern gear, an obscure resin-era release in a niche property and a biped, so no silhouette resemblance; the Bundeswehr's ATF Dingo, a four-wheeled armoured car, is the closer match and the homage W&S's register is built on. Say Dingo and people picture the dog: the coincidence tier.",
+    "notes": "Decided 28 September: stealth is a trait, not a passive (like flyer): it controls no ground and joins a fight only when an ally is in it or when it stopped a pack in its path, so it waits in the wings and never fights alone unless run into. The passive is the other half of Ryan's Adaptive Camouflage, the flanking bonus, as Tactical Databank. The locked Megataser Harpoon is a cheap pin for the foe an ally is about to eat; Coolant Dump because it can be spent on a friend. Numbers, designation and kit are Claude's fills, Ryan's to move."
+   },
+   "codex": "",
+   "hull": 60,
+   "shield": 40,
+   "movespeed": 40,
+   "heat_max": 60,
+   "hardpoints": 3,
+   "armour": 0,
+   "recharge_field": 25,
+   "cooling": 5,
+   "traits": [
+    "wheeled",
+    "stealth"
+   ],
+   "size": "light",
+   "fixed": [
+    "megataser_harpoon"
+   ],
+   "loadout": [
+    "twin_autoguns",
+    "pocket_mortar",
+    "coolant_dump"
+   ],
+   "passive": {
+    "id": "tactical_databank",
+    "name": "Tactical Databank",
+    "description": "Every ally's firing solution, shared. With an ally in the fight, the Dingo's kinetic weapons roll their maximum.",
+    "effects": [
+     {
+      "trigger": "on_attack",
+      "effect": "roll_max",
+      "value": 1,
+      "when": "ally_present"
+     }
+    ]
+   },
+   "flavour": ""
+  },
+  {
+   "id": "goshawk",
+   "name": "Goshawk",
+   "designation": "K-9 Mk II Attack Airframe",
+   "maker": "kestrel",
+   "design": {
+    "fantasy": "The larger cousin of the Sparrowhawk, trades explosiveness for longevity. Wide downturned wings evoking a hovering predator, weapon mounts mounted under the wings. Double boosters mounted on top of the tail section (similar to an A10 warthog).",
+    "niche": "Ramping damage",
+    "notes": "Locked weapon(s) should vent heat and deal increased damage proportional to heat vented. Decided 28 September: split, not stacked. The passive is sustain from heat (Thermal Recoupler regains shield per 10 heat at the start of its turn, the game's first in-fight regen, safe on one chassis) and the locked Afterburner Cannon is the burst that spends it: ride hot for regen or dump for the hit. Damage scaling dropped; the Sparrowhawk owns that. Arc Projector is its advanced piece. Numbers, designation and kit are Claude's fills, Ryan's to move.",
+    "name_clash": "Kept (Ryan, 28 September). Goshawk is the Inner Sphere designation of the Clan Vapor Eagle (a 55-ton 'Mech), and there is a Goshawk II. A designation few know, not the name people use; Ryan minds a designation-tier clash less, and the 'hawk pair with the Sparrowhawk stays."
+   },
+   "codex": "",
+   "hull": 100,
+   "shield": 50,
+   "movespeed": 40,
+   "heat_max": 100,
+   "hardpoints": 5,
+   "armour": 0,
+   "recharge_field": 25,
+   "cooling": 5,
+   "traits": [
+    "flyer"
+   ],
+   "size": "medium",
+   "fixed": [
+    "afterburner_cannon"
+   ],
+   "loadout": [
+    "laser_carbine",
+    "headhunter_rifle",
+    "arc_projector",
+    "deflector",
+    "ram_air_scoop"
+   ],
+   "passive": {
+    "id": "thermal_recoupler",
+    "name": "Thermal Recoupler",
+    "description": "Heat is not waste. At the start of its turn the Goshawk regains 5 shield for every 10 heat it carries.",
+    "effects": [
+     {
+      "trigger": "on_round_start",
+      "effect": "shield_per_heat",
+      "value": 5
+     }
+    ]
+   },
+   "flavour": ""
+  },
+  {
+   "id": "nemesis",
+   "name": "Nemesis",
+   "designation": "Arsenal Instrument IV",
+   "maker": "arsenal",
+   "design": {
+    "fantasy": "A hulking, neckless, spiked brute. Thick arms made for pummeling. A glowing firey core in its torso that lights up as the mech takes damage and heats up.",
+    "niche": "Sustained damage bruiser",
+    "notes": "One or more locked components should grant overheating, or deal self -damage. Decided 28 September: Crucible Capacitor counts blows that reach hull from foes or its own weapons, never overheat burn (that loop has no brake), and the stacks decay as Overheating does; a plain vent is its relief. The locked Gravity Knuckles are volatile, so every punch feeds it, and volatile is the general Arsenal self-damage keyword for later shield and vent faces. Meteor Artillery is its advanced piece. Numbers, designation and kit are Claude's fills, Ryan's to move."
+   },
+   "codex": "",
+   "hull": 140,
+   "shield": 20,
+   "movespeed": 20,
+   "heat_max": 100,
+   "hardpoints": 4,
+   "armour": 10,
+   "recharge_field": 15,
+   "cooling": 5,
+   "traits": [
+    "walker"
+   ],
+   "size": "heavy",
+   "fixed": [
+    "gravity_knuckles",
+    "gravity_knuckles"
+   ],
+   "loadout": [
+    "plasma_carbine",
+    "meteor_artillery",
+    "ward_plate",
+    "entropy_condenser"
+   ],
+   "passive": {
+    "id": "crucible_capacitor",
+    "name": "Crucible Capacitor",
+    "description": "The core feeds on punishment. Melee damage rises 5 with every stack of Overheating, and any blow that reaches hull, from a foe or its own weapons, adds a stack.",
+    "effects": [
+     {
+      "trigger": "on_attack",
+      "effect": "add_damage",
+      "value": 5,
+      "per_stack": "overheating",
+      "when": "reach_melee"
+     },
+     {
+      "trigger": "on_hull_damage",
+      "effect": "stack_status",
+      "value": "overheating"
+     }
+    ]
+   },
+   "flavour": ""
+  },
+  {
+   "id": "ammit",
+   "name": "Ammit",
+   "designation": "Arsenal Instrument VII",
+   "maker": "arsenal",
+   "design": {
+    "fantasy": "A sinister digitigrade figure, with 4 clawed arms, the middle set which can be used as an additional pair of legs. A low-set snout like cockpit with burning \"eyes.\" Absorbs energy from units it defeats with its 4 signature locked claw weapons, granting permanent overcharge.",
+    "niche": "Scaling damage",
+    "notes": "Needs 4 locked components: melee weapons that grant overcharge on kill. Not sure of name, something sinister about assimilation or draining or attuning or something. Decided 28 September: four locked Soulcutter Talons (execute to finish, devour to grow) and four hardpoints, the d8 Ryan wrote as a total. Quintessence Tap keeps the Overcharged stacks for the battle, never the campaign, so the snowball has an end. Arsenal names stay sanctified on their face and sinister on reflection. Numbers, designation and kit are Claude's fills, Ryan's to move."
+   },
+   "codex": "",
+   "hull": 120,
+   "shield": 40,
+   "movespeed": 30,
+   "heat_max": 80,
+   "hardpoints": 4,
+   "armour": 5,
+   "recharge_field": 20,
+   "cooling": 5,
+   "traits": [
+    "walker"
+   ],
+   "size": "medium",
+   "fixed": [
+    "soulcutter_talons",
+    "soulcutter_talons",
+    "soulcutter_talons",
+    "soulcutter_talons"
+   ],
+   "loadout": [
+    "plasma_carbine",
+    "blazethrower",
+    "ward_plate",
+    "entropy_condenser"
+   ],
+   "passive": {
+    "id": "quintessence_tap",
+    "name": "Quintessence Tap",
+    "description": "What the talons take is kept. Overcharged never decays on this machine and lasts the battle.",
+    "effects": [
+     {
+      "trigger": "static",
+      "effect": "keep_status",
+      "value": "overcharged"
+     }
+    ]
+   },
+   "flavour": ""
+  },
+  {
+   "id": "stingray",
+   "name": "Stingray",
+   "designation": "Perigee Flight 4 Strike Skimmer",
+   "maker": "aphelion",
+   "design": {
+    "fantasy": "A flat pearl-white lens of a hull that rides on lift fans sunk flush into its wings and pitches like a helicopter to move. Its heat suite is its weapon: the hotter it runs, the deeper every burn and every buff it lays. The ray's barb is its tail, lit at the tip; its mouth is the lance under the nose.",
+    "niche": "hot status amplifier",
+    "notes": "Proposed and decided 2 October (Ryan picked Stingray over Lionfish and Sea Wasp; Lionfish was Claude's lead). The second Aphelion machine, carrying the heat idea weighed and parked when the Baboon's passive was chosen (28 September). Cooling 0 by design: it never cools on its own, the Radiator Sail is its only brake, so every round is a heat decision; heat_max 100 so the suite has five steps to climb. Propulsion by maker (Ryan, 2 October): Aphelion's hovers and aircraft are aquatic, fans and rotors in places, so the Stingray's lift is ducted fans flush in the wing discs; Kestrel keeps the big boosters; the exposed-rotor fan-copter (the Banshee register) is kept free for a later Aphelion flyer, and W&S flyers would be traditional helicopter profiles. Numbers, designation and kit are Claude's fills, Ryan's to move. Ryan, 2 October: five extra Burning at 100 heat is probably silly, and easy to tune; the passive double-dips through Primed (the Primed stacks it lays are deepened, and so are the burns those blows lay), a knob for the runner."
+   },
+   "codex": "",
+   "hull": 80,
+   "shield": 50,
+   "movespeed": 40,
+   "heat_max": 100,
+   "hardpoints": 5,
+   "armour": 0,
+   "recharge_field": 25,
+   "cooling": 0,
+   "traits": [
+    "hover"
+   ],
+   "size": "medium",
+   "fixed": [
+    "photosphere_lance"
+   ],
+   "loadout": [
+    "solar_flare_array",
+    "pulse_repeater",
+    "zenith_emitter",
+    "aurora_lattice",
+    "radiator_sail"
+   ],
+   "passive": {
+    "id": "exothermic_suite",
+    "name": "Exothermic Suite",
+    "description": "Heat is the suite's power. Every stack this machine applies, to a foe, an ally or itself, is one deeper for every 20 heat it carries. Numbed excepted, as always.",
+    "effects": [
+     {
+      "trigger": "on_stack",
+      "effect": "add_stacks",
+      "value": 1,
+      "per_heat": 20
+     }
+    ]
+   },
+   "flavour": ""
+  },
+  {
+   "id": "puffin",
+   "name": "Puffin",
+   "designation": "K-11 Mk I Ground-Effect Escort",
+   "maker": "kestrel",
+   "design": {
+    "fantasy": "Kestrel's one machine that touches the ground, and so the one Kestrel that can stop a pack. A short deep body in chrome on two boosters far too big for it, stubby wings, tail fins, and the whole front one shield projector, a great faired beak. Kestrel called it a very cool ground-effect escort; pilots took one look and called it the Puffin.",
+    "niche": "shield specialist",
+    "notes": "Proposed and decided 2 October: the Puffin the bible's makers row wanted (28 September). The slowest Kestrel (Ryan: allowed, since lore-wise they loaded it with tech instead of guns), so movespeed 3; hover, so it skims water and chokes on ruins. Boosters, never fans: Ryan, 2 October, anything but big boosters is off-brand for Kestrel. Passive open: Ryan's lean is an overshield (shield allies past their maximum) with a cost or a second effect; Claude's shape, 2 October, is overshield that fades at the end of the round with the fixed projector pointing outward only, since shield-the-Puffin-every-turn would be a shield-bot. Planned until he decides. The Overcharge Coil gets its first chassis here. Numbers, designation and kit are Claude's fills, Ryan's to move. The passive decided 5 October (Ryan: shield for heat reduced is very effective; no penalty, the die is the brake): Slipstream is a placeholder name, Ryan's to move. The overshield went to the fixed Prow Projector as a rare keyword rather than the passive, by the bible's rule that a passive multiplies what components do and a new mechanic is a component's. Weighed and dropped: Spillover (shield past the Puffin's maximum flowing to an ally; win-more), a received-shield penalty (adds no decision; the one-man show cannot happen on a d5 with the only overshield allies-only)."
+   },
+   "codex": "",
+   "hull": 50,
+   "shield": 30,
+   "movespeed": 30,
+   "heat_max": 60,
+   "hardpoints": 4,
+   "armour": 0,
+   "recharge_field": 30,
+   "cooling": 5,
+   "traits": [
+    "hover"
+   ],
+   "size": "light",
+   "fixed": [
+    "prow_projector"
+   ],
+   "loadout": [
+    "laser_carbine",
+    "deflector",
+    "overcharge_coil",
+    "ram_air_scoop"
+   ],
+   "passive": {
+    "id": "slipstream",
+    "name": "Slipstream",
+    "description": "An ally this machine shields also sheds 10 heat.",
+    "effects": [
+     {
+      "trigger": "on_shield_granted",
+      "effect": "vent_heat",
+      "value": 10
+     }
+    ]
+   },
+   "flavour": ""
+  }
+ ]
 }

@@ -554,6 +554,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 			errs.append("%s: '%s' rides on a shield or vent component, not an attack" % [where, k])
 		elif kind != "attack" and not Face.SUPPORT_KEYWORDS.has(kw):
 			errs.append("%s: '%s' is an attack keyword; a %s component cannot carry it" % [where, k, kind])
+		elif kind != "shield" and Face.SHIELD_ONLY_KEYWORDS.has(kw):
+			errs.append("%s: '%s' rides on a shield component only; a %s has nothing to pass" % [where, k, kind])
 
 
 func _validate_passive(where: String, p, errs: Array[String]) -> void:
