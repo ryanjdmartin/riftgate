@@ -25,8 +25,10 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Discuss first, then decide: the reinforcement phase, and whether skirmish composition follows placement
 - [ ] Discuss first, then decide: when and how the multi-hex boss comes back (`Unit.TRIANGLE` waits)
 - [ ] Discuss first, then decide: Rift Pressure feeding packs into the boss fight, so bum-rushing the boss is a race between temporary power gained and the boss's reinforcements (Ryan, 29 September: valid, fits the complexity wanted, tight to balance; hinges on how strong the in-battle temporary upgrades are, which do not exist yet)
-- [ ] Discuss first, then decide: the final battle's source rift has a boss of its own (Ryan's lean, 29 September: probably yes, as the campaign's climax; The Far Bank may be that boss's track, being more doom-and-gloom than a fight, which would leave The Chorus wanting a theme from a seed)
-- [ ] Discuss first, then decide: the economy and the blueprint tiers, hull repair included (nothing that prices anything can be designed before this)
+- [x] Decide the final battle's boss (5 October: track B, bible section 3; the true final boss arrives at the capital at the threat threshold, sooner as cities fall; faction finals are prizes that thin the finale)
+- [x] Decide the economy's shape (5 October, bible sections 3 and 10: one currency, offers over trees with the front picking the catalogue, free hull and cracked repair, destroyed hardpoint components gone, shop timers, flat components and chassis modules with text, the pool between campaigns)
+- [ ] Decide the sponsorship (bible section 10, recommended): what "fielded most" measures, the sponsor module, standing as a livery or a title
+- [ ] Judge the campaign and the economy in play once the mission map and the hangar exist: twelve battles as the length, the capital's bleed per fallen city, one battle in the shop, the module archetypes, the budget of about three rule texts a machine read running
 - [ ] Discuss first, once the balance has a baseline (Ryan, 2 October): the commander layer, bible section 8 (the reward pick after a won skirmish, one-shots, city abilities, whether the command die exists); it needs heavy UI work and a place on the skirmish screen, and Rift Pressure in the boss fight waits on its rewards
 - [ ] Discuss first, then decide: does a pack keep its foes' hull and statuses between fights (a withdrawal leaves them hurt today only in the count), and how the map shows it (the strength segments could show it)
 - [ ] Judge the movement words and every chassis's move in play once movement by way of moving lands (bible section 4, the movement row); the moves follow size and role, the content check only flags a chassis at least as fast as another on every ground
@@ -45,6 +47,9 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Decide the Puffin's passive (discuss first): the overshield, shield an ally past its maximum, with its cost or second effect; Claude's shape is Overpressure, the excess fading at the end of the round, the fixed Prow Projector outward-only; then it gets built, with the gauges showing the excess
 
 ## Engine
+
+- [ ] The campaign state between battles in `sim/save.gd` (bible section 3, decided 5 October; waits on the hangar): every city's gate integrity and the capital's, the threat, the roster with each machine in the shop or ready, the components owned, the blueprints held and the pool; `sim/` keeps it headless
+- [ ] The runner counts components destroyed per won battle on the greedy ladder (bible section 10, the numbers row): the inflow has to beat it, and if greedy loses more than about one a battle the injury threshold moves
 
 Nothing in content is planned any more; every piece the 28 September content leaned on runs since 30 September (bible section 7, "The 28 September pieces, built"). The machine weld is decided and ready to build; the joint pass and the idle acts are built (3 October, a cloud session; Ryan judges them running next); movement by way of moving is built; the rest waits on a design line from Ryan first. Nothing here is claimed by another session; a session that takes a line says so in this file.
 
@@ -73,6 +78,7 @@ Nothing in content is planned any more; every piece the 28 September content lea
 
 ## Map and screens
 
+- [ ] The mission map (bible section 3, decided 5 October): the capital centred, the four cities around it, each front a card of words (faction, ground type, threat tier, the gate's bleed if ignored), a fallen city's horde drawn marching on the centre, the capital's gate as the one bar; and the hangar with the shop, the roster (in the shop or ready, dressed or bare) and the host maker's offer
 - [ ] The wreck's death animation on the map, once wrecks are decided
 - [ ] Corruption in a pack's wake, and the bleed growing with Rift Pressure (`bleed.gd` has the knob in mind), once decided
 - [ ] Props by hex back in the big batches, with the fade (decided 2 October; bible section 11, the battery row): each prop vertex carries its hex, the props' shader reads a small per-hex texture, the per-hex prop meshes in `game/battle/map_3d.gd` (`_prop_meshes`) go back into the bands. The texture fades a hex's props out as a machine enters and in as it leaves, with a setting to hold them see-through while it stands; a dither fade first, true alpha as the alternative; a debug switch to judge it running
@@ -106,5 +112,5 @@ Nothing in content is planned any more; every piece the 28 September content lea
 
 - Low-hull berserker or last-stand ability
 - Command die faces with a second, battlefield meaning
-- Endless mode after the bounded campaign
+- Endless mode after the bounded campaign (twelve battles the working length)
 - Hardwired hardpoints with a paid unlock (waits on the economy)

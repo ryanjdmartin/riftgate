@@ -246,7 +246,7 @@ static func _ids(list: Array) -> String:
 func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") -> Dictionary:
 	var agg := {"fights": 0, "victory": 0, "defeat": 0, "withdrawn": 0, "stalled": 0,
 		"rounds": 0, "hull_lost_pct": 0.0, "mechs_lost": 0, "foes_killed_pct": 0.0,
-		"overheat_hull": 0, "rerolls": 0, "spends": {}}
+		"overheat_hull": 0, "rerolls": 0, "spends": {}, "destroyed": 0, "destroyed_won": 0}
 	for s in range(seeds):
 		var fight := _fight(r, p, k, s + 1, rule)
 		var sk: Skirmish = fight["sk"]
@@ -264,6 +264,9 @@ func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") ->
 		else:
 			agg["defeat"] += 1
 		agg["rounds"] += pol.rounds
+		agg["destroyed"] += sk.destroyed
+		if outcome == Skirmish.Outcome.VICTORY and not pol.stalled:
+			agg["destroyed_won"] += sk.destroyed
 		var hull := 0
 		var lost := 0
 		for ms in sk.mechs:
@@ -315,7 +318,7 @@ func _report(fights: int, secs: float) -> String:
 	var top := policies[policies.size() - 1]
 	L.append("## Cost of a win, %s" % Policy.kind_name(top))
 	L.append("")
-	L.append("Mean rounds and mean hull lost (percent of the row's total hull), over every fight in the cell, won or not. A w marks a cell with withdrawals, an s a cell with a stalled fight (past %d rounds)." % Policy.MAX_ROUNDS)
+	L.append("Mean rounds and mean hull lost (percent of the row's total hull), over every fight in the cell, won or not, then the components destroyed per won fight (gone for good in the hangar, bible section 10; the inflow has to beat this). A w marks a cell with withdrawals, an s a cell with a stalled fight (past %d rounds)." % Policy.MAX_ROUNDS)
 	L.append("")
 	L.append(_header())
 	for r in rows:
@@ -328,7 +331,7 @@ func _report(fights: int, secs: float) -> String:
 				flags += " w"
 			if a["stalled"] > 0:
 				flags += " s"
-			cell.append("%.1f r, %d%% hull%s" % [float(a["rounds"]) / n, int(roundf(a["hull_lost_pct"] / n)), flags])
+			cell.append("%.1f r, %d%% hull, %.2f lost%s" % [float(a["rounds"]) / n, int(roundf(a["hull_lost_pct"] / n)), float(a["destroyed_won"]) / maxi(1, int(a["victory"])), flags])
 		L.append("| " + " | ".join(cell) + " |")
 	L.append("")
 	L.append("## Targeting rules on the team cells, %s" % " / ".join(_policy_names()))

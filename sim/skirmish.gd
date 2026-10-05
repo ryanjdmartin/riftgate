@@ -69,6 +69,7 @@ var round: int = 0
 var rerolls_left: int = 0
 var state: int = State.SETUP
 var outcome: int = Outcome.NONE
+var destroyed: int = 0   # components destroyed this fight, for the balance runner (the hangar's destroyed-is-gone rule, bible section 10, depends on the rate)
 var log: Array[String] = []
 
 ## The most recent attack, for the screen to show: {mech, target, rolled, final, crit, ranged}.
@@ -1325,6 +1326,7 @@ func _injure_entry(ms: MechState, idx: int) -> void:
 		var d := Face.blank()
 		d.component = f.component
 		ms.die.faces[idx] = d
+		destroyed += 1
 		log.append("%s: a cracked component is destroyed (%s)" % [ms.unit.display_name, what])
 	else:
 		originals[idx] = f.duplicate_face()
