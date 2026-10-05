@@ -1721,7 +1721,9 @@ def stingray(b):
     stages, the body running on behind the wings as a near-parallel neck before the taper, so
     the body ends at the wings' trailing edge and the tail is one straight taper from there.
     Ninth pass (the same day): the taper's rate kept, the tail four units longer to a smaller
-    tip, the mouth half again narrower.
+    tip, the mouth half again narrower. Tenth (the same day): the flare pods at the left tip
+    point forward like every other gun, stacked over the tip, and the exhaust's hot face sits
+    a unit inside the mouth.
     Floats: the belly at z = 6. Every number is a proportion Ryan may change."""
     top = _ray_top
     # The body: a flattened hexagonal section lofted nose to stern, widest amidships.
@@ -1751,8 +1753,8 @@ def stingray(b):
     b.loft([(-34.0, hexagon(0.0, 14.5, 17.4, 10.0)), (-49.0, hexagon(0.0, 15.0, 8.0, 3.4))], "steel.plate", "tail", cap=False)
     b.loft([(-49.0, hexagon(0.0, 15.0, 8.0, 3.4)), (-50.0, hexagon(0.0, 15.0, 7.6, 3.2))], "steel.dark", "tail_rim", cap=False)
     _rings(b, [[(x, -50.0, z) for x, z in hexagon(0.0, 15.0, 7.6, 3.2)], [(x, -50.0, z) for x, z in hexagon(0.0, 15.0, 6.4, 2.3)]], "steel.dark", "duct_rim", cap=False)
-    b.loft([(-50.0, hexagon(0.0, 15.0, 6.4, 2.3)), (-47.0, hexagon(0.0, 15.0, 6.8, 2.5))], "steel.dark", "duct_lining", cap=False)
-    b.loft([(-47.0, hexagon(0.0, 15.0, 6.8, 2.5)), (-46.7, hexagon(0.0, 15.0, 6.8, 2.5))], "amber.glow", "nozzle_glow")
+    b.loft([(-50.0, hexagon(0.0, 15.0, 6.4, 2.3)), (-49.0, hexagon(0.0, 15.0, 6.5, 2.35))], "steel.dark", "duct_lining", cap=False)
+    b.loft([(-49.0, hexagon(0.0, 15.0, 6.5, 2.35)), (-48.7, hexagon(0.0, 15.0, 6.5, 2.35))], "amber.glow", "nozzle_glow")   # the hot face a unit inside the mouth (Ryan, 5 October)
     # The Photosphere Lance under the nose (fixed, no pin): a long emitter along the keel,
     # a red collar at its root and a lit muzzle.
     b.box(-4.0, 4.0, 10.0, 24.0, 5.5, 9.5, "steel.panel", "lance_mount")
@@ -1797,10 +1799,10 @@ def stingray(b):
     for s in (-1.0, 1.0):
         px, py, pz = tip_pod(s)
         if s < 0:
-            with b.socket("hp_1", (px, py, pz), forward=(0.0, 0.866, 0.5), scale=0.8):
+            with b.socket("hp_1", (px, py, pz), scale=0.8):   # the flare pods point forward like every gun (Ryan, 5 October: pitched up read wrong), stacked over the tip
                 for s2 in (-1.0, 1.0):
-                    _beam(b, (px + s2 * 1.7, py - 1.5, pz - 0.4), (px + s2 * 1.7, py + 6.0, pz + 3.6), _poly(1.3, 6), _poly(1.5, 6), "steel.dark", "flare_pod")
-                    b.prism("y", px + s2 * 1.7, py + 6.4, pz + 3.8, 1.0, 0.8, "amber.engine", 6, "pod_mouth")
+                    _beam(b, (px, py - 1.5, pz + s2 * 1.4), (px, py + 7.5, pz + s2 * 1.4), _poly(1.2, 6), _poly(1.4, 6), "steel.dark", "flare_pod")
+                    b.prism("y", px, py + 7.9, pz + s2 * 1.4, 0.9, 0.8, "amber.engine", 6, "pod_mouth")
         else:
             with b.socket("hp_2", (px, py, pz), scale=0.8):
                 b.prism("y", px, py + 8.0, pz, 1.4, 16.0, "steel.dark", 6, "pulse_repeater")
@@ -1900,10 +1902,9 @@ def puffin(b):
     3rd: it looks much better, apply it): the Kestrel read, the hull a chined airframe facet
     (_chine_section) widest at a crease along the flank and leaning in to a narrower deck a
     step lower, the waist pinched so the nacelles stand proud of a fuselage, the fins taller
-    and swept back. RIFTGATE_PUFFIN_TRIAL builds Claude's suggestions 4 and 5 for a look,
-    not the model: "4" the skirt at two thirds its height, "5" a cobalt stripe along the
-    chine from the prow to the nacelles, "45" both."""
-    trial = os.environ.get("RIFTGATE_PUFFIN_TRIAL", "")
+    and swept back. Eighth pass (the same day, Claude's suggestions 4 and 5, both kept): the
+    skirt at two thirds its height, and a cobalt stripe along the chine from the prow back to
+    the nacelles, the prow's colour run down the flank."""
     # The hull: wide and low, nose to stern, as (y, w, z0, z1, chamfer), tapering to the stern.
     HULL = [(30.0, 14.0, 10.0, 14.6, 2.0), (20.0, 28.0, 8.0, 17.6, 3.0), (6.0, 36.0, 7.0, 19.4, 3.5), (-12.0, 34.0, 7.0, 19.4, 3.5),
             (-26.0, 30.0, 8.0, 18.8, 3.0), (-36.0, 22.0, 10.0, 17.4, 2.5)]
@@ -1926,28 +1927,25 @@ def puffin(b):
     # The skirt: the dark lip round the hull's foot, the plenum's armoured rim, carried up the
     # prow and tapering up onto its chine, ending short of the band (Ryan, 3 October: it need
     # not run under the beak).
-    if "4" in trial:   # trial 4: the skirt at two thirds its height, so it reads as a rim and not a hem
-        SKIRT = [(37.0, 9.6, 11.4, 12.1, 0.4), (34.0, 12.2, 10.3, 11.9, 0.7), (30.0, 15.0, 9.5, 11.4, 0.9)] \
-            + [(y, w + 1.0, z0 - 0.5, z0 + 1.4, 0.8) for (y, w, z0, z1, c) in HULL[1:]]
-    else:
-        SKIRT = [(37.0, 10.0, 11.4, 12.4, 0.5), (34.0, 12.6, 10.3, 12.6, 0.9), (30.0, 15.4, 9.5, 12.4, 1.2)] \
-            + [(y, w + 1.4, z0 - 0.5, z0 + 2.4, 1.2) for (y, w, z0, z1, c) in HULL[1:]]
+    # The skirt at two thirds its height (Ryan, 5 October), so it reads as a rim and not a hem.
+    SKIRT = [(37.0, 9.6, 11.4, 12.1, 0.4), (34.0, 12.2, 10.3, 11.9, 0.7), (30.0, 15.0, 9.5, 11.4, 0.9)] \
+        + [(y, w + 1.0, z0 - 0.5, z0 + 1.4, 0.8) for (y, w, z0, z1, c) in HULL[1:]]
     b.loft([(y, _hull_section(z0, z1, w, c, belly=0.3)) for (y, w, z0, z1, c) in SKIRT], "steel.dark", "lip")
-    if "5" in trial:   # trial 5: a cobalt stripe along the chine, the prow's colour run back to the nacelles
-        def hull_at(y):
-            for (y0, w0, a0, b0, c0), (y1, w1, a1, b1, c1) in zip(HULL, HULL[1:]):
-                if y1 <= y <= y0:
-                    t = (y0 - y) / (y0 - y1)
-                    return w0 + (w1 - w0) * t, a0 + (a1 - a0) * t, b0 + (b1 - b0) * t
-            return HULL[0][1:4]
-        for s in (-1.0, 1.0):
-            secs = []
-            for y in (30.0, 20.0, 6.0, -6.0):
-                w, z0, z1 = hull_at(y)
-                hw, zc = w / 2.0, z0 + (z1 - z0) * 0.42
-                pts = [(hw + 0.35, zc), (hw - 0.3, zc + 0.8), (hw - 1.2, zc), (hw - 0.3, zc - 0.8)]
-                secs.append((y, [(s * x, z) for (x, z) in (pts if s > 0 else list(reversed(pts)))]))
-            b.loft(list(reversed(secs)), "livery.livery", "chine_stripe")
+    # A cobalt stripe along the chine (Ryan, 5 October), the prow's colour run back to the nacelles.
+    def hull_at(y):
+        for (y0, w0, a0, b0, c0), (y1, w1, a1, b1, c1) in zip(HULL, HULL[1:]):
+            if y1 <= y <= y0:
+                t = (y0 - y) / (y0 - y1)
+                return w0 + (w1 - w0) * t, a0 + (a1 - a0) * t, b0 + (b1 - b0) * t
+        return HULL[0][1:4]
+    for s in (-1.0, 1.0):
+        secs = []
+        for y in (30.0, 20.0, 6.0, -6.0):
+            w, z0, z1 = hull_at(y)
+            hw, zc = w / 2.0, z0 + (z1 - z0) * 0.42
+            pts = [(hw + 0.35, zc), (hw - 0.3, zc + 0.8), (hw - 1.2, zc), (hw - 0.3, zc - 0.8)]
+            secs.append((y, [(s * x, z) for (x, z) in (pts if s > 0 else list(reversed(pts)))]))
+        b.loft(list(reversed(secs)), "livery.livery", "chine_stripe")
     # The canopy: a fighter's glass settled onto the fore deck (Ryan, 3 October: carried
     # farther back, settled down more, the block through it gone): a section with its base
     # sunk into the hull, vertical sides to half height and a chamfer to a flat crown, so it
@@ -2023,7 +2021,7 @@ def puffin(b):
             else:
                 b.prism("y", px, 4.5, 9.2, 3.4, 1.2, "steel.plate", 8, "dish")
                 b.prism("y", px, 5.4, 9.2, 1.3, 0.8, "amber.engine", 8, "dish_core")
-    # Two canted fins on the rear deck: the airframe ancestry (taller and swept back in the trial).
+    # Two canted fins on the rear deck: the airframe ancestry, tall and swept back.
     fh, fy0, fy1 = 13.0, -42.0, -34.0
     for s in (-1.0, 1.0):
         a = math.radians(s * 35.0)

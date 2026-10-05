@@ -195,8 +195,9 @@ on the Models tab, for his seventh look; then on 5 October the Stingray's eighth
 still read as two stages (the body had run on behind the wings as a near-parallel neck before the taper): the
 body now ends at the wings' trailing edge and the tail is one straight taper to the exhaust; the ninth pass ran
 that taper longer to a smaller tip. The Puffin's sleek trial was made the model the same day (the chined hull),
-with suggestions 4 and 5 (a skirt at two thirds, a cobalt chine stripe) rendered beside it under
-`RIFTGATE_PUFFIN_TRIAL`. The hangar
+and suggestions 4 and 5 (a skirt at two thirds, a cobalt chine stripe) kept on top. Then the Stingray's
+tenth (the left tip's flare pods pointing forward, the fire a unit inside the mouth), and Ryan called both
+hovercraft good on 5 October. The hangar
 page was not republished for it (the movement session had it in flux); the renders are in `docs/hangar/renders/`. The Stingray's helicopter-style movement is being built
 in the movement session; when it lands, the skirmish's `sway_pitch` idle is to be judged
 against it or retired. The skirmish's hover

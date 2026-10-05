@@ -355,8 +355,8 @@
    }
   },
   "stingray": {
-   "when": "Ninth pass, 5 October.",
-   "note": "Ryan on the eighth: the rate of taper is pretty ok; the tail a little longer, ending in a smaller tip. So: the same straight taper from the wings' trailing edge, run on four units further to a mouth a quarter narrower and two thirds as tall, the rim, lining and fire scaled with it. The third picture is from behind.",
+   "when": "Tenth pass, 5 October.",
+   "note": "Ryan on the ninth: good other than two things: the port wing tip's weapon pointed up, and the exhaust's hot face should sit closer to the end. So: the Solar Flare Array's two pods at the left tip point forward like every other gun, stacked one over the other along the tip, and the glow sits a unit inside the mouth. The third picture is from behind.",
    "images": [
     {
      "file": "stingray/stingray_front.png",
@@ -372,22 +372,22 @@
     }
    ],
    "before": {
-    "summary": "Before: eighth pass, 5 October (the one taper, shorter, to a wider mouth)",
+    "summary": "Before: ninth pass, 5 October (the flare pods pitched up at the left tip, the fire deeper in the duct)",
     "images": [
      {
       "file": "stingray/before_stingray_front.png",
-      "alt": "stingray, eighth pass, front"
+      "alt": "stingray, ninth pass, front"
      },
      {
       "file": "stingray/before_stingray_rear.png",
-      "alt": "stingray, eighth pass, rear"
+      "alt": "stingray, ninth pass, rear"
      }
     ]
    }
   },
   "puffin": {
-   "when": "Seventh pass, 5 October.",
-   "note": "Ryan on the sleek trial: much better, apply it; and show suggestions 4 and 5 for fun. So the model is the trial: the hull a chined airframe facet widest at a crease along the flank and leaning in to a narrower deck a step lower, the waist pinched so the nacelles stand proud of a fuselage, the fins taller and swept back. The pictures after the first two are trials, not the model (RIFTGATE_PUFFIN_TRIAL at build): suggestion 4, the skirt at two thirds its height; suggestion 5, a cobalt stripe along the chine from the prow to the nacelles; then both.",
+   "when": "Eighth pass, 5 October.",
+   "note": "Ryan on the trials: go with both 4 and 5, and it is good. So the sleek chined hull keeps its narrower, lower deck, pinched waist and tall swept fins, the skirt is two thirds its old height so it reads as a rim, and a cobalt stripe runs along the chine from the prow back to the nacelles, the prow's colour carried down the flank. The third picture is from behind.",
    "images": [
     {
      "file": "puffin/puffin_front.png",
@@ -398,40 +398,20 @@
      "alt": "puffin, rear"
     },
     {
-     "file": "puffin/puffin_trial4_front.png",
-     "alt": "puffin, trial 4 (the skirt at two thirds), not the model: front"
-    },
-    {
-     "file": "puffin/puffin_trial4_rear.png",
-     "alt": "puffin, trial 4 (the skirt at two thirds), not the model: rear"
-    },
-    {
-     "file": "puffin/puffin_trial5_front.png",
-     "alt": "puffin, trial 5 (the chine stripe), not the model: front"
-    },
-    {
-     "file": "puffin/puffin_trial5_rear.png",
-     "alt": "puffin, trial 5 (the chine stripe), not the model: rear"
-    },
-    {
-     "file": "puffin/puffin_trial45_front.png",
-     "alt": "puffin, trial 45 (both), not the model: front"
-    },
-    {
-     "file": "puffin/puffin_trial45_rear.png",
-     "alt": "puffin, trial 45 (both), not the model: rear"
+     "file": "puffin/puffin_from_behind.png",
+     "alt": "puffin, from behind and above"
     }
    ],
    "before": {
-    "summary": "Before: sixth pass, 3 October, night (the chamfered box hull)",
+    "summary": "Before: seventh pass, 5 October (the sleek hull with the full skirt and no stripe)",
     "images": [
      {
       "file": "puffin/before_puffin_front.png",
-      "alt": "puffin, sixth pass, front"
+      "alt": "puffin, seventh pass, front"
      },
      {
       "file": "puffin/before_puffin_rear.png",
-      "alt": "puffin, sixth pass, rear"
+      "alt": "puffin, seventh pass, rear"
      }
     ]
    }

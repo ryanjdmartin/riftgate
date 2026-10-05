@@ -40,7 +40,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [x] Judge the Stingray's and the Puffin's fifth renders (3 October, evening; notes given, the sixth pass built that night)
 - [x] Judge the sixth renders (3 October, night: the Stingray's tip layout kept, the shoulder pods at the tips, the switch gone)
 - [x] The Puffin's Kestrel read: the sleek trial (the chined hull, the lower narrower deck, the pinched waist, taller swept fins) applied as the model, 5 October
-- [ ] Judge the Stingray's ninth render (5 October: the taper's rate kept, the tail longer to a smaller tip) and the Puffin's seventh (the sleek hull as the model), with suggestions 4 and 5 rendered beside it for fun (the skirt at two thirds, a cobalt chine stripe; `RIFTGATE_PUFFIN_TRIAL=4`, `5` or `45` at build): keep either, or the switch goes
+- [x] The hovercraft models: Ryan called both good on 5 October (the Stingray's tenth pass, the flare pods forward and the fire at the mouth; the Puffin's eighth, the sleek hull with the thin skirt and the chine stripe)
 - [x] The movement session's helicopter-style movement for the Stingray landed 3 October (`b.move(tilt=...)` in its rig: nose down to go forward, a side down to strafe, no bank)
 - [ ] Judge the skirmish's hover idle pitch (`sway_pitch`, 2 October) against the rig's tilt and the hovercraft's acts running; retire the idle pitch if the rig's acts cover it
 - [ ] Decide the Puffin's passive (discuss first): the overshield, shield an ally past its maximum, with its cost or second effect; Claude's shape is Overpressure, the excess fading at the end of the round, the fixed Prow Projector outward-only; then it gets built, with the gauges showing the excess
