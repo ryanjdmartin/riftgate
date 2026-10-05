@@ -1293,6 +1293,7 @@ func sync() -> void:
 			_units[uid].queue_free()
 			_units.erase(uid)
 			_pivots.erase(uid)
+			_balance.erase(uid)
 			_rigs.erase(uid)
 			_scale.erase(uid)
 			_rest_yaw.erase(uid)
@@ -1305,10 +1306,12 @@ func sync() -> void:
 				_shadows.erase(uid)
 
 
-## Only a flyer sways at rest: it rides a slow swell, each on its own beat. A grounded
+## Only a flyer sways at rest: it rides a slow swell, each on its own beat; a hovercraft
+## balances on its cushion (HoverBalance). A grounded
 ## machine holds still and every few seconds plays one of its own idle acts through its rig,
 ## the same as the skirmish's (Ryan, 2 October).
 var _fly_y: Dictionary = {}   # unit id -> the eased height a flyer is at
+var _balance: Dictionary = {}   # unit id -> HoverBalance, a hovercraft's idle
 var _dt := 1.0 / 60.0
 
 func _process(delta: float) -> void:
@@ -1320,7 +1323,21 @@ func _process(delta: float) -> void:
 		_corner(uid, rig, delta)
 	for uid in _units.keys():
 		var u := field.unit_by_id(uid)
-		if u == null or not u.traits.has("flyer"):
+		if u == null:
+			continue
+		if u.traits.has("hover") and _pivots.has(uid):
+			# A hovercraft balances on its cushion as the currents shift it, every way at once
+			# (Ryan, 5 October: not the flyers' bob; a platform on the water), moving or not.
+			if not _balance.has(uid):
+				_balance[uid] = HoverBalance.new(uid + 1)
+			var hb: HoverBalance = _balance[uid]
+			hb.step(delta)
+			var hp: Node3D = _pivots[uid]
+			hp.rotation.x = hb.pitch
+			hp.rotation.z = hb.roll
+			(_units[uid] as Node3D).position = _base.get(uid, (_units[uid] as Node3D).position) + Vector3(0.0, hb.heave * float(_scale.get(uid, 1.0)), 0.0)
+			continue
+		if not u.traits.has("flyer"):
 			continue
 		var node: Node3D = _units[uid]
 		var ph: float = _phase.get(uid, 0.0)

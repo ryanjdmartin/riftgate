@@ -81,8 +81,8 @@
    }
   },
   "clydesdale": {
-   "when": "Thirteenth round, 1 October.",
-   "note": "The autogun turrets lower, the guns barely clearing the rail, and forward a little. The mortar's and the howitzer's mounts at one height.",
+   "when": "The fifth notes, 5 October.",
+   "note": "Longer legs (Ryan, 5 October: it is a horse after all): everything above the legs a tile higher, the thigh and the shin longer and a touch thicker, so it walks a long four-beat walk with its hooves never meeting.",
    "images": [
     {
      "file": "clydesdale/clydesdale_front.png",
@@ -94,7 +94,7 @@
     }
    ],
    "before": {
-    "summary": "Before: Twelfth round, 1 October",
+    "summary": "Before: thirteenth round, 1 October (the short legs)",
     "images": [
      {
       "file": "clydesdale/before_clydesdale_front.png",
@@ -220,8 +220,8 @@
    }
   },
   "prairie_dog": {
-   "when": "Fourth acts pass, 5 October.",
-   "note": "Deeper arches, a touch wider (Ryan, 5 October: the wheel tops came up through them as the chassis rocked in rev): five units of arch over each wheel's top, as much as the chassis's travel can drop one, and the arch covers the tyre's outer face.",
+   "when": "The fifth notes, 5 October.",
+   "note": "The arches their old shape again, raised clear of the tyres (Ryan, 5 October: deepened, they read far too thick).",
    "images": [
     {
      "file": "prairie_dog/prairie_dog_front.png",
@@ -233,7 +233,7 @@
     }
    ],
    "before": {
-    "summary": "Before: Tenth round, 1 October",
+    "summary": "Before: fourth acts pass, 5 October (the deep, wide arches)",
     "images": [
      {
       "file": "prairie_dog/before_prairie_dog_front.png",
@@ -274,8 +274,8 @@
    }
   },
   "goshawk": {
-   "when": "Fourth acts pass, 5 October.",
-   "note": "The exhausts carry one fitted glow, pale at the centre to deep red at the rim, filling the whole face (Ryan, 5 October: a cross in the middle and little red).",
+   "when": "The fifth notes, 5 October.",
+   "note": "The heat spine (Ryan, 5 October: let's try it): a dark channel between rails down the back from the nacelles to the intake and again over the nose, its floor nine cells that the cannon's charge lights in turn from the tail to the nose. The wings run into the body now (they stopped short of the narrowing nose), and the nacelles tilt on drums, not a block.",
    "images": [
     {
      "file": "goshawk/goshawk_front.png",
@@ -287,7 +287,7 @@
     }
    ],
    "before": {
-    "summary": "Before: Eleventh round, 1 October",
+    "summary": "Before: fourth acts pass, 5 October (the wings short of the body, the block under the nacelles)",
     "images": [
      {
       "file": "goshawk/before_goshawk_front.png",
@@ -328,8 +328,8 @@
    }
   },
   "ammit": {
-   "when": "Fourth acts pass, 5 October.",
-   "note": "Feet that could carry it (Ryan, 5 October): a heavy pad at the ball, two long toes forward and a spur turned back, all three flat on the ground and hooking into it at the tips. Each upper talon has its own joint now (they grip, not wave).",
+   "when": "The fifth notes, 5 October.",
+   "note": "Wrists on the middle hands, so the talons stay flat on the ground as it sinks, threatens and walks, and the front toes splayed a little (Ryan, 5 October). A waist under the upper body, so it turns without pivoting on its feet.",
    "images": [
     {
      "file": "ammit/ammit_front.png",
@@ -341,7 +341,7 @@
     }
    ],
    "before": {
-    "summary": "Before: Sixth round, 1 October",
+    "summary": "Before: fourth acts pass, 5 October",
     "images": [
      {
       "file": "ammit/before_ammit_front.png",
@@ -355,8 +355,8 @@
    }
   },
   "stingray": {
-   "when": "Seventh pass, 3 October, night.",
-   "note": "Ryan on the sixth: everything else great; the weapons layout stays as it is (the shoulder pods at the wing tips, the deck with the dome alone); the tail must narrow quicker, in one stage rather than two, the exhaust vent itself as it is. So: the tail is one straight loft from the stern to the mouth, the mouth, its thin dark rim and the fire inside unchanged; the other tip-mount pick and its switch are gone.",
+   "when": "Tenth pass, 5 October.",
+   "note": "Ryan on the ninth: good other than two things: the port wing tip's weapon pointed up, and the exhaust's hot face should sit closer to the end. So: the Solar Flare Array's two pods at the left tip point forward like every other gun, stacked one over the other along the tip, and the glow sits a unit inside the mouth. The third picture is from behind.",
    "images": [
     {
      "file": "stingray/stingray_front.png",
@@ -365,25 +365,29 @@
     {
      "file": "stingray/stingray_rear.png",
      "alt": "stingray, rear"
+    },
+    {
+     "file": "stingray/stingray_from_behind.png",
+     "alt": "stingray, from behind and above"
     }
    ],
    "before": {
-    "summary": "Before: sixth pass, 3 October, night (the tail in two stages; the other tip-mount pick beside it)",
+    "summary": "Before: ninth pass, 5 October (the flare pods pitched up at the left tip, the fire deeper in the duct)",
     "images": [
      {
       "file": "stingray/before_stingray_front.png",
-      "alt": "stingray, sixth pass, front"
+      "alt": "stingray, ninth pass, front"
      },
      {
       "file": "stingray/before_stingray_rear.png",
-      "alt": "stingray, sixth pass, rear"
+      "alt": "stingray, ninth pass, rear"
      }
     ]
    }
   },
   "puffin": {
-   "when": "Fourth acts pass, 5 October.",
-   "note": "The exhausts carry one fitted glow, pale at the centre to deep red at the rim, filling the whole face (Ryan, 5 October). The model itself is unchanged, waiting to be locked.",
+   "when": "Eighth pass, 5 October.",
+   "note": "Ryan on the trials: go with both 4 and 5, and it is good. So the sleek chined hull keeps its narrower, lower deck, pinched waist and tall swept fins, the skirt is two thirds its old height so it reads as a rim, and a cobalt stripe runs along the chine from the prow back to the nacelles, the prow's colour carried down the flank. The third picture is from behind.",
    "images": [
     {
      "file": "puffin/puffin_front.png",
@@ -392,18 +396,22 @@
     {
      "file": "puffin/puffin_rear.png",
      "alt": "puffin, rear"
+    },
+    {
+     "file": "puffin/puffin_from_behind.png",
+     "alt": "puffin, from behind and above"
     }
    ],
    "before": {
-    "summary": "Before: Sixth pass, 3 October, night",
+    "summary": "Before: seventh pass, 5 October (the sleek hull with the full skirt and no stripe)",
     "images": [
      {
       "file": "puffin/before_puffin_front.png",
-      "alt": "Earlier: puffin, front"
+      "alt": "puffin, seventh pass, front"
      },
      {
       "file": "puffin/before_puffin_rear.png",
-      "alt": "Earlier: puffin, rear"
+      "alt": "puffin, seventh pass, rear"
      }
     ]
    }

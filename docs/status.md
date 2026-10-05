@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.36 since 5 October: the acts' fourth pass and the movement notes, over the third pass, the Stingray's seventh pass and the map types); republish it from the committed file after every bible change, passing that URL.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.37 since 5 October: the fifth notes and the hovercraft's last passes, over the acts' fourth pass, the movement notes and the map types); republish it from the committed file after every bible change, passing that URL.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -13,7 +13,7 @@ stays in A alone (Ryan, 1 October: it serves one ongoing task) and is republishe
 session; a B session cannot read it. Shared:
 
 - **The bible** (above): `docs/design-bible.html`, published whole after every change.
-- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 5 October with the acts' fourth pass and the movement notes): four tabs, the
+- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 5 October with the fifth notes and the hovercraft's last passes): four tabs, the
   codex, the content editor, the names list and Models. Models (the renders and the Animation
   tab merged, Ryan, 3 October) puts each machine live in 3D on top: its acts, walk and
   cornering played from its rig sidecar by `tools/hangar_motion.js` (published as
@@ -83,7 +83,7 @@ the chat is newer.
 ## As of 3 October 2026
 
 **State.** Tests green: `perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (341 tests, 13,150 checks on 5 October in a cloud session, after the movement notes;
+tests/run_tests.gd` (343 tests, 13,461 checks on 5 October in a cloud session, after the fifth notes and the hovercraft merge;
 a cloud session fetches Godot 4.7's Linux build from the GitHub release asset to run them
 (`Godot_v4.7-stable_linux.x86_64.zip`, and `xvfb-run` for screenshots), since
 the proxy serves the asset though not the release page; it builds models too, with
@@ -191,10 +191,15 @@ straight stage (the weapons layout kept, the tip-mount pick closed, the switch g
 he likes but which does not quite read Kestrel, a sleek trial rendered beside the model and not into it (a
 chined airframe hull leaning in to a narrower, lower deck, a pinched waist so the nacelles stand proud, taller
 swept fins; `RIFTGATE_PUFFIN_SLEEK=1` at build) with suggestions in chat, the earlier passes folded under each
-on the Models tab, for his seventh look. The Stingray's helicopter-style movement is being built
-in the movement session; when it lands, the skirmish's `sway_pitch` idle is to be judged
-against it or retired. The skirmish's hover
-idle gained a slow pitch (`sway_pitch`), to judge running. The merge took the tens for both
+on the Models tab, for his seventh look; then on 5 October the Stingray's eighth pass, since the seventh
+still read as two stages (the body had run on behind the wings as a near-parallel neck before the taper): the
+body now ends at the wings' trailing edge and the tail is one straight taper to the exhaust; the ninth pass ran
+that taper longer to a smaller tip. The Puffin's sleek trial was made the model the same day (the chined hull),
+and suggestions 4 and 5 (a skirt at two thirds, a cobalt chine stripe) kept on top. Then the Stingray's
+tenth (the left tip's flare pods pointing forward, the fire a unit inside the mouth), and Ryan called both
+hovercraft good on 5 October; merged into the movement branch the same day and the hangar
+republished with them. Their idle is now `HoverBalance` (the fifth notes, below), in place of
+the bob and the slow pitch the skirmish had given them. The merge took the tens for both
 moves and the balance matrix is rerun with thirteen machines (the Balance paragraph). **The
 hangar page's content is ahead of main again** (2 October, night): another session is tuning
 numbers on the page from a tree not yet committed (its components, foes and vocabulary files
@@ -378,9 +383,8 @@ dimensions (hip pitch and roll, knee, ankle pitch and roll) for the Armadillo's 
 wears the new `exhaust` tile fitted to its face (`fit_axis` in `bl_low._finish`). The hangar
 plays a blow with the stage paused. `tools/act_shot.gd` takes `skirmish 160x192` for the
 skirmish's own frame. New renders on the Models tab for the Prairie Dog, the Ammit and the
-three boosters. Open with Ryan: a render margin for the skirmish views (the loop, circle and
-dash leave the frame), a Goshawk geometry change for the cannon's glow, and attack acts (the
-to-do).
+three boosters. Open with Ryan: a render margin for the skirmish views (the Dingo's dash leaves
+the frame), and attack acts (the to-do).
 
 **The movement notes, 5 October (bible v0.36).** A machine's step at full speed is a table by
 move (`BattleMapView.MECH_PACE`: 1.9, 1.25, 0.55, 0.42 seconds a hex at 20 to 50; the hangar's
@@ -389,9 +393,27 @@ a slow machine's corner no longer steps. `oversteer` in `b.move` (Map3D's `overs
 `OVERSTEER_*`, and the hangar's Route) aims an oversteering nose ahead of the path: the Dingo
 1.0, the Stingray 0.8 (no longer a helicopter; it noses down 26 degrees), the Puffin 0.7. The
 flyers bank harder; the Badger's claw rides lower, the Nemesis's arms swing less, the Ammit's
-limbs ripple a quarter stride apart, the Boar bumps under its plow, the Clydesdale's stride is a
-fifth longer. Open with Ryan: whether the Armadillo and the Clydesdale need their legs reworked
-(or the Clydesdale a gallop) once he has seen the pace.
+limbs ripple a quarter stride apart.
+
+**The fifth notes, 5 October (bible v0.37).** Rules: a walker turns with a waist, never by
+sliding its feet; waists for the Nemesis and the Ammit (its middle arms stay off it, they bear
+weight). Engine: an act may name `places` (map, skirmish; `MechRig.place`, set by Map3D and
+MechView3D) and carry its own `heft`; the oversteering nose reads the path 0.4 s ahead
+(`OVERSTEER_AHEAD`, `set_anim`'s `ahead`, the hangar's Route). `_Raised` in `models_low.py`
+builds parts in place and lifts them whole tiles (the Clydesdale a tile taller on longer legs);
+`_plant` takes `airborne` (a lifted foot bounds the body) and `smooth` (an eased ride, never
+over-reaching), both off by default so the other walkers are unchanged; the Clydesdale walks a
+four-beat. `_missile_face` puts the missile tile on a launcher's front alone. The Goshawk's heat
+spine (`heat_1` to `heat_9`) lights in charge_cannon; its wings meet the body. The Ammit's middle
+wrists (`hand_low_*`) keep its talons flat in its gait and acts. Acts: the Badger's raise_booms,
+the Baboon's calibrate and mark_target (chest beat and ground pound gone), the Sparrowhawk's
+barrel_roll and its loop and circle wide and map-only, the Goshawk's wider bank, the Nemesis's
+forceful pound, the Ammit's X, drummed talons and mantis tuck, the Boar's sway. The jets
+oversteer a little; the Puffin does not bank. `HoverBalance` (`game/ui/hover_balance.gd`, its
+twin in `hangar_motion.js`) is the hovercraft's idle on the map, in the skirmish and on the
+hangar: a spring under critical damping pushed by wandering currents and gusts. The hovercraft
+session's last passes are merged. Open with Ryan: the machines' scale on the map and in the
+skirmish, before the gaits are tuned further; the Ammit's arms and legs at different speeds.
 
 **The codex (29 September; a tab of the hangar page since 1 October).** One surface showing a
 chassis and the components fitted to it: the Codex tab renders it in the browser from the
@@ -511,9 +533,9 @@ disrupt into a boss's signature is a trick or a trap.
 **Open, in order.** The task list is `docs/todo.md`, one line a task, grouped by who moves
 it and ticked in the commit that lands it; this is the order to take them in.
 
-1. Ryan's fourth look at the Stingray and the Puffin on the hangar's Models tab, and his decision on the Puffin's passive (the overshield), which then gets built.
+1. Ryan's decision on the Puffin's passive (the overshield), which then gets built (both hovercraft models called good, 5 October).
 2. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
-3. Ryan's text for the new machines and components; the machines' scale on the map; the strikes, the hover idle's pitch, the idle acts (`RIFTGATE_ACTS_DEBUG=1`) and the gaits (`RIFTGATE_MOVE_DEBUG=1`, and a real move for the Dingo's drift, the Stingray's helicopter strafe and the banks), judged running; the movement branch merged on his word.
+3. Ryan's text for the new machines and components; the machines' scale on the map; the strikes, the hovercraft's balancing idle, the idle acts (`RIFTGATE_ACTS_DEBUG=1`) and the gaits (`RIFTGATE_MOVE_DEBUG=1`, and a real move for the Dingo's drift, the Stingray's helicopter strafe and the banks), judged running; the movement branch merged on his word.
 4. The discuss-first decisions in the Ryan section, the economy last; enemy targeting decided and built 2 October (the paragraph above; the runner's read is the baseline question); the commander layer once the balance has a baseline.
 5. Ready to build: the pacing pieces after Ryan's session; the movement's small finds (the frozen packs' missing mark, the road's first slab); the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased parked, Corrode, foe roles), and a dedicated hunter foe and spawned formations once proposed.
 6. Audio: a full play of Hold The Line, the console's fresh pass and the effects' picks, the two boss themes.

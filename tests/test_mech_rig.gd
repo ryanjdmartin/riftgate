@@ -710,3 +710,31 @@ func test_the_map_turns_a_strafing_machine_to_its_final_facing() -> void:
 	var yaw_north := Map3D.facing_yaw(1)
 	var yaw_south := Map3D.facing_yaw(4)
 	assert_true(absf(wrapf(yaw_north - yaw_south, -PI, PI)) > PI - 0.01, "the six facings are yaws, opposite ones half a turn apart")
+
+
+func test_a_hovercraft_balances_on_its_cushion() -> void:
+	# Ryan, 5 October: a hovercraft's idle is not the flyers' bob but a platform on the water,
+	# its attitude adjusting every way as the currents change, trying to stay level.
+	var a := HoverBalance.new(3)
+	var b := HoverBalance.new(3)
+	var lo := Vector3(INF, INF, INF)
+	var hi := Vector3(-INF, -INF, -INF)
+	var moved := 0.0
+	var last := Vector3.ZERO
+	for i in range(60 * 30):
+		a.step(1.0 / 60.0)
+		b.step(1.0 / 30.0 if i % 2 == 0 else 0.0)
+		var now := Vector3(a.pitch, a.roll, a.heave)
+		lo = lo.min(now)
+		hi = hi.max(now)
+		moved += (now - last).length()
+		last = now
+	assert_true(is_equal_approx(a.pitch, b.pitch) and is_equal_approx(a.roll, b.roll), "the same seed balances the same whatever the frame rate")
+	assert_true(lo.x < -0.02 and hi.x > 0.02 and lo.y < -0.02 and hi.y > 0.02, "it tips every way: nose and tail, either side (%s to %s)" % [lo, hi])
+	assert_true(maxf(absf(lo.x), hi.x) < 0.2 and maxf(absf(lo.y), hi.y) < 0.2, "and catches itself near level")
+	assert_true(hi.z - lo.z > 0.5, "it rides up and down too")
+	assert_true(moved > 1.0, "never still")
+	var c := HoverBalance.new(4)
+	for i in range(600):
+		c.step(1.0 / 60.0)
+	assert_false(is_equal_approx(c.pitch, a.pitch), "another seed, another beat")

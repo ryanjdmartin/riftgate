@@ -1191,9 +1191,9 @@ if (location.hash.startsWith("#md-")) MOTION.id = location.hash.slice(4);   // a
 function rememberMotion() { try { localStorage.setItem("hangar.motion", JSON.stringify({id: MOTION.id, shape: MOTION.shape, maker: MOTION.maker})); } catch (e) {} }
 const ensureShapes = () => ensure("shapes", "hangar/shapes.json", j => { state.shapes = j; });
 const MODE_HELP = {
-  acts: "Every act in turn, back to back, as RIFTGATE_ACTS_DEBUG=1 plays them. Tap one to loop it; drag the bar to hold a moment. The blows layer over whatever is showing, playing or paused.",
+  acts: "Every act in turn, back to back, as RIFTGATE_ACTS_DEBUG=1 plays them. Tap one to loop it; drag the bar to hold a moment. The blows layer over whatever is showing, playing or paused. A hovercraft balances on its cushion all the while, tipping every way as the currents and the gusts take it, as the map and the skirmish draw it.",
   walk: "Driven straight ahead at its own full speed on the map, as RIFTGATE_MOVE_DEBUG=1 does: the stride at the pace the map gives its move (a 20 or a 30 plods, a 40 or a 50 runs), the wheels, the treads and the held poses.",
-  route: "A loop of two long moves on the map's hexes: three steps north and a turn east, three steps south and a turn back. The facing follows the cornering module: the Dingo's and the hovercraft's noses swinging into each corner ahead of the path (oversteer), the flyers' banks. Each move runs as the map runs it: one smooth curve, from rest to full speed, through the corners at full speed, easing to a stop and then to its recorded facing.",
+  route: "A loop of two long moves on the map's hexes: three steps north and a turn east, three steps south and a turn back. The facing follows the cornering module: the Dingo's, the hovercraft's and (a little) the jets' noses swinging into each corner ahead of the path (oversteer), the flyers' and the Stingray's banks, the Puffin flat. Each move runs as the map runs it: one smooth curve, from rest to full speed, through the corners at full speed, easing to a stop and then to its recorded facing.",
 };
 function motionMachines() {
   return liveEntries("chassis.entries").map(x => x.entry).filter(e => state.pins && Array.isArray(state.pins[e.id]));
@@ -1225,12 +1225,14 @@ function renderModels(main) {
     if (MOTION.id === CLASSES) {
       MOTION.wrap.className = "motion " + (MAKER_TAB[MOTION.maker] || "other");
       st.flyer = false;
+      st.hover = false;
       show = state.shapes ? st.show("shapes/" + MOTION.shape + "_" + MOTION.maker, true) : null;
     } else {
       const entry = list.find(e => e.id === MOTION.id);
       MOTION.wrap.className = "motion " + (MAKER_TAB[entry.maker] || "other");
       st.movespeed = Number(entry.movespeed) || 50;
       st.flyer = (entry.traits || []).includes("flyer");
+      st.hover = (entry.traits || []).includes("hover");   // balances on its cushion all the while, as in the game
       show = st.show(entry.id);
     }
     main.append(MOTION.wrap);

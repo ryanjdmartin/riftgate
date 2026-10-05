@@ -566,6 +566,49 @@ function three() {
 }
 const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim() || "#888";
 
+// A hovercraft's idle (HoverBalance, game/ui/hover_balance.gd: keep the two in step; the
+// random numbers differ, the motion does not): its attitude a mass on a spring a little
+// under critical damping, pushed toward a lean by slow currents wandering every way and
+// knocked now and then by a gust, so it tips, catches itself and settles with a touch of
+// overshoot; a heave with a slow swell and a dip at each gust (Ryan, 5 October: a platform
+// on the water, trying to stay level). Stepped at a fixed rate.
+const HB = {OMEGA: 3.2, ZETA: 0.3, CURRENT: 0.05, GUST: 0.22, GUST_GAP: [1.3, 3.4], HEAVE_OMEGA: 2.6, HEAVE_ZETA: 0.4, SWELL: 0.8, HEAVE_GUST: 3.0, STEP: 1 / 120};
+class HoverBalance {
+  constructor(seed = 1) {
+    this.seed = seed;
+    this.pitch = 0; this.roll = 0; this.heave = 0;
+    this.rate = [0, 0]; this.heaveRate = 0; this.t = 0; this.acc = 0;
+    this.phase = [0, 1, 2, 3, 4].map(() => this.random() * Math.PI * 2);
+    this.nextGust = 0.4 + this.random() * (HB.GUST_GAP[1] - 0.4);
+  }
+  random() { this.seed = (this.seed * 1103515245 + 12345) % 2147483648; return this.seed / 2147483648; }
+  current(t) {
+    const p = this.phase;
+    return [(Math.sin(t * 0.53 + p[0]) * 0.6 + Math.sin(t * 1.27 + p[1]) * 0.4) * HB.CURRENT,
+            (Math.sin(t * 0.71 + p[2]) * 0.6 + Math.sin(t * 1.53 + p[3]) * 0.4) * HB.CURRENT];
+  }
+  step(dt) {
+    this.acc += Math.min(dt, 0.25);
+    const w = HB.OMEGA, d = 2 * HB.ZETA * HB.OMEGA, hw = HB.HEAVE_OMEGA, hd = 2 * HB.HEAVE_ZETA * HB.HEAVE_OMEGA;
+    while (this.acc >= HB.STEP) {
+      this.acc -= HB.STEP; this.t += HB.STEP;
+      if (this.t >= this.nextGust) {
+        const a = this.random() * Math.PI * 2, k = 0.6 + this.random() * 0.4;
+        this.rate[0] += Math.cos(a) * HB.GUST * k; this.rate[1] += Math.sin(a) * HB.GUST * k;
+        this.heaveRate -= HB.HEAVE_GUST * k;
+        this.nextGust = this.t + HB.GUST_GAP[0] + this.random() * (HB.GUST_GAP[1] - HB.GUST_GAP[0]);
+      }
+      const c = this.current(this.t);
+      this.rate[0] += ((c[0] - this.pitch) * w * w - this.rate[0] * d) * HB.STEP;
+      this.rate[1] += ((c[1] - this.roll) * w * w - this.rate[1] * d) * HB.STEP;
+      this.pitch += this.rate[0] * HB.STEP; this.roll += this.rate[1] * HB.STEP;
+      const swell = Math.sin(this.t * 0.9 + this.phase[4]) * HB.SWELL;
+      this.heaveRate += ((swell - this.heave) * hw * hw - this.heaveRate * hd) * HB.STEP;
+      this.heave += this.heaveRate * HB.STEP;
+    }
+  }
+}
+
 class Stage {
   constructor() {
     this.el = document.createElement("div");
@@ -693,6 +736,7 @@ class Stage {
     this.route = new Route(this.widest / (2 * MARKER_FIT * (this.flyer ? FIT_FLYER : 1)));
     this.buildGround();
     this.pivot.position.set(0, 0, 0); this.pivot.rotation.set(0, this.route.facing, 0);
+    this.balance = this.hover ? new HoverBalance(3) : null;
     this.note.textContent = "";
     this.frame();
     this.emit();
@@ -784,6 +828,13 @@ class Stage {
       this.pivot.position.set(p.x, 0, p.z);
       this.pivot.rotation.set(0, this.route.facing, 0);
     }
+    if (this.balance) {   // a hovercraft balancing on its cushion, as the map and the skirmish draw it
+      this.balance.step(dt);
+      this.pivot.rotation.order = "YXZ";
+      this.pivot.rotation.x = this.balance.pitch;
+      this.pivot.rotation.z = this.balance.roll;
+      this.pivot.position.y = this.balance.heave;
+    }
     if (rig.current) this.emitTick();
   }
   // The machine's full speed on the map in its own model units a second (MechRig.map_speed):
@@ -794,5 +845,5 @@ class Stage {
   seek(t) { if (this.rig && this.rig.current) { this.rig.seek(t); this.renderer && this.renderer.render(this.scene, this.camera); this.emit(); } }
 }
 
-window.HangarMotion = {Rig, Route, Stage, MovePath, curve, cycleCurve, curveAt, sample, sampleCycle, clampDegrees, labelled, MOVE_REF_SPEED};
+window.HangarMotion = {Rig, Route, Stage, MovePath, HoverBalance, curve, cycleCurve, curveAt, sample, sampleCycle, clampDegrees, labelled, MOVE_REF_SPEED};
 })();
