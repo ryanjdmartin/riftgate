@@ -355,8 +355,8 @@
    }
   },
   "stingray": {
-   "when": "Eighth pass, 5 October.",
-   "note": "Ryan on the seventh: the tail did not look any different, still two stages; the exhaust vent itself is right, only how the tail gets there. The seventh pass had shortened the taper, but the body itself ran on behind the wings as a near-parallel neck for ten units before the taper began, and that neck was the first stage. So: the body ends at the wings' trailing edge and the tail is one straight taper in its pearl from there to the same mouth, its thin dark rim and the fire inside unchanged; the whole stub is shorter by three units. The third picture is from behind.",
+   "when": "Ninth pass, 5 October.",
+   "note": "Ryan on the eighth: the rate of taper is pretty ok; the tail a little longer, ending in a smaller tip. So: the same straight taper from the wings' trailing edge, run on four units further to a mouth a quarter narrower and two thirds as tall, the rim, lining and fire scaled with it. The third picture is from behind.",
    "images": [
     {
      "file": "stingray/stingray_front.png",
@@ -372,22 +372,22 @@
     }
    ],
    "before": {
-    "summary": "Before: seventh pass, 3 October, night (a near-parallel neck behind the wings, then the taper)",
+    "summary": "Before: eighth pass, 5 October (the one taper, shorter, to a wider mouth)",
     "images": [
      {
       "file": "stingray/before_stingray_front.png",
-      "alt": "stingray, seventh pass, front"
+      "alt": "stingray, eighth pass, front"
      },
      {
       "file": "stingray/before_stingray_rear.png",
-      "alt": "stingray, seventh pass, rear"
+      "alt": "stingray, eighth pass, rear"
      }
     ]
    }
   },
   "puffin": {
-   "when": "Sixth pass, 3 October, night.",
-   "note": "Ryan on the fifth: the back too boxy, the hull top overhanging the boosters, the vents narrower and lower; the fourth's overall shape was better (the back taper, the boosters poking out the side, the wings attached to them) and he was not sure how to reconcile that with the deck carried over the boosters; the skirt to taper up before the beak. So, the two reconciled: the hull tapers to the stern as in the fourth pass; each sponson is a faired nacelle whose top is the deck itself, sloping down with the hull's taper and closing on the drum's crown, so the deck is carried over the booster with no lid overhanging it; the drum pokes out of the nacelle's flank and below it, its intake mouth ahead of the nacelle; a narrow, low louvred housing lies along each nacelle's top; the wings grow out of the nacelles' flanks, reverse-swept and dropping, their tips ahead of the intakes, the pods under them clear of the blade; the skirt climbs onto the prow's chine and ends short of the band. Ryan on the sixth: he really likes what it is doing, a cohesive vehicle, but it does not quite read Kestrel, not quite sleek enough, and he asked for suggestions. The third and fourth pictures are a trial for that, not the model: the hull's chamfered box as a chined airframe facet, widest at a crease along the flank and leaning in to a narrower deck a step lower, the waist pinched so the nacelles stand proud of a fuselage, the fins taller and swept back (RIFTGATE_PUFFIN_SLEEK=1 at build); everything else as the model.",
+   "when": "Seventh pass, 5 October.",
+   "note": "Ryan on the sleek trial: much better, apply it; and show suggestions 4 and 5 for fun. So the model is the trial: the hull a chined airframe facet widest at a crease along the flank and leaning in to a narrower deck a step lower, the waist pinched so the nacelles stand proud of a fuselage, the fins taller and swept back. The pictures after the first two are trials, not the model (RIFTGATE_PUFFIN_TRIAL at build): suggestion 4, the skirt at two thirds its height; suggestion 5, a cobalt stripe along the chine from the prow to the nacelles; then both.",
    "images": [
     {
      "file": "puffin/puffin_front.png",
@@ -398,24 +398,40 @@
      "alt": "puffin, rear"
     },
     {
-     "file": "puffin/puffin_sleek_trial_front.png",
-     "alt": "puffin, the sleek trial for the Kestrel read, not the model: front"
+     "file": "puffin/puffin_trial4_front.png",
+     "alt": "puffin, trial 4 (the skirt at two thirds), not the model: front"
     },
     {
-     "file": "puffin/puffin_sleek_trial_rear.png",
-     "alt": "puffin, the sleek trial, rear"
+     "file": "puffin/puffin_trial4_rear.png",
+     "alt": "puffin, trial 4 (the skirt at two thirds), not the model: rear"
+    },
+    {
+     "file": "puffin/puffin_trial5_front.png",
+     "alt": "puffin, trial 5 (the chine stripe), not the model: front"
+    },
+    {
+     "file": "puffin/puffin_trial5_rear.png",
+     "alt": "puffin, trial 5 (the chine stripe), not the model: rear"
+    },
+    {
+     "file": "puffin/puffin_trial45_front.png",
+     "alt": "puffin, trial 45 (both), not the model: front"
+    },
+    {
+     "file": "puffin/puffin_trial45_rear.png",
+     "alt": "puffin, trial 45 (both), not the model: rear"
     }
    ],
    "before": {
-    "summary": "Before: fifth pass, 3 October, evening (the widened stern, the flat lids over the boosters)",
+    "summary": "Before: sixth pass, 3 October, night (the chamfered box hull)",
     "images": [
      {
       "file": "puffin/before_puffin_front.png",
-      "alt": "puffin, fifth pass, front"
+      "alt": "puffin, sixth pass, front"
      },
      {
       "file": "puffin/before_puffin_rear.png",
-      "alt": "puffin, fifth pass, rear"
+      "alt": "puffin, sixth pass, rear"
      }
     ]
    }
