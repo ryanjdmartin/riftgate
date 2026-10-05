@@ -83,7 +83,7 @@ the chat is newer.
 ## As of 3 October 2026
 
 **State.** Tests green: `perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (329 tests, 6,847 checks on 3 October in a cloud session, after the movement leftovers;
+tests/run_tests.gd` (333 tests, 7,782 checks on 5 October in a cloud session, after the campaign session's runner counter and the merge with main's hovercraft passes;
 a cloud session fetches Godot 4.7's Linux build from the GitHub release asset to run them
 (`Godot_v4.7-stable_linux.x86_64.zip`, and `xvfb-run` for screenshots), since
 the proxy serves the asset though not the release page; it builds models too, with
@@ -475,10 +475,10 @@ disrupt into a boss's signature is a trick or a trap.
 **Open, in order.** The task list is `docs/todo.md`, one line a task, grouped by who moves
 it and ticked in the commit that lands it; this is the order to take them in.
 
-1. Ryan's fourth look at the Stingray and the Puffin on the hangar's Models tab, and his decision on the Puffin's passive (the overshield), which then gets built.
+1. Ryan's decision on the Puffin's passive (the overshield), which then gets built; the hovercraft models themselves he called good on 5 October.
 2. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
 3. Ryan's text for the new machines and components; the machines' scale on the map; the strikes, the hover idle's pitch, the idle acts (`RIFTGATE_ACTS_DEBUG=1`) and the gaits (`RIFTGATE_MOVE_DEBUG=1`, and a real move for the Dingo's drift, the Stingray's helicopter strafe and the banks), judged running; the movement branch merged on his word.
-4. The discuss-first decisions in the Ryan section (the campaign and the economy decided 5 October, the paragraph below; the sponsorship's details are Ryan's); enemy targeting decided and built 2 October (the paragraph above; the runner's read is the baseline question); the commander layer once the balance has a baseline.
+4. The discuss-first decisions left in the Ryan section (the campaign and the economy are decided, 5 October, the paragraph above; what remains of them is the makers' measures and notices, and the in-battle ones: ally wrecks, terrain, base defences, reinforcements, the multi-hex boss, Rift Pressure in the boss fight, packs keeping hull between fights); enemy targeting decided and built 2 October (the paragraph above; the runner's read is the baseline question); the commander layer once the balance has a baseline.
 5. Ready to build: the pacing pieces after Ryan's session; the movement's small finds (the frozen packs' missing mark, the road's first slab); the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased parked, Corrode, foe roles), and a dedicated hunter foe and spawned formations once proposed.
 6. Audio: a full play of Hold The Line, the console's fresh pass and the effects' picks, the two boss themes.
-7. A prototype hangar in the game (paints and loadouts, no economy). Art: enemy art through foeforge, the hangar as a model. Before a phone leaves the desk: onboarding, then tuning.
+7. A prototype hangar in the game (paints and loadouts, no economy), now with a design to grow into (the hangar and the mission map in the to-do's screens section, the campaign state in the engine's). Art: enemy art through foeforge, the hangar as a model. Before a phone leaves the desk: onboarding, then tuning.
