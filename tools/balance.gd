@@ -1,8 +1,9 @@
 extends SceneTree
 
-## The balance runner: every chassis alone, and the default team, against every pack a
-## faction sends through the rift, played by each rung of the policy ladder over many
-## seeds. Writes docs/balance.md (and a JSON of every cell with --json) and prints it.
+## The balance runner: every chassis alone, the default team, and each maker's team of three
+## (5 October: an escort such as the Puffin reads only on a team that carries it), against
+## every pack a faction sends through the rift, played by each rung of the policy ladder
+## over many seeds. Writes docs/balance.md (and a JSON of every cell with --json) and prints it.
 ##   perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
 ## Options: --seeds N (200), --policies random,greedy (both), --out path (docs/balance.md),
 ## --json path (none), --withdraw N (a persona that withdraws under N percent hull; 0 never),
@@ -121,16 +122,25 @@ func _parse_args() -> void:
 		i += 1
 
 
-## Rows: each chassis alone, then the starting team. Packs: every distinct foe and strength a
-## faction's spawn list names, then each faction's boss alone.
+## Rows: each chassis alone, then the starting team, then each maker's team (its first three
+## machines in content order, for every maker with three; decided 5 October, so that a machine
+## whose kit is for its allies, the Puffin's allies-only Prow Projector, is read at all: alone
+## it can never spend it). Packs: every distinct foe and strength a faction's spawn list
+## names, then each faction's boss alone.
 func _build_matrix() -> void:
 	for id in db.chassis.keys():
 		rows.append({"id": str(id), "name": str(db.chassis[id].get("name", id)), "chassis": [str(id)]})
 	var team: Array = db.default_team()
-	var team_names: Array[String] = []
-	for id in team:
-		team_names.append(str(db.chassis[id].get("name", id)))
-	rows.append({"id": "team", "name": "Team (%s)" % ", ".join(team_names), "chassis": team})
+	rows.append({"id": "team", "name": "Team (%s)" % ", ".join(_names(team)), "chassis": team})
+	for mk in db.makers.keys():
+		var own: Array = []
+		for id in db.chassis.keys():
+			if str(db.chassis[id].get("maker", "")) == str(mk):
+				own.append(str(id))
+		if own.size() < 3:
+			continue
+		var trio: Array = own.slice(0, 3)
+		rows.append({"id": "%s team" % mk, "name": "%s team (%s)" % [str(db.makers[mk].get("name", mk)), ", ".join(_names(trio))], "chassis": trio})
 	for fac in db.factions.keys():
 		for entry in db.spawn_table(fac):
 			var pid := "%s x%d" % [entry[0], entry[1]]
@@ -155,6 +165,13 @@ func _build_matrix() -> void:
 		if mix.size() < 2:
 			continue
 		packs.append({"id": fac + " formation", "name": "%s formation (%s)" % [str(db.factions[fac].get("name", fac)), ", ".join(names)], "foe": "", "strength": 0, "mix": mix})
+
+
+func _names(ids: Array) -> Array[String]:
+	var out: Array[String] = []
+	for id in ids:
+		out.append(str(db.chassis[id].get("name", id)))
+	return out
 
 
 func _has_pack(pid: String) -> bool:

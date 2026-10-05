@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.40 since 5 October, evening: the machines' scale by class and the Ammit's offbeat option, over the campaign and the economy decided, the Puffin's passive and the fifth notes); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.41 since 5 October, evening: the runner's maker team rows and the Kestrel team's reading, over the movement session's v0.40, the machines' scale by class); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -457,17 +457,18 @@ started from the harness is saved after every change (`sim/save.gd`, `user://bat
 and Resume battle opens it where it stood; standalone runs and tests never write it.
 
 **Balance (bible section 11).** `sim/policy.gd` plays the skirmish headless (RANDOM, GREEDY,
-`withdraw_below`); `tools/balance.gd` runs the matrix, about fourteen minutes on the Mac at 200 seeds with
-thirteen machines, twelve packs (the nine plus each faction's whole formation in one fight, since
-2 October) and the team row run twice for the targeting comparison (`docs/balance.md`, generated
-2 October, night, with the targeting pass, the playtest set and the two hovercraft in).
+`withdraw_below`); `tools/balance.gd` runs the matrix, about nineteen minutes on the Mac at 200 seeds with
+thirteen machines, four team rows (the starting team, and since 5 October a team of three per
+maker with three machines: Minerva, Kestrel, Wainwright & Sutler), twelve packs (the nine plus
+each faction's whole formation in one fight, since 2 October) and the starting team run twice
+for the targeting comparison (`docs/balance.md`, generated 5 October, evening, 86,400 fights).
 **The hovercraft's first read:** the Stingray alone sits in the support band beside the Baboon,
 beating the back-rank packs under greedy and losing to every front-rank pack and formation; the
 flare, the emitter and the lance share its spends about a third each and the Radiator Sail takes
 2%, so the bot runs it hot and never vents (the Nemesis's problem again) and cooling 0 is the
 knob to watch. The Puffin alone loses nearly everything, as an escort with an allies-only locked
 shield and a planned passive must (its Prow Projector is never spendable in a solo cell; greedy
-still takes the necromancers at 71%); it reads only once a team cell carries it. The rerun of 5 October after its passive and the overshield landed moved not a cell, as it must: the runner's one team row is the first three chassis, so neither ran in any fight; a row that carries the Puffin (a Kestrel team, or an escort row with the Stingray) is the open proposal. **The baseline reading, for Ryan's
+still takes the necromancers at 71%); it reads only once a team cell carries it. The maker team rows (5 October, evening) put it on a cell at last: the Kestrel team (Sparrowhawk, Goshawk, Puffin) is the first team row with a decision on the formation cells (random 44, 85 and 92 against greedy 99 to 100; the starting team wins them all at both rungs), costs the same as the starting team on the Risen formation (4.0 rounds, 17% hull), and spends the Prow Projector 2% of the time and the Deflector 9%, because nearly every cell ends in a round or two, where a kill ends the fight and a shield only delays it. The projector reads only on the formations; dead or patient waits on longer packs and on Ryan's play. The Wainwright & Sutler team is the weakest team row (random 20 on the Risen formation, 7.0 rounds and 26% hull under greedy); Minerva's wins everything at no cost. **The baseline reading, for Ryan's
 question of whether 80 a round is average or game-losing:** the team of three still wins every
 cell, the formations included, in about a round and at no cost, under the aims and under the
 lowest-shield rule alike (the Risen formation, fifteen foes, is the one fight that lasts: 4.6
@@ -549,7 +550,7 @@ disrupt into a boss's signature is a trick or a trap.
 **Open, in order.** The task list is `docs/todo.md`, one line a task, grouped by who moves
 it and ticked in the commit that lands it; this is the order to take them in.
 
-1. The Puffin's Slipstream and Overshield read in play (built 5 October; the hovercraft models are called good); the runner cannot read them until a team row carries the Puffin (the 5 October rerun moved nothing); its name, a placeholder, is Ryan's.
+1. The Puffin's Slipstream and Overshield read in play (built 5 October; the hovercraft models are called good; the runner's Kestrel team row carries it since that evening, the Balance paragraph); its name, a placeholder, is Ryan's.
 2. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
 3. Ryan's text for the new machines and components; the size classes on the phone and the Ammit's offbeat walk (the hangar's Walk); the strikes, the hovercraft's balancing idle, the idle acts (`RIFTGATE_ACTS_DEBUG=1`) and the gaits (`RIFTGATE_MOVE_DEBUG=1`, and a real move for the Dingo's drift, the Stingray's helicopter strafe and the banks), judged running; the movement branch merged on his word.
 4. The discuss-first decisions left in the Ryan section (the campaign and the economy are decided, 5 October, the paragraph above; what remains of them is the makers' measures and notices, and the in-battle ones: ally wrecks, terrain, base defences, reinforcements, the multi-hex boss, Rift Pressure in the boss fight, packs keeping hull between fights); enemy targeting decided and built 2 October (the paragraph above; the runner's read is the baseline question); the commander layer once the balance has a baseline.
