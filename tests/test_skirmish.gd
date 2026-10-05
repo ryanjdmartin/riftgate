@@ -2646,6 +2646,95 @@ func test_a_foes_special_action_is_picked_by_weight_and_shows_its_kind() -> void
 	assert_eq(g.threat(), 10, "the threat for deployment is the blow's")
 
 
+func test_an_overshield_passes_the_maximum_and_fades_at_the_rounds_end() -> void:
+	var sk := Skirmish.new(1)
+	var ov := Face.shield(30)
+	ov.keywords.append(Face.Keyword.OVERSHIELD)
+	var giver := _mech("Giver", Die.single(ov), 40, 100)
+	var taker := _mech("Taker", Die.single(Face.attack(10, L)), 20, 100)
+	sk.add_mech(giver)
+	sk.add_mech(taker)
+	sk.add_foes([_ghoul(500, 20), _ghoul(500, 20), _ghoul(500, 20)])
+	sk.begin()
+	sk.start_round()
+	for f in sk.field_foes():
+		f.target = sk.mechs[1]
+	var fc := sk.forecast(sk.mechs[1], false, 30, true)
+	assert_eq(int(fc["shield_after"]), 0, "the forecast reads the overshield: 50 against three blows of 20 leaves no shield standing")
+	assert_eq(int(fc["hull_after"]), 100, "and no hull lost, where 20 shield alone would have let the third blow through")
+	assert_true(sk.assign(0, sk.mechs[1]), "shield the ally past its maximum")
+	assert_eq(taker.shield, 50, "20 plus 30, past a maximum of 20")
+	assert_true("\n".join(sk.log).contains("past its maximum"), "the log says so")
+	sk.mechs[1].face_index = 0
+	sk.assign(1, sk.front[0])
+	sk.end_round()
+	assert_eq(taker.hull, 100, "three blows of 20 all blocked by the overshield")
+	assert_eq(taker.shield, 0, "the shield spent on them")
+	# The excess fades at the round's end when nothing spends it.
+	taker.shield = 20
+	sk.start_round()
+	sk.mechs[0].face_index = 0
+	for f in sk.field_foes():
+		f.target = sk.mechs[0]
+	assert_true(sk.assign(0, sk.mechs[1]), "shield the ally again")
+	assert_eq(taker.shield, 50, "past the maximum again")
+	sk.mechs[1].face_index = 0
+	sk.assign(1, sk.front[0])
+	sk.end_round()
+	assert_eq(taker.shield, 20, "untouched by the blows this round, the 30 past the maximum faded at the round's end")
+	assert_true("\n".join(sk.log).contains("30 shield past its maximum fades"), "and the log says so")
+	# Without the keyword the same shield is capped, as it always was.
+	var plain := _mech("Plain", Die.single(Face.shield(30)), 40, 100)
+	var sk2 := Skirmish.new(1)
+	var t2 := _mech("T", Die.single(Face.attack(10, L)), 20, 100)
+	t2.shield = 20
+	sk2.add_mech(plain)
+	sk2.add_mech(t2)
+	sk2.add_foes([_ghoul(90)])
+	sk2.begin()
+	sk2.start_round()
+	assert_true(sk2.assign(0, sk2.mechs[1]), "a plain shield on a full ally")
+	assert_eq(t2.shield, 20, "stays at the maximum")
+
+
+func test_shielding_an_ally_fires_the_escorts_passive_on_the_ally() -> void:
+	var escort := {"id": "escort", "name": "Escort", "description": "", "effects": [
+		{"trigger": "on_shield_granted", "effect": "vent_heat", "value": 10}]}
+	var sk := Skirmish.new(1)
+	var giver := _mech("Giver", Die.of([Face.shield(30), Face.shield(10)]), 40, 100)
+	var taker := _mech("Taker", Die.single(Face.attack(10, L)), 50, 100)
+	giver.grant_passive(escort)
+	sk.add_mech(giver)
+	sk.add_mech(taker)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	sk.mechs[1].heat = 25
+	sk.mechs[0].heat = 25
+	sk.mechs[0].face_index = 0
+	assert_true(sk.assign(0, sk.mechs[1]), "shield the ally")
+	assert_eq(sk.mechs[1].heat, 15, "the ally shed 10 heat")
+	assert_eq(sk.mechs[0].heat, 25, "the escort itself shed nothing")
+	assert_true("\n".join(sk.log).contains("Taker: Giver's escort, -10 heat"), "the log names the escort")
+	assert_eq(Effects.granted_vent(giver), 10, "the bot can read what the escort sheds")
+	assert_eq(Effects.effect_text(escort["effects"][0]), "an ally this machine shields: sheds 10 heat", "reads as a sentence")
+	# On itself the trigger never fires, and a shield on a full ally still vents.
+	sk.end_round()
+	sk.start_round()
+	sk.mechs[0].face_index = 1
+	sk.mechs[0].heat = 25
+	assert_true(sk.assign(0, null), "shield itself")
+	assert_eq(sk.mechs[0].heat, 25, "no vent for a shield on itself")
+	sk.end_round()
+	sk.start_round()
+	taker.shield = taker.shield_max
+	sk.mechs[1].heat = 30
+	sk.mechs[0].face_index = 1
+	assert_true(sk.assign(0, sk.mechs[1]), "shield a full ally")
+	assert_eq(taker.shield, taker.shield_max, "the plain shield is capped")
+	assert_eq(sk.mechs[1].heat, 20, "but the escort's vent still fires on the spend")
+
+
 func test_the_gauge_triggers_fire_and_never_feed_themselves() -> void:
 	var opening := {"id": "opening", "name": "Opening", "description": "", "effects": [
 		{"trigger": "on_skirmish_start", "effect": "add_shield", "value": 15}]}
@@ -2672,7 +2761,7 @@ func test_the_gauge_triggers_fire_and_never_feed_themselves() -> void:
 	# venting 10, and the shield gained grants no more shield.
 	assert_eq(m.shield, 30, "5 shield from the heat gained")
 	assert_eq(sk.mechs[0].heat, 25 + 30 - 10, "and 10 heat shed for the shield gained")
-	assert_eq(Effects.effect_text({"trigger": "on_shield_gain", "effect": "vent_heat", "value": 10}), "on gaining shield: vents 10 heat", "reads as a sentence")
+	assert_eq(Effects.effect_text({"trigger": "on_shield_gain", "effect": "vent_heat", "value": 10}), "on gaining shield: sheds 10 heat", "reads as a sentence")
 	sk.end_round()
 	sk.start_round()
 	sk.mechs[0].face_index = 1

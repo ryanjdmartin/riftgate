@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (the committed file is v0.34 since 5 October, the campaign and the economy decided, sections 3 and 10 rewritten; the published page is at v0.36 from `claude/modest-ramanujan-ya5dnq`, a branch ahead of main, so the cloud session of 5 October did not republish over it: republish from the committed file once the branches meet on main); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.39 since 5 October: the campaign and the economy decided, over the Puffin's passive); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -83,7 +83,7 @@ the chat is newer.
 ## As of 3 October 2026
 
 **State.** Tests green: `perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (333 tests, 7,782 checks on 5 October in a cloud session, after the campaign session's runner counter and the merge with main's hovercraft passes;
+tests/run_tests.gd` (335 tests, 7,806 checks on 5 October in a cloud session, after the campaign session merged with the Puffin's passive;
 a cloud session fetches Godot 4.7's Linux build from the GitHub release asset to run them
 (`Godot_v4.7-stable_linux.x86_64.zip`, and `xvfb-run` for screenshots), since
 the proxy serves the asset though not the release page; it builds models too, with
@@ -165,9 +165,12 @@ deepens every stack it applies by one per 20 heat carried, through the `on_stack
 `sim/skirmish.gd`). **Numbed is exempt from every interaction** (Ryan, a general rule). The
 **Puffin** (Kestrel, `puffin`): hull 50, shield 30, move 30 (the slowest Kestrel), a d5 of the
 locked Prow Projector (shield 30, allies only) and four hardpoints, the Overcharge Coil's first
-chassis; its passive Overpressure is **planned**: Ryan leans to an overshield (shield an ally
-past its maximum) with a cost, Claude's shape fades the excess at the round's end, his decision
-pending. Both modelled (`stingray(b)`, `puffin(b)` in `models_low.py`; propulsion reads the
+chassis; its passive **Slipstream** (decided and built 5 October; the name a placeholder): an ally it
+shields also sheds 10 heat, through the new `on_shield_granted` trigger (fires on the granter with the
+recipient, on the spend); and the Prow Projector carries **Overshield**, a new rare support keyword
+(shields only): the shield may pass the target's maximum and the excess fades at the round's end
+(`Skirmish._trim_overshield`), shown on the gauge as a hatched block beyond the bar's end. No penalty:
+the die is the brake. The bot weighs both (`Policy.shield_score`). Both modelled (`stingray(b)`, `puffin(b)` in `models_low.py`; propulsion reads the
 maker: the Stingray on lift fans flush in its wings, the Puffin on boosters far too big for it)
 and rendered to the hangar page's Models tab; rebuilt twice the same night on his notes (the
 Stingray: too literal and floating, so no tail and every part seated on the skin through
@@ -235,7 +238,7 @@ d7, the Halo Shield dropped; passive Pocket Paradox on `on_foe_status`), `armadi
 locked component the Lockdown Shutters), `wild_boar` (five hardpoints), `prairie_dog`,
 `dingo`, `goshawk`, `nemesis`, `ammit` (the last two the Arsenal's), and since 2 October the
 hovercraft `stingray` (Aphelion's, d6, passive Exothermic Suite on `on_stack`) and `puffin`
-(Kestrel's, d5, passive Overpressure planned, waiting on Ryan's overshield decision). Nothing
+(Kestrel's, d5, passive Slipstream on `on_shield_granted`; its Prow Projector the first Overshield). Nothing
 else in content is planned: every passive, keyword, status and trigger the vocabulary names runs
 (`Effects.fire`; the bible's section 7 row "The 28 September pieces, built" has each one), and
 the ten foe actions run (`Foe.ACTION_EFFECTS`, weights 3:1 attack to special as placeholders,
@@ -475,7 +478,7 @@ disrupt into a boss's signature is a trick or a trap.
 **Open, in order.** The task list is `docs/todo.md`, one line a task, grouped by who moves
 it and ticked in the commit that lands it; this is the order to take them in.
 
-1. Ryan's decision on the Puffin's passive (the overshield), which then gets built; the hovercraft models themselves he called good on 5 October.
+1. The Puffin's Slipstream and Overshield read in play and on the runner's team cells (built 5 October; the hovercraft models are called good); its name, a placeholder, is Ryan's.
 2. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
 3. Ryan's text for the new machines and components; the machines' scale on the map; the strikes, the hover idle's pitch, the idle acts (`RIFTGATE_ACTS_DEBUG=1`) and the gaits (`RIFTGATE_MOVE_DEBUG=1`, and a real move for the Dingo's drift, the Stingray's helicopter strafe and the banks), judged running; the movement branch merged on his word.
 4. The discuss-first decisions left in the Ryan section (the campaign and the economy are decided, 5 October, the paragraph above; what remains of them is the makers' measures and notices, and the in-battle ones: ally wrecks, terrain, base defences, reinforcements, the multi-hex boss, Rift Pressure in the boss fight, packs keeping hull between fights); enemy targeting decided and built 2 October (the paragraph above; the runner's read is the baseline question); the commander layer once the balance has a baseline.

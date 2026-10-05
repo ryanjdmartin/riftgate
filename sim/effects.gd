@@ -51,6 +51,7 @@ const SUPPORTED_EFFECTS := {
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
 	"on_shield_gain": ["vent_heat", "stack_status"],
+	"on_shield_granted": ["vent_heat", "stack_status"],
 	"on_heat_gain": ["add_shield", "stack_status"],
 	"out_of_combat": ["add_shield"],
 	"status": ["tick_hp", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry", "scramble_reroll"],
@@ -682,6 +683,24 @@ static func round_start(u, heat: int) -> Dictionary:
 	return fire(u, "on_round_start", heat)
 
 
+## What this machine's passives do to an ally it shields (on_shield_granted; the Puffin's
+## escort passive, 5 October): heat the ally sheds and statuses it gains, for the caller to
+## apply on the ally. Fires on the spend, whatever the shield gained, so a shield die on a
+## topped-up ally still does its other work. Never on itself: the trigger is for allies.
+static func shield_granted(u, amount: int) -> Dictionary:
+	return fire(u, "on_shield_granted", amount)
+
+
+## The heat an ally this machine shields would shed (on_shield_granted vent_heat), for the
+## bot to weigh a shield spend on an ally by.
+static func granted_vent(u) -> int:
+	var n := 0
+	for pair in _taking_part(u, "on_shield_granted", null):
+		if str(pair[0].get("effect", "")) == "vent_heat":
+			n += int(pair[0].get("value", 0)) * int(pair[1].stacks)
+	return maxi(0, n)
+
+
 ## Does the pipeline hold a cracked component short of destruction?
 static func no_destroy(u, face: Face) -> bool:
 	for pair in _taking_part(u, "on_injury", face):
@@ -761,7 +780,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"multiply_heat": body = "heat ×%s" % vs
 		"add_heat": body = "heat +%s" % vs
 		"add_burn": body = "+%s burn" % vs
-		"vent_heat": body = "vents %s heat" % vs
+		"vent_heat": body = "sheds %s heat" % vs
 		"add_crit_damage": body = "crit multiplier +%s" % vs
 		"no_destroy": body = "cracked components are never destroyed"
 		"set_reach": body = "reach becomes %s" % vs
@@ -810,6 +829,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"on_hull_damage": lead = "on losing hull: "
 		"on_skirmish_start": lead = "as the fight begins: "
 		"on_shield_gain": lead = "on gaining shield: "
+		"on_shield_granted": lead = "an ally this machine shields: "
 		"on_heat_gain": lead = "on gaining heat: "
 		"out_of_combat": lead = "each phase out of combat: "
 	match str(eff.get("when", "")):

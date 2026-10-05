@@ -137,7 +137,7 @@ func options_for(sk: Skirmish, i: int) -> Array:
 				out.append({"mech": i, "target": t, "score": attack_score(sk, ms, f, t)})
 		Face.Kind.SHIELD:
 			for who in sk.equipment_targets_for(ms, f):
-				out.append({"mech": i, "target": who, "score": shield_score(sk, who, f.power) - volatile_cost(sk, ms, f)})
+				out.append({"mech": i, "target": who, "score": shield_score(sk, who, f.power, f.has(Face.Keyword.OVERSHIELD), ms) - volatile_cost(sk, ms, f)})
 		Face.Kind.VENT:
 			for who in sk.equipment_targets_for(ms, f):
 				out.append({"mech": i, "target": who, "score": vent_score(sk, who, f.power) - volatile_cost(sk, ms, f)})
@@ -357,14 +357,22 @@ static func _kill_odds(outcomes: Array, hp: int) -> float:
 
 ## A shield on a machine: the hull it keeps this round (a standing shield blocks a whole
 ## blow), the death it prevents, and a little for what stands afterwards.
-func shield_score(sk: Skirmish, who: Skirmish.MechState, power: int) -> float:
+func shield_score(sk: Skirmish, who: Skirmish.MechState, power: int, overshield: bool = false, by: Skirmish.MechState = null) -> float:
 	var before := sk.forecast(who, false)
-	var after := sk.forecast(who, false, power)
+	var after := sk.forecast(who, false, power, overshield)
 	var saved := maxf(0.0, float(after["hull_after"])) - maxf(0.0, float(before["hull_after"]))
 	var score := saved * HULL_WEIGHT
 	if before["destroyed"] and not after["destroyed"]:
 		score += DEATH_WEIGHT
-	score += float(mini(power, who.unit.shield_max - who.unit.shield)) * BANK_WEIGHT
+	# What stands afterwards: an overshield's excess fades at the round's end, so only the
+	# shield up to the maximum banks.
+	score += float(maxi(0, mini(power, who.unit.shield_max - who.unit.shield))) * BANK_WEIGHT
+	# An escort's passive sheds the ally's heat as it shields (on_shield_granted): worth what
+	# a vent of that much would be, on an ally only.
+	if by != null and by != who:
+		var vent := Effects.granted_vent(by.unit)
+		if vent > 0:
+			score += vent_score(sk, who, vent)
 	return score
 
 
@@ -509,7 +517,7 @@ func face_value(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
 		Face.Kind.SHIELD:
 			var best := 0.0
 			for who in sk.equipment_targets_for(ms, f):
-				best = maxf(best, shield_score(sk, who, f.power) - volatile_cost(sk, ms, f))
+				best = maxf(best, shield_score(sk, who, f.power, f.has(Face.Keyword.OVERSHIELD), ms) - volatile_cost(sk, ms, f))
 			return best
 		Face.Kind.VENT:
 			var best := 0.0

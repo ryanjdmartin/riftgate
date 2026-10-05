@@ -33,7 +33,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Judge the water feature in play with the two hovercraft, the Stingray and the Puffin (built 3 October; bible section 4, the movement row): a river with fords or a lake band, one a map; the map survey says the river barely changes how far anyone gets, so its bite is where the horde crosses and where a walker off the ford stops; and the move gauge on the phone (`draft` and `draftslow` screenshot poses)
 - [ ] The game's name
 - [ ] Judge the skirmish's hover idle pitch (`sway_pitch`, 2 October) against the rig's tilt and the hovercraft's acts running; retire the idle pitch if the rig's acts cover it
-- [ ] Decide the Puffin's passive (discuss first): the overshield, shield an ally past its maximum, with its cost or second effect; Claude's shape is Overpressure, the excess fading at the end of the round, the fixed Prow Projector outward-only; then it gets built, with the gauges showing the excess
+- [ ] Name the Puffin's passive (Slipstream is Claude's placeholder) and read it in play: the overshield on an ally against a heavy round, the vent on the Stingray
 
 ## Engine
 
@@ -42,7 +42,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 
 Nothing in content is planned any more; every piece the 28 September content leaned on runs since 30 September (bible section 7, "The 28 September pieces, built"). The machine weld is decided and ready to build; the joint pass and the idle acts are built (3 October, a cloud session; Ryan judges them running next); movement by way of moving is built; the rest waits on a design line from Ryan first. Nothing here is claimed by another session; a session that takes a line says so in this file.
 
-- [ ] The Puffin's Overpressure, once Ryan decides it (the Ryan section): shield past maximum at the cap site when the Puffin's shield component is spent on an ally, a round-end trim, the gauges showing the excess
+- [ ] Rerun `tools/balance.gd` and read the Puffin on the team cells now its passive and overshield run (the escort's vent on the Stingray is the cell to watch)
 - [ ] Phased (parked) and Corrode still want a design line first
 - [ ] Judge the aims, the lure and the disrupt in play: whether the exposed weighting (hull reached plus half a breaking shield) leans hard enough, whether the swarm's opening 80 reads as pressure or as a wall, whether a disrupt into a boss's signature feels like a trick or a trap
 - [ ] Left from the movement build: the hangar page's foes, components and vocabulary files republished from main (its chassis file carries the tens and the hovercraft since 2 October, night; the other three are ahead of main from another session's tuning, so republish them once that work lands, never over it)
