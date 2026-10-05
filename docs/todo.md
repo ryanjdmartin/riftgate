@@ -43,7 +43,8 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [x] The hovercraft models: Ryan called both good on 5 October (the Stingray's tenth pass, the flare pods forward and the fire at the mouth; the Puffin's eighth, the sleek hull with the thin skirt and the chine stripe)
 - [x] The movement session's helicopter-style movement for the Stingray landed 3 October (`b.move(tilt=...)` in its rig: nose down to go forward, a side down to strafe, no bank)
 - [ ] Judge the skirmish's hover idle pitch (`sway_pitch`, 2 October) against the rig's tilt and the hovercraft's acts running; retire the idle pitch if the rig's acts cover it
-- [ ] Decide the Puffin's passive (discuss first): the overshield, shield an ally past its maximum, with its cost or second effect; Claude's shape is Overpressure, the excess fading at the end of the round, the fixed Prow Projector outward-only; then it gets built, with the gauges showing the excess
+- [x] Decide the Puffin's passive (5 October, in discussion: Overshield a rare keyword on the Prow Projector, Slipstream venting an ally it shields, no penalty; bible section 7, the hovercraft row)
+- [ ] Name the Puffin's passive (Slipstream is Claude's placeholder) and read it in play: the overshield on an ally against a heavy round, the vent on the Stingray
 
 ## Engine
 
@@ -51,7 +52,8 @@ Nothing in content is planned any more; every piece the 28 September content lea
 
 - [x] The targeting pass (2 October, bible sections 5 and 9; built the same day with tests green): armour on foes; `aim` and the per-foe weighted pick; `when`, the no-repeat rule and attacks at 2 to a special's 1; Lure as a retarget on any foe-targeted entry; Disrupt; Brace as flat armour; the vocabulary; the nine foes rewritten
 - [x] The runner reads targeting on the team cells (2 October: the shipped aims against the lowest-shield rule, in their own section of `docs/balance.md`)
-- [ ] The Puffin's Overpressure, once Ryan decides it (the Ryan section): shield past maximum at the cap site when the Puffin's shield component is spent on an ally, a round-end trim, the gauges showing the excess
+- [x] The Puffin's passive built (5 October): the `overshield` keyword (shields only, the cap lifted at the gain, a round-end trim, the forecast and the bot reading the excess, the gauge's hatched block past the bar's end), the `on_shield_granted` trigger with `vent_heat`, tests for both
+- [ ] Rerun `tools/balance.gd` and read the Puffin on the team cells now its passive and overshield run (the escort's vent on the Stingray is the cell to watch)
 - [ ] Phased (parked) and Corrode still want a design line first
 - [ ] Judge the aims, the lure and the disrupt in play: whether the exposed weighting (hull reached plus half a breaking shield) leans hard enough, whether the swarm's opening 80 reads as pressure or as a wall, whether a disrupt into a boss's signature feels like a trick or a trap
 - [x] Movement by way of moving (decided and built 2 October; bible section 4, the movement row ends with what stands): the words and `BattleMap.spend`, moves in tens in content with the foes' in `foes.json`, the horde's rule, the hunter's shore target, the validator and the flag, the generator's guarantee under the horde's rule with no single-hex plug, the terrain tap, the codex's open-ground count, the dashed slow end hexes, the pace, `Save.VERSION` 2
