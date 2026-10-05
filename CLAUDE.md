@@ -98,6 +98,14 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
 
 Sessions have died mid-flight before. To keep the next one cheap to start:
 
+- One folder per branch (decided 5 October). `~/Code/riftgate` stays on `main`. A session that
+  needs another branch (a cloud session resumed on the Mac for its tools, most often) works in
+  its own worktree, `git worktree add .claude/worktrees/<name> <branch>` and EnterWorktree with
+  that path, never by switching the main folder's branch under whoever is using it.
+  `.claude/worktrees/` is excluded in `.git/info/exclude`. A worktree has no `.godot` import
+  or git-ignored tools: run `--import` there before Godot, and call the venvs by their path in
+  the main folder. Remove the worktree once its branch is merged.
+
 - Commit after each verified chunk of work, from this folder, with tests green. Do not leave a
   day of work uncommitted.
 - Before ending a session, or whenever a large task completes, update `docs/status.md`: what
