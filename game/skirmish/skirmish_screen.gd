@@ -395,6 +395,7 @@ func _build() -> void:
 			var maker := str(db.chassis.get(ms.unit.chassis_id, {}).get("maker", "minerva"))
 			var view := MechView3D.make(ms.unit.chassis_id, maker, look, "badger", MechView3D.YAW_SKIRMISH, Vector2i.ZERO, false, ms.unit.paint, MechView3D.plan_for(ms.unit, db))
 			view.set_sheen(MechView3D.SHEEN_SKIRMISH)   # the rear pose needs more to shine like the codex
+			view.size_k = float(MechView3D.SIZE_FILL.get(str(db.chassis.get(ms.unit.chassis_id, {}).get("size", "")), 1.0))   # the team in proportion
 			# Idle: an aircraft hovers, a hover chassis skims, a ground machine stands still
 			# (its idle is limb movement, which waits on annotated joints).
 			if ms.unit.traits.has("flyer"):

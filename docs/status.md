@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.37 since 5 October: the fifth notes and the hovercraft's last passes, over the acts' fourth pass, the movement notes and the map types); republish it from the committed file after every bible change, passing that URL.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.38 since 5 October, evening: the machines' scale by class and the Ammit's offbeat option, over the fifth notes, the hovercraft's last passes and the map types); republish it from the committed file after every bible change, passing that URL.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -83,7 +83,7 @@ the chat is newer.
 ## As of 3 October 2026
 
 **State.** Tests green: `perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (343 tests, 13,461 checks on 5 October in a cloud session, after the fifth notes and the hovercraft merge;
+tests/run_tests.gd` (344 tests, 13,485 checks on 5 October in a cloud session, after the machines' scale by class;
 a cloud session fetches Godot 4.7's Linux build from the GitHub release asset to run them
 (`Godot_v4.7-stable_linux.x86_64.zip`, and `xvfb-run` for screenshots), since
 the proxy serves the asset though not the release page; it builds models too, with
@@ -412,8 +412,19 @@ forceful pound, the Ammit's X, drummed talons and mantis tuck, the Boar's sway. 
 oversteer a little; the Puffin does not bank. `HoverBalance` (`game/ui/hover_balance.gd`, its
 twin in `hangar_motion.js`) is the hovercraft's idle on the map, in the skirmish and on the
 hangar: a spring under critical damping pushed by wandering currents and gusts. The hovercraft
-session's last passes are merged. Open with Ryan: the machines' scale on the map and in the
-skirmish, before the gaits are tuned further; the Ammit's arms and legs at different speeds.
+session's last passes are merged.
+
+**The machines' scale, 5 October, evening (bible v0.38, section 7's size row).** Every chassis
+has a `size` (`ContentDB.SIZES`: light, medium, heavy, assault; validated). The map fits a
+machine's widest extent to `Map3D.SIZE_FIT[size]` hex widths (0.72 to 1.2; heavy is the old
+1.05; `MARKER_FIT` and `FIT_FLYER` are gone), `MechRig.map_speed` takes that width, and the
+skirmish sets `MechView3D.size_k` from `SIZE_FILL` (0.7 to 1.0) so the team stands in proportion;
+the hangar's Route and Walk read the class too. The Baboon and the Ammit step about a fifth more
+often, the Armadillo an eighth less. The Ammit's offbeat walk (three hand steps to two leg steps,
+`_plant`'s per-limb `cycles`) is a gait option in its sidecar (`b.gait_option`,
+`MechRig.use_gait`), shown by the hangar's Gait switch and `tools/gait_clip.gd` (frames of a
+machine walking at its map pace, for ffmpeg). Open with Ryan: the classes and their numbers on
+the phone, the Badger's booms in its width, and whether the offbeat walk replaces the ripple.
 
 **The codex (29 September; a tab of the hangar page since 1 October).** One surface showing a
 chassis and the components fitted to it: the Codex tab renders it in the browser from the

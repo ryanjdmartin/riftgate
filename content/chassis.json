@@ -1,5 +1,5 @@
 {
-  "_about": "Chassis. Not classes: any silhouette, any component in any slot. Numbers are in tens. movespeed is the move in tens: a normal hex costs 10, a fast one 5, and a slow hex can always be entered and ends the move; which ground is which word is the way of moving among traits (tracked, walker, wheeled, hover, flyer; exactly one), bible section 4. armour is taken off every blow that lands on bare hull, flat, so small hits bounce off a heavy machine (a standing shield blocks a blow whole; nothing bleeds through). recharge_field is shield regained each battlefield phase spent out of combat; in a fight shield comes only from components (never a free refill, so withdrawing is not a reset). cooling is heat shed at the start of every skirmish turn (0 if absent): venting is a tactic, but a round of ballistics or shields is a way of cooling too. hardpoints is the number of free slots (and of hp_<n> pins on the model); fixed lists the components built into the chassis (always on the die, never removed, no hardpoint used); loadout is the components fitted to the hardpoints by default, and a hardpoint left empty is an entry on the die that does nothing. Every component is one entry, so die size is fixed count plus hardpoints. passive is zero or one object: name and description are shown (the codex prints NAME: description), effects are what the engine runs, at most three, one idea (an upside and its cost count as one passive); the validator refuses effects the engine cannot execute. Shown to the player: codex (the inspect entry, combat and hangar), flavour (an in-world quote), the passive's name and description. design is internal and never shown: fantasy (pitch, inspiration, homages), niche (the role it is meant to fill). Makers are placeholders.",
+  "_about": "Chassis. Not classes: any silhouette, any component in any slot. Numbers are in tens. movespeed is the move in tens: a normal hex costs 10, a fast one 5, and a slow hex can always be entered and ends the move; which ground is which word is the way of moving among traits (tracked, walker, wheeled, hover, flyer; exactly one), bible section 4. size is the machine's class by mass (light, medium, heavy, assault), which sets how big it is drawn on the map and in the skirmish (bible section 7). armour is taken off every blow that lands on bare hull, flat, so small hits bounce off a heavy machine (a standing shield blocks a blow whole; nothing bleeds through). recharge_field is shield regained each battlefield phase spent out of combat; in a fight shield comes only from components (never a free refill, so withdrawing is not a reset). cooling is heat shed at the start of every skirmish turn (0 if absent): venting is a tactic, but a round of ballistics or shields is a way of cooling too. hardpoints is the number of free slots (and of hp_<n> pins on the model); fixed lists the components built into the chassis (always on the die, never removed, no hardpoint used); loadout is the components fitted to the hardpoints by default, and a hardpoint left empty is an entry on the die that does nothing. Every component is one entry, so die size is fixed count plus hardpoints. passive is zero or one object: name and description are shown (the codex prints NAME: description), effects are what the engine runs, at most three, one idea (an upside and its cost count as one passive); the validator refuses effects the engine cannot execute. Shown to the player: codex (the inspect entry, combat and hangar), flavour (an in-world quote), the passive's name and description. design is internal and never shown: fantasy (pitch, inspiration, homages), niche (the role it is meant to fill). Makers are placeholders.",
   "makers": [
     { "id": "minerva", "name": "Minerva Heavy Works", "style": "Armour first. Everything is a tank, even the ones with legs.", "voice": "Maintenance manual. Terse, exact, proud of tolerances." },
     { "id": "kestrel", "name": "Kestrel Dynamics", "style": "Fast, fragile, over-tuned. Airframes and interceptors.", "voice": "Flight-test log. Clipped, numbers first." },
@@ -15,6 +15,7 @@
       "hull": 160, "shield": 30, "movespeed": 20, "heat_max": 80, "hardpoints": 4,
       "armour": 10, "recharge_field": 15, "cooling": 5,
       "traits": ["tracked"],
+      "size": "assault",
       "fixed": ["chainsaw_claw", "chainsaw_claw"],
       "loadout": ["slug_cannon", "missile_rack", "twin_autoguns", "proximity_klaxon"],
       "passive": {
@@ -35,6 +36,7 @@
       "hull": 140, "shield": 40, "movespeed": 30, "heat_max": 60, "hardpoints": 9,
       "armour": 5, "recharge_field": 20, "cooling": 5,
       "traits": ["walker"],
+      "size": "heavy",
       "fixed": [],
       "loadout": ["twin_autoguns", "twin_autoguns", "lance", "pocket_mortar", "howitzer", "shock_barrage", "ablative_plating", "flak_skirt", "heat_sink"],
       "passive": {
@@ -53,6 +55,7 @@
       "hull": 60, "shield": 60, "movespeed": 50, "heat_max": 60, "hardpoints": 4,
       "armour": 0, "recharge_field": 30, "cooling": 0,
       "traits": ["flyer"],
+      "size": "light",
       "fixed": [],
       "loadout": ["overclocked_railgun", "headhunter_rifle", "arc_projector", "deflector"],
       "passive": {
@@ -72,6 +75,7 @@
       "hull": 100, "shield": 40, "movespeed": 20, "heat_max": 80, "hardpoints": 6,
       "armour": 0, "recharge_field": 20, "cooling": 5,
       "traits": ["walker"],
+      "size": "medium",
       "fixed": ["solar_flare_array"],
       "loadout": ["umbra_projector", "umbra_projector", "pulse_repeater", "pulse_repeater", "zenith_emitter", "radiator_sail"],
       "passive": {
@@ -90,6 +94,7 @@
       "hull": 150, "shield": 30, "movespeed": 20, "heat_max": 60, "hardpoints": 5,
       "armour": 15, "recharge_field": 15, "cooling": 5,
       "traits": ["walker"],
+      "size": "assault",
       "fixed": ["lockdown_shutters"],
       "loadout": ["rivet_gun", "slug_cannon", "missile_rack", "ablative_plating", "blowout_stack"],
       "passive": {
@@ -108,6 +113,7 @@
       "hull": 130, "shield": 30, "movespeed": 30, "heat_max": 60, "hardpoints": 5,
       "armour": 10, "recharge_field": 20, "cooling": 5,
       "traits": ["tracked"],
+      "size": "heavy",
       "fixed": ["breaching_plow"],
       "loadout": ["slug_cannon", "slug_cannon", "missile_rack", "ablative_plating", "blowout_stack"],
       "passive": {
@@ -126,6 +132,7 @@
       "hull": 60, "shield": 40, "movespeed": 50, "heat_max": 60, "hardpoints": 3,
       "armour": 0, "recharge_field": 30, "cooling": 5,
       "traits": ["wheeled"],
+      "size": "light",
       "fixed": ["flakshot_repeater"],
       "loadout": ["twin_autoguns", "incendiary_shells", "flak_skirt"],
       "passive": {
@@ -144,6 +151,7 @@
       "hull": 60, "shield": 40, "movespeed": 40, "heat_max": 60, "hardpoints": 3,
       "armour": 0, "recharge_field": 25, "cooling": 5,
       "traits": ["wheeled", "stealth"],
+      "size": "light",
       "fixed": ["megataser_harpoon"],
       "loadout": ["twin_autoguns", "pocket_mortar", "coolant_dump"],
       "passive": {
@@ -162,6 +170,7 @@
       "hull": 100, "shield": 50, "movespeed": 40, "heat_max": 100, "hardpoints": 5,
       "armour": 0, "recharge_field": 25, "cooling": 5,
       "traits": ["flyer"],
+      "size": "medium",
       "fixed": ["afterburner_cannon"],
       "loadout": ["laser_carbine", "headhunter_rifle", "arc_projector", "deflector", "ram_air_scoop"],
       "passive": {
@@ -180,6 +189,7 @@
       "hull": 140, "shield": 20, "movespeed": 20, "heat_max": 100, "hardpoints": 4,
       "armour": 10, "recharge_field": 15, "cooling": 5,
       "traits": ["walker"],
+      "size": "heavy",
       "fixed": ["gravity_knuckles", "gravity_knuckles"],
       "loadout": ["plasma_carbine", "meteor_artillery", "ward_plate", "entropy_condenser"],
       "passive": {
@@ -199,6 +209,7 @@
       "hull": 120, "shield": 40, "movespeed": 30, "heat_max": 80, "hardpoints": 4,
       "armour": 5, "recharge_field": 20, "cooling": 5,
       "traits": ["walker"],
+      "size": "medium",
       "fixed": ["soulcutter_talons", "soulcutter_talons", "soulcutter_talons", "soulcutter_talons"],
       "loadout": ["plasma_carbine", "blazethrower", "ward_plate", "entropy_condenser"],
       "passive": {
@@ -217,6 +228,7 @@
       "hull": 80, "shield": 50, "movespeed": 40, "heat_max": 100, "hardpoints": 5,
       "armour": 0, "recharge_field": 25, "cooling": 0,
       "traits": ["hover"],
+      "size": "medium",
       "fixed": ["photosphere_lance"],
       "loadout": ["solar_flare_array", "pulse_repeater", "zenith_emitter", "aurora_lattice", "radiator_sail"],
       "passive": {
@@ -235,6 +247,7 @@
       "hull": 50, "shield": 30, "movespeed": 30, "heat_max": 60, "hardpoints": 4,
       "armour": 0, "recharge_field": 30, "cooling": 5,
       "traits": ["hover"],
+      "size": "light",
       "fixed": ["prow_projector"],
       "loadout": ["laser_carbine", "deflector", "overcharge_coil", "ram_air_scoop"],
       "passive": {

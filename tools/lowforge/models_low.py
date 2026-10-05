@@ -1999,6 +1999,19 @@ def ammit(b):
                       "phase": 0.25 if side == "r" else 0.75, "shift": -12.0})
     tracks, body, stride = _plant(limbs, sweep=30.0, lift=8.0, crouch=0.5, dip=0.8, nod=0.5)
     b.gait(stride=stride, tracks=tracks, hold={"shoulder_l": 12.0, "shoulder_r": 12.0}, body=body, ease="linear")
+    # An option beside it, for judging and not in use (Ryan, 5 October: weirder, the arms and
+    # the legs at different speeds): the hands take three short steps to the legs' two over a
+    # cycle two strides long, each pair still half a step apart, so the ripple drifts through
+    # the cycle and never repeats inside it. The legs step as above; the hands at a third of
+    # the cycle each, so a hand's stance is two thirds of a leg's.
+    offbeat = []
+    for side in ("l", "r"):
+        offbeat.append({"hip": "hip_" + side, "knee": "knee_" + side, "ankle": "ankle_" + side, "at": legs[side],
+                        "phase": 0.0 if side == "l" else 0.5, "cycles": 2})
+        offbeat.append({"hip": "shoulder_low_" + side, "knee": "elbow_low_" + side, "ankle": "hand_low_" + side, "at": arms[side],
+                        "phase": 0.25 if side == "r" else 0.75, "shift": -12.0, "cycles": 3})
+    tracks, body, stride = _plant(offbeat, sweep=60.0, lift=8.0, crouch=0.5, dip=0.8, nod=0.5, n=120)
+    b.gait_option("offbeat", stride=stride, tracks=tracks, hold={"shoulder_l": 12.0, "shoulder_r": 12.0}, body=body, ease="linear")
     b.move(accel=1.0, heft=0.2)
 
 ammit.maker = "arsenal"
@@ -2952,21 +2965,28 @@ def _plant(limbs, sweep, duty=0.55, lift=8.0, crouch=0.0, dip=1.2, nod=0.0, reac
     `reach`, lets a foot in the air bound the body too, so a hoof leaving the back of its
     stance or reaching for the ground ahead lowers it on the way and not all at once on
     landing (a four-beat walk, where one foot is always about to land); `smooth` (a share
-    of the stride) eases the body's ride, only ever lower than the legs allow. Returns
-    (tracks, body, stride) for b.gait with ease "linear" (dense keys, n a stride)."""
+    of the stride) eases the body's ride, only ever lower than the legs allow. A limb's
+    "cycles" (1 unless given) is how many steps it takes in the cycle, its phase then a share
+    of its own step and its stance `sweep` over its cycles (Ryan, 5 October: the Ammit's arms
+    and legs at different speeds, three steps of the arms to two of the legs, the cycle as
+    long as both take to come round together). Returns (tracks, body, stride) for b.gait with
+    ease "linear" (dense keys, n a cycle)."""
     stride = sweep / duty
-    landings = sorted({round(l["phase"] % 1.0, 4) for l in limbs})
+    loop = max(int(l.get("cycles", 1)) for l in limbs)   # the most steps any limb takes in a cycle
+    landings = sorted({round(((l["phase"] + j) / int(l.get("cycles", 1))) % 1.0, 4) for l in limbs for j in range(int(l.get("cycles", 1)))})
 
     def foot(l, p):
         """Where a limb's end goes at phase p, in the model's rest frame: (y, z, down)."""
         e = l["at"][2]
+        k = int(l.get("cycles", 1))
+        sw = sweep / k
         y0 = e[1] + l.get("shift", 0.0)
-        q = (p - l["phase"]) % 1.0
+        q = (p * k - l["phase"]) % 1.0
         if q < duty:
-            return y0 + sweep * 0.5 - sweep * (q / duty), e[2], True
+            return y0 + sw * 0.5 - sw * (q / duty), e[2], True
         s = (q - duty) / (1.0 - duty)
         u = min(1.0, max(0.0, (s - 0.12) / 0.76))
-        y = y0 - sweep * 0.5 + sweep * u * u * (3.0 - 2.0 * u)
+        y = y0 - sw * 0.5 + sw * u * u * (3.0 - 2.0 * u)
         if s < 0.3:
             r = s / 0.3
             z = e[2] + lift * (1.0 - (1.0 - r) * (1.0 - r))   # up briskly, easing at the top
@@ -2994,7 +3014,7 @@ def _plant(limbs, sweep, duty=0.55, lift=8.0, crouch=0.0, dip=1.2, nod=0.0, reac
             ride = min(ride, z + math.sqrt(max(0.0, span * span - dy * dy)) - h3[2])
         jolt = 0.0
         for land in landings:
-            x = (p - land) % 1.0
+            x = ((p - land) % 1.0) * loop   # in steps, so a landing's dip lasts as long whatever the cycle
             if x < 0.05:
                 jolt += x / 0.05
             elif x < 0.4:

@@ -19,8 +19,12 @@ extends SubViewport
 const PITCH := 42.0            # the map tokens' tilt
 const HEX_WORLD := 35.0        # a hex's circumradius in model units: a mech is about one hex wide
 const CAMERA_DISTANCE := 900.0
-const MARKER_FIT := 1.05       # a mech's widest extent, in hex widths, on the map
-const FIT_FLYER := 0.8         # a flyer is a small craft beside a mech (Ryan, 21 September)
+## A machine's widest extent on the map, in hex widths, by its class by mass (chassis
+## `size`; Ryan, 5 October: the machines' scale, which had fitted every machine to one width
+## and a flyer a little smaller): a scout car takes most of a hex, a heavy the whole of it as
+## before, an assault machine overflows it, drawn south over north. The flyers' own shrink
+## (21 September: a small craft beside a mech) is the light and medium classes' now.
+const SIZE_FIT := {"light": 0.72, "medium": 0.88, "heavy": 1.05, "assault": 1.2}
 ## The ground keeps its true height under the bleed; the other world's painting sits over
 ## it at ground level, half up and half down (Ryan, 22 September: flawless). The enemy's
 ## marks sit at the base. So nothing on the ground moves once built, and all of it is
@@ -744,6 +748,12 @@ func _corner(uid: int, rig: MechRig, delta: float) -> void:
 const STRAFE_TURN_RATE := 6.0   # per second: a helicopter yaws to where it will face in the first moment of a move, then translates
 
 
+## A machine's widest extent on the map, in hex widths, for its class by mass; a class the
+## table does not know is drawn as a heavy, the one width every machine had before.
+static func fit_for(size: String) -> float:
+	return float(SIZE_FIT.get(size, SIZE_FIT["heavy"]))
+
+
 ## How far an oversteering nose leads its path, radians: past the turn the path makes over
 ## the next OVERSTEER_AHEAD seconds (`turn_ahead`, radians), up to OVERSTEER_MAX.
 static func oversteer_lead(turn_ahead: float, oversteer: float) -> float:
@@ -1362,7 +1372,7 @@ func _make_unit(u: Unit) -> Node3D:
 		var aabb := _bounds(node)
 		var widest := maxf(aabb.size.x, aabb.size.z)
 		var flyer := u.traits.has("flyer")
-		var fit := MARKER_FIT * (FIT_FLYER if flyer else 1.0)
+		var fit := fit_for(str(ContentDB.load_default().chassis.get(u.chassis_id, {}).get("size", "")))
 		var k := (HEX_WORLD * 2.0 * fit / widest) if widest > 0.0 else 1.0
 		var pivot := Node3D.new()
 		node.scale = Vector3.ONE * k
@@ -1381,7 +1391,7 @@ func _make_unit(u: Unit) -> Node3D:
 		var rig := MechRig.new()
 		rig.place = "map"
 		rig.setup(node, model_id, node, u.id)
-		rig.top_speed = MechRig.map_speed(widest, u.movespeed, flyer)   # the debug drive's pace (RIFTGATE_MOVE_DEBUG)
+		rig.top_speed = MechRig.map_speed(widest, u.movespeed, fit)   # the debug drive's pace (RIFTGATE_MOVE_DEBUG)
 		_rigs[u.id] = rig
 		_scale[u.id] = k
 		var seat := Node3D.new()   # the pivot turns to the facing; the seat's southward set does not

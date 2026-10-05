@@ -18,6 +18,11 @@ const YAW_FRONT := 45.0     # front three-quarter: the codex hero angle
 const YAW_REAR := 225.0     # rear three-quarter, kept for hero shots
 const YAW_SKIRMISH := 155.0 # the skirmish: rear three-quarter facing the foes above, turned to the left (the claw side shows)
 const FILL := 0.92
+## How much of its frame a machine fills, by its class by mass (chassis `size`; Ryan, 5
+## October: the machines' scale): the skirmish sets `size_k` from it, so the team stands in
+## proportion, an assault machine filling its slot and a scout car well inside its own. The
+## codex and the hangar frame every machine whole.
+const SIZE_FILL := {"light": 0.7, "medium": 0.82, "heavy": 0.92, "assault": 1.0}
 
 # The spriter's tones, so 3D and sprites share a palette (tools/spriter/spriter.py).
 const RAMPS := {
@@ -80,6 +85,7 @@ var token: bool = false           # a 24 px map token: no detail parts, no surfa
 var hide_detail: bool = true      # in token mode: drop ".detail" parts (a structure sprite keeps them)
 var paint: Dictionary = {}        # optional repaint: {"primary": Color, "secondary": Color} over the maker's livery and bone plating
 var frame_override: Vector2i = Vector2i.ZERO
+var size_k: float = 1.0           # the share of FILL the model takes (SIZE_FILL); set before it is in the tree
 const SPIN_SPEED := 0.7           # radians per second
 
 # The model's tags (tools/lowforge/bl_low.py): `joint_<name>` is a pivot with the limb's
@@ -367,7 +373,7 @@ func _setup(chassis_id: String, maker: String) -> void:
 	if widest > 0.0:
 		# The debug drive (RIFTGATE_MOVE_DEBUG) runs at the machine's own pace on the map.
 		var c: Dictionary = ContentDB.load_default().chassis.get(chassis_id, {})
-		rig.top_speed = MechRig.map_speed(widest, int(c.get("movespeed", Unit.MECH_MOVE)), (c.get("traits", []) as Array).has("flyer"))
+		rig.top_speed = MechRig.map_speed(widest, int(c.get("movespeed", Unit.MECH_MOVE)), Map3D.fit_for(str(c.get("size", ""))))
 	joints = rig.joints
 	hardpoints = rig.hardpoints
 	_apply_plan()   # before the traces attach and the camera frames, so a mounted shape gets both
@@ -581,6 +587,12 @@ static func toon(node: Node, maker: String, look: String, paint_arg: Dictionary 
 		toon(c, maker, look, paint_arg, as_token, drop_detail)
 
 
+## The world height an orthographic camera shows so a model whose projection spans `extent`
+## fills FILL of a frame `aspect` wide to tall, times `k` (its class's share, SIZE_FILL).
+static func view_height(extent: Vector2, aspect: float, k: float = 1.0) -> float:
+	return maxf(extent.y, extent.x / aspect) / (FILL * clampf(k, 0.1, 1.0))
+
+
 ## Orthographic camera on the sprites' angle, sized so the model fills the frame the way
 ## blendforge fits it: the projected extents of every mesh's bounds, with a little slack.
 func _frame_camera() -> void:
@@ -610,7 +622,7 @@ func _frame_camera() -> void:
 	centre /= corners.size()
 	var extent := hi - lo
 	var aspect := float(size.x) / float(size.y)
-	var height := maxf(extent.y, extent.x / aspect) / FILL
+	var height := view_height(extent, aspect, size_k)
 	_camera.size = height
 	var mid := (lo + hi) * 0.5
 	# Where the drawing lands in the frame, in pixels: every vertex projected the same way,

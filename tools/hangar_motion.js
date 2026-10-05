@@ -149,11 +149,8 @@ class Rig {
     this.acts = (side.acts || []).filter(a => a && a.name);
     this.move = side.move || {};
     this.heft = this.move.heft ?? HEFT_DEFAULT;
-    this.gait = side.gait || {};
-    this.spin = new Set(Object.keys(this.gait.wheels || {}));   // an act turns a wheel directly, never through a servo
-    this.gaitCurves = {};
-    for (const [name, tr] of Object.entries(this.gait.tracks || {})) this.gaitCurves[name] = cycleCurve(tr.keys || [], this.gait.ease || "smooth");
-    if ((this.gait.body || []).length) this.gaitCurves["@body"] = cycleCurve(this.gait.body, this.gait.ease || "smooth");
+    this.gaitOptions = side.gait_options || {};   // other ways it could move, to judge beside it (b.gait_option); the game moves by the gait alone
+    this.useGait(side.gait || {});
     root.rotation.order = "YXZ";
     this.bodyRestPos = root.position.clone();
     this.bodyRestRot = v3(root.rotation.x, root.rotation.y, root.rotation.z);
@@ -171,6 +168,14 @@ class Rig {
       if (n.isMesh && labelled(n.name, part)) for (const m of [].concat(n.material)) if (m.map) this.treadMats.push([m, m.map.offset.x]);
     });
     for (const part of ((this.gait.glow || {}).parts || [])) for (const m of this.litMaterials(part)) this.moveGlow.push([m, m.emissiveIntensity]);
+  }
+  // Move by this gait from now on: the sidecar's own, or one of its options.
+  useGait(g) {
+    this.gait = g || {};
+    this.spin = new Set(Object.keys(this.gait.wheels || {}));   // an act turns a wheel directly, never through a servo
+    this.gaitCurves = {};
+    for (const [name, tr] of Object.entries(this.gait.tracks || {})) this.gaitCurves[name] = cycleCurve(tr.keys || [], this.gait.ease || "smooth");
+    if ((this.gait.body || []).length) this.gaitCurves["@body"] = cycleCurve(this.gait.body, this.gait.ease || "smooth");
   }
   random() { this.seed = (this.seed * 1103515245 + 12345) % 2147483648; return this.seed / 2147483648; }
   alive() { return this.acts.length > 0 || this.strikes.length > 0 || !!this.current || Object.keys(this.servo).length > 0; }
@@ -468,10 +473,11 @@ class MovePath {
 // three steps south and a turn back through south-west and north-west. Each move runs along
 // its MovePath curve; between moves the machine eases to the facing the simulation records,
 // its last step's (Map3D, REST_TURN_RATE). The hex is sized to the machine as the map fits it
-// (Map3D: its widest extent is MARKER_FIT hex widths, a flyer FIT_FLYER of that) and a step
+// (Map3D.SIZE_FIT: its widest extent is so many hex widths by its class by mass) and a step
 // takes the map's time for its move (BattleMapView.MECH_PACE: seconds a hex by move, straight
 // between the tens), so the pace here is the pace on the map (MechRig.map_speed).
-const MARKER_FIT = 1.05, FIT_FLYER = 0.8;
+const SIZE_FIT = {light: 0.72, medium: 0.88, heavy: 1.05, assault: 1.2};
+const fitFor = (size) => SIZE_FIT[size] || SIZE_FIT.heavy;
 const MECH_PACE = [[10, 2.8], [20, 1.9], [30, 1.25], [40, 0.55], [50, 0.42], [60, 0.36]];
 function mechSecondsPerHex(move) {
   if (move <= MECH_PACE[0][0]) return MECH_PACE[0][1];
@@ -730,10 +736,11 @@ class Stage {
     this.modelRoot = root;
     this.pivot.add(root);
     this.rig = new Rig(root, sidecar, 7);
+    this.gaitName = "";
     this.rig.debug = this.loop || "1";
     this.side = sidecar;
     if (shape && this.mode !== "acts") this.mode = "acts";
-    this.route = new Route(this.widest / (2 * MARKER_FIT * (this.flyer ? FIT_FLYER : 1)));
+    this.route = new Route(this.widest / (2 * fitFor(this.size)));
     this.buildGround();
     this.pivot.position.set(0, 0, 0); this.pivot.rotation.set(0, this.route.facing, 0);
     this.balance = this.hover ? new HoverBalance(3) : null;
@@ -791,6 +798,13 @@ class Stage {
     if (this.pivot) { this.pivot.position.set(0, 0, 0); this.pivot.rotation.set(0, this.route.facing, 0); }
     if (this.routeLine) this.routeLine.visible = mode === "route";
     this.frame();
+    this.emit();
+  }
+  // Walk by one of the sidecar's gait options, or by its own gait ("").
+  setGait(name) {
+    if (!this.rig) return;
+    this.gaitName = name && this.rig.gaitOptions[name] ? name : "";
+    this.rig.useGait(this.gaitName ? this.rig.gaitOptions[this.gaitName] : (this.side.gait || {}));
     this.emit();
   }
   setLoop(name) {

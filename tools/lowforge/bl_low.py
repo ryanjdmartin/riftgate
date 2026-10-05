@@ -363,6 +363,7 @@ class Build:
         self.acts = []         # the machine's idle acts, in authoring order (see act())
         self.tuning = {}       # the cornering module's per-machine numbers (see move())
         self.gait_spec = {}    # how the machine moves (see gait())
+        self.gait_options = {} # other ways it could move, for judging beside it (see gait_option())
         self._joint_stack = []   # the joint blocks open right now, outermost first
         self.tile_world = TILE_WORLD   # a structure sets this higher: it is seen at true scale on the map
 
@@ -774,6 +775,16 @@ class Build:
         self.gait_spec = out
         return out
 
+    def gait_option(self, name, **kw):
+        """Another way the machine could move, built as gait() builds one and written beside
+        it in the sidecar under `gait_options` (Ryan, 5 October: the Ammit's arms and legs at
+        different speeds, to see before deciding): the game moves by the gait alone, and the
+        hangar's Walk can switch to an option to judge it running."""
+        kept = self.gait_spec
+        self.gait_options[name] = self.gait(**kw)
+        self.gait_spec = kept
+        return self.gait_options[name]
+
     def move(self, slide=0.0, bank=0.0, strafe=0.0, tilt=None, accel=None, heft=None, oversteer=0.0):
         """The cornering module's numbers for this machine (the joints row, 2 October):
         `slide`, how far the body drifts from its path on a turn and how slowly its heading
@@ -810,8 +821,11 @@ class Build:
         for the weld, which must keep those parts apart."""
         glow_parts = sorted({p for a in self.acts for g in a["glow"] for p in g["parts"]}
                             | set(self.gait_spec.get("glow", {}).get("parts", [])) | set(self.gait_spec.get("treads", {}).get("parts", [])))
-        return {"_about": "the rig of art/models/%s.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it" % self.name,
-                "joints": self.joint_meta, "acts": self.acts, "gait": self.gait_spec, "move": self.tuning, "glow_parts": glow_parts}
+        out = {"_about": "the rig of art/models/%s.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it" % self.name,
+               "joints": self.joint_meta, "acts": self.acts, "gait": self.gait_spec, "move": self.tuning, "glow_parts": glow_parts}
+        if self.gait_options:
+            out["gait_options"] = self.gait_options
+        return out
 
     def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0):
         """`with b.socket("hp_1", at, forward): ...` builds the stock component inside the

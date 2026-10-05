@@ -502,15 +502,15 @@ func test_the_debug_walk_runs_at_the_machine_s_own_pace_on_the_map() -> void:
 	# The hangar's Walk and RIFTGATE_MOVE_DEBUG ran every machine at one pace, two or three
 	# times a walker's on the map. A machine's full speed is its step on the map over the
 	# map's time for its move.
-	var fit := Map3D.MARKER_FIT
+	var fit := Map3D.fit_for("heavy")
 	var expect := sqrt(3.0) * 100.0 / (2.0 * fit) / BattleMapView.mech_seconds_per_hex(20.0)
-	assert_true(is_equal_approx(MechRig.map_speed(100.0, 20, false), expect), "a slow walker's pace")
-	assert_true(MechRig.map_speed(100.0, 50, false) > MechRig.map_speed(100.0, 20, false) * 4.0, "a 50 runs four and a half times a 20")
+	assert_true(is_equal_approx(MechRig.map_speed(100.0, 20, fit), expect), "a slow walker's pace")
+	assert_true(MechRig.map_speed(100.0, 50, fit) > MechRig.map_speed(100.0, 20, fit) * 4.0, "a 50 runs four and a half times a 20")
 	# Ryan, 5 October: the 20s and 30s slower than the third pass's pace, the 40s and 50s faster.
 	assert_true(BattleMapView.mech_seconds_per_hex(20.0) > 1.38 and BattleMapView.mech_seconds_per_hex(30.0) > 0.92, "the 20s and 30s plod slower")
 	assert_true(BattleMapView.mech_seconds_per_hex(40.0) < 0.69 and BattleMapView.mech_seconds_per_hex(50.0) < 0.55, "the 40s and 50s run faster")
 	assert_true(is_equal_approx(BattleMapView.mech_seconds_per_hex(35.0), lerpf(BattleMapView.mech_seconds_per_hex(30.0), BattleMapView.mech_seconds_per_hex(40.0), 0.5)), "straight between the tens")
-	assert_true(MechRig.map_speed(100.0, 50, true) > MechRig.map_speed(100.0, 50, false), "a flyer is fitted smaller, so it covers more of itself")
+	assert_true(MechRig.map_speed(100.0, 50, Map3D.fit_for("light")) > MechRig.map_speed(100.0, 50, Map3D.fit_for("assault")), "a light machine is drawn smaller, so a hex is more of itself")
 	var pair := _rig_for("armadillo", 2)
 	var rig: MechRig = pair[0]
 	rig.top_speed = 64.0
@@ -738,3 +738,23 @@ func test_a_hovercraft_balances_on_its_cushion() -> void:
 	for i in range(600):
 		c.step(1.0 / 60.0)
 	assert_false(is_equal_approx(c.pitch, a.pitch), "another seed, another beat")
+
+
+func test_a_machine_is_drawn_as_big_as_its_class() -> void:
+	# Ryan, 5 October: the machines' scale. Every chassis has a class by mass; the map draws
+	# a heavier class wider and the skirmish fills more of a slot with it, lightest first.
+	var db := ContentDB.load_default()
+	var last_fit := 0.0
+	var last_fill := 0.0
+	for size in ContentDB.SIZES:
+		assert_true(Map3D.SIZE_FIT.has(size) and MechView3D.SIZE_FILL.has(size), "%s has a width on the map and a fill in the skirmish" % size)
+		assert_true(Map3D.fit_for(size) > last_fit and float(MechView3D.SIZE_FILL[size]) > last_fill, "%s is drawn bigger than the class below it" % size)
+		last_fit = Map3D.fit_for(size)
+		last_fill = float(MechView3D.SIZE_FILL[size])
+	assert_true(is_equal_approx(Map3D.fit_for("no such class"), Map3D.fit_for("heavy")), "an unknown class is drawn as a heavy, the old width")
+	for id in db.chassis.keys():
+		assert_true(ContentDB.SIZES.has(str(db.chassis[id].get("size", ""))), "%s has a class by mass" % id)
+	var extent := Vector2(80.0, 96.0)
+	var shown := MechView3D.view_height(extent, 160.0 / 192.0, float(MechView3D.SIZE_FILL["light"]))
+	assert_true(is_equal_approx(extent.y / shown, MechView3D.FILL * float(MechView3D.SIZE_FILL["light"])), "a light machine fills that share of its slot's height in the skirmish")
+	assert_true(is_equal_approx(MechView3D.view_height(extent, 160.0 / 192.0), extent.y / MechView3D.FILL), "and the codex frames it whole")

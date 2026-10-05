@@ -1226,6 +1226,7 @@ function renderModels(main) {
       MOTION.wrap.className = "motion " + (MAKER_TAB[MOTION.maker] || "other");
       st.flyer = false;
       st.hover = false;
+      st.size = "heavy";
       show = state.shapes ? st.show("shapes/" + MOTION.shape + "_" + MOTION.maker, true) : null;
     } else {
       const entry = list.find(e => e.id === MOTION.id);
@@ -1233,6 +1234,7 @@ function renderModels(main) {
       st.movespeed = Number(entry.movespeed) || 50;
       st.flyer = (entry.traits || []).includes("flyer");
       st.hover = (entry.traits || []).includes("hover");   // balances on its cushion all the while, as in the game
+      st.size = entry.size || "heavy";   // its class by mass sets the hex it walks over, as the map draws it
       show = st.show(entry.id);
     }
     main.append(MOTION.wrap);
@@ -1314,6 +1316,14 @@ function paintMotion(force) {
     panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Blows"), el("div", {class: "seg"},
       el("button", {class: "btn", id: "mo-melee", onclick: () => st.strike(false)}, "Melee"),
       el("button", {class: "btn", id: "mo-shot", onclick: () => st.strike(true)}, "Shot"))));
+  }
+  // A machine with gait options (b.gait_option) walks by any of them here, to judge beside its own.
+  const options = Object.keys(rig.gaitOptions || {});
+  if (st.mode !== "acts" && options.length) {
+    const g = el("div", {class: "acts"});
+    g.append(el("button", {class: "fchip", id: "mo-gait-built", "aria-pressed": String(!st.gaitName), onclick: () => st.setGait("")}, "As built"));
+    for (const name of options) g.append(el("button", {class: "fchip", id: "mo-gait-" + safeId(name), "aria-pressed": String(st.gaitName === name), onclick: () => st.setGait(name)}, actWords(name), el("span", {class: "n"}, "option")));
+    panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Gait"), g, el("p", {class: "mhelp"}, "An option is a way it could walk, built beside the one it uses, to judge running; the game walks it as built.")));
   }
   // The mounts: each takes its stock part, nothing, or any class in any maker's metal.
   const pinsHere = (state.pins && state.pins[MOTION.id]) || [];

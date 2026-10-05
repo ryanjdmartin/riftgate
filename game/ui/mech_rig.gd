@@ -67,6 +67,7 @@ var move: Dictionary = {}          # the cornering numbers: {"slide", "bank"}
 var model: Node3D = null           # the glTF's root
 var body: Node3D = null            # the node a body track moves (the model root unless told otherwise)
 var gait: Dictionary = {}          # the sidecar's gait: how this machine moves (see drive)
+var gait_options: Dictionary = {}  # other ways it could move, built beside it for judging (b.gait_option); the game never uses them
 var debug: String = ""             # RIFTGATE_ACTS_DEBUG, read at setup
 var debug_move: bool = false       # RIFTGATE_MOVE_DEBUG: driven constantly
 var last_act: String = ""          # the act played last (never played twice running)
@@ -331,13 +332,29 @@ static func sample(keys: Array, t: float, duration: float, ease: String = "smoot
 
 
 ## A machine's full speed on the map in its own model units a second: the map fits it to
-## MARKER_FIT hexes at its widest (a flyer smaller) and a step at full speed takes the map's
-## pace for its move (BattleMapView.mech_seconds_per_hex). What the debug drive and the
-## hangar's Walk run at, so a stride is seen at the pace the map gives it.
-static func map_speed(widest: float, movespeed: int, flyer: bool) -> float:
-	var fit := Map3D.MARKER_FIT * (Map3D.FIT_FLYER if flyer else 1.0)
-	var step := sqrt(3.0) * widest / (2.0 * fit)
+## `fit` hex widths at its widest (Map3D.fit_for, by its class by mass) and a step at full
+## speed takes the map's pace for its move (BattleMapView.mech_seconds_per_hex). What the
+## debug drive and the hangar's Walk run at, so a stride is seen at the pace the map gives
+## it: the smaller a machine is drawn, the more of itself a hex is, the more strides it takes.
+static func map_speed(widest: float, movespeed: int, fit: float) -> float:
+	var step := sqrt(3.0) * widest / (2.0 * maxf(0.01, fit))
 	return step / BattleMapView.mech_seconds_per_hex(float(movespeed))
+
+
+## Move by `g` from now on: the sidecar's gait (setup does this) or one of its options, for a
+## tool or a page judging one running (tools/gait_clip.gd).
+func use_gait(g: Dictionary) -> void:
+	gait = g
+	_spin = {}
+	for name in gait.get("wheels", {}).keys():
+		_spin[name] = true
+	_gait_curves = {}
+	var ease := str(gait.get("ease", "smooth"))
+	var cycles: Dictionary = gait.get("tracks", {})
+	for name in cycles.keys():
+		_gait_curves[name] = cycle_curve((cycles[name] as Dictionary).get("keys", []), ease)
+	if not gait.get("body", []).is_empty():
+		_gait_curves[BODY] = cycle_curve(gait["body"], ease)
 
 
 ## Read the model's tags and its sidecar. Call once the materials are applied (the glows
@@ -368,17 +385,8 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 			acts.append(a)
 	move = side.get("move", {})
 	heft = float(move.get("heft", HEFT_DEFAULT))
-	gait = side.get("gait", {}) if side.get("gait", {}) is Dictionary else {}
-	_spin = {}
-	for name in gait.get("wheels", {}).keys():
-		_spin[name] = true
-	_gait_curves = {}
-	var ease := str(gait.get("ease", "smooth"))
-	var cycles: Dictionary = gait.get("tracks", {})
-	for name in cycles.keys():
-		_gait_curves[name] = cycle_curve((cycles[name] as Dictionary).get("keys", []), ease)
-	if not gait.get("body", []).is_empty():
-		_gait_curves[BODY] = cycle_curve(gait["body"], ease)
+	gait_options = side.get("gait_options", {}) if side.get("gait_options", {}) is Dictionary else {}
+	use_gait(side.get("gait", {}) if side.get("gait", {}) is Dictionary else {})
 	_body_rest_pos = body.position
 	_body_rest_rot = body.rotation
 	_rng.seed = hash(model_id) ^ (randi() if phase < 0 else phase * 7919)

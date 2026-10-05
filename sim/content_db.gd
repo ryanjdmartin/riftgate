@@ -11,6 +11,9 @@ const DIR := "res://content/"
 const MAX_AUTHORED_KEYWORDS := 3    # per authored face; upgrades may exceed this at runtime
 const MIN_DIE := 4
 const MAX_DIE := 10                 # the Clydesdale carries nine (Ryan, 28 September); ten leaves it room
+## A chassis's class by mass, lightest first (Ryan, 5 October: the machines' scale on the map
+## and in the skirmish): how big it is drawn, Map3D.SIZE_FIT and MechView3D.SIZE_FILL.
+const SIZES := ["light", "medium", "heavy", "assault"]
 const MAX_PASSIVE_EFFECTS := 3      # effects in one passive; a benefit and its cost is one passive
 ## Internal design text lives under `design` and is never shown. These keys at the top level
 ## of an entry are the old layout, or a leak waiting to happen, so the validator refuses them.
@@ -694,7 +697,7 @@ func _validate_chassis(errs: Array[String]) -> void:
 		var where := "chassis %s" % id
 		# designation: the maker's long name on the spec plate (Ryan, 26 September: every
 		# chassis carries one; the bible's section 7 row says the shape per maker).
-		for key in ["name", "designation", "codex", "flavour", "hull", "shield", "armour", "movespeed", "hardpoints", "loadout", "recharge_field"]:
+		for key in ["name", "designation", "codex", "flavour", "hull", "shield", "armour", "movespeed", "hardpoints", "loadout", "recharge_field", "size"]:
 			if not c.has(key):
 				errs.append("%s: missing %s" % [where, key])
 		if c.has("designation") and str(c["designation"]).strip_edges().is_empty():
@@ -733,6 +736,8 @@ func _validate_chassis(errs: Array[String]) -> void:
 			errs.append("%s: a chassis has exactly one way of moving (%s)" % [where, ", ".join(BattleMap.WAYS)])
 		if c.has("movespeed") and (int(c["movespeed"]) <= 0 or int(c["movespeed"]) % 5 != 0):
 			errs.append("%s: movespeed is in tens, a positive multiple of 5" % where)
+		if c.has("size") and not SIZES.has(str(c["size"])):
+			errs.append("%s: size is one of %s" % [where, ", ".join(SIZES)])
 		if c.has("maker") and not makers.has(c["maker"]):
 			errs.append("%s: unknown maker %s" % [where, c["maker"]])
 		if c.has("passives"):
