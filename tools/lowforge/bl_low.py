@@ -602,7 +602,7 @@ class Build:
                 return "yaw"
         return "pitch"
 
-    def act(self, name, duration, tracks=None, body=None, glow=None, ease="smooth"):
+    def act(self, name, duration, tracks=None, body=None, glow=None, ease="smooth", heft=None, places=None):
         """One idle act, what the pilot does with the machine every few seconds (the
         idle-acts row, 2 October). `tracks` maps a joint name to keyframes, each
         (t, value) on the joint's own axis, or (t, pitch, yaw, roll), or
@@ -612,8 +612,19 @@ class Build:
         a list of (parts, keys): the lit parts named by prefix (their lowforge labels) and
         (t, k) keys scaling their light, 1 at rest, so a weapon's tip charges. Degrees and
         seconds throughout; every track starts and ends at rest. `ease` is "smooth"
-        (eased between keys) or "linear" (a wheel spinning)."""
+        (eased between keys) or "linear" (a wheel spinning). `heft`, if given, is the act's
+        own servo time constant in place of the machine's (b.move): a blow sharper than its
+        weight (Ryan, 5 October). `places` limits the act to "map" or "skirmish" (the
+        Sparrowhawk's loop leaves the skirmish's frame); unnamed, it plays in both."""
         out = {"name": name, "duration": float(duration), "ease": ease, "tracks": {}, "body": [], "glow": []}
+        if heft is not None:
+            out["heft"] = float(heft)
+        if places:
+            places = [places] if isinstance(places, str) else list(places)
+            for pl in places:
+                if pl not in ("map", "skirmish"):
+                    raise ValueError("act %r of %s: a place is map or skirmish, not %r" % (name, self.name, pl))
+            out["places"] = places
         for jn, keys in (tracks or {}).items():
             if jn not in self.joint_meta:
                 raise ValueError("act %r of %s keys a joint the model has not got: %s" % (name, self.name, jn))

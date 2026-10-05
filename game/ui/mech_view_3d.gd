@@ -361,6 +361,7 @@ func _setup(chassis_id: String, maker: String) -> void:
 		widest = maxf(hi.x - lo.x, hi.z - lo.z)
 	_pivot.rotation.y = deg_to_rad(yaw)
 	_apply_materials(_model, maker)
+	rig.place = "skirmish"
 	rig.setup(_model, chassis_id)   # after the materials: the acts' glows look for the lit surfaces
 	if widest > 0.0:
 		# The debug drive (RIFTGATE_MOVE_DEBUG) runs at the machine's own pace on the map.

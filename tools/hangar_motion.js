@@ -27,7 +27,7 @@ const MOVE_REF_SPEED = 150.0, MOVE_BLEND_IN = 0.25, MOVE_BLEND_OUT = 0.35;
 const ROCK_ACCEL = 200.0, BANK_TURN = 1.2, DRIFT_UNITS = 12.0;
 const HEFT_DEFAULT = 0.12, DAMPING = 0.7, STEP = 1 / 60;   // the servos (MechRig._follow) and the longest step anything advances by
 const SLIDE_RATE_SNAP = 12.0, SLIDE_RATE_FULL = 2.2, STRAFE_TURN_RATE = 6.0, REST_TURN_RATE = 4.0;   // Map3D
-const OVERSTEER_LEAD = 0.45, OVERSTEER_MAX = 0.8, OVERSTEER_RATE = 7.0;   // Map3D: the nose leads the path into a corner
+const OVERSTEER_AHEAD = 0.4, OVERSTEER_GAIN = 1.4, OVERSTEER_MAX = 0.8, OVERSTEER_RATE = 7.0;   // Map3D: the nose leads the path into a corner, from the heading a moment ahead
 const GLOW_PAGE = 0.9;   // this page's emission for a lit part at rest (the game's is 1.8 under its own glow pass)
 const AXES = ["pitch", "yaw", "roll"];
 const D2R = Math.PI / 180;
@@ -197,6 +197,7 @@ class Rig {
   play(name) { const a = this.acts.find(x => x.name === name); if (!a) return false; this.endAct(true); this.start(a); this.evaluateAct(); this.pose(); return true; }
   start(a) {
     this.current = a; this.t = 0; this.lastAct = a.name; this.glow = [];
+    this.actHeft = a.heft ?? this.heft;   // an act may ask for its own heft (MechRig._act_heft): a blow sharper than the machine's weight
     const d = a.duration || 0, ease = a.ease || "smooth";
     this.curves = {};
     for (const [name, keys] of Object.entries(a.tracks || {})) if (this.joints[name]) this.curves[name] = curve(keys, d, ease);
@@ -233,7 +234,7 @@ class Rig {
   // The servos (MechRig._follow): each part a mass on a damped spring chasing what the act asks,
   // the machine's heft its time constant; a part home and still drops out.
   follow(dt) {
-    const w = 1 / Math.max(0.02, this.heft), len = (a) => Math.hypot(a.x, a.y, a.z);
+    const w = 1 / Math.max(0.02, this.current ? (this.actHeft ?? this.heft) : this.heft), len = (a) => Math.hypot(a.x, a.y, a.z);
     const names = new Set([...Object.keys(this.servo), ...Object.keys(this.wantRot)]);
     if (len(this.bodyWantRot) || len(this.bodyWantSlide)) names.add("@body");
     const chase = (x, v, want) => { const nv = add3(v, mul3(add3(mul3(add3(want, mul3(x, -1)), w * w), mul3(v, -2 * DAMPING * w)), dt)); return [add3(x, mul3(nv, dt)), nv]; };
@@ -516,7 +517,7 @@ class Route {
     if (this.t >= this.curve.duration) {
       this.pos = this.curve.points[this.curve.points.length - 1];
       this.rest = yawOf(dirVec(DIRS[mv[mv.length - 1]]));
-      this.move = (this.move + 1) % ROUTE.length; this.curve = null; this.pause = PAUSE; this.lastHeading = undefined; this.headingRate = 0;
+      this.move = (this.move + 1) % ROUTE.length; this.curve = null; this.pause = PAUSE;
       if (this.move === 0) this.pos = {x: 0, z: 0};
       return {speed: 0, aim: 0, turn: 0};
     }
@@ -524,11 +525,12 @@ class Route {
     this.here = here;
     const heading = yawOf(tan);
     const slide = clamp(move.slide || 0, 0, 1), strafe = clamp(move.strafe || 0, 0, 1), over = clamp(move.oversteer || 0, 0, 1);
-    const hr = this.lastHeading === undefined || dt <= 0 ? 0 : wrapPi(heading - this.lastHeading) / dt;
-    this.lastHeading = heading;
-    this.headingRate = lerp(this.headingRate || 0, hr, 1 - Math.exp(-dt / 0.1));
     let rate = lerp(SLIDE_RATE_SNAP, SLIDE_RATE_FULL, slide), want = heading;
-    if (over > 0) { want = heading + clamp(this.headingRate * OVERSTEER_LEAD * over, -OVERSTEER_MAX, OVERSTEER_MAX); rate = lerp(rate, OVERSTEER_RATE, over); }
+    if (over > 0) {
+      const ahead = yawOf(this.curve.at(this.t + OVERSTEER_AHEAD)[1]);
+      want = heading + clamp(wrapPi(ahead - heading) * OVERSTEER_GAIN * over, -OVERSTEER_MAX, OVERSTEER_MAX);
+      rate = lerp(rate, OVERSTEER_RATE, over);
+    }
     if (strafe > 0) { want = lerpAngle(heading, yawOf(dirVec(DIRS[mv[mv.length - 1]])), strafe); rate = lerp(rate, STRAFE_TURN_RATE, strafe); }
     const step = wrapPi(want - this.facing) * (1 - Math.exp(-dt * rate));
     this.facing += step;

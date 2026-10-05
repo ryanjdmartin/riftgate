@@ -102,6 +102,8 @@ var _t := 0.0                      # time into the act playing
 var _wait := 0.0                   # seconds until the next act starts
 var _rng := RandomNumberGenerator.new()
 var heft := HEFT_DEFAULT           # seconds: how long a joint or the body takes to catch up with what the pilot asks (the sidecar's `move.heft`)
+var place: String = ""             # where this machine stands, "map" or "skirmish": an act may be for one of them only (its `places`); empty plays them all
+var _act_heft := HEFT_DEFAULT      # the heft while the act playing asks for its own (a blow sharper than the machine's weight)
 var top_speed := MOVE_REF_SPEED    # model units a second at this machine's full speed on the map (map_speed; the debug drive's pace)
 var _want_rot: Dictionary = {}     # joint -> degrees the act asks for now; the servos chase it into _act_rot
 var _want_slide: Dictionary = {}
@@ -486,9 +488,14 @@ func choose() -> Dictionary:
 		for a in acts:
 			if str(a["name"]) == debug:
 				return a
-	if acts.size() == 1:
-		return acts[0]
-	var pool: Array = acts.filter(func(a): return str(a["name"]) != last_act)
+	# An act may be for the map or the skirmish alone (Ryan, 5 October: the Sparrowhawk's loop
+	# and circle mean nothing in the skirmish's frame); this machine plays what fits its place.
+	var here: Array = acts.filter(func(a): return place.is_empty() or (a.get("places", []) as Array).is_empty() or (a.get("places", []) as Array).has(place))
+	if here.is_empty():
+		return {}
+	if here.size() == 1:
+		return here[0]
+	var pool: Array = here.filter(func(a): return str(a["name"]) != last_act)
 	return pool[_rng.randi_range(0, pool.size() - 1)]
 
 
@@ -509,6 +516,7 @@ func _start(a: Dictionary) -> void:
 	last_act = str(a["name"])
 	var duration := float(a.get("duration", 0.0))
 	var ease := str(a.get("ease", "smooth"))
+	_act_heft = float(a.get("heft", heft))
 	_curves = {}
 	var tracks: Dictionary = a.get("tracks", {})
 	for name in tracks.keys():
@@ -571,7 +579,7 @@ func _evaluate_act() -> void:
 ## a little past its mark and settles, `heft` seconds its time constant. A wheel the gait
 ## spins takes the act's keys as they are. A part home and still drops out.
 func _follow(dt: float) -> void:
-	var w := 1.0 / maxf(0.02, heft)
+	var w := 1.0 / maxf(0.02, _act_heft if not _current.is_empty() else heft)
 	var names := {}
 	for name in _servo.keys():
 		names[name] = true

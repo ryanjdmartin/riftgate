@@ -1300,7 +1300,8 @@ function paintMotion(force) {
   if (st.mode === "acts") {
     const acts = el("div", {class: "acts"});
     acts.append(el("button", {class: "fchip", id: "mo-act-all", "aria-pressed": String(!st.loop), onclick: () => st.setLoop("")}, "All, in turn"));
-    for (const a of rig.acts) acts.append(el("button", {class: "fchip", id: "mo-act-" + safeId(a.name), "aria-pressed": String(st.loop === a.name), onclick: () => st.setLoop(a.name)}, actWords(a.name)));
+    for (const a of rig.acts) acts.append(el("button", {class: "fchip", id: "mo-act-" + safeId(a.name), "aria-pressed": String(st.loop === a.name), onclick: () => st.setLoop(a.name),
+      title: a.places && a.places.length ? "Plays on the " + a.places.join(" and the ") + " only" : ""}, actWords(a.name), a.places && a.places.length ? el("span", {class: "n"}, a.places.join("/")) : null));
     panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, rig.acts.length ? `Acts · ${rig.acts.length}` : "Acts"), rig.acts.length ? acts : el("p", {class: "mhelp"}, "This machine has no acts yet.")));
     if (rig.current) {
       const r = el("input", {type: "range", id: "mo-scrub", min: "0", max: String(rig.current.duration), step: "0.01", value: String(rig.t), "aria-label": "Time into " + actWords(rig.current.name)});

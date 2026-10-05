@@ -319,6 +319,37 @@ func test_a_whole_turn_in_an_act_comes_home_without_unwinding() -> void:
 	pair[1].free()
 
 
+func test_an_act_may_be_for_one_place_and_may_carry_its_own_heft() -> void:
+	# Ryan, 5 October: the Sparrowhawk's loop and circle are for the map; a blow wants to be
+	# sharper than a heavy machine's weight allows.
+	var pair := _rig_for("clydesdale", 4)
+	var rig: MechRig = pair[0]
+	rig.acts = [{"name": "map_only", "duration": 1.0, "tracks": {}, "body": [], "glow": [], "places": ["map"]},
+				{"name": "anywhere", "duration": 1.0, "tracks": {}, "body": [], "glow": []}]
+	rig.place = "skirmish"
+	for i in range(12):
+		rig.last_act = ""
+		assert_eq(str(rig.choose().get("name", "")), "anywhere", "the skirmish never picks a map-only act")
+	rig.place = "map"
+	var seen := {}
+	for i in range(40):
+		rig.last_act = ""
+		seen[str(rig.choose().get("name", ""))] = true
+	assert_true(seen.has("map_only") and seen.has("anywhere"), "the map picks either")
+	var lags := []
+	for h in [-1.0, 0.05]:
+		rig.acts = [{"name": "probe", "duration": 3.0, "ease": "smooth", "tracks": {"turret_l": [[0.6, 0.0, 30.0, 0.0, 0.0, 0.0, 0.0], [2.0, 0.0, 30.0, 0.0, 0.0, 0.0, 0.0]]}, "body": [], "glow": []}]
+		if h > 0.0:
+			rig.acts[0]["heft"] = h
+		rig.tick(5.0)
+		assert_true(rig.play("probe"), "a probe")
+		rig.tick(0.4)
+		lags.append(30.0 * 0.4 / 0.6 - rad_to_deg((rig.joints["turret_l"] as Node3D).rotation.y))
+		rig.tick(3.0)
+	assert_true(float(lags[1]) < float(lags[0]) * 0.5, "an act with its own light heft follows its keys more closely (%f against %f)" % [lags[1], lags[0]])
+	pair[1].free()
+
+
 func test_limits_hold_an_outward_only_turret_and_the_strike_flinches_outward() -> void:
 	var pair := _rig_for("clydesdale", 4)
 	var rig: MechRig = pair[0]
@@ -660,8 +691,9 @@ func test_the_stingray_noses_into_its_travel() -> void:
 
 func test_an_oversteering_nose_leads_into_the_corner() -> void:
 	# Ryan, 5 October: the Dingo lagged through its turns where it should drift into them, and
-	# the hovercraft the same: oversteer, not understeer. The nose aims ahead of the path by
-	# how fast the path turns, into the turn, within a limit; none without oversteer.
+	# the hovercraft the same: oversteer, not understeer. The nose aims past where the path
+	# will head a moment on, into the turn and before it, within a limit; none without
+	# oversteer.
 	assert_true(Map3D.oversteer_lead(1.0, 1.0) > 0.2, "a path turning left puts the nose further left")
 	assert_true(Map3D.oversteer_lead(-1.0, 1.0) < -0.2, "and right, right")
 	assert_true(is_equal_approx(Map3D.oversteer_lead(50.0, 1.0), Map3D.OVERSTEER_MAX), "within a limit")

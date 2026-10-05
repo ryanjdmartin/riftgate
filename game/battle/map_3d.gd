@@ -77,10 +77,11 @@ var _rest_yaw: Dictionary = {}  # unit id -> the facing it settles to at rest; e
 const REST_TURN_RATE := 4.0     # per second: a standing machine turns to its recorded facing this briskly
 const SLIDE_RATE_SNAP := 12.0   # per second: a machine with no slide follows its heading round the curve, smoothly (Ryan, 4 October: was 30, a snap)
 const SLIDE_RATE_FULL := 2.2    # per second: a slide of 1 lets the facing lag the path through a corner
-const OVERSTEER_LEAD := 0.45    # seconds of the path's turn an oversteer of 1 puts the nose ahead by, into the corner
+const OVERSTEER_AHEAD := 0.4    # seconds along the path an oversteering nose looks ahead, so it turns in before the corner
+const OVERSTEER_GAIN := 1.4     # how far past the heading ahead an oversteer of 1 swings the nose, into the corner
 const OVERSTEER_MAX := 0.8      # radians the nose may lead the path by, at most
 const OVERSTEER_RATE := 7.0     # per second: how briskly an oversteering nose chases its lead
-var _heading_rate: Dictionary = {}   # unit id -> how fast the path's heading turns, radians a second, eased
+var _heading_ahead: Dictionary = {}  # unit id -> the yaw the path heads OVERSTEER_AHEAD seconds on
 var _base: Dictionary = {}      # unit id -> resting position, which the idle sway plays around
 var _phase: Dictionary = {}     # unit id -> idle phase, so the team does not sway in step
 var _columns: Dictionary = {}   # hex -> Node3D at the hex's ground: the marks hang off it
@@ -668,21 +669,19 @@ var _anim_px: Dictionary = {}   # unit id -> map pixel while a move plays, in pl
 ## While a phase plays, a unit is where its animation says, not on its hex. The heading is
 ## where the move is going; the facing follows it through the cornering module (_corner),
 ## at once for most machines and lagging for one with a slide.
-func set_anim(uid: int, px: Vector2, heading: Vector2) -> void:
+func set_anim(uid: int, px: Vector2, heading: Vector2, ahead: Vector2 = Vector2.ZERO) -> void:
 	_anim_px[uid] = px
 	if heading.length_squared() > 0.001:
 		_heading[uid] = atan2(-heading.x, -heading.y)
+	if ahead.length_squared() > 0.001:
+		_heading_ahead[uid] = atan2(-ahead.x, -ahead.y)
 
 
 func clear_anim(uid: int) -> void:
 	_anim_px.erase(uid)
 	_heading.erase(uid)
 	_last_pos.erase(uid)
-	_heading_rate.erase(uid)
-	_last_heading.erase(uid)
-
-
-var _last_heading: Dictionary = {}   # unit id -> the path's heading last frame
+	_heading_ahead.erase(uid)
 
 
 ## The cornering module (the joints row, 2 October): one piece for the Dingo's drift and the
@@ -691,8 +690,10 @@ var _last_heading: Dictionary = {}   # unit id -> the path's heading last frame
 ## rig is told the speed, the bearing of the travel against the facing (the casters point
 ## along it) and the turn (the steering and the bank). An oversteering machine (Ryan, 5
 ## October: the Dingo and the hovercraft, which lagged where they should drift; `oversteer`)
-## aims its nose ahead of the path by how fast the path is turning, so it swings into a
-## corner with its tail stepping out and back out of it as the corner ends. A helicopter-style
+## aims its nose past where the path will be heading a moment on, so it turns in before the
+## corner, as a drift is entered, swings through it with its tail stepping out, and comes
+## back out of it as the corner ends; reading the path ahead rather than how fast it turns
+## keeps it smooth across the corner's spans (Ryan, 5 October: it jerked span by span). A helicopter-style
 ## machine (Ryan, 3 October; `strafe`) faces where it will end up facing instead, turning
 ## there first and then translating, so its travel can be sideways or backward and its rig
 ## tilts it that way. A standing machine is driven at zero, so its gait settles.
@@ -723,14 +724,10 @@ func _corner(uid: int, rig: MechRig, delta: float) -> void:
 	var over := clampf(float(rig.move.get("oversteer", 0.0)), 0.0, 1.0)
 	var rate := lerpf(SLIDE_RATE_SNAP, SLIDE_RATE_FULL, slide)
 	var heading: float = _heading[uid]
-	var hr := 0.0
-	if _last_heading.has(uid):
-		hr = wrapf(heading - float(_last_heading[uid]), -PI, PI) / delta
-	_last_heading[uid] = heading
-	_heading_rate[uid] = lerpf(float(_heading_rate.get(uid, 0.0)), hr, 1.0 - exp(-delta / 0.1))
 	var want := heading
 	if over > 0.0:
-		want = heading + oversteer_lead(float(_heading_rate[uid]), over)
+		var ahead := float(_heading_ahead.get(uid, heading))
+		want = heading + oversteer_lead(wrapf(ahead - heading, -PI, PI), over)
 		rate = lerpf(rate, OVERSTEER_RATE, over)
 	if strafe > 0.0:
 		var u := field.unit_by_id(uid)
@@ -747,10 +744,10 @@ func _corner(uid: int, rig: MechRig, delta: float) -> void:
 const STRAFE_TURN_RATE := 6.0   # per second: a helicopter yaws to where it will face in the first moment of a move, then translates
 
 
-## How far an oversteering nose leads its path, radians: ahead into the turn by how fast the
-## path is turning (`heading_rate`, radians a second), up to OVERSTEER_MAX.
-static func oversteer_lead(heading_rate: float, oversteer: float) -> float:
-	return clampf(heading_rate * OVERSTEER_LEAD * oversteer, -OVERSTEER_MAX, OVERSTEER_MAX)
+## How far an oversteering nose leads its path, radians: past the turn the path makes over
+## the next OVERSTEER_AHEAD seconds (`turn_ahead`, radians), up to OVERSTEER_MAX.
+static func oversteer_lead(turn_ahead: float, oversteer: float) -> float:
+	return clampf(turn_ahead * OVERSTEER_GAIN * oversteer, -OVERSTEER_MAX, OVERSTEER_MAX)
 
 
 ## The motion numbers in a machine's rig sidecar (`move`: slide, bank, strafe, tilt, accel,
@@ -1365,6 +1362,7 @@ func _make_unit(u: Unit) -> Node3D:
 		# The rig after the materials and the seat: a body track moves the model under its
 		# pivot, so the facing and the idle never fight; seeded by the unit, so no two act in step.
 		var rig := MechRig.new()
+		rig.place = "map"
 		rig.setup(node, model_id, node, u.id)
 		rig.top_speed = MechRig.map_speed(widest, u.movespeed, flyer)   # the debug drive's pace (RIFTGATE_MOVE_DEBUG)
 		_rigs[u.id] = rig
