@@ -108,8 +108,8 @@
    }
   },
   "sparrowhawk": {
-   "when": "Fourth round, 30 September.",
-   "note": "Unchanged; rendered bare.",
+   "when": "Fourth acts pass, 5 October.",
+   "note": "The exhausts carry one fitted glow, pale at the centre to deep red at the rim, filling the whole face (Ryan, 5 October: a cross in the middle and little red; the world-grid tile had landed on them by chance).",
    "images": [
     {
      "file": "sparrowhawk/sparrowhawk_front.png",
@@ -121,7 +121,7 @@
     }
    ],
    "before": {
-    "summary": "Before: Mount rule, 30 September",
+    "summary": "Before: Fourth round, 30 September",
     "images": [
      {
       "file": "sparrowhawk/before_sparrowhawk_front.png",
@@ -220,8 +220,8 @@
    }
   },
   "prairie_dog": {
-   "when": "Tenth round, 1 October.",
-   "note": "The launcher is the class rack now, its tube face one whole tile (the hand-built box showed a quarter of the tile). The mast a little shorter.",
+   "when": "Fourth acts pass, 5 October.",
+   "note": "Deeper arches, a touch wider (Ryan, 5 October: the wheel tops came up through them as the chassis rocked in rev): five units of arch over each wheel's top, as much as the chassis's travel can drop one, and the arch covers the tyre's outer face.",
    "images": [
     {
      "file": "prairie_dog/prairie_dog_front.png",
@@ -233,7 +233,7 @@
     }
    ],
    "before": {
-    "summary": "Before: Ninth round, 1 October",
+    "summary": "Before: Tenth round, 1 October",
     "images": [
      {
       "file": "prairie_dog/before_prairie_dog_front.png",
@@ -274,8 +274,8 @@
    }
   },
   "goshawk": {
-   "when": "Eleventh round, 1 October.",
-   "note": "The vent glows fill their cuts; the muzzle's hot floor a touch back in.",
+   "when": "Fourth acts pass, 5 October.",
+   "note": "The exhausts carry one fitted glow, pale at the centre to deep red at the rim, filling the whole face (Ryan, 5 October: a cross in the middle and little red).",
    "images": [
     {
      "file": "goshawk/goshawk_front.png",
@@ -287,7 +287,7 @@
     }
    ],
    "before": {
-    "summary": "Before: Tenth round, 1 October",
+    "summary": "Before: Eleventh round, 1 October",
     "images": [
      {
       "file": "goshawk/before_goshawk_front.png",
@@ -328,8 +328,8 @@
    }
   },
   "ammit": {
-   "when": "Sixth round, 1 October.",
-   "note": "Both tail slots lit whole (a new lit tile; the strip tile only lit a slot that happened to cross its one line). The back panel ends below the back's crown.",
+   "when": "Fourth acts pass, 5 October.",
+   "note": "Feet that could carry it (Ryan, 5 October): a heavy pad at the ball, two long toes forward and a spur turned back, all three flat on the ground and hooking into it at the tips. Each upper talon has its own joint now (they grip, not wave).",
    "images": [
     {
      "file": "ammit/ammit_front.png",
@@ -341,7 +341,7 @@
     }
    ],
    "before": {
-    "summary": "Before: Fifth round, 1 October",
+    "summary": "Before: Sixth round, 1 October",
     "images": [
      {
       "file": "ammit/before_ammit_front.png",
@@ -382,8 +382,8 @@
    }
   },
   "puffin": {
-   "when": "Sixth pass, 3 October, night.",
-   "note": "Ryan on the fifth: the back too boxy, the hull top overhanging the boosters, the vents narrower and lower; the fourth's overall shape was better (the back taper, the boosters poking out the side, the wings attached to them) and he was not sure how to reconcile that with the deck carried over the boosters; the skirt to taper up before the beak. So, the two reconciled: the hull tapers to the stern as in the fourth pass; each sponson is a faired nacelle whose top is the deck itself, sloping down with the hull's taper and closing on the drum's crown, so the deck is carried over the booster with no lid overhanging it; the drum pokes out of the nacelle's flank and below it, its intake mouth ahead of the nacelle; a narrow, low louvred housing lies along each nacelle's top; the wings grow out of the nacelles' flanks, reverse-swept and dropping, their tips ahead of the intakes, the pods under them clear of the blade; the skirt climbs onto the prow's chine and ends short of the band. Ryan on the sixth: he really likes what it is doing, a cohesive vehicle, but it does not quite read Kestrel, not quite sleek enough, and he asked for suggestions. The third and fourth pictures are a trial for that, not the model: the hull's chamfered box as a chined airframe facet, widest at a crease along the flank and leaning in to a narrower deck a step lower, the waist pinched so the nacelles stand proud of a fuselage, the fins taller and swept back (RIFTGATE_PUFFIN_SLEEK=1 at build); everything else as the model.",
+   "when": "Fourth acts pass, 5 October.",
+   "note": "The exhausts carry one fitted glow, pale at the centre to deep red at the rim, filling the whole face (Ryan, 5 October). The model itself is unchanged, waiting to be locked.",
    "images": [
     {
      "file": "puffin/puffin_front.png",
@@ -392,26 +392,18 @@
     {
      "file": "puffin/puffin_rear.png",
      "alt": "puffin, rear"
-    },
-    {
-     "file": "puffin/puffin_sleek_trial_front.png",
-     "alt": "puffin, the sleek trial for the Kestrel read, not the model: front"
-    },
-    {
-     "file": "puffin/puffin_sleek_trial_rear.png",
-     "alt": "puffin, the sleek trial, rear"
     }
    ],
    "before": {
-    "summary": "Before: fifth pass, 3 October, evening (the widened stern, the flat lids over the boosters)",
+    "summary": "Before: Sixth pass, 3 October, night",
     "images": [
      {
       "file": "puffin/before_puffin_front.png",
-      "alt": "puffin, fifth pass, front"
+      "alt": "Earlier: puffin, front"
      },
      {
       "file": "puffin/before_puffin_rear.png",
-      "alt": "puffin, fifth pass, rear"
+      "alt": "Earlier: puffin, rear"
      }
     ]
    }

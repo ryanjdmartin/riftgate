@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.34 since 4 October: the acts and movement's third pass, over the Stingray's seventh pass and the map types); republish it from the committed file after every bible change, passing that URL.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.35 since 5 October: the acts' fourth pass, over the third pass, the Stingray's seventh pass and the map types); republish it from the committed file after every bible change, passing that URL.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -13,7 +13,7 @@ stays in A alone (Ryan, 1 October: it serves one ongoing task) and is republishe
 session; a B session cannot read it. Shared:
 
 - **The bible** (above): `docs/design-bible.html`, published whole after every change.
-- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 5 October with the acts and movement's third pass): four tabs, the
+- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 5 October with the acts' fourth pass): four tabs, the
   codex, the content editor, the names list and Models. Models (the renders and the Animation
   tab merged, Ryan, 3 October) puts each machine live in 3D on top: its acts, walk and
   cornering played from its rig sidecar by `tools/hangar_motion.js` (published as
@@ -83,7 +83,7 @@ the chat is newer.
 ## As of 3 October 2026
 
 **State.** Tests green: `perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (338 tests, 10,477 checks on 5 October in a cloud session, after the acts and movement's third pass;
+tests/run_tests.gd` (339 tests, 13,128 checks on 5 October in a cloud session, after the acts' fourth pass;
 a cloud session fetches Godot 4.7's Linux build from the GitHub release asset to run them
 (`Godot_v4.7-stable_linux.x86_64.zip`, and `xvfb-run` for screenshots), since
 the proxy serves the asset though not the release page; it builds models too, with
@@ -363,6 +363,24 @@ hangar); the debug walk and the hangar's Walk run each machine at its own map pa
 second; the hangar's Route is two long moves. Built and rebuilt here with the bpy wheel; the
 regenerated tiles and working files were not committed, as before. Open with Ryan: whether
 walkers move slower on the map (the to-do).
+
+**The fourth pass, 5 October (Ryan's notes on the third, machine by machine; bible section 7,
+the joints row, v0.35).** Joints: wrists on the Badger (the claw curls, the gun dips) and the
+Baboon (fists flat through the knuckle-walk), the Baboon's waist under its upper body in place
+of a neck, a joint per Ammit talon; geometry checked identical with `glbcmp.py` except the
+Prairie Dog's deeper arches (the wheel tops came through at the chassis's travel) and the
+Ammit's load-bearing feet (pad, two long toes, a spur back, flat). `MechRig._end_act` (and the
+hangar's port) takes every angle the short way round, so an act may end a whole turn on: the
+Sparrowhawk's loop and banked circle, the Goshawk's barrel-roll cannon charge, the Dingo's
+spin on diagonal casters. `_stance` in `models_low.py` solves a three-joint leg in three
+dimensions (hip pitch and roll, knee, ankle pitch and roll) for the Armadillo's sumo stance;
+`_steps` steps feet about in their planes (the Ammit's middle hands). Every booster's exhaust
+wears the new `exhaust` tile fitted to its face (`fit_axis` in `bl_low._finish`). The hangar
+plays a blow with the stage paused. `tools/act_shot.gd` takes `skirmish 160x192` for the
+skirmish's own frame. New renders on the Models tab for the Prairie Dog, the Ammit and the
+three boosters. Open with Ryan: a render margin for the skirmish views (the loop, circle and
+dash leave the frame), a Goshawk geometry change for the cannon's glow, and attack acts (the
+to-do).
 
 **The codex (29 September; a tab of the hangar page since 1 October).** One surface showing a
 chassis and the components fitted to it: the Codex tab renders it in the browser from the

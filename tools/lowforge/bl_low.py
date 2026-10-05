@@ -247,6 +247,20 @@ class Tiles:
             img[8:56, 8:56, :] = np.array([0.55, 0.05, 0.03], np.float32)
             img[14:50, 14:50, :] = np.array([0.95, 0.12, 0.05], np.float32)
             img[22:42, 22:42, :] = np.array([1.0, 0.45, 0.20], np.float32)
+        elif kind == "exhaust":
+            # A booster's mouth (Ryan, 5 October: the engine tile on a booster showed a
+            # cross and little red, since a world-grid tile landed anywhere on the face): a
+            # radial flame filling the whole tile, white-hot at the core through orange to a
+            # deep red rim, no metal border. Fitted one tile to each mouth (`fit` in loft).
+            yy, xx = np.mgrid[0:TILE, 0:TILE].astype(np.float32)
+            r = np.sqrt((yy - (TILE - 1) / 2.0) ** 2 + (xx - (TILE - 1) / 2.0) ** 2) / (TILE / 2.0)
+            stops = [(0.0, (1.0, 0.95, 0.70)), (0.28, (1.0, 0.78, 0.32)), (0.55, (1.0, 0.42, 0.10)),
+                     (0.82, (0.88, 0.14, 0.05)), (1.0, (0.55, 0.05, 0.03)), (2.0, (0.55, 0.05, 0.03))]
+            img = np.zeros((TILE, TILE, 3), np.float32)
+            for (r0, c0), (r1, c1) in zip(stops, stops[1:]):
+                m = (r >= r0) & (r < r1)
+                f = ((r - r0) / (r1 - r0))[m][:, None]
+                img[m] = np.array(c0, np.float32) * (1.0 - f) + np.array(c1, np.float32) * f
         elif kind == "missile":
             img = self.metal(g * 0.9, 0.03, mottle=0.01)
             for cy in (11, 32, 53):
@@ -368,14 +382,16 @@ class Build:
         self.materials[name] = mat
         return mat
 
-    def _finish(self, bm, material, label, transform=None, frame=None):
+    def _finish(self, bm, material, label, transform=None, frame=None, fit_axis=None):
         """Tiles are mapped by projection. Without a `frame`, along the world axis nearest
         each face's normal, which suits anything axis-aligned and puts seams at the same
         world lines on every part. A `frame` (origin, along, across, over, scale) maps a
         member in its own axes instead (Ryan, 26 September: on a slanted arm the world
         seams cut diagonally across the plates), so panel lines run along and around the
         member; `scale` is (u, v) world units per tile, so a fist's face can carry exactly
-        one tile of its own."""
+        one tile of its own. `fit_axis` (0, 1 or 2) fits one whole tile to each face whose
+        normal lies mostly along that world axis, its bounds onto the tile's, so a booster's
+        mouth wears its flame centred whatever the world grid says."""
         bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
         if transform is not None:
             bmesh.ops.transform(bm, matrix=transform, verts=bm.verts)
@@ -386,6 +402,15 @@ class Build:
             if frame is None:
                 ax = max(range(3), key=lambda i: abs(n[i]))
                 a, b = [i for i in range(3) if i != ax]
+                if fit_axis is not None and ax == fit_axis:
+                    lo_a = min(l.vert.co[a] for l in f.loops)
+                    hi_a = max(l.vert.co[a] for l in f.loops)
+                    lo_b = min(l.vert.co[b] for l in f.loops)
+                    hi_b = max(l.vert.co[b] for l in f.loops)
+                    for loop in f.loops:
+                        co = loop.vert.co
+                        loop[uv].uv = ((co[a] - lo_a) / max(1e-6, hi_a - lo_a), (co[b] - lo_b) / max(1e-6, hi_b - lo_b))
+                    continue
                 for loop in f.loops:
                     co = loop.vert.co
                     loop[uv].uv = (co[a] / self.tile_world, co[b] / self.tile_world)
@@ -412,7 +437,8 @@ class Build:
         return ob
 
     def loft(self, sections, material, label="part", transform=None, cap=True):
-        """Sections: [(y, [(x, z), ...]), ...] with the same point count, ordered along y."""
+        """Sections: [(y, [(x, z), ...]), ...] with the same point count, ordered along y. A
+        part wearing the exhaust tile has a whole tile fitted to each of its caps."""
         bm = bmesh.new()
         rings = []
         for y, pts in sections:
@@ -433,7 +459,8 @@ class Build:
                         bm.faces.new(ring)
                     except ValueError:
                         pass
-        return self._finish(bm, material, label, transform)
+        fit = 1 if material.partition(".")[2] == "exhaust" and transform is None else None
+        return self._finish(bm, material, label, transform, fit_axis=fit)
 
     def box(self, x0, x1, y0, y1, z0, z1, material, label="box", transform=None):
         return self.loft([(y0, rect((x0 + x1) / 2, x1 - x0, z0, z1)), (y1, rect((x0 + x1) / 2, x1 - x0, z0, z1))], material, label, transform)

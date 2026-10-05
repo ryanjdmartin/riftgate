@@ -208,6 +208,8 @@ class Rig {
   restoreGlow() { for (const g of this.glow) g.mats.forEach((m, i) => { m.emissiveIntensity = g.base[i]; }); this.glow = []; }
   // The act is over (MechRig._end_act): its asks go to nothing and the servos bring every part home.
   endAct(quiet) {
+    const wrap = (a) => fposmod(a + 180, 360) - 180;   // the short way round: a loop or a spin ends a whole turn on and never unwinds
+    for (const st of Object.values(this.servo)) st[0] = v3(wrap(st[0].x), wrap(st[0].y), wrap(st[0].z));
     this.restoreGlow();
     this.current = null; this.curves = {}; this.wantRot = {}; this.wantSlide = {}; this.bodyWantRot = v3(); this.bodyWantSlide = v3();
     this.wait = this.debug ? GAP_DEBUG : lerp(GAP_MIN, GAP_MAX, this.random());
@@ -284,6 +286,14 @@ class Rig {
       moved = true;
     }
     return moved;
+  }
+  // The blows alone, for a paused stage: a blow always plays out (Ryan, 5 October: they only
+  // played while an act was running, since a paused stage advanced nothing).
+  tickStrikes(delta) {
+    if (!this.strikes.length) return;
+    for (const st of this.strikes) st.t += delta;
+    this.strikes = this.strikes.filter(st => st.t < st.up + st.down);
+    this.pose();
   }
   strike(ranged) {
     const armed = {};
@@ -728,6 +738,7 @@ class Stage {
       if (!this.el.isConnected) return;   // the tab closed: stop until it shows again
       const dt = Math.min(0.05, (now - this.last) / 1000); this.last = now;
       if (this.playing && this.rig) this.advance(dt * this.speedK);
+      else if (this.rig) this.rig.tickStrikes(dt * this.speedK);
       this.controls.update();
       this.renderer.render(this.scene, this.camera);
       this.raf = requestAnimationFrame(step);

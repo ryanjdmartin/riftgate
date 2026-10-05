@@ -116,16 +116,16 @@ func test_the_glow_parts_name_lit_meshes_in_every_model() -> void:
 
 func test_the_nested_joints_the_bible_asked_for_are_in_the_models() -> void:
 	var want := {
-		"badger": [["elbow_l", "shoulder_l"], ["jaw_upper", "elbow_l"], ["jaw_lower", "elbow_l"], ["elbow_r", "shoulder_r"]],
+		"badger": [["elbow_l", "shoulder_l"], ["wrist_l", "elbow_l"], ["jaw_upper", "wrist_l"], ["jaw_lower", "wrist_l"], ["elbow_r", "shoulder_r"], ["wrist_r", "elbow_r"]],
 		"clydesdale": [["head", ""], ["knee_fl", "hip_fl"], ["knee_hr", "hip_hr"], ["ankle_fl", "knee_fl"], ["ankle_hr", "knee_hr"], ["elev_mortar", "turret_mortar"], ["elev_howitzer", "turret_howitzer"]],
-		"baboon": [["elbow_l", "shoulder_l"], ["ankle_l", "knee_l"], ["knee_l", "hip_l"], ["elev_r", ""]],
+		"baboon": [["waist", ""], ["shoulder_l", "waist"], ["elbow_l", "shoulder_l"], ["wrist_l", "elbow_l"], ["ankle_l", "knee_l"], ["knee_l", "hip_l"], ["elev_r", "waist"]],
 		"armadillo": [["knee_fl", "hip_fl"], ["ankle_fl", "knee_fl"], ["ankle_hl", "knee_hl"], ["elev_l", ""], ["elev_r", ""], ["elev_cell", ""]],
 		"wild_boar": [["elev", "turret"], ["plow", ""], ["elev_pod", ""]],
 		"prairie_dog": [["wheel_fl", "steer_fl"], ["wheel_rl", ""], ["sensor", "chassis"], ["turret", "chassis"]],
 		"dingo": [["wheel_fl", "caster_fl"], ["harpoon", "chassis"], ["elev_mortar", "chassis"]],
 		"goshawk": [["nacelle_l", ""], ["nacelle_r", ""]],
 		"nemesis": [["elbow_r", "shoulder_r"], ["knee_l", "hip_l"], ["ankle_l", "knee_l"], ["ankle_r", "knee_r"], ["elev_meteor", ""]],
-		"ammit": [["hand_l", "elbow_l"], ["elbow_l", "shoulder_l"], ["ankle_r", "knee_r"], ["elbow_low_r", "shoulder_low_r"], ["elev_l", ""]],
+		"ammit": [["hand_l", "elbow_l"], ["talon_l_out", "hand_l"], ["talon_r_mid", "hand_r"], ["talon_r_in", "hand_r"], ["elbow_l", "shoulder_l"], ["ankle_r", "knee_r"], ["elbow_low_r", "shoulder_low_r"], ["elev_l", ""]],
 	}
 	for id in want.keys():
 		var pair := _rig_for(id)
@@ -295,6 +295,27 @@ func test_a_body_track_moves_the_model_and_a_wheel_never_unwinds() -> void:
 	assert_true(wheel.rotation.x < -5.0 or is_equal_approx(fmod(wheel.rotation.x, TAU), 0.0), "at the end the wheel sits a whole turn on, not unwound")
 	rig.tick(float(rig._current.get("duration", 0.0)) if not rig._current.is_empty() else 1.0)
 	assert_true(model.position.is_equal_approx(base), "and the car is back on its hex")
+	pair[1].free()
+
+
+func test_a_whole_turn_in_an_act_comes_home_without_unwinding() -> void:
+	# Ryan, 5 October: a loop, a barrel roll and a spin on the spot end a whole turn on, which
+	# is the pose they started in; the rig takes every angle the short way home at the act's
+	# end, so nothing spins back round.
+	var pair := _rig_for("dingo", 2)
+	var rig: MechRig = pair[0]
+	var model: Node3D = pair[1]
+	rig.acts = [{"name": "probe", "duration": 2.0, "ease": "smooth", "tracks": {}, "body": [[1.5, 0.0, 0.0, 0.0, 360.0, 0.0, 0.0], [2.0, 0.0, 0.0, 0.0, 360.0, 0.0, 0.0]], "glow": []}]
+	assert_true(rig.play("probe"), "a whole turn")
+	rig.tick(1.0)
+	assert_true(rad_to_deg(model.rotation.y) > 90.0, "it is on its way round (%f)" % rad_to_deg(model.rotation.y))
+	rig.tick(1.0)
+	var most := 0.0
+	for i in range(120):
+		rig.tick(1.0 / 60.0)
+		most = maxf(most, absf(rad_to_deg(model.rotation.y)))
+	assert_true(most < 20.0, "and from the act's end it settles where it began, never turning back (%f)" % most)
+	assert_true(is_zero_approx(model.rotation.y), "home")
 	pair[1].free()
 
 

@@ -529,8 +529,14 @@ func _start(a: Dictionary) -> void:
 
 
 ## The act is over: its glows go back to rest and its asks to nothing, and the servos bring
-## every part home from wherever its weight has carried it.
+## every part home from wherever its weight has carried it, each angle first taken the short
+## way round (a loop or a spin ends a whole turn on, which is the pose it started in, so it
+## never unwinds; Ryan, 5 October).
 func _end_act() -> void:
+	for name in _servo.keys():
+		var st: Array = _servo[name]
+		var r: Vector3 = st[0]
+		st[0] = Vector3(wrapf(r.x, -180.0, 180.0), wrapf(r.y, -180.0, 180.0), wrapf(r.z, -180.0, 180.0))
 	for g in _glow:
 		for i in range(g["mats"].size()):
 			(g["mats"][i] as StandardMaterial3D).emission_energy_multiplier = float(g["base"][i])
