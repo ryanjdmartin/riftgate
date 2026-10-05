@@ -191,7 +191,10 @@ straight stage (the weapons layout kept, the tip-mount pick closed, the switch g
 he likes but which does not quite read Kestrel, a sleek trial rendered beside the model and not into it (a
 chined airframe hull leaning in to a narrower, lower deck, a pinched waist so the nacelles stand proud, taller
 swept fins; `RIFTGATE_PUFFIN_SLEEK=1` at build) with suggestions in chat, the earlier passes folded under each
-on the Models tab, for his seventh look. The Stingray's helicopter-style movement is being built
+on the Models tab, for his seventh look; then on 5 October the Stingray's eighth pass, since the seventh
+still read as two stages (the body had run on behind the wings as a near-parallel neck before the taper): the
+body now ends at the wings' trailing edge and the tail is one straight taper to the same exhaust. The hangar
+page was not republished for it (the movement session had it in flux); the renders are in `docs/hangar/renders/`. The Stingray's helicopter-style movement is being built
 in the movement session; when it lands, the skirmish's `sway_pitch` idle is to be judged
 against it or retired. The skirmish's hover
 idle gained a slow pitch (`sway_pitch`), to judge running. The merge took the tens for both

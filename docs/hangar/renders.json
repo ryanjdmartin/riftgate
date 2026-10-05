@@ -355,8 +355,8 @@
    }
   },
   "stingray": {
-   "when": "Seventh pass, 3 October, night.",
-   "note": "Ryan on the sixth: everything else great; the weapons layout stays as it is (the shoulder pods at the wing tips, the deck with the dome alone); the tail must narrow quicker, in one stage rather than two, the exhaust vent itself as it is. So: the tail is one straight loft from the stern to the mouth, the mouth, its thin dark rim and the fire inside unchanged; the other tip-mount pick and its switch are gone.",
+   "when": "Eighth pass, 5 October.",
+   "note": "Ryan on the seventh: the tail did not look any different, still two stages; the exhaust vent itself is right, only how the tail gets there. The seventh pass had shortened the taper, but the body itself ran on behind the wings as a near-parallel neck for ten units before the taper began, and that neck was the first stage. So: the body ends at the wings' trailing edge and the tail is one straight taper in its pearl from there to the same mouth, its thin dark rim and the fire inside unchanged; the whole stub is shorter by three units. The third picture is from behind.",
    "images": [
     {
      "file": "stingray/stingray_front.png",
@@ -365,18 +365,22 @@
     {
      "file": "stingray/stingray_rear.png",
      "alt": "stingray, rear"
+    },
+    {
+     "file": "stingray/stingray_from_behind.png",
+     "alt": "stingray, from behind and above"
     }
    ],
    "before": {
-    "summary": "Before: sixth pass, 3 October, night (the tail in two stages; the other tip-mount pick beside it)",
+    "summary": "Before: seventh pass, 3 October, night (a near-parallel neck behind the wings, then the taper)",
     "images": [
      {
       "file": "stingray/before_stingray_front.png",
-      "alt": "stingray, sixth pass, front"
+      "alt": "stingray, seventh pass, front"
      },
      {
       "file": "stingray/before_stingray_rear.png",
-      "alt": "stingray, sixth pass, rear"
+      "alt": "stingray, seventh pass, rear"
      }
     ]
    }

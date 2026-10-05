@@ -1620,7 +1620,7 @@ def _lift_fan(b, targets, cx, cy, z0, z1, r=8.6, blades=5):
 # is a loft of flattened hexagons along y; each wing a loft of flat-topped six-point sections
 # along x. `_ray_top(x, y)` is the higher of the two skins at a point, or None off the machine.
 _RAY_BODY = [(44.0, 12.0, 4.0, 3.0), (36.0, 13.0, 14.0, 9.0), (20.0, 14.0, 22.0, 16.0), (0.0, 14.0, 24.0, 18.0),
-             (-20.0, 14.0, 22.0, 15.0), (-36.0, 14.5, 17.0, 9.5), (-44.0, 15.0, 16.0, 7.0)]   # (y, cz, w, h), nose to stern; the tail duct runs on from the last
+             (-20.0, 14.0, 22.0, 15.0), (-34.0, 14.5, 17.4, 10.0)]   # (y, cz, w, h), nose to stern; the body ends at the wings' trailing edge and the tail tapers on from the last
 _RAY_WING = [(9.0, -34.0, 38.0, 6.5, 21.5, 16.0), (22.0, -24.0, 30.0, 8.0, 19.0, 12.0), (36.0, -12.0, 8.0, 12.5, 15.5, 4.0)]   # (x, y_back, y_front, z_bottom, z_top, shoulder)
 
 
@@ -1717,7 +1717,9 @@ def stingray(b):
     order: hp_1 (the Solar Flare Array, two pods) at the left wing tip and hp_2 (the Pulse
     Repeater) at the right, hp_3 the dome (the Zenith Emitter), hp_4 (the Aurora Lattice, a
     dish) out of the right forewing's underside and hp_5 bare out of the left (the Radiator
-    Sail is a vent and shows nowhere).
+    Sail is a vent and shows nowhere). Eighth pass (Ryan, 5 October): the tail still read as two
+    stages, the body running on behind the wings as a near-parallel neck before the taper, so
+    the body ends at the wings' trailing edge and the tail is one straight taper from there.
     Floats: the belly at z = 6. Every number is a proportion Ryan may change."""
     top = _ray_top
     # The body: a flattened hexagonal section lofted nose to stern, widest amidships.
@@ -1729,7 +1731,7 @@ def stingray(b):
     ez = top(0.0, 38.5)
     b.box(-2.5, 2.5, 37.5, 39.5, ez - 2.5, ez + 0.6, "amber.engine", "eye")
     # The spine stripe follows the skin from the stern to behind the canopy.
-    _ridge(b, top, 0.0, -38.0, 6.0, 3.6, 0.5, 0.8, "livery.livery", "spine_stripe")
+    _ridge(b, top, 0.0, -32.0, 6.0, 3.6, 0.5, 0.8, "livery.livery", "spine_stripe")
     # The wings: two discs lofted out of the flanks, inner in plate, outer in red; a fan
     # sunk through each at the knuckle, where the wing is thickest.
     for s in (-1.0, 1.0):
@@ -1737,17 +1739,18 @@ def stingray(b):
         inner = _rings(b, [secs[0], secs[1]], "steel.plate", "wing_inner")
         outer = _rings(b, [secs[1], secs[2]], "livery.livery", "wing_outer")
         _lift_fan(b, [inner, outer], s * 23.0, 2.0, 7.5, 20.5)
-    # The tail is the exhaust, short and thin (Ryan, 3 October, sixth and seventh passes:
-    # the shape two iterations ago was great; then it must narrow quicker, in one stage, not
-    # two): the body's own taper runs on past the stern in its pearl as one straight loft,
-    # closing fast to a mouth two thirds the stern's width, one open duct; a thin dark rim
-    # at the mouth is all the grey there is; a dark lining inside and fire at its floor.
-    # Nothing is mounted on it.
-    b.loft([(-44.0, hexagon(0.0, 15.0, 16.0, 7.0)), (-47.5, hexagon(0.0, 15.0, 10.6, 4.7))], "steel.plate", "tail", cap=False)
-    b.loft([(-47.5, hexagon(0.0, 15.0, 10.6, 4.7)), (-48.5, hexagon(0.0, 15.0, 10.0, 4.4))], "steel.dark", "tail_rim", cap=False)
-    _rings(b, [[(x, -48.5, z) for x, z in hexagon(0.0, 15.0, 10.0, 4.4)], [(x, -48.5, z) for x, z in hexagon(0.0, 15.0, 8.6, 3.2)]], "steel.dark", "duct_rim", cap=False)
-    b.loft([(-48.5, hexagon(0.0, 15.0, 8.6, 3.2)), (-45.5, hexagon(0.0, 15.0, 9.0, 3.3))], "steel.dark", "duct_lining", cap=False)
-    b.loft([(-45.5, hexagon(0.0, 15.0, 9.0, 3.3)), (-45.2, hexagon(0.0, 15.0, 9.0, 3.3))], "amber.glow", "nozzle_glow")
+    # The tail is the exhaust, and it narrows in one stage (Ryan, 3 to 5 October, the sixth to
+    # eighth passes: the shape two iterations ago was great; narrow quicker; then not in two
+    # stages, since the body had run on behind the wings as a near-parallel neck before the
+    # taper began): the body ends at the wings' trailing edge and the tail is one straight
+    # loft in its pearl from there to a mouth two thirds the stern's width, one open duct; a
+    # thin dark rim at the mouth is all the grey there is; a dark lining inside and fire at
+    # its floor. Nothing is mounted on it.
+    b.loft([(-34.0, hexagon(0.0, 14.5, 17.4, 10.0)), (-45.0, hexagon(0.0, 15.0, 10.6, 4.7))], "steel.plate", "tail", cap=False)
+    b.loft([(-45.0, hexagon(0.0, 15.0, 10.6, 4.7)), (-46.0, hexagon(0.0, 15.0, 10.0, 4.4))], "steel.dark", "tail_rim", cap=False)
+    _rings(b, [[(x, -46.0, z) for x, z in hexagon(0.0, 15.0, 10.0, 4.4)], [(x, -46.0, z) for x, z in hexagon(0.0, 15.0, 8.6, 3.2)]], "steel.dark", "duct_rim", cap=False)
+    b.loft([(-46.0, hexagon(0.0, 15.0, 8.6, 3.2)), (-43.0, hexagon(0.0, 15.0, 9.0, 3.3))], "steel.dark", "duct_lining", cap=False)
+    b.loft([(-43.0, hexagon(0.0, 15.0, 9.0, 3.3)), (-42.7, hexagon(0.0, 15.0, 9.0, 3.3))], "amber.glow", "nozzle_glow")
     # The Photosphere Lance under the nose (fixed, no pin): a long emitter along the keel,
     # a red collar at its root and a lit muzzle.
     b.box(-4.0, 4.0, 10.0, 24.0, 5.5, 9.5, "steel.panel", "lance_mount")
