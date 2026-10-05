@@ -396,7 +396,7 @@ flare, the emitter and the lance share its spends about a third each and the Rad
 2%, so the bot runs it hot and never vents (the Nemesis's problem again) and cooling 0 is the
 knob to watch. The Puffin alone loses nearly everything, as an escort with an allies-only locked
 shield and a planned passive must (its Prow Projector is never spendable in a solo cell; greedy
-still takes the necromancers at 71%); it reads only once a team cell carries it. **The baseline reading, for Ryan's
+still takes the necromancers at 71%); it reads only once a team cell carries it. The rerun of 5 October after its passive and the overshield landed moved not a cell, as it must: the runner's one team row is the first three chassis, so neither ran in any fight; a row that carries the Puffin (a Kestrel team, or an escort row with the Stingray) is the open proposal. **The baseline reading, for Ryan's
 question of whether 80 a round is average or game-losing:** the team of three still wins every
 cell, the formations included, in about a round and at no cost, under the aims and under the
 lowest-shield rule alike (the Risen formation, fifteen foes, is the one fight that lasts: 4.6
@@ -478,7 +478,7 @@ disrupt into a boss's signature is a trick or a trap.
 **Open, in order.** The task list is `docs/todo.md`, one line a task, grouped by who moves
 it and ticked in the commit that lands it; this is the order to take them in.
 
-1. The Puffin's Slipstream and Overshield read in play and on the runner's team cells (built 5 October; the hovercraft models are called good); its name, a placeholder, is Ryan's.
+1. The Puffin's Slipstream and Overshield read in play (built 5 October; the hovercraft models are called good); the runner cannot read them until a team row carries the Puffin (the 5 October rerun moved nothing); its name, a placeholder, is Ryan's.
 2. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
 3. Ryan's text for the new machines and components; the machines' scale on the map; the strikes, the hover idle's pitch, the idle acts (`RIFTGATE_ACTS_DEBUG=1`) and the gaits (`RIFTGATE_MOVE_DEBUG=1`, and a real move for the Dingo's drift, the Stingray's helicopter strafe and the banks), judged running; the movement branch merged on his word.
 4. The discuss-first decisions left in the Ryan section (the campaign and the economy are decided, 5 October, the paragraph above; what remains of them is the makers' measures and notices, and the in-battle ones: ally wrecks, terrain, base defences, reinforcements, the multi-hex boss, Rift Pressure in the boss fight, packs keeping hull between fights); enemy targeting decided and built 2 October (the paragraph above; the runner's read is the baseline question); the commander layer once the balance has a baseline.

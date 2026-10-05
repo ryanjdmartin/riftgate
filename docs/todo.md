@@ -42,7 +42,8 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 
 Nothing in content is planned any more; every piece the 28 September content leaned on runs since 30 September (bible section 7, "The 28 September pieces, built"). The machine weld is decided and ready to build; the joint pass and the idle acts are built (3 October, a cloud session; Ryan judges them running next); movement by way of moving is built; the rest waits on a design line from Ryan first. Nothing here is claimed by another session; a session that takes a line says so in this file.
 
-- [ ] Rerun `tools/balance.gd` and read the Puffin on the team cells now its passive and overshield run (the escort's vent on the Stingray is the cell to watch)
+- [x] Rerun `tools/balance.gd` after the Puffin's passive (5 October: not a cell moved; the runner's one team row is the first three chassis, so Slipstream and the overshield ran in no fight)
+- [ ] Discuss first: a team cell that carries the Puffin so the runner can read it at all (a row per maker with three machines, the Kestrel team of Sparrowhawk, Goshawk and Puffin; or one escort row with the Stingray in it, the vent cell Ryan named). Until then the Puffin reads only in play
 - [ ] Phased (parked) and Corrode still want a design line first
 - [ ] Judge the aims, the lure and the disrupt in play: whether the exposed weighting (hull reached plus half a breaking shield) leans hard enough, whether the swarm's opening 80 reads as pressure or as a wall, whether a disrupt into a boss's signature feels like a trick or a trap
 - [ ] Left from the movement build: the hangar page's foes, components and vocabulary files republished from main (its chassis file carries the tens and the hovercraft since 2 October, night; the other three are ahead of main from another session's tuning, so republish them once that work lands, never over it)
