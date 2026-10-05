@@ -116,3 +116,4 @@ Nothing in content is planned any more; every piece the 28 September content lea
 - Command die faces with a second, battlefield meaning
 - Endless mode after the bounded campaign (twelve battles the working length)
 - Hardwired hardpoints with a paid unlock (waits on the economy)
+- Livery colours unlocked by a maker's favour, free on any machine (decided 5 October, bible section 10; after the hangar exists)
