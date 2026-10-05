@@ -378,7 +378,7 @@
  },
  "move": {
   "slide": 0.3,
-  "bank": 26.0,
+  "bank": 0.0,
   "strafe": 0.0,
   "oversteer": 0.7,
   "accel": 0.8,

@@ -124,8 +124,9 @@ func test_the_nested_joints_the_bible_asked_for_are_in_the_models() -> void:
 		"prairie_dog": [["wheel_fl", "steer_fl"], ["wheel_rl", ""], ["sensor", "chassis"], ["turret", "chassis"]],
 		"dingo": [["wheel_fl", "caster_fl"], ["harpoon", "chassis"], ["elev_mortar", "chassis"]],
 		"goshawk": [["nacelle_l", ""], ["nacelle_r", ""]],
-		"nemesis": [["elbow_r", "shoulder_r"], ["knee_l", "hip_l"], ["ankle_l", "knee_l"], ["ankle_r", "knee_r"], ["elev_meteor", ""]],
-		"ammit": [["hand_l", "elbow_l"], ["talon_l_out", "hand_l"], ["talon_r_mid", "hand_r"], ["talon_r_in", "hand_r"], ["elbow_l", "shoulder_l"], ["ankle_r", "knee_r"], ["elbow_low_r", "shoulder_low_r"], ["elev_l", ""]],
+		"nemesis": [["waist", ""], ["shoulder_r", "waist"], ["elbow_r", "shoulder_r"], ["knee_l", "hip_l"], ["ankle_l", "knee_l"], ["ankle_r", "knee_r"], ["elev_meteor", "waist"]],
+		"ammit": [["waist", ""], ["shoulder_l", "waist"], ["hand_l", "elbow_l"], ["talon_l_out", "hand_l"], ["talon_r_mid", "hand_r"], ["talon_r_in", "hand_r"], ["elbow_l", "shoulder_l"], ["ankle_r", "knee_r"],
+			["shoulder_low_r", ""], ["elbow_low_r", "shoulder_low_r"], ["hand_low_r", "elbow_low_r"], ["elev_l", "waist"]],
 	}
 	for id in want.keys():
 		var pair := _rig_for(id)
@@ -654,8 +655,9 @@ func test_the_hovercraft_have_acts_and_cornering_numbers() -> void:
 		assert_true(side.get("acts", []).size() >= 3, "%s has several acts" % id)
 	# Ryan, 5 October: both oversteer through corners, like the Dingo; the Stingray faces its
 	# heading (no longer a helicopter holding its final facing) and noses down into its travel.
+	# The fifth notes: a hovercraft keeps flat, so the Puffin no longer banks.
 	var puffin: Dictionary = MechRig.load_sidecar("puffin")["move"]
-	assert_true(float(puffin.get("bank", 0.0)) > 0.0 and float(puffin.get("oversteer", 0.0)) > 0.0, "the Puffin banks and oversteers, the jet and the Dingo crossed")
+	assert_true(is_zero_approx(float(puffin.get("bank", 0.0))) and float(puffin.get("oversteer", 0.0)) > 0.0, "the Puffin oversteers and does not bank")
 	var stingray: Dictionary = MechRig.load_sidecar("stingray")["move"]
 	assert_true(float(stingray.get("oversteer", 0.0)) > 0.0 and is_zero_approx(float(stingray.get("strafe", 0.0))), "the Stingray oversteers and faces its heading")
 	assert_true(stingray.has("tilt") and float(stingray["tilt"][0]) > 20.0, "and noses down hard into its travel, its fans its propulsion")
@@ -682,10 +684,9 @@ func test_the_stingray_noses_into_its_travel() -> void:
 	pair[1].free()
 	pair = _rig_for("puffin", 2)
 	rig = pair[0]
-	assert_true(float(rig.move.get("bank", 0.0)) > 15.0, "the Puffin banks")
-	assert_true(is_zero_approx(float(rig.move.get("strafe", 0.0))), "and faces its heading")
+	assert_true(is_zero_approx(float(rig.move.get("strafe", 0.0))), "the Puffin faces its heading")
 	_drive(rig, MechRig.MOVE_REF_SPEED, 1.5, 0.0, 1.0)
-	assert_true(pair[1].rotation.z > deg_to_rad(8.0), "banking into a left turn")
+	assert_true(absf(pair[1].rotation.z) < deg_to_rad(0.5), "and stays flat through a left turn (%f)" % rad_to_deg(pair[1].rotation.z))
 	pair[1].free()
 
 
