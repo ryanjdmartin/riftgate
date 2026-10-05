@@ -167,9 +167,10 @@ def badger(b):
         "elbow_r": [(2.4, 0.0), (3.4, 20.0), (4.5, -25.0), (5.2, 0.0)],
         "wrist_r": [(2.5, 0.0), (3.5, 26.0), (4.6, -26.0), (5.2, 0.0)],
     }, body=[(1.0, 0.0, 0.0, 0.0, 0.0, 1.5, 0.0), (2.1, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0), (3.4, 0.0, 0.0, 0.0, 0.0, 1.5, 0.0), (4.5, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0), (5.2, 0.0, 0.0, 0.0)])
-    # Movement: the treads scroll, the booms carry the claw clear, curled up on its wrist as
-    # an excavator carries its bucket, a rock on pulling away and stopping; heavy to start.
-    b.gait(treads={"parts": ["tread"], "scroll": 1.0}, hold={"shoulder_l": 16.0, "elbow_l": 14.0, "wrist_l": 30.0, "shoulder_r": 8.0}, rock=7.0)
+    # Movement: the treads scroll, the booms carry the claw just clear (Ryan, 5 October: not so
+    # high), curled up on its wrist as an excavator carries its bucket, a rock on pulling away
+    # and stopping; heavy to start.
+    b.gait(treads={"parts": ["tread"], "scroll": 1.0}, hold={"shoulder_l": 7.0, "elbow_l": 6.0, "wrist_l": 24.0, "shoulder_r": 3.0}, rock=7.0)
     b.move(accel=1.2, heft=0.2)
 
 badger.maker = "minerva"
@@ -266,7 +267,7 @@ def sparrowhawk(b):
     # Movement: the boosters brighten, the nose drops; it banks and slides through corners
     # (b.move) at full speed.
     b.gait(glow={"parts": ["booster_ring", "exhaust"], "k": 5.0}, body_hold=(0.0, 0.0, 0.0, 0.0, -6.0, 0.0))
-    b.move(slide=0.6, bank=34.0, accel=0.7, heft=0.08)   # strafes most of the aircraft, banks hard; the lightest in its acts
+    b.move(slide=0.6, bank=50.0, accel=0.7, heft=0.08)   # strafes most of the aircraft, banks hardest (Ryan, 5 October: more); the lightest in its acts
 
 sparrowhawk.maker = "kestrel"
 
@@ -438,7 +439,7 @@ def clydesdale(b):
     tracks, body, stride = _plant([
         {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
          "phase": 0.0 if leg in ("fl", "hr") else 0.5, "shift": legs[leg][0][1] - legs[leg][2][1]}
-        for leg in ("fl", "fr", "hl", "hr")], sweep=28.0, lift=6.0, crouch=0.5, dip=1.4, nod=0.8)
+        for leg in ("fl", "fr", "hl", "hr")], sweep=34.0, lift=7.0, crouch=0.5, dip=1.6, nod=0.8)   # a longer stride (Ryan, 5 October: far fewer steps), as long as the legs reach
     tracks["head"] = ([(i / 40.0, round(-2.0 * abs(math.sin(2.0 * math.pi * i / 40.0)), 3)) for i in range(41)], 0.0)
     b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
     b.move(accel=1.4, heft=0.24)
@@ -1000,7 +1001,14 @@ def wild_boar(b):
     })
     # Movement: the treads scroll; a rock on pulling away and stopping; the turret turns
     # with the hull (Ryan, 4 October: holding its aim was not worth the complexity).
-    b.gait(treads={"parts": ["tread"], "scroll": 1.0}, rock=7.0)
+    # A little unstable under the plow (Ryan, 5 October): a few bumps over a long cycle, each
+    # tipping the hull's weight forward onto the plow and back, the plow nodding late on its
+    # rams.
+    bumps = [(0.0, 0.0), (0.16, 0.0), (0.21, -2.6), (0.27, 1.4), (0.33, -0.4), (0.4, 0.0), (0.58, 0.0), (0.62, 1.8),
+             (0.68, -1.6), (0.74, 0.5), (0.8, 0.0), (0.9, -1.4), (0.95, 0.9), (1.0, 0.0)]
+    b.gait(treads={"parts": ["tread"], "scroll": 1.0}, rock=7.0, stride=150.0,
+           body=[(t, 0.0, 0.0, round(-abs(p) * 0.25, 2), 0.0, p, 0.0) for t, p in bumps],
+           tracks={"plow": [(t, round(max(-2.0, -p * 1.6), 2)) for t, p in [(0.0, 0.0)] + [(round((t + 0.04) % 1.0, 3), p) for t, p in bumps[1:-1]]]})
     b.move(accel=1.1, heft=0.18)
 
 wild_boar.maker = "minerva"
@@ -1258,13 +1266,13 @@ def dingo(b):
         **{"wheel_" + w: [(t, round(k * TURN * v, 1)) for t, v in yaw] + [(3.2, k * 1440.0)] for w, k in (("fl", 1.0), ("rl", 1.0), ("fr", -1.0), ("rr", -1.0))},
         "chassis": [(0.45, 3.0, 0.0, 0.0), (0.8, 2.0, 0.0, -5.0), (1.5, 1.0, 0.0, -6.0), (1.95, -5.0, 0.0, 6.0), (2.3, 3.0, 0.0, -3.0), (2.7, -1.0, 0.0, 1.0), (3.1, 0.0, 0.0, 0.0)],
     }, body=[(0.4, 0.0, 0.0, 0.0)] + [(t, 0.0, 0.0, 0.0, v, 0.0, 0.0) for t, v in yaw[1:]] + [(2.1, 0.0, 0.0, 0.0, 364.0, 0.0, 0.0), (3.2, 0.0, 0.0, 0.0, 360.0, 0.0, 0.0)])
-    # Movement (Ryan, 2 October): it drifts. The casters point along the travel while the
-    # body's facing lags the path and sits off it on the outside, so on a sideways step or
-    # through a corner the wheels turn toward the move and the car slides, keeping its
-    # facing.
+    # Movement (Ryan, 2 October): it drifts. Oversteer (Ryan, 5 October: it lagged through
+    # its turns where it should drift into them): the nose swings into a corner ahead of the
+    # path, the tail stepping out, and back as the corner ends, while the casters point
+    # along the travel, so they counter-steer through it.
     b.gait(wheels={"wheel_fl": R, "wheel_fr": R, "wheel_rl": R, "wheel_rr": R},
            aim={"caster_fl": 1.0, "caster_fr": 1.0, "caster_rl": 1.0, "caster_rr": 1.0}, rock=4.0)
-    b.move(slide=1.0, bank=0.0, accel=0.5, heft=0.09)   # drifts wildly on the map and does not bank (Ryan, 2 October)
+    b.move(slide=0.4, bank=0.0, accel=0.5, heft=0.09, oversteer=1.0)   # drifts wildly on the map and does not bank (Ryan, 2 October)
 
 dingo.maker = "wainwright_sutler"
 
@@ -1396,7 +1404,7 @@ def goshawk(b):
     # turns (b.move).
     b.gait(hold={"nacelle_l": -12.0, "nacelle_r": -12.0}, glow={"parts": ["joint_nacelle_l", "joint_nacelle_r"], "k": 5.0},
            body_hold=(0.0, 0.0, 0.0, 0.0, -5.0, 0.0))
-    b.move(slide=0.3, bank=22.0, accel=0.9, heft=0.12)   # larger and slower than the Sparrowhawk: slides less, banks moderately
+    b.move(slide=0.3, bank=36.0, accel=0.9, heft=0.12)   # larger and slower than the Sparrowhawk: slides less, banks well (Ryan, 5 October: more)
 
 goshawk.maker = "kestrel"
 
@@ -1628,9 +1636,9 @@ def nemesis(b):
     tracks, body, stride = _plant([
         {"hip": "hip_" + side, "knee": "knee_" + side, "ankle": "ankle_" + side, "at": legs[side], "phase": 0.0 if side == "l" else 0.5}
         for side in ("l", "r")], sweep=30.0, lift=8.0, crouch=0.5, dip=1.8, nod=1.2)
-    tracks["shoulder_l"] = (_swing(12.0, 0.5), 0.0)
-    tracks["shoulder_r"] = (_swing(12.0, 0.0), 0.0)
-    b.gait(stride=stride, tracks=tracks, hold={"elbow_l": 14.0, "elbow_r": 14.0}, body=body, ease="linear")
+    tracks["shoulder_l"] = (_swing(5.0, 0.5), 0.0)   # a little swing (Ryan, 5 October: less arm movement; the plod is good)
+    tracks["shoulder_r"] = (_swing(5.0, 0.0), 0.0)
+    b.gait(stride=stride, tracks=tracks, hold={"elbow_l": 9.0, "elbow_r": 9.0}, body=body, ease="linear")
     b.move(accel=1.2, heft=0.24)
 
 nemesis.maker = "arsenal"
@@ -1870,17 +1878,18 @@ def ammit(b):
     b.act("threat", 5.0, tracks, body=body,
           glow=[(["throat_slot", "eye_strip"], [(0.8, 0.0), (1.4, 6.0), (2.0, 10.0), (3.0, 10.0), (3.3, 3.0), (4.2, 0.0)])])
     # Movement (Ryan, 4 October, the third pass: stomp and plod, no weight thrown side to
-    # side): a four-limbed gait, the legs and the planted lower arms in diagonal pairs (left
-    # arm with right leg), every foot and talon planted while the body passes over it, the
-    # lower arms reaching from further back under the chest; the upper arms held up out of
-    # the way; the body dropping onto each pair.
+    # side): a four-limbed gait, every foot and talon planted while the body passes over it,
+    # the lower arms reaching from further back under the chest; the upper arms held up out
+    # of the way. Out of step (Ryan, 5 October: more insect than mammal, not in pairs): a
+    # ripple, each limb landing on its own a quarter of a stride after the last, the left
+    # leg, the right hand, the right leg, the left hand; the body dropping a little onto each.
     limbs = []
     for side in ("l", "r"):
         limbs.append({"hip": "hip_" + side, "knee": "knee_" + side, "ankle": "ankle_" + side, "at": legs[side],
                       "phase": 0.0 if side == "l" else 0.5})
         limbs.append({"hip": "shoulder_low_" + side, "knee": "elbow_low_" + side, "ankle": None, "at": arms[side],
-                      "phase": 0.0 if side == "r" else 0.5, "shift": -12.0})
-    tracks, body, stride = _plant(limbs, sweep=30.0, lift=8.0, crouch=0.5, dip=1.4, nod=0.8)
+                      "phase": 0.25 if side == "r" else 0.75, "shift": -12.0})
+    tracks, body, stride = _plant(limbs, sweep=30.0, lift=8.0, crouch=0.5, dip=0.8, nod=0.5)
     b.gait(stride=stride, tracks=tracks, hold={"shoulder_l": 12.0, "shoulder_r": 12.0}, body=body, ease="linear")
     b.move(accel=1.0, heft=0.2)
 
@@ -2153,12 +2162,13 @@ def stingray(b):
     b.act("sidestep", 4.8, body=[   # slides a step to one side, rolling into it, and straight on across to the other
         (0.9, -6.0, 0.0, 0.0, 0.0, 0.0, -12.0), (1.6, -14.0, 0.0, 0.0, 0.0, 0.0, 2.0), (2.6, 2.0, 0.0, 0.0, 0.0, 0.0, 12.0),
         (3.4, 14.0, 0.0, 0.0, 0.0, 0.0, -2.0), (4.8, 0.0, 0.0, 0.0)])
-    # Movement (Ryan, 3 October): the first of the helicopter-style machines, on its fans. It
-    # keeps its facing and leans into its travel: nose down to go forward, nose up to go
-    # back, a side down to strafe; no bank, no rock, the tilt does both. The map turns it to
-    # where it will end up facing first, then translates it there.
+    # Movement (Ryan, 5 October, retiring the helicopter of 3 October: it turned to its final
+    # facing and held it, where it need not move so differently from the Dingo and the
+    # Puffin): it faces its heading and oversteers through corners like them, banking a
+    # little, and noses down hard into its travel, since its fans are its propulsion (the
+    # tilt: nose down going forward, a side down to slip that way).
     b.gait(glow={"parts": ["nozzle_glow"], "k": 5.0})
-    b.move(slide=0.0, bank=0.0, strafe=1.0, tilt=(16.0, 14.0), accel=0.9, heft=0.12)
+    b.move(slide=0.3, bank=14.0, tilt=(26.0, 10.0), accel=0.9, heft=0.12, oversteer=0.8)
 
 stingray.maker = "aphelion"
 
@@ -2369,10 +2379,10 @@ def puffin(b):
         (1.0, -12.0, 0.0, 0.0, 12.0, 0.0, -8.0), (1.7, -14.0, 0.0, 0.0, 1.0, 0.0, -1.0), (3.0, 12.0, 0.0, 0.0, -12.0, 0.0, 8.0), (3.7, 14.0, 0.0, 0.0, -1.0, 0.0, 1.0), (4.8, 0.0, 0.0, 0.0)],
           glow=[(["lift_nozzle"], [(0.6, 0.0), (1.0, 5.0), (3.4, 5.0), (4.2, 0.0)])])
     # Movement (Ryan, 3 October): a cross between a jet and the Dingo, on its boosters: it
-    # banks into turns and its facing lags the path, less wildly than the Dingo's, so it
-    # drifts through corners with its nose down a touch.
+    # banks into turns and oversteers through them (Ryan, 5 October: not lagging), less
+    # wildly than the Dingo, its nose down a touch.
     b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, -5.0, 0.0), glow={"parts": ["nozzle_ring", "exhaust"], "k": 5.0}, rock=3.0)
-    b.move(slide=0.6, bank=26.0, accel=0.8, heft=0.13)
+    b.move(slide=0.3, bank=26.0, accel=0.8, heft=0.13, oversteer=0.7)
 
 puffin.maker = "kestrel"
 

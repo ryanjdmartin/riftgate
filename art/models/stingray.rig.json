@@ -378,12 +378,13 @@
   "rock": 0.0
  },
  "move": {
-  "slide": 0.0,
-  "bank": 0.0,
-  "strafe": 1.0,
+  "slide": 0.3,
+  "bank": 14.0,
+  "strafe": 0.0,
+  "oversteer": 0.8,
   "tilt": [
-   16.0,
-   14.0
+   26.0,
+   10.0
   ],
   "accel": 0.9,
   "heft": 0.12

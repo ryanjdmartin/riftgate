@@ -1192,8 +1192,8 @@ function rememberMotion() { try { localStorage.setItem("hangar.motion", JSON.str
 const ensureShapes = () => ensure("shapes", "hangar/shapes.json", j => { state.shapes = j; });
 const MODE_HELP = {
   acts: "Every act in turn, back to back, as RIFTGATE_ACTS_DEBUG=1 plays them. Tap one to loop it; drag the bar to hold a moment. The blows layer over whatever is showing, playing or paused.",
-  walk: "Driven straight ahead at its own full speed on the map, as RIFTGATE_MOVE_DEBUG=1 does: the stride at the pace the map gives it, the wheels, the treads and the held poses.",
-  route: "A loop of two long moves on the map's hexes: three steps north and a turn east, three steps south and a turn back. The facing follows the cornering module: the Dingo's lag, the banks, a helicopter turning first and then strafing. Each move runs as the map runs it: one smooth curve, from rest to full speed, through the corners at full speed, easing to a stop and then to its recorded facing.",
+  walk: "Driven straight ahead at its own full speed on the map, as RIFTGATE_MOVE_DEBUG=1 does: the stride at the pace the map gives its move (a 20 or a 30 plods, a 40 or a 50 runs), the wheels, the treads and the held poses.",
+  route: "A loop of two long moves on the map's hexes: three steps north and a turn east, three steps south and a turn back. The facing follows the cornering module: the Dingo's and the hovercraft's noses swinging into each corner ahead of the path (oversteer), the flyers' banks. Each move runs as the map runs it: one smooth curve, from rest to full speed, through the corners at full speed, easing to a stop and then to its recorded facing.",
 };
 function motionMachines() {
   return liveEntries("chassis.entries").map(x => x.entry).filter(e => state.pins && Array.isArray(state.pins[e.id]));

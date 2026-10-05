@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.35 since 5 October: the acts' fourth pass, over the third pass, the Stingray's seventh pass and the map types); republish it from the committed file after every bible change, passing that URL.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.36 since 5 October: the acts' fourth pass and the movement notes, over the third pass, the Stingray's seventh pass and the map types); republish it from the committed file after every bible change, passing that URL.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -13,14 +13,14 @@ stays in A alone (Ryan, 1 October: it serves one ongoing task) and is republishe
 session; a B session cannot read it. Shared:
 
 - **The bible** (above): `docs/design-bible.html`, published whole after every change.
-- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 5 October with the acts' fourth pass): four tabs, the
+- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 5 October with the acts' fourth pass and the movement notes): four tabs, the
   codex, the content editor, the names list and Models. Models (the renders and the Animation
   tab merged, Ryan, 3 October) puts each machine live in 3D on top: its acts, walk and
   cornering played from its rig sidecar by `tools/hangar_motion.js` (published as
   `hangar/motion.js`), a port of `game/ui/mech_rig.gd` and `Map3D._corner` that must move with
   them in the same commit; Acts (in turn or one looped, a scrubber, melee and shot blows), Walk
   (the RIFTGATE_MOVE_DEBUG drive) and Route (a four-move loop on hexes sized and paced as the
-  map's, which shows the drift, the banks and the helicopter strafe the debug switches cannot);
+  map's, which shows the drift, the banks and the oversteer the debug switches cannot);
   every mount takes stock, bare or any silhouette class in any maker's metal, fitted live as
   `MechView3D.mount` does. Under the stage sit the game's own renders of that machine, with the
   pass's note and the earlier passes folded: those carry the look to judge, since the 3D view's
@@ -83,7 +83,7 @@ the chat is newer.
 ## As of 3 October 2026
 
 **State.** Tests green: `perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (339 tests, 13,128 checks on 5 October in a cloud session, after the acts' fourth pass;
+tests/run_tests.gd` (341 tests, 13,150 checks on 5 October in a cloud session, after the movement notes;
 a cloud session fetches Godot 4.7's Linux build from the GitHub release asset to run them
 (`Godot_v4.7-stable_linux.x86_64.zip`, and `xvfb-run` for screenshots), since
 the proxy serves the asset though not the release page; it builds models too, with
@@ -381,6 +381,17 @@ skirmish's own frame. New renders on the Models tab for the Prairie Dog, the Amm
 three boosters. Open with Ryan: a render margin for the skirmish views (the loop, circle and
 dash leave the frame), a Goshawk geometry change for the cannon's glow, and attack acts (the
 to-do).
+
+**The movement notes, 5 October (bible v0.36).** A machine's step at full speed is a table by
+move (`BattleMapView.MECH_PACE`: 1.9, 1.25, 0.55, 0.42 seconds a hex at 20 to 50; the hangar's
+`mechSecondsPerHex` matches). MovePath's heading turns evenly within a span (`_tangent_at`), so
+a slow machine's corner no longer steps. `oversteer` in `b.move` (Map3D's `oversteer_lead`,
+`OVERSTEER_*`, and the hangar's Route) aims an oversteering nose ahead of the path: the Dingo
+1.0, the Stingray 0.8 (no longer a helicopter; it noses down 26 degrees), the Puffin 0.7. The
+flyers bank harder; the Badger's claw rides lower, the Nemesis's arms swing less, the Ammit's
+limbs ripple a quarter stride apart, the Boar bumps under its plow, the Clydesdale's stride is a
+fifth longer. Open with Ryan: whether the Armadillo and the Clydesdale need their legs reworked
+(or the Clydesdale a gallop) once he has seen the pace.
 
 **The codex (29 September; a tab of the hangar page since 1 October).** One surface showing a
 chassis and the components fitted to it: the Codex tab renders it in the browser from the

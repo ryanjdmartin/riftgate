@@ -74,3 +74,22 @@ func test_at_moves_forward_continuously_and_the_packs_keep_their_lines() -> void
 	assert_true(absf(pack.duration - 2.0 * STEP / 100.0) < 0.05, "at their flat step (%f)" % pack.duration)
 	var still := MovePath.build([Vector2.ONE], 100.0)
 	assert_eq(still.duration, 0.0, "a one-hex route takes no time")
+
+
+func test_the_heading_turns_evenly_round_a_corner() -> void:
+	# Ryan, 5 October: a slow machine's turn stuttered in five to eight jumps, one a span of the
+	# corner's arc. The heading turns evenly within a span, so no frame turns it much more than
+	# the frame before.
+	var mp := MovePath.build(_route([90, 90, 30, -30, -30]), 40.0, 1.2)   # a slow machine through two corners
+	var prev: Vector2 = mp.at(0.0)[1]
+	var prev_turn := 0.0
+	var worst_jerk := 0.0
+	var t := 1.0 / 60.0
+	while t < mp.duration:
+		var here: Vector2 = mp.at(t)[1]
+		var turn := absf(prev.angle_to(here))
+		worst_jerk = maxf(worst_jerk, absf(turn - prev_turn))
+		prev = here
+		prev_turn = turn
+		t += 1.0 / 60.0
+	assert_true(worst_jerk < 0.01, "the heading's turn a frame never leaps (%f radians)" % worst_jerk)

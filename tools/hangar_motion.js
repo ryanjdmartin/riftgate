@@ -27,6 +27,7 @@ const MOVE_REF_SPEED = 150.0, MOVE_BLEND_IN = 0.25, MOVE_BLEND_OUT = 0.35;
 const ROCK_ACCEL = 200.0, BANK_TURN = 1.2, DRIFT_UNITS = 12.0;
 const HEFT_DEFAULT = 0.12, DAMPING = 0.7, STEP = 1 / 60;   // the servos (MechRig._follow) and the longest step anything advances by
 const SLIDE_RATE_SNAP = 12.0, SLIDE_RATE_FULL = 2.2, STRAFE_TURN_RATE = 6.0, REST_TURN_RATE = 4.0;   // Map3D
+const OVERSTEER_LEAD = 0.45, OVERSTEER_MAX = 0.8, OVERSTEER_RATE = 7.0;   // Map3D: the nose leads the path into a corner
 const GLOW_PAGE = 0.9;   // this page's emission for a lit part at rest (the game's is 1.8 under its own glow pass)
 const AXES = ["pitch", "yaw", "roll"];
 const D2R = Math.PI / 180;
@@ -436,6 +437,15 @@ class MovePath {
     return mp;
   }
   tangent(i) { i = clamp(i, 0, this.points.length - 2); return pNorm(pSub(this.points[i + 1], this.points[i])); }
+  // The heading turning evenly along a span between its samples' tangents, each sample's the
+  // direction across its two neighbours (MovePath._tangent_at: no stepping round an arc).
+  sampleTangent(k) {
+    const n = this.points.length;
+    if (k <= 0 || k >= n - 1) return this.tangent(k <= 0 ? 0 : n - 2);
+    const t = pSub(this.points[k + 1], this.points[k - 1]);
+    return pLen(t) > 1e-4 ? pNorm(t) : this.tangent(k);
+  }
+  tangentAt(i, f) { const t = pLerp(this.sampleTangent(i), this.sampleTangent(i + 1), f); return pLen(t) > 1e-4 ? pNorm(t) : this.tangent(i); }
   // [position, unit tangent, speed, distance along it] at time t
   at(t) {
     const n = this.points.length;
@@ -445,7 +455,8 @@ class MovePath {
     const dt = this.time[i + 1] - this.time[i], u = dt <= 0 ? 0 : (t - this.time[i]) / dt;
     const ds = this.arc[i + 1] - this.arc[i];
     const d = (this.speed[i] * u + 0.5 * (this.speed[i + 1] - this.speed[i]) * u * u) * dt;
-    return [pLerp(this.points[i], this.points[i + 1], ds <= 0 ? 0 : clamp(d / ds, 0, 1)), this.tangent(i), lerp(this.speed[i], this.speed[i + 1], u), this.arc[i] + d];
+    const f = ds <= 0 ? 0 : clamp(d / ds, 0, 1);
+    return [pLerp(this.points[i], this.points[i + 1], f), this.tangentAt(i, f), lerp(this.speed[i], this.speed[i + 1], u), this.arc[i] + d];
   }
 }
 
@@ -457,9 +468,18 @@ class MovePath {
 // its MovePath curve; between moves the machine eases to the facing the simulation records,
 // its last step's (Map3D, REST_TURN_RATE). The hex is sized to the machine as the map fits it
 // (Map3D: its widest extent is MARKER_FIT hex widths, a flyer FIT_FLYER of that) and a step
-// takes the map's time (BattleMapView: MECH_SECONDS_PER_HEX, slower below MOVE_REF_SPEED),
-// so the pace here is the pace on the map (MechRig.map_speed).
-const MARKER_FIT = 1.05, FIT_FLYER = 0.8, MECH_SECONDS_PER_HEX = 0.55, MAP_REF_SPEED = 50;
+// takes the map's time for its move (BattleMapView.MECH_PACE: seconds a hex by move, straight
+// between the tens), so the pace here is the pace on the map (MechRig.map_speed).
+const MARKER_FIT = 1.05, FIT_FLYER = 0.8;
+const MECH_PACE = [[10, 2.8], [20, 1.9], [30, 1.25], [40, 0.55], [50, 0.42], [60, 0.36]];
+function mechSecondsPerHex(move) {
+  if (move <= MECH_PACE[0][0]) return MECH_PACE[0][1];
+  for (let i = 1; i < MECH_PACE.length; i++) {
+    const [b, vb] = MECH_PACE[i], [a, va] = MECH_PACE[i - 1];
+    if (move <= b) return lerp(va, vb, (move - a) / (b - a));
+  }
+  return MECH_PACE[MECH_PACE.length - 1][1];
+}
 const DIRS = {N: 90, NE: 30, SE: -30, S: -90, SW: -150, NW: 150};
 const ROUTE = [["N", "N", "N", "NE", "SE"], ["S", "S", "S", "SW", "NW"]];
 const PAUSE = 1.2;
@@ -496,15 +516,19 @@ class Route {
     if (this.t >= this.curve.duration) {
       this.pos = this.curve.points[this.curve.points.length - 1];
       this.rest = yawOf(dirVec(DIRS[mv[mv.length - 1]]));
-      this.move = (this.move + 1) % ROUTE.length; this.curve = null; this.pause = PAUSE;
+      this.move = (this.move + 1) % ROUTE.length; this.curve = null; this.pause = PAUSE; this.lastHeading = undefined; this.headingRate = 0;
       if (this.move === 0) this.pos = {x: 0, z: 0};
       return {speed: 0, aim: 0, turn: 0};
     }
     const [here, tan, sp] = this.curve.at(this.t);
     this.here = here;
     const heading = yawOf(tan);
-    const slide = clamp(move.slide || 0, 0, 1), strafe = clamp(move.strafe || 0, 0, 1);
+    const slide = clamp(move.slide || 0, 0, 1), strafe = clamp(move.strafe || 0, 0, 1), over = clamp(move.oversteer || 0, 0, 1);
+    const hr = this.lastHeading === undefined || dt <= 0 ? 0 : wrapPi(heading - this.lastHeading) / dt;
+    this.lastHeading = heading;
+    this.headingRate = lerp(this.headingRate || 0, hr, 1 - Math.exp(-dt / 0.1));
     let rate = lerp(SLIDE_RATE_SNAP, SLIDE_RATE_FULL, slide), want = heading;
+    if (over > 0) { want = heading + clamp(this.headingRate * OVERSTEER_LEAD * over, -OVERSTEER_MAX, OVERSTEER_MAX); rate = lerp(rate, OVERSTEER_RATE, over); }
     if (strafe > 0) { want = lerpAngle(heading, yawOf(dirVec(DIRS[mv[mv.length - 1]])), strafe); rate = lerp(rate, STRAFE_TURN_RATE, strafe); }
     const step = wrapPi(want - this.facing) * (1 - Math.exp(-dt * rate));
     this.facing += step;
@@ -762,7 +786,7 @@ class Stage {
   }
   // The machine's full speed on the map in its own model units a second (MechRig.map_speed):
   // the route's step, which the map fits to it, at the map's time for its move.
-  topSpeed() { return this.route.STEP / (MECH_SECONDS_PER_HEX * Math.max(1, MAP_REF_SPEED / Math.max(1, this.movespeed || MAP_REF_SPEED))); }
+  topSpeed() { return this.route.STEP / mechSecondsPerHex(this.movespeed || 50); }
   emitTick() { const now = performance.now(); if (!this.lastTick || now - this.lastTick > 90) { this.lastTick = now; this.emit(); } }
   strike(ranged) { if (this.rig) this.rig.strike(ranged); }
   seek(t) { if (this.rig && this.rig.current) { this.rig.seek(t); this.renderer && this.renderer.render(this.scene, this.camera); this.emit(); } }

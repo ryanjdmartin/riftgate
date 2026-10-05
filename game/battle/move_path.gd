@@ -139,7 +139,7 @@ func at(t: float) -> Array:
 	var ds := arc[i + 1] - arc[i]
 	var d := (speed[i] * u + 0.5 * (speed[i + 1] - speed[i]) * u * u) * dt   # distance into the span
 	var f := 0.0 if ds <= 0.0 else clampf(d / ds, 0.0, 1.0)
-	return [points[i].lerp(points[i + 1], f), _tangent(i), v, arc[i] + d]
+	return [points[i].lerp(points[i + 1], f), _tangent_at(i, f), v, arc[i] + d]
 
 
 func _tangent(i: int) -> Vector2:
@@ -147,3 +147,20 @@ func _tangent(i: int) -> Vector2:
 		return Vector2.ZERO
 	i = clampi(i, 0, points.size() - 2)
 	return (points[i + 1] - points[i]).normalized()
+
+
+## The heading `f` of the way along span `i`, turning evenly from the tangent at one sample to
+## the tangent at the next (Ryan, 5 October: a corner's arc is a few straight spans, and the
+## heading stepped round it in jumps a slow machine showed), each sample's the direction across
+## its two neighbours.
+func _tangent_at(i: int, f: float) -> Vector2:
+	var t := _sample_tangent(i).lerp(_sample_tangent(i + 1), f)
+	return t.normalized() if t.length_squared() > 1e-8 else _tangent(i)
+
+
+func _sample_tangent(k: int) -> Vector2:
+	var n := points.size()
+	if k <= 0 or k >= n - 1:
+		return _tangent(k if k <= 0 else n - 2)
+	var t := points[k + 1] - points[k - 1]
+	return t.normalized() if t.length_squared() > 1e-8 else _tangent(k)

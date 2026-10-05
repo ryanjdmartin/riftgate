@@ -329,14 +329,13 @@ static func sample(keys: Array, t: float, duration: float, ease: String = "smoot
 
 
 ## A machine's full speed on the map in its own model units a second: the map fits it to
-## MARKER_FIT hexes at its widest (a flyer smaller) and a step at full speed takes
-## MECH_SECONDS_PER_HEX, longer below the reference move (BattleMapView). What the debug
-## drive and the hangar's Walk run at, so a stride is seen at the pace the map gives it.
+## MARKER_FIT hexes at its widest (a flyer smaller) and a step at full speed takes the map's
+## pace for its move (BattleMapView.mech_seconds_per_hex). What the debug drive and the
+## hangar's Walk run at, so a stride is seen at the pace the map gives it.
 static func map_speed(widest: float, movespeed: int, flyer: bool) -> float:
 	var fit := Map3D.MARKER_FIT * (Map3D.FIT_FLYER if flyer else 1.0)
 	var step := sqrt(3.0) * widest / (2.0 * fit)
-	var slow := maxf(1.0, BattleMapView.MOVE_REF_SPEED / maxf(1.0, float(movespeed)))
-	return step / (BattleMapView.MECH_SECONDS_PER_HEX * slow)
+	return step / BattleMapView.mech_seconds_per_hex(float(movespeed))
 
 
 ## Read the model's tags and its sidecar. Call once the materials are applied (the glows

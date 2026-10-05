@@ -2733,9 +2733,10 @@
   "rock": 4.0
  },
  "move": {
-  "slide": 1.0,
+  "slide": 0.4,
   "bank": 0.0,
   "strafe": 0.0,
+  "oversteer": 1.0,
   "accel": 0.5,
   "heft": 0.09
  },

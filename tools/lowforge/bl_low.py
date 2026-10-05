@@ -763,7 +763,7 @@ class Build:
         self.gait_spec = out
         return out
 
-    def move(self, slide=0.0, bank=0.0, strafe=0.0, tilt=None, accel=None, heft=None):
+    def move(self, slide=0.0, bank=0.0, strafe=0.0, tilt=None, accel=None, heft=None, oversteer=0.0):
         """The cornering module's numbers for this machine (the joints row, 2 October):
         `slide`, how far the body drifts from its path on a turn and how slowly its heading
         catches up, 0 for a machine that corners on rails; `bank`, how far a flyer or
@@ -778,8 +778,13 @@ class Build:
         speed through corners (the third pass). `heft` is the machine's weight in its acts
         (Ryan, 4 October, the third pass: heavy, with inertia): the seconds a joint or the body
         takes to catch up with what an act asks, the servos' time constant (MechRig._follow);
-        a light craft 0.08, a heavy walker 0.25."""
+        a light craft 0.08, a heavy walker 0.25. `oversteer` (Ryan, 5 October: the Dingo lagged
+        through its turns where it should drift into them, and the hovercraft the same) turns
+        the nose into a corner ahead of the path, the tail stepping out, and swings it back
+        as the corner ends, 1 the most; the slide's lag is for what does not oversteer."""
         self.tuning = {"slide": float(slide), "bank": float(bank), "strafe": float(strafe)}
+        if oversteer:
+            self.tuning["oversteer"] = float(oversteer)
         if tilt is not None:
             self.tuning["tilt"] = [float(tilt[0]), float(tilt[1])]
         if accel is not None:

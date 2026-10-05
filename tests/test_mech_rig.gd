@@ -471,9 +471,13 @@ func test_the_debug_walk_runs_at_the_machine_s_own_pace_on_the_map() -> void:
 	# times a walker's on the map. A machine's full speed is its step on the map over the
 	# map's time for its move.
 	var fit := Map3D.MARKER_FIT
-	var expect := sqrt(3.0) * 100.0 / (2.0 * fit) / (BattleMapView.MECH_SECONDS_PER_HEX * (BattleMapView.MOVE_REF_SPEED / 20.0))
+	var expect := sqrt(3.0) * 100.0 / (2.0 * fit) / BattleMapView.mech_seconds_per_hex(20.0)
 	assert_true(is_equal_approx(MechRig.map_speed(100.0, 20, false), expect), "a slow walker's pace")
-	assert_true(MechRig.map_speed(100.0, 50, false) > MechRig.map_speed(100.0, 20, false) * 2.0, "a 50 runs two and a half times a 20")
+	assert_true(MechRig.map_speed(100.0, 50, false) > MechRig.map_speed(100.0, 20, false) * 4.0, "a 50 runs four and a half times a 20")
+	# Ryan, 5 October: the 20s and 30s slower than the third pass's pace, the 40s and 50s faster.
+	assert_true(BattleMapView.mech_seconds_per_hex(20.0) > 1.38 and BattleMapView.mech_seconds_per_hex(30.0) > 0.92, "the 20s and 30s plod slower")
+	assert_true(BattleMapView.mech_seconds_per_hex(40.0) < 0.69 and BattleMapView.mech_seconds_per_hex(50.0) < 0.55, "the 40s and 50s run faster")
+	assert_true(is_equal_approx(BattleMapView.mech_seconds_per_hex(35.0), lerpf(BattleMapView.mech_seconds_per_hex(30.0), BattleMapView.mech_seconds_per_hex(40.0), 0.5)), "straight between the tens")
 	assert_true(MechRig.map_speed(100.0, 50, true) > MechRig.map_speed(100.0, 50, false), "a flyer is fitted smaller, so it covers more of itself")
 	var pair := _rig_for("armadillo", 2)
 	var rig: MechRig = pair[0]
@@ -600,8 +604,9 @@ func test_a_slide_drifts_the_body_off_its_path() -> void:
 	var pair := _rig_for("dingo", 2)
 	var rig: MechRig = pair[0]
 	var model: Node3D = pair[1]
+	var slide := float(rig.move.get("slide", 0.0))
 	_drive(rig, MechRig.MOVE_REF_SPEED, 1.0, deg_to_rad(90.0))   # a step square to the left of its facing
-	assert_true(model.position.x > 8.0, "the body sits off the path on the outside, to the right (%f)" % model.position.x)
+	assert_true(model.position.x > 0.8 * slide * MechRig.DRIFT_UNITS, "the body sits off the path on the outside, to the right (%f)" % model.position.x)
 	_drive(rig, MechRig.MOVE_REF_SPEED, 1.5, 0.0)
 	assert_true(absf(model.position.x) < 0.3, "back over its path once the travel is straight ahead")
 	pair[1].free()
@@ -616,41 +621,52 @@ func test_the_hovercraft_have_acts_and_cornering_numbers() -> void:
 	for id in ["stingray", "puffin"]:
 		var side := MechRig.load_sidecar(id)
 		assert_true(side.get("acts", []).size() >= 3, "%s has several acts" % id)
+	# Ryan, 5 October: both oversteer through corners, like the Dingo; the Stingray faces its
+	# heading (no longer a helicopter holding its final facing) and noses down into its travel.
 	var puffin: Dictionary = MechRig.load_sidecar("puffin")["move"]
-	assert_true(float(puffin.get("bank", 0.0)) > 0.0 and float(puffin.get("slide", 0.0)) > 0.0, "the Puffin banks and slides, the jet and the Dingo crossed")
+	assert_true(float(puffin.get("bank", 0.0)) > 0.0 and float(puffin.get("oversteer", 0.0)) > 0.0, "the Puffin banks and oversteers, the jet and the Dingo crossed")
 	var stingray: Dictionary = MechRig.load_sidecar("stingray")["move"]
-	assert_true(float(stingray.get("strafe", 0.0)) > 0.0 and stingray.has("tilt"), "the Stingray strafes and tilts, a helicopter")
+	assert_true(float(stingray.get("oversteer", 0.0)) > 0.0 and is_zero_approx(float(stingray.get("strafe", 0.0))), "the Stingray oversteers and faces its heading")
+	assert_true(stingray.has("tilt") and float(stingray["tilt"][0]) > 20.0, "and noses down hard into its travel, its fans its propulsion")
+	assert_true(float(MechRig.load_sidecar("dingo")["move"].get("oversteer", 0.0)) >= 1.0, "the Dingo oversteers most")
 
 
-func test_a_helicopter_tilts_into_its_travel_and_holds_its_facing() -> void:
+func test_the_stingray_noses_into_its_travel() -> void:
+	# The tilt (a helicopter's, 3 October): it leans into its travel by its speed. Ryan, 5
+	# October: the Stingray keeps it, harder forward, since its fans are its propulsion.
 	var pair := _rig_for("stingray", 2)
 	var rig: MechRig = pair[0]
 	var model: Node3D = pair[1]
-	assert_true(float(rig.move.get("strafe", 0.0)) >= 1.0, "the Stingray holds its facing")
-	assert_true(is_zero_approx(float(rig.move.get("bank", 0.0))), "and never banks: the tilt does it")
 	_drive(rig, MechRig.MOVE_REF_SPEED, 1.5)   # straight ahead
-	assert_true(model.rotation.x < -deg_to_rad(8.0), "forward: the nose drops (%f)" % rad_to_deg(model.rotation.x))
+	assert_true(model.rotation.x < -deg_to_rad(15.0), "forward: the nose drops hard (%f)" % rad_to_deg(model.rotation.x))
 	assert_true(absf(model.rotation.z) < deg_to_rad(0.5), "level across")
 	_drive(rig, MechRig.MOVE_REF_SPEED, 1.5, PI)   # backing
 	assert_true(model.rotation.x > deg_to_rad(8.0), "backward: the nose comes up (%f)" % rad_to_deg(model.rotation.x))
-	_drive(rig, MechRig.MOVE_REF_SPEED, 1.5, deg_to_rad(90.0))   # strafing left
+	_drive(rig, MechRig.MOVE_REF_SPEED, 1.5, deg_to_rad(90.0))   # slipping left
 	# The node's z points backward, so a positive turn about it drops the left side (the same
 	# sign the Goshawk's bank into a left turn reads).
-	assert_true(model.rotation.z > deg_to_rad(6.0), "left: the left side drops (%f)" % rad_to_deg(model.rotation.z))
-	assert_true(absf(model.rotation.x) < deg_to_rad(1.0), "and the nose levels")
-	_drive(rig, MechRig.MOVE_REF_SPEED, 1.5, deg_to_rad(-90.0))
-	assert_true(model.rotation.z < -deg_to_rad(6.0), "right: the right side")
+	assert_true(model.rotation.z > deg_to_rad(4.0), "left: the left side drops (%f)" % rad_to_deg(model.rotation.z))
 	_drive(rig, 0.0, 3.0)
 	assert_true((model.rotation - rig._body_rest_rot).length() < deg_to_rad(0.3), "level again on station")
 	pair[1].free()
-	# The Puffin is the jet and the Dingo crossed: it banks and its facing lags the path.
 	pair = _rig_for("puffin", 2)
 	rig = pair[0]
-	assert_true(float(rig.move.get("bank", 0.0)) > 15.0 and float(rig.move.get("slide", 0.0)) > 0.4, "the Puffin banks and slides")
+	assert_true(float(rig.move.get("bank", 0.0)) > 15.0, "the Puffin banks")
 	assert_true(is_zero_approx(float(rig.move.get("strafe", 0.0))), "and faces its heading")
 	_drive(rig, MechRig.MOVE_REF_SPEED, 1.5, 0.0, 1.0)
 	assert_true(pair[1].rotation.z > deg_to_rad(8.0), "banking into a left turn")
 	pair[1].free()
+
+
+func test_an_oversteering_nose_leads_into_the_corner() -> void:
+	# Ryan, 5 October: the Dingo lagged through its turns where it should drift into them, and
+	# the hovercraft the same: oversteer, not understeer. The nose aims ahead of the path by
+	# how fast the path turns, into the turn, within a limit; none without oversteer.
+	assert_true(Map3D.oversteer_lead(1.0, 1.0) > 0.2, "a path turning left puts the nose further left")
+	assert_true(Map3D.oversteer_lead(-1.0, 1.0) < -0.2, "and right, right")
+	assert_true(is_equal_approx(Map3D.oversteer_lead(50.0, 1.0), Map3D.OVERSTEER_MAX), "within a limit")
+	assert_true(is_zero_approx(Map3D.oversteer_lead(1.0, 0.0)), "nothing without oversteer")
+	assert_true(Map3D.oversteer_lead(1.0, 0.5) < Map3D.oversteer_lead(1.0, 1.0), "less for less")
 
 
 func test_the_map_turns_a_strafing_machine_to_its_final_facing() -> void:
