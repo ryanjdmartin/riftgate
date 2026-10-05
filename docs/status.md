@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.34 since 5 October: the campaign and the economy decided, sections 3 and 10 rewritten); republish it from the committed file after every bible change, passing that URL.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (the committed file is v0.34 since 5 October, the campaign and the economy decided, sections 3 and 10 rewritten; the published page is at v0.36 from `claude/modest-ramanujan-ya5dnq`, a branch ahead of main, so the cloud session of 5 October did not republish over it: republish from the committed file once the branches meet on main); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
