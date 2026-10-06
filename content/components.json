@@ -65,13 +65,13 @@
    "name": "Bullion Fragmenter",
    "maker": "minerva",
    "shape": "barrel",
-   "codex": "Gold and silver are worth nothing out here, so the hopper crushes them into shot. A sawed-off cannon: the range is what is left of the barrel.",
+   "codex": "A sawed-off cannon fed from a crusher hopper.",
    "flavour": "",
    "design": {
     "stage": "draft",
     "fantasy": "One big round. Warm barrel.",
     "niche": "",
-    "notes": " 6 October (Ryan): the Slug Cannon converted to melee, renamed the Bullion Fragmenter, and locked to the Badger as a funny mining reference; its line kinetic numbers kept (30 to 60, crit 15, 10 heat) as placeholders. Ryan, later 6 October: a sawed-off cannon, not a breaker; melee is very short range, not contact (a shotgun is melee), and the irony is that bullion is so useless it is better crushed and fired."
+    "notes": " 6 October (Ryan): the Slug Cannon converted to melee, renamed the Bullion Fragmenter, and locked to the Badger as a funny mining reference; its line kinetic numbers kept (30 to 60, crit 15, 10 heat) as placeholders. Ryan, later 6 October: a sawed-off cannon, not a breaker; melee is very short range, not contact (a shotgun is melee), and the irony is that bullion is so useless it is better crushed and fired. Codex cut 6 October (Ryan: never explain the joke; keep a component's line short)."
    },
    "face": {
     "kind": "attack",
@@ -86,6 +86,34 @@
    "tags": [
     "kinetic",
     "melee",
+    "single"
+   ]
+  },
+  {
+   "id": "slugthrower",
+   "name": "Slugthrower",
+   "maker": "minerva",
+   "shape": "barrel",
+   "codex": "Minerva's standard gun. It throws a slug.",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "The basic Minervan line weapon: a play on flamethrower under Minerva's trope that things have to physically hit other things.",
+    "niche": "The default kinetic gun of the Minervan kit, the Slug Cannon's old numbers (30 to 60, crit 15, 10 heat), on the Armadillo and twice on the Wild Boar.",
+    "notes": "Named by Ryan 6 October over Claude's Iron-Billet Thrower, Ingot Hurler and Billet Launcher: a default weapon wants the plain word. Fills the line-fire hole the Bullion Fragmenter left when it became the Badger's fixed melee piece. Numbers are placeholders."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "line",
+    "power": 30,
+    "power_max": 60,
+    "crit": 15,
+    "keywords": [],
+    "heat": 10
+   },
+   "passive": null,
+   "tags": [
+    "kinetic",
     "single"
    ]
   },

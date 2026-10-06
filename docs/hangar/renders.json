@@ -54,8 +54,8 @@
  },
  "chassis": {
   "badger": {
-   "when": "Twelfth round, second pass, 6 October.",
-   "note": "The right boom's mount is the Bullion Fragmenter built in: a sawed-off cannon (Ryan: melee is very short range, not contact; a shotgun is melee), its breech a block with a hazard band, the crusher hopper on top with its mouth open upward, where the useless bullion goes in to come out as shot, and a short wide barrel sawn off a hand past the breech. For Ryan to judge.",
+   "when": "Twelfth round, third pass, 6 October.",
+   "note": "The Bullion Fragmenter's bore inset so it reads hollow (Ryan): a pale sawn rim at the muzzle, the bore lined dark five units in with a dark floor. The breech block, its hazard band and the crusher hopper as the second pass.",
    "images": [
     {
      "file": "badger/badger_front.png",
@@ -67,7 +67,7 @@
     }
    ],
    "before": {
-    "summary": "Before: twelfth round, 6 October, the first pass (a hydraulic breaker with a chisel)",
+    "summary": "Before: twelfth round, second pass, 6 October (the sawed-off cannon with a flat bore)",
     "images": [
      {
       "file": "badger/before_badger_front.png",

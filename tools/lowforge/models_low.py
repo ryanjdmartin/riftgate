@@ -118,7 +118,7 @@ def badger(b):
                     # joke is that gold and silver are so useless out here that the hopper crushes
                     # them into shot). The breech is a heavy block with a hazard band, the crusher
                     # hopper sits on top with its mouth open upward, and the barrel is short and
-                    # wide, sawn off a hand past the breech, its bore a dark face.
+                    # wide, sawn off a hand past the breech.
                     wx, wy, wz = wrist
                     b.box(wx - 8.0, wx + 8.0, wy - 6.0, wy + 14.0, wz - 7.0, wz + 7.0, "steel.panel", "breech")
                     b.box(wx - 8.5, wx + 8.5, wy + 2.0, wy + 6.0, wz - 7.5, wz + 7.5, "steel.hazard", "breech_band")
@@ -126,8 +126,13 @@ def badger(b):
                     b.box(wx - 5.5, wx + 5.5, wy + 0.0, wy + 12.0, wz + 7.0, wz + 15.0, "steel.panel", "hopper")
                     b.box(wx - 4.0, wx + 4.0, wy + 1.5, wy + 10.5, wz + 14.5, wz + 15.2, "steel.dark", "hopper_mouth")
                     b.box(wx - 6.0, wx + 6.0, wy + 12.0, wy + 13.0, wz + 7.0, wz + 15.5, "steel.hazard", "hopper_lip")
-                    b.prism("y", wx, wy + 22.0, wz, 5.8, 16.0, "steel.dark", 8, "sawn_barrel")
-                    b.prism("y", wx, wy + 30.3, wz, 4.4, 0.6, "steel.panel", 8, "bore")
+                    # The barrel is an open tube (Ryan: the bore inset so it looks hollow): a pale
+                    # sawn rim at the muzzle, the bore lined dark five units in, a dark floor.
+                    octo = lambda r: [(wx + r * math.cos(math.pi / 8.0 + k * math.pi / 4.0), wz + r * math.sin(math.pi / 8.0 + k * math.pi / 4.0)) for k in range(8)]
+                    b.loft([(wy + 14.0, octo(5.8)), (wy + 30.0, octo(5.8))], "steel.dark", "sawn_barrel", cap=False)
+                    _rings(b, [[(x, wy + 30.0, z) for x, z in octo(5.8)], [(x, wy + 30.0, z) for x, z in octo(4.4)]], "steel.panel", "muzzle_rim", cap=False)
+                    b.loft([(wy + 25.0, octo(4.1)), (wy + 30.0, octo(4.4))], "steel.dark", "bore_lining", cap=False)
+                    b.loft([(wy + 24.8, octo(4.1)), (wy + 25.0, octo(4.1))], "steel.dark", "bore_floor")
     # Deck weapon: a missile box on a turret ring, right of centre. Its face is exactly one
     # tile (14 units) square on tile boundaries, so the box projection shows the nine tubes
     # whole rather than a slice of them.
