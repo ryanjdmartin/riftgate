@@ -16,6 +16,18 @@ Two processings, each on three voices:
 The voices: Samantha (US, the smooth one), Karen (AU, a little drier), Daniel (GB, male).
 Rendered slower than conversation (`-r 165`). Rough by design.
 
+Second pass (Ryan, 6 October): Samantha has the best non-human cadence and phrasing; Karen's
+accent is uncommon for a sci-fi assistant and she enunciates her hard consonants, which plays;
+Daniel dips too much (a pilot, not a machine) and is dropped; the machine processing beats
+the comm, which made them more believable as people, and is dropped. Worth exploring. His
+question, whether players will recognise the Mac's voices: Samantha above all, yes, and Apple's
+licence ties the system voices to its devices, so the Mac voices are the proving ground for
+the processing and the shipped voice comes from a source we can license, with the same chain
+on it. So this pass pushes the chain: `machine` as before; `shifted`, the same with the voice
+resampled down six percent (pitch and formants down together, a touch slower), which already
+masks the identity a good way; `ring`, the shifted voice with a low ring modulation on it,
+the classic robot, at a low mix.
+
     python3 tools/soundforge/voice_sketches.py          # into out/fx; needs `say` (macOS)
 """
 import json
@@ -39,7 +51,7 @@ RAW = os.path.join(F.OUT_SKETCH, "say")
 
 LINES = {"target_locked": "target locked", "weapons_online": "weapons online", "machine_lost": "machine lost",
          "all_units": "all units committed", "incoming": "incoming"}
-VOICES = {"samantha": "Samantha", "karen": "Karen", "daniel": "Daniel"}
+VOICES = {"samantha": "Samantha", "karen": "Karen"}
 RATE = 165
 
 
@@ -116,7 +128,28 @@ def comm(x):
     return at(buf, A.sq(0.6, 0.022), 0.03 + len(y) / SR + 0.02)
 
 
-PROCESS = {"raw": (lambda x: x), "machine": machine, "comm": comm}
+def shift(x, factor=0.94):
+    """Resample: pitch and formants down together, a touch slower. A different person."""
+    n = int(len(x) / factor)
+    return np.interp(np.arange(n) * factor, np.arange(len(x)), x)
+
+
+def ring(x, f=28.0, mixv=0.3):
+    """A low ring modulation: sidebands either side of every harmonic, the robot's buzz."""
+    return x * (1.0 - mixv) + x * np.sin(2.0 * math.pi * f * t_of(len(x))) * mixv
+
+
+def shifted(x):
+    return machine(shift(x, 0.94))
+
+
+def ringed(x):
+    y = machine(shift(x, 0.94))
+    return F.sat(ring(y, 28.0, 0.3), 1.2)
+
+
+PROCESS = {"raw": (lambda x: x), "machine": machine, "comm": comm, "shifted": shifted, "ring": ringed}
+PREFIX = "voice2_"
 
 
 def level_for_phone(x, db):
@@ -134,10 +167,10 @@ def main(argv):
     for key_, text in LINES.items():
         for v in VOICES:
             raw = say(v, text)
-            for proc in ("raw", "machine", "comm") if key_ == "target_locked" else ("machine", "comm"):
-                F.seed("voice_%s_%s_%s" % (v, key_, proc))
+            for proc in ("machine", "shifted", "ring"):
+                F.seed(PREFIX + "%s_%s_%s" % (v, key_, proc))
                 x = level_for_phone(PROCESS[proc](raw), -12.0)
-                name = "voice_%s_%s_%s" % (v, key_, proc)
+                name = PREFIX + "%s_%s_%s" % (v, key_, proc)
                 X.write(name, X.tail(x, 0.3))
                 manifest["voice"].append({"name": name, "voice": v, "line": key_, "process": proc, "seconds": round(len(x) / SR, 2)})
                 print("  %-36s %5.2f s" % (name, len(x) / SR))

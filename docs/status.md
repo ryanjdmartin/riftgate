@@ -365,10 +365,14 @@ rhythm first in one dry voice; the modal shell, a plate and a glass tapped or bo
 principle the same day, pulse for the hand and targeting, the shell for the body and the menus, the boop's
 warning and menu figures and the voice on real words from the parked set; the console assembled to those
 verdicts (`assembled_sketches.py`) read as monotone (4 October), so nothing plays alone now; the
-eight profiles he liked are a palette (`palette_sketches.py`, in its fourth cut to his notes of 5 and 6 October:
-the die in the glass register alone, a hover hum easing in before a spend with no boop on the spend, the
-lock back toward the shipped relays, the end of the turn P21 alone, the boops leading wherever they ride
-on glass, select and the codex an octave up, one select-dismiss-confirm set; `voice_sketches.py` tries the voice from the Mac's `say`, processed down, in the page's section 5), each event built by fit from two or three of them
+eight profiles he liked are a palette (`palette_sketches.py`, in its fifth cut to his notes of 5 and 6 October:
+the die in the glass register alone, a hover hum easing in before a spend with no boop on the spend,
+digital clicks on the lock, the end of the turn P21 alone, the boops leading wherever they ride on glass,
+one sound for a press, a menu item and a selection, the map acquiring on its own scan-and-lock, the
+common sounds soft; `voice_sketches.py` tries the voice from the Mac's `say`, processed down, in the page's section 5:
+Ryan rates Samantha's cadence and Karen's consonants, drops Daniel and the comm processing; the Mac voices
+are recognisable and Apple-licensed, so they prove the processing and the shipped voice needs a licensable
+source; the second pass pushes the chain with a resample down and a ring modulation), each event built by fit from two or three of them
 rather than pinned to where they first played (a first combined cut, `combined_sketches.py`, pinned
 them and is superseded), at the top of the page's section 1; everything earlier stays
 below for the record; the voice is set aside, an optional experiment that would start from a real speech
@@ -379,7 +383,7 @@ Content carries a `sound` label on a component (a word or a list meaning layers,
 lands as a recipe in `forge.py` with its hook (shape, maker, faction, silhouette, the label, the
 replay telling shield hit from block from hit). The sketch script encodes AAC with `ffmpeg` at
 256 kbps where there is no `afconvert` (its encoder smears a transient's front at 128). Next:
-Ryan's listen of the palette's fourth cut and of the Mac voices (which, if any, is close enough to tune), then picks into the forge with their hooks (the hover needs an over-target state in the drag); the Risen and Infernal
+Ryan's listen of the palette's fifth cut and of the voice's second pass (does the shift mask the voice while keeping the cadence), then picks into the forge with their hooks (the hover needs an over-target state in the drag); the Risen and Infernal
 Horde boss themes from their seeds, melodies proposed in chat first. The speakers/headphones
 setting is dropped (Ryan, 2 October): the one master balances for both for now.
 
