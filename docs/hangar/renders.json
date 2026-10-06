@@ -81,8 +81,8 @@
    }
   },
   "clydesdale": {
-   "when": "The eleventh notes, 6 October.",
-   "note": "Every knee points forward, as an AT-AT's (Ryan: the hind knee pointing back at mid-height read as a frog's or a lizard's), two thirds of the way up, a short thigh over a long shin, each hoof under its hip, so the four legs stand as columns. It trots riding nearly as tall as its legs reach, the legs straight under it, the knees folding only to lift a hoof; the gallop is kept as an option, its lift lowered for the long shins.",
+   "when": "The fifteenth notes, 6 October.",
+   "note": "The shins stand plumb, each hoof under its knee, the knee three forward of the hip, so only the thigh angles (Ryan: the stance leaned too far forward; a straight leg, a straight calf or less of a lean). It walks in an elephant's amble, each side's hind then fore, a stride of 72 where the trot's was 55, a quarter slower at its map pace; the trot and the gallop are options on the hangar's Walk.",
    "images": [
     {
      "file": "clydesdale/clydesdale_front.png",
@@ -98,15 +98,11 @@
     }
    ],
    "before": {
-    "summary": "Before: the fifth notes, 5 October (the knees mid-height, the hind pair pointing back)",
+    "summary": "Before: the eleventh notes, 6 October (the knee four forward, the shin raking back to a hoof under the hip)",
     "images": [
      {
-      "file": "clydesdale/before_clydesdale_front.png",
-      "alt": "Earlier: clydesdale, front"
-     },
-     {
-      "file": "clydesdale/before_clydesdale_rear.png",
-      "alt": "Earlier: clydesdale, rear"
+      "file": "clydesdale/before_clydesdale_side.png",
+      "alt": "Earlier: clydesdale, left side"
      }
     ]
    }

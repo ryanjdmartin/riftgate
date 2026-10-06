@@ -321,8 +321,10 @@ def sparrowhawk(b):
     # A figure eight beside it, to judge against the circle (Ryan, 6 October, the ninth notes:
     # "I'd like to see what a figure 8 looks like"; the tenth: a smooth bank change, crossing the
     # hex on a diagonal, larger, quicker): a lobe to the left and one to the right, crossing its
-    # hex at speed between them (_figure_eight). Map only.
-    eight = _figure_eight()
+    # hex at speed between them (_figure_eight). Map only. Quicker again (Ryan, 6 October, the
+    # fifteenth notes: it can be sped up): 145 units a second at its fastest, from 110, the
+    # whole eight in six seconds from nearly eight.
+    eight = _figure_eight(vmax=145.0)
     mid = round((eight[0][0] + eight[-2][0]) * 0.5, 3)   # the crossing, halfway in time (the pace is symmetric)
     b.act("figure_eight", eight[-1][0], body=eight, places=("map",),
           glow=[(["booster_ring", "exhaust"], [(0.2, 0.0), (0.6, 7.0), (mid - 0.3, 6.0), (mid, 8.0), (mid + 0.3, 6.0), (eight[-2][0] - 0.6, 6.0), (eight[-1][0] - 0.1, 0.0)])])
@@ -388,18 +390,22 @@ def clydesdale(b):
     # The eleventh notes (Ryan, 6 October: the joints looked like a frog's or a lizard's, the
     # hind knee pointing back at mid-height): every knee points forward, as an AT-AT's, and
     # sits two thirds of the way up, a short thigh over a long shin (more calf), each hoof
-    # under its hip, so the four legs stand as columns.
+    # under its hip, so the four legs stand as columns. The fifteenth notes (Ryan, 6 October:
+    # the knees good, but the stance leaned too far forward, awkward; a straight leg, a straight
+    # calf or less of a lean): the shin stands plumb, the hoof under the knee, and the knee
+    # comes forward of the hip by three (from four), so the thigh alone angles, ten degrees,
+    # where the shin had raked back under a forward knee and the whole leg read as leaning.
     legs = {}
     for yh, fa in ((16.0, "f"), (-24.0, "h")):
         for s in (-1.0, 1.0):
             leg = fa + ("l" if s < 0 else "r")
             hip = (s * 26.0, yh, 37.0 + H)
-            knee = (s * 30.0, yh + 4.0, 34.0)
-            ankle = (s * 30.0, yh, 6.0)
+            knee = (s * 30.0, yh + 3.0, 34.0)
+            ankle = (s * 30.0, yh + 3.0, 6.0)
             b.box(min(s * 18.0, s * 24.0), max(s * 18.0, s * 24.0), yh - 7.0, yh + 7.0, 30.0 + H, 44.0 + H, "steel.panel", "hip")
             b.prism("x", hip[0], hip[1], hip[2], 6.0, 6.0, "steel.dark", 6, "hip_pin")
             legs[leg] = (hip, knee, ankle)
-            with b.joint("hip_%s" % leg, hip, limits=(-80.0, 80.0)):   # 70 until the short thighs of the eleventh notes asked the gallop's fold for a hair more
+            with b.joint("hip_%s" % leg, hip, limits=(-85.0, 85.0)):   # 70 until the short thighs of the eleventh notes asked the gallop's fold for a hair more; 80 until the plumb shins of the fifteenth
                 _beam(b, hip, knee, _sq(11.0, 13.0), _sq(10.0, 11.0), "steel.plate", "thigh")
                 b.prism("x", knee[0], knee[1], knee[2], 5.5, 12.0, "steel.dark", 6, "knee")
                 with b.joint("knee_%s" % leg, knee, limits=(-115.0, 20.0)):
@@ -523,6 +529,26 @@ def clydesdale(b):
     # columnar legs): it rides nearly as tall as its legs reach (`reach` 0.985), barely
     # crouched, so the legs stay nearly straight under it as an AT-AT's, the knees folding
     # only to lift a hoof. A stride of 55, about one and a fifth a second at its map pace.
+    # An elephant's amble (Ryan, 6 October, the fifteenth notes: the legs still a little too
+    # quick; slow the stride, or try another gait): the trot's stride cannot grow, since a
+    # hind hoof swings forward as the fore on its side sweeps back, and with the hips 40
+    # apart a sweep past 22 brings them within a few units. Here each side's legs step nearly
+    # together, the hind landing and the fore an eighth of the stride after it, then the other
+    # side, four heavy beats, a pair on the ground always, so a hind hoof follows its fore
+    # rather than meeting it (the legs eight units clear at the closest, measured; the trot's
+    # five and a half) and the sweep can be 36: a stride of 72, about 0.92 a second at its map
+    # pace against the trot's 1.2, a quarter slower. The longer reach rides the hull lower
+    # (four and a half to seven and a half under its rest, the trot's two to four and a half),
+    # smoothed so it heaves three between steps; the hooves lift 10, low and long.
+    tracks, body, stride = _plant([
+        {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
+         "phase": {"hl": 0.0, "fl": 0.12, "hr": 0.5, "fr": 0.62}[leg],
+         "shift": legs[leg][0][1] - legs[leg][2][1] + (3.0 if leg[0] == "f" else -3.0),
+         "nod": 1.0 if leg[0] == "f" else -0.5}
+        for leg in ("fl", "fr", "hl", "hr")], sweep=36.0, duty=0.5, lift=10.0, crouch=0.3, dip=1.4, nod=1.2, reach=0.985, airborne=0.99, smooth=0.08, n=120)
+    tracks["head"] = ([(i / 40.0, round(-1.8 * abs(math.sin(2.0 * math.pi * (i / 40.0 - 0.14))), 3)) for i in range(41)], 0.0)   # a nod onto each fore
+    b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
+    # The trot, kept as an option for the hangar's Walk to set beside the amble.
     tracks, body, stride = _plant([
         {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
          "phase": {"fl": 0.0, "hr": 0.05, "fr": 0.5, "hl": 0.55}[leg],
@@ -530,7 +556,7 @@ def clydesdale(b):
          "nod": 1.0 if leg[0] == "f" else -0.5}
         for leg in ("fl", "fr", "hl", "hr")], sweep=22.0, duty=0.4, lift=12.0, crouch=0.3, dip=1.4, nod=1.2, reach=0.985, airborne=0.99, smooth=0.03, n=120)
     tracks["head"] = ([(i / 40.0, round(-1.8 * abs(math.sin(2.0 * math.pi * (i / 40.0 - 0.04))), 3)) for i in range(41)], 0.0)   # a nod onto each pair
-    b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
+    b.gait_option("trot", stride=stride, tracks=tracks, body=body, ease="linear")
     # The eighth notes' gallop, kept as an option for the hangar's Walk to set beside the
     # trot (Ryan: it has potential), its stances spread as the trot's and its sweep cut from
     # 42 to 30 so its hooves pass clear of each other too (they met by two and a half;
