@@ -33,7 +33,11 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Judge the water feature in play with the two hovercraft, the Stingray and the Puffin (built 3 October; bible section 4, the movement row): a river with fords or a lake band, one a map; the map survey says the river barely changes how far anyone gets, so its bite is where the horde crosses and where a walker off the ford stops; and the move gauge on the phone (`draft` and `draftslow` screenshot poses)
 - [ ] The game's name
 - [ ] Judge the skirmish's hover idle pitch (`sway_pitch`, 2 October) against the rig's tilt and the hovercraft's acts running; retire the idle pitch if the rig's acts cover it
-- [ ] Name the Puffin's passive (Slipstream is Claude's placeholder) and read it in play: the overshield on an ally against a heavy round, the vent on the Stingray
+- [x] Name the Puffin's passive (6 October: the Slipstream Projector; its fixed shield the Backwash Ionizer; the Puffin at move 40)
+- [ ] Read the Puffin in play: the overshield on an ally against a heavy round, the vent on the Stingray
+- [ ] Pick the Slug Cannon's Minervan name (6 October: more forceful or more low-tech; Claude's candidates Slug Hurler, Ingot Launcher, Pig-iron Flinger, Shot Heaver)
+- [ ] Discuss first: renaming Overwhelm, the one of the six "over" words that would move (6 October; candidates Follow-through, Spillover, Carry-through; it is a keyword, so the engine, content, tests and vocabulary move with it)
+- [ ] The Names board (the hangar page's names tab) follows the vocabulary guidelines of 6 October rather than maker claims: its maker tabs for chassis stay, its parts tab is maker-free (the labels came off 6 October), its rules text wants the guidelines; rework the page once the movement session is done with it
 
 ## Engine
 

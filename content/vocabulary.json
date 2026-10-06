@@ -406,7 +406,7 @@
    "codex": "Player keyword, on shield components, rare. The shield may raise its target past the target's maximum; shield past the maximum fades at the end of the round. A shield die spent on a machine already at its maximum is never wasted when it carries this.",
    "status": "implemented",
    "design": {
-    "holes": "Decided 5 October (Ryan: overshield as a component keyword, a rare one). The Puffin's fixed Prow Projector carries it, allies only, so the excess never lands on the Puffin itself. Rare because every overshield on the field makes shield max a soft number. The fade is the whole safeguard: a persisting excess would stack a team past every blow. The gauge shows the excess as a hatched block beyond the bar's end."
+    "holes": "Decided 5 October (Ryan: overshield as a component keyword, a rare one). The Puffin's fixed Backwash Ionizer carries it, allies only, so the excess never lands on the Puffin itself. Rare because every overshield on the field makes shield max a soft number. The fade is the whole safeguard: a persisting excess would stack a team past every blow. The gauge shows the excess as a hatched block beyond the bar's end."
    }
   },
   {

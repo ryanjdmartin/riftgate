@@ -165,7 +165,7 @@
    "loadout": [
     "overclocked_railgun",
     "headhunter_rifle",
-    "arc_projector",
+    "arc_fault_cannon",
     "deflector"
    ],
    "passive": {
@@ -214,8 +214,8 @@
     "solar_flare_array"
    ],
    "loadout": [
-    "umbra_projector",
-    "umbra_projector",
+    "umbra_inducer",
+    "umbra_inducer",
     "pulse_repeater",
     "pulse_repeater",
     "zenith_emitter",
@@ -448,7 +448,7 @@
    "loadout": [
     "laser_carbine",
     "headhunter_rifle",
-    "arc_projector",
+    "arc_fault_cannon",
     "deflector",
     "ram_air_scoop"
    ],
@@ -622,12 +622,12 @@
    "design": {
     "fantasy": "Kestrel's one machine that touches the ground, and so the one Kestrel that can stop a pack. A short deep body in chrome on two boosters far too big for it, stubby wings, tail fins, and the whole front one shield projector, a great faired beak. Kestrel called it a very cool ground-effect escort; pilots took one look and called it the Puffin.",
     "niche": "shield specialist",
-    "notes": "Proposed and decided 2 October: the Puffin the bible's makers row wanted (28 September). The slowest Kestrel (Ryan: allowed, since lore-wise they loaded it with tech instead of guns), so movespeed 3; hover, so it skims water and chokes on ruins. Boosters, never fans: Ryan, 2 October, anything but big boosters is off-brand for Kestrel. Passive open: Ryan's lean is an overshield (shield allies past their maximum) with a cost or a second effect; Claude's shape, 2 October, is overshield that fades at the end of the round with the fixed projector pointing outward only, since shield-the-Puffin-every-turn would be a shield-bot. Planned until he decides. The Overcharge Coil gets its first chassis here. Numbers, designation and kit are Claude's fills, Ryan's to move. The passive decided 5 October (Ryan: shield for heat reduced is very effective; no penalty, the die is the brake): Slipstream is a placeholder name, Ryan's to move. The overshield went to the fixed Prow Projector as a rare keyword rather than the passive, by the bible's rule that a passive multiplies what components do and a new mechanic is a component's. Weighed and dropped: Spillover (shield past the Puffin's maximum flowing to an ally; win-more), a received-shield penalty (adds no decision; the one-man show cannot happen on a d5 with the only overshield allies-only)."
+    "notes": "Proposed and decided 2 October: the Puffin the bible's makers row wanted (28 September). The slowest Kestrel (Ryan: allowed, since lore-wise they loaded it with tech instead of guns), so movespeed 3; hover, so it skims water and chokes on ruins. Boosters, never fans: Ryan, 2 October, anything but big boosters is off-brand for Kestrel. Passive open: Ryan's lean is an overshield (shield allies past their maximum) with a cost or a second effect; Claude's shape, 2 October, is overshield that fades at the end of the round with the fixed projector pointing outward only, since shield-the-Puffin-every-turn would be a shield-bot. Planned until he decides. The Overcharge Coil gets its first chassis here. Numbers, designation and kit are Claude's fills, Ryan's to move. The passive decided 5 October (Ryan: shield for heat reduced is very effective; no penalty, the die is the brake): Slipstream is a placeholder name, Ryan's to move. The overshield went to the fixed Prow Projector as a rare keyword rather than the passive, by the bible's rule that a passive multiplies what components do and a new mechanic is a component's. Weighed and dropped: Spillover (shield past the Puffin's maximum flowing to an ally; win-more), a received-shield penalty (adds no decision; the one-man show cannot happen on a d5 with the only overshield allies-only). 6 October (Ryan): move 40, the 40 club with the Dingo, Goshawk and Stingray, since a small hovercraft slower than the Dingo felt wrong (the 'slowest Kestrel' line retired; Ryan adjusts the lore); the passive named the Slipstream Projector, extra dumb on purpose, a slipstream given to allies to shed heat by science magic; the fixed shield renamed the Backwash Ionizer."
    },
    "codex": "",
    "hull": 50,
    "shield": 30,
-   "movespeed": 30,
+   "movespeed": 40,
    "heat_max": 60,
    "hardpoints": 4,
    "armour": 0,
@@ -637,7 +637,7 @@
     "hover"
    ],
    "fixed": [
-    "prow_projector"
+    "backwash_ionizer"
    ],
    "loadout": [
     "laser_carbine",
@@ -646,9 +646,9 @@
     "ram_air_scoop"
    ],
    "passive": {
-    "id": "slipstream",
-    "name": "Slipstream",
-    "description": "An ally this machine shields also sheds 10 heat.",
+    "id": "slipstream_projector",
+    "name": "Slipstream Projector",
+    "description": "A slipstream, projected forward, which is not how slipstreams work. Any ally this machine shields also sheds 10 heat.",
     "effects": [
      {
       "trigger": "on_shield_granted",
