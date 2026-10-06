@@ -435,7 +435,7 @@ critically damped spring with capped rate and acceleration (`Map3D.turn_toward`,
 corners and move starts no longer jolt; the Dingo oversteers 1.4, the Puffin 1.0. A hovercraft's
 gust pushes over half a second and none comes through an act (`HoverBalance.quiet`,
 `MechRig.in_act`). All ported to `hangar_motion.js`. Models: the Prairie Dog's skirts both sides
-and arches 5.5 over the tyre; the Armadillo's cell in a channel (`b.cut` and `_tube` take a
+and arches 2 over the tyre (5.5 read far too high), its rev's chassis rock eased to 2.5 degrees; the Armadillo's cell in a channel (`b.cut` and `_tube` take a
 `phase`); the Ammit's middle talons jointed. Acts: the Dingo an antsy pilot and its strafe
 map-only; the Badger's elbows both ways (shoulder limit 18), its gun level in raise_booms; the
 Baboon's mark_target on the right arm; the Sparrowhawk's `_barrel_roll` (overshoot, no

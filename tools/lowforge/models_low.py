@@ -1088,9 +1088,10 @@ def prairie_dog(b):
             # over the tyre at rest, so a chassis dipping three or four units over a wheel
             # takes the tyre up into the arch's own depth and never through its top.
             # Raised clear of the tyre (the sixth notes: the wheel top came through in rev again,
-            # the arch sitting right on it): five and a half units of air over the wheel's crown
-            # at rest, a little more than the rev's rock drops a corner, so a gap stays.
-            b.loft([(yw - 12.0, rect(s * 18.0, 10.0, R + 11.0, R + 15.0)), (yw, rect(s * 18.0, 10.0, R + 15.0, R + 19.0)), (yw + 12.0, rect(s * 18.0, 10.0, R + 11.0, R + 15.0))], "steel.plate", "arch")
+            # the arch sitting right on it; then, raised five and a half, far too high): two units
+            # more than it was, a little air over the wheel's crown, and the rev rocks the chassis
+            # less, so the tyre never rises into it.
+            b.loft([(yw - 12.0, rect(s * 18.0, 10.0, R + 7.5, R + 11.5)), (yw, rect(s * 18.0, 10.0, R + 11.5, R + 15.5)), (yw + 12.0, rect(s * 18.0, 10.0, R + 7.5, R + 11.5))], "steel.plate", "arch")
     # The body: a wedge lofted from a squared tail to a low raked nose, a chin plate under.
     b.loft([(-30.0, rect(0.0, 28.0, 8.0, 24.0)), (-6.0, rect(0.0, 30.0, 8.0, 28.0)), (12.0, rect(0.0, 28.0, 8.0, 24.0)), (32.0, rect(0.0, 20.0, 10.0, 15.0))], "steel.panel", "body")
     b.box(-10.0, 10.0, 30.0, 33.0, 8.0, 12.0, "steel.dark", "chin")
@@ -1149,12 +1150,14 @@ def prairie_dog(b):
     # keyed. Degrees and seconds; a key is (t, value) on the joint's own axis or (t, pitch,
     # yaw, roll); a body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll); a glow
     # key is (t, k), k the light added over rest.
-    b.act("rev", 4.2, {   # revs eagerly: a jump forward, a squat, back, and again; the wheels spin hard
+    # The chassis rocks two and a half degrees and hardly squats (the sixth notes: its six
+    # degrees and a squat drove the arches onto the tyres, which only a high arch cleared).
+    b.act("rev", 4.2, {   # revs eagerly: a jump forward, a rock, back, and again; the wheels spin hard
         "wheel_fl": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.2, -1080.0)],
         "wheel_fr": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.2, -1080.0)],
         "wheel_rl": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.2, -1080.0)],
         "wheel_rr": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.2, -1080.0)],
-        "chassis": [(0.5, 6.0, 0.0, 0.0, 0.0, 0.0, -2.5), (1.2, -6.0, 0.0, 0.0, 0.0, 0.0, -2.0), (2.2, 5.0, 0.0, 0.0, 0.0, 0.0, -1.5), (3.0, -6.0, 0.0, 0.0, 0.0, 0.0, -2.0), (3.8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
+        "chassis": [(0.5, 2.5, 0.0, 0.0, 0.0, 0.0, -0.2), (1.2, -2.5, 0.0, 0.0, 0.0, 0.0, -0.2), (2.2, 2.0, 0.0, 0.0, 0.0, 0.0, -0.1), (3.0, -2.5, 0.0, 0.0, 0.0, 0.0, -0.2), (3.8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
     }, body=[(0.6, 0.0, 10.0, 0.0), (1.3, 0.0, 9.0, 0.0), (2.2, 0.0, -4.0, 0.0), (3.0, 0.0, 6.0, 0.0), (4.2, 0.0, 0.0, 0.0)])
     b.act("scout", 7.6, {   # the sensor head looks one way and then the other, the turret following it round each way and waiting, the mast light hot
         "sensor": [(0.9, 60.0), (2.4, 62.0), (3.6, -55.0), (5.6, -58.0), (6.8, 0.0)],
