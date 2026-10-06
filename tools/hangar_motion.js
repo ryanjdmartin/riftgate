@@ -27,7 +27,7 @@ const MOVE_REF_SPEED = 150.0, MOVE_BLEND_IN = 0.25, MOVE_BLEND_OUT = 0.35;
 const ROCK_ACCEL = 200.0, BANK_TURN = 1.2, DRIFT_UNITS = 12.0;
 const HEFT_DEFAULT = 0.12, DAMPING = 0.7, STEP = 1 / 60;   // the servos (MechRig._follow) and the longest step anything advances by
 const SLIDE_RATE_SNAP = 12.0, SLIDE_RATE_FULL = 2.2, STRAFE_TURN_RATE = 6.0, REST_TURN_RATE = 4.0;   // Map3D
-const OVERSTEER_AHEAD = 0.4, OVERSTEER_GAIN = 1.4, OVERSTEER_MAX = 0.95, OVERSTEER_RATE = 7.0, OVERSTEER_WINDOW = 0.5;   // Map3D: the nose leads the path into a corner, from the heading a moment ahead
+const OVERSTEER_AHEAD = 0.4, OVERSTEER_GAIN = 1.4, OVERSTEER_MAX = 1.2, OVERSTEER_RATE = 7.0, OVERSTEER_WINDOW = 0.5;   // Map3D: the nose leads the path into a corner, from the heading a moment ahead
 // Map3D.oversteer_lead: eased toward the limit, never stopped at it hard.
 const oversteerLead = (turnAhead, over) => OVERSTEER_MAX * Math.tanh(turnAhead * OVERSTEER_GAIN * over / OVERSTEER_MAX);
 // Map3D.turn_toward: a critically damped spring turning the facing toward `want`, its natural
@@ -164,6 +164,8 @@ class Rig {
     this.move = side.move || {};
     this.heft = this.move.heft ?? HEFT_DEFAULT;
     this.gaitOptions = side.gait_options || {};   // other ways it could move, to judge beside it (b.gait_option); the game moves by the gait alone
+    this.spinners = {}; this.spun = {};   // joints turned without end (MechRig.spinners, b.spin: the Stingray's fans)
+    for (const [name, r] of Object.entries(side.spin || {})) if (this.joints[name] && Array.isArray(r) && r.length >= 2) { this.spinners[name] = [Number(r[0]), Number(r[1])]; this.spun[name] = 0; }
     this.useGait(side.gait || {});
     root.rotation.order = "YXZ";
     this.bodyRestPos = root.position.clone();
@@ -192,7 +194,7 @@ class Rig {
     if ((this.gait.body || []).length) this.gaitCurves["@body"] = cycleCurve(this.gait.body, this.gait.ease || "smooth");
   }
   random() { this.seed = (this.seed * 1103515245 + 12345) % 2147483648; return this.seed / 2147483648; }
-  alive() { return this.acts.length > 0 || this.strikes.length > 0 || !!this.current || Object.keys(this.servo).length > 0; }
+  alive() { return this.acts.length > 0 || this.strikes.length > 0 || !!this.current || Object.keys(this.servo).length > 0 || Object.keys(this.spinners).length > 0; }
   litMaterials(part) {
     if (this.glowCache[part]) return this.glowCache[part];
     const out = [], tag = parseTag(part);
@@ -288,6 +290,10 @@ class Rig {
   tick(delta, acting = true) {
     let moved = false, left = delta;
     while (left > 0) { const dt = Math.min(left, STEP); left -= dt; if (this.step(dt, acting)) moved = true; }
+    for (const [name, r] of Object.entries(this.spinners)) {
+      const s = this.spun[name] + (r[0] + (r[1] - r[0]) * this.blend) * delta;
+      this.spun[name] = ((s % 360) + 360) % 360; moved = true;
+    }
     if (moved) this.pose();
   }
   step(dt, acting) {
@@ -345,6 +351,7 @@ class Rig {
       let deg = add3(this.actRot[name] || v3(), this.gaitRot[name] || v3());
       for (const st of this.strikes) if (st.joint === name) deg = add3(deg, mul3(st.vec, Rig.envelope(st)));
       deg = clampDegrees(deg, this.meta[name].limits);
+      if (name in this.spun) { const k = ["x", "y", "z"][AXES.indexOf(this.meta[name].axis)]; deg = {...deg, [k]: deg[k] + this.spun[name]}; }
       const r = this.rest[name], e = eulerOf(deg);
       j.rotation.set(r.x + e.x, r.y + e.y, r.z + e.z, "YXZ");
       const o = offsetOf(add3(this.actSlide[name] || v3(), this.gaitSlide[name] || v3())), p = this.restPos[name];
@@ -414,16 +421,23 @@ class Rig {
 
 // ---------------------------------------------------------------- the move (MovePath)
 // A port of game/battle/move_path.gd (Ryan, 4 October: too fast, no acceleration, hard
-// corners): the hex centres become one smooth curve, each interior corner cut by a quadratic
-// arc; along it the speed starts at rest, accelerates at the machine's rate, holds full speed
+// corners): the hex centres become one smooth curve, each interior corner cut by a quintic
+// whose curvature eases in from the straight and out again (the seventh notes); along it the speed starts at rest, accelerates at the machine's rate, holds full speed
 // through the corners (the third pass: no braking for them) and comes to rest at the end.
 // Points are {x, z} on the ground plane, in model units.
-const MP_CUT = 0.42, MP_ARC_STEPS = 8, MP_FINE = 24, MP_ACCEL = 0.6;
+const MP_CUT = 0.42, MP_ARC_STEPS = 24, MP_FINE = 24, MP_ACCEL = 0.6;
 const pAdd = (a, b, k = 1) => ({x: a.x + b.x * k, z: a.z + b.z * k});
 const pSub = (a, b) => ({x: a.x - b.x, z: a.z - b.z});
 const pLerp = (a, b, t) => ({x: a.x + (b.x - a.x) * t, z: a.z + (b.z - a.z) * t});
 const pLen = (a) => Math.hypot(a.x, a.z);
 const pNorm = (a) => { const l = pLen(a) || 1; return {x: a.x / l, z: a.z / l}; };
+// A quintic Bezier through six control points (MovePath.quintic).
+function quintic(c, t) {
+  const s = 1 - t, w = [s ** 5, 5 * t * s ** 4, 10 * t * t * s ** 3, 10 * t ** 3 * s * s, 5 * t ** 4 * s, t ** 5];
+  let x = 0, z = 0;
+  for (let i = 0; i < 6; i++) { x += c[i].x * w[i]; z += c[i].z * w[i]; }
+  return {x, z};
+}
 class MovePath {
   static build(centres, top, accelS = MP_ACCEL) {
     const mp = new MovePath();
@@ -435,7 +449,8 @@ class MovePath {
       const turn = Math.abs(Math.atan2(din.x * dout.z - din.z * dout.x, din.x * dout.x + din.z * dout.z));
       if (turn < 0.01) { coarse.push(p); cturn.push(0); continue; }
       const p1 = pLerp(p, a, MP_CUT), p2 = pLerp(p, b, MP_CUT);
-      for (let k = 0; k <= MP_ARC_STEPS; k++) { const t = k / MP_ARC_STEPS; coarse.push(pLerp(pLerp(p1, p, t), pLerp(p, p2, t), t)); cturn.push(turn); }
+      const ctrl = [p1, pLerp(p1, p, 0.4), pLerp(p1, p, 0.8), pLerp(p2, p, 0.8), pLerp(p2, p, 0.4), p2];
+      for (let k = 0; k <= MP_ARC_STEPS; k++) { coarse.push(quintic(ctrl, k / MP_ARC_STEPS)); cturn.push(turn); }
     }
     coarse.push(centres[centres.length - 1]); cturn.push(0);
     const pts = [], turns = [];

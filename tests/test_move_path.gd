@@ -145,3 +145,31 @@ func test_an_oversteering_nose_swings_into_each_corner_without_a_jolt() -> void:
 	for i in range(240):
 		settled = Map3D.turn_toward(settled.x, settled.y, 1.0, 4.0, dt)
 	assert_true(absf(settled.x - 1.0) < 0.001 and absf(settled.y) < 0.001, "and it settles where it is sent, without ringing")
+
+
+func test_a_corner_eases_its_turn_in_and_out() -> void:
+	# Ryan, 6 October, the seventh notes: the drift still jerked as each corner began. A quadratic
+	# arc's curvature starts at once where it leaves the straight, so a quick machine's travel
+	# went from straight to turning at about 1.75 radians a second in a frame; a corner is a
+	# quintic now, its curvature rising from nothing, so the turn rate builds over the corner.
+	var mp := MovePath.build(_route([0, 0, 60, 60, 0, -60]), 120.0, 0.7)
+	var dt := 1.0 / 60.0
+	var prev: Vector2 = mp.at(0.0)[1]
+	var prev_rate := 0.0
+	var worst := 0.0
+	var fastest := 0.0
+	var t := dt
+	while t < mp.duration:
+		var here: Vector2 = mp.at(t)[1]
+		var rate := prev.angle_to(here) / dt
+		worst = maxf(worst, absf(rate - prev_rate))
+		fastest = maxf(fastest, absf(rate))
+		prev = here
+		prev_rate = rate
+		t += dt
+	assert_true(worst < 0.8, "the travel's turn rate changes by little in a frame (%f radians a second)" % worst)
+	assert_true(fastest > 2.0, "and the corners still turn it briskly at their middle (%f)" % fastest)
+	var c := [Vector2(0, 0), Vector2(4, 0), Vector2(8, 0), Vector2(10, 2), Vector2(10, 6), Vector2(10, 10)]
+	var d0 := MovePath.quintic(c, 0.01) - MovePath.quintic(c, 0.0)
+	var d1 := MovePath.quintic(c, 0.02) - MovePath.quintic(c, 0.01)
+	assert_true(absf(d0.angle_to(d1)) < 0.001, "a quintic leaves its first leg without turning")

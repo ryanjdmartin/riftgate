@@ -364,6 +364,7 @@ class Build:
         self.tuning = {}       # the cornering module's per-machine numbers (see move())
         self.gait_spec = {}    # how the machine moves (see gait())
         self.gait_options = {} # other ways it could move, for judging beside it (see gait_option())
+        self.spins = {}        # joints turned without end (see spin())
         self._joint_stack = []   # the joint blocks open right now, outermost first
         self.tile_world = TILE_WORLD   # a structure sets this higher: it is seen at true scale on the map
 
@@ -787,6 +788,13 @@ class Build:
         self.gait_spec = kept
         return self.gait_options[name]
 
+    def spin(self, joint, idle, moving=None):
+        """A joint turned without end on its own axis, whatever the machine is doing (Ryan, 6
+        October, the seventh notes: the Stingray's lift fans): `idle` degrees a second standing,
+        `moving` (as idle if not given) once it is fully under way, the rate easing between them
+        with the move. Give the joint no limits: the turn is wrapped, never clamped."""
+        self.spins[joint] = [float(idle), float(idle if moving is None else moving)]
+
     def move(self, slide=0.0, bank=0.0, strafe=0.0, tilt=None, accel=None, heft=None, oversteer=0.0):
         """The cornering module's numbers for this machine (the joints row, 2 October):
         `slide`, how far the body drifts from its path on a turn and how slowly its heading
@@ -827,6 +835,8 @@ class Build:
                "joints": self.joint_meta, "acts": self.acts, "gait": self.gait_spec, "move": self.tuning, "glow_parts": glow_parts}
         if self.gait_options:
             out["gait_options"] = self.gait_options
+        if self.spins:
+            out["spin"] = self.spins
         return out
 
     def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0):

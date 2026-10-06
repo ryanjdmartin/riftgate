@@ -155,10 +155,15 @@ def badger(b):
         "jaw_lower": [(0.9, -44.0), (2.1, -44.0), (2.5, 0.0)],
     }, body=[(1.3, 0.0, 0.0, 0.0, 0.0, -4.0, 0.0), (2.0, 0.0, 0.0, 0.0, 0.0, -4.6, 0.0), (2.4, 0.0, 0.0, -0.4, 0.0, -5.4, 0.0), (3.7, 0.0, 0.0, 0.0, 0.0, 3.0, 0.0),
              (4.9, 0.0, 0.0, 0.0, 0.0, 2.4, 0.0), (6.2, 0.0, 0.0, 0.0)])
-    b.act("sight_gun", 6.6, {   # the gun boom rises and the gimbals swing to sight one way, then the other, the floodlights hot
-        "shoulder_r": [(1.3, 16.0), (3.4, 17.0), (5.2, 16.0), (6.4, 0.0)],
-        "elbow_r": [(1.3, 42.0), (5.2, 43.0), (6.4, 0.0)],
-        "wrist_r": [(1.4, -28.0), (2.6, -28.0), (3.4, -16.0), (4.4, -26.0), (5.2, -26.0), (6.3, 0.0)],   # the mount dips its barrel to sight level, and nods as the gimbals cross (the boom's total lift as before)
+    # The gun boom stretched out straight to snipe (Ryan, 6 October, the seventh notes: one
+    # line from the hinge through the barrel): the upper boom hangs 6 degrees down and the
+    # forearm 36, so the elbow lifts the forearm 30 into the boom's line and the wrist takes
+    # the mount 36 back down onto it; the shoulder then raises the whole straight arm, and its
+    # small moves are the aim's, the arm staying straight.
+    b.act("sight_gun", 6.6, {   # the gun boom stretches out straight and the gimbals swing to sight one way, then the other, the floodlights hot
+        "shoulder_r": [(1.3, 15.0), (2.6, 16.0), (3.4, 13.5), (4.4, 15.5), (5.2, 15.0), (6.4, 0.0)],
+        "elbow_r": [(1.3, 30.0), (5.2, 30.0), (6.4, 0.0)],
+        "wrist_r": [(1.3, -36.0), (5.2, -36.0), (6.3, 0.0)],
         "turret_l": [(0.6, 0.0), (1.8, -40.0), (2.6, -40.0), (4.4, 20.0), (5.2, 20.0), (5.8, 0.0)],
         "turret_r": [(0.6, 0.0), (1.8, -40.0), (2.6, -40.0), (4.4, 20.0), (5.2, 20.0), (5.8, 0.0)],
     }, body=[(1.8, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0), (2.6, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0), (4.4, 0.0, 0.0, 0.0, -4.0, 0.0, 0.0), (5.2, 0.0, 0.0, 0.0, -4.0, 0.0, 0.0), (6.4, 0.0, 0.0, 0.0)],
@@ -266,8 +271,8 @@ def sparrowhawk(b):
     # The wing dip a barrel roll (Ryan, 5 October, the fifth notes: "since it's cool"; the
     # sixth: quicker, with inertia, and about the fuselage): a dip and a kick the other way to
     # gather, then once round its own length fast, a little past and back, level where it began.
-    b.act("barrel_roll", 2.4, body=_barrel_roll(t0=0.32, t1=1.08, over=24.0, duration=2.4),
-          glow=[(["booster_ring", "exhaust"], [(0.2, 0.0), (0.4, 7.0), (1.1, 7.0), (1.8, 0.0)])])
+    b.act("barrel_roll", 3.0, body=_barrel_roll(t0=0.35, t1=1.55, over=24.0, duration=3.0),   # once round in a second and a quarter (the seventh notes: slower)
+          glow=[(["booster_ring", "exhaust"], [(0.2, 0.0), (0.45, 7.0), (1.6, 7.0), (2.3, 0.0)])])
     # A loop (Ryan, 5 October: the nose dip was the weakest; it needs to do a loop): it backs
     # off, runs in and pulls up through a full circle, over on its back and down, the nose
     # along the path, the boosters hot, and brakes onto its hex a whole turn on, the pose it
@@ -278,13 +283,12 @@ def sparrowhawk(b):
           glow=[(["booster_ring", "exhaust"], [(0.6, 0.0), (1.0, 8.0), (3.3, 8.0), (4.0, 0.0)])])
     b.act("flare_boosters", 3.8, body=[(0.5, 0.0, 0.0, 0.0), (1.1, 0.0, 9.0, 0.0, 0.0, -6.0, 0.0), (2.5, 0.0, 12.0, 0.5, 0.0, -7.0, 0.0), (3.8, 0.0, 0.0, 0.0)],
           glow=[(["booster_ring", "exhaust"], [(0.3, 0.0), (0.8, 8.0), (1.2, 4.0), (1.6, 8.0), (2.6, 8.0), (3.4, 0.0)])])
-    # A quick banked circle (Ryan, 5 October, in place of the slow pirouette): wide, out over
-    # the next hexes, and on the map only, as the loop (the fifth notes). It breaks right
-    # first, then reverses into a circle to the left whose middle is straight ahead, so it
-    # goes round the front of its hex about evenly, and comes in along the back of it onto
-    # its hex where it began (the sixth: the plain left circle was lazy and one-sided).
-    b.act("banked_circle", 3.9, body=_s_circle(rho=24.0, beta=60.0, r=28.0, bank=-44.0, t0=0.35, t1=3.5, duration=3.9, steps=24), places=("map",),
-          glow=[(["booster_ring", "exhaust"], [(0.2, 0.0), (0.5, 6.0), (3.4, 6.0), (3.9, 0.0)])])
+    # A banked circle (Ryan, 5 October, in place of the slow pirouette): wide, out over the next
+    # hexes, and on the map only, as the loop (the fifth notes). A circling predator surveying
+    # the ground (the seventh notes: slow and smooth, one true circle round the front of its
+    # hex, after a harder pull to the right; the sixth's path levelled out along a straight).
+    b.act("banked_circle", 7.0, body=_survey_circle(r=34.0, bank=-32.0, peel=26.0, t0=0.4, t1=6.2, duration=7.0), places=("map",),
+          glow=[(["booster_ring", "exhaust"], [(0.2, 0.0), (0.6, 6.0), (6.0, 6.0), (6.8, 0.0)])])
     # Movement: the boosters brighten, the nose drops; it banks and slides through corners
     # (b.move) at full speed.
     b.gait(glow={"parts": ["booster_ring", "exhaust"], "k": 5.0}, body_hold=(0.0, 0.0, 0.0, 0.0, -6.0, 0.0))
@@ -474,10 +478,16 @@ def clydesdale(b):
     # makes a stride of 72 (it was 62) with the body five under its rest at the lowest and
     # the hooves never nearer than 22; a lifting or landing hoof bounds the body too, and
     # the ride is eased, so it plods level instead of dropping as each hoof lands.
+    # An assault walker's stomp (Ryan, 6 October, the seventh notes: AT-AT massive, the walk
+    # did not sell it; a stomp over a gallop, which at this size would read as a toy horse):
+    # three hooves down at once for most of the stride, each lifted high and held, then
+    # slammed down, the body dropping hard at every footfall and shuddering, the nose dipping
+    # on a fore hoof and lifting a little on a hind.
     tracks, body, stride = _plant([
         {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
-         "phase": {"fl": 0.0, "hl": 0.25, "fr": 0.5, "hr": 0.75}[leg], "shift": legs[leg][0][1] - legs[leg][2][1]}
-        for leg in ("fl", "fr", "hl", "hr")], sweep=36.0, duty=0.5, lift=8.0, crouch=0.5, dip=0.6, nod=0.4, airborne=0.96, smooth=0.06)
+         "phase": {"fl": 0.0, "hl": 0.25, "fr": 0.5, "hr": 0.75}[leg], "shift": legs[leg][0][1] - legs[leg][2][1],
+         "nod": 1.0 if leg[0] == "f" else -0.6}
+        for leg in ("fl", "fr", "hl", "hr")], sweep=40.0, duty=0.64, lift=14.0, crouch=0.5, dip=2.2, nod=1.4, airborne=0.96, smooth=0.04, stomp=True, n=120)
     tracks["head"] = ([(i / 40.0, round(-2.0 * abs(math.sin(2.0 * math.pi * i / 40.0)), 3)) for i in range(41)], 0.0)
     b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
     b.move(accel=1.4, heft=0.24)
@@ -657,12 +667,14 @@ def baboon(b):
         "wrist_r": [(0.6, -12.0), (5.4, -12.0), (6.0, 0.0)],
     }, heft=0.08, glow=[(["emitter", "eye"], [(0.5, 0.0)] + [(t + d, k) for t in ticks for d, k in ((-0.02, 0.0), (0.06, 9.0), (0.3, 0.0))] + [(5.0, 0.0)])])
     # The right fist marks the target (Ryan, 5 October, the sixth notes: inspect_fist already
-    # raises the left), the torso turning right to it.
+    # raises the left), the torso turning right to it; the fist comes up palm out, then the
+    # wrist turns it down so its projector prongs lock on the mark before the rack sends (the
+    # seventh notes: it only showed the enemy its palm).
     b.act("mark_target", 5.2, {
         "waist": [(1.1, -4.0, -24.0, 0.0), (3.7, -4.0, -25.0, 0.0), (4.7, 0.0, 0.0, 0.0)],
         "shoulder_r": [(1.2, 42.0, 10.0, 0.0), (3.6, 43.0, 10.0, 0.0), (4.6, 0.0, 0.0, 0.0)],
         "elbow_r": [(1.2, 30.0), (3.6, 31.0), (4.6, 0.0)],
-        "wrist_r": [(1.3, 20.0), (3.6, 21.0), (4.6, 0.0)],
+        "wrist_r": [(1.2, 18.0), (1.45, 18.0), (1.8, -52.0), (3.6, -54.0), (4.6, 0.0)],
         "shoulder_l": [(1.0, 10.0), (4.0, 10.0), (4.8, 0.0)],
         "wrist_l": [(1.0, -12.0), (4.0, -12.0), (4.8, 0.0)],
     }, glow=[(["eye"], [(1.2, 0.0), (1.6, 7.0), (3.4, 7.0), (4.0, 0.0)]),
@@ -1052,6 +1064,19 @@ def _wheel(b, cx, cy, r, w, label="wheel", lit=False):
         b.prism("x", cx, cy, r, r * 0.3, w + 1.6, "amber.engine", 8, label + "_ring", phase=math.pi / 8)
 
 
+def _wheel_guard(b, s, yw, r):
+    """The Prairie Dog's skirt, a plate of armour outboard of a wheel across its middle,
+    carried on a stub from the hub (Ryan, 5 October, the sixth notes: the skirt is unique, on
+    both sides; the seventh: out past the tyres, and moving with the wheels). Built on the
+    wheel's carrier, never its spin: a front guard steers with its wheel, a rear one stays
+    with its axle, and neither rocks with the chassis. One plate the length of the side could
+    not follow a steering front wheel, whose tyre swings out through it at full lock, so it is
+    a guard a wheel."""
+    x0 = s * 25.0
+    b.box(min(x0, x0 + s * 1.6), max(x0, x0 + s * 1.6), yw - 9.5, yw + 9.5, 6.0, 15.0, "steel.plate", "skirt")
+    b.prism("x", s * 24.9, yw, r, 1.6, 1.4, "steel.dark", 8, "skirt_stub")
+
+
 def prairie_dog(b):
     """Wainwright & Sutler "Prairie Dog" (Pattern 9 Scout Car): light and fast, an armoured
     buggy rather than a dune buggy (Ryan, 29 September: no open cockpits; the Bilecka Panther
@@ -1075,9 +1100,11 @@ def prairie_dog(b):
                 with b.joint("steer_%s" % w, hub, limits=(-32.0, 32.0)):
                     with b.joint("wheel_%s" % w, hub):
                         _wheel(b, s * 20.0, yw, R, 8.0)
+                    _wheel_guard(b, s, yw, R)
             else:
                 with b.joint("wheel_%s" % w, hub):
                     _wheel(b, s * 20.0, yw, R, 8.0)
+                _wheel_guard(b, s, yw, R)
     chassis = b.joint("chassis", (0.0, -4.0, 12.0), limits={"pitch": (-6.0, 6.0), "roll": (-6.0, 6.0)}, swing=False)
     chassis.__enter__()
     for yw in (18.0, -18.0):
@@ -1088,10 +1115,11 @@ def prairie_dog(b):
             # over the tyre at rest, so a chassis dipping three or four units over a wheel
             # takes the tyre up into the arch's own depth and never through its top.
             # Raised clear of the tyre (the sixth notes: the wheel top came through in rev again,
-            # the arch sitting right on it; then, raised five and a half, far too high): two units
-            # more than it was, a little air over the wheel's crown, and the rev rocks the chassis
-            # less, so the tyre never rises into it.
-            b.loft([(yw - 12.0, rect(s * 18.0, 10.0, R + 7.5, R + 11.5)), (yw, rect(s * 18.0, 10.0, R + 11.5, R + 15.5)), (yw + 12.0, rect(s * 18.0, 10.0, R + 7.5, R + 11.5))], "steel.plate", "arch")
+            # the arch sitting right on it; five and a half, far too high; the seventh: only the
+            # top matters at the game's angles, the tyre may ride into the arch's depth): a unit
+            # and a half over its old height, the least that keeps the tyre under the arch's top
+            # through the rev's rock and squat (measured).
+            b.loft([(yw - 12.0, rect(s * 18.0, 10.0, R + 7.0, R + 11.0)), (yw, rect(s * 18.0, 10.0, R + 11.0, R + 15.0)), (yw + 12.0, rect(s * 18.0, 10.0, R + 7.0, R + 11.0))], "steel.plate", "arch")
     # The body: a wedge lofted from a squared tail to a low raked nose, a chin plate under.
     b.loft([(-30.0, rect(0.0, 28.0, 8.0, 24.0)), (-6.0, rect(0.0, 30.0, 8.0, 28.0)), (12.0, rect(0.0, 28.0, 8.0, 24.0)), (32.0, rect(0.0, 20.0, 10.0, 15.0))], "steel.panel", "body")
     b.box(-10.0, 10.0, 30.0, 33.0, 8.0, 12.0, "steel.dark", "chin")
@@ -1135,10 +1163,7 @@ def prairie_dog(b):
     # The launcher on the rear-left corner (hp_2): the class rack, its tube face one whole
     # tile (the hand-built box showed a quarter of the tile: Ryan, 1 October).
     b.stock("hp_2", (-10.0, -26.0, 28.5), "rack", scale=0.6)
-    # The skirt plate over the right wheel line: detail. The third mount (hp_3) is bare on
-    # the rear-right corner, the launcher's twin.
-    for s in (-1.0, 1.0):   # on both sides (Ryan, 5 October, the sixth notes: it is unique; apply it to both)
-        b.box(min(s * 23.0, s * 25.0), max(s * 23.0, s * 25.0), -24.0, 24.0, 6.0, 15.0, "steel.plate", "skirt")
+    # The third mount (hp_3) is bare on the rear-right corner, the launcher's twin.
     b.pad("hp_3", (10.0, -26.0, 26.0), scale=0.7, size=(6.0, 2.0))   # on the roof, not above it
     for s in (-1.0, 1.0):
         b.box(s * 7.0 - 2.0, s * 7.0 + 2.0, 32.5, 33.5, 12.0, 14.0, "amber.light", "lamp")
@@ -1150,14 +1175,12 @@ def prairie_dog(b):
     # keyed. Degrees and seconds; a key is (t, value) on the joint's own axis or (t, pitch,
     # yaw, roll); a body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll); a glow
     # key is (t, k), k the light added over rest.
-    # The chassis rocks two and a half degrees and hardly squats (the sixth notes: its six
-    # degrees and a squat drove the arches onto the tyres, which only a high arch cleared).
-    b.act("rev", 4.2, {   # revs eagerly: a jump forward, a rock, back, and again; the wheels spin hard
+    b.act("rev", 4.2, {   # revs eagerly: a jump forward, a squat, back, and again; the wheels spin hard
         "wheel_fl": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.2, -1080.0)],
         "wheel_fr": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.2, -1080.0)],
         "wheel_rl": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.2, -1080.0)],
         "wheel_rr": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.2, -1080.0)],
-        "chassis": [(0.5, 2.5, 0.0, 0.0, 0.0, 0.0, -0.2), (1.2, -2.5, 0.0, 0.0, 0.0, 0.0, -0.2), (2.2, 2.0, 0.0, 0.0, 0.0, 0.0, -0.1), (3.0, -2.5, 0.0, 0.0, 0.0, 0.0, -0.2), (3.8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
+        "chassis": [(0.5, 6.0, 0.0, 0.0, 0.0, 0.0, -2.5), (1.2, -6.0, 0.0, 0.0, 0.0, 0.0, -2.0), (2.2, 5.0, 0.0, 0.0, 0.0, 0.0, -1.5), (3.0, -6.0, 0.0, 0.0, 0.0, 0.0, -2.0), (3.8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
     }, body=[(0.6, 0.0, 10.0, 0.0), (1.3, 0.0, 9.0, 0.0), (2.2, 0.0, -4.0, 0.0), (3.0, 0.0, 6.0, 0.0), (4.2, 0.0, 0.0, 0.0)])
     b.act("scout", 7.6, {   # the sensor head looks one way and then the other, the turret following it round each way and waiting, the mast light hot
         "sensor": [(0.9, 60.0), (2.4, 62.0), (3.6, -55.0), (5.6, -58.0), (6.8, 0.0)],
@@ -1286,11 +1309,16 @@ def dingo(b):
         "chassis": [(2.4, 0.0, 0.0, 0.0), (2.55, 2.0, 0.0, 0.0), (2.75, -1.5, 0.0, 0.0), (3.0, 0.0, 0.0, 0.0), (3.7, 0.0, 0.0, 0.0), (3.85, -1.5, 0.0, 0.0), (4.05, 1.0, 0.0, 0.0), (4.3, 0.0, 0.0, 0.0)],
     }, body=blip(2.4, 3.0) + blip(3.7, -2.0)[1:], heft=0.06,
        glow=[(["capacitor_ring"], [(0.6, 0.0), (0.9, 6.0), (1.1, 1.0), (1.4, 7.0), (1.6, 2.0), (1.9, 9.0), (3.6, 9.0), (4.2, 0.0)])])
-    b.act("mortar_check", 4.4, {   # the tube stepped up a notch at a time, held, test-dropped twice, held, and down; a nervous throttle tap
-        "elev_mortar": [(0.4, 0.0), (0.55, 10.0), (0.9, 10.0), (1.05, 20.0), (1.4, 20.0), (1.55, 28.0), (2.3, 28.0), (2.42, 18.0), (2.56, 28.0), (2.68, 18.0), (2.82, 28.0), (3.5, 28.0), (4.0, 0.0)],
-        "chassis": [(2.3, 0.0, 0.0, 0.0), (2.42, -1.5, 0.0, 0.0), (2.56, 0.0, 0.0, 0.0), (2.68, -1.5, 0.0, 0.0), (2.82, 0.0, 0.0, 0.0), (3.1, 0.0, 0.0, 0.0), (3.25, 1.5, 0.0, 0.0), (3.5, 0.0, 0.0, 0.0)],
-        **{"wheel_" + w: spin([(3.1, 0.0), (3.28, -2.0), (3.6, 0.0)], ROLL) for w in ("fl", "fr", "rl", "rr")},
-    }, body=blip(3.1, -2.0), heft=0.06)
+    # The seventh notes: the harpoon is the good kind of twitchy, the mortar check nodded (the
+    # tube test-dropped twice, the chassis dipping with it): now the tube ticks up a notch at a
+    # time, each snap settling back a hair, and jitters on its fine aim; the casters fidget and
+    # the throttle blips; nothing pitches the car.
+    b.act("mortar_check", 4.4, {   # the tube ticked up notch by notch, a fine-aim jitter at the top, the casters fidgeting, a throttle blip, and down
+        "elev_mortar": [(0.4, 0.0), (0.5, 9.5), (0.58, 8.5), (0.95, 8.5), (1.05, 17.5), (1.13, 16.5), (1.5, 16.5), (1.6, 25.5), (1.68, 24.5), (2.3, 24.5),
+                        (2.36, 26.0), (2.42, 24.0), (2.48, 25.5), (2.54, 24.5), (3.4, 24.5), (3.5, 26.0), (3.9, 0.0)],
+        **{"caster_" + w: [(1.9, 0.0), (2.0, -8.0), (2.35, -8.0), (2.45, 6.0), (2.8, 6.0), (2.9, 0.0)] for w in ("fl", "fr")},
+        **{"wheel_" + w: spin([(3.0, 0.0), (3.18, 2.5), (3.5, 0.0)], ROLL) for w in ("fl", "fr", "rl", "rr")},
+    }, body=blip(3.0, 2.5), heft=0.06)
     # A full turn on the spot (Ryan, 5 October: the paired casters could not spin it): each
     # caster square to its corner's radius, the right wheels driving forward and the left
     # back, and the car whips round once anticlockwise and rocks to a stop. The wheels'
@@ -1310,7 +1338,7 @@ def dingo(b):
     # along the travel, so they counter-steer through it.
     b.gait(wheels={"wheel_fl": R, "wheel_fr": R, "wheel_rl": R, "wheel_rr": R},
            aim={"caster_fl": 1.0, "caster_fr": 1.0, "caster_rl": 1.0, "caster_rr": 1.0}, rock=4.0)
-    b.move(slide=0.4, bank=0.0, accel=0.5, heft=0.09, oversteer=1.4)   # drifts wildly on the map and does not bank (Ryan, 2 October); its rear kicked out further (the sixth notes)
+    b.move(slide=0.4, bank=0.0, accel=0.5, heft=0.09, oversteer=2.0)   # drifts wildly on the map and does not bank (Ryan, 2 October); its rear kicked out further (the sixth notes), and further again (the seventh)
 
 dingo.maker = "wainwright_sutler"
 
@@ -1459,13 +1487,15 @@ def goshawk(b):
     # holds, and settles as the exhausts flare back. It no longer rolls onto its back to show
     # the belly (the sixth notes: with the spine on top the roll hid it again; Ryan to judge
     # it in game, the spine along the belly the other way if the roll comes back).
-    heat = [([("heat_%d" % (i + 1))], [(0.2, 0.0), (round(0.3 + 0.15 * i, 2), 0.0), (round(0.45 + 0.15 * i, 2), 10.0), (round(0.7 + 0.15 * i, 2), 5.0), (2.3, 5.0), (2.9, 0.0)])
+    # The seventh notes: the spine much hotter when it lights, the glow under the cannon well
+    # down (it sat too high), the nose up further.
+    heat = [([("heat_%d" % (i + 1))], [(0.2, 0.0), (round(0.3 + 0.15 * i, 2), 0.0), (round(0.45 + 0.15 * i, 2), 26.0), (round(0.7 + 0.15 * i, 2), 16.0), (2.6, 16.0), (3.2, 0.0)])
             for i in range(9)]
     b.act("charge_cannon", 6.0, glow=heat + [
-        (["vent_glow", "barrel_groove", "cannon_bore", "cannon_glow"], [(1.6, 0.0), (2.2, 4.0), (2.5, 1.5), (2.8, 7.0), (3.1, 3.0), (3.6, 12.0), (4.5, 12.0), (5.4, 0.0)]),
+        (["vent_glow", "barrel_groove", "cannon_bore", "cannon_glow"], [(1.6, 0.0), (2.2, 1.5), (2.5, 0.5), (2.8, 3.0), (3.1, 1.2), (3.6, 5.0), (4.5, 5.0), (5.4, 0.0)]),
         (["joint_nacelle_l", "joint_nacelle_r"], [(0.3, 0.0), (1.4, -0.6), (4.3, -0.85), (4.6, 7.0), (5.2, 4.0), (5.9, 0.0)])],
-          body=[(1.4, 0.0, 0.0, 0.0), (2.6, 0.0, -1.0, 3.0, 0.0, 5.0, 0.0), (3.6, 0.0, -1.5, 3.8, 0.0, 6.5, 0.0), (4.4, 0.0, -1.2, 3.4, 0.0, 6.0, 0.0),
-                (5.1, 0.0, 0.8, 1.0, 0.0, -2.0, 0.0), (6.0, 0.0, 0.0, 0.0)])
+          body=[(1.4, 0.0, 0.0, 0.0), (2.6, 0.0, -1.0, 3.2, 0.0, 8.0, 0.0), (3.6, 0.0, -1.6, 4.0, 0.0, 11.0, 0.0), (4.4, 0.0, -1.3, 3.6, 0.0, 10.0, 0.0),
+                (5.1, 0.0, 0.8, 1.0, 0.0, -2.5, 0.0), (6.0, 0.0, 0.0, 0.0)])
     # The bank (the fifth notes: more lateral, and level at the ends of the strafe): a skid
     # out one way banked into it, coming level as it stops there; across the other way banked
     # the other, level again at that end; and back to station.
@@ -1663,12 +1693,14 @@ def nemesis(b):
     # a short lift off the bounce and down harder. Its own quick servos (heft), so the fists
     # arrive hard and not eased in.
     UP, RECOIL, LIFT = (46.0, -14.0, 0.0, 25.0), (25.0, -54.0, 8.0, 9.0), (44.0, -50.0, 6.0, 16.0)
-    tracks, body = _planted(feet, [(0.5, 0.0, 0.8, 2.0), (1.05, 0.0, 1.4, 3.0), (1.25, 0.0, -4.0, -4.5), (1.45, 0.0, -2.6, -3.0), (1.65, 0.0, 0.0, 1.0),
-                                   (1.85, 0.0, -5.0, -5.5), (2.1, 0.0, -3.6, -4.0), (3.1, 0.0, -3.8, -4.2), (4.2, 0.0, 0.0, 0.0)])
+    # The legs drive the first blow only (the seventh notes: through the second the knees and
+    # ankles made it nod): the body holds where the first left it and the waist and arms make
+    # the second.
+    tracks, body = _planted(feet, [(0.5, 0.0, 0.8, 2.0), (1.05, 0.0, 1.4, 3.0), (1.25, 0.0, -4.0, -4.5), (1.45, 0.0, -2.8, -3.2), (3.1, 0.0, -2.9, -3.3), (4.2, 0.0, 0.0, 0.0)])
     for side in ("l", "r"):
         tracks.update(arm(side, [(0.5, WIDE), (1.05, UP), (1.25, HIT), (1.45, RECOIL), (1.65, LIFT), (1.85, HIT), (2.1, RECOIL),
                                  (3.1, (31.0, -66.0, 10.0, 0.0))]))
-    tracks["waist"] = [(t, p, 0.0, 0.0) for t, p in ((0.5, 4.0), (1.05, 8.0), (1.25, -12.0), (1.45, -8.0), (1.65, 2.0), (1.85, -15.0), (2.1, -10.0), (3.1, -10.0), (4.2, 0.0))]   # pitch: the waist's own axis is its yaw
+    tracks["waist"] = [(t, p, 0.0, 0.0) for t, p in ((0.5, 4.0), (1.05, 8.0), (1.25, -12.0), (1.45, -8.0), (1.65, 3.0), (1.85, -17.0), (2.1, -12.0), (3.1, -12.0), (4.2, 0.0))]   # pitch: the waist's own axis is its yaw; it takes the second blow's drive
     b.act("pound_fists", 4.8, tracks, body=body, heft=0.09,   # the fists wound up high and slammed together before the chest, twice back to back, the waist driving into each blow and the body dropping, the core flaring
           glow=[(["core_fire"], [(1.0, 0.0), (1.25, 10.0), (1.45, 4.0), (1.65, 3.0), (1.85, 14.0), (3.0, 9.0), (4.0, 0.0)])])
     tracks, body = _planted(feet, [(1.2, -2.0, 0.0, 7.0), (3.8, -2.2, 0.0, 7.5), (5.2, 0.0, 0.0, 0.0)])
@@ -1900,21 +1932,6 @@ def ammit(b):
     hind = {side: {"hip": "hip_" + side, "knee": "knee_" + side, "ankle": "ankle_" + side, "at": legs[side]} for side in ("l", "r")}
     mid_arms = {side: {"hip": "shoulder_low_" + side, "knee": "elbow_low_" + side, "ankle": "hand_low_" + side, "at": arms[side]} for side in ("l", "r")}
 
-    def talons(side, events):
-        """Keys for one hand's three talons: `events` is (t, "open") or (t, "grip"); a hand
-        opens out to in, the outer talon first and splayed, and grips all at once."""
-        out_yaw = 22.0 if side == "l" else -22.0
-        keys = {w: [] for w in ("out", "mid", "in")}
-        for t, what in events:
-            for k, w in enumerate(("out", "mid", "in")):
-                if what == "open":
-                    keys[w].append((round(t + 0.07 * k, 3), (46.0, 42.0, 36.0)[k], (out_yaw, 0.0, -out_yaw * 0.4)[k], 0.0))
-                elif what == "grip":
-                    keys[w].append((t, -36.0, 0.0, 0.0))
-                else:
-                    keys[w].append((t, 0.0, 0.0, 0.0))
-        return {"talon_%s_%s" % (side, w): v for w, v in keys.items()}
-
     def drum(side, t0, rounds, spread, end):
         """Keys for one hand's talons drummed (Ryan, 5 October, the fifth notes: show off the
         fingers): each curls and opens again in turn, out to in, `rounds` times from t0; then
@@ -1930,52 +1947,40 @@ def ammit(b):
                         (round(spread + 0.9, 3), -36.0, 0.0, 0.0), (end, 0.0, 0.0, 0.0)]
         return {"talon_%s_%s" % (side, w): v for w, v in keys.items()}
 
-    def waggle(side, t0, t1, base, amp, low=False, period=0.5):
-        """Keys for one hand's talons waggled (Ryan, 5 October, the sixth notes: more finger
-        waggle, less wrist): each curls up and back about `base` by `amp` degrees on its own
-        beat, a third of a `period` behind the one before, from `t0`; back to `base` by `t1`.
-        `low` the middle hand's talons."""
-        keys = {}
-        for k, w in enumerate(("out", "mid", "in") if not low else ("in", "mid", "out")):
-            row = [(t0, base, 0.0, 0.0)]
-            t = t0 + 0.12 + k * period / 3.0
-            up = True
-            while t < t1 - 0.25:
-                row.append((round(t, 3), round(base + (amp if up else -amp * 0.6), 3), 0.0, 0.0))
-                t += period * 0.5
-                up = not up
-            row.append((round(t1, 3), base, 0.0, 0.0))
-            keys["talon_%s%s_%s" % ("low_" if low else "", side, w)] = row
-        return keys
-
     # The rise: the legs straighten under it and the hips carry the body up and back over
     # the feet, the snout still level; the upper pair high and spread (Goro, Machamp) and the
-    # middle pair out wide and low, an X of arms (Ryan, 5 October, the fifth notes); every
-    # talon waggling on its own beat, the upper hands' and the middle's, the wrists steady,
-    # and a hard grip before it comes down (the sixth notes: the open and grip waved the
-    # wrist more than the fingers).
-    tracks, body = _steps(hind, [(1.6, (-2.0, 11.0, 3.0), {}), (4.8, (-2.2, 11.6, 3.4), {}), (6.2, (0.0, 0.0, 0.0), {})])
+    # middle pair out wide and low, an X of arms (Ryan, 5 October, the fifth notes). Up there
+    # it takes two practice swipes, the left claws and then the right (the seventh notes, in
+    # place of the talons waggling like jazz hands): each arm cocks on its elbow and wrist with
+    # its talons spread, slashes across and down in a third of a second, the talons snapping
+    # shut at the end of the cut, and comes back up; then it grips and comes down. The middle
+    # hands hold still, a little lower than the first X so the swiping arms' roots pass over
+    # them, and so does the waist: turning it swung the upper arms' roots across the middle
+    # arms', which ride the pelvis (measured).
+    tracks, body = _steps(hind, [(1.6, (-2.0, 11.0, 3.0), {}), (5.4, (-2.2, 11.6, 3.4), {}), (6.8, (0.0, 0.0, 0.0), {})])
     tracks.update({
-        "shoulder_low_l": [(1.5, 6.0, 0.0, 56.0), (4.8, 7.0, 0.0, 58.0), (6.0, 0.0, 0.0, 0.0)],
-        "shoulder_low_r": [(1.5, 6.0, 0.0, -56.0), (4.8, 7.0, 0.0, -58.0), (6.0, 0.0, 0.0, 0.0)],
-        "elbow_low_l": [(1.5, 18.0), (4.8, 19.0), (6.0, 0.0)],
-        "elbow_low_r": [(1.5, 18.0), (4.8, 19.0), (6.0, 0.0)],
-        "hand_low_l": [(1.5, 24.0), (4.8, 26.0), (6.0, 0.0)],
-        "hand_low_r": [(1.5, 24.0), (4.8, 26.0), (6.0, 0.0)],
-        "shoulder_l": [(1.4, 46.0, 26.0, 0.0), (4.8, 48.0, 28.0, 0.0), (5.9, 0.0, 0.0, 0.0)],
-        "shoulder_r": [(1.4, 46.0, -26.0, 0.0), (4.8, 48.0, -28.0, 0.0), (5.9, 0.0, 0.0, 0.0)],
-        "elbow_l": [(1.4, 18.0), (4.8, 20.0), (5.9, 0.0)],
-        "elbow_r": [(1.4, 18.0), (4.8, 20.0), (5.9, 0.0)],
-        "hand_l": [(1.4, -20.0), (4.8, -22.0), (5.9, 0.0)],
-        "hand_r": [(1.4, -20.0), (4.8, -22.0), (5.9, 0.0)],
+        "shoulder_low_l": [(1.5, 6.0, 0.0, 44.0), (5.4, 7.0, 0.0, 46.0), (6.6, 0.0, 0.0, 0.0)],
+        "shoulder_low_r": [(1.5, 6.0, 0.0, -44.0), (5.4, 7.0, 0.0, -46.0), (6.6, 0.0, 0.0, 0.0)],
+        "elbow_low_l": [(1.5, 18.0), (5.4, 19.0), (6.6, 0.0)],
+        "elbow_low_r": [(1.5, 18.0), (5.4, 19.0), (6.6, 0.0)],
+        "hand_low_l": [(1.5, 24.0), (5.4, 26.0), (6.6, 0.0)],
+        "hand_low_r": [(1.5, 24.0), (5.4, 26.0), (6.6, 0.0)],
     })
-    for side, lag in (("l", 0.0), ("r", 0.17)):
-        up = waggle(side, 1.5 + lag, 4.4, 12.0, 26.0)
-        for name, row in up.items():
-            up[name] = row + [(4.65, -36.0, 0.0, 0.0), (5.0, -36.0, 0.0, 0.0), (5.6, 0.0, 0.0, 0.0)]
-        tracks.update(up)
-        tracks.update(waggle(side, 1.9 + lag, 4.8, 0.0, 20.0, low=True, period=0.6))
-    b.act("rear", 6.6, tracks, body=body)
+    for side, y, t in (("l", 1.0, 2.0), ("r", -1.0, 3.2)):
+        # y turns the yaw outward on this side; t the swipe's wind-up
+        out_yaw = 22.0 * y
+        tracks.update({
+            "shoulder_" + side: [(1.4, 45.0, 26.0 * y, 0.0), (t, 44.0, 24.0 * y, 0.0), (t + 0.35, 40.0, -22.0 * y, 0.0), (t + 0.7, 42.0, -18.0 * y, 0.0),
+                                 (t + 1.0, 45.0, 4.0 * y, 0.0), (t + 1.3, 45.0, 24.0 * y, 0.0), (5.4, 45.0, 26.0 * y, 0.0), (6.5, 0.0, 0.0, 0.0)],   # cocked on the elbow and hand, never swung further out or lifted past 45: the middle arms' X sits just under the upper arms' roots
+            "elbow_" + side: [(1.4, 18.0), (t - 0.3, 18.0), (t, 30.0), (t + 0.35, 4.0), (t + 0.7, 6.0), (t + 1.3, 18.0), (5.4, 20.0), (6.5, 0.0)],
+            "hand_" + side: [(1.4, -20.0), (t - 0.3, -20.0), (t, -34.0), (t + 0.35, 12.0), (t + 0.7, 5.0), (t + 1.3, -20.0), (5.4, -22.0), (6.5, 0.0)],
+        })
+        for k, w in enumerate(("out", "mid", "in")):
+            spread = ((46.0, out_yaw), (42.0, 0.0), (36.0, -out_yaw * 0.4))[k]
+            tracks["talon_%s_%s" % (side, w)] = [(1.4, 10.0, 0.0, 0.0), (round(t - 0.1 + 0.04 * k, 3), spread[0], spread[1], 0.0), (round(t + 0.28, 3), spread[0], spread[1], 0.0),
+                                                 (round(t + 0.4, 3), -38.0, 0.0, 0.0), (t + 0.8, -38.0, 0.0, 0.0), (t + 1.3, 10.0, 0.0, 0.0),
+                                                 (5.1, -36.0, 0.0, 0.0), (5.5, -36.0, 0.0, 0.0), (6.3, 0.0, 0.0, 0.0)]
+    b.act("rear", 7.2, tracks, body=body)
     # The talons shown off (Ryan, 5 October, the fifth notes: the fingers more, the wave
     # less, the middle pair in it, and no turning on the feet): the torso turns on its waist
     # to one hand as it comes up before the snout, wrist cocked, and holds there while its
@@ -1997,7 +2002,8 @@ def ammit(b):
     b.act("flex_talons", 8.0, tracks)
     # Raise the cannons on the hips: the middle hands step forward one and then the other,
     # the body pitches down over the hind feet and sinks low between its hands, and the
-    # cannons come up along the back to bear.
+    # cannons come up along the back to bear. Held long, brooding, the talons folded tight
+    # (the seventh notes), the body settling lower by a hair as it waits.
     REACH, LIFT = 8.0, 5.0
     low = lambda side, f, z=0.0: (arms[side][2][1] + REACH * f, arms[side][2][2] + z)
     S0, A, B, C, S3, S4 = (0.0, 0.0, 0.0), (0.0, -4.5, -6.5), (0.5, -5.5, -7.5), (1.0, -6.2, -8.2), (1.5, -7.0, -9.0), (1.6, -7.4, -9.4)
@@ -2007,36 +2013,40 @@ def ammit(b):
                                                  (t1, b1, {side: low(side, f1)})]
     frames = [(0.3, S0, {}), (0.6, mixb(S0, A, 0.5), {}), (0.9, A, {})]
     frames += step(0.9, 1.5, "l", 0.0, 1.0, A, B) + step(1.5, 2.1, "r", 0.0, 1.0, B, C)
-    frames += [(2.6, S3, {}), (4.4, S4, {}), (4.8, C, {})]
-    frames += step(4.8, 5.4, "r", 1.0, 0.0, C, B) + step(5.4, 6.0, "l", 1.0, 0.0, B, A)
-    frames += [(6.4, mixb(A, S0, 0.6), {}), (6.8, S0, {})]
+    frames += [(2.6, S3, {}), (6.6, S4, {}), (7.0, C, {})]
+    frames += step(7.0, 7.6, "r", 1.0, 0.0, C, B) + step(7.6, 8.2, "l", 1.0, 0.0, B, A)
+    frames += [(8.6, mixb(A, S0, 0.6), {}), (9.0, S0, {})]
     tracks, body = _steps({**hind, **{"low_" + k: v for k, v in mid_arms.items()}},
                           [(t, pose, {"low_" + k: v for k, v in feet.items()}) for t, pose, feet in frames])
-    tracks.update({"elev_l": [(2.2, 0.0), (3.0, 18.0), (4.2, 17.5), (4.9, 0.0)], "elev_r": [(2.4, 0.0), (3.2, 18.0), (4.3, 17.5), (5.0, 0.0)]})
+    tracks.update({"elev_l": [(2.2, 0.0), (3.0, 18.0), (6.4, 17.5), (7.1, 0.0)], "elev_r": [(2.4, 0.0), (3.2, 18.0), (6.5, 17.5), (7.2, 0.0)]})
     # The upper arms fold in against the chest as the guns come up, a mantis's, the talons
     # gripping (Ryan, 5 October, the fifth notes: not so static); carried higher and further
     # in, so the folded claws clear the middle arms' elbows as the body pitches down (the
     # sixth notes; measured, no talon inside a middle arm through the act).
     for side, y in (("l", -1.0), ("r", 1.0)):
-        tracks.update({"shoulder_" + side: [(2.0, 0.0, 0.0, 0.0), (2.8, 38.0, 16.0 * y, 0.0), (4.4, 39.0, 17.0 * y, 0.0), (5.3, 0.0, 0.0, 0.0)],
-                       "elbow_" + side: [(2.0, 0.0), (2.8, -28.0), (4.4, -30.0), (5.3, 0.0)],
-                       "hand_" + side: [(2.2, 0.0), (2.9, -30.0), (4.4, -32.0), (5.3, 0.0)]})
-        tracks.update(talons(side, [(2.9, "grip"), (4.4, "grip"), (5.2, "rest")]))
-    b.act("raise_cannons", 7.0, tracks, body=body,
-          glow=[(["carbine_tip", "pilot_flame"], [(2.4, 0.0), (3.0, 8.0), (4.2, 8.0), (4.9, 0.0)])])
-    # The threat: the snout drops, the upper arms flung wide with every talon spread, and
-    # the throat vent breathes out its heat, long and hot; then the talons snap shut.
+        tracks.update({"shoulder_" + side: [(2.0, 0.0, 0.0, 0.0), (2.8, 38.0, 16.0 * y, 0.0), (6.6, 39.0, 17.0 * y, 0.0), (7.5, 0.0, 0.0, 0.0)],
+                       "elbow_" + side: [(2.0, 0.0), (2.8, -28.0), (6.6, -30.0), (7.5, 0.0)],
+                       "hand_" + side: [(2.2, 0.0), (2.9, -40.0), (6.6, -42.0), (7.5, 0.0)]})
+        tracks.update({"talon_%s_%s" % (side, w): [(2.4, 0.0, 0.0, 0.0), (3.0, -40.0, 0.0, 0.0), (6.6, -40.0, 0.0, 0.0), (7.4, 0.0, 0.0, 0.0)] for w in ("out", "mid", "in")})
+    b.act("raise_cannons", 9.2, tracks, body=body,
+          glow=[(["carbine_tip", "pilot_flame"], [(2.4, 0.0), (3.0, 8.0), (6.4, 8.0), (7.1, 0.0)])])
+    # The threat: the snout drops, the upper arms flung wide, the outer talons spread and the
+    # middle ones lowered, ready to grab (the seventh notes), and the throat vent breathes out
+    # its heat, long and hot; the talons snap shut twice, a bite each, as the Badger's claw
+    # does, and the second time they stay shut.
     tracks, body = _steps({**hind, **{"low_" + k: v for k, v in mid_arms.items()}}, [(1.0, (0.0, -3.0, -6.0), {}), (3.4, (0.0, -3.4, -6.6), {}), (4.6, (0.0, 0.0, 0.0), {})])
     tracks.update({
         "shoulder_l": [(0.9, 36.0, 40.0, 0.0), (3.4, 38.0, 40.0, 0.0), (4.4, 0.0, 0.0, 0.0)],
         "shoulder_r": [(0.9, 36.0, -40.0, 0.0), (3.4, 38.0, -40.0, 0.0), (4.4, 0.0, 0.0, 0.0)],
         "elbow_l": [(0.9, 24.0), (3.4, 26.0), (4.4, 0.0)],
         "elbow_r": [(0.9, 24.0), (3.4, 26.0), (4.4, 0.0)],
-        "hand_l": [(0.9, 20.0), (3.0, 22.0), (3.4, -20.0), (4.4, 0.0)],
-        "hand_r": [(0.9, 20.0), (3.0, 22.0), (3.4, -20.0), (4.4, 0.0)],
+        "hand_l": [(0.9, 20.0), (1.9, 22.0), (2.0, 10.0), (2.35, 20.0), (2.8, 8.0), (3.4, -20.0), (4.4, 0.0)],
+        "hand_r": [(0.9, 20.0), (1.9, 22.0), (2.0, 10.0), (2.35, 20.0), (2.8, 8.0), (3.4, -20.0), (4.4, 0.0)],
     })
-    tracks.update(talons("l", [(0.8, "open"), (3.0, "open"), (3.25, "grip"), (3.8, "grip"), (4.4, "rest")]))
-    tracks.update(talons("r", [(0.8, "open"), (3.0, "open"), (3.25, "grip"), (3.8, "grip"), (4.4, "rest")]))
+    for side, y in (("l", 1.0), ("r", -1.0)):
+        for w, (pitch, yaw) in (("out", (46.0, 22.0 * y)), ("mid", (-12.0, 0.0)), ("in", (36.0, -8.8 * y))):
+            tracks["talon_%s_%s" % (side, w)] = [(0.4, 0.0, 0.0, 0.0), (0.8, pitch, yaw, 0.0), (1.88, pitch, yaw, 0.0), (2.0, -38.0, 0.0, 0.0), (2.12, -38.0, 0.0, 0.0),
+                                                 (2.45, pitch, yaw, 0.0), (2.68, pitch, yaw, 0.0), (2.8, -38.0, 0.0, 0.0), (3.8, -36.0, 0.0, 0.0), (4.4, 0.0, 0.0, 0.0)]
     b.act("threat", 5.0, tracks, body=body,
           glow=[(["throat_slot", "eye_strip"], [(0.8, 0.0), (1.4, 6.0), (2.0, 10.0), (3.0, 10.0), (3.3, 3.0), (4.2, 0.0)])])
     # Movement (Ryan, 4 October, the third pass: stomp and plod, no weight thrown side to
@@ -2085,17 +2095,21 @@ def _wing_section(x, y_back, y_front, z_bottom, z_top, shoulder):
             (x, y_front, zm), (x, y_front - shoulder, z_bottom), (x, y_back + shoulder, z_bottom)]
 
 
-def _lift_fan(b, targets, cx, cy, z0, z1, r=8.6, blades=5):
+def _lift_fan(b, targets, cx, cy, z0, z1, r=8.6, blades=5, joint=None):
     """A ducted lift fan sunk flush through a wing: a hole cut right through the wing, a
     shallow duct lining its mouth with the rim just proud of the skin, a glow at the duct's
     floor (the downwash, lit) a few units under the rim, a dark hub and wide pitched blades
     just below the mouth. Shallow on purpose: from the hangar's angle a deep duct showed its
     wall and nothing else, so the floor sits at `z1 - 3.5` and the blades over it, and the
-    hole below it is open to the underside, never seen from above."""
+    hole below it is open to the underside, never seen from above. `joint` names a joint for
+    the hub, cap and blades, turning about up, so the rotor can spin (b.spin)."""
     b.cut(targets, (cx, cy, z0 - 2.0), (cx, cy, z1 + 2.0), r, 12)
     zfloor = z1 - 3.6
     _tube(b, (cx, cy, zfloor), (cx, cy, z1), r + 0.5, r - 0.8, 12, "steel.dark", "fan_duct", floor_material="amber.glow", floor_depth=0.4)
     zf = z1 - 1.9
+    rotor = b.joint(joint, (cx, cy, zf), axis="yaw") if joint else None
+    if rotor:
+        rotor.__enter__()
     b.prism("z", cx, cy, zf, 2.0, 2.6, "steel.dark", 8, "fan_hub")
     b.prism("z", cx, cy, zf + 1.4, 1.2, 0.6, "steel.plate", 8, "hub_cap")
     ri, ro = 2.0, r - 1.1
@@ -2107,6 +2121,8 @@ def _lift_fan(b, targets, cx, cy, z0, z1, r=8.6, blades=5):
         ot = (cx + ro * math.cos(a + do), cy + ro * math.sin(a + do), zf - 0.9)
         ol = (cx + ro * math.cos(a - do), cy + ro * math.sin(a - do), zf + 0.9)
         _rings(b, [[il, it, ot, ol], [(il[0], il[1], il[2] - 0.45), (it[0], it[1], it[2] - 0.45), (ot[0], ot[1], ot[2] - 0.45), (ol[0], ol[1], ol[2] - 0.45)]], "steel.dark", "fan_blade")
+    if rotor:
+        rotor.__exit__(None, None, None)
 
 
 # The Stingray's skin, as a function, so every part sits on it (Ryan, 2 October, on the first
@@ -2236,7 +2252,7 @@ def stingray(b):
         secs = [_wing_section(s * x, yb, yf, zb, zt, sh) for (x, yb, yf, zb, zt, sh) in _RAY_WING]
         inner = _rings(b, [secs[0], secs[1]], "steel.plate", "wing_inner")
         outer = _rings(b, [secs[1], secs[2]], "livery.livery", "wing_outer")
-        _lift_fan(b, [inner, outer], s * 23.0, 2.0, 7.5, 20.5)
+        _lift_fan(b, [inner, outer], s * 23.0, 2.0, 7.5, 20.5, joint="fan_" + ("l" if s < 0 else "r"))
     # The tail is the exhaust, and it narrows in one stage (Ryan, 3 to 5 October, the sixth to
     # eighth passes: the shape two iterations ago was great; narrow quicker; then not in two
     # stages, since the body had run on behind the wings as a near-parallel neck before the
@@ -2341,7 +2357,12 @@ def stingray(b):
     # little, and noses down hard into its travel, since its fans are its propulsion (the
     # tilt: nose down going forward, a side down to slip that way).
     b.gait(glow={"parts": ["nozzle_glow"], "k": 5.0})
-    b.move(slide=0.3, bank=14.0, tilt=(26.0, 10.0), accel=0.9, heft=0.12, oversteer=0.8)
+    # The lift fans turn all the time, counter-rotating, and faster under way (Ryan, 6 October,
+    # the seventh notes, the model locked: "the thing the Stingray really needs"). Slow enough a
+    # frame that five blades never strobe backward at 30 frames a second.
+    b.spin("fan_l", -480.0, -840.0)
+    b.spin("fan_r", 480.0, 840.0)
+    b.move(slide=0.3, bank=14.0, tilt=(26.0, 10.0), accel=0.9, heft=0.12, oversteer=1.2)   # the nose further into its corners (Ryan, 6 October, the seventh notes)
 
 stingray.maker = "aphelion"
 
@@ -2568,7 +2589,7 @@ def puffin(b):
     # its nose down a touch. It does not bank (the fifth notes: a hovercraft keeps flat; the
     # Stingray banks because it moves as a helicopter does).
     b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, -5.0, 0.0), glow={"parts": ["nozzle_ring", "exhaust"], "k": 5.0}, rock=3.0)
-    b.move(slide=0.3, bank=0.0, accel=0.8, heft=0.13, oversteer=1.0)   # its rear kicked out further (Ryan, 5 October, the sixth notes)
+    b.move(slide=0.3, bank=0.0, accel=0.8, heft=0.13, oversteer=1.5)   # its rear kicked out further (Ryan, 5 October, the sixth notes), and further again (the seventh)
 
 puffin.maker = "kestrel"
 
@@ -2987,7 +3008,7 @@ def _steps(limbs, frames):
     return tracks, body
 
 
-def _plant(limbs, sweep, duty=0.55, lift=8.0, crouch=0.0, dip=1.2, nod=0.0, reach=0.96, n=40, airborne=None, smooth=0.0):
+def _plant(limbs, sweep, duty=0.55, lift=8.0, crouch=0.0, dip=1.2, nod=0.0, reach=0.96, n=40, airborne=None, smooth=0.0, stomp=False):
     """A walk worked out foot by foot (Ryan, 4 October, the third pass: legs too fast, the
     weight shift far too pronounced; stomp and plod, mechanical, MechWarrior or Star Wars, not
     Gundam or Evangelion). Each limb's foot stays planted on the ground through its stance,
@@ -3014,11 +3035,16 @@ def _plant(limbs, sweep, duty=0.55, lift=8.0, crouch=0.0, dip=1.2, nod=0.0, reac
     "cycles" (1 unless given) is how many steps it takes in the cycle, its phase then a share
     of its own step and its stance `sweep` over its cycles (Ryan, 5 October: the Ammit's arms
     and legs at different speeds, three steps of the arms to two of the legs, the cycle as
-    long as both take to come round together). Returns (tracks, body, stride) for b.gait with
-    ease "linear" (dense keys, n a cycle)."""
+    long as both take to come round together). `stomp` (Ryan, 6 October, the seventh notes: an
+    AT-AT's weight, not a plod) lifts each foot briskly and holds it high, then slams it down
+    in the last fifth of its swing, and each landing drops the body hard and lets it shudder,
+    a rebound and a settle; a limb's "nod" (1 unless given) signs and scales the body's pitch
+    at its landing, so a fore foot can dip the nose and a hind one lift it. Returns (tracks,
+    body, stride) for b.gait with ease "linear" (dense keys, n a cycle)."""
     stride = sweep / duty
     loop = max(int(l.get("cycles", 1)) for l in limbs)   # the most steps any limb takes in a cycle
     landings = sorted({round(((l["phase"] + j) / int(l.get("cycles", 1))) % 1.0, 4) for l in limbs for j in range(int(l.get("cycles", 1)))})
+    nods = {round(((l["phase"] + j) / int(l.get("cycles", 1))) % 1.0, 4): float(l.get("nod", 1.0)) for l in limbs for j in range(int(l.get("cycles", 1)))}
 
     def foot(l, p):
         """Where a limb's end goes at phase p, in the model's rest frame: (y, z, down)."""
@@ -3032,6 +3058,16 @@ def _plant(limbs, sweep, duty=0.55, lift=8.0, crouch=0.0, dip=1.2, nod=0.0, reac
         s = (q - duty) / (1.0 - duty)
         u = min(1.0, max(0.0, (s - 0.12) / 0.76))
         y = y0 - sw * 0.5 + sw * u * u * (3.0 - 2.0 * u)
+        if stomp:
+            if s < 0.25:
+                r = s / 0.25
+                z = e[2] + lift * (1.0 - (1.0 - r) ** 3)      # up briskly
+            elif s < 0.8:
+                z = e[2] + lift                               # held high, reaching forward
+            else:
+                r = (s - 0.8) / 0.2
+                z = e[2] + lift * (1.0 - r * r * r)           # slammed down
+            return y, z, False
         if s < 0.3:
             r = s / 0.3
             z = e[2] + lift * (1.0 - (1.0 - r) * (1.0 - r))   # up briskly, easing at the top
@@ -3045,7 +3081,7 @@ def _plant(limbs, sweep, duty=0.55, lift=8.0, crouch=0.0, dip=1.2, nod=0.0, reac
     # The body first: as high as its planted legs allow kept short of straight, lower by the
     # crouch, dropping and nodding as each foot lands and taking most of the stride between
     # landings to come back up.
-    rides, jolts = [], []
+    rides, jolts, pitch_jolts = [], [], []
     for i in range(n + 1):
         p = i / float(n)
         ride = 0.0
@@ -3058,15 +3094,24 @@ def _plant(limbs, sweep, duty=0.55, lift=8.0, crouch=0.0, dip=1.2, nod=0.0, reac
             dy = y - h3[1]
             ride = min(ride, z + math.sqrt(max(0.0, span * span - dy * dy)) - h3[2])
         jolt = 0.0
+        pitch_jolt = 0.0
         for land in landings:
             x = ((p - land) % 1.0) * loop   # in steps, so a landing's dip lasts as long whatever the cycle
-            if x < 0.05:
-                jolt += x / 0.05
+            if stomp:
+                # A hard drop in a moment, then a damped shudder: a rebound past level and a settle.
+                j = x / 0.03 if x < 0.03 else (math.exp(-(x - 0.03) / 0.09) * math.cos((x - 0.03) * 2.0 * math.pi / 0.16) if x < 0.45 else 0.0)
+            elif x < 0.05:
+                j = x / 0.05
             elif x < 0.4:
                 r = (x - 0.05) / 0.35
-                jolt += (1.0 - r) * (1.0 - r)
+                j = (1.0 - r) * (1.0 - r)
+            else:
+                j = 0.0
+            jolt += j
+            pitch_jolt += j * nods[land]
         rides.append(ride)
         jolts.append(jolt)
+        pitch_jolts.append(pitch_jolt)
     if smooth > 0.0:
         # The lowest within a window either side, then its mean over the same window: every
         # value the mean takes is at or under the ride at the middle, so no leg overreaches.
@@ -3074,7 +3119,7 @@ def _plant(limbs, sweep, duty=0.55, lift=8.0, crouch=0.0, dip=1.2, nod=0.0, reac
         low = [min(rides[(i + j) % n] for j in range(-w, w + 1)) for i in range(n)]
         rides = [sum(low[(i + j) % n] for j in range(-w, w + 1)) / (2 * w + 1) for i in range(n)]
         rides.append(rides[0])
-    pose = [(rides[i] - crouch - dip * jolts[i], -nod * jolts[i]) for i in range(n + 1)]
+    pose = [(rides[i] - crouch - dip * jolts[i], -nod * pitch_jolts[i]) for i in range(n + 1)]
     tracks = {}
     for l in limbs:
         rows = {"hip": [], "knee": [], "ankle": []}
@@ -3131,67 +3176,41 @@ def _barrel_roll(t0, t1, over, duration, surge=4.0):
             (duration, 0.0, 0.0, 0.0, 0.0, 0.0, 360.0)]
 
 
-def _s_circle(rho, beta, r, bank, t0, t1, duration, steps=20):
-    """Body keys for a break right and a circle left (Ryan, 5 October; the sixth notes: the
-    plain circle to the left was lazy and all to one side): it banks and pulls right through
-    `beta` degrees on a radius `rho`, reverses its bank and flies a circle of radius `r` to the
-    left, the circle's middle straight ahead of its hex, so the path goes round the front of
-    it about evenly; down the left side, and a half turn left along the back of its hex brings
-    it up onto it facing the way it began, a whole turn on. The bank follows the turn: `bank`
-    degrees on the circle (negative drops the left wing), more where the turn is tighter.
-    Rolled in before `t0`, out after `t1`. Keys as (t, dx, dy, dz, yaw, pitch, roll)."""
-    b = math.radians(beta)
-    cx = rho * (1.0 - math.cos(b)) - r * math.cos(b)
-    cy = (rho + r) * math.sin(b)
-    rho2 = (r - cx) / 2.0   # the last half turn's radius: its widest point under the circle's
-    segs = [(rho, -b), (r, math.pi + b), (None, cy), (rho2, math.pi)]   # (radius, signed sweep); a line is (None, length)
-    total = sum(abs(a) * rad if rad else a for rad, a in segs)
-
-    def at(s):
-        x, y, psi = 0.0, 0.0, 0.0
-        for rad, a in segs:
-            length = abs(a) * rad if rad else a
-            d = min(s, length)
-            if rad is None:
-                x, y = x - math.sin(psi) * d, y + math.cos(psi) * d
-                k = 0.0
-            else:
-                sg = 1.0 if a > 0 else -1.0
-                ccx, ccy = x - sg * rad * math.cos(psi), y - sg * rad * math.sin(psi)
-                psi += sg * d / rad
-                x, y = ccx + sg * rad * math.cos(psi), ccy + sg * rad * math.sin(psi)
-                k = sg / rad
-            if s <= length:
-                return x, y, psi, k
-            s -= length
-        return x, y, psi, k
-
-    # Slower through the break, so it reads, and braking onto its hex at the end: the time a
-    # step takes goes as one over the speed there.
+def _survey_circle(r, bank, peel, t0, t1, duration, steps=36):
+    """Body keys for a slow circling flight over the ground ahead (Ryan, 6 October, the seventh
+    notes: a circling predator surveying the area; the earlier path ran a straight down one
+    side and levelled out there). The path is one true circle of radius `r` whose middle is
+    straight ahead of the hex and whose foot is the hex, flown once round to the left at a
+    steady bank of `bank` degrees (negative drops the left wing). It pulls away to the right
+    along the circle's foot, banking right by `peel` degrees and swinging its nose right as it
+    gathers way, then rolls into the left bank and holds it all the way round; it comes back
+    over its hex travelling across it, slowing, rolls level and swings its nose the last
+    quarter turn onto its facing as it settles, as a hovering craft can. A circle through the
+    hex cannot be entered or left along the hex's own facing, so the nose takes that quarter
+    turn standing. Keys as (t, dx, dy, dz, yaw, pitch, roll)."""
     def speed(u):
-        a = min(1.0, u / 0.3)
-        e = min(1.0, (1.0 - u) / 0.15)
-        return 0.45 + 0.55 * min(a * a * (3.0 - 2.0 * a), e * e * (3.0 - 2.0 * e))
+        a = min(1.0, u / 0.18)
+        e = min(1.0, (1.0 - u) / 0.2)
+        return 0.2 + 0.8 * min(a * a * (3.0 - 2.0 * a), e * e * (3.0 - 2.0 * e))
     clock = [0.0]
     for i in range(steps):
         clock.append(clock[-1] + 1.0 / speed((i + 0.5) / steps))
-    lim = abs(bank) * 1.25
-    rows = []
+    keys = [(round(t0 * 0.5, 3), 0.0, 0.0, 0.4, -4.0, -1.0, round(peel * 0.3, 3))]
     for i in range(steps + 1):
         u = i / float(steps)
-        x, y, psi, _k = at(total * u)
-        _x, _y, _p, k = at(min(total, total * u + total * 0.5 / steps))   # the bank leads the turn by half a step
-        roll = max(-lim, min(lim, abs(bank) * r * -k))
-        roll *= min(1.0, 0.6 + u * 5.0, 0.25 + (1.0 - u) * 5.0)
-        rows.append([round(t0 + (t1 - t0) * clock[i] / clock[-1], 3), round(x, 3), round(y, 3), round(-1.5 * math.sin(math.pi * u), 3),
-                     round(math.degrees(psi), 3), -4.0 if 0 < i < steps else -2.0, roll])
-    for i in range(1, steps):   # a little give between the bank's keys
-        rows[i][6] = rows[i - 1][6] * 0.25 + rows[i][6] * 0.5 + rows[i + 1][6] * 0.25
-    keys = [(round(t0 * 0.5, 3), 0.0, 0.0, 0.0, 0.0, -1.0, round(abs(bank) * 0.25, 3))]
-    keys += [tuple(row[:6]) + (round(row[6], 3),) for row in rows]
+        phi = 2.0 * math.pi * u
+        x, y = r * math.sin(phi), r - r * math.cos(phi)
+        heading = math.degrees(phi) - 90.0
+        start = max(0.0, 1.0 - u / 0.14)
+        end = min(1.0, max(0.0, (u - 0.86) / 0.14))
+        start, end = start * start * (3.0 - 2.0 * start), end * end * (3.0 - 2.0 * end)
+        yaw = heading + 90.0 * start + 90.0 * end
+        roll_in = min(1.0, max(0.0, (u - 0.04) / 0.12))
+        roll = peel * math.sin(math.pi * min(1.0, u / 0.1)) * (1.0 - roll_in) + bank * roll_in * (1.0 - end)
+        keys.append((round(t0 + (t1 - t0) * clock[i] / clock[-1], 3), round(x, 3), round(y, 3), round(3.0 * math.sin(math.pi * u), 3),
+                     round(yaw, 3), -3.0 if 0 < i < steps else -1.0, round(roll, 3)))
     keys.append((duration, 0.0, 0.0, 0.0, 360.0, 0.0, 0.0))
     return keys
-
 
 def _swing(amp, phase=0.0, n=40):
     """A limb swung evenly fore and aft over a stride, at its most forward at `phase`: dense

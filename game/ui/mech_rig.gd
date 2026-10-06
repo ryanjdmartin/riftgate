@@ -68,6 +68,8 @@ var model: Node3D = null           # the glTF's root
 var body: Node3D = null            # the node a body track moves (the model root unless told otherwise)
 var gait: Dictionary = {}          # the sidecar's gait: how this machine moves (see drive)
 var gait_options: Dictionary = {}  # other ways it could move, built beside it for judging (b.gait_option); the game never uses them
+var spinners: Dictionary = {}      # joint -> [idle, moving] degrees a second: turned without end on its own axis (b.spin: the Stingray's fans)
+var _spun: Dictionary = {}         # joint -> degrees turned so far, wrapped
 var debug: String = ""             # RIFTGATE_ACTS_DEBUG, read at setup
 var debug_move: bool = false       # RIFTGATE_MOVE_DEBUG: driven constantly
 var last_act: String = ""          # the act played last (never played twice running)
@@ -386,6 +388,13 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 	move = side.get("move", {})
 	heft = float(move.get("heft", HEFT_DEFAULT))
 	gait_options = side.get("gait_options", {}) if side.get("gait_options", {}) is Dictionary else {}
+	spinners = {}
+	_spun = {}
+	var sp: Dictionary = side.get("spin", {}) if side.get("spin", {}) is Dictionary else {}
+	for name in sp.keys():
+		if joints.has(name) and sp[name] is Array and (sp[name] as Array).size() >= 2:
+			spinners[name] = [float(sp[name][0]), float(sp[name][1])]
+			_spun[name] = 0.0
 	use_gait(side.get("gait", {}) if side.get("gait", {}) is Dictionary else {})
 	_body_rest_pos = body.position
 	_body_rest_rot = body.rotation
@@ -459,6 +468,11 @@ func tick(delta: float) -> void:
 		left -= dt
 		if _step(dt):
 			moved = true
+	# What turns without end turns whatever else is happening, faster as the move blends in.
+	for name in spinners.keys():
+		var r: Array = spinners[name]
+		_spun[name] = fposmod(float(_spun[name]) + lerpf(float(r[0]), float(r[1]), _blend) * delta, 360.0)
+		moved = true
 	if debug_move and not gait.is_empty():
 		drive(top_speed, 0.0, 0.0, delta)
 	elif moved:
@@ -640,6 +654,8 @@ func _pose() -> void:
 				deg += (st["vec"] as Vector3) * _strike_envelope(st)
 		var m: Dictionary = meta.get(name, {})
 		deg = clamp_degrees(deg, m.get("limits", {}))
+		if _spun.has(name):
+			deg[["pitch", "yaw", "roll"].find(str(m.get("axis", "yaw")))] += float(_spun[name])
 		j.rotation = _rest[name] + euler_of(deg)
 		var slide: Vector3 = _act_slide.get(name, Vector3.ZERO) + _gait_slide.get(name, Vector3.ZERO)
 		if slide != Vector3.ZERO or j.position != _rest_pos[name]:

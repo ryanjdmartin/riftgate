@@ -1,6 +1,18 @@
 {
  "_about": "the rig of art/models/stingray.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it",
  "joints": {
+  "fan_l": {
+   "axis": "yaw",
+   "limits": {},
+   "swing": false,
+   "parent": ""
+  },
+  "fan_r": {
+   "axis": "yaw",
+   "limits": {},
+   "swing": false,
+   "parent": ""
+  },
   "turret": {
    "axis": "yaw",
    "limits": {},
@@ -381,7 +393,7 @@
   "slide": 0.3,
   "bank": 14.0,
   "strafe": 0.0,
-  "oversteer": 0.8,
+  "oversteer": 1.2,
   "tilt": [
    26.0,
    10.0
@@ -395,5 +407,15 @@
   "eye",
   "lance_muzzle",
   "nozzle_glow"
- ]
+ ],
+ "spin": {
+  "fan_l": [
+   -480.0,
+   -840.0
+  ],
+  "fan_r": [
+   480.0,
+   840.0
+  ]
+ }
 }

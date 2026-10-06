@@ -3,20 +3,24 @@ extends RefCounted
 
 ## A machine's move on the map as a curve and a speed along it (Ryan, 4 October: too fast, no
 ## acceleration, hard corners). The hex centres of the route become one smooth curve: each
-## interior corner is cut by a quadratic arc, the endpoints and the last step's direction kept,
+## interior corner is cut by a curve, the endpoints and the last step's direction kept,
 ## so the machine ends on its hex facing the way the simulation records. Along the curve the
 ## speed starts at rest, accelerates at the machine's rate, holds its full speed through the
 ## corners (Ryan, 4 October, the third pass: braking for them was not needed) and comes to
 ## rest at the end: the classic forward and backward pass over a speed limit. Pure arithmetic
 ## in map pixels, so it runs headless and the hangar page ports it (tools/hangar_motion.js,
 ## Route) line for line.
+## A corner is a quintic, not a quadratic (Ryan, 6 October, the seventh notes: the drift still
+## jerked as each corner began): its first and last three control points lie along the legs,
+## so its curvature rises from nothing on the straight and falls back to nothing, and a
+## machine's turn rate eases in and out of every corner instead of stepping at the arc's start.
 ##
 ## The number per machine lives in its rig sidecar's `move` (written by lowforge's b.move):
 ## `accel`, the seconds it takes from rest to full speed. A machine without it takes the
 ## default below.
 
 const CUT := 0.42            # each corner's arc starts this share of the way along its legs (at most half)
-const ARC_STEPS := 8         # samples per corner arc
+const ARC_STEPS := 24        # samples per corner arc
 const ACCEL_DEFAULT := 0.6   # seconds from rest to full speed
 const FINE := 24             # samples a straight span is cut into, so the speed profile is smooth within a hex
 
@@ -27,7 +31,7 @@ var time: PackedFloat32Array = PackedFloat32Array()     # the time each sample i
 var duration := 0.0
 
 
-## The curve through `centres` (map pixels), each interior corner cut by a quadratic arc. Each
+## The curve through `centres` (map pixels), each interior corner cut by a quintic. Each
 ## sample carries the turn of the corner it belongs to, radians (0 on a straight).
 static func smooth(centres: Array) -> Array:
 	var pts: Array = []
@@ -52,13 +56,23 @@ static func smooth(centres: Array) -> Array:
 			continue
 		var p1 := p + (a - p) * CUT
 		var p2 := p + (b - p) * CUT
+		var ctrl := [p1, p1.lerp(p, 0.4), p1.lerp(p, 0.8), p2.lerp(p, 0.8), p2.lerp(p, 0.4), p2]
 		for k in range(ARC_STEPS + 1):
-			var t := float(k) / ARC_STEPS
-			pts.append(p1.lerp(p, t).lerp(p.lerp(p2, t), t))
+			pts.append(quintic(ctrl, float(k) / ARC_STEPS))
 			turns.append(turn)
 	pts.append(centres[centres.size() - 1])
 	turns.append(0.0)
 	return [pts, turns]
+
+
+## A quintic Bezier through its six control points at `t`.
+static func quintic(c: Array, t: float) -> Vector2:
+	var s := 1.0 - t
+	var w := [s * s * s * s * s, 5.0 * t * s * s * s * s, 10.0 * t * t * s * s * s, 10.0 * t * t * t * s * s, 5.0 * t * t * t * t * s, t * t * t * t * t]
+	var out := Vector2.ZERO
+	for i in range(6):
+		out += (c[i] as Vector2) * float(w[i])
+	return out
 
 
 ## The move: `centres` in map pixels, `top` the full speed in pixels a second, `accel_s` the

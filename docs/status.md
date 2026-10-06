@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.42 since 5 October, late: the sixth notes on the machines, over v0.41's runner's maker team rows and the Kestrel team's reading); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.43 since 6 October: the seventh notes on the machines, over v0.42's sixth); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -13,7 +13,7 @@ stays in A alone (Ryan, 1 October: it serves one ongoing task) and is republishe
 session; a B session cannot read it. Shared:
 
 - **The bible** (above): `docs/design-bible.html`, published whole after every change.
-- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 5 October, late, with the sixth notes): four tabs, the
+- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 6 October with the seventh notes): four tabs, the
   codex, the content editor, the names list and Models. Models (the renders and the Animation
   tab merged, Ryan, 3 October) puts each machine live in 3D on top: its acts, walk and
   cornering played from its rig sidecar by `tools/hangar_motion.js` (published as
@@ -83,7 +83,7 @@ the chat is newer.
 ## As of 3 October 2026
 
 **State.** Tests green: `perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (348 tests, 14,743 checks on 5 October in a cloud session, after the sixth notes;
+tests/run_tests.gd` (350 tests, 15,730 checks on 6 October in a cloud session, after the seventh notes;
 a cloud session fetches Godot 4.7's Linux build from the GitHub release asset to run them
 (`Godot_v4.7-stable_linux.x86_64.zip`, and `xvfb-run` for screenshots), since
 the proxy serves the asset though not the release page; it builds models too, with
@@ -445,6 +445,17 @@ Ammit's waggling talons, higher fold and the offbeat walk as its gait (`_plant` 
 0.9; the option gone). Clearance was measured, not eyeballed, with a scratch script counting
 one part set's vertices inside another's convex pieces through an act (not committed; easy to
 rewrite from `tools/act_shot.gd`). Attack acts: wanted, a session of their own.
+
+**The seventh notes, 6 October (bible v0.43).** Engine: a corner is a quintic (`MovePath.quintic`,
+`ARC_STEPS` 24; the hangar's `quintic` too), so a turn eases in and out; `OVERSTEER_MAX` 1.2; the
+Dingo 2.0, Stingray 1.2, Puffin 1.5. Spinners (`b.spin`, the sidecar's `spin`, `MechRig.spinners`,
+the hangar's `spinners`): the Stingray's fans on `fan_l`/`fan_r` joints. Prairie Dog: the old rev,
+arches +1.5 (judged by the tyre against the arch's top only), skirts as `_wheel_guard`s on each
+wheel's carrier. Acts: the Badger's straight sight_gun, the Dingo's mortar_check, the
+Sparrowhawk's slower roll and `_survey_circle` (replacing `_s_circle`), the Goshawk's charge, the
+Baboon's mark, the Nemesis's pound, the Ammit's rear (swipes), raise_cannons (9.2 s hold) and
+threat (snaps). The Clydesdale stomps (`_plant`'s `stomp`, per-limb `nod`), other walkers' gaits
+unchanged (checked).
 
 **The codex (29 September; a tab of the hangar page since 1 October).** One surface showing a
 chassis and the components fitted to it: the Codex tab renders it in the browser from the

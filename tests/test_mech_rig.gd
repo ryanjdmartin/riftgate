@@ -789,3 +789,33 @@ func test_a_hovercraft_eases_down_and_takes_no_gust_through_an_act() -> void:
 		last_rate = rate
 	assert_true(widest_calm < widest_free * 0.5, "an act's balance is a share of the free one (%f against %f)" % [widest_calm, widest_free])
 	assert_true(worst_jolt < 0.02, "and a gust never changes the attitude's rate at a stroke (%f radians a second in a frame)" % worst_jolt)
+
+
+func test_a_spinner_turns_without_end_and_faster_under_way() -> void:
+	# Ryan, 6 October, the seventh notes: the Stingray's lift fans turn. A spinner (b.spin) turns
+	# on its own axis whatever the machine does, at its idle rate standing and its moving rate
+	# once under way, wrapped rather than clamped; the two fans counter-rotate.
+	var pair := _rig_for("stingray", 3)
+	var rig: MechRig = pair[0]
+	assert_true(rig.spinners.has("fan_l") and rig.spinners.has("fan_r"), "the fans are spinners")
+	var fan_l: Node3D = rig.joints["fan_l"]
+	var fan_r: Node3D = rig.joints["fan_r"]
+	var turned := func(node: Node3D, seconds: float, moving: bool) -> float:
+		var total := 0.0
+		var dt := 1.0 / 60.0
+		var t := 0.0
+		while t < seconds:
+			var before := node.rotation.y
+			if moving:
+				rig.drive(rig.top_speed if rig.top_speed > 0.0 else 60.0, 0.0, 0.0, dt)
+			rig.tick(dt)
+			total += wrapf(node.rotation.y - before, -PI, PI)
+			t += dt
+		return rad_to_deg(total) / seconds
+	var idle: float = turned.call(fan_r, 1.0, false)
+	assert_true(absf(idle - float(rig.spinners["fan_r"][0])) < 20.0, "standing, a fan turns at its idle rate (%f a second)" % idle)
+	assert_true(signf(turned.call(fan_l, 0.5, false)) != signf(idle), "and its twin the other way")
+	turned.call(fan_r, 2.0, true)   # under way, the move blended in
+	var under_way: float = turned.call(fan_r, 1.0, true)
+	assert_true(absf(under_way - float(rig.spinners["fan_r"][1])) < 40.0, "under way it turns at its moving rate (%f a second)" % under_way)
+	pair[1].free()
