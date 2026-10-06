@@ -20,8 +20,11 @@ def badger(b):
     a low reinforced frame with a raised engine deck; the cockpit tucked into the front of the
     frame under a brow, between two cheeks, so it survives a cave-in; two excavator booms
     pivoting on the frame's flanks at mid-length (not shoulders), reaching forward past the
-    cockpit; an outsized claw on the left, the defining feature; a barrel mount on the right;
-    a missile box on the deck; floodlights, vents, a ladder, a hatch."""
+    cockpit; an outsized claw on the left, the defining feature; the Bullion Fragmenter on the
+    right, a hydraulic breaker built in (6 October: the Slug Cannon converted to melee and
+    locked to the Badger, the second claw gone, so the right boom's mount is no hardpoint and
+    the pins run hp_1 missile box, hp_2 left gimbal, hp_3 right gimbal); a missile box on the
+    deck; floodlights, vents, a ladder, a hatch."""
     # Treads: wide enough for the booms to rest over them, chamfered both ends, a skirt
     # plate over each, hazard tips forward.
     for s in (-1.0, 1.0):
@@ -69,18 +72,18 @@ def badger(b):
                    [(cx - s * 11.5, -14.0, 54.0), (cx + s * 11.5, -14.0, 54.0), (cx + s * 11.5, 2.0, 54.0), (cx - s * 11.5, 2.0, 54.0)]], "steel.plate", "pauldron")
         # A gimbal on each pauldron, the same both sides (Ryan, 1 October): a ring and a
         # drum under a turret joint that traverses. The left carries the Twin Autoguns
-        # (hp_3); the right's mount is bare (hp_4: the stock's fourth entry is the
+        # (hp_2); the right's mount is bare (hp_3: the stock's third entry is the
         # Proximity Klaxon, which shows nowhere).
         b.prism("z", cx, -6.0, 54.5, 5.2, 1.0, "steel.dark", 8, "gimbal_ring")
         with b.joint("turret_%s" % ("l" if s < 0 else "r"), (cx, -6.0, 55.0), limits=(-80.0, 80.0)):
             b.prism("z", cx, -6.0, 57.0, 4.4, 4.0, "steel.plate", 8, "gimbal", phase=math.pi / 8)
             if s < 0:
-                with b.socket("hp_3", (cx, -6.0, 59.0)):   # on the gimbal's centre (Ryan, 1 October)
+                with b.socket("hp_2", (cx, -6.0, 59.0)):   # on the gimbal's centre (Ryan, 1 October)
                     b.box(cx - 3.0, cx + 3.0, -10.0, -2.0, 58.0, 61.0, "steel.panel", "receiver")
                     for s2 in (-1.0, 1.0):
                         b.prism("y", cx + s2 * 2.4, 11.0, 59.5, 1.8, 26.0, "steel.dark", 6, "autogun")
             else:
-                b.pad("hp_4", (cx, -6.0, 60.0), size=(6.0, 1.0))
+                b.pad("hp_3", (cx, -6.0, 60.0), size=(6.0, 1.0))
         start = (hinge_x, -6.0, 40.0)
         # The whole boom hangs under a shoulder joint at the hinge: it swings on a melee
         # blow and idles under power (the joints, decided earlier and on the to-do; built
@@ -110,17 +113,21 @@ def badger(b):
                         for sx in (-3.0, 3.0):
                             _tine(b, wrist, sx, -95.0, 90.0, 24.0, 7.0, 4.5, "steel.dark", "tine")
                 else:
-                    # A weapons mount on the wrist: receiver block and a six-sided barrel, the
-                    # hardpoint on it.
-                    b.box(wrist[0] - 7.0, wrist[0] + 7.0, wrist[1] - 6.0, wrist[1] + 12.0, wrist[2] - 6.0, wrist[2] + 6.0, "steel.panel", "mount")
-                    b.box(wrist[0] - 3.0, wrist[0] + 3.0, wrist[1] + 10.0, wrist[1] + 16.0, wrist[2] + 6.0, wrist[2] + 9.0, "amber.light", "mount_light")
-                    with b.socket("hp_1", (wrist[0], wrist[1] + 12.0, wrist[2])):
-                        b.prism("y", wrist[0], wrist[1] + 26.0, wrist[2], 3.2, 30.0, "steel.dark", 6, "barrel")
+                    # The Bullion Fragmenter, built in (6 October): a hydraulic breaker on the
+                    # wrist. The housing is a heavy block with a hazard band, a collar ahead of
+                    # it, and the chisel a tapering six-sided spike to a flat bit, long enough
+                    # to reach the ground beside the claw when the boom drops.
+                    wx, wy, wz = wrist
+                    b.box(wx - 8.0, wx + 8.0, wy - 6.0, wy + 14.0, wz - 7.0, wz + 7.0, "steel.panel", "breaker_housing")
+                    b.box(wx - 8.5, wx + 8.5, wy + 2.0, wy + 6.0, wz - 7.5, wz + 7.5, "steel.hazard", "breaker_band")
+                    b.box(wx - 3.0, wx + 3.0, wy + 8.0, wy + 14.0, wz + 7.0, wz + 10.0, "amber.light", "mount_light")   # the acts' glow track names it
+                    b.prism("y", wx, wy + 17.0, wz, 5.0, 6.0, "steel.dark", 6, "breaker_collar")
+                    b.loft([(wy + 20.0, hexagon(wx, wz, 7.0, 7.0)), (wy + 34.0, hexagon(wx, wz, 5.0, 5.0)), (wy + 46.0, hexagon(wx, wz, 4.0, 1.6))], "steel.dark", "chisel")
     # Deck weapon: a missile box on a turret ring, right of centre. Its face is exactly one
     # tile (14 units) square on tile boundaries, so the box projection shows the nine tubes
     # whole rather than a slice of them.
     b.prism("z", 7.0, -13.0, 41.0, 8.0, 2.0, "steel.dark", 8, "ring")
-    with b.socket("hp_2", (7.0, -12.0, 49.0)):   # no joint: a missile box there has no business spinning (Ryan, 1 October)
+    with b.socket("hp_1", (7.0, -12.0, 49.0)):   # no joint: a missile box there has no business spinning (Ryan, 1 October); hp_1 since 6 October
         b.box(0.0, 14.0, -22.0, -4.0, 42.0, 56.0, "steel.panel", "turret")
         b.box(0.0, 14.0, -4.6, -3.6, 42.0, 56.0, "steel.missile", "missile_face")
 

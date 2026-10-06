@@ -54,8 +54,8 @@
  },
  "chassis": {
   "badger": {
-   "when": "Eleventh round, 1 October.",
-   "note": "The shoulder mounts on the gimbals' centres, not ahead of them.",
+   "when": "Twelfth round, 6 October.",
+   "note": "The right boom's barrel mount is the Bullion Fragmenter built in: a housing with a hazard band, a collar and a tapering chisel to a flat bit. First pass, for Ryan to judge.",
    "images": [
     {
      "file": "badger/badger_front.png",
@@ -67,7 +67,7 @@
     }
    ],
    "before": {
-    "summary": "Before: Tenth round, 1 October",
+    "summary": "Before: Eleventh round, 1 October",
     "images": [
      {
       "file": "badger/before_badger_front.png",

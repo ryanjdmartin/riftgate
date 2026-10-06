@@ -2094,15 +2094,15 @@ func test_a_disrupt_makes_the_foe_do_its_other_move_and_the_new_move_aims_for_it
 	assert_true(boss.attacks(), "the next in its list after the rally is the blow, wrapping")
 
 
-func test_overwhelm_carries_the_damage_past_a_kill_into_the_foe_behind() -> void:
+func test_spillover_carries_the_damage_past_a_kill_into_the_foe_behind() -> void:
 	var sk := Skirmish.new(1, 2)
-	var ram := Face.attack(50, L, K.OVERWHELM)
+	var ram := Face.attack(50, L, K.SPILLOVER)
 	var m := _mech("A", Die.single(ram), 40, 100)
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(20, 10), _ghoul(500, 10), _archer(500, 10), _archer(10, 10)])
 	sk.begin()
 	sk.start_round()
-	assert_eq(ram.describe(), "50 overwhelm", "the keyword reads on the entry")
+	assert_eq(ram.describe(), "50 spillover", "the keyword reads on the entry")
 	# Find the column with the weak ghoul in front and see who stands behind it.
 	var col := 0 if sk.front[0].hp == 20 else 1
 	var behind: Foe = sk.back[col]
@@ -2110,7 +2110,7 @@ func test_overwhelm_carries_the_damage_past_a_kill_into_the_foe_behind() -> void
 	assert_true(sk.assign(0, sk.front[col]), "hit the weak ghoul")
 	assert_eq(sk.front[col], null, "it fell")
 	assert_eq(behind_before - behind.hp, 30, "the 30 past its 20 carried into the archer behind")
-	assert_true("\n".join(sk.log).contains("A overwhelms: 30 spills into archer"), "the log says so")
+	assert_true("\n".join(sk.log).contains("A spills over: 30 into archer"), "the log says so")
 	# No spill into an empty slot, and none past a foe that survives.
 	sk.end_round()
 	sk.start_round()
@@ -2126,7 +2126,7 @@ func test_overwhelm_carries_the_damage_past_a_kill_into_the_foe_behind() -> void
 
 func test_a_passive_may_grant_a_keyword_and_the_entry_wears_it() -> void:
 	var drive := {"id": "drive", "name": "Juggernaut Drive", "description": "", "effects": [
-		{"trigger": "static", "effect": "grant_keyword", "value": "overwhelm"}]}
+		{"trigger": "static", "effect": "grant_keyword", "value": "spillover"}]}
 	var sk := Skirmish.new(1, 1)
 	var gun := Face.attack(50, L)
 	var m := _mech("A", Die.single(gun), 40, 100)
@@ -2135,10 +2135,10 @@ func test_a_passive_may_grant_a_keyword_and_the_entry_wears_it() -> void:
 	sk.add_foes([_ghoul(20, 10), _archer(500, 10)])
 	sk.begin()
 	sk.start_round()
-	assert_false(gun.has(K.OVERWHELM), "the die's own entry is untouched")
-	assert_true(Effects.effective_face(m, gun).has(K.OVERWHELM), "but the machine spends it with the keyword")
-	assert_true(sk.shown_face(sk.mechs[0], gun).has(K.OVERWHELM), "and sees it on the die")
-	assert_eq(Effects.explain(m, gun), ["gains overwhelm (Juggernaut Drive)"], "the die row says where it came from")
+	assert_false(gun.has(K.SPILLOVER), "the die's own entry is untouched")
+	assert_true(Effects.effective_face(m, gun).has(K.SPILLOVER), "but the machine spends it with the keyword")
+	assert_true(sk.shown_face(sk.mechs[0], gun).has(K.SPILLOVER), "and sees it on the die")
+	assert_eq(Effects.explain(m, gun), ["gains spillover (Juggernaut Drive)"], "the die row says where it came from")
 	sk.assign(0, sk.front[0])
 	assert_eq(sk.back[0].hp, 470, "the plain gun spilled past the kill")
 	# A support keyword is never granted to an attack, nor an attack keyword to a shield.
@@ -2148,7 +2148,7 @@ func test_a_passive_may_grant_a_keyword_and_the_entry_wears_it() -> void:
 	m.grant_passive(odd, "odd")
 	assert_false(Effects.effective_face(m, gun).has(K.CLEANSE), "cleanse stays off the gun")
 	assert_true(Effects.effective_face(m, plate).has(K.CLEANSE), "and lands on the shield")
-	assert_false(Effects.effective_face(m, plate).has(K.OVERWHELM), "overwhelm stays off the shield")
+	assert_false(Effects.effective_face(m, plate).has(K.SPILLOVER), "spillover stays off the shield")
 
 
 func test_a_vent_on_fire_attack_fires_the_heat_into_the_blow_and_empties_the_gauge() -> void:

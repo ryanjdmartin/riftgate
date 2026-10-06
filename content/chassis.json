@@ -41,14 +41,15 @@
    "design": {
     "fantasy": "A repurposed mining vehicle, designed to take severe punishment and keep on working. Refurbishments were minimal, basically bolting on weapons and armour, it keeps most of its utilitarian mining machinery flavour.",
     "niche": "tanky bruiser",
-    "name_clash": "Flagged 28 September: the id badger is Heavy Gear's Badger APC and BattleTech's Badger transport; the nickname Honey Badger is nobody's. Kept: the shown name is clear."
+    "name_clash": "Flagged 28 September: the id badger is Heavy Gear's Badger APC and BattleTech's Badger transport; the nickname Honey Badger is nobody's. Kept: the shown name is clear.",
+    "notes": " 6 October (Ryan): the Slug Cannon becomes the Bullion Fragmenter, melee, locked to the Badger as a mining joke; the second Chainsaw Claw goes, so the die is one claw, one fragmenter and three hardpoints (d5) and every face with a model is one face; the right boom's mount is the fragmenter built in, the pins renumbered 1 to 3 (missile box, left gimbal, right gimbal)."
    },
    "codex": "The Minerva EX-45L (colloquially nicknamed the \"Badger\") was popular a mining mech widely praised for its reliability and durability, being designed to operate in the harshest, deepest environments imaginable. Reports exist of Badgers being caught in cave-ins while mining over 5 kilometers underground, only to dig their way out to the surface by nightfall, just in time for drinks with the crew. So naturally, when the Rifts opened, the ever-practical Minerva engineering team's first instinct was to finally give their prized Badger claws, teeth, and as many missiles as it could carry, putting its legendary longevity to work on the battlefield.",
    "hull": 160,
    "shield": 30,
    "movespeed": 20,
    "heat_max": 80,
-   "hardpoints": 4,
+   "hardpoints": 3,
    "armour": 10,
    "recharge_field": 15,
    "cooling": 5,
@@ -57,10 +58,9 @@
    ],
    "fixed": [
     "chainsaw_claw",
-    "chainsaw_claw"
+    "bullion_fragmenter"
    ],
    "loadout": [
-    "slug_cannon",
     "missile_rack",
     "twin_autoguns",
     "proximity_klaxon"
@@ -244,7 +244,7 @@
    "design": {
     "fantasy": "A squat, heavily armoured walker with short, thick legs, its back bristling with weaponry from shielded ports that can seal for additional protection. The cockpit is tucked under the front armour, providing reduced visibility but extra protection. An internal electric generator shocks foes that strike is hull when activated.",
     "niche": "tank",
-    "notes": "Probably needs taunt effects on one or more locked or stock components. Wants a retaliate ability that  damages and/or causes status on foes that hit hull, but not sure if that is a passive or component that needs activating. Decided 28 September: the tankiest machine in the game, its toughness in the numbers and the passive and never in locked plating, so the free die is the player's. Faraday Hull is retaliation as a debuff, not thorns (thorns scales with enemy blows and inverts horde against boss); the locked Faraday Shutters are its taunt and extend the shock to blocked blows; the crack threshold needs no help at this hull. Numbers, designation and kit are Claude's fills, Ryan's to move."
+    "notes": "Probably needs taunt effects on one or more locked or stock components. Wants a retaliate ability that  damages and/or causes status on foes that hit hull, but not sure if that is a passive or component that needs activating. Decided 28 September: the tankiest machine in the game, its toughness in the numbers and the passive and never in locked plating, so the free die is the player's. Faraday Hull is retaliation as a debuff, not thorns (thorns scales with enemy blows and inverts horde against boss); the locked Faraday Shutters are its taunt and extend the shock to blocked blows; the crack threshold needs no help at this hull. Numbers, designation and kit are Claude's fills, Ryan's to move. 6 October: its Slug Cannon slots carry the Rivet Gun as a stopgap since the cannon became the Badger's fixed Bullion Fragmenter; the loadout is Ryan's to reset."
    },
    "codex": "",
    "hull": 150,
@@ -263,7 +263,7 @@
    ],
    "loadout": [
     "rivet_gun",
-    "slug_cannon",
+    "rivet_gun",
     "missile_rack",
     "ablative_plating",
     "blowout_stack"
@@ -290,7 +290,7 @@
    "design": {
     "fantasy": "An unstoppable assault tank, complete with front rams and plows, designed for breaching reinforced emplacements - or plowing over and through fodder monsters.",
     "niche": "Vanguard tank",
-    "notes": "Passive should be something about being able to access the backline, or some other vanguard-punch-through ability. Decided 28 September: a diver, not a bruiser (that is the Badger). Juggernaut Drive puts overwhelm on every attack, so a kill's spare damage reaches the back rank from any gun; the locked Breaching Plow is its one melee hit, cleaving, and carries the front armour as its own passive. Five hardpoints since 30 September (Ryan): two parallel turret guns, a mount on the turret's top and one on each rear quarter; a second Slug Cannon fills the turret pair. Numbers, designation and kit are Claude's fills, Ryan's to move."
+    "notes": "Passive should be something about being able to access the backline, or some other vanguard-punch-through ability. Decided 28 September: a diver, not a bruiser (that is the Badger). Juggernaut Drive puts overwhelm on every attack, so a kill's spare damage reaches the back rank from any gun; the locked Breaching Plow is its one melee hit, cleaving, and carries the front armour as its own passive. Five hardpoints since 30 September (Ryan): two parallel turret guns, a mount on the turret's top and one on each rear quarter; a second Slug Cannon fills the turret pair. Numbers, designation and kit are Claude's fills, Ryan's to move. 6 October: its Slug Cannon slots carry the Rivet Gun as a stopgap since the cannon became the Badger's fixed Bullion Fragmenter; the loadout is Ryan's to reset."
    },
    "codex": "",
    "hull": 130,
@@ -308,8 +308,8 @@
     "breaching_plow"
    ],
    "loadout": [
-    "slug_cannon",
-    "slug_cannon",
+    "rivet_gun",
+    "rivet_gun",
     "missile_rack",
     "ablative_plating",
     "blowout_stack"
@@ -322,7 +322,7 @@
      {
       "trigger": "static",
       "effect": "grant_keyword",
-      "value": "overwhelm"
+      "value": "spillover"
      }
     ]
    },
@@ -648,7 +648,7 @@
    "passive": {
     "id": "slipstream_projector",
     "name": "Slipstream Projector",
-    "description": "A slipstream, projected forward, which is not how slipstreams work. Any ally this machine shields also sheds 10 heat.",
+    "description": "A slipstream, projected forward. Any ally this machine shields also sheds 10 heat.",
     "effects": [
      {
       "trigger": "on_shield_granted",

@@ -884,17 +884,17 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 				log.append("%s: the shock lands, %d doubled" % [foe.display_name, dmg])
 			if was_alive and not foe.alive() and f.has(Face.Keyword.DEVOUR):
 				_devour(ms, foe)
-			# Overwhelm: what the blow had past the kill of a front-rank foe carries into the
+			# Spillover (Overwhelm until 6 October): what the blow had past the kill of a front-rank foe carries into the
 			# foe behind it in the column, as plain damage that still spends a shock and
 			# feeds a devour. A massive foe fills its column, so nothing stands behind it.
-			if was_alive and not foe.alive() and f.has(Face.Keyword.OVERWHELM) and foe.rank == 0 and not foe.is_massive():
+			if was_alive and not foe.alive() and f.has(Face.Keyword.SPILLOVER) and foe.rank == 0 and not foe.is_massive():
 				var spill := taken - hp_before
 				var behind: Foe = back[foe.column] if foe.column >= 0 and foe.column < columns else null
 				if spill > 0 and behind != null and behind.alive() and not hit.has(behind):
 					var behind_taken := maxi(0, Effects.damage_taken(behind, spill) - behind.armour_total())
 					behind.hp -= behind_taken
 					Effects.remove(behind, "shocked")
-					log.append("%s overwhelms: %d spills into %s" % [ms.unit.display_name, behind_taken, behind.display_name])
+					log.append("%s spills over: %d into %s" % [ms.unit.display_name, behind_taken, behind.display_name])
 					if not behind.alive() and f.has(Face.Keyword.DEVOUR):
 						_devour(ms, behind)
 			if f.has(Face.Keyword.BURN):

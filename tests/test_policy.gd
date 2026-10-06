@@ -272,7 +272,7 @@ func test_greedy_lures_when_it_saves_the_glass_machine() -> void:
 func test_greedy_values_the_spill_behind_a_dying_foe() -> void:
 	var sk := Skirmish.new(1, 1)
 	var plain := Face.attack(50, L)
-	var ram := Face.attack(50, L, K.OVERWHELM)
+	var ram := Face.attack(50, L, K.SPILLOVER)
 	sk.add_mech(_mech("A", Die.of([plain, ram]), 40, 100))
 	sk.add_foes([_ghoul(20, 10), _archer(40, 10)])
 	sk.begin()

@@ -35,8 +35,10 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Judge the skirmish's hover idle pitch (`sway_pitch`, 2 October) against the rig's tilt and the hovercraft's acts running; retire the idle pitch if the rig's acts cover it
 - [x] Name the Puffin's passive (6 October: the Slipstream Projector; its fixed shield the Backwash Ionizer; the Puffin at move 40)
 - [ ] Read the Puffin in play: the overshield on an ally against a heavy round, the vent on the Stingray
-- [ ] Pick the Slug Cannon's Minervan name (6 October: more forceful or more low-tech; Claude's candidates Slug Hurler, Ingot Launcher, Pig-iron Flinger, Shot Heaver)
-- [ ] Discuss first: renaming Overwhelm, the one of the six "over" words that would move (6 October; candidates Follow-through, Spillover, Carry-through; it is a keyword, so the engine, content, tests and vocabulary move with it)
+- [x] The Slug Cannon's name (6 October, Ryan: the Bullion Fragmenter, melee, locked to the Badger; the second Chainsaw Claw gone; built the same day with the Badger's right boom as the breaker)
+- [ ] Judge the Badger's Bullion Fragmenter from the renders (first pass 6 October: a housing with a hazard band, a collar and a tapering chisel on the right boom where the barrel mount was)
+- [ ] Reset the Armadillo's and the Wild Boar's loadouts: their Slug Cannon slots carry the Rivet Gun as a stopgap since 6 October (the Boar's two of them)
+- [x] Overwhelm renamed Spillover (Ryan, 6 October; engine, content, tests, vocabulary and bible moved with it)
 - [ ] The Names board (the hangar page's names tab) follows the vocabulary guidelines of 6 October rather than maker claims: its maker tabs for chassis stay, its parts tab is maker-free (the labels came off 6 October), its rules text wants the guidelines; rework the page once the movement session is done with it
 
 ## Engine

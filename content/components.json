@@ -61,20 +61,21 @@
    ]
   },
   {
-   "id": "slug_cannon",
-   "name": "Slug Cannon",
+   "id": "bullion_fragmenter",
+   "name": "Bullion Fragmenter",
    "maker": "minerva",
-   "shape": "barrel",
-   "codex": "",
+   "shape": "blade",
+   "codex": "A hydraulic breaker built to reduce bullion to a size the smelter will take. Pointed at anything else, it does the same.",
    "flavour": "",
    "design": {
     "stage": "draft",
     "fantasy": "One big round. Warm barrel.",
-    "niche": ""
+    "niche": "",
+    "notes": " 6 October (Ryan): the Slug Cannon converted to melee, renamed the Bullion Fragmenter, and locked to the Badger as a funny mining reference; its line kinetic numbers kept (30 to 60, crit 15, 10 heat) as placeholders."
    },
    "face": {
     "kind": "attack",
-    "reach": "line",
+    "reach": "melee",
     "power": 30,
     "power_max": 60,
     "crit": 15,
@@ -84,6 +85,7 @@
    "passive": null,
    "tags": [
     "kinetic",
+    "melee",
     "single"
    ]
   },
@@ -1213,7 +1215,7 @@
    "name": "Backwash Ionizer",
    "maker": "kestrel",
    "shape": "dish",
-   "codex": "Ionizes the target's backwash. Whatever that means, the ally comes out holding more shield than it was built for, until the round's end.",
+   "codex": "Ionizes the target's backwash, temporarily increasing the target's shield capacity until round end.",
    "flavour": "",
    "design": {
     "stage": "draft",
