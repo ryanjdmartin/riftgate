@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.50 since 6 October: the movement session's eighth notes, over v0.49's packs retargeting when held off their goal (published by another session and not yet on main when the movement branch built on it; the committed file here carries that row too), over v0.48's Fragmenter signed off, over the Slugthrower, the codex rule, Spillover and the Bullion Fragmenter, a sawed-off cannon, on the Badger, over the movement session's seventh notes, over the naming guidelines, the Puffin's names and speed, and the movement session's sixth notes); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.51 since 6 October: the movement session's eighth notes (the survey one smooth circle), over v0.49's packs retargeting when held off their goal (published by another session and not yet on main when the movement branch built on it; the committed file here carries that row too), over v0.48's Fragmenter signed off, over the Slugthrower, the codex rule, Spillover and the Bullion Fragmenter, a sawed-off cannon, on the Badger, over the movement session's seventh notes, over the naming guidelines, the Puffin's names and speed, and the movement session's sixth notes); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -455,8 +455,8 @@ cap `OVERSTEER_MAX` 1.45; the Dingo 2.0, Stingray 1.2, Puffin 1.5. Spinners (`b.
 hangar's acts view frames how far an act carries the machine. Prairie Dog: the old rev, arches
 +1.5 (judged by the top only), the long plate back on the axles (`_skirt_plate`), the fronts
 steering through it. Acts: the Badger's sight_gun (straight, then the shoulder adjusts the aim
-down), the Dingo's mortar laid with the tail, the Sparrowhawk's `_survey_ring` (the ring round
-its hex; `_survey_circle` gone) and a loop of radius 46, the Goshawk's cannon on the new
+down), the Dingo's mortar laid with the tail, the Sparrowhawk's `_survey_circle` (one smooth
+circle beside its hex, no peel; the ring round the hex and a figure eight set aside) and a loop of radius 46, the Goshawk's cannon on the new
 `ember` tile at rest and charged far hotter, the spine lit throughout, the Nemesis's dead-stop
 pound (a CLOSE key 0.85 of the way three hundredths before the hit), the Ammit's paired angry
 swipes, deeper fold (talons to -80) and held point. The Clydesdale gallops (`_gallop`); the

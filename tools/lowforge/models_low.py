@@ -305,14 +305,12 @@ def sparrowhawk(b):
           glow=[(["booster_ring", "exhaust"], [(0.3, 0.0), (0.8, 8.0), (1.2, 4.0), (1.6, 8.0), (2.6, 8.0), (3.4, 0.0)])])
     # A banked circle (Ryan, 5 October, in place of the slow pirouette): wide, out over the next
     # hexes, and on the map only, as the loop (the fifth notes). A circling predator surveying
-    # the ground (the seventh notes: slow and smooth, after a harder pull to the right; the
-    # sixth's path levelled out along a straight). The eighth (Ryan, 6 October: the right idea,
-    # but it twitched at the start, drifted right without travelling, and slid round at the
-    # end): one smooth curve with the nose always along it, a slow pull away into a right bank,
-    # rolling over into a wide left circle round the ground about its hex, and a curl up from
-    # behind onto its hex along its facing (_survey_ring).
-    b.act("banked_circle", 10.4, body=_survey_ring(t0=0.3, t1=9.8, duration=10.4), places=("map",),
-          glow=[(["booster_ring", "exhaust"], [(0.2, 0.0), (1.4, 6.0), (8.6, 6.0), (10.0, 0.0)])])
+    # the ground, slow and smooth (the seventh notes). After the eighth (Ryan, 6 October: no
+    # right peel if it makes it complicated, just a smooth circle): one true circle to the
+    # left, from its hex along its facing and back onto it the same way, the bank steady
+    # (_survey_circle).
+    b.act("banked_circle", 9.0, body=_survey_circle(), places=("map",),
+          glow=[(["booster_ring", "exhaust"], [(0.2, 0.0), (1.2, 6.0), (7.6, 6.0), (8.8, 0.0)])])
     # Movement: the boosters brighten, the nose drops; it banks and slides through corners
     # (b.move) at full speed.
     b.gait(glow={"parts": ["booster_ring", "exhaust"], "k": 5.0}, body_hold=(0.0, 0.0, 0.0, 0.0, -6.0, 0.0))
@@ -3329,114 +3327,38 @@ def _barrel_roll(t0, t1, over, duration, surge=4.0):
             (duration, 0.0, 0.0, 0.0, 0.0, 0.0, 360.0)]
 
 
-def _survey_ring(rho=28.0, peel=100.0, r1=22.0, r3=25.0, lead=10.0, ramp=20.0, bank=42.0, t0=0.3, t1=9.6, duration=10.2, rise=6.0, steps=60):
-    """Body keys for a slow circling flight round the ground about its hex (Ryan, 6 October,
-    the eighth notes: a smooth slow acceleration into a right bank, then smoothly into a wider
-    circle that ends behind the hex, so it comes back onto its facing without sliding round;
-    it can leave its hex more, the act being the map's alone). The path, one smooth curve with
-    the nose always along it: away along its facing, gathering speed into a right turn of
-    radius `rho` (about `peel` degrees, the bank coming on as the speed does), rolling through
-    level into a left turn of radius `r1` that opens out onto a wide circle round the hex, held
-    at a steady left bank most of the way round, then a tighter left curl (radius `r3`) up
-    behind the hex and the last `lead` units straight along its facing, slowing onto its hex.
-    The circle has to take the hex inside it: after a right peel a left circle can only come
-    back along the hex's facing from behind if it goes round the hex, which is why the seventh
-    notes' circle, standing on the hex, needed a quarter turn at the end. Each change of turn
-    eases in over `ramp` units of path (a clothoid's way), so the bank never steps. The wide
-    circle's radius and the three turns' lengths are solved so the path closes on the hex, on
-    its facing. Keys as (t, dx, dy, dz, yaw, pitch, roll); bank and pitch in degrees, the
-    circle steady at about 34, the peel and the curl soft-capped near 48 (tanh)."""
-    a = math.radians(peel)
-    D = rho + r1
-    K = (D * D * (1.0 - math.cos(a)) ** 2 + (lead + D * math.sin(a)) ** 2) / (2.0 * D * (1.0 - math.cos(a)))
-    R = r3 + K   # the wide circle, from the turns as plain arcs (the ramps then close it below)
-    phi = math.atan2(-(lead + D * math.sin(a)) / K, 1.0 - D * (1.0 - math.cos(a)) / K) % (2.0 * math.pi)
-    ds = 0.5
+def _survey_circle(r=66.0, bank=-34.0, t0=0.3, t1=8.6, duration=9.0, rise=6.0, steps=56):
+    """Body keys for a slow circling flight beside its hex (Ryan, 6 October, after the eighth
+    notes: no right peel, just a smooth circle; a figure eight weighed and set aside, since it
+    crosses its own hex at speed and rolls through level to change bank halfway, the levelling
+    he disliked). One true circle of radius `r`, flown once round to the left from the hex
+    along its facing and back onto the hex along its facing, so it never slides: the hex is on
+    the circle's edge and the circle lies to its left. It gathers speed over the first quarter
+    of the way round and slows over the last, the nose always along the path, the bank coming
+    on with the speed to a steady `bank` degrees (negative drops the left wing) and easing off
+    as it slows, the nose a little down at speed, rising `rise` units over the far side. Keys
+    as (t, dx, dy, dz, yaw, pitch, roll)."""
+    n = 720
 
-    def kappas(holds):
-        """(curvature, length) steps: each ramp in `ds` steps, each hold in whole steps and a
-        last part step, so the path's length varies smoothly with the holds (Newton's need)."""
-        out, k0 = [], 0.0
-        for k1, run, hold in ((-1.0 / rho, ramp, holds[0]), (1.0 / r1, ramp, holds[1]), (1.0 / R, ramp, holds[2]), (1.0 / r3, ramp, holds[3]), (0.0, ramp * 0.8, holds[4])):
-            n = max(1, int(round(run / ds)))
-            for i in range(n):
-                u = (i + 0.5) / n
-                out.append((k0 + (k1 - k0) * u * u * u * (u * (6.0 * u - 15.0) + 10.0), run / n))
-            h = max(0.0, hold)
-            out += [(k1, ds)] * int(h // ds)
-            if h % ds > 1e-9:
-                out.append((k1, h % ds))
-            k0 = k1
-        return out
+    def pace(u):
+        a1, e1 = min(1.0, u / 0.22), min(1.0, (1.0 - u) / 0.22)
+        return 0.2 + 0.8 * min(a1 * a1 * (3.0 - 2.0 * a1), e1 * e1 * (3.0 - 2.0 * e1))
 
-    def walk(ks):
-        psi, x, y, pts = 0.0, 0.0, 0.0, [(0.0, 0.0, 0.0, 0.0)]
-        for k, l in ks:
-            m = psi + 0.5 * k * l
-            x -= math.sin(m) * l
-            y += math.cos(m) * l
-            psi += k * l
-            pts.append((x, y, psi, k))
-        return pts
-
-    L1, L5 = max(0.0, rho * a - ramp * 0.5), lead
-    hold = [max(0.0, r1 * a - ramp), max(0.0, R * phi - ramp), max(0.0, r3 * (2.0 * math.pi - phi) - ramp)]
-
-    def miss(h):
-        e = walk(kappas([L1, h[0], h[1], h[2], L5]))[-1]
-        return [e[0] / 50.0, e[1] / 50.0, e[2] - 2.0 * math.pi]
-
-    for _ in range(40):   # Newton on the three holds, the ramps having moved the arcs' ends
-        f = miss(hold)
-        if max(abs(v) for v in f) < 1e-6:
-            break
-        J = []
-        for j in range(3):
-            h = list(hold)
-            h[j] += 0.25
-            J.append([(g - v) / 0.25 for g, v in zip(miss(h), f)])
-        J = [[J[c][r] for c in range(3)] for r in range(3)]   # rows: equations
-        det = lambda m: (m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) - m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0])
-                         + m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]))
-        d0 = det(J)
-        if abs(d0) < 1e-12:
-            break
-        step = []
-        for c in range(3):
-            m = [row[:] for row in J]
-            for r in range(3):
-                m[r][c] = f[r]
-            step.append(det(m) / d0)
-        hold = [max(0.0, h - st) for h, st in zip(hold, step)]
-    pts = walk(kappas([L1, hold[0], hold[1], hold[2], L5]))
-    n = len(pts) - 1
-    # The pace: away slowly, gathering speed over the first fifth of the path, slow and steady
-    # round the circle, easing down over the last sixth onto the hex.
-    lengths = [l for _, l in kappas([L1, hold[0], hold[1], hold[2], L5])]
-    run_to = [0.0]
-    for l in lengths:
-        run_to.append(run_to[-1] + l)
-    def pace(i):
-        u = run_to[int(i)] / run_to[-1]
-        a1, e1 = min(1.0, u / 0.2), min(1.0, (1.0 - u) / 0.16)
-        return 0.12 + 0.88 * min(a1 * a1 * (3.0 - 2.0 * a1), e1 * e1 * (3.0 - 2.0 * e1))
     clock = [0.0]
     for i in range(n):
-        clock.append(clock[-1] + lengths[i] / pace(i))
+        clock.append(clock[-1] + 1.0 / pace((i + 0.5) / n))
     keys = [(t0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)]
     j = 0
-    for kk in range(1, steps + 1):
-        tt = clock[-1] * kk / float(steps)
+    for k in range(1, steps):
+        tt = clock[-1] * k / float(steps)
         while j < n and clock[j + 1] < tt:
             j += 1
-        x, y, psi, k = pts[min(j + 1, n)]
-        u = run_to[min(j + 1, n)] / run_to[-1]
-        v = pace(min(j + 1, n - 1))
-        roll = 48.0 * math.tanh(-k * R * bank / 48.0) * min(1.0, v / 0.8) ** 2   # a right turn drops the right wing
-        pitch = -3.0 * min(1.0, v / 0.8) + 5.0 * max(0.0, (u - 0.86) / 0.14) * (1.0 - max(0.0, (u - 0.97) / 0.03))   # nose down at speed, a flare braking onto the hex
-        keys.append((round(t0 + (t1 - t0) * kk / float(steps), 3), round(x, 3), round(y, 3), round(rise * math.sin(math.pi * u) ** 2, 3),
-                     round(math.degrees(psi), 3), round(pitch, 3), round(roll, 3)))
-    keys[-1] = (t1, 0.0, 0.0, 0.0, 360.0, 0.0, 0.0)
+        u = (j + (tt - clock[j]) / (clock[j + 1] - clock[j])) / n   # the share of the way round at this key
+        th = 2.0 * math.pi * u
+        v = pace(u)
+        keys.append((round(t0 + (t1 - t0) * k / float(steps), 3), round(-r + r * math.cos(th), 3), round(r * math.sin(th), 3), round(rise * math.sin(math.pi * u) ** 2, 3),
+                     round(math.degrees(th), 3), round(-3.0 * v, 3), round(bank * v * v, 3)))
+    keys.append((t1, 0.0, 0.0, 0.0, 360.0, 0.0, 0.0))
     keys.append((duration, 0.0, 0.0, 0.0, 360.0, 0.0, 0.0))
     return keys
 
