@@ -34,7 +34,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] The game's name
 - [ ] Judge the skirmish's hover idle pitch (`sway_pitch`, 2 October) against the rig's tilt and the hovercraft's acts running; retire the idle pitch if the rig's acts cover it
 - [x] Name the Puffin's passive (6 October: the Slipstream Projector; its fixed shield the Backwash Ionizer; the Puffin at move 40)
-- [ ] Read the Puffin in play: the overshield on an ally against a heavy round, the vent on the Stingray
+- [x] Read the Puffin in play (closed 6 October: Ryan reads it in his own time, not as a tracked task)
 - [x] The Slug Cannon's name (6 October, Ryan: the Bullion Fragmenter, melee, locked to the Badger; the second Chainsaw Claw gone; built the same day with the Badger's right boom as the breaker)
 - [ ] Judge the Badger's Bullion Fragmenter from the renders (third pass 6 October, the bore hollow: a pale sawn rim, the bore lined dark five units in; a breech block with a hazard band and the crusher hopper on top)
 - [x] The basic Minervan line weapon for the Armadillo and Wild Boar (Ryan, 6 October: the Slugthrower, a play on flamethrower; built the same evening with the Slug Cannon's numbers)
