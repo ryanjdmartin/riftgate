@@ -1203,23 +1203,20 @@ def prairie_dog(b):
                 b.loft([(yw - 12.0, rect(s * 18.0, 10.0, R + 7.0, R + 11.0)), (yw, rect(s * 18.0, 10.0, R + 11.0, R + 15.0)), (yw + 12.0, rect(s * 18.0, 10.0, R + 7.0, R + 11.0))], "steel.plate", "arch")
                 continue
             # The front pair meet the body (Ryan, 6 October, the ninth notes: a gap between the
-            # front fenders and the body; then, an inner flange stepping down into the nose was
-            # far too smooth a join for W&S: the box arch was right and only wanted tilting or
-            # carrying down to meet). The same box, flat on top and square at its edges, its
-            # inner edge run in on one straight line to the nose's flank, the whole of it
-            # rolled 15 degrees inward about the tyre's inner edge, so its inner side drops
-            # onto the body and the part over the tyre rises a little. Carrying the front end
-            # down instead took its top through the tyre in the rev; the roll leaves more room
-            # than the level arch had (0.35 at the worst moment of the rev, from 0.22, measured).
-            tilt = math.radians(15.0)
+            # front fenders and the body; an inner flange stepping down into the nose was far too
+            # smooth a join for W&S; the box rolled 15 degrees onto the nose lost its squared-off
+            # look, the twelfth). The level box again, flat on top and square at every edge, its
+            # inner edge run in on one straight line to a unit inside the nose's flank, and a
+            # square lip two units wide hung from that edge down to half a unit into the body's
+            # top where the nose drops away under the arch, so the arch sits on the hull as a
+            # bolted box would. Nothing over the tyre changes, so its top clears the tyre in the
+            # rev as the level arch always has.
             nose_half, _top = _prairie_body(yw + 12.0)
             secs = []
-            for (y, z0), xi in zip(((yw - 12.0, R + 7.0), (yw, R + 11.0), (yw + 12.0, R + 7.0)), (13.0, (13.0 + nose_half) * 0.5, nose_half)):
-                pts = []
-                for x, z in rect(16.0, 2.0 * (23.0 - 16.0), z0, z0 + 4.0):
-                    x = xi if x < 16.0 else x
-                    pts.append((s * (16.0 + (x - 16.0) * math.cos(tilt) - (z - z0) * math.sin(tilt)), z0 + (z - z0) * math.cos(tilt) + (x - 16.0) * math.sin(tilt)))
-                secs.append((y, pts if s > 0 else pts[::-1]))
+            for (y, z0), xi in zip(((yw - 12.0, R + 7.0), (yw, R + 11.0), (yw + 12.0, R + 7.0)), (13.0, (13.0 + nose_half - 1.0) * 0.5, nose_half - 1.0)):
+                lip = min(z0, _prairie_body(y)[1] - 0.5)
+                pts = [(xi, lip), (xi + 2.0, lip), (xi + 2.0, z0), (23.0, z0), (23.0, z0 + 4.0), (xi, z0 + 4.0)]
+                secs.append((y, [(s * x, z) for x, z in (pts if s > 0 else pts[::-1])]))
             b.loft(secs, "steel.plate", "arch")
     # The body: a wedge lofted from a squared tail to a low raked nose, a chin plate under.
     b.loft([(-30.0, rect(0.0, 28.0, 8.0, 24.0)), (-6.0, rect(0.0, 30.0, 8.0, 28.0)), (12.0, rect(0.0, 28.0, 8.0, 24.0)), (32.0, rect(0.0, 20.0, 10.0, 15.0))], "steel.panel", "body")

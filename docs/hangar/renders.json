@@ -224,8 +224,8 @@
    }
   },
   "prairie_dog": {
-   "when": "The ninth notes, second pass, 6 October.",
-   "note": "Bash bars, Ryan's pick of the three tyre guards (the most W&S: functional rather than sleek): a low rail bolted on the long plate's outer face runs on past each end to an upright ahead of the front tyre and behind the rear, with a top bar across toward the body; an armoured boss over each hub. They ride with the plate on the axles, clear of the arches as the body rocks and of a front tyre steering as far as the map steers it (a full lock in the steer act swings it through them, as through the plate). The front arches are the old box again (Ryan: the stepped flange into the nose was far too smooth a join for W&S), its inner edge run in straight to the nose and the whole box rolled 15 degrees inward about the tyre's inner edge, so it drops onto the body; that leaves the tyre more room under its top in the rev than the level arch had.",
+   "when": "The twelfth notes, 6 October.",
+   "note": "The front arches are the squared level box again (Ryan: the tilt lost the squared-off look; was there no way to resolve it?), its inner edge run in on one straight line to the nose's flank and a square lip two units wide hung from that edge into the body's top where the nose drops away, so the arch sits on the hull as a bolted box would: flat top, square edges, no gap. Nothing over the tyre changed, so its top clears the tyre in the rev as the level arch always has. The bash bars and hub bosses as before. The last picture is the alternative, all four arches rolled 15 degrees, for comparison only; not built.",
    "images": [
     {
      "file": "prairie_dog/prairie_dog_front.png",
@@ -238,10 +238,14 @@
     {
      "file": "prairie_dog/prairie_dog_side.png",
      "alt": "prairie_dog, left side"
+    },
+    {
+     "file": "prairie_dog/option_all_tilted.png",
+     "alt": "For comparison, not built: all four arches rolled 15 degrees"
     }
    ],
    "before": {
-    "summary": "Before: the ninth notes' first pass, 6 October (the front arches' inner flange stepping into the nose, the plate bare)",
+    "summary": "Before: the eleventh notes, 6 October (the front arches rolled 15 degrees onto the nose)",
     "images": [
      {
       "file": "prairie_dog/before_prairie_dog_front.png",
