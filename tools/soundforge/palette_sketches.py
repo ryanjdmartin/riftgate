@@ -66,6 +66,15 @@ transient); the round opening a touch slower; the end of the turn swelling neare
 a longer tail, quieter; the shoo softer with a longer tail; the menu opening's boops shorter; the
 menu closing's plate swelling at the start and tailing off.
 
+The seventh cut (Ryan, 6 October, night): the map's acquire two sounds so it stands further
+from a press, the brackets closing softly on the glass then a couple of quick soft boops,
+still short; the heavy press cut, since every heavy button plays its action's own sound and
+nothing would call it; the hover easing in slower; the reroll rebuilt on the lock's soft digital
+clicks over the glass, since a glass flutter will always sound like a glass rolling on the
+floor; the round opening's swell at its start with two boops on one pitch, fast then slow,
+dot dash; the end of the turn's swell shorter; a route set high then low; the shoo less hard
+again; the menu opening down to G and a little shorter.
+
     python3 tools/soundforge/palette_sketches.py          # into out/fx, after the others
 """
 import json
@@ -85,7 +94,7 @@ import audition_sketches as A  # noqa: E402
 
 SR = F.SR
 n_of, t_of, mix, at = F.n_of, F.t_of, F.mix, F.at
-PREFIX = "pal6_"   # the fifth cut's files; the earlier cuts' files are cleared from the server as each is superseded
+PREFIX = "pal7_"   # the fifth cut's files; the earlier cuts' files are cleared from the server as each is superseded
 
 
 def lay(*parts):
@@ -158,11 +167,11 @@ def map_select():
     """The map is where something is acquired: a tile, a pack, a machine. A scan, the glass
     bowed with its colour rising over a fifth of a second (the filter moves, no pitch does),
     then the lock, two quick boops E5 B5."""
-    dur = 0.12
-    n = n_of(dur)
-    x = F.lp_var(F.hp(F.noise(n), 150.0), np.geomspace(400.0, 2200.0, n)) * F.env_pts(n, [(0.0, 0.0), (0.03, 1.0), (dur - 0.02, 0.9), (dur, 0.0)])
-    scan = R.body(np.concatenate([x * 0.5, np.zeros(n_of(0.3))]), "glass", 460.0, 0.2)
-    return lay((0.0, scan), (0.1, boop(B.G4, 0.09, 0.4)))
+    brackets = np.zeros(n_of(0.5))
+    brackets = at(brackets, R.tap(0.6, 0.006), 0.0)
+    brackets = at(brackets, R.tap(0.5, 0.006), 0.045)
+    glass = R.body(brackets, "glass", 460.0, 0.16)
+    return lay((0.0, glass), (0.09, boop(B.G4, 0.06, 0.4)), (0.16, boop(B.G4, 0.08, 0.4)))
 
 
 def dismiss():
@@ -182,7 +191,7 @@ def die_hover(dur=1.2):
     Glass register, subtle: in the game this would loop while the ghost sits over a target."""
     n = n_of(dur)
     t = t_of(n)
-    env = F.env_pts(n, [(0.0, 0.0), (min(0.45, dur * 0.45), 1.0), (dur - 0.15, 1.0), (dur, 0.0)])   # eases in
+    env = F.env_pts(n, [(0.0, 0.0), (min(0.8, dur * 0.55), 1.0), (dur - 0.15, 1.0), (dur, 0.0)])   # eases in over most of a second
     x = F.lp(F.hp(F.noise(n), 120.0), 700.0)
     eager = 1.0 - 0.14 * 0.5 * (1.0 + np.sin(2.0 * math.pi * 2.2 * t))
     glass = R.body(np.concatenate([x * env * eager * 0.4, np.zeros(n_of(0.25))]), "glass", 320.0, None)
@@ -203,16 +212,16 @@ def die_spend_self():
 
 
 def reroll():
-    """The flips as the glass fluttering for the 0.22 s they take, then the glass tapped as
-    the dice land. Glass alone and short; the flutter brighter and harder than the second cut."""
-    dur = 0.28
+    """The flips as the lock's soft digital clicks, five at fourteen a second, over a quiet
+    glass bow, the last click a little firmer as the dice land. (A glass flutter always
+    sounded like a glass rolling on the floor.)"""
+    dur = 0.3
     n = n_of(dur)
-    t = t_of(n)
-    gate = 0.15 + 0.85 * (np.sin(2.0 * math.pi * 14.0 * t) > 0.0).astype(float)
-    gate = np.convolve(gate, np.ones(n_of(0.0015)) / n_of(0.0015), mode="same")
-    x = F.lp(F.hp(F.noise(n), 200.0), 2600.0) * gate * F.env_pts(n, [(0.0, 0.0), (0.015, 1.0), (dur - 0.02, 1.0), (dur, 0.0)])
-    flips = R.body(np.concatenate([x * 1.4, np.zeros(n_of(0.3))]), "glass", 480.0, dur + 0.08)
-    return lay((0.0, flips), (dur, R.shell_tap("glass", 450.0, 1.0, 0.14)))
+    glass = R.body(np.concatenate([R.bow(dur, 0.35, 1000.0, 0.2), np.zeros(n_of(0.3))]), "glass", 480.0, dur + 0.1)
+    buf = glass
+    for k in range(5):
+        buf = at(buf, click(0.5 if k < 4 else 0.7, 1.0 - 0.03 * k), k * (1.0 / 14.0))
+    return buf
 
 
 def click(gain=1.0, pitch=1.0):
@@ -240,19 +249,18 @@ def unlock():
 def round_open():
     """The glass and then the plate bowed, one soft rising two-note on the boop, and nothing
     after it."""
-    g = np.concatenate([R.bow(0.32, 1.0, 1400.0, 0.18), np.zeros(n_of(0.5))])
+    g = np.concatenate([R.bow(0.3, 1.0, 1400.0, 0.06), np.zeros(n_of(0.5))])
     glass = R.body(g, "glass", 560.0, 0.5)
-    pl = np.zeros(n_of(1.1))
-    pl = at(pl, R.bow(0.6, 1.0, 650.0, 0.35), 0.12)
-    plate = R.body(pl, "plate", 180.0, 0.9)
-    return lay((0.0, boop(B.B4, 0.34, 0.45, attack=0.02, close=(2200.0, 700.0))), (0.0, mix(glass * 0.6, plate) * 0.8))
+    pl = np.concatenate([R.bow(0.55, 1.0, 650.0, 0.1), np.zeros(n_of(0.5))])
+    plate = R.body(pl, "plate", 180.0, 0.85)
+    return lay((0.0, boop(B.B4, 0.1, 0.45, attack=0.012)), (0.14, boop(B.B4, 0.32, 0.45, attack=0.015, close=(2200.0, 700.0))), (0.0, mix(glass * 0.6, plate) * 0.8))
 
 
 def end_turn():
     """P21 alone, drawn out: the low plate bow and the chunk landing in it, handing control
     over (Ryan: it sounds like Protoss)."""
-    d = 0.8
-    pl = np.concatenate([R.bow(d, 1.0, 600.0, 0.18), np.zeros(n_of(0.9))])
+    d = 0.45
+    pl = np.concatenate([R.bow(d, 1.0, 600.0, 0.2), np.zeros(n_of(0.9))])
     plate = R.body(pl, "plate", 150.0, None)
     n = len(plate)
     plate *= F.env_pts(n, [(0.0, 1.0), (d + 0.1, 1.0), (n / SR, 0.0)])   # tails off rather than being stopped
@@ -275,21 +283,21 @@ def hold_readout():
     dur = 0.9
     n = n_of(dur)
     t = t_of(n)
-    air = F.bp(F.noise(n), 500.0, 1700.0) * F.env_pts(n, [(0.0, 0.0), (0.16, 1.0), (0.4, 0.4), (dur, 0.0)]) * 0.28   # the band kept under 2 kHz; the tail drawn out
+    air = F.bp(F.noise(n), 450.0, 1500.0) * F.env_pts(n, [(0.0, 0.0), (0.22, 1.0), (0.45, 0.4), (dur, 0.0)]) * 0.22   # the band kept under 2 kHz; slower in, softer, the tail drawn out
     f = B.hz(0, 1)
-    tone = (np.sin(2.0 * math.pi * f * t) + 0.5 * np.sin(2.0 * math.pi * f * 2.0 * t) + 0.2 * np.sin(2.0 * math.pi * f * 3.0 * t)) * F.env_pts(n, [(0.0, 0.0), (0.08, 1.0), (0.4, 0.45), (dur, 0.0)]) * 0.5
+    tone = (np.sin(2.0 * math.pi * f * t) + 0.5 * np.sin(2.0 * math.pi * f * 2.0 * t) + 0.2 * np.sin(2.0 * math.pi * f * 3.0 * t)) * F.env_pts(n, [(0.0, 0.0), (0.12, 1.0), (0.45, 0.45), (dur, 0.0)]) * 0.45
     return lay((0.0, p17(0.5, 0.35, 480.0)), (0.0, F.room(mix(air, tone), decay=0.14, mix=0.1, cut=2500.0)))
 
 
 def route_set():
     """P5 with two pips and a rising pair of boops, E4 then B4: a waypoint logged, going up,
     not a cancel."""
-    return lay((0.0, boop(B.A4, 0.07, 0.5)), (0.09, boop(B.A4, 0.09, 0.5)), (0.0, p5(0.7, 0.5)))
+    return lay((0.0, boop(B.A4, 0.07, 0.5)), (0.09, boop(B.E4, 0.1, 0.5)), (0.0, p5(0.7, 0.5)))
 
 
 def menu_open():
     """The heavy press (P21 short) under a boop-boop on E5 from the first instant: PAUSED."""
-    return lay((0.0, boop(B.B4, 0.12, 0.55)), (0.14, boop(B.B4, 0.15, 0.55)), (0.0, p21(0.8, 1.0, 180.0)))
+    return lay((0.0, boop(B.G4, 0.1, 0.55)), (0.12, boop(B.G4, 0.12, 0.55)), (0.0, p21(0.6, 1.0, 180.0)))
 
 
 def menu_close():
@@ -308,24 +316,23 @@ def refuse():
 # name: (recipe, phone dB, shipped name, label, note)
 SET = [
     ("tap", select, -20.0, "ui_tap", "A press, a menu item, select", "one act, one sound: the boop on E5 first, the glass under it; quiet, the commonest sound. Every ordinary button, the menu's forward, a selection in a panel"),
-    ("map_select", map_select, -20.0, "ui_tap", "Map: a tile, a pack, a machine tapped", "softer, shorter and down: a short scan and one soft boop on G, a minor signal that something was boxed; its own pitch, not the confirm's"),
-    ("press_heavy", lambda: p21(0.4, 1.0, 180.0), -20.0, "ui_tap", "A heavy press", "P21 short"),
+    ("map_select", map_select, -20.0, "ui_tap", "Map: a tile, a pack, a machine tapped", "two sounds now: the brackets closing softly on the glass, then two quick soft boops on G; still short"),
     ("dismiss", dismiss, -21.0, "ui_back", "Dismiss", "the low boop first, P17 under it; also the menu's back"),
     ("confirm", confirm, -19.0, None, "Confirm", "P26 from the first instant, the glass under it; 3 dB down; the menu's select"),
     ("die_lift", lambda: p5(1.0), -17.0, "die_pick", "Die lifted", "glass alone"),
-    ("die_hover", lambda: die_hover(1.2), -31.0, None, "Die over a valid target", "down again (the glass at 320, the buzz on E2) and quieter again, easing in"),
+    ("die_hover", lambda: die_hover(1.6), -31.0, None, "Die over a valid target", "easing in slower, over most of a second"),
     ("die_spend", die_spend, -17.0, "die_drop", "Die spent", "no boop: the glass letting the die go and the pulse under it; one sound for a foe and a machine"),
     ("die_drop_back", lambda: p17(0.5, 0.8, 460.0), -21.0, "die_drop", "Die set back", "glass alone"),
     ("die_lock", lock, -20.0, "die_lock", "Die locked", "the digital clicks given a three-millisecond onset and longer, lower partials: the hard front cracked the speaker"),
     ("die_unlock", unlock, -20.0, "die_lock", "Die unlocked", "one digital click, the glass letting go"),
-    ("reroll", reroll, -14.0, "die_roll", "Reroll", "the flips pitched down and a little shorter"),
-    ("round_open", round_open, -15.0, None, "The round opens", "one long boop on B closing over the body, in place of the E-B pair that read as a confirm; a touch slower"),
-    ("end_turn", end_turn, -20.0, "resolve", "End turn", "the plate swelling near its start, the chunk, and a long tail that fades rather than being stopped; 3 dB down again"),
-    ("route_set", route_set, -16.0, "plot", "A route set", "two quick ticks on A over a quiet glass: logged, not confirmed, and not the map's figure"),
-    ("hold_readout", hold_readout, -26.0, None, "A hold's readout", "the shoo softer again with a longer tail"),
+    ("reroll", reroll, -16.0, "die_roll", "Reroll", "rebuilt: five of the lock's soft digital clicks at fourteen a second over a quiet glass, the last a little firmer as the dice land"),
+    ("round_open", round_open, -15.0, None, "The round opens", "the swell at the start; two boops on B, fast then slow, dot dash"),
+    ("end_turn", end_turn, -20.0, "resolve", "End turn", "the swell shorter, the chunk, the tail fading"),
+    ("route_set", route_set, -16.0, "plot", "A route set", "high then low, A then E, over a quiet glass"),
+    ("hold_readout", hold_readout, -29.0, None, "A hold's readout", "the shoo less hard again: slower in, softer, lower"),
     ("codex_open", codex_open, -21.0, "codex_open", "Codex opens", "the climbing figure E5 G5 B5 with its boops quieter and a longer glass under it"),
     ("codex_close", codex_close, -23.0, "codex_close", "Codex closes", "B5 G5 E5 the same way, the glass letting go under it longer"),
-    ("menu_open", menu_open, -15.0, "menu_open", "Menu opens", "the boop-boop on B4 shorter again over the long under-glass"),
+    ("menu_open", menu_open, -15.0, "menu_open", "Menu opens", "down to G and a little shorter"),
     ("menu_close", menu_close, -16.0, "menu_open", "Menu closes", "the plate swelling at the start and tailing off, the chunk in it, the low boop from the start"),
     ("nav_forward", select, -20.0, "ui_tap", "Menu: forward", "= a press"),
     ("nav_back", dismiss, -21.0, "ui_back", "Menu: back", "= dismiss"),
@@ -333,7 +340,7 @@ SET = [
     ("refuse", refuse, -15.0, "ui_back", "Refused", "P28 over a low scrape; the dropout's and the scrape's hard edges softened, which was the click on your speaker"),
 ]
 SET_BY = {name: (fn, db, beside, label, note) for name, fn, db, beside, label, note in SET}
-NAMES = {"touch": "tap", "touch_heavy": "press_heavy", "round_acquire": "round_open", "resolve": "end_turn", "route_clear": "dismiss", "select": "map_select"}
+NAMES = {"touch": "tap", "touch_heavy": "tap", "round_acquire": "round_open", "resolve": "end_turn", "route_clear": "dismiss", "select": "map_select"}
 
 # A turn of the skirmish with the hover before each spend (seconds, console name or None, shipped name, dB).
 TURN = [
@@ -350,7 +357,7 @@ TURN = [
     (14.3, "round_open", None, 0.0),
     (15.6, "die_lift", "die_pick", 0.0), (15.85, "die_hover_short", None, 0.0), (16.2, "die_spend", "die_drop", 0.0), (16.25, None, "cannon", 0.0), (17.0, None, "kill", 0.0),
 ]
-SET_BY["die_hover_short"] = ((lambda: die_hover(0.5)), -31.0, None, "", "")
+SET_BY["die_hover_short"] = ((lambda: die_hover(0.6)), -31.0, None, "", "")
 
 
 def render_one(name):

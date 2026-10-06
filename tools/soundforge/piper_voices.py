@@ -11,6 +11,15 @@ Karen: amy (US), ljspeech (US, public domain), alba (Scottish, CC BY 4.0), jenny
 southern_english_female (English, CC BY-SA 4.0); hfc_female was downloaded and dropped, its data
 being CC BY-NC-SA, non-commercial.
 
+Fourth pass (Ryan, 6 October, night): LJ Speech and Southern cut; Alba ok but loses to Jenny;
+Amy carries the drawn-out machine cadence and is spot on for the Adjutant's register as the
+chain has her, so she is the baseline; Jenny (Irish) is the one to play with, nobody expects
+an Irish adjutant, she hits her consonants hard and her cadence (some words rushed, some
+slow) plays well for repeated listening. So Amy through the chain as before, and Jenny four
+ways: the chain as before; `light`, less levelling and a shallower flange so more of her own
+dynamics survive; `deep`, the flange fed back harder with more sub-octave; `slow`, the chain
+with the model slowed a third.
+
     tools/soundforge/.venv-piper/bin/python -m piper.download_voices --data-dir tools/soundforge/out/piper <voice>...
     tools/spriter/.venv/bin/python tools/soundforge/piper_voices.py          # into out/fx
 """
@@ -31,15 +40,40 @@ SR = F.SR
 HERE = os.path.dirname(os.path.abspath(__file__))
 PIPER_PY = os.path.join(HERE, ".venv-piper", "bin", "python")
 DATA = os.path.join(F.OUT_SKETCH, "piper")
-PREFIX = "voice3_"
+PREFIX = "voice4_"
 VOICES = {
     "amy": "en_US-amy-medium",
-    "ljspeech": "en_US-ljspeech-medium",
-    "alba": "en_GB-alba-medium",
     "jenny": "en_GB-jenny_dioco-medium",
-    "southern": "en_GB-southern_english_female-low",
 }
 LENGTH_SCALE = 1.15   # a touch slower than the model's default, as the Mac voices were
+
+
+def light(x):
+    """Less levelling and a shallower flange: more of the voice's own dynamics survive."""
+    y = F.bp(x, 180.0, 4500.0, order=3)
+    y = V.level_syllables(y, target=0.22, cap=2.0)
+    y = V.flange(y, feedback=0.3, wet=0.3)
+    y = F.mix(y, V.sub_octave(y, 0.15))
+    return F.sat(y / (np.max(np.abs(y)) + 1e-9) * 1.05, 1.2)
+
+
+def deep(x):
+    """The flange fed back harder, more sub-octave: further into the machine."""
+    y = F.bp(x, 180.0, 4500.0, order=3)
+    y = V.level_syllables(y, target=0.22)
+    y = V.flange(y, delay=0.0034, depth=0.0014, feedback=0.62, wet=0.6)
+    y = F.mix(y, V.sub_octave(y, 0.35))
+    return F.sat(y / (np.max(np.abs(y)) + 1e-9) * 1.15, 1.4)
+
+
+# (voice, process name, chain, length scale)
+TRIALS = [
+    ("amy", "machine", V.machine, 1.15),
+    ("jenny", "machine", V.machine, 1.15),
+    ("jenny", "light", light, 1.15),
+    ("jenny", "deep", deep, 1.15),
+    ("jenny", "slow", V.machine, 1.35),
+]
 
 
 def resample(x, sr_in):
@@ -49,11 +83,11 @@ def resample(x, sr_in):
     return np.interp(np.linspace(0.0, len(x) - 1, n), np.arange(len(x)), x)
 
 
-def render(voice, text):
+def render(voice, text, scale=LENGTH_SCALE):
     """Render a line with Piper to WAV, cached under out/piper, and return it at the forge's rate."""
-    path = os.path.join(DATA, "%s_%s.wav" % (voice, text.replace(" ", "_")))
+    path = os.path.join(DATA, "%s_%s_%.2f.wav" % (voice, text.replace(" ", "_"), scale))
     if not os.path.exists(path):
-        subprocess.run([PIPER_PY, "-m", "piper", "-m", VOICES[voice], "--data-dir", DATA, "--length-scale", str(LENGTH_SCALE), "-f", path, "--", text], check=True, capture_output=True)
+        subprocess.run([PIPER_PY, "-m", "piper", "-m", VOICES[voice], "--data-dir", DATA, "--length-scale", str(scale), "-f", path, "--", text], check=True, capture_output=True)
     with wave.open(path, "rb") as w:
         sr = w.getframerate()
         x = np.frombuffer(w.readframes(w.getnframes()), "<i2").astype(float) / 32767.0
@@ -72,17 +106,16 @@ def main(argv):
     if os.path.exists(path):
         with open(path) as fh:
             manifest.update(json.load(fh))
-    manifest["voice3"] = []
+    manifest["voice4"] = []
     for key_, text in V.LINES.items():
-        for v in VOICES:
-            raw = render(v, text)
-            for proc in (("raw", "machine") if key_ == "target_locked" else ("machine",)):
-                F.seed(PREFIX + "%s_%s_%s" % (v, key_, proc))
-                x = V.level_for_phone(V.PROCESS[proc](raw), -12.0)
-                name = PREFIX + "%s_%s_%s" % (v, key_, proc)
-                X.write(name, X.tail(x, 0.3))
-                manifest["voice3"].append({"name": name, "voice": v, "model": VOICES[v], "line": key_, "process": proc, "seconds": round(len(x) / SR, 2)})
-                print("  %-40s %5.2f s" % (name, len(x) / SR))
+        for v, proc, chain, scale in TRIALS:
+            raw = render(v, text, scale)
+            F.seed(PREFIX + "%s_%s_%s" % (v, key_, proc))
+            x = V.level_for_phone(chain(raw), -12.0)
+            name = PREFIX + "%s_%s_%s" % (v, key_, proc)
+            X.write(name, X.tail(x, 0.3))
+            manifest["voice4"].append({"name": name, "voice": v, "model": VOICES[v], "line": key_, "process": proc, "seconds": round(len(x) / SR, 2)})
+            print("  %-40s %5.2f s" % (name, len(x) / SR))
     with open(path, "w") as fh:
         json.dump(manifest, fh, indent=1)
     return 0
