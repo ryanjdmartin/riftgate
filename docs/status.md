@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.57 since 6 October: the movement session's twelfth notes (the Prairie Dog's squared arches), over v0.56's campaign first pass (published by another session; the committed file here carries it too), over the movement session's eleventh notes, over its tenth and ninth notes, over its eighth notes, over v0.49's packs retargeting when held off their goal (published by another session and not yet on main when the movement branch built on it; the committed file here carries that row too), over v0.48's Fragmenter signed off, over the Slugthrower, the codex rule, Spillover and the Bullion Fragmenter, a sawed-off cannon, on the Badger, over the movement session's seventh notes, over the naming guidelines, the Puffin's names and speed, and the movement session's sixth notes); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.58 since 6 October: the movement session's thirteenth and twelfth notes (the Prairie Dog's guards on the body, its squared arches), over v0.56's campaign first pass (published by another session; the committed file here carries it too), over the movement session's eleventh notes, over its tenth and ninth notes, over its eighth notes, over v0.49's packs retargeting when held off their goal (published by another session and not yet on main when the movement branch built on it; the committed file here carries that row too), over v0.48's Fragmenter signed off, over the Slugthrower, the codex rule, Spillover and the Bullion Fragmenter, a sawed-off cannon, on the Badger, over the movement session's seventh notes, over the naming guidelines, the Puffin's names and speed, and the movement session's sixth notes); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -13,7 +13,7 @@ stays in A alone (Ryan, 1 October: it serves one ongoing task) and is republishe
 session; a B session cannot read it. Shared:
 
 - **The bible** (above): `docs/design-bible.html`, published whole after every change.
-- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 6 October with the twelfth notes, from the movement branch with main merged into it (the Slugthrower, the Fragmenter's hollow bore). Until that branch merges to main, the live page, motion.js, the rig files and the models are ahead of main, so a republish from main must start from the live page body and send none of `hangar/motion.js`, `hangar/models/*`: main's Badger has no wrist joints, and its republish of 6 October paired that model with the branch's wrist rig, which broke the gun's wrist until the branch republished): four tabs, the
+- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 6 October with the thirteenth notes, from the movement branch with main merged into it (the Slugthrower, the Fragmenter's hollow bore). Until that branch merges to main, the live page, motion.js, the rig files and the models are ahead of main, so a republish from main must start from the live page body and send none of `hangar/motion.js`, `hangar/models/*`: main's Badger has no wrist joints, and its republish of 6 October paired that model with the branch's wrist rig, which broke the gun's wrist until the branch republished): four tabs, the
   codex, the content editor, the names list and Models. Models (the renders and the Animation
   tab merged, Ryan, 3 October) puts each machine live in 3D on top: its acts, walk and
   cornering played from its rig sidecar by `tools/hangar_motion.js` (published as
@@ -446,7 +446,7 @@ Ammit's waggling talons, higher fold and the offbeat walk as its gait (`_plant` 
 one part set's vertices inside another's convex pieces through an act (not committed; easy to
 rewrite from `tools/act_shot.gd`). Attack acts: wanted, a session of their own.
 
-**The seventh to twelfth notes, 6 October (bible v0.48 to v0.56).** Engine: a corner is a quintic
+**The seventh to thirteenth notes, 6 October (bible v0.48 to v0.58).** Engine: a corner is a quintic
 (`MovePath.quintic`, `ARC_STEPS` 24); a move's aim eases from the facing it set off from onto
 the path over `SETOFF_S` 0.5 (`Map3D.setoff_aim`; the jerk Ryan saw was each set-off's step).
 A drifter eases into its kick-out (`Map3D.oversteer_ease`: from an oversteer of 0.5 to 1.5 it
@@ -462,8 +462,9 @@ still after the second; the cracks slower), the Ammit's threat (a snake's bite, 
 at full stretch: the upper elbow opens to 64 and turns out) and rear (a mauling, the cuts 0.6 s
 apart, the waist into each). The Sparrowhawk's `_survey_circle` (to the right) and
 `_figure_eight` (laid out by its curvature, crossing its hex on a diagonal), both from rest to
-rest at an even rate; its wing roots inside the fuselage. Prairie Dog: the long plate on the axles (`_skirt_plate`) with bash bars and hub bosses
-(Ryan's pick of three guards), the front arches the level squared box, the inner edge run in to
+rest at an even rate; its wing roots inside the fuselage. Prairie Dog: the long plate (`_skirt_plate`) with bash bars and hub bosses (Ryan's pick of
+three guards), on the body since the thirteenth notes, hung from aprons and drops at the
+arches' ends, the wheels free under them; the front arches the level squared box, the inner edge run in to
 the nose and a square lip dropped into it (the tyre's room under the arch top in the rev, by a
 scratch script: 0.22, as the level arch always had; all four rolled was rendered, not built). The Clydesdale's knees all point forward, two thirds up, the
 legs columns with each hoof under its hip; it trots (`_plant`, diagonal pairs, the fore a beat

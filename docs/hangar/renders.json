@@ -224,8 +224,8 @@
    }
   },
   "prairie_dog": {
-   "when": "The twelfth notes, 6 October.",
-   "note": "The front arches are the squared level box again (Ryan: the tilt lost the squared-off look; was there no way to resolve it?), its inner edge run in on one straight line to the nose's flank and a square lip two units wide hung from that edge into the body's top where the nose drops away, so the arch sits on the hull as a bolted box would: flat top, square edges, no gap. Nothing over the tyre changed, so its top clears the tyre in the rev as the level arch always has. The bash bars and hub bosses as before. The last picture is the alternative, all four arches rolled 15 degrees, for comparison only; not built.",
+   "when": "The thirteenth notes, 6 October.",
+   "note": "The guards are on the body now, the wheels free under them (Ryan: the bash bars to the fenders, not the hubs; the wheels moving freely and independently). Each arch comes down at its ends: at its outer end an apron across the front of the front tyre (or the back of the rear) down to the hub, shielding it and closing the open wedge where the arch rose off the tyre, with the bash bars' hoop bolted to its face; at its inner end a drop to the long skirt plate, which hangs from the four of them, its hub bosses on it. All of it rocks with the body, raised a unit and a half so it stays clear of the ground in the rev. The front arches level and squared, meeting the nose with their lip, as the twelfth notes left them.",
    "images": [
     {
      "file": "prairie_dog/prairie_dog_front.png",
@@ -238,14 +238,10 @@
     {
      "file": "prairie_dog/prairie_dog_side.png",
      "alt": "prairie_dog, left side"
-    },
-    {
-     "file": "prairie_dog/option_all_tilted.png",
-     "alt": "For comparison, not built: all four arches rolled 15 degrees"
     }
    ],
    "before": {
-    "summary": "Before: the eleventh notes, 6 October (the front arches rolled 15 degrees onto the nose)",
+    "summary": "Before: the twelfth notes, 6 October (the plate and bars on the hubs, the arches open at their ends)",
     "images": [
      {
       "file": "prairie_dog/before_prairie_dog_front.png",

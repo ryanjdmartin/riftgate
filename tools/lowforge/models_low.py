@@ -1121,28 +1121,29 @@ def _wheel(b, cx, cy, r, w, label="wheel", lit=False):
 def _skirt_plate(b, s, r, hubs):
     """The Prairie Dog's skirt, one long plate of armour down the side outboard of both wheels
     (Ryan, 5 October, the sixth notes: the skirt is unique, on both sides; the seventh: out
-    past the tyres, and moving with the wheels; the eighth, 6 October: the long connected
-    plate is the defining thing, and hides some of the tyres' play in the arches, so it comes
-    back whole, and the front wheels steer through it). Built outside the chassis joint on a
-    stub from each hub, so it rides with the axles and never rocks with the body; a front
-    tyre at full lock swings out through it, as Ryan asked to see. The ninth notes (Ryan, 6
-    October: make it look like the designers tried to protect the tyres; of three mock-ups,
-    bash bars, the most W&S, functional rather than sleek): a low rail runs on from each end
-    of the plate to a bar standing ahead of the front tyre and behind the rear, and a top bar
-    across in front of the tyre toward the body; an armoured boss over each hub. The bars ride
-    with the plate, so they stand a little clear of the arches' ends (which rock with the
-    body), and the rails run on the plate's outer face, clear of a front tyre steering as far
-    as it does on the map (at the steer act's full lock it swings through them, as through
-    the plate; measured)."""
+    past the tyres; the eighth, 6 October: the long connected plate is the defining thing, and
+    hides some of the tyres' play in the arches, so it comes back whole, and the front wheels
+    steer through it at full lock). The ninth notes (Ryan, 6 October: make it look like the
+    designers tried to protect the tyres; of three mock-ups, bash bars, the most W&S,
+    functional rather than sleek): a low rail runs on from each end of the plate to a bar
+    standing ahead of the front tyre and behind the rear, and a top bar across in front of
+    the tyre toward the body; an armoured boss on the plate over each hub. The thirteenth
+    (Ryan, 6 October: the bars to the fenders, not the hubs, the wheels free and independent):
+    built on the body with the fenders, the plate hanging from the drops at the fenders' inner
+    ends and the hoops bolted to the aprons at their outer ends (prairie_dog), so it all rocks
+    with the body and the wheels move under it on their own. Raised a unit and a half, since
+    the body's nose drops toward the ground in the rev (measured, the lowest part a unit and a
+    half clear). A front tyre turning steers through the plate past about nine degrees, its
+    hub the first, as it always has (the eighth notes asked to see it); the rails run on the
+    plate's outer face, clear of it as far as the map turns it."""
     def bar(x0, x1, y0, y1, z0, z1):
         b.box(min(s * x0, s * x1), max(s * x0, s * x1), min(y0, y1), max(y0, y1), z0, z1, "steel.dark", "bar")
-    b.box(min(s * 25.0, s * 26.6), max(s * 25.0, s * 26.6), -24.0, 24.0, 6.0, 15.0, "steel.plate", "skirt")
+    b.box(min(s * 25.0, s * 26.6), max(s * 25.0, s * 26.6), -24.0, 24.0, 7.5, 16.0, "steel.plate", "skirt")
     for yw in hubs:
-        b.prism("x", s * 24.9, yw, r, 1.6, 1.4, "steel.dark", 8, "skirt_stub")
         b.prism("x", s * 27.4, yw, r, 3.6, 1.6, "steel.dark", 8, "skirt_boss", phase=math.pi / 8)
-    for e, y0, y1 in ((1.0, 31.2, 32.8), (-1.0, -31.6, -33.2)):
-        bar(26.6, 28.2, e * 22.0, y1, 6.0, 8.0)      # the low rail, bolted on the plate's face and run on past its end
-        bar(26.6, 28.2, y0, y1, 6.0, 18.0)           # the upright
+    for e, y0, y1 in ((1.0, 30.6, 32.2), (-1.0, -30.6, -32.2)):   # the hoops against the aprons' faces
+        bar(26.6, 28.2, e * 22.0, y1, 8.0, 10.0)     # the low rail, bolted on the plate's face and run on past its end
+        bar(26.6, 28.2, y0, y1, 8.0, 18.0)           # the upright
         bar(15.0, 28.2, y0, y1, 16.0, 18.0)          # the top bar across the tyre's front or back
 
 
@@ -1183,10 +1184,10 @@ def prairie_dog(b):
             else:
                 with b.joint("wheel_%s" % w, hub):
                     _wheel(b, s * 20.0, yw, R, 8.0)
-    for s in (-1.0, 1.0):
-        _skirt_plate(b, s, R, (18.0, -18.0))
     chassis = b.joint("chassis", (0.0, -4.0, 12.0), limits={"pitch": (-6.0, 6.0), "roll": (-6.0, 6.0)}, swing=False)
     chassis.__enter__()
+    for s in (-1.0, 1.0):
+        _skirt_plate(b, s, R, (18.0, -18.0))
     for yw in (18.0, -18.0):
         for s in (-1.0, 1.0):
             # An angular arch over each wheel, open outward, its first shape and thickness raised
@@ -1199,6 +1200,15 @@ def prairie_dog(b):
             # top matters at the game's angles, the tyre may ride into the arch's depth): a unit
             # and a half over its old height, the least that keeps the tyre under the arch's top
             # through the rev's rock and squat (measured).
+            # Each arch comes down at its ends (Ryan, 6 October, the thirteenth notes): at its
+            # outer end an apron across the tyre's front (or back) down to the hub, shielding it
+            # and closing the open wedge where the arch rose off the tyre; at its inner end a drop
+            # to the skirt plate, which hangs from the four of them, the bash bars' hoops bolted
+            # to the aprons. All on the body; the wheels move free under them.
+            out_y, in_y = (yw + 12.0, yw - 12.0) if yw > 0.0 else (yw - 12.0, yw + 12.0)
+            e = 1.0 if yw > 0.0 else -1.0
+            b.box(min(s * 15.0, s * 26.6), max(s * 15.0, s * 26.6), min(out_y - e * 0.8, out_y + e * 0.6), max(out_y - e * 0.8, out_y + e * 0.6), 9.0, R + 11.0, "steel.plate", "apron")
+            b.box(min(s * 16.0, s * 26.6), max(s * 16.0, s * 26.6), min(in_y - e * 0.8, in_y + e * 0.8), max(in_y - e * 0.8, in_y + e * 0.8), 14.0, R + 11.0, "steel.plate", "drop")
             if yw < 0.0:
                 b.loft([(yw - 12.0, rect(s * 18.0, 10.0, R + 7.0, R + 11.0)), (yw, rect(s * 18.0, 10.0, R + 11.0, R + 15.0)), (yw + 12.0, rect(s * 18.0, 10.0, R + 7.0, R + 11.0))], "steel.plate", "arch")
                 continue
