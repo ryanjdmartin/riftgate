@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.58 since 6 October: the movement session's thirteenth and twelfth notes (the Prairie Dog's guards on the body, its squared arches), over v0.56's campaign first pass (published by another session; the committed file here carries it too), over the movement session's eleventh notes, over its tenth and ninth notes, over its eighth notes, over v0.49's packs retargeting when held off their goal (published by another session and not yet on main when the movement branch built on it; the committed file here carries that row too), over v0.48's Fragmenter signed off, over the Slugthrower, the codex rule, Spillover and the Bullion Fragmenter, a sawed-off cannon, on the Badger, over the movement session's seventh notes, over the naming guidelines, the Puffin's names and speed, and the movement session's sixth notes); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.59 since 6 October: the movement session's fourteenth notes (the drift turning in later), its thirteenth and twelfth notes (the Prairie Dog's guards on the body, its squared arches), over v0.56's campaign first pass (published by another session; the committed file here carries it too), over the movement session's eleventh notes, over its tenth and ninth notes, over its eighth notes, over v0.49's packs retargeting when held off their goal (published by another session and not yet on main when the movement branch built on it; the committed file here carries that row too), over v0.48's Fragmenter signed off, over the Slugthrower, the codex rule, Spillover and the Bullion Fragmenter, a sawed-off cannon, on the Badger, over the movement session's seventh notes, over the naming guidelines, the Puffin's names and speed, and the movement session's sixth notes); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -13,7 +13,7 @@ stays in A alone (Ryan, 1 October: it serves one ongoing task) and is republishe
 session; a B session cannot read it. Shared:
 
 - **The bible** (above): `docs/design-bible.html`, published whole after every change.
-- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 6 October with the thirteenth notes, from the movement branch with main merged into it (the Slugthrower, the Fragmenter's hollow bore). Until that branch merges to main, the live page, motion.js, the rig files and the models are ahead of main, so a republish from main must start from the live page body and send none of `hangar/motion.js`, `hangar/models/*`: main's Badger has no wrist joints, and its republish of 6 October paired that model with the branch's wrist rig, which broke the gun's wrist until the branch republished): four tabs, the
+- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 6 October with the fourteenth notes, from the movement branch with main merged into it (the Slugthrower, the Fragmenter's hollow bore). Until that branch merges to main, the live page, motion.js, the rig files and the models are ahead of main, so a republish from main must start from the live page body and send none of `hangar/motion.js`, `hangar/models/*`: main's Badger has no wrist joints, and its republish of 6 October paired that model with the branch's wrist rig, which broke the gun's wrist until the branch republished): four tabs, the
   codex, the content editor, the names list and Models. Models (the renders and the Animation
   tab merged, Ryan, 3 October) puts each machine live in 3D on top: its acts, walk and
   cornering played from its rig sidecar by `tools/hangar_motion.js` (published as
@@ -446,14 +446,18 @@ Ammit's waggling talons, higher fold and the offbeat walk as its gait (`_plant` 
 one part set's vertices inside another's convex pieces through an act (not committed; easy to
 rewrite from `tools/act_shot.gd`). Attack acts: wanted, a session of their own.
 
-**The seventh to thirteenth notes, 6 October (bible v0.48 to v0.58).** Engine: a corner is a quintic
+**The seventh to fourteenth notes, 6 October (bible v0.48 to v0.59).** Engine: a corner is a quintic
 (`MovePath.quintic`, `ARC_STEPS` 24); a move's aim eases from the facing it set off from onto
 the path over `SETOFF_S` 0.5 (`Map3D.setoff_aim`; the jerk Ryan saw was each set-off's step).
 A drifter eases into its kick-out (`Map3D.oversteer_ease`: from an oversteer of 0.5 to 1.5 it
-takes `DRIFT_AHEAD` 0.5, `DRIFT_WINDOW` 1.4, `DRIFT_RATE` 4.0 and `DRIFT_MAX` 1.35 over the
-jets' 0.4, 0.5, 7 and 1.45; the wide window sweeps the route's double corner as one, where a
-narrow one swung the nose in two lumps); the Dingo 2.0, Stingray 1.2, Puffin 1.5; an S-bend
-still swings the tail from one kick to the other. The hangar's acts view no longer refits to each act. Spinners (`b.spin`): the Stingray's fans, the starboard
+takes `DRIFT_AHEAD` 0.35, `DRIFT_WINDOW` 1.4, `DRIFT_RATE` 4.5, `DRIFT_MAX` 1.55 and
+`DRIFT_GAIN` 2.0 over the jets' 0.4, 0.5, 7, 1.45 and 1.4, and its stretch tapered to the
+middle, `MovePath.chord_tapered`; the wide window sweeps the route's double corner as one, where
+a narrow one swung the nose in two lumps, and the taper (the fourteenth notes) starts the nose
+in later for the same kick at a quicker swing, 2.4 radians a second); the Dingo 2.0, Stingray
+1.2, Puffin 1.5; an S-bend still swings the tail from one kick to the other. The drift sims
+(the hangar's Route driven headless in node, the nose's onset against the corner) are scratch,
+not kept; the measures are in the bible's fourteenth notes. The hangar's acts view no longer refits to each act. Spinners (`b.spin`): the Stingray's fans, the starboard
 mirrored. Acts that must hit run on a stiff act heft (0.05 to 0.07) with each blow keyed by
 `_slam` (a third of the way at half the time, three quarters just before contact): the
 Nemesis's crack_shoulders and pound_fists (the stance widened first; the knuckles meet, measured

@@ -96,13 +96,21 @@ const OVERSTEER_RATE := 7.0     # per second: how briskly an oversteering nose c
 # the eleventh (a little of a segment break through the corner) found the nose's swing in two
 # lumps through the route's double corner, fast, slower over the short leg between, fast again,
 # and widened the stretch it averages over to a second and two fifths so it sweeps through both
-# as one: the Dingo's nose at full lead when it was, its kick 74 degrees, its quickest turn 1.5
-# radians a second (2.1 before; 3.3 before the easing). The jets, oversteering a third or less,
-# keep the values above (oversteer_ease is 0 for them).
-const DRIFT_AHEAD := 0.5
+# as one, which started the nose in sooner again. The fourteenth (it turned in too soon again)
+# keeps that stretch but weights its middle most (MovePath.chord_tapered), looks a little less
+# far ahead and leads harder for the turn it sees (DRIFT_GAIN), on a slightly stiffer spring:
+# the Dingo's nose a tenth of the way in 0.22 s later and half in 0.17 s later, its sideways
+# travel on the straight before the first corner 74 units where it was 104 (a hex is 104), its
+# kick 74 degrees as before, its quickest turn 2.4 radians a second (1.5 before), the double
+# corner still one sweep. The nose is fully in just before the corner either way: a hex corner
+# turns the path 60 degrees in a quarter of a second, faster than a nose can gain on it, so a
+# later start costs a quicker swing or a smaller kick. The jets, oversteering a third or less,
+# keep the values above (oversteer_ease is 0 for them, and their stretch untapered).
+const DRIFT_AHEAD := 0.35
 const DRIFT_WINDOW := 1.4
-const DRIFT_RATE := 4.0
-const DRIFT_MAX := 1.35
+const DRIFT_RATE := 4.5
+const DRIFT_MAX := 1.55
+const DRIFT_GAIN := 2.0
 var _heading_ahead: Dictionary = {}  # unit id -> the yaw the path heads oversteer_ahead seconds on
 var _turn_vel: Dictionary = {}       # unit id -> how fast its facing is turning, radians a second (turn_toward)
 var _setoff: Dictionary = {}         # unit id -> [the facing it set off from, seconds since] while a move plays (SETOFF_S)
@@ -810,7 +818,7 @@ static func fit_for(size: String) -> float:
 ## rather than stopping hard at it (a hard stop was a kink the nose showed).
 static func oversteer_lead(turn_ahead: float, oversteer: float) -> float:
 	var top := oversteer_max(oversteer)
-	return top * tanh(turn_ahead * OVERSTEER_GAIN * oversteer / top)
+	return top * tanh(turn_ahead * oversteer_gain(oversteer) * oversteer / top)
 
 
 ## How much of a drifter's easing a machine takes: none at an oversteer of a half or less (the
@@ -833,6 +841,10 @@ static func oversteer_rate(oversteer: float) -> float:
 
 static func oversteer_max(oversteer: float) -> float:
 	return lerpf(OVERSTEER_MAX, DRIFT_MAX, oversteer_ease(oversteer))
+
+
+static func oversteer_gain(oversteer: float) -> float:
+	return lerpf(OVERSTEER_GAIN, DRIFT_GAIN, oversteer_ease(oversteer))
 
 
 ## A facing turned toward `want` over `delta` seconds, from `facing` turning at `vel` radians a

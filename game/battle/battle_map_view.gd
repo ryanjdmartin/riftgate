@@ -1458,7 +1458,8 @@ func _advance_anim(delta: float) -> void:
 			var over := float(_map3d.motion_of(uid).get("oversteer", 0.0))   # a drifter looks further ahead, over a longer stretch (Map3D.oversteer_ease)
 			var w := Map3D.oversteer_window(over) * 0.5
 			var ah := Map3D.oversteer_ahead(over)
-			_map3d.set_anim(uid, px, here[1], curve.chord(t + ah - w, t + ah + w), curve.chord(t - w, t + w))
+			var tp := Map3D.oversteer_ease(over)   # its stretch tapered, the middle counting most (the fourteenth notes)
+			_map3d.set_anim(uid, px, here[1], curve.chord_tapered(t + ah, w, tp), curve.chord_tapered(t, w, tp))
 	for uid in finished:
 		_anim.erase(uid)
 		_anim_px.erase(uid)

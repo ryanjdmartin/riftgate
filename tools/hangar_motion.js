@@ -28,14 +28,15 @@ const ROCK_ACCEL = 200.0, BANK_TURN = 1.2, DRIFT_UNITS = 12.0;
 const HEFT_DEFAULT = 0.12, DAMPING = 0.7, STEP = 1 / 60;   // the servos (MechRig._follow) and the longest step anything advances by
 const SLIDE_RATE_SNAP = 12.0, SLIDE_RATE_FULL = 2.2, STRAFE_TURN_RATE = 6.0, REST_TURN_RATE = 4.0;   // Map3D
 const OVERSTEER_AHEAD = 0.4, OVERSTEER_GAIN = 1.4, OVERSTEER_MAX = 1.45, OVERSTEER_RATE = 7.0, OVERSTEER_WINDOW = 0.5;   // Map3D: the nose leads the path into a corner, from the heading a moment ahead
-const DRIFT_AHEAD = 0.5, DRIFT_WINDOW = 1.4, DRIFT_RATE = 4.0, DRIFT_MAX = 1.35;   // Map3D: the same for a drifter, eased into its kick-out (Map3D.oversteer_ease)
+const DRIFT_AHEAD = 0.35, DRIFT_WINDOW = 1.4, DRIFT_RATE = 4.5, DRIFT_MAX = 1.55, DRIFT_GAIN = 2.0;   // Map3D: the same for a drifter, eased into its kick-out (Map3D.oversteer_ease)
 const oversteerEase = (over) => clamp((over - 0.5) / 1.0, 0, 1);
 const oversteerAhead = (over) => lerp(OVERSTEER_AHEAD, DRIFT_AHEAD, oversteerEase(over));
 const oversteerWindow = (over) => lerp(OVERSTEER_WINDOW, DRIFT_WINDOW, oversteerEase(over));
 const oversteerRate = (over) => lerp(OVERSTEER_RATE, DRIFT_RATE, oversteerEase(over));
 const oversteerMax = (over) => lerp(OVERSTEER_MAX, DRIFT_MAX, oversteerEase(over));
+const oversteerGain = (over) => lerp(OVERSTEER_GAIN, DRIFT_GAIN, oversteerEase(over));
 // Map3D.oversteer_lead: eased toward the limit, never stopped at it hard.
-const oversteerLead = (turnAhead, over) => oversteerMax(over) * Math.tanh(turnAhead * OVERSTEER_GAIN * over / oversteerMax(over));
+const oversteerLead = (turnAhead, over) => oversteerMax(over) * Math.tanh(turnAhead * oversteerGain(over) * over / oversteerMax(over));
 // Map3D.turn_toward: a critically damped spring turning the facing toward `want`, its natural
 // frequency twice the first-order rate so it lags as long, so the turn rate eases in and out and
 // a corner's start never jolts the nose. Returns [facing, turn rate].
@@ -496,6 +497,14 @@ class MovePath {
     const a = this.at(t0)[0], b = this.at(t1)[0], dx = b.x - a.x, dz = b.z - a.z, l = Math.hypot(dx, dz);
     return l > 0.001 ? {x: dx / l, z: dz / l} : null;
   }
+  // MovePath.chord_tapered: the heading averaged about t, half either side, the middle counting
+  // most (the fourteenth notes): the whole stretch's chord and two nested ones weighted by taper.
+  chordTapered(t, half, taper) {
+    let x = 0, z = 0;
+    for (let j = 1; j <= 3; j++) { const q = this.chord(t - half * j / 3, t + half * j / 3), k = j === 3 ? 1 : taper; if (q) { x += q.x * k; z += q.z * k; } }
+    const l = Math.hypot(x, z);
+    return l > 1e-6 ? {x: x / l, z: z / l} : null;
+  }
   at(t) {
     const n = this.points.length;
     if (t <= 0) return [this.points[0], this.tangent(0), 0, 0];
@@ -578,9 +587,9 @@ class Route {
     const slide = clamp(move.slide || 0, 0, 1), strafe = clamp(move.strafe || 0, 0, 1), over = Math.max(0, move.oversteer || 0);
     let rate = lerp(SLIDE_RATE_SNAP, SLIDE_RATE_FULL, slide), want = heading;
     if (over > 0) {
-      // The headings averaged about now and a moment ahead (Map3D: MovePath.chord), held when
-      // the stretch runs off the curve's end.
-      const w = oversteerWindow(over) / 2, ah = oversteerAhead(over), cb = this.curve.chord(this.t - w, this.t + w), ca = this.curve.chord(this.t + ah - w, this.t + ah + w);
+      // The headings averaged about now and a moment ahead, a drifter's tapered to their middle
+      // (Map3D: MovePath.chord_tapered), held when the stretch runs off the curve's end.
+      const w = oversteerWindow(over) / 2, ah = oversteerAhead(over), tp = oversteerEase(over), cb = this.curve.chordTapered(this.t, w, tp), ca = this.curve.chordTapered(this.t + ah, w, tp);
       if (cb) this.base = yawOf(cb);
       if (ca) this.ahead = yawOf(ca);
       const base = this.base ?? heading, ahead = this.ahead ?? base;

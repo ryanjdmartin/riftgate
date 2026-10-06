@@ -223,11 +223,13 @@ func test_a_drifter_eases_into_its_kick_out() -> void:
 		var fastest := 0.0
 		var kick := 0.0
 		var t := 0.0
+		var taper: float = Map3D.oversteer_ease(over) if drifter else 0.0
+		var gain: float = Map3D.oversteer_gain(over) if drifter else Map3D.OVERSTEER_GAIN
 		while t < mp.duration:
-			var base: float = yaw.call(mp.chord(t - w, t + w))
-			var ca := mp.chord(t + ah - w, t + ah + w)
+			var base: float = yaw.call(mp.chord_tapered(t, w, taper))
+			var ca := mp.chord_tapered(t + ah, w, taper)
 			var ahead: float = yaw.call(ca) if ca != Vector2.ZERO else base
-			var want := base + top * tanh(wrapf(ahead - base, -PI, PI) * Map3D.OVERSTEER_GAIN * over / top)
+			var want := base + top * tanh(wrapf(ahead - base, -PI, PI) * gain * over / top)
 			var turned := Map3D.turn_toward(facing, vel, want, rate, dt)
 			facing = turned.x
 			vel = turned.y
@@ -237,3 +239,64 @@ func test_a_drifter_eases_into_its_kick_out() -> void:
 		runs.append([fastest, kick])
 	assert_true(float(runs[1][0]) < float(runs[0][0]) * 0.8, "the nose whips round slower (%f against %f radians a second)" % [runs[1][0], runs[0][0]])
 	assert_true(float(runs[1][1]) > float(runs[0][1]) * 0.85, "for about the same kick (%f against %f radians)" % [runs[1][1], runs[0][1]])
+
+
+## A drifter's nose on the hangar's first move (three north, then north-east and south-east):
+## [when it is a tenth of the way to its kick, the kick, how much its turn quickens again after
+## its quickest, before it eases out, against its quickest], its stretch tapered by `taper`.
+func _drift(mp: MovePath, over: float, taper: float) -> Array:
+	var dt := 1.0 / 60.0
+	var yaw := func(v: Vector2) -> float: return atan2(-v.x, -v.y)
+	var w := Map3D.oversteer_window(over) * 0.5
+	var ah := Map3D.oversteer_ahead(over)
+	var facing: float = yaw.call(mp.at(0.0)[1])
+	var vel := 0.0
+	var base := facing
+	var ahead := facing
+	var leads: Array = []
+	var rates: Array = []
+	var t := 0.0
+	while t < mp.duration:
+		var cb := mp.chord_tapered(t, w, taper)
+		var ca := mp.chord_tapered(t + ah, w, taper)
+		if cb != Vector2.ZERO:
+			base = yaw.call(cb)
+		if ca != Vector2.ZERO:
+			ahead = yaw.call(ca)
+		var want := base + Map3D.oversteer_lead(wrapf(ahead - base, -PI, PI), over)
+		var turned := Map3D.turn_toward(facing, vel, want, Map3D.oversteer_rate(over), dt)
+		facing = turned.x
+		vel = turned.y
+		leads.append(absf(wrapf(facing - float(yaw.call(mp.at(t)[1])), -PI, PI)))
+		rates.append(-vel)   # the route turns right
+		t += dt
+	var kick: float = leads.max()
+	var fastest: float = rates.max()
+	var first := 0
+	while float(leads[first]) < 0.1 * kick:
+		first += 1
+	var slowest := fastest
+	var again := 0.0
+	for i in range(rates.find(fastest), rates.size()):
+		if float(rates[i]) < 0.0:
+			break   # easing out past the path's last heading
+		slowest = minf(slowest, float(rates[i]))
+		again = maxf(again, float(rates[i]) - slowest)
+	return [first * dt, kick, again / fastest]
+
+
+func test_a_drifter_turns_in_late_and_sweeps_both_corners_as_one() -> void:
+	# Ryan, 6 October, the fourteenth notes: the drift turned in too soon again once the
+	# eleventh widened its stretch to carry it through the double corner as one sweep. The
+	# stretch's middle now counts most (MovePath.chord_tapered), so a corner at its far end turns
+	# the nose a third as much: the nose starts in later, kicks out as far, and still sweeps both
+	# corners without slowing between them.
+	var mp := MovePath.build(_route([90, 90, 90, 30, -30]), 110.0, 0.5)
+	var plain := _drift(mp, 2.0, 0.0)
+	var tapered := _drift(mp, 2.0, Map3D.oversteer_ease(2.0))
+	assert_true(float(tapered[0]) > float(plain[0]) + 0.1, "the nose starts in later (%f s against %f)" % [tapered[0], plain[0]])
+	assert_true(float(tapered[1]) > float(plain[1]) * 0.9, "for about the same kick (%f against %f radians)" % [tapered[1], plain[1]])
+	assert_true(float(tapered[2]) < 0.08, "its turn never quickens again between the corners (by %f of its quickest)" % tapered[2])
+	var w := 0.6
+	assert_true(mp.chord_tapered(1.0, w, 0.0).is_equal_approx(mp.chord(1.0 - w, 1.0 + w)), "untapered, the plain chord")
+

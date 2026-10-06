@@ -703,8 +703,8 @@ func test_an_oversteering_nose_leads_into_the_corner() -> void:
 	assert_true(Map3D.oversteer_lead(1.0, 1.0) > 0.2, "a path turning left puts the nose further left")
 	assert_true(Map3D.oversteer_lead(-1.0, 1.0) < -0.2, "and right, right")
 	assert_true(is_equal_approx(Map3D.oversteer_lead(50.0, 1.0), Map3D.oversteer_max(1.0)), "within a limit")
-	assert_true(is_equal_approx(Map3D.oversteer_max(0.35), Map3D.OVERSTEER_MAX) and is_equal_approx(Map3D.oversteer_ahead(0.35), Map3D.OVERSTEER_AHEAD), "a jet's as it was")
-	assert_true(Map3D.oversteer_ahead(2.0) > Map3D.OVERSTEER_AHEAD and Map3D.oversteer_rate(2.0) < Map3D.OVERSTEER_RATE, "a drifter looks further ahead and turns in on a softer spring")
+	assert_true(is_equal_approx(Map3D.oversteer_max(0.35), Map3D.OVERSTEER_MAX) and is_equal_approx(Map3D.oversteer_ahead(0.35), Map3D.OVERSTEER_AHEAD) and is_equal_approx(Map3D.oversteer_gain(0.35), Map3D.OVERSTEER_GAIN), "a jet's as it was")
+	assert_true(Map3D.oversteer_window(2.0) > Map3D.OVERSTEER_WINDOW and Map3D.oversteer_rate(2.0) < Map3D.OVERSTEER_RATE, "a drifter averages a longer stretch and turns in on a softer spring")
 	assert_true(is_zero_approx(Map3D.oversteer_lead(1.0, 0.0)), "nothing without oversteer")
 	assert_true(Map3D.oversteer_lead(1.0, 0.5) < Map3D.oversteer_lead(1.0, 1.0), "less for less")
 

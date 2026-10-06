@@ -146,6 +146,19 @@ func chord(t0: float, t1: float) -> Vector2:
 	return d.normalized() if d.length() > 0.001 else Vector2.ZERO
 
 
+## The heading averaged about `t`, `half` seconds either side, its middle counting most: the
+## chords of the whole stretch and of two shorter ones nested in it (two thirds and a third of
+## it), the shorter weighted by `taper` and all summed (Ryan, 6 October, the fourteenth notes:
+## the drift's nose turned in too soon again). At a taper of 0 it is the plain chord; at 1 a
+## corner reaching the stretch's far end turns it a third as much, so a drifter's nose starts
+## in later while the whole stretch still carries it through a double corner as one sweep.
+func chord_tapered(t: float, half: float, taper: float) -> Vector2:
+	var sum := Vector2.ZERO
+	for j in range(1, 4):
+		sum += chord(t - half * j / 3.0, t + half * j / 3.0) * (1.0 if j == 3 else taper)
+	return sum.normalized() if sum.length() > 1e-6 else Vector2.ZERO
+
+
 func at(t: float) -> Array:
 	var n := points.size()
 	if n == 0:
