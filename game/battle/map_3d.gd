@@ -90,13 +90,17 @@ const OVERSTEER_MAX := 1.45     # radians the nose may lead the path by, at most
 const OVERSTEER_RATE := 7.0     # per second: how briskly an oversteering nose chases its lead
 # A drifter eases into its kick-out (Ryan, 6 October, the ninth notes: not so sudden; it would
 # help the whipping): it looks further ahead and averages a longer stretch, so the nose starts
-# turning in sooner and builds over twice as long, and chases its lead on a softer spring with a
-# lower cap, so its nose turns two fifths slower at its quickest for about the same kick. The
-# jets, oversteering a third or less, keep the values above (oversteer_ease is 0 for them).
-const DRIFT_AHEAD := 0.7
-const DRIFT_WINDOW := 1.0
+# turning in sooner and builds over longer, and chases its lead on a softer spring, so its nose
+# turns slower at its quickest for about the same kick. The tenth notes (the same day: it kicked
+# out a touch too soon, a sideways strafe before the corner) brought the look ahead back from
+# 0.7 and the stretch from a second: the Dingo's nose now leads by half its kick 0.18 seconds
+# later, the kick 71 degrees (74 before), its quickest turn 2.1 radians a second (1.8 before;
+# 3.3 before the easing). The jets, oversteering a third or less, keep the values above
+# (oversteer_ease is 0 for them).
+const DRIFT_AHEAD := 0.55
+const DRIFT_WINDOW := 0.8
 const DRIFT_RATE := 4.5
-const DRIFT_MAX := 1.2
+const DRIFT_MAX := 1.3
 var _heading_ahead: Dictionary = {}  # unit id -> the yaw the path heads oversteer_ahead seconds on
 var _turn_vel: Dictionary = {}       # unit id -> how fast its facing is turning, radians a second (turn_toward)
 var _setoff: Dictionary = {}         # unit id -> [the facing it set off from, seconds since] while a move plays (SETOFF_S)

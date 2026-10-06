@@ -28,7 +28,7 @@ const ROCK_ACCEL = 200.0, BANK_TURN = 1.2, DRIFT_UNITS = 12.0;
 const HEFT_DEFAULT = 0.12, DAMPING = 0.7, STEP = 1 / 60;   // the servos (MechRig._follow) and the longest step anything advances by
 const SLIDE_RATE_SNAP = 12.0, SLIDE_RATE_FULL = 2.2, STRAFE_TURN_RATE = 6.0, REST_TURN_RATE = 4.0;   // Map3D
 const OVERSTEER_AHEAD = 0.4, OVERSTEER_GAIN = 1.4, OVERSTEER_MAX = 1.45, OVERSTEER_RATE = 7.0, OVERSTEER_WINDOW = 0.5;   // Map3D: the nose leads the path into a corner, from the heading a moment ahead
-const DRIFT_AHEAD = 0.7, DRIFT_WINDOW = 1.0, DRIFT_RATE = 4.5, DRIFT_MAX = 1.2;   // Map3D: the same for a drifter, eased into its kick-out (Map3D.oversteer_ease)
+const DRIFT_AHEAD = 0.55, DRIFT_WINDOW = 0.8, DRIFT_RATE = 4.5, DRIFT_MAX = 1.3;   // Map3D: the same for a drifter, eased into its kick-out (Map3D.oversteer_ease)
 const oversteerEase = (over) => clamp((over - 0.5) / 1.0, 0, 1);
 const oversteerAhead = (over) => lerp(OVERSTEER_AHEAD, DRIFT_AHEAD, oversteerEase(over));
 const oversteerWindow = (over) => lerp(OVERSTEER_WINDOW, DRIFT_WINDOW, oversteerEase(over));
@@ -752,34 +752,19 @@ class Stage {
     this.aspect = w / h;
     this.frame();
   }
-  // How far the acts carry the machine off its spot (a map-only flight, Ryan, 6 October, the
-  // eighth notes: the survey circle and the loop leave the hex): the box its body keys reach,
-  // in model units on the ground, of the act looping or, playing them all, of every act.
-  actsTravel() {
-    const box = {x0: 0, x1: 0, z0: 0, z1: 0, y1: 0};
-    for (const a of (this.side && this.side.acts) || []) {
-      if (this.loop && a.name !== this.loop) continue;
-      for (const k of a.body || []) {
-        box.x0 = Math.min(box.x0, k[1]); box.x1 = Math.max(box.x1, k[1]);
-        box.z0 = Math.min(box.z0, -k[2]); box.z1 = Math.max(box.z1, -k[2]);
-        box.y1 = Math.max(box.y1, k[3]);
-      }
-    }
-    return box;
-  }
-  // An orthographic view on the map's pitch, from the front-left, fitted to the machine (and
-  // as far as its acts carry it) or to the whole route.
+  // An orthographic view on the map's pitch, from the front-left, fitted to the machine or to
+  // the whole route. Picking an act leaves the view as it is (Ryan, 6 October, the tenth notes:
+  // fitting the view to each act's travel, and turning it back with it, was a nuisance; he
+  // zooms out for a flight himself).
   frame(keepDir) {
     if (!this.camera || !this.size) return;
-    const STEP = this.route.STEP, tr = this.actsTravel();
-    const reach = this.mode === "acts" ? Math.max(tr.x1 - tr.x0, tr.z1 - tr.z0, tr.y1) * 0.62 : 0;
-    const half = this.mode === "route" ? STEP * 2.3 + this.size * 0.3 : this.size * 0.75 + reach;
+    const STEP = this.route.STEP;
+    const half = this.mode === "route" ? STEP * 2.3 + this.size * 0.3 : this.size * 0.75;
     const a = this.aspect || 1;
     this.camera.left = -half * a; this.camera.right = half * a; this.camera.top = half; this.camera.bottom = -half;
     this.camera.updateProjectionMatrix();
     if (!keepDir) {
-      const mid = this.mode === "acts" && reach > 0 ? new window.THREE.Vector3((tr.x0 + tr.x1) / 2, this.size * 0.3, (tr.z0 + tr.z1) / 2) : new window.THREE.Vector3(0, this.size * 0.3, 0);
-      const target = this.mode === "route" ? new window.THREE.Vector3(STEP * 0.866, 0, -STEP * 1.5) : mid;
+      const target = this.mode === "route" ? new window.THREE.Vector3(STEP * 0.866, 0, -STEP * 1.5) : new window.THREE.Vector3(0, this.size * 0.3, 0);
       const pitch = 42 * D2R, yaw = (this.mode === "route" ? 20 : 35) * D2R;
       this.camera.position.set(target.x - Math.sin(yaw) * Math.cos(pitch) * 1200, target.y + Math.sin(pitch) * 1200, target.z + Math.cos(yaw) * Math.cos(pitch) * 1200);
       this.camera.zoom = 1; this.camera.updateProjectionMatrix();
@@ -891,7 +876,6 @@ class Stage {
     if (!this.rig) return;
     this.rig.debug = name || "1";
     if (name) this.rig.play(name); else this.rig.endAct();
-    this.frame();   // fitted to how far this act (or every act) carries the machine
     this.emit();
   }
   start() {
