@@ -36,7 +36,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [x] Name the Puffin's passive (6 October: the Slipstream Projector; its fixed shield the Backwash Ionizer; the Puffin at move 40)
 - [x] Read the Puffin in play (closed 6 October: Ryan reads it in his own time, not as a tracked task)
 - [x] The Slug Cannon's name (6 October, Ryan: the Bullion Fragmenter, melee, locked to the Badger; the second Chainsaw Claw gone; built the same day with the Badger's right boom as the breaker)
-- [ ] Judge the Badger's Bullion Fragmenter from the renders (third pass 6 October, the bore hollow: a pale sawn rim, the bore lined dark five units in; a breech block with a hazard band and the crusher hopper on top)
+- [x] The Badger's Bullion Fragmenter: Ryan called the sawed-off cannon good on 6 October (third pass, the hollow bore)
 - [x] The basic Minervan line weapon for the Armadillo and Wild Boar (Ryan, 6 October: the Slugthrower, a play on flamethrower; built the same evening with the Slug Cannon's numbers)
 - [x] Overwhelm renamed Spillover (Ryan, 6 October; engine, content, tests, vocabulary and bible moved with it)
 - [ ] The Names board (the hangar page's names tab) follows the vocabulary guidelines of 6 October rather than maker claims: its maker tabs for chassis stay, its parts tab is maker-free (the labels came off 6 October), its rules text wants the guidelines; rework the page once the movement session is done with it
