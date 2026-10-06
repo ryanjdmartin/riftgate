@@ -1113,11 +1113,25 @@ def _skirt_plate(b, s, r, hubs):
     plate is the defining thing, and hides some of the tyres' play in the arches, so it comes
     back whole, and the front wheels steer through it). Built outside the chassis joint on a
     stub from each hub, so it rides with the axles and never rocks with the body; a front
-    tyre at full lock swings out through it, as Ryan asked to see."""
-    x0 = s * 25.0
-    b.box(min(x0, x0 + s * 1.6), max(x0, x0 + s * 1.6), -24.0, 24.0, 6.0, 15.0, "steel.plate", "skirt")
+    tyre at full lock swings out through it, as Ryan asked to see. The ninth notes (Ryan, 6
+    October: make it look like the designers tried to protect the tyres; of three mock-ups,
+    bash bars, the most W&S, functional rather than sleek): a low rail runs on from each end
+    of the plate to a bar standing ahead of the front tyre and behind the rear, and a top bar
+    across in front of the tyre toward the body; an armoured boss over each hub. The bars ride
+    with the plate, so they stand a little clear of the arches' ends (which rock with the
+    body), and the rails run on the plate's outer face, clear of a front tyre steering as far
+    as it does on the map (at the steer act's full lock it swings through them, as through
+    the plate; measured)."""
+    def bar(x0, x1, y0, y1, z0, z1):
+        b.box(min(s * x0, s * x1), max(s * x0, s * x1), min(y0, y1), max(y0, y1), z0, z1, "steel.dark", "bar")
+    b.box(min(s * 25.0, s * 26.6), max(s * 25.0, s * 26.6), -24.0, 24.0, 6.0, 15.0, "steel.plate", "skirt")
     for yw in hubs:
         b.prism("x", s * 24.9, yw, r, 1.6, 1.4, "steel.dark", 8, "skirt_stub")
+        b.prism("x", s * 27.4, yw, r, 3.6, 1.6, "steel.dark", 8, "skirt_boss", phase=math.pi / 8)
+    for e, y0, y1 in ((1.0, 31.2, 32.8), (-1.0, -31.6, -33.2)):
+        bar(26.6, 28.2, e * 22.0, y1, 6.0, 8.0)      # the low rail, bolted on the plate's face and run on past its end
+        bar(26.6, 28.2, y0, y1, 6.0, 18.0)           # the upright
+        bar(15.0, 28.2, y0, y1, 16.0, 18.0)          # the top bar across the tyre's front or back
 
 
 def _prairie_body(y):
@@ -1176,17 +1190,24 @@ def prairie_dog(b):
             if yw < 0.0:
                 b.loft([(yw - 12.0, rect(s * 18.0, 10.0, R + 7.0, R + 11.0)), (yw, rect(s * 18.0, 10.0, R + 11.0, R + 15.0)), (yw + 12.0, rect(s * 18.0, 10.0, R + 7.0, R + 11.0))], "steel.plate", "arch")
                 continue
-            # The front pair follow the nose in (Ryan, 6 October, the ninth notes: a gap
-            # between the front fenders and the body): the body narrows and drops toward the
-            # nose while a straight arch did not, so each front arch's inner flange steps down
-            # and in to sit a unit inside the body's flank and under its top, the part over
-            # the tyre (x 16 out) left as it was so its top still clears the tyre in the rev.
+            # The front pair meet the body (Ryan, 6 October, the ninth notes: a gap between the
+            # front fenders and the body; then, an inner flange stepping down into the nose was
+            # far too smooth a join for W&S: the box arch was right and only wanted tilting or
+            # carrying down to meet). The same box, flat on top and square at its edges, its
+            # inner edge run in on one straight line to the nose's flank, the whole of it
+            # rolled 15 degrees inward about the tyre's inner edge, so its inner side drops
+            # onto the body and the part over the tyre rises a little. Carrying the front end
+            # down instead took its top through the tyre in the rev; the roll leaves more room
+            # than the level arch had (0.35 at the worst moment of the rev, from 0.22, measured).
+            tilt = math.radians(15.0)
+            nose_half, _top = _prairie_body(yw + 12.0)
             secs = []
-            for y, z0 in ((yw - 12.0, R + 7.0), (yw, R + 11.0), (yw + 12.0, R + 7.0)):
-                half, top = _prairie_body(y)
-                zi = min(z0, top - 1.0)
-                pts = [(half - 1.0, zi), (16.0, z0), (23.0, z0), (23.0, z0 + 4.0), (16.0, z0 + 4.0), (half - 1.0, zi + 4.0)]
-                secs.append((y, [(s * x, z) for x, z in (pts if s > 0 else pts[::-1])]))
+            for (y, z0), xi in zip(((yw - 12.0, R + 7.0), (yw, R + 11.0), (yw + 12.0, R + 7.0)), (13.0, (13.0 + nose_half) * 0.5, nose_half)):
+                pts = []
+                for x, z in rect(16.0, 2.0 * (23.0 - 16.0), z0, z0 + 4.0):
+                    x = xi if x < 16.0 else x
+                    pts.append((s * (16.0 + (x - 16.0) * math.cos(tilt) - (z - z0) * math.sin(tilt)), z0 + (z - z0) * math.cos(tilt) + (x - 16.0) * math.sin(tilt)))
+                secs.append((y, pts if s > 0 else pts[::-1]))
             b.loft(secs, "steel.plate", "arch")
     # The body: a wedge lofted from a squared tail to a low raked nose, a chin plate under.
     b.loft([(-30.0, rect(0.0, 28.0, 8.0, 24.0)), (-6.0, rect(0.0, 30.0, 8.0, 28.0)), (12.0, rect(0.0, 28.0, 8.0, 24.0)), (32.0, rect(0.0, 20.0, 10.0, 15.0))], "steel.panel", "body")

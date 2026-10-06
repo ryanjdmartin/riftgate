@@ -220,8 +220,8 @@
    }
   },
   "prairie_dog": {
-   "when": "The ninth notes, 6 October.",
-   "note": "The front arches follow the nose in (Ryan: a gap between the front fenders and the body): each front arch's inner flange steps down and in to sit inside the body's flank and under its top as the body narrows and drops toward the nose; the part over the tyre is as it was, so its top still clears the tyre in the rev. The long plate is unchanged. Ryan asked how to make it look like the designers tried to protect the tyres: three mock-ups to choose from, none built yet. A, scalloped: the plate rises over each tyre to just under the arch and dips between, its ends turned in, an armoured boss on each hub (Claude's pick: it keeps the long plate as the defining line, the tyre's top half sits behind armour, and the lower half still shows the wheels turning). B, a full tank skirt, hub height to the arch along the whole side: the most protected, but it hides the wheels' spin almost entirely. C, the plate as it is with bash bars: a hoop ahead of each front tyre and behind each rear, and the hub bosses.",
+   "when": "The ninth notes, second pass, 6 October.",
+   "note": "Bash bars, Ryan's pick of the three tyre guards (the most W&S: functional rather than sleek): a low rail bolted on the long plate's outer face runs on past each end to an upright ahead of the front tyre and behind the rear, with a top bar across toward the body; an armoured boss over each hub. They ride with the plate on the axles, clear of the arches as the body rocks and of a front tyre steering as far as the map steers it (a full lock in the steer act swings it through them, as through the plate). The front arches are the old box again (Ryan: the stepped flange into the nose was far too smooth a join for W&S), its inner edge run in straight to the nose and the whole box rolled 15 degrees inward about the tyre's inner edge, so it drops onto the body; that leaves the tyre more room under its top in the rev than the level arch had.",
    "images": [
     {
      "file": "prairie_dog/prairie_dog_front.png",
@@ -232,20 +232,12 @@
      "alt": "prairie_dog, rear"
     },
     {
-     "file": "prairie_dog/guard_a.png",
-     "alt": "Tyre guard option A: the plate scalloped over each tyre, its ends turned in, hub bosses"
-    },
-    {
-     "file": "prairie_dog/guard_b.png",
-     "alt": "Tyre guard option B: a full-height tank skirt with hub bosses"
-    },
-    {
-     "file": "prairie_dog/guard_c.png",
-     "alt": "Tyre guard option C: the plate with bash bars ahead of and behind the tyres, hub bosses"
+     "file": "prairie_dog/prairie_dog_side.png",
+     "alt": "prairie_dog, left side"
     }
    ],
    "before": {
-    "summary": "Before: the eighth notes, 6 October (straight front arches, a gap at the nose)",
+    "summary": "Before: the ninth notes' first pass, 6 October (the front arches' inner flange stepping into the nose, the plate bare)",
     "images": [
      {
       "file": "prairie_dog/before_prairie_dog_front.png",

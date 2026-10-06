@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.52 since 6 October: the movement session's ninth notes, over its eighth notes, over v0.49's packs retargeting when held off their goal (published by another session and not yet on main when the movement branch built on it; the committed file here carries that row too), over v0.48's Fragmenter signed off, over the Slugthrower, the codex rule, Spillover and the Bullion Fragmenter, a sawed-off cannon, on the Badger, over the movement session's seventh notes, over the naming guidelines, the Puffin's names and speed, and the movement session's sixth notes); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.53 since 6 October: the movement session's ninth notes, over its eighth notes, over v0.49's packs retargeting when held off their goal (published by another session and not yet on main when the movement branch built on it; the committed file here carries that row too), over v0.48's Fragmenter signed off, over the Slugthrower, the codex rule, Spillover and the Bullion Fragmenter, a sawed-off cannon, on the Badger, over the movement session's seventh notes, over the naming guidelines, the Puffin's names and speed, and the movement session's sixth notes); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -459,9 +459,9 @@ Nemesis's crack_shoulders and pound_fists (the stance widened first, the fists p
 grinding after the second, no recoil), the Ammit's threat (a one-two of pincer snaps) and rear
 (a mauling, the left pair then the right). The Sparrowhawk's `_survey_circle` (6.4 s) and
 `_figure_eight` (8 s, two limaçon lobes, level as it crosses its hex), its wing roots inside the
-fuselage. Prairie Dog: the long plate on the axles (`_skirt_plate`), the front arches stepping
-into the nose (`_prairie_body`); three tyre guards mocked up for Ryan (renders `guard_a` to `c`,
-A Claude's pick; none built). The Clydesdale trots (`_plant`, diagonal pairs, the fore a beat
+fuselage. Prairie Dog: the long plate on the axles (`_skirt_plate`) with bash bars and hub bosses
+(Ryan's pick of three guards), the front arches the old box rolled 15 degrees onto the nose
+(the tyre's room under the arch top in the rev measured by a scratch script: 0.35). The Clydesdale trots (`_plant`, diagonal pairs, the fore a beat
 first, stances spread three either way of the hips, sweep 24); `_gallop` (sweep 30) is its gait
 option; the stomp retired. Clearances measured with a scratch clip check (meshes in convex
 meshes, through an act or a gait): clear.
