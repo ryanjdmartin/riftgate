@@ -25,6 +25,8 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Discuss first, then decide: when and how the multi-hex boss comes back (`Unit.TRIANGLE` waits)
 - [ ] Discuss first, then decide: Rift Pressure feeding packs into the boss fight, so bum-rushing the boss is a race between temporary power gained and the boss's reinforcements (Ryan, 29 September: valid, fits the complexity wanted, tight to balance; hinges on how strong the in-battle temporary upgrades are, which do not exist yet)
 - [ ] Decide the makers' measures (bible section 10, recommended: relative, one a maker, Kestrel hexes moved, Minerva damage taken on shield and armour, Wainwright dice spent on attacks, Aphelion status stacks applied, the Arsenal absolute at the top threat tier) and write each maker's notice in its voice
+- [ ] Read `docs/campaign_run.md` (6 October, the first whole runs; every number in `sim/campaign.gd` a placeholder) and say which placeholders move; then decide the starting draft, the restore on a won battle (full, or by the win's margin) and the rush's price
+- [ ] Discuss first: what a faction's final is (track B; the run flags a faction's rift as its final after three of its bosses are beaten, and nothing else differs yet)
 - [ ] Judge the campaign and the economy in play once the mission map and the hangar exist: twelve battles as the length, the capital's bleed per fallen city, one battle in the shop, the module archetypes, the budget of about three rule texts a machine read running
 - [ ] Discuss first, once the balance has a baseline (Ryan, 2 October): the commander layer, bible section 8 (the reward pick after a won skirmish, one-shots, city abilities, whether the command die exists); it needs heavy UI work and a place on the skirmish screen, and Rift Pressure in the boss fight waits on its rewards
 - [ ] Discuss first, then decide: does a pack keep its foes' hull and statuses between fights (a withdrawal leaves them hurt today only in the count), and how the map shows it (the strength segments could show it)
@@ -40,8 +42,10 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 
 ## Engine
 
-- [ ] The campaign state between battles in `sim/save.gd` (bible section 3, decided 5 October; waits on the hangar): every city's gate integrity and the capital's, the threat, the roster with each machine in the shop or ready, the components owned, the blueprints held and the pool; `sim/` keeps it headless
-- [ ] The runner counts components destroyed per won battle on the greedy ladder (bible section 10, the numbers row): the inflow has to beat it, and if greedy loses more than about one a battle the injury threshold moves
+- [x] The campaign state and the between-battle rules (6 October, first pass on Ryan's go; bible section 3's rows of 6 October): `sim/campaign.gd` (cities and gates, rifts rolled as fronts, the roster and its shop, salvage, tokens, offers owed, blueprints, the threat and the finale), `sim/profile.gd` (what outlives a run), the run and the profile in `sim/save.gd`, `sim/battle_bot.gd` and `tools/campaign_run.gd` playing whole runs
+- [x] The runner counts components destroyed per won battle on the greedy ladder (6 October: `tools/campaign_run.gd`, whole battles in whole runs; its reading is in `docs/campaign_run.md` and the bible's numbers row)
+- [ ] The makers' favour tallies in the run (bible section 10, the measures row: hexes moved, damage taken on shield and armour, dice spent on attacks, status stacks applied, per maker), once Ryan decides the measures
+- [ ] The hangar's economy verbs on the run: the host maker's offer, a research token unpacked, building from a blueprint, fitting a module (the run already holds offers owed, tokens and blueprints); waits on the catalogues and the numbers row
 
 Nothing in content is planned any more; every piece the 28 September content leaned on runs since 30 September (bible section 7, "The 28 September pieces, built"). The machine weld is decided and ready to build; the joint pass and the idle acts are built (3 October, a cloud session; Ryan judges them running next); movement by way of moving is built; the rest waits on a design line from Ryan first. Nothing here is claimed by another session; a session that takes a line says so in this file.
 
@@ -59,7 +63,7 @@ Nothing in content is planned any more; every piece the 28 September content lea
 
 ## Map and screens
 
-- [ ] The mission map (bible section 3, decided 5 October): the capital centred, the four cities around it, each front a card of words (faction, ground type, threat tier, the gate's bleed if ignored), a fallen city's horde drawn marching on the centre, the capital's gate as the one bar; and the hangar with the shop, the roster (in the shop or ready, dressed or bare) and the host maker's offer
+- [ ] The mission map (bible section 3, decided 5 October; its rules run in `sim/campaign.gd` since 6 October): the capital centred, the four cities around it, each front a card of words (faction, ground type, threat tier, the gate's bleed if ignored), a fallen city's horde drawn marching on the centre, the capital's gate as the one bar; and the hangar with the shop, the roster (in the shop or ready, dressed or bare) and the host maker's offer
 - [ ] The wreck's death animation on the map, once wrecks are decided
 - [ ] Corruption in a pack's wake, and the bleed growing with Rift Pressure (`bleed.gd` has the knob in mind), once decided
 - [ ] Props by hex back in the big batches, with the fade (decided 2 October; bible section 11, the battery row): each prop vertex carries its hex, the props' shader reads a small per-hex texture, the per-hex prop meshes in `game/battle/map_3d.gd` (`_prop_meshes`) go back into the bands. The texture fades a hex's props out as a machine enters and in as it leaves, with a setting to hold them see-through while it stands; a dither fade first, true alpha as the alternative; a debug switch to judge it running

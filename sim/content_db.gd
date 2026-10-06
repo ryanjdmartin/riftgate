@@ -124,8 +124,11 @@ func build_die(fixed_ids: Array, loadout_ids: Array, hardpoints: int) -> Die:
 	return die
 
 
-func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO) -> Unit:
+## A machine as the content builds it. `loadout` is the hardpoint components fitted, in
+## order; null means the chassis's stock loadout (the campaign passes its roster's own).
+func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO, loadout = null) -> Unit:
 	var c: Dictionary = chassis[chassis_id]
+	var fitted: Array = c.get("loadout", []) if loadout == null else loadout
 	var u := Unit.mech(uid, str(c["name"]), at, int(c.get("movespeed", Unit.MECH_MOVE)))
 	u.hull = int(c.get("hull", 100))
 	u.hull_max = u.hull
@@ -138,14 +141,14 @@ func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO) -
 	u.armour = int(c.get("armour", 0))
 	u.recharge_field = int(c.get("recharge_field", 0))
 	u.cooling = int(c.get("cooling", 0))
-	u.die = build_die(c.get("fixed", []), c.get("loadout", []), u.hardpoints)
+	u.die = build_die(c.get("fixed", []), fitted, u.hardpoints)
 	u.chassis_id = chassis_id
 	var p = c.get("passive", null)
 	if p is Dictionary:
 		u.passive = p
 		u.grant_passive(p, "chassis")
 	# Fitted components bring their own passives; a destroyed one keeps its bonuses only.
-	for cid in c.get("fixed", []) + c.get("loadout", []):
+	for cid in c.get("fixed", []) + fitted:
 		var cp = components.get(cid, {}).get("passive", null)
 		if cp is Dictionary:
 			u.grant_passive(cp, cid, cid)
@@ -373,6 +376,24 @@ func foes_for(sq: Unit) -> Array[Foe]:
 ## is the one the standalone screens and the harness fight.
 func default_team(count: int = 3) -> Array:
 	return chassis.keys().slice(0, count)
+
+
+## The maker whose city is the capital (the Council's own house, `capital` on its entry in
+## chassis.json, decided 5 October: the capital hosts the Council and the Arsenal), and the
+## makers who each host one of the cities around it, in file order.
+func capital_maker() -> String:
+	for id in makers.keys():
+		if bool(makers[id].get("capital", false)):
+			return str(id)
+	return ""
+
+
+func city_makers() -> Array:
+	var out: Array = []
+	for id in makers.keys():
+		if not bool(makers[id].get("capital", false)):
+			out.append(str(id))
+	return out
 
 
 func default_faction() -> String:
@@ -691,6 +712,12 @@ func _validate_components(errs: Array[String]) -> void:
 
 
 func _validate_chassis(errs: Array[String]) -> void:
+	var capitals := 0
+	for id in makers.keys():
+		if bool(makers[id].get("capital", false)):
+			capitals += 1
+	if not makers.is_empty() and capitals != 1:
+		errs.append("makers: exactly one maker sits at the capital (\"capital\": true); %d do" % capitals)
 	for id in chassis.keys():
 		var c: Dictionary = chassis[id]
 		var where := "chassis %s" % id

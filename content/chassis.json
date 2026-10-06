@@ -29,7 +29,8 @@
    "id": "arsenal",
    "name": "The Arsenal",
    "style": "The Council's own R&D house, which need not compete for favour. Heavy walkers, plasma and energy that runs hot and never crits, big single hits, execute, burn. Dark steel and gunmetal, black chrome.",
-   "voice": "A manual written as liturgy."
+   "voice": "A manual written as liturgy.",
+   "capital": true
   }
  ],
  "entries": [

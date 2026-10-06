@@ -37,6 +37,17 @@ var current: Skirmish = null
 var last_result: Battlefield.PhaseResult = null
 var skirmishes_fought: int = 0
 var columns: int = Skirmish.DEFAULT_COLUMNS   # formation width for every skirmish this battle opens
+## A guest faction (bible section 3: one lead and at most one guest a battle): set before
+## setup, its spawn list joins the rift's cycle, alternating with the lead's; the formation
+## on the field at the start is the lead's alone. Empty for none.
+var guest: String = ""
+## Salvage won this battle (bible section 10: a won skirmish yields salvage scaled by the
+## pack): every foe a won skirmish killed, at Campaign.SALVAGE_PER_FOE each when the
+## campaign banks it. The battle only counts; the campaign decides what is kept.
+var foes_killed: int = 0
+## The machines wrecked this battle, as they fell: the map lets go of them, the campaign
+## still reads their dice (a wreck loses its cracked and destroyed components).
+var wrecks: Array[Unit] = []
 
 
 func _init(seed_arg: int = 1) -> void:
@@ -56,6 +67,16 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 	field = Battlefield.new(map)
 	field.spawn_faction = faction
 	field.spawn_table = db.spawn_table(faction)
+	if not guest.is_empty() and guest != faction and db.factions.has(guest):
+		var lead: Array = field.spawn_table
+		var visitors: Array = db.spawn_table(guest)
+		var mixed: Array = []
+		for k in range(maxi(lead.size(), visitors.size())):
+			if k < lead.size():
+				mixed.append(lead[k])
+			if k < visitors.size():
+				mixed.append(visitors[k])
+		field.spawn_table = mixed
 	field.foe_profiles = db.pack_profiles()
 	var gate_o := Hex.axial_to_offset(map.gate)
 	var i := 0
@@ -357,6 +378,12 @@ func _build_skirmish(group: Array) -> Skirmish:
 func finish_skirmish() -> void:
 	if current == null:
 		return
+	for ms in current.mechs:
+		if ms.unit.hull <= 0 and not wrecks.has(ms.unit):
+			wrecks.append(ms.unit)
+	if current.outcome == Skirmish.Outcome.VICTORY:
+		for sq in current.packs:
+			foes_killed += maxi(0, sq.strength - current.survivors_for(sq))
 	field.apply_skirmish_result(current)
 	current = null
 	boss_contact = false

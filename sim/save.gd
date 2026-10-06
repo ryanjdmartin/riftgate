@@ -2,7 +2,8 @@ class_name SaveGame
 extends RefCounted
 
 ## One battle, whole, as plain data and back (built 30 September, for a phone that may be
-## put down mid-fight): the map by its seed, every unit with its numbers, die, damage and
+## put down mid-fight), and since 6 October the run around it (`user://campaign.json`, the
+## battle under way inside it) and the profile that outlives every run (`user://profile.json`): the map by its seed, every unit with its numbers, die, damage and
 ## live modifiers, the routes being plotted, the contacts waiting, and the skirmish under
 ## way with its dice, foes, ranks and both random streams, so a resumed fight plays on
 ## exactly as it would have. Headless, like everything in sim/: the screens only decide
@@ -63,6 +64,9 @@ static func to_dict(b: Battle) -> Dictionary:
 		"seed": b.seed_value,
 		"rng": str(b.rng.state),
 		"faction": b.faction,
+		"guest": b.guest,
+		"foes_killed": b.foes_killed,
+		"wrecks": _units(b.wrecks),
 		"state": b.state,
 		"outcome": b.outcome,
 		"routes": routes,
@@ -77,10 +81,21 @@ static func to_dict(b: Battle) -> Dictionary:
 	}
 
 
+static func _units(list: Array) -> Array:
+	var out: Array = []
+	for u in list:
+		out.append(_unit_dict(u))
+	return out
+
+
 static func from_dict(d: Dictionary) -> Battle:
 	var b := Battle.new(int(d.get("seed", 1)))
 	b.rng.state = str(d.get("rng", "0")).to_int()
 	b.faction = str(d.get("faction", ""))
+	b.guest = str(d.get("guest", ""))
+	b.foes_killed = int(d.get("foes_killed", 0))
+	for wd in d.get("wrecks", []):
+		b.wrecks.append(_unit_from(wd))
 	b.state = int(d.get("state", Battle.State.PLAN))
 	b.outcome = int(d.get("outcome", Battle.Outcome.NONE))
 	var md: Dictionary = d.get("map", {})
@@ -421,3 +436,148 @@ static func _hexes_from(list) -> Array[Vector2i]:
 	for a in list:
 		out.append(_hex_from(a))
 	return out
+
+
+# ---------------------------------------------------------------- the run
+
+const RUN_PATH := "user://campaign.json"
+const RUN_VERSION := 1
+
+
+static func save_campaign(c: Campaign, path: String = RUN_PATH) -> bool:
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	if f == null:
+		return false
+	f.store_string(JSON.stringify(campaign_to_dict(c)))
+	f.close()
+	return true
+
+
+## The saved run, or null when there is none or it cannot be read.
+static func load_campaign(path: String = RUN_PATH) -> Campaign:
+	if not FileAccess.file_exists(path):
+		return null
+	var parsed = JSON.parse_string(FileAccess.get_file_as_string(path))
+	if not (parsed is Dictionary) or int(parsed.get("version", 0)) != RUN_VERSION:
+		return null
+	return campaign_from_dict(parsed)
+
+
+static func campaign_to_dict(c: Campaign) -> Dictionary:
+	var cities: Array = []
+	for city in c.cities.values():
+		cities.append({"id": city.id, "capital": city.capital, "gate": city.gate, "gate_max": city.gate_max,
+			"fallen": city.fallen, "quiet": city.quiet, "rift": city.rift})
+	var roster: Array = []
+	for m in c.roster:
+		roster.append({"uid": m.uid, "chassis": m.chassis, "loadout": m.loadout, "shop": m.shop})
+	return {
+		"version": RUN_VERSION,
+		"seed": c.seed_value,
+		"rng": str(c.rng.state),
+		"state": c.state, "won": c.won, "turn": c.turn, "threat": c.threat,
+		"cities": cities, "roster": roster, "next_uid": c._next_uid,
+		"components": c.components, "salvage": c.salvage, "blueprints": c.blueprints,
+		"tokens": c.tokens, "offers": c.offers, "bosses_beaten": c.bosses_beaten, "finals_won": c.finals_won,
+		"battle": to_dict(c.battle) if c.battle != null else null,
+		"battle_city": c.battle_city, "squad": c.squad,
+		"history": c.history,
+	}
+
+
+static func campaign_from_dict(d: Dictionary) -> Campaign:
+	var c := Campaign.new(int(d.get("seed", 1)))
+	c.rng.state = str(d.get("rng", "0")).to_int()
+	c.state = int(d.get("state", Campaign.PICK))
+	c.won = bool(d.get("won", false))
+	c.turn = int(d.get("turn", 0))
+	c.threat = int(d.get("threat", 0))
+	c.cities.clear()
+	for cd in d.get("cities", []):
+		var city := Campaign.City.new()
+		city.id = str(cd.get("id", ""))
+		city.capital = bool(cd.get("capital", false))
+		city.gate = int(cd.get("gate", 0))
+		city.gate_max = int(cd.get("gate_max", 0))
+		city.fallen = bool(cd.get("fallen", false))
+		city.quiet = int(cd.get("quiet", 0))
+		var rift: Dictionary = cd.get("rift", {})
+		city.rift = {} if rift.is_empty() else {"faction": str(rift.get("faction", "")), "guest": str(rift.get("guest", "")), "final": bool(rift.get("final", false))}
+		c.cities[city.id] = city
+	c.roster.clear()
+	for md in d.get("roster", []):
+		var m := Campaign.Machine.new()
+		m.uid = int(md.get("uid", 0))
+		m.chassis = str(md.get("chassis", ""))
+		for cid in md.get("loadout", []):
+			m.loadout.append(str(cid))
+		m.shop = int(md.get("shop", 0))
+		c.roster.append(m)
+	c._next_uid = int(d.get("next_uid", c.roster.size() + 1))
+	c.components.clear()
+	var owned: Dictionary = d.get("components", {})
+	for cid in owned.keys():
+		c.components[str(cid)] = int(owned[cid])
+	c.salvage = int(d.get("salvage", 0))
+	c.blueprints = _strings(d.get("blueprints", []))
+	c.tokens = _strings(d.get("tokens", []))
+	c.offers = _strings(d.get("offers", []))
+	c.bosses_beaten.clear()
+	var beaten: Dictionary = d.get("bosses_beaten", {})
+	for f in beaten.keys():
+		c.bosses_beaten[str(f)] = int(beaten[f])
+	c.finals_won = _strings(d.get("finals_won", []))
+	var bd = d.get("battle", null)
+	c.battle = from_dict(bd) if bd is Dictionary else null
+	c.battle_city = str(d.get("battle_city", ""))
+	c.squad.clear()
+	for uid in d.get("squad", []):
+		c.squad.append(int(uid))
+	c.history.clear()
+	for rd in d.get("history", []):
+		c.history.append(_report_from(rd))
+	return c
+
+
+## A battle's report as Campaign.finish_battle wrote it: JSON brings every number back as a
+## float, so the counts are cast back.
+static func _report_from(rd: Dictionary) -> Dictionary:
+	var r := rd.duplicate(true)
+	for k in ["turn", "gate_left", "phases", "salvage", "tier", "squad"]:
+		if r.has(k):
+			r[k] = int(r[k])
+	var wrecked: Array = []
+	for uid in r.get("wrecked", []):
+		wrecked.append(int(uid))
+	r["wrecked"] = wrecked
+	r["lost"] = _strings(r.get("lost", []))
+	return r
+
+
+static func _strings(list) -> Array:
+	var out: Array = []
+	for x in list:
+		out.append(str(x))
+	return out
+
+
+# ---------------------------------------------------------------- the profile
+
+const PROFILE_PATH := "user://profile.json"
+
+
+static func save_profile(p: Profile, path: String = PROFILE_PATH) -> bool:
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	if f == null:
+		return false
+	f.store_string(JSON.stringify(p.to_dict()))
+	f.close()
+	return true
+
+
+## The saved profile, or a fresh one when there is none.
+static func load_profile(path: String = PROFILE_PATH) -> Profile:
+	if not FileAccess.file_exists(path):
+		return Profile.new()
+	var parsed = JSON.parse_string(FileAccess.get_file_as_string(path))
+	return Profile.from_dict(parsed if parsed is Dictionary else {})

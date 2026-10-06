@@ -147,6 +147,7 @@ func test_finish_skirmish_removes_the_pack_and_keeps_shields_as_they_were() -> v
 	var packs_before := b.field.packs().size()
 	b.finish_skirmish()
 	assert_eq(b.field.packs().size(), packs_before - 1, "pack wiped from the map")
+	assert_eq(b.foes_killed, sq.strength, "a won skirmish counts every foe it killed, for the salvage")
 	assert_eq(m.shield, 0, "no free refill between skirmishes")
 	assert_eq(b.state, Battle.State.PLAN, "planning again")
 	assert_eq(b.current, null, "no skirmish open")
@@ -286,6 +287,8 @@ func test_wrecked_mechs_leave_the_map() -> void:
 	var before := b.mechs().size()
 	b.finish_skirmish()
 	assert_eq(b.mechs().size(), before - sk.mechs.size(), "wrecks are gone")
+	assert_eq(b.wrecks.size(), sk.mechs.size(), "and the battle keeps them, for the campaign to read")
+	assert_eq(b.foes_killed, 0, "a lost skirmish banks nothing")
 	assert_true(b.state == Battle.State.PLAN or b.outcome == Battle.Outcome.WRECKED, "battle continues or ends")
 
 

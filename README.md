@@ -26,9 +26,16 @@ and open question from the design sessions.
   - `effects.gd` the one pipeline every number is read through: base plus every live modifier
     (passives, rewards, buffs, statuses) with a scope and a source
   - `content_db.gd` loads and validates `content/*.json`, builds dice, mechs, and foes
-  - `save.gd` writes the whole battle to `user://battle.json` and reads it back
+  - `save.gd` writes the whole battle to `user://battle.json` and reads it back; the run to
+    `user://campaign.json` (the battle under way inside it) and the profile to
+    `user://profile.json`
   - `battle.gd` one battle end to end: plot routes, resolve, open a skirmish per contact
     group, apply the result, until the gate falls, the team is wrecked, or the boss dies
+  - `campaign.gd` the run: five cities and their gates, rifts rolled as fronts, the roster
+    and its shop, salvage, the between-battle rules, the turn's bleed and drain, the finale
+  - `profile.gd` what outlives a run: the pool, the codex, the tier, the favour piece
+  - `battle_bot.gd` plays a whole battle headless (the map's plain rule, every fight by
+    `policy.gd`), for the campaign runner
 - `content/` — game data: `vocabulary.json` (every mechanic term; `codex` is the rule as the player reads it), `factions.json`,
   `foes.json`, `chassis.json`, `components.json`. Placeholder numbers. `reserved_names.json` is
   every machine name in BattleTech, Heavy Gear, Warhammer 40k and Halo; a chassis nickname or id
@@ -53,7 +60,8 @@ and open question from the design sessions.
 - `tools/` — `export_vocabulary.gd` regenerates `docs/vocabulary.md`; `balance.gd` plays every
   chassis and the team against every pack under each policy and writes `docs/balance.md`
   (`--trace` prints one fight blow by blow); `map_survey.gd` measures the map generator over
-  many seeds and writes `docs/map_survey.md`; `screenshot.gd` renders a
+  many seeds and writes `docs/map_survey.md`; `campaign_run.gd` plays whole runs and writes
+  `docs/campaign_run.md`; `screenshot.gd` renders a
   scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `perf_probe.gd` measures
   the battle map's frame cost; `lowforge/` builds the
   ally units by code from a brief (`models_low.py`, one function per chassis id) in the
@@ -118,6 +126,13 @@ perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/balance.gd -
 # each way of moving takes to the rift at move 30; written to docs/map_survey.md (under a
 # minute). --seeds N, --move M, --w/--h for another size; --show SEED prints one map as text.
 perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/map_survey.gd -- --seeds 200
+
+# the campaign runner: whole runs played headless by a plain player (it defends the front
+# nearest to falling, hunts the nearest enemy on the map, fights at the greedy rung), measuring
+# the campaign's placeholders: runs won, cities fallen, wipes, components destroyed per battle;
+# written to docs/campaign_run.md. --runs N, --seed S, --policy random; --trace SEED prints one
+# run battle by battle instead.
+perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40
 
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument
 # poses the screen first. Skirmish: codex, mechcodex, hold, confirm, lock, strike,
