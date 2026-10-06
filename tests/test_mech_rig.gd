@@ -441,14 +441,17 @@ func test_a_walker_steps_and_settles() -> void:
 	_drive(rig, rig.top_speed, 0.6)
 	assert_true(rig.moving, "under way")
 	var widest := 0.0
-	var opposite := false
+	var left_leads := false
+	var right_leads := false
 	for i in range(60):
 		rig.drive(rig.top_speed, 0.0, 0.0, 1.0 / 60.0)
 		widest = maxf(widest, absf(fl.rotation.x))
-		if signf(fl.rotation.x) != signf(fr.rotation.x) and absf(fl.rotation.x) > deg_to_rad(5.0):
-			opposite = true
+		# Each side's hip swings ahead of the other's in turn (a hip need not swing either side
+		# of its rest: the Clydesdale's, under forward knees, stays mostly ahead of it).
+		left_leads = left_leads or fl.rotation.x - fr.rotation.x > deg_to_rad(10.0)
+		right_leads = right_leads or fr.rotation.x - fl.rotation.x > deg_to_rad(10.0)
 	assert_true(widest > deg_to_rad(10.0), "the hips swing (%f at the widest)" % rad_to_deg(widest))
-	assert_true(opposite, "the other pair is half a stride behind")
+	assert_true(left_leads and right_leads, "the other pair is half a stride behind")
 	_drive(rig, 0.0, 1.0)
 	assert_false(rig.moving, "stopped")
 	assert_true(is_zero_approx(fl.rotation.x) and is_zero_approx(fr.rotation.x), "the legs settle to rest")

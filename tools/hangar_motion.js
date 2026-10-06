@@ -28,7 +28,7 @@ const ROCK_ACCEL = 200.0, BANK_TURN = 1.2, DRIFT_UNITS = 12.0;
 const HEFT_DEFAULT = 0.12, DAMPING = 0.7, STEP = 1 / 60;   // the servos (MechRig._follow) and the longest step anything advances by
 const SLIDE_RATE_SNAP = 12.0, SLIDE_RATE_FULL = 2.2, STRAFE_TURN_RATE = 6.0, REST_TURN_RATE = 4.0;   // Map3D
 const OVERSTEER_AHEAD = 0.4, OVERSTEER_GAIN = 1.4, OVERSTEER_MAX = 1.45, OVERSTEER_RATE = 7.0, OVERSTEER_WINDOW = 0.5;   // Map3D: the nose leads the path into a corner, from the heading a moment ahead
-const DRIFT_AHEAD = 0.55, DRIFT_WINDOW = 0.8, DRIFT_RATE = 4.5, DRIFT_MAX = 1.3;   // Map3D: the same for a drifter, eased into its kick-out (Map3D.oversteer_ease)
+const DRIFT_AHEAD = 0.5, DRIFT_WINDOW = 1.4, DRIFT_RATE = 4.0, DRIFT_MAX = 1.35;   // Map3D: the same for a drifter, eased into its kick-out (Map3D.oversteer_ease)
 const oversteerEase = (over) => clamp((over - 0.5) / 1.0, 0, 1);
 const oversteerAhead = (over) => lerp(OVERSTEER_AHEAD, DRIFT_AHEAD, oversteerEase(over));
 const oversteerWindow = (over) => lerp(OVERSTEER_WINDOW, DRIFT_WINDOW, oversteerEase(over));

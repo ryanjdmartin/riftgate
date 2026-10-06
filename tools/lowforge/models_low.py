@@ -308,13 +308,16 @@ def sparrowhawk(b):
     # A banked circle (Ryan, 5 October, in place of the slow pirouette): wide, out over the next
     # hexes, and on the map only, as the loop (the fifth notes). A circling predator surveying
     # the ground, slow and smooth (the seventh notes). After the eighth (Ryan, 6 October: no
-    # right peel if it makes it complicated, just a smooth circle): one true circle to the
-    # left, from its hex along its facing and back onto it the same way, the bank steady
+    # right peel if it makes it complicated, just a smooth circle): one true circle,
+    # from its hex along its facing and back onto it the same way, the bank steady
     # (_survey_circle).
     # Quicker off the mark and quicker round (the ninth notes), and quicker again (the tenth:
     # about 110 units a second at its fastest, from about 80).
-    b.act("banked_circle", 5.0, body=_survey_circle(t1=4.6, duration=5.0, steps=40), places=("map",),
-          glow=[(["booster_ring", "exhaust"], [(0.2, 0.0), (0.6, 7.0), (4.0, 6.0), (4.8, 0.0)])])
+    # To the right (the eleventh notes: so it and the figure eight turn different ways), and
+    # from rest to rest at an even rate, where it had slid into its finish.
+    circle = _survey_circle()
+    b.act("banked_circle", circle[-1][0], body=circle, places=("map",),
+          glow=[(["booster_ring", "exhaust"], [(0.2, 0.0), (0.8, 7.0), (circle[-2][0] - 0.6, 6.0), (circle[-1][0] - 0.1, 0.0)])])
     # A figure eight beside it, to judge against the circle (Ryan, 6 October, the ninth notes:
     # "I'd like to see what a figure 8 looks like"; the tenth: a smooth bank change, crossing the
     # hex on a diagonal, larger, quicker): a lobe to the left and one to the right, crossing its
@@ -382,23 +385,26 @@ def clydesdale(b):
     # under the hip, the shin under the knee inside it; and an ankle at the shin's foot
     # (Ryan, 4 October, the third pass: more joints if a plod needs them) carrying the
     # feathering and the hoof, so the hoof stays flat to the ground through a stride.
+    # The eleventh notes (Ryan, 6 October: the joints looked like a frog's or a lizard's, the
+    # hind knee pointing back at mid-height): every knee points forward, as an AT-AT's, and
+    # sits two thirds of the way up, a short thigh over a long shin (more calf), each hoof
+    # under its hip, so the four legs stand as columns.
     legs = {}
-    for (yh, splay), fa in (((16.0, 6.0), "f"), ((-24.0, -6.0), "h")):
+    for yh, fa in ((16.0, "f"), (-24.0, "h")):
         for s in (-1.0, 1.0):
             leg = fa + ("l" if s < 0 else "r")
             hip = (s * 26.0, yh, 37.0 + H)
-            knee = (s * 30.0, yh + splay, 20.0 + H / 2.0)
-            ankle = (s * 30.0, yh + splay * 1.5, 6.0)
+            knee = (s * 30.0, yh + 4.0, 34.0)
+            ankle = (s * 30.0, yh, 6.0)
             b.box(min(s * 18.0, s * 24.0), max(s * 18.0, s * 24.0), yh - 7.0, yh + 7.0, 30.0 + H, 44.0 + H, "steel.panel", "hip")
             b.prism("x", hip[0], hip[1], hip[2], 6.0, 6.0, "steel.dark", 6, "hip_pin")
             legs[leg] = (hip, knee, ankle)
-            fore = fa == "f"
-            with b.joint("hip_%s" % leg, hip, limits=(-70.0, 70.0)):
+            with b.joint("hip_%s" % leg, hip, limits=(-80.0, 80.0)):   # 70 until the short thighs of the eleventh notes asked the gallop's fold for a hair more
                 _beam(b, hip, knee, _sq(11.0, 13.0), _sq(10.0, 11.0), "steel.plate", "thigh")
                 b.prism("x", knee[0], knee[1], knee[2], 5.5, 12.0, "steel.dark", 6, "knee")
-                with b.joint("knee_%s" % leg, knee, limits=(-115.0, 20.0) if fore else (-20.0, 115.0)):
+                with b.joint("knee_%s" % leg, knee, limits=(-115.0, 20.0)):
                     _beam(b, knee, ankle, _sq(9.0, 10.0), _sq(9.0, 9.0), "steel.panel", "shin")
-                    with b.joint("ankle_%s" % leg, ankle, limits=(-30.0, 115.0) if fore else (-115.0, 30.0)):
+                    with b.joint("ankle_%s" % leg, ankle, limits=(-30.0, 115.0)):
                         _rings(b, [[(ankle[0] + u, ankle[1] + v, 12.0) for u, v in _sq(9.0, 9.0)],
                                    [(ankle[0] + u, ankle[1] + v, 3.0) for u, v in _sq(16.0, 16.0)]], "bone.bone", "feather")
                         b.box(ankle[0] - 7.0, ankle[0] + 7.0, ankle[1] - 8.0, ankle[1] + 8.0, 0.0, 5.0, "steel.dark", "hoof")
@@ -511,16 +517,18 @@ def clydesdale(b):
     # high-stepping, each fore landing a beat before its hind partner so every pair comes
     # down as a heavy double thud, a moment between pairs with only the swinging hooves
     # under it, the hull dropping and nodding onto each pair. The stances are spread three
-    # units fore and aft of the hips and the sweep kept to 24, so a hind hoof reaching
-    # forward never comes within 22 of where the fore on its side stands or swings (the
-    # hooves are 16 long): nothing of one leg can meet the other. A stride of 60, about one
-    # a second at its map pace.
+    # units fore and aft of the hips and the sweep kept to 22, so a hind hoof reaching
+    # forward never comes within 24 of where the fore on its side stands or swings (the
+    # hooves are 16 long): nothing of one leg can meet the other. The eleventh notes (on the
+    # columnar legs): it rides nearly as tall as its legs reach (`reach` 0.985), barely
+    # crouched, so the legs stay nearly straight under it as an AT-AT's, the knees folding
+    # only to lift a hoof. A stride of 55, about one and a fifth a second at its map pace.
     tracks, body, stride = _plant([
         {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
          "phase": {"fl": 0.0, "hr": 0.05, "fr": 0.5, "hl": 0.55}[leg],
          "shift": legs[leg][0][1] - legs[leg][2][1] + (3.0 if leg[0] == "f" else -3.0),
          "nod": 1.0 if leg[0] == "f" else -0.5}
-        for leg in ("fl", "fr", "hl", "hr")], sweep=24.0, duty=0.4, lift=12.0, crouch=1.0, dip=1.8, nod=1.2, airborne=0.97, smooth=0.03, n=120)
+        for leg in ("fl", "fr", "hl", "hr")], sweep=22.0, duty=0.4, lift=12.0, crouch=0.3, dip=1.4, nod=1.2, reach=0.985, airborne=0.99, smooth=0.03, n=120)
     tracks["head"] = ([(i / 40.0, round(-1.8 * abs(math.sin(2.0 * math.pi * (i / 40.0 - 0.04))), 3)) for i in range(41)], 0.0)   # a nod onto each pair
     b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
     # The eighth notes' gallop, kept as an option for the hangar's Walk to set beside the
@@ -533,7 +541,7 @@ def clydesdale(b):
         {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
          "phase": {"hl": 0.0, "hr": 0.12, "fl": 0.42, "fr": 0.54}[leg],
          "shift": legs[leg][0][1] - legs[leg][2][1] + (3.0 if leg[0] == "f" else -3.0)}
-        for leg in ("fl", "fr", "hl", "hr")], sweep=30.0, duty=0.34, lift=13.0, crouch=1.0, hop=3.0, rock=4.0, dip=2.0)
+        for leg in ("fl", "fr", "hl", "hr")], sweep=30.0, duty=0.34, lift=10.0, crouch=1.0, hop=3.0, rock=4.0, dip=2.0)   # lift 13 until the long shins of the eleventh notes
     tracks["head"] = ([(i / 40.0, round(-2.5 * math.cos(2.0 * math.pi * (i / 40.0 - 0.1)), 3)) for i in range(41)], 0.0)   # the head lags the rock, steadying it
     b.gait_option("gallop", stride=stride, tracks=tracks, body=body, ease="linear")
     b.move(accel=1.4, heft=0.24)
@@ -1807,8 +1815,12 @@ def nemesis(b):
     # left's mirrored (it meets the left fist face to face at its yaw's limit).
     WIDE = (10.0, -40.0, 25.0, 15.0)
     UP, RECOIL, LIFT = (46.0, -20.0, 30.0, 20.0), (18.0, -52.0, 42.0, -2.0), (40.0, -45.0, 40.0, 8.0)
-    HIT_L, HIT_R = (20.0, -70.0, 50.0, -10.0), (20.0, 80.0, -50.0, -10.0)
-    PRESS_L, PRESS_R = (21.0, -72.0, 51.0, -11.0), (21.0, 80.0, -51.0, -12.0)
+    # The eleventh notes (Ryan: the fists did not meet in either): only the knuckle spikes' tips
+    # had touched, the knuckles themselves five and a half apart; the poses now bring the
+    # knuckle faces together (measured on the fists' fronts, the spikes passing into the other
+    # fist), and pressed a little past.
+    HIT_L, HIT_R = (30.0, -73.0, 45.0, -10.0), (35.0, 80.0, -45.0, -14.0)
+    PRESS_L, PRESS_R = (30.0, -74.0, 45.0, -10.0), (35.0, 80.0, -45.0, -15.0)
     WIDEN = 9.0   # degrees each hip rolls out to widen the stance
     lift_at = {sd: (legs[sd][2][1] + 1.0, legs[sd][2][2] + 6.0) for sd in ("l", "r")}
     # A leg rolled out reaches less far down: its ankle swings up round the hip, the more so
@@ -1834,8 +1846,8 @@ def nemesis(b):
     for side in ("l", "r"):
         m = lambda pose: pose if side == "l" else (pose[0], -pose[1], -pose[2], pose[3])
         hit, press = (HIT_L, PRESS_L) if side == "l" else (HIT_R, PRESS_R)
-        keys = [(1.5, m(WIDE)), (2.05, m(UP))] + _slam(2.05, m(UP), 2.3, hit) + [(2.38, hit), (2.55, m(RECOIL)), (2.72, m(LIFT))] + _slam(2.72, m(LIFT), 2.95, hit) + \
-               [(3.1, press), (4.1, press), (4.7, m((12.0, -34.0, 20.0, 10.0))), (5.3, (0.0, 0.0, 0.0, 0.0))]
+        keys = [(1.5, m(WIDE)), (2.05, m(UP))] + _slam(2.05, m(UP), 2.3, hit) + [(2.42, press), (2.56, m(RECOIL)), (2.72, m(LIFT))] + _slam(2.72, m(LIFT), 2.95, hit) + \
+               [(3.1, press), (4.1, press), (4.45, m(RECOIL)), (4.9, m((12.0, -34.0, 20.0, 10.0))), (5.4, (0.0, 0.0, 0.0, 0.0))]   # parted level before they drop, clear of the hip cannon
         tracks["shoulder_" + side] = [(t, p2, y2, r2) for t, (p2, y2, r2, e2) in keys]
         tracks["elbow_" + side] = [(t, e2) for t, (p2, y2, r2, e2) in keys]
     tracks["waist"] = [(t, p2, 0.0, 0.0) for t, p2 in [(1.5, 2.0), (2.05, 4.0)] + _slam(2.05, 4.0, 2.3, -6.0) + [(2.5, -4.0), (4.2, -4.0), (5.0, 0.0)]]   # pitch: the waist's own axis is its yaw
@@ -1880,8 +1892,8 @@ def nemesis(b):
     # left them snapping); and the fists meet as in the pound, the elbows out, a little higher
     # again, since the torso slams forward on its waist into this one (the fists at the core,
     # 77 in the torso's frame, the hip cannon at 55).
-    HITC_L, HITC_R = (32.0, -72.0, 50.0, -14.0), (32.0, 80.0, -50.0, -14.0)
-    PRESSC_L, PRESSC_R = (33.0, -74.0, 51.0, -15.0), (33.0, 80.0, -51.0, -16.0)
+    HITC_L, HITC_R = (45.0, -71.0, 45.0, -5.0), (45.0, 78.0, -45.0, -8.0)
+    PRESSC_L, PRESSC_R = (45.0, -72.0, 45.0, -5.0), (45.0, 78.0, -45.0, -9.0)
     tracks, body = _planted(feet, [(0.4, 0.0, -1.5, -4.0), (1.8, 0.0, -2.2, -4.5), (3.5, 0.0, -2.2, -4.5), (3.95, 0.0, 0.8, 4.0)] + [(t, *v) for t, v in _slam(3.95, (0.0, 0.8, 4.0), 4.35, (0.0, -3.4, -5.0))] +
                             [(5.05, 0.0, -3.0, -4.6), (6.05, 0.0, 0.0, 0.0)])
     tracks.update({
@@ -2035,7 +2047,7 @@ def ammit(b):
         with b.joint("shoulder_%s" % side, shoulder, limits={"pitch": (-45.0, 50.0), "yaw": (-40.0, 40.0)}):
             _beam(b, shoulder, elbow, _sq(8.4, 8.4), _sq(7.2, 7.2), "steel.plate", "upper_arm")
             b.prism("x", elbow[0], elbow[1], elbow[2], 4.4, 9.0, "steel.dark", 6, "elbow")
-            with b.joint("elbow_%s" % side, elbow, limits=(-60.0, 30.0)):
+            with b.joint("elbow_%s" % side, elbow, limits=(-60.0, 64.0)):   # opens far enough to straighten the arm (Ryan, 6 October, the eleventh notes: the strike all the way out)
                 _beam(b, elbow, wrist, _sq(7.2, 7.2), _sq(6.4, 6.4), "steel.panel", "forearm")
                 b.prism("x", wrist[0], wrist[1], wrist[2], 3.2, 8.0, "steel.dark", 6, "wrist")
                 with b.joint("hand_%s" % side, wrist, limits=(-55.0, 25.0)):
@@ -2215,13 +2227,18 @@ def ammit(b):
     flat = lambda ks: [(tt, *v) for tt, v in ks]
     for side, y, t in (("l", 1.0, 1.55), ("r", -1.0, 1.85)):
         # y turns the yaw outward on this side; t the thrust's arrival
-        GUARD, THRUST, BACK = (30.0, 16.0 * y, 0.0), (22.0, -8.0 * y, 0.0), (33.0, 20.0 * y, 0.0)
+        GUARD, THRUST, BACK = (30.0, 16.0 * y, 0.0), (-12.0, -22.0 * y, 0.0), (33.0, 20.0 * y, 0.0)
+        # The eleventh notes (Ryan: the arms can extend all the way): the strike straightens the
+        # arm to within five degrees, the elbow opening and turning out to line the forearm up
+        # with the upper arm (a pitch hinge alone left it bent a third of a right angle, since
+        # the upper arm angles out), the talons about fifty units out at the shoulder's height.
+        E_GUARD, E_THRUST, E_BACK = (-24.0, 0.0, 0.0), (64.0, 30.0 * y, 0.0), (-28.0, 0.0, 0.0)
         t0 = round(t - 0.24, 3)
-        back, home = round(t + 0.24, 3), round(t + 0.5, 3)   # whipped back past its guard, and settled there
+        back, home = round(t + 0.27, 3), round(t + 0.53, 3)   # whipped back past its guard, and settled there
         tracks.update({
-            "shoulder_" + side: flat([(0.9, GUARD), (t0, GUARD)] + _slam(t0, GUARD, t, THRUST) + [(round(t + 0.05, 3), THRUST), (back, BACK), (home, GUARD), (2.9, GUARD), (3.8, (0.0, 0.0, 0.0))]),
-            "elbow_" + side: [(0.9, -22.0), (t0, -24.0)] + _slam(t0, -24.0, t, 28.0) + [(round(t + 0.05, 3), 28.0), (back, -28.0), (home, -24.0), (2.9, -23.0), (3.8, 0.0)],
-            "hand_" + side: [(0.9, -8.0), (t0, -10.0)] + _slam(t0, -10.0, t, 14.0) + [(round(t + 0.05, 3), 14.0), (back, -12.0), (home, -10.0), (2.9, -9.0), (3.8, 0.0)],
+            "shoulder_" + side: flat([(0.9, GUARD), (t0, GUARD)] + _slam(t0, GUARD, t, THRUST) + [(round(t + 0.08, 3), THRUST), (back, BACK), (home, GUARD), (2.9, GUARD), (3.8, (0.0, 0.0, 0.0))]),
+            "elbow_" + side: flat([(0.9, (-22.0, 0.0, 0.0)), (t0, E_GUARD)] + _slam(t0, E_GUARD, t, E_THRUST) + [(round(t + 0.08, 3), E_THRUST), (back, E_BACK), (home, E_GUARD), (2.9, (-23.0, 0.0, 0.0)), (3.8, (0.0, 0.0, 0.0))]),
+            "hand_" + side: [(0.9, -8.0), (t0, -10.0)] + _slam(t0, -10.0, t, 6.0) + [(round(t + 0.08, 3), 6.0), (back, -12.0), (home, -10.0), (2.9, -9.0), (3.8, 0.0)],
         })
         snap = round(t + 0.03, 3)
         for w, (pitch, yaw) in (("out", (44.0, 22.0 * y)), ("mid", (-40.0, 0.0)), ("in", (36.0, -8.8 * y))):
@@ -3476,27 +3493,29 @@ def _barrel_roll(t0, t1, over, duration, surge=4.0):
             (duration, 0.0, 0.0, 0.0, 0.0, 0.0, 360.0)]
 
 
-def _survey_circle(r=66.0, bank=-34.0, t0=0.3, t1=6.0, duration=6.4, rise=6.0, steps=48):
-    """Body keys for a slow circling flight beside its hex (Ryan, 6 October, after the eighth
-    notes: no right peel, just a smooth circle; a figure eight weighed and set aside, since it
-    crosses its own hex at speed and rolls through level to change bank halfway, the levelling
-    he disliked). One true circle of radius `r`, flown once round to the left from the hex
-    along its facing and back onto the hex along its facing, so it never slides: the hex is on
-    the circle's edge and the circle lies to its left. It gathers speed over the first tenth
-    of the way round and slows over the last (the ninth notes: quicker off the mark, and the
-    whole of it quicker; the tenth, quicker again), the nose always along the path, the bank coming
-    on with the speed to a steady `bank` degrees (negative drops the left wing) and easing off
-    as it slows, the nose a little down at speed, rising `rise` units over the far side. Keys
-    as (t, dx, dy, dz, yaw, pitch, roll)."""
+def _survey_circle(r=66.0, bank=34.0, side=1.0, t0=0.3, vmax=110.0, rise=6.0, steps=72):
+    """Body keys for a circling flight beside its hex (Ryan, 6 October, after the eighth notes:
+    no right peel, just a smooth circle). One true circle of radius `r`, flown once round from
+    the hex along its facing and back onto the hex along its facing, so it never slides: the
+    hex is on the circle's edge, the circle to its right (`side` 1; -1 to its left, the eleventh
+    notes turning it right so it and the figure eight, which starts left, go different ways).
+    It gathers speed from rest at an even rate over the first eighth of the way round and
+    sheds it the same way over the last, stopping on its hex (the eleventh notes: it had come
+    in at a third of its speed and stopped dead, a slide into the finish), `vmax` units a second
+    between (the ninth and tenth notes: quicker), the nose always along the path, the bank
+    coming on with the speed to a steady `bank` degrees toward the turn and easing off as it
+    slows, the nose a little down at speed, rising `rise` units over the far side. Keys as (t,
+    dx, dy, dz, yaw, pitch, roll)."""
     n = 720
+    length = 2.0 * math.pi * r
 
     def pace(u):
-        a1, e1 = min(1.0, u / 0.12), min(1.0, (1.0 - u) / 0.15)
-        return 0.3 + 0.7 * min(a1 * a1 * (3.0 - 2.0 * a1), e1 * e1 * (3.0 - 2.0 * e1))
+        return max(1e-3, min(1.0, math.sqrt(u / 0.12), math.sqrt(max(0.0, 1.0 - u) / 0.12)))
 
     clock = [0.0]
     for i in range(n):
-        clock.append(clock[-1] + 1.0 / pace((i + 0.5) / n))
+        clock.append(clock[-1] + length / n / (vmax * pace((i + 0.5) / n)))
+    t1 = round(t0 + clock[-1], 3)
     keys = [(t0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)]
     j = 0
     for k in range(1, steps):
@@ -3506,10 +3525,10 @@ def _survey_circle(r=66.0, bank=-34.0, t0=0.3, t1=6.0, duration=6.4, rise=6.0, s
         u = (j + (tt - clock[j]) / (clock[j + 1] - clock[j])) / n   # the share of the way round at this key
         th = 2.0 * math.pi * u
         v = pace(u)
-        keys.append((round(t0 + (t1 - t0) * k / float(steps), 3), round(-r + r * math.cos(th), 3), round(r * math.sin(th), 3), round(rise * math.sin(math.pi * u) ** 2, 3),
-                     round(math.degrees(th), 3), round(-3.0 * v, 3), round(bank * v * v, 3)))
-    keys.append((t1, 0.0, 0.0, 0.0, 360.0, 0.0, 0.0))
-    keys.append((duration, 0.0, 0.0, 0.0, 360.0, 0.0, 0.0))
+        keys.append((round(t0 + clock[-1] * k / float(steps), 3), round(side * (r - r * math.cos(th)), 3), round(r * math.sin(th), 3), round(rise * math.sin(math.pi * u) ** 2, 3),
+                     round(-side * math.degrees(th), 3), round(-3.0 * v, 3), round(side * bank * v * v, 3)))
+    keys.append((t1, 0.0, 0.0, 0.0, round(-side * 360.0, 3), 0.0, 0.0))
+    keys.append((round(t1 + 0.4, 3), 0.0, 0.0, 0.0, round(-side * 360.0, 3), 0.0, 0.0))
     return keys
 
 def _figure_eight(radius=40.0, sharp=1.5, bank=-40.0, t0=0.3, vmax=110.0, rise=6.0, steps=84):
@@ -3523,8 +3542,8 @@ def _figure_eight(radius=40.0, sharp=1.5, bank=-40.0, t0=0.3, vmax=110.0, rise=6
     (solved here; 40 degrees at `sharp` 1.5, so the two passes over the hex cross 80 degrees
     apart, on the diagonal). It leaves its hex along its facing into the left lobe, crosses
     back over the hex at speed into the right lobe, and settles back onto its hex along its
-    facing, so it never slides. The speed gathers over the first tenth from three tenths of
-    `vmax` and is shed over the last tenth, the bank following the turn (soft capped near
+    facing, so it never slides. The speed gathers from rest at an even rate over the first
+    tenth and is shed the same way over the last, the bank following the turn (soft capped near
     `bank`) and the speed, rising `rise` units over each lobe's far end. Keys as (t, dx, dy,
     dz, yaw, pitch, roll)."""
     n = 1200
@@ -3555,9 +3574,8 @@ def _figure_eight(radius=40.0, sharp=1.5, bank=-40.0, t0=0.3, vmax=110.0, rise=6
     ds = length / n
     total = ds * (len(pts) - 1)
 
-    def pace(u):
-        a1, e1 = min(1.0, u / 0.1), min(1.0, (1.0 - u) / 0.1)
-        return 0.3 + 0.7 * min(a1 * a1 * (3.0 - 2.0 * a1), e1 * e1 * (3.0 - 2.0 * e1))
+    def pace(u):   # from rest and back to rest at an even rate (the eleventh notes)
+        return max(1e-3, min(1.0, math.sqrt(u / 0.1), math.sqrt(max(0.0, 1.0 - u) / 0.1)))
 
     clock = [0.0]
     for i in range(1, len(pts)):
