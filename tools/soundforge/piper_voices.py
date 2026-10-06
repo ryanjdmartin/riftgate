@@ -43,7 +43,7 @@ SR = F.SR
 HERE = os.path.dirname(os.path.abspath(__file__))
 PIPER_PY = os.path.join(HERE, ".venv-piper", "bin", "python")
 DATA = os.path.join(F.OUT_SKETCH, "piper")
-PREFIX = "voice5_"
+PREFIX = "voice6_"
 VOICES = {
     "amy": "en_US-amy-medium",
     "jenny": "en_GB-jenny_dioco-medium",
@@ -74,12 +74,27 @@ def deep(x):
 
 
 # (voice, process name, chain, length scale)
+def mid(x):
+    """Between the chain and deep (Ryan: somewhere between is probably it): one comb fed back
+    harder than the chain's, more sub-octave, a light grain."""
+    y = F.bp(x, 180.0, 4500.0, order=3)
+    y = V.level_syllables(y, target=0.22)
+    y = V.flange(y, delay=0.0032, depth=0.0012, rate=0.3, feedback=0.62, wet=0.7)
+    y = F.mix(y, V.sub_octave(y, 0.35))
+    hold = 2
+    y = np.repeat(y[::hold], hold)[:len(y)]
+    return F.sat(y / (np.max(np.abs(y)) + 1e-9) * 1.2, 1.5)
+
+
+# the sixth pass: the chain, mid and deep, each at the normal pace and slowed a third
 TRIALS = [
     ("amy", "machine", V.machine, 1.15),
     ("jenny", "machine", V.machine, 1.15),
-    ("jenny", "light", light, 1.15),
+    ("jenny", "mid", mid, 1.15),
     ("jenny", "deep", deep, 1.15),
-    ("jenny", "slow", V.machine, 1.35),
+    ("jenny", "machine_slow", V.machine, 1.35),
+    ("jenny", "mid_slow", mid, 1.35),
+    ("jenny", "deep_slow", deep, 1.35),
 ]
 
 
@@ -113,7 +128,7 @@ def main(argv):
     if os.path.exists(path):
         with open(path) as fh:
             manifest.update(json.load(fh))
-    manifest["voice5"] = []
+    manifest["voice6"] = []
     for key_, text in V.LINES.items():
         for v, proc, chain, scale in TRIALS:
             raw = render(v, text, scale)
@@ -121,7 +136,7 @@ def main(argv):
             x = V.level_for_phone(chain(raw), -12.0)
             name = PREFIX + "%s_%s_%s" % (v, key_, proc)
             X.write(name, X.tail(x, 0.3))
-            manifest["voice5"].append({"name": name, "voice": v, "model": VOICES[v], "line": key_, "process": proc, "seconds": round(len(x) / SR, 2)})
+            manifest["voice6"].append({"name": name, "voice": v, "model": VOICES[v], "line": key_, "process": proc, "seconds": round(len(x) / SR, 2)})
             print("  %-40s %5.2f s" % (name, len(x) / SR))
     with open(path, "w") as fh:
         json.dump(manifest, fh, indent=1)
