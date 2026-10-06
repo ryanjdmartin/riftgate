@@ -189,7 +189,8 @@ def refuse():
     """F falling to E on dull boops, a dropout cutting the second."""
     a = boop(F4, 0.14, 1.0, attack=0.01, bright=1100.0)
     b = boop(E4, 0.22, 0.9, attack=0.01, bright=1000.0)
-    b[n_of(0.08):n_of(0.11)] = 0.0
+    # the dropout, with 3 ms ramps either side: a hard zeroing clicked on the speaker (Ryan, 5 October)
+    b *= env(len(b), [(0.0, 1.0), (0.077, 1.0), (0.08, 0.0), (0.11, 0.0), (0.113, 1.0), (0.22, 1.0)])
     buf = at(a, b, 0.13)
     return at(buf, A.pulse(69.0, 0.14, 0.6), 0.13)
 

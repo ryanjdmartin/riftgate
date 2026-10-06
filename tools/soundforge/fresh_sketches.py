@@ -147,6 +147,7 @@ def scrape(dur=0.25, gain=1.0):
     """A scrape: grainy noise with a rough gate, a protest."""
     n = n_of(dur)
     g = (np.sin(2.0 * math.pi * 23.0 * t_of(n)) > 0.2).astype(float)
+    g = np.convolve(g, np.ones(n_of(0.003)) / n_of(0.003), mode="same")   # soft edges: a hard gate clicked on the speaker (Ryan, 5 October)
     x = F.bp(F.noise(n), 300.0, 2400.0) * g
     return x * env(n, [(0.0, 0.0), (0.01, 1.0), (dur * 0.8, 0.8), (dur, 0.0)]) * gain
 
