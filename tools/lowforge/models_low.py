@@ -247,9 +247,11 @@ def sparrowhawk(b):
         b.box(s * 4.6, s * 5.2, -34.0, -29.0, 7.0, 9.6, "steel.vent", "intake_slits")
     # Reverse-swept wings with a little anhedral, knife-edged at the front (a three-point
     # section: the leading edge is one line), the root's trailing edge running back into
-    # the boosters; a weapon pod and gun at each tip.
+    # the boosters; a weapon pod and gun at each tip. The root sits inside the fuselage
+    # (Ryan, 6 October, the ninth notes: the wings did not quite meet the fuselage at the
+    # front, where it narrows to 7.3 either side of the centreline and the root stood at 8).
     for s in (-1.0, 1.0):
-        root = [(s * 8.0, -32.0, -1.0), (s * 8.0, -32.0, 1.4), (s * 8.0, 6.0, 0.2)]
+        root = [(s * 6.5, -32.0, -1.0), (s * 6.5, -32.0, 1.4), (s * 6.5, 6.0, 0.2)]
         tip = [(s * 32.0, 6.0, -5.4), (s * 32.0, 6.0, -4.6), (s * 32.0, 14.0, -5.0)]
         _wing(b, root, tip, "livery.livery", "wing")
         if s < 0:
@@ -309,8 +311,14 @@ def sparrowhawk(b):
     # right peel if it makes it complicated, just a smooth circle): one true circle to the
     # left, from its hex along its facing and back onto it the same way, the bank steady
     # (_survey_circle).
-    b.act("banked_circle", 9.0, body=_survey_circle(), places=("map",),
-          glow=[(["booster_ring", "exhaust"], [(0.2, 0.0), (1.2, 6.0), (7.6, 6.0), (8.8, 0.0)])])
+    # Quicker off the mark and quicker round (the ninth notes).
+    b.act("banked_circle", 6.4, body=_survey_circle(), places=("map",),
+          glow=[(["booster_ring", "exhaust"], [(0.2, 0.0), (0.7, 7.0), (5.4, 6.0), (6.2, 0.0)])])
+    # A figure eight beside it, to judge against the circle (Ryan, 6 October, the ninth notes:
+    # "I'd like to see what a figure 8 looks like"): a lobe to the left and one to the right,
+    # crossing its hex at speed between them (_figure_eight). Map only.
+    b.act("figure_eight", 8.0, body=_figure_eight(), places=("map",),
+          glow=[(["booster_ring", "exhaust"], [(0.2, 0.0), (0.7, 7.0), (3.7, 6.0), (4.0, 8.0), (4.3, 6.0), (7.0, 6.0), (7.8, 0.0)])])
     # Movement: the boosters brighten, the nose drops; it banks and slides through corners
     # (b.move) at full speed.
     b.gait(glow={"parts": ["booster_ring", "exhaust"], "k": 5.0}, body_hold=(0.0, 0.0, 0.0, 0.0, -6.0, 0.0))
@@ -492,35 +500,38 @@ def clydesdale(b):
     b.act("settle", 5.8, tracks, body=body)   # the hydraulics let the body down onto its hooves, the head dropping, and heave it up again
     # Movement (Ryan, 4 October, the third pass: stomp and plod, no weight thrown side to
     # side): each hoof planted flat while the body passes over it, then lifted high and
-    # stamped down; the body sunk a little into the walk, dropping and nodding as each hoof
-    # lands; the head nodding with it. A four-beat walk on the longer legs (Ryan, 5 October,
-    # the fifth notes): each hind lands a quarter of a stride after the fore on its side, so
-    # a hind hoof never comes down where the fore still stands (in diagonal pairs the two
-    # met under the belly). Half the stride a hoof is down, two always, so a stance of 36
-    # makes a stride of 72 (it was 62) with the body five under its rest at the lowest and
-    # the hooves never nearer than 22; a lifting or landing hoof bounds the body too, and
-    # the ride is eased, so it plods level instead of dropping as each hoof lands.
-    # An assault walker's stomp (Ryan, 6 October, the seventh notes: AT-AT massive, the walk
-    # did not sell it) read as hooves stuck down on suction cups (the eighth notes), so a heavy
-    # slow gallop, as Ryan asked to try: a transverse gallop, hind left, hind right, fore left,
-    # fore right, then a moment gathered off the ground, the hull rocking nose up onto the
-    # hinds and down over the fores (_gallop). A long stride, so at its map pace it lopes, a
-    # stride and a half a second or so.
-    tracks, body, stride = _gallop([
-        {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
-         "phase": {"hl": 0.0, "hr": 0.12, "fl": 0.42, "fr": 0.54}[leg], "shift": legs[leg][0][1] - legs[leg][2][1]}
-        for leg in ("fl", "fr", "hl", "hr")], sweep=42.0, duty=0.34, lift=13.0, crouch=1.0, hop=3.0, rock=4.0, dip=2.0)
-    tracks["head"] = ([(i / 40.0, round(-2.5 * math.cos(2.0 * math.pi * (i / 40.0 - 0.1)), 3)) for i in range(41)], 0.0)   # the head lags the rock, steadying it
-    b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
-    # The seventh notes' stomp, kept as an option for the hangar's Walk to set beside the
-    # gallop: three hooves down at once, each lifted high and held, then slammed down.
+    # stamped down.
+    # A heavy trot (Ryan, 6 October, the ninth notes: the gallop has potential but is a bit
+    # much, and its hooves met through each other; somewhere between it and the Armadillo's
+    # stomp). The gait between the two in a horse, and the namesake's own: diagonal pairs,
+    # high-stepping, each fore landing a beat before its hind partner so every pair comes
+    # down as a heavy double thud, a moment between pairs with only the swinging hooves
+    # under it, the hull dropping and nodding onto each pair. The stances are spread three
+    # units fore and aft of the hips and the sweep kept to 24, so a hind hoof reaching
+    # forward never comes within 22 of where the fore on its side stands or swings (the
+    # hooves are 16 long): nothing of one leg can meet the other. A stride of 60, about one
+    # a second at its map pace.
     tracks, body, stride = _plant([
         {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
-         "phase": {"fl": 0.0, "hl": 0.25, "fr": 0.5, "hr": 0.75}[leg], "shift": legs[leg][0][1] - legs[leg][2][1],
-         "nod": 1.0 if leg[0] == "f" else -0.6}
-        for leg in ("fl", "fr", "hl", "hr")], sweep=40.0, duty=0.64, lift=14.0, crouch=0.5, dip=2.2, nod=1.4, airborne=0.96, smooth=0.04, stomp=True, n=120)
-    tracks["head"] = ([(i / 40.0, round(-2.0 * abs(math.sin(2.0 * math.pi * i / 40.0)), 3)) for i in range(41)], 0.0)
-    b.gait_option("stomp", stride=stride, tracks=tracks, body=body, ease="linear")
+         "phase": {"fl": 0.0, "hr": 0.05, "fr": 0.5, "hl": 0.55}[leg],
+         "shift": legs[leg][0][1] - legs[leg][2][1] + (3.0 if leg[0] == "f" else -3.0),
+         "nod": 1.0 if leg[0] == "f" else -0.5}
+        for leg in ("fl", "fr", "hl", "hr")], sweep=24.0, duty=0.4, lift=12.0, crouch=1.0, dip=1.8, nod=1.2, airborne=0.97, smooth=0.03, n=120)
+    tracks["head"] = ([(i / 40.0, round(-1.8 * abs(math.sin(2.0 * math.pi * (i / 40.0 - 0.04))), 3)) for i in range(41)], 0.0)   # a nod onto each pair
+    b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
+    # The eighth notes' gallop, kept as an option for the hangar's Walk to set beside the
+    # trot (Ryan: it has potential), its stances spread as the trot's and its sweep cut from
+    # 42 to 30 so its hooves pass clear of each other too (they met by two and a half;
+    # now a unit clear at the closest, measured): a transverse gallop, hind left, hind
+    # right, fore left, fore right, then a moment gathered off the ground, the hull rocking
+    # nose up onto the hinds and down over the fores (_gallop).
+    tracks, body, stride = _gallop([
+        {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
+         "phase": {"hl": 0.0, "hr": 0.12, "fl": 0.42, "fr": 0.54}[leg],
+         "shift": legs[leg][0][1] - legs[leg][2][1] + (3.0 if leg[0] == "f" else -3.0)}
+        for leg in ("fl", "fr", "hl", "hr")], sweep=30.0, duty=0.34, lift=13.0, crouch=1.0, hop=3.0, rock=4.0, dip=2.0)
+    tracks["head"] = ([(i / 40.0, round(-2.5 * math.cos(2.0 * math.pi * (i / 40.0 - 0.1)), 3)) for i in range(41)], 0.0)   # the head lags the rock, steadying it
+    b.gait_option("gallop", stride=stride, tracks=tracks, body=body, ease="linear")
     b.move(accel=1.4, heft=0.24)
 
 clydesdale.maker = "wainwright_sutler"
@@ -1109,6 +1120,17 @@ def _skirt_plate(b, s, r, hubs):
         b.prism("x", s * 24.9, yw, r, 1.6, 1.4, "steel.dark", 8, "skirt_stub")
 
 
+def _prairie_body(y):
+    """The Prairie Dog's body at y: its half width and its top, read off the body's loft
+    (below) so the front arches can follow it in."""
+    secs = ((-30.0, 14.0, 24.0), (-6.0, 15.0, 28.0), (12.0, 14.0, 24.0), (32.0, 10.0, 15.0))
+    for (y0, h0, t0), (y1, h1, t1) in zip(secs, secs[1:]):
+        if y <= y1:
+            f = max(0.0, (y - y0) / (y1 - y0))
+            return h0 + f * (h1 - h0), t0 + f * (t1 - t0)
+    return secs[-1][1], secs[-1][2]
+
+
 def prairie_dog(b):
     """Wainwright & Sutler "Prairie Dog" (Pattern 9 Scout Car): light and fast, an armoured
     buggy rather than a dune buggy (Ryan, 29 September: no open cockpits; the Bilecka Panther
@@ -1151,7 +1173,21 @@ def prairie_dog(b):
             # top matters at the game's angles, the tyre may ride into the arch's depth): a unit
             # and a half over its old height, the least that keeps the tyre under the arch's top
             # through the rev's rock and squat (measured).
-            b.loft([(yw - 12.0, rect(s * 18.0, 10.0, R + 7.0, R + 11.0)), (yw, rect(s * 18.0, 10.0, R + 11.0, R + 15.0)), (yw + 12.0, rect(s * 18.0, 10.0, R + 7.0, R + 11.0))], "steel.plate", "arch")
+            if yw < 0.0:
+                b.loft([(yw - 12.0, rect(s * 18.0, 10.0, R + 7.0, R + 11.0)), (yw, rect(s * 18.0, 10.0, R + 11.0, R + 15.0)), (yw + 12.0, rect(s * 18.0, 10.0, R + 7.0, R + 11.0))], "steel.plate", "arch")
+                continue
+            # The front pair follow the nose in (Ryan, 6 October, the ninth notes: a gap
+            # between the front fenders and the body): the body narrows and drops toward the
+            # nose while a straight arch did not, so each front arch's inner flange steps down
+            # and in to sit a unit inside the body's flank and under its top, the part over
+            # the tyre (x 16 out) left as it was so its top still clears the tyre in the rev.
+            secs = []
+            for y, z0 in ((yw - 12.0, R + 7.0), (yw, R + 11.0), (yw + 12.0, R + 7.0)):
+                half, top = _prairie_body(y)
+                zi = min(z0, top - 1.0)
+                pts = [(half - 1.0, zi), (16.0, z0), (23.0, z0), (23.0, z0 + 4.0), (16.0, z0 + 4.0), (half - 1.0, zi + 4.0)]
+                secs.append((y, [(s * x, z) for x, z in (pts if s > 0 else pts[::-1])]))
+            b.loft(secs, "steel.plate", "arch")
     # The body: a wedge lofted from a squared tail to a low raked nose, a chin plate under.
     b.loft([(-30.0, rect(0.0, 28.0, 8.0, 24.0)), (-6.0, rect(0.0, 30.0, 8.0, 28.0)), (12.0, rect(0.0, 28.0, 8.0, 24.0)), (32.0, rect(0.0, 20.0, 10.0, 15.0))], "steel.panel", "body")
     b.box(-10.0, 10.0, 30.0, 33.0, 8.0, 12.0, "steel.dark", "chin")
@@ -1730,27 +1766,48 @@ def nemesis(b):
                               "elbow_" + side: [(t, e) for t, (p, y, r, e) in keys] + [(keys[-1][0] + 1.1, 0.0)]}
 
     # The fist pound, forceful (Ryan, 5 October, the fifth notes: too soft): wound up high and
-    # wide with the torso reared back on its waist, then slammed together in a fifth of a
-    # second and the body dropping; and at once again (the sixth notes: two quick pounds back
-    # to back, the fists not drawn far apart between), a short lift off the bounce and down
-    # harder. Its own quick servos (heft), so the fists arrive hard and not eased in.
-    # The eighth notes (Ryan, 6 October): the fists hit and stop dead, as the arms crack in
-    # crack_shoulders, where they slowed into each other: each blow runs at full speed to a key
-    # a hair short of contact (CLOSE, 0.85 of the way, timed so the speed carries through it)
-    # and stops on the next three hundredths of a second later, held a beat. The lean is the
-    # first blow's alone and smaller (it leaned too far), and the second is the arms' alone:
-    # the waist holds where the first left it, the hips no longer driving it (nor, since the
-    # seventh, the knees and ankles).
+    # wide with the torso reared back on its waist, then slammed together and the body
+    # dropping; and at once again (the sixth notes: two quick pounds back to back), a short
+    # lift off the bounce and down harder. The lean is the first blow's alone (the eighth),
+    # the second the arms' alone. The ninth notes (Ryan, 6 October): it first widens its stance,
+    # each foot lifted, set down further out and planted (the hip rolled out, the ankle back
+    # so the sabaton lands flat); the fists gather speed all the way into each other and stop
+    # dead (_slam), on servos quick enough to show it (the act's heft, where the machine's own
+    # took a quarter of a second to catch up); after the second blow the fists stay pressed,
+    # grinding, where they had recoiled and come back together, a bounce; and it steps back in.
     UP, RECOIL, LIFT = (46.0, -14.0, 0.0, 25.0), (25.0, -54.0, 8.0, 9.0), (44.0, -50.0, 6.0, 16.0)
-    CLOSE = lambda a, b: tuple(round(x + 0.85 * (y - x), 2) for x, y in zip(a, b))
-    tracks, body = _planted(feet, [(0.5, 0.0, 0.6, 1.0), (1.05, 0.0, 1.0, 1.5), (1.22, 0.0, -2.57, -1.48), (1.25, 0.0, -3.2, -2.0), (1.45, 0.0, -2.4, -1.4),
-                                   (3.1, 0.0, -2.5, -1.5), (4.2, 0.0, 0.0, 0.0)])
+    PRESS = (31.0, -66.0, 10.0, 0.0)
+    WIDEN = 9.0   # degrees each hip rolls out to widen the stance
+    lift_at = {sd: (legs[sd][2][1] + 1.0, legs[sd][2][2] + 6.0) for sd in ("l", "r")}
+    # A leg rolled out reaches less far down: its ankle swings up round the hip, the more so
+    # for the ankle standing outboard of the hip.
+    rise = lambda sd: (legs[sd][0][2] - legs[sd][2][2]) * (1.0 - math.cos(math.radians(WIDEN))) + (abs(legs[sd][2][0]) - abs(legs[sd][0][0])) * math.sin(math.radians(WIDEN))
+    wide_at = {sd: (legs[sd][2][1], legs[sd][2][2] - rise(sd)) for sd in ("l", "r")}
+    home_at = {sd: (legs[sd][2][1], legs[sd][2][2]) for sd in ("l", "r")}
+    SQ = -1.4   # the wider stance sits lower
+    frames = [(0.2, (0.0, 0.0, 0.0), {}), (0.45, (0.0, -0.3, 0.0), {"l": lift_at["l"]}), (0.7, (0.0, -0.6, 0.0), {"l": wide_at["l"]}),
+              (0.95, (0.0, -0.9, 0.0), {"r": lift_at["r"]}), (1.2, (0.0, -1.2, 0.0), {"r": wide_at["r"]}), (1.5, (0.0, SQ + 0.6, 1.0), {}),
+              (2.05, (0.0, SQ + 1.0, 1.5), {})]
+    frames += [(t, b2, {}) for t, b2 in _slam(2.05, (0.0, SQ + 1.0, 1.5), 2.3, (0.0, SQ - 3.2, -2.0))]
+    frames += [(2.5, (0.0, SQ - 2.4, -1.4), {}), (4.2, (0.0, SQ - 2.5, -1.5), {}), (4.8, (0.0, SQ, 0.0), {}),
+               (5.05, (0.0, SQ + 0.2, 0.0), {"r": lift_at["r"]}), (5.3, (0.0, SQ + 0.5, 0.0), {"r": home_at["r"]}),
+               (5.55, (0.0, SQ + 0.8, 0.0), {"l": lift_at["l"]}), (5.8, (0.0, SQ + 1.1, 0.0), {"l": home_at["l"]}), (6.3, (0.0, 0.0, 0.0), {})]
+    tracks, body = _steps({sd: feet[i] for i, sd in enumerate(("l", "r"))}, frames)
+    # The roll out and back, on each hip and against it on its ankle, as each foot steps.
+    rolls = {"l": [(0.2, 0.0), (0.45, 0.5), (0.7, 1.0), (5.55, 1.0), (5.8, 0.0)], "r": [(0.7, 0.0), (0.95, 0.5), (1.2, 1.0), (5.05, 1.0), (5.3, 0.0)]}
+    for sd, sign in (("l", 1.0), ("r", -1.0)):
+        out = lambda t: sign * WIDEN * _lerp_keys(rolls[sd], t)
+        tracks["hip_" + sd] = [(t, a2, 0.0, round(out(t), 3)) for t, a2 in tracks["hip_" + sd]]
+        tracks["ankle_" + sd] = [(t, c2, 0.0, round(-out(t), 3)) for t, c2 in tracks["ankle_" + sd]]
     for side in ("l", "r"):
-        tracks.update(arm(side, [(0.5, WIDE), (1.05, UP), (1.22, CLOSE(UP, HIT)), (1.25, HIT), (1.33, HIT), (1.5, RECOIL), (1.7, LIFT), (1.87, CLOSE(LIFT, HIT)),
-                                 (1.9, HIT), (1.98, HIT), (2.2, RECOIL), (3.1, (31.0, -66.0, 10.0, 0.0))]))
-    tracks["waist"] = [(t, p, 0.0, 0.0) for t, p in ((0.5, 2.0), (1.05, 4.0), (1.22, -4.5), (1.25, -6.0), (1.45, -4.0), (3.1, -4.0), (4.2, 0.0))]   # pitch: the waist's own axis is its yaw
-    b.act("pound_fists", 4.8, tracks, body=body, heft=0.09,   # the fists wound up high and slammed together before the chest, twice back to back, stopping dead on each other, the body dropping into the first, the core flashing at each
-          glow=[(["core_fire"], [(1.22, 0.0), (1.28, 12.0), (1.5, 4.0), (1.88, 3.0), (1.93, 15.0), (3.0, 9.0), (4.0, 0.0)])])
+        m = lambda pose: (pose[0], pose[1] if side == "l" else -pose[1], pose[2] if side == "l" else -pose[2])
+        keys = [(1.5, WIDE), (2.05, UP)] + _slam(2.05, UP, 2.3, HIT) + [(2.38, HIT), (2.55, RECOIL), (2.72, LIFT)] + _slam(2.72, LIFT, 2.95, HIT) + \
+               [(3.1, PRESS), (3.35, (30.0, -64.5, 9.0, 1.5)), (3.6, PRESS), (3.85, (30.0, -64.5, 9.0, 1.5)), (4.1, PRESS), (4.7, (14.0, -34.0, 4.0, 14.0)), (5.3, (0.0, 0.0, 0.0, 0.0))]
+        tracks["shoulder_" + side] = [(t, *m(pose)) for t, pose in keys]
+        tracks["elbow_" + side] = [(t, pose[3]) for t, pose in keys]
+    tracks["waist"] = [(t, p2, 0.0, 0.0) for t, p2 in [(1.5, 2.0), (2.05, 4.0)] + _slam(2.05, 4.0, 2.3, -6.0) + [(2.5, -4.0), (4.2, -4.0), (5.0, 0.0)]]   # pitch: the waist's own axis is its yaw
+    b.act("pound_fists", 6.6, tracks, body=body, heft=0.05,   # the stance widened foot by foot, then the fists wound up and slammed together before the chest, twice, stopping dead, pressed and grinding, and the feet stepped back in
+          glow=[(["core_fire"], [(2.27, 0.0), (2.33, 13.0), (2.6, 4.0), (2.92, 3.0), (2.98, 16.0), (4.1, 9.0), (5.0, 0.0)])])
     tracks, body = _planted(feet, [(1.2, -2.0, 0.0, 7.0), (3.8, -2.2, 0.0, 7.5), (5.2, 0.0, 0.0, 0.0)])
     tracks.update({
         "shoulder_l": [(1.2, 60.0, 60.0, 0.0), (3.8, 62.0, 62.0, 0.0), (5.0, 0.0, 0.0, 0.0)],
@@ -1782,18 +1839,22 @@ def nemesis(b):
     # cracks at the bottom, the torso twisting with it on the waist (Ryan, 5 October: not the
     # whole machine pivoting on its feet) and the core flaring at each crack; then the chest
     # thrown out on the waist and slammed forward, the fists clenched before it.
-    tracks, body = _planted(feet, [(0.4, 0.0, -1.5, -4.0), (1.35, 0.0, -2.2, -4.5), (2.45, 0.0, -2.2, -4.5), (2.9, 0.0, 0.8, 4.0), (3.3, 0.0, -3.4, -5.0),
-                                   (4.0, 0.0, -3.0, -4.6), (5.0, 0.0, 0.0, 0.0)])
+    # The ninth notes (Ryan, 6 October: the fists did not hit at all, the same soft): the slam
+    # gathers speed all the way into the fists meeting and stops dead (_slam), and the act runs
+    # on quick servos (its heft), where the machine's own let every move lag a quarter second.
+    tracks, body = _planted(feet, [(0.4, 0.0, -1.5, -4.0), (1.35, 0.0, -2.2, -4.5), (2.45, 0.0, -2.2, -4.5), (2.9, 0.0, 0.8, 4.0)] + [(t, *v) for t, v in _slam(2.9, (0.0, 0.8, 4.0), 3.3, (0.0, -3.4, -5.0))] +
+                            [(4.0, 0.0, -3.0, -4.6), (5.0, 0.0, 0.0, 0.0)])
     tracks.update({
-        "waist": [(0.4, -4.0, 0.0, 0.0), (1.35, -6.0, 20.0, 0.0), (2.45, -6.0, -20.0, 0.0), (2.9, 10.0, 0.0, 0.0), (3.3, -12.0, 0.0, 0.0), (4.0, -10.0, 0.0, 0.0), (5.0, 0.0, 0.0, 0.0)],
-        "shoulder_l": [(0.5, 55.0, 0.0, 0.0), (0.8, 30.0, 48.0, 0.0), (1.1, -45.0, 20.0, 0.0), (1.35, -12.0, 0.0, 0.0), (2.45, -10.0, 0.0, 0.0), (2.9, -48.0, 10.0, 0.0),
-                       (3.3, 28.0, -60.0, 8.0), (4.0, 30.0, -62.0, 8.0), (5.0, 0.0, 0.0, 0.0)],
-        "shoulder_r": [(1.35, -8.0, 0.0, 0.0), (1.6, 55.0, 0.0, 0.0), (1.9, 30.0, -48.0, 0.0), (2.2, -45.0, -20.0, 0.0), (2.45, -12.0, 0.0, 0.0), (2.9, -48.0, -10.0, 0.0),
-                       (3.3, 28.0, 60.0, -8.0), (4.0, 30.0, 62.0, -8.0), (5.0, 0.0, 0.0, 0.0)],
-        "elbow_l": [(0.5, 20.0), (1.35, 0.0), (2.9, -10.0), (3.3, 6.0), (4.0, 6.0), (5.0, 0.0)],
-        "elbow_r": [(1.6, 20.0), (2.45, 0.0), (2.9, -10.0), (3.3, 6.0), (4.0, 6.0), (5.0, 0.0)],
+        "waist": [(0.4, -4.0, 0.0, 0.0), (1.35, -6.0, 20.0, 0.0), (2.45, -6.0, -20.0, 0.0), (2.9, 10.0, 0.0, 0.0)] +
+                 [(t, *v) for t, v in _slam(2.9, (10.0, 0.0, 0.0), 3.3, (-12.0, 0.0, 0.0))] + [(4.0, -10.0, 0.0, 0.0), (5.0, 0.0, 0.0, 0.0)],
+        "shoulder_l": [(0.5, 55.0, 0.0, 0.0), (0.8, 30.0, 48.0, 0.0), (1.1, -45.0, 20.0, 0.0), (1.35, -12.0, 0.0, 0.0), (2.45, -10.0, 0.0, 0.0), (2.9, -48.0, 10.0, 0.0)] +
+                      [(t, *v) for t, v in _slam(2.9, (-48.0, 10.0, 0.0), 3.3, (28.0, -60.0, 8.0))] + [(4.0, 29.0, -61.0, 8.0), (5.0, 0.0, 0.0, 0.0)],
+        "shoulder_r": [(1.35, -8.0, 0.0, 0.0), (1.6, 55.0, 0.0, 0.0), (1.9, 30.0, -48.0, 0.0), (2.2, -45.0, -20.0, 0.0), (2.45, -12.0, 0.0, 0.0), (2.9, -48.0, -10.0, 0.0)] +
+                      [(t, *v) for t, v in _slam(2.9, (-48.0, -10.0, 0.0), 3.3, (28.0, 60.0, -8.0))] + [(4.0, 29.0, 61.0, -8.0), (5.0, 0.0, 0.0, 0.0)],
+        "elbow_l": [(0.5, 20.0), (1.35, 0.0), (2.9, -10.0)] + _slam(2.9, -10.0, 3.3, 6.0) + [(4.0, 6.0), (5.0, 0.0)],
+        "elbow_r": [(1.6, 20.0), (2.45, 0.0), (2.9, -10.0)] + _slam(2.9, -10.0, 3.3, 6.0) + [(4.0, 6.0), (5.0, 0.0)],
     })
-    b.act("crack_shoulders", 5.4, tracks, body=body,
+    b.act("crack_shoulders", 5.4, tracks, body=body, heft=0.07,
           glow=[(["core_fire"], [(1.2, 0.0), (1.35, 7.0), (1.8, 1.0), (2.45, 7.0), (2.9, 3.0), (3.3, 12.0), (4.0, 10.0), (4.9, 0.0)])])
     # Movement (Ryan, 4 October, the third pass: stomp and plod, MechWarrior and not Gundam,
     # no weight thrown side to side): a long heavy stride, each sabaton planted flat while
@@ -1998,41 +2059,50 @@ def ammit(b):
     # The rise: the legs straighten under it and the hips carry the body up and back over
     # the feet, the snout still level; the upper pair high and spread (Goro, Machamp) and the
     # middle pair out wide and low, an X of arms (Ryan, 5 October, the fifth notes). Up there
-    # it slashes twice toward its centre, angry (the eighth notes, Ryan, 6 October: the two
-    # left arms together, then the two right): on each side the upper arm and the middle arm
-    # cock out wide together, talons spread, and cut across to the middle in under a quarter
-    # of a second, the talons snapping shut as they meet the centre line; held there a beat,
-    # trembling, then flung back out to the X. The body pitches into each cut on the planted
-    # legs and the throat flares; then it grips and comes down. The waist stays still: turning
-    # it swung the upper arms' roots across the middle arms', which ride the pelvis (measured).
-    W1, W2 = 2.0, 3.5   # the left side's wind-up, the right side's
+    # it slashes twice toward its centre, the two left arms together and then the two right
+    # (the eighth notes). The ninth (Ryan, 6 October: not vicious, not even close; a lame little
+    # flailing, not a practice mauling): each pair cocks right back, the upper claw high and
+    # out over the shoulder with the talons spread, the middle claw out wide and back, and
+    # rakes down and across past its centre in a fifth of a second, gathering speed all the way
+    # and stopping dead at the end of the cut (_slam), the talons snapping shut through it, the
+    # body lunging into it and the throat flaring; it holds there a beat, quivering, and is
+    # flung back up. Quick servos for the act (its heft): the machine's own, a fifth of a
+    # second, smeared a slash of that speed into a wave. No new joints: the shoulder's own
+    # range carries the arc. The waist stays still (turning it swung the upper arms' roots
+    # across the middle arms', which ride the pelvis; measured).
+    W1, W2 = 2.0, 3.3   # each side's cut lands this long after the rise begins
     rise = (-2.0, 11.0, 3.0)
-    lunge = lambda t: [(round(t + 0.08, 3), (-2.0, 11.4, 2.0), {}), (round(t + 0.32, 3), (-1.0, 9.6, 8.0), {}), (round(t + 0.75, 3), (-1.2, 9.9, 7.0), {}), (round(t + 1.15, 3), rise, {})]
-    tracks, body = _steps(hind, [(1.6, rise, {})] + lunge(W1) + lunge(W2) + [(5.4, (-2.2, 11.6, 3.4), {}), (6.8, (0.0, 0.0, 0.0), {})])
+    lunge = lambda t: [(round(t - 0.32, 3), (-2.2, 11.4, 1.5), {}), (round(t, 3), (-0.8, 9.6, 7.5), {}), (round(t + 0.45, 3), (-1.0, 9.9, 6.8), {}), (round(t + 0.85, 3), rise, {})]
+    tracks, body = _steps(hind, [(1.4, rise, {})] + lunge(W1) + lunge(W2) + [(4.9, (-2.2, 11.6, 3.4), {}), (6.2, (0.0, 0.0, 0.0), {})])
     for side, y, t in (("l", 1.0, W1), ("r", -1.0, W2)):
-        # y turns the yaw (and the middle arm's roll) outward on this side; t the cut's wind-up
+        # y turns the yaw (and the middle arm's roll) outward on this side; t the cut's end
         out_yaw = 22.0 * y
-        X_low = (6.0, 0.0, 44.0 * y)
+        X, Xl = (45.0, 26.0 * y, 0.0), (6.0, 0.0, 44.0 * y)
+        COCK, CUT, PAST = (50.0, 40.0 * y, 0.0), (2.0, -36.0 * y, 0.0), (-2.0, -38.0 * y, 0.0)   # the cut ends above the middle claw raking under it
+        COCKl, CUTl = (-12.0, 0.0, 58.0 * y), (30.0, 0.0, -18.0 * y)
+        c0 = round(t - 0.55, 3)   # cocked back by here
+        s0 = round(t - 0.2, 3)    # the cut begins
+        flat = lambda ks: [(tt, *v) for tt, v in ks]
         tracks.update({
-            "shoulder_" + side: [(1.4, 45.0, 26.0 * y, 0.0), (t - 0.3, 45.0, 26.0 * y, 0.0), (t, 44.0, 34.0 * y, 0.0), (round(t + 0.22, 3), 38.0, -30.0 * y, 0.0), (round(t + 0.28, 3), 38.5, -31.0 * y, 0.0),
-                                 (round(t + 0.7, 3), 39.0, -29.0 * y, 0.0), (round(t + 1.05, 3), 45.0, 26.0 * y, 0.0), (5.4, 45.0, 26.0 * y, 0.0), (6.5, 0.0, 0.0, 0.0)],   # never lifted past 45: the middle arms' X sits just under the upper arms' roots
-            "elbow_" + side: [(1.4, 18.0), (t - 0.3, 18.0), (t, 30.0), (round(t + 0.22, 3), 2.0), (round(t + 0.7, 3), 4.0), (round(t + 1.05, 3), 18.0), (5.4, 20.0), (6.5, 0.0)],
-            "hand_" + side: [(1.4, -20.0), (t - 0.3, -20.0), (t, -40.0), (round(t + 0.22, 3), 14.0), (round(t + 0.7, 3), 10.0), (round(t + 1.05, 3), -20.0), (5.4, -22.0), (6.5, 0.0)],
-            "shoulder_low_" + side: [(1.5, *X_low), (t - 0.3, *X_low), (t, 4.0, 0.0, 54.0 * y), (round(t + 0.22, 3), 16.0, 0.0, -12.0 * y), (round(t + 0.28, 3), 16.5, 0.0, -13.0 * y),
-                                     (round(t + 0.7, 3), 15.0, 0.0, -11.0 * y), (round(t + 1.05, 3), *X_low), (5.4, 7.0, 0.0, 46.0 * y), (6.6, 0.0, 0.0, 0.0)],
-            "elbow_low_" + side: [(1.5, 18.0), (t - 0.3, 18.0), (t, 28.0), (round(t + 0.22, 3), 6.0), (round(t + 0.7, 3), 8.0), (round(t + 1.05, 3), 18.0), (5.4, 19.0), (6.6, 0.0)],
-            "hand_low_" + side: [(1.5, 24.0), (t - 0.3, 24.0), (t, 36.0), (round(t + 0.22, 3), 8.0), (round(t + 0.7, 3), 10.0), (round(t + 1.05, 3), 24.0), (5.4, 26.0), (6.6, 0.0)],
+            "shoulder_" + side: flat([(1.2, X), (round(c0 - 0.25, 3), X), (c0, COCK), (s0, COCK)] + _slam(s0, COCK, t, CUT) + [(round(t + 0.12, 3), PAST), (round(t + 0.45, 3), CUT),
+                                      (round(t + 0.85, 3), X), (4.9, X), (6.0, (0.0, 0.0, 0.0))]),   # within the shoulder's own range, raised to 50 at most
+            "elbow_" + side: [(1.2, 18.0), (round(c0 - 0.25, 3), 18.0), (c0, 30.0), (s0, 30.0)] + _slam(s0, 30.0, t, -8.0) + [(round(t + 0.45, 3), -6.0), (round(t + 0.85, 3), 18.0), (4.9, 20.0), (6.0, 0.0)],
+            "hand_" + side: [(1.2, -20.0), (round(c0 - 0.25, 3), -20.0), (c0, 24.0), (s0, 24.0)] + _slam(s0, 24.0, t, -50.0) + [(round(t + 0.45, 3), -46.0), (round(t + 0.85, 3), -20.0), (4.9, -22.0), (6.0, 0.0)],
+            "shoulder_low_" + side: flat([(1.3, Xl), (round(c0 - 0.25, 3), Xl), (c0, COCKl), (s0, COCKl)] + _slam(s0, COCKl, t, CUTl) + [(round(t + 0.45, 3), (28.0, 0.0, -16.0 * y)),
+                                          (round(t + 0.85, 3), Xl), (4.9, (7.0, 0.0, 46.0 * y)), (6.1, (0.0, 0.0, 0.0))]),
+            "elbow_low_" + side: [(1.3, 18.0), (round(c0 - 0.25, 3), 18.0), (c0, 32.0), (s0, 32.0)] + _slam(s0, 32.0, t, 2.0) + [(round(t + 0.45, 3), 4.0), (round(t + 0.85, 3), 18.0), (4.9, 19.0), (6.1, 0.0)],
+            "hand_low_" + side: [(1.3, 24.0), (round(c0 - 0.25, 3), 24.0), (c0, 40.0), (s0, 40.0)] + _slam(s0, 40.0, t, 4.0) + [(round(t + 0.45, 3), 6.0), (round(t + 0.85, 3), 24.0), (4.9, 26.0), (6.1, 0.0)],
         })
         for k, w in enumerate(("out", "mid", "in")):
-            spread = ((46.0, out_yaw), (42.0, 0.0), (36.0, -out_yaw * 0.4))[k]
-            shut = round(t + 0.2 + 0.03 * k, 3)
-            tracks["talon_%s_%s" % (side, w)] = [(1.4, 10.0, 0.0, 0.0), (round(t - 0.15, 3), spread[0], spread[1], 0.0), (round(t + 0.12, 3), spread[0], spread[1], 0.0),
-                                                 (shut, -38.0, 0.0, 0.0), (round(t + 0.75, 3), -38.0, 0.0, 0.0), (round(t + 1.05, 3), 10.0, 0.0, 0.0),
-                                                 (5.1, -36.0, 0.0, 0.0), (5.5, -36.0, 0.0, 0.0), (6.3, 0.0, 0.0, 0.0)]
-            tracks["talon_low_%s_%s" % (side, w)] = [(round(t - 0.15, 3), 0.0, 0.0, 0.0), (round(t + 0.05, 3), 34.0, 0.0, 0.0), (round(t + 0.12, 3), 34.0, 0.0, 0.0),
-                                                     (shut, -34.0, 0.0, 0.0), (round(t + 0.75, 3), -34.0, 0.0, 0.0), (round(t + 1.05, 3), 0.0, 0.0, 0.0)]
-    b.act("rear", 7.2, tracks, body=body,
-          glow=[(["throat_slot", "eye_strip"], [(W1 - 0.1, 0.0), (W1 + 0.22, 9.0), (W1 + 0.9, 2.0), (W2 - 0.1, 1.0), (W2 + 0.22, 10.0), (W2 + 0.9, 2.0), (5.6, 0.0)])])
+            spread = ((48.0, out_yaw), (44.0, 0.0), (38.0, -out_yaw * 0.4))[k]
+            shut = round(t - 0.06 + 0.02 * k, 3)
+            tracks["talon_%s_%s" % (side, w)] = [(1.2, 10.0, 0.0, 0.0), (c0, spread[0], spread[1], 0.0), (round(s0 + 0.05, 3), spread[0], spread[1], 0.0),
+                                                 (shut, -40.0, 0.0, 0.0), (round(t + 0.5, 3), -38.0, 0.0, 0.0), (round(t + 0.85, 3), 10.0, 0.0, 0.0),
+                                                 (4.6, -36.0, 0.0, 0.0), (5.0, -36.0, 0.0, 0.0), (5.8, 0.0, 0.0, 0.0)]
+            tracks["talon_low_%s_%s" % (side, w)] = [(c0, 0.0, 0.0, 0.0), (round(s0 + 0.03, 3), 36.0, 0.0, 0.0), (shut, -36.0, 0.0, 0.0), (round(t + 0.5, 3), -34.0, 0.0, 0.0),
+                                                     (round(t + 0.85, 3), 0.0, 0.0, 0.0)]
+    b.act("rear", 6.6, tracks, body=body, heft=0.05,
+          glow=[(["throat_slot", "eye_strip"], [(W1 - 0.15, 0.0), (W1 + 0.02, 12.0), (W1 + 0.7, 3.0), (W2 - 0.15, 2.0), (W2 + 0.02, 13.0), (W2 + 0.7, 3.0), (5.2, 0.0)])])
     # The talons shown off (Ryan, 5 October, the fifth notes: the fingers more, the wave
     # less, the middle pair in it, and no turning on the feet): the torso turns on its waist
     # to one hand as it comes up before the snout, wrist cocked, and holds there while its
@@ -2085,27 +2155,32 @@ def ammit(b):
                        for k, w in enumerate(("out", "mid", "in"))})
     b.act("raise_cannons", 9.2, tracks, body=body,
           glow=[(["carbine_tip", "pilot_flame"], [(2.4, 0.0), (3.0, 8.0), (6.4, 8.0), (7.1, 0.0)])])
-    # The threat: the snout drops, the upper arms flung wide, the outer talons spread and the
-    # middle ones lowered, ready to grab (the seventh notes), and the throat vent breathes out
-    # its heat, long and hot; the talons snap shut twice, a bite each, as the Badger's claw
-    # does, and the second time they stay shut. The hands stay pointed at the mark a breath
-    # after the last snap before they come back to rest (the eighth notes: they folded the
-    # moment it closed).
-    tracks, body = _steps({**hind, **{"low_" + k: v for k, v in mid_arms.items()}}, [(1.0, (0.0, -3.0, -6.0), {}), (3.8, (0.0, -3.4, -6.6), {}), (5.0, (0.0, 0.0, 0.0), {})])
-    tracks.update({
-        "shoulder_l": [(0.9, 36.0, 40.0, 0.0), (3.8, 38.0, 40.0, 0.0), (4.9, 0.0, 0.0, 0.0)],
-        "shoulder_r": [(0.9, 36.0, -40.0, 0.0), (3.8, 38.0, -40.0, 0.0), (4.9, 0.0, 0.0, 0.0)],
-        "elbow_l": [(0.9, 24.0), (3.8, 26.0), (4.9, 0.0)],
-        "elbow_r": [(0.9, 24.0), (3.8, 26.0), (4.9, 0.0)],
-        "hand_l": [(0.9, 20.0), (1.9, 22.0), (2.0, 10.0), (2.35, 20.0), (2.8, 8.0), (3.8, 10.0), (4.9, 0.0)],
-        "hand_r": [(0.9, 20.0), (1.9, 22.0), (2.0, 10.0), (2.35, 20.0), (2.8, 8.0), (3.8, 10.0), (4.9, 0.0)],
-    })
-    for side, y in (("l", 1.0), ("r", -1.0)):
-        for w, (pitch, yaw) in (("out", (46.0, 22.0 * y)), ("mid", (-12.0, 0.0)), ("in", (36.0, -8.8 * y))):
-            tracks["talon_%s_%s" % (side, w)] = [(0.4, 0.0, 0.0, 0.0), (0.8, pitch, yaw, 0.0), (1.88, pitch, yaw, 0.0), (2.0, -38.0, 0.0, 0.0), (2.12, -38.0, 0.0, 0.0),
-                                                 (2.45, pitch, yaw, 0.0), (2.68, pitch, yaw, 0.0), (2.8, -38.0, 0.0, 0.0), (3.9, -36.0, 0.0, 0.0), (4.8, 0.0, 0.0, 0.0)]
-    b.act("threat", 5.4, tracks, body=body,
-          glow=[(["throat_slot", "eye_strip"], [(0.8, 0.0), (1.4, 6.0), (2.0, 10.0), (3.0, 10.0), (3.3, 3.0), (4.4, 0.0)])])
+    # The threat: the snout drops, the throat vent breathes out its heat, long and hot, and the
+    # upper claws strike in a one-two (Ryan, 6 October, the ninth notes): each cocked back
+    # with its talons spread, the middle one hung low beneath them ready to grab, thrusts out
+    # at the mark and snaps shut as it arrives, the two outer talons closing down and the
+    # middle one swinging up to meet them (it had hung below the others, barely moving); the
+    # second thrusts as the first is snapping. Both stay pointed at the mark a breath before
+    # they come back to rest (the eighth notes). The thrusts and snaps gather speed and stop
+    # dead (_slam) on quick servos (the act's heft).
+    tracks, body = _steps({**hind, **{"low_" + k: v for k, v in mid_arms.items()}}, [(1.0, (0.0, -3.0, -6.0), {}), (3.6, (0.0, -3.4, -6.6), {}), (4.8, (0.0, 0.0, 0.0), {})])
+    flat = lambda ks: [(tt, *v) for tt, v in ks]
+    for side, y, t in (("l", 1.0, 1.55), ("r", -1.0, 1.85)):
+        # y turns the yaw outward on this side; t the thrust's arrival
+        GUARD, THRUST = (30.0, 16.0 * y, 0.0), (22.0, -8.0 * y, 0.0)
+        t0 = round(t - 0.24, 3)
+        tracks.update({
+            "shoulder_" + side: flat([(0.9, GUARD), (t0, GUARD)] + _slam(t0, GUARD, t, THRUST) + [(3.5, (23.0, -9.0 * y, 0.0)), (4.6, (0.0, 0.0, 0.0))]),
+            "elbow_" + side: [(0.9, -22.0), (t0, -24.0)] + _slam(t0, -24.0, t, 28.0) + [(3.5, 27.0), (4.6, 0.0)],
+            "hand_" + side: [(0.9, -8.0), (t0, -10.0)] + _slam(t0, -10.0, t, 14.0) + [(3.5, 12.0), (4.6, 0.0)],
+        })
+        snap = round(t + 0.03, 3)
+        for w, (pitch, yaw) in (("out", (44.0, 22.0 * y)), ("mid", (-40.0, 0.0)), ("in", (36.0, -8.8 * y))):
+            shut = -12.0   # the outer two close down to it and the middle one comes up to it
+            tracks["talon_%s_%s" % (side, w)] = [(0.4, 0.0, 0.0, 0.0), (0.9, pitch, yaw, 0.0), (round(t - 0.06, 3), pitch, yaw, 0.0)] + \
+                [(tt, *v) for tt, v in _slam(round(t - 0.06, 3), (pitch, yaw, 0.0), snap, (shut, 0.0, 0.0))] + [(3.6, shut - 2.0, 0.0, 0.0), (4.5, 0.0, 0.0, 0.0)]
+    b.act("threat", 5.2, tracks, body=body, heft=0.05,
+          glow=[(["throat_slot", "eye_strip"], [(0.6, 0.0), (1.2, 6.0), (1.58, 11.0), (1.88, 12.0), (3.0, 10.0), (3.4, 3.0), (4.4, 0.0)])])
     # Movement (Ryan, 4 October, the third pass: stomp and plod, no weight thrown side to
     # side): a four-limbed gait, every foot and talon planted while the body passes over it,
     # the lower arms reaching from further back under the chest; the upper arms held up out
@@ -2903,6 +2978,30 @@ def _limb_angles(l, target, pitch):
     return a, b, -(a + b + pitch)
 
 
+def _lerp_keys(keys, t):
+    """A value at `t` along (t, v) keys, straight between them, held before the first and after
+    the last."""
+    if t <= keys[0][0]:
+        return keys[0][1]
+    for (t0, v0), (t1, v1) in zip(keys, keys[1:]):
+        if t <= t1:
+            return v0 + (v1 - v0) * (t - t0) / max(1e-9, t1 - t0)
+    return keys[-1][1]
+
+
+def _slam(t0, a, t1, b):
+    """Keys after `t0` (where the part stands at `a`) that drive it into `b` at `t1` gathering
+    speed all the way and stopping dead there (Ryan, 6 October, the eighth and ninth notes: the
+    fists slowed into each other): a third of the way at a little past half the time, three
+    quarters three hundredths of a second short of the hit, so the monotone curve carries its
+    speed into the last key and has to stop on it. `a` and `b` are numbers or tuples alike."""
+    if isinstance(a, tuple):
+        mix = lambda f: tuple(round(x + f * (y - x), 3) for x, y in zip(a, b))
+    else:
+        mix = lambda f: round(a + f * (b - a), 3)
+    return [(round(t0 + 0.55 * (t1 - t0), 3), mix(0.3)), (round(t1 - 0.03, 3), mix(0.76)), (t1, b)]
+
+
 def _planted(limbs, body):
     """Leg keys for an act that moves the body of a walker (Ryan, 4 October, the third pass:
     the weight of the machine believable): `body` the act's keys as (t, dy, dz, pitch), and
@@ -3327,22 +3426,23 @@ def _barrel_roll(t0, t1, over, duration, surge=4.0):
             (duration, 0.0, 0.0, 0.0, 0.0, 0.0, 360.0)]
 
 
-def _survey_circle(r=66.0, bank=-34.0, t0=0.3, t1=8.6, duration=9.0, rise=6.0, steps=56):
+def _survey_circle(r=66.0, bank=-34.0, t0=0.3, t1=6.0, duration=6.4, rise=6.0, steps=48):
     """Body keys for a slow circling flight beside its hex (Ryan, 6 October, after the eighth
     notes: no right peel, just a smooth circle; a figure eight weighed and set aside, since it
     crosses its own hex at speed and rolls through level to change bank halfway, the levelling
     he disliked). One true circle of radius `r`, flown once round to the left from the hex
     along its facing and back onto the hex along its facing, so it never slides: the hex is on
-    the circle's edge and the circle lies to its left. It gathers speed over the first quarter
-    of the way round and slows over the last, the nose always along the path, the bank coming
+    the circle's edge and the circle lies to its left. It gathers speed over the first tenth
+    of the way round and slows over the last (the ninth notes: quicker off the mark, and the
+    whole of it quicker), the nose always along the path, the bank coming
     on with the speed to a steady `bank` degrees (negative drops the left wing) and easing off
     as it slows, the nose a little down at speed, rising `rise` units over the far side. Keys
     as (t, dx, dy, dz, yaw, pitch, roll)."""
     n = 720
 
     def pace(u):
-        a1, e1 = min(1.0, u / 0.22), min(1.0, (1.0 - u) / 0.22)
-        return 0.2 + 0.8 * min(a1 * a1 * (3.0 - 2.0 * a1), e1 * e1 * (3.0 - 2.0 * e1))
+        a1, e1 = min(1.0, u / 0.12), min(1.0, (1.0 - u) / 0.15)
+        return 0.3 + 0.7 * min(a1 * a1 * (3.0 - 2.0 * a1), e1 * e1 * (3.0 - 2.0 * e1))
 
     clock = [0.0]
     for i in range(n):
@@ -3361,6 +3461,65 @@ def _survey_circle(r=66.0, bank=-34.0, t0=0.3, t1=8.6, duration=9.0, rise=6.0, s
     keys.append((t1, 0.0, 0.0, 0.0, 360.0, 0.0, 0.0))
     keys.append((duration, 0.0, 0.0, 0.0, 360.0, 0.0, 0.0))
     return keys
+
+def _figure_eight(r=19.0, bank=-40.0, t0=0.3, t1=7.6, duration=8.0, rise=6.0, steps=72):
+    """Body keys for a figure eight beside and over its hex (Ryan, 6 October, the ninth notes:
+    to see one against the circle). Two lobes, a loop to the left and then a loop to the right,
+    each a limacon r = `r`(2 - cos t) about a centre `r` to its side, so each is egg-shaped,
+    four `r` across, and straight where it meets the hex: the eight leaves its hex along its
+    facing, comes back over it at full speed along its facing to change lobes, rolling through
+    level as the bank changes side (the curvature passes through nothing there, so the roll
+    never snaps), and settles back onto it along its facing. The bank follows the turn (soft
+    capped near `bank`), the speed gathered over the first tenth and shed over the last,
+    rising `rise` units over each lobe's far side. Keys as (t, dx, dy, dz, yaw, pitch, roll)."""
+    n = 1440
+    pts = []
+    for lobe, side in ((0, -1.0), (1, 1.0)):   # the left lobe anticlockwise, the right its mirror, clockwise
+        for i in range(n + (1 if lobe else 0)):
+            th = 2.0 * math.pi * i / n
+            rr = r * (2.0 - math.cos(th))
+            pts.append((side * (r - rr * math.cos(th)), rr * math.sin(th), lobe))
+    run, head = [0.0], []
+    for i in range(1, len(pts)):
+        run.append(run[-1] + math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]))
+    for i in range(len(pts)):
+        a, b2 = pts[max(0, i - 1)], pts[min(len(pts) - 1, i + 1)]
+        head.append(math.atan2(-(b2[0] - a[0]), b2[1] - a[1]))
+    for i in range(1, len(head)):   # unwrapped: +2 pi round the left lobe, back to 0 round the right
+        while head[i] - head[i - 1] > math.pi:
+            head[i] -= 2.0 * math.pi
+        while head[i] - head[i - 1] < -math.pi:
+            head[i] += 2.0 * math.pi
+    kap = [0.0] * len(pts)
+    for i in range(1, len(pts) - 1):
+        kap[i] = (head[i + 1] - head[i - 1]) / max(1e-9, run[i + 1] - run[i - 1])
+    total = run[-1]
+
+    def pace(u):
+        a1, e1 = min(1.0, u / 0.1), min(1.0, (1.0 - u) / 0.12)
+        return 0.3 + 0.7 * min(a1 * a1 * (3.0 - 2.0 * a1), e1 * e1 * (3.0 - 2.0 * e1))
+
+    clock = [0.0]
+    for i in range(1, len(pts)):
+        clock.append(clock[-1] + (run[i] - run[i - 1]) / pace(0.5 * (run[i] + run[i - 1]) / total))
+    kmax = max(abs(k) for k in kap)
+    keys = [(t0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)]
+    j = 0
+    for k in range(1, steps):
+        tt = clock[-1] * k / float(steps)
+        while j < len(pts) - 2 and clock[j + 1] < tt:
+            j += 1
+        x, y, lobe = pts[j]
+        u = run[j] / total
+        v = pace(u)
+        half = (u * 2.0) % 1.0   # the share of the way round this lobe
+        roll = 48.0 * math.tanh((bank / 48.0) * kap[j] / kmax * 1.6) * v * v
+        keys.append((round(t0 + (t1 - t0) * k / float(steps), 3), round(x, 3), round(y, 3), round(rise * math.sin(math.pi * half) ** 2, 3),
+                     round(math.degrees(head[j]), 3), round(-3.0 * v, 3), round(roll, 3)))
+    keys.append((t1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0))
+    keys.append((duration, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0))
+    return keys
+
 
 def _swing(amp, phase=0.0, n=40):
     """A limb swung evenly fore and aft over a stride, at its most forward at `phase`: dense

@@ -108,8 +108,8 @@
    }
   },
   "sparrowhawk": {
-   "when": "Fourth acts pass, 5 October.",
-   "note": "The exhausts carry one fitted glow, pale at the centre to deep red at the rim, filling the whole face (Ryan, 5 October: a cross in the middle and little red; the world-grid tile had landed on them by chance).",
+   "when": "The ninth notes, 6 October.",
+   "note": "The wings' roots sit inside the fuselage at their leading edge (Ryan: not sure its wings meet the front of the fuselage; they stood just proud of it, by under a unit, where the fuselage narrows). The exhausts' fitted glow as before.",
    "images": [
     {
      "file": "sparrowhawk/sparrowhawk_front.png",
@@ -121,7 +121,7 @@
     }
    ],
    "before": {
-    "summary": "Before: Fourth round, 30 September",
+    "summary": "Before: the fourth acts pass, 5 October (the wing roots just proud of the fuselage at the front)",
     "images": [
      {
       "file": "sparrowhawk/before_sparrowhawk_front.png",
@@ -220,8 +220,8 @@
    }
   },
   "prairie_dog": {
-   "when": "The eighth notes, 6 October.",
-   "note": "The skirt is one long plate down each side again (Ryan: the long connected plate is the defining thing, and it hides some of the tyres' play in the arches), out past the tyres on a stub from each hub, outside the chassis joint, so it rides with the axles and never rocks with the body; a front tyre at full lock steers out through it, as Ryan asked to see. The arches and the rev as the seventh notes left them.",
+   "when": "The ninth notes, 6 October.",
+   "note": "The front arches follow the nose in (Ryan: a gap between the front fenders and the body): each front arch's inner flange steps down and in to sit inside the body's flank and under its top as the body narrows and drops toward the nose; the part over the tyre is as it was, so its top still clears the tyre in the rev. The long plate is unchanged. Ryan asked how to make it look like the designers tried to protect the tyres: three mock-ups to choose from, none built yet. A, scalloped: the plate rises over each tyre to just under the arch and dips between, its ends turned in, an armoured boss on each hub (Claude's pick: it keeps the long plate as the defining line, the tyre's top half sits behind armour, and the lower half still shows the wheels turning). B, a full tank skirt, hub height to the arch along the whole side: the most protected, but it hides the wheels' spin almost entirely. C, the plate as it is with bash bars: a hoop ahead of each front tyre and behind each rear, and the hub bosses.",
    "images": [
     {
      "file": "prairie_dog/prairie_dog_front.png",
@@ -230,10 +230,22 @@
     {
      "file": "prairie_dog/prairie_dog_rear.png",
      "alt": "prairie_dog, rear"
+    },
+    {
+     "file": "prairie_dog/guard_a.png",
+     "alt": "Tyre guard option A: the plate scalloped over each tyre, its ends turned in, hub bosses"
+    },
+    {
+     "file": "prairie_dog/guard_b.png",
+     "alt": "Tyre guard option B: a full-height tank skirt with hub bosses"
+    },
+    {
+     "file": "prairie_dog/guard_c.png",
+     "alt": "Tyre guard option C: the plate with bash bars ahead of and behind the tyres, hub bosses"
     }
    ],
    "before": {
-    "summary": "Before: the seventh notes, 6 October (a guard a wheel, each on its own wheel's carrier)",
+    "summary": "Before: the eighth notes, 6 October (straight front arches, a gap at the nose)",
     "images": [
      {
       "file": "prairie_dog/before_prairie_dog_front.png",

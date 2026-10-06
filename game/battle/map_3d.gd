@@ -88,7 +88,16 @@ const TURN_ACCEL_MAX := 30.0    # radians a second a second its turn rate change
 const OVERSTEER_GAIN := 1.4     # how far past the heading ahead an oversteer of 1 swings the nose, into the corner
 const OVERSTEER_MAX := 1.45     # radians the nose may lead the path by, at most (eased toward; 0.95 until the seventh notes: nose in more; 1.2 until the eighth: the rear kicked out further)
 const OVERSTEER_RATE := 7.0     # per second: how briskly an oversteering nose chases its lead
-var _heading_ahead: Dictionary = {}  # unit id -> the yaw the path heads OVERSTEER_AHEAD seconds on
+# A drifter eases into its kick-out (Ryan, 6 October, the ninth notes: not so sudden; it would
+# help the whipping): it looks further ahead and averages a longer stretch, so the nose starts
+# turning in sooner and builds over twice as long, and chases its lead on a softer spring with a
+# lower cap, so its nose turns two fifths slower at its quickest for about the same kick. The
+# jets, oversteering a third or less, keep the values above (oversteer_ease is 0 for them).
+const DRIFT_AHEAD := 0.7
+const DRIFT_WINDOW := 1.0
+const DRIFT_RATE := 4.5
+const DRIFT_MAX := 1.2
+var _heading_ahead: Dictionary = {}  # unit id -> the yaw the path heads oversteer_ahead seconds on
 var _turn_vel: Dictionary = {}       # unit id -> how fast its facing is turning, radians a second (turn_toward)
 var _setoff: Dictionary = {}         # unit id -> [the facing it set off from, seconds since] while a move plays (SETOFF_S)
 var _heading_smooth: Dictionary = {} # unit id -> the path's heading averaged over OVERSTEER_WINDOW about now (MovePath.chord)
@@ -746,7 +755,7 @@ func _corner(uid: int, rig: MechRig, delta: float) -> void:
 		var base := float(_heading_smooth.get(uid, heading))
 		var ahead := float(_heading_ahead.get(uid, base))
 		want = base + oversteer_lead(wrapf(ahead - base, -PI, PI), over)
-		rate = lerpf(rate, OVERSTEER_RATE, minf(over, 1.0))
+		rate = lerpf(rate, oversteer_rate(over), minf(over, 1.0))
 	if strafe > 0.0:
 		var u := field.unit_by_id(uid)
 		if u != null:
@@ -791,10 +800,33 @@ static func fit_for(size: String) -> float:
 
 
 ## How far an oversteering nose leads its path, radians: past the turn the path makes over
-## the next OVERSTEER_AHEAD seconds (`turn_ahead`, radians), easing toward OVERSTEER_MAX
+## the next oversteer_ahead seconds (`turn_ahead`, radians), easing toward oversteer_max
 ## rather than stopping hard at it (a hard stop was a kink the nose showed).
 static func oversteer_lead(turn_ahead: float, oversteer: float) -> float:
-	return OVERSTEER_MAX * tanh(turn_ahead * OVERSTEER_GAIN * oversteer / OVERSTEER_MAX)
+	var top := oversteer_max(oversteer)
+	return top * tanh(turn_ahead * OVERSTEER_GAIN * oversteer / top)
+
+
+## How much of a drifter's easing a machine takes: none at an oversteer of a half or less (the
+## jets), all of it from one and a half (the Puffin and the Dingo), the Stingray between.
+static func oversteer_ease(oversteer: float) -> float:
+	return clampf((oversteer - 0.5) / 1.0, 0.0, 1.0)
+
+
+static func oversteer_ahead(oversteer: float) -> float:
+	return lerpf(OVERSTEER_AHEAD, DRIFT_AHEAD, oversteer_ease(oversteer))
+
+
+static func oversteer_window(oversteer: float) -> float:
+	return lerpf(OVERSTEER_WINDOW, DRIFT_WINDOW, oversteer_ease(oversteer))
+
+
+static func oversteer_rate(oversteer: float) -> float:
+	return lerpf(OVERSTEER_RATE, DRIFT_RATE, oversteer_ease(oversteer))
+
+
+static func oversteer_max(oversteer: float) -> float:
+	return lerpf(OVERSTEER_MAX, DRIFT_MAX, oversteer_ease(oversteer))
 
 
 ## A facing turned toward `want` over `delta` seconds, from `facing` turning at `vel` radians a

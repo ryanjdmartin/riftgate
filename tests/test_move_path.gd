@@ -201,3 +201,39 @@ func test_a_move_setting_off_across_its_facing_turns_without_a_jolt() -> void:
 	assert_true(float(worst[1]) < 6.0, "the turn's acceleration builds a little a frame (%f radians a second squared)" % worst[1])
 	assert_true(float(worst[0]) > 20.0, "where the aim sent at once jumped it (%f)" % worst[0])
 	assert_true(is_equal_approx(Map3D.setoff_aim([1.0, 0.0], 2.0), 1.0) and is_equal_approx(Map3D.setoff_aim([1.0, Map3D.SETOFF_S], 2.0), 2.0), "from the facing it stood at to the path's aim")
+
+
+func test_a_drifter_eases_into_its_kick_out() -> void:
+	# Ryan, 6 October, the ninth notes: ease into the kick-out, not so sudden, to help the
+	# whipping. A drifter (oversteer 2) looks further ahead over a longer stretch and chases its
+	# lead on a softer spring: its nose turns slower at its quickest, for about the same kick,
+	# than it would on the jets' numbers.
+	var mp := MovePath.build(_route([90, 90, 90, 30, -30]), 110.0, 0.5)   # the hangar's first move: three north, a turn through north-east to south-east
+	var dt := 1.0 / 60.0
+	var yaw := func(v: Vector2) -> float: return atan2(-v.x, -v.y)
+	var runs := []
+	for drifter in [false, true]:
+		var over := 2.0
+		var ah: float = Map3D.oversteer_ahead(over) if drifter else Map3D.OVERSTEER_AHEAD
+		var w: float = (Map3D.oversteer_window(over) if drifter else Map3D.OVERSTEER_WINDOW) * 0.5
+		var rate: float = Map3D.oversteer_rate(over) if drifter else Map3D.OVERSTEER_RATE
+		var top: float = Map3D.oversteer_max(over) if drifter else Map3D.OVERSTEER_MAX
+		var facing: float = yaw.call(mp.at(0.0)[1])
+		var vel := 0.0
+		var fastest := 0.0
+		var kick := 0.0
+		var t := 0.0
+		while t < mp.duration:
+			var base: float = yaw.call(mp.chord(t - w, t + w))
+			var ca := mp.chord(t + ah - w, t + ah + w)
+			var ahead: float = yaw.call(ca) if ca != Vector2.ZERO else base
+			var want := base + top * tanh(wrapf(ahead - base, -PI, PI) * Map3D.OVERSTEER_GAIN * over / top)
+			var turned := Map3D.turn_toward(facing, vel, want, rate, dt)
+			facing = turned.x
+			vel = turned.y
+			fastest = maxf(fastest, absf(vel))
+			kick = maxf(kick, absf(wrapf(facing - float(yaw.call(mp.at(t)[1])), -PI, PI)))
+			t += dt
+		runs.append([fastest, kick])
+	assert_true(float(runs[1][0]) < float(runs[0][0]) * 0.8, "the nose whips round slower (%f against %f radians a second)" % [runs[1][0], runs[0][0]])
+	assert_true(float(runs[1][1]) > float(runs[0][1]) * 0.85, "for about the same kick (%f against %f radians)" % [runs[1][1], runs[0][1]])

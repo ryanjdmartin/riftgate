@@ -28,8 +28,14 @@ const ROCK_ACCEL = 200.0, BANK_TURN = 1.2, DRIFT_UNITS = 12.0;
 const HEFT_DEFAULT = 0.12, DAMPING = 0.7, STEP = 1 / 60;   // the servos (MechRig._follow) and the longest step anything advances by
 const SLIDE_RATE_SNAP = 12.0, SLIDE_RATE_FULL = 2.2, STRAFE_TURN_RATE = 6.0, REST_TURN_RATE = 4.0;   // Map3D
 const OVERSTEER_AHEAD = 0.4, OVERSTEER_GAIN = 1.4, OVERSTEER_MAX = 1.45, OVERSTEER_RATE = 7.0, OVERSTEER_WINDOW = 0.5;   // Map3D: the nose leads the path into a corner, from the heading a moment ahead
+const DRIFT_AHEAD = 0.7, DRIFT_WINDOW = 1.0, DRIFT_RATE = 4.5, DRIFT_MAX = 1.2;   // Map3D: the same for a drifter, eased into its kick-out (Map3D.oversteer_ease)
+const oversteerEase = (over) => clamp((over - 0.5) / 1.0, 0, 1);
+const oversteerAhead = (over) => lerp(OVERSTEER_AHEAD, DRIFT_AHEAD, oversteerEase(over));
+const oversteerWindow = (over) => lerp(OVERSTEER_WINDOW, DRIFT_WINDOW, oversteerEase(over));
+const oversteerRate = (over) => lerp(OVERSTEER_RATE, DRIFT_RATE, oversteerEase(over));
+const oversteerMax = (over) => lerp(OVERSTEER_MAX, DRIFT_MAX, oversteerEase(over));
 // Map3D.oversteer_lead: eased toward the limit, never stopped at it hard.
-const oversteerLead = (turnAhead, over) => OVERSTEER_MAX * Math.tanh(turnAhead * OVERSTEER_GAIN * over / OVERSTEER_MAX);
+const oversteerLead = (turnAhead, over) => oversteerMax(over) * Math.tanh(turnAhead * OVERSTEER_GAIN * over / oversteerMax(over));
 // Map3D.turn_toward: a critically damped spring turning the facing toward `want`, its natural
 // frequency twice the first-order rate so it lags as long, so the turn rate eases in and out and
 // a corner's start never jolts the nose. Returns [facing, turn rate].
@@ -561,6 +567,9 @@ class Route {
       this.rest = yawOf(dirVec(DIRS[mv[mv.length - 1]]));
       this.move = (this.move + 1) % ROUTE.length; this.curve = null; this.pause = PAUSE;
       if (this.move === 0) this.pos = {x: 0, z: 0};
+      // The frame the move ends still turns, toward the facing it now rests on, as the map's
+      // standing machine does at once (a nose still easing out of a drift froze a frame here).
+      [this.facing, this.turnVel] = turnToward(this.facing, this.turnVel, this.rest, REST_TURN_RATE, dt);
       return {speed: 0, aim: 0, turn: this.turnVel};
     }
     const [here, tan, sp] = this.curve.at(this.t);
@@ -571,12 +580,12 @@ class Route {
     if (over > 0) {
       // The headings averaged about now and a moment ahead (Map3D: MovePath.chord), held when
       // the stretch runs off the curve's end.
-      const w = OVERSTEER_WINDOW / 2, cb = this.curve.chord(this.t - w, this.t + w), ca = this.curve.chord(this.t + OVERSTEER_AHEAD - w, this.t + OVERSTEER_AHEAD + w);
+      const w = oversteerWindow(over) / 2, ah = oversteerAhead(over), cb = this.curve.chord(this.t - w, this.t + w), ca = this.curve.chord(this.t + ah - w, this.t + ah + w);
       if (cb) this.base = yawOf(cb);
       if (ca) this.ahead = yawOf(ca);
       const base = this.base ?? heading, ahead = this.ahead ?? base;
       want = base + oversteerLead(wrapPi(ahead - base), over);
-      rate = lerp(rate, OVERSTEER_RATE, Math.min(over, 1));
+      rate = lerp(rate, oversteerRate(over), Math.min(over, 1));
     }
     if (strafe > 0) { want = lerpAngle(heading, yawOf(dirVec(DIRS[mv[mv.length - 1]])), strafe); rate = lerp(rate, STRAFE_TURN_RATE, strafe); }
     want = setoffAim(this.from, this.t, want);

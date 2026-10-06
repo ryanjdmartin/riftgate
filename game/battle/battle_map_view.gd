@@ -1455,8 +1455,10 @@ func _advance_anim(delta: float) -> void:
 		_anim_px[uid] = px
 		if _map3d != null:
 			var t := float(a["t"])
-			var w := Map3D.OVERSTEER_WINDOW * 0.5
-			_map3d.set_anim(uid, px, here[1], curve.chord(t + Map3D.OVERSTEER_AHEAD - w, t + Map3D.OVERSTEER_AHEAD + w), curve.chord(t - w, t + w))
+			var over := float(_map3d.motion_of(uid).get("oversteer", 0.0))   # a drifter looks further ahead, over a longer stretch (Map3D.oversteer_ease)
+			var w := Map3D.oversteer_window(over) * 0.5
+			var ah := Map3D.oversteer_ahead(over)
+			_map3d.set_anim(uid, px, here[1], curve.chord(t + ah - w, t + ah + w), curve.chord(t - w, t + w))
 	for uid in finished:
 		_anim.erase(uid)
 		_anim_px.erase(uid)
