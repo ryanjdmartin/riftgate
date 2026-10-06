@@ -530,6 +530,11 @@ func _draw() -> void:
 			var sq := field.unit_by_id(sid)
 			if sq != null:
 				_plaque(center(ends[sid]) + Vector2(0.0, HEX_SIZE * 0.7), "BLOCKED", Palette.MUTED, 1.5)
+		for sid in res.stalled:
+			# Held off every goal by its own side: it waits, and the plan says so (6 October).
+			var sq := field.unit_by_id(sid)
+			if sq != null:
+				_plaque(center(ends[sid]) + Vector2(0.0, HEX_SIZE * 0.7), "STALLED", Palette.MUTED, 1.5)
 		for mid_id in res.rejected:
 			var m := field.unit_by_id(mid_id)
 			if m != null:

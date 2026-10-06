@@ -230,3 +230,24 @@ func test_roads_are_laid_as_paths_with_gaps() -> void:
 				joined = true
 		assert_true(joined, "road hex %s joins a road or the gate" % str(h))
 		assert_eq(m2.elevation[h], 0, "road hex %s is at ground level" % str(h))
+
+
+func test_the_road_starts_in_front_of_the_gate_and_leaves_no_lone_slab() -> void:
+	# Found 2 October, fixed 6 October: the trunk's first slab, in front of the gate, was
+	# paved over by the gate clearing on every map, and the lone-slab pass had already run.
+	var lone := 0
+	for s in range(1, 60):
+		var m := BattleMap.generate(7, 20, s)
+		var gate_o := Hex.axial_to_offset(m.gate)
+		var first := Hex.offset_to_axial(gate_o.x, gate_o.y - BattleMap.GATE_ROWS)
+		assert_eq(m.terrain[first], BattleMap.Terrain.ROAD, "seed %d: the road's first slab stands in front of the gate" % s)
+		for h in m.all_hexes():
+			if m.terrain[h] != BattleMap.Terrain.ROAD:
+				continue
+			var joined := false
+			for n in Hex.neighbors(h):
+				if m.terrain.get(n, -1) == BattleMap.Terrain.ROAD or m.gate_hexes.has(n):
+					joined = true
+			if not joined:
+				lone += 1
+	assert_eq(lone, 0, "no lone slab on 59 maps")

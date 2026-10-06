@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.44 since 6 October: Spillover for Overwhelm and the Bullion Fragmenter on the Badger, over the naming guidelines, the Puffin's names and speed, and the movement session's sixth notes); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.45 since 6 October, later: the packs' retarget rule after the engagement-zone row in section 5, over v0.44's Spillover, Bullion Fragmenter, naming guidelines and the movement session's sixth notes); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -83,7 +83,7 @@ the chat is newer.
 ## As of 3 October 2026
 
 **State.** Tests green: `perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (335 tests, 7,806 checks on 5 October in a cloud session, after the campaign session merged with the Puffin's passive;
+tests/run_tests.gd` (338 tests, 7,874 checks on 6 October in a cloud session, after the map's small finds landed;
 a cloud session fetches Godot 4.7's Linux build from the GitHub release asset to run them
 (`Godot_v4.7-stable_linux.x86_64.zip`, and `xvfb-run` for screenshots), since
 the proxy serves the asset though not the release page; it builds models too, with
@@ -155,6 +155,8 @@ three wide or more, water 6% of the field in 1.7 bodies (3.9 with the puddles), 
 `--show SEED` prints a map as text. Its phases to the rift barely move by way of moving, so the
 river's bite is where the horde crosses and where a walker off a ford stops; Ryan judges it with
 the hovercraft. Left: the small finds and the hangar page's other content files (the to-do).
+
+**The map's small finds, built 6 October, later** (a cloud session; bible section 5, the row after the engagement zones; the to-do's ticked line). Ryan's rule, given in chat: packs retarget when they cannot reach their desired hex, a stalled horde is never the norm, and if the horde stalls too much the answer is fewer terrain penalties for it (water first). `Battlefield.compute_intents` now tries every gate hex and static defence nearest first (`_gate_targets`) when the nearest cannot be approached, and a pack with no goal at all waits in `Battlefield.stalled` and `PhaseResult.stalled`, drawn as a STALLED plaque in the plan beside BLOCKED and NO ROUTE (`battle_map_view.gd`); a hunter keeps its prey and waits. Measured with a packs-only probe (40 phases, the Risen's three packs, 200 seeds, no spawns; the script lived in the scratchpad): 156 of 600 packs stood still off the gate before, 2 after, both marked. The generator keeps the road's first slab through the gate clearing (it was paved over on all 200 maps) and runs its branches north-east or north-west only, as the comment said (the two southward diagonals were in the list): no lone slab on 200 maps, was 11. The dead terrain code and the 14-row default the find named had already gone. `SaveGame.VERSION` is 3, since the roads changed under every seed; a battle saved before it does not resume. `docs/map_survey.md` regenerated: two maps in 200 moved a decimal, no band moved. Tests: 338, 7,874 checks, three new (`test_map`, `test_battlefield`).
 
 **The hovercraft are on main** (2 October, night, merged from the Mac session; bible section 7,
 the hovercraft row). The **Stingray** (Aphelion, `stingray`): hull 80, shield 50, move 40, heat
@@ -483,6 +485,6 @@ it and ticked in the commit that lands it; this is the order to take them in.
 2. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
 3. Ryan's text for the new machines and components; the machines' scale on the map; the strikes, the hover idle's pitch, the idle acts (`RIFTGATE_ACTS_DEBUG=1`) and the gaits (`RIFTGATE_MOVE_DEBUG=1`, and a real move for the Dingo's drift, the Stingray's helicopter strafe and the banks), judged running; the movement branch merged on his word.
 4. The discuss-first decisions left in the Ryan section (the campaign and the economy are decided, 5 October, the paragraph above; what remains of them is the makers' measures and notices, and the in-battle ones: ally wrecks, terrain, base defences, reinforcements, the multi-hex boss, Rift Pressure in the boss fight, packs keeping hull between fights); enemy targeting decided and built 2 October (the paragraph above; the runner's read is the baseline question); the commander layer once the balance has a baseline.
-5. Ready to build: the pacing pieces after Ryan's session; the movement's small finds (the frozen packs' missing mark, the road's first slab); the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased parked, Corrode, foe roles), and a dedicated hunter foe and spawned formations once proposed.
+5. Ready to build: the pacing pieces after Ryan's session; the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased parked, Corrode, foe roles), and a dedicated hunter foe and spawned formations once proposed.
 6. Audio: a full play of Hold The Line, the console's fresh pass and the effects' picks, the two boss themes.
 7. A prototype hangar in the game (paints and loadouts, no economy), now with a design to grow into (the hangar and the mission map in the to-do's screens section, the campaign state in the engine's). Art: enemy art through foeforge, the hangar as a model. Before a phone leaves the desk: onboarding, then tuning.
