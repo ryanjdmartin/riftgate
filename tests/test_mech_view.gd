@@ -36,7 +36,7 @@ func test_every_silhouette_class_has_a_model_in_every_makers_metal() -> void:
 func test_mount_plan_names_only_the_mounts_that_differ_from_stock() -> void:
 	var db := ContentDB.load_default()
 	# Stock: a gun, a rack, a gun, and plating that takes no mount: three mounts filled.
-	var stock := ["rivet_gun", "missile_rack", "twin_autoguns", "ablative_plating"]
+	var stock := ["slugthrower", "missile_rack", "twin_autoguns", "ablative_plating"]
 	var die := db.build_die(["chainsaw_claw", "chainsaw_claw"], stock, 4)
 	assert_eq(MechView3D.mount_plan(die, stock, db), [], "the stock kit changes nothing")
 	# The plating swapped for a vent: still no mount touched.

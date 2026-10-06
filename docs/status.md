@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.46 since 6 October: the seventh notes on the machines, over v0.45's Spillover for Overwhelm and the Bullion Fragmenter, a sawed-off cannon, on the Badger, over the naming guidelines, the Puffin's names and speed, and the movement session's sixth notes); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.48 since 6 October: the movement session's eighth notes, over v0.47's Slugthrower, the codex rule, Spillover and the Bullion Fragmenter, a sawed-off cannon, on the Badger, over the movement session's seventh notes, over the naming guidelines, the Puffin's names and speed, and the movement session's sixth notes); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -13,7 +13,7 @@ stays in A alone (Ryan, 1 October: it serves one ongoing task) and is republishe
 session; a B session cannot read it. Shared:
 
 - **The bible** (above): `docs/design-bible.html`, published whole after every change.
-- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 6 October with the seventh notes, from the movement branch with main merged into it (the renames, Spillover, the Badger's Fragmenter, the Names tab's Components plate and Rules section). Until that branch merges to main, the live page and its motion.js and rig files are ahead of `tools/hangar.html` and `art/models/*.rig.json` on main, so a republish from main must start from the live page body and leave motion.js and the rig files alone): four tabs, the
+- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 6 October with the eighth notes, from the movement branch with main merged into it (the Slugthrower, the Fragmenter's hollow bore). Until that branch merges to main, the live page, motion.js, the rig files and the models are ahead of main, so a republish from main must start from the live page body and send none of `hangar/motion.js`, `hangar/models/*`: main's Badger has no wrist joints, and its republish of 6 October paired that model with the branch's wrist rig, which broke the gun's wrist until the branch republished): four tabs, the
   codex, the content editor, the names list and Models. Models (the renders and the Animation
   tab merged, Ryan, 3 October) puts each machine live in 3D on top: its acts, walk and
   cornering played from its rig sidecar by `tools/hangar_motion.js` (published as
@@ -83,7 +83,7 @@ the chat is newer.
 ## As of 3 October 2026
 
 **State.** Tests green: `perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (350 tests, 15,725 checks on 6 October in a cloud session, after the seventh notes merged with main;
+tests/run_tests.gd` (351 tests, 16,584 checks on 6 October in a cloud session, after the eighth notes merged with main;
 a cloud session fetches Godot 4.7's Linux build from the GitHub release asset to run them
 (`Godot_v4.7-stable_linux.x86_64.zip`, and `xvfb-run` for screenshots), since
 the proxy serves the asset though not the release page; it builds models too, with
@@ -446,16 +446,22 @@ Ammit's waggling talons, higher fold and the offbeat walk as its gait (`_plant` 
 one part set's vertices inside another's convex pieces through an act (not committed; easy to
 rewrite from `tools/act_shot.gd`). Attack acts: wanted, a session of their own.
 
-**The seventh notes, 6 October (bible v0.43).** Engine: a corner is a quintic (`MovePath.quintic`,
-`ARC_STEPS` 24; the hangar's `quintic` too), so a turn eases in and out; `OVERSTEER_MAX` 1.2; the
-Dingo 2.0, Stingray 1.2, Puffin 1.5. Spinners (`b.spin`, the sidecar's `spin`, `MechRig.spinners`,
-the hangar's `spinners`): the Stingray's fans on `fan_l`/`fan_r` joints. Prairie Dog: the old rev,
-arches +1.5 (judged by the tyre against the arch's top only), skirts as `_wheel_guard`s on each
-wheel's carrier. Acts: the Badger's straight sight_gun, the Dingo's mortar_check, the
-Sparrowhawk's slower roll and `_survey_circle` (replacing `_s_circle`), the Goshawk's charge, the
-Baboon's mark, the Nemesis's pound, the Ammit's rear (swipes), raise_cannons (9.2 s hold) and
-threat (snaps). The Clydesdale stomps (`_plant`'s `stomp`, per-limb `nod`), other walkers' gaits
-unchanged (checked).
+**The seventh and eighth notes, 6 October (bible v0.48).** Engine: a corner is a quintic
+(`MovePath.quintic`, `ARC_STEPS` 24); a move's aim eases from the facing it set off from onto
+the path over `SETOFF_S` 0.5 (`Map3D.setoff_aim`; the jerk Ryan saw was each set-off's step,
+taken at full turning acceleration in a frame, measured through the hangar's route); the lead's
+cap `OVERSTEER_MAX` 1.45; the Dingo 2.0, Stingray 1.2, Puffin 1.5. Spinners (`b.spin`,
+`MechRig.spinners`): the Stingray's fans, the starboard mirrored (`_lift_fan`'s `hand`). The
+hangar's acts view frames how far an act carries the machine. Prairie Dog: the old rev, arches
++1.5 (judged by the top only), the long plate back on the axles (`_skirt_plate`), the fronts
+steering through it. Acts: the Badger's sight_gun (straight, then the shoulder adjusts the aim
+down), the Dingo's mortar laid with the tail, the Sparrowhawk's `_survey_ring` (the ring round
+its hex; `_survey_circle` gone) and a loop of radius 46, the Goshawk's cannon on the new
+`ember` tile at rest and charged far hotter, the spine lit throughout, the Nemesis's dead-stop
+pound (a CLOSE key 0.85 of the way three hundredths before the hit), the Ammit's paired angry
+swipes, deeper fold (talons to -80) and held point. The Clydesdale gallops (`_gallop`); the
+stomp is its gait option. Clearances measured with the scratch clip check (arms in pauldrons,
+arms in arms): clear.
 
 **The codex (29 September; a tab of the hangar page since 1 October).** One surface showing a
 chassis and the components fitted to it: the Codex tab renders it in the browser from the
@@ -578,7 +584,7 @@ disrupt into a boss's signature is a trick or a trap.
 **Open, in order.** The task list is `docs/todo.md`, one line a task, grouped by who moves
 it and ticked in the commit that lands it; this is the order to take them in.
 
-1. The Puffin's Slipstream and Overshield read in play (built 5 October; the hovercraft models are called good; the runner's Kestrel team row carries it since that evening, the Balance paragraph); named 6 October: the passive is the Slipstream Projector, the fixed shield the Backwash Ionizer, and the Puffin moves 40. Later on 6 October: Overwhelm is Spillover (engine, content, tests, vocabulary, bible); the Slug Cannon is the Bullion Fragmenter, melee, fixed on the Badger with its second Chainsaw Claw gone (d5, three pins: the right boom's mount is the Fragmenter built in, a sawed-off cannon with a crusher hopper since Ryan's note that melee is short range and not contact, for him to judge from the renders; the Armadillo's and Wild Boar's cannon slots carry the Rivet Gun as a stopgap); the hangar page's files republished with the renames, the Badger's model and renders.
+1. The Puffin is done for now (its passive and shield named and built 5 and 6 October, the hovercraft models called good, the runner's Kestrel team row carrying it); Ryan reads it in play in his own time.
 2. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
 3. Ryan's text for the new machines and components; the size classes on the phone and the Ammit's offbeat walk (the hangar's Walk); the strikes, the hovercraft's balancing idle, the idle acts (`RIFTGATE_ACTS_DEBUG=1`) and the gaits (`RIFTGATE_MOVE_DEBUG=1`, and a real move for the Dingo's drift, the Stingray's helicopter strafe and the banks), judged running; the movement branch merged on his word.
 4. The discuss-first decisions left in the Ryan section (the campaign and the economy are decided, 5 October, the paragraph above; what remains of them is the makers' measures and notices, and the in-battle ones: ally wrecks, terrain, base defences, reinforcements, the multi-hex boss, Rift Pressure in the boss fight, packs keeping hull between fights); enemy targeting decided and built 2 October (the paragraph above; the runner's read is the baseline question); the commander layer once the balance has a baseline.

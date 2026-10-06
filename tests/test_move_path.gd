@@ -173,3 +173,31 @@ func test_a_corner_eases_its_turn_in_and_out() -> void:
 	var d0 := MovePath.quintic(c, 0.01) - MovePath.quintic(c, 0.0)
 	var d1 := MovePath.quintic(c, 0.02) - MovePath.quintic(c, 0.01)
 	assert_true(absf(d0.angle_to(d1)) < 0.001, "a quintic leaves its first leg without turning")
+
+
+func test_a_move_setting_off_across_its_facing_turns_without_a_jolt() -> void:
+	# Ryan, 6 October, the eighth notes: a frame jerk at the corners, worse each time the drift
+	# was made harder. A move setting off sixty degrees from where the machine faced (every move
+	# of the hangar's route, after its turn) sent the aim there at once, and the facing's spring
+	# took it at its full turning acceleration in a frame. The aim eases in over SETOFF_S now.
+	var dt := 1.0 / 60.0
+	var worst := [0.0, 0.0]
+	for eased in [false, true]:
+		var facing := 0.0
+		var vel := 0.0
+		var prev_acc := 0.0
+		var state := [0.0, 0.0]
+		for i in range(90):
+			state[1] = float(state[1]) + dt
+			var want := Map3D.setoff_aim(state, PI / 3.0) if eased else PI / 3.0
+			var turned := Map3D.turn_toward(facing, vel, want, Map3D.OVERSTEER_RATE, dt)
+			var acc := (turned.y - vel) / dt
+			worst[int(eased)] = maxf(float(worst[int(eased)]), absf(acc - prev_acc))
+			prev_acc = acc
+			facing = turned.x
+			vel = turned.y
+		if eased:
+			assert_true(absf(facing - PI / 3.0) < 0.01, "and it still comes round onto the path (%f)" % facing)
+	assert_true(float(worst[1]) < 6.0, "the turn's acceleration builds a little a frame (%f radians a second squared)" % worst[1])
+	assert_true(float(worst[0]) > 20.0, "where the aim sent at once jumped it (%f)" % worst[0])
+	assert_true(is_equal_approx(Map3D.setoff_aim([1.0, 0.0], 2.0), 1.0) and is_equal_approx(Map3D.setoff_aim([1.0, Map3D.SETOFF_S], 2.0), 2.0), "from the facing it stood at to the path's aim")

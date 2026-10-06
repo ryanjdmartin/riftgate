@@ -316,6 +316,14 @@ class Tiles:
             r = np.sqrt((yy - TILE / 2) ** 2 + (xx - TILE / 2) ** 2) / (TILE / 2)
             t = np.clip(1.0 - r, 0.0, 1.0)[..., None]
             img = np.array([0.80, 0.12, 0.04], np.float32) * (1.0 - t) + np.array([1.0, 0.55, 0.18], np.float32) * t
+        elif kind == "ember":
+            # The fire banked down: the glow's tile at under a third of its light, for a part
+            # that rests dark and is lit hot by an act (Ryan, 6 October, the eighth notes: the
+            # Goshawk's cannon dim at rest and bright when it charges, for the contrast).
+            yy, xx = np.mgrid[0:TILE, 0:TILE]
+            r = np.sqrt((yy - TILE / 2) ** 2 + (xx - TILE / 2) ** 2) / (TILE / 2)
+            t = np.clip(1.0 - r, 0.0, 1.0)[..., None]
+            img = 0.28 * (np.array([0.80, 0.12, 0.04], np.float32) * (1.0 - t) + np.array([1.0, 0.55, 0.18], np.float32) * t)
         elif kind == "hazard":
             img = self.metal(g, 0.05)
             img[26:38, :, :] = np.array([0.95, 0.75, 0.10], np.float32)

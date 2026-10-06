@@ -86,10 +86,11 @@ const OVERSTEER_WINDOW := 0.5   # seconds of path an oversteering nose averages 
 const TURN_RATE_MAX := 5.0      # radians a second a machine's facing turns at most (turn_toward)
 const TURN_ACCEL_MAX := 30.0    # radians a second a second its turn rate changes at most
 const OVERSTEER_GAIN := 1.4     # how far past the heading ahead an oversteer of 1 swings the nose, into the corner
-const OVERSTEER_MAX := 1.2      # radians the nose may lead the path by, at most (eased toward; 0.95 until the seventh notes: nose in more)
+const OVERSTEER_MAX := 1.45     # radians the nose may lead the path by, at most (eased toward; 0.95 until the seventh notes: nose in more; 1.2 until the eighth: the rear kicked out further)
 const OVERSTEER_RATE := 7.0     # per second: how briskly an oversteering nose chases its lead
 var _heading_ahead: Dictionary = {}  # unit id -> the yaw the path heads OVERSTEER_AHEAD seconds on
 var _turn_vel: Dictionary = {}       # unit id -> how fast its facing is turning, radians a second (turn_toward)
+var _setoff: Dictionary = {}         # unit id -> [the facing it set off from, seconds since] while a move plays (SETOFF_S)
 var _heading_smooth: Dictionary = {} # unit id -> the path's heading averaged over OVERSTEER_WINDOW about now (MovePath.chord)
 var _base: Dictionary = {}      # unit id -> resting position, which the idle sway plays around
 var _phase: Dictionary = {}     # unit id -> idle phase, so the team does not sway in step
@@ -690,6 +691,7 @@ func set_anim(uid: int, px: Vector2, heading: Vector2, ahead: Vector2 = Vector2.
 
 func clear_anim(uid: int) -> void:
 	_anim_px.erase(uid)
+	_setoff.erase(uid)
 	_heading.erase(uid)
 	_last_pos.erase(uid)
 	_heading_ahead.erase(uid)
@@ -723,6 +725,7 @@ func _corner(uid: int, rig: MechRig, delta: float) -> void:
 			pivot.rotation.y = settled.x
 			_turn_vel[uid] = settled.y
 			turn = settled.y
+		_setoff.erase(uid)
 		rig.drive(0.0, 0.0, turn, delta)
 		return
 	var node: Node3D = _units[uid]
@@ -749,6 +752,7 @@ func _corner(uid: int, rig: MechRig, delta: float) -> void:
 		if u != null:
 			want = facing_target(heading, facing_yaw(u.facing), strafe)
 			rate = lerpf(rate, STRAFE_TURN_RATE, strafe)
+	want = setoff_aim(_setoff_step(uid, pivot.rotation.y, delta), want)
 	var turned := turn_toward(pivot.rotation.y, float(_turn_vel.get(uid, 0.0)), want, rate, delta)
 	pivot.rotation.y = turned.x
 	_turn_vel[uid] = turned.y
@@ -756,6 +760,28 @@ func _corner(uid: int, rig: MechRig, delta: float) -> void:
 
 
 const STRAFE_TURN_RATE := 6.0   # per second: a helicopter yaws to where it will face in the first moment of a move, then translates
+const SETOFF_S := 0.5           # seconds a move's set-off takes to bring the facing's aim from where it stood onto the path
+
+
+## The set-off (Ryan, 6 October, the eighth notes: a frame jerk at the corners, worse each time
+## the drift was made harder): a move that sets off in another direction than the machine
+## faces, as every move of the hangar's route does after its turn, sent the aim there at
+## once, and the facing's spring took that step at its full turning acceleration in a frame.
+## The aim eases from the facing it set off from onto the path's over SETOFF_S (a
+## smootherstep, so the turn's acceleration builds from nothing); `state` is [that facing,
+## seconds since].
+static func setoff_aim(state: Array, want: float) -> float:
+	var u := clampf(float(state[1]) / SETOFF_S, 0.0, 1.0)
+	var s := u * u * u * (u * (6.0 * u - 15.0) + 10.0)
+	return float(state[0]) + wrapf(want - float(state[0]), -PI, PI) * s
+
+
+func _setoff_step(uid: int, facing: float, delta: float) -> Array:
+	if not _setoff.has(uid):
+		_setoff[uid] = [facing, 0.0]
+	var state: Array = _setoff[uid]
+	state[1] = float(state[1]) + delta
+	return state
 
 
 ## A machine's widest extent on the map, in hex widths, for its class by mass; a class the
@@ -1335,6 +1361,7 @@ func sync() -> void:
 			_pivots.erase(uid)
 			_balance.erase(uid)
 			_turn_vel.erase(uid)
+			_setoff.erase(uid)
 			_rigs.erase(uid)
 			_scale.erase(uid)
 			_rest_yaw.erase(uid)

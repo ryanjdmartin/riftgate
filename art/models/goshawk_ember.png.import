@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://doeyupe1wvuft"
-path="res://.godot/imported/goshawk_lit.png-df31d23081cb51855a937d42be1d1538.ctex"
+uid="uid://8lopnl3k7ggb"
+path="res://.godot/imported/goshawk_ember.png-fbb858143343d19ab6f83327ed4b184f.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "7bc399876c07bcbfa5e6587098a110b4"
+"md5": "667f2ace7758b94dc7f6d76a39ee4612"
 }
 
 [deps]
 
-source_file="res://art/models/goshawk_lit.png"
-dest_files=["res://.godot/imported/goshawk_lit.png-df31d23081cb51855a937d42be1d1538.ctex"]
+source_file="res://art/models/goshawk_ember.png"
+dest_files=["res://.godot/imported/goshawk_ember.png-fbb858143343d19ab6f83327ed4b184f.ctex"]
 
 [params]
 
