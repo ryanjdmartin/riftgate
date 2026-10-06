@@ -295,9 +295,18 @@ func test_a_guests_spawns_join_the_rifts_cycle() -> void:
 		if db.faction_of_foe(str(e[0])) == str(facs[1]):
 			guest_foes += 1
 	assert_eq(guest_foes, db.spawn_table(str(facs[1])).size(), "every guest pack is in the cycle")
+	var formation := 0
 	for u in b.field.packs():
 		if not u.elite:
-			assert_eq(u.faction, str(facs[0]), "the field's formation is the lead's")
+			formation += 1
+			assert_eq(db.faction_of_foe(u.foe_id), str(facs[0]), "the field's formation is the lead's foes")
+	assert_eq(formation, db.spawn_table(str(facs[0])).size(), "and only the lead's: a guest never doubles the field")
+	# A guest pack the rift sends wears its own faction.
+	b.field.rift_pressure = b.field.rift_pressure_max - 1
+	b.field._spawn_index = 1
+	b.field.tick_pressure(1)
+	var spawned: Unit = b.field.packs()[b.field.packs().size() - 1]
+	assert_eq(spawned.faction, str(facs[1]), "the guest's pack is the guest's")
 
 
 func test_the_finale_is_due_at_the_threshold_and_fought_at_the_capital() -> void:

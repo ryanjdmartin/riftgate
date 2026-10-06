@@ -150,7 +150,7 @@ static func _field_from(d: Dictionary, map: BattleMap) -> Battlefield:
 	f.spawn_faction = str(d.get("spawn_faction", f.spawn_faction))
 	var table: Array = []
 	for e in d.get("spawn_table", []):
-		table.append([str(e[0]), int(e[1])])
+		table.append([str(e[0]), int(e[1])] if e.size() < 3 else [str(e[0]), int(e[1]), str(e[2])])
 	if not table.is_empty():
 		f.spawn_table = table
 	f._spawn_index = int(d.get("spawn_index", 0))

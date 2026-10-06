@@ -66,16 +66,19 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 	map = BattleMap.generate(w, h, seed_value)
 	field = Battlefield.new(map)
 	field.spawn_faction = faction
-	field.spawn_table = db.spawn_table(faction)
+	var lead_table: Array = db.spawn_table(faction)
+	field.spawn_table = lead_table
 	if not guest.is_empty() and guest != faction and db.factions.has(guest):
-		var lead: Array = field.spawn_table
+		# The guest joins the rift's cycle only, each entry carrying its own faction; the
+		# formation placed below is the lead's alone (found 6 October: placing it from the
+		# mixed table doubled the field).
 		var visitors: Array = db.spawn_table(guest)
 		var mixed: Array = []
-		for k in range(maxi(lead.size(), visitors.size())):
-			if k < lead.size():
-				mixed.append(lead[k])
+		for k in range(maxi(lead_table.size(), visitors.size())):
+			if k < lead_table.size():
+				mixed.append(lead_table[k])
 			if k < visitors.size():
-				mixed.append(visitors[k])
+				mixed.append([visitors[k][0], visitors[k][1], guest])
 		field.spawn_table = mixed
 	field.foe_profiles = db.pack_profiles()
 	var gate_o := Hex.axial_to_offset(map.gate)
@@ -88,7 +91,7 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 		u.facing = face_rng.randi_range(1, 2)   # northward, one of the two directions that lead away from the gate
 		field.add_unit(u)
 		i += 1
-	var table: Array = field.spawn_table
+	var table: Array = lead_table
 	for j in range(table.size()):
 		var entry: Array = table[j]
 		var col := (w * (j + 1)) / (table.size() + 1)

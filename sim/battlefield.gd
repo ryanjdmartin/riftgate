@@ -43,7 +43,8 @@ var gate_hp_max: int = 200
 var rift_pressure: int = 0
 var rift_pressure_max: int = 12
 var spawn_faction: String = "undead"
-## Packs the rift sends, cycled: [[foe_id, strength], ...]. The game fills this from content.
+## Packs the rift sends, cycled: [[foe_id, strength], ...], a guest faction's entries with
+## their faction third. The game fills this from content.
 var spawn_table: Array = [["ghoul", 6]]
 var _spawn_index: int = 0
 var phase: int = 0
@@ -757,7 +758,8 @@ func tick_pressure(ticks: int) -> bool:
 	var at := nearest_free(map.rift, [])
 	var entry: Array = spawn_table[_spawn_index % spawn_table.size()] if not spawn_table.is_empty() else ["", 6]
 	_spawn_index += 1
-	var sq := Unit.pack(0, "%s pack" % str(entry[0]), at, spawn_faction, Unit.PACK_MOVE, int(entry[1]), str(entry[0]))
+	var fac := str(entry[2]) if entry.size() > 2 else spawn_faction
+	var sq := Unit.pack(0, "%s pack" % str(entry[0]), at, fac, Unit.PACK_MOVE, int(entry[1]), str(entry[0]))
 	add_unit(dress_pack(sq))
 	log.append("Rift pressure peaks: %s emerge at %s" % [sq.display_name, str(at)])
 	return true

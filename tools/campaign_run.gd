@@ -248,7 +248,7 @@ func report() -> String:
 	L.append("| Phases a battle | %s |" % _band(phases_all))
 	L.append("")
 	# By tier and by faction.
-	L.append("## By threat tier and by lead faction")
+	L.append("## By threat tier, lead faction, squad size and guest")
 	L.append("")
 	L.append("| | Battles | Won | Fell | Wiped | Destroyed per battle |")
 	L.append("|---|---|---|---|---|---|")
@@ -267,9 +267,22 @@ func report() -> String:
 			e["fell"] += 1 if b["result"] == "fell" else 0
 			e["wiped"] += 1 if b["wiped"] else 0
 			e["lost"] += b["lost"].size()
-	var keys: Array = tiers.keys()
-	keys.sort()
-	for bucket in [tiers, facs]:
+	var squads := {}
+	var guests := {}
+	for b in battles:
+		var sk := "%d machines" % int(b["squad"])
+		var gk := "with a guest" if str(b["guest"]) != "" else "lead alone"
+		for pair in [[squads, sk], [guests, "%s, %s" % [sk, gk]]]:
+			var bucket: Dictionary = pair[0]
+			if not bucket.has(pair[1]):
+				bucket[pair[1]] = {"n": 0, "won": 0, "fell": 0, "wiped": 0, "lost": 0}
+			var e: Dictionary = bucket[pair[1]]
+			e["n"] += 1
+			e["won"] += 1 if b["result"] == "won" else 0
+			e["fell"] += 1 if b["result"] == "fell" else 0
+			e["wiped"] += 1 if b["wiped"] else 0
+			e["lost"] += b["lost"].size()
+	for bucket in [tiers, facs, squads, guests]:
 		var ks: Array = bucket.keys()
 		ks.sort()
 		for k in ks:
