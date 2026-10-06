@@ -57,6 +57,15 @@ shoo softer, a common interaction; the codex with glass under it and its boops q
 common; the menu opening's under-glass longer and its boops longer and down a fourth so it is
 not the forward's pitch; the menu closing's boop audible from the start.
 
+The sixth cut (Ryan, 6 October, on the fifth): the map's acquire softer, down, shorter, a minor
+signal that something was boxed; the map, confirm and the round opening all shared the E-B pitches
+and all read as confirmation, and a route set had the same spread on other pitches, so each gets
+its own figure (the map one soft boop on G, confirm its E-B, the round opening one long B closing,
+a route set two quick ticks on A); the lock's click cracked the speaker (a four-millisecond
+transient); the round opening a touch slower; the end of the turn swelling nearer its start with
+a longer tail, quieter; the shoo softer with a longer tail; the menu opening's boops shorter; the
+menu closing's plate swelling at the start and tailing off.
+
     python3 tools/soundforge/palette_sketches.py          # into out/fx, after the others
 """
 import json
@@ -76,7 +85,7 @@ import audition_sketches as A  # noqa: E402
 
 SR = F.SR
 n_of, t_of, mix, at = F.n_of, F.t_of, F.mix, F.at
-PREFIX = "pal5_"   # the fifth cut's files; the earlier cuts' files are cleared from the server as each is superseded
+PREFIX = "pal6_"   # the fifth cut's files; the earlier cuts' files are cleared from the server as each is superseded
 
 
 def lay(*parts):
@@ -149,11 +158,11 @@ def map_select():
     """The map is where something is acquired: a tile, a pack, a machine. A scan, the glass
     bowed with its colour rising over a fifth of a second (the filter moves, no pitch does),
     then the lock, two quick boops E5 B5."""
-    dur = 0.2
+    dur = 0.12
     n = n_of(dur)
-    x = F.lp_var(F.hp(F.noise(n), 150.0), np.geomspace(500.0, 3200.0, n)) * F.env_pts(n, [(0.0, 0.0), (0.04, 1.0), (dur - 0.03, 0.9), (dur, 0.0)])
-    scan = R.body(np.concatenate([x * 0.6, np.zeros(n_of(0.3))]), "glass", 540.0, 0.3)
-    return lay((0.0, scan), (0.16, boop(B.E5, 0.08, 0.5)), (0.24, boop(B.hz(7, 3), 0.12, 0.5)))
+    x = F.lp_var(F.hp(F.noise(n), 150.0), np.geomspace(400.0, 2200.0, n)) * F.env_pts(n, [(0.0, 0.0), (0.03, 1.0), (dur - 0.02, 0.9), (dur, 0.0)])
+    scan = R.body(np.concatenate([x * 0.5, np.zeros(n_of(0.3))]), "glass", 460.0, 0.2)
+    return lay((0.0, scan), (0.1, boop(B.G4, 0.09, 0.4)))
 
 
 def dismiss():
@@ -209,7 +218,10 @@ def reroll():
 def click(gain=1.0, pitch=1.0):
     """A digital click (Ryan: the relay sounded analog): two clean sine partials, four
     milliseconds, no noise and no casing."""
-    return F.knock([620.0 * pitch, 1250.0 * pitch, 1900.0 * pitch], [0.006, 0.004, 0.003], [0.7, 1.0, 0.4], noise_gain=0.0) * gain * 0.7   # partials spread down into the body band (the first try sat all above 2 kHz)
+    k = F.knock([520.0 * pitch, 1040.0 * pitch, 1560.0 * pitch], [0.012, 0.008, 0.005], [0.8, 1.0, 0.35], noise_gain=0.0)
+    n = n_of(0.003)
+    k[:n] *= 0.5 * (1.0 - np.cos(np.linspace(0.0, math.pi, n)))   # a three-millisecond onset: the hard front cracked the speaker
+    return k * gain * 0.55
 
 
 def lock():
@@ -228,18 +240,23 @@ def unlock():
 def round_open():
     """The glass and then the plate bowed, one soft rising two-note on the boop, and nothing
     after it."""
-    g = np.concatenate([R.bow(0.26, 1.0, 1400.0, 0.12), np.zeros(n_of(0.5))])
-    glass = R.body(g, "glass", 560.0, 0.42)
-    pl = np.zeros(n_of(1.0))
-    pl = at(pl, R.bow(0.5, 1.0, 650.0, 0.35), 0.08)
-    plate = R.body(pl, "plate", 180.0, 0.75)
-    return lay((0.0, boop(B.E4, 0.14, 0.45, attack=0.015)), (0.14, boop(B.B4, 0.18, 0.45, attack=0.015)), (0.0, mix(glass * 0.6, plate) * 0.8))
+    g = np.concatenate([R.bow(0.32, 1.0, 1400.0, 0.18), np.zeros(n_of(0.5))])
+    glass = R.body(g, "glass", 560.0, 0.5)
+    pl = np.zeros(n_of(1.1))
+    pl = at(pl, R.bow(0.6, 1.0, 650.0, 0.35), 0.12)
+    plate = R.body(pl, "plate", 180.0, 0.9)
+    return lay((0.0, boop(B.B4, 0.34, 0.45, attack=0.02, close=(2200.0, 700.0))), (0.0, mix(glass * 0.6, plate) * 0.8))
 
 
 def end_turn():
     """P21 alone, drawn out: the low plate bow and the chunk landing in it, handing control
     over (Ryan: it sounds like Protoss)."""
-    return p21(1.8, 1.0, 150.0)
+    d = 0.8
+    pl = np.concatenate([R.bow(d, 1.0, 600.0, 0.18), np.zeros(n_of(0.9))])
+    plate = R.body(pl, "plate", 150.0, None)
+    n = len(plate)
+    plate *= F.env_pts(n, [(0.0, 1.0), (d + 0.1, 1.0), (n / SR, 0.0)])   # tails off rather than being stopped
+    return lay((0.0, plate), (d * 0.88, R.shell_tap("plate", 150.0, 1.0, 0.5)))
 
 
 def codex_open():
@@ -255,29 +272,33 @@ def codex_close():
 def hold_readout():
     """The ping softened into a shoo: a breath of air swelling over a tenth of a second with a
     faint E3 inside it, eased in and out, the glass touch under its front."""
-    dur = 0.55
+    dur = 0.9
     n = n_of(dur)
     t = t_of(n)
-    air = F.bp(F.noise(n), 500.0, 1700.0) * F.env_pts(n, [(0.0, 0.0), (0.16, 1.0), (0.32, 0.5), (dur, 0.0)]) * 0.3   # the band kept under 2 kHz; eased in further and softer (a common interaction)
+    air = F.bp(F.noise(n), 500.0, 1700.0) * F.env_pts(n, [(0.0, 0.0), (0.16, 1.0), (0.4, 0.4), (dur, 0.0)]) * 0.28   # the band kept under 2 kHz; the tail drawn out
     f = B.hz(0, 1)
-    tone = (np.sin(2.0 * math.pi * f * t) + 0.5 * np.sin(2.0 * math.pi * f * 2.0 * t) + 0.2 * np.sin(2.0 * math.pi * f * 3.0 * t)) * F.env_pts(n, [(0.0, 0.0), (0.07, 1.0), (0.3, 0.5), (dur, 0.0)]) * 0.5
+    tone = (np.sin(2.0 * math.pi * f * t) + 0.5 * np.sin(2.0 * math.pi * f * 2.0 * t) + 0.2 * np.sin(2.0 * math.pi * f * 3.0 * t)) * F.env_pts(n, [(0.0, 0.0), (0.08, 1.0), (0.4, 0.45), (dur, 0.0)]) * 0.5
     return lay((0.0, p17(0.5, 0.35, 480.0)), (0.0, F.room(mix(air, tone), decay=0.14, mix=0.1, cut=2500.0)))
 
 
 def route_set():
     """P5 with two pips and a rising pair of boops, E4 then B4: a waypoint logged, going up,
     not a cancel."""
-    return lay((0.0, boop(B.B4, 0.1, 0.5)), (0.1, boop(B.hz(0, 3), 0.14, 0.55)), (0.0, p5(0.7, 0.5)))
+    return lay((0.0, boop(B.A4, 0.07, 0.5)), (0.09, boop(B.A4, 0.09, 0.5)), (0.0, p5(0.7, 0.5)))
 
 
 def menu_open():
     """The heavy press (P21 short) under a boop-boop on E5 from the first instant: PAUSED."""
-    return lay((0.0, boop(B.B4, 0.2, 0.55)), (0.22, boop(B.B4, 0.26, 0.55)), (0.0, p21(0.8, 1.0, 180.0)))
+    return lay((0.0, boop(B.B4, 0.12, 0.55)), (0.14, boop(B.B4, 0.15, 0.55)), (0.0, p21(0.8, 1.0, 180.0)))
 
 
 def menu_close():
     """The full P21 that used to open the menu, with one lower boop over the top."""
-    return lay((0.0, boop(B.B3, 0.16, 0.8, attack=0.008, bright=1100.0)), (0.0, boop(B.B4, 0.12, 0.3, attack=0.008)), (0.0, p21(1.0)))
+    d = 0.5
+    pl = np.concatenate([R.bow(d, 1.0, 600.0, 0.08), np.zeros(n_of(0.6))])
+    plate = R.body(pl, "plate", 160.0, None)
+    plate *= F.env_pts(len(plate), [(0.0, 1.0), (d, 1.0), (len(plate) / SR, 0.0)])
+    return lay((0.0, boop(B.B3, 0.16, 0.8, attack=0.008, bright=1100.0)), (0.0, boop(B.B4, 0.12, 0.3, attack=0.008)), (0.0, plate), (d * 0.88, R.shell_tap("plate", 160.0, 0.8, 0.3)))
 
 
 def refuse():
@@ -287,7 +308,7 @@ def refuse():
 # name: (recipe, phone dB, shipped name, label, note)
 SET = [
     ("tap", select, -20.0, "ui_tap", "A press, a menu item, select", "one act, one sound: the boop on E5 first, the glass under it; quiet, the commonest sound. Every ordinary button, the menu's forward, a selection in a panel"),
-    ("map_select", map_select, -17.0, "ui_tap", "Map: a tile, a pack, a machine tapped", "new: a scan, the glass bowed with its colour rising, then the lock, two quick boops E5 B5. Acquired"),
+    ("map_select", map_select, -20.0, "ui_tap", "Map: a tile, a pack, a machine tapped", "softer, shorter and down: a short scan and one soft boop on G, a minor signal that something was boxed; its own pitch, not the confirm's"),
     ("press_heavy", lambda: p21(0.4, 1.0, 180.0), -20.0, "ui_tap", "A heavy press", "P21 short"),
     ("dismiss", dismiss, -21.0, "ui_back", "Dismiss", "the low boop first, P17 under it; also the menu's back"),
     ("confirm", confirm, -19.0, None, "Confirm", "P26 from the first instant, the glass under it; 3 dB down; the menu's select"),
@@ -295,17 +316,17 @@ SET = [
     ("die_hover", lambda: die_hover(1.2), -31.0, None, "Die over a valid target", "down again (the glass at 320, the buzz on E2) and quieter again, easing in"),
     ("die_spend", die_spend, -17.0, "die_drop", "Die spent", "no boop: the glass letting the die go and the pulse under it; one sound for a foe and a machine"),
     ("die_drop_back", lambda: p17(0.5, 0.8, 460.0), -21.0, "die_drop", "Die set back", "glass alone"),
-    ("die_lock", lock, -18.0, "die_lock", "Die locked", "the clicks digital now: two clean partials, four milliseconds, no noise, no casing; the short glass under the second"),
+    ("die_lock", lock, -20.0, "die_lock", "Die locked", "the digital clicks given a three-millisecond onset and longer, lower partials: the hard front cracked the speaker"),
     ("die_unlock", unlock, -20.0, "die_lock", "Die unlocked", "one digital click, the glass letting go"),
     ("reroll", reroll, -14.0, "die_roll", "Reroll", "the flips pitched down and a little shorter"),
-    ("round_open", round_open, -15.0, None, "The round opens", "the glass from the first instant with the plate close behind, the two-note quicker, the whole under a second"),
-    ("end_turn", end_turn, -17.0, "resolve", "End turn", "P21 alone, slower still and 3 dB down"),
-    ("route_set", route_set, -16.0, "plot", "A route set", "the rising pair, B4 then E5, over a quiet glass; the pips are gone"),
-    ("hold_readout", hold_readout, -23.0, None, "A hold's readout", "the shoo softer and slower in: a common interaction"),
+    ("round_open", round_open, -15.0, None, "The round opens", "one long boop on B closing over the body, in place of the E-B pair that read as a confirm; a touch slower"),
+    ("end_turn", end_turn, -20.0, "resolve", "End turn", "the plate swelling near its start, the chunk, and a long tail that fades rather than being stopped; 3 dB down again"),
+    ("route_set", route_set, -16.0, "plot", "A route set", "two quick ticks on A over a quiet glass: logged, not confirmed, and not the map's figure"),
+    ("hold_readout", hold_readout, -26.0, None, "A hold's readout", "the shoo softer again with a longer tail"),
     ("codex_open", codex_open, -21.0, "codex_open", "Codex opens", "the climbing figure E5 G5 B5 with its boops quieter and a longer glass under it"),
     ("codex_close", codex_close, -23.0, "codex_close", "Codex closes", "B5 G5 E5 the same way, the glass letting go under it longer"),
-    ("menu_open", menu_open, -15.0, "menu_open", "Menu opens", "the under-glass twice as long, the boop-boop longer and down a fourth to B4, so it is not the forward's pitch"),
-    ("menu_close", menu_close, -16.0, "menu_open", "Menu closes", "the low boop louder and quicker in, a quiet octave over it, so it is heard from the start over the P21"),
+    ("menu_open", menu_open, -15.0, "menu_open", "Menu opens", "the boop-boop on B4 shorter again over the long under-glass"),
+    ("menu_close", menu_close, -16.0, "menu_open", "Menu closes", "the plate swelling at the start and tailing off, the chunk in it, the low boop from the start"),
     ("nav_forward", select, -20.0, "ui_tap", "Menu: forward", "= a press"),
     ("nav_back", dismiss, -21.0, "ui_back", "Menu: back", "= dismiss"),
     ("nav_select", confirm, -19.0, "ui_tap", "Menu: select", "= confirm"),
