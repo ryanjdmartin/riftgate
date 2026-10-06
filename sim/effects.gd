@@ -490,7 +490,7 @@ static func effective_reach(u, face: Face) -> int:
 
 
 ## Keywords a live passive grants this component beyond its own (grant_keyword, static, its
-## `when` honoured; the Wild Boar's Juggernaut Drive puts overwhelm on every attack). An
+## `when` honoured; the Wild Boar's Juggernaut Drive puts spillover on every attack). An
 ## attack keyword lands on attacks only, a support keyword on equipment only, a spend
 ## keyword on anything; a keyword the component already carries is not granted twice.
 static func granted_keywords(u, face: Face) -> Array[int]:

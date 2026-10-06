@@ -61,20 +61,21 @@
    ]
   },
   {
-   "id": "slug_cannon",
-   "name": "Slug Cannon",
+   "id": "bullion_fragmenter",
+   "name": "Bullion Fragmenter",
    "maker": "minerva",
    "shape": "barrel",
-   "codex": "",
+   "codex": "Gold and silver are worth nothing out here, so the hopper crushes them into shot. A sawed-off cannon: the range is what is left of the barrel.",
    "flavour": "",
    "design": {
     "stage": "draft",
     "fantasy": "One big round. Warm barrel.",
-    "niche": ""
+    "niche": "",
+    "notes": " 6 October (Ryan): the Slug Cannon converted to melee, renamed the Bullion Fragmenter, and locked to the Badger as a funny mining reference; its line kinetic numbers kept (30 to 60, crit 15, 10 heat) as placeholders. Ryan, later 6 October: a sawed-off cannon, not a breaker; melee is very short range, not contact (a shotgun is melee), and the irony is that bullion is so useless it is better crushed and fired."
    },
    "face": {
     "kind": "attack",
-    "reach": "line",
+    "reach": "melee",
     "power": 30,
     "power_max": 60,
     "crit": 15,
@@ -84,6 +85,7 @@
    "passive": null,
    "tags": [
     "kinetic",
+    "melee",
     "single"
    ]
   },
@@ -397,8 +399,8 @@
    ]
   },
   {
-   "id": "arc_projector",
-   "name": "Arc Projector",
+   "id": "arc_fault_cannon",
+   "name": "Arc Fault Cannon",
    "maker": "kestrel",
    "shape": "twin_barrel",
    "codex": "",
@@ -406,7 +408,8 @@
    "design": {
     "stage": "draft",
     "fantasy": "Lightning that picks its own second target.",
-    "niche": ""
+    "niche": "",
+    "notes": "Renamed from the Arc Projector 6 October (Ryan: makes sense and also no sense)."
    },
    "face": {
     "kind": "attack",
@@ -445,8 +448,8 @@
    ]
   },
   {
-   "id": "umbra_projector",
-   "name": "Umbra Projector",
+   "id": "umbra_inducer",
+   "name": "Umbra Inducer",
    "maker": "aphelion",
    "shape": "barrel",
    "codex": "",
@@ -455,7 +458,7 @@
     "stage": "draft",
     "fantasy": "A shadow falls across the target and it forgets what it was about to do.",
     "niche": "Aphelion's suppress: a flat energy number on a line, so the control lands every time it comes up.",
-    "notes": "Claude's fill, 26 September; name and numbers are Ryan's to move."
+    "notes": "Claude's fill, 26 September; name and numbers are Ryan's to move. Renamed from the Umbra Projector 6 October (Ryan: more slick)."
    },
    "face": {
     "kind": "attack",
@@ -1208,17 +1211,17 @@
    ]
   },
   {
-   "id": "prow_projector",
-   "name": "Prow Projector",
+   "id": "backwash_ionizer",
+   "name": "Backwash Ionizer",
    "maker": "kestrel",
    "shape": "dish",
-   "codex": "",
+   "codex": "Ionizes the target's backwash, temporarily increasing the target's shield capacity until round end.",
    "flavour": "",
    "design": {
     "stage": "draft",
     "fantasy": "The whole front of the Puffin is one shield projector, and it only points outward.",
     "niche": "The Puffin's locked shield: a big bubble it can only raise on an ally, and the game's first Overshield, so it may lift the ally past its maximum for the round (Ryan, 2 October: a shield specialist, not a shield-bot; 5 October: overshield a rare keyword, the projector first).",
-    "notes": "Proposed 2 October. Decided 5 October with the Puffin's passive: the projector carries Overshield, the passive vents the ally it shields. Overshield's excess fades at the round's end; it is never on the Puffin itself, since the projector is fixed and allies-only. Numbers are placeholders."
+    "notes": "Proposed 2 October. Decided 5 October with the Puffin's passive: the projector carries Overshield, the passive vents the ally it shields. Overshield's excess fades at the round's end; it is never on the Puffin itself, since the projector is fixed and allies-only. Numbers are placeholders. Renamed from the Prow Projector 6 October (Ryan: janky; a shield that grants extra shield by ionizing the target's backwash, whatever that means, is the house joke done right)."
    },
    "face": {
     "kind": "shield",

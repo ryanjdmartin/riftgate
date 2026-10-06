@@ -1018,10 +1018,10 @@ const NAME_TABS = [
    builds: "Bipedal-ish walkers first, some large aircraft or hovercraft, always a little creepy. Silhouettes cross the other makers' lines: leg counts convert, legs ride on hoverjets, aircraft carry arms.",
    names: "Never animals. Deities and beings of myth that stand for divine justice, vengeance or retribution (Nemesis, Ammit). A second vein of sins (Hubris) is unfleshed.",
    avoid: "Never outright war, so no Ares. Spread across cultures: Egypt and Greece would swallow the list on their own."},
-  {id: "parts", label: "Components", name: "Components", voice: "One piece of equipment, one entry on the die.",
-   builds: "Weapons, shields, vents, plating. Names proposed here check against the same lists as the machines.",
-   names: "The maker's register shows in the word: Minerva industrial (Slug Cannon, Ablative Plating), Kestrel aeronautical (Twin Autoguns), W&S artillery (Pocket Mortar, Howitzer), Aphelion astronomical (Umbra Projector, Solar Flare Array, Corona Shield).",
-   avoid: "The reserved lists are machines, not weapons, so a clash here is a softer signal."},
+  {id: "parts", label: "Components", name: "Components", voice: "One piece of equipment, one entry on the die. Any word here is open to any maker.",
+   builds: "Weapons, shields, vents, plating. Names proposed here check against the same lists as the machines. A passive is named the same way: a device or a part of the chassis that does the thing (Thermal Recoupler, Slipstream Projector), never an ability.",
+   names: "The makers' vocabularies are guidelines, not claims (Ryan, 6 October; bible section 7). General words such as cannon, missile and laser belong to no maker, and a word may cross makers by its meanings (an Aphelion ion cannon; a Kestrel part ionizing something by speed). Minerva hits hard and low-tech: hurl, slam, smash, ram, launcher, flinger, hammer. Kestrel is propulsion and aerodynamics: booster, impeller, diffuser, mach, slipstream, wake, thrust. W&S is a plain military term beside something a little stupid or from the wrong period: carbine, gatling, howitzer, phalanx, repeater, flak. Aphelion is the physics and maths nonsense: entropy, subspace, solenoid, inducer, phase, neutrino, array, wormhole. The Arsenal is medieval and slightly occult, twisting the others' words: halberd, cleaver, talon, hellfire, hoarfrost, dimensional, arbalest. The pseudo-tech may contradict itself on purpose: a Polarity Projector, a Backwash Ionizer.",
+   avoid: "The reserved lists are machines, not weapons, so a clash here is a softer signal. Mind the over-words: Overcharged, Overheating, Overshield, Overcharge Coil and Overclocked Railgun are plenty (Overwhelm became Spillover for it)."},
   {id: "other", label: "Other", name: "Other", voice: "", builds: "Foes, factions, places, anything without a home yet.", names: "", avoid: ""},
   {id: "rules", label: "Rules", name: "Rules"},
 ];
@@ -1161,6 +1161,8 @@ function renderRules() {
     <li><b>Bipeds:</b> Aphelion every kind, Minerva heavy plantigrade, the Arsenal bipedal-ish and creepy.</li>
     <li><b>Hovercraft:</b> Kestrel small and fast, Aphelion platforms, the Arsenal legs on hoverjets. <b>Large aircraft:</b> Minerva a flying brick, Aphelion a deep-space thing, the Arsenal a creepy one; Kestrel never.</li>
   </ul>
+  <h3>Component names</h3>
+  <p>The makers' vocabularies are guidelines, not claims (6 October): general words belong to no maker, a word may cross makers by its meanings, and the Components tab lists each maker's register. A passive names a piece of machinery or a part of the chassis that does the thing, never an ability, and the pseudo-tech may contradict itself on purpose; that contradiction is the joke.</p>
   <h3>Designations</h3>
   <p>Minerva an industrial catalogue code (EX-45XLE Combat Miner). Kestrel a type and mark (K-7 Mk III Interceptor). W&amp;S a pattern number (Pattern 1 Combat Walker). Aphelion a programme and flight (Perihelion Flight 7 Support Frame). The Arsenal a decree (Arsenal Instrument IV). Frame is Aphelion's word alone.</p>`});
 }

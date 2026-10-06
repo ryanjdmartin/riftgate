@@ -189,7 +189,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 				score += ((1.0 - p_kill) if foe == target else 1.0) * disrupt_score(sk, foe)
 		if f.has(Face.Keyword.LURE):
 			score += (1.0 - p_kill) * lure_score(sk, ms, hit)
-	if f.has(Face.Keyword.OVERWHELM) and target.rank == 0 and not target.is_massive():
+	if f.has(Face.Keyword.SPILLOVER) and target.rank == 0 and not target.is_massive():
 		# What the roll has past the kill lands on the foe behind, and may kill it too.
 		var behind := sk.foe_at(1, target.column)
 		if behind != null and behind.alive() and behind != target:

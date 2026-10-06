@@ -95,7 +95,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_arc(c + Vector2(0, s * 0.3), s * 0.7, PI, TAU, 16, color, width)
 			ci.draw_line(c + Vector2(-s * 0.7, s * 0.3), c + Vector2(s * 0.7, s * 0.3), color, width)
 			ci.draw_arc(c + Vector2(0, -s * 0.15), s * 0.95, PI * 1.15, PI * 1.85, 12, color, width * 0.8)
-		"overwhelm":
+		"spillover":
 			# An arrow driven down through a bar: what carries past the kill into the rank behind.
 			ci.draw_line(c + Vector2(-s * 0.8, -s * 0.15), c + Vector2(s * 0.8, -s * 0.15), color, width)
 			ci.draw_line(c + Vector2(0, -s), c + Vector2(0, s * 0.9), color, width)

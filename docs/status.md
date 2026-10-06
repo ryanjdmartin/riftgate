@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.43 since 6 October: the seventh notes on the machines, over v0.42's sixth); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.46 since 6 October: the seventh notes on the machines, over v0.45's Spillover for Overwhelm and the Bullion Fragmenter, a sawed-off cannon, on the Badger, over the naming guidelines, the Puffin's names and speed, and the movement session's sixth notes); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -13,7 +13,7 @@ stays in A alone (Ryan, 1 October: it serves one ongoing task) and is republishe
 session; a B session cannot read it. Shared:
 
 - **The bible** (above): `docs/design-bible.html`, published whole after every change.
-- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 6 October with the seventh notes): four tabs, the
+- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 6 October with the seventh notes, from the movement branch with main merged into it (the renames, Spillover, the Badger's Fragmenter, the Names tab's Components plate and Rules section). Until that branch merges to main, the live page and its motion.js and rig files are ahead of `tools/hangar.html` and `art/models/*.rig.json` on main, so a republish from main must start from the live page body and leave motion.js and the rig files alone): four tabs, the
   codex, the content editor, the names list and Models. Models (the renders and the Animation
   tab merged, Ryan, 3 October) puts each machine live in 3D on top: its acts, walk and
   cornering played from its rig sidecar by `tools/hangar_motion.js` (published as
@@ -83,7 +83,7 @@ the chat is newer.
 ## As of 3 October 2026
 
 **State.** Tests green: `perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (350 tests, 15,730 checks on 6 October in a cloud session, after the seventh notes;
+tests/run_tests.gd` (350 tests, 15,725 checks on 6 October in a cloud session, after the seventh notes merged with main;
 a cloud session fetches Godot 4.7's Linux build from the GitHub release asset to run them
 (`Godot_v4.7-stable_linux.x86_64.zip`, and `xvfb-run` for screenshots), since
 the proxy serves the asset though not the release page; it builds models too, with
@@ -496,7 +496,7 @@ flare, the emitter and the lance share its spends about a third each and the Rad
 2%, so the bot runs it hot and never vents (the Nemesis's problem again) and cooling 0 is the
 knob to watch. The Puffin alone loses nearly everything, as an escort with an allies-only locked
 shield and a planned passive must (its Prow Projector is never spendable in a solo cell; greedy
-still takes the necromancers at 71%); it reads only once a team cell carries it. The maker team rows (5 October, evening) put it on a cell at last: the Kestrel team (Sparrowhawk, Goshawk, Puffin) is the first team row with a decision on the formation cells (random 44, 85 and 92 against greedy 99 to 100; the starting team wins them all at both rungs), costs the same as the starting team on the Risen formation (4.0 rounds, 17% hull), and spends the Prow Projector 2% of the time and the Deflector 9%, because nearly every cell ends in a round or two, where a kill ends the fight and a shield only delays it. The projector reads only on the formations; dead or patient waits on longer packs and on Ryan's play. The Wainwright & Sutler team is the weakest team row (random 20 on the Risen formation, 7.0 rounds and 26% hull under greedy); Minerva's wins everything at no cost. **The baseline reading, for Ryan's
+still takes the necromancers at 71%); it reads only once a team cell carries it. The maker team rows (5 October, evening) put it on a cell at last: the Kestrel team (Sparrowhawk, Goshawk, Puffin) is the first team row with a decision on the formation cells (random 44, 85 and 92 against greedy 99 to 100; the starting team wins them all at both rungs), costs the same as the starting team on the Risen formation (4.0 rounds, 17% hull), and spends the Backwash Ionizer (the Prow Projector until 6 October) 2% of the time and the Deflector 9%, because nearly every cell ends in a round or two, where a kill ends the fight and a shield only delays it. The projector reads only on the formations; dead or patient waits on longer packs and on Ryan's play. The Wainwright & Sutler team is the weakest team row (random 20 on the Risen formation, 7.0 rounds and 26% hull under greedy); Minerva's wins everything at no cost. **The baseline reading, for Ryan's
 question of whether 80 a round is average or game-losing:** the team of three still wins every
 cell, the formations included, in about a round and at no cost, under the aims and under the
 lowest-shield rule alike (the Risen formation, fifteen foes, is the one fight that lasts: 4.6
@@ -578,7 +578,7 @@ disrupt into a boss's signature is a trick or a trap.
 **Open, in order.** The task list is `docs/todo.md`, one line a task, grouped by who moves
 it and ticked in the commit that lands it; this is the order to take them in.
 
-1. The Puffin's Slipstream and Overshield read in play (built 5 October; the hovercraft models are called good; the runner's Kestrel team row carries it since that evening, the Balance paragraph); its name, a placeholder, is Ryan's.
+1. The Puffin's Slipstream and Overshield read in play (built 5 October; the hovercraft models are called good; the runner's Kestrel team row carries it since that evening, the Balance paragraph); named 6 October: the passive is the Slipstream Projector, the fixed shield the Backwash Ionizer, and the Puffin moves 40. Later on 6 October: Overwhelm is Spillover (engine, content, tests, vocabulary, bible); the Slug Cannon is the Bullion Fragmenter, melee, fixed on the Badger with its second Chainsaw Claw gone (d5, three pins: the right boom's mount is the Fragmenter built in, a sawed-off cannon with a crusher hopper since Ryan's note that melee is short range and not contact, for him to judge from the renders; the Armadillo's and Wild Boar's cannon slots carry the Rivet Gun as a stopgap); the hangar page's files republished with the renames, the Badger's model and renders.
 2. Ryan's play test of the engagement zones and the three behaviours (the radii, the brute's hunt, how big fights come out), and his phone reads.
 3. Ryan's text for the new machines and components; the size classes on the phone and the Ammit's offbeat walk (the hangar's Walk); the strikes, the hovercraft's balancing idle, the idle acts (`RIFTGATE_ACTS_DEBUG=1`) and the gaits (`RIFTGATE_MOVE_DEBUG=1`, and a real move for the Dingo's drift, the Stingray's helicopter strafe and the banks), judged running; the movement branch merged on his word.
 4. The discuss-first decisions left in the Ryan section (the campaign and the economy are decided, 5 October, the paragraph above; what remains of them is the makers' measures and notices, and the in-battle ones: ally wrecks, terrain, base defences, reinforcements, the multi-hex boss, Rift Pressure in the boss fight, packs keeping hull between fights); enemy targeting decided and built 2 October (the paragraph above; the runner's read is the baseline question); the commander layer once the balance has a baseline.

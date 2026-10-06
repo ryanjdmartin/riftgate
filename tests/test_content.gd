@@ -38,10 +38,10 @@ func test_every_chassis_builds_a_full_die() -> void:
 
 func test_build_die_leaves_empty_hardpoints_empty() -> void:
 	var db := _db()
-	var d := db.build_die(["chainsaw_claw"], ["slug_cannon"], 3)
+	var d := db.build_die(["chainsaw_claw"], ["missile_rack"], 3)
 	assert_eq(d.size(), 4, "one fixed plus three hardpoints")
 	assert_eq(d.faces[0].component, "chainsaw_claw", "the fixed claw first")
-	assert_eq(d.faces[1].component, "slug_cannon", "then the loadout")
+	assert_eq(d.faces[1].component, "missile_rack", "then the loadout")
 	assert_true(d.faces[2].empty and d.faces[3].empty, "two hardpoints left empty stay empty")
 	assert_true(d.faces[0].fixed and not d.faces[1].fixed and not d.faces[2].fixed, "only the claw is fixed; the rest are hardpoints")
 	assert_eq(d.faces[2].describe(), "empty hardpoint", "and say so")
@@ -666,7 +666,7 @@ func test_grant_keyword_names_a_keyword_the_engine_runs() -> void:
 	c["id"] = "ram"
 	c["name"] = "Ram Test"
 	c["passive"] = {"id": "drive", "name": "Drive", "description": "", "effects": [
-		{"trigger": "static", "effect": "grant_keyword", "value": "overwhelm"}]}
+		{"trigger": "static", "effect": "grant_keyword", "value": "spillover"}]}
 	db.chassis["ram"] = c
 	var bad: Dictionary = c.duplicate(true)
 	bad["id"] = "ram_bad"

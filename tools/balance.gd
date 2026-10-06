@@ -153,7 +153,7 @@ func _build_matrix() -> void:
 			continue
 		packs.append({"id": boss + " x1", "name": str(db.foes[boss].get("name", boss)), "foe": boss, "strength": 1})
 	# The mixed cells (the to-do, 2 October): every pack a faction sends through the rift in
-	# one fight, a front and a back together, which is where targeting, overwhelm and the
+	# one fight, a front and a back together, which is where targeting, spillover and the
 	# Databank can be read at all.
 	for fac in db.factions.keys():
 		var mix: Array = []

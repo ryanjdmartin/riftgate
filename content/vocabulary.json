@@ -200,13 +200,13 @@
    }
   },
   {
-   "id": "overwhelm",
+   "id": "spillover",
    "category": "keyword",
-   "name": "Overwhelm",
+   "name": "Spillover",
    "codex": "Player keyword. When a blow kills a front-rank foe, what it had past the kill carries into the foe behind it in the same column. Nothing stands behind a massive foe.",
    "status": "implemented",
    "design": {
-    "holes": "Built 29 September. The spill is plain damage: it spends a shock and feeds a devour, and carries no other keyword of the blow. The Wild Boar's Juggernaut Drive grants it to every attack (grant_keyword, the first passive to add a keyword)."
+    "holes": "Built 29 September as Overwhelm; renamed Spillover 6 October (Ryan: of the six over-words it was the one to move). The spill is plain damage: it spends a shock and feeds a devour, and carries no other keyword of the blow. The Wild Boar's Juggernaut Drive grants it to every attack (grant_keyword, the first passive to add a keyword)."
    }
   },
   {
@@ -406,7 +406,7 @@
    "codex": "Player keyword, on shield components, rare. The shield may raise its target past the target's maximum; shield past the maximum fades at the end of the round. A shield die spent on a machine already at its maximum is never wasted when it carries this.",
    "status": "implemented",
    "design": {
-    "holes": "Decided 5 October (Ryan: overshield as a component keyword, a rare one). The Puffin's fixed Prow Projector carries it, allies only, so the excess never lands on the Puffin itself. Rare because every overshield on the field makes shield max a soft number. The fade is the whole safeguard: a persisting excess would stack a team past every blow. The gauge shows the excess as a hatched block beyond the bar's end."
+    "holes": "Decided 5 October (Ryan: overshield as a component keyword, a rare one). The Puffin's fixed Backwash Ionizer carries it, allies only, so the excess never lands on the Puffin itself. Rare because every overshield on the field makes shield max a soft number. The fade is the whole safeguard: a persisting excess would stack a team past every blow. The gauge shows the excess as a hatched block beyond the bar's end."
    }
   },
   {
