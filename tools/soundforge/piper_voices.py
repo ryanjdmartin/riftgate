@@ -16,9 +16,12 @@ Amy carries the drawn-out machine cadence and is spot on for the Adjutant's regi
 chain has her, so she is the baseline; Jenny (Irish) is the one to play with, nobody expects
 an Irish adjutant, she hits her consonants hard and her cadence (some words rushed, some
 slow) plays well for repeated listening. So Amy through the chain as before, and Jenny four
-ways: the chain as before; `light`, less levelling and a shallower flange so more of her own
-dynamics survive; `deep`, the flange fed back harder with more sub-octave; `slow`, the chain
-with the model slowed a third.
+ways: the chain as before; `light`, her natural voice through the band with a gentle
+levelling and nothing else; `deep`, two combs fed back hard with grain and half a sub-octave; `slow`, the chain with the
+model slowed a third. (Ryan heard only slow differ in the first try; measured, light was 95
+percent the chain's signal and deep 75, so both were pushed apart: light 85 now, deep 44. A
+`flat` variant with the levelling harder still measured 99 percent the chain, since the chain
+already levels hard, and was dropped rather than shown.)
 
     tools/soundforge/.venv-piper/bin/python -m piper.download_voices --data-dir tools/soundforge/out/piper <voice>...
     tools/spriter/.venv/bin/python tools/soundforge/piper_voices.py          # into out/fx
@@ -40,7 +43,7 @@ SR = F.SR
 HERE = os.path.dirname(os.path.abspath(__file__))
 PIPER_PY = os.path.join(HERE, ".venv-piper", "bin", "python")
 DATA = os.path.join(F.OUT_SKETCH, "piper")
-PREFIX = "voice4_"
+PREFIX = "voice5_"
 VOICES = {
     "amy": "en_US-amy-medium",
     "jenny": "en_GB-jenny_dioco-medium",
@@ -49,21 +52,25 @@ LENGTH_SCALE = 1.15   # a touch slower than the model's default, as the Mac voic
 
 
 def light(x):
-    """Less levelling and a shallower flange: more of the voice's own dynamics survive."""
+    """Her natural voice: the band and a gentle levelling, no flange, no sub-octave. Measured
+    against the chain, the first light was 95 percent the same signal; this one is a real
+    other end."""
     y = F.bp(x, 180.0, 4500.0, order=3)
-    y = V.level_syllables(y, target=0.22, cap=2.0)
-    y = V.flange(y, feedback=0.3, wet=0.3)
-    y = F.mix(y, V.sub_octave(y, 0.15))
-    return F.sat(y / (np.max(np.abs(y)) + 1e-9) * 1.05, 1.2)
+    y = V.level_syllables(y, target=0.22, cap=1.6)
+    return F.sat(y / (np.max(np.abs(y)) + 1e-9) * 1.05, 1.15)
 
 
 def deep(x):
-    """The flange fed back harder, more sub-octave: further into the machine."""
+    """Far into the machine: two combs fed back hard (3.2 ms and 1.1 ms), half a sub-octave,
+    and a sample-and-hold grain. The first deep was 75 percent the chain; this is not."""
     y = F.bp(x, 180.0, 4500.0, order=3)
     y = V.level_syllables(y, target=0.22)
-    y = V.flange(y, delay=0.0034, depth=0.0014, feedback=0.62, wet=0.6)
-    y = F.mix(y, V.sub_octave(y, 0.35))
-    return F.sat(y / (np.max(np.abs(y)) + 1e-9) * 1.15, 1.4)
+    y = V.flange(y, delay=0.0032, depth=0.0012, rate=0.3, feedback=0.8, wet=0.9)
+    y = V.flange(y, delay=0.0011, depth=0.0003, rate=0.7, feedback=0.6, wet=0.6)
+    y = F.mix(y, V.sub_octave(y, 0.5))
+    hold = 3
+    y = np.repeat(y[::hold], hold)[:len(y)]
+    return F.sat(y / (np.max(np.abs(y)) + 1e-9) * 1.3, 1.6)
 
 
 # (voice, process name, chain, length scale)
@@ -106,7 +113,7 @@ def main(argv):
     if os.path.exists(path):
         with open(path) as fh:
             manifest.update(json.load(fh))
-    manifest["voice4"] = []
+    manifest["voice5"] = []
     for key_, text in V.LINES.items():
         for v, proc, chain, scale in TRIALS:
             raw = render(v, text, scale)
@@ -114,7 +121,7 @@ def main(argv):
             x = V.level_for_phone(chain(raw), -12.0)
             name = PREFIX + "%s_%s_%s" % (v, key_, proc)
             X.write(name, X.tail(x, 0.3))
-            manifest["voice4"].append({"name": name, "voice": v, "model": VOICES[v], "line": key_, "process": proc, "seconds": round(len(x) / SR, 2)})
+            manifest["voice5"].append({"name": name, "voice": v, "model": VOICES[v], "line": key_, "process": proc, "seconds": round(len(x) / SR, 2)})
             print("  %-40s %5.2f s" % (name, len(x) / SR))
     with open(path, "w") as fh:
         json.dump(manifest, fh, indent=1)
