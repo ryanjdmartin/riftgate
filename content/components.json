@@ -64,14 +64,14 @@
    "id": "bullion_fragmenter",
    "name": "Bullion Fragmenter",
    "maker": "minerva",
-   "shape": "blade",
-   "codex": "A hydraulic breaker built to reduce bullion to a size the smelter will take. Pointed at anything else, it does the same.",
+   "shape": "barrel",
+   "codex": "Gold and silver are worth nothing out here, so the hopper crushes them into shot. A sawed-off cannon: the range is what is left of the barrel.",
    "flavour": "",
    "design": {
     "stage": "draft",
     "fantasy": "One big round. Warm barrel.",
     "niche": "",
-    "notes": " 6 October (Ryan): the Slug Cannon converted to melee, renamed the Bullion Fragmenter, and locked to the Badger as a funny mining reference; its line kinetic numbers kept (30 to 60, crit 15, 10 heat) as placeholders."
+    "notes": " 6 October (Ryan): the Slug Cannon converted to melee, renamed the Bullion Fragmenter, and locked to the Badger as a funny mining reference; its line kinetic numbers kept (30 to 60, crit 15, 10 heat) as placeholders. Ryan, later 6 October: a sawed-off cannon, not a breaker; melee is very short range, not contact (a shotgun is melee), and the irony is that bullion is so useless it is better crushed and fired."
    },
    "face": {
     "kind": "attack",

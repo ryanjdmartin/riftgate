@@ -21,7 +21,7 @@ def badger(b):
     frame under a brow, between two cheeks, so it survives a cave-in; two excavator booms
     pivoting on the frame's flanks at mid-length (not shoulders), reaching forward past the
     cockpit; an outsized claw on the left, the defining feature; the Bullion Fragmenter on the
-    right, a hydraulic breaker built in (6 October: the Slug Cannon converted to melee and
+    right, a sawed-off cannon with a crusher hopper built in (6 October: the Slug Cannon converted to melee and
     locked to the Badger, the second claw gone, so the right boom's mount is no hardpoint and
     the pins run hp_1 missile box, hp_2 left gimbal, hp_3 right gimbal); a missile box on the
     deck; floodlights, vents, a ladder, a hatch."""
@@ -113,16 +113,21 @@ def badger(b):
                         for sx in (-3.0, 3.0):
                             _tine(b, wrist, sx, -95.0, 90.0, 24.0, 7.0, 4.5, "steel.dark", "tine")
                 else:
-                    # The Bullion Fragmenter, built in (6 October): a hydraulic breaker on the
-                    # wrist. The housing is a heavy block with a hazard band, a collar ahead of
-                    # it, and the chisel a tapering six-sided spike to a flat bit, long enough
-                    # to reach the ground beside the claw when the boom drops.
+                    # The Bullion Fragmenter, built in (6 October; Ryan the same day: a sawed-off
+                    # cannon, not a breaker, since melee is short range and not contact, and the
+                    # joke is that gold and silver are so useless out here that the hopper crushes
+                    # them into shot). The breech is a heavy block with a hazard band, the crusher
+                    # hopper sits on top with its mouth open upward, and the barrel is short and
+                    # wide, sawn off a hand past the breech, its bore a dark face.
                     wx, wy, wz = wrist
-                    b.box(wx - 8.0, wx + 8.0, wy - 6.0, wy + 14.0, wz - 7.0, wz + 7.0, "steel.panel", "breaker_housing")
-                    b.box(wx - 8.5, wx + 8.5, wy + 2.0, wy + 6.0, wz - 7.5, wz + 7.5, "steel.hazard", "breaker_band")
-                    b.box(wx - 3.0, wx + 3.0, wy + 8.0, wy + 14.0, wz + 7.0, wz + 10.0, "amber.light", "mount_light")   # the acts' glow track names it
-                    b.prism("y", wx, wy + 17.0, wz, 5.0, 6.0, "steel.dark", 6, "breaker_collar")
-                    b.loft([(wy + 20.0, hexagon(wx, wz, 7.0, 7.0)), (wy + 34.0, hexagon(wx, wz, 5.0, 5.0)), (wy + 46.0, hexagon(wx, wz, 4.0, 1.6))], "steel.dark", "chisel")
+                    b.box(wx - 8.0, wx + 8.0, wy - 6.0, wy + 14.0, wz - 7.0, wz + 7.0, "steel.panel", "breech")
+                    b.box(wx - 8.5, wx + 8.5, wy + 2.0, wy + 6.0, wz - 7.5, wz + 7.5, "steel.hazard", "breech_band")
+                    b.box(wx - 3.0, wx + 3.0, wy - 5.0, wy - 1.0, wz + 7.0, wz + 9.0, "amber.light", "mount_light")   # the acts' glow track names it
+                    b.box(wx - 5.5, wx + 5.5, wy + 0.0, wy + 12.0, wz + 7.0, wz + 15.0, "steel.panel", "hopper")
+                    b.box(wx - 4.0, wx + 4.0, wy + 1.5, wy + 10.5, wz + 14.5, wz + 15.2, "steel.dark", "hopper_mouth")
+                    b.box(wx - 6.0, wx + 6.0, wy + 12.0, wy + 13.0, wz + 7.0, wz + 15.5, "steel.hazard", "hopper_lip")
+                    b.prism("y", wx, wy + 22.0, wz, 5.8, 16.0, "steel.dark", 8, "sawn_barrel")
+                    b.prism("y", wx, wy + 30.3, wz, 4.4, 0.6, "steel.panel", 8, "bore")
     # Deck weapon: a missile box on a turret ring, right of centre. Its face is exactly one
     # tile (14 units) square on tile boundaries, so the box projection shows the nine tubes
     # whole rather than a slice of them.

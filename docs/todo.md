@@ -36,8 +36,8 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [x] Name the Puffin's passive (6 October: the Slipstream Projector; its fixed shield the Backwash Ionizer; the Puffin at move 40)
 - [ ] Read the Puffin in play: the overshield on an ally against a heavy round, the vent on the Stingray
 - [x] The Slug Cannon's name (6 October, Ryan: the Bullion Fragmenter, melee, locked to the Badger; the second Chainsaw Claw gone; built the same day with the Badger's right boom as the breaker)
-- [ ] Judge the Badger's Bullion Fragmenter from the renders (first pass 6 October: a housing with a hazard band, a collar and a tapering chisel on the right boom where the barrel mount was)
-- [ ] Reset the Armadillo's and the Wild Boar's loadouts: their Slug Cannon slots carry the Rivet Gun as a stopgap since 6 October (the Boar's two of them)
+- [ ] Judge the Badger's Bullion Fragmenter from the renders (second pass 6 October, after Ryan's note that it is a sawed-off cannon: a breech block with a hazard band, the crusher hopper on top with its mouth open upward, and a short wide barrel on the right boom)
+- [ ] Pick the basic Minervan line weapon that fills the Armadillo's and Wild Boar's Slug Cannon slots (the Rivet Gun is the stopgap since 6 October; Claude's candidates from Ryan's own board rows: Iron-Billet Thrower, Ingot Hurler, Billet Launcher), then build it with the cannon's numbers
 - [x] Overwhelm renamed Spillover (Ryan, 6 October; engine, content, tests, vocabulary and bible moved with it)
 - [ ] The Names board (the hangar page's names tab) follows the vocabulary guidelines of 6 October rather than maker claims: its maker tabs for chassis stay, its parts tab is maker-free (the labels came off 6 October), its rules text wants the guidelines; rework the page once the movement session is done with it
 
