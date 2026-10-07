@@ -380,8 +380,8 @@ through the machine chain, the Mac's voices retired as sources; Ryan's picks: Am
 one to play with (her licence checked: commercial use permitted, attribution for live generation only),
 decided (Ryan, 7 October, "spot on"): Jenny on the mid chain slowed a third, her plosives tamed
 (`mid_tamed` in `piper_voices.py`), at -14 dB on the phone; Ryan's brief for her lines (infrequent, many phrases on many hooks, information lines every time, a rare personality
-layer) is proposed as a system with a second draft of pools in `voice_lines.py`, cut to what he named (an unmentioned
-line is cut, not kept), every line rendered on the page;
+layer) is proposed as a system with a second draft of pools in `voice_lines.py`, under his rule (a heard line stays unless
+he says cut or change, an unheard candidate comes in only on add), every line rendered on the page;
 still to come, the buff hook split per keyword once he names them; the page's history is cut, the earlier cuts live in git), each event built by fit from two or three of them
 rather than pinned to where they first played (a first combined cut, `combined_sketches.py`, pinned
 them and is superseded), at the top of the page's section 1; everything earlier stays
