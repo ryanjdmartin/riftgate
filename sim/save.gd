@@ -13,7 +13,7 @@ extends RefCounted
 ## it travels as a string. Nothing here is shown to the player.
 
 const PATH := "user://battle.json"
-const VERSION := 2   # 2: moves in tens (2 October)
+const VERSION := 3   # 2: moves in tens (2 October); 3: the water feature and the map's kind (3 and 4 October)
 
 
 # ---------------------------------------------------------------- the file
@@ -71,7 +71,7 @@ static func to_dict(b: Battle) -> Dictionary:
 		"boss": b.boss.id if b.boss != null else -1,
 		"skirmishes_fought": b.skirmishes_fought,
 		"columns": b.columns,
-		"map": {"w": b.map.width, "h": b.map.height, "seed": b.map.map_seed},
+		"map": {"w": b.map.width, "h": b.map.height, "seed": b.map.map_seed, "kind": b.map.kind},
 		"field": _field_dict(b.field),
 		"skirmish": _skirmish_dict(b.current, b.field) if b.current != null else null,
 	}
@@ -87,7 +87,8 @@ static func from_dict(d: Dictionary) -> Battle:
 	var w := int(md.get("w", Battle.DEFAULT_WIDTH))
 	var h := int(md.get("h", Battle.DEFAULT_HEIGHT))
 	var map_seed := int(md.get("seed", 0))
-	b.map = BattleMap.generate(w, h, map_seed) if map_seed != 0 else BattleMap.flat(w, h)
+	b.map_kind = str(md.get("kind", "mixed"))
+	b.map = BattleMap.generate(w, h, map_seed, b.map_kind) if map_seed != 0 else BattleMap.flat(w, h)
 	b.field = _field_from(d.get("field", {}), b.map)
 	for uid in d.get("routes", {}).keys():
 		b.routes[int(str(uid))] = _hexes_from(d["routes"][uid])

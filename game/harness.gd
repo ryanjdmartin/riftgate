@@ -16,6 +16,7 @@ var _foe_b: OptionButton
 var _count_b: SpinBox
 var _boss: OptionButton
 var _seed: SpinBox
+var _kind: OptionButton   # the map's type, for judging each in play
 var _menu: Control
 var _current: Node = null
 
@@ -100,6 +101,12 @@ func _build_menu() -> void:
 	row_c.add_child(_boss)
 	_seed = _spin("seed", 1, 9999, 7)
 	row_c.add_child(_seed)
+	_kind = OptionButton.new()
+	_kind.add_theme_font_size_override("font_size", 18)
+	for k in BattleMap.KINDS.keys():
+		_kind.add_item(str(BattleMap.KINDS[k]["name"]).capitalize())
+		_kind.set_item_metadata(_kind.item_count - 1, k)
+	row_c.add_child(_kind)
 
 	col.add_child(_label("HUD colour", 20, Palette.INK))
 	var swatches := HBoxContainer.new()
@@ -228,6 +235,7 @@ func _on_battle() -> void:
 	if fac.is_empty() or not db.factions.has(fac):
 		fac = db.default_faction()
 	var b := Battle.new(int(_seed.value))
+	b.map_kind = str(_kind.get_item_metadata(_kind.selected))
 	b.setup(team, fac)
 	_show_battle(b)
 

@@ -142,6 +142,41 @@ func test_one_water_feature_a_map() -> void:
 	assert_true(kinds.size() >= 3, "and lakes too: %s" % str(kinds.keys()))
 
 
+func test_map_kinds_tell_apart_and_stay_playable() -> void:
+	# 4 October: named map types as presets of the generator's knobs, the intel the player
+	# will read. Each must lean the way its name says against the mixed ground, keep the
+	# horde's crossing, and leave every way of moving a path to the rift.
+	var share := func(kind: String, t: int) -> float:
+		var hexes := 0
+		var hit := 0
+		for s in range(1, 21):
+			var m := BattleMap.generate(7, 20, s, kind)
+			for hx in m.all_hexes():
+				if m.is_structure(hx):
+					continue
+				hexes += 1
+				if m.terrain[hx] == t or (t == BattleMap.Terrain.PLAIN and m.terrain[hx] == BattleMap.Terrain.ROAD):
+					hit += 1
+		return float(hit) / float(hexes)
+	assert_true(share.call("steppe", BattleMap.Terrain.PLAIN) > share.call("mixed", BattleMap.Terrain.PLAIN) + 0.1, "the steppe is more open")
+	assert_true(share.call("rubble", BattleMap.Terrain.RUINS) > share.call("mixed", BattleMap.Terrain.RUINS) + 0.05, "the rubble field has more ruins")
+	assert_true(share.call("badlands", BattleMap.Terrain.MOUNTAIN) > share.call("mixed", BattleMap.Terrain.MOUNTAIN) + 0.04, "the badlands have more crags")
+	assert_true(share.call("flooded", BattleMap.Terrain.WATER) > share.call("mixed", BattleMap.Terrain.WATER) + 0.05, "the flooded map has more water")
+	for kind in BattleMap.KINDS.keys():
+		for s in range(1, 21):
+			var m := BattleMap.generate(7, 20, s, kind)
+			assert_eq(m.kind, kind, "the map says its kind")
+			assert_true(m.narrowest_crossing() >= BattleMap.CROSSING_WIDTH, "%s seed %d: the horde's crossing is three wide" % [kind, s])
+			var start := m.gate_hexes[0]
+			for way in BattleMap.WAYS:
+				assert_true(not m.find_path(start, m.rift, [way]).is_empty(), "%s seed %d: a %s has a way to the rift" % [kind, s, way])
+	assert_eq(BattleMap.generate(7, 20, 3, "no such kind").kind, "mixed", "an unknown kind is the mixed ground")
+	var a := BattleMap.generate(7, 20, 3)
+	var b := BattleMap.generate(7, 20, 3, "mixed")
+	for hx in a.all_hexes():
+		assert_eq(b.terrain[hx], a.terrain[hx], "mixed is the default")
+
+
 func test_the_narrowest_crossing_counts_the_cut() -> void:
 	# A wall of crags across the field with gaps: the crossing's width is the gaps' total,
 	# and the cut is exactly the gap hexes.

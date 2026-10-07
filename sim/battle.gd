@@ -22,6 +22,7 @@ const DEFAULT_WIDTH := 7
 const DEFAULT_HEIGHT := 20
 
 var seed_value: int = 1
+var map_kind := "mixed"   # the map's type (BattleMap.KINDS); set before setup, the intel the player will choose by
 var rng := RandomNumberGenerator.new()
 var db: ContentDB
 var map: BattleMap
@@ -52,7 +53,7 @@ func _init(seed_arg: int = 1) -> void:
 ## moves.
 func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int = DEFAULT_HEIGHT) -> void:
 	faction = faction_id if not faction_id.is_empty() else db.default_faction()
-	map = BattleMap.generate(w, h, seed_value)
+	map = BattleMap.generate(w, h, seed_value, map_kind)
 	field = Battlefield.new(map)
 	field.spawn_faction = faction
 	field.spawn_table = db.spawn_table(faction)
