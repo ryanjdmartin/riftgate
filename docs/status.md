@@ -365,8 +365,8 @@ rhythm first in one dry voice; the modal shell, a plate and a glass tapped or bo
 principle the same day, pulse for the hand and targeting, the shell for the body and the menus, the boop's
 warning and menu figures and the voice on real words from the parked set; the console assembled to those
 verdicts (`assembled_sketches.py`) read as monotone (4 October), so nothing plays alone now; the
-eight profiles he liked are a palette (`palette_sketches.py`, in its eleventh cut to his notes of 5 to 7 October, every under-layer levelled by measurement from its rider, the general rule's start 8 dB under, per-row
-leads where Ryan judged them, the map's acquire glass first with or without its boop to choose from:
+eight profiles he liked are a palette (`palette_sketches.py`, in its eleventh cut to his notes of 5 to 7 October, every under-layer levelled by measurement from its rider, the general rule's start 10 dB under, per-row
+leads where Ryan judged them, the map's acquire glass first with the weight's pulse in place of its boop:
 the die in the glass register alone, a hover hum easing in before a spend with no boop on the spend,
 soft digital clicks on the lock, the end of the turn the plate swelling and tailing off, the boops leading
 wherever they ride on glass, one sound for a press, a menu item and a selection, and the map's acquire,
@@ -380,7 +380,8 @@ through the machine chain, the Mac's voices retired as sources; Ryan's picks: Am
 one to play with (her licence checked: commercial use permitted, attribution for live generation only),
 decided (Ryan, 7 October, "spot on"): Jenny on the mid chain slowed a third, her plosives tamed
 (`mid_tamed` in `piper_voices.py`), at -14 dB on the phone; Ryan's brief for her lines (infrequent, many phrases on many hooks, information lines every time, a rare personality
-layer) is proposed as a system with a first draft of pools in `voice_lines.py` and a taster on the page; the page's history is cut, the earlier cuts live in git), each event built by fit from two or three of them
+layer) is proposed as a system with a second draft of pools in `voice_lines.py` after his notes, every line rendered on the page;
+still to come, the buff hook split per keyword once he names them; the page's history is cut, the earlier cuts live in git), each event built by fit from two or three of them
 rather than pinned to where they first played (a first combined cut, `combined_sketches.py`, pinned
 them and is superseded), at the top of the page's section 1; everything earlier stays
 below for the record; the voice is set aside, an optional experiment that would start from a real speech
