@@ -13,7 +13,7 @@ stays in A alone (Ryan, 1 October: it serves one ongoing task) and is republishe
 session; a B session cannot read it. Shared:
 
 - **The bible** (above): `docs/design-bible.html`, published whole after every change.
-- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 7 October with the twenty-third notes, from the movement branch with main merged into it (the Slugthrower, the Fragmenter's hollow bore). Until that branch merges to main, the live page, motion.js, the rig files and the models are ahead of main, so a republish from main must start from the live page body and send none of `hangar/motion.js`, `hangar/models/*`: main's Badger has no wrist joints, and its republish of 6 October paired that model with the branch's wrist rig, which broke the gun's wrist until the branch republished): four tabs, the
+- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 7 October with the twenty-third notes; the movement branch merged to main the same day, so main's page body, `tools/hangar_motion.js` (published as `hangar/motion.js`), the rig files and the models are the live ones again and a republish from main may send them): four tabs, the
   codex, the content editor, the names list and Models. Models (the renders and the Animation
   tab merged, Ryan, 3 October) puts each machine live in 3D on top: its acts, walk and
   cornering played from its rig sidecar by `tools/hangar_motion.js` (published as
