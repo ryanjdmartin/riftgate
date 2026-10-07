@@ -35,6 +35,7 @@ tamed one to hear the voice across more moments.
 """
 import json
 import os
+import re
 import subprocess
 import sys
 import wave
@@ -49,6 +50,7 @@ import voice_sketches as V  # noqa: E402  (the machine chain, the lines, the lev
 SR = F.SR
 HERE = os.path.dirname(os.path.abspath(__file__))
 PIPER_PY = os.path.join(HERE, ".venv-piper", "bin", "python")
+SENTENCE_SILENCE = 0.35   # seconds between sentences of one line (Ryan, 7 October: she ran over the full stops)
 DATA = os.path.join(F.OUT_SKETCH, "piper")
 PREFIX = "voice7_"
 VOICES = {
@@ -93,9 +95,12 @@ def mid(x):
     return F.sat(y / (np.max(np.abs(y)) + 1e-9) * 1.2, 1.5)
 
 
-def tame_plosives(y, split=1500.0, win=0.003, thr=0.03, ratio=0.05, release=0.04):   # searched 7 October, then pushed harder on Ryan's word (the first setting was not much of a change)
+def tame_plosives(y, split=1500.0, win=0.003, thr=0.03, ratio=0.05, release=0.04, protect=None):   # searched 7 October, then pushed harder on Ryan's word (the first setting was not much of a change)
     """Duck the high band where its short envelope leaps: the T's and D's. The gain falls to
-    `ratio` of the overshoot at once and recovers over `release`."""
+    `ratio` of the overshoot at once and recovers over `release`. `protect` is a (start, end)
+    span in samples left unducked, with a 5 ms ramp after it: an opening fricative, which is
+    no plosive and which the tamer was otherwise holding at 17 dB under its vowel whatever
+    the lift gave it (measured 7 October against Ryan's perfect and clipped lines)."""
     low = F.lp(y, split, order=3)
     high = y - low
     n = F.n_of(win)
@@ -107,6 +112,13 @@ def tame_plosives(y, split=1500.0, win=0.003, thr=0.03, ratio=0.05, release=0.04
     for i in range(len(gain)):
         g = gain[i] if gain[i] < g else g + (1.0 - g) / rel
         out[i] = g
+    if protect is not None:
+        a, b = protect
+        r = F.n_of(0.005)
+        keep = np.zeros(len(y))
+        keep[a:b] = 1.0
+        keep[b:min(len(y), b + r)] = np.linspace(1.0, 0.0, r)[:min(len(y), b + r) - b]
+        out = 1.0 - (1.0 - out) * (1.0 - keep)
     return low + high * out
 
 
@@ -131,7 +143,7 @@ def front_level(x):
     return 20.0 * np.log10(np.sqrt(np.mean(hi[a:b] ** 2)) + 1e-9) - vpk
 
 
-def lift_front(x, target=-16.0, cap=18.0):
+def lift_front(x, target=-14.0, cap=18.0):
     """Jenny clips the first phoneme of an utterance (measured 7 October: "squad" opens with 13 ms
     of s at 49 dB under its vowel where "sector" gets 80 ms at 14 under; the decoder and the chain
     were ruled out). Where the first consonant's high band sits further under its vowel than
@@ -153,13 +165,37 @@ def lift_front(x, target=-16.0, cap=18.0):
     return lo + hi * g
 
 
-def mid_tamed(x):
-    """The mid chain with the plosives tamed before a gentler saturator."""
+def set_front(y, target=-18.0, floor=-12.0, cap=18.0):
+    """Set the first consonant's high band to `target` dB under its vowel on a finished line,
+    with 5 ms ramps. The chain is not linear in level (the syllable leveller lifts a quiet
+    opening more than a loud one, measured 7 October: the same lift in gave fronts anywhere
+    from 4 to 17 dB under out), so the level is set where it is heard, on the output."""
+    lo, hi, a, b, vpk = front_of(y)
+    if b - a < F.n_of(0.005):
+        return y
+    g_db = min(cap, max(floor, target - front_level(y)))
+    g = np.ones(len(y))
+    r = F.n_of(0.005)
+    g[a:b] = 10.0 ** (g_db / 20.0)
+    if a > 0:
+        n0 = min(r, a)
+        g[a - n0:a] = np.linspace(1.0, g[a], n0)
+    g[b:min(len(y), b + r)] = np.linspace(g[a], 1.0, r)[:min(len(y), b + r) - b]
+    return lo + hi * g
+
+
+def mid_tamed(x, protect_front=False):
+    """The mid chain with the plosives tamed before a gentler saturator. `protect_front` keeps
+    the tamer off the first consonant's span (a fricative opening)."""
+    protect = None
+    if protect_front:
+        lo, hi, a, b, vpk = front_of(x)
+        protect = (a, b)
     y = F.bp(x, 180.0, 4500.0, order=3)
     y = V.level_syllables(y, target=0.22)
     y = V.flange(y, delay=0.0032, depth=0.0012, rate=0.3, feedback=0.62, wet=0.7)
     y = F.mix(y, V.sub_octave(y, 0.35))
-    y = tame_plosives(y)
+    y = tame_plosives(y, protect=protect)
     hold = 2
     y = np.repeat(y[::hold], hold)[:len(y)]
     return F.sat(y / (np.max(np.abs(y)) + 1e-9) * 1.1, 1.25)
@@ -185,7 +221,12 @@ def render(voice, text, scale=LENGTH_SCALE, draw=0):
     Piper samples: every call is a fresh draw, so `draw` names another one of the same text."""
     path = os.path.join(DATA, "%s_%s_%.2f%s.wav" % (voice, text.replace(" ", "_"), scale, "_d%d" % draw if draw else ""))
     if not os.path.exists(path):
-        subprocess.run([PIPER_PY, "-m", "piper", "-m", VOICES[voice], "--data-dir", DATA, "--length-scale", str(scale), "-f", path, "--", text], check=True, capture_output=True)
+        # A full stop is a sentence end to the phonemiser only when the next word is capitalised
+        # (measured 7 October: lowercase after it, and "gate breached. the city is lost" came out
+        # as one sentence phrased "gate breached the city, is lost"); the silence between
+        # sentences is Piper's flag, nothing by default. The cache is keyed by the text as given.
+        said = re.sub(r"([.!?])\s+([a-z])", lambda m: m.group(1) + " " + m.group(2).upper(), text)
+        subprocess.run([PIPER_PY, "-m", "piper", "-m", VOICES[voice], "--data-dir", DATA, "--length-scale", str(scale), "--sentence-silence", str(SENTENCE_SILENCE), "-f", path, "--", said], check=True, capture_output=True)
     with wave.open(path, "rb") as w:
         sr = w.getframerate()
         x = np.frombuffer(w.readframes(w.getnframes()), "<i2").astype(float) / 32767.0
