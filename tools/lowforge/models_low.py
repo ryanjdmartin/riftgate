@@ -517,38 +517,36 @@ def clydesdale(b):
     # Movement (Ryan, 4 October, the third pass: stomp and plod, no weight thrown side to
     # side): each hoof planted flat while the body passes over it, then lifted high and
     # stamped down.
+    # A lumbering giant's gallop (Ryan, 7 October, the sixteenth notes: the amble moved to the
+    # Armadillo; he still liked the gallop of the eighth notes, so how far toward a lumbering
+    # giant?): the transverse gallop, hind left, hind right, fore left, fore right, then a
+    # moment gathered with every hoof off the ground. Its stride cannot lengthen: at a sweep of
+    # 30 a hind hoof swinging forward passes within two units of the fore planted on its side,
+    # and the legs are at their full reach, so the stride stays 88, about 0.75 a second at its
+    # map pace (the trot's 1.2), the slowest of its gaits. A shorter time on the ground would
+    # slow the legs only by floating it longer. The weight is what is pushed: it barely leaves
+    # the ground in the gathered moment (`hop` 0.5, from 3), the hull rocks 6 degrees either
+    # way (from 4; at 7 a fore's hip folds past its 85), riding three under its rest, every landing a weight coming down (`thud`:
+    # the hull sinking at once as the hoof strikes, recovering slowly through a small rebound,
+    # deepest as the fores take it with the nose down), the hooves lifting 7 (from 10) and
+    # the head heaving after the rock.
+    tracks, body, stride = _gallop([
+        {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
+         "phase": {"hl": 0.0, "hr": 0.12, "fl": 0.42, "fr": 0.54}[leg],
+         "shift": legs[leg][0][1] - legs[leg][2][1] + (3.0 if leg[0] == "f" else -3.0)}
+        for leg in ("fl", "fr", "hl", "hr")], sweep=30.0, duty=0.34, lift=7.0, crouch=3.0, hop=0.5, rock=6.0, dip=5.0, smooth=0.015, thud=True, airborne=0.99)
+    tracks["head"] = ([(i / 40.0, round(-4.5 * math.cos(2.0 * math.pi * (i / 40.0 - 0.16)), 3)) for i in range(41)], 0.0)   # the head heaves after the rock
+    b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
     # A heavy trot (Ryan, 6 October, the ninth notes: the gallop has potential but is a bit
     # much, and its hooves met through each other; somewhere between it and the Armadillo's
-    # stomp). The gait between the two in a horse, and the namesake's own: diagonal pairs,
-    # high-stepping, each fore landing a beat before its hind partner so every pair comes
-    # down as a heavy double thud, a moment between pairs with only the swinging hooves
-    # under it, the hull dropping and nodding onto each pair. The stances are spread three
-    # units fore and aft of the hips and the sweep kept to 22, so a hind hoof reaching
-    # forward never comes within 24 of where the fore on its side stands or swings (the
-    # hooves are 16 long): nothing of one leg can meet the other. The eleventh notes (on the
-    # columnar legs): it rides nearly as tall as its legs reach (`reach` 0.985), barely
-    # crouched, so the legs stay nearly straight under it as an AT-AT's, the knees folding
-    # only to lift a hoof. A stride of 55, about one and a fifth a second at its map pace.
-    # An elephant's amble (Ryan, 6 October, the fifteenth notes: the legs still a little too
-    # quick; slow the stride, or try another gait): the trot's stride cannot grow, since a
-    # hind hoof swings forward as the fore on its side sweeps back, and with the hips 40
-    # apart a sweep past 22 brings them within a few units. Here each side's legs step nearly
-    # together, the hind landing and the fore an eighth of the stride after it, then the other
-    # side, four heavy beats, a pair on the ground always, so a hind hoof follows its fore
-    # rather than meeting it (the legs eight units clear at the closest, measured; the trot's
-    # five and a half) and the sweep can be 36: a stride of 72, about 0.92 a second at its map
-    # pace against the trot's 1.2, a quarter slower. The longer reach rides the hull lower
-    # (four and a half to seven and a half under its rest, the trot's two to four and a half),
-    # smoothed so it heaves three between steps; the hooves lift 10, low and long.
-    tracks, body, stride = _plant([
-        {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
-         "phase": {"hl": 0.0, "fl": 0.12, "hr": 0.5, "fr": 0.62}[leg],
-         "shift": legs[leg][0][1] - legs[leg][2][1] + (3.0 if leg[0] == "f" else -3.0),
-         "nod": 1.0 if leg[0] == "f" else -0.5}
-        for leg in ("fl", "fr", "hl", "hr")], sweep=36.0, duty=0.5, lift=10.0, crouch=0.3, dip=1.4, nod=1.2, reach=0.985, airborne=0.99, smooth=0.08, n=120)
-    tracks["head"] = ([(i / 40.0, round(-1.8 * abs(math.sin(2.0 * math.pi * (i / 40.0 - 0.14))), 3)) for i in range(41)], 0.0)   # a nod onto each fore
-    b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
-    # The trot, kept as an option for the hangar's Walk to set beside the amble.
+    # stomp), kept as an option for the hangar's Walk. The gait between the two in a horse:
+    # diagonal pairs, high-stepping, each fore landing a beat before its hind partner so every
+    # pair comes down as a heavy double thud, the hull dropping and nodding onto each pair.
+    # The stances are spread three units fore and aft of the hips and the sweep kept to 22,
+    # so a hind hoof reaching forward never meets the fore on its side. The eleventh notes (on
+    # the columnar legs): it rides nearly as tall as its legs reach (`reach` 0.985), barely
+    # crouched, the knees folding only to lift a hoof. A stride of 55, about one and a fifth a
+    # second at its map pace (the fifteenth notes: a little too quick).
     tracks, body, stride = _plant([
         {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
          "phase": {"fl": 0.0, "hr": 0.05, "fr": 0.5, "hl": 0.55}[leg],
@@ -557,19 +555,6 @@ def clydesdale(b):
         for leg in ("fl", "fr", "hl", "hr")], sweep=22.0, duty=0.4, lift=12.0, crouch=0.3, dip=1.4, nod=1.2, reach=0.985, airborne=0.99, smooth=0.03, n=120)
     tracks["head"] = ([(i / 40.0, round(-1.8 * abs(math.sin(2.0 * math.pi * (i / 40.0 - 0.04))), 3)) for i in range(41)], 0.0)   # a nod onto each pair
     b.gait_option("trot", stride=stride, tracks=tracks, body=body, ease="linear")
-    # The eighth notes' gallop, kept as an option for the hangar's Walk to set beside the
-    # trot (Ryan: it has potential), its stances spread as the trot's and its sweep cut from
-    # 42 to 30 so its hooves pass clear of each other too (they met by two and a half;
-    # now a unit clear at the closest, measured): a transverse gallop, hind left, hind
-    # right, fore left, fore right, then a moment gathered off the ground, the hull rocking
-    # nose up onto the hinds and down over the fores (_gallop).
-    tracks, body, stride = _gallop([
-        {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
-         "phase": {"hl": 0.0, "hr": 0.12, "fl": 0.42, "fr": 0.54}[leg],
-         "shift": legs[leg][0][1] - legs[leg][2][1] + (3.0 if leg[0] == "f" else -3.0)}
-        for leg in ("fl", "fr", "hl", "hr")], sweep=30.0, duty=0.34, lift=10.0, crouch=1.0, hop=3.0, rock=4.0, dip=2.0)   # lift 13 until the long shins of the eleventh notes
-    tracks["head"] = ([(i / 40.0, round(-2.5 * math.cos(2.0 * math.pi * (i / 40.0 - 0.1)), 3)) for i in range(41)], 0.0)   # the head lags the rock, steadying it
-    b.gait_option("gallop", stride=stride, tracks=tracks, body=body, ease="linear")
     b.move(accel=1.4, heft=0.24)
 
 clydesdale.maker = "wainwright_sutler"
@@ -988,13 +973,30 @@ def armadillo(b):
     }, body=[(0.9, 0.0, 0.0, 0.5, 0.0, 1.5, 0.0), (1.8, 0.0, 0.0, 0.6, 0.0, 1.7, 0.0), (2.1, 0.0, 0.0, -1.4, 0.0, -0.8, 0.0), (2.6, 0.0, 0.0, 0.0),
              (3.5, 0.0, 0.0, 0.5, 0.0, -1.2, 0.0), (4.1, 0.0, 0.0, 0.6, 0.0, -1.3, 0.0), (4.4, 0.0, 0.0, -1.4, 0.0, 0.6, 0.0), (5.0, 0.0, 0.0, 0.0)])
     # Movement (Ryan, 4 October, the third pass: stomp and plod, no weight thrown side to
-    # side): a heavy walk in diagonal pairs, each foot planted flat while the shell passes
-    # over it, lifted and stamped down; the shell level but for its drop onto each pair.
+    # side): each foot planted flat while the shell passes over it, lifted and set down.
+    # An elephant's amble (Ryan, 7 October, the sixteenth notes: built for the Clydesdale in
+    # the fifteenth, "that actually looks perfect for the Armadillo"): each side's legs step
+    # nearly together, the hind landing and the fore an eighth of the stride after it, then
+    # the other side, four heavy beats with a pair always down, the shell dropping as each
+    # foot lands and nodding with it, down onto a fore and up off a hind. Its sweep stays 30,
+    # its legs being short for the shell, on the ground half the stride (from 0.55), so a
+    # stride of 60 (from 55), a tenth slower at its map pace; a hind foot follows its fore
+    # rather than passing it (the feet 14 clear at the closest, where the diagonal walk's
+    # came within one), the feet lifting 6, low and long.
+    tracks, body, stride = _plant([
+        {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
+         "phase": {"hl": 0.0, "fl": 0.12, "hr": 0.5, "fr": 0.62}[leg], "shift": legs[leg][0][1] - legs[leg][2][1],
+         "nod": 1.0 if leg[0] == "f" else -0.5}
+        for leg in ("fl", "fr", "hl", "hr")], sweep=30.0, duty=0.5, lift=6.0, crouch=0.3, dip=1.4, nod=1.2, reach=0.985, airborne=0.99, smooth=0.08, n=120)
+    b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
+    # The heavy walk in diagonal pairs it had (the third pass), kept as an option for the
+    # hangar's Walk: each foot lifted and stamped down, the shell level but for its drop onto
+    # each pair.
     tracks, body, stride = _plant([
         {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
          "phase": 0.0 if leg in ("fl", "hr") else 0.5, "shift": legs[leg][0][1] - legs[leg][2][1]}
         for leg in ("fl", "fr", "hl", "hr")], sweep=30.0, lift=7.0, crouch=0.5, dip=1.6, nod=0.6)
-    b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
+    b.gait_option("walk", stride=stride, tracks=tracks, body=body, ease="linear")
     b.move(accel=1.6, heft=0.26)
 
 armadillo.maker = "minerva"
@@ -3398,7 +3400,7 @@ def _plant(limbs, sweep, duty=0.55, lift=8.0, crouch=0.0, dip=1.2, nod=0.0, reac
     return tracks, body, stride
 
 
-def _gallop(limbs, sweep, duty=0.34, lift=16.0, crouch=1.0, hop=3.0, rock=4.0, dip=2.0, reach=0.97, smooth=0.03, n=160):
+def _gallop(limbs, sweep, duty=0.34, lift=16.0, crouch=1.0, hop=3.0, rock=4.0, dip=2.0, reach=0.97, smooth=0.03, n=160, thud=False, airborne=None):
     """A heavy slow gallop (Ryan, 6 October, the eighth notes: the stomp looked stuck to the
     ground on suction cups; try the gallop, for fun): a transverse gallop, the hind pair
     landing one after the other, then the fore pair, each hoof down `duty` of the stride
@@ -3409,7 +3411,12 @@ def _gallop(limbs, sweep, duty=0.34, lift=16.0, crouch=1.0, hop=3.0, rock=4.0, d
     its weight, `crouch` under its rest height, never higher than its planted legs allow kept
     `reach` of straight (pitch and all). In the air a hoof folds up high and reaches forward
     to land. A limb is a dict as _plant takes, with "phase" its landing in the stride and
-    "shift" its stance's centre. Returns (tracks, body, stride) for b.gait, ease linear."""
+    "shift" its stance's centre. `thud` (Ryan, 7 October, the sixteenth notes: a lumbering
+    giant) makes each landing a weight coming down: the hull sinks `dip` in a moment as the
+    hoof strikes, then recovers slowly through a small damped rebound, where by default it
+    eases down and up about the landing; `airborne`, a share of straight as _plant's, lets a
+    hoof in the air bound the hull too, so one just off the ground or reaching for it is never
+    out of reach as the hull heaves. Returns (tracks, body, stride) for b.gait, ease linear."""
     stride = sweep / duty
     landings = sorted(l["phase"] for l in limbs)
 
@@ -3451,14 +3458,19 @@ def _gallop(limbs, sweep, duty=0.34, lift=16.0, crouch=1.0, hop=3.0, rock=4.0, d
         c, sn = math.cos(math.radians(th)), math.sin(math.radians(th))
         want = -crouch + hop * bump(p, mid_air, air * 1.4)
         for land in landings:
-            want -= dip * 0.5 * bump(p, land + 0.06, 0.12)
+            if thud:
+                x = (p - land) % 1.0
+                j = x / 0.025 if x < 0.025 else (math.exp(-(x - 0.025) / 0.07) * math.cos((x - 0.025) * 2.0 * math.pi / 0.22) if x < 0.4 else 0.0)
+                want -= dip * 0.5 * j
+            else:
+                want -= dip * 0.5 * bump(p, land + 0.06, 0.12)
         cap = 1e9
         for l in limbs:
             y, z, down = foot(l, p)
-            if not down:
+            if not down and airborne is None:
                 continue
             h3, k3, e3 = l["at"]
-            span = reach * (math.hypot(k3[1] - h3[1], k3[2] - h3[2]) + math.hypot(e3[1] - k3[1], e3[2] - k3[2]))
+            span = (reach if down else airborne) * (math.hypot(k3[1] - h3[1], k3[2] - h3[2]) + math.hypot(e3[1] - k3[1], e3[2] - k3[2]))
             hy, hz = h3[1] * c - h3[2] * sn, h3[1] * sn + h3[2] * c
             cap = min(cap, z + math.sqrt(max(0.0, span * span - (hy - y) ** 2)) - hz)
         pose.append([min(want, cap), th])
