@@ -48,6 +48,7 @@ extends RefCounted
 const GAP_MIN := 2.5          # seconds between acts, at least
 const GAP_MAX := 6.5          # and at most
 const GAP_DEBUG := 0.4        # with the debug switch on
+const WAIT_TICK_MAX := 0.1    # seconds of the gap a single tick may spend, however long the frame (a hitch must not start every machine at once)
 const GLOW_BASE := 1.8        # the amber role's emission at rest (MechView3D.toon)
 const MOVE_REF_SPEED := 150.0 # model units a second the slide and the tilt are authored at (a machine's own full speed on the map is `top_speed`)
 const MOVE_BLEND_IN := 0.25   # seconds a gait takes to come up from standing
@@ -126,6 +127,7 @@ var _curves: Dictionary = {}       # the act playing as curves: joint -> curve, 
 var _t := 0.0                      # time into the act playing
 var _wait := 0.0                   # seconds until the next act starts
 var _rng := RandomNumberGenerator.new()
+var _wait_budget := 0.0            # what is left of this tick's share of the gap (WAIT_TICK_MAX)
 var heft := HEFT_DEFAULT           # seconds: how long a joint or the body takes to catch up with what the pilot asks (the sidecar's `move.heft`)
 var place: String = ""             # where this machine stands, "map" or "skirmish": an act may be for one of them only (its `places`); empty plays them all
 var _act_heft := HEFT_DEFAULT      # the heft while the act playing asks for its own (a blow sharper than the machine's weight)
@@ -526,6 +528,11 @@ func tick(delta: float) -> void:
 		return
 	var moved := false
 	var left := delta
+	# A long frame catches the act and the servos up in full, but spends no more than a
+	# frame's worth of the gap to the next act: a hitch (a screen opening, a shader compiling)
+	# used to run every machine's wait out in the same frame, so they all started together
+	# (Ryan, 7 October).
+	_wait_budget = minf(delta, WAIT_TICK_MAX)
 	while left > 0.0:
 		var dt := minf(left, STEP)
 		left -= dt
@@ -551,7 +558,9 @@ func _step(dt: float) -> bool:
 		if _t >= float(_current.get("duration", 0.0)):
 			_end_act()
 	elif not acts.is_empty() and not moving:   # a pilot on the move has no hands free for an act
-		_wait -= dt
+		var spent := minf(dt, _wait_budget)
+		_wait_budget -= spent
+		_wait -= spent
 		if _wait <= 0.0:
 			var next := choose()
 			if not next.is_empty():
