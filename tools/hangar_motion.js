@@ -22,7 +22,7 @@ const THREE_URLS = [
 ];
 
 // ---------------------------------------------------------------- the rig (MechRig's numbers)
-const GAP_MIN = 2.5, GAP_MAX = 6.5, GAP_DEBUG = 0.4;
+const GAP_MIN = 6.0, GAP_MAX = 12.0, GAP_DEBUG = 0.4, WAIT_TICK_MAX = 0.1;   // MechRig: a long frame spends at most this much of the gap
 const MOVE_REF_SPEED = 150.0, MOVE_BLEND_IN = 0.25, MOVE_BLEND_OUT = 0.35;
 const ROCK_ACCEL = 200.0, BANK_TURN = 1.2, DRIFT_UNITS = 12.0;
 const STEER_EASE = 0.12;   // MechRig: seconds a steered joint takes to follow the turn, its servo
@@ -326,6 +326,7 @@ class Rig {
   // Advance (MechRig.tick): in steps no longer than STEP, so a slow frame lands where frames would.
   tick(delta, acting = true) {
     let moved = false, left = delta;
+    this.waitBudget = Math.min(delta, WAIT_TICK_MAX);
     while (left > 0) { const dt = Math.min(left, STEP); left -= dt; if (this.step(dt, acting)) moved = true; }
     for (const [name, r] of Object.entries(this.spinners)) {
       const s = this.spun[name] + (r[0] + (r[1] - r[0]) * this.blend) * delta;
@@ -339,7 +340,7 @@ class Rig {
       this.t += dt; this.evaluateAct(); moved = true;
       if (this.t >= (this.current.duration || 0)) this.endAct(true);
     } else if (acting && this.acts.length && !this.moving) {
-      this.wait -= dt;
+      const spent = Math.min(dt, this.waitBudget || 0); this.waitBudget -= spent; this.wait -= spent;
       if (this.wait <= 0) { const next = this.choose(); if (next) { this.start(next); this.evaluateAct(); moved = true; } }
     }
     const bw = this.bodyWantRot, bs = this.bodyWantSlide;

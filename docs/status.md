@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.82 since 7 October: Aphelion's measure the dice that deal no damage, over another session's v0.81 (the idle acts' rests); the starting draft a tender, what a tap on loot tells, the makers' measures decided; over another session's v0.79 (the idle acts) and v0.78's every price left to an economy pass of its own, over v0.77's idle acts taking turns from another session; the Convergence and Anathema, the Rupture meter and its Fractures, the salvage row, the loot on the map, the ledger decided with Favour and Sponsorship and the tiers, the withdraw guarantee; it carries the movement session's notes on the machines through the twenty-third); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.82 since 7 October: Aphelion's measure the dice that deal no damage, over another session's v0.81 (the idle acts resting 6 to 12 seconds and opening in turn); the starting draft a tender, what a tap on loot tells, the makers' measures decided; over another session's v0.79 (the idle acts) and v0.78's every price left to an economy pass of its own, over v0.77's idle acts taking turns from another session; the Convergence and Anathema, the Rupture meter and its Fractures, the salvage row, the loot on the map, the ledger decided with Favour and Sponsorship and the tiers, the withdraw guarantee; it carries the movement session's notes on the machines through the twenty-third); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -13,7 +13,7 @@ stays in A alone (Ryan, 1 October: it serves one ongoing task) and is republishe
 session; a B session cannot read it. Shared:
 
 - **The bible** (above): `docs/design-bible.html`, published whole after every change.
-- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 7 October with the twenty-third notes, then again the same day with the tiers: a chassis tier chip, filter and sort, and each component's tier derived from the chassis that stock it as `ContentDB.component_tier` does, only the page and the chassis and components files sent; every content file on the page matches main; the movement branch merged to main the same day, so main's page body, `tools/hangar_motion.js` (published as `hangar/motion.js`), the rig files and the models are the live ones again and a republish from main may send them): four tabs, the
+- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 7 October with the twenty-third notes, then again the same day with the tiers: a chassis tier chip, filter and sort, and each component's tier derived from the chassis that stock it as `ContentDB.component_tier` does, only the page and the chassis and components files sent; and once more after the campaign branch merged to main, with main's `motion.js` (the idle acts' rests); every file on the page matches main; the movement branch merged to main the same day, so main's page body, `tools/hangar_motion.js` (published as `hangar/motion.js`), the rig files and the models are the live ones again and a republish from main may send them): four tabs, the
   codex, the content editor, the names list and Models. Models (the renders and the Animation
   tab merged, Ryan, 3 October) puts each machine live in 3D on top: its acts, walk and
   cornering played from its rig sidecar by `tools/hangar_motion.js` (published as
@@ -83,7 +83,7 @@ the chat is newer.
 ## As of 3 October 2026
 
 **State.** Tests green: `perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (390 tests, 18,720 checks on 7 October in a cloud session, after main's map types merged into the campaign branch and the draft landed;
+tests/run_tests.gd` (392 tests, 18,727 checks on 7 October in a cloud session, after the campaign branch and the idle acts' rests merged to main;
 a cloud session fetches Godot 4.7's Linux build from the GitHub release asset to run them
 (`Godot_v4.7-stable_linux.x86_64.zip`, and `xvfb-run` for screenshots), since
 the proxy serves the asset though not the release page; it builds models too, with
@@ -293,6 +293,19 @@ names brought over to the third); the joint pass, the idle acts and the movement
 3 October (the paragraphs below); next on the art side is Ryan judging the acts and the movement
 running. Open on the models: each class's size per machine, and the machines' scale
 on the map's hexes (Ryan, 2 October: needs adjusting; all are fitted to one width today).
+
+**The idle acts no longer line up** (7 October; bible section 7, the idle-acts row). Ryan:
+the machines fired together almost every time. The cause: `MechRig.tick` catches a long
+frame up in small steps, and the gap to the next act was spent in full with it, so a hitch
+(a screen opening, a shader compiling) ran every machine's wait out in the same frame (seen
+in a logged skirmish: two first acts two milliseconds apart after a loading frame). A tick
+now spends at most `WAIT_TICK_MAX` (0.1 s) of the gap; acts and servos still catch up in full.
+`tools/hangar_motion.js` carries the same (one machine there, so nothing visible; it rides
+the hangar page's next republish). A turn-taking cue tried first was retired the same day.
+Then, as they still overlapped too often (an act runs about six seconds, so at 2.5 to 6.5 s of
+rest a machine acted over half the time): the rest is 6 to 12 s (`GAP_MIN`, `GAP_MAX`), and a
+screen's machines open in turn, the first within `OPEN_FIRST` (2 s) and each after it at least
+`OPEN_GAP` (1.5 s) later (`MechRig._opening`, per place, real clock). For Ryan to judge running.
 
 **Joints and idle acts, built 3 October (a cloud session; bible section 7, the idle-acts row
 and the joints row).** Every joint the joints row asked for is in `models_low.py`: elbows in

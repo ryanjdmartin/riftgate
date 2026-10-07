@@ -420,6 +420,55 @@ func test_cycle_sampling_wraps() -> void:
 	assert_true(mid < -5.0 and mid > -30.0, "between keys (%f)" % mid)
 
 
+func test_a_long_frame_never_runs_every_wait_out_at_once() -> void:
+	# A hitch (a screen opening) spends a frame's worth of the gap, not the whole of it, so
+	# machines waiting different times still start at different times (Ryan, 7 October).
+	var a := _rig_for("clydesdale", 3)
+	var b := _rig_for("clydesdale", 4)
+	var act := {"name": "nod", "duration": 0.5, "tracks": {}, "body": [], "glow": []}
+	for r in [a[0], b[0]]:
+		(r as MechRig).debug = ""
+		(r as MechRig).acts = [act]
+	(a[0] as MechRig)._wait = 1.0
+	(b[0] as MechRig)._wait = 3.0
+	(a[0] as MechRig).tick(5.0)
+	(b[0] as MechRig).tick(5.0)
+	assert_false((a[0] as MechRig).in_act() or (b[0] as MechRig).in_act(), "a five-second frame starts neither")
+	for i in range(66):
+		(a[0] as MechRig).tick(1.0 / 60.0)
+		(b[0] as MechRig).tick(1.0 / 60.0)
+	assert_true((a[0] as MechRig).in_act(), "the shorter wait runs out in ordinary frames")
+	assert_false((b[0] as MechRig).in_act(), "and the longer one is still waiting")
+	a[1].free()
+	b[1].free()
+
+
+func test_machines_set_up_together_open_one_after_another() -> void:
+	# A screen's machines open in turn, OPEN_GAP apart at least, not at random over the first
+	# gap (Ryan, 7 October). A place of the test's own; the debug switch off.
+	MechRig._opening.erase("open_test")
+	var waits := []
+	var opens := []
+	var models := []
+	for i in range(4):
+		var model: Node3D = (load("res://art/models/clydesdale.glb") as PackedScene).instantiate()
+		var rig := MechRig.new()
+		rig.place = "open_test"
+		rig.setup(model, "clydesdale", model, i)
+		models.append(model)
+		if not rig.debug.is_empty():
+			break
+		waits.append(rig._wait)
+		opens.append(Time.get_ticks_msec() / 1000.0 + rig._wait)   # when it opens, on the clock the spacing keeps
+	for i in range(1, opens.size()):
+		assert_true(float(opens[i]) >= float(opens[i - 1]) + MechRig.OPEN_GAP - 0.01, "each opens after the last (%s)" % str(opens))
+	if not waits.is_empty():
+		assert_true(float(waits[0]) <= MechRig.OPEN_FIRST, "and the first soon after the screen loads")
+	MechRig._opening.erase("open_test")
+	for m in models:
+		m.free()
+
+
 ## A node's place in the model's own frame (the model root's parent), composed by hand: the
 ## models are never in a tree here.
 func _in_model(node: Node3D, model: Node3D) -> Transform3D:
