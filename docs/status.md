@@ -365,7 +365,7 @@ rhythm first in one dry voice; the modal shell, a plate and a glass tapped or bo
 principle the same day, pulse for the hand and targeting, the shell for the body and the menus, the boop's
 warning and menu figures and the voice on real words from the parked set; the console assembled to those
 verdicts (`assembled_sketches.py`) read as monotone (4 October), so nothing plays alone now; the
-eight profiles he liked are a palette (`palette_sketches.py`, in its ninth cut to his notes of 5 and 6 October:
+eight profiles he liked are a palette (`palette_sketches.py`, in its tenth cut to his notes of 5 to 7 October:
 the die in the glass register alone, a hover hum easing in before a spend with no boop on the spend,
 soft digital clicks on the lock, the end of the turn the plate swelling and tailing off, the boops leading
 wherever they ride on glass, one sound for a press, a menu item and a selection, and the map's acquire,
@@ -389,7 +389,7 @@ Content carries a `sound` label on a component (a word or a list meaning layers,
 lands as a recipe in `forge.py` with its hook (shape, maker, faction, silhouette, the label, the
 replay telling shield hit from block from hit). The sketch script encodes AAC with `ffmpeg` at
 256 kbps where there is no `afconvert` (its encoder smears a transient's front at 128). Next:
-Ryan's listen of the palette's ninth cut and of Jenny at three depths and two paces, then picks into the forge with their hooks (the hover needs an over-target state in the drag); the Risen and Infernal
+Ryan's listen of the palette's tenth cut and of Jenny at three depths and two paces, then picks into the forge with their hooks (the hover needs an over-target state in the drag); the Risen and Infernal
 Horde boss themes from their seeds, melodies proposed in chat first. The speakers/headphones
 setting is dropped (Ryan, 2 October): the one master balances for both for now.
 
