@@ -165,7 +165,7 @@ def main(argv):
         for v, proc, chain, scale in TRIALS:
             raw = render(v, text, scale)
             F.seed(PREFIX + "%s_%s_%s" % (v, key_, proc))
-            x = V.level_for_phone(chain(raw), -12.0)
+            x = V.level_for_phone(chain(raw), -14.0)   # the baseline mix (7 October): ten over the music's mean, under the blows, over the console
             name = PREFIX + "%s_%s_%s" % (v, key_, proc)
             X.write(name, X.tail(x, 0.3))
             manifest["voice7"].append({"name": name, "voice": v, "model": VOICES[v], "line": key_, "process": proc, "seconds": round(len(x) / SR, 2)})

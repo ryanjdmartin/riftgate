@@ -90,6 +90,17 @@ glass had sat seven to twelve decibels under the boops and clicks through the ph
 each is raised by its measured gap plus two; the menu's chunk, open and close, moved near the
 start.
 
+The eleventh cut (Ryan, 7 October): a levelling pass on every glass with the tenth cut's rule.
+`balanced` takes the glass layer and what rides on it, measures both through the phone model
+and sets the glass a dB and a half over the rider, so no glass is set by a recipe's gain any
+more. Applied to a press, dismiss, confirm, the lock and unlock, the map's acquire, the
+reroll, the round opening, a route set, the hold's touch under the shoo, and the codex; not
+to a die spent, whose pulse the phone cannot play (the glass is the sound there), nor to the
+menu, whose under-layer is the plate. And a baseline mix (the same day): every family measured
+through the phone model against Hold The Line's mean, and the console's statements (the round
+opening, the menu, refuse) pulled from level with a hit to seven decibels over the music, the reroll
+and a route set to six; the ladder is on the page.
+
     python3 tools/soundforge/palette_sketches.py          # into out/fx, after the others
 """
 import json
@@ -106,10 +117,11 @@ import console_sketches as C  # noqa: E402  (the beds and the map's event list)
 import fresh_sketches as R  # noqa: E402
 import boop_sketches as B  # noqa: E402
 import audition_sketches as A  # noqa: E402
+from phone_sketches import phone_model  # noqa: E402
 
 SR = F.SR
 n_of, t_of, mix, at = F.n_of, F.t_of, F.mix, F.at
-PREFIX = "pal10_"   # the fifth cut's files; the earlier cuts' files are cleared from the server as each is superseded
+PREFIX = "pal11_"   # the fifth cut's files; the earlier cuts' files are cleared from the server as each is superseded
 
 
 def lay(*parts):
@@ -118,6 +130,22 @@ def lay(*parts):
     for when, x in parts:
         buf = at(buf, x, when)
     return buf
+
+
+LEAD = 1.5
+
+
+def balanced(glass, riders, lead=LEAD):
+    """The rule since the tenth cut: a glass under what rides on it is measured through the
+    phone model and set `lead` dB over it, never by a recipe's gain. `glass` and `riders`
+    are lists of (seconds, sound)."""
+    g = lay(*glass)
+    if not riders:
+        return g
+    r = lay(*riders)
+    gl = F.loudness(phone_model(g))
+    rl = F.loudness(phone_model(r))
+    return mix(g * 10.0 ** ((rl + lead - gl) / 20.0), r)
 
 
 # ---------------------------------------------------------------- the palette
@@ -175,24 +203,24 @@ def glass_let_go(dur=0.16, gain=0.8, f0=500.0):
 def select():
     """A press, a menu item, a selection in a panel: one act, one sound. The boop first, on E5,
     the glass under it from the same instant; quiet, since it is the commonest sound."""
-    return lay((0.0, boop(B.E5, 0.12, 0.5)), (0.0, p5(0.8)))
+    return balanced([(0.0, p5(0.8))], [(0.0, boop(B.E5, 0.12, 0.5))])
 
 
 def map_select():
     """The map is where something is acquired: a tile, a pack, a machine. A scan, the glass
     bowed with its colour rising over a fifth of a second (the filter moves, no pitch does),
     then the lock, two quick boops E5 B5."""
-    glass = R.body(np.concatenate([R.bow(0.24, 1.9, 1500.0, 0.5), np.zeros(n_of(0.4))]), "glass", 480.0, 0.34) * 2.8   # measured 7 dB under the boop; +9
-    return lay((0.0, glass), (0.12, boop(B.G4, 0.08, 0.4)))
+    glass = R.body(np.concatenate([R.bow(0.24, 1.9, 1500.0, 0.5), np.zeros(n_of(0.4))]), "glass", 480.0, 0.34)
+    return balanced([(0.0, glass)], [(0.12, boop(B.G4, 0.08, 0.4))])
 
 
 def dismiss():
-    return lay((0.0, boop(B.B3, 0.12, 0.45, bright=1000.0)), (0.0, p17(0.6, 0.8, 440.0)))
+    return balanced([(0.0, p17(0.6, 0.8, 440.0))], [(0.0, boop(B.B3, 0.12, 0.45, bright=1000.0))])
 
 
 def confirm():
     """P26 from the first instant with a longer P5 under it: the affirmation on glass."""
-    return lay((0.0, p26()), (0.0, p5(1.2, 0.7)))
+    return balanced([(0.0, p5(1.2, 0.7))], [(0.0, p26())])
 
 
 # ---------------------------------------------------------------- the die: the glass register
@@ -229,11 +257,9 @@ def reroll():
     sounded like a glass rolling on the floor.)"""
     dur = 0.24
     n = n_of(dur)
-    glass = R.body(np.concatenate([R.bow(dur, 0.35, 1000.0, 0.2), np.zeros(n_of(0.3))]), "glass", 480.0, dur + 0.1) * 5.0   # measured 11.5 dB under a click; +14
-    buf = glass
-    for k in range(4):
-        buf = at(buf, click(0.5 if k < 3 else 0.7, 1.0), k * (1.0 / 14.0))
-    return buf
+    glass = R.body(np.concatenate([R.bow(dur, 0.35, 1000.0, 0.2), np.zeros(n_of(0.3))]), "glass", 480.0, dur + 0.1)
+    clicks = [(k * (1.0 / 14.0), click(0.5 if k < 3 else 0.7, 1.0)) for k in range(4)]
+    return balanced([(0.0, glass)], clicks)
 
 
 def click(gain=1.0, pitch=1.0):
@@ -248,12 +274,12 @@ def click(gain=1.0, pitch=1.0):
 def lock():
     """Closer to the shipped lock's clicks (two relays, the second under the tone), subtler:
     two soft relays with a short glass under the second instead of the tone. Both registers."""
-    return lay((0.0, click(0.5)), (0.05, click(0.65, 0.9)), (0.05, p5(0.45, 0.5)))
+    return balanced([(0.05, p5(0.45, 0.5))], [(0.0, click(0.5)), (0.05, click(0.65, 0.9))])
 
 
 def unlock():
     """One soft relay and the glass letting go."""
-    return lay((0.0, click(0.5, 0.85)), (0.01, glass_let_go(0.12, 0.6)))
+    return balanced([(0.01, glass_let_go(0.12, 0.6))], [(0.0, click(0.5, 0.85))])
 
 
 # ---------------------------------------------------------------- the console's own lines
@@ -265,7 +291,7 @@ def round_open():
     glass = R.body(g, "glass", 560.0, 0.5)
     pl = np.concatenate([R.bow(0.55, 1.0, 650.0, 0.1), np.zeros(n_of(0.5))])
     plate = R.body(pl, "plate", 180.0, 0.85)
-    return lay((0.0, boop(B.B4, 0.1, 0.45, attack=0.012)), (0.14, boop(B.B4, 0.1, 0.45, attack=0.012)), (0.0, mix(glass * 0.6, plate) * 0.8))
+    return balanced([(0.0, mix(glass * 0.6, plate) * 0.8)], [(0.0, boop(B.B4, 0.1, 0.45, attack=0.012)), (0.14, boop(B.B4, 0.1, 0.45, attack=0.012))])
 
 
 def end_turn():
@@ -281,12 +307,12 @@ def end_turn():
 
 def codex_open():
     """Booting: a climbing boop figure, E4 G4 B4, quick, over a short glass bow."""
-    return lay((0.0, boop(B.hz(0, 3), 0.09, 0.35)), (0.08, boop(B.hz(3, 3), 0.09, 0.35)), (0.16, boop(B.hz(7, 3), 0.14, 0.35, close=(2600.0, 1100.0))), (0.0, p5(1.1, 0.7)))
+    return balanced([(0.0, p5(1.1, 0.7))], [(0.0, boop(B.hz(0, 3), 0.09, 0.35)), (0.08, boop(B.hz(3, 3), 0.09, 0.35)), (0.16, boop(B.hz(7, 3), 0.14, 0.35, close=(2600.0, 1100.0)))])
 
 
 def codex_close():
     """Shutting down: the figure descending, quick, the glass letting go under it."""
-    return lay((0.0, glass_let_go(0.26, 0.7)), (0.0, boop(B.hz(7, 3), 0.08, 0.32)), (0.08, boop(B.hz(3, 3), 0.08, 0.3)), (0.16, boop(B.hz(0, 3), 0.12, 0.3, bright=1600.0)))
+    return balanced([(0.0, glass_let_go(0.26, 0.7))], [(0.0, boop(B.hz(7, 3), 0.08, 0.32)), (0.08, boop(B.hz(3, 3), 0.08, 0.3)), (0.16, boop(B.hz(0, 3), 0.12, 0.3, bright=1600.0))])
 
 
 def hold_readout():
@@ -298,13 +324,13 @@ def hold_readout():
     air = F.bp(F.noise(n), 450.0, 1500.0) * F.env_pts(n, [(0.0, 0.0), (0.22, 1.0), (0.55, 0.9), (0.68, 0.3), (dur, 0.0)]) * 0.22   # held, then a shorter tail
     f = B.hz(0, 1)
     tone = (np.sin(2.0 * math.pi * f * t) + 0.5 * np.sin(2.0 * math.pi * f * 2.0 * t) + 0.2 * np.sin(2.0 * math.pi * f * 3.0 * t)) * F.env_pts(n, [(0.0, 0.0), (0.12, 1.0), (0.55, 0.9), (0.68, 0.35), (dur, 0.0)]) * 0.45
-    return lay((0.0, p17(0.5, 0.35, 480.0)), (0.0, F.room(mix(air, tone), decay=0.14, mix=0.1, cut=2500.0)))
+    return balanced([(0.0, p17(0.5, 0.35, 480.0))], [(0.0, F.room(mix(air, tone), decay=0.14, mix=0.1, cut=2500.0))])
 
 
 def route_set():
     """P5 with two pips and a rising pair of boops, E4 then B4: a waypoint logged, going up,
     not a cancel."""
-    return lay((0.0, boop(B.A4, 0.07, 0.5)), (0.09, boop(B.E4, 0.1, 0.5)), (0.0, p5(1.2, 1.7) * 4.5))   # measured 11 dB under the boops; +13
+    return balanced([(0.0, p5(1.2, 1.7))], [(0.0, boop(B.A4, 0.07, 0.5)), (0.09, boop(B.E4, 0.1, 0.5))])
 
 
 def menu_open():
@@ -331,29 +357,29 @@ def refuse():
 
 # name: (recipe, phone dB, shipped name, label, note)
 SET = [
-    ("tap", select, -20.0, "ui_tap", "A press, a menu item, select", "one act, one sound: the boop on E5 first, the glass under it; quiet, the commonest sound. Every ordinary button, the menu's forward, a selection in a panel"),
-    ("map_select", map_select, -20.0, "ui_tap", "Map: a tile, a pack, a machine tapped", "the glass up 9 dB (it had measured 7 under the boop), one soft boop on G over it"),
-    ("dismiss", dismiss, -21.0, "ui_back", "Dismiss", "the low boop first, P17 under it; also the menu's back"),
-    ("confirm", confirm, -19.0, None, "Confirm", "P26 from the first instant, the glass under it; 3 dB down; the menu's select"),
+    ("tap", select, -20.0, "ui_tap", "A press, a menu item, select", "one act, one sound: the boop on E5 first, the glass measured level under it. Every ordinary button, the menu's forward, a selection in a panel"),
+    ("map_select", map_select, -20.0, "ui_tap", "Map: a tile, a pack, a machine tapped", "the glass measured level under one soft boop on G"),
+    ("dismiss", dismiss, -21.0, "ui_back", "Dismiss", "the low boop first, the glass measured level under it; also the menu's back"),
+    ("confirm", confirm, -19.0, None, "Confirm", "P26 from the first instant, the glass measured level under it; the menu's select"),
     ("die_lift", lambda: p5(1.0), -17.0, "die_pick", "Die lifted", "glass alone"),
     ("die_hover", lambda: die_hover(1.6), -31.0, None, "Die over a valid target", "easing in slower, over most of a second"),
     ("die_spend", die_spend, -17.0, "die_drop", "Die spent", "no boop: the glass letting the die go and the pulse under it; one sound for a foe and a machine"),
     ("die_drop_back", lambda: p17(0.5, 0.8, 460.0), -21.0, "die_drop", "Die set back", "glass alone"),
-    ("die_lock", lock, -20.0, "die_lock", "Die locked", "the digital clicks given a three-millisecond onset and longer, lower partials: the hard front cracked the speaker"),
-    ("die_unlock", unlock, -20.0, "die_lock", "Die unlocked", "one digital click, the glass letting go"),
-    ("reroll", reroll, -16.0, "die_roll", "Reroll", "the glass up 14 dB (it had measured 11 under a click), four clicks on one pitch over it"),
-    ("round_open", round_open, -15.0, None, "The round opens", "the swell at the start; two short boops on B, dot dot"),
+    ("die_lock", lock, -20.0, "die_lock", "Die locked", "two digital clicks, the glass measured level under the second"),
+    ("die_unlock", unlock, -20.0, "die_lock", "Die unlocked", "one digital click, the glass letting go measured level under it"),
+    ("reroll", reroll, -18.0, "die_roll", "Reroll", "four clicks on one pitch, the glass measured level under them"),
+    ("round_open", round_open, -17.0, None, "The round opens", "dot dot on B, the body measured level under it"),
     ("end_turn", end_turn, -20.0, "resolve", "End turn", "the swell shorter, the chunk, the tail fading"),
-    ("route_set", route_set, -16.0, "plot", "A route set", "the glass up 13 dB (it had measured 11 under the boops), A then E over it"),
-    ("hold_readout", hold_readout, -29.0, None, "A hold's readout", "the shoo held, then a shorter tail"),
-    ("codex_open", codex_open, -21.0, "codex_open", "Codex opens", "the climbing figure E5 G5 B5 with its boops quieter and a longer glass under it"),
-    ("codex_close", codex_close, -23.0, "codex_close", "Codex closes", "B5 G5 E5 the same way, the glass letting go under it longer"),
-    ("menu_open", menu_open, -15.0, "menu_open", "Menu opens", "the chunk moved near the start, under E4 twice"),
-    ("menu_close", menu_close, -16.0, "menu_open", "Menu closes", "the chunk moved near the start, under the low boop"),
+    ("route_set", route_set, -18.0, "plot", "A route set", "A then E, the glass measured level under them"),
+    ("hold_readout", hold_readout, -29.0, None, "A hold's readout", "the shoo, its glass touch measured level under it"),
+    ("codex_open", codex_open, -21.0, "codex_open", "Codex opens", "the climbing figure E5 G5 B5, the glass measured level under it"),
+    ("codex_close", codex_close, -23.0, "codex_close", "Codex closes", "B5 G5 E5, the glass letting go measured level under it"),
+    ("menu_open", menu_open, -17.0, "menu_open", "Menu opens", "the chunk moved near the start, under E4 twice"),
+    ("menu_close", menu_close, -17.0, "menu_open", "Menu closes", "the chunk moved near the start, under the low boop"),
     ("nav_forward", select, -20.0, "ui_tap", "Menu: forward", "= a press"),
     ("nav_back", dismiss, -21.0, "ui_back", "Menu: back", "= dismiss"),
     ("nav_select", confirm, -19.0, "ui_tap", "Menu: select", "= confirm"),
-    ("refuse", refuse, -15.0, "ui_back", "Refused", "P28 over a low scrape; the dropout's and the scrape's hard edges softened, which was the click on your speaker"),
+    ("refuse", refuse, -17.0, "ui_back", "Refused", "P28 over a low scrape; the dropout's and the scrape's hard edges softened, which was the click on your speaker"),
 ]
 SET_BY = {name: (fn, db, beside, label, note) for name, fn, db, beside, label, note in SET}
 NAMES = {"touch": "tap", "touch_heavy": "tap", "round_acquire": "round_open", "resolve": "end_turn", "route_clear": "dismiss", "select": "map_select"}
