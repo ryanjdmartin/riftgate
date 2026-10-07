@@ -248,9 +248,9 @@ func test_a_wreck_can_be_rushed_for_salvage() -> void:
 func test_the_capitals_gate_is_the_one_priced_repair() -> void:
 	var c := _run()
 	c.capital().gate = 100
-	c.salvage = 30
-	assert_eq(c.repair_capital(10), 10, "spends what it is given")
-	assert_eq(c.capital().gate, 100 + 10 * Campaign.CAPITAL_REPAIR, "at the rate")
+	c.salvage = 30 * Campaign.REPAIR_COST
+	assert_eq(c.repair_capital(10 * Campaign.REPAIR_COST), 10 * Campaign.REPAIR_COST, "spends what it is given")
+	assert_eq(c.capital().gate, 110, "a point for every REPAIR_COST")
 	c.salvage = 1000
 	c.repair_capital(1000)
 	assert_eq(c.capital().gate, Campaign.CAPITAL_GATE, "never past full")
@@ -271,7 +271,7 @@ func test_an_undefended_gate_bleeds_and_falls_unfought() -> void:
 
 func test_rifts_open_with_the_tier_and_a_guest_joins_from_its_tier() -> void:
 	var c := _run()
-	c.threat = Campaign.TIER_EVERY * Campaign.GUEST_TIER - 1
+	c.convergence = Campaign.TIER_EVERY * Campaign.GUEST_TIER - 1
 	for city in c.cities.values():
 		city.rift = {}
 		city.quiet = 0
@@ -311,7 +311,7 @@ func test_a_guests_spawns_join_the_rifts_cycle() -> void:
 
 func test_the_finale_is_due_at_the_threshold_and_fought_at_the_capital() -> void:
 	var c := _run()
-	c.threat = Campaign.FINALE_AT - 1
+	c.convergence = Campaign.FINALE_AT - 1
 	c.pass_turn()
 	assert_true(c.finale_due(), "due")
 	assert_eq(c.fronts(), [c.capital().id], "the capital is the only front")
@@ -325,7 +325,7 @@ func test_the_finale_is_due_at_the_threshold_and_fought_at_the_capital() -> void
 
 func test_a_fallen_city_brings_the_finale_sooner() -> void:
 	var c := _run()
-	c.threat = Campaign.FINALE_AT - 1
+	c.convergence = Campaign.FINALE_AT - 1
 	assert_false(c.finale_due(), "not yet")
 	c.cities[str(c.fronts()[0])].fallen = true
 	assert_true(c.finale_due(), "one sooner")

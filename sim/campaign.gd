@@ -7,7 +7,7 @@ extends RefCounted
 ## ones are the fronts. A battle is fought at one front with up to four ready machines;
 ## what it ends in decides the city, the roster and the salvage, then the turn ends: every
 ## other open rift bleeds its city's gate, every fallen city's horde drains the capital,
-## the threat rises and new rifts open. The finale is due at the threat threshold and is
+## the Convergence rises and new rifts open. The finale is due at the Convergence's threshold and is
 ## fought at the capital on what its gate has left.
 ##
 ## Headless and seeded, like everything in sim/: the screens and the runner decide when to
@@ -29,7 +29,7 @@ extends RefCounted
 ##                  cracked components and sits out SHOP_BATTLES battles, unless rushed
 ##   end of a turn  (after a battle, or a turn passed) open rifts bleed their cities, a gate
 ##                  at zero falls unfought, fallen cities drain the capital, the capital at
-##                  zero loses the run, the threat rises, rifts open up to the tier's count
+##                  zero loses the run, the Convergence rises, rifts open up to the tier's count
 
 const PICK := 0     # between battles: choose a front, refit, rush, repair the capital, or pass
 const BATTLE := 1   # a battle is under way (`battle`, at `battle_city`)
@@ -42,13 +42,13 @@ const BLEED := 50             # a city under an open rift it was not defended at
 const DRAIN := 25             # each fallen city's horde takes this from the capital a turn
 const SQUAD := 4              # machines a battle takes at most (four columns, section 5)
 const WIPE_PHASES := 6        # phases the horde strikes the gate unopposed after a team wipe
-const SALVAGE_PER_FOE := 1    # salvage for each foe a won skirmish kills
-const START_SALVAGE := 20     # enough for one rush
-const RUSH_PRICE := 20        # salvage to bring a wreck out of the shop now (6 October: a choice after a wreck, never routine repair)
-const CAPITAL_REPAIR := 2     # capital gate points one salvage buys (the one priced repair, section 3)
-const THREAT_PER_TURN := 1    # a turn passed raises it too, so waiting never stops the clock
-const TIER_EVERY := 4         # threat per tier
-const FINALE_AT := 12         # the threat that makes the finale due (twelve battles, section 3); each fallen city brings it one sooner
+const SALVAGE_PER_FOE := 10   # salvage for each foe killed, in any fight however it ended (7 October: a kill is a kill); large on purpose, salvage is no combat stat
+const START_SALVAGE := 200    # enough for one rush
+const RUSH_PRICE := 200       # salvage to bring a wreck out of the shop now (6 October: a choice after a wreck, never routine repair); by chassis tier once tiers exist
+const REPAIR_COST := 5        # salvage a point of the capital's gate costs (the one priced repair, section 3)
+const CONVERGENCE_PER_TURN := 1   # a turn passed raises it too, so waiting never stops the clock
+const TIER_EVERY := 4         # Convergence per tier
+const FINALE_AT := 12         # the Convergence that makes the finale due (twelve battles, section 3); each fallen city brings it one sooner
 const RIFTS_BASE := 2         # rifts open at tier 0; one more a tier
 const GUEST_TIER := 1         # from this tier a rift carries a guest faction
 const QUIET_TURNS := 1        # a city whose rift was closed opens no new one for this many turns
@@ -81,7 +81,7 @@ var db: ContentDB
 var state: int = PICK
 var won: bool = false
 var turn: int = 0                 # turns ended
-var threat: int = 0
+var convergence: int = 0       # the campaign's clock toward the finale (named the Convergence, Ryan, 7 October)
 var cities: Dictionary = {}       # city id -> City, the capital last
 var roster: Array = []            # Machine
 var components: Dictionary = {}   # component id -> count owned and not fitted
@@ -158,7 +158,7 @@ func ready_machines() -> Array:
 
 
 func tier() -> int:
-	return threat / TIER_EVERY
+	return convergence / TIER_EVERY
 
 
 func fallen_count() -> int:
@@ -170,7 +170,7 @@ func fallen_count() -> int:
 
 
 func finale_due() -> bool:
-	return threat >= FINALE_AT - fallen_count()
+	return convergence >= FINALE_AT - fallen_count()
 
 
 ## Where a battle can be fought: every standing city under an open rift, or, once the
@@ -242,7 +242,9 @@ func finish_battle() -> Dictionary:
 			b.field.resolve_phase({})
 	var report := {"turn": turn, "city": c.id, "faction": b.faction, "guest": b.guest, "wiped": wiped,
 		"phases": b.field.phase, "lost": [], "wrecked": [], "salvage": 0}
-	# The machines.
+	# The machines. (Salvage is the kills of every fight however it ended, tallied here at the
+	# battle's end and never shown while it is fought, 7 October: one less number on the
+	# screen, and no visible count to farm against.)
 	var wrecked: Array = []
 	for uid in squad:
 		var m := machine(int(uid))
@@ -367,7 +369,7 @@ func _end_turn(fought: String) -> void:
 			state = OVER
 			won = false
 			return
-	threat += THREAT_PER_TURN
+	convergence += CONVERGENCE_PER_TURN
 	_open_rifts()
 	for c in cities.values():
 		c.quiet = maxi(0, c.quiet - 1)
@@ -429,17 +431,17 @@ func rush(uid: int) -> bool:
 	return true
 
 
-## Spend up to `spend` salvage on the capital's gate, CAPITAL_REPAIR points each, never
-## past full. Returns the salvage spent.
+## Spend up to `spend` salvage on the capital's gate, REPAIR_COST a point, never past full.
+## Returns the salvage spent.
 func repair_capital(spend: int) -> int:
 	var cap := capital()
 	if state != PICK or cap == null:
 		return 0
-	var room := int(ceil(float(cap.gate_max - cap.gate) / float(CAPITAL_REPAIR)))
-	var n := clampi(mini(spend, salvage), 0, room)
-	salvage -= n
-	cap.gate = mini(cap.gate_max, cap.gate + n * CAPITAL_REPAIR)
-	return n
+	var points := mini(maxi(0, mini(spend, salvage)) / REPAIR_COST, cap.gate_max - cap.gate)
+	var cost := points * REPAIR_COST
+	salvage -= cost
+	cap.gate += points
+	return cost
 
 
 ## Fit an owned component on a free hardpoint (refit is instant, section 3).

@@ -114,8 +114,8 @@ func play_run(seed_value: int, verbose: bool = false) -> Dictionary:
 		if r["city"] == c.db.capital_maker():
 			out["finale"] = true
 		if verbose:
-			print("turn %d, threat %d: %s at %s (%s%s), %s, gate %d left, %d machines, lost %s, wrecked %s, salvage +%d; capital %d" % [
-				int(r["turn"]), c.threat, "won" if r["result"] == "won" else r["result"], r["city"], r["faction"],
+			print("turn %d, Convergence %d: %s at %s (%s%s), %s, gate %d left, %d machines, lost %s, wrecked %s, salvage +%d; capital %d" % [
+				int(r["turn"]), c.convergence, "won" if r["result"] == "won" else r["result"], r["city"], r["faction"],
 				(" + " + str(r["guest"])) if str(r["guest"]) != "" else "", "wiped" if r["wiped"] else "standing",
 				int(r["gate_left"]), uids.size(), str(r["lost"]), str(r["wrecked"]), int(r["salvage"]), c.capital().gate])
 		# Everything above one rush goes on the capital's gate.
@@ -249,7 +249,7 @@ func report() -> String:
 	L.append("| Phases a battle | %s |" % _band(phases_all))
 	L.append("")
 	# By tier and by faction.
-	L.append("## By threat tier, lead faction, squad size and guest")
+	L.append("## By tier of the Convergence, lead faction, squad size and guest")
 	L.append("")
 	L.append("| | Battles | Won | Fell | Wiped | Destroyed per battle |")
 	L.append("|---|---|---|---|---|---|")
@@ -323,9 +323,9 @@ func report() -> String:
 	L.append("")
 	L.append("## The placeholders measured")
 	L.append("")
-	L.append("City gate %d, capital %d, bleed %d a turn, drain %d a fallen city a turn, %d phases of unopposed strikes after a wipe, %d salvage a foe, %d to start, a rush %d, %d capital gate points a salvage, the finale at threat %d (one sooner a fallen city), %d rifts open at tier 0 and one more every %d threat, a guest from tier %d, a squad of %d." % [
+	L.append("City gate %d, capital %d, bleed %d a turn, drain %d a fallen city a turn, %d phases of unopposed strikes after a wipe, %d salvage a foe killed in any fight, %d to start, a rush %d, %d salvage a point of the capital's gate, the finale at Convergence %d (one sooner a fallen city), %d rifts open at tier 0 and one more every %d of the Convergence, a guest from tier %d, a squad of %d." % [
 		Campaign.CITY_GATE, Campaign.CAPITAL_GATE, Campaign.BLEED, Campaign.DRAIN, Campaign.WIPE_PHASES,
-		Campaign.SALVAGE_PER_FOE, Campaign.START_SALVAGE, Campaign.RUSH_PRICE, Campaign.CAPITAL_REPAIR,
+		Campaign.SALVAGE_PER_FOE, Campaign.START_SALVAGE, Campaign.RUSH_PRICE, Campaign.REPAIR_COST,
 		Campaign.FINALE_AT, Campaign.RIFTS_BASE, Campaign.TIER_EVERY, Campaign.GUEST_TIER, Campaign.SQUAD])
 	L.append("")
 	return "\n".join(L)

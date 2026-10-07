@@ -288,7 +288,6 @@ func test_wrecked_mechs_leave_the_map() -> void:
 	b.finish_skirmish()
 	assert_eq(b.mechs().size(), before - sk.mechs.size(), "wrecks are gone")
 	assert_eq(b.wrecks.size(), sk.mechs.size(), "and the battle keeps them, for the campaign to read")
-	assert_eq(b.foes_killed, 0, "a lost skirmish banks nothing")
 	assert_true(b.state == Battle.State.PLAN or b.outcome == Battle.Outcome.WRECKED, "battle continues or ends")
 
 
@@ -430,3 +429,22 @@ func test_an_out_of_combat_passive_fires_after_a_quiet_phase() -> void:
 	var rate := m.recharge_field
 	b.commit()
 	assert_eq(m.shield, mini(m.shield_max, rate + 5), "the field rate, then the passive's five")
+
+
+func test_a_kill_is_a_kill_whatever_the_fight_ends_in() -> void:
+	# Ryan, 7 October: withdrawing never takes a kill away, so the salvage the campaign
+	# tallies at the battle's end counts every foe killed, won fight or not.
+	var b := _battle()
+	var m: Unit = b.mechs()[0]
+	var sq: Unit = b.field.packs()[0]
+	_engage(b, sq, m)
+	b.commit()
+	var sk := b.open_next_skirmish()
+	sk.begin()
+	sk.start_round()
+	var victim: Foe = sk.field_foes()[0]
+	victim.hp = 0
+	assert_true(sk.withdraw(), "the team pulls out")
+	assert_eq(sk.outcome, Skirmish.Outcome.WITHDRAWN, "withdrawn")
+	b.finish_skirmish()
+	assert_eq(b.foes_killed, 1, "the kill made before withdrawing counts")

@@ -441,7 +441,7 @@ static func _hexes_from(list) -> Array[Vector2i]:
 # ---------------------------------------------------------------- the run
 
 const RUN_PATH := "user://campaign.json"
-const RUN_VERSION := 1
+const RUN_VERSION := 2   # 2: the threat became the Convergence (7 October)
 
 
 static func save_campaign(c: Campaign, path: String = RUN_PATH) -> bool:
@@ -475,7 +475,7 @@ static func campaign_to_dict(c: Campaign) -> Dictionary:
 		"version": RUN_VERSION,
 		"seed": c.seed_value,
 		"rng": str(c.rng.state),
-		"state": c.state, "won": c.won, "turn": c.turn, "threat": c.threat,
+		"state": c.state, "won": c.won, "turn": c.turn, "convergence": c.convergence,
 		"cities": cities, "roster": roster, "next_uid": c._next_uid,
 		"components": c.components, "salvage": c.salvage, "blueprints": c.blueprints,
 		"tokens": c.tokens, "offers": c.offers, "bosses_beaten": c.bosses_beaten, "finals_won": c.finals_won,
@@ -491,7 +491,7 @@ static func campaign_from_dict(d: Dictionary) -> Campaign:
 	c.state = int(d.get("state", Campaign.PICK))
 	c.won = bool(d.get("won", false))
 	c.turn = int(d.get("turn", 0))
-	c.threat = int(d.get("threat", 0))
+	c.convergence = int(d.get("convergence", 0))
 	c.cities.clear()
 	for cd in d.get("cities", []):
 		var city := Campaign.City.new()
