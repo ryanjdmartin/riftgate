@@ -559,7 +559,7 @@ def clydesdale(b):
     trot = [{"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
              "phase": {"fl": 0.0, "hr": 0.05, "fr": 0.5, "hl": 0.55}[leg],
              "shift": legs[leg][0][1] - legs[leg][2][1] + (3.0 if leg[0] == "f" else -3.0),
-             "nod": 1.0 if leg[0] == "f" else -0.5}
+             "nod": 1.0 if leg[0] == "f" else -0.5, "whole": leg[0] == "h"}
             for leg in ("fl", "fr", "hl", "hr")]
     ttracks, tbody, tstride = _plant(trot, sweep=22.0, duty=0.4, lift=12.0, crouch=0.3, dip=1.4, nod=1.2, reach=0.985, airborne=0.99, smooth=0.03, n=120)
     ttracks["head"] = ([(i / 40.0, round(-1.8 * abs(math.sin(2.0 * math.pi * (i / 40.0 - 0.04))), 3)) for i in range(41)], 0.0)   # a nod onto each pair
@@ -568,12 +568,15 @@ def clydesdale(b):
     # wholly the trot under half its full speed, wholly the gallop over 0.95, crossfading
     # between (b.gait's start). Off the mark the speed alone held the trot for half a step
     # (the twenty-first notes), and a stride held then crossfaded at once clipped a hoof's
-    # third step, fast and short (the twenty-second notes: about two steps of trot). It now
-    # sets off as a diagonal pair lifts, every hoof takes one trot step (the one it is in as
-    # it sets off counting), and its second is its own swing into the gallop, worked out foot
-    # by foot (_transition): it lifts from its trot stance and lands where and when the gallop
-    # lands it, no faster than either gait swings a hoof, the hull easing from the trot's
-    # ride to the gallop's meanwhile.
+    # third step, fast and short (the twenty-second notes: about two steps of trot). Every
+    # hoof now takes one trot step (one it is in as it sets off counting), and its next is its
+    # own swing into the gallop, the gallop's first stride, worked out foot by foot
+    # (_transition): it lifts from its trot stance and lands where and when the gallop lands
+    # it, no faster than either gait swings a hoof, the hull easing from the trot's ride to
+    # the gallop's meanwhile. The hinds' trot step is always a whole one, never one already
+    # under way as it sets off (the twenty-third notes: one trot step is enough, so long as
+    # it is complete, the hinds especially, since they push off into the gallop): it sets off
+    # as the hind left lands and the hind right has just lifted.
     hand = _transition({"limbs": trot, "duty": 0.4, "stride": tstride, "tracks": ttracks, "body": tbody},
                        {"limbs": gallop, "duty": 0.34, "stride": stride, "tracks": tracks, "body": body}, steps=1)
     b.gait(stride=stride, tracks=tracks, body=body, ease="linear", start=("trot", 0.5, 0.95, hand))
@@ -3561,11 +3564,15 @@ def _transition(start, run, steps=1):
     crossfaded into its gallop wherever each leg was, so a hoof's third step came out fast and
     short; about two steps of trot). `start` and `run` are dicts of "limbs", "duty", "stride",
     "tracks" and "body", the limbs as _plant and _gallop took them (each has its "foot" and
-    "span" after them) and the tracks and body as they returned. It sets off at a moment of the
-    start gait's stride when no hoof is more than halfway through a swing, so none drops out of
-    the air as it starts. Each leg takes `steps` steps in it, a swing it has begun as it sets
-    off counting as one, then plants as that gait
-    does and makes one swing of its own into the run: lifting from its stance (a little early,
+    "span" after them) and the tracks and body as they returned. Each leg takes `steps` steps
+    in the start gait (a limb's own "steps" over that), a swing it has begun as it sets off
+    counting as one while under half done, or under a fifth for a limb whose step must be
+    whole ("whole": the Clydesdale's hinds, which push off into the gallop; Ryan, 7 October,
+    the twenty-third notes: one trot step, so long as the hinds' is a complete one). It sets
+    off at a moment of the start gait's stride when no hoof is further through a swing than
+    that, so none drops out of the air as it starts and no whole step comes out a half. Each
+    then plants as that gait does and makes one swing of its own into the run, as high as the
+    run lifts (its first stride of it): lifting from its stance (a little early,
     or for a hind a little late, where the run reaches further back) and landing where and when
     the run lands it, never sliding while planted. The run's phase, and when each hoof lifts,
     are chosen so no hoof moves faster fore and aft than in either gait's own swing and each is
@@ -3603,7 +3610,8 @@ def _transition(start, run, steps=1):
 
     def swing(l, plan, x):
         """The changing hoof in the air: from where it lifts to where the run lands it, as
-        high as the two gaits lift on average, reaching as the run's does."""
+        high as the run lifts and reaching as the run's does (the twenty-second notes had
+        the two gaits' average, which read as a second step of the start gait)."""
         r = by_hip[l["hip"]]
         s = (x - plan["lift"]) / (plan["land"] - plan["lift"])
         y = plan["from"] + (plan["to"] - plan["from"]) * smooth((s - 0.1) / 0.8)
@@ -3616,8 +3624,10 @@ def _transition(start, run, steps=1):
         r = by_hip[l["hip"]]
         t0 = None
         lift0 = ((l["phase"] + S["duty"] - s0) % 1.0) * s_stride
-        counted = [lift0 + k * s_stride for k in range(-1, steps + 3) if lift0 + k * s_stride >= -0.5 * s_air]
-        t0 = counted[steps]                                  # where its hoof would lift into its next step
+        n = int(l.get("steps", steps))
+        begun = (0.2 if l.get("whole") else 0.5) * s_air      # how far into a swing it may be as it sets off for that to count as a step
+        counted = [lift0 + k * s_stride for k in range(-1, n + 3) if lift0 + k * s_stride >= -begun]
+        t0 = counted[n]                                      # where its hoof would lift into its next step
         y0 = l["foot"]((s0 + t0 / s_stride) - 1e-6)[0]
         back = r["foot"]((r["phase"] + R["duty"]) % 1.0 - 1e-6)[0]   # the run lifts from here
         best = None
@@ -3626,8 +3636,8 @@ def _transition(start, run, steps=1):
             if t1 <= t0 - 0.6 * s_stance + 0.8 * s_air:
                 continue
             want = t1 - min(max(t1 - t0, s_air), r_air)
-            lift = min(max(want, t0 - 0.6 * s_stance), t0 + max(0.0, y0 - back))
-            plan = {"t0": t0, "y0": y0, "lift": lift, "land": t1, "high": 0.5 * (height[id(l)] + height[id(r)]),
+            lift = max(0.0, min(max(want, t0 - 0.6 * s_stance), t0 + max(0.0, y0 - back)))
+            plan = {"t0": t0, "y0": y0, "lift": lift, "land": t1, "high": height[id(r)],
                     "from": l["foot"](s0 + lift / s_stride)[0] if lift <= t0 else y0 - (lift - t0),
                     "to": r["foot"](g0 + t1 / r_stride)[0]}
             d = t1 - lift
@@ -3639,8 +3649,10 @@ def _transition(start, run, steps=1):
         return best
 
     def caught(s0):
-        """Whether a hoof is more than halfway through a swing at this moment of the stride."""
-        return any(((s0 - l["phase"]) % 1.0 - S["duty"]) / (1.0 - S["duty"]) > 0.5 for l in S["limbs"])
+        """Whether a hoof is more than halfway through a swing at this moment of the stride, or
+        a limb whose step must be whole (its "whole") more than a fifth through one."""
+        return any(((s0 - l["phase"]) % 1.0 - S["duty"]) / (1.0 - S["duty"]) > (0.2 if l.get("whole") else 0.5)
+                   for l in S["limbs"])
 
     best = None
     for s0 in [i / 40.0 for i in range(40) if not caught(i / 40.0)]:
