@@ -45,8 +45,11 @@ extends RefCounted
 ## the complexity). RIFTGATE_MOVE_DEBUG=1 drives every machine constantly at its own full
 ## speed on the map (`top_speed`, map_speed), on both screens, for judging a gait running.
 
-const GAP_MIN := 2.5          # seconds between acts, at least
-const GAP_MAX := 6.5          # and at most
+const GAP_MIN := 6.0          # seconds between acts, at least (Ryan, 7 October: from 2.5, as the acts overlapped too often)
+const GAP_MAX := 12.0         # and at most (from 6.5)
+const OPEN_FIRST := 2.0       # seconds: the first machine in a place opens within this of the screen loading
+const OPEN_GAP := 1.5         # and each machine set up with it opens at least this long after the one before
+const OPEN_JITTER := 0.8      # plus up to this, so the openings are not a metronome
 const GAP_DEBUG := 0.4        # with the debug switch on
 const WAIT_TICK_MAX := 0.1    # seconds of the gap a single tick may spend, however long the frame (a hitch must not start every machine at once)
 const GLOW_BASE := 1.8        # the amber role's emission at rest (MechView3D.toon)
@@ -128,6 +131,7 @@ var _t := 0.0                      # time into the act playing
 var _wait := 0.0                   # seconds until the next act starts
 var _rng := RandomNumberGenerator.new()
 var _wait_budget := 0.0            # what is left of this tick's share of the gap (WAIT_TICK_MAX)
+static var _opening: Dictionary = {}   # place -> the msec clock when the last machine set up there opens (its first act)
 var heft := HEFT_DEFAULT           # seconds: how long a joint or the body takes to catch up with what the pilot asks (the sidecar's `move.heft`)
 var place: String = ""             # where this machine stands, "map" or "skirmish": an act may be for one of them only (its `places`); empty plays them all
 var _act_heft := HEFT_DEFAULT      # the heft while the act playing asks for its own (a blow sharper than the machine's weight)
@@ -463,7 +467,7 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 	_rng.seed = hash(model_id) ^ (randi() if phase < 0 else phase * 7919)
 	debug = OS.get_environment("RIFTGATE_ACTS_DEBUG")
 	debug_move = OS.get_environment("RIFTGATE_MOVE_DEBUG") == "1"
-	_wait = GAP_DEBUG if not debug.is_empty() else _rng.randf_range(0.6, GAP_MAX)
+	_wait = GAP_DEBUG if not debug.is_empty() else _first_wait()
 	_glow_cache.clear()
 	_tread_mats = []
 	_move_glow = []
@@ -519,6 +523,20 @@ func in_act() -> bool:
 
 func alive() -> bool:
 	return not acts.is_empty() or not _strikes.is_empty() or not _current.is_empty() or not _servo.is_empty() or (debug_move and not gait.is_empty())
+
+
+## The wait before this machine's first act. The machines a screen sets up together open
+## one after another, at least OPEN_GAP apart, rather than each at random over the first
+## gap (Ryan, 7 October). A rig with no place (the tests, the tools) opens at random.
+func _first_wait() -> float:
+	var first := _rng.randf_range(0.6, OPEN_FIRST)
+	if place.is_empty():
+		return first
+	var now := Time.get_ticks_msec()
+	var after := (float(int(_opening.get(place, 0)) - now) / 1000.0) + OPEN_GAP + _rng.randf_range(0.0, OPEN_JITTER)
+	var wait := maxf(first, after)
+	_opening[place] = now + int(wait * 1000.0)
+	return wait
 
 
 ## Advance the clock: the act playing, the gap to the next one, the servos and the strikes,

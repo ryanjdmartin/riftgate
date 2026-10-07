@@ -22,7 +22,7 @@ const THREE_URLS = [
 ];
 
 // ---------------------------------------------------------------- the rig (MechRig's numbers)
-const GAP_MIN = 2.5, GAP_MAX = 6.5, GAP_DEBUG = 0.4, WAIT_TICK_MAX = 0.1;   // MechRig: a long frame spends at most this much of the gap
+const GAP_MIN = 6.0, GAP_MAX = 12.0, GAP_DEBUG = 0.4, WAIT_TICK_MAX = 0.1;   // MechRig: a long frame spends at most this much of the gap
 const MOVE_REF_SPEED = 150.0, MOVE_BLEND_IN = 0.25, MOVE_BLEND_OUT = 0.35;
 const ROCK_ACCEL = 200.0, BANK_TURN = 1.2, DRIFT_UNITS = 12.0;
 const STEER_EASE = 0.12;   // MechRig: seconds a steered joint takes to follow the turn, its servo
