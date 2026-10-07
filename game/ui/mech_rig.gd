@@ -23,6 +23,13 @@ extends RefCounted
 ## team is never in step. RIFTGATE_ACTS_DEBUG=1 plays the acts back to back for judging
 ## them running; RIFTGATE_ACTS_DEBUG=<act name> loops that one act.
 ##
+## Weight (Ryan, 4 October, the third pass: some acts stilted, bank and hard stop; real
+## machines with real physics, limbs and weapons heavy, with inertia): an act's keys are a
+## curve that runs on through a key a part passes on its way (it stops only to turn back or
+## to hold), and what the curve asks of each part is chased by a servo, a mass on a damped
+## spring, the machine's `heft` its time constant: a part gathers speed, carries a touch past
+## its mark and settles, and a heavy machine lags its pilot more than a light one.
+##
 ## Movement (the joints row, 2 October): while the map moves a machine, `drive` feeds the rig
 ## its speed, the bearing it is travelling on relative to its facing, and how fast its facing
 ## is turning, and the sidecar's gait answers: cycles keyed by distance travelled (a walk,
@@ -33,22 +40,39 @@ extends RefCounted
 ## cornering module owes the rig the numbers (Map3D). A helicopter-style machine (Ryan, 3
 ## October: the Stingray, and one or two more to come) keeps its facing and tilts toward
 ## its travel instead: nose down to go forward, nose up to go back, a side down to go that
-## way (`tilt` in its cornering numbers; the map holds its facing through `strafe`).
-## RIFTGATE_MOVE_DEBUG=1 drives every machine constantly at the reference speed, on both
-## screens, for judging a gait running.
+## way (`tilt` in its cornering numbers; the map holds its facing through `strafe`). A
+## turret turns with the hull on the move (Ryan, 4 October: holding its aim was not worth
+## the complexity). RIFTGATE_MOVE_DEBUG=1 drives every machine constantly at its own full
+## speed on the map (`top_speed`, map_speed), on both screens, for judging a gait running.
 
 const GAP_MIN := 2.5          # seconds between acts, at least
 const GAP_MAX := 6.5          # and at most
 const GAP_DEBUG := 0.4        # with the debug switch on
 const GLOW_BASE := 1.8        # the amber role's emission at rest (MechView3D.toon)
-const MOVE_REF_SPEED := 150.0 # model units a second: about a machine's full speed on the map (BattleMapView.MECH_SECONDS_PER_HEX; was 300 before the slower pace of 4 October)
+const MOVE_REF_SPEED := 150.0 # model units a second the slide and the tilt are authored at (a machine's own full speed on the map is `top_speed`)
 const MOVE_BLEND_IN := 0.25   # seconds a gait takes to come up from standing
 const MOVE_BLEND_OUT := 0.35  # and to settle back when the machine stops
 const ROCK_ACCEL := 200.0     # model units a second squared that earns the whole rock: a machine reaching full speed in under a second (MovePath accelerates; was 1500 when moves started at full speed)
 const BANK_TURN := 1.2        # radians a second of turning that earns the whole bank (the curve's corners turn about this fast)
+const STEER_EASE := 0.12      # seconds a steered joint (a knuckle, a nacelle) takes to follow the turn: its servo
+# Turning in place steps the legs round (Ryan, 7 October, the twentieth notes: a machine turns
+# onto its way before it sets off, and a walker turning on the spot slid round on its feet):
+# the turn counts toward the gait's travel as though each foot went round a circle PIVOT_STEP
+# of a stride across, never faster than PIVOT_CAP of its own full speed (the twenty-first
+# notes: some stepped round faster than they walk, which read as skating; 0.5 and no cap
+# before; the twenty-second: 0.4 was too slow, up to three quarters), fading out as the
+# machine gathers PIVOT_FADE units a second of its own; a turn
+# slower than PIVOT_MIN radians a second is a settle, not a step. Nothing banks standing: the
+# bank comes in with BANK_SPEED units a second.
+const PIVOT_STEP := 0.35
+const PIVOT_CAP := 0.75
+const PIVOT_FADE := 20.0
+const PIVOT_MIN := 0.15
+const BANK_SPEED := 37.5
 const DRIFT_UNITS := 12.0     # model units a machine with a slide of 1 drifts off its path when the travel is square to its facing
-const AIM_HOLD_MAX := 170.0   # degrees a turret may wind up holding its aim against a turning hull
-const AIM_RELAX := 0.8        # seconds for a held aim to come back to centre once the hull stops turning
+const HEFT_DEFAULT := 0.12    # seconds: the inertia of a machine whose sidecar names none (`move.heft`)
+const DAMPING := 0.7          # the joints' servos: a touch under critical, so a heavy part gives a little past its mark and settles
+const STEP := 1.0 / 60.0      # the longest step the acts and the servos advance by, so a long tick (a frozen frame) plays the same as frames
 
 var joints: Dictionary = {}        # "shoulder_l" -> Node3D
 var hardpoints: Dictionary = {}    # 1 -> Node3D
@@ -58,6 +82,15 @@ var move: Dictionary = {}          # the cornering numbers: {"slide", "bank"}
 var model: Node3D = null           # the glTF's root
 var body: Node3D = null            # the node a body track moves (the model root unless told otherwise)
 var gait: Dictionary = {}          # the sidecar's gait: how this machine moves (see drive)
+var gait_options: Dictionary = {}  # other ways it could move, built beside it for judging (b.gait_option); the game uses one only as a gait's start
+var _start_gait: Dictionary = {}   # the gait it starts and stops in, when its gait names one: {"gait", "curves", "below", "full"}, and the stride it changes in: "from", "to" and "handoff" (a gait whose stride is its length)
+var _travel := 0.0                 # model units travelled since it last stood still
+var _start_offset := 0.0           # model units added to the travel for the start gait's phase (it sets off at its handoff's "from")
+var _main_offset := 0.0            # and for the gait's own (at the handoff's "to" as it sets off)
+var _handoff_at := 0.0             # the travel (`_dist`) the stride it changes in counts from
+var _handing := false              # whether it is rolling and the handoff counts (false standing)
+var spinners: Dictionary = {}      # joint -> [idle, moving] degrees a second: turned without end on its own axis (b.spin: the Stingray's fans)
+var _spun: Dictionary = {}         # joint -> degrees turned so far, wrapped
 var debug: String = ""             # RIFTGATE_ACTS_DEBUG, read at setup
 var debug_move: bool = false       # RIFTGATE_MOVE_DEBUG: driven constantly
 var last_act: String = ""          # the act played last (never played twice running)
@@ -84,14 +117,28 @@ var _blend := 0.0                  # 0 standing, 1 moving: the gait's weight
 var _accel := 0.0                  # the smoothed change of speed, for the rock
 var _bank := 0.0                   # degrees of roll into the turn, eased
 var _tilt := Vector2.ZERO          # degrees of (pitch, roll) toward the travel, a helicopter's, eased
+var _steer: Dictionary = {}        # joint -> degrees a steered joint has turned with the turn, eased
 var _drift := 0.0                  # model units the body sits off its path, right positive, eased (the slide)
-var _aim_hold: Dictionary = {}     # joint -> degrees of yaw a turret holds against the hull's turning
 var _tread_mats: Array = []        # [[StandardMaterial3D, base uv offset]] the treads scroll
 var _move_glow: Array = []         # [[StandardMaterial3D, base]] the boosters brighten
 var _current: Dictionary = {}      # the act playing, or empty
+var _curves: Dictionary = {}       # the act playing as curves: joint -> curve, BODY -> curve
 var _t := 0.0                      # time into the act playing
 var _wait := 0.0                   # seconds until the next act starts
 var _rng := RandomNumberGenerator.new()
+var heft := HEFT_DEFAULT           # seconds: how long a joint or the body takes to catch up with what the pilot asks (the sidecar's `move.heft`)
+var place: String = ""             # where this machine stands, "map" or "skirmish": an act may be for one of them only (its `places`); empty plays them all
+var _act_heft := HEFT_DEFAULT      # the heft while the act playing asks for its own (a blow sharper than the machine's weight)
+var top_speed := MOVE_REF_SPEED    # model units a second at this machine's full speed on the map (map_speed; the debug drive's pace)
+var _want_rot: Dictionary = {}     # joint -> degrees the act asks for now; the servos chase it into _act_rot
+var _want_slide: Dictionary = {}
+var _body_want_rot := Vector3.ZERO
+var _body_want_slide := Vector3.ZERO
+var _servo: Dictionary = {}        # joint (or BODY) -> [rot, rot speed, slide, slide speed]: where each part is and how fast it moves
+var _spin: Dictionary = {}         # the gait's wheels: an act turns them directly, never through a servo (a spin never unwinds)
+var _gait_curves: Dictionary = {}  # the gait's cycles as curves: joint -> curve, BODY -> curve
+
+const BODY := "@body"
 
 
 ## The sidecar of a model, or an empty dictionary when it has none.
@@ -162,10 +209,13 @@ static func clamp_degrees(deg: Vector3, limits: Dictionary) -> Vector3:
 	return out
 
 
-## Keys sampled at `t`: each key is [t, v1, v2, ...]; the track rests (every value zero) at
-## time 0 and again at `duration`, so an act always returns the machine to its pose. Between
-## keys the values ease ("smooth") or run straight ("linear", a wheel spinning).
-static func sample(keys: Array, t: float, duration: float, ease: String = "smooth") -> Array:
+## An act's keys as a curve: each key is [t, v1, v2, ...]; the track rests (every value
+## zero) at time 0 and again at `duration` unless a key is authored there, so an act always
+## returns the machine to its pose. "smooth" runs a monotone cubic through the keys (Ryan, 4
+## October, the third pass: a part passing a key on its way keeps its speed through it, so
+## only a turn or a hold stops it, and nothing overshoots a key); "linear" runs straight
+## between them (a wheel spinning). Sample it with curve_at.
+static func curve(keys: Array, duration: float, ease: String = "smooth") -> Dictionary:
 	var width := 1
 	for k in keys:
 		width = maxi(width, (k as Array).size())
@@ -174,7 +224,7 @@ static func sample(keys: Array, t: float, duration: float, ease: String = "smoot
 		zero.append(0.0)
 	var pts: Array = []
 	if keys.is_empty() or float(keys[0][0]) > 0.0:
-		pts.append(zero)
+		pts.append(zero.duplicate())
 	for k in keys:
 		var row: Array = (k as Array).duplicate()
 		while row.size() < width:
@@ -184,21 +234,189 @@ static func sample(keys: Array, t: float, duration: float, ease: String = "smoot
 		var end := zero.duplicate()
 		end[0] = duration
 		pts.append(end)
-	if t <= float(pts[0][0]):
-		return pts[0].slice(1)
-	for i in range(1, pts.size()):
-		var a: Array = pts[i - 1]
-		var b: Array = pts[i]
-		if t <= float(b[0]):
-			var span := float(b[0]) - float(a[0])
-			var f := 1.0 if span <= 0.0 else (t - float(a[0])) / span
-			if ease != "linear":
-				f = f * f * (3.0 - 2.0 * f)
-			var out: Array = []
-			for j in range(1, width):
-				out.append(lerpf(float(a[j]), float(b[j]), f))
+	return _through(pts, ease)
+
+
+## Cyclic keys over a phase of 0 to 1 as a curve: the track wraps, so a key at 1 is the key
+## at 0 unless that one is authored too, and the curve runs through the wrap without a stop.
+static func cycle_curve(keys: Array, ease: String = "smooth") -> Dictionary:
+	if keys.is_empty():
+		return {}
+	var rows: Array = []
+	var at := {}
+	for k in keys:
+		var row: Array = (k as Array).duplicate()
+		row[0] = float(row[0])
+		if row[0] < 1.0:
+			rows.append(row)
+			at[snappedf(row[0], 0.0001)] = true
+	for k in keys:
+		var row: Array = (k as Array).duplicate()
+		row[0] = float(row[0])
+		if row[0] >= 1.0 and not at.has(snappedf(row[0] - 1.0, 0.0001)):
+			row[0] -= 1.0
+			rows.append(row)
+	rows.sort_custom(func(a, b): return float(a[0]) < float(b[0]))
+	var width := 1
+	for r in rows:
+		width = maxi(width, (r as Array).size())
+	for r in rows:
+		while (r as Array).size() < width:
+			(r as Array).append(0.0)
+	# Two keys of the cycle before and two after, so every key inside a stride has neighbours
+	# on both sides and its slope is the cycle's own.
+	var n := rows.size()
+	var pts: Array = []
+	for i in range(-2, n + 2):
+		var row: Array = (rows[posmod(i, n)] as Array).duplicate()
+		row[0] = float(row[0]) + float(floori(float(i) / n))
+		pts.append(row)
+	return _through(pts, ease)
+
+
+## The slopes of a monotone cubic through `pts` ([t, v...] rows in time order): zero at a
+## turn, a hold and the two ends, the weighted harmonic mean of the neighbouring secants
+## where the track runs on through a key (Fritsch and Butland).
+static func _through(pts: Array, ease: String) -> Dictionary:
+	var n := pts.size()
+	var width := (pts[0] as Array).size() - 1
+	var times := PackedFloat64Array()
+	var vals: Array = []
+	var slopes: Array = []
+	for p in pts:
+		times.append(float(p[0]))
+		var v := PackedFloat64Array()
+		for j in range(1, width + 1):
+			v.append(float(p[j]))
+		vals.append(v)
+	var linear := ease == "linear"
+	for i in range(n):
+		var m := PackedFloat64Array()
+		m.resize(width)
+		if not linear and i > 0 and i < n - 1:
+			var h0 := times[i] - times[i - 1]
+			var h1 := times[i + 1] - times[i]
+			for j in range(width):
+				if h0 <= 0.0 or h1 <= 0.0:
+					continue
+				var d0: float = (float(vals[i][j]) - float(vals[i - 1][j])) / h0
+				var d1: float = (float(vals[i + 1][j]) - float(vals[i][j])) / h1
+				if d0 * d1 <= 0.0:
+					continue
+				var w0 := 2.0 * h1 + h0
+				var w1 := h1 + 2.0 * h0
+				m[j] = (w0 + w1) / (w0 / d0 + w1 / d1)
+		slopes.append(m)
+	return {"t": times, "v": vals, "m": slopes, "linear": linear, "width": width}
+
+
+## A curve's values at time `t`, held at its first and last keys outside them.
+static func curve_at(c: Dictionary, t: float) -> Array:
+	var out: Array = []
+	if c.is_empty():
+		return out
+	var times: PackedFloat64Array = c["t"]
+	var vals: Array = c["v"]
+	var width := int(c["width"])
+	var n := times.size()
+	var row: PackedFloat64Array
+	if t <= times[0]:
+		row = vals[0]
+	elif t >= times[n - 1]:
+		row = vals[n - 1]
+	else:
+		var i := clampi(times.bsearch(t, false) - 1, 0, n - 2)
+		var h := times[i + 1] - times[i]
+		var u := 1.0 if h <= 0.0 else (t - times[i]) / h
+		var a: PackedFloat64Array = vals[i]
+		var b: PackedFloat64Array = vals[i + 1]
+		if bool(c["linear"]):
+			for j in range(width):
+				out.append(lerpf(a[j], b[j], u))
 			return out
-	return pts[pts.size() - 1].slice(1)
+		var ma: PackedFloat64Array = c["m"][i]
+		var mb: PackedFloat64Array = c["m"][i + 1]
+		var u2 := u * u
+		var u3 := u2 * u
+		var h00 := 2.0 * u3 - 3.0 * u2 + 1.0
+		var h10 := u3 - 2.0 * u2 + u
+		var h01 := -2.0 * u3 + 3.0 * u2
+		var h11 := u3 - u2
+		for j in range(width):
+			out.append(h00 * a[j] + h10 * h * ma[j] + h01 * b[j] + h11 * h * mb[j])
+		return out
+	for j in range(width):
+		out.append(row[j])
+	return out
+
+
+## Keys sampled at `t` (the curve through them, at once): for one look, not a frame loop.
+static func sample(keys: Array, t: float, duration: float, ease: String = "smooth") -> Array:
+	return curve_at(curve(keys, duration, ease), t)
+
+
+## A machine's full speed on the map in its own model units a second: the map fits it to
+## `fit` hex widths at its widest (Map3D.fit_for, by its class by mass) and a step at full
+## speed takes the map's pace for its move (BattleMapView.mech_seconds_per_hex). What the
+## debug drive and the hangar's Walk run at, so a stride is seen at the pace the map gives
+## it: the smaller a machine is drawn, the more of itself a hex is, the more strides it takes.
+static func map_speed(widest: float, movespeed: int, fit: float) -> float:
+	var step := sqrt(3.0) * widest / (2.0 * maxf(0.01, fit))
+	return step / BattleMapView.mech_seconds_per_hex(float(movespeed))
+
+
+## Move by `g` from now on: the sidecar's gait (setup does this) or one of its options, for a
+## tool or a page judging one running (tools/gait_clip.gd).
+func use_gait(g: Dictionary) -> void:
+	gait = g
+	_spin = {}
+	for name in gait.get("wheels", {}).keys():
+		_spin[name] = true
+	_gait_curves = _cycle_curves(gait)
+	# A gait may start and stop in another (Ryan, 7 October, the nineteenth notes: the
+	# Clydesdale took off straight into its gallop): `start` names one of the options, moved by
+	# wholly under `below` of its full speed, by its own gait over `full`, crossfading between.
+	# Its handoff (the twenty-second notes) sets it off in that gait at `from` and plays the
+	# stride it changes in, worked out foot by foot over `length` units, into its own at `to`.
+	_start_gait = {}
+	_main_offset = 0.0
+	_start_offset = 0.0
+	_handing = false
+	var st: Variant = gait.get("start", {})
+	if st is Dictionary and gait_options.get(str(st.get("option", "")), null) is Dictionary:
+		var opt: Dictionary = gait_options[str(st["option"])]
+		_start_gait = {"gait": opt, "curves": _cycle_curves(opt), "below": float(st.get("below", 0.3)), "full": float(st.get("full", 0.8))}
+		var h: Variant = st.get("handoff", {})
+		if h is Dictionary and float((h as Dictionary).get("length", 0.0)) > 0.0:
+			var change := {"stride": float(h["length"]), "ease": "linear", "tracks": h.get("tracks", {}), "body": h.get("body", [])}
+			change["curves"] = _once_curves(change)
+			_start_gait["from"] = float(h.get("from", 0.0))
+			_start_gait["to"] = float(h.get("to", 0.0))
+			_start_gait["handoff"] = change
+
+
+## The cyclic curves of a gait's tracks and body.
+func _cycle_curves(g: Dictionary) -> Dictionary:
+	var out := {}
+	var ease := str(g.get("ease", "smooth"))
+	var cycles: Dictionary = g.get("tracks", {})
+	for name in cycles.keys():
+		out[name] = cycle_curve((cycles[name] as Dictionary).get("keys", []), ease)
+	if not g.get("body", []).is_empty():
+		out[BODY] = cycle_curve(g["body"], ease)
+	return out
+
+
+## The stride a gait changes in as curves: once through, its first key the start gait's pose
+## and its last the gait's own, never wrapping (cycle_curve would read its end as its start).
+func _once_curves(g: Dictionary) -> Dictionary:
+	var out := {}
+	var tracks: Dictionary = g.get("tracks", {})
+	for name in tracks.keys():
+		out[name] = curve((tracks[name] as Dictionary).get("keys", []), 1.0, "linear")
+	if not g.get("body", []).is_empty():
+		out[BODY] = curve(g["body"], 1.0, "linear")
+	return out
 
 
 ## Read the model's tags and its sidecar. Call once the materials are applied (the glows
@@ -228,7 +446,16 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 		if a is Dictionary and a.has("name"):
 			acts.append(a)
 	move = side.get("move", {})
-	gait = side.get("gait", {}) if side.get("gait", {}) is Dictionary else {}
+	heft = float(move.get("heft", HEFT_DEFAULT))
+	gait_options = side.get("gait_options", {}) if side.get("gait_options", {}) is Dictionary else {}
+	spinners = {}
+	_spun = {}
+	var sp: Dictionary = side.get("spin", {}) if side.get("spin", {}) is Dictionary else {}
+	for name in sp.keys():
+		if joints.has(name) and sp[name] is Array and (sp[name] as Array).size() >= 2:
+			spinners[name] = [float(sp[name][0]), float(sp[name][1])]
+			_spun[name] = 0.0
+	use_gait(side.get("gait", {}) if side.get("gait", {}) is Dictionary else {})
 	_body_rest_pos = body.position
 	_body_rest_rot = body.rotation
 	_rng.seed = hash(model_id) ^ (randi() if phase < 0 else phase * 7919)
@@ -244,8 +471,19 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 	_accel = 0.0
 	_bank = 0.0
 	_tilt = Vector2.ZERO
+	_steer.clear()
+	_travel = 0.0
+	_handing = false
 	_drift = 0.0
-	_aim_hold.clear()
+	_current = {}
+	_curves = {}
+	_want_rot.clear()
+	_want_slide.clear()
+	_body_want_rot = Vector3.ZERO
+	_body_want_slide = Vector3.ZERO
+	_servo.clear()
+	_act_rot.clear()
+	_act_slide.clear()
 	_gait_rot.clear()
 	_gait_slide.clear()
 	var treads: Dictionary = gait.get("treads", {})
@@ -270,40 +508,65 @@ func _collect(node: Node) -> void:
 		_collect(c)
 
 
-## Whether anything here moves on its own: acts to play, a strike still swinging, a gait
-## under the debug switch.
+## Whether anything here moves on its own: acts to play, a part still settling, a strike
+## still swinging, a gait under the debug switch.
+## Whether an act is playing now (a hovercraft's balance quietens through one).
+func in_act() -> bool:
+	return not _current.is_empty()
+
+
 func alive() -> bool:
-	return not acts.is_empty() or not _strikes.is_empty() or not _current.is_empty() or (debug_move and not gait.is_empty())
+	return not acts.is_empty() or not _strikes.is_empty() or not _current.is_empty() or not _servo.is_empty() or (debug_move and not gait.is_empty())
 
 
-## Advance the clock: the act playing, the gap to the next one, and the strikes.
+## Advance the clock: the act playing, the gap to the next one, the servos and the strikes,
+## in steps no longer than STEP, so a long tick lands where frames would have.
 func tick(delta: float) -> void:
 	if model == null:
 		return
 	var moved := false
+	var left := delta
+	while left > 0.0:
+		var dt := minf(left, STEP)
+		left -= dt
+		if _step(dt):
+			moved = true
+	# What turns without end turns whatever else is happening, faster as the move blends in.
+	for name in spinners.keys():
+		var r: Array = spinners[name]
+		_spun[name] = fposmod(float(_spun[name]) + lerpf(float(r[0]), float(r[1]), _blend) * delta, 360.0)
+		moved = true
+	if debug_move and not gait.is_empty():
+		drive(top_speed, 0.0, 0.0, delta)
+	elif moved:
+		_pose()
+
+
+func _step(dt: float) -> bool:
+	var moved := false
 	if not _current.is_empty():
-		_t += delta
+		_t += dt
 		_evaluate_act()
 		moved = true
 		if _t >= float(_current.get("duration", 0.0)):
 			_end_act()
 	elif not acts.is_empty() and not moving:   # a pilot on the move has no hands free for an act
-		_wait -= delta
+		_wait -= dt
 		if _wait <= 0.0:
 			var next := choose()
 			if not next.is_empty():
 				_start(next)
 				_evaluate_act()
 				moved = true
+	if not _servo.is_empty() or not _want_rot.is_empty() or _body_want_rot != Vector3.ZERO or _body_want_slide != Vector3.ZERO:
+		_follow(dt)
+		moved = true
 	if not _strikes.is_empty():
 		for st in _strikes:
-			st["t"] = float(st["t"]) + delta
+			st["t"] = float(st["t"]) + dt
 		_strikes = _strikes.filter(func(st): return float(st["t"]) < float(st["up"]) + float(st["down"]))
 		moved = true
-	if debug_move and not gait.is_empty():
-		drive(MOVE_REF_SPEED, 0.0, 0.0, delta)
-	elif moved:
-		_pose()
+	return moved
 
 
 ## The next act: random among the machine's own, never the one just played (Ryan, 2
@@ -315,9 +578,14 @@ func choose() -> Dictionary:
 		for a in acts:
 			if str(a["name"]) == debug:
 				return a
-	if acts.size() == 1:
-		return acts[0]
-	var pool: Array = acts.filter(func(a): return str(a["name"]) != last_act)
+	# An act may be for the map or the skirmish alone (Ryan, 5 October: the Sparrowhawk's loop
+	# and circle mean nothing in the skirmish's frame); this machine plays what fits its place.
+	var here: Array = acts.filter(func(a): return place.is_empty() or (a.get("places", []) as Array).is_empty() or (a.get("places", []) as Array).has(place))
+	if here.is_empty():
+		return {}
+	if here.size() == 1:
+		return here[0]
+	var pool: Array = here.filter(func(a): return str(a["name"]) != last_act)
 	return pool[_rng.randi_range(0, pool.size() - 1)]
 
 
@@ -336,6 +604,16 @@ func _start(a: Dictionary) -> void:
 	_current = a
 	_t = 0.0
 	last_act = str(a["name"])
+	var duration := float(a.get("duration", 0.0))
+	var ease := str(a.get("ease", "smooth"))
+	_act_heft = float(a.get("heft", heft))
+	_curves = {}
+	var tracks: Dictionary = a.get("tracks", {})
+	for name in tracks.keys():
+		if joints.has(name):
+			_curves[name] = curve(tracks[name], duration, ease)
+	if not a.get("body", []).is_empty():
+		_curves[BODY] = curve(a["body"], duration, ease)
 	_glow = []
 	for g in a.get("glow", []):
 		var mats: Array = []
@@ -344,42 +622,88 @@ func _start(a: Dictionary) -> void:
 		var base: Array = []
 		for m in mats:
 			base.append((m as StandardMaterial3D).emission_energy_multiplier)
-		_glow.append({"keys": g.get("keys", []), "mats": mats, "base": base})
+		_glow.append({"curve": curve(g.get("keys", []), duration, ease), "mats": mats, "base": base})
 
 
+## The act is over: its glows go back to rest and its asks to nothing, and the servos bring
+## every part home from wherever its weight has carried it, each angle first taken the short
+## way round (a loop or a spin ends a whole turn on, which is the pose it started in, so it
+## never unwinds; Ryan, 5 October).
 func _end_act() -> void:
+	for name in _servo.keys():
+		var st: Array = _servo[name]
+		var r: Vector3 = st[0]
+		st[0] = Vector3(wrapf(r.x, -180.0, 180.0), wrapf(r.y, -180.0, 180.0), wrapf(r.z, -180.0, 180.0))
 	for g in _glow:
 		for i in range(g["mats"].size()):
 			(g["mats"][i] as StandardMaterial3D).emission_energy_multiplier = float(g["base"][i])
 	_glow = []
 	_current = {}
-	_act_rot.clear()
-	_act_slide.clear()
-	_body_act_rot = Vector3.ZERO
-	_body_act_slide = Vector3.ZERO
+	_curves = {}
+	_want_rot.clear()
+	_want_slide.clear()
+	_body_want_rot = Vector3.ZERO
+	_body_want_slide = Vector3.ZERO
 	_wait = GAP_DEBUG if not debug.is_empty() else _rng.randf_range(GAP_MIN, GAP_MAX)
-	_pose()
 
 
+## What the act asks of each part at this moment: the servos chase it (_follow).
 func _evaluate_act() -> void:
-	var duration := float(_current.get("duration", 0.0))
-	var ease := str(_current.get("ease", "smooth"))
-	var tracks: Dictionary = _current.get("tracks", {})
-	for name in tracks.keys():
-		if not joints.has(name):
+	for name in _curves.keys():
+		var v := curve_at(_curves[name], _t)
+		if name == BODY:
+			_body_want_slide = Vector3(float(v[0]), float(v[1]), float(v[2]))
+			_body_want_rot = Vector3(float(v[4]), float(v[3]), float(v[5])) if v.size() >= 6 else Vector3.ZERO   # authored (yaw, pitch, roll)
 			continue
-		var v := sample(tracks[name], _t, duration, ease)
-		_act_rot[name] = Vector3(float(v[0]), float(v[1]), float(v[2]))
-		_act_slide[name] = Vector3(float(v[3]), float(v[4]), float(v[5])) if v.size() >= 6 else Vector3.ZERO
-	var body_keys: Array = _current.get("body", [])
-	if not body_keys.is_empty():
-		var v := sample(body_keys, _t, duration, ease)
-		_body_act_slide = Vector3(float(v[0]), float(v[1]), float(v[2]))
-		_body_act_rot = Vector3(float(v[4]), float(v[3]), float(v[5]))   # authored (yaw, pitch, roll)
+		_want_rot[name] = Vector3(float(v[0]), float(v[1]), float(v[2]))
+		_want_slide[name] = Vector3(float(v[3]), float(v[4]), float(v[5])) if v.size() >= 6 else Vector3.ZERO
 	for g in _glow:
-		var k := float(sample(g["keys"], _t, duration, ease)[0]) + 1.0   # the keys are offsets from rest: 0 is the base light
+		var k := float(curve_at(g["curve"], _t)[0]) + 1.0   # the keys are offsets from rest: 0 is the base light
 		for i in range(g["mats"].size()):
 			(g["mats"][i] as StandardMaterial3D).emission_energy_multiplier = float(g["base"][i]) * maxf(0.0, k)
+
+
+## The machine's weight (Ryan, 4 October, the third pass: heavy, with inertia, real machines
+## and not toys): every part an act moves, and the body, is driven to what the act asks by
+## a servo, a mass on a spring a touch under critical damping, so it gathers speed, carries
+## a little past its mark and settles, `heft` seconds its time constant. A wheel the gait
+## spins takes the act's keys as they are. A part home and still drops out.
+func _follow(dt: float) -> void:
+	var w := 1.0 / maxf(0.02, _act_heft if not _current.is_empty() else heft)
+	var names := {}
+	for name in _servo.keys():
+		names[name] = true
+	for name in _want_rot.keys():
+		names[name] = true
+	if _body_want_rot != Vector3.ZERO or _body_want_slide != Vector3.ZERO:
+		names[BODY] = true
+	for name in names.keys():
+		var want_r: Vector3 = _body_want_rot if name == BODY else _want_rot.get(name, Vector3.ZERO)
+		var want_s: Vector3 = _body_want_slide if name == BODY else _want_slide.get(name, Vector3.ZERO)
+		var st: Array
+		if _spin.has(name):
+			st = [want_r, Vector3.ZERO, want_s, Vector3.ZERO]
+		else:
+			st = _servo.get(name, [Vector3.ZERO, Vector3.ZERO, Vector3.ZERO, Vector3.ZERO])
+			var vr: Vector3 = st[1] + (w * w * (want_r - (st[0] as Vector3)) - 2.0 * DAMPING * w * (st[1] as Vector3)) * dt
+			var vs: Vector3 = st[3] + (w * w * (want_s - (st[2] as Vector3)) - 2.0 * DAMPING * w * (st[3] as Vector3)) * dt
+			st = [(st[0] as Vector3) + vr * dt, vr, (st[2] as Vector3) + vs * dt, vs]
+		var home: bool = want_r == Vector3.ZERO and want_s == Vector3.ZERO and (st[0] as Vector3).length() < 0.02 \
+			and (st[1] as Vector3).length() < 0.05 and (st[2] as Vector3).length() < 0.005 and (st[3] as Vector3).length() < 0.01
+		if home:
+			_servo.erase(name)
+			st = [Vector3.ZERO, Vector3.ZERO, Vector3.ZERO, Vector3.ZERO]
+		else:
+			_servo[name] = st
+		if name == BODY:
+			_body_act_rot = st[0]
+			_body_act_slide = st[2]
+		elif home:
+			_act_rot.erase(name)
+			_act_slide.erase(name)
+		else:
+			_act_rot[name] = st[0]
+			_act_slide[name] = st[2]
 
 
 ## Rest plus the act plus the gait plus the strikes, clamped to the joint's limits, on every
@@ -393,6 +717,8 @@ func _pose() -> void:
 				deg += (st["vec"] as Vector3) * _strike_envelope(st)
 		var m: Dictionary = meta.get(name, {})
 		deg = clamp_degrees(deg, m.get("limits", {}))
+		if _spun.has(name):
+			deg[["pitch", "yaw", "roll"].find(str(m.get("axis", "yaw")))] += float(_spun[name])
 		j.rotation = _rest[name] + euler_of(deg)
 		var slide: Vector3 = _act_slide.get(name, Vector3.ZERO) + _gait_slide.get(name, Vector3.ZERO)
 		if slide != Vector3.ZERO or j.position != _rest_pos[name]:
@@ -404,28 +730,12 @@ func _pose() -> void:
 
 # ---------------------------------------------------------------- movement
 
-## Cyclic keys sampled at a phase in [0, 1): the track wraps, so the key at 1 is the key at 0
-## unless one is authored there; eased between keys like an act's.
+## Cyclic keys sampled at a phase (the curve through them, at once): for one look, not a
+## frame loop; the rig keeps its gait's curves from setup.
 static func sample_cycle(keys: Array, phase: float, ease: String = "smooth") -> Array:
 	if keys.is_empty():
 		return []
-	var pts: Array = []
-	for k in keys:
-		pts.append((k as Array).duplicate())
-	pts.sort_custom(func(a, b): return float(a[0]) < float(b[0]))
-	var first: Array = pts[0]
-	if float(first[0]) > 0.0:
-		var k0 := first.duplicate()
-		k0[0] = float(pts[pts.size() - 1][0]) - 1.0   # the last key, wrapped round before the start
-		for i in range(1, k0.size()):
-			k0[i] = pts[pts.size() - 1][i]
-		pts.push_front(k0)
-	if float(pts[pts.size() - 1][0]) < 1.0:
-		var k1: Array = pts[0].duplicate() if float(pts[0][0]) >= 0.0 else pts[1].duplicate()
-		k1[0] = float(k1[0]) + 1.0
-		pts.append(k1)
-	var p := fposmod(phase, 1.0)
-	return sample(pts, p, 2.0, ease)
+	return curve_at(cycle_curve(keys, ease), fposmod(phase, 1.0))
 
 
 ## One frame of movement. `speed` is model units a second along the travel; `aim` the bearing
@@ -438,72 +748,152 @@ func drive(speed: float, aim: float, turn: float, delta: float) -> void:
 	var prev := _speed
 	_speed = lerpf(_speed, maxf(0.0, speed), 1.0 - exp(-delta / 0.12))
 	_accel = lerpf(_accel, (_speed - prev) / delta, 1.0 - exp(-delta / 0.15))
-	moving = speed > 0.5
+	var pivot := minf(absf(turn) * PIVOT_STEP * maxf(1.0, float(gait.get("stride", 40.0))), PIVOT_CAP * top_speed) * (1.0 - clampf(_speed / PIVOT_FADE, 0.0, 1.0)) if absf(turn) > PIVOT_MIN else 0.0
+	moving = speed > 0.5 or pivot > 0.0
 	var target := 1.0 if moving else 0.0
 	var rate := MOVE_BLEND_IN if moving else MOVE_BLEND_OUT
+	var stood := _blend < 0.05   # the gait not yet showing as this frame begins
 	_blend = move_toward(_blend, target, delta / rate)
-	_dist += _speed * delta
-	var bank_want := float(move.get("bank", 0.0)) * clampf(-turn / BANK_TURN, -1.0, 1.0)   # a left turn drops the left wing: roll negative
+	_dist += (_speed + pivot) * delta
+	if speed > 0.5 or _speed > 0.5:
+		if _travel <= 0.0:
+			_set_off(stood)
+		_travel += _speed * delta
+	else:
+		_travel = 0.0
+		_handing = false
+	var bank_want := float(move.get("bank", 0.0)) * clampf(-turn / BANK_TURN, -1.0, 1.0) * clampf(_speed / BANK_SPEED, 0.0, 1.0)   # a left turn drops the left wing: roll negative
 	_bank = lerpf(_bank, bank_want, 1.0 - exp(-delta / 0.3))
 	# A helicopter's tilt: it leans into its travel by its speed, nose down going forward,
-	# nose up going back, the left side down going left (the roll is positive right-down).
+	# nose up going back, the left side down going left (the roll is positive right-down). A
+	# third number is the share of the nose-down it sheds in a turn, as it banks and pulls into
+	# the corner (Ryan, 7 October, the nineteenth notes: a helicopter pulls into the turn after
+	# banking, as a plane does), all of it at the turn rate that earns the whole bank.
 	var tilt_spec: Array = move.get("tilt", [])
 	if tilt_spec.size() >= 2:
 		var share := clampf(_speed / MOVE_REF_SPEED, 0.0, 1.0)
-		var want := Vector2(-float(tilt_spec[0]) * cos(aim), -float(tilt_spec[1]) * sin(aim)) * share
+		var pull := float(tilt_spec[2]) * clampf(absf(turn) / BANK_TURN, 0.0, 1.0) if tilt_spec.size() >= 3 else 0.0
+		var want := Vector2(-float(tilt_spec[0]) * cos(aim) * (1.0 - pull), -float(tilt_spec[1]) * sin(aim)) * share
 		_tilt = _tilt.lerp(want, 1.0 - exp(-delta / 0.35))
+	# Steered joints follow the turn on a servo, easing toward their limits (Ryan, 7 October,
+	# the nineteenth notes: the Prairie Dog's wheels jumped from straight to full lock).
+	var steer: Dictionary = gait.get("steer", {})
+	for name in steer.keys():
+		_steer[name] = lerpf(float(_steer.get(name, 0.0)), steer_soft(name, turn * float(steer[name])), 1.0 - exp(-delta / STEER_EASE))
 	# The slide: a body with inertia sits off a path that turned under it, on the outside,
 	# by how square the travel is to its facing (the Dingo's drift; a hovercraft's a little).
 	var drift_want := float(move.get("slide", 0.0)) * DRIFT_UNITS * sin(aim) * clampf(_speed / MOVE_REF_SPEED, 0.0, 1.0)
 	_drift = lerpf(_drift, drift_want, 1.0 - exp(-delta / 0.3))
-	# A turret holding its aim while the hull turns under it: it winds against the turn and
-	# relaxes back to centre once the hull runs straight (the Wild Boar, the Prairie Dog).
-	for name in gait.get("hold_aim", {}).keys():
-		var held := float(_aim_hold.get(name, 0.0))
-		if absf(turn) > 0.15:
-			held = clampf(held - rad_to_deg(turn) * delta * float(gait["hold_aim"][name]), -AIM_HOLD_MAX, AIM_HOLD_MAX)
-		else:
-			held = lerpf(held, 0.0, 1.0 - exp(-delta / AIM_RELAX))
-		_aim_hold[name] = held
 	_evaluate_gait(aim, turn)
 	_pose()
+
+
+## Setting off from a standstill with a start gait that hands over: the start gait set to its
+## handoff's moment, when it is not yet showing (a machine that stepped round on the spot
+## first keeps its step, and the change counts from that moment of its stride nearest now),
+## and the gait's own phase set to meet the change's end.
+func _set_off(stood: bool) -> void:
+	if not _start_gait.has("handoff"):
+		return
+	var s := maxf(1.0, float((_start_gait["gait"] as Dictionary).get("stride", 40.0)))
+	if stood:
+		_start_offset = float(_start_gait["from"]) * s - _dist
+		_handoff_at = _dist
+	else:
+		var past := fposmod((_dist + _start_offset) / s - float(_start_gait["from"]) + 0.5, 1.0) - 0.5
+		_handoff_at = _dist - past * s
+	_main_offset = float(_start_gait["to"]) * maxf(1.0, float(gait.get("stride", 40.0))) - _handoff_at
+	_handing = true
+
+
+## How much of its moving is the gait it starts and stops in, by its share of its full
+## speed: 1 under the start's `below`, 0 over its `full` (0 for a gait that names none); and
+## wholly that gait standing, and off the mark until the stride it changes in begins.
+func start_weight() -> float:
+	if _start_gait.is_empty():
+		return 0.0
+	if _start_gait.has("handoff") and (not _handing or _dist < _handoff_at):
+		return 1.0
+	return 1.0 - smoothstep(float(_start_gait["below"]), float(_start_gait["full"]), _speed / maxf(1.0, top_speed))
+
+
+## Whether the stride a machine changes gait in is playing (the twenty-second notes): from
+## its handoff's start to its length, after which the gait's own cycle takes over where the
+## change ends.
+func changing() -> bool:
+	return _handing and _start_gait.has("handoff") and _dist >= _handoff_at and _dist - _handoff_at < float(_start_gait["handoff"]["stride"])
+
+
+## A gait's cycles at `weight` (its tracks and its body's bob, each at its stride's phase,
+## `offset` units on), added to the gait's joints and to `body` ([slide, turn]).
+func _add_cycles(g: Dictionary, curves: Dictionary, weight: float, offset: float, body_out: Array) -> void:
+	if weight <= 0.0:
+		return
+	var phase := fposmod((_dist + offset) / maxf(1.0, float(g.get("stride", 40.0))), 1.0)
+	var k := _blend * weight
+	var tracks: Dictionary = g.get("tracks", {})
+	for name in tracks.keys():
+		if not joints.has(name) or not curves.has(name):
+			continue
+		var tr: Dictionary = tracks[name]
+		var v := curve_at(curves[name], fposmod(phase + float(tr.get("phase", 0.0)), 1.0))
+		if v.size() >= 3:
+			_gait_rot[name] = _gait_rot.get(name, Vector3.ZERO) + Vector3(float(v[0]), float(v[1]), float(v[2])) * k
+		if v.size() >= 6:
+			_gait_slide[name] = _gait_slide.get(name, Vector3.ZERO) + Vector3(float(v[3]), float(v[4]), float(v[5])) * k
+	if curves.has(BODY):
+		var v := curve_at(curves[BODY], phase)
+		if v.size() >= 6:
+			body_out[0] += Vector3(float(v[0]), float(v[1]), float(v[2])) * k
+			body_out[1] += Vector3(float(v[4]), float(v[3]), float(v[5])) * k   # authored (yaw, pitch, roll)
+
+
+## Degrees a steered joint turns for `raw` (its gain times the turn rate): eased toward its
+## limit on its axis that way rather than stopped hard at it, so a knuckle comes round to full
+## lock as the turn builds.
+func steer_soft(name: String, raw: float) -> float:
+	var m: Dictionary = meta.get(name, {})
+	var lim: Dictionary = m.get("limits", {})
+	var axis := str(m.get("axis", "yaw"))
+	if not (lim.has(axis) and lim[axis] is Array and (lim[axis] as Array).size() == 2):
+		return raw
+	var edge := absf(float(lim[axis][1] if raw > 0.0 else lim[axis][0]))
+	return raw if edge <= 0.0 else edge * tanh(raw / edge)
 
 
 func _evaluate_gait(aim: float, turn: float) -> void:
 	_gait_rot.clear()
 	_gait_slide.clear()
-	var stride := maxf(1.0, float(gait.get("stride", 40.0)))
-	var phase := fposmod(_dist / stride, 1.0)
-	var ease := str(gait.get("ease", "smooth"))
-	# The cycles: a walk, stride by stride.
-	var tracks: Dictionary = gait.get("tracks", {})
-	for name in tracks.keys():
-		if not joints.has(name):
-			continue
-		var tr: Dictionary = tracks[name]
-		var v := sample_cycle(tr.get("keys", []), phase + float(tr.get("phase", 0.0)), ease)
-		if v.size() >= 3:
-			_gait_rot[name] = Vector3(float(v[0]), float(v[1]), float(v[2])) * _blend
-		if v.size() >= 6:
-			_gait_slide[name] = Vector3(float(v[3]), float(v[4]), float(v[5])) * _blend
+	# The cycles: a walk, stride by stride, and the gait it starts and stops in by its share
+	# of the speed (use_gait), each at its own stride's phase.
+	# Off the mark, the stride it changes gait in plays in place of its own (use_gait).
+	var start_w := start_weight()
+	var cyc_body := [Vector3.ZERO, Vector3.ZERO]   # the body's (slide, turn) from the cycles
+	if changing():
+		_add_cycles(_start_gait["handoff"], _start_gait["handoff"]["curves"], 1.0 - start_w, -_handoff_at, cyc_body)
+	else:
+		_add_cycles(gait, _gait_curves, 1.0 - start_w, _main_offset, cyc_body)
+	if start_w > 0.0:
+		_add_cycles(_start_gait["gait"], _start_gait["curves"], start_w, _start_offset, cyc_body)
 	# Wheels spin by their radius, forward a negative pitch, and never unwind.
 	var wheels: Dictionary = gait.get("wheels", {})
 	for name in wheels.keys():
 		if joints.has(name):
 			var r := maxf(0.1, float(wheels[name]))
 			_gait_rot[name] = _gait_rot.get(name, Vector3.ZERO) + Vector3(-fposmod(rad_to_deg(_dist / r), 360.0), 0.0, 0.0)
-	# Steering knuckles turn with the turn; casters point along the travel.
+	# Steering knuckles turn with the turn, each about its own axis (a knuckle yaws; the Goshawk's
+	# nacelles pitch, vectoring through a turn: Ryan, 7 October, the eighteenth notes), as far
+	# as their servo has followed it (drive); casters point along the travel.
 	var steer: Dictionary = gait.get("steer", {})
 	for name in steer.keys():
 		if joints.has(name):
-			_gait_rot[name] = _gait_rot.get(name, Vector3.ZERO) + Vector3(0.0, rad_to_deg(turn) * float(steer[name]) * _blend, 0.0)
+			var by := Vector3.ZERO
+			by[maxi(0, ["pitch", "yaw", "roll"].find(str(meta.get(name, {}).get("axis", "yaw"))))] = float(_steer.get(name, 0.0)) * _blend
+			_gait_rot[name] = _gait_rot.get(name, Vector3.ZERO) + by
 	var casters: Dictionary = gait.get("aim", {})
 	for name in casters.keys():
 		if joints.has(name):
 			_gait_rot[name] = _gait_rot.get(name, Vector3.ZERO) + Vector3(0.0, rad_to_deg(aim) * float(casters[name]) * _blend, 0.0)
-	for name in _aim_hold.keys():
-		if joints.has(name):
-			_gait_rot[name] = _gait_rot.get(name, Vector3.ZERO) + Vector3(0.0, float(_aim_hold[name]), 0.0)
 	# Offsets held while moving: a claw carried clear of the ground, nacelles tilted.
 	var hold: Dictionary = gait.get("hold", {})
 	for name in hold.keys():
@@ -512,14 +902,8 @@ func _evaluate_gait(aim: float, turn: float) -> void:
 			_gait_rot[name] = _gait_rot.get(name, Vector3.ZERO) + Vector3(float(h[0]), float(h[1]), float(h[2])) * _blend
 	# The body: a bob over the cycle, a held attitude, the rock on pulling away and
 	# stopping, and the bank into a turn.
-	var body_rot := Vector3.ZERO
-	var body_slide := Vector3.ZERO
-	var body_keys: Array = gait.get("body", [])
-	if not body_keys.is_empty():
-		var v := sample_cycle(body_keys, phase, ease)
-		if v.size() >= 6:
-			body_slide += Vector3(float(v[0]), float(v[1]), float(v[2])) * _blend
-			body_rot += Vector3(float(v[4]), float(v[3]), float(v[5])) * _blend   # authored (yaw, pitch, roll)
+	var body_rot: Vector3 = cyc_body[1]
+	var body_slide: Vector3 = cyc_body[0]
 	var bh: Array = gait.get("body_hold", [])
 	if bh.size() >= 6:
 		body_slide += Vector3(float(bh[0]), float(bh[1]), float(bh[2])) * _blend

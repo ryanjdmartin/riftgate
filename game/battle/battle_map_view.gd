@@ -1353,9 +1353,27 @@ func _preview() -> Dictionary:
 # ---------------------------------------------------------------- the movement phase
 
 const MOVE_SECONDS_PER_HEX := 0.22   # the packs' step: the fastest anything moves (Ryan, 22 September); they are pictures with nothing to show
-const MECH_SECONDS_PER_HEX := 0.55   # a machine's step at full speed (Ryan, 4 October: slower, so the walks and the corners breathe)
+## A machine's step at full speed, seconds a hex, by its move (Ryan, 5 October: the walkers
+## plod better at the third pass's pace, but the 20s and 30s want to be slower and the 40s
+## and 50s faster, so the pace is a table rather than one step slowed in proportion). Between
+## the tens it runs straight; past the ends it holds.
+const MECH_PACE := {10: 2.8, 20: 1.9, 30: 1.25, 40: 0.55, 50: 0.42, 60: 0.36}
 static var pace := 1.0               # the player's setting: seconds per hex are divided by it
-const MOVE_REF_SPEED := 50.0         # a unit this quick (moves are in tens) moves at that pace; slower ones slower
+const MOVE_REF_SPEED := 50.0         # the packs' reference: a pack this quick takes MOVE_SECONDS_PER_HEX a hex, slower ones slower
+
+
+## Seconds a hex at full speed for a machine of move `move` (MECH_PACE).
+static func mech_seconds_per_hex(move: float) -> float:
+	var keys: Array = MECH_PACE.keys()
+	keys.sort()
+	if move <= float(keys[0]):
+		return float(MECH_PACE[keys[0]])
+	for i in range(1, keys.size()):
+		if move <= float(keys[i]):
+			var a := float(keys[i - 1])
+			var b := float(keys[i])
+			return lerpf(float(MECH_PACE[keys[i - 1]]), float(MECH_PACE[keys[i]]), (move - a) / (b - a))
+	return float(MECH_PACE[keys[keys.size() - 1]])
 var _anim: Dictionary = {}      # unit id -> {path, t, curve: MovePath, hex: the step reached}
 var _anim_queue: Array = []     # [[moves], ...] phases still to play: mechs, then packs
 var _anim_done: Callable = Callable()
@@ -1403,8 +1421,8 @@ func _next_anim_phase() -> void:
 
 
 ## A move as a curve with a speed along it (MovePath). A machine takes its own step and its
-## acceleration and cornering from its rig sidecar through the 3D map; the packs keep the old
-## straight hex-to-hex lines at their fixed step. Slower units move slower either way.
+## acceleration from its rig sidecar through the 3D map; the packs keep the old straight
+## hex-to-hex lines at their fixed step. Slower units move slower either way.
 func _curve_for(uid: int, path: Array) -> MovePath:
 	var u := field.unit_by_id(uid)
 	var centres: Array = path.map(func(h): return Hex.to_pixel(h, HEX_SIZE))
@@ -1412,9 +1430,12 @@ func _curve_for(uid: int, path: Array) -> MovePath:
 	var slow := maxf(1.0, MOVE_REF_SPEED / maxf(1.0, float(u.movespeed if u != null else MOVE_REF_SPEED)))
 	if u != null and u.is_player():
 		var mv: Dictionary = _map3d.motion_of(uid) if _map3d != null else {}
-		var top := step_px / (MECH_SECONDS_PER_HEX * slow)
-		return MovePath.build(centres, top, float(mv.get("accel", MovePath.ACCEL_DEFAULT)), float(mv.get("corner", MovePath.CORNER_DEFAULT)))
-	return MovePath.build(centres, step_px / (MOVE_SECONDS_PER_HEX * slow), 0.001, 0.0, false)
+		var top := step_px / mech_seconds_per_hex(float(u.movespeed))
+		var mp := MovePath.build(centres, top, float(mv.get("accel", MovePath.ACCEL_DEFAULT)))
+		if _map3d != null and centres.size() >= 2:
+			mp.hold_start(_map3d.setoff_seconds(uid, (centres[1] as Vector2) - (centres[0] as Vector2)))   # it turns onto its way first (the twentieth notes)
+		return mp
+	return MovePath.build(centres, step_px / (MOVE_SECONDS_PER_HEX * slow), 0.001, false)
 
 
 func _advance_anim(delta: float) -> void:
@@ -1436,7 +1457,12 @@ func _advance_anim(delta: float) -> void:
 		var px: Vector2 = here[0]
 		_anim_px[uid] = px
 		if _map3d != null:
-			_map3d.set_anim(uid, px, here[1])
+			var t := float(a["t"])
+			var over := float(_map3d.motion_of(uid).get("oversteer", 0.0))   # a drifter looks further ahead, over a longer stretch (Map3D.oversteer_ease)
+			var w := Map3D.oversteer_window(over) * 0.5
+			var ah := Map3D.oversteer_ahead(over)
+			var tp := Map3D.oversteer_ease(over)   # its stretch tapered, the middle counting most (the fourteenth notes)
+			_map3d.set_anim(uid, px, here[1], curve.chord_tapered(t + ah, w, tp), curve.chord_tapered(t, w, tp))
 	for uid in finished:
 		_anim.erase(uid)
 		_anim_px.erase(uid)

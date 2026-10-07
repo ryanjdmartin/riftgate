@@ -81,8 +81,8 @@
    }
   },
   "clydesdale": {
-   "when": "Thirteenth round, 1 October.",
-   "note": "The autogun turrets lower, the guns barely clearing the rail, and forward a little. The mortar's and the howitzer's mounts at one height.",
+   "when": "The fifteenth notes, 6 October.",
+   "note": "The shins stand plumb, each hoof under its knee, the knee three forward of the hip, so only the thigh angles (Ryan: the stance leaned too far forward; a straight leg, a straight calf or less of a lean). It gallops, pushed toward a lumbering giant (the sixteenth notes): barely airborne, the hull rocking and sinking onto every hoof; the trot is an option on the hangar's Walk.",
    "images": [
     {
      "file": "clydesdale/clydesdale_front.png",
@@ -91,25 +91,25 @@
     {
      "file": "clydesdale/clydesdale_rear.png",
      "alt": "clydesdale, rear"
+    },
+    {
+     "file": "clydesdale/clydesdale_side.png",
+     "alt": "clydesdale, left side"
     }
    ],
    "before": {
-    "summary": "Before: Twelfth round, 1 October",
+    "summary": "Before: the eleventh notes, 6 October (the knee four forward, the shin raking back to a hoof under the hip)",
     "images": [
      {
-      "file": "clydesdale/before_clydesdale_front.png",
-      "alt": "Earlier: clydesdale, front"
-     },
-     {
-      "file": "clydesdale/before_clydesdale_rear.png",
-      "alt": "Earlier: clydesdale, rear"
+      "file": "clydesdale/before_clydesdale_side.png",
+      "alt": "Earlier: clydesdale, left side"
      }
     ]
    }
   },
   "sparrowhawk": {
-   "when": "Fourth round, 30 September.",
-   "note": "Unchanged; rendered bare.",
+   "when": "The ninth notes, 6 October.",
+   "note": "The wings' roots sit inside the fuselage at their leading edge (Ryan: not sure its wings meet the front of the fuselage; they stood just proud of it, by under a unit, where the fuselage narrows). The exhausts' fitted glow as before.",
    "images": [
     {
      "file": "sparrowhawk/sparrowhawk_front.png",
@@ -121,7 +121,7 @@
     }
    ],
    "before": {
-    "summary": "Before: Mount rule, 30 September",
+    "summary": "Before: the fourth acts pass, 5 October (the wing roots just proud of the fuselage at the front)",
     "images": [
      {
       "file": "sparrowhawk/before_sparrowhawk_front.png",
@@ -162,8 +162,8 @@
    }
   },
   "armadillo": {
-   "when": "Fourteenth round, 1 October.",
-   "note": "A firing channel cut through the front band ahead of each forward port, so a gun fitted there lies in a trough instead of running into the shell; the channel in the base metal, and the slab between the two channels cut away, so the front band steps down to one wide firing deck. The last picture is the machine with a Slug Cannon and a Missile Rack fitted to those two ports.",
+   "when": "The sixth notes, 5 October.",
+   "note": "A square channel cut through the shell along the missile cell's own line, so the cell slides up out of it instead of through the top panel; the stripe frame a sleeve over its lower part, floored dark deep in the shell. The last picture is still the fourteenth round's, with a Slug Cannon and a Missile Rack fitted to the forward ports.",
    "images": [
     {
      "file": "armadillo/armadillo_front.png",
@@ -179,7 +179,7 @@
     }
    ],
    "before": {
-    "summary": "Before: Thirteenth round, 1 October",
+    "summary": "Before: the fifth notes, 5 October (the cell's frame sitting on the shell)",
     "images": [
      {
       "file": "armadillo/before_armadillo_front.png",
@@ -220,8 +220,8 @@
    }
   },
   "prairie_dog": {
-   "when": "Tenth round, 1 October.",
-   "note": "The launcher is the class rack now, its tube face one whole tile (the hand-built box showed a quarter of the tile). The mast a little shorter.",
+   "when": "The thirteenth notes, 6 October.",
+   "note": "The guards are on the body now, the wheels free under them (Ryan: the bash bars to the fenders, not the hubs; the wheels moving freely and independently). Each arch comes down at its ends: at its outer end an apron across the front of the front tyre (or the back of the rear) down to the hub, shielding it and closing the open wedge where the arch rose off the tyre, with the bash bars' hoop bolted to its face; at its inner end a drop to the long skirt plate, which hangs from the four of them, its hub bosses on it. All of it rocks with the body, raised a unit and a half so it stays clear of the ground in the rev. The front arches level and squared, meeting the nose with their lip, as the twelfth notes left them.",
    "images": [
     {
      "file": "prairie_dog/prairie_dog_front.png",
@@ -230,10 +230,14 @@
     {
      "file": "prairie_dog/prairie_dog_rear.png",
      "alt": "prairie_dog, rear"
+    },
+    {
+     "file": "prairie_dog/prairie_dog_side.png",
+     "alt": "prairie_dog, left side"
     }
    ],
    "before": {
-    "summary": "Before: Ninth round, 1 October",
+    "summary": "Before: the twelfth notes, 6 October (the plate and bars on the hubs, the arches open at their ends)",
     "images": [
      {
       "file": "prairie_dog/before_prairie_dog_front.png",
@@ -274,8 +278,8 @@
    }
   },
   "goshawk": {
-   "when": "Eleventh round, 1 October.",
-   "note": "The vent glows fill their cuts; the muzzle's hot floor a touch back in.",
+   "when": "The eighth notes, 6 October.",
+   "note": "The cannon's lights banked down at rest (a new ember tile, the glow at under a third of its light) so its charge burns far hotter against them; the spine stays lit through the whole charge. At rest the vents and the bore read dark red.",
    "images": [
     {
      "file": "goshawk/goshawk_front.png",
@@ -287,7 +291,7 @@
     }
    ],
    "before": {
-    "summary": "Before: Tenth round, 1 October",
+    "summary": "Before: the fifth notes, 5 October (the cannon's lights at the full glow at rest)",
     "images": [
      {
       "file": "goshawk/before_goshawk_front.png",
@@ -328,8 +332,8 @@
    }
   },
   "ammit": {
-   "when": "Sixth round, 1 October.",
-   "note": "Both tail slots lit whole (a new lit tile; the strip tile only lit a slot that happened to cross its one line). The back panel ends below the back's crown.",
+   "when": "The fifth notes, 5 October.",
+   "note": "Wrists on the middle hands, so the talons stay flat on the ground as it sinks, threatens and walks, and the front toes splayed a little (Ryan, 5 October). A waist under the upper body, so it turns without pivoting on its feet.",
    "images": [
     {
      "file": "ammit/ammit_front.png",
@@ -341,7 +345,7 @@
     }
    ],
    "before": {
-    "summary": "Before: Fifth round, 1 October",
+    "summary": "Before: fourth acts pass, 5 October",
     "images": [
      {
       "file": "ammit/before_ammit_front.png",
@@ -355,8 +359,8 @@
    }
   },
   "stingray": {
-   "when": "Tenth pass, 5 October.",
-   "note": "Ryan on the ninth: good other than two things: the port wing tip's weapon pointed up, and the exhaust's hot face should sit closer to the end. So: the Solar Flare Array's two pods at the left tip point forward like every other gun, stacked one over the other along the tip, and the glow sits a unit inside the mouth. The third picture is from behind.",
+   "when": "The eighth notes, 6 October.",
+   "note": "The starboard lift fan's blades mirrored (Ryan: its pitch was the port fan's while it spins the other way), so each rotor's blades lead with their raised edge as it turns. The third picture is from straight behind and above.",
    "images": [
     {
      "file": "stingray/stingray_front.png",
@@ -372,15 +376,15 @@
     }
    ],
    "before": {
-    "summary": "Before: ninth pass, 5 October (the flare pods pitched up at the left tip, the fire deeper in the duct)",
+    "summary": "Before: the tenth pass, 5 October (both rotors' blades pitched the same way)",
     "images": [
      {
       "file": "stingray/before_stingray_front.png",
-      "alt": "stingray, ninth pass, front"
+      "alt": "Earlier: stingray, front"
      },
      {
       "file": "stingray/before_stingray_rear.png",
-      "alt": "stingray, ninth pass, rear"
+      "alt": "Earlier: stingray, rear"
      }
     ]
    }
