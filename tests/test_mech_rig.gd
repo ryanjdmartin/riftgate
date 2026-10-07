@@ -683,6 +683,31 @@ func test_steering_eases_in_and_a_gait_starts_in_another() -> void:
 	pair[1].free()
 
 
+func test_turning_in_place_steps_the_legs_round_and_nothing_banks_standing() -> void:
+	# Ryan, 7 October, the twentieth notes: a machine turns onto its way before it sets off, so a
+	# walker turning on the spot steps round rather than sliding on its feet, and a flyer yawing
+	# in place keeps level.
+	var pair := _rig_for("clydesdale", 2)
+	var rig: MechRig = pair[0]
+	var d0 := rig._dist
+	for i in range(60):
+		rig.drive(0.0, 0.0, 1.5, 1.0 / 60.0)
+	assert_true(rig.moving and rig._dist - d0 > 20.0, "it steps as it turns (%f units of stride)" % (rig._dist - d0))
+	for i in range(120):
+		rig.drive(0.0, 0.0, 0.05, 1.0 / 60.0)
+	assert_true(not rig.moving, "a slow settle is not a step")
+	pair[1].free()
+	pair = _rig_for("goshawk", 2)
+	rig = pair[0]
+	for i in range(60):
+		rig.drive(0.0, 0.0, 1.5, 1.0 / 60.0)
+	assert_true(absf(rig._bank) < 0.5, "a flyer yawing in place does not bank (%f)" % rig._bank)
+	for i in range(60):
+		rig.drive(150.0, 0.0, 1.5, 1.0 / 60.0)
+	assert_true(absf(rig._bank) > 20.0, "and banks at speed (%f)" % rig._bank)
+	pair[1].free()
+
+
 func test_the_hovercraft_have_acts_and_cornering_numbers() -> void:
 	for id in ["stingray", "puffin"]:
 		var side := MechRig.load_sidecar(id)

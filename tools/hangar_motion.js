@@ -26,6 +26,7 @@ const GAP_MIN = 2.5, GAP_MAX = 6.5, GAP_DEBUG = 0.4;
 const MOVE_REF_SPEED = 150.0, MOVE_BLEND_IN = 0.25, MOVE_BLEND_OUT = 0.35;
 const ROCK_ACCEL = 200.0, BANK_TURN = 1.2, DRIFT_UNITS = 12.0;
 const STEER_EASE = 0.12;   // MechRig: seconds a steered joint takes to follow the turn, its servo
+const PIVOT_STEP = 0.5, PIVOT_FADE = 20.0, PIVOT_MIN = 0.15, BANK_SPEED = 37.5;   // MechRig: turning in place steps the legs round; nothing banks standing (the twentieth notes)
 const HEFT_DEFAULT = 0.12, DAMPING = 0.7, STEP = 1 / 60;   // the servos (MechRig._follow) and the longest step anything advances by
 const SLIDE_RATE_SNAP = 12.0, SLIDE_RATE_FULL = 2.2, STRAFE_TURN_RATE = 6.0, REST_TURN_RATE = 4.0;   // Map3D
 const OVERSTEER_AHEAD = 0.4, OVERSTEER_GAIN = 1.4, OVERSTEER_MAX = 1.45, OVERSTEER_RATE = 7.0, OVERSTEER_WINDOW = 0.5;   // Map3D: the nose leads the path into a corner, from the heading a moment ahead
@@ -43,7 +44,9 @@ const oversteerLead = (turnAhead, over) => oversteerMax(over) * Math.tanh(turnAh
 // a corner's start never jolts the nose. Returns [facing, turn rate].
 const TURN_RATE_MAX = 5.0, TURN_ACCEL_MAX = 30.0;   // Map3D: the turn rate and its change, capped
 const SETOFF_S = 0.5;   // Map3D: a move's set-off eases the aim from the facing it stood at onto the path (setoff_aim)
-const setoffAim = (from, t, want) => { const u = clamp(t / SETOFF_S, 0, 1); return from + wrapPi(want - from) * u * u * u * (u * (6 * u - 15) + 10); };
+const SETOFF_TURN_BASE = 0.6, SETOFF_TURN_PER_ACCEL = 0.4, SETOFF_ROLL = 0.75;   // Map3D: it turns onto its way first, rolling off as the turn finishes (the twentieth notes)
+const setoffTurn = (angle, accel) => (SETOFF_TURN_BASE + SETOFF_TURN_PER_ACCEL * accel) * Math.sqrt(Math.abs(angle) / (Math.PI / 3));
+const setoffAim = (from, t, want, dur = SETOFF_S) => { const u = clamp(t / Math.max(0.05, dur), 0, 1); return from + wrapPi(want - from) * u * u * u * (u * (6 * u - 15) + 10); };
 function turnToward(facing, vel, want, rate, dt) {
   const w = 2 * rate, n = Math.max(1, Math.ceil(dt * w / 0.25)), h = dt / n;
   for (let i = 0; i < n; i++) {
@@ -387,11 +390,12 @@ class Rig {
     const prev = this.speed;
     this.speed = lerp(this.speed, Math.max(0, speed), 1 - Math.exp(-delta / 0.12));
     this.accel = lerp(this.accel, (this.speed - prev) / delta, 1 - Math.exp(-delta / 0.15));
-    this.moving = speed > 0.5;
+    const pivot = Math.abs(turn) > PIVOT_MIN ? Math.abs(turn) * PIVOT_STEP * Math.max(1, this.gait.stride || 40) * (1 - clamp(this.speed / PIVOT_FADE, 0, 1)) : 0;
+    this.moving = speed > 0.5 || pivot > 0;
     this.blend = moveToward(this.blend, this.moving ? 1 : 0, delta / (this.moving ? MOVE_BLEND_IN : MOVE_BLEND_OUT));
-    this.dist += this.speed * delta;
+    this.dist += (this.speed + pivot) * delta;
     const mv = this.move;
-    this.bank = lerp(this.bank, (mv.bank || 0) * clamp(-turn / BANK_TURN, -1, 1), 1 - Math.exp(-delta / 0.3));
+    this.bank = lerp(this.bank, (mv.bank || 0) * clamp(-turn / BANK_TURN, -1, 1) * clamp(this.speed / BANK_SPEED, 0, 1), 1 - Math.exp(-delta / 0.3));
     if (Array.isArray(mv.tilt) && mv.tilt.length >= 2) {
       // MechRig: a third number sheds that share of the nose-down at the whole bank's turn rate (it pulls into the corner)
       const share = clamp(this.speed / MOVE_REF_SPEED, 0, 1), f = 1 - Math.exp(-delta / 0.35), pull = mv.tilt.length >= 3 ? mv.tilt[2] * clamp(Math.abs(turn) / BANK_TURN, 0, 1) : 0;
@@ -533,10 +537,13 @@ class MovePath {
     const l = Math.hypot(x, z);
     return l > 1e-6 ? {x: x / l, z: z / l} : null;
   }
+  // MovePath.hold_start: it holds at its start that long, turning onto its way, before it sets off
+  holdStart(seconds) { this.lead = Math.max(0, seconds); this.duration = (this.time.length ? this.time[this.time.length - 1] : 0) + this.lead; }
   at(t) {
+    t -= this.lead || 0;
     const n = this.points.length;
     if (t <= 0) return [this.points[0], this.tangent(0), 0, 0];
-    if (t >= this.duration) return [this.points[n - 1], this.tangent(n - 2), 0, this.arc[n - 1]];
+    if (t >= this.time[n - 1]) return [this.points[n - 1], this.tangent(n - 2), 0, this.arc[n - 1]];
     let i = 0; while (i < n - 2 && this.time[i + 1] < t) i++;
     const dt = this.time[i + 1] - this.time[i], u = dt <= 0 ? 0 : (t - this.time[i]) / dt;
     const ds = this.arc[i + 1] - this.arc[i];
@@ -595,6 +602,9 @@ class Route {
         for (const d of mv) { p = pAdd(p, dirVec(DIRS[d]), this.STEP); centres.push(p); }
         this.curve = MovePath.build(centres, top, move.accel ?? MP_ACCEL);
         this.t = 0; this.base = null; this.ahead = null; this.from = this.facing;
+        // Map3D.setoff_seconds: it turns onto its way first, the move holding at its start for most of the turn
+        this.setoffTurn = (move.strafe || 0) > 0 ? SETOFF_S : Math.max(SETOFF_S, setoffTurn(wrapPi(yawOf(pSub(centres[1], centres[0])) - this.facing), move.accel ?? MP_ACCEL));
+        if (!((move.strafe || 0) > 0)) this.curve.holdStart(SETOFF_ROLL * setoffTurn(wrapPi(yawOf(pSub(centres[1], centres[0])) - this.facing), move.accel ?? MP_ACCEL));
       }
       return {speed: 0, aim: 0, turn: this.turnVel};
     }
@@ -625,7 +635,7 @@ class Route {
       rate = lerp(rate, oversteerRate(over), Math.min(over, 1));
     }
     if (strafe > 0) { want = lerpAngle(heading, yawOf(dirVec(DIRS[mv[mv.length - 1]])), strafe); rate = lerp(rate, STRAFE_TURN_RATE, strafe); }
-    want = setoffAim(this.from, this.t, want);
+    want = setoffAim(this.from, this.t, want, this.setoffTurn);
     [this.facing, this.turnVel] = turnToward(this.facing, this.turnVel, want, rate, dt);
     return {speed: sp, aim: wrapPi(heading - this.facing), turn: this.turnVel};
   }

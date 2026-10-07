@@ -55,6 +55,16 @@ const MOVE_BLEND_OUT := 0.35  # and to settle back when the machine stops
 const ROCK_ACCEL := 200.0     # model units a second squared that earns the whole rock: a machine reaching full speed in under a second (MovePath accelerates; was 1500 when moves started at full speed)
 const BANK_TURN := 1.2        # radians a second of turning that earns the whole bank (the curve's corners turn about this fast)
 const STEER_EASE := 0.12      # seconds a steered joint (a knuckle, a nacelle) takes to follow the turn: its servo
+# Turning in place steps the legs round (Ryan, 7 October, the twentieth notes: a machine turns
+# onto its way before it sets off, and a walker turning on the spot slid round on its feet):
+# the turn counts toward the gait's travel as though each foot went round a circle PIVOT_STEP
+# of a stride across, fading out as the machine gathers PIVOT_FADE units a second of its own;
+# a turn slower than PIVOT_MIN radians a second is a settle, not a step. Nothing banks
+# standing: the bank comes in with BANK_SPEED units a second.
+const PIVOT_STEP := 0.5
+const PIVOT_FADE := 20.0
+const PIVOT_MIN := 0.15
+const BANK_SPEED := 37.5
 const DRIFT_UNITS := 12.0     # model units a machine with a slide of 1 drifts off its path when the travel is square to its facing
 const HEFT_DEFAULT := 0.12    # seconds: the inertia of a machine whose sidecar names none (`move.heft`)
 const DAMPING := 0.7          # the joints' servos: a touch under critical, so a heavy part gives a little past its mark and settles
@@ -703,12 +713,13 @@ func drive(speed: float, aim: float, turn: float, delta: float) -> void:
 	var prev := _speed
 	_speed = lerpf(_speed, maxf(0.0, speed), 1.0 - exp(-delta / 0.12))
 	_accel = lerpf(_accel, (_speed - prev) / delta, 1.0 - exp(-delta / 0.15))
-	moving = speed > 0.5
+	var pivot := absf(turn) * PIVOT_STEP * maxf(1.0, float(gait.get("stride", 40.0))) * (1.0 - clampf(_speed / PIVOT_FADE, 0.0, 1.0)) if absf(turn) > PIVOT_MIN else 0.0
+	moving = speed > 0.5 or pivot > 0.0
 	var target := 1.0 if moving else 0.0
 	var rate := MOVE_BLEND_IN if moving else MOVE_BLEND_OUT
 	_blend = move_toward(_blend, target, delta / rate)
-	_dist += _speed * delta
-	var bank_want := float(move.get("bank", 0.0)) * clampf(-turn / BANK_TURN, -1.0, 1.0)   # a left turn drops the left wing: roll negative
+	_dist += (_speed + pivot) * delta
+	var bank_want := float(move.get("bank", 0.0)) * clampf(-turn / BANK_TURN, -1.0, 1.0) * clampf(_speed / BANK_SPEED, 0.0, 1.0)   # a left turn drops the left wing: roll negative
 	_bank = lerpf(_bank, bank_want, 1.0 - exp(-delta / 0.3))
 	# A helicopter's tilt: it leans into its travel by its speed, nose down going forward,
 	# nose up going back, the left side down going left (the roll is positive right-down). A

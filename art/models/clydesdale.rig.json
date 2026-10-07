@@ -20479,8 +20479,8 @@
   "rock": 0.0,
   "start": {
    "option": "trot",
-   "below": 0.3,
-   "full": 0.85
+   "below": 0.5,
+   "full": 0.95
   }
  },
  "move": {

@@ -29,6 +29,7 @@ var arc: PackedFloat32Array = PackedFloat32Array()      # distance along the cur
 var speed: PackedFloat32Array = PackedFloat32Array()    # the speed at each sample, pixels a second
 var time: PackedFloat32Array = PackedFloat32Array()     # the time each sample is reached
 var duration := 0.0
+var lead := 0.0     # seconds it holds at its start before it sets off, turning onto its way (hold_start)
 
 
 ## The curve through `centres` (map pixels), each interior corner cut by a quintic. Each
@@ -135,6 +136,13 @@ static func build(centres: Array, top: float, accel_s: float = ACCEL_DEFAULT, sm
 	return mp
 
 
+## Hold the move at its start for `seconds` before it sets off (Ryan, 7 October, the twentieth
+## notes: a machine turns onto its way at a measured pace before it rolls; Map3D.setoff_seconds).
+func hold_start(seconds: float) -> void:
+	lead = maxf(0.0, seconds)
+	duration = (time[time.size() - 1] if time.size() > 0 else 0.0) + lead
+
+
 ## Where the move is at time `t`: [position, unit tangent, speed, distance along it]. Within
 ## a span the speed changes evenly with time, so the distance follows the area under it.
 ## The direction from where the curve is at `t0` to where it is at `t1` (times clamped to the
@@ -160,12 +168,13 @@ func chord_tapered(t: float, half: float, taper: float) -> Vector2:
 
 
 func at(t: float) -> Array:
+	t -= lead
 	var n := points.size()
 	if n == 0:
 		return [Vector2.ZERO, Vector2.ZERO, 0.0, 0.0]
 	if n == 1 or t <= 0.0:
 		return [points[0], _tangent(0), 0.0, 0.0]
-	if t >= duration:
+	if t >= time[n - 1]:
 		return [points[n - 1], _tangent(n - 2), 0.0, arc[n - 1]]
 	var i := time.bsearch(t, true) - 1
 	i = clampi(i, 0, n - 2)

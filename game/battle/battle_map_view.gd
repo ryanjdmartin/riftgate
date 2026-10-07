@@ -1431,7 +1431,10 @@ func _curve_for(uid: int, path: Array) -> MovePath:
 	if u != null and u.is_player():
 		var mv: Dictionary = _map3d.motion_of(uid) if _map3d != null else {}
 		var top := step_px / mech_seconds_per_hex(float(u.movespeed))
-		return MovePath.build(centres, top, float(mv.get("accel", MovePath.ACCEL_DEFAULT)))
+		var mp := MovePath.build(centres, top, float(mv.get("accel", MovePath.ACCEL_DEFAULT)))
+		if _map3d != null and centres.size() >= 2:
+			mp.hold_start(_map3d.setoff_seconds(uid, (centres[1] as Vector2) - (centres[0] as Vector2)))   # it turns onto its way first (the twentieth notes)
+		return mp
 	return MovePath.build(centres, step_px / (MOVE_SECONDS_PER_HEX * slow), 0.001, false)
 
 

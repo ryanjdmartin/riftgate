@@ -113,7 +113,8 @@ const DRIFT_MAX := 1.55
 const DRIFT_GAIN := 2.0
 var _heading_ahead: Dictionary = {}  # unit id -> the yaw the path heads oversteer_ahead seconds on
 var _turn_vel: Dictionary = {}       # unit id -> how fast its facing is turning, radians a second (turn_toward)
-var _setoff: Dictionary = {}         # unit id -> [the facing it set off from, seconds since] while a move plays (SETOFF_S)
+var _setoff: Dictionary = {}         # unit id -> [the facing it set off from, seconds since, seconds the turn takes] while a move plays
+var _setoff_turn: Dictionary = {}    # unit id -> seconds its next move's turn onto its way takes (setoff_seconds)
 var _heading_smooth: Dictionary = {} # unit id -> the path's heading averaged over OVERSTEER_WINDOW about now (MovePath.chord)
 var _base: Dictionary = {}      # unit id -> resting position, which the idle sway plays around
 var _phase: Dictionary = {}     # unit id -> idle phase, so the team does not sway in step
@@ -719,6 +720,7 @@ func clear_anim(uid: int) -> void:
 	_last_pos.erase(uid)
 	_heading_ahead.erase(uid)
 	_heading_smooth.erase(uid)
+	_setoff_turn.erase(uid)
 
 
 ## The cornering module (the joints row, 2 October): one piece for the Dingo's drift and the
@@ -783,7 +785,15 @@ func _corner(uid: int, rig: MechRig, delta: float) -> void:
 
 
 const STRAFE_TURN_RATE := 6.0   # per second: a helicopter yaws to where it will face in the first moment of a move, then translates
-const SETOFF_S := 0.5           # seconds a move's set-off takes to bring the facing's aim from where it stood onto the path
+const SETOFF_S := 0.5           # seconds a move's set-off takes to bring the facing's aim from where it stood onto the path, when nothing says longer
+# A machine turns onto its way before it sets off (Ryan, 7 October, the twentieth notes: the
+# turn at a move's start was a little jumpy, half a second whatever the angle, rolling as it
+# swung): a sixth of a turn takes SETOFF_TURN_BASE plus SETOFF_TURN_PER_ACCEL for each second
+# of its `accel` (the heavy turn slower), a bigger turn longer by the root of its size, and the
+# move holds at its start for SETOFF_ROLL of that, rolling off as the turn finishes.
+const SETOFF_TURN_BASE := 0.6
+const SETOFF_TURN_PER_ACCEL := 0.4
+const SETOFF_ROLL := 0.75
 
 
 ## The set-off (Ryan, 6 October, the eighth notes: a frame jerk at the corners, worse each time
@@ -794,17 +804,39 @@ const SETOFF_S := 0.5           # seconds a move's set-off takes to bring the fa
 ## smootherstep, so the turn's acceleration builds from nothing); `state` is [that facing,
 ## seconds since].
 static func setoff_aim(state: Array, want: float) -> float:
-	var u := clampf(float(state[1]) / SETOFF_S, 0.0, 1.0)
+	var u := clampf(float(state[1]) / maxf(0.05, float(state[2]) if state.size() > 2 else SETOFF_S), 0.0, 1.0)
 	var s := u * u * u * (u * (6.0 * u - 15.0) + 10.0)
 	return float(state[0]) + wrapf(want - float(state[0]), -PI, PI) * s
 
 
 func _setoff_step(uid: int, facing: float, delta: float) -> Array:
 	if not _setoff.has(uid):
-		_setoff[uid] = [facing, 0.0]
+		_setoff[uid] = [facing, 0.0, maxf(SETOFF_S, float(_setoff_turn.get(uid, SETOFF_S)))]
+		_setoff_turn.erase(uid)
 	var state: Array = _setoff[uid]
 	state[1] = float(state[1]) + delta
 	return state
+
+
+## Seconds a machine's move holds at its start while it turns from where it faces onto the
+## move's first heading (`first`, map pixels), SETOFF_ROLL of the turn, which it remembers for
+## that move's set-off; none for a helicopter, which turns as it translates.
+func setoff_seconds(uid: int, first: Vector2) -> float:
+	_setoff_turn.erase(uid)
+	if not _pivots.has(uid) or not _rigs.has(uid) or first.length_squared() < 1e-6:
+		return 0.0
+	var rig: MechRig = _rigs[uid]
+	if float(rig.move.get("strafe", 0.0)) > 0.0:
+		return 0.0
+	var angle := absf(wrapf(atan2(-first.x, -first.y) - (_pivots[uid] as Node3D).rotation.y, -PI, PI))
+	var turn := setoff_turn(angle, float(rig.move.get("accel", MovePath.ACCEL_DEFAULT)))
+	_setoff_turn[uid] = turn
+	return turn * SETOFF_ROLL
+
+
+## Seconds a turn of `angle` radians onto a move's way takes a machine of `accel`.
+static func setoff_turn(angle: float, accel: float) -> float:
+	return (SETOFF_TURN_BASE + SETOFF_TURN_PER_ACCEL * accel) * sqrt(absf(angle) / (PI / 3.0))
 
 
 ## A machine's widest extent on the map, in hex widths, for its class by mass; a class the

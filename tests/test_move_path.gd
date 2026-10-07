@@ -300,3 +300,20 @@ func test_a_drifter_turns_in_late_and_sweeps_both_corners_as_one() -> void:
 	var w := 0.6
 	assert_true(mp.chord_tapered(1.0, w, 0.0).is_equal_approx(mp.chord(1.0 - w, 1.0 + w)), "untapered, the plain chord")
 
+
+func test_a_machine_turns_onto_its_way_before_it_sets_off() -> void:
+	# Ryan, 7 October, the twentieth notes: the turn at a move's start was a little jumpy, half a
+	# second whatever the angle, rolling as it swung. A move now holds at its start while the
+	# machine turns onto its way, longer for a bigger turn and a heavier machine.
+	var mp := MovePath.build(_route([90, 90, 30]), 120.0, 0.7)
+	var arrival := mp.duration
+	mp.hold_start(0.8)
+	assert_true(is_equal_approx(mp.duration, arrival + 0.8), "the move takes the hold longer (%f)" % mp.duration)
+	assert_true((mp.at(0.5)[0] as Vector2).is_equal_approx(mp.points[0]) and is_zero_approx(float(mp.at(0.5)[2])), "it stands on its start through the hold")
+	assert_true((mp.at(mp.duration)[0] as Vector2).is_equal_approx(mp.points[mp.points.size() - 1]), "and arrives where it did")
+	var sixth := Map3D.setoff_turn(PI / 3.0, 1.0)
+	assert_true(Map3D.setoff_turn(PI, 1.0) > sixth * 1.5, "a half turn takes longer than a sixth (%f against %f)" % [Map3D.setoff_turn(PI, 1.0), sixth])
+	assert_true(Map3D.setoff_turn(PI / 3.0, 1.4) > Map3D.setoff_turn(PI / 3.0, 0.5), "and a heavy machine longer than a light one")
+	assert_true(sixth > Map3D.SETOFF_S, "every real turn slower than the old half second (%f)" % sixth)
+	assert_true(is_zero_approx(Map3D.setoff_turn(0.0, 1.0)), "and none at all when it already faces its way")
+
