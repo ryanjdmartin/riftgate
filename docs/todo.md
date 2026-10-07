@@ -13,7 +13,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Formations (Ryan, 1 October): seed the opening enemy formations as threatening shapes with a front and a back, and have the rift spawn formations rather than single packs; shapes proposed in chat first
 - [ ] Judge on the phone after a re-export: the machines' outline at 2.6 (`MechView3D.OUTLINE`; 1.0 was the thin), the intent field in motion (stripe width `STRIPE`, ring spokes `SPOKES`, the pulse), the machine's lock's contrast (the light at half), the orange pulse of the gate's hazard glyphs, the sound set, the grid at `GRID_GAIN_PHONE`
 - [ ] Codex and flavour for the nine new machines, the Baboon's flavour, and the 45 components whose codex is empty
-- [ ] Listen to the palette console's eleventh cut and the baseline mix (7 October; sections 1 and 6 of the listening page): every glass measured level under its rider, the console's statements at seven over the music, the voice at ten, the sliders at music 0.63 and effects 1.0; picks land in `forge.py` with their hooks, the hover needing an over-target state in the drag and the map's acquire a hook on the map's selection; a per-track music offset when the ten-decibel spread between tracks on the phone is wanted closed
+- [ ] Listen to the palette console's eleventh cut and the baseline mix (7 October; sections 1 and 6 of the listening page): every glass measured level under its rider, the console's statements at seven over the music, the voice at ten, the sliders at music 0.63 and effects 1.0; picks land in `forge.py` with their hooks, the hover needing an over-target state in the drag and the map's acquire a hook on the map's selection
 - [ ] The console voice: Jenny on the mid chain slowed a third (Ryan, 7 October), her plosives tamed in the page's section 5; Ryan confirms the tamed one keeps her bite, then a line per moment, the levels against the music, a hook per line in `sound.gd`, and the credits line for Jenny (Dioco)
 - [x] Run the tests on the Mac: the `sound` label's validation in `content_db.gd` landed from a cloud session with no Godot (2 October: green in the cloud too, Godot fetched into the session)
 - [ ] Judge the limbs striking and the turrets flinching in the skirmish, running, and each machine's acts, movement and cornering once built; and each class's size per machine on a refit (a pin's `scale` in `models_low.py`)
@@ -93,6 +93,7 @@ Nothing in content is planned any more; every piece the 28 September content lea
 ## Audio
 
 - [x] A speakers or headphones setting (2 October: not needed; the one master balances for both for now, Ryan)
+- [ ] Level the other five tracks against Hold The Line through the phone model (Ryan, 7 October: Hold The Line is the baseline, the others are not levelled yet; the rift tracks sit seven decibels under it on a phone, the map's thirteen); the effects hold still while it happens
 - [ ] The Risen and Infernal Horde boss themes from their seeds; melodies proposed in chat first
 - [ ] The effects' pass: Ryan's picks from the listening page land in `forge.py` with their hooks (shape, maker, faction, silhouette, the `sound` label; the replay telling a shield hit from a block from a hit, which `_land_blow` now plays as two)
 - Stretch, not now: a modification that adds burn or shock to a component adds its sound layer

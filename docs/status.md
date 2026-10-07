@@ -389,7 +389,7 @@ Content carries a `sound` label on a component (a word or a list meaning layers,
 lands as a recipe in `forge.py` with its hook (shape, maker, faction, silhouette, the label, the
 replay telling shield hit from block from hit). The sketch script encodes AAC with `ffmpeg` at
 256 kbps where there is no `afconvert` (its encoder smears a transient's front at 128). Next:
-Ryan's listen of the eleventh cut and the baseline mix (section 6 of the page: music 0.63, effects 1.0, the ladder per family) and of Jenny mid slow tamed against untamed, then picks into the forge with their hooks (the hover needs an over-target state in the drag); the Risen and Infernal
+Ryan's listen of the eleventh cut and the baseline mix (section 6 of the page: music 0.63, effects 1.0, the ladder per family; Hold The Line the baseline, the other tracks' levelling against it a pass of its own) and of Jenny mid slow tamed against untamed, then picks into the forge with their hooks (the hover needs an over-target state in the drag); the Risen and Infernal
 Horde boss themes from their seeds, melodies proposed in chat first. The speakers/headphones
 setting is dropped (Ryan, 2 October): the one master balances for both for now.
 
