@@ -377,8 +377,8 @@ source; the second pass's resample and ring did nothing for him, so `piper_voice
 `tools/soundforge/.venv-piper`, voices under `out/piper`) renders the lines from openly licensed voices
 through the machine chain, the Mac's voices retired as sources; Ryan's picks: Amy the baseline, Jenny the
 one to play with (her licence checked: commercial use permitted, attribution for live generation only),
-the sixth pass Jenny at three depths (the chain, mid, deep) and two paces against Amy, Ryan
-leaning to between the chain and deep, slowed; the page's history is cut, the earlier cuts live in git), each event built by fit from two or three of them
+Ryan's pick (7 October) Jenny on the mid chain slowed a third, her plosives tamed in the seventh pass
+after they spiked on the speaker (`mid_tamed` in `piper_voices.py`), the untamed beside it on the page; the page's history is cut, the earlier cuts live in git), each event built by fit from two or three of them
 rather than pinned to where they first played (a first combined cut, `combined_sketches.py`, pinned
 them and is superseded), at the top of the page's section 1; everything earlier stays
 below for the record; the voice is set aside, an optional experiment that would start from a real speech
@@ -389,7 +389,7 @@ Content carries a `sound` label on a component (a word or a list meaning layers,
 lands as a recipe in `forge.py` with its hook (shape, maker, faction, silhouette, the label, the
 replay telling shield hit from block from hit). The sketch script encodes AAC with `ffmpeg` at
 256 kbps where there is no `afconvert` (its encoder smears a transient's front at 128). Next:
-Ryan's listen of the palette's tenth cut and of Jenny at three depths and two paces, then picks into the forge with their hooks (the hover needs an over-target state in the drag); the Risen and Infernal
+Ryan's listen of the palette's tenth cut and of Jenny mid slow tamed against untamed, then picks into the forge with their hooks (the hover needs an over-target state in the drag); the Risen and Infernal
 Horde boss themes from their seeds, melodies proposed in chat first. The speakers/headphones
 setting is dropped (Ryan, 2 October): the one master balances for both for now.
 

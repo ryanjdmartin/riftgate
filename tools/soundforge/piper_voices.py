@@ -23,6 +23,13 @@ percent the chain's signal and deep 75, so both were pushed apart: light 85 now,
 `flat` variant with the levelling harder still measured 99 percent the chain, since the chain
 already levels hard, and was dropped rather than shown.)
 
+Seventh pass (Ryan, 7 October): Jenny mid slow is good; only her T's and D's come through
+too harsh and spike on the speaker. The plosive bursts were hitting the chain's saturator,
+which sharpened them, so `tamed` splits the voice at 1.8 kHz and ducks the high band wherever
+its three-millisecond envelope leaps past a threshold (a de-esser aimed at plosives), before
+a gentler saturator. Both are on the page for the comparison, with two more lines on the
+tamed one to hear the voice across more moments.
+
     tools/soundforge/.venv-piper/bin/python -m piper.download_voices --data-dir tools/soundforge/out/piper <voice>...
     tools/spriter/.venv/bin/python tools/soundforge/piper_voices.py          # into out/fx
 """
@@ -43,7 +50,7 @@ SR = F.SR
 HERE = os.path.dirname(os.path.abspath(__file__))
 PIPER_PY = os.path.join(HERE, ".venv-piper", "bin", "python")
 DATA = os.path.join(F.OUT_SKETCH, "piper")
-PREFIX = "voice6_"
+PREFIX = "voice7_"
 VOICES = {
     "amy": "en_US-amy-medium",
     "jenny": "en_GB-jenny_dioco-medium",
@@ -86,15 +93,40 @@ def mid(x):
     return F.sat(y / (np.max(np.abs(y)) + 1e-9) * 1.2, 1.5)
 
 
-# the sixth pass: the chain, mid and deep, each at the normal pace and slowed a third
+def tame_plosives(y, split=1800.0, win=0.003, thr=0.06, ratio=0.1, release=0.03):   # searched 7 October: the plosives' lead over the body from 8 and 14 dB to 0.5 and 4
+    """Duck the high band where its short envelope leaps: the T's and D's. The gain falls to
+    `ratio` of the overshoot at once and recovers over `release`."""
+    low = F.lp(y, split, order=3)
+    high = y - low
+    n = F.n_of(win)
+    env = np.sqrt(np.convolve(high ** 2, np.ones(n) / n, mode="same")) + 1e-6
+    gain = np.where(env > thr, (thr + (env - thr) * ratio) / env, 1.0)
+    rel = F.n_of(release)
+    out = np.empty_like(gain)
+    g = 1.0
+    for i in range(len(gain)):
+        g = gain[i] if gain[i] < g else g + (1.0 - g) / rel
+        out[i] = g
+    return low + high * out
+
+
+def mid_tamed(x):
+    """The mid chain with the plosives tamed before a gentler saturator."""
+    y = F.bp(x, 180.0, 4500.0, order=3)
+    y = V.level_syllables(y, target=0.22)
+    y = V.flange(y, delay=0.0032, depth=0.0012, rate=0.3, feedback=0.62, wet=0.7)
+    y = F.mix(y, V.sub_octave(y, 0.35))
+    y = tame_plosives(y)
+    hold = 2
+    y = np.repeat(y[::hold], hold)[:len(y)]
+    return F.sat(y / (np.max(np.abs(y)) + 1e-9) * 1.1, 1.25)
+
+
+LINES = dict(V.LINES, shield_up="shield up", gate_breached="gate breached")
+# the seventh pass: Jenny mid slow as picked, and the same with the plosives tamed
 TRIALS = [
-    ("amy", "machine", V.machine, 1.15),
-    ("jenny", "machine", V.machine, 1.15),
-    ("jenny", "mid", mid, 1.15),
-    ("jenny", "deep", deep, 1.15),
-    ("jenny", "machine_slow", V.machine, 1.35),
     ("jenny", "mid_slow", mid, 1.35),
-    ("jenny", "deep_slow", deep, 1.35),
+    ("jenny", "mid_slow_tamed", mid_tamed, 1.35),
 ]
 
 
@@ -128,15 +160,15 @@ def main(argv):
     if os.path.exists(path):
         with open(path) as fh:
             manifest.update(json.load(fh))
-    manifest["voice6"] = []
-    for key_, text in V.LINES.items():
+    manifest["voice7"] = []
+    for key_, text in LINES.items():
         for v, proc, chain, scale in TRIALS:
             raw = render(v, text, scale)
             F.seed(PREFIX + "%s_%s_%s" % (v, key_, proc))
             x = V.level_for_phone(chain(raw), -12.0)
             name = PREFIX + "%s_%s_%s" % (v, key_, proc)
             X.write(name, X.tail(x, 0.3))
-            manifest["voice6"].append({"name": name, "voice": v, "model": VOICES[v], "line": key_, "process": proc, "seconds": round(len(x) / SR, 2)})
+            manifest["voice7"].append({"name": name, "voice": v, "model": VOICES[v], "line": key_, "process": proc, "seconds": round(len(x) / SR, 2)})
             print("  %-40s %5.2f s" % (name, len(x) / SR))
     with open(path, "w") as fh:
         json.dump(manifest, fh, indent=1)
