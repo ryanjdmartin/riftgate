@@ -115,7 +115,7 @@ HOOKS = {
                   [("corruption has reached the city. estimated casualties: 100%", "corruption has reached the city. estimated casualties: one hundred percent")],
                   ["z axis lost"]),
     "victory": (1.0, False,
-                ["line held. rift sealed", "area secured. hostiles cleared", ("mission accomplished. well fought, commander", "mission accomplished. well fot, commander")],
+                ["hostiles cleared. the line holds", ("area secured. well fought, commander", "area secured. well fot, commander"), "mission accomplished. the rift is sealed"],   # rewritten as sentence pairs (Ryan, 7 October: the combined lines read samey and stuck together)
                 [("GG EZ", "gee gee easy"), ("flawless victory", "flawless victory", 1.55), "well, that was fun"]),
     "codex": (1.0 / 12.0, False,
               ["searching database", "record retrieved", "consulting archives", "help text loaded"],
@@ -124,7 +124,7 @@ HOOKS = {
                ["negative", "unable to comply"],
                ["you must construct additional pylons"]),
     "battle_open": (1.0, False,
-                    ["battlefield feed online. telemetry online", "deployment complete. all units on the field", "sector loaded. feed live"],
+                    ["battlefield feed online. all units reporting in", "deployment complete. awaiting your orders, commander", "sector loaded. hostiles inbound"],
                     [("reactor online, sensors online, weapons online, all systems nominal", "reactor on-line, sensors on-line, weapons on-line, all systems nominal"), "so it begins"]),
 }
 
