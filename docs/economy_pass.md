@@ -22,6 +22,11 @@ with Favour when nobody is ready.
 | Machines wrecked per battle | 0.53 | each one rushed (Favour) or sat out (a battle) |
 | Wrecks rushed | 8 in 40 runs | `RUSH_PRICE` 100 Favour |
 
+Since the draft (7 October, later): with each run's three drawn from its tender instead of the
+fixed Badger, Sparrowhawk and Baboon, runs get harder. 32 of 40 are won, 75% of battles, and
+0.17 components are destroyed per won battle. Salvage is 123 per won battle and Favour 92.
+Re-read these against the new report before pricing.
+
 So one run pays about **1,200 salvage** from won battles alone, plus the kills in held and
 withdrawn ones. It also pays about **1,000 Favour** on top of `START_FAVOUR` 100. Read those
 as the budget every price is cut from.
