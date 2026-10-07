@@ -61,7 +61,7 @@ HOOKS = {
                   ["light them up", "going ballistic"]),
     "foe_down": (1.0 / 4.0, False,
                  ["eliminating", "neutralising hostile", "target destroyed", "lethal force applied", "bogey down", "threat eliminated"],
-                 ["mopping up trash", "get wrecked", "bug squashed"]),
+                 ["mopping up trash", "get wrecked", "bug squashed", "dodge this"]),
     "foe_down_undead": (1.0 / 3.0, False,
                         ["undead anomaly cleared", "necrotic signature lost", "animation ceased"],
                         ["re-interred", "stay dead this time"]),
@@ -116,7 +116,7 @@ HOOKS = {
                   ["z axis lost"]),
     "victory": (1.0, False,
                 ["hostiles cleared. the line holds", ("area secured. well fought, commander", "area secured. well fot, commander"), "mission accomplished. the rift is sealed"],   # rewritten as sentence pairs (Ryan, 7 October: the combined lines read samey and stuck together)
-                [("GG EZ", "gee gee easy"), ("flawless victory", "flawless victory", 1.55), "well, that was fun"]),
+                [("GG EZ", "gee gee easy"), ("flawless victory", "flawless victory", 1.55), "well, that was fun", "payday", "first round's on me"]),
     "codex": (1.0 / 12.0, False,
               ["searching database", "record retrieved", "consulting archives", "help text loaded"],
               ["let me look that up", "reading the manual"]),
@@ -125,7 +125,7 @@ HOOKS = {
                ["you must construct additional pylons"]),
     "battle_open": (1.0, False,
                     ["battlefield feed online. all units reporting in", "deployment complete. awaiting your orders, commander", "sector loaded. hostiles inbound"],
-                    [("reactor online, sensors online, weapons online, all systems nominal", "reactor on-line, sensors on-line, weapons on-line, all systems nominal"), "so it begins"]),
+                    [("reactor online, sensors online, weapons online, all systems nominal", "reactor on-line, sensors on-line, weapons on-line, all systems nominal"), "once more, into the breach", "now for wrath, now for ruin, and the red dawn"]),
 }
 
 # a hook draws from its own pool and these others' together
@@ -174,7 +174,7 @@ FRIC_OUT = -18.0      # where an opening fricative is set on the finished line, 
 
 def onset_kind(text):
     t = text.lower()
-    word = re.split(r"[^a-z']", t, 1)[0]
+    word = re.split(r"[^a-z']", t, maxsplit=1)[0]
     if t[0] in "sfvz" or t.startswith("sh") or (t.startswith("th") and word not in SOFT_TH):
         return "fricative"
     return "stop" if t[0] in ONSETS else "open"
@@ -220,6 +220,7 @@ def pick_draw(text, scale, pin=None):
 
 def render_line(text, scale=PACE, pin=None):
     raw, draw, l0, l1 = pick_draw(text, scale, pin)
+    raw = P.shorten_pauses(raw, text)
     kind = onset_kind(text)
     if kind != "open":
         raw = P.lift_front(raw)

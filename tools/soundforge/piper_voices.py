@@ -51,6 +51,7 @@ SR = F.SR
 HERE = os.path.dirname(os.path.abspath(__file__))
 PIPER_PY = os.path.join(HERE, ".venv-piper", "bin", "python")
 SENTENCE_SILENCE = 0.35   # seconds between sentences of one line (Ryan, 7 October: she ran over the full stops)
+COMMA_PAUSE = 0.13        # what a comma's pause is cut to (Ryan, 7 October: Piper's 250 to 290 ms is too long); a full stop keeps its silence
 DATA = os.path.join(F.OUT_SKETCH, "piper")
 PREFIX = "voice7_"
 VOICES = {
@@ -163,6 +164,51 @@ def lift_front(x, target=-14.0, cap=18.0):
     g[max(0, a - r):a] = ramp[-(a - max(0, a - r)):] if a > 0 else ramp[:0]
     g[b:min(len(x), b + r)] = np.linspace(g[a], 1.0, r)[:min(len(x), b + r) - b]
     return lo + hi * g
+
+
+def pauses(x, thr=-50.0, min_ms=60):
+    """Internal runs of silence in a render, as (start, length) in samples, longest first."""
+    n = F.n_of(0.01)
+    e = 20.0 * np.log10(np.sqrt(np.convolve(x ** 2, np.ones(n) / n, mode="same")) + 1e-9)
+    loud = np.where(e > -40.0)[0]
+    if len(loud) == 0:
+        return []
+    a, b = loud[0], loud[-1]
+    q = e[a:b] < thr
+    runs, start = [], None
+    for i, v in enumerate(q):
+        if v and start is None:
+            start = i
+        if not v and start is not None:
+            if (i - start) >= F.n_of(min_ms / 1000.0):
+                runs.append((a + start, i - start))
+            start = None
+    return sorted(runs, key=lambda r: -r[1])
+
+
+def shorten_pauses(x, text, comma=COMMA_PAUSE, least=0.18):
+    """Cut every pause that is not a sentence end down to `comma` seconds. Piper pauses 250 to
+    290 ms at a comma and has no knob for it; a full stop's silence (SENTENCE_SILENCE and the
+    model's own) is longer, so the longest pauses, as many as the text has sentence ends, are
+    kept, and any other pause of `least` or more is cut from its middle with a 5 ms crossfade."""
+    ends = len(re.findall(r"[.!?]\s+\S", text))
+    runs = pauses(x)[ends:]
+    cuts = [(s, n) for s, n in runs if n >= F.n_of(least)]
+    if not cuts:
+        return x
+    out = x
+    for s, n in sorted(cuts, key=lambda r: -r[0]):   # from the back, so earlier indices hold
+        keep = F.n_of(comma)
+        r = F.n_of(0.005)
+        head = out[:s + keep // 2]
+        tail = out[s + n - (keep - keep // 2):]
+        if r > 0 and len(head) > r and len(tail) > r:
+            fade = np.linspace(0.0, 1.0, r)
+            tail = tail.copy()
+            tail[:r] = head[-r:] * (1.0 - fade) + tail[:r] * fade
+            head = head[:-r]
+        out = np.concatenate([head, tail])
+    return out
 
 
 def set_front(y, target=-18.0, floor=-12.0, cap=18.0):
