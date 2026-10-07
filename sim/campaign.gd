@@ -103,8 +103,8 @@ var history: Array = []           # one report a battle (finish_battle's)
 var _next_uid: int = 1
 
 
-## A new run. `team` is the starting roster's chassis ids (the draft is not designed yet;
-## the default is the content's starting team).
+## A new run. `team` is the starting roster's chassis ids, the player's pick from
+## `tender`; without one the run takes START_MACHINES of its tender at random.
 func _init(seed_arg: int = 1, team: Array = []) -> void:
 	seed_value = seed_arg
 	rng.seed = seed_arg
@@ -112,15 +112,46 @@ func _init(seed_arg: int = 1, team: Array = []) -> void:
 	for id in db.city_makers():
 		_add_city(str(id), false)
 	_add_city(db.capital_maker(), true)
-	# The starting team: the draft is not designed yet, so the first tier-one chassis in
-	# content order stand in for it.
-	var start: Array = team if not team.is_empty() else db.chassis_of_tier(1).slice(0, START_MACHINES)
+	# The starting team is the player's pick from the tender; a run made without one (the
+	# runner, a test) takes START_MACHINES of the tender's machines at random.
+	var start: Array = team
+	if start.is_empty():
+		start = tender(db, seed_arg)
+		_shuffle(start)
+		start = start.slice(0, START_MACHINES)
 	for cid in start:
 		add_machine(str(cid))
 	salvage = START_SALVAGE
 	favour = START_FAVOUR
 	blueprints = db.starting_blueprints()
 	_open_rifts()
+
+
+## The starting draft (Ryan, 7 October): a tender. Each city maker offers one of its
+## tier-one chassis, drawn by the run's seed, in its stock loadout, and the player takes
+## START_MACHINES of them. The Arsenal never offers; a maker with no tier-one chassis
+## offers nothing. The same seed always offers the same machines.
+static func tender(content: ContentDB, seed_arg: int) -> Array:
+	var r := RandomNumberGenerator.new()
+	r.seed = seed_arg
+	var tier_one := content.chassis_of_tier(1)
+	var out: Array = []
+	for mk in content.city_makers():
+		var pool: Array = []
+		for id in tier_one:
+			if str(content.chassis[id].get("maker", "")) == str(mk):
+				pool.append(str(id))
+		if not pool.is_empty():
+			out.append(pool[r.randi_range(0, pool.size() - 1)])
+	return out
+
+
+func _shuffle(a: Array) -> void:
+	for i in range(a.size() - 1, 0, -1):
+		var j := rng.randi_range(0, i)
+		var t = a[i]
+		a[i] = a[j]
+		a[j] = t
 
 
 func _add_city(id: String, capital: bool) -> void:

@@ -59,14 +59,38 @@ func test_a_new_run_has_a_city_per_maker_around_the_capital() -> void:
 	assert_eq(c.fronts().size(), Campaign.RIFTS_BASE, "rifts open at tier 0")
 	assert_true(c.capital().rift.is_empty(), "the capital is not attacked before the finale")
 	assert_eq(c.roster.size(), Campaign.START_MACHINES, "three machines to start, all four squad slots open")
+	var offered := Campaign.tender(db, 5)
 	for m in c.roster:
 		assert_eq(db.chassis_tier(m.chassis), 1, "%s is a tier-one chassis" % m.chassis)
+		assert_true(offered.has(m.chassis), "%s was in the tender" % m.chassis)
 	assert_eq(c.salvage, Campaign.START_SALVAGE, "starting salvage")
 	assert_eq(c.favour, Campaign.START_FAVOUR, "starting Favour")
 	assert_eq(c.blueprints, db.starting_blueprints(), "the tier-one blueprints")
 	assert_true(not c.blueprints.is_empty(), "there are some")
 	for cid in c.blueprints:
 		assert_eq(db.component_tier(cid), 1, "%s is tier one" % cid)
+
+
+func test_the_tender_offers_one_tier_one_machine_from_each_city_maker() -> void:
+	var db := ContentDB.load_default()
+	var seen := {}
+	for seed_value in range(1, 41):
+		var offered := Campaign.tender(db, seed_value)
+		var makers := {}
+		for id in offered:
+			var mk := str(db.chassis[id].get("maker", ""))
+			assert_eq(db.chassis_tier(id), 1, "%s is tier one" % id)
+			assert_true(mk != db.capital_maker(), "the capital's maker never offers")
+			assert_true(not makers.has(mk), "one machine a maker")
+			makers[mk] = true
+			seen[id] = true
+		assert_true(offered.size() >= Campaign.START_MACHINES, "enough to take a full start")
+		assert_eq(Campaign.tender(db, seed_value), offered, "a seed always offers the same")
+	var city_tier_one := 0
+	for id in db.chassis_of_tier(1):
+		if str(db.chassis[id].get("maker", "")) != db.capital_maker():
+			city_tier_one += 1
+	assert_eq(seen.size(), city_tier_one, "across seeds every city maker's tier-one machine is offered")
 
 
 func test_the_content_names_exactly_one_capital() -> void:
