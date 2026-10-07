@@ -18,6 +18,9 @@ var fights: int = 0
 var fights_won: int = 0
 var stalled: bool = false
 var spends: Dictionary = {}   # component id -> times spent, over every fight
+## One entry a fight: [machines in it, machines on the field, packs in it, won]. The
+## engagement zones decide who fights, so a fight need not hold the whole squad.
+var fight_sizes: Array = []
 
 
 static func make(kind_arg: int, seed_value: int = 0) -> BattleBot:
@@ -42,9 +45,12 @@ func play(b: Battle) -> int:
 			if sk == null:
 				continue
 			sk.begin()
+			var size := [sk.mechs.size(), b.mechs().size(), sk.packs.size(), false]
 			var pol := Policy.make(kind, rng.randi())
 			if pol.play(sk) == Skirmish.Outcome.VICTORY:
 				fights_won += 1
+				size[3] = true
+			fight_sizes.append(size)
 			fights += 1
 			for cid in pol.spends.keys():
 				spends[cid] = int(spends.get(cid, 0)) + int(pol.spends[cid])

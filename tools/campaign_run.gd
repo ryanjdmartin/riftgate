@@ -60,7 +60,7 @@ func play_run(seed_value: int, verbose: bool = false) -> Dictionary:
 	var t0 := Time.get_ticks_msec()
 	var c := Campaign.new(seed_value)
 	var out := {"won": false, "turns": 0, "reports": [], "passes": 0, "rushes": 0, "stalled": 0,
-		"first_fall": -1, "finale": false, "fights": 0, "spends": {}}
+		"first_fall": -1, "finale": false, "fights": 0, "spends": {}, "fight_sizes": []}
 	var guard := 0
 	while c.state != Campaign.OVER and guard < 200:
 		guard += 1
@@ -96,6 +96,7 @@ func play_run(seed_value: int, verbose: bool = false) -> Dictionary:
 		var bot := BattleBot.make(policy, seed_value * 1000 + c.turn)
 		bot.play(b)
 		out["fights"] += bot.fights
+		out["fight_sizes"].append_array(bot.fight_sizes)
 		for cid in bot.spends.keys():
 			out["spends"][cid] = int(out["spends"].get(cid, 0)) + int(bot.spends[cid])
 		if bot.stalled:
@@ -289,6 +290,36 @@ func report() -> String:
 			var e: Dictionary = bucket[k]
 			var m := maxi(1, int(e["n"]))
 			L.append("| %s | %d | %d%% | %d%% | %d%% | %.2f |" % [k, int(e["n"]), 100 * int(e["won"]) / m, 100 * int(e["fell"]) / m, 100 * int(e["wiped"]) / m, float(e["lost"]) / m])
+	L.append("")
+	# The fights: who the engagement zones actually put in them.
+	var sizes: Array = []
+	for r in results:
+		sizes.append_array(r["fight_sizes"])
+	var cells := {}
+	var packs_in := {}
+	for f in sizes:
+		var k := "%d of %d" % [int(f[0]), int(f[1])]
+		if not cells.has(k):
+			cells[k] = [0, 0]
+		cells[k][0] += 1
+		cells[k][1] += 1 if f[3] else 0
+		var pk := "%d machines against %d packs" % [int(f[0]), int(f[2])]
+		if not packs_in.has(pk):
+			packs_in[pk] = [0, 0]
+		packs_in[pk][0] += 1
+		packs_in[pk][1] += 1 if f[3] else 0
+	L.append("## The fights")
+	L.append("")
+	L.append("%d fights. The engagement zones decide who is in a fight, so a fight need not hold the whole squad; this bot sends every machine at the nearest enemy, so it bunches, and a player who splits lanes fights more fights with fewer machines in each. Machines in the fight of machines on the field, then machines against packs, each with the fight's win rate." % sizes.size())
+	L.append("")
+	L.append("| In the fight | Fights | Won |")
+	L.append("|---|---|---|")
+	for bucket in [cells, packs_in]:
+		var ks: Array = bucket.keys()
+		ks.sort()
+		for k in ks:
+			var e: Array = bucket[k]
+			L.append("| %s | %d | %d%% |" % [k, int(e[0]), 100 * int(e[1]) / maxi(1, int(e[0]))])
 	L.append("")
 	L.append("## The placeholders measured")
 	L.append("")
