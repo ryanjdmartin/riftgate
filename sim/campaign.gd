@@ -43,9 +43,13 @@ const DRAIN := 25             # each fallen city's horde takes this from the cap
 const SQUAD := 4              # machines a battle takes at most (four columns, section 5)
 const WIPE_PHASES := 6        # phases the horde strikes the gate unopposed after a team wipe
 const SALVAGE_PER_FOE := 10   # salvage for each foe killed, in any fight however it ended (7 October: a kill is a kill); large on purpose, salvage is no combat stat
-const START_SALVAGE := 200    # enough for one rush
-const RUSH_PRICE := 200       # salvage to bring a wreck out of the shop now (6 October: a choice after a wreck, never routine repair); by chassis tier once tiers exist
-const REPAIR_COST := 5        # salvage a point of the capital's gate costs (the one priced repair, section 3)
+const START_SALVAGE := 0      # salvage builds; a run starts with nothing to build with but its blueprints
+const FAVOUR_PER_WIN := 100   # the Council's Favour for a won battle (7 October: the second currency, earned by results, spent on purchases and services)
+const FAVOUR_DOCK := 1        # Favour docked per point of gate damage the city took in that battle; never below nothing
+const START_FAVOUR := 100     # enough for one rush
+const RUSH_PRICE := 100       # Favour to bring a wreck out of the shop now (6 October: a choice after a wreck, never routine repair)
+const REPAIR_COST := 5        # salvage a point of the capital's gate costs (the one priced repair, section 3; materials, so salvage)
+const START_MACHINES := 3     # a run starts with three machines and all SQUAD slots; the fourth is bought (7 October)
 const CONVERGENCE_PER_TURN := 1   # a turn passed raises it too, so waiting never stops the clock
 const TIER_EVERY := 4         # Convergence per tier
 const FINALE_AT := 12         # the Convergence that makes the finale due (twelve battles, section 3); each fallen city brings it one sooner
@@ -85,8 +89,9 @@ var convergence: int = 0       # the campaign's clock toward the finale (named t
 var cities: Dictionary = {}       # city id -> City, the capital last
 var roster: Array = []            # Machine
 var components: Dictionary = {}   # component id -> count owned and not fitted
-var salvage: int = 0
-var blueprints: Array = []        # blueprint ids held this run (nothing yields one yet)
+var salvage: int = 0             # materials, earned by fighting (kills, loot); spent on building, module slots, the capital's gate
+var favour: int = 0              # the Council's Favour, earned by results (a won battle, docked for gate damage); spent on procurement and rushes
+var blueprints: Array = []        # component ids the run can build without limit: the tier-one blueprints at the start (7 October), more from loot, offers and research
 var tokens: Array = []            # research tokens, by the faction whose boss dropped them (unpacked in the hangar, not built)
 var offers: Array = []            # city ids whose maker owes an offer (the offer itself waits on the catalogues)
 var bosses_beaten: Dictionary = {}   # faction id -> bosses beaten this run
@@ -107,9 +112,14 @@ func _init(seed_arg: int = 1, team: Array = []) -> void:
 	for id in db.city_makers():
 		_add_city(str(id), false)
 	_add_city(db.capital_maker(), true)
-	for cid in (team if not team.is_empty() else db.default_team()):
+	# The starting team: the draft is not designed yet, so the first tier-one chassis in
+	# content order stand in for it.
+	var start: Array = team if not team.is_empty() else db.chassis_of_tier(1).slice(0, START_MACHINES)
+	for cid in start:
 		add_machine(str(cid))
 	salvage = START_SALVAGE
+	favour = START_FAVOUR
+	blueprints = db.starting_blueprints()
 	_open_rifts()
 
 
@@ -225,7 +235,7 @@ func start_battle(city_id: String, uids: Array) -> Battle:
 
 ## Apply a finished battle to the run, end the turn, and report what happened:
 ## {"turn", "city", "faction", "guest", "result" ("won", "held" or "fell"), "wiped",
-##  "gate_left", "salvage", "lost" (component ids gone for good), "wrecked" (uids), "phases"}.
+##  "gate_left", "salvage", "favour", "lost" (component ids gone for good), "wrecked" (uids), "phases"}.
 ## Empty when no battle has finished.
 func finish_battle() -> Dictionary:
 	if state != BATTLE or battle == null or battle.state != Battle.State.DONE:
@@ -259,7 +269,9 @@ func finish_battle() -> Dictionary:
 		report["wrecked"].append(m.uid)
 	# The city.
 	var faction := b.faction
+	var gate_damage := maxi(0, c.gate - b.field.gate_hp)   # what the city's gate took in this battle
 	c.gate = maxi(0, b.field.gate_hp)
+	report["favour"] = 0
 	if b.outcome == Battle.Outcome.VICTORY:
 		report["result"] = "won"
 		c.gate = c.gate_max
@@ -269,6 +281,11 @@ func finish_battle() -> Dictionary:
 		var banked := b.foes_killed * SALVAGE_PER_FOE
 		salvage += banked
 		report["salvage"] = banked
+		# The Council pays for results: its Favour for the win, docked for the gate damage the
+		# city took (7 October); a battle not won pays nothing.
+		var fee := maxi(0, FAVOUR_PER_WIN - gate_damage * FAVOUR_DOCK)
+		favour += fee
+		report["favour"] = fee
 		tokens.append(faction)
 		offers.append(c.id)
 		bosses_beaten[faction] = int(bosses_beaten.get(faction, 0)) + 1
@@ -421,12 +438,12 @@ func _roll_rift() -> Dictionary:
 
 # ---------------------------------------------------------------- the hangar
 
-## Bring a wreck out of the shop now, for RUSH_PRICE salvage.
+## Bring a wreck out of the shop now, for RUSH_PRICE Favour (each wreck its own cost).
 func rush(uid: int) -> bool:
 	var m := machine(uid)
-	if state != PICK or m == null or m.shop == 0 or salvage < RUSH_PRICE:
+	if state != PICK or m == null or m.shop == 0 or favour < RUSH_PRICE:
 		return false
-	salvage -= RUSH_PRICE
+	favour -= RUSH_PRICE
 	m.shop = 0
 	return true
 

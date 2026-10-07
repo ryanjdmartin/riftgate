@@ -441,7 +441,7 @@ static func _hexes_from(list) -> Array[Vector2i]:
 # ---------------------------------------------------------------- the run
 
 const RUN_PATH := "user://campaign.json"
-const RUN_VERSION := 2   # 2: the threat became the Convergence (7 October)
+const RUN_VERSION := 3   # 2: the threat became the Convergence; 3: Favour and the starting blueprints (7 October)
 
 
 static func save_campaign(c: Campaign, path: String = RUN_PATH) -> bool:
@@ -477,7 +477,7 @@ static func campaign_to_dict(c: Campaign) -> Dictionary:
 		"rng": str(c.rng.state),
 		"state": c.state, "won": c.won, "turn": c.turn, "convergence": c.convergence,
 		"cities": cities, "roster": roster, "next_uid": c._next_uid,
-		"components": c.components, "salvage": c.salvage, "blueprints": c.blueprints,
+		"components": c.components, "salvage": c.salvage, "favour": c.favour, "blueprints": c.blueprints,
 		"tokens": c.tokens, "offers": c.offers, "bosses_beaten": c.bosses_beaten, "finals_won": c.finals_won,
 		"battle": to_dict(c.battle) if c.battle != null else null,
 		"battle_city": c.battle_city, "squad": c.squad,
@@ -519,6 +519,7 @@ static func campaign_from_dict(d: Dictionary) -> Campaign:
 	for cid in owned.keys():
 		c.components[str(cid)] = int(owned[cid])
 	c.salvage = int(d.get("salvage", 0))
+	c.favour = int(d.get("favour", 0))
 	c.blueprints = _strings(d.get("blueprints", []))
 	c.tokens = _strings(d.get("tokens", []))
 	c.offers = _strings(d.get("offers", []))
@@ -543,7 +544,7 @@ static func campaign_from_dict(d: Dictionary) -> Campaign:
 ## float, so the counts are cast back.
 static func _report_from(rd: Dictionary) -> Dictionary:
 	var r := rd.duplicate(true)
-	for k in ["turn", "gate_left", "phases", "salvage", "tier", "squad"]:
+	for k in ["turn", "gate_left", "phases", "salvage", "favour", "tier", "squad"]:
 		if r.has(k):
 			r[k] = int(r[k])
 	var wrecked: Array = []

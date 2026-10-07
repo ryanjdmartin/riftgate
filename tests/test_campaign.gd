@@ -58,8 +58,15 @@ func test_a_new_run_has_a_city_per_maker_around_the_capital() -> void:
 	assert_eq(c.capital().gate_max, Campaign.CAPITAL_GATE, "the capital's gate is the life bar")
 	assert_eq(c.fronts().size(), Campaign.RIFTS_BASE, "rifts open at tier 0")
 	assert_true(c.capital().rift.is_empty(), "the capital is not attacked before the finale")
-	assert_eq(c.roster.size(), db.default_team().size(), "the starting team")
+	assert_eq(c.roster.size(), Campaign.START_MACHINES, "three machines to start, all four squad slots open")
+	for m in c.roster:
+		assert_eq(db.chassis_tier(m.chassis), 1, "%s is a tier-one chassis" % m.chassis)
 	assert_eq(c.salvage, Campaign.START_SALVAGE, "starting salvage")
+	assert_eq(c.favour, Campaign.START_FAVOUR, "starting Favour")
+	assert_eq(c.blueprints, db.starting_blueprints(), "the tier-one blueprints")
+	assert_true(not c.blueprints.is_empty(), "there are some")
+	for cid in c.blueprints:
+		assert_eq(db.component_tier(cid), 1, "%s is tier one" % cid)
 
 
 func test_the_content_names_exactly_one_capital() -> void:
@@ -236,12 +243,12 @@ func test_a_wreck_can_be_rushed_for_salvage() -> void:
 	var c := _run()
 	var m: Campaign.Machine = c.roster[0]
 	m.shop = 1
-	c.salvage = Campaign.RUSH_PRICE - 1
-	assert_false(c.rush(m.uid), "not without the salvage")
-	c.salvage = Campaign.RUSH_PRICE
+	c.favour = Campaign.RUSH_PRICE - 1
+	assert_false(c.rush(m.uid), "not without the Favour")
+	c.favour = Campaign.RUSH_PRICE
 	assert_true(c.rush(m.uid), "rushed")
 	assert_eq(m.shop, 0, "ready now")
-	assert_eq(c.salvage, 0, "paid")
+	assert_eq(c.favour, 0, "paid in Favour")
 	assert_false(c.rush(m.uid), "a ready machine needs no rush")
 
 
@@ -410,3 +417,30 @@ func test_the_bot_plays_a_battle_of_the_run_to_its_end() -> void:
 	assert_true(bot.fights > 0, "it fought")
 	var r := c.finish_battle()
 	assert_true(["won", "held", "fell"].has(r["result"]), "and the run reads it")
+
+
+func test_the_council_pays_favour_for_a_win_docked_for_gate_damage() -> void:
+	var c := _run()
+	var front := str(c.fronts()[0])
+	var b := _battle(c)
+	b.field.gate_hp = c.cities[front].gate - 30   # the gate took 30 in the battle
+	_end(b, Battle.Outcome.VICTORY)
+	var r := c.finish_battle()
+	var fee := maxi(0, Campaign.FAVOUR_PER_WIN - 30 * Campaign.FAVOUR_DOCK)
+	assert_eq(r["favour"], fee, "the fee, docked for the damage")
+	assert_eq(c.favour, Campaign.START_FAVOUR + fee, "paid")
+	assert_eq(c.cities[front].gate, Campaign.CITY_GATE, "and the siege is lifted all the same")
+
+
+func test_a_battle_not_won_pays_no_favour() -> void:
+	var c := _run()
+	var b := _battle(c)
+	for u in b.mechs():
+		_wreck(b, u)
+	b.foes_killed = 3
+	_end(b, Battle.Outcome.WRECKED)
+	var r := c.finish_battle()
+	assert_eq(r["result"], "held", "the city held")
+	assert_eq(r["favour"], 0, "no Favour for a battle not won")
+	assert_eq(c.favour, Campaign.START_FAVOUR, "nothing paid")
+	assert_true(c.salvage > Campaign.START_SALVAGE, "though its kills keep their salvage")

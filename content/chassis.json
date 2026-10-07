@@ -1,5 +1,5 @@
 {
- "_about": "Chassis. Not classes: any silhouette, any component in any slot. Numbers are in tens. movespeed is the move in tens: a normal hex costs 10, a fast one 5, and a slow hex can always be entered and ends the move; which ground is which word is the way of moving among traits (tracked, walker, wheeled, hover, flyer; exactly one), bible section 4. size is the machine's class by mass (light, medium, heavy, assault), which sets how big it is drawn on the map and in the skirmish (bible section 7). armour is taken off every blow that lands on bare hull, flat, so small hits bounce off a heavy machine (a standing shield blocks a blow whole; nothing bleeds through). recharge_field is shield regained each battlefield phase spent out of combat; in a fight shield comes only from components (never a free refill, so withdrawing is not a reset). cooling is heat shed at the start of every skirmish turn (0 if absent): venting is a tactic, but a round of ballistics or shields is a way of cooling too. hardpoints is the number of free slots (and of hp_<n> pins on the model); fixed lists the components built into the chassis (always on the die, never removed, no hardpoint used); loadout is the components fitted to the hardpoints by default, and a hardpoint left empty is an entry on the die that does nothing. Every component is one entry, so die size is fixed count plus hardpoints. passive is zero or one object: name and description are shown (the codex prints NAME: description), effects are what the engine runs, at most three, one idea (an upside and its cost count as one passive); the validator refuses effects the engine cannot execute. Shown to the player: codex (the inspect entry, combat and hangar), flavour (an in-world quote), the passive's name and description. design is internal and never shown: fantasy (pitch, inspiration, homages), niche (the role it is meant to fill). Makers are placeholders.",
+ "_about": "Chassis. Not classes: any silhouette, any component in any slot. Numbers are in tens. movespeed is the move in tens: a normal hex costs 10, a fast one 5, and a slow hex can always be entered and ends the move; which ground is which word is the way of moving among traits (tracked, walker, wheeled, hover, flyer; exactly one), bible section 4. size is the machine's class by mass (light, medium, heavy, assault), which sets how big it is drawn on the map and in the skirmish (bible section 7). armour is taken off every blow that lands on bare hull, flat, so small hits bounce off a heavy machine (a standing shield blocks a blow whole; nothing bleeds through). recharge_field is shield regained each battlefield phase spent out of combat; in a fight shield comes only from components (never a free refill, so withdrawing is not a reset). cooling is heat shed at the start of every skirmish turn (0 if absent): venting is a tactic, but a round of ballistics or shields is a way of cooling too. tier is the chassis's tier, 1 to 3 (bible section 10, the ledger, 7 October): power and complexity, never the maker, so any maker may field a tier three and the capital's maker fields no tier one; a run starts with tier-one chassis, and a component's tier follows the lowest tier of chassis that stock it. hardpoints is the number of free slots (and of hp_<n> pins on the model); fixed lists the components built into the chassis (always on the die, never removed, no hardpoint used); loadout is the components fitted to the hardpoints by default, and a hardpoint left empty is an entry on the die that does nothing. Every component is one entry, so die size is fixed count plus hardpoints. passive is zero or one object: name and description are shown (the codex prints NAME: description), effects are what the engine runs, at most three, one idea (an upside and its cost count as one passive); the validator refuses effects the engine cannot execute. Shown to the player: codex (the inspect entry, combat and hangar), flavour (an in-world quote), the passive's name and description. design is internal and never shown: fantasy (pitch, inspiration, homages), niche (the role it is meant to fill). Makers are placeholders.",
  "makers": [
   {
    "id": "minerva",
@@ -39,6 +39,7 @@
    "name": "Honey Badger",
    "designation": "EX-45XLE Combat Miner",
    "maker": "minerva",
+   "tier": 1,
    "design": {
     "fantasy": "A repurposed mining vehicle, designed to take severe punishment and keep on working. Refurbishments were minimal, basically bolting on weapons and armour, it keeps most of its utilitarian mining machinery flavour.",
     "niche": "tanky bruiser",
@@ -98,6 +99,7 @@
    "name": "Clydesdale",
    "designation": "Pattern 1 Combat Walker",
    "maker": "wainwright_sutler",
+   "tier": 2,
    "design": {
     "fantasy": "A massive, boxy, heavily armoured, and utilitarian quadruped walker, designed to fill whatever niche the team is lacking. Like its namesake, it has four thick legs and carries a massive payload on top.",
     "niche": "Heavy cavalry",
@@ -147,6 +149,7 @@
    "name": "Sparrowhawk",
    "designation": "K-7 Mk III Interceptor",
    "maker": "kestrel",
+   "tier": 1,
    "design": {
     "fantasy": "A priority-target interceptor. Designed for speed and firepower and not much else, taking out a key asset and fleeing while its generous shields recharge.",
     "niche": "assassin",
@@ -196,6 +199,7 @@
    "name": "Baboon",
    "designation": "Perihelion Flight 7 Support Frame",
    "maker": "aphelion",
+   "tier": 1,
    "design": {
     "fantasy": "A long-armed, stubby-legged plantigrade walker with a high tech suite of weapons and equipment mounted on its backpack. Not fast or heavily armoured, it specializes in battlefield control through status effects and high-tech equipment with complex effects.",
     "niche": "combat support",
@@ -246,6 +250,7 @@
    "name": "Armadillo",
    "designation": "HW-22T Heavy Weapons Carrier",
    "maker": "minerva",
+   "tier": 1,
    "design": {
     "fantasy": "A squat, heavily armoured walker with short, thick legs, its back bristling with weaponry from shielded ports that can seal for additional protection. The cockpit is tucked under the front armour, providing reduced visibility but extra protection. An internal electric generator shocks foes that strike is hull when activated.",
     "niche": "tank",
@@ -293,6 +298,7 @@
    "name": "Wild Boar",
    "designation": "AB-70R Assault Breacher",
    "maker": "minerva",
+   "tier": 2,
    "design": {
     "fantasy": "An unstoppable assault tank, complete with front rams and plows, designed for breaching reinforced emplacements - or plowing over and through fodder monsters.",
     "niche": "Vanguard tank",
@@ -340,6 +346,7 @@
    "name": "Prairie Dog",
    "designation": "Pattern 9 Scout Car",
    "maker": "wainwright_sutler",
+   "tier": 1,
    "design": {
     "fantasy": "A fast, agile, and lightly armoured skirmisher, able to skim in and out of fights with ease. It's signature ability allows it to serve as both a potent scout and harasser before getting away with minimal damage.",
     "niche": "scout/harasser",
@@ -385,6 +392,7 @@
    "name": "Dingo",
    "designation": "Pattern 12 Support Car",
    "maker": "wainwright_sutler",
+   "tier": 1,
    "design": {
     "fantasy": "A small, nimble, lightly armoured vehicle designed to support heavy armour in combat. Able to stealthily avoid combat until its allies are in position for a flanking or pincer attack, then capitalize on openings in combat.",
     "niche": "combat support",
@@ -433,6 +441,7 @@
    "name": "Goshawk",
    "designation": "K-9 Mk II Attack Airframe",
    "maker": "kestrel",
+   "tier": 2,
    "design": {
     "fantasy": "The larger cousin of the Sparrowhawk, trades explosiveness for longevity. Wide downturned wings evoking a hovering predator, weapon mounts mounted under the wings. Double boosters mounted on top of the tail section (similar to an A10 warthog).",
     "niche": "Ramping damage",
@@ -481,6 +490,7 @@
    "name": "Nemesis",
    "designation": "Arsenal Instrument IV",
    "maker": "arsenal",
+   "tier": 2,
    "design": {
     "fantasy": "A hulking, neckless, spiked brute. Thick arms made for pummeling. A glowing firey core in its torso that lights up as the mech takes damage and heats up.",
     "niche": "Sustained damage bruiser",
@@ -535,6 +545,7 @@
    "name": "Ammit",
    "designation": "Arsenal Instrument VII",
    "maker": "arsenal",
+   "tier": 3,
    "design": {
     "fantasy": "A sinister digitigrade figure, with 4 clawed arms, the middle set which can be used as an additional pair of legs. A low-set snout like cockpit with burning \"eyes.\" Absorbs energy from units it defeats with its 4 signature locked claw weapons, granting permanent overcharge.",
     "niche": "Scaling damage",
@@ -584,6 +595,7 @@
    "name": "Stingray",
    "designation": "Perigee Flight 4 Strike Skimmer",
    "maker": "aphelion",
+   "tier": 2,
    "design": {
     "fantasy": "A flat pearl-white lens of a hull that rides on lift fans sunk flush into its wings and pitches like a helicopter to move. Its heat suite is its weapon: the hotter it runs, the deeper every burn and every buff it lays. The ray's barb is its tail, lit at the tip; its mouth is the lance under the nose.",
     "niche": "hot status amplifier",
@@ -632,6 +644,7 @@
    "name": "Puffin",
    "designation": "K-11 Mk I Ground-Effect Escort",
    "maker": "kestrel",
+   "tier": 2,
    "design": {
     "fantasy": "Kestrel's one machine that touches the ground, and so the one Kestrel that can stop a pack. A short deep body in chrome on two boosters far too big for it, stubby wings, tail fins, and the whole front one shield projector, a great faired beak. Kestrel called it a very cool ground-effect escort; pilots took one look and called it the Puffin.",
     "niche": "shield specialist",

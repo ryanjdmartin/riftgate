@@ -399,6 +399,44 @@ func city_makers() -> Array:
 	return out
 
 
+## Tiers (bible section 10, the ledger, 7 October). A chassis carries its tier; a component
+## stocked by any chassis takes the lowest tier of the chassis that stock it; one no chassis
+## stocks carries its own; a fixed-only component has none (0).
+func chassis_tier(chassis_id: String) -> int:
+	return int(chassis.get(chassis_id, {}).get("tier", 0))
+
+
+func component_tier(component_id: String) -> int:
+	var best := 0
+	for id in chassis.keys():
+		if chassis[id].get("loadout", []).has(component_id):
+			var t := int(chassis[id].get("tier", 0))
+			if t > 0 and (best == 0 or t < best):
+				best = t
+	if best > 0:
+		return best
+	return int(components.get(component_id, {}).get("tier", 0))
+
+
+## The chassis of one tier, in content order.
+func chassis_of_tier(t: int) -> Array:
+	var out: Array = []
+	for id in chassis.keys():
+		if int(chassis[id].get("tier", 0)) == t:
+			out.append(str(id))
+	return out
+
+
+## The blueprints a run starts with: every tier-one component (Ryan, 7 October: each
+## maker's basic defaults, which are the tier-one chassis's stock).
+func starting_blueprints() -> Array:
+	var out: Array = []
+	for cid in components.keys():
+		if component_tier(str(cid)) == 1:
+			out.append(str(cid))
+	return out
+
+
 func default_faction() -> String:
 	return str(factions.keys()[0]) if not factions.is_empty() else ""
 
@@ -721,6 +759,30 @@ func _validate_chassis(errs: Array[String]) -> void:
 			capitals += 1
 	if not makers.is_empty() and capitals != 1:
 		errs.append("makers: exactly one maker sits at the capital (\"capital\": true); %d do" % capitals)
+	# Tiers (7 October): every chassis 1 to 3; the capital's maker fields no tier one; a
+	# stocked component's tier is derived, so it stores none; an unstocked one that is not
+	# fixed stores its own; no component of the capital's maker is tier one.
+	var capital := capital_maker()
+	var stocked_ids := {}
+	var fixed_ids := {}
+	for id in chassis.keys():
+		var t = chassis[id].get("tier", null)
+		if not (t is float or t is int) or int(t) < 1 or int(t) > 3:
+			errs.append("chassis %s: tier must be 1, 2 or 3" % id)
+		elif str(chassis[id].get("maker", "")) == capital and int(t) == 1:
+			errs.append("chassis %s: the capital's maker fields no tier one" % id)
+		for cid in chassis[id].get("loadout", []):
+			stocked_ids[cid] = true
+		for cid in chassis[id].get("fixed", []):
+			fixed_ids[cid] = true
+	for cid in components.keys():
+		var c: Dictionary = components[cid]
+		if stocked_ids.has(cid) and c.has("tier"):
+			errs.append("component %s: stocked by a chassis, so its tier is derived and stores none" % cid)
+		elif not stocked_ids.has(cid) and not fixed_ids.has(cid) and not c.has("tier"):
+			errs.append("component %s: no chassis stocks it, so it carries its own tier" % cid)
+		if not capital.is_empty() and str(c.get("maker", "")) == capital and component_tier(str(cid)) == 1:
+			errs.append("component %s: the capital's maker has no tier-one component" % cid)
 	for id in chassis.keys():
 		var c: Dictionary = chassis[id]
 		var where := "chassis %s" % id
