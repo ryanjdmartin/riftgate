@@ -365,8 +365,8 @@ rhythm first in one dry voice; the modal shell, a plate and a glass tapped or bo
 principle the same day, pulse for the hand and targeting, the shell for the body and the menus, the boop's
 warning and menu figures and the voice on real words from the parked set; the console assembled to those
 verdicts (`assembled_sketches.py`) read as monotone (4 October), so nothing plays alone now; the
-eight profiles he liked are a palette (`palette_sketches.py`, in its eleventh cut to his notes of 5 to 7 October, every under-layer levelled by measurement from its rider, the general rule's start 5 dB under, per-row
-leads where Ryan judged them, the map's acquire in two alignments to choose from:
+eight profiles he liked are a palette (`palette_sketches.py`, in its eleventh cut to his notes of 5 to 7 October, every under-layer levelled by measurement from its rider, the general rule's start 8 dB under, per-row
+leads where Ryan judged them, the map's acquire glass first with or without its boop to choose from:
 the die in the glass register alone, a hover hum easing in before a spend with no boop on the spend,
 soft digital clicks on the lock, the end of the turn the plate swelling and tailing off, the boops leading
 wherever they ride on glass, one sound for a press, a menu item and a selection, and the map's acquire,
@@ -379,7 +379,8 @@ source; the second pass's resample and ring did nothing for him, so `piper_voice
 through the machine chain, the Mac's voices retired as sources; Ryan's picks: Amy the baseline, Jenny the
 one to play with (her licence checked: commercial use permitted, attribution for live generation only),
 decided (Ryan, 7 October, "spot on"): Jenny on the mid chain slowed a third, her plosives tamed
-(`mid_tamed` in `piper_voices.py`), at -14 dB on the phone; the moments that earn a line and the words are open; the page's history is cut, the earlier cuts live in git), each event built by fit from two or three of them
+(`mid_tamed` in `piper_voices.py`), at -14 dB on the phone; Ryan's brief for her lines (infrequent, many phrases on many hooks, information lines every time, a rare personality
+layer) is proposed as a system with a first draft of pools in `voice_lines.py` and a taster on the page; the page's history is cut, the earlier cuts live in git), each event built by fit from two or three of them
 rather than pinned to where they first played (a first combined cut, `combined_sketches.py`, pinned
 them and is superseded), at the top of the page's section 1; everything earlier stays
 below for the record; the voice is set aside, an optional experiment that would start from a real speech
@@ -390,7 +391,7 @@ Content carries a `sound` label on a component (a word or a list meaning layers,
 lands as a recipe in `forge.py` with its hook (shape, maker, faction, silhouette, the label, the
 replay telling shield hit from block from hit). The sketch script encodes AAC with `ffmpeg` at
 256 kbps where there is no `afconvert` (its encoder smears a transient's front at 128). Next:
-Ryan's listen of the eleventh cut and the baseline mix (section 6 of the page: music 0.63, effects 1.0, the ladder per family; Hold The Line the baseline, the other tracks' levelling against it a pass of its own) and his word on which moments earn a voice line, then picks into the forge with their hooks (the hover needs an over-target state in the drag); the Risen and Infernal
+Ryan's listen of the eleventh cut and the baseline mix (section 6 of the page: music 0.63, effects 1.0, the ladder per family; Hold The Line the baseline, the other tracks' levelling against it a pass of its own) and his strikes and rewrites of Jenny's draft lines, then picks into the forge with their hooks (the hover needs an over-target state in the drag); the Risen and Infernal
 Horde boss themes from their seeds, melodies proposed in chat first. The speakers/headphones
 setting is dropped (Ryan, 2 October): the one master balances for both for now.
 
