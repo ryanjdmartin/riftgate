@@ -1193,9 +1193,9 @@ if (location.hash.startsWith("#md-")) MOTION.id = location.hash.slice(4);   // a
 function rememberMotion() { try { localStorage.setItem("hangar.motion", JSON.stringify({id: MOTION.id, shape: MOTION.shape, maker: MOTION.maker})); } catch (e) {} }
 const ensureShapes = () => ensure("shapes", "hangar/shapes.json", j => { state.shapes = j; });
 const MODE_HELP = {
-  acts: "Every act in turn, back to back, as RIFTGATE_ACTS_DEBUG=1 plays them. Tap one to loop it; drag the bar to hold a moment. The blows layer over whatever is playing.",
-  walk: "Driven straight ahead at the reference speed, as RIFTGATE_MOVE_DEBUG=1 does: the stride, the wheels, the treads and the held poses.",
-  route: "A loop of four moves on the map's hexes: two steps north, a corner east, two steps south, a corner back. The facing follows the cornering module: the Dingo's lag, the banks, a helicopter turning first and then strafing. Each move runs as the map runs it: one smooth curve, from rest to full speed, braking into corners, easing to a stop and then to its recorded facing.",
+  acts: "Every act in turn, back to back, as RIFTGATE_ACTS_DEBUG=1 plays them. Tap one to loop it; drag the bar to hold a moment. The blows layer over whatever is showing, playing or paused. A hovercraft balances on its cushion all the while, tipping every way as the currents and the gusts take it, as the map and the skirmish draw it.",
+  walk: "Driven straight ahead at its own full speed on the map, as RIFTGATE_MOVE_DEBUG=1 does: the stride at the pace the map gives its move (a 20 or a 30 plods, a 40 or a 50 runs), the wheels, the treads and the held poses.",
+  route: "A loop of two long moves on the map's hexes: three steps north and a turn east, three steps south and a turn back. The facing follows the cornering module: the Dingo's, the hovercraft's and (a little) the jets' noses swinging into each corner ahead of the path (oversteer), the flyers' and the Stingray's banks, the Puffin flat. Each move runs as the map runs it: one smooth curve, from rest to full speed, through the corners at full speed, easing to a stop and then to its recorded facing.",
 };
 function motionMachines() {
   return liveEntries("chassis.entries").map(x => x.entry).filter(e => state.pins && Array.isArray(state.pins[e.id]));
@@ -1227,12 +1227,16 @@ function renderModels(main) {
     if (MOTION.id === CLASSES) {
       MOTION.wrap.className = "motion " + (MAKER_TAB[MOTION.maker] || "other");
       st.flyer = false;
+      st.hover = false;
+      st.size = "heavy";
       show = state.shapes ? st.show("shapes/" + MOTION.shape + "_" + MOTION.maker, true) : null;
     } else {
       const entry = list.find(e => e.id === MOTION.id);
       MOTION.wrap.className = "motion " + (MAKER_TAB[entry.maker] || "other");
       st.movespeed = Number(entry.movespeed) || 50;
       st.flyer = (entry.traits || []).includes("flyer");
+      st.hover = (entry.traits || []).includes("hover");   // balances on its cushion all the while, as in the game
+      st.size = entry.size || "heavy";   // its class by mass sets the hex it walks over, as the map draws it
       show = st.show(entry.id);
     }
     main.append(MOTION.wrap);
@@ -1302,7 +1306,8 @@ function paintMotion(force) {
   if (st.mode === "acts") {
     const acts = el("div", {class: "acts"});
     acts.append(el("button", {class: "fchip", id: "mo-act-all", "aria-pressed": String(!st.loop), onclick: () => st.setLoop("")}, "All, in turn"));
-    for (const a of rig.acts) acts.append(el("button", {class: "fchip", id: "mo-act-" + safeId(a.name), "aria-pressed": String(st.loop === a.name), onclick: () => st.setLoop(a.name)}, actWords(a.name)));
+    for (const a of rig.acts) acts.append(el("button", {class: "fchip", id: "mo-act-" + safeId(a.name), "aria-pressed": String(st.loop === a.name), onclick: () => st.setLoop(a.name),
+      title: a.places && a.places.length ? "Plays on the " + a.places.join(" and the ") + " only" : ""}, actWords(a.name), a.places && a.places.length ? el("span", {class: "n"}, a.places.join("/")) : null));
     panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, rig.acts.length ? `Acts · ${rig.acts.length}` : "Acts"), rig.acts.length ? acts : el("p", {class: "mhelp"}, "This machine has no acts yet.")));
     if (rig.current) {
       const r = el("input", {type: "range", id: "mo-scrub", min: "0", max: String(rig.current.duration), step: "0.01", value: String(rig.t), "aria-label": "Time into " + actWords(rig.current.name)});
@@ -1313,6 +1318,14 @@ function paintMotion(force) {
     panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Blows"), el("div", {class: "seg"},
       el("button", {class: "btn", id: "mo-melee", onclick: () => st.strike(false)}, "Melee"),
       el("button", {class: "btn", id: "mo-shot", onclick: () => st.strike(true)}, "Shot"))));
+  }
+  // A machine with gait options (b.gait_option) walks by any of them here, to judge beside its own.
+  const options = Object.keys(rig.gaitOptions || {});
+  if (st.mode !== "acts" && options.length) {
+    const g = el("div", {class: "acts"});
+    g.append(el("button", {class: "fchip", id: "mo-gait-built", "aria-pressed": String(!st.gaitName), onclick: () => st.setGait("")}, "As built"));
+    for (const name of options) g.append(el("button", {class: "fchip", id: "mo-gait-" + safeId(name), "aria-pressed": String(st.gaitName === name), onclick: () => st.setGait(name)}, actWords(name), el("span", {class: "n"}, "option")));
+    panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Gait"), g, el("p", {class: "mhelp"}, "An option is a way it could walk, built beside the one it uses, to judge running; the game walks it as built.")));
   }
   // The mounts: each takes its stock part, nothing, or any class in any maker's metal.
   const pinsHere = (state.pins && state.pins[MOTION.id]) || [];
@@ -1351,7 +1364,7 @@ function paintMotion(force) {
   fact("Bank", mv.bank ? mv.bank + "°" : "");
   fact("Strafe", mv.strafe ? "turns first, then translates" : "");
   fact("Tilt", Array.isArray(mv.tilt) ? `${mv.tilt[0]}° forward, ${mv.tilt[1]}° across` : "");
-  fact("Turret", Object.keys(g.hold_aim || {}).length ? "holds its aim" : "");
+  fact("Heft", mv.heft ? mv.heft + " s" : "");
   panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "From its sidecar"), facts));
 }
 // The classes: one alone in a maker's metal, turning on the stage.

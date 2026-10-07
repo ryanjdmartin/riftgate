@@ -186,6 +186,7 @@ tools/spriter/.venv/bin/python tools/lowforge/forge.py build gate wall
 RIFTGATE_ACTS_DEBUG=1 godot --path .            # every act back to back in the skirmish and on the map (=<act name> loops one)
 RIFTGATE_MOVE_DEBUG=1 godot --path .            # every machine driven constantly: the walks, wheels, treads and held poses (`b.gait(...)` in models_low.py); the cornering (the Dingo's drift, the banks) needs a real move
 godot --path . --resolution 360x640 --position 2000,2000 -s tools/act_shot.gd -- badger minerva test_claw 1.4 claw.png front   # one act frozen 1.4 s in; "gait 0.5" freezes a stride
+godot --path . --resolution 360x640 -s tools/gait_clip.gd -- ammit arsenal clip/ammit 8 front 480x400 offbeat   # a machine walking at its map pace, every frame a PNG (a gait option by name, "-" for its own); then ffmpeg -framerate 30 -i clip/ammit_%04d.png -pix_fmt yuv420p ammit.mp4
 # with no Blender installed (a cloud session): a python3.11 venv with `pip install bpy==5.0.1`, then
 BPY_PYTHON=.bpy/bin/python tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger
 tools/spriter/.venv/bin/python tools/lowforge/glbcmp.py art/models/badger.glb /tmp/badger.glb   # a rebuild's geometry against the committed file

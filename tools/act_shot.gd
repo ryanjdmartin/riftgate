@@ -4,9 +4,11 @@ extends SceneTree
 ## model's art/models/<id>.rig.json), saved as a PNG, for checking a pose without a running
 ## build. Judge the acts running where you can (RIFTGATE_ACTS_DEBUG=1 godot --path .); this
 ## is for a sign or a reach, one frame at a time.
-##   godot --path . --resolution 360x640 --position 2000,2000 -s tools/act_shot.gd -- <chassis> <maker> <act> <seconds> out.png [front|rear|<yaw degrees>]
+##   godot --path . --resolution 360x640 --position 2000,2000 -s tools/act_shot.gd -- <chassis> <maker> <act> <seconds> out.png [front|rear|skirmish|<yaw degrees>] [<w>x<h>]
+## The frame is 420 square unless a size is given; "skirmish 160x192" is the skirmish's own
+## view (its angle, its frame fitted to the machine at rest), to see what an act leaves of it.
 ## An act name of "-" renders the rest pose; "gait" renders the machine that many seconds
-## into a straight run at the reference speed (its stride). Needs a window (xvfb-run does, on a Linux box).
+## into a straight run at its full speed on the map (its stride). Needs a window (xvfb-run does, on a Linux box).
 
 var _frames := 0
 var _view: MechView3D
@@ -18,18 +20,23 @@ func _init() -> void:
 	var yaw := MechView3D.YAW_FRONT
 	if args.size() >= 6 and args[5] == "rear":
 		yaw = MechView3D.YAW_REAR
+	elif args.size() >= 6 and args[5] == "skirmish":
+		yaw = MechView3D.YAW_SKIRMISH
 	elif args.size() >= 6 and args[5].is_valid_float():
 		yaw = float(args[5])
+	var frame := Vector2i(420, 420)
+	if args.size() >= 7 and args[6].contains("x"):
+		frame = Vector2i(int(args[6].get_slice("x", 0)), int(args[6].get_slice("x", 1)))
 	_out = args[4]
-	_view = MechView3D.make(args[0], args[1], "clean", "badger", yaw, Vector2i(420, 420), false, {}, [])
+	_view = MechView3D.make(args[0], args[1], "clean", "badger", yaw, frame, false, {}, [])
 	_view.strip_silhouette()
 	root.add_child(_view)
 	_view.set_process(false)
 	if args[2] == "gait":
-		# Under way at the reference speed for that long, frame by frame: a stride's pose.
+		# Under way at its own full speed on the map for that long, frame by frame: a stride's pose.
 		var t := 0.0
 		while t < float(args[3]):
-			_view.rig.drive(MechRig.MOVE_REF_SPEED, 0.0, 0.0, 1.0 / 60.0)
+			_view.rig.drive(_view.rig.top_speed, 0.0, 0.0, 1.0 / 60.0)
 			t += 1.0 / 60.0
 	elif args[2] != "-":
 		if not _view.rig.play(args[2]):

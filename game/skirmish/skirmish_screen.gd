@@ -395,6 +395,7 @@ func _build() -> void:
 			var maker := str(db.chassis.get(ms.unit.chassis_id, {}).get("maker", "minerva"))
 			var view := MechView3D.make(ms.unit.chassis_id, maker, look, "badger", MechView3D.YAW_SKIRMISH, Vector2i.ZERO, false, ms.unit.paint, MechView3D.plan_for(ms.unit, db))
 			view.set_sheen(MechView3D.SHEEN_SKIRMISH)   # the rear pose needs more to shine like the codex
+			view.size_k = float(MechView3D.SIZE_FILL.get(str(db.chassis.get(ms.unit.chassis_id, {}).get("size", "")), 1.0))   # the team in proportion
 			# Idle: an aircraft hovers, a hover chassis skims, a ground machine stands still
 			# (its idle is limb movement, which waits on annotated joints).
 			if ms.unit.traits.has("flyer"):
@@ -402,10 +403,12 @@ func _build() -> void:
 				view.sway_bob = 1.4
 				view.sway_yaw = 0.06
 			elif ms.unit.traits.has("hover"):
+				# A hovercraft balances on its cushion as the currents shift it, every way at
+				# once (Ryan, 5 October: not the flyers' bob; a platform on the water).
 				view.sway = true
-				view.sway_bob = 0.6
+				view.sway_bob = 1.0
 				view.sway_yaw = 0.04
-				view.sway_pitch = 0.06   # a hover holds station nose down and up, the way a helicopter does (Ryan, 2 October); to be judged running
+				view.balance = HoverBalance.new(i + 1)
 			view.sway_phase = i * 2.1
 			view.strip_silhouette()   # no light outline in the skirmish (Ryan, 22 September); the trace and its scan glow stay
 			# Hug the model by its framed bounds, never the render read back. The view frames
