@@ -20480,7 +20480,8 @@
   "start": {
    "option": "trot",
    "below": 0.5,
-   "full": 0.95
+   "full": 0.95,
+   "hold": 1.0
   }
  },
  "move": {

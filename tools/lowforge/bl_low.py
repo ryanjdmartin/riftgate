@@ -756,11 +756,13 @@ class Build:
         full): the machine moves wholly by that gait option under `below` of its full speed
         and by this gait over `full`, crossfading between, so it sets off and pulls up in one
         gait and runs in another (Ryan, 7 October, the nineteenth notes: the Clydesdale trots
-        off the mark into its gallop)."""
+        off the mark into its gallop); a fourth number holds that gait for so many of its
+        strides from a standstill, fading over half a stride more (the twenty-first notes)."""
         out = {"stride": float(stride), "ease": ease, "tracks": {}, "body": [], "wheels": {}, "steer": {}, "aim": {},
                "hold": {}, "treads": {}, "glow": {}, "rock": float(rock)}
         if start is not None:
-            out["start"] = {"option": str(start[0]), "below": float(start[1]), "full": float(start[2])}
+            out["start"] = {"option": str(start[0]), "below": float(start[1]), "full": float(start[2]),
+                            "hold": float(start[3]) if len(start) > 3 else 0.0}
         for jn, spec in (tracks or {}).items():
             keys, phase = (spec if isinstance(spec, tuple) and len(spec) == 2 and not isinstance(spec[0], (int, float)) else (spec, 0.0))
             out["tracks"][jn] = {"keys": self._keys("the gait", keys, jn), "phase": float(phase)}

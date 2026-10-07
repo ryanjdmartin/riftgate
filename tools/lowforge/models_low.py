@@ -548,10 +548,12 @@ def clydesdale(b):
     # It sets off at a trot and rolls into the gallop as it gathers speed, and drops back to
     # the trot as it pulls up (Ryan, 7 October, the nineteenth notes: it took off straight into
     # a slow gallop): wholly the trot under half its full speed, wholly the gallop over 0.95,
-    # crossfading between (b.gait's start; 0.3 and 0.85 until the twentieth notes: it could hold
-    # its trot a little longer); off the mark at its map pace, about the first eight tenths of
-    # a second trot and the gallop is whole by about a second and a half.
-    b.gait(stride=stride, tracks=tracks, body=body, ease="linear", start=("trot", 0.5, 0.95))
+    # crossfading between (b.gait's start; 0.3 and 0.85 until the twentieth notes). It reaches
+    # half its speed within a fifth of a stride, so the trot is also held for its first stride
+    # from a standstill, fading into the gallop over half a stride more (the twenty-first notes:
+    # it held the trot for about half a step): 55 units of trot, two thirds of a hex, about the
+    # first second and seven tenths at its map pace, the gallop whole by about 2.1 seconds.
+    b.gait(stride=stride, tracks=tracks, body=body, ease="linear", start=("trot", 0.5, 0.95, 1.0))
     # A heavy trot (Ryan, 6 October, the ninth notes: the gallop has potential but is a bit
     # much, and its hooves met through each other; somewhere between it and the Armadillo's
     # stomp), kept as an option for the hangar's Walk. The gait between the two in a horse:

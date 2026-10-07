@@ -58,10 +58,13 @@ const STEER_EASE := 0.12      # seconds a steered joint (a knuckle, a nacelle) t
 # Turning in place steps the legs round (Ryan, 7 October, the twentieth notes: a machine turns
 # onto its way before it sets off, and a walker turning on the spot slid round on its feet):
 # the turn counts toward the gait's travel as though each foot went round a circle PIVOT_STEP
-# of a stride across, fading out as the machine gathers PIVOT_FADE units a second of its own;
-# a turn slower than PIVOT_MIN radians a second is a settle, not a step. Nothing banks
-# standing: the bank comes in with BANK_SPEED units a second.
-const PIVOT_STEP := 0.5
+# of a stride across, never faster than PIVOT_CAP of its own full speed (the twenty-first
+# notes: some stepped round faster than they walk, which read as skating; 0.5 and no cap
+# before), fading out as the machine gathers PIVOT_FADE units a second of its own; a turn
+# slower than PIVOT_MIN radians a second is a settle, not a step. Nothing banks standing: the
+# bank comes in with BANK_SPEED units a second.
+const PIVOT_STEP := 0.35
+const PIVOT_CAP := 0.4
 const PIVOT_FADE := 20.0
 const PIVOT_MIN := 0.15
 const BANK_SPEED := 37.5
@@ -79,7 +82,8 @@ var model: Node3D = null           # the glTF's root
 var body: Node3D = null            # the node a body track moves (the model root unless told otherwise)
 var gait: Dictionary = {}          # the sidecar's gait: how this machine moves (see drive)
 var gait_options: Dictionary = {}  # other ways it could move, built beside it for judging (b.gait_option); the game uses one only as a gait's start
-var _start_gait: Dictionary = {}   # the gait it starts and stops in, when its gait names one: {"gait", "curves", "below", "full"}
+var _start_gait: Dictionary = {}   # the gait it starts and stops in, when its gait names one: {"gait", "curves", "below", "full", "hold"}
+var _travel := 0.0                 # model units travelled since it last stood still (a start gait's hold)
 var spinners: Dictionary = {}      # joint -> [idle, moving] degrees a second: turned without end on its own axis (b.spin: the Stingray's fans)
 var _spun: Dictionary = {}         # joint -> degrees turned so far, wrapped
 var debug: String = ""             # RIFTGATE_ACTS_DEBUG, read at setup
@@ -371,7 +375,7 @@ func use_gait(g: Dictionary) -> void:
 	var st: Variant = gait.get("start", {})
 	if st is Dictionary and gait_options.get(str(st.get("option", "")), null) is Dictionary:
 		var opt: Dictionary = gait_options[str(st["option"])]
-		_start_gait = {"gait": opt, "curves": _cycle_curves(opt), "below": float(st.get("below", 0.3)), "full": float(st.get("full", 0.8))}
+		_start_gait = {"gait": opt, "curves": _cycle_curves(opt), "below": float(st.get("below", 0.3)), "full": float(st.get("full", 0.8)), "hold": float(st.get("hold", 0.0))}
 
 
 ## The cyclic curves of a gait's tracks and body.
@@ -439,6 +443,7 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 	_bank = 0.0
 	_tilt = Vector2.ZERO
 	_steer.clear()
+	_travel = 0.0
 	_drift = 0.0
 	_current = {}
 	_curves = {}
@@ -713,12 +718,13 @@ func drive(speed: float, aim: float, turn: float, delta: float) -> void:
 	var prev := _speed
 	_speed = lerpf(_speed, maxf(0.0, speed), 1.0 - exp(-delta / 0.12))
 	_accel = lerpf(_accel, (_speed - prev) / delta, 1.0 - exp(-delta / 0.15))
-	var pivot := absf(turn) * PIVOT_STEP * maxf(1.0, float(gait.get("stride", 40.0))) * (1.0 - clampf(_speed / PIVOT_FADE, 0.0, 1.0)) if absf(turn) > PIVOT_MIN else 0.0
+	var pivot := minf(absf(turn) * PIVOT_STEP * maxf(1.0, float(gait.get("stride", 40.0))), PIVOT_CAP * top_speed) * (1.0 - clampf(_speed / PIVOT_FADE, 0.0, 1.0)) if absf(turn) > PIVOT_MIN else 0.0
 	moving = speed > 0.5 or pivot > 0.0
 	var target := 1.0 if moving else 0.0
 	var rate := MOVE_BLEND_IN if moving else MOVE_BLEND_OUT
 	_blend = move_toward(_blend, target, delta / rate)
 	_dist += (_speed + pivot) * delta
+	_travel = _travel + _speed * delta if speed > 0.5 or _speed > 0.5 else 0.0
 	var bank_want := float(move.get("bank", 0.0)) * clampf(-turn / BANK_TURN, -1.0, 1.0) * clampf(_speed / BANK_SPEED, 0.0, 1.0)   # a left turn drops the left wing: roll negative
 	_bank = lerpf(_bank, bank_want, 1.0 - exp(-delta / 0.3))
 	# A helicopter's tilt: it leans into its travel by its speed, nose down going forward,
@@ -746,11 +752,18 @@ func drive(speed: float, aim: float, turn: float, delta: float) -> void:
 
 
 ## How much of its moving is the gait it starts and stops in, by its share of its full speed:
-## 1 under the start's `below`, 0 over its `full` (0 for a gait that names none).
+## 1 under the start's `below`, 0 over its `full` (0 for a gait that names none); and held
+## for the start's `hold` of its strides from a standstill, fading over half a stride more
+## (Ryan, 7 October, the twenty-first notes: a quick machine is past half its speed within a
+## fifth of a stride, so the speed alone held the trot for half a step).
 func start_weight() -> float:
 	if _start_gait.is_empty():
 		return 0.0
-	return 1.0 - smoothstep(float(_start_gait["below"]), float(_start_gait["full"]), _speed / maxf(1.0, top_speed))
+	var by_speed := 1.0 - smoothstep(float(_start_gait["below"]), float(_start_gait["full"]), _speed / maxf(1.0, top_speed))
+	var stride := maxf(1.0, float((_start_gait["gait"] as Dictionary).get("stride", 40.0)))
+	var hold := float(_start_gait["hold"]) * stride
+	var by_way := 1.0 - smoothstep(hold, hold + 0.5 * stride, _travel) if hold > 0.0 else 0.0
+	return maxf(by_speed, by_way)
 
 
 ## A gait's cycles at `weight` (its tracks and its body's bob, each at its stride's phase), added

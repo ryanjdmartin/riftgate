@@ -26,7 +26,7 @@ const GAP_MIN = 2.5, GAP_MAX = 6.5, GAP_DEBUG = 0.4;
 const MOVE_REF_SPEED = 150.0, MOVE_BLEND_IN = 0.25, MOVE_BLEND_OUT = 0.35;
 const ROCK_ACCEL = 200.0, BANK_TURN = 1.2, DRIFT_UNITS = 12.0;
 const STEER_EASE = 0.12;   // MechRig: seconds a steered joint takes to follow the turn, its servo
-const PIVOT_STEP = 0.5, PIVOT_FADE = 20.0, PIVOT_MIN = 0.15, BANK_SPEED = 37.5;   // MechRig: turning in place steps the legs round; nothing banks standing (the twentieth notes)
+const PIVOT_STEP = 0.35, PIVOT_CAP = 0.4, PIVOT_FADE = 20.0, PIVOT_MIN = 0.15, BANK_SPEED = 37.5;   // MechRig: turning in place steps the legs round, never faster than PIVOT_CAP of its speed (the twenty-first notes); nothing banks standing (the twentieth)
 const HEFT_DEFAULT = 0.12, DAMPING = 0.7, STEP = 1 / 60;   // the servos (MechRig._follow) and the longest step anything advances by
 const SLIDE_RATE_SNAP = 12.0, SLIDE_RATE_FULL = 2.2, STRAFE_TURN_RATE = 6.0, REST_TURN_RATE = 4.0;   // Map3D
 const OVERSTEER_AHEAD = 0.4, OVERSTEER_GAIN = 1.4, OVERSTEER_MAX = 1.45, OVERSTEER_RATE = 7.0, OVERSTEER_WINDOW = 0.5;   // Map3D: the nose leads the path into a corner, from the heading a moment ahead
@@ -213,7 +213,7 @@ class Rig {
     this.gaitCurves = cycleCurves(this.gait);
     // MechRig.use_gait: a gait may start and stop in one of the options (the nineteenth notes)
     const st = this.gait.start, opt = st && this.gaitOptions[st.option];
-    this.startGait = opt ? {gait: opt, curves: cycleCurves(opt), below: st.below ?? 0.3, full: st.full ?? 0.8} : null;
+    this.startGait = opt ? {gait: opt, curves: cycleCurves(opt), below: st.below ?? 0.3, full: st.full ?? 0.8, hold: st.hold ?? 0} : null;
   }
   random() { this.seed = (this.seed * 1103515245 + 12345) % 2147483648; return this.seed / 2147483648; }
   alive() { return this.acts.length > 0 || this.strikes.length > 0 || !!this.current || Object.keys(this.servo).length > 0 || Object.keys(this.spinners).length > 0; }
@@ -390,10 +390,11 @@ class Rig {
     const prev = this.speed;
     this.speed = lerp(this.speed, Math.max(0, speed), 1 - Math.exp(-delta / 0.12));
     this.accel = lerp(this.accel, (this.speed - prev) / delta, 1 - Math.exp(-delta / 0.15));
-    const pivot = Math.abs(turn) > PIVOT_MIN ? Math.abs(turn) * PIVOT_STEP * Math.max(1, this.gait.stride || 40) * (1 - clamp(this.speed / PIVOT_FADE, 0, 1)) : 0;
+    const pivot = Math.abs(turn) > PIVOT_MIN ? Math.min(Math.abs(turn) * PIVOT_STEP * Math.max(1, this.gait.stride || 40), PIVOT_CAP * (this.topSpeed || MOVE_REF_SPEED)) * (1 - clamp(this.speed / PIVOT_FADE, 0, 1)) : 0;
     this.moving = speed > 0.5 || pivot > 0;
     this.blend = moveToward(this.blend, this.moving ? 1 : 0, delta / (this.moving ? MOVE_BLEND_IN : MOVE_BLEND_OUT));
     this.dist += (this.speed + pivot) * delta;
+    this.travel = speed > 0.5 || this.speed > 0.5 ? (this.travel || 0) + this.speed * delta : 0;   // MechRig._travel: a start gait's hold
     const mv = this.move;
     this.bank = lerp(this.bank, (mv.bank || 0) * clamp(-turn / BANK_TURN, -1, 1) * clamp(this.speed / BANK_SPEED, 0, 1), 1 - Math.exp(-delta / 0.3));
     if (Array.isArray(mv.tilt) && mv.tilt.length >= 2) {
@@ -434,7 +435,9 @@ class Rig {
         if (v.length >= 6) { slide = add3(slide, mul3(v3(v[0], v[1], v[2]), k)); rot = add3(rot, mul3(v3(v[4], v[3], v[5]), k)); }
       }
     };
-    const st = this.startGait, startW = st ? 1 - smoothstep(st.below, st.full, this.speed / Math.max(1, this.topSpeed || MOVE_REF_SPEED)) : 0;
+    // MechRig.start_weight: by its share of its speed, and held for `hold` of the start gait's strides from a standstill
+    const st = this.startGait, sStride = st ? Math.max(1, st.gait.stride || 40) : 1, hold = st ? st.hold * sStride : 0;
+    const startW = st ? Math.max(1 - smoothstep(st.below, st.full, this.speed / Math.max(1, this.topSpeed || MOVE_REF_SPEED)), hold > 0 ? 1 - smoothstep(hold, hold + 0.5 * sStride, this.travel || 0) : 0) : 0;
     cycles(g, this.gaitCurves, 1 - startW);
     if (startW > 0) cycles(st.gait, st.curves, startW);
     for (const [name, r] of Object.entries(g.wheels || {})) if (this.joints[name]) addRot(name, v3(-fposmod(this.dist / Math.max(0.1, r) / D2R, 360), 0, 0));

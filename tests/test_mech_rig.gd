@@ -677,9 +677,12 @@ func test_steering_eases_in_and_a_gait_starts_in_another() -> void:
 	for i in range(60):
 		rig.drive(6.0, 0.0, 0.0, 1.0 / 60.0)
 	assert_true(rig.start_weight() > 0.99, "barely moving, it trots (%f of it)" % rig.start_weight())
-	for i in range(60):
+	for i in range(30):
 		rig.drive(66.0, 0.0, 0.0, 1.0 / 60.0)
-	assert_true(rig.start_weight() < 0.01, "at full speed, it gallops (%f trot)" % rig.start_weight())
+	assert_true(rig.start_weight() > 0.99, "at full speed it still trots its first stride (the twenty-first notes; %f)" % rig.start_weight())
+	for i in range(90):
+		rig.drive(66.0, 0.0, 0.0, 1.0 / 60.0)
+	assert_true(rig.start_weight() < 0.01, "then it gallops (%f trot)" % rig.start_weight())
 	pair[1].free()
 
 
@@ -692,7 +695,8 @@ func test_turning_in_place_steps_the_legs_round_and_nothing_banks_standing() -> 
 	var d0 := rig._dist
 	for i in range(60):
 		rig.drive(0.0, 0.0, 1.5, 1.0 / 60.0)
-	assert_true(rig.moving and rig._dist - d0 > 20.0, "it steps as it turns (%f units of stride)" % (rig._dist - d0))
+	assert_true(rig.moving and rig._dist - d0 > 10.0, "it steps as it turns (%f units of stride)" % (rig._dist - d0))
+	assert_true(rig._dist - d0 <= MechRig.PIVOT_CAP * rig.top_speed + 0.01, "never faster than it walks, well under (%f in a second)" % (rig._dist - d0))
 	for i in range(120):
 		rig.drive(0.0, 0.0, 0.05, 1.0 / 60.0)
 	assert_true(not rig.moving, "a slow settle is not a step")

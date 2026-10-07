@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.68 since 7 October: the movement session's twentieth notes (a machine turning onto its way before it sets off), its nineteenth (the Stingray pulling into its turns, steering eased in, the Clydesdale trotting off the mark), its eighteenth (the Goshawk's vectoring, the Stingray's jet turns, the Clydesdale's reaching gallop, the Armadillo's knees forward), over its seventeenth notes, over v0.64's and v0.63's faction bar drawing out its leader, filled by the pacing row's weighted kills (published by another session; merged into the committed file here), over the movement session's sixteenth notes (the Clydesdale's lumbering gallop, the Armadillo's amble), over v0.61's whole gate restored as a lever for higher tiers and a faction's final as its leader (published by another session; merged into the committed file here), over the movement session's fifteenth (the Clydesdale's plumb shins, the Sparrowhawk's quicker eight), its fourteenth (the drift turning in later), its thirteenth and twelfth notes (the Prairie Dog's guards on the body, its squared arches), over v0.56's campaign first pass (published by another session; the committed file here carries it too), over the movement session's eleventh notes, over its tenth and ninth notes, over its eighth notes, over v0.49's packs retargeting when held off their goal (published by another session and not yet on main when the movement branch built on it; the committed file here carries that row too), over v0.48's Fragmenter signed off, over the Slugthrower, the codex rule, Spillover and the Bullion Fragmenter, a sawed-off cannon, on the Badger, over the movement session's seventh notes, over the naming guidelines, the Puffin's names and speed, and the movement session's sixth notes); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.69 since 7 October: the movement session's twenty-first notes (the Clydesdale's trot held a stride, walkers stepping round slower), its twentieth (a machine turning onto its way before it sets off), its nineteenth (the Stingray pulling into its turns, steering eased in, the Clydesdale trotting off the mark), its eighteenth (the Goshawk's vectoring, the Stingray's jet turns, the Clydesdale's reaching gallop, the Armadillo's knees forward), over its seventeenth notes, over v0.64's and v0.63's faction bar drawing out its leader, filled by the pacing row's weighted kills (published by another session; merged into the committed file here), over the movement session's sixteenth notes (the Clydesdale's lumbering gallop, the Armadillo's amble), over v0.61's whole gate restored as a lever for higher tiers and a faction's final as its leader (published by another session; merged into the committed file here), over the movement session's fifteenth (the Clydesdale's plumb shins, the Sparrowhawk's quicker eight), its fourteenth (the drift turning in later), its thirteenth and twelfth notes (the Prairie Dog's guards on the body, its squared arches), over v0.56's campaign first pass (published by another session; the committed file here carries it too), over the movement session's eleventh notes, over its tenth and ninth notes, over its eighth notes, over v0.49's packs retargeting when held off their goal (published by another session and not yet on main when the movement branch built on it; the committed file here carries that row too), over v0.48's Fragmenter signed off, over the Slugthrower, the codex rule, Spillover and the Bullion Fragmenter, a sawed-off cannon, on the Badger, over the movement session's seventh notes, over the naming guidelines, the Puffin's names and speed, and the movement session's sixth notes); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -13,7 +13,7 @@ stays in A alone (Ryan, 1 October: it serves one ongoing task) and is republishe
 session; a B session cannot read it. Shared:
 
 - **The bible** (above): `docs/design-bible.html`, published whole after every change.
-- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 7 October with the twentieth notes, from the movement branch with main merged into it (the Slugthrower, the Fragmenter's hollow bore). Until that branch merges to main, the live page, motion.js, the rig files and the models are ahead of main, so a republish from main must start from the live page body and send none of `hangar/motion.js`, `hangar/models/*`: main's Badger has no wrist joints, and its republish of 6 October paired that model with the branch's wrist rig, which broke the gun's wrist until the branch republished): four tabs, the
+- **The hangar page** (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH; republished 7 October with the twenty-first notes, from the movement branch with main merged into it (the Slugthrower, the Fragmenter's hollow bore). Until that branch merges to main, the live page, motion.js, the rig files and the models are ahead of main, so a republish from main must start from the live page body and send none of `hangar/motion.js`, `hangar/models/*`: main's Badger has no wrist joints, and its republish of 6 October paired that model with the branch's wrist rig, which broke the gun's wrist until the branch republished): four tabs, the
   codex, the content editor, the names list and Models. Models (the renders and the Animation
   tab merged, Ryan, 3 October) puts each machine live in 3D on top: its acts, walk and
   cornering played from its rig sidecar by `tools/hangar_motion.js` (published as
@@ -446,7 +446,7 @@ Ammit's waggling talons, higher fold and the offbeat walk as its gait (`_plant` 
 one part set's vertices inside another's convex pieces through an act (not committed; easy to
 rewrite from `tools/act_shot.gd`). Attack acts: wanted, a session of their own.
 
-**The seventh to twentieth notes, 6 and 7 October (bible v0.48 to v0.68).** Engine: a corner is a quintic
+**The seventh to twenty-first notes, 6 and 7 October (bible v0.48 to v0.69).** Engine: a corner is a quintic
 (`MovePath.quintic`, `ARC_STEPS` 24); a move's aim eases from the facing it set off from onto
 the path over `SETOFF_S` 0.5 (`Map3D.setoff_aim`; the jerk Ryan saw was each set-off's step).
 A drifter eases into its kick-out (`Map3D.oversteer_ease`: from an oversteer of 0.5 to 1.5 it
@@ -483,10 +483,12 @@ through turns (a gait's `steer` about the joint's own axis, degrees a radian a s
 the limits on a `STEER_EASE` servo, so the Prairie Dog's wheels come round rather than jump); the
 Stingray corners as the jets and sheds its nose-down as it banks (a tilt's third number). The
 Clydesdale trots off the mark into its gallop (`b.gait`'s `start`: an option it moves by under
-a share of its full speed, `MechRig.start_weight`; 0.5 to 0.95). A move holds at its start while
+a share of its full speed, `MechRig.start_weight`; 0.5 to 0.95, and held its first stride from a
+standstill, `_travel`). A move holds at its start while
 the machine turns onto its way (`Map3D.setoff_seconds`/`setoff_turn`, `MovePath.hold_start`; the
 set-off aim eases over the whole turn), walkers stepping round as they turn in place
-(`MechRig.PIVOT_STEP`), nothing banking standing (`BANK_SPEED`). Clearances measured with a scratch clip check (meshes in convex
+(`MechRig.PIVOT_STEP`, never faster than `PIVOT_CAP` of its own pace), nothing banking standing
+(`BANK_SPEED`). Clearances measured with a scratch clip check (meshes in convex
 meshes, through an act or a gait): clear.
 
 **The codex (29 September; a tab of the hangar page since 1 October).** One surface showing a
