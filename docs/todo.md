@@ -36,6 +36,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [ ] Judge the five map types in play (4 October, merged to main 7 October; bible section 4, the map types row; the harness has a picker, `RIFTGATE_MAP_KIND` for a standalone run): whether each reads as a place and bites the way its name says; the type list and every share are Claude's placeholders to move; which types the campaign offers and how often is a design line
 - [ ] Discuss first: the campaign's structure (Ryan, 4 October, in chat): battles of one faction or a mix and whether a faction carries a whole battle; whether three acts are needed; a battlefront select from the capital with the intel (faction, map type) laid out before the team is chosen, and whether the other cities are managed or it is a mission select
 - [ ] The game's name
+- [ ] Judge the idle acts taking turns running (7 October; bible section 7, the idle-acts row): on the map and in the skirmish, no two machines starting together; `MechRig.CUE_GAP` (1 s) and `CUE_JITTER` (0.8 s) are the knobs
 - [ ] Judge the hovercraft's balancing idle running (5 October; on the hangar's Models tab, the map and the skirmish): how far and how often they tip, the gusts, the heave
 - [x] Name the Puffin's passive (6 October: the Slipstream Projector; its fixed shield the Backwash Ionizer; the Puffin at move 40)
 - [x] Read the Puffin in play (closed 6 October: Ryan reads it in his own time, not as a tracked task)

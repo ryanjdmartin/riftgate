@@ -48,6 +48,8 @@ extends RefCounted
 const GAP_MIN := 2.5          # seconds between acts, at least
 const GAP_MAX := 6.5          # and at most
 const GAP_DEBUG := 0.4        # with the debug switch on
+const CUE_GAP := 1.0          # seconds between any two acts starting in one place: the machines there take turns
+const CUE_JITTER := 0.8       # and a machine kept waiting tries again up to this much later, so the queue never lines up
 const GLOW_BASE := 1.8        # the amber role's emission at rest (MechView3D.toon)
 const MOVE_REF_SPEED := 150.0 # model units a second the slide and the tilt are authored at (a machine's own full speed on the map is `top_speed`)
 const MOVE_BLEND_IN := 0.25   # seconds a gait takes to come up from standing
@@ -126,6 +128,7 @@ var _curves: Dictionary = {}       # the act playing as curves: joint -> curve, 
 var _t := 0.0                      # time into the act playing
 var _wait := 0.0                   # seconds until the next act starts
 var _rng := RandomNumberGenerator.new()
+static var _cue: Dictionary = {}   # place -> the msec clock when an act last started there (the shared cue)
 var heft := HEFT_DEFAULT           # seconds: how long a joint or the body takes to catch up with what the pilot asks (the sidecar's `move.heft`)
 var place: String = ""             # where this machine stands, "map" or "skirmish": an act may be for one of them only (its `places`); empty plays them all
 var _act_heft := HEFT_DEFAULT      # the heft while the act playing asks for its own (a blow sharper than the machine's weight)
@@ -554,7 +557,9 @@ func _step(dt: float) -> bool:
 		_wait -= dt
 		if _wait <= 0.0:
 			var next := choose()
-			if not next.is_empty():
+			if not next.is_empty() and not _cued():
+				_wait = _rng.randf_range(0.0, CUE_JITTER)   # another machine here just started: wait a turn
+			elif not next.is_empty():
 				_start(next)
 				_evaluate_act()
 				moved = true
@@ -567,6 +572,21 @@ func _step(dt: float) -> bool:
 		_strikes = _strikes.filter(func(st): return float(st["t"]) < float(st["up"]) + float(st["down"]))
 		moved = true
 	return moved
+
+
+## Whether this machine may start an act now: its own wait is spent and no other machine in
+## its place started one in the last CUE_GAP (Ryan, 7 October: independent clocks put two
+## machines' acts together far too often, and any stagger at the start drifts back into
+## chance within a few acts). Kept on the real clock, shared by every rig in the place; a
+## rig with no place (the tests, the tools) and the debug switch skip it.
+func _cued() -> bool:
+	if place.is_empty() or not debug.is_empty():
+		return true
+	var now := Time.get_ticks_msec()
+	if _cue.has(place) and now - int(_cue[place]) < int(CUE_GAP * 1000.0):
+		return false
+	_cue[place] = now
+	return true
 
 
 ## The next act: random among the machine's own, never the one just played (Ryan, 2
