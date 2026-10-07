@@ -545,7 +545,12 @@ def clydesdale(b):
          "reach": 10.0 if leg[0] == "f" else 0.0}
         for leg in ("fl", "fr", "hl", "hr")], sweep=30.0, duty=0.34, lift=7.0, crouch=3.0, hop=0.5, rock=6.0, dip=5.0, smooth=0.015, thud=True, airborne=0.99)
     tracks["head"] = ([(i / 40.0, round(-4.5 * math.cos(2.0 * math.pi * (i / 40.0 - 0.16)), 3)) for i in range(41)], 0.0)   # the head heaves after the rock
-    b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
+    # It sets off at a trot and rolls into the gallop as it gathers speed, and drops back to
+    # the trot as it pulls up (Ryan, 7 October, the nineteenth notes: it took off straight into
+    # a slow gallop): wholly the trot under three tenths of its full speed, wholly the gallop
+    # over 0.85, crossfading between (b.gait's start); off the mark at its map pace, about the
+    # first half second trots and the gallop is whole by about the first second and a fifth.
+    b.gait(stride=stride, tracks=tracks, body=body, ease="linear", start=("trot", 0.3, 0.85))
     # A heavy trot (Ryan, 6 October, the ninth notes: the gallop has potential but is a bit
     # much, and its hooves met through each other; somewhere between it and the Armadillo's
     # stomp), kept as an option for the hangar's Walk. The gait between the two in a horse:
@@ -1333,6 +1338,10 @@ def prairie_dog(b):
     })
     # Movement: the wheels spin by their radius, the fronts steer into turns, the body rocks
     # on pulling away; the turret turns with the hull.
+    # The front wheels steer 14 degrees a radian a second of turning, eased toward full lock (32)
+    # and on a short servo (Ryan, 7 October, the nineteenth notes: they jumped from straight to
+    # full lock, since the gain had been read per degree a second): about 22 through a corner's
+    # first quarter, 30 at its quickest.
     b.gait(wheels={"wheel_fl": R, "wheel_fr": R, "wheel_rl": R, "wheel_rr": R}, steer={"steer_fl": 14.0, "steer_fr": 14.0}, rock=5.0)
     b.move(accel=0.6, heft=0.1)
 
@@ -1653,12 +1662,12 @@ def goshawk(b):
     # Movement: the nacelles tilt forward, the exhausts flare, the nose drops; it banks into
     # turns (b.move).
     # Through a turn the nacelles split as in vector_turn (Ryan, 7 October, the eighteenth notes:
-    # should it use its vectoring in its turns? Yes): each pitches by the turn, a fifth of a
-    # degree for each degree a second (12 a radian a second), opposite ways, the left back and
-    # the right forward turning right as the act turns it; the one pitching forward stops at
-    # its limit, two past the hold, so in a hard turn the other swings back about 30 (b.gait's
-    # steer, on the joint's own axis).
-    b.gait(hold={"nacelle_l": -12.0, "nacelle_r": -12.0}, steer={"nacelle_l": -0.21, "nacelle_r": 0.21},
+    # should it use its vectoring in its turns? Yes): each pitches by the turn, 15 degrees a
+    # radian a second eased toward its limits, opposite ways, the left back and the right
+    # forward turning right as the act turns it; the one pitching forward stops at its limit,
+    # two past the hold, so in a hard turn the other swings back about 30 (b.gait's steer, on
+    # the joint's own axis).
+    b.gait(hold={"nacelle_l": -12.0, "nacelle_r": -12.0}, steer={"nacelle_l": -15.0, "nacelle_r": 15.0},
            glow={"parts": ["joint_nacelle_l", "joint_nacelle_r"], "k": 5.0},
            body_hold=(0.0, 0.0, 0.0, 0.0, -5.0, 0.0))
     b.move(slide=0.3, bank=36.0, accel=0.9, heft=0.12, oversteer=0.3)   # larger and slower than the Sparrowhawk: slides less, banks well (Ryan, 5 October: more); the nose a little into its corners (the fifth notes)
@@ -2610,7 +2619,10 @@ def stingray(b):
     # jets do, banking into the corner and not sliding so much): the Goshawk's cornering, a
     # little oversteer and a hard bank (36 degrees, from 14), where it drifted as the Dingo
     # and the Puffin do (oversteer 1.2 since the seventh notes); its nose-down tilt kept.
-    b.move(slide=0.3, bank=36.0, tilt=(26.0, 10.0), accel=0.9, heft=0.12, oversteer=0.3)
+    # The nineteenth notes (Ryan, 7 October: it would not keep its nose down so far in the
+    # corner; a helicopter banks, then pulls into the turn as a plane does): it sheds seven
+    # tenths of its nose-down at a full bank's turn rate (the tilt's third number).
+    b.move(slide=0.3, bank=36.0, tilt=(26.0, 10.0, 0.7), accel=0.9, heft=0.12, oversteer=0.3)
 
 stingray.maker = "aphelion"
 

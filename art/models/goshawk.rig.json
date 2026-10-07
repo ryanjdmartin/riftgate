@@ -1008,8 +1008,8 @@
   "body": [],
   "wheels": {},
   "steer": {
-   "nacelle_l": -0.21,
-   "nacelle_r": 0.21
+   "nacelle_l": -15.0,
+   "nacelle_r": 15.0
   },
   "aim": {},
   "hold": {

@@ -54,6 +54,7 @@ const MOVE_BLEND_IN := 0.25   # seconds a gait takes to come up from standing
 const MOVE_BLEND_OUT := 0.35  # and to settle back when the machine stops
 const ROCK_ACCEL := 200.0     # model units a second squared that earns the whole rock: a machine reaching full speed in under a second (MovePath accelerates; was 1500 when moves started at full speed)
 const BANK_TURN := 1.2        # radians a second of turning that earns the whole bank (the curve's corners turn about this fast)
+const STEER_EASE := 0.12      # seconds a steered joint (a knuckle, a nacelle) takes to follow the turn: its servo
 const DRIFT_UNITS := 12.0     # model units a machine with a slide of 1 drifts off its path when the travel is square to its facing
 const HEFT_DEFAULT := 0.12    # seconds: the inertia of a machine whose sidecar names none (`move.heft`)
 const DAMPING := 0.7          # the joints' servos: a touch under critical, so a heavy part gives a little past its mark and settles
@@ -67,7 +68,8 @@ var move: Dictionary = {}          # the cornering numbers: {"slide", "bank"}
 var model: Node3D = null           # the glTF's root
 var body: Node3D = null            # the node a body track moves (the model root unless told otherwise)
 var gait: Dictionary = {}          # the sidecar's gait: how this machine moves (see drive)
-var gait_options: Dictionary = {}  # other ways it could move, built beside it for judging (b.gait_option); the game never uses them
+var gait_options: Dictionary = {}  # other ways it could move, built beside it for judging (b.gait_option); the game uses one only as a gait's start
+var _start_gait: Dictionary = {}   # the gait it starts and stops in, when its gait names one: {"gait", "curves", "below", "full"}
 var spinners: Dictionary = {}      # joint -> [idle, moving] degrees a second: turned without end on its own axis (b.spin: the Stingray's fans)
 var _spun: Dictionary = {}         # joint -> degrees turned so far, wrapped
 var debug: String = ""             # RIFTGATE_ACTS_DEBUG, read at setup
@@ -96,6 +98,7 @@ var _blend := 0.0                  # 0 standing, 1 moving: the gait's weight
 var _accel := 0.0                  # the smoothed change of speed, for the rock
 var _bank := 0.0                   # degrees of roll into the turn, eased
 var _tilt := Vector2.ZERO          # degrees of (pitch, roll) toward the travel, a helicopter's, eased
+var _steer: Dictionary = {}        # joint -> degrees a steered joint has turned with the turn, eased
 var _drift := 0.0                  # model units the body sits off its path, right positive, eased (the slide)
 var _tread_mats: Array = []        # [[StandardMaterial3D, base uv offset]] the treads scroll
 var _move_glow: Array = []         # [[StandardMaterial3D, base]] the boosters brighten
@@ -350,13 +353,27 @@ func use_gait(g: Dictionary) -> void:
 	_spin = {}
 	for name in gait.get("wheels", {}).keys():
 		_spin[name] = true
-	_gait_curves = {}
-	var ease := str(gait.get("ease", "smooth"))
-	var cycles: Dictionary = gait.get("tracks", {})
+	_gait_curves = _cycle_curves(gait)
+	# A gait may start and stop in another (Ryan, 7 October, the nineteenth notes: the
+	# Clydesdale took off straight into its gallop): `start` names one of the options, moved by
+	# wholly under `below` of its full speed, by its own gait over `full`, crossfading between.
+	_start_gait = {}
+	var st: Variant = gait.get("start", {})
+	if st is Dictionary and gait_options.get(str(st.get("option", "")), null) is Dictionary:
+		var opt: Dictionary = gait_options[str(st["option"])]
+		_start_gait = {"gait": opt, "curves": _cycle_curves(opt), "below": float(st.get("below", 0.3)), "full": float(st.get("full", 0.8))}
+
+
+## The cyclic curves of a gait's tracks and body.
+func _cycle_curves(g: Dictionary) -> Dictionary:
+	var out := {}
+	var ease := str(g.get("ease", "smooth"))
+	var cycles: Dictionary = g.get("tracks", {})
 	for name in cycles.keys():
-		_gait_curves[name] = cycle_curve((cycles[name] as Dictionary).get("keys", []), ease)
-	if not gait.get("body", []).is_empty():
-		_gait_curves[BODY] = cycle_curve(gait["body"], ease)
+		out[name] = cycle_curve((cycles[name] as Dictionary).get("keys", []), ease)
+	if not g.get("body", []).is_empty():
+		out[BODY] = cycle_curve(g["body"], ease)
+	return out
 
 
 ## Read the model's tags and its sidecar. Call once the materials are applied (the glows
@@ -411,6 +428,7 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 	_accel = 0.0
 	_bank = 0.0
 	_tilt = Vector2.ZERO
+	_steer.clear()
 	_drift = 0.0
 	_current = {}
 	_curves = {}
@@ -693,12 +711,21 @@ func drive(speed: float, aim: float, turn: float, delta: float) -> void:
 	var bank_want := float(move.get("bank", 0.0)) * clampf(-turn / BANK_TURN, -1.0, 1.0)   # a left turn drops the left wing: roll negative
 	_bank = lerpf(_bank, bank_want, 1.0 - exp(-delta / 0.3))
 	# A helicopter's tilt: it leans into its travel by its speed, nose down going forward,
-	# nose up going back, the left side down going left (the roll is positive right-down).
+	# nose up going back, the left side down going left (the roll is positive right-down). A
+	# third number is the share of the nose-down it sheds in a turn, as it banks and pulls into
+	# the corner (Ryan, 7 October, the nineteenth notes: a helicopter pulls into the turn after
+	# banking, as a plane does), all of it at the turn rate that earns the whole bank.
 	var tilt_spec: Array = move.get("tilt", [])
 	if tilt_spec.size() >= 2:
 		var share := clampf(_speed / MOVE_REF_SPEED, 0.0, 1.0)
-		var want := Vector2(-float(tilt_spec[0]) * cos(aim), -float(tilt_spec[1]) * sin(aim)) * share
+		var pull := float(tilt_spec[2]) * clampf(absf(turn) / BANK_TURN, 0.0, 1.0) if tilt_spec.size() >= 3 else 0.0
+		var want := Vector2(-float(tilt_spec[0]) * cos(aim) * (1.0 - pull), -float(tilt_spec[1]) * sin(aim)) * share
 		_tilt = _tilt.lerp(want, 1.0 - exp(-delta / 0.35))
+	# Steered joints follow the turn on a servo, easing toward their limits (Ryan, 7 October,
+	# the nineteenth notes: the Prairie Dog's wheels jumped from straight to full lock).
+	var steer: Dictionary = gait.get("steer", {})
+	for name in steer.keys():
+		_steer[name] = lerpf(float(_steer.get(name, 0.0)), steer_soft(name, turn * float(steer[name])), 1.0 - exp(-delta / STEER_EASE))
 	# The slide: a body with inertia sits off a path that turned under it, on the outside,
 	# by how square the travel is to its facing (the Dingo's drift; a hovercraft's a little).
 	var drift_want := float(move.get("slide", 0.0)) * DRIFT_UNITS * sin(aim) * clampf(_speed / MOVE_REF_SPEED, 0.0, 1.0)
@@ -707,22 +734,61 @@ func drive(speed: float, aim: float, turn: float, delta: float) -> void:
 	_pose()
 
 
+## How much of its moving is the gait it starts and stops in, by its share of its full speed:
+## 1 under the start's `below`, 0 over its `full` (0 for a gait that names none).
+func start_weight() -> float:
+	if _start_gait.is_empty():
+		return 0.0
+	return 1.0 - smoothstep(float(_start_gait["below"]), float(_start_gait["full"]), _speed / maxf(1.0, top_speed))
+
+
+## A gait's cycles at `weight` (its tracks and its body's bob, each at its stride's phase), added
+## to the gait's joints and to `body` ([slide, turn]).
+func _add_cycles(g: Dictionary, curves: Dictionary, weight: float, body_out: Array) -> void:
+	if weight <= 0.0:
+		return
+	var phase := fposmod(_dist / maxf(1.0, float(g.get("stride", 40.0))), 1.0)
+	var k := _blend * weight
+	var tracks: Dictionary = g.get("tracks", {})
+	for name in tracks.keys():
+		if not joints.has(name) or not curves.has(name):
+			continue
+		var tr: Dictionary = tracks[name]
+		var v := curve_at(curves[name], fposmod(phase + float(tr.get("phase", 0.0)), 1.0))
+		if v.size() >= 3:
+			_gait_rot[name] = _gait_rot.get(name, Vector3.ZERO) + Vector3(float(v[0]), float(v[1]), float(v[2])) * k
+		if v.size() >= 6:
+			_gait_slide[name] = _gait_slide.get(name, Vector3.ZERO) + Vector3(float(v[3]), float(v[4]), float(v[5])) * k
+	if curves.has(BODY):
+		var v := curve_at(curves[BODY], phase)
+		if v.size() >= 6:
+			body_out[0] += Vector3(float(v[0]), float(v[1]), float(v[2])) * k
+			body_out[1] += Vector3(float(v[4]), float(v[3]), float(v[5])) * k   # authored (yaw, pitch, roll)
+
+
+## Degrees a steered joint turns for `raw` (its gain times the turn rate): eased toward its
+## limit on its axis that way rather than stopped hard at it, so a knuckle comes round to full
+## lock as the turn builds.
+func steer_soft(name: String, raw: float) -> float:
+	var m: Dictionary = meta.get(name, {})
+	var lim: Dictionary = m.get("limits", {})
+	var axis := str(m.get("axis", "yaw"))
+	if not (lim.has(axis) and lim[axis] is Array and (lim[axis] as Array).size() == 2):
+		return raw
+	var edge := absf(float(lim[axis][1] if raw > 0.0 else lim[axis][0]))
+	return raw if edge <= 0.0 else edge * tanh(raw / edge)
+
+
 func _evaluate_gait(aim: float, turn: float) -> void:
 	_gait_rot.clear()
 	_gait_slide.clear()
-	var stride := maxf(1.0, float(gait.get("stride", 40.0)))
-	var phase := fposmod(_dist / stride, 1.0)
-	# The cycles: a walk, stride by stride.
-	var tracks: Dictionary = gait.get("tracks", {})
-	for name in tracks.keys():
-		if not joints.has(name) or not _gait_curves.has(name):
-			continue
-		var tr: Dictionary = tracks[name]
-		var v := curve_at(_gait_curves[name], fposmod(phase + float(tr.get("phase", 0.0)), 1.0))
-		if v.size() >= 3:
-			_gait_rot[name] = Vector3(float(v[0]), float(v[1]), float(v[2])) * _blend
-		if v.size() >= 6:
-			_gait_slide[name] = Vector3(float(v[3]), float(v[4]), float(v[5])) * _blend
+	# The cycles: a walk, stride by stride, and the gait it starts and stops in by its share
+	# of the speed (use_gait), each at its own stride's phase.
+	var start_w := start_weight()
+	var cyc_body := [Vector3.ZERO, Vector3.ZERO]   # the body's (slide, turn) from the cycles
+	_add_cycles(gait, _gait_curves, 1.0 - start_w, cyc_body)
+	if start_w > 0.0:
+		_add_cycles(_start_gait["gait"], _start_gait["curves"], start_w, cyc_body)
 	# Wheels spin by their radius, forward a negative pitch, and never unwind.
 	var wheels: Dictionary = gait.get("wheels", {})
 	for name in wheels.keys():
@@ -730,13 +796,13 @@ func _evaluate_gait(aim: float, turn: float) -> void:
 			var r := maxf(0.1, float(wheels[name]))
 			_gait_rot[name] = _gait_rot.get(name, Vector3.ZERO) + Vector3(-fposmod(rad_to_deg(_dist / r), 360.0), 0.0, 0.0)
 	# Steering knuckles turn with the turn, each about its own axis (a knuckle yaws; the Goshawk's
-	# nacelles pitch, vectoring through a turn: Ryan, 7 October, the eighteenth notes); casters
-	# point along the travel.
+	# nacelles pitch, vectoring through a turn: Ryan, 7 October, the eighteenth notes), as far
+	# as their servo has followed it (drive); casters point along the travel.
 	var steer: Dictionary = gait.get("steer", {})
 	for name in steer.keys():
 		if joints.has(name):
 			var by := Vector3.ZERO
-			by[maxi(0, ["pitch", "yaw", "roll"].find(str(meta.get(name, {}).get("axis", "yaw"))))] = rad_to_deg(turn) * float(steer[name]) * _blend
+			by[maxi(0, ["pitch", "yaw", "roll"].find(str(meta.get(name, {}).get("axis", "yaw"))))] = float(_steer.get(name, 0.0)) * _blend
 			_gait_rot[name] = _gait_rot.get(name, Vector3.ZERO) + by
 	var casters: Dictionary = gait.get("aim", {})
 	for name in casters.keys():
@@ -750,13 +816,8 @@ func _evaluate_gait(aim: float, turn: float) -> void:
 			_gait_rot[name] = _gait_rot.get(name, Vector3.ZERO) + Vector3(float(h[0]), float(h[1]), float(h[2])) * _blend
 	# The body: a bob over the cycle, a held attitude, the rock on pulling away and
 	# stopping, and the bank into a turn.
-	var body_rot := Vector3.ZERO
-	var body_slide := Vector3.ZERO
-	if _gait_curves.has(BODY):
-		var v := curve_at(_gait_curves[BODY], phase)
-		if v.size() >= 6:
-			body_slide += Vector3(float(v[0]), float(v[1]), float(v[2])) * _blend
-			body_rot += Vector3(float(v[4]), float(v[3]), float(v[5])) * _blend   # authored (yaw, pitch, roll)
+	var body_rot: Vector3 = cyc_body[1]
+	var body_slide: Vector3 = cyc_body[0]
 	var bh: Array = gait.get("body_hold", [])
 	if bh.size() >= 6:
 		body_slide += Vector3(float(bh[0]), float(bh[1]), float(bh[2])) * _blend

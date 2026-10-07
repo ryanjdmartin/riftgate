@@ -737,7 +737,7 @@ class Build:
         return rows
 
     def gait(self, stride=40.0, tracks=None, body=None, body_hold=None, wheels=None, steer=None, aim=None,
-             treads=None, hold=None, glow=None, rock=0.0, ease="smooth"):
+             treads=None, hold=None, glow=None, rock=0.0, ease="smooth", start=None):
         """How the machine moves while the map moves it (the joints row, 2 October; MechRig.drive).
         `stride` is the model units one cycle covers. `tracks` maps a joint to cyclic keys
         over a phase of 0 to 1 (the same shapes as an act's keys), or to (keys, phase) with
@@ -745,16 +745,22 @@ class Build:
         (a bob). `body_hold` is (dx, dy, dz, yaw, pitch, roll) held while moving (a flyer's
         nose down) and `hold` maps a joint to (pitch, yaw, roll) held while moving (the
         Badger's booms carrying the claw clear). `wheels` maps a spin joint to its radius;
-        `steer` a knuckle to degrees per degree a second of turning (MechRig multiplies the turn in degrees, so a knuckle's 14 steers to its limits in any real turn), about the joint's own axis (a knuckle yaws, a nacelle pitches: the eighteenth notes); `aim` a caster
+        `steer` a knuckle to degrees per radian a second of turning, about the joint's own axis (a knuckle yaws, a nacelle pitches: the eighteenth notes), eased toward its limits rather than stopped at them and followed on a short servo (the nineteenth notes: until then it was degrees per degree a second, and a knuckle jumped to full lock); `aim` a caster
         to its share of the travel's bearing against the facing (1 points along it).
         `treads` is {"parts": [labels], "scroll": 1.0} to run the tread tiles; `glow`
         {"parts": [labels or groups], "k": 2.0} to brighten boosters by that much on the
         move; `rock` the degrees the nose comes up on pulling away and dips on stopping. A
         turret turns with the hull on the move (Ryan, 4 October: holding its aim was not worth
         the complexity). `ease` "linear" plays dense keys as they are (a walk worked out
-        foot by foot, _plant), "smooth" runs a curve through them."""
+        foot by foot, _plant), "smooth" runs a curve through them. `start` is (option, below,
+        full): the machine moves wholly by that gait option under `below` of its full speed
+        and by this gait over `full`, crossfading between, so it sets off and pulls up in one
+        gait and runs in another (Ryan, 7 October, the nineteenth notes: the Clydesdale trots
+        off the mark into its gallop)."""
         out = {"stride": float(stride), "ease": ease, "tracks": {}, "body": [], "wheels": {}, "steer": {}, "aim": {},
                "hold": {}, "treads": {}, "glow": {}, "rock": float(rock)}
+        if start is not None:
+            out["start"] = {"option": str(start[0]), "below": float(start[1]), "full": float(start[2])}
         for jn, spec in (tracks or {}).items():
             keys, phase = (spec if isinstance(spec, tuple) and len(spec) == 2 and not isinstance(spec[0], (int, float)) else (spec, 0.0))
             out["tracks"][jn] = {"keys": self._keys("the gait", keys, jn), "phase": float(phase)}
@@ -813,7 +819,8 @@ class Build:
         first, then translates there, sideways or backward as the path demands; 0 faces its
         heading like everything else), and `tilt` is (pitch, roll) in degrees at the
         reference speed: nose down going forward and up going back, a side down going that
-        way. A helicopter banks 0 and rocks 0; the tilt does both. The map's curve (Ryan, 4
+        way, and a third number if given the share of that nose-down it sheds in a turn as it banks
+        and pulls into the corner (the nineteenth notes). A helicopter banks 0 and rocks 0; the tilt does both. The map's curve (Ryan, 4
         October; MovePath) reads `accel`, the seconds from rest to full speed; it holds full
         speed through corners (the third pass). `heft` is the machine's weight in its acts
         (Ryan, 4 October, the third pass: heavy, with inertia): the seconds a joint or the body
@@ -826,7 +833,7 @@ class Build:
         if oversteer:
             self.tuning["oversteer"] = float(oversteer)
         if tilt is not None:
-            self.tuning["tilt"] = [float(tilt[0]), float(tilt[1])]
+            self.tuning["tilt"] = [float(v) for v in tilt[:3]]
         if accel is not None:
             self.tuning["accel"] = float(accel)
         if heft is not None:

@@ -654,6 +654,35 @@ func test_a_slide_drifts_the_body_off_its_path() -> void:
 	pair[1].free()
 
 
+func test_steering_eases_in_and_a_gait_starts_in_another() -> void:
+	# Ryan, 7 October, the nineteenth notes: the Prairie Dog's front wheels jumped from straight to
+	# full lock (the gain was read per degree a second); the Clydesdale took off straight into
+	# its gallop. A knuckle now comes round on a servo, eased toward its limit, and a gait can
+	# name an option it starts and stops in.
+	var pair := _rig_for("prairie_dog", 2)
+	var rig: MechRig = pair[0]
+	var steer: Node3D = rig.joints["steer_fl"]
+	var last := steer.rotation_degrees.y
+	var worst := 0.0
+	for i in range(30):
+		rig.drive(200.0, 0.0, 3.0, 1.0 / 60.0)   # a hard left turn, all at once
+		worst = maxf(worst, absf(steer.rotation_degrees.y - last))
+		last = steer.rotation_degrees.y
+	assert_true(worst < 6.0, "no jump to full lock: at most %f degrees a frame" % worst)
+	assert_true(last > 20.0 and last < 32.0, "and it comes round toward full lock (%f)" % last)
+	pair[1].free()
+	pair = _rig_for("clydesdale", 2)
+	rig = pair[0]
+	rig.top_speed = 66.0
+	for i in range(60):
+		rig.drive(6.0, 0.0, 0.0, 1.0 / 60.0)
+	assert_true(rig.start_weight() > 0.99, "barely moving, it trots (%f of it)" % rig.start_weight())
+	for i in range(60):
+		rig.drive(66.0, 0.0, 0.0, 1.0 / 60.0)
+	assert_true(rig.start_weight() < 0.01, "at full speed, it gallops (%f trot)" % rig.start_weight())
+	pair[1].free()
+
+
 func test_the_hovercraft_have_acts_and_cornering_numbers() -> void:
 	for id in ["stingray", "puffin"]:
 		var side := MechRig.load_sidecar(id)

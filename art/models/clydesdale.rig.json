@@ -20476,7 +20476,12 @@
   "hold": {},
   "treads": {},
   "glow": {},
-  "rock": 0.0
+  "rock": 0.0,
+  "start": {
+   "option": "trot",
+   "below": 0.3,
+   "full": 0.85
+  }
  },
  "move": {
   "slide": 0.0,
