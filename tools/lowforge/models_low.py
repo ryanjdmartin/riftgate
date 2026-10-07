@@ -822,12 +822,14 @@ def armadillo(b):
             b.prism("x", hip[0], hip[1], hip[2], 6.5, 8.0, "steel.dark", 6, "hip_pin")
             legs[leg] = (hip, knee, ankle)
             fore = yh > 0
-            with b.joint("hip_%s" % leg, hip, limits=(-60.0, 60.0)):
+            with b.joint("hip_%s" % leg, hip, limits=(-60.0, 60.0) if fore else (-75.0, 75.0)):   # a hind thigh folding forward swings further (the seventeenth notes)
                 _beam(b, hip, knee, _sq(13.0, 14.0), _sq(11.0, 12.0), "steel.plate", "thigh")
                 b.prism("x", knee[0], knee[1], knee[2], 6.0, 13.0, "steel.dark", 6, "knee")
-                with b.joint("knee_%s" % leg, knee, limits=(-115.0, 30.0) if fore else (-30.0, 115.0)):
+                # The hind knee and ankle may fold either way while the hind knees' direction is
+                # judged (the seventeenth notes: forward, as the fores, or back, as built).
+                with b.joint("knee_%s" % leg, knee, limits=(-115.0, 30.0) if fore else (-115.0, 115.0)):
                     _beam(b, knee, ankle, _sq(10.0, 11.0), _sq(10.0, 10.0), "steel.panel", "shin")
-                    with b.joint("ankle_%s" % leg, ankle, limits=(-40.0, 115.0) if fore else (-115.0, 40.0)):
+                    with b.joint("ankle_%s" % leg, ankle, limits=(-40.0, 115.0) if fore else (-115.0, 115.0)):
                         b.box(ankle[0] - 9.0, ankle[0] + 9.0, ankle[1] - 10.0, ankle[1] + 10.0, 0.0, 6.0, "steel.dark", "foot")
                         b.box(ankle[0] - 9.0, ankle[0] + 9.0, ankle[1] + (10.0 if yh > 0 else -13.0), ankle[1] + (13.0 if yh > 0 else -10.0), 0.0, 4.0, "steel.stripe", "toe_plate")
     # The rear ports: a hollow cut right through the shell (b.cut: a boolean on the bands),
@@ -983,20 +985,33 @@ def armadillo(b):
     # stride of 60 (from 55), a tenth slower at its map pace; a hind foot follows its fore
     # rather than passing it (the feet 14 clear at the closest, where the diagonal walk's
     # came within one), the feet lifting 6, low and long.
-    tracks, body, stride = _plant([
-        {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
-         "phase": {"hl": 0.0, "fl": 0.12, "hr": 0.5, "fr": 0.62}[leg], "shift": legs[leg][0][1] - legs[leg][2][1],
-         "nod": 1.0 if leg[0] == "f" else -0.5}
-        for leg in ("fl", "fr", "hl", "hr")], sweep=30.0, duty=0.5, lift=6.0, crouch=0.3, dip=1.4, nod=1.2, reach=0.985, airborne=0.99, smooth=0.08, n=120)
-    b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
+    # The seventeenth notes (Ryan, 7 October: the hind knees pointing forward as the fores do,
+    # the stubby legs kept): the legs stand nearly straight at rest, so a knee shows its way
+    # only as it folds; each walk is built twice, the hind knees folding back as built and
+    # forward as the fores fold (a limb's "bend"), for the hangar's Walk to set side by side.
+    forward = _bend(legs["fl"])
+
+    def amble(knees_forward):
+        return _plant([
+            dict({"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
+                  "phase": {"hl": 0.0, "fl": 0.12, "hr": 0.5, "fr": 0.62}[leg], "shift": legs[leg][0][1] - legs[leg][2][1],
+                  "nod": 1.0 if leg[0] == "f" else -0.5}, **({"bend": forward} if knees_forward else {}))
+            for leg in ("fl", "fr", "hl", "hr")], sweep=30.0, duty=0.5, lift=6.0, crouch=0.3, dip=1.4, nod=1.2, reach=0.985, airborne=0.99, smooth=0.08, n=120)
+
     # The heavy walk in diagonal pairs it had (the third pass), kept as an option for the
     # hangar's Walk: each foot lifted and stamped down, the shell level but for its drop onto
     # each pair.
-    tracks, body, stride = _plant([
-        {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
-         "phase": 0.0 if leg in ("fl", "hr") else 0.5, "shift": legs[leg][0][1] - legs[leg][2][1]}
-        for leg in ("fl", "fr", "hl", "hr")], sweep=30.0, lift=7.0, crouch=0.5, dip=1.6, nod=0.6)
-    b.gait_option("walk", stride=stride, tracks=tracks, body=body, ease="linear")
+    def walk(knees_forward):
+        return _plant([
+            dict({"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
+                  "phase": 0.0 if leg in ("fl", "hr") else 0.5, "shift": legs[leg][0][1] - legs[leg][2][1]},
+                 **({"bend": forward} if knees_forward else {}))
+            for leg in ("fl", "fr", "hl", "hr")], sweep=30.0, lift=7.0, crouch=0.5, dip=1.6, nod=0.6)
+
+    tracks, body, stride = amble(False)
+    b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
+    for name, (tracks, body, stride) in (("amble_knees_forward", amble(True)), ("walk", walk(False)), ("walk_knees_forward", walk(True))):
+        b.gait_option(name, stride=stride, tracks=tracks, body=body, ease="linear")
     b.move(accel=1.6, heft=0.26)
 
 armadillo.maker = "minerva"
@@ -3072,12 +3087,21 @@ def _to_body(y, z, dy, dz, pitch):
 
 def _limb_angles(l, target, pitch):
     """A limb's hip, knee and ankle (degrees) putting its end on `target` (the body's frame),
-    the foot kept flat to the ground under a body pitched `pitch`."""
+    the foot kept flat to the ground under a body pitched `pitch`. The knee bends the way the
+    model's rest pose bends it (_bend), or the way a limb's "bend" says (Ryan, 7 October, the
+    seventeenth notes: a leg standing nearly straight can fold either way)."""
     h3, k3, e3 = l["at"]
     h, k, e = (h3[1], h3[2]), (k3[1], k3[2]), (e3[1], e3[2])
-    bend = 1.0 if math.sin(math.atan2(e[1] - k[1], e[0] - k[0]) - math.atan2(k[1] - h[1], k[0] - h[0])) >= 0.0 else -1.0
-    a, b = _ik2(h, k, e, target, bend)
+    a, b = _ik2(h, k, e, target, l.get("bend", _bend(l["at"])))
     return a, b, -(a + b + pitch)
+
+
+def _bend(at):
+    """Which way a leg's knee folds, from its (hip, knee, end) points at rest: -1 with the knee
+    ahead of the line from hip to end (the knee pointing forward), 1 behind it."""
+    h3, k3, e3 = at
+    h, k, e = (h3[1], h3[2]), (k3[1], k3[2]), (e3[1], e3[2])
+    return 1.0 if math.sin(math.atan2(e[1] - k[1], e[0] - k[0]) - math.atan2(k[1] - h[1], k[0] - h[0])) >= 0.0 else -1.0
 
 
 def _lerp_keys(keys, t):
