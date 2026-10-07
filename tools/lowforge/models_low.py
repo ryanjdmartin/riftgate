@@ -410,7 +410,7 @@ def clydesdale(b):
                 b.prism("x", knee[0], knee[1], knee[2], 5.5, 12.0, "steel.dark", 6, "knee")
                 with b.joint("knee_%s" % leg, knee, limits=(-115.0, 20.0)):
                     _beam(b, knee, ankle, _sq(9.0, 10.0), _sq(9.0, 9.0), "steel.panel", "shin")
-                    with b.joint("ankle_%s" % leg, ankle, limits=(-30.0, 115.0)):
+                    with b.joint("ankle_%s" % leg, ankle, limits=(-45.0, 115.0)):   # -30 until the gallop's fores reached out ahead (the eighteenth notes)
                         _rings(b, [[(ankle[0] + u, ankle[1] + v, 12.0) for u, v in _sq(9.0, 9.0)],
                                    [(ankle[0] + u, ankle[1] + v, 3.0) for u, v in _sq(16.0, 16.0)]], "bone.bone", "feather")
                         b.box(ankle[0] - 7.0, ankle[0] + 7.0, ankle[1] - 8.0, ankle[1] + 8.0, 0.0, 5.0, "steel.dark", "hoof")
@@ -523,17 +523,26 @@ def clydesdale(b):
     # moment gathered with every hoof off the ground. Its stride cannot lengthen: at a sweep of
     # 30 a hind hoof swinging forward passes within two units of the fore planted on its side,
     # and the legs are at their full reach, so the stride stays 88, about 0.75 a second at its
-    # map pace (the trot's 1.2), the slowest of its gaits. A shorter time on the ground would
+    # map pace (the trot's 1.2), the slowest of its gaits (the fores' clearance grew in the eighteenth
+    # notes, below; the stride kept). A shorter time on the ground would
     # slow the legs only by floating it longer. The weight is what is pushed: it barely leaves
     # the ground in the gathered moment (`hop` 0.5, from 3), the hull rocks 6 degrees either
     # way (from 4; at 7 a fore's hip folds past its 85), riding three under its rest, every landing a weight coming down (`thud`:
     # the hull sinking at once as the hoof strikes, recovering slowly through a small rebound,
     # deepest as the fores take it with the nose down), the hooves lifting 7 (from 10) and
-    # the head heaving after the rock.
+    # the head heaving after the rock. The eighteenth notes (Ryan, 7 October: extend the legs
+    # more through the stride; no leg moved past vertical into the forward plane): the shin
+    # had never passed vertical, the knee jutting forward while it hung back. The fores now
+    # throw their hooves ten past where they land late in the swing and draw them back onto it
+    # (a limb's `reach`), the leg straightening out ahead, the shin up to 36 degrees forward,
+    # and land eight ahead of the hip (from three), which leaves a hind hoof swinging forward
+    # seven clear of them where it passed within two. The hinds cannot reach so: four units of
+    # it brought them back within three of the fores, eight into them (measured).
     tracks, body, stride = _gallop([
         {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
          "phase": {"hl": 0.0, "hr": 0.12, "fl": 0.42, "fr": 0.54}[leg],
-         "shift": legs[leg][0][1] - legs[leg][2][1] + (3.0 if leg[0] == "f" else -3.0)}
+         "shift": legs[leg][0][1] - legs[leg][2][1] + (8.0 if leg[0] == "f" else -3.0),
+         "reach": 10.0 if leg[0] == "f" else 0.0}
         for leg in ("fl", "fr", "hl", "hr")], sweep=30.0, duty=0.34, lift=7.0, crouch=3.0, hop=0.5, rock=6.0, dip=5.0, smooth=0.015, thud=True, airborne=0.99)
     tracks["head"] = ([(i / 40.0, round(-4.5 * math.cos(2.0 * math.pi * (i / 40.0 - 0.16)), 3)) for i in range(41)], 0.0)   # the head heaves after the rock
     b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
@@ -817,19 +826,21 @@ def armadillo(b):
             leg = ("f" if yh > 0 else "h") + ("l" if s < 0 else "r")
             b.box(min(s * 24.0, s * 34.0), max(s * 24.0, s * 34.0), yh - 8.0, yh + 8.0, Z0 + 2.0, Z0 + 18.0, "steel.panel", "hip_cuff")
             hip = (s * 34.0, yh, Z0 + 10.0)
-            knee = (s * 44.0, yh + (4.0 if yh > 0 else -4.0), 18.0)
+            # The hind knee a hair ahead of the line from hip to foot (Ryan, 7 October, the
+            # eighteenth notes: every knee folding forward, the stubby legs kept), so it folds
+            # forward as the fores do; it stood a hair behind and folded back. The legs' shape
+            # is unchanged to the eye (the knee 0.8 forward).
+            knee = (s * 44.0, yh + (4.0 if yh > 0 else -3.2), 18.0)
             ankle = (s * 42.0, yh + (6.0 if yh > 0 else -6.0), 6.0)
             b.prism("x", hip[0], hip[1], hip[2], 6.5, 8.0, "steel.dark", 6, "hip_pin")
             legs[leg] = (hip, knee, ankle)
             fore = yh > 0
-            with b.joint("hip_%s" % leg, hip, limits=(-60.0, 60.0) if fore else (-75.0, 75.0)):   # a hind thigh folding forward swings further (the seventeenth notes)
+            with b.joint("hip_%s" % leg, hip, limits=(-60.0, 60.0) if fore else (-60.0, 75.0)):   # a hind thigh folding forward swings further (the seventeenth notes)
                 _beam(b, hip, knee, _sq(13.0, 14.0), _sq(11.0, 12.0), "steel.plate", "thigh")
                 b.prism("x", knee[0], knee[1], knee[2], 6.0, 13.0, "steel.dark", 6, "knee")
-                # The hind knee and ankle may fold either way while the hind knees' direction is
-                # judged (the seventeenth notes: forward, as the fores, or back, as built).
-                with b.joint("knee_%s" % leg, knee, limits=(-115.0, 30.0) if fore else (-115.0, 115.0)):
+                with b.joint("knee_%s" % leg, knee, limits=(-115.0, 30.0)):
                     _beam(b, knee, ankle, _sq(10.0, 11.0), _sq(10.0, 10.0), "steel.panel", "shin")
-                    with b.joint("ankle_%s" % leg, ankle, limits=(-40.0, 115.0) if fore else (-115.0, 115.0)):
+                    with b.joint("ankle_%s" % leg, ankle, limits=(-40.0, 115.0)):
                         b.box(ankle[0] - 9.0, ankle[0] + 9.0, ankle[1] - 10.0, ankle[1] + 10.0, 0.0, 6.0, "steel.dark", "foot")
                         b.box(ankle[0] - 9.0, ankle[0] + 9.0, ankle[1] + (10.0 if yh > 0 else -13.0), ankle[1] + (13.0 if yh > 0 else -10.0), 0.0, 4.0, "steel.stripe", "toe_plate")
     # The rear ports: a hollow cut right through the shell (b.cut: a boolean on the bands),
@@ -969,49 +980,23 @@ def armadillo(b):
         "hip_fr": [(0.9, 30.0), (1.8, 31.0), (2.1, 0.0)],
         "knee_fr": [(0.9, -44.0), (1.8, -45.0), (2.1, 0.0)],
         "ankle_fr": [(0.9, 14.0), (1.8, 14.0), (2.1, 0.0)],
-        "hip_hl": [(2.8, 0.0), (3.5, 22.0), (4.1, 23.0), (4.4, 0.0)],
-        "knee_hl": [(2.8, 0.0), (3.5, 40.0), (4.1, 41.0), (4.4, 0.0)],
-        "ankle_hl": [(2.8, 0.0), (3.5, -62.0), (4.1, -64.0), (4.4, 0.0)],
+        "hip_hl": [(2.8, 0.0), (3.5, 32.0), (4.1, 33.0), (4.4, 0.0)],   # the knee folding forward since the eighteenth notes (it folded back: 22, 40, -62), the foot lifted as the fore's is, solved flat
+        "knee_hl": [(2.8, 0.0), (3.5, -57.0), (4.1, -58.0), (4.4, 0.0)],
+        "ankle_hl": [(2.8, 0.0), (3.5, 26.0), (4.1, 26.5), (4.4, 0.0)],
     }, body=[(0.9, 0.0, 0.0, 0.5, 0.0, 1.5, 0.0), (1.8, 0.0, 0.0, 0.6, 0.0, 1.7, 0.0), (2.1, 0.0, 0.0, -1.4, 0.0, -0.8, 0.0), (2.6, 0.0, 0.0, 0.0),
              (3.5, 0.0, 0.0, 0.5, 0.0, -1.2, 0.0), (4.1, 0.0, 0.0, 0.6, 0.0, -1.3, 0.0), (4.4, 0.0, 0.0, -1.4, 0.0, 0.6, 0.0), (5.0, 0.0, 0.0, 0.0)])
     # Movement (Ryan, 4 October, the third pass: stomp and plod, no weight thrown side to
-    # side): each foot planted flat while the shell passes over it, lifted and set down.
-    # An elephant's amble (Ryan, 7 October, the sixteenth notes: built for the Clydesdale in
-    # the fifteenth, "that actually looks perfect for the Armadillo"): each side's legs step
-    # nearly together, the hind landing and the fore an eighth of the stride after it, then
-    # the other side, four heavy beats with a pair always down, the shell dropping as each
-    # foot lands and nodding with it, down onto a fore and up off a hind. Its sweep stays 30,
-    # its legs being short for the shell, on the ground half the stride (from 0.55), so a
-    # stride of 60 (from 55), a tenth slower at its map pace; a hind foot follows its fore
-    # rather than passing it (the feet 14 clear at the closest, where the diagonal walk's
-    # came within one), the feet lifting 6, low and long.
-    # The seventeenth notes (Ryan, 7 October: the hind knees pointing forward as the fores do,
-    # the stubby legs kept): the legs stand nearly straight at rest, so a knee shows its way
-    # only as it folds; each walk is built twice, the hind knees folding back as built and
-    # forward as the fores fold (a limb's "bend"), for the hangar's Walk to set side by side.
-    forward = _bend(legs["fl"])
-
-    def amble(knees_forward):
-        return _plant([
-            dict({"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
-                  "phase": {"hl": 0.0, "fl": 0.12, "hr": 0.5, "fr": 0.62}[leg], "shift": legs[leg][0][1] - legs[leg][2][1],
-                  "nod": 1.0 if leg[0] == "f" else -0.5}, **({"bend": forward} if knees_forward else {}))
-            for leg in ("fl", "fr", "hl", "hr")], sweep=30.0, duty=0.5, lift=6.0, crouch=0.3, dip=1.4, nod=1.2, reach=0.985, airborne=0.99, smooth=0.08, n=120)
-
-    # The heavy walk in diagonal pairs it had (the third pass), kept as an option for the
-    # hangar's Walk: each foot lifted and stamped down, the shell level but for its drop onto
-    # each pair.
-    def walk(knees_forward):
-        return _plant([
-            dict({"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
-                  "phase": 0.0 if leg in ("fl", "hr") else 0.5, "shift": legs[leg][0][1] - legs[leg][2][1]},
-                 **({"bend": forward} if knees_forward else {}))
-            for leg in ("fl", "fr", "hl", "hr")], sweep=30.0, lift=7.0, crouch=0.5, dip=1.6, nod=0.6)
-
-    tracks, body, stride = amble(False)
+    # side): a heavy walk in diagonal pairs, each foot planted flat while the shell passes
+    # over it, lifted and stamped down; the shell level but for its drop onto each pair. The
+    # sixteenth notes gave it the Clydesdale's elephant amble, and the seventeenth built each
+    # walk with the hind knees folding back and forward to compare; Ryan picked this walk with
+    # every knee folding forward (7 October, the eighteenth notes), the hind knees now folding
+    # forward from the rest pose itself, so the acts follow without a word.
+    tracks, body, stride = _plant([
+        {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
+         "phase": 0.0 if leg in ("fl", "hr") else 0.5, "shift": legs[leg][0][1] - legs[leg][2][1]}
+        for leg in ("fl", "fr", "hl", "hr")], sweep=30.0, lift=7.0, crouch=0.5, dip=1.6, nod=0.6)
     b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
-    for name, (tracks, body, stride) in (("amble_knees_forward", amble(True)), ("walk", walk(False)), ("walk_knees_forward", walk(True))):
-        b.gait_option(name, stride=stride, tracks=tracks, body=body, ease="linear")
     b.move(accel=1.6, heft=0.26)
 
 armadillo.maker = "minerva"
@@ -1667,7 +1652,14 @@ def goshawk(b):
         (5.4, 8.0, 0.0, 0.2, 0.0, 0.0, -18.0), (6.0, 1.0, 0.0, 0.0, 0.0, 0.0, -3.0), (6.6, 0.0, 0.0, 0.0)])
     # Movement: the nacelles tilt forward, the exhausts flare, the nose drops; it banks into
     # turns (b.move).
-    b.gait(hold={"nacelle_l": -12.0, "nacelle_r": -12.0}, glow={"parts": ["joint_nacelle_l", "joint_nacelle_r"], "k": 5.0},
+    # Through a turn the nacelles split as in vector_turn (Ryan, 7 October, the eighteenth notes:
+    # should it use its vectoring in its turns? Yes): each pitches by the turn, a fifth of a
+    # degree for each degree a second (12 a radian a second), opposite ways, the left back and
+    # the right forward turning right as the act turns it; the one pitching forward stops at
+    # its limit, two past the hold, so in a hard turn the other swings back about 30 (b.gait's
+    # steer, on the joint's own axis).
+    b.gait(hold={"nacelle_l": -12.0, "nacelle_r": -12.0}, steer={"nacelle_l": -0.21, "nacelle_r": 0.21},
+           glow={"parts": ["joint_nacelle_l", "joint_nacelle_r"], "k": 5.0},
            body_hold=(0.0, 0.0, 0.0, 0.0, -5.0, 0.0))
     b.move(slide=0.3, bank=36.0, accel=0.9, heft=0.12, oversteer=0.3)   # larger and slower than the Sparrowhawk: slides less, banks well (Ryan, 5 October: more); the nose a little into its corners (the fifth notes)
 
@@ -2614,7 +2606,11 @@ def stingray(b):
     # frame that five blades never strobe backward at 30 frames a second.
     b.spin("fan_l", -480.0, -840.0)
     b.spin("fan_r", 480.0, 840.0)
-    b.move(slide=0.3, bank=14.0, tilt=(26.0, 10.0), accel=0.9, heft=0.12, oversteer=1.2)   # the nose further into its corners (Ryan, 6 October, the seventh notes)
+    # The eighteenth notes (Ryan, 7 October: it moves as a helicopter, so it should turn as the
+    # jets do, banking into the corner and not sliding so much): the Goshawk's cornering, a
+    # little oversteer and a hard bank (36 degrees, from 14), where it drifted as the Dingo
+    # and the Puffin do (oversteer 1.2 since the seventh notes); its nose-down tilt kept.
+    b.move(slide=0.3, bank=36.0, tilt=(26.0, 10.0), accel=0.9, heft=0.12, oversteer=0.3)
 
 stingray.maker = "aphelion"
 
@@ -3461,6 +3457,11 @@ def _gallop(limbs, sweep, duty=0.34, lift=16.0, crouch=1.0, hop=3.0, rock=4.0, d
         else:
             r = (s - 0.7) / 0.3
             z = e[2] + lift * (1.0 - r * r)                    # reaching down to land
+        # A limb's "reach" (Ryan, 7 October, the eighteenth notes: no leg passed vertical into
+        # the forward plane): late in the swing the hoof is thrown that far past where it lands
+        # and drawn back onto it, the leg straightening out ahead of the hip before it plants.
+        if l.get("reach", 0.0) > 0.0 and s > 0.5:
+            y += l["reach"] * math.sin(math.pi * (s - 0.5) / 0.5)
         return y, z, False
 
     last_off = max(((l["phase"] + duty) % 1.0, l) for l in limbs)[0]

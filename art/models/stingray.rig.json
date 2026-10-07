@@ -391,9 +391,9 @@
  },
  "move": {
   "slide": 0.3,
-  "bank": 14.0,
+  "bank": 36.0,
   "strafe": 0.0,
-  "oversteer": 1.2,
+  "oversteer": 0.3,
   "tilt": [
    26.0,
    10.0

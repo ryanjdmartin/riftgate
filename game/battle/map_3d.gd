@@ -822,7 +822,8 @@ static func oversteer_lead(turn_ahead: float, oversteer: float) -> float:
 
 
 ## How much of a drifter's easing a machine takes: none at an oversteer of a half or less (the
-## jets), all of it from one and a half (the Puffin and the Dingo), the Stingray between.
+## jets, and the Stingray since the eighteenth notes), all of it from one and a half (the Puffin
+## and the Dingo).
 static func oversteer_ease(oversteer: float) -> float:
 	return clampf((oversteer - 0.5) / 1.0, 0.0, 1.0)
 

@@ -729,11 +729,15 @@ func _evaluate_gait(aim: float, turn: float) -> void:
 		if joints.has(name):
 			var r := maxf(0.1, float(wheels[name]))
 			_gait_rot[name] = _gait_rot.get(name, Vector3.ZERO) + Vector3(-fposmod(rad_to_deg(_dist / r), 360.0), 0.0, 0.0)
-	# Steering knuckles turn with the turn; casters point along the travel.
+	# Steering knuckles turn with the turn, each about its own axis (a knuckle yaws; the Goshawk's
+	# nacelles pitch, vectoring through a turn: Ryan, 7 October, the eighteenth notes); casters
+	# point along the travel.
 	var steer: Dictionary = gait.get("steer", {})
 	for name in steer.keys():
 		if joints.has(name):
-			_gait_rot[name] = _gait_rot.get(name, Vector3.ZERO) + Vector3(0.0, rad_to_deg(turn) * float(steer[name]) * _blend, 0.0)
+			var by := Vector3.ZERO
+			by[maxi(0, ["pitch", "yaw", "roll"].find(str(meta.get(name, {}).get("axis", "yaw"))))] = rad_to_deg(turn) * float(steer[name]) * _blend
+			_gait_rot[name] = _gait_rot.get(name, Vector3.ZERO) + by
 	var casters: Dictionary = gait.get("aim", {})
 	for name in casters.keys():
 		if joints.has(name):

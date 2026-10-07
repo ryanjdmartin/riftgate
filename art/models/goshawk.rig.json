@@ -1007,7 +1007,10 @@
   "tracks": {},
   "body": [],
   "wheels": {},
-  "steer": {},
+  "steer": {
+   "nacelle_l": -0.21,
+   "nacelle_r": 0.21
+  },
   "aim": {},
   "hold": {
    "nacelle_l": [

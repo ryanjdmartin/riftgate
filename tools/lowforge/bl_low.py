@@ -745,7 +745,7 @@ class Build:
         (a bob). `body_hold` is (dx, dy, dz, yaw, pitch, roll) held while moving (a flyer's
         nose down) and `hold` maps a joint to (pitch, yaw, roll) held while moving (the
         Badger's booms carrying the claw clear). `wheels` maps a spin joint to its radius;
-        `steer` a knuckle to degrees of yaw per radian a second of turning; `aim` a caster
+        `steer` a knuckle to degrees per degree a second of turning (MechRig multiplies the turn in degrees, so a knuckle's 14 steers to its limits in any real turn), about the joint's own axis (a knuckle yaws, a nacelle pitches: the eighteenth notes); `aim` a caster
         to its share of the travel's bearing against the facing (1 points along it).
         `treads` is {"parts": [labels], "scroll": 1.0} to run the tread tiles; `glow`
         {"parts": [labels or groups], "k": 2.0} to brighten boosters by that much on the
