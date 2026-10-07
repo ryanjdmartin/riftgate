@@ -96,7 +96,8 @@ and sets the glass a dB and a half over the rider, so no glass is set by a recip
 more. Applied to a press, dismiss, confirm, the lock and unlock, the map's acquire, the
 reroll, the round opening, a route set, the hold's touch under the shoo, and the codex; not
 to a die spent, whose pulse the phone cannot play (the glass is the sound there), nor to the
-menu, whose under-layer is the plate. And a baseline mix (the same day): every family measured
+menu, whose under-layer is the plate (Ryan: every under-layer, glass or plate, so the menu's plate
+and refuse's scrape are balanced too; the end of the turn is the plate alone). And a baseline mix (the same day): every family measured
 through the phone model against Hold The Line's mean, and the console's statements (the round
 opening, the menu, refuse) pulled from level with a hit to seven decibels over the music, the reroll
 and a route set to six; the ladder is on the page.
@@ -339,7 +340,7 @@ def menu_open():
     pl = np.concatenate([R.bow(d, 1.0, 600.0, 0.08), np.zeros(n_of(0.6))])
     plate = R.body(pl, "plate", 180.0, None)
     plate *= F.env_pts(len(plate), [(0.0, 1.0), (d, 1.0), (len(plate) / SR, 0.0)])
-    return lay((0.0, boop(B.E4, 0.12, 0.7, attack=0.008, bright=1100.0)), (0.14, boop(B.E4, 0.14, 0.7, attack=0.008, bright=1100.0)), (0.0, plate), (0.16, R.shell_tap("plate", 180.0, 0.8, 0.3)))
+    return balanced([(0.0, plate), (0.16, R.shell_tap("plate", 180.0, 0.8, 0.3))], [(0.0, boop(B.E4, 0.12, 0.7, attack=0.008, bright=1100.0)), (0.14, boop(B.E4, 0.14, 0.7, attack=0.008, bright=1100.0))])
 
 
 def menu_close():
@@ -348,11 +349,11 @@ def menu_close():
     pl = np.concatenate([R.bow(d, 1.0, 600.0, 0.08), np.zeros(n_of(0.6))])
     plate = R.body(pl, "plate", 160.0, None)
     plate *= F.env_pts(len(plate), [(0.0, 1.0), (d, 1.0), (len(plate) / SR, 0.0)])
-    return lay((0.0, boop(B.B3, 0.16, 0.8, attack=0.008, bright=1100.0)), (0.0, boop(B.B4, 0.12, 0.3, attack=0.008)), (0.0, plate), (0.16, R.shell_tap("plate", 160.0, 0.8, 0.3)))
+    return balanced([(0.0, plate), (0.16, R.shell_tap("plate", 160.0, 0.8, 0.3))], [(0.0, boop(B.B3, 0.16, 0.8, attack=0.008, bright=1100.0)), (0.0, boop(B.B4, 0.12, 0.3, attack=0.008))])
 
 
 def refuse():
-    return lay((0.0, p28()), (0.0, R.shell_scrape(170.0, 0.5)))
+    return balanced([(0.0, R.shell_scrape(170.0, 0.5))], [(0.0, p28())])
 
 
 # name: (recipe, phone dB, shipped name, label, note)
@@ -374,12 +375,12 @@ SET = [
     ("hold_readout", hold_readout, -29.0, None, "A hold's readout", "the shoo, its glass touch measured level under it"),
     ("codex_open", codex_open, -21.0, "codex_open", "Codex opens", "the climbing figure E5 G5 B5, the glass measured level under it"),
     ("codex_close", codex_close, -23.0, "codex_close", "Codex closes", "B5 G5 E5, the glass letting go measured level under it"),
-    ("menu_open", menu_open, -17.0, "menu_open", "Menu opens", "the chunk moved near the start, under E4 twice"),
-    ("menu_close", menu_close, -17.0, "menu_open", "Menu closes", "the chunk moved near the start, under the low boop"),
+    ("menu_open", menu_open, -17.0, "menu_open", "Menu opens", "the plate measured level under E4 twice"),
+    ("menu_close", menu_close, -17.0, "menu_open", "Menu closes", "the plate measured level under the low boop"),
     ("nav_forward", select, -20.0, "ui_tap", "Menu: forward", "= a press"),
     ("nav_back", dismiss, -21.0, "ui_back", "Menu: back", "= dismiss"),
     ("nav_select", confirm, -19.0, "ui_tap", "Menu: select", "= confirm"),
-    ("refuse", refuse, -17.0, "ui_back", "Refused", "P28 over a low scrape; the dropout's and the scrape's hard edges softened, which was the click on your speaker"),
+    ("refuse", refuse, -17.0, "ui_back", "Refused", "P28, the scrape measured level under it"),
 ]
 SET_BY = {name: (fn, db, beside, label, note) for name, fn, db, beside, label, note in SET}
 NAMES = {"touch": "tap", "touch_heavy": "tap", "round_acquire": "round_open", "resolve": "end_turn", "route_clear": "dismiss", "select": "map_select"}
