@@ -420,28 +420,25 @@ func test_cycle_sampling_wraps() -> void:
 	assert_true(mid < -5.0 and mid > -30.0, "between keys (%f)" % mid)
 
 
-func test_machines_in_one_place_take_turns_to_start_an_act() -> void:
-	# Two machines whose waits run out together: the first starts, the second waits its turn
-	# and starts once the cue has passed (Ryan, 7 October). Synthetic acts; a place of its own.
+func test_a_long_frame_never_runs_every_wait_out_at_once() -> void:
+	# A hitch (a screen opening) spends a frame's worth of the gap, not the whole of it, so
+	# machines waiting different times still start at different times (Ryan, 7 October).
 	var a := _rig_for("clydesdale", 3)
 	var b := _rig_for("clydesdale", 4)
 	var act := {"name": "nod", "duration": 0.5, "tracks": {}, "body": [], "glow": []}
 	for r in [a[0], b[0]]:
-		var rig: MechRig = r
-		rig.debug = ""
-		rig.acts = [act]
-		rig.place = "cue_test"
-		rig._wait = 0.0
-	MechRig._cue.erase("cue_test")
-	(a[0] as MechRig).tick(0.01)
-	(b[0] as MechRig).tick(0.01)
-	assert_true((a[0] as MechRig).in_act(), "the first machine starts")
-	assert_false((b[0] as MechRig).in_act(), "the second waits its turn")
-	assert_true((b[0] as MechRig)._wait > 0.0 and (b[0] as MechRig)._wait <= MechRig.CUE_JITTER, "and tries again a moment later")
-	MechRig._cue["cue_test"] = int(MechRig._cue["cue_test"]) - int(MechRig.CUE_GAP * 1000.0) - 1
-	(b[0] as MechRig).tick(MechRig.CUE_JITTER + 0.01)
-	assert_true((b[0] as MechRig).in_act(), "once the cue has passed it starts")
-	MechRig._cue.erase("cue_test")
+		(r as MechRig).debug = ""
+		(r as MechRig).acts = [act]
+	(a[0] as MechRig)._wait = 1.0
+	(b[0] as MechRig)._wait = 3.0
+	(a[0] as MechRig).tick(5.0)
+	(b[0] as MechRig).tick(5.0)
+	assert_false((a[0] as MechRig).in_act() or (b[0] as MechRig).in_act(), "a five-second frame starts neither")
+	for i in range(66):
+		(a[0] as MechRig).tick(1.0 / 60.0)
+		(b[0] as MechRig).tick(1.0 / 60.0)
+	assert_true((a[0] as MechRig).in_act(), "the shorter wait runs out in ordinary frames")
+	assert_false((b[0] as MechRig).in_act(), "and the longer one is still waiting")
 	a[1].free()
 	b[1].free()
 
