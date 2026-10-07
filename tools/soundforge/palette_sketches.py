@@ -153,9 +153,9 @@ def balanced(glass, riders, lead=LEAD):
 
 # ---------------------------------------------------------------- the palette
 
-def p5(scale=1.0, gain=1.0):
+def p5(scale=1.0, gain=1.0, f0=540.0):
     d = 0.18 * scale
-    return R.shell_bow("glass", 540.0, d, gain, 1600.0, 0.5, d + 0.08)
+    return R.shell_bow("glass", f0, d, gain, 1600.0, 0.5, d + 0.08)
 
 
 def p13(times=2, gain=1.0):
@@ -206,7 +206,9 @@ def glass_let_go(dur=0.16, gain=0.8, f0=500.0):
 def select():
     """A press, a menu item, a selection in a panel: one act, one sound. The boop first, on E5,
     the glass under it from the same instant; quiet, since it is the commonest sound."""
-    return balanced([(0.0, p5(0.8))], [(0.0, boop(B.E5, 0.12, 0.5))])
+    # Ryan (7 October): a touch quieter overall (the level in the table), and the pitch down a
+    # little for the tone and the undertone alike: D5 over a glass at 480.
+    return balanced([(0.0, p5(0.8, 1.0, 480.0))], [(0.0, boop(B.hz(10, 2), 0.12, 0.5))])
 
 
 def map_select():
@@ -340,7 +342,7 @@ def hold_readout():
 def route_set():
     """P5 with two pips and a rising pair of boops, E4 then B4: a waypoint logged, going up,
     not a cancel."""
-    return balanced([(0.0, p5(1.2, 1.7))], [(0.0, boop(B.A4, 0.07, 0.5)), (0.09, boop(B.E4, 0.1, 0.5))])
+    return balanced([(0.0, p5(1.2, 1.7, 440.0))], [(0.0, boop(B.A4, 0.07, 0.5)), (0.09, boop(B.E4, 0.1, 0.5))])   # the undertone pitched down a bit (Ryan, 7 October)
 
 
 def menu_open():
@@ -367,7 +369,7 @@ def refuse():
 
 # name: (recipe, phone dB, shipped name, label, note)
 SET = [
-    ("tap", select, -20.0, "ui_tap", "A press, a menu item, select", "one act, one sound: the boop on E5 first, the glass measured 10 dB under it. Every ordinary button, the menu's forward, a selection in a panel"),
+    ("tap", select, -22.0, "ui_tap", "A press, a menu item, select", "one act, one sound: the boop on D5 first, the glass at 480 measured 10 dB under it, the whole 2 dB quieter. Every ordinary button, the menu's forward, a selection in a panel"),
     ("map_select", map_select, -20.0, "ui_tap", "Map: a tile, a pack, a machine tapped", "the pulse version, as you preferred: the glass swell and the pulse over a longer window, the glass up as the primary sound, the pulse down a touch"),
     ("dismiss", dismiss, -21.0, "ui_back", "Dismiss", "the low boop first, the glass measured 10 dB under it; also the menu's back"),
     ("confirm", confirm, -19.0, None, "Confirm", "P26 from the first instant, the glass measured 10 dB under it; the menu's select"),
@@ -380,13 +382,13 @@ SET = [
     ("reroll", reroll, -18.0, "die_roll", "Reroll", "four clicks on one pitch, the glass 1.5 dB over them (fine as it was)"),
     ("round_open", round_open, -17.0, None, "The round opens", "dot dot on B, the body 1.5 dB over it (fine as it was)"),
     ("end_turn", end_turn, -20.0, "resolve", "End turn", "the swell shorter, the chunk, the tail fading"),
-    ("route_set", route_set, -18.0, "plot", "A route set", "A then E, the glass measured 10 dB under them"),
+    ("route_set", route_set, -18.0, "plot", "A route set", "A then E, the glass pitched down to 440 and measured 10 dB under them"),
     ("hold_readout", hold_readout, -29.0, None, "A hold's readout", "the shoo, its glass touch 1.5 dB over it (fine as it was)"),
     ("codex_open", codex_open, -21.0, "codex_open", "Codex opens", "the climbing figure E5 G5 B5, the glass pitched down toward the menu's plate, 3.5 dB under"),
     ("codex_close", codex_close, -23.0, "codex_close", "Codex closes", "B5 G5 E5, the glass letting go pitched down toward the menu's, 3.5 dB under"),
     ("menu_open", menu_open, -17.0, "menu_open", "Menu opens", "the plate 1.5 dB over E4 twice (fine as it was)"),
     ("menu_close", menu_close, -17.0, "menu_open", "Menu closes", "the plate 3.5 dB under the low boop"),
-    ("nav_forward", select, -20.0, "ui_tap", "Menu: forward", "= a press"),
+    ("nav_forward", select, -22.0, "ui_tap", "Menu: forward", "= a press"),
     ("nav_back", dismiss, -21.0, "ui_back", "Menu: back", "= dismiss"),
     ("nav_select", confirm, -19.0, "ui_tap", "Menu: select", "= confirm"),
     ("refuse", refuse, -17.0, "ui_back", "Refused", "P28, the scrape 1.5 dB over it (fine as it was)"),

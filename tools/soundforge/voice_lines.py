@@ -59,19 +59,19 @@ HOOKS = {
                   ["light them up", "going ballistic"]),
     "foe_down": (1.0 / 4.0, False,
                  ["eliminating", "neutralising hostile", "target destroyed", "lethal force applied", "bogey down", "threat eliminated"],
-                 ["mopping up trash", "get wrecked", "glitch removed"]),
+                 ["mopping up trash", "get wrecked", "bug squashed"]),
     "foe_down_undead": (1.0 / 3.0, False,
                         ["undead anomaly cleared", "necrotic signature lost", "animation ceased"],
                         ["re-interred", "stay dead this time"]),
     "foe_down_demonic": (1.0 / 3.0, False,
-                         ["demonic presence eliminated", "infernal unit purged", "hellfire contained"],
-                         ["back te hell with ya", "not today, satan", "power overwhelming"]),
+                         ["demonic presence eliminated", "infernal unit purged", "demonic unit banished"],
+                         ["back to hell with you", "not today, satan"]),
     "foe_down_eldritch": (1.0 / 3.0, False,
                           ["unknowable horror purged", "sanity restored", "anxiety levels reduced"],
                           ["that was not supposed to exist", "thank goodness"]),
     "buff": (1.0 / 6.0, False,
              ["shield up", "buff applied", "unit boosted", "countermeasures engaged"],
-             ["saving throw granted", "rage mode activated"]),
+             ["saving throw granted", "rage mode activated", "power overwhelming"]),
     "heat_vented": (1.0 / 6.0, False,
                     ["venting", "heat sinks engaged", "cooling", "thermal load falling"],
                     ["whew", "that's much better"]),
@@ -89,31 +89,31 @@ HOOKS = {
                             []),
     "resolve_all": (1.0 / 2.0, False,
                     ["all units committed", "full line advancing", "squad deployed"],
-                    ["get 'em boys", "transform and roll out", ("roll out", "rrrroll out"), "let none survive", "your time has come"]),
+                    [("get 'em boys", "get-em boys", 1.5), "transform and roll out", "let none survive", "your time has come"]),
     "resolve_move": (1.0 / 3.0, False,
                      ["orders received", "moving to intercept", "in transit", "moving out", "proceeding", "coordinates received", "executing strategy"],
                      ["stay on target", "sounds fun", "evil draws close", "go go go"]),
     "contact": (1.0 / 2.0, False,
                 ["combat imminent", "contact", "hostiles in range", "enemy in range", "closing to contact"],
-                ["showtime", "here we go"]),
+                ["showtime", "here we go again"]),
     "engage": (1.0 / 2.0, False,
-               ["engaging", "feed acquired", "weapons hot", "live feed", "the fight is on"],
-               [("rip and tear", "rip and tare"), "battle music initiated", "so it begins", "let's dance"]),
+               ["engaging", "feed acquired", "weapons hot", "live feed", "transferring to tactical display", "initiating combat protocol"],
+               [("rip and tear", "rip and tare"), "battle music initiated", "let's dance", "the fight is on"]),
     "boss": (1.0, False,
-             ["primary hostile identified", "priority target, engaging"],
-             ["oh, that's a big one", "that's a lot of hostile", "big lad", "big fella", "that's a lot of teeth", "oh no. no no no"]),
+             ["primary target identified", "priority threat detected. engaging", "approaching large hostile", "initiating sector purge"],
+             ["oh, that's a big one", "big lad", "big fella on route", "that's a lot of teeth", "nope nope nope"]),
     "gate": (1.0 / 2.0, False,
              ["gate under attack", "gate taking damage", "gate integrity falling"],
              ["they're in the walls", "they're breaking through"]),
     "flattening": (1.0 / 3.0, False,
                    ["errors increasing", "reconstruction degrading", "sector signal corrupted"],
-                   ["this is fine", "everything is under control", "known issue", "that's a lot of bugs"]),
-    "loss_gate": (1.0, True, ["gate breached"], ["now you've done it"]),
+                   ["this is fine", "I'm glitching out here"]),
+    "loss_gate": (1.0, True, ["gate breached. the city is lost"], ["now you've done it"]),
     "loss_city": (1.0, True,
-                  ["corruption has reached the city", "the city is lost"],
+                  [("corruption has reached the city. estimated casualties: 100%", "corruption has reached the city. estimated casualties: one hundred percent")],
                   ["z axis lost"]),
     "victory": (1.0, False,
-                ["line held", "rift sealed", "area secured", "hostiles cleared", "well fought, commander", "mission accomplished"],
+                ["line held. rift sealed", "area secured. hostiles cleared", ("mission accomplished. well fought, commander", "mission accomplished. well fot, commander")],
                 [("GG EZ", "gee gee easy"), ("flawless victory", "flawless victory", 1.55), "well, that was fun"]),
     "codex": (1.0 / 12.0, False,
               ["searching database", "record retrieved", "consulting archives", "help text loaded"],
@@ -122,8 +122,8 @@ HOOKS = {
                ["negative", "unable to comply"],
                ["you must construct additional pylons"]),
     "battle_open": (1.0, False,
-                    ["feed live", "combat feed online", "telemetry online", "deployment complete", "all units on the field", "sector loaded"],
-                    ["reactor online, sensors online, weapons online, all systems nominal"]),
+                    ["battlefield feed online. telemetry online", "deployment complete. all units on the field", "sector loaded. feed live"],
+                    ["reactor online, sensors online, weapons online, all systems nominal", "so it begins"]),
 }
 
 # a hook draws from its own pool and these others' together
@@ -151,9 +151,36 @@ def slug(text):
     return re.sub(r"[^a-z0-9]+", "_", text.lower()).strip("_")
 
 
-def render_line(text, scale=PACE):
+# A line opening on one of these letters has a front Jenny may clip; one opening on a vowel,
+# a nasal, a liquid or an h has nothing in the band the lift works on, and is left alone.
+ONSETS = "sftkcqpgdbjzv"
+DRAWS = 6      # draws tried for a weak front
+WEAK = -30.0   # a first consonant this far under its vowel (dB) gets the other draws
+
+
+def pick_draw(text, scale):
+    """Piper samples, and the first phoneme of an utterance is where the draws differ most
+    (measured 7 October: "so it begins" opens at 11 to 24 dB under its vowel across six
+    draws, "target destroyed" at 14 to 28). The first draw stays, as heard, unless its front
+    is weak; then the strongest front of six. Returns the audio, the draw and the levels."""
     raw = P.render("jenny", text, scale)
-    return V.level_for_phone(P.mid_tamed(raw), -14.0)
+    lvl = P.front_level(raw)
+    if text[0].lower() not in ONSETS or lvl >= WEAK:
+        return raw, 0, lvl, lvl
+    best = (lvl, 0, raw)
+    for d in range(1, DRAWS):
+        y = P.render("jenny", text, scale, d)
+        l2 = P.front_level(y)
+        if l2 > best[0]:
+            best = (l2, d, y)
+    return best[2], best[1], lvl, best[0]
+
+
+def render_line(text, scale=PACE):
+    raw, draw, l0, l1 = pick_draw(text, scale)
+    if text[0].lower() in ONSETS:
+        raw = P.lift_front(raw)
+    return V.level_for_phone(P.mid_tamed(raw), -14.0), {"draw": draw, "front": round(l0, 1), "front_drawn": round(l1, 1), "front_lifted": round(P.front_level(raw), 1)}
 
 
 def main(argv):
@@ -168,11 +195,11 @@ def main(argv):
         for line in normal + personality:
             text = shown(line)
             F.seed(PREFIX + slug(text))
-            x = render_line(spoken(line), pace(line))
+            x, front = render_line(spoken(line), pace(line))
             name = PREFIX + slug(text)
             X.write(name, X.tail(x, 0.3))
-            manifest["lines"].append({"name": name, "hook": hook, "text": text, "personality": line in personality, "seconds": round(len(x) / SR, 2)})
-            print("  %-20s %-52s %5.2f s" % (hook, text, len(x) / SR))
+            manifest["lines"].append(dict({"name": name, "hook": hook, "text": text, "personality": line in personality, "seconds": round(len(x) / SR, 2)}, **front))
+            print("  %-20s %-52s %5.2f s  draw %d  front %6.1f -> %6.1f -> %6.1f" % (hook, text, len(x) / SR, front["draw"], front["front"], front["front_drawn"], front["front_lifted"]))
     with open(path, "w") as fh:
         json.dump(manifest, fh, indent=1)
     return 0

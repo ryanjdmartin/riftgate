@@ -110,6 +110,49 @@ def tame_plosives(y, split=1500.0, win=0.003, thr=0.03, ratio=0.05, release=0.04
     return low + high * out
 
 
+def front_of(x):
+    """The first consonant's span: from the first sound to where the low band reaches the
+    vowel, and the vowel's peak level after it (dB)."""
+    lo = F.lp(x, 1500.0, order=3)
+    hi = x - lo
+    n1, n2 = F.n_of(0.01), F.n_of(0.005)
+    le = 20.0 * np.log10(np.sqrt(np.convolve(lo ** 2, np.ones(n1) / n1, mode="same")) + 1e-9)
+    he = 20.0 * np.log10(np.sqrt(np.convolve(hi ** 2, np.ones(n2) / n2, mode="same")) + 1e-9)
+    start = int(np.argmax(np.maximum(le, he) > -45.0))
+    vowel = start + int(np.argmax(le[start:] > -22.0))
+    return lo, hi, start, vowel, le[vowel:vowel + F.n_of(0.15)].max()
+
+
+def front_level(x):
+    """How far the first consonant's high band sits under its vowel, in dB."""
+    lo, hi, a, b, vpk = front_of(x)
+    if b - a < F.n_of(0.005):
+        return -99.0
+    return 20.0 * np.log10(np.sqrt(np.mean(hi[a:b] ** 2)) + 1e-9) - vpk
+
+
+def lift_front(x, target=-16.0, cap=18.0):
+    """Jenny clips the first phoneme of an utterance (measured 7 October: "squad" opens with 13 ms
+    of s at 49 dB under its vowel where "sector" gets 80 ms at 14 under; the decoder and the chain
+    were ruled out). Where the first consonant's high band sits further under its vowel than
+    `target`, lift that band over its span by the difference, up to `cap`, with 5 ms ramps.
+    An opening vowel or nasal has next to nothing in that band, so the lift does nothing there."""
+    lo, hi, a, b, vpk = front_of(x)
+    if b - a < F.n_of(0.005):
+        return x
+    lvl = 20.0 * np.log10(np.sqrt(np.mean(hi[a:b] ** 2)) + 1e-9) - vpk
+    g_db = min(cap, max(0.0, target - lvl))
+    if g_db <= 0.0:
+        return x
+    g = np.ones(len(x))
+    r = F.n_of(0.005)
+    g[a:b] = 10.0 ** (g_db / 20.0)
+    ramp = np.linspace(1.0, g[a], r)
+    g[max(0, a - r):a] = ramp[-(a - max(0, a - r)):] if a > 0 else ramp[:0]
+    g[b:min(len(x), b + r)] = np.linspace(g[a], 1.0, r)[:min(len(x), b + r) - b]
+    return lo + hi * g
+
+
 def mid_tamed(x):
     """The mid chain with the plosives tamed before a gentler saturator."""
     y = F.bp(x, 180.0, 4500.0, order=3)
@@ -137,9 +180,10 @@ def resample(x, sr_in):
     return np.interp(np.linspace(0.0, len(x) - 1, n), np.arange(len(x)), x)
 
 
-def render(voice, text, scale=LENGTH_SCALE):
-    """Render a line with Piper to WAV, cached under out/piper, and return it at the forge's rate."""
-    path = os.path.join(DATA, "%s_%s_%.2f.wav" % (voice, text.replace(" ", "_"), scale))
+def render(voice, text, scale=LENGTH_SCALE, draw=0):
+    """Render a line with Piper to WAV, cached under out/piper, and return it at the forge's rate.
+    Piper samples: every call is a fresh draw, so `draw` names another one of the same text."""
+    path = os.path.join(DATA, "%s_%s_%.2f%s.wav" % (voice, text.replace(" ", "_"), scale, "_d%d" % draw if draw else ""))
     if not os.path.exists(path):
         subprocess.run([PIPER_PY, "-m", "piper", "-m", VOICES[voice], "--data-dir", DATA, "--length-scale", str(scale), "-f", path, "--", text], check=True, capture_output=True)
     with wave.open(path, "rb") as w:
