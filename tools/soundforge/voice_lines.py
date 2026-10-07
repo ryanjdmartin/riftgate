@@ -61,7 +61,7 @@ HOOKS = {
                   ["light them up", "going ballistic"]),
     "foe_down": (1.0 / 4.0, False,
                  ["eliminating", "neutralising hostile", "target destroyed", "lethal force applied", "bogey down", "threat eliminated"],
-                 ["mopping up trash", "get wrecked", "bug squashed", "dodge this"]),
+                 ["mopping up trash", "get wrecked", "bug squashed", "dodge this", "fatality"]),
     "foe_down_undead": (1.0 / 3.0, False,
                         ["undead anomaly cleared", "necrotic signature lost", "animation ceased"],
                         ["re-interred", "stay dead this time"]),
@@ -116,7 +116,8 @@ HOOKS = {
                   ["z axis lost"]),
     "victory": (1.0, False,
                 ["hostiles cleared. the line holds", ("area secured. well fought, commander", "area secured. well fot, commander"), "mission accomplished. the rift is sealed"],   # rewritten as sentence pairs (Ryan, 7 October: the combined lines read samey and stuck together)
-                [("GG EZ", "gee gee easy"), ("flawless victory", "flawless victory", 1.55), "well, that was fun", "payday", "first round's on me"]),
+                [("GG EZ", "gee gee easy"), ("flawless victory", "flawless victory", 1.55), "well, that was fun", "we got paid, commander. first round's on me",
+                 "I love it when a plan comes together", "winner winner, chicken dinner", "another one bites the dust", "victory achieved"]),   # homages proposed 7 October (the A-Team, PUBG, Queen, Dark Souls), the two short ones folded into one
     "codex": (1.0 / 12.0, False,
               ["searching database", "record retrieved", "consulting archives", "help text loaded"],
               ["let me look that up", "reading the manual"]),
@@ -125,7 +126,7 @@ HOOKS = {
                ["you must construct additional pylons"]),
     "battle_open": (1.0, False,
                     ["battlefield feed online. all units reporting in", "deployment complete. awaiting your orders, commander", "sector loaded. hostiles inbound"],
-                    [("reactor online, sensors online, weapons online, all systems nominal", "reactor on-line, sensors on-line, weapons on-line, all systems nominal"), "once more, into the breach", "now for wrath, now for ruin, and the red dawn"]),
+                    [("reactor online, sensors online, weapons online, all systems nominal", "reactor on-line, sensors on-line, weapons on-line, all systems nominal"), "once more, into the breach", "now for wrath. now for ruin. and the red dawn"]),
 }
 
 # a hook draws from its own pool and these others' together
