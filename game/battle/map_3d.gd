@@ -790,9 +790,10 @@ const SETOFF_S := 0.5           # seconds a move's set-off takes to bring the fa
 # turn at a move's start was a little jumpy, half a second whatever the angle, rolling as it
 # swung): a sixth of a turn takes SETOFF_TURN_BASE plus SETOFF_TURN_PER_ACCEL for each second
 # of its `accel` (the heavy turn slower), a bigger turn longer by the root of its size, and the
-# move holds at its start for SETOFF_ROLL of that, rolling off as the turn finishes.
-const SETOFF_TURN_BASE := 0.6
-const SETOFF_TURN_PER_ACCEL := 0.4
+# move holds at its start for SETOFF_ROLL of that, rolling off as the turn finishes. The
+# twenty-second notes slowed it two fifths for every machine (0.6 and 0.4 before).
+const SETOFF_TURN_BASE := 0.85
+const SETOFF_TURN_PER_ACCEL := 0.55
 const SETOFF_ROLL := 0.75
 
 

@@ -756,13 +756,22 @@ class Build:
         full): the machine moves wholly by that gait option under `below` of its full speed
         and by this gait over `full`, crossfading between, so it sets off and pulls up in one
         gait and runs in another (Ryan, 7 October, the nineteenth notes: the Clydesdale trots
-        off the mark into its gallop); a fourth number holds that gait for so many of its
-        strides from a standstill, fading over half a stride more (the twenty-first notes)."""
+        off the mark into its gallop); a fourth, a handoff (_transition in models_low), sets it
+        off at a given moment of that gait's stride (`from`) and plays the stride it changes
+        in, keys over its `length` in units, into this gait at `to` (the twenty-second notes:
+        a crossfade of the whole machine at once clipped a hoof's step; the twenty-first held
+        it a stride and faded over half a stride more)."""
         out = {"stride": float(stride), "ease": ease, "tracks": {}, "body": [], "wheels": {}, "steer": {}, "aim": {},
                "hold": {}, "treads": {}, "glow": {}, "rock": float(rock)}
         if start is not None:
-            out["start"] = {"option": str(start[0]), "below": float(start[1]), "full": float(start[2]),
-                            "hold": float(start[3]) if len(start) > 3 else 0.0}
+            out["start"] = {"option": str(start[0]), "below": float(start[1]), "full": float(start[2])}
+            if len(start) > 3:
+                h = start[3]
+                out["start"]["handoff"] = {"from": round(float(h["from"]), 4), "to": round(float(h["to"]), 4),
+                                           "length": round(float(h["length"]), 3),
+                                           "tracks": {jn: {"keys": self._keys("the gait's handoff", keys, jn), "phase": 0.0}
+                                                      for jn, keys in h["tracks"].items()},
+                                           "body": self._keys("the gait's handoff body", h["body"])}
         for jn, spec in (tracks or {}).items():
             keys, phase = (spec if isinstance(spec, tuple) and len(spec) == 2 and not isinstance(spec[0], (int, float)) else (spec, 0.0))
             out["tracks"][jn] = {"keys": self._keys("the gait", keys, jn), "phase": float(phase)}

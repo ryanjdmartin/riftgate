@@ -6,6 +6,7 @@ Function names are chassis ids (content/chassis.json), so the build lands where 
 engine looks: art/models/<id>.glb.
 """
 
+import bisect
 import math
 import os
 
@@ -538,25 +539,16 @@ def clydesdale(b):
     # and land eight ahead of the hip (from three), which leaves a hind hoof swinging forward
     # seven clear of them where it passed within two. The hinds cannot reach so: four units of
     # it brought them back within three of the fores, eight into them (measured).
-    tracks, body, stride = _gallop([
-        {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
-         "phase": {"hl": 0.0, "hr": 0.12, "fl": 0.42, "fr": 0.54}[leg],
-         "shift": legs[leg][0][1] - legs[leg][2][1] + (8.0 if leg[0] == "f" else -3.0),
-         "reach": 10.0 if leg[0] == "f" else 0.0}
-        for leg in ("fl", "fr", "hl", "hr")], sweep=30.0, duty=0.34, lift=7.0, crouch=3.0, hop=0.5, rock=6.0, dip=5.0, smooth=0.015, thud=True, airborne=0.99)
+    gallop = [{"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
+               "phase": {"hl": 0.0, "hr": 0.12, "fl": 0.42, "fr": 0.54}[leg],
+               "shift": legs[leg][0][1] - legs[leg][2][1] + (8.0 if leg[0] == "f" else -3.0),
+               "reach": 10.0 if leg[0] == "f" else 0.0}
+              for leg in ("fl", "fr", "hl", "hr")]
+    tracks, body, stride = _gallop(gallop, sweep=30.0, duty=0.34, lift=7.0, crouch=3.0, hop=0.5, rock=6.0, dip=5.0, smooth=0.015, thud=True, airborne=0.99)
     tracks["head"] = ([(i / 40.0, round(-4.5 * math.cos(2.0 * math.pi * (i / 40.0 - 0.16)), 3)) for i in range(41)], 0.0)   # the head heaves after the rock
-    # It sets off at a trot and rolls into the gallop as it gathers speed, and drops back to
-    # the trot as it pulls up (Ryan, 7 October, the nineteenth notes: it took off straight into
-    # a slow gallop): wholly the trot under half its full speed, wholly the gallop over 0.95,
-    # crossfading between (b.gait's start; 0.3 and 0.85 until the twentieth notes). It reaches
-    # half its speed within a fifth of a stride, so the trot is also held for its first stride
-    # from a standstill, fading into the gallop over half a stride more (the twenty-first notes:
-    # it held the trot for about half a step): 55 units of trot, two thirds of a hex, about the
-    # first second and seven tenths at its map pace, the gallop whole by about 2.1 seconds.
-    b.gait(stride=stride, tracks=tracks, body=body, ease="linear", start=("trot", 0.5, 0.95, 1.0))
     # A heavy trot (Ryan, 6 October, the ninth notes: the gallop has potential but is a bit
     # much, and its hooves met through each other; somewhere between it and the Armadillo's
-    # stomp), kept as an option for the hangar's Walk. The gait between the two in a horse:
+    # stomp), the gait it sets off and pulls up in (below). The gait between the two in a horse:
     # diagonal pairs, high-stepping, each fore landing a beat before its hind partner so every
     # pair comes down as a heavy double thud, the hull dropping and nodding onto each pair.
     # The stances are spread three units fore and aft of the hips and the sweep kept to 22,
@@ -564,14 +556,28 @@ def clydesdale(b):
     # the columnar legs): it rides nearly as tall as its legs reach (`reach` 0.985), barely
     # crouched, the knees folding only to lift a hoof. A stride of 55, about one and a fifth a
     # second at its map pace (the fifteenth notes: a little too quick).
-    tracks, body, stride = _plant([
-        {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
-         "phase": {"fl": 0.0, "hr": 0.05, "fr": 0.5, "hl": 0.55}[leg],
-         "shift": legs[leg][0][1] - legs[leg][2][1] + (3.0 if leg[0] == "f" else -3.0),
-         "nod": 1.0 if leg[0] == "f" else -0.5}
-        for leg in ("fl", "fr", "hl", "hr")], sweep=22.0, duty=0.4, lift=12.0, crouch=0.3, dip=1.4, nod=1.2, reach=0.985, airborne=0.99, smooth=0.03, n=120)
-    tracks["head"] = ([(i / 40.0, round(-1.8 * abs(math.sin(2.0 * math.pi * (i / 40.0 - 0.04))), 3)) for i in range(41)], 0.0)   # a nod onto each pair
-    b.gait_option("trot", stride=stride, tracks=tracks, body=body, ease="linear")
+    trot = [{"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg],
+             "phase": {"fl": 0.0, "hr": 0.05, "fr": 0.5, "hl": 0.55}[leg],
+             "shift": legs[leg][0][1] - legs[leg][2][1] + (3.0 if leg[0] == "f" else -3.0),
+             "nod": 1.0 if leg[0] == "f" else -0.5}
+            for leg in ("fl", "fr", "hl", "hr")]
+    ttracks, tbody, tstride = _plant(trot, sweep=22.0, duty=0.4, lift=12.0, crouch=0.3, dip=1.4, nod=1.2, reach=0.985, airborne=0.99, smooth=0.03, n=120)
+    ttracks["head"] = ([(i / 40.0, round(-1.8 * abs(math.sin(2.0 * math.pi * (i / 40.0 - 0.04))), 3)) for i in range(41)], 0.0)   # a nod onto each pair
+    # It sets off at a trot and rolls into the gallop, and drops back to the trot as it pulls
+    # up (Ryan, 7 October, the nineteenth notes: it took off straight into a slow gallop):
+    # wholly the trot under half its full speed, wholly the gallop over 0.95, crossfading
+    # between (b.gait's start). Off the mark the speed alone held the trot for half a step
+    # (the twenty-first notes), and a stride held then crossfaded at once clipped a hoof's
+    # third step, fast and short (the twenty-second notes: about two steps of trot). It now
+    # sets off as a diagonal pair lifts, every hoof takes one trot step (the one it is in as
+    # it sets off counting), and its second is its own swing into the gallop, worked out foot
+    # by foot (_transition): it lifts from its trot stance and lands where and when the gallop
+    # lands it, no faster than either gait swings a hoof, the hull easing from the trot's
+    # ride to the gallop's meanwhile.
+    hand = _transition({"limbs": trot, "duty": 0.4, "stride": tstride, "tracks": ttracks, "body": tbody},
+                       {"limbs": gallop, "duty": 0.34, "stride": stride, "tracks": tracks, "body": body}, steps=1)
+    b.gait(stride=stride, tracks=tracks, body=body, ease="linear", start=("trot", 0.5, 0.95, hand))
+    b.gait_option("trot", stride=tstride, tracks=ttracks, body=tbody, ease="linear")
     b.move(accel=1.4, heft=0.24)
 
 clydesdale.maker = "wainwright_sutler"
@@ -3374,6 +3380,10 @@ def _plant(limbs, sweep, duty=0.55, lift=8.0, crouch=0.0, dip=1.2, nod=0.0, reac
             z = e[2] + lift * (1.0 - r * r)                   # down gathering speed: the stomp
         return y, z, False
 
+    for l in limbs:
+        l["foot"] = lambda p, l=l: foot(l, p)   # where its foot is at a phase, and how far it reaches planted and in the air, for _transition
+        l["span"] = (reach, airborne)
+
     # The body first: as high as its planted legs allow kept short of straight, lower by the
     # crouch, dropping and nodding as each foot lands and taking most of the stride between
     # landings to come back up.
@@ -3479,6 +3489,10 @@ def _gallop(limbs, sweep, duty=0.34, lift=16.0, crouch=1.0, hop=3.0, rock=4.0, d
             y += l["reach"] * math.sin(math.pi * (s - 0.5) / 0.5)
         return y, z, False
 
+    for l in limbs:
+        l["foot"] = lambda p, l=l: foot(l, p)   # where its foot is at a phase, and how far it reaches planted and in the air, for _transition
+        l["span"] = (reach, airborne)
+
     last_off = max(((l["phase"] + duty) % 1.0, l) for l in limbs)[0]
     first_on = landings[0]
     air = ((first_on - last_off) % 1.0) or 0.1
@@ -3539,6 +3553,169 @@ def _gallop(limbs, sweep, duty=0.34, lift=16.0, crouch=1.0, hop=3.0, rock=4.0, d
             tracks[l["ankle"]] = (rows["ankle"], 0.0)
     body = [(i / float(n), 0.0, 0.0, round(dz, 3), 0.0, round(th, 3), 0.0) for i, (dz, th) in enumerate(pose)]
     return tracks, body, stride
+
+
+def _transition(start, run, steps=1):
+    """The stride a machine changes gait in, from the gait it sets off in to the one it runs in,
+    worked out foot by foot (Ryan, 7 October, the twenty-second notes: the Clydesdale's trot
+    crossfaded into its gallop wherever each leg was, so a hoof's third step came out fast and
+    short; about two steps of trot). `start` and `run` are dicts of "limbs", "duty", "stride",
+    "tracks" and "body", the limbs as _plant and _gallop took them (each has its "foot" and
+    "span" after them) and the tracks and body as they returned. It sets off at a moment of the
+    start gait's stride when no hoof is more than halfway through a swing, so none drops out of
+    the air as it starts. Each leg takes `steps` steps in it, a swing it has begun as it sets
+    off counting as one, then plants as that gait
+    does and makes one swing of its own into the run: lifting from its stance (a little early,
+    or for a hind a little late, where the run reaches further back) and landing where and when
+    the run lands it, never sliding while planted. The run's phase, and when each hoof lifts,
+    are chosen so no hoof moves faster fore and aft than in either gait's own swing and each is
+    in the air between nine tenths of the start gait's time aloft and a tenth over the run's,
+    then so the last is down soonest. The hull eases from the one gait's ride to the other's
+    from the first lift to the last landing, never higher than the legs reach, and any other
+    track (a head) with it. Returns {"from", "to", "length", "tracks", "body"} for b.gait's
+    start: the start gait's phase at the set-off, the run's, the units the change takes, and
+    its keys over them as a share (dense, linear)."""
+    S, R = start, run
+    s_stride, r_stride = S["stride"], R["stride"]
+    s_air, r_air = (1.0 - S["duty"]) * s_stride, (1.0 - R["duty"]) * r_stride
+    s_stance = S["duty"] * s_stride
+    by_hip = {l["hip"]: l for l in R["limbs"]}
+
+    def smooth(u):
+        u = min(1.0, max(0.0, u))
+        return u * u * (3.0 - 2.0 * u)
+
+    def fore_aft(f, lo, hi, h=0.5):
+        out, x, p = 0.0, lo, f(lo)[0]
+        while x < hi:
+            q = f(min(hi, x + h))[0]
+            out, p, x = max(out, abs(q - p) / h), q, x + h
+        return out
+
+    height = {}
+    for l in S["limbs"] + R["limbs"]:
+        height[id(l)] = max(l["foot"](i / 200.0)[1] for i in range(200)) - l["at"][2][2]
+    normal = {}
+    for l in S["limbs"]:
+        r = by_hip[l["hip"]]
+        normal[l["hip"]] = max(fore_aft(lambda x: l["foot"](x / s_stride), 0.0, s_stride),
+                               fore_aft(lambda x: r["foot"](x / r_stride), 0.0, r_stride))
+
+    def swing(l, plan, x):
+        """The changing hoof in the air: from where it lifts to where the run lands it, as
+        high as the two gaits lift on average, reaching as the run's does."""
+        r = by_hip[l["hip"]]
+        s = (x - plan["lift"]) / (plan["land"] - plan["lift"])
+        y = plan["from"] + (plan["to"] - plan["from"]) * smooth((s - 0.1) / 0.8)
+        if r.get("reach", 0.0) > 0.0 and s > 0.5:
+            y += r["reach"] * math.sin(math.pi * (s - 0.5) / 0.5)
+        k = 1.0 - (1.0 - s / 0.3) ** 2 if s < 0.3 else (1.0 if s < 0.7 else 1.0 - ((s - 0.7) / 0.3) ** 2)
+        return y, l["at"][2][2] + plan["high"] * k, False
+
+    def plan_leg(l, s0, g0):
+        r = by_hip[l["hip"]]
+        t0 = None
+        lift0 = ((l["phase"] + S["duty"] - s0) % 1.0) * s_stride
+        counted = [lift0 + k * s_stride for k in range(-1, steps + 3) if lift0 + k * s_stride >= -0.5 * s_air]
+        t0 = counted[steps]                                  # where its hoof would lift into its next step
+        y0 = l["foot"]((s0 + t0 / s_stride) - 1e-6)[0]
+        back = r["foot"]((r["phase"] + R["duty"]) % 1.0 - 1e-6)[0]   # the run lifts from here
+        best = None
+        land0 = ((r["phase"] - g0) % 1.0) * r_stride
+        for t1 in (land0 + k * r_stride for k in range(-1, steps + 4)):
+            if t1 <= t0 - 0.6 * s_stance + 0.8 * s_air:
+                continue
+            want = t1 - min(max(t1 - t0, s_air), r_air)
+            lift = min(max(want, t0 - 0.6 * s_stance), t0 + max(0.0, y0 - back))
+            plan = {"t0": t0, "y0": y0, "lift": lift, "land": t1, "high": 0.5 * (height[id(l)] + height[id(r)]),
+                    "from": l["foot"](s0 + lift / s_stride)[0] if lift <= t0 else y0 - (lift - t0),
+                    "to": r["foot"](g0 + t1 / r_stride)[0]}
+            d = t1 - lift
+            fast = fore_aft(lambda x: swing(l, plan, x), lift, t1) / normal[l["hip"]]
+            bad = 5.0 * max(0.0, fast - 1.0) + max(0.0, 0.9 * s_air - d) / s_air + max(0.0, d - 1.1 * r_air) / r_air
+            key = (round(bad, 2), round(t1, 3))
+            if best is None or key < best[0]:
+                best = (key, plan)
+        return best
+
+    def caught(s0):
+        """Whether a hoof is more than halfway through a swing at this moment of the stride."""
+        return any(((s0 - l["phase"]) % 1.0 - S["duty"]) / (1.0 - S["duty"]) > 0.5 for l in S["limbs"])
+
+    best = None
+    for s0 in [i / 40.0 for i in range(40) if not caught(i / 40.0)]:
+        for gi in range(100):
+            g0 = gi / 100.0
+            plans = {l["hip"]: plan_leg(l, s0, g0) for l in S["limbs"]}
+            if any(p is None for p in plans.values()):
+                continue
+            key = (max(p[0][0] for p in plans.values()), max(p[0][1] for p in plans.values()))
+            if best is None or key < best[0]:
+                best = (key, s0, g0, {h: p[1] for h, p in plans.items()})
+    _key, s0, g0, plans = best
+    X = max(p["land"] for p in plans.values())
+    first = min(min(p["lift"], p["t0"]) for p in plans.values())
+
+    def cyc(keys, p):
+        p %= 1.0
+        xs = [k[0] for k in keys]
+        i = max(0, min(bisect.bisect_right(xs, p) - 1, len(keys) - 2))
+        a, b = keys[i], keys[i + 1]
+        u = (p - a[0]) / max(1e-9, b[0] - a[0])
+        return [a[j] + (b[j] - a[j]) * u for j in range(1, len(a))]
+
+    def track(tracks, name, p):
+        spec = tracks.get(name)
+        if spec is None:
+            return None
+        keys, ph = spec if isinstance(spec, tuple) and len(spec) == 2 and not isinstance(spec[0], (int, float)) else (spec, 0.0)
+        return cyc(keys, p + ph)
+
+    legs = {j for l in S["limbs"] for j in (l["hip"], l["knee"], l.get("ankle")) if j}
+    others = sorted((set(S["tracks"]) | set(R["tracks"])) - legs)
+    n = int(math.ceil(X * 2.0))
+    rows = {name: [] for name in sorted(legs) + others}
+    body = []
+    for i in range(n + 1):
+        x = X * i / n
+        w = smooth((x - first) / max(1e-6, X - first))
+        sb, rb = cyc(S["body"], s0 + x / s_stride), cyc(R["body"], g0 + x / r_stride)
+        dz, pitch = (1.0 - w) * sb[2] + w * rb[2], (1.0 - w) * sb[4] + w * rb[4]
+        feet = {}
+        for l in S["limbs"]:
+            p = plans[l["hip"]]
+            if x < min(p["t0"], p["lift"]):
+                feet[l["hip"]] = l["foot"](s0 + x / s_stride)
+            elif x < p["lift"]:
+                feet[l["hip"]] = (p["y0"] - (x - p["t0"]), l["at"][2][2], True)   # still planted, going back with the ground
+            elif x < p["land"]:
+                feet[l["hip"]] = swing(l, p, x)
+            else:
+                feet[l["hip"]] = by_hip[l["hip"]]["foot"](g0 + x / r_stride)
+        if w > 0.0:
+            c, sn = math.cos(math.radians(pitch)), math.sin(math.radians(pitch))
+            for l in S["limbs"]:
+                y, z, down = feet[l["hip"]]
+                ks, kr = l["span"][0 if down else 1], by_hip[l["hip"]]["span"][0 if down else 1]
+                if ks is None or kr is None:
+                    continue
+                h3, k3, e3 = l["at"]
+                span = ((1.0 - w) * ks + w * kr) * (math.hypot(k3[1] - h3[1], k3[2] - h3[2]) + math.hypot(e3[1] - k3[1], e3[2] - k3[2]))
+                hy, hz = h3[1] * c - h3[2] * sn, h3[1] * sn + h3[2] * c
+                dz = min(dz, z + math.sqrt(max(0.0, span * span - (hy - y) ** 2)) - hz)
+        body.append((round(i / n, 5), 0.0, 0.0, round(dz, 3), 0.0, round(pitch, 3), 0.0))
+        for l in S["limbs"]:
+            y, z, _down = feet[l["hip"]]
+            a, b, c3 = _limb_angles(by_hip[l["hip"]], _to_body(y, z, 0.0, dz, pitch), pitch)
+            rows[l["hip"]].append((round(i / n, 5), round(a, 3)))
+            rows[l["knee"]].append((round(i / n, 5), round(b, 3)))
+            if l.get("ankle"):
+                rows[l["ankle"]].append((round(i / n, 5), round(c3, 3)))
+        for name in others:
+            a, b = track(S["tracks"], name, s0 + x / s_stride), track(R["tracks"], name, g0 + x / r_stride)
+            v = [(1.0 - w) * (a[j] if a else 0.0) + w * (b[j] if b else 0.0) for j in range(len(a or b))]
+            rows[name].append(tuple([round(i / n, 5)] + [round(u, 3) for u in v]))
+    return {"from": s0, "to": g0, "length": X, "tracks": rows, "body": body}
 
 
 def _loop(r, t0, t1, duration, back=26.0, run=16.0, steps=16):

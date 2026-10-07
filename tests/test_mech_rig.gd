@@ -679,11 +679,48 @@ func test_steering_eases_in_and_a_gait_starts_in_another() -> void:
 	assert_true(rig.start_weight() > 0.99, "barely moving, it trots (%f of it)" % rig.start_weight())
 	for i in range(30):
 		rig.drive(66.0, 0.0, 0.0, 1.0 / 60.0)
-	assert_true(rig.start_weight() > 0.99, "at full speed it still trots its first stride (the twenty-first notes; %f)" % rig.start_weight())
-	for i in range(90):
+	assert_true(rig.changing(), "at full speed off the mark it plays the stride it changes gait in (the twenty-second notes)")
+	for i in range(150):
 		rig.drive(66.0, 0.0, 0.0, 1.0 / 60.0)
-	assert_true(rig.start_weight() < 0.01, "then it gallops (%f trot)" % rig.start_weight())
+	assert_true(not rig.changing() and rig.start_weight() < 0.01, "then it gallops (%f trot)" % rig.start_weight())
 	pair[1].free()
+
+
+## The most each leg joint turns in a frame over `frames` frames of a run from a standstill
+## to 66 units a second over 1.4 s, counted from `after`.
+func _leg_turns(rig: MechRig, frames: int, after: int) -> Dictionary:
+	rig.top_speed = 66.0
+	var out := {}
+	var last := {}
+	for i in range(frames):
+		rig.drive(minf(66.0, 66.0 * i / 60.0 / 1.4), 0.0, 0.0, 1.0 / 60.0)
+		for l in ["fl", "fr", "hl", "hr"]:
+			for j in ["hip_", "knee_", "ankle_"]:
+				var v := (rig._gait_rot.get(j + l, Vector3.ZERO) as Vector3).x
+				if i > after and last.has(j + l):
+					out[j + l] = maxf(float(out.get(j + l, 0.0)), absf(v - float(last[j + l])))
+				last[j + l] = v
+	return out
+
+
+func test_changing_gait_never_flicks_a_leg() -> void:
+	# Ryan, 7 October, the twenty-second notes: off the mark the Clydesdale's trot crossfaded into
+	# its gallop wherever each leg was, and a hoof's third step came out fast and short. Its
+	# change of gait is now a stride worked out foot by foot, so no leg joint turns faster in a
+	# frame than the faster of its two gaits run steadily at that pace.
+	var pair := _rig_for("clydesdale", 2)
+	var start := _leg_turns(pair[0], 240, 0)
+	pair[1].free()
+	pair = _rig_for("clydesdale", 2)
+	var gallop := _leg_turns(pair[0], 360, 240)
+	pair[1].free()
+	pair = _rig_for("clydesdale", 2)
+	(pair[0] as MechRig).use_gait((pair[0] as MechRig).gait_options["trot"])
+	var trot := _leg_turns(pair[0], 360, 120)
+	pair[1].free()
+	for name in start.keys():
+		var most := maxf(float(gallop[name]), float(trot[name]))
+		assert_true(float(start[name]) <= most * 1.05, "%s turns at most %.1f degrees a frame setting off (%.1f; the gaits %.1f and %.1f)" % [name, most, start[name], gallop[name], trot[name]])
 
 
 func test_turning_in_place_steps_the_legs_round_and_nothing_banks_standing() -> void:

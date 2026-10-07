@@ -60,11 +60,12 @@ const STEER_EASE := 0.12      # seconds a steered joint (a knuckle, a nacelle) t
 # the turn counts toward the gait's travel as though each foot went round a circle PIVOT_STEP
 # of a stride across, never faster than PIVOT_CAP of its own full speed (the twenty-first
 # notes: some stepped round faster than they walk, which read as skating; 0.5 and no cap
-# before), fading out as the machine gathers PIVOT_FADE units a second of its own; a turn
+# before; the twenty-second: 0.4 was too slow, up to three quarters), fading out as the
+# machine gathers PIVOT_FADE units a second of its own; a turn
 # slower than PIVOT_MIN radians a second is a settle, not a step. Nothing banks standing: the
 # bank comes in with BANK_SPEED units a second.
 const PIVOT_STEP := 0.35
-const PIVOT_CAP := 0.4
+const PIVOT_CAP := 0.75
 const PIVOT_FADE := 20.0
 const PIVOT_MIN := 0.15
 const BANK_SPEED := 37.5
@@ -82,8 +83,12 @@ var model: Node3D = null           # the glTF's root
 var body: Node3D = null            # the node a body track moves (the model root unless told otherwise)
 var gait: Dictionary = {}          # the sidecar's gait: how this machine moves (see drive)
 var gait_options: Dictionary = {}  # other ways it could move, built beside it for judging (b.gait_option); the game uses one only as a gait's start
-var _start_gait: Dictionary = {}   # the gait it starts and stops in, when its gait names one: {"gait", "curves", "below", "full", "hold"}
-var _travel := 0.0                 # model units travelled since it last stood still (a start gait's hold)
+var _start_gait: Dictionary = {}   # the gait it starts and stops in, when its gait names one: {"gait", "curves", "below", "full"}, and the stride it changes in: "from", "to" and "handoff" (a gait whose stride is its length)
+var _travel := 0.0                 # model units travelled since it last stood still
+var _start_offset := 0.0           # model units added to the travel for the start gait's phase (it sets off at its handoff's "from")
+var _main_offset := 0.0            # and for the gait's own (at the handoff's "to" as it sets off)
+var _handoff_at := 0.0             # the travel (`_dist`) the stride it changes in counts from
+var _handing := false              # whether it is rolling and the handoff counts (false standing)
 var spinners: Dictionary = {}      # joint -> [idle, moving] degrees a second: turned without end on its own axis (b.spin: the Stingray's fans)
 var _spun: Dictionary = {}         # joint -> degrees turned so far, wrapped
 var debug: String = ""             # RIFTGATE_ACTS_DEBUG, read at setup
@@ -371,11 +376,23 @@ func use_gait(g: Dictionary) -> void:
 	# A gait may start and stop in another (Ryan, 7 October, the nineteenth notes: the
 	# Clydesdale took off straight into its gallop): `start` names one of the options, moved by
 	# wholly under `below` of its full speed, by its own gait over `full`, crossfading between.
+	# Its handoff (the twenty-second notes) sets it off in that gait at `from` and plays the
+	# stride it changes in, worked out foot by foot over `length` units, into its own at `to`.
 	_start_gait = {}
+	_main_offset = 0.0
+	_start_offset = 0.0
+	_handing = false
 	var st: Variant = gait.get("start", {})
 	if st is Dictionary and gait_options.get(str(st.get("option", "")), null) is Dictionary:
 		var opt: Dictionary = gait_options[str(st["option"])]
-		_start_gait = {"gait": opt, "curves": _cycle_curves(opt), "below": float(st.get("below", 0.3)), "full": float(st.get("full", 0.8)), "hold": float(st.get("hold", 0.0))}
+		_start_gait = {"gait": opt, "curves": _cycle_curves(opt), "below": float(st.get("below", 0.3)), "full": float(st.get("full", 0.8))}
+		var h: Variant = st.get("handoff", {})
+		if h is Dictionary and float((h as Dictionary).get("length", 0.0)) > 0.0:
+			var change := {"stride": float(h["length"]), "ease": "linear", "tracks": h.get("tracks", {}), "body": h.get("body", [])}
+			change["curves"] = _once_curves(change)
+			_start_gait["from"] = float(h.get("from", 0.0))
+			_start_gait["to"] = float(h.get("to", 0.0))
+			_start_gait["handoff"] = change
 
 
 ## The cyclic curves of a gait's tracks and body.
@@ -387,6 +404,18 @@ func _cycle_curves(g: Dictionary) -> Dictionary:
 		out[name] = cycle_curve((cycles[name] as Dictionary).get("keys", []), ease)
 	if not g.get("body", []).is_empty():
 		out[BODY] = cycle_curve(g["body"], ease)
+	return out
+
+
+## The stride a gait changes in as curves: once through, its first key the start gait's pose
+## and its last the gait's own, never wrapping (cycle_curve would read its end as its start).
+func _once_curves(g: Dictionary) -> Dictionary:
+	var out := {}
+	var tracks: Dictionary = g.get("tracks", {})
+	for name in tracks.keys():
+		out[name] = curve((tracks[name] as Dictionary).get("keys", []), 1.0, "linear")
+	if not g.get("body", []).is_empty():
+		out[BODY] = curve(g["body"], 1.0, "linear")
 	return out
 
 
@@ -444,6 +473,7 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 	_tilt = Vector2.ZERO
 	_steer.clear()
 	_travel = 0.0
+	_handing = false
 	_drift = 0.0
 	_current = {}
 	_curves = {}
@@ -722,9 +752,16 @@ func drive(speed: float, aim: float, turn: float, delta: float) -> void:
 	moving = speed > 0.5 or pivot > 0.0
 	var target := 1.0 if moving else 0.0
 	var rate := MOVE_BLEND_IN if moving else MOVE_BLEND_OUT
+	var stood := _blend < 0.05   # the gait not yet showing as this frame begins
 	_blend = move_toward(_blend, target, delta / rate)
 	_dist += (_speed + pivot) * delta
-	_travel = _travel + _speed * delta if speed > 0.5 or _speed > 0.5 else 0.0
+	if speed > 0.5 or _speed > 0.5:
+		if _travel <= 0.0:
+			_set_off(stood)
+		_travel += _speed * delta
+	else:
+		_travel = 0.0
+		_handing = false
 	var bank_want := float(move.get("bank", 0.0)) * clampf(-turn / BANK_TURN, -1.0, 1.0) * clampf(_speed / BANK_SPEED, 0.0, 1.0)   # a left turn drops the left wing: roll negative
 	_bank = lerpf(_bank, bank_want, 1.0 - exp(-delta / 0.3))
 	# A helicopter's tilt: it leans into its travel by its speed, nose down going forward,
@@ -751,27 +788,48 @@ func drive(speed: float, aim: float, turn: float, delta: float) -> void:
 	_pose()
 
 
-## How much of its moving is the gait it starts and stops in, by its share of its full speed:
-## 1 under the start's `below`, 0 over its `full` (0 for a gait that names none); and held
-## for the start's `hold` of its strides from a standstill, fading over half a stride more
-## (Ryan, 7 October, the twenty-first notes: a quick machine is past half its speed within a
-## fifth of a stride, so the speed alone held the trot for half a step).
+## Setting off from a standstill with a start gait that hands over: the start gait set to its
+## handoff's moment, when it is not yet showing (a machine that stepped round on the spot
+## first keeps its step, and the change counts from that moment of its stride nearest now),
+## and the gait's own phase set to meet the change's end.
+func _set_off(stood: bool) -> void:
+	if not _start_gait.has("handoff"):
+		return
+	var s := maxf(1.0, float((_start_gait["gait"] as Dictionary).get("stride", 40.0)))
+	if stood:
+		_start_offset = float(_start_gait["from"]) * s - _dist
+		_handoff_at = _dist
+	else:
+		var past := fposmod((_dist + _start_offset) / s - float(_start_gait["from"]) + 0.5, 1.0) - 0.5
+		_handoff_at = _dist - past * s
+	_main_offset = float(_start_gait["to"]) * maxf(1.0, float(gait.get("stride", 40.0))) - _handoff_at
+	_handing = true
+
+
+## How much of its moving is the gait it starts and stops in, by its share of its full
+## speed: 1 under the start's `below`, 0 over its `full` (0 for a gait that names none); and
+## wholly that gait standing, and off the mark until the stride it changes in begins.
 func start_weight() -> float:
 	if _start_gait.is_empty():
 		return 0.0
-	var by_speed := 1.0 - smoothstep(float(_start_gait["below"]), float(_start_gait["full"]), _speed / maxf(1.0, top_speed))
-	var stride := maxf(1.0, float((_start_gait["gait"] as Dictionary).get("stride", 40.0)))
-	var hold := float(_start_gait["hold"]) * stride
-	var by_way := 1.0 - smoothstep(hold, hold + 0.5 * stride, _travel) if hold > 0.0 else 0.0
-	return maxf(by_speed, by_way)
+	if _start_gait.has("handoff") and (not _handing or _dist < _handoff_at):
+		return 1.0
+	return 1.0 - smoothstep(float(_start_gait["below"]), float(_start_gait["full"]), _speed / maxf(1.0, top_speed))
 
 
-## A gait's cycles at `weight` (its tracks and its body's bob, each at its stride's phase), added
-## to the gait's joints and to `body` ([slide, turn]).
-func _add_cycles(g: Dictionary, curves: Dictionary, weight: float, body_out: Array) -> void:
+## Whether the stride a machine changes gait in is playing (the twenty-second notes): from
+## its handoff's start to its length, after which the gait's own cycle takes over where the
+## change ends.
+func changing() -> bool:
+	return _handing and _start_gait.has("handoff") and _dist >= _handoff_at and _dist - _handoff_at < float(_start_gait["handoff"]["stride"])
+
+
+## A gait's cycles at `weight` (its tracks and its body's bob, each at its stride's phase,
+## `offset` units on), added to the gait's joints and to `body` ([slide, turn]).
+func _add_cycles(g: Dictionary, curves: Dictionary, weight: float, offset: float, body_out: Array) -> void:
 	if weight <= 0.0:
 		return
-	var phase := fposmod(_dist / maxf(1.0, float(g.get("stride", 40.0))), 1.0)
+	var phase := fposmod((_dist + offset) / maxf(1.0, float(g.get("stride", 40.0))), 1.0)
 	var k := _blend * weight
 	var tracks: Dictionary = g.get("tracks", {})
 	for name in tracks.keys():
@@ -808,11 +866,15 @@ func _evaluate_gait(aim: float, turn: float) -> void:
 	_gait_slide.clear()
 	# The cycles: a walk, stride by stride, and the gait it starts and stops in by its share
 	# of the speed (use_gait), each at its own stride's phase.
+	# Off the mark, the stride it changes gait in plays in place of its own (use_gait).
 	var start_w := start_weight()
 	var cyc_body := [Vector3.ZERO, Vector3.ZERO]   # the body's (slide, turn) from the cycles
-	_add_cycles(gait, _gait_curves, 1.0 - start_w, cyc_body)
+	if changing():
+		_add_cycles(_start_gait["handoff"], _start_gait["handoff"]["curves"], 1.0 - start_w, -_handoff_at, cyc_body)
+	else:
+		_add_cycles(gait, _gait_curves, 1.0 - start_w, _main_offset, cyc_body)
 	if start_w > 0.0:
-		_add_cycles(_start_gait["gait"], _start_gait["curves"], start_w, cyc_body)
+		_add_cycles(_start_gait["gait"], _start_gait["curves"], start_w, _start_offset, cyc_body)
 	# Wheels spin by their radius, forward a negative pitch, and never unwind.
 	var wheels: Dictionary = gait.get("wheels", {})
 	for name in wheels.keys():

@@ -26,7 +26,7 @@ const GAP_MIN = 2.5, GAP_MAX = 6.5, GAP_DEBUG = 0.4;
 const MOVE_REF_SPEED = 150.0, MOVE_BLEND_IN = 0.25, MOVE_BLEND_OUT = 0.35;
 const ROCK_ACCEL = 200.0, BANK_TURN = 1.2, DRIFT_UNITS = 12.0;
 const STEER_EASE = 0.12;   // MechRig: seconds a steered joint takes to follow the turn, its servo
-const PIVOT_STEP = 0.35, PIVOT_CAP = 0.4, PIVOT_FADE = 20.0, PIVOT_MIN = 0.15, BANK_SPEED = 37.5;   // MechRig: turning in place steps the legs round, never faster than PIVOT_CAP of its speed (the twenty-first notes); nothing banks standing (the twentieth)
+const PIVOT_STEP = 0.35, PIVOT_CAP = 0.75, PIVOT_FADE = 20.0, PIVOT_MIN = 0.15, BANK_SPEED = 37.5;   // MechRig: turning in place steps the legs round, never faster than PIVOT_CAP of its speed (the twenty-first notes; three quarters in the twenty-second); nothing banks standing (the twentieth)
 const HEFT_DEFAULT = 0.12, DAMPING = 0.7, STEP = 1 / 60;   // the servos (MechRig._follow) and the longest step anything advances by
 const SLIDE_RATE_SNAP = 12.0, SLIDE_RATE_FULL = 2.2, STRAFE_TURN_RATE = 6.0, REST_TURN_RATE = 4.0;   // Map3D
 const OVERSTEER_AHEAD = 0.4, OVERSTEER_GAIN = 1.4, OVERSTEER_MAX = 1.45, OVERSTEER_RATE = 7.0, OVERSTEER_WINDOW = 0.5;   // Map3D: the nose leads the path into a corner, from the heading a moment ahead
@@ -44,7 +44,7 @@ const oversteerLead = (turnAhead, over) => oversteerMax(over) * Math.tanh(turnAh
 // a corner's start never jolts the nose. Returns [facing, turn rate].
 const TURN_RATE_MAX = 5.0, TURN_ACCEL_MAX = 30.0;   // Map3D: the turn rate and its change, capped
 const SETOFF_S = 0.5;   // Map3D: a move's set-off eases the aim from the facing it stood at onto the path (setoff_aim)
-const SETOFF_TURN_BASE = 0.6, SETOFF_TURN_PER_ACCEL = 0.4, SETOFF_ROLL = 0.75;   // Map3D: it turns onto its way first, rolling off as the turn finishes (the twentieth notes)
+const SETOFF_TURN_BASE = 0.85, SETOFF_TURN_PER_ACCEL = 0.55, SETOFF_ROLL = 0.75;   // Map3D: it turns onto its way first, rolling off as the turn finishes (the twentieth notes; two fifths slower in the twenty-second)
 const setoffTurn = (angle, accel) => (SETOFF_TURN_BASE + SETOFF_TURN_PER_ACCEL * accel) * Math.sqrt(Math.abs(angle) / (Math.PI / 3));
 const setoffAim = (from, t, want, dur = SETOFF_S) => { const u = clamp(t / Math.max(0.05, dur), 0, 1); return from + wrapPi(want - from) * u * u * u * (u * (6 * u - 15) + 10); };
 function turnToward(facing, vel, want, rate, dt) {
@@ -96,6 +96,13 @@ function cycleCurve(keys, ease = "smooth") {
   const n = rows.length, pts = [];
   for (let i = -2; i < n + 2; i++) { const r = rows[fposmod(i, n)].slice(); r[0] += Math.floor(i / n); pts.push(r); }
   return through(pts, ease);
+}
+// MechRig._once_curves: the stride a gait changes in, once through, never wrapping.
+function onceCurves(g) {
+  const out = {};
+  for (const [name, tr] of Object.entries(g.tracks || {})) out[name] = curve(tr.keys || [], 1, "linear");
+  if ((g.body || []).length) out["@body"] = curve(g.body, 1, "linear");
+  return out;
 }
 // MechRig._cycle_curves: the cyclic curves of a gait's tracks and its body.
 function cycleCurves(g) {
@@ -213,7 +220,15 @@ class Rig {
     this.gaitCurves = cycleCurves(this.gait);
     // MechRig.use_gait: a gait may start and stop in one of the options (the nineteenth notes)
     const st = this.gait.start, opt = st && this.gaitOptions[st.option];
-    this.startGait = opt ? {gait: opt, curves: cycleCurves(opt), below: st.below ?? 0.3, full: st.full ?? 0.8, hold: st.hold ?? 0} : null;
+    this.startGait = opt ? {gait: opt, curves: cycleCurves(opt), below: st.below ?? 0.3, full: st.full ?? 0.8} : null;
+    // and set off in it at `from`, playing the stride it changes in once into its own at `to` (the twenty-second notes)
+    const h = st && st.handoff;
+    if (opt && h && h.length > 0) {
+      const change = {stride: h.length, ease: "linear", tracks: h.tracks || {}, body: h.body || []};
+      change.curves = onceCurves(change);
+      Object.assign(this.startGait, {from: h.from || 0, to: h.to || 0, handoff: change});
+    }
+    this.startOffset = 0; this.mainOffset = 0; this.handing = false;
   }
   random() { this.seed = (this.seed * 1103515245 + 12345) % 2147483648; return this.seed / 2147483648; }
   alive() { return this.acts.length > 0 || this.strikes.length > 0 || !!this.current || Object.keys(this.servo).length > 0 || Object.keys(this.spinners).length > 0; }
@@ -392,9 +407,13 @@ class Rig {
     this.accel = lerp(this.accel, (this.speed - prev) / delta, 1 - Math.exp(-delta / 0.15));
     const pivot = Math.abs(turn) > PIVOT_MIN ? Math.min(Math.abs(turn) * PIVOT_STEP * Math.max(1, this.gait.stride || 40), PIVOT_CAP * (this.topSpeed || MOVE_REF_SPEED)) * (1 - clamp(this.speed / PIVOT_FADE, 0, 1)) : 0;
     this.moving = speed > 0.5 || pivot > 0;
+    const stood = this.blend < 0.05;   // the gait not yet showing as this frame begins
     this.blend = moveToward(this.blend, this.moving ? 1 : 0, delta / (this.moving ? MOVE_BLEND_IN : MOVE_BLEND_OUT));
     this.dist += (this.speed + pivot) * delta;
-    this.travel = speed > 0.5 || this.speed > 0.5 ? (this.travel || 0) + this.speed * delta : 0;   // MechRig._travel: a start gait's hold
+    if (speed > 0.5 || this.speed > 0.5) {   // MechRig._travel: rolling since it last stood still
+      if (!(this.travel > 0)) this.setOff(stood);
+      this.travel = (this.travel || 0) + this.speed * delta;
+    } else { this.travel = 0; this.handing = false; }
     const mv = this.move;
     this.bank = lerp(this.bank, (mv.bank || 0) * clamp(-turn / BANK_TURN, -1, 1) * clamp(this.speed / BANK_SPEED, 0, 1), 1 - Math.exp(-delta / 0.3));
     if (Array.isArray(mv.tilt) && mv.tilt.length >= 2) {
@@ -409,6 +428,28 @@ class Rig {
     this.evaluateGait(aim, turn);
     this.pose();
   }
+  // MechRig._set_off: the start gait set to its handoff's moment when not yet showing (else the change counts from that moment nearest now), the gait's own to meet its end
+  setOff(stood) {
+    const st = this.startGait;
+    if (!st || !st.handoff) return;
+    const s = Math.max(1, st.gait.stride || 40);
+    if (stood) { this.startOffset = st.from * s - this.dist; this.handoffAt = this.dist; }
+    else this.handoffAt = this.dist - (fposmod((this.dist + this.startOffset) / s - st.from + 0.5, 1) - 0.5) * s;
+    this.mainOffset = st.to * Math.max(1, this.gait.stride || 40) - this.handoffAt;
+    this.handing = true;
+  }
+  // MechRig.start_weight: by its share of its speed; wholly the start gait standing and until the change begins
+  startWeight() {
+    const st = this.startGait;
+    if (!st) return 0;
+    if (st.handoff && (!this.handing || this.dist < this.handoffAt)) return 1;
+    return 1 - smoothstep(st.below, st.full, this.speed / Math.max(1, this.topSpeed || MOVE_REF_SPEED));
+  }
+  // MechRig.changing: the stride it changes gait in is playing
+  changing() {
+    const st = this.startGait;
+    return !!(this.handing && st && st.handoff && this.dist >= this.handoffAt && this.dist - this.handoffAt < st.handoff.stride);
+  }
   // MechRig.steer_soft: eased toward the joint's limit on its axis, never stopped at it hard
   steerSoft(name, raw) {
     const m = this.meta[name] || {}, lim = (m.limits || {})[m.axis || "yaw"];
@@ -420,10 +461,11 @@ class Rig {
     const g = this.gait, gr = {}, gs = {}, b = this.blend;
     const addRot = (name, v) => { gr[name] = add3(gr[name] || v3(), v); };
     let rot = v3(), slide = v3();
-    // MechRig._add_cycles: a gait's tracks and body bob at a weight, each at its own stride's phase
-    const cycles = (gg, curves, w) => {
+    // MechRig._add_cycles: a gait's tracks and body bob at a weight, each at its own stride's phase (`offset` units on)
+    const st = this.startGait;
+    const cycles = (gg, curves, w, offset) => {
       if (w <= 0) return;
-      const phase = fposmod(this.dist / Math.max(1, gg.stride || 40), 1), k = b * w;
+      const phase = fposmod((this.dist + offset) / Math.max(1, gg.stride || 40), 1), k = b * w;
       for (const [name, tr] of Object.entries(gg.tracks || {})) {
         if (!this.joints[name] || !curves[name]) continue;
         const v = curveAt(curves[name], fposmod(phase + (tr.phase || 0), 1));
@@ -435,11 +477,11 @@ class Rig {
         if (v.length >= 6) { slide = add3(slide, mul3(v3(v[0], v[1], v[2]), k)); rot = add3(rot, mul3(v3(v[4], v[3], v[5]), k)); }
       }
     };
-    // MechRig.start_weight: by its share of its speed, and held for `hold` of the start gait's strides from a standstill
-    const st = this.startGait, sStride = st ? Math.max(1, st.gait.stride || 40) : 1, hold = st ? st.hold * sStride : 0;
-    const startW = st ? Math.max(1 - smoothstep(st.below, st.full, this.speed / Math.max(1, this.topSpeed || MOVE_REF_SPEED)), hold > 0 ? 1 - smoothstep(hold, hold + 0.5 * sStride, this.travel || 0) : 0) : 0;
-    cycles(g, this.gaitCurves, 1 - startW);
-    if (startW > 0) cycles(st.gait, st.curves, startW);
+    // MechRig: off the mark, the stride it changes gait in plays in place of its own
+    const startW = this.startWeight();
+    if (this.changing()) cycles(st.handoff, st.handoff.curves, 1 - startW, -this.handoffAt);
+    else cycles(g, this.gaitCurves, 1 - startW, this.mainOffset || 0);
+    if (st && startW > 0) cycles(st.gait, st.curves, startW, this.startOffset || 0);
     for (const [name, r] of Object.entries(g.wheels || {})) if (this.joints[name]) addRot(name, v3(-fposmod(this.dist / Math.max(0.1, r) / D2R, 360), 0, 0));
     // MechRig: steering about each joint's own axis (a knuckle yaws, the Goshawk's nacelles pitch: the eighteenth notes)
     for (const name of Object.keys(g.steer || {})) if (this.joints[name]) { const a = (this.steerVal[name] || 0) * b, ax = Math.max(0, AXES.indexOf((this.meta[name] || {}).axis || "yaw")); addRot(name, v3(ax === 0 ? a : 0, ax === 1 ? a : 0, ax === 2 ? a : 0)); }
