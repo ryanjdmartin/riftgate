@@ -93,7 +93,7 @@ def mid(x):
     return F.sat(y / (np.max(np.abs(y)) + 1e-9) * 1.2, 1.5)
 
 
-def tame_plosives(y, split=1800.0, win=0.003, thr=0.06, ratio=0.1, release=0.03):   # searched 7 October: the plosives' lead over the body from 8 and 14 dB to 0.5 and 4
+def tame_plosives(y, split=1500.0, win=0.003, thr=0.03, ratio=0.05, release=0.04):   # searched 7 October, then pushed harder on Ryan's word (the first setting was not much of a change)
     """Duck the high band where its short envelope leaps: the T's and D's. The gain falls to
     `ratio` of the overshoot at once and recovers over `release`."""
     low = F.lp(y, split, order=3)
