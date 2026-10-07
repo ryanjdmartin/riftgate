@@ -148,9 +148,10 @@ def render(voice, text, scale=LENGTH_SCALE):
         if w.getnchannels() > 1:
             x = x.reshape(-1, w.getnchannels()).mean(axis=1)
     x = resample(x, sr)
-    # the trim keeps a soft voiced consonant at the front (Ryan: "get wrecked" lost its g)
-    idx = np.where(np.abs(x) > 0.0015)[0]
-    a, b = max(0, idx[0] - F.n_of(0.08)), min(len(x), idx[-1] + F.n_of(0.08))
+    # the trim keeps a soft consonant at the front: a lower threshold and more room, since
+    # "get wrecked" lost its g and "so it begins" its s at the first setting (Ryan, 7 October)
+    idx = np.where(np.abs(x) > 0.0004)[0]
+    a, b = max(0, idx[0] - F.n_of(0.14)), min(len(x), idx[-1] + F.n_of(0.08))
     return x[a:b]
 
 
