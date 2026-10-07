@@ -600,7 +600,7 @@ func _draw_frame(hud: Color) -> void:
 			draw_string(font, Vector2(lx, y + 5.0), label, HORIZONTAL_ALIGNMENT_LEFT, -1, FRAME_FONT, fc)
 		for y in [top, bottom]:
 			draw_line(Vector2(sx, y), Vector2(sx + 18.0 * dir, y), fc, 2.0)
-	_readout(font, Vector2(FRAME_SIDE + 8.0, top + 19.0), "SEC %02d // GRID %dx%d // RECON" % [map.map_seed % 100, map.width, map.height - BattleMap.GATE_ROWS], fc)
+	_readout(font, Vector2(FRAME_SIDE + 8.0, top + 19.0), "SEC %02d // %s // RECON" % [map.map_seed % 100, BattleMap.KINDS[map.kind]["name"]], fc)
 	_readout(font, Vector2(FRAME_SIDE + 8.0, bottom - 8.0), "CARE // PROJECTOR LINE", fc)
 
 

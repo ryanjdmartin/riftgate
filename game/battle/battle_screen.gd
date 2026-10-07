@@ -139,7 +139,7 @@ func _start_music() -> void:
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks).
 ## RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,baboon overrides the team; RIFTGATE_FACTION picks
-## the enemy.
+## the enemy; RIFTGATE_MAP_KIND=rubble picks the map's type (BattleMap.KINDS).
 static func _default_battle() -> Battle:
 	var db := ContentDB.load_default()
 	var b := Battle.new(7)
@@ -154,6 +154,9 @@ static func _default_battle() -> Battle:
 	var fac := OS.get_environment("RIFTGATE_FACTION")
 	if fac.is_empty() or not db.factions.has(fac):
 		fac = db.default_faction()
+	var kind := OS.get_environment("RIFTGATE_MAP_KIND")
+	if BattleMap.KINDS.has(kind):
+		b.map_kind = kind
 	b.setup(team, fac)
 	return b
 

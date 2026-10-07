@@ -121,11 +121,13 @@ godot --headless --path . -s tools/export_vocabulary.gd
 # --trace "sparrowhawk|brute x4|greedy|3" plays that one fight and prints its log instead.
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
 
-# the map survey: 200 generated maps at the game's 7x20, measuring the water (share, bodies,
-# which feature), the horde's narrowest crossing and what the guarantee opened, and the phases
-# each way of moving takes to the rift at move 30; written to docs/map_survey.md (under a
-# minute). --seeds N, --move M, --w/--h for another size; --show SEED prints one map as text.
-perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/map_survey.gd -- --seeds 200
+# the map survey: 200 generated maps at the game's 7x20, measuring each ground's share, the
+# water (bodies, which feature), the horde's narrowest crossing and what the guarantee opened,
+# the phases each way of moving takes to the rift at move 30 and its reach after two phases,
+# then every map type compared; written to docs/map_survey.md (a few minutes). --type KIND
+# (mixed, steppe, rubble, badlands, flooded: BattleMap.KINDS) for the detailed report, --seeds N,
+# --move M, --w/--h for another size; --show SEED prints one map as text.
+perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/map_survey.gd -- --seeds 200
 
 # the campaign runner: whole runs played headless by a plain player (it defends the front
 # nearest to falling, hunts the nearest enemy on the map, fights at the greedy rung), measuring
@@ -139,6 +141,7 @@ perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run
 # enemyturn, withdraw, rounds, logfull, killed, acquire, menu, settings, quit, and the feed's
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
 # and groundtear (the corrupted side's tear as it fires).
+# RIFTGATE_MAP_KIND=rubble (any standalone battle run) picks the map's type; the harness has a picker.
 # Battle: select, route, draft and draftslow (a route drawn by hand, its move gauge spent or
 # stopped by a slow hex), hold, north, zoom, zoomlast,
 # flyer, predict, resolve, contact, engage, codex, foecodex, menu, settings, tune, and
