@@ -365,8 +365,8 @@ rhythm first in one dry voice; the modal shell, a plate and a glass tapped or bo
 principle the same day, pulse for the hand and targeting, the shell for the body and the menus, the boop's
 warning and menu figures and the voice on real words from the parked set; the console assembled to those
 verdicts (`assembled_sketches.py`) read as monotone (4 October), so nothing plays alone now; the
-eight profiles he liked are a palette (`palette_sketches.py`, in its eleventh cut to his notes of 5 to 7 October, every under-layer levelled by measurement from its rider, the general rule's start 1.5 dB under, per-row
-leads where Ryan judged them:
+eight profiles he liked are a palette (`palette_sketches.py`, in its eleventh cut to his notes of 5 to 7 October, every under-layer levelled by measurement from its rider, the general rule's start 5 dB under, per-row
+leads where Ryan judged them, the map's acquire in two alignments to choose from:
 the die in the glass register alone, a hover hum easing in before a spend with no boop on the spend,
 soft digital clicks on the lock, the end of the turn the plate swelling and tailing off, the boops leading
 wherever they ride on glass, one sound for a press, a menu item and a selection, and the map's acquire,
