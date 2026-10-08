@@ -314,7 +314,7 @@ func report() -> String:
 			var m := maxi(1, int(e["n"]))
 			L.append("| %s | %d | %d%% | %d%% | %d%% | %.2f |" % [k, int(e["n"]), 100 * int(e["won"]) / m, 100 * int(e["fell"]) / m, 100 * int(e["wiped"]) / m, float(e["lost"]) / m])
 	L.append("")
-	# The fights: who the engagement zones actually put in them.
+	# The fights: who the rings and the attack range actually put in them.
 	var sizes: Array = []
 	for r in results:
 		sizes.append_array(r["fight_sizes"])
@@ -333,7 +333,7 @@ func report() -> String:
 		packs_in[pk][1] += 1 if f[3] else 0
 	L.append("## The fights")
 	L.append("")
-	L.append("%d fights. The engagement zones decide who is in a fight, so a fight need not hold the whole squad; this bot sends every machine at the nearest enemy, so it bunches, and a player who splits lanes fights more fights with fewer machines in each. Machines in the fight of machines on the field, then machines against packs, each with the fight's win rate." % sizes.size())
+	L.append("%d fights. A fight holds the machines committed (those whose attack range covers the pack attacked) and every pack whose ring covers it, so a fight need not hold the whole squad; this bot walks every machine toward its nearest enemy and attacks the pack the most of them can reach, so it bunches, and a player who splits the team fights more fights with fewer machines in each. Machines in the fight of machines on the field, then machines against packs, each with the fight's win rate." % sizes.size())
 	L.append("")
 	L.append("| In the fight | Fights | Won |")
 	L.append("|---|---|---|")

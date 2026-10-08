@@ -20,7 +20,7 @@ extends RefCounted
 enum State { PLAN, SKIRMISH, DONE }
 enum Outcome { NONE, VICTORY, GATE_FALLEN, WRECKED }
 
-const DEFAULT_WIDTH := 7
+const DEFAULT_WIDTH := 9   # nine wide, the thumb's limit, so four machines can split two and two (bible section 4, the round row)
 const DEFAULT_HEIGHT := 20
 
 var seed_value: int = 1

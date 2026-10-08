@@ -4,9 +4,8 @@ extends RefCounted
 ## Plays a whole battle headless, for the runner (6 October; the per-battle measures the
 ## economy waits on, bible section 10). The map layer is one plain rule, in the redesigned
 ## round (bible section 4): first every fight a hunter forced, with every machine that can
-## join; then each machine with an action left, in roster order, walks toward the nearest
-## enemy, pack or boss, and attacks the nearest one in its range with every machine that can
-## join. Every fight is played by `Policy` at the rung given. It is a floor, not a player:
+## join; then every machine with an action left walks toward its nearest enemy, pack or boss,
+## and the pack the most machines can reach is attacked with all of them. Every fight is played by `Policy` at the rung given. It is a floor, not a player:
 ## nothing here guards the gate, splits a formation or picks a fight, so read what it loses
 ## as the cost of not thinking on the map.
 
@@ -46,39 +45,47 @@ func play(b: Battle) -> int:
 	return b.outcome
 
 
-## One player's turn: the forced fights, then every machine's move and attack.
+## One player's turn: the forced fights; then every machine with an action left walks toward
+## its nearest enemy, and the pack the most machines can reach is attacked with all of them,
+## again while any pack is in reach; a tireless machine's second action goes round again.
 func take_turn(b: Battle) -> void:
 	var guard := 0
 	while not b.forced.is_empty() and b.state == Battle.State.PLAN and guard < 16:
 		guard += 1
 		var r := b.roster()
 		_fight(b, b.attack(null, r.get("eligible", [])))
-	var acted := true
 	guard = 0
-	while acted and b.state == Battle.State.PLAN and guard < 16:
+	while b.state == Battle.State.PLAN and guard < 8:
 		guard += 1
-		acted = false
+		if b.field.packs().is_empty():
+			return
 		for m in b.mechs():
-			if b.state != Battle.State.PLAN:
-				return
-			if b.actions_left(m) <= 0 or not b.field.units.has(m):
+			if not b.can_move(m):
 				continue
-			var enemies: Array[Unit] = b.field.packs()
-			if enemies.is_empty():
-				return
-			var target := _nearest(m.pos, enemies)
+			var target := _nearest(m.pos, b.field.packs())
 			if Battlefield.unit_distance(m, target) > m.attack_range:
 				_close_on(b, m, target)
-			var in_range: Array[Unit] = []
-			for e in enemies:
-				if Battlefield.unit_distance(m, e) <= m.attack_range:
-					in_range.append(e)
-			if in_range.is_empty():
-				continue
-			var aim := _nearest(m.pos, in_range)
-			var r := b.roster(aim)
-			_fight(b, b.attack(aim, r.get("eligible", [])))
-			acted = true
+		var fought := false
+		while b.state == Battle.State.PLAN:
+			var aim := _best_target(b)
+			if aim == null:
+				break
+			_fight(b, b.attack(aim, b.roster(aim).get("eligible", [])))
+			fought = true
+		if not fought:
+			return
+
+
+## The pack the most ready machines can reach, nearest the gate on a tie; null when none can.
+func _best_target(b: Battle) -> Unit:
+	var best: Unit = null
+	var best_n := 0
+	for p in b.field.packs():
+		var n := (b.roster(p).get("eligible", []) as Array).size()
+		if n > best_n:
+			best = p
+			best_n = n
+	return best
 
 
 ## Walk a machine to the hex it can reach nearest the target.

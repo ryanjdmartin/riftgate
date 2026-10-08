@@ -403,7 +403,8 @@ func _draw() -> void:
 	# Where every pack walks on the enemy's turn (bible section 4), from where the machines
 	# stand now, and every hunter's lock on its prey; nothing while a move plays or a fight is
 	# being set up or entered, when the fight's own marks have the map.
-	if _anim.is_empty() and attack.is_empty() and fight_group.is_empty():
+	# A fight a hunter forced comes first, so its marks have the map until it is fought.
+	if _anim.is_empty() and attack.is_empty() and fight_group.is_empty() and forced.is_empty():
 		for sq in field.packs():
 			var w: Battlefield.Walk = walks.get(sq.id, null)
 			if w == null:
@@ -492,8 +493,8 @@ func _draw() -> void:
 		for t in targets:
 			_zone_hexes(t, (t as Unit).pos, reach, _attack_reach())
 		for h in reach.keys():
-			_fill(h, Color(hud, 0.10))
-		_region_outline(reach, Color(hud, 0.85), 2.0)
+			_fill(h, Color(hud, 0.28))   # hot: on a phone every mark has come back wanting more
+		_region_outline(reach, hud, 3.0)
 		for j in attack.get("joins", []):
 			var ring: Dictionary = {}
 			_zone_hexes(j, (j as Unit).pos, ring)

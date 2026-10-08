@@ -971,7 +971,10 @@ func _fill_attack_panel() -> void:
 		b.font_size = 13
 		b.filled = on
 		b.ghost = not on
-		b.custom_minimum_size = Vector2(0, 40)
+		# Each toggle as wide as its name, the row shared out evenly (a HudButton has no
+		# minimum size of its own, so an unsized one collapses to nothing in a row).
+		b.custom_minimum_size = Vector2(maxf(140.0, 11.0 * float(b.text.length()) + 32.0), 40)
+		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		if m == r["pinned"]:
 			b.set_enabled(false)
 		commit.add_child(b)

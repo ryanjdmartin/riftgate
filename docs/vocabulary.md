@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 106 implemented, 7 planned, 0 idea.
+Status: 107 implemented, 8 planned, 0 idea.
 
 ## Resource
 
@@ -114,15 +114,16 @@ Status: 106 implemented, 7 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Movespeed** | Move in tens: how far a machine goes in a phase. A normal hex costs 10, so MOVE 40 is four hexes on open ground. Each way of moving calls each ground fast (5), normal (10) or slow: a slow hex can always be entered with any move left, and the step ends the move. Move left at the end of a phase is lost. | implemented |
-| **Intent** | Each pack commits its path when the round opens and the map shows it exactly: a pusher walks to the gate or the nearest city defense, an aggressive pack turns for a machine that ends inside its reach, a hunter chases the machine it has locked. Player routes resolve first. | implemented |
-| **Body block** | A pack stops at the first hex on its path occupied by a blocking unit. Flyers do not block; packs pass through their hex but never land on it. | implemented |
-| **Contact** | After all movement, every machine standing inside a pack's zone fights that pack. A machine inside two packs' zones joins their fights into one; that is the only way fights join. Multiple skirmishes resolve one at a time, in the order you choose. | implemented |
-| **Engagement zone** | Every pack has a zone, a radius in hexes around where it ends its move, drawn on the map before Resolve. Stand inside it and you fight that pack. Nothing else decides who fights: a pack stops only where a body stands in its path, and a machine beside its path is walked past unless the zone reaches it. | implemented |
-| **Behaviour** | Every pack commits its route when the round opens; the route you read is the route, and only a body in its path cuts it. A pusher walks it to the gate whatever you do. An aggressive pack does the same unless a machine ends inside its reach, the dashed ring: then it comes for the biggest catch it can make. A hunter locks one machine when it spawns, by its caveat (the nearest, weakest, strongest, slowest or fastest), wears the target rings on it, and chases wherever that machine ends until one of them is dead. | implemented |
+| **Movespeed** | Move in tens: how far a machine goes in an action. A normal hex costs 10, so MOVE 40 is four hexes on open ground. Each way of moving calls each ground fast (5), normal (10) or slow: a slow hex can always be entered with any move left, and the step ends the move. Move left at the end of a phase is lost. | implemented |
+| **Walk** | The map shows where every pack will walk on the enemy's turn, worked out from where your machines stand now: a pusher toward the gate, a hunter toward its prey. Packs go round your machines; nothing you do stops one, and nothing a pack does reacts to your plan. | implemented |
+| **Fight** | Tap a pack to attack it. The fight is at that pack's hex: every pack whose ring covers it joins, and you commit the machines whose attack range covers it. One fight at a time, each resolved before the next; a machine that fought, won, lost or withdrew, is spent until your next turn. | implemented |
+| **Spent** | A machine that has fought this turn is spent: it cannot move or fight again until your next turn. A tireless machine has two actions before it is spent. | implemented |
+| **Caught** | A machine a hunter has caught fights it first on your turn, before any other fight, and cannot move until then. Others in range may join that fight. Withdrawing ends it, and the hunter catches the machine again while it lives. | implemented |
+| **Ring** | Every unit has a ring. A pack's ring is who it supports: a pack whose ring covers the pack you attack joins the fight. A hunter's ring is how close it must be to catch its prey. A machine's ring is its attack range, two hexes: it can join a fight whose target is that close. | implemented |
+| **Behaviour** | A pusher walks toward the gate and threatens nothing else. A hunter locks one machine, by its caveat (the nearest, weakest, strongest or slowest), wears the target rings on it and walks toward it; when it ends its walk with its prey inside its ring it has caught it, and that fight comes first on your next turn. A caught machine cannot move until the fight, and is caught again while the hunter lives. | implemented |
 | **Pack** | An enemy hex is a pack: one foe type times a strength. A skirmish's enemy composition is every pack whose zone your machines stand in, so the rift's formations and how you come at them decide what you fight. Bosses are single three-hex units. | implemented |
-| **Footprint** | A unit covers one or more hexes. A boss covers three in a triangle. Every footprint hex blocks, touches for contact, and is a tap target. Packs and mechs stay single-hex. | implemented |
-| **Structure** | Gate and rift hexes are structures wider than one hex. Nobody stands on them. A pack whose path reaches any gate hex strikes the gate. | implemented |
+| **Footprint** | A unit covers one or more hexes. A boss covers three in a triangle. Every footprint hex is occupied, counts for rings and range, and is a tap target. Packs and mechs stay single-hex. | implemented |
+| **Structure** | Gate and rift hexes are structures wider than one hex. Nobody stands on them. A pack that ends its walk beside a gate hex strikes the gate. | implemented |
 | **Spawn** | When Rift Pressure fills, the next pack of the faction's spawn list appears on the nearest free hex to the rift. | implemented |
 
 ## Terrain
@@ -140,13 +141,14 @@ Status: 106 implemented, 7 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Flyer** | Normal pace over every ground, mountains included. Packs pass through it: it cannot stop one. It fights by the zone like any machine. | implemented |
-| **Hover** | Skims water fast. Rough ground and ruins are slow: it can enter them, and the step ends its move. Stops a pack in its path like any ground machine. | implemented |
+| **Flyer** | Normal pace over every ground, mountains included. Packs walk under it but never stop on its hex. | implemented |
+| **Hover** | Skims water fast. Rough ground and ruins are slow: it can enter them, and the step ends its move. | implemented |
 | **Walker** | Legs. Rough ground and ruins at normal pace; water is slow: it can enter it, and the step ends its move. | implemented |
 | **Tracked** | Tracks. Ploughs through forest and fords water at normal pace; rubble is slow: it can enter ruins, and the step ends its move. | implemented |
 | **Wheeled** | Wheels. Fast on open ground. Rough ground, ruins and water are slow: it can enter them, and the step ends its move. | implemented |
-| **Stealth** | A pack's zone never pulls it in on its own. Joins a fight only when another machine is in it, or when it stopped a pack in its path; a pack whose zone merely falls on it has walked past. | implemented |
-| **City defense** | A static player-side unit. Packs path toward it, and it joins any skirmish it is adjacent to. | implemented |
+| **Elusive** | A hunter never picks it. It is never in a fight it did not choose. | implemented |
+| **Tireless** | Two actions a turn: it may move and fight, then move and fight again. | implemented |
+| **City defense** | A static player-side unit. Not on the field yet. | planned |
 
 ## Trigger
 
@@ -229,9 +231,12 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Reinforcements** (implemented): Elites should surface at set points rather than in pool order.
 - **Massive** (implemented): Cleave treats it as a front-rank neighbour; pierce cannot hit anything behind it because nothing is.
 - **Movespeed** (implemented): Built 2 October (bible section 4). Every chassis's move is a placeholder Ryan sets by size and role; the content check flags a chassis at least as fast as another on every ground, never refuses it.
-- **Contact** (implemented): No participant cap. May need one for phone readability. Decided 1 October: zones on the packs, measured from where each stops; nothing chains.
-- **Engagement zone** (implemented): Decided 1 October after the touching rule (22 September) and the engagement range (28 September). Radii are content on the foe type: front-rank 1, back-rank 3, bosses 2, placeholders. Dropped on the way: chaining in any form, a touch rule between packs, double-booking a machine into two fights, the zone as the stop.
-- **Behaviour** (implemented): Decided 1 October: the enemy commits first, so no pack re-aims at the plan without a drawn trigger. Placeholders: the ghoul aggressive, the brute hunts the strongest at move 3; a dedicated hunter is a foe to name.
+- **Walk** (implemented): Bible section 4, the round row (8 October). A pack with no way to the gate waits, and the map says so.
+- **Fight** (implemented): Bible section 5, the fights-by-ring row (8 October).
+- **Spent** (implemented): Bible section 4 (8 October).
+- **Caught** (implemented): Bible section 5 (8 October).
+- **Ring** (implemented): Bible section 5 (8 October). Rings are content on the foe type (front-rank 1, back-rank 3, bosses 2) and placeholders; a machine's attack range is two for every chassis, an exception only where a role earns it.
+- **Behaviour** (implemented): Bible section 5 (8 October): push and hunt are the only behaviours. The ghoul hunts the nearest and the brute the strongest, placeholders.
 - **Pack** (implemented): The rift should seed and spawn formations, not single packs (Ryan, 1 October): to design.
 - **Footprint** (implemented): Footprints do not rotate with facing.
 - **Structure** (implemented): The rift does nothing yet beyond marking where packs spawn.
@@ -240,8 +245,9 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Water** (implemented): Designed to dampen burn inside a skirmish. Not coded. The generator gives one real water feature a map with crossings for the horde, with the hovercraft (bible section 4).
 - **Tracked** (implemented): Was tank until 2 October (Ryan). Built 2 October.
 - **Wheeled** (implemented): The cars (Ryan, 2 October: the Prairie Dog and the Dingo). Built 2 October.
-- **Stealth** (implemented): The Dingo (Ryan, 28 September): a support car that waits in the wings while the heavies get into position, then joins their fight, and never fights alone unless run into. Pays again when hunter packs exist.
-- **City defense** (implemented): Defenses have no die. They cannot act inside a skirmish yet.
+- **Elusive** (implemented): The Prairie Dog (Ryan, 8 October): the scout that slips around the fights. The name is a placeholder.
+- **Tireless** (implemented): The Dingo (Ryan, 8 October): the pack animal that drifts between fights. The name is a placeholder.
+- **City defense** (planned): Defenses have no die. They cannot act inside a skirmish yet. The redesigned round (8 October) leaves it no rule yet: packs walk to the gate alone.
 - **On shield gain** (implemented): Built 30 September (Effects.fire); no content uses it yet.
 - **On shielding an ally** (implemented): Built 5 October for the Puffin's Slipstream (an ally it shields sheds 10 heat). Fires on the spend, whatever the shield gained, so a shield die on a topped-up ally still does its other work.
 - **On heat gain** (implemented): Built 30 September (Effects.fire); no content uses it yet.
