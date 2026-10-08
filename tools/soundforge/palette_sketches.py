@@ -375,29 +375,40 @@ def blare(dur=0.6, rise=0.3, gain=1.0):
     return R.body(p, "plate", 180.0, dur + 0.3) * gain
 
 
-def under(kind, dur):
+def drone(f0=100.0, dur=1.0, rise=0.12, gain=1.0):
+    """The hover's hum at a chosen pitch: the fundamental with its third and fifth partials,
+    saturated and low-passed, rising in over `rise` and holding, then letting go."""
+    n = n_of(dur)
+    t = np.arange(n) / SR
+    x = np.sin(2.0 * math.pi * f0 * t) + 0.5 * np.sin(2.0 * math.pi * 3.0 * f0 * t) + 0.25 * np.sin(2.0 * math.pi * 5.0 * f0 * t)
+    x = F.lp(F.sat(x, 1.5), 900.0)
+    return x * F.env_pts(n, [(0.0, 0.0), (rise, 0.7), (dur * 0.85, 0.7), (dur, 0.0)]) * gain
+
+
+def under(kind, dur, f0=100.0):
     """A signal's undertone (Ryan, 8 October: more like a drone than the plate's swell; the
-    pulse might be more appropriate): the drone is the hover's hum rising in fast and holding
-    under the tones, the pulse the weight's throb."""
+    drone it is): the hover's hum rising in fast and holding under the tones; the pulse, the
+    weight's throb, was the alternative."""
     if kind == "pulse":
         return A.pulse(92.0, dur, 0.6)
-    return B.hum(dur, 1.0, 0.12)
+    return drone(f0, dur, 0.12)
 
 
 def heat_warn(kind="drone"):
     """Heat past three quarters: two equal beeps on one pitch over a drone, the universal
     caution (the high-then-low pair read as a cancel, so nothing falls here and nothing rises,
-    which would read as a confirm)."""
-    beeps = lay(*[(0.16 + k * 0.16, boop(B.A4, 0.09, 0.9, bright=1800.0)) for k in range(2)])
-    return balanced([(0.0, under(kind, 0.7))], [(0.0, beeps)])
+    which would read as a confirm). The drone a bit lower and a lot quieter than the alarm's,
+    the blips a bit longer (Ryan, 8 October)."""
+    beeps = lay(*[(0.16 + k * 0.2, boop(B.A4, 0.13, 0.9, bright=1800.0)) for k in range(2)])
+    return balanced([(0.0, under(kind, 0.75, 82.0))], [(0.0, beeps)], -18.0)
 
 
 def overheat_alarm(kind="drone"):
     """The overheat: the tones made alarm, high-low-high-low with no gap between them, a fifth
     apart, longer and harder than a cancel's pair, over a longer drone (the klaxon's whoops were
-    comical, Ryan)."""
+    comical, Ryan); the drone a touch under the general rule."""
     tones = lay(*[(0.14 + k * 0.22, boop(f, 0.22, 0.95, bright=2400.0, attack=0.008)) for k, f in enumerate((B.E5, B.A4, B.E5, B.A4))])
-    return balanced([(0.0, under(kind, 1.15))], [(0.0, tones)])
+    return balanced([(0.0, under(kind, 1.15))], [(0.0, tones)], -13.0)
 
 
 # name: (recipe, phone dB, shipped name, label, note)
@@ -425,8 +436,8 @@ SET = [
     ("nav_back", dismiss, -21.0, "ui_back", "Menu: back", "= dismiss"),
     ("nav_select", confirm, -19.0, "ui_tap", "Menu: select", "= confirm"),
     ("refuse", refuse, -17.0, "ui_back", "Refused", "P28, the scrape 1.5 dB over it (fine as it was)"),
-    ("heat_warn", heat_warn, -17.0, "heat_warn", "Heat past three quarters: the signal", "two equal beeps on A over a drone 10 dB under; Jenny's line a quarter second after it"),
-    ("overheat", overheat_alarm, -15.0, "overheat", "Overheat: the alarm", "high-low-high-low, a fifth apart, no gap between the tones, over a longer drone, 2 dB hotter than the warning; the line after it"),
+    ("heat_warn", heat_warn, -17.0, "heat_warn", "Heat past three quarters: the signal", "two beeps on A, 130 ms each, over a drone at 82 Hz 18 dB under; Jenny's line a quarter second after it"),
+    ("overheat", overheat_alarm, -15.0, "overheat", "Overheat: the alarm", "high-low-high-low, a fifth apart, no gap between the tones, over a longer drone at 100 Hz 13 dB under, 2 dB hotter than the warning; the line after it"),
 ]
 SET_BY = {name: (fn, db, beside, label, note) for name, fn, db, beside, label, note in SET}
 NAMES = {"touch": "tap", "touch_heavy": "tap", "round_acquire": "round_open", "resolve": "end_turn", "route_clear": "dismiss", "select": "map_select"}
