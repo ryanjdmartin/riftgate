@@ -280,13 +280,15 @@ pressure a bar above the rift. The map scrolls by drag, zooms by pinch or wheel,
 the gate end. Purple lines are where each pack will walk on the enemy's turn, from where your
 machines stand now: a pusher toward the gate, a hunter (target rings on its prey) toward its
 prey; packs go round machines and never stop at one. Tap a machine to select it and the hexes
-it can reach light up; tap a lit hex, or drag a route from it, and it moves there at once;
-UNDO MOVE takes the move back until it fights. Tap a pack and the panel sets up its fight:
-the packs whose ring covers it join, and the machines whose attack range covers it are
-toggles; ENGAGE dives the map onto the fight and hands over to the skirmish screen. A machine
-that fought is spent until the next turn. A hunter that ends its walk beside its prey has
-caught it: the next turn opens with a CAUGHT band and that fight's panel, which comes first.
-END TURN plays the enemy's turn: the packs walk, a pack beside the gate strikes it, machines
+it can reach light up; tap a lit hex, or drag a route from it, and it moves there at once,
+staying in hand while it can act; UNDO MOVE takes the move back until it fights. With a
+machine in hand, tap a pack (or drag the machine onto it) and it moves into range and is
+ordered onto that fight; tap the pack again to take the order back. The map shows the next
+fight: its target, the packs whose ring covers it, the machines ordered in. The bottom-left
+button reads ENGAGE while a fight is ready and dives the map onto it, handing over to the
+skirmish screen. A machine that fought is spent until the next turn. A hunter that ends its
+walk beside its prey has caught it: the next turn opens with a CAUGHT band, and that fight is
+the next one ENGAGE opens. END TURN plays the enemy's turn: the packs walk, a pack beside the gate strikes it, machines
 that did not fight recharge, and Rift Pressure ticks. The skirmish's Back button applies the
 result: wrecks leave the map, packs shrink to their survivors, and Rift Pressure ticks once
 per round fought. The battle ends when the gate falls, every mech is wrecked, or the boss

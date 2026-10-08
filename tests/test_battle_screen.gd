@@ -1,8 +1,8 @@
 extends TestCase
 
-## Drives the battle screen through its handlers without a window: select, move, set up a
-## fight and engage, the skirmish and back, a hunter's forced fight, the enemy's turn, and
-## the outcome overlay (bible section 4, the round row).
+## Drives the battle screen through its handlers without a window: select, move, order a
+## machine onto a pack by a tap or a drag and ENGAGE, the skirmish and back, a hunter's catch,
+## the enemy's turn, and the outcome overlay (bible section 4, the round row).
 
 
 func _screen(seed_value: int = 3) -> BattleScreen:
@@ -34,6 +34,7 @@ func test_screen_builds_on_the_players_turn() -> void:
 	assert_true(s._header.text.contains("NEXT SPAWN IN"), "and how long until the rift spawns")
 	assert_true(s._sub_label.text.begins_with("READY // 3 OF 3"), "every machine ready")
 	assert_false(s._resolve_btn.disabled, "the turn can end")
+	assert_eq(s._resolve_btn.text, "END TURN", "nothing ordered: the button ends the turn")
 	assert_true(s._clear_btn.disabled, "nothing to undo yet")
 	assert_true(s._map.field == s.battle.field, "map shows the field")
 	assert_eq(s._map.walks.size(), s.battle.field.packs().size(), "every pack's walk on the map")
@@ -51,7 +52,7 @@ func test_a_tap_selects_and_a_lit_hex_moves_the_machine_at_once() -> void:
 	var dest: Vector2i = s._map.destinations.keys()[0]
 	s._on_hex_tapped(dest)
 	assert_eq(m.pos, dest, "it moved at once")
-	assert_eq(s._map.selected, null, "and is let go")
+	assert_eq(s._map.selected, m, "and stays in hand, to pick a target from there")
 	assert_false(s._clear_btn.disabled, "the move can be undone")
 	s._on_undo()
 	assert_eq(m.pos, start, "undo puts it back")
@@ -83,25 +84,28 @@ func test_end_turn_walks_the_packs_and_opens_the_next_turn() -> void:
 	s.free()
 
 
-func test_a_tap_on_a_pack_sets_up_the_fight_and_engage_opens_it() -> void:
+func test_a_tap_on_a_pack_with_a_machine_in_hand_orders_it_and_engage_opens_the_fight() -> void:
 	var s := _screen()
 	var b := s.battle
 	var m: Unit = b.mechs()[0]
 	var sq: Unit = b.field.packs()[0]
 	_engage(b, sq, m)
 	s._refresh()
-	s._on_hex_tapped(m.pos)   # the machine in hand is committed first
+	s._on_hex_tapped(m.pos)
 	s._on_hex_tapped(sq.pos)
-	assert_true(s._contacts != null, "the fight's panel is up")
-	assert_eq(s._committed, [m], "with the selected machine committed")
-	assert_true(s._resolve_btn.disabled, "no ending the turn while a fight is set up")
+	assert_eq(b.order_of(m), sq, "ordered onto the pack")
+	assert_eq(b.state, Battle.State.PLAN, "nothing opens on the tap")
+	assert_eq(s._resolve_btn.text, "ENGAGE", "the button reads ENGAGE")
+	assert_false(s._map.attack.is_empty(), "the map shows the fight")
+	assert_true((s._map.attack["committed"] as Array).has(m), "with the machine in it")
 	s._on_hex_tapped(m.pos)
-	assert_true(s._committed.is_empty(), "a tap on it uncommits it")
+	s._on_hex_tapped(sq.pos)
+	assert_eq(b.order_of(m), null, "a second tap on its pack takes the order back")
+	assert_eq(s._resolve_btn.text, "END TURN", "and the button ends the turn again")
 	s._on_hex_tapped(m.pos)
-	assert_eq(s._committed, [m], "and commits it again")
-	s._engage()
-	assert_eq(s._contacts, null, "the panel goes")
-	assert_true(s._skirmish != null, "skirmish screen opened")
+	s._on_hex_tapped(sq.pos)
+	s._on_main_button()
+	assert_true(s._skirmish != null, "ENGAGE opens the skirmish screen")
 	assert_eq(s._sub_label.text, "FIGHT", "the readout says so")
 	var sk: Skirmish = s._skirmish.sk
 	assert_eq(sk.round, 1, "skirmish started")
@@ -119,20 +123,43 @@ func test_a_tap_on_a_pack_sets_up_the_fight_and_engage_opens_it() -> void:
 	s.free()
 
 
-func test_a_pack_out_of_reach_shows_its_fight_but_nobody_to_send() -> void:
+func test_a_drag_onto_a_pack_orders_the_machine_into_range() -> void:
 	var s := _screen()
-	var sq: Unit = s.battle.field.packs()[0]
-	s._on_hex_tapped(sq.pos)
-	assert_true(s._contacts != null, "the panel shows who it is and who would join")
-	assert_true(s._committed.is_empty(), "nobody in range")
-	s._engage()
-	assert_eq(s._skirmish, null, "so ENGAGE does nothing")
-	s._on_hex_tapped(s.battle.map.rift)
-	assert_eq(s._contacts, null, "a tap elsewhere puts it away")
+	var b := s.battle
+	var m: Unit = b.mechs()[0]
+	var sq: Unit = b.field.packs()[0]
+	sq.behaviour = "push"
+	var spot := Vector2i(-99, -99)
+	for h in b.field.map.all_hexes():
+		if Hex.distance(h, m.pos) == 3 and b.field.can_stand(sq, h):
+			spot = h
+			break
+	sq.pos = spot
+	sq.movespeed = 0
+	s._refresh()
+	s._on_route_drag_started(m)
+	s._on_route_drag_to(sq.pos)
+	assert_eq(s._drag_target, sq, "the finger is on the pack")
+	assert_true((s._map.attack.get("committed", []) as Array).has(m), "the map shows the fight it would join")
+	s._on_route_drag_ended(true)
+	assert_eq(b.order_of(m), sq, "letting go orders it onto the pack")
+	assert_true(b.in_range_from(m, m.pos, sq), "having moved into range")
 	s.free()
 
 
-func test_a_hunters_catch_is_fought_first_and_cannot_be_put_away() -> void:
+func test_a_pack_tapped_with_nothing_in_hand_shows_its_fight() -> void:
+	var s := _screen()
+	var sq: Unit = s.battle.field.packs()[0]
+	s._on_hex_tapped(sq.pos)
+	assert_true(s.battle.orders.is_empty(), "nothing ordered")
+	assert_false(s._map.attack.is_empty(), "its fight shows: who joins, where a machine must stand")
+	assert_true(s._details.visible, "and its readout")
+	s._on_hex_tapped(s.battle.map.rift)
+	assert_true(s._map.attack.is_empty(), "a tap elsewhere puts it away")
+	s.free()
+
+
+func test_a_hunters_catch_is_fought_first() -> void:
 	var s := _screen()
 	var b := s.battle
 	var m: Unit = b.mechs()[0]
@@ -143,65 +170,24 @@ func test_a_hunters_catch_is_fought_first_and_cannot_be_put_away() -> void:
 	hunter.zone = 1
 	b._new_turn()
 	s._after_step()
-	assert_true(s._contacts != null, "the caught fight's panel is up")
-	assert_eq(s._committed, [m], "its prey committed")
+	assert_eq(s._resolve_btn.text, "ENGAGE", "the button reads ENGAGE with nobody ordered")
 	assert_true(s._sub_label.text.begins_with("CAUGHT"), "the readout says so")
-	s._on_hex_tapped(b.map.rift)
-	assert_true(s._contacts != null, "it cannot be put away")
+	assert_false(s._map.attack.is_empty(), "the catch's fight shows")
+	var other: Unit = b.field.packs()[1]
+	s._on_hex_tapped(b.mechs()[1].pos)
+	s._on_hex_tapped(other.pos)
+	assert_eq(b.order_of(b.mechs()[1]), null, "another pack cannot be ordered on first")
 	s._on_end_turn()
 	assert_eq(b.field.phase, 0, "nor the turn ended")
-	s._engage()
-	assert_true(s._skirmish != null, "it opens")
+	s._on_main_button()
+	assert_true(s._skirmish != null, "ENGAGE opens the catch")
 	s._skirmish.sk.reinforcements.clear()
 	for f in s._skirmish.sk.field_foes():
 		f.hp = 0
 	s._skirmish._end_turn_now()
 	s._on_skirmish_back()
 	assert_true(b.forced.is_empty(), "fought")
-	assert_eq(s._contacts, null, "no panel left")
-	assert_false(s._resolve_btn.disabled, "the turn may end")
-	s.free()
-
-
-## The contact panel's portraits die with it (Ryan, 26 September: they hung off the screen
-## root, and every contact and every tap of the panel's arrows left another pair of
-## viewports rendering for the rest of the battle, until the phone's GL driver ran out
-## of memory). A view counts as live unless it, or something above it, is on its way out.
-func _live_portraits(s: BattleScreen) -> Array:
-	var out: Array = []
-	for v in s.find_children("*", "MechView3D", true, false):
-		if s._skirmish != null and s._skirmish.is_ancestor_of(v):
-			continue
-		var n: Node = v
-		var dying := false
-		while n != null and n != s:
-			if n.is_queued_for_deletion():
-				dying = true
-				break
-			n = n.get_parent()
-		if not dying:
-			out.append(v)
-	return out
-
-
-func test_the_panels_portraits_die_with_it() -> void:
-	var s := _screen()
-	var b := s.battle
-	_engage(b, b.field.packs()[0], b.mechs()[0])
-	_engage(b, b.field.packs()[1], b.mechs()[1])
-	s._refresh()
-	s._on_hex_tapped(b.mechs()[0].pos)
-	s._on_hex_tapped(b.field.packs()[0].pos)
-	assert_true(s._contacts != null, "the panel is up")
-	var before := _live_portraits(s)
-	assert_true(before.size() > 0, "a portrait per machine committed")
-	for v in before:
-		assert_true(s._contacts.is_ancestor_of(v), "a portrait belongs to the panel")
-	s._fill_attack_panel()
-	s._fill_attack_panel()
-	assert_eq(_live_portraits(s).size(), before.size(), "refilling replaces the portraits, never adds")
-	s._close_attack()
-	assert_eq(_live_portraits(s).size(), 0, "the panel gone, no portrait outlives it")
+	assert_eq(s._resolve_btn.text, "END TURN", "the turn may end")
 	s.free()
 
 
@@ -213,7 +199,7 @@ func test_the_boss_fight_plays_its_theme() -> void:
 	s._refresh()
 	s._on_hex_tapped(b.mechs()[0].pos)
 	s._on_hex_tapped(b.boss.pos)
-	s._engage()
+	s._on_main_button()
 	assert_true(b.boss_fight, "the boss's fight")
 	assert_true(s._skirmish != null, "it opens")
 	assert_eq(s._sub_label.text, "BOSS // FIGHT", "the readout says so")
@@ -369,7 +355,7 @@ func test_a_skirmish_quit_leaves_the_battle_too() -> void:
 	s._refresh()
 	s._on_hex_tapped(b.mechs()[0].pos)
 	s._on_hex_tapped(b.field.packs()[0].pos)
-	s._engage()
+	s._on_main_button()
 	assert_true(s._skirmish != null, "skirmish screen opened")
 	var quits: Array = []
 	s.quit_requested.connect(func() -> void: quits.append(true))
@@ -392,7 +378,7 @@ func test_the_battle_is_saved_as_it_goes_and_resumes() -> void:
 	s._on_hex_tapped(dest)
 	assert_true(SaveGame.exists(TMP), "the move is saved")
 	assert_eq(SaveGame.load(TMP).field.unit_by_id(m.id).pos, dest, "where the machine went")
-	# A hunter's catch, resumed: the panel comes back.
+	# A hunter's catch, resumed: it is still the next fight.
 	var hunter: Unit = b.field.packs()[0]
 	_engage(b, hunter, m)
 	hunter.behaviour = "hunt"
@@ -405,12 +391,11 @@ func test_the_battle_is_saved_as_it_goes_and_resumes() -> void:
 	var r := BattleScreen.new()
 	r.setup(loaded)
 	r._resume_where_it_was()
-	assert_true(r._contacts != null, "the caught fight's panel comes back")
+	assert_eq(r._resolve_btn.text, "ENGAGE", "the catch is ready to engage")
 	assert_eq(r._skirmish, null, "no fight opened on its own")
 	r.free()
 	# Into the fight, and the save follows every change.
-	s._open_attack(null)
-	s._engage()
+	s._on_main_button()
 	var sk: Skirmish = s._skirmish.sk
 	var before := FileAccess.get_file_as_string(TMP)
 	sk.reroll([0])

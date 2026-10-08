@@ -208,10 +208,10 @@ func test_a_machine_that_fought_is_spent_until_the_next_turn() -> void:
 	assert_eq(b.actions_left(m), 1, "a new turn gives it back")
 
 
-func test_a_tireless_machine_fights_twice_a_turn() -> void:
+func test_a_second_action_fights_twice_a_turn() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
-	m.traits.append(Battlefield.TIRELESS)
+	m.grant_passive({"id": "twin", "name": "Twin", "description": "", "effects": [{"trigger": "static", "effect": "extra_action", "value": 1}]}, "twin")
 	b.spent.clear()
 	var sq: Unit = b.field.packs()[0]
 	_engage(b, sq, m)
@@ -534,3 +534,93 @@ func test_a_kill_is_a_kill_whatever_the_fight_ends_in() -> void:
 	assert_eq(sk.outcome, Skirmish.Outcome.WITHDRAWN, "withdrawn")
 	b.finish_skirmish()
 	assert_eq(b.foes_killed, 1, "the kill made before withdrawing counts")
+
+
+func test_an_order_needs_the_pack_in_range_and_engage_opens_the_fight() -> void:
+	# Bible section 5: a machine is ordered onto a pack it has in range; nothing opens until
+	# ENGAGE, which opens the fight with every machine ordered onto that pack.
+	var b := _battle()
+	var a: Unit = b.mechs()[0]
+	var c: Unit = b.mechs()[1]
+	var sq: Unit = b.field.packs()[0]
+	assert_false(b.order(a, sq), "out of range: refused")
+	_engage(b, sq, a)
+	assert_true(b.order(a, sq), "beside it: ordered")
+	assert_eq(b.state, Battle.State.PLAN, "nothing opens on the order")
+	assert_eq(b.next_fight()["target"], sq, "the next fight is at the pack")
+	assert_eq(b.next_fight()["machines"], [a], "with the machine ordered")
+	b.cancel_order(a)
+	assert_true(b.next_fight().is_empty(), "taken back")
+	b.order(a, sq)
+	var sk := b.engage()
+	assert_true(sk != null, "ENGAGE opens it")
+	assert_true(sk.packs.has(sq), "at the pack")
+	assert_eq(sk.mechs.size(), 1, "with the one machine")
+	assert_true(b.orders.is_empty(), "the order is spent")
+	assert_false(b.orders.has(c.id), "the other machine was never in it")
+
+
+func test_the_attack_hex_is_the_farthest_in_range_the_move_reaches() -> void:
+	var b := _battle()
+	var m: Unit = b.mechs()[0]
+	var sq: Unit = b.field.packs()[0]
+	sq.behaviour = "push"
+	# Park the pack three hexes ahead of the machine, out of its range of two.
+	var spot := Vector2i(-99, -99)
+	for h in b.field.map.all_hexes():
+		if Hex.distance(h, m.pos) == 3 and b.field.can_stand(sq, h):
+			spot = h
+			break
+	assert_true(spot != Vector2i(-99, -99), "a hex three away")
+	sq.pos = spot
+	assert_false(b.in_range_from(m, m.pos, sq), "out of range where it stands")
+	var h := b.attack_hex(m, sq)
+	assert_true(h != Battle.NO_HEX, "a hex in range within its move")
+	assert_true(b.in_range_from(m, h, sq), "in range there")
+	for d in b.destinations_for(m).keys():
+		if b.in_range_from(m, d, sq):
+			assert_true(b._distance_from(d, sq) <= b._distance_from(h, sq), "none in range is farther")
+	b.move_to(m, h)
+	assert_eq(b.attack_hex(m, sq), m.pos, "in range now: it attacks from where it stands")
+
+
+func test_moving_out_of_range_drops_the_order() -> void:
+	var b := _battle()
+	var m: Unit = b.mechs()[0]
+	var sq: Unit = b.field.packs()[0]
+	_engage(b, sq, m)
+	assert_true(b.order(m, sq), "ordered")
+	var away := Vector2i(-99, -99)
+	for h in b.destinations_for(m).keys():
+		if not b.in_range_from(m, h, sq):
+			away = h
+			break
+	if away == Vector2i(-99, -99):
+		return   # nowhere out of range within its move on this map; nothing to test
+	b.move_to(m, away)
+	assert_true(b.orders.is_empty(), "out of range: the order drops")
+
+
+func test_a_catch_comes_first_through_engage() -> void:
+	var b := _battle()
+	var m: Unit = b.mechs()[0]
+	var helper: Unit = b.mechs()[1]
+	var hunter: Unit = b.field.packs()[0]
+	var other: Unit = b.field.packs()[1]
+	_engage(b, hunter, m)
+	hunter.behaviour = "hunt"
+	hunter.prey = m.id
+	hunter.zone = 1
+	b._new_turn()
+	assert_false(b.can_target(other), "another pack cannot be ordered on while the catch waits")
+	assert_false(b.next_fight().is_empty(), "the catch is ready to engage with nobody ordered")
+	assert_eq(b.next_fight()["target"], null, "the catch, not a pack tapped")
+	if b.in_range_from(helper, helper.pos, hunter):
+		assert_true(b.order(helper, hunter), "a helper in range may be ordered onto the hunter")
+	var sk := b.engage()
+	assert_true(sk != null, "it opens")
+	assert_true(sk.packs.has(hunter), "against the hunter")
+	var in_it := false
+	for ms in sk.mechs:
+		in_it = in_it or ms.unit == m
+	assert_true(in_it, "with its prey in it")

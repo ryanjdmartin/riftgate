@@ -7,9 +7,10 @@ extends RefCounted
 ## drives it, tests drive it headless. The round is bible section 4's; the fights, section 5's.
 ##
 ## Loop:
-##   PLAN      the player's turn: the fights hunters forced come first (`forced`); then
-##             move_to() any machine with an action left, and attack() a pack with the
-##             machines in range, one fight at a time; end_turn() when done
+##   PLAN      the player's turn: move_to() any machine with an action left; order() it onto
+##             a pack in its attack range; engage() opens the next fight with the machines
+##             ordered onto it, a fight hunters forced always first (`forced`); end_turn()
+##             when done
 ##   SKIRMISH  the fight attack() opened; the screen plays it, finish_skirmish() applies it
 ##             back to the map and the machines in it are spent; back to PLAN
 ##   DONE      outcome is set
@@ -41,6 +42,10 @@ var fought: Dictionary = {}      # mech id -> true: it fought this turn, so no f
 ## "hunters": Array[Unit]}]. While any is left, it is the only fight that may open and the
 ## turn cannot end; its prey cannot move.
 var forced: Array = []
+## Attack orders (bible section 5): mech id -> the pack it fights when ENGAGE is pressed, in
+## the order given. A drag or a tap onto a pack gives one; nothing opens until ENGAGE, so a
+## mis-drop on a phone is harmless. Several machines on one pack are one fight.
+var orders: Dictionary = {}
 var boss_fight := false          # the open fight holds the boss (its reveal and its theme)
 var last_spawned := false        # the last enemy turn's rift tick spawned a pack
 var current: Skirmish = null
@@ -144,7 +149,7 @@ func mechs() -> Array[Unit]:
 	return field.mechs()
 
 
-## The actions a machine has left this turn: one a turn, two for a tireless one.
+## The actions a machine has left this turn: one a turn, more if its passive grants them.
 func actions_left(u: Unit) -> int:
 	return maxi(0, Battlefield.actions_for(u) - int(spent.get(u.id, 0)))
 
@@ -209,6 +214,7 @@ func _walk_machine(u: Unit, route: Array[Vector2i]) -> void:
 	var before: Vector2i = route[route.size() - 2] if route.size() >= 2 else u.pos
 	u.facing = field._direction_index(before, route[route.size() - 1])
 	u.pos = route[route.size() - 1]
+	_prune_orders()
 
 
 ## Whether a machine's move this action can be taken back.
@@ -228,6 +234,7 @@ func undo_move(u: Unit) -> bool:
 	u.facing = int(a[1])
 	move_left[u.id] = int(a[2])
 	action_from.erase(u.id)
+	_prune_orders()
 	return true
 
 
@@ -334,6 +341,125 @@ func attack(target: Unit, machines: Array) -> Skirmish:
 	return sk
 
 
+# ---------------------------------------------------------------- attack orders
+
+const NO_HEX := Vector2i(-9999, -9999)
+
+
+## The distance from a hex to a unit, by the unit's nearest hex.
+func _distance_from(h: Vector2i, u: Unit) -> int:
+	var best := 1 << 30
+	for x in u.hexes():
+		best = mini(best, Hex.distance(h, x))
+	return best
+
+
+## Whether a machine standing at `h` has `target` within its attack range.
+func in_range_from(m: Unit, h: Vector2i, target: Unit) -> bool:
+	return _distance_from(h, target) <= m.attack_range
+
+
+## Where a machine attacks `target` from when it is dragged or tapped onto it (bible section
+## 5): where it stands, if the target is in range; else the hex its move left reaches that has
+## the target in range and stands farthest from it, the cheaper on a tie. NO_HEX when none.
+func attack_hex(m: Unit, target: Unit) -> Vector2i:
+	if m == null or target == null:
+		return NO_HEX
+	if in_range_from(m, m.pos, target):
+		return m.pos
+	var best := NO_HEX
+	var best_d := -1
+	var best_c := 1 << 30
+	var dests := destinations_for(m)
+	for h in dests.keys():
+		var hx: Vector2i = h
+		if not in_range_from(m, hx, target):
+			continue
+		var d := _distance_from(hx, target)
+		var c := int(dests[hx])
+		if d > best_d or (d == best_d and c < best_c):
+			best = hx
+			best_d = d
+			best_c = c
+	return best
+
+
+## Whether a fight may be ordered at `target` now: a pack on the field, and while a hunter's
+## catch waits, one of its hunters alone (that fight comes first).
+func can_target(target: Unit) -> bool:
+	if target == null or not target.is_enemy() or not field.units.has(target):
+		return false
+	if not forced.is_empty():
+		return (forced[0]["hunters"] as Array).has(target)
+	return true
+
+
+## Order a machine onto `target` for ENGAGE: on the player's turn, with an action left, the
+## target in range where it stands now (a machine moves first), and the target one that may
+## be fought now. False when refused.
+func order(m: Unit, target: Unit) -> bool:
+	if state != State.PLAN or m == null or not field.units.has(m) or actions_left(m) <= 0:
+		return false
+	if not can_target(target) or not in_range_from(m, m.pos, target):
+		return false
+	orders[m.id] = target
+	return true
+
+
+func cancel_order(m: Unit) -> void:
+	if m != null:
+		orders.erase(m.id)
+
+
+## The pack a machine is ordered onto, or null.
+func order_of(m: Unit) -> Unit:
+	return orders.get(m.id, null) if m != null else null
+
+
+## The next fight ENGAGE opens: a hunter's catch first (its prey and the machines ordered onto
+## its hunters), else the first pack ordered on, with every machine ordered onto it.
+## {"target": the pack, null for a catch, "machines": Array}; empty when there is none.
+func next_fight() -> Dictionary:
+	_prune_orders()
+	if not forced.is_empty():
+		var hunters: Array = forced[0]["hunters"]
+		var ms: Array = []
+		for uid in orders.keys():
+			if hunters.has(orders[uid]):
+				ms.append(field.unit_by_id(int(uid)))
+		return {"target": null, "machines": ms}
+	if orders.is_empty():
+		return {}
+	var first: Unit = orders.values()[0]
+	var team: Array = []
+	for uid in orders.keys():
+		if orders[uid] == first:
+			team.append(field.unit_by_id(int(uid)))
+	return {"target": first, "machines": team}
+
+
+## ENGAGE: the next fight opens with the machines ordered onto it. Null when there is none.
+func engage() -> Skirmish:
+	var f := next_fight()
+	if f.is_empty():
+		return null
+	var sk := attack(f["target"], f["machines"])
+	if sk != null:
+		for m in f["machines"]:
+			orders.erase((m as Unit).id)
+	return sk
+
+
+## Drop an order whose machine is gone, has no action left or stands out of range, or whose
+## pack is gone or cannot be fought now.
+func _prune_orders() -> void:
+	for uid in orders.keys():
+		var m := field.unit_by_id(int(uid))
+		var target: Unit = orders[uid]
+		if m == null or actions_left(m) <= 0 or not can_target(target) or not in_range_from(m, m.pos, target):
+			orders.erase(uid)
+
+
 ## End the player's turn (bible section 4): the enemy's turn plays (packs walk round the
 ## machines, a pack on the apron strikes the gate), a machine that did not fight this turn
 ## recharges at the field rate, the rift ticks once, and the next turn opens with the fights
@@ -363,6 +489,7 @@ func _new_turn() -> void:
 	move_left.clear()
 	action_from.clear()
 	fought.clear()
+	orders.clear()
 	forced = []
 	if _check_outcome():
 		return
@@ -439,6 +566,7 @@ func finish_skirmish() -> void:
 	if not forced.is_empty():
 		forced.pop_front()
 	_prune_forced()
+	_prune_orders()
 	_check_outcome()
 
 

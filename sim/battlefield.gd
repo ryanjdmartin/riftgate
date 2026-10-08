@@ -239,8 +239,9 @@ func _search(u: Unit, from: Vector2i, budget: int, blocked: Dictionary = {}, thr
 
 
 ## A hunter's prey, picked by its caveat the first time it needs one and kept until the
-## machine is gone (single-minded, so the lock the player sees holds). An elusive machine
-## (the Prairie Dog, bible section 7) is never picked. Null when there is nothing to hunt.
+## machine is gone (single-minded, so the lock the player sees holds). A machine whose passive
+## says never_hunted (the Prairie Dog, bible section 7) is never picked. Null when there is
+## nothing to hunt.
 func pick_prey(sq: Unit) -> Unit:
 	var current := unit_by_id(sq.prey)
 	if current != null and current.is_player() and not current.is_static():
@@ -248,7 +249,7 @@ func pick_prey(sq: Unit) -> Unit:
 	var best: Unit = null
 	var best_key := 0
 	for m in mechs():
-		if m.traits.has(ELUSIVE):
+		if Effects.never_hunted(m):
 			continue
 		var key := 0
 		match sq.hunts:
@@ -282,12 +283,6 @@ func _patrol_step(sq: Unit, blocked: Dictionary) -> Vector2i:
 	if options.is_empty():
 		return sq.pos
 	return options[(phase * 7 + sq.id * 13) % options.size()]
-
-
-## The trait a hunter never picks (the Prairie Dog: bible section 7, the cars' traits).
-const ELUSIVE := "elusive"
-## The trait that gives a machine two actions a turn (the Dingo).
-const TIRELESS := "tireless"
 
 
 ## Every pack's walk for the enemy's turn, against the field as it stands now (bible section
@@ -520,9 +515,10 @@ func attack_roster(targets: Array) -> Dictionary:
 	return {"targets": targets, "joins": joins, "in_range": in_range}
 
 
-## How many actions a machine has a turn: two for a tireless one, else one.
+## How many actions a machine has a turn: one, and one more for each its passives grant (the
+## Dingo's second).
 static func actions_for(u: Unit) -> int:
-	return 2 if u.traits.has(TIRELESS) else 1
+	return 1 + Effects.extra_actions(u)
 
 
 func _direction_index(from: Vector2i, to: Vector2i) -> int:

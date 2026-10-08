@@ -45,7 +45,8 @@ var field: Battlefield
 var selected: Unit = null
 var walks: Dictionary = {}           # pack id -> Battlefield.Walk: where each pack walks on the enemy's turn (the screen keeps it)
 var forced: Array = []               # the fights hunters forced, first in line (Battle.forced)
-var attack: Dictionary = {}          # the fight being set up (Battle.roster) with "committed": the machines in it; empty for none
+var attack: Dictionary = {}          # the fight shown (Battle.roster) with "committed": the machines in it; empty for none
+var orders: Dictionary = {}          # mech id -> the pack it is ordered onto (Battle.orders): drawn as a line to it
 var fight_group: Array = []          # the fight being entered: the map freezes on it through the handover
 var spent: Dictionary = {}           # machine id -> true: no action left this turn
 var flatten_at := Vector2.ZERO       # the handover into a skirmish: one more bleed source, growing
@@ -402,9 +403,8 @@ func _draw() -> void:
 
 	# Where every pack walks on the enemy's turn (bible section 4), from where the machines
 	# stand now, and every hunter's lock on its prey; nothing while a move plays or a fight is
-	# being set up or entered, when the fight's own marks have the map.
-	# A fight a hunter forced comes first, so its marks have the map until it is fought.
-	if _anim.is_empty() and attack.is_empty() and fight_group.is_empty() and forced.is_empty():
+	# entered. A fight a hunter forced comes first, so its marks have the map until it is fought.
+	if _anim.is_empty() and fight_group.is_empty() and forced.is_empty():
 		for sq in field.packs():
 			var w: Battlefield.Walk = walks.get(sq.id, null)
 			if w == null:
@@ -484,9 +484,27 @@ func _draw() -> void:
 				_contact_effect((h as Unit).pos, true, true)
 			Hud.brackets(self, Rect2(center(prey.pos) - Vector2(HEX_SIZE, HEX_SIZE) * 0.9, Vector2(HEX_SIZE, HEX_SIZE) * 1.8), 12.0, Palette.ENEMY, 3.0)
 			_plaque(center(prey.pos) + Vector2(0.0, -HEX_SIZE * 1.05), "CAUGHT", Palette.ENEMY, 2.0)
-	# The fight being set up (bible section 5): the attack range round the target in the
-	# display's light (where a machine must stand to join), every joining pack's ring in the
-	# enemy's, the packs in it lit, the machines committed bracketed.
+	# The orders (bible section 5): a line from each machine to the pack it is ordered onto, in
+	# the display's light, dashes crawling toward the pack.
+	if _anim.is_empty() and fight_group.is_empty():
+		for uid in orders.keys():
+			var m := field.unit_by_id(int(uid))
+			var target: Unit = orders[uid]
+			if m == null or target == null or not field.units.has(target):
+				continue
+			var a := center(m.pos)
+			var b := center(target.pos)
+			var dir := (b - a).normalized()
+			a += dir * HEX_SIZE * 0.55
+			b -= dir * HEX_SIZE * 0.6
+			draw_line(a, b, Color(hud, 0.35), 6.0)
+			_dashed_line(a, b, hud, HEX_SIZE * 0.2, fmod(_ring_t * 2.0, 2.0))
+			var side := Vector2(-dir.y, dir.x)
+			draw_polyline(PackedVector2Array([b - dir * 10.0 + side * 8.0, b, b - dir * 10.0 - side * 8.0]), hud, 3.0)
+	# The fight shown (bible section 5): the next one ENGAGE opens, the one a dragged machine
+	# is over, or a pack looked at. The attack range round the target in the display's light
+	# (where a machine must stand to join), every joining pack's ring in the enemy's, the packs
+	# in it lit, the machines in it bracketed.
 	if not attack.is_empty() and _anim.is_empty():
 		var targets: Array = attack.get("targets", [])
 		var reach: Dictionary = {}

@@ -75,6 +75,7 @@ static func to_dict(b: Battle) -> Dictionary:
 		"fought": _int_keys(b.fought),
 		"action_from": moved,
 		"forced": forced,
+		"orders": _order_ids(b.orders),
 		"boss_fight": b.boss_fight,
 		"boss": b.boss.id if b.boss != null else -1,
 		"skirmishes_fought": b.skirmishes_fought,
@@ -83,6 +84,14 @@ static func to_dict(b: Battle) -> Dictionary:
 		"field": _field_dict(b.field),
 		"skirmish": _skirmish_dict(b.current, b.field) if b.current != null else null,
 	}
+
+
+## Attack orders as mech id -> target id, with string keys for JSON.
+static func _order_ids(orders: Dictionary) -> Dictionary:
+	var out := {}
+	for k in orders.keys():
+		out[str(k)] = (orders[k] as Unit).id
+	return out
 
 
 ## A dictionary keyed by unit id, with string keys for JSON.
@@ -135,6 +144,10 @@ static func from_dict(d: Dictionary) -> Battle:
 				hunters.append(hunter)
 		if prey != null and not hunters.is_empty():
 			b.forced.append({"prey": prey, "hunters": hunters})
+	for uid in d.get("orders", {}).keys():
+		var target := b.field.unit_by_id(int(d["orders"][uid]))
+		if target != null:
+			b.orders[int(str(uid))] = target
 	b.boss_fight = bool(d.get("boss_fight", false))
 	var boss_id := int(d.get("boss", -1))
 	b.boss = b.field.unit_by_id(boss_id) if boss_id >= 0 else null

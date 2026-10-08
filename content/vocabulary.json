@@ -633,7 +633,7 @@
    "id": "spent",
    "category": "battlefield",
    "name": "Spent",
-   "codex": "A machine that has fought this turn is spent: it cannot move or fight again until your next turn. A tireless machine has two actions before it is spent.",
+   "codex": "A machine that has fought this turn is spent: it cannot move or fight again until your next turn. A machine whose passive grants a second action has two before it is spent.",
    "status": "implemented",
    "design": {
     "holes": "Bible section 4 (8 October)."
@@ -817,26 +817,6 @@
    "status": "implemented",
    "design": {
     "holes": "The cars (Ryan, 2 October: the Prairie Dog and the Dingo). Built 2 October."
-   }
-  },
-  {
-   "id": "elusive",
-   "category": "trait",
-   "name": "Elusive",
-   "codex": "A hunter never picks it. It is never in a fight it did not choose.",
-   "status": "implemented",
-   "design": {
-    "holes": "The Prairie Dog (Ryan, 8 October): the scout that slips around the fights. The name is a placeholder."
-   }
-  },
-  {
-   "id": "tireless",
-   "category": "trait",
-   "name": "Tireless",
-   "codex": "Two actions a turn: it may move and fight, then move and fight again.",
-   "status": "implemented",
-   "design": {
-    "holes": "The Dingo (Ryan, 8 October): the pack animal that drifts between fights. The name is a placeholder."
    }
   },
   {

@@ -218,12 +218,12 @@ func test_a_hunter_picks_its_prey_by_its_caveat_and_keeps_it() -> void:
 	assert_eq(f.pick_prey(sq), weak, "still the Sparrowhawk, now the strongest")
 	f.units.erase(weak)
 	assert_eq(f.pick_prey(sq), mid, "the prey gone, it picks again: the weakest left")
-	# An elusive machine (the Prairie Dog) is never picked.
+	# A machine whose passive says never_hunted (the Prairie Dog's) is never picked.
 	var f2 := _field(7, 14)
 	var sq2 := f2.add_unit(Unit.pack(1, "brutes", _o(3, 2), "demonic", 30))
 	sq2.behaviour = "hunt"
 	var st := f2.add_unit(Unit.mech(2, "Prairie Dog", _o(3, 4), 30))
-	st.traits = [Battlefield.ELUSIVE]
+	st.grant_passive({"id": "scrub", "name": "Scrub", "description": "", "effects": [{"trigger": "static", "effect": "never_hunted", "value": 1}]}, "scrub")
 	var open := f2.add_unit(Unit.mech(3, "Badger", _o(3, 10), 30))
 	assert_eq(f2.pick_prey(sq2), open, "the nearest machine that can be seen")
 
@@ -308,11 +308,11 @@ func test_range_and_rings_count_from_any_footprint_hex() -> void:
 	assert_true((f.attack_roster([boss])["in_range"] as Array).has(m), "in range through a secondary footprint hex")
 
 
-func test_a_tireless_machine_has_two_actions() -> void:
+func test_a_passive_can_grant_a_second_action() -> void:
 	var m := Unit.mech(1, "Dingo", Vector2i.ZERO, 40)
 	assert_eq(Battlefield.actions_for(m), 1, "one action")
-	m.traits.append(Battlefield.TIRELESS)
-	assert_eq(Battlefield.actions_for(m), 2, "two, tireless")
+	m.grant_passive({"id": "twin", "name": "Twin", "description": "", "effects": [{"trigger": "static", "effect": "extra_action", "value": 1}]}, "twin")
+	assert_eq(Battlefield.actions_for(m), 2, "two, by its passive")
 
 
 func test_boss_covers_three_hexes_and_blocks_them() -> void:

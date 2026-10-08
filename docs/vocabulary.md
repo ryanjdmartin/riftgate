@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 107 implemented, 8 planned, 0 idea.
+Status: 105 implemented, 8 planned, 0 idea.
 
 ## Resource
 
@@ -117,7 +117,7 @@ Status: 107 implemented, 8 planned, 0 idea.
 | **Movespeed** | Move in tens: how far a machine goes in an action. A normal hex costs 10, so MOVE 40 is four hexes on open ground. Each way of moving calls each ground fast (5), normal (10) or slow: a slow hex can always be entered with any move left, and the step ends the move. Move left at the end of a phase is lost. | implemented |
 | **Walk** | The map shows where every pack will walk on the enemy's turn, worked out from where your machines stand now: a pusher toward the gate, a hunter toward its prey. Packs go round your machines; nothing you do stops one, and nothing a pack does reacts to your plan. | implemented |
 | **Fight** | Tap a pack to attack it. The fight is at that pack's hex: every pack whose ring covers it joins, and you commit the machines whose attack range covers it. One fight at a time, each resolved before the next; a machine that fought, won, lost or withdrew, is spent until your next turn. | implemented |
-| **Spent** | A machine that has fought this turn is spent: it cannot move or fight again until your next turn. A tireless machine has two actions before it is spent. | implemented |
+| **Spent** | A machine that has fought this turn is spent: it cannot move or fight again until your next turn. A machine whose passive grants a second action has two before it is spent. | implemented |
 | **Caught** | A machine a hunter has caught fights it first on your turn, before any other fight, and cannot move until then. Others in range may join that fight. Withdrawing ends it, and the hunter catches the machine again while it lives. | implemented |
 | **Ring** | Every unit has a ring. A pack's ring is who it supports: a pack whose ring covers the pack you attack joins the fight. A hunter's ring is how close it must be to catch its prey. A machine's ring is its attack range, two hexes: it can join a fight whose target is that close. | implemented |
 | **Behaviour** | A pusher walks toward the gate and threatens nothing else. A hunter locks one machine, by its caveat (the nearest, weakest, strongest or slowest), wears the target rings on it and walks toward it; when it ends its walk with its prey inside its ring it has caught it, and that fight comes first on your next turn. A caught machine cannot move until the fight, and is caught again while the hunter lives. | implemented |
@@ -146,8 +146,6 @@ Status: 107 implemented, 8 planned, 0 idea.
 | **Walker** | Legs. Rough ground and ruins at normal pace; water is slow: it can enter it, and the step ends its move. | implemented |
 | **Tracked** | Tracks. Ploughs through forest and fords water at normal pace; rubble is slow: it can enter ruins, and the step ends its move. | implemented |
 | **Wheeled** | Wheels. Fast on open ground. Rough ground, ruins and water are slow: it can enter them, and the step ends its move. | implemented |
-| **Elusive** | A hunter never picks it. It is never in a fight it did not choose. | implemented |
-| **Tireless** | Two actions a turn: it may move and fight, then move and fight again. | implemented |
 | **City defense** | A static player-side unit. Not on the field yet. | planned |
 
 ## Trigger
@@ -245,8 +243,6 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Water** (implemented): Designed to dampen burn inside a skirmish. Not coded. The generator gives one real water feature a map with crossings for the horde, with the hovercraft (bible section 4).
 - **Tracked** (implemented): Was tank until 2 October (Ryan). Built 2 October.
 - **Wheeled** (implemented): The cars (Ryan, 2 October: the Prairie Dog and the Dingo). Built 2 October.
-- **Elusive** (implemented): The Prairie Dog (Ryan, 8 October): the scout that slips around the fights. The name is a placeholder.
-- **Tireless** (implemented): The Dingo (Ryan, 8 October): the pack animal that drifts between fights. The name is a placeholder.
 - **City defense** (planned): Defenses have no die. They cannot act inside a skirmish yet. The redesigned round (8 October) leaves it no rule yet: packs walk to the gate alone.
 - **On shield gain** (implemented): Built 30 September (Effects.fire); no content uses it yet.
 - **On shielding an ally** (implemented): Built 5 October for the Puffin's Slipstream (an ally it shields sheds 10 heat). Fires on the spend, whatever the shield gained, so a shield die on a topped-up ally still does its other work.

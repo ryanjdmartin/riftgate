@@ -63,8 +63,7 @@ var cooling: int:
 		base["cooling"] = v
 
 ## Chassis traits: a way of moving ("flyer", "hover", "walker", "tracked", "wheeled";
-## BattleMap.WAYS), "elusive" (a hunter never picks it), "tireless" (two actions a turn),
-## or "defense" for a static unit. A pack carries none and
+## BattleMap.WAYS), or "defense" for a static unit. A pack carries none and
 ## moves by the horde's rule.
 var traits: Array[String] = []
 

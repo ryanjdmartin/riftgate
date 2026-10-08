@@ -122,6 +122,9 @@ func _rows() -> Array:
 		elif battle.actions_left(m) <= 0:
 			order = "SPENT"
 			col = Color(Palette.HUD, 0.45)
+		elif battle.order_of(m) != null:
+			order = "> " + _short(battle.order_of(m).display_name)
+			col = Palette.HUD
 		elif battle.action_from.has(m.id):
 			order = "MOVED"
 		elif battle.actions_left(m) < Battlefield.actions_for(m):
@@ -146,6 +149,8 @@ func _field_lines() -> Array:
 	if battle.state == Battle.State.PLAN:
 		if not battle.forced.is_empty():
 			lines.append(["CAUGHT // %d FIGHT%s FIRST" % [battle.forced.size(), "" if battle.forced.size() == 1 else "S"], Color(Palette.ENEMY, 0.9)])
+		elif not battle.orders.is_empty():
+			lines.append(["ORDERS // ENGAGE WHEN READY", Color(Palette.HUD, 0.9)])
 		var strikes := 0
 		var w: Dictionary = walks.call() if walks.is_valid() else {}
 		for k in w.keys():
