@@ -1,0 +1,792 @@
+<title>Engagement Sandbox</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+/* Layout: the field (portrait, the phone's 7x14) on the left, the pieces, the rules and the readout on the right;
+   one column on a phone. One deliberate dark look: the game's display, so what is judged here is what the
+   phone will show. Every mark carries structure as well as hue (Ryan is colourblind). */
+:root {
+  --bg: #0a0e0b;
+  --panel: #101712;
+  --line: #1f3326;
+  --ink: #d6e3d9;
+  --dim: #7f968a;
+  --hud: #5fe08a;        /* the display's green: machines, HUD */
+  --hud-dim: #2a6b40;
+  --rift: #a468ff;       /* a pack's intent */
+  --rift-deep: #5a1cb8;
+  --warn: #ff4a3d;       /* the engagement warning */
+  --warn-hot: #ff9a3c;
+  --gate: #4b5651;
+  --crag: #2b2f2a;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: dark;
+}
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.45; margin: 0; }
+.wrap { padding-inline: 16px; padding-block: 14px 32px; max-width: 1180px; margin: 0 auto; }
+header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; margin-bottom: 12px; }
+h1 { font-family: var(--mono); font-weight: 600; font-size: 20px; letter-spacing: 0.04em; margin: 0; color: var(--hud); text-transform: uppercase; }
+header p { margin: 0; color: var(--dim); max-width: 64ch; }
+.grid { display: grid; grid-template-columns: minmax(280px, 420px) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+.field { background: var(--panel); border: 1px solid var(--line); padding: 8px; }
+canvas { display: block; width: 100%; height: auto; touch-action: none; cursor: pointer; }
+.hint { font-family: var(--mono); font-size: 12px; color: var(--dim); margin: 8px 2px 0; letter-spacing: 0.02em; }
+.side { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+fieldset { border: 1px solid var(--line); padding: 10px 12px 12px; margin: 0; min-width: 0; }
+legend { font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--hud); padding: 0 6px; }
+.pieces { display: flex; flex-wrap: wrap; gap: 6px; }
+.pieces button { display: inline-flex; align-items: center; gap: 7px; }
+.pieces button svg { flex: none; }
+.toggles { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.toggles label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 14px; }
+.toggles input { accent-color: var(--hud); }
+.toggles + .toggles { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); }
+select { background: var(--bg); color: var(--ink); border: 1px solid var(--line); font-family: var(--mono); font-size: 13px; padding: 2px 4px; }
+button { font-family: var(--mono); font-size: 13px; background: var(--bg); color: var(--ink); border: 1px solid var(--hud-dim); padding: 6px 10px; cursor: pointer; letter-spacing: 0.02em; }
+button:hover { border-color: var(--hud); }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--hud); outline-offset: 2px; }
+button.on { background: var(--hud-dim); color: #fff; border-color: var(--hud); }
+button.act { border-color: var(--warn-hot); }
+.phase { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; }
+.phase .n { font-family: var(--mono); color: var(--warn-hot); font-weight: 600; letter-spacing: 0.05em; }
+.sentence { font-family: var(--mono); font-size: 14px; line-height: 1.5; color: var(--ink); border-left: 3px solid var(--warn); padding: 4px 10px; margin: 0; background: var(--bg); }
+.readout { font-family: var(--mono); font-size: 13px; line-height: 1.55; margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.readout li { padding: 6px 10px; border: 1px solid var(--line); display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; min-width: 0; }
+.readout li > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+.readout .k { color: var(--warn-hot); font-weight: 600; letter-spacing: 0.05em; white-space: nowrap; }
+.readout .k.p { color: var(--rift); }
+.readout .k.m { color: var(--hud); }
+.readout .none { color: var(--dim); border-style: dashed; grid-template-columns: 1fr; }
+.readout .why { color: var(--dim); grid-column: 2; }
+.readout .diff { border-color: var(--warn-hot); }
+.readout .same { border-style: dashed; }
+.leg { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 6px 14px; font-size: 13px; color: var(--dim); }
+.leg div { display: flex; align-items: center; gap: 8px; }
+.leg svg { flex: none; }
+.scenario { color: var(--dim); font-size: 14px; margin: 8px 0 0; min-height: 1.4em; }
+.presets { display: flex; flex-wrap: wrap; gap: 6px; }
+.log { font-family: var(--mono); font-size: 12px; color: var(--dim); margin: 0; padding: 0; list-style: none; max-height: 9em; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; }
+.log li { overflow-wrap: anywhere; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+<header>
+  <h1>Engagement Sandbox</h1>
+  <p>The decided rules, as the engine runs them: the enemy commits first, zones where a pack ends, a body in the path as the only stop, push, aggressive and hunt, and the Prairie Dog's provoke to judge. Place machines where they end their move, read where every pack goes, then resolve the phase and plan the next.</p>
+</header>
+
+<div class="grid">
+  <div>
+    <div class="field"><canvas id="c" width="420" height="700" aria-label="The hex field"></canvas></div>
+    <div class="hint" id="hint">tap: place the chosen piece, or remove what stands there &nbsp;·&nbsp; drag to move</div>
+    <p class="scenario" id="scenario"></p>
+  </div>
+
+  <div class="side">
+    <fieldset>
+      <legend>Pieces</legend>
+      <div class="pieces" id="pieces"></div>
+      <div class="toggles" style="margin-top:10px">
+        <label>pack move <input type="range" id="speed" min="1" max="4" value="2"> <span id="speedv">2</span> hexes (brute +1, boss 1)</label>
+        <label>a hunter hunts the <select id="hunts"><option value="nearest">nearest</option><option value="fastest">fastest</option><option value="strongest">strongest</option></select></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Phase</legend>
+      <div class="phase">
+        <span class="n" id="phaseno">PHASE 1</span>
+        <button type="button" class="act" id="resolve">Resolve: packs walk</button>
+        <button type="button" id="reset">Reset scenario</button>
+        <button type="button" id="clear">Clear field</button>
+      </div>
+      <ul class="log" id="log" style="margin-top:8px"></ul>
+    </fieldset>
+
+    <fieldset>
+      <legend>The car</legend>
+      <div class="toggles">
+        <label><input type="checkbox" id="provoke" checked> the Prairie Dog provokes: a pusher whose reach holds it reacts as an aggressive pack</label>
+        <label>a provoked pack goes for <select id="goes"><option value="catch">the biggest catch in its reach (as aggressive)</option><option value="car">the car itself</option></select></label>
+      </div>
+      <div class="toggles">
+        <label><input type="checkbox" id="routeround"> a pack stopped twice by the same body routes round it (proposed; off is the engine today)</label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Marks, to judge clutter</legend>
+      <div class="toggles">
+        <label>reach rings <select id="rings"><option value="aggressive">aggressive packs only (the game today)</option><option value="provoked" selected>aggressive, and a pusher the car provokes</option><option value="drag">those, and every pusher while the car is dragged</option><option value="all">every pack, always</option><option value="none">none</option></select></label>
+        <label>zones <select id="zones"><option value="all" selected>every pack's, thin where empty (the game today)</option><option value="fights">only where a fight is</option></select></label>
+        <label>routes <select id="routes"><option value="all" selected>every pack's (the game today)</option><option value="react">only reactions</option><option value="none">none</option></select></label>
+        <label><input type="checkbox" id="ghost" checked> show the committed route as a ghost when a reaction replaces it</label>
+        <label><input type="checkbox" id="locks" checked> hunters' locks</label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Scenarios</legend>
+      <div class="presets" id="presets"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>In one sentence</legend>
+      <p class="sentence">Every pack walks to the gate and stops only where a body stands in its path. Stand inside a pack's zone where it stops and you fight it; everything your machines connect is one fight. An aggressive pack turns for the biggest catch in its reach. A hunter chases one machine. The Prairie Dog makes any pusher that can reach it aggressive.</p>
+    </fieldset>
+
+    <fieldset>
+      <legend>Does the car change anything</legend>
+      <ul class="readout" id="diff"></ul>
+    </fieldset>
+
+    <fieldset>
+      <legend>Packs</legend>
+      <ul class="readout" id="packs"></ul>
+    </fieldset>
+
+    <fieldset>
+      <legend>Fights</legend>
+      <ul class="readout" id="fights"></ul>
+    </fieldset>
+
+    <fieldset>
+      <legend>Marks</legend>
+      <div class="leg">
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><polygon points="11,2 19,6.5 19,15.5 11,20 3,15.5 3,6.5" fill="#1a3d26" stroke="#5fe08a" stroke-width="2"/></svg>heavy: a body</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><polygon points="11,2 19,6.5 19,15.5 11,20 3,15.5 3,6.5" fill="#1a3d26" stroke="#5fe08a" stroke-width="2"/><polygon points="11,5 16,8 16,14 11,17 6,14 6,8" fill="none" stroke="#5fe08a" stroke-width="1.5"/></svg>Prairie Dog: a body that provokes</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><polygon points="11,2 19,6.5 19,15.5 11,20 3,15.5 3,6.5" fill="none" stroke="#5fe08a" stroke-width="2" stroke-dasharray="3 2"/></svg>flyer: passed through</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><polygon points="11,2 19,6.5 19,15.5 11,20 3,15.5 3,6.5" fill="none" stroke="#5fe08a" stroke-width="2" stroke-dasharray="1 3"/></svg>stealth: a body no zone pulls in</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><polygon points="11,2 20,11 11,20 2,11" fill="#4a1410" stroke="#ff4a3d" stroke-width="2"/></svg>pack, with its zone radius</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><rect x="2" y="2" width="18" height="18" fill="none" stroke="#ff4a3d" stroke-width="1" stroke-dasharray="2 2"/></svg>zone, nobody in it</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><defs><pattern id="h" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="4" stroke="#ff4a3d" stroke-width="1.5"/></pattern></defs><rect x="2" y="2" width="18" height="18" fill="url(#h)" stroke="#ff4a3d" stroke-width="2"/></svg>zone with a fight in it</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><rect x="2" y="2" width="18" height="18" fill="none" stroke="#ff9a3c" stroke-width="1.5" stroke-dasharray="5 3"/></svg>reach ring: where a reaction can catch</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="8" fill="none" stroke="#ff9a3c" stroke-width="1.5"/><circle cx="11" cy="11" r="3" fill="none" stroke="#ff9a3c" stroke-width="1.5"/></svg>a hunter's lock</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><line x1="3" y1="18" x2="18" y2="4" stroke="#a468ff" stroke-width="2.5"/></svg>a pack's route; a reaction is thicker</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><polygon points="11,2 19,6.5 19,15.5 11,20 3,15.5 3,6.5" fill="#2b2f2a" stroke="#4b5651" stroke-width="2"/><line x1="6" y1="6" x2="16" y2="16" stroke="#4b5651" stroke-width="1.5"/><line x1="16" y1="6" x2="6" y2="16" stroke="#4b5651" stroke-width="1.5"/></svg>crag or water: a wall to the horde</div>
+      </div>
+    </fieldset>
+  </div>
+</div>
+</div>
+
+<script>
+(function () {
+  const COLS = 7, ROWS = 14, RIFT_ROW = 0, GATE_ROW = 12;   // rows 12 and 13 are the gate and the wall
+  const GATE_COLS = [2, 3, 4];
+  const C = {
+    bg: '#0a0e0b', line: '#1f3326', ink: '#d6e3d9', dim: '#7f968a', hud: '#5fe08a', hudDim: '#2a6b40',
+    hudFill: '#1a3d26', rift: '#a468ff', riftDeep: '#5a1cb8', warn: '#ff4a3d', warnHot: '#ff9a3c',
+    warnFill: '#4a1410', gate: '#4b5651', crag: '#2b2f2a'
+  };
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  const $ = id => document.getElementById(id);
+
+  // ---- the pieces ----
+  // zone and move are the content's placeholders (front 1, back 3, boss 2; packs 2 hexes, the brute 3, bosses 1).
+  const PIECES = {
+    heavy:   { label: 'M', name: 'heavy',        side: 'mech', speed: 3, body: true,  hp: 180 },
+    car:     { label: 'D', name: 'Prairie Dog',  side: 'mech', speed: 5, body: true,  hp: 100, provokes: true },
+    flyer:   { label: 'F', name: 'flyer',        side: 'mech', speed: 5, body: false, hp: 120 },
+    stealth: { label: 'S', name: 'stealth',      side: 'mech', speed: 4, body: true,  hp: 100, stealth: true },
+    front:   { label: 'P', name: 'front pack',   side: 'pack', zone: 1, behaviour: 'push' },
+    back:    { label: 'B', name: 'back pack',    side: 'pack', zone: 3, behaviour: 'push' },
+    ghoul:   { label: 'G', name: 'ghoul pack',   side: 'pack', zone: 1, behaviour: 'aggressive' },
+    brute:   { label: 'H', name: 'brute',        side: 'pack', zone: 1, behaviour: 'hunt', moveBonus: 1 },
+    boss:    { label: 'X', name: 'boss',         side: 'pack', zone: 2, behaviour: 'push', moveFixed: 1 },
+    wall:    { label: '',  name: 'crag / water', side: 'wall' },
+    erase:   { label: '',  name: 'erase',        side: 'tool' }
+  };
+  const ORDER = ['heavy', 'car', 'flyer', 'stealth', 'front', 'back', 'ghoul', 'brute', 'boss', 'wall', 'erase'];
+  let piece = 'heavy';
+  let units = [];        // {id, kind, col, row, prey, stoppedBy, stoppedAt}
+  let walls = new Set(); // keys of hexes that are a wall to the horde (and to a machine's stand)
+  let nextId = 1;
+  let phase = 1;
+  let scenarioIndex = -1;
+  let dragHex = null;    // the hex the dragged piece is over, for the drag ring policy
+  let dragging = null;
+
+  // ---- hex maths: pointy-top, odd rows shifted right (the game's offset grid) ----
+  const mod2 = r => ((r % 2) + 2) % 2;
+  const toCube = (col, row) => { const x = col - (row - mod2(row)) / 2; return [x, -x - row, row]; };
+  const toOffset = (x, z) => [x + (z - mod2(z)) / 2, z];
+  const dist = (a, b) => { const p = toCube(a.col, a.row), q = toCube(b.col, b.row); return Math.max(Math.abs(p[0] - q[0]), Math.abs(p[1] - q[1]), Math.abs(p[2] - q[2])); };
+  const DIRS = [[1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0], [0, 1, -1], [1, 0, -1]];
+  const key = h => h.col + ',' + h.row;
+  const same = (a, b) => a.col === b.col && a.row === b.row;
+  const inField = (col, row) => col >= 0 && col < COLS && row >= 0 && row < ROWS;
+  const isGate = h => h.row === GATE_ROW && GATE_COLS.includes(h.col);
+  const GATE_HEXES = GATE_COLS.map(col => ({ col, row: GATE_ROW }));
+  const standable = h => inField(h.col, h.row) && h.row > RIFT_ROW && h.row < GATE_ROW && !walls.has(key(h));
+  function neighbours(h) {
+    const c = toCube(h.col, h.row); const out = [];
+    for (const d of DIRS) { const o = toOffset(c[0] + d[0], c[2] + d[2]); if (inField(o[0], o[1])) out.push({ col: o[0], row: o[1] }); }
+    return out;
+  }
+  function ring(h, r) {
+    const out = [];
+    for (let row = RIFT_ROW + 1; row < GATE_ROW; row++) for (let col = 0; col < COLS; col++) { const q = { col, row }; if (dist(h, q) <= r) out.push(q); }
+    return out;
+  }
+  const gateDistance = h => Math.min(...GATE_HEXES.map(g => dist(h, g)));
+
+  // ---- geometry on the canvas ----
+  let S = 28, W, PADX = 6, PADY = 6;
+  function layout() {
+    const cssW = canvas.clientWidth || 420;
+    W = (cssW - 2 * PADX) / (COLS + 0.5);
+    S = W / Math.sqrt(3);
+    const cssH = PADY * 2 + S * (1.5 * (ROWS - 1) + 2);
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.round(cssW * dpr); canvas.height = Math.round(cssH * dpr);
+    canvas.style.height = cssH + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  const centre = h => ({ x: PADX + W * (h.col + 0.5 * mod2(h.row)) + W / 2, y: PADY + S + 1.5 * S * h.row });
+  function corner(c, i) { const a = Math.PI / 180 * (60 * i - 30); return { x: c.x + S * Math.cos(a), y: c.y + S * Math.sin(a) }; }
+  function hexPath(c, scale) {
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) { const a = Math.PI / 180 * (60 * i - 30); const x = c.x + S * scale * Math.cos(a), y = c.y + S * scale * Math.sin(a); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+    ctx.closePath();
+  }
+  function hexAt(px, py) {
+    let best = null, bd = Infinity;
+    for (let row = 0; row < ROWS; row++) for (let col = 0; col < COLS; col++) { const c = centre({ col, row }); const d = (c.x - px) ** 2 + (c.y - py) ** 2; if (d < bd) { bd = d; best = { col, row }; } }
+    return bd <= (S * S) ? best : null;
+  }
+
+  // ---- the units ----
+  const P = u => PIECES[u.kind];
+  const isPack = u => P(u).side === 'pack';
+  const isMech = u => P(u).side === 'mech';
+  const blocks = u => isMech(u) && P(u).body;       // a grounded machine is a body; a flyer is passed through
+  const packs = () => units.filter(isPack);
+  const mechs = () => units.filter(isMech);
+  const unitAt = h => units.find(u => same(u, h));
+  const byId = id => units.find(u => u.id === id);
+  const zone = u => P(u).zone;
+  const move = u => P(u).moveFixed != null ? P(u).moveFixed : Number($('speed').value) + (P(u).moveBonus || 0);
+  const behaviour = u => P(u).behaviour;
+  const pos = (u, at) => (at && at.has(u.id)) ? at.get(u.id) : { col: u.col, row: u.row };
+  const name = u => (isPack(u) ? P(u).name.replace(' pack', '').toUpperCase() : P(u).label) + ' ' + u.col + '.' + u.row;
+  const hexName = h => h.col + '.' + h.row;
+
+  // ---- paths: the horde's ground is binary (every land hex one step; crags and water walls), machines ignored ----
+  // A breadth-first search from `from` over the ground the horde can walk, past `blocked` hexes (other packs' holds).
+  // Gate hexes are reachable but never walked through: a pack strikes the gate from the hex before.
+  function search(from, blocked, limit) {
+    const d = new Map([[key(from), 0]]), prev = new Map(), q = [from];
+    while (q.length) {
+      const cur = q.shift(); const cd = d.get(key(cur));
+      if (limit != null && cd >= limit) continue;
+      for (const n of neighbours(cur)) {
+        const k = key(n);
+        if (d.has(k)) continue;
+        if (isGate(n)) { d.set(k, cd + 1); prev.set(k, cur); continue; }
+        if (!standable(n) || blocked.has(k)) continue;
+        d.set(k, cd + 1); prev.set(k, cur); q.push(n);
+      }
+    }
+    return { d, prev };
+  }
+  function pathTo(from, to, blocked) {
+    const { d, prev } = search(from, blocked, null);
+    if (!d.has(key(to))) return [];
+    const out = []; let cur = to;
+    while (!same(cur, from)) { out.unshift(cur); cur = prev.get(key(cur)); }
+    return out;
+  }
+  // The nearest gate hex the pack can reach, else nothing (a pack held off every goal is STALLED).
+  function gatePath(from, blocked) {
+    const { d, prev } = search(from, blocked, null);
+    let best = null, bd = Infinity;
+    for (const g of GATE_HEXES) { const k = key(g); if (d.has(k) && d.get(k) < bd) { bd = d.get(k); best = g; } }
+    if (!best) return [];
+    const out = []; let cur = best;
+    while (!same(cur, from)) { out.unshift(cur); cur = prev.get(key(cur)); }
+    return out;
+  }
+  const affordable = (u, path) => path.slice(0, move(u));
+
+  // The hexes a pack will hold after walking `path`: a strike on the gate or a body in the way is where it stops.
+  function heldAfter(u, path, at) {
+    let end = pos(u, at);
+    for (const step of path) {
+      if (isGate(step)) break;
+      const o = unitAt(step);
+      if (o && blocks(o)) break;
+      end = step;
+    }
+    return end;
+  }
+  // The hexes every other pack holds: where the ones planned before it will end, where the rest stand now.
+  function heldByOthers(u, ends) {
+    const b = new Set();
+    for (const o of packs()) { if (o === u) continue; b.add(key(ends.has(o.id) ? ends.get(o.id) : o)); }
+    // Proposed: a body that stopped this pack last phase, still standing there, is a wall to its planning.
+    if ($('routeround').checked && u.stoppedBy) { const body = byId(u.stoppedBy); if (body && u.stoppedAt && same(body, u.stoppedAt)) b.add(key(body)); }
+    return b;
+  }
+
+  // ---- behaviours ----
+  function pickPrey(u) {
+    const cur = byId(u.prey);
+    if (cur && isMech(cur)) return cur;
+    let best = null, bk = Infinity;
+    for (const m of mechs()) {
+      if (P(m).stealth) continue;
+      let k;
+      switch ($('hunts').value) {
+        case 'fastest': k = -P(m).speed * 100 + dist(u, m); break;
+        case 'strongest': k = -P(m).hp * 100 + dist(u, m); break;
+        default: k = dist(u, m);
+      }
+      if (k < bk) { bk = k; best = m; }
+    }
+    u.prey = best ? best.id : 0;
+    return best;
+  }
+  // The hexes a pack can walk to this phase past the other packs, and the reach its zone makes from them.
+  function reachable(u, blocked) {
+    const { d } = search(u, blocked, move(u));
+    const out = [];
+    for (const [k, v] of d) { const [col, row] = k.split(',').map(Number); const h = { col, row }; if (!isGate(h) && v <= move(u)) out.push(h); }
+    return out;
+  }
+  function reachHexes(u, blocked) {
+    const m = new Map();
+    for (const h of reachable(u, blocked)) for (const r of ring(h, zone(u))) m.set(key(r), r);
+    return m;
+  }
+  const catchAt = (u, at) => mechs().filter(m => !P(m).stealth && dist(at, m) <= zone(u)).length;
+  function bestCatch(u, blocked) {
+    let best = { col: u.col, row: u.row }, bn = catchAt(u, best), bd = gateDistance(best);
+    for (const h of reachable(u, blocked)) {
+      const n = catchAt(u, h), d = gateDistance(h);
+      if (n > bn || (n === bn && d < bd)) { best = h; bn = n; bd = d; }
+    }
+    return { hex: best, count: bn };
+  }
+  const cars = () => mechs().filter(m => P(m).provokes);
+  function provokedBy(u, blocked) {
+    if (!$('provoke').checked || behaviour(u) !== 'push') return null;
+    const reach = reachHexes(u, blocked);
+    return cars().find(c => reach.has(key(c))) || null;
+  }
+
+  // The enemy commits first: every pack's route to the gate (or its prey), planned in field order around where
+  // the packs before it will end. Machines are ignored, so the route the player reads is "where it goes unless
+  // a body stops it".
+  function commit() {
+    const intents = new Map(), ends = new Map();
+    for (const u of packs()) {
+      const blocked = heldByOthers(u, ends);
+      let path;
+      if (behaviour(u) === 'hunt') { const prey = pickPrey(u); path = prey ? pathTo(u, prey, blocked) : gatePath(u, blocked); }
+      else path = gatePath(u, blocked);
+      path = affordable(u, path);
+      intents.set(u.id, path); ends.set(u.id, heldAfter(u, path));
+    }
+    return intents;
+  }
+  // The reaction to the plan, the machines standing where they will end: an aggressive pack (or a pusher the car
+  // provokes) goes for the biggest catch in its reach, ties toward the gate; a hunter for where its prey stands.
+  function react(intents, provokeOn) {
+    const plans = new Map(), ends = new Map(), why = new Map();
+    const saved = $('provoke').checked; $('provoke').checked = provokeOn;
+    for (const u of packs()) {
+      const blocked = heldByOthers(u, ends);
+      let path = intents.get(u.id).slice();
+      let w = { kind: behaviour(u) };
+      const car = provokedBy(u, blocked);
+      if (behaviour(u) === 'aggressive' || car) {
+        if (car && $('goes').value === 'car') {
+          path = affordable(u, pathTo(u, car, blocked));
+          w = { kind: 'provoked', car, count: catchAt(u, heldAfter(u, path)) };
+        } else {
+          const best = bestCatch(u, blocked);
+          if (best.count > 0) path = affordable(u, pathTo(u, best.hex, blocked));
+          w = { kind: car ? 'provoked' : 'aggressive', car, count: best.count };
+        }
+      } else if (behaviour(u) === 'hunt') {
+        const prey = pickPrey(u);
+        if (prey) { path = affordable(u, pathTo(u, prey, blocked)); w = { kind: 'hunt', prey }; }
+      }
+      const end = heldAfter(u, path);
+      plans.set(u.id, path); ends.set(u.id, end); why.set(u.id, w);
+    }
+    $('provoke').checked = saved;
+    return { plans, ends, why };
+  }
+  // Where a pack actually stops: the gate (a strike) or the first body in its path. Packs walk in field order,
+  // so the ones before it stand at their ends and the ones after it where they are now (`packPos`).
+  function stopOf(u, path, packPos) {
+    let end = { col: u.col, row: u.row }, blocker = null, strikes = false;
+    for (const step of path) {
+      if (isGate(step)) { strikes = true; break; }
+      const m = mechs().find(x => blocks(x) && same(x, step));
+      const pk = packs().find(x => x !== u && same(packPos.get(x.id), step));
+      if (m || pk) { blocker = m || pk; break; }
+      end = step;
+    }
+    return { end, blocker, strikes };
+  }
+  function stopsOf(plans) {
+    const packPos = new Map(packs().map(p => [p.id, { col: p.col, row: p.row }]));
+    const stops = new Map();
+    for (const u of packs()) { const s = stopOf(u, plans.get(u.id), packPos); stops.set(u.id, s); packPos.set(u.id, s.end); }
+    return stops;
+  }
+
+  // ---- contacts: every machine inside a pack's zone where it ends fights it; a machine in two zones joins the two ----
+  function fightsOf(ends, stops) {
+    const nodes = [...packs(), ...mechs().filter(m => !P(m).stealth)];
+    const parent = new Map(nodes.map(n => [n.id, n.id]));
+    const find = x => parent.get(x) === x ? x : (parent.set(x, find(parent.get(x))), parent.get(x));
+    const union = (a, b) => parent.set(find(a), find(b));
+    for (const p of packs()) for (const m of mechs()) {
+      if (P(m).stealth) continue;
+      if (dist(ends.get(p.id), m) <= zone(p)) union(p.id, m.id);
+    }
+    // A stealth machine is never pulled in by a zone alone: it fights when it stopped one of the fight's packs,
+    // or when another machine is in that fight.
+    const stealths = mechs().filter(m => P(m).stealth);
+    for (const s of stealths) parent.set(s.id, s.id);
+    let changed = true;
+    while (changed) {
+      changed = false;
+      for (const s of stealths) for (const p of packs()) {
+        if (dist(ends.get(p.id), s) > zone(p)) continue;
+        const stopped = stops.get(p.id).blocker === s;
+        const hasMech = mechs().some(m => !P(m).stealth && find(m.id) === find(p.id));
+        if ((stopped || hasMech) && find(s.id) !== find(p.id)) { union(s.id, p.id); changed = true; }
+      }
+    }
+    const groups = new Map();
+    for (const n of [...nodes, ...stealths]) { const r = find(n.id); if (!groups.has(r)) groups.set(r, []); groups.get(r).push(n); }
+    return [...groups.values()].filter(g => g.some(isPack) && g.some(isMech)).map(g => ({ mechs: g.filter(isMech), packs: g.filter(isPack) }));
+  }
+
+  // ---- one reading of the field: commit, react, stop, fight; and the same with the car's provoke off ----
+  function reading() {
+    const intents = commit();
+    const r = react(intents, $('provoke').checked);
+    const stops = stopsOf(r.plans);
+    const ends = new Map(); for (const [id, s] of stops) ends.set(id, s.end);
+    const fights = fightsOf(ends, stops);
+    let without = null;
+    if ($('provoke').checked && cars().length) {
+      const r0 = react(intents, false);
+      const stops0 = stopsOf(r0.plans);
+      const ends0 = new Map(); for (const [id, s] of stops0) ends0.set(id, s.end);
+      without = { plans: r0.plans, stops: stops0, ends: ends0, fights: fightsOf(ends0, stops0) };
+    }
+    return { intents, plans: r.plans, why: r.why, stops, ends, fights, without };
+  }
+
+  // ---- drawing ----
+  const font = px => `600 ${px}px ${getComputedStyle(document.body).getPropertyValue('--mono')}`;
+  function regionOutline(hexes, stroke, width, dash) {
+    const set = new Set(hexes.map(key));
+    ctx.save(); ctx.strokeStyle = stroke; ctx.lineWidth = width; ctx.setLineDash(dash); ctx.lineCap = 'round';
+    ctx.beginPath();
+    for (const h of hexes) {
+      const c = toCube(h.col, h.row), ctr = centre(h);
+      DIRS.forEach((d, i) => {
+        const o = toOffset(c[0] + d[0], c[2] + d[2]);
+        if (set.has(o[0] + ',' + o[1])) return;
+        const a = corner(ctr, i), b = corner(ctr, (i + 1) % 6);
+        ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+      });
+    }
+    ctx.stroke(); ctx.restore();
+  }
+  function regionHatch(hexes, colour, angle, gap, width) {
+    ctx.save();
+    ctx.beginPath();
+    for (const h of hexes) { const ctr = centre(h); for (let i = 0; i < 6; i++) { const p = corner(ctr, i); i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y); } ctx.closePath(); }
+    ctx.clip();
+    ctx.strokeStyle = colour; ctx.lineWidth = width;
+    const w = canvas.clientWidth, hgt = parseFloat(canvas.style.height) || canvas.clientHeight, L = Math.hypot(w, hgt);
+    ctx.translate(w / 2, hgt / 2); ctx.rotate(angle);
+    ctx.beginPath();
+    for (let x = -L; x <= L; x += gap) { ctx.moveTo(x, -L); ctx.lineTo(x, L); }
+    ctx.stroke(); ctx.restore();
+  }
+  const DASHES = [[], [10, 6], [3, 5], [12, 4, 3, 4]];
+  const uniq = hexes => { const m = new Map(); hexes.forEach(h => m.set(key(h), h)); return [...m.values()]; };
+  function route(from, path, width, alpha, dash) {
+    if (!path.length) return;
+    ctx.save(); ctx.strokeStyle = `rgba(164,104,255,${alpha})`; ctx.lineWidth = width; ctx.setLineDash(dash); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.beginPath(); let c = centre(from); ctx.moveTo(c.x, c.y);
+    for (const h of path) { c = centre(h); ctx.lineTo(c.x, c.y); }
+    ctx.stroke(); ctx.restore();
+  }
+  function lock(h) {
+    const c = centre(h);
+    ctx.save(); ctx.strokeStyle = C.warnHot; ctx.lineWidth = 2; ctx.setLineDash([]);
+    ctx.beginPath(); ctx.arc(c.x, c.y, S * 0.95, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(c.x, c.y, S * 0.35, 0, Math.PI * 2); ctx.stroke();
+    for (let i = 0; i < 4; i++) { const a = Math.PI / 2 * i; ctx.beginPath(); ctx.moveTo(c.x + Math.cos(a) * S * 0.75, c.y + Math.sin(a) * S * 0.75); ctx.lineTo(c.x + Math.cos(a) * S * 1.15, c.y + Math.sin(a) * S * 1.15); ctx.stroke(); }
+    ctx.restore();
+  }
+
+  function draw() {
+    layout();
+    const rd = reading();
+    const w = canvas.clientWidth, hgt = parseFloat(canvas.style.height);
+    ctx.fillStyle = C.bg; ctx.fillRect(0, 0, w, hgt);
+
+    // the ground: rift band, open ground, crags, the gate and its wall
+    for (let row = 0; row < ROWS; row++) for (let col = 0; col < COLS; col++) {
+      const h = { col, row }, c = centre(h); hexPath(c, 0.96);
+      const gate = isGate(h), wallRow = row >= GATE_ROW && !gate, crag = walls.has(key(h));
+      ctx.fillStyle = row === RIFT_ROW ? '#1a1030' : gate ? '#161b18' : wallRow ? '#121513' : crag ? C.crag : '#0d1310';
+      ctx.fill(); ctx.strokeStyle = row === RIFT_ROW ? C.riftDeep : (gate || wallRow) ? C.gate : crag ? C.gate : C.line; ctx.lineWidth = crag ? 2 : 1; ctx.stroke();
+      if (crag) { ctx.strokeStyle = C.gate; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(c.x - S * 0.4, c.y - S * 0.4); ctx.lineTo(c.x + S * 0.4, c.y + S * 0.4); ctx.moveTo(c.x + S * 0.4, c.y - S * 0.4); ctx.lineTo(c.x - S * 0.4, c.y + S * 0.4); ctx.stroke(); }
+    }
+    ctx.font = font(10); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = C.rift; ctx.fillText('RIFT', centre({ col: 3, row: 0 }).x, centre({ col: 3, row: 0 }).y);
+    ctx.fillStyle = C.gate; ctx.fillText('GATE', centre({ col: 3, row: GATE_ROW }).x, centre({ col: 3, row: GATE_ROW }).y); ctx.fillText('WALL', centre({ col: 3, row: GATE_ROW + 1 }).x, centre({ col: 3, row: GATE_ROW + 1 }).y);
+
+    // zones where each pack will stand: thin dashed where empty, hatched under a heavy shared outline where a fight is
+    const inFight = new Set(rd.fights.flatMap(f => [...f.mechs, ...f.packs].map(u => u.id)));
+    if ($('zones').value === 'all') for (const p of packs()) if (!inFight.has(p.id)) regionOutline(ring(rd.ends.get(p.id), zone(p)), C.warn, 1, [3, 4]);
+    rd.fights.forEach((f, i) => {
+      const region = uniq(f.packs.flatMap(p => ring(rd.ends.get(p.id), zone(p))));
+      f.packs.forEach((p, k) => regionHatch(ring(rd.ends.get(p.id), zone(p)), 'rgba(255,74,61,0.33)', Math.PI / 3 * (k % 3) + Math.PI / 12, 7, 1.5));
+      regionOutline(region, C.warn, 2.5, DASHES[i % DASHES.length]);
+      const top = region.reduce((a, h) => h.row < a.row || (h.row === a.row && h.col < a.col) ? h : a, region[0]);
+      const c = centre(top);
+      ctx.font = font(11); ctx.fillStyle = C.bg; ctx.fillRect(c.x - 26, c.y - S - 14, 52, 14);
+      ctx.fillStyle = C.warnHot; ctx.fillText('FIGHT ' + (i + 1), c.x, c.y - S - 7);
+    });
+
+    // reach rings, by the policy under judgement
+    const policy = $('rings').value;
+    for (const p of packs()) {
+      const wy = rd.why.get(p.id);
+      const provoked = wy.kind === 'provoked';
+      let show = false, heavy = false;
+      if (policy === 'all') show = true;
+      if (behaviour(p) === 'aggressive' && policy !== 'none') show = true;
+      if (provoked && (policy === 'provoked' || policy === 'drag')) { show = true; heavy = true; }
+      if (policy === 'drag' && dragging && P(dragging).provokes && behaviour(p) === 'push') { show = true; heavy = provoked; }
+      if (!show) continue;
+      const reach = [...reachHexes(p, heldByOthers(p, new Map())).values()];
+      regionOutline(reach, C.warnHot, heavy ? 2.5 : 1.2, heavy ? [7, 4] : [5, 4]);
+    }
+
+    // hunters' locks
+    if ($('locks').checked) for (const p of packs()) { const wy = rd.why.get(p.id); if (wy.kind === 'hunt' && wy.prey) lock(wy.prey); }
+
+    // routes: the committed one as a ghost when a reaction replaced it, the one it walks on top
+    for (const p of packs()) {
+      const plan = rd.plans.get(p.id), intent = rd.intents.get(p.id), wy = rd.why.get(p.id);
+      const reacted = wy.kind !== 'push' && JSON.stringify(plan) !== JSON.stringify(intent);
+      const rp = $('routes').value;
+      if (rp === 'none') continue;
+      if (rp === 'react' && !reacted) continue;
+      if (reacted && $('ghost').checked) route(p, intent, 1.5, 0.45, [3, 5]);
+      const stop = rd.stops.get(p.id);
+      route(p, plan, reacted ? 4 : 2.5, reacted ? 1 : 0.8, []);
+      // the hex it stops on: a hollow diamond, so the zone has an anchor
+      const e = centre(stop.end);
+      if (!same(stop.end, p)) { ctx.save(); ctx.strokeStyle = C.rift; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(e.x, e.y - S * 0.45); ctx.lineTo(e.x + S * 0.45, e.y); ctx.lineTo(e.x, e.y + S * 0.45); ctx.lineTo(e.x - S * 0.45, e.y); ctx.closePath(); ctx.stroke(); ctx.restore(); }
+      if (!plan.length && behaviour(p) !== 'hunt' && gateDistance(p) > 1) { const c = centre(p); ctx.font = font(9); ctx.fillStyle = C.rift; ctx.fillText('STALLED', c.x, c.y - S * 0.95); }
+    }
+
+    // the units
+    const mechFights = new Map(); rd.fights.forEach((f, i) => f.mechs.forEach(m => mechFights.set(m.id, [...(mechFights.get(m.id) || []), i + 1])));
+    ctx.setLineDash([]);
+    for (const u of units) {
+      const c = centre(u); ctx.lineWidth = 2;
+      if (isPack(u)) {
+        ctx.beginPath(); ctx.moveTo(c.x, c.y - S * 0.62); ctx.lineTo(c.x + S * 0.62, c.y); ctx.lineTo(c.x, c.y + S * 0.62); ctx.lineTo(c.x - S * 0.62, c.y); ctx.closePath();
+        ctx.fillStyle = C.warnFill; ctx.fill(); ctx.strokeStyle = inFight.has(u.id) ? C.warnHot : C.warn; ctx.stroke();
+        ctx.fillStyle = C.ink; ctx.font = font(Math.round(S * 0.42)); ctx.fillText(P(u).label + zone(u), c.x, c.y + 1);
+        const wy = rd.why.get(u.id);
+        if (wy.kind === 'provoked') { // the glyph: provoked, with its cause
+          ctx.fillStyle = C.bg; ctx.beginPath(); ctx.arc(c.x + S * 0.55, c.y - S * 0.55, S * 0.3, 0, Math.PI * 2); ctx.fill();
+          ctx.strokeStyle = C.warnHot; ctx.lineWidth = 1.5; ctx.stroke();
+          ctx.fillStyle = C.warnHot; ctx.font = font(Math.round(S * 0.42)); ctx.fillText('!', c.x + S * 0.55, c.y - S * 0.55 + 1);
+        }
+      } else {
+        hexPath(c, 0.6);
+        ctx.fillStyle = P(u).body && !P(u).stealth ? C.hudFill : C.bg; ctx.fill();
+        ctx.strokeStyle = C.hud;
+        if (u.kind === 'flyer') ctx.setLineDash([3, 2]); else if (u.kind === 'stealth') ctx.setLineDash([1, 3]);
+        ctx.stroke(); ctx.setLineDash([]);
+        if (u.kind === 'car') { hexPath(c, 0.42); ctx.lineWidth = 1.5; ctx.stroke(); ctx.lineWidth = 2; }
+        const fl = mechFights.get(u.id) || [];
+        ctx.fillStyle = C.hud; ctx.font = font(Math.round(S * 0.42));
+        ctx.fillText(P(u).label + (fl.length ? fl.join('·') : ''), c.x, c.y + 1);
+      }
+    }
+    writeReadout(rd);
+  }
+
+  // ---- the readout ----
+  function line(ul, k, text, cls, why) {
+    const li = document.createElement('li'); if (cls) li.className = cls;
+    const ks = document.createElement('span'); ks.className = 'k' + (k.cls ? ' ' + k.cls : ''); ks.textContent = k.text; li.appendChild(ks);
+    const v = document.createElement('span'); v.textContent = text; li.appendChild(v);
+    if (why) { const w = document.createElement('span'); w.className = 'why'; w.textContent = why; li.appendChild(w); }
+    ul.appendChild(li);
+    return li;
+  }
+  function none(ul, text) { const li = document.createElement('li'); li.className = 'none'; li.textContent = text; ul.appendChild(li); }
+  function stopText(s) { return s.strikes ? 'strikes the gate' : s.blocker ? 'stopped by ' + name(s.blocker) : 'walks on'; }
+  function writeReadout(rd) {
+    const pk = $('packs'); pk.textContent = '';
+    if (!packs().length) none(pk, 'No packs. Place one.');
+    for (const p of packs()) {
+      const wy = rd.why.get(p.id), s = rd.stops.get(p.id), plan = rd.plans.get(p.id);
+      let why = '';
+      if (wy.kind === 'push') why = plan.length ? 'pushes for the gate' : 'held off every goal: STALLED';
+      if (wy.kind === 'aggressive') why = wy.count > 0 ? `aggressive: ${wy.count} machine${wy.count > 1 ? 's' : ''} in reach, goes for the biggest catch` : 'aggressive, nothing in reach: pushes for the gate';
+      if (wy.kind === 'provoked') why = `provoked by the car at ${hexName(wy.car)}: ` + ($('goes').value === 'car' ? 'goes for the car' : `goes for the biggest catch in reach (${wy.count})`);
+      if (wy.kind === 'hunt') why = wy.prey ? `hunts ${name(wy.prey)}` : 'nothing to hunt: pushes for the gate';
+      line(pk, { text: name(p), cls: 'p' }, `→ ${hexName(s.end)}, ${stopText(s)}`, '', why);
+    }
+    const fu = $('fights'); fu.textContent = '';
+    if (!rd.fights.length) none(fu, 'No contact. Nothing fights this phase.');
+    rd.fights.forEach((f, i) => line(fu, { text: 'FIGHT ' + (i + 1) }, f.mechs.map(name).join(', ') + '  vs  ' + f.packs.map(name).join(', ')));
+    const du = $('diff'); du.textContent = '';
+    if (!cars().length) none(du, 'No Prairie Dog on the field. Place one to compare.');
+    else if (!$('provoke').checked) none(du, 'Provoke is off: the car is a body like any other.');
+    else {
+      const moved = packs().filter(p => !same(rd.ends.get(p.id), rd.without.ends.get(p.id)));
+      const f0 = rd.without.fights.length, f1 = rd.fights.length;
+      if (!moved.length) none(du, 'Nothing: every pack ends where it would without the car. ' + (f1 ? 'The fights are the same.' : 'No fight either way.'));
+      else {
+        line(du, { text: moved.length + ' OF ' + packs().length }, `pack${moved.length > 1 ? 's' : ''} end elsewhere because of the car; fights ${f0} → ${f1}.`, 'diff');
+        for (const p of moved) {
+          const s0 = rd.without.stops.get(p.id), s1 = rd.stops.get(p.id);
+          line(du, { text: name(p), cls: 'p' }, `without: → ${hexName(s0.end)}, ${stopText(s0)}.  with: → ${hexName(s1.end)}, ${stopText(s1)}.`);
+        }
+      }
+    }
+  }
+
+  // ---- resolve: the packs walk, the field is the next phase's start ----
+  function resolve() {
+    const rd = reading();
+    const log = $('log');
+    const li = document.createElement('li');
+    const parts = [];
+    for (const p of packs()) {
+      const s = rd.stops.get(p.id);
+      parts.push(`${name(p)} → ${hexName(s.end)}${s.blocker ? ' (held by ' + name(s.blocker) + ')' : s.strikes ? ' (gate)' : ''}`);
+      if (s.blocker && blocks(s.blocker)) { p.stoppedBy = s.blocker.id; p.stoppedAt = { col: s.blocker.col, row: s.blocker.row }; } else { p.stoppedBy = 0; p.stoppedAt = null; }
+    }
+    for (const p of packs()) { const e = rd.ends.get(p.id); p.col = e.col; p.row = e.row; }
+    li.textContent = `phase ${phase}: ` + (parts.length ? parts.join('; ') : 'no packs') + (rd.fights.length ? `; ${rd.fights.length} fight${rd.fights.length > 1 ? 's' : ''}` : '');
+    log.prepend(li);
+    phase += 1; $('phaseno').textContent = 'PHASE ' + phase;
+    draw();
+  }
+
+  // ---- input: a piece palette; tap places or removes; drag moves ----
+  const ICON = {
+    mech: (k) => `<svg width="18" height="18" viewBox="0 0 22 22"><polygon points="11,2 19,6.5 19,15.5 11,20 3,15.5 3,6.5" fill="${k === 'heavy' || k === 'car' ? '#1a3d26' : 'none'}" stroke="#5fe08a" stroke-width="2" ${k === 'flyer' ? 'stroke-dasharray="3 2"' : k === 'stealth' ? 'stroke-dasharray="1 3"' : ''}/>${k === 'car' ? '<polygon points="11,5 16,8 16,14 11,17 6,14 6,8" fill="none" stroke="#5fe08a" stroke-width="1.5"/>' : ''}</svg>`,
+    pack: () => `<svg width="18" height="18" viewBox="0 0 22 22"><polygon points="11,2 20,11 11,20 2,11" fill="#4a1410" stroke="#ff4a3d" stroke-width="2"/></svg>`,
+    wall: () => `<svg width="18" height="18" viewBox="0 0 22 22"><polygon points="11,2 19,6.5 19,15.5 11,20 3,15.5 3,6.5" fill="#2b2f2a" stroke="#4b5651" stroke-width="2"/><line x1="6" y1="6" x2="16" y2="16" stroke="#4b5651" stroke-width="1.5"/><line x1="16" y1="6" x2="6" y2="16" stroke="#4b5651" stroke-width="1.5"/></svg>`,
+    tool: () => `<svg width="18" height="18" viewBox="0 0 22 22"><line x1="5" y1="5" x2="17" y2="17" stroke="#7f968a" stroke-width="2"/><line x1="17" y1="5" x2="5" y2="17" stroke="#7f968a" stroke-width="2"/></svg>`
+  };
+  const palette = $('pieces');
+  for (const k of ORDER) {
+    const b = document.createElement('button'); b.type = 'button'; b.id = 'piece-' + k;
+    const d = PIECES[k];
+    const detail = d.side === 'pack' ? ` z${d.zone} ${d.behaviour}` : d.side === 'mech' ? (d.body ? '' : ' no body') : '';
+    b.innerHTML = ICON[d.side](k) + `<span>${d.name}${detail}</span>`;
+    b.addEventListener('click', () => { piece = k; palette.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); });
+    if (k === piece) b.classList.add('on');
+    palette.appendChild(b);
+  }
+  let down = null, moved = false;
+  function pt(e) { const r = canvas.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+  canvas.addEventListener('pointerdown', e => {
+    const h = hexAt(pt(e).x, pt(e).y); if (!h) return;
+    down = h; moved = false; dragging = unitAt(h) || null; canvas.setPointerCapture(e.pointerId);
+    if (dragging) draw();
+  });
+  canvas.addEventListener('pointermove', e => {
+    if (!down) return;
+    const h = hexAt(pt(e).x, pt(e).y); if (!h) return;
+    if (dragging) {
+      if (!same(h, dragging)) {
+        moved = true;
+        if (standable(h) && !unitAt(h)) { dragging.col = h.col; dragging.row = h.row; setScenario(''); draw(); }
+      }
+    } else if (piece === 'wall' && !same(h, down)) {   // paint walls by dragging
+      moved = true;
+      if (h.row > RIFT_ROW && h.row < GATE_ROW && !unitAt(h)) { walls.add(key(h)); draw(); }
+    }
+  });
+  canvas.addEventListener('pointerup', () => {
+    if (!down) return;
+    if (!moved) {
+      const h = down, u = unitAt(h);
+      if (u) units = units.filter(x => x !== u);
+      else if (piece === 'wall') { if (h.row > RIFT_ROW && h.row < GATE_ROW) { const k = key(h); walls.has(k) ? walls.delete(k) : walls.add(k); } }
+      else if (piece === 'erase') { walls.delete(key(h)); }
+      else if (standable(h)) units.push({ id: nextId++, kind: piece, col: h.col, row: h.row, prey: 0, stoppedBy: 0, stoppedAt: null });
+      setScenario('');
+    }
+    down = null; dragging = null; draw();
+  });
+  canvas.addEventListener('pointercancel', () => { down = null; dragging = null; draw(); });
+
+  // ---- scenarios ----
+  const U = (kind, col, row) => ({ kind, col, row });
+  const WALL = (...hs) => hs.map(([col, row]) => col + ',' + row);
+  const SCENARIOS = [
+    { name: 'Open steppe', note: 'No cover, the squad on the left flank, two front packs coming down the middle and the right. The middle pack would walk past at zone one; the car at 1.7 is inside its reach (move two and zone one), so it steps aside for the biggest catch, the heavy at 1.6 and the car, and fights instead of walking on. The right-hand pack is out of reach and walks on. Note the scale: the diversion is one hex.',
+      units: [U('front', 3, 4), U('front', 6, 4), U('heavy', 0, 6), U('heavy', 1, 6), U('car', 1, 7)] },
+    { name: 'Front and back', note: 'A ghoul front with a necromancer back two hexes behind. The ghouls react on their own. The back pack\u2019s zone of three covers the squad from its own route, so the car changes nothing for it on a field seven wide: read the diff. Provoke only moves a pack whose zone misses you.',
+      units: [U('ghoul', 3, 5), U('back', 3, 3), U('heavy', 3, 8), U('heavy', 2, 8), U('car', 5, 7)] },
+    { name: 'The crossing', note: 'A ridge with a three-wide gap, the horde\u2019s guaranteed crossing. Two heavies stand in two of its hexes. At zone one the third lane is beside a heavy, so the pack walking it fights anyway and stops nowhere. Move a heavy off the gap and the car becomes the thing that holds the lane.',
+      units: [U('front', 1, 4), U('front', 3, 4), U('front', 5, 4), U('heavy', 2, 6), U('heavy', 3, 6), U('car', 3, 8)],
+      walls: WALL([0, 6], [1, 6], [5, 6], [6, 6]) },
+    { name: 'The hunter', note: 'A brute hunting the nearest machine. The car in its reach changes nothing: a hunter keeps its lock. Change what it hunts to the fastest and it hunts the car.',
+      units: [U('brute', 3, 3), U('heavy', 3, 6), U('car', 5, 7)] },
+    { name: 'Kiting', note: 'The car alone before a front pack. Resolve, move the car, resolve again. The pack follows only while the car stays catchable, so every phase of kiting is a phase the car could have been caught in, and the rift ticks. Resolve without moving the car and watch the pack walk round it to the catch hex nearest the gate: a body between only holds where the ground funnels.',
+      units: [U('front', 3, 3), U('car', 3, 6)] },
+    { name: 'Held forever', note: 'One heavy standing in a pack\u2019s lane on open ground. Resolve a few phases: the pack walks into the same body every phase and never routes round it, though the field is open either side. Tick the proposed rule and it goes round on the second stop.',
+      units: [U('front', 3, 3), U('heavy', 4, 5)] },
+    { name: 'Clutter', note: 'Six packs and the whole team, every mark the game draws today. Change the ring and route policies and judge what a thumb can read.',
+      units: [U('ghoul', 0, 2), U('front', 2, 1), U('back', 4, 2), U('front', 6, 3), U('brute', 3, 4), U('back', 1, 5), U('heavy', 2, 8), U('heavy', 3, 8), U('flyer', 4, 6), U('stealth', 5, 8), U('car', 3, 9)],
+      walls: WALL([0, 6], [6, 7]) },
+  ];
+  const presets = $('presets');
+  SCENARIOS.forEach((s, i) => {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = s.name; b.id = 'preset-' + i;
+    b.addEventListener('click', () => load(i));
+    presets.appendChild(b);
+  });
+  function load(i) {
+    const s = SCENARIOS[i]; scenarioIndex = i;
+    units = s.units.map(u => ({ ...u, id: nextId++, prey: 0, stoppedBy: 0, stoppedAt: null }));
+    walls = new Set(s.walls || []);
+    phase = 1; $('phaseno').textContent = 'PHASE 1'; $('log').textContent = '';
+    setScenario(s.note, presets.querySelector('#preset-' + i)); draw();
+  }
+  function setScenario(note, btn) {
+    $('scenario').textContent = note;
+    presets.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === btn));
+  }
+
+  $('resolve').addEventListener('click', resolve);
+  $('reset').addEventListener('click', () => { if (scenarioIndex >= 0) load(scenarioIndex); });
+  $('clear').addEventListener('click', () => { units = []; walls = new Set(); phase = 1; $('phaseno').textContent = 'PHASE 1'; $('log').textContent = ''; setScenario(''); draw(); });
+  ['provoke', 'goes', 'routeround', 'rings', 'zones', 'routes', 'ghost', 'locks', 'hunts'].forEach(id => $(id).addEventListener('change', draw));
+  $('speed').addEventListener('input', e => { $('speedv').textContent = e.target.value; draw(); });
+  window.addEventListener('resize', draw);
+  load(0);
+})();
+</script>
