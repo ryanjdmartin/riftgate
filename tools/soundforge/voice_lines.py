@@ -57,8 +57,8 @@ PACE = 1.35          # the decided pace, the model slowed a third
 # hook: (chance a trigger says a line, information?, normal pool, personality pool)
 HOOKS = {
     "die_spent": (1.0 / 6.0, False,
-                  ["target locked", "weapons free", "extreme prejudice authorised", "discharging", "ordnance engaged"],
-                  ["light them up", "going ballistic"]),
+                  ["target locked", "weapons free", "extreme prejudice authorised", "discharging", "ordnance engaged", "suppressing fire"],
+                  ["light them up", "going ballistic", "rampage"]),
     "foe_down": (1.0 / 4.0, False,
                  ["eliminating", "neutralising hostile", "target destroyed", "lethal force applied", "bogey down", "threat eliminated"],
                  ["mopping up trash", "get wrecked", "bug squashed", "dodge this", "fatality"]),
@@ -115,9 +115,9 @@ HOOKS = {
                   [("corruption has reached the city. estimated casualties: 100%", "corruption has reached the city. estimated casualties: one hundred percent")],
                   ["z axis lost"]),
     "victory": (1.0, False,
-                ["hostiles cleared. the line holds", ("area secured. well fought, commander", "area secured. well fot, commander"), "mission accomplished. the rift is sealed"],   # rewritten as sentence pairs (Ryan, 7 October: the combined lines read samey and stuck together)
-                [("GG EZ", "gee gee easy"), ("flawless victory", "flawless victory", 1.55), "well, that was fun", "we got paid, commander. first round's on me",
-                 "I love it when a plan comes together", "winner winner, chicken dinner", "another one bites the dust", "victory achieved"]),   # homages proposed 7 October (the A-Team, PUBG, Queen, Dark Souls), the two short ones folded into one
+                ["hostiles cleared. the line holds", ("area secured. well fought, commander", "area secured. well fot commander"), "mission accomplished. the rift is sealed"],   # rewritten as sentence pairs (Ryan, 7 October: the combined lines read samey and stuck together)
+                [("GG EZ", "gee gee easy"), ("flawless victory", "flawless victory", 1.55), "well, that was fun", ("we got paid, commander. first round's on me", "we got paid commander. first round's on me"),
+                 "I love it when a plan comes together", ("this was a triumph. I'm making a note here: huge success", "this was a triumph. I'm making a note here: huge success", 1.45), "are you not entertained", "we came, we saw, we kicked its ass", "hell, it's about time", "the only good bug is a dead bug"]),   # homages (7 October): the A-Team kept; Portal, Gladiator, Ghostbusters, Tychus and Starship Troopers proposed in the second round; a vocative comma is dropped in the spoken form
     "codex": (1.0 / 12.0, False,
               ["searching database", "record retrieved", "consulting archives", "help text loaded"],
               ["let me look that up", "reading the manual"]),
@@ -125,7 +125,7 @@ HOOKS = {
                ["negative", "unable to comply"],
                ["you must construct additional pylons"]),
     "battle_open": (1.0, False,
-                    ["battlefield feed online. all units reporting in", "deployment complete. awaiting your orders, commander", "sector loaded. hostiles inbound"],
+                    ["battlefield feed online. all units reporting in", ("deployment complete. awaiting your orders, commander", "deployment complete. awaiting your orders commander"), "sector loaded. hostiles inbound"],
                     [("reactor online, sensors online, weapons online, all systems nominal", "reactor on-line, sensors on-line, weapons on-line, all systems nominal"), "once more, into the breach", "now for wrath. now for ruin. and the red dawn"]),
 }
 
