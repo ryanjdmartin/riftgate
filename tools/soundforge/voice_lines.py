@@ -40,9 +40,10 @@ A line is a string, or a (shown, spoken) pair where the synthesiser needs anothe
 say it right, or a (shown, spoken, pace) triple where one line wants its own pace, or a
 (shown, spoken, pace, draw) quadruple pinning one of Piper's draws of it. A word in square
 brackets in the spoken form is one she censors (Ryan, 7 October: it would be really funny if
-she censored herself): the line renders in pieces either side of it, the word itself is
-rendered only to measure how long she would have taken, and a console tone of that length
-takes its place before the whole goes through her chain.
+she censored herself): she says the phrase up to and with the word, a console tone lies over
+the word from just after its onset with her ducked to a trace beneath it, so a bit of the
+first syllable comes through, and the rest of the line follows; the whole goes through her
+chain.
 
 Rendered through the decided chain (Jenny, mid, slowed a third, plosives tamed) at -14 dB on
 the phone. Every line in every pool is rendered, so each word can be judged.
@@ -240,39 +241,68 @@ def pick_draw(text, scale, pin=None):
 
 
 BLEEP_HZ = 1000.0
+LEAK = 0.05       # how much of the word's first syllable is heard before the tone (s)
+UNDER = 0.3       # what is left of her under the tone
+TONE_MAX = 0.36   # the tone's longest (s); a slow "ss" ran to 470 ms and read long (Ryan)
 
 
-def bleep_for(word, scale):
-    """The censor's tone, as long as the word she would have said (rendered to measure, never heard)."""
-    n = int(min(max(len(P.render("jenny", word, scale)), F.n_of(0.22)), F.n_of(0.45)))
-    y = np.sin(2.0 * np.pi * BLEEP_HZ * np.arange(n) / F.SR)
-    r = F.n_of(0.005)
-    y[:r] *= np.linspace(0.0, 1.0, r)
-    y[-r:] *= np.linspace(1.0, 0.0, r)
-    return y
+def last_word_onset(raw):
+    """Where the last word's vowel starts: the start of the last voiced run (the low band, gaps
+    under 30 ms closed). A word opening on a consonant leaks that consonant before the tone,
+    as a censor on television does."""
+    lo = F.lp(raw, 1000.0, order=3)
+    n = F.n_of(0.01)
+    env = np.sqrt(np.convolve(lo ** 2, np.ones(n) / n, mode="same"))
+    thr = float(np.percentile(env[env > 1e-4], 90)) * 0.2 if np.any(env > 1e-4) else 0.01
+    voiced = env > thr
+    gap = F.n_of(0.03)
+    runs, start, last_end = [], None, None
+    for i, v in enumerate(voiced):
+        if v and start is None:
+            if last_end is not None and i - last_end < gap and runs:
+                start = runs.pop()[0]
+            else:
+                start = i
+        if not v and start is not None:
+            runs.append((start, i)); last_end = i; start = None
+    if start is not None:
+        runs.append((start, len(raw)))
+    return runs[-1][0] if runs else 0
 
 
 def render_censored(text, scale):
-    """"kick [ass] and chew": the pieces either side render as their own utterances, the word
-    is a tone at the level of her loud syllables, 40 ms of air on each side of it."""
-    parts = re.split(r"\[([^\]]+)\]", text)
-    out, loud = [], None
-    for i, part in enumerate(parts):
-        if i % 2 == 0:
-            part = part.strip()
-            if not part:
-                continue
-            raw = P.shorten_pauses(P.render("jenny", part, scale), part)
-            if loud is None:
-                n = F.n_of(0.03)
-                env = np.sqrt(np.convolve(raw ** 2, np.ones(n) / n, mode="same"))
-                loud = float(np.percentile(env[env > 0.01], 90)) if np.any(env > 0.01) else 0.1
-            out.append(raw)
-        else:
-            out.append(np.zeros(F.n_of(0.04)))
-            out.append(bleep_for(part, scale) * (loud or 0.1) * 0.8 * math.sqrt(2.0))
-            out.append(np.zeros(F.n_of(0.04)))
-    return np.concatenate(out)
+    """"kick [ass] and chew": she says the phrase up to and with the word, a tone the length of the
+    word lies over it from just after its onset with her ducked to a trace beneath, and the
+    rest of the line follows as its own utterance (Ryan, 7 October: let her say it, then the
+    bleep on top, so a bit of the first syllable comes through)."""
+    m = re.match(r"^(.*?)\[([^\]]+)\](.*)$", text, re.S)
+    before, word, after = m.group(1).strip(), m.group(2).strip(), m.group(3).strip()
+    head_text = (before + " " + word).strip()
+    head = P.shorten_pauses(P.render("jenny", head_text, scale), head_text)
+    n = F.n_of(0.03)
+    env = np.sqrt(np.convolve(head ** 2, np.ones(n) / n, mode="same"))
+    loud = float(np.percentile(env[env > 0.01], 90)) if np.any(env > 0.01) else 0.1
+    a = last_word_onset(head) + F.n_of(LEAK)
+    loud_idx = np.where(np.abs(head) > 0.002)[0]
+    b = min(len(head), (int(loud_idx[-1]) if len(loud_idx) else len(head)) + F.n_of(0.02))
+    if b - a < F.n_of(0.12):
+        a = max(0, b - F.n_of(0.12))
+    t_len = min(b - a, F.n_of(TONE_MAX))   # the tone no longer than this; the duck runs to the word's end
+    tone = np.sin(2.0 * np.pi * BLEEP_HZ * np.arange(t_len) / F.SR) * loud * 0.8 * math.sqrt(2.0)
+    r = F.n_of(0.005)
+    tone[:r] *= np.linspace(0.0, 1.0, r)
+    tone[-r:] *= np.linspace(1.0, 0.0, r)
+    duck = np.ones(len(head))
+    r2 = F.n_of(0.01)
+    duck[a:b] = UNDER
+    duck[max(0, a - r2):a] = np.linspace(1.0, UNDER, r2)[-(a - max(0, a - r2)):] if a > 0 else duck[0:0]
+    duck[b:min(len(head), b + r2)] = np.linspace(UNDER, 1.0, r2)[:min(len(head), b + r2) - b]
+    head = head * duck
+    head[a:a + t_len] += tone
+    parts = [head]
+    if after:
+        parts += [np.zeros(F.n_of(0.06)), P.shorten_pauses(P.render("jenny", after, scale), after)]
+    return np.concatenate(parts)
 
 
 def render_line(text, scale=PACE, pin=None):
