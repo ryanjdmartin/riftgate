@@ -367,6 +367,17 @@ def refuse():
     return balanced([(0.0, R.shell_scrape(170.0, 0.5))], [(0.0, p28())], FINE)
 
 
+def heat_warn():
+    """Heat past three quarters: P13's pair once, high then low, over the plate (Ryan, 8 October:
+    a warning signal, then the phrase)."""
+    return balanced([(0.0, R.shell_round() * 0.8)], [(0.15, B.warning(B.B4, B.E4, 0.18, 1, 0.9))])
+
+
+def overheat_alarm():
+    """The overheat: three pairs, quicker and higher, the alarm to the warning's caution."""
+    return balanced([(0.0, R.shell_round() * 0.8)], [(0.12, B.warning(B.E5, B.A4, 0.13, 3, 0.9))])
+
+
 # name: (recipe, phone dB, shipped name, label, note)
 SET = [
     ("tap", select, -22.0, "ui_tap", "A press, a menu item, select", "one act, one sound: the boop on D5 first, the glass at 480 measured 10 dB under it, the whole 2 dB quieter. Every ordinary button, the menu's forward, a selection in a panel"),
@@ -392,6 +403,8 @@ SET = [
     ("nav_back", dismiss, -21.0, "ui_back", "Menu: back", "= dismiss"),
     ("nav_select", confirm, -19.0, "ui_tap", "Menu: select", "= confirm"),
     ("refuse", refuse, -17.0, "ui_back", "Refused", "P28, the scrape 1.5 dB over it (fine as it was)"),
+    ("heat_warn", heat_warn, -17.0, "heat_warn", "Heat past three quarters: the signal", "P13's pair once, high then low, the plate 10 dB under; Jenny's line a quarter second after it"),
+    ("overheat", overheat_alarm, -15.0, "overheat", "Overheat: the alarm", "three pairs, quicker and higher, 2 dB hotter than the warning; the line after it"),
 ]
 SET_BY = {name: (fn, db, beside, label, note) for name, fn, db, beside, label, note in SET}
 NAMES = {"touch": "tap", "touch_heavy": "tap", "round_acquire": "round_open", "resolve": "end_turn", "route_clear": "dismiss", "select": "map_select"}

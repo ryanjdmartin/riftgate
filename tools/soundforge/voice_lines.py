@@ -16,6 +16,10 @@ The system (for sound.gd when it lands):
               replaces a pending heat warning when the heat blew past both marks in one go.
   ducking     the music dips under a line (3 to 4 dB to start with, set by ear) and comes back
               after it; her level is measured against the undipped music.
+  signals     the two heat hooks are announced by a console signal first and the line after
+              it (Ryan, 8 October): the warning's pair of boops at three quarters, the alarm's
+              three at the overheat (palette_sketches: heat_warn, overheat_alarm), a quarter
+              second between the signal and the line.
   parked      an idle nag (thirty seconds with no input, a chance of "awaiting orders"): Ryan
               likes it, parked for now. The loss pools stay thin: not something to chase.
   pools       a hook's pool is its own plus any it merges (MERGE): a Horde foe falling draws
@@ -96,7 +100,7 @@ HOOKS = {
                     ["whew", "that's much better"]),
     "heat_high": (1.0, True,
                   ["thermal load approaching limit", "heat warning", "danger: internal temperature elevated"],
-                  ["toasty"]),   # she is not in the machine: she comments on its state (Ryan, 7 October)
+                  ["toasty", "seems a wee bit sweaty in there", "some like it hot"]),   # she is not in the machine: she comments on its state (Ryan, 7 October)
     "overheat": (1.0, True,   # heat past 100: damage at the round's end, a serious danger (Ryan, 7 October); pre-empts a pending heat warning
                  ["overheat detected. structural damage imminent", "thermal limit exceeded. hull integrity compromised", "danger: heat level critical", "heat sinks overloaded. vent now"],
                  ["hot hot hot", "smoking", ("she can't take anymore, captain", "she can't take anymore captain")]),   # the quote legible rather than right (Ryan: cannae read as can-nee)
