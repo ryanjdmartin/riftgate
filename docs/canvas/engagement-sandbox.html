@@ -109,7 +109,9 @@ button.act { border-color: var(--warn-hot); }
       <legend>The car</legend>
       <div class="toggles">
         <label><input type="checkbox" id="provoke" checked> the Prairie Dog provokes: a pusher whose reach holds it reacts as an aggressive pack</label>
-        <label>a provoked pack goes for <select id="goes"><option value="catch">the biggest catch in its reach (as aggressive)</option><option value="car">the car itself</option></select></label>
+        <label>a provoked pack goes for <select id="goes"><option value="car" selected>the car itself (Ryan, 8 October)</option><option value="catch">the biggest catch in its reach (as aggressive)</option></select></label>
+        <label><input type="checkbox" id="cardraws" checked> the car draws every reaction: an aggressive pack with the car in reach goes for the car too</label>
+        <label>an aggressive pack with no car in reach goes for <select id="aggro"><option value="catch">the biggest catch in its reach, ties toward the gate (decided)</option><option value="nearest">the nearest machine in reach, ties toward the gate (proposed)</option></select></label>
       </div>
       <div class="toggles">
         <label><input type="checkbox" id="routeround"> a pack stopped twice by the same body routes round it (proposed; off is the engine today)</label>
@@ -123,7 +125,7 @@ button.act { border-color: var(--warn-hot); }
         <label>zones <select id="zones"><option value="all" selected>every pack's, thin where empty (the game today)</option><option value="fights">only where a fight is</option></select></label>
         <label>routes <select id="routes"><option value="all" selected>every pack's (the game today)</option><option value="react">only reactions</option><option value="none">none</option></select></label>
         <label><input type="checkbox" id="ghost" checked> show the committed route as a ghost when a reaction replaces it</label>
-        <label><input type="checkbox" id="locks" checked> hunters' locks</label>
+        <label><input type="checkbox" id="locks" checked> locks: a hunter's prey, and the machine a reacting pack comes for</label>
       </div>
     </fieldset>
 
@@ -134,7 +136,7 @@ button.act { border-color: var(--warn-hot); }
 
     <fieldset>
       <legend>In one sentence</legend>
-      <p class="sentence">Every pack walks to the gate and stops only where a body stands in its path. Stand inside a pack's zone where it stops and you fight it; everything your machines connect is one fight. An aggressive pack turns for the biggest catch in its reach. A hunter chases one machine. The Prairie Dog makes any pusher that can reach it aggressive.</p>
+      <p class="sentence">Every pack walks to the gate and stops only where a body stands in its path. Stand inside a pack's zone where it stops and you fight it; everything your machines connect is one fight. An aggressive pack turns for the biggest catch in its reach. A hunter chases one machine. The Prairie Dog draws any pack that can reach it: it comes for the car.</p>
     </fieldset>
 
     <fieldset>
@@ -373,6 +375,18 @@ button.act { border-color: var(--warn-hot); }
     return { hex: best, count: bn, tied };
   }
   const cars = () => mechs().filter(m => P(m).provokes);
+  function carInReach(u, blocked) { const reach = reachHexes(u, blocked); return cars().find(c => reach.has(key(c))) || null; }
+  // The nearest machine inside the pack's reach, ties toward the gate (proposed, one key instead of two).
+  function nearestInReach(u, blocked) {
+    const reach = reachHexes(u, blocked);
+    let best = null, bd = Infinity, bg = Infinity;
+    for (const m of mechs()) {
+      if (P(m).stealth || !reach.has(key(m))) continue;
+      const d = dist(u, m), g = gateDistance(m);
+      if (d < bd || (d === bd && g < bg)) { best = m; bd = d; bg = g; }
+    }
+    return best;
+  }
   function provokedBy(u, blocked) {
     if (!$('provoke').checked || behaviour(u) !== 'push') return null;
     const reach = reachHexes(u, blocked);
@@ -404,10 +418,16 @@ button.act { border-color: var(--warn-hot); }
       let path = intents.get(u.id).slice();
       let w = { kind: behaviour(u) };
       const car = provokedBy(u, blocked);
+      const drawn = behaviour(u) === 'aggressive' && $('cardraws').checked ? carInReach(u, blocked) : null;
       if (behaviour(u) === 'aggressive' || car) {
-        if (car && $('goes').value === 'car') {
-          path = affordable(u, pathTo(u, car, blocked));
-          w = { kind: 'provoked', car, count: catchAt(u, heldAfter(u, path)) };
+        if ((car && $('goes').value === 'car') || drawn) {
+          const target = car || drawn;
+          path = affordable(u, pathTo(u, target, blocked));
+          w = { kind: car ? 'provoked' : 'aggressive', car: target, target, count: catchAt(u, heldAfter(u, path)), drawn: !!drawn };
+        } else if ($('aggro').value === 'nearest') {
+          const m = nearestInReach(u, blocked);
+          if (m) { path = affordable(u, pathTo(u, m, blocked)); w = { kind: car ? 'provoked' : 'aggressive', car, target: m, count: catchAt(u, heldAfter(u, path)) }; }
+          else w = { kind: 'aggressive', count: 0 };
         } else {
           const best = bestCatch(u, blocked);
           if (best.count > 0) path = affordable(u, pathTo(u, best.hex, blocked));
@@ -584,7 +604,7 @@ button.act { border-color: var(--warn-hot); }
     }
 
     // hunters' locks
-    if ($('locks').checked) for (const p of packs()) { const wy = rd.why.get(p.id); if (wy.kind === 'hunt' && wy.prey) lock(wy.prey); }
+    if ($('locks').checked) for (const p of packs()) { const wy = rd.why.get(p.id); if (wy.kind === 'hunt' && wy.prey) lock(wy.prey); else if (wy.target) lock(wy.target); }
 
     // routes: the committed one as a ghost when a reaction replaced it, the one it walks on top
     for (const p of packs()) {
@@ -652,8 +672,8 @@ button.act { border-color: var(--warn-hot); }
       let why = '';
       if (wy.kind === 'push') why = plan.length ? 'pushes for the gate' : 'held off every goal: STALLED';
       const tie = wy.tied ? ', several hexes tied, the one nearest the gate' : '';
-      if (wy.kind === 'aggressive') why = wy.count > 0 ? `aggressive: goes for the biggest catch in reach (${wy.count})${tie}` : 'aggressive, nothing in reach: pushes for the gate';
-      if (wy.kind === 'provoked') why = `provoked by the car at ${hexName(wy.car)}: ` + ($('goes').value === 'car' ? 'goes for the car' : `goes for the biggest catch in reach (${wy.count})${tie}`);
+      if (wy.kind === 'aggressive') why = wy.drawn ? `aggressive, the car in reach: goes for the car at ${hexName(wy.target)}` : wy.target ? `aggressive: goes for the nearest machine in reach, ${name(wy.target)}` : wy.count > 0 ? `aggressive: goes for the biggest catch in reach (${wy.count})${tie}` : 'aggressive, nothing in reach: pushes for the gate';
+      if (wy.kind === 'provoked') why = `provoked by the car at ${hexName(wy.car)}: ` + (wy.target ? (wy.target === wy.car ? 'goes for the car' : `goes for the nearest machine in reach, ${name(wy.target)}`) : `goes for the biggest catch in reach (${wy.count})${tie}`);
       if (wy.kind === 'hunt') why = wy.prey ? `hunts ${name(wy.prey)}` : 'nothing to hunt: pushes for the gate';
       line(pk, { text: name(p), cls: 'p' }, `→ ${hexName(s.end)}, ${stopText(s)}`, '', why);
     }
@@ -789,7 +809,7 @@ button.act { border-color: var(--warn-hot); }
   $('resolve').addEventListener('click', resolve);
   $('reset').addEventListener('click', () => { if (scenarioIndex >= 0) load(scenarioIndex); });
   $('clear').addEventListener('click', () => { units = []; walls = new Set(); phase = 1; $('phaseno').textContent = 'PHASE 1'; $('log').textContent = ''; setScenario(''); draw(); });
-  ['provoke', 'goes', 'routeround', 'rings', 'zones', 'routes', 'ghost', 'locks', 'hunts'].forEach(id => $(id).addEventListener('change', draw));
+  ['provoke', 'goes', 'cardraws', 'aggro', 'routeround', 'rings', 'zones', 'routes', 'ghost', 'locks', 'hunts'].forEach(id => $(id).addEventListener('change', draw));
   $('speed').addEventListener('input', e => { $('speedv').textContent = e.target.value; draw(); });
   window.addEventListener('resize', draw);
   load(0);
