@@ -382,7 +382,7 @@ def drone(f0=100.0, dur=1.0, rise=0.12, gain=1.0):
     t = np.arange(n) / SR
     x = np.sin(2.0 * math.pi * f0 * t) + 0.5 * np.sin(2.0 * math.pi * 3.0 * f0 * t) + 0.25 * np.sin(2.0 * math.pi * 5.0 * f0 * t)
     x = F.lp(F.sat(x, 1.5), 900.0)
-    return x * F.env_pts(n, [(0.0, 0.0), (rise, 0.7), (dur * 0.85, 0.7), (dur, 0.0)]) * gain
+    return x * F.env_pts(n, [(0.0, 0.0), (rise, 0.7), (dur - 0.04, 0.7), (dur, 0.0)]) * gain   # flat: in, hold, out over 40 ms (Ryan, 8 October)
 
 
 def under(kind, dur, f0=100.0):
@@ -391,7 +391,7 @@ def under(kind, dur, f0=100.0):
     weight's throb, was the alternative."""
     if kind == "pulse":
         return A.pulse(92.0, dur, 0.6)
-    return drone(f0, dur, 0.12)
+    return drone(f0, dur, 0.01)
 
 
 def heat_warn(kind="drone"):
@@ -400,7 +400,7 @@ def heat_warn(kind="drone"):
     which would read as a confirm). The drone a bit lower and a lot quieter than the alarm's,
     the blips a bit longer (Ryan, 8 October)."""
     beeps = lay(*[(0.16 + k * 0.2, boop(B.A4, 0.13, 0.9, bright=1800.0)) for k in range(2)])
-    return balanced([(0.0, under(kind, 0.75, 82.0))], [(0.0, beeps)], -18.0)
+    return balanced([(0.0, under(kind, 0.62, 82.0))], [(0.0, beeps)], -18.0)   # ends a little sooner
 
 
 def overheat_alarm(kind="drone"):
@@ -408,7 +408,7 @@ def overheat_alarm(kind="drone"):
     apart, longer and harder than a cancel's pair, over a longer drone (the klaxon's whoops were
     comical, Ryan); the drone a touch under the general rule."""
     tones = lay(*[(0.14 + k * 0.22, boop(f, 0.22, 0.95, bright=2400.0, attack=0.008)) for k, f in enumerate((B.E5, B.A4, B.E5, B.A4))])
-    return balanced([(0.0, under(kind, 1.15))], [(0.0, tones)], -13.0)
+    return balanced([(0.0, under(kind, 1.08))], [(0.0, tones)], -13.0)   # ends a little sooner
 
 
 # name: (recipe, phone dB, shipped name, label, note)
