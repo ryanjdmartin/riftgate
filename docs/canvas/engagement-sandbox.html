@@ -80,7 +80,7 @@ button.act { border-color: var(--warn-hot); }
 <div class="grid">
   <div>
     <div class="field"><canvas id="c" width="420" height="700" aria-label="The hex field"></canvas></div>
-    <div class="hint" id="hint">tap: place the chosen piece, or remove what stands there &nbsp;·&nbsp; drag to move</div>
+    <div class="hint" id="hint">tap: place the chosen piece, or inspect what stands there &nbsp;·&nbsp; drag to move &nbsp;·&nbsp; the erase tool removes</div>
     <p class="scenario" id="scenario"></p>
   </div>
 
@@ -119,7 +119,7 @@ button.act { border-color: var(--warn-hot); }
     <fieldset>
       <legend>Marks, to judge clutter</legend>
       <div class="toggles">
-        <label>reach rings <select id="rings"><option value="aggressive">aggressive packs only (the game today)</option><option value="provoked" selected>aggressive, and a pusher the car provokes</option><option value="drag">those, and every pusher while the car is dragged</option><option value="all">every pack, always</option><option value="none">none</option></select></label>
+        <label>reach rings <select id="rings"><option value="tapped" selected>the tapped pack only (proposed)</option><option value="aggressive">aggressive packs only (the game today)</option><option value="provoked">aggressive, and a pusher the car provokes</option><option value="drag">those, and every pusher while the car is dragged</option><option value="all">every pack, always</option><option value="none">none</option></select></label>
         <label>zones <select id="zones"><option value="all" selected>every pack's, thin where empty (the game today)</option><option value="fights">only where a fight is</option></select></label>
         <label>routes <select id="routes"><option value="all" selected>every pack's (the game today)</option><option value="react">only reactions</option><option value="none">none</option></select></label>
         <label><input type="checkbox" id="ghost" checked> show the committed route as a ghost when a reaction replaces it</label>
@@ -207,8 +207,8 @@ button.act { border-color: var(--warn-hot); }
   let nextId = 1;
   let phase = 1;
   let scenarioIndex = -1;
-  let dragHex = null;    // the hex the dragged piece is over, for the drag ring policy
   let dragging = null;
+  let inspected = 0;     // the tapped piece, by id: its ring shows under the tapped policy
 
   // ---- hex maths: pointy-top, odd rows shifted right (the game's offset grid) ----
   const mod2 = r => ((r % 2) + 2) % 2;
@@ -364,12 +364,13 @@ button.act { border-color: var(--warn-hot); }
   }
   const catchAt = (u, at) => mechs().filter(m => !P(m).stealth && dist(at, m) <= zone(u)).length;
   function bestCatch(u, blocked) {
-    let best = { col: u.col, row: u.row }, bn = catchAt(u, best), bd = gateDistance(best);
+    let best = { col: u.col, row: u.row }, bn = catchAt(u, best), bd = gateDistance(best), tied = false;
     for (const h of reachable(u, blocked)) {
       const n = catchAt(u, h), d = gateDistance(h);
-      if (n > bn || (n === bn && d < bd)) { best = h; bn = n; bd = d; }
+      if (n > bn) { best = h; bn = n; bd = d; tied = false; }
+      else if (n === bn && n > 0 && !same(h, best)) { tied = true; if (d < bd) { best = h; bd = d; } }
     }
-    return { hex: best, count: bn };
+    return { hex: best, count: bn, tied };
   }
   const cars = () => mechs().filter(m => P(m).provokes);
   function provokedBy(u, blocked) {
@@ -410,7 +411,7 @@ button.act { border-color: var(--warn-hot); }
         } else {
           const best = bestCatch(u, blocked);
           if (best.count > 0) path = affordable(u, pathTo(u, best.hex, blocked));
-          w = { kind: car ? 'provoked' : 'aggressive', car, count: best.count };
+          w = { kind: car ? 'provoked' : 'aggressive', car, count: best.count, tied: best.tied };
         }
       } else if (behaviour(u) === 'hunt') {
         const prey = pickPrey(u);
@@ -572,6 +573,7 @@ button.act { border-color: var(--warn-hot); }
       const wy = rd.why.get(p.id);
       const provoked = wy.kind === 'provoked';
       let show = false, heavy = false;
+      if (policy === 'tapped') { if (p.id === inspected) { show = true; heavy = provoked; } }
       if (policy === 'all') show = true;
       if (behaviour(p) === 'aggressive' && policy !== 'none') show = true;
       if (provoked && (policy === 'provoked' || policy === 'drag')) { show = true; heavy = true; }
@@ -605,6 +607,7 @@ button.act { border-color: var(--warn-hot); }
     ctx.setLineDash([]);
     for (const u of units) {
       const c = centre(u); ctx.lineWidth = 2;
+      if (u.id === inspected) { ctx.save(); ctx.strokeStyle = C.ink; ctx.lineWidth = 2; ctx.setLineDash([2, 3]); hexPath(c, 0.9); ctx.stroke(); ctx.restore(); }
       if (isPack(u)) {
         ctx.beginPath(); ctx.moveTo(c.x, c.y - S * 0.62); ctx.lineTo(c.x + S * 0.62, c.y); ctx.lineTo(c.x, c.y + S * 0.62); ctx.lineTo(c.x - S * 0.62, c.y); ctx.closePath();
         ctx.fillStyle = C.warnFill; ctx.fill(); ctx.strokeStyle = inFight.has(u.id) ? C.warnHot : C.warn; ctx.stroke();
@@ -648,8 +651,9 @@ button.act { border-color: var(--warn-hot); }
       const wy = rd.why.get(p.id), s = rd.stops.get(p.id), plan = rd.plans.get(p.id);
       let why = '';
       if (wy.kind === 'push') why = plan.length ? 'pushes for the gate' : 'held off every goal: STALLED';
-      if (wy.kind === 'aggressive') why = wy.count > 0 ? `aggressive: ${wy.count} machine${wy.count > 1 ? 's' : ''} in reach, goes for the biggest catch` : 'aggressive, nothing in reach: pushes for the gate';
-      if (wy.kind === 'provoked') why = `provoked by the car at ${hexName(wy.car)}: ` + ($('goes').value === 'car' ? 'goes for the car' : `goes for the biggest catch in reach (${wy.count})`);
+      const tie = wy.tied ? ', several hexes tied, the one nearest the gate' : '';
+      if (wy.kind === 'aggressive') why = wy.count > 0 ? `aggressive: goes for the biggest catch in reach (${wy.count})${tie}` : 'aggressive, nothing in reach: pushes for the gate';
+      if (wy.kind === 'provoked') why = `provoked by the car at ${hexName(wy.car)}: ` + ($('goes').value === 'car' ? 'goes for the car' : `goes for the biggest catch in reach (${wy.count})${tie}`);
       if (wy.kind === 'hunt') why = wy.prey ? `hunts ${name(wy.prey)}` : 'nothing to hunt: pushes for the gate';
       line(pk, { text: name(p), cls: 'p' }, `→ ${hexName(s.end)}, ${stopText(s)}`, '', why);
     }
@@ -732,7 +736,8 @@ button.act { border-color: var(--warn-hot); }
     if (!down) return;
     if (!moved) {
       const h = down, u = unitAt(h);
-      if (u) units = units.filter(x => x !== u);
+      if (u && piece === 'erase') { units = units.filter(x => x !== u); if (inspected === u.id) inspected = 0; }
+      else if (u) inspected = inspected === u.id ? 0 : u.id;
       else if (piece === 'wall') { if (h.row > RIFT_ROW && h.row < GATE_ROW) { const k = key(h); walls.has(k) ? walls.delete(k) : walls.add(k); } }
       else if (piece === 'erase') { walls.delete(key(h)); }
       else if (standable(h)) units.push({ id: nextId++, kind: piece, col: h.col, row: h.row, prey: 0, stoppedBy: 0, stoppedAt: null });
