@@ -139,7 +139,7 @@ func _start_music() -> void:
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks).
 ## RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,baboon overrides the team; RIFTGATE_FACTION picks
-## the enemy.
+## the enemy; RIFTGATE_MAP_KIND=rubble picks the map's type (BattleMap.KINDS).
 static func _default_battle() -> Battle:
 	var db := ContentDB.load_default()
 	var b := Battle.new(7)
@@ -154,6 +154,9 @@ static func _default_battle() -> Battle:
 	var fac := OS.get_environment("RIFTGATE_FACTION")
 	if fac.is_empty() or not db.factions.has(fac):
 		fac = db.default_faction()
+	var kind := OS.get_environment("RIFTGATE_MAP_KIND")
+	if BattleMap.KINDS.has(kind):
+		b.map_kind = kind
 	b.setup(team, fac)
 	return b
 
@@ -497,7 +500,7 @@ func _on_route_drag_started(u: Unit) -> void:
 	_select(u)   # its destinations light while the finger draws
 	_draft_unit = u
 	_map.draft = []
-	_map.draft_cost = 0
+	_map.draft_spend = Vector2i(0, 0)
 	Sound.play("ui_tap", -4.0)
 
 
@@ -506,7 +509,7 @@ func _on_route_drag_to(h: Vector2i) -> void:
 		return
 	var before := _map.draft.size()
 	_map.draft = battle.draft_step(_draft_unit, _map.draft, h)
-	_map.draft_cost = battle.draft_cost(_draft_unit, _map.draft)
+	_map.draft_spend = battle.draft_spend(_draft_unit, _map.draft)
 	if _map.draft.size() != before:
 		Sound.play("ui_tap", -12.0)   # a tick per hex, so the line is heard growing
 	_map.queue_redraw()
@@ -517,7 +520,7 @@ func _on_route_drag_ended(commit: bool) -> void:
 	var draft: Array = _map.draft
 	_draft_unit = null
 	_map.draft = []
-	_map.draft_cost = -1
+	_map.draft_spend = Vector2i(-1, 0)
 	if u != null and commit and not draft.is_empty():
 		if battle.set_route_path(u, draft):
 			Sound.play("plot")

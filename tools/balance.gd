@@ -1,8 +1,9 @@
 extends SceneTree
 
-## The balance runner: every chassis alone, and the default team, against every pack a
-## faction sends through the rift, played by each rung of the policy ladder over many
-## seeds. Writes docs/balance.md (and a JSON of every cell with --json) and prints it.
+## The balance runner: every chassis alone, the default team, and each maker's team of three
+## (5 October: an escort such as the Puffin reads only on a team that carries it), against
+## every pack a faction sends through the rift, played by each rung of the policy ladder
+## over many seeds. Writes docs/balance.md (and a JSON of every cell with --json) and prints it.
 ##   perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
 ## Options: --seeds N (200), --policies random,greedy (both), --out path (docs/balance.md),
 ## --json path (none), --withdraw N (a persona that withdraws under N percent hull; 0 never),
@@ -121,16 +122,25 @@ func _parse_args() -> void:
 		i += 1
 
 
-## Rows: each chassis alone, then the starting team. Packs: every distinct foe and strength a
-## faction's spawn list names, then each faction's boss alone.
+## Rows: each chassis alone, then the starting team, then each maker's team (its first three
+## machines in content order, for every maker with three; decided 5 October, so that a machine
+## whose kit is for its allies, the Puffin's allies-only Prow Projector, is read at all: alone
+## it can never spend it). Packs: every distinct foe and strength a faction's spawn list
+## names, then each faction's boss alone.
 func _build_matrix() -> void:
 	for id in db.chassis.keys():
 		rows.append({"id": str(id), "name": str(db.chassis[id].get("name", id)), "chassis": [str(id)]})
 	var team: Array = db.default_team()
-	var team_names: Array[String] = []
-	for id in team:
-		team_names.append(str(db.chassis[id].get("name", id)))
-	rows.append({"id": "team", "name": "Team (%s)" % ", ".join(team_names), "chassis": team})
+	rows.append({"id": "team", "name": "Team (%s)" % ", ".join(_names(team)), "chassis": team})
+	for mk in db.makers.keys():
+		var own: Array = []
+		for id in db.chassis.keys():
+			if str(db.chassis[id].get("maker", "")) == str(mk):
+				own.append(str(id))
+		if own.size() < 3:
+			continue
+		var trio: Array = own.slice(0, 3)
+		rows.append({"id": "%s team" % mk, "name": "%s team (%s)" % [str(db.makers[mk].get("name", mk)), ", ".join(_names(trio))], "chassis": trio})
 	for fac in db.factions.keys():
 		for entry in db.spawn_table(fac):
 			var pid := "%s x%d" % [entry[0], entry[1]]
@@ -143,7 +153,7 @@ func _build_matrix() -> void:
 			continue
 		packs.append({"id": boss + " x1", "name": str(db.foes[boss].get("name", boss)), "foe": boss, "strength": 1})
 	# The mixed cells (the to-do, 2 October): every pack a faction sends through the rift in
-	# one fight, a front and a back together, which is where targeting, overwhelm and the
+	# one fight, a front and a back together, which is where targeting, spillover and the
 	# Databank can be read at all.
 	for fac in db.factions.keys():
 		var mix: Array = []
@@ -155,6 +165,13 @@ func _build_matrix() -> void:
 		if mix.size() < 2:
 			continue
 		packs.append({"id": fac + " formation", "name": "%s formation (%s)" % [str(db.factions[fac].get("name", fac)), ", ".join(names)], "foe": "", "strength": 0, "mix": mix})
+
+
+func _names(ids: Array) -> Array[String]:
+	var out: Array[String] = []
+	for id in ids:
+		out.append(str(db.chassis[id].get("name", id)))
+	return out
 
 
 func _has_pack(pid: String) -> bool:
@@ -246,7 +263,7 @@ static func _ids(list: Array) -> String:
 func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") -> Dictionary:
 	var agg := {"fights": 0, "victory": 0, "defeat": 0, "withdrawn": 0, "stalled": 0,
 		"rounds": 0, "hull_lost_pct": 0.0, "mechs_lost": 0, "foes_killed_pct": 0.0,
-		"overheat_hull": 0, "rerolls": 0, "spends": {}}
+		"overheat_hull": 0, "rerolls": 0, "spends": {}, "destroyed": 0, "destroyed_won": 0}
 	for s in range(seeds):
 		var fight := _fight(r, p, k, s + 1, rule)
 		var sk: Skirmish = fight["sk"]
@@ -264,6 +281,9 @@ func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") ->
 		else:
 			agg["defeat"] += 1
 		agg["rounds"] += pol.rounds
+		agg["destroyed"] += sk.destroyed
+		if outcome == Skirmish.Outcome.VICTORY and not pol.stalled:
+			agg["destroyed_won"] += sk.destroyed
 		var hull := 0
 		var lost := 0
 		for ms in sk.mechs:
@@ -315,7 +335,7 @@ func _report(fights: int, secs: float) -> String:
 	var top := policies[policies.size() - 1]
 	L.append("## Cost of a win, %s" % Policy.kind_name(top))
 	L.append("")
-	L.append("Mean rounds and mean hull lost (percent of the row's total hull), over every fight in the cell, won or not. A w marks a cell with withdrawals, an s a cell with a stalled fight (past %d rounds)." % Policy.MAX_ROUNDS)
+	L.append("Mean rounds and mean hull lost (percent of the row's total hull), over every fight in the cell, won or not, then the components destroyed per won fight (gone for good in the hangar, bible section 10; the inflow has to beat this). A w marks a cell with withdrawals, an s a cell with a stalled fight (past %d rounds)." % Policy.MAX_ROUNDS)
 	L.append("")
 	L.append(_header())
 	for r in rows:
@@ -328,7 +348,7 @@ func _report(fights: int, secs: float) -> String:
 				flags += " w"
 			if a["stalled"] > 0:
 				flags += " s"
-			cell.append("%.1f r, %d%% hull%s" % [float(a["rounds"]) / n, int(roundf(a["hull_lost_pct"] / n)), flags])
+			cell.append("%.1f r, %d%% hull, %.2f lost%s" % [float(a["rounds"]) / n, int(roundf(a["hull_lost_pct"] / n)), float(a["destroyed_won"]) / maxi(1, int(a["victory"])), flags])
 		L.append("| " + " | ".join(cell) + " |")
 	L.append("")
 	L.append("## Targeting rules on the team cells, %s" % " / ".join(_policy_names()))

@@ -24,6 +24,7 @@ class PhaseResult:
 	var moved: Array[int] = []        # unit ids that moved
 	var rejected: Array[int] = []     # unit ids whose route was invalid
 	var blocked: Array[int] = []      # pack ids stopped by a body block
+	var stalled: Array[int] = []      # pack ids that had no way to any goal this phase (every approach held by their own side)
 	var blockers: Dictionary = {}     # pack id -> the unit id that stood in its path (the stealth join rule reads it)
 	var intents: Dictionary = {}      # pack id -> the path it followed: the committed one, or the reaction
 	var gate_damage: int = 0
@@ -42,11 +43,13 @@ var gate_hp_max: int = 200
 var rift_pressure: int = 0
 var rift_pressure_max: int = 12
 var spawn_faction: String = "undead"
-## Packs the rift sends, cycled: [[foe_id, strength], ...]. The game fills this from content.
+## Packs the rift sends, cycled: [[foe_id, strength], ...], a guest faction's entries with
+## their faction third. The game fills this from content.
 var spawn_table: Array = [["ghoul", 6]]
 var _spawn_index: int = 0
 var phase: int = 0
 var intents: Dictionary = {}   # pack id -> Array[Vector2i]: the path each pack committed to when the round opened
+var stalled: Dictionary = {}   # pack id -> true: no goal was reachable when the round opened, so the pack waits where it is
 var log: Array[String] = []
 var _next_id: int = 1
 
@@ -243,17 +246,33 @@ func _search(u: Unit, from: Vector2i, budget: int, blocked: Dictionary = {}, thr
 ## packs head for the gate; a hunter picks its prey, if it has none, and heads for where the
 ## prey stands now. Paths ignore the machines, so what the player sees is "where they go
 ## unless you stop them"; a pack's reaction to the plan, if it has one, is `_react`'s.
+##
+## A pack whose way to its goal is held by its own side turns for the next goal it can
+## reach (Ryan, 6 October: a stalled horde is never the norm): a gate-goer tries every
+## gate hex and defence nearest first. One with no goal reachable at all waits where it
+## is and is marked `stalled`, which the preview shows. Found 2 October: 156 of 600 packs
+## in a packs-only run stood still for want of this, with no mark.
 func compute_intents() -> void:
 	# Packs plan in field order, each around where the packs before it will end and
 	# where the ones after it stand now (Ryan, 22 September), so a pack routes around a
 	# hex another is taking instead of walking into it and stopping short. The same order
 	# moves them at resolve, so an intent plays as shown unless a body blocks it.
 	intents.clear()
+	stalled.clear()
 	var ends: Dictionary = {}   # pack id -> hexes it will hold, for the packs after it
 	for sq in packs():
 		var blocked := _held_by_others(sq, ends)
 		var target := _pick_target(sq)
 		var path := _affordable(sq, map.find_path(sq.pos, target, sq.traits, blocked))
+		if path.is_empty() and target != sq.pos:
+			for alt in _gate_targets(sq):
+				if alt == target:
+					continue
+				path = _affordable(sq, map.find_path(sq.pos, alt, sq.traits, blocked))
+				if not path.is_empty():
+					break
+			if path.is_empty():
+				stalled[sq.id] = true
 		intents[sq.id] = path
 		ends[sq.id] = _held_after(sq, path)
 
@@ -455,17 +474,27 @@ func _gate_distance(h: Vector2i) -> int:
 
 ## The nearest gate hex or static defence: where a pusher heads.
 func _gate_target(sq: Unit) -> Vector2i:
-	var target := map.gate
-	var best_d := Hex.distance(sq.pos, target)
+	return _gate_targets(sq)[0]
+
+
+## Every gate hex and static defence, nearest to the pack first (ties in field order, the
+## gate's centre first), so a pack held off one can try the next.
+func _gate_targets(sq: Unit) -> Array[Vector2i]:
+	var goals: Array[Vector2i] = [map.gate]
 	for g in map.gate_hexes:
-		if Hex.distance(sq.pos, g) < best_d:
-			best_d = Hex.distance(sq.pos, g)
-			target = g
+		if not goals.has(g):
+			goals.append(g)
 	for d in defenses():
-		if Hex.distance(sq.pos, d.pos) < best_d:
-			best_d = Hex.distance(sq.pos, d.pos)
-			target = d.pos
-	return target
+		if not goals.has(d.pos):
+			goals.append(d.pos)
+	var order: Array = []
+	for i in range(goals.size()):
+		order.append([Hex.distance(sq.pos, goals[i]), i])
+	order.sort()
+	var out: Array[Vector2i] = []
+	for o in order:
+		out.append(goals[int(o[1])])
+	return out
 
 
 func _affordable(sq: Unit, path: Array[Vector2i]) -> Array[Vector2i]:
@@ -546,7 +575,12 @@ func _move_all(routes: Dictionary, result: PhaseResult, dry: bool) -> void:
 	var plans := _react()
 	result.intents = plans.duplicate(true)
 	for sq in packs():
-		_execute_pack(sq, plans.get(sq.id, []), result, dry)
+		var plan: Array = plans.get(sq.id, [])
+		_execute_pack(sq, plan, result, dry)
+		if plan.is_empty() and stalled.has(sq.id):
+			result.stalled.append(sq.id)
+			if not dry:
+				log.append("%s has no way through and waits" % sq.display_name)
 
 
 ## Run `fn` with the machines that move before `u` (earlier in `routes`, or all of them
@@ -724,7 +758,8 @@ func tick_pressure(ticks: int) -> bool:
 	var at := nearest_free(map.rift, [])
 	var entry: Array = spawn_table[_spawn_index % spawn_table.size()] if not spawn_table.is_empty() else ["", 6]
 	_spawn_index += 1
-	var sq := Unit.pack(0, "%s pack" % str(entry[0]), at, spawn_faction, Unit.PACK_MOVE, int(entry[1]), str(entry[0]))
+	var fac := str(entry[2]) if entry.size() > 2 else spawn_faction
+	var sq := Unit.pack(0, "%s pack" % str(entry[0]), at, fac, Unit.PACK_MOVE, int(entry[1]), str(entry[0]))
 	add_unit(dress_pack(sq))
 	log.append("Rift pressure peaks: %s emerge at %s" % [sq.display_name, str(at)])
 	return true

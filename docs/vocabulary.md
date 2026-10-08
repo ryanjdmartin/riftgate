@@ -2,14 +2,14 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 104 implemented, 7 planned, 0 idea.
+Status: 106 implemented, 7 planned, 0 idea.
 
 ## Resource
 
 | Term | Codex | Status |
 |---|---|---|
 | **Hull** | Damage that gets past shield removes hull. Hull never recovers during a battle. At zero the mech is a wreck to be salvaged after the battle. | implemented |
-| **Shield** | Enemy damage hits shield before hull, and a standing shield blocks a blow whole: however small the shield and however big the blow, nothing bleeds through to the hull (a breaching foe is the exception). The blow still costs the shield its damage. Shield components add shield up to the chassis maximum; in a fight that is the only way shield comes back. Out of combat it returns each battlefield phase at the chassis's field rate. It never refills for free between skirmishes. | implemented |
+| **Shield** | Enemy damage hits shield before hull, and a standing shield blocks a blow whole: however small the shield and however big the blow, nothing bleeds through to the hull (a breaching foe is the exception). The blow still costs the shield its damage. Shield components add shield up to the chassis maximum (a component with Overshield may pass it, and the excess fades at the end of the round); in a fight that is the only way shield comes back. Out of combat it returns each battlefield phase at the chassis's field rate. It never refills for free between skirmishes. | implemented |
 | **Heat** | Attack components may add heat. At the end of the round, heat above the chassis maximum burns hull one for one and the gauge settles at the maximum; until then a vent can still bring it down. Vent components remove heat. At the start of every turn a mech sheds its chassis's cooling rating in heat, so a round spent on ballistics or shields is a way of cooling down without a vent; Overheating ticks at the end of the round, after the enemy has struck, so a scorch lands on the round's peak heat before cooling relieves it. | implemented |
 | **Reroll** | Three rerolls per round, each rerolling every unlocked, unspent mech die. A reroll always lands on a different component: never the one showing, never one equivalent to it (a die whose components are all alike keeps what it shows). Rerolls may be spent before or after attacking, so a low damage roll is information for the rest of the round. Never pooled across rounds. | implemented |
 | **Rift Pressure** | Ticks once per battlefield phase and once per skirmish round. When full it resets and a fresh pack emerges at the rift. | implemented |
@@ -61,7 +61,7 @@ Status: 104 implemented, 7 planned, 0 idea.
 |---|---|---|
 | **Spread** | Player keyword. Also hits the foes in the neighbouring columns of the target's rank. | implemented |
 | **Penetrate** | Player keyword. Hits first the front, then the back rank of a single column. | implemented |
-| **Overwhelm** | Player keyword. When a blow kills a front-rank foe, what it had past the kill carries into the foe behind it in the same column. Nothing stands behind a massive foe. | implemented |
+| **Spillover** | Player keyword. When a blow kills a front-rank foe, what it had past the kill carries into the foe behind it in the same column. Nothing stands behind a massive foe. | implemented |
 | **Burn** | Player keyword. Burning enemies lose 5 HP per stack at the start of their action, then lose one stack. Bypasses armour. Can be resisted. | implemented |
 | **Corrode** | Player keyword. Corroding enemies lose 1% of their HP per stack at the start of their action, then lose one stack. Bypasses armour. Can be resisted. | planned |
 | **Lure** | Player keyword, on any entry aimed at a foe: a weapon, a status, or an entry that does nothing else. Every foe the entry reaches turns on this machine for the round, intents and all; reach and area decide who and how many. A lured foe whose move has no target keeps doing it. | implemented |
@@ -76,6 +76,7 @@ Status: 104 implemented, 7 planned, 0 idea.
 | **Disable** | Enemy keyword. The component the target's die is showing is switched off through the target's next turn: if the die lands on it, it comes up blank. | implemented |
 | **Corrupt** | Foe attack keyword. Each blow that lands leaves a stack of Corrupted on the component the target's die is showing: it deals damage to its owner whenever spent. | implemented |
 | **Cleanse** | Player keyword, on shield and vent components. Whoever the component is spent on also loses every Disabled, Corrupted and Overheating status. A rapid component's own switch-off is not a status a cleanse touches. | implemented |
+| **Overshield** | Player keyword, on shield components, rare. The shield may raise its target past the target's maximum; shield past the maximum fades at the end of the round. A shield die spent on a machine already at its maximum is never wasted when it carries this. | implemented |
 
 ## Status
 
@@ -153,6 +154,7 @@ Status: 104 implemented, 7 planned, 0 idea.
 |---|---|---|
 | **On attack** | Passive trigger. Fires after the damage roll on every attack. Effects: multiply or add damage or heat, or set a minimum damage. An effect may carry a when condition: component_cracked (only when the component being spent is cracked). | implemented |
 | **On shield gain** | Passive trigger. Fires when this mech gains shield from any source, with the amount gained; it may shed heat or grant a status, never raise more shield. | implemented |
+| **On shielding an ally** | Passive trigger. Fires when this machine spends a shield component on an ally, with the shield's size; it may shed the ally's heat or grant the ally a status, never raise more shield. It never fires for a shield on itself. | implemented |
 | **On heat gain** | Passive trigger. Fires when this mech gains heat, with the amount; it may raise shield or grant a status, never add heat. | implemented |
 | **On round start** | Passive trigger. Fires after the roll, before rerolls: shield from heat, a flat shield, a vent. | implemented |
 | **On skirmish start** | Passive trigger. Fires once as the skirmish begins, before the first roll: a shield, a vent, a status. | implemented |
@@ -206,7 +208,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Buff component** (implemented): Only one component carries it, a draft. Debuffs on foes stay weapons.
 - **Damage range** (implemented): Ranges are content-authored per component; no upgrade path raises min or max yet.
 - **Critical hit** (implemented): The base is Face.CRIT_MULT, a balance knob; lower it if crit triggers make crits too strong at low chance.
-- **Overwhelm** (implemented): Built 29 September. The spill is plain damage: it spends a shock and feeds a devour, and carries no other keyword of the blow. The Wild Boar's Juggernaut Drive grants it to every attack (grant_keyword, the first passive to add a keyword).
+- **Spillover** (implemented): Built 29 September as Overwhelm; renamed Spillover 6 October (Ryan: of the six over-words it was the one to move). The spill is plain damage: it spends a shock and feeds a devour, and carries no other keyword of the blow. The Wild Boar's Juggernaut Drive grants it to every attack (grant_keyword, the first passive to add a keyword).
 - **Lure** (implemented): Decided 2 October in place of Taunt and Beacon (bible, section 5). No status and no chip: the arrow is the record. A draw by ally (cover) is parked until a support role proves to need it.
 - **Disrupt** (implemented): Decided 2 October in place of the planned Scramble and Confuse (bible, section 5). Deterministic: the next move in the foe's list that its conditions allow, so a boss steps through its pattern.
 - **Numbed** (implemented): Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths. Exempt from everything (Ryan, 2 October): a stun resist that passives or cleanses could touch is where other games' combat loops broke.
@@ -216,6 +218,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Equipment** (implemented): Buffs will be equipment too, once they exist.
 - **Corrupt** (implemented): No foe carries it yet; Ryan places it (The Chorus, presumably).
 - **Cleanse** (implemented): No component carries it yet; Ryan places it.
+- **Overshield** (implemented): Decided 5 October (Ryan: overshield as a component keyword, a rare one). The Puffin's fixed Backwash Ionizer carries it, allies only, so the excess never lands on the Puffin itself. Rare because every overshield on the field makes shield max a soft number. The fade is the whole safeguard: a persisting excess would stack a team past every blow. The gauge shows the excess as a hatched block beyond the bar's end.
 - **Retaliate** (implemented): Was flat damage equal to the component's power. Thorns scales with enemy blows and so inverts horde against boss; a debuff does not (Ryan, 28 September). The Armadillo's passive carries it always on.
 - **Shocked** (implemented): The Armadillo's retaliation (Ryan, 28 September): the tank sets up kills instead of out-damaging area weapons against a horde, and it works on a boss. The discharge on a second strike is the small thorns left in. Numbers are placeholders.
 - **Overcharged** (implemented): The buff side and devour run (29 September); a buff's stacks and devour's are the same status to the machine and add up. The Ammit's Quintessence Tap (which stops the decay and keeps the stacks for the battle, never the campaign) is planned. Name is a placeholder.
@@ -240,6 +243,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Stealth** (implemented): The Dingo (Ryan, 28 September): a support car that waits in the wings while the heavies get into position, then joins their fight, and never fights alone unless run into. Pays again when hunter packs exist.
 - **City defense** (implemented): Defenses have no die. They cannot act inside a skirmish yet.
 - **On shield gain** (implemented): Built 30 September (Effects.fire); no content uses it yet.
+- **On shielding an ally** (implemented): Built 5 October for the Puffin's Slipstream (an ally it shields sheds 10 heat). Fires on the spend, whatever the shield gained, so a shield die on a topped-up ally still does its other work.
 - **On heat gain** (implemented): Built 30 September (Effects.fire); no content uses it yet.
 - **On round start** (implemented): Built 30 September for the Thermal Recoupler; the heat it reads is the gauge after the turn's passive cooling.
 - **On skirmish start** (implemented): Built 30 September (Effects.fire); no content uses it yet.

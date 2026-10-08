@@ -77,7 +77,7 @@ var _pinch_d := 0.0                 # the fingers' distance when the pinch last 
 var _pinching := false
 var route_drawing := false          # the screen allows a route to be drawn from a machine (planning, nothing playing)
 var draft: Array = []               # the route being drawn, hexes after the machine's own; the screen keeps it legal
-var draft_cost := -1                # its cost so far, for the plaque at its end; -1 shows none
+var draft_spend := Vector2i(-1, 0)  # what it has spent and what a slow last step took (Battle.draft_spend), for the gauge at its end; x -1 shows none
 var _press_unit: Unit = null        # the player's machine under the finger at press: a drag from it draws
 var _route_drag: Unit = null        # the machine whose route is being drawn, while it is
 var _draft_hex := Vector2i(-9999, -9999)   # the last hex the finger reported, so a hex is announced once
@@ -479,8 +479,9 @@ func _draw() -> void:
 			continue
 		_route(u.pos, route, hud, true, true, true)
 
-	# The route being drawn by hand: the same line, heavier, with the move it has spent
-	# against the machine's whole move on a plaque at its end.
+	# The route being drawn by hand: the same line, heavier, with the machine's move as a
+	# gauge at its end that the route drains (decided 2 October: the player never does
+	# arithmetic, so no numbers).
 	if _route_drag != null and not draft.is_empty():
 		var prev := center(_route_drag.pos)
 		for step in draft:
@@ -488,8 +489,8 @@ func _draw() -> void:
 			draw_line(prev, p, hud, 5.0)
 			prev = p
 		Hud.stroke_poly(self, Hex.corners(prev, HEX_SIZE * 0.45), hud, 2.5)
-		if draft_cost >= 0:
-			_plaque(prev + Vector2(0.0, -HEX_SIZE * 0.95), "%d/%d" % [draft_cost, _route_drag.movespeed], hud, 1.5)
+		if draft_spend.x >= 0:
+			_move_gauge(prev + Vector2(0.0, -HEX_SIZE * 1.0), gauge_cells(_route_drag.movespeed, draft_spend), hud)
 
 	# Contacts waiting to be fought (Ryan, 22 September): the map freezes on them, the
 	# units about to engage lit, and nothing of the next phase shows until they are done.
@@ -529,6 +530,11 @@ func _draw() -> void:
 			var sq := field.unit_by_id(sid)
 			if sq != null:
 				_plaque(center(ends[sid]) + Vector2(0.0, HEX_SIZE * 0.7), "BLOCKED", Palette.MUTED, 1.5)
+		for sid in res.stalled:
+			# Held off every goal by its own side: it waits, and the plan says so (6 October).
+			var sq := field.unit_by_id(sid)
+			if sq != null:
+				_plaque(center(ends[sid]) + Vector2(0.0, HEX_SIZE * 0.7), "STALLED", Palette.MUTED, 1.5)
 		for mid_id in res.rejected:
 			var m := field.unit_by_id(mid_id)
 			if m != null:
@@ -594,7 +600,7 @@ func _draw_frame(hud: Color) -> void:
 			draw_string(font, Vector2(lx, y + 5.0), label, HORIZONTAL_ALIGNMENT_LEFT, -1, FRAME_FONT, fc)
 		for y in [top, bottom]:
 			draw_line(Vector2(sx, y), Vector2(sx + 18.0 * dir, y), fc, 2.0)
-	_readout(font, Vector2(FRAME_SIDE + 8.0, top + 19.0), "SEC %02d // GRID %dx%d // RECON" % [map.map_seed % 100, map.width, map.height - BattleMap.GATE_ROWS], fc)
+	_readout(font, Vector2(FRAME_SIDE + 8.0, top + 19.0), "SEC %02d // %s // RECON" % [map.map_seed % 100, BattleMap.KINDS[map.kind]["name"]], fc)
 	_readout(font, Vector2(FRAME_SIDE + 8.0, bottom - 8.0), "CARE // PROJECTOR LINE", fc)
 
 
@@ -717,14 +723,91 @@ func _draw_rift(map: BattleMap) -> void:
 ## carries the side without asking coloured text to survive the ground.
 func _plaque(at: Vector2, text: String, border: Color, thick: float = 1.5) -> void:
 	var w := Hud.mono().get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x + 10.0
-	# Kept inside the visible width, so a zoomed-in plaque never runs off the screen.
-	var left := (4.0 - scroll_x) / zoom
-	var right := (size.x - 4.0 - scroll_x) / zoom
-	var x := clampf(at.x, left + w * 0.5, right - w * 0.5) if right - left > w else at.x
-	var rect := Rect2(Vector2(x, at.y) - Vector2(w * 0.5, 9.0), Vector2(w, 18.0))
+	var rect := _plaque_rect(at, Vector2(w, 18.0))
 	draw_rect(rect, Palette.BG, true)
 	draw_rect(rect, border, false, thick)
 	draw_string(Hud.mono(), rect.position + Vector2(5.0, 13.0), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color.WHITE)
+
+
+## A plaque's rect centred on `at`, kept inside the visible width so a zoomed-in plaque
+## never runs off the screen.
+func _plaque_rect(at: Vector2, sz: Vector2) -> Rect2:
+	var left := (4.0 - scroll_x) / zoom
+	var right := (size.x - 4.0 - scroll_x) / zoom
+	var x := clampf(at.x, left + sz.x * 0.5, right - sz.x * 0.5) if right - left > sz.x else at.x
+	return Rect2(Vector2(x, at.y) - sz * 0.5, sz)
+
+
+## The move gauge's cells: one per 5 of move, two to a pip, a pip being one normal hex and
+## a half one fast hex. A cell is LEFT, SPENT by the route's steps, or STOPPED: taken by a
+## slow last step, which spends whatever is left (Battle.draft_spend). It fills from the
+## left like every gauge on the HUD, so the route drains it from the right.
+enum Cell { LEFT, SPENT, STOPPED }
+const GAUGE_PIP := Vector2(20.0, 28.0)   # a pip on the map, before zoom: big, since a finger sits beside it
+const GAUGE_GAP := 6.0
+
+
+static func gauge_cells(move: int, spend: Vector2i) -> Array[int]:
+	var out: Array[int] = []
+	var n := int(ceil(float(maxi(move, 0)) / float(BattleMap.FAST)))
+	for i in range(n):
+		var from_end := (n - 1 - i) * BattleMap.FAST
+		if from_end < spend.x:
+			out.append(Cell.SPENT)
+		elif from_end < spend.x + spend.y:
+			out.append(Cell.STOPPED)
+		else:
+			out.append(Cell.LEFT)
+	return out
+
+
+## The gauge on its plaque, told apart by structure, never hue (Ryan is colourblind): a pip
+## still to spend is solid, a spent one an empty outline, and one a slow step took is
+## hatched, so a route that ended on rubble with move to spare never reads as one that ran
+## its move out. The hatching rhymes with the dashed edge a slow end hex wears.
+func _move_gauge(at: Vector2, cells: Array[int], col: Color) -> void:
+	var pips := (cells.size() + 1) / 2
+	if pips == 0:
+		return
+	var pad := 5.0
+	var sz := Vector2(pips * GAUGE_PIP.x + (pips - 1) * GAUGE_GAP + pad * 2.0, GAUGE_PIP.y + pad * 2.0)
+	var rect := _plaque_rect(at, sz)
+	draw_rect(rect, Palette.BG, true)
+	draw_rect(rect, col, false, 2.0)
+	var half := GAUGE_PIP.x * 0.5
+	for p in range(pips):
+		var pip := Rect2(rect.position + Vector2(pad + p * (GAUGE_PIP.x + GAUGE_GAP), pad), GAUGE_PIP)
+		var live := false
+		for k in range(2):
+			var i := p * 2 + k
+			if i >= cells.size():
+				continue
+			var cell := Rect2(pip.position + Vector2(k * half, 0.0), Vector2(half, GAUGE_PIP.y)).grow(-1.5)
+			match cells[i]:
+				Cell.LEFT:
+					draw_rect(cell, col, true)
+					live = true
+				Cell.STOPPED:
+					_hatch(cell, col, 2.5)
+					live = true
+		# A pip's outline is bright while any of it counts and faint once it is all spent,
+		# and the split between its halves shows where a fast hex would end.
+		draw_rect(pip, Color(col, 1.0 if live else 0.45), false, 2.0 if live else 1.5)
+		if cells.size() > p * 2 + 1:
+			draw_line(pip.position + Vector2(half, 2.0), pip.position + Vector2(half, GAUGE_PIP.y - 2.0), Color(Palette.BG, 0.9), 1.0)
+
+
+## Diagonal stripes across a rect, clipped to it.
+func _hatch(r: Rect2, col: Color, width: float) -> void:
+	var box := PackedVector2Array([r.position, Vector2(r.end.x, r.position.y), r.end, Vector2(r.position.x, r.end.y)])
+	var step := 5.0
+	var x := r.position.x - r.size.y
+	while x < r.end.x:
+		var line := PackedVector2Array([Vector2(x, r.end.y), Vector2(x + r.size.y, r.position.y)])
+		for seg in Geometry2D.intersect_polyline_with_polygon(line, box):
+			if seg.size() >= 2:
+				draw_line(seg[0], seg[seg.size() - 1], col, width)
+		x += step
 
 
 func _draw_tags() -> void:
@@ -1274,10 +1357,29 @@ func _preview() -> Dictionary:
 
 # ---------------------------------------------------------------- the movement phase
 
-const MOVE_SECONDS_PER_HEX := 0.22   # the fastest anything ever moves (Ryan, 22 September)
+const MOVE_SECONDS_PER_HEX := 0.22   # the packs' step: the fastest anything moves (Ryan, 22 September); they are pictures with nothing to show
+## A machine's step at full speed, seconds a hex, by its move (Ryan, 5 October: the walkers
+## plod better at the third pass's pace, but the 20s and 30s want to be slower and the 40s
+## and 50s faster, so the pace is a table rather than one step slowed in proportion). Between
+## the tens it runs straight; past the ends it holds.
+const MECH_PACE := {10: 2.8, 20: 1.9, 30: 1.25, 40: 0.55, 50: 0.42, 60: 0.36}
 static var pace := 1.0               # the player's setting: seconds per hex are divided by it
-const MOVE_REF_SPEED := 50.0         # a unit this quick (moves are in tens) moves at that pace; slower ones slower
-var _anim: Dictionary = {}      # unit id -> {path: Array[Vector2i], t: float}
+const MOVE_REF_SPEED := 50.0         # the packs' reference: a pack this quick takes MOVE_SECONDS_PER_HEX a hex, slower ones slower
+
+
+## Seconds a hex at full speed for a machine of move `move` (MECH_PACE).
+static func mech_seconds_per_hex(move: float) -> float:
+	var keys: Array = MECH_PACE.keys()
+	keys.sort()
+	if move <= float(keys[0]):
+		return float(MECH_PACE[keys[0]])
+	for i in range(1, keys.size()):
+		if move <= float(keys[i]):
+			var a := float(keys[i - 1])
+			var b := float(keys[i])
+			return lerpf(float(MECH_PACE[keys[i - 1]]), float(MECH_PACE[keys[i]]), (move - a) / (b - a))
+	return float(MECH_PACE[keys[keys.size() - 1]])
+var _anim: Dictionary = {}      # unit id -> {path, t, curve: MovePath, hex: the step reached}
 var _anim_queue: Array = []     # [[moves], ...] phases still to play: mechs, then packs
 var _anim_done: Callable = Callable()
 
@@ -1310,8 +1412,7 @@ func _next_anim_phase() -> void:
 		var moves: Array = _anim_queue.pop_front()
 		for mv in moves:
 			if (mv[1] as Array).size() >= 2:
-				var u := field.unit_by_id(mv[0])
-				_anim[mv[0]] = {"path": mv[1], "t": 0.0, "speed": u.movespeed if u != null else MOVE_REF_SPEED}
+				_anim[mv[0]] = {"path": mv[1], "t": 0.0, "curve": _curve_for(mv[0], mv[1]), "hex": 0}
 	if _anim.is_empty():
 		for uid in _anim_px.keys():
 			if _map3d != null:
@@ -1324,28 +1425,49 @@ func _next_anim_phase() -> void:
 	queue_redraw()
 
 
+## A move as a curve with a speed along it (MovePath). A machine takes its own step and its
+## acceleration from its rig sidecar through the 3D map; the packs keep the old straight
+## hex-to-hex lines at their fixed step. Slower units move slower either way.
+func _curve_for(uid: int, path: Array) -> MovePath:
+	var u := field.unit_by_id(uid)
+	var centres: Array = path.map(func(h): return Hex.to_pixel(h, HEX_SIZE))
+	var step_px := Hex.to_pixel(Vector2i(0, 0), HEX_SIZE).distance_to(Hex.to_pixel(Hex.DIRECTIONS[0], HEX_SIZE))
+	var slow := maxf(1.0, MOVE_REF_SPEED / maxf(1.0, float(u.movespeed if u != null else MOVE_REF_SPEED)))
+	if u != null and u.is_player():
+		var mv: Dictionary = _map3d.motion_of(uid) if _map3d != null else {}
+		var top := step_px / mech_seconds_per_hex(float(u.movespeed))
+		var mp := MovePath.build(centres, top, float(mv.get("accel", MovePath.ACCEL_DEFAULT)))
+		if _map3d != null and centres.size() >= 2:
+			mp.hold_start(_map3d.setoff_seconds(uid, (centres[1] as Vector2) - (centres[0] as Vector2)))   # it turns onto its way first (the twentieth notes)
+		return mp
+	return MovePath.build(centres, step_px / (MOVE_SECONDS_PER_HEX * slow), 0.001, false)
+
+
 func _advance_anim(delta: float) -> void:
 	var finished: Array = []
 	for uid in _anim.keys():
 		var a: Dictionary = _anim[uid]
-		var path: Array = a["path"]
-		a["t"] += delta * pace / (MOVE_SECONDS_PER_HEX * maxf(1.0, MOVE_REF_SPEED / maxf(1.0, float(a["speed"]))))
-		var last := float(path.size() - 1)
-		if a["t"] >= last:
+		var curve: MovePath = a["curve"]
+		a["t"] += delta * pace
+		if a["t"] >= curve.duration:
 			finished.append(uid)
 			continue
-		var i := int(floor(a["t"]))
-		if i != int(a.get("i", -1)):
-			a["i"] = i
-			if i > 0 and field.unit_by_id(uid) != null and field.unit_by_id(uid).is_player():
+		var here: Array = curve.at(a["t"])
+		var step_px := Hex.to_pixel(Vector2i(0, 0), HEX_SIZE).distance_to(Hex.to_pixel(Hex.DIRECTIONS[0], HEX_SIZE))
+		var hex := int(floor(float(here[3]) / step_px + 0.5))
+		if hex != int(a["hex"]):
+			a["hex"] = hex
+			if field.unit_by_id(uid) != null and field.unit_by_id(uid).is_player():
 				Sound.play("step", 0.0, 0.1)   # a footfall a hex (quiet by its file); the packs are pictures and make none
-		var f: float = a["t"] - i
-		var from: Vector2 = Hex.to_pixel(path[i], HEX_SIZE)
-		var to: Vector2 = Hex.to_pixel(path[i + 1], HEX_SIZE)
-		var px := from.lerp(to, f)
+		var px: Vector2 = here[0]
 		_anim_px[uid] = px
 		if _map3d != null:
-			_map3d.set_anim(uid, px, (to - from).normalized())
+			var t := float(a["t"])
+			var over := float(_map3d.motion_of(uid).get("oversteer", 0.0))   # a drifter looks further ahead, over a longer stretch (Map3D.oversteer_ease)
+			var w := Map3D.oversteer_window(over) * 0.5
+			var ah := Map3D.oversteer_ahead(over)
+			var tp := Map3D.oversteer_ease(over)   # its stretch tapered, the middle counting most (the fourteenth notes)
+			_map3d.set_anim(uid, px, here[1], curve.chord_tapered(t + ah, w, tp), curve.chord_tapered(t, w, tp))
 	for uid in finished:
 		_anim.erase(uid)
 		_anim_px.erase(uid)

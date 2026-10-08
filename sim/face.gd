@@ -11,7 +11,7 @@ const CRIT_MULT := 2.0        # a crit multiplies the roll by this plus every cr
 
 enum Kind { ATTACK, SHIELD, VENT, BLANK, BUFF }
 enum Reach { NONE, LINE, INDIRECT, MELEE }
-enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, EXECUTE, CHAIN, STEADY, RAPID, CLEANSE, VOLATILE, DEVOUR, LURE, DISRUPT, OVERWHELM }
+enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, EXECUTE, CHAIN, STEADY, RAPID, CLEANSE, VOLATILE, DEVOUR, LURE, DISRUPT, SPILLOVER, OVERSHIELD }
 ## Whom a component may be spent on (Ryan, 26 September): a weapon (an attack) targets foes;
 ## equipment (a shield, a vent) targets self and allies by default, and content may narrow
 ## one to self only or allies only, so the design space stays open.
@@ -28,7 +28,7 @@ const KEYWORD_NAMES := {
 	Keyword.SUPPRESS: "suppress", Keyword.EXECUTE: "execute",
 	Keyword.CHAIN: "chain", Keyword.STEADY: "steady", Keyword.RAPID: "rapid", Keyword.CLEANSE: "cleanse",
 	Keyword.VOLATILE: "volatile", Keyword.DEVOUR: "devour", Keyword.LURE: "lure", Keyword.DISRUPT: "disrupt",
-	Keyword.OVERWHELM: "overwhelm",
+	Keyword.SPILLOVER: "spillover", Keyword.OVERSHIELD: "overshield",
 }
 ## What the player reads where it differs from the content id (the vocabulary's name).
 const KEYWORD_LABELS := { Keyword.CLEAVE: "spread" }
@@ -39,7 +39,11 @@ const TARGET_NAMES := {
 ## other keyword is an attack's, except the few that ride on anything. The validator holds
 ## content to this. Lure and disrupt (2 October) are attack keywords: they ride on any
 ## foe-targeted entry, a damage weapon, a status weapon or an entry that does nothing else.
-const SUPPORT_KEYWORDS := [Keyword.CLEANSE]
+const SUPPORT_KEYWORDS := [Keyword.CLEANSE, Keyword.OVERSHIELD]
+## Of those, the ones only a shield may carry: overshield (5 October, the Puffin's Prow
+## Projector first, rare) lets a shield pass its target's maximum, and the excess fades at the
+## round's end. A vent has nothing to pass.
+const SHIELD_ONLY_KEYWORDS := [Keyword.OVERSHIELD]
 ## Keywords about the spend itself, not its target, so any kind of component may carry
 ## them: volatile (the Arsenal's self-damage, 28 September) bites the owner whatever the
 ## component does.

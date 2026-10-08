@@ -11,12 +11,14 @@ perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s tests/run_tests.gd 
 godot --path .                                     # harness: skirmish screen and map viewer
 godot --headless --path . -s tools/export_vocabulary.gd   # regenerate docs/vocabulary.md
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200   # balance report to docs/balance.md (about half an hour); --trace "row|pack|policy|seed" for one fight's log
+perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/map_survey.gd -- --seeds 200   # map generator report to docs/map_survey.md (shares, water, the horde's crossing, phases and reach by way of moving, every map type compared); --type KIND, --show SEED prints a map
+perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40   # whole runs played headless into docs/campaign_run.md (the campaign's placeholders against a plain player); --trace SEED prints one run
 tools/spriter/.venv/bin/python tools/sheet_export.py      # export enemy grids to art/foes, then --import
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate <foe> --n 4   # model candidates (mflux, FLUX.2 Klein)
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut <png> <foe>        # cut one into art/foes, then --import
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build <chassis id>...   # ally units, and gate and wall, by code (tools/lowforge/models_low.py), with their rig sidecars (joints, acts), then --import
 BPY_PYTHON=<python with the bpy wheel> tools/spriter/.venv/bin/python tools/lowforge/forge.py build <id>   # the same with no Blender installed (a cloud session: python3.11 venv, pip install bpy==5.0.1); tools/lowforge/glbcmp.py old.glb new.glb proves the geometry unchanged
-RIFTGATE_ACTS_DEBUG=1 godot --path .               # every idle act back to back, in the skirmish and on the map (=<act name> loops one); RIFTGATE_MOVE_DEBUG=1 drives every machine constantly; tools/act_shot.gd freezes one frame of one act (or a stride) to a PNG
+RIFTGATE_ACTS_DEBUG=1 godot --path .               # every idle act back to back, in the skirmish and on the map (=<act name> loops one); RIFTGATE_MOVE_DEBUG=1 drives every machine constantly; tools/act_shot.gd freezes one frame of one act (or a stride) to a PNG; tools/gait_clip.gd saves every frame of a walk at its map pace (a gait option too) for ffmpeg
 tools/spriter/.venv/bin/python tools/lowforge/forge.py export <chassis id>     # a hand-edited tools/lowforge/models/<id>.blend back to art/models, then --import
 tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes                # the five silhouette classes in every maker's metal (art/models/shapes), then --import
 godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- <chassis> <maker> out.png front 480 480   # one unit large (needs a window)

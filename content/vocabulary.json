@@ -1,117 +1,1153 @@
 {
-  "_about": "The single source of truth for every mechanic term. codex is the rule as the player reads it; design.holes is what the mechanic does not do yet. docs/vocabulary.md is generated from this file by tools/export_vocabulary.gd. status: implemented (in sim/), planned (designed, not coded), idea (floated, undecided).",
-  "categories": ["resource", "equipment", "component_kind", "component_property", "reach", "keyword", "status", "formation", "battlefield", "terrain", "trait", "trigger", "commander", "city", "foe", "rules"],
-  "entries": [
-    {"id": "hull", "category": "resource", "name": "Hull", "codex": "Damage that gets past shield removes hull. Hull never recovers during a battle. At zero the mech is a wreck to be salvaged after the battle.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "shield", "category": "resource", "name": "Shield", "codex": "Enemy damage hits shield before hull, and a standing shield blocks a blow whole: however small the shield and however big the blow, nothing bleeds through to the hull (a breaching foe is the exception). The blow still costs the shield its damage. Shield components add shield up to the chassis maximum; in a fight that is the only way shield comes back. Out of combat it returns each battlefield phase at the chassis's field rate. It never refills for free between skirmishes.", "status": "implemented", "design": {"holes": "Rates and shield sizes are placeholders. Decided 18 September: block-the-blow replaced bleed-through, and the in-combat trickle was dropped the same day (a passive may bring it back for one chassis)."}},
-    {"id": "heat", "category": "resource", "name": "Heat", "codex": "Attack components may add heat. At the end of the round, heat above the chassis maximum burns hull one for one and the gauge settles at the maximum; until then a vent can still bring it down. Vent components remove heat. At the start of every turn a mech sheds its chassis's cooling rating in heat, so a round spent on ballistics or shields is a way of cooling down without a vent; Overheating ticks at the end of the round, after the enemy has struck, so a scorch lands on the round's peak heat before cooling relieves it.", "status": "implemented", "design": {"holes": "Heat does nothing below the cap. Consider effects at high heat short of overflow. Cooling numbers are placeholders; cooling must stay below a typical weapon's heat or heat never matters, and a vent component must be worth a whole turn (tuning)."}},
-    {"id": "reroll", "category": "resource", "name": "Reroll", "codex": "Three rerolls per round, each rerolling every unlocked, unspent mech die. A reroll always lands on a different component: never the one showing, never one equivalent to it (a die whose components are all alike keeps what it shows). Rerolls may be spent before or after attacking, so a low damage roll is information for the rest of the round. Never pooled across rounds.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "rift_pressure", "category": "resource", "name": "Rift Pressure", "codex": "Ticks once per battlefield phase and once per skirmish round. When full it resets and a fresh pack emerges at the rift.", "status": "implemented", "design": {"holes": "Spawns a fixed pack. Should draw from the battle's faction(s) and escalate."}},
-    {"id": "gate", "category": "resource", "name": "Gate Integrity", "codex": "A pack whose path reaches the gate strikes it instead of moving. Gate integrity persists across battles and is repaired in the meta.", "status": "implemented", "design": {"holes": "Gate damage formula is a placeholder (strength divided by three)."}},
-    {"id": "attack", "category": "component_kind", "name": "Attack component", "codex": "Spend on a foe within reach to deal its power in damage, then apply its keywords and heat.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "shield_component", "category": "component_kind", "name": "Shield component", "codex": "Spend on self or an ally to add its power in shield, capped at that mech's shield maximum.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "vent", "category": "component_kind", "name": "Vent component", "codex": "Spend on self or an ally to remove its power in heat.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "buff", "category": "component_kind", "name": "Buff component", "codex": "Equipment spent on a machine (itself, an ally, or either, as the component says) that grants it a status, so many stacks deep, through the end of so many rounds: Overcharged for damage, Braced against damage, Primed to burn on hit. The die shows the status name and the stacks.", "status": "implemented", "design": {"holes": "Only one component carries it, a draft. Debuffs on foes stay weapons."}},
-    {"id": "cracked", "category": "component_kind", "name": "Cracked component", "codex": "A cracked component still acts but loses all keywords and unique effects. Cracked compoents can still crit, still generate heat, and still provide their passive bonuses and abilities. A destroyed component is blank and does nothing when it comes up, and provides passive bonuses but not passive abilities. Both persist until repaired in the hangar.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "damage_range", "category": "component_property", "name": "Damage range", "codex": "A kinetic attack component shows a minimum and a maximum and rolls between them when spent, immediately and visibly. Energy components show one number and never roll. Numbers are in tens.", "status": "implemented", "design": {"holes": "Ranges are content-authored per component; no upgrade path raises min or max yet."}},
-    {"id": "crit", "category": "component_property", "name": "Critical hit", "codex": "A kinetic component may carry a crit chance. On a crit the roll is multiplied by the crit multiplier: a base of 2 for everyone, plus every crit damage bonus that applies, from the component itself or a passive. Bonuses add to the multiplier, never multiply each other, so a +0.5 weapon with a +0.5 passive crits for 3 times. The readout shows the resulting multiplier. Energy components never crit. Crits fire the on_crit passive trigger.", "status": "implemented", "design": {"holes": "The base is Face.CRIT_MULT, a balance knob; lower it if crit triggers make crits too strong at low chance."}},
-    {"id": "melee", "category": "reach", "name": "Melee", "codex": "Targets any front-rank foe. Can target any back-rank foe when the front rank is empty.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "line", "category": "reach", "name": "Line of sight", "codex": "Targets any front-rank foe, and any back-rank foe whose column is exposed.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "indirect", "category": "reach", "name": "Indirect", "codex": "Targets any foe in either rank. Hitting the front rank triggers danger close.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "cleave", "category": "keyword", "name": "Spread", "codex": "Player keyword. Also hits the foes in the neighbouring columns of the target's rank.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "penetrate", "category": "keyword", "name": "Penetrate", "codex": "Player keyword. Hits first the front, then the back rank of a single column.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "overwhelm", "category": "keyword", "name": "Overwhelm", "codex": "Player keyword. When a blow kills a front-rank foe, what it had past the kill carries into the foe behind it in the same column. Nothing stands behind a massive foe.", "status": "implemented", "design": {"holes": "Built 29 September. The spill is plain damage: it spends a shock and feeds a devour, and carries no other keyword of the blow. The Wild Boar's Juggernaut Drive grants it to every attack (grant_keyword, the first passive to add a keyword)."}},
-    {"id": "burn", "category": "keyword", "name": "Burn", "codex": "Player keyword. Burning enemies lose 5 HP per stack at the start of their action, then lose one stack. Bypasses armour. Can be resisted.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "corrode", "category": "keyword", "name": "Corrode", "codex": "Player keyword. Corroding enemies lose 1% of their HP per stack at the start of their action, then lose one stack. Bypasses armour. Can be resisted.", "status": "planned", "design": {"holes": ""}},
-    {"id": "lure", "category": "keyword", "name": "Lure", "codex": "Player keyword, on any entry aimed at a foe: a weapon, a status, or an entry that does nothing else. Every foe the entry reaches turns on this machine for the round, intents and all; reach and area decide who and how many. A lured foe whose move has no target keeps doing it.", "status": "implemented", "design": {"holes": "Decided 2 October in place of Taunt and Beacon (bible, section 5). No status and no chip: the arrow is the record. A draw by ally (cover) is parked until a support role proves to need it."}},
-    {"id": "disrupt", "category": "keyword", "name": "Disrupt", "codex": "Player keyword, on any entry aimed at a foe. The foe does its other move instead, this round, and its new intent shows at once. A foe with nothing else open is not moved.", "status": "implemented", "design": {"holes": "Decided 2 October in place of the planned Scramble and Confuse (bible, section 5). Deterministic: the next move in the foe's list that its conditions allow, so a boss steps through its pattern."}},
-    {"id": "suppress", "category": "keyword", "name": "Suppress", "codex": "Player keyword. The target skips its telegraphed action this round, then gains two stacks of Numbed (three if massive). A foe may shrug it off: its own stun resistance plus 10% a Numbed stack.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "numbed", "category": "status", "name": "Numbed", "codex": "Foe status. Each stack is 10% resistance to a suppress on top of the foe's own; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. Numbed is exempt from every other interaction: nothing deepens it, spreads it, cleanses it or reads it beyond suppress itself and its own decay.", "status": "implemented", "design": {"holes": "Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths. Exempt from everything (Ryan, 2 October): a stun resist that passives or cleanses could touch is where other games' combat loops broke."}},
-    {"id": "stun_resist", "category": "foe", "name": "Stun resistance", "codex": "A foe's base chance to shrug off a suppress, before Numbed. Rank and file have none; bosses carry some.", "status": "implemented", "design": {"holes": "30 on the three bosses as a placeholder."}},
-    {"id": "volatile", "category": "keyword", "name": "Volatile", "codex": "Player keyword, on any kind of component. Spending it bites its owner for 10 hull, past shield and armour, before the component acts. A blank is never spent, so a disabled entry does not bite.", "status": "implemented", "design": {"holes": "The Arsenal's self-damage (Ryan, 28 September), built 29 September: hull outright where the Corrupted bite takes shield first. The bite is a placeholder number (Skirmish.VOLATILE_BITE). It will feed the Nemesis's Crucible Capacitor once that counts blows that reach hull."}},
-    {"id": "devour", "category": "keyword", "name": "Devour", "codex": "Player keyword. Every foe this component kills gives its owner a stack of Overcharged for the skirmish; the stacks fade one a round at the round's end.", "status": "implemented", "design": {"holes": "The Ammit's talons (28 September), built 29 September on the kill in the attack resolution: a spread that kills two feeds two, a chain feeds on every link. The Quintessence Tap, which stops the fade and keeps the stacks for the battle, is planned."}},
-    {"id": "weapon", "category": "component_kind", "name": "Weapon", "codex": "A component spent on a foe within its reach. It need not deal damage.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "equipment", "category": "component_kind", "name": "Equipment", "codex": "A component spent on a machine: itself, an ally, or either, as the component says. Shields and vents are equipment.", "status": "implemented", "design": {"holes": "Buffs will be equipment too, once they exist."}},
-    {"id": "targets", "category": "component_property", "name": "Targets", "codex": "Whom a piece of equipment may be spent on: self and allies, self only, or allies only. Shown as a chip on the die when narrowed.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "execute", "category": "keyword", "name": "Execute", "codex": "+100% damage against a foe at or below half its health. Reduced to +50% against bosses and elites.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "chain", "category": "keyword", "name": "Chain", "codex": "If this attack kills an enemy, repeat it on a new, valid target.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "rapid", "category": "keyword", "name": "Rapid", "codex": "After this component is spent, it is switched off for the rest of this round, the die rerolls for free (never the same entry), and the mech may act again. The switch-off only stops an infinite turn.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "steady", "category": "keyword", "name": "Steady", "codex": "A component with steady always uses its average damage as its base damage. It may still crit.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "disable", "category": "keyword", "name": "Disable", "codex": "Enemy keyword. The component the target's die is showing is switched off through the target's next turn: if the die lands on it, it comes up blank.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "corrupt", "category": "keyword", "name": "Corrupt", "codex": "Foe attack keyword. Each blow that lands leaves a stack of Corrupted on the component the target's die is showing: it deals damage to its owner whenever spent.", "status": "implemented", "design": {"holes": "No foe carries it yet; Ryan places it (The Chorus, presumably)."}},
-    {"id": "cleanse", "category": "keyword", "name": "Cleanse", "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Disabled, Corrupted and Overheating status. A rapid component's own switch-off is not a status a cleanse touches.", "status": "implemented", "design": {"holes": "No component carries it yet; Ryan places it."}},
-    {"id": "retaliate", "category": "status", "name": "Retaliate", "codex": "Mech status. While it lasts, a foe that strikes this machine's bare hull is Shocked. From buff equipment it lasts the rounds the component says; the Armadillo's Faraday Hull carries it always.", "status": "implemented", "design": {"holes": "Was flat damage equal to the component's power. Thorns scales with enemy blows and so inverts horde against boss; a debuff does not (Ryan, 28 September). The Armadillo's passive carries it always on."}},
-    {"id": "shocked", "category": "status", "name": "Shocked", "codex": "Foe status. The next blow this foe takes deals double damage, then the status clears. A Shocked foe that strikes bare hull again takes 10. Never stacks.", "status": "implemented", "design": {"holes": "The Armadillo's retaliation (Ryan, 28 September): the tank sets up kills instead of out-damaging area weapons against a horde, and it works on a boss. The discharge on a second strike is the small thorns left in. Numbers are placeholders."}},
-    {"id": "overcharged", "category": "status", "name": "Overcharged", "codex": "Mech status. Each stack is +5 damage on this machine's attacks, flat. From buff equipment it lasts through the rounds the component says; from devour it lasts the skirmish and loses a stack at the end of each round unless a passive says otherwise.", "status": "implemented", "design": {"holes": "The buff side and devour run (29 September); a buff's stacks and devour's are the same status to the machine and add up. The Ammit's Quintessence Tap (which stops the decay and keeps the stacks for the battle, never the campaign) is planned. Name is a placeholder."}},
-    {"id": "braced", "category": "status", "name": "Braced", "codex": "Mech status. Armour +5 per stack: that much off every blow on bare hull, flat. Granted by buff equipment for the rounds it says.", "status": "implemented", "design": {"holes": "Placeholder name and number (29 September). Flat since 2 October; it was 15% less damage a stack."}},
-    {"id": "primed", "category": "status", "name": "Primed", "codex": "Mech status. Every blow this machine lands leaves a stack of Burning per stack of Primed. Granted by buff equipment for the rounds it says.", "status": "implemented", "design": {"holes": "Placeholder name (29 September)."}},
-    {"id": "disabled", "category": "status", "name": "Disabled", "codex": "Component status. This die entry comes up blank while it lasts; the component itself is untouched. A foe's disable lasts through the mech's next turn and can be cleansed; a rapid component's own switch-off ends with the round.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "corrupted", "category": "status", "name": "Corrupted", "codex": "Component status. Every time this die entry is spent it bites its owner for 10 per stack, shield first, before the component acts. A blank is never spent, so a disabled entry does not bite. Stacks. Clears at end of skirmish. Can be cleansed.", "status": "implemented", "design": {"holes": "The bite is a placeholder number (Skirmish.CORRUPT_BITE_PER_STACK)."}},
-    {"id": "phased", "category": "status", "name": "Phased", "codex": "Player and enemy status. This unit cannot attack, nor can it be damaged by attacks, until end of round.", "status": "planned", "design": {"holes": ""}},
-    {"id": "burning", "category": "status", "name": "Burning", "codex": "Foe status. Loses 5 HP per stack at the start of its action, then loses one stack. Bypasses armour. Applied by the burn keyword, one stack per twenty damage dealt.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "suppressed", "category": "status", "name": "Suppressed", "codex": "Foe status. Skips its action this round, then clears.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "cracked_component", "category": "status", "name": "Cracked component", "codex": "Mech status, global rule. When a blow lands on bare hull (no shield standing) and what gets past armour is at least a quarter of maximum hull, the mech's die is rolled and the component it lands on is injured. An intact component cracks: it loses its keywords and unique effects, but still does its basic action, can still crit, still generates heat, and still provides its passive bonuses and abilities. Any shield standing, however small, prevents injury, except against a breach; a foe's double strike is the other way past it. A cracked component stays cracked across skirmishes and battles until repaired in the hangar.", "status": "implemented", "design": {"holes": "Threshold is a placeholder. Repair cost and the hangar screen are not built."}},
-    {"id": "destroyed_component", "category": "status", "name": "Destroyed component", "codex": "Mech status. When an injury lands on a component that is already cracked, it is destroyed: blank, it does nothing when it comes up, and provides its passive bonuses but not passive abilities. until the hangar repairs or replaces it. An injury that lands on a destroyed component or an empty hardpoint finds nothing to break, so a badly broken mech shrugs off more of them.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "front_rank", "category": "formation", "name": "Front rank", "codex": "Three slots. Front-preferring foes fill these. Always in line of fire.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "back_rank", "category": "formation", "name": "Back rank", "codex": "Three slots behind the front. Back-preferring foes hold these.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "exposed", "category": "formation", "name": "Exposed", "codex": "A back-rank foe is exposed when the front slot in its column is empty. Exposed foes are in line of fire.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "pool", "category": "formation", "name": "Reinforcements", "codex": "Foes not yet on the field. Front and Back ranks have their own reinforcement pool. Empty slots refill from the pool of reinforcements after each round. The skirmish is won when the field and all reinforcements are defeated.", "status": "implemented", "design": {"holes": "Elites should surface at set points rather than in pool order."}},
-    {"id": "danger_close", "category": "formation", "name": "Splash", "codex": "Indirect fire on the front rank damages the firing unit equal to half the component's power, rounded up.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "massive", "category": "formation", "name": "Massive", "codex": "A massive foe fills both slots of a column and counts as front rank. Its column is never exposed while it stands. Only some elites and bosses are massive.", "status": "implemented", "design": {"holes": "Cleave treats it as a front-rank neighbour; pierce cannot hit anything behind it because nothing is."}},
-    {"id": "withdraw", "category": "formation", "name": "Withdraw", "codex": "Available at any point of the player's turn, the first round included. The price is always the same: the enemy takes its turn, then the team flees at the end of the round, so nobody leapfrogs out of contact unscathed. Ends the skirmish; survivors on both sides carry their damage to the battlefield. Shields do not refill on withdrawing; they recharge at the field rate only in phases spent out of combat.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "movespeed", "category": "battlefield", "name": "Movespeed", "codex": "Move in tens: how far a machine goes in a phase. A normal hex costs 10, so MOVE 40 is four hexes on open ground. Each way of moving calls each ground fast (5), normal (10) or slow: a slow hex can always be entered with any move left, and the step ends the move. Move left at the end of a phase is lost.", "status": "implemented", "design": {"holes": "Built 2 October (bible section 4). Every chassis's move is a placeholder Ryan sets by size and role; the content check flags a chassis at least as fast as another on every ground, never refuses it."}},
-    {"id": "intent", "category": "battlefield", "name": "Intent", "codex": "Each pack commits its path when the round opens and the map shows it exactly: a pusher walks to the gate or the nearest city defense, an aggressive pack turns for a machine that ends inside its reach, a hunter chases the machine it has locked. Player routes resolve first.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "body_block", "category": "battlefield", "name": "Body block", "codex": "A pack stops at the first hex on its path occupied by a blocking unit. Flyers do not block; packs pass through their hex but never land on it.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "contact", "category": "battlefield", "name": "Contact", "codex": "After all movement, every machine standing inside a pack's zone fights that pack. A machine inside two packs' zones joins their fights into one; that is the only way fights join. Multiple skirmishes resolve one at a time, in the order you choose.", "status": "implemented", "design": {"holes": "No participant cap. May need one for phone readability. Decided 1 October: zones on the packs, measured from where each stops; nothing chains."}},
-    {"id": "engagement_zone", "category": "battlefield", "name": "Engagement zone", "codex": "Every pack has a zone, a radius in hexes around where it ends its move, drawn on the map before Resolve. Stand inside it and you fight that pack. Nothing else decides who fights: a pack stops only where a body stands in its path, and a machine beside its path is walked past unless the zone reaches it.", "status": "implemented", "design": {"holes": "Decided 1 October after the touching rule (22 September) and the engagement range (28 September). Radii are content on the foe type: front-rank 1, back-rank 3, bosses 2, placeholders. Dropped on the way: chaining in any form, a touch rule between packs, double-booking a machine into two fights, the zone as the stop."}},
-    {"id": "pack_behaviour", "category": "battlefield", "name": "Behaviour", "codex": "Every pack commits its route when the round opens; the route you read is the route, and only a body in its path cuts it. A pusher walks it to the gate whatever you do. An aggressive pack does the same unless a machine ends inside its reach, the dashed ring: then it comes for the biggest catch it can make. A hunter locks one machine when it spawns, by its caveat (the nearest, weakest, strongest, slowest or fastest), wears the target rings on it, and chases wherever that machine ends until one of them is dead.", "status": "implemented", "design": {"holes": "Decided 1 October: the enemy commits first, so no pack re-aims at the plan without a drawn trigger. Placeholders: the ghoul aggressive, the brute hunts the strongest at move 3; a dedicated hunter is a foe to name."}},
-    {"id": "pack", "category": "battlefield", "name": "Pack", "codex": "An enemy hex is a pack: one foe type times a strength. A skirmish's enemy composition is every pack whose zone your machines stand in, so the rift's formations and how you come at them decide what you fight. Bosses are single three-hex units.", "status": "implemented", "design": {"holes": "The rift should seed and spawn formations, not single packs (Ryan, 1 October): to design."}},
-    {"id": "footprint", "category": "battlefield", "name": "Footprint", "codex": "A unit covers one or more hexes. A boss covers three in a triangle. Every footprint hex blocks, touches for contact, and is a tap target. Packs and mechs stay single-hex.", "status": "implemented", "design": {"holes": "Footprints do not rotate with facing."}},
-    {"id": "structure", "category": "battlefield", "name": "Structure", "codex": "Gate and rift hexes are structures wider than one hex. Nobody stands on them. A pack whose path reaches any gate hex strikes the gate.", "status": "implemented", "design": {"holes": "The rift does nothing yet beyond marking where packs spawn."}},
-    {"id": "spawn", "category": "battlefield", "name": "Spawn", "codex": "When Rift Pressure fills, the next pack of the faction's spawn list appears on the nearest free hex to the rift.", "status": "implemented", "design": {"holes": "A full spawn list should arrive together as a formation; pressure currently sends one pack at a time."}},
-    {"id": "plain", "category": "terrain", "name": "Plain", "codex": "Open ground. Normal pace for every machine; wheels run fast. Packs cross it.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "road", "category": "terrain", "name": "Road", "codex": "Open ground, the same as plain: the road is art. Normal pace for every machine; wheels run fast. Packs cross it.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "rough", "category": "terrain", "name": "Rough", "codex": "Forest and scrub. Normal pace for tracks, walkers and flyers; slow for wheels and hovercraft, which can enter it but end their move there. Packs cross it at full pace.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "ruins", "category": "terrain", "name": "Ruins", "codex": "Rubble. Normal pace for walkers and flyers; slow for tracks, wheels and hovercraft, which can enter it but end their move there. Packs cross it at full pace.", "status": "implemented", "design": {"holes": "Designed as cover for the pack inside a skirmish. Skirmish terrain conditions are not coded."}},
-    {"id": "water", "category": "terrain", "name": "Water", "codex": "Hovercraft skim it fast and tracks ford at normal pace; walkers and wheels can enter it but end their move there; flyers pass over. Packs never enter it.", "status": "implemented", "design": {"holes": "Designed to dampen burn inside a skirmish. Not coded. The generator gives one real water feature a map with crossings for the horde, with the hovercraft (bible section 4)."}},
-    {"id": "mountain", "category": "terrain", "name": "Mountain", "codex": "Impassable except for flyers, which cross at normal pace. Packs go around.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "flyer", "category": "trait", "name": "Flyer", "codex": "Normal pace over every ground, mountains included. Packs pass through it: it cannot stop one. It fights by the zone like any machine.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "hover", "category": "trait", "name": "Hover", "codex": "Skims water fast. Rough ground and ruins are slow: it can enter them, and the step ends its move. Stops a pack in its path like any ground machine.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "walker", "category": "trait", "name": "Walker", "codex": "Legs. Rough ground and ruins at normal pace; water is slow: it can enter it, and the step ends its move.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "tracked", "category": "trait", "name": "Tracked", "codex": "Tracks. Ploughs through forest and fords water at normal pace; rubble is slow: it can enter ruins, and the step ends its move.", "status": "implemented", "design": {"holes": "Was tank until 2 October (Ryan). Built 2 October."}},
-    {"id": "wheeled", "category": "trait", "name": "Wheeled", "codex": "Wheels. Fast on open ground. Rough ground, ruins and water are slow: it can enter them, and the step ends its move.", "status": "implemented", "design": {"holes": "The cars (Ryan, 2 October: the Prairie Dog and the Dingo). Built 2 October."}},
-    {"id": "stealth", "category": "trait", "name": "Stealth", "codex": "A pack's zone never pulls it in on its own. Joins a fight only when another machine is in it, or when it stopped a pack in its path; a pack whose zone merely falls on it has walked past.", "status": "implemented", "design": {"holes": "The Dingo (Ryan, 28 September): a support car that waits in the wings while the heavies get into position, then joins their fight, and never fights alone unless run into. Pays again when hunter packs exist."}},
-    {"id": "defense", "category": "trait", "name": "City defense", "codex": "A static player-side unit. Packs path toward it, and it joins any skirmish it is adjacent to.", "status": "implemented", "design": {"holes": "Defenses have no die. They cannot act inside a skirmish yet."}},
-    {"id": "on_attack", "category": "trigger", "name": "On attack", "codex": "Passive trigger. Fires after the damage roll on every attack. Effects: multiply or add damage or heat, or set a minimum damage. An effect may carry a when condition: component_cracked (only when the component being spent is cracked).", "status": "implemented", "design": {"holes": ""}},
-    {"id": "on_shield_gain", "category": "trigger", "name": "On shield gain", "codex": "Passive trigger. Fires when this mech gains shield from any source, with the amount gained; it may shed heat or grant a status, never raise more shield.", "status": "implemented", "design": {"holes": "Built 30 September (Effects.fire); no content uses it yet."}},
-    {"id": "on_heat_gain", "category": "trigger", "name": "On heat gain", "codex": "Passive trigger. Fires when this mech gains heat, with the amount; it may raise shield or grant a status, never add heat.", "status": "implemented", "design": {"holes": "Built 30 September (Effects.fire); no content uses it yet."}},
-    {"id": "on_round_start", "category": "trigger", "name": "On round start", "codex": "Passive trigger. Fires after the roll, before rerolls: shield from heat, a flat shield, a vent.", "status": "implemented", "design": {"holes": "Built 30 September for the Thermal Recoupler; the heat it reads is the gauge after the turn's passive cooling."}},
-    {"id": "on_skirmish_start", "category": "trigger", "name": "On skirmish start", "codex": "Passive trigger. Fires once as the skirmish begins, before the first roll: a shield, a vent, a status.", "status": "implemented", "design": {"holes": "Built 30 September (Effects.fire); no content uses it yet."}},
-    {"id": "on_foe_status", "category": "trigger", "name": "On foe status", "codex": "Passive trigger. Fires when any foe gains a status (Burning today; the buffs and debuffs to come), whoever applied it, and never for Suppressed or Numbed themselves. Effects: chance_suppress (a chance the foe is also Suppressed, rising per point of shield the owner is missing).", "status": "implemented", "design": {"holes": "One machine's passive so far (the Baboon's Pocket Paradox)."}},
-    {"id": "on_stack", "category": "trigger", "name": "On applying stacks", "codex": "Passive trigger. Fires when this machine applies stacks of a status to anyone: a foe's Burning (from a burn or from Primed), an ally's or its own buff, its own Overcharged from a devour. Effects: add_stacks (so many stacks more, flat or for every so much heat the machine carries). Never for Numbed, which is exempt from every interaction.", "status": "implemented", "design": {"holes": "One machine's passive so far (the Stingray's Exothermic Suite). Shocked and Suppressed are not stacks, so it never touches them."}},
-    {"id": "on_crit", "category": "trigger", "name": "On crit", "codex": "Passive trigger. Fires when an attack component crits. Effects: multiply or add damage, add burn to the target, vent the attacker's heat.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "on_hull_damage", "category": "trigger", "name": "On hull damage", "codex": "Passive trigger. Fires when this mech loses hull to a blow or a bite, never to its own overheat.", "status": "implemented", "design": {"holes": "Built 30 September for the Crucible Capacitor (stack_status). Still the hook for the pinned berserker idea."}},
-    {"id": "out_of_combat", "category": "trigger", "name": "Out of combat", "codex": "Passive trigger. Fires at the end of a battlefield phase in which this mech had no skirmish, after the field recharge: more shield.", "status": "implemented", "design": {"holes": "Built 30 September (Effects.fire in Battle.commit); heat does not persist between fights, so a vent here would be nothing. No content uses it yet."}},
-    {"id": "command_die", "category": "commander", "name": "Command die", "codex": "One die rolled alongside the mech dice each round. Its entries are rechargeable commander abilities and never deal damage. They come from the hangar, never from rewards. Die size is a research path.", "status": "planned", "design": {"holes": "Open question: whether the command die exists at all, or one-shots only."}},
-    {"id": "one_shot", "category": "commander", "name": "One-shot", "codex": "Consumable ability. Pouch of three. Picked up from skirmishes, expires when the battle ends. Starting stock restocks every battle.", "status": "planned", "design": {"holes": ""}},
-    {"id": "reward_pick", "category": "commander", "name": "Reward pick", "codex": "After a skirmish victory: a modifier on a component you carry, a one-shot, or a battle-wide boon. Weighted by the pack's faction.", "status": "planned", "design": {"holes": ""}},
-    {"id": "city_ability", "category": "city", "name": "City ability", "codex": "Battlefield-level ability owned and upgraded by the city: sprint, airlift, teleport, tractor beam, orbital strike. Cooldowns measured in phases.", "status": "planned", "design": {"holes": "Consider range limits from the gate so the push north leaves support behind."}},
-    {"id": "cooldown", "category": "city", "name": "Cooldown", "codex": "City abilities only. Counted in battlefield phases. Never used inside a skirmish.", "status": "planned", "design": {"holes": ""}},
-    {"id": "component", "category": "equipment", "name": "Component", "codex": "A piece of equipment on a mech, and one entry on its die. There is no generic equipment: every entry on a die is a component, or an empty hardpoint. Each round the die is rolled and the component that comes up is what the mech can do.", "status": "implemented", "design": {"holes": "Multi-slot components were considered and scrapped on 18 September as invisible complexity."}},
-    {"id": "hardpoint", "category": "equipment", "name": "Hardpoint", "codex": "A free slot on the chassis. Any component fits any hardpoint. On the model a hardpoint is a socket where the component mounts.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "fixed_component", "category": "equipment", "name": "Fixed component", "codex": "A component built into the chassis: always on the die, never removed, never sold, and it uses no hardpoint. The Badger's claw and its plating are fixed.", "status": "implemented", "design": {"holes": "Decided against unlocking fixed slots for money (18 September)."}},
-    {"id": "empty_hardpoint", "category": "equipment", "name": "Empty hardpoint", "codex": "A hardpoint with nothing in it is an entry on the die that does nothing when it comes up. Nothing fills it for you.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "on_injury", "category": "trigger", "name": "on_injury", "codex": "Passive trigger. Fires when an injury lands on a component. Effects: no_destroy (a cracked component holds instead of being destroyed).", "status": "implemented", "design": {"holes": ""}},
-    {"id": "armour", "category": "resource", "name": "Armour", "codex": "A chassis number taken off every blow that lands on bare hull, flat, never a percentage. A blow smaller than the armour does nothing. Shield is not armoured: a blow on shield costs the shield its full damage.", "status": "implemented", "design": {"holes": "Numbers are placeholders. Armour from components is content, not yet written."}},
-    {"id": "strike_order", "category": "formation", "name": "Strike order", "codex": "Foes strike in the order they stand: front rank left to right, then the back rank. Each blow is resolved on its own against the shield standing at that moment, so which foe strikes first decides what a small shield blocks. At first contact the heaviest hitters deploy left.", "status": "implemented", "design": {"holes": ""}},
-    {"id": "aim", "category": "foe", "name": "Aim", "codex": "What a foe's sense goes for when it picks whom to strike, chosen for every foe on its own as the round opens and shown as its arrow before you act. The exposed: weighted toward the machine its blow would hurt most, a shield standing lowering the draw and a shield about to break raising it. Anything: any machine alike. Heat: the hottest machine. The armed: a machine showing an intact weapon. Fires as one: the rank shares a pick. A move may aim differently from its foe. The pick is a commitment: a foe whose target shields up still swings at it.", "status": "implemented", "design": {"holes": "Decided 2 October (bible, section 5). Content: `aim` on a foe type and on a move; `when` on a move is the condition that lets a foe pick it, and a special never fires twice running."}},
-    {"id": "breach", "category": "foe", "name": "Breach", "codex": "A breaching blow overflows: what the shield cannot absorb reaches the hull, and if that is a quarter of maximum hull it injures a component like any bare-hull blow. It breaks the fundamental promise that a standing shield stops the big hit, so it is a dangerous, uncommon attack modifier, and its counterplay is not the shield: redirect it or interrupt it.", "status": "implemented", "design": {"holes": "A property of a foe's attack action. No foe carries it yet; Ryan places it. Redirect and interrupt do not exist yet. Name is a placeholder (pierce is taken by the player keyword)."}},
-    {"id": "foe_action", "category": "foe", "name": "Foe action", "codex": "A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (folding against damage, regrowing, readying to get back up, calling up a foe, rallying the others, costing the team a reroll, stoking a machine's heat, scrambling a reroll, cracking a component). Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number.", "status": "implemented", "design": {"holes": "Only attacks run; defend, buff and debuff actions stay planned. Weighted RNG is the whole brain for now."}},
-    {"id": "vents_all", "category": "component_property", "name": "Vents all", "codex": "An attack that fires the machine's whole heat as it is spent: the heat gauge is empty after the shot, and every 10 heat fired adds the component's bonus to the blow before crits and passives. The shot's own heat cost still lands.", "status": "implemented", "design": {"holes": "Built 30 September for the Afterburner Cannon (vents_all and power_per_heat on the face). Only the first shot of a chain fires the heat."}},
-    {"id": "strikes", "category": "component_property", "name": "Strikes", "codex": "An attack's blows per use. A weapon with three strikes lands three separate hits: each rolls its own damage, its own crit and its own effects, so a rapid-fire weapon procs often. Against a shield, every strike past the first reaches the hull; against armour, every small strike loses the armour, so many small hits are the wrong tool for a heavy target and the right one for a soft one. Foe attacks have strikes too.", "status": "implemented", "design": {"holes": "Heat is paid once per use, not per strike. Foes have no armour yet, so on the player side strikes only matter for procs until they do."}},
-    {"id": "static", "category": "trigger", "name": "Static", "codex": "Passive trigger. Always on. Its effects change a mech's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; set_reach on a component (the Badger's cracked weapons become melee); suppress, which turns off another effect by id or tag.", "status": "implemented", "design": {"holes": "Every read asks the pipeline; nothing is written to a stat or a component, so an effect that is gone stops answering. A static reach rule cannot be conditioned on reach."}},
-    {"id": "order_of_operations", "category": "rules", "name": "Order of operations", "codex": "Everything that changes a number goes through one pipeline, in one order. Sources: the chassis passive and each fitted component's passive (until refitted), skirmish rewards (until the battle ends), buffs and debuffs (until the skirmish ends, or until the end of a given round). First suppression, shortest-lived source to longest: a live effect that suppresses another by id or tag turns it off, and a suppressed effect suppresses nothing. Then the gate: an effect takes part only if it is live, its trigger fires now, its condition holds, and, for an ability, its component is not destroyed (a destroyed component keeps its stat bonuses and loses its abilities). Then adds, all sources summed; then multiplies, all sources multiplied; then floors and caps; then overrides, where the shortest-lived source wins and the latest granted breaks ties. In an attack, the crit multiplier and the fixed keyword rule (execute) come before the pipeline's adds and multiplies. Nothing is ever stored as a total: every read asks again, so an effect that is gone stops answering. Statuses stack: the same status granted again adds stacks instead of a second copy; an add is worth its value per stack and a multiply is applied once per stack; a status that ticks applies its per-stack tick at its owner's turn, then loses one stack, and is gone at zero.", "status": "implemented", "design": {"holes": "Refit (the hangar) is what changes loadout-scoped effects; not built."}},
-    {"id": "overheating", "category": "status", "name": "Overheating", "codex": "Mech status. Gains 5 heat per stack at the end of the round, after the enemy has struck, then loses one stack. The mech-side counterpart of Burning: metal does not burn, it heats. Applied by foe attacks that scorch. Clears at end of skirmish. Can be cleansed.", "status": "implemented", "design": {"holes": "Placeholder name and numbers, engine id overheating; Ryan is looking for the flavour."}},
-    {"id": "scorch", "category": "foe", "name": "Scorch", "codex": "Foe attack keyword. Each blow that lands leaves one stack of Overheating on the mech it hit.", "status": "implemented", "design": {"holes": "Placeholder name. No foe carries it yet; Ryan places it (fire demons, presumably)."}}
-  ]
+ "_about": "The single source of truth for every mechanic term. codex is the rule as the player reads it; design.holes is what the mechanic does not do yet. docs/vocabulary.md is generated from this file by tools/export_vocabulary.gd. status: implemented (in sim/), planned (designed, not coded), idea (floated, undecided).",
+ "categories": [
+  "resource",
+  "equipment",
+  "component_kind",
+  "component_property",
+  "reach",
+  "keyword",
+  "status",
+  "formation",
+  "battlefield",
+  "terrain",
+  "trait",
+  "trigger",
+  "commander",
+  "city",
+  "foe",
+  "rules"
+ ],
+ "entries": [
+  {
+   "id": "hull",
+   "category": "resource",
+   "name": "Hull",
+   "codex": "Damage that gets past shield removes hull. Hull never recovers during a battle. At zero the mech is a wreck to be salvaged after the battle.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "shield",
+   "category": "resource",
+   "name": "Shield",
+   "codex": "Enemy damage hits shield before hull, and a standing shield blocks a blow whole: however small the shield and however big the blow, nothing bleeds through to the hull (a breaching foe is the exception). The blow still costs the shield its damage. Shield components add shield up to the chassis maximum (a component with Overshield may pass it, and the excess fades at the end of the round); in a fight that is the only way shield comes back. Out of combat it returns each battlefield phase at the chassis's field rate. It never refills for free between skirmishes.",
+   "status": "implemented",
+   "design": {
+    "holes": "Rates and shield sizes are placeholders. Decided 18 September: block-the-blow replaced bleed-through, and the in-combat trickle was dropped the same day (a passive may bring it back for one chassis)."
+   }
+  },
+  {
+   "id": "heat",
+   "category": "resource",
+   "name": "Heat",
+   "codex": "Attack components may add heat. At the end of the round, heat above the chassis maximum burns hull one for one and the gauge settles at the maximum; until then a vent can still bring it down. Vent components remove heat. At the start of every turn a mech sheds its chassis's cooling rating in heat, so a round spent on ballistics or shields is a way of cooling down without a vent; Overheating ticks at the end of the round, after the enemy has struck, so a scorch lands on the round's peak heat before cooling relieves it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Heat does nothing below the cap. Consider effects at high heat short of overflow. Cooling numbers are placeholders; cooling must stay below a typical weapon's heat or heat never matters, and a vent component must be worth a whole turn (tuning)."
+   }
+  },
+  {
+   "id": "reroll",
+   "category": "resource",
+   "name": "Reroll",
+   "codex": "Three rerolls per round, each rerolling every unlocked, unspent mech die. A reroll always lands on a different component: never the one showing, never one equivalent to it (a die whose components are all alike keeps what it shows). Rerolls may be spent before or after attacking, so a low damage roll is information for the rest of the round. Never pooled across rounds.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "rift_pressure",
+   "category": "resource",
+   "name": "Rift Pressure",
+   "codex": "Ticks once per battlefield phase and once per skirmish round. When full it resets and a fresh pack emerges at the rift.",
+   "status": "implemented",
+   "design": {
+    "holes": "Spawns a fixed pack. Should draw from the battle's faction(s) and escalate."
+   }
+  },
+  {
+   "id": "gate",
+   "category": "resource",
+   "name": "Gate Integrity",
+   "codex": "A pack whose path reaches the gate strikes it instead of moving. Gate integrity persists across battles and is repaired in the meta.",
+   "status": "implemented",
+   "design": {
+    "holes": "Gate damage formula is a placeholder (strength divided by three)."
+   }
+  },
+  {
+   "id": "attack",
+   "category": "component_kind",
+   "name": "Attack component",
+   "codex": "Spend on a foe within reach to deal its power in damage, then apply its keywords and heat.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "shield_component",
+   "category": "component_kind",
+   "name": "Shield component",
+   "codex": "Spend on self or an ally to add its power in shield, capped at that mech's shield maximum.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "vent",
+   "category": "component_kind",
+   "name": "Vent component",
+   "codex": "Spend on self or an ally to remove its power in heat.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "buff",
+   "category": "component_kind",
+   "name": "Buff component",
+   "codex": "Equipment spent on a machine (itself, an ally, or either, as the component says) that grants it a status, so many stacks deep, through the end of so many rounds: Overcharged for damage, Braced against damage, Primed to burn on hit. The die shows the status name and the stacks.",
+   "status": "implemented",
+   "design": {
+    "holes": "Only one component carries it, a draft. Debuffs on foes stay weapons."
+   }
+  },
+  {
+   "id": "cracked",
+   "category": "component_kind",
+   "name": "Cracked component",
+   "codex": "A cracked component still acts but loses all keywords and unique effects. Cracked compoents can still crit, still generate heat, and still provide their passive bonuses and abilities. A destroyed component is blank and does nothing when it comes up, and provides passive bonuses but not passive abilities. Both persist until repaired in the hangar.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "damage_range",
+   "category": "component_property",
+   "name": "Damage range",
+   "codex": "A kinetic attack component shows a minimum and a maximum and rolls between them when spent, immediately and visibly. Energy components show one number and never roll. Numbers are in tens.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ranges are content-authored per component; no upgrade path raises min or max yet."
+   }
+  },
+  {
+   "id": "crit",
+   "category": "component_property",
+   "name": "Critical hit",
+   "codex": "A kinetic component may carry a crit chance. On a crit the roll is multiplied by the crit multiplier: a base of 2 for everyone, plus every crit damage bonus that applies, from the component itself or a passive. Bonuses add to the multiplier, never multiply each other, so a +0.5 weapon with a +0.5 passive crits for 3 times. The readout shows the resulting multiplier. Energy components never crit. Crits fire the on_crit passive trigger.",
+   "status": "implemented",
+   "design": {
+    "holes": "The base is Face.CRIT_MULT, a balance knob; lower it if crit triggers make crits too strong at low chance."
+   }
+  },
+  {
+   "id": "melee",
+   "category": "reach",
+   "name": "Melee",
+   "codex": "Targets any front-rank foe. Can target any back-rank foe when the front rank is empty.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "line",
+   "category": "reach",
+   "name": "Line of sight",
+   "codex": "Targets any front-rank foe, and any back-rank foe whose column is exposed.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "indirect",
+   "category": "reach",
+   "name": "Indirect",
+   "codex": "Targets any foe in either rank. Hitting the front rank triggers danger close.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "cleave",
+   "category": "keyword",
+   "name": "Spread",
+   "codex": "Player keyword. Also hits the foes in the neighbouring columns of the target's rank.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "penetrate",
+   "category": "keyword",
+   "name": "Penetrate",
+   "codex": "Player keyword. Hits first the front, then the back rank of a single column.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "spillover",
+   "category": "keyword",
+   "name": "Spillover",
+   "codex": "Player keyword. When a blow kills a front-rank foe, what it had past the kill carries into the foe behind it in the same column. Nothing stands behind a massive foe.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 29 September as Overwhelm; renamed Spillover 6 October (Ryan: of the six over-words it was the one to move). The spill is plain damage: it spends a shock and feeds a devour, and carries no other keyword of the blow. The Wild Boar's Juggernaut Drive grants it to every attack (grant_keyword, the first passive to add a keyword)."
+   }
+  },
+  {
+   "id": "burn",
+   "category": "keyword",
+   "name": "Burn",
+   "codex": "Player keyword. Burning enemies lose 5 HP per stack at the start of their action, then lose one stack. Bypasses armour. Can be resisted.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "corrode",
+   "category": "keyword",
+   "name": "Corrode",
+   "codex": "Player keyword. Corroding enemies lose 1% of their HP per stack at the start of their action, then lose one stack. Bypasses armour. Can be resisted.",
+   "status": "planned",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "lure",
+   "category": "keyword",
+   "name": "Lure",
+   "codex": "Player keyword, on any entry aimed at a foe: a weapon, a status, or an entry that does nothing else. Every foe the entry reaches turns on this machine for the round, intents and all; reach and area decide who and how many. A lured foe whose move has no target keeps doing it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Decided 2 October in place of Taunt and Beacon (bible, section 5). No status and no chip: the arrow is the record. A draw by ally (cover) is parked until a support role proves to need it."
+   }
+  },
+  {
+   "id": "disrupt",
+   "category": "keyword",
+   "name": "Disrupt",
+   "codex": "Player keyword, on any entry aimed at a foe. The foe does its other move instead, this round, and its new intent shows at once. A foe with nothing else open is not moved.",
+   "status": "implemented",
+   "design": {
+    "holes": "Decided 2 October in place of the planned Scramble and Confuse (bible, section 5). Deterministic: the next move in the foe's list that its conditions allow, so a boss steps through its pattern."
+   }
+  },
+  {
+   "id": "suppress",
+   "category": "keyword",
+   "name": "Suppress",
+   "codex": "Player keyword. The target skips its telegraphed action this round, then gains two stacks of Numbed (three if massive). A foe may shrug it off: its own stun resistance plus 10% a Numbed stack.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "numbed",
+   "category": "status",
+   "name": "Numbed",
+   "codex": "Foe status. Each stack is 10% resistance to a suppress on top of the foe's own; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. Numbed is exempt from every other interaction: nothing deepens it, spreads it, cleanses it or reads it beyond suppress itself and its own decay.",
+   "status": "implemented",
+   "design": {
+    "holes": "Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths. Exempt from everything (Ryan, 2 October): a stun resist that passives or cleanses could touch is where other games' combat loops broke."
+   }
+  },
+  {
+   "id": "stun_resist",
+   "category": "foe",
+   "name": "Stun resistance",
+   "codex": "A foe's base chance to shrug off a suppress, before Numbed. Rank and file have none; bosses carry some.",
+   "status": "implemented",
+   "design": {
+    "holes": "30 on the three bosses as a placeholder."
+   }
+  },
+  {
+   "id": "volatile",
+   "category": "keyword",
+   "name": "Volatile",
+   "codex": "Player keyword, on any kind of component. Spending it bites its owner for 10 hull, past shield and armour, before the component acts. A blank is never spent, so a disabled entry does not bite.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Arsenal's self-damage (Ryan, 28 September), built 29 September: hull outright where the Corrupted bite takes shield first. The bite is a placeholder number (Skirmish.VOLATILE_BITE). It will feed the Nemesis's Crucible Capacitor once that counts blows that reach hull."
+   }
+  },
+  {
+   "id": "devour",
+   "category": "keyword",
+   "name": "Devour",
+   "codex": "Player keyword. Every foe this component kills gives its owner a stack of Overcharged for the skirmish; the stacks fade one a round at the round's end.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Ammit's talons (28 September), built 29 September on the kill in the attack resolution: a spread that kills two feeds two, a chain feeds on every link. The Quintessence Tap, which stops the fade and keeps the stacks for the battle, is planned."
+   }
+  },
+  {
+   "id": "weapon",
+   "category": "component_kind",
+   "name": "Weapon",
+   "codex": "A component spent on a foe within its reach. It need not deal damage.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "equipment",
+   "category": "component_kind",
+   "name": "Equipment",
+   "codex": "A component spent on a machine: itself, an ally, or either, as the component says. Shields and vents are equipment.",
+   "status": "implemented",
+   "design": {
+    "holes": "Buffs will be equipment too, once they exist."
+   }
+  },
+  {
+   "id": "targets",
+   "category": "component_property",
+   "name": "Targets",
+   "codex": "Whom a piece of equipment may be spent on: self and allies, self only, or allies only. Shown as a chip on the die when narrowed.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "execute",
+   "category": "keyword",
+   "name": "Execute",
+   "codex": "+100% damage against a foe at or below half its health. Reduced to +50% against bosses and elites.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "chain",
+   "category": "keyword",
+   "name": "Chain",
+   "codex": "If this attack kills an enemy, repeat it on a new, valid target.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "rapid",
+   "category": "keyword",
+   "name": "Rapid",
+   "codex": "After this component is spent, it is switched off for the rest of this round, the die rerolls for free (never the same entry), and the mech may act again. The switch-off only stops an infinite turn.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "steady",
+   "category": "keyword",
+   "name": "Steady",
+   "codex": "A component with steady always uses its average damage as its base damage. It may still crit.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "disable",
+   "category": "keyword",
+   "name": "Disable",
+   "codex": "Enemy keyword. The component the target's die is showing is switched off through the target's next turn: if the die lands on it, it comes up blank.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "corrupt",
+   "category": "keyword",
+   "name": "Corrupt",
+   "codex": "Foe attack keyword. Each blow that lands leaves a stack of Corrupted on the component the target's die is showing: it deals damage to its owner whenever spent.",
+   "status": "implemented",
+   "design": {
+    "holes": "No foe carries it yet; Ryan places it (The Chorus, presumably)."
+   }
+  },
+  {
+   "id": "cleanse",
+   "category": "keyword",
+   "name": "Cleanse",
+   "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Disabled, Corrupted and Overheating status. A rapid component's own switch-off is not a status a cleanse touches.",
+   "status": "implemented",
+   "design": {
+    "holes": "No component carries it yet; Ryan places it."
+   }
+  },
+  {
+   "id": "overshield",
+   "category": "keyword",
+   "name": "Overshield",
+   "codex": "Player keyword, on shield components, rare. The shield may raise its target past the target's maximum; shield past the maximum fades at the end of the round. A shield die spent on a machine already at its maximum is never wasted when it carries this.",
+   "status": "implemented",
+   "design": {
+    "holes": "Decided 5 October (Ryan: overshield as a component keyword, a rare one). The Puffin's fixed Backwash Ionizer carries it, allies only, so the excess never lands on the Puffin itself. Rare because every overshield on the field makes shield max a soft number. The fade is the whole safeguard: a persisting excess would stack a team past every blow. The gauge shows the excess as a hatched block beyond the bar's end."
+   }
+  },
+  {
+   "id": "retaliate",
+   "category": "status",
+   "name": "Retaliate",
+   "codex": "Mech status. While it lasts, a foe that strikes this machine's bare hull is Shocked. From buff equipment it lasts the rounds the component says; the Armadillo's Faraday Hull carries it always.",
+   "status": "implemented",
+   "design": {
+    "holes": "Was flat damage equal to the component's power. Thorns scales with enemy blows and so inverts horde against boss; a debuff does not (Ryan, 28 September). The Armadillo's passive carries it always on."
+   }
+  },
+  {
+   "id": "shocked",
+   "category": "status",
+   "name": "Shocked",
+   "codex": "Foe status. The next blow this foe takes deals double damage, then the status clears. A Shocked foe that strikes bare hull again takes 10. Never stacks.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Armadillo's retaliation (Ryan, 28 September): the tank sets up kills instead of out-damaging area weapons against a horde, and it works on a boss. The discharge on a second strike is the small thorns left in. Numbers are placeholders."
+   }
+  },
+  {
+   "id": "overcharged",
+   "category": "status",
+   "name": "Overcharged",
+   "codex": "Mech status. Each stack is +5 damage on this machine's attacks, flat. From buff equipment it lasts through the rounds the component says; from devour it lasts the skirmish and loses a stack at the end of each round unless a passive says otherwise.",
+   "status": "implemented",
+   "design": {
+    "holes": "The buff side and devour run (29 September); a buff's stacks and devour's are the same status to the machine and add up. The Ammit's Quintessence Tap (which stops the decay and keeps the stacks for the battle, never the campaign) is planned. Name is a placeholder."
+   }
+  },
+  {
+   "id": "braced",
+   "category": "status",
+   "name": "Braced",
+   "codex": "Mech status. Armour +5 per stack: that much off every blow on bare hull, flat. Granted by buff equipment for the rounds it says.",
+   "status": "implemented",
+   "design": {
+    "holes": "Placeholder name and number (29 September). Flat since 2 October; it was 15% less damage a stack."
+   }
+  },
+  {
+   "id": "primed",
+   "category": "status",
+   "name": "Primed",
+   "codex": "Mech status. Every blow this machine lands leaves a stack of Burning per stack of Primed. Granted by buff equipment for the rounds it says.",
+   "status": "implemented",
+   "design": {
+    "holes": "Placeholder name (29 September)."
+   }
+  },
+  {
+   "id": "disabled",
+   "category": "status",
+   "name": "Disabled",
+   "codex": "Component status. This die entry comes up blank while it lasts; the component itself is untouched. A foe's disable lasts through the mech's next turn and can be cleansed; a rapid component's own switch-off ends with the round.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "corrupted",
+   "category": "status",
+   "name": "Corrupted",
+   "codex": "Component status. Every time this die entry is spent it bites its owner for 10 per stack, shield first, before the component acts. A blank is never spent, so a disabled entry does not bite. Stacks. Clears at end of skirmish. Can be cleansed.",
+   "status": "implemented",
+   "design": {
+    "holes": "The bite is a placeholder number (Skirmish.CORRUPT_BITE_PER_STACK)."
+   }
+  },
+  {
+   "id": "phased",
+   "category": "status",
+   "name": "Phased",
+   "codex": "Player and enemy status. This unit cannot attack, nor can it be damaged by attacks, until end of round.",
+   "status": "planned",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "burning",
+   "category": "status",
+   "name": "Burning",
+   "codex": "Foe status. Loses 5 HP per stack at the start of its action, then loses one stack. Bypasses armour. Applied by the burn keyword, one stack per twenty damage dealt.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "suppressed",
+   "category": "status",
+   "name": "Suppressed",
+   "codex": "Foe status. Skips its action this round, then clears.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "cracked_component",
+   "category": "status",
+   "name": "Cracked component",
+   "codex": "Mech status, global rule. When a blow lands on bare hull (no shield standing) and what gets past armour is at least a quarter of maximum hull, the mech's die is rolled and the component it lands on is injured. An intact component cracks: it loses its keywords and unique effects, but still does its basic action, can still crit, still generates heat, and still provides its passive bonuses and abilities. Any shield standing, however small, prevents injury, except against a breach; a foe's double strike is the other way past it. A cracked component stays cracked across skirmishes and battles until repaired in the hangar.",
+   "status": "implemented",
+   "design": {
+    "holes": "Threshold is a placeholder. Repair cost and the hangar screen are not built."
+   }
+  },
+  {
+   "id": "destroyed_component",
+   "category": "status",
+   "name": "Destroyed component",
+   "codex": "Mech status. When an injury lands on a component that is already cracked, it is destroyed: blank, it does nothing when it comes up, and provides its passive bonuses but not passive abilities. until the hangar repairs or replaces it. An injury that lands on a destroyed component or an empty hardpoint finds nothing to break, so a badly broken mech shrugs off more of them.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "front_rank",
+   "category": "formation",
+   "name": "Front rank",
+   "codex": "Three slots. Front-preferring foes fill these. Always in line of fire.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "back_rank",
+   "category": "formation",
+   "name": "Back rank",
+   "codex": "Three slots behind the front. Back-preferring foes hold these.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "exposed",
+   "category": "formation",
+   "name": "Exposed",
+   "codex": "A back-rank foe is exposed when the front slot in its column is empty. Exposed foes are in line of fire.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "pool",
+   "category": "formation",
+   "name": "Reinforcements",
+   "codex": "Foes not yet on the field. Front and Back ranks have their own reinforcement pool. Empty slots refill from the pool of reinforcements after each round. The skirmish is won when the field and all reinforcements are defeated.",
+   "status": "implemented",
+   "design": {
+    "holes": "Elites should surface at set points rather than in pool order."
+   }
+  },
+  {
+   "id": "danger_close",
+   "category": "formation",
+   "name": "Splash",
+   "codex": "Indirect fire on the front rank damages the firing unit equal to half the component's power, rounded up.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "massive",
+   "category": "formation",
+   "name": "Massive",
+   "codex": "A massive foe fills both slots of a column and counts as front rank. Its column is never exposed while it stands. Only some elites and bosses are massive.",
+   "status": "implemented",
+   "design": {
+    "holes": "Cleave treats it as a front-rank neighbour; pierce cannot hit anything behind it because nothing is."
+   }
+  },
+  {
+   "id": "withdraw",
+   "category": "formation",
+   "name": "Withdraw",
+   "codex": "Available at any point of the player's turn, the first round included. The price is always the same: the enemy takes its turn, then the team flees at the end of the round, so nobody leapfrogs out of contact unscathed. Ends the skirmish; survivors on both sides carry their damage to the battlefield. Shields do not refill on withdrawing; they recharge at the field rate only in phases spent out of combat.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "movespeed",
+   "category": "battlefield",
+   "name": "Movespeed",
+   "codex": "Move in tens: how far a machine goes in a phase. A normal hex costs 10, so MOVE 40 is four hexes on open ground. Each way of moving calls each ground fast (5), normal (10) or slow: a slow hex can always be entered with any move left, and the step ends the move. Move left at the end of a phase is lost.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 2 October (bible section 4). Every chassis's move is a placeholder Ryan sets by size and role; the content check flags a chassis at least as fast as another on every ground, never refuses it."
+   }
+  },
+  {
+   "id": "intent",
+   "category": "battlefield",
+   "name": "Intent",
+   "codex": "Each pack commits its path when the round opens and the map shows it exactly: a pusher walks to the gate or the nearest city defense, an aggressive pack turns for a machine that ends inside its reach, a hunter chases the machine it has locked. Player routes resolve first.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "body_block",
+   "category": "battlefield",
+   "name": "Body block",
+   "codex": "A pack stops at the first hex on its path occupied by a blocking unit. Flyers do not block; packs pass through their hex but never land on it.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "contact",
+   "category": "battlefield",
+   "name": "Contact",
+   "codex": "After all movement, every machine standing inside a pack's zone fights that pack. A machine inside two packs' zones joins their fights into one; that is the only way fights join. Multiple skirmishes resolve one at a time, in the order you choose.",
+   "status": "implemented",
+   "design": {
+    "holes": "No participant cap. May need one for phone readability. Decided 1 October: zones on the packs, measured from where each stops; nothing chains."
+   }
+  },
+  {
+   "id": "engagement_zone",
+   "category": "battlefield",
+   "name": "Engagement zone",
+   "codex": "Every pack has a zone, a radius in hexes around where it ends its move, drawn on the map before Resolve. Stand inside it and you fight that pack. Nothing else decides who fights: a pack stops only where a body stands in its path, and a machine beside its path is walked past unless the zone reaches it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Decided 1 October after the touching rule (22 September) and the engagement range (28 September). Radii are content on the foe type: front-rank 1, back-rank 3, bosses 2, placeholders. Dropped on the way: chaining in any form, a touch rule between packs, double-booking a machine into two fights, the zone as the stop."
+   }
+  },
+  {
+   "id": "pack_behaviour",
+   "category": "battlefield",
+   "name": "Behaviour",
+   "codex": "Every pack commits its route when the round opens; the route you read is the route, and only a body in its path cuts it. A pusher walks it to the gate whatever you do. An aggressive pack does the same unless a machine ends inside its reach, the dashed ring: then it comes for the biggest catch it can make. A hunter locks one machine when it spawns, by its caveat (the nearest, weakest, strongest, slowest or fastest), wears the target rings on it, and chases wherever that machine ends until one of them is dead.",
+   "status": "implemented",
+   "design": {
+    "holes": "Decided 1 October: the enemy commits first, so no pack re-aims at the plan without a drawn trigger. Placeholders: the ghoul aggressive, the brute hunts the strongest at move 3; a dedicated hunter is a foe to name."
+   }
+  },
+  {
+   "id": "pack",
+   "category": "battlefield",
+   "name": "Pack",
+   "codex": "An enemy hex is a pack: one foe type times a strength. A skirmish's enemy composition is every pack whose zone your machines stand in, so the rift's formations and how you come at them decide what you fight. Bosses are single three-hex units.",
+   "status": "implemented",
+   "design": {
+    "holes": "The rift should seed and spawn formations, not single packs (Ryan, 1 October): to design."
+   }
+  },
+  {
+   "id": "footprint",
+   "category": "battlefield",
+   "name": "Footprint",
+   "codex": "A unit covers one or more hexes. A boss covers three in a triangle. Every footprint hex blocks, touches for contact, and is a tap target. Packs and mechs stay single-hex.",
+   "status": "implemented",
+   "design": {
+    "holes": "Footprints do not rotate with facing."
+   }
+  },
+  {
+   "id": "structure",
+   "category": "battlefield",
+   "name": "Structure",
+   "codex": "Gate and rift hexes are structures wider than one hex. Nobody stands on them. A pack whose path reaches any gate hex strikes the gate.",
+   "status": "implemented",
+   "design": {
+    "holes": "The rift does nothing yet beyond marking where packs spawn."
+   }
+  },
+  {
+   "id": "spawn",
+   "category": "battlefield",
+   "name": "Spawn",
+   "codex": "When Rift Pressure fills, the next pack of the faction's spawn list appears on the nearest free hex to the rift.",
+   "status": "implemented",
+   "design": {
+    "holes": "A full spawn list should arrive together as a formation; pressure currently sends one pack at a time."
+   }
+  },
+  {
+   "id": "plain",
+   "category": "terrain",
+   "name": "Plain",
+   "codex": "Open ground. Normal pace for every machine; wheels run fast. Packs cross it.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "road",
+   "category": "terrain",
+   "name": "Road",
+   "codex": "Open ground, the same as plain: the road is art. Normal pace for every machine; wheels run fast. Packs cross it.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "rough",
+   "category": "terrain",
+   "name": "Rough",
+   "codex": "Forest and scrub. Normal pace for tracks, walkers and flyers; slow for wheels and hovercraft, which can enter it but end their move there. Packs cross it at full pace.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "ruins",
+   "category": "terrain",
+   "name": "Ruins",
+   "codex": "Rubble. Normal pace for walkers and flyers; slow for tracks, wheels and hovercraft, which can enter it but end their move there. Packs cross it at full pace.",
+   "status": "implemented",
+   "design": {
+    "holes": "Designed as cover for the pack inside a skirmish. Skirmish terrain conditions are not coded."
+   }
+  },
+  {
+   "id": "water",
+   "category": "terrain",
+   "name": "Water",
+   "codex": "Hovercraft skim it fast and tracks ford at normal pace; walkers and wheels can enter it but end their move there; flyers pass over. Packs never enter it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Designed to dampen burn inside a skirmish. Not coded. The generator gives one real water feature a map with crossings for the horde, with the hovercraft (bible section 4)."
+   }
+  },
+  {
+   "id": "mountain",
+   "category": "terrain",
+   "name": "Mountain",
+   "codex": "Impassable except for flyers, which cross at normal pace. Packs go around.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "flyer",
+   "category": "trait",
+   "name": "Flyer",
+   "codex": "Normal pace over every ground, mountains included. Packs pass through it: it cannot stop one. It fights by the zone like any machine.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "hover",
+   "category": "trait",
+   "name": "Hover",
+   "codex": "Skims water fast. Rough ground and ruins are slow: it can enter them, and the step ends its move. Stops a pack in its path like any ground machine.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "walker",
+   "category": "trait",
+   "name": "Walker",
+   "codex": "Legs. Rough ground and ruins at normal pace; water is slow: it can enter it, and the step ends its move.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "tracked",
+   "category": "trait",
+   "name": "Tracked",
+   "codex": "Tracks. Ploughs through forest and fords water at normal pace; rubble is slow: it can enter ruins, and the step ends its move.",
+   "status": "implemented",
+   "design": {
+    "holes": "Was tank until 2 October (Ryan). Built 2 October."
+   }
+  },
+  {
+   "id": "wheeled",
+   "category": "trait",
+   "name": "Wheeled",
+   "codex": "Wheels. Fast on open ground. Rough ground, ruins and water are slow: it can enter them, and the step ends its move.",
+   "status": "implemented",
+   "design": {
+    "holes": "The cars (Ryan, 2 October: the Prairie Dog and the Dingo). Built 2 October."
+   }
+  },
+  {
+   "id": "stealth",
+   "category": "trait",
+   "name": "Stealth",
+   "codex": "A pack's zone never pulls it in on its own. Joins a fight only when another machine is in it, or when it stopped a pack in its path; a pack whose zone merely falls on it has walked past.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Dingo (Ryan, 28 September): a support car that waits in the wings while the heavies get into position, then joins their fight, and never fights alone unless run into. Pays again when hunter packs exist."
+   }
+  },
+  {
+   "id": "defense",
+   "category": "trait",
+   "name": "City defense",
+   "codex": "A static player-side unit. Packs path toward it, and it joins any skirmish it is adjacent to.",
+   "status": "implemented",
+   "design": {
+    "holes": "Defenses have no die. They cannot act inside a skirmish yet."
+   }
+  },
+  {
+   "id": "on_attack",
+   "category": "trigger",
+   "name": "On attack",
+   "codex": "Passive trigger. Fires after the damage roll on every attack. Effects: multiply or add damage or heat, or set a minimum damage. An effect may carry a when condition: component_cracked (only when the component being spent is cracked).",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "on_shield_gain",
+   "category": "trigger",
+   "name": "On shield gain",
+   "codex": "Passive trigger. Fires when this mech gains shield from any source, with the amount gained; it may shed heat or grant a status, never raise more shield.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 30 September (Effects.fire); no content uses it yet."
+   }
+  },
+  {
+   "id": "on_shield_granted",
+   "category": "trigger",
+   "name": "On shielding an ally",
+   "codex": "Passive trigger. Fires when this machine spends a shield component on an ally, with the shield's size; it may shed the ally's heat or grant the ally a status, never raise more shield. It never fires for a shield on itself.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 5 October for the Puffin's Slipstream (an ally it shields sheds 10 heat). Fires on the spend, whatever the shield gained, so a shield die on a topped-up ally still does its other work."
+   }
+  },
+  {
+   "id": "on_heat_gain",
+   "category": "trigger",
+   "name": "On heat gain",
+   "codex": "Passive trigger. Fires when this mech gains heat, with the amount; it may raise shield or grant a status, never add heat.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 30 September (Effects.fire); no content uses it yet."
+   }
+  },
+  {
+   "id": "on_round_start",
+   "category": "trigger",
+   "name": "On round start",
+   "codex": "Passive trigger. Fires after the roll, before rerolls: shield from heat, a flat shield, a vent.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 30 September for the Thermal Recoupler; the heat it reads is the gauge after the turn's passive cooling."
+   }
+  },
+  {
+   "id": "on_skirmish_start",
+   "category": "trigger",
+   "name": "On skirmish start",
+   "codex": "Passive trigger. Fires once as the skirmish begins, before the first roll: a shield, a vent, a status.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 30 September (Effects.fire); no content uses it yet."
+   }
+  },
+  {
+   "id": "on_foe_status",
+   "category": "trigger",
+   "name": "On foe status",
+   "codex": "Passive trigger. Fires when any foe gains a status (Burning today; the buffs and debuffs to come), whoever applied it, and never for Suppressed or Numbed themselves. Effects: chance_suppress (a chance the foe is also Suppressed, rising per point of shield the owner is missing).",
+   "status": "implemented",
+   "design": {
+    "holes": "One machine's passive so far (the Baboon's Pocket Paradox)."
+   }
+  },
+  {
+   "id": "on_stack",
+   "category": "trigger",
+   "name": "On applying stacks",
+   "codex": "Passive trigger. Fires when this machine applies stacks of a status to anyone: a foe's Burning (from a burn or from Primed), an ally's or its own buff, its own Overcharged from a devour. Effects: add_stacks (so many stacks more, flat or for every so much heat the machine carries). Never for Numbed, which is exempt from every interaction.",
+   "status": "implemented",
+   "design": {
+    "holes": "One machine's passive so far (the Stingray's Exothermic Suite). Shocked and Suppressed are not stacks, so it never touches them."
+   }
+  },
+  {
+   "id": "on_crit",
+   "category": "trigger",
+   "name": "On crit",
+   "codex": "Passive trigger. Fires when an attack component crits. Effects: multiply or add damage, add burn to the target, vent the attacker's heat.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "on_hull_damage",
+   "category": "trigger",
+   "name": "On hull damage",
+   "codex": "Passive trigger. Fires when this mech loses hull to a blow or a bite, never to its own overheat.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 30 September for the Crucible Capacitor (stack_status). Still the hook for the pinned berserker idea."
+   }
+  },
+  {
+   "id": "out_of_combat",
+   "category": "trigger",
+   "name": "Out of combat",
+   "codex": "Passive trigger. Fires at the end of a battlefield phase in which this mech had no skirmish, after the field recharge: more shield.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 30 September (Effects.fire in Battle.commit); heat does not persist between fights, so a vent here would be nothing. No content uses it yet."
+   }
+  },
+  {
+   "id": "command_die",
+   "category": "commander",
+   "name": "Command die",
+   "codex": "One die rolled alongside the mech dice each round. Its entries are rechargeable commander abilities and never deal damage. They come from the hangar, never from rewards. Die size is a research path.",
+   "status": "planned",
+   "design": {
+    "holes": "Open question: whether the command die exists at all, or one-shots only."
+   }
+  },
+  {
+   "id": "one_shot",
+   "category": "commander",
+   "name": "One-shot",
+   "codex": "Consumable ability. Pouch of three. Picked up from skirmishes, expires when the battle ends. Starting stock restocks every battle.",
+   "status": "planned",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "reward_pick",
+   "category": "commander",
+   "name": "Reward pick",
+   "codex": "After a skirmish victory: a modifier on a component you carry, a one-shot, or a battle-wide boon. Weighted by the pack's faction.",
+   "status": "planned",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "city_ability",
+   "category": "city",
+   "name": "City ability",
+   "codex": "Battlefield-level ability owned and upgraded by the city: sprint, airlift, teleport, tractor beam, orbital strike. Cooldowns measured in phases.",
+   "status": "planned",
+   "design": {
+    "holes": "Consider range limits from the gate so the push north leaves support behind."
+   }
+  },
+  {
+   "id": "cooldown",
+   "category": "city",
+   "name": "Cooldown",
+   "codex": "City abilities only. Counted in battlefield phases. Never used inside a skirmish.",
+   "status": "planned",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "component",
+   "category": "equipment",
+   "name": "Component",
+   "codex": "A piece of equipment on a mech, and one entry on its die. There is no generic equipment: every entry on a die is a component, or an empty hardpoint. Each round the die is rolled and the component that comes up is what the mech can do.",
+   "status": "implemented",
+   "design": {
+    "holes": "Multi-slot components were considered and scrapped on 18 September as invisible complexity."
+   }
+  },
+  {
+   "id": "hardpoint",
+   "category": "equipment",
+   "name": "Hardpoint",
+   "codex": "A free slot on the chassis. Any component fits any hardpoint. On the model a hardpoint is a socket where the component mounts.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "fixed_component",
+   "category": "equipment",
+   "name": "Fixed component",
+   "codex": "A component built into the chassis: always on the die, never removed, never sold, and it uses no hardpoint. The Badger's claw and its plating are fixed.",
+   "status": "implemented",
+   "design": {
+    "holes": "Decided against unlocking fixed slots for money (18 September)."
+   }
+  },
+  {
+   "id": "empty_hardpoint",
+   "category": "equipment",
+   "name": "Empty hardpoint",
+   "codex": "A hardpoint with nothing in it is an entry on the die that does nothing when it comes up. Nothing fills it for you.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "on_injury",
+   "category": "trigger",
+   "name": "on_injury",
+   "codex": "Passive trigger. Fires when an injury lands on a component. Effects: no_destroy (a cracked component holds instead of being destroyed).",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "armour",
+   "category": "resource",
+   "name": "Armour",
+   "codex": "A chassis number taken off every blow that lands on bare hull, flat, never a percentage. A blow smaller than the armour does nothing. Shield is not armoured: a blow on shield costs the shield its full damage.",
+   "status": "implemented",
+   "design": {
+    "holes": "Numbers are placeholders. Armour from components is content, not yet written."
+   }
+  },
+  {
+   "id": "strike_order",
+   "category": "formation",
+   "name": "Strike order",
+   "codex": "Foes strike in the order they stand: front rank left to right, then the back rank. Each blow is resolved on its own against the shield standing at that moment, so which foe strikes first decides what a small shield blocks. At first contact the heaviest hitters deploy left.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "aim",
+   "category": "foe",
+   "name": "Aim",
+   "codex": "What a foe's sense goes for when it picks whom to strike, chosen for every foe on its own as the round opens and shown as its arrow before you act. The exposed: weighted toward the machine its blow would hurt most, a shield standing lowering the draw and a shield about to break raising it. Anything: any machine alike. Heat: the hottest machine. The armed: a machine showing an intact weapon. Fires as one: the rank shares a pick. A move may aim differently from its foe. The pick is a commitment: a foe whose target shields up still swings at it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Decided 2 October (bible, section 5). Content: `aim` on a foe type and on a move; `when` on a move is the condition that lets a foe pick it, and a special never fires twice running."
+   }
+  },
+  {
+   "id": "breach",
+   "category": "foe",
+   "name": "Breach",
+   "codex": "A breaching blow overflows: what the shield cannot absorb reaches the hull, and if that is a quarter of maximum hull it injures a component like any bare-hull blow. It breaks the fundamental promise that a standing shield stops the big hit, so it is a dangerous, uncommon attack modifier, and its counterplay is not the shield: redirect it or interrupt it.",
+   "status": "implemented",
+   "design": {
+    "holes": "A property of a foe's attack action. No foe carries it yet; Ryan places it. Redirect and interrupt do not exist yet. Name is a placeholder (pierce is taken by the player keyword)."
+   }
+  },
+  {
+   "id": "foe_action",
+   "category": "foe",
+   "name": "Foe action",
+   "codex": "A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (folding against damage, regrowing, readying to get back up, calling up a foe, rallying the others, costing the team a reroll, stoking a machine's heat, scrambling a reroll, cracking a component). Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number.",
+   "status": "implemented",
+   "design": {
+    "holes": "Only attacks run; defend, buff and debuff actions stay planned. Weighted RNG is the whole brain for now."
+   }
+  },
+  {
+   "id": "vents_all",
+   "category": "component_property",
+   "name": "Vents all",
+   "codex": "An attack that fires the machine's whole heat as it is spent: the heat gauge is empty after the shot, and every 10 heat fired adds the component's bonus to the blow before crits and passives. The shot's own heat cost still lands.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 30 September for the Afterburner Cannon (vents_all and power_per_heat on the face). Only the first shot of a chain fires the heat."
+   }
+  },
+  {
+   "id": "strikes",
+   "category": "component_property",
+   "name": "Strikes",
+   "codex": "An attack's blows per use. A weapon with three strikes lands three separate hits: each rolls its own damage, its own crit and its own effects, so a rapid-fire weapon procs often. Against a shield, every strike past the first reaches the hull; against armour, every small strike loses the armour, so many small hits are the wrong tool for a heavy target and the right one for a soft one. Foe attacks have strikes too.",
+   "status": "implemented",
+   "design": {
+    "holes": "Heat is paid once per use, not per strike. Foes have no armour yet, so on the player side strikes only matter for procs until they do."
+   }
+  },
+  {
+   "id": "static",
+   "category": "trigger",
+   "name": "Static",
+   "codex": "Passive trigger. Always on. Its effects change a mech's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; set_reach on a component (the Badger's cracked weapons become melee); suppress, which turns off another effect by id or tag.",
+   "status": "implemented",
+   "design": {
+    "holes": "Every read asks the pipeline; nothing is written to a stat or a component, so an effect that is gone stops answering. A static reach rule cannot be conditioned on reach."
+   }
+  },
+  {
+   "id": "order_of_operations",
+   "category": "rules",
+   "name": "Order of operations",
+   "codex": "Everything that changes a number goes through one pipeline, in one order. Sources: the chassis passive and each fitted component's passive (until refitted), skirmish rewards (until the battle ends), buffs and debuffs (until the skirmish ends, or until the end of a given round). First suppression, shortest-lived source to longest: a live effect that suppresses another by id or tag turns it off, and a suppressed effect suppresses nothing. Then the gate: an effect takes part only if it is live, its trigger fires now, its condition holds, and, for an ability, its component is not destroyed (a destroyed component keeps its stat bonuses and loses its abilities). Then adds, all sources summed; then multiplies, all sources multiplied; then floors and caps; then overrides, where the shortest-lived source wins and the latest granted breaks ties. In an attack, the crit multiplier and the fixed keyword rule (execute) come before the pipeline's adds and multiplies. Nothing is ever stored as a total: every read asks again, so an effect that is gone stops answering. Statuses stack: the same status granted again adds stacks instead of a second copy; an add is worth its value per stack and a multiply is applied once per stack; a status that ticks applies its per-stack tick at its owner's turn, then loses one stack, and is gone at zero.",
+   "status": "implemented",
+   "design": {
+    "holes": "Refit (the hangar) is what changes loadout-scoped effects; not built."
+   }
+  },
+  {
+   "id": "overheating",
+   "category": "status",
+   "name": "Overheating",
+   "codex": "Mech status. Gains 5 heat per stack at the end of the round, after the enemy has struck, then loses one stack. The mech-side counterpart of Burning: metal does not burn, it heats. Applied by foe attacks that scorch. Clears at end of skirmish. Can be cleansed.",
+   "status": "implemented",
+   "design": {
+    "holes": "Placeholder name and numbers, engine id overheating; Ryan is looking for the flavour."
+   }
+  },
+  {
+   "id": "scorch",
+   "category": "foe",
+   "name": "Scorch",
+   "codex": "Foe attack keyword. Each blow that lands leaves one stack of Overheating on the mech it hit.",
+   "status": "implemented",
+   "design": {
+    "holes": "Placeholder name. No foe carries it yet; Ryan places it (fire demons, presumably)."
+   }
+  }
+ ]
 }

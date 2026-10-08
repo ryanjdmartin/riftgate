@@ -11,6 +11,9 @@ const DIR := "res://content/"
 const MAX_AUTHORED_KEYWORDS := 3    # per authored face; upgrades may exceed this at runtime
 const MIN_DIE := 4
 const MAX_DIE := 10                 # the Clydesdale carries nine (Ryan, 28 September); ten leaves it room
+## A chassis's class by mass, lightest first (Ryan, 5 October: the machines' scale on the map
+## and in the skirmish): how big it is drawn, Map3D.SIZE_FIT and MechView3D.SIZE_FILL.
+const SIZES := ["light", "medium", "heavy", "assault"]
 const MAX_PASSIVE_EFFECTS := 3      # effects in one passive; a benefit and its cost is one passive
 ## Internal design text lives under `design` and is never shown. These keys at the top level
 ## of an entry are the old layout, or a leak waiting to happen, so the validator refuses them.
@@ -124,8 +127,11 @@ func build_die(fixed_ids: Array, loadout_ids: Array, hardpoints: int) -> Die:
 	return die
 
 
-func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO) -> Unit:
+## A machine as the content builds it. `loadout` is the hardpoint components fitted, in
+## order; null means the chassis's stock loadout (the campaign passes its roster's own).
+func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO, loadout = null) -> Unit:
 	var c: Dictionary = chassis[chassis_id]
+	var fitted: Array = c.get("loadout", []) if loadout == null else loadout
 	var u := Unit.mech(uid, str(c["name"]), at, int(c.get("movespeed", Unit.MECH_MOVE)))
 	u.hull = int(c.get("hull", 100))
 	u.hull_max = u.hull
@@ -138,14 +144,14 @@ func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO) -
 	u.armour = int(c.get("armour", 0))
 	u.recharge_field = int(c.get("recharge_field", 0))
 	u.cooling = int(c.get("cooling", 0))
-	u.die = build_die(c.get("fixed", []), c.get("loadout", []), u.hardpoints)
+	u.die = build_die(c.get("fixed", []), fitted, u.hardpoints)
 	u.chassis_id = chassis_id
 	var p = c.get("passive", null)
 	if p is Dictionary:
 		u.passive = p
 		u.grant_passive(p, "chassis")
 	# Fitted components bring their own passives; a destroyed one keeps its bonuses only.
-	for cid in c.get("fixed", []) + c.get("loadout", []):
+	for cid in c.get("fixed", []) + fitted:
 		var cp = components.get(cid, {}).get("passive", null)
 		if cp is Dictionary:
 			u.grant_passive(cp, cid, cid)
@@ -375,6 +381,62 @@ func default_team(count: int = 3) -> Array:
 	return chassis.keys().slice(0, count)
 
 
+## The maker whose city is the capital (the Council's own house, `capital` on its entry in
+## chassis.json, decided 5 October: the capital hosts the Council and the Arsenal), and the
+## makers who each host one of the cities around it, in file order.
+func capital_maker() -> String:
+	for id in makers.keys():
+		if bool(makers[id].get("capital", false)):
+			return str(id)
+	return ""
+
+
+func city_makers() -> Array:
+	var out: Array = []
+	for id in makers.keys():
+		if not bool(makers[id].get("capital", false)):
+			out.append(str(id))
+	return out
+
+
+## Tiers (bible section 10, the ledger, 7 October). A chassis carries its tier; a component
+## stocked by any chassis takes the lowest tier of the chassis that stock it; one no chassis
+## stocks carries its own; a fixed-only component has none (0).
+func chassis_tier(chassis_id: String) -> int:
+	return int(chassis.get(chassis_id, {}).get("tier", 0))
+
+
+func component_tier(component_id: String) -> int:
+	var best := 0
+	for id in chassis.keys():
+		if chassis[id].get("loadout", []).has(component_id):
+			var t := int(chassis[id].get("tier", 0))
+			if t > 0 and (best == 0 or t < best):
+				best = t
+	if best > 0:
+		return best
+	return int(components.get(component_id, {}).get("tier", 0))
+
+
+## The chassis of one tier, in content order.
+func chassis_of_tier(t: int) -> Array:
+	var out: Array = []
+	for id in chassis.keys():
+		if int(chassis[id].get("tier", 0)) == t:
+			out.append(str(id))
+	return out
+
+
+## The blueprints a run starts with: every tier-one component (Ryan, 7 October: each
+## maker's basic defaults, which are the tier-one chassis's stock).
+func starting_blueprints() -> Array:
+	var out: Array = []
+	for cid in components.keys():
+		if component_tier(str(cid)) == 1:
+			out.append(str(cid))
+	return out
+
+
 func default_faction() -> String:
 	return str(factions.keys()[0]) if not factions.is_empty() else ""
 
@@ -551,6 +613,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 			errs.append("%s: '%s' rides on a shield or vent component, not an attack" % [where, k])
 		elif kind != "attack" and not Face.SUPPORT_KEYWORDS.has(kw):
 			errs.append("%s: '%s' is an attack keyword; a %s component cannot carry it" % [where, k, kind])
+		elif kind != "shield" and Face.SHIELD_ONLY_KEYWORDS.has(kw):
+			errs.append("%s: '%s' rides on a shield component only; a %s has nothing to pass" % [where, k, kind])
 
 
 func _validate_passive(where: String, p, errs: Array[String]) -> void:
@@ -689,12 +753,42 @@ func _validate_components(errs: Array[String]) -> void:
 
 
 func _validate_chassis(errs: Array[String]) -> void:
+	var capitals := 0
+	for id in makers.keys():
+		if bool(makers[id].get("capital", false)):
+			capitals += 1
+	if not makers.is_empty() and capitals != 1:
+		errs.append("makers: exactly one maker sits at the capital (\"capital\": true); %d do" % capitals)
+	# Tiers (7 October): every chassis 1 to 3; the capital's maker fields no tier one; a
+	# stocked component's tier is derived, so it stores none; an unstocked one that is not
+	# fixed stores its own; no component of the capital's maker is tier one.
+	var capital := capital_maker()
+	var stocked_ids := {}
+	var fixed_ids := {}
+	for id in chassis.keys():
+		var t = chassis[id].get("tier", null)
+		if not (t is float or t is int) or int(t) < 1 or int(t) > 3:
+			errs.append("chassis %s: tier must be 1, 2 or 3" % id)
+		elif str(chassis[id].get("maker", "")) == capital and int(t) == 1:
+			errs.append("chassis %s: the capital's maker fields no tier one" % id)
+		for cid in chassis[id].get("loadout", []):
+			stocked_ids[cid] = true
+		for cid in chassis[id].get("fixed", []):
+			fixed_ids[cid] = true
+	for cid in components.keys():
+		var c: Dictionary = components[cid]
+		if stocked_ids.has(cid) and c.has("tier"):
+			errs.append("component %s: stocked by a chassis, so its tier is derived and stores none" % cid)
+		elif not stocked_ids.has(cid) and not fixed_ids.has(cid) and not c.has("tier"):
+			errs.append("component %s: no chassis stocks it, so it carries its own tier" % cid)
+		if not capital.is_empty() and str(c.get("maker", "")) == capital and component_tier(str(cid)) == 1:
+			errs.append("component %s: the capital's maker has no tier-one component" % cid)
 	for id in chassis.keys():
 		var c: Dictionary = chassis[id]
 		var where := "chassis %s" % id
 		# designation: the maker's long name on the spec plate (Ryan, 26 September: every
 		# chassis carries one; the bible's section 7 row says the shape per maker).
-		for key in ["name", "designation", "codex", "flavour", "hull", "shield", "armour", "movespeed", "hardpoints", "loadout", "recharge_field"]:
+		for key in ["name", "designation", "codex", "flavour", "hull", "shield", "armour", "movespeed", "hardpoints", "loadout", "recharge_field", "size"]:
 			if not c.has(key):
 				errs.append("%s: missing %s" % [where, key])
 		if c.has("designation") and str(c["designation"]).strip_edges().is_empty():
@@ -733,6 +827,8 @@ func _validate_chassis(errs: Array[String]) -> void:
 			errs.append("%s: a chassis has exactly one way of moving (%s)" % [where, ", ".join(BattleMap.WAYS)])
 		if c.has("movespeed") and (int(c["movespeed"]) <= 0 or int(c["movespeed"]) % 5 != 0):
 			errs.append("%s: movespeed is in tens, a positive multiple of 5" % where)
+		if c.has("size") and not SIZES.has(str(c["size"])):
+			errs.append("%s: size is one of %s" % [where, ", ".join(SIZES)])
 		if c.has("maker") and not makers.has(c["maker"]):
 			errs.append("%s: unknown maker %s" % [where, c["maker"]])
 		if c.has("passives"):

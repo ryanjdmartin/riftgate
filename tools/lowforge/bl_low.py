@@ -247,6 +247,20 @@ class Tiles:
             img[8:56, 8:56, :] = np.array([0.55, 0.05, 0.03], np.float32)
             img[14:50, 14:50, :] = np.array([0.95, 0.12, 0.05], np.float32)
             img[22:42, 22:42, :] = np.array([1.0, 0.45, 0.20], np.float32)
+        elif kind == "exhaust":
+            # A booster's mouth (Ryan, 5 October: the engine tile on a booster showed a
+            # cross and little red, since a world-grid tile landed anywhere on the face): a
+            # radial flame filling the whole tile, white-hot at the core through orange to a
+            # deep red rim, no metal border. Fitted one tile to each mouth (`fit` in loft).
+            yy, xx = np.mgrid[0:TILE, 0:TILE].astype(np.float32)
+            r = np.sqrt((yy - (TILE - 1) / 2.0) ** 2 + (xx - (TILE - 1) / 2.0) ** 2) / (TILE / 2.0)
+            stops = [(0.0, (1.0, 0.95, 0.70)), (0.28, (1.0, 0.78, 0.32)), (0.55, (1.0, 0.42, 0.10)),
+                     (0.82, (0.88, 0.14, 0.05)), (1.0, (0.55, 0.05, 0.03)), (2.0, (0.55, 0.05, 0.03))]
+            img = np.zeros((TILE, TILE, 3), np.float32)
+            for (r0, c0), (r1, c1) in zip(stops, stops[1:]):
+                m = (r >= r0) & (r < r1)
+                f = ((r - r0) / (r1 - r0))[m][:, None]
+                img[m] = np.array(c0, np.float32) * (1.0 - f) + np.array(c1, np.float32) * f
         elif kind == "missile":
             img = self.metal(g * 0.9, 0.03, mottle=0.01)
             for cy in (11, 32, 53):
@@ -302,6 +316,14 @@ class Tiles:
             r = np.sqrt((yy - TILE / 2) ** 2 + (xx - TILE / 2) ** 2) / (TILE / 2)
             t = np.clip(1.0 - r, 0.0, 1.0)[..., None]
             img = np.array([0.80, 0.12, 0.04], np.float32) * (1.0 - t) + np.array([1.0, 0.55, 0.18], np.float32) * t
+        elif kind == "ember":
+            # The fire banked down: the glow's tile at under a third of its light, for a part
+            # that rests dark and is lit hot by an act (Ryan, 6 October, the eighth notes: the
+            # Goshawk's cannon dim at rest and bright when it charges, for the contrast).
+            yy, xx = np.mgrid[0:TILE, 0:TILE]
+            r = np.sqrt((yy - TILE / 2) ** 2 + (xx - TILE / 2) ** 2) / (TILE / 2)
+            t = np.clip(1.0 - r, 0.0, 1.0)[..., None]
+            img = 0.28 * (np.array([0.80, 0.12, 0.04], np.float32) * (1.0 - t) + np.array([1.0, 0.55, 0.18], np.float32) * t)
         elif kind == "hazard":
             img = self.metal(g, 0.05)
             img[26:38, :, :] = np.array([0.95, 0.75, 0.10], np.float32)
@@ -349,6 +371,8 @@ class Build:
         self.acts = []         # the machine's idle acts, in authoring order (see act())
         self.tuning = {}       # the cornering module's per-machine numbers (see move())
         self.gait_spec = {}    # how the machine moves (see gait())
+        self.gait_options = {} # other ways it could move, for judging beside it (see gait_option())
+        self.spins = {}        # joints turned without end (see spin())
         self._joint_stack = []   # the joint blocks open right now, outermost first
         self.tile_world = TILE_WORLD   # a structure sets this higher: it is seen at true scale on the map
 
@@ -368,14 +392,16 @@ class Build:
         self.materials[name] = mat
         return mat
 
-    def _finish(self, bm, material, label, transform=None, frame=None):
+    def _finish(self, bm, material, label, transform=None, frame=None, fit_axis=None):
         """Tiles are mapped by projection. Without a `frame`, along the world axis nearest
         each face's normal, which suits anything axis-aligned and puts seams at the same
         world lines on every part. A `frame` (origin, along, across, over, scale) maps a
         member in its own axes instead (Ryan, 26 September: on a slanted arm the world
         seams cut diagonally across the plates), so panel lines run along and around the
         member; `scale` is (u, v) world units per tile, so a fist's face can carry exactly
-        one tile of its own."""
+        one tile of its own. `fit_axis` (0, 1 or 2) fits one whole tile to each face whose
+        normal lies mostly along that world axis, its bounds onto the tile's, so a booster's
+        mouth wears its flame centred whatever the world grid says."""
         bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
         if transform is not None:
             bmesh.ops.transform(bm, matrix=transform, verts=bm.verts)
@@ -386,6 +412,15 @@ class Build:
             if frame is None:
                 ax = max(range(3), key=lambda i: abs(n[i]))
                 a, b = [i for i in range(3) if i != ax]
+                if fit_axis is not None and ax == fit_axis:
+                    lo_a = min(l.vert.co[a] for l in f.loops)
+                    hi_a = max(l.vert.co[a] for l in f.loops)
+                    lo_b = min(l.vert.co[b] for l in f.loops)
+                    hi_b = max(l.vert.co[b] for l in f.loops)
+                    for loop in f.loops:
+                        co = loop.vert.co
+                        loop[uv].uv = ((co[a] - lo_a) / max(1e-6, hi_a - lo_a), (co[b] - lo_b) / max(1e-6, hi_b - lo_b))
+                    continue
                 for loop in f.loops:
                     co = loop.vert.co
                     loop[uv].uv = (co[a] / self.tile_world, co[b] / self.tile_world)
@@ -412,7 +447,8 @@ class Build:
         return ob
 
     def loft(self, sections, material, label="part", transform=None, cap=True):
-        """Sections: [(y, [(x, z), ...]), ...] with the same point count, ordered along y."""
+        """Sections: [(y, [(x, z), ...]), ...] with the same point count, ordered along y. A
+        part wearing the exhaust tile has a whole tile fitted to each of its caps."""
         bm = bmesh.new()
         rings = []
         for y, pts in sections:
@@ -433,7 +469,8 @@ class Build:
                         bm.faces.new(ring)
                     except ValueError:
                         pass
-        return self._finish(bm, material, label, transform)
+        fit = 1 if material.partition(".")[2] == "exhaust" and transform is None else None
+        return self._finish(bm, material, label, transform, fit_axis=fit)
 
     def box(self, x0, x1, y0, y1, z0, z1, material, label="box", transform=None):
         return self.loft([(y0, rect((x0 + x1) / 2, x1 - x0, z0, z1)), (y1, rect((x0 + x1) / 2, x1 - x0, z0, z1))], material, label, transform)
@@ -453,11 +490,13 @@ class Build:
             m = Matrix.Translation((cx, cy, cz)) @ Matrix.Rotation(-math.pi / 2, 4, "X")
         return self.loft(sections, material, label, m)
 
-    def cut(self, targets, p0, p1, radius, sides=8):
+    def cut(self, targets, p0, p1, radius, sides=8, phase=0.0):
         """A hole: a cylinder from `p0` to `p1` subtracted from every object in `targets`
         before export (a boolean modifier, applied), so a recessed port is a real hollow in
         the chassis and nothing of the hull shows inside it (Ryan, 1 October). Pair it with
-        a `_tube` of the same axis a hair smaller, whose inner wall and floor line the hole."""
+        a `_tube` of the same axis a hair smaller, whose inner wall and floor line the hole.
+        `phase` turns the section about the axis: four sides at a quarter pi is a square
+        with its sides across and over the axis."""
         d = (Vector(p1) - Vector(p0)).normalized()
         up = Vector((0.0, 0.0, 1.0))
         side = Vector((1.0, 0.0, 0.0)) if abs(d.dot(up)) > 0.999 else d.cross(up).normalized()
@@ -465,7 +504,7 @@ class Build:
         bm = bmesh.new()
         rings = []
         for p in (Vector(p0) - d * 1.0, Vector(p1) + d * 4.0):
-            rings.append([bm.verts.new(p + side * (radius * math.cos(i * 2.0 * math.pi / sides)) + over * (radius * math.sin(i * 2.0 * math.pi / sides))) for i in range(sides)])
+            rings.append([bm.verts.new(p + side * (radius * math.cos(phase + i * 2.0 * math.pi / sides)) + over * (radius * math.sin(phase + i * 2.0 * math.pi / sides))) for i in range(sides)])
         for i in range(sides):
             bm.faces.new([rings[0][i], rings[0][(i + 1) % sides], rings[1][(i + 1) % sides], rings[1][i]])
         bm.faces.new(rings[0])
@@ -575,7 +614,7 @@ class Build:
                 return "yaw"
         return "pitch"
 
-    def act(self, name, duration, tracks=None, body=None, glow=None, ease="smooth"):
+    def act(self, name, duration, tracks=None, body=None, glow=None, ease="smooth", heft=None, places=None):
         """One idle act, what the pilot does with the machine every few seconds (the
         idle-acts row, 2 October). `tracks` maps a joint name to keyframes, each
         (t, value) on the joint's own axis, or (t, pitch, yaw, roll), or
@@ -585,8 +624,19 @@ class Build:
         a list of (parts, keys): the lit parts named by prefix (their lowforge labels) and
         (t, k) keys scaling their light, 1 at rest, so a weapon's tip charges. Degrees and
         seconds throughout; every track starts and ends at rest. `ease` is "smooth"
-        (eased between keys) or "linear" (a wheel spinning)."""
+        (eased between keys) or "linear" (a wheel spinning). `heft`, if given, is the act's
+        own servo time constant in place of the machine's (b.move): a blow sharper than its
+        weight (Ryan, 5 October). `places` limits the act to "map" or "skirmish" (the
+        Sparrowhawk's loop leaves the skirmish's frame); unnamed, it plays in both."""
         out = {"name": name, "duration": float(duration), "ease": ease, "tracks": {}, "body": [], "glow": []}
+        if heft is not None:
+            out["heft"] = float(heft)
+        if places:
+            places = [places] if isinstance(places, str) else list(places)
+            for pl in places:
+                if pl not in ("map", "skirmish"):
+                    raise ValueError("act %r of %s: a place is map or skirmish, not %r" % (name, self.name, pl))
+            out["places"] = places
         for jn, keys in (tracks or {}).items():
             if jn not in self.joint_meta:
                 raise ValueError("act %r of %s keys a joint the model has not got: %s" % (name, self.name, jn))
@@ -608,6 +658,8 @@ class Build:
                     if not lo <= v <= hi:
                         raise ValueError("act %r of %s asks %s for %s %g, outside its limits %g..%g" % (name, self.name, jn, ax, v, lo, hi))
                 rows.append(row)
+            if jn.startswith("turret"):
+                self._turret_rule(name, jn, rows, float(duration))
             out["tracks"][jn] = rows
         for key in body or []:
             key = [float(v) for v in key]
@@ -621,6 +673,35 @@ class Build:
             out["glow"].append({"parts": parts, "keys": [[float(t), float(k)] for t, k in keys]})
         self.acts.append(out)
         return out
+
+    # A turret's traverse in an act (Ryan, 4 October, the third pass: too fast and wild; not so
+    # far, not nearly as fast, and a pause before it swings back, so it carries its weight).
+    TURRET_REACH = 70.0   # degrees from the bow at most
+    TURRET_SLEW = 35.0    # degrees a second at most between two keys, on average
+    TURRET_PAUSE = 0.6    # seconds a turret holds still before it turns back
+
+    def _turret_rule(self, name, jn, rows, duration):
+        """Refuse an act that swings a turret too far or too fast, or turns it back without a
+        pause: rest at the act's start and end counts as a key."""
+        axis_i = ("pitch", "yaw", "roll").index(self.joint_meta[jn]["axis"])
+        pts = [(0.0, 0.0)] if rows[0][0] > 0.0 else []
+        pts += [(r[0], r[1 + axis_i]) for r in rows]
+        if pts[-1][0] < duration:
+            pts.append((duration, 0.0))
+        where = "act %r of %s, %s" % (name, self.name, jn)
+        for t, v in pts:
+            if abs(v) > self.TURRET_REACH + 1e-6:
+                raise ValueError("%s: %g degrees at %gs, past the turret's reach of %g" % (where, v, t, self.TURRET_REACH))
+        moves = []   # (t0, t1, direction) of each leg that moves
+        for (t0, v0), (t1, v1) in zip(pts, pts[1:]):
+            if v1 == v0:
+                continue
+            if t1 <= t0 or abs(v1 - v0) / (t1 - t0) > self.TURRET_SLEW + 1e-6:
+                raise ValueError("%s: %g to %g degrees in %gs, faster than %g a second" % (where, v0, v1, t1 - t0, self.TURRET_SLEW))
+            moves.append((t0, t1, 1 if v1 > v0 else -1))
+        for (a0, a1, da), (b0, b1, db) in zip(moves, moves[1:]):
+            if da != db and b0 - a1 < self.TURRET_PAUSE - 1e-6:
+                raise ValueError("%s: turns back at %gs after %gs still, under the %gs pause" % (where, b0, b0 - a1, self.TURRET_PAUSE))
 
     def _keys(self, name, keys, jn=None):
         """Keyframes widened to (t, pitch, yaw, roll, dx, dy, dz) and checked against a
@@ -656,7 +737,7 @@ class Build:
         return rows
 
     def gait(self, stride=40.0, tracks=None, body=None, body_hold=None, wheels=None, steer=None, aim=None,
-             treads=None, hold=None, glow=None, rock=0.0, hold_aim=None, ease="smooth"):
+             treads=None, hold=None, glow=None, rock=0.0, ease="smooth", start=None):
         """How the machine moves while the map moves it (the joints row, 2 October; MechRig.drive).
         `stride` is the model units one cycle covers. `tracks` maps a joint to cyclic keys
         over a phase of 0 to 1 (the same shapes as an act's keys), or to (keys, phase) with
@@ -664,15 +745,33 @@ class Build:
         (a bob). `body_hold` is (dx, dy, dz, yaw, pitch, roll) held while moving (a flyer's
         nose down) and `hold` maps a joint to (pitch, yaw, roll) held while moving (the
         Badger's booms carrying the claw clear). `wheels` maps a spin joint to its radius;
-        `steer` a knuckle to degrees of yaw per radian a second of turning; `aim` a caster
+        `steer` a knuckle to degrees per radian a second of turning, about the joint's own axis (a knuckle yaws, a nacelle pitches: the eighteenth notes), eased toward its limits rather than stopped at them and followed on a short servo (the nineteenth notes: until then it was degrees per degree a second, and a knuckle jumped to full lock); `aim` a caster
         to its share of the travel's bearing against the facing (1 points along it).
         `treads` is {"parts": [labels], "scroll": 1.0} to run the tread tiles; `glow`
         {"parts": [labels or groups], "k": 2.0} to brighten boosters by that much on the
-        move; `rock` the degrees the nose comes up on pulling away and dips on stopping;
-        `hold_aim` maps a turret to its share of the hull's turning it winds against, so it
-        holds its aim while the hull turns under it (1 holds it exactly)."""
+        move; `rock` the degrees the nose comes up on pulling away and dips on stopping. A
+        turret turns with the hull on the move (Ryan, 4 October: holding its aim was not worth
+        the complexity). `ease` "linear" plays dense keys as they are (a walk worked out
+        foot by foot, _plant), "smooth" runs a curve through them. `start` is (option, below,
+        full): the machine moves wholly by that gait option under `below` of its full speed
+        and by this gait over `full`, crossfading between, so it sets off and pulls up in one
+        gait and runs in another (Ryan, 7 October, the nineteenth notes: the Clydesdale trots
+        off the mark into its gallop); a fourth, a handoff (_transition in models_low), sets it
+        off at a given moment of that gait's stride (`from`) and plays the stride it changes
+        in, keys over its `length` in units, into this gait at `to` (the twenty-second notes:
+        a crossfade of the whole machine at once clipped a hoof's step; the twenty-first held
+        it a stride and faded over half a stride more)."""
         out = {"stride": float(stride), "ease": ease, "tracks": {}, "body": [], "wheels": {}, "steer": {}, "aim": {},
-               "hold": {}, "treads": {}, "glow": {}, "rock": float(rock), "hold_aim": {}}
+               "hold": {}, "treads": {}, "glow": {}, "rock": float(rock)}
+        if start is not None:
+            out["start"] = {"option": str(start[0]), "below": float(start[1]), "full": float(start[2])}
+            if len(start) > 3:
+                h = start[3]
+                out["start"]["handoff"] = {"from": round(float(h["from"]), 4), "to": round(float(h["to"]), 4),
+                                           "length": round(float(h["length"]), 3),
+                                           "tracks": {jn: {"keys": self._keys("the gait's handoff", keys, jn), "phase": 0.0}
+                                                      for jn, keys in h["tracks"].items()},
+                                           "body": self._keys("the gait's handoff body", h["body"])}
         for jn, spec in (tracks or {}).items():
             keys, phase = (spec if isinstance(spec, tuple) and len(spec) == 2 and not isinstance(spec[0], (int, float)) else (spec, 0.0))
             out["tracks"][jn] = {"keys": self._keys("the gait", keys, jn), "phase": float(phase)}
@@ -682,7 +781,7 @@ class Build:
             if len(bh) != 6:
                 raise ValueError("the gait of %s: body_hold is (dx, dy, dz, yaw, pitch, roll)" % self.name)
             out["body_hold"] = bh
-        for d, src in (("wheels", wheels), ("steer", steer), ("aim", aim), ("hold_aim", hold_aim)):
+        for d, src in (("wheels", wheels), ("steer", steer), ("aim", aim)):
             for jn, v in (src or {}).items():
                 if jn not in self.joint_meta:
                     raise ValueError("the gait of %s names a joint the model has not got: %s" % (self.name, jn))
@@ -704,7 +803,24 @@ class Build:
         self.gait_spec = out
         return out
 
-    def move(self, slide=0.0, bank=0.0, strafe=0.0, tilt=None):
+    def gait_option(self, name, **kw):
+        """Another way the machine could move, built as gait() builds one and written beside
+        it in the sidecar under `gait_options` (Ryan, 5 October: the Ammit's arms and legs at
+        different speeds, to see before deciding): the game moves by the gait alone, and the
+        hangar's Walk can switch to an option to judge it running."""
+        kept = self.gait_spec
+        self.gait_options[name] = self.gait(**kw)
+        self.gait_spec = kept
+        return self.gait_options[name]
+
+    def spin(self, joint, idle, moving=None):
+        """A joint turned without end on its own axis, whatever the machine is doing (Ryan, 6
+        October, the seventh notes: the Stingray's lift fans): `idle` degrees a second standing,
+        `moving` (as idle if not given) once it is fully under way, the rate easing between them
+        with the move. Give the joint no limits: the turn is wrapped, never clamped."""
+        self.spins[joint] = [float(idle), float(idle if moving is None else moving)]
+
+    def move(self, slide=0.0, bank=0.0, strafe=0.0, tilt=None, accel=None, heft=None, oversteer=0.0):
         """The cornering module's numbers for this machine (the joints row, 2 October):
         `slide`, how far the body drifts from its path on a turn and how slowly its heading
         catches up, 0 for a machine that corners on rails; `bank`, how far a flyer or
@@ -714,10 +830,25 @@ class Build:
         first, then translates there, sideways or backward as the path demands; 0 faces its
         heading like everything else), and `tilt` is (pitch, roll) in degrees at the
         reference speed: nose down going forward and up going back, a side down going that
-        way. A helicopter banks 0 and rocks 0; the tilt does both."""
+        way, and a third number if given the share of that nose-down it sheds in a turn as it banks
+        and pulls into the corner (the nineteenth notes). A helicopter banks 0 and rocks 0; the tilt does both. The map's curve (Ryan, 4
+        October; MovePath) reads `accel`, the seconds from rest to full speed; it holds full
+        speed through corners (the third pass). `heft` is the machine's weight in its acts
+        (Ryan, 4 October, the third pass: heavy, with inertia): the seconds a joint or the body
+        takes to catch up with what an act asks, the servos' time constant (MechRig._follow);
+        a light craft 0.08, a heavy walker 0.25. `oversteer` (Ryan, 5 October: the Dingo lagged
+        through its turns where it should drift into them, and the hovercraft the same) turns
+        the nose into a corner ahead of the path, the tail stepping out, and swings it back
+        as the corner ends, 1 the most; the slide's lag is for what does not oversteer."""
         self.tuning = {"slide": float(slide), "bank": float(bank), "strafe": float(strafe)}
+        if oversteer:
+            self.tuning["oversteer"] = float(oversteer)
         if tilt is not None:
-            self.tuning["tilt"] = [float(tilt[0]), float(tilt[1])]
+            self.tuning["tilt"] = [float(v) for v in tilt[:3]]
+        if accel is not None:
+            self.tuning["accel"] = float(accel)
+        if heft is not None:
+            self.tuning["heft"] = float(heft)
 
     def rig(self):
         """The rig sidecar: every joint's axis, limits and parent, the acts and the
@@ -726,8 +857,13 @@ class Build:
         for the weld, which must keep those parts apart."""
         glow_parts = sorted({p for a in self.acts for g in a["glow"] for p in g["parts"]}
                             | set(self.gait_spec.get("glow", {}).get("parts", [])) | set(self.gait_spec.get("treads", {}).get("parts", [])))
-        return {"_about": "the rig of art/models/%s.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it" % self.name,
-                "joints": self.joint_meta, "acts": self.acts, "gait": self.gait_spec, "move": self.tuning, "glow_parts": glow_parts}
+        out = {"_about": "the rig of art/models/%s.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers; MechRig reads it" % self.name,
+               "joints": self.joint_meta, "acts": self.acts, "gait": self.gait_spec, "move": self.tuning, "glow_parts": glow_parts}
+        if self.gait_options:
+            out["gait_options"] = self.gait_options
+        if self.spins:
+            out["spin"] = self.spins
+        return out
 
     def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0):
         """`with b.socket("hp_1", at, forward): ...` builds the stock component inside the

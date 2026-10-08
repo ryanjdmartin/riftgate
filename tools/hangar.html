@@ -2,9 +2,11 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* One page for the hangar (decided 1 October): the codex, the content editor, the names
-   list and the renders, each a tab, all reading the content files published beside this
-   page so one republish refreshes every tab. Edits and name candidates live in the
-   artifact's database (collections "edits" and "candidates"). */
+   list and the models, each a tab, all reading the files published beside this page so one
+   republish refreshes every tab. Edits and name candidates live in the artifact's database
+   (collections "edits" and "candidates"). The Models tab (3 October: the renders and the
+   animation viewer merged) runs hangar/motion.js (tools/hangar_motion.js), a port of the
+   game's rig, over the game's own renders. */
 :root{
   --ground:#ECE8DF; --paper:#F6F3EC; --sunk:#E2DDD2; --ink:#1F2226; --ink-2:#4B5058; --ink-3:#7C8189; --rule:#CFC9BC; --rule-strong:#B4AD9F;
   --minerva:#4E6A3B; --kestrel:#33639C; --ws:#8A5730; --aphelion:#B3302C; --arsenal:#3E434D; --parts:#6A5B8E; --other:#6E7279;
@@ -219,6 +221,41 @@ section.model .plate2{color:var(--ink-3);font-size:13px;margin:2px 0 4px}
 .pics img{width:min(100%,420px);max-width:100%;height:auto;image-rendering:pixelated;background:var(--ground);border-radius:3px}
 .pics.small img{width:min(100%,240px)}
 details{margin-top:8px} summary{cursor:pointer;color:var(--ink-3);font-size:13px}
+
+/* ---- models: the live stage keeps its canvas across redraws, the game's renders under it;
+   the machine wears its maker's rule */
+.mpick{display:flex;gap:4px;flex-wrap:wrap;margin-top:12px}
+.mpick button{border:1px solid var(--rule);border-left:4px solid var(--mk);background:var(--paper);color:var(--ink-2);padding:6px 10px;border-radius:3px;font:600 14px/1 var(--display);letter-spacing:.04em;text-transform:uppercase;cursor:pointer}
+.mpick button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);border-left-color:var(--mk);color:var(--ground)}
+.motion{--acc:var(--other);display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:12px;margin-top:12px;align-items:start}
+.motion.minerva{--acc:var(--minerva)} .motion.kestrel{--acc:var(--kestrel)} .motion.ws{--acc:var(--ws)} .motion.aphelion{--acc:var(--aphelion)} .motion.arsenal{--acc:var(--arsenal)}
+.stage{position:relative;aspect-ratio:4 / 3;max-width:100%;max-height:68vh;background:var(--sunk);border:1px solid var(--rule);border-top:4px solid var(--acc);border-radius:3px;overflow:hidden;touch-action:none}
+.stage canvas{display:block;width:100%;height:100%}
+.stage-note{position:absolute;inset:auto 10px 8px 10px;font:500 12px/1.4 var(--mono);color:var(--ink-3);pointer-events:none}
+.mpanel{display:flex;flex-direction:column;gap:12px;min-width:0}
+.mpanel h2{font:700 26px/1 var(--display);text-transform:uppercase;letter-spacing:.03em;margin:0;color:var(--acc)}
+.mpanel .plate2{color:var(--ink-3);font-size:13px;margin:2px 0 0}
+.mgroup{display:flex;flex-direction:column;gap:6px}
+.mgroup .glabel{font:600 11px/1.2 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.seg{display:flex;gap:4px;flex-wrap:wrap}
+.seg .btn{padding:6px 10px}
+.acts{display:flex;gap:5px;flex-wrap:wrap}
+.scrub{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}
+.scrub input{width:100%;accent-color:var(--acc)}
+.scrub output{font:500 12px/1 var(--mono);color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.mfacts{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;margin:0;font-size:13px}
+.mfacts dt{font:600 11px/1.6 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.mfacts dd{margin:0;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.mhelp{font-size:13px;color:var(--ink-3);margin:0;max-width:60ch}
+.mpick button.classes{border-left-style:dashed;border-left-color:var(--ink-3)}
+.mounts{display:grid;grid-template-columns:auto minmax(0,1fr);gap:5px 8px;align-items:center}
+.mounts label{font:600 11px/1.2 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap}
+.mounts select{min-width:0;width:100%;padding:5px 6px;font:500 13px/1.2 var(--body)}
+.mounts .fitted{color:var(--acc);font-weight:600}
+.makers{display:flex;gap:4px;flex-wrap:wrap}
+.makers .btn{border-left:4px solid var(--mk)}
+.under{margin-top:14px}
+@media (max-width:760px){.motion{grid-template-columns:1fr}}
 @media (prefers-reduced-motion: reduce){.toast{transition:none}}
 </style>
 
@@ -235,6 +272,7 @@ details{margin-top:8px} summary{cursor:pointer;color:var(--ink-3);font-size:13px
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<script src="hangar/motion.js"></script>
 <script>
 // ------------------------------------------------------------------ shared
 // The shipped content is published beside this page at content/<file>.json. Edits are
@@ -271,6 +309,7 @@ const state = {
 };
 try {
   const s = JSON.parse(localStorage.getItem("hangar.tabs") || "{}");
+  if (s.section === "motion") s.section = "models";   // the Animation tab merged into Models (3 October)
   if (SECTIONS.some(x => x.id === s.section)) state.section = s.section;
   if (s.sub) Object.assign(state.sub, s.sub);
 } catch (e) {}
@@ -367,25 +406,31 @@ let CTX = null;
 function ctx() {
   if (CTX) return CTX;
   const byId = (key) => new Map(liveEntries(key).map(x => [x.entry.id, x.entry]));
-  const fitted = new Map(), byMaker = new Map();
+  const fitted = new Map(), byMaker = new Map(), stockTier = new Map();
   for (const {entry: e} of liveEntries("chassis.entries")) {
     for (const cid of new Set(dieIds(e))) fitted.set(cid, (fitted.get(cid) || 0) + 1);
     byMaker.set(e.maker, (byMaker.get(e.maker) || 0) + 1);
+    // A stocked component's tier is the lowest tier of chassis stocking it (as ContentDB.component_tier).
+    const t = Number(e.tier || 0);
+    if (t > 0) for (const cid of (e.loadout || [])) if (!stockTier.has(cid) || t < stockTier.get(cid)) stockTier.set(cid, t);
   }
-  return CTX = {makers: byId("chassis.makers"), comps: liveMap("components.entries"), factions: byId("factions.entries"), foes: byId("foes.entries"), fitted, byMaker};
+  return CTX = {makers: byId("chassis.makers"), comps: liveMap("components.entries"), factions: byId("factions.entries"), foes: byId("foes.entries"), fitted, byMaker, stockTier};
 }
 // The components on a chassis's die: fixed first, then one per hardpoint.
 function dieIds(e) { return [...(e.fixed || []), ...(e.loadout || []).slice(0, Number(e.hardpoints || 0))]; }
 function dieComps(e) { return dieIds(e).map(id => ctx().comps.get(id)).filter(Boolean).map(x => x.entry); }
 const faceKeywords = (c) => ((c && c.face) || {}).keywords || [];
 const kindOf = (c) => ((c && c.face) || {}).kind || "";
+// A component's blueprint tier: derived from the chassis stocking it, else the tier it stores
+// (an unstocked one), else none (fixed-only components are never a blueprint).
+const compTier = (c) => (c && (ctx().stockTier.get(c.id) || Number(c.tier || 0))) || 0;
 function makerShort(id) { const t = NAME_TABS.find(t => t.id === MAKER_TAB[id]); return t ? t.label : ((ctx().makers.get(id) || {}).name || id || ""); }
 const factionName = (id) => (ctx().factions.get(id) || {}).name || id || "";
 const plain = (s) => String(s ?? "").replace(/_/g, " ");
 
 // ------------------------------------------------------------------ filters and sorts
-// One filter per kind of thing, wherever it is listed: the codex, the models and the
-// editor's chassis list share the chassis filter. Chips within a group are alternatives
+// One filter per kind of thing, wherever it is listed: the codex and the editor's chassis
+// list share the chassis filter. Chips within a group are alternatives
 // (any of them); groups narrow each other (all of them); the search wants every word typed
 // somewhere in the entry's names, ids and keywords. A chip's count is what tapping it would
 // show given everything else set. Kept per viewer in this browser.
@@ -405,16 +450,17 @@ const FILTER_SPECS = {
       ...dieComps(e).flatMap(c => [c.name, ...faceKeywords(c).map(vocabName)])],
     groups: [
       MAKER_GROUP,
+      {id: "tier", label: "Tier", of: e => [e.tier ? "T" + e.tier : "none"], name: v => v === "none" ? "No tier" : v, order: ["T1", "T2", "T3", "none"]},
       {id: "trait", label: "Traits", of: e => e.traits || [], name: vocabName},
       {id: "kw", label: "On the die", of: e => dieComps(e).flatMap(faceKeywords), name: vocabName},
       {id: "passive", label: "Passive", of: e => [!e.passive ? "none" : e.passive.status === "planned" ? "planned" : "written"], order: ["written", "planned", "none"]},
       EDITS,
     ],
-    sorts: [BY_ORDER, BY_NAME, BY_MAKER,
+    sorts: [BY_ORDER, BY_NAME, BY_MAKER, stat("tier", "Tier", e => e.tier),
       stat("hull", "Hull", e => e.hull), stat("shield", "Shield", e => e.shield), stat("recharge_field", "Field recharge", e => e.recharge_field),
       stat("armour", "Armour", e => e.armour ?? 0), stat("heat_max", "Heat max", e => e.heat_max), stat("cooling", "Cooling", e => e.cooling ?? 0),
       stat("movespeed", "Move", e => e.movespeed), stat("die", "Die entries", dieSize)],
-    line: e => [makerShort(e.maker), (e.traits || []).map(vocabName).join(", "), `hull ${e.hull}`, `shield ${e.shield}`, `move ${e.movespeed}`, "d" + dieSize(e)],
+    line: e => [makerShort(e.maker), e.tier ? "T" + e.tier : "", (e.traits || []).map(vocabName).join(", "), `hull ${e.hull}`, `shield ${e.shield}`, `move ${e.movespeed}`, "d" + dieSize(e)],
   },
   components: {
     noun: ["component", "components"], placeholder: "Name, keyword or maker",
@@ -425,14 +471,14 @@ const FILTER_SPECS = {
       {id: "reach", label: "Reach", of: e => [(e.face || {}).reach], name: v => REACH[v] || v, order: Object.keys(REACH)},
       {id: "kw", label: "Keywords", of: faceKeywords, name: vocabName},
       {id: "shape", label: "Silhouette", of: e => [e.shape], name: plain},
-      {id: "tier", label: "Tier", of: e => [e.tier ? "T" + e.tier : "none"], name: v => v === "none" ? "No tier" : v},
+      {id: "tier", label: "Tier", of: e => [compTier(e) ? "T" + compTier(e) : "none"], name: v => v === "none" ? "No tier" : v, order: ["T1", "T2", "T3", "none"]},
       {id: "fit", label: "Dice", of: e => [ctx().fitted.get(e.id) ? "fitted" : "spare"], name: v => v === "fitted" ? "On a die" : "On none", order: ["fitted", "spare"]},
       {id: "status", label: "Status", of: e => e.status === "planned" ? ["planned"] : [], keep: true},
       EDITS,
     ],
     sorts: [BY_ORDER, BY_NAME, BY_MAKER,
       stat("power", "Power", e => (e.face || {}).power), stat("power_max", "Top power", e => (e.face || {}).power_max ?? (e.face || {}).power),
-      stat("crit", "Crit", e => (e.face || {}).crit), stat("heat", "Heat", e => (e.face || {}).heat ?? 0), stat("tier", "Tier", e => e.tier),
+      stat("crit", "Crit", e => (e.face || {}).crit), stat("heat", "Heat", e => (e.face || {}).heat ?? 0), stat("tier", "Tier", compTier),
       stat("fitted", "Dice carrying it", e => ctx().fitted.get(e.id) || 0)],
     line: e => {
       const n = ctx().fitted.get(e.id) || 0;
@@ -461,7 +507,7 @@ const FILTER_SPECS = {
   makers: {
     noun: ["maker", "makers"], placeholder: "Name",
     text: e => [e.name, e.id], groups: [EDITS], sorts: [BY_ORDER, BY_NAME],
-    line: e => { const n = ctx().byMaker.get(e.id) || 0; return [n + " chassis"]; },
+    line: e => { const n = ctx().byMaker.get(e.id) || 0; return [e.capital ? "the capital" : "", n + " chassis"]; },
   },
   vocabulary: {
     noun: ["entry", "entries"], placeholder: "Word or category",
@@ -666,7 +712,8 @@ function componentEntry(cid, slot, comps, makers) {
   if (comp.shape) kws.append(el("span", {class: "kw shape", title: "Silhouette class: what the model wears at a gun mount when this component is fitted, in its own maker's metal; none means it shows nowhere (armour, a vent)"}, comp.shape.replace(/_/g, " ")));
   for (const k of (f.keywords || [])) kws.append(kwChip(k));
   const name = el("div", {class: "cname"}, comp.name || cid);
-  if (comp.tier) name.append(el("span", {class: "tier", title: "Blueprint tier"}, "T" + comp.tier));
+  const tier = compTier(comp);
+  if (tier) name.append(el("span", {class: "tier", title: comp.tier ? "Blueprint tier (stored: no chassis stocks it)" : "Blueprint tier: the lowest tier of chassis stocking it"}, "T" + tier));
   if (planned) name.append(" ", el("span", {class: "tag planned"}, "planned"));
   if (c.st) name.append(" ", el("span", {class: "tag " + c.st}, c.st));
   const row = el("div", {class: "entry" + (planned ? " planned" : ""), tabindex: "0", role: "button", title: "Open in the editor",
@@ -685,7 +732,7 @@ function renderCodex(main) {
   const {comps, makers} = ctx();
   const view = runFilter("chassis", liveEntries("chassis.entries"));
   const compact = !!view.f.compact, sorted = view.sort.stat;
-  main.append(el("p", {class: "lede"}, "Every chassis with its die laid out entry by entry: fixed components first, then each hardpoint. The dashed chip on a component is its silhouette class, the shape the model wears at a gun mount when it is fitted. Pending edits are already laid over the shipped content here, tagged. Tap a name or an entry to edit it; tap the picture for its renders. The filter is shared with the Models tab and the editor's chassis list. Numbers are placeholders."));
+  main.append(el("p", {class: "lede"}, "Every chassis with its die laid out entry by entry: fixed components first, then each hardpoint. The dashed chip on a component is its silhouette class, the shape the model wears at a gun mount when it is fitted. Pending edits are already laid over the shipped content here, tagged. Tap a name or an entry to edit it; tap the picture for the machine on the Models tab. The filter is shared with the editor's chassis list. Numbers are placeholders."));
   main.append(filterBar(view, {compact: true}));
   const nav = el("nav", {class: "anchors"});
   for (const {entry} of view.shown) nav.append(el("a", {href: "#cx-" + entry.id}, entry.name || entry.id));
@@ -698,9 +745,10 @@ function renderCodex(main) {
     const card = el("section", {class: "chassis " + (MAKER_TAB[e.maker] || "other"), id: "cx-" + e.id});
     const head = el("div", {class: "head"});
     const r = state.renders && state.renders.chassis[e.id];
-    if (r && r.images && r.images.length) head.append(el("img", {class: "thumb", src: "hangar/renders/" + r.images[0].file, alt: r.images[0].alt, title: "Renders", onclick: () => { setSection("models"); requestAnimationFrame(() => { const t = document.getElementById("md-" + e.id); if (t) t.scrollIntoView(); }); }}));
+    if (r && r.images && r.images.length) head.append(el("img", {class: "thumb", src: "hangar/renders/" + r.images[0].file, alt: r.images[0].alt, title: "The model", onclick: () => { MOTION.id = e.id; rememberMotion(); setSection("models"); }}));
     head.append(el("p", {class: "desig"}, e.designation || ""));
     const h2 = el("h2", {}, el("span", {role: "button", tabindex: "0", title: "Open in the editor", style: "cursor:pointer", onclick: () => openFromCodex("chassis.entries", e.id), onkeydown: (ev) => { if (ev.key === "Enter") openFromCodex("chassis.entries", e.id); }}, e.name || e.id));
+    if (e.tier) h2.append(el("span", {class: "tier", title: "Chassis tier: power and complexity (1 to 3); tier 1 is the starting stock"}, "T" + e.tier));
     if (st) h2.append(el("span", {class: "tag " + st}, st));
     head.append(h2);
     const sub = el("p", {class: "sub"}, mk.name || "");
@@ -979,10 +1027,10 @@ const NAME_TABS = [
    builds: "Bipedal-ish walkers first, some large aircraft or hovercraft, always a little creepy. Silhouettes cross the other makers' lines: leg counts convert, legs ride on hoverjets, aircraft carry arms.",
    names: "Never animals. Deities and beings of myth that stand for divine justice, vengeance or retribution (Nemesis, Ammit). A second vein of sins (Hubris) is unfleshed.",
    avoid: "Never outright war, so no Ares. Spread across cultures: Egypt and Greece would swallow the list on their own."},
-  {id: "parts", label: "Components", name: "Components", voice: "One piece of equipment, one entry on the die.",
-   builds: "Weapons, shields, vents, plating. Names proposed here check against the same lists as the machines.",
-   names: "The maker's register shows in the word: Minerva industrial (Slug Cannon, Ablative Plating), Kestrel aeronautical (Twin Autoguns), W&S artillery (Pocket Mortar, Howitzer), Aphelion astronomical (Umbra Projector, Solar Flare Array, Corona Shield).",
-   avoid: "The reserved lists are machines, not weapons, so a clash here is a softer signal."},
+  {id: "parts", label: "Components", name: "Components", voice: "One piece of equipment, one entry on the die. Any word here is open to any maker.",
+   builds: "Weapons, shields, vents, plating. Names proposed here check against the same lists as the machines. A passive is named the same way: a device or a part of the chassis that does the thing (Thermal Recoupler, Slipstream Projector), never an ability.",
+   names: "The makers' vocabularies are guidelines, not claims (Ryan, 6 October; bible section 7). General words such as cannon, missile and laser belong to no maker, and a word may cross makers by its meanings (an Aphelion ion cannon; a Kestrel part ionizing something by speed). Minerva hits hard and low-tech: hurl, slam, smash, ram, launcher, flinger, hammer. Kestrel is propulsion and aerodynamics: booster, impeller, diffuser, mach, slipstream, wake, thrust. W&S is a plain military term beside something a little stupid or from the wrong period: carbine, gatling, howitzer, phalanx, repeater, flak. Aphelion is the physics and maths nonsense: entropy, subspace, solenoid, inducer, phase, neutrino, array, wormhole. The Arsenal is medieval and slightly occult, twisting the others' words: halberd, cleaver, talon, hellfire, hoarfrost, dimensional, arbalest. The pseudo-tech may contradict itself on purpose: a Polarity Projector, a Backwash Ionizer.",
+   avoid: "The reserved lists are machines, not weapons, so a clash here is a softer signal. Mind the over-words: Overcharged, Overheating, Overshield, Overcharge Coil and Overclocked Railgun are plenty (Overwhelm became Spillover for it)."},
   {id: "other", label: "Other", name: "Other", voice: "", builds: "Foes, factions, places, anything without a home yet.", names: "", avoid: ""},
   {id: "rules", label: "Rules", name: "Rules"},
 ];
@@ -1122,6 +1170,8 @@ function renderRules() {
     <li><b>Bipeds:</b> Aphelion every kind, Minerva heavy plantigrade, the Arsenal bipedal-ish and creepy.</li>
     <li><b>Hovercraft:</b> Kestrel small and fast, Aphelion platforms, the Arsenal legs on hoverjets. <b>Large aircraft:</b> Minerva a flying brick, Aphelion a deep-space thing, the Arsenal a creepy one; Kestrel never.</li>
   </ul>
+  <h3>Component names</h3>
+  <p>The makers' vocabularies are guidelines, not claims (6 October): general words belong to no maker, a word may cross makers by its meanings, and the Components tab lists each maker's register. A passive names a piece of machinery or a part of the chassis that does the thing, never an ability, and the pseudo-tech may contradict itself on purpose; that contradiction is the joke.</p>
   <h3>Designations</h3>
   <p>Minerva an industrial catalogue code (EX-45XLE Combat Miner). Kestrel a type and mark (K-7 Mk III Interceptor). W&amp;S a pattern number (Pattern 1 Combat Walker). Aphelion a programme and flight (Perihelion Flight 7 Support Frame). The Arsenal a decree (Arsenal Instrument IV). Frame is Aphelion's word alone.</p>`});
 }
@@ -1132,40 +1182,215 @@ async function removeCandidate(id) { if (!state.db) return; try { await state.db
 function writeFailed(e) { toast("Write refused: " + (e && e.code ? e.code : "unknown")); if (e && e.code === "invalid_argument") { state.canWrite = false; render(); } }
 
 // ------------------------------------------------------------------ models
+// Every machine live in 3D, played from the sidecars the game reads (hangar/models/<id>.rig.json
+// beside the model as glTF JSON, hangar/models/<id>.model.json), with the game's own renders
+// under the stage: those carry the look to judge, the notes and the earlier passes. Classes
+// shows each silhouette class alone in any maker's metal, over the game's renders of them,
+// and every machine's mounts take any class live. The stage and its controls are built once
+// and moved into the page on every redraw, so a database update never restarts the animation.
+// hangar/motion.js holds the port of the game's rig. Merged from the Models and Animation
+// tabs, 3 October.
+const CLASSES = "classes";   // the picker's entry for the silhouette classes (no chassis has this id)
+const MOTION = {stage: null, wrap: null, panel: null, id: "", key: "", shape: "barrel", maker: "minerva"};
+try {
+  const m = JSON.parse(localStorage.getItem("hangar.motion") || "{}");
+  if (m && typeof m.id === "string") MOTION.id = m.id;
+  if (m && typeof m.shape === "string") MOTION.shape = m.shape;
+  if (m && typeof m.maker === "string") MOTION.maker = m.maker;
+} catch (e) {}
+if (location.hash.startsWith("#md-")) MOTION.id = location.hash.slice(4);   // a link to one machine, or #md-classes
+function rememberMotion() { try { localStorage.setItem("hangar.motion", JSON.stringify({id: MOTION.id, shape: MOTION.shape, maker: MOTION.maker})); } catch (e) {} }
+const ensureShapes = () => ensure("shapes", "hangar/shapes.json", j => { state.shapes = j; });
+const MODE_HELP = {
+  acts: "Every act in turn, back to back, as RIFTGATE_ACTS_DEBUG=1 plays them. Tap one to loop it; drag the bar to hold a moment. The blows layer over whatever is showing, playing or paused. A hovercraft balances on its cushion all the while, tipping every way as the currents and the gusts take it, as the map and the skirmish draw it.",
+  walk: "Driven straight ahead at its own full speed on the map, as RIFTGATE_MOVE_DEBUG=1 does: the stride at the pace the map gives its move (a 20 or a 30 plods, a 40 or a 50 runs), the wheels, the treads and the held poses.",
+  route: "A loop of two long moves on the map's hexes: three steps north and a turn east, three steps south and a turn back. The facing follows the cornering module: the Dingo's, the hovercraft's and (a little) the jets' noses swinging into each corner ahead of the path (oversteer), the flyers' and the Stingray's banks, the Puffin flat. Each move runs as the map runs it: one smooth curve, from rest to full speed, through the corners at full speed, easing to a stop and then to its recorded facing.",
+};
+function motionMachines() {
+  return liveEntries("chassis.entries").map(x => x.entry).filter(e => state.pins && Array.isArray(state.pins[e.id]));
+}
+const pics = (images, small) => el("div", {class: "pics" + (small ? " small" : "")}, ...images.map(im => el("img", {src: "hangar/renders/" + im.file, alt: im.alt, loading: "lazy"})));
 function renderModels(main) {
-  want("renders", ensureRenders);
-  main.append(el("p", {class: "lede"}, "Every chassis as it stands, rendered bare through the game's own view. Every proportion lives in models_low.py; a note moves it and a rebuild takes a minute. Earlier passes fold under each machine. The classes section shows what a swapped component wears. The filter is the codex's."));
+  want("pins", ensurePins); want("renders", ensureRenders); want("shapes", ensureShapes);
+  main.append(el("p", {class: "lede"}, "Every machine live in 3D, its acts, walk and cornering played from the same files the game reads, and under it the renders through the game's own view, which carry the look to judge, with each pass's note and the earlier passes. Fit any mount with a silhouette class to see a swap; Classes shows each class alone. Drag to turn the view, pinch or scroll to zoom. Every proportion lives in models_low.py; a note moves it and a rebuild takes a minute."));
+  if (!state.pins) { main.append(el("p", {class: "help"}, "Loading the machines…")); return; }
+  const list = motionMachines();
+  if (!list.length) { main.append(el("p", {class: "empty"}, "No machine has a model yet.")); return; }
+  if (MOTION.id !== CLASSES && !list.some(e => e.id === MOTION.id)) MOTION.id = list[0].id;
+  const pick = el("div", {class: "mpick", role: "group", "aria-label": "Machine"});
+  for (const e of list) pick.append(el("button", {id: "mo-pick-" + e.id, "aria-pressed": String(e.id === MOTION.id), style: `--mk:var(--${MAKER_TAB[e.maker] || "other"})`,
+    onclick: () => { MOTION.id = e.id; rememberMotion(); render(); }}, e.name || e.id));
+  pick.append(el("button", {id: "mo-pick-classes", class: "classes", "aria-pressed": String(MOTION.id === CLASSES), title: "The silhouette classes a fitted component wears",
+    onclick: () => { MOTION.id = CLASSES; rememberMotion(); render(); }}, "Classes"));
+  main.append(pick);
+  if (!window.HangarMotion) { main.append(el("p", {class: "help"}, "The 3D script did not load; the renders follow.")); }
+  else {
+    if (!MOTION.stage) {
+      MOTION.stage = new HangarMotion.Stage();
+      MOTION.panel = el("div", {class: "mpanel"});
+      MOTION.wrap = el("div", {class: "motion"}, MOTION.stage.el, MOTION.panel);
+      MOTION.stage.on(() => paintMotion());
+    }
+    const st = MOTION.stage;
+    let show;
+    if (MOTION.id === CLASSES) {
+      MOTION.wrap.className = "motion " + (MAKER_TAB[MOTION.maker] || "other");
+      st.flyer = false;
+      st.hover = false;
+      st.size = "heavy";
+      show = state.shapes ? st.show("shapes/" + MOTION.shape + "_" + MOTION.maker, true) : null;
+    } else {
+      const entry = list.find(e => e.id === MOTION.id);
+      MOTION.wrap.className = "motion " + (MAKER_TAB[entry.maker] || "other");
+      st.movespeed = Number(entry.movespeed) || 50;
+      st.flyer = (entry.traits || []).includes("flyer");
+      st.hover = (entry.traits || []).includes("hover");   // balances on its cushion all the while, as in the game
+      st.size = entry.size || "heavy";   // its class by mass sets the hex it walks over, as the map draws it
+      show = st.show(entry.id);
+    }
+    main.append(MOTION.wrap);
+    paintMotion(true);
+    if (show) show.then(() => st.start()).catch(ex => { st.note.textContent = "Could not load the model: " + ex.message; console.error(ex); });
+    if (st.renderer) st.start();
+  }
+  // Under the stage: the game's renders of what is picked.
   const r = state.renders;
-  if (!r) { main.append(el("p", {class: "help"}, "Loading the renders…")); return; }
-  const chassis = liveEntries("chassis.entries");
-  const {makers} = ctx();
-  const view = runFilter("chassis", chassis);
-  main.append(filterBar(view));
-  if (!view.shown.length) main.append(noMatch(view));
-  const nav = el("nav", {class: "anchors"}, el("a", {href: "#md-shapes"}, "Classes"));
-  for (const {entry} of view.shown) if (r.chassis[entry.id]) nav.append(el("a", {href: "#md-" + entry.id}, entry.name || entry.id));
-  main.append(nav);
-  const pics = (images, small) => el("div", {class: "pics" + (small ? " small" : "")}, ...images.map(im => el("img", {src: "hangar/renders/" + im.file, alt: im.alt, loading: "lazy"})));
-  const cls = r.classes || {blocks: []};
-  const sec = el("section", {class: "model", id: "md-shapes"}, el("h2", {}, cls.title || "Silhouette classes"), el("p", {class: "plate2"}, cls.plate || ""));
-  for (const b of cls.blocks) { sec.append(el("p", {class: "when"}, b.when || ""), el("p", {class: "mnote"}, b.note || ""), pics(b.images || [], b.small)); }
-  main.append(sec);
-  for (const x of view.shown) {
-    const e = x.entry, d = r.chassis[e.id]; if (!d) continue;
-    const mk = makers.get(e.maker || "") || {};
-    const s = el("section", {class: "model", id: "md-" + e.id},
-      el("h2", {}, e.name || e.id),
-      el("p", {class: "plate2"}, [mk.name || "", e.designation || "", ...(e.traits || []).map(vocabName), sortNote(view, x)].filter(Boolean).join(" · ")),
-      el("p", {class: "when"}, d.when || ""),
-      el("p", {class: "mnote"}, d.note || ""),
-      pics(d.images || [], false));
-    if (d.before && d.before.images && d.before.images.length) s.append(el("details", {}, el("summary", {}, d.before.summary || "Before"), pics(d.before.images, true)));
-    main.append(s);
+  const under = el("div", {class: "under"});
+  if (!r) under.append(el("p", {class: "help"}, "Loading the renders…"));
+  else if (MOTION.id === CLASSES) {
+    const cls = r.classes || {blocks: []};
+    const sec = el("section", {class: "model", id: "md-shapes"}, el("h2", {}, cls.title || "Silhouette classes"), el("p", {class: "plate2"}, cls.plate || ""));
+    for (const b of cls.blocks) sec.append(el("p", {class: "when"}, b.when || ""), el("p", {class: "mnote"}, b.note || ""), pics(b.images || [], b.small));
+    under.append(sec);
+  } else {
+    const e = list.find(x => x.id === MOTION.id) || {}, d = r.chassis[e.id];
+    const mk = ctx().makers.get(e.maker || "") || {};
+    if (!d) under.append(el("p", {class: "help"}, "No renders of this machine yet."));
+    else {
+      const s = el("section", {class: "model", id: "md-" + e.id},
+        el("h2", {}, (e.name || e.id) + " · the game's view"),
+        el("p", {class: "plate2"}, [mk.name || "", e.designation || "", ...(e.traits || []).map(vocabName)].filter(Boolean).join(" · ")),
+        el("p", {class: "when"}, d.when || ""),
+        el("p", {class: "mnote"}, d.note || ""),
+        pics(d.images || [], false));
+      if (d.before && d.before.images && d.before.images.length) s.append(el("details", {}, el("summary", {}, d.before.summary || "Before"), pics(d.before.images, true)));
+      under.append(s);
+    }
   }
-  if (!view.active) for (const [id, d] of Object.entries(r.chassis)) if (!chassis.some(x => x.entry.id === id)) {
-    main.append(el("section", {class: "model", id: "md-" + id}, el("h2", {}, id), el("p", {class: "plate2"}, "Not in content"), el("p", {class: "when"}, d.when || ""), el("p", {class: "mnote"}, d.note || ""), pics(d.images || [], false)));
+  main.append(under);
+}
+// What each mount carries in the stock kit, by the game's rule (MechView3D.mount_plan): the
+// shaped components of the loadout take the mounts in the die's order; armour and vents
+// take none; a mount past them is bare.
+function stockOnMounts(entry) {
+  const comps = ctx().comps;
+  return (entry.loadout || []).slice(0, Number(entry.hardpoints || 0)).map(id => (comps.get(id) || {}).entry).filter(c => c && c.shape && c.shape !== "none");
+}
+const actWords = (n) => String(n).replace(/_/g, " ");
+// The panel redraws whole when its shape changes (a machine, a mode, an act looped) and
+// only moves the scrubber otherwise, so dragging it never loses the handle.
+function paintMotion(force) {
+  const st = MOTION.stage, rig = st.rig, panel = MOTION.panel;
+  const key = [MOTION.id, st.id, st.mode, st.loop, st.playing, st.speedK, rig ? rig.acts.length : -1, rig && rig.current ? rig.current.name : "", JSON.stringify(st.fits || {})].join("|");
+  if (!force && key === MOTION.key) {
+    const r = $("#mo-scrub"), o = $("#mo-scrub-out");
+    if (r && rig && rig.current) { if (document.activeElement !== r) r.value = String(rig.t); o.textContent = `${rig.t.toFixed(2)} s of ${rig.current.duration}`; }
+    return;
   }
-  if (location.hash && location.hash.startsWith("#md-")) requestAnimationFrame(() => { const t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); });
+  MOTION.key = key;
+  panel.replaceChildren();
+  if (MOTION.id === CLASSES) return paintClasses(panel);
+  const entry = liveEntries("chassis.entries").map(x => x.entry).find(e => e.id === MOTION.id) || {};
+  const mk = ctx().makers.get(entry.maker || "") || {};
+  panel.append(el("div", {}, el("h2", {}, entry.name || MOTION.id), el("p", {class: "plate2"}, [mk.name, ...(entry.traits || []).map(vocabName)].filter(Boolean).join(" · "))));
+  const mode = (id, label) => el("button", {class: "btn", id: "mo-mode-" + id, "aria-pressed": String(st.mode === id), onclick: () => { st.setMode(id); }}, label);
+  panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Show"), el("div", {class: "seg"}, mode("acts", "Acts"), mode("walk", "Walk"), mode("route", "Route")), el("p", {class: "mhelp"}, MODE_HELP[st.mode])));
+  const speed = el("select", {id: "mo-speed", "aria-label": "Playback speed"});
+  for (const k of [0.25, 0.5, 1]) { const o = el("option", {value: String(k)}, k === 1 ? "Full speed" : k + "×"); if (k === st.speedK) o.selected = true; speed.append(o); }
+  speed.addEventListener("change", () => { st.speedK = Number(speed.value); st.emit(); });
+  panel.append(el("div", {class: "seg"},
+    el("button", {class: "btn primary", id: "mo-play", onclick: () => { st.playing = !st.playing; st.emit(); }}, st.playing ? "Pause" : "Play"),
+    speed));
+  if (!rig) { panel.append(el("p", {class: "mhelp"}, "Loading…")); return; }
+  if (st.mode === "acts") {
+    const acts = el("div", {class: "acts"});
+    acts.append(el("button", {class: "fchip", id: "mo-act-all", "aria-pressed": String(!st.loop), onclick: () => st.setLoop("")}, "All, in turn"));
+    for (const a of rig.acts) acts.append(el("button", {class: "fchip", id: "mo-act-" + safeId(a.name), "aria-pressed": String(st.loop === a.name), onclick: () => st.setLoop(a.name),
+      title: a.places && a.places.length ? "Plays on the " + a.places.join(" and the ") + " only" : ""}, actWords(a.name), a.places && a.places.length ? el("span", {class: "n"}, a.places.join("/")) : null));
+    panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, rig.acts.length ? `Acts · ${rig.acts.length}` : "Acts"), rig.acts.length ? acts : el("p", {class: "mhelp"}, "This machine has no acts yet.")));
+    if (rig.current) {
+      const r = el("input", {type: "range", id: "mo-scrub", min: "0", max: String(rig.current.duration), step: "0.01", value: String(rig.t), "aria-label": "Time into " + actWords(rig.current.name)});
+      r.addEventListener("input", () => { st.playing = false; st.seek(Number(r.value)); });
+      panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Playing · " + actWords(rig.current.name)),
+        el("div", {class: "scrub"}, r, el("output", {id: "mo-scrub-out", for: "mo-scrub"}, `${rig.t.toFixed(2)} s of ${rig.current.duration}`))));
+    }
+    panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Blows"), el("div", {class: "seg"},
+      el("button", {class: "btn", id: "mo-melee", onclick: () => st.strike(false)}, "Melee"),
+      el("button", {class: "btn", id: "mo-shot", onclick: () => st.strike(true)}, "Shot"))));
+  }
+  // A machine with gait options (b.gait_option) walks by any of them here, to judge beside its own.
+  const options = Object.keys(rig.gaitOptions || {});
+  if (st.mode !== "acts" && options.length) {
+    const g = el("div", {class: "acts"});
+    g.append(el("button", {class: "fchip", id: "mo-gait-built", "aria-pressed": String(!st.gaitName), onclick: () => st.setGait("")}, "As built"));
+    for (const name of options) g.append(el("button", {class: "fchip", id: "mo-gait-" + safeId(name), "aria-pressed": String(st.gaitName === name), onclick: () => st.setGait(name)}, actWords(name), el("span", {class: "n"}, "option")));
+    panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Gait"), g, el("p", {class: "mhelp"}, "An option is a way it could walk, built beside the one it uses, to judge running; the game walks it as built.")));
+  }
+  // The mounts: each takes its stock part, nothing, or any class in any maker's metal.
+  const pinsHere = (state.pins && state.pins[MOTION.id]) || [];
+  if (pinsHere.length && state.shapes) {
+    const stock = stockOnMounts(entry), fits = st.fits || {};
+    const grid = el("div", {class: "mounts"});
+    for (const n of pinsHere) {
+      const sel = el("select", {id: "mo-fit-" + n, "aria-label": "Mount " + n});
+      const sc = stock[n - 1];
+      sel.append(el("option", {value: "stock"}, sc ? "Stock · " + sc.name : "Stock · bare mount"), el("option", {value: "bare"}, "Bare"));
+      for (const c of state.shapes.classes) {
+        const og = el("optgroup", {label: plain(c)});
+        for (const m of state.shapes.makers) og.append(el("option", {value: c + ":" + m}, plain(c) + " · " + makerShort(m)));
+        sel.append(og);
+      }
+      sel.value = fits[n] || "stock";
+      sel.addEventListener("change", () => {
+        const v = sel.value;
+        if (v === "stock") st.fit(n, null); else if (v === "bare") st.fit(n, ""); else { const [c, m] = v.split(":"); st.fit(n, c, m); }
+      });
+      grid.append(el("label", {for: "mo-fit-" + n, class: fits[n] ? "fitted" : ""}, "Mount " + n), sel);
+    }
+    const g2 = el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Mounts"), grid);
+    if (Object.keys(fits).length) g2.append(el("div", {class: "seg"}, el("button", {class: "btn", id: "mo-fit-reset", onclick: () => st.resetFits()}, "Back to stock")));
+    panel.append(g2);
+  }
+  const mv = rig.move || {}, g = rig.gait || {};
+  const facts = el("dl", {class: "mfacts"});
+  const fact = (k, v) => { if (v !== "" && v !== null && v !== undefined) facts.append(el("dt", {}, k), el("dd", {}, String(v))); };
+  fact("Joints", Object.keys(rig.joints).length);
+  fact("Move", entry.movespeed);
+  if ((g.tracks && Object.keys(g.tracks).length) || g.stride) fact("Stride", Object.keys(g.tracks || {}).length ? `${g.stride} units` : "");
+  fact("Wheels", Object.keys(g.wheels || {}).length || "");
+  fact("Treads", (g.treads && (g.treads.parts || []).length) ? "scroll" : "");
+  fact("Slide", mv.slide ? mv.slide : "");
+  fact("Bank", mv.bank ? mv.bank + "°" : "");
+  fact("Strafe", mv.strafe ? "turns first, then translates" : "");
+  fact("Tilt", Array.isArray(mv.tilt) ? `${mv.tilt[0]}° forward, ${mv.tilt[1]}° across` : "");
+  fact("Heft", mv.heft ? mv.heft + " s" : "");
+  panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "From its sidecar"), facts));
+}
+// The classes: one alone in a maker's metal, turning on the stage.
+function paintClasses(panel) {
+  const st = MOTION.stage;
+  panel.append(el("div", {}, el("h2", {}, "Classes"), el("p", {class: "plate2"}, "What a fitted component wears at a gun mount, in its own maker's metal")));
+  if (!state.shapes) { panel.append(el("p", {class: "mhelp"}, "Loading the classes…")); return; }
+  const pickC = el("div", {class: "seg"});
+  for (const c of state.shapes.classes) pickC.append(el("button", {class: "btn", id: "mo-class-" + c, "aria-pressed": String(c === MOTION.shape),
+    onclick: () => { MOTION.shape = c; rememberMotion(); render(); }}, plain(c)));
+  const pickM = el("div", {class: "makers"});
+  for (const m of state.shapes.makers) pickM.append(el("button", {class: "btn", id: "mo-metal-" + m, "aria-pressed": String(m === MOTION.maker), style: `--mk:var(--${MAKER_TAB[m] || "other"})`,
+    onclick: () => { MOTION.maker = m; rememberMotion(); render(); }}, makerShort(m)));
+  panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Class"), pickC),
+    el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Metal"), pickM),
+    el("p", {class: "mhelp"}, "Any machine's mounts take these too: pick a machine and fit a mount."));
+  panel.append(el("div", {class: "seg"}, el("button", {class: "btn primary", id: "mo-play", title: "The class turns while it plays", onclick: () => { st.playing = !st.playing; st.emit(); }}, st.playing ? "Pause" : "Play")));
 }
 
 // ------------------------------------------------------------------ the database

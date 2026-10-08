@@ -56,6 +56,32 @@ func test_setup_places_team_formation_and_boss() -> void:
 	assert_true(b.field.intents.size() > 0, "enemy moves previewed")
 
 
+func test_a_composed_formation_replaces_the_spawn_list_and_the_boss_can_stay_home() -> void:
+	var db := ContentDB.load_default()
+	var facs: Array = db.factions.keys()
+	var a := str(db.spawn_foes(str(facs[0]))[0])
+	var c := str(db.spawn_foes(str(facs[1]))[0])
+	var b := Battle.new(3)
+	b.formation = [[a, 2], [c, 5], [a, 1]]
+	b.with_boss = false
+	b.setup(_team(), str(facs[0]))
+	assert_true(b.boss == null, "no boss")
+	var placed: Array = []
+	for sq in b.field.packs():
+		assert_false(sq.elite, "%s is no boss" % sq.display_name)
+		placed.append([sq.foe_id, sq.strength, sq.faction])
+	assert_eq(placed, [[a, 2, str(facs[0])], [c, 5, str(facs[1])], [a, 1, str(facs[0])]], "the packs as composed, each under its own foe's faction")
+	assert_eq(b.field.spawn_table, placed, "and the rift sends them in turn")
+	b.field.rift_pressure = b.field.rift_pressure_max - 1
+	b.field._spawn_index = 1
+	b.field.tick_pressure(1)
+	var spawned: Unit = b.field.packs()[b.field.packs().size() - 1]
+	assert_eq([spawned.foe_id, spawned.faction], [c, str(facs[1])], "a rift pack wears its own faction")
+	b.field.gate_hp = 0
+	b.commit()
+	assert_eq(b.outcome, Battle.Outcome.GATE_FALLEN, "without a boss only the field ends it")
+
+
 func test_route_to_reaches_every_reachable_hex() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[1]
@@ -147,6 +173,7 @@ func test_finish_skirmish_removes_the_pack_and_keeps_shields_as_they_were() -> v
 	var packs_before := b.field.packs().size()
 	b.finish_skirmish()
 	assert_eq(b.field.packs().size(), packs_before - 1, "pack wiped from the map")
+	assert_eq(b.foes_killed, sq.strength, "a won skirmish counts every foe it killed, for the salvage")
 	assert_eq(m.shield, 0, "no free refill between skirmishes")
 	assert_eq(b.state, Battle.State.PLAN, "planning again")
 	assert_eq(b.current, null, "no skirmish open")
@@ -286,6 +313,7 @@ func test_wrecked_mechs_leave_the_map() -> void:
 	var before := b.mechs().size()
 	b.finish_skirmish()
 	assert_eq(b.mechs().size(), before - sk.mechs.size(), "wrecks are gone")
+	assert_eq(b.wrecks.size(), sk.mechs.size(), "and the battle keeps them, for the campaign to read")
 	assert_true(b.state == Battle.State.PLAN or b.outcome == Battle.Outcome.WRECKED, "battle continues or ends")
 
 
@@ -339,6 +367,49 @@ func test_a_drawn_route_is_kept_as_drawn() -> void:
 	assert_eq(m.pos, dest, "Resolve walks the drawn route")
 
 
+func test_the_gauge_tells_a_slow_stop_from_a_spent_move() -> void:
+	# Decided 3 October: the move gauge the drawn route drains. A slow last step takes
+	# whatever move is left, and the gauge says so apart from the steps' own spending.
+	var b := _battle()
+	var m: Unit = null
+	var slow_ground := -1
+	for c in b.mechs():
+		for t in [BattleMap.Terrain.WATER, BattleMap.Terrain.RUINS, BattleMap.Terrain.ROUGH]:
+			if BattleMap.move_cost(t, c.traits) == BattleMap.SLOW:
+				m = c
+				slow_ground = t
+				break
+		if m != null:
+			break
+	assert_true(m != null, "the team has a machine with a slow ground")
+	var n1 := Vector2i(-99, -99)
+	var n2 := Vector2i(-99, -99)
+	for a in Hex.neighbors(m.pos):
+		if not b.field.can_stand(m, a):
+			continue
+		for d in Hex.neighbors(a):
+			if d != m.pos and not Hex.are_adjacent(m.pos, d) and b.field.can_stand(m, d):
+				n1 = a
+				n2 = d
+				break
+		if n2 != Vector2i(-99, -99):
+			break
+	assert_true(n2 != Vector2i(-99, -99), "two free hexes in a line")
+	b.field.map.terrain[n1] = BattleMap.Terrain.PLAIN
+	b.field.map.terrain[n2] = slow_ground
+	var open_cost := BattleMap.move_cost(BattleMap.Terrain.PLAIN, m.traits)
+	assert_eq(b.draft_spend(m, []), Vector2i(0, 0), "nothing drawn spends nothing")
+	assert_eq(b.draft_spend(m, [n1]), Vector2i(open_cost, 0), "an open step spends its price and stops nothing")
+	assert_eq(b.draft_spend(m, [n1, n2]), Vector2i(open_cost, m.movespeed - open_cost), "the slow step takes the rest")
+	# The cells: one per 5 of move, filling from the left, so what is left comes first, then
+	# what the slow step took, then what the steps spent.
+	var C := BattleMapView.Cell
+	assert_eq(BattleMapView.gauge_cells(40, Vector2i(10, 30)), [C.STOPPED, C.STOPPED, C.STOPPED, C.STOPPED, C.STOPPED, C.STOPPED, C.SPENT, C.SPENT], "a slow step after one hex")
+	assert_eq(BattleMapView.gauge_cells(40, Vector2i(40, 0)), [C.SPENT, C.SPENT, C.SPENT, C.SPENT, C.SPENT, C.SPENT, C.SPENT, C.SPENT], "the move run out")
+	assert_eq(BattleMapView.gauge_cells(30, Vector2i(15, 0)), [C.LEFT, C.LEFT, C.LEFT, C.SPENT, C.SPENT, C.SPENT], "a fast hex is half a pip")
+	assert_eq(BattleMapView.gauge_cells(0, Vector2i(0, 0)).size(), 0, "no move, no gauge")
+
+
 func test_a_draft_never_outruns_the_move_or_lands_on_a_claimed_hex() -> void:
 	var b := _battle()
 	var a: Unit = b.mechs()[0]
@@ -384,3 +455,22 @@ func test_an_out_of_combat_passive_fires_after_a_quiet_phase() -> void:
 	var rate := m.recharge_field
 	b.commit()
 	assert_eq(m.shield, mini(m.shield_max, rate + 5), "the field rate, then the passive's five")
+
+
+func test_a_kill_is_a_kill_whatever_the_fight_ends_in() -> void:
+	# Ryan, 7 October: withdrawing never takes a kill away, so the salvage the campaign
+	# tallies at the battle's end counts every foe killed, won fight or not.
+	var b := _battle()
+	var m: Unit = b.mechs()[0]
+	var sq: Unit = b.field.packs()[0]
+	_engage(b, sq, m)
+	b.commit()
+	var sk := b.open_next_skirmish()
+	sk.begin()
+	sk.start_round()
+	var victim: Foe = sk.field_foes()[0]
+	victim.hp = 0
+	assert_true(sk.withdraw(), "the team pulls out")
+	assert_eq(sk.outcome, Skirmish.Outcome.WITHDRAWN, "withdrawn")
+	b.finish_skirmish()
+	assert_eq(b.foes_killed, 1, "the kill made before withdrawing counts")

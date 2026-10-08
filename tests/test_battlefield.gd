@@ -804,3 +804,37 @@ func test_the_boss_takes_its_move_from_content() -> void:
 	var b := f.add_unit(f.dress_pack(Unit.boss(1, "colossus", _o(3, 2), "undead"), "colossus"))
 	assert_eq(b.movespeed, 10, "a boss's move is dressed from its foe type too")
 	assert_true(b.elite, "and it stays the boss")
+
+
+func test_a_pack_held_off_its_gate_hex_by_its_own_side_turns_for_another() -> void:
+	# Ryan, 6 October: a stalled horde is never the norm. The row the gate is struck from
+	# is held at the three middle columns, so the nearest gate hex cannot be approached;
+	# the pack behind turns for a gate hex whose approach is free instead of standing still.
+	var f := _field(7, 13)
+	for col in [2, 3, 4]:
+		f.add_unit(Unit.pack(10 + col, "wall", _o(col, 10), "undead", 20))
+	var sq := f.add_unit(Unit.pack(1, "ghouls", _o(3, 8), "undead", 20))
+	f.compute_intents()
+	assert_true(not f.intents[1].is_empty(), "the pack found a way")
+	assert_true(not f.stalled.has(1), "and is not stalled")
+	var before := sq.pos
+	var res := f.resolve_phase({})
+	assert_true(sq.pos != before, "it moved")
+	assert_true(not res.stalled.has(1), "no stall mark")
+
+
+func test_a_pack_with_no_way_to_any_goal_waits_and_is_marked() -> void:
+	# The whole striking row is held by its own side: nothing is reachable, so the pack
+	# waits where it is and the phase says so, in the preview as at the resolve.
+	var f := _field(7, 13)
+	for col in range(7):
+		f.add_unit(Unit.pack(10 + col, "wall", _o(col, 10), "undead", 20))
+	var sq := f.add_unit(Unit.pack(1, "ghouls", _o(3, 8), "undead", 20))
+	f.compute_intents()
+	assert_true(f.intents[1].is_empty(), "no path")
+	assert_true(f.stalled.has(1), "marked stalled at the round's open")
+	var pv: Dictionary = f.preview_phase({})
+	assert_true((pv["result"] as Battlefield.PhaseResult).stalled.has(1), "the preview carries the mark")
+	var res := f.resolve_phase({})
+	assert_eq(sq.pos, _o(3, 8), "it waited")
+	assert_true(res.stalled.has(1), "the resolve carries the mark")

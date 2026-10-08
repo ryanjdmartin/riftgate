@@ -69,6 +69,7 @@ var round: int = 0
 var rerolls_left: int = 0
 var state: int = State.SETUP
 var outcome: int = Outcome.NONE
+var destroyed: int = 0   # components destroyed this fight, for the balance runner (the hangar's destroyed-is-gone rule, bible section 10, depends on the rate)
 var log: Array[String] = []
 
 ## The most recent attack, for the screen to show: {mech, target, rolled, final, crit, ranged}.
@@ -310,9 +311,10 @@ static func volatile_cost(f: Face) -> int:
 ## moves the numbers at once. `with_face` counts the heat of the die's showing component as
 ## if spent; the screen asks for that only while the die is being dragged. `extra_shield`
 ## asks the same question with that much more shield standing (a shield component about
-## to be spent here), for whoever weighs one.
-func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0) -> Dictionary:
-	var shield := mini(ms.unit.shield_max, ms.unit.shield + extra_shield)
+## to be spent here), for whoever weighs one; `overshield` lets it pass the maximum, as a
+## component with that keyword would.
+func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, overshield: bool = false) -> Dictionary:
+	var shield := ms.unit.shield + extra_shield if overshield else mini(maxi(ms.unit.shield_max, ms.unit.shield), ms.unit.shield + extra_shield)
 	var hull := ms.unit.hull
 	var bite := pending_bite(ms) if with_face else 0
 	if bite > 0:
@@ -660,8 +662,10 @@ func assign(mech_index: int, target = null) -> bool:
 			pass
 		Face.Kind.SHIELD:
 			var who: MechState = target if target is MechState else ms
-			_gain_shield(who, f.power)
-			log.append("%s shields %s for %d" % [ms.unit.display_name, who.unit.display_name, f.power])
+			_gain_shield(who, f.power, f.has(Face.Keyword.OVERSHIELD))
+			log.append("%s shields %s for %d%s" % [ms.unit.display_name, who.unit.display_name, f.power, " (past its maximum)" if who.unit.shield > who.unit.shield_max else ""])
+			if who != ms:
+				_shield_granted(ms, who, f.power)
 			_cleanse_with(ms, who, f)
 		Face.Kind.VENT:
 			var who: MechState = target if target is MechState else ms
@@ -702,6 +706,7 @@ func end_round() -> int:
 	_enemy_turn()
 	_tick_mechs()
 	_settle_heat()
+	_trim_overshield()
 	_reinforce(true)    # the reinforcement phase: a random waiting foe of the right rank per empty slot
 	_refresh_allies()
 	_check_outcome()
@@ -879,17 +884,17 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 				log.append("%s: the shock lands, %d doubled" % [foe.display_name, dmg])
 			if was_alive and not foe.alive() and f.has(Face.Keyword.DEVOUR):
 				_devour(ms, foe)
-			# Overwhelm: what the blow had past the kill of a front-rank foe carries into the
+			# Spillover (Overwhelm until 6 October): what the blow had past the kill of a front-rank foe carries into the
 			# foe behind it in the column, as plain damage that still spends a shock and
 			# feeds a devour. A massive foe fills its column, so nothing stands behind it.
-			if was_alive and not foe.alive() and f.has(Face.Keyword.OVERWHELM) and foe.rank == 0 and not foe.is_massive():
+			if was_alive and not foe.alive() and f.has(Face.Keyword.SPILLOVER) and foe.rank == 0 and not foe.is_massive():
 				var spill := taken - hp_before
 				var behind: Foe = back[foe.column] if foe.column >= 0 and foe.column < columns else null
 				if spill > 0 and behind != null and behind.alive() and not hit.has(behind):
 					var behind_taken := maxi(0, Effects.damage_taken(behind, spill) - behind.armour_total())
 					behind.hp -= behind_taken
 					Effects.remove(behind, "shocked")
-					log.append("%s overwhelms: %d spills into %s" % [ms.unit.display_name, behind_taken, behind.display_name])
+					log.append("%s spills over: %d into %s" % [ms.unit.display_name, behind_taken, behind.display_name])
 					if not behind.alive() and f.has(Face.Keyword.DEVOUR):
 						_devour(ms, behind)
 			if f.has(Face.Keyword.BURN):
@@ -1196,15 +1201,41 @@ func _add_heat(ms: MechState, amount: int) -> void:
 		_fired(ms, Effects.fire(ms.unit, "on_heat_gain", amount), "on the heat")
 
 
-## Shield gained from any source, capped at the maximum; gaining any fires the
-## on_shield_gain passives (which may shed heat, never raise shield). Returns what stood up.
-func _gain_shield(ms: MechState, amount: int) -> int:
+## Shield gained from any source, capped at the maximum unless the component carries
+## Overshield; gaining any fires the on_shield_gain passives (which may shed heat, never
+## raise shield). Returns what stood up.
+func _gain_shield(ms: MechState, amount: int, overshield: bool = false) -> int:
 	if amount <= 0:
 		return 0
-	var gained := ms.unit.recharge_shield(amount)
+	var gained := ms.unit.recharge_shield(amount, overshield)
 	if gained > 0:
 		_fired(ms, Effects.fire(ms.unit, "on_shield_gain", gained), "on the shield")
 	return gained
+
+
+## A shield component spent on an ally fires the spender's on_shield_granted passives on
+## that ally (the Puffin's escort passive, 5 October): heat the ally sheds, statuses it
+## gains. Fires on the spend, whatever the shield gained.
+func _shield_granted(ms: MechState, who: MechState, amount: int) -> void:
+	var r := Effects.shield_granted(ms.unit, amount)
+	var parts: Array[String] = []
+	var vented := mini(who.heat, int(r["vent"]))
+	if vented > 0:
+		who.heat -= vented
+		parts.append("-%d heat" % vented)
+	for name in r["statuses"]:
+		parts.append(str(name))
+	if not parts.is_empty():
+		log.append("%s: %s's escort, %s" % [who.unit.display_name, ms.unit.display_name, ", ".join(parts)])
+
+
+## The round's end lets shield past the maximum go (Overshield, 5 October): the excess was a
+## one-round buffer, and a buffer that stayed would stack a team past every blow.
+func _trim_overshield() -> void:
+	for ms in live_mechs():
+		if ms.unit.shield > ms.unit.shield_max:
+			log.append("%s: %d shield past its maximum fades" % [ms.unit.display_name, ms.unit.shield - ms.unit.shield_max])
+			ms.unit.shield = ms.unit.shield_max
 
 
 ## Apply what a trigger's passives gave a machine: shield up (which is a shield gain of its
@@ -1325,6 +1356,7 @@ func _injure_entry(ms: MechState, idx: int) -> void:
 		var d := Face.blank()
 		d.component = f.component
 		ms.die.faces[idx] = d
+		destroyed += 1
 		log.append("%s: a cracked component is destroyed (%s)" % [ms.unit.display_name, what])
 	else:
 		originals[idx] = f.duplicate_face()
