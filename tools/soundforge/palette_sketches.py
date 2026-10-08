@@ -371,15 +371,23 @@ def heat_warn():
     """Heat past three quarters: three equal beeps on one pitch over the plate, the universal
     caution (Ryan, 8 October: a warning signal, then the phrase; the high-then-low pair read
     as a cancel, so nothing falls here and nothing rises, which would read as a confirm)."""
-    beeps = lay(*[(k * 0.16, boop(B.A4, 0.09, 0.9, bright=1800.0)) for k in range(3)])
+    beeps = lay(*[(k * 0.16, boop(B.A4, 0.09, 0.9, bright=1800.0)) for k in range(2)])   # two (Ryan, 8 October)
     return balanced([(0.0, R.shell_round() * 0.8)], [(0.12, beeps)])
 
 
+def whoop(f0=320.0, f1=640.0, dur=0.3, gain=0.9):
+    """One upward sweep of a soft square, low-passed so nothing pierces: the klaxon's whoop."""
+    n = n_of(dur)
+    t = np.arange(n) / SR
+    f = f0 * (f1 / f0) ** (t / dur)
+    x = F.lp(F.sat(np.sin(2.0 * math.pi * np.cumsum(f) / SR) * 2.0, 1.5), 2200.0)
+    return x * F.env_pts(n, [(0.0, 0.0), (0.012, 1.0), (dur * 0.85, 1.0), (dur, 0.0)]) * gain
+
+
 def overheat_alarm():
-    """The overheat: a two-tone siren, a tritone alternating fast and bright, four times over,
-    the alarm to the warning's caution."""
-    pairs = lay(*[(k * 0.2 + j * 0.1, boop(f, 0.085, 0.95, bright=2200.0)) for k in range(4) for j, f in enumerate((466.2, 659.3))])
-    return balanced([(0.0, R.shell_round() * 0.8)], [(0.1, pairs)])
+    """The overheat: a klaxon, two whoops over the plate, the alarm to the warning's caution
+    (the fast tritone siren of the second cut was more annoying than alarming, Ryan)."""
+    return balanced([(0.0, R.shell_round() * 0.9)], [(0.08, lay((0.0, whoop()), (0.38, whoop())))])
 
 
 # name: (recipe, phone dB, shipped name, label, note)
@@ -407,8 +415,8 @@ SET = [
     ("nav_back", dismiss, -21.0, "ui_back", "Menu: back", "= dismiss"),
     ("nav_select", confirm, -19.0, "ui_tap", "Menu: select", "= confirm"),
     ("refuse", refuse, -17.0, "ui_back", "Refused", "P28, the scrape 1.5 dB over it (fine as it was)"),
-    ("heat_warn", heat_warn, -17.0, "heat_warn", "Heat past three quarters: the signal", "three equal beeps on A, the plate 10 dB under; Jenny's line a quarter second after it (the falling pair read as a cancel)"),
-    ("overheat", overheat_alarm, -15.0, "overheat", "Overheat: the alarm", "a two-tone siren, a tritone alternating fast and bright four times over, 2 dB hotter than the warning; the line after it"),
+    ("heat_warn", heat_warn, -17.0, "heat_warn", "Heat past three quarters: the signal", "two equal beeps on A, the plate 10 dB under; Jenny's line a quarter second after it (the falling pair read as a cancel)"),
+    ("overheat", overheat_alarm, -15.0, "overheat", "Overheat: the alarm", "a klaxon, two upward whoops of a soft square over the plate, 2 dB hotter than the warning; the line after it (the siren was annoying)"),
 ]
 SET_BY = {name: (fn, db, beside, label, note) for name, fn, db, beside, label, note in SET}
 NAMES = {"touch": "tap", "touch_heavy": "tap", "round_acquire": "round_open", "resolve": "end_turn", "route_clear": "dismiss", "select": "map_select"}
