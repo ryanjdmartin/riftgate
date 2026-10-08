@@ -399,16 +399,16 @@ def heat_warn(kind="drone"):
     caution (the high-then-low pair read as a cancel, so nothing falls here and nothing rises,
     which would read as a confirm). The drone a bit lower and a lot quieter than the alarm's,
     the blips a bit longer (Ryan, 8 October)."""
-    beeps = lay(*[(0.16 + k * 0.2, boop(B.A4, 0.13, 0.9, bright=1800.0)) for k in range(2)])
-    return balanced([(0.0, under(kind, 0.62, 82.0))], [(0.0, beeps)], -18.0)   # ends a little sooner
+    beeps = lay(*[(k * 0.2, boop(B.A4, 0.13, 0.9, bright=1800.0)) for k in range(2)])   # from the front (Ryan, 8 October)
+    return balanced([(0.0, under(kind, 0.46, 82.0))], [(0.0, beeps)], -18.0)   # the drone the same tail past the last blip
 
 
 def overheat_alarm(kind="drone"):
     """The overheat: the tones made alarm, high-low-high-low with no gap between them, a fifth
     apart, longer and harder than a cancel's pair, over a longer drone (the klaxon's whoops were
     comical, Ryan); the drone a touch under the general rule."""
-    tones = lay(*[(0.14 + k * 0.22, boop(f, 0.22, 0.95, bright=2400.0, attack=0.008)) for k, f in enumerate((B.E5, B.A4, B.E5, B.A4))])
-    return balanced([(0.0, under(kind, 1.08))], [(0.0, tones)], -13.0)   # ends a little sooner
+    tones = lay(*[(k * 0.22, boop(f, 0.22, 0.95, bright=2400.0, attack=0.008)) for k, f in enumerate((B.E5, B.A4, B.E5, B.A4))])   # from the front
+    return balanced([(0.0, under(kind, 0.94))], [(0.0, tones)], -13.0)
 
 
 # name: (recipe, phone dB, shipped name, label, note)
