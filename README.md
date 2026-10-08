@@ -12,9 +12,9 @@ and open question from the design sessions.
   - `hex.gd` axial/cube hex math, pointy-top pixel conversion
   - `battle_map.gd` terrain grid, gate, rift, procedural generation with a guaranteed ground path
   - `unit.gd` mechs, packs, city defenses on the battlefield
-  - `battlefield.gd` phase resolution: every pack's committed route and its behaviour (pusher,
-    aggressive, hunter), player routes, body-blocking, the engagement zones that decide who
-    fights, gate damage, Rift Pressure
+  - `battlefield.gd` the turn's rules: every pack's walk on the enemy's turn (a pusher to the
+    gate, a hunter to its prey, round the machines), the fights hunters force, who joins a
+    fight by ring and who can be committed by attack range, gate strikes, Rift Pressure
   - `face.gd`, `die.gd` die faces and dice
   - `foe.gd` an enemy inside a skirmish
   - `skirmish.gd` the dice skirmish: two-rank enemy formation fed from a pool, reach rules,
@@ -31,8 +31,9 @@ and open question from the design sessions.
   - `save.gd` writes the whole battle to `user://battle.json` and reads it back; the run to
     `user://campaign.json` (the battle under way inside it) and the profile to
     `user://profile.json`
-  - `battle.gd` one battle end to end: plot routes, resolve, open a skirmish per contact
-    group, apply the result, until the gate falls, the team is wrecked, or the boss dies
+  - `battle.gd` one battle end to end: the player's turn (moves at once, one fight at a time,
+    a machine that fought is spent, a hunter's catch first), the enemy's turn, until the gate
+    falls, the team is wrecked, or the boss dies
   - `campaign.gd` the run: five cities and their gates, rifts rolled as fronts, the roster
     and its shop, salvage, the between-battle rules, the turn's bleed and drain, the finale
   - `profile.gd` what outlives a run: the pool, the codex, the tier, the favour piece
@@ -50,10 +51,10 @@ and open question from the design sessions.
     with the packs as its formation and its rift's cycle; Fight chains them all with the
     boss into one skirmish; Resume battle (while a save exists) and the map viewer below.
     What was last launched is kept in `user://harness.json` (`sim/harness_setup.gd`)
-  - `battle/battle_screen.gd` the battle screen: the map with the phase loop around it, and
-    the skirmish screen hosted over it on contact; `battle/battle_map_view.gd` draws the
+  - `battle/battle_screen.gd` the battle screen: the map with the turn around it, the panel
+    that sets up a fight, and the skirmish screen hosted over it; `battle/battle_map_view.gd` draws the
     field and reads the gestures; `battle/orders_board.gd` the strip under the map;
-    `battle/boss_reveal.gd` the boss's contact; `battle/bleed.gd` composites the 3D field
+    `battle/boss_reveal.gd` the boss's reveal; `battle/bleed.gd` composites the 3D field
     with the painted other world
   - `skirmish/skirmish_screen.gd` the skirmish screen, built in code
   - `ui/` the HUD kit (bars, glyphs, palette, buttons), the die face view, the codex box, the
@@ -150,8 +151,9 @@ perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run
 # RIFTGATE_MAP_KIND=rubble (any standalone battle run) picks the map's type; the harness has a picker.
 # Battle: select, route, draft and draftslow (a route drawn by hand, its move gauge spent or
 # stopped by a slow hex), hold, north, zoom, zoomlast,
-# flyer, predict, resolve, contact, engage, codex, foecodex, menu, settings, tune, and
-# bosscontact (the boss reached: the reveal; RIFTGATE_REVEAL_T=<seconds> pins its frame), logfull (the battle log full screen), gate and foe (the gate or a pack tapped).
+# flyer, attack (a fight set up beside a pack), caught (a hunter's catch), resolve (a turn
+# ended), contact and engage (the handover into a fight), codex, foecodex, menu, settings, tune, and
+# bosscontact (the boss attacked: the reveal; RIFTGATE_REVEAL_T=<seconds> pins its frame), logfull (the battle log full screen), gate and foe (the gate or a pack tapped).
 # RIFTGATE_SHOT_FRAME=<n> picks the capture frame, to catch an animation mid-flight.
 # RIFTGATE_FEED_DEBUG=1 (any run) fires the skirmish feed's analysis events every half
 # second and the ground tears every couple of seconds, to judge them by eye.
@@ -258,8 +260,8 @@ shows every arrow; double-tap any unit for its codex entry. Withdraw is offered 
 of the player's turn; the enemy's parting blows replay before the team flees. Blank faces
 are discarded at end of turn. MENU pauses: resume, settings, or quit to the harness. A
 battle started from the harness is saved after every change (`user://battle.json`, written
-by `sim/save.gd`: the map by its seed, every unit, the routes, the contacts waiting and the
-fight under way with its dice and random streams), so quitting or a phone killing the app
+by `sim/save.gd`: the map by its seed, every unit, the player's turn (who has moved and
+fought, the fights hunters forced) and the fight under way with its dice and random streams), so quitting or a phone killing the app
 loses nothing: Resume battle opens it where it stood, straight into the fight if one was
 on. A decided battle clears the save. Standalone scene runs and the tests never write it.
 
@@ -272,27 +274,24 @@ The screens are laid out for 720 by 1280 and the window expands its height to th
 spreads its rows. Pinch is read from the two fingers themselves, so it works in a browser
 too.
 
-The battle screen is the loop. The header shows the round and how many rounds until the
-rift spawns; the gate's integrity is a bar on the wall and the rift's pressure a bar above
-the rift. The map scrolls by drag, zooms by pinch or wheel, and starts at the gate end. Tap
-a mech to select it and the hexes it can reach light up; tap a lit hex to plot the route
-there; tap the mech again to clear its route. Routes are planned in the order they are
-plotted, so a later machine may end where an earlier one is leaving; re-plotting a machine
-puts it last. Hold any unit for its numbers; double-tap it for its codex; tap the gate for
-its integrity. Red lines are where each pack goes this round, from the plan as it stands:
-every pack commits its route when the round opens and only a body in its path cuts it;
-every pack carries an engagement zone (its foe type's radius, drawn red where the pack will
-stop: a thin outline when nobody stands in it, tinted and heavily outlined when a fight is
-in it), every machine inside a pack's zone fights it, and a machine inside two zones joins
-those fights into one. Pushers walk their route whatever you do; an aggressive pack turns
-for anything that ends inside its reach, the dashed ring; a hunter wears the target rings
-on the machine it has locked and chases it. So who is in is never a surprise. The contact
-is marked before Resolve with who is in it and the ground
-it will be fought on. Resolve plays the moves, then a CONTACT band, then a panel of the
-contacts with portraits; ENGAGE dives the map onto the fight and hands over to the skirmish
-screen. Its Back button applies the result: wrecks leave the map, packs shrink to their
-survivors, surviving shields recharge, and Rift Pressure ticks once per round fought. The
-battle ends when the gate falls, every mech is wrecked, or the boss dies. MENU on either
+The battle screen is the loop (bible section 4, the round row). The header shows the turn and
+how many turns until the rift spawns; the gate's integrity is a bar on the wall and the rift's
+pressure a bar above the rift. The map scrolls by drag, zooms by pinch or wheel, and starts at
+the gate end. Purple lines are where each pack will walk on the enemy's turn, from where your
+machines stand now: a pusher toward the gate, a hunter (target rings on its prey) toward its
+prey; packs go round machines and never stop at one. Tap a machine to select it and the hexes
+it can reach light up; tap a lit hex, or drag a route from it, and it moves there at once;
+UNDO MOVE takes the move back until it fights. Tap a pack and the panel sets up its fight:
+the packs whose ring covers it join, and the machines whose attack range covers it are
+toggles; ENGAGE dives the map onto the fight and hands over to the skirmish screen. A machine
+that fought is spent until the next turn. A hunter that ends its walk beside its prey has
+caught it: the next turn opens with a CAUGHT band and that fight's panel, which comes first.
+END TURN plays the enemy's turn: the packs walk, a pack beside the gate strikes it, machines
+that did not fight recharge, and Rift Pressure ticks. The skirmish's Back button applies the
+result: wrecks leave the map, packs shrink to their survivors, and Rift Pressure ticks once
+per round fought. The battle ends when the gate falls, every mech is wrecked, or the boss
+dies. Hold any unit for its numbers; double-tap it for its codex; tap the gate for its
+integrity. MENU on either
 screen pauses and holds the settings (display colour, brightness, move pace, glitch, scan
 bar, music and effects volume). For the standalone screen `RIFTGATE_TEAM` picks the team and
 `RIFTGATE_FACTION=undead|demonic|eldritch` the enemy; `RIFTGATE_TUNE=1` shows the
