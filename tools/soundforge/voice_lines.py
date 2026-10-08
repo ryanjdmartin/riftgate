@@ -61,7 +61,7 @@ HOOKS = {
                   ["light them up", "going ballistic", "rampage"]),
     "foe_down": (1.0 / 4.0, False,
                  ["eliminating", "neutralising hostile", "target destroyed", "lethal force applied", "bogey down", "threat eliminated"],
-                 ["mopping up trash", "get wrecked", "bug squashed", "dodge this", "fatality"]),
+                 ["mopping up trash", "get wrecked", "bug squashed", "dodge this", "fatality", "only good bug is a dead bug"]),
     "foe_down_undead": (1.0 / 3.0, False,
                         ["undead anomaly cleared", "necrotic signature lost", "animation ceased"],
                         ["re-interred", "stay dead this time"]),
@@ -91,7 +91,7 @@ HOOKS = {
                             []),
     "resolve_all": (1.0 / 2.0, False,
                     ["all units committed", "full line advancing", "full squad deployed"],
-                    [("get 'em boys", "get 'em, boys", 1.2), "transform and roll out", "let none survive", "your time has come"]),
+                    ["transform and roll out", "let none survive", "your time has come"]),
     "resolve_move": (1.0 / 3.0, False,
                      ["orders received", "moving to intercept", "in transit", "moving out", "proceeding", "coordinates received", "executing strategy"],
                      ["stay on target", "sounds fun", "evil draws close", "go go go"]),
@@ -103,7 +103,7 @@ HOOKS = {
                [("rip and tear", "rip and tare"), "battle music initiated", "let's dance", "the fight is on"]),
     "boss": (1.0, False,
              ["primary target identified", "priority threat detected. engaging", "alert: approaching dangerous hostile", "initiating sector purge"],
-             ["oh, that's a big one", "big lad", "big fella on route", "that's a lot of teeth", "nope nope nope"]),
+             [("oh, that's a big one", "oh. that's a big one"), "big lad", "big fella on route", "that's a lot of teeth", "nope nope nope"]),   # a full stop after oh: the comma's beat was too short for him at any length
     "gate": (1.0 / 2.0, False,
              ["gate under attack", "gate taking damage", "gate integrity falling"],
              ["they're in the walls", "they're breaking through"]),
@@ -115,9 +115,9 @@ HOOKS = {
                   [("corruption has reached the city. estimated casualties: 100%", "corruption has reached the city. estimated casualties: one hundred percent")],
                   ["z axis lost"]),
     "victory": (1.0, False,
-                ["hostiles cleared. the line holds", ("area secured. well fought, commander", "area secured. well fot commander"), "mission accomplished. the rift is sealed"],   # rewritten as sentence pairs (Ryan, 7 October: the combined lines read samey and stuck together)
-                [("GG EZ", "gee gee easy"), ("flawless victory", "flawless victory", 1.55), "well, that was fun", ("we got paid, commander. first round's on me", "we got paid commander. first round's on me"),
-                 "I love it when a plan comes together", ("this was a triumph. I'm making a note here: huge success", "this was a triumph. I'm making a note here: huge success", 1.45), "are you not entertained", "we came, we saw, we kicked its ass", "hell, it's about time", "the only good bug is a dead bug"]),   # homages (7 October): the A-Team kept; Portal, Gladiator, Ghostbusters, Tychus and Starship Troopers proposed in the second round; a vocative comma is dropped in the spoken form
+                ["hostiles cleared. the line holds", ("area secured. well fought, commander", "area secured. well-fot commander"), "mission accomplished. the rift is sealed"],   # well-fot linked: the gap between the words read long   # rewritten as sentence pairs (Ryan, 7 October: the combined lines read samey and stuck together)
+                [("GG EZ", "gee gee easy"), ("flawless victory", "flawless victory", 1.55), "well, that was fun", "I do the job, and then I get paid", "what a ride. first round's on me",
+                 "I love it when a plan comes together", ("I'm making a note here: huge success", "I'm making a note here: huge success", 1.45)]),   # homages (7 October): the A-Team and Portal kept, the Portal line from its note on
     "codex": (1.0 / 12.0, False,
               ["searching database", "record retrieved", "consulting archives", "help text loaded"],
               ["let me look that up", "reading the manual"]),
@@ -126,7 +126,7 @@ HOOKS = {
                ["you must construct additional pylons"]),
     "battle_open": (1.0, False,
                     ["battlefield feed online. all units reporting in", ("deployment complete. awaiting your orders, commander", "deployment complete. awaiting your orders commander"), "sector loaded. hostiles inbound"],
-                    [("reactor online, sensors online, weapons online, all systems nominal", "reactor on-line, sensors on-line, weapons on-line, all systems nominal"), "once more, into the breach", "now for wrath. now for ruin. and the red dawn"]),
+                    [("reactor online, sensors online, weapons online, all systems nominal", "reactor on-line, sensors on-line, weapons on-line, all systems nominal"), "once more, into the breach", ("now for wrath. now for ruin. and the red dawn", "now for wrath. now for ruin. and the red don"), ("hell, it's about time", "hell, it's about time", 1.7)]),   # don for dawn (Ryan); Tychus at a drawl
 }
 
 # a hook draws from its own pool and these others' together
