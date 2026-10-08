@@ -125,10 +125,11 @@ func _apply_pose() -> void:
 			s._toggle_all_arrows(true)
 
 
-## Battle screen poses: select (a mech and its reach), route (two routes plotted), draft and
+## Battle screen poses: select (a mech and its reach), route (two machines moved), draft and
 ## draftslow (a route drawn by hand, its move gauge spent or stopped by a slow hex), hold (a
-## pack's readout), codex / foecodex (a machine's or a pack's entry), resolve (one
-## phase run), contact (a skirmish open over the map).
+## pack's readout), codex / foecodex (a machine's or a pack's entry), resolve (one turn
+## ended), attack (a fight set up beside a pack), caught (a hunter's forced fight), engage
+## (the handover into a fight), bosscontact (the boss's reveal).
 func _apply_battle_pose() -> void:
 	var s: BattleScreen = _node
 	var b := s.battle
@@ -177,9 +178,9 @@ func _apply_battle_pose() -> void:
 		"settings":
 			s._open_menu()
 			s._menu._show_page("settings")
-		"predict":
-			# A pack parked beside the first mech and a route plotted: the plan's contact
-			# and block tags before resolve. It stays put, so its zone holds the machine.
+		"attack", "predict":
+			# A pack parked beside the first machine and tapped with it in hand: the fight's
+			# panel, the target lit, the attack range and the joining rings on the map.
 			var m: Unit = b.mechs()[0]
 			var sq: Unit = b.field.packs()[0]
 			for n in Hex.neighbors(m.pos):
@@ -187,11 +188,22 @@ func _apply_battle_pose() -> void:
 					sq.pos = n
 					break
 			sq.movespeed = 0
-			b.field.compute_intents()
-			s._on_hex_tapped(b.mechs()[1].pos)
-			var dests: Array = s._map.destinations.keys()
-			if not dests.is_empty():
-				s._on_hex_tapped(dests[0])
+			sq.behaviour = "push"
+			s._refresh()
+			s._on_hex_tapped(m.pos)
+			s._on_hex_tapped(sq.pos)
+		"caught":
+			# A hunter beside the first machine at the turn's start: the warning, then the panel.
+			var m: Unit = b.mechs()[0]
+			var sq: Unit = b.field.packs()[0]
+			for n in Hex.neighbors(m.pos):
+				if b.field.can_stand(sq, n):
+					sq.pos = n
+					break
+			sq.behaviour = "hunt"
+			sq.prey = m.id
+			b._new_turn()
+			s._after_step()
 		"flyer":
 			# The flyer parked two rows south of the rift, in the other world's ground, zoomed.
 			for m in b.mechs():
@@ -210,7 +222,7 @@ func _apply_battle_pose() -> void:
 		"foecodex":
 			s._on_hex_double_tapped(b.field.packs()[0].pos)
 		"resolve":
-			s._on_resolve()
+			s._on_end_turn()
 		"gate":
 			# The gate tapped: its footprint and the hexes it can be attacked from.
 			s._on_hex_tapped(b.field.map.gate_hexes[0])
@@ -248,11 +260,13 @@ func _apply_battle_pose() -> void:
 					sq.pos = n
 					break
 			sq.movespeed = 0
-			b.field.compute_intents()
-			b.commit()
+			sq.behaviour = "push"
 			s._refresh()
-			s._open_skirmish(0)
+			s._on_hex_tapped(m.pos)
+			s._on_hex_tapped(sq.pos)
+			s._engage()
 		"contact":
+			# The fight open over the map: as engage, at its end (a later RIFTGATE_SHOT_FRAME).
 			var m: Unit = b.mechs()[0]
 			var sq: Unit = b.field.packs()[0]
 			for n in Hex.neighbors(m.pos):
@@ -260,10 +274,13 @@ func _apply_battle_pose() -> void:
 					sq.pos = n
 					break
 			sq.movespeed = 0
-			b.field.compute_intents()
-			s._on_resolve()
+			sq.behaviour = "push"
+			s._refresh()
+			s._on_hex_tapped(m.pos)
+			s._on_hex_tapped(sq.pos)
+			s._engage()
 		"bosscontact":
-			# The boss reached: the reveal over the map (RIFTGATE_REVEAL_T pins its second).
+			# The boss attacked: the reveal over the map (RIFTGATE_REVEAL_T pins its second).
 			var m: Unit = b.mechs()[0]
 			var boss: Unit = b.boss
 			for n in Hex.neighbors(m.pos):
@@ -271,9 +288,10 @@ func _apply_battle_pose() -> void:
 					boss.pos = n
 					break
 			boss.movespeed = 0
-			b.field.compute_intents()
-			s._on_resolve()
-
+			s._refresh()
+			s._on_hex_tapped(m.pos)
+			s._on_hex_tapped(boss.pos)
+			s._engage()
 
 func _tick() -> void:
 	_frames += 1

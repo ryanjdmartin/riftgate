@@ -399,7 +399,8 @@ func test_the_run_saves_and_resumes_between_battles_and_mid_battle() -> void:
 	assert_eq(JSON.stringify(SaveGame.campaign_to_dict(c2)), JSON.stringify(SaveGame.campaign_to_dict(c)), "and plays on the same")
 	# Mid-battle, with a wreck on the battle's books.
 	var b3 := _battle(c)
-	b3.commit()
+	b3.forced = []
+	b3.end_turn()
 	var wreck: Unit = b3.mechs()[0]
 	_wreck(b3, wreck)
 	assert_true(SaveGame.save_campaign(c, TMP), "saved mid-battle")

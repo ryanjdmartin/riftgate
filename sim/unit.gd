@@ -63,7 +63,8 @@ var cooling: int:
 		base["cooling"] = v
 
 ## Chassis traits: a way of moving ("flyer", "hover", "walker", "tracked", "wheeled";
-## BattleMap.WAYS), "stealth", or "defense" for a static unit. A pack carries none and
+## BattleMap.WAYS), "elusive" (a hunter never picks it), "tireless" (two actions a turn),
+## or "defense" for a static unit. A pack carries none and
 ## moves by the horde's rule.
 var traits: Array[String] = []
 
@@ -79,11 +80,12 @@ var facing: int = 0
 var faction: String = ""
 var foe_id: String = ""      # content id of the foe this pack is made of
 var strength: int = 6        # how many foes the pack holds
-var behaviour: String = "push"   # push: the gate, committed at the round's start; aggressive: the gate, unless a machine ends within its reach; hunt: one machine, chased (decided 1 October)
+var behaviour: String = "push"   # push: walks toward the gate; hunt: walks toward one machine, its prey (bible section 5)
 var hunts: String = "nearest"    # a hunter's caveat: nearest, weakest, strongest, slowest or fastest
 var prey: int = 0                # a hunter's locked machine, by unit id; 0 until it has picked one
 var elite: bool = false      # this unit is the faction's boss
-var zone: int = 1            # the pack's engagement zone: it fights every machine within this many hexes of where it ends its move (decided 1 October)
+var zone: int = 1            # the pack's ring: a pack whose ring covers a fight's target joins that fight, and a hunter catches a prey inside it (bible section 5)
+var attack_range: int = 2    # a machine's ring: it may join a fight whose target is within this many hexes (bible section 5)
 
 const TRIANGLE: Array[Vector2i] = [Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1)]
 

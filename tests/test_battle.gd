@@ -1,6 +1,7 @@
 extends TestCase
 
-## The battle loop, headless: setup, plotting, resolving, contact, and outcomes.
+## The battle loop, headless (bible section 4, the round row): setup, the player's turn of
+## moves and fights, the fights hunters force, the enemy's turn, and outcomes.
 
 
 func _team() -> Array:
@@ -17,7 +18,7 @@ func _battle(seed_value: int = 3) -> Battle:
 	return b
 
 
-## Park a pack next to a mech and root it so contact is certain after the phase.
+## Park a pack beside a machine, rooted and pushing, so it can be attacked and does not hunt.
 func _engage(b: Battle, sq: Unit, m: Unit) -> void:
 	var spot := m.pos
 	for n in Hex.neighbors(m.pos):
@@ -26,10 +27,10 @@ func _engage(b: Battle, sq: Unit, m: Unit) -> void:
 			break
 	sq.pos = spot
 	sq.movespeed = 0
-	b.field.compute_intents()
+	if not sq.elite:
+		sq.behaviour = "push"
 
 
-## Wipe the foes of an open skirmish so it ends in victory.
 func _win(sk: Skirmish) -> void:
 	sk.begin()
 	sk.start_round()
@@ -50,10 +51,12 @@ func test_setup_places_team_formation_and_boss() -> void:
 	var gate_row := Hex.axial_to_offset(b.map.gate).y
 	for m in b.mechs():
 		assert_true(Hex.axial_to_offset(m.pos).y >= gate_row - 3, "%s starts by the gate" % m.display_name)
+		assert_eq(b.actions_left(m), 1, "%s has its action" % m.display_name)
 	for sq in b.field.packs():
 		assert_true(Hex.axial_to_offset(sq.pos).y < gate_row / 2, "%s starts in the north" % sq.display_name)
-	assert_eq(b.state, Battle.State.PLAN, "planning")
-	assert_true(b.field.intents.size() > 0, "enemy moves previewed")
+	assert_eq(b.state, Battle.State.PLAN, "the player's turn")
+	assert_true(b.forced.is_empty(), "nothing caught at the start")
+	assert_eq(b.field.plan_walks().size(), b.field.packs().size(), "every pack's walk shows")
 
 
 func test_a_composed_formation_replaces_the_spawn_list_and_the_boss_can_stay_home() -> void:
@@ -77,8 +80,9 @@ func test_a_composed_formation_replaces_the_spawn_list_and_the_boss_can_stay_hom
 	b.field.tick_pressure(1)
 	var spawned: Unit = b.field.packs()[b.field.packs().size() - 1]
 	assert_eq([spawned.foe_id, spawned.faction], [c, str(facs[1])], "a rift pack wears its own faction")
+	b.forced = []
 	b.field.gate_hp = 0
-	b.commit()
+	b.end_turn()
 	assert_eq(b.outcome, Battle.Outcome.GATE_FALLEN, "without a boss only the field ends it")
 
 
@@ -101,18 +105,43 @@ func test_route_to_reaches_every_reachable_hex() -> void:
 	assert_true(b.field.route_to(m, m.pos).is_empty(), "no route to itself")
 
 
-func test_set_route_needs_a_reachable_hex() -> void:
+func test_a_machine_moves_at_once_and_keeps_what_is_left_of_its_move() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
-	assert_false(b.set_route(m, b.map.rift), "the rift is out of reach")
+	var near := Vector2i(-99, -99)
+	for h in b.destinations_for(m).keys():
+		if int(b.destinations_for(m)[h]) < m.movespeed:
+			near = h
+			break
+	assert_true(near != Vector2i(-99, -99), "a hex short of its whole move")
+	var cost := int(b.destinations_for(m)[near])
+	var route := b.move_to(m, near)
+	assert_false(route.is_empty(), "the move is taken")
+	assert_eq(m.pos, near, "it is there at once")
+	assert_eq(b.moves_left(m), m.movespeed - cost, "with the rest of its move")
+	assert_eq(b.actions_left(m), 1, "a move spends no action")
+	for h in b.destinations_for(m).keys():
+		assert_true(int(b.destinations_for(m)[h]) <= b.moves_left(m), "and it can go on only as far as is left")
+	assert_true(b.move_to(m, b.map.rift).is_empty(), "the rift is out of reach")
+
+
+func test_undo_puts_a_machine_back_with_its_whole_move() -> void:
+	var b := _battle()
+	var m: Unit = b.mechs()[0]
+	var start := m.pos
+	var facing := m.facing
+	assert_false(b.can_undo(m), "nothing to undo")
 	var h: Vector2i = b.destinations_for(m).keys()[0]
-	assert_true(b.set_route(m, h), "reachable hex accepted")
-	assert_eq(b.route_end(m), h, "route ends there")
-	assert_true(b.set_route(m, m.pos), "own hex clears")
-	assert_true(b.routes.is_empty(), "route gone")
+	b.move_to(m, h)
+	assert_true(b.can_undo(m), "the move can be taken back")
+	assert_true(b.undo_move(m), "undone")
+	assert_eq(m.pos, start, "back where it was")
+	assert_eq(m.facing, facing, "facing as it was")
+	assert_eq(b.moves_left(m), m.movespeed, "its whole move again")
+	assert_false(b.can_undo(m), "and nothing more to undo")
 
 
-func test_two_mechs_cannot_claim_one_destination() -> void:
+func test_a_machine_cannot_end_on_another() -> void:
 	var b := _battle()
 	var a: Unit = b.mechs()[0]
 	var c: Unit = b.mechs()[1]
@@ -122,42 +151,79 @@ func test_two_mechs_cannot_claim_one_destination() -> void:
 			shared = h
 			break
 	assert_true(shared != Vector2i(-99, -99), "the two share a reachable hex")
-	assert_true(b.set_route(a, shared), "first claim")
-	assert_false(b.destinations_for(c).has(shared), "claimed hex is off the second mech's list")
-	assert_false(b.set_route(c, shared), "second claim refused")
-	b.clear_route(a.id)
-	assert_true(b.destinations_for(c).has(shared), "free again once cleared")
+	b.move_to(a, shared)
+	assert_false(b.destinations_for(c).has(shared), "taken: off the second machine's list")
+	assert_true(b.move_to(c, shared).is_empty(), "and refused")
 
 
-func test_commit_without_contact_returns_to_plan() -> void:
+func test_attack_opens_a_fight_with_the_target_the_packs_that_join_and_the_machines_committed() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
-	var h: Vector2i = b.destinations_for(m).keys()[0]
-	b.set_route(m, h)
-	var res := b.commit()
-	assert_true(res != null, "phase resolved")
-	assert_eq(m.pos, h, "mech moved")
-	assert_eq(b.field.phase, 1, "one phase in")
-	assert_eq(b.state, Battle.State.PLAN, "back to planning")
-	assert_true(b.routes.is_empty(), "routes consumed")
-	assert_false(b.has_pending(), "no contact")
+	var sq: Unit = b.field.packs()[0]
+	var other: Unit = b.field.packs()[1]
+	_engage(b, sq, m)
+	other.zone = 3
+	other.behaviour = "push"
+	for n in Hex.neighbors(sq.pos):
+		if b.field.can_stand(other, n) and n != m.pos:
+			other.pos = n
+			break
+	var r := b.roster(sq)
+	assert_eq(r["targets"], [sq], "the pack tapped")
+	assert_true((r["joins"] as Array).has(other), "a pack whose ring covers it joins")
+	assert_true((r["eligible"] as Array).has(m), "the machine beside it may join")
+	var sk := b.attack(sq, [m])
+	assert_true(sk != null, "the fight opens")
+	assert_eq(b.state, Battle.State.SKIRMISH, "and is under way")
+	assert_true(sk.packs.has(sq) and sk.packs.has(other), "both packs are in it")
+	assert_eq(sk.mechs.size(), 1, "the one machine committed")
+	assert_eq(Battle.ground_hex(sk.packs), sq.pos, "fought on the target's ground")
+	assert_eq(b.attack(sq, [m]), null, "no second fight while one is open")
 
 
-func test_contact_opens_a_skirmish_with_the_touching_units() -> void:
+func test_a_machine_out_of_range_cannot_be_committed() -> void:
+	var b := _battle()
+	var m: Unit = b.mechs()[0]
+	var sq: Unit = b.field.packs()[0]
+	assert_true(Battlefield.unit_distance(m, sq) > m.attack_range, "the packs start far off")
+	assert_false((b.roster(sq)["eligible"] as Array).has(m), "out of range")
+	assert_eq(b.attack(sq, [m]), null, "so there is nobody to fight with")
+
+
+func test_a_machine_that_fought_is_spent_until_the_next_turn() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
 	var sq: Unit = b.field.packs()[0]
 	_engage(b, sq, m)
-	b.commit()
-	assert_eq(b.state, Battle.State.SKIRMISH, "contact")
-	var sk := b.open_next_skirmish()
-	assert_true(sk != null, "skirmish built")
-	var in_it := false
-	for ms in sk.mechs:
-		in_it = in_it or ms.unit == m
-	assert_true(in_it, "the touched mech fights")
-	assert_true(sk.packs.has(sq), "the pack is in it")
-	assert_eq(sk.reinforcements.size(), sq.strength, "one foe per point of strength")
+	var sk := b.attack(sq, [m])
+	sk.begin()
+	sk.start_round()
+	sk.withdraw()
+	b.finish_skirmish()
+	assert_eq(b.state, Battle.State.PLAN, "back to the turn")
+	assert_eq(b.actions_left(m), 0, "spent, though it withdrew")
+	assert_true(b.destinations_for(m).is_empty(), "it cannot move")
+	assert_false((b.roster(sq)["eligible"] as Array).has(m), "nor fight again")
+	b.end_turn()
+	assert_eq(b.actions_left(m), 1, "a new turn gives it back")
+
+
+func test_a_tireless_machine_fights_twice_a_turn() -> void:
+	var b := _battle()
+	var m: Unit = b.mechs()[0]
+	m.traits.append(Battlefield.TIRELESS)
+	b.spent.clear()
+	var sq: Unit = b.field.packs()[0]
+	_engage(b, sq, m)
+	var sk := b.attack(sq, [m])
+	_win(sk)
+	b.finish_skirmish()
+	assert_eq(b.actions_left(m), 1, "one action left")
+	assert_false(b.destinations_for(m).is_empty(), "it can move again, its move whole")
+	assert_eq(b.moves_left(m), m.movespeed, "the second action's move")
+	var sq2: Unit = b.field.packs()[0]
+	_engage(b, sq2, m)
+	assert_true(b.attack(sq2, [m]) != null, "and fight again")
 
 
 func test_finish_skirmish_removes_the_pack_and_keeps_shields_as_they_were() -> void:
@@ -165,8 +231,7 @@ func test_finish_skirmish_removes_the_pack_and_keeps_shields_as_they_were() -> v
 	var m: Unit = b.mechs()[0]
 	var sq: Unit = b.field.packs()[0]
 	_engage(b, sq, m)
-	b.commit()
-	var sk := b.open_next_skirmish()
+	var sk := b.attack(sq, [m])
 	m.shield = 0
 	_win(sk)
 	assert_eq(sk.outcome, Skirmish.Outcome.VICTORY, "won")
@@ -175,30 +240,25 @@ func test_finish_skirmish_removes_the_pack_and_keeps_shields_as_they_were() -> v
 	assert_eq(b.field.packs().size(), packs_before - 1, "pack wiped from the map")
 	assert_eq(b.foes_killed, sq.strength, "a won skirmish counts every foe it killed, for the salvage")
 	assert_eq(m.shield, 0, "no free refill between skirmishes")
-	assert_eq(b.state, Battle.State.PLAN, "planning again")
+	assert_eq(b.state, Battle.State.PLAN, "the turn goes on")
 	assert_eq(b.current, null, "no skirmish open")
 
 
-func test_shield_recharges_at_the_field_rate_only_out_of_combat() -> void:
+func test_shield_recharges_at_the_field_rate_only_in_a_turn_without_a_fight() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
+	var idle: Unit = b.mechs()[1]
 	m.shield = 0
-	m.recharge_field = 15
-	m.shield_max = 40
+	idle.shield = 0
 	var sq: Unit = b.field.packs()[0]
-	# Phase one: contact. The engaged mech gets nothing from the phase.
 	_engage(b, sq, m)
-	b.commit()
-	assert_eq(m.shield, 0, "a mech in contact this phase does not recharge at the field rate")
-	var sk := b.open_next_skirmish()
+	var sk := b.attack(sq, [m])
 	_win(sk)
 	b.finish_skirmish()
-	assert_eq(m.shield, 0, "still nothing after the fight")
-	# Later phases with no contact: the field rate, capped at max.
-	if b.state == Battle.State.PLAN:
-		b.commit()
-		assert_true(m.shield == 15 or b.has_pending(), "a quiet phase gives the field rate (%d)" % m.shield)
-	assert_true(m.shield <= m.shield_max, "never above max")
+	b.end_turn()
+	assert_eq(m.shield, 0, "a machine that fought this turn gets nothing")
+	assert_eq(idle.shield, mini(idle.shield_max, idle.recharge_field), "one that did not, the field rate")
+	assert_true(idle.shield <= idle.shield_max, "never above max")
 
 
 func test_survivors_shrink_the_pack() -> void:
@@ -206,8 +266,7 @@ func test_survivors_shrink_the_pack() -> void:
 	var m: Unit = b.mechs()[0]
 	var sq: Unit = b.field.packs()[0]
 	_engage(b, sq, m)
-	b.commit()
-	var sk := b.open_next_skirmish()
+	var sk := b.attack(sq, [m])
 	sk.begin()
 	sk.start_round()
 	sk.withdraw()
@@ -220,58 +279,71 @@ func test_boss_death_seals_the_rift() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
 	_engage(b, b.boss, m)
-	b.commit()
-	assert_eq(b.state, Battle.State.SKIRMISH, "boss contact")
-	var sk := b.open_next_skirmish()
+	var sk := b.attack(b.boss, [m])
+	assert_true(b.boss_fight, "the boss's fight")
 	var massive := false
 	for f in sk.reinforcements:
 		massive = massive or f.is_massive()
 	assert_true(massive, "boss unpacked into the massive elite")
 	_win(sk)
 	b.finish_skirmish()
+	assert_false(b.boss_fight, "the flag drops with the fight")
 	assert_eq(b.outcome, Battle.Outcome.VICTORY, "victory")
 	assert_eq(b.state, Battle.State.DONE, "battle over")
 
 
-## The boss's contact takes the phase (Ryan, 25 September): one fight, every machine in it,
-## the boss alone across from them, every other contact dropped.
-func test_boss_contact_commits_every_machine_and_drops_the_other_contacts() -> void:
+func test_a_hunter_that_caught_its_prey_forces_the_first_fight() -> void:
+	# Bible section 5: a hunter within its ring of its prey has caught it; that fight comes
+	# first on the player's turn, whatever is tapped, its prey cannot move, and the turn
+	# cannot end until it is fought.
 	var b := _battle()
-	var mechs := b.mechs()
-	var sq: Unit = b.field.packs()[0]
-	_engage(b, b.boss, mechs[0])
-	_engage(b, sq, mechs[2])
-	b.commit()
-	assert_true(b.boss_contact, "the boss was contacted")
-	assert_eq(b.state, Battle.State.SKIRMISH, "one fight pending")
-	assert_eq(b.pending.size(), 1, "the pack's contact is dropped")
-	var group: Array = b.pending[0]
-	for m in mechs:
-		assert_true(group.has(m), "%s is committed, in contact or not" % m.display_name)
-	assert_true(group.has(b.boss), "against the boss")
-	assert_false(group.has(sq), "the pack stays on the field")
-	var sk := b.open_next_skirmish()
-	assert_eq(sk.mechs.size(), mechs.size(), "every machine fights")
-	assert_eq(sk.packs, [b.boss], "the boss is the only pack in it")
-	assert_eq(Battle.ground_hex(group), b.boss.pos, "fought on the boss's ground")
+	var m: Unit = b.mechs()[0]
+	var other: Unit = b.field.packs()[1]
+	var hunter: Unit = b.field.packs()[0]
+	_engage(b, hunter, m)
+	hunter.behaviour = "hunt"
+	hunter.hunts = "nearest"
+	hunter.prey = m.id
+	hunter.zone = 1
+	b._new_turn()
+	assert_eq(b.forced.size(), 1, "caught")
+	assert_true(b.is_pinned(m), "its prey is pinned")
+	assert_true(b.destinations_for(m).is_empty(), "and cannot move")
+	var r := b.roster(other)
+	assert_eq(r["targets"], [hunter], "the forced fight comes first whatever is tapped")
+	assert_eq(r["pinned"], m, "with its prey in it")
+	assert_true(b.end_turn().is_empty(), "the turn cannot end before it")
+	var sk := b.attack(other, [])
+	assert_true(sk != null, "it opens with nobody else committed")
+	assert_true(sk.packs.has(hunter), "against the hunter")
 	_win(sk)
 	b.finish_skirmish()
-	assert_false(b.boss_contact, "the flag drops with the fight")
-	assert_eq(b.outcome, Battle.Outcome.VICTORY, "victory")
-	assert_true(b.field.units.has(sq), "the dropped pack was never fought")
+	assert_true(b.forced.is_empty(), "fought")
+	assert_eq(b.actions_left(m), 0, "and its prey is spent")
+	assert_false(b.end_turn().is_empty(), "the turn may end now")
 
 
-func test_a_plain_contact_is_not_a_boss_contact() -> void:
+func test_withdrawing_from_a_hunter_leaves_the_machine_caught() -> void:
 	var b := _battle()
-	_engage(b, b.field.packs()[0], b.mechs()[0])
-	b.commit()
-	assert_false(b.boss_contact, "no boss in it")
-	assert_eq(b.pending.size(), 1, "the one contact stands")
-	assert_false(b.pending[0].has(b.boss), "the boss is not dragged in")
-	assert_true(b.pending[0].has(b.field.packs()[0]), "the pack is fought")
+	var m: Unit = b.mechs()[0]
+	var hunter: Unit = b.field.packs()[0]
+	_engage(b, hunter, m)
+	hunter.behaviour = "hunt"
+	hunter.prey = m.id
+	hunter.zone = 1
+	b._new_turn()
+	var sk := b.attack(null, [])
+	sk.begin()
+	sk.start_round()
+	sk.withdraw()
+	b.finish_skirmish()
+	assert_true(b.forced.is_empty(), "this turn's forced fight is over")
+	b.end_turn()
+	assert_eq(b.forced.size(), 1, "next turn the hunter, still on it, has caught it again")
+	assert_eq(b.forced[0]["prey"], m, "the same machine")
 
 
-## Clear the team away from the gate and park a pack right in front of it.
+## Clear the team away from the gate and park a pusher right in front of it.
 static func threaten_gate(b: Battle, sq: Unit) -> void:
 	var gate_o := Hex.axial_to_offset(b.map.gate)
 	for m in b.mechs():
@@ -280,8 +352,7 @@ static func threaten_gate(b: Battle, sq: Unit) -> void:
 		if b.field.can_stand(sq, n):
 			sq.pos = n
 			break
-	sq.behaviour = "push"   # a pusher: an aggressive pack would turn for a machine within its reach
-	b.field.compute_intents()
+	sq.behaviour = "push"
 
 
 func test_gate_falling_ends_the_battle() -> void:
@@ -289,12 +360,13 @@ func test_gate_falling_ends_the_battle() -> void:
 	b.field.gate_hp = 5
 	var sq: Unit = b.field.packs()[0]
 	threaten_gate(b, sq)
-	assert_true(b.map.gate_hexes.has(b.field.intents[sq.id][0]), "the pack previews a strike on the gate")
-	b.commit()
+	b.forced = []
+	assert_true((b.field.plan_walks()[sq.id] as Battlefield.Walk).strikes, "the pack shows a strike on the gate")
+	b.end_turn()
 	assert_eq(b.field.gate_hp, 0, "gate down")
 	assert_eq(b.outcome, Battle.Outcome.GATE_FALLEN, "gate fallen")
 	assert_eq(b.state, Battle.State.DONE, "battle over")
-	assert_eq(b.open_next_skirmish(), null, "nothing to fight once the gate is gone")
+	assert_eq(b.attack(sq, b.mechs()), null, "nothing to fight once the gate is gone")
 
 
 func test_wrecked_mechs_leave_the_map() -> void:
@@ -302,8 +374,7 @@ func test_wrecked_mechs_leave_the_map() -> void:
 	var m: Unit = b.mechs()[0]
 	var sq: Unit = b.field.packs()[0]
 	_engage(b, sq, m)
-	b.commit()
-	var sk := b.open_next_skirmish()
+	var sk := b.attack(sq, [m])
 	sk.begin()
 	sk.start_round()
 	for ms in sk.mechs:
@@ -318,8 +389,8 @@ func test_wrecked_mechs_leave_the_map() -> void:
 
 
 func test_a_skirmish_is_fought_on_the_first_packs_ground() -> void:
-	# Decided 22 September: the ground is the pack's hex, the first pack in field order
-	# when there are several, whatever the machines stand on.
+	# Decided 22 September, and since 8 October the first pack is the one attacked: the
+	# ground is the target's hex, whatever the machines stand on.
 	var b := _battle()
 	var f := b.field
 	var m: Unit = b.mechs()[0]
@@ -328,7 +399,7 @@ func test_a_skirmish_is_fought_on_the_first_packs_ground() -> void:
 	f.map.terrain[m.pos] = BattleMap.Terrain.ROAD
 	f.map.terrain[sq.pos] = BattleMap.Terrain.RUINS
 	f.map.terrain[sq2.pos] = BattleMap.Terrain.WATER
-	var group: Array = [m, sq, sq2]
+	var group: Array = [sq, sq2, m]
 	assert_eq(Battle.ground_hex(group), sq.pos, "the first pack's hex")
 	assert_eq(b.ground_terrain(group), BattleMap.Terrain.RUINS, "and its terrain")
 	var sk := b._build_skirmish(group)
@@ -336,7 +407,7 @@ func test_a_skirmish_is_fought_on_the_first_packs_ground() -> void:
 
 
 ## A route drawn by hand goes the way it was drawn, where a tap would take the cheapest way.
-func test_a_drawn_route_is_kept_as_drawn() -> void:
+func test_a_drawn_route_is_walked_as_drawn() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[1]
 	var n1 := Vector2i(-99, -99)
@@ -358,13 +429,13 @@ func test_a_drawn_route_is_kept_as_drawn() -> void:
 	if draft.size() != 2:
 		return   # the detour does not fit this machine's move on this map; nothing to test
 	assert_eq(b.draft_cost(m, draft), b.field.route_cost(m, draft), "the draft's cost is the route's cost")
-	assert_true(b.set_route_path(m, draft), "the drawn route is accepted")
-	assert_eq(b.route_for(m.id).size(), 2, "and kept as drawn")
 	assert_eq(b.field.route_to(m, dest).size(), 1, "where the tap would have gone straight there")
 	assert_eq(b.draft_step(m, draft, n1), [n1], "back onto a drawn hex cuts the draft to it")
 	assert_true(b.draft_step(m, draft, m.pos).is_empty(), "back onto the machine clears it")
-	b.commit()
-	assert_eq(m.pos, dest, "Resolve walks the drawn route")
+	var cost := b.draft_cost(m, draft)
+	assert_true(b.move_along(m, draft), "the drawn route is walked")
+	assert_eq(m.pos, dest, "to its end")
+	assert_eq(b.moves_left(m), m.movespeed - cost, "spending what the drawn way costs")
 
 
 func test_the_gauge_tells_a_slow_stop_from_a_spent_move() -> void:
@@ -410,11 +481,12 @@ func test_the_gauge_tells_a_slow_stop_from_a_spent_move() -> void:
 	assert_eq(BattleMapView.gauge_cells(0, Vector2i(0, 0)).size(), 0, "no move, no gauge")
 
 
-func test_a_draft_never_outruns_the_move_or_lands_on_a_claimed_hex() -> void:
+func test_a_draft_never_outruns_the_move_left() -> void:
 	var b := _battle()
-	var a: Unit = b.mechs()[0]
 	var c: Unit = b.mechs()[1]
-	# Draw as far as the map allows in one direction: the draft stops growing at the move.
+	var first: Vector2i = b.destinations_for(c).keys()[0]
+	b.move_to(c, first)
+	var left := b.moves_left(c)
 	var draft: Array = []
 	var cur := c.pos
 	for i in range(c.movespeed + 3):
@@ -429,31 +501,20 @@ func test_a_draft_never_outruns_the_move_or_lands_on_a_claimed_hex() -> void:
 					break
 		if not stepped:
 			break
-	assert_true(not draft.is_empty(), "something was drawn")
 	var cost := b.draft_cost(c, draft)
-	assert_true(cost >= 0 and cost <= c.movespeed, "the draft fits the move: cost %d of %d" % [cost, c.movespeed])
-	# A hex another machine has claimed cannot end a drawn route either.
-	var shared := Vector2i(-99, -99)
-	for h in b.destinations_for(a).keys():
-		if b.destinations_for(c).has(h):
-			shared = h
-			break
-	assert_true(shared != Vector2i(-99, -99), "the two share a reachable hex")
-	var to_shared: Array = b.field.route_to(c, shared)
-	assert_true(not to_shared.is_empty(), "the second could walk there")
-	assert_true(b.set_route(a, shared), "the first claims it by tap")
-	assert_false(b.set_route_path(c, to_shared), "the second's drawn route to it is refused")
-	assert_true(b.set_route_path(c, []), "an empty draft clears")
+	assert_true(cost >= 0 and cost <= left, "the draft fits the move left: cost %d of %d" % [cost, left])
+	assert_false(b.move_along(c, []), "an empty draft walks nowhere")
 
 
-func test_an_out_of_combat_passive_fires_after_a_quiet_phase() -> void:
+func test_an_out_of_combat_passive_fires_after_a_quiet_turn() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
 	m.shield = 0
 	m.grant_passive({"id": "hum", "name": "Hum", "description": "", "effects": [
 		{"trigger": "out_of_combat", "effect": "add_shield", "value": 5}]}, "hum")
 	var rate := m.recharge_field
-	b.commit()
+	b.forced = []
+	b.end_turn()
 	assert_eq(m.shield, mini(m.shield_max, rate + 5), "the field rate, then the passive's five")
 
 
@@ -464,8 +525,7 @@ func test_a_kill_is_a_kill_whatever_the_fight_ends_in() -> void:
 	var m: Unit = b.mechs()[0]
 	var sq: Unit = b.field.packs()[0]
 	_engage(b, sq, m)
-	b.commit()
-	var sk := b.open_next_skirmish()
+	var sk := b.attack(sq, [m])
 	sk.begin()
 	sk.start_round()
 	var victim: Foe = sk.field_foes()[0]

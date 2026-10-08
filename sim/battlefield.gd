@@ -1,35 +1,31 @@
 class_name Battlefield
 extends RefCounted
 
-## Battlefield state and phase resolution. Pure: no scenes, no signals, no rendering.
+## Battlefield state and the turn's rules (bible section 4, the round row; section 5, the
+## fights-by-ring row). Pure: no scenes, no signals, no rendering.
 ##
-## A phase:
-##   1. compute_intents()          every pack commits its path for the round: pushers and
-##                                 aggressive packs to the gate, hunters toward their prey
-##   2. player plots routes        (outside the sim)
-##   3. resolve_phase(routes)      player routes resolve first; then each pack walks its
-##                                 committed path, except an aggressive pack with a machine
-##                                 inside its reach (it goes for the biggest catch) and a
-##                                 hunter (it goes after its prey's new hex); a pack stops
-##                                 at the first blocked hex
-##   4. detect_skirmishes()        contacts: every machine inside a pack's engagement zone
-##                                 where it ends fights it; a machine in two zones joins
-##                                 those two packs' fights into one
+## A turn:
+##   1. plan_walks()        where every pack will walk on the enemy's turn, against the field as
+##                          it stands: a pusher toward the gate, a hunter toward its prey, round
+##                          the machines, which are ground the horde goes round and never a stop
+##   2. the player's turn   (Battle) first every fight a hunter forced (forced_fights), then
+##                          fights the player picks (attack_roster): a fight is at the pack
+##                          attacked, every pack whose ring covers it joins, and the machines
+##                          committed are those whose attack range covers it
+##   3. enemy_turn()        the packs walk what plan_walks says; a pack on the gate's apron
+##                          strikes it
 ##
-## Units may cover several hexes (Unit.footprint). Every footprint hex blocks, touches, and
-## counts as occupied. The gate and the rift are structures wider than one hex; nobody stands
-## on them and packs strike any gate hex.
+## Units may cover several hexes (Unit.footprint). Every footprint hex counts as occupied. The
+## gate and the rift are structures wider than one hex; nobody stands on them.
 
-class PhaseResult:
-	var moved: Array[int] = []        # unit ids that moved
-	var rejected: Array[int] = []     # unit ids whose route was invalid
-	var blocked: Array[int] = []      # pack ids stopped by a body block
-	var stalled: Array[int] = []      # pack ids that had no way to any goal this phase (every approach held by their own side)
-	var blockers: Dictionary = {}     # pack id -> the unit id that stood in its path (the stealth join rule reads it)
-	var intents: Dictionary = {}      # pack id -> the path it followed: the committed one, or the reaction
-	var gate_damage: int = 0
-	var spawned: bool = false
-	var skirmishes: Array = []        # Array of Array[Unit]
+## A pack's walk on the enemy's turn.
+class Walk:
+	var path: Array[Vector2i] = []   # the hexes it walks, after its own
+	var end: Vector2i                # where it stops
+	var strikes := false             # it stops on the gate's apron and strikes the gate
+	var waits := false               # no way to its goal: it stays where it is
+	var catches: int = 0             # a hunter whose walk ends within its ring of its prey: the prey's id
+	var prey: int = 0                # a hunter's prey, by id
 
 ## What the map knows of each foe type (ContentDB.pack_profiles): the pack's engagement
 ## zone, whether it hunts, its move. Battle fills it from content, and a pack is dressed
@@ -48,8 +44,6 @@ var spawn_faction: String = "undead"
 var spawn_table: Array = [["ghoul", 6]]
 var _spawn_index: int = 0
 var phase: int = 0
-var intents: Dictionary = {}   # pack id -> Array[Vector2i]: the path each pack committed to when the round opened
-var stalled: Dictionary = {}   # pack id -> true: no goal was reachable when the round opened, so the pack waits where it is
 var log: Array[String] = []
 var _next_id: int = 1
 
@@ -161,17 +155,19 @@ func nearest_standable(u: Unit, h: Vector2i) -> Vector2i:
 	return h
 
 
-## Every anchor hex a unit can end its move on this phase, mapped to the cost of getting there.
-func reachable(u: Unit) -> Dictionary:
-	var dist: Dictionary = _search(u, u.pos, u.movespeed)[0]
+## Every anchor hex a unit can end its move on, mapped to the cost of getting there: from
+## its hex with its whole move, or with `budget` when given (a machine that has moved part of
+## its move this action has the rest).
+func reachable(u: Unit, budget: int = -1) -> Dictionary:
+	var dist: Dictionary = _search(u, u.pos, u.movespeed if budget < 0 else budget)[0]
 	dist.erase(u.pos)
 	return dist
 
 
-## Cheapest route for `u` to `to` within its movespeed, as the hexes after its position.
-## Empty when `to` is out of reach. What resolve_phase expects for a plotted mech.
-func route_to(u: Unit, to: Vector2i) -> Array[Vector2i]:
-	return route_from(u, u.pos, u.movespeed, to)
+## Cheapest route for `u` to `to` within its movespeed (or `budget`), as the hexes after its
+## position. Empty when `to` is out of reach.
+func route_to(u: Unit, to: Vector2i, budget: int = -1) -> Array[Vector2i]:
+	return route_from(u, u.pos, u.movespeed if budget < 0 else budget, to)
 
 
 ## The cheapest continuation for `u` from `from` to `to` inside `budget` move points, as
@@ -192,16 +188,17 @@ func route_from(u: Unit, from: Vector2i, budget: int, to: Vector2i) -> Array[Vec
 
 
 ## What a route costs `u` in move points, or -1 when it is not one it can walk: every step
-## adjacent to the last and standable, each paid for out of what is left (a slow hex takes
-## the rest and so must be the last step). The rule Resolve applies, asked ahead of time.
-func route_cost(u: Unit, route: Array) -> int:
+## adjacent to the last and standable, each paid for out of what is left of its move (or of
+## `budget`); a slow hex takes the rest and so must be the last step.
+func route_cost(u: Unit, route: Array, budget: int = -1) -> int:
 	var cost := 0
 	var cur := u.pos
+	var move := u.movespeed if budget < 0 else budget
 	for step in route:
 		var s: Vector2i = step
 		if not Hex.are_adjacent(cur, s) or not can_stand(u, s):
 			return -1
-		var c := BattleMap.spend(map.terrain[s], u.traits, u.movespeed - cost)
+		var c := BattleMap.spend(map.terrain[s], u.traits, move - cost)
 		if c < 0:
 			return -1
 		cost += c
@@ -241,72 +238,9 @@ func _search(u: Unit, from: Vector2i, budget: int, blocked: Dictionary = {}, thr
 	return [dist, prev]
 
 
-## Where each pack commits to go this round (decided 1 October: the enemy commits first,
-## so a route the player reads at the round's start is the route). Pushers and aggressive
-## packs head for the gate; a hunter picks its prey, if it has none, and heads for where the
-## prey stands now. Paths ignore the machines, so what the player sees is "where they go
-## unless you stop them"; a pack's reaction to the plan, if it has one, is `_react`'s.
-##
-## A pack whose way to its goal is held by its own side turns for the next goal it can
-## reach (Ryan, 6 October: a stalled horde is never the norm): a gate-goer tries every
-## gate hex and defence nearest first. One with no goal reachable at all waits where it
-## is and is marked `stalled`, which the preview shows. Found 2 October: 156 of 600 packs
-## in a packs-only run stood still for want of this, with no mark.
-func compute_intents() -> void:
-	# Packs plan in field order, each around where the packs before it will end and
-	# where the ones after it stand now (Ryan, 22 September), so a pack routes around a
-	# hex another is taking instead of walking into it and stopping short. The same order
-	# moves them at resolve, so an intent plays as shown unless a body blocks it.
-	intents.clear()
-	stalled.clear()
-	var ends: Dictionary = {}   # pack id -> hexes it will hold, for the packs after it
-	for sq in packs():
-		var blocked := _held_by_others(sq, ends)
-		var target := _pick_target(sq)
-		var path := _affordable(sq, map.find_path(sq.pos, target, sq.traits, blocked))
-		if path.is_empty() and target != sq.pos:
-			for alt in _gate_targets(sq):
-				if alt == target:
-					continue
-				path = _affordable(sq, map.find_path(sq.pos, alt, sq.traits, blocked))
-				if not path.is_empty():
-					break
-			if path.is_empty():
-				stalled[sq.id] = true
-		intents[sq.id] = path
-		ends[sq.id] = _held_after(sq, path)
-
-
-## The hexes every other pack holds: where the ones planned before it will end, where the
-## rest stand now.
-func _held_by_others(sq: Unit, ends: Dictionary) -> Dictionary:
-	var blocked := {}
-	for other in packs():
-		if other == sq:
-			continue
-		var held: Array = ends[other.id] if ends.has(other.id) else other.hexes()
-		for h in held:
-			blocked[h] = true
-	return blocked
-
-
-## The hexes a pack will hold after walking `path`: a strike on the gate or a body in the
-## way is where it stops, not where it stands.
-func _held_after(sq: Unit, path: Array) -> Array:
-	var end: Vector2i = sq.pos
-	for step in path:
-		if map.gate_hexes.has(step) or (unit_at(step) != null and unit_at(step).is_player() and unit_at(step).can_block()):
-			break
-		end = step
-	var held: Array = []
-	for o in sq.footprint:
-		held.append(end + o)
-	return held
-
-
 ## A hunter's prey, picked by its caveat the first time it needs one and kept until the
-## machine is gone (single-minded, so the lock the player sees holds). Stealth machines
-## are never picked. Null when there is nothing to hunt.
+## machine is gone (single-minded, so the lock the player sees holds). An elusive machine
+## (the Prairie Dog, bible section 7) is never picked. Null when there is nothing to hunt.
 func pick_prey(sq: Unit) -> Unit:
 	var current := unit_by_id(sq.prey)
 	if current != null and current.is_player() and not current.is_static():
@@ -314,7 +248,7 @@ func pick_prey(sq: Unit) -> Unit:
 	var best: Unit = null
 	var best_key := 0
 	for m in mechs():
-		if m.traits.has("stealth"):
+		if m.traits.has(ELUSIVE):
 			continue
 		var key := 0
 		match sq.hunts:
@@ -335,286 +269,260 @@ func pick_prey(sq: Unit) -> Unit:
 	return best
 
 
-## Where a pack heads this phase. A boss patrols its zone outside the rift (Ryan, 22
-## September): one step to a standable hex within BOSS_ZONE of the rift, picked by the
-## phase so the preview never disagrees with the resolve; nothing, when nothing fits.
+## A boss patrols its ground outside the rift (Ryan, 22 September): one step to a standable
+## hex within BOSS_ZONE of the rift, picked by the turn so the preview never disagrees with
+## the walk; its own hex when nothing fits.
 const BOSS_ZONE := 2
 
-func _pick_target(sq: Unit) -> Vector2i:
-	if sq.elite and sq.strength == 0:
-		var options: Array[Vector2i] = []
-		for n in Hex.neighbors(sq.pos):
-			if map.has(n) and Hex.distance(n, map.rift) <= BOSS_ZONE and can_stand(sq, n) and not map.rift_hexes.has(n):
-				options.append(n)
-		if options.is_empty():
-			return sq.pos
-		return options[(phase * 7 + sq.id * 13) % options.size()]
-	if sq.behaviour == "hunt":
-		var prey := pick_prey(sq)
-		if prey != null:
-			return hunt_target(sq, prey)
-	return _gate_target(sq)
+func _patrol_step(sq: Unit, blocked: Dictionary) -> Vector2i:
+	var options: Array[Vector2i] = []
+	for n in Hex.neighbors(sq.pos):
+		if map.has(n) and Hex.distance(n, map.rift) <= BOSS_ZONE and not map.rift_hexes.has(n) and _walkable(sq, n, blocked) and _landable(sq, n):
+			options.append(n)
+	if options.is_empty():
+		return sq.pos
+	return options[(phase * 7 + sq.id * 13) % options.size()]
 
 
-## Where a hunter heads for its prey: the prey's own hex when the pack could stand there
-## (the path stops at the body, which is the strike), else the nearest hex inside the
-## pack's zone of the prey that the pack can reach, nearest to the pack. A prey standing in
-## water (a wall to the horde) would otherwise give the planner an impassable goal and the
-## pack would stand still with no mark (found 2 October).
-func hunt_target(sq: Unit, prey: Unit) -> Vector2i:
-	if BattleMap.passable(map.terrain[prey.pos], sq.traits):
-		return prey.pos
-	var ring: Dictionary = {}
-	_ring_into(prey.pos, sq.zone, ring)
-	var best := prey.pos
-	var best_d := 1 << 30
-	for h in ring.keys():
-		var hx: Vector2i = h
-		if hx == prey.pos or not BattleMap.passable(map.terrain[hx], sq.traits):
+## The trait a hunter never picks (the Prairie Dog: bible section 7, the cars' traits).
+const ELUSIVE := "elusive"
+## The trait that gives a machine two actions a turn (the Dingo).
+const TIRELESS := "tireless"
+
+
+## Every pack's walk for the enemy's turn, against the field as it stands now (bible section
+## 4, the round row). Packs plan in field order, each round where the packs before it will
+## end and where the ones after it stand now, so the walk plays as shown. The preview is this
+## call: nothing a pack does reacts to the plan, it reads where the machines stand.
+func plan_walks() -> Dictionary:
+	var out: Dictionary = {}
+	var ends: Dictionary = {}   # pack id -> the hexes it will hold, for the packs after it
+	for sq in packs():
+		var w := _walk(sq, _held_by_others(sq, ends))
+		out[sq.id] = w
+		var held: Array = []
+		for o in sq.footprint:
+			held.append(w.end + o)
+		ends[sq.id] = held
+	return out
+
+
+## The hexes every other pack holds: where the ones planned before it will end, where the
+## rest stand now.
+func _held_by_others(sq: Unit, ends: Dictionary) -> Dictionary:
+	var blocked := {}
+	for other in packs():
+		if other == sq:
 			continue
-		var d := Hex.distance(sq.pos, hx)
-		if d < best_d or (d == best_d and (hx.y < best.y or (hx.y == best.y and hx.x < best.x))):
-			best = hx
-			best_d = d
+		var held: Array = ends[other.id] if ends.has(other.id) else other.hexes()
+		for h in held:
+			blocked[h] = true
+	return blocked
+
+
+## Whether a pack may walk with its anchor at `at`: every footprint hex in the map, ground the
+## horde can cross, no structure, no other pack's hold, no grounded machine (a flyer is passed
+## under). Machines are ground the horde goes round, never a stop.
+func _walkable(sq: Unit, at: Vector2i, blocked: Dictionary) -> bool:
+	for o in sq.footprint:
+		var h: Vector2i = at + o
+		if not map.has(h) or map.is_structure(h) or blocked.has(h):
+			return false
+		if not BattleMap.passable(map.terrain[h], sq.traits):
+			return false
+		var occ := unit_at(h)
+		if occ != null and occ != sq and occ.is_player() and occ.can_block():
+			return false
+	return true
+
+
+## Whether a pack may stop with its anchor at `at`: walkable, and no machine there at all.
+func _landable(sq: Unit, at: Vector2i) -> bool:
+	for o in sq.footprint:
+		var occ := unit_at(at + o)
+		if occ != null and occ != sq and occ.is_player():
+			return false
+	return true
+
+
+## Whether a pack with its anchor at `at` stands on the gate's apron, beside a gate hex.
+func on_apron(sq: Unit, at: Vector2i) -> bool:
+	for o in sq.footprint:
+		for g in map.gate_hexes:
+			if Hex.distance(at + o, g) <= 1:
+				return true
+	return false
+
+
+## The shortest distance from a pack anchored at `at` to a unit.
+func _distance_from(sq: Unit, at: Vector2i, u: Unit) -> int:
+	var best := 1 << 30
+	for o in sq.footprint:
+		for h in u.hexes():
+			best = mini(best, Hex.distance(at + o, h))
 	return best
 
 
-## Each pack's path for this phase's movement, the machines having moved: the committed
-## one, unless the pack reacts (decided 1 October). An aggressive pack with a machine
-## inside its reach goes for the hex within its move whose zone holds the most machines,
-## ties toward the gate. A hunter goes for where its prey now stands. Both show in the
-## preview, which is the same dry run, so the reaction is read before Resolve; the reach
-## ring and the lock say beforehand whether there will be one.
-func _react() -> Dictionary:
-	var plans: Dictionary = {}
-	var ends: Dictionary = {}
-	for sq in packs():
-		var blocked := _held_by_others(sq, ends)
-		var path: Array[Vector2i] = []
-		path.assign(intents.get(sq.id, []))
-		if sq.behaviour == "aggressive" and not (sq.elite and sq.strength == 0):
-			var best: Array = _best_catch(sq, blocked)
-			if int(best[1]) > 0:
-				path = _affordable(sq, map.find_path(sq.pos, best[0], sq.traits, blocked))
-		elif sq.behaviour == "hunt":
-			var prey := pick_prey(sq)
-			if prey != null:
-				path = _affordable(sq, map.find_path(sq.pos, hunt_target(sq, prey), sq.traits, blocked))
-		plans[sq.id] = path
-		ends[sq.id] = _held_after(sq, path)
-	return plans
-
-
-## The hex within a pack's move whose zone holds the most machines, ties toward the gate,
-## as [hex, count]; its own hex counts. A count of 0 means nothing is in its reach.
-func _best_catch(sq: Unit, blocked: Dictionary) -> Array:
-	var best := sq.pos
-	var best_n := _catch(sq, sq.pos)
-	var best_d := _gate_distance(sq.pos)
-	var reach: Dictionary = _search(sq, sq.pos, sq.movespeed, blocked, true)[0]
-	for h in reach.keys():
-		var n := _catch(sq, h)
-		var d := _gate_distance(h)
-		if n > best_n or (n == best_n and d < best_d):
-			best = h
-			best_n = n
-			best_d = d
-	return [best, best_n]
-
-
-## An aggressive pack's reach: every hex its zone can fall on this round, from every hex it
-## can walk to past the other packs. What the map draws as the ring, and what "a machine
-## within its reach" means, so the ring never promises what the ground denies.
-func reach_hexes(sq: Unit) -> Dictionary:
-	var out: Dictionary = {}
-	var reach: Dictionary = _search(sq, sq.pos, sq.movespeed, _held_by_others(sq, {}), true)[0]
-	for h in reach.keys():
-		for o in sq.footprint:
-			_ring_into(h + o, sq.zone, out)
-	return out
-
-
-func _ring_into(h: Vector2i, r: int, out: Dictionary) -> void:
-	var dist := {h: 0}
-	var queue: Array[Vector2i] = [h]
-	while not queue.is_empty():
-		var cur: Vector2i = queue.pop_front()
-		if map.has(cur) and not map.is_structure(cur):
-			out[cur] = true
-		if int(dist[cur]) >= r:
-			continue
-		for n in Hex.neighbors(cur):
-			if not dist.has(n):
-				dist[n] = int(dist[cur]) + 1
-				queue.append(n)
-
-
-## How many machines a pack standing at `at` would have inside its zone. Stealth machines
-## are not counted: a zone never pulls one in.
-func _catch(sq: Unit, at: Vector2i) -> int:
-	var n := 0
-	for m in mechs():
-		if m.traits.has("stealth"):
-			continue
-		var d := 1 << 30
-		for o in sq.footprint:
-			for h in m.hexes():
-				d = mini(d, Hex.distance(at + o, h))
-		if d <= sq.zone:
-			n += 1
-	return n
-
-
-func _gate_distance(h: Vector2i) -> int:
-	var d := Hex.distance(h, map.gate)
-	for g in map.gate_hexes:
-		d = mini(d, Hex.distance(h, g))
-	return d
-
-
-## The nearest gate hex or static defence: where a pusher heads.
-func _gate_target(sq: Unit) -> Vector2i:
-	return _gate_targets(sq)[0]
-
-
-## Every gate hex and static defence, nearest to the pack first (ties in field order, the
-## gate's centre first), so a pack held off one can try the next.
-func _gate_targets(sq: Unit) -> Array[Vector2i]:
-	var goals: Array[Vector2i] = [map.gate]
-	for g in map.gate_hexes:
-		if not goals.has(g):
-			goals.append(g)
-	for d in defenses():
-		if not goals.has(d.pos):
-			goals.append(d.pos)
-	var order: Array = []
-	for i in range(goals.size()):
-		order.append([Hex.distance(sq.pos, goals[i]), i])
-	order.sort()
-	var out: Array[Vector2i] = []
-	for o in order:
-		out.append(goals[int(o[1])])
-	return out
-
-
-func _affordable(sq: Unit, path: Array[Vector2i]) -> Array[Vector2i]:
-	var out: Array[Vector2i] = []
+## One pack's walk. A boss patrols. A hunter heads for the nearest hex it can reach that puts
+## its prey inside its ring, or as near as it gets; a pusher for the nearest hex of the gate's
+## apron. It walks as far as its move goes, round machines and the other packs, never ending
+## under a flyer. A pusher with no way to the gate waits, and the map says so.
+func _walk(sq: Unit, blocked: Dictionary) -> Walk:
+	var w := Walk.new()
+	w.end = sq.pos
+	if sq.elite and sq.strength == 0:
+		var step := _patrol_step(sq, blocked)
+		if step != sq.pos:
+			w.path.append(step)
+			w.end = step
+		return w
+	var found := _walk_search(sq, blocked)
+	var dist: Dictionary = found[0]
+	var prev: Dictionary = found[1]
+	var goal := sq.pos
+	var prey: Unit = pick_prey(sq) if sq.behaviour == "hunt" else null
+	if prey != null:
+		w.prey = prey.id
+		var best_key := Vector2i(maxi(_distance_from(sq, sq.pos, prey) - sq.zone, 0), 0)
+		for h in dist.keys():
+			var hx: Vector2i = h
+			if not _landable(sq, hx):
+				continue
+			var key := Vector2i(maxi(_distance_from(sq, hx, prey) - sq.zone, 0), int(dist[hx]))
+			if key.x < best_key.x or (key.x == best_key.x and key.y < best_key.y):
+				best_key = key
+				goal = hx
+	elif not on_apron(sq, sq.pos):
+		var best := 1 << 30
+		for h in dist.keys():
+			var hx: Vector2i = h
+			if on_apron(sq, hx) and _landable(sq, hx) and int(dist[hx]) < best:
+				best = int(dist[hx])
+				goal = hx
+		if best == 1 << 30:
+			w.waits = true
+	var route: Array[Vector2i] = []
+	var c := goal
+	while c != sq.pos:
+		route.push_front(c)
+		c = prev[c]
 	var budget := sq.movespeed
-	for step in path:
-		# Reaching a target hex (gate, defense, mech) is an attack, not a move. Keep it in
-		# the preview so the player sees the strike, then stop.
-		var occ := unit_at(step)
-		if map.gate_hexes.has(step) or (occ != null and occ.is_player() and occ.can_block()):
-			out.append(step)
+	var walked: Array[Vector2i] = []
+	for s in route:
+		var cost := BattleMap.spend(map.terrain[s], sq.traits, budget)
+		if cost < 0:
 			break
-		var c := BattleMap.spend(map.terrain[step], sq.traits, budget)
-		if c < 0:
-			break
-		budget -= c
-		out.append(step)
-	return out
+		budget -= cost
+		walked.append(s)
+	while not walked.is_empty() and not _landable(sq, walked[walked.size() - 1]):
+		walked.pop_back()
+	w.path = walked
+	w.end = walked[walked.size() - 1] if not walked.is_empty() else sq.pos
+	w.strikes = prey == null and on_apron(sq, w.end)
+	if prey != null and _distance_from(sq, w.end, prey) <= sq.zone:
+		w.catches = prey.id
+	return w
 
 
-## Resolve one phase. `routes` maps a mech id to an Array of anchor hexes after its position.
-func resolve_phase(routes: Dictionary) -> PhaseResult:
-	var result := PhaseResult.new()
-	phase += 1
-	_move_all(routes, result, false)
-	result.spawned = tick_pressure(1)
-	result.skirmishes = detect_skirmishes(result.blockers)
-	return result
-
-
-## The phase as it would resolve right now, without resolving it (Ryan, 21 September: the
-## plan must never be ambiguous). Runs the same movement as `resolve_phase`, dry, then puts
-## every unit back. Returns {"result": PhaseResult, "ends": {unit id: hex}}. Only the
-## pressure tick and its spawn are left out: a pack that spawns at the rift this phase
-## cannot be in a contact, since nothing stands at the rift.
-func preview_phase(routes: Dictionary) -> Dictionary:
-	var saved: Dictionary = {}
-	for u in units:
-		saved[u.id] = [u.pos, u.facing]
-	var result := PhaseResult.new()
-	phase += 1   # the phase the resolve will be, so a boss's patrol step is the same one
-	_move_all(routes, result, true)
-	phase -= 1
-	result.skirmishes = detect_skirmishes(result.blockers)
-	var ends: Dictionary = {}
-	for u in units:
-		ends[u.id] = u.pos
-	for u in units:
-		u.pos = saved[u.id][0]
-		u.facing = saved[u.id][1]
-	return {"result": result, "ends": ends}
-
-
-## The movement of one phase: the mechs' routes in the order given, then every pack in
-## field order. Order matters twice, and this is the one place it is decided: a route
-## through a hex another mech is leaving is rejected unless that mech went first, and a
-## pack stops short of a hex another pack has already taken. `dry` skips the gate
-## damage and the log.
-func _move_all(routes: Dictionary, result: PhaseResult, dry: bool) -> void:
-	# Mechs first, in the order the player plotted them (the dictionary's order). Routes
-	# are planned in that same order against where earlier machines will be (Ryan, 22
-	# September: don't let a destination be chosen that an earlier move blocks), so a
-	# route is never rejected here in play; the branch stays as a guard.
-	for uid in routes.keys():
-		var u := unit_by_id(uid)
-		if u == null or not u.is_player() or u.is_static():
-			result.rejected.append(uid)
+## Dijkstra over the horde's ground from a pack's hex, unbounded: [cost, prev].
+func _walk_search(sq: Unit, blocked: Dictionary) -> Array:
+	var dist := {sq.pos: 0}
+	var prev := {}
+	var frontier: Array = [[0, sq.pos]]
+	while not frontier.is_empty():
+		var best := 0
+		for i in range(1, frontier.size()):
+			if frontier[i][0] < frontier[best][0]:
+				best = i
+		var cur: Array = frontier.pop_at(best)
+		var d: int = cur[0]
+		var h: Vector2i = cur[1]
+		if d > dist[h]:
 			continue
-		if _apply_route(u, routes[uid]):
-			result.moved.append(uid)
-		else:
-			result.rejected.append(uid)
-			if not dry:
-				log.append("%s: route rejected" % u.display_name)
-	# The packs walk what they committed to when the round opened, or their reaction to
-	# where the machines now stand (an aggressive pack with someone in reach, a hunter),
-	# worked out here so the preview and the resolve agree.
-	var plans := _react()
-	result.intents = plans.duplicate(true)
+		for n in Hex.neighbors(h):
+			if not _walkable(sq, n, blocked):
+				continue
+			var c := BattleMap.spend(map.terrain[n], sq.traits, 1 << 20)
+			if c < 0:
+				continue
+			var nd := d + c
+			if not dist.has(n) or nd < dist[n]:
+				dist[n] = nd
+				prev[n] = h
+				frontier.append([nd, n])
+	return [dist, prev]
+
+
+## The enemy's turn: every pack walks what plan_walks says, and a pack on the gate's apron
+## strikes the gate for a third of its strength, ten at least. Returns the walks played.
+func enemy_turn() -> Dictionary:
+	var walks := plan_walks()
 	for sq in packs():
-		var plan: Array = plans.get(sq.id, [])
-		_execute_pack(sq, plan, result, dry)
-		if plan.is_empty() and stalled.has(sq.id):
-			result.stalled.append(sq.id)
-			if not dry:
-				log.append("%s has no way through and waits" % sq.display_name)
+		var w: Walk = walks[sq.id]
+		if not w.path.is_empty():
+			var before: Vector2i = w.path[w.path.size() - 2] if w.path.size() >= 2 else sq.pos
+			sq.facing = _direction_index(before, w.end)
+		sq.pos = w.end
+		if w.strikes:
+			var dmg := maxi(10, (sq.strength * 10) / 3)
+			gate_hp = maxi(0, gate_hp - dmg)
+			log.append("%s strikes the gate for %d" % [sq.display_name, dmg])
+		elif w.waits:
+			log.append("%s has no way through and waits" % sq.display_name)
+		elif w.catches != 0:
+			var prey := unit_by_id(w.catches)
+			if prey != null:
+				log.append("%s catches %s" % [sq.display_name, prey.display_name])
+	return walks
 
 
-## Run `fn` with the machines that move before `u` (earlier in `routes`, or all of them
-## when `u` has no route yet) standing at their destinations, then put them back. This is
-## the view a route is planned in, so plotting in order can never conflict at resolve.
-func with_plan(u: Unit, routes: Dictionary, fn: Callable) -> Variant:
-	var saved: Dictionary = {}
-	var before := not routes.has(u.id)
-	for uid in routes.keys():
-		if uid == u.id:
-			before = false
+## The fights a hunter forces (bible section 5): every hunter that stands within its ring of
+## its prey has caught it, and that fight comes first on the player's turn. One fight per
+## caught machine, with every hunter that caught it, in field order:
+## [{"prey": Unit, "hunters": Array[Unit]}].
+func forced_fights() -> Array:
+	var order: Array = []
+	var by_prey: Dictionary = {}
+	for sq in packs():
+		if sq.behaviour != "hunt" or (sq.elite and sq.strength == 0):
 			continue
-		if not before:
+		var prey := pick_prey(sq)
+		if prey == null or not in_ring(sq, prey):
 			continue
-		var o := unit_by_id(uid)
-		var r: Array = routes[uid]
-		if o == null or r.is_empty():
-			continue
-		saved[uid] = o.pos
-		o.pos = r[r.size() - 1]
-	var out: Variant = fn.call()
-	for uid in saved.keys():
-		unit_by_id(uid).pos = saved[uid]
+		if not by_prey.has(prey.id):
+			by_prey[prey.id] = {"prey": prey, "hunters": []}
+			order.append(prey.id)
+		by_prey[prey.id]["hunters"].append(sq)
+	var out: Array = []
+	for pid in order:
+		out.append(by_prey[pid])
 	return out
 
 
-func _apply_route(u: Unit, route: Array) -> bool:
-	if route_cost(u, route) < 0:
-		return false
-	var cur: Vector2i = route[route.size() - 1] if not route.is_empty() else u.pos
-	if cur != u.pos:
-		u.facing = _direction_index(route[route.size() - 2] if route.size() >= 2 else u.pos, cur)
-	u.pos = cur
-	return true
+## The fight at `targets` (bible section 5): every other pack whose ring covers a target joins,
+## and the machines whose attack range covers a target may be committed.
+## {"targets": Array[Unit], "joins": Array[Unit], "in_range": Array[Unit]}.
+func attack_roster(targets: Array) -> Dictionary:
+	var joins: Array[Unit] = []
+	for p in packs():
+		if targets.has(p):
+			continue
+		for t in targets:
+			if in_ring(p, t):
+				joins.append(p)
+				break
+	var in_range: Array[Unit] = []
+	for m in mechs():
+		for t in targets:
+			if unit_distance(m, t) <= m.attack_range:
+				in_range.append(m)
+				break
+	return {"targets": targets, "joins": joins, "in_range": in_range}
+
+
+## How many actions a machine has a turn: two for a tireless one, else one.
+static func actions_for(u: Unit) -> int:
+	return 2 if u.traits.has(TIRELESS) else 1
 
 
 func _direction_index(from: Vector2i, to: Vector2i) -> int:
@@ -625,118 +533,8 @@ func _direction_index(from: Vector2i, to: Vector2i) -> int:
 	return 0
 
 
-func _execute_pack(sq: Unit, path: Array, result: PhaseResult, dry: bool = false) -> void:
-	var budget := sq.movespeed
-	var landed := sq.pos
-	var prev := sq.pos
-	for step in path:
-		var s: Vector2i = step
-		if map.gate_hexes.has(s):
-			var dmg := maxi(10, (sq.strength * 10) / 3)
-			result.gate_damage += dmg
-			if not dry:
-				gate_hp = maxi(0, gate_hp - dmg)
-				log.append("%s hits the gate for %d" % [sq.display_name, dmg])
-			break
-		var occ := unit_at(s)
-		if occ != null and occ != sq and (occ.can_block() or occ.is_enemy()):
-			result.blocked.append(sq.id)
-			result.blockers[sq.id] = occ.id
-			if not dry:
-				log.append("%s blocked at %s by %s" % [sq.display_name, str(s), occ.display_name])
-			break
-		if sq.is_multi_hex() and not can_stand(sq, s, true):
-			result.blocked.append(sq.id)
-			if not dry:
-				log.append("%s cannot fit at %s" % [sq.display_name, str(s)])
-			break
-		var c := BattleMap.spend(map.terrain[s], sq.traits, budget)
-		if c < 0:
-			break
-		budget -= c
-		# A flyer's hex is passed through but never landed on.
-		if occ == null or occ == sq:
-			landed = s
-			sq.facing = _direction_index(prev, s)
-		prev = s
-	sq.pos = landed
-
-
-## Contact groups (decided 1 October). Every pack has an engagement zone (`Unit.zone`, from
-## its foe type), and a machine standing inside it where the pack ends its move fights it.
-## A machine inside two packs' zones puts both packs in one fight, and that is the only way
-## fights join: packs never join through each other and machines never through each other,
-## so nothing chains and the zones drawn on the map are the whole rule. A flyer fights by
-## the zone like anyone; its difference is that it cannot stop a pack. A stealth machine is
-## never pulled in by a zone alone: it is in the fight when it stopped one of its packs in
-## its path (`blockers`, the trait's join rule of 28 September), or when another machine is
-## in it. A static defence inside a zone is in the fight too. Packs come first in a group,
-## since the fight's ground is its first pack's hex. `blockers` says which unit stopped
-## which pack this phase.
-func detect_skirmishes(blockers: Dictionary = {}) -> Array:
-	var groups: Array = []
-	var seen := {}
-	var open_mechs: Array[Unit] = []   # machines a zone pulls in on its own
-	var shy: Array[Unit] = []          # stealth machines and static defences: join on their own terms
-	for u in units:
-		if not u.is_player():
-			continue
-		if u.is_static() or u.traits.has("stealth"):
-			shy.append(u)
-		else:
-			open_mechs.append(u)
-	for sq in packs():
-		if seen.has(sq.id):
-			continue
-		var group_packs: Array[Unit] = []
-		var group_mechs: Array[Unit] = []
-		var queue: Array[Unit] = [sq]
-		seen[sq.id] = true
-		while not queue.is_empty():
-			var cur: Unit = queue.pop_front()
-			if cur.is_enemy():
-				group_packs.append(cur)
-				for m in open_mechs:
-					if not seen.has(m.id) and in_zone(cur, m):
-						seen[m.id] = true
-						queue.append(m)
-				for m in shy:
-					# A stealth machine that stopped this pack is in, whoever else is.
-					if not seen.has(m.id) and m.traits.has("stealth") and in_zone(cur, m) and int(blockers.get(cur.id, -1)) == m.id:
-						seen[m.id] = true
-						queue.append(m)
-			else:
-				group_mechs.append(cur)
-				for p in packs():
-					if not seen.has(p.id) and in_zone(p, cur):
-						seen[p.id] = true
-						queue.append(p)
-		if group_mechs.is_empty():
-			for p in group_packs:
-				seen.erase(p.id)   # no fight here; the packs stay free for nothing
-			continue
-		var has_ally := false
-		for m in group_mechs:
-			has_ally = has_ally or not m.traits.has("stealth")
-		for m in shy:
-			if seen.has(m.id):
-				continue
-			var inside := false
-			for p in group_packs:
-				inside = inside or in_zone(p, m)
-			# A defence inside the zone is in; a stealth machine only beside an ally.
-			if inside and (m.is_static() or has_ally):
-				seen[m.id] = true
-				group_mechs.append(m)
-		var group: Array[Unit] = []
-		group.append_array(group_packs)
-		group.append_array(group_mechs)
-		groups.append(group)
-	return groups
-
-
-## Whether `u` stands inside the pack's engagement zone.
-static func in_zone(sq: Unit, u: Unit) -> bool:
+## Whether `u` stands inside the pack's ring.
+static func in_ring(sq: Unit, u: Unit) -> bool:
 	return unit_distance(sq, u) <= sq.zone
 
 
@@ -747,7 +545,6 @@ static func unit_distance(a: Unit, b: Unit) -> int:
 		for y in b.hexes():
 			best = mini(best, Hex.distance(x, y))
 	return best
-
 
 ## Feed the Rift Pressure clock. Spawns a pack at the rift when it fills. Returns true on spawn.
 func tick_pressure(ticks: int) -> bool:

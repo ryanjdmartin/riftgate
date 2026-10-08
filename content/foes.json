@@ -5,7 +5,7 @@
       "id": "ghoul", "name": "Ghoul", "faction": "undead",
       "design": { "fantasy": "A body that forgot to stop.", "niche": "There are six of them and four slots. Kill fast or be buried: every one standing makes every other one hit harder.", "notes": "The swarm claw since 2 October (Ryan: the revive was confusing; a smaller monster's threat is its numbers): 5, and 5 more for every other ghoul on the field, so four on the field hit for 20 each and killing one drops every blow. One move, so a disrupt has nothing to switch it to. Get Back Up is gone from it; the necromancer is the Risen's \"hard to keep down\" now. Aims at anything." },
       "codex": "The rank and file of the Risen. Slow, stupid and never alone: six arrive for every one you put down, and they walk straight at the nearest thing with a heartbeat. The more of them stand, the harder each one hits.",
-      "hp": 30, "attack": 5, "rank": "front", "zone": 1, "movespeed": 20, "behaviour": "aggressive", "aim": "anything",
+      "hp": 30, "attack": 5, "rank": "front", "zone": 1, "movespeed": 20, "behaviour": "hunt", "hunts": "nearest", "aim": "anything",
       "actions": [
         { "id": "claw", "name": "Claw", "kind": "attack", "swarm": 5, "weight": 2, "text": "Tears at anything in reach for {damage}: more for every other ghoul standing.", "status": "implemented" }
       ],

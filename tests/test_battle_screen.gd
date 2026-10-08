@@ -1,7 +1,8 @@
 extends TestCase
 
-## Drives the battle screen through its handlers without a window: select, route, resolve,
-## contact into a skirmish and back, and the outcome overlay.
+## Drives the battle screen through its handlers without a window: select, move, set up a
+## fight and engage, the skirmish and back, a hunter's forced fight, the enemy's turn, and
+## the outcome overlay (bible section 4, the round row).
 
 
 func _screen(seed_value: int = 3) -> BattleScreen:
@@ -16,83 +17,92 @@ func _screen(seed_value: int = 3) -> BattleScreen:
 	return s
 
 
+## Park a pack beside a machine, rooted and pushing.
 func _engage(b: Battle, sq: Unit, m: Unit) -> void:
 	for n in Hex.neighbors(m.pos):
 		if b.field.can_stand(sq, n):
 			sq.pos = n
 			break
 	sq.movespeed = 0
-	b.field.compute_intents()
+	if not sq.elite:
+		sq.behaviour = "push"
 
 
-func test_screen_builds_in_the_plan_phase() -> void:
+func test_screen_builds_on_the_players_turn() -> void:
 	var s := _screen()
-	assert_true(s._header.text.begins_with("ROUND 01"), "round one in the header")
+	assert_true(s._header.text.begins_with("TURN 01"), "turn one in the header")
 	assert_true(s._header.text.contains("NEXT SPAWN IN"), "and how long until the rift spawns")
-	assert_true(s._sub_label.text.begins_with("ORDERS"), "orders readout")
-	assert_false(s._resolve_btn.disabled, "resolve available")
-	assert_true(s._clear_btn.disabled, "nothing to clear yet")
+	assert_true(s._sub_label.text.begins_with("READY // 3 OF 3"), "every machine ready")
+	assert_false(s._resolve_btn.disabled, "the turn can end")
+	assert_true(s._clear_btn.disabled, "nothing to undo yet")
 	assert_true(s._map.field == s.battle.field, "map shows the field")
+	assert_eq(s._map.walks.size(), s.battle.field.packs().size(), "every pack's walk on the map")
 	assert_true(s._map.scroll_y <= 0.0, "scrolled to the gate end")
 	s.free()
 
 
-func test_tap_selects_routes_and_clears() -> void:
+func test_a_tap_selects_and_a_lit_hex_moves_the_machine_at_once() -> void:
 	var s := _screen()
 	var m: Unit = s.battle.mechs()[0]
+	var start := m.pos
 	s._on_hex_tapped(m.pos)
 	assert_eq(s._map.selected, m, "mech selected")
 	assert_true(s._map.destinations.size() > 0, "destinations lit")
 	var dest: Vector2i = s._map.destinations.keys()[0]
 	s._on_hex_tapped(dest)
-	assert_eq(s._map.selected, null, "deselected after plotting")
-	assert_eq(s.battle.route_end(m), dest, "route plotted")
-	assert_false(s._clear_btn.disabled, "clear available")
-	assert_true(s._sub_label.text.contains("1 OF 3"), "readout counts the route")
-	s._on_hex_tapped(m.pos)
-	s._on_hex_tapped(m.pos)
-	assert_true(s.battle.routes.is_empty(), "second tap on the mech clears its route")
-	assert_eq(s._map.selected, null, "and deselects")
+	assert_eq(m.pos, dest, "it moved at once")
+	assert_eq(s._map.selected, null, "and is let go")
+	assert_false(s._clear_btn.disabled, "the move can be undone")
+	s._on_undo()
+	assert_eq(m.pos, start, "undo puts it back")
+	assert_true(s._clear_btn.disabled, "and there is nothing more to undo")
 	s.free()
 
 
-func test_tap_elsewhere_deselects() -> void:
+func test_a_second_tap_lets_a_machine_go() -> void:
 	var s := _screen()
 	var m: Unit = s.battle.mechs()[0]
+	s._on_hex_tapped(m.pos)
+	s._on_hex_tapped(m.pos)
+	assert_eq(s._map.selected, null, "deselected")
 	s._on_hex_tapped(m.pos)
 	s._on_hex_tapped(s.battle.map.rift)
-	assert_eq(s._map.selected, null, "deselected")
-	assert_true(s.battle.routes.is_empty(), "no route to an unreachable hex")
+	assert_eq(s._map.selected, null, "a tap out of reach lets it go too")
 	s.free()
 
 
-func test_resolve_runs_a_phase() -> void:
+func test_end_turn_walks_the_packs_and_opens_the_next_turn() -> void:
 	var s := _screen()
-	var m: Unit = s.battle.mechs()[0]
-	s._on_hex_tapped(m.pos)
-	var dest: Vector2i = s._map.destinations.keys()[0]
-	s._on_hex_tapped(dest)
-	s._on_resolve()
-	assert_eq(m.pos, dest, "mech moved")
-	assert_true(s._header.text.begins_with("ROUND 02"), "next round")
-	assert_eq(s.battle.state, Battle.State.PLAN, "planning")
-	assert_eq(s._skirmish, null, "no contact, no skirmish")
+	var sq: Unit = s.battle.field.packs()[0]
+	var shown: Battlefield.Walk = s._map.walks[sq.id]
+	s._on_end_turn()
+	assert_eq(sq.pos, shown.end, "the pack walked where the map showed")
+	assert_true(s._header.text.begins_with("TURN 02"), "next turn")
+	assert_eq(s.battle.state, Battle.State.PLAN, "the player's turn again")
+	assert_eq(s._skirmish, null, "no fight on its own")
 	s.free()
 
 
-func test_contact_opens_the_skirmish_screen_and_back_applies_it() -> void:
+func test_a_tap_on_a_pack_sets_up_the_fight_and_engage_opens_it() -> void:
 	var s := _screen()
 	var b := s.battle
 	var m: Unit = b.mechs()[0]
 	var sq: Unit = b.field.packs()[0]
 	_engage(b, sq, m)
-	s._on_resolve()
-	assert_true(s._contacts != null, "the contacts are offered first, for the player to pick and confirm")
-	assert_eq(s._skirmish, null, "nothing opens until they do")
-	s._open_skirmish(0)
+	s._refresh()
+	s._on_hex_tapped(m.pos)   # the machine in hand is committed first
+	s._on_hex_tapped(sq.pos)
+	assert_true(s._contacts != null, "the fight's panel is up")
+	assert_eq(s._committed, [m], "with the selected machine committed")
+	assert_true(s._resolve_btn.disabled, "no ending the turn while a fight is set up")
+	s._on_hex_tapped(m.pos)
+	assert_true(s._committed.is_empty(), "a tap on it uncommits it")
+	s._on_hex_tapped(m.pos)
+	assert_eq(s._committed, [m], "and commits it again")
+	s._engage()
+	assert_eq(s._contacts, null, "the panel goes")
 	assert_true(s._skirmish != null, "skirmish screen opened")
-	assert_eq(s._sub_label.text, "CONTACT", "contact readout")
-	assert_true(s._resolve_btn.disabled, "no resolving mid-skirmish")
+	assert_eq(s._sub_label.text, "FIGHT", "the readout says so")
 	var sk: Skirmish = s._skirmish.sk
 	assert_eq(sk.round, 1, "skirmish started")
 	sk.reinforcements.clear()
@@ -103,8 +113,53 @@ func test_contact_opens_the_skirmish_screen_and_back_applies_it() -> void:
 	s._on_skirmish_back()
 	assert_eq(s._skirmish, null, "skirmish screen gone")
 	assert_false(b.field.units.has(sq), "pack wiped")
-	assert_eq(b.state, Battle.State.PLAN, "back to the plan")
-	assert_false(s._resolve_btn.disabled, "resolve available again")
+	assert_eq(b.state, Battle.State.PLAN, "back to the turn")
+	assert_eq(b.actions_left(m), 0, "the machine is spent")
+	assert_true(s._sub_label.text.contains("2 OF 3"), "the readout counts it out")
+	s.free()
+
+
+func test_a_pack_out_of_reach_shows_its_fight_but_nobody_to_send() -> void:
+	var s := _screen()
+	var sq: Unit = s.battle.field.packs()[0]
+	s._on_hex_tapped(sq.pos)
+	assert_true(s._contacts != null, "the panel shows who it is and who would join")
+	assert_true(s._committed.is_empty(), "nobody in range")
+	s._engage()
+	assert_eq(s._skirmish, null, "so ENGAGE does nothing")
+	s._on_hex_tapped(s.battle.map.rift)
+	assert_eq(s._contacts, null, "a tap elsewhere puts it away")
+	s.free()
+
+
+func test_a_hunters_catch_is_fought_first_and_cannot_be_put_away() -> void:
+	var s := _screen()
+	var b := s.battle
+	var m: Unit = b.mechs()[0]
+	var hunter: Unit = b.field.packs()[0]
+	_engage(b, hunter, m)
+	hunter.behaviour = "hunt"
+	hunter.prey = m.id
+	hunter.zone = 1
+	b._new_turn()
+	s._after_step()
+	assert_true(s._contacts != null, "the caught fight's panel is up")
+	assert_eq(s._committed, [m], "its prey committed")
+	assert_true(s._sub_label.text.begins_with("CAUGHT"), "the readout says so")
+	s._on_hex_tapped(b.map.rift)
+	assert_true(s._contacts != null, "it cannot be put away")
+	s._on_end_turn()
+	assert_eq(b.field.phase, 0, "nor the turn ended")
+	s._engage()
+	assert_true(s._skirmish != null, "it opens")
+	s._skirmish.sk.reinforcements.clear()
+	for f in s._skirmish.sk.field_foes():
+		f.hp = 0
+	s._skirmish._end_turn_now()
+	s._on_skirmish_back()
+	assert_true(b.forced.is_empty(), "fought")
+	assert_eq(s._contacts, null, "no panel left")
+	assert_false(s._resolve_btn.disabled, "the turn may end")
 	s.free()
 
 
@@ -129,44 +184,43 @@ func _live_portraits(s: BattleScreen) -> Array:
 	return out
 
 
-func test_contact_portraits_die_with_the_panel() -> void:
+func test_the_panels_portraits_die_with_it() -> void:
 	var s := _screen()
 	var b := s.battle
 	_engage(b, b.field.packs()[0], b.mechs()[0])
 	_engage(b, b.field.packs()[1], b.mechs()[1])
-	s._on_resolve()
-	assert_true(s._contacts != null, "contacts offered")
+	s._refresh()
+	s._on_hex_tapped(b.mechs()[0].pos)
+	s._on_hex_tapped(b.field.packs()[0].pos)
+	assert_true(s._contacts != null, "the panel is up")
 	var before := _live_portraits(s)
-	assert_true(before.size() > 0, "a portrait per machine in the fight shown")
+	assert_true(before.size() > 0, "a portrait per machine committed")
 	for v in before:
 		assert_true(s._contacts.is_ancestor_of(v), "a portrait belongs to the panel")
-	s._contact_index = 1
-	s._fill_contact_panel()
-	s._contact_index = 0
-	s._fill_contact_panel()
-	assert_eq(_live_portraits(s).size(), before.size(), "paging replaces the portraits, never adds")
-	s._open_skirmish(0)
+	s._fill_attack_panel()
+	s._fill_attack_panel()
+	assert_eq(_live_portraits(s).size(), before.size(), "refilling replaces the portraits, never adds")
+	s._close_attack()
 	assert_eq(_live_portraits(s).size(), 0, "the panel gone, no portrait outlives it")
 	s.free()
 
 
-## The boss's contact offers no panel: the fight opens on its own with every machine, and
-## the skirmish is told the family's theme when there is one (Ryan, 25 September).
-func test_boss_contact_opens_the_fight_at_once_with_every_machine() -> void:
+## The boss's fight plays the family's theme when there is one (Ryan, 25 September).
+func test_the_boss_fight_plays_its_theme() -> void:
 	var s := _screen()
 	var b := s.battle
 	_engage(b, b.boss, b.mechs()[0])
-	_engage(b, b.field.packs()[0], b.mechs()[1])
-	s._on_resolve()
-	assert_true(b.boss_contact, "boss contact")
-	assert_eq(s._contacts, null, "no contact panel: nothing to choose")
-	assert_true(s._skirmish != null, "the fight opens on its own")
-	assert_eq(s._sub_label.text, "BOSS CONTACT // ALL UNITS", "the readout says so")
-	assert_eq(s._skirmish.sk.mechs.size(), b.mechs().size(), "every machine is in it")
+	s._refresh()
+	s._on_hex_tapped(b.mechs()[0].pos)
+	s._on_hex_tapped(b.boss.pos)
+	s._engage()
+	assert_true(b.boss_fight, "the boss's fight")
+	assert_true(s._skirmish != null, "it opens")
+	assert_eq(s._sub_label.text, "BOSS // FIGHT", "the readout says so")
 	var want := Sound.boss_set(b.faction)
 	assert_eq(s._skirmish.music_set, want if not want.is_empty() else "skirmish", "the fight plays the family's theme, or the skirmish's pick without one")
 	s._on_skirmish_back()
-	assert_false(b.boss_contact, "the flag drops on the way back")
+	assert_false(b.boss_fight, "the flag drops on the way back")
 	s.free()
 
 
@@ -199,10 +253,12 @@ func test_hold_shows_a_readout() -> void:
 	s._on_unit_held(s.battle.mechs()[0])
 	assert_true(s._details.visible, "readout shown")
 	assert_true(s._details_label.text.contains("hull"), "mech numbers")
+	assert_true(s._details_label.text.contains("action"), "and its actions")
 	s._on_hold_released()
 	assert_false(s._details.visible, "hidden on release")
 	s._on_unit_held(s.battle.field.packs()[0])
 	assert_true(s._details_label.text.contains("×"), "pack strength")
+	assert_true(s._details_label.text.contains("ring"), "and its ring")
 	s._on_unit_held(s.battle.boss)
 	assert_true(s._details_label.text.contains("massive"), "boss readout")
 	s.free()
@@ -214,10 +270,11 @@ func test_gate_falling_shows_the_outcome() -> void:
 	b.field.gate_hp = 5
 	var sq: Unit = b.field.packs()[0]
 	load("res://tests/test_battle.gd").threaten_gate(b, sq)
-	s._on_resolve()
+	s._refresh()
+	s._on_end_turn()
 	assert_true(s._overlay.visible, "overlay shown")
 	assert_eq(s._overlay_title.text, "GATE FALLEN", "title")
-	assert_true(s._resolve_btn.disabled, "no more phases")
+	assert_true(s._resolve_btn.disabled, "no more turns")
 	s.free()
 
 
@@ -236,26 +293,6 @@ func test_double_tap_opens_the_codex_for_a_machine_and_a_pack() -> void:
 	assert_true(s._codex._sub.text.contains("×%d" % sq.strength), "with its strength in the subtitle")
 	assert_true(not s._codex._body.text.is_empty(), "and its foe type's codex text")
 	s._codex.close()
-	s.free()
-
-
-func test_a_tap_routes_onto_a_hex_an_earlier_machine_is_leaving() -> void:
-	# Ryan, 22 September: plotting in order frees the hex; the tap must route there, not
-	# select the machine still drawn on it.
-	var s := _screen()
-	var a: Unit = s.battle.mechs()[0]
-	var b: Unit = s.battle.mechs()[1]
-	var a_from := a.pos
-	s._on_hex_tapped(a.pos)
-	var dests: Array = s._map.destinations.keys()
-	s._on_hex_tapped(dests[0])
-	assert_true(s.battle.routes.has(a.id), "A plotted away")
-	s._on_hex_tapped(b.pos)
-	if s._map.destinations.has(a_from):
-		s._on_hex_tapped(a_from)
-		assert_true(s.battle.routes.has(b.id), "B's route set by the tap on A's old hex")
-		var r: Array = s.battle.routes[b.id]
-		assert_eq(r[r.size() - 1], a_from, "and it ends there")
 	s.free()
 
 
@@ -293,14 +330,14 @@ func test_the_menu_opens_and_the_settings_persist() -> void:
 	s.free()
 
 
-func test_nothing_resolves_or_routes_while_a_move_plays() -> void:
+func test_nothing_ends_or_moves_while_a_move_plays() -> void:
 	var s := _screen()
 	var m: Unit = s.battle.mechs()[0]
 	s._map._anim_queue = [[]]   # a move in flight, as far as the screen knows
 	assert_true(s._map.is_playing(), "the map is playing")
 	var phase := s.battle.field.phase
-	s._on_resolve()
-	assert_eq(s.battle.field.phase, phase, "Resolve does nothing while the move plays")
+	s._on_end_turn()
+	assert_eq(s.battle.field.phase, phase, "End turn does nothing while the move plays")
 	s._on_hex_tapped(m.pos)
 	assert_eq(s._map.selected, null, "nor does a tap")
 	s._refresh()
@@ -329,8 +366,10 @@ func test_a_skirmish_quit_leaves_the_battle_too() -> void:
 	var s := _screen()
 	var b := s.battle
 	_engage(b, b.field.packs()[0], b.mechs()[0])
-	s._on_resolve()
-	s._open_skirmish(0)
+	s._refresh()
+	s._on_hex_tapped(b.mechs()[0].pos)
+	s._on_hex_tapped(b.field.packs()[0].pos)
+	s._engage()
 	assert_true(s._skirmish != null, "skirmish screen opened")
 	var quits: Array = []
 	s.quit_requested.connect(func() -> void: quits.append(true))
@@ -339,7 +378,7 @@ func test_a_skirmish_quit_leaves_the_battle_too() -> void:
 	s.free()
 
 
-func test_the_battle_is_saved_as_it_goes_and_resumes_into_the_fight() -> void:
+func test_the_battle_is_saved_as_it_goes_and_resumes() -> void:
 	const TMP := "user://test_screen_battle.json"
 	SaveGame.clear(TMP)
 	var s := _screen(4)
@@ -347,23 +386,31 @@ func test_the_battle_is_saved_as_it_goes_and_resumes_into_the_fight() -> void:
 	s.save_path = TMP
 	var b := s.battle
 	var m: Unit = b.mechs()[0]
-	var sq: Unit = b.field.packs()[0]
-	_engage(b, sq, m)
 	assert_false(SaveGame.exists(TMP), "nothing written until something changes")
-	s._on_resolve()
-	assert_true(SaveGame.exists(TMP), "the resolve is saved")
+	s._on_hex_tapped(m.pos)
+	var dest: Vector2i = s._map.destinations.keys()[0]
+	s._on_hex_tapped(dest)
+	assert_true(SaveGame.exists(TMP), "the move is saved")
+	assert_eq(SaveGame.load(TMP).field.unit_by_id(m.id).pos, dest, "where the machine went")
+	# A hunter's catch, resumed: the panel comes back.
+	var hunter: Unit = b.field.packs()[0]
+	_engage(b, hunter, m)
+	hunter.behaviour = "hunt"
+	hunter.prey = m.id
+	hunter.zone = 1
+	b._new_turn()
+	s._autosave()
 	var loaded := SaveGame.load(TMP)
-	assert_eq(loaded.state, Battle.State.SKIRMISH, "with the contact waiting")
-	assert_true(loaded.current == null, "and no fight open yet")
-	# Resumed here, the screen offers the contacts again.
+	assert_eq(loaded.forced.size(), 1, "the catch is in the save")
 	var r := BattleScreen.new()
 	r.setup(loaded)
 	r._resume_where_it_was()
-	assert_true(r._contacts != null, "the contact panel comes back")
+	assert_true(r._contacts != null, "the caught fight's panel comes back")
 	assert_eq(r._skirmish, null, "no fight opened on its own")
 	r.free()
-	# Into the fight, a round played, and the save follows every change.
-	s._open_skirmish(0)
+	# Into the fight, and the save follows every change.
+	s._open_attack(null)
+	s._engage()
 	var sk: Skirmish = s._skirmish.sk
 	var before := FileAccess.get_file_as_string(TMP)
 	sk.reroll([0])
@@ -378,7 +425,7 @@ func test_the_battle_is_saved_as_it_goes_and_resumes_into_the_fight() -> void:
 	r2._resume_where_it_was()
 	assert_true(r2._skirmish != null, "resumed straight into the skirmish screen")
 	assert_eq(r2._skirmish.sk, mid.current, "on the saved fight")
-	assert_eq(r2._sub_label.text, "CONTACT", "the field reads as in contact")
+	assert_eq(r2._sub_label.text, "FIGHT", "the field reads as in a fight")
 	r2.free()
 	# A decided battle clears the save.
 	sk.reinforcements.clear()

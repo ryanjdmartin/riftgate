@@ -24,6 +24,7 @@ const COLORS := {
 
 var map: BattleMap
 var field: Battlefield
+var walks: Dictionary = {}   # pack id -> Battlefield.Walk: each pack's walk on the enemy's turn
 var map_seed: int = 1
 var origin := Vector2.ZERO
 var scroll_y: float = 0.0
@@ -59,7 +60,7 @@ func _build(s: int) -> void:
 	var boss := db.make_boss(0, field.spawn_faction)
 	boss.pos = field.nearest_standable(boss, Hex.offset_to_axial(MAP_W / 2 - 1, 3))
 	field.add_unit(boss)
-	field.compute_intents()
+	walks = field.plan_walks()
 	var px_w := sqrt(3.0) * HEX_SIZE * (map.width + 0.5)
 	origin = Vector2((VIEW_W - px_w) / 2.0 + sqrt(3.0) * HEX_SIZE / 2.0, TOP)
 	# Start scrolled to the gate end, where the player's units are.
@@ -83,7 +84,7 @@ func _draw() -> void:
 		draw_colored_polygon(Hex.corners(_center(r), HEX_SIZE - 1.5), Color("2a1a3f"))
 		draw_polyline(Hex.corners(_center(r), HEX_SIZE - 4.0) + PackedVector2Array([Hex.corners(_center(r), HEX_SIZE - 4.0)[0]]), Color("a06be0"), 3.0)
 	for sq in field.packs():
-		var path: Array = field.intents.get(sq.id, [])
+		var path: Array = (walks[sq.id] as Battlefield.Walk).path if walks.has(sq.id) else []
 		var prev := _center(sq.pos)
 		for step in path:
 			var p := _center(step)

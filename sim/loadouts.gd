@@ -89,7 +89,7 @@ static func sample_packs(field: Battlefield, count: int, rng: RandomNumberGenera
 			continue
 		var entry: Array = table[rng.randi_range(0, table.size() - 1)]
 		var sq := Unit.pack(0, "%s pack" % str(entry[0]), h, fac, 2, int(entry[1]), str(entry[0]))
-		sq.behaviour = "aggressive" if rng.randf() < 0.2 else "push"
+		sq.behaviour = "hunt" if rng.randf() < 0.2 else "push"
 		field.add_unit(sq)
 		out.append(sq)
 	return out

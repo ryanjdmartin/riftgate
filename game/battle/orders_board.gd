@@ -6,16 +6,14 @@ extends Control
 ## September: an overlay on the map would make selecting under it annoying); empty, the
 ## strip read as a black gap on a tall phone, so it carries the orders board while it
 ## waits. What a player wants at a glance (Ryan, 29 September): every machine's shield
-## and hull, its order, and whether it will meet anything; the enemy on the field as a
-## count; whether contact is coming at all. Not the rift's count (the top bar and the
-## rift's own bar say it), not the nearest pack (the map is faster), not how far a route
-## runs. An order names its hex as the display would (column.row), for flavour: the map
-## is where you look. The display dresses it: a bytes readout ticking in the corner, and a
+## and hull, what it can still do this turn, and whether a hunter is after it; the enemy on
+## the field as a count; what the enemy's turn will do to the gate. Not the rift's count
+## (the top bar and the rift's own bar say it), not the nearest pack (the map is faster). The display dresses it: a bytes readout ticking in the corner, and a
 ## line whose text changed settles from a scramble. Covered (drawn blank) while the
 ## readout is up. The LOG button at its corner belongs to the screen and opens the full log.
 
 var battle: Battle
-var preview: Callable = Callable()   # -> Dictionary: the map's cached plan preview
+var walks: Callable = Callable()     # -> Dictionary: every pack's walk on the enemy's turn (the map's)
 var covered: Callable = Callable()   # -> bool: the readout panel is up
 var playing: Callable = Callable()   # -> bool: the movement phase is playing
 
@@ -102,48 +100,42 @@ func _settled(key: String, text: String, frame: int) -> String:
 
 func _title() -> String:
 	if playing.is_valid() and playing.call():
-		return "RESOLVING // PHASE %02d" % (battle.field.phase + 1)
+		return "MOVING // TURN %02d" % (battle.field.phase + 1)
 	match battle.state:
 		Battle.State.PLAN:
-			return "ORDERS // ROUND %02d" % (battle.field.phase + 1)
+			return "ORDERS // TURN %02d" % (battle.field.phase + 1)
 		Battle.State.SKIRMISH:
-			return "CONTACT // %d PENDING" % battle.pending.size()
+			return "FIGHT // TURN %02d" % (battle.field.phase + 1)
 	return "BATTLE OVER"
 
 
-func _groups() -> Array:
-	var pv: Dictionary = preview.call() if preview.is_valid() and battle.state == Battle.State.PLAN else {}
-	if pv.has("result") and pv["result"] != null:
-		return pv["result"].skirmishes
-	return []
-
-
-## One entry per machine: its unit (for the gauges), its order (HOLD, or the hex it ends
-## on) and what the plan has it meeting, from the preview's contact groups.
+## One entry per machine: its unit (for the gauges), what it can still do this turn (READY,
+## MOVED, ONE MORE, SPENT, CAUGHT) and which hunter is after it.
 func _rows() -> Array:
 	var out: Array = []
-	var groups := _groups()
 	for m in battle.mechs():
-		var route: Array = battle.routes.get(m.id, [])
-		var order := "HOLD"
-		var col := Color(Palette.HUD, 0.55)
-		if not route.is_empty():
-			order = "> " + _hex_label(route[route.size() - 1])
-			col = Palette.HUD
+		var order := "READY"
+		var col := Palette.HUD
+		if battle.is_pinned(m):
+			order = "CAUGHT"
+			col = Palette.ENEMY
+		elif battle.actions_left(m) <= 0:
+			order = "SPENT"
+			col = Color(Palette.HUD, 0.45)
+		elif battle.action_from.has(m.id):
+			order = "MOVED"
+		elif battle.actions_left(m) < Battlefield.actions_for(m):
+			order = "ONE MORE"
 		var meets := ""
-		for g in groups:
-			if g.has(m):
-				var names: Array[String] = []
-				for u in g:
-					if u.is_enemy():
-						names.append("%s x%d" % [_short(u.display_name), u.strength])
-				meets = "MEETS " + ", ".join(names)
+		for p in battle.field.packs():
+			if p.behaviour == "hunt" and p.prey == m.id:
+				meets = "HUNTED BY " + _short(p.display_name)
 				break
 		out.append({"unit": m, "name": m.display_name.to_upper(), "order": order, "meets": meets, "colour": col})
 	return out
 
 
-## The enemy on the field as a count, and whether the plan makes contact.
+## The enemy on the field as a count, and what the enemy's turn will do to the gate.
 func _field_lines() -> Array:
 	var packs := battle.field.packs()
 	var foes := 0
@@ -151,12 +143,18 @@ func _field_lines() -> Array:
 		foes += p.strength
 	# The register is military (Ryan, 29 September): hostiles, not foes.
 	var lines: Array = [["PACKS %02d // %d HOSTILES" % [packs.size(), foes], Color(Palette.HUD, 0.75)]]
-	var n := _groups().size()
 	if battle.state == Battle.State.PLAN:
-		if n > 0:
-			lines.append(["CONTACT // %d FIGHT%s" % [n, "" if n == 1 else "S"], Color(Palette.ENEMY, 0.9)])
+		if not battle.forced.is_empty():
+			lines.append(["CAUGHT // %d FIGHT%s FIRST" % [battle.forced.size(), "" if battle.forced.size() == 1 else "S"], Color(Palette.ENEMY, 0.9)])
+		var strikes := 0
+		var w: Dictionary = walks.call() if walks.is_valid() else {}
+		for k in w.keys():
+			if (w[k] as Battlefield.Walk).strikes:
+				strikes += 1
+		if strikes > 0:
+			lines.append(["GATE // %d STRIKE%s NEXT" % [strikes, "" if strikes == 1 else "S"], Color(Palette.ENEMY, 0.9)])
 		else:
-			lines.append(["NO CONTACT", Color(Palette.HUD, 0.5)])
+			lines.append(["GATE // CLEAR", Color(Palette.HUD, 0.5)])
 	return lines
 
 

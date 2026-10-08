@@ -4,7 +4,7 @@ extends RefCounted
 ## One battle, whole, as plain data and back (built 30 September, for a phone that may be
 ## put down mid-fight), and since 6 October the run around it (`user://campaign.json`, the
 ## battle under way inside it) and the profile that outlives every run (`user://profile.json`): the map by its seed, every unit with its numbers, die, damage and
-## live modifiers, the routes being plotted, the contacts waiting, and the skirmish under
+## live modifiers, the player's turn (who has moved and fought, the fights hunters forced), and the skirmish under
 ## way with its dice, foes, ranks and both random streams, so a resumed fight plays on
 ## exactly as it would have. Headless, like everything in sim/: the screens only decide
 ## when to call it.
@@ -14,7 +14,7 @@ extends RefCounted
 ## it travels as a string. Nothing here is shown to the player.
 
 const PATH := "user://battle.json"
-const VERSION := 4   # 2: moves in tens (2 October); 3: the water feature and the map's kind (3 and 4 October); 4: the generator's roads changed under every seed, and the guest, kills and wrecks (6 October)
+const VERSION := 5   # 2: moves in tens (2 October); 3: the water feature and the map's kind (3 and 4 October); 4: the generator's roads changed under every seed, and the guest, kills and wrecks (6 October); 5: the redesigned round, a turn of actions and fights in place of routes and contacts (8 October)
 
 
 # ---------------------------------------------------------------- the file
@@ -50,15 +50,16 @@ static func clear(path: String = PATH) -> void:
 # ---------------------------------------------------------------- the battle
 
 static func to_dict(b: Battle) -> Dictionary:
-	var routes := {}
-	for uid in b.routes.keys():
-		routes[str(uid)] = _hexes(b.routes[uid])
-	var pending: Array = []
-	for group in b.pending:
-		var ids: Array = []
-		for u in group:
-			ids.append(u.id)
-		pending.append(ids)
+	var forced: Array = []
+	for f in b.forced:
+		var hunters: Array = []
+		for h in f["hunters"]:
+			hunters.append(h.id)
+		forced.append({"prey": f["prey"].id, "hunters": hunters})
+	var moved := {}
+	for uid in b.action_from.keys():
+		var a: Array = b.action_from[uid]
+		moved[str(uid)] = [_hex(a[0]), int(a[1]), int(a[2])]
 	return {
 		"version": VERSION,
 		"seed": b.seed_value,
@@ -69,9 +70,12 @@ static func to_dict(b: Battle) -> Dictionary:
 		"wrecks": _units(b.wrecks),
 		"state": b.state,
 		"outcome": b.outcome,
-		"routes": routes,
-		"pending": pending,
-		"boss_contact": b.boss_contact,
+		"spent": _int_keys(b.spent),
+		"move_left": _int_keys(b.move_left),
+		"fought": _int_keys(b.fought),
+		"action_from": moved,
+		"forced": forced,
+		"boss_fight": b.boss_fight,
 		"boss": b.boss.id if b.boss != null else -1,
 		"skirmishes_fought": b.skirmishes_fought,
 		"columns": b.columns,
@@ -79,6 +83,14 @@ static func to_dict(b: Battle) -> Dictionary:
 		"field": _field_dict(b.field),
 		"skirmish": _skirmish_dict(b.current, b.field) if b.current != null else null,
 	}
+
+
+## A dictionary keyed by unit id, with string keys for JSON.
+static func _int_keys(d: Dictionary) -> Dictionary:
+	var out := {}
+	for k in d.keys():
+		out[str(k)] = d[k]
+	return out
 
 
 static func _units(list: Array) -> Array:
@@ -105,16 +117,25 @@ static func from_dict(d: Dictionary) -> Battle:
 	b.map_kind = str(md.get("kind", "mixed"))
 	b.map = BattleMap.generate(w, h, map_seed, b.map_kind) if map_seed != 0 else BattleMap.flat(w, h)
 	b.field = _field_from(d.get("field", {}), b.map)
-	for uid in d.get("routes", {}).keys():
-		b.routes[int(str(uid))] = _hexes_from(d["routes"][uid])
-	for ids in d.get("pending", []):
-		var group: Array = []
-		for uid in ids:
-			var u := b.field.unit_by_id(int(uid))
-			if u != null:
-				group.append(u)
-		b.pending.append(group)
-	b.boss_contact = bool(d.get("boss_contact", false))
+	for uid in d.get("spent", {}).keys():
+		b.spent[int(str(uid))] = int(d["spent"][uid])
+	for uid in d.get("move_left", {}).keys():
+		b.move_left[int(str(uid))] = int(d["move_left"][uid])
+	for uid in d.get("fought", {}).keys():
+		b.fought[int(str(uid))] = true
+	for uid in d.get("action_from", {}).keys():
+		var a: Array = d["action_from"][uid]
+		b.action_from[int(str(uid))] = [_hex_from(a[0]), int(a[1]), int(a[2])]
+	for fd in d.get("forced", []):
+		var prey := b.field.unit_by_id(int(fd.get("prey", -1)))
+		var hunters: Array = []
+		for hid in fd.get("hunters", []):
+			var hunter := b.field.unit_by_id(int(hid))
+			if hunter != null:
+				hunters.append(hunter)
+		if prey != null and not hunters.is_empty():
+			b.forced.append({"prey": prey, "hunters": hunters})
+	b.boss_fight = bool(d.get("boss_fight", false))
 	var boss_id := int(d.get("boss", -1))
 	b.boss = b.field.unit_by_id(boss_id) if boss_id >= 0 else null
 	b.skirmishes_fought = int(d.get("skirmishes_fought", 0))
@@ -122,8 +143,6 @@ static func from_dict(d: Dictionary) -> Battle:
 	var sd = d.get("skirmish", null)
 	if sd is Dictionary:
 		b.current = _skirmish_from(sd, b.field)
-	if b.state == Battle.State.PLAN:
-		b.field.compute_intents()   # the packs' shown intents are derived, never stored
 	return b
 
 
@@ -185,7 +204,7 @@ static func _unit_dict(u: Unit) -> Dictionary:
 		"id": u.id, "name": u.display_name, "side": u.side, "pos": _hex(u.pos),
 		"hull": u.hull, "shield": u.shield, "base": u.base, "modifiers": mods, "allies": u.allies,
 		"traits": u.traits, "footprint": _hexes(u.footprint), "facing": u.facing,
-		"faction": u.faction, "foe_id": u.foe_id, "strength": u.strength, "behaviour": u.behaviour, "hunts": u.hunts, "prey": u.prey, "elite": u.elite, "zone": u.zone,
+		"faction": u.faction, "foe_id": u.foe_id, "strength": u.strength, "behaviour": u.behaviour, "hunts": u.hunts, "prey": u.prey, "elite": u.elite, "zone": u.zone, "attack_range": u.attack_range,
 		"die": faces, "paint": paint, "passive": u.passive, "chassis_id": u.chassis_id,
 		"hardpoints": u.hardpoints, "damaged_faces": damaged,
 	}
@@ -215,10 +234,11 @@ static func _unit_from(d: Dictionary) -> Unit:
 	u.faction = str(d.get("faction", ""))
 	u.foe_id = str(d.get("foe_id", ""))
 	u.strength = int(d.get("strength", 0))
-	u.behaviour = str(d.get("behaviour", "aggressive" if bool(d.get("aggro", false)) else "push"))
+	u.behaviour = str(d.get("behaviour", "push"))
 	u.hunts = str(d.get("hunts", "nearest"))
 	u.prey = int(d.get("prey", 0))
 	u.zone = int(d.get("zone", 1))
+	u.attack_range = int(d.get("attack_range", 2))
 	u.elite = bool(d.get("elite", false))
 	var faces = d.get("die", null)
 	if faces is Array:
@@ -442,7 +462,7 @@ static func _hexes_from(list) -> Array[Vector2i]:
 # ---------------------------------------------------------------- the run
 
 const RUN_PATH := "user://campaign.json"
-const RUN_VERSION := 3   # 2: the threat became the Convergence; 3: Favour and the starting blueprints (7 October)
+const RUN_VERSION := 4   # 2: the threat became the Convergence; 3: Favour and the starting blueprints (7 October); 4: the battle inside it in the redesigned round (8 October)
 
 
 static func save_campaign(c: Campaign, path: String = RUN_PATH) -> bool:
