@@ -38,7 +38,11 @@ the information hooks keep theirs. The buff hook stays generic until the vocabul
 
 A line is a string, or a (shown, spoken) pair where the synthesiser needs another spelling to
 say it right, or a (shown, spoken, pace) triple where one line wants its own pace, or a
-(shown, spoken, pace, draw) quadruple pinning one of Piper's draws of it.
+(shown, spoken, pace, draw) quadruple pinning one of Piper's draws of it. A word in square
+brackets in the spoken form is one she censors (Ryan, 7 October: it would be really funny if
+she censored herself): the line renders in pieces either side of it, the word itself is
+rendered only to measure how long she would have taken, and a console tone of that length
+takes its place before the whole goes through her chain.
 
 Rendered through the decided chain (Jenny, mid, slowed a third, plosives tamed) at -14 dB on
 the phone. Every line in every pool is rendered, so each word can be judged.
@@ -50,6 +54,8 @@ import math
 import os
 import re
 import sys
+
+import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import forge as F  # noqa: E402
@@ -71,7 +77,7 @@ HOOKS = {
                   ["light them up", "going ballistic", "rampage"]),
     "foe_down": (1.0 / 4.0, False,
                  ["eliminating", "neutralising hostile", "target destroyed", "lethal force applied", "bogey down", "threat eliminated"],
-                 ["mopping up trash", "get wrecked", "bug squashed", "dodge this", "fatality", "only good bug is a dead bug"]),
+                 ["mopping up trash", "get wrecked", "bug squashed", "dodge this", "fatality"]),
     "foe_down_undead": (1.0 / 3.0, False,
                         ["undead anomaly cleared", "necrotic signature lost", "animation ceased"],
                         ["re-interred", "stay dead this time"]),
@@ -91,8 +97,8 @@ HOOKS = {
                   ["thermal load approaching limit", "heat warning", "danger: internal temperature elevated"],
                   ["toasty"]),   # she is not in the machine: she comments on its state (Ryan, 7 October)
     "overheat": (1.0, True,   # heat past 100: damage at the round's end, a serious danger (Ryan, 7 October); pre-empts a pending heat warning
-                 ["overheat detected. structural damage predicted", "thermal limit exceeded. hull integrity compromised", "danger: heat level critical", "heat sinks overloaded. vent now"],
-                 ["hot hot hot", "smoking", "she cannae take any more"]),
+                 ["overheat detected. structural damage imminent", "thermal limit exceeded. hull integrity compromised", "danger: heat level critical", "heat sinks overloaded. vent now"],
+                 ["hot hot hot", "smoking", ("she can't take anymore, captain", "she can't take anymore captain")]),   # the quote legible rather than right (Ryan: cannae read as can-nee)
     "machine_lost": (1.0, True,
                      ["machine lost", "unit destroyed"],
                      []),
@@ -116,7 +122,7 @@ HOOKS = {
                [("rip and tear", "rip and tare"), "battle music initiated", "let's dance", "the fight is on"]),
     "boss": (1.0, False,
              ["primary target identified", "priority threat detected. engaging", "alert: approaching dangerous hostile", "initiating sector purge"],
-             [("oh, that's a big one", "oh. that's a big one"), "big lad", "big fella on route", "that's a lot of teeth", "nope nope nope"]),   # a full stop after oh: the comma's beat was too short for him at any length
+             [("oh, that's a big one", "oh. that's a big one"), "big lad", "big fella on route", "that's a lot of teeth", "nope nope nope", ("I'm too old for this shit", "I'm too old for this [shit]")]),   # a full stop after oh: the comma's beat was too short for him at any length
     "gate": (1.0 / 2.0, False,
              ["gate under attack", "gate taking damage", "gate integrity falling"],
              ["they're in the walls", "they're breaking through"]),
@@ -139,7 +145,8 @@ HOOKS = {
                ["you must construct additional pylons"]),
     "battle_open": (1.0, False,
                     ["battlefield feed online. all units reporting in", ("deployment complete. awaiting your orders, commander", "deployment complete. awaiting your orders commander"), "sector loaded. hostiles inbound"],
-                    [("reactor online, sensors online, weapons online, all systems nominal", "reactor on-line, sensors on-line, weapons on-line, all systems nominal"), "once more, into the breach", ("now for wrath. now for ruin. and the red dawn", "now for wrath. now for ruin. and the red don"), ("hell, it's about time", "hell, it's about, time", 1.7)]),   # don for dawn (Ryan); Tychus at a drawl, about and time split a little
+                    [("reactor online, sensors online, weapons online, all systems nominal", "reactor on-line, sensors on-line, weapons on-line, all systems nominal"), "once more, into the breach", ("now for wrath. now for ruin. and the red dawn", "now for wrath. now for ruin. and the red don"), ("hell, it's about time", "hell, it's about, time", 1.7),
+                     ("it's time to kick ass and chew bubble gum. and I'm all out of gum", "it's time to kick [ass] and chew bubble gum. and I'm all out of gum")]),   # don for dawn (Ryan); Tychus at a drawl, about and time split a little; Duke, censored
 }
 
 # a hook draws from its own pool and these others' together
@@ -232,9 +239,49 @@ def pick_draw(text, scale, pin=None):
     return best[2], best[1], lvl, P.front_level(best[2])
 
 
+BLEEP_HZ = 1000.0
+
+
+def bleep_for(word, scale):
+    """The censor's tone, as long as the word she would have said (rendered to measure, never heard)."""
+    n = int(min(max(len(P.render("jenny", word, scale)), F.n_of(0.22)), F.n_of(0.45)))
+    y = np.sin(2.0 * np.pi * BLEEP_HZ * np.arange(n) / F.SR)
+    r = F.n_of(0.005)
+    y[:r] *= np.linspace(0.0, 1.0, r)
+    y[-r:] *= np.linspace(1.0, 0.0, r)
+    return y
+
+
+def render_censored(text, scale):
+    """"kick [ass] and chew": the pieces either side render as their own utterances, the word
+    is a tone at the level of her loud syllables, 40 ms of air on each side of it."""
+    parts = re.split(r"\[([^\]]+)\]", text)
+    out, loud = [], None
+    for i, part in enumerate(parts):
+        if i % 2 == 0:
+            part = part.strip()
+            if not part:
+                continue
+            raw = P.shorten_pauses(P.render("jenny", part, scale), part)
+            if loud is None:
+                n = F.n_of(0.03)
+                env = np.sqrt(np.convolve(raw ** 2, np.ones(n) / n, mode="same"))
+                loud = float(np.percentile(env[env > 0.01], 90)) if np.any(env > 0.01) else 0.1
+            out.append(raw)
+        else:
+            out.append(np.zeros(F.n_of(0.04)))
+            out.append(bleep_for(part, scale) * (loud or 0.1) * 0.8 * math.sqrt(2.0))
+            out.append(np.zeros(F.n_of(0.04)))
+    return np.concatenate(out)
+
+
 def render_line(text, scale=PACE, pin=None):
-    raw, draw, l0, l1 = pick_draw(text, scale, pin)
-    raw = P.shorten_pauses(raw, text)
+    if "[" in text:
+        raw = render_censored(text, scale)
+        draw, l0, l1 = 0, P.front_level(raw), P.front_level(raw)
+    else:
+        raw, draw, l0, l1 = pick_draw(text, scale, pin)
+        raw = P.shorten_pauses(raw, text)
     kind = onset_kind(text)
     if kind != "open":
         raw = P.lift_front(raw)
