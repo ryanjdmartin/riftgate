@@ -600,63 +600,37 @@ the Baboon, Prairie Dog and Dingo lose to every front-rank pack alone, as suppor
 might. Pick share: the Klaxon's lure is spent 1% of the time, since the team never needs it;
 the Shutters 2%. Rerun after each engine piece lands; read bands, not numbers.
 
-**Audio (the bible's section 1 sound row has the direction, the palettes and every rule; the
-listen-by-listen history is retired).** Everything is `tools/soundforge/forge.py` writing WAVs
-into `art/audio/` (`build`, `measure`, `sections`, `audition`, `sketch`); the recipes are the
-record of each track. Six titled tracks in `Sound.TRACKS`, all locked or "pretty great"; the
-map's set cycles Low Ground and Night Shift, the skirmish's picks one of Hold The Line, The
-Crossing and Full Bore per visit, The Far Bank is The Chorus's boss theme (`SETS["boss_<faction>"]`,
-`LOOP_FROM`). The track levels stay until Ryan says otherwise. Ryan judges on his phone, so a
-change is heard as an A/B from the listening page before it lands; a sketch never overwrites a
-shipped track; his melodies come through the Melody Desk and the session interprets them. **The
-effects' pass** is on the listening page (`tools/soundforge/fx_sketches.py`; the bible's sound
-row has the set and the 2 October decisions), nothing shipped. Where it stands (Ryan, 2 October):
-the weapons' third cut (every blow drawn out with `heft` and a boom tail, measured through the
-phone model) is acceptable and parked; the voice section (`tools/soundforge/speech.py`, a Betty
-and a VEGA) is too faint under noise, cracks and pops to judge; the console was derived again
-that night from the UI design, Hold The Line and the direction notes, not from the existing
-sounds (`tools/soundforge/console_sketches.py`, section 1 of the page, and was chosen by audition
-(3 October: `audition_sketches.py`, six directions that share nothing; Ryan picked the weight, the breakers,
-the pings pitched down, the data burst as a comms static, the voice in unintelligible words in small doses,
-and asked for the Terran nuke warning's boops; a set built from those picks (`boop_sketches.py`) is parked
-unheard on Ryan's word to start fresh; two fresh sets sharing nothing (`fresh_sketches.py`: pulse code,
-rhythm first in one dry voice; the modal shell, a plate and a glass tapped or bowed) were judged by
-principle the same day, pulse for the hand and targeting, the shell for the body and the menus, the boop's
-warning and menu figures and the voice on real words from the parked set; the console assembled to those
-verdicts (`assembled_sketches.py`) read as monotone (4 October), so nothing plays alone now; the
-eight profiles he liked are a palette (`palette_sketches.py`, in its eleventh cut to his notes of 5 to 7 October, every under-layer levelled by measurement from its rider, the general rule's start 10 dB under, per-row
-leads where Ryan judged them, the map's acquire glass first with the weight's pulse in place of its boop:
-the die in the glass register alone, a hover hum easing in before a spend with no boop on the spend,
-soft digital clicks on the lock, the end of the turn the plate swelling and tailing off, the boops leading
-wherever they ride on glass, one sound for a press, a menu item and a selection, and the map's acquire,
-confirm, the round opening and a route set each on their own figure since shared pitches read as
-confirmation; `voice_sketches.py` tries the voice from the Mac's `say`, processed down, in the page's section 5:
-Ryan rates Samantha's cadence and Karen's consonants, drops Daniel and the comm processing; the Mac voices
-are recognisable and Apple-licensed, so they prove the processing and the shipped voice needs a licensable
-source; the second pass's resample and ring did nothing for him, so `piper_voices.py` (a Piper venv at
-`tools/soundforge/.venv-piper`, voices under `out/piper`) renders the lines from openly licensed voices
-through the machine chain, the Mac's voices retired as sources; Ryan's picks: Amy the baseline, Jenny the
-one to play with (her licence checked: commercial use permitted, attribution for live generation only),
-decided (Ryan, 7 October, "spot on"): Jenny on the mid chain slowed a third, her plosives tamed
-(`mid_tamed` in `piper_voices.py`), at -14 dB on the phone; Ryan's brief for her lines (infrequent, many phrases on many hooks, information lines every time, a rare personality
-layer) is proposed as a system with a fifteenth draft of pools in `voice_lines.py` (8 October: the two heat hooks announced by a console signal first, the warning three equal beeps on one pitch over the plate and the overheat's alarm high-low-high-low, each over a drone, the warning's lower and well under, both palette rows, the line a quarter second after, the first cut's falling pairs having read as a cancel; she censors herself, a bracketed word in the spoken form said inside its phrase with a console tone laid over it from just after its vowel and her all but silent beneath, the tone capped at 360 ms, Duke's line opening the battle and Lethal Weapon's on the boss; an overheat hook, heat past 100 with damage at the round's end, taking the screamers from the three-quarter warning and pre-empting it; a loss clears the queue and speaks at once, the skirmish's win clears the queue and the victory line waits for the screen, no boss-down hook since the boss's death is the win; the music to duck 3 to 4 dB under a line; the idle nag parked; `CREDITS.md` with Jenny's line, the credit to sit under her volume slider in the settings; the big moments as combined lines, the opening and the victory then rewritten as sentence pairs since the glued ones read samey, the boss's pool rebuilt, heat speaking past three quarters; the boys line cut after seven trials, not worth the trouble; a real comma's pause cut to 130 ms on every line by `shorten_pauses`, Piper's 230 to 290 having no knob and the full stops keeping theirs, and a vocative comma dropped from the spoken form since it read long at any length; the A-Team and Portal kept for the victory, the marine's line opening the battle at a drawl, the troopers' a kill quote), under his rule (a heard line stays unless
-he says cut or change, an unheard candidate comes in only on add), every line rendered on the page, the pools
-overlapping (a family's foe with the generic pool, every unit committed with the moves), heat two hooks;
-the clipped fronts ("et wrecked", "wad deployed") were Piper's sampling, the first phoneme varying up to 14 dB between draws of the same text (the decoder and the chain measured exact), so `pick_draw` keeps the first draw unless its front is weak and then takes the best of six (by level for a stop, by level and length for a fricative), `lift_front` lifts the first consonant before the chain, an opening fricative is kept out of the plosive tamer (which held every s at 17 under whatever the lift gave it) and `set_front` sets it at 18 under its vowel on the finished line; the full stops in a combined line are honoured only when the renderer capitalises after them (the phonemiser's rule) with 350 ms of Piper's sentence silence between; "fought" is spelt fot for her, since fawt gives her the same phonemes, the reactor line on-line, since every draw of "online" breaks up inside the word;
-still to come, the buff hook split per keyword once he names them; the page's history is cut, the earlier cuts live in git), each event built by fit from two or three of them
-rather than pinned to where they first played (a first combined cut, `combined_sketches.py`, pinned
-them and is superseded), at the top of the page's section 1; everything earlier stays
-below for the record; the voice is set aside, an optional experiment that would start from a real speech
-synthesiser processed down, none being installed in the cloud); the voice is re-rendered judgeable (a smooth glottal pulse,
-the vowels levelled over the bursts, the contact's level).
-Content carries a `sound` label on a component (a word or a list meaning layers, validated in
-`content_db.gd`; the Breaching Plow says blunt, the Gravity Knuckles blunt and plasma). A pick
-lands as a recipe in `forge.py` with its hook (shape, maker, faction, silhouette, the label, the
-replay telling shield hit from block from hit). The sketch script encodes AAC with `ffmpeg` at
-256 kbps where there is no `afconvert` (its encoder smears a transient's front at 128). Next:
-Ryan's listen of the eleventh cut and the baseline mix (section 6 of the page: music 0.63, effects 1.0, the ladder per family; Hold The Line the baseline, the other tracks' levelling against it a pass of its own) and his strikes and rewrites of Jenny's draft lines, then picks into the forge with their hooks (the hover needs an over-target state in the drag); the Risen and Infernal
-Horde boss themes from their seeds, melodies proposed in chat first. The speakers/headphones
-setting is dropped (Ryan, 2 October): the one master balances for both for now.
+**Audio (the bible's section 1 sound row has the direction, the palettes and every rule).**
+`tools/soundforge/forge.py` builds everything the game plays into `art/audio/` (`SHIP`: `build`,
+`build effects` for all but the loops, `measure`, `sections`, `audition`); its recipes are the
+record of each track. Six titled tracks in `Sound.TRACKS`; the map's set cycles Low Ground and
+Night Shift, the skirmish's picks one of Hold The Line, The Crossing and Full Bore per visit, The
+Far Bank is The Chorus's boss theme. **The effects' pass is in the game (8 October):** every
+pick from the listening page ships from the function that rendered it and at the level Ryan
+heard: the console is the palette's eleventh cut with the heat signals (`palette_sketches.py`),
+the iron, the rift and the red the third cut (`fx_sketches.py`), the cut, vent, burn, withdrawal
+and a foe stepping in kept. The hooks: a blow by the weapon (`ContentDB.sound_of`, as decided 2
+October), the struck machine's metal by what took the blow (a shield's hit, the armour's block,
+the hull's hit, the shield breaking, its maker's kill), each family's blow, heavy blow and
+arrival, the boss revealed, footfalls by the way a machine moves, the die's hover over a valid
+target (`Skirmish.can_assign`), lock and unlock apart, the round opening once a round, a hold's
+readout, the map's acquire on its taps, a route the plan cannot carry refused. **Jenny is in the
+game:** `voice_lines.py ship` writes her 151 lines at 24 kHz into `art/audio/voice/` with
+`lines.json`; `VoiceLines` (`game/audio/voice_lines.gd`) is the agreed system and `Sound.say`
+plays it on a Voice bus with the music ducked 3.5 dB under her; the injury now says whether it
+cracked or destroyed (`Skirmish.apply_injury`), for her component lines; a VOICE knob carries
+"Voice: Jenny (Dioco)" under it (`CREDITS.md` the record); the music's default is the baseline's
+0.63. `tools/sound_smoke.gd` drives a skirmish and a battle with a window, muted, through every
+hook (the tests are headless, where Sound is a no-op). Not hookable yet: the flattening's spread
+and the loss by the city. Next: Ryan hears the set in the game on the phone (the to-do lists the
+judgement calls made landing it); the other tracks levelled against Hold The Line, a pass of the
+music's own; the Risen and Infernal Horde boss themes from their seeds. The listening page
+(https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9) holds every round for the record; the
+speakers/headphones setting is dropped (Ryan, 2 October): the one master balances for both.
+Content carries a `sound` label only where shape and face cannot say (validated in
+`content_db.gd`; the Breaching Plow says blunt, the Gravity Knuckles blunt and plasma); every
+other component derives its sound (`ContentDB.sound_of`). The sketch scripts encode AAC with
+`ffmpeg` at 256 kbps where there is no `afconvert` (its encoder smears a transient's front at 128).
 
 **The phone (bible section 11 has four rows on it; README has the commands).** Ryan's Pixel
 runs the debug APK at 60 fps with the fine map (the default, since the Compatibility renderer
@@ -703,5 +677,5 @@ it and ticked in the commit that lands it; this is the order to take them in.
 3. Ryan's text for the new machines and components; the size classes on the phone and the Ammit's offbeat walk (the hangar's Walk); the strikes, the hovercraft's balancing idle, the idle acts (`RIFTGATE_ACTS_DEBUG=1`) and the gaits (`RIFTGATE_MOVE_DEBUG=1`, and a real move for the Dingo's drift, the Stingray's helicopter strafe and the banks), judged running; the movement branch merged on his word.
 4. The discuss-first decisions left in the Ryan section (the campaign and the economy are decided, 5 October, the paragraph above; what remains of them is the makers' measures and notices, and the in-battle ones: ally wrecks, terrain, base defences, reinforcements, the multi-hex boss, Rift Pressure in the boss fight, packs keeping hull between fights); enemy targeting decided and built 2 October (the paragraph above; the runner's read is the baseline question); the commander layer once the balance has a baseline.
 5. Ready to build: the pacing pieces after Ryan's session; the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased parked, Corrode, foe roles), and a dedicated hunter foe and spawned formations once proposed.
-6. Audio: a full play of Hold The Line, the console's fresh pass and the effects' picks, the two boss themes.
+6. Audio: Ryan hears the sound set in the game on the phone (landed 8 October, with Jenny); a full play of Hold The Line; the other tracks levelled against it; the two boss themes.
 7. A prototype hangar in the game (paints and loadouts, no economy), now with a design to grow into and the run underneath it (`sim/campaign.gd`; the hangar and the mission map in the to-do's screens section). Ryan reads `docs/campaign_run.md` and decides the draft, the restore on a win and the rush's price. Art: enemy art through foeforge, the hangar as a model. Before a phone leaves the desk: onboarding, then tuning.

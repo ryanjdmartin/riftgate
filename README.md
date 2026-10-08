@@ -90,7 +90,8 @@ and open question from the design sessions.
   sidecar beside each machine (its joints' axes and limits, its idle acts, its cornering
   numbers; written by lowforge, read by `mech_rig.gd`), `foes/` from the sheet
   export, `fonts/` the HUD faces, `audio/` every sound by name (`game/audio/sound.gd` lists
-  them). A missing foe sprite falls back to a placeholder shape; a missing sound is silence.
+  them) and `audio/voice/` Jenny's lines with `lines.json` (`game/audio/voice_lines.gd` is
+  her system). A missing foe sprite falls back to a placeholder shape; a missing sound is silence.
 - `docs/` — design bible, generated vocabulary, the hangar page's renders and pins under `hangar/`,
   `sprites-enemies.html` (the enemy sheet the export reads), design canvases under
   `canvas/`, `status.md`, the handoff note updated at the end of every working session,
@@ -204,8 +205,11 @@ tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes
 # one machine wearing swapped components on its mounts ("2:" bares a mount; armour and vents show nowhere); a class alone: <chassis> shapes/barrel_minerva; rendered bare (RIFTGATE_OUTLINE_KEEP=1 keeps the display's edge)
 RIFTGATE_FIT="1:lance,4:blazethrower" godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva fit.png front 480 480
 
-# every sound and the six music tracks, from the recipes in tools/soundforge/forge.py, then re-import
-tools/spriter/.venv/bin/python tools/soundforge/forge.py build          # or: build hit kill music_far_bank
+# every sound and the six music tracks into art/audio (forge.py SHIP: the console from palette_sketches.py,
+# the iron, rift and red from fx_sketches.py's third cut, each as Ryan heard it; the loops from forge.py), then re-import
+tools/spriter/.venv/bin/python tools/soundforge/forge.py build          # or: build effects (all but the loops), or: build ui_tap kill music_far_bank
+tools/spriter/.venv/bin/python tools/soundforge/voice_lines.py ship     # Jenny's lines into art/audio/voice at 24 kHz with lines.json (the pools, chances and signals the game reads), then re-import
+perl -e 'alarm 300; exec @ARGV' godot --path . --resolution 360x640 -s tools/sound_smoke.gd   # every sound hook run with a window, muted (headless, Sound is a no-op): a SCRIPT ERROR in the log is a broken hook
 tools/spriter/.venv/bin/python tools/soundforge/phone_sketches.py [set]  # A/B sketches of one change at a time for the phone's speaker, as AAC into tools/soundforge/out/phone/ with a listening page (index.html) to publish
 tools/spriter/.venv/bin/python tools/soundforge/fx_sketches.py [singles|sequences]   # every effect sketched again beside the shipped one, and four rounds in context, as AAC into tools/soundforge/out/fx/ with the listening page (index.html) to publish (AAC by afconvert on the Mac, by ffmpeg at 256 kbps elsewhere, since ffmpeg's encoder smears a transient's front at 128; numpy and scipy are all it needs)
 tools/spriter/.venv/bin/python tools/soundforge/desk_parts.py [track]   # every track's melodic parts as notes, one JSON per track into tools/soundforge/out/desk/, for the Melody Desk page's store (collection `parts`)
