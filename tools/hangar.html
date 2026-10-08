@@ -406,18 +406,24 @@ let CTX = null;
 function ctx() {
   if (CTX) return CTX;
   const byId = (key) => new Map(liveEntries(key).map(x => [x.entry.id, x.entry]));
-  const fitted = new Map(), byMaker = new Map();
+  const fitted = new Map(), byMaker = new Map(), stockTier = new Map();
   for (const {entry: e} of liveEntries("chassis.entries")) {
     for (const cid of new Set(dieIds(e))) fitted.set(cid, (fitted.get(cid) || 0) + 1);
     byMaker.set(e.maker, (byMaker.get(e.maker) || 0) + 1);
+    // A stocked component's tier is the lowest tier of chassis stocking it (as ContentDB.component_tier).
+    const t = Number(e.tier || 0);
+    if (t > 0) for (const cid of (e.loadout || [])) if (!stockTier.has(cid) || t < stockTier.get(cid)) stockTier.set(cid, t);
   }
-  return CTX = {makers: byId("chassis.makers"), comps: liveMap("components.entries"), factions: byId("factions.entries"), foes: byId("foes.entries"), fitted, byMaker};
+  return CTX = {makers: byId("chassis.makers"), comps: liveMap("components.entries"), factions: byId("factions.entries"), foes: byId("foes.entries"), fitted, byMaker, stockTier};
 }
 // The components on a chassis's die: fixed first, then one per hardpoint.
 function dieIds(e) { return [...(e.fixed || []), ...(e.loadout || []).slice(0, Number(e.hardpoints || 0))]; }
 function dieComps(e) { return dieIds(e).map(id => ctx().comps.get(id)).filter(Boolean).map(x => x.entry); }
 const faceKeywords = (c) => ((c && c.face) || {}).keywords || [];
 const kindOf = (c) => ((c && c.face) || {}).kind || "";
+// A component's blueprint tier: derived from the chassis stocking it, else the tier it stores
+// (an unstocked one), else none (fixed-only components are never a blueprint).
+const compTier = (c) => (c && (ctx().stockTier.get(c.id) || Number(c.tier || 0))) || 0;
 function makerShort(id) { const t = NAME_TABS.find(t => t.id === MAKER_TAB[id]); return t ? t.label : ((ctx().makers.get(id) || {}).name || id || ""); }
 const factionName = (id) => (ctx().factions.get(id) || {}).name || id || "";
 const plain = (s) => String(s ?? "").replace(/_/g, " ");
@@ -444,16 +450,17 @@ const FILTER_SPECS = {
       ...dieComps(e).flatMap(c => [c.name, ...faceKeywords(c).map(vocabName)])],
     groups: [
       MAKER_GROUP,
+      {id: "tier", label: "Tier", of: e => [e.tier ? "T" + e.tier : "none"], name: v => v === "none" ? "No tier" : v, order: ["T1", "T2", "T3", "none"]},
       {id: "trait", label: "Traits", of: e => e.traits || [], name: vocabName},
       {id: "kw", label: "On the die", of: e => dieComps(e).flatMap(faceKeywords), name: vocabName},
       {id: "passive", label: "Passive", of: e => [!e.passive ? "none" : e.passive.status === "planned" ? "planned" : "written"], order: ["written", "planned", "none"]},
       EDITS,
     ],
-    sorts: [BY_ORDER, BY_NAME, BY_MAKER,
+    sorts: [BY_ORDER, BY_NAME, BY_MAKER, stat("tier", "Tier", e => e.tier),
       stat("hull", "Hull", e => e.hull), stat("shield", "Shield", e => e.shield), stat("recharge_field", "Field recharge", e => e.recharge_field),
       stat("armour", "Armour", e => e.armour ?? 0), stat("heat_max", "Heat max", e => e.heat_max), stat("cooling", "Cooling", e => e.cooling ?? 0),
       stat("movespeed", "Move", e => e.movespeed), stat("die", "Die entries", dieSize)],
-    line: e => [makerShort(e.maker), (e.traits || []).map(vocabName).join(", "), `hull ${e.hull}`, `shield ${e.shield}`, `move ${e.movespeed}`, "d" + dieSize(e)],
+    line: e => [makerShort(e.maker), e.tier ? "T" + e.tier : "", (e.traits || []).map(vocabName).join(", "), `hull ${e.hull}`, `shield ${e.shield}`, `move ${e.movespeed}`, "d" + dieSize(e)],
   },
   components: {
     noun: ["component", "components"], placeholder: "Name, keyword or maker",
@@ -464,14 +471,14 @@ const FILTER_SPECS = {
       {id: "reach", label: "Reach", of: e => [(e.face || {}).reach], name: v => REACH[v] || v, order: Object.keys(REACH)},
       {id: "kw", label: "Keywords", of: faceKeywords, name: vocabName},
       {id: "shape", label: "Silhouette", of: e => [e.shape], name: plain},
-      {id: "tier", label: "Tier", of: e => [e.tier ? "T" + e.tier : "none"], name: v => v === "none" ? "No tier" : v},
+      {id: "tier", label: "Tier", of: e => [compTier(e) ? "T" + compTier(e) : "none"], name: v => v === "none" ? "No tier" : v, order: ["T1", "T2", "T3", "none"]},
       {id: "fit", label: "Dice", of: e => [ctx().fitted.get(e.id) ? "fitted" : "spare"], name: v => v === "fitted" ? "On a die" : "On none", order: ["fitted", "spare"]},
       {id: "status", label: "Status", of: e => e.status === "planned" ? ["planned"] : [], keep: true},
       EDITS,
     ],
     sorts: [BY_ORDER, BY_NAME, BY_MAKER,
       stat("power", "Power", e => (e.face || {}).power), stat("power_max", "Top power", e => (e.face || {}).power_max ?? (e.face || {}).power),
-      stat("crit", "Crit", e => (e.face || {}).crit), stat("heat", "Heat", e => (e.face || {}).heat ?? 0), stat("tier", "Tier", e => e.tier),
+      stat("crit", "Crit", e => (e.face || {}).crit), stat("heat", "Heat", e => (e.face || {}).heat ?? 0), stat("tier", "Tier", compTier),
       stat("fitted", "Dice carrying it", e => ctx().fitted.get(e.id) || 0)],
     line: e => {
       const n = ctx().fitted.get(e.id) || 0;
@@ -500,7 +507,7 @@ const FILTER_SPECS = {
   makers: {
     noun: ["maker", "makers"], placeholder: "Name",
     text: e => [e.name, e.id], groups: [EDITS], sorts: [BY_ORDER, BY_NAME],
-    line: e => { const n = ctx().byMaker.get(e.id) || 0; return [n + " chassis"]; },
+    line: e => { const n = ctx().byMaker.get(e.id) || 0; return [e.capital ? "the capital" : "", n + " chassis"]; },
   },
   vocabulary: {
     noun: ["entry", "entries"], placeholder: "Word or category",
@@ -705,7 +712,8 @@ function componentEntry(cid, slot, comps, makers) {
   if (comp.shape) kws.append(el("span", {class: "kw shape", title: "Silhouette class: what the model wears at a gun mount when this component is fitted, in its own maker's metal; none means it shows nowhere (armour, a vent)"}, comp.shape.replace(/_/g, " ")));
   for (const k of (f.keywords || [])) kws.append(kwChip(k));
   const name = el("div", {class: "cname"}, comp.name || cid);
-  if (comp.tier) name.append(el("span", {class: "tier", title: "Blueprint tier"}, "T" + comp.tier));
+  const tier = compTier(comp);
+  if (tier) name.append(el("span", {class: "tier", title: comp.tier ? "Blueprint tier (stored: no chassis stocks it)" : "Blueprint tier: the lowest tier of chassis stocking it"}, "T" + tier));
   if (planned) name.append(" ", el("span", {class: "tag planned"}, "planned"));
   if (c.st) name.append(" ", el("span", {class: "tag " + c.st}, c.st));
   const row = el("div", {class: "entry" + (planned ? " planned" : ""), tabindex: "0", role: "button", title: "Open in the editor",
@@ -740,6 +748,7 @@ function renderCodex(main) {
     if (r && r.images && r.images.length) head.append(el("img", {class: "thumb", src: "hangar/renders/" + r.images[0].file, alt: r.images[0].alt, title: "The model", onclick: () => { MOTION.id = e.id; rememberMotion(); setSection("models"); }}));
     head.append(el("p", {class: "desig"}, e.designation || ""));
     const h2 = el("h2", {}, el("span", {role: "button", tabindex: "0", title: "Open in the editor", style: "cursor:pointer", onclick: () => openFromCodex("chassis.entries", e.id), onkeydown: (ev) => { if (ev.key === "Enter") openFromCodex("chassis.entries", e.id); }}, e.name || e.id));
+    if (e.tier) h2.append(el("span", {class: "tier", title: "Chassis tier: power and complexity (1 to 3); tier 1 is the starting stock"}, "T" + e.tier));
     if (st) h2.append(el("span", {class: "tag " + st}, st));
     head.append(h2);
     const sub = el("p", {class: "sub"}, mk.name || "");

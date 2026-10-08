@@ -56,6 +56,32 @@ func test_setup_places_team_formation_and_boss() -> void:
 	assert_true(b.field.intents.size() > 0, "enemy moves previewed")
 
 
+func test_a_composed_formation_replaces_the_spawn_list_and_the_boss_can_stay_home() -> void:
+	var db := ContentDB.load_default()
+	var facs: Array = db.factions.keys()
+	var a := str(db.spawn_foes(str(facs[0]))[0])
+	var c := str(db.spawn_foes(str(facs[1]))[0])
+	var b := Battle.new(3)
+	b.formation = [[a, 2], [c, 5], [a, 1]]
+	b.with_boss = false
+	b.setup(_team(), str(facs[0]))
+	assert_true(b.boss == null, "no boss")
+	var placed: Array = []
+	for sq in b.field.packs():
+		assert_false(sq.elite, "%s is no boss" % sq.display_name)
+		placed.append([sq.foe_id, sq.strength, sq.faction])
+	assert_eq(placed, [[a, 2, str(facs[0])], [c, 5, str(facs[1])], [a, 1, str(facs[0])]], "the packs as composed, each under its own foe's faction")
+	assert_eq(b.field.spawn_table, placed, "and the rift sends them in turn")
+	b.field.rift_pressure = b.field.rift_pressure_max - 1
+	b.field._spawn_index = 1
+	b.field.tick_pressure(1)
+	var spawned: Unit = b.field.packs()[b.field.packs().size() - 1]
+	assert_eq([spawned.foe_id, spawned.faction], [c, str(facs[1])], "a rift pack wears its own faction")
+	b.field.gate_hp = 0
+	b.commit()
+	assert_eq(b.outcome, Battle.Outcome.GATE_FALLEN, "without a boss only the field ends it")
+
+
 func test_route_to_reaches_every_reachable_hex() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[1]
@@ -147,6 +173,7 @@ func test_finish_skirmish_removes_the_pack_and_keeps_shields_as_they_were() -> v
 	var packs_before := b.field.packs().size()
 	b.finish_skirmish()
 	assert_eq(b.field.packs().size(), packs_before - 1, "pack wiped from the map")
+	assert_eq(b.foes_killed, sq.strength, "a won skirmish counts every foe it killed, for the salvage")
 	assert_eq(m.shield, 0, "no free refill between skirmishes")
 	assert_eq(b.state, Battle.State.PLAN, "planning again")
 	assert_eq(b.current, null, "no skirmish open")
@@ -286,6 +313,7 @@ func test_wrecked_mechs_leave_the_map() -> void:
 	var before := b.mechs().size()
 	b.finish_skirmish()
 	assert_eq(b.mechs().size(), before - sk.mechs.size(), "wrecks are gone")
+	assert_eq(b.wrecks.size(), sk.mechs.size(), "and the battle keeps them, for the campaign to read")
 	assert_true(b.state == Battle.State.PLAN or b.outcome == Battle.Outcome.WRECKED, "battle continues or ends")
 
 
@@ -427,3 +455,22 @@ func test_an_out_of_combat_passive_fires_after_a_quiet_phase() -> void:
 	var rate := m.recharge_field
 	b.commit()
 	assert_eq(m.shield, mini(m.shield_max, rate + 5), "the field rate, then the passive's five")
+
+
+func test_a_kill_is_a_kill_whatever_the_fight_ends_in() -> void:
+	# Ryan, 7 October: withdrawing never takes a kill away, so the salvage the campaign
+	# tallies at the battle's end counts every foe killed, won fight or not.
+	var b := _battle()
+	var m: Unit = b.mechs()[0]
+	var sq: Unit = b.field.packs()[0]
+	_engage(b, sq, m)
+	b.commit()
+	var sk := b.open_next_skirmish()
+	sk.begin()
+	sk.start_round()
+	var victim: Foe = sk.field_foes()[0]
+	victim.hp = 0
+	assert_true(sk.withdraw(), "the team pulls out")
+	assert_eq(sk.outcome, Skirmish.Outcome.WITHDRAWN, "withdrawn")
+	b.finish_skirmish()
+	assert_eq(b.foes_killed, 1, "the kill made before withdrawing counts")

@@ -20,23 +20,36 @@ and open question from the design sessions.
   - `skirmish.gd` the dice skirmish: two-rank enemy formation fed from a pool, reach rules,
     keywords, heat, shields, injuries, withdraw, outcome
   - `loadouts.gd` sample dice and packs for prototypes and tests
+  - `harness_setup.gd` what the harness launches (team, loadouts, enemy side, seed, map
+    type), built into a battle or a skirmish, kept between launches
   - `policy.gd` a player for the headless skirmish, a ladder of skill (random, greedy) with
     personas on top, so balance can be measured over thousands of fights
   - `passives.gd` runs the passive triggers the engine supports (the validator refuses others)
   - `effects.gd` the one pipeline every number is read through: base plus every live modifier
     (passives, rewards, buffs, statuses) with a scope and a source
   - `content_db.gd` loads and validates `content/*.json`, builds dice, mechs, and foes
-  - `save.gd` writes the whole battle to `user://battle.json` and reads it back
+  - `save.gd` writes the whole battle to `user://battle.json` and reads it back; the run to
+    `user://campaign.json` (the battle under way inside it) and the profile to
+    `user://profile.json`
   - `battle.gd` one battle end to end: plot routes, resolve, open a skirmish per contact
     group, apply the result, until the gate falls, the team is wrecked, or the boss dies
+  - `campaign.gd` the run: five cities and their gates, rifts rolled as fronts, the roster
+    and its shop, salvage, the between-battle rules, the turn's bleed and drain, the finale
+  - `profile.gd` what outlives a run: the pool, the codex, the tier, the favour piece
+  - `battle_bot.gd` plays a whole battle headless (the map's plain rule, every fight by
+    `policy.gd`), for the campaign runner
 - `content/` — game data: `vocabulary.json` (every mechanic term; `codex` is the rule as the player reads it), `factions.json`,
   `foes.json`, `chassis.json`, `components.json`. Placeholder numbers. `reserved_names.json` is
   every machine name in BattleTech, Heavy Gear, Warhammer 40k and Halo; a chassis nickname or id
   on it fails the validator unless the entry records the clash under `design.name_clash`.
 - `game/` — scenes and presentation.
-  - `harness.tscn` is the main scene: pick a team, faction, pack size, seed, then Battle
-    (the whole loop), Resume battle (the saved one, while one exists), Fight (one
-    skirmish), or the map viewer
+  - `harness.tscn` is the main scene, three tabs over launch buttons that stay put: TEAM
+    (who deploys, in the order ticked, and each machine's hardpoints, any component on any
+    hardpoint), ENEMY (the packs, the boss and a guest faction, loaded from a faction and
+    edited from there) and SETUP (seed, map type, HUD colour). Battle plays the whole loop
+    with the packs as its formation and its rift's cycle; Fight chains them all with the
+    boss into one skirmish; Resume battle (while a save exists) and the map viewer below.
+    What was last launched is kept in `user://harness.json` (`sim/harness_setup.gd`)
   - `battle/battle_screen.gd` the battle screen: the map with the phase loop around it, and
     the skirmish screen hosted over it on contact; `battle/battle_map_view.gd` draws the
     field and reads the gestures; `battle/orders_board.gd` the strip under the map;
@@ -53,7 +66,8 @@ and open question from the design sessions.
 - `tools/` — `export_vocabulary.gd` regenerates `docs/vocabulary.md`; `balance.gd` plays every
   chassis and the team against every pack under each policy and writes `docs/balance.md`
   (`--trace` prints one fight blow by blow); `map_survey.gd` measures the map generator over
-  many seeds and writes `docs/map_survey.md`; `screenshot.gd` renders a
+  many seeds and writes `docs/map_survey.md`; `campaign_run.gd` plays whole runs and writes
+  `docs/campaign_run.md`; `screenshot.gd` renders a
   scene to PNG at 720x1280; `hero_shot.gd` renders one unit large; `perf_probe.gd` measures
   the battle map's frame cost; `lowforge/` builds the
   ally units by code from a brief (`models_low.py`, one function per chassis id) in the
@@ -120,6 +134,13 @@ perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/balance.gd -
 # (mixed, steppe, rubble, badlands, flooded: BattleMap.KINDS) for the detailed report, --seeds N,
 # --move M, --w/--h for another size; --show SEED prints one map as text.
 perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/map_survey.gd -- --seeds 200
+
+# the campaign runner: whole runs played headless by a plain player (it defends the front
+# nearest to falling, hunts the nearest enemy on the map, fights at the greedy rung), measuring
+# the campaign's placeholders: runs won, cities fallen, wipes, components destroyed per battle;
+# written to docs/campaign_run.md. --runs N, --seed S, --policy random; --trace SEED prints one
+# run battle by battle instead.
+perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40
 
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument
 # poses the screen first. Skirmish: codex, mechcodex, hold, confirm, lock, strike,
@@ -242,7 +263,7 @@ fight under way with its dice and random streams), so quitting or a phone killin
 loses nothing: Resume battle opens it where it stood, straight into the fight if one was
 on. A decided battle clears the save. Standalone scene runs and the tests never write it.
 
-The harness can add the faction's massive elite, which fills both ranks of a column. For the
+The harness can add any faction's massive elite, which fills both ranks of a column. For the
 standalone screen, `RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,baboon` picks the team and
 `RIFTGATE_ELITE=1` adds the elite.
 

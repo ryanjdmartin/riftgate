@@ -207,6 +207,7 @@ func test_keyword_cap_is_enforced() -> void:
 	db.load_dir(ContentDB.DIR)
 	var comp: Dictionary = db.components["lance"].duplicate(true)
 	comp["face"]["keywords"] = ["penetrate", "burn", "chain", "execute"]
+	comp["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["too_many"] = comp
 	var errs := db.validate()
 	var hit := false
@@ -348,12 +349,14 @@ func test_planned_component_may_carry_a_planned_keyword() -> void:
 	var plate: Dictionary = db.components["ablative_plating"].duplicate(true)
 	plate["face"]["keywords"] = ["corrode"]
 	plate["status"] = "planned"
+	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["loud_plate"] = plate
 	for e in db.validate():
 		assert_false(e.begins_with("component loud_plate"), "a planned component with a planned keyword validates clean: %s" % e)
 	var f := Face.from_dict(plate["face"])
 	assert_true(f.keywords.is_empty(), "and builds without the keyword the engine lacks")
 	plate.erase("status")
+	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["loud_plate"] = plate
 	var hit := false
 	for e in db.validate():
@@ -385,6 +388,7 @@ func test_melee_reach_can_be_authored() -> void:
 	db.load_dir(ContentDB.DIR)
 	var claw: Dictionary = db.components["lance"].duplicate(true)
 	claw["face"]["reach"] = "melee"
+	claw["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["fist"] = claw
 	for e in db.validate():
 		assert_false(e.begins_with("component fist"), "an authored melee component validates clean: %s" % e)
@@ -529,12 +533,15 @@ func test_support_keywords_ride_on_shields_and_vents_only() -> void:
 	db.load_dir(ContentDB.DIR)
 	var scrubber: Dictionary = db.components["ablative_plating"].duplicate(true)
 	scrubber["face"]["keywords"] = ["cleanse"]
+	scrubber["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["scrubber"] = scrubber
 	var gun: Dictionary = db.components["lance"].duplicate(true)
 	gun["face"]["keywords"] = ["cleanse"]
+	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["cleansing_gun"] = gun
 	var plate: Dictionary = db.components["ablative_plating"].duplicate(true)
 	plate["face"]["keywords"] = ["burn"]
+	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["burning_plate"] = plate
 	var bad_gun := false
 	var bad_plate := false
@@ -555,7 +562,7 @@ func test_a_component_passive_from_content_lands_on_the_mech() -> void:
 	fins["name"] = "Finned Sink"
 	fins["passive"] = {"id": "fins", "name": "Fins", "description": "Cooling +5.",
 		"effects": [{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 5}]}
-	db.components["fins_pack"] = fins
+	db.components["fins_pack"] = fins   # stocked by the chassis below, so its tier is derived
 	var c: Dictionary = db.chassis["clydesdale"].duplicate(true)
 	c["loadout"] = ["fins_pack"]
 	c["passive"] = null
@@ -581,15 +588,19 @@ func test_a_buff_face_names_a_machine_status() -> void:
 	db.load_dir(ContentDB.DIR)
 	var good: Dictionary = db.components["ablative_plating"].duplicate(true)
 	good["face"] = {"kind": "buff", "status": "overcharged", "stacks": 2}
+	good["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["coil_ok"] = good
 	var foe_status: Dictionary = good.duplicate(true)
 	foe_status["face"] = {"kind": "buff", "status": "burning"}
+	foe_status["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["coil_foe"] = foe_status
 	var unknown: Dictionary = good.duplicate(true)
 	unknown["face"] = {"kind": "buff", "status": "haste", "rounds": 0}
+	unknown["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["coil_bad"] = unknown
 	var stray: Dictionary = good.duplicate(true)
 	stray["face"] = {"kind": "shield", "power": 10, "stacks": 2}
+	stray["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["stray"] = stray
 	var hit := {"coil_foe": false, "coil_bad": false, "stray": false}
 	for e in db.validate():
@@ -607,12 +618,15 @@ func test_a_spend_keyword_rides_on_any_kind_of_component() -> void:
 	db.load_dir(ContentDB.DIR)
 	var plate: Dictionary = db.components["ablative_plating"].duplicate(true)
 	plate["face"]["keywords"] = ["volatile"]
+	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["hot_plate"] = plate
 	var gun: Dictionary = db.components["lance"].duplicate(true)
 	gun["face"]["keywords"] = ["volatile"]
+	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["hot_gun"] = gun
 	var fins: Dictionary = db.components["heat_sink"].duplicate(true)
 	fins["face"]["keywords"] = ["volatile"]
+	fins["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["hot_fins"] = fins
 	for e in db.validate():
 		assert_false(e.begins_with("component hot_"), "volatile validates on a shield, an attack and a vent alike: %s" % e)
@@ -626,9 +640,11 @@ func test_the_content_carries_a_live_hull_the_engine_runs() -> void:
 	var plate: Dictionary = db.components["ablative_plating"].duplicate(true)
 	plate["passive"] = {"id": "live_plate", "name": "Live Plate", "description": "", "effects": [
 		{"trigger": "static", "effect": "shock_on_block", "value": 1}]}
+	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["live_plate"] = plate
 	var coil: Dictionary = db.components["overcharge_coil"].duplicate(true)
 	coil["face"]["status"] = "retaliate"
+	coil["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["klaxon_coil"] = coil
 	var errs := db.validate()
 	for e in errs:
@@ -642,9 +658,11 @@ func test_lure_and_disrupt_ride_on_attacks_and_never_on_a_shield() -> void:
 	db.load_dir(ContentDB.DIR)
 	var gun: Dictionary = db.components["lance"].duplicate(true)
 	gun["face"]["keywords"] = ["lure", "disrupt"]
+	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["loud_gun"] = gun
 	var plate: Dictionary = db.components["ablative_plating"].duplicate(true)
 	plate["face"]["keywords"] = ["lure"]
+	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["loud_plate"] = plate
 	var bad_plate := false
 	for e in db.validate():
@@ -687,9 +705,11 @@ func test_the_vent_on_fire_fields_belong_to_an_attack() -> void:
 	db.load_dir(ContentDB.DIR)
 	var plate: Dictionary = db.components["ablative_plating"].duplicate(true)
 	plate["face"]["vents_all"] = true
+	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["hot_plate"] = plate
 	var gun: Dictionary = db.components["lance"].duplicate(true)
 	gun["face"]["power_per_heat"] = 10
+	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["half_gun"] = gun
 	var bad_plate := false
 	var bad_gun := false
@@ -829,3 +849,67 @@ func test_the_codex_plate_lists_the_traits() -> void:
 	assert_eq(str(db.codex_for_unit(db.make_mech("bare"))["subtitle"]), "%s // D%d" % [maker, u.die.size()], "no traits, no traits part")
 	for e in db.validate():
 		assert_false(e.contains("silhouette"), "no chassis needs a silhouette: %s" % e)
+
+
+## A fresh database the test may edit (the default one is shared and cached).
+func _fresh() -> ContentDB:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	return db
+
+
+func _has_error(db: ContentDB, word: String) -> bool:
+	for e in db.validate():
+		if e.contains(word):
+			return true
+	return false
+
+
+func test_a_components_tier_follows_the_lowest_chassis_that_stocks_it() -> void:
+	# 7 October: tier is power and complexity, never the maker; a stocked component's tier is
+	# derived from the chassis that carry it, so moving a chassis moves its stock.
+	var db := _fresh()
+	var low := ""
+	var high := ""
+	for id in db.chassis.keys():
+		if not db.chassis[id].get("loadout", []).is_empty():
+			if low.is_empty():
+				low = str(id)
+			elif high.is_empty():
+				high = str(id)
+	var cid := str(db.chassis[high]["loadout"][0])
+	db.chassis[low]["tier"] = 3
+	db.chassis[high]["tier"] = 2
+	for id in db.chassis.keys():
+		if id != low and id != high and db.chassis[id].get("loadout", []).has(cid):
+			db.chassis[id]["tier"] = 3
+	assert_eq(db.component_tier(cid), 2, "the lowest chassis stocking it")
+	db.chassis[low]["loadout"].append(cid)
+	db.chassis[low]["tier"] = 1
+	assert_eq(db.component_tier(cid), 1, "a tier-one chassis stocking it makes it tier one")
+	assert_true(db.starting_blueprints().has(cid), "and a starting blueprint")
+
+
+func test_the_tier_rules_are_validated() -> void:
+	var db := _fresh()
+	var capital := db.capital_maker()
+	var cap_chassis := ""
+	var plain := ""
+	for id in db.chassis.keys():
+		if str(db.chassis[id].get("maker", "")) == capital and cap_chassis.is_empty():
+			cap_chassis = str(id)
+		elif plain.is_empty() and not db.chassis[id].get("loadout", []).is_empty():
+			plain = str(id)
+	assert_true(not cap_chassis.is_empty(), "the content has a chassis of the capital's maker")
+	db.chassis[cap_chassis]["tier"] = 1
+	assert_true(_has_error(db, "fields no tier one"), "the capital's maker fields no tier one")
+	db = _fresh()
+	db.chassis[plain].erase("tier")
+	assert_true(_has_error(db, "tier must be 1, 2 or 3"), "a chassis needs a tier")
+	db = _fresh()
+	var stocked := str(db.chassis[plain]["loadout"][0])
+	db.components[stocked]["tier"] = 2
+	assert_true(_has_error(db, "its tier is derived"), "a stocked component stores no tier")
+	db = _fresh()
+	db.components["test_loose"] = db.components[stocked].duplicate(true)
+	assert_true(_has_error(db, "carries its own tier"), "an unstocked component needs its own")

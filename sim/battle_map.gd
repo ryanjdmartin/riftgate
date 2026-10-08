@@ -113,7 +113,9 @@ static func generate(w: int, h: int, seed_value: int, map_kind: String = "mixed"
 	m._lay_roads(rng)
 	# The gate, the rift, and the ground right in front of each are always open, and the
 	# two rows above the gate's apron are the team's ground: never water or crag, so a
-	# deployed machine always has somewhere to go.
+	# deployed machine always has somewhere to go. A road slab stays a road: the trunk's
+	# first slab sits in front of the gate, and this pass used to pave over it on every
+	# map (found 2 October, fixed 6 October).
 	var open: Array[Vector2i] = []
 	open.append_array(m.gate_hexes)
 	open.append_array(m.rift_hexes)
@@ -123,7 +125,8 @@ static func generate(w: int, h: int, seed_value: int, map_kind: String = "mixed"
 		m.elevation[hx] = 0
 		for n in Hex.neighbors(hx):
 			if m.has(n):
-				m.terrain[n] = Terrain.PLAIN
+				if m.terrain[n] != Terrain.ROAD:
+					m.terrain[n] = Terrain.PLAIN
 				m.crag_base.erase(n)
 				m.elevation[n] = 0
 	for row in range(h - GATE_ROWS - 2, h):
@@ -404,7 +407,7 @@ func _lay_roads(rng: RandomNumberGenerator) -> void:
 			break
 		var from: Vector2i = trunk[rng.randi_range(1, trunk.size() - 2)]
 		var branch: Array[Vector2i] = []
-		var dir: int = [1, 2, 4, 5][rng.randi_range(0, 3)]   # diagonal only: roads run north-east or north-west, never across
+		var dir: int = [1, 2][rng.randi_range(0, 1)]   # diagonal only: roads run north-east or north-west, never across (found 6 October: the list carried the two southward diagonals too)
 		for i in range(rng.randi_range(3, 5)):
 			var n: Vector2i = from + Hex.DIRECTIONS[dir]
 			if not has(n) or is_structure(n):

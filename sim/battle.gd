@@ -38,6 +38,26 @@ var current: Skirmish = null
 var last_result: Battlefield.PhaseResult = null
 var skirmishes_fought: int = 0
 var columns: int = Skirmish.DEFAULT_COLUMNS   # formation width for every skirmish this battle opens
+## A guest faction (bible section 3: one lead and at most one guest a battle): set before
+## setup, its spawn list joins the rift's cycle, alternating with the lead's; the formation
+## on the field at the start is the lead's alone. Empty for none.
+var guest: String = ""
+## The enemy side composed by hand (the harness, for play tests), set before setup: the
+## packs as [[foe_id, strength], ...], placed at the start and cycled by the rift as the
+## lead's spawn table would be, each pack under its own foe's faction. Empty keeps the lead
+## faction's spawn table.
+var formation: Array = []
+## Whether the lead faction's boss takes the field. Without one the battle has no victory,
+## only the gate's fall or the team's (the harness, to watch the packs alone).
+var with_boss := true
+## Every foe killed this battle, in any fight however it ended (Ryan, 7 October: a kill is a
+## kill, and withdrawing never takes it away), for the salvage the campaign tallies at the
+## battle's end and never shows while it is fought. The battle only counts; the campaign
+## decides what is kept.
+var foes_killed: int = 0
+## The machines wrecked this battle, as they fell: the map lets go of them, the campaign
+## still reads their dice (a wreck loses its cracked and destroyed components).
+var wrecks: Array[Unit] = []
 
 
 func _init(seed_arg: int = 1) -> void:
@@ -56,7 +76,25 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 	map = BattleMap.generate(w, h, seed_value, map_kind)
 	field = Battlefield.new(map)
 	field.spawn_faction = faction
-	field.spawn_table = db.spawn_table(faction)
+	var lead_table: Array = db.spawn_table(faction)
+	if not formation.is_empty():
+		lead_table = []
+		for e in formation:
+			var fac := db.faction_of_foe(str(e[0]))
+			lead_table.append([str(e[0]), int(e[1]), fac if not fac.is_empty() else faction])
+	field.spawn_table = lead_table
+	if not guest.is_empty() and guest != faction and db.factions.has(guest):
+		# The guest joins the rift's cycle only, each entry carrying its own faction; the
+		# formation placed below is the lead's alone (found 6 October: placing it from the
+		# mixed table doubled the field).
+		var visitors: Array = db.spawn_table(guest)
+		var mixed: Array = []
+		for k in range(maxi(lead_table.size(), visitors.size())):
+			if k < lead_table.size():
+				mixed.append(lead_table[k])
+			if k < visitors.size():
+				mixed.append([visitors[k][0], visitors[k][1], guest])
+		field.spawn_table = mixed
 	field.foe_profiles = db.pack_profiles()
 	var gate_o := Hex.axial_to_offset(map.gate)
 	var i := 0
@@ -68,17 +106,17 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 		u.facing = face_rng.randi_range(1, 2)   # northward, one of the two directions that lead away from the gate
 		field.add_unit(u)
 		i += 1
-	var table: Array = field.spawn_table
+	var table: Array = lead_table
 	for j in range(table.size()):
 		var entry: Array = table[j]
 		var col := (w * (j + 1)) / (table.size() + 1)
 		var row := 3 + (j % 3)
-		var sq := Unit.pack(0, _pack_name(str(entry[0])), Vector2i.ZERO, faction, Unit.PACK_MOVE, int(entry[1]), str(entry[0]))
+		var sq := Unit.pack(0, _pack_name(str(entry[0])), Vector2i.ZERO, str(entry[2]) if entry.size() > 2 else faction, Unit.PACK_MOVE, int(entry[1]), str(entry[0]))
 		sq.pos = field.nearest_standable(sq, Hex.offset_to_axial(col, row))
 		field.add_unit(field.dress_pack(sq))
 	var fac: Dictionary = db.factions.get(faction, {})
 	var boss_id := str(fac.get("boss", ""))
-	if db.foes.has(boss_id):
+	if with_boss and db.foes.has(boss_id):
 		boss = Unit.boss(0, str(db.foes[boss_id]["name"]).to_lower(), Vector2i.ZERO, faction, Unit.BOSS_MOVE)
 		boss.pos = field.nearest_standable(boss, Hex.offset_to_axial(w / 2 - 1, 1))
 		field.add_unit(field.dress_pack(boss, boss_id))
@@ -358,6 +396,11 @@ func _build_skirmish(group: Array) -> Skirmish:
 func finish_skirmish() -> void:
 	if current == null:
 		return
+	for ms in current.mechs:
+		if ms.unit.hull <= 0 and not wrecks.has(ms.unit):
+			wrecks.append(ms.unit)
+	for sq in current.packs:
+		foes_killed += maxi(0, sq.strength - current.survivors_for(sq))
 	field.apply_skirmish_result(current)
 	current = null
 	boss_contact = false
