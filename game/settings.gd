@@ -24,12 +24,12 @@ static var _loaded := false
 ## (Ryan, 23 September: that should be the fastest the slider goes).
 const DISPLAY_DEFAULTS := {
 	"brightness": 1.0, "glitch": true, "pace": 1.0, "enemy_pace": 1.0, "scan": true,
-	"music": 0.8, "effects": 1.0,
+	"music": 0.63, "effects": 1.0, "voice": 1.0,   # the baseline mix (Ryan, 7 October): music 0.63 (-4 dB) with the effects and the voice at full, Hold The Line the reference
 	"fine_map": true,   # the map's scene and compositor at the glass's density rather than the design's (Ryan, 29 September: 60 fps locked on the Pixel with it, so it is the default)
 }
 const DISPLAY_RANGES := {
 	"brightness": Vector2(0.5, 1.5), "pace": Vector2(0.5, 2.0), "enemy_pace": Vector2(0.5, 3.75),
-	"music": Vector2(0.0, 1.0), "effects": Vector2(0.0, 1.0),
+	"music": Vector2(0.0, 1.0), "effects": Vector2(0.0, 1.0), "voice": Vector2(0.0, 1.0),
 }
 static var display: Dictionary = DISPLAY_DEFAULTS.duplicate()
 

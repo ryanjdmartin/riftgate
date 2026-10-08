@@ -715,6 +715,51 @@ const SHAPE_NONE := "none"
 const SOUNDS := ["barrel", "twin_barrel", "rack", "blade", "blunt", "laser", "plasma", "deflector", "coil"]
 
 
+## The sound a component's use plays, as layers (the first the blow, each after it riding on
+## the landing): its `sound` where content names one, else derived as SOUNDS says. A shield
+## is a deflector and a buff a coil, whatever the mount; an attack is its shape, an energy
+## barrel a laser and the Arsenal's a plasma (energy is the static face: no power_max above
+## power, no crit); a dish that attacks (the Klaxon's lure) is a coil; an attack with no
+## mount sounds by its reach. A vent, or an id content does not know, is [].
+func sound_of(component_id: String) -> Array[String]:
+	var out: Array[String] = []
+	var c: Dictionary = components.get(component_id, {})
+	if c.is_empty():
+		return out
+	if c.has("sound"):
+		for w in (c["sound"] if c["sound"] is Array else [c["sound"]]):
+			out.append(str(w))
+		return out
+	var face: Dictionary = c.get("face", {}) if c.get("face", null) is Dictionary else {}
+	var kind := str(face.get("kind", ""))
+	if kind == "shield":
+		out.append("deflector")
+		return out
+	if kind == "buff":
+		out.append("coil")
+		return out
+	if kind != "attack":
+		return out
+	var shape := str(c.get("shape", SHAPE_NONE))
+	var power := int(face.get("power", 0))
+	var energy := int(face.get("power_max", power)) <= power and int(face.get("crit", 0)) == 0
+	if shape == "barrel" and energy:
+		out.append("plasma" if str(c.get("maker", "")) == "arsenal" else "laser")
+	elif shape == "dish":
+		out.append("coil")
+	elif ["barrel", "twin_barrel", "rack", "blade"].has(shape):
+		out.append(shape)
+	else:
+		match str(face.get("reach", "line")):
+			"melee":
+				out.append("blade")
+			"indirect":
+				out.append("rack")
+			_:
+				out.append("barrel")
+	return out
+
+
 func _validate_components(errs: Array[String]) -> void:
 	for id in components.keys():
 		var c: Dictionary = components[id]

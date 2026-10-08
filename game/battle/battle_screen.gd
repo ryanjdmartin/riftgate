@@ -135,6 +135,7 @@ func _autosave() -> void:
 
 func _start_music() -> void:
 	Sound.music("map", true)
+	Sound.say("battle_open")
 
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks).
@@ -219,6 +220,7 @@ func _build() -> void:
 	_resolve_btn.filled = true
 	_place(_resolve_btn, Vector2(16, BOTTOM_Y), BOTTOM_BTN)
 	_clear_btn = HudButton.new("CLEAR ROUTES", _on_clear)
+	_clear_btn.sound = ""   # the clear is its own dismiss
 	_clear_btn.ghost = true
 	_place(_clear_btn, Vector2(W - 16 - BOTTOM_BTN.x, BOTTOM_Y), BOTTOM_BTN)
 
@@ -298,6 +300,7 @@ func _build_outcome() -> void:
 	_overlay_text.custom_minimum_size = Vector2(420, 0)
 	ov.add_child(_overlay_text)
 	var back := HudButton.new("BACK", func() -> void: back_requested.emit())
+	back.sound = "ui_back"
 	back.custom_minimum_size = Vector2(0, 54)
 	ov.add_child(back)
 
@@ -398,6 +401,7 @@ func _build_log_full() -> void:
 	_log_full_text.add_theme_color_override("default_color", Palette.HUD)
 	_log_full_scroll.add_child(_log_full_text)
 	var close := HudButton.new("CLOSE", _toggle_log_full)
+	close.sound = "ui_back"
 	close.custom_minimum_size = Vector2(0, 52)
 	col.add_child(close)
 
@@ -444,15 +448,16 @@ func _on_hex_tapped(h: Vector2i) -> void:
 		_map.gate_selected = true
 		_show_details(gate_text(battle.field), Vector2.ZERO)
 		_map.queue_redraw()
-		Sound.play("ui_tap", -4.0)
+		Sound.play("map_select")
 		return
 	if _map.selected != null and u != _map.selected and _map.destinations.has(h):
 		# A hex a machine plotted earlier is leaving is a destination too (Ryan, 22
 		# September): plotting in order makes it free, so the tap routes there rather
 		# than selecting the machine still drawn on it.
-		battle.set_route(_map.selected, h)
+		var routed := _map.selected
+		battle.set_route(routed, h)
 		_select(null)
-		Sound.play("plot")
+		_route_sound(routed)
 	elif u != null and u.is_player() and not u.is_static():
 		if _map.selected == u:
 			battle.clear_route(u.id)
@@ -461,15 +466,16 @@ func _on_hex_tapped(h: Vector2i) -> void:
 		else:
 			_select(u)
 			_on_unit_held(u)   # its shield, hull and move, in the readout
-			Sound.play("ui_tap", -4.0)
+			Sound.play("map_select")
 	elif u != null and u.is_enemy():
 		_map.inspected = h   # the pack lit, its path emphasised (Ryan, 29 September: show what was tapped)
 		_on_unit_held(u)   # a quick label for the enemy; double-tap for the codex
-		Sound.play("ui_tap", -8.0)
+		Sound.play("map_select")
 	elif _map.selected != null and _map.destinations.has(h):
-		battle.set_route(_map.selected, h)
+		var routed := _map.selected
+		battle.set_route(routed, h)
 		_select(null)
-		Sound.play("plot")
+		_route_sound(routed)
 	elif _map.selected == null and u == null and battle.field.map.has(h) and not battle.field.map.is_structure(h):
 		# Nothing to route: the tap asks what the ground is (Ryan, 21 September). Its
 		# properties will grow with the terrain rules.
@@ -479,6 +485,7 @@ func _on_hex_tapped(h: Vector2i) -> void:
 		_map.inspected = h   # the hex lit, so what was tapped is plain (Ryan, 29 September)
 		_show_details(text, _map.position + _map.to_screen(_map.center(h)))
 		_map.queue_redraw()
+		Sound.play("map_select")
 		return
 	else:
 		_select(null)
@@ -501,7 +508,7 @@ func _on_route_drag_started(u: Unit) -> void:
 	_draft_unit = u
 	_map.draft = []
 	_map.draft_spend = Vector2i(0, 0)
-	Sound.play("ui_tap", -4.0)
+	Sound.play("map_select")
 
 
 func _on_route_drag_to(h: Vector2i) -> void:
@@ -510,9 +517,7 @@ func _on_route_drag_to(h: Vector2i) -> void:
 	var before := _map.draft.size()
 	_map.draft = battle.draft_step(_draft_unit, _map.draft, h)
 	_map.draft_spend = battle.draft_spend(_draft_unit, _map.draft)
-	if _map.draft.size() != before:
-		Sound.play("ui_tap", -12.0)   # a tick per hex, so the line is heard growing
-	_map.queue_redraw()
+	_map.queue_redraw()   # silent while it grows (the console's rule: no clicky ticks with no story)
 
 
 func _on_route_drag_ended(commit: bool) -> void:
@@ -523,11 +528,24 @@ func _on_route_drag_ended(commit: bool) -> void:
 	_map.draft_spend = Vector2i(-1, 0)
 	if u != null and commit and not draft.is_empty():
 		if battle.set_route_path(u, draft):
-			Sound.play("plot")
+			_route_sound(u)
 		else:
-			Sound.play("ui_back")
+			_refuse()
 	_select(null)
 	_refresh()
+
+
+## A route set: plotted, or refused when the plan cannot carry it (the NO ROUTE plaque).
+func _route_sound(u: Unit) -> void:
+	if u != null and _map.rejected().has(u.id):
+		_refuse()
+	else:
+		Sound.play("plot")
+
+
+func _refuse() -> void:
+	Sound.play("refuse")
+	Sound.say("refuse")
 
 
 func _on_unit_held(u: Unit) -> void:
@@ -694,6 +712,16 @@ func _on_resolve() -> void:
 		starts[sq.id] = sq.pos
 	# The packs' paths are the resolve's own, planned after the machines moved.
 	Sound.play("resolve")
+	var routed := 0
+	var free := 0
+	for m in battle.mechs():
+		if m.is_static() or not m.alive():
+			continue
+		free += 1
+		if not Array(battle.routes.get(m.id, [])).is_empty():
+			routed += 1
+	if routed > 0:
+		Sound.say("resolve_all" if routed == free else "resolve_move")
 	var gate_before := battle.field.gate_hp
 	var result := battle.commit()
 	_gate_struck = battle.field.gate_hp < gate_before
@@ -725,8 +753,9 @@ var _spawned := false       # and the rift spawned
 func _after_step() -> void:
 	if _gate_struck:
 		Sound.play("gate_hit")
+		Sound.say("gate")
 	if _spawned:
-		Sound.play_after(0.35 if _gate_struck else 0.0, "spawn")
+		Sound.play_after(0.35 if _gate_struck else 0.0, Sound.family("spawn", battle.faction))
 	_gate_struck = false
 	_spawned = false
 	match battle.state:
@@ -789,6 +818,7 @@ func _show_contacts() -> void:
 	add_child(warn)
 	Sound.play("contact")
 	Sound.play_after(1.02, "contact", -2.0)   # the second beat, with the blink
+	Sound.say("contact")
 	var tw := create_tween()
 	# Two beats, drawn out (Ryan, 22 September: one flash looked accidental).
 	tw.tween_property(warn, "modulate", Color(1, 1, 1, 1), 0.3)
@@ -850,7 +880,8 @@ func _show_boss_contact() -> void:
 		_open_skirmish(0))
 	_reveal = reveal
 	add_child(reveal)
-	Sound.play("contact")
+	Sound.play("reveal")
+	Sound.say("boss")
 
 
 ## The contact panel: one contact at a time, with portraits, paged with arrows; paging
@@ -1061,6 +1092,8 @@ func _play_handover(group: Array, screen: SkirmishScreen) -> void:
 	scrim.modulate = Color(1, 1, 1, 0)
 	add_child(scrim)
 	Sound.play("engage")
+	if not battle.boss_contact:
+		Sound.say("engage")
 	var tw := create_tween().set_parallel(true)
 	tw.tween_method(func(t: float) -> void:
 		_map.focus_on(mid, lerpf(z0, BattleMapView.ZOOM_MAX, t)), 0.0, 1.0, HANDOVER_DIVE).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
@@ -1105,6 +1138,10 @@ func _on_skirmish_back() -> void:
 func _show_outcome() -> void:
 	var f := battle.field
 	Sound.play("victory" if battle.outcome == Battle.Outcome.VICTORY else "defeat")
+	if battle.outcome == Battle.Outcome.VICTORY:
+		Sound.say("victory")
+	elif battle.outcome == Battle.Outcome.GATE_FALLEN:
+		Sound.say("loss_gate")
 	match battle.outcome:
 		Battle.Outcome.VICTORY:
 			_overlay_title.text = "RIFT SEALED"

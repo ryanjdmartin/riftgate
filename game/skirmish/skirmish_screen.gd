@@ -159,10 +159,12 @@ func _set_phase(p: String) -> void:
 	_sub_label.text = _phase_text()
 
 
-## The display locks onto every foe's intent: called as a round's intents appear.
+## The display locks onto every foe's intent: called as a round's intents appear, with the
+## round opening's figure, once a round.
 func _acquire_intents() -> void:
 	if not is_inside_tree():
 		return
+	Sound.play("round_open")
 	for v in _view_foe.keys():
 		if v.visible and not v.dead:
 			v.acquire()
@@ -372,6 +374,7 @@ func _build() -> void:
 	# Reroll: one wide button centred right under the dice, the dice's own control. Far from
 	# End turn, so a thumb going for one cannot land on the other.
 	_reroll_btn = HudButton.new("REROLL", _on_reroll)
+	_reroll_btn.sound = ""   # the reroll is its own figure
 	_reroll_btn.glyph = "reroll"
 	_reroll_btn.font_size = 20
 	_reroll_btn.badge_size = 20
@@ -542,6 +545,7 @@ func _build_log_full() -> void:
 	_log_full_text = _log_label(18)
 	_log_full_scroll.add_child(_log_full_text)
 	var close := HudButton.new("CLOSE", _toggle_log_full)
+	close.sound = "ui_back"
 	close.custom_minimum_size = Vector2(0, 52)
 	col.add_child(close)
 
@@ -599,10 +603,12 @@ func _build_confirm() -> void:
 	row.add_theme_constant_override("separation", 16)
 	v.add_child(row)
 	var no := HudButton.new("NO", _hide_confirm)
+	no.sound = "ui_back"
 	no.custom_minimum_size = Vector2(0, 54)
 	no.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(no)
 	var yes := HudButton.new("YES", _confirm_yes)
+	yes.sound = "confirm"
 	yes.filled = true
 	yes.custom_minimum_size = Vector2(0, 54)
 	yes.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -632,6 +638,7 @@ func _build_outcome() -> void:
 	_overlay_text.custom_minimum_size = Vector2(420, 0)
 	ov.add_child(_overlay_text)
 	var back := HudButton.new(back_label, func() -> void: back_requested.emit())
+	back.sound = "ui_back"
 	back.custom_minimum_size = Vector2(0, 54)
 	ov.add_child(back)
 
@@ -1027,7 +1034,7 @@ func _on_die_tapped(i: int) -> void:
 	if not ms.alive() or ms.assigned:
 		return
 	locked[i] = not locked[i]
-	Sound.play("die_lock")
+	Sound.play("die_lock" if locked[i] else "die_unlock")
 	_refresh()
 
 
@@ -1068,6 +1075,7 @@ func _on_die_held(i: int) -> void:
 	# Every entry with what applies to it right now (a disabled entry, a passive's change,
 	# a cracked component): the hold is the die's whole readout since the die codex went.
 	_show_details("%s // D%d" % [ms.unit.display_name.to_upper(), ms.die.size()], _dice[i], _shown_faces(ms), ms.face_index, [], _face_labels(ms, true))
+	Sound.play("hold")
 
 
 func _on_foe_held(v: UnitView) -> void:
@@ -1089,6 +1097,7 @@ func _on_foe_held(v: UnitView) -> void:
 	if foe.is_massive():
 		text += "\nmassive: fills the column"
 	_show_details(text, v, [], -1, _readout_rows(_foe_rows(foe)))
+	Sound.play("hold")
 	_refresh_arrows()
 
 
@@ -1099,6 +1108,7 @@ func _on_mech_held(i: int) -> void:
 	if ms.unit.cooling > 0:
 		text += "\ncools %d at the start of each turn" % ms.unit.cooling
 	_show_details(text, _mech_views[i], [], -1, _readout_rows(_mech_rows(i)))
+	Sound.play("hold")
 	_refresh_arrows()
 
 
@@ -1181,20 +1191,22 @@ func _on_drag_moved(global_pos: Vector2) -> void:
 		return
 	var local: Vector2 = get_global_transform().affine_inverse() * global_pos
 	_ghost.position = local - Vector2(DIE_SIZE * 0.5, DIE_SIZE * 0.5)
+	# The hover hum while the die is over somewhere it may be spent (Ryan, 5 October).
+	var target = _drop_target_at(global_pos)
+	Sound.hover(target != null and sk.can_assign(_drag_from, target))
 
 
 func _on_drag_ended(global_pos: Vector2) -> void:
 	var i := _drag_from
 	_drag_from = -1
 	_ghost.visible = false
+	Sound.hover(false)
 	if i < 0:
 		_refresh()
 		return
 	var target = _drop_target_at(global_pos)
-	if target != null:
-		_use_die(i, target)
-	else:
-		Sound.play("die_drop", -6.0)
+	if target == null or not _use_die(i, target):
+		Sound.play("die_drop")   # set back
 	_refresh()
 
 
@@ -1209,25 +1221,53 @@ func _drop_target_at(global_pos: Vector2):
 	return null
 
 
-## A foe's blow this big or bigger lands as a slam rather than a slash (a placeholder, like
+## A foe's blow this big or bigger lands as its family's heavy blow (a placeholder, like
 ## every number).
-const SLAM_DAMAGE := 20
+const HEAVY_DAMAGE := 20
+const CRIT_DB := 2.0   # a crit is the same blow, a little louder (the third cut has no crit of its own)
 
 
-## The sound of a machine's blow, by its weapon (Ryan, 23 September: lasers, gunfire,
-## explosions and melee of various kinds, with Doom levels of punch): energy is a laser
-## (static, never crits), a kinetic line weapon is gunfire and its crit the cannon, indirect
-## is the cannon, melee is a slash and its crit a slam.
-func _blow_sound(f: Face, crit: bool) -> String:
-	if f == null:
-		return "hit_crit" if crit else "hit"
-	if f.reach == Face.Reach.MELEE:
-		return "slam" if crit else "slash"
-	if f.reach == Face.Reach.INDIRECT:
-		return "cannon"
-	if f.crit == 0 and f.power == f.power_max:
-		return "laser"
-	return "cannon" if crit else "gunfire"
+## The sound of a component's use: by the weapon (ContentDB.sound_of: its shape, an energy
+## barrel a laser, the Arsenal's a plasma, the label where content names one), a shield's
+## deflector and a buff's coil. "" for none.
+func _blow_sound(f: Face) -> String:
+	if f == null or f.component.is_empty():
+		return ""
+	return Sound.blow(ContentDB.load_default().sound_of(f.component))
+
+
+## The maker whose metal a machine is.
+func _maker_of(ms: Skirmish.MechState) -> String:
+	return str(ContentDB.load_default().chassis.get(ms.unit.chassis_id, {}).get("maker", "minerva"))
+
+
+## Each live machine's heat as a mark: 0 cool, 1 past three quarters, 2 over the cap (it will
+## burn at the round's end).
+func _heat_marks() -> Array:
+	var out: Array = []
+	for ms in sk.mechs:
+		var m := 0
+		if ms.alive() and ms.heat_max > 0:
+			if ms.heat > ms.heat_max:
+				m = 2
+			elif ms.heat * 4 >= ms.heat_max * 3:
+				m = 1
+		out.append(m)
+	return out
+
+
+## Jenny on the heat a spend just added: the overheat when a machine went over the cap, else
+## the warning when one passed three quarters; one line for the spend.
+func _say_heat(before: Array) -> void:
+	var after := _heat_marks()
+	var worst := 0
+	for k in range(mini(before.size(), after.size())):
+		if int(after[k]) > int(before[k]):
+			worst = maxi(worst, int(after[k]))
+	if worst == 2:
+		Sound.say("overheat")
+	elif worst == 1:
+		Sound.say("heat_high")
 
 
 ## Spend die `i` on `target` (a Foe or a MechState). Returns whether the simulation accepted it.
@@ -1240,29 +1280,47 @@ func _use_die(i: int, target) -> bool:
 		if fv != null:
 			was[foe] = [fv, fv.sprite, fv.sprite_frame(), fv.flip_h]
 	var spent: Face = sk.mechs[i].face()
+	var heat_before := _heat_marks()
 	var ok := sk.assign(i, target)
 	if ok:
 		locked[i] = false
 	_refresh()
+	if ok:
+		Sound.play("die_spend")   # the console letting the die go; the component's own sound lands after
+	# The fight decided by this die: nothing queued during it is said after (the win clears
+	# Jenny's queue, so the last kill never gets a heat warning behind it).
+	var won := ok and sk.outcome == Skirmish.Outcome.VICTORY
+	if won:
+		Sound.voice_clear()
 	if ok and target is Foe:
 		var tv: UnitView = was[target][0] if was.has(target) else null
 		_flash_roll(tv)
 		_animate_attack(_mech_views[i], tv, bool(sk.last_roll.get("ranged", false)), target.alive())
-		Sound.play_after(0.08, _blow_sound(spent, bool(sk.last_roll.get("crit", false))))   # when the blow lands
+		Sound.play_after(0.08, _blow_sound(spent), CRIT_DB if bool(sk.last_roll.get("crit", false)) else 0.0)   # when the blow lands
 		var k := 0
+		var fallen := ""
 		for foe in was.keys():
 			if not foe.alive():
 				var w: Array = was[foe]
 				_animate_death(w[0], w[1], w[2], w[3])
 				Sound.play_after(0.14 + 0.07 * k, "kill", -2.0 * k)
+				fallen = ContentDB.load_default().faction_of_foe(foe.content_id)
 				k += 1
+		if not won:
+			if k > 0:
+				var hook := "foe_down_" + fallen
+				Sound.say(hook if Sound.FAMILIES.has(fallen) else "foe_down")
+			else:
+				Sound.say("die_spent")
 	elif ok and spent != null:
-		if spent.kind == Face.Kind.SHIELD:
-			Sound.play("shield_up")
-		elif spent.kind == Face.Kind.VENT:
+		if spent.kind == Face.Kind.VENT:
 			Sound.play("vent")
-		elif spent.kind == Face.Kind.BUFF:
-			Sound.play("shield_up", -3.0)   # a placeholder until a buff has a sound of its own
+			Sound.say("heat_vented")
+		elif spent.kind == Face.Kind.SHIELD or spent.kind == Face.Kind.BUFF:
+			Sound.play(_blow_sound(spent), 0.0 if spent.kind == Face.Kind.SHIELD else -3.0)
+			Sound.say("buff")
+	if ok and not won:
+		_say_heat(heat_before)
 	if ok and sk.outcome != Skirmish.Outcome.NONE:
 		# Decided by this die: the fight ends now, after the last blow has played.
 		if is_inside_tree():
@@ -1380,7 +1438,10 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 		if mi >= 0 and mi < _mech_views.size():
 			hits.append([before["views"].get(ev["foe"]), _mech_views[mi], bool(ev["broke_shield"]),
 				bool(ev.get("blocked", false)), int(ev["shield"]), int(ev["hull"]),
-				int(ev.get("absorbed", 0)) + int(ev.get("through", 0))])
+				int(ev.get("absorbed", 0)) + int(ev.get("through", 0)),
+				int(ev.get("through", 0)), str(ev.get("component", "")),
+				ContentDB.load_default().faction_of_foe(ev["foe"].content_id) if ev["foe"] != null else "",
+				_maker_of(sk.mechs[mi])])
 	if not is_inside_tree() or (hits.is_empty() and sk.overheats.is_empty()):
 		then.call()
 		return
@@ -1414,7 +1475,14 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 
 
 ## One blow of the replay: [foe view or null, mech view, broke shield, blocked, shield after,
-## hull after]. A striker whose slot has since emptied (killed by burn) still lands its blow.
+## hull after, damage, through to hull, what an injury did, the striker's family, the struck
+## machine's maker]. A striker whose slot has since emptied
+## (killed by burn) still lands its blow.
+##
+## Heard as the family's blow (its heavy blow from HEAVY_DAMAGE), then what took it: a
+## standing shield (the shield hit), the shield breaking, the armour turning it on bare hull
+## (the maker's block), or the hull (the maker's hit), and a machine that falls its maker's
+## kill. Jenny: a machine lost, a component damaged or destroyed.
 func _land_blow(h: Array) -> void:
 	var fv: UnitView = h[0]
 	var mv: UnitView = h[1]
@@ -1422,12 +1490,23 @@ func _land_blow(h: Array) -> void:
 	var held: bool = h[3]
 	var shield_after: int = h[4]
 	var hull_after: int = h[5]
+	var through: int = h[7]
+	var injury: String = h[8]
+	var maker: String = h[10]
 	if fv != null and fv.visible:
 		_animate_attack(fv, mv, false)
 	else:
 		_animate_hit(mv)
-	var blow := "slam" if (h.size() > 6 and int(h[6]) >= SLAM_DAMAGE) else "slash"
-	Sound.play_after(0.08, "shield_break" if broke else ("block" if held else blow), 0.0 if broke else -3.0)
+	Sound.play(Sound.family("heavy" if int(h[6]) >= HEAVY_DAMAGE else "hit", h[9]))
+	var struck := "shield_break" if broke else ("shield_hit" if held else (Sound.struck("hit", maker) if through > 0 else Sound.struck("block", maker)))
+	Sound.play_after(0.08, struck, 0.0 if broke else -3.0)
+	if hull_after <= 0 and not mv.dead:   # its first fall only: a wreck struck again is not lost twice
+		Sound.play_after(0.2, Sound.struck("kill", maker))
+		Sound.say("machine_lost")
+	elif injury == "destroyed":
+		Sound.say("component_destroyed")
+	elif injury == "cracked":
+		Sound.say("component_damaged")
 	var t2 := create_tween()
 	t2.tween_interval(0.08)
 	t2.tween_callback(func() -> void:
@@ -1454,6 +1533,9 @@ func _land_overheats() -> void:
 		_animate_hit(mv)
 		if mv.bars.size() >= 2:
 			mv.bars[1][0] = int(ov["hull"])
+		if int(ov["hull"]) <= 0 and not mv.dead:
+			Sound.play_after(0.2, Sound.struck("kill", _maker_of(sk.mechs[i])))
+			Sound.say("machine_lost")
 		if int(ov["hull"]) <= 0:
 			mv.dead = true
 		mv.queue_redraw()
@@ -1612,6 +1694,7 @@ func _show_outcome(outcome: int) -> void:
 	_refresh()
 	match outcome:
 		Skirmish.Outcome.VICTORY:
+			Sound.voice_clear()
 			Sound.play("victory")
 			_overlay_title.text = "VICTORY"
 			_overlay_text.text = "The pack is gone. Rift pressure rose by %d." % sk.round

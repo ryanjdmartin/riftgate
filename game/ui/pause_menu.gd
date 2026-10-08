@@ -77,7 +77,7 @@ func open() -> void:
 
 func close() -> void:
 	visible = false
-	Sound.play("ui_back")
+	Sound.play("menu_close")
 	Sound.duck(false)
 	resumed.emit()
 
@@ -94,7 +94,7 @@ func _show_page(page: String) -> void:
 	match page:
 		"paused":
 			_title("PAUSED")
-			_button("RESUME", close, true)
+			_button("RESUME", close, true, "")   # close() plays the menu closing
 			_button("SETTINGS", func() -> void: _show_page("settings"))
 			_button("QUIT", func() -> void: _show_page("quit"))
 		"settings":
@@ -108,18 +108,20 @@ func _show_page(page: String) -> void:
 			_toggle("FINE MAP", "fine_map")   # the map at the glass's density: sharper, costlier; a phone judges its frame rate
 			_slider("MUSIC", "music")
 			_slider("EFFECTS", "effects")
-			_button("BACK", func() -> void: _show_page("paused"))
+			_slider("VOICE", "voice")
+			_credit("Voice: Jenny (Dioco)")   # her licence asks for it (CREDITS.md is the record)
+			_button("BACK", func() -> void: _show_page("paused"), false, "ui_back")
 		"quit":
 			_title("QUIT?")
 			var l := Hud.label("Leave for the harness. A battle is kept where it stands.", 18, Palette.MUTED)
 			l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			l.autowrap_mode = TextServer.AUTOWRAP_WORD
 			_rows.add_child(l)
-			_button("STAY", func() -> void: _show_page("paused"), true)
+			_button("STAY", func() -> void: _show_page("paused"), true, "ui_back")
 			_button("QUIT", func() -> void:
 				visible = false
 				Sound.duck(false)
-				quit_requested.emit())
+				quit_requested.emit(), false, "confirm")
 	_fit()
 	_fit.call_deferred()
 
@@ -193,8 +195,11 @@ func _title(text: String) -> void:
 	_rows.add_child(l)
 
 
-func _button(text: String, on_pressed: Callable, filled: bool = false) -> void:
+## A menu button: forward is the press (the default), back is a dismiss, and an action the
+## menu commits to is a confirm (the palette: the menu's forward, back and select).
+func _button(text: String, on_pressed: Callable, filled: bool = false, sound: String = "ui_tap") -> void:
 	var b := HudButton.new(text, on_pressed)
+	b.sound = sound
 	b.filled = filled
 	b.custom_minimum_size = Vector2(0, 54)
 	_rows.add_child(b)
@@ -259,11 +264,18 @@ func _slider(caption: String, key: String) -> void:
 	s.custom_minimum_size = Vector2(0, 28)
 	s.value_changed.connect(func(v: float) -> void:
 		Settings.set_display(key, v)
-		if key in ["music", "effects"]:
+		if key in ["music", "effects", "voice"]:
 			Sound.apply_settings()
 		display_changed.emit(key, v))
 	row.add_child(s)
 	_rows.add_child(row)
+
+
+## A small line of credit under the knob it belongs to.
+func _credit(text: String) -> void:
+	var l := Hud.label(text, 11, Palette.MUTED, Hud.mono())
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_rows.add_child(l)
 
 
 func _toggle(caption: String, key: String) -> void:

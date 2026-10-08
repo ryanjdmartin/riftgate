@@ -1343,6 +1343,11 @@ func _frame_x() -> Vector2:
 	return Vector2(left, left + hex_w * (field.map.width + 0.5) + HEX_SIZE * 0.44)
 
 
+## The machines whose routes the plan cannot carry right now (the NO ROUTE plaque).
+func rejected() -> Array:
+	return _preview().get("rejected", [])
+
+
 ## The dry run of the phase, redone only when the plan changes.
 var _preview_key := ""
 var _preview_cache: Dictionary = {}
@@ -1458,7 +1463,7 @@ func _advance_anim(delta: float) -> void:
 		if hex != int(a["hex"]):
 			a["hex"] = hex
 			if field.unit_by_id(uid) != null and field.unit_by_id(uid).is_player():
-				Sound.play("step", 0.0, 0.1)   # a footfall a hex (quiet by its file); the packs are pictures and make none
+				Sound.play(Sound.step_for(field.unit_by_id(uid).traits), 0.0, 0.1)   # a footfall a hex by the way it moves (quiet by its file); the packs are pictures and make none
 		var px: Vector2 = here[0]
 		_anim_px[uid] = px
 		if _map3d != null:

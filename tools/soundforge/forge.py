@@ -4,8 +4,9 @@ nothing that sounds like a space opera; the music an industrial groove, driving 
 fast, more bop than pummel. These are placeholders in that register, to be replaced by
 real recordings and a real track when there are some. numpy only.
 
-    tools/spriter/.venv/bin/python tools/soundforge/forge.py build            # everything into art/audio
-    tools/spriter/.venv/bin/python tools/soundforge/forge.py build hit kill   # some
+    tools/spriter/.venv/bin/python tools/soundforge/forge.py build            # everything SHIP names into art/audio (and retire the rest)
+    tools/spriter/.venv/bin/python tools/soundforge/forge.py build effects    # everything but the loops
+    tools/spriter/.venv/bin/python tools/soundforge/forge.py build ui_tap kill   # some
     tools/spriter/.venv/bin/python tools/soundforge/forge.py list
     tools/spriter/.venv/bin/python tools/soundforge/forge.py measure          # level and balance of every file
     tools/spriter/.venv/bin/python tools/soundforge/forge.py sketch [human rift djent]   # eight bars in a direction, to tools/soundforge/out
@@ -3410,6 +3411,104 @@ LEVELS = {
 }
 
 
+# ---------------------------------------------------------------- what ships
+# The effects' pass, in the game (Ryan, 8 October: implement everything in-game). SOUNDS
+# above stays the forge's own recipes, the first and second cuts among them, which the sketch
+# modules still play beside their picks; SHIP is what `build` writes into art/audio. A pick
+# is built by the very function that rendered what Ryan heard on the listening page and at
+# the level he heard it, so nothing is re-derived on the way in:
+#   - the console is the palette (palette_sketches.py, its eleventh cut and the heat
+#     signals), each row levelled through the phone model;
+#   - the iron, the rift and the red are the third cut (fx_sketches.py), each written at its
+#     shipped sound's level plus the cut's stated boost;
+#   - the cut, the vent, the overheat's burn, the withdrawal and a foe stepping into the
+#     line are kept as they were (the page: kept as they are), and the music is untouched.
+# A foe falling plays the third cut's kill in Minerva steel, as the round on the page did.
+# Jenny's lines ship from voice_lines.py into art/audio/voice.
+
+def _console(row):
+    def build():
+        import palette_sketches as PS
+        x, _db, _beside, _label, _note = PS.render_one(row)
+        return x
+    return build
+
+
+def _third_cut(name):
+    def build():
+        import fx_sketches as FX
+        return FX.level(FX.new(name), LEVELS[FX.NEW[name][2]] + FX.boost(name))
+    return build
+
+
+def _kept(name):
+    return lambda: write_level(SOUNDS[name](), name, LEVELS[name])
+
+
+MAKERS = ["minerva", "kestrel", "wainwright_sutler", "aphelion", "arsenal"]
+FAMILIES = ["undead", "demonic", "eldritch"]
+
+## game name -> a builder of the levelled signal
+SHIP = {
+    # the console: a press, the map, the die, the turn, the panels, the heat
+    "ui_tap": _console("tap"), "map_select": _console("map_select"), "ui_back": _console("dismiss"),
+    "confirm": _console("confirm"), "refuse": _console("refuse"),
+    "die_pick": _console("die_lift"), "die_hover": _console("die_hover"), "die_spend": _console("die_spend"),
+    "die_drop": _console("die_drop_back"), "die_lock": _console("die_lock"), "die_unlock": _console("die_unlock"),
+    "die_roll": _console("reroll"), "round_open": _console("round_open"), "resolve": _console("end_turn"),
+    "plot": _console("route_set"), "hold": _console("hold_readout"),
+    "codex_open": _console("codex_open"), "codex_close": _console("codex_close"),
+    "menu_open": _console("menu_open"), "menu_close": _console("menu_close"),
+    "heat_warn": _console("heat_warn"), "heat_alarm": _console("overheat"),
+    # the iron: a blow by the weapon (ContentDB.sound_of), the struck machine's metal, shields, footfalls
+    "w_barrel": _third_cut("w_barrel"), "w_twin": _third_cut("w_twin"), "w_rack": _third_cut("w_rack"),
+    "w_blade": _third_cut("w_blade"), "w_blunt": _third_cut("w_blunt"), "w_blunt_plasma": _third_cut("w_blunt_plasma"),
+    "w_laser": _third_cut("w_laser"), "w_plasma": _third_cut("w_plasma"),
+    "w_dish_shield": _third_cut("w_dish_shield"), "w_dish_coil": _third_cut("w_dish_coil"),
+    "shield_hit": _third_cut("shield_hit"), "shield_break": _third_cut("shield_break"),
+    "kill": _third_cut("kill_minerva"),
+    "step_tracked": _third_cut("step_tracked"), "step_legged": _third_cut("step_legged"),
+    "step_wheeled": _third_cut("step_wheeled"), "step_flyer": _third_cut("step_flyer"),
+    # the rift: each family's blow, heavy blow and arrival, and the boss revealed
+    "reveal": _third_cut("reveal"),
+    # the red
+    "contact": _third_cut("contact"), "engage": _third_cut("engage"), "gate_hit": _third_cut("gate_hit"),
+    "victory": _third_cut("victory"), "defeat": _third_cut("defeat"),
+    # kept as they were
+    "cut": _kept("cut"), "vent": _kept("vent"), "overheat": _kept("overheat"),
+    "withdraw": _kept("withdraw"), "arrival": _kept("arrival"),
+}
+for _m in MAKERS:
+    for _k in ("hit", "block", "kill"):
+        SHIP["%s_%s" % (_k, _m)] = _third_cut("%s_%s" % (_k, _m))
+for _f in FAMILIES:
+    SHIP["foe_%s_hit" % _f] = _third_cut("foe_%s_hit" % _f)
+    SHIP["foe_%s_heavy" % _f] = _third_cut("foe_%s_heavy" % _f)
+    SHIP["spawn_%s" % _f] = _third_cut("spawn_%s" % _f)
+for _name in [n for n in SOUNDS if n.startswith("music_")]:
+    SHIP[_name] = (lambda n=_name: write_level(SOUNDS[n](), n, LEVELS[n]))
+
+
+def write_level(x, name, level):
+    """A recipe's signal at its LEVELS level, as `write` levels it (a loop by its body, an
+    effect by its loudest 50 ms)."""
+    return x * 10.0 ** ((level - (mean_level(x) if name.startswith("music_") else loudness(x))) / 20.0)
+
+
+def write_as_is(name, x):
+    """A signal already at its level: limited and written."""
+    x = limit(x)
+    pcm = (np.clip(x, -1.0, 1.0) * 32767.0).astype("<i2")
+    os.makedirs(OUT, exist_ok=True)
+    path = os.path.join(OUT, name + ".wav")
+    with wave.open(path, "wb") as w:
+        w.setnchannels(1)
+        w.setsampwidth(2)
+        w.setframerate(SR)
+        w.writeframes(pcm.tobytes())
+    return path
+
+
 def read(name):
     with wave.open(os.path.join(OUT, name + ".wav"), "rb") as w:
         x = np.frombuffer(w.readframes(w.getnframes()), "<i2") / 32767.0
@@ -3425,7 +3524,7 @@ def main(argv):
         # and where each one starts.
         os.makedirs(OUT_SKETCH, exist_ok=True)
         parts, when, t = [], [], 0.0
-        for name in [n for n in SOUNDS if not n.startswith("music_")]:
+        for name in [n for n in SHIP if not n.startswith("music_")]:
             x, sr = read(name)
             when.append((t, name))
             parts.append(x)
@@ -3467,24 +3566,35 @@ def main(argv):
             print("%-16s %5.2f s  %s" % (name, len(x) / SR, os.path.relpath(path)))
         return 0
     if argv[0] == "list":
-        for name in SOUNDS:
+        for name in SHIP:
             print(name)
         return 0
     if argv[0] == "measure":
         print("%-16s %6s %8s %8s %6s" % ("name", "dur", "loud dB", "peak dB", "<150Hz"))
-        for name in argv[1:] or list(SOUNDS):
+        for name in argv[1:] or list(SHIP):
             x, sr = read(name)
             print("%-16s %6.2f %8.1f %8.1f %6.2f" % (name, len(x) / sr, loudness(x), 20.0 * math.log10(np.max(np.abs(x)) + 1e-9), low_share(x)))
         return 0
-    names = argv[1:] or list(SOUNDS)
+    whole = not argv[1:] or argv[1:] == ["effects"]
+    names = argv[1:] or list(SHIP)
+    if argv[1:] == ["effects"]:   # everything but the loops, which take minutes and rarely move
+        names = [n for n in SHIP if not n.startswith("music_")]
     for name in names:
-        if name not in SOUNDS:
+        if name not in SHIP:
             print("no such sound:", name)
             return 1
         seed(name)
-        x = SOUNDS[name]()
-        path = write(name, x, LEVELS[name])
+        x = SHIP[name]()
+        path = write_as_is(name, x)
         print("%-16s %5.2f s  %s" % (name, len(x) / SR, os.path.relpath(path)))
+    if whole:
+        # A whole build retires what SHIP no longer names (and its import file).
+        for f in sorted(os.listdir(OUT)):
+            if f.endswith(".wav") and f[:-4] not in SHIP:
+                os.remove(os.path.join(OUT, f))
+                if os.path.exists(os.path.join(OUT, f + ".import")):
+                    os.remove(os.path.join(OUT, f + ".import"))
+                print("retired", f)
     return 0
 
 

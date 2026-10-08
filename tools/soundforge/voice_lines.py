@@ -53,6 +53,10 @@ Rendered through the decided chain (Jenny, mid, slowed a third, plosives tamed) 
 the phone. Every line in every pool is rendered, so each word can be judged.
 
     tools/spriter/.venv/bin/python tools/soundforge/voice_lines.py          # into out/fx
+    tools/spriter/.venv/bin/python tools/soundforge/voice_lines.py ship     # into art/audio/voice, with lines.json, for the game
+
+The game (game/audio/voice_lines.gd, played by Sound.say) reads lines.json: every hook's
+chance, whether it is information, its pools by file, the pools it merges and its signal.
 """
 import json
 import math
@@ -327,7 +331,57 @@ def render_line(text, scale=PACE, pin=None):
     return V.level_for_phone(y, -14.0), {"draw": draw, "front": round(l0, 1), "front_drawn": round(l1, 1), "front_lifted": round(P.front_level(raw), 1), "front_out": round(P.front_level(y), 1)}
 
 
+# The console signal a hook is announced by, heard first and the line a quarter second after
+# (Ryan, 8 October: the two heat marks).
+SIGNALS = {"heat_high": "heat_warn", "overheat": "heat_alarm"}
+SHIP_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "art", "audio", "voice")
+SHIP_SR = 24000   # her chain stops at 4.5 kHz, so half the rate loses nothing and halves the files
+
+
+def ship():
+    """Every line into art/audio/voice at SHIP_SR, as the page rendered it, and lines.json."""
+    import wave
+    os.makedirs(SHIP_DIR, exist_ok=True)
+    table = {"spacing": SPACING, "stale": STALE, "personality": PERSONALITY, "hooks": {}}
+    written = set()
+    for hook, (chance, info, normal, personality) in HOOKS.items():
+        entry = {"chance": chance, "info": info, "lines": [], "personality": [],
+                 "merge": MERGE.get(hook, []), "signal": SIGNALS.get(hook, "")}
+        for pool, key in ((normal, "lines"), (personality, "personality")):
+            for line in pool:
+                text = shown(line)
+                name = PREFIX + slug(text)
+                entry[key].append({"file": name, "text": text})
+                if name in written:
+                    continue
+                F.seed(PREFIX + slug(text))
+                x, _front = render_line(spoken(line), pace(line), pinned(line))
+                x = F.limit(np.concatenate([x, np.zeros(F.n_of(0.05))]))
+                y = F.lp(x, SHIP_SR * 0.42, order=6)[::SR // SHIP_SR]
+                pcm = (np.clip(y, -1.0, 1.0) * 32767.0).astype("<i2")
+                with wave.open(os.path.join(SHIP_DIR, name + ".wav"), "wb") as w:
+                    w.setnchannels(1)
+                    w.setsampwidth(2)
+                    w.setframerate(SHIP_SR)
+                    w.writeframes(pcm.tobytes())
+                written.add(name)
+                print("  %-20s %-52s %5.2f s" % (hook, text, len(y) / SHIP_SR))
+        table["hooks"][hook] = entry
+    with open(os.path.join(SHIP_DIR, "lines.json"), "w") as fh:
+        json.dump(table, fh, indent=1, ensure_ascii=False)
+        fh.write("\n")
+    for f in sorted(os.listdir(SHIP_DIR)):
+        if f.endswith(".wav") and f[:-4] not in written:
+            os.remove(os.path.join(SHIP_DIR, f))
+            if os.path.exists(os.path.join(SHIP_DIR, f + ".import")):
+                os.remove(os.path.join(SHIP_DIR, f + ".import"))
+            print("retired", f)
+    return 0
+
+
 def main(argv):
+    if argv[:1] == ["ship"]:
+        return ship()
     os.makedirs(X.OUT, exist_ok=True)
     path = os.path.join(X.OUT, "manifest.json")
     manifest = {}
