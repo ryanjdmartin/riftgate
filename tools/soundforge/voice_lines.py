@@ -5,9 +5,19 @@ between lines so she never rattles off several at once.
 The system (for sound.gd when it lands):
 
   chance      each hook has a chance that a trigger says a line at all; information hooks (a
-              machine lost, a component damaged or destroyed, heat past three quarters, a loss) say one
-              every time, since that is actual information; victory and the battle opening say
-              one every time too (Ryan: common moments, obvious ones).
+              machine lost, a component damaged or destroyed, heat past three quarters, an
+              overheat, a loss) say one every time, since that is actual information; victory
+              and the battle opening say one every time too (Ryan: common moments, obvious ones).
+  pre-emption (Ryan, 7 October) a loss clears the queue and speaks at once, the player's
+              controls going at the same moment; the skirmish's win clears the queue, so the
+              final kill shot never gets a heat warning after it, and the victory line waits
+              for the victory screen (the boss's death is the win: its animation, the corpse on
+              the field, the rift collapsing, so there is no boss-down hook); an overheat
+              replaces a pending heat warning when the heat blew past both marks in one go.
+  ducking     the music dips under a line (3 to 4 dB to start with, set by ear) and comes back
+              after it; her level is measured against the undipped music.
+  parked      an idle nag (thirty seconds with no input, a chance of "awaiting orders"): Ryan
+              likes it, parked for now. The loss pools stay thin: not something to chase.
   pools       a hook's pool is its own plus any it merges (MERGE): a Horde foe falling draws
               from the generic foe-down pool and the Horde pool together, and every unit
               committed draws from both resolve pools, since all units moving is the norm.
@@ -79,7 +89,10 @@ HOOKS = {
                     ["whew", "that's much better"]),
     "heat_high": (1.0, True,
                   ["thermal load approaching limit", "heat warning", "danger: internal temperature elevated"],
-                  ["hot hot hot", "toasty", "smoking"]),
+                  ["toasty", "getting warm in here"]),
+    "overheat": (1.0, True,   # heat past 100: damage at the round's end, a serious danger (Ryan, 7 October); pre-empts a pending heat warning
+                 ["overheat. damage imminent", "thermal limit exceeded. hull damage next round", "heat critical. vent now"],
+                 ["hot hot hot", "smoking", "she cannae take any more", "I'm melting"]),
     "machine_lost": (1.0, True,
                      ["machine lost", "unit destroyed"],
                      []),
@@ -126,7 +139,7 @@ HOOKS = {
                ["you must construct additional pylons"]),
     "battle_open": (1.0, False,
                     ["battlefield feed online. all units reporting in", ("deployment complete. awaiting your orders, commander", "deployment complete. awaiting your orders commander"), "sector loaded. hostiles inbound"],
-                    [("reactor online, sensors online, weapons online, all systems nominal", "reactor on-line, sensors on-line, weapons on-line, all systems nominal"), "once more, into the breach", ("now for wrath. now for ruin. and the red dawn", "now for wrath. now for ruin. and the red don"), ("hell, it's about time", "hell, it's about time", 1.7)]),   # don for dawn (Ryan); Tychus at a drawl
+                    [("reactor online, sensors online, weapons online, all systems nominal", "reactor on-line, sensors on-line, weapons on-line, all systems nominal"), "once more, into the breach", ("now for wrath. now for ruin. and the red dawn", "now for wrath. now for ruin. and the red don"), ("hell, it's about time", "hell, it's about, time", 1.7)]),   # don for dawn (Ryan); Tychus at a drawl, about and time split a little
 }
 
 # a hook draws from its own pool and these others' together
