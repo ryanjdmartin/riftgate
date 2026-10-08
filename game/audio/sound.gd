@@ -61,6 +61,16 @@ const BLOWS := {
 	"laser": "w_laser", "plasma": "w_plasma", "deflector": "w_dish_shield", "coil": "w_dish_coil",
 }
 
+## Where a blow lands, seconds from its start (measured 8 October: the loudest moment through
+## the phone model; the third cut draws every blow out, the laser charging, the rack's salvo
+## in flight, the firebolt lobbed). A hit's flash, a kill, a death and Jenny wait for it, so a
+## spend is heard in order rather than all at once (Ryan, 8 October: too dense). Absent is at once.
+const LAND := {
+	"w_barrel": 0.03, "w_twin": 0.07, "w_rack": 1.15, "w_blade": 0.5, "w_blunt": 0.33, "w_blunt_plasma": 0.33,
+	"w_laser": 0.47, "w_plasma": 0.5, "w_dish_shield": 0.04, "w_dish_coil": 0.57,
+	"foe_undead_heavy": 0.3, "foe_demonic_heavy": 0.3, "foe_eldritch_heavy": 0.46,
+}
+
 ## A way of moving (BattleMap.WAYS) to its footfall; a hovercraft passes like a flyer.
 const STEPS := {"tracked": "step_tracked", "walker": "step_legged", "wheeled": "step_wheeled", "flyer": "step_flyer", "hover": "step_flyer"}
 
@@ -167,6 +177,11 @@ static func family(kind: String, faction: String) -> String:
 	return "spawn_" + f if kind == "spawn" else "foe_%s_%s" % [f, kind]
 
 
+## Seconds from a blow's start to where it lands (LAND); 0 for one that lands at once.
+static func lands(name: String) -> float:
+	return float(LAND.get(name, 0.0))
+
+
 ## A machine's footfall by its way of moving (its traits); legs for a machine with none.
 static func step_for(traits: Array) -> String:
 	for t in traits:
@@ -213,6 +228,7 @@ var _line_timer: Timer = null                # the line after its signal
 var _pending_line: AudioStream = null        # the line that timer will speak
 var _voice_db := 0.0                         # the music under a line
 var _voice_tween: Tween = null
+var _say_gen := 0                            # bumped by a clear: a delayed line from before it is dropped
 
 
 # ---------------------------------------------------------------- the static face
@@ -296,7 +312,14 @@ static func say(hook: String) -> void:
 	_call("_say", [hook])
 
 
-## Every waiting line dropped: the skirmish is won, so nothing queued during it is said after.
+## A hook fired `delay` seconds from now: after the blow it belongs to has landed. A clear in
+## the meantime (the fight won) cancels it.
+static func say_after(delay: float, hook: String) -> void:
+	_call("_say_after", [delay, hook])
+
+
+## Every waiting line dropped, and every line still on its way: the skirmish is won, so
+## nothing from the fight is said after it.
 static func voice_clear() -> void:
 	_call("_voice_clear", [])
 
@@ -556,6 +579,7 @@ func _apply() -> void:
 	_set_music_bus()
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Effects"), _db(float(Settings.display.get("effects", 1.0))))
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Voice"), _db(float(Settings.display.get("voice", 1.0))))
+	_lines.always = OS.is_debug_build() and bool(Settings.display.get("voice_test", false))
 
 
 ## The music bus is the knob, the duck, the dip and the line together; each moves its own
@@ -612,7 +636,18 @@ func _say(hook: String) -> void:
 	_pump()
 
 
+func _say_after(delay: float, hook: String) -> void:
+	if delay <= 0.0:
+		_say(hook)
+		return
+	var gen := _say_gen
+	get_tree().create_timer(delay).timeout.connect(func() -> void:
+		if gen == _say_gen:
+			_say(hook))
+
+
 func _voice_clear() -> void:
+	_say_gen += 1
 	_lines.clear()
 
 

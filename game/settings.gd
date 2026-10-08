@@ -24,7 +24,8 @@ static var _loaded := false
 ## (Ryan, 23 September: that should be the fastest the slider goes).
 const DISPLAY_DEFAULTS := {
 	"brightness": 1.0, "glitch": true, "pace": 1.0, "enemy_pace": 1.0, "scan": true,
-	"music": 0.63, "effects": 1.0, "voice": 1.0,   # the baseline mix (Ryan, 7 October): music 0.63 (-4 dB) with the effects and the voice at full, Hold The Line the reference
+	"music": 1.0, "effects": 1.0, "voice": 1.0,   # Hold The Line at the full knob matches other games on the phone (Ryan, 8 October); the effects and the voice mastered up to sit over it
+	"voice_test": false,   # a debug build's test mode: every one of Jenny's hooks speaks every time
 	"fine_map": true,   # the map's scene and compositor at the glass's density rather than the design's (Ryan, 29 September: 60 fps locked on the Pixel with it, so it is the default)
 }
 const DISPLAY_RANGES := {

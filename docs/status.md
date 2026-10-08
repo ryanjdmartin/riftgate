@@ -618,7 +618,11 @@ readout, the map's acquire on its taps, a route the plan cannot carry refused. *
 game:** `voice_lines.py ship` writes her 151 lines at 24 kHz into `art/audio/voice/` with
 `lines.json`; `VoiceLines` (`game/audio/voice_lines.gd`) is the agreed system and `Sound.say`
 plays it on a Voice bus with the music ducked 3.5 dB under her; the injury now says whether it
-cracked or destroyed (`Skirmish.apply_injury`), for her component lines; a VOICE knob carries
+cracked or destroyed (`Skirmish.apply_injury`), for her component lines; after Ryan's first phone
+notes a spend is heard in order (the kill and the death where the blow lands, `Sound.LAND`, Jenny
+after), every effect and line goes through the forge's master stage (`forge.master`: 8 dB up, a
+look-ahead limiter at -1 dBFS), the music's default is the full knob, and a debug build's settings
+have EVERY LINE (Jenny on every hook, every time); a VOICE knob carries
 "Voice: Jenny (Dioco)" under it (`CREDITS.md` the record); the music's default is the baseline's
 0.63. `tools/sound_smoke.gd` drives a skirmish and a battle with a window, muted, through every
 hook (the tests are headless, where Sound is a no-op). Not hookable yet: the flattening's spread

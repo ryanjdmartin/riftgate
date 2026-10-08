@@ -41,6 +41,10 @@ var spacing := SPACING
 var stale := STALE
 var personality := PERSONALITY
 var rng := RandomNumberGenerator.new()
+## The test mode (a debug build's settings, 8 October: Ryan could not get the codex's one in
+## twelve to fire on the phone): every hook speaks every time, each line a second after the
+## last, nothing goes stale, so every hook can be heard on demand.
+var always := false
 
 var _queue: Array = []           # [{hook, file, text, at, info, signal}], oldest first
 var _bags: Dictionary = {}       # hook -> remaining indices into its merged normal pool
@@ -66,7 +70,7 @@ func trigger(hook: String, now: float) -> bool:
 		return false
 	var h: Dictionary = hooks[hook]
 	var info := bool(h.get("info", false))
-	if not info and rng.randf() >= float(h.get("chance", 1.0)):
+	if not info and not always and rng.randf() >= float(h.get("chance", 1.0)):
 		return false
 	var line := _pick(hook)
 	if line.is_empty():
@@ -98,12 +102,12 @@ func next(now: float) -> Dictionary:
 		return {}
 	while not _queue.is_empty():
 		var q: Dictionary = _queue[0]
-		if not q["info"] and now - float(q["at"]) > stale:
+		if not q["info"] and not always and now - float(q["at"]) > stale:
 			_queue.pop_front()
 			continue
-		var gap := 0.0 if q["loss"] else (INFO_GAP if q["info"] else spacing)
+		var gap := 0.0 if q["loss"] else (INFO_GAP if q["info"] or always else spacing)
 		if now < _last_end + gap:
-			if not q["info"] and (_last_end + gap) - float(q["at"]) > stale:
+			if not q["info"] and not always and (_last_end + gap) - float(q["at"]) > stale:
 				_queue.pop_front()   # it would be stale by the time its turn came
 				continue
 			return {}

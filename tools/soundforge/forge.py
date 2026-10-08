@@ -3495,9 +3495,37 @@ def write_level(x, name, level):
     return x * 10.0 ** ((level - (mean_level(x) if name.startswith("music_") else loudness(x))) / 20.0)
 
 
-def write_as_is(name, x):
-    """A signal already at its level: limited and written."""
-    x = limit(x)
+## The master stage on every effect and line (Ryan, 8 October, on the phone: the set way too
+## quiet, against the music and for the phone's own volume; Hold The Line at the music's full
+## knob matches other games). Every page level stays the relative mix; the set comes up by
+## MASTER_DB together, a look-ahead limiter holding the peaks at CEILING, so the blows that
+## already peaked at full scale come up in loudness without clipping. The loops are untouched.
+MASTER_DB = 8.0
+CEILING = 0.89   # -1 dBFS
+
+
+def master(x, gain_db=MASTER_DB, ceiling=CEILING, look=0.004, release=0.02):
+    """Gain, then a look-ahead peak limiter: the gain falls ahead of a peak over `look` and
+    recovers over `release`, so a transient is turned down rather than folded over."""
+    from numpy.lib.stride_tricks import sliding_window_view
+    y = np.asarray(x, dtype=float) * 10.0 ** (gain_db / 20.0)
+    n = max(1, n_of(look))
+    a = np.abs(y)
+    ahead = sliding_window_view(np.concatenate([a, np.zeros(n)]), n + 1).max(axis=1)[:len(a)]
+    g = np.minimum(1.0, ceiling / np.maximum(ahead, 1e-9))
+    rel = 1.0 / max(1.0, release * SR)
+    out = np.empty_like(g)
+    cur = 1.0
+    for i in range(len(g)):
+        cur = g[i] if g[i] < cur else cur + (1.0 - cur) * rel
+        out[i] = cur
+    out = np.convolve(out, np.ones(n) / n, mode="full")[:len(out)]   # the fall ramped over the look-ahead
+    return np.clip(y * out, -ceiling, ceiling)
+
+
+def write_as_is(name, x, mastered=False):
+    """A signal already at its level: limited (unless the master stage has) and written."""
+    x = x if mastered else limit(x)
     pcm = (np.clip(x, -1.0, 1.0) * 32767.0).astype("<i2")
     os.makedirs(OUT, exist_ok=True)
     path = os.path.join(OUT, name + ".wav")
@@ -3585,7 +3613,11 @@ def main(argv):
             return 1
         seed(name)
         x = SHIP[name]()
-        path = write_as_is(name, x)
+        if name.startswith("music_"):
+            path = write_as_is(name, x)
+        else:
+            x = master(x)
+            path = write_as_is(name, x, True)
         print("%-16s %5.2f s  %s" % (name, len(x) / SR, os.path.relpath(path)))
     if whole:
         # A whole build retires what SHIP no longer names (and its import file).

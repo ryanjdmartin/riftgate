@@ -229,3 +229,24 @@ func test_the_win_clears_the_queue() -> void:
 	v.trigger("heat_high", 0.0)
 	v.clear()
 	assert_true(v.next(5.0).is_empty(), "nothing queued during the fight is said after it")
+
+
+
+func test_every_landing_is_a_blow_the_game_plays() -> void:
+	for name in Sound.LAND:
+		assert_true(Sound.all_names().has(name), "%s lands somewhere: it is a named sound" % name)
+		assert_true(Sound.lands(name) >= 0.0 and Sound.lands(name) < 2.0, "%s lands within two seconds" % name)
+	assert_eq(Sound.lands("not_a_blow"), 0.0, "a sound without a landing lands at once")
+	assert_true(Sound.lands("w_rack") > Sound.lands("w_barrel"), "the rack's salvo is in flight before it lands; the barrel's report is the hit")
+
+
+func test_every_line_mode_speaks_every_hook_a_second_apart() -> void:
+	var v := VoiceLines.new()
+	v.load_table(_table())
+	v.always = true
+	assert_true(v.trigger("rare", 0.0), "a hook at chance 0 speaks in the test mode")
+	v.next(0.0)
+	v.started(0.0, 1.0)
+	v.trigger("chatty", 0.2)
+	assert_true(v.next(1.5).is_empty(), "the line in progress and a second first")
+	assert_eq(str(v.next(1.0 + VoiceLines.INFO_GAP)["hook"]), "chatty", "then the next, never stale")

@@ -356,7 +356,7 @@ def ship():
                     continue
                 F.seed(PREFIX + slug(text))
                 x, _front = render_line(spoken(line), pace(line), pinned(line))
-                x = F.limit(np.concatenate([x, np.zeros(F.n_of(0.05))]))
+                x = F.master(np.concatenate([x, np.zeros(F.n_of(0.05))]))   # the effects' master stage (8 October: the set too quiet on the phone)
                 y = F.lp(x, SHIP_SR * 0.42, order=6)[::SR // SHIP_SR]
                 pcm = (np.clip(y, -1.0, 1.0) * 32767.0).astype("<i2")
                 with wave.open(os.path.join(SHIP_DIR, name + ".wav"), "wb") as w:

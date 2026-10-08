@@ -284,13 +284,16 @@ def click(gain=1.0, pitch=1.0):
 
 def lock():
     """Closer to the shipped lock's clicks (two relays, the second under the tone), subtler:
-    two soft relays with a short glass under the second instead of the tone. Both registers."""
-    return balanced([(0.05, p5(0.45, 0.5))], [(0.0, click(0.5)), (0.05, click(0.65, 0.9))], LITTLE)
+    two soft relays with a short glass under the second instead of the tone. Both registers.
+    The glass at 720, a fourth over the die lifted's 540, and down to the general rule's ten
+    under (Ryan, 8 October, in the game: the undertone down, its pitch apart from the pick-up
+    and the set-back)."""
+    return balanced([(0.05, p5(0.45, 0.5, 720.0))], [(0.0, click(0.5)), (0.05, click(0.65, 0.9))])
 
 
 def unlock():
-    """One soft relay and the glass letting go."""
-    return balanced([(0.01, glass_let_go(0.12, 0.6))], [(0.0, click(0.5, 0.85))], LITTLE)
+    """One soft relay and the glass letting go, at 360, under the set-back's 460, ten under."""
+    return balanced([(0.01, glass_let_go(0.12, 0.6, 360.0))], [(0.0, click(0.5, 0.85))])
 
 
 # ---------------------------------------------------------------- the console's own lines
@@ -421,8 +424,8 @@ SET = [
     ("die_hover", lambda: die_hover(1.6), -31.0, None, "Die over a valid target", "easing in slower, over most of a second"),
     ("die_spend", die_spend, -17.0, "die_drop", "Die spent", "no boop: the glass letting the die go and the pulse under it; one sound for a foe and a machine"),
     ("die_drop_back", lambda: p17(0.5, 0.8, 460.0), -21.0, "die_drop", "Die set back", "glass alone"),
-    ("die_lock", lock, -20.0, "die_lock", "Die locked", "two digital clicks, the glass 3.5 dB under the second"),
-    ("die_unlock", unlock, -20.0, "die_lock", "Die unlocked", "one digital click, the glass letting go 3.5 dB under it"),
+    ("die_lock", lock, -20.0, "die_lock", "Die locked", "two digital clicks, the glass at 720 ten under the second"),
+    ("die_unlock", unlock, -20.0, "die_lock", "Die unlocked", "one digital click, the glass letting go at 360 ten under it"),
     ("reroll", reroll, -18.0, "die_roll", "Reroll", "four clicks on one pitch, the glass 1.5 dB over them (fine as it was)"),
     ("round_open", round_open, -17.0, None, "The round opens", "dot dot on B, the body 1.5 dB over it (fine as it was)"),
     ("end_turn", end_turn, -20.0, "resolve", "End turn", "the swell shorter, the chunk, the tail fading"),

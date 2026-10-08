@@ -110,6 +110,8 @@ func _show_page(page: String) -> void:
 			_slider("EFFECTS", "effects")
 			_slider("VOICE", "voice")
 			_credit("Voice: Jenny (Dioco)")   # her licence asks for it (CREDITS.md is the record)
+			if OS.is_debug_build():
+				_toggle("EVERY LINE", "voice_test")   # Jenny on every hook, every time: to hear them all on the phone
 			_button("BACK", func() -> void: _show_page("paused"), false, "ui_back")
 		"quit":
 			_title("QUIT?")
@@ -286,6 +288,8 @@ func _toggle(caption: String, key: String) -> void:
 	c.button_pressed = bool(Settings.display[key])
 	c.toggled.connect(func(on: bool) -> void:
 		Settings.set_display(key, on)
+		if key == "voice_test":
+			Sound.apply_settings()
 		display_changed.emit(key, on))
 	row.add_child(c)
 	_rows.add_child(row)
