@@ -400,7 +400,7 @@ def heat_warn(kind="drone"):
     which would read as a confirm). The drone a bit lower and a lot quieter than the alarm's,
     the blips a bit longer (Ryan, 8 October)."""
     beeps = lay(*[(k * 0.2, boop(B.A4, 0.13, 0.9, bright=1800.0)) for k in range(2)])   # from the front (Ryan, 8 October)
-    return balanced([(0.0, under(kind, 0.46, 82.0))], [(0.0, beeps)], -18.0)   # the drone a short tail past the second blip (Ryan, 8 October: ending with it sounded clipped, 0.42 a little short)
+    return balanced([(0.0, under(kind, 0.5, 82.0))], [(0.0, beeps)], -18.0)   # the drone a short tail past the second blip (Ryan, 8 October: ending with it sounded clipped, 0.42 and 0.46 a little short)
 
 
 def overheat_alarm(kind="drone"):
