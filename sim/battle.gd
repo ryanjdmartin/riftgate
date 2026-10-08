@@ -42,6 +42,14 @@ var columns: int = Skirmish.DEFAULT_COLUMNS   # formation width for every skirmi
 ## setup, its spawn list joins the rift's cycle, alternating with the lead's; the formation
 ## on the field at the start is the lead's alone. Empty for none.
 var guest: String = ""
+## The enemy side composed by hand (the harness, for play tests), set before setup: the
+## packs as [[foe_id, strength], ...], placed at the start and cycled by the rift as the
+## lead's spawn table would be, each pack under its own foe's faction. Empty keeps the lead
+## faction's spawn table.
+var formation: Array = []
+## Whether the lead faction's boss takes the field. Without one the battle has no victory,
+## only the gate's fall or the team's (the harness, to watch the packs alone).
+var with_boss := true
 ## Every foe killed this battle, in any fight however it ended (Ryan, 7 October: a kill is a
 ## kill, and withdrawing never takes it away), for the salvage the campaign tallies at the
 ## battle's end and never shows while it is fought. The battle only counts; the campaign
@@ -69,6 +77,11 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 	field = Battlefield.new(map)
 	field.spawn_faction = faction
 	var lead_table: Array = db.spawn_table(faction)
+	if not formation.is_empty():
+		lead_table = []
+		for e in formation:
+			var fac := db.faction_of_foe(str(e[0]))
+			lead_table.append([str(e[0]), int(e[1]), fac if not fac.is_empty() else faction])
 	field.spawn_table = lead_table
 	if not guest.is_empty() and guest != faction and db.factions.has(guest):
 		# The guest joins the rift's cycle only, each entry carrying its own faction; the
@@ -98,12 +111,12 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 		var entry: Array = table[j]
 		var col := (w * (j + 1)) / (table.size() + 1)
 		var row := 3 + (j % 3)
-		var sq := Unit.pack(0, _pack_name(str(entry[0])), Vector2i.ZERO, faction, Unit.PACK_MOVE, int(entry[1]), str(entry[0]))
+		var sq := Unit.pack(0, _pack_name(str(entry[0])), Vector2i.ZERO, str(entry[2]) if entry.size() > 2 else faction, Unit.PACK_MOVE, int(entry[1]), str(entry[0]))
 		sq.pos = field.nearest_standable(sq, Hex.offset_to_axial(col, row))
 		field.add_unit(field.dress_pack(sq))
 	var fac: Dictionary = db.factions.get(faction, {})
 	var boss_id := str(fac.get("boss", ""))
-	if db.foes.has(boss_id):
+	if with_boss and db.foes.has(boss_id):
 		boss = Unit.boss(0, str(db.foes[boss_id]["name"]).to_lower(), Vector2i.ZERO, faction, Unit.BOSS_MOVE)
 		boss.pos = field.nearest_standable(boss, Hex.offset_to_axial(w / 2 - 1, 1))
 		field.add_unit(field.dress_pack(boss, boss_id))

@@ -20,6 +20,8 @@ and open question from the design sessions.
   - `skirmish.gd` the dice skirmish: two-rank enemy formation fed from a pool, reach rules,
     keywords, heat, shields, injuries, withdraw, outcome
   - `loadouts.gd` sample dice and packs for prototypes and tests
+  - `harness_setup.gd` what the harness launches (team, loadouts, enemy side, seed, map
+    type), built into a battle or a skirmish, kept between launches
   - `policy.gd` a player for the headless skirmish, a ladder of skill (random, greedy) with
     personas on top, so balance can be measured over thousands of fights
   - `passives.gd` runs the passive triggers the engine supports (the validator refuses others)
@@ -41,9 +43,13 @@ and open question from the design sessions.
   every machine name in BattleTech, Heavy Gear, Warhammer 40k and Halo; a chassis nickname or id
   on it fails the validator unless the entry records the clash under `design.name_clash`.
 - `game/` — scenes and presentation.
-  - `harness.tscn` is the main scene: pick a team, faction, pack size, seed, then Battle
-    (the whole loop), Resume battle (the saved one, while one exists), Fight (one
-    skirmish), or the map viewer
+  - `harness.tscn` is the main scene, three tabs over launch buttons that stay put: TEAM
+    (who deploys, in the order ticked, and each machine's hardpoints, any component on any
+    hardpoint), ENEMY (the packs, the boss and a guest faction, loaded from a faction and
+    edited from there) and SETUP (seed, map type, HUD colour). Battle plays the whole loop
+    with the packs as its formation and its rift's cycle; Fight chains them all with the
+    boss into one skirmish; Resume battle (while a save exists) and the map viewer below.
+    What was last launched is kept in `user://harness.json` (`sim/harness_setup.gd`)
   - `battle/battle_screen.gd` the battle screen: the map with the phase loop around it, and
     the skirmish screen hosted over it on contact; `battle/battle_map_view.gd` draws the
     field and reads the gestures; `battle/orders_board.gd` the strip under the map;
@@ -257,7 +263,7 @@ fight under way with its dice and random streams), so quitting or a phone killin
 loses nothing: Resume battle opens it where it stood, straight into the fight if one was
 on. A decided battle clears the save. Standalone scene runs and the tests never write it.
 
-The harness can add the faction's massive elite, which fills both ranks of a column. For the
+The harness can add any faction's massive elite, which fills both ranks of a column. For the
 standalone screen, `RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,baboon` picks the team and
 `RIFTGATE_ELITE=1` adds the elite.
 

@@ -83,7 +83,7 @@ the chat is newer.
 ## As of 3 October 2026
 
 **State.** Tests green: `perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (392 tests, 18,727 checks on 7 October in a cloud session, after the campaign branch and the idle acts' rests merged to main;
+tests/run_tests.gd` (399 tests, 18,788 checks on 8 October in a cloud session, after the harness's tabs;
 a cloud session fetches Godot 4.7's Linux build from the GitHub release asset to run them
 (`Godot_v4.7-stable_linux.x86_64.zip`, and `xvfb-run` for screenshots), since
 the proxy serves the asset though not the release page; it builds models too, with
@@ -93,6 +93,17 @@ and `tools/act_shot.gd` work there). Two or three
 sessions run on this repo at once: check `git status` before committing, stage by path, diff a
 shared file first (a path still sweeps the other session's hunks), never `git add -A`, never
 kill a bare `godot --path .`. Commit after each verified chunk with tests green.
+
+**The harness in tabs, 8 October** (a cloud session; Ryan: the long column ran off the glass,
+and loadouts and the enemy side wanted setting for tests). TEAM, ENEMY and SETUP tabs scroll
+over a summary and the launch buttons, which stay put and keep the phone's safe band. TEAM
+ticks who deploys (in the order ticked) and opens any machine's hardpoints: any component on
+any hardpoint, or none, carried into Battle and Fight (the 3D mounts follow the die). ENEMY
+loads a faction's spawn list and boss, then edits the packs (foe, strength, add, remove), the
+boss (or none: no victory) and a guest faction. `sim/harness_setup.gd` holds it all, builds
+the battle or skirmish, and keeps the last launch in `user://harness.json`; `Battle.formation`
+and `Battle.with_boss` carry a composed side (each pack under its own foe's faction). Not
+judged on a phone yet. A pull needs one `--import` for the new class.
 
 **2 October: the to-do review and what came of it.** Every to-do line was checked against the
 code. Ryan's calls, each in the bible:

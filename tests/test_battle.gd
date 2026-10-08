@@ -56,6 +56,32 @@ func test_setup_places_team_formation_and_boss() -> void:
 	assert_true(b.field.intents.size() > 0, "enemy moves previewed")
 
 
+func test_a_composed_formation_replaces_the_spawn_list_and_the_boss_can_stay_home() -> void:
+	var db := ContentDB.load_default()
+	var facs: Array = db.factions.keys()
+	var a := str(db.spawn_foes(str(facs[0]))[0])
+	var c := str(db.spawn_foes(str(facs[1]))[0])
+	var b := Battle.new(3)
+	b.formation = [[a, 2], [c, 5], [a, 1]]
+	b.with_boss = false
+	b.setup(_team(), str(facs[0]))
+	assert_true(b.boss == null, "no boss")
+	var placed: Array = []
+	for sq in b.field.packs():
+		assert_false(sq.elite, "%s is no boss" % sq.display_name)
+		placed.append([sq.foe_id, sq.strength, sq.faction])
+	assert_eq(placed, [[a, 2, str(facs[0])], [c, 5, str(facs[1])], [a, 1, str(facs[0])]], "the packs as composed, each under its own foe's faction")
+	assert_eq(b.field.spawn_table, placed, "and the rift sends them in turn")
+	b.field.rift_pressure = b.field.rift_pressure_max - 1
+	b.field._spawn_index = 1
+	b.field.tick_pressure(1)
+	var spawned: Unit = b.field.packs()[b.field.packs().size() - 1]
+	assert_eq([spawned.foe_id, spawned.faction], [c, str(facs[1])], "a rift pack wears its own faction")
+	b.field.gate_hp = 0
+	b.commit()
+	assert_eq(b.outcome, Battle.Outcome.GATE_FALLEN, "without a boss only the field ends it")
+
+
 func test_route_to_reaches_every_reachable_hex() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[1]
