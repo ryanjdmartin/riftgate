@@ -368,14 +368,18 @@ def refuse():
 
 
 def heat_warn():
-    """Heat past three quarters: P13's pair once, high then low, over the plate (Ryan, 8 October:
-    a warning signal, then the phrase)."""
-    return balanced([(0.0, R.shell_round() * 0.8)], [(0.15, B.warning(B.B4, B.E4, 0.18, 1, 0.9))])
+    """Heat past three quarters: three equal beeps on one pitch over the plate, the universal
+    caution (Ryan, 8 October: a warning signal, then the phrase; the high-then-low pair read
+    as a cancel, so nothing falls here and nothing rises, which would read as a confirm)."""
+    beeps = lay(*[(k * 0.16, boop(B.A4, 0.09, 0.9, bright=1800.0)) for k in range(3)])
+    return balanced([(0.0, R.shell_round() * 0.8)], [(0.12, beeps)])
 
 
 def overheat_alarm():
-    """The overheat: three pairs, quicker and higher, the alarm to the warning's caution."""
-    return balanced([(0.0, R.shell_round() * 0.8)], [(0.12, B.warning(B.E5, B.A4, 0.13, 3, 0.9))])
+    """The overheat: a two-tone siren, a tritone alternating fast and bright, four times over,
+    the alarm to the warning's caution."""
+    pairs = lay(*[(k * 0.2 + j * 0.1, boop(f, 0.085, 0.95, bright=2200.0)) for k in range(4) for j, f in enumerate((466.2, 659.3))])
+    return balanced([(0.0, R.shell_round() * 0.8)], [(0.1, pairs)])
 
 
 # name: (recipe, phone dB, shipped name, label, note)
@@ -403,8 +407,8 @@ SET = [
     ("nav_back", dismiss, -21.0, "ui_back", "Menu: back", "= dismiss"),
     ("nav_select", confirm, -19.0, "ui_tap", "Menu: select", "= confirm"),
     ("refuse", refuse, -17.0, "ui_back", "Refused", "P28, the scrape 1.5 dB over it (fine as it was)"),
-    ("heat_warn", heat_warn, -17.0, "heat_warn", "Heat past three quarters: the signal", "P13's pair once, high then low, the plate 10 dB under; Jenny's line a quarter second after it"),
-    ("overheat", overheat_alarm, -15.0, "overheat", "Overheat: the alarm", "three pairs, quicker and higher, 2 dB hotter than the warning; the line after it"),
+    ("heat_warn", heat_warn, -17.0, "heat_warn", "Heat past three quarters: the signal", "three equal beeps on A, the plate 10 dB under; Jenny's line a quarter second after it (the falling pair read as a cancel)"),
+    ("overheat", overheat_alarm, -15.0, "overheat", "Overheat: the alarm", "a two-tone siren, a tritone alternating fast and bright four times over, 2 dB hotter than the warning; the line after it"),
 ]
 SET_BY = {name: (fn, db, beside, label, note) for name, fn, db, beside, label, note in SET}
 NAMES = {"touch": "tap", "touch_heavy": "tap", "round_acquire": "round_open", "resolve": "end_turn", "route_clear": "dismiss", "select": "map_select"}
