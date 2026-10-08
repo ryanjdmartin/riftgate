@@ -242,7 +242,7 @@ def pick_draw(text, scale, pin=None):
 
 BLEEP_HZ = 1000.0
 LEAK = 0.05       # how much of the word's first syllable is heard before the tone (s)
-UNDER = 0.3       # what is left of her under the tone
+UNDER = 0.03      # what is left of her under the tone: next to nothing (Ryan, 8 October: at a third the word bled through)
 TONE_MAX = 0.36   # the tone's longest (s); a slow "ss" ran to 470 ms and read long (Ryan)
 
 
