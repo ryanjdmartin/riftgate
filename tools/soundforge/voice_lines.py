@@ -241,9 +241,11 @@ def pick_draw(text, scale, pin=None):
 
 
 BLEEP_HZ = 1000.0
-LEAK = 0.05       # how much of the word's first syllable is heard before the tone (s)
+LEAK = 0.05       # how much of the word's first syllable is heard before the tone (s), after an opening consonant
+LEAK_VOWEL = 0.11 # and when the word opens on its vowel, since a vowel's first 50 ms is its rise and reads as nothing (Ryan, 8 October: the a of ass was covered)
+TAIL = 0.05       # the tone runs this far past the word's last sound (its t was ending early)
 UNDER = 0.03      # what is left of her under the tone: next to nothing (Ryan, 8 October: at a third the word bled through)
-TONE_MAX = 0.36   # the tone's longest (s); a slow "ss" ran to 470 ms and read long (Ryan)
+TONE_MAX = 0.40   # the tone's longest (s); a slow "ss" ran to 470 ms and read long (Ryan)
 
 
 def last_word_onset(raw):
@@ -282,9 +284,9 @@ def render_censored(text, scale):
     n = F.n_of(0.03)
     env = np.sqrt(np.convolve(head ** 2, np.ones(n) / n, mode="same"))
     loud = float(np.percentile(env[env > 0.01], 90)) if np.any(env > 0.01) else 0.1
-    a = last_word_onset(head) + F.n_of(LEAK)
-    loud_idx = np.where(np.abs(head) > 0.002)[0]
-    b = min(len(head), (int(loud_idx[-1]) if len(loud_idx) else len(head)) + F.n_of(0.02))
+    a = last_word_onset(head) + F.n_of(LEAK_VOWEL if word[0].lower() in "aeiou" else LEAK)
+    loud_idx = np.where(np.abs(head) > 0.001)[0]
+    b = min(len(head), (int(loud_idx[-1]) if len(loud_idx) else len(head)) + F.n_of(TAIL))
     if b - a < F.n_of(0.12):
         a = max(0, b - F.n_of(0.12))
     t_len = min(b - a, F.n_of(TONE_MAX))   # the tone no longer than this; the duck runs to the word's end
