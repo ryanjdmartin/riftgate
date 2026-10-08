@@ -100,10 +100,10 @@ HOOKS = {
                     ["whew", "that's much better"]),
     "heat_high": (1.0, True,
                   ["thermal load approaching limit", "heat warning", "danger: internal temperature elevated"],
-                  ["toasty", "some like it hot", "running a wee bit warm, aren't we?", "that one could do with a fan, so it could", "ah, it's only a wee bit warm"]),   # she is not in the machine: she comments on its state (Ryan, 7 October)
+                  ["running a wee bit warm, aren't we?", "somebody fetch the poor lad some ice", "that fella's gonna need a fan"]),   # she is not in the machine: she comments on its state (Ryan, 7 October)
     "overheat": (1.0, True,   # heat past 100: damage at the round's end, a serious danger (Ryan, 7 October); pre-empts a pending heat warning
                  ["overheat detected. structural damage imminent", "thermal limit exceeded. hull integrity compromised", "danger: heat level critical", "heat sinks overloaded. vent now"],
-                 ["hot hot hot", "smoking", ("she can't take anymore, captain", "she can't take anymore captain")]),   # the quote legible rather than right (Ryan: cannae read as can-nee)
+                 ["hot hot hot", ("she can't take anymore, captain", "she can't take anymore captain")]),   # the quote legible rather than right (Ryan: cannae read as can-nee)
     "machine_lost": (1.0, True,
                      ["machine lost", "unit destroyed"],
                      []),
