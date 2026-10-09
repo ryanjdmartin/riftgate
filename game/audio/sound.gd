@@ -47,12 +47,13 @@ const NAMES := [
 ## identity. A boss set is keyed "boss_<faction id>" and holds one loop; the battle screen
 ## starts it on the field the moment the boss is contacted, from its top, so the intro bars
 ## play under the reveal and the handover and the fight arrives in the groove. A family
-## without a set falls back to the skirmish's pick (`boss_set`). The Far Bank is The
-## Chorus's: the most choral and the most symphonic of the six, for the last act.
+## without a set falls back to the skirmish's pick (`boss_set`). The Far Bank is the
+## Marsh's (it was The Chorus's until the domains of 9 October): the most choral and the
+## most symphonic of the six, and the far bank of a river is where the Marsh is.
 const SETS := {
 	"map": ["music_low_ground", "music_night_shift"],
 	"skirmish": ["music_hold_the_line", "music_crossing", "music_full_bore"],
-	"boss_eldritch": ["music_far_bank"],
+	"boss_marsh": ["music_far_bank"],
 }
 const PICK := ["skirmish"]
 
@@ -170,7 +171,7 @@ static func set_playing() -> String:
 	return _node._set
 
 
-## The boss set for a family ("boss_eldritch"), or "" when the family has no theme yet and
+## The boss set for a domain ("boss_marsh"), or "" when the family has no theme yet and
 ## the fight takes the skirmish's pick.
 static func boss_set(faction: String) -> String:
 	var name := "boss_" + faction

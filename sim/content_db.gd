@@ -169,6 +169,7 @@ func make_foe(foe_id: String) -> Foe:
 	f.armour = maxi(0, int(d.get("armour", 0)))
 	f.aim = str(d.get("aim", Foe.AIM_EXPOSED))
 	f.stun_resist = clampi(int(d.get("stun_resist", 0)), 0, 100)
+	f.hero = bool(d.get("hero", false))
 	if d.get("on_death", {}) is Dictionary and d.get("on_death", {}).has("summon"):
 		f.on_death = {"summon": str(d["on_death"]["summon"]), "count": maxi(1, int(d["on_death"].get("count", 1)))}
 	var acts: Array = []
@@ -970,6 +971,8 @@ func _validate_foes(errs: Array[String]) -> void:
 				errs.append("%s: '%s' belongs on an attack action, not the foe" % [where, key])
 		if f.has("faction") and not factions.has(f["faction"]):
 			errs.append("%s: unknown faction %s" % [where, f["faction"]])
+		if f.has("hero") and bool(f["hero"]) and sz != 1:
+			errs.append("%s: a hero is human-sized (size 1); the massive thing it commands is its own foe" % where)
 		if f.has("on_death"):
 			# A split (the Gel): destroyed, it summons; what it summons never splits again.
 			var od = f["on_death"]
@@ -1002,8 +1005,20 @@ func _validate_factions(errs: Array[String]) -> void:
 				errs.append("%s: spawn entry %s needs a strength of at least 1" % [where, e.get("foe")])
 			elif int(foes[str(e["foe"])].get("size", 1)) > 1:
 				errs.append("%s: massive foe %s belongs in 'boss', not spawn" % [where, e.get("foe")])
+		for e in spawn:
+			if e is Dictionary and foes.has(str(e.get("foe", ""))) and bool(foes[str(e["foe"])].get("hero", false)):
+				errs.append("%s: hero %s is never in a spawn list; it is dealt from the bench" % [where, e["foe"]])
 		if f.has("boss"):
 			if not foes.has(f["boss"]):
 				errs.append("%s: boss names unknown foe %s" % [where, f["boss"]])
 			elif int(foes[f["boss"]].get("size", 1)) != 2:
 				errs.append("%s: boss %s should be massive (size 2)" % [where, f["boss"]])
+		# The bench (decided 9 October): the heroes the campaign's start may deal to this domain.
+		var bench: Array = f.get("bench", [])
+		if not (f.get("bench", []) is Array):
+			errs.append("%s: bench is a list of hero ids" % where)
+		for h in bench:
+			if not foes.has(str(h)):
+				errs.append("%s: bench names unknown foe %s" % [where, str(h)])
+			elif not bool(foes[str(h)].get("hero", false)):
+				errs.append("%s: bench entry %s is not a hero" % [where, str(h)])

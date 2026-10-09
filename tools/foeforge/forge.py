@@ -49,13 +49,17 @@ STYLE = (
     "no text, no border, no ground shadow."
 )
 
+# The domains of 9 October (content/factions.json). The looks are the overworld biome's;
+# the domain reads on the map by its ground, so a sprite's hue is free (bible section 9).
 FACTION_LOOK = {
-    "undead": "sickly green flesh, bone white, faded purple rags, a green necrotic glow",
-    "demonic": "deep red hide, black iron, brass trim, fire orange and yellow embers",
-    "eldritch": "violet flesh, dark teal shadows, pale cyan glow, too many eyes",
+    "meadow": "bright saturated greens and yellows, round and soft, the overworld's first monsters",
+    "waste": "sand, ochre, bleached bone white, dusty teal shadows, hard-edged",
+    "marsh": "bone ivory and rust over grave-blue shadow, tatters, lanterns, rusted ornate plate",
+    "peak": "black rock, lava orange and yellow in the cracks, red scale, lit from inside",
 }
 
-PALETTE_FOR = {"undead": "UND", "demonic": "DEM", "eldritch": "ELD"}
+# The enemy sheet's three palettes, kept for the optional snap; the domains borrow the nearest.
+PALETTE_FOR = {"meadow": "UND", "waste": "DEM", "marsh": "UND", "peak": "DEM"}
 COMBAT_SIZE = {1: (48, 64), 2: (64, 96)}
 MAP_SIZE = {1: (16, 16), 2: (16, 16)}
 BIG_MAP = {"bone_colossus": (40, 40)}
@@ -231,7 +235,7 @@ def fit(img, frame):
 def cut(args):
     foes = load_foes()
     foe = foes[args.foe]
-    pal = parse_palettes()[PALETTE_FOR[foe.get("faction", "undead")]] if args.faction_palette else None
+    pal = parse_palettes()[PALETTE_FOR.get(foe.get("faction", "marsh"), "UND")] if args.faction_palette else None
     src = key_background(Image.open(args.image))
     size = int(foe.get("size") or 1)
     ART.mkdir(parents=True, exist_ok=True)

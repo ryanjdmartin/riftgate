@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bsf0of4wkima3"
-path="res://.godot/imported/pit_lord_map.png-c92b7c319a825da352ff2fa877c93dd2.ctex"
+uid="uid://ce7g2fdopdbkk"
+path="res://.godot/imported/magma_golem_map.png-9592414d6d91653080f1472a159a3517.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/foes/pit_lord_map.png"
-dest_files=["res://.godot/imported/pit_lord_map.png-c92b7c319a825da352ff2fa877c93dd2.ctex"]
+source_file="res://art/foes/magma_golem_map.png"
+dest_files=["res://.godot/imported/magma_golem_map.png-9592414d6d91653080f1472a159a3517.ctex"]
 
 [params]
 

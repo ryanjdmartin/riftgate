@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://fuempigwd3x6"
-path="res://.godot/imported/hellcaster_map.png-23a8eb247c8a291d52df5c65fbb1710f.ctex"
+uid="uid://dekbfqj1r1a34"
+path="res://.godot/imported/revenant_map.png-ff88ba81a89c535511ad11356fb4a32c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/foes/hellcaster_map.png"
-dest_files=["res://.godot/imported/hellcaster_map.png-23a8eb247c8a291d52df5c65fbb1710f.ctex"]
+source_file="res://art/foes/revenant_map.png"
+dest_files=["res://.godot/imported/revenant_map.png-ff88ba81a89c535511ad11356fb4a32c.ctex"]
 
 [params]
 

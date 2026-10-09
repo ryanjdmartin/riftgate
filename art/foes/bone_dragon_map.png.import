@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cleb514d37805"
-path="res://.godot/imported/the_maw_combat.png-f01a39eaa5d95c3efaf2baea5ea247f0.ctex"
+uid="uid://4jvs1wt1t5ey"
+path="res://.godot/imported/bone_dragon_map.png-3dbbf4464c11d893c11227a8c6281fd5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/foes/the_maw_combat.png"
-dest_files=["res://.godot/imported/the_maw_combat.png-f01a39eaa5d95c3efaf2baea5ea247f0.ctex"]
+source_file="res://art/foes/bone_dragon_map.png"
+dest_files=["res://.godot/imported/bone_dragon_map.png-3dbbf4464c11d893c11227a8c6281fd5.ctex"]
 
 [params]
 

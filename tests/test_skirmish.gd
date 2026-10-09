@@ -19,7 +19,7 @@ func _mech(name: String, d: Die, shield: int = 40, hull: int = 100) -> Unit:
 
 
 func _ghoul(hp: int = 30, atk: int = 10) -> Foe:
-	return Foe.make("ghoul", hp, atk)
+	return Foe.make("revenant", hp, atk)
 
 
 func _archer(hp: int = 30, atk: int = 10) -> Foe:
@@ -32,8 +32,8 @@ func test_formation_fills_front_then_back() -> void:
 	sk.add_foes([_ghoul(), _ghoul(), _archer(), _ghoul(), _ghoul()])
 	sk.begin()
 	assert_eq(sk.field_foes().size(), 4, "four on the field: ranks hold, so the fourth ghoul waits")
-	assert_eq(sk.front[0].display_name, "ghoul", "front 0 is a ghoul")
-	assert_eq(sk.front[2].display_name, "ghoul", "front 2 is a ghoul")
+	assert_eq(sk.front[0].display_name, "revenant", "front 0 is a ghoul")
+	assert_eq(sk.front[2].display_name, "revenant", "front 2 is a ghoul")
 	var archer_col := -1
 	for col in range(3):
 		if sk.back[col] != null and sk.back[col].display_name == "archer":
@@ -567,7 +567,7 @@ func test_injury_rolls_the_die_and_a_destroyed_component_takes_the_blow() -> voi
 	var d := Die.of([Face.blank(), Face.blank(), Face.attack(10, L, K.CLEAVE)])
 	var m := _mech("A", d, 0, 100)
 	sk.add_mech(m)
-	sk.add_foes([Foe.make("ghoul", 90, 10)])
+	sk.add_foes([Foe.make("revenant", 90, 10)])
 	sk.begin()
 	sk.start_round()
 	var misses := 0
@@ -591,7 +591,7 @@ func test_small_hits_and_shielded_hits_never_crack() -> void:
 		var d := Die.of([Face.attack(10, L, K.CLEAVE)])
 		var m := _mech("A", d, 0, 100)
 		sk.add_mech(m)
-		sk.add_foes([Foe.make("ghoul", 90, 20)])
+		sk.add_foes([Foe.make("revenant", 90, 20)])
 		sk.begin()
 		sk.start_round()
 		sk.end_round()
@@ -613,7 +613,7 @@ func test_injury_cracks_then_destroys_and_persists_until_repaired() -> void:
 	var d := Die.single(Face.attack(30, L, [K.CLEAVE, K.BURN], 10, 50, 15))
 	var m := _mech("A", d, 0, 100)
 	sk.add_mech(m)
-	sk.add_foes([Foe.make("ghoul", 90, 10)])
+	sk.add_foes([Foe.make("revenant", 90, 10)])
 	sk.begin()
 	sk.start_round()
 	sk.apply_injury(sk.mechs[0])
@@ -637,7 +637,7 @@ func test_injury_cracks_then_destroys_and_persists_until_repaired() -> void:
 	# A second skirmish with the same unit starts with the damage in place.
 	var again := Skirmish.new(4)
 	again.add_mech(m)
-	again.add_foes([Foe.make("ghoul", 90, 10)])
+	again.add_foes([Foe.make("revenant", 90, 10)])
 	again.begin()
 	again.start_round()
 	assert_eq(again.mechs[0].face().kind, Face.Kind.BLANK, "the destroyed face is still destroyed next fight")
@@ -803,7 +803,7 @@ func test_skirmish_reroll_changes_every_unlocked_face() -> void:
 		var sk := Skirmish.new(seed_value)
 		for id in ["badger", "clydesdale", "sparrowhawk"]:
 			sk.add_mech(db.make_mech(id))
-		sk.add_foes([Foe.make("ghoul", 30, 10)])
+		sk.add_foes([Foe.make("revenant", 30, 10)])
 		sk.begin()
 		sk.start_round()
 		var before: Array = []
@@ -845,7 +845,7 @@ func test_no_destroy_passive_holds_a_cracked_component() -> void:
 	var m := _mech("A", d, 0, 100)
 	m.grant_passive({"id": "hold", "name": "Hold", "description": "", "effects": [{"trigger": "on_injury", "effect": "no_destroy", "value": 1}]})
 	sk.add_mech(m)
-	sk.add_foes([Foe.make("ghoul", 90, 10)])
+	sk.add_foes([Foe.make("revenant", 90, 10)])
 	sk.begin()
 	sk.start_round()
 	sk.apply_injury(sk.mechs[0])
@@ -862,7 +862,7 @@ func test_injury_on_an_empty_hardpoint_breaks_nothing() -> void:
 	var d := Die.single(Face.empty_slot())
 	var m := _mech("A", d, 0, 100)
 	sk.add_mech(m)
-	sk.add_foes([Foe.make("ghoul", 90, 10)])
+	sk.add_foes([Foe.make("revenant", 90, 10)])
 	sk.begin()
 	sk.start_round()
 	sk.apply_injury(sk.mechs[0])
@@ -975,7 +975,7 @@ func test_heaviest_hitters_deploy_left_and_strike_first() -> void:
 	sk.add_foes([_ghoul(90, 10), _ghoul(90, 10), Foe.make("brute", 90, 50)])
 	sk.begin()
 	assert_eq(sk.front[0].display_name, "brute", "the brute stands left")
-	assert_eq(sk.front[1].display_name, "ghoul", "ghouls follow in arrival order")
+	assert_eq(sk.front[1].display_name, "revenant", "ghouls follow in arrival order")
 	sk.start_round()
 	sk.end_round()
 	assert_eq(m.shield, 0, "the brute strikes first and the shield takes it")
@@ -1247,7 +1247,7 @@ func test_a_foe_disable_switches_off_the_showing_entry_through_the_next_turn() -
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.attack(30, L)), 0, 200)
 	sk.add_mech(m)
-	var jammer := Foe.make("whisperer", 90, 10)
+	var jammer := Foe.make("cockatrice", 90, 10)
 	jammer.actions[0]["keywords"] = ["disable"]
 	sk.add_foes([jammer])
 	sk.begin()
@@ -1836,7 +1836,7 @@ func test_devour_feeds_a_stack_of_overcharged_per_kill_and_it_fades_a_round_at_a
 			kills += 1
 	assert_eq(kills, 2, "two ghouls fell to the spread")
 	assert_eq(Effects.stacks_of(m, "overcharged"), 2, "one stack of Overcharged per kill")
-	assert_true("\n".join(sk.log).contains("devours ghoul: Overcharged"), "the log says what was taken")
+	assert_true("\n".join(sk.log).contains("devours revenant: Overcharged"), "the log says what was taken")
 	sk.end_round()
 	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "a stack fades at the round's end")
 	sk.start_round()
@@ -1884,7 +1884,7 @@ func test_a_live_hull_shocks_the_foe_that_strikes_it_and_the_next_blow_lands_dou
 	sk.end_round()
 	assert_eq(m.hull, 190, "the blow landed on bare hull")
 	assert_true(Effects.has(g, "shocked"), "and the ghoul is Shocked")
-	assert_true("\n".join(sk.log).contains("A shocks ghoul"), "the log says so")
+	assert_true("\n".join(sk.log).contains("A shocks revenant"), "the log says so")
 	sk.start_round()
 	sk.assign(0, g)
 	assert_eq(g.hp, 460, "20 lands double")
@@ -1916,7 +1916,7 @@ func test_a_shocked_foe_that_reaches_hull_again_pays_the_discharge() -> void:
 	sk.end_round()
 	assert_eq(g.hp, 500 - Skirmish.SHOCK_DISCHARGE, "the second strike on bare hull costs it the discharge")
 	assert_true(Effects.has(g, "shocked"), "and it stays Shocked, never doubly")
-	assert_true("\n".join(sk.log).contains("A discharges into ghoul: 10"), "the log says so")
+	assert_true("\n".join(sk.log).contains("A discharges into revenant: 10"), "the log says so")
 	# A blocked blow neither shocks nor discharges, unless a passive extends the shock to blocks.
 	sk.start_round()
 	sk.assign(0, null)
@@ -2002,7 +2002,7 @@ func test_a_lure_turns_every_foe_the_entry_reaches_on_the_spender_for_the_round(
 	var archer: Foe = sk.back[0] if sk.back[0] != null else (sk.back[1] if sk.back[1] != null else sk.back[2])
 	assert_eq(archer.target, sk.mechs[1], "the archer kept its aim")
 	assert_eq(sk.incoming_for(sk.mechs[0]), 30, "the forecast follows the turn")
-	assert_true("\n".join(sk.log).contains("Tank lures ghoul, ghoul, ghoul"), "the log says so: %s" % sk.log[sk.log.size() - 1])
+	assert_true("\n".join(sk.log).contains("Tank lures revenant, revenant, revenant"), "the log says so: %s" % sk.log[sk.log.size() - 1])
 	assert_false(Effects.describe(tank).any(func(d): return str(d[5]) == "lure"), "no status on the machine: the arrows are the record")
 	sk.end_round()
 	assert_eq(tank.shield, 10, "the tank took the front rank's three blows on its shield")
@@ -2508,7 +2508,7 @@ func test_a_summoning_foe_calls_up_reinforcements_through_the_factory() -> void:
 	sk.add_mech(_mech("A", Die.single(Face.attack(10, L)), 40, 100))
 	var n := _archer(30, 10)
 	n.pack_id = 7
-	n.actions = [_special("buff", "summon", {"foe": "ghoul", "count": 2})]
+	n.actions = [_special("buff", "summon", {"foe": "revenant", "count": 2})]
 	n.action = n.actions[0]
 	sk.add_foes([n])
 	sk.foe_factory = func(id: String) -> Foe: return Foe.make(id, 30, 10)
@@ -2521,7 +2521,7 @@ func test_a_summoning_foe_calls_up_reinforcements_through_the_factory() -> void:
 	var s2 := Skirmish.new(6, 1)
 	s2.add_mech(_mech("B", Die.single(Face.attack(10, L)), 40, 100))
 	var n2 := _archer(30, 10)
-	n2.actions = [_special("buff", "summon", {"foe": "ghoul"})]
+	n2.actions = [_special("buff", "summon", {"foe": "revenant"})]
 	n2.action = n2.actions[0]
 	s2.add_foes([n2])
 	s2.begin()

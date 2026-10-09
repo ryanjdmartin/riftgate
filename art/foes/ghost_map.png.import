@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cj8hv4sgciih0"
-path="res://.godot/imported/spawn_combat.png-18efdf614d926bb6a6024681b3693317.ctex"
+uid="uid://d0pkcggitbg7j"
+path="res://.godot/imported/ghost_map.png-776637ae0d44abb19c8b64c82cf6ee8d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/foes/spawn_combat.png"
-dest_files=["res://.godot/imported/spawn_combat.png-18efdf614d926bb6a6024681b3693317.ctex"]
+source_file="res://art/foes/ghost_map.png"
+dest_files=["res://.godot/imported/ghost_map.png-776637ae0d44abb19c8b64c82cf6ee8d.ctex"]
 
 [params]
 

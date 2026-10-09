@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c8twn2w0gedg6"
-path="res://.godot/imported/ghoul_combat.png-6b34cfe8889ca8924e7864fe4e920ef6.ctex"
+uid="uid://bn1c2yyaqvsg7"
+path="res://.godot/imported/sandworm_combat.png-1bda8a96d098ad1575dea90e6e9ef210.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/foes/ghoul_combat.png"
-dest_files=["res://.godot/imported/ghoul_combat.png-6b34cfe8889ca8924e7864fe4e920ef6.ctex"]
+source_file="res://art/foes/sandworm_combat.png"
+dest_files=["res://.godot/imported/sandworm_combat.png-1bda8a96d098ad1575dea90e6e9ef210.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dmxhk02k8hcqc"
-path="res://.godot/imported/bone_colossus_map.png-ea02586da073b7146a01b7c4e0be4c5b.ctex"
+uid="uid://l00fhptw4j1u"
+path="res://.godot/imported/magma_golem_combat.png-6e64483cce54bd5c7e20ee18ea184e44.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/foes/bone_colossus_map.png"
-dest_files=["res://.godot/imported/bone_colossus_map.png-ea02586da073b7146a01b7c4e0be4c5b.ctex"]
+source_file="res://art/foes/magma_golem_combat.png"
+dest_files=["res://.godot/imported/magma_golem_combat.png-6e64483cce54bd5c7e20ee18ea184e44.ctex"]
 
 [params]
 

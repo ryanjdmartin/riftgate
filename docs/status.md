@@ -111,7 +111,19 @@ and promoted, a beaten hero an empty slot; four domains, everything keyed to thr
 foe move in the genre's name, announced on a plaque in the other world's own window with the replay
 holding for it. `docs/enemy_roster_proposal.md` is the pitched roster (four domains, their wildlife and
 heroes, the engine gaps, the holes, five decisions wanted). Nothing in content or the engine changed yet.
-The plaque is built (the same session, 394 tests green): `game/ui/plaque.gd` draws the other world's window
+**Built the same evening, on Ryan's go** (397 tests, 18,847 checks): the Bomb's Self-Destruct (an attack keyword
+that spends the striker) and the Gel's split (`on_death` summons into the pool, one level deep); the four domains
+in `content/factions.json` (meadow, waste, marsh, peak: bleed and map_kind as data not yet read, spawn as the
+shape, boss the massive wildlife, `bench` the heroes) and in `content/foes.json` eighteen wildlife and the first
+eight heroes (`hero: true`; moves in the genre's names; Cover, Counter, Flee, Jump, Cure, Protect, Ember Hide and
+Scatter planned, everything else running); the re-keying from three to four (the Far Bank is the Marsh's boss
+set, the defaults, foeforge's looks, the sheet export, the README, the tests' ids); the art lineage renamed
+(ghoul to revenant, necromancer to ghost, bone_colossus to bone_dragon, hellcaster to drake, pit_lord to
+magma_golem, the_maw to sandworm; the brute, spawn and whisperer grids removed), so every other new foe draws the
+placeholder shape until foeforge runs from the new text. Owed: the hangar page's content files republished; the
+balance and campaign runners rerun on four domains; the party card and the deal in `sim/campaign.gd` (today a
+final is still the faction's third boss, and the campaign does not read `bench`); the remaining engine gaps in
+the to-do. The plaque is built (the same session, 394 tests green): `game/ui/plaque.gd` draws the other world's window
 (a blue gradient box, a double white border, a code-drawn 5x7 pixel face) and the skirmish's replay merges
 the turn's blows and specials by the sim's order (`Skirmish.turn_specials`, `seq`, `name` and `boss` on
 every blow), announcing a special always and a boss's blow once per move, holding a second each;

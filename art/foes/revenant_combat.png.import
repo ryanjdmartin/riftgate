@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://kgdmyeqg0jrg"
-path="res://.godot/imported/brute_combat.png-d2cf6eb883f4c8e3f23bb4c0818a6e4a.ctex"
+uid="uid://qw78xbwwunn1"
+path="res://.godot/imported/revenant_combat.png-69649eb28b4eeab72c709e1b28f4c14a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/foes/brute_combat.png"
-dest_files=["res://.godot/imported/brute_combat.png-d2cf6eb883f4c8e3f23bb4c0818a6e4a.ctex"]
+source_file="res://art/foes/revenant_combat.png"
+dest_files=["res://.godot/imported/revenant_combat.png-69649eb28b4eeab72c709e1b28f4c14a.ctex"]
 
 [params]
 

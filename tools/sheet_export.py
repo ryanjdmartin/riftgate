@@ -27,26 +27,22 @@ OUT = ROOT / "art" / "foes"
 
 # grid name -> (foe id, palette name)
 COMBAT = {
-    "GHOUL": ("ghoul", "UND"),
-    "NECRO": ("necromancer", "UND"),
-    "COLOSSUS": ("bone_colossus", "UND"),
-    "BRUTE": ("brute", "DEM"),
-    "HELLCASTER": ("hellcaster", "DEM"),
-    "PITLORD": ("pit_lord", "DEM"),
-    "SPAWN": ("spawn", "ELD"),
-    "WHISPERER": ("whisperer", "ELD"),
-    "MAW": ("the_maw", "ELD"),
+    # The sheet's grids predate the domains of 9 October; each exports under the foe that
+    # descends from it (content/foes.json). The brute, the spawn and the whisperer have no heir.
+    "GHOUL": ("revenant", "UND"),
+    "NECRO": ("ghost", "UND"),
+    "COLOSSUS": ("bone_dragon", "UND"),
+    "HELLCASTER": ("drake", "DEM"),
+    "PITLORD": ("magma_golem", "DEM"),
+    "MAW": ("sandworm", "ELD"),
 }
 MAP = {
-    "T_GHOUL": ("ghoul", "UND"),
-    "T_NECRO": ("necromancer", "UND"),
-    "TB_COLOSSUS": ("bone_colossus", "UND"),
-    "T_BRUTE": ("brute", "DEM"),
-    "T_HELLCASTER": ("hellcaster", "DEM"),
-    "T_PITLORD": ("pit_lord", "DEM"),
-    "T_SPAWN": ("spawn", "ELD"),
-    "T_WHISPERER": ("whisperer", "ELD"),
-    "T_MAW": ("the_maw", "ELD"),
+    "T_GHOUL": ("revenant", "UND"),
+    "T_NECRO": ("ghost", "UND"),
+    "TB_COLOSSUS": ("bone_dragon", "UND"),
+    "T_HELLCASTER": ("drake", "DEM"),
+    "T_PITLORD": ("magma_golem", "DEM"),
+    "T_MAW": ("sandworm", "ELD"),
 }
 
 

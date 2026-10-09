@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bd4kdr6f2l1k4"
-path="res://.godot/imported/bone_colossus_combat.png-a2d9569e513d6c437e069b83a8895e62.ctex"
+uid="uid://c3r78oy4skwyy"
+path="res://.godot/imported/sandworm_map.png-53ef61705b0c9910448303024cab07b4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/foes/bone_colossus_combat.png"
-dest_files=["res://.godot/imported/bone_colossus_combat.png-a2d9569e513d6c437e069b83a8895e62.ctex"]
+source_file="res://art/foes/sandworm_map.png"
+dest_files=["res://.godot/imported/sandworm_map.png-53ef61705b0c9910448303024cab07b4.ctex"]
 
 [params]
 

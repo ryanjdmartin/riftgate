@@ -1,7 +1,7 @@
 # Riftgate (working title)
 
 Portrait-mode tactical hex battler for Android. A few customizable war machines hold the last
-city gate against undead, demonic, and eldritch hordes in a roguelike campaign.
+city gate against a whole genre invading, the JRPG world's wildlife and its heroes pouring through rifts, in a roguelike campaign.
 
 The design bible lives in `docs/design-bible.html` and records every decision, recommendation,
 and open question from the design sessions.
@@ -184,8 +184,8 @@ tools/spriter/.venv/bin/python tools/sheet_export.py
 godot --headless --path . --import
 
 # better enemy sprites from an image model on this Mac (see tools/foeforge/README.md)
-tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate ghoul --n 4
-tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut tools/foeforge/out/ghoul/ghoul_3.png ghoul
+tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate revenant --n 4
+tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut tools/foeforge/out/revenant/revenant_3.png revenant
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py rift --n 4                                   # the rift's vortex, the same way
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut-rift tools/foeforge/out/rift/rift_3.png  # three frames into art/terrain/rift.png
 
@@ -296,7 +296,7 @@ dies. Hold any unit for its numbers; double-tap it for its codex; tap the gate f
 integrity. MENU on either
 screen pauses and holds the settings (display colour, brightness, move pace, glitch, scan
 bar, music and effects volume). For the standalone screen `RIFTGATE_TEAM` picks the team and
-`RIFTGATE_FACTION=undead|demonic|eldritch` the enemy; `RIFTGATE_TUNE=1` shows the
+`RIFTGATE_FACTION=meadow|waste|marsh|peak` the enemy; `RIFTGATE_TUNE=1` shows the
 development knob panel.
 
 In the map viewer: drag to scroll the taller-than-screen battlefield, tap without dragging

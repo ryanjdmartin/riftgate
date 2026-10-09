@@ -1,106 +1,307 @@
 {
-  "_about": "Enemies inside a skirmish. Numbers are in tens. Enemy damage is static and telegraphed exactly; only the player's kinetic faces roll. rank is where they prefer to stand: front foes step up, back foes hold. size 2 is massive and fills both slots of a column. armour (default 0) comes off every blow that lands on the foe, flat, never off a burn. stun_resist (default 0) is the foe's base chance, percent, to shrug off a suppress; Numbed adds 10 a stack on top and decays a stack each turn; bosses carry 30 as a placeholder (26 September). aim (decided 2 October; default exposed) is the sense the foe's target pick follows, each foe on its own as the round opens, shown as its arrow before the player acts: exposed (weighted toward the machine its blows would hurt most: the hull they reach plus half of any shield they break), anything (any machine alike), heat (the hottest machine), armed (a machine showing an intact weapon), focus (the rank shares one pick). A move may carry its own aim. Player-facing text: codex (what the codex says), flavour (an in-world quote, shown in italics), and each action's text. design is internal and never shown: fantasy (the pitch, inspiration, homages), niche (the tactical problem the foe poses), notes. actions is the foe's roster of moves, each kind attack, defend, buff or debuff, with status implemented or planned; only implemented actions appear in the codex. Rank and file have one or two moves, a boss three, the third a signature that opens on a condition. A move may carry when, one word or a list meaning any, the condition that lets the foe pick it this round (below_half, missing_hull: missing at least its value, few_waiting: fewer than two of the foe it summons wait, rerolls_left: the team has rerolls to lose, machine_hot: a machine carries 20 heat or more, machine_armed: a machine shows an intact weapon, back_behind: a back-rank foe stands behind it, others_on_field: another foe stands with it); a move whose condition fails is not rolled, and a special never fires twice running when anything else is open. A defend, buff or debuff action names an effect the engine runs (Foe.ACTION_EFFECTS: harden with value, regrow with value; revive_once, summon with foe and count, rally with value; drain_rerolls, add_heat, scramble, crack, disable, heat_all, corrupt_all) and is picked by weight like an attack, in place of a blow that turn. Write {value} in its text for its number. Component injuries are a global rule, not a foe property. On the map (decided 1 October): zone is the pack's engagement zone in hexes (default 1), the radius around where it ends its move inside which every machine fights it; behaviour is how its pack moves: push (default; the gate, its path committed when the round opens), aggressive (the gate, unless a machine ends within its reach, its move plus its zone, in which case it comes for the biggest catch it can make) or hunt (locks one machine when it spawns and chases it until one of them is dead); hunts is a hunter's caveat for picking that machine: nearest (default), weakest, strongest, slowest or fastest; movespeed is its move in tens (default 20): a pack pays 10 for any land hex and never enters water or a crag (the horde flattens what it crosses; the Final Fantasy overworld rule, Ryan, 2 October), so its reach is a plain ring bent only round water and rock; bosses patrol at 10. An implemented attack action scales the base attack: factor (default 1.0; damage is attack times factor, rounded), strikes (default 1; each a separate blow, so a double strike breaks a shield and reaches the hull), swarm (so much more damage per other foe of its type on the field: the ghoul's threat is its numbers), keywords (tags on the blow; breach: its blows overflow shield into hull and can injure through it, dangerous and uncommon; scorch: a stack of Overheating on the machine hit; disable and corrupt act on the entry the machine's die shows), weight (default 1; attacks weigh 2 to a special's 1 among the moves whose conditions hold). Write {damage} in an action's text and the resulting number is shown. Foes stand and strike front rank left to right then back rank; the heaviest hitters deploy left. Numbers are placeholders, the set of 2 October written for play testing (the bible, section 9).",
+  "_about": "Enemies inside a skirmish: the domains' wildlife and the heroes (decided 9 October, bible section 9; the names are working names until play moves them, the numbers placeholders in tens). Enemy damage is static and telegraphed exactly; only the player's kinetic faces roll. rank is where they prefer to stand: front foes step up, back foes hold. size 2 is massive and fills both slots of a column; a domain's boss is massive. hero marks one of the party: human-sized, the domain's final, dealt from the domain's bench at the campaign's start; a hero is never in a spawn list. armour (default 0) comes off every blow that lands on the foe, flat, never off a burn. stun_resist (default 0) is the foe's base chance, percent, to shrug off a suppress; bosses and heroes carry 30 as a placeholder. aim (default exposed) is the sense the foe's target pick follows, each foe on its own as the round opens: exposed (weighted toward the machine its blows would hurt most), anything, heat (the hottest machine), armed (a machine showing an intact weapon), focus (the rank shares one pick). A move may carry its own aim. on_death {summon, count}: destroyed, the foe splits, that many of the named foe stepping into the pool under its pack (the Gel); a split goes one deep. Player-facing text: codex (what the codex says), flavour (an in-world quote), and each action's text. Every move wears the genre's name where the genre has one (Protect, Cure, Fire, Steal, Self-Destruct) while the engine's words stay ours; the plaque announces a named move when it lands (bible section 5). design is internal and never shown: fantasy (the pitch, the source of the homage), niche (the tactical problem the foe poses), notes. actions is the foe's roster of moves, each kind attack, defend, buff or debuff, with status implemented or planned; only implemented actions appear in the codex. Rank and file have one or two moves, a boss or a hero three, the third a signature that opens on a condition. A move may carry when, one word or a list meaning any (below_half, missing_hull, few_waiting, rerolls_left, machine_hot, machine_armed, back_behind, others_on_field); a move whose condition fails is not rolled, and a special never fires twice running when anything else is open. A defend, buff or debuff names an effect the engine runs (Foe.ACTION_EFFECTS: harden with value, regrow with value; revive_once, summon with foe and count, rally with value; drain_rerolls, add_heat, scramble, crack, disable, heat_all, corrupt_all) and is picked by weight like an attack, in place of a blow that turn. Write {value} in its text for its number. On the map: zone is the pack's ring in hexes (default 1), behaviour push (default; toward the gate) or hunt (one machine, locked at spawn; hunts names the caveat: nearest, weakest, strongest, slowest), movespeed in tens (default 20; foes move binary, water and crags walls; bosses patrol at 10). An implemented attack scales the base attack: factor (default 1.0), strikes (default 1; each a separate blow), swarm (so much more per other foe of its type on the field), keywords (breach: overflows shield into hull; scorch: a stack of Overheating; disable and corrupt act on the entry the machine's die shows; self_destruct: the blow spends the striker), weight (default 1; attacks weigh 2 to a special's 1). Write {damage} in an action's text and the resulting number is shown. Foes stand and strike front rank left to right then back rank; the heaviest hitters deploy left.",
   "entries": [
     {
-      "id": "ghoul", "name": "Ghoul", "faction": "undead",
-      "design": { "fantasy": "A body that forgot to stop.", "niche": "There are six of them and four slots. Kill fast or be buried: every one standing makes every other one hit harder.", "notes": "The swarm claw since 2 October (Ryan: the revive was confusing; a smaller monster's threat is its numbers): 5, and 5 more for every other ghoul on the field, so four on the field hit for 20 each and killing one drops every blow. One move, so a disrupt has nothing to switch it to. Get Back Up is gone from it; the necromancer is the Risen's \"hard to keep down\" now. Aims at anything." },
-      "codex": "The rank and file of the Risen. Slow, stupid and never alone: six arrive for every one you put down, and they walk straight at the nearest thing with a heartbeat. The more of them stand, the harder each one hits.",
+      "id": "goblin", "name": "Goblin", "faction": "meadow",
+      "design": { "fantasy": "The genre's first fight, with a knife. Every JRPG opens on one.", "niche": "There are six of them and four slots. Kill fast or be buried: every one standing makes every other one hit harder.", "notes": "The swarm claw (2 October's ghoul rule): 5, and 5 more for every other goblin on the field. One move, so a disrupt has nothing to switch it to. Aims at anything." },
+      "codex": "The Meadow's rank and file. Small, loud and never alone: they come in sixes, straight at the nearest thing with a heartbeat, and the more of them stand the harder each one hits.",
       "hp": 30, "attack": 5, "rank": "front", "zone": 1, "movespeed": 20, "behaviour": "hunt", "hunts": "nearest", "aim": "anything",
       "actions": [
-        { "id": "claw", "name": "Claw", "kind": "attack", "swarm": 5, "weight": 2, "text": "Tears at anything in reach for {damage}: more for every other ghoul standing.", "status": "implemented" }
+        { "id": "stab", "name": "Stab", "kind": "attack", "swarm": 5, "weight": 2, "text": "A knife from the crowd for {damage}: more for every other goblin standing.", "status": "implemented" }
       ],
       "flavour": "They don't run. They don't have to. You'll get tired first."
     },
     {
-      "id": "necromancer", "name": "Necromancer", "faction": "undead",
-      "design": { "fantasy": "The reason the ghouls keep coming.", "niche": "It hides behind the wall and keeps the wall standing. Reach it, or chew through.", "notes": "Raise runs since 30 September (summon); since 2 October it fires only when fewer than two ghouls wait, and the back rank fires as one (aim focus), so the casters coordinate while the bodies flail." },
-      "codex": "Keeps to the back rank behind a wall of ghouls and keeps the wall standing. Anything that can reach past the front is worth more here than anywhere else.",
+      "id": "wolf", "name": "Wolf", "faction": "meadow",
+      "design": { "fantasy": "The pack that runs down the straggler, in every forest the genre has.", "niche": "A hunter of the slowest, fast, in threes. Whoever lags is caught, and the pack howls each other on.", "notes": "The Meadow's hunter. Howl is a rally when another stands with it." },
+      "codex": "Runs in threes and picks the slowest machine on the field. It is faster than anything you own but the cars, and once it has caught something it does not let go until it is dead.",
+      "hp": 30, "attack": 10, "rank": "front", "zone": 1, "movespeed": 30, "behaviour": "hunt", "hunts": "slowest",
+      "actions": [
+        { "id": "bite", "name": "Bite", "kind": "attack", "weight": 2, "text": "Teeth in the hull for {damage}.", "status": "implemented" },
+        { "id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 5, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder next round.", "status": "implemented" }
+      ],
+      "flavour": "You hear them before the sensors do."
+    },
+    {
+      "id": "gel", "name": "Gel", "faction": "meadow",
+      "design": { "fantasy": "The genre's first monster, a blob: Dragon Quest's slime and Final Fantasy's flan in one, ours bright green and faintly wrong.", "niche": "Kill it and there are two. Volume is the answer, or leave it for last.", "notes": "on_death splits it into two Half-Gels that step into the pool; a split goes one deep." },
+      "codex": "A heap of something bright that moves on its own. Hit it and it hits back; kill it and it comes apart into two smaller heaps that step up in its place.",
+      "hp": 40, "attack": 10, "rank": "front", "zone": 1, "movespeed": 20,
+      "on_death": { "summon": "gel_half", "count": 2 },
+      "actions": [
+        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "text": "Flows over the hull for {damage}.", "status": "implemented" }
+      ],
+      "flavour": "Count them after, not before."
+    },
+    {
+      "id": "gel_half", "name": "Half-Gel", "faction": "meadow",
+      "design": { "fantasy": "What a Gel leaves.", "niche": "Two weak heaps where there was one. They do not split again.", "notes": "Only ever summoned by a Gel's death; never in a spawn list." },
+      "codex": "Half of a Gel. Smaller, weaker, and there are two of them.",
+      "hp": 20, "attack": 5, "rank": "front", "zone": 1, "movespeed": 20,
+      "actions": [
+        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "text": "Flows over the hull for {damage}.", "status": "implemented" }
+      ],
+      "flavour": "Told you."
+    },
+    {
+      "id": "mandragora", "name": "Mandragora", "faction": "meadow",
+      "design": { "fantasy": "The screaming root, pulled up and furious.", "niche": "Back rank. Its scream costs the team a reroll, which is the Meadow's one attack on the die.", "notes": "The back rank fires as one. Scream only when the team has rerolls to lose." },
+      "codex": "A root with a face, and it screams. Stands behind the crowd and shrieks the fight out of your dice: a scream costs the team a reroll next round.",
+      "hp": 30, "attack": 10, "rank": "back", "zone": 3, "movespeed": 20, "aim": "focus",
+      "actions": [
+        { "id": "root_lash", "name": "Root Lash", "kind": "attack", "weight": 2, "text": "A whip of root for {damage}.", "status": "implemented" },
+        { "id": "scream", "name": "Scream", "kind": "debuff", "effect": "drain_rerolls", "value": 1, "weight": 1, "when": "rerolls_left", "text": "Costs the team one reroll next round.", "status": "implemented" }
+      ],
+      "flavour": "Earplugs are issued. Earplugs do not help."
+    },
+    {
+      "id": "treant", "name": "Treant", "faction": "meadow",
+      "design": { "fantasy": "The tree that walks, every forest's boss.", "niche": "Fills a whole column, armoured, and it regrows. Burst against the regrowth, armour against the storm of limbs below half.", "notes": "Massive boss of the Meadow. Regen when missing 20 or more; Root Storm opens below half: three blows of 10 at anything." },
+      "codex": "A tree that walks, and it is older than the city. Fills a whole column; nothing behind it can be reached until it falls, and it grows back what you cut. Hurt it badly enough and the roots come up through the ground.",
+      "hp": 140, "attack": 30, "armour": 10, "rank": "front", "size": 2, "zone": 2, "movespeed": 10, "stun_resist": 30,
+      "actions": [
+        { "id": "limb", "name": "Limb", "kind": "attack", "weight": 2, "text": "A branch the size of a girder, for {damage}.", "status": "implemented" },
+        { "id": "regen", "name": "Regen", "kind": "defend", "effect": "regrow", "value": 20, "weight": 1, "when": "missing_hull", "text": "Regrows {value} hull.", "status": "implemented" },
+        { "id": "root_storm", "name": "Root Storm", "kind": "attack", "factor": 0.34, "strikes": 3, "weight": 2, "aim": "anything", "when": "below_half", "text": "Roots come up everywhere: three blows of {damage} at anything.", "status": "implemented" }
+      ],
+      "flavour": "Gate order one still applies. Bring a bigger saw."
+    },
+
+    {
+      "id": "needler", "name": "Needler", "faction": "waste",
+      "design": { "fantasy": "The Cactuar, made sinister: a figure in a running pose that has never been seen to move. Final Fantasy's thousand needles, our fixed ten through anything.", "niche": "Its needles are exactly ten and no shield stops them, and it comes in fives. Hull and tempo, never the shield.", "notes": "Needles breach. Scatter (it leaves the fight after striking, so the pack is never fully dead) waits on a flee effect: planned. Aims at anything." },
+      "codex": "A cactus the height of a man, in the pose of someone running, and nobody has ever seen one move. Its needles are exactly ten, every time, and a shield does nothing about them.",
+      "hp": 20, "attack": 10, "rank": "front", "zone": 1, "movespeed": 30, "behaviour": "hunt", "hunts": "nearest", "aim": "anything",
+      "actions": [
+        { "id": "needles", "name": "Needles", "kind": "attack", "weight": 2, "keywords": ["breach"], "text": "Exactly {damage} needles, through the shield.", "status": "implemented" },
+        { "id": "scatter", "name": "Scatter", "kind": "buff", "effect": "flee", "weight": 1, "text": "It is somewhere else, and will be back.", "status": "planned" }
+      ],
+      "flavour": "Appendix K: do not take your eyes off the cactus."
+    },
+    {
+      "id": "antlion", "name": "Antlion", "faction": "waste",
+      "design": { "fantasy": "The trap at the bottom of the funnel. Final Fantasy's antlion, Dragon Quest's.", "niche": "A hunter of the slowest that pins what it catches and hardens when hurt. The slow machine wants company.", "notes": "Burrow is flat armour until its next action, below half." },
+      "codex": "Waits under the sand for whatever is slowest and does not let go. Hurt it and it digs in, and what is dug in is hard to hit.",
+      "hp": 50, "attack": 20, "rank": "front", "zone": 1, "movespeed": 20, "behaviour": "hunt", "hunts": "slowest",
+      "actions": [
+        { "id": "mandibles", "name": "Mandibles", "kind": "attack", "weight": 2, "text": "Jaws close on the hull for {damage}.", "status": "implemented" },
+        { "id": "burrow", "name": "Burrow", "kind": "defend", "effect": "harden", "value": 10, "weight": 1, "when": "below_half", "text": "Digs in: armour +{value} until its next action.", "status": "implemented" }
+      ],
+      "flavour": "The sand moved. Nobody else saw the sand move."
+    },
+    {
+      "id": "cockatrice", "name": "Cockatrice", "faction": "waste",
+      "design": { "fantasy": "The bird that turns you to stone. Final Fantasy's, and every bestiary's.", "niche": "Back rank. Stone switches off the weapon a machine is showing. Show it a shield or a blank.", "notes": "Stone is the old Hush: disable the showing entry through the next turn, when a machine shows an intact weapon; both aim at the armed." },
+      "codex": "A bird with a lizard's tail that stands behind the others and stares. What it stares at stops working: the weapon your machine is showing is stone until its next turn.",
+      "hp": 30, "attack": 10, "rank": "back", "zone": 3, "movespeed": 20, "aim": "armed",
+      "actions": [
+        { "id": "peck", "name": "Peck", "kind": "attack", "weight": 2, "text": "A beak like a pick, for {damage}.", "status": "implemented" },
+        { "id": "stone", "name": "Stone", "kind": "debuff", "effect": "disable", "weight": 1, "when": "machine_armed", "text": "Turns the weapon one machine's die is showing to stone, through its next turn.", "status": "implemented" }
+      ],
+      "flavour": "Don't look at it. No, the other way."
+    },
+    {
+      "id": "sandworm", "name": "Sandworm", "faction": "waste",
+      "design": { "fantasy": "The worm under the desert, the genre's and every desert's. The old Maw's ring of teeth is its mouth.", "niche": "Fills a whole column, swallows through the shield, and digs in when hurt. Suppress the swallow; hull takes it, a shield does not.", "notes": "Massive boss of the Waste. Swallow breaches. Burrow hardens when hurt. Quake opens below half: three blows of 10 at anything." },
+      "codex": "Most of it is under the sand. The part that is not is a ring of teeth the width of a road, and what it swallows it swallows through the shield. Hurt it and the ground shakes for everyone.",
+      "hp": 160, "attack": 40, "armour": 10, "rank": "front", "size": 2, "zone": 2, "movespeed": 10, "stun_resist": 30,
+      "actions": [
+        { "id": "swallow", "name": "Swallow", "kind": "attack", "weight": 2, "keywords": ["breach"], "text": "The ring closes for {damage}, through the shield.", "status": "implemented" },
+        { "id": "burrow", "name": "Burrow", "kind": "defend", "effect": "harden", "value": 10, "weight": 1, "when": "missing_hull", "text": "Digs in: armour +{value} until its next action.", "status": "implemented" },
+        { "id": "quake", "name": "Quake", "kind": "attack", "factor": 0.25, "strikes": 3, "weight": 2, "aim": "anything", "when": "below_half", "text": "The ground heaves: three blows of {damage} at anything.", "status": "implemented" }
+      ],
+      "flavour": "Appendix K, last page: if the sand is moving toward you, it is too late to read this."
+    },
+
+    {
+      "id": "revenant", "name": "Revenant", "faction": "marsh",
+      "design": { "fantasy": "The dead in rusted ornate plate: a knight's silhouette gone wrong, the helm empty, the plate hanging off the ribs. The genre's zombies and skeletons in one.", "niche": "There are six of them and four slots. Kill fast or be buried: every one standing makes every other one hit harder.", "notes": "The swarm claw since 2 October (the ghoul's, renamed 9 October): 5, and 5 more for every other revenant on the field. One move, so a disrupt has nothing to switch it to. The Ghost is the Marsh's hard to keep down. Aims at anything." },
+      "codex": "The rank and file of the Marsh. Slow, stupid and never alone: six arrive for every one you put down, and they walk straight at the nearest thing with a heartbeat. The more of them stand, the harder each one hits.",
+      "hp": 30, "attack": 5, "rank": "front", "zone": 1, "movespeed": 20, "behaviour": "hunt", "hunts": "nearest", "aim": "anything",
+      "actions": [
+        { "id": "claw", "name": "Claw", "kind": "attack", "swarm": 5, "weight": 2, "text": "Tears at anything in reach for {damage}: more for every other revenant standing.", "status": "implemented" }
+      ],
+      "flavour": "They don't run. They don't have to. You'll get tired first."
+    },
+    {
+      "id": "ghost", "name": "Ghost", "faction": "marsh",
+      "design": { "fantasy": "A hooded ghost carrying a lantern, the flame the brightest pixel in the domain. The reason the revenants keep coming.", "niche": "It hides behind the wall and keeps the wall standing. Reach it, or chew through.", "notes": "Raise fires only when fewer than two revenants wait, and the back rank fires as one (aim focus)." },
+      "codex": "Keeps to the back rank behind a wall of the dead and keeps the wall standing. Anything that can reach past the front is worth more here than anywhere else.",
       "hp": 30, "attack": 10, "rank": "back", "zone": 3, "movespeed": 20, "aim": "focus",
       "actions": [
         { "id": "hex_bolt", "name": "Hex Bolt", "kind": "attack", "weight": 2, "text": "A bolt of grave-light for {damage}.", "status": "implemented" },
-        { "id": "raise", "name": "Raise", "kind": "buff", "effect": "summon", "foe": "ghoul", "count": 1, "weight": 1, "when": "few_waiting", "text": "Calls a ghoul up from the pool at the end of the round.", "status": "implemented" }
+        { "id": "raise", "name": "Raise", "kind": "buff", "effect": "summon", "foe": "revenant", "count": 1, "weight": 1, "when": "few_waiting", "text": "Calls a revenant up from the pool at the end of the round.", "status": "implemented" }
       ],
-      "flavour": "Kill the one doing the talking."
+      "flavour": "Kill the one holding the light."
     },
     {
-      "id": "brute", "name": "Brute", "faction": "demonic",
-      "design": { "fantasy": "A wall that hits back.", "niche": "Its swing is telegraphed. Shield for it, suppress it, or disrupt it into a roar once the rerolls are spent.", "notes": "Roar runs since 30 September (drain_rerolls); since 2 October only when the team has rerolls to lose, and never twice running. Aims at the exposed." },
-      "codex": "A slab of muscle that swings once a round and means it. Everything it does is announced a round early, which is the only reason anyone survives it.",
-      "hp": 50, "attack": 20, "rank": "front", "zone": 1, "behaviour": "hunt", "hunts": "strongest", "movespeed": 30,
+      "id": "zombie_knight", "name": "Zombie Knight", "faction": "marsh",
+      "design": { "fantasy": "The genre's death knight: a cape, rusted plate, a sword as long as it is tall.", "niche": "The Marsh's one armoured foe, and it gets back up once. Big single blows, and an execute if you have one.", "notes": "The elite tier's candidate. Reraise is revive_once." },
+      "codex": "A knight that died in its armour and kept the armour. Hits hard, takes little, and the first time you put it down it gets back up.",
+      "hp": 50, "attack": 20, "armour": 10, "rank": "front", "zone": 1, "movespeed": 20,
       "actions": [
-        { "id": "haymaker", "name": "Haymaker", "kind": "attack", "weight": 2, "text": "One enormous swing for {damage}.", "status": "implemented" },
-        { "id": "roar", "name": "Roar", "kind": "debuff", "effect": "drain_rerolls", "value": 1, "weight": 1, "when": "rerolls_left", "text": "Costs the team one reroll next round.", "status": "implemented" }
+        { "id": "cleaver", "name": "Cleaver", "kind": "attack", "weight": 2, "text": "A sword longer than it is tall, for {damage}.", "status": "implemented" },
+        { "id": "reraise", "name": "Reraise", "kind": "buff", "effect": "revive_once", "weight": 1, "when": "missing_hull", "text": "Readies itself once it is hurt: the next time it falls it gets back up, whole, once.", "status": "implemented" }
       ],
-      "flavour": "Big, loud and honest. I've fought worse people."
+      "flavour": "It saluted. Then it got up again."
     },
     {
-      "id": "hellcaster", "name": "Hellcaster", "faction": "demonic",
-      "design": { "fantasy": "Artillery with opinions.", "niche": "Heat from the back rank: the bolt scorches and the stoke finishes it. Lure it onto a cold machine, suppress it, or reach it with indirect fire.", "notes": "Since 2 October the bolt is 20 with Scorch (it was a plain 30) so the heat is the rider, and Stoke aims at heat and fires only when a machine carries 20 or more, so it finishes a hot machine rather than warming a cold one." },
-      "codex": "Infernal artillery. Stands at the back and lobs fire over the front rank; the front rank exists so it can. What it hits runs hot, and it knows where the heat is.",
+      "id": "bone_dragon", "name": "Bone Dragon", "faction": "marsh",
+      "design": { "fantasy": "A cathedral of ribs that walks: the genre's bone dragon, the Colossus of September as it stands.", "niche": "Fills a whole column. Nothing behind it is reachable until it falls, and it does not fall quickly: burst against the regrowth, armour against the storm.", "notes": "Massive boss of the Marsh. Regen when missing 20 or more. Bone Storm opens below half: three blows of 10 at anything." },
+      "codex": "A cathedral of ribs that walks. Fills a whole column; nothing behind it can be reached until it falls, and it does not fall quickly. Hurt it badly enough and the ribs start to fly.",
+      "hp": 140, "attack": 30, "armour": 10, "rank": "front", "size": 2, "zone": 2, "movespeed": 10, "stun_resist": 30,
+      "actions": [
+        { "id": "tail_sweep", "name": "Tail Sweep", "kind": "attack", "weight": 2, "text": "A rib the size of a girder, for {damage}.", "status": "implemented" },
+        { "id": "regen", "name": "Regen", "kind": "defend", "effect": "regrow", "value": 20, "weight": 1, "when": "missing_hull", "text": "Regrows {value} hull.", "status": "implemented" },
+        { "id": "bone_storm", "name": "Bone Storm", "kind": "attack", "factor": 0.34, "strikes": 3, "weight": 2, "aim": "anything", "when": "below_half", "text": "Ribs fly: three blows of {damage} at anything.", "status": "implemented" }
+      ],
+      "flavour": "Gate order four still applies. Bring more gun."
+    },
+
+    {
+      "id": "bomb", "name": "Bomb", "faction": "peak",
+      "design": { "fantasy": "A floating fireball with a face: Final Fantasy's bomb, the one that swells and bursts.", "niche": "Its death is its blow. Kill it outright or leave it alone; a hurt bomb bursts through the shield and is gone.", "notes": "The elite tier's candidate. Flare Up is the common blow and scorches; Self-Destruct opens below half, breaches and spends it." },
+      "codex": "A ball of fire with a face, and it comes straight for you. Hurt it and it swells; a swollen bomb bursts through any shield and takes itself with it.",
+      "hp": 30, "attack": 30, "rank": "front", "zone": 1, "movespeed": 30, "behaviour": "hunt", "hunts": "nearest",
+      "actions": [
+        { "id": "flare_up", "name": "Flare Up", "kind": "attack", "factor": 0.34, "weight": 2, "keywords": ["scorch"], "text": "A lick of fire for {damage}. It scorches.", "status": "implemented" },
+        { "id": "self_destruct", "name": "Self-Destruct", "kind": "attack", "weight": 3, "keywords": ["breach", "self_destruct"], "when": "below_half", "text": "Bursts for {damage}, through the shield, and is gone.", "status": "implemented" }
+      ],
+      "flavour": "If it starts to swell, you have already made the wrong call."
+    },
+    {
+      "id": "salamander", "name": "Salamander", "faction": "peak",
+      "design": { "fantasy": "The lizard that lives in the fire. Its hide burns what touches it.", "niche": "Front rank, scorching blows, and a hide that burns back. The melee machines pay to hit it.", "notes": "Ember Hide (a foe-side retaliate: whoever strikes it in melee takes a stack of Overheating) is planned." },
+      "codex": "A lizard the size of a car that lives in the lava and does not notice. Its bites burn, and so does its hide.",
+      "hp": 50, "attack": 20, "rank": "front", "zone": 1, "movespeed": 20,
+      "actions": [
+        { "id": "bite", "name": "Bite", "kind": "attack", "weight": 2, "keywords": ["scorch"], "text": "A burning bite for {damage}. It scorches.", "status": "implemented" },
+        { "id": "ember_hide", "name": "Ember Hide", "kind": "defend", "effect": "retaliate", "weight": 1, "text": "Whatever strikes it up close runs hot.", "status": "planned" }
+      ],
+      "flavour": "Do not pet the lizard."
+    },
+    {
+      "id": "drake", "name": "Drake", "faction": "peak",
+      "design": { "fantasy": "A small dragon that breathes over the front rank. Artillery with wings.", "niche": "Heat from the back rank: the breath scorches and the stoke finishes it. Lure it onto a cold machine, suppress it, or reach it with indirect fire.", "notes": "The Hellcaster of September, renamed 9 October: Breath is 20 with Scorch so the heat is the rider, and Stoke aims at heat and fires only when a machine carries 20 or more." },
+      "codex": "Stands at the back and breathes fire over the front rank; the front rank exists so it can. What it hits runs hot, and it knows where the heat is.",
       "hp": 30, "attack": 20, "rank": "back", "zone": 3, "movespeed": 20,
       "actions": [
-        { "id": "firebolt", "name": "Firebolt", "kind": "attack", "weight": 2, "keywords": ["scorch"], "text": "Lobbed fire for {damage}, over the front rank. It scorches.", "status": "implemented" },
+        { "id": "breath", "name": "Breath", "kind": "attack", "weight": 2, "keywords": ["scorch"], "text": "A gout of fire for {damage}, over the front rank. It scorches.", "status": "implemented" },
         { "id": "stoke", "name": "Stoke", "kind": "debuff", "effect": "add_heat", "value": 10, "weight": 1, "aim": "heat", "when": "machine_hot", "text": "Adds {value} heat to the hottest machine.", "status": "implemented" }
       ],
       "flavour": "If the sky turns orange, that's not the sunset."
     },
     {
-      "id": "spawn", "name": "Spawn", "faction": "eldritch",
-      "design": { "fantasy": "It has too many angles.", "niche": "Unremarkable alone. Exists to shield the whisperer, and hardens when it is doing that job or when it is hurt. Hit the other column, or hit it once and hard.", "notes": "Fold runs since 30 September; flat armour since 2 October (harden +10), when a back-rank foe stands behind it or it is below half." },
-      "codex": "Something like a body, folded wrong. Harmless enough on its own; in numbers it is a wall that keeps the Whisperer out of reach, and it folds tighter when something stands behind it.",
-      "hp": 40, "attack": 20, "rank": "front", "zone": 1, "movespeed": 20,
-      "actions": [
-        { "id": "lash", "name": "Lash", "kind": "attack", "weight": 2, "text": "A limb from an unexpected direction for {damage}.", "status": "implemented" },
-        { "id": "fold", "name": "Fold", "kind": "defend", "effect": "harden", "value": 10, "weight": 1, "when": ["back_behind", "below_half"], "text": "Folds in on itself: armour +{value} until its next action.", "status": "implemented" }
-      ],
-      "flavour": "Count the limbs. Now count again."
-    },
-    {
-      "id": "whisperer", "name": "Whisperer", "faction": "eldritch",
-      "design": { "fantasy": "It talks to your dice.", "niche": "It goes for the loaded gun: its hits corrupt what you rolled and its hush switches it off. Redundancy wins; so does showing it a blank or a shield.", "notes": "Since 2 October: Murmur carries Corrupt and Hush switches off the showing entry (disable) when a machine shows an intact weapon; both aim at the armed. The spoiled reroll (scramble) is gone from it: one foe doing two things to the die is the act, and the reroll was the less readable." },
-      "codex": "It does not hit hard. It hits your dice. A machine that has been whispered to does not roll what was installed, and a machine that shows it a loaded gun finds the gun switched off.",
-      "hp": 30, "attack": 10, "rank": "back", "zone": 3, "movespeed": 20, "aim": "armed",
-      "actions": [
-        { "id": "murmur", "name": "Murmur", "kind": "attack", "weight": 2, "keywords": ["corrupt"], "text": "A word that hurts, for {damage}, and corrupts the component the machine is showing.", "status": "implemented" },
-        { "id": "hush", "name": "Hush", "kind": "debuff", "effect": "disable", "weight": 1, "when": "machine_armed", "text": "Switches off the weapon one mech's die is showing, through its next turn.", "status": "implemented" }
-      ],
-      "flavour": "Your die came up with a face you never fitted. Don't trust it. Don't trust the next one either."
-    },
-    {
-      "id": "bone_colossus", "name": "Bone Colossus", "faction": "undead",
-      "design": { "fantasy": "A cathedral of ribs that walks.", "niche": "Fills a whole column. Nothing behind it is reachable until it falls, and it does not fall quickly: burst and burn against the knitting, armour against the storm.", "notes": "Massive boss. On the battlefield it is a three-hex unit. Knit runs since 30 September (regrow); since 2 October only when missing 20 or more. Armour 10. The third move, Bone Storm, opens below half: three blows of 10 at anything, the volume answer to a machine that armoured for the sweep." },
-      "codex": "A cathedral of ribs that walks. Fills a whole column; nothing behind it can be reached until it falls, and it does not fall quickly. Hurt it badly enough and the ribs start to fly.",
-      "hp": 140, "attack": 30, "armour": 10, "rank": "front", "size": 2, "zone": 2, "movespeed": 10, "stun_resist": 30,
-      "actions": [
-        { "id": "sweep", "name": "Sweep", "kind": "attack", "weight": 2, "text": "A rib the size of a girder, for {damage}.", "status": "implemented" },
-        { "id": "knit", "name": "Knit", "kind": "defend", "effect": "regrow", "value": 20, "weight": 1, "when": "missing_hull", "text": "Regrows {value} hull.", "status": "implemented" },
-        { "id": "bone_storm", "name": "Bone Storm", "kind": "attack", "factor": 0.34, "strikes": 3, "weight": 2, "aim": "anything", "when": "below_half", "text": "Ribs fly: three blows of {damage} at anything.", "status": "implemented" }
-      ],
-      "flavour": "Gate order four still applies. Bring more gun."
-    },
-    {
-      "id": "pit_lord", "name": "Pit Lord", "faction": "demonic",
-      "design": { "fantasy": "The furnace has a face.", "niche": "The biggest telegraphed hit in the game, and it breaches, so no shield answers it: suppress it, lure it onto hull that can take it, or disrupt it into a Kindle when another demon stands.", "notes": "Massive boss. Furnace Blow carries Breach since 2 October. Kindle runs since 30 September (rally); since 2 October only when another demon stands, so it never rallies an empty field. Armour 10. The third move, Eruption, opens below half: 10 heat to every machine." },
-      "codex": "The furnace has a face. The single biggest telegraphed hit in the campaign, every round, until it is dead, and a shield does not stop it. When it is hurt the furnace vents on everyone.",
+      "id": "magma_golem", "name": "Magma Golem", "faction": "peak",
+      "design": { "fantasy": "The furnace with a body: rock on the outside, lava in the seams. The Pit Lord of September with the hell taken out.", "niche": "The biggest telegraphed hit in the domain, and it breaches, so no shield answers it: suppress it, lure it onto hull that can take it, or disrupt it into Stoke the Forge when another stands.", "notes": "Massive boss of the Peak. Slag Fist breaches. Stoke the Forge rallies when another stands. Eruption opens below half: 10 heat to every machine." },
+      "codex": "A walking slab of black rock with lava in every crack. The single biggest telegraphed hit on the Peak, every round, until it is dead, and a shield does not stop it. When it is hurt the cracks vent on everyone.",
       "hp": 160, "attack": 40, "armour": 10, "rank": "front", "size": 2, "zone": 2, "movespeed": 10, "stun_resist": 30,
       "actions": [
-        { "id": "furnace_blow", "name": "Furnace Blow", "kind": "attack", "weight": 2, "keywords": ["breach"], "text": "A fist of slag for {damage}, through the shield.", "status": "implemented" },
-        { "id": "kindle", "name": "Kindle", "kind": "buff", "effect": "rally", "value": 10, "weight": 1, "when": "others_on_field", "text": "Every other demon on the field hits {value} harder next round.", "status": "implemented" },
-        { "id": "eruption", "name": "Eruption", "kind": "debuff", "effect": "heat_all", "value": 10, "weight": 1, "when": "below_half", "text": "The furnace vents: {value} heat to every machine.", "status": "implemented" }
+        { "id": "slag_fist", "name": "Slag Fist", "kind": "attack", "weight": 2, "keywords": ["breach"], "text": "A fist of slag for {damage}, through the shield.", "status": "implemented" },
+        { "id": "stoke_the_forge", "name": "Stoke the Forge", "kind": "buff", "effect": "rally", "value": 10, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder next round.", "status": "implemented" },
+        { "id": "eruption", "name": "Eruption", "kind": "debuff", "effect": "heat_all", "value": 10, "weight": 1, "when": "below_half", "text": "The cracks vent: {value} heat to every machine.", "status": "implemented" }
       ],
-      "flavour": "They brought fire. We brought bigger fire. It brought the biggest."
+      "flavour": "They brought fire. We brought bigger fire. It brought the mountain."
+    },
+
+    {
+      "id": "warrior", "name": "The Warrior", "faction": "meadow", "hero": true,
+      "design": { "fantasy": "The classic party's front: the plain fighter, over-levelled, a sword the size of the tank. Every JRPG's first hero.", "niche": "One big telegraphed blow a round, and below half it swings at everyone. Shield the telegraph, and keep nobody weak when it drops.", "notes": "The Meadow's hero. Cover (it takes the blow aimed at another foe in the fight) is a foe-side interpose: planned. Cleave below half is the three-at-anything form until a blow at every machine exists." },
+      "codex": "The one in front. A sword longer than your machine is tall, swung once a round and meant, and when it is hurt it stops picking targets.",
+      "hp": 120, "attack": 30, "rank": "front", "zone": 2, "movespeed": 20, "behaviour": "hunt", "hunts": "strongest", "stun_resist": 30,
+      "actions": [
+        { "id": "slash", "name": "Slash", "kind": "attack", "weight": 2, "text": "One enormous swing for {damage}.", "status": "implemented" },
+        { "id": "cover", "name": "Cover", "kind": "defend", "effect": "interpose", "weight": 1, "text": "Steps in front of whoever you aimed at.", "status": "planned" },
+        { "id": "cleave", "name": "Cleave", "kind": "attack", "factor": 0.5, "strikes": 3, "weight": 2, "aim": "anything", "when": "below_half", "text": "Swings through everything: three blows of {damage} at anything.", "status": "implemented" }
+      ],
+      "flavour": "It looked at the gate like it was a door."
     },
     {
-      "id": "the_maw", "name": "The Maw", "faction": "eldritch",
-      "design": { "fantasy": "You do not see all of it. That is a mercy.", "niche": "Bites twice a round at whoever shows it a weapon, and cracks what it sees. Redundancy wins; burst loses; a blank or a shield showing is a kind of armour.", "notes": "Massive boss. Bite strikes twice since 2 October and aims at the armed, like Unmake (crack, since 30 September; since 2 October only when a machine shows an intact component). Armour 10. The third move, Unravel, opens below half: every machine's showing component corrupted." },
-      "codex": "You do not see all of it. The part you can see bites twice, at whatever is pointing a gun at it, and what it bites cracks. Hurt it and everything you rolled goes wrong at once.",
-      "hp": 120, "attack": 20, "armour": 10, "rank": "front", "size": 2, "zone": 2, "movespeed": 10, "stun_resist": 30, "aim": "armed",
+      "id": "martial_artist", "name": "The Martial Artist", "faction": "meadow", "hero": true,
+      "design": { "fantasy": "The bare-handed one: Final Fantasy's monk, Dragon Quest's martial artist, Chrono Trigger's cavewoman with a club. Hits twice and hits back.", "niche": "Two strikes a round, so a shield stops the first and the second reaches the hull, and it breathes its wounds closed. Big single blows beat it; chip damage feeds it.", "notes": "The Meadow's second hero. Counter (a foe-side retaliate) is planned. Chakra is regrow when hurt. Hundred Fists opens below half." },
+      "codex": "No sword, no armour, and it does not need either. Every strike is two, it breathes its wounds closed between rounds, and when it is hurt it stops counting.",
+      "hp": 100, "attack": 20, "rank": "front", "zone": 2, "movespeed": 30, "behaviour": "hunt", "hunts": "nearest", "stun_resist": 30,
       "actions": [
-        { "id": "bite", "name": "Bite", "kind": "attack", "strikes": 2, "weight": 2, "text": "The visible part closes, twice, for {damage} each.", "status": "implemented" },
-        { "id": "unmake", "name": "Unmake", "kind": "debuff", "effect": "crack", "weight": 1, "when": "machine_armed", "text": "Cracks the component one mech's die is showing, no hull hit needed.", "status": "implemented" },
-        { "id": "unravel", "name": "Unravel", "kind": "debuff", "effect": "corrupt_all", "weight": 1, "when": "below_half", "text": "Everything you rolled is wrong: every machine's showing component is corrupted.", "status": "implemented" }
+        { "id": "flurry", "name": "Flurry", "kind": "attack", "strikes": 2, "weight": 2, "text": "Two blows of {damage}, one after the other.", "status": "implemented" },
+        { "id": "counter", "name": "Counter", "kind": "defend", "effect": "retaliate", "weight": 1, "text": "Whatever strikes it up close is struck back.", "status": "planned" },
+        { "id": "chakra", "name": "Chakra", "kind": "defend", "effect": "regrow", "value": 20, "weight": 1, "when": "missing_hull", "text": "Breathes {value} hull closed.", "status": "implemented" },
+        { "id": "hundred_fists", "name": "Hundred Fists", "kind": "attack", "factor": 0.5, "strikes": 3, "weight": 2, "aim": "anything", "when": "below_half", "text": "Three blows of {damage} at anything, too fast to count.", "status": "implemented" }
       ],
-      "flavour": "Appendix K, last page: if you can read this, it hasn't noticed you yet."
+      "flavour": "It bowed first. That was the warning."
+    },
+    {
+      "id": "thief", "name": "The Thief", "faction": "waste", "hero": true,
+      "design": { "fantasy": "The party's quick one: Final Fantasy's thief, Dragon Quest's, Octopath's. Steals, mugs, and gets away.", "niche": "Fast, a hunter of the slowest, and it attacks what you have: a reroll stolen, the entry you are showing corrupted. Below half it flees and comes back next battle, so its final is a tempo check: kill it before it can.", "notes": "The Waste's hero. Flee (it leaves the fight below half and returns next battle, the recurring boss who gets away) waits on a flee effect: planned, and its price must show before the fight." },
+      "codex": "Faster than anything you own, and it goes for the slowest machine you have. It does not hit hard. It takes things: a reroll here, the weapon you were about to use there. When it is hurt it leaves, and it will be back.",
+      "hp": 90, "attack": 20, "rank": "front", "zone": 2, "movespeed": 40, "behaviour": "hunt", "hunts": "slowest", "aim": "armed", "stun_resist": 30,
+      "actions": [
+        { "id": "mug", "name": "Mug", "kind": "attack", "weight": 2, "keywords": ["corrupt"], "text": "A blow for {damage} that corrupts the component the machine is showing.", "status": "implemented" },
+        { "id": "steal", "name": "Steal", "kind": "debuff", "effect": "drain_rerolls", "value": 1, "weight": 1, "when": "rerolls_left", "text": "Takes a reroll from the team for next round.", "status": "implemented" },
+        { "id": "flee", "name": "Flee", "kind": "buff", "effect": "flee", "weight": 3, "when": "below_half", "text": "Gone, with whatever it took. It will be back.", "status": "planned" }
+      ],
+      "flavour": "Check your pockets. Check the gun."
+    },
+    {
+      "id": "lancer", "name": "The Lancer", "faction": "waste", "hero": true,
+      "design": { "fantasy": "The one who jumps: Final Fantasy's dragoon, Legend of Dragoon's. A spear from a great height.", "niche": "Jump is announced this round and lands next, breaching, so the player has a round to answer the machine it named. Below half it dives for everything it has.", "notes": "The Waste's second hero. Jump (a delayed blow) is planned. Dragon Dive opens below half." },
+      "codex": "A spear and a long way up. It leaves the ground on one round and comes down on the next, through the shield, on whoever it named. When it is hurt it stops coming down gently.",
+      "hp": 110, "attack": 30, "rank": "front", "zone": 2, "movespeed": 30, "behaviour": "hunt", "hunts": "strongest", "stun_resist": 30,
+      "actions": [
+        { "id": "thrust", "name": "Thrust", "kind": "attack", "weight": 2, "text": "A spear through the plating for {damage}.", "status": "implemented" },
+        { "id": "jump", "name": "Jump", "kind": "attack", "weight": 1, "keywords": ["breach"], "text": "Leaves the ground; lands next round for {damage}, through the shield.", "status": "planned" },
+        { "id": "dragon_dive", "name": "Dragon Dive", "kind": "attack", "factor": 1.5, "weight": 2, "keywords": ["breach"], "when": "below_half", "text": "Comes down with everything it has: {damage}, through the shield.", "status": "implemented" }
+      ],
+      "flavour": "Look up. No, higher."
+    },
+    {
+      "id": "white_mage", "name": "The White Mage", "faction": "marsh", "hero": true,
+      "design": { "fantasy": "The healer, in the white robe with the red trim, who heals the dead. The lesson every JRPG teaches: kill the healer first.", "niche": "Back rank behind a wall of the dead, keeping it standing: Cure on the hurt, Protect on the front, Reraise on itself. Reach it, and burst beats its regrowth. Holy below half is the one blow it has, and it is big.", "notes": "The Marsh's hero. Cure (regrow an ally) and Protect (harden every foe in the fight) are planned; the engine has both for self only. Reraise is revive_once. Holy opens below half." },
+      "codex": "It does not fight. It stands behind the dead and keeps them standing: the hurt ones healed, the front ones shielded, itself readied to get up if it falls. Reach it or lose the fight slowly. When it is hurt it has one spell left, and it is a big one.",
+      "hp": 90, "attack": 10, "rank": "back", "zone": 3, "movespeed": 20, "aim": "focus", "stun_resist": 30,
+      "actions": [
+        { "id": "dia", "name": "Dia", "kind": "attack", "weight": 2, "text": "A lance of white light for {damage}.", "status": "implemented" },
+        { "id": "cure", "name": "Cure", "kind": "defend", "effect": "regrow_ally", "value": 20, "weight": 1, "text": "Regrows {value} hull on the most hurt of its own.", "status": "planned" },
+        { "id": "protect", "name": "Protect", "kind": "defend", "effect": "harden_all", "value": 10, "weight": 1, "text": "Armour +{value} on every foe in the fight until its next action.", "status": "planned" },
+        { "id": "reraise", "name": "Reraise", "kind": "buff", "effect": "revive_once", "weight": 1, "when": "missing_hull", "text": "Readies itself once it is hurt: the next time it falls it gets back up, whole, once.", "status": "implemented" },
+        { "id": "holy", "name": "Holy", "kind": "attack", "factor": 3.0, "weight": 2, "when": "below_half", "text": "Everything it has, as light: {damage}.", "status": "implemented" }
+      ],
+      "flavour": "It healed the thing that was eating the gate. Then it looked at us."
+    },
+    {
+      "id": "necromancer", "name": "The Necromancer", "faction": "marsh", "hero": true,
+      "design": { "fantasy": "The raiser: Final Fantasy V's necromancer, the dark mage of every bestiary. The Marsh's other apex, the one that makes the dead rather than mends them.", "niche": "Raise every round, so the wall never thins, and below half it raises two at once. Its blows should cost it hull: planned. Reach it; every round it stands is a revenant more.", "notes": "The Marsh's second hero. Raise fires whenever fewer than two revenants wait, at an attack's weight. Its blows costing it hull waits on a self-damage rider for foes." },
+      "codex": "Stands at the back and makes more of them. Every round it is alive the wall in front of it is a revenant thicker, and when it is hurt it stops making them one at a time.",
+      "hp": 90, "attack": 10, "rank": "back", "zone": 3, "movespeed": 20, "aim": "focus", "stun_resist": 30,
+      "actions": [
+        { "id": "drain", "name": "Drain", "kind": "attack", "weight": 2, "text": "Pulls something out of the hull for {damage}.", "status": "implemented" },
+        { "id": "raise", "name": "Raise", "kind": "buff", "effect": "summon", "foe": "revenant", "count": 1, "weight": 2, "when": "few_waiting", "text": "Calls a revenant up from the pool at the end of the round, whenever fewer than two wait.", "status": "implemented" },
+        { "id": "mass_raise", "name": "Mass Raise", "kind": "buff", "effect": "summon", "foe": "revenant", "count": 2, "weight": 2, "when": "below_half", "text": "Calls two revenants up from the pool at the end of the round.", "status": "implemented" }
+      ],
+      "flavour": "Kill the one doing the talking."
+    },
+    {
+      "id": "black_mage", "name": "The Black Mage", "faction": "peak", "hero": true,
+      "design": { "fantasy": "The one in the hat who throws fire for a living. Every party's damage, and the genre's most recognisable silhouette, redrawn as ours.", "niche": "Fire at the hottest machine, Fira on everyone once someone is hot, Flare through the shield when it is hurt. Cooling and a cold lure; a shield for Flare does nothing.", "notes": "The Peak's hero. Fire aims at heat and scorches; Fira is heat to all when a machine runs hot; Flare opens below half and breaches. Meteor is the promoted form's." },
+      "codex": "A hat, a robe, and fire. It picks the machine that is already running hot and makes it hotter, and once anyone is hot it burns everyone. When it is hurt it stops throwing fire and starts throwing the mountain.",
+      "hp": 90, "attack": 20, "rank": "back", "zone": 3, "movespeed": 20, "aim": "heat", "stun_resist": 30,
+      "actions": [
+        { "id": "fire", "name": "Fire", "kind": "attack", "weight": 2, "keywords": ["scorch"], "text": "Fire for {damage}, at the hottest machine. It scorches.", "status": "implemented" },
+        { "id": "fira", "name": "Fira", "kind": "debuff", "effect": "heat_all", "value": 10, "weight": 1, "when": "machine_hot", "text": "{value} heat to every machine.", "status": "implemented" },
+        { "id": "flare", "name": "Flare", "kind": "attack", "factor": 2.0, "weight": 2, "keywords": ["breach"], "when": "below_half", "text": "Everything it has, as fire: {damage}, through the shield.", "status": "implemented" }
+      ],
+      "flavour": "The hat is not the problem. Stop shooting the hat."
+    },
+    {
+      "id": "summoner", "name": "The Summoner", "faction": "peak", "hero": true,
+      "design": { "fantasy": "The one who calls something bigger: Final Fantasy's summoner, Golden Sun's adepts, the demon summoners of Megami Tensei. The hero-plus-beast pair: the brain behind, the Golem in front.", "niche": "On its own it is a mage with a weak blow. It calls the Magma Golem up into the pool, and the Golem is the fight. Kill the Summoner first and the Golem is dumb; kill the Golem first and the Summoner calls another.", "notes": "The Peak's second hero. Summon Golem fires when fewer than two wait in the pool. Hellfire opens below half." },
+      "codex": "A small figure in the back rank, and the mountain does what it says. Leave it alone and there is a golem in front of it; kill the golem and there is another. When it is hurt the fire comes for everyone.",
+      "hp": 80, "attack": 10, "rank": "back", "zone": 3, "movespeed": 20, "aim": "focus", "stun_resist": 30,
+      "actions": [
+        { "id": "ruin", "name": "Ruin", "kind": "attack", "weight": 2, "text": "A word that cracks plating, for {damage}.", "status": "implemented" },
+        { "id": "summon_golem", "name": "Summon", "kind": "buff", "effect": "summon", "foe": "magma_golem", "count": 1, "weight": 2, "when": "few_waiting", "text": "Calls a Magma Golem up from the pool at the end of the round.", "status": "implemented" },
+        { "id": "hellfire", "name": "Hellfire", "kind": "debuff", "effect": "heat_all", "value": 10, "weight": 1, "when": "below_half", "text": "{value} heat to every machine.", "status": "implemented" }
+      ],
+      "flavour": "It raised one hand. The ground answered."
     }
   ]
 }

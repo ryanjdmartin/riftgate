@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b8yu5dvky7u0s"
-path="res://.godot/imported/necromancer_map.png-40cc3539c7833a236a29db310b6bcf9b.ctex"
+uid="uid://bghilqglbdbst"
+path="res://.godot/imported/drake_combat.png-a54b7a28a8da2ae7b3e0e17b5f686909.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/foes/necromancer_map.png"
-dest_files=["res://.godot/imported/necromancer_map.png-40cc3539c7833a236a29db310b6bcf9b.ctex"]
+source_file="res://art/foes/drake_combat.png"
+dest_files=["res://.godot/imported/drake_combat.png-a54b7a28a8da2ae7b3e0e17b5f686909.ctex"]
 
 [params]
 

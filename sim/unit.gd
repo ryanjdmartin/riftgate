@@ -111,7 +111,7 @@ static func mech(uid: int, name: String, at: Vector2i, speed: int = MECH_MOVE) -
 	return u
 
 
-static func pack(uid: int, name: String, at: Vector2i, fac: String = "undead", speed: int = PACK_MOVE, size: int = 6, foe: String = "") -> Unit:
+static func pack(uid: int, name: String, at: Vector2i, fac: String = "marsh", speed: int = PACK_MOVE, size: int = 6, foe: String = "") -> Unit:
 	var u := Unit.new()
 	u.id = uid
 	u.display_name = name
@@ -130,7 +130,7 @@ static func pack(uid: int, name: String, at: Vector2i, fac: String = "undead", s
 ## A boss stands on one hex for now (Ryan, 22 September: a wider footprint cannot path
 ## through a field of hexes, and the boss guards the rift rather than marching). The
 ## multi-hex footprint (`TRIANGLE`) stays in the engine for later.
-static func boss(uid: int, name: String, at: Vector2i, fac: String = "undead", speed: int = BOSS_MOVE) -> Unit:
+static func boss(uid: int, name: String, at: Vector2i, fac: String = "marsh", speed: int = BOSS_MOVE) -> Unit:
 	var u := pack(uid, name, at, fac, speed, 0)
 	u.elite = true
 	u.hull = 1

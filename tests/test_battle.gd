@@ -14,7 +14,7 @@ func _team() -> Array:
 
 func _battle(seed_value: int = 3) -> Battle:
 	var b := Battle.new(seed_value)
-	b.setup(_team(), "undead")
+	b.setup(_team(), "marsh")
 	return b
 
 

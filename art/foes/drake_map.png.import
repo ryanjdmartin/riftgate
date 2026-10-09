@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dyego7hwdwtwb"
-path="res://.godot/imported/spawn_map.png-bef646c56a1d27ca93dcf90f2281c2db.ctex"
+uid="uid://ol2njk6wbmsx"
+path="res://.godot/imported/drake_map.png-64f5fcb6aefd0b51ce6c18194b68a053.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/foes/spawn_map.png"
-dest_files=["res://.godot/imported/spawn_map.png-bef646c56a1d27ca93dcf90f2281c2db.ctex"]
+source_file="res://art/foes/drake_map.png"
+dest_files=["res://.godot/imported/drake_map.png-64f5fcb6aefd0b51ce6c18194b68a053.ctex"]
 
 [params]
 
