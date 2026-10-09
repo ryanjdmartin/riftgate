@@ -134,7 +134,12 @@ Nothing in content is planned any more; every piece the 28 September content lea
 
 ## Art
 
-- [ ] Enemy art through foeforge from the new text (9 October): every foe but the six that inherited a sketch grid (revenant, ghost, bone_dragon, drake, magma_golem, sandworm) draws the placeholder shape; the heroes at the boss register, elaborate and over the top; four bleeds for the flattened ground
+- [x] Enemy art through foeforge from the new text (9 October: every foe and hero rendered on the Mac, picked by Ryan and cut in; the boss-register hero picks wait in `tools/foeforge/picks` for the promoted entries)
+- [x] Decide the heroes' frame (Ryan, 9 October: the hero split; bible section 9): a chibi party sprite at 24x32 in its domain's final, the promoted form massive at 64x96 at the finale
+- [x] Pick the foe art (Ryan, 9 October: all 34 picked in `forge.py picker`; the sources and the picks kept in `tools/foeforge/picks` with `picks.json`; the 18 wildlife and the 8 chibi heroes cut into `art/foes`, checked in the skirmish at the phone's layout)
+- [ ] Touch up the picked art (Ryan, 9 October: a fine first pass, but AI art: missing arms, weapons passing through hands and such): fix on the kept source in `tools/foeforge/picks` and recut with `forge.py cut` and the options `picks.json` records
+- [ ] The promoted forms as entries (bible section 9, the hero split row): size 2, numbers by the promotion rule, names proposed in chat first; their art from the boss-register candidates already rendered
+- [ ] The finale (bible section 9, the hero split row): the four promoted forms in line, a beaten hero's column to boss-tier wildlife from the standing domains, the pool behind holding elites and bosses
 - [ ] The hangar as a model
 - [ ] Consider, once the acts run: the Armadillo sealing its ports, the Lockdown Shutters made real (Ryan, 2 October: very cool, its own flavour). The guns retract into the shell first, a slide joints cannot do today, then shutters close over the ports, which need geometry; bible section 7, the joints row
 - [ ] A licensed icon set (game-icons.net, CC BY) rendered to textures, replacing the line-drawn glyphs in one pass
