@@ -263,7 +263,7 @@ static func _ids(list: Array) -> String:
 func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") -> Dictionary:
 	var agg := {"fights": 0, "victory": 0, "defeat": 0, "withdrawn": 0, "stalled": 0,
 		"rounds": 0, "hull_lost_pct": 0.0, "mechs_lost": 0, "foes_killed_pct": 0.0,
-		"overheat_hull": 0, "rerolls": 0, "spends": {}, "destroyed": 0, "destroyed_won": 0}
+		"overheat_hull": 0, "rerolls": 0, "spends": {}, "destroyed": 0, "destroyed_won": 0, "reach": {}}
 	for s in range(seeds):
 		var fight := _fight(r, p, k, s + 1, rule)
 		var sk: Skirmish = fight["sk"]
@@ -301,6 +301,11 @@ func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") ->
 		agg["rerolls"] += pol.rerolls
 		for c in pol.spends.keys():
 			agg["spends"][c] = int(agg["spends"].get(c, 0)) + int(pol.spends[c])
+		for rk in sk.reach_tally.keys():
+			var into: Dictionary = agg["reach"].get(rk, {})
+			for f in sk.reach_tally[rk].keys():
+				into[f] = int(into.get(f, 0)) + int(sk.reach_tally[rk][f])
+			agg["reach"][rk] = into
 	return agg
 
 
@@ -402,7 +407,62 @@ func _report(fights: int, secs: float) -> String:
 			parts.append("%s %d%%" % [e[0], _pct(e[1], total)])
 		L.append("- **%s**: %s. Rerolls %.2f a round." % [r["name"], ", ".join(parts), float(rerolls) / maxi(1, rounds)])
 	L.append("")
+	L.append_array(_reach_report(top))
 	return "\n".join(L)
+
+
+## Does a pack field a back rank? Indirect's premium is reaching it (Ryan, 9 October: the
+## splash is a build issue, not a price, if the back rank holds the threats).
+func _has_back_rank(p: Dictionary) -> bool:
+	var ids: Array = []
+	if p.has("mix"):
+		for entry in p["mix"]:
+			ids.append(str(entry[0]))
+	else:
+		ids.append(str(p["foe"]))
+	for fid in ids:
+		if str(db.foes.get(fid, {}).get("rank", "front")) == "back":
+			return true
+	return false
+
+
+## The reach table: what a spend of each reach did, over every row and pack under the top
+## policy, then over the packs with a back rank alone (Ryan, 9 October: does each attack
+## type carry a premium, and is indirect's priced at all?).
+func _reach_report(top: int) -> Array[String]:
+	var L: Array[String] = []
+	L.append("## Reach, %s" % Policy.kind_name(top))
+	L.append("")
+	L.append("What a spend of each reach did: its share of attack spends, the hull it took off foes a spend (every foe the blows reached, overkill not counted), the heat it paid a spend, the spends aimed at the back rank, and for indirect the shield its danger close cost per spend aimed at the front. Over every row and pack, then over the packs that field a back rank.")
+	L.append("")
+	for only_back in [false, true]:
+		var tot := {}
+		for r in rows:
+			for p in packs:
+				if only_back and not _has_back_rank(p):
+					continue
+				var a: Dictionary = cells[_key(r, p, top)]
+				for rk in a.get("reach", {}).keys():
+					var into: Dictionary = tot.get(rk, {})
+					for f in a["reach"][rk].keys():
+						into[f] = int(into.get(f, 0)) + int(a["reach"][rk][f])
+					tot[rk] = into
+		var all_spends := 0
+		for rk in tot.keys():
+			all_spends += int(tot[rk].get("spends", 0))
+		L.append("**%s**" % ("Packs with a back rank" if only_back else "Every pack"))
+		L.append("")
+		L.append("| Reach | Share of attack spends | Hull a spend | Heat a spend | Aimed at the back | Splash a front spend |")
+		L.append("|---|---|---|---|---|---|")
+		for rk in ["melee", "line", "indirect"]:
+			if not tot.has(rk):
+				continue
+			var t: Dictionary = tot[rk]
+			var n := maxi(1, int(t.get("spends", 0)))
+			var splash := "%.1f" % (float(t.get("splash", 0)) / maxi(1, int(t.get("front_spends", 0)))) if rk == "indirect" else "-"
+			L.append("| %s | %d%% | %.1f | %.1f | %d%% | %s |" % [rk, _pct(int(t.get("spends", 0)), all_spends), float(t.get("damage", 0)) / n, float(t.get("heat", 0)) / n, _pct(int(t.get("back", 0)), n), splash])
+		L.append("")
+	return L
 
 
 func _header() -> String:

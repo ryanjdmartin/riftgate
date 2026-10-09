@@ -74,6 +74,11 @@ var log: Array[String] = []
 
 ## The most recent attack, for the screen to show: {mech, target, rolled, final, crit, ranged}.
 var last_roll: Dictionary = {}
+## What each reach did this fight, for the balance runner's reach table (tools/balance.gd):
+## by reach name, the spends, the hull its blows took off foes, the spends aimed at the back
+## rank, the heat paid and the shield lost to danger close. Never read by the game.
+var reach_tally: Dictionary = {}
+var _chaining := false
 ## Every blow of the last enemy turn, in order, for the screen to replay:
 ## {foe, mech (index), absorbed, through, blocked, broke_shield, injured, shield, hull,
 ## seq, name, boss}. `seq` orders it among the turn's specials; `name` is the move's shown
@@ -872,6 +877,9 @@ func withdraw() -> bool:
 ## keywords and passives), landing on every foe the component reaches. Heat is paid once per
 ## use; danger close is charged on the total.
 func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> void:
+	var reach := reach_of(ms, f)
+	var aimed_back := target.rank == 1
+	var dealt := 0             # hull the blows took off every foe they reached, for the reach tally
 	var total := 0
 	var rolled_total := 0
 	var any_crit := false
@@ -934,6 +942,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 			var foe_armoured := mini(taken, foe.armour_total())
 			taken -= foe_armoured
 			foe.hp -= taken
+			if was_alive:
+				dealt += clampi(taken, 0, maxi(0, hp_before))
 			if foe == target:
 				landed = taken
 				armoured_total += foe_armoured
@@ -992,11 +1002,14 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 	# A kill clears the slot at once (Ryan, 22 September): burning a hole through the front
 	# opens the back rank to line and melee until reinforcements plug it.
 	_clear_dead()
-	if reach_of(ms, f) == Face.Reach.INDIRECT and was_front:
+	var splashed := 0
+	if reach == Face.Reach.INDIRECT and was_front:
 		var splash := ceili(float(total) / DANGER_CLOSE_DIVISOR)
 		if splash > 0 and not Effects.spares_splash(ms.unit):
+			splashed = mini(splash, ms.unit.shield)
 			ms.unit.shield = maxi(0, ms.unit.shield - splash)
 			log.append("%s: splash, shield -%d" % [ms.unit.display_name, splash])
+	_tally_reach(reach, dealt, aimed_back, heat_total, splashed)
 	if vent > 0:
 		ms.heat = maxi(0, ms.heat - vent)
 	_add_heat(ms, heat_total)
@@ -1006,7 +1019,10 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 		for cand in targets_for(mech_index):
 			if cand.alive() and cand != target:
 				log.append("%s chains to %s" % [ms.unit.display_name, cand.display_name])
+				var was_chaining := _chaining
+				_chaining = true   # a chain is the same spend: its blows count, not a second spend
 				_resolve_attack(mech_index, ms, f, cand)
+				_chaining = was_chaining
 				break
 
 
@@ -1106,6 +1122,22 @@ func _screen_cover() -> void:
 			_screened.append(ms)
 			names.append(ms.unit.display_name)
 	log.append("the static screen covers %s" % ", ".join(names))
+
+
+## One attack's share of the reach tally (the runner's; the game never reads it).
+func _tally_reach(reach: int, dealt: int, aimed_back: bool, heat: int, splashed: int) -> void:
+	var k := str(Face.REACH_NAMES.get(reach, reach))
+	var t: Dictionary = reach_tally.get(k, {"spends": 0, "damage": 0, "back": 0, "heat": 0, "splash": 0, "front_spends": 0})
+	if not _chaining:
+		t["spends"] += 1
+		if aimed_back:
+			t["back"] += 1
+		else:
+			t["front_spends"] += 1
+	t["damage"] += dealt
+	t["heat"] += heat
+	t["splash"] += splashed
+	reach_tally[k] = t
 
 
 ## Hull lost to a blow or a bite: the on_hull_damage passives fire (the Nemesis's Crucible

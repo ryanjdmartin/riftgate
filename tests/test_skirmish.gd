@@ -3061,3 +3061,22 @@ func test_a_splitting_foe_puts_its_halves_into_the_pool_once() -> void:
 	sk2.assign(0, lone)
 	assert_eq(sk2.reinforcements.size(), 0, "no factory, no halves")
 	assert_eq(sk2.outcome, Skirmish.Outcome.VICTORY, "and the fight ends")
+
+
+func test_the_reach_tally_counts_a_spend_its_hull_and_its_splash() -> void:
+	# For the balance runner's reach table (9 October): what a spend of each reach did.
+	var sk := Skirmish.new(1)
+	sk.add_mech(_mech("A", Die.single(Face.attack(20, I)), 40, 100))
+	var front := _ghoul(15, 10)
+	var behind := _archer(500, 10)
+	sk.add_foes([front, behind])
+	sk.begin()
+	sk.start_round()
+	sk.assign(0, front)
+	var t: Dictionary = sk.reach_tally["indirect"]
+	assert_eq(int(t["spends"]), 1, "one spend")
+	assert_eq(int(t["damage"]), 15, "the hull it took, overkill not counted")
+	assert_eq(int(t["back"]), 0, "aimed at the front")
+	assert_eq(int(t["front_spends"]), 1, "so it is a front spend")
+	assert_eq(int(t["splash"]), 10, "and danger close cost half the blow in shield")
+	assert_false(sk.reach_tally.has("line"), "no line spend happened")
