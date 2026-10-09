@@ -3500,6 +3500,7 @@ SHIP["kill_wainwright_sutler"] = _death("death3_wainwright_sutler", 3)   # the w
 SHIP["kill_aphelion"] = _death("death5_aphelion", 5)   # the Science Vessel: discharging, its warning, small blasts rolling into its end
 SHIP["kill_kestrel"] = _death("death6_kestrel", 6)   # falling, the air rushing, the crash catching as an ignition, the fire crackling down
 SHIP["kill_minerva"] = _death("death10_minerva", 10)   # boom... BOOM at either end of the machine, both soft-fronted and low, the second the bigger
+SHIP["kill_arsenal"] = _death("death11_arsenal", 11)   # a deep soft blast, the fire roaring up over a ghost breathing out in its own hall, breaking into static, crackles and sputters
 for _f in FAMILIES:
     SHIP["foe_%s_hit" % _f] = _third_cut("foe_%s_hit" % _f)
     SHIP["foe_%s_heavy" % _f] = _third_cut("foe_%s_heavy" % _f)

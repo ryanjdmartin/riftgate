@@ -75,7 +75,7 @@ const LAND := {
 ## Ryan picked has a gap for her (death_sketches.py, VOICE_AT), so she interleaves with it
 ## rather than speaking over a blast. A maker whose death has not been picked yet takes the
 ## default, past the old death's first blast.
-const DEATH_VOICE_AT := {"wainwright_sutler": 0.45, "aphelion": 0.2, "kestrel": 1.45, "minerva": 1.5}
+const DEATH_VOICE_AT := {"wainwright_sutler": 0.45, "aphelion": 0.2, "kestrel": 1.45, "minerva": 1.5, "arsenal": 1.5}
 const DEATH_VOICE_AT_DEFAULT := 0.9
 const DEATH_AFTER_LINE := 1.7   # her line and a breath, before anything else happens
 
