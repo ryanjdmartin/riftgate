@@ -20,6 +20,7 @@ Everything here goes through the forge's master stage, so it plays at the game's
 the page sets it beside what the game plays now.
 
     tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py     # into out/fx, after the others
+    tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 2   # the second cut
 """
 import json
 import math
@@ -173,6 +174,120 @@ def shield_discharge(big=False):
     return room(FX.heft(b, 0.5), decay=0.2, mix=0.12)
 
 
+# ---------------------------------------------------------------- the second cut (Ryan, 9 October)
+# His picks from the first: one short blast for every foe (the families later). The knocks
+# made the machine's death a xylophone rather than chunks hitting, so no knock anywhere (the
+# maker's plate, the relays, the explosion's debris pieces): the whine is the power-down (its
+# noise "is not Pac-Man at all"), and the maker's flair goes in the explosion itself. The
+# bigger discharge for the shield, shorter, its boom cut well down, the arc and fizzle leading.
+
+def blast(dur=1.0, low=24.0, gain=1.0, cut=None):
+    """An explosion with no debris pieces (their knocks rang), its boom behind it; `cut`
+    low-passes the lot."""
+    b = mix(F.explosion(dur, low, gain, debris=0), FX.boom_tail(dur * 0.7, 0.6 * gain))
+    if cut:
+        b = F.lp(b, cut, order=3)
+    return FX.heft(b, 0.6)
+
+
+def grit(dur, gain=1.0, lo=150.0, hi=1800.0, density=0.93):
+    """Chunks: sparse bursts of low, untuned noise, the sound of pieces hitting, not ringing."""
+    n = n_of(dur)
+    hits = (F.RNG.uniform(0.0, 1.0, n) > density).astype(float)
+    hits = np.convolve(hits, np.exp(-np.arange(n_of(0.012)) / n_of(0.003)), mode="full")[:n]
+    return F.lp(F.bp(F.noise(n), lo, hi) * hits, hi * 0.7, order=3) * F.env_ad(n, 0.005, dur * 0.4) * gain
+
+
+def fizzle(dur, gain=0.5, lo=900.0, hi=3800.0, density=0.985):
+    """Electric crackle thinning out: sparse bright bursts, fewer and fainter."""
+    n = n_of(dur)
+    t = t_of(n)
+    dens = density + (1.0 - density) * 0.8 * (t / dur)
+    return F.bp(F.noise(n), lo, hi) * (F.RNG.uniform(0.0, 1.0, n) > dens) * F.env_pts(n, [(0.0, 1.0), (dur, 0.0)]) * gain
+
+
+def death2(maker):
+    """A machine's death, second cut: the maker's explosion, the hull's weight, the whine
+    powering down under Jenny's line."""
+    if maker == "minerva":
+        # Deep, as if inside an armoured hull: the blast muffled by the plate around it, a
+        # heavy box resonance, the hull taking it whole.
+        b = blast(1.1, 22.0, 1.2, cut=520.0)
+        n = n_of(0.5)
+        box = F.lp(F.sat(F.bp(F.noise(n), 70.0, 180.0) * 4.0, 3.0), 400.0) * F.env_ad(n, 0.004, 0.18) * 0.9
+        b = at(b, box, 0.0)
+        b = at(b, FX.heft(F.thud(95.0, 28.0, 0.7, click=0.6, drive=4.0, body_gain=2.0), 0.6), 0.04)
+        b = at(b, blast(0.8, 26.0, 0.7, cut=450.0), 0.22)
+        b = at(b, power_down_whine(1.7, 0.5), 0.3)
+    elif maker == "wainwright_sutler":
+        # Winds down: a gritty blast, then the works running down, the clatter of its gears
+        # slowing (a rate falling, never a pitch) under the whine, a breath of steam.
+        b = blast(0.9, 26.0, 1.0)
+        b = at(b, grit(0.4, 0.6), 0.05)
+        dur = 1.9
+        when = 0.25
+        k = 0
+        while when < 0.25 + dur:
+            gap = 0.05 + 0.22 * ((when - 0.25) / dur) ** 1.4
+            b = at(b, F.lp(F.burst(0.03, 150.0, 1600.0, decay=0.008), 1100.0, order=3) * 0.55 * (1.0 - 0.6 * (when - 0.25) / dur), when)
+            when += gap
+            k += 1
+        b = at(b, power_down_whine(2.2, 0.55), 0.25)
+        steam = F.bp(F.noise(n_of(0.8)), 1000.0, 2600.0) * F.env_pts(n_of(0.8), [(0.0, 0.0), (0.1, 1.0), (0.8, 0.0)]) * 0.07
+        b = at(b, steam, 0.6)
+    elif maker == "kestrel":
+        # Hits the ground: a sharp blast in the air, then the airframe striking the ground,
+        # the crunch and the skid of it, chunks.
+        b = blast(0.6, 32.0, 0.9)
+        ground = mix(F.thud(120.0, 30.0, 0.7, click=1.4, drive=4.0, body_gain=2.0), F.burst(0.12, 120.0, 1600.0, decay=0.04) * 0.9, FX.boom_tail(0.7, 0.6))
+        b = at(b, FX.heft(ground, 0.7), 0.38)
+        n = n_of(0.45)
+        skid = F.lp_var(F.bp(F.noise(n), 150.0, 1800.0), 1600.0 - 1400.0 * t_of(n) / 0.45) * F.env_pts(n, [(0.0, 0.8), (0.45, 0.0)]) * 0.45
+        b = at(b, skid, 0.42)
+        b = at(b, grit(0.5, 0.7), 0.4)
+        b = at(b, power_down_whine(1.4, 0.4), 0.5)
+    elif maker == "aphelion":
+        # Beeps and fizzles out: a clean ceramic blast, its systems' warning beeping (three,
+        # spreading out, each fainter), then the electrics crackling down to nothing.
+        b = blast(0.7, 34.0, 0.85)
+        for k, when in enumerate((0.3, 0.52, 0.82)):
+            n = n_of(0.07)
+            beep = F.lp(np.sign(np.sin(2.0 * math.pi * 987.77 * t_of(n))) * 0.5 + np.sin(2.0 * math.pi * 987.77 * t_of(n)) * 0.5, 3000.0)
+            b = at(b, beep * F.env_pts(n, [(0.0, 0.0), (0.004, 1.0), (0.06, 1.0), (0.07, 0.0)]) * 0.22 * (1.0 - 0.3 * k), when)
+        b = at(b, fizzle(1.4, 0.55), 0.2)
+        b = at(b, power_down_whine(1.5, 0.3), 0.3)
+    else:
+        # The Arsenal: plasma flames, the whoomp and the fire burning on, and under it, faint,
+        # something leaving: breath through a vowel, swelling and gone.
+        b = mix(blast(0.8, 28.0, 0.9), FX.plasma_splash(1.0))
+        n = n_of(1.3)
+        flames = F.lp(F.sat(F.lp(F.noise(n), 320.0) * 3.0, 3.0), 1100.0) * F.env_pts(n, [(0.0, 0.0), (0.05, 0.9), (0.6, 0.6), (1.3, 0.0)]) * 0.55
+        b = at(b, flames, 0.05)
+        n = n_of(1.2)
+        souls = F.choir([0, 3, 7], n, gain=0.18, vowel="oo", octave=2)[:n]
+        breath = F.bp(F.noise(n), 600.0, 2400.0) * 0.12
+        souls = F.lp(mix(souls, breath), 2600.0) * F.env_pts(n, [(0.0, 0.0), (0.45, 1.0), (0.8, 0.6), (1.2, 0.0)])
+        b = at(b, souls, 0.35)
+        b = at(b, power_down_whine(1.5, 0.35), 0.3)
+    return room(b, decay=0.25, mix=0.1)
+
+
+def shield_discharge2():
+    """The bigger discharge, shorter and its boom cut well down: the crack, the field arcing
+    as it fails, its hum flaring and cut dead, a second arc's pop, the fizzle after, a small
+    thump under it."""
+    crack = mix(F.burst(0.05, 2000.0, 14000.0, decay=0.008) * 1.1, F.body(900.0, 220.0, 0.06, click=1.0, drive=3.0) * 0.7)
+    b = at(crack, F.lp(arc(0.3, 0.7), 2600.0, order=2), 0.01)
+    n = n_of(0.26)
+    hum = FX.field_hum(n, 0.8) * F.env_pts(n, [(0.0, 0.0), (0.02, 1.2), (0.24, 1.0), (0.26, 0.0)])
+    b = at(b, hum, 0.0)
+    b = at(b, mix(F.explosion(0.35, 40.0, 0.3, debris=0), FX.boom_tail(0.3, 0.15)), 0.2)
+    b = at(b, F.lp(arc(0.1, 0.55, (40.0, 90.0)), 2600.0, order=2), 0.36)
+    b = at(b, fizzle(0.5, 0.4, 600.0, 2400.0), 0.42)
+    b = at(b, F.thud(130.0, 45.0, 0.3, click=0.4, drive=2.5, body_gain=1.3) * 0.9, 0.2)
+    return room(FX.heft(b, 0.4), decay=0.15, mix=0.1)
+
+
 # ---------------------------------------------------------------- written as the game plays it
 
 def at_level(x, level):
@@ -233,7 +348,33 @@ SINGLES = [
 ]
 
 
+SINGLES2 = [("death2_" + m, (lambda m=m: death2(m)), DEATH_LEVEL) for m in ("minerva", "wainwright_sutler", "kestrel", "aphelion", "arsenal")] + [
+    ("break2", shield_discharge2, BREAK_LEVEL)]
+
+
+def cut2():
+    made = {}
+    for name, fn, level in SINGLES2:
+        F.seed("d2_" + name)
+        x = at_level(fn(), level)
+        made[name] = x
+        write("d2_" + name, tail(x))
+        print("  d2_%-24s %5.2f s" % (name, len(x) / SR))
+    line_lost = read(os.path.join(ART, "voice", "line_machine_lost.wav"))
+    brute = read(os.path.join(ART, "foe_demonic_heavy.wav"))
+    land = 0.3
+    for m in ("minerva", "wainwright_sutler", "kestrel", "aphelion", "arsenal"):
+        hit = read(os.path.join(ART, "hit_%s.wav" % m))
+        x = made["death2_" + m]
+        seq = at(at(at(at(np.zeros(1), brute, 0.0), hit * 0.7, land), x, land + 0.12), line_lost, land + 0.12 + 0.55)
+        write("d2_seq_lost_" + m, tail(seq, 0.5))
+    print("  sequences written")
+    return 0
+
+
 def main(argv):
+    if argv[:1] == ["2"]:
+        return cut2()
     made = {}
     for name, fn, level in SINGLES:
         F.seed(PREFIX + name)

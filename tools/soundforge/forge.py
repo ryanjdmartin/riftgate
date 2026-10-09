@@ -3423,7 +3423,9 @@ LEVELS = {
 #     shipped sound's level plus the cut's stated boost;
 #   - the cut, the vent, the overheat's burn, the withdrawal and a foe stepping into the
 #     line are kept as they were (the page: kept as they are), and the music is untouched.
-# A foe falling plays the third cut's kill in Minerva steel, as the round on the page did.
+# A foe falling plays a short blast of its own (death_sketches.py, Ryan's pick of 9 October);
+# it had been the machine's death, near three seconds, for something that happens ten times
+# a fight.
 # Jenny's lines ship from voice_lines.py into art/audio/voice.
 
 def _console(row):
@@ -3438,6 +3440,17 @@ def _third_cut(name):
     def build():
         import fx_sketches as FX
         return FX.level(FX.new(name), LEVELS[FX.NEW[name][2]] + FX.boost(name))
+    return build
+
+
+def _death(name):
+    """A pick from death_sketches.py (Ryan, 9 October), seeded and levelled as the page made it."""
+    def build():
+        import death_sketches as D
+        fn, level = {n: (f, lv) for n, f, lv in D.SINGLES}[name]
+        D.F.seed(D.PREFIX + name)
+        x = fn()
+        return x * 10.0 ** ((level - loudness(x)) / 20.0)
     return build
 
 
@@ -3466,7 +3479,7 @@ SHIP = {
     "w_laser": _third_cut("w_laser"), "w_plasma": _third_cut("w_plasma"),
     "w_dish_shield": _third_cut("w_dish_shield"), "w_dish_coil": _third_cut("w_dish_coil"),
     "shield_hit": _third_cut("shield_hit"), "shield_break": _third_cut("shield_break"),
-    "kill": _third_cut("kill_minerva"),
+    "kill": _death("foe_blast"),   # a foe's death, one short blast for every family (Ryan, 9 October; the families' own later)
     "step_tracked": _third_cut("step_tracked"), "step_legged": _third_cut("step_legged"),
     "step_wheeled": _third_cut("step_wheeled"), "step_flyer": _third_cut("step_flyer"),
     # the rift: each family's blow, heavy blow and arrival, and the boss revealed
