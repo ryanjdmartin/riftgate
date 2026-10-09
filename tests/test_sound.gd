@@ -5,8 +5,40 @@ extends TestCase
 
 
 func test_every_named_sound_has_a_file() -> void:
-	for name in Sound.NAMES:
+	for name in Sound.all_names():
 		assert_true(FileAccess.file_exists(Sound.DIR + name + ".wav"), "art/audio/%s.wav exists (tools/soundforge builds it)" % name)
+
+
+func test_a_component_sound_finds_its_blow() -> void:
+	for word in ContentDB.SOUNDS:
+		assert_true(Sound.BLOWS.has(word), "the sound word %s has a blow" % word)
+		assert_true(Sound.NAMES.has(Sound.BLOWS[word]), "%s's blow is a named sound" % word)
+	assert_eq(Sound.blow(["barrel"]), "w_barrel", "one word is its blow")
+	assert_eq(Sound.blow(["blunt", "plasma"]), "w_blunt_plasma", "a combination the forge built plays as itself")
+	assert_eq(Sound.blow(["rack", "plasma"]), "w_rack", "one it did not build plays its first word")
+	assert_eq(Sound.blow([]), "", "no layers, no blow")
+	assert_eq(Sound.blow(["not_a_word"]), "", "an unknown word plays nothing")
+
+
+func test_metal_family_and_footfall_names_are_files() -> void:
+	var db := ContentDB.load_default()
+	for id in db.chassis:
+		var maker := str(db.chassis[id].get("maker", ""))
+		assert_true(Sound.MAKERS.has(maker), "chassis %s's maker %s has a metal" % [id, maker])
+		var step := Sound.step_for(db.chassis[id].get("traits", []))
+		assert_true(Sound.NAMES.has(step), "chassis %s has a footfall (%s)" % [id, step])
+	for f in db.factions:
+		# A domain borrows a family's recipes until it has its own (9 October).
+		assert_true(Sound.FAMILIES.has(f) or Sound.FAMILIES.has(str(Sound.DOMAIN_FAMILY.get(f, ""))), "domain %s has a family's blows and arrival" % f)
+		assert_true(Sound.all_names().has(Sound.family("spawn", f)), "domain %s's arrival is a file" % f)
+	for way in BattleMap.WAYS:
+		assert_true(Sound.STEPS.has(way), "the way of moving %s has a footfall" % way)
+	assert_eq(Sound.struck("hit", "kestrel"), "hit_kestrel", "a hit in Kestrel chrome")
+	assert_eq(Sound.struck("kill", "not_a_maker"), "kill_minerva", "an unknown maker is Minerva's steel")
+	assert_eq(Sound.family("heavy", "demonic"), "foe_demonic_heavy", "the Horde's heavy blow")
+	assert_eq(Sound.family("spawn", "eldritch"), "spawn_eldritch", "the Chorus arriving")
+	assert_eq(Sound.step_for(["wheeled", "stealth"]), "step_wheeled", "a way among other traits")
+	assert_eq(Sound.step_for([]), "step_legged", "no way is legs")
 
 
 func test_every_set_names_known_loops() -> void:
@@ -67,6 +99,171 @@ func test_headless_calls_are_no_ops() -> void:
 
 
 func test_volume_knobs_are_settings() -> void:
-	for key in ["music", "effects"]:
+	for key in ["music", "effects", "voice"]:
 		assert_true(Settings.DISPLAY_DEFAULTS.has(key), "%s has a default" % key)
 		assert_true(Settings.DISPLAY_RANGES.has(key), "%s has a slider range" % key)
+
+
+
+## Jenny's table as the forge ships it: every hook the game says is in it, every file exists,
+## and the information hooks speak every time.
+func test_the_lines_table_is_whole() -> void:
+	var table := Sound._read_lines()
+	assert_true(not table.is_empty(), "art/audio/voice/lines.json is shipped (voice_lines.py ship)")
+	var hooks: Dictionary = table.get("hooks", {})
+	for hook in ["die_spent", "foe_down", "foe_down_undead", "foe_down_demonic", "foe_down_eldritch", "shield", "buff",
+			"heat_vented", "heat_high", "overheat", "machine_lost", "component_damaged", "component_destroyed",
+			"resolve_all", "resolve_move", "contact", "engage", "boss", "gate", "loss_gate", "victory", "codex",
+			"refuse", "battle_open"]:
+		assert_true(hooks.has(hook), "the game's hook %s has lines" % hook)
+	for hook in hooks:
+		var h: Dictionary = hooks[hook]
+		assert_true(not (h.get("lines", []) as Array).is_empty() or not (h.get("personality", []) as Array).is_empty(), "%s has a line" % hook)
+		for key in ["lines", "personality"]:
+			for line in h.get(key, []):
+				assert_true(FileAccess.file_exists(Sound.VOICE_DIR + str(line["file"]) + ".wav"), "%s's %s is a file" % [hook, line["file"]])
+		for other in h.get("merge", []):
+			assert_true(hooks.has(other), "%s merges %s, a hook" % [hook, other])
+		var sig := str(h.get("signal", ""))
+		if not sig.is_empty():
+			assert_true(Sound.NAMES.has(sig), "%s's signal %s is a named sound" % [hook, sig])
+	for hook in ["machine_lost", "component_damaged", "component_destroyed", "heat_high", "overheat", "loss_gate"]:
+		assert_true(bool(hooks[hook].get("info", false)), "%s is information" % hook)
+
+
+func _table() -> Dictionary:
+	return {"spacing": 6.0, "stale": 2.0, "personality": 0.0, "hooks": {
+		"rare": {"chance": 0.0, "info": false, "lines": [{"file": "r"}]},
+		"chatty": {"chance": 1.0, "info": false, "lines": [{"file": "a"}, {"file": "b"}, {"file": "c"}], "personality": [{"file": "p"}]},
+		"info": {"chance": 0.0, "info": true, "lines": [{"file": "i"}]},
+		"family": {"chance": 1.0, "info": false, "lines": [{"file": "f"}], "merge": ["chatty"]},
+		"heat_high": {"chance": 1.0, "info": true, "lines": [{"file": "warm"}], "signal": "heat_warn"},
+		"overheat": {"chance": 1.0, "info": true, "lines": [{"file": "hot"}], "signal": "heat_alarm"},
+		"loss_gate": {"chance": 1.0, "info": true, "lines": [{"file": "lost"}]},
+	}}
+
+
+func test_a_hook_speaks_by_its_chance_and_information_always() -> void:
+	var v := VoiceLines.new()
+	v.load_table(_table())
+	v.rng.seed = 7
+	for k in range(20):
+		assert_false(v.trigger("rare", 0.0), "a hook at chance 0 never speaks")
+	assert_true(v.trigger("info", 0.0), "information speaks even at chance 0")
+	assert_false(v.trigger("unknown", 0.0), "a hook without lines says nothing")
+
+
+func test_the_bag_never_repeats_until_spent_and_a_hook_queues_once() -> void:
+	var v := VoiceLines.new()
+	v.load_table(_table())
+	v.rng.seed = 3
+	var said := {}
+	var t := 0.0
+	for k in range(3):
+		assert_true(v.trigger("chatty", t), "queued")
+		assert_false(v.trigger("chatty", t), "a hook already waiting is not queued twice")
+		var q := v.next(t)
+		said[q["file"]] = true
+		v.started(t, 1.0)
+		t += 10.0
+	assert_eq(said.size(), 3, "three draws from a bag of three are the three lines")
+
+
+func test_lines_keep_their_distance_and_go_stale() -> void:
+	var v := VoiceLines.new()
+	v.load_table(_table())
+	v.trigger("chatty", 0.0)
+	var q := v.next(0.0)
+	assert_true(not q.is_empty(), "the first line plays at once")
+	v.started(0.0, 1.0)
+	v.trigger("family", 1.5)
+	assert_true(v.next(2.0).is_empty(), "inside the spacing nothing plays")
+	assert_true(v.next(7.5).is_empty(), "a line that would wait past STALE is dropped")
+	assert_true(v.waiting().is_empty(), "and is gone from the queue")
+	v.trigger("info", 1.2)
+	assert_true(v.next(1.5).is_empty(), "information waits for the line in progress and its own short gap")
+	assert_eq(str(v.next(1.0 + VoiceLines.INFO_GAP)["file"]), "i", "then speaks, long before the spacing")
+
+
+func test_a_merged_hook_draws_both_pools() -> void:
+	var v := VoiceLines.new()
+	v.load_table(_table())
+	v.rng.seed = 11
+	var said := {}
+	var t := 0.0
+	for k in range(8):
+		v.trigger("family", t)
+		said[v.next(t)["file"]] = true
+		v.started(t, 0.5)
+		t += 10.0
+	assert_eq(said.size(), 4, "its own line and the merged pool's three")
+
+
+func test_the_personality_layer_replaces_a_line() -> void:
+	var table := _table()
+	table["personality"] = 1.0
+	var v := VoiceLines.new()
+	v.load_table(table)
+	v.trigger("chatty", 0.0)
+	assert_eq(str(v.next(0.0)["file"]), "p", "at chance one the personality line speaks")
+
+
+func test_overheat_replaces_the_warning_and_a_loss_cuts_in() -> void:
+	var v := VoiceLines.new()
+	v.load_table(_table())
+	v.trigger("chatty", 0.0)
+	v.next(0.0)
+	v.started(0.0, 3.0)
+	v.trigger("heat_high", 0.5)
+	v.trigger("overheat", 0.6)
+	var hooks: Array = v.waiting().map(func(q: Dictionary) -> String: return q["hook"])
+	assert_eq(hooks, ["overheat"], "the overheat replaced the waiting warning")
+	assert_eq(str(v.waiting()[0]["signal"]), "heat_alarm", "and carries its signal")
+	v.trigger("loss_gate", 1.0)
+	assert_eq(v.waiting().size(), 1, "a loss clears the queue")
+	assert_eq(str(v.next(1.0)["file"]), "lost", "and speaks at once, over the line in progress")
+
+
+func test_the_win_clears_the_queue() -> void:
+	var v := VoiceLines.new()
+	v.load_table(_table())
+	v.trigger("info", 0.0)
+	v.trigger("heat_high", 0.0)
+	v.clear()
+	assert_true(v.next(5.0).is_empty(), "nothing queued during the fight is said after it")
+
+
+
+func test_every_landing_is_a_blow_the_game_plays() -> void:
+	for name in Sound.LAND:
+		assert_true(Sound.all_names().has(name), "%s lands somewhere: it is a named sound" % name)
+		assert_true(Sound.lands(name) >= 0.0 and Sound.lands(name) < 2.0, "%s lands within two seconds" % name)
+	assert_eq(Sound.lands("not_a_blow"), 0.0, "a sound without a landing lands at once")
+	assert_true(Sound.lands("w_rack") > Sound.lands("w_barrel"), "the rack's salvo is in flight before it lands; the barrel's report is the hit")
+
+
+func test_every_line_mode_speaks_every_hook_a_second_apart() -> void:
+	var v := VoiceLines.new()
+	v.load_table(_table())
+	v.always = true
+	assert_true(v.trigger("rare", 0.0), "a hook at chance 0 speaks in the test mode")
+	v.next(0.0)
+	v.started(0.0, 1.0)
+	v.trigger("chatty", 0.2)
+	assert_true(v.next(1.5).is_empty(), "the line in progress and a second first")
+	assert_eq(str(v.next(1.0 + VoiceLines.INFO_GAP)["hook"]), "chatty", "then the next, never stale")
+
+
+
+func test_a_claimed_line_is_booked_or_refused_at_once() -> void:
+	var v := VoiceLines.new()
+	v.load_table(_table())
+	assert_true(v.claim("rare", 0.1).is_empty(), "a hook's chance still rolls")
+	var line := v.claim("chatty", 0.1)
+	assert_true(not line.is_empty(), "free, a chance line is booked for its moment")
+	v.started(0.1, 1.0)
+	assert_true(v.claim("chatty", 0.5).is_empty(), "not over the line booked")
+	assert_true(v.claim("chatty", 3.0).is_empty(), "nor inside the spacing after it")
+	assert_true(not v.claim("chatty", 7.2).is_empty(), "free again past the spacing")
+	v.trigger("info", 8.0)
+	assert_true(v.claim("chatty", 20.0).is_empty(), "never ahead of a line waiting its turn")

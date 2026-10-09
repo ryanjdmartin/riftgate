@@ -58,7 +58,7 @@
       "id": "treant", "name": "Treant", "faction": "meadow",
       "design": { "fantasy": "The tree that walks, every forest's boss.", "niche": "Fills a whole column, armoured, and it regrows. Burst against the regrowth, armour against the storm of limbs below half.", "notes": "Massive boss of the Meadow. Regen when missing 20 or more; Root Storm opens below half: three blows of 10 at anything." },
       "codex": "A tree that walks, and it is older than the city. Fills a whole column; nothing behind it can be reached until it falls, and it grows back what you cut. Hurt it badly enough and the roots come up through the ground.",
-      "hp": 140, "attack": 30, "armour": 10, "rank": "front", "size": 2, "zone": 2, "movespeed": 10, "stun_resist": 30,
+      "hp": 140, "attack": 30, "armour": 5, "rank": "front", "size": 2, "zone": 2, "movespeed": 10, "stun_resist": 30,
       "actions": [
         { "id": "limb", "name": "Limb", "kind": "attack", "weight": 2, "text": "A branch the size of a girder, for {damage}.", "status": "implemented" },
         { "id": "regen", "name": "Regen", "kind": "defend", "effect": "regrow", "value": 20, "weight": 1, "when": "missing_hull", "text": "Regrows {value} hull.", "status": "implemented" },
@@ -85,7 +85,7 @@
       "hp": 50, "attack": 20, "rank": "front", "zone": 1, "movespeed": 20, "behaviour": "hunt", "hunts": "slowest",
       "actions": [
         { "id": "mandibles", "name": "Mandibles", "kind": "attack", "weight": 2, "text": "Jaws close on the hull for {damage}.", "status": "implemented" },
-        { "id": "burrow", "name": "Burrow", "kind": "defend", "effect": "harden", "value": 10, "weight": 1, "when": "below_half", "text": "Digs in: armour +{value} until its next action.", "status": "implemented" }
+        { "id": "burrow", "name": "Burrow", "kind": "defend", "effect": "harden", "value": 5, "weight": 1, "when": "below_half", "text": "Digs in: armour +{value} until its next action.", "status": "implemented" }
       ],
       "flavour": "The sand moved. Nobody else saw the sand move."
     },
@@ -104,10 +104,10 @@
       "id": "sandworm", "name": "Sandworm", "faction": "waste",
       "design": { "fantasy": "The worm under the desert, the genre's and every desert's. The old Maw's ring of teeth is its mouth.", "niche": "Fills a whole column, swallows through the shield, and digs in when hurt. Suppress the swallow; hull takes it, a shield does not.", "notes": "Massive boss of the Waste. Swallow breaches. Burrow hardens when hurt. Quake opens below half: three blows of 10 at anything." },
       "codex": "Most of it is under the sand. The part that is not is a ring of teeth the width of a road, and what it swallows it swallows through the shield. Hurt it and the ground shakes for everyone.",
-      "hp": 160, "attack": 40, "armour": 10, "rank": "front", "size": 2, "zone": 2, "movespeed": 10, "stun_resist": 30,
+      "hp": 160, "attack": 40, "armour": 5, "rank": "front", "size": 2, "zone": 2, "movespeed": 10, "stun_resist": 30,
       "actions": [
         { "id": "swallow", "name": "Swallow", "kind": "attack", "weight": 2, "keywords": ["breach"], "text": "The ring closes for {damage}, through the shield.", "status": "implemented" },
-        { "id": "burrow", "name": "Burrow", "kind": "defend", "effect": "harden", "value": 10, "weight": 1, "when": "missing_hull", "text": "Digs in: armour +{value} until its next action.", "status": "implemented" },
+        { "id": "burrow", "name": "Burrow", "kind": "defend", "effect": "harden", "value": 5, "weight": 1, "when": "missing_hull", "text": "Digs in: armour +{value} until its next action.", "status": "implemented" },
         { "id": "quake", "name": "Quake", "kind": "attack", "factor": 0.25, "strikes": 3, "weight": 2, "aim": "anything", "when": "below_half", "text": "The ground heaves: three blows of {damage} at anything.", "status": "implemented" }
       ],
       "flavour": "Appendix K, last page: if the sand is moving toward you, it is too late to read this."
@@ -138,7 +138,7 @@
       "id": "zombie_knight", "name": "Zombie Knight", "faction": "marsh",
       "design": { "fantasy": "The genre's death knight: a cape, rusted plate, a sword as long as it is tall.", "niche": "The Marsh's one armoured foe, and it gets back up once. Big single blows, and an execute if you have one.", "notes": "The elite tier's candidate. Reraise is revive_once." },
       "codex": "A knight that died in its armour and kept the armour. Hits hard, takes little, and the first time you put it down it gets back up.",
-      "hp": 50, "attack": 20, "armour": 10, "rank": "front", "zone": 1, "movespeed": 20,
+      "hp": 50, "attack": 20, "armour": 5, "rank": "front", "zone": 1, "movespeed": 20,
       "actions": [
         { "id": "cleaver", "name": "Cleaver", "kind": "attack", "weight": 2, "text": "A sword longer than it is tall, for {damage}.", "status": "implemented" },
         { "id": "reraise", "name": "Reraise", "kind": "buff", "effect": "revive_once", "weight": 1, "when": "missing_hull", "text": "Readies itself once it is hurt: the next time it falls it gets back up, whole, once.", "status": "implemented" }
@@ -149,7 +149,7 @@
       "id": "bone_dragon", "name": "Bone Dragon", "faction": "marsh",
       "design": { "fantasy": "A cathedral of ribs that walks: the genre's bone dragon, the Colossus of September as it stands.", "niche": "Fills a whole column. Nothing behind it is reachable until it falls, and it does not fall quickly: burst against the regrowth, armour against the storm.", "notes": "Massive boss of the Marsh. Regen when missing 20 or more. Bone Storm opens below half: three blows of 10 at anything." },
       "codex": "A cathedral of ribs that walks. Fills a whole column; nothing behind it can be reached until it falls, and it does not fall quickly. Hurt it badly enough and the ribs start to fly.",
-      "hp": 140, "attack": 30, "armour": 10, "rank": "front", "size": 2, "zone": 2, "movespeed": 10, "stun_resist": 30,
+      "hp": 140, "attack": 30, "armour": 5, "rank": "front", "size": 2, "zone": 2, "movespeed": 10, "stun_resist": 30,
       "actions": [
         { "id": "tail_sweep", "name": "Tail Sweep", "kind": "attack", "weight": 2, "text": "A rib the size of a girder, for {damage}.", "status": "implemented" },
         { "id": "regen", "name": "Regen", "kind": "defend", "effect": "regrow", "value": 20, "weight": 1, "when": "missing_hull", "text": "Regrows {value} hull.", "status": "implemented" },
@@ -195,7 +195,7 @@
       "id": "magma_golem", "name": "Magma Golem", "faction": "peak",
       "design": { "fantasy": "The furnace with a body: rock on the outside, lava in the seams. The Pit Lord of September with the hell taken out.", "niche": "The biggest telegraphed hit in the domain, and it breaches, so no shield answers it: suppress it, lure it onto hull that can take it, or disrupt it into Stoke the Forge when another stands.", "notes": "Massive boss of the Peak. Slag Fist breaches. Stoke the Forge rallies when another stands. Eruption opens below half: 10 heat to every machine." },
       "codex": "A walking slab of black rock with lava in every crack. The single biggest telegraphed hit on the Peak, every round, until it is dead, and a shield does not stop it. When it is hurt the cracks vent on everyone.",
-      "hp": 160, "attack": 40, "armour": 10, "rank": "front", "size": 2, "zone": 2, "movespeed": 10, "stun_resist": 30,
+      "hp": 160, "attack": 40, "armour": 5, "rank": "front", "size": 2, "zone": 2, "movespeed": 10, "stun_resist": 30,
       "actions": [
         { "id": "slag_fist", "name": "Slag Fist", "kind": "attack", "weight": 2, "keywords": ["breach"], "text": "A fist of slag for {damage}, through the shield.", "status": "implemented" },
         { "id": "stoke_the_forge", "name": "Stoke the Forge", "kind": "buff", "effect": "rally", "value": 10, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder next round.", "status": "implemented" },
@@ -261,7 +261,7 @@
       "actions": [
         { "id": "dia", "name": "Dia", "kind": "attack", "weight": 2, "text": "A lance of white light for {damage}.", "status": "implemented" },
         { "id": "cure", "name": "Cure", "kind": "defend", "effect": "regrow_ally", "value": 20, "weight": 1, "text": "Regrows {value} hull on the most hurt of its own.", "status": "planned" },
-        { "id": "protect", "name": "Protect", "kind": "defend", "effect": "harden_all", "value": 10, "weight": 1, "text": "Armour +{value} on every foe in the fight until its next action.", "status": "planned" },
+        { "id": "protect", "name": "Protect", "kind": "defend", "effect": "harden_all", "value": 5, "weight": 1, "text": "Armour +{value} on every foe in the fight until its next action.", "status": "planned" },
         { "id": "reraise", "name": "Reraise", "kind": "buff", "effect": "revive_once", "weight": 1, "when": "missing_hull", "text": "Readies itself once it is hurt: the next time it falls it gets back up, whole, once.", "status": "implemented" },
         { "id": "holy", "name": "Holy", "kind": "attack", "factor": 3.0, "weight": 2, "when": "below_half", "text": "Everything it has, as light: {damage}.", "status": "implemented" }
       ],

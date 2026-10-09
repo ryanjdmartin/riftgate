@@ -831,7 +831,7 @@ func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 	assert_true(entry["stats"].contains("ARM") or true, "stats read")
 	var maw := db.codex_for_foe(db.make_foe("sandworm"))
 	assert_true(maw["actions"].contains("WHEN BELOW HALF"), "the codex says a move's condition: %s" % maw["actions"])
-	assert_true(str(maw["stats"]).contains("ARM 10"), "and the boss's armour")
+	assert_true(str(maw["stats"]).contains("ARM 5"), "and the boss's armour")
 
 
 # The name plate shows the traits, not a silhouette word (Ryan, 2 October): maker, then
@@ -939,3 +939,50 @@ func test_a_split_is_validated_one_deep_and_read_into_the_foe() -> void:
 	var f := db.make_foe("split_test")
 	assert_eq(f.on_death, {"summon": any_id, "count": 2}, "read into the foe")
 	db.foes.erase("split_test")
+
+
+## A component's sound (decided 2 October): its label where content names one, else derived
+## from shape and face. Synthetic components, so no entry's sound is pinned here.
+func test_a_component_sound_is_its_label_or_derived() -> void:
+	var db := ContentDB.new()
+	var kinetic := {"kind": "attack", "reach": "line", "power": 10, "power_max": 20, "crit": 10}
+	var energy := {"kind": "attack", "reach": "line", "power": 15}
+	db.components = {
+		"slug": {"shape": "barrel", "maker": "minerva", "face": kinetic},
+		"twin": {"shape": "twin_barrel", "maker": "kestrel", "face": kinetic},
+		"beam": {"shape": "barrel", "maker": "kestrel", "face": energy},
+		"hot": {"shape": "barrel", "maker": "arsenal", "face": energy},
+		"hot_rack": {"shape": "rack", "maker": "arsenal", "face": energy},
+		"plow": {"shape": "blade", "maker": "minerva", "face": {"kind": "attack", "reach": "melee", "power": 5, "power_max": 10}, "sound": "blunt"},
+		"fist": {"shape": "blade", "maker": "arsenal", "face": energy, "sound": ["blunt", "plasma"]},
+		"field": {"shape": "none", "maker": "minerva", "face": {"kind": "shield", "power": 20}},
+		"coil": {"shape": "dish", "maker": "kestrel", "face": {"kind": "buff"}},
+		"lure": {"shape": "dish", "maker": "minerva", "face": {"kind": "attack", "reach": "indirect", "power": 0}},
+		"bare": {"shape": "none", "maker": "minerva", "face": {"kind": "attack", "reach": "indirect", "power": 5, "power_max": 10}},
+		"vent": {"shape": "none", "maker": "minerva", "face": {"kind": "vent", "power": 10}},
+	}
+	assert_eq(db.sound_of("slug"), ["barrel"], "a kinetic barrel is a barrel")
+	assert_eq(db.sound_of("twin"), ["twin_barrel"], "a twin a twin")
+	assert_eq(db.sound_of("beam"), ["laser"], "an energy barrel a laser")
+	assert_eq(db.sound_of("hot"), ["plasma"], "the Arsenal's energy barrel a plasma")
+	assert_eq(db.sound_of("hot_rack"), ["rack"], "the Arsenal's rack still a rack")
+	assert_eq(db.sound_of("plow"), ["blunt"], "a label wins")
+	assert_eq(db.sound_of("fist"), ["blunt", "plasma"], "a list is layers")
+	assert_eq(db.sound_of("field"), ["deflector"], "a shield a deflector, whatever its mount")
+	assert_eq(db.sound_of("coil"), ["coil"], "a buff a coil")
+	assert_eq(db.sound_of("lure"), ["coil"], "a dish that attacks a coil")
+	assert_eq(db.sound_of("bare"), ["rack"], "an attack with no mount by its reach")
+	assert_eq(db.sound_of("vent"), [], "a vent has none of these")
+	assert_eq(db.sound_of("nothing"), [], "an unknown id has none")
+
+
+func test_every_component_derives_a_sound_the_game_plays() -> void:
+	var db := ContentDB.load_default()
+	for id in db.components:
+		var kind := str(db.components[id].get("face", {}).get("kind", ""))
+		var layers := db.sound_of(id)
+		if kind == "vent":
+			assert_eq(layers, [], "%s is a vent" % id)
+			continue
+		assert_true(not layers.is_empty(), "%s has a sound" % id)
+		assert_true(not Sound.blow(layers).is_empty(), "%s's sound %s has a blow" % [id, layers])

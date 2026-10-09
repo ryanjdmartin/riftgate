@@ -450,7 +450,7 @@ func test_replay_steps_order_specials_among_blows_and_name_only_the_named() -> v
 	assert_eq(str(steps[2]["announce"]), "Protect", "the special is announced")
 	assert_true((steps[2]["blow"] as Array).is_empty(), "and lands no blow")
 	assert_eq(str(steps[3]["announce"]), "", "a plain blow shows no plaque")
-	assert_eq((steps[3]["blow"] as Array).size(), 7, "and lands as before")
+	assert_eq((steps[3]["blow"] as Array).size(), 11, "and lands as before, with the striker's family and the struck machine's maker for the sound")
 	s.free()
 
 

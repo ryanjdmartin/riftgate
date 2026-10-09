@@ -17,8 +17,8 @@
    "face": {
     "kind": "attack",
     "reach": "melee",
-    "power": 20,
-    "power_max": 40,
+    "power": 10,
+    "power_max": 20,
     "crit": 10,
     "keywords": [
      "cleave"
@@ -48,8 +48,8 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 20,
-    "power_max": 40,
+    "power": 10,
+    "power_max": 20,
     "crit": 10,
     "keywords": [],
     "heat": 10
@@ -76,8 +76,8 @@
    "face": {
     "kind": "attack",
     "reach": "melee",
-    "power": 30,
-    "power_max": 60,
+    "power": 15,
+    "power_max": 30,
     "crit": 15,
     "keywords": [],
     "heat": 10
@@ -105,8 +105,8 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 30,
-    "power_max": 60,
+    "power": 15,
+    "power_max": 30,
     "crit": 15,
     "keywords": [],
     "heat": 10
@@ -153,8 +153,8 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 10,
-    "power_max": 30,
+    "power": 5,
+    "power_max": 15,
     "crit": 10,
     "keywords": [],
     "heat": 0
@@ -180,7 +180,7 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 30,
+    "power": 15,
     "keywords": [
      "penetrate"
     ],
@@ -207,8 +207,8 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 10,
-    "power_max": 30,
+    "power": 5,
+    "power_max": 15,
     "crit": 5,
     "keywords": [],
     "heat": 0
@@ -255,8 +255,8 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 20,
-    "power_max": 50,
+    "power": 10,
+    "power_max": 25,
     "crit": 10,
     "keywords": [],
     "heat": 0
@@ -282,8 +282,8 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 10,
-    "power_max": 30,
+    "power": 5,
+    "power_max": 15,
     "crit": 5,
     "keywords": [
      "burn"
@@ -312,8 +312,8 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 30,
-    "power_max": 50,
+    "power": 15,
+    "power_max": 25,
     "crit": 10,
     "keywords": [
      "suppress"
@@ -385,7 +385,7 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 100,
+    "power": 50,
     "keywords": [],
     "heat": 40
    },
@@ -411,8 +411,8 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 20,
-    "power_max": 40,
+    "power": 10,
+    "power_max": 20,
     "crit": 20,
     "keywords": [
      "execute"
@@ -442,7 +442,7 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 30,
+    "power": 15,
     "keywords": [
      "chain"
     ],
@@ -491,7 +491,7 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 20,
+    "power": 10,
     "keywords": [
      "suppress"
     ],
@@ -519,8 +519,8 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 10,
-    "power_max": 30,
+    "power": 5,
+    "power_max": 15,
     "crit": 5,
     "keywords": [
      "burn",
@@ -578,7 +578,7 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 10,
+    "power": 5,
     "keywords": [
      "rapid"
     ],
@@ -671,8 +671,8 @@
    "face": {
     "kind": "attack",
     "reach": "melee",
-    "power": 30,
-    "power_max": 60,
+    "power": 15,
+    "power_max": 30,
     "crit": 10,
     "keywords": [
      "cleave"
@@ -714,8 +714,8 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 10,
-    "power_max": 30,
+    "power": 5,
+    "power_max": 15,
     "crit": 10,
     "keywords": [
      "rapid"
@@ -745,8 +745,8 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 10,
-    "power_max": 20,
+    "power": 5,
+    "power_max": 10,
     "crit": 5,
     "keywords": [
      "suppress"
@@ -775,7 +775,7 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 20,
+    "power": 10,
     "keywords": [],
     "heat": 0,
     "vents_all": true,
@@ -808,7 +808,7 @@
    "face": {
     "kind": "attack",
     "reach": "melee",
-    "power": 30,
+    "power": 15,
     "keywords": [
      "burn",
      "volatile"
@@ -838,7 +838,7 @@
    "face": {
     "kind": "attack",
     "reach": "melee",
-    "power": 20,
+    "power": 10,
     "keywords": [
      "execute",
      "devour"
@@ -868,8 +868,8 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 10,
-    "power_max": 30,
+    "power": 5,
+    "power_max": 15,
     "crit": 10,
     "keywords": [],
     "heat": 0
@@ -918,7 +918,7 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 20,
+    "power": 10,
     "keywords": [],
     "heat": 5
    },
@@ -966,7 +966,7 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 30,
+    "power": 15,
     "keywords": [],
     "heat": 10
    },
@@ -1062,7 +1062,7 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 20,
+    "power": 10,
     "keywords": [],
     "heat": 5
    },
@@ -1088,7 +1088,7 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 20,
+    "power": 10,
     "keywords": [
      "burn"
     ],
@@ -1116,7 +1116,7 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 30,
+    "power": 15,
     "keywords": [
      "burn"
     ],
@@ -1189,7 +1189,7 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 20,
+    "power": 10,
     "keywords": [
      "burn"
     ],

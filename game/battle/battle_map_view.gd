@@ -1402,7 +1402,7 @@ func _advance_anim(delta: float) -> void:
 		if hex != int(a["hex"]):
 			a["hex"] = hex
 			if field.unit_by_id(uid) != null and field.unit_by_id(uid).is_player():
-				Sound.play("step", 0.0, 0.1)   # a footfall a hex (quiet by its file); the packs are pictures and make none
+				Sound.play(Sound.step_for(field.unit_by_id(uid).traits), 0.0, 0.1)   # a footfall a hex by the way it moves (quiet by its file); the packs are pictures and make none
 		var px: Vector2 = here[0]
 		_anim_px[uid] = px
 		if _map3d != null:

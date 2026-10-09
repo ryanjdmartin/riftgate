@@ -16,6 +16,8 @@ perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run
 tools/spriter/.venv/bin/python tools/sheet_export.py      # export enemy grids to art/foes, then --import
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate <foe> --n 4   # model candidates (mflux, FLUX.2 Klein)
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut <png> <foe>        # cut one into art/foes, then --import
+tools/spriter/.venv/bin/python tools/soundforge/forge.py build effects       # the console and the effects into art/audio (`build` alone adds the loops); voice_lines.py ship for Jenny's lines; then --import
+perl -e 'alarm 300; exec @ARGV' godot --path . --resolution 360x640 -s tools/sound_smoke.gd   # every sound hook driven with a window, muted: a SCRIPT ERROR is a broken hook
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build <chassis id>...   # ally units, and gate and wall, by code (tools/lowforge/models_low.py), with their rig sidecars (joints, acts), then --import
 BPY_PYTHON=<python with the bpy wheel> tools/spriter/.venv/bin/python tools/lowforge/forge.py build <id>   # the same with no Blender installed (a cloud session: python3.11 venv, pip install bpy==5.0.1); tools/lowforge/glbcmp.py old.glb new.glb proves the geometry unchanged
 RIFTGATE_ACTS_DEBUG=1 godot --path .               # every idle act back to back, in the skirmish and on the map (=<act name> loops one); RIFTGATE_MOVE_DEBUG=1 drives every machine constantly; tools/act_shot.gd freezes one frame of one act (or a stride) to a PNG; tools/gait_clip.gd saves every frame of a walk at its map pace (a gait option too) for ffmpeg
@@ -99,6 +101,14 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
 ## Session handoff
 
 Sessions have died mid-flight before. To keep the next one cheap to start:
+
+- One folder per branch (decided 5 October). `~/Code/riftgate` stays on `main`. A session that
+  needs another branch (a cloud session resumed on the Mac for its tools, most often) works in
+  its own worktree, `git worktree add .claude/worktrees/<name> <branch>` and EnterWorktree with
+  that path, never by switching the main folder's branch under whoever is using it.
+  `.claude/worktrees/` is excluded in `.git/info/exclude`. A worktree has no `.godot` import
+  or git-ignored tools: run `--import` there before Godot, and call the venvs by their path in
+  the main folder. Remove the worktree once its branch is merged.
 
 - Commit after each verified chunk of work, from this folder, with tests green. Do not leave a
   day of work uncommitted.

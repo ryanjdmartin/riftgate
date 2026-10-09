@@ -25,7 +25,7 @@ enum Outcome { NONE, VICTORY, DEFEAT, WITHDRAWN }
 const DEFAULT_COLUMNS := 4   # the formation's width (Ryan, 23 September: four plays better than three)
 const REROLLS_PER_ROUND := 3
 const DANGER_CLOSE_DIVISOR := 2
-const BURN_DAMAGE_PER_STACK := 20   # damage dealt per stack applied
+const BURN_DAMAGE_PER_STACK := 10   # damage dealt per stack applied (halved 2 October with the player's damage)
 const CRACK_MIN_HULL_PCT := 25      # a single hull hit this big (percent of max) injures a face
 const CORRUPT_BITE_PER_STACK := 10  # what a corrupted entry costs its owner each time it is spent, per stack (placeholder)
 const VOLATILE_BITE := 10           # what a volatile component costs its owner each time it is spent: hull, past shield and armour (placeholder)
@@ -637,6 +637,23 @@ func can_reroll() -> bool:
 
 ## Spend a mech's face. `target` is a Foe for attacks, a MechState (or null for self) for
 ## shield and vent. Returns false if the assignment is not legal.
+## Whether die `mech_index` may be spent on `target` now (a Foe for an attack, a MechState or
+## null for equipment): the checks `assign` makes before it acts, changing nothing. The
+## screen asks it while a die is dragged, for the hover over a valid target.
+func can_assign(mech_index: int, target) -> bool:
+	if state != State.ASSIGN or mech_index < 0 or mech_index >= mechs.size():
+		return false
+	var ms := mechs[mech_index]
+	if not ms.alive() or ms.assigned or ms.face() == null:
+		return false
+	var f := Effects.effective_face(ms.unit, ms.face())
+	if f.is_attack():
+		return target is Foe and targets_for(mech_index).has(target)
+	if f.is_equipment():
+		return equipment_targets_for(ms, f).has(target if target is MechState else ms)
+	return false
+
+
 func assign(mech_index: int, target = null) -> bool:
 	if state != State.ASSIGN:
 		return false
@@ -1330,7 +1347,9 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	if int(r["through"]) > 0:
 		_hull_damaged(ms)
 	if r["injures"]:
-		apply_injury(ms)
+		# What the injury did rides on the event too: the console says a component was
+		# damaged or destroyed (Jenny's information lines, 8 October).
+		turn_events[turn_events.size() - 1]["component"] = apply_injury(ms)
 
 
 ## The arithmetic of one blow against a shield, hull max and armour, shared by the real hit
@@ -1366,39 +1385,40 @@ static func _blow(shield: int, hull_max: int, armour: int, amount: int, breach: 
 ## happens, so a mech with little left to break shrugs off more of them. The damage lives on
 ## the unit and persists until repaired in the hangar. (Decided 17 September: one threshold,
 ## one roll.) A passive may say no_destroy on_injury: then a cracked component holds.
-func apply_injury(ms: MechState) -> void:
+func apply_injury(ms: MechState) -> String:
 	if ms.die.faces.is_empty():
-		return
-	_injure_entry(ms, ms.die.roll(rng))
+		return ""
+	return _injure_entry(ms, ms.die.roll(rng))
 
 
 ## The injury on one entry: intact cracks, cracked is destroyed (unless a passive holds it),
 ## blank shrugs it off. The die's roll picks the entry for a hull hit; a foe's unmake picks
-## the one showing.
-func _injure_entry(ms: MechState, idx: int) -> void:
+## the one showing. Returns what happened: "cracked", "destroyed", or "" for nothing.
+func _injure_entry(ms: MechState, idx: int) -> String:
 	if idx < 0 or idx >= ms.die.faces.size():
-		return
+		return ""
 	var f := ms.die.faces[idx]
 	if f.kind == Face.Kind.BLANK:
 		log.append("%s: the blow lands on %s; nothing left to break" % [ms.unit.display_name, "an empty hardpoint" if f.empty else "a destroyed component"])
-		return
+		return ""
 	var originals: Dictionary = ms.unit.damaged_faces
 	var what := f.describe()
 	if f.cracked:
 		if Effects.no_destroy(ms.unit, f):
 			log.append("%s: %s holds, cracked but not destroyed" % [ms.unit.display_name, what])
-			return
+			return ""
 		var d := Face.blank()
 		d.component = f.component
 		ms.die.faces[idx] = d
 		destroyed += 1
 		log.append("%s: a cracked component is destroyed (%s)" % [ms.unit.display_name, what])
-	else:
-		originals[idx] = f.duplicate_face()
-		var c := f.duplicate_face()
-		c.crack()
-		ms.die.faces[idx] = c
-		log.append("%s: a component cracks (%s)" % [ms.unit.display_name, what])
+		return "destroyed"
+	originals[idx] = f.duplicate_face()
+	var c := f.duplicate_face()
+	c.crack()
+	ms.die.faces[idx] = c
+	log.append("%s: a component cracks (%s)" % [ms.unit.display_name, what])
+	return "cracked"
 
 
 ## Whom a foe strikes (decided 2 October): its own pick, by the sense its move follows. The aim: the exposed, weighted by the hull its blow would reach, so a

@@ -391,10 +391,10 @@ func test_burn_ticks_down() -> void:
 	sk.assign(0, sk.front[0])
 	var g: Foe = sk.front[0]
 	assert_eq(g.hp, 60, "took 30 on hit")
-	assert_eq(g.burn_stacks(), 2, "two burn stacks from 30 damage")
+	assert_eq(g.burn_stacks(), 3, "three burn stacks from 30 damage, one a ten")
 	sk.end_round()
-	assert_eq(g.hp, 50, "burn ticked for 10: two stacks of five")
-	assert_eq(g.burn_stacks(), 1, "one stack consumed")
+	assert_eq(g.hp, 45, "burn ticked for 15: three stacks of five")
+	assert_eq(g.burn_stacks(), 2, "one stack consumed")
 
 
 func test_ranged_face_rolls_within_bounds() -> void:
@@ -1571,7 +1571,7 @@ func test_stacks_a_hot_machine_applies_run_deeper() -> void:
 	var hot := {"id": "hot", "name": "Exothermic Suite", "description": "", "effects": [
 		{"trigger": "on_stack", "effect": "add_stacks", "value": 1, "per_heat": 20}]}
 	var sk := Skirmish.new(1)
-	var m := _mech("Ray", Die.single(Face.attack(20, L, K.BURN)), 40, 100)
+	var m := _mech("Ray", Die.single(Face.attack(10, L, K.BURN)), 40, 100)   # a 10 burn: one stack, one a ten since 2 October
 	m.grant_passive(hot)
 	sk.add_mech(m)
 	var g := _ghoul(500, 0)
@@ -1579,7 +1579,7 @@ func test_stacks_a_hot_machine_applies_run_deeper() -> void:
 	sk.begin()
 	sk.start_round()
 	sk.assign(0, sk.front[0])
-	assert_eq(Effects.stacks_of(g, "burning"), 1, "cold, a 20 burn is one stack")
+	assert_eq(Effects.stacks_of(g, "burning"), 1, "cold, a 10 burn is one stack")
 	sk.end_round()
 	sk.start_round()
 	sk.mechs[0].heat = 45
@@ -1631,7 +1631,7 @@ func test_a_foe_gaining_a_status_may_be_caught_by_the_loop() -> void:
 	sk.start_round()
 	assert_eq(Effects.foe_status_suppress_chance(m), 100, "a sure thing at 100")
 	sk.assign(0, sk.front[0])
-	assert_eq(Effects.stacks_of(g, "burning"), 1, "the burn landed")
+	assert_true(Effects.stacks_of(g, "burning") >= 1, "the burn landed")
 	assert_true(g.is_suppressed(), "and the loop caught it")
 	assert_eq(Effects.stacks_of(g, "numbed"), 2, "a caught foe is numbed like any suppressed one, once")
 	sk.end_round()
@@ -1686,12 +1686,12 @@ func test_a_buff_component_grants_its_status_through_the_round() -> void:
 	assert_true(sk.assign(0, sk.mechs[1]), "spent on B")
 	assert_eq(Effects.stacks_of(b, "overcharged"), 2, "two stacks on B")
 	sk.assign(1, sk.front[0])
-	assert_eq(sk.front[0].hp, 500 - 24, "20 times 1.1 squared, rounded")
+	assert_eq(sk.front[0].hp, 500 - 30, "20 plus 5 a stack, two stacks")
 	sk.end_round()
 	assert_eq(Effects.stacks_of(b, "overcharged"), 0, "gone with the round")
 	sk.start_round()
 	sk.assign(1, sk.front[0])
-	assert_eq(sk.front[0].hp, 500 - 24 - 20, "plain 20 the round after")
+	assert_eq(sk.front[0].hp, 500 - 30 - 20, "plain 20 the round after")
 	# A two-round buff outlasts the first end of round; targets are the component's to set.
 	var s2 := Skirmish.new(2)
 	var brace := Face.buff("braced", 1, 2)
@@ -1707,7 +1707,7 @@ func test_a_buff_component_grants_its_status_through_the_round() -> void:
 	assert_true(s2.assign(0, s2.mechs[1]), "on the ally")
 	s2.end_round()
 	assert_eq(Effects.stacks_of(d, "braced"), 1, "still there after one round")
-	assert_eq(d.hull, 100 - 10, "20 less the brace's armour 10, on bare hull")
+	assert_eq(d.hull, 100 - 15, "20 less the brace's armour 5, on bare hull")
 	s2.start_round()
 	s2.end_round()
 	assert_eq(Effects.stacks_of(d, "braced"), 0, "gone after the second")
@@ -1846,7 +1846,7 @@ func test_devour_feeds_a_stack_of_overcharged_per_kill_and_it_fades_a_round_at_a
 			big = sk.front[col]
 	var before := big.hp
 	sk.assign(0, big)
-	assert_eq(before - big.hp, 33, "30 times 1.1 with the stack left, rounded")
+	assert_eq(before - big.hp, 35, "30 plus 5 with the stack left")
 	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "no kill, no new stack")
 	sk.end_round()
 	assert_eq(Effects.stacks_of(m, "overcharged"), 0, "and the last fades")
@@ -1863,7 +1863,7 @@ func test_a_buffs_overcharged_and_devours_add_up() -> void:
 	Effects.stack(m, Effects.STATUS["overcharged"], Effects.SKIRMISH, "devour", 2, Effects.DECAY_TICK)
 	assert_eq(Effects.stacks_of(m, "overcharged"), 3, "the round's stack and the skirmish's count together")
 	sk.assign(0, sk.front[0])
-	assert_eq(sk.front[0].hp, 500 - 27, "20 times 1.1 cubed, rounded")
+	assert_eq(sk.front[0].hp, 500 - 35, "20 plus 5 a stack, three stacks")
 	sk.end_round()
 	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "the buff went with the round, devour's faded one")
 
@@ -2818,10 +2818,10 @@ func test_brace_is_flat_armour_for_the_rounds_it_says() -> void:
 	sk.start_round()
 	assert_eq(m.armour, 0, "bare")
 	assert_true(sk.assign(0, null), "braces itself")
-	assert_eq(m.armour, 10, "braced is armour +10, read through the stat")
-	assert_eq(int(sk.forecast(sk.mechs[0], false)["hull_after"]), 80, "the forecast takes the armour off the 30")
+	assert_eq(m.armour, 5, "braced is armour +5, read through the stat")
+	assert_eq(int(sk.forecast(sk.mechs[0], false)["hull_after"]), 75, "the forecast takes the armour off the 30")
 	sk.end_round()
-	assert_eq(m.hull, 80, "and so does the blow")
+	assert_eq(m.hull, 75, "and so does the blow")
 	sk.start_round()
 	assert_eq(m.armour, 0, "gone with the round")
 

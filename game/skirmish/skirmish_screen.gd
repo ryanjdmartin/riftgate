@@ -174,10 +174,12 @@ func _set_phase(p: String) -> void:
 	_sub_label.text = _phase_text()
 
 
-## The display locks onto every foe's intent: called as a round's intents appear.
+## The display locks onto every foe's intent: called as a round's intents appear, with the
+## round opening's figure, once a round.
 func _acquire_intents() -> void:
 	if not is_inside_tree():
 		return
+	Sound.play("round_open")
 	for v in _view_foe.keys():
 		if v.visible and not v.dead:
 			v.acquire()
@@ -387,6 +389,7 @@ func _build() -> void:
 	# Reroll: one wide button centred right under the dice, the dice's own control. Far from
 	# End turn, so a thumb going for one cannot land on the other.
 	_reroll_btn = HudButton.new("REROLL", _on_reroll)
+	_reroll_btn.sound = ""   # the reroll is its own figure
 	_reroll_btn.glyph = "reroll"
 	_reroll_btn.font_size = 20
 	_reroll_btn.badge_size = 20
@@ -562,6 +565,7 @@ func _build_log_full() -> void:
 	_log_full_text = _log_label(18)
 	_log_full_scroll.add_child(_log_full_text)
 	var close := HudButton.new("CLOSE", _toggle_log_full)
+	close.sound = "ui_back"
 	close.custom_minimum_size = Vector2(0, 52)
 	col.add_child(close)
 
@@ -619,10 +623,12 @@ func _build_confirm() -> void:
 	row.add_theme_constant_override("separation", 16)
 	v.add_child(row)
 	var no := HudButton.new("NO", _hide_confirm)
+	no.sound = "ui_back"
 	no.custom_minimum_size = Vector2(0, 54)
 	no.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(no)
 	var yes := HudButton.new("YES", _confirm_yes)
+	yes.sound = "confirm"
 	yes.filled = true
 	yes.custom_minimum_size = Vector2(0, 54)
 	yes.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -652,6 +658,7 @@ func _build_outcome() -> void:
 	_overlay_text.custom_minimum_size = Vector2(420, 0)
 	ov.add_child(_overlay_text)
 	var back := HudButton.new(back_label, func() -> void: back_requested.emit())
+	back.sound = "ui_back"
 	back.custom_minimum_size = Vector2(0, 54)
 	ov.add_child(back)
 
@@ -1047,7 +1054,7 @@ func _on_die_tapped(i: int) -> void:
 	if not ms.alive() or ms.assigned:
 		return
 	locked[i] = not locked[i]
-	Sound.play("die_lock")
+	Sound.play("die_lock" if locked[i] else "die_unlock")
 	_refresh()
 
 
@@ -1088,6 +1095,7 @@ func _on_die_held(i: int) -> void:
 	# Every entry with what applies to it right now (a disabled entry, a passive's change,
 	# a cracked component): the hold is the die's whole readout since the die codex went.
 	_show_details("%s // D%d" % [ms.unit.display_name.to_upper(), ms.die.size()], _dice[i], _shown_faces(ms), ms.face_index, [], _face_labels(ms, true))
+	Sound.play("hold")
 
 
 func _on_foe_held(v: UnitView) -> void:
@@ -1109,6 +1117,7 @@ func _on_foe_held(v: UnitView) -> void:
 	if foe.is_massive():
 		text += "\nmassive: fills the column"
 	_show_details(text, v, [], -1, _readout_rows(_foe_rows(foe)))
+	Sound.play("hold")
 	_refresh_arrows()
 
 
@@ -1119,6 +1128,7 @@ func _on_mech_held(i: int) -> void:
 	if ms.unit.cooling > 0:
 		text += "\ncools %d at the start of each turn" % ms.unit.cooling
 	_show_details(text, _mech_views[i], [], -1, _readout_rows(_mech_rows(i)))
+	Sound.play("hold")
 	_refresh_arrows()
 
 
@@ -1201,20 +1211,22 @@ func _on_drag_moved(global_pos: Vector2) -> void:
 		return
 	var local: Vector2 = get_global_transform().affine_inverse() * global_pos
 	_ghost.position = local - Vector2(DIE_SIZE * 0.5, DIE_SIZE * 0.5)
+	# The hover hum while the die is over somewhere it may be spent (Ryan, 5 October).
+	var target = _drop_target_at(global_pos)
+	Sound.hover(target != null and sk.can_assign(_drag_from, target))
 
 
 func _on_drag_ended(global_pos: Vector2) -> void:
 	var i := _drag_from
 	_drag_from = -1
 	_ghost.visible = false
+	Sound.hover(false)
 	if i < 0:
 		_refresh()
 		return
 	var target = _drop_target_at(global_pos)
-	if target != null:
-		_use_die(i, target)
-	else:
-		Sound.play("die_drop", -6.0)
+	if target == null or not _use_die(i, target):
+		Sound.play("die_drop")   # set back
 	_refresh()
 
 
@@ -1229,25 +1241,72 @@ func _drop_target_at(global_pos: Vector2):
 	return null
 
 
-## A foe's blow this big or bigger lands as a slam rather than a slash (a placeholder, like
+## A foe's blow this big or bigger lands as its family's heavy blow (a placeholder, like
 ## every number).
-const SLAM_DAMAGE := 20
+const HEAVY_DAMAGE := 20
+const CRIT_DB := 2.0   # a crit is the same blow, a little louder (the third cut has no crit of its own)
 
 
-## The sound of a machine's blow, by its weapon (Ryan, 23 September: lasers, gunfire,
-## explosions and melee of various kinds, with Doom levels of punch): energy is a laser
-## (static, never crits), a kinetic line weapon is gunfire and its crit the cannon, indirect
-## is the cannon, melee is a slash and its crit a slam.
-func _blow_sound(f: Face, crit: bool) -> String:
-	if f == null:
-		return "hit_crit" if crit else "hit"
-	if f.reach == Face.Reach.MELEE:
-		return "slam" if crit else "slash"
-	if f.reach == Face.Reach.INDIRECT:
-		return "cannon"
-	if f.crit == 0 and f.power == f.power_max:
-		return "laser"
-	return "cannon" if crit else "gunfire"
+## The sound of a component's use: by the weapon (ContentDB.sound_of: its shape, an energy
+## barrel a laser, the Arsenal's a plasma, the label where content names one), a shield's
+## deflector and a buff's coil. "" for none.
+func _blow_sound(f: Face) -> String:
+	if f == null or f.component.is_empty():
+		return ""
+	return Sound.blow(ContentDB.load_default().sound_of(f.component))
+
+
+## The maker whose metal a machine is.
+func _maker_of(ms: Skirmish.MechState) -> String:
+	return str(ContentDB.load_default().chassis.get(ms.unit.chassis_id, {}).get("maker", "minerva"))
+
+
+## Each live machine's heat as a mark: 0 cool, 1 past three quarters, 2 over the cap (it will
+## burn at the round's end).
+func _heat_marks() -> Array:
+	var out: Array = []
+	for ms in sk.mechs:
+		var m := 0
+		if ms.alive() and ms.heat_max > 0:
+			if ms.heat > ms.heat_max:
+				m = 2
+			elif ms.heat * 4 >= ms.heat_max * 3:
+				m = 1
+		out.append(m)
+	return out
+
+
+## Jenny on the heat a spend just added: the overheat when a machine went over the cap, else
+## the warning when one passed three quarters; one line for the spend.
+func _heat_hook(before: Array) -> String:
+	var after := _heat_marks()
+	var worst := 0
+	for k in range(mini(before.size(), after.size())):
+		if int(after[k]) > int(before[k]):
+			worst = maxi(worst, int(after[k]))
+	return "overheat" if worst == 2 else ("heat_high" if worst == 1 else "")
+
+
+## The chain a spend is heard in (Ryan, 8 and 9 October). The die is let go at once and the
+## blow fires BLOW_AT after; the hit's flash, a kill and its death come where the blow lands
+## (Sound.LAND). Jenny, when she speaks on it:
+##   a blow that does not kill: before the weapon, confirming the input, the weapon firing
+##     as her line closes, PRE_FIRE of the way through it (Ryan, 9 October: half a second was
+##     not enough, she talks slow);
+##   a blow that kills: the foe's short death where the blow lands, her line right after it
+##     (Ryan, 9 October: at the landing she was early and buried, the death being the
+##     machine's then; a foe's own is under a second);
+##   a shield, a buff or a vent: before it, the same as a blow;
+##   heat pushed past a mark: the warning in place of any of those, where the blow lands
+##     (the damage applied), or after the death on a kill.
+## The die that wins the fight has none of her.
+const BLOW_AT := 0.08
+const PRE_LINE_AT := 0.1     # her line, just after the die's own sound
+const PRE_FIRE := 0.85       # the weapon, this far through her line
+const AFTER_DEATH := 0.45   # her line, this long after a foe's death begins
+## The enemy's turn: her component lines after the blow lands (a machine lost waits for its
+## death at the turn's end).
+const VOICE_AFTER_BLOW := 0.4
 
 
 ## Spend die `i` on `target` (a Foe or a MechState). Returns whether the simulation accepted it.
@@ -1260,34 +1319,70 @@ func _use_die(i: int, target) -> bool:
 		if fv != null:
 			was[foe] = [fv, fv.sprite, fv.sprite_frame(), fv.flip_h]
 	var spent: Face = sk.mechs[i].face()
+	var heat_before := _heat_marks()
 	var ok := sk.assign(i, target)
 	if ok:
 		locked[i] = false
 	_refresh()
+	if ok:
+		Sound.play("die_spend")   # the console letting the die go; the component's own sound lands after
+	# The fight decided by this die: nothing queued during it is said after (the win clears
+	# Jenny's queue, so the last kill never gets a heat warning behind it).
+	var won := ok and sk.outcome == Skirmish.Outcome.VICTORY
+	if won:
+		Sound.voice_clear()
+	var blow := _blow_sound(spent)
+	var heat_hook := _heat_hook(heat_before) if ok and not won else ""
+	var quiet := won or not heat_hook.is_empty()   # nothing but the heat may take her line
+	var fire_at := BLOW_AT
+	var landed := fire_at + Sound.lands(blow)   # where the blow lands, from the die let go
 	if ok and target is Foe:
 		var tv: UnitView = was[target][0] if was.has(target) else null
 		_flash_roll(tv)
-		_animate_attack(_mech_views[i], tv, bool(sk.last_roll.get("ranged", false)), target.alive())
-		Sound.play_after(0.08, _blow_sound(spent, bool(sk.last_roll.get("crit", false))))   # when the blow lands
-		var k := 0
+		var dead: Array = []
+		var fallen := ""
 		for foe in was.keys():
 			if not foe.alive():
-				var w: Array = was[foe]
-				_animate_death(w[0], w[1], w[2], w[3])
-				Sound.play_after(0.14 + 0.07 * k, "kill", -2.0 * k)
-				k += 1
+				dead.append(foe)
+				fallen = ContentDB.load_default().faction_of_foe(foe.content_id)
+		if not quiet:
+			if dead.is_empty():
+				var said := Sound.claim_line("die_spent", PRE_LINE_AT)
+				if said > 0.0:
+					fire_at = PRE_LINE_AT + said * PRE_FIRE
+			else:
+				var hook := "foe_down_" + fallen
+				Sound.claim_line(hook if Sound.FAMILIES.has(fallen) else "foe_down", landed + AFTER_DEATH)
+		landed = fire_at + Sound.lands(blow)
+		var ranged := bool(sk.last_roll.get("ranged", false))
+		var hit := (target as Foe).alive()
+		if fire_at > BLOW_AT and is_inside_tree():
+			var tw := create_tween()   # the attacker moves when its weapon fires, into her line
+			tw.tween_interval(fire_at - BLOW_AT)
+			tw.tween_callback(_animate_attack.bind(_mech_views[i], tv, ranged, hit, BLOW_AT + Sound.lands(blow)))
+		else:
+			_animate_attack(_mech_views[i], tv, ranged, hit, landed)
+		Sound.play_after(fire_at, blow, CRIT_DB if bool(sk.last_roll.get("crit", false)) else 0.0)
+		for k in range(dead.size()):
+			var w: Array = was[dead[k]]
+			_animate_death(w[0], w[1], w[2], w[3], landed)
+			Sound.play_after(landed + 0.07 * k, "kill", -2.0 * k)
 	elif ok and spent != null:
-		if spent.kind == Face.Kind.SHIELD:
-			Sound.play("shield_up")
-		elif spent.kind == Face.Kind.VENT:
-			Sound.play("vent")
-		elif spent.kind == Face.Kind.BUFF:
-			Sound.play("shield_up", -3.0)   # a placeholder until a buff has a sound of its own
+		var vent := spent.kind == Face.Kind.VENT
+		var effect := "vent" if vent else blow
+		if spent.kind == Face.Kind.VENT or spent.kind == Face.Kind.SHIELD or spent.kind == Face.Kind.BUFF:
+			var hook := "heat_vented" if vent else ("shield" if spent.kind == Face.Kind.SHIELD else "buff")
+			var said := 0.0 if quiet else Sound.claim_line(hook, PRE_LINE_AT)
+			fire_at = PRE_LINE_AT + said * PRE_FIRE if said > 0.0 else 0.0
+			Sound.play_after(fire_at, effect, -3.0 if spent.kind == Face.Kind.BUFF else 0.0)
+			landed = fire_at + Sound.lands(effect)
+	if not heat_hook.is_empty():
+		Sound.say_after(landed + (AFTER_DEATH if target is Foe and not (target as Foe).alive() else 0.0), heat_hook)
 	if ok and sk.outcome != Skirmish.Outcome.NONE:
-		# Decided by this die: the fight ends now, after the last blow has played.
+		# Decided by this die: the fight ends once the last blow has landed and played.
 		if is_inside_tree():
 			var tw := create_tween()
-			tw.tween_interval(0.75)
+			tw.tween_interval(landed + 0.75)
 			tw.tween_callback(_show_outcome.bind(sk.outcome))
 		else:
 			_show_outcome(sk.outcome)
@@ -1299,7 +1394,7 @@ func _use_die(i: int, target) -> bool:
 
 ## A melee face lunges the attacker at the target; a ranged face kicks it back. The target
 ## flashes and shakes a beat later, when the blow lands.
-func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool, hit: bool = true) -> void:
+func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool, hit: bool = true, lands: float = 0.08) -> void:
 	if not is_inside_tree() or attacker == null:
 		return
 	_settle(attacker)
@@ -1317,12 +1412,13 @@ func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool, hit: bo
 		tw.tween_property(attacker, "position", origin + dir * 18.0, 0.09).set_ease(Tween.EASE_OUT)
 		tw.tween_property(attacker, "position", origin, 0.16).set_ease(Tween.EASE_IN_OUT)
 	if target != null and hit:
-		_animate_hit(target, 0.08)
+		_animate_hit(target, lands)
 
 
 ## A foe dies: a ghost of its drawing, where it stood, flashes, drops and fades, in the
-## enemy's colour. The slot itself is already empty (a kill clears it at once).
-func _animate_death(v: UnitView, tex: Texture2D, frame: Rect2, flip: bool) -> void:
+## enemy's colour. The slot itself is already empty (a kill clears it at once), so the ghost
+## stands in for the foe until the blow lands (`lands`), then goes.
+func _animate_death(v: UnitView, tex: Texture2D, frame: Rect2, flip: bool, lands: float = 0.0) -> void:
 	if not is_inside_tree() or v == null or tex == null:
 		return
 	var ghost := TextureRect.new()
@@ -1336,6 +1432,8 @@ func _animate_death(v: UnitView, tex: Texture2D, frame: Rect2, flip: bool) -> vo
 	ghost.size = frame.size
 	add_child(ghost)
 	var tw := create_tween()
+	if lands > 0.0:
+		tw.tween_interval(lands)
 	tw.tween_property(ghost, "modulate", Color(2.0, 1.2, 1.2), 0.06)
 	tw.tween_property(ghost, "modulate", Color(Palette.ENEMY_DIM, 1.0), 0.12)
 	tw.set_parallel(true)
@@ -1395,6 +1493,10 @@ func _enemy_beat() -> float:
 ## (tests, headless) it all happens at once.
 func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 	var steps := _replay_steps(before)
+	var hits: Array = []
+	for st in steps:
+		if not (st["blow"] as Array).is_empty():
+			hits.append(st["blow"])
 	if not is_inside_tree() or (steps.is_empty() and sk.overheats.is_empty()):
 		then.call()
 		return
@@ -1413,6 +1515,19 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 			if v.bars.size() >= 3:
 				v.bars[2] = v.bars[2].slice(0, 3)
 			v.queue_redraw()
+	# The machines that fall this turn, to a blow or to the burn, in the order they fall: each
+	# dies at the end of the turn, one after another, with nothing over it (Ryan, 9 October).
+	var deaths: Array = []
+	_dying.clear()
+	for h in hits:
+		if int(h[5]) <= 0 and not h[1].dead and not _dying.has(h[1]):
+			_dying[h[1]] = true
+			deaths.append([h[1], h[10]])
+	for ov in sk.overheats:
+		var oi: int = ov["mech"]
+		if oi >= 0 and oi < _mech_views.size() and int(ov["hull"]) <= 0 and not _mech_views[oi].dead and not _dying.has(_mech_views[oi]):
+			_dying[_mech_views[oi]] = true
+			deaths.append([_mech_views[oi], _maker_of(sk.mechs[oi])])
 	var beat := _enemy_beat()
 	var tw := create_tween()
 	for st in steps:
@@ -1425,6 +1540,9 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 	if not sk.overheats.is_empty():
 		tw.tween_callback(_land_overheats)
 		tw.tween_interval(beat)
+	for d in deaths:
+		tw.tween_callback(_land_death.bind(d[0], d[1]))
+		tw.tween_interval(Sound.death_span(d[1]))
 	tw.tween_interval(0.25)
 	tw.tween_callback(func() -> void:
 		_replay_shade.visible = false
@@ -1446,7 +1564,10 @@ func _replay_steps(before: Dictionary) -> Array:
 			"named": bool(ev.get("boss", false)), "announce": "",
 			"blow": [before["views"].get(ev["foe"]), _mech_views[mi], bool(ev["broke_shield"]),
 				bool(ev.get("blocked", false)), int(ev["shield"]), int(ev["hull"]),
-				int(ev.get("absorbed", 0)) + int(ev.get("through", 0))]})
+				int(ev.get("absorbed", 0)) + int(ev.get("through", 0)),
+				int(ev.get("through", 0)), str(ev.get("component", "")),
+				ContentDB.load_default().faction_of_foe(ev["foe"].content_id) if ev["foe"] != null else "",
+				_maker_of(sk.mechs[mi])]})
 	for sp in sk.turn_specials:
 		steps.append({"seq": int(sp.get("seq", 0)), "foe": sp["foe"], "name": str(sp.get("name", "")),
 			"named": true, "announce": "", "blow": []})
@@ -1475,7 +1596,15 @@ func _announce(name: String) -> void:
 
 
 ## One blow of the replay: [foe view or null, mech view, broke shield, blocked, shield after,
-## hull after]. A striker whose slot has since emptied (killed by burn) still lands its blow.
+## hull after, damage, through to hull, what an injury did, the striker's family, the struck
+## machine's maker]. A striker whose slot has since emptied
+## (killed by burn) still lands its blow.
+##
+## Heard as the family's blow (its heavy blow from HEAVY_DAMAGE), then what took it: a
+## standing shield (the shield hit), the shield breaking, the armour turning it on bare hull
+## (the maker's block), or the hull (the maker's hit), and a machine that falls its maker's
+## kill. Jenny: a component damaged or destroyed. A machine the blow fells dies at the end of
+## the turn (`_land_death`), not here.
 func _land_blow(h: Array) -> void:
 	var fv: UnitView = h[0]
 	var mv: UnitView = h[1]
@@ -1483,23 +1612,45 @@ func _land_blow(h: Array) -> void:
 	var held: bool = h[3]
 	var shield_after: int = h[4]
 	var hull_after: int = h[5]
+	var through: int = h[7]
+	var injury: String = h[8]
+	var maker: String = h[10]
+	var foe_blow := Sound.family("heavy" if int(h[6]) >= HEAVY_DAMAGE else "hit", h[9])
+	var landed := maxf(0.08, Sound.lands(foe_blow))
 	if fv != null and fv.visible:
-		_animate_attack(fv, mv, false)
+		_animate_attack(fv, mv, false, true, landed)
 	else:
-		_animate_hit(mv)
-	var blow := "slam" if (h.size() > 6 and int(h[6]) >= SLAM_DAMAGE) else "slash"
-	Sound.play_after(0.08, "shield_break" if broke else ("block" if held else blow), 0.0 if broke else -3.0)
+		_animate_hit(mv, landed)
+	Sound.play(foe_blow)
+	var struck := "shield_break" if broke else ("shield_hit" if held else (Sound.struck("hit", maker) if through > 0 else Sound.struck("block", maker)))
+	Sound.play_after(landed, struck, 0.0 if broke else -3.0)
+	if _dying.has(mv):
+		pass   # its death comes at the end of the turn
+	elif injury == "destroyed":
+		Sound.say_after(landed + VOICE_AFTER_BLOW, "component_destroyed")
+	elif injury == "cracked":
+		Sound.say_after(landed + VOICE_AFTER_BLOW, "component_damaged")
 	var t2 := create_tween()
-	t2.tween_interval(0.08)
+	t2.tween_interval(landed)
 	t2.tween_callback(func() -> void:
 		if mv.bars.size() >= 2:
 			mv.bars[0][0] = shield_after
 			mv.bars[1][0] = hull_after
-		if hull_after <= 0:
-			mv.dead = true
 		mv.queue_redraw()
 		if broke:
 			mv.shatter_shield())
+
+
+## A machine lost, at the end of the enemy's turn: the wreck shown, its maker's death, and
+## Jenny's "machine lost" in that death's gap (Sound.death_voice_at); the replay waits out
+## Sound.death_span before anything else.
+var _dying: Dictionary = {}
+
+func _land_death(mv: UnitView, maker: String) -> void:
+	mv.dead = true
+	mv.queue_redraw()
+	Sound.play(Sound.struck("kill", maker))
+	Sound.say_after(Sound.death_voice_at(maker), "machine_lost")
 
 
 ## The round's overheats land together after the enemy's blows (the sim burns them at the
@@ -1515,9 +1666,7 @@ func _land_overheats() -> void:
 		_animate_hit(mv)
 		if mv.bars.size() >= 2:
 			mv.bars[1][0] = int(ov["hull"])
-		if int(ov["hull"]) <= 0:
-			mv.dead = true
-		mv.queue_redraw()
+		mv.queue_redraw()   # one the burn fells dies at the end of the turn (`_land_death`)
 
 
 ## Every animation on a control returns it to where it was placed. Whatever is still
@@ -1673,6 +1822,7 @@ func _show_outcome(outcome: int) -> void:
 	_refresh()
 	match outcome:
 		Skirmish.Outcome.VICTORY:
+			Sound.voice_clear()
 			Sound.play("victory")
 			_overlay_title.text = "VICTORY"
 			_overlay_text.text = "The pack is gone. Rift pressure rose by %d." % sk.round

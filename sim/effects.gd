@@ -78,12 +78,13 @@ const STATUS := {
 		"effects": [{"trigger": "status", "effect": "resist_suppress", "value": 10}]},
 	# The machines' buffs (29 September): what buff equipment grants for a round or more.
 	# Devour will stack Overcharged too, for the skirmish. Names are placeholders for Ryan.
-	"overcharged": {"id": "overcharged", "name": "Overcharged", "description": "Attacks deal +10% damage per stack.",
-		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "multiply_damage", "value": 1.1}]},
+	# Flat since 2 October (the damage scale: a tenth of a blow of 10 to 20 is nothing to read).
+	"overcharged": {"id": "overcharged", "name": "Overcharged", "description": "Attacks deal +5 damage per stack.",
+		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 5}]},
 	# Brace is temporary armour (2 October): flat off every blow, the same word and icon as the
 	# chassis stat, never a percentage.
-	"braced": {"id": "braced", "name": "Braced", "description": "Armour +10 per stack.",
-		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 10}]},
+	"braced": {"id": "braced", "name": "Braced", "description": "Armour +5 per stack.",
+		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 5}]},
 	"primed": {"id": "primed", "name": "Primed", "description": "Every blow it lands leaves a stack of Burning, per stack.",
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_burn", "value": 1}]},
 	# Retaliation as a debuff, not thorns (Ryan, 28 September): a foe that strikes this
@@ -96,8 +97,8 @@ const STATUS := {
 	# What a foe's defend, buff and debuff actions leave (30 September). Folded fades at the
 	# foe's next action; Kindled lasts the next round; Risen is a charge spent by a death;
 	# Scrambled sits on a machine until its next reroll, and a cleanse clears it.
-	"folded": {"id": "folded", "name": "Folded", "description": "Armour +10 until its next action.",
-		"tags": ["guard"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 10}]},
+	"folded": {"id": "folded", "name": "Folded", "description": "Armour +5 until its next action.",
+		"tags": ["guard"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 5}]},
 	"kindled": {"id": "kindled", "name": "Kindled", "description": "Hits 10 harder this round.",
 		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 10}]},
 	"risen": {"id": "risen", "name": "Getting Back Up", "description": "Returns from the pool once after dying, unless executed.",
