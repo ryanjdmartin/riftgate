@@ -2,8 +2,9 @@ class_name HarnessSetup
 extends RefCounted
 
 ## What the harness launches (game/harness.gd is its view): the team in the order it
-## deploys, each machine's hardpoints, the enemy side (packs, a boss, a guest faction), the
-## seed and the map's type. Pure, so the tests build the same fights the harness does.
+## deploys, each machine's hardpoints and modules, the enemy side (packs, a boss, a guest
+## faction), the seed and the map's type. Pure, so the tests build the same fights the
+## harness does.
 ## Kept in user://harness.json between launches; ids the content no longer has are dropped
 ## on load, never trusted.
 
@@ -16,6 +17,9 @@ var team: Array = []            # chassis ids, in the order they deploy
 ## Chassis id -> one pick per hardpoint, a component id or "" for a hardpoint left empty.
 ## A machine with no entry wears its chassis's stock loadout.
 var loadouts: Dictionary = {}
+## Chassis id -> one pick per module slot, a module id or "" for a slot left empty. A machine
+## with no entry wears none (modules are never stock).
+var modules: Dictionary = {}
 var packs: Array = []           # [[foe_id, strength], ...]: on the field at the start and the rift's cycle in a battle, all chained in a fight
 var boss: String = ""           # a faction's boss by foe id, "" for none
 var guest: String = ""          # a battle's guest faction, joining the rift's cycle; "" for none
@@ -118,6 +122,33 @@ func is_refit(chassis_id: String) -> bool:
 	return loadouts.has(chassis_id)
 
 
+## A machine's module picks: one per slot of its chassis, "" for each slot left empty.
+func module_picks(chassis_id: String) -> Array:
+	var n := int(db.chassis.get(chassis_id, {}).get("module_slots", 0))
+	var out: Array = modules[chassis_id].duplicate() if modules.has(chassis_id) else []
+	out.resize(mini(out.size(), n))
+	while out.size() < n:
+		out.append("")
+	return out
+
+
+## Put a module (or "" for none) in one slot. A machine with every slot empty forgets the edit.
+func set_module(chassis_id: String, slot: int, module_id: String) -> void:
+	var p := module_picks(chassis_id)
+	if slot < 0 or slot >= p.size():
+		return
+	p[slot] = module_id if db.modules.has(module_id) else ""
+	if p.all(func(m) -> bool: return str(m).is_empty()):
+		modules.erase(chassis_id)
+	else:
+		modules[chassis_id] = p
+
+
+## The modules make_mech takes: the picks in slot order, the empty ones left out.
+func fitted_modules(chassis_id: String) -> Array:
+	return module_picks(chassis_id).filter(func(m) -> bool: return not str(m).is_empty())
+
+
 ## The loadout make_mech takes: the picks in hardpoint order, the empty ones left out (the
 ## die's empty entries are what the hardpoints leave over).
 func fitted(chassis_id: String) -> Array:
@@ -135,7 +166,7 @@ func make_team() -> Array:
 	var uid := 1
 	for id in team:
 		if db.chassis.has(id):
-			out.append(db.make_mech(str(id), uid, Vector2i.ZERO, fitted(str(id))))
+			out.append(db.make_mech(str(id), uid, Vector2i.ZERO, fitted(str(id)), fitted_modules(str(id))))
 			uid += 1
 	return out
 
@@ -184,7 +215,7 @@ func make_battle() -> Battle:
 # ---------------------------------------------------------------- keeping
 
 func to_dict() -> Dictionary:
-	return {"team": team, "loadouts": loadouts, "packs": packs, "boss": boss, "guest": guest, "seed": seed_value, "map_kind": map_kind}
+	return {"team": team, "loadouts": loadouts, "modules": modules, "packs": packs, "boss": boss, "guest": guest, "seed": seed_value, "map_kind": map_kind}
 
 
 ## A setup from a saved dictionary, checked against the content: unknown ids drop out, a
@@ -210,6 +241,12 @@ static func from_dict(d: Dictionary, content: ContentDB = null) -> HarnessSetup:
 				p.append("")
 			if p != s.stock_picks(str(id)):
 				s.loadouts[str(id)] = p
+	var mo = d.get("modules", {})
+	if mo is Dictionary:
+		for id in mo.keys():
+			if s.db.chassis.has(str(id)) and mo[id] is Array:
+				for k in range((mo[id] as Array).size()):
+					s.set_module(str(id), k, str(mo[id][k]))
 	var foes := s.pack_foes()
 	for p in d.get("packs", []):
 		if p is Array and p.size() >= 2 and foes.has(str(p[0])):

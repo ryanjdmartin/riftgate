@@ -65,7 +65,7 @@
     "bullion_fragmenter"
    ],
    "loadout": [
-    "missile_rack",
+    "shotfire_rack",
     "twin_autoguns",
     "proximity_klaxon"
    ],
@@ -130,7 +130,7 @@
     "suppression_battery",
     "blast_door",
     "incendiary_shells",
-    "heat_sink"
+    "coolant_jacket"
    ],
    "passive": {
     "id": "battery_director",
@@ -176,7 +176,7 @@
     "overclocked_railgun",
     "headhunter_rifle",
     "arc_fault_cannon",
-    "deflector"
+    "laminar_deflector"
    ],
    "passive": {
     "id": "disabled_regulators",
@@ -280,7 +280,7 @@
    "loadout": [
     "rivet_gun",
     "slugthrower",
-    "missile_rack",
+    "shotfire_rack",
     "shoring_jack",
     "blowout_stack"
    ],
@@ -329,7 +329,7 @@
    "loadout": [
     "slugthrower",
     "slugthrower",
-    "missile_rack",
+    "shotfire_rack",
     "blast_door",
     "blowout_stack"
    ],
@@ -356,7 +356,7 @@
    "design": {
     "fantasy": "A fast, agile, and lightly armoured skirmisher, able to skim in and out of fights with ease. It's signature ability allows it to serve as both a potent scout and harasser before getting away with minimal damage.",
     "niche": "scout",
-    "notes": "Decided 28 September: the passive as Ryan wrote it, resolved per ally with a flat chance and no new UI: the Prairie Dog is always out before the enemy strikes, each ally rolls an even chance to slip out with it, and a blow aimed at a covered machine is lost rather than retargeted. The locked Flakshot Repeater makes its round shoot, roll again, shoot, leave; Incendiary Shells because it leaves them burning (burning carried between fights is on the ideas list). Numbers, designation and kit are Claude's fills, Ryan's to move. 8 October (Ryan, the redesigned round, bible sections 4, 5 and 7): the scout that slips around the fights; elusive, a hunter never picks it, so it is never in a fight it did not choose and works behind the horde. The Static-screen Projector is gone (the guaranteed enemy turn); its locked gun is to carry the disorder keyword in its place and the Flak Skirt is to go with the niche, both not yet done. 8 October, later (Ryan): elusive is a passive, not a trait, since no other machine will carry it; named the Track-Dispersing Tyres (Ryan, 9 October). The model lost its side skirts, bash bars and drops the same day, and rides higher over its wheels (Ryan: the fast scout, a dune buggy's flair). Claude's recommendation, open with Ryan: the Flakshot Repeater stays as it is (a rapid gun suits a light machine that finishes its own fights fast) and the disorder keyword is dropped (it pays in team fights, which an elusive car rarely joins); the Flak Skirt is stock in a free hardpoint, never the design. 9 October: the platings left the dice for modules, so the Flak Skirt became the Deflector, a mounted shield (W&S has none of its own yet), since the skirt was a quarter of its spends alone."
+    "notes": "Decided 28 September: the passive as Ryan wrote it, resolved per ally with a flat chance and no new UI: the Prairie Dog is always out before the enemy strikes, each ally rolls an even chance to slip out with it, and a blow aimed at a covered machine is lost rather than retargeted. The locked Flakshot Repeater makes its round shoot, roll again, shoot, leave; Incendiary Shells because it leaves them burning (burning carried between fights is on the ideas list). Numbers, designation and kit are Claude's fills, Ryan's to move. 8 October (Ryan, the redesigned round, bible sections 4, 5 and 7): the scout that slips around the fights; elusive, a hunter never picks it, so it is never in a fight it did not choose and works behind the horde. The Static-screen Projector is gone (the guaranteed enemy turn); its locked gun is to carry the disorder keyword in its place and the Flak Skirt is to go with the niche, both not yet done. 8 October, later (Ryan): elusive is a passive, not a trait, since no other machine will carry it; named the Track-Dispersing Tyres (Ryan, 9 October). The model lost its side skirts, bash bars and drops the same day, and rides higher over its wheels (Ryan: the fast scout, a dune buggy's flair). Claude's recommendation, open with Ryan: the Flakshot Repeater stays as it is (a rapid gun suits a light machine that finishes its own fights fast) and the disorder keyword is dropped (it pays in team fights, which an elusive car rarely joins); the Flak Skirt is stock in a free hardpoint, never the design. 9 October: the platings left the dice for modules, so the Flak Skirt became the Laminar Deflector, a mounted shield (W&S has none of its own yet), since the skirt was a quarter of its spends alone."
    },
    "codex": "",
    "hull": 60,
@@ -378,7 +378,7 @@
    "loadout": [
     "twin_autoguns",
     "incendiary_shells",
-    "deflector"
+    "laminar_deflector"
    ],
    "passive": {
     "id": "track_dispersing_tyres",
@@ -475,7 +475,7 @@
     "laser_carbine",
     "headhunter_rifle",
     "arc_fault_cannon",
-    "deflector",
+    "laminar_deflector",
     "ram_air_scoop"
    ],
    "passive": {
@@ -679,7 +679,7 @@
    ],
    "loadout": [
     "laser_carbine",
-    "deflector",
+    "laminar_deflector",
     "overcharge_coil",
     "wake_diffuser"
    ],

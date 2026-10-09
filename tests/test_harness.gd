@@ -170,11 +170,23 @@ func test_the_harness_drives_the_setup() -> void:
 	assert_false(h._battle_btn.disabled, "and the battle can launch")
 	h._toggle_loadout(id)
 	var pickers: Array = []
+	var module_pickers: Array = []
 	for line in h._rows[id]["editor"].get_children():
 		for ch in line.get_children():
 			if ch is OptionButton:
-				pickers.append(ch)
+				var tag: String = (line.get_child(0) as Label).text
+				(module_pickers if tag.begins_with("MOD") else pickers).append(ch)
 	assert_eq(pickers.size(), int(db.chassis[id]["hardpoints"]), "one picker per hardpoint")
+	assert_eq(module_pickers.size(), int(db.chassis[id]["module_slots"]), "and one per module slot")
+	var mob: OptionButton = module_pickers[0]
+	var mk: int = h._index_of(mob, str(db.modules.keys()[0]))
+	mob.select(mk)
+	mob.item_selected.emit(mk)
+	assert_eq(s.fitted_modules(id), [str(db.modules.keys()[0])], "a module pick is the setup's")
+	assert_true(h._rows[id]["status"].text.contains("modules: "), "the row names it")
+	mob.select(0)
+	mob.item_selected.emit(0)
+	assert_true(s.fitted_modules(id).is_empty(), "and the slot empties again")
 	var ob: OptionButton = pickers[0]
 	var k: int = h._index_of(ob, pair[1])
 	ob.select(k)
@@ -202,3 +214,28 @@ func test_the_harness_drives_the_setup() -> void:
 	assert_true(h._battle_btn.disabled, "no packs: no battle")
 	assert_false(h._fight_btn.disabled, "the boss alone is still a fight")
 	h.free()
+
+
+func test_modules_reach_the_machine_and_survive_a_save() -> void:
+	var db := _db()
+	var id := ""
+	for cid in db.chassis.keys():
+		if int(db.chassis[cid].get("module_slots", 0)) >= 2:
+			id = str(cid)
+			break
+	assert_false(id.is_empty(), "the content has a machine with two module slots")
+	assert_false(db.modules.is_empty(), "and modules to fit")
+	var mid: String = db.modules.keys()[0]
+	var s := HarnessSetup.defaults(db)
+	s.team = [id]
+	assert_eq(s.module_picks(id).size(), int(db.chassis[id]["module_slots"]), "one pick per slot")
+	assert_true(s.fitted_modules(id).is_empty(), "none fitted by default")
+	s.set_module(id, 1, mid)
+	s.set_module(id, 0, "no_such_module")
+	assert_eq(s.fitted_modules(id), [mid], "a known module fits, an unknown one leaves the slot empty")
+	var u: Unit = s.make_team()[0]
+	assert_eq(Array(u.modules), [mid], "the machine wears it")
+	var back := HarnessSetup.from_dict(JSON.parse_string(JSON.stringify(s.to_dict())), db)
+	assert_eq(back.fitted_modules(id), [mid], "and it survives a save")
+	s.set_module(id, 1, "")
+	assert_false(s.modules.has(id), "a machine with every slot empty forgets the edit")

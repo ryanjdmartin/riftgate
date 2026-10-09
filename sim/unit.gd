@@ -100,6 +100,10 @@ var hardpoints: int = 0          # free slots; the die is these plus the chassis
 ## original, undamaged component.
 var damaged_faces: Dictionary = {}
 
+## Modules fitted (content ids, in slot order), for the codex and the hangar; the engine runs
+## them as loadout modifiers sourced "module" (ContentDB.fit_module).
+var modules: Array[String] = []
+
 
 static func mech(uid: int, name: String, at: Vector2i, speed: int = MECH_MOVE) -> Unit:
 	var u := Unit.new()

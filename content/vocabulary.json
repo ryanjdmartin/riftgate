@@ -1040,6 +1040,16 @@
    }
   },
   {
+   "id": "module",
+   "category": "equipment",
+   "name": "Module",
+   "codex": "Equipment inside the machine, not on its die: a few numbers up or down, and at most one rule of its own. A chassis has its module slots (two, three on the Clydesdale), and a module is never spent: it is always working.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 9 October (content/modules.json; ContentDB.fit_module runs one as a loadout modifier sourced \"module\"). Fitted in the harness only: the campaign's roster, the loot that drops them and the hangar wait for the economy pass and the hangar."
+   }
+  },
+  {
    "id": "on_injury",
    "category": "trigger",
    "name": "on_injury",

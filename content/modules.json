@@ -1,0 +1,435 @@
+{
+ "_about": "Modules: what a machine wears inside, beside its die (bible section 10, the modules row). A chassis carries module_slots of them (two as a rule, three on the Clydesdale; a number of the chassis, never bought). A module is read like a passive: any number of stat lines (stats: the engine's stat names, hull, shield, heat, armour, move, recharge, cooling, added through Effects) beside at most one text (text: a description shown to the player and its effects, checked like a passive's; a text the engine cannot run carries \"status\": \"planned\"). Every module has a tier, 1 to 3, so the first battle offers plain ones; the capital's maker has no tier one. The archetypes (plate, kit, overload, prototype) are a design guide, never stored or checked. Shown: name, codex, flavour, the text's description; internal text under design.",
+ "entries": [
+  {
+   "id": "ablative_plating",
+   "name": "Ablative Plating",
+   "maker": "minerva",
+   "tier": 1,
+   "codex": "",
+   "flavour": "",
+   "stats": {
+    "hull": 30,
+    "armour": 5
+   },
+   "text": null,
+   "design": {
+    "stage": "draft",
+    "fantasy": "Bolt-on armour that comes off in sheets so the hull does not.",
+    "niche": "A plate: plain stats, the starting module.",
+    "notes": "A component until 9 October (Minerva's shield 20); Ryan moved the platings to modules the same day, since a hardpoint is a mount and armour is not mounted. It took the place of Claude's Slab Armour, which did the same job."
+   }
+  },
+  {
+   "id": "ram_frame",
+   "name": "Ram Frame",
+   "maker": "minerva",
+   "tier": 2,
+   "codex": "",
+   "flavour": "",
+   "stats": {
+    "hull": 60,
+    "armour": 10
+   },
+   "text": {
+    "description": "Every weapon it carries has melee reach.",
+    "effects": [
+     {
+      "trigger": "static",
+      "effect": "set_reach",
+      "value": "melee"
+     }
+    ]
+   },
+   "design": {
+    "stage": "draft",
+    "fantasy": "A reinforced prow and a driver who stopped asking.",
+    "niche": "An overload: the biggest hull in the catalogue for a machine that must close; a perk on a machine that already fights in melee (the Honey Badger).",
+    "notes": "Claude's proposal of 9 October, in Ryan's pick of the whole catalogue the same day; numbers are placeholders."
+   }
+  },
+  {
+   "id": "spall_liner",
+   "name": "Spall Liner",
+   "maker": "minerva",
+   "tier": 2,
+   "codex": "",
+   "flavour": "",
+   "stats": {
+    "move": -10,
+    "heat": -20
+   },
+   "text": {
+    "description": "A blow that reaches its hull stands up 10 shield, which blocks the next blow whole.",
+    "effects": [
+     {
+      "trigger": "on_hull_damage",
+      "effect": "add_shield",
+      "value": 10
+     }
+    ]
+   },
+   "design": {
+    "stage": "draft",
+    "fantasy": "A lining that catches what comes off the inside of the armour, and throws it back out as a wall.",
+    "niche": "A prototype: a slower, hotter machine that never takes two bare-hull blows running.",
+    "notes": "Claude's proposal of 9 October, in Ryan's pick of the whole catalogue the same day; numbers are placeholders. Needed the on_hull_damage shield fix (built 9 October)."
+   }
+  },
+  {
+   "id": "boundary_layer_bleed",
+   "name": "Boundary-layer Bleed",
+   "maker": "kestrel",
+   "tier": 1,
+   "codex": "",
+   "flavour": "",
+   "stats": {
+    "cooling": 5
+   },
+   "text": {
+    "description": "Each time its heat climbs, it stands up 5 shield.",
+    "effects": [
+     {
+      "trigger": "on_heat_gain",
+      "effect": "add_shield",
+      "value": 5
+     }
+    ]
+   },
+   "design": {
+    "stage": "draft",
+    "fantasy": "Bleed air off the hot skin and blow it across the hull as a cushion.",
+    "niche": "A kit: a small stat and a small rule; a hot machine is a shielded one.",
+    "notes": "Claude's proposal of 9 October, in Ryan's pick of the whole catalogue the same day; numbers are placeholders."
+   }
+  },
+  {
+   "id": "muzzle_velocity_booster",
+   "name": "Muzzle Velocity Booster",
+   "maker": "kestrel",
+   "tier": 2,
+   "codex": "",
+   "flavour": "",
+   "stats": {
+    "shield": -20
+   },
+   "text": {
+    "description": "Its crits deal triple damage.",
+    "effects": [
+     {
+      "trigger": "on_crit",
+      "effect": "add_crit_damage",
+      "value": 1
+     }
+    ]
+   },
+   "design": {
+    "stage": "draft",
+    "fantasy": "Everything leaves the barrel faster. Including the barrel, eventually.",
+    "niche": "A prototype: crit-fishing at the price of the shield.",
+    "notes": "Claude's proposal of 9 October, in Ryan's pick of the whole catalogue the same day; numbers are placeholders."
+   }
+  },
+  {
+   "id": "thrust_overboost",
+   "name": "Thrust Overboost",
+   "maker": "kestrel",
+   "tier": 3,
+   "codex": "",
+   "flavour": "",
+   "stats": {
+    "move": 20,
+    "shield": 30
+   },
+   "text": {
+    "description": "Its weapons run twice as hot.",
+    "effects": [
+     {
+      "trigger": "on_attack",
+      "effect": "multiply_heat",
+      "value": 2
+     }
+    ]
+   },
+   "design": {
+    "stage": "draft",
+    "fantasy": "Afterburners on the walk to the fight, and the fight paid for in heat.",
+    "niche": "An overload: speed and shield for double heat; a perk on a machine that wants heat (the Goshawk).",
+    "notes": "Claude's proposal of 9 October, in Ryan's pick of the whole catalogue the same day; numbers are placeholders."
+   }
+  },
+  {
+   "id": "flak_skirt",
+   "name": "Flak Skirt",
+   "maker": "wainwright_sutler",
+   "tier": 1,
+   "codex": "",
+   "flavour": "",
+   "stats": {
+    "hull": 10,
+    "armour": 5
+   },
+   "text": null,
+   "design": {
+    "stage": "draft",
+    "fantasy": "A little armour is better than the amount you had.",
+    "niche": "A plate: plain stats, the starting module.",
+    "notes": "A component until 9 October (W&S's shield 10); moved to modules with the other platings the same day (Ryan)."
+   }
+  },
+  {
+   "id": "field_radiators",
+   "name": "Field Radiators",
+   "maker": "wainwright_sutler",
+   "tier": 1,
+   "codex": "",
+   "flavour": "",
+   "stats": {
+    "heat": 20,
+    "cooling": 5
+   },
+   "text": null,
+   "design": {
+    "stage": "draft",
+    "fantasy": "Radiator grilles off a field kitchen, bolted wherever they fit.",
+    "niche": "A plate for heat: a hotter, cooler machine.",
+    "notes": "Claude's proposal of 9 October, in Ryan's pick of the whole catalogue the same day; numbers are placeholders."
+   }
+  },
+  {
+   "id": "tactical_databank",
+   "name": "Tactical Databank",
+   "maker": "wainwright_sutler",
+   "tier": 2,
+   "codex": "",
+   "flavour": "",
+   "stats": {},
+   "text": {
+    "description": "Its kinetic weapons roll their maximum.",
+    "effects": [
+     {
+      "trigger": "on_attack",
+      "effect": "roll_max",
+      "value": 1
+     }
+    ]
+   },
+   "design": {
+    "stage": "draft",
+    "fantasy": "Every firing solution the regiment ever logged, in a box that hums.",
+    "niche": "Kinetic rolls at their ceiling: the plain gun's best friend.",
+    "notes": "The Dingo's passive until 8 October, then the game's first module with its name kept (Ryan), with an ally in the fight. The ally condition was there so the Dingo's stealth could not carry it alone; stealth is gone, and Ryan said it may not be needed (9 October), so it is dropped for the runner to judge (Claude's lean; a raised minimum is the lighter fallback)."
+   }
+  },
+  {
+   "id": "artillery_rangefinder",
+   "name": "Artillery Rangefinder",
+   "maker": "wainwright_sutler",
+   "tier": 2,
+   "codex": "",
+   "flavour": "",
+   "stats": {},
+   "text": {
+    "description": "Its indirect fire on the front rank never splashes it.",
+    "effects": [
+     {
+      "trigger": "static",
+      "effect": "spares_splash",
+      "value": 1
+     }
+    ]
+   },
+   "design": {
+    "stage": "draft",
+    "fantasy": "A man with a theodolite who has never once been wrong about where a shell lands.",
+    "niche": "Danger close removed: indirect fire on the front rank for free.",
+    "notes": "Ryan, 9 October: the Rangefinder as named fits a splash-damage eliminator (Claude's earlier versions rolled indirect weapons high, too near the Databank)."
+   }
+  },
+  {
+   "id": "phase_conjugator",
+   "name": "Phase Conjugator",
+   "maker": "aphelion",
+   "tier": 2,
+   "codex": "",
+   "flavour": "",
+   "stats": {
+    "shield": 10
+   },
+   "text": {
+    "description": "An ally it shields is Braced for the round.",
+    "effects": [
+     {
+      "trigger": "on_shield_granted",
+      "effect": "stack_status",
+      "value": "braced"
+     }
+    ]
+   },
+   "design": {
+    "stage": "draft",
+    "fantasy": "The field it lends comes back mirrored, and the mirror holds.",
+    "niche": "A kit for the support frame: a shield spent on an ally is armour too.",
+    "notes": "Claude's proposal of 9 October, in Ryan's pick of the whole catalogue the same day; numbers are placeholders. Needed the on_shield_granted fix, the status on the ally (built 9 October)."
+   }
+  },
+  {
+   "id": "susceptibility_tensor",
+   "name": "Susceptibility Tensor",
+   "maker": "aphelion",
+   "tier": 1,
+   "codex": "",
+   "flavour": "",
+   "stats": {
+    "shield": 10
+   },
+   "text": {
+    "description": "Its blows deal 10 more to a foe carrying any status.",
+    "effects": [
+     {
+      "trigger": "on_attack",
+      "effect": "add_damage",
+      "value": 10,
+      "when": "target_status"
+     }
+    ]
+   },
+   "design": {
+    "stage": "draft",
+    "fantasy": "A matrix of how much each thing in front of it wants to fall apart.",
+    "niche": "A kit: a status machine's payoff.",
+    "notes": "Claude's Tactical Plotting Board for W&S, 9 October; Ryan the same day: the effect reads as Aphelion's, so it moved and took an Aphelion name (Claude's working name, for Ryan to move)."
+   }
+  },
+  {
+   "id": "exotic_matter_shell",
+   "name": "Exotic-matter Shell",
+   "maker": "aphelion",
+   "tier": 3,
+   "codex": "",
+   "flavour": "",
+   "stats": {
+    "shield": 40,
+    "heat": 30
+   },
+   "text": {
+    "description": "Every blow on it lands 10 harder.",
+    "effects": [
+     {
+      "trigger": "static",
+      "effect": "add_damage_taken",
+      "value": 10
+     }
+    ]
+   },
+   "design": {
+    "stage": "draft",
+    "fantasy": "A shell of something with negative mass. Hits do not quite agree with it.",
+    "niche": "An overload: a huge shield that every small hit chews into.",
+    "notes": "Claude's proposal of 9 October, in Ryan's pick of the whole catalogue the same day; numbers are placeholders."
+   }
+  },
+  {
+   "id": "catalyzer_matrix",
+   "name": "Catalyzer Matrix",
+   "maker": "aphelion",
+   "tier": 3,
+   "codex": "",
+   "flavour": "",
+   "stats": {
+    "shield": -20,
+    "cooling": -5
+   },
+   "text": {
+    "description": "Every status it applies is one stack deeper.",
+    "effects": [
+     {
+      "trigger": "on_stack",
+      "effect": "add_stacks",
+      "value": 1
+     }
+    ]
+   },
+   "design": {
+    "stage": "draft",
+    "fantasy": "It does nothing itself. It makes everything else go faster.",
+    "niche": "A prototype: stacks on the status machines, stacking with the Stingray's own passive on purpose.",
+    "notes": "Claude's proposal of 9 October, in Ryan's pick of the whole catalogue the same day; numbers are placeholders."
+   }
+  },
+  {
+   "id": "ward_plate",
+   "name": "Ward Plate",
+   "maker": "arsenal",
+   "tier": 2,
+   "codex": "",
+   "flavour": "",
+   "stats": {
+    "shield": 20,
+    "armour": 5
+   },
+   "text": null,
+   "design": {
+    "stage": "draft",
+    "fantasy": "Armour inscribed with the Arsenal's tolerances. It holds because it was told to.",
+    "niche": "A plate, at tier two: the Arsenal fields no tier one.",
+    "notes": "A component until 9 October (the Arsenal's shield 20); moved to modules with the other platings the same day (Ryan). It took the place of Claude's Consecrated Plate."
+   }
+  },
+  {
+   "id": "grievance_reliquary",
+   "name": "Grievance Reliquary",
+   "maker": "arsenal",
+   "tier": 2,
+   "codex": "",
+   "flavour": "",
+   "stats": {
+    "hull": 10
+   },
+   "text": {
+    "description": "A blow on its hull Overcharges it.",
+    "effects": [
+     {
+      "trigger": "on_hull_damage",
+      "effect": "stack_status",
+      "value": "overcharged"
+     }
+    ]
+   },
+   "design": {
+    "stage": "draft",
+    "fantasy": "It keeps a record of every wound, and it reads the list aloud.",
+    "niche": "A kit: a machine that hits harder the more it is hit.",
+    "notes": "Claude's proposal of 9 October, in Ryan's pick of the whole catalogue the same day; numbers are placeholders."
+   }
+  },
+  {
+   "id": "tithe_coupling",
+   "name": "Tithe Coupling",
+   "maker": "arsenal",
+   "tier": 3,
+   "codex": "",
+   "flavour": "",
+   "stats": {
+    "hull": 50,
+    "shield": 30
+   },
+   "text": {
+    "description": "Every component it spends costs 10 hull.",
+    "effects": [
+     {
+      "trigger": "static",
+      "effect": "hull_per_spend",
+      "value": 10
+     }
+    ]
+   },
+   "design": {
+    "stage": "draft",
+    "fantasy": "The machine takes its due before it does anything you ask.",
+    "niche": "An overload: a great deal of hull and shield with a price on every action; a perk where the hull is already being spent (the Nemesis).",
+    "notes": "Claude's proposal of 9 October, in Ryan's pick of the whole catalogue the same day; numbers are placeholders."
+   }
+  }
+ ]
+}

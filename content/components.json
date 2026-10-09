@@ -33,8 +33,8 @@
    ]
   },
   {
-   "id": "missile_rack",
-   "name": "Missile Rack",
+   "id": "shotfire_rack",
+   "name": "Shotfire Rack",
    "maker": "minerva",
    "shape": "rack",
    "codex": "",
@@ -43,7 +43,7 @@
     "stage": "draft",
     "fantasy": "As many missiles as it could carry. The box on the Badger's deck.",
     "niche": "Minerva's indirect fire: the tank that reaches the back rank.",
-    "notes": "Claude's fill, 26 September, so the Badger's missiles exist as a component."
+    "notes": "Claude's fill, 26 September, so the Badger's missiles exist as a component. Renamed from the Missile Rack 9 October (Ryan, the name audit: the old name was bland; Claude proposed the Shotfirer, the mine's blasting man, for Minerva's mining roots, and Ryan made it the Shotfire Rack)."
    },
    "face": {
     "kind": "attack",
@@ -201,8 +201,8 @@
    ]
   },
   {
-   "id": "heat_sink",
-   "name": "Heat Sink",
+   "id": "coolant_jacket",
+   "name": "Coolant Jacket",
    "maker": "wainwright_sutler",
    "shape": "none",
    "codex": "",
@@ -210,7 +210,8 @@
    "design": {
     "stage": "draft",
     "fantasy": "Fins. Lots of fins.",
-    "niche": ""
+    "niche": "",
+    "notes": "Renamed from the Heat Sink 9 October (Ryan, the name audit: the old name was bland; Claude proposed the Water Jacket, the old machine gun's cooling sleeve, and Ryan made it the Coolant Jacket). It shares Coolant with W&S's Coolant Dump."
    },
    "face": {
     "kind": "vent",
@@ -416,8 +417,8 @@
    ]
   },
   {
-   "id": "deflector",
-   "name": "Deflector",
+   "id": "laminar_deflector",
+   "name": "Laminar Deflector",
    "maker": "kestrel",
    "shape": "dish",
    "codex": "",
@@ -425,7 +426,8 @@
    "design": {
     "stage": "draft",
     "fantasy": "A very expensive bubble.",
-    "niche": ""
+    "niche": "",
+    "notes": "Renamed from the Deflector 9 October (Ryan, the name audit: the old name was bland; laminar is the smooth-airflow word, Kestrel's aerodynamics register)."
    },
    "face": {
     "kind": "shield",

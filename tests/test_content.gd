@@ -38,10 +38,10 @@ func test_every_chassis_builds_a_full_die() -> void:
 
 func test_build_die_leaves_empty_hardpoints_empty() -> void:
 	var db := _db()
-	var d := db.build_die(["chainsaw_claw"], ["missile_rack"], 3)
+	var d := db.build_die(["chainsaw_claw"], ["shotfire_rack"], 3)
 	assert_eq(d.size(), 4, "one fixed plus three hardpoints")
 	assert_eq(d.faces[0].component, "chainsaw_claw", "the fixed claw first")
-	assert_eq(d.faces[1].component, "missile_rack", "then the loadout")
+	assert_eq(d.faces[1].component, "shotfire_rack", "then the loadout")
 	assert_true(d.faces[2].empty and d.faces[3].empty, "two hardpoints left empty stay empty")
 	assert_true(d.faces[0].fixed and not d.faces[1].fixed and not d.faces[2].fixed, "only the claw is fixed; the rest are hardpoints")
 	assert_eq(d.faces[2].describe(), "empty hardpoint", "and say so")
@@ -51,7 +51,7 @@ func test_chassis_validator_guards_hardpoints() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var c: Dictionary = db.chassis["sparrowhawk"].duplicate(true)
-	c["loadout"] = ["deflector", "deflector", "deflector", "deflector", "deflector"]
+	c["loadout"] = ["laminar_deflector", "laminar_deflector", "laminar_deflector", "laminar_deflector", "laminar_deflector"]
 	db.chassis["over"] = c
 	var f: Dictionary = db.chassis["badger"].duplicate(true)
 	f["loadout"] = ["chainsaw_claw"]
@@ -346,7 +346,7 @@ func test_planned_passive_is_kept_but_not_run() -> void:
 func test_planned_component_may_carry_a_planned_keyword() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var plate: Dictionary = db.components["deflector"].duplicate(true)
+	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
 	plate["face"]["keywords"] = ["corrode"]
 	plate["status"] = "planned"
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
@@ -531,7 +531,7 @@ func test_chassis_cooling_is_read_and_never_negative() -> void:
 func test_support_keywords_ride_on_shields_and_vents_only() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var scrubber: Dictionary = db.components["deflector"].duplicate(true)
+	var scrubber: Dictionary = db.components["laminar_deflector"].duplicate(true)
 	scrubber["face"]["keywords"] = ["cleanse"]
 	scrubber["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["scrubber"] = scrubber
@@ -539,7 +539,7 @@ func test_support_keywords_ride_on_shields_and_vents_only() -> void:
 	gun["face"]["keywords"] = ["cleanse"]
 	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["cleansing_gun"] = gun
-	var plate: Dictionary = db.components["deflector"].duplicate(true)
+	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
 	plate["face"]["keywords"] = ["burn"]
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["burning_plate"] = plate
@@ -558,7 +558,7 @@ func test_support_keywords_ride_on_shields_and_vents_only() -> void:
 func test_a_component_passive_from_content_lands_on_the_mech() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var fins: Dictionary = db.components["heat_sink"].duplicate(true)
+	var fins: Dictionary = db.components["coolant_jacket"].duplicate(true)
 	fins["name"] = "Finned Sink"
 	fins["passive"] = {"id": "fins", "name": "Fins", "description": "Cooling +5.",
 		"effects": [{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 5}]}
@@ -586,7 +586,7 @@ func test_a_component_passive_from_content_lands_on_the_mech() -> void:
 func test_a_buff_face_names_a_machine_status() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var good: Dictionary = db.components["deflector"].duplicate(true)
+	var good: Dictionary = db.components["laminar_deflector"].duplicate(true)
 	good["face"] = {"kind": "buff", "status": "overcharged", "stacks": 2}
 	good["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["coil_ok"] = good
@@ -616,7 +616,7 @@ func test_a_buff_face_names_a_machine_status() -> void:
 func test_a_spend_keyword_rides_on_any_kind_of_component() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var plate: Dictionary = db.components["deflector"].duplicate(true)
+	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
 	plate["face"]["keywords"] = ["volatile"]
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["hot_plate"] = plate
@@ -624,7 +624,7 @@ func test_a_spend_keyword_rides_on_any_kind_of_component() -> void:
 	gun["face"]["keywords"] = ["volatile"]
 	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["hot_gun"] = gun
-	var fins: Dictionary = db.components["heat_sink"].duplicate(true)
+	var fins: Dictionary = db.components["coolant_jacket"].duplicate(true)
 	fins["face"]["keywords"] = ["volatile"]
 	fins["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["hot_fins"] = fins
@@ -637,7 +637,7 @@ func test_a_spend_keyword_rides_on_any_kind_of_component() -> void:
 func test_the_content_carries_a_live_hull_the_engine_runs() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var plate: Dictionary = db.components["deflector"].duplicate(true)
+	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
 	plate["passive"] = {"id": "live_plate", "name": "Live Plate", "description": "", "effects": [
 		{"trigger": "static", "effect": "shock_on_block", "value": 1}]}
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
@@ -660,7 +660,7 @@ func test_lure_and_disrupt_ride_on_attacks_and_never_on_a_shield() -> void:
 	gun["face"]["keywords"] = ["lure", "disrupt"]
 	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["loud_gun"] = gun
-	var plate: Dictionary = db.components["deflector"].duplicate(true)
+	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
 	plate["face"]["keywords"] = ["lure"]
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["loud_plate"] = plate
@@ -703,7 +703,7 @@ func test_grant_keyword_names_a_keyword_the_engine_runs() -> void:
 func test_the_vent_on_fire_fields_belong_to_an_attack() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var plate: Dictionary = db.components["deflector"].duplicate(true)
+	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
 	plate["face"]["vents_all"] = true
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["hot_plate"] = plate
@@ -919,11 +919,11 @@ func test_rapid_rides_on_anything_and_shock_on_weapons_only() -> void:
 	# 9 October: rapid joined volatile as a keyword about the spend, so a vent may carry it;
 	# shock is a weapon's.
 	var db := _fresh()
-	var vent: Dictionary = db.components["heat_sink"].duplicate(true)
+	var vent: Dictionary = db.components["coolant_jacket"].duplicate(true)
 	vent["face"]["keywords"] = ["rapid"]
 	vent["tier"] = 1
 	db.components["test_vent"] = vent
-	var plate: Dictionary = db.components["deflector"].duplicate(true)
+	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
 	plate["face"]["keywords"] = ["shock"]
 	plate["tier"] = 1
 	db.components["test_plate"] = plate
@@ -954,3 +954,77 @@ func test_every_chassis_states_its_module_slots() -> void:
 	wide["id"] = "test_wide"
 	db.chassis["test_wide"] = wide
 	assert_true(_has_error(db, "module_slots must be"), "and so is one past the range")
+
+
+## A synthetic module, so no test leans on a real entry's numbers or text.
+func _module(maker: String, tier: int, stats: Dictionary, text) -> Dictionary:
+	return {"id": "test_module", "name": "Test Module", "maker": maker, "tier": tier, "codex": "", "flavour": "",
+		"stats": stats, "text": text, "design": {"fantasy": "A test."}}
+
+
+func test_a_module_is_its_stat_lines_and_its_text_on_the_machine() -> void:
+	# Built 9 October: a module is read like a passive, sourced "module", and the machine
+	# starts whole on the numbers it made.
+	var db := _fresh()
+	var maker := str(db.chassis["badger"]["maker"])
+	db.modules["test_module"] = _module(maker, 1, {"hull": 30, "armour": 5, "move": -10},
+		{"description": "Its weapons run twice as hot.", "effects": [{"trigger": "on_attack", "effect": "multiply_heat", "value": 2}]})
+	var plain := db.make_mech("badger")
+	var u := db.make_mech("badger", 0, Vector2i.ZERO, null, ["test_module"])
+	assert_eq(Array(u.modules), ["test_module"], "the machine knows its module")
+	assert_eq(u.hull_max, plain.hull_max + 30, "hull line")
+	assert_eq(u.hull, u.hull_max, "and it starts whole on it")
+	assert_eq(u.armour, plain.armour + 5, "armour line")
+	assert_eq(u.movespeed, plain.movespeed - 10, "a drawback line")
+	var gun: Face = null
+	for f in u.die.faces:
+		if f.kind == Face.Kind.ATTACK:
+			gun = f
+			break
+	assert_eq(int(Effects.attack(u, gun, 10, 10, false)["heat"]), 2 * int(Effects.attack(plain, gun, 10, 10, false)["heat"]), "and the text runs")
+	var rows: Array = db.codex_for_unit(u)["passive_rows"]
+	var found := false
+	for r in rows:
+		if str(r[0]).begins_with("TEST MODULE (MODULE): Hull +30, armour +5, move -10. Its weapons run twice as hot."):
+			found = r[1] == "module"
+	assert_true(found, "the codex names it as a module, with its lines and its text: %s" % str(rows))
+
+
+func test_a_machine_wears_no_more_modules_than_its_slots() -> void:
+	var db := _fresh()
+	var maker := str(db.chassis["badger"]["maker"])
+	db.modules["test_module"] = _module(maker, 1, {"hull": 10}, null)
+	var slots := int(db.chassis["badger"]["module_slots"])
+	var asked: Array = []
+	for i in range(slots + 1):
+		asked.append("test_module")
+	var u := db.make_mech("badger", 0, Vector2i.ZERO, null, asked)
+	assert_eq(u.modules.size(), slots, "one past the slots is left off")
+	assert_eq(u.hull_max, db.make_mech("badger").hull_max + 10 * slots, "the same module twice stacks")
+
+
+func test_the_module_rules_are_validated() -> void:
+	var db := _fresh()
+	var plain_maker := ""
+	for id in db.makers.keys():
+		if str(id) != db.capital_maker():
+			plain_maker = str(id)
+			break
+	db.modules["test_module"] = _module(plain_maker, 1, {"hull": 10, "armour": 5, "shield": 5, "cooling": 5}, null)
+	for e in db.validate():
+		assert_false(e.begins_with("module test_module"), "four stat lines and no text validate: %s" % e)
+	db.modules["test_module"] = _module(db.capital_maker(), 1, {"hull": 10}, null)
+	assert_true(_has_error(db, "no tier-one module"), "the capital's maker has no tier-one module")
+	db.modules["test_module"] = _module(plain_maker, 4, {"hull": 10}, null)
+	assert_true(_has_error(db, "module test_module: tier must be"), "a tier is 1 to 3")
+	db.modules["test_module"] = _module(plain_maker, 1, {"luck": 10}, null)
+	assert_true(_has_error(db, "stat 'luck' is not one of"), "a stat line names an engine stat")
+	db.modules["test_module"] = _module(plain_maker, 1, {"hull": 0}, null)
+	assert_true(_has_error(db, "must be a whole number other than zero"), "and is not zero")
+	db.modules["test_module"] = _module(plain_maker, 1, {}, null)
+	assert_true(_has_error(db, "needs stats, a text or both"), "an empty module is refused")
+	db.modules["test_module"] = _module(plain_maker, 1, {}, {"description": "x", "effects": [{"trigger": "static", "effect": "no_such_thing", "value": 1}]})
+	assert_true(_has_error(db, "is not implemented by the engine"), "a text is checked like a passive")
+	db.modules["test_module"] = _module(plain_maker, 1, {}, {"description": "x", "status": "planned", "effects": [{"trigger": "static", "effect": "no_such_thing", "value": 1}]})
+	for e in db.validate():
+		assert_false(e.begins_with("module test_module"), "a planned text waits: %s" % e)

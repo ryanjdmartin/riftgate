@@ -2932,3 +2932,48 @@ func test_a_rapid_vent_cools_and_the_machine_acts_again() -> void:
 	assert_eq(sk.mechs[0].face_index, 1, "on the other entry, rolled free")
 	assert_true(sk.assign(0, sk.front[0]), "so the gun fires the same round")
 	assert_eq(sk.front[0].hp, 170, "thirty landed")
+
+
+func test_a_hull_hit_can_raise_shield_and_shed_heat() -> void:
+	# on_hull_damage's add_shield and vent_heat were accepted by the validator and dropped by
+	# the skirmish until 9 October (the Spall Liner needs the shield).
+	var liner := {"id": "liner", "name": "Liner", "description": "", "effects": [
+		{"trigger": "on_hull_damage", "effect": "add_shield", "value": 10},
+		{"trigger": "on_hull_damage", "effect": "vent_heat", "value": 5}]}
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.attack(10, L)), 20, 200)
+	m.shield = 0
+	m.grant_passive(liner)
+	sk.add_mech(m)
+	var g := _ghoul(500, 10)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	sk.mechs[0].heat = 20
+	sk.assign(0, g)
+	sk.end_round()
+	assert_eq(m.hull, 190, "the blow reached bare hull")
+	assert_eq(m.shield, 10, "and the hit stood a shield up")
+	assert_eq(sk.mechs[0].heat, 15, "and shed heat")
+	assert_true("\n".join(sk.log).contains("A: +10 shield, -5 heat from the hit"), "the log says so")
+
+
+func test_a_status_granted_on_shielding_lands_on_the_ally() -> void:
+	# on_shield_granted's stack_status landed on the shielder until 9 October (the Phase
+	# Conjugator's Braced is for the ally).
+	var conj := {"id": "conj", "name": "Conjugator", "description": "", "effects": [
+		{"trigger": "on_shield_granted", "effect": "stack_status", "value": "braced"}]}
+	var sk := Skirmish.new(1)
+	var giver := _mech("Giver", Die.single(Face.shield(20)), 40, 100)
+	var taker := _mech("Taker", Die.single(Face.attack(10, L)), 50, 100)
+	giver.grant_passive(conj)
+	sk.add_mech(giver)
+	sk.add_mech(taker)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, sk.mechs[1]), "shield the ally")
+	assert_eq(Effects.stacks_of(taker, "braced"), 1, "the ally is Braced")
+	assert_eq(Effects.stacks_of(giver, "braced"), 0, "the shielder is not")
+	assert_eq(taker.armour, 10, "and the ally's armour reads it")
+	assert_true("\n".join(sk.log).contains("Taker: Giver's escort, Braced"), "the log names it")

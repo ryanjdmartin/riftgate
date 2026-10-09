@@ -284,6 +284,7 @@ const FILES = [
   {key: "chassis.entries", label: "Chassis", file: "content/chassis.json", list: "entries", filter: "chassis"},
   {key: "chassis.makers", label: "Makers", file: "content/chassis.json", list: "makers", filter: "makers"},
   {key: "components.entries", label: "Components", file: "content/components.json", list: "entries", filter: "components"},
+  {key: "modules.entries", label: "Modules", file: "content/modules.json", list: "entries", filter: "modules"},
   {key: "foes.entries", label: "Foes", file: "content/foes.json", list: "entries", filter: "foes"},
   {key: "factions.entries", label: "Factions", file: "content/factions.json", list: "entries", filter: "factions"},
   {key: "vocabulary.entries", label: "Vocabulary", file: "content/vocabulary.json", list: "entries", filter: "vocabulary"},
@@ -485,6 +486,18 @@ const FILTER_SPECS = {
       return [makerShort(e.maker), ((KIND_GLYPH[kindOf(e)] || kindOf(e)) + " " + faceLine(e.face)).trim(), faceKeywords(e).map(vocabName).join(", "), n ? `on ${n} ${n === 1 ? "die" : "dice"}` : "on no die"];
     },
   },
+  modules: {
+    noun: ["module", "modules"], placeholder: "Name, stat or maker",
+    text: e => [e.name, e.id, makerShort(e.maker), ...Object.keys(e.stats || {}), e.text && e.text.description],
+    groups: [
+      MAKER_GROUP,
+      {id: "tier", label: "Tier", of: e => [e.tier ? "T" + e.tier : "none"], name: v => v === "none" ? "No tier" : v, order: ["T1", "T2", "T3", "none"]},
+      {id: "text", label: "Text", of: e => [e.text ? "rule" : "stats"], name: v => v === "rule" ? "With a rule" : "Stats only", order: ["stats", "rule"]},
+      EDITS,
+    ],
+    sorts: [BY_ORDER, BY_NAME, BY_MAKER, stat("tier", "Tier", e => e.tier)],
+    line: e => [makerShort(e.maker), e.tier ? "T" + e.tier : "", moduleLine(e)],
+  },
   foes: {
     noun: ["foe", "foes"], placeholder: "Name or faction",
     text: e => [e.name, e.id, factionName(e.faction), e.rank, e.aim, e.hunts, e.behaviour],
@@ -530,6 +543,13 @@ const FILTER_SPECS = {
     sorts: [{...BY_ORDER, label: "Status", dirs: ["Status order", "Reversed"]}, BY_NAME, {id: "created", label: "Added", of: d => d.created || null, start: -1, dirs: ["Oldest first", "Newest first"]}],
   },
 };
+// A module in one line: its stat lines, then its rule (ContentDB.module_description's shape).
+const STAT_WORDS = {hull: "hull", shield: "shield", heat: "heat max", armour: "armour", move: "move", recharge: "field recharge", cooling: "cooling"};
+function moduleLine(e) {
+  const stats = Object.entries(e.stats || {}).map(([k, v]) => `${STAT_WORDS[k] || k} ${v > 0 ? "+" : ""}${v}`).join(", ");
+  const rule = e.text && e.text.status !== "planned" ? e.text.description || "" : "";
+  return [stats, rule].filter(Boolean).join(" · ");
+}
 function fstate(kind) {
   let f = state.filters[kind];
   if (!f || typeof f !== "object") f = state.filters[kind] = {};
@@ -755,7 +775,7 @@ function renderCodex(main) {
     if ((e.traits || []).length) { sub.append(" · "); for (const t of e.traits) sub.append(kwChip(t), " "); }
     head.append(sub);
     card.append(head);
-    const stats = [["hull", "hull", e.hull], ["shield", "shield", e.shield], ["recharge_field", "field recharge", e.recharge_field], ["armour", "armour", e.armour], ["heat_max", "heat max", e.heat_max], ["cooling", "cooling", e.cooling], ["movespeed", "move", e.movespeed + " (" + Math.floor(e.movespeed / ((e.traits || []).includes("wheeled") ? 5 : 10)) + " open)"], ["die", "die", "d" + die]];
+    const stats = [["hull", "hull", e.hull], ["shield", "shield", e.shield], ["recharge_field", "field recharge", e.recharge_field], ["armour", "armour", e.armour], ["heat_max", "heat max", e.heat_max], ["cooling", "cooling", e.cooling], ["movespeed", "move", e.movespeed + " (" + Math.floor(e.movespeed / ((e.traits || []).includes("wheeled") ? 5 : 10)) + " open)"], ["die", "die", "d" + die], ["module_slots", "module slots", e.module_slots ?? ""]];
     card.append(el("div", {class: "stats"}, ...stats.map(([id, k, v]) => el("div", {class: "stat" + (id === sorted ? " sorted" : "")}, el("span", {class: "k"}, k), el("span", {class: "v"}, String(v ?? ""))))));
     if (compact) { main.append(card); continue; }
     const p = e.passive;

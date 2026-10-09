@@ -269,7 +269,7 @@ static func plan_for(u: Unit, db: ContentDB) -> Array:
 	return mount_plan(u.die, stock, db)
 
 
-## A plan from a debug spec, "1:lance,4:heat_sink" (RIFTGATE_FIT in tools/hero_shot.gd):
+## A plan from a debug spec, "1:enfilade_beam,4:coolant_jacket" (RIFTGATE_FIT in tools/hero_shot.gd):
 ## the pin's number and the component to hang there, or "1:" to empty a socket.
 static func plan_from_spec(spec: String, db: ContentDB) -> Array:
 	var out: Array = []

@@ -298,12 +298,21 @@ func pending_volatile(ms: MechState) -> int:
 	var f := ms.face()
 	if f == null or ms.assigned:
 		return 0
-	return volatile_cost(f)
+	return spend_bite(ms.unit, f)
 
 
 ## The hull a volatile entry costs its owner per spend; zero for any other entry.
 static func volatile_cost(f: Face) -> int:
 	return VOLATILE_BITE if f != null and f.has(Face.Keyword.VOLATILE) else 0
+
+
+## The hull spending this entry costs its owner: a volatile bite, and a passive's price on
+## every component spent (hull_per_spend; never on a blank, which is no component).
+static func spend_bite(u, f: Face) -> int:
+	if f == null:
+		return 0
+	var tithe := 0 if f.kind == Face.Kind.BLANK else Effects.hull_per_spend(u)
+	return volatile_cost(f) + tithe
 
 
 ## What the end of the round does to this mech if nothing else changes: the screen's warning
@@ -650,7 +659,7 @@ func assign(mech_index: int, target = null) -> bool:
 	var volatile := pending_volatile(ms)
 	if volatile > 0:
 		ms.unit.hull -= volatile
-		log.append("%s: %s is volatile, hull -%d" % [ms.unit.display_name, f.describe(), volatile])
+		log.append("%s: %s %s, hull -%d" % [ms.unit.display_name, f.describe(), "is volatile" if f.has(Face.Keyword.VOLATILE) else "pays its tithe", volatile])
 		_hull_damaged(ms)
 		if not ms.alive():
 			log.append("%s is wrecked by its own volatile component" % ms.unit.display_name)
@@ -937,7 +946,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 	_clear_dead()
 	if reach_of(ms, f) == Face.Reach.INDIRECT and was_front:
 		var splash := ceili(float(total) / DANGER_CLOSE_DIVISOR)
-		if splash > 0:
+		if splash > 0 and not Effects.spares_splash(ms.unit):
 			ms.unit.shield = maxi(0, ms.unit.shield - splash)
 			log.append("%s: splash, shield -%d" % [ms.unit.display_name, splash])
 	if vent > 0:
@@ -1050,11 +1059,12 @@ func _screen_cover() -> void:
 
 
 ## Hull lost to a blow or a bite: the on_hull_damage passives fire (the Nemesis's Crucible
-## stacks Overheating). Never for the round's overheat burn, which would feed itself.
+## stacks Overheating; a shield raised or heat shed lands too). Never for the round's
+## overheat burn, which would feed itself.
 func _hull_damaged(ms: MechState) -> void:
-	var gained := Effects.hull_damaged(ms.unit)
-	if not gained.is_empty():
-		log.append("%s: %s from the hit" % [ms.unit.display_name, ", ".join(gained)])
+	var parts := _apply(ms, Effects.hull_damaged(ms.unit))
+	if not parts.is_empty():
+		log.append("%s: %s from the hit" % [ms.unit.display_name, ", ".join(parts)])
 
 
 ## Shocked (the Armadillo's retaliation, 28 September; built 29 September): the foe that struck
@@ -1224,7 +1234,7 @@ func _gain_shield(ms: MechState, amount: int, overshield: bool = false) -> int:
 ## that ally (the Puffin's escort passive, 5 October): heat the ally sheds, statuses it
 ## gains. Fires on the spend, whatever the shield gained.
 func _shield_granted(ms: MechState, who: MechState, amount: int) -> void:
-	var r := Effects.shield_granted(ms.unit, amount)
+	var r := Effects.shield_granted(ms.unit, who.unit, amount)
 	var parts: Array[String] = []
 	var vented := mini(who.heat, int(r["vent"]))
 	if vented > 0:
@@ -1248,6 +1258,14 @@ func _trim_overshield() -> void:
 ## Apply what a trigger's passives gave a machine: shield up (which is a shield gain of its
 ## own), heat off, and a log line naming it when anything happened.
 func _fired(ms: MechState, result: Dictionary, when: String) -> void:
+	var parts := _apply(ms, result)
+	if not parts.is_empty():
+		log.append("%s: %s, %s" % [ms.unit.display_name, when, ", ".join(parts)])
+
+
+## What a trigger's passives gave a machine, applied where the gauges live; returns the
+## pieces for the log line.
+func _apply(ms: MechState, result: Dictionary) -> Array[String]:
 	var parts: Array[String] = []
 	var gained := _gain_shield(ms, int(result["shield"]))
 	if gained > 0:
@@ -1258,8 +1276,7 @@ func _fired(ms: MechState, result: Dictionary, when: String) -> void:
 		parts.append("-%d heat" % vented)
 	for name in result["statuses"]:
 		parts.append(str(name))
-	if not parts.is_empty():
-		log.append("%s: %s, %s" % [ms.unit.display_name, when, ", ".join(parts)])
+	return parts
 
 
 ## The end of the round: heat above the maximum burns hull one for one and the gauge

@@ -34,7 +34,7 @@ var _flavour: Label
 ## The colour a passive's row takes from its source.
 static func passive_colour(kind: String) -> Color:
 	match kind:
-		"component":
+		"component", "module":
 			return Palette.HUD
 		"reward":
 			return Palette.INK

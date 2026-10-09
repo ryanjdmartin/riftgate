@@ -28,6 +28,7 @@ var factions: Dictionary = {}
 var foes: Dictionary = {}
 var chassis: Dictionary = {}
 var components: Dictionary = {}
+var modules: Dictionary = {}
 var makers: Dictionary = {}
 var categories: Array = []
 ## Machine names from the properties our designs sit nearest (content/reserved_names.json:
@@ -62,6 +63,7 @@ func load_dir(dir: String) -> void:
 	for m in c.get("makers", []):
 		makers[m["id"]] = m
 	components = _index(_read(dir + "components.json"))
+	modules = _index(_read(dir + "modules.json"))
 	reserved_names = {}
 	var reserved := _read(dir + "reserved_names.json")
 	var sources: Dictionary = reserved.get("sources", {})
@@ -130,7 +132,7 @@ func build_die(fixed_ids: Array, loadout_ids: Array, hardpoints: int) -> Die:
 
 ## A machine as the content builds it. `loadout` is the hardpoint components fitted, in
 ## order; null means the chassis's stock loadout (the campaign passes its roster's own).
-func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO, loadout = null) -> Unit:
+func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO, loadout = null, fitted_modules: Array = []) -> Unit:
 	var c: Dictionary = chassis[chassis_id]
 	var fitted: Array = c.get("loadout", []) if loadout == null else loadout
 	var u := Unit.mech(uid, str(c["name"]), at, int(c.get("movespeed", Unit.MECH_MOVE)))
@@ -156,7 +158,64 @@ func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO, l
 		var cp = components.get(cid, {}).get("passive", null)
 		if cp is Dictionary:
 			u.grant_passive(cp, cid, cid)
+	# Modules, as many as the chassis has slots; then the machine starts whole on the numbers
+	# they made.
+	for mid in fitted_modules.slice(0, int(c.get("module_slots", 0))):
+		fit_module(u, str(mid))
+	u.hull = u.hull_max
+	u.shield = u.shield_max
 	return u
+
+
+## A module fitted to a machine: its stat lines and its text as one passive, a loadout-long
+## modifier sourced "module" (Effects; never written to a stat). No component carries it, so
+## nothing on the die can take it away. Fitting the same module twice stacks it.
+func fit_module(u: Unit, module_id: String) -> void:
+	var m: Dictionary = modules.get(module_id, {})
+	if m.is_empty():
+		return
+	u.modules.append(module_id)
+	u.grant_passive(module_passive(module_id), "module")
+
+
+## A module as the passive the engine runs: an add_stat per stat line, then the text's
+## effects (none while the text is planned).
+func module_passive(module_id: String) -> Dictionary:
+	var m: Dictionary = modules.get(module_id, {})
+	var effects: Array = []
+	var stats: Dictionary = m.get("stats", {})
+	for k in stats.keys():
+		effects.append({"trigger": "static", "effect": "add_stat", "stat": str(k), "value": int(stats[k])})
+	var text = m.get("text", null)
+	if text is Dictionary and str(text.get("status", "implemented")) == "implemented":
+		effects.append_array(text.get("effects", []))
+	return {"id": "module:" + module_id, "name": str(m.get("name", module_id)), "description": module_description(module_id), "effects": effects}
+
+
+## What the player reads for a module: its stat lines, then its text.
+func module_description(module_id: String) -> String:
+	var m: Dictionary = modules.get(module_id, {})
+	var bits: Array[String] = []
+	var stats: Dictionary = m.get("stats", {})
+	for k in stats.keys():
+		var v := int(stats[k])
+		bits.append("%s %s%d" % [STAT_WORDS.get(str(k), str(k)), "+" if v > 0 else "", v])
+	var line := ", ".join(bits)
+	var text = m.get("text", null)
+	if text is Dictionary and str(text.get("status", "implemented")) == "implemented":
+		var d := str(text.get("description", ""))
+		line = d if line.is_empty() else "%s. %s" % [line.substr(0, 1).to_upper() + line.substr(1), d]
+	elif not line.is_empty():
+		line = line.substr(0, 1).to_upper() + line.substr(1) + "."
+	return line
+
+
+## The words a stat line is shown with.
+const STAT_WORDS := {"hull": "hull", "shield": "shield", "heat": "heat max", "armour": "armour", "move": "move", "recharge": "field recharge", "cooling": "cooling"}
+
+
+func module_name(module_id: String) -> String:
+	return str(modules.get(module_id, {}).get("name", module_id))
 
 
 func component_name(cid: String) -> String:
@@ -297,8 +356,8 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		for f in u.die.faces:
 			faces.append(Effects.effective_face(u, f))   # its reach and keywords as the passives make them
 	# Every live loadout and battle modifier: the chassis passive first, then what
-	# components grant, then the battle's rewards; nothing from the fight itself. Each row
-	# says where it comes from ("chassis", "component", "reward"), and the codex colours
+	# components and modules grant, then the battle's rewards; nothing from the fight itself.
+	# Each row says where it comes from ("chassis", "component", "module", "reward"), and the codex colours
 	# it by that, so a granted passive never reads as the machine's own.
 	var lines: Array[String] = []
 	var rows: Array = []
@@ -310,6 +369,9 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		if d[2] != "chassis" and components.has(d[2]):
 			head += " (%s)" % str(components[d[2]].get("name", d[2]))
 			kind = "component"
+		elif d[2] == "module":
+			head += " (MODULE)"
+			kind = "module"
 		elif d[3] == Effects.BATTLE:
 			head += " (REWARD)"
 			kind = "reward"
@@ -515,6 +577,7 @@ func validate() -> Array[String]:
 	_validate_vocabulary(errs)
 	_validate_components(errs)
 	_validate_chassis(errs)
+	_validate_modules(errs)
 	_validate_foes(errs)
 	_validate_factions(errs)
 	return errs
@@ -751,6 +814,51 @@ func _validate_components(errs: Array[String]) -> void:
 		if c.has("maker") and not makers.has(c["maker"]):
 			errs.append("%s: unknown maker %s" % [where, c["maker"]])
 		_validate_passive(where, c.get("passive", null), errs)
+
+
+## Modules (built 9 October from the modules row's working rules): stats are any number of
+## stat lines; the text is at most one passive's worth, checked as a passive; every module
+## carries a tier, and the capital's maker has no tier one. The archetypes are a guide and
+## never checked (Ryan: enforcing them only restricts the design space).
+func _validate_modules(errs: Array[String]) -> void:
+	var capital := capital_maker()
+	for id in modules.keys():
+		var m: Dictionary = modules[id]
+		var where := "module %s" % id
+		for key in ["name", "maker", "tier", "codex", "flavour", "stats", "text"]:
+			if not m.has(key):
+				errs.append("%s: missing %s" % [where, key])
+		_validate_design(where, m, errs)
+		if m.has("maker") and not makers.has(m["maker"]):
+			errs.append("%s: unknown maker %s" % [where, m["maker"]])
+		var t = m.get("tier", null)
+		if not (t is float or t is int) or int(t) < 1 or int(t) > 3:
+			errs.append("%s: tier must be 1, 2 or 3" % where)
+		elif str(m.get("maker", "")) == capital and int(t) == 1:
+			errs.append("%s: the capital's maker has no tier-one module" % where)
+		var stats = m.get("stats", {})
+		if not (stats is Dictionary):
+			errs.append("%s: stats must be an object of stat lines" % where)
+			stats = {}
+		for k in stats.keys():
+			if not Effects.STATS.has(str(k)):
+				errs.append("%s: stat '%s' is not one of %s" % [where, k, ", ".join(Effects.STATS)])
+			var v = stats[k]
+			if not (v is float or v is int) or int(v) == 0 or float(v) != floorf(float(v)):
+				errs.append("%s: stat %s must be a whole number other than zero" % [where, k])
+		var text = m.get("text", null)
+		if text != null and not (text is Dictionary):
+			errs.append("%s: text must be an object or null" % where)
+		elif text is Dictionary:
+			for key in ["name", "id", "rules", "fantasy"]:
+				if text.has(key):
+					errs.append("%s: text has '%s'; a module's text is its description and effects" % [where, key])
+			var p: Dictionary = text.duplicate()
+			p["id"] = str(id)
+			p["name"] = str(m.get("name", id))
+			_validate_passive(where + " text", p, errs)
+		if (stats as Dictionary).is_empty() and not (text is Dictionary):
+			errs.append("%s: a module needs stats, a text or both" % where)
 
 
 func _validate_chassis(errs: Array[String]) -> void:

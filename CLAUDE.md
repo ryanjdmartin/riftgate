@@ -41,7 +41,7 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   validator, so bad content fails the build. Every entry's internal text lives under `design`
   (`fantasy`, `niche`, `holes`, ...: Ryan's pitch, inspiration and homages) and is never shown;
   the validator refuses those keys at the top level. Shown to the player: `codex` (the inspect
-  entry), `flavour` (the quote), a passive's `name` and `description`, a foe action's `text`.
+  entry), `flavour` (the quote), a passive's `name` and `description`, a module's `text.description`, a foe action's `text`.
   Content ids are Ryan's and may be renamed; runtime code takes defaults from the content,
   never from a hardcoded id. A draft the engine cannot run yet carries `"status": "planned"`
   (a foe action, or a chassis passive): it is kept, not shown, not run, and not validated

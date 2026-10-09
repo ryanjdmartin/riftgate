@@ -242,7 +242,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	score -= float(over - int(fc["overheat"])) * HULL_WEIGHT
 	if not fc["destroyed"] and int(fc["hull_after"]) - (over - int(fc["overheat"])) <= 0:
 		score -= DEATH_WEIGHT
-	if sk.reach_of(ms, f) == Face.Reach.INDIRECT and target.rank == 0:
+	if sk.reach_of(ms, f) == Face.Reach.INDIRECT and target.rank == 0 and not Effects.spares_splash(ms.unit):
 		score -= ceilf(mean / Skirmish.DANGER_CLOSE_DIVISOR) * SHIELD_WEIGHT
 	return score - volatile_cost(sk, ms, f, uses)
 
@@ -250,7 +250,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 ## What a volatile entry costs its owner in the score: the hull it bites per use, and the
 ## death it brings when the round's end would already leave nothing to bite.
 static func volatile_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: float = 1.0) -> float:
-	var bite := Skirmish.volatile_cost(f)
+	var bite := Skirmish.spend_bite(ms.unit, f)
 	if bite <= 0:
 		return 0.0
 	var cost := float(bite) * uses * HULL_WEIGHT

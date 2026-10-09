@@ -46,7 +46,7 @@ const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "roll_max"],
 	"on_crit": ["multiply_damage", "add_damage", "add_burn", "vent_heat", "add_crit_damage"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "spares_splash", "hull_per_spend"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
@@ -644,8 +644,8 @@ static func extra_actions(u) -> int:
 ## The machine has just lost hull to a blow or a bite (never to its own overheat): every
 ## on_hull_damage passive fires (the Crucible's Overheating). Returns the names of the
 ## statuses granted, for the log; shield and vent from it are the caller's to apply.
-static func hull_damaged(u) -> Array[String]:
-	return fire(u, "on_hull_damage")["statuses"]
+static func hull_damaged(u) -> Dictionary:
+	return fire(u, "on_hull_damage")
 
 
 ## An event on a machine (on_skirmish_start as the fight begins, on_round_start after the
@@ -654,9 +654,11 @@ static func hull_damaged(u) -> Array[String]:
 ## fires. `amount` is what the event carried (the heat carried for shield_per_heat, the
 ## shield or heat gained). Returns {shield, vent, statuses}: shield to gain and heat to shed,
 ## for the caller to apply where the gauges live, and the names of the statuses granted
-## (stack_status: a stack for the skirmish, fading a stack a turn). Nothing here can fire
-## itself: a shield gained here grants no more shield, heat shed here grants no heat.
-static func fire(u, trigger: String, amount: int = 0) -> Dictionary:
+## (stack_status: a stack for the skirmish, fading a stack a turn), on `onto` when it is
+## given (the ally an on_shield_granted passive shields) and on the machine itself otherwise.
+## Nothing here can fire itself: a shield gained here grants no more shield, heat shed here
+## grants no heat.
+static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary:
 	var out := {"shield": 0, "vent": 0, "statuses": [] as Array[String]}
 	for pair in _taking_part(u, trigger, null):
 		var eff: Dictionary = pair[0]
@@ -671,7 +673,7 @@ static func fire(u, trigger: String, amount: int = 0) -> Dictionary:
 			"stack_status":
 				var id := str(eff.get("value", ""))
 				if STATUS.has(id):
-					var m := stack(u, STATUS[id], SKIRMISH, "passive:" + str(pair[1].id), int(pair[1].stacks), DECAY_TICK)
+					var m := stack(u if onto == null else onto, STATUS[id], SKIRMISH, "passive:" + str(pair[1].id), int(pair[1].stacks), DECAY_TICK)
 					if m != null and not (out["statuses"] as Array).has(m.name):
 						(out["statuses"] as Array).append(m.name)
 	return out
@@ -706,8 +708,8 @@ static func round_start(u, heat: int) -> Dictionary:
 ## escort passive, 5 October): heat the ally sheds and statuses it gains, for the caller to
 ## apply on the ally. Fires on the spend, whatever the shield gained, so a shield die on a
 ## topped-up ally still does its other work. Never on itself: the trigger is for allies.
-static func shield_granted(u, amount: int) -> Dictionary:
-	return fire(u, "on_shield_granted", amount)
+static func shield_granted(u, ally, amount: int) -> Dictionary:
+	return fire(u, "on_shield_granted", amount, ally)
 
 
 ## The heat an ally this machine shields would shed (on_shield_granted vent_heat), for the
@@ -716,6 +718,24 @@ static func granted_vent(u) -> int:
 	var n := 0
 	for pair in _taking_part(u, "on_shield_granted", null):
 		if str(pair[0].get("effect", "")) == "vent_heat":
+			n += int(pair[0].get("value", 0)) * int(pair[1].stacks)
+	return maxi(0, n)
+
+
+## Is this machine spared danger close (spares_splash, static; the Artillery Rangefinder)?
+static func spares_splash(u) -> bool:
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "spares_splash":
+			return true
+	return false
+
+
+## Hull this machine pays for every component it spends (hull_per_spend, static; the
+## Tithe Coupling), like a volatile bite: shield and armour never see it.
+static func hull_per_spend(u) -> int:
+	var n := 0
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "hull_per_spend":
 			n += int(pair[0].get("value", 0)) * int(pair[1].stacks)
 	return maxi(0, n)
 
@@ -833,6 +853,8 @@ static func effect_text(eff: Dictionary) -> String:
 		"add_attack": body = "attack +%s" % vs
 		"never_hunted": body = "no hunter ever picks it as its prey"
 		"extra_action": body = "%s more action%s a turn: move and fight again" % [vs, "" if int(v) == 1 else "s"]
+		"spares_splash": body = "indirect fire on the front rank never splashes it"
+		"hull_per_spend": body = "every component it spends costs %s hull" % vs
 		"scramble_reroll": body = "the next reroll of this die lands anywhere"
 		"free_reroll": body = "%s free reroll%s of this die a round" % [vs, "" if int(v) == 1 else "s"]
 		"shield_per_heat": body = "+%s shield for every 10 heat carried" % vs

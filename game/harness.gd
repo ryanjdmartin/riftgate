@@ -144,7 +144,7 @@ func _select_tab(i: int) -> void:
 # ---------------------------------------------------------------- team
 
 func _build_team(page: VBoxContainer) -> void:
-	page.add_child(_hint("Tick who deploys; they go out in the order ticked. HARDPOINTS opens a machine's loadout, and the battle and the fight both carry it."))
+	page.add_child(_hint("Tick who deploys; they go out in the order ticked. HARDPOINTS opens a machine's loadout and its module slots, and the battle and the fight both carry them."))
 	var ids: Array = db.chassis.keys()
 	ids.sort_custom(func(a, b) -> bool: return str(db.chassis[a]["name"]) < str(db.chassis[b]["name"]))
 	for id in ids:
@@ -205,9 +205,12 @@ func _refresh_row(id: String) -> void:
 	var names: Array = []
 	for cid in setup.picks(id):
 		names.append("—" if str(cid).is_empty() else db.component_name(str(cid)))
-	var refit := setup.is_refit(id)
+	var mods: Array = []
+	for mid in setup.fitted_modules(id):
+		mods.append(db.module_name(str(mid)))
+	var refit := setup.is_refit(id) or not mods.is_empty()
 	var status: Label = row["status"]
-	status.text = ("REFIT  " if refit else "stock  ") + (", ".join(names) if not names.is_empty() else "no hardpoints")
+	status.text = ("REFIT  " if refit else "stock  ") + (", ".join(names) if not names.is_empty() else "no hardpoints") + ("  ·  modules: " + ", ".join(mods) if not mods.is_empty() else "")
 	status.add_theme_color_override("font_color", Palette.HUD if refit else Palette.MUTED)
 	(row["toggle"] as Button).text = "CLOSE" if _open == id else "HARDPOINTS"
 
@@ -265,10 +268,22 @@ func _fill_editor(id: String) -> void:
 		ob.item_selected.connect(_on_pick.bind(ob, id, slot))
 		line.add_child(ob)
 		editor.add_child(line)
+	var mp := setup.module_picks(id)
+	for slot in range(mp.size()):
+		var line := HBoxContainer.new()
+		line.add_theme_constant_override("separation", 10)
+		var n := _label("MOD %d" % (slot + 1), 16, Palette.MUTED)
+		n.custom_minimum_size = Vector2(64, 0)
+		line.add_child(n)
+		var ob := _module_picker(str(mp[slot]))
+		ob.item_selected.connect(_on_module_pick.bind(ob, id, slot))
+		line.add_child(ob)
+		editor.add_child(line)
 	var tools := HBoxContainer.new()
 	tools.add_theme_constant_override("separation", 12)
 	tools.add_child(_button("Stock", func() -> void:
 		setup.reset_loadout(id)
+		setup.modules.erase(id)
 		_fill_editor(id)
 		_refresh_row(id)
 		_refresh_summary(), ROW_H, 16))
@@ -308,6 +323,30 @@ func _component_picker(selected: String) -> OptionButton:
 			ob.set_item_metadata(ob.item_count - 1, cid)
 	ob.select(_index_of(ob, selected))
 	return ob
+
+
+## Every module, grouped by maker, with its tier and what it does on one line.
+func _module_picker(selected: String) -> OptionButton:
+	var ob := _picker()
+	ob.add_item("— no module —")
+	ob.set_item_metadata(0, "")
+	for m in db.makers.keys():
+		var list: Array = db.modules.keys().filter(func(mid) -> bool: return str(db.modules[mid].get("maker", "")) == str(m))
+		if list.is_empty():
+			continue
+		ob.add_separator(str(db.makers[m].get("name", m)))
+		list.sort_custom(func(a, b) -> bool: return db.module_name(a) < db.module_name(b))
+		for mid in list:
+			ob.add_item("%s  (T%d)  %s" % [db.module_name(mid), int(db.modules[mid].get("tier", 0)), db.module_description(mid)])
+			ob.set_item_metadata(ob.item_count - 1, str(mid))
+	ob.select(_index_of(ob, selected))
+	return ob
+
+
+func _on_module_pick(index: int, ob: OptionButton, id: String, slot: int) -> void:
+	setup.set_module(id, slot, str(ob.get_item_metadata(index)))
+	_refresh_row(id)
+	_refresh_summary()
 
 
 func _on_pick(index: int, ob: OptionButton, id: String, slot: int) -> void:
@@ -500,7 +539,7 @@ func _show_seed() -> void:
 func _refresh_summary() -> void:
 	var team: Array = []
 	for id in setup.team:
-		team.append(str(db.chassis[id]["name"]) + (" (refit)" if setup.is_refit(str(id)) else ""))
+		team.append(str(db.chassis[id]["name"]) + (" (refit)" if setup.is_refit(str(id)) or not setup.fitted_modules(str(id)).is_empty() else ""))
 	var foes: Array = []
 	for p in setup.packs:
 		foes.append("%s ×%d" % [db.foes[p[0]]["name"], int(p[1])])

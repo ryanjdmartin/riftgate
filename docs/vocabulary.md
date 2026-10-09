@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 106 implemented, 8 planned, 0 idea.
+Status: 107 implemented, 8 planned, 0 idea.
 
 ## Resource
 
@@ -24,6 +24,7 @@ Status: 106 implemented, 8 planned, 0 idea.
 | **Hardpoint** | A free slot on the chassis. Any component fits any hardpoint. On the model a hardpoint is a socket where the component mounts. | implemented |
 | **Fixed component** | A component built into the chassis: always on the die, never removed, never sold, and it uses no hardpoint. The Badger's claw and its plating are fixed. | implemented |
 | **Empty hardpoint** | A hardpoint with nothing in it is an entry on the die that does nothing when it comes up. Nothing fills it for you. | implemented |
+| **Module** | Equipment inside the machine, not on its die: a few numbers up or down, and at most one rule of its own. A chassis has its module slots (two, three on the Clydesdale), and a module is never spent: it is always working. | implemented |
 
 ## Component Kind
 
@@ -260,6 +261,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **City ability** (planned): Consider range limits from the gate so the push north leaves support behind.
 - **Component** (implemented): Multi-slot components were considered and scrapped on 18 September as invisible complexity.
 - **Fixed component** (implemented): Decided against unlocking fixed slots for money (18 September).
+- **Module** (implemented): Built 9 October (content/modules.json; ContentDB.fit_module runs one as a loadout modifier sourced "module"). Fitted in the harness only: the campaign's roster, the loot that drops them and the hangar wait for the economy pass and the hangar.
 - **Armour** (implemented): Numbers are placeholders. Armour from components is content, not yet written.
 - **Aim** (implemented): Decided 2 October (bible, section 5). Content: `aim` on a foe type and on a move; `when` on a move is the condition that lets a foe pick it, and a special never fires twice running.
 - **Breach** (implemented): A property of a foe's attack action. No foe carries it yet; Ryan places it. Redirect and interrupt do not exist yet. Name is a placeholder (pierce is taken by the player keyword).
