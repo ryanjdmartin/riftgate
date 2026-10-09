@@ -1,18 +1,20 @@
 class_name BattleScreen
 extends Control
 
-## The battle: the battlefield map with the phase loop around it, in the overlay style.
-## Portrait, 720x1280 logical, absolute layout.
+## The battle: the battlefield map with the turn around it, in the overlay style (bible
+## section 4, the round row). Portrait, 720x1280 logical, absolute layout.
 ##
-##   header   phase, gate hull, Rift Pressure; plan readout beside it
-##   map      drag to scroll; tap a mech to select it and light up where it can go; tap a lit
-##            hex to plot the route there; tap the mech again to clear it; hold a unit for
-##            its numbers
-##   log      what the last phase did
-##   bottom   Resolve bottom-left, Clear routes bottom-right
+##   header   the turn and Rift Pressure; the turn's readout beside it
+##   map      drag to scroll; tap a machine to select it and light where it can move; tap a
+##            lit hex (or draw a route from it) and it moves there at once; with a machine in
+##            hand, tap a pack (or drag the machine onto one) and it moves into range and is
+##            ordered onto that fight; hold a unit for its numbers. Every pack's walk on the
+##            enemy's turn shows, a hunter's lock on its prey, and the next fight: its target,
+##            the packs whose ring covers it, the machines ordered onto it
+##   bottom   ENGAGE (while a fight is ready) or END TURN bottom-left, Undo move bottom-right
 ##
-## Contact opens the skirmish screen over the map. Its Back button applies the result and
-## either opens the next skirmish or returns to the plan.
+## A fight opens the skirmish screen over the map. Its Back button applies the result, and
+## the turn goes on; End turn plays the enemy's turn.
 
 signal back_requested
 signal quit_requested   # the menu's QUIT, on this screen or in an open skirmish: out to the harness
@@ -114,12 +116,12 @@ func _ready() -> void:
 
 
 ## A battle handed over mid-flight (a save read back): a fight under way opens straight
-## into the skirmish, no handover, since a resume is not a contact; contacts waiting show
-## their panel; a decided battle shows its outcome. A battle in plan needs nothing.
+## into the skirmish, no handover; a decided battle shows its outcome. A turn needs nothing:
+## the map shows its orders and any catch, and the button reads ENGAGE.
 func _resume_where_it_was() -> void:
 	if battle.current != null:
 		_enter_skirmish(battle.current, [], false)
-	elif battle.state == Battle.State.SKIRMISH or battle.state == Battle.State.DONE:
+	elif battle.state == Battle.State.DONE:
 		_after_step()
 
 
@@ -214,11 +216,11 @@ func _build() -> void:
 	_apply_display()
 	_map.hold_released.connect(_on_hold_released)
 
-	_resolve_btn = HudButton.new("RESOLVE", _on_resolve)
+	_resolve_btn = HudButton.new("END TURN", _on_main_button)
 	_resolve_btn.sound = ""   # the lever is the sound
 	_resolve_btn.filled = true
 	_place(_resolve_btn, Vector2(16, BOTTOM_Y), BOTTOM_BTN)
-	_clear_btn = HudButton.new("CLEAR ROUTES", _on_clear)
+	_clear_btn = HudButton.new("UNDO MOVE", _on_undo)
 	_clear_btn.ghost = true
 	_place(_clear_btn, Vector2(W - 16 - BOTTOM_BTN.x, BOTTOM_Y), BOTTOM_BTN)
 
@@ -226,7 +228,7 @@ func _build() -> void:
 	# held (Ryan, 28 September); the readout, when held, sits over it.
 	_board = OrdersBoard.new()
 	_board.battle = battle
-	_board.preview = _map._preview
+	_board.walks = func() -> Dictionary: return _map.walks
 	_board.playing = _map.is_playing
 	_board.covered = func() -> bool: return _details != null and _details.visible
 	_place(_board, Vector2(12.0, STRIP_Y + 6.0), Vector2(W - 24.0, STRIP_H - 12.0))
@@ -323,24 +325,47 @@ func _tag(text: String, size_px: int, mono: bool) -> HudButton:
 func _refresh() -> void:
 	var f := battle.field
 	var planning := battle.state == Battle.State.PLAN
-	# Plain words (Ryan, 22 September): the round, and how long until the rift spawns. The
+	var playing := _map.is_playing()
+	# Plain words (Ryan, 22 September): the turn, and how long until the rift spawns. The
 	# gate's integrity is on the map, under the gate.
-	_header.text = "ROUND %02d // NEXT SPAWN IN %d" % [f.phase + 1, f.rift_pressure_max - f.rift_pressure]
+	_header.text = "TURN %02d // NEXT SPAWN IN %d" % [f.phase + 1, f.rift_pressure_max - f.rift_pressure]
 	_header.queue_redraw()
 	match battle.state:
 		Battle.State.PLAN:
-			_sub_label.text = "ORDERS // %d OF %d SET" % [battle.routes.size(), battle.mechs().size()]
+			var ready := 0
+			for m in battle.mechs():
+				if battle.actions_left(m) > 0:
+					ready += 1
+			if not battle.forced.is_empty():
+				_sub_label.text = "CAUGHT // FIGHT FIRST"
+			elif not battle.orders.is_empty():
+				_sub_label.text = "ORDERS // %d IN" % battle.orders.size()
+			else:
+				_sub_label.text = "READY // %d OF %d" % [ready, battle.mechs().size()]
 		Battle.State.SKIRMISH:
-			_sub_label.text = "BOSS CONTACT // ALL UNITS" if battle.boss_contact else "CONTACT"
+			_sub_label.text = "BOSS // FIGHT" if battle.boss_fight else "FIGHT"
 		_:
 			_sub_label.text = "BATTLE OVER"
-	_map.routes = battle.routes
-	_map.pending = battle.pending if battle.state == Battle.State.SKIRMISH else []
-	_map.route_drawing = planning and not _map.is_playing()
+	# Every pack's walk on the enemy's turn, from where the machines stand now.
+	_map.walks = f.plan_walks() if planning and not playing else {}
+	_map.forced = battle.forced if planning else []
+	var spent := {}
+	for m in battle.mechs():
+		if battle.actions_left(m) <= 0:
+			spent[m.id] = true
+	_map.spent = spent
+	_map.orders = battle.orders if planning else {}
+	_map.attack = _fight_preview() if planning and not playing else {}
+	_map.route_drawing = planning and not playing
 	_map.queue_redraw()
 	_refresh_log()
-	_resolve_btn.set_enabled(planning and not _map.is_playing())
-	_clear_btn.set_enabled(planning and not battle.routes.is_empty() and not _map.is_playing())
+	# The one button: ENGAGE while a fight is ready (a catch, or a machine ordered onto a pack),
+	# END TURN otherwise.
+	var fight := battle.next_fight() if planning else {}
+	_resolve_btn.text = "ENGAGE" if not fight.is_empty() else "END TURN"
+	_resolve_btn.queue_redraw()
+	_resolve_btn.set_enabled(planning and not playing)
+	_clear_btn.set_enabled(planning and not playing and _undo_target() != null)
 
 
 func _refresh_log() -> void:
@@ -349,7 +374,7 @@ func _refresh_log() -> void:
 	var lines: Array[String] = battle.field.log
 	var out := ""
 	if lines.is_empty():
-		out = "[color=#%s]> round %d // %d packs on the field // give orders, then resolve[/color]" % [
+		out = "[color=#%s]> turn %d // %d packs on the field // move and fight, then end the turn[/color]" % [
 			Color(Palette.HUD, 0.45).to_html(true), battle.field.phase + 1, battle.field.packs().size()]
 	for line in lines:
 		out += "[color=#%s]> %s[/color]\n" % [Color(Palette.HUD, 1.0).to_html(true), line]
@@ -420,92 +445,109 @@ func _select(u: Unit) -> void:
 
 # ---------------------------------------------------------------- gestures
 
-## Tap a mech to select it; tap a lit hex to plot its route; tap the selected mech again to
-## clear its route; tap anything else to deselect.
+## Tap a machine to select it; tap a lit hex and it moves there, staying in hand while it can
+## still act; tap it again to let it go. With a machine in hand, a tap on a pack orders it onto
+## that fight, moving it into range first (and a second tap on the pack it is ordered onto
+## takes the order back). With nothing in hand, a tap on a pack shows its fight.
 func _on_hex_tapped(h: Vector2i) -> void:
 	if battle.state != Battle.State.PLAN or _map.is_playing():
 		return
 	_details.visible = false
 	var u := battle.field.unit_at(h)
-	# A second tap on what is selected unselects it (Ryan, 29 September): the gate, a pack,
-	# a hex asked about. A machine's second tap clears its route, below, as before.
+	var sel: Unit = _map.selected
+	# A second tap on what is selected unselects it (Ryan, 29 September): the gate, a hex
+	# asked about, a pack looked at.
 	var was_gate := _map.gate_selected and battle.field.map.gate_hexes.has(h)
 	var was_inspected := _map.inspected == h
 	_map.gate_selected = false
 	_map.inspected = Vector2i(-9999, -9999)
+	_inspect_pack = null
+	if sel != null and u != null and u.is_enemy():
+		_order_attack(sel, u, [])
+		return
 	if was_gate or was_inspected:
 		_select(null)
 		Sound.play("ui_back")
 		_refresh()
 		return
-	if battle.field.map.gate_hexes.has(h) and (_map.selected == null or not _map.destinations.has(h)):
+	if battle.field.map.gate_hexes.has(h) and (sel == null or not _map.destinations.has(h)):
 		# The gate is selectable for its integrity (Ryan, 22 September).
 		_select(null)
 		_map.gate_selected = true
 		_show_details(gate_text(battle.field), Vector2.ZERO)
-		_map.queue_redraw()
+		_refresh()
 		Sound.play("ui_tap", -4.0)
 		return
-	if _map.selected != null and u != _map.selected and _map.destinations.has(h):
-		# A hex a machine plotted earlier is leaving is a destination too (Ryan, 22
-		# September): plotting in order makes it free, so the tap routes there rather
-		# than selecting the machine still drawn on it.
-		battle.set_route(_map.selected, h)
-		_select(null)
-		Sound.play("plot")
+	if sel != null and u == null and _map.destinations.has(h):
+		var from := sel.pos
+		var route := battle.move_to(sel, h)
+		if not route.is_empty():
+			_play_move(sel, from, route)
+			return
 	elif u != null and u.is_player() and not u.is_static():
-		if _map.selected == u:
-			battle.clear_route(u.id)
+		if sel == u:
 			_select(null)
 			Sound.play("ui_back")
 		else:
 			_select(u)
-			_on_unit_held(u)   # its shield, hull and move, in the readout
+			_on_unit_held(u)   # its shield, hull, move and actions, in the readout
 			Sound.play("ui_tap", -4.0)
 	elif u != null and u.is_enemy():
-		_map.inspected = h   # the pack lit, its path emphasised (Ryan, 29 September: show what was tapped)
-		_on_unit_held(u)   # a quick label for the enemy; double-tap for the codex
-		Sound.play("ui_tap", -8.0)
-	elif _map.selected != null and _map.destinations.has(h):
-		battle.set_route(_map.selected, h)
+		# Nothing in hand: the pack's fight is shown, who would join and who is ordered in.
 		_select(null)
-		Sound.play("plot")
-	elif _map.selected == null and u == null and battle.field.map.has(h) and not battle.field.map.is_structure(h):
-		# Nothing to route: the tap asks what the ground is (Ryan, 21 September). Its
-		# properties will grow with the terrain rules.
+		_inspect_pack = u
+		_map.inspected = h
+		_on_unit_held(u)
+		Sound.play("ui_tap", -8.0)
+	elif sel == null and u == null and battle.field.map.has(h) and not battle.field.map.is_structure(h):
+		# Nothing to move: the tap asks what the ground is (Ryan, 21 September).
 		var t: int = battle.field.map.terrain[h]
 		# Each way of moving's word for this ground (decided 2 October), then the horde's rule.
 		var text := "%s\n%s" % [str(BattleMap.TERRAIN_NAMES.get(t, "ground")).to_upper(), BattleMap.ground_words(t)]
 		_map.inspected = h   # the hex lit, so what was tapped is plain (Ryan, 29 September)
 		_show_details(text, _map.position + _map.to_screen(_map.center(h)))
-		_map.queue_redraw()
-		return
 	else:
 		_select(null)
 	_refresh()
 
 
 var _draft_unit: Unit = null   # the machine whose route is being drawn by hand
+var _drag_target: Unit = null  # the pack under the finger as the route is drawn: an attack on release
 
 
 ## A route drawn by hand (Ryan, 25 September): drag from a machine through the hexes it
-## should walk. The tap keeps the cheapest route; the drag says which way round. Each hex
+## should walk. The tap takes the cheapest route; the drag says which way round. Each hex
 ## the finger reaches extends the draft along the cheapest continuation that fits the move
-## left, a hex already on it cuts back to there, and letting go keeps the route as drawn.
+## left, a hex already on it cuts back to there, and letting go walks it. Letting go over a
+## pack orders the machine onto it from the draft's end (bible section 5; Abalon's drag onto
+## an enemy), or from the farthest hex in range when nothing was drawn.
 func _on_route_drag_started(u: Unit) -> void:
-	if battle.state != Battle.State.PLAN or _map.is_playing():
+	if battle.state != Battle.State.PLAN or _map.is_playing() or battle.actions_left(u) <= 0:
 		return
 	_details.visible = false
 	_map.gate_selected = false
 	_select(u)   # its destinations light while the finger draws
 	_draft_unit = u
+	_drag_target = null
 	_map.draft = []
+	_map.draft_move = battle.moves_left(u)
 	_map.draft_spend = Vector2i(0, 0)
 	Sound.play("ui_tap", -4.0)
 
 
 func _on_route_drag_to(h: Vector2i) -> void:
 	if _draft_unit == null:
+		return
+	var over := battle.field.unit_at(h)
+	var target: Unit = over if over != null and over.is_enemy() else null
+	if target != _drag_target:
+		_drag_target = target
+		if target != null:
+			Sound.play("ui_tap", -6.0)
+		_refresh()
+	if target != null:
+		return   # the finger is on a pack: the draft stands, the fight it would join shows
+	if not battle.can_move(_draft_unit):
 		return
 	var before := _map.draft.size()
 	_map.draft = battle.draft_step(_draft_unit, _map.draft, h)
@@ -518,14 +560,20 @@ func _on_route_drag_to(h: Vector2i) -> void:
 func _on_route_drag_ended(commit: bool) -> void:
 	var u := _draft_unit
 	var draft: Array = _map.draft
+	var target := _drag_target
 	_draft_unit = null
+	_drag_target = null
 	_map.draft = []
 	_map.draft_spend = Vector2i(-1, 0)
+	if u != null and commit and target != null:
+		_order_attack(u, target, draft)
+		return
 	if u != null and commit and not draft.is_empty():
-		if battle.set_route_path(u, draft):
-			Sound.play("plot")
-		else:
-			Sound.play("ui_back")
+		var from := u.pos
+		if battle.move_along(u, draft):
+			_play_move(u, from, draft)
+			return
+		Sound.play("ui_back")
 	_select(null)
 	_refresh()
 
@@ -533,27 +581,28 @@ func _on_route_drag_ended(commit: bool) -> void:
 func _on_unit_held(u: Unit) -> void:
 	var text := ""
 	if u.is_player():
-		text = "%s\nshield %d/%d · hull %d/%d · move %d" % [u.display_name, u.shield, u.shield_max, u.hull, u.hull_max, u.movespeed]
+		text = "%s\nshield %d/%d · hull %d/%d · move %d · %d of %d action%s left" % [u.display_name, u.shield, u.shield_max, u.hull, u.hull_max, u.movespeed,
+			battle.actions_left(u), Battlefield.actions_for(u), "" if Battlefield.actions_for(u) == 1 else "s"]
 		if u.damaged_component_count() > 0:
 			text += "\n%d damaged component%s" % [u.damaged_component_count(), "" if u.damaged_component_count() == 1 else "s"]
 	else:
 		var db := ContentDB.load_default()
 		var foe_name := str(db.foes.get(u.foe_id, {}).get("name", u.foe_id))
 		if u.elite:
-			text = "%s\nmassive · zone %d · %s" % [u.display_name, u.zone, _behaviour_text(u)]
+			text = "%s\nmassive · ring %d · %s" % [u.display_name, u.zone, _behaviour_text(u)]
 		else:
-			text = "%s\n%s ×%d · move %d · zone %d\n%s" % [u.display_name, foe_name, u.strength, u.movespeed, u.zone, _behaviour_text(u)]
+			text = "%s\n%s ×%d · move %d · ring %d\n%s" % [u.display_name, foe_name, u.strength, u.movespeed, u.zone, _behaviour_text(u)]
 	_show_details(text, _map.position + _map.to_screen(_map.center(u.pos)))
 
 
-## What a pack is doing, in the hold's words: the three behaviours (decided 1 October).
+## What a pack is doing, in the hold's words: the two behaviours (bible section 5).
 func _behaviour_text(u: Unit) -> String:
+	if u.elite and u.strength == 0:
+		return "holds the rift"
 	match u.behaviour:
 		"hunt":
 			var prey := battle.field.unit_by_id(u.prey)
 			return "hunts the %s: %s" % [u.hunts, prey.display_name if prey != null else "nobody yet"]
-		"aggressive":
-			return "aggressive: comes for anything within its reach"
 		_:
 			return "marching on the gate"
 
@@ -670,56 +719,80 @@ func _show_details(text: String, _near: Vector2) -> void:
 	_details.position = Vector2(12.0, STRIP_Y + 6.0)
 
 
-# ---------------------------------------------------------------- the loop
+# ---------------------------------------------------------------- the turn
 
-func _on_clear() -> void:
+var _last_moved: Unit = null   # the machine moved last, for UNDO MOVE when none is selected
+
+
+## The machine UNDO MOVE puts back: the selected one, else the one moved last.
+func _undo_target() -> Unit:
+	if _map.selected != null and battle.can_undo(_map.selected):
+		return _map.selected
+	if _last_moved != null and battle.field.units.has(_last_moved) and battle.can_undo(_last_moved):
+		return _last_moved
+	return null
+
+
+func _on_undo() -> void:
+	var u := _undo_target()
+	if u == null or _map.is_playing():
+		return
+	battle.undo_move(u)
+	if u == _last_moved:
+		_last_moved = null
 	Sound.play("ui_back")
-	battle.clear_routes()
 	_select(null)
+	_refresh()
+	_autosave()
+
+
+## A machine has moved (the battle already has it there): play its walk. It stays in hand
+## while it can still act, so a tap on a pack next is its attack from where it now stands
+## (Abalon's move, then pick a target).
+func _play_move(u: Unit, from: Vector2i, route: Array, keep: bool = true) -> void:
+	_last_moved = u
+	Sound.play("plot")
+	_select(u if keep and battle.actions_left(u) > 0 else null)
+	_details.visible = false
+	if DisplayServer.get_name() == "headless" or route.is_empty():
+		_refresh()
+		_autosave()
+		return
+	_map.play_moves([[u.id, [from] + route]], [], func() -> void:
+		_refresh()
+		_autosave())
 	_refresh()
 
 
-func _on_resolve() -> void:
-	if battle.state != Battle.State.PLAN or _map.is_playing():
-		return   # a second Resolve while the move plays would resolve the next phase over it
+## End the turn: the enemy's turn plays (bible section 4), the packs walking where the map
+## showed, then the next turn opens, with any fight a hunter forced.
+func _on_end_turn() -> void:
+	if battle.state != Battle.State.PLAN or _map.is_playing() or not battle.forced.is_empty():
+		return   # a second press while the walk plays would end the next turn over it
 	_select(null)
 	_details.visible = false
-	# Capture where everyone meant to go, resolve, then play what actually happened: each
-	# path cut at the hex the unit really reached (a block or a rejection stops it short).
-	var planned: Dictionary = {}
-	for m in battle.mechs():
-		planned[m.id] = [m.pos] + Array(battle.routes.get(m.id, []))
 	var starts: Dictionary = {}
 	for sq in battle.field.packs():
 		starts[sq.id] = sq.pos
-	# The packs' paths are the resolve's own, planned after the machines moved.
 	Sound.play("resolve")
 	var gate_before := battle.field.gate_hp
-	var result := battle.commit()
+	var walks := battle.end_turn()
 	_gate_struck = battle.field.gate_hp < gate_before
-	_spawned = result.spawned
-	for sid in starts.keys():
-		planned[sid] = [starts[sid]] + Array(result.intents.get(sid, []))
-	var mech_moves: Array = []
+	_spawned = battle.last_spawned
+	_last_moved = null
 	var pack_moves: Array = []
-	for u in battle.field.units:
-		if not planned.has(u.id):
-			continue
-		var path: Array = planned[u.id]
-		var at: int = path.find(u.pos)
-		var played: Array = path.slice(0, at + 1) if at >= 0 else [path[0], u.pos]
-		if u.is_player():
-			mech_moves.append([u.id, played])
-		else:
-			pack_moves.append([u.id, played])
+	for sid in walks.keys():
+		var w: Battlefield.Walk = walks[sid]
+		if starts.has(sid) and not w.path.is_empty():
+			pack_moves.append([sid, [starts[sid]] + Array(w.path)])
 	if DisplayServer.get_name() == "headless":
 		_after_step()
 	else:
-		_map.play_moves(mech_moves, pack_moves, _after_step)
-		_refresh()   # the buttons grey until the move has played
+		_map.play_moves([], pack_moves, _after_step)
+		_refresh()   # the buttons grey until the walk has played
 
 
-var _gate_struck := false   # the phase just resolved hit the gate: heard when the moves have played
+var _gate_struck := false   # the enemy's turn just played hit the gate: heard when the walk has played
 var _spawned := false       # and the rift spawned
 
 func _after_step() -> void:
@@ -730,31 +803,22 @@ func _after_step() -> void:
 	_gate_struck = false
 	_spawned = false
 	match battle.state:
-		Battle.State.SKIRMISH:
-			if battle.boss_contact:
-				_show_boss_contact()
-			else:
-				_show_contacts()
 		Battle.State.DONE:
 			_refresh()
 			_show_outcome()
 		_:
 			_refresh()
+			if battle.state == Battle.State.PLAN and not battle.forced.is_empty():
+				_show_caught()
 	_autosave()
 
 
-## The contacts this phase, before any opens (Ryan, 22 September): how many, who is in
-## each, and the player picks which to fight first and confirms. The map keeps showing
-## them tagged behind the panel.
-func _show_contacts() -> void:
+## A hunter has caught a machine (bible section 5): the warning, big and red over the map;
+## the catch stays lit and the button reads ENGAGE until it is fought. On a black band with red rules across
+## the map, and the map dimmed under it: red on the terrain alone never reads (Ryan, 22
+## September).
+func _show_caught() -> void:
 	_refresh()
-	if _contacts != null:
-		_contacts.queue_free()
-		_contacts = null
-	# First the warning, big and red over the map; then the panel slides in and the map
-	# zooms to the first contact (Ryan, 22 September: dramatic, and in the player's face).
-	# On a black band with red rules across the map, and the map dimmed under it: red on
-	# the terrain alone never reads (Ryan, 22 September).
 	var warn := Control.new()
 	warn.position = Vector2(0, MAP_Y)
 	warn.size = Vector2(W, LOG_Y - 10.0 - INFO_H - MAP_Y)
@@ -774,13 +838,14 @@ func _show_contacts() -> void:
 		rule.position = Vector2(0, y)
 		rule.size = Vector2(W, 4.0)
 		warn.add_child(rule)
-	var text := Hud.label("CONTACT", 84, Palette.ENEMY, Hud.display_bold())
+	var text := Hud.label("CAUGHT", 84, Palette.ENEMY, Hud.display_bold())
 	text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	text.position = band.position
 	text.size = band.size
 	warn.add_child(text)
-	var sub := Hud.label("%d SKIRMISH%s // ENGAGE" % [battle.pending.size(), "" if battle.pending.size() == 1 else "ES"], 16, Palette.INK, Hud.mono())
+	var n := battle.forced.size()
+	var sub := Hud.label("%d MACHINE%s HUNTED DOWN // FIGHT FIRST" % [n, "" if n == 1 else "S"], 16, Palette.INK, Hud.mono())
 	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	sub.position = Vector2(0, band.position.y + band.size.y - 34.0)
 	sub.size = Vector2(W, 20)
@@ -793,43 +858,166 @@ func _show_contacts() -> void:
 	# Two beats, drawn out (Ryan, 22 September: one flash looked accidental).
 	tw.tween_property(warn, "modulate", Color(1, 1, 1, 1), 0.3)
 	tw.tween_interval(0.6)
-	for _i in range(1):
-		tw.tween_property(warn, "modulate", Color(1, 1, 1, 0.1), 0.15)
-		tw.tween_interval(0.12)
-		tw.tween_property(warn, "modulate", Color(1, 1, 1, 1), 0.15)
-		tw.tween_interval(0.55)
+	tw.tween_property(warn, "modulate", Color(1, 1, 1, 0.1), 0.15)
+	tw.tween_interval(0.12)
+	tw.tween_property(warn, "modulate", Color(1, 1, 1, 1), 0.15)
+	tw.tween_interval(0.55)
 	tw.tween_property(warn, "modulate", Color(1, 1, 1, 0), 0.4)
 	tw.tween_callback(warn.queue_free)
-	tw.tween_callback(_build_contact_panel)
 	if DisplayServer.get_name() == "headless":
 		tw.kill()
 		warn.queue_free()
-		_build_contact_panel()
 
 
-## The boss's contact (Ryan, 25 September): no panel and no choice. The family's theme starts
-## from its top, the map looks at the boss, the reveal plays over it (BossReveal), and the
-## handover runs on its own into the one fight with every machine in it. Headless, the
-## fight opens at once.
+# ---------------------------------------------------------------- orders and the fight
+
+## A pack looked at with nothing in hand: its fight is shown on the map.
+var _inspect_pack: Unit = null
+
+
+## Order a machine onto a pack (bible section 5): along a drawn route first, if one was drawn,
+## then the fight from the route's end if the pack is in range there; with no route, from the
+## farthest hex in range its move left reaches, or where it stands. A second tap on the pack it
+## is already ordered onto takes the order back.
+func _order_attack(m: Unit, target: Unit, draft: Array) -> void:
+	if draft.is_empty() and battle.order_of(m) == target:
+		battle.cancel_order(m)
+		Sound.play("ui_back")
+		_select(null)
+		_refresh()
+		_autosave()
+		return
+	if not battle.can_target(target) or battle.actions_left(m) <= 0:
+		Sound.play("ui_back")
+		if not battle.forced.is_empty():
+			_show_details("A HUNTER'S CATCH COMES FIRST\norder machines onto the hunter, then ENGAGE", Vector2.ZERO)
+		_refresh()
+		return
+	var from := m.pos
+	var route: Array = []
+	if not draft.is_empty():
+		if not battle.move_along(m, draft):
+			Sound.play("ui_back")
+			_select(null)
+			_refresh()
+			return
+		route = draft
+	else:
+		var h := battle.attack_hex(m, target)
+		if h == Battle.NO_HEX:
+			Sound.play("ui_back")
+			_show_details("OUT OF REACH\n%s cannot get within %d of it this turn" % [m.display_name, m.attack_range], Vector2.ZERO)
+			_refresh()
+			return
+		if h != m.pos:
+			route = battle.move_to(m, h)
+	var ordered := battle.order(m, target)
+	if not ordered:
+		Sound.play("ui_back")   # the drawn route ended out of range: it moved, and no order
+	if route.is_empty():
+		if ordered:
+			Sound.play("plot")
+		_select(null)
+		_refresh()
+		_autosave()
+		return
+	_play_move(m, from, route, false)
+
+
+## The fight the map shows: the pack the finger is on while a route is drawn, with the machine
+## drawing it; else the next fight ENGAGE opens; else a pack looked at. The roster (Battle.roster)
+## and "committed", the machines in it.
+func _fight_preview() -> Dictionary:
+	if _draft_unit != null and _drag_target != null and battle.can_target(_drag_target):
+		var r := battle.roster(_drag_target)
+		if not r.is_empty():
+			var team: Array = _ordered_onto(r["targets"])
+			if not team.has(_draft_unit):
+				team.append(_draft_unit)
+			r["committed"] = team
+			return r
+	var f := battle.next_fight()
+	if not f.is_empty():
+		var r := battle.roster(f["target"])
+		if not r.is_empty():
+			var team: Array = f["machines"].duplicate()
+			if r["pinned"] != null and not team.has(r["pinned"]):
+				team.push_front(r["pinned"])
+			r["committed"] = team
+			return r
+	if _inspect_pack != null and battle.field.units.has(_inspect_pack):
+		var r := battle.roster(_inspect_pack)
+		if not r.is_empty():
+			r["committed"] = _ordered_onto(r["targets"])
+			return r
+	return {}
+
+
+func _ordered_onto(targets: Array) -> Array:
+	var out: Array = []
+	for uid in battle.orders.keys():
+		if targets.has(battle.orders[uid]):
+			out.append(battle.field.unit_by_id(int(uid)))
+	return out
+
+
+## The one button: ENGAGE while a fight is ready, END TURN otherwise.
+func _on_main_button() -> void:
+	if battle.state != Battle.State.PLAN or _map.is_playing():
+		return
+	if battle.next_fight().is_empty():
+		_on_end_turn()
+	else:
+		_engage()
+
+
+## ENGAGE: the next fight opens with the machines ordered onto it; the boss's fight plays its
+## reveal.
+func _engage() -> void:
+	var f := battle.next_fight()
+	if f.is_empty():
+		return
+	var r := battle.roster(f["target"])
+	if r.is_empty():
+		return
+	var group: Array = []
+	group.append_array(r["targets"])
+	group.append_array(r["joins"])
+	if r["pinned"] != null:
+		group.append(r["pinned"])
+	for m in f["machines"]:
+		if not group.has(m):
+			group.append(m)
+	_select(null)
+	_details.visible = false
+	_inspect_pack = null
+	var sk := battle.engage()
+	if sk == null:
+		Sound.play("ui_back")
+		_refresh()
+		return
+	_map.attack = {}
+	if battle.boss_fight:
+		_play_boss_reveal(sk, group)
+	else:
+		_enter_skirmish(sk, group, true)
+
+
+## The boss's fight (Ryan, 25 September): the family's theme starts from its top, the map
+## looks at the boss, the reveal plays over it (BossReveal), and the handover runs on its own
+## into the fight. Headless, the fight opens at once.
 var _reveal: BossReveal = null
 
-func _show_boss_contact() -> void:
+func _play_boss_reveal(sk: Skirmish, group: Array) -> void:
 	_refresh()
-	if _contacts != null:
-		_contacts.queue_free()
-		_contacts = null
 	var bs := Sound.boss_set(battle.faction)
 	if not bs.is_empty():
 		Sound.music(bs, true)
 	if DisplayServer.get_name() == "headless":
-		_open_skirmish(0)
+		_enter_skirmish(sk, group, true)
 		return
 	var boss := battle.boss
-	var group: Array = battle.pending[0] if not battle.pending.is_empty() else []
-	var hexes: Array = []
-	for u in group:
-		hexes.append(u.pos)
-	_map.set_highlight(hexes)
+	_map.set_highlight([boss.pos])
 	_map.focus_on(_map.center(boss.pos) + Vector2(0, 60.0), 1.6)
 	var reveal := BossReveal.new()
 	reveal.position = Vector2(0, MAP_Y)
@@ -847,160 +1035,10 @@ func _show_boss_contact() -> void:
 		if _reveal != null:
 			_reveal.queue_free()
 			_reveal = null
-		_open_skirmish(0))
+		_enter_skirmish(sk, group, true))
 	_reveal = reveal
 	add_child(reveal)
 	Sound.play("contact")
-
-
-## The contact panel: one contact at a time, with portraits, paged with arrows; paging
-## zooms the map to that fight and lights its hexes.
-var _contact_index := 0
-
-func _build_contact_panel() -> void:
-	_contact_index = 0
-	_contacts = HudPanel.new(16.0)
-	_contacts.position = Vector2(12.0, LOG_Y - 10.0 - INFO_H - 200.0)
-	_contacts.custom_minimum_size = Vector2(W - 24.0, 300.0)
-	add_child(_contacts)
-	_fill_contact_panel()
-	var start := _contacts.position + Vector2(0, 240.0)
-	var end := _contacts.position
-	_contacts.position = start
-	var tw := create_tween()
-	tw.tween_property(_contacts, "position", end, 0.22).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-
-
-func _fill_contact_panel() -> void:
-	for c in _contacts.get_children():
-		c.queue_free()
-	var n := battle.pending.size()
-	_contact_index = clampi(_contact_index, 0, n - 1)
-	var group: Array = battle.pending[_contact_index]
-	var rows := VBoxContainer.new()
-	rows.position = Vector2(14, 12)
-	rows.size = Vector2(W - 52.0, 276.0)
-	rows.add_theme_constant_override("separation", 8)
-	_contacts.add_child(rows)
-	# Header: which contact this is, and the arrows.
-	var head := HBoxContainer.new()
-	head.add_theme_constant_override("separation", 12)
-	var prev_btn := HudButton.new("◀", func() -> void:
-		_contact_index = (_contact_index - 1 + n) % n
-		_fill_contact_panel())
-	prev_btn.custom_minimum_size = Vector2(54, 40)
-	prev_btn.visible = n > 1
-	head.add_child(prev_btn)
-	var title := Hud.label("CONTACT %d OF %d" % [_contact_index + 1, n], 22, Palette.ENEMY, Hud.display_bold())
-	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	head.add_child(title)
-	var next_btn := HudButton.new("▶", func() -> void:
-		_contact_index = (_contact_index + 1) % n
-		_fill_contact_panel())
-	next_btn.custom_minimum_size = Vector2(54, 40)
-	next_btn.visible = n > 1
-	head.add_child(next_btn)
-	rows.add_child(head)
-	# Portraits: the machines, a VS, the packs.
-	var faces := HBoxContainer.new()
-	faces.alignment = BoxContainer.ALIGNMENT_CENTER
-	faces.add_theme_constant_override("separation", 10)
-	var db := ContentDB.load_default()
-	for u in group:
-		if not u.is_player():
-			continue
-		faces.add_child(_portrait_mech(u, db))
-	var vs := Hud.label("VS", 26, Palette.MUTED, Hud.display_bold())
-	vs.custom_minimum_size = Vector2(60, 0)
-	vs.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	vs.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	faces.add_child(vs)
-	for u in group:
-		if not u.is_enemy():
-			continue
-		faces.add_child(_portrait_pack(u))
-	rows.add_child(faces)
-	# The ground the fight is on, named before ENGAGE (decided 22 September).
-	var ground := Hud.label("GROUND // %s" % str(BattleMap.TERRAIN_NAMES.get(battle.ground_terrain(group), "plain")).to_upper(), 14, Palette.HUD, Hud.mono())
-	ground.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	rows.add_child(ground)
-	var gap := Control.new()   # the portraits say who; ENGAGE sits at the foot of the panel
-	gap.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	rows.add_child(gap)
-	var btn := HudButton.new("ENGAGE", _open_skirmish.bind(_contact_index))
-	btn.sound = ""   # the dive is the sound
-	btn.filled = true
-	btn.custom_minimum_size = Vector2(0, 54)
-	rows.add_child(btn)
-	# The map looks at this fight and dims the others.
-	var hexes: Array = []
-	var mid := Vector2.ZERO
-	for u in group:
-		hexes.append(u.pos)
-		mid += _map.center(u.pos)
-	mid /= float(group.size())
-	_map.set_highlight(hexes)
-	_map.focus_on(mid + Vector2(0, 90.0), 1.9)
-
-
-func _portrait_mech(u: Unit, db: ContentDB) -> Control:
-	var box := VBoxContainer.new()
-	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	var maker := str(db.chassis.get(u.chassis_id, {}).get("maker", "minerva"))
-	var view := MechView3D.make(u.chassis_id, maker, "clean", "badger", MechView3D.YAW_FRONT, Vector2i(96, 96), false, u.paint, MechView3D.plan_for(u, db))
-	# The view lives in the portrait's own box, so it dies with the panel. It used to hang off
-	# the screen root: every contact, and every tap of the panel's arrows, left another pair of
-	# viewports rendering every frame for the rest of the battle, until the phone's GL driver
-	# ran out of memory (Ryan, 26 September: crashes after some minutes on Android).
-	box.add_child(view)
-	view.strip_silhouette()
-	var tr := TextureRect.new()
-	tr.texture = view.texture
-	tr.custom_minimum_size = Vector2(96, 96)
-	tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE   # the render may be denser than 96 (FINE MAP); the box stays 96
-	tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	box.add_child(tr)
-	var lbl := Hud.label(str(u.display_name), 11, Palette.HUD, Hud.mono())
-	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	box.add_child(lbl)
-	return box
-
-
-func _portrait_pack(u: Unit) -> Control:
-	var box := VBoxContainer.new()
-	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	var tr := TextureRect.new()
-	var fid := BattleMapView.foe_sprite_id(u)
-	tr.texture = Sprites.combat_foe(fid)   # the battle sprite, as the skirmish shows it
-	if tr.texture == null:
-		tr.texture = Sprites.map_foe(fid)
-	tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	tr.custom_minimum_size = Vector2(96, 96)
-	tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE   # the render may be denser than 96 (FINE MAP); the box stays 96
-	tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	tr.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	box.add_child(tr)
-	var lbl := Hud.label("%s ×%d" % [u.display_name, u.strength] if u.strength > 0 else str(u.display_name).to_upper(), 11, Palette.ENEMY, Hud.mono())
-	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	box.add_child(lbl)
-	return box
-
-
-var _contacts: Control = null
-
-
-func _open_skirmish(index: int = 0) -> void:
-	if _contacts != null:
-		_contacts.queue_free()
-		_contacts = null
-	var group: Array = battle.pending[clampi(index, 0, battle.pending.size() - 1)] if not battle.pending.is_empty() else []
-	var sk := battle.open_skirmish_at(index)
-	if sk == null:
-		_map.set_highlight([])
-		_after_step()
-		return
-	_enter_skirmish(sk, group, true)
 
 
 ## Open the skirmish screen on a fight: with the handover for a contact just made, or
@@ -1009,7 +1047,7 @@ func _enter_skirmish(sk: Skirmish, group: Array, handover: bool) -> void:
 	var screen: SkirmishScreen = SKIRMISH_SCENE.instantiate()
 	screen.sk = sk
 	screen.back_label = "BACK TO THE FIELD"
-	if battle.boss_contact and not Sound.boss_set(battle.faction).is_empty():
+	if battle.boss_fight and not Sound.boss_set(battle.faction).is_empty():
 		screen.music_set = Sound.boss_set(battle.faction)   # the theme already playing since contact carries on
 	screen.setup(sk)
 	screen.back_requested.connect(_on_skirmish_back)
@@ -1035,7 +1073,7 @@ const HANDOVER_FLAT_HEX := 7.5
 func _play_handover(group: Array, screen: SkirmishScreen) -> void:
 	var hexes: Array = []
 	var mid := Vector2.ZERO
-	if battle.boss_contact and battle.boss != null:
+	if battle.boss_fight and battle.boss != null:
 		# The boss's fight holds every machine, so the group's centroid is the middle of the
 		# field: the dive aims at the boss's hex alone (Ryan, 29 September: the spread came
 		# out of the centre of the map, not the boss's tile).
@@ -1047,7 +1085,7 @@ func _play_handover(group: Array, screen: SkirmishScreen) -> void:
 			mid += _map.center(u.pos)
 		mid /= maxf(1.0, float(group.size()))
 	_map.set_highlight(hexes)
-	_map.pending = [group]        # the map stays frozen on this fight until the cut
+	_map.fight_group = group      # the map stays frozen on this fight until the cut
 	# The spread grows out of the ground the fight is on, the same hex the skirmish
 	# takes its terrain from (Ryan, 22 September: it came out of the wrong tile).
 	_map.flatten_at = _map._origin + Hex.to_pixel(Battle.ground_hex(group), BattleMapView.HEX_SIZE)
@@ -1071,6 +1109,7 @@ func _play_handover(group: Array, screen: SkirmishScreen) -> void:
 		add_child(screen)
 		scrim.move_to_front()
 		_map.flatten_r = 0.0
+		_map.fight_group = []
 		_map.set_highlight([])
 		_map.zoom = z0
 		_map.scroll_x = scroll0.x
@@ -1090,7 +1129,8 @@ func _notification(what: int) -> void:
 		_skirmish = null
 
 
-## The skirmish's Back button: apply the result, then the next contact or back to the plan.
+## The skirmish's Back button: apply the result, then back to the turn (or the next fight a
+## hunter forced, straight to its panel).
 func _on_skirmish_back() -> void:
 	if _skirmish != null:
 		_skirmish.queue_free()
@@ -1099,7 +1139,10 @@ func _on_skirmish_back() -> void:
 	Sound.music("map")
 	if _built_hud != Settings.hud:
 		_build()   # the colour changed in the skirmish's menu: this screen catches up
-	_after_step()
+	_refresh()
+	if battle.state == Battle.State.DONE:
+		_show_outcome()
+	_autosave()
 
 
 func _show_outcome() -> void:
@@ -1108,11 +1151,11 @@ func _show_outcome() -> void:
 	match battle.outcome:
 		Battle.Outcome.VICTORY:
 			_overlay_title.text = "RIFT SEALED"
-			_overlay_text.text = "The %s is down. The gate holds at %d after %d phases and %d skirmishes." % [
+			_overlay_text.text = "The %s is down. The gate holds at %d after %d turns and %d skirmishes." % [
 				battle.boss.display_name if battle.boss != null else "boss", f.gate_hp, f.phase, battle.skirmishes_fought]
 		Battle.Outcome.GATE_FALLEN:
 			_overlay_title.text = "GATE FALLEN"
-			_overlay_text.text = "The horde is in the city. Phase %d." % f.phase
+			_overlay_text.text = "The horde is in the city. Turn %d." % (f.phase + 1)
 		_:
 			_overlay_title.text = "ALL WRECKED"
 			_overlay_text.text = "Every machine is scrap. The gate stands at %d, undefended." % f.gate_hp

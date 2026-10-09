@@ -81,7 +81,7 @@ func test_chassis_validator_wants_one_way_of_moving_and_moves_in_tens() -> void:
 	two["traits"] = ["tracked", "walker"]
 	db.chassis["twoways"] = two
 	var none: Dictionary = db.chassis["badger"].duplicate(true)
-	none["traits"] = ["stealth"]
+	none["traits"] = ["defense"]
 	db.chassis["noway"] = none
 	var odd: Dictionary = db.chassis["badger"].duplicate(true)
 	odd["movespeed"] = 7

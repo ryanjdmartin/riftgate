@@ -279,8 +279,8 @@ func finish_battle() -> Dictionary:
 		for i in range(WIPE_PHASES):
 			if b.field.gate_hp <= 0:
 				break
-			b.field.compute_intents()
-			b.field.resolve_phase({})
+			b.field.enemy_turn()
+			b.field.phase += 1
 	var report := {"turn": turn, "city": c.id, "faction": b.faction, "guest": b.guest, "wiped": wiped,
 		"phases": b.field.phase, "lost": [], "wrecked": [], "salvage": 0}
 	# The machines. (Salvage is the kills of every fight however it ended, tallied here at the
