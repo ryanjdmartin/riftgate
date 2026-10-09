@@ -220,8 +220,8 @@
    }
   },
   "prairie_dog": {
-   "when": "The thirteenth notes, 6 October.",
-   "note": "The guards are on the body now, the wheels free under them (Ryan: the bash bars to the fenders, not the hubs; the wheels moving freely and independently). Each arch comes down at its ends: at its outer end an apron across the front of the front tyre (or the back of the rear) down to the hub, shielding it and closing the open wedge where the arch rose off the tyre, with the bash bars' hoop bolted to its face; at its inner end a drop to the long skirt plate, which hangs from the four of them, its hub bosses on it. All of it rocks with the body, raised a unit and a half so it stays clear of the ground in the rev. The front arches level and squared, meeting the nose with their lip, as the twelfth notes left them.",
+   "when": "9 October, sixth pass.",
+   "note": "The front arches and the aprons trimmed to the hood (Ryan: minimise the fronts' overlap with it): each front arch's inner edge now follows the hood's own edge a quarter of a unit inside it, with a section at the hood's kink so it follows the taper, where it had run a unit to a unit and a half over the hood on one straight line; the aprons stop a quarter of a unit inside the body's flank, not a whole unit. The arches' depth, a whole unit lower, and the rev at five degrees as Ryan settled them; the livery aprons, the axle covers and the wheels as before.",
    "images": [
     {
      "file": "prairie_dog/prairie_dog_front.png",
@@ -237,7 +237,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the twelfth notes, 6 October (the plate and bars on the hubs, the arches open at their ends)",
+    "summary": "Before: 9 October, fifth pass (the front arches and aprons reaching a unit or more over the hood)",
     "images": [
      {
       "file": "prairie_dog/before_prairie_dog_front.png",
@@ -246,6 +246,10 @@
      {
       "file": "prairie_dog/before_prairie_dog_rear.png",
       "alt": "Earlier: prairie_dog, rear"
+     },
+     {
+      "file": "prairie_dog/before_prairie_dog_side.png",
+      "alt": "Earlier: prairie_dog, left side"
      }
     ]
    }

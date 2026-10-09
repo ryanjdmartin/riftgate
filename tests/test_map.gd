@@ -62,8 +62,8 @@ func test_words_by_way_of_moving() -> void:
 	assert_true(M.passable(T.WATER, ["walker"]), "a walker may enter water")
 	for w in M.WAYS:
 		assert_eq(M.move_cost(T.ROAD, [w]), M.move_cost(T.PLAIN, [w]), "road and plain are one ground for %s" % w)
-	assert_eq(M.way_of(["stealth", "wheeled"]), "wheeled", "the way of moving is found among the traits")
-	assert_eq(M.way_of(["stealth"]), "", "no way of moving is the horde's rule")
+	assert_eq(M.way_of(["defense", "wheeled"]), "wheeled", "the way of moving is found among the traits")
+	assert_eq(M.way_of(["defense"]), "", "no way of moving is the horde's rule")
 	assert_eq(M.move_word(T.WATER, ["walker"]), "slow", "the word for the codex")
 	assert_true(M.ground_words(T.WATER).contains("packs never enter"), "the terrain tap says what the horde does")
 	assert_true(M.ground_words(T.RUINS).contains("slow for tracked, wheeled, hover"), "the ways grouped by word: %s" % M.ground_words(T.RUINS))

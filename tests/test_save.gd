@@ -23,7 +23,7 @@ func _battle(seed_value: int = 5) -> Battle:
 	return b
 
 
-## Park a pack next to a mech and root it so contact is certain after the phase.
+## Park a pack beside a machine, rooted and pushing, so it can be attacked.
 func _engage(b: Battle, sq: Unit, m: Unit) -> void:
 	var spot := m.pos
 	for n in Hex.neighbors(m.pos):
@@ -32,7 +32,7 @@ func _engage(b: Battle, sq: Unit, m: Unit) -> void:
 			break
 	sq.pos = spot
 	sq.movespeed = 0
-	b.field.compute_intents()
+	sq.behaviour = "push"
 
 
 ## The same skirmish played from two copies of one state by the same bot with the same
@@ -66,7 +66,16 @@ func test_a_battle_in_plan_round_trips() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
 	var dest: Vector2i = b.destinations_for(m).keys()[0]
-	b.set_route(m, dest)
+	b.move_to(m, dest)
+	var hunted: Unit = b.mechs()[1]
+	var hunter: Unit = b.field.packs()[0]
+	_engage(b, hunter, hunted)
+	hunter.behaviour = "hunt"
+	hunter.prey = hunted.id
+	b.forced = b.field.forced_fights()
+	b.spent[b.mechs()[2].id] = 1
+	b.fought[b.mechs()[2].id] = true
+	b.orders[hunted.id] = hunter
 	var d := SaveGame.to_dict(b)
 	var text := JSON.stringify(d)
 	var back := SaveGame.from_dict(JSON.parse_string(text))
@@ -76,7 +85,16 @@ func test_a_battle_in_plan_round_trips() -> void:
 	assert_eq(back.field.units.size(), b.field.units.size(), "every unit")
 	assert_eq(back.map.terrain, b.map.terrain, "the same map from the same seed")
 	assert_eq(back.field.gate_hp, b.field.gate_hp, "the gate")
-	assert_eq(back.route_for(m.id), b.route_for(m.id), "the route being plotted")
+	assert_eq(back.field.unit_by_id(m.id).pos, dest, "the machine where it moved")
+	assert_eq(back.moves_left(back.field.unit_by_id(m.id)), b.moves_left(m), "with the move it has left")
+	assert_true(back.can_undo(back.field.unit_by_id(m.id)), "and its move can still be taken back")
+	assert_eq(back.spent, b.spent, "who has fought")
+	assert_eq(back.fought, b.fought, "and who recharges")
+	assert_eq(back.forced.size(), 1, "the fight a hunter forced")
+	assert_eq((back.forced[0]["prey"] as Unit).id, hunted.id, "on its prey")
+	assert_eq((back.forced[0]["hunters"][0] as Unit).id, hunter.id, "by its hunter")
+	assert_eq(back.orders.size(), 1, "the order given")
+	assert_eq((back.orders[hunted.id] as Unit).id, hunter.id, "onto its pack")
 	var bm: Unit = back.field.unit_by_id(m.id)
 	assert_eq(bm.display_name, m.display_name, "the machine by id")
 	assert_eq(bm.die.size(), m.die.size(), "its die")
@@ -100,9 +118,8 @@ func test_a_skirmish_under_way_resumes_and_plays_on_alike() -> void:
 	var m: Unit = b.mechs()[0]
 	var sq: Unit = b.field.packs()[0]
 	_engage(b, sq, m)
-	b.commit()
-	assert_eq(b.state, Battle.State.SKIRMISH, "contact")
-	var sk := b.open_next_skirmish()
+	var sk := b.attack(sq, [m])
+	assert_eq(b.state, Battle.State.SKIRMISH, "a fight")
 	assert_true(sk != null, "a fight")
 	sk.begin()
 	sk.start_round()
@@ -149,6 +166,7 @@ func test_a_skirmish_under_way_resumes_and_plays_on_alike() -> void:
 	assert_eq(back.state, b.state, "the battle's state after")
 	assert_eq(back.field.units.size(), b.field.units.size(), "the same units left")
 	assert_eq(back.field.rift_pressure, b.field.rift_pressure, "the same pressure")
+	assert_eq(back.actions_left(back.field.unit_by_id(m.id)), b.actions_left(m), "and the machine spent alike")
 
 
 func test_damage_and_statuses_survive_the_trip() -> void:

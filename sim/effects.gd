@@ -46,7 +46,7 @@ const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "roll_max"],
 	"on_crit": ["multiply_damage", "add_damage", "add_burn", "vent_heat", "add_crit_damage"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
@@ -623,6 +623,25 @@ static func screen_chance(u) -> int:
 	return clampi(best, 0, 100)
 
 
+## Whether no hunter ever picks this machine as its prey (never_hunted, static; the Prairie
+## Dog's, bible section 7, the cars).
+static func never_hunted(u) -> bool:
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "never_hunted":
+			return true
+	return false
+
+
+## Actions a turn this machine has past the one every machine has (extra_action, static; the
+## Dingo's second, bible section 7, the cars).
+static func extra_actions(u) -> int:
+	var n := 0
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "extra_action":
+			n += int(pair[0].get("value", 0)) * pair[1].stacks
+	return maxi(0, n)
+
+
 ## The machine has just lost hull to a blow or a bite (never to its own overheat): every
 ## on_hull_damage passive fires (the Crucible's Overheating). Returns the names of the
 ## statuses granted, for the log; shield and vent from it are the caller's to apply.
@@ -801,6 +820,8 @@ static func effect_text(eff: Dictionary) -> String:
 		"screen_withdraw": body = "on a withdrawal this machine is out before the enemy strikes, and each ally has a %s%% chance to slip out with it; a blow at a covered machine is lost" % vs
 		"stack_status": body = "gains a stack of %s" % str(STATUS.get(str(v), {}).get("name", str(v)))
 		"add_attack": body = "attack +%s" % vs
+		"never_hunted": body = "no hunter ever picks it as its prey"
+		"extra_action": body = "%s more action%s a turn: move and fight again" % [vs, "" if int(v) == 1 else "s"]
 		"scramble_reroll": body = "the next reroll of this die lands anywhere"
 		"free_reroll": body = "%s free reroll%s of this die a round" % [vs, "" if int(v) == 1 else "s"]
 		"shield_per_heat": body = "+%s shield for every 10 heat carried" % vs

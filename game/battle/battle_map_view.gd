@@ -2,8 +2,9 @@ class_name BattleMapView
 extends Control
 
 ## The battlefield as a scrolling, touchable map in the overlay style. Draws terrain, the gate
-## and the rift, every pack's previewed move, the routes the player has plotted, the hexes
-## the selected mech can reach, and the units themselves.
+## and the rift, every pack's walk on the enemy's turn and every hunter's lock, the fights a
+## hunter forced, the fight being set up, the hexes the selected machine can reach, and the
+## units themselves (bible section 4, the round row).
 ##
 ## Gestures: drag to scroll; tap a hex (the screen decides what that means); hold a unit for
 ## its readout; drag from one of the player's machines to draw its route by hand (Ryan, 25
@@ -41,9 +42,13 @@ const TERRAIN := {
 }
 
 var field: Battlefield
-var routes: Dictionary = {}          # mech id -> Array[Vector2i]
 var selected: Unit = null
-var pending: Array = []              # contact groups waiting to be fought: the map freezes on them
+var walks: Dictionary = {}           # pack id -> Battlefield.Walk: where each pack walks on the enemy's turn (the screen keeps it)
+var forced: Array = []               # the fights hunters forced, first in line (Battle.forced)
+var attack: Dictionary = {}          # the fight shown (Battle.roster) with "committed": the machines in it; empty for none
+var orders: Dictionary = {}          # mech id -> the pack it is ordered onto (Battle.orders): drawn as a line to it
+var fight_group: Array = []          # the fight being entered: the map freezes on it through the handover
+var spent: Dictionary = {}           # machine id -> true: no action left this turn
 var flatten_at := Vector2.ZERO       # the handover into a skirmish: one more bleed source, growing
 var flatten_r := 0.0                 # its radius in hexes; 0 is none (tweened by the screen)
 var destinations: Dictionary = {}    # hexes the selected mech may end on
@@ -78,6 +83,7 @@ var _pinching := false
 var route_drawing := false          # the screen allows a route to be drawn from a machine (planning, nothing playing)
 var draft: Array = []               # the route being drawn, hexes after the machine's own; the screen keeps it legal
 var draft_spend := Vector2i(-1, 0)  # what it has spent and what a slow last step took (Battle.draft_spend), for the gauge at its end; x -1 shows none
+var draft_move: int = 0             # the move the draft spends from: what the machine has left this action
 var _press_unit: Unit = null        # the player's machine under the finger at press: a drag from it draws
 var _route_drag: Unit = null        # the machine whose route is being drawn, while it is
 var _draft_hex := Vector2i(-9999, -9999)   # the last hex the finger reported, so a hex is announced once
@@ -395,44 +401,29 @@ func _draw() -> void:
 		else:
 			Hud.stroke_poly(self, pts, Color(hud, 0.8), 1.5)
 
-	# Enemy previews: where each pack goes given the plan as it stands, from the same dry
-	# run that finds the contacts (Ryan, 22 September: a route that cuts a pack off shows
-	# in that pack's path), and none at all while a move is playing.
-	var contact_hexes: Dictionary = {}
-	if _anim.is_empty() and pending.is_empty():
-		var pv := _preview()
-		var res: Battlefield.PhaseResult = pv["result"]
-		for group in res.skirmishes:
-			for u in group:
-				contact_hexes[(pv["ends"] as Dictionary)[u.id]] = true
-		# Every pack's engagement zone where it will stand (decided 1 October): the whole
-		# rule, drawn. A zone nobody stands in is a thin outline; one with a fight in it is
-		# tinted red under a heavy outline, and a fight's packs share one outline.
-		var ends: Dictionary = pv["ends"]
-		_pack_zones(res.skirmishes, ends, field.packs())
+	# Where every pack walks on the enemy's turn (bible section 4), from where the machines
+	# stand now, and every hunter's lock on its prey; nothing while a move plays or a fight is
+	# entered. A fight a hunter forced comes first, so its marks have the map until it is fought.
+	if _anim.is_empty() and fight_group.is_empty() and forced.is_empty():
 		for sq in field.packs():
-			# What a pack will react to (decided 1 October), drawn before the plan is touched:
-			# an aggressive pack's reach as a ring, a hunter's lock on its prey.
-			if sq.behaviour == "aggressive":
-				_reach_ring(sq)
-			elif sq.behaviour == "hunt":
-				var prey := field.unit_by_id(sq.prey)
-				var hunt_path: Array = res.intents.get(sq.id, [])
-				if prey != null and (hunt_path.is_empty() or hunt_path[hunt_path.size() - 1] != ends.get(prey.id, prey.pos)):
-					_prey_lock(ends.get(prey.id, prey.pos))
-			var path: Array = res.intents.get(sq.id, [])
-			if path.is_empty():
+			var w: Battlefield.Walk = walks.get(sq.id, null)
+			if w == null:
 				continue
-			var dest: Vector2i = path[path.size() - 1]
-			# The same route mark as the player's (Ryan, 29 September: the new one is so good
-			# it should be both sides'), in steady red; the colour breathes only on the pack
-			# that was tapped. A contact or the gate needs no target lock: its own mark says it.
-			# The target lock stays at a contact too (Ryan, 30 September: the machine's kept
-			# its own, the pack's vanished under the contact mark); only the gate, with its
-			# own bar, needs none. The tapped pack alone breathes.
-			var owned := not map.gate_hexes.has(dest)
-			var col := INTENT   # the tapped pack's pulse is set inside _route, on the whole mark
-			_route(sq.pos, path, col, owned, false, sq.pos == inspected, true)
+			if w.prey != 0:
+				var prey := field.unit_by_id(w.prey)
+				if prey != null:
+					_prey_lock(prey.pos)
+			if not w.path.is_empty():
+				# The same route mark as the player's (Ryan, 29 September), in steady red; the
+				# colour breathes only on the pack that was tapped.
+				_route(sq.pos, w.path, INTENT, false, false, sq.pos == inspected, true)
+			var below := center(w.end) + Vector2(0.0, HEX_SIZE * 0.7)
+			if w.strikes:
+				_plaque(below, "STRIKES THE GATE", Palette.ENEMY, 1.5)
+			elif w.waits:
+				_plaque(below, "WAITS", Palette.MUTED, 1.5)
+			elif w.catches != 0:
+				_plaque(below, "CATCHES", Palette.ENEMY, 1.5)
 
 	# The gate selected: its footprint outlined, and the hexes it can be attacked from
 	# tinted (Ryan, 29 September: the bar lit alone did not say where the danger stands).
@@ -471,14 +462,6 @@ func _draw() -> void:
 		var ic := center(inspected)
 		Hud.brackets(self, Rect2(ic - Vector2(HEX_SIZE, HEX_SIZE) * 0.95, Vector2(HEX_SIZE, HEX_SIZE) * 1.9), HEX_SIZE * 0.45, Color(hud, 0.95), 2.5)
 
-	# The player's plotted routes.
-	for uid in routes.keys():
-		var u := field.unit_by_id(uid)
-		var route: Array = routes[uid]
-		if u == null or route.is_empty():
-			continue
-		_route(u.pos, route, hud, true, true, true)
-
 	# The route being drawn by hand: the same line, heavier, with the machine's move as a
 	# gauge at its end that the route drains (decided 2 October: the player never does
 	# arithmetic, so no numbers).
@@ -490,55 +473,67 @@ func _draw() -> void:
 			prev = p
 		Hud.stroke_poly(self, Hex.corners(prev, HEX_SIZE * 0.45), hud, 2.5)
 		if draft_spend.x >= 0:
-			_move_gauge(prev + Vector2(0.0, -HEX_SIZE * 1.0), gauge_cells(_route_drag.movespeed, draft_spend), hud)
+			_move_gauge(prev + Vector2(0.0, -HEX_SIZE * 1.0), gauge_cells(draft_move if draft_move > 0 else _route_drag.movespeed, draft_spend), hud)
 
-	# Contacts waiting to be fought (Ryan, 22 September): the map freezes on them, the
-	# units about to engage lit, and nothing of the next phase shows until they are done.
-	if not pending.is_empty() and _anim.is_empty():
-		var now: Dictionary = {}
-		for u in field.units:
-			now[u.id] = u.pos
-		_pack_zones(pending, now, [])
-		for group in pending:
-			var lit := _highlight.is_empty() or _highlight.has((group[0] as Unit).pos)
-			for u in group:
-				_contact_effect(u.pos, lit, u.is_enemy())
-	# The plan as it will resolve, from the resolver itself run dry (Ryan, 21 September:
-	# never ambiguous): every contact group, every pack stopped by a body block, every
-	# route that will be rejected.
-	if _anim.is_empty() and pending.is_empty():
-		var pv := _preview()
-		var res: Battlefield.PhaseResult = pv["result"]
-		var ends: Dictionary = pv["ends"]
-		for group in res.skirmishes:
-			var mid := Vector2.ZERO
-			var top_y := INF
-			var group_hexes: Array = []
-			for u in group:
-				group_hexes.append(ends[u.id])
-			var lit := _highlight.is_empty() or _highlight.has(group_hexes[0])
-			for u in group:
-				var c := center(ends[u.id])
-				mid += c
-				top_y = minf(top_y, c.y)
-				_contact_effect(ends[u.id], lit, u.is_enemy())
-			mid /= float(group.size())
-			# Who is in it: the machines against the packs, so the player knows what the
-			# skirmish will hold before locking in (Ryan, 22 September).
-			_plaque(Vector2(mid.x, top_y - HEX_SIZE * 0.95), "CONTACT // " + contact_label(group, ends), Palette.ENEMY, 2.0)
-		for sid in res.blocked:
-			var sq := field.unit_by_id(sid)
-			if sq != null:
-				_plaque(center(ends[sid]) + Vector2(0.0, HEX_SIZE * 0.7), "BLOCKED", Palette.MUTED, 1.5)
-		for sid in res.stalled:
-			# Held off every goal by its own side: it waits, and the plan says so (6 October).
-			var sq := field.unit_by_id(sid)
-			if sq != null:
-				_plaque(center(ends[sid]) + Vector2(0.0, HEX_SIZE * 0.7), "STALLED", Palette.MUTED, 1.5)
-		for mid_id in res.rejected:
-			var m := field.unit_by_id(mid_id)
-			if m != null:
-				_plaque(center(m.pos) + Vector2(0.0, HEX_SIZE * 0.7), "NO ROUTE", Palette.ENEMY, 1.5)
+	# The fights hunters forced (bible section 5): the hunter and its prey lit, the prey
+	# tagged; they come first on the player's turn.
+	if _anim.is_empty() and fight_group.is_empty():
+		for f in forced:
+			var prey: Unit = f["prey"]
+			for h in f["hunters"]:
+				_contact_effect((h as Unit).pos, true, true)
+			Hud.brackets(self, Rect2(center(prey.pos) - Vector2(HEX_SIZE, HEX_SIZE) * 0.9, Vector2(HEX_SIZE, HEX_SIZE) * 1.8), 12.0, Palette.ENEMY, 3.0)
+			_plaque(center(prey.pos) + Vector2(0.0, -HEX_SIZE * 1.05), "CAUGHT", Palette.ENEMY, 2.0)
+	# The orders (bible section 5): a line from each machine to the pack it is ordered onto, in
+	# the display's light, dashes crawling toward the pack.
+	if _anim.is_empty() and fight_group.is_empty():
+		for uid in orders.keys():
+			var m := field.unit_by_id(int(uid))
+			var target: Unit = orders[uid]
+			if m == null or target == null or not field.units.has(target):
+				continue
+			var a := center(m.pos)
+			var b := center(target.pos)
+			var dir := (b - a).normalized()
+			a += dir * HEX_SIZE * 0.55
+			b -= dir * HEX_SIZE * 0.6
+			draw_line(a, b, Color(hud, 0.35), 6.0)
+			_dashed_line(a, b, hud, HEX_SIZE * 0.2, fmod(_ring_t * 2.0, 2.0))
+			var side := Vector2(-dir.y, dir.x)
+			draw_polyline(PackedVector2Array([b - dir * 10.0 + side * 8.0, b, b - dir * 10.0 - side * 8.0]), hud, 3.0)
+	# The fight shown (bible section 5): the next one ENGAGE opens, the one a dragged machine
+	# is over, or a pack looked at. The attack range round the target in the display's light
+	# (where a machine must stand to join), every joining pack's ring in the enemy's, the packs
+	# in it lit, the machines in it bracketed.
+	if not attack.is_empty() and _anim.is_empty():
+		var targets: Array = attack.get("targets", [])
+		var reach: Dictionary = {}
+		for t in targets:
+			_zone_hexes(t, (t as Unit).pos, reach, _attack_reach())
+		for h in reach.keys():
+			_fill(h, Color(hud, 0.28))   # hot: on a phone every mark has come back wanting more
+		_region_outline(reach, hud, 3.0)
+		for j in attack.get("joins", []):
+			var ring: Dictionary = {}
+			_zone_hexes(j, (j as Unit).pos, ring)
+			_region_outline(ring, Color(Palette.ENEMY, 0.85), 2.0)
+		var group: Array = targets + attack.get("joins", [])
+		for u in group:
+			_contact_effect((u as Unit).pos, true, true)
+		for m in attack.get("committed", []):
+			var c := center((m as Unit).pos)
+			Hud.brackets(self, Rect2(c - Vector2(HEX_SIZE, HEX_SIZE) * 0.9, Vector2(HEX_SIZE, HEX_SIZE) * 1.8), 12.0, hud, 3.0)
+		if not targets.is_empty():
+			_plaque(center((targets[0] as Unit).pos) + Vector2(0.0, -HEX_SIZE * 1.05), "FIGHT // " + contact_text(attack.get("committed", []) + group), Palette.ENEMY, 2.0)
+	# The fight being entered: frozen on its units through the handover.
+	if not fight_group.is_empty():
+		for u in fight_group:
+			_contact_effect((u as Unit).pos, true, (u as Unit).is_enemy())
+	# A machine with no action left this turn says so.
+	if _anim.is_empty():
+		for m in field.mechs():
+			if spent.has(m.id):
+				_plaque(center(m.pos) + Vector2(0.0, HEX_SIZE * 0.7), "SPENT", Palette.MUTED, 1.5)
 
 	for u in field.units:
 		_draw_unit(u)
@@ -1162,57 +1157,8 @@ func _dashed_line(a: Vector2, b: Vector2, col: Color, dash: float, offset: float
 		k += 2.0
 
 
-## The packs' engagement zones (decided 1 October), each where its pack will stand. A zone
-## with a fight in it is tinted and heavily outlined, a fight's packs sharing one outline so
-## a merged fight reads as one shape; a zone nobody stands in is a thin outline only, so the
-## two differ by weight and fill and never by hue alone (Ryan is colourblind). Empty zones
-## go down first, so a fight's marks win where they overlap. `at` is where each unit
-## stands; `free_packs` are drawn empty when they are in no fight.
-func _pack_zones(groups: Array, at: Dictionary, free_packs: Array) -> void:
-	var in_fight := {}
-	for group in groups:
-		for u in group:
-			if (u as Unit).is_enemy():
-				in_fight[u.id] = true
-	for sq in free_packs:
-		if in_fight.has(sq.id) or not at.has(sq.id):
-			continue
-		var region: Dictionary = {}
-		_zone_hexes(sq, at[sq.id], region)
-		_region_outline(region, Color(Palette.ENEMY, 0.4), 1.5)
-	var breath := 0.5 + 0.5 * sin(_ring_t * 2.2)
-	for group in groups:
-		var region: Dictionary = {}
-		for u in group:
-			if (u as Unit).is_enemy() and at.has(u.id):
-				_zone_hexes(u, at[u.id], region)
-		var first: Unit = group[0]
-		var lit := _highlight.is_empty() or _highlight.has(at.get(first.id, first.pos))
-		var a := 1.0 if lit else 0.4
-		# Ground marks land with their alpha raised to 2.2 (Map3D._scene_alpha), so these
-		# read far fainter on the scene than the numbers say; the old zone sat at 0.30.
-		for h in region.keys():
-			_fill(h, Color(Palette.ENEMY, (0.26 + 0.08 * breath) * a))
-		_region_outline(region, Color(Palette.ENEMY, 0.9 * a), 2.5)
-
-
-## An aggressive pack's reach (decided 1 October): every hex its zone can fall on this
-## round, as a dashed red border crawling round the region, so it reads apart from a
-## zone's solid outline on the ground. End inside it and the pack comes for you.
-func _reach_ring(sq: Unit) -> void:
-	var region: Dictionary = field.reach_hexes(sq)
-	var col := Color(Palette.ENEMY, 0.75)
-	for h in region.keys():
-		var nb := Hex.neighbors(h)
-		var pts := Hex.corners(center(h), HEX_SIZE - 2.0)
-		for i in range(6):
-			var across: Vector2i = nb[(6 - i) % 6]
-			if not region.has(across) and field.map.has(across):
-				_dashed_line(pts[i], pts[(i + 1) % 6], col, HEX_SIZE * 0.18, fmod(_ring_t * 1.2, 2.0))
-
-
 ## A hunter's lock on its prey: the display's target rings in the enemy's register on the
-## hex the prey will stand on, when the hunter's route does not already end there.
+## prey's hex.
 func _prey_lock(h: Vector2i) -> void:
 	_field_hot = ENEMY_HOT
 	_field_deep = Color(Palette.ENEMY, 0.5)
@@ -1220,9 +1166,11 @@ func _prey_lock(h: Vector2i) -> void:
 	draw_circle(center(h), 3.5, ENEMY_HOT)
 
 
-## The hexes within a pack's zone of its anchor at `anchor`: pure hex distance from any of
-## its footprint hexes, structures left out of the region but not of the count.
-func _zone_hexes(sq: Unit, anchor: Vector2i, region: Dictionary) -> void:
+## The hexes within a unit's ring of its anchor at `anchor` (a pack's own, or `radius`):
+## pure hex distance from any of its footprint hexes, structures left out of the region but
+## not of the count.
+func _zone_hexes(sq: Unit, anchor: Vector2i, region: Dictionary, radius: int = -1) -> void:
+	var r := sq.zone if radius < 0 else radius
 	for o in sq.footprint:
 		var seed: Vector2i = anchor + o
 		var dist := {seed: 0}
@@ -1231,7 +1179,7 @@ func _zone_hexes(sq: Unit, anchor: Vector2i, region: Dictionary) -> void:
 			var h: Vector2i = queue.pop_front()
 			if field.map.has(h) and not field.map.is_structure(h):
 				region[h] = true
-			if int(dist[h]) >= sq.zone:
+			if int(dist[h]) >= r:
 				continue
 			for n in Hex.neighbors(h):
 				if not dist.has(n):
@@ -1322,7 +1270,7 @@ static func contact_text(group: Array) -> String:
 	return " + ".join(mechs) + " vs " + " + ".join(packs)
 
 
-## The contact's words with the ground it is fought on (decided 22 September).
+## The fight's words with the ground it is fought on (decided 22 September).
 func contact_label(group: Array, ends: Dictionary = {}) -> String:
 	var ground_h: Vector2i = Battle.ground_hex(group)
 	if ends.has((group[0] as Unit).id):
@@ -1343,21 +1291,12 @@ func _frame_x() -> Vector2:
 	return Vector2(left, left + hex_w * (field.map.width + 0.5) + HEX_SIZE * 0.44)
 
 
-## The machines whose routes the plan cannot carry right now (the NO ROUTE plaque).
-func rejected() -> Array:
-	return _preview().get("rejected", [])
-
-
-## The dry run of the phase, redone only when the plan changes.
-var _preview_key := ""
-var _preview_cache: Dictionary = {}
-
-func _preview() -> Dictionary:
-	var key := "%d|%s|%s" % [field.phase, str(routes), str(field.intents)]
-	if key != _preview_key:
-		_preview_key = key
-		_preview_cache = field.preview_phase(routes)
-	return _preview_cache
+## The widest attack range on the team: the ring drawn round a target.
+func _attack_reach() -> int:
+	var best := 0
+	for m in field.mechs():
+		best = maxi(best, m.attack_range)
+	return best
 
 
 # ---------------------------------------------------------------- the movement phase

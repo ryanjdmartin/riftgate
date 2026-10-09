@@ -5,8 +5,8 @@ extends SceneTree
 ## docs/map_survey.md and prints it.
 ##   perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/map_survey.gd -- --seeds 200
 ## Options: --seeds N (200), --type KIND (mixed; a key of BattleMap.KINDS for the detailed
-## report; the comparison at the end always runs every kind), --w W --h H (7 by 20, the
-## game's field), --move M (30, the reference move every way of moving is measured at; the
+## report; the comparison at the end always runs every kind), --w W --h H (Battle's default,
+## 9 by 20, the game's field), --move M (30, the reference move every way of moving is measured at; the
 ## packs at their own 20), --out path (docs/map_survey.md), --show SEED (print that seed's
 ## map as text instead, of --type's kind).
 ##
@@ -23,7 +23,7 @@ const OUT := "res://docs/map_survey.md"
 const WAYS := ["tracked", "walker", "wheeled", "hover", "flyer"]
 
 var seeds := 200
-var w := 7
+var w := Battle.DEFAULT_WIDTH   # the game's field: nine wide since 8 October
 var h := 20
 var move := 30
 var out_path := OUT

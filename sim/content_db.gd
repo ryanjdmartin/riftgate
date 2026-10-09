@@ -338,7 +338,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 	}
 
 
-## What the map needs of a foe type (decided 1 October): its pack's engagement zone, its
+## What the map needs of a foe type (bible section 5): its pack's ring (the `zone` key), its
 ## behaviour and caveat, and its move. Keyed by foe id, for Battlefield.foe_profiles; a
 ## boss's entry serves the boss unit. Defaults are the engine's when the content says nothing.
 func pack_profiles() -> Dictionary:
@@ -999,9 +999,9 @@ func _validate_foes(errs: Array[String]) -> void:
 		if f.has("stun_resist") and (int(f["stun_resist"]) < 0 or int(f["stun_resist"]) > 100):
 			errs.append("%s: stun_resist is a percent, 0 to 100" % where)
 		if f.has("zone") and (int(f["zone"]) < 1 or int(f["zone"]) > 4):
-			errs.append("%s: zone is the pack's engagement radius in hexes, 1 to 4" % where)
-		if f.has("behaviour") and not ["push", "aggressive", "hunt"].has(str(f["behaviour"])):
-			errs.append("%s: behaviour is push, aggressive or hunt" % where)
+			errs.append("%s: zone is the pack's ring in hexes, 1 to 4" % where)
+		if f.has("behaviour") and not ["push", "hunt"].has(str(f["behaviour"])):
+			errs.append("%s: behaviour is push or hunt" % where)
 		if f.has("hunts") and not ["nearest", "weakest", "strongest", "slowest", "fastest"].has(str(f["hunts"])):
 			errs.append("%s: hunts is nearest, weakest, strongest, slowest or fastest" % where)
 		if f.has("hunts") and str(f.get("behaviour", "push")) != "hunt":
