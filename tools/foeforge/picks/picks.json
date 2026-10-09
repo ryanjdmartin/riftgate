@@ -280,5 +280,11 @@
    "kept": "picks/summoner_promoted.png",
    "prompt": "A robed summoner with a horned headdress and flowing sleeves, arms raised to call something up, glowing runes stitched into its robes. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the tradition of Final Fantasy VI's and Chrono Trigger's boss art: ornate armour or robes with gold trim and flowing cloth, an oversized weapon or staff, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Summoner, a hero of the party who comes out of the volcano. The one who calls something bigger: The hero-plus-beast pair: the brain behind, the Golem in front. Light: lit from inside by heat, black rock and embers."
   }
+ },
+ "reference": {
+  "ghoul": {
+   "kept": "picks/ghoul_reference.png",
+   "note": "The September Ghoul's source render (seed 1 of the 15 September run, saved then as out/test_ghoul_1.png), cut into the old ghoul_combat.png (git 2bd7ffa). Ryan, 9 October: the one cut that read best at phone scale; the style reference for the forge."
+  }
  }
 }
