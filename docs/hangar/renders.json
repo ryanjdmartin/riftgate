@@ -220,8 +220,8 @@
    }
   },
   "prairie_dog": {
-   "when": "9 October, with the scout's role.",
-   "note": "The side skirts, their bash bars and the drops that hung them are gone (Ryan: the combat role reduced, the fast scout embraced), and everything on the chassis rides three and a half units higher over the same wheels, so the tyres sit down and away from their wells, a dune buggy's stance on the armoured car. The arches keep their aprons at the outer ends; the front arches level and squared, meeting the nose with their lip.",
+   "when": "9 October, second pass.",
+   "note": "The wheels tucked up closer under the arches (Ryan: too low and too far from the chassis, a gap): the chassis rides two units over them, not three and a half. A rounded axle housing under the floor along each axle, hub to hub, and a rounded ridge along each side of the floor joining them; from the game's camera the ridges show as a rail under each flank between the wheels, closing the daylight that showed there. The arches' aprons end at the arch's own outer edge, part of the well rather than a plate standing out past it. No side skirts, as the first pass left it.",
    "images": [
     {
      "file": "prairie_dog/prairie_dog_front.png",
@@ -237,7 +237,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the thirteenth notes, 6 October (the long skirt plate hung from drops at the arches, bash bars bolted to the aprons, hub bosses on the plate)",
+    "summary": "Before: 9 October, first pass (the skirts gone, the chassis three and a half units up, a gap over the wheels and daylight under the flanks, the aprons out past the wells)",
     "images": [
      {
       "file": "prairie_dog/before_prairie_dog_front.png",
@@ -246,6 +246,10 @@
      {
       "file": "prairie_dog/before_prairie_dog_rear.png",
       "alt": "Earlier: prairie_dog, rear"
+     },
+     {
+      "file": "prairie_dog/before_prairie_dog_side.png",
+      "alt": "Earlier: prairie_dog, left side"
      }
     ]
    }

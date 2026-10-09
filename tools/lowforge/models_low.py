@@ -1164,8 +1164,9 @@ def _wheel(b, cx, cy, r, w, label="wheel", lit=False):
 
 
 ## The Prairie Dog's ride height over its wheels (Ryan, 9 October: the tyres down and away from
-## their wells, a dune buggy's stance); every part on its chassis rides this much higher.
-LIFT_PRAIRIE = 3.5
+## their wells, a dune buggy's stance; then, the same day, 3.5 left a gap between the wheels and
+## the chassis, so a little less); every part on its chassis rides this much higher.
+LIFT_PRAIRIE = 2.0
 
 
 def _prairie_body(y):
@@ -1192,7 +1193,8 @@ def prairie_dog(b):
     side, none in the middle, nothing hand-modelled. Ryan, 9 October, with the scout's role:
     the side skirts, their bash bars and the drops that hung them are gone, and everything
     on the chassis rides LIFT higher over the same wheels, so the tyres sit down and away from
-    their wells, a dune buggy's stance on the armoured car."""
+    their wells, a dune buggy's stance on the armoured car; a rounded housing under the body
+    along each axle, hub to hub, and the arches' aprons no wider than the arches."""
     R = 10.0
     L = LIFT_PRAIRIE   # the ride height over the wheels, on every part of the chassis
     # The wheels spin on their hubs, the front pair steering (the joint pass, 2 October):
@@ -1226,9 +1228,11 @@ def prairie_dog(b):
             # Each arch comes down at its outer end (Ryan, 6 October, the thirteenth notes): an
             # apron across the tyre's front (or back), shielding it and closing the open wedge
             # where the arch rose off the tyre; on the body, the wheels moving free under it.
+            # The apron ends at the arch's own outer edge (Ryan, 9 October: they stood out past
+            # the wells; part of the well, not a plate bolted on beside it).
             out_y, in_y = (yw + 12.0, yw - 12.0) if yw > 0.0 else (yw - 12.0, yw + 12.0)
             e = 1.0 if yw > 0.0 else -1.0
-            b.box(min(s * 15.0, s * 26.6), max(s * 15.0, s * 26.6), min(out_y - e * 0.8, out_y + e * 0.6), max(out_y - e * 0.8, out_y + e * 0.6), 9.0 + L, R + 11.0 + L, "steel.plate", "apron")
+            b.box(min(s * 15.0, s * 23.0), max(s * 15.0, s * 23.0), min(out_y - e * 0.8, out_y + e * 0.6), max(out_y - e * 0.8, out_y + e * 0.6), 9.0 + L, R + 11.0 + L, "steel.plate", "apron")
             if yw < 0.0:
                 b.loft([(yw - 12.0, rect(s * 18.0, 10.0, R + 7.0 + L, R + 11.0 + L)), (yw, rect(s * 18.0, 10.0, R + 11.0 + L, R + 15.0 + L)), (yw + 12.0, rect(s * 18.0, 10.0, R + 7.0 + L, R + 11.0 + L))], "steel.plate", "arch")
                 continue
@@ -1251,6 +1255,15 @@ def prairie_dog(b):
     # The body: a wedge lofted from a squared tail to a low raked nose, a chin plate under.
     b.loft([(-30.0, rect(0.0, 28.0, 8.0 + L, 24.0 + L)), (-6.0, rect(0.0, 30.0, 8.0 + L, 28.0 + L)), (12.0, rect(0.0, 28.0, 8.0 + L, 24.0 + L)), (32.0, rect(0.0, 20.0, 10.0 + L, 15.0 + L))], "steel.panel", "body")
     b.box(-10.0, 10.0, 30.0, 33.0, 8.0 + L, 12.0 + L, "steel.dark", "chin")
+    # The axle covers (Ryan, 9 October: a rounded ridge on the underside, so the wheels stop
+    # hanging off a floating body): a housing along each axle, hub to hub, and a rounded ridge
+    # along each side of the floor joining them, half sunk into it. Only the side ridges show
+    # from the game's camera, a rail under the flank between the wheels; the housings are what
+    # they join.
+    for yw in (18.0, -18.0):
+        b.prism("x", 0.0, yw, R, 3.4, 31.0, "steel.dark", 8, "axle_cover", phase=math.pi / 8)
+    for s in (-1.0, 1.0):
+        b.prism("y", s * 11.5, 0.0, R, 3.0, 36.0, "steel.dark", 8, "axle_ridge", phase=math.pi / 8)
     for s in (-1.0, 1.0):
         b.box(min(s * 14.0, s * 15.5), max(s * 14.0, s * 15.5), -26.0, 6.0, 12.0 + L, 20.0 + L, "livery.livery2", "flank_stripe")
     # The windscreen: armoured glass lying flush on the raked roof, slit-narrow, a brow
