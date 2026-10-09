@@ -111,8 +111,13 @@ and promoted, a beaten hero an empty slot; four domains, everything keyed to thr
 foe move in the genre's name, announced on a plaque in the other world's own window with the replay
 holding for it. `docs/enemy_roster_proposal.md` is the pitched roster (four domains, their wildlife and
 heroes, the engine gaps, the holes, five decisions wanted). Nothing in content or the engine changed yet.
-Next: Ryan's picks, then the plaque (ready to build, in the to-do's engine section), then the Bomb and the
-Gel, then the content revision re-keying three to four.
+The plaque is built (the same session, 394 tests green): `game/ui/plaque.gd` draws the other world's window
+(a blue gradient box, a double white border, a code-drawn 5x7 pixel face) and the skirmish's replay merges
+the turn's blows and specials by the sim's order (`Skirmish.turn_specials`, `seq`, `name` and `boss` on
+every blow), announcing a special always and a boss's blow once per move, holding a second each;
+`RIFTGATE_PLAQUE_DEBUG=1` fires names constantly. Not judged on a phone yet; the hold and the pixel size are
+placeholders. Next: Ryan's picks on the roster, the plaque judged running, then the Bomb and the Gel, then
+the content revision re-keying three to four.
 
 **The harness in tabs, 8 October** (a cloud session; Ryan: the long column ran off the glass,
 and loadouts and the enemy side wanted setting for tests). TEAM, ENEMY and SETUP tabs scroll

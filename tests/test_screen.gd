@@ -422,3 +422,52 @@ func test_the_eye_and_reroll_keep_off_the_grounds() -> void:
 	assert_true(seam <= s.MECH_Y, "the mechs' ground starts before the mechs")
 	assert_true(s.DIE_Y >= s.LOG_Y + SkirmishScreen.LOG_H, "the dice sit under the log")
 	s.free()
+
+
+func test_replay_steps_order_specials_among_blows_and_name_only_the_named() -> void:
+	# The plaque (decided 9 October): a special always announces, a boss's blow announces
+	# once per move, a plain blow never; the steps follow the sim's order, not the lists'.
+	var s := _screen(5)
+	var before := s._before_enemy_turn()
+	var ghoul: Foe = s.sk.field_foes()[0]
+	var boss := Foe.make("colossus", 140, 30)
+	boss.size = 2
+	boss.action = {"id": "storm", "name": "Bone Storm", "kind": "attack", "strikes": 3}
+	var blow := {"mech": 0, "absorbed": 0, "through": 10, "blocked": false, "broke_shield": false, "injured": false, "shield": 0, "hull": 50}
+	var b1 := blow.duplicate(); b1["foe"] = boss; b1["seq"] = 1; b1["name"] = "Bone Storm"; b1["boss"] = true
+	var b2 := blow.duplicate(); b2["foe"] = boss; b2["seq"] = 2; b2["name"] = "Bone Storm"; b2["boss"] = true
+	var b3 := blow.duplicate(); b3["foe"] = ghoul; b3["seq"] = 4; b3["name"] = "Claw"; b3["boss"] = false
+	s.sk.turn_events = [b1, b2, b3]
+	s.sk.turn_specials = [{"foe": ghoul, "name": "Protect", "kind": "defend", "seq": 3}]
+	var steps := s._replay_steps(before)
+	assert_eq(steps.size(), 4, "three blows and a special")
+	var seqs: Array = []
+	for st in steps:
+		seqs.append(int(st["seq"]))
+	assert_eq(seqs, [1, 2, 3, 4], "in the sim's order")
+	assert_eq(str(steps[0]["announce"]), "Bone Storm", "the boss's move is announced before its first strike")
+	assert_eq(str(steps[1]["announce"]), "", "and not again for its second")
+	assert_eq(str(steps[2]["announce"]), "Protect", "the special is announced")
+	assert_true((steps[2]["blow"] as Array).is_empty(), "and lands no blow")
+	assert_eq(str(steps[3]["announce"]), "", "a plain blow shows no plaque")
+	assert_eq((steps[3]["blow"] as Array).size(), 7, "and lands as before")
+	s.free()
+
+
+func test_the_plaque_shows_a_name_in_its_pixel_face() -> void:
+	var p := Plaque.new()
+	p.px = 4.0
+	p.announce("1000 Needles", 1.0)
+	assert_true(p.is_showing(), "showing")
+	assert_eq(p.text, "1000 NEEDLES", "upper case, the face has no lower")
+	assert_eq(p.size, p.size_for("1000 NEEDLES"), "sized to its name")
+	assert_true(p.size.x > p.size_for("FIRE").x, "a longer name, a wider window")
+	assert_eq(Plaque.glyph_rows("A").size(), 7, "seven rows a glyph")
+	assert_eq(Plaque.glyph_rows("~"), Plaque.glyph_rows(" "), "a character the face lacks is a space")
+	var s := _screen(5)
+	assert_true(s._plaque != null, "the screen carries one")
+	s._announce("Protect")
+	assert_true(s._plaque.is_showing(), "and announces on it")
+	assert_true(s._plaque.position.x > 0.0 and s._plaque.position.x + s._plaque.size.x < SkirmishScreen.W, "centred over the foes")
+	s.free()
+	p.free()

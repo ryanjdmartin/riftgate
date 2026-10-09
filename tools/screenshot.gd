@@ -105,6 +105,10 @@ func _apply_pose() -> void:
 			# Spend the first mech's face on the first front foe: the attack animation plays.
 			var foe: Foe = s.sk.front[0]
 			s._use_die(0, foe)
+		"plaque":
+			# The other world's window announcing a foe's named move (RIFTGATE_SHOT_FRAME=20,
+			# past its fade-in).
+			s._announce("Self-Destruct")
 		"enemyturn":
 			# Thin every shield so the enemy turn breaks some: the replay and shatter play.
 			for ms in s.sk.mechs:

@@ -56,6 +56,10 @@ const BOTTOM_BTN := Vector2(210, 60)
 const PITCH := 172.0
 const LOG_LINES := 7
 const ENEMY_BEAT := 0.45   # seconds between the enemy's blows at ENEMY PACE 1; the setting divides it
+const PLAQUE_HOLD := 1.0   # seconds the replay holds on a named move's plaque (decided 9 October; a placeholder, judged running); the pace setting does not shorten a read
+const PLAQUE_Y := -10.0    # the plaque's top, from the back rank's row: over the foes, where the other world is
+## RIFTGATE_PLAQUE_DEBUG=1: the plaque fires one of the field's move names after another.
+static var PLAQUE_DEBUG := OS.get_environment("RIFTGATE_PLAQUE_DEBUG") == "1"
 
 var sk: Skirmish
 var locked: Array[bool] = []
@@ -87,6 +91,8 @@ var _roll_label: Label
 var _codex: CodexBox                 # the spec plate, shared with the battle screen
 var _mech_3d: Array[MechView3D] = [] # parallel to _mech_views; null where the mech is a sprite
 var _bg: HudBackdrop = null
+var _plaque: Plaque = null           # the other world's window: a foe's named move, announced
+var _plaque_debug_at := 0.0
 
 
 var _fight_t := 0.0                  # seconds since the feed opened: the header's clock
@@ -103,6 +109,15 @@ func _process(delta: float) -> void:
 	if _bg == null:
 		return
 	_fight_t += delta
+	if PLAQUE_DEBUG and _plaque != null and not _plaque.is_showing() and _fight_t - _plaque_debug_at > PLAQUE_HOLD + 1.2:
+		_plaque_debug_at = _fight_t
+		var names: Array = []
+		for f in sk.field_foes():
+			for a in f.actions:
+				names.append(str(a.get("name", "")))
+		if names.is_empty():
+			names = ["Protect", "1000 Needles", "Self-Destruct", "Bone Storm"]
+		_announce(str(names[int(_fight_t / (PLAQUE_HOLD + 1.2)) % names.size()]))
 	var sec := int(_fight_t)
 	if sec != _clock_sec:
 		_clock_sec = sec
@@ -445,6 +460,11 @@ func _build() -> void:
 	_replay_shade.visible = false
 	_replay_shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(_replay_shade)
+	# The plaque sits over the foes' rows and above everything but the menu; it places
+	# itself on each announcement, since its width is its name's.
+	_plaque = Plaque.new()
+	_plaque.px = 4.0 * H / BASE_H
+	add_child(_plaque)
 
 	# The display reading the fight: every few seconds one brief analysis event on a random
 	# unit or die (brackets and a meter, a telemetry box, a tear, a recalculation).
@@ -1374,14 +1394,8 @@ func _enemy_beat() -> float:
 ## broken shield shattering. Then `then` runs: the next round, or the outcome. Off the tree
 ## (tests, headless) it all happens at once.
 func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
-	var hits: Array = []
-	for ev in sk.turn_events:
-		var mi: int = ev["mech"]
-		if mi >= 0 and mi < _mech_views.size():
-			hits.append([before["views"].get(ev["foe"]), _mech_views[mi], bool(ev["broke_shield"]),
-				bool(ev.get("blocked", false)), int(ev["shield"]), int(ev["hull"]),
-				int(ev.get("absorbed", 0)) + int(ev.get("through", 0))])
-	if not is_inside_tree() or (hits.is_empty() and sk.overheats.is_empty()):
+	var steps := _replay_steps(before)
+	if not is_inside_tree() or (steps.is_empty() and sk.overheats.is_empty()):
 		then.call()
 		return
 	_set_phase("ENEMY PHASE")
@@ -1401,9 +1415,13 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 			v.queue_redraw()
 	var beat := _enemy_beat()
 	var tw := create_tween()
-	for h in hits:
-		tw.tween_callback(_land_blow.bind(h))
-		tw.tween_interval(beat)
+	for st in steps:
+		if not str(st["announce"]).is_empty():
+			tw.tween_callback(_announce.bind(str(st["announce"])))
+			tw.tween_interval(PLAQUE_HOLD)
+		if not (st["blow"] as Array).is_empty():
+			tw.tween_callback(_land_blow.bind(st["blow"]))
+			tw.tween_interval(beat)
 	if not sk.overheats.is_empty():
 		tw.tween_callback(_land_overheats)
 		tw.tween_interval(beat)
@@ -1411,6 +1429,49 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 	tw.tween_callback(func() -> void:
 		_replay_shade.visible = false
 		then.call())
+
+
+## The enemy's turn as the replay plays it, in the order it happened: every blow (with the
+## struck mech's gauges after it) and every special, merged by the sim's sequence numbers.
+## Each step is {seq, announce, blow}: `announce` is the name the plaque shows first (a
+## special's always; a boss's blow's once per move, so a three-strike storm says it once; a
+## plain blow's never), and `blow` is the blow to land after it, or empty for a special.
+func _replay_steps(before: Dictionary) -> Array:
+	var steps: Array = []
+	for ev in sk.turn_events:
+		var mi: int = ev["mech"]
+		if mi < 0 or mi >= _mech_views.size():
+			continue
+		steps.append({"seq": int(ev.get("seq", steps.size())), "foe": ev["foe"], "name": str(ev.get("name", "")),
+			"named": bool(ev.get("boss", false)), "announce": "",
+			"blow": [before["views"].get(ev["foe"]), _mech_views[mi], bool(ev["broke_shield"]),
+				bool(ev.get("blocked", false)), int(ev["shield"]), int(ev["hull"]),
+				int(ev.get("absorbed", 0)) + int(ev.get("through", 0))]})
+	for sp in sk.turn_specials:
+		steps.append({"seq": int(sp.get("seq", 0)), "foe": sp["foe"], "name": str(sp.get("name", "")),
+			"named": true, "announce": "", "blow": []})
+	steps.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a["seq"]) < int(b["seq"]))
+	var last_foe = null
+	var last_name := ""
+	for st in steps:
+		if bool(st["named"]) and not (st["foe"] == last_foe and str(st["name"]) == last_name):
+			st["announce"] = str(st["name"])
+		last_foe = st["foe"]
+		last_name = str(st["name"])
+	return steps
+
+
+## The plaque: the move's name in the other world's window, centred over the foes' rows,
+## above everything but the menu.
+func _announce(name: String) -> void:
+	if _plaque == null:
+		return
+	var sz := _plaque.size_for(name.to_upper())
+	_plaque.position = Vector2((W - sz.x) * 0.5, BACK_Y + PLAQUE_Y * H / BASE_H)
+	_plaque.announce(name, PLAQUE_HOLD)
+	_plaque.move_to_front()
+	if _menu != null:
+		_menu.move_to_front()
 
 
 ## One blow of the replay: [foe view or null, mech view, broke shield, blocked, shield after,

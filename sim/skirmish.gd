@@ -75,8 +75,14 @@ var log: Array[String] = []
 ## The most recent attack, for the screen to show: {mech, target, rolled, final, crit, ranged}.
 var last_roll: Dictionary = {}
 ## Every blow of the last enemy turn, in order, for the screen to replay:
-## {foe, mech (index), absorbed, through, blocked, broke_shield, injured, shield, hull}.
+## {foe, mech (index), absorbed, through, blocked, broke_shield, injured, shield, hull,
+## seq, name, boss}. `seq` orders it among the turn's specials; `name` is the move's shown
+## name and `boss` whether a massive foe struck, for the plaque (decided 9 October).
 var turn_events: Array = []
+## Every special of the last enemy turn (a defend, buff or debuff in place of a blow), for
+## the screen to announce on its plaque in order: {foe, name, kind, seq}.
+var turn_specials: Array = []
+var _seq: int = 0   # the order of the turn's blows and specials, shared by both lists
 ## Every mech that burnt at the end of the last enemy turn, for the screen to land after
 ## the blows: {mech (index), over, hull}.
 var overheats: Array = []
@@ -719,6 +725,8 @@ func end_round() -> int:
 ## out. Shared by the end of a round and by a withdrawal.
 func _enemy_turn() -> void:
 	turn_events.clear()
+	turn_specials.clear()
+	_seq = 0
 	overheats.clear()
 	# Foes act in the order they stand: front rank left to right, then the back rank. Each
 	# foe's statuses tick at the start of its action (burning may kill it first), a
@@ -953,6 +961,8 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 	var a := f.action
 	var effect := str(a.get("effect", ""))
 	var value := int(a.get("value", 0))
+	turn_specials.append({"foe": f, "name": str(a.get("name", "")), "kind": Foe.kind_of(a), "seq": _seq})
+	_seq += 1
 	match effect:
 		"harden":
 			# Armour for a turn: the status carries the action's own number, flat off every blow,
@@ -1283,7 +1293,9 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	# The mech's gauges after the blow ride along, so a replay can step them down blow by blow.
 	turn_events.append({"foe": source, "mech": mechs.find(ms), "absorbed": r["absorbed"], "through": r["through"],
 		"blocked": r["blocked"], "broke_shield": had_shield and ms.unit.shield == 0, "injured": r["injures"],
-		"shield": ms.unit.shield, "hull": ms.unit.hull})
+		"shield": ms.unit.shield, "hull": ms.unit.hull, "seq": _seq,
+		"name": str(source.action.get("name", "")) if source != null else "", "boss": source != null and source.is_massive()})
+	_seq += 1
 	if r["blocked"]:
 		log.append("%s hits %s: shield -%d, blocked" % [source.display_name, ms.unit.display_name, r["absorbed"]])
 	elif r["absorbed"] > 0:

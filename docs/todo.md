@@ -70,7 +70,8 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 
 ## Engine
 
-- [ ] The plaque (decided 9 October, bible section 5): a foe's named move (every defend, buff or debuff, every boss blow) shows the other world's window over the foes' rows during the enemy replay, blue box, double white border, pixel face, at the foes' pixel scale, and the replay holds about a second for it; a plain blow shows none; `RIFTGATE_PLAQUE_DEBUG=1` fires it constantly; judged running by Ryan
+- [x] The plaque (decided 9 October, bible section 5; built the same day: `Plaque`, the skirmish's replay merging blows and specials by the sim's order, `RIFTGATE_PLAQUE_DEBUG=1`; the hold a second, the pixel four design units, both placeholders for Ryan to judge running on the phone)
+- [ ] Judge the plaque running on the phone (Ryan): its hold (`SkirmishScreen.PLAQUE_HOLD`), its size (`Plaque.px`), its place over the back rank, whether a boss's plain blow earns one, whether it wants a sound of its own
 - [ ] The domains' engine gaps, once Ryan picks the roster (bible section 9, the recommended row): a summon on death, a flee, a blow that ends the foe, a cure and a revive on an ally, a foe-side interpose and retaliate, a blow at every machine, a rare pack that flees on the map, the Mimic as loot, placement and the bleed by domain; then four domains in content with the sound sets, the guest rule, the finals' count and the sheet's palettes re-keyed from three
 
 - [x] The campaign state and the between-battle rules (6 October, first pass on Ryan's go; bible section 3's rows of 6 October): `sim/campaign.gd` (cities and gates, rifts rolled as fronts, the roster and its shop, salvage, tokens, offers owed, blueprints, the threat and the finale), `sim/profile.gd` (what outlives a run), the run and the profile in `sim/save.gd`, `sim/battle_bot.gd` and `tools/campaign_run.gd` playing whole runs

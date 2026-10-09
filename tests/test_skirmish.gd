@@ -2875,3 +2875,32 @@ func test_the_hush_the_eruption_and_the_unravel_run() -> void:
 	s3.end_round()
 	assert_eq(Effects.corrupt_stacks(c, s3.mechs[0].face_index), 1, "the first machine's showing entry is corrupted")
 	assert_eq(Effects.corrupt_stacks(d, s3.mechs[1].face_index), 1, "and the second's")
+
+
+func test_the_replay_hears_specials_and_the_names_of_blows_in_order() -> void:
+	# The plaque (decided 9 October): a special is recorded beside the blows with a shared
+	# order, and every blow carries its move's name and whether a massive foe struck.
+	var sk := Skirmish.new(1, 2)
+	sk.add_mech(_mech("A", Die.single(Face.attack(10, L)), 40, 100))
+	var folder := _ghoul(100, 10)
+	folder.actions = [_special("defend", "harden", {"value": 10})]
+	folder.action = folder.actions[0]
+	var striker := _ghoul(100, 10)
+	striker.size = 2
+	sk.add_foes([folder, striker])
+	sk.begin()
+	sk.start_round()
+	sk.end_round()
+	assert_eq(sk.turn_specials.size(), 1, "one special this turn")
+	assert_eq(str(sk.turn_specials[0]["name"]), "Harden", "it carries the move's name")
+	assert_eq(str(sk.turn_specials[0]["kind"]), "defend", "and its kind")
+	assert_eq(sk.turn_events.size(), 1, "one blow this turn")
+	assert_eq(str(sk.turn_events[0]["name"]), "Attack", "the blow carries its move's name")
+	assert_true(bool(sk.turn_events[0]["boss"]), "and that a massive foe struck")
+	var spec_seq := int(sk.turn_specials[0]["seq"])
+	var blow_seq := int(sk.turn_events[0]["seq"])
+	assert_true(spec_seq != blow_seq, "one order for both lists")
+	assert_eq(spec_seq < blow_seq, sk.front[0] == folder, "whoever stands left acts first, and the order says so")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(sk.turn_specials.size(), 1, "the lists start over each turn")
