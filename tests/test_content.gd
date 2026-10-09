@@ -1101,3 +1101,25 @@ func test_every_component_derives_a_sound_the_game_plays() -> void:
 			continue
 		assert_true(not layers.is_empty(), "%s has a sound" % id)
 		assert_true(not Sound.blow(layers).is_empty(), "%s's sound %s has a blow" % [id, layers])
+
+
+func test_a_locked_component_is_never_a_blueprint() -> void:
+	# Ryan, 9 October: locked components are powerful and unique, which is why they are locked.
+	var db := _fresh()
+	var locked := ""
+	var plain := ""
+	for id in db.chassis.keys():
+		if locked.is_empty() and not db.chassis[id].get("fixed", []).is_empty():
+			locked = str(db.chassis[id]["fixed"][0])
+		if plain.is_empty() and int(db.chassis[id].get("tier", 0)) == 1 and not db.chassis[id].get("loadout", []).is_empty():
+			plain = str(id)
+	assert_true(not locked.is_empty() and not plain.is_empty(), "the content has a locked component and a tier-one stock")
+	assert_eq(db.component_tier(locked), 0, "a locked component has no tier")
+	for bp in db.starting_blueprints():
+		assert_false(db.is_fixed(str(bp)), "no starting blueprint is locked anywhere: %s" % bp)
+	db.chassis[plain]["loadout"][0] = locked
+	assert_true(_has_error(db, "locked on a chassis, so no hardpoint stocks it"), "a hardpoint stocking a locked component is refused")
+	assert_eq(db.component_tier(locked), 0, "and even then it is never a blueprint")
+	db = _fresh()
+	db.components[locked]["tier"] = 2
+	assert_true(_has_error(db, "locked on a chassis, so it carries no tier"), "a locked component storing a tier is refused")

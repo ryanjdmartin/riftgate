@@ -608,7 +608,7 @@
    "design": {
     "fantasy": "A flat pearl-white lens of a hull that rides on lift fans sunk flush into its wings and pitches like a helicopter to move. Its heat suite is its weapon: the hotter it runs, the deeper every burn and every buff it lays. The ray's barb is its tail, lit at the tip; its mouth is the lance under the nose.",
     "niche": "hot status amplifier",
-    "notes": "Proposed and decided 2 October (Ryan picked Stingray over Lionfish and Sea Wasp; Lionfish was Claude's lead). The second Aphelion machine, carrying the heat idea weighed and parked when the Baboon's passive was chosen (28 September). Cooling 0 by design: it never cools on its own, the Radiator Sail is its only brake, so every round is a heat decision; heat_max 100 so the suite has five steps to climb. Propulsion by maker (Ryan, 2 October): Aphelion's hovers and aircraft are aquatic, fans and rotors in places, so the Stingray's lift is ducted fans flush in the wing discs; Kestrel keeps the big boosters; the exposed-rotor fan-copter (the Banshee register) is kept free for a later Aphelion flyer, and W&S flyers would be traditional helicopter profiles. Numbers, designation and kit are Claude's fills, Ryan's to move. Ryan, 2 October: five extra Burning at 100 heat is probably silly, and easy to tune; the passive double-dips through Primed (the Primed stacks it lays are deepened, and so are the burns those blows lay), a knob for the runner. 9 October, the content revision: the Pulse Vacillator became the Halo Shield (Ryan the same day: pick the stock by design and balance, never to give a component a home; the Zenith Emitter was its biggest spend alone, the Repeater among its smallest)."
+    "notes": "Proposed and decided 2 October (Ryan picked Stingray over Lionfish and Sea Wasp; Lionfish was Claude's lead). The second Aphelion machine, carrying the heat idea weighed and parked when the Baboon's passive was chosen (28 September). Cooling 0 by design: it never cools on its own, the Radiator Sail is its only brake, so every round is a heat decision; heat_max 100 so the suite has five steps to climb. Propulsion by maker (Ryan, 2 October): Aphelion's hovers and aircraft are aquatic, fans and rotors in places, so the Stingray's lift is ducted fans flush in the wing discs; Kestrel keeps the big boosters; the exposed-rotor fan-copter (the Banshee register) is kept free for a later Aphelion flyer, and W&S flyers would be traditional helicopter profiles. Numbers, designation and kit are Claude's fills, Ryan's to move. Ryan, 2 October: five extra Burning at 100 heat is probably silly, and easy to tune; the passive double-dips through Primed (the Primed stacks it lays are deepened, and so are the burns those blows lay), a knob for the runner. 9 October, the content revision: the Pulse Vacillator became the Halo Shield (Ryan the same day: pick the stock by design and balance, never to give a component a home; the Zenith Emitter was its biggest spend alone, the Repeater among its smallest). 9 October (Ryan: a locked component is never a blueprint; that is why it is locked): the Solar Flare Array is the Baboon's locked piece, so the Stingray's hardpoint takes the Incendiary Shells, the plain indirect burn, and the passive keeps a burn to read."
    },
    "codex": "",
    "hull": 80,
@@ -628,7 +628,7 @@
     "photosphere_lance"
    ],
    "loadout": [
-    "solar_flare_array",
+    "incendiary_shells",
     "halo_shield",
     "zenith_emitter",
     "aurora_lattice",

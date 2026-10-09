@@ -473,6 +473,8 @@ func chassis_tier(chassis_id: String) -> int:
 
 
 func component_tier(component_id: String) -> int:
+	if is_fixed(component_id):
+		return 0   # locked: powerful and unique, never a blueprint (Ryan, 9 October)
 	var best := 0
 	for id in chassis.keys():
 		if chassis[id].get("loadout", []).has(component_id):
@@ -482,6 +484,15 @@ func component_tier(component_id: String) -> int:
 	if best > 0:
 		return best
 	return int(components.get(component_id, {}).get("tier", 0))
+
+
+## Is this component locked on some chassis (its `fixed` list)? A locked component is the
+## machine's own: no hardpoint stocks it, it has no tier, and it is never a blueprint.
+func is_fixed(component_id: String) -> bool:
+	for id in chassis.keys():
+		if chassis[id].get("fixed", []).has(component_id):
+			return true
+	return false
 
 
 ## The chassis of one tier, in content order.
@@ -932,6 +943,13 @@ func _validate_chassis(errs: Array[String]) -> void:
 			stocked_ids[cid] = true
 		for cid in chassis[id].get("fixed", []):
 			fixed_ids[cid] = true
+	for cid in fixed_ids.keys():
+		# Locked components are powerful and unique (Ryan, 9 October): never a blueprint, so
+		# no hardpoint stocks one and none carries a tier.
+		if stocked_ids.has(cid):
+			errs.append("component %s: locked on a chassis, so no hardpoint stocks it (a locked component is never a blueprint)" % cid)
+		if components.get(cid, {}).has("tier"):
+			errs.append("component %s: locked on a chassis, so it carries no tier" % cid)
 	for cid in components.keys():
 		var c: Dictionary = components[cid]
 		if stocked_ids.has(cid) and c.has("tier"):

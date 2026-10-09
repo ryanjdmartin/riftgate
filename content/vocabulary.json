@@ -1023,10 +1023,10 @@
    "id": "fixed_component",
    "category": "equipment",
    "name": "Fixed component",
-   "codex": "A component built into the chassis: always on the die, never removed, never sold, and it uses no hardpoint. The Badger's claw and its plating are fixed.",
+   "codex": "A component built into the chassis: always on the die, never removed, never sold, and it uses no hardpoint. It is the machine's own: no other machine carries one, and it can never be built.",
    "status": "implemented",
    "design": {
-    "holes": "Decided against unlocking fixed slots for money (18 September)."
+    "holes": "Decided against unlocking fixed slots for money (18 September). Ryan, 9 October: locked components are powerful and unique, never blueprints, so no hardpoint stocks one and none carries a tier (the validator holds it; ContentDB.component_tier answers 0)."
    }
   },
   {
