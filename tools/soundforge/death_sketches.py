@@ -24,6 +24,7 @@ the page sets it beside what the game plays now.
     tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 3   # the third
     tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 4   # the fourth
     tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 5   # the fifth
+    tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 6   # the sixth
 """
 import json
 import math
@@ -599,6 +600,80 @@ def death5(variant):
     return room(b, decay=0.25, mix=0.1)
 
 
+# ---------------------------------------------------------------- the sixth cut (Ryan, 9 October)
+# Minerva: every boom so far began on the same explosion front (the forge's thud from 160 Hz,
+# its burst to 5 kHz), so lowering what came after it never moved what the ear latches onto.
+# So "boom... BOOM" from scratch: each boom its own front, a kick-like thump whose fall starts
+# where it is pitched, its noise body low-passed in step, and saturated so a phone (which plays
+# almost nothing under 220 Hz) hears the front's harmonics; the second lower, bigger and longer.
+# Kestrel: the crash with more of a tail, the crackles after much louder. Aphelion lands. The
+# Arsenal: the cry lower still, static and sputtering over the top.
+
+VOICE_AT6 = {"minerva": 1.4, "kestrel": 1.45, "arsenal": 1.3}
+
+
+def boom(f0, f1, dur, gain=1.0, body_cut=600.0, sub=0.0):
+    """A boom built from its front: a thump falling from f0 to f1 over the first tenth of a
+    second (its pitch is the front the ear hears), a noise body low-passed at body_cut, the
+    whole saturated for the speaker's band, and its air after it."""
+    n = n_of(dur)
+    t = t_of(n)
+    f = f1 + (f0 - f1) * np.exp(-t / 0.035)
+    thump = np.sin(2.0 * math.pi * np.cumsum(f) / SR) * F.env_pts(n, [(0.0, 0.0), (0.002, 1.0), (0.12, 0.7), (dur, 0.0)])
+    body = F.lp(F.noise(n), body_cut, order=3) * F.env_pts(n, [(0.0, 0.0), (0.003, 1.0), (dur * 0.3, 0.35), (dur, 0.0)]) * 1.2
+    b = F.sat((thump * 1.4 + body) * 1.8, 2.6)
+    if sub > 0.0:
+        rumble = F.lp(F.noise(n), 60.0) * F.env_pts(n, [(0.0, 0.0), (0.05, 1.0), (dur, 0.0)]) * sub
+        b = mix(b, F.sat(rumble * 2.5, 2.5))
+    b = mix(b, FX.boom_tail(dur * 0.9, 0.5, cut=body_cut * 0.6))
+    pad = np.zeros(n_of(0.5))
+    b = b + F.bp(np.concatenate([F.sat(b * 1.5, 3.0), pad]), 180.0, 1400.0)[:len(b)] * 0.6   # the speaker's band, as heft, kept below the old front
+    return b * gain
+
+
+def death6(maker):
+    if maker == "minerva":
+        # boom ... BOOM: the first smaller and pitched higher, the second lower, bigger, longer,
+        # with the hull's sub under it.
+        b = boom(190.0, 70.0, 0.7, 0.5, body_cut=650.0)
+        b = at(b, boom(105.0, 32.0, 1.5, 1.6, body_cut=330.0, sub=1.2), 0.62)
+    elif maker == "kestrel":
+        b = whoosh(0.85, 0.3, 250.0, 2400.0)
+        hit = 0.85
+        ground = mix(F.thud(120.0, 30.0, 0.7, click=1.4, drive=4.0, body_gain=2.0), F.burst(0.12, 120.0, 1600.0, decay=0.04) * 0.9, FX.boom_tail(1.4, 0.65))
+        b = at(b, FX.heft(ground, 0.7), hit)
+        b = at(b, ignition(1.1), hit + 0.02)
+        b = at(b, grit(0.9, 0.7), hit + 0.03)
+        n = n_of(1.6)
+        settle = F.lp(F.noise(n), 400.0) * F.env_pts(n, [(0.0, 0.0), (0.1, 1.0), (1.6, 0.0)]) * 0.35
+        b = at(b, F.sat(settle * 2.0, 2.0), hit + 0.2)
+        b = at(b, crackles(2.4, 1.1), hit + 0.25)
+    else:
+        n = n_of(0.45)
+        t = t_of(n)
+        roar_up = F.lp_var(F.sat(F.lp(F.noise(n), 260.0) * 3.0, 3.0), 300.0 + 900.0 * (t / 0.45) ** 1.5) * (t / 0.45) ** 1.4 * 0.9
+        b = roar_up
+        ign = 0.42
+        b = at(b, mix(blast(0.7, 30.0, 0.8), FX.plasma_splash(0.9), ignition(1.0)), ign)
+        b = at(b, wail(1.8, 230.0, 0.15), ign + 0.02)
+        b = at(b, crackles(1.9, 0.65), ign + 0.15)
+        b = at(b, flame_sputters(1.9, 0.75), ign + 0.15)
+        b = at(b, static(1.7, 0.35), ign + 0.2)
+        n = n_of(1.2)
+        flames = F.lp(F.sat(F.lp(F.noise(n), 320.0) * 3.0, 3.0), 1100.0) * F.env_pts(n, [(0.0, 0.0), (0.05, 0.9), (0.6, 0.5), (1.2, 0.0)]) * 0.5
+        b = at(b, flames, ign + 0.05)
+    return room(b, decay=0.25, mix=0.1)
+
+
+def static(dur, gain=0.4):
+    """Static over the fire: broadband hiss switched in short random bursts, thinning out."""
+    n = n_of(dur)
+    t = t_of(n)
+    gate = (F.RNG.uniform(0.0, 1.0, n // n_of(0.015) + 1) > (0.45 + 0.4 * np.linspace(0.0, 1.0, n // n_of(0.015) + 1))).repeat(n_of(0.015))[:n].astype(float)
+    gate = np.convolve(gate, np.ones(n_of(0.002)) / n_of(0.002), mode="same")
+    return F.bp(F.noise(n), 500.0, 2600.0) * gate * F.env_pts(n, [(0.0, 1.0), (dur, 0.0)]) * gain
+
+
 # ---------------------------------------------------------------- written as the game plays it
 
 def at_level(x, level):
@@ -743,7 +818,27 @@ def cut5():
     return 0
 
 
+SINGLES6 = [("death6_" + m, (lambda m=m: death6(m)), DEATH_LEVEL) for m in ("minerva", "kestrel", "arsenal")]
+
+
+def cut6():
+    made = {}
+    for name, fn, level in SINGLES6:
+        F.seed("d6_" + name)
+        x = at_level(fn(), level)
+        made[name] = x
+        write("d6_" + name, tail(x))
+        print("  d6_%-24s %5.2f s" % (name, len(x) / SR))
+    line_lost = read(os.path.join(ART, "voice", "line_machine_lost.wav"))
+    for m in VOICE_AT6:
+        write("d6_seq_lost_" + m, tail(at(at(np.zeros(1), made["death6_" + m], 0.0), line_lost, VOICE_AT6[m]), 0.5))
+    print("  sequences written")
+    return 0
+
+
 def main(argv):
+    if argv[:1] == ["6"]:
+        return cut6()
     if argv[:1] == ["5"]:
         return cut5()
     if argv[:1] == ["2"]:

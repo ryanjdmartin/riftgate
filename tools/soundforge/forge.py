@@ -3447,7 +3447,7 @@ def _death(name, cut=1):
     """A pick from death_sketches.py (Ryan, 9 October), seeded and levelled as the page made it."""
     def build():
         import death_sketches as D
-        table = {1: D.SINGLES, 2: D.SINGLES2, 3: D.SINGLES3, 4: D.SINGLES4}[cut]
+        table = {1: D.SINGLES, 2: D.SINGLES2, 3: D.SINGLES3, 4: D.SINGLES4, 5: D.SINGLES5, 6: D.SINGLES6}[cut]
         fn, level = {n: (f, lv) for n, f, lv in table}[name]
         D.F.seed("d%d_%s" % (cut, name))
         x = fn()
@@ -3497,6 +3497,7 @@ for _m in MAKERS:
         SHIP["%s_%s" % (_k, _m)] = _third_cut("%s_%s" % (_k, _m))
 # A machine's death in its maker's own explosion, as Ryan picks them (9 October, death_sketches.py).
 SHIP["kill_wainwright_sutler"] = _death("death3_wainwright_sutler", 3)   # the works winding down, three small blasts over the clockwork
+SHIP["kill_aphelion"] = _death("death5_aphelion", 5)   # the Science Vessel: discharging, its warning, small blasts rolling into its end
 for _f in FAMILIES:
     SHIP["foe_%s_hit" % _f] = _third_cut("foe_%s_hit" % _f)
     SHIP["foe_%s_heavy" % _f] = _third_cut("foe_%s_heavy" % _f)
