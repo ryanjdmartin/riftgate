@@ -54,8 +54,8 @@
    "info": false,
    "lines": [
     {
-     "file": "line_eliminating",
-     "text": "eliminating"
+     "file": "line_bogey_eliminated",
+     "text": "bogey eliminated"
     },
     {
      "file": "line_neutralising_hostile",
@@ -68,10 +68,6 @@
     {
      "file": "line_lethal_force_applied",
      "text": "lethal force applied"
-    },
-    {
-     "file": "line_bogey_down",
-     "text": "bogey down"
     },
     {
      "file": "line_threat_eliminated",
@@ -199,21 +195,13 @@
    ],
    "signal": ""
   },
-  "buff": {
+  "shield": {
    "chance": 0.16666666666666666,
    "info": false,
    "lines": [
     {
      "file": "line_shield_up",
      "text": "shield up"
-    },
-    {
-     "file": "line_granting_buff",
-     "text": "granting buff"
-    },
-    {
-     "file": "line_activating_boost",
-     "text": "activating boost"
     },
     {
      "file": "line_countermeasures_engaged",
@@ -224,7 +212,25 @@
     {
      "file": "line_saving_throw_granted",
      "text": "saving throw granted"
+    }
+   ],
+   "merge": [],
+   "signal": ""
+  },
+  "buff": {
+   "chance": 0.16666666666666666,
+   "info": false,
+   "lines": [
+    {
+     "file": "line_granting_buff",
+     "text": "granting buff"
     },
+    {
+     "file": "line_activating_boost",
+     "text": "activating boost"
+    }
+   ],
+   "personality": [
     {
      "file": "line_rage_mode_activated",
      "text": "rage mode activated"
@@ -509,21 +515,12 @@
      "text": "closing to contact"
     }
    ],
-   "personality": [
-    {
-     "file": "line_showtime",
-     "text": "showtime"
-    },
-    {
-     "file": "line_here_we_go_again",
-     "text": "here we go again"
-    }
-   ],
+   "personality": [],
    "merge": [],
    "signal": ""
   },
   "engage": {
-   "chance": 0.5,
+   "chance": 1.0,
    "info": false,
    "lines": [
     {
@@ -567,6 +564,14 @@
     {
      "file": "line_the_fight_is_on",
      "text": "the fight is on"
+    },
+    {
+     "file": "line_showtime",
+     "text": "showtime"
+    },
+    {
+     "file": "line_here_we_go_again",
+     "text": "here we go again"
     }
    ],
    "merge": [],
@@ -623,7 +628,7 @@
    "signal": ""
   },
   "gate": {
-   "chance": 0.5,
+   "chance": 1.0,
    "info": false,
    "lines": [
     {
@@ -773,7 +778,7 @@
    "signal": ""
   },
   "codex": {
-   "chance": 0.08333333333333333,
+   "chance": 0.16666666666666666,
    "info": false,
    "lines": [
     {
@@ -807,7 +812,7 @@
    "signal": ""
   },
   "refuse": {
-   "chance": 0.125,
+   "chance": 0.25,
    "info": false,
    "lines": [
     {

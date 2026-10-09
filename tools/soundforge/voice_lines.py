@@ -85,7 +85,7 @@ HOOKS = {
                   ["target locked", "weapons free", "extreme prejudice authorised", "discharging", "ordnance engaged", "suppressing fire"],
                   ["light them up", "going ballistic", "rampage"]),
     "foe_down": (1.0 / 3.0, False,   # 1 in 3 (Ryan, 9 October: a foe falls ten times a fight; she need not say it every time)
-                 ["eliminating", "neutralising hostile", "target destroyed", "lethal force applied", "bogey down", "threat eliminated"],
+                 ["bogey eliminated", "neutralising hostile", "target destroyed", "lethal force applied", "threat eliminated"],   # "eliminating" and "bogey down" combined (Ryan, 9 October)
                  ["mopping up trash", "get wrecked", "bug squashed", "dodge this", "fatality"]),
     "foe_down_undead": (1.0 / 3.0, False,
                         ["undead anomaly cleared", "necrotic signature lost", "animation ceased"],
@@ -96,9 +96,14 @@ HOOKS = {
     "foe_down_eldritch": (1.0 / 3.0, False,
                           ["unknowable horror purged", "sanity restored", "anxiety levels reduced"],
                           ["that was not supposed to exist", "thank goodness"]),
+    # A shield and a buff apart (Ryan, 9 October: the buff's lines made no sense for a shield
+    # raised); each said before the effect, confirming the input.
+    "shield": (1.0 / 6.0, False,
+               ["shield up", "countermeasures engaged"],
+               ["saving throw granted"]),
     "buff": (1.0 / 6.0, False,
-             ["shield up", "granting buff", "activating boost", "countermeasures engaged"],   # said before the effect, confirming the input (Ryan, 9 October)
-             ["saving throw granted", "rage mode activated", "power overwhelming"]),
+             ["granting buff", "activating boost"],
+             ["rage mode activated", "power overwhelming"]),
     "heat_vented": (1.0 / 6.0, False,
                     ["venting", "heat sinks engaged", "cooling", "thermal load falling"],
                     ["cool your jets", "take a load off", ("calm down, lad", "calm down lad")]),   # Ryan, 9 October; her "whew" moved to the victory
@@ -125,14 +130,14 @@ HOOKS = {
                      ["stay on target", "sounds fun", "evil draws close", "go go go"]),
     "contact": (1.0 / 2.0, False,
                 ["combat imminent", "contact", "hostiles in range", "enemy in range", "closing to contact"],
-                ["showtime", "here we go again"]),
-    "engage": (1.0 / 2.0, False,
+                []),   # showtime and here we go again moved to the skirmish's opening (Ryan, 9 October)
+    "engage": (1.0, False,   # every time (Ryan, 9 October)
                ["engaging", "skirmish feed acquired", "weapons hot", "connecting to live feed", "transferring to tactical display", "initiating combat protocol"],
-               [("rip and tear", "rip and tare"), "battle music initiated", "let's dance", "the fight is on"]),
+               [("rip and tear", "rip and tare"), "battle music initiated", "let's dance", "the fight is on", "showtime", "here we go again"]),   # the last two from contact (Ryan, 9 October: contact is likely to go)
     "boss": (1.0, False,
              ["primary target identified", "priority threat detected. engaging", "alert: approaching dangerous hostile", "initiating sector purge"],
              [("oh, that's a big one", "oh. that's a big one"), "big lad", "big fella on route", "that's a lot of teeth", "nope nope nope", ("I'm too old for this shit", "I'm too old for this [shit]")]),   # a full stop after oh: the comma's beat was too short for him at any length
-    "gate": (1.0 / 2.0, False,
+    "gate": (1.0, False,   # every time (Ryan, 9 October)
              ["gate under attack", "gate taking damage", "gate integrity falling"],
              ["they're in the walls", "they're breaking through"]),
     "flattening": (1.0 / 3.0, False,
@@ -146,10 +151,10 @@ HOOKS = {
                 ["hostiles cleared. the line holds", ("area secured. well fought, commander", "area secured. well-fot commander"), "mission accomplished. the rift is sealed"],   # well-fot linked: the gap between the words read long   # rewritten as sentence pairs (Ryan, 7 October: the combined lines read samey and stuck together)
                 [("GG EZ", "gee gee easy"), ("flawless victory", "flawless victory", 1.55), "well, that was fun", "I do the job, and then I get paid", "what a ride. first round's on me",
                  "I love it when a plan comes together", ("I'm making a note here: huge success", "I'm making a note here: huge success", 1.45), "whew"]),   # whew from the vent (Ryan, 9 October: the way she says it is great; somewhere else)   # homages (7 October): the A-Team and Portal kept, the Portal line from its note on
-    "codex": (1.0 / 12.0, False,
+    "codex": (1.0 / 6.0, False,   # 1 in 6 (Ryan, 9 October)
               ["searching database", "record retrieved", "consulting archives", "help text loaded"],
               ["let me look that up", "reading the manual"]),
-    "refuse": (1.0 / 8.0, False,
+    "refuse": (1.0 / 4.0, False,   # 1 in 4 (Ryan, 9 October)
                ["negative", "unable to comply"],
                ["you must construct additional pylons"]),
     "battle_open": (1.0, False,

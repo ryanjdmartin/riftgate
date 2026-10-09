@@ -22,6 +22,7 @@ the page sets it beside what the game plays now.
     tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py     # into out/fx, after the others
     tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 2   # the second cut
     tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 3   # the third
+    tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 4   # the fourth
 """
 import json
 import math
@@ -187,7 +188,7 @@ def blast(dur=1.0, low=24.0, gain=1.0, cut=None):
     low-passes the lot."""
     b = mix(F.explosion(dur, low, gain, debris=0), FX.boom_tail(dur * 0.7, 0.6 * gain))
     if cut:
-        b = F.lp(b, cut, order=3)
+        b = F.lp(np.concatenate([b, np.zeros(n_of(0.5))]), cut, order=3)[:len(b)]   # padded: see FX.heft
     return FX.heft(b, 0.6)
 
 
@@ -405,6 +406,105 @@ def death3(maker):
     return room(b, decay=0.25, mix=0.1)
 
 
+# ---------------------------------------------------------------- the fourth cut (Ryan, 9 October)
+# The pops long after were the forge's filters wrapping a blast's front round to the end of its
+# buffer (FX.heft now pads; nine shipped effects carried it too). Wainwright & Sutler's third
+# cut is right and lands. Minerva's second boom much deeper. Kestrel: something before the
+# impact, the impact an ignition, no second boom. Aphelion: three beeps on one pitch, small
+# explosions blended into the end of the discharge rather than a pause for one boom. The
+# Arsenal: the cry far quieter, the ignition a whoosh, plasma crackles fizzling out after.
+
+VOICE_AT4 = {"minerva": 1.05, "kestrel": 1.1, "aphelion": 0.2, "arsenal": 1.1}
+
+
+def deep_hull_boom(gain=1.0):
+    """Minerva's second: the reactor going inside the hull, much deeper: a lower, longer blast
+    with the plate around it, a box resonance an octave down, a sub rumble under it."""
+    b = blast(1.4, 15.0, 1.3 * gain, cut=320.0)
+    n = n_of(0.8)
+    box = F.lp(F.sat(F.bp(F.noise(n), 35.0, 95.0) * 5.0, 3.0), 250.0) * F.env_ad(n, 0.006, 0.3) * 1.1 * gain
+    b = at(b, box, 0.0)
+    rumble = F.lp(F.noise(n_of(1.4)), 60.0) * F.env_pts(n_of(1.4), [(0.0, 0.0), (0.05, 1.0), (1.4, 0.0)]) * 1.4 * gain
+    b = at(b, F.sat(rumble * 2.5, 2.5), 0.02)
+    return at(b, FX.heft(F.thud(70.0, 20.0, 0.9, click=0.4, drive=4.5, body_gain=2.4), 0.6) * gain, 0.05)
+
+
+def whoosh(dur=0.35, gain=1.0, lo=300.0, hi=3200.0):
+    """Air rushing in: noise whose band opens and whose loudness grows (a filter moving,
+    never a pitch)."""
+    n = n_of(dur)
+    t = t_of(n)
+    w = F.lp_var(F.hp(F.noise(n), 150.0), lo + (hi - lo) * (t / dur) ** 1.6)
+    return w * F.env_pts(n, [(0.0, 0.0), (dur * 0.8, 1.0), (dur, 0.6)]) * gain
+
+
+def ignition(gain=1.0):
+    """Fuel catching: a whoomp with a fire burst on it, the roar after."""
+    n = n_of(0.6)
+    roar = F.lp(F.sat(F.lp(F.noise(n), 320.0) * 3.0, 3.0), 1100.0) * F.env_pts(n, [(0.0, 0.0), (0.03, 1.0), (0.6, 0.0)]) * 0.7
+    b = mix(FX.whoomp(0.4, 520.0, 1.3), F.burst(0.15, 200.0, 2500.0, decay=0.05) * 0.7, roar)
+    return FX.heft(b, 0.5) * gain
+
+
+def crackles(dur=1.3, gain=0.5):
+    """Plasma crackling after a fire: hot bright pops, thinning out and fizzling to nothing."""
+    n = n_of(dur)
+    t = t_of(n)
+    dens = 0.975 + 0.024 * (t / dur) ** 0.8
+    pops = F.bp(F.noise(n), 700.0, 2600.0) * (F.RNG.uniform(0.0, 1.0, n) > dens)
+    hiss = F.bp(F.noise(n), 900.0, 2400.0) * 0.08
+    return (pops + hiss) * F.env_pts(n, [(0.0, 1.0), (dur * 0.5, 0.5), (dur, 0.0)]) * gain
+
+
+def death4(maker):
+    """A machine's death, fourth cut (Minerva, Kestrel, Aphelion, the Arsenal)."""
+    if maker == "minerva":
+        b = hull_boom(1.0, 24.0)
+        b = at(b, deep_hull_boom(1.1), 0.45)
+    elif maker == "kestrel":
+        # Falling: its engine sputtering out, cutting in and out, the air rushing up at it;
+        # then it strikes the ground and its fuel catches, the crunch in the ignition, chunks,
+        # the fire burning down. No second boom.
+        n = n_of(0.55)
+        t = t_of(n)
+        engine = F.lp(F.sat(F.harmonics(55.0, n, [1.0, 0.7, 0.5, 0.35, 0.25]) + F.lp(F.noise(n), 600.0) * 0.4, 2.5), 1400.0)
+        cut = (F.RNG.uniform(0.0, 1.0, n // n_of(0.04) + 1) > (0.25 + 0.6 * np.linspace(0.0, 1.0, n // n_of(0.04) + 1))).repeat(n_of(0.04))[:n].astype(float)
+        cut = np.convolve(cut, np.ones(n_of(0.004)) / n_of(0.004), mode="same")
+        b = engine * cut * F.env_pts(n, [(0.0, 0.0), (0.03, 0.7), (0.55, 0.4)]) * 0.6
+        b = mix(b, whoosh(0.55, 0.45))
+        hit = 0.55
+        ground = mix(F.thud(120.0, 30.0, 0.7, click=1.4, drive=4.0, body_gain=2.0), F.burst(0.12, 120.0, 1600.0, decay=0.04) * 0.9)
+        b = at(b, FX.heft(ground, 0.7), hit)
+        b = at(b, ignition(1.1), hit + 0.02)
+        b = at(b, grit(0.5, 0.7), hit + 0.03)
+        b = at(b, crackles(0.9, 0.3), hit + 0.4)
+    elif maker == "aphelion":
+        # The Science Vessel: the electrics discharging, arcing and shorting, its warning three
+        # beeps on one pitch, the whine running down, small blasts going off into the end of
+        # the discharge, no pause.
+        b = mix(F.lp(arc(1.7, 0.7), 2200.0, order=2), electric_buzz(1.7, 0.5))
+        b = at(b, fizzle(1.8, 0.45, 600.0, 2400.0), 0.1)
+        for k in range(3):
+            n = n_of(0.09)
+            beep = F.lp(np.sign(np.sin(2.0 * math.pi * 987.77 * t_of(n))) * 0.5 + np.sin(2.0 * math.pi * 987.77 * t_of(n)) * 0.5, 3000.0)
+            b = at(b, beep * F.env_pts(n, [(0.0, 0.0), (0.004, 1.0), (0.08, 1.0), (0.09, 0.0)]) * 0.22, 0.05 + 0.22 * k)
+        b = at(b, power_down_whine(1.6, 0.3), 0.15)
+        for k, when in enumerate((1.25, 1.42, 1.6, 1.75)):
+            b = at(b, blast(0.4, 44.0, 0.45 + 0.08 * k), when)
+    else:
+        # The Arsenal: the plasma rushing in and catching, the cry leaving it under the fire
+        # (far quieter now), the flames, then plasma crackles fizzling out.
+        b = whoosh(0.32, 0.8, 250.0, 2600.0)
+        ign = 0.3
+        b = at(b, mix(blast(0.7, 30.0, 0.8), FX.plasma_splash(0.9), ignition(1.0)), ign)
+        b = at(b, wail(1.0, 240.0, 0.45), ign + 0.02)
+        n = n_of(1.0)
+        flames = F.lp(F.sat(F.lp(F.noise(n), 320.0) * 3.0, 3.0), 1100.0) * F.env_pts(n, [(0.0, 0.0), (0.05, 0.9), (0.5, 0.5), (1.0, 0.0)]) * 0.5
+        b = at(b, flames, ign + 0.05)
+        b = at(b, crackles(1.4, 0.55), ign + 0.45)
+    return room(b, decay=0.25, mix=0.1)
+
+
 # ---------------------------------------------------------------- written as the game plays it
 
 def at_level(x, level):
@@ -511,11 +611,33 @@ def cut3():
     return 0
 
 
+SINGLES4 = [("death4_" + m, (lambda m=m: death4(m)), DEATH_LEVEL) for m in ("minerva", "kestrel", "aphelion", "arsenal")]
+
+
+def cut4():
+    made = {}
+    for name, fn, level in SINGLES4:
+        F.seed("d4_" + name)
+        x = at_level(fn(), level)
+        made[name] = x
+        write("d4_" + name, tail(x))
+        print("  d4_%-24s %5.2f s" % (name, len(x) / SR))
+    line_lost = read(os.path.join(ART, "voice", "line_machine_lost.wav"))
+    for m in ("minerva", "kestrel", "aphelion", "arsenal"):
+        seq = at(np.zeros(1), made["death4_" + m], 0.0)
+        seq = at(seq, line_lost, VOICE_AT4[m])
+        write("d4_seq_lost_" + m, tail(seq, 0.5))
+    print("  sequences written")
+    return 0
+
+
 def main(argv):
     if argv[:1] == ["2"]:
         return cut2()
     if argv[:1] == ["3"]:
         return cut3()
+    if argv[:1] == ["4"]:
+        return cut4()
     made = {}
     for name, fn, level in SINGLES:
         F.seed(PREFIX + name)

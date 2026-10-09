@@ -109,7 +109,7 @@ func test_the_lines_table_is_whole() -> void:
 	var table := Sound._read_lines()
 	assert_true(not table.is_empty(), "art/audio/voice/lines.json is shipped (voice_lines.py ship)")
 	var hooks: Dictionary = table.get("hooks", {})
-	for hook in ["die_spent", "foe_down", "foe_down_undead", "foe_down_demonic", "foe_down_eldritch", "buff",
+	for hook in ["die_spent", "foe_down", "foe_down_undead", "foe_down_demonic", "foe_down_eldritch", "shield", "buff",
 			"heat_vented", "heat_high", "overheat", "machine_lost", "component_damaged", "component_destroyed",
 			"resolve_all", "resolve_move", "contact", "engage", "boss", "gate", "loss_gate", "victory", "codex",
 			"refuse", "battle_open"]:

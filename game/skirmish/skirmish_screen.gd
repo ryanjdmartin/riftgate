@@ -1284,9 +1284,8 @@ const BLOW_AT := 0.08
 const PRE_LINE_AT := 0.1     # her line, just after the die's own sound
 const PRE_FIRE := 0.85       # the weapon, this far through her line
 const AFTER_DEATH := 0.45   # her line, this long after a foe's death begins
-## The enemy's turn (not yet under the chain's rule): her information lines after the blow
-## lands, a machine lost past its kill's first blast.
-const VOICE_AFTER_KILL := 0.9
+## The enemy's turn: her component lines after the blow lands (a machine lost waits for its
+## death at the turn's end).
 const VOICE_AFTER_BLOW := 0.4
 
 
@@ -1352,7 +1351,8 @@ func _use_die(i: int, target) -> bool:
 		var vent := spent.kind == Face.Kind.VENT
 		var effect := "vent" if vent else blow
 		if spent.kind == Face.Kind.VENT or spent.kind == Face.Kind.SHIELD or spent.kind == Face.Kind.BUFF:
-			var said := 0.0 if quiet else Sound.claim_line("heat_vented" if vent else "buff", PRE_LINE_AT)
+			var hook := "heat_vented" if vent else ("shield" if spent.kind == Face.Kind.SHIELD else "buff")
+			var said := 0.0 if quiet else Sound.claim_line(hook, PRE_LINE_AT)
 			fire_at = PRE_LINE_AT + said * PRE_FIRE if said > 0.0 else 0.0
 			Sound.play_after(fire_at, effect, -3.0 if spent.kind == Face.Kind.BUFF else 0.0)
 			landed = fire_at + Sound.lands(effect)
@@ -1500,6 +1500,19 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 			if v.bars.size() >= 3:
 				v.bars[2] = v.bars[2].slice(0, 3)
 			v.queue_redraw()
+	# The machines that fall this turn, to a blow or to the burn, in the order they fall: each
+	# dies at the end of the turn, one after another, with nothing over it (Ryan, 9 October).
+	var deaths: Array = []
+	_dying.clear()
+	for h in hits:
+		if int(h[5]) <= 0 and not h[1].dead and not _dying.has(h[1]):
+			_dying[h[1]] = true
+			deaths.append([h[1], h[10]])
+	for ov in sk.overheats:
+		var oi: int = ov["mech"]
+		if oi >= 0 and oi < _mech_views.size() and int(ov["hull"]) <= 0 and not _mech_views[oi].dead and not _dying.has(_mech_views[oi]):
+			_dying[_mech_views[oi]] = true
+			deaths.append([_mech_views[oi], _maker_of(sk.mechs[oi])])
 	var beat := _enemy_beat()
 	var tw := create_tween()
 	for h in hits:
@@ -1508,6 +1521,9 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 	if not sk.overheats.is_empty():
 		tw.tween_callback(_land_overheats)
 		tw.tween_interval(beat)
+	for d in deaths:
+		tw.tween_callback(_land_death.bind(d[0], d[1]))
+		tw.tween_interval(Sound.death_span(d[1]))
 	tw.tween_interval(0.25)
 	tw.tween_callback(func() -> void:
 		_replay_shade.visible = false
@@ -1522,7 +1538,8 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 ## Heard as the family's blow (its heavy blow from HEAVY_DAMAGE), then what took it: a
 ## standing shield (the shield hit), the shield breaking, the armour turning it on bare hull
 ## (the maker's block), or the hull (the maker's hit), and a machine that falls its maker's
-## kill. Jenny: a machine lost, a component damaged or destroyed.
+## kill. Jenny: a component damaged or destroyed. A machine the blow fells dies at the end of
+## the turn (`_land_death`), not here.
 func _land_blow(h: Array) -> void:
 	var fv: UnitView = h[0]
 	var mv: UnitView = h[1]
@@ -1542,9 +1559,8 @@ func _land_blow(h: Array) -> void:
 	Sound.play(foe_blow)
 	var struck := "shield_break" if broke else ("shield_hit" if held else (Sound.struck("hit", maker) if through > 0 else Sound.struck("block", maker)))
 	Sound.play_after(landed, struck, 0.0 if broke else -3.0)
-	if hull_after <= 0 and not mv.dead:   # its first fall only: a wreck struck again is not lost twice
-		Sound.play_after(landed + 0.12, Sound.struck("kill", maker))
-		Sound.say_after(landed + VOICE_AFTER_KILL, "machine_lost")
+	if _dying.has(mv):
+		pass   # its death comes at the end of the turn
 	elif injury == "destroyed":
 		Sound.say_after(landed + VOICE_AFTER_BLOW, "component_destroyed")
 	elif injury == "cracked":
@@ -1555,11 +1571,21 @@ func _land_blow(h: Array) -> void:
 		if mv.bars.size() >= 2:
 			mv.bars[0][0] = shield_after
 			mv.bars[1][0] = hull_after
-		if hull_after <= 0:
-			mv.dead = true
 		mv.queue_redraw()
 		if broke:
 			mv.shatter_shield())
+
+
+## A machine lost, at the end of the enemy's turn: the wreck shown, its maker's death, and
+## Jenny's "machine lost" in that death's gap (Sound.death_voice_at); the replay waits out
+## Sound.death_span before anything else.
+var _dying: Dictionary = {}
+
+func _land_death(mv: UnitView, maker: String) -> void:
+	mv.dead = true
+	mv.queue_redraw()
+	Sound.play(Sound.struck("kill", maker))
+	Sound.say_after(Sound.death_voice_at(maker), "machine_lost")
 
 
 ## The round's overheats land together after the enemy's blows (the sim burns them at the
@@ -1575,12 +1601,7 @@ func _land_overheats() -> void:
 		_animate_hit(mv)
 		if mv.bars.size() >= 2:
 			mv.bars[1][0] = int(ov["hull"])
-		if int(ov["hull"]) <= 0 and not mv.dead:
-			Sound.play_after(0.2, Sound.struck("kill", _maker_of(sk.mechs[i])))
-			Sound.say("machine_lost")
-		if int(ov["hull"]) <= 0:
-			mv.dead = true
-		mv.queue_redraw()
+		mv.queue_redraw()   # one the burn fells dies at the end of the turn (`_land_death`)
 
 
 ## Every animation on a control returns it to where it was placed. Whatever is still

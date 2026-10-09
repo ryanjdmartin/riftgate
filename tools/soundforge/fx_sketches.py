@@ -90,7 +90,11 @@ def heft(x, amount=0.6, drive=3.0):
     """The phone's weight: the signal's own mids, saturated and added back in the band a
     speaker plays (250 to 2000 Hz). Headphones keep the sub underneath; the speaker gets
     harmonics it can move air with. The third cut's answer to "it doesn't carry on a speaker"."""
-    return x + F.bp(F.sat(x * 1.5, drive), 250.0, 2000.0) * amount
+    # Filtered with silence after it: the forge's filters work on the whole buffer in the
+    # frequency domain, so a sharp front wrapped round to the end as a pop well after the
+    # sound had died (found 9 October in nine shipped effects); the padding takes the wrap.
+    pad = np.zeros(F.n_of(0.5))
+    return x + F.bp(np.concatenate([F.sat(x * 1.5, drive), pad]), 250.0, 2000.0)[:len(x)] * amount
 
 
 def boom_tail(dur=0.8, gain=0.7, cut=350.0):

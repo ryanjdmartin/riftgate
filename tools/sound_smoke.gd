@@ -72,6 +72,8 @@ func _skirmish() -> void:
 			break
 		screen._end_turn_now()
 		await _wait(6.0)
+	screen._land_death(screen._mech_views[0], "wainwright_sutler")   # a machine's death at the turn's end
+	await _wait(2.5)
 	print("skirmish smoke: round %d, outcome %d" % [sk.round, sk.outcome])
 	if Sound._node != null:
 		Sound._node._lines.always = false

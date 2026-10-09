@@ -71,6 +71,14 @@ const LAND := {
 	"foe_undead_heavy": 0.3, "foe_demonic_heavy": 0.3, "foe_eldritch_heavy": 0.46,
 }
 
+## Where Jenny's "machine lost" falls in each maker's death, seconds from its start: the death
+## Ryan picked has a gap for her (death_sketches.py, VOICE_AT), so she interleaves with it
+## rather than speaking over a blast. A maker whose death has not been picked yet takes the
+## default, past the old death's first blast.
+const DEATH_VOICE_AT := {"wainwright_sutler": 0.45}
+const DEATH_VOICE_AT_DEFAULT := 0.9
+const DEATH_AFTER_LINE := 1.7   # her line and a breath, before anything else happens
+
 ## A way of moving (BattleMap.WAYS) to its footfall; a hovercraft passes like a flyer.
 const STEPS := {"tracked": "step_tracked", "walker": "step_legged", "wheeled": "step_wheeled", "flyer": "step_flyer", "hover": "step_flyer"}
 
@@ -175,6 +183,15 @@ static func struck(kind: String, maker: String) -> String:
 static func family(kind: String, faction: String) -> String:
 	var f := faction if FAMILIES.has(faction) else "undead"
 	return "spawn_" + f if kind == "spawn" else "foe_%s_%s" % [f, kind]
+
+
+## Where her line falls in a maker's death, and how long the death holds the stage.
+static func death_voice_at(maker: String) -> float:
+	return float(DEATH_VOICE_AT.get(maker, DEATH_VOICE_AT_DEFAULT))
+
+
+static func death_span(maker: String) -> float:
+	return maxf(death_voice_at(maker) + DEATH_AFTER_LINE, 2.2)
 
 
 ## Seconds from a blow's start to where it lands (LAND); 0 for one that lands at once.
