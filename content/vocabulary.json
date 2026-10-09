@@ -1080,6 +1080,16 @@
    }
   },
   {
+   "id": "self_destruct",
+   "category": "foe",
+   "name": "Self-Destruct",
+   "codex": "A blow that spends the striker: after it lands the foe is gone, whole, and nothing brings it back. The blow is the foe's whole life, so it is announced like any other and the answer is to kill it first or to shield what it has picked.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Bomb's (decided 9 October, the Peak). A property of a foe's attack action, like breach. A self-destructing foe counts as a kill like any other."
+   }
+  },
+  {
    "id": "foe_action",
    "category": "foe",
    "name": "Foe action",

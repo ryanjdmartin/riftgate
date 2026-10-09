@@ -554,6 +554,24 @@ func _armed_mechs() -> Array[MechState]:
 
 ## Every foe on the field learns how many of its kind stand with it, for a swarm blow. Kept
 ## current as foes fall and step in, so the intent chips drop as the pack thins.
+## A foe that splits (the Gel): destroyed, so many of the named foe step into the pool
+## under its pack, made by the battle's content; without a factory nothing steps in.
+func _split(f: Foe) -> void:
+	if f.on_death.is_empty() or not foe_factory.is_valid():
+		return
+	var who := str(f.on_death.get("summon", ""))
+	var count := maxi(1, int(f.on_death.get("count", 1)))
+	var made := 0
+	for i in range(count):
+		var n = foe_factory.call(who)
+		if n is Foe:
+			n.pack_id = f.pack_id
+			reinforcements.append(n)
+			made += 1
+	if made > 0:
+		log.append("%s splits: %d %s step into the pool" % [f.display_name, made, who])
+
+
 func _refresh_kin() -> void:
 	var live := field_foes()
 	for f in live:
@@ -782,6 +800,11 @@ func _enemy_turn() -> void:
 				# The entry the die shows is corrupted for the fight: it bites when spent.
 				Effects.corrupt_entry(t.unit, t.face_index, "foe:" + f.content_id)
 				log.append("%s corrupts %s's %s (×%d)" % [f.display_name, t.unit.display_name, t.die.faces[t.face_index].describe(), Effects.corrupt_stacks(t.unit, t.face_index)])
+		if f.has_keyword(f.action, "self_destruct") and f.alive():
+			# The blow spends the striker (the Bomb): it dies whole and never gets back up.
+			f.hp = 0
+			f.executed = true
+			log.append("%s bursts, and is gone" % f.display_name)
 	_acted.clear()
 	_clear_dead()
 	for ms in mechs:
@@ -1498,6 +1521,7 @@ func _clear_dead_slots() -> void:
 						log.append("%s falls, and gets back up into the pool" % f.display_name)
 					else:
 						log.append("%s destroyed" % f.display_name)
+						_split(f)
 				f.rank = -1
 				rank[col] = null
 

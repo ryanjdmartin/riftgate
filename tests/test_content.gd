@@ -913,3 +913,25 @@ func test_the_tier_rules_are_validated() -> void:
 	db = _fresh()
 	db.components["test_loose"] = db.components[stocked].duplicate(true)
 	assert_true(_has_error(db, "carries its own tier"), "an unstocked component needs its own")
+
+
+func test_a_split_is_validated_one_deep_and_read_into_the_foe() -> void:
+	var db := _db()
+	var any_id: String = db.foes.keys()[0]
+	var a: Dictionary = db.foes[any_id].duplicate(true)
+	a["on_death"] = {"summon": "nobody", "count": 2}
+	db.foes["split_test"] = a
+	var errs := db.validate()
+	assert_true("\n".join(errs).contains("on_death must name a known foe"), "an unknown foe is refused")
+	a["on_death"] = {"summon": any_id, "count": 2}
+	var b: Dictionary = db.foes[any_id].duplicate(true)
+	b["on_death"] = {"summon": "split_test", "count": 1}
+	db.foes["chain_test"] = b
+	errs = db.validate()
+	assert_true("\n".join(errs).contains("a split goes one deep"), "a chain of splits is refused")
+	db.foes.erase("chain_test")
+	errs = db.validate()
+	assert_false("\n".join(errs).contains("split"), "one level validates: %s" % str(errs))
+	var f := db.make_foe("split_test")
+	assert_eq(f.on_death, {"summon": any_id, "count": 2}, "read into the foe")
+	db.foes.erase("split_test")

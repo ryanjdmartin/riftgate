@@ -169,6 +169,8 @@ func make_foe(foe_id: String) -> Foe:
 	f.armour = maxi(0, int(d.get("armour", 0)))
 	f.aim = str(d.get("aim", Foe.AIM_EXPOSED))
 	f.stun_resist = clampi(int(d.get("stun_resist", 0)), 0, 100)
+	if d.get("on_death", {}) is Dictionary and d.get("on_death", {}).has("summon"):
+		f.on_death = {"summon": str(d["on_death"]["summon"]), "count": maxi(1, int(d["on_death"].get("count", 1)))}
 	var acts: Array = []
 	for a in d.get("actions", []):
 		if str(a.get("status", "")) != "implemented":
@@ -968,6 +970,15 @@ func _validate_foes(errs: Array[String]) -> void:
 				errs.append("%s: '%s' belongs on an attack action, not the foe" % [where, key])
 		if f.has("faction") and not factions.has(f["faction"]):
 			errs.append("%s: unknown faction %s" % [where, f["faction"]])
+		if f.has("on_death"):
+			# A split (the Gel): destroyed, it summons; what it summons never splits again.
+			var od = f["on_death"]
+			if not (od is Dictionary) or not foes.has(str(od.get("summon", ""))):
+				errs.append("%s: on_death must name a known foe to summon" % where)
+			elif int(od.get("count", 1)) < 1:
+				errs.append("%s: on_death count is at least 1" % where)
+			elif foes[str(od["summon"])].has("on_death"):
+				errs.append("%s: on_death summons %s, which splits too; a split goes one deep" % [where, od["summon"]])
 
 
 func _validate_factions(errs: Array[String]) -> void:

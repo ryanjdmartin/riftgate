@@ -2904,3 +2904,58 @@ func test_the_replay_hears_specials_and_the_names_of_blows_in_order() -> void:
 	sk.start_round()
 	sk.end_round()
 	assert_eq(sk.turn_specials.size(), 1, "the lists start over each turn")
+
+
+func test_a_self_destructing_blow_lands_and_spends_the_striker() -> void:
+	# The Bomb (decided 9 October): its blow is its whole life, and nothing brings it back.
+	var sk := Skirmish.new(1, 1)
+	var m := _mech("A", Die.single(Face.attack(10, L)), 0, 100)
+	sk.add_mech(m)
+	var bomb := _ghoul(30, 20)
+	bomb.actions = [{"id": "burst", "name": "Self-Destruct", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": ["self_destruct"], "text": ""}]
+	bomb.action = bomb.actions[0]
+	Effects.stack(bomb, Effects.STATUS["risen"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)   # readied to get back up: the burst still keeps it down
+	sk.add_foes([bomb])
+	sk.begin()
+	sk.start_round()
+	sk.end_round()
+	assert_eq(m.hull, 80, "the blow landed")
+	assert_false(bomb.alive(), "and the striker is spent")
+	assert_true(bomb.executed, "never to get back up")
+	assert_eq(sk.front[0], null, "its slot is clear")
+	assert_eq(sk.reinforcements.size(), 0, "and it did not return to the pool")
+	assert_true("\n".join(sk.log).contains("bursts, and is gone"), "the log says so")
+	assert_eq(sk.outcome, Skirmish.Outcome.VICTORY, "the fight is won by its own blow")
+
+
+func test_a_splitting_foe_puts_its_halves_into_the_pool_once() -> void:
+	# The Gel (decided 9 October): destroyed, so many smaller step into the pool; the
+	# halves never split again, and without the battle's factory nothing steps in.
+	var sk := Skirmish.new(2, 1)
+	var m := _mech("A", Die.single(Face.attack(200, L)), 40, 100)
+	sk.add_mech(m)
+	var gel := _ghoul(30, 10)
+	gel.on_death = {"summon": "gel_small", "count": 2}
+	sk.foe_factory = func(id: String) -> Foe: return Foe.make(id, 10, 5)
+	sk.add_foes([gel])
+	sk.begin()
+	sk.start_round()
+	sk.assign(0, gel)
+	assert_eq(sk.front[0], null, "it fell")
+	assert_eq(sk.reinforcements.size(), 2, "two halves wait in the pool")
+	assert_eq(sk.reinforcements[0].display_name, "gel_small", "the named foe")
+	assert_eq(sk.reinforcements[0].pack_id, gel.pack_id, "under the same pack")
+	assert_true("\n".join(sk.log).contains("splits: 2 gel_small"), "the log says so")
+	assert_eq(sk.outcome, Skirmish.Outcome.NONE, "the fight goes on")
+	sk.end_round()
+	assert_eq(sk.front[0].display_name, "gel_small", "a half stepped in")
+	var sk2 := Skirmish.new(2, 1)
+	sk2.add_mech(_mech("B", Die.single(Face.attack(200, L)), 40, 100))
+	var lone := _ghoul(30, 10)
+	lone.on_death = {"summon": "gel_small", "count": 2}
+	sk2.add_foes([lone])
+	sk2.begin()
+	sk2.start_round()
+	sk2.assign(0, lone)
+	assert_eq(sk2.reinforcements.size(), 0, "no factory, no halves")
+	assert_eq(sk2.outcome, Skirmish.Outcome.VICTORY, "and the fight ends")
