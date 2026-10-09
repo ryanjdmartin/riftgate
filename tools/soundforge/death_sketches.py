@@ -27,6 +27,7 @@ the page sets it beside what the game plays now.
     tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 6   # the sixth
     tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 7   # the seventh
     tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 8   # the eighth
+    tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 9   # the ninth
 """
 import json
 import math
@@ -770,7 +771,18 @@ def boom_soft(f0, f1, dur, gain=1.0, body_cut=500.0, attack=0.009, drive=1.6, hp
     pad = np.zeros(n_of(0.5))
     b = b + F.bp(np.concatenate([F.sat(b * 1.3, 2.2), pad]), 160.0, 1200.0)[:len(b)] * 0.6
     b = F.hp(np.concatenate([b, pad]), hp, order=3)[:len(b)]
-    return b * gain
+    return onset_fade(b) * gain
+
+
+def onset_fade(x, dur=0.006):
+    """The forge's filters are zero-phase: a high-pass rings a little ahead of a swell, and a
+    piece filtered alone loses that ring and starts on a step, which pops wherever the piece is
+    placed (Minerva's second blast, the eighth cut). A raised-cosine fade over its first
+    milliseconds starts it from silence."""
+    k = min(len(x), n_of(dur))
+    out = np.array(x, dtype=float)
+    out[:k] *= 0.5 - 0.5 * np.cos(np.linspace(0.0, math.pi, k))
+    return out
 
 
 def lp_padded(x, cut, order=3):
@@ -833,6 +845,31 @@ def death8(maker, ghost="whoosh"):
         b = at(b, crackles(1.6, 0.7), 0.95)
         b = at(b, flame_sputters(1.5, 0.75), 1.0)
     return room(b, decay=0.25, mix=0.1)
+
+
+# ---------------------------------------------------------------- the ninth cut (Ryan, 9 October)
+# The Arsenal's breath is good; it needs more reverb, and the louder static and crackles can come
+# down. Measured on the eighth: the flame sputters were the loudest of the late layers (7 dB under
+# the whole, the static 12, the crackles 23 but each a one-sample spike). The eighth's own noise,
+# so nothing else moves; two rooms to pick from.
+
+VOICE_AT9 = {"arsenal": 1.25, "arsenal_big": 1.55}   # the bigger room rings under her longer: 8 dB clear at 1.55 s, as over Kestrel
+HALLS9 = {"arsenal": (0.6, 0.3), "arsenal_big": (1.0, 0.45)}
+
+
+def death9(variant):
+    F.seed("d8_death8_arsenal")   # the eighth cut's draws, in its order
+    b = mix(boom_soft(130.0, 42.0, 0.9, 1.0, body_cut=420.0, attack=0.012, hp=70.0), lp_padded(FX.plasma_splash(0.45), 800.0))
+    n = n_of(1.5)
+    t = t_of(n)
+    roar = F.lp_var(F.sat(F.lp(F.noise(n), 280.0) * 3.0, 3.0), 400.0 + 700.0 * np.minimum(1.0, t / 0.4)) * F.env_pts(n, [(0.0, 0.0), (0.35, 1.0), (0.9, 0.8), (1.5, 0.0)]) * 0.8
+    b = at(b, roar, 0.12)
+    b = at(b, ghost_whoosh(1.7, 520.0, 0.5), 0.2)
+    b = at(b, static(1.4, 0.25) * F.env_pts(n_of(1.4), [(0.0, 0.0), (0.25, 1.0), (1.4, 0.0)]), 1.0)   # half (-6 dB)
+    b = at(b, crackles(1.6, 0.35), 0.95)                                                              # half
+    b = at(b, flame_sputters(1.5, 0.3), 1.0)                                                          # -8 dB
+    decay, wet = HALLS9[variant]
+    return room(b, decay=decay, mix=wet)
 
 
 # ---------------------------------------------------------------- written as the game plays it
@@ -1034,7 +1071,27 @@ def cut8():
     return 0
 
 
+SINGLES9 = [("death9_" + v, (lambda v=v: death9(v)), DEATH_LEVEL) for v in ("arsenal", "arsenal_big")]
+
+
+def cut9():
+    made = {}
+    for name, fn, level in SINGLES9:
+        F.seed("d9_" + name)
+        x = at_level(fn(), level)
+        made[name] = x
+        write("d9_" + name, tail(x))
+        print("  d9_%-24s %5.2f s" % (name, len(x) / SR))
+    line_lost = read(os.path.join(ART, "voice", "line_machine_lost.wav"))
+    for v in VOICE_AT9:
+        write("d9_seq_lost_" + v, tail(at(at(np.zeros(1), made["death9_" + v], 0.0), line_lost, VOICE_AT9[v]), 0.5))
+    print("  sequences written")
+    return 0
+
+
 def main(argv):
+    if argv[:1] == ["9"]:
+        return cut9()
     if argv[:1] == ["8"]:
         return cut8()
     if argv[:1] == ["7"]:
