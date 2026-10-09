@@ -220,8 +220,8 @@
    }
   },
   "prairie_dog": {
-   "when": "9 October, second pass.",
-   "note": "The wheels tucked up closer under the arches (Ryan: too low and too far from the chassis, a gap): the chassis rides two units over them, not three and a half. A rounded axle housing under the floor along each axle, hub to hub, and a rounded ridge along each side of the floor joining them; from the game's camera the ridges show as a rail under each flank between the wheels, closing the daylight that showed there. The arches' aprons end at the arch's own outer edge, part of the well rather than a plate standing out past it. No side skirts, as the first pass left it.",
+   "when": "9 October, third pass.",
+   "note": "The aprons run in to a unit inside the body's flank, so no gap shows between them and the body at the nose or the tail (Ryan). The rev rocks about the middle of the wheelbase, five degrees and a squat under half a unit, so the tyres stay clear of the arches through it, measured with the spring's overshoot (Ryan: they clipped). The axle covers and the wheels as the second pass. The last two pictures are an option to judge, not the build: the aprons in the maker's rust livery, the flank stripe's (APRON_PRAIRIE in models_low.py).",
    "images": [
     {
      "file": "prairie_dog/prairie_dog_front.png",
@@ -234,10 +234,18 @@
     {
      "file": "prairie_dog/prairie_dog_side.png",
      "alt": "prairie_dog, left side"
+    },
+    {
+     "file": "prairie_dog/prairie_dog_livery_aprons_front.png",
+     "alt": "option: prairie_dog with the aprons in livery, front"
+    },
+    {
+     "file": "prairie_dog/prairie_dog_livery_aprons_rear.png",
+     "alt": "option: prairie_dog with the aprons in livery, rear"
     }
    ],
    "before": {
-    "summary": "Before: 9 October, first pass (the skirts gone, the chassis three and a half units up, a gap over the wheels and daylight under the flanks, the aprons out past the wells)",
+    "summary": "Before: 9 October, second pass (the aprons stopping short of the body, the rev's rock taking the front tyres into the arches)",
     "images": [
      {
       "file": "prairie_dog/before_prairie_dog_front.png",

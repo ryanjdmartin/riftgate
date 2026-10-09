@@ -397,7 +397,7 @@
     "fantasy": "A small, nimble, lightly armoured vehicle designed to support heavy armour in combat. Able to stealthily avoid combat until its allies are in position for a flanking or pincer attack, then capitalize on openings in combat.",
     "niche": "combat support",
     "name_clash": "Kept (Ryan, 29 September). Dingo is a Heavy Gear Northern gear, an obscure resin-era release in a niche property and a biped, so no silhouette resemblance; the Bundeswehr's ATF Dingo, a four-wheeled armoured car, is the closer match and the homage W&S's register is built on. Say Dingo and people picture the dog: the coincidence tier.",
-    "notes": "Decided 28 September: stealth is a trait, not a passive (like flyer): it controls no ground and joins a fight only when an ally is in it or when it stopped a pack in its path, so it waits in the wings and never fights alone unless run into. The passive is the other half of Ryan's Adaptive Camouflage, the flanking bonus, as Tactical Databank. The locked Megataser Harpoon is a cheap pin for the foe an ally is about to eat; Coolant Dump because it can be spent on a friend. Numbers, designation and kit are Claude's fills, Ryan's to move. 8 October (Ryan, the redesigned round, bible sections 4, 5 and 7): stealth is gone; the Dingo is tireless, two actions a turn, the pack animal that drifts between fights, its Tactical Databank making its second action count in an ally's fight. It can be hunted, and dies if it strays from the pack. 8 October, later (Ryan): the second action is the Dingo's passive (named the Second-Wind Flywheel, 9 October: Ryan kept the flywheel and refused the Momentum), and the Tactical Databank leaves the Dingo to become the game's first module, its name kept (Ryan): \"With an ally in the fight, this machine's kinetic weapons roll their maximum\" (on_attack, roll_max, when ally_present), for when modules exist (bible section 10)."
+    "notes": "Decided 28 September: stealth is a trait, not a passive (like flyer): it controls no ground and joins a fight only when an ally is in it or when it stopped a pack in its path, so it waits in the wings and never fights alone unless run into. The passive is the other half of Ryan's Adaptive Camouflage, the flanking bonus, as Tactical Databank. The locked Megataser Harpoon is a cheap pin for the foe an ally is about to eat; Coolant Dump because it can be spent on a friend. Numbers, designation and kit are Claude's fills, Ryan's to move. 8 October (Ryan, the redesigned round, bible sections 4, 5 and 7): stealth is gone; the Dingo is tireless, two actions a turn, the pack animal that drifts between fights, its Tactical Databank making its second action count in an ally's fight. It can be hunted, and dies if it strays from the pack. 8 October, later (Ryan): the second action is the Dingo's passive (named the Retrograde Flywheel, 9 October, by Ryan: the perfect amount of no-sense), and the Tactical Databank leaves the Dingo to become the game's first module, its name kept (Ryan): \"With an ally in the fight, this machine's kinetic weapons roll their maximum\" (on_attack, roll_max, when ally_present), for when modules exist (bible section 10)."
    },
    "codex": "",
    "hull": 60,
@@ -421,8 +421,8 @@
     "coolant_dump"
    ],
    "passive": {
-    "id": "second_wind_flywheel",
-    "name": "Second-Wind Flywheel",
+    "id": "retrograde_flywheel",
+    "name": "Retrograde Flywheel",
     "description": "A flywheel that banks the car's momentum between bursts and pays it back out. The Dingo has two actions a turn: it may move and fight, then move and fight again.",
     "effects": [
      {
