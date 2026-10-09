@@ -94,6 +94,19 @@ sessions run on this repo at once: check `git status` before committing, stage b
 shared file first (a path still sweeps the other session's hunks), never `git add -A`, never
 kill a bare `godot --path .`. Commit after each verified chunk with tests green.
 
+**The enemy roster proposal, 9 October** (a cloud session, on Ryan's ask: the factions and
+archetypes were written before the allies went 3D and before the enemy side became the Final
+Fantasy world). `docs/enemy_roster_proposal.md`, a proposal only: nothing in content, the
+bible or the engine changed. The argument: the Infernal Horde is Doom's bestiary and the
+Chorus's skin is Lovecraft, both the mech genre's own, so two factions of three cancel the
+clash the game is built on; the three tactical signatures stay and each faction is recast
+into one of the series' families (the pageant of the dead, the beasts, the court) with a pack
+shape of its own on the map, a hunter (the Penitent), elites (the Bone Knight, the Bomb, the
+Eye) and leaders as pitches. Found on the way: the faction palette folds for a protan viewer
+(the Risen green against the Host red at a simulated distance of 18), so the proposal bands
+the factions by lightness (bone, Behemoth violet, midnight: worst pair 35). Next: Ryan's five
+decisions at the end of the file, then content, then foeforge from the new text.
+
 **The harness in tabs, 8 October** (a cloud session; Ryan: the long column ran off the glass,
 and loadouts and the enemy side wanted setting for tests). TEAM, ENEMY and SETUP tabs scroll
 over a summary and the launch buttons, which stay put and keep the phone's safe band. TEAM
