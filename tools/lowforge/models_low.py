@@ -1237,12 +1237,13 @@ def prairie_dog(b):
             # apron across the tyre's front (or back), shielding it and closing the open wedge
             # where the arch rose off the tyre; on the body, the wheels moving free under it.
             # The apron ends at the arch's own outer edge (Ryan, 9 October: they stood out past
-            # the wells; part of the well, not a plate bolted on beside it) and runs in to a unit
-            # inside the body's flank (the same day: gaps showed between it and the body, worst
-            # at the nose, which narrows to the front).
+            # the wells; part of the well, not a plate bolted on beside it) and runs in to the
+            # body's flank (the same day: gaps showed between it and the body, worst at the nose,
+            # which narrows to the front), a quarter of a unit inside it so it never sits over
+            # the hood (Ryan: trim the fronts' overlap with the hood).
             out_y, in_y = (yw + 12.0, yw - 12.0) if yw > 0.0 else (yw - 12.0, yw + 12.0)
             e = 1.0 if yw > 0.0 else -1.0
-            xin = _prairie_body(out_y)[0] - 1.0
+            xin = _prairie_body(out_y)[0] - 0.25
             b.box(min(s * xin, s * 23.0), max(s * xin, s * 23.0), min(out_y - e * 0.8, out_y + e * 0.6), max(out_y - e * 0.8, out_y + e * 0.6), 9.0 + L, R + 11.0 + LA, APRON_PRAIRIE, "apron")
             if yw < 0.0:
                 b.loft([(yw - 12.0, rect(s * 18.0, 10.0, R + 7.0 + LA, R + 11.0 + LA)), (yw, rect(s * 18.0, 10.0, R + 11.0 + LA, R + 15.0 + LA)), (yw + 12.0, rect(s * 18.0, 10.0, R + 7.0 + LA, R + 11.0 + LA))], "steel.plate", "arch")
@@ -1251,14 +1252,18 @@ def prairie_dog(b):
             # front fenders and the body; an inner flange stepping down into the nose was far too
             # smooth a join for W&S; the box rolled 15 degrees onto the nose lost its squared-off
             # look, the twelfth). The level box again, flat on top and square at every edge, its
-            # inner edge run in on one straight line to a unit inside the nose's flank, and a
-            # square lip two units wide hung from that edge down to half a unit into the body's
-            # top where the nose drops away under the arch, so the arch sits on the hull as a
-            # bolted box would. Nothing over the tyre changes, so its top clears the tyre in the
-            # rev as the level arch always has.
-            nose_half, _top = _prairie_body(yw + 12.0)
+            # inner edge following the hood's own edge a quarter of a unit inside it (Ryan, 9
+            # October: trim the overlap with the hood; it had run a unit to a unit and a half over
+            # it on one straight line), with a section at the hood's kink so it follows the taper,
+            # and a square lip two units wide hung from that edge down to half a unit into the
+            # body's top where the nose drops away under the arch, so the arch sits on the hull
+            # as a bolted box would. Nothing over the tyre changes, so its top clears the tyre in
+            # the rev as the level arch always has.
             secs = []
-            for (y, z0), xi in zip(((yw - 12.0, R + 7.0 + LA), (yw, R + 11.0 + LA), (yw + 12.0, R + 7.0 + LA)), (13.0, (13.0 + nose_half - 1.0) * 0.5, nose_half - 1.0)):
+            for u in (-12.0, -6.0, 0.0, 12.0):
+                y = yw + u
+                z0 = R + 11.0 + LA - 4.0 * abs(u) / 12.0
+                xi = _prairie_body(y)[0] - 0.25
                 lip = min(z0, _prairie_body(y)[1] + L - 0.5)
                 pts = [(xi, lip), (xi + 2.0, lip), (xi + 2.0, z0), (23.0, z0), (23.0, z0 + 4.0), (xi, z0 + 4.0)]
                 secs.append((y, [(s * x, z) for x, z in (pts if s > 0 else pts[::-1])]))
