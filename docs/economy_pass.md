@@ -46,7 +46,6 @@ Three caveats before trusting them:
 | Sink | Currency | Today | Notes |
 |---|---|---|---|
 | Building a component from a blueprint | salvage | not built, no price | by tier? one price per tier is the simplest start |
-| A module slot | salvage | not built, no price | escalating per slot on one chassis? |
 | The capital's gate | salvage | `REPAIR_COST` 5 a point (300 points: 1,500 for a full gate) | the bot's only sink today, so it spends everything here |
 | Procurement: a component | Favour | not built | each standing city's maker, a few a turn |
 | Procurement: a chassis (the fourth machine and later) | Favour | not built | now and then; the fourth slot is bought, never unlocked |
@@ -62,7 +61,7 @@ unpacked, hull and cracked repairs, refits. Starting stock: `START_SALVAGE` 0,
 1. **Count the decisions.** The loop row asks for 15 to 25 real decisions across twelve
    battles. Split them between the two currencies by what each buys: salvage makes things,
    Favour buys services and stock.
-2. **Cut prices from the budget.** A run's salvage divided by the builds and slots it should
+2. **Cut prices from the budget.** A run's salvage divided by the builds it should
    afford gives the base build price. Tier two and three multiply it. Do the same for Favour
    with procurement, where a chassis should cost several wins' fees.
 3. **Anchor the trade-offs to a battle's pay:**
@@ -85,7 +84,6 @@ The runner has nothing to buy yet, so the first job is a spending policy, an inf
   hardpoint (what refills a hardpoint whose component was destroyed).
 - **Offers and tokens:** taking the host maker's offer, and unpacking research tokens (the boss
   drops one).
-- **Module slots:** bought when salvage is left over.
 - **Loot on the map:** seeded and claimed, once its density is decided.
 - **The report:** end-of-run inventory (unspent salvage and Favour, unfitted components,
   blueprints), hardpoints filled over the run, and the tier of what the squad fields by
@@ -97,7 +95,6 @@ The runner has nothing to buy yet, so the first job is a spending policy, an inf
 - The docking rate. At `FAVOUR_DOCK` 1, a city gate of 200 can zero a win's fee.
 - The procurement shelf: how many items, the refresh, the chassis rate, and the Arsenal's
   gate by the Convergence's tier.
-- Module slot prices, and whether they escalate per chassis.
 - The capital's repair price, against what the finale needs the gate to be.
 - Starting salvage and Favour, and whether the starting draft spends either.
 - Whether a held battle (a wipe the city survives) should pay any Favour. Today it pays

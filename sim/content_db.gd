@@ -15,6 +15,7 @@ const MAX_DIE := 10                 # the Clydesdale carries nine (Ryan, 28 Sept
 ## and in the skirmish): how big it is drawn, Map3D.SIZE_FIT and MechView3D.SIZE_FILL.
 const SIZES := ["light", "medium", "heavy", "assault"]
 const MAX_PASSIVE_EFFECTS := 3      # effects in one passive; a benefit and its cost is one passive
+const MAX_MODULE_SLOTS := 4         # a chassis's module slots: two as a rule, three on the Clydesdale (Ryan); room to move
 ## Internal design text lives under `design` and is never shown. These keys at the top level
 ## of an entry are the old layout, or a leak waiting to happen, so the validator refuses them.
 const DESIGN_ONLY_KEYS := ["fantasy", "question", "niche", "rule", "holes", "signature", "answer", "notes"]
@@ -790,9 +791,13 @@ func _validate_chassis(errs: Array[String]) -> void:
 		var where := "chassis %s" % id
 		# designation: the maker's long name on the spec plate (Ryan, 26 September: every
 		# chassis carries one; the bible's section 7 row says the shape per maker).
-		for key in ["name", "designation", "codex", "flavour", "hull", "shield", "armour", "movespeed", "hardpoints", "loadout", "recharge_field", "size"]:
+		for key in ["name", "designation", "codex", "flavour", "hull", "shield", "armour", "movespeed", "hardpoints", "loadout", "recharge_field", "size", "module_slots"]:
 			if not c.has(key):
 				errs.append("%s: missing %s" % [where, key])
+		# Module slots are a number of the chassis, never bought (Ryan: two as a rule, three on
+		# the Clydesdale as its identifying feature; the runner may move the baseline).
+		if c.has("module_slots") and (int(c["module_slots"]) < 0 or int(c["module_slots"]) > MAX_MODULE_SLOTS):
+			errs.append("%s: module_slots must be 0 to %d" % [where, MAX_MODULE_SLOTS])
 		if c.has("designation") and str(c["designation"]).strip_edges().is_empty():
 			errs.append("%s: designation is empty" % where)
 		_validate_name_clash(where, str(id), c, errs)

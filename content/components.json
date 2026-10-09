@@ -566,6 +566,7 @@
    "id": "pulse_repeater",
    "name": "Pulse Repeater",
    "maker": "aphelion",
+   "tier": 1,
    "shape": "barrel",
    "codex": "",
    "flavour": "",
@@ -573,7 +574,7 @@
     "stage": "draft",
     "fantasy": "A small fast gun that gives the machine its turn back.",
     "niche": "The tempo tool: a rapid entry so a control frame gets another look at its die.",
-    "notes": "Claude's fill, 26 September; the first rapid component in the pool."
+    "notes": "Claude's fill, 26 September; the first rapid component in the pool. Stocked on no chassis since 9 October (the content revision: the Baboon's two became the Probe and the Projector, the Stingray's the Halo Shield), so it carries its own tier, one, as when the Baboon stocked it."
    },
    "face": {
     "kind": "attack",
@@ -987,7 +988,7 @@
     "stage": "draft",
     "fantasy": "A ring of hard light. Nothing clever about it, which Aphelion resents.",
     "niche": "Aphelion's generic shield.",
-    "notes": "Claude's fill, 28 September; the Corona Shield with cleanse is the unique one. Stocked on the Stingray since 9 October (the content revision), in place of its Zenith Emitter, so its tier is derived (two)."
+    "notes": "Claude's fill, 28 September; the Corona Shield with cleanse is the unique one. Stocked on the Stingray since 9 October (the content revision), in place of its Pulse Repeater, so its tier is derived (two)."
    },
    "face": {
     "kind": "shield",

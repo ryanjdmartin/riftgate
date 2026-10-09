@@ -944,3 +944,22 @@ func test_a_guard_is_spent_on_an_ally_and_rapid_rides_on_anything() -> void:
 	assert_true(refused_shock, "a shock on a shield is refused")
 	var built := db.build_face(vent["face"])
 	assert_true(built.kind == Face.Kind.VENT and built.has(Face.Keyword.RAPID), "and the vent builds rapid")
+
+
+func test_every_chassis_states_its_module_slots() -> void:
+	# A number of the chassis, never bought (Ryan; bible section 10): the validator wants it
+	# on every chassis and holds it to a small range.
+	var db := _fresh()
+	for id in db.chassis.keys():
+		assert_true(db.chassis[id].has("module_slots"), "%s states its module slots" % id)
+	var bare: Dictionary = db.chassis.values()[0].duplicate(true)
+	bare.erase("module_slots")
+	bare["id"] = "test_bare"
+	db.chassis["test_bare"] = bare
+	assert_true(_has_error(db, "missing module_slots"), "a chassis without its slots is refused")
+	db = _fresh()
+	var wide: Dictionary = db.chassis.values()[0].duplicate(true)
+	wide["module_slots"] = ContentDB.MAX_MODULE_SLOTS + 1
+	wide["id"] = "test_wide"
+	db.chassis["test_wide"] = wide
+	assert_true(_has_error(db, "module_slots must be"), "and so is one past the range")
