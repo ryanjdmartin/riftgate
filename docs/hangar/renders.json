@@ -220,8 +220,8 @@
    }
   },
   "prairie_dog": {
-   "when": "9 October, fourth pass.",
-   "note": "The aprons in the maker's rust livery, the flank stripe's (Ryan liked the option). Every arch, with its apron's top, sits half a unit lower over its tyre (Ryan: tighten them now the rev is softer), and the rev's rock is four and a half degrees with a squat of a third of a unit to keep a fifth of a unit clear at its deepest key; a full unit lower would have needed the rock cut to about three and a half. The aprons run in to the body, the axle covers and the wheels as before.",
+   "when": "9 October, fifth pass.",
+   "note": "Every arch, with its apron's top, a whole unit lower over its tyre, and the rev's rock back to five degrees with a squat under half a unit (Ryan: it did not look close; a little clipping at the vertices is fine, so a whole unit to see). At the rev's deepest key the front tyres reach about half a unit into their arches. The livery aprons, run in to the body, the axle covers and the wheels as before.",
    "images": [
     {
      "file": "prairie_dog/prairie_dog_front.png",
@@ -237,7 +237,7 @@
     }
    ],
    "before": {
-    "summary": "Before: 9 October, third pass (the aprons in metal, the arches half a unit higher, the rock five degrees)",
+    "summary": "Before: 9 October, fourth pass (the arches half a unit lower, the rock four and a half degrees)",
     "images": [
      {
       "file": "prairie_dog/before_prairie_dog_front.png",

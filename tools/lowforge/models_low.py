@@ -1171,7 +1171,7 @@ LIFT_PRAIRIE = 2.0
 APRON_PRAIRIE = "livery.livery2"   # Ryan, 9 October: the livery aprons
 ## The arches (and their aprons' tops) sit this much lower than the ride height alone would put
 ## them (Ryan, 9 October: tighten them over the tyres once the rev was softened).
-ARCH_DROP_PRAIRIE = 0.5
+ARCH_DROP_PRAIRIE = 1.0   # a whole unit, to see (Ryan, 9 October: a little clipping at the vertices is fine)
 
 
 def _prairie_body(y):
@@ -1327,17 +1327,17 @@ def prairie_dog(b):
     # keyed. Degrees and seconds; a key is (t, value) on the joint's own axis or (t, pitch,
     # yaw, roll); a body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll); a glow
     # key is (t, k), k the light added over rest.
-    # The rock four and a half degrees and the squat a third of a unit (Ryan, 9 October: the tyres
-    # clipped the arches; six degrees and a squat of two and a half took them up to two units into
-    # the arch once the wheels came up under it, and the arches then came down half a unit).
-    # Measured at the keys: about a fifth of a unit clear at the deepest (the servo trails this
-    # slow a curve and never passes a key).
+    # The rock five degrees and the squat under half a unit (Ryan, 9 October: six degrees and a
+    # squat of two and a half took the tyres two units into the arches once the wheels came up
+    # under them; then, with the arches a whole unit lower, a little clipping at the vertices is
+    # fine). Measured at the keys: the front tyres reach about half a unit into their arches at
+    # the deepest (the servo trails this slow a curve and never passes a key).
     b.act("rev", 4.2, {   # revs eagerly: a jump forward, a squat, back, and again; the wheels spin hard
         "wheel_fl": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.2, -1080.0)],
         "wheel_fr": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.2, -1080.0)],
         "wheel_rl": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.2, -1080.0)],
         "wheel_rr": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.2, -1080.0)],
-        "chassis": [(0.5, 4.5, 0.0, 0.0, 0.0, 0.0, -0.3), (1.2, -4.5, 0.0, 0.0, 0.0, 0.0, -0.25), (2.2, 3.6, 0.0, 0.0, 0.0, 0.0, -0.15), (3.0, -4.5, 0.0, 0.0, 0.0, 0.0, -0.25), (3.8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
+        "chassis": [(0.5, 5.0, 0.0, 0.0, 0.0, 0.0, -0.4), (1.2, -5.0, 0.0, 0.0, 0.0, 0.0, -0.3), (2.2, 4.0, 0.0, 0.0, 0.0, 0.0, -0.2), (3.0, -5.0, 0.0, 0.0, 0.0, 0.0, -0.3), (3.8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
     }, body=[(0.6, 0.0, 10.0, 0.0), (1.3, 0.0, 9.0, 0.0), (2.2, 0.0, -4.0, 0.0), (3.0, 0.0, 6.0, 0.0), (4.2, 0.0, 0.0, 0.0)])
     b.act("scout", 7.6, {   # the sensor head looks one way and then the other, the turret following it round each way and waiting, the mast light hot
         "sensor": [(0.9, 60.0), (2.4, 62.0), (3.6, -55.0), (5.6, -58.0), (6.8, 0.0)],
