@@ -99,20 +99,20 @@ sessions run on this repo at once: check `git status` before committing, stage b
 shared file first (a path still sweeps the other session's hunks), never `git add -A`, never
 kill a bare `godot --path .`. Commit after each verified chunk with tests green.
 
-**The enemy roster proposal, 9 October** (a cloud session, on Ryan's ask: the factions and
-archetypes were written before the allies went 3D and before the enemy side became the Final
-Fantasy world). `docs/enemy_roster_proposal.md`, a proposal only: nothing in content, the
-bible or the engine changed. The argument: the Infernal Horde is Doom's bestiary and the
-Chorus's skin is Lovecraft, both the mech genre's own, so two factions of three cancel the
-clash the game is built on; the three tactical signatures stay and each faction is recast
-into one of the series' families (the pageant of the dead, the beasts, the court) with a pack
-shape of its own on the map, a hunter (the Penitent), elites (the Bone Knight, the Bomb, the
-Eye) and leaders as pitches. Found on the way: the faction palette folds for a protan viewer
-(the Risen green against the Host red at a simulated distance of 18), so the proposal bands
-the factions by lightness (bone, Behemoth violet, midnight: worst pair 35). Revised the same
-day to the redesigned round after main merged in: shapes are ring overlaps and who hunts,
-push and hunt only, and the Penitent hunts the slowest and pins. Next: Ryan's five decisions
-at the end of the file, then content, then foeforge from the new text. Then Ryan, later the same day: fresh slate. The whole JRPG genre invades (Final Fantasy the spine, the genre blended so ours is its own); leaders in the elaborate Final Fantasy boss register; the Cactuar in, made sinister; three factions good for scouting but not fixed. The proposal's roster and shapes are retired (a note at its top); its constraints, holes and palette stand. Next: the organising principle (the chat of 9 October put three on the table: the domain a rift brings with it, the depth of the invasion by Convergence tier, and the leader's retinue), then a roster from it.
+**The enemy side from a fresh slate, 9 October** (a cloud session, Ryan in chat; bible v0.94: section 1's
+enemies row, section 9's first two rows and table, section 5's plaque row). Ryan's ask: the factions and
+archetypes predate the 3D allies and the JRPG enemy side. The morning's pass recast the three factions
+into one series' families and found the Infernal Horde was Doom's bestiary and the Chorus's skin Lovecraft,
+both the mech genre's own, and the faction palette folding for a protan viewer; Ryan read it and called a
+fresh slate. Decided in chat: the whole JRPG genre invades (Final Fantasy the spine, the genre blended);
+a rift's domain (a biome of the classic overworld: its bleed, its wildlife, its hero) dictates what spawns;
+the leaders are the classic party (Warrior, Thief, White Mage, Black Mage), the finale the party assembled
+and promoted, a beaten hero an empty slot; four domains, everything keyed to three up for change; every
+foe move in the genre's name, announced on a plaque in the other world's own window with the replay
+holding for it. `docs/enemy_roster_proposal.md` is the pitched roster (four domains, their wildlife and
+heroes, the engine gaps, the holes, five decisions wanted). Nothing in content or the engine changed yet.
+Next: Ryan's picks, then the plaque (ready to build, in the to-do's engine section), then the Bomb and the
+Gel, then the content revision re-keying three to four.
 
 **The harness in tabs, 8 October** (a cloud session; Ryan: the long column ran off the glass,
 and loadouts and the enemy side wanted setting for tests). TEAM, ENEMY and SETUP tabs scroll
