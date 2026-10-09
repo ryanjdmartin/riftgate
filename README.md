@@ -185,6 +185,7 @@ tools/spriter/.venv/bin/python tools/sheet_export.py
 godot --headless --path . --import
 
 # better enemy sprites from an image model on this Mac (see tools/foeforge/README.md)
+tools/foeforge/.venv/bin/python tools/foeforge/forge.py prompts                                   # every foe's prompt into tools/foeforge/prompts.md, no model needed (runs anywhere)
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate revenant --n 4
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut tools/foeforge/out/revenant/revenant_3.png revenant
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py rift --n 4                                   # the rift's vortex, the same way
