@@ -86,6 +86,7 @@ func play_round(sk: Skirmish) -> void:
 	while sk.state == Skirmish.State.ASSIGN and guard < OPTION_GUARD:
 		guard += 1
 		var best: Dictionary = {}
+		var best_rolled: Dictionary = {}   # the best damaging spend that rolls, to go before a sure one
 		for i in range(sk.mechs.size()):
 			var ms: Skirmish.MechState = sk.mechs[i]
 			if not ms.alive() or ms.assigned or held.has(i):
@@ -109,16 +110,32 @@ func play_round(sk: Skirmish) -> void:
 					continue
 			if best.is_empty() or pick["score"] > best["score"]:
 				best = pick
+			if _rolls_damage(ms.face()) and pick["score"] > 0.0 and (best_rolled.is_empty() or pick["score"] > best_rolled["score"]):
+				best_rolled = pick
 			if kind == RANDOM:
 				break   # the first unspent die, any option: no weighing across the team
 		if best.is_empty():
 			break
+		# Rolled before sure (Ryan, 9 October): a sure number is worth most after the rolls
+		# have landed, when it can finish what they left, so a damaging flat spend waits while
+		# a damaging rolled one is there to make. Setup (buffs, shock, lure) keeps its order.
+		if kind == GREEDY and not best_rolled.is_empty() and _sure_damage(sk.mechs[best["mech"]].face()):
+			best = best_rolled
 		var ms: Skirmish.MechState = sk.mechs[best["mech"]]
 		var spent := ms.face()
 		if sk.assign(best["mech"], best["target"]):
 			_tally(spent)
 		else:
 			held.append(best["mech"])
+
+
+## A damaging attack that rolls a range (the gamble), and one that is a single number.
+static func _rolls_damage(f: Face) -> bool:
+	return f != null and f.kind == Face.Kind.ATTACK and f.is_ranged()
+
+
+static func _sure_damage(f: Face) -> bool:
+	return f != null and f.kind == Face.Kind.ATTACK and not f.is_ranged() and f.power > 0
 
 
 ## Every legal spend of one mech's showing entry, scored: {mech, target, score}. A blank is

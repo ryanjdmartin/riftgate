@@ -78,6 +78,10 @@ var last_roll: Dictionary = {}
 ## by reach name, the spends, the hull its blows took off foes, the spends aimed at the back
 ## rank, the heat paid and the shield lost to danger close. Never read by the game.
 var reach_tally: Dictionary = {}
+## The same by the shape of the number (rolled or flat), with the crits and what they
+## added, and the damage the foes dealt by the rank they struck from. The runner's alone.
+var class_tally: Dictionary = {}
+var taken_by_rank: Dictionary = {}
 var _chaining := false
 ## Every blow of the last enemy turn, in order, for the screen to replay:
 ## {foe, mech (index), absorbed, through, blocked, broke_shield, injured, shield, hull,
@@ -880,6 +884,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 	var reach := reach_of(ms, f)
 	var aimed_back := target.rank == 1
 	var dealt := 0             # hull the blows took off every foe they reached, for the reach tally
+	var crits := 0
+	var crit_extra := 0        # what the crits added to the blows, for the class tally
 	var total := 0
 	var rolled_total := 0
 	var any_crit := false
@@ -906,7 +912,10 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 		var heat := f.heat if s == 0 else 0
 		var crit := f.crit > 0 and rng.randi_range(1, 100) <= f.crit
 		if crit:
+			var plain := dmg
 			dmg = int(roundf(dmg * (Face.CRIT_MULT + f.crit_bonus + Effects.crit_bonus(ms.unit, f, target))))
+			crits += 1
+			crit_extra += dmg - plain
 		if f.has(Face.Keyword.EXECUTE):
 			target.executed = true   # a foe that would get back up stays down
 			if target.hp * 2 <= target.hp_max:
@@ -1009,7 +1018,9 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 			splashed = mini(splash, ms.unit.shield)
 			ms.unit.shield = maxi(0, ms.unit.shield - splash)
 			log.append("%s: splash, shield -%d" % [ms.unit.display_name, splash])
-	_tally_reach(reach, dealt, aimed_back, heat_total, splashed)
+	if f.power > 0 or f.power_max > 0:   # a lure or a probe deals nothing: it is no spend of damage
+		_tally_reach(reach, dealt, aimed_back, heat_total, splashed)
+		_tally_class(f.is_ranged(), dealt, heat_total, crits, crit_extra, maxi(1, f.strikes))
 	if vent > 0:
 		ms.heat = maxi(0, ms.heat - vent)
 	_add_heat(ms, heat_total)
@@ -1138,6 +1149,20 @@ func _tally_reach(reach: int, dealt: int, aimed_back: bool, heat: int, splashed:
 	t["heat"] += heat
 	t["splash"] += splashed
 	reach_tally[k] = t
+
+
+## One attack's share of the class tally (the runner's; the game never reads it).
+func _tally_class(rolled: bool, dealt: int, heat: int, crits: int, crit_extra: int, strikes: int) -> void:
+	var k := "rolled" if rolled else "flat"
+	var t: Dictionary = class_tally.get(k, {"spends": 0, "damage": 0, "heat": 0, "strikes": 0, "crits": 0, "crit_extra": 0})
+	if not _chaining:
+		t["spends"] += 1
+	t["damage"] += dealt
+	t["heat"] += heat
+	t["strikes"] += strikes
+	t["crits"] += crits
+	t["crit_extra"] += crit_extra
+	class_tally[k] = t
 
 
 ## Hull lost to a blow or a bite: the on_hull_damage passives fire (the Nemesis's Crucible
@@ -1386,6 +1411,8 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	var had_shield := ms.unit.shield > 0
 	ms.unit.shield = r["shield"]
 	ms.unit.hull -= r["through"]
+	var rk := "back" if source != null and source.rank == 1 else "front"
+	taken_by_rank[rk] = int(taken_by_rank.get(rk, 0)) + int(r["absorbed"]) + int(r["through"])
 	# The mech's gauges after the blow ride along, so a replay can step them down blow by blow.
 	turn_events.append({"foe": source, "mech": mechs.find(ms), "absorbed": r["absorbed"], "through": r["through"],
 		"blocked": r["blocked"], "broke_shield": had_shield and ms.unit.shield == 0, "injured": r["injures"],

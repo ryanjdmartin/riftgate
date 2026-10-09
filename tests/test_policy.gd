@@ -340,3 +340,23 @@ func test_greedy_values_a_shock_by_the_doubled_blow_to_come() -> void:
 	assert_true(pol.attack_score(sk, ms, projector, g) > 0.0, "a shock is worth the team's next blow again")
 	Effects.stack(g, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 	assert_eq(pol.attack_score(sk, ms, projector, g), 0.0, "and nothing on a foe already carrying one")
+
+
+func test_greedy_rolls_before_it_spends_a_sure_number() -> void:
+	# Ryan, 9 October: a sure number is worth most after the rolls have landed, when it can
+	# finish what they left; the bot spends rolled damage first and the flat finisher after.
+	var sk := Skirmish.new(3)
+	sk.add_mech(_mech("Sure", Die.single(Face.attack(15, L))))
+	sk.add_mech(_mech("Rolls", Die.single(Face.attack(10, L, [], 0, 20))))
+	var small := _ghoul(15, 10)
+	sk.add_foes([small, _ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	Policy.make(Policy.GREEDY).play_round(sk)
+	var first := ""
+	for line in sk.log:
+		if str(line).contains(" hits "):
+			first = str(line)
+			break
+	assert_true(first.begins_with("Rolls hits"), "the rolled die goes first: %s" % first)
+	assert_false(small.alive(), "and the sure one finishes whatever the roll left")
