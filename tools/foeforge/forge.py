@@ -56,7 +56,7 @@ HERO_STYLE = (
     "16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, "
     "elaborate and over the top, in the tradition of Final Fantasy VI's and Chrono Trigger's "
     "boss art: ornate armour or robes with gold trim and flowing cloth, an oversized weapon or "
-    "staff, a faint halo of light, heroic and terrifying, a face that is not a recognisable "
+    "staff, heroic and terrifying, a face that is not a recognisable "
     "character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark "
     "outline. Full body, facing toward the viewer's left, centered, "
     "isolated on a solid flat pure white background, no text, no border, no ground shadow."

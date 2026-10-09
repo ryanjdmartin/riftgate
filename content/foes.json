@@ -80,7 +80,7 @@
     },
     {
       "id": "antlion", "name": "Antlion", "faction": "waste",
-      "design": { "sprite": "a huge sand-coloured insect with enormous mandibles, six legs, half dug into a funnel of sand", "fantasy": "The trap at the bottom of the funnel. Final Fantasy's antlion, Dragon Quest's.", "niche": "A hunter of the slowest that pins what it catches and hardens when hurt. The slow machine wants company.", "notes": "Burrow is flat armour until its next action, below half." },
+      "design": { "sprite": "a giant sand-coloured insect with huge curved mandibles and six spindly legs, crouched low and half buried in a mound of loose sand", "fantasy": "The trap at the bottom of the funnel. Final Fantasy's antlion, Dragon Quest's.", "niche": "A hunter of the slowest that pins what it catches and hardens when hurt. The slow machine wants company.", "notes": "Burrow is flat armour until its next action, below half." },
       "codex": "Waits under the sand for whatever is slowest and does not let go. Hurt it and it digs in, and what is dug in is hard to hit.",
       "hp": 50, "attack": 20, "rank": "front", "zone": 1, "movespeed": 20, "behaviour": "hunt", "hunts": "slowest",
       "actions": [
@@ -91,7 +91,7 @@
     },
     {
       "id": "cockatrice", "name": "Cockatrice", "faction": "waste",
-      "design": { "sprite": "a rooster with a lizard's scaled tail and wings spread, a cruel beak and petrifying eyes", "fantasy": "The bird that turns you to stone. Final Fantasy's, and every bestiary's.", "niche": "Back rank. Stone switches off the weapon a machine is showing. Show it a shield or a blank.", "notes": "Stone is the old Hush: disable the showing entry through the next turn, when a machine shows an intact weapon; both aim at the armed." },
+      "design": { "sprite": "a horse-sized monster with a rooster's head and crimson comb, a cruel hooked beak and glowing eyes, a scaled lizard body, leathery bat wings and a long serpent tail", "fantasy": "The bird that turns you to stone. Final Fantasy's, and every bestiary's.", "niche": "Back rank. Stone switches off the weapon a machine is showing. Show it a shield or a blank.", "notes": "Stone is the old Hush: disable the showing entry through the next turn, when a machine shows an intact weapon; both aim at the armed." },
       "codex": "A bird with a lizard's tail that stands behind the others and stares. What it stares at stops working: the weapon your machine is showing is stone until its next turn.",
       "hp": 30, "attack": 10, "rank": "back", "zone": 3, "movespeed": 20, "aim": "armed",
       "actions": [
@@ -102,7 +102,7 @@
     },
     {
       "id": "sandworm", "name": "Sandworm", "faction": "waste",
-      "design": { "sprite": "a colossal sand-coloured worm rearing up out of the dunes, a round mouth ringed with teeth", "fantasy": "The worm under the desert, the genre's and every desert's. The old Maw's ring of teeth is its mouth.", "niche": "Fills a whole column, swallows through the shield, and digs in when hurt. Suppress the swallow; hull takes it, a shield does not.", "notes": "Massive boss of the Waste. Swallow breaches. Burrow hardens when hurt. Quake opens below half: three blows of 10 at anything." },
+      "design": { "sprite": "a colossal eyeless segmented worm bursting out of the desert sand, its head nothing but a round gaping maw ringed with rows of inward-pointing teeth", "fantasy": "The worm under the desert, the genre's and every desert's. The old Maw's ring of teeth is its mouth.", "niche": "Fills a whole column, swallows through the shield, and digs in when hurt. Suppress the swallow; hull takes it, a shield does not.", "notes": "Massive boss of the Waste. Swallow breaches. Burrow hardens when hurt. Quake opens below half: three blows of 10 at anything." },
       "codex": "Most of it is under the sand. The part that is not is a ring of teeth the width of a road, and what it swallows it swallows through the shield. Hurt it and the ground shakes for everyone.",
       "hp": 160, "attack": 40, "armour": 5, "rank": "front", "size": 2, "zone": 2, "movespeed": 10, "stun_resist": 30,
       "actions": [
@@ -171,7 +171,7 @@
     },
     {
       "id": "salamander", "name": "Salamander", "faction": "peak",
-      "design": { "sprite": "a car-sized red lizard with glowing lava-cracked scales, flames along its back, on four legs", "fantasy": "The lizard that lives in the fire. Its hide burns what touches it.", "niche": "Front rank, scorching blows, and a hide that burns back. The melee machines pay to hit it.", "notes": "Ember Hide (a foe-side retaliate: whoever strikes it in melee takes a stack of Overheating) is planned." },
+      "design": { "sprite": "a long low red lizard crawling on all four legs close to the ground, glowing lava cracks across its scales, flames running along its spine", "fantasy": "The lizard that lives in the fire. Its hide burns what touches it.", "niche": "Front rank, scorching blows, and a hide that burns back. The melee machines pay to hit it.", "notes": "Ember Hide (a foe-side retaliate: whoever strikes it in melee takes a stack of Overheating) is planned." },
       "codex": "A lizard the size of a car that lives in the lava and does not notice. Its bites burn, and so does its hide.",
       "hp": 50, "attack": 20, "rank": "front", "zone": 1, "movespeed": 20,
       "actions": [
