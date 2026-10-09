@@ -23,6 +23,7 @@ the page sets it beside what the game plays now.
     tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 2   # the second cut
     tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 3   # the third
     tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 4   # the fourth
+    tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 5   # the fifth
 """
 import json
 import math
@@ -505,6 +506,99 @@ def death4(maker):
     return room(b, decay=0.25, mix=0.1)
 
 
+# ---------------------------------------------------------------- the fifth cut (Ryan, 9 October)
+# Minerva: a lower-pitched first blast, the second boom a little later (read two ways: the
+# death's first boom lowered, or the second boom's own front lowered; both rendered). Kestrel:
+# no sputter, the whoosh softer and longer, the crackling after louder and longer. Aphelion:
+# the beeps quieter, the blasts sooner, each a different pitch and unevenly spaced. The
+# Arsenal: the whoosh is Kestrel's now, so a fiery roar into the ignition; the cry lower still
+# and longer, crackles and sputters over it.
+
+VOICE_AT5 = {"minerva_first_low": 1.25, "minerva_second_low": 1.25, "kestrel": 1.4, "aphelion": 0.2, "arsenal": 1.3}
+
+
+def hull_boom_low(gain=1.0):
+    """Minerva's first boom, lower: the muffling plate closed further, the box and the thud a
+    step down."""
+    b = blast(1.0, 19.0, 1.2 * gain, cut=340.0)
+    n = n_of(0.5)
+    box = F.lp(F.sat(F.bp(F.noise(n), 50.0, 130.0) * 4.0, 3.0), 300.0) * F.env_ad(n, 0.004, 0.2) * 0.9 * gain
+    b = at(b, box, 0.0)
+    return at(b, FX.heft(F.thud(80.0, 24.0, 0.75, click=0.5, drive=4.0, body_gain=2.1), 0.6) * gain, 0.04)
+
+
+def deep_hull_boom_low_front(gain=1.0):
+    """Minerva's second boom with its own front lowered: no crack at its head, the blast's
+    burst cut to the low band, so it arrives as weight and not as a hit."""
+    b = blast(1.4, 14.0, 1.25 * gain, cut=200.0)
+    n = n_of(0.8)
+    box = F.lp(F.sat(F.bp(F.noise(n), 30.0, 85.0) * 5.0, 3.0), 220.0) * F.env_pts(n, [(0.0, 0.0), (0.02, 1.0), (0.8, 0.0)]) * 1.1 * gain
+    b = at(b, box, 0.0)
+    rumble = F.lp(F.noise(n_of(1.5)), 55.0) * F.env_pts(n_of(1.5), [(0.0, 0.0), (0.06, 1.0), (1.5, 0.0)]) * 1.5 * gain
+    b = at(b, F.sat(rumble * 2.5, 2.5), 0.0)
+    return at(b, FX.heft(F.thud(60.0, 18.0, 1.0, click=0.15, drive=4.5, body_gain=2.6), 0.6) * gain, 0.03)
+
+
+def flame_sputters(dur, gain=0.5):
+    """Fire sputtering: short irregular bursts of low roar, as a flame catches and gutters."""
+    n = n_of(dur)
+    out = np.zeros(n)
+    when = 0.0
+    while when < dur - 0.08:
+        k = n_of(F.RNG.uniform(0.03, 0.09))
+        seg = F.lp(F.sat(F.lp(F.noise(k), 400.0) * 3.0, 3.0), 1300.0) * F.env_pts(k, [(0.0, 0.0), (0.005, 1.0), (k / SR, 0.0)])
+        out = at(out, seg * F.RNG.uniform(0.5, 1.0), when)
+        when += F.RNG.uniform(0.07, 0.22)
+    return out[:n] * F.env_pts(n, [(0.0, 1.0), (dur, 0.2)]) * gain
+
+
+def death5(variant):
+    if variant == "minerva_first_low":
+        b = hull_boom_low(1.0)
+        b = at(b, deep_hull_boom(1.1), 0.6)
+    elif variant == "minerva_second_low":
+        b = hull_boom(1.0, 24.0)
+        b = at(b, deep_hull_boom_low_front(1.1), 0.6)
+    elif variant == "kestrel":
+        # The air rushing up at it, softer and longer; it strikes the ground and its fuel
+        # catches; the fire crackling after, louder and on for longer.
+        b = whoosh(0.85, 0.3, 250.0, 2400.0)
+        hit = 0.85
+        ground = mix(F.thud(120.0, 30.0, 0.7, click=1.4, drive=4.0, body_gain=2.0), F.burst(0.12, 120.0, 1600.0, decay=0.04) * 0.9)
+        b = at(b, FX.heft(ground, 0.7), hit)
+        b = at(b, ignition(1.1), hit + 0.02)
+        b = at(b, grit(0.5, 0.7), hit + 0.03)
+        b = at(b, crackles(1.6, 0.55), hit + 0.3)
+    elif variant == "aphelion":
+        # The discharge with its warning quieter; small blasts from early in it, each its own
+        # pitch, at uneven gaps, rolling into its end.
+        b = mix(F.lp(arc(1.7, 0.7), 2200.0, order=2), electric_buzz(1.7, 0.5))
+        b = at(b, fizzle(1.8, 0.45, 600.0, 2400.0), 0.1)
+        for k in range(3):
+            n = n_of(0.09)
+            beep = F.lp(np.sign(np.sin(2.0 * math.pi * 987.77 * t_of(n))) * 0.5 + np.sin(2.0 * math.pi * 987.77 * t_of(n)) * 0.5, 3000.0)
+            b = at(b, beep * F.env_pts(n, [(0.0, 0.0), (0.004, 1.0), (0.08, 1.0), (0.09, 0.0)]) * 0.11, 0.05 + 0.22 * k)
+        b = at(b, power_down_whine(1.6, 0.3), 0.15)
+        for when, low, gain in ((0.62, 52.0, 0.4), (0.83, 30.0, 0.55), (1.18, 64.0, 0.4), (1.3, 22.0, 0.65), (1.62, 40.0, 0.5)):
+            b = at(b, blast(0.4, low, gain), when)
+    else:
+        # The Arsenal: fire roaring up into the ignition; the cry lower still and drawn out,
+        # crackling and sputtering over it; the flames.
+        n = n_of(0.45)
+        t = t_of(n)
+        roar_up = F.lp_var(F.sat(F.lp(F.noise(n), 260.0) * 3.0, 3.0), 300.0 + 900.0 * (t / 0.45) ** 1.5) * (t / 0.45) ** 1.4 * 0.9
+        b = roar_up
+        ign = 0.42
+        b = at(b, mix(blast(0.7, 30.0, 0.8), FX.plasma_splash(0.9), ignition(1.0)), ign)
+        b = at(b, wail(1.8, 230.0, 0.28), ign + 0.02)
+        b = at(b, crackles(1.8, 0.5), ign + 0.15)
+        b = at(b, flame_sputters(1.6, 0.45), ign + 0.2)
+        n = n_of(1.2)
+        flames = F.lp(F.sat(F.lp(F.noise(n), 320.0) * 3.0, 3.0), 1100.0) * F.env_pts(n, [(0.0, 0.0), (0.05, 0.9), (0.6, 0.5), (1.2, 0.0)]) * 0.5
+        b = at(b, flames, ign + 0.05)
+    return room(b, decay=0.25, mix=0.1)
+
+
 # ---------------------------------------------------------------- written as the game plays it
 
 def at_level(x, level):
@@ -631,7 +725,27 @@ def cut4():
     return 0
 
 
+SINGLES5 = [("death5_" + v, (lambda v=v: death5(v)), DEATH_LEVEL) for v in ("minerva_first_low", "minerva_second_low", "kestrel", "aphelion", "arsenal")]
+
+
+def cut5():
+    made = {}
+    for name, fn, level in SINGLES5:
+        F.seed("d5_" + name)
+        x = at_level(fn(), level)
+        made[name] = x
+        write("d5_" + name, tail(x))
+        print("  d5_%-26s %5.2f s" % (name, len(x) / SR))
+    line_lost = read(os.path.join(ART, "voice", "line_machine_lost.wav"))
+    for v in VOICE_AT5:
+        write("d5_seq_lost_" + v, tail(at(at(np.zeros(1), made["death5_" + v], 0.0), line_lost, VOICE_AT5[v]), 0.5))
+    print("  sequences written")
+    return 0
+
+
 def main(argv):
+    if argv[:1] == ["5"]:
+        return cut5()
     if argv[:1] == ["2"]:
         return cut2()
     if argv[:1] == ["3"]:
