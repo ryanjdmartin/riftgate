@@ -250,3 +250,18 @@ func test_every_line_mode_speaks_every_hook_a_second_apart() -> void:
 	v.trigger("chatty", 0.2)
 	assert_true(v.next(1.5).is_empty(), "the line in progress and a second first")
 	assert_eq(str(v.next(1.0 + VoiceLines.INFO_GAP)["hook"]), "chatty", "then the next, never stale")
+
+
+
+func test_a_claimed_line_is_booked_or_refused_at_once() -> void:
+	var v := VoiceLines.new()
+	v.load_table(_table())
+	assert_true(v.claim("rare", 0.1).is_empty(), "a hook's chance still rolls")
+	var line := v.claim("chatty", 0.1)
+	assert_true(not line.is_empty(), "free, a chance line is booked for its moment")
+	v.started(0.1, 1.0)
+	assert_true(v.claim("chatty", 0.5).is_empty(), "not over the line booked")
+	assert_true(v.claim("chatty", 3.0).is_empty(), "nor inside the spacing after it")
+	assert_true(not v.claim("chatty", 7.2).is_empty(), "free again past the spacing")
+	v.trigger("info", 8.0)
+	assert_true(v.claim("chatty", 20.0).is_empty(), "never ahead of a line waiting its turn")

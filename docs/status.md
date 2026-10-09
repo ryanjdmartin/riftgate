@@ -622,7 +622,10 @@ cracked or destroyed (`Skirmish.apply_injury`), for her component lines; after R
 notes a spend is heard in order (the kill and the death where the blow lands, `Sound.LAND`, Jenny
 after), every effect and line goes through the forge's master stage (`forge.master`: 8 dB up, a
 look-ahead limiter at -1 dBFS), the music's default is the full knob, and a debug build's settings
-have EVERY LINE (Jenny on every hook, every time); a VOICE knob carries
+have EVERY LINE (Jenny on every hook, every time); since 9 October a spend follows Ryan's chain
+(her line before the weapon on a blow that does not kill, the weapon half a second into it; at the
+landing in place of the kill's blast on a kill; before a shield, buff or vent; heat in place of
+any, at the landing), decided at the drop by `Sound.claim_line`; a VOICE knob carries
 "Voice: Jenny (Dioco)" under it (`CREDITS.md` the record); the music's default is the baseline's
 0.63. `tools/sound_smoke.gd` drives a skirmish and a battle with a window, muted, through every
 hook (the tests are headless, where Sound is a no-op). Not hookable yet: the flattening's spread

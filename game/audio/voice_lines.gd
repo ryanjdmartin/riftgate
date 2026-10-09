@@ -89,6 +89,25 @@ func trigger(hook: String, now: float) -> bool:
 	return true
 
 
+## A chance line the caller places itself, at time `at` (a spend's line: before the weapon on
+## a blow that does not kill, as the kill's sound on one that does; Ryan, 9 October). Rolled
+## and drawn now, and only when she is free then: no line in progress or waiting, and the
+## spacing since the last kept. Returns the line, or {}; the caller plays it at `at` and calls
+## `started(at, seconds)`, which holds every other line off until it ends.
+func claim(hook: String, at: float) -> Dictionary:
+	if not hooks.has(hook) or not _queue.is_empty():
+		return {}
+	var h: Dictionary = hooks[hook]
+	if at < _busy_until or at < _last_end + (INFO_GAP if always else spacing):
+		return {}
+	if not always and rng.randf() >= float(h.get("chance", 1.0)):
+		return {}
+	var line := _pick(hook)
+	if line.is_empty():
+		return {}
+	return {"hook": hook, "file": str(line["file"]), "text": str(line.get("text", ""))}
+
+
 ## Every waiting line dropped (the skirmish won); a line in progress finishes.
 func clear() -> void:
 	_queue.clear()

@@ -318,6 +318,16 @@ static func say_after(delay: float, hook: String) -> void:
 	_call("_say_after", [delay, hook])
 
 
+## Whether Jenny says a line of `hook` `delay` seconds from now, decided at once: the hook's
+## chance rolled and her being free then checked (VoiceLines.claim), and the line booked if so.
+## A spend asks it to know where to put the weapon or whether the kill needs its own sound.
+## False headless, or with no node yet.
+static func claim_line(hook: String, delay: float) -> bool:
+	if muted or DisplayServer.get_name() == "headless" or _node == null or not is_instance_valid(_node) or not _node.is_inside_tree():
+		return false
+	return _node._claim(hook, delay)
+
+
 ## Every waiting line dropped, and every line still on its way: the skirmish is won, so
 ## nothing from the fight is said after it.
 static func voice_clear() -> void:
@@ -644,6 +654,25 @@ func _say_after(delay: float, hook: String) -> void:
 	get_tree().create_timer(delay).timeout.connect(func() -> void:
 		if gen == _say_gen:
 			_say(hook))
+
+
+func _claim(hook: String, delay: float) -> bool:
+	var now := _now()
+	var q := _lines.claim(hook, now + maxf(delay, 0.0))
+	if q.is_empty():
+		return false
+	var line := _voice_stream(str(q["file"]))
+	if line == null:
+		return false
+	_lines.started(now + maxf(delay, 0.0), line.get_length())
+	if delay <= 0.0:
+		_speak(line)
+	else:
+		var gen := _say_gen
+		get_tree().create_timer(delay).timeout.connect(func() -> void:
+			if gen == _say_gen:
+				_speak(line))
+	return true
 
 
 func _voice_clear() -> void:

@@ -1258,23 +1258,32 @@ func _heat_marks() -> Array:
 
 ## Jenny on the heat a spend just added: the overheat when a machine went over the cap, else
 ## the warning when one passed three quarters; one line for the spend.
-func _say_heat(before: Array, delay: float) -> void:
+func _heat_hook(before: Array) -> String:
 	var after := _heat_marks()
 	var worst := 0
 	for k in range(mini(before.size(), after.size())):
 		if int(after[k]) > int(before[k]):
 			worst = maxi(worst, int(after[k]))
-	if worst == 2:
-		Sound.say_after(delay, "overheat")
-	elif worst == 1:
-		Sound.say_after(delay, "heat_high")
+	return "overheat" if worst == 2 else ("heat_high" if worst == 1 else "")
 
 
-## The order a spend is heard in (Ryan, 8 October: the die, the blow, Jenny, the hit and the
-## death came all at once): the die let go at once, the blow BLOW_AT after, the hit's flash,
-## the kill and the death where the blow lands (Sound.LAND), and Jenny once that has played.
+## The chain a spend is heard in (Ryan, 8 and 9 October). The die is let go at once and the
+## blow fires BLOW_AT after; the hit's flash, a kill and its death come where the blow lands
+## (Sound.LAND). Jenny, when she speaks on it:
+##   a blow that does not kill: before the weapon, confirming the input, the weapon firing
+##     PRE_FIRE into her line;
+##   a blow that kills: at the landing, her line the kill's sound, the kill's own blast gone;
+##   a shield, a buff or a vent: before it, the same as a blow;
+##   heat pushed past a mark: the warning in place of any of those, where the blow lands
+##     (the damage applied, or the kill), a kill's blast quieted under it.
+## The die that wins the fight has none of her.
 const BLOW_AT := 0.08
-const VOICE_AFTER_KILL := 0.9   # past the kill's blast
+const PRE_LINE_AT := 0.1     # her line, just after the die's own sound
+const PRE_FIRE := 0.5        # the weapon, this far into her line
+const KILL_UNDER_HEAT_DB := -10.0
+## The enemy's turn (not yet under the chain's rule): her information lines after the blow
+## lands, a machine lost past its kill's first blast.
+const VOICE_AFTER_KILL := 0.9
 const VOICE_AFTER_BLOW := 0.4
 
 
@@ -1301,41 +1310,54 @@ func _use_die(i: int, target) -> bool:
 	if won:
 		Sound.voice_clear()
 	var blow := _blow_sound(spent)
-	var landed := BLOW_AT + Sound.lands(blow)   # where the blow lands, from the die let go
-	var voice_at := landed + VOICE_AFTER_BLOW
+	var heat_hook := _heat_hook(heat_before) if ok and not won else ""
+	var quiet := won or not heat_hook.is_empty()   # nothing but the heat may take her line
+	var fire_at := BLOW_AT
+	var landed := fire_at + Sound.lands(blow)   # where the blow lands, from the die let go
 	if ok and target is Foe:
 		var tv: UnitView = was[target][0] if was.has(target) else null
 		_flash_roll(tv)
-		_animate_attack(_mech_views[i], tv, bool(sk.last_roll.get("ranged", false)), target.alive(), landed)
-		Sound.play_after(BLOW_AT, blow, CRIT_DB if bool(sk.last_roll.get("crit", false)) else 0.0)
-		var k := 0
+		var dead: Array = []
 		var fallen := ""
 		for foe in was.keys():
 			if not foe.alive():
-				var w: Array = was[foe]
-				_animate_death(w[0], w[1], w[2], w[3], landed)
-				Sound.play_after(landed + 0.07 * k, "kill", -2.0 * k)
+				dead.append(foe)
 				fallen = ContentDB.load_default().faction_of_foe(foe.content_id)
-				k += 1
-		if k > 0:
-			voice_at = landed + VOICE_AFTER_KILL
-		if not won:
-			if k > 0:
-				var hook := "foe_down_" + fallen
-				Sound.say_after(voice_at, hook if Sound.FAMILIES.has(fallen) else "foe_down")
+		var kill_line := false
+		if not quiet:
+			if dead.is_empty():
+				if Sound.claim_line("die_spent", PRE_LINE_AT):
+					fire_at = PRE_LINE_AT + PRE_FIRE
 			else:
-				Sound.say_after(voice_at, "die_spent")
+				var hook := "foe_down_" + fallen
+				kill_line = Sound.claim_line(hook if Sound.FAMILIES.has(fallen) else "foe_down", landed)
+		landed = fire_at + Sound.lands(blow)
+		var ranged := bool(sk.last_roll.get("ranged", false))
+		var hit := (target as Foe).alive()
+		if fire_at > BLOW_AT and is_inside_tree():
+			var tw := create_tween()   # the attacker moves when its weapon fires, into her line
+			tw.tween_interval(fire_at - BLOW_AT)
+			tw.tween_callback(_animate_attack.bind(_mech_views[i], tv, ranged, hit, BLOW_AT + Sound.lands(blow)))
+		else:
+			_animate_attack(_mech_views[i], tv, ranged, hit, landed)
+		Sound.play_after(fire_at, blow, CRIT_DB if bool(sk.last_roll.get("crit", false)) else 0.0)
+		for k in range(dead.size()):
+			var w: Array = was[dead[k]]
+			_animate_death(w[0], w[1], w[2], w[3], landed)
+			if not kill_line:   # her line is the kill's sound when she speaks on it
+				Sound.play_after(landed + 0.07 * k, "kill", -2.0 * k + (KILL_UNDER_HEAT_DB if not heat_hook.is_empty() else 0.0))
 	elif ok and spent != null:
-		if spent.kind == Face.Kind.VENT:
-			Sound.play("vent")
-			voice_at = 0.6
-			Sound.say_after(voice_at, "heat_vented")
-		elif spent.kind == Face.Kind.SHIELD or spent.kind == Face.Kind.BUFF:
-			Sound.play(blow, 0.0 if spent.kind == Face.Kind.SHIELD else -3.0)
-			voice_at = Sound.lands(blow) + VOICE_AFTER_BLOW + 0.2
-			Sound.say_after(voice_at, "buff")
-	if ok and not won:
-		_say_heat(heat_before, voice_at)
+		var vent := spent.kind == Face.Kind.VENT
+		var effect := "vent" if vent else blow
+		if spent.kind == Face.Kind.VENT or spent.kind == Face.Kind.SHIELD or spent.kind == Face.Kind.BUFF:
+			if not quiet and Sound.claim_line("heat_vented" if vent else "buff", PRE_LINE_AT):
+				fire_at = PRE_LINE_AT + PRE_FIRE
+			else:
+				fire_at = 0.0
+			Sound.play_after(fire_at, effect, -3.0 if spent.kind == Face.Kind.BUFF else 0.0)
+			landed = fire_at + Sound.lands(effect)
+	if not heat_hook.is_empty():
+		Sound.say_after(landed, heat_hook)
 	if ok and sk.outcome != Skirmish.Outcome.NONE:
 		# Decided by this die: the fight ends once the last blow has landed and played.
 		if is_inside_tree():

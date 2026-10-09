@@ -32,6 +32,8 @@ func _skirmish() -> void:
 	var screen: SkirmishScreen = load("res://game/skirmish/skirmish_screen.tscn").instantiate()
 	root.add_child(screen)
 	await _wait(1.0)
+	if Sound._node != null:
+		Sound._node._lines.always = true   # Jenny on every hook: the chain's booked lines run too
 	var sk := screen.sk
 	for r in range(ROUNDS):
 		if sk.outcome != Skirmish.Outcome.NONE:
@@ -71,6 +73,8 @@ func _skirmish() -> void:
 		screen._end_turn_now()
 		await _wait(6.0)
 	print("skirmish smoke: round %d, outcome %d" % [sk.round, sk.outcome])
+	if Sound._node != null:
+		Sound._node._lines.always = false
 	await _wait(1.0)
 	screen.queue_free()
 	await _wait(0.3)
