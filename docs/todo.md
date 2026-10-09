@@ -45,7 +45,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [x] Attack orders in place of the fight's panel (8 October, Ryan after Abalon; bible v0.85): a tap or a drag onto a pack moves a machine into range and orders it, ENGAGE opens the next fight; the cars' rules as passives; the Tactical Databank leaves the Dingo for the first module
 - [x] Pick the cars' passive names (Ryan, 9 October): the Prairie Dog's Track-Dispersing Tyres, the Dingo's Retrograde Flywheel (Ryan)
 - [x] The Prairie Dog without its side skirts, bash bars and drops, riding higher over its wheels (Ryan, 9 October; rebuilt, renders on the hangar page)
-- [ ] Judge the Prairie Dog's new stance running (Ryan): the hangar's Models tab and the map; the ride height is LIFT_PRAIRIE in models_low.py
+- [x] Judge the Prairie Dog's new stance (Ryan, 9 October, six passes on the hangar): two units of ride height, the arches a unit lower and called perfect, livery aprons trimmed to the hood, axle covers, the rev at five degrees; "very clean"
 - [x] Pick the Prairie Dog's apron finish (Ryan, 9 October): the rust livery
 - [x] Confirmed (Ryan, 9 October: the rest all seems good): the Prairie Dog keeps its Flakshot Repeater and the disorder keyword is set aside (Claude's recommendation, 8 October; bible section 7, the chassis pass row)
 - [ ] Build the Tactical Databank as the first module when modules exist (bible section 10, the modules row)
