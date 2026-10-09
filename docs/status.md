@@ -99,6 +99,14 @@ sessions run on this repo at once: check `git status` before committing, stage b
 shared file first (a path still sweeps the other session's hunks), never `git add -A`, never
 kill a bare `godot --path .`. Commit after each verified chunk with tests green.
 
+**The bars, for whoever picks them up** (9 October; the bible's section 9 bars row is the full note): the
+Convergence is built (`Campaign.convergence`); Anathema is a placeholder count (`bosses_beaten`, three won battles
+against a domain flag its next rift a final, `FINAL_AFTER`) and is meant to become the Rupture meter's weighted
+tally; the Rupture meter is designed and not built. Ryan's rules of the day: four finals impossible by design (a
+perfect run might read 4-4-4, subject to length); three distinct bosses a domain before its hero (each domain has
+one today; the others were proposed in chat); a final counts only when the hero dies. The roster branch merged
+to main that evening, over the sound pass; next is art.
+
 **The enemy side from a fresh slate, 9 October** (a cloud session, Ryan in chat; bible v0.94: section 1's
 enemies row, section 9's first two rows and table, section 5's plaque row). Ryan's ask: the factions and
 archetypes predate the 3D allies and the JRPG enemy side. The morning's pass recast the three factions
