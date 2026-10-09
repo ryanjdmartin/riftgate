@@ -41,39 +41,88 @@ QUANTIZE = "4"
 STEPS = "4"
 WIDTH, HEIGHT = 512, 768
 
+# The enemy side is the JRPG genre invading (decided 9 October, bible section 9): Final Fantasy
+# its spine, the genre blended so ours reads as its own. Played straight: menacing, never a gag.
 STYLE = (
-    "16-bit SNES RPG battle sprite in the style of Final Fantasy VI enemies: ornate, detailed, "
-    "over-the-top high fantasy, up to twenty colours, one-pixel dark outline. Full body, in "
-    "three-quarter view turned toward the viewer's left (its right shoulder nearest the viewer), "
-    "centered, isolated on a solid flat pure white background, "
+    "16-bit SNES JRPG battle sprite in the tradition of Final Fantasy VI, Chrono Trigger, "
+    "Dragon Quest and Breath of Fire enemies: ornate, detailed, over-the-top high fantasy, "
+    "menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark "
+    "outline. Full body, in three-quarter view turned toward the viewer's left (its right "
+    "shoulder nearest the viewer), centered, isolated on a solid flat pure white background, "
     "no text, no border, no ground shadow."
+)
+# The party's heroes (decided 9 October): the classic JRPG party seen from the other side,
+# levelled and on a quest, drawn in the elaborate Final Fantasy boss register.
+HERO_STYLE = (
+    "16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, "
+    "elaborate and over the top, in the tradition of Final Fantasy VI's and Chrono Trigger's "
+    "boss art: ornate armour or robes with gold trim and flowing cloth, an oversized weapon or "
+    "staff, a faint halo of light, heroic and terrifying, a face that is not a recognisable "
+    "character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark "
+    "outline. Full body, in three-quarter view turned toward the viewer's left, centered, "
+    "isolated on a solid flat pure white background, no text, no border, no ground shadow."
 )
 
 # The domains of 9 October (content/factions.json). The looks are the overworld biome's;
 # the domain reads on the map by its ground, so a sprite's hue is free (bible section 9).
+# A mood per domain, never a palette: the domain reads on the map by its ground, so each foe
+# keeps the colours its own description implies (a wolf grey, a goblin green).
 FACTION_LOOK = {
-    "meadow": "bright saturated greens and yellows, round and soft, the overworld's first monsters",
-    "waste": "sand, ochre, bleached bone white, dusty teal shadows, hard-edged",
-    "marsh": "bone ivory and rust over grave-blue shadow, tatters, lanterns, rusted ornate plate",
-    "peak": "black rock, lava orange and yellow in the cracks, red scale, lit from inside",
+    "meadow": "the bright, saturated light of a sunny overworld field",
+    "waste": "sun-bleached and dusty, hard desert light",
+    "marsh": "dim and damp, rust and old bone, lantern light in fog",
+    "peak": "lit from inside by heat, black rock and embers",
 }
+# Sentences that name a source series stay out of the prompt (the homage is the shape and the
+# move, never a trademark's design; Ryan, 9 October). They live in content for the designers.
+SOURCES = ("Final Fantasy", "Dragon Quest", "Chrono Trigger", "Breath of Fire", "Octopath", "Legend of Dragoon",
+           "Golden Sun", "Megami Tensei", "Lunar", "Suikoden", "Wild Arms", "Diablo", "Pit Lord",
+           "Hellcaster", "of September", "renamed")
+
+
+def _without_sources(text):
+    keep = [s for s in re.split(r"(?<=[.!?:])\s+", text) if s and not any(n in s for n in SOURCES)]
+    return " ".join(keep)
 
 # The enemy sheet's three palettes, kept for the optional snap; the domains borrow the nearest.
 PALETTE_FOR = {"meadow": "UND", "waste": "DEM", "marsh": "UND", "peak": "DEM"}
 COMBAT_SIZE = {1: (48, 64), 2: (64, 96)}
 MAP_SIZE = {1: (16, 16), 2: (16, 16)}
-BIG_MAP = {"bone_colossus": (40, 40)}
+BIG_MAP = {"bone_dragon": (40, 40)}   # the old three-hex colossus's token; the other bosses take MAP_SIZE until the multi-hex boss returns
 
 
 def load_foes():
     return {e["id"]: e for e in json.loads(FOES.read_text())["entries"]}
 
 
+DOMAIN_NAME = {"meadow": "the grasslands", "waste": "the desert", "marsh": "the swamp and graveyard", "peak": "the volcano"}
+
+
 def prompt_for(foe):
     look = FACTION_LOOK.get(foe.get("faction", ""), "")
-    body = " ".join(s for s in [foe.get("design", {}).get("fantasy", ""), foe.get("codex", "")] if s)
+    where = DOMAIN_NAME.get(foe.get("faction", ""), "the overworld")
+    body = " ".join(s for s in [_without_sources(foe.get("design", {}).get("fantasy", "")), foe.get("codex", "")] if s)
+    if foe.get("hero"):
+        return f"{HERO_STYLE} Subject: {foe['name']}, a hero of the party who comes out of {where}. {body} Light: {look}."
     size = "A towering elite, twice the height of a common foe." if int(foe.get("size") or 1) > 1 else ""
-    return f"{STYLE} Subject: {foe['name']}, a {foe.get('faction', '')} monster. {body} {size} Colours: {look}."
+    return f"{STYLE} Subject: {foe['name']}, a monster of {where}. {body} {size} Light: {look}."
+
+
+def prompts(args):
+    """Every foe's prompt, in content order, into one sheet to read before generating."""
+    foes = load_foes()
+    have = {p.stem.removesuffix("_combat") for p in ART.glob("*_combat.png")}
+    lines = ["# Foeforge prompts", "",
+             "Generated by `forge.py prompts` from `content/foes.json`; regenerate after the text changes.",
+             "Each foe's prompt is its fantasy and codex text on the fixed brief (the heroes on the boss brief).",
+             "`art` says whether `art/foes` holds a sprite for it today (an inherited sketch grid counts).", ""]
+    for fid, foe in foes.items():
+        kind = "hero" if foe.get("hero") else ("boss" if int(foe.get("size") or 1) > 1 else "foe")
+        lines += [f"## {foe['name']} (`{fid}`, {foe.get('faction', '')}, {kind}, art: {'yes' if fid in have else 'no'})", "",
+                  "```", prompt_for(foe), "```", ""]
+    dest = Path(args.out) if args.out else ROOT / "tools" / "foeforge" / "prompts.md"
+    dest.write_text("\n".join(lines))
+    print(f"wrote {dest.relative_to(ROOT)}: {len(foes)} prompts")
 
 
 def generate(args):
@@ -501,7 +550,7 @@ def load_chassis():
 def mech_prompt(c):
     body = " ".join(s for s in [c.get("design", {}).get("fantasy", ""), c.get("codex", "")] if s)
     look = MAKER_LOOK.get(c.get("maker", ""), "cold steel")
-    return f"{MECH_STYLE} Subject: the {c['name']}, a war machine. {body} Colours: {look}."
+    return f"{MECH_STYLE} Subject: the {c['name']}, a war machine. {body} Light: {look}."
 
 
 def mech_reference(chassis_id, turn, src=""):
@@ -590,6 +639,9 @@ def main():
     cm.add_argument("--chunk", type=int, default=1, help="pixel size relative to the foes: 2 draws the mech on a grid twice as coarse (tried; it loses too much at 40x48)")
     cm.add_argument("--out", default="", help="write here instead of art/mechs (for experiments)")
     cm.set_defaults(func=cut_mech)
+    p = sub.add_parser("prompts", help="every foe's prompt into tools/foeforge/prompts.md, to read before generating (no model needed)")
+    p.add_argument("--out", default="")
+    p.set_defaults(func=prompts)
     g = sub.add_parser("generate")
     g.add_argument("foe")
     g.add_argument("--n", type=int, default=4)

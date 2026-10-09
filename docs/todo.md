@@ -134,7 +134,8 @@ Nothing in content is planned any more; every piece the 28 September content lea
 
 ## Art
 
-- [ ] Enemy art through foeforge from the new text (9 October): every foe but the six that inherited a sketch grid (revenant, ghost, bone_dragon, drake, magma_golem, sandworm) draws the placeholder shape; the heroes at the boss register, elaborate and over the top; four bleeds for the flattened ground
+- [ ] Enemy art through foeforge from the new text (9 October): every foe but the six that inherited a sketch grid (revenant, ghost, bone_dragon, drake, magma_golem, sandworm) draws the placeholder shape; the heroes at the boss register, elaborate and over the top; four bleeds for the flattened ground; the brief rewritten for the genre and a boss brief for the heroes, the domain's look a mood rather than a palette, source names kept out of the prompts, and every prompt in `tools/foeforge/prompts.md` to read first (9 October, evening); generating runs on the Mac
+- [ ] Decide the heroes' frame (Ryan): a hero is human-sized and fills one slot, whose 48x64 at 2x leaves little room for the boss register; a bigger frame drawn at 1x reads smaller, so a bigger hero means a bigger slot or a hero that spans the column like a boss
 - [ ] The hangar as a model
 - [ ] Consider, once the acts run: the Armadillo sealing its ports, the Lockdown Shutters made real (Ryan, 2 October: very cool, its own flavour). The guns retract into the shell first, a slide joints cannot do today, then shutters close over the ports, which need geometry; bible section 7, the joints row
 - [ ] A licensed icon set (game-icons.net, CC BY) rendered to textures, replacing the line-drawn glyphs in one pass
