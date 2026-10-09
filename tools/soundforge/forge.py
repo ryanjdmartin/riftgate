@@ -3447,7 +3447,7 @@ def _death(name, cut=1):
     """A pick from death_sketches.py (Ryan, 9 October), seeded and levelled as the page made it."""
     def build():
         import death_sketches as D
-        table = {1: D.SINGLES, 2: D.SINGLES2, 3: D.SINGLES3, 4: D.SINGLES4, 5: D.SINGLES5, 6: D.SINGLES6, 7: D.SINGLES7, 8: D.SINGLES8, 9: D.SINGLES9}[cut]
+        table = {1: D.SINGLES, 2: D.SINGLES2, 3: D.SINGLES3, 4: D.SINGLES4, 5: D.SINGLES5, 6: D.SINGLES6, 7: D.SINGLES7, 8: D.SINGLES8, 9: D.SINGLES9, 10: D.SINGLES10}[cut]
         fn, level = {n: (f, lv) for n, f, lv in table}[name]
         D.F.seed("d%d_%s" % (cut, name))
         x = fn()

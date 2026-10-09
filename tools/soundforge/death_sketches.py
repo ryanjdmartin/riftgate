@@ -28,6 +28,7 @@ the page sets it beside what the game plays now.
     tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 7   # the seventh
     tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 8   # the eighth
     tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 9   # the ninth
+    tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 10  # the tenth
 """
 import json
 import math
@@ -790,7 +791,7 @@ def lp_padded(x, cut, order=3):
     return F.lp(np.concatenate([x, np.zeros(n_of(0.5))]), cut, order=order)[:len(x)]
 
 
-def ghost_whoosh(dur=1.7, centre=520.0, gain=1.0):
+def ghost_whoosh(dur=1.7, centre=520.0, gain=1.0, decay=0.8, wet=0.5):
     """The ghost as breath: noise through a voice-like band that rises and falls slowly, no
     waver at all, a faint steady tone at its core, washed far back."""
     n = n_of(dur)
@@ -801,7 +802,7 @@ def ghost_whoosh(dur=1.7, centre=520.0, gain=1.0):
     ph = 2.0 * math.pi * np.cumsum(np.interp(t, [0.0, dur * 0.35, dur], [centre * 0.8, centre * 1.1, centre * 0.7])) / SR
     core = (np.sin(ph) + 0.3 * np.sin(2.0 * ph)) * 0.18
     v = (air * 1.0 + core) * F.env_pts(n, [(0.0, 0.0), (0.3, 1.0), (dur * 0.7, 0.8), (dur, 0.0)])
-    return room(v, decay=0.8, mix=0.5) * gain
+    return room(v, decay=decay, mix=wet) * gain
 
 
 def wail_steady(dur=1.7, f0=430.0, gain=1.0, breath=1.0):
@@ -870,6 +871,42 @@ def death9(variant):
     b = at(b, flame_sputters(1.5, 0.3), 1.0)                                                          # -8 dB
     decay, wet = HALLS9[variant]
     return room(b, decay=decay, mix=wet)
+
+
+# ---------------------------------------------------------------- the tenth cut (Ryan, 9 October)
+# Only the ghost's voice wants the reverb: the death back in the eighth's small room, the breath
+# alone in a big one, at two sizes. The late layers stay as quiet as the ninth's, and every layer
+# keeps the eighth cut's noise (the ghost's bigger room draws more, so the draws after it are put
+# back where the eighth left them). Minerva's second blast a bit longer (Ryan, 9 October): a
+# second and a quarter, halfway back to the seventh's; the first keeps its noise.
+
+VOICE_AT10 = {"arsenal": 1.25, "arsenal_big": 1.8, "minerva": 1.5}   # each about 8 dB clear of what rings under her, as over Kestrel
+GHOST_ROOMS10 = {"arsenal": (1.4, 0.9), "arsenal_big": (2.2, 1.3)}
+
+
+def death10(variant):
+    if variant == "minerva":
+        F.seed("d8_death8_minerva")   # the eighth cut's draws, in its order
+        b = boom_soft(150.0, 55.0, 0.8, 0.36, body_cut=500.0)
+        b = at(b, boom_soft(80.0, 28.0, 1.25, 1.9, body_cut=280.0, hp=85.0), 0.75)
+        return room(b, decay=0.25, mix=0.1)
+    F.seed("d8_death8_arsenal")   # the eighth cut's draws, in its order
+    b = mix(boom_soft(130.0, 42.0, 0.9, 1.0, body_cut=420.0, attack=0.012, hp=70.0), lp_padded(FX.plasma_splash(0.45), 800.0))
+    n = n_of(1.5)
+    t = t_of(n)
+    roar = F.lp_var(F.sat(F.lp(F.noise(n), 280.0) * 3.0, 3.0), 400.0 + 700.0 * np.minimum(1.0, t / 0.4)) * F.env_pts(n, [(0.0, 0.0), (0.35, 1.0), (0.9, 0.8), (1.5, 0.0)]) * 0.8
+    b = at(b, roar, 0.12)
+    before = F.RNG.bit_generator.state
+    ghost_whoosh(1.7, 520.0, 0.5)   # drawn as the eighth drew it, to know where its draws end
+    after = F.RNG.bit_generator.state
+    F.RNG.bit_generator.state = before
+    decay, wet = GHOST_ROOMS10[variant]
+    b = at(b, ghost_whoosh(1.7, 520.0, 0.5, decay=decay, wet=wet), 0.2)
+    F.RNG.bit_generator.state = after
+    b = at(b, static(1.4, 0.25) * F.env_pts(n_of(1.4), [(0.0, 0.0), (0.25, 1.0), (1.4, 0.0)]), 1.0)
+    b = at(b, crackles(1.6, 0.35), 0.95)
+    b = at(b, flame_sputters(1.5, 0.3), 1.0)
+    return room(b, decay=0.25, mix=0.1)
 
 
 # ---------------------------------------------------------------- written as the game plays it
@@ -1089,7 +1126,27 @@ def cut9():
     return 0
 
 
+SINGLES10 = [("death10_" + v, (lambda v=v: death10(v)), DEATH_LEVEL) for v in ("arsenal", "arsenal_big", "minerva")]
+
+
+def cut10():
+    made = {}
+    for name, fn, level in SINGLES10:
+        F.seed("d10_" + name)
+        x = at_level(fn(), level)
+        made[name] = x
+        write("d10_" + name, tail(x))
+        print("  d10_%-23s %5.2f s" % (name, len(x) / SR))
+    line_lost = read(os.path.join(ART, "voice", "line_machine_lost.wav"))
+    for v in VOICE_AT10:
+        write("d10_seq_lost_" + v, tail(at(at(np.zeros(1), made["death10_" + v], 0.0), line_lost, VOICE_AT10[v]), 0.5))
+    print("  sequences written")
+    return 0
+
+
 def main(argv):
+    if argv[:1] == ["10"]:
+        return cut10()
     if argv[:1] == ["9"]:
         return cut9()
     if argv[:1] == ["8"]:
