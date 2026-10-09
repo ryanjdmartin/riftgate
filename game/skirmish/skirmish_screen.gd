@@ -1271,7 +1271,8 @@ func _heat_hook(before: Array) -> String:
 ## blow fires BLOW_AT after; the hit's flash, a kill and its death come where the blow lands
 ## (Sound.LAND). Jenny, when she speaks on it:
 ##   a blow that does not kill: before the weapon, confirming the input, the weapon firing
-##     PRE_FIRE into her line;
+##     as her line closes, PRE_FIRE of the way through it (Ryan, 9 October: half a second was
+##     not enough, she talks slow);
 ##   a blow that kills: at the landing, her line the kill's sound, the kill's own blast gone;
 ##   a shield, a buff or a vent: before it, the same as a blow;
 ##   heat pushed past a mark: the warning in place of any of those, where the blow lands
@@ -1279,7 +1280,7 @@ func _heat_hook(before: Array) -> String:
 ## The die that wins the fight has none of her.
 const BLOW_AT := 0.08
 const PRE_LINE_AT := 0.1     # her line, just after the die's own sound
-const PRE_FIRE := 0.5        # the weapon, this far into her line
+const PRE_FIRE := 0.85       # the weapon, this far through her line
 const KILL_UNDER_HEAT_DB := -10.0
 ## The enemy's turn (not yet under the chain's rule): her information lines after the blow
 ## lands, a machine lost past its kill's first blast.
@@ -1326,11 +1327,12 @@ func _use_die(i: int, target) -> bool:
 		var kill_line := false
 		if not quiet:
 			if dead.is_empty():
-				if Sound.claim_line("die_spent", PRE_LINE_AT):
-					fire_at = PRE_LINE_AT + PRE_FIRE
+				var said := Sound.claim_line("die_spent", PRE_LINE_AT)
+				if said > 0.0:
+					fire_at = PRE_LINE_AT + said * PRE_FIRE
 			else:
 				var hook := "foe_down_" + fallen
-				kill_line = Sound.claim_line(hook if Sound.FAMILIES.has(fallen) else "foe_down", landed)
+				kill_line = Sound.claim_line(hook if Sound.FAMILIES.has(fallen) else "foe_down", landed) > 0.0
 		landed = fire_at + Sound.lands(blow)
 		var ranged := bool(sk.last_roll.get("ranged", false))
 		var hit := (target as Foe).alive()
@@ -1350,10 +1352,8 @@ func _use_die(i: int, target) -> bool:
 		var vent := spent.kind == Face.Kind.VENT
 		var effect := "vent" if vent else blow
 		if spent.kind == Face.Kind.VENT or spent.kind == Face.Kind.SHIELD or spent.kind == Face.Kind.BUFF:
-			if not quiet and Sound.claim_line("heat_vented" if vent else "buff", PRE_LINE_AT):
-				fire_at = PRE_LINE_AT + PRE_FIRE
-			else:
-				fire_at = 0.0
+			var said := 0.0 if quiet else Sound.claim_line("heat_vented" if vent else "buff", PRE_LINE_AT)
+			fire_at = PRE_LINE_AT + said * PRE_FIRE if said > 0.0 else 0.0
 			Sound.play_after(fire_at, effect, -3.0 if spent.kind == Face.Kind.BUFF else 0.0)
 			landed = fire_at + Sound.lands(effect)
 	if not heat_hook.is_empty():

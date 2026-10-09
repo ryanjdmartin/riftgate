@@ -319,12 +319,12 @@ static func say_after(delay: float, hook: String) -> void:
 
 
 ## Whether Jenny says a line of `hook` `delay` seconds from now, decided at once: the hook's
-## chance rolled and her being free then checked (VoiceLines.claim), and the line booked if so.
-## A spend asks it to know where to put the weapon or whether the kill needs its own sound.
-## False headless, or with no node yet.
-static func claim_line(hook: String, delay: float) -> bool:
+## chance rolled and her being free checked (VoiceLines.claim), and the line booked if so.
+## Returns the line's length in seconds, or 0 when she says nothing; a spend asks it to know
+## where to put the weapon or whether the kill needs its own sound. 0 headless.
+static func claim_line(hook: String, delay: float) -> float:
 	if muted or DisplayServer.get_name() == "headless" or _node == null or not is_instance_valid(_node) or not _node.is_inside_tree():
-		return false
+		return 0.0
 	return _node._claim(hook, delay)
 
 
@@ -656,14 +656,14 @@ func _say_after(delay: float, hook: String) -> void:
 			_say(hook))
 
 
-func _claim(hook: String, delay: float) -> bool:
+func _claim(hook: String, delay: float) -> float:
 	var now := _now()
 	var q := _lines.claim(hook, now + maxf(delay, 0.0))
 	if q.is_empty():
-		return false
+		return 0.0
 	var line := _voice_stream(str(q["file"]))
 	if line == null:
-		return false
+		return 0.0
 	_lines.started(now + maxf(delay, 0.0), line.get_length())
 	if delay <= 0.0:
 		_speak(line)
@@ -672,7 +672,7 @@ func _claim(hook: String, delay: float) -> bool:
 		get_tree().create_timer(delay).timeout.connect(func() -> void:
 			if gen == _say_gen:
 				_speak(line))
-	return true
+	return line.get_length()
 
 
 func _voice_clear() -> void:

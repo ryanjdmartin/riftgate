@@ -50,7 +50,7 @@
    "signal": ""
   },
   "foe_down": {
-   "chance": 0.25,
+   "chance": 0.3333333333333333,
    "info": false,
    "lines": [
     {
@@ -208,12 +208,12 @@
      "text": "shield up"
     },
     {
-     "file": "line_buff_applied",
-     "text": "buff applied"
+     "file": "line_granting_buff",
+     "text": "granting buff"
     },
     {
-     "file": "line_unit_boosted",
-     "text": "unit boosted"
+     "file": "line_activating_boost",
+     "text": "activating boost"
     },
     {
      "file": "line_countermeasures_engaged",
@@ -260,12 +260,16 @@
    ],
    "personality": [
     {
-     "file": "line_whew",
-     "text": "whew"
+     "file": "line_cool_your_jets",
+     "text": "cool your jets"
     },
     {
-     "file": "line_that_s_much_better",
-     "text": "that's much better"
+     "file": "line_take_a_load_off",
+     "text": "take a load off"
+    },
+    {
+     "file": "line_calm_down_lad",
+     "text": "calm down, lad"
     }
    ],
    "merge": [],
@@ -759,6 +763,10 @@
     {
      "file": "line_i_m_making_a_note_here_huge_success",
      "text": "I'm making a note here: huge success"
+    },
+    {
+     "file": "line_whew",
+     "text": "whew"
     }
    ],
    "merge": [],

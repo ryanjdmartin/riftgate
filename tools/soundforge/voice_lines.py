@@ -84,7 +84,7 @@ HOOKS = {
     "die_spent": (1.0 / 6.0, False,
                   ["target locked", "weapons free", "extreme prejudice authorised", "discharging", "ordnance engaged", "suppressing fire"],
                   ["light them up", "going ballistic", "rampage"]),
-    "foe_down": (1.0 / 4.0, False,
+    "foe_down": (1.0 / 3.0, False,   # 1 in 3 (Ryan, 9 October: a foe falls ten times a fight; she need not say it every time)
                  ["eliminating", "neutralising hostile", "target destroyed", "lethal force applied", "bogey down", "threat eliminated"],
                  ["mopping up trash", "get wrecked", "bug squashed", "dodge this", "fatality"]),
     "foe_down_undead": (1.0 / 3.0, False,
@@ -97,11 +97,11 @@ HOOKS = {
                           ["unknowable horror purged", "sanity restored", "anxiety levels reduced"],
                           ["that was not supposed to exist", "thank goodness"]),
     "buff": (1.0 / 6.0, False,
-             ["shield up", "buff applied", "unit boosted", "countermeasures engaged"],
+             ["shield up", "granting buff", "activating boost", "countermeasures engaged"],   # said before the effect, confirming the input (Ryan, 9 October)
              ["saving throw granted", "rage mode activated", "power overwhelming"]),
     "heat_vented": (1.0 / 6.0, False,
                     ["venting", "heat sinks engaged", "cooling", "thermal load falling"],
-                    ["whew", "that's much better"]),
+                    ["cool your jets", "take a load off", ("calm down, lad", "calm down lad")]),   # Ryan, 9 October; her "whew" moved to the victory
     "heat_high": (1.0, True,
                   ["thermal load approaching limit", "heat warning", "danger: internal temperature elevated"],
                   ["running a wee bit warm, aren't we?", "somebody fetch the poor lad some ice", "that fella's gonna want a fan"]),   # she is not in the machine: she comments on its state (Ryan, 7 October)
@@ -145,7 +145,7 @@ HOOKS = {
     "victory": (1.0, False,
                 ["hostiles cleared. the line holds", ("area secured. well fought, commander", "area secured. well-fot commander"), "mission accomplished. the rift is sealed"],   # well-fot linked: the gap between the words read long   # rewritten as sentence pairs (Ryan, 7 October: the combined lines read samey and stuck together)
                 [("GG EZ", "gee gee easy"), ("flawless victory", "flawless victory", 1.55), "well, that was fun", "I do the job, and then I get paid", "what a ride. first round's on me",
-                 "I love it when a plan comes together", ("I'm making a note here: huge success", "I'm making a note here: huge success", 1.45)]),   # homages (7 October): the A-Team and Portal kept, the Portal line from its note on
+                 "I love it when a plan comes together", ("I'm making a note here: huge success", "I'm making a note here: huge success", 1.45), "whew"]),   # whew from the vent (Ryan, 9 October: the way she says it is great; somewhere else)   # homages (7 October): the A-Team and Portal kept, the Portal line from its note on
     "codex": (1.0 / 12.0, False,
               ["searching database", "record retrieved", "consulting archives", "help text loaded"],
               ["let me look that up", "reading the manual"]),
