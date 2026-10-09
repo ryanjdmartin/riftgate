@@ -179,12 +179,15 @@ show();
 
 def picker(args):
     """One page for picking: every foe's candidates big, one foe at a time, number keys to pick.
-    Earlier rounds (<id>_v1) and the heroes' chibi renders (<id>_chibi) sit beside each foe's
-    latest. Written into the git-ignored out folder, so the images load by relative path."""
+    The heroes' chibi renders (<id>_chibi) sit beside their boss register; set-aside first
+    rounds (<id>_v1) only with --all. Written into the git-ignored out folder, so the images load by relative path."""
     foes = load_foes()
     order = []
     for fid, foe in foes.items():
-        for suffix, note in [("_chibi", "chibi party sprite"), ("", "boss register" if foe.get("hero") else ""), ("_v1", "first round")]:
+        rounds = [("_chibi", "chibi party sprite"), ("", "boss register" if foe.get("hero") else "")]
+        if args.all:
+            rounds.append(("_v1", "first round"))   # the set-aside first rounds, only on request
+        for suffix, note in rounds:
             d = OUT / (fid + suffix)
             cands = sorted(p for p in d.glob(f"{fid}_*.png") if re.fullmatch(rf"{re.escape(fid)}_\d+", p.stem)) if d.is_dir() else []
             if not cands:
@@ -742,6 +745,7 @@ def main():
     cm.add_argument("--out", default="", help="write here instead of art/mechs (for experiments)")
     cm.set_defaults(func=cut_mech)
     pk = sub.add_parser("picker", help="a page for picking candidates, one foe at a time (tools/foeforge/out/picker.html)")
+    pk.add_argument("--all", action="store_true", help="also show the set-aside first rounds (<id>_v1)")
     pk.set_defaults(func=picker)
     p = sub.add_parser("prompts", help="every foe's prompt into tools/foeforge/prompts.md, to read before generating (no model needed)")
     p.add_argument("--out", default="")
