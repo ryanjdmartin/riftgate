@@ -68,7 +68,7 @@ How each row's spends divide between its components over every pack: the die's e
 - **Honey Badger**: Bullion Fragmenter 37%, Chainsaw Claw 37%, Missile Rack 15%, Twin Autoguns 8%, Proximity Klaxon 2%, disabled 0%. Rerolls 0.77 a round.
 - **Clydesdale**: Suppression Battery 24%, Howitzer 23%, Enfilade Beam 18%, Maxigun 13%, Incendiary Shells 8%, Blast Door 7%, Twin Autoguns 3%, Ankle Mortar 3%, Heat Sink 1%, destroyed 0%, disabled 0%. Rerolls 1.00 a round.
 - **Sparrowhawk**: Arc Fault Cannon 47%, Headhunter Rifle 29%, Overclocked Railgun 17%, Deflector 6%, disabled 0%, destroyed 0%. Rerolls 1.20 a round.
-- **Baboon**: Umbra Inducer 50%, Solar Flare Array 22%, Zenith Emitter 17%, Differentiation Probe 6%, Polarity Projector 4%, Sublimation Array 1%, disabled 0%, destroyed 0%. Rerolls 0.67 a round.
+- **Baboon**: Umbra Inducer 50%, Solar Flare Array 22%, Zenith Emitter 17%, Differentiation Probe 6%, Polarity Projector 4%, Phased Sublimator 1%, disabled 0%, destroyed 0%. Rerolls 0.67 a round.
 - **Armadillo**: Missile Rack 33%, Slugthrower 31%, Rivet Gun 30%, Lockdown Shutters 2%, Blowout Stack 2%, Shoring Jack 2%, disabled 0%. Rerolls 0.84 a round.
 - **Wild Boar**: Slugthrower 59%, Breaching Plow 29%, Missile Rack 9%, Blowout Stack 1%, Blast Door 1%, disabled 0%. Rerolls 0.69 a round.
 - **Prairie Dog**: Deflector 36%, Incendiary Shells 23%, Twin Autoguns 22%, Flakshot Repeater 18%, destroyed 1%, disabled 0%. Rerolls 0.84 a round.

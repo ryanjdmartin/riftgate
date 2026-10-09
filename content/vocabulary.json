@@ -406,7 +406,7 @@
    "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Disabled, Corrupted and Overheating status. A rapid component's own switch-off is not a status a cleanse touches.",
    "status": "implemented",
    "design": {
-    "holes": "Carried by the Corona Shield (a unique unlock) and since 9 October by the Sublimation Array, Aphelion's vent, stocked on the Baboon. The bot values what it clears since the same day."
+    "holes": "Carried by the Corona Shield (a unique unlock) and since 9 October by the Phased Sublimator, Aphelion's vent, stocked on the Baboon. The bot values what it clears since the same day."
    }
   },
   {

@@ -524,8 +524,8 @@
    ]
   },
   {
-   "id": "pulse_repeater",
-   "name": "Pulse Repeater",
+   "id": "pulse_vacillator",
+   "name": "Pulse Vacillator",
    "maker": "aphelion",
    "tier": 2,
    "shape": "barrel",
@@ -535,7 +535,7 @@
     "stage": "draft",
     "fantasy": "A small fast gun that gives the machine its turn back.",
     "niche": "The tempo tool: a rapid entry so a control frame gets another look at its die.",
-    "notes": "Claude's fill, 26 September; the first rapid component in the pool. Stocked on no chassis since 9 October (the content revision: the Baboon's two became the Probe and the Projector, the Stingray's the Halo Shield), so it carries its own tier, one, as when the Baboon stocked it. Tier two since the same day (Ryan: it carries Rapid, so it reads as a tier-two weapon)."
+    "notes": "Claude's fill, 26 September; the first rapid component in the pool. Stocked on no chassis since 9 October (the content revision: the Baboon's two became the Probe and the Projector, the Stingray's the Halo Shield), so it carries its own tier, one, as when the Baboon stocked it. Tier two since the same day (Ryan: it carries Rapid, so it reads as a tier-two weapon). Renamed from the Pulse Repeater the same day (Ryan, the name audit): the Flakshot Repeater had the word first, and a vacillating pulse is the rapid entry's back-and-forth."
    },
    "face": {
     "kind": "attack",
@@ -949,7 +949,7 @@
     "stage": "draft",
     "fantasy": "A ring of hard light. Nothing clever about it, which Aphelion resents.",
     "niche": "Aphelion's generic shield.",
-    "notes": "Claude's fill, 28 September; the Corona Shield with cleanse is the unique one. Stocked on the Stingray since 9 October (the content revision), in place of its Pulse Repeater, so its tier is derived (two)."
+    "notes": "Claude's fill, 28 September; the Corona Shield with cleanse is the unique one. Stocked on the Stingray since 9 October (the content revision), in place of its Pulse Vacillator, so its tier is derived (two)."
    },
    "face": {
     "kind": "shield",
@@ -1206,7 +1206,7 @@
     "stage": "draft",
     "fantasy": "A probe lobbed into the formation. Whatever the thing it lands beside was about to do, it now differentiates.",
     "niche": "The first Disrupt in the pool: an indirect entry of no damage that turns a foe onto its other move. It deals nothing, so it counts for Aphelion's Sponsorship.",
-    "notes": "Stocked on the Baboon in place of a Pulse Repeater. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders."
+    "notes": "Stocked on the Baboon in place of a Pulse Vacillator. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders."
    },
    "face": {
     "kind": "attack",
@@ -1223,8 +1223,8 @@
    ]
   },
   {
-   "id": "sublimation_array",
-   "name": "Sublimation Array",
+   "id": "phased_sublimator",
+   "name": "Phased Sublimator",
    "maker": "aphelion",
    "shape": "none",
    "codex": "",
@@ -1233,7 +1233,7 @@
     "stage": "draft",
     "fantasy": "Whatever the rift left on the metal goes straight from solid to gone, with the heat.",
     "niche": "Aphelion's cleanse vent: the Chorus's answer in a stock kit, where the Corona Shield is a unique unlock.",
-    "notes": "Stocked on the Baboon in place of the Radiator Sail, so it is Aphelion's tier-one vent. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders."
+    "notes": "Stocked on the Baboon in place of the Radiator Sail, so it is Aphelion's tier-one vent. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders. Renamed from the Sublimation Array the same day (Ryan, the name audit: a Sublimator, with an adjective; he chose Phased)."
    },
    "face": {
     "kind": "vent",
@@ -1258,7 +1258,7 @@
     "stage": "draft",
     "fantasy": "It projects polarity. Nobody at Aphelion will say what that means, and the next thing to hit the target hits twice as hard.",
     "niche": "The first Shock: a line entry of no damage that sets up a doubled blow for the team. Shocked is a status, so it feeds the Baboon's Pocket Paradox, which a suppress never does.",
-    "notes": "Ryan's own example of the house joke (bible, the component-names row of 6 October). Stocked on the Baboon in place of its second Pulse Repeater. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders."
+    "notes": "Ryan's own example of the house joke (bible, the component-names row of 6 October). Stocked on the Baboon in place of its second Pulse Vacillator. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders."
    },
    "face": {
     "kind": "attack",
