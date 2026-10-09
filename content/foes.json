@@ -3,7 +3,7 @@
   "entries": [
     {
       "id": "goblin", "name": "Goblin", "faction": "meadow",
-      "design": { "fantasy": "The genre's first fight, with a knife. Every JRPG opens on one.", "niche": "There are six of them and four slots. Kill fast or be buried: every one standing makes every other one hit harder.", "notes": "The swarm claw (2 October's ghoul rule): 5, and 5 more for every other goblin on the field. One move, so a disrupt has nothing to switch it to. Aims at anything." },
+      "design": { "sprite": "a hunched green goblin with a rusty knife, ragged loincloth and leather straps, snarling", "fantasy": "The genre's first fight, with a knife. Every JRPG opens on one.", "niche": "There are six of them and four slots. Kill fast or be buried: every one standing makes every other one hit harder.", "notes": "The swarm claw (2 October's ghoul rule): 5, and 5 more for every other goblin on the field. One move, so a disrupt has nothing to switch it to. Aims at anything." },
       "codex": "The Meadow's rank and file. Small, loud and never alone: they come in sixes, straight at the nearest thing with a heartbeat, and the more of them stand the harder each one hits.",
       "hp": 30, "attack": 5, "rank": "front", "zone": 1, "movespeed": 20, "behaviour": "hunt", "hunts": "nearest", "aim": "anything",
       "actions": [
@@ -13,7 +13,7 @@
     },
     {
       "id": "wolf", "name": "Wolf", "faction": "meadow",
-      "design": { "fantasy": "The pack that runs down the straggler, in every forest the genre has.", "niche": "A hunter of the slowest, fast, in threes. Whoever lags is caught, and the pack howls each other on.", "notes": "The Meadow's hunter. Howl is a rally when another stands with it." },
+      "design": { "sprite": "a lean grey wolf, hackles up and teeth bared, mid-lunge, on four legs", "fantasy": "The pack that runs down the straggler, in every forest the genre has.", "niche": "A hunter of the slowest, fast, in threes. Whoever lags is caught, and the pack howls each other on.", "notes": "The Meadow's hunter. Howl is a rally when another stands with it." },
       "codex": "Runs in threes and picks the slowest machine on the field. It is faster than anything you own but the cars, and once it has caught something it does not let go until it is dead.",
       "hp": 30, "attack": 10, "rank": "front", "zone": 1, "movespeed": 30, "behaviour": "hunt", "hunts": "slowest",
       "actions": [
@@ -24,7 +24,7 @@
     },
     {
       "id": "gel", "name": "Gel", "faction": "meadow",
-      "design": { "fantasy": "The genre's first monster, a blob: Dragon Quest's slime and Final Fantasy's flan in one, ours bright green and faintly wrong.", "niche": "Kill it and there are two. Volume is the answer, or leave it for last.", "notes": "on_death splits it into two Half-Gels that step into the pool; a split goes one deep." },
+      "design": { "sprite": "a heap of translucent bright green slime with a sinister face in it, no arms, no legs, no body, a puddle-shaped blob", "fantasy": "The genre's first monster, a blob: Dragon Quest's slime and Final Fantasy's flan in one, ours bright green and faintly wrong.", "niche": "Kill it and there are two. Volume is the answer, or leave it for last.", "notes": "on_death splits it into two Half-Gels that step into the pool; a split goes one deep." },
       "codex": "A heap of something bright that moves on its own. Hit it and it hits back; kill it and it comes apart into two smaller heaps that step up in its place.",
       "hp": 40, "attack": 10, "rank": "front", "zone": 1, "movespeed": 20,
       "on_death": { "summon": "gel_half", "count": 2 },
@@ -35,7 +35,7 @@
     },
     {
       "id": "gel_half", "name": "Half-Gel", "faction": "meadow",
-      "design": { "fantasy": "What a Gel leaves.", "niche": "Two weak heaps where there was one. They do not split again.", "notes": "Only ever summoned by a Gel's death; never in a spawn list." },
+      "design": { "sprite": "a small heap of translucent bright green slime with a sinister face, no arms, no legs, a blob half the size of a man", "fantasy": "What a Gel leaves.", "niche": "Two weak heaps where there was one. They do not split again.", "notes": "Only ever summoned by a Gel's death; never in a spawn list." },
       "codex": "Half of a Gel. Smaller, weaker, and there are two of them.",
       "hp": 20, "attack": 5, "rank": "front", "zone": 1, "movespeed": 20,
       "actions": [
@@ -45,7 +45,7 @@
     },
     {
       "id": "mandragora", "name": "Mandragora", "faction": "meadow",
-      "design": { "fantasy": "The screaming root, pulled up and furious.", "niche": "Back rank. Its scream costs the team a reroll, which is the Meadow's one attack on the die.", "notes": "The back rank fires as one. Scream only when the team has rerolls to lose." },
+      "design": { "sprite": "a gnarled root creature with a screaming human face, root legs, leaves sprouting from its head", "fantasy": "The screaming root, pulled up and furious.", "niche": "Back rank. Its scream costs the team a reroll, which is the Meadow's one attack on the die.", "notes": "The back rank fires as one. Scream only when the team has rerolls to lose." },
       "codex": "A root with a face, and it screams. Stands behind the crowd and shrieks the fight out of your dice: a scream costs the team a reroll next round.",
       "hp": 30, "attack": 10, "rank": "back", "zone": 3, "movespeed": 20, "aim": "focus",
       "actions": [
@@ -56,7 +56,7 @@
     },
     {
       "id": "treant", "name": "Treant", "faction": "meadow",
-      "design": { "fantasy": "The tree that walks, every forest's boss.", "niche": "Fills a whole column, armoured, and it regrows. Burst against the regrowth, armour against the storm of limbs below half.", "notes": "Massive boss of the Meadow. Regen when missing 20 or more; Root Storm opens below half: three blows of 10 at anything." },
+      "design": { "sprite": "a huge ancient walking tree with a furious face in its bark, branch arms like girders, roots for feet", "fantasy": "The tree that walks, every forest's boss.", "niche": "Fills a whole column, armoured, and it regrows. Burst against the regrowth, armour against the storm of limbs below half.", "notes": "Massive boss of the Meadow. Regen when missing 20 or more; Root Storm opens below half: three blows of 10 at anything." },
       "codex": "A tree that walks, and it is older than the city. Fills a whole column; nothing behind it can be reached until it falls, and it grows back what you cut. Hurt it badly enough and the roots come up through the ground.",
       "hp": 140, "attack": 30, "armour": 5, "rank": "front", "size": 2, "zone": 2, "movespeed": 10, "stun_resist": 30,
       "actions": [
@@ -69,7 +69,7 @@
 
     {
       "id": "needler", "name": "Needler", "faction": "waste",
-      "design": { "fantasy": "The Cactuar, made sinister: a figure in a running pose that has never been seen to move. Final Fantasy's thousand needles, our fixed ten through anything.", "niche": "Its needles are exactly ten and no shield stops them, and it comes in fives. Hull and tempo, never the shield.", "notes": "Needles breach. Scatter (it leaves the fight after striking, so the pack is never fully dead) waits on a flee effect: planned. Aims at anything." },
+      "design": { "sprite": "a man-sized cactus with arms and legs frozen in a sprinting pose, needles all over, a menacing face", "fantasy": "The Cactuar, made sinister: a figure in a running pose that has never been seen to move. Final Fantasy's thousand needles, our fixed ten through anything.", "niche": "Its needles are exactly ten and no shield stops them, and it comes in fives. Hull and tempo, never the shield.", "notes": "Needles breach. Scatter (it leaves the fight after striking, so the pack is never fully dead) waits on a flee effect: planned. Aims at anything." },
       "codex": "A cactus the height of a man, in the pose of someone running, and nobody has ever seen one move. Its needles are exactly ten, every time, and a shield does nothing about them.",
       "hp": 20, "attack": 10, "rank": "front", "zone": 1, "movespeed": 30, "behaviour": "hunt", "hunts": "nearest", "aim": "anything",
       "actions": [
@@ -80,7 +80,7 @@
     },
     {
       "id": "antlion", "name": "Antlion", "faction": "waste",
-      "design": { "fantasy": "The trap at the bottom of the funnel. Final Fantasy's antlion, Dragon Quest's.", "niche": "A hunter of the slowest that pins what it catches and hardens when hurt. The slow machine wants company.", "notes": "Burrow is flat armour until its next action, below half." },
+      "design": { "sprite": "a huge sand-coloured insect with enormous mandibles, six legs, half dug into a funnel of sand", "fantasy": "The trap at the bottom of the funnel. Final Fantasy's antlion, Dragon Quest's.", "niche": "A hunter of the slowest that pins what it catches and hardens when hurt. The slow machine wants company.", "notes": "Burrow is flat armour until its next action, below half." },
       "codex": "Waits under the sand for whatever is slowest and does not let go. Hurt it and it digs in, and what is dug in is hard to hit.",
       "hp": 50, "attack": 20, "rank": "front", "zone": 1, "movespeed": 20, "behaviour": "hunt", "hunts": "slowest",
       "actions": [
@@ -91,7 +91,7 @@
     },
     {
       "id": "cockatrice", "name": "Cockatrice", "faction": "waste",
-      "design": { "fantasy": "The bird that turns you to stone. Final Fantasy's, and every bestiary's.", "niche": "Back rank. Stone switches off the weapon a machine is showing. Show it a shield or a blank.", "notes": "Stone is the old Hush: disable the showing entry through the next turn, when a machine shows an intact weapon; both aim at the armed." },
+      "design": { "sprite": "a rooster with a lizard's scaled tail and wings spread, a cruel beak and petrifying eyes", "fantasy": "The bird that turns you to stone. Final Fantasy's, and every bestiary's.", "niche": "Back rank. Stone switches off the weapon a machine is showing. Show it a shield or a blank.", "notes": "Stone is the old Hush: disable the showing entry through the next turn, when a machine shows an intact weapon; both aim at the armed." },
       "codex": "A bird with a lizard's tail that stands behind the others and stares. What it stares at stops working: the weapon your machine is showing is stone until its next turn.",
       "hp": 30, "attack": 10, "rank": "back", "zone": 3, "movespeed": 20, "aim": "armed",
       "actions": [
@@ -102,7 +102,7 @@
     },
     {
       "id": "sandworm", "name": "Sandworm", "faction": "waste",
-      "design": { "fantasy": "The worm under the desert, the genre's and every desert's. The old Maw's ring of teeth is its mouth.", "niche": "Fills a whole column, swallows through the shield, and digs in when hurt. Suppress the swallow; hull takes it, a shield does not.", "notes": "Massive boss of the Waste. Swallow breaches. Burrow hardens when hurt. Quake opens below half: three blows of 10 at anything." },
+      "design": { "sprite": "a colossal sand-coloured worm rearing up out of the dunes, a round mouth ringed with teeth", "fantasy": "The worm under the desert, the genre's and every desert's. The old Maw's ring of teeth is its mouth.", "niche": "Fills a whole column, swallows through the shield, and digs in when hurt. Suppress the swallow; hull takes it, a shield does not.", "notes": "Massive boss of the Waste. Swallow breaches. Burrow hardens when hurt. Quake opens below half: three blows of 10 at anything." },
       "codex": "Most of it is under the sand. The part that is not is a ring of teeth the width of a road, and what it swallows it swallows through the shield. Hurt it and the ground shakes for everyone.",
       "hp": 160, "attack": 40, "armour": 5, "rank": "front", "size": 2, "zone": 2, "movespeed": 10, "stun_resist": 30,
       "actions": [
@@ -115,7 +115,7 @@
 
     {
       "id": "revenant", "name": "Revenant", "faction": "marsh",
-      "design": { "fantasy": "The dead in rusted ornate plate: a knight's silhouette gone wrong, the helm empty, the plate hanging off the ribs. The genre's zombies and skeletons in one.", "niche": "There are six of them and four slots. Kill fast or be buried: every one standing makes every other one hit harder.", "notes": "The swarm claw since 2 October (the ghoul's, renamed 9 October): 5, and 5 more for every other revenant on the field. One move, so a disrupt has nothing to switch it to. The Ghost is the Marsh's hard to keep down. Aims at anything." },
+      "design": { "sprite": "a skeleton knight in rusted ornate plate armour, an empty helm, torn surcoat, a notched sword", "fantasy": "The dead in rusted ornate plate: a knight's silhouette gone wrong, the helm empty, the plate hanging off the ribs. The genre's zombies and skeletons in one.", "niche": "There are six of them and four slots. Kill fast or be buried: every one standing makes every other one hit harder.", "notes": "The swarm claw since 2 October (the ghoul's, renamed 9 October): 5, and 5 more for every other revenant on the field. One move, so a disrupt has nothing to switch it to. The Ghost is the Marsh's hard to keep down. Aims at anything." },
       "codex": "The rank and file of the Marsh. Slow, stupid and never alone: six arrive for every one you put down, and they walk straight at the nearest thing with a heartbeat. The more of them stand, the harder each one hits.",
       "hp": 30, "attack": 5, "rank": "front", "zone": 1, "movespeed": 20, "behaviour": "hunt", "hunts": "nearest", "aim": "anything",
       "actions": [
@@ -125,7 +125,7 @@
     },
     {
       "id": "ghost", "name": "Ghost", "faction": "marsh",
-      "design": { "fantasy": "A hooded ghost carrying a lantern, the flame the brightest pixel in the domain. The reason the revenants keep coming.", "niche": "It hides behind the wall and keeps the wall standing. Reach it, or chew through.", "notes": "Raise fires only when fewer than two revenants wait, and the back rank fires as one (aim focus)." },
+      "design": { "sprite": "a hooded floating ghost in a tattered robe holding up a lantern with a pale green flame, no feet", "fantasy": "A hooded ghost carrying a lantern, the flame the brightest pixel in the domain. The reason the revenants keep coming.", "niche": "It hides behind the wall and keeps the wall standing. Reach it, or chew through.", "notes": "Raise fires only when fewer than two revenants wait, and the back rank fires as one (aim focus)." },
       "codex": "Keeps to the back rank behind a wall of the dead and keeps the wall standing. Anything that can reach past the front is worth more here than anywhere else.",
       "hp": 30, "attack": 10, "rank": "back", "zone": 3, "movespeed": 20, "aim": "focus",
       "actions": [
@@ -136,7 +136,7 @@
     },
     {
       "id": "zombie_knight", "name": "Zombie Knight", "faction": "marsh",
-      "design": { "fantasy": "The genre's death knight: a cape, rusted plate, a sword as long as it is tall.", "niche": "The Marsh's one armoured foe, and it gets back up once. Big single blows, and an execute if you have one.", "notes": "The elite tier's candidate. Reraise is revive_once." },
+      "design": { "sprite": "a rotting knight in heavy black plate and a torn cape, a greatsword as long as it is tall", "fantasy": "The genre's death knight: a cape, rusted plate, a sword as long as it is tall.", "niche": "The Marsh's one armoured foe, and it gets back up once. Big single blows, and an execute if you have one.", "notes": "The elite tier's candidate. Reraise is revive_once." },
       "codex": "A knight that died in its armour and kept the armour. Hits hard, takes little, and the first time you put it down it gets back up.",
       "hp": 50, "attack": 20, "armour": 5, "rank": "front", "zone": 1, "movespeed": 20,
       "actions": [
@@ -147,7 +147,7 @@
     },
     {
       "id": "bone_dragon", "name": "Bone Dragon", "faction": "marsh",
-      "design": { "fantasy": "A cathedral of ribs that walks: the genre's bone dragon, the Colossus of September as it stands.", "niche": "Fills a whole column. Nothing behind it is reachable until it falls, and it does not fall quickly: burst against the regrowth, armour against the storm.", "notes": "Massive boss of the Marsh. Regen when missing 20 or more. Bone Storm opens below half: three blows of 10 at anything." },
+      "design": { "sprite": "a towering dragon made of bones, a ribcage like a cathedral, skull head, tattered wings", "fantasy": "A cathedral of ribs that walks: the genre's bone dragon, the Colossus of September as it stands.", "niche": "Fills a whole column. Nothing behind it is reachable until it falls, and it does not fall quickly: burst against the regrowth, armour against the storm.", "notes": "Massive boss of the Marsh. Regen when missing 20 or more. Bone Storm opens below half: three blows of 10 at anything." },
       "codex": "A cathedral of ribs that walks. Fills a whole column; nothing behind it can be reached until it falls, and it does not fall quickly. Hurt it badly enough and the ribs start to fly.",
       "hp": 140, "attack": 30, "armour": 5, "rank": "front", "size": 2, "zone": 2, "movespeed": 10, "stun_resist": 30,
       "actions": [
@@ -160,7 +160,7 @@
 
     {
       "id": "bomb", "name": "Bomb", "faction": "peak",
-      "design": { "fantasy": "A floating fireball with a face: Final Fantasy's bomb, the one that swells and bursts.", "niche": "Its death is its blow. Kill it outright or leave it alone; a hurt bomb bursts through the shield and is gone.", "notes": "The elite tier's candidate. Flare Up is the common blow and scorches; Self-Destruct opens below half, breaches and spends it." },
+      "design": { "sprite": "a floating ball of fire with an angry face, no body, no arms, no legs, flames licking off it", "fantasy": "A floating fireball with a face: Final Fantasy's bomb, the one that swells and bursts.", "niche": "Its death is its blow. Kill it outright or leave it alone; a hurt bomb bursts through the shield and is gone.", "notes": "The elite tier's candidate. Flare Up is the common blow and scorches; Self-Destruct opens below half, breaches and spends it." },
       "codex": "A ball of fire with a face, and it comes straight for you. Hurt it and it swells; a swollen bomb bursts through any shield and takes itself with it.",
       "hp": 30, "attack": 30, "rank": "front", "zone": 1, "movespeed": 30, "behaviour": "hunt", "hunts": "nearest",
       "actions": [
@@ -171,7 +171,7 @@
     },
     {
       "id": "salamander", "name": "Salamander", "faction": "peak",
-      "design": { "fantasy": "The lizard that lives in the fire. Its hide burns what touches it.", "niche": "Front rank, scorching blows, and a hide that burns back. The melee machines pay to hit it.", "notes": "Ember Hide (a foe-side retaliate: whoever strikes it in melee takes a stack of Overheating) is planned." },
+      "design": { "sprite": "a car-sized red lizard with glowing lava-cracked scales, flames along its back, on four legs", "fantasy": "The lizard that lives in the fire. Its hide burns what touches it.", "niche": "Front rank, scorching blows, and a hide that burns back. The melee machines pay to hit it.", "notes": "Ember Hide (a foe-side retaliate: whoever strikes it in melee takes a stack of Overheating) is planned." },
       "codex": "A lizard the size of a car that lives in the lava and does not notice. Its bites burn, and so does its hide.",
       "hp": 50, "attack": 20, "rank": "front", "zone": 1, "movespeed": 20,
       "actions": [
@@ -182,7 +182,7 @@
     },
     {
       "id": "drake", "name": "Drake", "faction": "peak",
-      "design": { "fantasy": "A small dragon that breathes over the front rank. Artillery with wings.", "niche": "Heat from the back rank: the breath scorches and the stoke finishes it. Lure it onto a cold machine, suppress it, or reach it with indirect fire.", "notes": "The Hellcaster of September, renamed 9 October: Breath is 20 with Scorch so the heat is the rider, and Stoke aims at heat and fires only when a machine carries 20 or more." },
+      "design": { "sprite": "a small winged red dragon breathing fire, on its hind legs, wings half spread", "fantasy": "A small dragon that breathes over the front rank. Artillery with wings.", "niche": "Heat from the back rank: the breath scorches and the stoke finishes it. Lure it onto a cold machine, suppress it, or reach it with indirect fire.", "notes": "The Hellcaster of September, renamed 9 October: Breath is 20 with Scorch so the heat is the rider, and Stoke aims at heat and fires only when a machine carries 20 or more." },
       "codex": "Stands at the back and breathes fire over the front rank; the front rank exists so it can. What it hits runs hot, and it knows where the heat is.",
       "hp": 30, "attack": 20, "rank": "back", "zone": 3, "movespeed": 20,
       "actions": [
@@ -193,7 +193,7 @@
     },
     {
       "id": "magma_golem", "name": "Magma Golem", "faction": "peak",
-      "design": { "fantasy": "The furnace with a body: rock on the outside, lava in the seams. The Pit Lord of September with the hell taken out.", "niche": "The biggest telegraphed hit in the domain, and it breaches, so no shield answers it: suppress it, lure it onto hull that can take it, or disrupt it into Stoke the Forge when another stands.", "notes": "Massive boss of the Peak. Slag Fist breaches. Stoke the Forge rallies when another stands. Eruption opens below half: 10 heat to every machine." },
+      "design": { "sprite": "a hulking golem of black volcanic rock with molten lava glowing through every crack", "fantasy": "The furnace with a body: rock on the outside, lava in the seams. The Pit Lord of September with the hell taken out.", "niche": "The biggest telegraphed hit in the domain, and it breaches, so no shield answers it: suppress it, lure it onto hull that can take it, or disrupt it into Stoke the Forge when another stands.", "notes": "Massive boss of the Peak. Slag Fist breaches. Stoke the Forge rallies when another stands. Eruption opens below half: 10 heat to every machine." },
       "codex": "A walking slab of black rock with lava in every crack. The single biggest telegraphed hit on the Peak, every round, until it is dead, and a shield does not stop it. When it is hurt the cracks vent on everyone.",
       "hp": 160, "attack": 40, "armour": 5, "rank": "front", "size": 2, "zone": 2, "movespeed": 10, "stun_resist": 30,
       "actions": [
@@ -206,7 +206,7 @@
 
     {
       "id": "warrior", "name": "The Warrior", "faction": "meadow", "hero": true,
-      "design": { "fantasy": "The classic party's front: the plain fighter, over-levelled, a sword the size of the tank. Every JRPG's first hero.", "niche": "One big telegraphed blow a round, and below half it swings at everyone. Shield the telegraph, and keep nobody weak when it drops.", "notes": "The Meadow's hero. Cover (it takes the blow aimed at another foe in the fight) is a foe-side interpose: planned. Cleave below half is the three-at-anything form until a blow at every machine exists." },
+      "design": { "sprite": "a heroic knight in ornate gold-trimmed armour and a flowing cape, holding an enormous greatsword", "fantasy": "The classic party's front: the plain fighter, over-levelled, a sword the size of the tank. Every JRPG's first hero.", "niche": "One big telegraphed blow a round, and below half it swings at everyone. Shield the telegraph, and keep nobody weak when it drops.", "notes": "The Meadow's hero. Cover (it takes the blow aimed at another foe in the fight) is a foe-side interpose: planned. Cleave below half is the three-at-anything form until a blow at every machine exists." },
       "codex": "The one in front. A sword longer than your machine is tall, swung once a round and meant, and when it is hurt it stops picking targets.",
       "hp": 120, "attack": 30, "rank": "front", "zone": 2, "movespeed": 20, "behaviour": "hunt", "hunts": "strongest", "stun_resist": 30,
       "actions": [
@@ -218,7 +218,7 @@
     },
     {
       "id": "martial_artist", "name": "The Martial Artist", "faction": "meadow", "hero": true,
-      "design": { "fantasy": "The bare-handed one: Final Fantasy's monk, Dragon Quest's martial artist, Chrono Trigger's cavewoman with a club. Hits twice and hits back.", "niche": "Two strikes a round, so a shield stops the first and the second reaches the hull, and it breathes its wounds closed. Big single blows beat it; chip damage feeds it.", "notes": "The Meadow's second hero. Counter (a foe-side retaliate) is planned. Chakra is regrow when hurt. Hundred Fists opens below half." },
+      "design": { "sprite": "a bare-handed martial artist in a flowing gi with a sash and wrapped fists, in a fighting stance", "fantasy": "The bare-handed one: Final Fantasy's monk, Dragon Quest's martial artist, Chrono Trigger's cavewoman with a club. Hits twice and hits back.", "niche": "Two strikes a round, so a shield stops the first and the second reaches the hull, and it breathes its wounds closed. Big single blows beat it; chip damage feeds it.", "notes": "The Meadow's second hero. Counter (a foe-side retaliate) is planned. Chakra is regrow when hurt. Hundred Fists opens below half." },
       "codex": "No sword, no armour, and it does not need either. Every strike is two, it breathes its wounds closed between rounds, and when it is hurt it stops counting.",
       "hp": 100, "attack": 20, "rank": "front", "zone": 2, "movespeed": 30, "behaviour": "hunt", "hunts": "nearest", "stun_resist": 30,
       "actions": [
@@ -231,7 +231,7 @@
     },
     {
       "id": "thief", "name": "The Thief", "faction": "waste", "hero": true,
-      "design": { "fantasy": "The party's quick one: Final Fantasy's thief, Dragon Quest's, Octopath's. Steals, mugs, and gets away.", "niche": "Fast, a hunter of the slowest, and it attacks what you have: a reroll stolen, the entry you are showing corrupted. Below half it flees and comes back next battle, so its final is a tempo check: kill it before it can.", "notes": "The Waste's hero. Flee (it leaves the fight below half and returns next battle, the recurring boss who gets away) waits on a flee effect: planned, and its price must show before the fight." },
+      "design": { "sprite": "a lithe thief in a hooded dark tunic and scarf, twin daggers drawn, crouched to spring", "fantasy": "The party's quick one: Final Fantasy's thief, Dragon Quest's, Octopath's. Steals, mugs, and gets away.", "niche": "Fast, a hunter of the slowest, and it attacks what you have: a reroll stolen, the entry you are showing corrupted. Below half it flees and comes back next battle, so its final is a tempo check: kill it before it can.", "notes": "The Waste's hero. Flee (it leaves the fight below half and returns next battle, the recurring boss who gets away) waits on a flee effect: planned, and its price must show before the fight." },
       "codex": "Faster than anything you own, and it goes for the slowest machine you have. It does not hit hard. It takes things: a reroll here, the weapon you were about to use there. When it is hurt it leaves, and it will be back.",
       "hp": 90, "attack": 20, "rank": "front", "zone": 2, "movespeed": 40, "behaviour": "hunt", "hunts": "slowest", "aim": "armed", "stun_resist": 30,
       "actions": [
@@ -243,7 +243,7 @@
     },
     {
       "id": "lancer", "name": "The Lancer", "faction": "waste", "hero": true,
-      "design": { "fantasy": "The one who jumps: Final Fantasy's dragoon, Legend of Dragoon's. A spear from a great height.", "niche": "Jump is announced this round and lands next, breaching, so the player has a round to answer the machine it named. Below half it dives for everything it has.", "notes": "The Waste's second hero. Jump (a delayed blow) is planned. Dragon Dive opens below half." },
+      "design": { "sprite": "a dragoon knight in sharp dragon-themed armour with a horned helm, holding a long spear", "fantasy": "The one who jumps: Final Fantasy's dragoon, Legend of Dragoon's. A spear from a great height.", "niche": "Jump is announced this round and lands next, breaching, so the player has a round to answer the machine it named. Below half it dives for everything it has.", "notes": "The Waste's second hero. Jump (a delayed blow) is planned. Dragon Dive opens below half." },
       "codex": "A spear and a long way up. It leaves the ground on one round and comes down on the next, through the shield, on whoever it named. When it is hurt it stops coming down gently.",
       "hp": 110, "attack": 30, "rank": "front", "zone": 2, "movespeed": 30, "behaviour": "hunt", "hunts": "strongest", "stun_resist": 30,
       "actions": [
@@ -255,7 +255,7 @@
     },
     {
       "id": "white_mage", "name": "The White Mage", "faction": "marsh", "hero": true,
-      "design": { "fantasy": "The healer, in the white robe with the red trim, who heals the dead. The lesson every JRPG teaches: kill the healer first.", "niche": "Back rank behind a wall of the dead, keeping it standing: Cure on the hurt, Protect on the front, Reraise on itself. Reach it, and burst beats its regrowth. Holy below half is the one blow it has, and it is big.", "notes": "The Marsh's hero. Cure (regrow an ally) and Protect (harden every foe in the fight) are planned; the engine has both for self only. Reraise is revive_once. Holy opens below half." },
+      "design": { "sprite": "a healer in layered white robes with gold embroidery and a high collar, a pale stern face, holding a tall staff topped with a glowing crystal", "fantasy": "The healer, in the white robe with the red trim, who heals the dead. The lesson every JRPG teaches: kill the healer first.", "niche": "Back rank behind a wall of the dead, keeping it standing: Cure on the hurt, Protect on the front, Reraise on itself. Reach it, and burst beats its regrowth. Holy below half is the one blow it has, and it is big.", "notes": "The Marsh's hero. Cure (regrow an ally) and Protect (harden every foe in the fight) are planned; the engine has both for self only. Reraise is revive_once. Holy opens below half." },
       "codex": "It does not fight. It stands behind the dead and keeps them standing: the hurt ones healed, the front ones shielded, itself readied to get up if it falls. Reach it or lose the fight slowly. When it is hurt it has one spell left, and it is a big one.",
       "hp": 90, "attack": 10, "rank": "back", "zone": 3, "movespeed": 20, "aim": "focus", "stun_resist": 30,
       "actions": [
@@ -269,7 +269,7 @@
     },
     {
       "id": "necromancer", "name": "The Necromancer", "faction": "marsh", "hero": true,
-      "design": { "fantasy": "The raiser: Final Fantasy V's necromancer, the dark mage of every bestiary. The Marsh's other apex, the one that makes the dead rather than mends them.", "niche": "Raise every round, so the wall never thins, and below half it raises two at once. Its blows should cost it hull: planned. Reach it; every round it stands is a revenant more.", "notes": "The Marsh's second hero. Raise fires whenever fewer than two revenants wait, at an attack's weight. Its blows costing it hull waits on a self-damage rider for foes." },
+      "design": { "sprite": "a gaunt dark mage in a black-and-purple robe, a skull staff, ghostly green light in its hands", "fantasy": "The raiser: Final Fantasy V's necromancer, the dark mage of every bestiary. The Marsh's other apex, the one that makes the dead rather than mends them.", "niche": "Raise every round, so the wall never thins, and below half it raises two at once. Its blows should cost it hull: planned. Reach it; every round it stands is a revenant more.", "notes": "The Marsh's second hero. Raise fires whenever fewer than two revenants wait, at an attack's weight. Its blows costing it hull waits on a self-damage rider for foes." },
       "codex": "Stands at the back and makes more of them. Every round it is alive the wall in front of it is a revenant thicker, and when it is hurt it stops making them one at a time.",
       "hp": 90, "attack": 10, "rank": "back", "zone": 3, "movespeed": 20, "aim": "focus", "stun_resist": 30,
       "actions": [
@@ -281,7 +281,7 @@
     },
     {
       "id": "black_mage", "name": "The Black Mage", "faction": "peak", "hero": true,
-      "design": { "fantasy": "The one in the hat who throws fire for a living. Every party's damage, and the genre's most recognisable silhouette, redrawn as ours.", "niche": "Fire at the hottest machine, Fira on everyone once someone is hot, Flare through the shield when it is hurt. Cooling and a cold lure; a shield for Flare does nothing.", "notes": "The Peak's hero. Fire aims at heat and scorches; Fira is heat to all when a machine runs hot; Flare opens below half and breaches. Meteor is the promoted form's." },
+      "design": { "sprite": "a sorcerer in a tall crooked hat and a dark robe embroidered with flame sigils, a gaunt stern face, holding a staff wreathed in fire", "fantasy": "The one in the hat who throws fire for a living. Every party's damage, and the genre's most recognisable silhouette, redrawn as ours.", "niche": "Fire at the hottest machine, Fira on everyone once someone is hot, Flare through the shield when it is hurt. Cooling and a cold lure; a shield for Flare does nothing.", "notes": "The Peak's hero. Fire aims at heat and scorches; Fira is heat to all when a machine runs hot; Flare opens below half and breaches. Meteor is the promoted form's." },
       "codex": "A hat, a robe, and fire. It picks the machine that is already running hot and makes it hotter, and once anyone is hot it burns everyone. When it is hurt it stops throwing fire and starts throwing the mountain.",
       "hp": 90, "attack": 20, "rank": "back", "zone": 3, "movespeed": 20, "aim": "heat", "stun_resist": 30,
       "actions": [
@@ -293,7 +293,7 @@
     },
     {
       "id": "summoner", "name": "The Summoner", "faction": "peak", "hero": true,
-      "design": { "fantasy": "The one who calls something bigger: Final Fantasy's summoner, Golden Sun's adepts, the demon summoners of Megami Tensei. The hero-plus-beast pair: the brain behind, the Golem in front.", "niche": "On its own it is a mage with a weak blow. It calls the Magma Golem up into the pool, and the Golem is the fight. Kill the Summoner first and the Golem is dumb; kill the Golem first and the Summoner calls another.", "notes": "The Peak's second hero. Summon Golem fires when fewer than two wait in the pool. Hellfire opens below half." },
+      "design": { "sprite": "a robed summoner with a horned headdress and flowing sleeves, arms raised, glowing runes circling it", "fantasy": "The one who calls something bigger: Final Fantasy's summoner, Golden Sun's adepts, the demon summoners of Megami Tensei. The hero-plus-beast pair: the brain behind, the Golem in front.", "niche": "On its own it is a mage with a weak blow. It calls the Magma Golem up into the pool, and the Golem is the fight. Kill the Summoner first and the Golem is dumb; kill the Golem first and the Summoner calls another.", "notes": "The Peak's second hero. Summon Golem fires when fewer than two wait in the pool. Hellfire opens below half." },
       "codex": "A small figure in the back rank, and the mountain does what it says. Leave it alone and there is a golem in front of it; kill the golem and there is another. When it is hurt the fire comes for everyone.",
       "hp": 80, "attack": 10, "rank": "back", "zone": 3, "movespeed": 20, "aim": "focus", "stun_resist": 30,
       "actions": [

@@ -47,9 +47,8 @@ STYLE = (
     "16-bit SNES JRPG battle sprite in the tradition of Final Fantasy VI, Chrono Trigger, "
     "Dragon Quest and Breath of Fire enemies: ornate, detailed, over-the-top high fantasy, "
     "menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark "
-    "outline. Full body, in three-quarter view turned toward the viewer's left (its right "
-    "shoulder nearest the viewer), centered, isolated on a solid flat pure white background, "
-    "no text, no border, no ground shadow."
+    "outline. The whole creature in frame, facing toward the viewer's left, centered, isolated "
+    "on a solid flat pure white background, no text, no border, no ground shadow."
 )
 # The party's heroes (decided 9 October): the classic JRPG party seen from the other side,
 # levelled and on a quest, drawn in the elaborate Final Fantasy boss register.
@@ -59,7 +58,7 @@ HERO_STYLE = (
     "boss art: ornate armour or robes with gold trim and flowing cloth, an oversized weapon or "
     "staff, a faint halo of light, heroic and terrifying, a face that is not a recognisable "
     "character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark "
-    "outline. Full body, in three-quarter view turned toward the viewer's left, centered, "
+    "outline. Full body, facing toward the viewer's left, centered, "
     "isolated on a solid flat pure white background, no text, no border, no ground shadow."
 )
 
@@ -101,11 +100,18 @@ DOMAIN_NAME = {"meadow": "the grasslands", "waste": "the desert", "marsh": "the 
 def prompt_for(foe):
     look = FACTION_LOOK.get(foe.get("faction", ""), "")
     where = DOMAIN_NAME.get(foe.get("faction", ""), "the overworld")
-    body = " ".join(s for s in [_without_sources(foe.get("design", {}).get("fantasy", "")), foe.get("codex", "")] if s)
+    # A foe's sprite brief (design.sprite) leads: the model weighs the start of a prompt most,
+    # and a brief says the shape (a blob, a ball of fire) the style text would otherwise turn
+    # into a muscled body (9 October: every Bomb and Gel came out humanoid without one). With
+    # a brief, the codex's rule text stays out; without one, it fills in as before.
+    brief = foe.get("design", {}).get("sprite", "")
+    fantasy = _without_sources(foe.get("design", {}).get("fantasy", ""))
+    body = " ".join(s for s in [fantasy] + ([] if brief else [foe.get("codex", "")]) if s)
+    lead = f"{brief[0].upper() + brief[1:]}. " if brief else ""
     if foe.get("hero"):
-        return f"{HERO_STYLE} Subject: {foe['name']}, a hero of the party who comes out of {where}. {body} Light: {look}."
+        return f"{lead}{HERO_STYLE} Subject: {foe['name']}, a hero of the party who comes out of {where}. {body} Light: {look}."
     size = "A towering elite, twice the height of a common foe." if int(foe.get("size") or 1) > 1 else ""
-    return f"{STYLE} Subject: {foe['name']}, a monster of {where}. {body} {size} Light: {look}."
+    return f"{lead}{STYLE} Subject: {foe['name']}, a monster of {where}. {body} {size} Light: {look}."
 
 
 def prompts(args):
