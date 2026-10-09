@@ -1167,9 +1167,11 @@ def _wheel(b, cx, cy, r, w, label="wheel", lit=False):
 ## their wells, a dune buggy's stance; then, the same day, 3.5 left a gap between the wheels and
 ## the chassis, so a little less); every part on its chassis rides this much higher.
 LIFT_PRAIRIE = 2.0
-## The arches' aprons' finish (Ryan, 9 October: see them in livery too); "livery.livery2" for the
-## maker's rust, the flank stripe's.
-APRON_PRAIRIE = "steel.plate"
+## The arches' aprons' finish: the maker's rust, the flank stripe's ("steel.plate" for metal).
+APRON_PRAIRIE = "livery.livery2"   # Ryan, 9 October: the livery aprons
+## The arches (and their aprons' tops) sit this much lower than the ride height alone would put
+## them (Ryan, 9 October: tighten them over the tyres once the rev was softened).
+ARCH_DROP_PRAIRIE = 0.5
 
 
 def _prairie_body(y):
@@ -1200,6 +1202,7 @@ def prairie_dog(b):
     along each axle, hub to hub, and the arches' aprons no wider than the arches."""
     R = 10.0
     L = LIFT_PRAIRIE   # the ride height over the wheels, on every part of the chassis
+    LA = L - ARCH_DROP_PRAIRIE   # the arches' height, a little tighter over the tyres
     # The wheels spin on their hubs, the front pair steering (the joint pass, 2 October):
     # a steer joint about up carrying the wheel's spin joint. Built first, outside the
     # chassis joint, so they stay planted while the body squats and rocks over them.
@@ -1240,9 +1243,9 @@ def prairie_dog(b):
             out_y, in_y = (yw + 12.0, yw - 12.0) if yw > 0.0 else (yw - 12.0, yw + 12.0)
             e = 1.0 if yw > 0.0 else -1.0
             xin = _prairie_body(out_y)[0] - 1.0
-            b.box(min(s * xin, s * 23.0), max(s * xin, s * 23.0), min(out_y - e * 0.8, out_y + e * 0.6), max(out_y - e * 0.8, out_y + e * 0.6), 9.0 + L, R + 11.0 + L, APRON_PRAIRIE, "apron")
+            b.box(min(s * xin, s * 23.0), max(s * xin, s * 23.0), min(out_y - e * 0.8, out_y + e * 0.6), max(out_y - e * 0.8, out_y + e * 0.6), 9.0 + L, R + 11.0 + LA, APRON_PRAIRIE, "apron")
             if yw < 0.0:
-                b.loft([(yw - 12.0, rect(s * 18.0, 10.0, R + 7.0 + L, R + 11.0 + L)), (yw, rect(s * 18.0, 10.0, R + 11.0 + L, R + 15.0 + L)), (yw + 12.0, rect(s * 18.0, 10.0, R + 7.0 + L, R + 11.0 + L))], "steel.plate", "arch")
+                b.loft([(yw - 12.0, rect(s * 18.0, 10.0, R + 7.0 + LA, R + 11.0 + LA)), (yw, rect(s * 18.0, 10.0, R + 11.0 + LA, R + 15.0 + LA)), (yw + 12.0, rect(s * 18.0, 10.0, R + 7.0 + LA, R + 11.0 + LA))], "steel.plate", "arch")
                 continue
             # The front pair meet the body (Ryan, 6 October, the ninth notes: a gap between the
             # front fenders and the body; an inner flange stepping down into the nose was far too
@@ -1255,7 +1258,7 @@ def prairie_dog(b):
             # rev as the level arch always has.
             nose_half, _top = _prairie_body(yw + 12.0)
             secs = []
-            for (y, z0), xi in zip(((yw - 12.0, R + 7.0 + L), (yw, R + 11.0 + L), (yw + 12.0, R + 7.0 + L)), (13.0, (13.0 + nose_half - 1.0) * 0.5, nose_half - 1.0)):
+            for (y, z0), xi in zip(((yw - 12.0, R + 7.0 + LA), (yw, R + 11.0 + LA), (yw + 12.0, R + 7.0 + LA)), (13.0, (13.0 + nose_half - 1.0) * 0.5, nose_half - 1.0)):
                 lip = min(z0, _prairie_body(y)[1] + L - 0.5)
                 pts = [(xi, lip), (xi + 2.0, lip), (xi + 2.0, z0), (23.0, z0), (23.0, z0 + 4.0), (xi, z0 + 4.0)]
                 secs.append((y, [(s * x, z) for x, z in (pts if s > 0 else pts[::-1])]))
@@ -1324,16 +1327,17 @@ def prairie_dog(b):
     # keyed. Degrees and seconds; a key is (t, value) on the joint's own axis or (t, pitch,
     # yaw, roll); a body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll); a glow
     # key is (t, k), k the light added over rest.
-    # The rock five degrees and the squat under half a unit (Ryan, 9 October: the tyres clipped the
-    # arches; six degrees and a squat of two and a half took them up to two units into the arch
-    # once the wheels came up under it). Measured with the spring's overshoot: about a third of
-    # a unit clear at the deepest key.
+    # The rock four and a half degrees and the squat a third of a unit (Ryan, 9 October: the tyres
+    # clipped the arches; six degrees and a squat of two and a half took them up to two units into
+    # the arch once the wheels came up under it, and the arches then came down half a unit).
+    # Measured at the keys: about a fifth of a unit clear at the deepest (the servo trails this
+    # slow a curve and never passes a key).
     b.act("rev", 4.2, {   # revs eagerly: a jump forward, a squat, back, and again; the wheels spin hard
         "wheel_fl": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.2, -1080.0)],
         "wheel_fr": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.2, -1080.0)],
         "wheel_rl": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.2, -1080.0)],
         "wheel_rr": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.2, -1080.0)],
-        "chassis": [(0.5, 5.0, 0.0, 0.0, 0.0, 0.0, -0.4), (1.2, -5.0, 0.0, 0.0, 0.0, 0.0, -0.3), (2.2, 4.0, 0.0, 0.0, 0.0, 0.0, -0.2), (3.0, -5.0, 0.0, 0.0, 0.0, 0.0, -0.3), (3.8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
+        "chassis": [(0.5, 4.5, 0.0, 0.0, 0.0, 0.0, -0.3), (1.2, -4.5, 0.0, 0.0, 0.0, 0.0, -0.25), (2.2, 3.6, 0.0, 0.0, 0.0, 0.0, -0.15), (3.0, -4.5, 0.0, 0.0, 0.0, 0.0, -0.25), (3.8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
     }, body=[(0.6, 0.0, 10.0, 0.0), (1.3, 0.0, 9.0, 0.0), (2.2, 0.0, -4.0, 0.0), (3.0, 0.0, 6.0, 0.0), (4.2, 0.0, 0.0, 0.0)])
     b.act("scout", 7.6, {   # the sensor head looks one way and then the other, the turret following it round each way and waiting, the mast light hot
         "sensor": [(0.9, 60.0), (2.4, 62.0), (3.6, -55.0), (5.6, -58.0), (6.8, 0.0)],

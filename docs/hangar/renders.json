@@ -220,8 +220,8 @@
    }
   },
   "prairie_dog": {
-   "when": "9 October, third pass.",
-   "note": "The aprons run in to a unit inside the body's flank, so no gap shows between them and the body at the nose or the tail (Ryan). The rev rocks about the middle of the wheelbase, five degrees and a squat under half a unit, so the tyres stay clear of the arches through it, measured with the spring's overshoot (Ryan: they clipped). The axle covers and the wheels as the second pass. The last two pictures are an option to judge, not the build: the aprons in the maker's rust livery, the flank stripe's (APRON_PRAIRIE in models_low.py).",
+   "when": "9 October, fourth pass.",
+   "note": "The aprons in the maker's rust livery, the flank stripe's (Ryan liked the option). Every arch, with its apron's top, sits half a unit lower over its tyre (Ryan: tighten them now the rev is softer), and the rev's rock is four and a half degrees with a squat of a third of a unit to keep a fifth of a unit clear at its deepest key; a full unit lower would have needed the rock cut to about three and a half. The aprons run in to the body, the axle covers and the wheels as before.",
    "images": [
     {
      "file": "prairie_dog/prairie_dog_front.png",
@@ -234,18 +234,10 @@
     {
      "file": "prairie_dog/prairie_dog_side.png",
      "alt": "prairie_dog, left side"
-    },
-    {
-     "file": "prairie_dog/prairie_dog_livery_aprons_front.png",
-     "alt": "option: prairie_dog with the aprons in livery, front"
-    },
-    {
-     "file": "prairie_dog/prairie_dog_livery_aprons_rear.png",
-     "alt": "option: prairie_dog with the aprons in livery, rear"
     }
    ],
    "before": {
-    "summary": "Before: 9 October, second pass (the aprons stopping short of the body, the rev's rock taking the front tyres into the arches)",
+    "summary": "Before: 9 October, third pass (the aprons in metal, the arches half a unit higher, the rock five degrees)",
     "images": [
      {
       "file": "prairie_dog/before_prairie_dog_front.png",

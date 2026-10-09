@@ -46,7 +46,7 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [x] Pick the cars' passive names (Ryan, 9 October): the Prairie Dog's Track-Dispersing Tyres, the Dingo's Retrograde Flywheel (Ryan)
 - [x] The Prairie Dog without its side skirts, bash bars and drops, riding higher over its wheels (Ryan, 9 October; rebuilt, renders on the hangar page)
 - [ ] Judge the Prairie Dog's new stance running (Ryan): the hangar's Models tab and the map; the ride height is LIFT_PRAIRIE in models_low.py
-- [ ] Pick the Prairie Dog's apron finish (Ryan): metal as built, or the rust livery rendered on the hangar as an option (APRON_PRAIRIE in models_low.py)
+- [x] Pick the Prairie Dog's apron finish (Ryan, 9 October): the rust livery
 - [x] Confirmed (Ryan, 9 October: the rest all seems good): the Prairie Dog keeps its Flakshot Repeater and the disorder keyword is set aside (Claude's recommendation, 8 October; bible section 7, the chassis pass row)
 - [ ] Build the Tactical Databank as the first module when modules exist (bible section 10, the modules row)
 - [x] Decide the withdraw rule (decided 7 October in another session, bible section 5: dice may be spent before withdrawing, since the enemy's turn is guaranteed and nothing lets a machine out before it strikes; the Prairie Dog's screen gets a new passive) (Ryan, 7 October: withdrawing after spending dice is dangerous). The bible (19 September) and `Skirmish.can_withdraw` allow it at any point of the player's turn; the header comment of `sim/skirmish.gd` says before any face is spent. Claude's proposal: fight or flee, a withdrawal open after the roll is seen and before any die is spent
