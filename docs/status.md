@@ -627,7 +627,7 @@ have EVERY LINE (Jenny on every hook, every time); since 9 October a spend follo
 landing in place of the kill's blast on a kill; before a shield, buff or vent; heat in place of
 any, at the landing), decided at the drop by `Sound.claim_line`; a machine's death at the end of the enemy's turn, in sequence,
 Jenny in its gap (`Sound.DEATH_VOICE_AT`); a foe's death the short blast and the shield's break a
-discharge (`death_sketches.py`), Wainwright & Sutler's, Aphelion's, Kestrel's and Minerva's deaths their own, the Arsenal's on the page (the tenth cut, with a longer second blast for Minerva); a VOICE knob carries
+discharge (`death_sketches.py`), Wainwright & Sutler's, Aphelion's, Kestrel's and Minerva's deaths their own, the Arsenal's on the page (the eleventh cut); a VOICE knob carries
 "Voice: Jenny (Dioco)" under it (`CREDITS.md` the record); the music's default is the baseline's
 0.63. `tools/sound_smoke.gd` drives a skirmish and a battle with a window, muted, through every
 hook (the tests are headless, where Sound is a no-op). Not hookable yet: the flattening's spread

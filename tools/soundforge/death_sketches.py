@@ -29,6 +29,7 @@ the page sets it beside what the game plays now.
     tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 8   # the eighth
     tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 9   # the ninth
     tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 10  # the tenth
+    tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 11  # the eleventh
 """
 import json
 import math
@@ -890,6 +891,12 @@ def death10(variant):
         b = boom_soft(150.0, 55.0, 0.8, 0.36, body_cut=500.0)
         b = at(b, boom_soft(80.0, 28.0, 1.25, 1.9, body_cut=280.0, hp=85.0), 0.75)
         return room(b, decay=0.25, mix=0.1)
+    return arsenal_ghost_in_room(*GHOST_ROOMS10[variant])
+
+
+def arsenal_ghost_in_room(decay, wet):
+    """The tenth cut's Arsenal: the death in the eighth's small room, the ghost's breath alone
+    in a room of its own (`decay`, `wet`), every layer on the eighth's noise."""
     F.seed("d8_death8_arsenal")   # the eighth cut's draws, in its order
     b = mix(boom_soft(130.0, 42.0, 0.9, 1.0, body_cut=420.0, attack=0.012, hp=70.0), lp_padded(FX.plasma_splash(0.45), 800.0))
     n = n_of(1.5)
@@ -900,13 +907,24 @@ def death10(variant):
     ghost_whoosh(1.7, 520.0, 0.5)   # drawn as the eighth drew it, to know where its draws end
     after = F.RNG.bit_generator.state
     F.RNG.bit_generator.state = before
-    decay, wet = GHOST_ROOMS10[variant]
     b = at(b, ghost_whoosh(1.7, 520.0, 0.5, decay=decay, wet=wet), 0.2)
     F.RNG.bit_generator.state = after
     b = at(b, static(1.4, 0.25) * F.env_pts(n_of(1.4), [(0.0, 0.0), (0.25, 1.0), (1.4, 0.0)]), 1.0)
     b = at(b, crackles(1.6, 0.35), 0.95)
     b = at(b, flame_sputters(1.5, 0.3), 1.0)
     return room(b, decay=0.25, mix=0.1)
+
+
+# ---------------------------------------------------------------- the eleventh cut (Ryan, 9 October)
+# The Arsenal: the ghost in the hall's length, its echo up a bit; two amounts, 3 and 6 dB over
+# the tenth's. Minerva's tenth landed.
+
+VOICE_AT11 = {"arsenal": 1.5, "arsenal_more": 1.8}   # the louder echo rings under her longer: each about 8 dB clear
+GHOST_ROOMS11 = {"arsenal": (1.4, 0.9 * 10.0 ** (3.0 / 20.0)), "arsenal_more": (1.4, 0.9 * 10.0 ** (6.0 / 20.0))}
+
+
+def death11(variant):
+    return arsenal_ghost_in_room(*GHOST_ROOMS11[variant])
 
 
 # ---------------------------------------------------------------- written as the game plays it
@@ -1144,7 +1162,27 @@ def cut10():
     return 0
 
 
+SINGLES11 = [("death11_" + v, (lambda v=v: death11(v)), DEATH_LEVEL) for v in ("arsenal", "arsenal_more")]
+
+
+def cut11():
+    made = {}
+    for name, fn, level in SINGLES11:
+        F.seed("d11_" + name)
+        x = at_level(fn(), level)
+        made[name] = x
+        write("d11_" + name, tail(x))
+        print("  d11_%-23s %5.2f s" % (name, len(x) / SR))
+    line_lost = read(os.path.join(ART, "voice", "line_machine_lost.wav"))
+    for v in VOICE_AT11:
+        write("d11_seq_lost_" + v, tail(at(at(np.zeros(1), made["death11_" + v], 0.0), line_lost, VOICE_AT11[v]), 0.5))
+    print("  sequences written")
+    return 0
+
+
 def main(argv):
+    if argv[:1] == ["11"]:
+        return cut11()
     if argv[:1] == ["10"]:
         return cut10()
     if argv[:1] == ["9"]:
