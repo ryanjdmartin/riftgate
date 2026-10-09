@@ -308,6 +308,39 @@ def key_background(img, tol=48):
     return img
 
 
+def key_holes(img, tol=24, min_area=400):
+    """Alpha out pockets of background the edge fill cannot reach (sky between branches, the gap
+    between an arm and a body): connected patches within `tol` of the background colour and at
+    least `min_area` pixels at the render's size. Opt-in per cut, since a white robe or an eye's
+    highlight is the same colour; the area floor spares highlights, not robes."""
+    img = img.convert("RGBA")
+    w, h = img.size
+    px = img.load()
+    bg = (255, 255, 255)   # the prompt's flat white; the corners are already keyed by now
+
+    def near(p):
+        return p[3] > 0 and all(abs(p[i] - bg[i]) <= tol for i in range(3))
+
+    seen = bytearray(w * h)
+    for sy in range(h):
+        for sx in range(w):
+            if seen[sy * w + sx] or not near(px[sx, sy]):
+                continue
+            region, stack = [], [(sx, sy)]
+            seen[sy * w + sx] = 1
+            while stack:
+                x, y = stack.pop()
+                region.append((x, y))
+                for nx, ny in ((x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)):
+                    if 0 <= nx < w and 0 <= ny < h and not seen[ny * w + nx] and near(px[nx, ny]):
+                        seen[ny * w + nx] = 1
+                        stack.append((nx, ny))
+            if len(region) >= min_area:
+                for x, y in region:
+                    px[x, y] = (0, 0, 0, 0)
+    return img
+
+
 def quantize(img, palette, colours=16):
     """Flatten the shading into a few coherent regions (median cut on the opaque pixels),
     then, if a palette is given, snap each region colour to its nearest palette colour.
@@ -389,7 +422,9 @@ def cut(args):
     foes = load_foes()
     foe = foes[args.foe]
     pal = parse_palettes()[PALETTE_FOR.get(foe.get("faction", "marsh"), "UND")] if args.faction_palette else None
-    src = key_background(Image.open(args.image))
+    src = key_background(Image.open(args.image), args.tol)
+    if args.holes:
+        src = key_holes(src)
     size = int(foe.get("size") or 1)
     ART.mkdir(parents=True, exist_ok=True)
     frame = CHIBI_SIZE if (foe.get("hero") and size == 1) else COMBAT_SIZE[size]   # a hero in one slot is its chibi
@@ -761,6 +796,8 @@ def main():
     c.add_argument("image")
     c.add_argument("foe")
     c.add_argument("--colours", type=int, default=16, help="colours to keep (default 16)")
+    c.add_argument("--tol", type=int, default=48, help="how far from the background colour still keys out (default 48); raise it, to 90 or so, when a render left a grey ground shadow")
+    c.add_argument("--holes", action="store_true", help="also key enclosed pockets of background (sky between branches); off by default, since a white robe is the same colour")
     c.add_argument("--faction-palette", action="store_true", help="snap to the faction palette from the enemy sheet instead of keeping the model's colours")
     c.set_defaults(func=cut)
     r = sub.add_parser("rift", help="candidates for the rift: a vortex tearing a hole in reality")

@@ -254,9 +254,24 @@ static func _default_skirmish() -> Skirmish:
 				u.paint = paints[id]
 			s.add_mech(u)
 	# The first faction's first and last spawn entries: its rank and file, then its support.
+	# RIFTGATE_FOES=warrior,goblin:3,white_mage puts those foes on instead, by content id and
+	# count (heroes included), each its own pack: to see any sprite in the fight.
 	var fac := db.default_faction()
 	var table: Array = db.spawn_table(fac)
 	var uid := 1
+	var foes_env := OS.get_environment("RIFTGATE_FOES")
+	if not foes_env.is_empty():
+		table = []
+		for spec in foes_env.split(",", false):
+			var kv := spec.split(":")
+			if db.foes.has(kv[0]):
+				table.append([kv[0], int(kv[1]) if kv.size() > 1 else 1])
+		for entry in table:
+			var fid := str(entry[0])
+			var sq := Unit.pack(uid, "%s pack" % fid, Vector2i.ZERO, db.faction_of_foe(fid), 2, int(entry[1]), fid)
+			s.add_foes(db.foes_for(sq), sq)
+			uid += 1
+		table = []
 	for entry in [table[0], table[table.size() - 1]] if not table.is_empty() else []:
 		var sq := Unit.pack(uid, "%s pack" % str(entry[0]), Vector2i.ZERO, fac, 2, int(entry[1]), str(entry[0]))
 		s.add_foes(db.foes_for(sq), sq)

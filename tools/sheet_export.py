@@ -93,8 +93,20 @@ def main():
     problems = []
     written = []
 
+    # A foe cut from a foeforge pick (tools/foeforge/picks/picks.json, 9 October) keeps that
+    # art: the sketch grids are the floor, and every foe has a pick now. --force overwrites.
+    picks_file = ROOT / "tools" / "foeforge" / "picks" / "picks.json"
+    picked = set()
+    if picks_file.exists():
+        import json
+        picked = {p["foe"] for p in json.loads(picks_file.read_text())["picks"].values() if p["role"] in ("sprite", "chibi")}
+    force = "--force" in sys.argv
+
     def export(table, suffix):
         for grid_name, (foe_id, pal_name) in table.items():
+            if foe_id in picked and not force:
+                problems.append(f"{grid_name}: {foe_id} has foeforge art; kept (--force overwrites)")
+                continue
             rows = grids.get(grid_name)
             if rows is None:
                 problems.append(f"{grid_name}: grid not found in the sheet")
@@ -112,6 +124,11 @@ def main():
     # Contact sheet: combat sprites at 3x with their map tokens beneath, on the field colour.
     combat = [(f, i) for f, s, i in written if s == "combat"]
     tokens = {f: i for f, s, i in written if s == "map"}
+    if not combat:
+        for p in problems:
+            print("  " + p)
+        print("nothing exported: every grid's foe has foeforge art (--force overwrites)")
+        return
     scale = 3
     cell_w = 64 * scale + 24
     cell_h = 96 * scale + 40 * scale + 40

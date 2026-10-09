@@ -105,8 +105,12 @@ party sprite for their domain's final (the hero split, decided the same evening;
 `design.sprite` brief now leads its prompt, since without one the Bomb and the Gel came out as muscled humanoids;
 four briefs were sharpened after a bad first round (kept as `<id>_v1`), the hero halo dropped (a bright ring
 survives the cutter's key as a stray arc). `forge.py picker` writes a page to pick from with the number keys.
-Next: Ryan's picks, cut into `art/foes` (heroes at 24x32), checked at the phone's layout; then the promoted
-entries and their names.
+Ryan picked all 34 that evening: the 18 wildlife and 8 chibi heroes are cut into `art/foes` and checked in
+the skirmish at the phone's layout (`RIFTGATE_FOES=warrior,goblin:3` puts any foes on the standalone screen);
+every pick's source render is kept in `tools/foeforge/picks` with `picks.json` (role, prompt, cut options:
+the Treant needed `--tol 90 --holes`, the Bone Dragon `--tol 90`, for their ground shadows and enclosed sky).
+`tools/sheet_export.py` now keeps foeforge art (it would have overwritten six picks). Next: Ryan's touch-ups on
+the sources (missing arms, weapons through hands), the promoted entries and their names, the domain bleeds.
 
 **The bars, for whoever picks them up** (9 October; the bible's section 9 bars row is the full note): the
 Convergence is built (`Campaign.convergence`); Anathema is a placeholder count (`bosses_beaten`, three won battles
