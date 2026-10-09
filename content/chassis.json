@@ -349,8 +349,8 @@
    "tier": 1,
    "design": {
     "fantasy": "A fast, agile, and lightly armoured skirmisher, able to skim in and out of fights with ease. It's signature ability allows it to serve as both a potent scout and harasser before getting away with minimal damage.",
-    "niche": "scout/harasser",
-    "notes": "Decided 28 September: the passive as Ryan wrote it, resolved per ally with a flat chance and no new UI: the Prairie Dog is always out before the enemy strikes, each ally rolls an even chance to slip out with it, and a blow aimed at a covered machine is lost rather than retargeted. The locked Flakshot Repeater makes its round shoot, roll again, shoot, leave; Incendiary Shells because it leaves them burning (burning carried between fights is on the ideas list). Numbers, designation and kit are Claude's fills, Ryan's to move."
+    "niche": "scout",
+    "notes": "Decided 28 September: the passive as Ryan wrote it, resolved per ally with a flat chance and no new UI: the Prairie Dog is always out before the enemy strikes, each ally rolls an even chance to slip out with it, and a blow aimed at a covered machine is lost rather than retargeted. The locked Flakshot Repeater makes its round shoot, roll again, shoot, leave; Incendiary Shells because it leaves them burning (burning carried between fights is on the ideas list). Numbers, designation and kit are Claude's fills, Ryan's to move. 8 October (Ryan, the redesigned round, bible sections 4, 5 and 7): the scout that slips around the fights; elusive, a hunter never picks it, so it is never in a fight it did not choose and works behind the horde. The Static-screen Projector is gone (the guaranteed enemy turn); its locked gun is to carry the disorder keyword in its place and the Flak Skirt is to go with the niche, both not yet done. 8 October, later (Ryan): elusive is a passive, not a trait, since no other machine will carry it; named the Track-Dispersing Tyres (Ryan, 9 October). The model lost its side skirts, bash bars and drops the same day, and rides higher over its wheels (Ryan: the fast scout, a dune buggy's flair). Claude's recommendation, open with Ryan: the Flakshot Repeater stays as it is (a rapid gun suits a light machine that finishes its own fights fast) and the disorder keyword is dropped (it pays in team fights, which an elusive car rarely joins); the Flak Skirt is stock in a free hardpoint, never the design."
    },
    "codex": "",
    "hull": 60,
@@ -374,14 +374,14 @@
     "flak_skirt"
    ],
    "passive": {
-    "id": "staticscreen_projector",
-    "name": "Static-screen Projector",
-    "description": "A blast of dust, smoke and static electricity that confuses senses and sensors alike. When the team withdraws, the Prairie Dog is out before the enemy strikes, and each ally has an even chance of slipping out with it; a blow aimed at a machine the screen covers is lost.",
+    "id": "track_dispersing_tyres",
+    "name": "Track-Dispersing Tyres",
+    "description": "Treads cut to scuff out their own trail as they roll. No hunter ever picks the Prairie Dog as its prey.",
     "effects": [
      {
       "trigger": "static",
-      "effect": "screen_withdraw",
-      "value": 50
+      "effect": "never_hunted",
+      "value": 1
      }
     ]
    },
@@ -397,7 +397,7 @@
     "fantasy": "A small, nimble, lightly armoured vehicle designed to support heavy armour in combat. Able to stealthily avoid combat until its allies are in position for a flanking or pincer attack, then capitalize on openings in combat.",
     "niche": "combat support",
     "name_clash": "Kept (Ryan, 29 September). Dingo is a Heavy Gear Northern gear, an obscure resin-era release in a niche property and a biped, so no silhouette resemblance; the Bundeswehr's ATF Dingo, a four-wheeled armoured car, is the closer match and the homage W&S's register is built on. Say Dingo and people picture the dog: the coincidence tier.",
-    "notes": "Decided 28 September: stealth is a trait, not a passive (like flyer): it controls no ground and joins a fight only when an ally is in it or when it stopped a pack in its path, so it waits in the wings and never fights alone unless run into. The passive is the other half of Ryan's Adaptive Camouflage, the flanking bonus, as Tactical Databank. The locked Megataser Harpoon is a cheap pin for the foe an ally is about to eat; Coolant Dump because it can be spent on a friend. Numbers, designation and kit are Claude's fills, Ryan's to move."
+    "notes": "Decided 28 September: stealth is a trait, not a passive (like flyer): it controls no ground and joins a fight only when an ally is in it or when it stopped a pack in its path, so it waits in the wings and never fights alone unless run into. The passive is the other half of Ryan's Adaptive Camouflage, the flanking bonus, as Tactical Databank. The locked Megataser Harpoon is a cheap pin for the foe an ally is about to eat; Coolant Dump because it can be spent on a friend. Numbers, designation and kit are Claude's fills, Ryan's to move. 8 October (Ryan, the redesigned round, bible sections 4, 5 and 7): stealth is gone; the Dingo is tireless, two actions a turn, the pack animal that drifts between fights, its Tactical Databank making its second action count in an ally's fight. It can be hunted, and dies if it strays from the pack. 8 October, later (Ryan): the second action is the Dingo's passive (named the Retrograde Flywheel, 9 October, by Ryan: the perfect amount of no-sense), and the Tactical Databank leaves the Dingo to become the game's first module, its name kept (Ryan): \"With an ally in the fight, this machine's kinetic weapons roll their maximum\" (on_attack, roll_max, when ally_present), for when modules exist (bible section 10)."
    },
    "codex": "",
    "hull": 60,
@@ -409,8 +409,7 @@
    "recharge_field": 25,
    "cooling": 5,
    "traits": [
-    "wheeled",
-    "stealth"
+    "wheeled"
    ],
    "size": "light",
    "fixed": [
@@ -422,15 +421,14 @@
     "coolant_dump"
    ],
    "passive": {
-    "id": "tactical_databank",
-    "name": "Tactical Databank",
-    "description": "Every ally's firing solution, shared. With an ally in the fight, the Dingo's kinetic weapons roll their maximum.",
+    "id": "retrograde_flywheel",
+    "name": "Retrograde Flywheel",
+    "description": "A flywheel that banks the car's momentum between bursts and pays it back out. The Dingo has two actions a turn: it may move and fight, then move and fight again.",
     "effects": [
      {
-      "trigger": "on_attack",
-      "effect": "roll_max",
-      "value": 1,
-      "when": "ally_present"
+      "trigger": "static",
+      "effect": "extra_action",
+      "value": 1
      }
     ]
    },

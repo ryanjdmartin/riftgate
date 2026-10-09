@@ -1,0 +1,1533 @@
+<title>Engagement Sandbox</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600&display=swap">
+<style>
+/* Layout: the field (portrait, the phone's 7x14) on the left, the pieces, the rules and the readout on the right;
+   one column on a phone. One deliberate dark look: the game's display, so what is judged here is what the
+   phone will show. Every mark carries structure as well as hue (Ryan is colourblind). */
+:root {
+  --bg: #0a0e0b;
+  --panel: #101712;
+  --line: #1f3326;
+  --ink: #d6e3d9;
+  --dim: #7f968a;
+  --hud: #5fe08a;        /* the display's green: machines, HUD */
+  --hud-dim: #2a6b40;
+  --rift: #a468ff;       /* a pack's intent */
+  --rift-deep: #5a1cb8;
+  --warn: #ff4a3d;       /* the engagement warning */
+  --warn-hot: #ff9a3c;
+  --gate: #4b5651;
+  --crag: #2b2f2a;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: dark;
+}
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.45; margin: 0; }
+.wrap { padding-inline: 16px; padding-block: 14px 32px; max-width: 1180px; margin: 0 auto; }
+header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; margin-bottom: 12px; }
+h1 { font-family: var(--mono); font-weight: 600; font-size: 20px; letter-spacing: 0.04em; margin: 0; color: var(--hud); text-transform: uppercase; }
+header p { margin: 0; color: var(--dim); max-width: 64ch; }
+.grid { display: grid; grid-template-columns: minmax(280px, 420px) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+.field { background: var(--panel); border: 1px solid var(--line); padding: 8px; }
+canvas { display: block; width: 100%; height: auto; touch-action: none; cursor: pointer; }
+.hint { font-family: var(--mono); font-size: 12px; color: var(--dim); margin: 8px 2px 0; letter-spacing: 0.02em; }
+.side { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+fieldset { border: 1px solid var(--line); padding: 10px 12px 12px; margin: 0; min-width: 0; }
+legend { font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--hud); padding: 0 6px; }
+.pieces { display: flex; flex-wrap: wrap; gap: 6px; }
+.pieces button { display: inline-flex; align-items: center; gap: 7px; }
+.pieces button svg { flex: none; }
+.toggles { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.toggles label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 14px; }
+.toggles input { accent-color: var(--hud); }
+.toggles + .toggles { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); }
+select { background: var(--bg); color: var(--ink); border: 1px solid var(--line); font-family: var(--mono); font-size: 13px; padding: 2px 4px; }
+button { font-family: var(--mono); font-size: 13px; background: var(--bg); color: var(--ink); border: 1px solid var(--hud-dim); padding: 6px 10px; cursor: pointer; letter-spacing: 0.02em; }
+button:hover { border-color: var(--hud); }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--hud); outline-offset: 2px; }
+button.on { background: var(--hud-dim); color: #fff; border-color: var(--hud); }
+button.act { border-color: var(--warn-hot); }
+.phase { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; }
+.phase .n { font-family: var(--mono); color: var(--warn-hot); font-weight: 600; letter-spacing: 0.05em; }
+.sentence { font-family: var(--mono); font-size: 14px; line-height: 1.5; color: var(--ink); border-left: 3px solid var(--warn); padding: 4px 10px; margin: 0; background: var(--bg); }
+.readout { font-family: var(--mono); font-size: 13px; line-height: 1.55; margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.readout li { padding: 6px 10px; border: 1px solid var(--line); display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; min-width: 0; }
+.readout li > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+.readout .k { color: var(--warn-hot); font-weight: 600; letter-spacing: 0.05em; white-space: nowrap; }
+.readout .k.p { color: var(--rift); }
+.readout .k.m { color: var(--hud); }
+.readout .none { color: var(--dim); border-style: dashed; grid-template-columns: 1fr; }
+.readout .why { color: var(--dim); grid-column: 2; }
+.readout .diff { border-color: var(--warn-hot); }
+.readout .same { border-style: dashed; }
+.leg { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 6px 14px; font-size: 13px; color: var(--dim); }
+.leg div { display: flex; align-items: center; gap: 8px; }
+.leg svg { flex: none; }
+.scenario { color: var(--dim); font-size: 14px; margin: 8px 0 0; min-height: 1.4em; }
+.presets { display: flex; flex-wrap: wrap; gap: 6px; }
+.log { font-family: var(--mono); font-size: 12px; color: var(--dim); margin: 0; padding: 0; list-style: none; max-height: 9em; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; }
+.log li { overflow-wrap: anywhere; }
+.modes { display: flex; flex-wrap: wrap; gap: 6px; }
+.msg { font-family: var(--mono); font-size: 13px; color: var(--warn-hot); margin: 8px 0 0; min-height: 1.2em; }
+.rules5 { margin: 0; padding-left: 1.4em; display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+button:disabled { opacity: 0.4; cursor: not-allowed; }
+.readout .k.c { color: var(--warn); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+<header>
+  <h1>Engagement Sandbox</h1>
+  <div class="modes" role="group" aria-label="Rules">
+    <button type="button" id="mode-btn-new" class="on">The redesign (bible v0.83)</button>
+    <button type="button" id="mode-btn-old">The engine today</button>
+  </div>
+  <p id="intro-new">The redesigned round: packs show where they walk; you fight one fight at a time, and a machine that fought is spent; packs join a fight when their ring covers the target; on their turn survivors walk on, round your machines, which never stop a pack. Hunters catch, and a caught machine fights first.</p>
+  <p id="intro-old" hidden>The decided rules, as the engine runs them: the enemy commits first, zones where a pack ends, a body in the path as the only stop, push, aggressive and hunt, and the Prairie Dog's provoke to judge. Place machines where they end their move, read where every pack goes, then resolve the phase and plan the next.</p>
+</header>
+
+<section id="mode-old" hidden>
+<div class="grid">
+  <div>
+    <div class="field"><canvas id="c" width="420" height="700" aria-label="The hex field"></canvas></div>
+    <div class="hint" id="hint">tap: place the chosen piece, or inspect what stands there &nbsp;·&nbsp; drag to move &nbsp;·&nbsp; the erase tool removes</div>
+    <p class="scenario" id="scenario"></p>
+  </div>
+
+  <div class="side">
+    <fieldset>
+      <legend>Pieces</legend>
+      <div class="pieces" id="pieces"></div>
+      <div class="toggles" style="margin-top:10px">
+        <label>pack move <input type="range" id="speed" min="1" max="4" value="2"> <span id="speedv">2</span> hexes (brute +1, boss 1)</label>
+        <label>a hunter hunts the <select id="hunts"><option value="nearest">nearest</option><option value="fastest">fastest</option><option value="strongest">strongest</option></select></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Phase</legend>
+      <div class="phase">
+        <span class="n" id="phaseno">PHASE 1</span>
+        <button type="button" class="act" id="resolve">Resolve: packs walk</button>
+        <button type="button" id="reset">Reset scenario</button>
+        <button type="button" id="clear">Clear field</button>
+      </div>
+      <ul class="log" id="log" style="margin-top:8px"></ul>
+    </fieldset>
+
+    <fieldset>
+      <legend>The car</legend>
+      <div class="toggles">
+        <label><input type="checkbox" id="provoke" checked> the Prairie Dog provokes: a pusher whose reach holds it reacts as an aggressive pack</label>
+        <label>a provoked pack goes for <select id="goes"><option value="car" selected>the car itself (Ryan, 8 October)</option><option value="catch">the biggest catch in its reach (as aggressive)</option></select></label>
+        <label><input type="checkbox" id="cardraws" checked> the car draws every reaction: an aggressive pack with the car in reach goes for the car too</label>
+        <label>an aggressive pack with no car in reach goes for <select id="aggro"><option value="catch">the biggest catch in its reach, ties toward the gate (decided)</option><option value="nearest">the nearest machine in reach, ties toward the gate (proposed)</option></select></label>
+      </div>
+      <div class="toggles">
+        <label><input type="checkbox" id="routeround"> a pack stopped twice by the same body routes round it (proposed; off is the engine today)</label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Marks, to judge clutter</legend>
+      <div class="toggles">
+        <label>reach rings <select id="rings"><option value="tapped" selected>the tapped pack only (proposed)</option><option value="aggressive">aggressive packs only (the game today)</option><option value="provoked">aggressive, and a pusher the car provokes</option><option value="drag">those, and every pusher while the car is dragged</option><option value="all">every pack, always</option><option value="none">none</option></select></label>
+        <label>zones <select id="zones"><option value="all" selected>every pack's, thin where empty (the game today)</option><option value="fights">only where a fight is</option></select></label>
+        <label>routes <select id="routes"><option value="all" selected>every pack's (the game today)</option><option value="react">only reactions</option><option value="none">none</option></select></label>
+        <label><input type="checkbox" id="ghost" checked> show the committed route as a ghost when a reaction replaces it</label>
+        <label><input type="checkbox" id="locks" checked> locks: a hunter's prey, and the machine a reacting pack comes for</label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Scenarios</legend>
+      <div class="presets" id="presets"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>In one sentence</legend>
+      <p class="sentence">Every pack walks to the gate and stops only where a body stands in its path. Stand inside a pack's zone where it stops and you fight it; everything your machines connect is one fight. An aggressive pack turns for the biggest catch in its reach. A hunter chases one machine. The Prairie Dog draws any pack that can reach it: it comes for the car.</p>
+    </fieldset>
+
+    <fieldset>
+      <legend>Does the car change anything</legend>
+      <ul class="readout" id="diff"></ul>
+    </fieldset>
+
+    <fieldset>
+      <legend>Packs</legend>
+      <ul class="readout" id="packs"></ul>
+    </fieldset>
+
+    <fieldset>
+      <legend>Fights</legend>
+      <ul class="readout" id="fights"></ul>
+    </fieldset>
+
+    <fieldset>
+      <legend>Marks</legend>
+      <div class="leg">
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><polygon points="11,2 19,6.5 19,15.5 11,20 3,15.5 3,6.5" fill="#1a3d26" stroke="#5fe08a" stroke-width="2"/></svg>heavy: a body</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><polygon points="11,2 19,6.5 19,15.5 11,20 3,15.5 3,6.5" fill="#1a3d26" stroke="#5fe08a" stroke-width="2"/><polygon points="11,5 16,8 16,14 11,17 6,14 6,8" fill="none" stroke="#5fe08a" stroke-width="1.5"/></svg>Prairie Dog: a body that provokes</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><polygon points="11,2 19,6.5 19,15.5 11,20 3,15.5 3,6.5" fill="none" stroke="#5fe08a" stroke-width="2" stroke-dasharray="3 2"/></svg>flyer: passed through</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><polygon points="11,2 19,6.5 19,15.5 11,20 3,15.5 3,6.5" fill="none" stroke="#5fe08a" stroke-width="2" stroke-dasharray="1 3"/></svg>stealth: a body no zone pulls in</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><polygon points="11,2 20,11 11,20 2,11" fill="#4a1410" stroke="#ff4a3d" stroke-width="2"/></svg>pack, with its zone radius</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><rect x="2" y="2" width="18" height="18" fill="none" stroke="#ff4a3d" stroke-width="1" stroke-dasharray="2 2"/></svg>zone, nobody in it</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><defs><pattern id="h" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="4" stroke="#ff4a3d" stroke-width="1.5"/></pattern></defs><rect x="2" y="2" width="18" height="18" fill="url(#h)" stroke="#ff4a3d" stroke-width="2"/></svg>zone with a fight in it</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><rect x="2" y="2" width="18" height="18" fill="none" stroke="#ff9a3c" stroke-width="1.5" stroke-dasharray="5 3"/></svg>reach ring: where a reaction can catch</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="8" fill="none" stroke="#ff9a3c" stroke-width="1.5"/><circle cx="11" cy="11" r="3" fill="none" stroke="#ff9a3c" stroke-width="1.5"/></svg>a hunter's lock</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><line x1="3" y1="18" x2="18" y2="4" stroke="#a468ff" stroke-width="2.5"/></svg>a pack's route; a reaction is thicker</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><polygon points="11,2 19,6.5 19,15.5 11,20 3,15.5 3,6.5" fill="#2b2f2a" stroke="#4b5651" stroke-width="2"/><line x1="6" y1="6" x2="16" y2="16" stroke="#4b5651" stroke-width="1.5"/><line x1="16" y1="6" x2="6" y2="16" stroke="#4b5651" stroke-width="1.5"/></svg>crag or water: a wall to the horde</div>
+      </div>
+    </fieldset>
+  </div>
+</div>
+</section>
+
+<section id="mode-new">
+<div class="grid">
+  <div>
+    <div class="field"><canvas id="c2" width="420" height="700" aria-label="The hex field, redesigned round"></canvas></div>
+    <div class="hint">play: drag a machine within its move &nbsp;·&nbsp; tap a pack to attack it &nbsp;·&nbsp; tap a machine in range to commit it &nbsp;·&nbsp; pick a piece to set the field up</div>
+    <p class="scenario" id="scenario2"></p>
+  </div>
+
+  <div class="side">
+    <fieldset>
+      <legend>Turn</legend>
+      <div class="phase">
+        <span class="n" id="turn2">TURN 1</span>
+        <span class="n" id="gate2">GATE 10</span>
+        <button type="button" class="act" id="endturn2">End turn: packs walk</button>
+        <button type="button" id="reset2">Reset scenario</button>
+        <button type="button" id="clear2">Clear field</button>
+      </div>
+      <p class="msg" id="msg2"></p>
+      <ul class="log" id="log2"></ul>
+    </fieldset>
+
+    <fieldset>
+      <legend>Fight</legend>
+      <ul class="readout" id="fight2"></ul>
+      <div class="phase" style="margin-top:8px">
+        <button type="button" class="act" id="win2">Fight: we win</button>
+        <button type="button" id="withdraw2">Fight: we withdraw</button>
+        <button type="button" id="cancel2">Cancel</button>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Pieces</legend>
+      <div class="pieces" id="pieces2"></div>
+      <div class="toggles" style="margin-top:10px">
+        <label>width <select id="width2"><option value="9" selected>nine hexes</option><option value="7">seven hexes</option></select></label>
+        <label>machine attack range <input type="range" id="range2" min="1" max="3" value="2"> <span id="range2v">2</span></label>
+        <label>back-rank ring <input type="range" id="backring2" min="1" max="4" value="3"> <span id="backring2v">3</span></label>
+        <label>pack move <input type="range" id="packmove2" min="1" max="4" value="2"> <span id="packmove2v">2</span> (brute +1, boss holds)</label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Scenarios</legend>
+      <div class="presets" id="presets2"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>The rules</legend>
+      <ol class="rules5">
+        <li>A pack walks toward the gate. A hunter walks toward one machine instead, and never the Prairie Dog.</li>
+        <li>Every unit has a ring: a pack's ring is who it supports, a machine's is how far it attacks.</li>
+        <li>Your turn: a machine a hunter caught fights it first. Then pick a pack, commit machines in range, read who joins, and fight. A machine that fought is spent; the Dingo acts twice.</li>
+        <li>Their turn: packs walk round your machines; packs at the gate strike it.</li>
+        <li>A machine moves, then fights; never the other way round.</li>
+      </ol>
+    </fieldset>
+
+    <fieldset>
+      <legend>Machines</legend>
+      <ul class="readout" id="mechs2"></ul>
+    </fieldset>
+
+    <fieldset>
+      <legend>Packs</legend>
+      <ul class="readout" id="packs2"></ul>
+    </fieldset>
+
+    <fieldset>
+      <legend>Marks</legend>
+      <div class="leg">
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><polygon points="11,2 19,6.5 19,15.5 11,20 3,15.5 3,6.5" fill="#1a3d26" stroke="#5fe08a" stroke-width="2"/></svg>machine, ready</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><polygon points="11,2 19,6.5 19,15.5 11,20 3,15.5 3,6.5" fill="none" stroke="#2a6b40" stroke-width="2"/><line x1="5" y1="17" x2="17" y2="5" stroke="#2a6b40" stroke-width="2"/></svg>machine, spent this turn</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><polygon points="11,2 19,6.5 19,15.5 11,20 3,15.5 3,6.5" fill="#1a3d26" stroke="#ff9a3c" stroke-width="3"/></svg>committed to the fight</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><rect x="2" y="2" width="18" height="18" fill="none" stroke="#5fe08a" stroke-width="2" stroke-dasharray="5 3"/></svg>attack range round the target</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><rect x="2" y="2" width="18" height="18" fill="none" stroke="#5fe08a" stroke-width="1.5" stroke-dasharray="2 3"/></svg>a machine's move</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><polygon points="11,2 20,11 11,20 2,11" fill="#4a1410" stroke="#ff4a3d" stroke-width="2"/></svg>pack, with its ring</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><polygon points="11,2 20,11 11,20 2,11" fill="#4a1410" stroke="#d6e3d9" stroke-width="3"/></svg>the target</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><rect x="2" y="2" width="18" height="18" fill="none" stroke="#ff9a3c" stroke-width="2" stroke-dasharray="3 4"/></svg>a joining pack's ring</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="8" fill="none" stroke="#ff9a3c" stroke-width="1.5"/><circle cx="11" cy="11" r="3" fill="none" stroke="#ff9a3c" stroke-width="1.5"/></svg>a hunter's lock</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><line x1="3" y1="19" x2="19" y2="3" stroke="#ff4a3d" stroke-width="4"/></svg>caught: fights first</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><line x1="3" y1="18" x2="18" y2="4" stroke="#a468ff" stroke-width="2.5"/></svg>where a pack walks on their turn</div>
+        <div><svg width="22" height="22" viewBox="0 0 22 22"><polygon points="11,2 19,6.5 19,15.5 11,20 3,15.5 3,6.5" fill="#2b2f2a" stroke="#4b5651" stroke-width="2"/><line x1="6" y1="6" x2="16" y2="16" stroke="#4b5651" stroke-width="1.5"/><line x1="16" y1="6" x2="6" y2="16" stroke="#4b5651" stroke-width="1.5"/></svg>crag or water</div>
+      </div>
+    </fieldset>
+  </div>
+</div>
+</section>
+</div>
+
+<script>
+(function () {
+  const COLS = 7, ROWS = 14, RIFT_ROW = 0, GATE_ROW = 12;   // rows 12 and 13 are the gate and the wall
+  const GATE_COLS = [2, 3, 4];
+  const C = {
+    bg: '#0a0e0b', line: '#1f3326', ink: '#d6e3d9', dim: '#7f968a', hud: '#5fe08a', hudDim: '#2a6b40',
+    hudFill: '#1a3d26', rift: '#a468ff', riftDeep: '#5a1cb8', warn: '#ff4a3d', warnHot: '#ff9a3c',
+    warnFill: '#4a1410', gate: '#4b5651', crag: '#2b2f2a'
+  };
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  const $ = id => document.getElementById(id);
+
+  // ---- the pieces ----
+  // zone and move are the content's placeholders (front 1, back 3, boss 2; packs 2 hexes, the brute 3, bosses 1).
+  const PIECES = {
+    heavy:   { label: 'M', name: 'heavy',        side: 'mech', speed: 3, body: true,  hp: 180 },
+    car:     { label: 'D', name: 'Prairie Dog',  side: 'mech', speed: 5, body: true,  hp: 100, provokes: true },
+    flyer:   { label: 'F', name: 'flyer',        side: 'mech', speed: 5, body: false, hp: 120 },
+    stealth: { label: 'S', name: 'stealth',      side: 'mech', speed: 4, body: true,  hp: 100, stealth: true },
+    front:   { label: 'P', name: 'front pack',   side: 'pack', zone: 1, behaviour: 'push' },
+    back:    { label: 'B', name: 'back pack',    side: 'pack', zone: 3, behaviour: 'push' },
+    ghoul:   { label: 'G', name: 'ghoul pack',   side: 'pack', zone: 1, behaviour: 'aggressive' },
+    brute:   { label: 'H', name: 'brute',        side: 'pack', zone: 1, behaviour: 'hunt', moveBonus: 1 },
+    boss:    { label: 'X', name: 'boss',         side: 'pack', zone: 2, behaviour: 'push', moveFixed: 1 },
+    wall:    { label: '',  name: 'crag / water', side: 'wall' },
+    erase:   { label: '',  name: 'erase',        side: 'tool' }
+  };
+  const ORDER = ['heavy', 'car', 'flyer', 'stealth', 'front', 'back', 'ghoul', 'brute', 'boss', 'wall', 'erase'];
+  let piece = 'heavy';
+  let units = [];        // {id, kind, col, row, prey, stoppedBy, stoppedAt}
+  let walls = new Set(); // keys of hexes that are a wall to the horde (and to a machine's stand)
+  let nextId = 1;
+  let phase = 1;
+  let scenarioIndex = -1;
+  let dragging = null;
+  let inspected = 0;     // the tapped piece, by id: its ring shows under the tapped policy
+
+  // ---- hex maths: pointy-top, odd rows shifted right (the game's offset grid) ----
+  const mod2 = r => ((r % 2) + 2) % 2;
+  const toCube = (col, row) => { const x = col - (row - mod2(row)) / 2; return [x, -x - row, row]; };
+  const toOffset = (x, z) => [x + (z - mod2(z)) / 2, z];
+  const dist = (a, b) => { const p = toCube(a.col, a.row), q = toCube(b.col, b.row); return Math.max(Math.abs(p[0] - q[0]), Math.abs(p[1] - q[1]), Math.abs(p[2] - q[2])); };
+  const DIRS = [[1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0], [0, 1, -1], [1, 0, -1]];
+  const key = h => h.col + ',' + h.row;
+  const same = (a, b) => a.col === b.col && a.row === b.row;
+  const inField = (col, row) => col >= 0 && col < COLS && row >= 0 && row < ROWS;
+  const isGate = h => h.row === GATE_ROW && GATE_COLS.includes(h.col);
+  const GATE_HEXES = GATE_COLS.map(col => ({ col, row: GATE_ROW }));
+  const standable = h => inField(h.col, h.row) && h.row > RIFT_ROW && h.row < GATE_ROW && !walls.has(key(h));
+  function neighbours(h) {
+    const c = toCube(h.col, h.row); const out = [];
+    for (const d of DIRS) { const o = toOffset(c[0] + d[0], c[2] + d[2]); if (inField(o[0], o[1])) out.push({ col: o[0], row: o[1] }); }
+    return out;
+  }
+  function ring(h, r) {
+    const out = [];
+    for (let row = RIFT_ROW + 1; row < GATE_ROW; row++) for (let col = 0; col < COLS; col++) { const q = { col, row }; if (dist(h, q) <= r) out.push(q); }
+    return out;
+  }
+  const gateDistance = h => Math.min(...GATE_HEXES.map(g => dist(h, g)));
+
+  // ---- geometry on the canvas ----
+  let S = 28, W, PADX = 6, PADY = 6;
+  function layout() {
+    const cssW = canvas.clientWidth || 420;
+    W = (cssW - 2 * PADX) / (COLS + 0.5);
+    S = W / Math.sqrt(3);
+    const cssH = PADY * 2 + S * (1.5 * (ROWS - 1) + 2);
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.round(cssW * dpr); canvas.height = Math.round(cssH * dpr);
+    canvas.style.height = cssH + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  const centre = h => ({ x: PADX + W * (h.col + 0.5 * mod2(h.row)) + W / 2, y: PADY + S + 1.5 * S * h.row });
+  function corner(c, i) { const a = Math.PI / 180 * (60 * i - 30); return { x: c.x + S * Math.cos(a), y: c.y + S * Math.sin(a) }; }
+  function hexPath(c, scale) {
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) { const a = Math.PI / 180 * (60 * i - 30); const x = c.x + S * scale * Math.cos(a), y = c.y + S * scale * Math.sin(a); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+    ctx.closePath();
+  }
+  function hexAt(px, py) {
+    let best = null, bd = Infinity;
+    for (let row = 0; row < ROWS; row++) for (let col = 0; col < COLS; col++) { const c = centre({ col, row }); const d = (c.x - px) ** 2 + (c.y - py) ** 2; if (d < bd) { bd = d; best = { col, row }; } }
+    return bd <= (S * S) ? best : null;
+  }
+
+  // ---- the units ----
+  const P = u => PIECES[u.kind];
+  const isPack = u => P(u).side === 'pack';
+  const isMech = u => P(u).side === 'mech';
+  const blocks = u => isMech(u) && P(u).body;       // a grounded machine is a body; a flyer is passed through
+  const packs = () => units.filter(isPack);
+  const mechs = () => units.filter(isMech);
+  const unitAt = h => units.find(u => same(u, h));
+  const byId = id => units.find(u => u.id === id);
+  const zone = u => P(u).zone;
+  const move = u => P(u).moveFixed != null ? P(u).moveFixed : Number($('speed').value) + (P(u).moveBonus || 0);
+  const behaviour = u => P(u).behaviour;
+  const pos = (u, at) => (at && at.has(u.id)) ? at.get(u.id) : { col: u.col, row: u.row };
+  const name = u => (isPack(u) ? P(u).name.replace(' pack', '').toUpperCase() : P(u).label) + ' ' + u.col + '.' + u.row;
+  const hexName = h => h.col + '.' + h.row;
+
+  // ---- paths: the horde's ground is binary (every land hex one step; crags and water walls), machines ignored ----
+  // A breadth-first search from `from` over the ground the horde can walk, past `blocked` hexes (other packs' holds).
+  // Gate hexes are reachable but never walked through: a pack strikes the gate from the hex before.
+  function search(from, blocked, limit) {
+    const d = new Map([[key(from), 0]]), prev = new Map(), q = [from];
+    while (q.length) {
+      const cur = q.shift(); const cd = d.get(key(cur));
+      if (limit != null && cd >= limit) continue;
+      for (const n of neighbours(cur)) {
+        const k = key(n);
+        if (d.has(k)) continue;
+        if (isGate(n)) { d.set(k, cd + 1); prev.set(k, cur); continue; }
+        if (!standable(n) || blocked.has(k)) continue;
+        d.set(k, cd + 1); prev.set(k, cur); q.push(n);
+      }
+    }
+    return { d, prev };
+  }
+  function pathTo(from, to, blocked) {
+    const { d, prev } = search(from, blocked, null);
+    if (!d.has(key(to))) return [];
+    const out = []; let cur = to;
+    while (!same(cur, from)) { out.unshift(cur); cur = prev.get(key(cur)); }
+    return out;
+  }
+  // The nearest gate hex the pack can reach, else nothing (a pack held off every goal is STALLED).
+  function gatePath(from, blocked) {
+    const { d, prev } = search(from, blocked, null);
+    let best = null, bd = Infinity;
+    for (const g of GATE_HEXES) { const k = key(g); if (d.has(k) && d.get(k) < bd) { bd = d.get(k); best = g; } }
+    if (!best) return [];
+    const out = []; let cur = best;
+    while (!same(cur, from)) { out.unshift(cur); cur = prev.get(key(cur)); }
+    return out;
+  }
+  const affordable = (u, path) => path.slice(0, move(u));
+
+  // The hexes a pack will hold after walking `path`: a strike on the gate or a body in the way is where it stops.
+  function heldAfter(u, path, at) {
+    let end = pos(u, at);
+    for (const step of path) {
+      if (isGate(step)) break;
+      const o = unitAt(step);
+      if (o && blocks(o)) break;
+      end = step;
+    }
+    return end;
+  }
+  // The hexes every other pack holds: where the ones planned before it will end, where the rest stand now.
+  function heldByOthers(u, ends) {
+    const b = new Set();
+    for (const o of packs()) { if (o === u) continue; b.add(key(ends.has(o.id) ? ends.get(o.id) : o)); }
+    // Proposed: a body that stopped this pack last phase, still standing there, is a wall to its planning.
+    if ($('routeround').checked && u.stoppedBy) { const body = byId(u.stoppedBy); if (body && u.stoppedAt && same(body, u.stoppedAt)) b.add(key(body)); }
+    return b;
+  }
+
+  // ---- behaviours ----
+  function pickPrey(u) {
+    const cur = byId(u.prey);
+    if (cur && isMech(cur)) return cur;
+    let best = null, bk = Infinity;
+    for (const m of mechs()) {
+      if (P(m).stealth) continue;
+      let k;
+      switch ($('hunts').value) {
+        case 'fastest': k = -P(m).speed * 100 + dist(u, m); break;
+        case 'strongest': k = -P(m).hp * 100 + dist(u, m); break;
+        default: k = dist(u, m);
+      }
+      if (k < bk) { bk = k; best = m; }
+    }
+    u.prey = best ? best.id : 0;
+    return best;
+  }
+  // The hexes a pack can walk to this phase past the other packs, and the reach its zone makes from them.
+  function reachable(u, blocked) {
+    const { d } = search(u, blocked, move(u));
+    const out = [];
+    for (const [k, v] of d) { const [col, row] = k.split(',').map(Number); const h = { col, row }; if (!isGate(h) && v <= move(u)) out.push(h); }
+    return out;
+  }
+  function reachHexes(u, blocked) {
+    const m = new Map();
+    for (const h of reachable(u, blocked)) for (const r of ring(h, zone(u))) m.set(key(r), r);
+    return m;
+  }
+  const catchAt = (u, at) => mechs().filter(m => !P(m).stealth && dist(at, m) <= zone(u)).length;
+  function bestCatch(u, blocked) {
+    let best = { col: u.col, row: u.row }, bn = catchAt(u, best), bd = gateDistance(best), tied = false;
+    for (const h of reachable(u, blocked)) {
+      const n = catchAt(u, h), d = gateDistance(h);
+      if (n > bn) { best = h; bn = n; bd = d; tied = false; }
+      else if (n === bn && n > 0 && !same(h, best)) { tied = true; if (d < bd) { best = h; bd = d; } }
+    }
+    return { hex: best, count: bn, tied };
+  }
+  const cars = () => mechs().filter(m => P(m).provokes);
+  function carInReach(u, blocked) { const reach = reachHexes(u, blocked); return cars().find(c => reach.has(key(c))) || null; }
+  // The nearest machine inside the pack's reach, ties toward the gate (proposed, one key instead of two).
+  function nearestInReach(u, blocked) {
+    const reach = reachHexes(u, blocked);
+    let best = null, bd = Infinity, bg = Infinity;
+    for (const m of mechs()) {
+      if (P(m).stealth || !reach.has(key(m))) continue;
+      const d = dist(u, m), g = gateDistance(m);
+      if (d < bd || (d === bd && g < bg)) { best = m; bd = d; bg = g; }
+    }
+    return best;
+  }
+  function provokedBy(u, blocked) {
+    if (!$('provoke').checked || behaviour(u) !== 'push') return null;
+    const reach = reachHexes(u, blocked);
+    return cars().find(c => reach.has(key(c))) || null;
+  }
+
+  // The enemy commits first: every pack's route to the gate (or its prey), planned in field order around where
+  // the packs before it will end. Machines are ignored, so the route the player reads is "where it goes unless
+  // a body stops it".
+  function commit() {
+    const intents = new Map(), ends = new Map();
+    for (const u of packs()) {
+      const blocked = heldByOthers(u, ends);
+      let path;
+      if (behaviour(u) === 'hunt') { const prey = pickPrey(u); path = prey ? pathTo(u, prey, blocked) : gatePath(u, blocked); }
+      else path = gatePath(u, blocked);
+      path = affordable(u, path);
+      intents.set(u.id, path); ends.set(u.id, heldAfter(u, path));
+    }
+    return intents;
+  }
+  // The reaction to the plan, the machines standing where they will end: an aggressive pack (or a pusher the car
+  // provokes) goes for the biggest catch in its reach, ties toward the gate; a hunter for where its prey stands.
+  function react(intents, provokeOn) {
+    const plans = new Map(), ends = new Map(), why = new Map();
+    const saved = $('provoke').checked; $('provoke').checked = provokeOn;
+    for (const u of packs()) {
+      const blocked = heldByOthers(u, ends);
+      let path = intents.get(u.id).slice();
+      let w = { kind: behaviour(u) };
+      const car = provokedBy(u, blocked);
+      const drawn = behaviour(u) === 'aggressive' && $('cardraws').checked ? carInReach(u, blocked) : null;
+      if (behaviour(u) === 'aggressive' || car) {
+        if ((car && $('goes').value === 'car') || drawn) {
+          const target = car || drawn;
+          path = affordable(u, pathTo(u, target, blocked));
+          w = { kind: car ? 'provoked' : 'aggressive', car: target, target, count: catchAt(u, heldAfter(u, path)), drawn: !!drawn };
+        } else if ($('aggro').value === 'nearest') {
+          const m = nearestInReach(u, blocked);
+          if (m) { path = affordable(u, pathTo(u, m, blocked)); w = { kind: car ? 'provoked' : 'aggressive', car, target: m, count: catchAt(u, heldAfter(u, path)) }; }
+          else w = { kind: 'aggressive', count: 0 };
+        } else {
+          const best = bestCatch(u, blocked);
+          if (best.count > 0) path = affordable(u, pathTo(u, best.hex, blocked));
+          w = { kind: car ? 'provoked' : 'aggressive', car, count: best.count, tied: best.tied };
+        }
+      } else if (behaviour(u) === 'hunt') {
+        const prey = pickPrey(u);
+        if (prey) { path = affordable(u, pathTo(u, prey, blocked)); w = { kind: 'hunt', prey }; }
+      }
+      const end = heldAfter(u, path);
+      plans.set(u.id, path); ends.set(u.id, end); why.set(u.id, w);
+    }
+    $('provoke').checked = saved;
+    return { plans, ends, why };
+  }
+  // Where a pack actually stops: the gate (a strike) or the first body in its path. Packs walk in field order,
+  // so the ones before it stand at their ends and the ones after it where they are now (`packPos`).
+  function stopOf(u, path, packPos) {
+    let end = { col: u.col, row: u.row }, blocker = null, strikes = false;
+    for (const step of path) {
+      if (isGate(step)) { strikes = true; break; }
+      const m = mechs().find(x => blocks(x) && same(x, step));
+      const pk = packs().find(x => x !== u && same(packPos.get(x.id), step));
+      if (m || pk) { blocker = m || pk; break; }
+      end = step;
+    }
+    return { end, blocker, strikes };
+  }
+  function stopsOf(plans) {
+    const packPos = new Map(packs().map(p => [p.id, { col: p.col, row: p.row }]));
+    const stops = new Map();
+    for (const u of packs()) { const s = stopOf(u, plans.get(u.id), packPos); stops.set(u.id, s); packPos.set(u.id, s.end); }
+    return stops;
+  }
+
+  // ---- contacts: every machine inside a pack's zone where it ends fights it; a machine in two zones joins the two ----
+  function fightsOf(ends, stops) {
+    const nodes = [...packs(), ...mechs().filter(m => !P(m).stealth)];
+    const parent = new Map(nodes.map(n => [n.id, n.id]));
+    const find = x => parent.get(x) === x ? x : (parent.set(x, find(parent.get(x))), parent.get(x));
+    const union = (a, b) => parent.set(find(a), find(b));
+    for (const p of packs()) for (const m of mechs()) {
+      if (P(m).stealth) continue;
+      if (dist(ends.get(p.id), m) <= zone(p)) union(p.id, m.id);
+    }
+    // A stealth machine is never pulled in by a zone alone: it fights when it stopped one of the fight's packs,
+    // or when another machine is in that fight.
+    const stealths = mechs().filter(m => P(m).stealth);
+    for (const s of stealths) parent.set(s.id, s.id);
+    let changed = true;
+    while (changed) {
+      changed = false;
+      for (const s of stealths) for (const p of packs()) {
+        if (dist(ends.get(p.id), s) > zone(p)) continue;
+        const stopped = stops.get(p.id).blocker === s;
+        const hasMech = mechs().some(m => !P(m).stealth && find(m.id) === find(p.id));
+        if ((stopped || hasMech) && find(s.id) !== find(p.id)) { union(s.id, p.id); changed = true; }
+      }
+    }
+    const groups = new Map();
+    for (const n of [...nodes, ...stealths]) { const r = find(n.id); if (!groups.has(r)) groups.set(r, []); groups.get(r).push(n); }
+    return [...groups.values()].filter(g => g.some(isPack) && g.some(isMech)).map(g => ({ mechs: g.filter(isMech), packs: g.filter(isPack) }));
+  }
+
+  // ---- one reading of the field: commit, react, stop, fight; and the same with the car's provoke off ----
+  function reading() {
+    const intents = commit();
+    const r = react(intents, $('provoke').checked);
+    const stops = stopsOf(r.plans);
+    const ends = new Map(); for (const [id, s] of stops) ends.set(id, s.end);
+    const fights = fightsOf(ends, stops);
+    let without = null;
+    if ($('provoke').checked && cars().length) {
+      const r0 = react(intents, false);
+      const stops0 = stopsOf(r0.plans);
+      const ends0 = new Map(); for (const [id, s] of stops0) ends0.set(id, s.end);
+      without = { plans: r0.plans, stops: stops0, ends: ends0, fights: fightsOf(ends0, stops0) };
+    }
+    return { intents, plans: r.plans, why: r.why, stops, ends, fights, without };
+  }
+
+  // ---- drawing ----
+  const font = px => `600 ${px}px ${getComputedStyle(document.body).getPropertyValue('--mono')}`;
+  function regionOutline(hexes, stroke, width, dash) {
+    const set = new Set(hexes.map(key));
+    ctx.save(); ctx.strokeStyle = stroke; ctx.lineWidth = width; ctx.setLineDash(dash); ctx.lineCap = 'round';
+    ctx.beginPath();
+    for (const h of hexes) {
+      const c = toCube(h.col, h.row), ctr = centre(h);
+      DIRS.forEach((d, i) => {
+        const o = toOffset(c[0] + d[0], c[2] + d[2]);
+        if (set.has(o[0] + ',' + o[1])) return;
+        const a = corner(ctr, i), b = corner(ctr, (i + 1) % 6);
+        ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+      });
+    }
+    ctx.stroke(); ctx.restore();
+  }
+  function regionHatch(hexes, colour, angle, gap, width) {
+    ctx.save();
+    ctx.beginPath();
+    for (const h of hexes) { const ctr = centre(h); for (let i = 0; i < 6; i++) { const p = corner(ctr, i); i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y); } ctx.closePath(); }
+    ctx.clip();
+    ctx.strokeStyle = colour; ctx.lineWidth = width;
+    const w = canvas.clientWidth, hgt = parseFloat(canvas.style.height) || canvas.clientHeight, L = Math.hypot(w, hgt);
+    ctx.translate(w / 2, hgt / 2); ctx.rotate(angle);
+    ctx.beginPath();
+    for (let x = -L; x <= L; x += gap) { ctx.moveTo(x, -L); ctx.lineTo(x, L); }
+    ctx.stroke(); ctx.restore();
+  }
+  const DASHES = [[], [10, 6], [3, 5], [12, 4, 3, 4]];
+  const uniq = hexes => { const m = new Map(); hexes.forEach(h => m.set(key(h), h)); return [...m.values()]; };
+  function route(from, path, width, alpha, dash) {
+    if (!path.length) return;
+    ctx.save(); ctx.strokeStyle = `rgba(164,104,255,${alpha})`; ctx.lineWidth = width; ctx.setLineDash(dash); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.beginPath(); let c = centre(from); ctx.moveTo(c.x, c.y);
+    for (const h of path) { c = centre(h); ctx.lineTo(c.x, c.y); }
+    ctx.stroke(); ctx.restore();
+  }
+  function lock(h) {
+    const c = centre(h);
+    ctx.save(); ctx.strokeStyle = C.warnHot; ctx.lineWidth = 2; ctx.setLineDash([]);
+    ctx.beginPath(); ctx.arc(c.x, c.y, S * 0.95, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(c.x, c.y, S * 0.35, 0, Math.PI * 2); ctx.stroke();
+    for (let i = 0; i < 4; i++) { const a = Math.PI / 2 * i; ctx.beginPath(); ctx.moveTo(c.x + Math.cos(a) * S * 0.75, c.y + Math.sin(a) * S * 0.75); ctx.lineTo(c.x + Math.cos(a) * S * 1.15, c.y + Math.sin(a) * S * 1.15); ctx.stroke(); }
+    ctx.restore();
+  }
+
+  function draw() {
+    layout();
+    const rd = reading();
+    const w = canvas.clientWidth, hgt = parseFloat(canvas.style.height);
+    ctx.fillStyle = C.bg; ctx.fillRect(0, 0, w, hgt);
+
+    // the ground: rift band, open ground, crags, the gate and its wall
+    for (let row = 0; row < ROWS; row++) for (let col = 0; col < COLS; col++) {
+      const h = { col, row }, c = centre(h); hexPath(c, 0.96);
+      const gate = isGate(h), wallRow = row >= GATE_ROW && !gate, crag = walls.has(key(h));
+      ctx.fillStyle = row === RIFT_ROW ? '#1a1030' : gate ? '#161b18' : wallRow ? '#121513' : crag ? C.crag : '#0d1310';
+      ctx.fill(); ctx.strokeStyle = row === RIFT_ROW ? C.riftDeep : (gate || wallRow) ? C.gate : crag ? C.gate : C.line; ctx.lineWidth = crag ? 2 : 1; ctx.stroke();
+      if (crag) { ctx.strokeStyle = C.gate; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(c.x - S * 0.4, c.y - S * 0.4); ctx.lineTo(c.x + S * 0.4, c.y + S * 0.4); ctx.moveTo(c.x + S * 0.4, c.y - S * 0.4); ctx.lineTo(c.x - S * 0.4, c.y + S * 0.4); ctx.stroke(); }
+    }
+    ctx.font = font(10); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = C.rift; ctx.fillText('RIFT', centre({ col: 3, row: 0 }).x, centre({ col: 3, row: 0 }).y);
+    ctx.fillStyle = C.gate; ctx.fillText('GATE', centre({ col: 3, row: GATE_ROW }).x, centre({ col: 3, row: GATE_ROW }).y); ctx.fillText('WALL', centre({ col: 3, row: GATE_ROW + 1 }).x, centre({ col: 3, row: GATE_ROW + 1 }).y);
+
+    // zones where each pack will stand: thin dashed where empty, hatched under a heavy shared outline where a fight is
+    const inFight = new Set(rd.fights.flatMap(f => [...f.mechs, ...f.packs].map(u => u.id)));
+    if ($('zones').value === 'all') for (const p of packs()) if (!inFight.has(p.id)) regionOutline(ring(rd.ends.get(p.id), zone(p)), C.warn, 1, [3, 4]);
+    rd.fights.forEach((f, i) => {
+      const region = uniq(f.packs.flatMap(p => ring(rd.ends.get(p.id), zone(p))));
+      f.packs.forEach((p, k) => regionHatch(ring(rd.ends.get(p.id), zone(p)), 'rgba(255,74,61,0.33)', Math.PI / 3 * (k % 3) + Math.PI / 12, 7, 1.5));
+      regionOutline(region, C.warn, 2.5, DASHES[i % DASHES.length]);
+      const top = region.reduce((a, h) => h.row < a.row || (h.row === a.row && h.col < a.col) ? h : a, region[0]);
+      const c = centre(top);
+      ctx.font = font(11); ctx.fillStyle = C.bg; ctx.fillRect(c.x - 26, c.y - S - 14, 52, 14);
+      ctx.fillStyle = C.warnHot; ctx.fillText('FIGHT ' + (i + 1), c.x, c.y - S - 7);
+    });
+
+    // reach rings, by the policy under judgement
+    const policy = $('rings').value;
+    for (const p of packs()) {
+      const wy = rd.why.get(p.id);
+      const provoked = wy.kind === 'provoked';
+      let show = false, heavy = false;
+      if (policy === 'tapped') { if (p.id === inspected) { show = true; heavy = provoked; } }
+      if (policy === 'all') show = true;
+      if (behaviour(p) === 'aggressive' && policy !== 'none') show = true;
+      if (provoked && (policy === 'provoked' || policy === 'drag')) { show = true; heavy = true; }
+      if (policy === 'drag' && dragging && P(dragging).provokes && behaviour(p) === 'push') { show = true; heavy = provoked; }
+      if (!show) continue;
+      const reach = [...reachHexes(p, heldByOthers(p, new Map())).values()];
+      regionOutline(reach, C.warnHot, heavy ? 2.5 : 1.2, heavy ? [7, 4] : [5, 4]);
+    }
+
+    // hunters' locks
+    if ($('locks').checked) for (const p of packs()) { const wy = rd.why.get(p.id); if (wy.kind === 'hunt' && wy.prey) lock(wy.prey); else if (wy.target) lock(wy.target); }
+
+    // routes: the committed one as a ghost when a reaction replaced it, the one it walks on top
+    for (const p of packs()) {
+      const plan = rd.plans.get(p.id), intent = rd.intents.get(p.id), wy = rd.why.get(p.id);
+      const reacted = wy.kind !== 'push' && JSON.stringify(plan) !== JSON.stringify(intent);
+      const rp = $('routes').value;
+      if (rp === 'none') continue;
+      if (rp === 'react' && !reacted) continue;
+      if (reacted && $('ghost').checked) route(p, intent, 1.5, 0.45, [3, 5]);
+      const stop = rd.stops.get(p.id);
+      route(p, plan, reacted ? 4 : 2.5, reacted ? 1 : 0.8, []);
+      // the hex it stops on: a hollow diamond, so the zone has an anchor
+      const e = centre(stop.end);
+      if (!same(stop.end, p)) { ctx.save(); ctx.strokeStyle = C.rift; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(e.x, e.y - S * 0.45); ctx.lineTo(e.x + S * 0.45, e.y); ctx.lineTo(e.x, e.y + S * 0.45); ctx.lineTo(e.x - S * 0.45, e.y); ctx.closePath(); ctx.stroke(); ctx.restore(); }
+      if (!plan.length && behaviour(p) !== 'hunt' && gateDistance(p) > 1) { const c = centre(p); ctx.font = font(9); ctx.fillStyle = C.rift; ctx.fillText('STALLED', c.x, c.y - S * 0.95); }
+    }
+
+    // the units
+    const mechFights = new Map(); rd.fights.forEach((f, i) => f.mechs.forEach(m => mechFights.set(m.id, [...(mechFights.get(m.id) || []), i + 1])));
+    ctx.setLineDash([]);
+    for (const u of units) {
+      const c = centre(u); ctx.lineWidth = 2;
+      if (u.id === inspected) { ctx.save(); ctx.strokeStyle = C.ink; ctx.lineWidth = 2; ctx.setLineDash([2, 3]); hexPath(c, 0.9); ctx.stroke(); ctx.restore(); }
+      if (isPack(u)) {
+        ctx.beginPath(); ctx.moveTo(c.x, c.y - S * 0.62); ctx.lineTo(c.x + S * 0.62, c.y); ctx.lineTo(c.x, c.y + S * 0.62); ctx.lineTo(c.x - S * 0.62, c.y); ctx.closePath();
+        ctx.fillStyle = C.warnFill; ctx.fill(); ctx.strokeStyle = inFight.has(u.id) ? C.warnHot : C.warn; ctx.stroke();
+        ctx.fillStyle = C.ink; ctx.font = font(Math.round(S * 0.42)); ctx.fillText(P(u).label + zone(u), c.x, c.y + 1);
+        const wy = rd.why.get(u.id);
+        if (wy.kind === 'provoked') { // the glyph: provoked, with its cause
+          ctx.fillStyle = C.bg; ctx.beginPath(); ctx.arc(c.x + S * 0.55, c.y - S * 0.55, S * 0.3, 0, Math.PI * 2); ctx.fill();
+          ctx.strokeStyle = C.warnHot; ctx.lineWidth = 1.5; ctx.stroke();
+          ctx.fillStyle = C.warnHot; ctx.font = font(Math.round(S * 0.42)); ctx.fillText('!', c.x + S * 0.55, c.y - S * 0.55 + 1);
+        }
+      } else {
+        hexPath(c, 0.6);
+        ctx.fillStyle = P(u).body && !P(u).stealth ? C.hudFill : C.bg; ctx.fill();
+        ctx.strokeStyle = C.hud;
+        if (u.kind === 'flyer') ctx.setLineDash([3, 2]); else if (u.kind === 'stealth') ctx.setLineDash([1, 3]);
+        ctx.stroke(); ctx.setLineDash([]);
+        if (u.kind === 'car') { hexPath(c, 0.42); ctx.lineWidth = 1.5; ctx.stroke(); ctx.lineWidth = 2; }
+        const fl = mechFights.get(u.id) || [];
+        ctx.fillStyle = C.hud; ctx.font = font(Math.round(S * 0.42));
+        ctx.fillText(P(u).label + (fl.length ? fl.join('·') : ''), c.x, c.y + 1);
+      }
+    }
+    writeReadout(rd);
+  }
+
+  // ---- the readout ----
+  function line(ul, k, text, cls, why) {
+    const li = document.createElement('li'); if (cls) li.className = cls;
+    const ks = document.createElement('span'); ks.className = 'k' + (k.cls ? ' ' + k.cls : ''); ks.textContent = k.text; li.appendChild(ks);
+    const v = document.createElement('span'); v.textContent = text; li.appendChild(v);
+    if (why) { const w = document.createElement('span'); w.className = 'why'; w.textContent = why; li.appendChild(w); }
+    ul.appendChild(li);
+    return li;
+  }
+  function none(ul, text) { const li = document.createElement('li'); li.className = 'none'; li.textContent = text; ul.appendChild(li); }
+  function stopText(s) { return s.strikes ? 'strikes the gate' : s.blocker ? 'stopped by ' + name(s.blocker) : 'walks on'; }
+  function writeReadout(rd) {
+    const pk = $('packs'); pk.textContent = '';
+    if (!packs().length) none(pk, 'No packs. Place one.');
+    for (const p of packs()) {
+      const wy = rd.why.get(p.id), s = rd.stops.get(p.id), plan = rd.plans.get(p.id);
+      let why = '';
+      if (wy.kind === 'push') why = plan.length ? 'pushes for the gate' : 'held off every goal: STALLED';
+      const tie = wy.tied ? ', several hexes tied, the one nearest the gate' : '';
+      if (wy.kind === 'aggressive') why = wy.drawn ? `aggressive, the car in reach: goes for the car at ${hexName(wy.target)}` : wy.target ? `aggressive: goes for the nearest machine in reach, ${name(wy.target)}` : wy.count > 0 ? `aggressive: goes for the biggest catch in reach (${wy.count})${tie}` : 'aggressive, nothing in reach: pushes for the gate';
+      if (wy.kind === 'provoked') why = `provoked by the car at ${hexName(wy.car)}: ` + (wy.target ? (wy.target === wy.car ? 'goes for the car' : `goes for the nearest machine in reach, ${name(wy.target)}`) : `goes for the biggest catch in reach (${wy.count})${tie}`);
+      if (wy.kind === 'hunt') why = wy.prey ? `hunts ${name(wy.prey)}` : 'nothing to hunt: pushes for the gate';
+      line(pk, { text: name(p), cls: 'p' }, `→ ${hexName(s.end)}, ${stopText(s)}`, '', why);
+    }
+    const fu = $('fights'); fu.textContent = '';
+    if (!rd.fights.length) none(fu, 'No contact. Nothing fights this phase.');
+    rd.fights.forEach((f, i) => line(fu, { text: 'FIGHT ' + (i + 1) }, f.mechs.map(name).join(', ') + '  vs  ' + f.packs.map(name).join(', ')));
+    const du = $('diff'); du.textContent = '';
+    if (!cars().length) none(du, 'No Prairie Dog on the field. Place one to compare.');
+    else if (!$('provoke').checked) none(du, 'Provoke is off: the car is a body like any other.');
+    else {
+      const moved = packs().filter(p => !same(rd.ends.get(p.id), rd.without.ends.get(p.id)));
+      const f0 = rd.without.fights.length, f1 = rd.fights.length;
+      if (!moved.length) none(du, 'Nothing: every pack ends where it would without the car. ' + (f1 ? 'The fights are the same.' : 'No fight either way.'));
+      else {
+        line(du, { text: moved.length + ' OF ' + packs().length }, `pack${moved.length > 1 ? 's' : ''} end elsewhere because of the car; fights ${f0} → ${f1}.`, 'diff');
+        for (const p of moved) {
+          const s0 = rd.without.stops.get(p.id), s1 = rd.stops.get(p.id);
+          line(du, { text: name(p), cls: 'p' }, `without: → ${hexName(s0.end)}, ${stopText(s0)}.  with: → ${hexName(s1.end)}, ${stopText(s1)}.`);
+        }
+      }
+    }
+  }
+
+  // ---- resolve: the packs walk, the field is the next phase's start ----
+  function resolve() {
+    const rd = reading();
+    const log = $('log');
+    const li = document.createElement('li');
+    const parts = [];
+    for (const p of packs()) {
+      const s = rd.stops.get(p.id);
+      parts.push(`${name(p)} → ${hexName(s.end)}${s.blocker ? ' (held by ' + name(s.blocker) + ')' : s.strikes ? ' (gate)' : ''}`);
+      if (s.blocker && blocks(s.blocker)) { p.stoppedBy = s.blocker.id; p.stoppedAt = { col: s.blocker.col, row: s.blocker.row }; } else { p.stoppedBy = 0; p.stoppedAt = null; }
+    }
+    for (const p of packs()) { const e = rd.ends.get(p.id); p.col = e.col; p.row = e.row; }
+    li.textContent = `phase ${phase}: ` + (parts.length ? parts.join('; ') : 'no packs') + (rd.fights.length ? `; ${rd.fights.length} fight${rd.fights.length > 1 ? 's' : ''}` : '');
+    log.prepend(li);
+    phase += 1; $('phaseno').textContent = 'PHASE ' + phase;
+    draw();
+  }
+
+  // ---- input: a piece palette; tap places or removes; drag moves ----
+  const ICON = {
+    mech: (k) => `<svg width="18" height="18" viewBox="0 0 22 22"><polygon points="11,2 19,6.5 19,15.5 11,20 3,15.5 3,6.5" fill="${k === 'heavy' || k === 'car' ? '#1a3d26' : 'none'}" stroke="#5fe08a" stroke-width="2" ${k === 'flyer' ? 'stroke-dasharray="3 2"' : k === 'stealth' ? 'stroke-dasharray="1 3"' : ''}/>${k === 'car' ? '<polygon points="11,5 16,8 16,14 11,17 6,14 6,8" fill="none" stroke="#5fe08a" stroke-width="1.5"/>' : ''}</svg>`,
+    pack: () => `<svg width="18" height="18" viewBox="0 0 22 22"><polygon points="11,2 20,11 11,20 2,11" fill="#4a1410" stroke="#ff4a3d" stroke-width="2"/></svg>`,
+    wall: () => `<svg width="18" height="18" viewBox="0 0 22 22"><polygon points="11,2 19,6.5 19,15.5 11,20 3,15.5 3,6.5" fill="#2b2f2a" stroke="#4b5651" stroke-width="2"/><line x1="6" y1="6" x2="16" y2="16" stroke="#4b5651" stroke-width="1.5"/><line x1="16" y1="6" x2="6" y2="16" stroke="#4b5651" stroke-width="1.5"/></svg>`,
+    tool: () => `<svg width="18" height="18" viewBox="0 0 22 22"><line x1="5" y1="5" x2="17" y2="17" stroke="#7f968a" stroke-width="2"/><line x1="17" y1="5" x2="5" y2="17" stroke="#7f968a" stroke-width="2"/></svg>`
+  };
+  const palette = $('pieces');
+  for (const k of ORDER) {
+    const b = document.createElement('button'); b.type = 'button'; b.id = 'piece-' + k;
+    const d = PIECES[k];
+    const detail = d.side === 'pack' ? ` z${d.zone} ${d.behaviour}` : d.side === 'mech' ? (d.body ? '' : ' no body') : '';
+    b.innerHTML = ICON[d.side](k) + `<span>${d.name}${detail}</span>`;
+    b.addEventListener('click', () => { piece = k; palette.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); });
+    if (k === piece) b.classList.add('on');
+    palette.appendChild(b);
+  }
+  let down = null, moved = false;
+  function pt(e) { const r = canvas.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+  canvas.addEventListener('pointerdown', e => {
+    const h = hexAt(pt(e).x, pt(e).y); if (!h) return;
+    down = h; moved = false; dragging = unitAt(h) || null; canvas.setPointerCapture(e.pointerId);
+    if (dragging) draw();
+  });
+  canvas.addEventListener('pointermove', e => {
+    if (!down) return;
+    const h = hexAt(pt(e).x, pt(e).y); if (!h) return;
+    if (dragging) {
+      if (!same(h, dragging)) {
+        moved = true;
+        if (standable(h) && !unitAt(h)) { dragging.col = h.col; dragging.row = h.row; setScenario(''); draw(); }
+      }
+    } else if (piece === 'wall' && !same(h, down)) {   // paint walls by dragging
+      moved = true;
+      if (h.row > RIFT_ROW && h.row < GATE_ROW && !unitAt(h)) { walls.add(key(h)); draw(); }
+    }
+  });
+  canvas.addEventListener('pointerup', () => {
+    if (!down) return;
+    if (!moved) {
+      const h = down, u = unitAt(h);
+      if (u && piece === 'erase') { units = units.filter(x => x !== u); if (inspected === u.id) inspected = 0; }
+      else if (u) inspected = inspected === u.id ? 0 : u.id;
+      else if (piece === 'wall') { if (h.row > RIFT_ROW && h.row < GATE_ROW) { const k = key(h); walls.has(k) ? walls.delete(k) : walls.add(k); } }
+      else if (piece === 'erase') { walls.delete(key(h)); }
+      else if (standable(h)) units.push({ id: nextId++, kind: piece, col: h.col, row: h.row, prey: 0, stoppedBy: 0, stoppedAt: null });
+      setScenario('');
+    }
+    down = null; dragging = null; draw();
+  });
+  canvas.addEventListener('pointercancel', () => { down = null; dragging = null; draw(); });
+
+  // ---- scenarios ----
+  const U = (kind, col, row) => ({ kind, col, row });
+  const WALL = (...hs) => hs.map(([col, row]) => col + ',' + row);
+  const SCENARIOS = [
+    { name: 'Open steppe', note: 'No cover, the squad on the left flank, two front packs coming down the middle and the right. The middle pack would walk past at zone one; the car at 1.7 is inside its reach (move two and zone one), so it steps aside for the biggest catch, the heavy at 1.6 and the car, and fights instead of walking on. The right-hand pack is out of reach and walks on. Note the scale: the diversion is one hex.',
+      units: [U('front', 3, 4), U('front', 6, 4), U('heavy', 0, 6), U('heavy', 1, 6), U('car', 1, 7)] },
+    { name: 'Front and back', note: 'A ghoul front with a necromancer back two hexes behind. The ghouls react on their own. The back pack\u2019s zone of three covers the squad from its own route, so the car changes nothing for it on a field seven wide: read the diff. Provoke only moves a pack whose zone misses you.',
+      units: [U('ghoul', 3, 5), U('back', 3, 3), U('heavy', 3, 8), U('heavy', 2, 8), U('car', 5, 7)] },
+    { name: 'The crossing', note: 'A ridge with a three-wide gap, the horde\u2019s guaranteed crossing. Two heavies stand in two of its hexes. At zone one the third lane is beside a heavy, so the pack walking it fights anyway and stops nowhere. Move a heavy off the gap and the car becomes the thing that holds the lane.',
+      units: [U('front', 1, 4), U('front', 3, 4), U('front', 5, 4), U('heavy', 2, 6), U('heavy', 3, 6), U('car', 3, 8)],
+      walls: WALL([0, 6], [1, 6], [5, 6], [6, 6]) },
+    { name: 'The hunter', note: 'A brute hunting the nearest machine. The car in its reach changes nothing: a hunter keeps its lock. Change what it hunts to the fastest and it hunts the car.',
+      units: [U('brute', 3, 3), U('heavy', 3, 6), U('car', 5, 7)] },
+    { name: 'Kiting', note: 'The car alone before a front pack. Resolve, move the car, resolve again. The pack follows only while the car stays catchable, so every phase of kiting is a phase the car could have been caught in, and the rift ticks. Resolve without moving the car and watch the pack walk round it to the catch hex nearest the gate: a body between only holds where the ground funnels.',
+      units: [U('front', 3, 3), U('car', 3, 6)] },
+    { name: 'Held forever', note: 'One heavy standing in a pack\u2019s lane on open ground. Resolve a few phases: the pack walks into the same body every phase and never routes round it, though the field is open either side. Tick the proposed rule and it goes round on the second stop.',
+      units: [U('front', 3, 3), U('heavy', 4, 5)] },
+    { name: 'Clutter', note: 'Six packs and the whole team, every mark the game draws today. Change the ring and route policies and judge what a thumb can read.',
+      units: [U('ghoul', 0, 2), U('front', 2, 1), U('back', 4, 2), U('front', 6, 3), U('brute', 3, 4), U('back', 1, 5), U('heavy', 2, 8), U('heavy', 3, 8), U('flyer', 4, 6), U('stealth', 5, 8), U('car', 3, 9)],
+      walls: WALL([0, 6], [6, 7]) },
+  ];
+  const presets = $('presets');
+  SCENARIOS.forEach((s, i) => {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = s.name; b.id = 'preset-' + i;
+    b.addEventListener('click', () => load(i));
+    presets.appendChild(b);
+  });
+  function load(i) {
+    const s = SCENARIOS[i]; scenarioIndex = i;
+    units = s.units.map(u => ({ ...u, id: nextId++, prey: 0, stoppedBy: 0, stoppedAt: null }));
+    walls = new Set(s.walls || []);
+    phase = 1; $('phaseno').textContent = 'PHASE 1'; $('log').textContent = '';
+    setScenario(s.note, presets.querySelector('#preset-' + i)); draw();
+  }
+  function setScenario(note, btn) {
+    $('scenario').textContent = note;
+    presets.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === btn));
+  }
+
+  $('resolve').addEventListener('click', resolve);
+  $('reset').addEventListener('click', () => { if (scenarioIndex >= 0) load(scenarioIndex); });
+  $('clear').addEventListener('click', () => { units = []; walls = new Set(); phase = 1; $('phaseno').textContent = 'PHASE 1'; $('log').textContent = ''; setScenario(''); draw(); });
+  ['provoke', 'goes', 'cardraws', 'aggro', 'routeround', 'rings', 'zones', 'routes', 'ghost', 'locks', 'hunts'].forEach(id => $(id).addEventListener('change', draw));
+  $('speed').addEventListener('input', e => { $('speedv').textContent = e.target.value; draw(); });
+  window.addEventListener('resize', draw);
+  load(0);
+})();
+</script>
+
+<script>
+(function () {
+  // The redesigned round (bible v0.83, section 4 the round row, section 5 the fights-by-ring row).
+  // Packs show where they walk; the player fights one fight at a time; a machine that fought is spent;
+  // survivors walk on round the machines, which never stop a pack; packs join a fight by ring.
+  const $ = id => document.getElementById(id);
+  const canvas = $('c2'), ctx = canvas.getContext('2d');
+  const ROWS = 14, RIFT_ROW = 0, GATE_ROW = 12;
+  let COLS = 9;
+  const C = {
+    bg: '#0a0e0b', line: '#1f3326', ink: '#d6e3d9', dim: '#7f968a', hud: '#5fe08a', hudDim: '#2a6b40',
+    hudFill: '#1a3d26', rift: '#a468ff', riftDeep: '#5a1cb8', warn: '#ff4a3d', warnHot: '#ff9a3c',
+    warnFill: '#4a1410', gate: '#4b5651', crag: '#2b2f2a'
+  };
+
+  // ---- the pieces: moves in hexes on open ground; rings and moves are the content's placeholders ----
+  const PIECES = {
+    play:  { side: 'tool', name: 'play' },
+    heavy: { side: 'mech', label: 'M',  name: 'heavy',       move: 3, hp: 180 },
+    car:   { side: 'mech', label: 'PD', name: 'Prairie Dog', move: 5, hp: 100, unhunted: true },
+    dingo: { side: 'mech', label: 'DG', name: 'Dingo',       move: 4, hp: 100, actions: 2 },
+    flyer: { side: 'mech', label: 'F',  name: 'flyer',       move: 5, hp: 120, flies: true },
+    front: { side: 'pack', label: 'P',  name: 'front pack',  ring: 1, behaviour: 'push' },
+    back:  { side: 'pack', label: 'B',  name: 'back pack',   ring: 'back', behaviour: 'push' },
+    ghoul: { side: 'pack', label: 'G',  name: 'ghoul',       ring: 1, behaviour: 'hunt', hunts: 'nearest' },
+    brute: { side: 'pack', label: 'H',  name: 'brute',       ring: 1, behaviour: 'hunt', hunts: 'strongest', moveBonus: 1 },
+    boss:  { side: 'pack', label: 'X',  name: 'boss',        ring: 2, behaviour: 'hold' },
+    wall:  { side: 'wall', name: 'crag / water' },
+    erase: { side: 'tool', name: 'erase' }
+  };
+  const ORDER = ['play', 'heavy', 'car', 'dingo', 'flyer', 'front', 'back', 'ghoul', 'brute', 'boss', 'wall', 'erase'];
+  const DETAIL = {
+    play: 'move, attack', heavy: 'move 3', car: 'move 5, never hunted', dingo: 'move 4, acts twice', flyer: 'move 5, over walls',
+    front: 'ring 1, push', back: 'ring 3, push', ghoul: 'ring 1, hunts nearest', brute: 'ring 1, hunts strongest', boss: 'ring 2, holds',
+    wall: 'paint by dragging', erase: 'remove'
+  };
+
+  let units = [], walls = new Set(), nextId = 1;
+  let turn = 1, gate = 10, tool = 'play', scenarioIndex = -1;
+  let selected = 0, target = [], committed = new Set(), forced = [], resolvedPrey = new Set();
+
+  // ---- hex maths: pointy-top, odd rows shifted right (the game's offset grid) ----
+  const mod2 = r => ((r % 2) + 2) % 2;
+  const toCube = (col, row) => { const x = col - (row - mod2(row)) / 2; return [x, -x - row, row]; };
+  const toOffset = (x, z) => [x + (z - mod2(z)) / 2, z];
+  const dist = (a, b) => { const p = toCube(a.col, a.row), q = toCube(b.col, b.row); return Math.max(Math.abs(p[0] - q[0]), Math.abs(p[1] - q[1]), Math.abs(p[2] - q[2])); };
+  const DIRS = [[1, -1, 0], [0, -1, 1], [-1, 0, 1], [-1, 1, 0], [0, 1, -1], [1, 0, -1]];
+  const key = h => h.col + ',' + h.row;
+  const unkey = k => { const [col, row] = k.split(',').map(Number); return { col, row }; };
+  const same = (a, b) => a.col === b.col && a.row === b.row;
+  const inField = (col, row) => col >= 0 && col < COLS && row >= 0 && row < ROWS;
+  const gateCols = () => { const m = (COLS - 1) / 2; return [m - 1, m, m + 1]; };
+  const isGate = h => h.row === GATE_ROW && gateCols().includes(h.col);
+  const gateHexes = () => gateCols().map(col => ({ col, row: GATE_ROW }));
+  const onField = h => inField(h.col, h.row) && h.row > RIFT_ROW && h.row < GATE_ROW;
+  const ground = h => onField(h) && !walls.has(key(h));
+  function neighbours(h) {
+    const c = toCube(h.col, h.row); const out = [];
+    for (const d of DIRS) { const o = toOffset(c[0] + d[0], c[2] + d[2]); if (inField(o[0], o[1])) out.push({ col: o[0], row: o[1] }); }
+    return out;
+  }
+  function ring(h, r) {
+    const out = [];
+    for (let row = RIFT_ROW + 1; row < GATE_ROW; row++) for (let col = 0; col < COLS; col++) { const q = { col, row }; if (dist(h, q) <= r) out.push(q); }
+    return out;
+  }
+  const uniq = hexes => { const m = new Map(); hexes.forEach(h => m.set(key(h), h)); return [...m.values()]; };
+
+  // ---- the units ----
+  const P = u => PIECES[u.kind];
+  const isPack = u => P(u).side === 'pack';
+  const isMech = u => P(u).side === 'mech';
+  const packs = () => units.filter(isPack);
+  const mechs = () => units.filter(isMech);
+  const unitAt = h => units.find(u => same(u, h));
+  const byId = id => units.find(u => u.id === id);
+  const ringOf = u => P(u).ring === 'back' ? Number($('backring2').value) : P(u).ring;
+  const packMove = u => P(u).behaviour === 'hold' ? 0 : Number($('packmove2').value) + (P(u).moveBonus || 0);
+  const atkRange = () => Number($('range2').value);
+  const maxActions = u => P(u).actions || 1;
+  const name = u => (isPack(u) ? P(u).name.toUpperCase() : P(u).label) + ' ' + u.col + '.' + u.row;
+  const hexName = h => h.col + '.' + h.row;
+  function make(kind, col, row) {
+    const u = { id: nextId++, kind, col, row, prey: 0, left: 0, sc: col, sr: row };
+    if (isMech(u)) u.left = maxActions(u);
+    return u;
+  }
+
+  // ---- the horde's walk: binary ground, round grounded machines and other packs; under a flyer, never onto it ----
+  function packSearch(from, blocked) {
+    const d = new Map([[key(from), 0]]), prev = new Map(), q = [from];
+    while (q.length) {
+      const cur = q.shift(), cd = d.get(key(cur));
+      if (isGate(cur)) continue;
+      for (const n of neighbours(cur)) {
+        const k = key(n);
+        if (d.has(k)) continue;
+        if (isGate(n)) { d.set(k, cd + 1); prev.set(k, cur); continue; }
+        if (!ground(n) || blocked.has(k)) continue;
+        const m = mechs().find(x => same(x, n));
+        if (m && !P(m).flies) continue;
+        d.set(k, cd + 1); prev.set(k, cur); q.push(n);
+      }
+    }
+    return { d, prev };
+  }
+  function trace(prev, from, to) { const out = []; let cur = to; while (!same(cur, from)) { out.unshift(cur); cur = prev.get(key(cur)); } return out; }
+  const endable = h => !mechs().some(m => same(m, h));
+
+  // A hunter's prey: picked by its caveat the first time it needs one and kept until the machine is gone.
+  // The Prairie Dog is never picked.
+  function pickPrey(u) {
+    const cur = byId(u.prey);
+    if (cur && isMech(cur) && !P(cur).unhunted) return cur;
+    let best = null, bk = null;
+    for (const m of mechs()) {
+      if (P(m).unhunted) continue;
+      const k = P(u).hunts === 'strongest' ? [-P(m).hp, dist(u, m)] : [dist(u, m), -P(m).hp];
+      if (!best || k[0] < bk[0] || (k[0] === bk[0] && k[1] < bk[1])) { best = m; bk = k; }
+    }
+    u.prey = best ? best.id : 0;
+    return best;
+  }
+
+  function planPack(u, blocked) {
+    const mv = packMove(u), beh = P(u).behaviour;
+    const { d, prev } = packSearch(u, blocked);
+    let path = [], waits = false, prey = null;
+    if (beh === 'hunt') prey = pickPrey(u);
+    if (prey) {
+      // the nearest hex it can reach that puts its prey inside its ring; failing that, as near as it gets
+      const r = ringOf(u);
+      let best = { col: u.col, row: u.row }, bk = [Math.max(dist(u, prey) - r, 0), 0];
+      for (const [k, v] of d) {
+        const h = unkey(k);
+        if (isGate(h) || !endable(h)) continue;
+        const kk = [Math.max(dist(h, prey) - r, 0), v];
+        if (kk[0] < bk[0] || (kk[0] === bk[0] && kk[1] < bk[1])) { best = h; bk = kk; }
+      }
+      path = trace(prev, u, best);
+    } else if (beh !== 'hold') {
+      let best = null, bd = Infinity;
+      for (const g of gateHexes()) { const k = key(g); if (d.has(k) && d.get(k) < bd) { bd = d.get(k); best = g; } }
+      if (best) path = trace(prev, u, best); else waits = true;
+    }
+    let walked = [], strikes = false;
+    for (const s of path.slice(0, mv)) { if (isGate(s)) { strikes = true; break; } walked.push(s); }
+    while (walked.length && !endable(walked[walked.length - 1])) walked.pop();
+    const end = walked.length ? walked[walked.length - 1] : { col: u.col, row: u.row };
+    const catches = prey && dist(end, prey) <= ringOf(u) ? prey.id : 0;
+    return { path: walked, end, strikes, waits, catches, prey: prey ? prey.id : 0 };
+  }
+  // Every pack's walk for their turn, in field order, each around where the packs before it will end.
+  function plans() {
+    const out = new Map(), ends = new Map();
+    for (const u of packs()) {
+      const blocked = new Set();
+      for (const o of packs()) if (o !== u) blocked.add(key(ends.has(o.id) ? ends.get(o.id) : o));
+      const p = planPack(u, blocked);
+      out.set(u.id, p); ends.set(u.id, p.end);
+    }
+    return out;
+  }
+
+  // ---- the player's turn ----
+  // A hunter within its ring of its prey has caught it: that fight comes first, one fight per caught machine.
+  function computeForced() {
+    const groups = new Map();
+    for (const h of packs()) {
+      if (P(h).behaviour !== 'hunt') continue;
+      const prey = pickPrey(h);
+      if (!prey || resolvedPrey.has(prey.id)) continue;
+      if (dist(h, prey) <= ringOf(h)) { if (!groups.has(prey.id)) groups.set(prey.id, []); groups.get(prey.id).push(h.id); }
+    }
+    forced = [...groups].map(([prey, hunters]) => ({ prey, hunters }));
+    if (forced.length) openForced();
+  }
+  function openForced() { const f = forced[0]; target = f.hunters.slice(); committed = new Set([f.prey]); }
+  const pinnedIds = () => new Set(forced.map(f => f.prey));
+  const canMove = m => m.left > 0 && !pinnedIds().has(m.id);
+
+  // The fight as it stands: the target, the packs whose ring covers it, the machines that may join it.
+  function roster() {
+    if (!target.length) return null;
+    const tg = target.map(byId).filter(Boolean);
+    if (!tg.length) { target = []; return null; }
+    const joins = packs().filter(p => !target.includes(p.id) && tg.some(t => dist(p, t) <= ringOf(p)));
+    const isForced = forced.length > 0 && forced[0].hunters.length === target.length && forced[0].hunters.every(id => target.includes(id));
+    const pinned = isForced ? forced[0].prey : 0;
+    const inRange = m => tg.some(t => dist(m, t) <= atkRange());
+    for (const id of [...committed]) {
+      const m = byId(id);
+      if (!m || (id !== pinned && (!inRange(m) || m.left <= 0))) committed.delete(id);
+    }
+    if (pinned) committed.add(pinned);
+    const live = mechs().filter(m => m.left > 0 || m.id === pinned);
+    const eligible = live.filter(m => inRange(m) || m.id === pinned);
+    const outOfRange = live.filter(m => !eligible.includes(m));
+    const spent = mechs().filter(m => m.left <= 0 && m.id !== pinned);
+    return { tg, joins, eligible, outOfRange, spent, pinned, isForced };
+  }
+
+  function fight(won) {
+    const r = roster();
+    if (!r || !committed.size) return;
+    const ms = [...committed].map(byId);
+    const foes = [...r.tg, ...r.joins];
+    addLog(`turn ${turn}: ${ms.map(name).join(', ')} vs ${foes.map(name).join(' + ')}: ${won ? 'won' : 'withdrew'}`);
+    for (const m of ms) { m.left = Math.max(0, m.left - 1); m.sc = m.col; m.sr = m.row; }
+    if (r.isForced) { resolvedPrey.add(r.pinned); forced.shift(); }
+    if (won) {
+      const dead = new Set(foes.map(u => u.id));
+      units = units.filter(u => !dead.has(u.id));
+      forced = forced.map(f => ({ prey: f.prey, hunters: f.hunters.filter(id => !dead.has(id)) })).filter(f => f.hunters.length);
+    }
+    target = []; committed = new Set(); selected = 0;
+    if (forced.length) openForced();
+    flash('');
+    draw();
+  }
+
+  function endTurn() {
+    if (forced.length) { flash('A hunter has caught a machine: fight it before the turn ends.'); draw(); return; }
+    const pl = plans(), parts = [];
+    let strikes = 0;
+    for (const u of packs()) {
+      const p = pl.get(u.id);
+      if (p.strikes) strikes++;
+      parts.push(`${name(u)} → ${hexName(p.end)}${p.strikes ? ' (strikes the gate)' : ''}${p.waits ? ' (waits)' : ''}${p.catches ? ' (catches ' + name(byId(p.catches)) + ')' : ''}`);
+    }
+    for (const u of packs()) { const p = pl.get(u.id); u.col = p.end.col; u.row = p.end.row; }
+    gate -= strikes;
+    for (const m of mechs()) { m.left = maxActions(m); m.sc = m.col; m.sr = m.row; }
+    addLog(`turn ${turn} ends: ` + (parts.join('; ') || 'no packs') + (strikes ? `; the gate takes ${strikes}` : ''));
+    turn++; resolvedPrey = new Set(); target = []; committed = new Set(); selected = 0;
+    computeForced(); flash(''); draw();
+  }
+
+  // The hexes a machine may end on this action: within its move of where the action began, round packs
+  // (a flyer goes over anything), never onto a unit or a wall.
+  function moveRange(m) {
+    const from = { col: m.sc, row: m.sr }, mv = P(m).move, flies = !!P(m).flies;
+    const d = new Map([[key(from), 0]]), q = [from];
+    while (q.length) {
+      const cur = q.shift(), cd = d.get(key(cur));
+      if (cd >= mv) continue;
+      for (const n of neighbours(cur)) {
+        const k = key(n);
+        if (d.has(k) || !onField(n)) continue;
+        if (!flies && walls.has(k)) continue;
+        const o = unitAt(n);
+        if (o && isPack(o) && !flies) continue;
+        d.set(k, cd + 1); q.push(n);
+      }
+    }
+    const out = [];
+    for (const k of d.keys()) { const h = unkey(k); const o = unitAt(h); if ((!o || o === m) && !walls.has(k)) out.push(h); }
+    return out;
+  }
+
+  // ---- canvas geometry ----
+  let S = 28, W, PADX = 6, PADY = 6;
+  function layout() {
+    const cssW = canvas.clientWidth || 420;
+    W = (cssW - 2 * PADX) / (COLS + 0.5);
+    S = W / Math.sqrt(3);
+    const cssH = PADY * 2 + S * (1.5 * (ROWS - 1) + 2);
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.round(cssW * dpr); canvas.height = Math.round(cssH * dpr);
+    canvas.style.height = cssH + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  const centre = h => ({ x: PADX + W * (h.col + 0.5 * mod2(h.row)) + W / 2, y: PADY + S + 1.5 * S * h.row });
+  function corner(c, i) { const a = Math.PI / 180 * (60 * i - 30); return { x: c.x + S * Math.cos(a), y: c.y + S * Math.sin(a) }; }
+  function hexPath(c, scale) {
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) { const a = Math.PI / 180 * (60 * i - 30); const x = c.x + S * scale * Math.cos(a), y = c.y + S * scale * Math.sin(a); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+    ctx.closePath();
+  }
+  function hexAt(px, py) {
+    let best = null, bd = Infinity;
+    for (let row = 0; row < ROWS; row++) for (let col = 0; col < COLS; col++) { const c = centre({ col, row }); const d = (c.x - px) ** 2 + (c.y - py) ** 2; if (d < bd) { bd = d; best = { col, row }; } }
+    return bd <= (S * S) ? best : null;
+  }
+  const font = px => `600 ${px}px ${getComputedStyle(document.body).getPropertyValue('--mono')}`;
+  function regionOutline(hexes, stroke, width, dash) {
+    const set = new Set(hexes.map(key));
+    ctx.save(); ctx.strokeStyle = stroke; ctx.lineWidth = width; ctx.setLineDash(dash); ctx.lineCap = 'round';
+    ctx.beginPath();
+    for (const h of hexes) {
+      const c = toCube(h.col, h.row), ctr = centre(h);
+      DIRS.forEach((d, i) => {
+        const o = toOffset(c[0] + d[0], c[2] + d[2]);
+        if (set.has(o[0] + ',' + o[1])) return;
+        const a = corner(ctr, i), b = corner(ctr, (i + 1) % 6);
+        ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+      });
+    }
+    ctx.stroke(); ctx.restore();
+  }
+  function hatch(hexes, colour) {
+    ctx.save(); ctx.beginPath();
+    for (const h of hexes) { const ctr = centre(h); for (let i = 0; i < 6; i++) { const p = corner(ctr, i); i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y); } ctx.closePath(); }
+    ctx.clip(); ctx.strokeStyle = colour; ctx.lineWidth = 1.5;
+    const w = canvas.clientWidth, hgt = parseFloat(canvas.style.height) || canvas.clientHeight, L = Math.hypot(w, hgt);
+    ctx.translate(w / 2, hgt / 2); ctx.rotate(Math.PI / 4); ctx.beginPath();
+    for (let x = -L; x <= L; x += 6) { ctx.moveTo(x, -L); ctx.lineTo(x, L); }
+    ctx.stroke(); ctx.restore();
+  }
+  function route(from, path) {
+    if (!path.length) return;
+    ctx.save(); ctx.strokeStyle = C.rift; ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.beginPath(); let c = centre(from); ctx.moveTo(c.x, c.y);
+    for (const h of path) { c = centre(h); ctx.lineTo(c.x, c.y); }
+    ctx.stroke();
+    const e = centre(path[path.length - 1]);
+    ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(e.x, e.y - S * 0.42); ctx.lineTo(e.x + S * 0.42, e.y); ctx.lineTo(e.x, e.y + S * 0.42); ctx.lineTo(e.x - S * 0.42, e.y); ctx.closePath(); ctx.stroke();
+    ctx.restore();
+  }
+  function lock(h) {
+    const c = centre(h);
+    ctx.save(); ctx.strokeStyle = C.warnHot; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(c.x, c.y, S * 0.95, 0, Math.PI * 2); ctx.stroke();
+    for (let i = 0; i < 4; i++) { const a = Math.PI / 2 * i + Math.PI / 4; ctx.beginPath(); ctx.moveTo(c.x + Math.cos(a) * S * 0.78, c.y + Math.sin(a) * S * 0.78); ctx.lineTo(c.x + Math.cos(a) * S * 1.12, c.y + Math.sin(a) * S * 1.12); ctx.stroke(); }
+    ctx.restore();
+  }
+  function plaque(c, text, colour) {
+    ctx.font = font(10); const w = ctx.measureText(text).width + 8;
+    ctx.fillStyle = C.bg; ctx.fillRect(c.x - w / 2, c.y - 7, w, 14);
+    ctx.strokeStyle = colour; ctx.lineWidth = 1; ctx.strokeRect(c.x - w / 2, c.y - 7, w, 14);
+    ctx.fillStyle = colour; ctx.fillText(text, c.x, c.y + 1);
+  }
+
+  function draw() {
+    layout();
+    const r = roster();
+    const pl = plans();
+    const w = canvas.clientWidth, hgt = parseFloat(canvas.style.height);
+    ctx.fillStyle = C.bg; ctx.fillRect(0, 0, w, hgt);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+
+    // the ground: the rift, the field, crags, the gate and its wall
+    for (let row = 0; row < ROWS; row++) for (let col = 0; col < COLS; col++) {
+      const h = { col, row }, c = centre(h);
+      const gateHex = isGate(h), wallRow = row >= GATE_ROW && !gateHex, crag = walls.has(key(h));
+      hexPath(c, 0.96);
+      ctx.fillStyle = row === RIFT_ROW ? '#1a1030' : gateHex ? '#161b18' : wallRow ? '#121513' : crag ? C.crag : '#0d1310';
+      ctx.fill(); ctx.strokeStyle = row === RIFT_ROW ? C.riftDeep : (gateHex || wallRow || crag) ? C.gate : C.line; ctx.lineWidth = crag ? 2 : 1; ctx.stroke();
+      if (crag) { ctx.strokeStyle = C.gate; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(c.x - S * 0.4, c.y - S * 0.4); ctx.lineTo(c.x + S * 0.4, c.y + S * 0.4); ctx.moveTo(c.x + S * 0.4, c.y - S * 0.4); ctx.lineTo(c.x - S * 0.4, c.y + S * 0.4); ctx.stroke(); }
+    }
+    const mid = (COLS - 1) / 2;
+    ctx.font = font(10);
+    ctx.fillStyle = C.rift; ctx.fillText('RIFT', centre({ col: mid, row: 0 }).x, centre({ col: mid, row: 0 }).y);
+    ctx.fillStyle = C.gate; ctx.fillText('GATE ' + gate, centre({ col: mid, row: GATE_ROW }).x, centre({ col: mid, row: GATE_ROW }).y);
+    ctx.fillText('WALL', centre({ col: mid, row: GATE_ROW + 1 }).x, centre({ col: mid, row: GATE_ROW + 1 }).y);
+
+    // the selected machine's move
+    const sel = byId(selected);
+    if (sel && isMech(sel) && tool === 'play' && canMove(sel)) {
+      regionOutline(moveRange(sel), C.hud, 1.5, [2, 3]);
+      if (sel.sc !== sel.col || sel.sr !== sel.row) { const a = centre({ col: sel.sc, row: sel.sr }); ctx.save(); ctx.strokeStyle = C.hudDim; ctx.lineWidth = 1.5; hexPath(a, 0.45); ctx.stroke(); ctx.restore(); }
+    }
+    // the fight: the target hatched, the attack range round it, every joining pack's ring
+    if (r) {
+      hatch(r.tg, 'rgba(255,74,61,0.5)');
+      regionOutline(uniq(r.tg.flatMap(t => ring(t, atkRange()))), C.hud, 2, [6, 4]);
+      for (const j of r.joins) regionOutline(ring(j, ringOf(j)), C.warnHot, 2, [3, 4]);
+    }
+    // a tapped pack outside the fight: its ring, thin
+    if (sel && isPack(sel) && !(r && [...r.tg, ...r.joins].includes(sel))) regionOutline(ring(sel, ringOf(sel)), C.warnHot, 1.2, [5, 4]);
+
+    // where every pack walks on their turn
+    for (const u of packs()) {
+      const p = pl.get(u.id);
+      route(u, p.path);
+      const at = centre(p.path.length ? p.path[p.path.length - 1] : u);
+      if (p.strikes) plaque({ x: at.x, y: at.y + S * 0.95 }, 'STRIKES', C.rift);
+      if (p.waits) plaque({ x: at.x, y: at.y - S * 0.95 }, 'WAITS', C.rift);
+    }
+    // hunters' locks, and the machines they have caught
+    for (const u of packs()) { const prey = byId(u.prey); if (P(u).behaviour === 'hunt' && prey) lock(prey); }
+    for (const f of forced) {
+      const prey = byId(f.prey);
+      for (const id of f.hunters) {
+        const h = byId(id), a = centre(h), b = centre(prey);
+        ctx.save(); ctx.strokeStyle = C.warn; ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); ctx.restore();
+      }
+      const b = centre(prey); plaque({ x: b.x, y: b.y + S * 0.95 }, 'CAUGHT', C.warn);
+    }
+
+    // the units
+    const tgIds = new Set(r ? r.tg.map(u => u.id) : []), joinIds = new Set(r ? r.joins.map(u => u.id) : []);
+    const eligible = new Set(r ? r.eligible.map(u => u.id) : []);
+    for (const u of units) {
+      const c = centre(u); ctx.setLineDash([]);
+      if (isPack(u)) {
+        ctx.beginPath(); ctx.moveTo(c.x, c.y - S * 0.62); ctx.lineTo(c.x + S * 0.62, c.y); ctx.lineTo(c.x, c.y + S * 0.62); ctx.lineTo(c.x - S * 0.62, c.y); ctx.closePath();
+        ctx.fillStyle = C.warnFill; ctx.fill();
+        ctx.lineWidth = tgIds.has(u.id) ? 3.5 : joinIds.has(u.id) ? 3 : 2;
+        ctx.strokeStyle = tgIds.has(u.id) ? C.ink : joinIds.has(u.id) ? C.warnHot : C.warn; ctx.stroke();
+        ctx.fillStyle = C.ink; ctx.font = font(Math.round(S * 0.42)); ctx.fillText(P(u).label + ringOf(u), c.x, c.y + 1);
+        if (joinIds.has(u.id)) { ctx.fillStyle = C.bg; ctx.beginPath(); ctx.arc(c.x + S * 0.55, c.y - S * 0.55, S * 0.3, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = C.warnHot; ctx.lineWidth = 1.5; ctx.stroke(); ctx.fillStyle = C.warnHot; ctx.fillText('+', c.x + S * 0.55, c.y - S * 0.55 + 1); }
+      } else {
+        const ready = u.left > 0;
+        if (committed.has(u.id)) { ctx.save(); ctx.strokeStyle = C.warnHot; ctx.lineWidth = 3.5; hexPath(c, 0.82); ctx.stroke(); ctx.restore(); }
+        else if (r && eligible.has(u.id)) { ctx.save(); ctx.strokeStyle = C.hud; ctx.lineWidth = 1.5; ctx.setLineDash([3, 3]); hexPath(c, 0.82); ctx.stroke(); ctx.restore(); }
+        if (u.id === selected) { ctx.save(); ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5; ctx.setLineDash([2, 3]); hexPath(c, 0.95); ctx.stroke(); ctx.restore(); }
+        hexPath(c, 0.6);
+        ctx.fillStyle = ready ? C.hudFill : C.bg; ctx.fill();
+        ctx.strokeStyle = ready ? C.hud : C.hudDim; ctx.lineWidth = 2;
+        if (P(u).flies) ctx.setLineDash([3, 2]);
+        ctx.stroke(); ctx.setLineDash([]);
+        if (u.kind === 'car') { hexPath(c, 0.42); ctx.lineWidth = 1.5; ctx.stroke(); }
+        if (!ready) { ctx.beginPath(); ctx.moveTo(c.x - S * 0.42, c.y + S * 0.42); ctx.lineTo(c.x + S * 0.42, c.y - S * 0.42); ctx.stroke(); }
+        ctx.fillStyle = ready ? C.hud : C.hudDim; ctx.font = font(Math.round(S * (P(u).label.length > 1 ? 0.36 : 0.42)));
+        ctx.fillText(P(u).label, c.x, c.y + 1);
+        if (maxActions(u) > 1) for (let i = 0; i < maxActions(u); i++) {
+          const x = c.x + (i - (maxActions(u) - 1) / 2) * S * 0.32, y = c.y + S * 0.78;
+          ctx.beginPath(); ctx.arc(x, y, S * 0.1, 0, Math.PI * 2);
+          ctx.fillStyle = i < u.left ? C.hud : C.bg; ctx.fill(); ctx.strokeStyle = C.hud; ctx.lineWidth = 1; ctx.stroke();
+        }
+      }
+    }
+    writeReadout(r, pl);
+  }
+
+  // ---- the readout ----
+  function line(ul, k, text, kcls, why) {
+    const li = document.createElement('li');
+    const ks = document.createElement('span'); ks.className = 'k' + (kcls ? ' ' + kcls : ''); ks.textContent = k; li.appendChild(ks);
+    const v = document.createElement('span'); v.textContent = text; li.appendChild(v);
+    if (why) { const w = document.createElement('span'); w.className = 'why'; w.textContent = why; li.appendChild(w); }
+    ul.appendChild(li);
+  }
+  function none(ul, text) { const li = document.createElement('li'); li.className = 'none'; li.textContent = text; ul.appendChild(li); }
+  const names = list => list.length ? list.map(name).join(', ') : 'nobody';
+  function writeReadout(r, pl) {
+    $('turn2').textContent = 'TURN ' + turn;
+    $('gate2').textContent = 'GATE ' + gate;
+    const fu = $('fight2'); fu.textContent = '';
+    if (forced.length > 1) line(fu, 'CAUGHT', forced.map(f => name(byId(f.prey))).join(', '), 'c', 'Each caught machine fights its hunters before anything else, one fight each, in this order.');
+    if (r) {
+      line(fu, r.isForced ? 'CAUGHT' : 'TARGET', names(r.tg), r.isForced ? 'c' : '', r.isForced ? `${name(byId(r.pinned))} was caught: it fights first and cannot move. Add machines in range to help.` : 'The fight is at this hex.');
+      line(fu, 'JOINS', names(r.joins), '', r.joins.length ? 'Their rings cover the target.' : 'No other pack’s ring covers the target.');
+      line(fu, 'COMMITTED', names([...committed].map(byId)), 'm', committed.size ? '' : 'Tap a machine in range to commit it.');
+      const free = r.eligible.filter(m => !committed.has(m.id));
+      if (free.length) line(fu, 'IN RANGE', names(free), 'm', 'Tap to commit.');
+      if (r.outOfRange.length) line(fu, 'OUT OF RANGE', names(r.outOfRange), '', `Move within ${atkRange()} of the target to join.`);
+      if (r.spent.length) line(fu, 'SPENT', names(r.spent), '', 'Fought this turn.');
+    } else none(fu, mechs().some(m => m.left > 0) ? 'No fight chosen. Tap a pack to attack it.' : 'Every machine is spent. End the turn.');
+    $('win2').disabled = !(r && committed.size);
+    $('withdraw2').disabled = !(r && committed.size);
+    $('cancel2').disabled = !(r && !r.isForced);
+    $('endturn2').disabled = forced.length > 0;
+
+    const mu = $('mechs2'); mu.textContent = '';
+    if (!mechs().length) none(mu, 'No machines. Pick one from the pieces and tap the field.');
+    for (const m of mechs()) {
+      const hunters = packs().filter(p => P(p).behaviour === 'hunt' && p.prey === m.id);
+      const bits = [`${m.left} of ${maxActions(m)} action${maxActions(m) > 1 ? 's' : ''} left`];
+      if (pinnedIds().has(m.id)) bits.push('caught, cannot move');
+      if (P(m).unhunted) bits.push('never hunted');
+      line(mu, name(m), bits.join('; '), 'm', hunters.length ? 'hunted by ' + names(hunters) : '');
+    }
+    const pu = $('packs2'); pu.textContent = '';
+    if (!packs().length) none(pu, 'No packs. Every one is dead, or place one.');
+    for (const u of packs()) {
+      const p = pl.get(u.id), beh = P(u).behaviour;
+      const what = beh === 'hunt' ? `hunts the ${P(u).hunts}` + (p.prey ? `, ${name(byId(p.prey))}` : ', nothing to hunt') : beh === 'hold' ? 'holds' : 'pushes for the gate';
+      const next = p.strikes ? 'strikes the gate' : p.waits ? 'no way through: waits' : p.catches ? `→ ${hexName(p.end)}, catches ${name(byId(p.catches))}` : p.path.length ? `→ ${hexName(p.end)}` : 'stays';
+      line(pu, name(u), `${what}; ring ${ringOf(u)}, move ${packMove(u)}`, 'p', 'their turn: ' + next);
+    }
+  }
+  function addLog(text) { const li = document.createElement('li'); li.textContent = text; $('log2').prepend(li); }
+  function flash(text) { $('msg2').textContent = text; }
+
+  // ---- input ----
+  function setupChanged() {
+    for (const u of packs()) u.prey = 0;
+    for (const m of mechs()) { m.sc = m.col; m.sr = m.row; }
+    target = []; committed = new Set();
+    computeForced(); setScenario(''); draw();
+  }
+  function tap(h) {
+    const u = unitAt(h);
+    if (tool === 'erase') { if (u) units = units.filter(x => x !== u); else walls.delete(key(h)); setupChanged(); return; }
+    if (tool === 'wall') { if (!u && onField(h)) { const k = key(h); walls.has(k) ? walls.delete(k) : walls.add(k); setupChanged(); } return; }
+    if (tool !== 'play') { if (!u && ground(h)) { units.push(make(tool, h.col, h.row)); setupChanged(); } else if (u) selected = u.id; return; }
+    if (!u) { if (!forced.length) { target = []; committed = new Set(); } selected = 0; flash(''); return; }
+    if (isPack(u)) {
+      selected = u.id;
+      if (forced.length) { flash('A hunter has caught a machine: that fight comes first.'); return; }
+      if (target.length === 1 && target[0] === u.id) { target = []; committed = new Set(); } else target = [u.id];
+      flash(''); return;
+    }
+    const r = roster();
+    if (r && r.eligible.includes(u) && u.id !== r.pinned) { committed.has(u.id) ? committed.delete(u.id) : committed.add(u.id); selected = u.id; flash(''); return; }
+    if (r && u.left <= 0) flash(`${name(u)} is spent this turn.`);
+    else if (r && u.id !== r.pinned) flash(`${name(u)} is out of range: drag it within ${atkRange()} of the target first.`);
+    selected = selected === u.id ? 0 : u.id;
+  }
+  let down = null, drag = null, moved = false;
+  function pt(e) { const b = canvas.getBoundingClientRect(); return { x: e.clientX - b.left, y: e.clientY - b.top }; }
+  canvas.addEventListener('pointerdown', e => {
+    const h = hexAt(pt(e).x, pt(e).y); if (!h) return;
+    down = h; moved = false; drag = unitAt(h) || null; canvas.setPointerCapture(e.pointerId);
+    if (drag && isMech(drag) && tool === 'play') { selected = drag.id; draw(); }
+  });
+  canvas.addEventListener('pointermove', e => {
+    if (!down) return;
+    const h = hexAt(pt(e).x, pt(e).y); if (!h || same(h, down)) return;
+    if (drag) {
+      if (same(h, drag)) return;
+      moved = true;
+      if (tool === 'play') {
+        if (isMech(drag) && canMove(drag) && moveRange(drag).some(x => same(x, h))) { drag.col = h.col; drag.row = h.row; draw(); }
+      } else if (ground(h) && !unitAt(h)) { drag.col = h.col; drag.row = h.row; setupChanged(); }
+    } else if (tool === 'wall') { moved = true; if (onField(h) && !unitAt(h)) { walls.add(key(h)); setupChanged(); } }
+  });
+  canvas.addEventListener('pointerup', () => { if (!down) return; if (!moved) tap(down); down = null; drag = null; draw(); });
+  canvas.addEventListener('pointercancel', () => { down = null; drag = null; draw(); });
+
+  const ICON = {
+    mech: k => `<svg width="18" height="18" viewBox="0 0 22 22"><polygon points="11,2 19,6.5 19,15.5 11,20 3,15.5 3,6.5" fill="#1a3d26" stroke="#5fe08a" stroke-width="2" ${k === 'flyer' ? 'stroke-dasharray="3 2"' : ''}/>${k === 'car' ? '<polygon points="11,5 16,8 16,14 11,17 6,14 6,8" fill="none" stroke="#5fe08a" stroke-width="1.5"/>' : ''}</svg>`,
+    pack: () => `<svg width="18" height="18" viewBox="0 0 22 22"><polygon points="11,2 20,11 11,20 2,11" fill="#4a1410" stroke="#ff4a3d" stroke-width="2"/></svg>`,
+    wall: () => `<svg width="18" height="18" viewBox="0 0 22 22"><polygon points="11,2 19,6.5 19,15.5 11,20 3,15.5 3,6.5" fill="#2b2f2a" stroke="#4b5651" stroke-width="2"/></svg>`,
+    tool: k => k === 'play' ? `<svg width="18" height="18" viewBox="0 0 22 22"><polygon points="6,4 18,11 6,18" fill="none" stroke="#5fe08a" stroke-width="2"/></svg>` : `<svg width="18" height="18" viewBox="0 0 22 22"><line x1="5" y1="5" x2="17" y2="17" stroke="#7f968a" stroke-width="2"/><line x1="17" y1="5" x2="5" y2="17" stroke="#7f968a" stroke-width="2"/></svg>`
+  };
+  const palette = $('pieces2');
+  for (const k of ORDER) {
+    const b = document.createElement('button'); b.type = 'button'; b.id = 'piece2-' + k;
+    b.innerHTML = ICON[PIECES[k].side](k) + `<span>${PIECES[k].name} <small style="color:var(--dim)">${DETAIL[k]}</small></span>`;
+    b.addEventListener('click', () => { tool = k; palette.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); draw(); });
+    if (k === tool) b.classList.add('on');
+    palette.appendChild(b);
+  }
+
+  // ---- scenarios ----
+  const U = (kind, col, row) => [kind, col, row];
+  const WALL = (...hs) => hs.map(([col, row]) => col + ',' + row);
+  const SCENARIOS = [
+    { name: 'Formation in file', width: 9, note: 'A front pack with a back pack two hexes behind it. Tap the front pack: the back pack’s ring of three covers it, so it joins. Now drive the Prairie Dog round the flank to within two of the back pack and tap that instead: the front’s ring of one does not reach, so the back fights alone. You split a formation by the order you attack it.',
+      units: [U('front', 4, 5), U('back', 4, 3), U('heavy', 3, 8), U('heavy', 5, 8), U('dingo', 4, 9), U('car', 7, 6)] },
+    { name: 'Two and two', width: 9, note: 'Two pushers on the flanks and a back pack in the middle that reaches neither. Split two and two, or take them one at a time with the Dingo fighting twice. Switch to seven wide and see the field close up.',
+      units: [U('front', 1, 5), U('front', 7, 5), U('back', 4, 2), U('heavy', 2, 9), U('heavy', 6, 9), U('dingo', 4, 9), U('car', 4, 8)] },
+    { name: 'Hunted', width: 9, note: 'The brute hunts the strongest and stands beside the heavy it hunts: it has caught it, so that fight comes first and the heavy cannot move. The ghoul hunts the nearest: the Prairie Dog and the Dingo stand two hexes from it, and it locks the Dingo, since the Prairie Dog is never prey. End the turn without killing the ghoul and watch it catch the Dingo.',
+      units: [U('brute', 6, 6), U('ghoul', 4, 4), U('heavy', 6, 7), U('heavy', 3, 9), U('dingo', 3, 6), U('car', 4, 6)] },
+    { name: 'The wall', width: 9, note: 'A ridge with a gap three wide and three machines standing in it. The pushers have no way through, so they wait, and the rift clock is the price of the wall. The ghoul hunts and comes to the wall anyway.',
+      units: [U('front', 3, 3), U('front', 5, 3), U('ghoul', 4, 2), U('heavy', 3, 6), U('heavy', 4, 6), U('dingo', 5, 6), U('car', 4, 9)],
+      walls: WALL([0, 6], [1, 6], [2, 6], [6, 6], [7, 6], [8, 6]) },
+    { name: 'The pass', width: 9, note: 'A pack in a one-wide pass. At attack range two the whole squad below the walls can reach it. Set the range to one and only the two hexes under the pass can attack. A pass caps your side, never theirs, since a joining pack needs no room.',
+      units: [U('front', 4, 6), U('back', 4, 3), U('heavy', 3, 9), U('heavy', 5, 9), U('dingo', 4, 10), U('car', 2, 9)],
+      walls: WALL([0, 6], [1, 6], [2, 6], [3, 6], [5, 6], [6, 6], [7, 6], [8, 6], [0, 7], [1, 7], [2, 7], [5, 7], [6, 7], [7, 7], [8, 7]) },
+    { name: 'The Dingo between', width: 9, note: 'Two packs far apart. Fight the left one with the heavy and the Dingo, then drag the Dingo right and fight again beside the Prairie Dog. Its two pips are its two actions.',
+      units: [U('front', 2, 5), U('front', 6, 5), U('dingo', 4, 8), U('heavy', 2, 8), U('car', 6, 8)] },
+  ];
+  const presets = $('presets2');
+  SCENARIOS.forEach((s, i) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = s.name; b.id = 'preset2-' + i; b.addEventListener('click', () => load(i)); presets.appendChild(b); });
+  function load(i) {
+    const s = SCENARIOS[i]; scenarioIndex = i;
+    COLS = s.width; $('width2').value = String(s.width);
+    units = s.units.map(([kind, col, row]) => make(kind, col, row));
+    walls = new Set(s.walls || []);
+    turn = 1; gate = 10; selected = 0; target = []; committed = new Set(); resolvedPrey = new Set();
+    $('log2').textContent = ''; flash('');
+    computeForced();
+    setScenario(s.note, presets.querySelector('#preset2-' + i)); draw();
+  }
+  function setScenario(note, btn) { $('scenario2').textContent = note; presets.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === btn)); }
+
+  $('endturn2').addEventListener('click', endTurn);
+  $('win2').addEventListener('click', () => fight(true));
+  $('withdraw2').addEventListener('click', () => fight(false));
+  $('cancel2').addEventListener('click', () => { target = []; committed = new Set(); flash(''); draw(); });
+  $('reset2').addEventListener('click', () => { if (scenarioIndex >= 0) load(scenarioIndex); });
+  $('clear2').addEventListener('click', () => { units = []; walls = new Set(); turn = 1; gate = 10; resolvedPrey = new Set(); $('log2').textContent = ''; setupChanged(); });
+  // Changing the width spreads or squeezes the field: every column scales across, a unit that lands on a
+  // taken hex takes the nearest free one, and walls scale the same way.
+  $('width2').addEventListener('change', e => {
+    const old = COLS; COLS = Number(e.target.value);
+    const scale = col => Math.round(col * (COLS - 1) / (old - 1));
+    walls = new Set([...walls].map(k => { const h = unkey(k); return scale(h.col) + ',' + h.row; }));
+    const placed = [];
+    for (const u of units) {
+      let h = { col: scale(u.col), row: u.row };
+      const free = x => ground(x) && !placed.some(p => same(p, x));
+      if (!free(h)) { const options = ring(h, 3).filter(free).sort((a, b) => dist(a, h) - dist(b, h)); if (options.length) h = options[0]; }
+      u.col = h.col; u.row = h.row; placed.push(h);
+    }
+    setupChanged();
+  });
+  for (const id of ['range2', 'backring2', 'packmove2']) $(id).addEventListener('input', e => { $(id + 'v').textContent = e.target.value; computeForced(); draw(); });
+  window.addEventListener('resize', draw);
+  window.__sandbox2 = { load, draw, endTurn, fight, tap, state: () => ({ units, forced, target, committed: [...committed], turn, gate }) };
+  load(0);
+})();
+</script>
+
+<script>
+(function () {
+  const modes = { new: ['mode-new', 'intro-new', 'mode-btn-new'], old: ['mode-old', 'intro-old', 'mode-btn-old'] };
+  function show(which) {
+    for (const [k, [sec, intro, btn]] of Object.entries(modes)) {
+      document.getElementById(sec).hidden = k !== which;
+      document.getElementById(intro).hidden = k !== which;
+      document.getElementById(btn).classList.toggle('on', k === which);
+    }
+    window.dispatchEvent(new Event('resize'));
+  }
+  document.getElementById('mode-btn-new').addEventListener('click', () => show('new'));
+  document.getElementById('mode-btn-old').addEventListener('click', () => show('old'));
+})();
+</script>

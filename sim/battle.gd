@@ -1,24 +1,27 @@
 class_name Battle
 extends RefCounted
 
-## One battle, from the first phase until the gate falls, every machine is wrecked, or the
-## boss powering the rift dies. Owns the battlefield, the routes the player is plotting, and
-## the skirmishes that contact opens. Pure: the battle screen drives it, tests drive it
-## headless.
+## One battle, from the first turn until the gate falls, every machine is wrecked, or the
+## boss powering the rift dies. Owns the battlefield, the player's turn (who has moved, who
+## has fought, which fights a hunter forced) and the skirmish open. Pure: the battle screen
+## drives it, tests drive it headless. The round is bible section 4's; the fights, section 5's.
 ##
 ## Loop:
-##   PLAN      set_route() for any mech, then commit() resolves the phase
-##   SKIRMISH  contact groups wait in `pending`; open_next_skirmish() builds one, the screen
-##             plays it, finish_skirmish() applies it back to the map, repeat until empty
+##   PLAN      the player's turn: move_to() any machine with an action left; order() it onto
+##             a pack in its attack range; engage() opens the next fight with the machines
+##             ordered onto it, a fight hunters forced always first (`forced`); end_turn()
+##             when done
+##   SKIRMISH  the fight attack() opened; the screen plays it, finish_skirmish() applies it
+##             back to the map and the machines in it are spent; back to PLAN
 ##   DONE      outcome is set
 ##
-## Shields recharge fully between skirmishes; hull never repairs during a battle; damaged
-## faces persist on the unit.
+## Hull never repairs during a battle; shield comes back at the field rate in a turn a
+## machine does not fight; damaged faces persist on the unit.
 
 enum State { PLAN, SKIRMISH, DONE }
 enum Outcome { NONE, VICTORY, GATE_FALLEN, WRECKED }
 
-const DEFAULT_WIDTH := 7
+const DEFAULT_WIDTH := 9   # nine wide, the thumb's limit, so four machines can split two and two (bible section 4, the round row)
 const DEFAULT_HEIGHT := 20
 
 var seed_value: int = 1
@@ -31,11 +34,21 @@ var faction: String = ""
 var boss: Unit = null
 var state: int = State.PLAN
 var outcome: int = Outcome.NONE
-var routes: Dictionary = {}     # mech id -> Array[Vector2i]
-var pending: Array = []         # contact groups (Array[Unit]) waiting for a skirmish
-var boss_contact := false       # this phase's contact is the boss's: one fight, every machine in it
+var spent: Dictionary = {}       # mech id -> actions spent this turn (a fight spends one)
+var move_left: Dictionary = {}   # mech id -> move points left in its current action; whole when absent
+var action_from: Dictionary = {} # mech id -> [hex, facing, move left] where its current action's moving began, for an undo
+var fought: Dictionary = {}      # mech id -> true: it fought this turn, so no field recharge
+## The fights hunters forced this turn, first in line (bible section 5): [{"prey": Unit,
+## "hunters": Array[Unit]}]. While any is left, it is the only fight that may open and the
+## turn cannot end; its prey cannot move.
+var forced: Array = []
+## Attack orders (bible section 5): mech id -> the pack it fights when ENGAGE is pressed, in
+## the order given. A drag or a tap onto a pack gives one; nothing opens until ENGAGE, so a
+## mis-drop on a phone is harmless. Several machines on one pack are one fight.
+var orders: Dictionary = {}
+var boss_fight := false          # the open fight holds the boss (its reveal and its theme)
+var last_spawned := false        # the last enemy turn's rift tick spawned a pack
 var current: Skirmish = null
-var last_result: Battlefield.PhaseResult = null
 var skirmishes_fought: int = 0
 var columns: int = Skirmish.DEFAULT_COLUMNS   # formation width for every skirmish this battle opens
 ## A guest faction (bible section 3: one lead and at most one guest a battle): set before
@@ -120,8 +133,8 @@ func setup(team: Array, faction_id: String = "", w: int = DEFAULT_WIDTH, h: int 
 		boss = Unit.boss(0, str(db.foes[boss_id]["name"]).to_lower(), Vector2i.ZERO, faction, Unit.BOSS_MOVE)
 		boss.pos = field.nearest_standable(boss, Hex.offset_to_axial(w / 2 - 1, 1))
 		field.add_unit(field.dress_pack(boss, boss_id))
-	field.compute_intents()
 	state = State.PLAN
+	_new_turn()
 
 
 func _pack_name(foe_id: String) -> String:
@@ -130,72 +143,98 @@ func _pack_name(foe_id: String) -> String:
 	return "%s pack" % foe_id
 
 
-# ---------------------------------------------------------------- planning
+# ---------------------------------------------------------------- the player's turn
 
 func mechs() -> Array[Unit]:
 	return field.mechs()
 
 
-## Hexes a mech may end this phase on. Planned in plot order (Ryan, 22 September): the
-## machines plotted before it stand at their destinations, the ones after it where they
-## are, so a route can pass where an earlier machine is leaving and never where one is
-## going, and Resolve can never reject it. Other claimed destinations are out too.
+## The actions a machine has left this turn: one a turn, more if its passive grants them.
+func actions_left(u: Unit) -> int:
+	return maxi(0, Battlefield.actions_for(u) - int(spent.get(u.id, 0)))
+
+
+## Whether a hunter has caught this machine and the fight is still to come.
+func is_pinned(u: Unit) -> bool:
+	for f in forced:
+		if f["prey"] == u:
+			return true
+	return false
+
+
+## The move points left in a machine's current action.
+func moves_left(u: Unit) -> int:
+	return int(move_left.get(u.id, u.movespeed))
+
+
+## Whether a machine may move now: the player's turn, an action left, move left, not caught.
+func can_move(u: Unit) -> bool:
+	return state == State.PLAN and actions_left(u) > 0 and moves_left(u) > 0 and not is_pinned(u)
+
+
+## Hexes a machine may move to now, with the move it has left.
 func destinations_for(u: Unit) -> Dictionary:
-	var out: Dictionary = field.with_plan(u, routes, func() -> Dictionary: return field.reachable(u))
-	for uid in routes.keys():
-		if uid == u.id:
-			continue
-		var r: Array = routes[uid]
-		if not r.is_empty():
-			out.erase(r[r.size() - 1])
-	return out
+	if u == null or not can_move(u):
+		return {}
+	return field.reachable(u, moves_left(u))
 
 
-## Plot the cheapest route to `to`, in the same planned view. The mech's own hex clears its
-## route. False when the hex is out of reach or claimed. A re-plot puts the mech last in
-## the order (Ryan, 22 September: the last thing plotted moves last), so it is planned
-## against everyone else's destination; any route the change still breaks is dropped and
-## logged, so the plan is always one Resolve will play exactly.
-func set_route(u: Unit, to: Vector2i) -> bool:
-	if state != State.PLAN:
-		return false
-	routes.erase(u.id)
-	if to == u.pos:
-		_drop_conflicts()
-		return true
+## Move a machine to `to` by its cheapest route, at once (a machine moves, then fights; bible
+## section 4). The route walked, as the hexes after where it stood; empty when refused.
+func move_to(u: Unit, to: Vector2i) -> Array[Vector2i]:
+	var none: Array[Vector2i] = []
 	if not destinations_for(u).has(to):
-		return false
-	var route: Array = field.with_plan(u, routes, func() -> Array: return field.route_to(u, to))
+		return none
+	var route := field.route_to(u, to, moves_left(u))
 	if route.is_empty():
-		return false
-	routes[u.id] = route
-	_drop_conflicts()
-	return true
+		return none
+	_walk_machine(u, route)
+	return route
 
 
-## A route drawn by hand, kept as drawn (Ryan, 25 September: tap-to-destination alone
-## could not say which way round a pack to walk). Legal on the same terms as a tapped
-## one, planned last like a re-plot: every step adjacent and standable in the planned
-## view, the cost within the machine's move, and its last hex nobody else's destination.
-## An empty route clears. False when refused, and the machine's old route is gone either way.
-func set_route_path(u: Unit, route: Array) -> bool:
-	if state != State.PLAN:
+## Move a machine along a route drawn by hand (Ryan, 25 September: the drag says which way
+## round), at once. False when it cannot be walked with the move left.
+func move_along(u: Unit, route: Array) -> bool:
+	if not can_move(u) or route.is_empty():
 		return false
-	routes.erase(u.id)
-	if route.is_empty():
-		_drop_conflicts()
-		return true
-	var end: Vector2i = route[route.size() - 1]
-	if not destinations_for(u).has(end):
-		return false
-	var cost: int = field.with_plan(u, routes, func() -> int: return field.route_cost(u, route))
-	if cost < 0:
+	if field.route_cost(u, route, moves_left(u)) < 0:
 		return false
 	var typed: Array[Vector2i] = []
 	for s in route:
 		typed.append(s)
-	routes[u.id] = typed
-	_drop_conflicts()
+	_walk_machine(u, typed)
+	return true
+
+
+func _walk_machine(u: Unit, route: Array[Vector2i]) -> void:
+	var cost := field.route_cost(u, route, moves_left(u))
+	if not action_from.has(u.id):
+		action_from[u.id] = [u.pos, u.facing, moves_left(u)]
+	move_left[u.id] = moves_left(u) - cost
+	var before: Vector2i = route[route.size() - 2] if route.size() >= 2 else u.pos
+	u.facing = field._direction_index(before, route[route.size() - 1])
+	u.pos = route[route.size() - 1]
+	_prune_orders()
+
+
+## Whether a machine's move this action can be taken back.
+func can_undo(u: Unit) -> bool:
+	if state != State.PLAN or u == null or not action_from.has(u.id):
+		return false
+	var a: Array = action_from[u.id]
+	return u.pos == a[0] or field.can_stand(u, a[0])
+
+
+## Put a machine back where its current action's moving began, its move whole again.
+func undo_move(u: Unit) -> bool:
+	if not can_undo(u):
+		return false
+	var a: Array = action_from[u.id]
+	u.pos = a[0]
+	u.facing = int(a[1])
+	move_left[u.id] = int(a[2])
+	action_from.erase(u.id)
+	_prune_orders()
 	return true
 
 
@@ -203,21 +242,18 @@ func set_route_path(u: Unit, route: Array) -> bool:
 ## machine's own), `h` the hex the finger has reached. Back on the machine clears; a hex
 ## already on the draft cuts it back to there; anything else is joined by the cheapest
 ## continuation that fits the move left (a finger that skips a hex still draws a walkable
-## route), or the draft stands when nothing fits. Planned as a re-plot: the machine last.
+## route), or the draft stands when nothing fits.
 func draft_step(u: Unit, draft: Array, h: Vector2i) -> Array:
 	if h == u.pos:
 		return []
 	var at := draft.find(h)
 	if at >= 0:
 		return draft.slice(0, at + 1)
-	var others := routes.duplicate()
-	others.erase(u.id)
 	var end: Vector2i = draft[draft.size() - 1] if not draft.is_empty() else u.pos
-	var ext: Array = field.with_plan(u, others, func() -> Array:
-		var spent := field.route_cost(u, draft)
-		if spent < 0:
-			return []
-		return field.route_from(u, end, u.movespeed - spent, h))
+	var spent_move := field.route_cost(u, draft, moves_left(u))
+	if spent_move < 0:
+		return draft
+	var ext := field.route_from(u, end, moves_left(u) - spent_move, h)
 	if ext.is_empty():
 		return draft
 	var out: Array = draft.duplicate()
@@ -225,11 +261,9 @@ func draft_step(u: Unit, draft: Array, h: Vector2i) -> Array:
 	return out
 
 
-## What a draft costs so far in the same planned view; -1 when it cannot be walked.
+## What a draft costs so far out of the move left; -1 when it cannot be walked.
 func draft_cost(u: Unit, draft: Array) -> int:
-	var others := routes.duplicate()
-	others.erase(u.id)
-	return field.with_plan(u, others, func() -> int: return field.route_cost(u, draft))
+	return field.route_cost(u, draft, moves_left(u))
 
 
 ## The move gauge's reading of a draft (decided 3 October, bible section 4): the move its
@@ -248,113 +282,233 @@ func draft_spend(u: Unit, draft: Array) -> Vector2i:
 	return Vector2i(before, cost - before)
 
 
-func clear_route(uid: int) -> void:
-	routes.erase(uid)
-	_drop_conflicts()
-
-
-## After a change, any route the plan would now reject is dropped, with a line in the log.
-func _drop_conflicts() -> void:
-	var res: Battlefield.PhaseResult = field.preview_phase(routes)["result"]
-	for uid in res.rejected:
-		if routes.has(uid):
-			routes.erase(uid)
-			var u := field.unit_by_id(uid)
-			if u != null:
-				field.log.append("%s: route cleared, the plan changed under it" % u.display_name)
-
-
-func clear_routes() -> void:
-	routes.clear()
-
-
-func route_for(uid: int) -> Array:
-	return routes.get(uid, [])
-
-
-## Where the mech will stand after the phase: the end of its route, or where it is.
-func route_end(u: Unit) -> Vector2i:
-	var r: Array = routes.get(u.id, [])
-	return r[r.size() - 1] if not r.is_empty() else u.pos
-
-
-# ---------------------------------------------------------------- resolution
-
-## Resolve the phase with the plotted routes. Contact groups queue up as skirmishes.
-func commit() -> Battlefield.PhaseResult:
+## The fight the player would open at `target`, or the next fight a hunter forced, which comes
+## first whatever is tapped (bible section 5): {"targets": the packs attacked, "joins": the
+## packs whose ring covers a target, "in_range": the machines whose attack range covers one,
+## "eligible": those of them with an action left (a caught machine always), "pinned": the
+## caught machine or null, "forced": whether this is a forced fight}. Empty when there is none.
+func roster(target: Unit = null) -> Dictionary:
 	if state != State.PLAN:
+		return {}
+	var targets: Array = []
+	var pinned: Unit = null
+	if not forced.is_empty():
+		targets = (forced[0]["hunters"] as Array).duplicate()
+		pinned = forced[0]["prey"]
+	elif target != null and target.is_enemy() and field.units.has(target):
+		targets = [target]
+	else:
+		return {}
+	var r := field.attack_roster(targets)
+	var eligible: Array[Unit] = []
+	if pinned != null:
+		eligible.append(pinned)
+	for m in r["in_range"]:
+		if m != pinned and actions_left(m) > 0:
+			eligible.append(m)
+	r["eligible"] = eligible
+	r["pinned"] = pinned
+	r["forced"] = pinned != null
+	return r
+
+
+## Open a fight: the machines committed (those of `machines` the roster allows; a caught
+## machine always) against the targets and every pack that joins. The skirmish, or null when
+## refused (not the player's turn, no fight there, nobody to commit).
+func attack(target: Unit, machines: Array) -> Skirmish:
+	var r := roster(target)
+	if r.is_empty():
 		return null
-	last_result = field.resolve_phase(routes)
-	routes.clear()
-	pending = last_result.skirmishes.duplicate()
-	boss_contact = _take_boss_contact()
-	# A phase spent out of combat recharges shield at the field rate. A mech in contact this
-	# phase gets nothing here: its skirmish is its phase, and it recharges only at the combat
-	# rate inside it. So withdrawing buys a slower recharge, not a reset.
-	var engaged := {}
-	for group in pending:
-		for u in group:
-			engaged[u] = true
-	for u in field.mechs():
-		if not engaged.has(u):
-			u.recharge_shield(u.recharge_field)
-			# Passives that fire at the end of a phase spent out of a fight (out_of_combat).
-			var fired := Effects.fire(u, "out_of_combat")
-			if int(fired["shield"]) > 0:
-				u.recharge_shield(int(fired["shield"]))
-	_after_phase()
-	return last_result
-
-
-## The boss's contact takes the phase (Ryan, 25 September): when any contact group holds the
-## boss, the phase has one fight, every machine on the field against the boss alone, and
-## the other contacts are dropped, packs in the boss's own group included. The player's
-## positioning no longer matters once the boss is reached; the fight is the battle's end
-## or a withdrawal. True when it happened; `pending` is then that one group.
-func _take_boss_contact() -> bool:
-	if boss == null:
-		return false
-	var found := false
-	for group in pending:
-		if group.has(boss):
-			found = true
-			break
-	if not found:
-		return false
+	var team: Array = []
+	if r["pinned"] != null:
+		team.append(r["pinned"])
+	for m in machines:
+		if (r["eligible"] as Array).has(m) and not team.has(m):
+			team.append(m)
+	if team.is_empty():
+		return null
 	var group: Array = []
-	for m in field.mechs():
-		if not m.is_static():
-			group.append(m)
-	group.append(boss)
-	pending = [group]
+	group.append_array(r["targets"])
+	group.append_array(r["joins"])
+	group.append_array(team)
+	var sk := _build_skirmish(group)
+	if sk == null:
+		return null
+	boss_fight = boss != null and group.has(boss)
+	current = sk
+	skirmishes_fought += 1
+	state = State.SKIRMISH
+	return sk
+
+
+# ---------------------------------------------------------------- attack orders
+
+const NO_HEX := Vector2i(-9999, -9999)
+
+
+## The distance from a hex to a unit, by the unit's nearest hex.
+func _distance_from(h: Vector2i, u: Unit) -> int:
+	var best := 1 << 30
+	for x in u.hexes():
+		best = mini(best, Hex.distance(h, x))
+	return best
+
+
+## Whether a machine standing at `h` has `target` within its attack range.
+func in_range_from(m: Unit, h: Vector2i, target: Unit) -> bool:
+	return _distance_from(h, target) <= m.attack_range
+
+
+## Where a machine attacks `target` from when it is dragged or tapped onto it (bible section
+## 5): where it stands, if the target is in range; else the hex its move left reaches that has
+## the target in range and stands farthest from it, the cheaper on a tie. NO_HEX when none.
+func attack_hex(m: Unit, target: Unit) -> Vector2i:
+	if m == null or target == null:
+		return NO_HEX
+	if in_range_from(m, m.pos, target):
+		return m.pos
+	var best := NO_HEX
+	var best_d := -1
+	var best_c := 1 << 30
+	var dests := destinations_for(m)
+	for h in dests.keys():
+		var hx: Vector2i = h
+		if not in_range_from(m, hx, target):
+			continue
+		var d := _distance_from(hx, target)
+		var c := int(dests[hx])
+		if d > best_d or (d == best_d and c < best_c):
+			best = hx
+			best_d = d
+			best_c = c
+	return best
+
+
+## Whether a fight may be ordered at `target` now: a pack on the field, and while a hunter's
+## catch waits, one of its hunters alone (that fight comes first).
+func can_target(target: Unit) -> bool:
+	if target == null or not target.is_enemy() or not field.units.has(target):
+		return false
+	if not forced.is_empty():
+		return (forced[0]["hunters"] as Array).has(target)
 	return true
 
 
-func has_pending() -> bool:
-	return not pending.is_empty()
+## Order a machine onto `target` for ENGAGE: on the player's turn, with an action left, the
+## target in range where it stands now (a machine moves first), and the target one that may
+## be fought now. False when refused.
+func order(m: Unit, target: Unit) -> bool:
+	if state != State.PLAN or m == null or not field.units.has(m) or actions_left(m) <= 0:
+		return false
+	if not can_target(target) or not in_range_from(m, m.pos, target):
+		return false
+	orders[m.id] = target
+	return true
 
 
-## Build the next contact group's skirmish. Null when nothing is left to fight, in which case
-## the battle has moved on to the next plan (or ended).
-func open_next_skirmish() -> Skirmish:
-	return open_skirmish_at(0)
+func cancel_order(m: Unit) -> void:
+	if m != null:
+		orders.erase(m.id)
 
 
-## Open the pending contact at `index` (the player's choice of which to fight first, Ryan,
-## 22 September); the rest wait. Null when nothing is left to fight, in which case the
-## battle has moved on.
-func open_skirmish_at(index: int) -> Skirmish:
-	while not pending.is_empty():
-		var i := clampi(index, 0, pending.size() - 1)
-		var group: Array = pending.pop_at(i)
-		index = 0
-		var sk := _build_skirmish(group)
-		if sk != null:
-			current = sk
-			skirmishes_fought += 1
-			return sk
-	_after_phase()
-	return null
+## The pack a machine is ordered onto, or null.
+func order_of(m: Unit) -> Unit:
+	return orders.get(m.id, null) if m != null else null
+
+
+## The next fight ENGAGE opens: a hunter's catch first (its prey and the machines ordered onto
+## its hunters), else the first pack ordered on, with every machine ordered onto it.
+## {"target": the pack, null for a catch, "machines": Array}; empty when there is none.
+func next_fight() -> Dictionary:
+	_prune_orders()
+	if not forced.is_empty():
+		var hunters: Array = forced[0]["hunters"]
+		var ms: Array = []
+		for uid in orders.keys():
+			if hunters.has(orders[uid]):
+				ms.append(field.unit_by_id(int(uid)))
+		return {"target": null, "machines": ms}
+	if orders.is_empty():
+		return {}
+	var first: Unit = orders.values()[0]
+	var team: Array = []
+	for uid in orders.keys():
+		if orders[uid] == first:
+			team.append(field.unit_by_id(int(uid)))
+	return {"target": first, "machines": team}
+
+
+## ENGAGE: the next fight opens with the machines ordered onto it. Null when there is none.
+func engage() -> Skirmish:
+	var f := next_fight()
+	if f.is_empty():
+		return null
+	var sk := attack(f["target"], f["machines"])
+	if sk != null:
+		for m in f["machines"]:
+			orders.erase((m as Unit).id)
+	return sk
+
+
+## Drop an order whose machine is gone, has no action left or stands out of range, or whose
+## pack is gone or cannot be fought now.
+func _prune_orders() -> void:
+	for uid in orders.keys():
+		var m := field.unit_by_id(int(uid))
+		var target: Unit = orders[uid]
+		if m == null or actions_left(m) <= 0 or not can_target(target) or not in_range_from(m, m.pos, target):
+			orders.erase(uid)
+
+
+## End the player's turn (bible section 4): the enemy's turn plays (packs walk round the
+## machines, a pack on the apron strikes the gate), a machine that did not fight this turn
+## recharges at the field rate, the rift ticks once, and the next turn opens with the fights
+## hunters have forced. The walks played (pack id -> Battlefield.Walk); empty when refused
+## (not the player's turn, or a forced fight still to come).
+func end_turn() -> Dictionary:
+	if state != State.PLAN or not forced.is_empty():
+		return {}
+	var walks := field.enemy_turn()
+	for u in field.mechs():
+		if fought.has(u.id):
+			continue
+		u.recharge_shield(u.recharge_field)
+		# Passives that fire at the end of a turn spent out of a fight (out_of_combat).
+		var fired := Effects.fire(u, "out_of_combat")
+		if int(fired["shield"]) > 0:
+			u.recharge_shield(int(fired["shield"]))
+	field.phase += 1
+	last_spawned = field.tick_pressure(1)
+	_new_turn()
+	return walks
+
+
+## A fresh turn: every machine's actions and move whole, and the fights hunters forced.
+func _new_turn() -> void:
+	spent.clear()
+	move_left.clear()
+	action_from.clear()
+	fought.clear()
+	orders.clear()
+	forced = []
+	if _check_outcome():
+		return
+	forced = field.forced_fights()
+
+
+## Drop forced fights whose prey or every hunter is gone (killed in an earlier fight).
+func _prune_forced() -> void:
+	var kept: Array = []
+	for f in forced:
+		if not field.units.has(f["prey"]):
+			continue
+		var hunters: Array = []
+		for h in f["hunters"]:
+			if field.units.has(h):
+				hunters.append(h)
+		if not hunters.is_empty():
+			kept.append({"prey": f["prey"], "hunters": hunters})
+	forced = kept
 
 
 ## The mechs of the group fight every foe the group's packs unpack into.
@@ -391,34 +545,29 @@ func _build_skirmish(group: Array) -> Skirmish:
 
 
 ## Apply the finished skirmish: wrecks leave the map, packs shrink or vanish, and Rift
-## Pressure ticks once per round fought. Shields do not refill here: survivors carry what
-## they had, and recharge at the field rate only in phases they spend out of combat.
+## Pressure ticks once per round fought. Every machine in it is spent, however the fight
+## ended (bible section 4); a forced fight comes off the list. Shields do not refill here.
 func finish_skirmish() -> void:
 	if current == null:
 		return
 	for ms in current.mechs:
 		if ms.unit.hull <= 0 and not wrecks.has(ms.unit):
 			wrecks.append(ms.unit)
+		spent[ms.unit.id] = int(spent.get(ms.unit.id, 0)) + 1
+		fought[ms.unit.id] = true
+		move_left.erase(ms.unit.id)
+		action_from.erase(ms.unit.id)
 	for sq in current.packs:
 		foes_killed += maxi(0, sq.strength - current.survivors_for(sq))
 	field.apply_skirmish_result(current)
 	current = null
-	boss_contact = false
-	if _check_outcome():
-		pending.clear()
-		return
-	if pending.is_empty():
-		_after_phase()
-
-
-func _after_phase() -> void:
-	if _check_outcome():
-		return
-	if not pending.is_empty():
-		state = State.SKIRMISH
-		return
-	field.compute_intents()
+	boss_fight = false
 	state = State.PLAN
+	if not forced.is_empty():
+		forced.pop_front()
+	_prune_forced()
+	_prune_orders()
+	_check_outcome()
 
 
 func _check_outcome() -> bool:

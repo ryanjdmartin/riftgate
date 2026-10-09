@@ -1163,33 +1163,15 @@ def _wheel(b, cx, cy, r, w, label="wheel", lit=False):
         b.prism("x", cx, cy, r, r * 0.3, w + 1.6, "amber.engine", 8, label + "_ring", phase=math.pi / 8)
 
 
-def _skirt_plate(b, s, r, hubs):
-    """The Prairie Dog's skirt, one long plate of armour down the side outboard of both wheels
-    (Ryan, 5 October, the sixth notes: the skirt is unique, on both sides; the seventh: out
-    past the tyres; the eighth, 6 October: the long connected plate is the defining thing, and
-    hides some of the tyres' play in the arches, so it comes back whole, and the front wheels
-    steer through it at full lock). The ninth notes (Ryan, 6 October: make it look like the
-    designers tried to protect the tyres; of three mock-ups, bash bars, the most W&S,
-    functional rather than sleek): a low rail runs on from each end of the plate to a bar
-    standing ahead of the front tyre and behind the rear, and a top bar across in front of
-    the tyre toward the body; an armoured boss on the plate over each hub. The thirteenth
-    (Ryan, 6 October: the bars to the fenders, not the hubs, the wheels free and independent):
-    built on the body with the fenders, the plate hanging from the drops at the fenders' inner
-    ends and the hoops bolted to the aprons at their outer ends (prairie_dog), so it all rocks
-    with the body and the wheels move under it on their own. Raised a unit and a half, since
-    the body's nose drops toward the ground in the rev (measured, the lowest part a unit and a
-    half clear). A front tyre turning steers through the plate past about nine degrees, its
-    hub the first, as it always has (the eighth notes asked to see it); the rails run on the
-    plate's outer face, clear of it as far as the map turns it."""
-    def bar(x0, x1, y0, y1, z0, z1):
-        b.box(min(s * x0, s * x1), max(s * x0, s * x1), min(y0, y1), max(y0, y1), z0, z1, "steel.dark", "bar")
-    b.box(min(s * 25.0, s * 26.6), max(s * 25.0, s * 26.6), -24.0, 24.0, 7.5, 16.0, "steel.plate", "skirt")
-    for yw in hubs:
-        b.prism("x", s * 27.4, yw, r, 3.6, 1.6, "steel.dark", 8, "skirt_boss", phase=math.pi / 8)
-    for e, y0, y1 in ((1.0, 30.6, 32.2), (-1.0, -30.6, -32.2)):   # the hoops against the aprons' faces
-        bar(26.6, 28.2, e * 22.0, y1, 8.0, 10.0)     # the low rail, bolted on the plate's face and run on past its end
-        bar(26.6, 28.2, y0, y1, 8.0, 18.0)           # the upright
-        bar(15.0, 28.2, y0, y1, 16.0, 18.0)          # the top bar across the tyre's front or back
+## The Prairie Dog's ride height over its wheels (Ryan, 9 October: the tyres down and away from
+## their wells, a dune buggy's stance; then, the same day, 3.5 left a gap between the wheels and
+## the chassis, so a little less); every part on its chassis rides this much higher.
+LIFT_PRAIRIE = 2.0
+## The arches' aprons' finish: the maker's rust, the flank stripe's ("steel.plate" for metal).
+APRON_PRAIRIE = "livery.livery2"   # Ryan, 9 October: the livery aprons
+## The arches (and their aprons' tops) sit this much lower than the ride height alone would put
+## them (Ryan, 9 October: tighten them over the tyres once the rev was softened).
+ARCH_DROP_PRAIRIE = 1.0   # a whole unit, to see (Ryan, 9 October: a little clipping at the vertices is fine)
 
 
 def _prairie_body(y):
@@ -1211,10 +1193,16 @@ def prairie_dog(b):
     (the Flakshot Repeater, fixed, no pin, the class barrel on the turret's left) with the
     twin autoguns on the turret's right (hp_1, the class twin barrel); a sensor mast up out
     of the tail, the dog on watch. hp_2 the rear-left launcher (Incendiary Shells), hp_3
-    bare on the rear-right corner (the Flak Skirt takes no mount; the skirt plate is
-    detail). Ryan, 30 September: the mast lower, the visor flush with the body; 1 October:
-    a squatter turret, a gun either side, none in the middle, nothing hand-modelled."""
+    bare on the rear-right corner (the Flak Skirt takes no mount). Ryan, 30 September: the
+    mast lower, the visor flush with the body; 1 October: a squatter turret, a gun either
+    side, none in the middle, nothing hand-modelled. Ryan, 9 October, with the scout's role:
+    the side skirts, their bash bars and the drops that hung them are gone, and everything
+    on the chassis rides LIFT higher over the same wheels, so the tyres sit down and away from
+    their wells, a dune buggy's stance on the armoured car; a rounded housing under the body
+    along each axle, hub to hub, and the arches' aprons no wider than the arches."""
     R = 10.0
+    L = LIFT_PRAIRIE   # the ride height over the wheels, on every part of the chassis
+    LA = L - ARCH_DROP_PRAIRIE   # the arches' height, a little tighter over the tyres
     # The wheels spin on their hubs, the front pair steering (the joint pass, 2 October):
     # a steer joint about up carrying the wheel's spin joint. Built first, outside the
     # chassis joint, so they stay planted while the body squats and rocks over them.
@@ -1229,10 +1217,10 @@ def prairie_dog(b):
             else:
                 with b.joint("wheel_%s" % w, hub):
                     _wheel(b, s * 20.0, yw, R, 8.0)
-    chassis = b.joint("chassis", (0.0, -4.0, 12.0), limits={"pitch": (-6.0, 6.0), "roll": (-6.0, 6.0)}, swing=False)
+    # The body rocks about the middle of the wheelbase (Ryan, 9 October: the rev took the front
+    # tyres up through their arches; the pivot sat four back, so the nose swung furthest).
+    chassis = b.joint("chassis", (0.0, 0.0, 12.0 + L), limits={"pitch": (-6.0, 6.0), "roll": (-6.0, 6.0)}, swing=False)
     chassis.__enter__()
-    for s in (-1.0, 1.0):
-        _skirt_plate(b, s, R, (18.0, -18.0))
     for yw in (18.0, -18.0):
         for s in (-1.0, 1.0):
             # An angular arch over each wheel, open outward, its first shape and thickness raised
@@ -1245,81 +1233,97 @@ def prairie_dog(b):
             # top matters at the game's angles, the tyre may ride into the arch's depth): a unit
             # and a half over its old height, the least that keeps the tyre under the arch's top
             # through the rev's rock and squat (measured).
-            # Each arch comes down at its ends (Ryan, 6 October, the thirteenth notes): at its
-            # outer end an apron across the tyre's front (or back) down to the hub, shielding it
-            # and closing the open wedge where the arch rose off the tyre; at its inner end a drop
-            # to the skirt plate, which hangs from the four of them, the bash bars' hoops bolted
-            # to the aprons. All on the body; the wheels move free under them.
+            # Each arch comes down at its outer end (Ryan, 6 October, the thirteenth notes): an
+            # apron across the tyre's front (or back), shielding it and closing the open wedge
+            # where the arch rose off the tyre; on the body, the wheels moving free under it.
+            # The apron ends at the arch's own outer edge (Ryan, 9 October: they stood out past
+            # the wells; part of the well, not a plate bolted on beside it) and runs in to the
+            # body's flank (the same day: gaps showed between it and the body, worst at the nose,
+            # which narrows to the front), a quarter of a unit inside it so it never sits over
+            # the hood (Ryan: trim the fronts' overlap with the hood).
             out_y, in_y = (yw + 12.0, yw - 12.0) if yw > 0.0 else (yw - 12.0, yw + 12.0)
             e = 1.0 if yw > 0.0 else -1.0
-            b.box(min(s * 15.0, s * 26.6), max(s * 15.0, s * 26.6), min(out_y - e * 0.8, out_y + e * 0.6), max(out_y - e * 0.8, out_y + e * 0.6), 9.0, R + 11.0, "steel.plate", "apron")
-            b.box(min(s * 16.0, s * 26.6), max(s * 16.0, s * 26.6), min(in_y - e * 0.8, in_y + e * 0.8), max(in_y - e * 0.8, in_y + e * 0.8), 14.0, R + 11.0, "steel.plate", "drop")
+            xin = _prairie_body(out_y)[0] - 0.25
+            b.box(min(s * xin, s * 23.0), max(s * xin, s * 23.0), min(out_y - e * 0.8, out_y + e * 0.6), max(out_y - e * 0.8, out_y + e * 0.6), 9.0 + L, R + 11.0 + LA, APRON_PRAIRIE, "apron")
             if yw < 0.0:
-                b.loft([(yw - 12.0, rect(s * 18.0, 10.0, R + 7.0, R + 11.0)), (yw, rect(s * 18.0, 10.0, R + 11.0, R + 15.0)), (yw + 12.0, rect(s * 18.0, 10.0, R + 7.0, R + 11.0))], "steel.plate", "arch")
+                b.loft([(yw - 12.0, rect(s * 18.0, 10.0, R + 7.0 + LA, R + 11.0 + LA)), (yw, rect(s * 18.0, 10.0, R + 11.0 + LA, R + 15.0 + LA)), (yw + 12.0, rect(s * 18.0, 10.0, R + 7.0 + LA, R + 11.0 + LA))], "steel.plate", "arch")
                 continue
             # The front pair meet the body (Ryan, 6 October, the ninth notes: a gap between the
             # front fenders and the body; an inner flange stepping down into the nose was far too
             # smooth a join for W&S; the box rolled 15 degrees onto the nose lost its squared-off
             # look, the twelfth). The level box again, flat on top and square at every edge, its
-            # inner edge run in on one straight line to a unit inside the nose's flank, and a
-            # square lip two units wide hung from that edge down to half a unit into the body's
-            # top where the nose drops away under the arch, so the arch sits on the hull as a
-            # bolted box would. Nothing over the tyre changes, so its top clears the tyre in the
-            # rev as the level arch always has.
-            nose_half, _top = _prairie_body(yw + 12.0)
+            # inner edge following the hood's own edge a quarter of a unit inside it (Ryan, 9
+            # October: trim the overlap with the hood; it had run a unit to a unit and a half over
+            # it on one straight line), with a section at the hood's kink so it follows the taper,
+            # and a square lip two units wide hung from that edge down to half a unit into the
+            # body's top where the nose drops away under the arch, so the arch sits on the hull
+            # as a bolted box would. Nothing over the tyre changes, so its top clears the tyre in
+            # the rev as the level arch always has.
             secs = []
-            for (y, z0), xi in zip(((yw - 12.0, R + 7.0), (yw, R + 11.0), (yw + 12.0, R + 7.0)), (13.0, (13.0 + nose_half - 1.0) * 0.5, nose_half - 1.0)):
-                lip = min(z0, _prairie_body(y)[1] - 0.5)
+            for u in (-12.0, -6.0, 0.0, 12.0):
+                y = yw + u
+                z0 = R + 11.0 + LA - 4.0 * abs(u) / 12.0
+                xi = _prairie_body(y)[0] - 0.25
+                lip = min(z0, _prairie_body(y)[1] + L - 0.5)
                 pts = [(xi, lip), (xi + 2.0, lip), (xi + 2.0, z0), (23.0, z0), (23.0, z0 + 4.0), (xi, z0 + 4.0)]
                 secs.append((y, [(s * x, z) for x, z in (pts if s > 0 else pts[::-1])]))
             b.loft(secs, "steel.plate", "arch")
     # The body: a wedge lofted from a squared tail to a low raked nose, a chin plate under.
-    b.loft([(-30.0, rect(0.0, 28.0, 8.0, 24.0)), (-6.0, rect(0.0, 30.0, 8.0, 28.0)), (12.0, rect(0.0, 28.0, 8.0, 24.0)), (32.0, rect(0.0, 20.0, 10.0, 15.0))], "steel.panel", "body")
-    b.box(-10.0, 10.0, 30.0, 33.0, 8.0, 12.0, "steel.dark", "chin")
+    b.loft([(-30.0, rect(0.0, 28.0, 8.0 + L, 24.0 + L)), (-6.0, rect(0.0, 30.0, 8.0 + L, 28.0 + L)), (12.0, rect(0.0, 28.0, 8.0 + L, 24.0 + L)), (32.0, rect(0.0, 20.0, 10.0 + L, 15.0 + L))], "steel.panel", "body")
+    b.box(-10.0, 10.0, 30.0, 33.0, 8.0 + L, 12.0 + L, "steel.dark", "chin")
+    # The axle covers (Ryan, 9 October: a rounded ridge on the underside, so the wheels stop
+    # hanging off a floating body): a housing along each axle, hub to hub, and a rounded ridge
+    # along each side of the floor joining them, half sunk into it. Only the side ridges show
+    # from the game's camera, a rail under the flank between the wheels; the housings are what
+    # they join.
+    for yw in (18.0, -18.0):
+        b.prism("x", 0.0, yw, R, 3.4, 31.0, "steel.dark", 8, "axle_cover", phase=math.pi / 8)
     for s in (-1.0, 1.0):
-        b.box(min(s * 14.0, s * 15.5), max(s * 14.0, s * 15.5), -26.0, 6.0, 12.0, 20.0, "livery.livery2", "flank_stripe")
+        b.prism("y", s * 11.5, 0.0, R, 3.0, 36.0, "steel.dark", 8, "axle_ridge", phase=math.pi / 8)
+    for s in (-1.0, 1.0):
+        b.box(min(s * 14.0, s * 15.5), max(s * 14.0, s * 15.5), -26.0, 6.0, 12.0 + L, 20.0 + L, "livery.livery2", "flank_stripe")
     # The windscreen: armoured glass lying flush on the raked roof, slit-narrow, a brow
     # over its top edge.
-    _rings(b, [[(-10.0, 13.0, 23.6), (10.0, 13.0, 23.6), (10.0, 13.0, 24.8), (-10.0, 13.0, 24.8)],
-               [(-9.0, 19.0, 20.9), (9.0, 19.0, 20.9), (9.0, 19.0, 22.1), (-9.0, 19.0, 22.1)]], "glass.glass", "windscreen")
-    b.box(-12.0, 12.0, 10.5, 13.5, 23.5, 26.5, "steel.plate", "brow")
+    _rings(b, [[(-10.0, 13.0, 23.6 + L), (10.0, 13.0, 23.6 + L), (10.0, 13.0, 24.8 + L), (-10.0, 13.0, 24.8 + L)],
+               [(-9.0, 19.0, 20.9 + L), (9.0, 19.0, 20.9 + L), (9.0, 19.0, 22.1 + L), (-9.0, 19.0, 22.1 + L)]], "glass.glass", "windscreen")
+    b.box(-12.0, 12.0, 10.5, 13.5, 23.5 + L, 26.5 + L, "steel.plate", "brow")
     # The turret on the roof (Ryan, 1 October): squatter, wider, a gun on either side and
     # none in the middle, every gun the class shape and nothing hand-modelled. The left
     # gun is the fixed Flakshot Repeater (a barrel, no pin); the right is hp_1, the Twin
     # Autoguns (a twin barrel).
-    b.prism("z", 0.0, -8.0, 28.25, 5.5, 1.5, "steel.dark", 8, "neck")
-    b.prism("z", 0.0, -8.0, 29.75, 7.0, 1.5, "steel.dark", 8, "ring")
-    with b.joint("turret", (0.0, -8.0, 30.5)):   # traverses
-        b.prism("z", 0.0, -8.0, 33.0, 7.5, 5.0, "steel.panel", 8, "turret", phase=math.pi / 8)
+    b.prism("z", 0.0, -8.0, 28.25 + L, 5.5, 1.5, "steel.dark", 8, "neck")
+    b.prism("z", 0.0, -8.0, 29.75 + L, 7.0, 1.5, "steel.dark", 8, "ring")
+    with b.joint("turret", (0.0, -8.0, 30.5 + L)):   # traverses
+        b.prism("z", 0.0, -8.0, 33.0 + L, 7.5, 5.0, "steel.panel", 8, "turret", phase=math.pi / 8)
         # The guns at the drum's middle, their receivers sunk into its flanks (Ryan, 1
         # October: they floated off it, too far forward).
         start = len(b.objects)
         shape_barrel(b, 0.7)
         for ob in b.objects[start:]:
-            ob.matrix_world = Matrix.Translation(Vector((-8.8, -9.0, 33.0)))
-        b.stock("hp_1", (8.8, -9.0, 33.0), "twin_barrel", scale=0.7)
+            ob.matrix_world = Matrix.Translation(Vector((-8.8, -9.0, 33.0 + L)))
+        b.stock("hp_1", (8.8, -9.0, 33.0 + L), "twin_barrel", scale=0.7)
     # The mast, out of the tail's centre, lower: a post, a sensor head, a red light.
-    b.prism("z", 0.0, -27.0, 28.5, 1.2, 11.0, "steel.dark", 4, "mast")   # rooted in the roof; a little shorter (Ryan, 1 October)
-    with b.joint("sensor", (0.0, -27.0, 34.0), limits=(-75.0, 75.0)):   # the head turns on its mast (the joint pass)
-        b.box(-2.5, 2.5, -29.5, -24.5, 34.0, 39.0, "steel.panel", "sensor_head")
-        b.box(-1.5, 1.5, -24.4, -23.6, 35.0, 38.0, "glass.glass", "sensor_eye")
-        b.prism("z", 0.0, -27.0, 40.5, 1.5, 3.0, "amber.engine", 6, "mast_light")
+    b.prism("z", 0.0, -27.0, 28.5 + L, 1.2, 11.0, "steel.dark", 4, "mast")   # rooted in the roof; a little shorter (Ryan, 1 October)
+    with b.joint("sensor", (0.0, -27.0, 34.0 + L), limits=(-75.0, 75.0)):   # the head turns on its mast (the joint pass)
+        b.box(-2.5, 2.5, -29.5, -24.5, 34.0 + L, 39.0 + L, "steel.panel", "sensor_head")
+        b.box(-1.5, 1.5, -24.4, -23.6, 35.0 + L, 38.0 + L, "glass.glass", "sensor_eye")
+        b.prism("z", 0.0, -27.0, 40.5 + L, 1.5, 3.0, "amber.engine", 6, "mast_light")
     # The tail (Ryan, 30 September: something to break up the back): a raised hatch panel
     # with a handle, a jerry can strapped either side, tail lights at the corners, a hitch.
-    b.box(-7.0, 7.0, -30.8, -30.0, 11.0, 21.0, "steel.panel", "rear_hatch")
-    b.box(-3.0, 3.0, -31.6, -30.8, 15.0, 16.2, "steel.dark", "hatch_handle")
+    b.box(-7.0, 7.0, -30.8, -30.0, 11.0 + L, 21.0 + L, "steel.panel", "rear_hatch")
+    b.box(-3.0, 3.0, -31.6, -30.8, 15.0 + L, 16.2 + L, "steel.dark", "hatch_handle")
     for s in (-1.0, 1.0):
-        b.box(s * 11.0 - 2.0, s * 11.0 + 2.0, -32.5, -30.0, 10.0, 17.0, "livery.livery2", "jerry_can")
-        b.box(s * 11.0 - 2.4, s * 11.0 + 2.4, -32.7, -29.8, 13.0, 13.8, "steel.dark", "can_strap")
-        b.box(s * 12.0 - 1.5, s * 12.0 + 1.5, -30.6, -30.0, 19.0, 21.5, "amber.light", "tail_light")
-    b.box(-1.5, 1.5, -34.0, -30.0, 8.0, 10.0, "steel.dark", "hitch")
+        b.box(s * 11.0 - 2.0, s * 11.0 + 2.0, -32.5, -30.0, 10.0 + L, 17.0 + L, "livery.livery2", "jerry_can")
+        b.box(s * 11.0 - 2.4, s * 11.0 + 2.4, -32.7, -29.8, 13.0 + L, 13.8 + L, "steel.dark", "can_strap")
+        b.box(s * 12.0 - 1.5, s * 12.0 + 1.5, -30.6, -30.0, 19.0 + L, 21.5 + L, "amber.light", "tail_light")
+    b.box(-1.5, 1.5, -34.0, -30.0, 8.0 + L, 10.0 + L, "steel.dark", "hitch")
     # The launcher on the rear-left corner (hp_2): the class rack, its tube face one whole
     # tile (the hand-built box showed a quarter of the tile: Ryan, 1 October).
-    b.stock("hp_2", (-10.0, -26.0, 28.5), "rack", scale=0.6)
+    b.stock("hp_2", (-10.0, -26.0, 28.5 + L), "rack", scale=0.6)
     # The third mount (hp_3) is bare on the rear-right corner, the launcher's twin.
-    b.pad("hp_3", (10.0, -26.0, 26.0), scale=0.7, size=(6.0, 2.0))   # on the roof, not above it
+    b.pad("hp_3", (10.0, -26.0, 26.0 + L), scale=0.7, size=(6.0, 2.0))   # on the roof, not above it
     for s in (-1.0, 1.0):
-        b.box(s * 7.0 - 2.0, s * 7.0 + 2.0, 32.5, 33.5, 12.0, 14.0, "amber.light", "lamp")
+        b.box(s * 7.0 - 2.0, s * 7.0 + 2.0, 32.5, 33.5, 12.0 + L, 14.0 + L, "amber.light", "lamp")
     chassis.__exit__(None, None, None)
 
     # Idle acts, third pass (Ryan, 4 October: turrets too fast and wild; real machines with
@@ -1328,12 +1332,17 @@ def prairie_dog(b):
     # keyed. Degrees and seconds; a key is (t, value) on the joint's own axis or (t, pitch,
     # yaw, roll); a body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll); a glow
     # key is (t, k), k the light added over rest.
+    # The rock five degrees and the squat under half a unit (Ryan, 9 October: six degrees and a
+    # squat of two and a half took the tyres two units into the arches once the wheels came up
+    # under them; then, with the arches a whole unit lower, a little clipping at the vertices is
+    # fine). Measured at the keys: the front tyres reach about half a unit into their arches at
+    # the deepest (the servo trails this slow a curve and never passes a key).
     b.act("rev", 4.2, {   # revs eagerly: a jump forward, a squat, back, and again; the wheels spin hard
         "wheel_fl": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.2, -1080.0)],
         "wheel_fr": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.2, -1080.0)],
         "wheel_rl": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.2, -1080.0)],
         "wheel_rr": [(0.3, 0.0), (1.4, -900.0), (2.4, -540.0), (3.4, -1080.0), (4.2, -1080.0)],
-        "chassis": [(0.5, 6.0, 0.0, 0.0, 0.0, 0.0, -2.5), (1.2, -6.0, 0.0, 0.0, 0.0, 0.0, -2.0), (2.2, 5.0, 0.0, 0.0, 0.0, 0.0, -1.5), (3.0, -6.0, 0.0, 0.0, 0.0, 0.0, -2.0), (3.8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
+        "chassis": [(0.5, 5.0, 0.0, 0.0, 0.0, 0.0, -0.4), (1.2, -5.0, 0.0, 0.0, 0.0, 0.0, -0.3), (2.2, 4.0, 0.0, 0.0, 0.0, 0.0, -0.2), (3.0, -5.0, 0.0, 0.0, 0.0, 0.0, -0.3), (3.8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)],
     }, body=[(0.6, 0.0, 10.0, 0.0), (1.3, 0.0, 9.0, 0.0), (2.2, 0.0, -4.0, 0.0), (3.0, 0.0, 6.0, 0.0), (4.2, 0.0, 0.0, 0.0)])
     b.act("scout", 7.6, {   # the sensor head looks one way and then the other, the turret following it round each way and waiting, the mast light hot
         "sensor": [(0.9, 60.0), (2.4, 62.0), (3.6, -55.0), (5.6, -58.0), (6.8, 0.0)],

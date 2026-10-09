@@ -25,9 +25,12 @@ this just reads them together.
 - **Faction reads before foe at 1x**, and never by hue alone. Ryan is protanomalous; the
   sheet's rule of "no shared hue between factions" is the wrong rule. Each faction needs a
   lightness band and a silhouette family of its own (the numbers are in section 6).
-- **A pack is one type times a strength**, and on the map it is a chibi with a count.
-  Mixed fights come from packs chained. So a faction's identity lives in the shape its packs
-  make on the map as much as in the sprite.
+- **A pack is one type times a strength**, and on the map it is a chibi with a count. Under
+  the round of 8 October a pack does one of two things, pushes for the gate or hunts one
+  machine, and a fight is at the pack the player attacks, joined by every pack whose ring
+  covers it; machines are ground to foes and stop nothing. So a faction's identity lives in
+  how its packs stand to one another, which rings overlap and who hunts, as much as in the
+  sprite.
 - **Enemy numbers are static and telegraphed; only the player rolls.** That is exactly how
   Final Fantasy's enemies work: fixed, named, gimmick moves you learn and answer (the
   thousand needles, the bad breath, the doom count, the grudge, the self-destruct). The
@@ -56,8 +59,8 @@ this just reads them together.
   and heat; attacks on the die) are good. Keep them; retire the table.
 - **The palette folds for Ryan.** Under the protan simulation the Risen green against the
   Host red comes out at a distance of 18, the pair that cannot be told apart on a phone.
-- **Every faction makes the same pack shape** (two front packs and one back pack, in a
-  wall), and only the brute hunts. On the map the factions do not differ at all.
+- **Every faction makes the same pack shape** (two front packs and one back pack), and the
+  ghoul and the brute are the only hunters. On the map the factions barely differ.
 
 ## 3. The proposal in one line
 
@@ -75,8 +78,8 @@ costumes.
 - **Look.** Bone ivory and rust over a grave-blue shadow. Everything tall and thin or a
   ragged crowd: tatters, lanterns, rusted ornate plate, tower shields. Silhouette family:
   verticals and tatters. The pale band.
-- **Revenant** (was Ghoul; front, aim anything, aggressive). A crowd of armoured dead, the
-  swarm claw as built. The sprite is a knight's silhouette gone wrong: the helm empty, the
+- **Revenant** (was Ghoul; front, aim anything, hunts the nearest with a small ring, as
+  built). A crowd of armoured dead, the swarm claw as built. The sprite is a knight's silhouette gone wrong: the helm empty, the
   plate hanging off the ribs.
 - **Lantern-bearer** (was Necromancer; back, aim focus). A hooded ghost whose lantern flame
   is the brightest pixel in the faction. Hex Bolt and Raise as built.
@@ -104,8 +107,8 @@ bright animals that are furious rather than evil.
   Roar, which is now literally a roar. The biggest silhouette among the rank and file.
 - **Fire Drake** (was Hellcaster; back, aim exposed). A lizard that breathes over the front
   rank: Firebolt with Scorch and Stoke as built. The halo and cannon go; it is an animal.
-- **Bomb** (new, the elite tier's candidate; front, aggressive at 30, hunts the nearest). A
-  floating fireball with a face. It swells, and its blow breaches and kills it: the series'
+- **Bomb** (new, the elite tier's candidate; front, hunts the nearest at 30). A floating
+  fireball with a face. It swells, and its blow breaches and kills it: the series'
   self-destruct, which makes a foe whose death is its attack, costly for the Sparrowhawk to
   stay beside. Needs one effect in the engine (a blow that ends the foe).
 - **King Behemoth** (was Pit Lord; massive boss). Charge with Breach, Roar the pack (was
@@ -134,10 +137,13 @@ knife. The series' sorcerers and oddities, and its theatre.
   disables what a machine shows (built), or, if the gimmick is wanted, a Doom count, a blow
   that lands two rounds after it is announced (needs a delayed blow in the engine).
 - **The Penitent** (new; the dedicated hunter the to-do asks for). A small hooded figure
-  with a lantern and a knife. It locks a machine when it spawns and walks at 10, slower than
-  anything, and never stops; its knife breaches and grows every round it has walked (needs a
-  per-round scalar in the engine, the series' grudge). The decision it makes: kill it now at
-  reach, or outrun it and let it come for the gate. Its caveat for the hunt: the weakest.
+  with a lantern and a knife. A hunter of the slowest at 20 with a small ring (the round row:
+  hunters of the slow cannot be outrun, and a hunter pins what it catches until it is dead);
+  the lock it wears from its spawn says who it is coming for. Its knife breaches and grows
+  every round of the fight it has forced (needs a per-round scalar in the engine, the series'
+  grudge), so the fight it opens is a clock: kill it first, or the knife gets worse. The
+  decision is on the map, before it arrives: meet it with company, or send the machine it
+  can never pick, the Prairie Dog, to do the work behind it.
 - **The Conductor** (was The Maw; massive boss). Two strikes of the baton (was Bite),
   Unmake, Unravel as built.
 - **The leader** (pitches): the **Prima Donna**, the opera's own star, every Mask on the field
@@ -151,19 +157,24 @@ knife. The series' sorcerers and oddities, and its theatre.
 
 ## 4. Pack shapes on the map
 
-Today the three factions spawn the same shape. Each gets a shape of its own, so faction reads
-on the map before it is scouted and the formation Ryan asked for on 1 October has a front and
-a back by faction.
+Today the three factions spawn the same shape. Under the round of 8 October a shape is how a
+faction's packs stand to one another: which rings overlap, so which packs join which fight,
+and who hunts. Each faction gets one, so faction reads on the map before it is scouted and
+the formation Ryan asked for on 1 October has a front and a back by faction. Rings are the
+placeholders the round row left open.
 
-| Faction | Shape | Behaviour | Pace | What it asks of the player |
+| Faction | Shape | Behaviours | Pace | What it asks of the player |
 |---|---|---|---|---|
-| The Risen | **The wall**: three Revenant packs abreast, the Lantern-bearer behind | push | 20 | A line of three machines holds it (the horde's crossing is three wide by design); reach kills the caller |
-| The Menagerie | **The loose hunt**: no formation, singles and pairs scattered | aggressive and hunt | 30 | Nothing holds a line; what wanders into reach gets charged; the fast machines bait |
-| The Chorus | **The procession**: a column, Cantors in the middle, Masks ahead and behind, the Penitent walking apart | push, the hunter hunting | 20, the hunter 10 | Break the column at the Cantor; decide what to do about the walker |
+| The Risen | **The file**: Revenant packs ahead with small rings, the Lantern-bearer behind with a large one covering them | Revenants hunt the nearest, the caller pushes | 20 | Attack a Revenant pack and the caller joins; get round to the caller and the front stays out unless adjacent. Reach past the front, or fight the whole wall |
+| The Menagerie | **The loose hunt**: no file, hunters scattered, the Drake pushing on its own with a large ring | Behemoth hunts the strongest, the Bomb the nearest, the Drake pushes | 30, the Drake 20 | Every fight is forced on the player's turn; the question is where the machines stand when the beasts arrive, and who is caught alone |
+| The Chorus | **The procession**: Masks and Cantors alternating in a column, their rings overlapping, the Penitent walking apart | the column pushes, the Penitent hunts the slowest | 20 | Any order on the column pulls two packs; break it at a Cantor; decide what to do about the walker before it arrives |
 
 A guest's packs come in the guest's shape, so a mixed front still reads as two things. The
 rift's spawns would place by shape rather than at the rift's mouth (today a spawn list is
-placed, never shaped; that is a placement rule to write, small).
+placed, never shaped; that is a placement rule to write, small). Ryan's worry from the
+sandbox (8 October: getting round a front pack of ring one to its back rank looks easy) is
+answered per faction: the Risen is meant to be got round, that is its lesson; the Chorus's
+overlapping rings are not; the Menagerie has no back to get round.
 
 ## 5. Elites, commanders and leaders in one place
 
@@ -210,9 +221,10 @@ Looked for before building, as the rules ask.
 - **Three factions still.** The series' bestiary is wider, but the campaign (one lead, one
   guest, three finals) is built on three. More families fit inside these as elites.
 - **The Risen barely changes.** It was the one in register. Its cost is mostly art.
-- **The Penitent's threat.** A hunter at 10 may never catch a machine; its real threat is
-  the gate it walks to when it cannot, and the grudge that makes it worse the longer it is
-  ignored. If the runner shows it never lands a blow, it needs a wider zone, not more move.
+- **The Penitent's threat.** A hunter pins what it catches, so a hunter whose knife grows
+  every round is the one fight the team cannot leave cheaply, and a lone machine caught by it
+  is the fight the runner already says is lost three times in five. It belongs at the elite's
+  rate, never in the rank and file, and its ring should stay small so company can be sent.
 
 ## 8. What the recast costs
 
