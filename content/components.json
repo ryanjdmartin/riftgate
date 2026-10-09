@@ -118,27 +118,6 @@
    ]
   },
   {
-   "id": "ablative_plating",
-   "name": "Ablative Plating",
-   "maker": "minerva",
-   "shape": "none",
-   "codex": "",
-   "flavour": "",
-   "design": {
-    "stage": "draft",
-    "fantasy": "Bolt-on armour that comes off in sheets so the hull does not.",
-    "niche": ""
-   },
-   "face": {
-    "kind": "shield",
-    "power": 20
-   },
-   "passive": null,
-   "tags": [
-    "defense"
-   ]
-  },
-  {
    "id": "twin_autoguns",
    "name": "Twin Autoguns",
    "maker": "wainwright_sutler",
@@ -166,8 +145,8 @@
    ]
   },
   {
-   "id": "lance",
-   "name": "Lance",
+   "id": "enfilade_beam",
+   "name": "Enfilade Beam",
    "maker": "wainwright_sutler",
    "shape": "barrel",
    "codex": "",
@@ -175,7 +154,8 @@
    "design": {
     "stage": "draft",
     "fantasy": "A beam that goes through the wall and the thing hiding behind it.",
-    "niche": ""
+    "niche": "",
+    "notes": "Renamed from the Lance 9 October (Ryan, the name audit): the Lance shared its word with the Photosphere Lance, and a lance is the Arsenal's medieval register anyway; an enfilade is fire along a line of troops, which is what penetrate does."
    },
    "face": {
     "kind": "attack",
@@ -193,8 +173,8 @@
    ]
   },
   {
-   "id": "pocket_mortar",
-   "name": "Pocket Mortar",
+   "id": "ankle_mortar",
+   "name": "Ankle Mortar",
    "maker": "wainwright_sutler",
    "shape": "rack",
    "codex": "",
@@ -202,7 +182,8 @@
    "design": {
     "stage": "draft",
     "fantasy": "Small, rude, lands behind the front rank.",
-    "niche": ""
+    "niche": "",
+    "notes": "Renamed from the Pocket Mortar 9 October (Ryan, the name audit): pocket was also the Baboon's Pocket Paradox; the knee mortar's reference, extra stupid (Ryan)."
    },
    "face": {
     "kind": "attack",
@@ -298,8 +279,8 @@
    ]
   },
   {
-   "id": "shock_barrage",
-   "name": "Shock Barrage",
+   "id": "suppression_battery",
+   "name": "Suppression Battery",
    "maker": "wainwright_sutler",
    "shape": "rack",
    "codex": "",
@@ -307,7 +288,8 @@
    "design": {
     "stage": "draft",
     "fantasy": "Whatever it was about to do, it is not doing it now.",
-    "niche": ""
+    "niche": "",
+    "notes": "Renamed from the Shock Barrage 9 October (Ryan, the name audit): Shock is a keyword and a status since the content revision, and this one suppresses."
    },
    "face": {
     "kind": "attack",
@@ -346,27 +328,6 @@
    "passive": null,
    "tags": [
     "support"
-   ]
-  },
-  {
-   "id": "flak_skirt",
-   "name": "Flak Skirt",
-   "maker": "wainwright_sutler",
-   "shape": "none",
-   "codex": "",
-   "flavour": "",
-   "design": {
-    "stage": "draft",
-    "fantasy": "A little armour is better than the amount you had.",
-    "niche": ""
-   },
-   "face": {
-    "kind": "shield",
-    "power": 10
-   },
-   "passive": null,
-   "tags": [
-    "defense"
    ]
   },
   {
@@ -566,7 +527,7 @@
    "id": "pulse_repeater",
    "name": "Pulse Repeater",
    "maker": "aphelion",
-   "tier": 1,
+   "tier": 2,
    "shape": "barrel",
    "codex": "",
    "flavour": "",
@@ -574,7 +535,7 @@
     "stage": "draft",
     "fantasy": "A small fast gun that gives the machine its turn back.",
     "niche": "The tempo tool: a rapid entry so a control frame gets another look at its die.",
-    "notes": "Claude's fill, 26 September; the first rapid component in the pool. Stocked on no chassis since 9 October (the content revision: the Baboon's two became the Probe and the Projector, the Stingray's the Halo Shield), so it carries its own tier, one, as when the Baboon stocked it."
+    "notes": "Claude's fill, 26 September; the first rapid component in the pool. Stocked on no chassis since 9 October (the content revision: the Baboon's two became the Probe and the Projector, the Stingray's the Halo Shield), so it carries its own tier, one, as when the Baboon stocked it. Tier two since the same day (Ryan: it carries Rapid, so it reads as a tier-two weapon)."
    },
    "face": {
     "kind": "attack",
@@ -1047,8 +1008,8 @@
    ]
   },
   {
-   "id": "plasma_carbine",
-   "name": "Plasma Carbine",
+   "id": "plasma_arquebus",
+   "name": "Plasma Arquebus",
    "maker": "arsenal",
    "shape": "barrel",
    "codex": "",
@@ -1057,7 +1018,7 @@
     "stage": "draft",
     "fantasy": "The Arsenal's issue weapon. Flat, hot, and it never misses the way a shell can.",
     "niche": "The Arsenal's starter gun.",
-    "notes": "Claude's fill, 28 September."
+    "notes": "Claude's fill, 28 September. Renamed from the Plasma Carbine 9 October (Ryan, the name audit): carbine is W&S's word and the Laser Carbine already carries it; an arquebus is the Arsenal's medieval firearm."
    },
    "face": {
     "kind": "attack",
@@ -1127,28 +1088,6 @@
     "energy",
     "artillery",
     "burn"
-   ]
-  },
-  {
-   "id": "ward_plate",
-   "name": "Ward Plate",
-   "maker": "arsenal",
-   "shape": "none",
-   "codex": "",
-   "flavour": "",
-   "design": {
-    "stage": "draft",
-    "fantasy": "Armour inscribed with the Arsenal's tolerances. It holds because it was told to.",
-    "niche": "The Arsenal's starter shield.",
-    "notes": "Claude's fill, 28 September."
-   },
-   "face": {
-    "kind": "shield",
-    "power": 20
-   },
-   "passive": null,
-   "tags": [
-    "defense"
    ]
   },
   {
@@ -1370,21 +1309,16 @@
    "design": {
     "stage": "draft",
     "fantasy": "A slab of mine-shaft door on a hydraulic arm, swung across in front of whoever needs it.",
-    "niche": "Minerva's intercept for the starter set (the to-do of 30 September): spent on an ally, every foe aimed at that ally turns on the spender, and the door's own shield goes up on the spender, the one taking the blows.",
-    "notes": "Stocked on the Honey Badger in place of its Twin Autoguns, beside the Proximity Klaxon: the lure picks foes, the door picks the ally. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders."
+    "niche": "Minerva's hardpoint shield: a slab on an arm, raised on itself or an ally. The platings left the dice for modules on 9 October, so a shield on a hardpoint wants to be something mounted.",
+    "notes": "Built 9 October in the content revision as Minerva's intercept, with the Guard keyword (allies only, the foes aimed at the ally turning on the spender, its shield going up on the door); Guard taken out the same day (Ryan: until we feel we need it), so it is a plain shield, self or ally. On the Wild Boar and the Clydesdale in place of their Ablative Plating."
    },
    "face": {
     "kind": "shield",
-    "power": 20,
-    "targets": "ally",
-    "keywords": [
-     "guard"
-    ]
+    "power": 20
    },
    "passive": null,
    "tags": [
-    "defense",
-    "support"
+    "defense"
    ]
   },
   {
@@ -1423,14 +1357,14 @@
    "id": "oblation_ward",
    "name": "Oblation Ward",
    "maker": "arsenal",
-   "shape": "none",
+   "shape": "dish",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "An offering made of the machine's own plating. The manual calls it devotion.",
+    "fantasy": "A ward projected from the machine's own reactor, paid for out of its frame. The manual calls it devotion.",
     "niche": "The biggest shield in the pool, paid in the spender's hull: raised on an ally, the Arsenal machine bleeds to cover a friend.",
-    "notes": "Stocked on the Ammit in place of its Ward Plate. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders."
+    "notes": "Stocked on the Ammit in place of its Ward Plate. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders. A projector since 9 October (Ryan: plating belongs in modules, a hardpoint carries something mounted), its shape a dish and its fantasy no longer plating. On the Nemesis in place of its Ward Plate as well."
    },
    "face": {
     "kind": "shield",

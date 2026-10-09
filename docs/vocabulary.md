@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 108 implemented, 7 planned, 0 idea.
+Status: 107 implemented, 7 planned, 0 idea.
 
 ## Resource
 
@@ -66,7 +66,6 @@ Status: 108 implemented, 7 planned, 0 idea.
 | **Corrode** | Player keyword. Corroding enemies lose 1% of their HP per stack at the start of their action, then lose one stack. Bypasses armour. Can be resisted. | planned |
 | **Lure** | Player keyword, on any entry aimed at a foe: a weapon, a status, or an entry that does nothing else. Every foe the entry reaches turns on this machine for the round, intents and all; reach and area decide who and how many. A lured foe whose move has no target keeps doing it. | implemented |
 | **Shock** | Player keyword, on any entry aimed at a foe. Every foe the entry reaches and leaves standing is Shocked: the next blow it takes deals double. The entry's own blow never spends the shock it leaves. | implemented |
-| **Guard** | Player keyword, on equipment spent on an ally. Every foe aimed at that ally turns on this machine for the round, intents and all, and the component's own shield, vent or buff lands on this machine, the one taking the blows. | implemented |
 | **Disrupt** | Player keyword, on any entry aimed at a foe. The foe does its other move instead, this round, and its new intent shows at once. A foe with nothing else open is not moved. | implemented |
 | **Suppress** | Player keyword. The target skips its telegraphed action this round, then gains two stacks of Numbed (three if massive). A foe may shrug it off: its own stun resistance plus 10% a Numbed stack. | implemented |
 | **Volatile** | Player keyword, on any kind of component. Spending it bites its owner for 10 hull, past shield and armour, before the component acts. A blank is never spent, so a disabled entry does not bite. | implemented |
@@ -211,9 +210,8 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Damage range** (implemented): Ranges are content-authored per component; no upgrade path raises min or max yet.
 - **Critical hit** (implemented): The base is Face.CRIT_MULT, a balance knob; lower it if crit triggers make crits too strong at low chance.
 - **Spillover** (implemented): Built 29 September as Overwhelm; renamed Spillover 6 October (Ryan: of the six over-words it was the one to move). The spill is plain damage: it spends a shock and feeds a devour, and carries no other keyword of the blow. The Wild Boar's Juggernaut Drive grants it to every attack (grant_keyword, the first passive to add a keyword).
-- **Lure** (implemented): Decided 2 October in place of Taunt and Beacon (bible, section 5). No status and no chip: the arrow is the record. A draw by ally (cover) is parked until a support role proves to need it.
+- **Lure** (implemented): Decided 2 October in place of Taunt and Beacon (bible, section 5). No status and no chip: the arrow is the record. A draw by ally (cover) is parked until a support role proves to need it. Built 9 October as Guard (equipment spent on an ally, the foes aimed at it turning on the spender, on the Blast Door) and taken out the same day (Ryan: until we feel we need it); the parking stands.
 - **Shock** (implemented): Decided 9 October with the content revision: the Armadillo's Shocked on a weapon (the Polarity Projector at no damage, the Tesla Gauntlets on a melee blow). Shocked is a status, so a shock feeds an on_foe_status passive (the Baboon's Pocket Paradox), which a suppress never does. A shock on a foe already Shocked by a blow that deals nothing adds nothing; it never stacks.
-- **Guard** (implemented): Decided 9 October with the content revision: Minerva's intercept for the starter set (the to-do of 30 September), the lure from the other end. A lure picks foes by reach and spread; a guard picks the ally, so it takes exactly the arrows on that machine. The component's work landing on the spender is the one rule of its own (the Blast Door's shield goes up on the door, not on the ally behind it). No status and no chip: the arrows are the record. The validator holds a guard to allies only.
 - **Disrupt** (implemented): Decided 2 October in place of the planned Scramble and Confuse (bible, section 5). Deterministic: the next move in the foe's list that its conditions allow, so a boss steps through its pattern.
 - **Numbed** (implemented): Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths. Exempt from everything (Ryan, 2 October): a stun resist that passives or cleanses could touch is where other games' combat loops broke.
 - **Stun resistance** (implemented): 30 on the three bosses as a placeholder.

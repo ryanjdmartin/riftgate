@@ -205,7 +205,7 @@ func test_content_mech_survives_a_skirmish_round() -> void:
 func test_keyword_cap_is_enforced() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var comp: Dictionary = db.components["lance"].duplicate(true)
+	var comp: Dictionary = db.components["enfilade_beam"].duplicate(true)
 	comp["face"]["keywords"] = ["penetrate", "burn", "chain", "execute"]
 	comp["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["too_many"] = comp
@@ -346,7 +346,7 @@ func test_planned_passive_is_kept_but_not_run() -> void:
 func test_planned_component_may_carry_a_planned_keyword() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var plate: Dictionary = db.components["ablative_plating"].duplicate(true)
+	var plate: Dictionary = db.components["deflector"].duplicate(true)
 	plate["face"]["keywords"] = ["corrode"]
 	plate["status"] = "planned"
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
@@ -386,7 +386,7 @@ func test_a_crit_burn_passive_from_content_adds_a_stack() -> void:
 func test_melee_reach_can_be_authored() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var claw: Dictionary = db.components["lance"].duplicate(true)
+	var claw: Dictionary = db.components["enfilade_beam"].duplicate(true)
 	claw["face"]["reach"] = "melee"
 	claw["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["fist"] = claw
@@ -531,15 +531,15 @@ func test_chassis_cooling_is_read_and_never_negative() -> void:
 func test_support_keywords_ride_on_shields_and_vents_only() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var scrubber: Dictionary = db.components["ablative_plating"].duplicate(true)
+	var scrubber: Dictionary = db.components["deflector"].duplicate(true)
 	scrubber["face"]["keywords"] = ["cleanse"]
 	scrubber["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["scrubber"] = scrubber
-	var gun: Dictionary = db.components["lance"].duplicate(true)
+	var gun: Dictionary = db.components["enfilade_beam"].duplicate(true)
 	gun["face"]["keywords"] = ["cleanse"]
 	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["cleansing_gun"] = gun
-	var plate: Dictionary = db.components["ablative_plating"].duplicate(true)
+	var plate: Dictionary = db.components["deflector"].duplicate(true)
 	plate["face"]["keywords"] = ["burn"]
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["burning_plate"] = plate
@@ -586,7 +586,7 @@ func test_a_component_passive_from_content_lands_on_the_mech() -> void:
 func test_a_buff_face_names_a_machine_status() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var good: Dictionary = db.components["ablative_plating"].duplicate(true)
+	var good: Dictionary = db.components["deflector"].duplicate(true)
 	good["face"] = {"kind": "buff", "status": "overcharged", "stacks": 2}
 	good["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["coil_ok"] = good
@@ -616,11 +616,11 @@ func test_a_buff_face_names_a_machine_status() -> void:
 func test_a_spend_keyword_rides_on_any_kind_of_component() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var plate: Dictionary = db.components["ablative_plating"].duplicate(true)
+	var plate: Dictionary = db.components["deflector"].duplicate(true)
 	plate["face"]["keywords"] = ["volatile"]
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["hot_plate"] = plate
-	var gun: Dictionary = db.components["lance"].duplicate(true)
+	var gun: Dictionary = db.components["enfilade_beam"].duplicate(true)
 	gun["face"]["keywords"] = ["volatile"]
 	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["hot_gun"] = gun
@@ -637,7 +637,7 @@ func test_a_spend_keyword_rides_on_any_kind_of_component() -> void:
 func test_the_content_carries_a_live_hull_the_engine_runs() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var plate: Dictionary = db.components["ablative_plating"].duplicate(true)
+	var plate: Dictionary = db.components["deflector"].duplicate(true)
 	plate["passive"] = {"id": "live_plate", "name": "Live Plate", "description": "", "effects": [
 		{"trigger": "static", "effect": "shock_on_block", "value": 1}]}
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
@@ -656,11 +656,11 @@ func test_the_content_carries_a_live_hull_the_engine_runs() -> void:
 func test_lure_and_disrupt_ride_on_attacks_and_never_on_a_shield() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var gun: Dictionary = db.components["lance"].duplicate(true)
+	var gun: Dictionary = db.components["enfilade_beam"].duplicate(true)
 	gun["face"]["keywords"] = ["lure", "disrupt"]
 	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["loud_gun"] = gun
-	var plate: Dictionary = db.components["ablative_plating"].duplicate(true)
+	var plate: Dictionary = db.components["deflector"].duplicate(true)
 	plate["face"]["keywords"] = ["lure"]
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["loud_plate"] = plate
@@ -703,11 +703,11 @@ func test_grant_keyword_names_a_keyword_the_engine_runs() -> void:
 func test_the_vent_on_fire_fields_belong_to_an_attack() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var plate: Dictionary = db.components["ablative_plating"].duplicate(true)
+	var plate: Dictionary = db.components["deflector"].duplicate(true)
 	plate["face"]["vents_all"] = true
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["hot_plate"] = plate
-	var gun: Dictionary = db.components["lance"].duplicate(true)
+	var gun: Dictionary = db.components["enfilade_beam"].duplicate(true)
 	gun["face"]["power_per_heat"] = 10
 	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["half_gun"] = gun
@@ -784,17 +784,17 @@ func test_every_component_names_a_silhouette_class() -> void:
 			assert_true(shape != ContentDB.SHAPE_NONE, "%s is a weapon and takes a mount" % id)
 		if c0["face"].get("kind") == "vent":
 			assert_eq(shape, ContentDB.SHAPE_NONE, "%s is a vent and shows nowhere" % id)
-	var c: Dictionary = db.components["lance"]
+	var c: Dictionary = db.components["enfilade_beam"]
 	c["shape"] = "teapot"
 	var hit := false
 	for e in db.validate():
-		if e.begins_with("component lance") and e.contains("silhouette class"):
+		if e.begins_with("component enfilade_beam") and e.contains("silhouette class"):
 			hit = true
 	assert_true(hit, "an unknown class is refused")
 	c.erase("shape")
 	hit = false
 	for e in db.validate():
-		if e.begins_with("component lance") and e.contains("missing shape"):
+		if e.begins_with("component enfilade_beam") and e.contains("missing shape"):
 			hit = true
 	assert_true(hit, "and a component without one")
 
@@ -915,29 +915,20 @@ func test_the_tier_rules_are_validated() -> void:
 	assert_true(_has_error(db, "carries its own tier"), "an unstocked component needs its own")
 
 
-func test_a_guard_is_spent_on_an_ally_and_rapid_rides_on_anything() -> void:
-	# 9 October: guard is equipment's and is held to allies only; rapid joined volatile as a
-	# keyword about the spend, so a vent may carry it; shock is a weapon's.
+func test_rapid_rides_on_anything_and_shock_on_weapons_only() -> void:
+	# 9 October: rapid joined volatile as a keyword about the spend, so a vent may carry it;
+	# shock is a weapon's.
 	var db := _fresh()
-	var door: Dictionary = db.components["ablative_plating"].duplicate(true)
-	door["face"]["keywords"] = ["guard"]
-	door["tier"] = 1
-	db.components["test_door"] = door
-	assert_true(_has_error(db, "a guard is spent on an ally"), "a guard that could land on itself is refused")
-	db = _fresh()
-	door["face"]["targets"] = "ally"
-	db.components["test_door"] = door
 	var vent: Dictionary = db.components["heat_sink"].duplicate(true)
 	vent["face"]["keywords"] = ["rapid"]
 	vent["tier"] = 1
 	db.components["test_vent"] = vent
-	var plate: Dictionary = db.components["ablative_plating"].duplicate(true)
+	var plate: Dictionary = db.components["deflector"].duplicate(true)
 	plate["face"]["keywords"] = ["shock"]
 	plate["tier"] = 1
 	db.components["test_plate"] = plate
 	var refused_shock := false
 	for e in db.validate():
-		assert_false(e.begins_with("component test_door"), "an allies-only guard validates: %s" % e)
 		assert_false(e.begins_with("component test_vent"), "a rapid vent validates: %s" % e)
 		if e.begins_with("component test_plate") and e.contains("is an attack keyword"):
 			refused_shock = true

@@ -323,28 +323,6 @@ func test_greedy_values_a_cleanse_where_there_is_something_to_clear() -> void:
 	assert_true(pol.cleanse_score(sk, ms) > before, "a foe's disable is worth clearing, a rapid switch-off is not")
 
 
-func test_greedy_guards_the_machine_about_to_die() -> void:
-	var sk := Skirmish.new(2, 2)
-	var door := Face.shield(20)
-	door.targets = Face.Target.ALLY
-	door.add_keyword(K.GUARD)
-	var tank := _mech("Tank", Die.single(door), 30, 200)
-	var glass := _mech("Glass", Die.single(Face.blank()), 0, 15)
-	sk.add_mech(tank)
-	sk.add_mech(glass)
-	sk.add_foes([_ghoul(500, 10), _ghoul(500, 10)])
-	sk.begin()
-	sk.start_round()
-	for f in sk.field_foes():
-		f.target = sk.mechs[1]
-	var pol := Policy.make(Policy.GREEDY)
-	var ms: Skirmish.MechState = sk.mechs[0]
-	assert_true(pol.equipment_score(sk, ms, sk.mechs[1], door) > Policy.DEATH_WEIGHT, "the door in front of the glass is worth a life")
-	pol.play_round(sk)
-	assert_eq(sk.front[0].target, sk.mechs[0], "so the bot swings it")
-	assert_eq(sk.front[1].target, sk.mechs[0], "and both blows come to the tank")
-
-
 func test_greedy_values_a_shock_by_the_doubled_blow_to_come() -> void:
 	var sk := Skirmish.new(1, 1)
 	var projector := Face.attack(0, L, K.SHOCK)

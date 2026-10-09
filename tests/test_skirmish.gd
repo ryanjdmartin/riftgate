@@ -2915,39 +2915,6 @@ func test_a_blow_of_nothing_leaves_a_standing_shock_alone() -> void:
 	assert_false("\n".join(sk.log).contains("the shock lands"), "the log claims no doubled blow")
 
 
-func test_a_guard_turns_the_foes_on_the_ally_onto_the_spender_and_its_shield_goes_up_on_the_door() -> void:
-	var sk := Skirmish.new(2, 3)
-	var door := Face.shield(20)
-	door.targets = Face.Target.ALLY
-	door.add_keyword(K.GUARD)
-	var tank := _mech("Tank", Die.single(door), 30, 200)
-	tank.shield = 0
-	var glass := _mech("Glass", Die.single(Face.attack(10, L)), 0, 50)
-	var other := _mech("Other", Die.single(Face.attack(10, L)), 0, 50)
-	sk.add_mech(tank)
-	sk.add_mech(glass)
-	sk.add_mech(other)
-	sk.add_foes([_ghoul(500, 10), _ghoul(500, 10), _ghoul(500, 10)])
-	sk.begin()
-	sk.start_round()
-	assert_eq(door.describe(), "shield 20 guard (allies only)", "the keyword reads on the entry")
-	sk.front[0].target = sk.mechs[1]
-	sk.front[1].target = sk.mechs[1]
-	sk.front[2].target = sk.mechs[2]
-	assert_false(sk.equipment_targets_for(sk.mechs[0], door).has(sk.mechs[0]), "a guard is never spent on itself")
-	assert_true(sk.assign(0, sk.mechs[1]), "the tank swings the door in front of the glass")
-	assert_eq(sk.front[0].target, sk.mechs[0], "the blows aimed at the glass")
-	assert_eq(sk.front[1].target, sk.mechs[0], "turn on the tank")
-	assert_eq(sk.front[2].target, sk.mechs[2], "a blow aimed elsewhere keeps its aim")
-	assert_eq(tank.shield, 20, "the door's shield goes up on the tank, the one taking the blows")
-	assert_eq(glass.shield, 0, "not on the glass behind it")
-	assert_true("\n".join(sk.log).contains("Tank guards Glass: ghoul, ghoul turn on Tank"), "the log says so")
-	sk.end_round()
-	assert_eq(glass.hull, 50, "the glass took nothing")
-	assert_eq(tank.shield, 0, "the tank's shield took both blows")
-	assert_eq(other.hull, 40, "the third blow landed where it was aimed")
-
-
 func test_a_rapid_vent_cools_and_the_machine_acts_again() -> void:
 	var sk := Skirmish.new(2)
 	var diffuser := Face.vent(10)

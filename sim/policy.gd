@@ -361,11 +361,8 @@ static func _kill_odds(outcomes: Array, hp: int) -> float:
 
 
 ## A piece of equipment spent by `ms` on `who`: its shield, vent or buff where it lands, what
-## a cleanse clears there, and what a volatile bite costs. A guard is read whole by
-## `guard_score`, since its work lands on the spender and the blows move with it.
+## a cleanse clears there, and what a volatile bite costs.
 func equipment_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.MechState, f: Face) -> float:
-	if f.has(Face.Keyword.GUARD) and who != ms:
-		return guard_score(sk, ms, who, f) - volatile_cost(sk, ms, f)
 	var score := 0.0
 	match f.kind:
 		Face.Kind.SHIELD:
@@ -377,31 +374,6 @@ func equipment_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.MechSta
 	if f.has(Face.Keyword.CLEANSE):
 		score += cleanse_score(sk, who)
 	return score - volatile_cost(sk, ms, f)
-
-
-## A guard spent on `ally`: the team's hull and lives at the round's end with every foe aimed
-## at the ally turned on the spender and the component's shield standing on the spender, read
-## in a what-if and put back; a vent or a buff on the spender adds its own worth.
-func guard_score(sk: Skirmish, ms: Skirmish.MechState, ally: Skirmish.MechState, f: Face) -> float:
-	var power := f.power if f.kind == Face.Kind.SHIELD else 0
-	var before := _team_outlook(sk, ms, 0)
-	var saved := {}
-	for foe in sk.field_foes():
-		if foe.alive() and foe.target == ally:
-			saved[foe] = foe.target
-			foe.target = ms
-	var after := _team_outlook(sk, ms, power)
-	for foe in saved.keys():
-		foe.target = saved[foe]
-	var score := (float(after["hull"]) - float(before["hull"])) * HULL_WEIGHT + float(int(before["deaths"]) - int(after["deaths"])) * DEATH_WEIGHT
-	match f.kind:
-		Face.Kind.SHIELD:
-			score += float(maxi(0, mini(power, ms.unit.shield_max - ms.unit.shield))) * BANK_WEIGHT
-		Face.Kind.VENT:
-			score += vent_score(sk, ms, f.power)
-		Face.Kind.BUFF:
-			score += buff_score(sk, ms, f)
-	return score
 
 
 ## What a cleanse clears from a machine, in hull: the Overheating it would gain (the heat this

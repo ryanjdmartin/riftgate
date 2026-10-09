@@ -35,27 +35,27 @@ func test_every_silhouette_class_has_a_model_in_every_makers_metal() -> void:
 
 func test_mount_plan_names_only_the_mounts_that_differ_from_stock() -> void:
 	var db := ContentDB.load_default()
-	# Stock: a gun, a rack, a gun, and plating that takes no mount: three mounts filled.
-	var stock := ["slugthrower", "missile_rack", "twin_autoguns", "ablative_plating"]
+	# Stock: a gun, a rack, a gun, and a jack that takes no mount: three mounts filled.
+	var stock := ["slugthrower", "missile_rack", "twin_autoguns", "shoring_jack"]
 	var die := db.build_die(["chainsaw_claw", "chainsaw_claw"], stock, 4)
 	assert_eq(MechView3D.mount_plan(die, stock, db), [], "the stock kit changes nothing")
-	# The plating swapped for a vent: still no mount touched.
+	# The jack swapped for a vent: still no mount touched.
 	die.faces[5] = db.build_face(db.components["heat_sink"]["face"])
 	die.faces[5].component = "heat_sink"
 	assert_eq(MechView3D.mount_plan(die, stock, db), [], "equipment without a shape shows nowhere")
 	# The rack (die entry 4, mount 2) refitted with a Kestrel gun, the autoguns emptied: the
 	# next shaped entry is the vent, which takes no mount, so mount 3 goes bare.
-	die.faces[3] = db.build_face(db.components["lance"]["face"])
-	die.faces[3].component = "lance"
+	die.faces[3] = db.build_face(db.components["enfilade_beam"]["face"])
+	die.faces[3].component = "enfilade_beam"
 	die.faces[4] = Face.empty_slot()
 	var plan := MechView3D.mount_plan(die, stock, db)
-	assert_eq(plan, [[2, "lance", "barrel", "wainwright_sutler"], [3, "", "", ""]], "mounts are counted over shaped entries, in the die's order, in the component's own metal")
-	# Plating swapped for a shield projector: a dish takes the next mount, the fourth.
+	assert_eq(plan, [[2, "enfilade_beam", "barrel", "wainwright_sutler"], [3, "", "", ""]], "mounts are counted over shaped entries, in the die's order, in the component's own metal")
+	# The vent swapped for a shield projector: a dish takes the next mount, the fourth.
 	die.faces[4] = db.build_face(db.components["twin_autoguns"]["face"])
 	die.faces[4].component = "twin_autoguns"
 	die.faces[5] = db.build_face(db.components["deflector"]["face"])
 	die.faces[5].component = "deflector"
-	assert_eq(MechView3D.mount_plan(die, stock, db), [[2, "lance", "barrel", "wainwright_sutler"], [4, "deflector", "dish", "kestrel"]], "a projector is gun-shaped enough to take a mount")
+	assert_eq(MechView3D.mount_plan(die, stock, db), [[2, "enfilade_beam", "barrel", "wainwright_sutler"], [4, "deflector", "dish", "kestrel"]], "a projector is gun-shaped enough to take a mount")
 	assert_eq(MechView3D.mount_plan(null, stock, db), [], "no die, no plan")
 
 
@@ -68,10 +68,10 @@ func test_plan_for_reads_the_chassis_stock_from_content() -> void:
 		if not u.die.faces[i].fixed:
 			hp = i
 			break
-	u.die.faces[hp] = db.build_face(db.components["pocket_mortar"]["face"])
-	u.die.faces[hp].component = "pocket_mortar"
-	assert_eq(MechView3D.plan_for(u, db), [[1, "pocket_mortar", "rack", "wainwright_sutler"]], "the first mount refitted")
-	assert_eq(MechView3D.plan_from_spec("1:lance, 2:, x:y, 3:no_such, 4:heat_sink", db), [[1, "lance", "barrel", "wainwright_sutler"], [2, "", "", ""]], "the debug spec: a fit, a bared mount, junk and unshaped equipment skipped")
+	u.die.faces[hp] = db.build_face(db.components["ankle_mortar"]["face"])
+	u.die.faces[hp].component = "ankle_mortar"
+	assert_eq(MechView3D.plan_for(u, db), [[1, "ankle_mortar", "rack", "wainwright_sutler"]], "the first mount refitted")
+	assert_eq(MechView3D.plan_from_spec("1:enfilade_beam, 2:, x:y, 3:no_such, 4:heat_sink", db), [[1, "enfilade_beam", "barrel", "wainwright_sutler"], [2, "", "", ""]], "the debug spec: a fit, a bared mount, junk and unshaped equipment skipped")
 
 
 func test_a_turret_joint_traverses_and_a_limb_swings() -> void:

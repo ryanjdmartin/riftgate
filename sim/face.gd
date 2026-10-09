@@ -11,7 +11,7 @@ const CRIT_MULT := 2.0        # a crit multiplies the roll by this plus every cr
 
 enum Kind { ATTACK, SHIELD, VENT, BLANK, BUFF }
 enum Reach { NONE, LINE, INDIRECT, MELEE }
-enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, EXECUTE, CHAIN, STEADY, RAPID, CLEANSE, VOLATILE, DEVOUR, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, GUARD }
+enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, EXECUTE, CHAIN, STEADY, RAPID, CLEANSE, VOLATILE, DEVOUR, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK }
 ## Whom a component may be spent on (Ryan, 26 September): a weapon (an attack) targets foes;
 ## equipment (a shield, a vent) targets self and allies by default, and content may narrow
 ## one to self only or allies only, so the design space stays open.
@@ -28,7 +28,7 @@ const KEYWORD_NAMES := {
 	Keyword.SUPPRESS: "suppress", Keyword.EXECUTE: "execute",
 	Keyword.CHAIN: "chain", Keyword.STEADY: "steady", Keyword.RAPID: "rapid", Keyword.CLEANSE: "cleanse",
 	Keyword.VOLATILE: "volatile", Keyword.DEVOUR: "devour", Keyword.LURE: "lure", Keyword.DISRUPT: "disrupt",
-	Keyword.SPILLOVER: "spillover", Keyword.OVERSHIELD: "overshield", Keyword.SHOCK: "shock", Keyword.GUARD: "guard",
+	Keyword.SPILLOVER: "spillover", Keyword.OVERSHIELD: "overshield", Keyword.SHOCK: "shock",
 }
 ## What the player reads where it differs from the content id (the vocabulary's name).
 const KEYWORD_LABELS := { Keyword.CLEAVE: "spread" }
@@ -40,10 +40,8 @@ const TARGET_NAMES := {
 ## content to this. Lure and disrupt (2 October) are attack keywords: they ride on any
 ## foe-targeted entry, a damage weapon, a status weapon or an entry that does nothing else.
 ## Shock (9 October) is an attack keyword too: every foe the blows reach and leave alive is
-## Shocked. Guard (9 October) is equipment's: spent on an ally, the foes aimed at that ally
-## turn on the spender, and the component's own work lands on the spender, the one taking
-## the blows (`Skirmish._guard`).
-const SUPPORT_KEYWORDS := [Keyword.CLEANSE, Keyword.OVERSHIELD, Keyword.GUARD]
+## Shocked.
+const SUPPORT_KEYWORDS := [Keyword.CLEANSE, Keyword.OVERSHIELD]
 ## Of those, the ones only a shield may carry: overshield (5 October, the Puffin's Prow
 ## Projector first, rare) lets a shield pass its target's maximum, and the excess fades at the
 ## round's end. A vent has nothing to pass.

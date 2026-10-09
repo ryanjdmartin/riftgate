@@ -236,7 +236,7 @@
    "codex": "Player keyword, on any entry aimed at a foe: a weapon, a status, or an entry that does nothing else. Every foe the entry reaches turns on this machine for the round, intents and all; reach and area decide who and how many. A lured foe whose move has no target keeps doing it.",
    "status": "implemented",
    "design": {
-    "holes": "Decided 2 October in place of Taunt and Beacon (bible, section 5). No status and no chip: the arrow is the record. A draw by ally (cover) is parked until a support role proves to need it."
+    "holes": "Decided 2 October in place of Taunt and Beacon (bible, section 5). No status and no chip: the arrow is the record. A draw by ally (cover) is parked until a support role proves to need it. Built 9 October as Guard (equipment spent on an ally, the foes aimed at it turning on the spender, on the Blast Door) and taken out the same day (Ryan: until we feel we need it); the parking stands."
    }
   },
   {
@@ -247,16 +247,6 @@
    "status": "implemented",
    "design": {
     "holes": "Decided 9 October with the content revision: the Armadillo's Shocked on a weapon (the Polarity Projector at no damage, the Tesla Gauntlets on a melee blow). Shocked is a status, so a shock feeds an on_foe_status passive (the Baboon's Pocket Paradox), which a suppress never does. A shock on a foe already Shocked by a blow that deals nothing adds nothing; it never stacks."
-   }
-  },
-  {
-   "id": "guard",
-   "category": "keyword",
-   "name": "Guard",
-   "codex": "Player keyword, on equipment spent on an ally. Every foe aimed at that ally turns on this machine for the round, intents and all, and the component's own shield, vent or buff lands on this machine, the one taking the blows.",
-   "status": "implemented",
-   "design": {
-    "holes": "Decided 9 October with the content revision: Minerva's intercept for the starter set (the to-do of 30 September), the lure from the other end. A lure picks foes by reach and spread; a guard picks the ally, so it takes exactly the arrows on that machine. The component's work landing on the spender is the one rule of its own (the Blast Door's shield goes up on the door, not on the ally behind it). No status and no chip: the arrows are the record. The validator holds a guard to allies only."
    }
   },
   {

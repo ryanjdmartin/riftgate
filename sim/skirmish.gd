@@ -657,11 +657,6 @@ func assign(mech_index: int, target = null) -> bool:
 			ms.assigned = true
 			_check_outcome()
 			return true
-	# Guard (9 October, Minerva's intercept): spent on an ally, the component's own work lands
-	# on the spender, the one about to take that ally's blows, and the foes turn after it.
-	var guarding: MechState = target if f.has(Face.Keyword.GUARD) and target is MechState and target != ms else null
-	if guarding != null:
-		target = ms
 	match f.kind:
 		Face.Kind.BLANK:
 			pass
@@ -690,8 +685,6 @@ func assign(mech_index: int, target = null) -> bool:
 			_cleanse_with(ms, who, f)
 		Face.Kind.ATTACK:
 			_resolve_attack(mech_index, ms, f, target)
-	if guarding != null:
-		_guard(ms, guarding)
 	ms.assigned = true
 	# Rapid: the component is switched off for the rest of this round, the die rerolls for
 	# free (never the same entry), and the mech may act again. The disable is only there to
@@ -1153,22 +1146,6 @@ func _lure(ms: MechState, foes: Array) -> void:
 		log.append("%s lures %s" % [ms.unit.display_name, ", ".join(turned)])
 	if not idle.is_empty():
 		log.append("lured, but %s %s nothing to turn" % [", ".join(idle), "has" if idle.size() == 1 else "have"])
-
-
-## Guard (9 October, Minerva's intercept, the lure from the other end): every foe aimed at
-## the ally turns on the spender for the round, intents and all. A lure picks foes by reach
-## and spread; a guard picks the ally, so it takes exactly the arrows on that one machine.
-## No status and no chip, as with the lure: the arrows moving are the record.
-func _guard(ms: MechState, ally: MechState) -> void:
-	var turned: Array[String] = []
-	for foe in field_foes():
-		if foe.alive() and foe.target == ally:
-			foe.target = ms
-			turned.append(foe.display_name)
-	if turned.is_empty():
-		log.append("%s guards %s: nothing was aimed there" % [ms.unit.display_name, ally.unit.display_name])
-	else:
-		log.append("%s guards %s: %s turn on %s" % [ms.unit.display_name, ally.unit.display_name, ", ".join(turned), ms.unit.display_name])
 
 
 ## Disrupt (decided 2 October, in place of the planned scramble and confuse): the foe does its
