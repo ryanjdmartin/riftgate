@@ -21,6 +21,7 @@ the page sets it beside what the game plays now.
 
     tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py     # into out/fx, after the others
     tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 2   # the second cut
+    tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 3   # the third
 """
 import json
 import math
@@ -288,6 +289,122 @@ def shield_discharge2():
     return room(FX.heft(b, 0.4), decay=0.15, mix=0.1)
 
 
+# ---------------------------------------------------------------- the third cut (Ryan, 9 October)
+# The whine read as Pac-Man after all: gone from every maker but Aphelion. Minerva two booms;
+# Wainwright & Sutler's wind-down louder, three much smaller explosions over the clockwork;
+# Kestrel the other way round, the hit and then the blast; Aphelion the StarCraft Science
+# Vessel, electricity discharging with its warnings and a boom after; the Arsenal's occult
+# played right up, a ghostly cry as it ignites. Each death has its own gap for Jenny's
+# "machine lost" (VOICE_AT), so she interleaves with it rather than over a blast.
+
+VOICE_AT = {"minerva": 0.95, "wainwright_sutler": 0.45, "kestrel": 0.95, "aphelion": 0.3, "arsenal": 1.05}
+
+
+def hull_boom(gain=1.0, low=22.0):
+    """Minerva's: a blast inside the hull, the plate around it muffling it, a box resonance,
+    the hull taking it whole."""
+    b = blast(1.0, low, 1.2 * gain, cut=520.0)
+    n = n_of(0.5)
+    box = F.lp(F.sat(F.bp(F.noise(n), 70.0, 180.0) * 4.0, 3.0), 400.0) * F.env_ad(n, 0.004, 0.18) * 0.9 * gain
+    b = at(b, box, 0.0)
+    return at(b, FX.heft(F.thud(95.0, 28.0, 0.7, click=0.6, drive=4.0, body_gain=2.0), 0.6) * gain, 0.04)
+
+
+def wail(dur=1.0, f0=250.0, gain=1.0):
+    """A ghostly cry, an "aargh": a voice's harmonics on a cry's contour (a lift, then falling
+    away), through the "a" vowel's formants, with breath, a rasp at the front and a voice an
+    octave under it; spread and washed so it reads as something leaving, not someone."""
+    n = n_of(dur)
+    t = t_of(n)
+    contour = np.interp(t, [0.0, 0.12, dur * 0.45, dur], [f0 * 0.9, f0 * 1.25, f0, f0 * 0.62])
+    contour = contour * (1.0 + 0.012 * np.sin(2.0 * math.pi * 5.5 * t))
+    out = np.zeros(n)
+    for detune, octave, g in ((1.0, 1.0, 1.0), (1.007, 1.0, 0.7), (0.994, 0.5, 0.6)):
+        ph = 2.0 * math.pi * np.cumsum(contour * detune * octave) / SR
+        v = np.zeros(n)
+        for k in range(1, 18):
+            v += np.sin(k * ph) / k
+        out += v * g
+    rasp = 1.0 - 0.45 * (0.5 + 0.5 * np.sign(np.sin(2.0 * math.pi * 68.0 * t))) * np.clip(1.0 - t / 0.35, 0.0, 1.0)
+    out = out * rasp + F.lp(F.noise(n), 2000.0) * 0.25
+    vowel = mix(F.bp(out, 650.0, 950.0) * 1.0, F.bp(out, 1050.0, 1400.0) * 0.7, F.bp(out, 2300.0, 2800.0) * 0.12)
+    vowel = F.sat(vowel * 2.0, 1.8)
+    vowel = vowel * F.env_pts(n, [(0.0, 0.0), (0.05, 1.0), (dur * 0.5, 0.75), (dur, 0.0)])
+    return room(FX.chorus(vowel, depth=0.004, rate=0.6, voices=3, wet=0.7), decay=0.6, mix=0.35) * gain
+
+
+def electric_buzz(dur, gain=0.5):
+    """A machine's electrics shorting: a mains-like buzz, stuttering."""
+    n = n_of(dur)
+    t = t_of(n)
+    buzz = F.lp(F.sat(F.harmonics(120.0, n, [1.0, 0.6, 0.5, 0.4, 0.3, 0.2]), 3.0), 2200.0)
+    stutter = (F.RNG.uniform(0.0, 1.0, n // n_of(0.02) + 1) > 0.35).repeat(n_of(0.02))[:n].astype(float)
+    stutter = np.convolve(stutter, np.ones(n_of(0.003)) / n_of(0.003), mode="same")
+    return buzz * stutter * F.env_pts(n, [(0.0, 0.0), (0.03, 1.0), (dur * 0.7, 0.8), (dur, 0.0)]) * gain
+
+
+def death3(maker):
+    """A machine's death, third cut."""
+    if maker == "minerva":
+        # Two booms inside the hull, the second deeper; the hull settling.
+        b = hull_boom(1.0, 24.0)
+        b = at(b, hull_boom(1.1, 20.0), 0.42)
+        n = n_of(1.2)
+        settle = F.lp(F.noise(n), 140.0) * F.env_pts(n, [(0.0, 0.0), (0.1, 1.0), (1.2, 0.0)]) * 0.5
+        b = at(b, F.sat(settle * 2.0, 2.0), 0.6)
+    elif maker == "wainwright_sutler":
+        # A blast, then the works running down out loud: the clockwork clattering slower and
+        # slower (a rate falling, never a pitch), three small explosions going off over it,
+        # a breath of steam.
+        b = blast(0.9, 26.0, 1.0)
+        b = at(b, grit(0.4, 0.6), 0.05)
+        dur = 2.0
+        when = 0.25
+        while when < 0.25 + dur:
+            frac = (when - 0.25) / dur
+            tick = mix(F.lp(F.burst(0.035, 150.0, 1600.0, decay=0.01), 1100.0, order=3), F.thud(260.0, 120.0, 0.04, click=0.6, drive=2.0) * 0.5)
+            b = at(b, tick * 1.1 * (1.0 - 0.5 * frac), when)
+            when += 0.055 + 0.25 * frac ** 1.4
+        for when in (0.7, 1.15, 1.7):
+            b = at(b, blast(0.35, 48.0, 0.35), when)
+        steam = F.bp(F.noise(n_of(0.8)), 1000.0, 2600.0) * F.env_pts(n_of(0.8), [(0.0, 0.0), (0.1, 1.0), (0.8, 0.0)]) * 0.07
+        b = at(b, steam, 0.9)
+    elif maker == "kestrel":
+        # The airframe strikes the ground first, its crunch and skid, then it goes up.
+        ground = mix(F.thud(120.0, 30.0, 0.7, click=1.4, drive=4.0, body_gain=2.0), F.burst(0.12, 120.0, 1600.0, decay=0.04) * 0.9, FX.boom_tail(0.5, 0.5))
+        b = FX.heft(ground, 0.7)
+        n = n_of(0.4)
+        skid = F.lp_var(F.bp(F.noise(n), 150.0, 1800.0), 1600.0 - 1400.0 * t_of(n) / 0.4) * F.env_pts(n, [(0.0, 0.8), (0.4, 0.0)]) * 0.45
+        b = at(b, skid, 0.04)
+        b = at(b, grit(0.4, 0.7), 0.03)
+        b = at(b, blast(0.9, 26.0, 1.1), 0.42)
+    elif maker == "aphelion":
+        # The Science Vessel: the electrics discharging, arcing and shorting, its warning
+        # going under it, the whine running down, and a boom to end it.
+        b = mix(F.lp(arc(1.4, 0.7), 2200.0, order=2), electric_buzz(1.4, 0.5))
+        b = at(b, fizzle(1.5, 0.45, 600.0, 2400.0), 0.1)
+        for k in range(6):
+            n = n_of(0.08)
+            f = 987.77 if k % 2 == 0 else 880.0
+            beep = F.lp(np.sign(np.sin(2.0 * math.pi * f * t_of(n))) * 0.5 + np.sin(2.0 * math.pi * f * t_of(n)) * 0.5, 3000.0)
+            b = at(b, beep * F.env_pts(n, [(0.0, 0.0), (0.004, 1.0), (0.07, 1.0), (0.08, 0.0)]) * 0.2, 0.05 + 0.2 * k)
+        b = at(b, power_down_whine(1.5, 0.3), 0.15)
+        b = at(b, blast(0.9, 28.0, 1.1), 1.6)
+    else:
+        # The Arsenal: as it ignites, a ghostly cry leaving it, loud and plain; the plasma
+        # flames burning on; something else going under them.
+        b = mix(blast(0.8, 28.0, 0.9), FX.plasma_splash(1.0))
+        b = at(b, wail(1.1, 240.0, 1.4), 0.04)
+        n = n_of(1.3)
+        flames = F.lp(F.sat(F.lp(F.noise(n), 320.0) * 3.0, 3.0), 1100.0) * F.env_pts(n, [(0.0, 0.0), (0.05, 0.9), (0.6, 0.6), (1.3, 0.0)]) * 0.55
+        b = at(b, flames, 0.05)
+        n = n_of(1.2)
+        souls = F.choir([0, 3, 7], n, gain=0.18, vowel="oo", octave=2)[:n]
+        souls = F.lp(mix(souls, F.bp(F.noise(n), 600.0, 2400.0) * 0.12), 2600.0) * F.env_pts(n, [(0.0, 0.0), (0.45, 1.0), (0.8, 0.6), (1.2, 0.0)])
+        b = at(b, souls, 0.6)
+    return room(b, decay=0.25, mix=0.1)
+
+
 # ---------------------------------------------------------------- written as the game plays it
 
 def at_level(x, level):
@@ -372,9 +489,33 @@ def cut2():
     return 0
 
 
+SINGLES3 = [("death3_" + m, (lambda m=m: death3(m)), DEATH_LEVEL) for m in ("minerva", "wainwright_sutler", "kestrel", "aphelion", "arsenal")]
+
+
+def cut3():
+    made = {}
+    for name, fn, level in SINGLES3:
+        F.seed("d3_" + name)
+        x = at_level(fn(), level)
+        made[name] = x
+        write("d3_" + name, tail(x))
+        print("  d3_%-24s %5.2f s" % (name, len(x) / SR))
+    line_lost = read(os.path.join(ART, "voice", "line_machine_lost.wav"))
+    brute = read(os.path.join(ART, "foe_demonic_heavy.wav"))
+    land = 0.3
+    for m in ("minerva", "wainwright_sutler", "kestrel", "aphelion", "arsenal"):
+        hit = read(os.path.join(ART, "hit_%s.wav" % m))
+        seq = at(at(at(at(np.zeros(1), brute, 0.0), hit * 0.7, land), made["death3_" + m], land + 0.12), line_lost, land + 0.12 + VOICE_AT[m])
+        write("d3_seq_lost_" + m, tail(seq, 0.5))
+    print("  sequences written")
+    return 0
+
+
 def main(argv):
     if argv[:1] == ["2"]:
         return cut2()
+    if argv[:1] == ["3"]:
+        return cut3()
     made = {}
     for name, fn, level in SINGLES:
         F.seed(PREFIX + name)

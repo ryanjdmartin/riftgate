@@ -3443,12 +3443,13 @@ def _third_cut(name):
     return build
 
 
-def _death(name):
+def _death(name, cut=1):
     """A pick from death_sketches.py (Ryan, 9 October), seeded and levelled as the page made it."""
     def build():
         import death_sketches as D
-        fn, level = {n: (f, lv) for n, f, lv in D.SINGLES}[name]
-        D.F.seed(D.PREFIX + name)
+        table = {1: D.SINGLES, 2: D.SINGLES2, 3: D.SINGLES3}[cut]
+        fn, level = {n: (f, lv) for n, f, lv in table}[name]
+        D.F.seed("d%d_%s" % (cut, name))
         x = fn()
         return x * 10.0 ** ((level - loudness(x)) / 20.0)
     return build
@@ -3478,7 +3479,7 @@ SHIP = {
     "w_blade": _third_cut("w_blade"), "w_blunt": _third_cut("w_blunt"), "w_blunt_plasma": _third_cut("w_blunt_plasma"),
     "w_laser": _third_cut("w_laser"), "w_plasma": _third_cut("w_plasma"),
     "w_dish_shield": _third_cut("w_dish_shield"), "w_dish_coil": _third_cut("w_dish_coil"),
-    "shield_hit": _third_cut("shield_hit"), "shield_break": _third_cut("shield_break"),
+    "shield_hit": _third_cut("shield_hit"), "shield_break": _death("break2", 2),   # the shield's break, an electric discharge (Ryan's pick, 9 October)
     "kill": _death("foe_blast"),   # a foe's death, one short blast for every family (Ryan, 9 October; the families' own later)
     "step_tracked": _third_cut("step_tracked"), "step_legged": _third_cut("step_legged"),
     "step_wheeled": _third_cut("step_wheeled"), "step_flyer": _third_cut("step_flyer"),
