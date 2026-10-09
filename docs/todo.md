@@ -153,7 +153,7 @@ Nothing in content is planned any more; every piece the 28 September content lea
 
 ## Audio
 
-- [ ] Rerun the balance matrix (`tools/balance.gd`) after the sound branch's merge (8 October): the branch carried Ryan's 2 October halving of the player's blows, which main never had, so the merged content is halved (the four weapons main renamed or added at the old scale, the Slugthrower, Arc Fault Cannon, Umbra Inducer and Bullion Fragmenter, halved to match) and `docs/balance.md` is main's 5 October read at the old scale
+- [x] Rerun the balance matrix (`tools/balance.gd`) after the sound branch's merge (8 October; rerun 9 October at the half, the reading in status): the branch carried Ryan's 2 October halving of the player's blows, which main never had, so the merged content is halved (the four weapons main renamed or added at the old scale, the Slugthrower, Arc Fault Cannon, Umbra Inducer and Bullion Fragmenter, halved to match) and `docs/balance.md` is main's 5 October read at the old scale
 - [ ] Level the other five tracks against Hold The Line through the phone model (Ryan, 7 October: Hold The Line is the baseline, the others are not levelled yet; the rift tracks sit seven decibels under it on a phone, the map's thirteen); the effects hold still while it happens
 - [ ] The Risen and Infernal Horde boss themes from their seeds; melodies proposed in chat first
 - [x] The effects' pass in the game (8 October): forge.py SHIP builds every pick, the hooks read the weapon (`ContentDB.sound_of`), the struck machine's maker, what took the blow, the family, the way of moving; `tools/sound_smoke.gd` drives them all
