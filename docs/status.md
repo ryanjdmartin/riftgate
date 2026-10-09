@@ -99,6 +99,15 @@ sessions run on this repo at once: check `git status` before committing, stage b
 shared file first (a path still sweeps the other session's hunks), never `git add -A`, never
 kill a bare `godot --path .`. Commit after each verified chunk with tests green.
 
+**Foe art on the Mac, 9 October, evening.** Every foe and hero has four foeforge candidates in
+`tools/foeforge/out` (git-ignored), the heroes twice: the boss register for their promoted forms and the chibi
+party sprite for their domain's final (the hero split, decided the same evening; bible section 9). Each foe's
+`design.sprite` brief now leads its prompt, since without one the Bomb and the Gel came out as muscled humanoids;
+four briefs were sharpened after a bad first round (kept as `<id>_v1`), the hero halo dropped (a bright ring
+survives the cutter's key as a stray arc). `forge.py picker` writes a page to pick from with the number keys.
+Next: Ryan's picks, cut into `art/foes` (heroes at 24x32), checked at the phone's layout; then the promoted
+entries and their names.
+
 **The bars, for whoever picks them up** (9 October; the bible's section 9 bars row is the full note): the
 Convergence is built (`Campaign.convergence`); Anathema is a placeholder count (`bosses_beaten`, three won battles
 against a domain flag its next rift a final, `FINAL_AFTER`) and is meant to become the Rupture meter's weighted

@@ -94,6 +94,18 @@ def load_foes():
     return {e["id"]: e for e in json.loads(FOES.read_text())["entries"]}
 
 
+# The hero split (decided 9 October): a hero met in its domain's final is the genre's party
+# member, a small chibi battle sprite in one slot (CHIBI_SIZE, drawn by the slot at 4x); its
+# promoted form at the finale is the boss register, massive, 64x96 (HERO_STYLE above).
+CHIBI_STYLE = (
+    "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, "
+    "the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel "
+    "dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid "
+    "flat pure white background, no text, no border, no ground shadow. A face that is not a "
+    "recognisable character, played straight and determined, never comic."
+)
+CHIBI_SIZE = (24, 32)
+
 DOMAIN_NAME = {"meadow": "the grasslands", "waste": "the desert", "marsh": "the swamp and graveyard", "peak": "the volcano"}
 
 
@@ -114,6 +126,78 @@ def prompt_for(foe):
     return f"{lead}{STYLE} Subject: {foe['name']}, a monster of {where}. {body} {size} Light: {look}."
 
 
+PICKER_HTML = """<!doctype html><html><head><meta charset="utf-8"><title>Foe picker</title>
+<style>
+:root{--bg:#14171c;--panel:#1d2126;--ink:#e7ebee;--muted:#8a949e;--pick:#f2b233}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px -apple-system,Helvetica,sans-serif}
+header{display:flex;gap:16px;align-items:baseline;padding:12px 20px;border-bottom:1px solid #2e353e}
+h1{font-size:22px;margin:0}#pos{color:var(--muted)}#hint{color:var(--muted);margin-left:auto;font-size:13px}
+#row{display:flex;gap:14px;padding:16px 20px;overflow-x:auto}
+figure{margin:0;flex:0 0 auto;background:#fff;border:4px solid transparent;cursor:pointer;position:relative}
+figure img{display:block;height:min(68vh,760px);width:auto}
+figure.pick{border-color:var(--pick)}
+figcaption{position:absolute;left:0;top:0;background:#000c;color:#fff;padding:3px 8px;font-weight:600}
+figure.pick figcaption{background:var(--pick);color:#000}
+#out{padding:8px 20px 20px;display:flex;gap:10px;align-items:center}
+#text{flex:1;background:var(--panel);color:var(--ink);border:1px solid #2e353e;padding:8px;font:13px ui-monospace,Menlo,monospace;min-height:40px}
+button{background:var(--pick);border:0;padding:9px 14px;font-weight:600;cursor:pointer}
+</style></head><body>
+<header><h1 id="name"></h1><span id="pos"></span><span id="hint">1-9 pick and move on &middot; &larr; &rarr; move &middot; 0 clears</span></header>
+<div id="row"></div>
+<div id="out"><div id="text"></div><button id="copy">Copy picks</button></div>
+<script>
+const FOES = __FOES__;
+let i = 0, picks = {};
+try { picks = JSON.parse(localStorage.getItem('foe-picks') || '{}'); } catch (e) {}
+function save(){ try { localStorage.setItem('foe-picks', JSON.stringify(picks)); } catch (e) {} }
+function text(){ return FOES.filter(f => picks[f.id]).map(f => f.id + ' ' + picks[f.id]).join(', '); }
+function show(){
+  const f = FOES[i];
+  document.getElementById('name').textContent = f.name;
+  document.getElementById('pos').textContent = (i + 1) + ' of ' + FOES.length + ' · ' + f.note;
+  const row = document.getElementById('row'); row.innerHTML = '';
+  f.cands.forEach((c, k) => {
+    const fig = document.createElement('figure');
+    if (picks[f.id] === c.label) fig.className = 'pick';
+    fig.innerHTML = '<img src="' + c.src + '"><figcaption>' + (k + 1) + ' · ' + c.label + '</figcaption>';
+    fig.onclick = () => choose(k);
+    row.appendChild(fig);
+  });
+  document.getElementById('text').textContent = text() || 'no picks yet';
+}
+function choose(k){ const f = FOES[i]; picks[f.id] = f.cands[k].label; save(); if (i < FOES.length - 1) i++; show(); }
+document.addEventListener('keydown', e => {
+  if (e.key >= '1' && e.key <= '9') { const k = +e.key - 1; if (k < FOES[i].cands.length) choose(k); }
+  else if (e.key === '0') { delete picks[FOES[i].id]; save(); show(); }
+  else if (e.key === 'ArrowRight') { i = Math.min(FOES.length - 1, i + 1); show(); }
+  else if (e.key === 'ArrowLeft') { i = Math.max(0, i - 1); show(); }
+});
+document.getElementById('copy').onclick = () => { navigator.clipboard.writeText(text()); };
+show();
+</script></body></html>"""
+
+
+def picker(args):
+    """One page for picking: every foe's candidates big, one foe at a time, number keys to pick.
+    Earlier rounds (<id>_v1) and the heroes' chibi renders (<id>_chibi) sit beside each foe's
+    latest. Written into the git-ignored out folder, so the images load by relative path."""
+    foes = load_foes()
+    order = []
+    for fid, foe in foes.items():
+        for suffix, note in [("_chibi", "chibi party sprite"), ("", "boss register" if foe.get("hero") else ""), ("_v1", "first round")]:
+            d = OUT / (fid + suffix)
+            cands = sorted(p for p in d.glob(f"{fid}_*.png") if re.fullmatch(rf"{re.escape(fid)}_\d+", p.stem)) if d.is_dir() else []
+            if not cands:
+                continue
+            key = fid + suffix
+            order.append({"id": key, "name": foe["name"] + (" (chibi)" if suffix == "_chibi" else ""),
+                          "note": " ".join(x for x in [foe.get("faction", ""), note] if x),
+                          "cands": [{"src": f"{key}/{p.name}", "label": p.stem.rsplit("_", 1)[1]} for p in cands]})
+    dest = OUT / "picker.html"
+    dest.write_text(PICKER_HTML.replace("__FOES__", json.dumps(order)))
+    print(f"wrote {dest.relative_to(ROOT)}: {len(order)} sets; open it with: open {dest.relative_to(ROOT)}")
+
+
 def prompts(args):
     """Every foe's prompt, in content order, into one sheet to read before generating."""
     foes = load_foes()
@@ -131,18 +215,29 @@ def prompts(args):
     print(f"wrote {dest.relative_to(ROOT)}: {len(foes)} prompts")
 
 
+def chibi_prompt_for(foe):
+    brief = foe.get("design", {}).get("sprite", foe["name"])
+    return f"{CHIBI_STYLE} The hero: {brief}."
+
+
 def generate(args):
     foes = load_foes()
     foe = foes[args.foe]
-    out = OUT / args.foe
+    chibi = getattr(args, "chibi", False)
+    if chibi and not foe.get("hero"):
+        sys.exit(f"{args.foe} is not a hero; only heroes have a chibi form")
+    name = args.foe + ("_chibi" if chibi else "")
+    out = OUT / name
     out.mkdir(parents=True, exist_ok=True)
-    prompt = args.prompt or prompt_for(foe)
+    prompt = args.prompt or (chibi_prompt_for(foe) if chibi else prompt_for(foe))
     (out / "prompt.txt").write_text(prompt + "\n")
     print(prompt)
     height = HEIGHT if int(foe.get("size") or 1) == 1 else 1024
     made = []
     for seed in range(args.seed, args.seed + args.n):
         path = out / f"{args.foe}_{seed}.png"
+        if path.exists():
+            path.unlink()   # mflux never overwrites; it writes a suffixed twin, which the contact sheet would miss
         cmd = [str(MFLUX), "--model", MODEL, "--quantize", QUANTIZE, "--prompt", prompt,
                "--width", str(WIDTH), "--height", str(height), "--steps", STEPS,
                "--seed", str(seed), "--output", str(path)]
@@ -294,7 +389,8 @@ def cut(args):
     src = key_background(Image.open(args.image))
     size = int(foe.get("size") or 1)
     ART.mkdir(parents=True, exist_ok=True)
-    combat = outline(quantize(fit(src, COMBAT_SIZE[size]), pal, args.colours))
+    frame = CHIBI_SIZE if (foe.get("hero") and size == 1) else COMBAT_SIZE[size]   # a hero in one slot is its chibi
+    combat = outline(quantize(fit(src, frame), pal, args.colours))
     combat.save(ART / f"{args.foe}_combat.png")
     map_frame = BIG_MAP.get(args.foe, MAP_SIZE[size])
     token = outline(quantize(fit(src, map_frame), pal, min(args.colours, 8)))
@@ -645,6 +741,8 @@ def main():
     cm.add_argument("--chunk", type=int, default=1, help="pixel size relative to the foes: 2 draws the mech on a grid twice as coarse (tried; it loses too much at 40x48)")
     cm.add_argument("--out", default="", help="write here instead of art/mechs (for experiments)")
     cm.set_defaults(func=cut_mech)
+    pk = sub.add_parser("picker", help="a page for picking candidates, one foe at a time (tools/foeforge/out/picker.html)")
+    pk.set_defaults(func=picker)
     p = sub.add_parser("prompts", help="every foe's prompt into tools/foeforge/prompts.md, to read before generating (no model needed)")
     p.add_argument("--out", default="")
     p.set_defaults(func=prompts)
@@ -653,6 +751,7 @@ def main():
     g.add_argument("--n", type=int, default=4)
     g.add_argument("--seed", type=int, default=1)
     g.add_argument("--prompt", default="")
+    g.add_argument("--chibi", action="store_true", help="a hero's chibi party sprite, into out/<hero>_chibi")
     g.set_defaults(func=generate)
     c = sub.add_parser("cut")
     c.add_argument("image")
