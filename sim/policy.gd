@@ -221,7 +221,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	if f.has(Face.Keyword.DEVOUR):
 		# A kill feeds a stack of Overcharged: what the status adds to the die's own damage,
 		# for about the rounds the stack lasts. Read from the status, never hardcoded.
-		score += p_kill * _stack_damage_gain("overcharged") * _raw_attack_mean(ms) * DEVOUR_ROUNDS
+		score += p_kill * _stack_damage_gain("overcharged", _raw_attack_mean(ms)) * DEVOUR_ROUNDS
 	# A chain repeats on the next foe in reach while it keeps killing, heat and all: every
 	# link is worth its kill at the odds of reaching it.
 	var uses := 1.0
@@ -260,15 +260,18 @@ static func volatile_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: f
 	return cost
 
 
-## What one stack of a status adds to an attack's damage, as a fraction (0.1 for +10%).
-static func _stack_damage_gain(status_id: String) -> float:
+## What one stack of a status adds to a blow of `mean` damage: a flat add as itself, a
+## multiplier as its share of the blow. Read from the status, never hardcoded.
+static func _stack_damage_gain(status_id: String, mean: float) -> float:
 	var gain := 0.0
 	for eff in Effects.STATUS.get(status_id, {}).get("effects", []):
 		if str(eff.get("trigger", "")) != "on_attack":
 			continue
 		match str(eff.get("effect", "")):
 			"multiply_damage":
-				gain += float(eff.get("value", 1)) - 1.0
+				gain += (float(eff.get("value", 1)) - 1.0) * mean
+			"add_damage":
+				gain += float(eff.get("value", 0))
 	return gain
 
 

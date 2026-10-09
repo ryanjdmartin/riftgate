@@ -25,7 +25,7 @@ enum Outcome { NONE, VICTORY, DEFEAT, WITHDRAWN }
 const DEFAULT_COLUMNS := 4   # the formation's width (Ryan, 23 September: four plays better than three)
 const REROLLS_PER_ROUND := 3
 const DANGER_CLOSE_DIVISOR := 2
-const BURN_DAMAGE_PER_STACK := 20   # damage dealt per stack applied
+const BURN_DAMAGE_PER_STACK := 10   # damage dealt per stack applied (halved 2 October with the player's damage)
 const CRACK_MIN_HULL_PCT := 25      # a single hull hit this big (percent of max) injures a face
 const CORRUPT_BITE_PER_STACK := 10  # what a corrupted entry costs its owner each time it is spent, per stack (placeholder)
 const VOLATILE_BITE := 10           # what a volatile component costs its owner each time it is spent: hull, past shield and armour (placeholder)
@@ -75,8 +75,14 @@ var log: Array[String] = []
 ## The most recent attack, for the screen to show: {mech, target, rolled, final, crit, ranged}.
 var last_roll: Dictionary = {}
 ## Every blow of the last enemy turn, in order, for the screen to replay:
-## {foe, mech (index), absorbed, through, blocked, broke_shield, injured, shield, hull}.
+## {foe, mech (index), absorbed, through, blocked, broke_shield, injured, shield, hull,
+## seq, name, boss}. `seq` orders it among the turn's specials; `name` is the move's shown
+## name and `boss` whether a massive foe struck, for the plaque (decided 9 October).
 var turn_events: Array = []
+## Every special of the last enemy turn (a defend, buff or debuff in place of a blow), for
+## the screen to announce on its plaque in order: {foe, name, kind, seq}.
+var turn_specials: Array = []
+var _seq: int = 0   # the order of the turn's blows and specials, shared by both lists
 ## Every mech that burnt at the end of the last enemy turn, for the screen to land after
 ## the blows: {mech (index), over, hull}.
 var overheats: Array = []
@@ -557,6 +563,24 @@ func _armed_mechs() -> Array[MechState]:
 
 ## Every foe on the field learns how many of its kind stand with it, for a swarm blow. Kept
 ## current as foes fall and step in, so the intent chips drop as the pack thins.
+## A foe that splits (the Gel): destroyed, so many of the named foe step into the pool
+## under its pack, made by the battle's content; without a factory nothing steps in.
+func _split(f: Foe) -> void:
+	if f.on_death.is_empty() or not foe_factory.is_valid():
+		return
+	var who := str(f.on_death.get("summon", ""))
+	var count := maxi(1, int(f.on_death.get("count", 1)))
+	var made := 0
+	for i in range(count):
+		var n = foe_factory.call(who)
+		if n is Foe:
+			n.pack_id = f.pack_id
+			reinforcements.append(n)
+			made += 1
+	if made > 0:
+		log.append("%s splits: %d %s step into the pool" % [f.display_name, made, who])
+
+
 func _refresh_kin() -> void:
 	var live := field_foes()
 	for f in live:
@@ -622,6 +646,23 @@ func can_reroll() -> bool:
 
 ## Spend a mech's face. `target` is a Foe for attacks, a MechState (or null for self) for
 ## shield and vent. Returns false if the assignment is not legal.
+## Whether die `mech_index` may be spent on `target` now (a Foe for an attack, a MechState or
+## null for equipment): the checks `assign` makes before it acts, changing nothing. The
+## screen asks it while a die is dragged, for the hover over a valid target.
+func can_assign(mech_index: int, target) -> bool:
+	if state != State.ASSIGN or mech_index < 0 or mech_index >= mechs.size():
+		return false
+	var ms := mechs[mech_index]
+	if not ms.alive() or ms.assigned or ms.face() == null:
+		return false
+	var f := Effects.effective_face(ms.unit, ms.face())
+	if f.is_attack():
+		return target is Foe and targets_for(mech_index).has(target)
+	if f.is_equipment():
+		return equipment_targets_for(ms, f).has(target if target is MechState else ms)
+	return false
+
+
 func assign(mech_index: int, target = null) -> bool:
 	if state != State.ASSIGN:
 		return false
@@ -728,6 +769,8 @@ func end_round() -> int:
 ## out. Shared by the end of a round and by a withdrawal.
 func _enemy_turn() -> void:
 	turn_events.clear()
+	turn_specials.clear()
+	_seq = 0
 	overheats.clear()
 	# Foes act in the order they stand: front rank left to right, then the back rank. Each
 	# foe's statuses tick at the start of its action (burning may kill it first), a
@@ -783,6 +826,11 @@ func _enemy_turn() -> void:
 				# The entry the die shows is corrupted for the fight: it bites when spent.
 				Effects.corrupt_entry(t.unit, t.face_index, "foe:" + f.content_id)
 				log.append("%s corrupts %s's %s (×%d)" % [f.display_name, t.unit.display_name, t.die.faces[t.face_index].describe(), Effects.corrupt_stacks(t.unit, t.face_index)])
+		if f.has_keyword(f.action, "self_destruct") and f.alive():
+			# The blow spends the striker (the Bomb): it dies whole and never gets back up.
+			f.hp = 0
+			f.executed = true
+			log.append("%s bursts, and is gone" % f.display_name)
 	_acted.clear()
 	_clear_dead()
 	for ms in mechs:
@@ -969,6 +1017,8 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 	var a := f.action
 	var effect := str(a.get("effect", ""))
 	var value := int(a.get("value", 0))
+	turn_specials.append({"foe": f, "name": str(a.get("name", "")), "kind": Foe.kind_of(a), "seq": _seq})
+	_seq += 1
 	match effect:
 		"harden":
 			# Armour for a turn: the status carries the action's own number, flat off every blow,
@@ -1307,7 +1357,9 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	# The mech's gauges after the blow ride along, so a replay can step them down blow by blow.
 	turn_events.append({"foe": source, "mech": mechs.find(ms), "absorbed": r["absorbed"], "through": r["through"],
 		"blocked": r["blocked"], "broke_shield": had_shield and ms.unit.shield == 0, "injured": r["injures"],
-		"shield": ms.unit.shield, "hull": ms.unit.hull})
+		"shield": ms.unit.shield, "hull": ms.unit.hull, "seq": _seq,
+		"name": str(source.action.get("name", "")) if source != null else "", "boss": source != null and source.is_massive()})
+	_seq += 1
 	if r["blocked"]:
 		log.append("%s hits %s: shield -%d, blocked" % [source.display_name, ms.unit.display_name, r["absorbed"]])
 	elif r["absorbed"] > 0:
@@ -1319,7 +1371,9 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	if int(r["through"]) > 0:
 		_hull_damaged(ms)
 	if r["injures"]:
-		apply_injury(ms)
+		# What the injury did rides on the event too: the console says a component was
+		# damaged or destroyed (Jenny's information lines, 8 October).
+		turn_events[turn_events.size() - 1]["component"] = apply_injury(ms)
 
 
 ## The arithmetic of one blow against a shield, hull max and armour, shared by the real hit
@@ -1355,39 +1409,40 @@ static func _blow(shield: int, hull_max: int, armour: int, amount: int, breach: 
 ## happens, so a mech with little left to break shrugs off more of them. The damage lives on
 ## the unit and persists until repaired in the hangar. (Decided 17 September: one threshold,
 ## one roll.) A passive may say no_destroy on_injury: then a cracked component holds.
-func apply_injury(ms: MechState) -> void:
+func apply_injury(ms: MechState) -> String:
 	if ms.die.faces.is_empty():
-		return
-	_injure_entry(ms, ms.die.roll(rng))
+		return ""
+	return _injure_entry(ms, ms.die.roll(rng))
 
 
 ## The injury on one entry: intact cracks, cracked is destroyed (unless a passive holds it),
 ## blank shrugs it off. The die's roll picks the entry for a hull hit; a foe's unmake picks
-## the one showing.
-func _injure_entry(ms: MechState, idx: int) -> void:
+## the one showing. Returns what happened: "cracked", "destroyed", or "" for nothing.
+func _injure_entry(ms: MechState, idx: int) -> String:
 	if idx < 0 or idx >= ms.die.faces.size():
-		return
+		return ""
 	var f := ms.die.faces[idx]
 	if f.kind == Face.Kind.BLANK:
 		log.append("%s: the blow lands on %s; nothing left to break" % [ms.unit.display_name, "an empty hardpoint" if f.empty else "a destroyed component"])
-		return
+		return ""
 	var originals: Dictionary = ms.unit.damaged_faces
 	var what := f.describe()
 	if f.cracked:
 		if Effects.no_destroy(ms.unit, f):
 			log.append("%s: %s holds, cracked but not destroyed" % [ms.unit.display_name, what])
-			return
+			return ""
 		var d := Face.blank()
 		d.component = f.component
 		ms.die.faces[idx] = d
 		destroyed += 1
 		log.append("%s: a cracked component is destroyed (%s)" % [ms.unit.display_name, what])
-	else:
-		originals[idx] = f.duplicate_face()
-		var c := f.duplicate_face()
-		c.crack()
-		ms.die.faces[idx] = c
-		log.append("%s: a component cracks (%s)" % [ms.unit.display_name, what])
+		return "destroyed"
+	originals[idx] = f.duplicate_face()
+	var c := f.duplicate_face()
+	c.crack()
+	ms.die.faces[idx] = c
+	log.append("%s: a component cracks (%s)" % [ms.unit.display_name, what])
+	return "cracked"
 
 
 ## Whom a foe strikes (decided 2 October): its own pick, by the sense its move follows. The aim: the exposed, weighted by the hull its blow would reach, so a
@@ -1510,6 +1565,7 @@ func _clear_dead_slots() -> void:
 						log.append("%s falls, and gets back up into the pool" % f.display_name)
 					else:
 						log.append("%s destroyed" % f.display_name)
+						_split(f)
 				f.rank = -1
 				rank[col] = null
 

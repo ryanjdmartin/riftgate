@@ -11,7 +11,7 @@ func _screen(seed_value: int = 3) -> BattleScreen:
 	for id in ["badger", "clydesdale", "sparrowhawk"]:
 		team.append(db.make_mech(id))
 	var b := Battle.new(seed_value)
-	b.setup(team, "undead")
+	b.setup(team, "marsh")
 	var s := BattleScreen.new()
 	s.setup(b)
 	return s
@@ -230,7 +230,7 @@ func test_offscreen_packs_get_edge_tags() -> void:
 	var still: Array = s._map.offscreen_tags()
 	for t in still:
 		assert_true(t[1] != sq, "the pack scrolled to has no tag")
-	assert_true(BattleMapView.foe_sprite_id(s.battle.boss) == "bone_colossus", "boss uses the faction's boss art")
+	assert_true(BattleMapView.foe_sprite_id(s.battle.boss) == "bone_dragon", "boss uses the faction's boss art")
 	s.free()
 
 

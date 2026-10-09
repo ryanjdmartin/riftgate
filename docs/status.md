@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.99 since 9 October: the modules built, the two half-run triggers fixed, the last three renames, a shared basic kit opened; over v0.98's the sound pass and v0.97's the party (other sessions'), over v0.96's the name audit settled but three, over v0.95's Guard taken out, the platings moved to modules with their hardpoints re-picked, four renames, the modules' working rules, from the content branch merged with main; over v0.94's the enemy side from a fresh slate (another session's), over v0.93's the Prairie Dog's front arches trimmed to the hood, over v0.92's arches a whole unit lower, over v0.91's livery aprons, over v0.90's the Dingo's Retrograde Flywheel and the aprons run in, over v0.89's axle covers, over another session's v0.88 (module slots a number of the chassis, from its branch), over v0.87, the cars' passives named, the Prairie Dog without its skirts and riding higher, over another session's v0.86 (the content revision's components, from its branch, not yet in main), over v0.85, attack orders by tap and drag, the cars' rules as passives, the Tactical Databank the first module, over v0.84, the round built and decided, over v0.82 since 7 October: Aphelion's measure the dice that deal no damage, over another session's v0.81 (the idle acts resting 6 to 12 seconds and opening in turn); the starting draft a tender, what a tap on loot tells, the makers' measures decided; over another session's v0.79 (the idle acts) and v0.78's every price left to an economy pass of its own, over v0.77's idle acts taking turns from another session; the Convergence and Anathema, the Rupture meter and its Fractures, the salvage row, the loot on the map, the ledger decided with Favour and Sponsorship and the tiers, the withdraw guarantee; it carries the movement session's notes on the machines through the twenty-third); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.100 since 9 October: the bars and the finals as they stand (another session's, laid onto v0.99); over v0.99's the modules built, the two half-run triggers fixed, the last three renames, a shared basic kit opened; over v0.98's the sound pass and v0.97's the party (other sessions'), over v0.96's the name audit settled but three, over v0.95's Guard taken out, the platings moved to modules with their hardpoints re-picked, four renames, the modules' working rules, from the content branch merged with main; over v0.94's the enemy side from a fresh slate (another session's), over v0.93's the Prairie Dog's front arches trimmed to the hood, over v0.92's arches a whole unit lower, over v0.91's livery aprons, over v0.90's the Dingo's Retrograde Flywheel and the aprons run in, over v0.89's axle covers, over another session's v0.88 (module slots a number of the chassis, from its branch), over v0.87, the cars' passives named, the Prairie Dog without its skirts and riding higher, over another session's v0.86 (the content revision's components, from its branch, not yet in main), over v0.85, attack orders by tap and drag, the cars' rules as passives, the Tactical Databank the first module, over v0.84, the round built and decided, over v0.82 since 7 October: Aphelion's measure the dice that deal no damage, over another session's v0.81 (the idle acts resting 6 to 12 seconds and opening in turn); the starting draft a tender, what a tap on loot tells, the makers' measures decided; over another session's v0.79 (the idle acts) and v0.78's every price left to an economy pass of its own, over v0.77's idle acts taking turns from another session; the Convergence and Anathema, the Rupture meter and its Fractures, the salvage row, the loot on the map, the ledger decided with Favour and Sponsorship and the tiers, the withdraw guarantee; it carries the movement session's notes on the machines through the twenty-third); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -55,7 +55,7 @@ session; a B session cannot read it. Shared:
   pass from `tools/soundforge/fx_sketches.py` (the weapons' third cut, the console, the blunt
   impact with its plasma layer, the voice in two registers; every file re-rendered 2 October),
   the console derived again that night, the voice re-rendered), and nothing else; render with
-  `fx_sketches.py`, then `console_sketches.py`, then `warroom_sketches.py`, copy `fx_page.html` in as `index.html`, and
+  `fx_sketches.py`, then `console_sketches.py`, `warroom_sketches.py`, `audition_sketches.py`, `boop_sketches.py`, `fresh_sketches.py`, `assembled_sketches.py`, `combined_sketches.py` and `palette_sketches.py`, copy `fx_page.html` in as `index.html`, and
   republish from `tools/soundforge/out/fx/` with `root` set to it (numpy and scipy, plus ffmpeg). The music
   rounds re-render from `phone_sketches.py` if ever wanted again.
 
@@ -99,7 +99,47 @@ sessions run on this repo at once: check `git status` before committing, stage b
 shared file first (a path still sweeps the other session's hunks), never `git add -A`, never
 kill a bare `godot --path .`. Commit after each verified chunk with tests green.
 
-**The content revision's components, 9 October** (a cloud session, on Ryan's go after the proposal in chat; bible v0.86, section 7's content revision row has every entry, the swaps and the reading). Ten components, six of them support: the Differentiation Probe (disrupt), Sublimation Array (cleanse vent; the Phased Sublimator since) and Polarity Projector (shock) for Aphelion; the Shoring Jack (Braced), Blast Door (guard) and Tesla Gauntlets (shock, unstocked, tier two) for Minerva; the Oblation Ward (volatile shield 40) and Retribution Thurible (Retaliate) for the Arsenal; the Maxigun (three strikes) for W&S; the Wake Diffuser (rapid vent) for Kestrel. Eight stock swaps (Baboon, Stingray, Armadillo, Badger, Nemesis, Ammit, Clydesdale, Puffin); the Halo Shield is stocked now, so its tier is derived. Engine: Shock and Guard keywords (`Face.Keyword`, `Skirmish._guard`; a guard's own work lands on the spender), rapid on any component, a blow of nothing no longer spends a shock, and the bot scores shock, guard and cleanse (`Policy.equipment_score`, `guard_score`, `cleanse_score`). Balance and whole runs regenerated: team cells unchanged; the lone Badger the one machine hurt (the Blast Door is dead with no ally); 33 of 40 runs won. Ryan, 9 October: the foes get a fresh start in a session of their own (proposed in chat first). Chassis modules were proposed in chat the same day (fifteen across the four archetypes, slots, the content shape), none in content; the bible's v0.85 had already made the Dingo's Tactical Databank the first module (Ryan, 8 October), content when modules exist, and the round's code that carried it is not on this remote; found on the way, two triggers the validator accepts but the skirmish half-runs: `on_hull_damage`'s shield is never applied, and `on_shield_granted`'s status lands on the shielder, not the ally. The hangar page republished with the content. Later the same day (Ryan): module slots are a number of the chassis, two as a rule and three on the Clydesdale, never bought (`module_slots` on every chassis, the validator holding it; the bible's section 10, the economy brief and `sim/campaign.gd` had said bought with salvage); the stock is chosen by design and balance, never to give a component a home, so the Stingray's swap is the Pulse Repeater (now on no chassis, its own tier one) and the Zenith Emitter is back. Later still (Ryan): Guard taken out until needed (keyword, bot score, glyph, vocabulary; the Blast Door a plain mounted shield, the Badger's Twin Autoguns back); the Ablative Plating, Flak Skirt and Ward Plate left the component pool for modules and their hardpoints were re-picked (the Wild Boar and the Clydesdale the Blast Door, the Clydesdale the Incendiary Shells, the Prairie Dog the Deflector, the Nemesis the Oblation Ward, now a dish); the Pulse Repeater tier two; renamed, ids with them, the Suppression Battery, Enfilade Beam, Plasma Arquebus and Ankle Mortar, and then the Phased Sublimator (the Sublimation Array) and the Pulse Vacillator (the Pulse Repeater); the Afterburner Cannon and the Photosphere Lance keep their names (a lance there is a laser strike); the modules' working rules in the bible's modules row. Then the Shotfire Rack, Laminar Deflector and Coolant Jacket (ids with them). **The modules, built later the same day** (Ryan's pick of the whole catalogue, tiers Claude's): `content/modules.json` holds seventeen (stats any number of lines, at most one text checked as a passive, tier 1 to 3, the capital's maker no tier one); `ContentDB.fit_module` grants one as a loadout modifier sourced "module", `make_mech` takes them up to the chassis's slots and starts the machine whole; the codex rows say MODULE; `HarnessSetup.modules` and a picker per slot in the TEAM tab; the Plotting Board's effect moved to Aphelion as the Susceptibility Tensor (working name); the Databank without its ally condition. Fixed for them: `on_hull_damage` now raises shield and sheds heat, and `on_shield_granted` stacks its status on the ally. New effects: `spares_splash` (the Rangefinder) and `hull_per_spend` (the Tithe Coupling), read by the bot. The hangar page lists modules in its Content tab. Ryan opened a shared basic kit (Minerva the shields, Kestrel the vents); the bible's Open row has the holes. Open in the to-do: a W&S mounted shield, the mitigation discussion Ryan is gathering, the module build.
+**The content revision's components, 9 October** (a cloud session, on Ryan's go after the proposal in chat; bible v0.86, section 7's content revision row has every entry, the swaps and the reading). Ten components, six of them support: the Differentiation Probe (disrupt), Sublimation Array (cleanse vent; the Phased Sublimator since) and Polarity Projector (shock) for Aphelion; the Shoring Jack (Braced), Blast Door (guard) and Tesla Gauntlets (shock, unstocked, tier two) for Minerva; the Oblation Ward (volatile shield 40) and Retribution Thurible (Retaliate) for the Arsenal; the Maxigun (three strikes) for W&S; the Wake Diffuser (rapid vent) for Kestrel. Eight stock swaps (Baboon, Stingray, Armadillo, Badger, Nemesis, Ammit, Clydesdale, Puffin); the Halo Shield is stocked now, so its tier is derived. Engine: Shock and Guard keywords (`Face.Keyword`, `Skirmish._guard`; a guard's own work lands on the spender), rapid on any component, a blow of nothing no longer spends a shock, and the bot scores shock, guard and cleanse (`Policy.equipment_score`, `guard_score`, `cleanse_score`). Balance and whole runs regenerated: team cells unchanged; the lone Badger the one machine hurt (the Blast Door is dead with no ally); 33 of 40 runs won. Ryan, 9 October: the foes get a fresh start in a session of their own (proposed in chat first). Chassis modules were proposed in chat the same day (fifteen across the four archetypes, slots, the content shape), none in content; the bible's v0.85 had already made the Dingo's Tactical Databank the first module (Ryan, 8 October), content when modules exist, and the round's code that carried it is not on this remote; found on the way, two triggers the validator accepts but the skirmish half-runs: `on_hull_damage`'s shield is never applied, and `on_shield_granted`'s status lands on the shielder, not the ally. The hangar page republished with the content. Later the same day (Ryan): module slots are a number of the chassis, two as a rule and three on the Clydesdale, never bought (`module_slots` on every chassis, the validator holding it; the bible's section 10, the economy brief and `sim/campaign.gd` had said bought with salvage); the stock is chosen by design and balance, never to give a component a home, so the Stingray's swap is the Pulse Repeater (now on no chassis, its own tier one) and the Zenith Emitter is back. Later still (Ryan): Guard taken out until needed (keyword, bot score, glyph, vocabulary; the Blast Door a plain mounted shield, the Badger's Twin Autoguns back); the Ablative Plating, Flak Skirt and Ward Plate left the component pool for modules and their hardpoints were re-picked (the Wild Boar and the Clydesdale the Blast Door, the Clydesdale the Incendiary Shells, the Prairie Dog the Deflector, the Nemesis the Oblation Ward, now a dish); the Pulse Repeater tier two; renamed, ids with them, the Suppression Battery, Enfilade Beam, Plasma Arquebus and Ankle Mortar, and then the Phased Sublimator (the Sublimation Array) and the Pulse Vacillator (the Pulse Repeater); the Afterburner Cannon and the Photosphere Lance keep their names (a lance there is a laser strike); the modules' working rules in the bible's modules row. Then the Shotfire Rack, Laminar Deflector and Coolant Jacket (ids with them). **The modules, built later the same day** (Ryan's pick of the whole catalogue, tiers Claude's): `content/modules.json` holds seventeen (stats any number of lines, at most one text checked as a passive, tier 1 to 3, the capital's maker no tier one); `ContentDB.fit_module` grants one as a loadout modifier sourced "module", `make_mech` takes them up to the chassis's slots and starts the machine whole; the codex rows say MODULE; `HarnessSetup.modules` and a picker per slot in the TEAM tab; the Plotting Board's effect moved to Aphelion as the Susceptibility Tensor (working name); the Databank without its ally condition. Fixed for them: `on_hull_damage` now raises shield and sheds heat, and `on_shield_granted` stacks its status on the ally. New effects: `spares_splash` (the Rangefinder) and `hull_per_spend` (the Tithe Coupling), read by the bot. The hangar page lists modules in its Content tab. Ryan opened a shared basic kit (Minerva the shields, Kestrel the vents; then Aphelion the ally support, a split by target, and the guns crossing too); the bible's Open row has the holes, the tier-one proposal is in chat. **Main merged in the same evening** (the damage scale, the sound pass, the domains and the party): the renamed weapons took main's halved numbers; the Tesla Gauntlets 10 to 20 and the Maxigun 5 to 10 times three at the half; the Susceptibility Tensor +5; Braced is +5 a stack there, so the Shoring Jack is +10. `docs/balance.md` and `docs/campaign_run.md` on this branch predate the halving: rerun after the stock pass. Open in the to-do: a W&S mounted shield, the mitigation discussion Ryan is gathering, the module build.
+
+**The bars, for whoever picks them up** (9 October; the bible's section 9 bars row is the full note): the
+Convergence is built (`Campaign.convergence`); Anathema is a placeholder count (`bosses_beaten`, three won battles
+against a domain flag its next rift a final, `FINAL_AFTER`) and is meant to become the Rupture meter's weighted
+tally; the Rupture meter is designed and not built. Ryan's rules of the day: four finals impossible by design (a
+perfect run might read 4-4-4, subject to length); three distinct bosses a domain before its hero (each domain has
+one today; the others were proposed in chat); a final counts only when the hero dies. The roster branch merged
+to main that evening, over the sound pass; next is art.
+
+**The enemy side from a fresh slate, 9 October** (a cloud session, Ryan in chat; bible v0.94: section 1's
+enemies row, section 9's first two rows and table, section 5's plaque row). Ryan's ask: the factions and
+archetypes predate the 3D allies and the JRPG enemy side. The morning's pass recast the three factions
+into one series' families and found the Infernal Horde was Doom's bestiary and the Chorus's skin Lovecraft,
+both the mech genre's own, and the faction palette folding for a protan viewer; Ryan read it and called a
+fresh slate. Decided in chat: the whole JRPG genre invades (Final Fantasy the spine, the genre blended);
+a rift's domain (a biome of the classic overworld: its bleed, its wildlife, its hero) dictates what spawns;
+the leaders are the classic party (Warrior, Thief, White Mage, Black Mage), the finale the party assembled
+and promoted, a beaten hero an empty slot; four domains, everything keyed to three up for change; every
+foe move in the genre's name, announced on a plaque in the other world's own window with the replay
+holding for it. `docs/enemy_roster_proposal.md` is the pitched roster (four domains, their wildlife and
+heroes, the engine gaps, the holes, five decisions wanted). Nothing in content or the engine changed yet.
+**Built the same evening, on Ryan's go** (397 tests, 18,847 checks): the Bomb's Self-Destruct (an attack keyword
+that spends the striker) and the Gel's split (`on_death` summons into the pool, one level deep); the four domains
+in `content/factions.json` (meadow, waste, marsh, peak: bleed and map_kind as data not yet read, spawn as the
+shape, boss the massive wildlife, `bench` the heroes) and in `content/foes.json` eighteen wildlife and the first
+eight heroes (`hero: true`; moves in the genre's names; Cover, Counter, Flee, Jump, Cure, Protect, Ember Hide and
+Scatter planned, everything else running); the re-keying from three to four (the Far Bank is the Marsh's boss
+set, the defaults, foeforge's looks, the sheet export, the README, the tests' ids); the art lineage renamed
+(ghoul to revenant, necromancer to ghost, bone_colossus to bone_dragon, hellcaster to drake, pit_lord to
+magma_golem, the_maw to sandworm; the brute, spawn and whisperer grids removed), so every other new foe draws the
+placeholder shape until foeforge runs from the new text. Owed: the hangar page's content files republished; the
+balance and campaign runners rerun on four domains; the party card and the deal in `sim/campaign.gd` (today a
+final is still the faction's third boss, and the campaign does not read `bench`); the remaining engine gaps in
+the to-do. The plaque is built (the same session, 394 tests green): `game/ui/plaque.gd` draws the other world's window
+(a blue gradient box, a double white border, a code-drawn 5x7 pixel face) and the skirmish's replay merges
+the turn's blows and specials by the sim's order (`Skirmish.turn_specials`, `seq`, `name` and `boss` on
+every blow), announcing a special always and a boss's blow once per move, holding a second each;
+`RIFTGATE_PLAQUE_DEBUG=1` fires names constantly. Not judged on a phone yet; the hold and the pixel size are
+placeholders. Next: Ryan's picks on the roster, the plaque judged running, then the Bomb and the Gel, then
+the content revision re-keying three to four.
 
 **The harness in tabs, 8 October** (a cloud session; Ryan: the long column ran off the glass,
 and loadouts and the enemy side wanted setting for tests). TEAM, ENEMY and SETUP tabs scroll
@@ -578,7 +618,8 @@ and Resume battle opens it where it stood; standalone runs and tests never write
 thirteen machines, four team rows (the starting team, and since 5 October a team of three per
 maker with three machines: Minerva, Kestrel, Wainwright & Sutler), twelve packs (the nine plus
 each faction's whole formation in one fight, since 2 October) and the starting team run twice
-for the targeting comparison (`docs/balance.md`, generated 5 October, evening, 86,400 fights).
+for the targeting comparison (`docs/balance.md`, generated 5 October, evening, 86,400 fights, before the halving below merged).
+**The damage scale (bible section 11, Ryan, 2 October):** the player's blows are halved (move the player's numbers, not the foes' hit points; measured at 0.67 and 0.5 first, 0.5 taken), with the flat modifiers brought down beside them and Overcharged flat; it came in from a cloud branch with the sound work on 8 October, the four weapons main had renamed or added at the old scale halved to match, and the report below is main's read at the old scale until the rerun (the to-do).
 **The hovercraft's first read:** the Stingray alone sits in the support band beside the Baboon,
 beating the back-rank packs under greedy and losing to every front-rank pack and formation; the
 flare, the emitter and the lance share its spends about a third each and the Radiator Sail takes
@@ -601,35 +642,46 @@ the Baboon, Prairie Dog and Dingo lose to every front-rank pack alone, as suppor
 might. Pick share: the Klaxon's lure is spent 1% of the time, since the team never needs it;
 the Shutters 2%. Rerun after each engine piece lands; read bands, not numbers.
 
-**Audio (the bible's section 1 sound row has the direction, the palettes and every rule; the
-listen-by-listen history is retired).** Everything is `tools/soundforge/forge.py` writing WAVs
-into `art/audio/` (`build`, `measure`, `sections`, `audition`, `sketch`); the recipes are the
-record of each track. Six titled tracks in `Sound.TRACKS`, all locked or "pretty great"; the
-map's set cycles Low Ground and Night Shift, the skirmish's picks one of Hold The Line, The
-Crossing and Full Bore per visit, The Far Bank is The Chorus's boss theme (`SETS["boss_<faction>"]`,
-`LOOP_FROM`). The track levels stay until Ryan says otherwise. Ryan judges on his phone, so a
-change is heard as an A/B from the listening page before it lands; a sketch never overwrites a
-shipped track; his melodies come through the Melody Desk and the session interprets them. **The
-effects' pass** is on the listening page (`tools/soundforge/fx_sketches.py`; the bible's sound
-row has the set and the 2 October decisions), nothing shipped. Where it stands (Ryan, 2 October):
-the weapons' third cut (every blow drawn out with `heft` and a boom tail, measured through the
-phone model) is acceptable and parked; the voice section (`tools/soundforge/speech.py`, a Betty
-and a VEGA) is too faint under noise, cracks and pops to judge; the console was derived again
-that night from the UI design, Hold The Line and the direction notes, not from the existing
-sounds (`tools/soundforge/console_sketches.py`, section 1 of the page, in its fourth cut, the war room
-(`warroom_sketches.py`: low, slow, vocoded and broken up; a carrier, a vocoded grunt per maker, digital
-breakup; piercing measured and held 10 dB under the body), with the FM terminal and its operations
-channel (`console_sketches.py`) kept beside it for the comparison; the music under the sequences
-4 dB down; the morning's fourth cut folded away at the page's foot); the voice is re-rendered judgeable (a smooth glottal pulse,
-the vowels levelled over the bursts, the contact's level).
-Content carries a `sound` label on a component (a word or a list meaning layers, validated in
-`content_db.gd`; the Breaching Plow says blunt, the Gravity Knuckles blunt and plasma). A pick
-lands as a recipe in `forge.py` with its hook (shape, maker, faction, silhouette, the label, the
-replay telling shield hit from block from hit). The sketch script encodes AAC with `ffmpeg` at
-256 kbps where there is no `afconvert` (its encoder smears a transient's front at 128). Next:
-Ryan's listen of the fresh console (the verbs first, then the climax row); the Risen and Infernal
-Horde boss themes from their seeds, melodies proposed in chat first. The speakers/headphones
-setting is dropped (Ryan, 2 October): the one master balances for both for now.
+**Audio (the bible's section 1 sound row has the direction, the palettes and every rule).**
+`tools/soundforge/forge.py` builds everything the game plays into `art/audio/` (`SHIP`: `build`,
+`build effects` for all but the loops, `measure`, `sections`, `audition`); its recipes are the
+record of each track. Six titled tracks in `Sound.TRACKS`; the map's set cycles Low Ground and
+Night Shift, the skirmish's picks one of Hold The Line, The Crossing and Full Bore per visit, The
+Far Bank is The Chorus's boss theme. **The effects' pass is in the game (8 October):** every
+pick from the listening page ships from the function that rendered it and at the level Ryan
+heard: the console is the palette's eleventh cut with the heat signals (`palette_sketches.py`),
+the iron, the rift and the red the third cut (`fx_sketches.py`), the cut, vent, burn, withdrawal
+and a foe stepping in kept. The hooks: a blow by the weapon (`ContentDB.sound_of`, as decided 2
+October), the struck machine's metal by what took the blow (a shield's hit, the armour's block,
+the hull's hit, the shield breaking, its maker's kill), each family's blow, heavy blow and
+arrival, the boss revealed, footfalls by the way a machine moves, the die's hover over a valid
+target (`Skirmish.can_assign`), lock and unlock apart, the round opening once a round, a hold's
+readout, the map's acquire on its taps, a route the plan cannot carry refused. **Jenny is in the
+game:** `voice_lines.py ship` writes her 151 lines at 24 kHz into `art/audio/voice/` with
+`lines.json`; `VoiceLines` (`game/audio/voice_lines.gd`) is the agreed system and `Sound.say`
+plays it on a Voice bus with the music ducked 3.5 dB under her; the injury now says whether it
+cracked or destroyed (`Skirmish.apply_injury`), for her component lines; after Ryan's first phone
+notes a spend is heard in order (the kill and the death where the blow lands, `Sound.LAND`, Jenny
+after), every effect and line goes through the forge's master stage (`forge.master`: 8 dB up, a
+look-ahead limiter at -1 dBFS), the music's default is the full knob, and a debug build's settings
+have EVERY LINE (Jenny on every hook, every time); since 9 October a spend follows Ryan's chain
+(her line before the weapon on a blow that does not kill, the weapon half a second into it; at the
+landing in place of the kill's blast on a kill; before a shield, buff or vent; heat in place of
+any, at the landing), decided at the drop by `Sound.claim_line`; a machine's death at the end of the enemy's turn, in sequence,
+Jenny in its gap (`Sound.DEATH_VOICE_AT`); a foe's death the short blast and the shield's break a
+discharge (`death_sketches.py`), every maker's machine its own death (Wainwright & Sutler's, Aphelion's, Kestrel's, Minerva's, the Arsenal's); a VOICE knob carries
+"Voice: Jenny (Dioco)" under it (`CREDITS.md` the record); the music's default is the baseline's
+0.63. `tools/sound_smoke.gd` drives a skirmish and a battle with a window, muted, through every
+hook (the tests are headless, where Sound is a no-op). Not hookable yet: the flattening's spread
+and the loss by the city. Next: Ryan hears the set in the game on the phone (the to-do lists the
+judgement calls made landing it); the other tracks levelled against Hold The Line, a pass of the
+music's own; the Risen and Infernal Horde boss themes from their seeds. The listening page
+(https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9) holds every round for the record; the
+speakers/headphones setting is dropped (Ryan, 2 October): the one master balances for both.
+Content carries a `sound` label only where shape and face cannot say (validated in
+`content_db.gd`; the Breaching Plow says blunt, the Gravity Knuckles blunt and plasma); every
+other component derives its sound (`ContentDB.sound_of`). The sketch scripts encode AAC with
+`ffmpeg` at 256 kbps where there is no `afconvert` (its encoder smears a transient's front at 128).
 
 **The phone (bible section 11 has four rows on it; README has the commands).** Ryan's Pixel
 runs the debug APK at 60 fps with the fine map (the default, since the Compatibility renderer
@@ -676,5 +728,5 @@ it and ticked in the commit that lands it; this is the order to take them in.
 3. Ryan's text for the new machines and components; the size classes on the phone and the Ammit's offbeat walk (the hangar's Walk); the strikes, the hovercraft's balancing idle, the idle acts (`RIFTGATE_ACTS_DEBUG=1`) and the gaits (`RIFTGATE_MOVE_DEBUG=1`, and a real move for the Dingo's drift, the Stingray's helicopter strafe and the banks), judged running; the movement branch merged on his word.
 4. The discuss-first decisions left in the Ryan section (the campaign and the economy are decided, 5 October, the paragraph above; what remains of them is the makers' measures and notices, and the in-battle ones: ally wrecks, terrain, base defences, reinforcements, the multi-hex boss, Rift Pressure in the boss fight, packs keeping hull between fights); enemy targeting decided and built 2 October (the paragraph above; the runner's read is the baseline question); the commander layer once the balance has a baseline.
 5. Ready to build: the pacing pieces after Ryan's session; the machine weld and the prop fade; the 3D at 30 last, once the animations exist to judge it against. The engine gaps waiting on design (Phased parked, Corrode, foe roles), and a dedicated hunter foe and spawned formations once proposed.
-6. Audio: a full play of Hold The Line, the console's fresh pass and the effects' picks, the two boss themes.
+6. Audio: Ryan hears the sound set in the game on the phone (landed 8 October, with Jenny); a full play of Hold The Line; the other tracks levelled against it; the two boss themes.
 7. A prototype hangar in the game (paints and loadouts, no economy), now with a design to grow into and the run underneath it (`sim/campaign.gd`; the hangar and the mission map in the to-do's screens section). Ryan reads `docs/campaign_run.md` and decides the draft, the restore on a win and the rush's price. Art: enemy art through foeforge, the hangar as a model. Before a phone leaves the desk: onboarding, then tuning.

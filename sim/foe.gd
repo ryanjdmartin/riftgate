@@ -39,6 +39,8 @@ var die = null                   # foes have no die; the pipeline asks, so the f
 var executed: bool = false       # struck by an executing blow this fight: a foe that would get back up stays down
 var last_special: String = ""    # the special it announced last round, so none fires twice running
 var kin: int = 0                 # other live foes of its type on the field, for a swarm blow; the skirmish keeps it
+var hero: bool = false           # one of the party (content `hero`): human-sized, a domain's final, dealt from its bench
+var on_death: Dictionary = {}    # {"summon": foe id, "count": n}: destroyed, it splits, that many of the named foe stepping into the pool (the Gel)
 
 ## The aims a foe type or a move may name, and how the codex says each.
 const AIM_EXPOSED := "exposed"
@@ -202,8 +204,9 @@ const ACTION_EFFECTS := {
 ## breach: overflows shield into hull. scorch: stacks Overheating on the mech it hits (a
 ## placeholder name; the mech-side heat DOT Ryan asked for). disable: switches off the entry
 ## the target's die shows, through its next turn. corrupt: a stack of Corrupted on that
-## entry, for the skirmish: it bites its owner every time it is spent.
-const ATTACK_KEYWORDS := ["breach", "scorch", "disable", "corrupt"]
+## entry, for the skirmish: it bites its owner every time it is spent. self_destruct: the
+## blow spends the striker: it dies after it, whole, and never gets back up (the Bomb).
+const ATTACK_KEYWORDS := ["breach", "scorch", "disable", "corrupt", "self_destruct"]
 
 
 func has_keyword(a: Dictionary, k: String) -> bool:

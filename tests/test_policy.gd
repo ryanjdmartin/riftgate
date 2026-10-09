@@ -19,7 +19,7 @@ func _mech(name: String, d: Die, shield: int = 40, hull: int = 100) -> Unit:
 
 
 func _ghoul(hp: int = 30, atk: int = 10) -> Foe:
-	return Foe.make("ghoul", hp, atk)
+	return Foe.make("revenant", hp, atk)
 
 
 func _archer(hp: int = 30, atk: int = 10) -> Foe:

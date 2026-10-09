@@ -1,7 +1,7 @@
 # Riftgate (working title)
 
 Portrait-mode tactical hex battler for Android. A few customizable war machines hold the last
-city gate against undead, demonic, and eldritch hordes in a roguelike campaign.
+city gate against a whole genre invading, the JRPG world's wildlife and its heroes pouring through rifts, in a roguelike campaign.
 
 The design bible lives in `docs/design-bible.html` and records every decision, recommendation,
 and open question from the design sessions.
@@ -91,7 +91,8 @@ and open question from the design sessions.
   sidecar beside each machine (its joints' axes and limits, its idle acts, its cornering
   numbers; written by lowforge, read by `mech_rig.gd`), `foes/` from the sheet
   export, `fonts/` the HUD faces, `audio/` every sound by name (`game/audio/sound.gd` lists
-  them). A missing foe sprite falls back to a placeholder shape; a missing sound is silence.
+  them) and `audio/voice/` Jenny's lines with `lines.json` (`game/audio/voice_lines.gd` is
+  her system). A missing foe sprite falls back to a placeholder shape; a missing sound is silence.
 - `docs/` — design bible, generated vocabulary, the hangar page's renders and pins under `hangar/`,
   `sprites-enemies.html` (the enemy sheet the export reads), design canvases under
   `canvas/`, `status.md`, the handoff note updated at the end of every working session,
@@ -145,7 +146,7 @@ perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run
 
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument
 # poses the screen first. Skirmish: codex, mechcodex, hold, confirm, lock, strike,
-# enemyturn, withdraw, rounds, logfull, killed, acquire, menu, settings, quit, and the feed's
+# enemyturn, plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), withdraw, rounds, logfull, killed, acquire, menu, settings, quit, and the feed's
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
 # and groundtear (the corrupted side's tear as it fires).
 # RIFTGATE_MAP_KIND=rubble (any standalone battle run) picks the map's type; the harness has a picker.
@@ -184,8 +185,8 @@ tools/spriter/.venv/bin/python tools/sheet_export.py
 godot --headless --path . --import
 
 # better enemy sprites from an image model on this Mac (see tools/foeforge/README.md)
-tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate ghoul --n 4
-tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut tools/foeforge/out/ghoul/ghoul_3.png ghoul
+tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate revenant --n 4
+tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut tools/foeforge/out/revenant/revenant_3.png revenant
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py rift --n 4                                   # the rift's vortex, the same way
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut-rift tools/foeforge/out/rift/rift_3.png  # three frames into art/terrain/rift.png
 
@@ -206,8 +207,11 @@ tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes
 # one machine wearing swapped components on its mounts ("2:" bares a mount; armour and vents show nowhere); a class alone: <chassis> shapes/barrel_minerva; rendered bare (RIFTGATE_OUTLINE_KEEP=1 keeps the display's edge)
 RIFTGATE_FIT="1:lance,4:blazethrower" godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva fit.png front 480 480
 
-# every sound and the six music tracks, from the recipes in tools/soundforge/forge.py, then re-import
-tools/spriter/.venv/bin/python tools/soundforge/forge.py build          # or: build hit kill music_far_bank
+# every sound and the six music tracks into art/audio (forge.py SHIP: the console from palette_sketches.py,
+# the iron, rift and red from fx_sketches.py's third cut, each as Ryan heard it; the loops from forge.py), then re-import
+tools/spriter/.venv/bin/python tools/soundforge/forge.py build          # or: build effects (all but the loops), or: build ui_tap kill music_far_bank
+tools/spriter/.venv/bin/python tools/soundforge/voice_lines.py ship     # Jenny's lines into art/audio/voice at 24 kHz with lines.json (the pools, chances and signals the game reads), then re-import
+perl -e 'alarm 300; exec @ARGV' godot --path . --resolution 360x640 -s tools/sound_smoke.gd   # every sound hook run with a window, muted (headless, Sound is a no-op): a SCRIPT ERROR in the log is a broken hook
 tools/spriter/.venv/bin/python tools/soundforge/phone_sketches.py [set]  # A/B sketches of one change at a time for the phone's speaker, as AAC into tools/soundforge/out/phone/ with a listening page (index.html) to publish
 tools/spriter/.venv/bin/python tools/soundforge/fx_sketches.py [singles|sequences]   # every effect sketched again beside the shipped one, and four rounds in context, as AAC into tools/soundforge/out/fx/ with the listening page (index.html) to publish (AAC by afconvert on the Mac, by ffmpeg at 256 kbps elsewhere, since ffmpeg's encoder smears a transient's front at 128; numpy and scipy are all it needs)
 tools/spriter/.venv/bin/python tools/soundforge/desk_parts.py [track]   # every track's melodic parts as notes, one JSON per track into tools/soundforge/out/desk/, for the Melody Desk page's store (collection `parts`)
@@ -296,7 +300,7 @@ dies. Hold any unit for its numbers; double-tap it for its codex; tap the gate f
 integrity. MENU on either
 screen pauses and holds the settings (display colour, brightness, move pace, glitch, scan
 bar, music and effects volume). For the standalone screen `RIFTGATE_TEAM` picks the team and
-`RIFTGATE_FACTION=undead|demonic|eldritch` the enemy; `RIFTGATE_TUNE=1` shows the
+`RIFTGATE_FACTION=meadow|waste|marsh|peak` the enemy; `RIFTGATE_TUNE=1` shows the
 development knob panel.
 
 In the map viewer: drag to scroll the taller-than-screen battlefield, tap without dragging

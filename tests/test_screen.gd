@@ -9,12 +9,12 @@ func _screen(seed_value: int = 3, elite: bool = false) -> SkirmishScreen:
 	var sk := Skirmish.new(seed_value)
 	for id in ["badger", "clydesdale", "sparrowhawk"]:
 		sk.add_mech(db.make_mech(id))
-	var ghouls := Unit.pack(1, "ghouls", Vector2i.ZERO, "undead", 20, 4, "ghoul")
+	var ghouls := Unit.pack(1, "ghouls", Vector2i.ZERO, "marsh", 20, 4, "revenant")
 	sk.add_foes(db.foes_for(ghouls), ghouls)
-	var necros := Unit.pack(2, "necromancers", Vector2i.ZERO, "undead", 20, 2, "necromancer")
+	var necros := Unit.pack(2, "necromancers", Vector2i.ZERO, "marsh", 20, 2, "ghost")
 	sk.add_foes(db.foes_for(necros), necros)
 	if elite:
-		var boss := Unit.boss(3, "colossus", Vector2i.ZERO, "undead")
+		var boss := Unit.boss(3, "colossus", Vector2i.ZERO, "marsh")
 		sk.add_foes(db.foes_for(boss), boss)
 	var screen := SkirmishScreen.new()
 	screen.setup(sk)
@@ -151,7 +151,7 @@ func test_double_tap_opens_and_closes_the_codex() -> void:
 	s._on_foe_double_tapped(s._foe_view_for(foe))
 	assert_true(s._codex.visible, "codex opens for a foe")
 	assert_eq(s._codex._title.text, foe.display_name, "titled with the foe's name")
-	assert_eq(s._codex._sub.text, "THE RISEN", "faction name as the subtitle")
+	assert_eq(s._codex._sub.text, "THE MARSH", "the domain's name as the subtitle")
 	assert_true(not s._codex._body.text.is_empty(), "foe codex text present")
 	assert_true(s._codex._actions.visible and s._codex._actions.text.contains("CLAW"), "implemented actions listed")
 	assert_true(s._codex._actions.text.contains("A KIN"), "the swarm is said too")
@@ -252,7 +252,7 @@ func test_exposed_marker_appears_when_front_dies() -> void:
 	var m := db.make_mech("badger")
 	m.die = Die.single(Face.attack(90))
 	sk.add_mech(m)
-	sk.add_foes([Foe.make("ghoul", 30, 10), Foe.make("archer", 30, 10, true)])
+	sk.add_foes([Foe.make("revenant", 30, 10), Foe.make("archer", 30, 10, true)])
 	var s := SkirmishScreen.new()
 	s.setup(sk)
 	s._use_die(0, sk.front[0])
@@ -279,9 +279,9 @@ func test_screen_lays_out_four_columns() -> void:
 	for id in ["badger", "clydesdale"]:
 		sk.add_mech(db.make_mech(id))
 	# Ranks hold: four front-rank ghouls fill the front, four back-rank necromancers the back.
-	var ghouls := Unit.pack(1, "ghouls", Vector2i.ZERO, "undead", 20, 4, "ghoul")
+	var ghouls := Unit.pack(1, "ghouls", Vector2i.ZERO, "marsh", 20, 4, "revenant")
 	sk.add_foes(db.foes_for(ghouls), ghouls)
-	var necros := Unit.pack(2, "necromancers", Vector2i.ZERO, "undead", 20, 4, "necromancer")
+	var necros := Unit.pack(2, "necromancers", Vector2i.ZERO, "marsh", 20, 4, "ghost")
 	sk.add_foes(db.foes_for(necros), necros)
 	var s := SkirmishScreen.new()
 	s.setup(sk)
@@ -318,7 +318,7 @@ func test_a_killed_foe_shows_no_intent_and_no_arrow() -> void:
 	var m := db.make_mech("badger")
 	m.die = Die.single(Face.attack(90))
 	sk.add_mech(m)
-	sk.add_foes([Foe.make("ghoul", 30, 10), Foe.make("ghoul", 30, 10)])
+	sk.add_foes([Foe.make("revenant", 30, 10), Foe.make("revenant", 30, 10)])
 	var s := SkirmishScreen.new()
 	s.setup(sk)
 	s._toggle_all_arrows(true)
@@ -337,7 +337,7 @@ func test_the_last_kill_ends_the_fight_without_end_turn() -> void:
 	var m := db.make_mech("badger")
 	m.die = Die.single(Face.attack(90))
 	sk.add_mech(m)
-	sk.add_foes([Foe.make("ghoul", 30, 10)])
+	sk.add_foes([Foe.make("revenant", 30, 10)])
 	var s := SkirmishScreen.new()
 	s.setup(sk)
 	s._use_die(0, sk.front[0])
@@ -422,3 +422,52 @@ func test_the_eye_and_reroll_keep_off_the_grounds() -> void:
 	assert_true(seam <= s.MECH_Y, "the mechs' ground starts before the mechs")
 	assert_true(s.DIE_Y >= s.LOG_Y + SkirmishScreen.LOG_H, "the dice sit under the log")
 	s.free()
+
+
+func test_replay_steps_order_specials_among_blows_and_name_only_the_named() -> void:
+	# The plaque (decided 9 October): a special always announces, a boss's blow announces
+	# once per move, a plain blow never; the steps follow the sim's order, not the lists'.
+	var s := _screen(5)
+	var before := s._before_enemy_turn()
+	var ghoul: Foe = s.sk.field_foes()[0]
+	var boss := Foe.make("colossus", 140, 30)
+	boss.size = 2
+	boss.action = {"id": "storm", "name": "Bone Storm", "kind": "attack", "strikes": 3}
+	var blow := {"mech": 0, "absorbed": 0, "through": 10, "blocked": false, "broke_shield": false, "injured": false, "shield": 0, "hull": 50}
+	var b1 := blow.duplicate(); b1["foe"] = boss; b1["seq"] = 1; b1["name"] = "Bone Storm"; b1["boss"] = true
+	var b2 := blow.duplicate(); b2["foe"] = boss; b2["seq"] = 2; b2["name"] = "Bone Storm"; b2["boss"] = true
+	var b3 := blow.duplicate(); b3["foe"] = ghoul; b3["seq"] = 4; b3["name"] = "Claw"; b3["boss"] = false
+	s.sk.turn_events = [b1, b2, b3]
+	s.sk.turn_specials = [{"foe": ghoul, "name": "Protect", "kind": "defend", "seq": 3}]
+	var steps := s._replay_steps(before)
+	assert_eq(steps.size(), 4, "three blows and a special")
+	var seqs: Array = []
+	for st in steps:
+		seqs.append(int(st["seq"]))
+	assert_eq(seqs, [1, 2, 3, 4], "in the sim's order")
+	assert_eq(str(steps[0]["announce"]), "Bone Storm", "the boss's move is announced before its first strike")
+	assert_eq(str(steps[1]["announce"]), "", "and not again for its second")
+	assert_eq(str(steps[2]["announce"]), "Protect", "the special is announced")
+	assert_true((steps[2]["blow"] as Array).is_empty(), "and lands no blow")
+	assert_eq(str(steps[3]["announce"]), "", "a plain blow shows no plaque")
+	assert_eq((steps[3]["blow"] as Array).size(), 11, "and lands as before, with the striker's family and the struck machine's maker for the sound")
+	s.free()
+
+
+func test_the_plaque_shows_a_name_in_its_pixel_face() -> void:
+	var p := Plaque.new()
+	p.px = 4.0
+	p.announce("1000 Needles", 1.0)
+	assert_true(p.is_showing(), "showing")
+	assert_eq(p.text, "1000 NEEDLES", "upper case, the face has no lower")
+	assert_eq(p.size, p.size_for("1000 NEEDLES"), "sized to its name")
+	assert_true(p.size.x > p.size_for("FIRE").x, "a longer name, a wider window")
+	assert_eq(Plaque.glyph_rows("A").size(), 7, "seven rows a glyph")
+	assert_eq(Plaque.glyph_rows("~"), Plaque.glyph_rows(" "), "a character the face lacks is a space")
+	var s := _screen(5)
+	assert_true(s._plaque != null, "the screen carries one")
+	s._announce("Protect")
+	assert_true(s._plaque.is_showing(), "and announces on it")
+	assert_true(s._plaque.position.x > 0.0 and s._plaque.position.x + s._plaque.size.x < SkirmishScreen.W, "centred over the foes")
+	s.free()
+	p.free()

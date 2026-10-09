@@ -1,0 +1,879 @@
+{
+ "spacing": 6.0,
+ "stale": 2.0,
+ "personality": 0.06666666666666667,
+ "hooks": {
+  "die_spent": {
+   "chance": 0.16666666666666666,
+   "info": false,
+   "lines": [
+    {
+     "file": "line_target_locked",
+     "text": "target locked"
+    },
+    {
+     "file": "line_weapons_free",
+     "text": "weapons free"
+    },
+    {
+     "file": "line_extreme_prejudice_authorised",
+     "text": "extreme prejudice authorised"
+    },
+    {
+     "file": "line_discharging",
+     "text": "discharging"
+    },
+    {
+     "file": "line_ordnance_engaged",
+     "text": "ordnance engaged"
+    },
+    {
+     "file": "line_suppressing_fire",
+     "text": "suppressing fire"
+    }
+   ],
+   "personality": [
+    {
+     "file": "line_light_them_up",
+     "text": "light them up"
+    },
+    {
+     "file": "line_going_ballistic",
+     "text": "going ballistic"
+    },
+    {
+     "file": "line_rampage",
+     "text": "rampage"
+    }
+   ],
+   "merge": [],
+   "signal": ""
+  },
+  "foe_down": {
+   "chance": 0.3333333333333333,
+   "info": false,
+   "lines": [
+    {
+     "file": "line_bogey_eliminated",
+     "text": "bogey eliminated"
+    },
+    {
+     "file": "line_neutralising_hostile",
+     "text": "neutralising hostile"
+    },
+    {
+     "file": "line_target_destroyed",
+     "text": "target destroyed"
+    },
+    {
+     "file": "line_lethal_force_applied",
+     "text": "lethal force applied"
+    },
+    {
+     "file": "line_threat_eliminated",
+     "text": "threat eliminated"
+    }
+   ],
+   "personality": [
+    {
+     "file": "line_mopping_up_trash",
+     "text": "mopping up trash"
+    },
+    {
+     "file": "line_get_wrecked",
+     "text": "get wrecked"
+    },
+    {
+     "file": "line_bug_squashed",
+     "text": "bug squashed"
+    },
+    {
+     "file": "line_dodge_this",
+     "text": "dodge this"
+    },
+    {
+     "file": "line_fatality",
+     "text": "fatality"
+    }
+   ],
+   "merge": [],
+   "signal": ""
+  },
+  "foe_down_undead": {
+   "chance": 0.3333333333333333,
+   "info": false,
+   "lines": [
+    {
+     "file": "line_undead_anomaly_cleared",
+     "text": "undead anomaly cleared"
+    },
+    {
+     "file": "line_necrotic_signature_lost",
+     "text": "necrotic signature lost"
+    },
+    {
+     "file": "line_animation_ceased",
+     "text": "animation ceased"
+    }
+   ],
+   "personality": [
+    {
+     "file": "line_re_interred",
+     "text": "re-interred"
+    },
+    {
+     "file": "line_stay_dead_this_time",
+     "text": "stay dead this time"
+    }
+   ],
+   "merge": [
+    "foe_down"
+   ],
+   "signal": ""
+  },
+  "foe_down_demonic": {
+   "chance": 0.3333333333333333,
+   "info": false,
+   "lines": [
+    {
+     "file": "line_demonic_presence_eliminated",
+     "text": "demonic presence eliminated"
+    },
+    {
+     "file": "line_infernal_unit_purged",
+     "text": "infernal unit purged"
+    },
+    {
+     "file": "line_horde_unit_banished",
+     "text": "horde unit banished"
+    }
+   ],
+   "personality": [
+    {
+     "file": "line_back_to_hell_with_you",
+     "text": "back to hell with you"
+    },
+    {
+     "file": "line_not_today_satan",
+     "text": "not today, satan"
+    }
+   ],
+   "merge": [
+    "foe_down"
+   ],
+   "signal": ""
+  },
+  "foe_down_eldritch": {
+   "chance": 0.3333333333333333,
+   "info": false,
+   "lines": [
+    {
+     "file": "line_unknowable_horror_purged",
+     "text": "unknowable horror purged"
+    },
+    {
+     "file": "line_sanity_restored",
+     "text": "sanity restored"
+    },
+    {
+     "file": "line_anxiety_levels_reduced",
+     "text": "anxiety levels reduced"
+    }
+   ],
+   "personality": [
+    {
+     "file": "line_that_was_not_supposed_to_exist",
+     "text": "that was not supposed to exist"
+    },
+    {
+     "file": "line_thank_goodness",
+     "text": "thank goodness"
+    }
+   ],
+   "merge": [
+    "foe_down"
+   ],
+   "signal": ""
+  },
+  "shield": {
+   "chance": 0.16666666666666666,
+   "info": false,
+   "lines": [
+    {
+     "file": "line_shield_up",
+     "text": "shield up"
+    },
+    {
+     "file": "line_countermeasures_engaged",
+     "text": "countermeasures engaged"
+    }
+   ],
+   "personality": [
+    {
+     "file": "line_saving_throw_granted",
+     "text": "saving throw granted"
+    }
+   ],
+   "merge": [],
+   "signal": ""
+  },
+  "buff": {
+   "chance": 0.16666666666666666,
+   "info": false,
+   "lines": [
+    {
+     "file": "line_granting_buff",
+     "text": "granting buff"
+    },
+    {
+     "file": "line_activating_boost",
+     "text": "activating boost"
+    }
+   ],
+   "personality": [
+    {
+     "file": "line_rage_mode_activated",
+     "text": "rage mode activated"
+    },
+    {
+     "file": "line_power_overwhelming",
+     "text": "power overwhelming"
+    }
+   ],
+   "merge": [],
+   "signal": ""
+  },
+  "heat_vented": {
+   "chance": 0.16666666666666666,
+   "info": false,
+   "lines": [
+    {
+     "file": "line_venting",
+     "text": "venting"
+    },
+    {
+     "file": "line_heat_sinks_engaged",
+     "text": "heat sinks engaged"
+    },
+    {
+     "file": "line_cooling",
+     "text": "cooling"
+    },
+    {
+     "file": "line_thermal_load_falling",
+     "text": "thermal load falling"
+    }
+   ],
+   "personality": [
+    {
+     "file": "line_cool_your_jets",
+     "text": "cool your jets"
+    },
+    {
+     "file": "line_take_a_load_off",
+     "text": "take a load off"
+    },
+    {
+     "file": "line_calm_down_lad",
+     "text": "calm down, lad"
+    }
+   ],
+   "merge": [],
+   "signal": ""
+  },
+  "heat_high": {
+   "chance": 1.0,
+   "info": true,
+   "lines": [
+    {
+     "file": "line_thermal_load_approaching_limit",
+     "text": "thermal load approaching limit"
+    },
+    {
+     "file": "line_heat_warning",
+     "text": "heat warning"
+    },
+    {
+     "file": "line_danger_internal_temperature_elevated",
+     "text": "danger: internal temperature elevated"
+    }
+   ],
+   "personality": [
+    {
+     "file": "line_running_a_wee_bit_warm_aren_t_we",
+     "text": "running a wee bit warm, aren't we?"
+    },
+    {
+     "file": "line_somebody_fetch_the_poor_lad_some_ice",
+     "text": "somebody fetch the poor lad some ice"
+    },
+    {
+     "file": "line_that_fella_s_gonna_want_a_fan",
+     "text": "that fella's gonna want a fan"
+    }
+   ],
+   "merge": [],
+   "signal": "heat_warn"
+  },
+  "overheat": {
+   "chance": 1.0,
+   "info": true,
+   "lines": [
+    {
+     "file": "line_overheat_detected_structural_damage_imminent",
+     "text": "overheat detected. structural damage imminent"
+    },
+    {
+     "file": "line_thermal_limit_exceeded_hull_integrity_compromised",
+     "text": "thermal limit exceeded. hull integrity compromised"
+    },
+    {
+     "file": "line_danger_heat_level_critical",
+     "text": "danger: heat level critical"
+    },
+    {
+     "file": "line_heat_sinks_overloaded_vent_now",
+     "text": "heat sinks overloaded. vent now"
+    }
+   ],
+   "personality": [
+    {
+     "file": "line_hot_hot_hot",
+     "text": "hot hot hot"
+    },
+    {
+     "file": "line_she_can_t_take_anymore_captain",
+     "text": "she can't take anymore, captain"
+    }
+   ],
+   "merge": [],
+   "signal": "heat_alarm"
+  },
+  "machine_lost": {
+   "chance": 1.0,
+   "info": true,
+   "lines": [
+    {
+     "file": "line_machine_lost",
+     "text": "machine lost"
+    },
+    {
+     "file": "line_unit_destroyed",
+     "text": "unit destroyed"
+    }
+   ],
+   "personality": [],
+   "merge": [],
+   "signal": ""
+  },
+  "component_damaged": {
+   "chance": 1.0,
+   "info": true,
+   "lines": [
+    {
+     "file": "line_component_damaged",
+     "text": "component damaged"
+    },
+    {
+     "file": "line_hardpoint_hit",
+     "text": "hardpoint hit"
+    }
+   ],
+   "personality": [],
+   "merge": [],
+   "signal": ""
+  },
+  "component_destroyed": {
+   "chance": 1.0,
+   "info": true,
+   "lines": [
+    {
+     "file": "line_component_destroyed",
+     "text": "component destroyed"
+    },
+    {
+     "file": "line_hardpoint_lost",
+     "text": "hardpoint lost"
+    }
+   ],
+   "personality": [],
+   "merge": [],
+   "signal": ""
+  },
+  "resolve_all": {
+   "chance": 0.5,
+   "info": false,
+   "lines": [
+    {
+     "file": "line_all_units_committed",
+     "text": "all units committed"
+    },
+    {
+     "file": "line_full_line_advancing",
+     "text": "full line advancing"
+    },
+    {
+     "file": "line_full_squad_deployed",
+     "text": "full squad deployed"
+    }
+   ],
+   "personality": [
+    {
+     "file": "line_transform_and_roll_out",
+     "text": "transform and roll out"
+    },
+    {
+     "file": "line_let_none_survive",
+     "text": "let none survive"
+    },
+    {
+     "file": "line_your_time_has_come",
+     "text": "your time has come"
+    }
+   ],
+   "merge": [
+    "resolve_move"
+   ],
+   "signal": ""
+  },
+  "resolve_move": {
+   "chance": 0.3333333333333333,
+   "info": false,
+   "lines": [
+    {
+     "file": "line_orders_received",
+     "text": "orders received"
+    },
+    {
+     "file": "line_moving_to_intercept",
+     "text": "moving to intercept"
+    },
+    {
+     "file": "line_in_transit",
+     "text": "in transit"
+    },
+    {
+     "file": "line_moving_out",
+     "text": "moving out"
+    },
+    {
+     "file": "line_proceeding",
+     "text": "proceeding"
+    },
+    {
+     "file": "line_coordinates_received",
+     "text": "coordinates received"
+    },
+    {
+     "file": "line_executing_strategy",
+     "text": "executing strategy"
+    }
+   ],
+   "personality": [
+    {
+     "file": "line_stay_on_target",
+     "text": "stay on target"
+    },
+    {
+     "file": "line_sounds_fun",
+     "text": "sounds fun"
+    },
+    {
+     "file": "line_evil_draws_close",
+     "text": "evil draws close"
+    },
+    {
+     "file": "line_go_go_go",
+     "text": "go go go"
+    }
+   ],
+   "merge": [],
+   "signal": ""
+  },
+  "contact": {
+   "chance": 0.5,
+   "info": false,
+   "lines": [
+    {
+     "file": "line_combat_imminent",
+     "text": "combat imminent"
+    },
+    {
+     "file": "line_contact",
+     "text": "contact"
+    },
+    {
+     "file": "line_hostiles_in_range",
+     "text": "hostiles in range"
+    },
+    {
+     "file": "line_enemy_in_range",
+     "text": "enemy in range"
+    },
+    {
+     "file": "line_closing_to_contact",
+     "text": "closing to contact"
+    }
+   ],
+   "personality": [],
+   "merge": [],
+   "signal": ""
+  },
+  "engage": {
+   "chance": 1.0,
+   "info": false,
+   "lines": [
+    {
+     "file": "line_engaging",
+     "text": "engaging"
+    },
+    {
+     "file": "line_skirmish_feed_acquired",
+     "text": "skirmish feed acquired"
+    },
+    {
+     "file": "line_weapons_hot",
+     "text": "weapons hot"
+    },
+    {
+     "file": "line_connecting_to_live_feed",
+     "text": "connecting to live feed"
+    },
+    {
+     "file": "line_transferring_to_tactical_display",
+     "text": "transferring to tactical display"
+    },
+    {
+     "file": "line_initiating_combat_protocol",
+     "text": "initiating combat protocol"
+    }
+   ],
+   "personality": [
+    {
+     "file": "line_rip_and_tear",
+     "text": "rip and tear"
+    },
+    {
+     "file": "line_battle_music_initiated",
+     "text": "battle music initiated"
+    },
+    {
+     "file": "line_let_s_dance",
+     "text": "let's dance"
+    },
+    {
+     "file": "line_the_fight_is_on",
+     "text": "the fight is on"
+    },
+    {
+     "file": "line_showtime",
+     "text": "showtime"
+    },
+    {
+     "file": "line_here_we_go_again",
+     "text": "here we go again"
+    }
+   ],
+   "merge": [],
+   "signal": ""
+  },
+  "boss": {
+   "chance": 1.0,
+   "info": false,
+   "lines": [
+    {
+     "file": "line_primary_target_identified",
+     "text": "primary target identified"
+    },
+    {
+     "file": "line_priority_threat_detected_engaging",
+     "text": "priority threat detected. engaging"
+    },
+    {
+     "file": "line_alert_approaching_dangerous_hostile",
+     "text": "alert: approaching dangerous hostile"
+    },
+    {
+     "file": "line_initiating_sector_purge",
+     "text": "initiating sector purge"
+    }
+   ],
+   "personality": [
+    {
+     "file": "line_oh_that_s_a_big_one",
+     "text": "oh, that's a big one"
+    },
+    {
+     "file": "line_big_lad",
+     "text": "big lad"
+    },
+    {
+     "file": "line_big_fella_on_route",
+     "text": "big fella on route"
+    },
+    {
+     "file": "line_that_s_a_lot_of_teeth",
+     "text": "that's a lot of teeth"
+    },
+    {
+     "file": "line_nope_nope_nope",
+     "text": "nope nope nope"
+    },
+    {
+     "file": "line_i_m_too_old_for_this_shit",
+     "text": "I'm too old for this shit"
+    }
+   ],
+   "merge": [],
+   "signal": ""
+  },
+  "gate": {
+   "chance": 1.0,
+   "info": false,
+   "lines": [
+    {
+     "file": "line_gate_under_attack",
+     "text": "gate under attack"
+    },
+    {
+     "file": "line_gate_taking_damage",
+     "text": "gate taking damage"
+    },
+    {
+     "file": "line_gate_integrity_falling",
+     "text": "gate integrity falling"
+    }
+   ],
+   "personality": [
+    {
+     "file": "line_they_re_in_the_walls",
+     "text": "they're in the walls"
+    },
+    {
+     "file": "line_they_re_breaking_through",
+     "text": "they're breaking through"
+    }
+   ],
+   "merge": [],
+   "signal": ""
+  },
+  "flattening": {
+   "chance": 0.3333333333333333,
+   "info": false,
+   "lines": [
+    {
+     "file": "line_errors_increasing",
+     "text": "errors increasing"
+    },
+    {
+     "file": "line_reconstruction_degrading",
+     "text": "reconstruction degrading"
+    },
+    {
+     "file": "line_sector_signal_corrupted",
+     "text": "sector signal corrupted"
+    }
+   ],
+   "personality": [
+    {
+     "file": "line_this_is_fine",
+     "text": "this is fine"
+    },
+    {
+     "file": "line_i_m_glitching_out_here",
+     "text": "I'm glitching out here"
+    }
+   ],
+   "merge": [],
+   "signal": ""
+  },
+  "loss_gate": {
+   "chance": 1.0,
+   "info": true,
+   "lines": [
+    {
+     "file": "line_gate_breached_the_city_is_lost",
+     "text": "gate breached. the city is lost"
+    }
+   ],
+   "personality": [
+    {
+     "file": "line_now_you_ve_done_it",
+     "text": "now you've done it"
+    }
+   ],
+   "merge": [],
+   "signal": ""
+  },
+  "loss_city": {
+   "chance": 1.0,
+   "info": true,
+   "lines": [
+    {
+     "file": "line_corruption_has_reached_the_city_estimated_casualties_100",
+     "text": "corruption has reached the city. estimated casualties: 100%"
+    }
+   ],
+   "personality": [
+    {
+     "file": "line_z_axis_lost",
+     "text": "z axis lost"
+    }
+   ],
+   "merge": [],
+   "signal": ""
+  },
+  "victory": {
+   "chance": 1.0,
+   "info": false,
+   "lines": [
+    {
+     "file": "line_hostiles_cleared_the_line_holds",
+     "text": "hostiles cleared. the line holds"
+    },
+    {
+     "file": "line_area_secured_well_fought_commander",
+     "text": "area secured. well fought, commander"
+    },
+    {
+     "file": "line_mission_accomplished_the_rift_is_sealed",
+     "text": "mission accomplished. the rift is sealed"
+    }
+   ],
+   "personality": [
+    {
+     "file": "line_gg_ez",
+     "text": "GG EZ"
+    },
+    {
+     "file": "line_flawless_victory",
+     "text": "flawless victory"
+    },
+    {
+     "file": "line_well_that_was_fun",
+     "text": "well, that was fun"
+    },
+    {
+     "file": "line_i_do_the_job_and_then_i_get_paid",
+     "text": "I do the job, and then I get paid"
+    },
+    {
+     "file": "line_what_a_ride_first_round_s_on_me",
+     "text": "what a ride. first round's on me"
+    },
+    {
+     "file": "line_i_love_it_when_a_plan_comes_together",
+     "text": "I love it when a plan comes together"
+    },
+    {
+     "file": "line_i_m_making_a_note_here_huge_success",
+     "text": "I'm making a note here: huge success"
+    },
+    {
+     "file": "line_whew",
+     "text": "whew"
+    }
+   ],
+   "merge": [],
+   "signal": ""
+  },
+  "codex": {
+   "chance": 0.16666666666666666,
+   "info": false,
+   "lines": [
+    {
+     "file": "line_searching_database",
+     "text": "searching database"
+    },
+    {
+     "file": "line_record_retrieved",
+     "text": "record retrieved"
+    },
+    {
+     "file": "line_consulting_archives",
+     "text": "consulting archives"
+    },
+    {
+     "file": "line_help_text_loaded",
+     "text": "help text loaded"
+    }
+   ],
+   "personality": [
+    {
+     "file": "line_let_me_look_that_up",
+     "text": "let me look that up"
+    },
+    {
+     "file": "line_reading_the_manual",
+     "text": "reading the manual"
+    }
+   ],
+   "merge": [],
+   "signal": ""
+  },
+  "refuse": {
+   "chance": 0.25,
+   "info": false,
+   "lines": [
+    {
+     "file": "line_negative",
+     "text": "negative"
+    },
+    {
+     "file": "line_unable_to_comply",
+     "text": "unable to comply"
+    }
+   ],
+   "personality": [
+    {
+     "file": "line_you_must_construct_additional_pylons",
+     "text": "you must construct additional pylons"
+    }
+   ],
+   "merge": [],
+   "signal": ""
+  },
+  "battle_open": {
+   "chance": 1.0,
+   "info": false,
+   "lines": [
+    {
+     "file": "line_battlefield_feed_online_all_units_reporting_in",
+     "text": "battlefield feed online. all units reporting in"
+    },
+    {
+     "file": "line_deployment_complete_awaiting_your_orders_commander",
+     "text": "deployment complete. awaiting your orders, commander"
+    },
+    {
+     "file": "line_sector_loaded_hostiles_inbound",
+     "text": "sector loaded. hostiles inbound"
+    }
+   ],
+   "personality": [
+    {
+     "file": "line_reactor_online_sensors_online_weapons_online_all_systems_nominal",
+     "text": "reactor online, sensors online, weapons online, all systems nominal"
+    },
+    {
+     "file": "line_once_more_into_the_breach",
+     "text": "once more, into the breach"
+    },
+    {
+     "file": "line_now_for_wrath_now_for_ruin_and_the_red_dawn",
+     "text": "now for wrath. now for ruin. and the red dawn"
+    },
+    {
+     "file": "line_hell_it_s_about_time",
+     "text": "hell, it's about time"
+    },
+    {
+     "file": "line_it_s_time_to_kick_ass_and_chew_bubble_gum_and_i_m_all_out_of_gum",
+     "text": "it's time to kick ass and chew bubble gum. and I'm all out of gum"
+    }
+   ],
+   "merge": [],
+   "signal": ""
+  }
+ }
+}

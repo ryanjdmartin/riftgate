@@ -12,7 +12,7 @@ func test_content_loads() -> void:
 	assert_true(db.chassis.size() >= 3, "chassis present")
 	assert_true(db.components.size() >= 10, "components present")
 	assert_true(db.foes.size() >= 6, "foes present")
-	assert_eq(db.factions.size(), 3, "three factions")
+	assert_eq(db.factions.size(), 4, "four domains")
 
 
 func test_content_validates_clean() -> void:
@@ -145,41 +145,41 @@ func test_sparrowhawk_loadout_matches_design() -> void:
 
 func test_packs_unpack_by_foe_type() -> void:
 	var db := _db()
-	var ghouls := Unit.pack(7, "ghouls", Vector2i.ZERO, "undead", 20, 6, "ghoul")
+	var ghouls := Unit.pack(7, "ghouls", Vector2i.ZERO, "marsh", 20, 6, "revenant")
 	var foes := db.foes_for(ghouls)
 	assert_eq(foes.size(), 6, "six ghouls from strength six")
 	for f in foes:
-		assert_eq(f.display_name, "Ghoul", "all the same type")
+		assert_eq(f.display_name, "Revenant", "all the same type")
 		assert_eq(f.pack_id, 7, "foe remembers its pack")
-	var necros := Unit.pack(8, "necromancers", Vector2i.ZERO, "undead", 20, 2, "necromancer")
+	var necros := Unit.pack(8, "necromancers", Vector2i.ZERO, "marsh", 20, 2, "ghost")
 	var backs := db.foes_for(necros)
 	assert_eq(backs.size(), 2, "two necromancers")
 	assert_true(backs[0].prefers_back, "necromancer holds the back")
-	var untyped := Unit.pack(9, "whatever", Vector2i.ZERO, "demonic", 20, 3)
+	var untyped := Unit.pack(9, "whatever", Vector2i.ZERO, "peak", 20, 3)
 	var fallback := db.foes_for(untyped)
 	assert_eq(fallback.size(), 3, "a pack with no type falls back to the faction's first spawn entry")
-	assert_eq(fallback[0].display_name, "Brute", "which is the brute for demons")
+	assert_eq(fallback[0].display_name, "Bomb", "which is the bomb for the Peak")
 
 
 func test_boss_unpacks_to_the_faction_boss() -> void:
 	var db := _db()
-	var boss := Unit.boss(8, "colossus", Vector2i.ZERO, "undead")
+	var boss := Unit.boss(8, "colossus", Vector2i.ZERO, "marsh")
 	var only := db.foes_for(boss)
 	assert_eq(only.size(), 1, "a boss unpacks to just its massive foe")
-	assert_eq(only[0].display_name, "Bone Colossus", "undead boss")
+	assert_eq(only[0].display_name, "Bone Dragon", "undead boss")
 	assert_true(only[0].is_massive(), "and it is massive")
-	var pit := db.foes_for(Unit.boss(9, "lord", Vector2i.ZERO, "demonic"))
-	assert_eq(pit[0].display_name, "Pit Lord", "demonic boss")
+	var pit := db.foes_for(Unit.boss(9, "lord", Vector2i.ZERO, "peak"))
+	assert_eq(pit[0].display_name, "Magma Golem", "demonic boss")
 
 
 func test_spawn_table_lists_the_factions_formation() -> void:
 	var db := _db()
-	var table := db.spawn_table("undead")
+	var table := db.spawn_table("marsh")
 	assert_eq(table.size(), 3, "three packs come through together")
-	assert_eq(table[0][0], "ghoul", "ghouls first")
-	assert_eq(table[2][0], "necromancer", "necromancers behind them")
+	assert_eq(table[0][0], "revenant", "ghouls first")
+	assert_eq(table[2][0], "ghost", "necromancers behind them")
 	assert_eq(table[2][1], 3, "three of them")
-	assert_eq(db.faction_of_foe("hellcaster"), "demonic", "foe to faction lookup")
+	assert_eq(db.faction_of_foe("drake"), "peak", "foe to faction lookup")
 
 
 func test_content_mech_survives_a_skirmish_round() -> void:
@@ -187,7 +187,7 @@ func test_content_mech_survives_a_skirmish_round() -> void:
 	var sk := Skirmish.new(5)
 	sk.add_mech(db.make_mech("badger"))
 	sk.add_mech(db.make_mech("clydesdale"))
-	var sq := Unit.pack(1, "risen", Vector2i.ZERO, "undead", 20, 6)
+	var sq := Unit.pack(1, "risen", Vector2i.ZERO, "marsh", 20, 6)
 	sk.add_foes(db.foes_for(sq), sq)
 	sk.begin()
 	sk.start_round()
@@ -238,7 +238,7 @@ func test_internal_text_cannot_sit_at_the_top_level() -> void:
 	var c: Dictionary = db.chassis["sparrowhawk"].duplicate(true)
 	c["fantasy"] = "would be shown"
 	db.chassis["leaky"] = c
-	var f: Dictionary = db.foes["ghoul"].duplicate(true)
+	var f: Dictionary = db.foes["revenant"].duplicate(true)
 	f.erase("design")
 	db.foes["bare"] = f
 	var errs := db.validate()
@@ -306,7 +306,7 @@ func test_sparrowhawk_passive_doubles_damage_and_heat() -> void:
 	u.die = Die.single(Face.attack(30, Face.Reach.LINE, [], 10))
 	var sk := Skirmish.new(1)
 	sk.add_mech(u)
-	sk.add_foes([Foe.make("ghoul", 90, 10)])
+	sk.add_foes([Foe.make("revenant", 90, 10)])
 	sk.begin()
 	sk.start_round()
 	sk.assign(0, sk.front[0])
@@ -375,7 +375,7 @@ func test_a_crit_burn_passive_from_content_adds_a_stack() -> void:
 	u.die = Die.single(Face.attack(20, Face.Reach.INDIRECT, [], 0, 0, 100))
 	var sk := Skirmish.new(1)
 	sk.add_mech(u)
-	sk.add_foes([Foe.make("ghoul", 200, 10)])
+	sk.add_foes([Foe.make("revenant", 200, 10)])
 	sk.begin()
 	sk.start_round()
 	sk.assign(0, sk.front[0])
@@ -443,23 +443,23 @@ func test_every_foe_has_an_action_roster_and_player_text() -> void:
 				if Foe.is_attack_action(a):
 					assert_false(a.has("value"), "%s: an attack scales the base attack, it has no value of its own" % id)
 		assert_true(implemented >= 1, "%s has at least one implemented action" % id)
-	var foe := db.make_foe("ghoul")
+	var foe := db.make_foe("revenant")
 	var entry := db.codex_for_foe(foe)
 	assert_true(entry["actions"].contains("CLAW // ATTACK 5"), "codex lists the implemented action with the resulting number (alone on the field: no kin)")
 	assert_true(entry["actions"].contains("for 5:"), "and fills {damage} into the text")
-	var caster := db.codex_for_foe(db.make_foe("necromancer"))
+	var caster := db.codex_for_foe(db.make_foe("ghost"))
 	assert_true(caster["actions"].contains("RAISE // BUFF"), "and lists a buff, live since 30 September")
-	var planned: Dictionary = db.foes["ghoul"].duplicate(true)
+	var planned: Dictionary = db.foes["revenant"].duplicate(true)
 	planned["actions"] = Array(planned["actions"]).duplicate(true)
 	planned["actions"].append({"id": "someday", "name": "Someday", "kind": "buff", "text": "", "status": "planned"})
-	db.foes["ghoul"] = planned
-	assert_false(db.codex_for_foe(db.make_foe("ghoul"))["actions"].contains("SOMEDAY"), "a planned action stays hidden")
+	db.foes["revenant"] = planned
+	assert_false(db.codex_for_foe(db.make_foe("revenant"))["actions"].contains("SOMEDAY"), "a planned action stays hidden")
 	ContentDB.reset_cache()
-	assert_eq(entry["flavour"], db.foes["ghoul"]["flavour"], "codex quotes the foe, not the faction")
+	assert_eq(entry["flavour"], db.foes["revenant"]["flavour"], "codex quotes the foe, not the faction")
 
 
 func test_foe_actions_scale_the_base_attack_and_are_picked_by_weight() -> void:
-	var f := Foe.make("ghoul", 30, 10)
+	var f := Foe.make("revenant", 30, 10)
 	f.actions = [
 		{"id": "claw", "name": "Claw", "factor": 1.0, "strikes": 1, "breach": false, "weight": 3, "text": "Claws for {damage}."},
 		{"id": "rend", "name": "Jaw Rend", "factor": 1.5, "strikes": 1, "breach": false, "weight": 1, "text": "Bites for {damage}."},
@@ -494,12 +494,12 @@ func test_foe_actions_scale_the_base_attack_and_are_picked_by_weight() -> void:
 func test_planned_actions_cannot_claim_to_be_implemented() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var f: Dictionary = db.foes["ghoul"].duplicate(true)
+	var f: Dictionary = db.foes["revenant"].duplicate(true)
 	f["actions"].append({"id": "someday", "name": "Someday", "kind": "buff", "text": "", "status": "implemented"})
-	db.foes["ghoul"] = f
+	db.foes["revenant"] = f
 	var hit := false
 	for e in db.validate():
-		if e.begins_with("foe ghoul action someday") and e.contains("effect must be"):
+		if e.begins_with("foe revenant action someday") and e.contains("effect must be"):
 			hit = true
 	assert_true(hit, "a non-attack action marked implemented without an effect the engine runs is reported")
 
@@ -754,7 +754,7 @@ func test_the_foe_actions_run_and_the_validator_knows_their_shape() -> void:
 			if not Foe.is_attack_action(a):
 				assert_true(Foe.ACTION_EFFECTS[Foe.kind_of(a)].has(str(a.get("effect", ""))), "%s's %s runs" % [id, a["id"]])
 	assert_true(kinds.has("defend") and kinds.has("buff") and kinds.has("debuff"), "every kind is in the content")
-	var g: Dictionary = db.foes["ghoul"].duplicate(true)
+	var g: Dictionary = db.foes["revenant"].duplicate(true)
 	g["id"] = "odd_ghoul"
 	g["name"] = "Odd Ghoul"
 	g["actions"] = [{"id": "claw", "name": "Claw", "kind": "attack", "text": "", "status": "implemented"},
@@ -767,8 +767,8 @@ func test_the_foe_actions_run_and_the_validator_knows_their_shape() -> void:
 		if e.begins_with("foe odd_ghoul") and (e.contains("effect must be") or e.contains("unknown foe") or e.contains("belongs to an attack")):
 			hits += 1
 	assert_eq(hits, 3, "a bad effect, an unknown summon and an attack field on a debuff are each named")
-	var entry := db.codex_for_foe(db.make_foe("bone_colossus"))
-	assert_true(entry["actions"].contains("KNIT // DEFEND"), "the codex lists the defend")
+	var entry := db.codex_for_foe(db.make_foe("bone_dragon"))
+	assert_true(entry["actions"].contains("REGEN // DEFEND"), "the codex lists the defend")
 	assert_true(entry["actions"].contains("Regrows 20 hull"), "with its number filled in")
 
 
@@ -812,12 +812,16 @@ func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 		if f.is_massive():
 			assert_eq(f.actions.size(), 3, "%s, a boss, has three moves" % id)
 			assert_true(f.armour > 0, "%s, a boss, wears armour" % id)
+		elif f.hero:
+			# A hero has three moves (decided 9 October); one may still be planned, so two run.
+			assert_true(f.actions.size() >= 2 and f.actions.size() <= 3, "%s, a hero, has two or three moves running" % id)
+			assert_eq(f.size, 1, "%s, a hero, is human-sized" % id)
 		else:
 			assert_true(f.actions.size() >= 1 and f.actions.size() <= 2, "%s has one or two moves" % id)
 		for a in f.actions:
 			if not Foe.is_attack_action(a):
 				assert_false(Foe.whens_of(a).is_empty(), "%s's %s carries a condition" % [id, a["id"]])
-	var g := db.make_foe("ghoul")
+	var g := db.make_foe("revenant")
 	assert_eq(g.actions.size(), 1, "the ghoul has one move")
 	assert_eq(int(g.actions[0].get("swarm", 0)), 5, "and it swarms")
 	g.kin = 3
@@ -825,9 +829,9 @@ func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 	var entry := db.codex_for_foe(g)
 	assert_true(entry["actions"].contains("+5 A KIN"), "the codex says the swarm: %s" % entry["actions"])
 	assert_true(entry["stats"].contains("ARM") or true, "stats read")
-	var maw := db.codex_for_foe(db.make_foe("the_maw"))
+	var maw := db.codex_for_foe(db.make_foe("sandworm"))
 	assert_true(maw["actions"].contains("WHEN BELOW HALF"), "the codex says a move's condition: %s" % maw["actions"])
-	assert_true(str(maw["stats"]).contains("ARM 10"), "and the boss's armour")
+	assert_true(str(maw["stats"]).contains("ARM 5"), "and the boss's armour")
 
 
 # The name plate shows the traits, not a silhouette word (Ryan, 2 October): maker, then
@@ -1028,3 +1032,72 @@ func test_the_module_rules_are_validated() -> void:
 	db.modules["test_module"] = _module(plain_maker, 1, {}, {"description": "x", "status": "planned", "effects": [{"trigger": "static", "effect": "no_such_thing", "value": 1}]})
 	for e in db.validate():
 		assert_false(e.begins_with("module test_module"), "a planned text waits: %s" % e)
+
+
+func test_a_split_is_validated_one_deep_and_read_into_the_foe() -> void:
+	var db := _db()
+	var any_id: String = db.foes.keys()[0]
+	var a: Dictionary = db.foes[any_id].duplicate(true)
+	a["on_death"] = {"summon": "nobody", "count": 2}
+	db.foes["split_test"] = a
+	var errs := db.validate()
+	assert_true("\n".join(errs).contains("on_death must name a known foe"), "an unknown foe is refused")
+	a["on_death"] = {"summon": any_id, "count": 2}
+	var b: Dictionary = db.foes[any_id].duplicate(true)
+	b["on_death"] = {"summon": "split_test", "count": 1}
+	db.foes["chain_test"] = b
+	errs = db.validate()
+	assert_true("\n".join(errs).contains("a split goes one deep"), "a chain of splits is refused")
+	db.foes.erase("chain_test")
+	errs = db.validate()
+	assert_false("\n".join(errs).contains("split"), "one level validates: %s" % str(errs))
+	var f := db.make_foe("split_test")
+	assert_eq(f.on_death, {"summon": any_id, "count": 2}, "read into the foe")
+	db.foes.erase("split_test")
+
+
+## A component's sound (decided 2 October): its label where content names one, else derived
+## from shape and face. Synthetic components, so no entry's sound is pinned here.
+func test_a_component_sound_is_its_label_or_derived() -> void:
+	var db := ContentDB.new()
+	var kinetic := {"kind": "attack", "reach": "line", "power": 10, "power_max": 20, "crit": 10}
+	var energy := {"kind": "attack", "reach": "line", "power": 15}
+	db.components = {
+		"slug": {"shape": "barrel", "maker": "minerva", "face": kinetic},
+		"twin": {"shape": "twin_barrel", "maker": "kestrel", "face": kinetic},
+		"beam": {"shape": "barrel", "maker": "kestrel", "face": energy},
+		"hot": {"shape": "barrel", "maker": "arsenal", "face": energy},
+		"hot_rack": {"shape": "rack", "maker": "arsenal", "face": energy},
+		"plow": {"shape": "blade", "maker": "minerva", "face": {"kind": "attack", "reach": "melee", "power": 5, "power_max": 10}, "sound": "blunt"},
+		"fist": {"shape": "blade", "maker": "arsenal", "face": energy, "sound": ["blunt", "plasma"]},
+		"field": {"shape": "none", "maker": "minerva", "face": {"kind": "shield", "power": 20}},
+		"coil": {"shape": "dish", "maker": "kestrel", "face": {"kind": "buff"}},
+		"lure": {"shape": "dish", "maker": "minerva", "face": {"kind": "attack", "reach": "indirect", "power": 0}},
+		"bare": {"shape": "none", "maker": "minerva", "face": {"kind": "attack", "reach": "indirect", "power": 5, "power_max": 10}},
+		"vent": {"shape": "none", "maker": "minerva", "face": {"kind": "vent", "power": 10}},
+	}
+	assert_eq(db.sound_of("slug"), ["barrel"], "a kinetic barrel is a barrel")
+	assert_eq(db.sound_of("twin"), ["twin_barrel"], "a twin a twin")
+	assert_eq(db.sound_of("beam"), ["laser"], "an energy barrel a laser")
+	assert_eq(db.sound_of("hot"), ["plasma"], "the Arsenal's energy barrel a plasma")
+	assert_eq(db.sound_of("hot_rack"), ["rack"], "the Arsenal's rack still a rack")
+	assert_eq(db.sound_of("plow"), ["blunt"], "a label wins")
+	assert_eq(db.sound_of("fist"), ["blunt", "plasma"], "a list is layers")
+	assert_eq(db.sound_of("field"), ["deflector"], "a shield a deflector, whatever its mount")
+	assert_eq(db.sound_of("coil"), ["coil"], "a buff a coil")
+	assert_eq(db.sound_of("lure"), ["coil"], "a dish that attacks a coil")
+	assert_eq(db.sound_of("bare"), ["rack"], "an attack with no mount by its reach")
+	assert_eq(db.sound_of("vent"), [], "a vent has none of these")
+	assert_eq(db.sound_of("nothing"), [], "an unknown id has none")
+
+
+func test_every_component_derives_a_sound_the_game_plays() -> void:
+	var db := ContentDB.load_default()
+	for id in db.components:
+		var kind := str(db.components[id].get("face", {}).get("kind", ""))
+		var layers := db.sound_of(id)
+		if kind == "vent":
+			assert_eq(layers, [], "%s is a vent" % id)
+			continue
+		assert_true(not layers.is_empty(), "%s has a sound" % id)
+		assert_true(not Sound.blow(layers).is_empty(), "%s's sound %s has a blow" % [id, layers])

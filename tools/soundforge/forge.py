@@ -4,8 +4,9 @@ nothing that sounds like a space opera; the music an industrial groove, driving 
 fast, more bop than pummel. These are placeholders in that register, to be replaced by
 real recordings and a real track when there are some. numpy only.
 
-    tools/spriter/.venv/bin/python tools/soundforge/forge.py build            # everything into art/audio
-    tools/spriter/.venv/bin/python tools/soundforge/forge.py build hit kill   # some
+    tools/spriter/.venv/bin/python tools/soundforge/forge.py build            # everything SHIP names into art/audio (and retire the rest)
+    tools/spriter/.venv/bin/python tools/soundforge/forge.py build effects    # everything but the loops
+    tools/spriter/.venv/bin/python tools/soundforge/forge.py build ui_tap kill   # some
     tools/spriter/.venv/bin/python tools/soundforge/forge.py list
     tools/spriter/.venv/bin/python tools/soundforge/forge.py measure          # level and balance of every file
     tools/spriter/.venv/bin/python tools/soundforge/forge.py sketch [human rift djent]   # eight bars in a direction, to tools/soundforge/out
@@ -3410,6 +3411,152 @@ LEVELS = {
 }
 
 
+# ---------------------------------------------------------------- what ships
+# The effects' pass, in the game (Ryan, 8 October: implement everything in-game). SOUNDS
+# above stays the forge's own recipes, the first and second cuts among them, which the sketch
+# modules still play beside their picks; SHIP is what `build` writes into art/audio. A pick
+# is built by the very function that rendered what Ryan heard on the listening page and at
+# the level he heard it, so nothing is re-derived on the way in:
+#   - the console is the palette (palette_sketches.py, its eleventh cut and the heat
+#     signals), each row levelled through the phone model;
+#   - the iron, the rift and the red are the third cut (fx_sketches.py), each written at its
+#     shipped sound's level plus the cut's stated boost;
+#   - the cut, the vent, the overheat's burn, the withdrawal and a foe stepping into the
+#     line are kept as they were (the page: kept as they are), and the music is untouched.
+# A foe falling plays a short blast of its own (death_sketches.py, Ryan's pick of 9 October);
+# it had been the machine's death, near three seconds, for something that happens ten times
+# a fight.
+# Jenny's lines ship from voice_lines.py into art/audio/voice.
+
+def _console(row):
+    def build():
+        import palette_sketches as PS
+        x, _db, _beside, _label, _note = PS.render_one(row)
+        return x
+    return build
+
+
+def _third_cut(name):
+    def build():
+        import fx_sketches as FX
+        return FX.level(FX.new(name), LEVELS[FX.NEW[name][2]] + FX.boost(name))
+    return build
+
+
+def _death(name, cut=1):
+    """A pick from death_sketches.py (Ryan, 9 October), seeded and levelled as the page made it."""
+    def build():
+        import death_sketches as D
+        table = {1: D.SINGLES, 2: D.SINGLES2, 3: D.SINGLES3, 4: D.SINGLES4, 5: D.SINGLES5, 6: D.SINGLES6, 7: D.SINGLES7, 8: D.SINGLES8, 9: D.SINGLES9, 10: D.SINGLES10, 11: D.SINGLES11}[cut]
+        fn, level = {n: (f, lv) for n, f, lv in table}[name]
+        D.F.seed("d%d_%s" % (cut, name))
+        x = fn()
+        return x * 10.0 ** ((level - loudness(x)) / 20.0)
+    return build
+
+
+def _kept(name):
+    return lambda: write_level(SOUNDS[name](), name, LEVELS[name])
+
+
+MAKERS = ["minerva", "kestrel", "wainwright_sutler", "aphelion", "arsenal"]
+FAMILIES = ["undead", "demonic", "eldritch"]
+
+## game name -> a builder of the levelled signal
+SHIP = {
+    # the console: a press, the map, the die, the turn, the panels, the heat
+    "ui_tap": _console("tap"), "map_select": _console("map_select"), "ui_back": _console("dismiss"),
+    "confirm": _console("confirm"), "refuse": _console("refuse"),
+    "die_pick": _console("die_lift"), "die_hover": _console("die_hover"), "die_spend": _console("die_spend"),
+    "die_drop": _console("die_drop_back"), "die_lock": _console("die_lock"), "die_unlock": _console("die_unlock"),
+    "die_roll": _console("reroll"), "round_open": _console("round_open"), "resolve": _console("end_turn"),
+    "plot": _console("route_set"), "hold": _console("hold_readout"),
+    "codex_open": _console("codex_open"), "codex_close": _console("codex_close"),
+    "menu_open": _console("menu_open"), "menu_close": _console("menu_close"),
+    "heat_warn": _console("heat_warn"), "heat_alarm": _console("overheat"),
+    # the iron: a blow by the weapon (ContentDB.sound_of), the struck machine's metal, shields, footfalls
+    "w_barrel": _third_cut("w_barrel"), "w_twin": _third_cut("w_twin"), "w_rack": _third_cut("w_rack"),
+    "w_blade": _third_cut("w_blade"), "w_blunt": _third_cut("w_blunt"), "w_blunt_plasma": _third_cut("w_blunt_plasma"),
+    "w_laser": _third_cut("w_laser"), "w_plasma": _third_cut("w_plasma"),
+    "w_dish_shield": _third_cut("w_dish_shield"), "w_dish_coil": _third_cut("w_dish_coil"),
+    "shield_hit": _third_cut("shield_hit"), "shield_break": _death("break2", 2),   # the shield's break, an electric discharge (Ryan's pick, 9 October)
+    "kill": _death("foe_blast"),   # a foe's death, one short blast for every family (Ryan, 9 October; the families' own later)
+    "step_tracked": _third_cut("step_tracked"), "step_legged": _third_cut("step_legged"),
+    "step_wheeled": _third_cut("step_wheeled"), "step_flyer": _third_cut("step_flyer"),
+    # the rift: each family's blow, heavy blow and arrival, and the boss revealed
+    "reveal": _third_cut("reveal"),
+    # the red
+    "contact": _third_cut("contact"), "engage": _third_cut("engage"), "gate_hit": _third_cut("gate_hit"),
+    "victory": _third_cut("victory"), "defeat": _third_cut("defeat"),
+    # kept as they were
+    "cut": _kept("cut"), "vent": _kept("vent"), "overheat": _kept("overheat"),
+    "withdraw": _kept("withdraw"), "arrival": _kept("arrival"),
+}
+for _m in MAKERS:
+    for _k in ("hit", "block", "kill"):
+        SHIP["%s_%s" % (_k, _m)] = _third_cut("%s_%s" % (_k, _m))
+# A machine's death in its maker's own explosion, as Ryan picks them (9 October, death_sketches.py).
+SHIP["kill_wainwright_sutler"] = _death("death3_wainwright_sutler", 3)   # the works winding down, three small blasts over the clockwork
+SHIP["kill_aphelion"] = _death("death5_aphelion", 5)   # the Science Vessel: discharging, its warning, small blasts rolling into its end
+SHIP["kill_kestrel"] = _death("death6_kestrel", 6)   # falling, the air rushing, the crash catching as an ignition, the fire crackling down
+SHIP["kill_minerva"] = _death("death10_minerva", 10)   # boom... BOOM at either end of the machine, both soft-fronted and low, the second the bigger
+SHIP["kill_arsenal"] = _death("death11_arsenal", 11)   # a deep soft blast, the fire roaring up over a ghost breathing out in its own hall, breaking into static, crackles and sputters
+for _f in FAMILIES:
+    SHIP["foe_%s_hit" % _f] = _third_cut("foe_%s_hit" % _f)
+    SHIP["foe_%s_heavy" % _f] = _third_cut("foe_%s_heavy" % _f)
+    SHIP["spawn_%s" % _f] = _third_cut("spawn_%s" % _f)
+for _name in [n for n in SOUNDS if n.startswith("music_")]:
+    SHIP[_name] = (lambda n=_name: write_level(SOUNDS[n](), n, LEVELS[n]))
+
+
+def write_level(x, name, level):
+    """A recipe's signal at its LEVELS level, as `write` levels it (a loop by its body, an
+    effect by its loudest 50 ms)."""
+    return x * 10.0 ** ((level - (mean_level(x) if name.startswith("music_") else loudness(x))) / 20.0)
+
+
+## The master stage on every effect and line (Ryan, 8 October, on the phone: the set way too
+## quiet, against the music and for the phone's own volume; Hold The Line at the music's full
+## knob matches other games). Every page level stays the relative mix; the set comes up by
+## MASTER_DB together, a look-ahead limiter holding the peaks at CEILING, so the blows that
+## already peaked at full scale come up in loudness without clipping. The loops are untouched.
+MASTER_DB = 8.0
+CEILING = 0.89   # -1 dBFS
+
+
+def master(x, gain_db=MASTER_DB, ceiling=CEILING, look=0.004, release=0.02):
+    """Gain, then a look-ahead peak limiter: the gain falls ahead of a peak over `look` and
+    recovers over `release`, so a transient is turned down rather than folded over."""
+    from numpy.lib.stride_tricks import sliding_window_view
+    y = np.asarray(x, dtype=float) * 10.0 ** (gain_db / 20.0)
+    n = max(1, n_of(look))
+    a = np.abs(y)
+    ahead = sliding_window_view(np.concatenate([a, np.zeros(n)]), n + 1).max(axis=1)[:len(a)]
+    g = np.minimum(1.0, ceiling / np.maximum(ahead, 1e-9))
+    rel = 1.0 / max(1.0, release * SR)
+    out = np.empty_like(g)
+    cur = 1.0
+    for i in range(len(g)):
+        cur = g[i] if g[i] < cur else cur + (1.0 - cur) * rel
+        out[i] = cur
+    out = np.convolve(out, np.ones(n) / n, mode="full")[:len(out)]   # the fall ramped over the look-ahead
+    return np.clip(y * out, -ceiling, ceiling)
+
+
+def write_as_is(name, x, mastered=False):
+    """A signal already at its level: limited (unless the master stage has) and written."""
+    x = x if mastered else limit(x)
+    pcm = (np.clip(x, -1.0, 1.0) * 32767.0).astype("<i2")
+    os.makedirs(OUT, exist_ok=True)
+    path = os.path.join(OUT, name + ".wav")
+    with wave.open(path, "wb") as w:
+        w.setnchannels(1)
+        w.setsampwidth(2)
+        w.setframerate(SR)
+        w.writeframes(pcm.tobytes())
+    return path
+
+
 def read(name):
     with wave.open(os.path.join(OUT, name + ".wav"), "rb") as w:
         x = np.frombuffer(w.readframes(w.getnframes()), "<i2") / 32767.0
@@ -3425,7 +3572,7 @@ def main(argv):
         # and where each one starts.
         os.makedirs(OUT_SKETCH, exist_ok=True)
         parts, when, t = [], [], 0.0
-        for name in [n for n in SOUNDS if not n.startswith("music_")]:
+        for name in [n for n in SHIP if not n.startswith("music_")]:
             x, sr = read(name)
             when.append((t, name))
             parts.append(x)
@@ -3467,24 +3614,39 @@ def main(argv):
             print("%-16s %5.2f s  %s" % (name, len(x) / SR, os.path.relpath(path)))
         return 0
     if argv[0] == "list":
-        for name in SOUNDS:
+        for name in SHIP:
             print(name)
         return 0
     if argv[0] == "measure":
         print("%-16s %6s %8s %8s %6s" % ("name", "dur", "loud dB", "peak dB", "<150Hz"))
-        for name in argv[1:] or list(SOUNDS):
+        for name in argv[1:] or list(SHIP):
             x, sr = read(name)
             print("%-16s %6.2f %8.1f %8.1f %6.2f" % (name, len(x) / sr, loudness(x), 20.0 * math.log10(np.max(np.abs(x)) + 1e-9), low_share(x)))
         return 0
-    names = argv[1:] or list(SOUNDS)
+    whole = not argv[1:] or argv[1:] == ["effects"]
+    names = argv[1:] or list(SHIP)
+    if argv[1:] == ["effects"]:   # everything but the loops, which take minutes and rarely move
+        names = [n for n in SHIP if not n.startswith("music_")]
     for name in names:
-        if name not in SOUNDS:
+        if name not in SHIP:
             print("no such sound:", name)
             return 1
         seed(name)
-        x = SOUNDS[name]()
-        path = write(name, x, LEVELS[name])
+        x = SHIP[name]()
+        if name.startswith("music_"):
+            path = write_as_is(name, x)
+        else:
+            x = master(x)
+            path = write_as_is(name, x, True)
         print("%-16s %5.2f s  %s" % (name, len(x) / SR, os.path.relpath(path)))
+    if whole:
+        # A whole build retires what SHIP no longer names (and its import file).
+        for f in sorted(os.listdir(OUT)):
+            if f.endswith(".wav") and f[:-4] not in SHIP:
+                os.remove(os.path.join(OUT, f))
+                if os.path.exists(os.path.join(OUT, f + ".import")):
+                    os.remove(os.path.join(OUT, f + ".import"))
+                print("retired", f)
     return 0
 
 

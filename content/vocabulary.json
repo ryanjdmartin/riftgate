@@ -443,7 +443,7 @@
    "id": "overcharged",
    "category": "status",
    "name": "Overcharged",
-   "codex": "Mech status. Each stack is +10% damage on this machine's attacks. From buff equipment it lasts through the rounds the component says; from devour it lasts the skirmish and loses a stack at the end of each round unless a passive says otherwise.",
+   "codex": "Mech status. Each stack is +5 damage on this machine's attacks, flat. From buff equipment it lasts through the rounds the component says; from devour it lasts the skirmish and loses a stack at the end of each round unless a passive says otherwise.",
    "status": "implemented",
    "design": {
     "holes": "The buff side and devour run (29 September); a buff's stacks and devour's are the same status to the machine and add up. The Ammit's Quintessence Tap (which stops the decay and keeps the stacks for the battle, never the campaign) is planned. Name is a placeholder."
@@ -453,7 +453,7 @@
    "id": "braced",
    "category": "status",
    "name": "Braced",
-   "codex": "Mech status. Armour +10 per stack: that much off every blow on bare hull, flat. Granted by buff equipment for the rounds it says.",
+   "codex": "Mech status. Armour +5 per stack: that much off every blow on bare hull, flat. Granted by buff equipment for the rounds it says.",
    "status": "implemented",
    "design": {
     "holes": "Placeholder name and number (29 September). Flat since 2 October; it was 15% less damage a stack."
@@ -1097,6 +1097,16 @@
    "status": "implemented",
    "design": {
     "holes": "A property of a foe's attack action. No foe carries it yet; Ryan places it. Redirect and interrupt do not exist yet. Name is a placeholder (pierce is taken by the player keyword)."
+   }
+  },
+  {
+   "id": "self_destruct",
+   "category": "foe",
+   "name": "Self-Destruct",
+   "codex": "A blow that spends the striker: after it lands the foe is gone, whole, and nothing brings it back. The blow is the foe's whole life, so it is announced like any other and the answer is to kill it first or to shield what it has picked.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Bomb's (decided 9 October, the Peak). A property of a foe's attack action, like breach. A self-destructing foe counts as a kill like any other."
    }
   },
   {

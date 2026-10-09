@@ -284,12 +284,12 @@
     "shield": 10
    },
    "text": {
-    "description": "Its blows deal 10 more to a foe carrying any status.",
+    "description": "Its blows deal 5 more to a foe carrying any status.",
     "effects": [
      {
       "trigger": "on_attack",
       "effect": "add_damage",
-      "value": 10,
+      "value": 5,
       "when": "target_status"
      }
     ]
@@ -298,7 +298,7 @@
     "stage": "draft",
     "fantasy": "A matrix of how much each thing in front of it wants to fall apart.",
     "niche": "A kit: a status machine's payoff.",
-    "notes": "Claude's Tactical Plotting Board for W&S, 9 October; Ryan the same day: the effect reads as Aphelion's, so it moved and took an Aphelion name (Claude's working name, for Ryan to move)."
+    "notes": "Claude's Tactical Plotting Board for W&S, 9 October; Ryan the same day: the effect reads as Aphelion's, so it moved and took an Aphelion name (Claude's working name, for Ryan to move). +5, not +10: a flat modifier on the player's blows, brought down with them by the damage scale (bible section 11)."
    }
   },
   {

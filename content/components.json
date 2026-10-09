@@ -17,8 +17,8 @@
    "face": {
     "kind": "attack",
     "reach": "melee",
-    "power": 20,
-    "power_max": 40,
+    "power": 10,
+    "power_max": 20,
     "crit": 10,
     "keywords": [
      "cleave"
@@ -48,8 +48,8 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 20,
-    "power_max": 40,
+    "power": 10,
+    "power_max": 20,
     "crit": 10,
     "keywords": [],
     "heat": 10
@@ -76,8 +76,8 @@
    "face": {
     "kind": "attack",
     "reach": "melee",
-    "power": 30,
-    "power_max": 60,
+    "power": 15,
+    "power_max": 30,
     "crit": 15,
     "keywords": [],
     "heat": 10
@@ -105,8 +105,8 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 30,
-    "power_max": 60,
+    "power": 15,
+    "power_max": 30,
     "crit": 15,
     "keywords": [],
     "heat": 10
@@ -132,8 +132,8 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 10,
-    "power_max": 30,
+    "power": 5,
+    "power_max": 15,
     "crit": 10,
     "keywords": [],
     "heat": 0
@@ -160,7 +160,7 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 30,
+    "power": 15,
     "keywords": [
      "penetrate"
     ],
@@ -188,8 +188,8 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 10,
-    "power_max": 30,
+    "power": 5,
+    "power_max": 15,
     "crit": 5,
     "keywords": [],
     "heat": 0
@@ -237,8 +237,8 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 20,
-    "power_max": 50,
+    "power": 10,
+    "power_max": 25,
     "crit": 10,
     "keywords": [],
     "heat": 0
@@ -264,8 +264,8 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 10,
-    "power_max": 30,
+    "power": 5,
+    "power_max": 15,
     "crit": 5,
     "keywords": [
      "burn"
@@ -295,8 +295,8 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 30,
-    "power_max": 50,
+    "power": 15,
+    "power_max": 25,
     "crit": 10,
     "keywords": [
      "suppress"
@@ -347,7 +347,7 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 100,
+    "power": 50,
     "keywords": [],
     "heat": 40
    },
@@ -373,8 +373,8 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 20,
-    "power_max": 40,
+    "power": 10,
+    "power_max": 20,
     "crit": 20,
     "keywords": [
      "execute"
@@ -404,7 +404,7 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 30,
+    "power": 15,
     "keywords": [
      "chain"
     ],
@@ -454,7 +454,7 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 20,
+    "power": 10,
     "keywords": [
      "suppress"
     ],
@@ -482,8 +482,8 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 10,
-    "power_max": 30,
+    "power": 5,
+    "power_max": 15,
     "crit": 5,
     "keywords": [
      "burn",
@@ -542,7 +542,7 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 10,
+    "power": 5,
     "keywords": [
      "rapid"
     ],
@@ -635,8 +635,8 @@
    "face": {
     "kind": "attack",
     "reach": "melee",
-    "power": 30,
-    "power_max": 60,
+    "power": 15,
+    "power_max": 30,
     "crit": 10,
     "keywords": [
      "cleave"
@@ -678,8 +678,8 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 10,
-    "power_max": 30,
+    "power": 5,
+    "power_max": 15,
     "crit": 10,
     "keywords": [
      "rapid"
@@ -709,8 +709,8 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 10,
-    "power_max": 20,
+    "power": 5,
+    "power_max": 10,
     "crit": 5,
     "keywords": [
      "suppress"
@@ -739,7 +739,7 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 20,
+    "power": 10,
     "keywords": [],
     "heat": 0,
     "vents_all": true,
@@ -772,7 +772,7 @@
    "face": {
     "kind": "attack",
     "reach": "melee",
-    "power": 30,
+    "power": 15,
     "keywords": [
      "burn",
      "volatile"
@@ -802,7 +802,7 @@
    "face": {
     "kind": "attack",
     "reach": "melee",
-    "power": 20,
+    "power": 10,
     "keywords": [
      "execute",
      "devour"
@@ -832,8 +832,8 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 10,
-    "power_max": 30,
+    "power": 5,
+    "power_max": 15,
     "crit": 10,
     "keywords": [],
     "heat": 0
@@ -882,7 +882,7 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 20,
+    "power": 10,
     "keywords": [],
     "heat": 5
    },
@@ -930,7 +930,7 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 30,
+    "power": 15,
     "keywords": [],
     "heat": 10
    },
@@ -1025,7 +1025,7 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 20,
+    "power": 10,
     "keywords": [],
     "heat": 5
    },
@@ -1051,7 +1051,7 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 20,
+    "power": 10,
     "keywords": [
      "burn"
     ],
@@ -1079,7 +1079,7 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 30,
+    "power": 15,
     "keywords": [
      "burn"
     ],
@@ -1130,7 +1130,7 @@
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 20,
+    "power": 10,
     "keywords": [
      "burn"
     ],
@@ -1335,13 +1335,13 @@
     "stage": "draft",
     "fantasy": "Mining gauntlets with the arc welder left switched on. What they punch stays live.",
     "niche": "Melee that Shocks what it hits and leaves standing: the Armadillo's status on a weapon (Ryan's board), so the next blow on it lands double.",
-    "notes": "From Ryan's Names board. Stocked on no chassis, so it carries its own tier. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders."
+    "notes": "From Ryan's Names board. Stocked on no chassis, so it carries its own tier. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders. Halved to 10 to 20 when the branch met the damage scale (9 October; bible section 11, the damage-scale row)."
    },
    "face": {
     "kind": "attack",
     "reach": "melee",
-    "power": 20,
-    "power_max": 40,
+    "power": 10,
+    "power_max": 20,
     "crit": 10,
     "keywords": [
      "shock"
@@ -1417,17 +1417,17 @@
     "stage": "draft",
     "fantasy": "A minigun, but more. Three bursts a pull, each rolled on its own.",
     "niche": "The first multi-strike: three small blows that each roll, crit and proc on their own. Strong into bare foes and with Primed, almost useless into armour 10.",
-    "notes": "From Ryan's Names board (the horde gun). Stocked on the Clydesdale in place of one Twin Autoguns. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders."
+    "notes": "From Ryan's Names board (the horde gun). Stocked on the Clydesdale in place of one Twin Autoguns. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders. At the damage scale (9 October) its strikes are 5 to 10, half of 5 to 15 rounded up to fives as the scale rounds (a kinetic weapon rolls a range): 22 or so a spend against the Twin Autoguns' 10, a little hotter than the old ratio, and about 7 into armour 5, which is its weakness (bible section 11, the damage-scale row)."
    },
    "face": {
     "kind": "attack",
     "reach": "line",
     "power": 5,
-    "power_max": 15,
     "crit": 5,
     "strikes": 3,
     "keywords": [],
-    "heat": 5
+    "heat": 5,
+    "power_max": 10
    },
    "passive": null,
    "tags": [

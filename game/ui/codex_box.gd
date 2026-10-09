@@ -143,6 +143,7 @@ func _init() -> void:
 	gap.custom_minimum_size = Vector2(0, 8)
 	cv.add_child(gap)
 	var close_btn := HudButton.new("CLOSE", close)
+	close_btn.sound = ""   # the codex closing is its own figure
 	close_btn.custom_minimum_size = Vector2(0, 52)
 	cv.add_child(close_btn)
 
@@ -208,6 +209,7 @@ func open(entry: Dictionary) -> void:
 	_flavour.visible = not quote.is_empty()
 	if not visible:
 		Sound.play("codex_open")
+		Sound.say("codex")   # rarely: she looks it up
 	visible = true
 	_fit()
 	# Wrapping labels report their true height only after a layout pass at the panel's

@@ -12,6 +12,14 @@ extends Node
 ## The mix lives in the forge: every file is written at its own level (a tap is quiet, the
 ## gate is not), so a hook passes a dB offset only when one moment is relatively louder or
 ## softer than the sound's usual one (the enemy's blows, a stack of kills).
+##
+## The effects' pass, in the game (Ryan, 8 October; the bible's sound row): the console is
+## the palette, every press, die, panel and turn its own figure; a blow sounds by the weapon
+## (`blow`, from ContentDB.sound_of); a hit, a block and a kill in the struck machine's metal
+## (`struck`); a standing shield's hit apart from the armour's block and the hull's hit; each
+## family its own blow, heavy blow and arrival (`family`); footfalls by the way a machine
+## moves (`step_for`); a boss revealed; and Jenny, the console's voice, on her own bus with
+## the music ducked under her (`say`, the rules in VoiceLines).
 
 const DIR := "res://art/audio/"
 const VOICES := 10          # effects that can sound at once; the oldest is cut for the next
@@ -20,18 +28,63 @@ const FADE_IN := 0.9        # the loop arriving...
 const FADE_IN_DELAY := 0.25 # ...a little after, so two tempos overlap less
 const SET_FADE := 2.0       # one loop of a set into the next: out and in together, over this long
 const DUCK_DB := -9.0       # how far the music drops under the pause menu
+const VOICE_DUCK_DB := -3.5 # and under one of Jenny's lines (Ryan, 7 October: 3 to 4 dB, set by ear)
 const SILENT_DB := -80.0
-const VARY := 0.04          # random pitch on a blow or a knock, as a fraction
+const VARY := 0.04          # random pitch on a footfall or a plate struck, as a fraction
+const VOICE_DIR := "res://art/audio/voice/"
+const HOVER_FADE := 0.12    # the hover letting go when the die leaves its target
 
-## Every name the game asks for, so a test can check the files exist and the forge writes them.
+const MAKERS := ["minerva", "kestrel", "wainwright_sutler", "aphelion", "arsenal"]
+const FAMILIES := ["undead", "demonic", "eldritch"]
+## The domains of 9 October (content/factions.json) borrow the nearest family's recipes until
+## the effects pass gives each its own: the Marsh's dead are the Risen's, the Peak's fire the
+## Horde's slag, the Waste's needles and stares the Chorus's word, the Meadow's crowd the Risen's.
+const DOMAIN_FAMILY := {"marsh": "undead", "peak": "demonic", "waste": "eldritch", "meadow": "undead"}
+
+## Every name the game asks for, so a test can check the files exist and the forge writes
+## them (tools/soundforge/forge.py, SHIP). The makers' metals and the families' blows are
+## named by MAKERS and FAMILIES and checked the same way (`all_names`).
 const NAMES := [
-	"ui_tap", "ui_back", "plot", "codex_open", "codex_close", "menu_open",
-	"die_pick", "die_drop", "die_roll", "die_lock", "shield_up", "vent",
-	"hit", "hit_crit", "block", "shield_break", "kill", "arrival", "step", "resolve",
-	"contact", "engage", "cut", "gate_hit", "spawn", "victory", "defeat", "withdraw",
-	"overheat", "laser", "gunfire", "cannon", "slash", "slam",
+	# the console
+	"ui_tap", "ui_back", "confirm", "refuse", "map_select", "plot", "hold",
+	"codex_open", "codex_close", "menu_open", "menu_close",
+	"die_pick", "die_hover", "die_spend", "die_drop", "die_lock", "die_unlock", "die_roll",
+	"round_open", "resolve", "heat_warn", "heat_alarm",
+	# the iron
+	"w_barrel", "w_twin", "w_rack", "w_blade", "w_blunt", "w_blunt_plasma", "w_laser", "w_plasma",
+	"w_dish_shield", "w_dish_coil", "shield_hit", "shield_break", "kill", "vent", "overheat",
+	"step_tracked", "step_legged", "step_wheeled", "step_flyer",
+	# the rift and the red
+	"reveal", "arrival", "contact", "engage", "cut", "gate_hit", "victory", "defeat", "withdraw",
 	"music_far_bank", "music_hold_the_line", "music_low_ground", "music_night_shift", "music_crossing", "music_full_bore",
 ]
+
+## A component's sound word (ContentDB.SOUNDS) to its blow.
+const BLOWS := {
+	"barrel": "w_barrel", "twin_barrel": "w_twin", "rack": "w_rack", "blade": "w_blade", "blunt": "w_blunt",
+	"laser": "w_laser", "plasma": "w_plasma", "deflector": "w_dish_shield", "coil": "w_dish_coil",
+}
+
+## Where a blow lands, seconds from its start (measured 8 October: the loudest moment through
+## the phone model; the third cut draws every blow out, the laser charging, the rack's salvo
+## in flight, the firebolt lobbed). A hit's flash, a kill, a death and Jenny wait for it, so a
+## spend is heard in order rather than all at once (Ryan, 8 October: too dense). Absent is at once.
+const LAND := {
+	"w_barrel": 0.03, "w_twin": 0.07, "w_rack": 1.15, "w_blade": 0.5, "w_blunt": 0.33, "w_blunt_plasma": 0.33,
+	"w_laser": 0.47, "w_plasma": 0.5, "w_dish_shield": 0.04, "w_dish_coil": 0.57,
+	"foe_undead_heavy": 0.3, "foe_demonic_heavy": 0.3, "foe_eldritch_heavy": 0.46,
+}
+
+## Where Jenny's "machine lost" falls in each maker's death, seconds from its start: the death
+## Ryan picked has a gap for her (death_sketches.py, VOICE_AT), so she interleaves with it
+## rather than speaking over a blast. A maker whose death has not been picked yet takes the
+## default, past the old death's first blast.
+const DEATH_VOICE_AT := {"wainwright_sutler": 0.45, "aphelion": 0.2, "kestrel": 1.45, "minerva": 1.5, "arsenal": 1.5}
+const DEATH_VOICE_AT_DEFAULT := 0.9
+const DEATH_AFTER_LINE := 1.7   # her line and a breath, before anything else happens
+
+## A way of moving (BattleMap.WAYS) to its footfall; a hovercraft passes like a flyer.
+const STEPS := {"tracked": "step_tracked", "walker": "step_legged", "wheeled": "step_wheeled", "flyer": "step_flyer", "hover": "step_flyer"}
 
 ## What a screen's music is: a set of loops. A cycling set plays them in turn, one full
 ## loop each, the last crossfading into the first again: the map's, the two calm tracks,
@@ -47,12 +100,13 @@ const NAMES := [
 ## identity. A boss set is keyed "boss_<faction id>" and holds one loop; the battle screen
 ## starts it on the field the moment the boss is contacted, from its top, so the intro bars
 ## play under the reveal and the handover and the fight arrives in the groove. A family
-## without a set falls back to the skirmish's pick (`boss_set`). The Far Bank is The
-## Chorus's: the most choral and the most symphonic of the six, for the last act.
+## without a set falls back to the skirmish's pick (`boss_set`). The Far Bank is the
+## Marsh's (it was The Chorus's until the domains of 9 October): the most choral and the
+## most symphonic of the six, and the far bank of a river is where the Marsh is.
 const SETS := {
 	"map": ["music_low_ground", "music_night_shift"],
 	"skirmish": ["music_hold_the_line", "music_crossing", "music_full_bore"],
-	"boss_eldritch": ["music_far_bank"],
+	"boss_marsh": ["music_far_bank"],
 }
 const PICK := ["skirmish"]
 
@@ -74,20 +128,88 @@ const TRACKS := {
 	"music_crossing": {"title": "The Crossing", "label": "Rift C"},
 }
 
-## Pitched sounds (a horn, a chord, a drone) play at their written pitch; the rest get VARY.
-const TONAL := ["contact", "victory", "defeat", "spawn", "engage", "overheat"]
+## The sounds that take VARY: the footfalls and the plate struck, heard many times a phase.
+## Everything else plays at its written pitch: the console's figures are pitched on purpose
+## (shared pitches read as confirmation), the red is tuned to E, and the blows carry tuned
+## hums and holds.
+const VARIED_PREFIXES := ["step_", "hit_", "block_"]
 
 ## The moments that push the music down and let it climb back: name -> [depth dB, seconds
 ## to recover]. A cheap way to make a blow feel bigger than its file (Ryan, 23 September).
 const DIP := {
-	"contact": [-7.0, 0.7], "engage": [-9.0, 2.4], "cut": [-14.0, 1.6],
-	"gate_hit": [-9.0, 1.4], "spawn": [-5.0, 1.3], "kill": [-6.0, 0.9],
-	"shield_break": [-4.0, 0.5], "overheat": [-5.0, 1.0], "cannon": [-5.0, 0.7], "slam": [-4.0, 0.5],
+	"contact": [-7.0, 0.7], "engage": [-9.0, 2.4], "cut": [-14.0, 1.6], "reveal": [-7.0, 1.2],
+	"gate_hit": [-9.0, 1.4], "spawn_undead": [-5.0, 1.3], "spawn_demonic": [-5.0, 1.3], "spawn_eldritch": [-5.0, 1.3],
+	"kill": [-6.0, 0.9], "kill_minerva": [-6.0, 0.9], "kill_kestrel": [-6.0, 0.9], "kill_wainwright_sutler": [-6.0, 0.9],
+	"kill_aphelion": [-6.0, 0.9], "kill_arsenal": [-6.0, 0.9],
+	"shield_break": [-4.0, 0.5], "overheat": [-5.0, 1.0], "w_rack": [-5.0, 0.7], "w_blunt": [-4.0, 0.5], "w_blunt_plasma": [-4.0, 0.5],
+	"heat_alarm": [-4.0, 0.6],
 	"victory": [-12.0, 3.0], "defeat": [-12.0, 3.0],
 }
 
 static var _node: Sound = null
 static var muted := false   # tests and tools: nothing plays
+
+
+## Every file the game may ask for: NAMES, each maker's hit, block and kill, each family's
+## blow, heavy blow and arrival.
+static func all_names() -> Array:
+	var out: Array = NAMES.duplicate()
+	for m in MAKERS:
+		for k in ["hit", "block", "kill"]:
+			out.append("%s_%s" % [k, m])
+	for f in FAMILIES:
+		out.append_array(["foe_%s_hit" % f, "foe_%s_heavy" % f, "spawn_%s" % f])
+	return out
+
+
+## The blow for a component's sound layers (ContentDB.sound_of): the first word is the blow;
+## a combination the forge built as one recipe (the blunt with plasma on its landing) plays as
+## itself, otherwise the first word alone. "" for no layers.
+static func blow(layers: Array) -> String:
+	if layers.is_empty() or not BLOWS.has(str(layers[0])):
+		return ""
+	var first: String = BLOWS[str(layers[0])]
+	if layers.size() > 1:
+		var joined := first
+		for w in layers.slice(1):
+			joined += "_" + str(w)
+		if NAMES.has(joined):
+			return joined
+	return first
+
+
+## A hit, a block or a kill ("hit", "block", "kill") in a maker's metal; Minerva's steel, the
+## baseline, for a maker without one.
+static func struck(kind: String, maker: String) -> String:
+	return "%s_%s" % [kind, maker if MAKERS.has(maker) else "minerva"]
+
+
+## A family's blow ("hit", "heavy") or arrival ("spawn"); the Risen's for an unknown family.
+static func family(kind: String, faction: String) -> String:
+	var f := faction if FAMILIES.has(faction) else str(DOMAIN_FAMILY.get(faction, "undead"))
+	return "spawn_" + f if kind == "spawn" else "foe_%s_%s" % [f, kind]
+
+
+## Where her line falls in a maker's death, and how long the death holds the stage.
+static func death_voice_at(maker: String) -> float:
+	return float(DEATH_VOICE_AT.get(maker, DEATH_VOICE_AT_DEFAULT))
+
+
+static func death_span(maker: String) -> float:
+	return maxf(death_voice_at(maker) + DEATH_AFTER_LINE, 2.2)
+
+
+## Seconds from a blow's start to where it lands (LAND); 0 for one that lands at once.
+static func lands(name: String) -> float:
+	return float(LAND.get(name, 0.0))
+
+
+## A machine's footfall by its way of moving (its traits); legs for a machine with none.
+static func step_for(traits: Array) -> String:
+	for t in traits:
+		if STEPS.has(str(t)):
+			return STEPS[str(t)]
+	return "step_legged"
 
 ## The loops' tempos, as tools/soundforge writes them, so a thing on screen can move on
 ## the beat (the rift's vortex, Ryan, 23 September: it had landed near the beat by chance).
@@ -120,6 +242,15 @@ var _duck_db := 0.0
 var _dip_db := 0.0
 var _duck_tween: Tween = null
 var _dip_tween: Tween = null
+var _hover_player: AudioStreamPlayer = null
+var _hover_tween: Tween = null
+var _voice: AudioStreamPlayer = null
+var _lines := VoiceLines.new()
+var _line_timer: Timer = null                # the line after its signal
+var _pending_line: AudioStream = null        # the line that timer will speak
+var _voice_db := 0.0                         # the music under a line
+var _voice_tween: Tween = null
+var _say_gen := 0                            # bumped by a clear: a delayed line from before it is dropped
 
 
 # ---------------------------------------------------------------- the static face
@@ -170,7 +301,7 @@ static func set_playing() -> String:
 	return _node._set
 
 
-## The boss set for a family ("boss_eldritch"), or "" when the family has no theme yet and
+## The boss set for a domain ("boss_marsh"), or "" when the family has no theme yet and
 ## the fight takes the skirmish's pick.
 static func boss_set(faction: String) -> String:
 	var name := "boss_" + faction
@@ -189,6 +320,40 @@ static func label(loop: String) -> String:
 ## The volume knobs from Settings onto the buses.
 static func apply_settings() -> void:
 	_call("_apply", [])
+
+
+## The die over a valid target: its hum eases in while it hovers (`on`) and lets go when it
+## leaves or lands (Ryan, 5 October: a hover hum, eager to drop).
+static func hover(on: bool) -> void:
+	_call("_hover", [on])
+
+
+## One of Jenny's hooks fired (VoiceLines has the rules: a chance per hook, information every
+## time, room between lines, a loss at once).
+static func say(hook: String) -> void:
+	_call("_say", [hook])
+
+
+## A hook fired `delay` seconds from now: after the blow it belongs to has landed. A clear in
+## the meantime (the fight won) cancels it.
+static func say_after(delay: float, hook: String) -> void:
+	_call("_say_after", [delay, hook])
+
+
+## Whether Jenny says a line of `hook` `delay` seconds from now, decided at once: the hook's
+## chance rolled and her being free checked (VoiceLines.claim), and the line booked if so.
+## Returns the line's length in seconds, or 0 when she says nothing; a spend asks it to know
+## where to put the weapon or whether the kill needs its own sound. 0 headless.
+static func claim_line(hook: String, delay: float) -> float:
+	if muted or DisplayServer.get_name() == "headless" or _node == null or not is_instance_valid(_node) or not _node.is_inside_tree():
+		return 0.0
+	return _node._claim(hook, delay)
+
+
+## Every waiting line dropped, and every line still on its way: the skirmish is won, so
+## nothing from the fight is said after it.
+static func voice_clear() -> void:
+	_call("_voice_clear", [])
 
 
 ## The node is made on the first call and joins the root deferred, since the first call
@@ -216,11 +381,30 @@ func _init() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_bus("Music")
 	_bus("Effects")
+	_bus("Voice")
 	for i in range(VOICES):
 		var p := AudioStreamPlayer.new()
 		p.bus = "Effects"
 		add_child(p)
 		_voices.append(p)
+	_hover_player = AudioStreamPlayer.new()
+	_hover_player.bus = "Effects"
+	add_child(_hover_player)
+	_voice = AudioStreamPlayer.new()
+	_voice.bus = "Voice"
+	_voice.finished.connect(func() -> void: _set_voice_duck(false))
+	add_child(_voice)
+	_line_timer = Timer.new()
+	_line_timer.one_shot = true
+	_line_timer.timeout.connect(func() -> void:
+		if _pending_line != null:
+			_speak(_pending_line)
+			_pending_line = null)
+	add_child(_line_timer)
+	_lines.rng.randomize()
+	var table := _read_lines()
+	if not table.is_empty():
+		_lines.load_table(table)
 	for i in range(2):
 		var p := AudioStreamPlayer.new()
 		p.bus = "Music"
@@ -273,7 +457,10 @@ func _play(name: String, db: float, vary: float) -> void:
 	if s == null:
 		return
 	if vary < 0.0:
-		vary = 0.0 if TONAL.has(name) else VARY
+		vary = 0.0
+		for prefix in VARIED_PREFIXES:
+			if name.begins_with(prefix):
+				vary = VARY
 	var p := _voices[_next_voice]
 	_next_voice = (_next_voice + 1) % VOICES
 	p.stream = s
@@ -423,14 +610,152 @@ func _set_dip(v: float) -> void:
 func _apply() -> void:
 	_set_music_bus()
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Effects"), _db(float(Settings.display.get("effects", 1.0))))
+	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Voice"), _db(float(Settings.display.get("voice", 1.0))))
+	_lines.always = OS.is_debug_build() and bool(Settings.display.get("voice_test", false))
 
 
-## The music bus is the knob, the duck and the dip together; each moves its own number and
-## calls this, so none of them fights another's tween.
+## The music bus is the knob, the duck, the dip and the line together; each moves its own
+## number and calls this, so none of them fights another's tween.
 func _set_music_bus() -> void:
-	var knob := _db(float(Settings.display.get("music", 0.8)))
-	var v := SILENT_DB if knob <= SILENT_DB else knob + _duck_db + _dip_db
+	var knob := _db(float(Settings.display.get("music", Settings.DISPLAY_DEFAULTS["music"])))
+	var v := SILENT_DB if knob <= SILENT_DB else knob + _duck_db + _dip_db + _voice_db
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Music"), v)
+
+
+# ---------------------------------------------------------------- the hover
+
+func _hover(on: bool) -> void:
+	if _hover_tween != null and _hover_tween.is_valid():
+		_hover_tween.kill()
+	if on:
+		if _hover_player.playing:
+			return
+		var s := _stream("die_hover")
+		if s == null:
+			return
+		_hover_player.stream = s
+		_hover_player.volume_db = 0.0
+		_hover_player.play()
+	elif _hover_player.playing:
+		_hover_tween = create_tween()
+		_hover_tween.tween_property(_hover_player, "volume_db", SILENT_DB, HOVER_FADE)
+		_hover_tween.tween_callback(_hover_player.stop)
+
+
+# ---------------------------------------------------------------- Jenny
+
+## The pools and the files, as tools/soundforge/voice_lines.py ships them.
+static func _read_lines() -> Dictionary:
+	var path := VOICE_DIR + "lines.json"
+	if not FileAccess.file_exists(path):
+		return {}
+	var parsed = JSON.parse_string(FileAccess.get_file_as_string(path))
+	return parsed if parsed is Dictionary else {}
+
+
+func _now() -> float:
+	return Time.get_ticks_msec() / 1000.0
+
+
+func _say(hook: String) -> void:
+	var queued := _lines.trigger(hook, _now())
+	if queued and VoiceLines.LOSSES.has(hook):
+		# A loss cuts whatever she is saying and speaks at once.
+		_line_timer.stop()
+		_pending_line = null
+		_voice.stop()
+		_set_voice_duck(false)
+	_pump()
+
+
+func _say_after(delay: float, hook: String) -> void:
+	if delay <= 0.0:
+		_say(hook)
+		return
+	var gen := _say_gen
+	get_tree().create_timer(delay).timeout.connect(func() -> void:
+		if gen == _say_gen:
+			_say(hook))
+
+
+func _claim(hook: String, delay: float) -> float:
+	var now := _now()
+	var q := _lines.claim(hook, now + maxf(delay, 0.0))
+	if q.is_empty():
+		return 0.0
+	var line := _voice_stream(str(q["file"]))
+	if line == null:
+		return 0.0
+	_lines.started(now + maxf(delay, 0.0), line.get_length())
+	if delay <= 0.0:
+		_speak(line)
+	else:
+		var gen := _say_gen
+		get_tree().create_timer(delay).timeout.connect(func() -> void:
+			if gen == _say_gen:
+				_speak(line))
+	return line.get_length()
+
+
+func _voice_clear() -> void:
+	_say_gen += 1
+	_lines.clear()
+
+
+func _process(_delta: float) -> void:
+	_pump()
+
+
+## The next line, when she is free: its signal first (the heat marks), then the line, the
+## music ducked under it and back after.
+func _pump() -> void:
+	var q := _lines.next(_now())
+	if q.is_empty():
+		return
+	var line := _voice_stream(str(q["file"]))
+	if line == null:
+		return
+	var lead := 0.0
+	var signal_name := str(q.get("signal", ""))
+	if not signal_name.is_empty():
+		var sig := _stream(signal_name)
+		_play(signal_name, 0.0, 0.0)
+		if sig != null:
+			lead = sig.get_length() + VoiceLines.SIGNAL_GAP
+	_lines.started(_now(), lead + line.get_length())
+	if lead > 0.0:
+		_pending_line = line
+		_line_timer.start(lead)
+	else:
+		_speak(line)
+
+
+func _speak(line: AudioStream) -> void:
+	_voice.stream = line
+	_voice.play()
+	_set_voice_duck(true)
+
+
+func _voice_stream(file: String) -> AudioStream:
+	var key := "voice/" + file
+	if _streams.has(key):
+		return _streams[key]
+	var path := VOICE_DIR + file + ".wav"
+	var s: AudioStream = load(path) if ResourceLoader.exists(path) else null
+	_streams[key] = s
+	return s
+
+
+func _set_voice_duck(on: bool) -> void:
+	if _voice_tween != null and _voice_tween.is_valid():
+		_voice_tween.kill()
+	_voice_tween = create_tween()
+	_voice_tween.tween_method(_set_voice_db, _voice_db, VOICE_DUCK_DB if on else 0.0, 0.15 if on else 0.6)
+
+
+func _set_voice_db(v: float) -> void:
+	_voice_db = v
+	_set_music_bus()
 
 
 static func _db(v: float) -> float:

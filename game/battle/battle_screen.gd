@@ -137,6 +137,7 @@ func _autosave() -> void:
 
 func _start_music() -> void:
 	Sound.music("map", true)
+	Sound.say("battle_open")
 
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks).
@@ -221,6 +222,7 @@ func _build() -> void:
 	_resolve_btn.filled = true
 	_place(_resolve_btn, Vector2(16, BOTTOM_Y), BOTTOM_BTN)
 	_clear_btn = HudButton.new("UNDO MOVE", _on_undo)
+	_clear_btn.sound = ""   # the undo plays its own dismiss
 	_clear_btn.ghost = true
 	_place(_clear_btn, Vector2(W - 16 - BOTTOM_BTN.x, BOTTOM_Y), BOTTOM_BTN)
 
@@ -300,6 +302,7 @@ func _build_outcome() -> void:
 	_overlay_text.custom_minimum_size = Vector2(420, 0)
 	ov.add_child(_overlay_text)
 	var back := HudButton.new("BACK", func() -> void: back_requested.emit())
+	back.sound = "ui_back"
 	back.custom_minimum_size = Vector2(0, 54)
 	ov.add_child(back)
 
@@ -423,6 +426,7 @@ func _build_log_full() -> void:
 	_log_full_text.add_theme_color_override("default_color", Palette.HUD)
 	_log_full_scroll.add_child(_log_full_text)
 	var close := HudButton.new("CLOSE", _toggle_log_full)
+	close.sound = "ui_back"
 	close.custom_minimum_size = Vector2(0, 52)
 	col.add_child(close)
 
@@ -476,7 +480,7 @@ func _on_hex_tapped(h: Vector2i) -> void:
 		_map.gate_selected = true
 		_show_details(gate_text(battle.field), Vector2.ZERO)
 		_refresh()
-		Sound.play("ui_tap", -4.0)
+		Sound.play("map_select")
 		return
 	if sel != null and u == null and _map.destinations.has(h):
 		var from := sel.pos
@@ -491,14 +495,14 @@ func _on_hex_tapped(h: Vector2i) -> void:
 		else:
 			_select(u)
 			_on_unit_held(u)   # its shield, hull, move and actions, in the readout
-			Sound.play("ui_tap", -4.0)
+			Sound.play("map_select")
 	elif u != null and u.is_enemy():
 		# Nothing in hand: the pack's fight is shown, who would join and who is ordered in.
 		_select(null)
 		_inspect_pack = u
 		_map.inspected = h
 		_on_unit_held(u)
-		Sound.play("ui_tap", -8.0)
+		Sound.play("map_select")
 	elif sel == null and u == null and battle.field.map.has(h) and not battle.field.map.is_structure(h):
 		# Nothing to move: the tap asks what the ground is (Ryan, 21 September).
 		var t: int = battle.field.map.terrain[h]
@@ -506,6 +510,7 @@ func _on_hex_tapped(h: Vector2i) -> void:
 		var text := "%s\n%s" % [str(BattleMap.TERRAIN_NAMES.get(t, "ground")).to_upper(), BattleMap.ground_words(t)]
 		_map.inspected = h   # the hex lit, so what was tapped is plain (Ryan, 29 September)
 		_show_details(text, _map.position + _map.to_screen(_map.center(h)))
+		Sound.play("map_select")
 	else:
 		_select(null)
 	_refresh()
@@ -532,7 +537,7 @@ func _on_route_drag_started(u: Unit) -> void:
 	_map.draft = []
 	_map.draft_move = battle.moves_left(u)
 	_map.draft_spend = Vector2i(0, 0)
-	Sound.play("ui_tap", -4.0)
+	Sound.play("map_select")
 
 
 func _on_route_drag_to(h: Vector2i) -> void:
@@ -552,9 +557,7 @@ func _on_route_drag_to(h: Vector2i) -> void:
 	var before := _map.draft.size()
 	_map.draft = battle.draft_step(_draft_unit, _map.draft, h)
 	_map.draft_spend = battle.draft_spend(_draft_unit, _map.draft)
-	if _map.draft.size() != before:
-		Sound.play("ui_tap", -12.0)   # a tick per hex, so the line is heard growing
-	_map.queue_redraw()
+	_map.queue_redraw()   # silent while it grows (the console's rule: no clicky ticks with no story)
 
 
 func _on_route_drag_ended(commit: bool) -> void:
@@ -573,9 +576,15 @@ func _on_route_drag_ended(commit: bool) -> void:
 		if battle.move_along(u, draft):
 			_play_move(u, from, draft)
 			return
-		Sound.play("ui_back")
+		_refuse()
 	_select(null)
 	_refresh()
+
+
+## A move refused: the refusal, and Jenny now and then.
+func _refuse() -> void:
+	Sound.play("refuse")
+	Sound.say("refuse")
 
 
 func _on_unit_held(u: Unit) -> void:
@@ -775,6 +784,17 @@ func _on_end_turn() -> void:
 	for sq in battle.field.packs():
 		starts[sq.id] = sq.pos
 	Sound.play("resolve")
+	# Jenny on the turn's orders: every machine committed (moved or fought), or some.
+	var committed := 0
+	var free := 0
+	for m in battle.mechs():
+		if m.is_static() or not m.alive():
+			continue
+		free += 1
+		if battle.action_from.has(m.id) or int(battle.spent.get(m.id, 0)) > 0:
+			committed += 1
+	if committed > 0:
+		Sound.say("resolve_all" if committed == free else "resolve_move")
 	var gate_before := battle.field.gate_hp
 	var walks := battle.end_turn()
 	_gate_struck = battle.field.gate_hp < gate_before
@@ -798,8 +818,9 @@ var _spawned := false       # and the rift spawned
 func _after_step() -> void:
 	if _gate_struck:
 		Sound.play("gate_hit")
+		Sound.say("gate")
 	if _spawned:
-		Sound.play_after(0.35 if _gate_struck else 0.0, "spawn")
+		Sound.play_after(0.35 if _gate_struck else 0.0, Sound.family("spawn", battle.faction))
 	_gate_struck = false
 	_spawned = false
 	match battle.state:
@@ -854,6 +875,7 @@ func _show_caught() -> void:
 	add_child(warn)
 	Sound.play("contact")
 	Sound.play_after(1.02, "contact", -2.0)   # the second beat, with the blink
+	Sound.say("contact")
 	var tw := create_tween()
 	# Two beats, drawn out (Ryan, 22 September: one flash looked accidental).
 	tw.tween_property(warn, "modulate", Color(1, 1, 1, 1), 0.3)
@@ -1038,7 +1060,8 @@ func _play_boss_reveal(sk: Skirmish, group: Array) -> void:
 		_enter_skirmish(sk, group, true))
 	_reveal = reveal
 	add_child(reveal)
-	Sound.play("contact")
+	Sound.play("reveal")
+	Sound.say("boss")
 
 
 ## Open the skirmish screen on a fight: with the handover for a contact just made, or
@@ -1099,6 +1122,8 @@ func _play_handover(group: Array, screen: SkirmishScreen) -> void:
 	scrim.modulate = Color(1, 1, 1, 0)
 	add_child(scrim)
 	Sound.play("engage")
+	if not battle.boss_fight:   # the boss has its reveal and its own line
+		Sound.say("engage")
 	var tw := create_tween().set_parallel(true)
 	tw.tween_method(func(t: float) -> void:
 		_map.focus_on(mid, lerpf(z0, BattleMapView.ZOOM_MAX, t)), 0.0, 1.0, HANDOVER_DIVE).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
@@ -1148,6 +1173,10 @@ func _on_skirmish_back() -> void:
 func _show_outcome() -> void:
 	var f := battle.field
 	Sound.play("victory" if battle.outcome == Battle.Outcome.VICTORY else "defeat")
+	if battle.outcome == Battle.Outcome.VICTORY:
+		Sound.say("victory")
+	elif battle.outcome == Battle.Outcome.GATE_FALLEN:
+		Sound.say("loss_gate")
 	match battle.outcome:
 		Battle.Outcome.VICTORY:
 			_overlay_title.text = "RIFT SEALED"

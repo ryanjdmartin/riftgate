@@ -72,7 +72,7 @@
    "passive": {
     "id": "reinforced_skeleton",
     "name": "Reinforced Skeleton",
-    "description": "Legendary Minervan strength. Components can be cracked but never destroyed. Melee attacks deal +10% damage. Cracked weapons become melee-typed, instead of their usual type.",
+    "description": "Legendary Minervan strength. Components can be cracked but never destroyed. Melee attacks deal +5 damage. Cracked weapons become melee-typed, instead of their usual type.",
     "effects": [
      {
       "trigger": "on_injury",
@@ -81,8 +81,8 @@
      },
      {
       "trigger": "on_attack",
-      "effect": "multiply_damage",
-      "value": 1.1,
+      "effect": "add_damage",
+      "value": 5,
       "when": "reach_melee"
      },
      {
