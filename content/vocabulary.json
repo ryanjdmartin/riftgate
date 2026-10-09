@@ -240,6 +240,26 @@
    }
   },
   {
+   "id": "shock",
+   "category": "keyword",
+   "name": "Shock",
+   "codex": "Player keyword, on any entry aimed at a foe. Every foe the entry reaches and leaves standing is Shocked: the next blow it takes deals double. The entry's own blow never spends the shock it leaves.",
+   "status": "implemented",
+   "design": {
+    "holes": "Decided 9 October with the content revision: the Armadillo's Shocked on a weapon (the Polarity Projector at no damage, the Tesla Gauntlets on a melee blow). Shocked is a status, so a shock feeds an on_foe_status passive (the Baboon's Pocket Paradox), which a suppress never does. A shock on a foe already Shocked by a blow that deals nothing adds nothing; it never stacks."
+   }
+  },
+  {
+   "id": "guard",
+   "category": "keyword",
+   "name": "Guard",
+   "codex": "Player keyword, on equipment spent on an ally. Every foe aimed at that ally turns on this machine for the round, intents and all, and the component's own shield, vent or buff lands on this machine, the one taking the blows.",
+   "status": "implemented",
+   "design": {
+    "holes": "Decided 9 October with the content revision: Minerva's intercept for the starter set (the to-do of 30 September), the lure from the other end. A lure picks foes by reach and spread; a guard picks the ally, so it takes exactly the arrows on that machine. The component's work landing on the spender is the one rule of its own (the Blast Door's shield goes up on the door, not on the ally behind it). No status and no chip: the arrows are the record. The validator holds a guard to allies only."
+   }
+  },
+  {
    "id": "disrupt",
    "category": "keyword",
    "name": "Disrupt",
@@ -353,10 +373,10 @@
    "id": "rapid",
    "category": "keyword",
    "name": "Rapid",
-   "codex": "After this component is spent, it is switched off for the rest of this round, the die rerolls for free (never the same entry), and the mech may act again. The switch-off only stops an infinite turn.",
+   "codex": "After this component is spent, it is switched off for the rest of this round, the die rerolls for free (never the same entry), and the mech may act again. Any component may carry it, a vent or a shield as well as a weapon. The switch-off only stops an infinite turn.",
    "status": "implemented",
    "design": {
-    "holes": ""
+    "holes": "On equipment since 9 October (the Wake Diffuser first): a rapid vent is cooling that gives the turn back, so a support entry is not a dead roll."
    }
   },
   {
@@ -396,7 +416,7 @@
    "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Disabled, Corrupted and Overheating status. A rapid component's own switch-off is not a status a cleanse touches.",
    "status": "implemented",
    "design": {
-    "holes": "No component carries it yet; Ryan places it."
+    "holes": "Carried by the Corona Shield (a unique unlock) and since 9 October by the Sublimation Array, Aphelion's vent, stocked on the Baboon. The bot values what it clears since the same day."
    }
   },
   {
@@ -423,7 +443,7 @@
    "id": "shocked",
    "category": "status",
    "name": "Shocked",
-   "codex": "Foe status. The next blow this foe takes deals double damage, then the status clears. A Shocked foe that strikes bare hull again takes 10. Never stacks.",
+   "codex": "Foe status. The next blow this foe takes deals double damage, then the status clears; a blow of nothing (a lure, a probe) leaves it standing. A Shocked foe that strikes bare hull again takes 10. Never stacks. Applied by a machine whose hull is live, and by weapons that shock.",
    "status": "implemented",
    "design": {
     "holes": "The Armadillo's retaliation (Ryan, 28 September): the tank sets up kills instead of out-damaging area weapons against a horde, and it works on a boss. The discharge on a second strike is the small thorns left in. Numbers are placeholders."

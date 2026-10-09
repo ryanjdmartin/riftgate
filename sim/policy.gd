@@ -27,6 +27,7 @@ const BURN_WEIGHT := 0.5         # burn stacks pay out over the rounds to come
 const OPTION_GUARD := 64         # spends in one round, at most: rapid rerolls the die and acts again
 const DEVOUR_ROUNDS := 1.0       # rounds of the die's own damage a devoured stack is worth (it fades a stack a round)
 const SHOCK_WEIGHT := 0.6        # the doubled blow a Shocked foe will take, as a share of the die's own damage
+const CLEANSE_ROUNDS := 2.0      # rounds a cleansed status would otherwise have cost (Corrupted lasts the fight, Overheating fades)
 
 var kind: int = GREEDY
 var withdraw_below: int = 0      # persona: withdraw when the team's hull is under this percent (0: never)
@@ -135,15 +136,9 @@ func options_for(sk: Skirmish, i: int) -> Array:
 		Face.Kind.ATTACK:
 			for t in sk.targets_for(i):
 				out.append({"mech": i, "target": t, "score": attack_score(sk, ms, f, t)})
-		Face.Kind.SHIELD:
+		Face.Kind.SHIELD, Face.Kind.VENT, Face.Kind.BUFF:
 			for who in sk.equipment_targets_for(ms, f):
-				out.append({"mech": i, "target": who, "score": shield_score(sk, who, f.power, f.has(Face.Keyword.OVERSHIELD), ms) - volatile_cost(sk, ms, f)})
-		Face.Kind.VENT:
-			for who in sk.equipment_targets_for(ms, f):
-				out.append({"mech": i, "target": who, "score": vent_score(sk, who, f.power) - volatile_cost(sk, ms, f)})
-		Face.Kind.BUFF:
-			for who in sk.equipment_targets_for(ms, f):
-				out.append({"mech": i, "target": who, "score": buff_score(sk, who, f) - volatile_cost(sk, ms, f)})
+				out.append({"mech": i, "target": who, "score": equipment_score(sk, ms, who, f)})
 	return out
 
 
@@ -170,9 +165,10 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		if other != null and other != target and other.alive():
 			score += minf(mean, float(other.hp))
 	score += p_kill * (KILL_BONUS + _threat_now(target) * HULL_WEIGHT)
-	if f.has(Face.Keyword.LURE) or f.has(Face.Keyword.DISRUPT):
+	if f.has(Face.Keyword.LURE) or f.has(Face.Keyword.DISRUPT) or f.has(Face.Keyword.SHOCK):
 		# Every foe the blows reach: the target, the neighbours of a spread, the column of a
-		# penetrate; the ones that survive the blow are the ones a lure or a disrupt moves.
+		# penetrate; the ones that survive the blow are the ones a lure or a disrupt moves
+		# and a shock charges.
 		var hit: Array = [target]
 		if f.has(Face.Keyword.CLEAVE):
 			for c in [target.column - 1, target.column + 1]:
@@ -189,6 +185,15 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 				score += ((1.0 - p_kill) if foe == target else 1.0) * disrupt_score(sk, foe)
 		if f.has(Face.Keyword.LURE):
 			score += (1.0 - p_kill) * lure_score(sk, ms, hit)
+		if f.has(Face.Keyword.SHOCK):
+			# Each foe left standing takes the team's next blow double: about the team's own
+			# average blow again, capped at what the foe will have left. A charge already on a
+			# foe this blow does not spend is worth nothing more.
+			for foe in hit:
+				if Effects.has(foe, "shocked") and mean <= 0.0:
+					continue
+				var left := maxf(0.0, float(foe.hp) - mean)
+				score += ((1.0 - p_kill) if foe == target else 1.0) * minf(left, _team_raw_attack_mean(sk)) * SHOCK_WEIGHT
 	if f.has(Face.Keyword.SPILLOVER) and target.rank == 0 and not target.is_massive():
 		# What the roll has past the kill lands on the foe behind, and may kill it too.
 		var behind := sk.foe_at(1, target.column)
@@ -204,7 +209,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		# A Numbed foe shrugs it off at its resistance, so the stopped blow is worth its odds.
 		var lands := 1.0 - float(target.resist_total()) / 100.0
 		score += (1.0 - p_kill) * _threat_now(target) * HULL_WEIGHT * maxf(0.0, lands)
-	elif f.has(Face.Keyword.BURN) and not target.is_suppressed():
+	elif (f.has(Face.Keyword.BURN) or f.has(Face.Keyword.SHOCK)) and not target.is_suppressed():
 		# A status this blow applies may knock the foe out through a machine's on_foe_status
 		# passive (the Baboon's Pocket Paradox): the stopped blow at the loop's odds, at the
 		# foe's odds of not shrugging it off.
@@ -353,6 +358,73 @@ static func _kill_odds(outcomes: Array, hp: int) -> float:
 		if int(o[0]) >= hp:
 			p += float(o[1])
 	return p
+
+
+## A piece of equipment spent by `ms` on `who`: its shield, vent or buff where it lands, what
+## a cleanse clears there, and what a volatile bite costs. A guard is read whole by
+## `guard_score`, since its work lands on the spender and the blows move with it.
+func equipment_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.MechState, f: Face) -> float:
+	if f.has(Face.Keyword.GUARD) and who != ms:
+		return guard_score(sk, ms, who, f) - volatile_cost(sk, ms, f)
+	var score := 0.0
+	match f.kind:
+		Face.Kind.SHIELD:
+			score = shield_score(sk, who, f.power, f.has(Face.Keyword.OVERSHIELD), ms)
+		Face.Kind.VENT:
+			score = vent_score(sk, who, f.power)
+		Face.Kind.BUFF:
+			score = buff_score(sk, who, f)
+	if f.has(Face.Keyword.CLEANSE):
+		score += cleanse_score(sk, who)
+	return score - volatile_cost(sk, ms, f)
+
+
+## A guard spent on `ally`: the team's hull and lives at the round's end with every foe aimed
+## at the ally turned on the spender and the component's shield standing on the spender, read
+## in a what-if and put back; a vent or a buff on the spender adds its own worth.
+func guard_score(sk: Skirmish, ms: Skirmish.MechState, ally: Skirmish.MechState, f: Face) -> float:
+	var power := f.power if f.kind == Face.Kind.SHIELD else 0
+	var before := _team_outlook(sk, ms, 0)
+	var saved := {}
+	for foe in sk.field_foes():
+		if foe.alive() and foe.target == ally:
+			saved[foe] = foe.target
+			foe.target = ms
+	var after := _team_outlook(sk, ms, power)
+	for foe in saved.keys():
+		foe.target = saved[foe]
+	var score := (float(after["hull"]) - float(before["hull"])) * HULL_WEIGHT + float(int(before["deaths"]) - int(after["deaths"])) * DEATH_WEIGHT
+	match f.kind:
+		Face.Kind.SHIELD:
+			score += float(maxi(0, mini(power, ms.unit.shield_max - ms.unit.shield))) * BANK_WEIGHT
+		Face.Kind.VENT:
+			score += vent_score(sk, ms, f.power)
+		Face.Kind.BUFF:
+			score += buff_score(sk, ms, f)
+	return score
+
+
+## What a cleanse clears from a machine, in hull: the Overheating it would gain (the heat this
+## round's tick adds past the cap as hull, the rest as room), the bites its Corrupted entries
+## would take over the rounds to come, and the entries a foe switched off, at the die's own
+## mean for each. A Scrambled reroll is small change.
+func cleanse_score(sk: Skirmish, who: Skirmish.MechState) -> float:
+	var score := 0.0
+	var tick := int(Effects.tick_preview(who.unit)["heat"])
+	if tick > 0:
+		var fc := sk.forecast(who, false)
+		var over := mini(tick, int(fc["overheat"]))
+		score += float(over) * HULL_WEIGHT + float(tick - over) * BANK_WEIGHT * CLEANSE_ROUNDS
+	var n := who.die.faces.size()
+	if n > 0:
+		for i in range(n):
+			var bite := Effects.corrupt_stacks(who.unit, i) * Skirmish.CORRUPT_BITE_PER_STACK
+			score += float(bite) * HULL_WEIGHT * CLEANSE_ROUNDS / float(n)
+			if Effects.is_entry_disabled(who.unit, i) and Effects.cleansable_disable(who.unit, i):
+				score += _raw_attack_mean(who) * CLEANSE_ROUNDS / float(n)
+	if Effects.has(who.unit, "scrambled"):
+		score += KILL_BONUS * BANK_WEIGHT
+	return score
 
 
 ## A shield on a machine: the hull it keeps this round (a standing shield blocks a whole
@@ -514,20 +586,10 @@ func face_value(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
 			for t in sk.targets_for_face(ms, f):
 				best = maxf(best, attack_score(sk, ms, f, t))
 			return best
-		Face.Kind.SHIELD:
+		Face.Kind.SHIELD, Face.Kind.VENT, Face.Kind.BUFF:
 			var best := 0.0
 			for who in sk.equipment_targets_for(ms, f):
-				best = maxf(best, shield_score(sk, who, f.power, f.has(Face.Keyword.OVERSHIELD), ms) - volatile_cost(sk, ms, f))
-			return best
-		Face.Kind.VENT:
-			var best := 0.0
-			for who in sk.equipment_targets_for(ms, f):
-				best = maxf(best, vent_score(sk, who, f.power) - volatile_cost(sk, ms, f))
-			return best
-		Face.Kind.BUFF:
-			var best := 0.0
-			for who in sk.equipment_targets_for(ms, f):
-				best = maxf(best, buff_score(sk, who, f) - volatile_cost(sk, ms, f))
+				best = maxf(best, equipment_score(sk, ms, who, f))
 			return best
 	return 0.0
 

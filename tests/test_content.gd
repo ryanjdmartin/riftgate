@@ -913,3 +913,34 @@ func test_the_tier_rules_are_validated() -> void:
 	db = _fresh()
 	db.components["test_loose"] = db.components[stocked].duplicate(true)
 	assert_true(_has_error(db, "carries its own tier"), "an unstocked component needs its own")
+
+
+func test_a_guard_is_spent_on_an_ally_and_rapid_rides_on_anything() -> void:
+	# 9 October: guard is equipment's and is held to allies only; rapid joined volatile as a
+	# keyword about the spend, so a vent may carry it; shock is a weapon's.
+	var db := _fresh()
+	var door: Dictionary = db.components["ablative_plating"].duplicate(true)
+	door["face"]["keywords"] = ["guard"]
+	door["tier"] = 1
+	db.components["test_door"] = door
+	assert_true(_has_error(db, "a guard is spent on an ally"), "a guard that could land on itself is refused")
+	db = _fresh()
+	door["face"]["targets"] = "ally"
+	db.components["test_door"] = door
+	var vent: Dictionary = db.components["heat_sink"].duplicate(true)
+	vent["face"]["keywords"] = ["rapid"]
+	vent["tier"] = 1
+	db.components["test_vent"] = vent
+	var plate: Dictionary = db.components["ablative_plating"].duplicate(true)
+	plate["face"]["keywords"] = ["shock"]
+	plate["tier"] = 1
+	db.components["test_plate"] = plate
+	var refused_shock := false
+	for e in db.validate():
+		assert_false(e.begins_with("component test_door"), "an allies-only guard validates: %s" % e)
+		assert_false(e.begins_with("component test_vent"), "a rapid vent validates: %s" % e)
+		if e.begins_with("component test_plate") and e.contains("is an attack keyword"):
+			refused_shock = true
+	assert_true(refused_shock, "a shock on a shield is refused")
+	var built := db.build_face(vent["face"])
+	assert_true(built.kind == Face.Kind.VENT and built.has(Face.Keyword.RAPID), "and the vent builds rapid")

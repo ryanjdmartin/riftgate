@@ -728,6 +728,18 @@ static func is_entry_disabled(u, index: int) -> bool:
 	return false
 
 
+## Is the entry switched off by something a cleanse clears (a foe's disable), rather than by a
+## rapid component's own switch-off, which keeps the turn finite and no cleanse touches?
+static func cleansable_disable(u, index: int) -> bool:
+	for m in live(u):
+		if not m.tags.has(CLEANSABLE):
+			continue
+		for eff in m.effects:
+			if str(eff.get("effect", "")) == "disable_entry" and int(eff.get("value", -1)) == index:
+				return true
+	return false
+
+
 ## A buff component's grant (29 September): `stacks` of a machine status through the end of
 ## `until_round`. The same status from the same scope stacks up and keeps the later expiry.
 static func grant_buff(u, status_id: String, stacks: int, source: String, until_round: int) -> Modifier:

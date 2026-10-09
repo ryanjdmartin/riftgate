@@ -2875,3 +2875,93 @@ func test_the_hush_the_eruption_and_the_unravel_run() -> void:
 	s3.end_round()
 	assert_eq(Effects.corrupt_stacks(c, s3.mechs[0].face_index), 1, "the first machine's showing entry is corrupted")
 	assert_eq(Effects.corrupt_stacks(d, s3.mechs[1].face_index), 1, "and the second's")
+
+
+func test_a_shocking_weapon_leaves_a_charge_its_own_blow_never_spends() -> void:
+	var sk := Skirmish.new(1, 2)
+	var tesla := Face.attack(20, L, K.SHOCK)
+	tesla.add_keyword(K.CLEAVE)
+	var a := _mech("A", Die.single(tesla), 40, 100)
+	var b := _mech("B", Die.single(Face.attack(20, L)), 40, 100)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var g1 := _ghoul(500, 10)
+	var g2 := _ghoul(500, 10)
+	sk.add_foes([g1, g2])
+	sk.begin()
+	sk.start_round()
+	assert_eq(tesla.describe(), "20 shock spread", "the keyword reads on the entry")
+	assert_true(sk.assign(0, sk.front[0]), "A punches the first ghoul")
+	assert_eq(sk.front[0].hp, 480, "the blow itself lands plain")
+	assert_true(Effects.has(sk.front[0], "shocked") and Effects.has(sk.front[1], "shocked"), "and every foe it reached is Shocked, the spread's neighbour too")
+	assert_true(sk.assign(1, sk.front[0]), "B follows up")
+	assert_eq(sk.front[0].hp, 440, "20 lands double")
+	assert_false(Effects.has(sk.front[0], "shocked"), "and the charge is spent")
+
+
+func test_a_blow_of_nothing_leaves_a_standing_shock_alone() -> void:
+	var sk := Skirmish.new(1, 1)
+	var probe := Face.attack(0, L, K.SHOCK)
+	var m := _mech("A", Die.single(probe), 40, 100)
+	sk.add_mech(m)
+	var g := _ghoul(500, 10)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(g, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	assert_true(sk.assign(0, g), "the projector is spent on a foe already Shocked")
+	assert_true(Effects.has(g, "shocked"), "a blow of nothing never spends the charge")
+	assert_eq(Effects.stacks_of(g, "shocked"), 1, "and a shock never stacks")
+	assert_false("\n".join(sk.log).contains("the shock lands"), "the log claims no doubled blow")
+
+
+func test_a_guard_turns_the_foes_on_the_ally_onto_the_spender_and_its_shield_goes_up_on_the_door() -> void:
+	var sk := Skirmish.new(2, 3)
+	var door := Face.shield(20)
+	door.targets = Face.Target.ALLY
+	door.add_keyword(K.GUARD)
+	var tank := _mech("Tank", Die.single(door), 30, 200)
+	tank.shield = 0
+	var glass := _mech("Glass", Die.single(Face.attack(10, L)), 0, 50)
+	var other := _mech("Other", Die.single(Face.attack(10, L)), 0, 50)
+	sk.add_mech(tank)
+	sk.add_mech(glass)
+	sk.add_mech(other)
+	sk.add_foes([_ghoul(500, 10), _ghoul(500, 10), _ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	assert_eq(door.describe(), "shield 20 guard (allies only)", "the keyword reads on the entry")
+	sk.front[0].target = sk.mechs[1]
+	sk.front[1].target = sk.mechs[1]
+	sk.front[2].target = sk.mechs[2]
+	assert_false(sk.equipment_targets_for(sk.mechs[0], door).has(sk.mechs[0]), "a guard is never spent on itself")
+	assert_true(sk.assign(0, sk.mechs[1]), "the tank swings the door in front of the glass")
+	assert_eq(sk.front[0].target, sk.mechs[0], "the blows aimed at the glass")
+	assert_eq(sk.front[1].target, sk.mechs[0], "turn on the tank")
+	assert_eq(sk.front[2].target, sk.mechs[2], "a blow aimed elsewhere keeps its aim")
+	assert_eq(tank.shield, 20, "the door's shield goes up on the tank, the one taking the blows")
+	assert_eq(glass.shield, 0, "not on the glass behind it")
+	assert_true("\n".join(sk.log).contains("Tank guards Glass: ghoul, ghoul turn on Tank"), "the log says so")
+	sk.end_round()
+	assert_eq(glass.hull, 50, "the glass took nothing")
+	assert_eq(tank.shield, 0, "the tank's shield took both blows")
+	assert_eq(other.hull, 40, "the third blow landed where it was aimed")
+
+
+func test_a_rapid_vent_cools_and_the_machine_acts_again() -> void:
+	var sk := Skirmish.new(2)
+	var diffuser := Face.vent(10)
+	diffuser.add_keyword(K.RAPID)
+	var m := _mech("A", Die.of([diffuser, Face.attack(30, L)]), 40, 100)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(200)])
+	sk.begin()
+	sk.start_round()
+	sk.mechs[0].heat = 30
+	sk.mechs[0].face_index = 0
+	assert_true(sk.assign(0, sk.mechs[0]), "vent itself")
+	assert_eq(sk.mechs[0].heat, 20, "ten heat gone")
+	assert_false(sk.mechs[0].assigned, "and the machine may act again")
+	assert_eq(sk.mechs[0].face_index, 1, "on the other entry, rolled free")
+	assert_true(sk.assign(0, sk.front[0]), "so the gun fires the same round")
+	assert_eq(sk.front[0].hp, 170, "thirty landed")

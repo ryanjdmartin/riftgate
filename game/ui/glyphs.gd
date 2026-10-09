@@ -114,7 +114,19 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			]), color, width)
 			ci.draw_polyline(PackedVector2Array([c + Vector2(s * 0.45, -s * 0.75), c + Vector2(s * 0.9, -s * 0.35), c + Vector2(s * 0.45, s * 0.05)]), color, width)
 			ci.draw_line(c + Vector2(-s * 0.3, -s * 0.2), c + Vector2(0.25 * s, s * 0.6), color, width * 0.7)
-		"shocked":
+		"guard":
+			# A door slammed between: a tall bar, the ally small and filled behind it, and the
+			# blow's arrow bent onto the door.
+			ci.draw_line(c + Vector2(-s * 0.1, -s), c + Vector2(-s * 0.1, s), color, width * 1.4)
+			ci.draw_rect(Rect2(c + Vector2(s * 0.3, s * 0.05), Vector2(s * 0.6, s * 0.6)), color, true)
+			ci.draw_polyline(PackedVector2Array([c + Vector2(-s * 0.95, -s * 0.75), c + Vector2(-s * 0.35, -s * 0.15)]), color, width)
+			ci.draw_polyline(PackedVector2Array([c + Vector2(-s * 0.7, -s * 0.15), c + Vector2(-s * 0.35, -s * 0.15), c + Vector2(-s * 0.35, -s * 0.5)]), color, width)
+		"rapid":
+			# Two chevrons: spent, and the die rolls again.
+			for i in range(2):
+				var x := -s * 0.55 + i * s * 0.6
+				ci.draw_polyline(PackedVector2Array([c + Vector2(x, -s * 0.7), c + Vector2(x + s * 0.5, 0), c + Vector2(x, s * 0.7)]), color, width)
+		"shocked", "shock":
 			# A bolt in a ring: the charge a foe carries until a blow spends it.
 			ci.draw_arc(c, s * 0.95, 0.0, TAU, 28, color, width * 0.8)
 			ci.draw_polyline(PackedVector2Array([
@@ -243,13 +255,13 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 ## can share a shape in different colours.
 static func colour_for(id: String) -> Color:
 	match id:
-		"burn", "overcharge", "heat", "devour", "shocked":
+		"burn", "overcharge", "heat", "devour", "shocked", "shock":
 			return Palette.HEAT
 		"execute", "skull", "shieldbreak", "corrupt", "volatile":
 			return Palette.ENEMY
 		"star":
 			return Palette.SELECT
-		"suppress", "chain", "cleanse", "numbed", "lure", "disrupt":
+		"suppress", "chain", "cleanse", "numbed", "lure", "disrupt", "guard":
 			return Palette.SHIELD
 		_:
 			return Palette.HUD

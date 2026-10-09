@@ -980,7 +980,6 @@
    "id": "halo_shield",
    "name": "Halo Shield",
    "maker": "aphelion",
-   "tier": 1,
    "shape": "dish",
    "codex": "",
    "flavour": "",
@@ -988,7 +987,7 @@
     "stage": "draft",
     "fantasy": "A ring of hard light. Nothing clever about it, which Aphelion resents.",
     "niche": "Aphelion's generic shield.",
-    "notes": "Claude's fill, 28 September; the Corona Shield with cleanse is the unique one."
+    "notes": "Claude's fill, 28 September; the Corona Shield with cleanse is the unique one. Stocked on the Stingray since 9 October (the content revision), in place of its Zenith Emitter, so its tier is derived (two)."
    },
    "face": {
     "kind": "shield",
@@ -1254,6 +1253,276 @@
    "tags": [
     "defense",
     "support"
+   ]
+  },
+  {
+   "id": "differentiation_probe",
+   "name": "Differentiation Probe",
+   "maker": "aphelion",
+   "shape": "rack",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A probe lobbed into the formation. Whatever the thing it lands beside was about to do, it now differentiates.",
+    "niche": "The first Disrupt in the pool: an indirect entry of no damage that turns a foe onto its other move. It deals nothing, so it counts for Aphelion's Sponsorship.",
+    "notes": "Stocked on the Baboon in place of a Pulse Repeater. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "indirect",
+    "power": 0,
+    "keywords": [
+     "disrupt"
+    ],
+    "heat": 5
+   },
+   "passive": null,
+   "tags": [
+    "control"
+   ]
+  },
+  {
+   "id": "sublimation_array",
+   "name": "Sublimation Array",
+   "maker": "aphelion",
+   "shape": "none",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "Whatever the rift left on the metal goes straight from solid to gone, with the heat.",
+    "niche": "Aphelion's cleanse vent: the Chorus's answer in a stock kit, where the Corona Shield is a unique unlock.",
+    "notes": "Stocked on the Baboon in place of the Radiator Sail, so it is Aphelion's tier-one vent. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders."
+   },
+   "face": {
+    "kind": "vent",
+    "power": 20,
+    "keywords": [
+     "cleanse"
+    ]
+   },
+   "passive": null,
+   "tags": [
+    "support"
+   ]
+  },
+  {
+   "id": "polarity_projector",
+   "name": "Polarity Projector",
+   "maker": "aphelion",
+   "shape": "dish",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "It projects polarity. Nobody at Aphelion will say what that means, and the next thing to hit the target hits twice as hard.",
+    "niche": "The first Shock: a line entry of no damage that sets up a doubled blow for the team. Shocked is a status, so it feeds the Baboon's Pocket Paradox, which a suppress never does.",
+    "notes": "Ryan's own example of the house joke (bible, the component-names row of 6 October). Stocked on the Baboon in place of its second Pulse Repeater. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "line",
+    "power": 0,
+    "keywords": [
+     "shock"
+    ],
+    "heat": 5
+   },
+   "passive": null,
+   "tags": [
+    "control"
+   ]
+  },
+  {
+   "id": "shoring_jack",
+   "name": "Shoring Jack",
+   "maker": "minerva",
+   "shape": "none",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A hydraulic pit prop jammed under a machine's plating. It holds the roof up in the mine; it holds the armour on out here.",
+    "niche": "The first Braced carrier: armour +20 for the round on itself or an ally, the answer to volume (swarms, double strikes, a storm of small blows), nothing against a breach.",
+    "notes": "Stocked on the Armadillo in place of its Ablative Plating. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders."
+   },
+   "face": {
+    "kind": "buff",
+    "status": "braced",
+    "stacks": 2,
+    "rounds": 1
+   },
+   "passive": null,
+   "tags": [
+    "support",
+    "buff"
+   ]
+  },
+  {
+   "id": "blast_door",
+   "name": "Blast Door",
+   "maker": "minerva",
+   "shape": "none",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A slab of mine-shaft door on a hydraulic arm, swung across in front of whoever needs it.",
+    "niche": "Minerva's intercept for the starter set (the to-do of 30 September): spent on an ally, every foe aimed at that ally turns on the spender, and the door's own shield goes up on the spender, the one taking the blows.",
+    "notes": "Stocked on the Honey Badger in place of its Twin Autoguns, beside the Proximity Klaxon: the lure picks foes, the door picks the ally. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders."
+   },
+   "face": {
+    "kind": "shield",
+    "power": 20,
+    "targets": "ally",
+    "keywords": [
+     "guard"
+    ]
+   },
+   "passive": null,
+   "tags": [
+    "defense",
+    "support"
+   ]
+  },
+  {
+   "id": "tesla_gauntlets",
+   "name": "Tesla Gauntlets",
+   "maker": "minerva",
+   "tier": 2,
+   "shape": "blade",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "Mining gauntlets with the arc welder left switched on. What they punch stays live.",
+    "niche": "Melee that Shocks what it hits and leaves standing: the Armadillo's status on a weapon (Ryan's board), so the next blow on it lands double.",
+    "notes": "From Ryan's Names board. Stocked on no chassis, so it carries its own tier. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "melee",
+    "power": 20,
+    "power_max": 40,
+    "crit": 10,
+    "keywords": [
+     "shock"
+    ],
+    "heat": 10
+   },
+   "passive": null,
+   "tags": [
+    "kinetic",
+    "melee",
+    "control"
+   ]
+  },
+  {
+   "id": "oblation_ward",
+   "name": "Oblation Ward",
+   "maker": "arsenal",
+   "shape": "none",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "An offering made of the machine's own plating. The manual calls it devotion.",
+    "niche": "The biggest shield in the pool, paid in the spender's hull: raised on an ally, the Arsenal machine bleeds to cover a friend.",
+    "notes": "Stocked on the Ammit in place of its Ward Plate. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders."
+   },
+   "face": {
+    "kind": "shield",
+    "power": 40,
+    "keywords": [
+     "volatile"
+    ]
+   },
+   "passive": null,
+   "tags": [
+    "defense"
+   ]
+  },
+  {
+   "id": "retribution_thurible",
+   "name": "Retribution Thurible",
+   "maker": "arsenal",
+   "shape": "dish",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A censer swung over the hull. Whatever strikes the consecrated metal is marked for what comes next.",
+    "niche": "The first Retaliate carrier: for two rounds, a foe that strikes the machine's bare hull is Shocked, so the Armadillo's Faraday Hull can ride on any machine; on the Nemesis its own punches spend the shocks.",
+    "notes": "Stocked on the Nemesis in place of its Plasma Carbine. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders."
+   },
+   "face": {
+    "kind": "buff",
+    "status": "retaliate",
+    "stacks": 1,
+    "rounds": 2
+   },
+   "passive": null,
+   "tags": [
+    "support",
+    "buff",
+    "control"
+   ]
+  },
+  {
+   "id": "maxigun",
+   "name": "Maxigun",
+   "maker": "wainwright_sutler",
+   "shape": "barrel",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A minigun, but more. Three bursts a pull, each rolled on its own.",
+    "niche": "The first multi-strike: three small blows that each roll, crit and proc on their own. Strong into bare foes and with Primed, almost useless into armour 10.",
+    "notes": "From Ryan's Names board (the horde gun). Stocked on the Clydesdale in place of one Twin Autoguns. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "line",
+    "power": 5,
+    "power_max": 15,
+    "crit": 5,
+    "strikes": 3,
+    "keywords": [],
+    "heat": 5
+   },
+   "passive": null,
+   "tags": [
+    "kinetic",
+    "single",
+    "volume"
+   ]
+  },
+  {
+   "id": "wake_diffuser",
+   "name": "Wake Diffuser",
+   "maker": "kestrel",
+   "shape": "none",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A diffuser on the exhaust that spreads the wake thin. It runs cooler, and somehow faster.",
+    "niche": "The first rapid equipment: a small vent that gives the machine its turn back, so cooling is never a dead roll.",
+    "notes": "From Ryan's Names board. Stocked on the Puffin in place of its Ram-air Scoop: the escort cools an ally and acts again. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders."
+   },
+   "face": {
+    "kind": "vent",
+    "power": 10,
+    "keywords": [
+     "rapid"
+    ]
+   },
+   "passive": null,
+   "tags": [
+    "support",
+    "tempo"
    ]
   }
  ]

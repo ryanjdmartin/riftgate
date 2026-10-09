@@ -300,3 +300,65 @@ func test_greedy_spends_a_free_reroll_before_the_teams() -> void:
 	assert_true(sk.mechs[0].face_index != 0, "the blank was rerolled")
 	assert_eq(sk.mechs[0].free_rerolls, 0, "with the machine's own reroll")
 	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND, "the team's untouched")
+
+
+func test_greedy_values_a_cleanse_where_there_is_something_to_clear() -> void:
+	var sk := Skirmish.new(1)
+	var plain := Face.vent(20)
+	var scrub := Face.vent(20)
+	scrub.add_keyword(K.CLEANSE)
+	var m := _mech("A", Die.of([plain, scrub, Face.attack(20, L)]), 40, 100)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	var pol := Policy.make(Policy.GREEDY)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	assert_eq(pol.equipment_score(sk, ms, ms, scrub), pol.equipment_score(sk, ms, ms, plain), "nothing to clear: a cleanse vent is a vent")
+	Effects.corrupt_entry(m, 2, "foe:x", 2)
+	assert_true(pol.equipment_score(sk, ms, ms, scrub) > pol.equipment_score(sk, ms, ms, plain), "a corrupted gun makes the cleanse worth more")
+	Effects.disable_entry(m, 2, "rapid", sk.round)
+	var before := pol.cleanse_score(sk, ms)
+	Effects.disable_entry(m, 2, "foe:x", sk.round + 1)
+	assert_true(pol.cleanse_score(sk, ms) > before, "a foe's disable is worth clearing, a rapid switch-off is not")
+
+
+func test_greedy_guards_the_machine_about_to_die() -> void:
+	var sk := Skirmish.new(2, 2)
+	var door := Face.shield(20)
+	door.targets = Face.Target.ALLY
+	door.add_keyword(K.GUARD)
+	var tank := _mech("Tank", Die.single(door), 30, 200)
+	var glass := _mech("Glass", Die.single(Face.blank()), 0, 15)
+	sk.add_mech(tank)
+	sk.add_mech(glass)
+	sk.add_foes([_ghoul(500, 10), _ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	for f in sk.field_foes():
+		f.target = sk.mechs[1]
+	var pol := Policy.make(Policy.GREEDY)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	assert_true(pol.equipment_score(sk, ms, sk.mechs[1], door) > Policy.DEATH_WEIGHT, "the door in front of the glass is worth a life")
+	pol.play_round(sk)
+	assert_eq(sk.front[0].target, sk.mechs[0], "so the bot swings it")
+	assert_eq(sk.front[1].target, sk.mechs[0], "and both blows come to the tank")
+
+
+func test_greedy_values_a_shock_by_the_doubled_blow_to_come() -> void:
+	var sk := Skirmish.new(1, 1)
+	var projector := Face.attack(0, L, K.SHOCK)
+	var plain := Face.attack(0, L)
+	var m := _mech("A", Die.of([projector, plain]), 40, 100)
+	sk.add_mech(m)
+	sk.add_mech(_mech("B", Die.single(Face.attack(30, L)), 40, 100))
+	var g := _ghoul(500, 10)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	var pol := Policy.make(Policy.GREEDY)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	assert_eq(pol.attack_score(sk, ms, plain, g), 0.0, "an entry of no damage is worth nothing")
+	assert_true(pol.attack_score(sk, ms, projector, g) > 0.0, "a shock is worth the team's next blow again")
+	Effects.stack(g, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	assert_eq(pol.attack_score(sk, ms, projector, g), 0.0, "and nothing on a foe already carrying one")

@@ -657,6 +657,11 @@ func assign(mech_index: int, target = null) -> bool:
 			ms.assigned = true
 			_check_outcome()
 			return true
+	# Guard (9 October, Minerva's intercept): spent on an ally, the component's own work lands
+	# on the spender, the one about to take that ally's blows, and the foes turn after it.
+	var guarding: MechState = target if f.has(Face.Keyword.GUARD) and target is MechState and target != ms else null
+	if guarding != null:
+		target = ms
 	match f.kind:
 		Face.Kind.BLANK:
 			pass
@@ -685,6 +690,8 @@ func assign(mech_index: int, target = null) -> bool:
 			_cleanse_with(ms, who, f)
 		Face.Kind.ATTACK:
 			_resolve_attack(mech_index, ms, f, target)
+	if guarding != null:
+		_guard(ms, guarding)
 	ms.assigned = true
 	# Rapid: the component is switched off for the rest of this round, the die rerolls for
 	# free (never the same entry), and the mech may act again. The disable is only there to
@@ -880,7 +887,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 			if foe == target:
 				landed = taken
 				armoured_total += foe_armoured
-			if Effects.remove(foe, "shocked"):
+			# A blow of nothing (a lure, a probe) leaves a shock standing for a blow that counts.
+			if dmg > 0 and Effects.remove(foe, "shocked"):
 				log.append("%s: the shock lands, %d doubled" % [foe.display_name, dmg])
 			if was_alive and not foe.alive() and f.has(Face.Keyword.DEVOUR):
 				_devour(ms, foe)
@@ -910,6 +918,11 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 	if extra_burn > 0:
 		Effects.stack(target, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", _stacks_from(ms, "burning", extra_burn))
 		_foe_gained_status(target, "burning")
+	# Shock (9 October): every foe the blows reached and left alive carries a charge for the
+	# team's next blow, after this one landed, so a shocking weapon never spends its own.
+	if f.has(Face.Keyword.SHOCK):
+		for foe in touched:
+			_shock(foe, ms)
 	# Disrupt first, then lure, so an entry carrying both ends with the foe's new move aimed at
 	# the spender.
 	if f.has(Face.Keyword.DISRUPT):
@@ -931,8 +944,9 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 	_clear_dead()
 	if reach_of(ms, f) == Face.Reach.INDIRECT and was_front:
 		var splash := ceili(float(total) / DANGER_CLOSE_DIVISOR)
-		ms.unit.shield = maxi(0, ms.unit.shield - splash)
-		log.append("%s: splash, shield -%d" % [ms.unit.display_name, splash])
+		if splash > 0:
+			ms.unit.shield = maxi(0, ms.unit.shield - splash)
+			log.append("%s: splash, shield -%d" % [ms.unit.display_name, splash])
 	if vent > 0:
 		ms.heat = maxi(0, ms.heat - vent)
 	_add_heat(ms, heat_total)
@@ -1139,6 +1153,22 @@ func _lure(ms: MechState, foes: Array) -> void:
 		log.append("%s lures %s" % [ms.unit.display_name, ", ".join(turned)])
 	if not idle.is_empty():
 		log.append("lured, but %s %s nothing to turn" % [", ".join(idle), "has" if idle.size() == 1 else "have"])
+
+
+## Guard (9 October, Minerva's intercept, the lure from the other end): every foe aimed at
+## the ally turns on the spender for the round, intents and all. A lure picks foes by reach
+## and spread; a guard picks the ally, so it takes exactly the arrows on that one machine.
+## No status and no chip, as with the lure: the arrows moving are the record.
+func _guard(ms: MechState, ally: MechState) -> void:
+	var turned: Array[String] = []
+	for foe in field_foes():
+		if foe.alive() and foe.target == ally:
+			foe.target = ms
+			turned.append(foe.display_name)
+	if turned.is_empty():
+		log.append("%s guards %s: nothing was aimed there" % [ms.unit.display_name, ally.unit.display_name])
+	else:
+		log.append("%s guards %s: %s turn on %s" % [ms.unit.display_name, ally.unit.display_name, ", ".join(turned), ms.unit.display_name])
 
 
 ## Disrupt (decided 2 October, in place of the planned scramble and confuse): the foe does its

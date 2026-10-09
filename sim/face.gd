@@ -11,7 +11,7 @@ const CRIT_MULT := 2.0        # a crit multiplies the roll by this plus every cr
 
 enum Kind { ATTACK, SHIELD, VENT, BLANK, BUFF }
 enum Reach { NONE, LINE, INDIRECT, MELEE }
-enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, EXECUTE, CHAIN, STEADY, RAPID, CLEANSE, VOLATILE, DEVOUR, LURE, DISRUPT, SPILLOVER, OVERSHIELD }
+enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, EXECUTE, CHAIN, STEADY, RAPID, CLEANSE, VOLATILE, DEVOUR, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, GUARD }
 ## Whom a component may be spent on (Ryan, 26 September): a weapon (an attack) targets foes;
 ## equipment (a shield, a vent) targets self and allies by default, and content may narrow
 ## one to self only or allies only, so the design space stays open.
@@ -28,7 +28,7 @@ const KEYWORD_NAMES := {
 	Keyword.SUPPRESS: "suppress", Keyword.EXECUTE: "execute",
 	Keyword.CHAIN: "chain", Keyword.STEADY: "steady", Keyword.RAPID: "rapid", Keyword.CLEANSE: "cleanse",
 	Keyword.VOLATILE: "volatile", Keyword.DEVOUR: "devour", Keyword.LURE: "lure", Keyword.DISRUPT: "disrupt",
-	Keyword.SPILLOVER: "spillover", Keyword.OVERSHIELD: "overshield",
+	Keyword.SPILLOVER: "spillover", Keyword.OVERSHIELD: "overshield", Keyword.SHOCK: "shock", Keyword.GUARD: "guard",
 }
 ## What the player reads where it differs from the content id (the vocabulary's name).
 const KEYWORD_LABELS := { Keyword.CLEAVE: "spread" }
@@ -39,15 +39,20 @@ const TARGET_NAMES := {
 ## other keyword is an attack's, except the few that ride on anything. The validator holds
 ## content to this. Lure and disrupt (2 October) are attack keywords: they ride on any
 ## foe-targeted entry, a damage weapon, a status weapon or an entry that does nothing else.
-const SUPPORT_KEYWORDS := [Keyword.CLEANSE, Keyword.OVERSHIELD]
+## Shock (9 October) is an attack keyword too: every foe the blows reach and leave alive is
+## Shocked. Guard (9 October) is equipment's: spent on an ally, the foes aimed at that ally
+## turn on the spender, and the component's own work lands on the spender, the one taking
+## the blows (`Skirmish._guard`).
+const SUPPORT_KEYWORDS := [Keyword.CLEANSE, Keyword.OVERSHIELD, Keyword.GUARD]
 ## Of those, the ones only a shield may carry: overshield (5 October, the Puffin's Prow
 ## Projector first, rare) lets a shield pass its target's maximum, and the excess fades at the
 ## round's end. A vent has nothing to pass.
 const SHIELD_ONLY_KEYWORDS := [Keyword.OVERSHIELD]
 ## Keywords about the spend itself, not its target, so any kind of component may carry
 ## them: volatile (the Arsenal's self-damage, 28 September) bites the owner whatever the
-## component does.
-const ANY_KEYWORDS := [Keyword.VOLATILE]
+## component does, and rapid (equipment too since 9 October, the Wake Diffuser first) gives
+## the machine its turn back whatever the component did.
+const ANY_KEYWORDS := [Keyword.VOLATILE, Keyword.RAPID]
 
 
 static func keyword_label(k: int) -> String:
