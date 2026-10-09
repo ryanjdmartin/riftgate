@@ -112,7 +112,7 @@ Eye) and leaders as pitches. Found on the way: the faction palette folds for a p
 the factions by lightness (bone, Behemoth violet, midnight: worst pair 35). Revised the same
 day to the redesigned round after main merged in: shapes are ring overlaps and who hunts,
 push and hunt only, and the Penitent hunts the slowest and pins. Next: Ryan's five decisions
-at the end of the file, then content, then foeforge from the new text.
+at the end of the file, then content, then foeforge from the new text. Then Ryan, later the same day: fresh slate. The whole JRPG genre invades (Final Fantasy the spine, the genre blended so ours is its own); leaders in the elaborate Final Fantasy boss register; the Cactuar in, made sinister; three factions good for scouting but not fixed. The proposal's roster and shapes are retired (a note at its top); its constraints, holes and palette stand. Next: the organising principle (the chat of 9 October put three on the table: the domain a rift brings with it, the depth of the invasion by Convergence tier, and the leader's retinue), then a roster from it.
 
 **The harness in tabs, 8 October** (a cloud session; Ryan: the long column ran off the glass,
 and loadouts and the enemy side wanted setting for tests). TEAM, ENEMY and SETUP tabs scroll

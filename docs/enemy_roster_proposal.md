@@ -1,5 +1,14 @@
 # The enemy side in the Final Fantasy register
 
+> **Superseded the same day.** Ryan, 9 October, after reading it: fresh slate. The direction
+> is that the whole JRPG genre invades our world, Final Fantasy its spine but the genre blended
+> so ours reads as its own; the leaders look like Final Fantasy bosses, elaborate and over the
+> top; the Cactuar is in, made sinister; three factions are good for scouting but not fixed,
+> since other frames may give the same read. Sections 1, 2 and 6 (the art's constraints, the
+> holes in the current factions, the palette by lightness) still hold. Sections 3 to 5 (the
+> recast roster and shapes) are retired as too attached to the three factions and to one series;
+> the next pass starts from the organising principle Ryan picks (the chat of 9 October, in status).
+
 A proposal, 9 October 2026, for discussion. Nothing here is decided: the content, the bible
 and the engine are untouched. Ryan asked for the factions and the pack directions to be
 reworked to match where the art landed. They were written on 11 to 15 September, before the
