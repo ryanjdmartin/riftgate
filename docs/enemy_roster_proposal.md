@@ -47,6 +47,19 @@ faction.
 What was keyed to three (the sound sets, the guest rule, the finals' count, the enemy sheet's
 palettes, the effects' recipes) is content and small code, all up for change (Ryan).
 
+**The party is drawn** (Ryan, 9 October, later: more than the four core, four chosen at the
+campaign's start, for replayability and so the pool can pull from the genre beyond one
+series). A pool of jobs sits on four benches, one bench a domain, and the campaign's start
+deals one hero per domain from its bench, so the land and its wildlife stay constant and
+scoutable while the apex is the surprise. Each bench holds front jobs and back jobs and the
+deal keeps two of each, so the finale still reads as a party. Promotion is one rule for every
+job: the finale's form is the same hero repainted, armour ten, one move more. A party card
+opens the campaign, the genre's own party screen turned round: four silhouettes with their
+job names, chosen for the player, not by them; from then on each domain's Anathema bar
+names its hero. The runner measures the deal as a party-composition cell. No job rolls: the
+Gambler and the Jester are the genre's obvious variety picks and the ones that must not
+exist. The benches are in section 2b.
+
 **Hero-plus-beast pairs, answered.** Some jobs are defined by what they command (a summoner's
 esper, a dragoon's dragon, a beastmaster's behemoth). For those, the leader fight would be a
 pair: the hero human-sized in the back as the brain, the companion massive in front as the
@@ -135,10 +148,27 @@ names; the homage is the shape and the move, never a trademark's silhouette.
   every machine), Flare (the biggest telegraphed blow, breaching), and below half Meteor,
   three blows at anything. The promoted form: the Black Wizard, Flare every other round.
 
+### 2b. The benches
+
+By archetype, across the genre; the homage is the shape and the move, the name ours, the
+source in the entry's fantasy note. The first eight (two a domain) are marked; the rest are a
+backlog, each one boss entry and one sprite at the boss register.
+
+| Domain | Bench | What each brings |
+|---|---|---|
+| The Meadow | **Warrior**, **Martial Artist**, Tamer | the telegraphed blow and Cover; two strikes and a counter (foe-side retaliate); a back-rank commander calling the wildlife up every round (the pair pattern made general) |
+| The Waste | **Thief**, **Lancer**, Merchant, Gunslinger | Steal, Mug, Flee; Jump (announced this round, lands next, breaching); blows that take salvage off the tally (needs an engine piece; a hole, since hidden salvage shows no loss until the end); a line blow that reaches our back rank |
+| The Marsh | **White Mage**, **Necromancer**, Priest, Rune-bearer | Cure, Protect, Reraise, Holy; Raise every round at the cost of its own hull; the Priest a second healer's kit; an execute on a machine below a quarter of its hull |
+| The Peak | **Black Mage**, **Summoner**, Mage, Sorcerer, Dragon Heir | Fire, Fira, Flare, Meteor; the pair with the Magma Golem; a second caster's kit; shadow for fire (corrupt-all and heat-all on one hero); the pair in one body, massive below half |
+| Any domain | Blue Mage, Psychic, Dancer | learns the components used against it, at their numbers (needs an engine piece); the old die attacks in a child's hands; another action for the wildlife, the enemy's Haste |
+
+Two cautions. The genre's robots (a round brass robot, a gear, magitek armour) collide with
+our side's register and stay off the benches, or come as exactly one late wildcard once the
+clash is established. Flying heroes are hunters with reach, never flyers.
+
 ### The finale
 
-The four in two ranks: Knight and Ninja ahead, White Wizard and Black Wizard behind, every
-hero beaten in its final an empty slot. Their level is the Convergence's tier. Whether something
+The four dealt, promoted, in two ranks, every hero beaten in its final an empty slot. Their level is the Convergence's tier. Whether something
 cosmic follows them through, the thing they were questing to kill, is parked: the genre's
 superboss is an optional fight past the Rupture, never the finale.
 
@@ -197,7 +227,9 @@ a fourth checked by simulation at the art pass.
 - **Audio.** Four boss sets; The Far Bank reassigned to one domain (it was The Chorus's).
   Spawn and hit recipes keyed by domain.
 
-## 7. Decisions wanted
+## 7. Decisions
+
+Ryan, 9 October: go ahead with everything proposed, and shake it out later. So, as decided:
 
 1. The four domains and their heroes as pitched, or moved.
 2. The wildlife's working names, which are Ryan's to replace.
