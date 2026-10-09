@@ -26,6 +26,7 @@ the page sets it beside what the game plays now.
     tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 5   # the fifth
     tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 6   # the sixth
     tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 7   # the seventh
+    tools/spriter/.venv/bin/python tools/soundforge/death_sketches.py 8   # the eighth
 """
 import json
 import math
@@ -748,6 +749,92 @@ def death7(maker):
     return room(b, decay=0.25, mix=0.1)
 
 
+# ---------------------------------------------------------------- the eighth cut (Ryan, 9 October)
+# Minerva: a little less pause, the second explosion shorter, both hitting less hard and lower.
+# The Arsenal: the wail with no waver and more whoosh; its opening blast deeper, less violent.
+
+VOICE_AT8 = {"minerva": 1.3, "arsenal": 1.25, "arsenal_wail": 1.4}
+
+
+def boom_soft(f0, f1, dur, gain=1.0, body_cut=500.0, attack=0.009, drive=1.6, hp=60.0):
+    """boom2 with a softer front: the thump and the body swelling in over `attack` rather than
+    striking, the saturation lighter; nothing under `hp` (60 Hz unless a deep one needs more off
+    the bottom to stay level with its mids on a phone's speaker)."""
+    n = n_of(dur)
+    t = t_of(n)
+    f = f1 + (f0 - f1) * np.exp(-t / 0.04)
+    thump = np.sin(2.0 * math.pi * np.cumsum(f) / SR) * F.env_pts(n, [(0.0, 0.0), (attack, 1.0), (0.05, 0.45), (0.14, 0.08), (dur, 0.0)])
+    body = F.lp(F.noise(n), body_cut, order=3) * F.env_pts(n, [(0.0, 0.0), (attack * 1.3, 1.0), (dur * 0.3, 0.4), (dur, 0.0)]) * 1.4
+    b = F.sat((thump * 0.8 + body) * 1.3, drive)
+    b = mix(b, FX.boom_tail(dur * 0.9, 0.5, cut=body_cut * 0.7))
+    pad = np.zeros(n_of(0.5))
+    b = b + F.bp(np.concatenate([F.sat(b * 1.3, 2.2), pad]), 160.0, 1200.0)[:len(b)] * 0.6
+    b = F.hp(np.concatenate([b, pad]), hp, order=3)[:len(b)]
+    return b * gain
+
+
+def lp_padded(x, cut, order=3):
+    """A low-pass that cannot wrap the front round to the end (see FX.heft)."""
+    return F.lp(np.concatenate([x, np.zeros(n_of(0.5))]), cut, order=order)[:len(x)]
+
+
+def ghost_whoosh(dur=1.7, centre=520.0, gain=1.0):
+    """The ghost as breath: noise through a voice-like band that rises and falls slowly, no
+    waver at all, a faint steady tone at its core, washed far back."""
+    n = n_of(dur)
+    t = t_of(n)
+    c = np.interp(t, [0.0, dur * 0.35, dur], [centre * 0.8, centre * 1.25, centre * 0.6])
+    air = F.lp_var(F.noise(n), c * 1.6)
+    air = air - F.lp(air, centre * 0.45, order=2)
+    ph = 2.0 * math.pi * np.cumsum(np.interp(t, [0.0, dur * 0.35, dur], [centre * 0.8, centre * 1.1, centre * 0.7])) / SR
+    core = (np.sin(ph) + 0.3 * np.sin(2.0 * ph)) * 0.18
+    v = (air * 1.0 + core) * F.env_pts(n, [(0.0, 0.0), (0.3, 1.0), (dur * 0.7, 0.8), (dur, 0.0)])
+    return room(v, decay=0.8, mix=0.5) * gain
+
+
+def wail_steady(dur=1.7, f0=430.0, gain=1.0, breath=1.0):
+    """The seventh cut's wail with nothing wavering: one voice on the same slow rise and fall, no
+    vibrato, no detuned voices beating, no chorus; breath through the same oo-to-ah vowel, as
+    loud as the tone at breath=1."""
+    n = n_of(dur)
+    t = t_of(n)
+    contour = np.interp(t, [0.0, dur * 0.3, dur * 0.65, dur], [f0 * 0.85, f0 * 1.2, f0 * 1.05, f0 * 0.7])
+    ph = 2.0 * math.pi * np.cumsum(contour) / SR
+    tone = np.zeros(n)
+    for k in range(1, 10):
+        tone += np.sin(k * ph) / (k * k)
+    air = F.lp(F.noise(n), 2400.0)
+    rms = lambda x: float(np.sqrt(np.mean(x ** 2))) + 1e-12
+    v = tone * (1.1 / rms(tone)) + air * (1.1 * breath / rms(air))
+    o = t / dur
+    oo = mix(F.bp(v, 280.0, 420.0), F.bp(v, 700.0, 950.0) * 0.5)
+    ah = mix(F.bp(v, 650.0, 950.0), F.bp(v, 1050.0, 1400.0) * 0.6)
+    vowel = (oo * (1.0 - o) + ah * o) * F.env_pts(n, [(0.0, 0.0), (0.18, 1.0), (dur * 0.55, 0.8), (dur, 0.0)])
+    return room(vowel, decay=0.8, mix=0.45) * gain
+
+
+def death8(maker, ghost="whoosh"):
+    if maker == "minerva":
+        b = boom_soft(150.0, 55.0, 0.8, 0.36, body_cut=500.0)
+        b = at(b, boom_soft(80.0, 28.0, 1.0, 1.9, body_cut=280.0, hp=85.0), 0.75)
+    else:
+        # The Arsenal: a deeper, gentler blast; the fire roaring up over the ghost's breath; then
+        # it breaks up into static, crackles and sputters.
+        b = mix(boom_soft(130.0, 42.0, 0.9, 1.0, body_cut=420.0, attack=0.012, hp=70.0), lp_padded(FX.plasma_splash(0.45), 800.0))
+        n = n_of(1.5)
+        t = t_of(n)
+        roar = F.lp_var(F.sat(F.lp(F.noise(n), 280.0) * 3.0, 3.0), 400.0 + 700.0 * np.minimum(1.0, t / 0.4)) * F.env_pts(n, [(0.0, 0.0), (0.35, 1.0), (0.9, 0.8), (1.5, 0.0)]) * 0.8
+        b = at(b, roar, 0.12)
+        if ghost == "whoosh":
+            b = at(b, ghost_whoosh(1.7, 520.0, 0.5), 0.2)
+        else:
+            b = at(b, wail_steady(1.4, 430.0, 0.27), 0.2)
+        b = at(b, static(1.4, 0.5) * F.env_pts(n_of(1.4), [(0.0, 0.0), (0.25, 1.0), (1.4, 0.0)]), 1.0)
+        b = at(b, crackles(1.6, 0.7), 0.95)
+        b = at(b, flame_sputters(1.5, 0.75), 1.0)
+    return room(b, decay=0.25, mix=0.1)
+
+
 # ---------------------------------------------------------------- written as the game plays it
 
 def at_level(x, level):
@@ -928,7 +1015,28 @@ def cut7():
     return 0
 
 
+SINGLES8 = [("death8_" + m, (lambda m=m: death8(m)), DEATH_LEVEL) for m in ("minerva", "arsenal")] + [
+    ("death8_arsenal_wail", (lambda: death8("arsenal", "wail")), DEATH_LEVEL)]
+
+
+def cut8():
+    made = {}
+    for name, fn, level in SINGLES8:
+        F.seed("d8_" + name)
+        x = at_level(fn(), level)
+        made[name] = x
+        write("d8_" + name, tail(x))
+        print("  d8_%-24s %5.2f s" % (name, len(x) / SR))
+    line_lost = read(os.path.join(ART, "voice", "line_machine_lost.wav"))
+    for m in VOICE_AT8:
+        write("d8_seq_lost_" + m, tail(at(at(np.zeros(1), made["death8_" + m], 0.0), line_lost, VOICE_AT8[m]), 0.5))
+    print("  sequences written")
+    return 0
+
+
 def main(argv):
+    if argv[:1] == ["8"]:
+        return cut8()
     if argv[:1] == ["7"]:
         return cut7()
     if argv[:1] == ["6"]:
