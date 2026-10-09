@@ -46,7 +46,7 @@ WIDTH, HEIGHT = 512, 768
 # its spine, the genre blended so ours reads as its own. Played straight: menacing, never a gag.
 STYLE = (
     "16-bit SNES JRPG battle sprite in the tradition of Final Fantasy VI, Chrono Trigger, "
-    "Dragon Quest and Breath of Fire enemies: striking, over-the-top high fantasy, "
+    "Dragon Quest and Breath of Fire enemies: ornate, detailed, over-the-top high fantasy, "
     "menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark "
     "outline. " + "{rules}" + " The whole creature in frame, facing toward the viewer's left, "
     "centered, isolated on a solid flat pure white background, no text, no border, no ground shadow."
@@ -95,17 +95,15 @@ def load_foes():
     return {e["id"]: e for e in json.loads(FOES.read_text())["entries"]}
 
 
-# Ryan's rules of 9 October, after the first full pass, and the lesson of the old Ghoul (the one
-# September cut that read best at phone scale: one clear value against the ground, limbs held
-# clear of the body, little interior detail). Said as what to draw, since a diffusion model
-# tends to draw what a prompt says not to.
+# Ryan's rules of 9 October, after the first full pass, said as what to draw, since a diffusion
+# model tends to draw what a prompt says not to. Readability at phone scale is the cut's job,
+# never the prompt's: a first try that asked for "a few large simple shapes, little fine detail"
+# and dropped "ornate, detailed" turned the painterly SNES register into a TV cartoon (Ryan,
+# 9 October), while the September Ghoul read best of all from a detailed, painterly render.
 RULES = (
     "Its posture follows its own body plan, so it need not stand upright like a person. "
     "Its eyes are solid glowing or blank shapes without pupils. "
-    "It carries only what the description names. "
-    "A bold silhouette of a few large simple shapes with its limbs held clear of its body, "
-    "strong contrast between light and dark masses, and little fine detail, since it is seen "
-    "48 pixels tall on a phone and a face's details do not survive."
+    "It carries only what the description names."
 )
 STYLE = STYLE.replace("{rules}", RULES)
 HERO_STYLE = HERO_STYLE.replace("{rules}", RULES)
