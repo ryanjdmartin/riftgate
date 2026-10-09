@@ -3,7 +3,7 @@
 Handoff note for the next session. Replace stale lines; keep it under a screen. How a
 thing works lives in its file's comments; why it is that way lives in the bible
 (`docs/design-bible.html`, every decision by section; section 12 is the roadmap). The
-bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.82 since 7 October: Aphelion's measure the dice that deal no damage, over another session's v0.81 (the idle acts resting 6 to 12 seconds and opening in turn); the starting draft a tender, what a tap on loot tells, the makers' measures decided; over another session's v0.79 (the idle acts) and v0.78's every price left to an economy pass of its own, over v0.77's idle acts taking turns from another session; the Convergence and Anathema, the Rupture meter and its Fractures, the salvage row, the loot on the map, the ledger decided with Favour and Sponsorship and the tiers, the withdraw guarantee; it carries the movement session's notes on the machines through the twenty-third); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
+bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.83 since 9 October: the content revision's components, ten more with Shock and Guard; over v0.82 of 7 October: Aphelion's measure the dice that deal no damage, over another session's v0.81 (the idle acts resting 6 to 12 seconds and opening in turn); the starting draft a tender, what a tap on loot tells, the makers' measures decided; over another session's v0.79 (the idle acts) and v0.78's every price left to an economy pass of its own, over v0.77's idle acts taking turns from another session; the Convergence and Anathema, the Rupture meter and its Fractures, the salvage row, the loot on the map, the ledger decided with Favour and Sponsorship and the tiers, the withdraw guarantee; it carries the movement session's notes on the machines through the twenty-third); republish it from the committed file after every bible change, passing that URL, and read it first, since a publish over a newer version is refused.
 
 **The pages, as of 2 October.** Every page lives in the personal account (A). Four are shared
 to the work email (B) as Editor, so a session in either account republishes them in place by
@@ -83,9 +83,9 @@ the chat is newer.
 ## As of 3 October 2026
 
 **State.** Tests green: `perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s
-tests/run_tests.gd` (399 tests, 18,788 checks on 8 October in a cloud session, after the harness's tabs;
+tests/run_tests.gd` (407 tests, 18,862 checks on 9 October in a cloud session, after the content revision's components;
 a cloud session fetches Godot 4.7's Linux build from the GitHub release asset to run them
-(`Godot_v4.7-stable_linux.x86_64.zip`, and `xvfb-run` for screenshots), since
+(`Godot_v4.7-stable_linux.x86_64.zip`; on 9 October `godotengine/godot-builds` served `4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip`; and `xvfb-run` for screenshots), since
 the proxy serves the asset though not the release page; it builds models too, with
 `BPY_PYTHON` naming a python3.11 venv holding `pip install bpy==5.0.1`, blender.org being
 unreachable there, and renders through `xvfb-run` on Mesa's software GL, so `tools/hero_shot.gd`
@@ -93,6 +93,8 @@ and `tools/act_shot.gd` work there). Two or three
 sessions run on this repo at once: check `git status` before committing, stage by path, diff a
 shared file first (a path still sweeps the other session's hunks), never `git add -A`, never
 kill a bare `godot --path .`. Commit after each verified chunk with tests green.
+
+**The content revision's components, 9 October** (a cloud session, on Ryan's go after the proposal in chat; bible v0.83, section 7's content revision row has every entry, the swaps and the reading). Ten components, six of them support: the Differentiation Probe (disrupt), Sublimation Array (cleanse vent) and Polarity Projector (shock) for Aphelion; the Shoring Jack (Braced), Blast Door (guard) and Tesla Gauntlets (shock, unstocked, tier two) for Minerva; the Oblation Ward (volatile shield 40) and Retribution Thurible (Retaliate) for the Arsenal; the Maxigun (three strikes) for W&S; the Wake Diffuser (rapid vent) for Kestrel. Eight stock swaps (Baboon, Stingray, Armadillo, Badger, Nemesis, Ammit, Clydesdale, Puffin); the Halo Shield is stocked now, so its tier is derived. Engine: Shock and Guard keywords (`Face.Keyword`, `Skirmish._guard`; a guard's own work lands on the spender), rapid on any component, a blow of nothing no longer spends a shock, and the bot scores shock, guard and cleanse (`Policy.equipment_score`, `guard_score`, `cleanse_score`). Balance and whole runs regenerated: team cells unchanged; the lone Badger the one machine hurt (the Blast Door is dead with no ally); 33 of 40 runs won. Ryan, 9 October: the foes get a fresh start in a session of their own (proposed in chat first). Chassis modules were proposed in chat the same day (fifteen across the four archetypes, slots, the content shape), none in content; found on the way, two triggers the validator accepts but the skirmish half-runs: `on_hull_damage`'s shield is never applied, and `on_shield_granted`'s status lands on the shielder, not the ally. The hangar page republished with the content (version 53).
 
 **The harness in tabs, 8 October** (a cloud session; Ryan: the long column ran off the glass,
 and loadouts and the enemy side wanted setting for tests). TEAM, ENEMY and SETUP tabs scroll
@@ -277,7 +279,7 @@ commander and city pieces (the command die, one-shots, the reward pick, city abi
 cooldowns). Numbers are in tens and are placeholders;
 every stat is read through `sim/effects.gd`. An enemy unit is a **pack** everywhere. Ryan
 writes `content/*.json` in his own voice (he writes die totals in his head; the data keeps
-free slots). Every component's codex and flavour are empty (45), and the nine new machines'
+free slots). Fifty-three of the 56 components have no codex and none has flavour, and the nine new machines'
 codex and flavour too: his to write. Tests never hardcode an entry's passive name.
 `content/reserved_names.json` holds about 1,250 machine names (BattleTech, Heavy Gear, 40k,
 Halo); the validator refuses an exact match unless `design.name_clash` says why it stays, and
