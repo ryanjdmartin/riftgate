@@ -261,6 +261,59 @@ def picker(args):
     print(f"wrote {dest.relative_to(ROOT)}: {len(order)} sets; open it with: open {dest.relative_to(ROOT)}")
 
 
+def phone(args):
+    """The picker as a phone page (tools/foeforge/phone_picker.html filled in), written to
+    out/phone/ with every render as a small WebP and every game cut inline, for publishing as
+    an artifact: tap a candidate to pick it, picks saved in the page's db collection `picks`
+    (one document per set key: {pick, set, at}) for a session to read back."""
+    import base64
+    foes = load_foes()
+    picks = {}
+    pf = ROOT / "tools" / "foeforge" / "picks" / "picks.json"
+    if pf.exists():
+        for key, p in json.loads(pf.read_text())["picks"].items():
+            picks[key] = str(p["candidate"])
+    dest = OUT / "phone"
+    (dest / "renders").mkdir(parents=True, exist_ok=True)
+    sets, files = [], []
+    for fid, foe in foes.items():
+        rounds = [("_chibi", "chibi party sprite"), ("", "boss register" if foe.get("hero") else "")]
+        for t in args.tags:
+            rounds.append((f"_{t}", f"new takes ({t})"))
+        for suffix, note in rounds:
+            d = OUT / (fid + suffix)
+            cands = sorted(p for p in d.glob(f"{fid}_*.png") if re.fullmatch(rf"{re.escape(fid)}_\d+", p.stem)) if d.is_dir() else []
+            if not cands:
+                continue
+            key = fid + suffix
+            if suffix == "_chibi":
+                frame, scale = CHIBI_SIZE, 2
+            elif foe.get("hero") or int(foe.get("size") or 1) > 1:
+                frame, scale = COMBAT_SIZE[2], 1
+            else:
+                frame, scale = COMBAT_SIZE[1], 1
+            entry = []
+            for p in cands:
+                n = p.stem.rsplit("_", 1)[1]
+                small = Image.open(p).convert("RGB")
+                small.thumbnail((360, 540))
+                rel = f"renders/{key}_{n}.webp"
+                small.save(dest / rel, "WEBP", quality=82)
+                files.append(rel)
+                cut = cut_sprite(key_background(Image.open(p)), frame)
+                buf = io.BytesIO()
+                cut.save(buf, "PNG")
+                entry.append({"n": n, "img": rel, "cut": "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode(),
+                              "cw": frame[0], "ch": frame[1]})
+            kind = " ".join(x for x in [foe.get("faction", ""), note] if x)
+            sets.append({"key": key, "foe": fid, "name": foe["name"] + (" (chibi)" if suffix == "_chibi" else ""),
+                         "note": kind, "scale": scale, "current": picks.get(key), "cands": entry})
+    page = (ROOT / "tools" / "foeforge" / "phone_picker.html").read_text()
+    (dest / "index.html").write_text(page.replace("/*__SETS__*/[]", json.dumps(sets)))
+    (dest / "files.json").write_text(json.dumps({f: str((dest / f).relative_to(ROOT)) for f in files}, indent=0))
+    print(f"wrote {(dest / 'index.html').relative_to(ROOT)}: {len(sets)} sets, {len(files)} renders; files map in {(dest / 'files.json').relative_to(ROOT)}")
+
+
 def prompts(args):
     """Every foe's prompt, in content order, into one sheet to read before generating."""
     foes = load_foes()
@@ -910,6 +963,9 @@ def main():
     pk.add_argument("--all", action="store_true", help="also show the set-aside first rounds (<id>_v1)")
     pk.add_argument("--tags", nargs="*", default=[], help="also show experiments' sets (out/<id>_<tag>), beside each foe's current set")
     pk.set_defaults(func=picker)
+    ph = sub.add_parser("phone", help="the picker as a phone page in out/phone/, for publishing as an artifact")
+    ph.add_argument("--tags", nargs="*", default=[], help="also include experiments' sets (out/<id>_<tag>)")
+    ph.set_defaults(func=phone)
     p = sub.add_parser("prompts", help="every foe's prompt into tools/foeforge/prompts.md, to read before generating (no model needed)")
     p.add_argument("--out", default="")
     p.set_defaults(func=prompts)
