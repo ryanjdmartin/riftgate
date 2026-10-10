@@ -36,8 +36,8 @@ const BASE_H := 1280.0   # the design's height; on a taller phone the rows sprea
 var H := BASE_H
 var BACK_Y := 72.0    # the foes' ground starts 14 above: 16 px of black under the header (Ryan, 23 September)
 var FRONT_Y := 266.0
-const SLOT_SIZE := Vector2(150, 194)     # floating gauge 18 + 48x64 foe at 2x + chip row 38
-const MASSIVE_SIZE := Vector2(150, 388)  # 64x96 elites at 2x across both ranks
+const SLOT_SIZE := Vector2(150, 194)     # floating gauge 18 + a 72x96 foe at two device pixels a pixel on the 1080 phone (96x128 design) + chip row 38
+const MASSIVE_SIZE := Vector2(150, 388)  # 96x144 elites across both ranks, the same way
 var EYE_Y := 510.0   # 12 px into the black under the foes' ground, the same as its margin from the right edge
 const EYE := 60.0
 var LOG_Y := 508.0
@@ -887,6 +887,7 @@ func _log_scroller() -> ScrollContainer:
 func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -> void:
 	v.display_name = foe.display_name
 	v.sprite = Sprites.combat_foe(foe.content_id)
+	v.pixel_snap = true
 	# Enemies face left, the convention; a sprite painted facing right says so in content.
 	v.flip_h = bool(ContentDB.load_default().foes.get(foe.content_id, {}).get("flip", false))
 	v.breathe = true

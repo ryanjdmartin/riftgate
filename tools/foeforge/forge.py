@@ -89,7 +89,10 @@ def _without_sources(text):
 
 # The enemy sheet's three palettes, kept for the optional snap; the domains borrow the nearest.
 PALETTE_FOR = {"meadow": "UND", "waste": "DEM", "marsh": "UND", "peak": "DEM"}
-COMBAT_SIZE = {1: (48, 64), 2: (64, 96)}
+# The frames (decided 9 October, Ryan, from an in-engine comparison at the phone's density):
+# 72x96 and 96x144 massive, drawn by the slot at whole device pixels, two a pixel on the 1080
+# phone; 48x64 lost the art's detail and 96x128 went uneven and thin-outlined at 1.5.
+COMBAT_SIZE = {1: (72, 96), 2: (96, 144)}
 MAP_SIZE = {1: (16, 16), 2: (16, 16)}
 BIG_MAP = {"bone_dragon": (40, 40)}   # the old three-hex colossus's token; the other bosses take MAP_SIZE until the multi-hex boss returns
 
@@ -121,7 +124,7 @@ CHIBI_STYLE = (
     "flat pure white background, no text, no border, no ground shadow. A face that is not a "
     "recognisable character, played straight and determined, never comic."
 )
-CHIBI_SIZE = (24, 32)
+CHIBI_SIZE = (36, 48)   # exactly twice the wildlife's pixel beside it: a deliberate party-sprite coarseness, not a mismatch
 
 DOMAIN_NAME = {"meadow": "the grasslands", "waste": "the desert", "marsh": "the swamp and graveyard", "peak": "the volcano"}
 
@@ -204,7 +207,7 @@ def game_preview(src, dest, frame, scale):
     shows it so a pick is judged at phone scale, where a face's details do not survive."""
     if dest.exists() and dest.stat().st_mtime >= src.stat().st_mtime:
         return
-    c = outline(quantize(fit(key_background(Image.open(src)), frame), None, 16))
+    c = cut_sprite(key_background(Image.open(src)), frame)
     c.resize((c.width * scale, c.height * scale), Image.NEAREST).save(dest)
 
 
@@ -455,6 +458,50 @@ def quantize(img, palette, colours=16):
     return img
 
 
+def source_palette(keyed, colours=16):
+    """The palette from the full-size render's opaque pixels, before any shrinking: averaging
+    in the shrink washes out highlights and darks, so a palette taken after it is duller."""
+    arr = np.array(keyed)
+    px = arr[arr[..., 3] >= 128][:, :3]
+    if len(px) == 0:
+        return [(0, 0, 0)]
+    q = Image.fromarray(px.reshape(1, -1, 3), "RGB").quantize(colors=colours, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
+    pal = q.getpalette()[:colours * 3]
+    return [tuple(pal[i:i + 3]) for i in range(0, len(pal), 3)]
+
+
+def sharpen_quantize(small, keyed, colours=16, amount=60):
+    """The gentle sharpen (decided 9 October; Ryan may want it stronger after a phone read):
+    after the shrink, an unsharp mask of `amount` percent and a slight contrast lift, then
+    every pixel snapped to the full render's own palette. A stronger pass that also kept
+    the dark linework speckled the goblin and the mandragora; this one only gives back the
+    contrast the shrink averaged away."""
+    from PIL import ImageEnhance, ImageFilter
+    a = np.array(small)
+    opaque = a[..., 3] >= 128
+    rgb = Image.fromarray(a[..., :3], "RGB")
+    if amount > 0:
+        rgb = rgb.filter(ImageFilter.UnsharpMask(radius=1, percent=int(amount), threshold=3))
+        rgb = ImageEnhance.Contrast(rgb).enhance(1.0 + 0.08 * amount / 60.0)
+    pal = np.array(source_palette(keyed, colours), dtype=np.int32)
+    out = np.array(rgb).astype(np.int32)
+    idx = ((out[..., None, :] - pal[None, None, :, :]) ** 2).sum(-1).argmin(-1)
+    res = np.zeros((a.shape[0], a.shape[1], 4), np.uint8)
+    res[..., :3] = pal[idx]
+    res[..., 3] = np.where(opaque, 255, 0)
+    return Image.fromarray(res, "RGBA")
+
+
+def cut_sprite(keyed, frame, colours=16, sharpen=60, palette=None):
+    """One sprite as the game draws it: fitted to its frame, flattened to `colours` (the
+    gentle sharpen with the render's own palette unless a faction palette is asked for or
+    `sharpen` is negative, which is the old median cut), and outlined."""
+    small = fit(keyed, frame)
+    if palette or sharpen < 0:
+        return outline(quantize(small, palette, colours))
+    return outline(sharpen_quantize(small, keyed, colours, sharpen))
+
+
 def outline(img, colour=(20, 22, 28, 255)):
     """One-pixel outline around the opaque shape, drawn into transparent neighbours."""
     w, h = img.size
@@ -508,7 +555,7 @@ def cut(args):
     size = int(foe.get("size") or 1)
     ART.mkdir(parents=True, exist_ok=True)
     frame = CHIBI_SIZE if (foe.get("hero") and size == 1) else COMBAT_SIZE[size]   # a hero in one slot is its chibi
-    combat = outline(quantize(fit(src, frame), pal, args.colours))
+    combat = cut_sprite(src, frame, args.colours, args.sharpen, pal)
     combat.save(ART / f"{args.foe}_combat.png")
     map_frame = BIG_MAP.get(args.foe, MAP_SIZE[size])
     token = outline(quantize(fit(src, map_frame), pal, min(args.colours, 8)))
@@ -880,6 +927,7 @@ def main():
     c.add_argument("image")
     c.add_argument("foe")
     c.add_argument("--colours", type=int, default=16, help="colours to keep (default 16)")
+    c.add_argument("--sharpen", type=int, default=60, help="the gentle sharpen's unsharp amount, percent (default 60; raise it for a crisper cut, -1 for the old plain median cut)")
     c.add_argument("--tol", type=int, default=48, help="how far from the background colour still keys out (default 48); raise it, to 90 or so, when a render left a grey ground shadow")
     c.add_argument("--holes", action="store_true", help="also key enclosed pockets of background (sky between branches); off by default, since a white robe is the same colour")
     c.add_argument("--faction-palette", action="store_true", help="snap to the faction palette from the enemy sheet instead of keeping the model's colours")

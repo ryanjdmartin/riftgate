@@ -138,6 +138,7 @@ Nothing in content is planned any more; every piece the 28 September content lea
 - [x] Decide the heroes' frame (Ryan, 9 October: the hero split; bible section 9): a chibi party sprite at 24x32 in its domain's final, the promoted form massive at 64x96 at the finale
 - [x] Pick the foe art (Ryan, 9 October: all 34 picked in `forge.py picker`; the sources and the picks kept in `tools/foeforge/picks` with `picks.json`; the 18 wildlife and the 8 chibi heroes cut into `art/foes`, checked in the skirmish at the phone's layout)
 - [ ] Touch up the picked art (Ryan, 9 October: a fine first pass, but AI art: missing arms, weapons passing through hands and such): fix on the kept source in `tools/foeforge/picks` and recut with `forge.py cut` and the options `picks.json` records
+- [ ] Judge the 72x96 foes on the phone (Ryan, 9 October): the frame, the whole-device-pixel slot and the gentle sharpen (`forge.py cut --sharpen`, 60 now; Ryan may want it stronger), then recut every pick at the strength chosen
 - [ ] The promoted forms as entries (bible section 9, the hero split row): size 2, numbers by the promotion rule, names proposed in chat first; their art from the boss-register candidates already rendered
 - [ ] The finale (bible section 9, the hero split row): the four promoted forms in line, a beaten hero's column to boss-tier wildlife from the standing domains, the pool behind holding elites and bosses
 - [ ] The hangar as a model

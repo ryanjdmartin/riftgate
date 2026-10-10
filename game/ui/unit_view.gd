@@ -45,6 +45,7 @@ var statuses: Array = []          # [[glyph id, chip text, (Color)], ...] under 
 var highlight: bool = false       # valid drop target while dragging a die
 var dead: bool = false
 var sprite: Texture2D = null      # pixel art drawn at an integer scale; null draws a placeholder
+var pixel_snap := false           # a foe's pixel art: scaled by whole device pixels, not design pixels (below)
 var used_override := Rect2()      # the drawing's extent inside the sprite, when the caller knows it (a 3D view's model bounds)
 var breathe: bool = false         # a slow vertical bob from the feet: a painted foe alive
 var flip_h: bool = false          # mirror the sprite, so an enemy painted facing right faces left
@@ -86,7 +87,25 @@ func _scale() -> float:
 	var top := _bars_height() + 2.0
 	var avail := size.y - top - STATUS_H
 	var ts := _sprite_size()
+	if pixel_snap:
+		# A foe's sprite pixel lands on a whole number of device pixels (decided 9 October,
+		# with the 72x96 frame): on the 1080 phone, two; a denser glass may take three and
+		# draw a little larger, the design's 720 one. Scaling by whole design pixels instead
+		# put a 72-wide sprite at 1.5 device pixels a pixel, which the nearest filter draws
+		# unevenly.
+		var d := _device_scale()
+		var k := maxf(1.0, floorf(minf(size.x * d / ts.x, avail * d / ts.y)))
+		return k / d
 	return maxf(1.0, floorf(minf(size.x / ts.x, avail / ts.y)))
+
+
+## Device pixels per local pixel: the canvas and the window's stretch together; 1 off the
+## tree (headless tests), where the design is the glass.
+func _device_scale() -> float:
+	if not is_inside_tree():
+		return 1.0
+	var xf := get_viewport().get_final_transform() * get_global_transform_with_canvas()
+	return maxf(0.01, xf.get_scale().y)
 
 
 ## The sprite's size in design pixels: its texture's, over the density it was rendered at.
