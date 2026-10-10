@@ -181,9 +181,9 @@ Burning, Suppressed, Shocked or Paradox.
   fight at zero.
 - An overheat is hull damage for every passive that reads hull damage.
 - Foes heat machines by scorch (Overheating), and by moves that add heat to one machine or
-  to all. (Decided direction, not built: foes heat machines only through debuffs; one adds
-  its heat at the end of the player's turn, before the overheat, so it can be vented or
-  cleansed first; a softer one raises the heat every weapon generates, per stack.)
+  to all. (The direction, not built: foes heat machines only through debuffs; one adds its
+  heat at the end of the player's turn, before the overheat, so it can be vented or cleansed
+  first; a softer one raises the heat every weapon generates, per stack; the names are open.)
 
 ### Injury
 - A foe's blow that puts a quarter of the machine's maximum hull or more past armour into
