@@ -1,7 +1,8 @@
 # Riftgate
 
-Godot 4.7 / GDScript. Portrait tactical hex battler for Android. `README.md` explains the layout
-and every command; `docs/design-bible.html` records every decision and section 12 is the roadmap.
+Godot 4.7 / GDScript. Portrait tactical hex battler for Android. `docs/rules.md` states the game's
+rules as they are now: read it first. `docs/design-bible.html` records every decision and why
+(section 12 is the roadmap); `README.md` explains the layout and every command.
 
 ## Commands
 
@@ -119,5 +120,11 @@ Sessions have died mid-flight before. To keep the next one cheap to start:
   lands or dies is ticked or struck in the same commit as the work; a new task goes in when
   it is agreed, not when it is remembered. Status says how things stand; the to-do says what
   is next; the bible says why.
-- Record decisions in `docs/design-bible.html` when they are made, not at the end.
+- Record decisions in `docs/design-bible.html` when they are made, not at the end. A rule that
+  changes is edited in place in `docs/rules.md` (present tense, no dates) in the same commit as
+  its bible row. Both say what is true now: a superseded line is rewritten, never appended to,
+  and neither keeps a changelog (git and `docs/status.md` carry the history).
+- Before proposing a change, read what `docs/rules.md`, the bible and the code already say about
+  it. A proposal that re-opens a settled point, or states one wrongly, costs Ryan a correction;
+  when the records cannot settle it, ask.
 - Design canvases under `docs/canvas/` are not watched. Ryan says when one changes.
