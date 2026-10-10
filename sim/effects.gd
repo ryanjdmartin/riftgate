@@ -29,8 +29,8 @@ extends RefCounted
 ##   5. overrides (set_reach): the shortest-lived source wins, then the latest granted
 ## In an attack, the roll (or the flat number, with what heat fired or the target's missing
 ## hull adds) comes first, from the skirmish, so the pipeline's adds and multiplies come last. A raised
-## ceiling (add_ceiling) is the one exception: it widens the range before the roll, so it
-## lives on the effective face (effective_face) and the face shows it.
+## ceiling or floor (add_ceiling, add_floor) is the one exception: it moves the range before
+## the roll, so it lives on the effective face (effective_face) and the face shows it.
 ##
 ## Stacking. A modifier has stacks (one by default). Granting the same id in the same scope
 ## again adds stacks instead of a second copy; an add is worth its value per stack, a
@@ -45,7 +45,7 @@ const ROUNDS := 3
 
 ## What the content may ask for, by trigger. The validator refuses anything else.
 const SUPPORTED_EFFECTS := {
-	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "add_ceiling"],
+	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "add_ceiling", "add_floor"],
 	"on_injury": ["no_destroy"],
 	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "spares_splash", "hull_per_spend"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
@@ -422,11 +422,22 @@ static func stat(u, name: String, upto: int = ROUNDS) -> int:
 ## on_attack; the Muzzle Velocity Booster, 10 October), summed. A flat face has no range to
 ## widen, so it gets nothing.
 static func ceiling_bonus(u, face: Face) -> int:
+	return _range_bonus(u, face, "add_ceiling")
+
+
+## What they add to the bottom (add_floor; the Tactical Databank, 10 October): the floor and
+## the ceiling are the two ways to push a range. Never past the top, so a narrow range can
+## end up flat.
+static func floor_bonus(u, face: Face) -> int:
+	return _range_bonus(u, face, "add_floor")
+
+
+static func _range_bonus(u, face: Face, effect: String) -> int:
 	if face == null or not face.is_attack() or not face.is_ranged():
 		return 0
 	var total := 0
 	for pair in _taking_part(u, "on_attack", face):
-		if str(pair[0].get("effect", "")) == "add_ceiling":
+		if str(pair[0].get("effect", "")) == effect:
 			total += int(pair[0].get("value", 0)) * pair[1].stacks
 	return maxi(0, total)
 
@@ -528,22 +539,24 @@ static func granted_keywords(u, face: Face) -> Array[int]:
 
 
 ## The component as it is right now for this machine: its own entry, unless a live passive
-## changes its reach, grants it a keyword or raises its ceiling, in which case a copy
-## carrying all three. What the resolver spends, the bot weighs and the screen draws; the
-## die keeps the real one.
+## changes its reach, grants it a keyword or pushes its range (a raised ceiling or floor), in
+## which case a copy carrying all of it. What the resolver spends, the bot weighs and the
+## screen draws; the die keeps the real one.
 static func effective_face(u, face: Face) -> Face:
 	if face == null:
 		return null
 	var r := effective_reach(u, face)
 	var granted := granted_keywords(u, face)
 	var ceiling := ceiling_bonus(u, face)
-	if r == face.reach and granted.is_empty() and ceiling == 0:
+	var floor_up := floor_bonus(u, face)
+	if r == face.reach and granted.is_empty() and ceiling == 0 and floor_up == 0:
 		return face
 	var c := face.duplicate_face()
 	c.reach = r
 	for kw in granted:
 		c.add_keyword(kw)
 	c.power_max += ceiling
+	c.power = mini(c.power + floor_up, c.power_max)
 	return c
 
 
@@ -857,6 +870,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"add_burn": body = "+%s burn" % vs
 		"vent_heat": body = "sheds %s heat" % vs
 		"add_ceiling": body = "rolls reach %s higher" % vs
+		"add_floor": body = "the lowest roll %s higher" % vs
 		"no_destroy": body = "cracked components are never destroyed"
 		"set_reach": body = "reach becomes %s" % vs
 		"add_stat": body = "%s +%s" % [str(eff.get("stat", "")), vs]
@@ -945,7 +959,7 @@ static func explain(u, face: Face) -> Array[String]:
 			elif trig == "on_attack":
 				# A condition on the target is shown as a rule (its lead says when), since
 				# the row has no target in hand. A raised ceiling means nothing to a flat face.
-				if name == "add_ceiling" and not face.is_ranged():
+				if (name == "add_ceiling" or name == "add_floor") and not face.is_ranged():
 					continue
 				if _usable(u, m, name) and (str(eff.get("when", "")) == "target_status" or _holds(u, eff, face)):
 					out.append("%s (%s)" % [effect_text(eff), m.name])

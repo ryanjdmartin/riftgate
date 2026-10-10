@@ -484,6 +484,16 @@ func test_a_raised_ceiling_widens_a_rolled_range_and_leaves_a_flat_one() -> void
 	assert_eq([shown.power, shown.power_max], [10, 30], "the rolled face shows 10 to 30")
 	assert_eq(gun.power_max, 20, "the die keeps the real one")
 	assert_eq(Effects.effective_face(m, beam).power_max, 15, "a flat face has no range to widen")
+	# The floor (add_floor, the Tactical Databank, 10 October) is the other way to push it.
+	m.grant_passive({"id": "db", "name": "DB", "description": "", "effects": [{"trigger": "on_attack", "effect": "add_floor", "value": 5}]})
+	shown = Effects.effective_face(m, gun)
+	assert_eq([shown.power, shown.power_max], [15, 30], "floor and ceiling together: 15 to 30")
+	var narrow := Face.attack(5, L, [], 0, 10)
+	var n := _mech("N", Die.single(narrow))
+	n.grant_passive({"id": "db", "name": "DB", "description": "", "effects": [{"trigger": "on_attack", "effect": "add_floor", "value": 10}]})
+	assert_eq([Effects.effective_face(n, narrow).power, Effects.effective_face(n, narrow).power_max], [10, 10], "never past the top: a narrow range ends flat")
+	assert_eq(Effects.effective_face(n, beam), beam, "a flat face is untouched")
+	assert_eq(Effects.explain(n, beam), [], "and its row says nothing")
 	var high := 0
 	for seed in range(40):
 		var sk := Skirmish.new(seed)
@@ -2278,8 +2288,8 @@ func test_a_round_start_passive_regains_shield_from_heat() -> void:
 	assert_true(m.shield <= 60, "capped at the maximum")
 
 
-## The rolled condition (10 October, the Tactical Databank as a flat increase): an add that
-## holds for a rolled weapon and never for a flat one. The ally condition still reads allies.
+## The rolled condition: an effect that holds for a rolled weapon and never for a flat one.
+## The ally condition still reads allies.
 func test_a_rolled_condition_holds_for_rolled_weapons_only() -> void:
 	var databank := {"id": "databank", "name": "Tactical Databank", "description": "", "effects": [
 		{"trigger": "on_attack", "effect": "add_damage", "value": 5, "when": "rolled"}]}

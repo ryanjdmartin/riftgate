@@ -194,23 +194,24 @@
    "tier": 2,
    "codex": "",
    "flavour": "",
-   "stats": {},
+   "stats": {
+    "hull": 20
+   },
    "text": {
-    "description": "Its rolled weapons deal 5 more.",
+    "description": "Its rolled weapons' lowest roll is 5 higher.",
     "effects": [
      {
       "trigger": "on_attack",
-      "effect": "add_damage",
-      "value": 5,
-      "when": "rolled"
+      "effect": "add_floor",
+      "value": 5
      }
     ]
    },
    "design": {
     "stage": "draft",
     "fantasy": "Every firing solution the regiment ever logged, in a box that hums.",
-    "niche": "The plain gun's best friend: every blow of a rolled weapon 5 harder, the floor raised with the rest; the Muzzle Velocity Booster's ceiling is the other way.",
-    "notes": "The Dingo's passive until 8 October, then the game's first module with its name kept (Ryan), with an ally in the fight. The ally condition was there so the Dingo's stealth could not carry it alone; stealth is gone, and Ryan said it may not be needed (9 October), so it is dropped for the runner to judge (Claude's lean; a raised minimum is the lighter fallback). 10 October (Ryan): a flat increase in place of rolling the maximum, more interesting and far less abusable; no stat line, and never tuned to parity with the Booster (a module carries stats too; the runner's module rows are the guard against a must-pick)."
+    "niche": "The floor to the Muzzle Velocity Booster's ceiling: a rolled weapon's lowest roll raised a little, with a little hull stapled on so it is worth a slot.",
+    "notes": "The Dingo's passive until 8 October, then the game's first module with its name kept (Ryan), with an ally in the fight. The ally condition was there so the Dingo's stealth could not carry it alone; stealth is gone, and Ryan said it may not be needed (9 October), so it is dropped for the runner to judge (Claude's lean; a raised minimum is the lighter fallback). 10 October (Ryan): a flat increase in place of rolling the maximum, more interesting and far less abusable; no stat line, and never tuned to parity with the Booster (a module carries stats too; the runner's module rows are the guard against a must-pick). Later on 10 October (Ryan, as on 9 October: increase the minimum instead of maxing it): the floor raised by a small amount, stats stapled on if that is too weak; the +5 on every blow was a flat damage increase, good everywhere and so bad design. Hull +20 is Claude's placeholder until the runner's module rows read it."
    }
   },
   {
@@ -318,34 +319,6 @@
     "stage": "draft",
     "fantasy": "A shell of something with negative mass. Hits do not quite agree with it.",
     "niche": "An overload: a huge shield that every small hit chews into.",
-    "notes": "Claude's proposal of 9 October, in Ryan's pick of the whole catalogue the same day; numbers are placeholders."
-   }
-  },
-  {
-   "id": "catalyzer_matrix",
-   "name": "Catalyzer Matrix",
-   "maker": "aphelion",
-   "tier": 3,
-   "codex": "",
-   "flavour": "",
-   "stats": {
-    "shield": -20,
-    "cooling": -5
-   },
-   "text": {
-    "description": "Every status it applies is one stack deeper.",
-    "effects": [
-     {
-      "trigger": "on_stack",
-      "effect": "add_stacks",
-      "value": 1
-     }
-    ]
-   },
-   "design": {
-    "stage": "draft",
-    "fantasy": "It does nothing itself. It makes everything else go faster.",
-    "niche": "A prototype: stacks on the status machines, stacking with the Stingray's own passive on purpose.",
     "notes": "Claude's proposal of 9 October, in Ryan's pick of the whole catalogue the same day; numbers are placeholders."
    }
   },
