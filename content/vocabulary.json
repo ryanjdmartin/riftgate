@@ -140,23 +140,13 @@
    }
   },
   {
-   "id": "melee",
+   "id": "direct",
    "category": "reach",
-   "name": "Melee",
-   "codex": "Targets any front-rank foe. Can target any back-rank foe when the front rank is empty.",
-   "status": "implemented",
-   "design": {
-    "holes": ""
-   }
-  },
-  {
-   "id": "line",
-   "category": "reach",
-   "name": "Line of sight",
+   "name": "Direct",
    "codex": "Targets any front-rank foe, and any back-rank foe whose column is exposed.",
    "status": "implemented",
    "design": {
-    "holes": ""
+    "holes": "Line of sight until 9 October; one of two reaches since 10 October, when Close (melee) was removed and melee became a tag."
    }
   },
   {
@@ -1113,7 +1103,7 @@
    "id": "static",
    "category": "trigger",
    "name": "Static",
-   "codex": "Passive trigger. Always on. Its effects change a mech's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; set_reach on a component (the Badger's cracked weapons become melee); suppress, which turns off another effect by id or tag.",
+   "codex": "Passive trigger. Always on. Its effects change a mech's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; set_reach on a component (direct or indirect while a condition holds); suppress, which turns off another effect by id or tag.",
    "status": "implemented",
    "design": {
     "holes": "Every read asks the pipeline; nothing is written to a stat or a component, so an effect that is gone stops answering. A static reach rule cannot be conditioned on reach."

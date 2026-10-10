@@ -44,7 +44,7 @@
     "fantasy": "A repurposed mining vehicle, designed to take severe punishment and keep on working. Refurbishments were minimal, basically bolting on weapons and armour, it keeps most of its utilitarian mining machinery flavour.",
     "niche": "tanky bruiser",
     "name_clash": "Flagged 28 September: the id badger is Heavy Gear's Badger APC and BattleTech's Badger transport; the nickname Honey Badger is nobody's. Kept: the shown name is clear.",
-    "notes": "6 October (Ryan): the Slug Cannon becomes the Bullion Fragmenter, melee, locked to the Badger as a mining joke; the second Chainsaw Claw goes, so the die is one claw, one fragmenter and three hardpoints (d5) and every face with a model is one face; the right boom's mount is the fragmenter built in, the pins renumbered 1 to 3 (missile box, left gimbal, right gimbal). 9 October, the content revision: the Twin Autoguns became the Blast Door, Minerva's intercept for the starter set, beside the Klaxon (the lure picks foes, the door picks the ally). Later on 9 October Guard came out (Ryan: until we feel we need it), so the Twin Autoguns are back in place of the Blast Door."
+    "notes": "6 October (Ryan): the Slug Cannon becomes the Bullion Fragmenter, melee, locked to the Badger as a mining joke; the second Chainsaw Claw goes, so the die is one claw, one fragmenter and three hardpoints (d5) and every face with a model is one face; the right boom's mount is the fragmenter built in, the pins renumbered 1 to 3 (missile box, left gimbal, right gimbal). 9 October, the content revision: the Twin Autoguns became the Blast Door, Minerva's intercept for the starter set, beside the Klaxon (the lure picks foes, the door picks the ally). Later on 9 October Guard came out (Ryan: until we feel we need it), so the Twin Autoguns are back in place of the Blast Door. 10 October (Ryan): Close removed, so the cracked-weapons-go-melee line went with it; the +5 reads the melee tag its two locked weapons carry; the passive is overloaded and is to be reworked around the Chainsaw Claw and the Bullion Fragmenter."
    },
    "codex": "The Minerva EX-45L (colloquially nicknamed the \"Badger\") was popular a mining mech widely praised for its reliability and durability, being designed to operate in the harshest, deepest environments imaginable. Reports exist of Badgers being caught in cave-ins while mining over 5 kilometers underground, only to dig their way out to the surface by nightfall, just in time for drinks with the crew. So naturally, when the Rifts opened, the ever-practical Minerva engineering team's first instinct was to finally give their prized Badger claws, teeth, and as many missiles as it could carry, putting its legendary longevity to work on the battlefield.",
    "hull": 160,
@@ -72,7 +72,7 @@
    "passive": {
     "id": "reinforced_skeleton",
     "name": "Reinforced Skeleton",
-    "description": "Legendary Minervan strength. Components can be cracked but never destroyed. Melee attacks deal +5 damage. Cracked weapons become melee-typed, instead of their usual type.",
+    "description": "Legendary Minervan strength. Components can be cracked but never destroyed. Melee attacks deal +5 damage.",
     "effects": [
      {
       "trigger": "on_injury",
@@ -83,13 +83,7 @@
       "trigger": "on_attack",
       "effect": "add_damage",
       "value": 5,
-      "when": "reach_melee"
-     },
-     {
-      "trigger": "static",
-      "effect": "set_reach",
-      "value": "melee",
-      "when": "component_cracked"
+      "when": "tag_melee"
      }
     ]
    },
@@ -501,7 +495,7 @@
    "design": {
     "fantasy": "A hulking, neckless, spiked brute. Thick arms made for pummeling. A glowing firey core in its torso that lights up as the mech takes damage and heats up.",
     "niche": "Sustained damage bruiser",
-    "notes": "One or more locked components should grant overheating, or deal self -damage. Decided 28 September: Crucible Capacitor counts blows that reach hull from foes or its own weapons, never overheat burn (that loop has no brake), and the stacks decay as Overheating does; a plain vent is its relief. The locked Gravity Knuckles are volatile, so every punch feeds it, and volatile is the general Arsenal self-damage keyword for later shield and vent faces. Meteor Artillery is its advanced piece. Numbers, designation and kit are Claude's fills, Ryan's to move. 9 October, the content revision: the Plasma Carbine became the Retribution Thurible (Retaliate, so the foes that reach its hull set up its next punch). 9 October: the platings left the dice for modules, so the Ward Plate became the Oblation Ward, the Arsenal's shield paid in hull."
+    "notes": "One or more locked components should grant overheating, or deal self -damage. Decided 28 September: Crucible Capacitor counts blows that reach hull from foes or its own weapons, never overheat burn (that loop has no brake), and the stacks decay as Overheating does; a plain vent is its relief. The locked Gravity Knuckles are volatile, so every punch feeds it, and volatile is the general Arsenal self-damage keyword for later shield and vent faces. Meteor Artillery is its advanced piece. Numbers, designation and kit are Claude's fills, Ryan's to move. 9 October, the content revision: the Plasma Carbine became the Retribution Thurible (Retaliate, so the foes that reach its hull set up its next punch). 9 October: the platings left the dice for modules, so the Ward Plate became the Oblation Ward, the Arsenal's shield paid in hull. 10 October: Close removed, so the Crucible reads the melee tag (its Gravity Knuckles carry it)."
    },
    "codex": "",
    "hull": 140,
@@ -537,7 +531,7 @@
       "effect": "add_damage",
       "value": 5,
       "per_stack": "overheating",
-      "when": "reach_melee"
+      "when": "tag_melee"
      },
      {
       "trigger": "on_hull_damage",

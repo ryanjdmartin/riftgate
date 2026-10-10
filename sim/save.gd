@@ -278,6 +278,8 @@ static func _face_dict(f: Face) -> Dictionary:
 	d["component"] = f.component
 	d["empty"] = f.empty
 	d["fixed"] = f.fixed
+	if not f.tags.is_empty():
+		d["tags"] = f.tags
 	if not f.label.is_empty():
 		d["label"] = f.label
 	return d
@@ -289,6 +291,8 @@ static func _face_from(d: Dictionary) -> Face:
 	f.component = str(d.get("component", ""))
 	f.empty = bool(d.get("empty", false))
 	f.fixed = bool(d.get("fixed", false))
+	for t in d.get("tags", []):
+		f.tags.append(str(t))
 	return f
 
 

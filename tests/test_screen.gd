@@ -141,7 +141,7 @@ func test_die_hold_shows_every_face_with_what_applies_to_it() -> void:
 
 
 func test_face_descriptions_drop_the_line_word() -> void:
-	assert_eq(Face.attack(10, Face.Reach.LINE, [], 0, 30).describe(), "10–30", "line of fire goes unsaid")
+	assert_eq(Face.attack(10, Face.Reach.DIRECT, [], 0, 30).describe(), "10–30", "line of fire goes unsaid")
 	assert_true(Face.attack(20, Face.Reach.INDIRECT).describe().begins_with("indirect 20"), "indirect is called out")
 
 

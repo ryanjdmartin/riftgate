@@ -37,11 +37,6 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_polyline(tri, color, width)
 			ci.draw_line(c + Vector2(0, -s * 0.35), c + Vector2(0, s * 0.2), color, width)
 			ci.draw_circle(c + Vector2(0, s * 0.45), width * 0.6, color)
-		"melee":
-			# Three claw strokes, raking down and right.
-			for i in range(3):
-				var x := -s * 0.7 + i * s * 0.7
-				ci.draw_line(c + Vector2(x - s * 0.3, -s), c + Vector2(x + s * 0.3, s), color, width)
 		"cleave":
 			for i in range(3):
 				var x := -s * 0.7 + i * s * 0.7
@@ -283,6 +278,4 @@ static func primary_for(face: Face) -> String:
 		_:
 			if face.reach == Face.Reach.INDIRECT:
 				return "indirect"
-			if face.reach == Face.Reach.MELEE:
-				return "melee"
-			return "line"
+			return "line"   # direct: the crosshair glyph, whatever its tags

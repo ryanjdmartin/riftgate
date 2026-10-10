@@ -4,7 +4,7 @@ extends RefCounted
 ## Sample dice, mechs, and packs. Placeholder numbers for prototypes and tests.
 ## None of these are balanced. They exist so there is something to roll.
 
-const L := Face.Reach.LINE
+const L := Face.Reach.DIRECT
 const I := Face.Reach.INDIRECT
 const K := Face.Keyword
 

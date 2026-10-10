@@ -111,7 +111,9 @@ const STATUS := {
 const MECH_STATUSES := ["overcharged", "braced", "primed", "retaliate"]
 ## target_status: the foe struck carries any live status (burning, suppressed, numbed...).
 ## ally_present: another live machine is in the fight (the unit's `allies`, kept by the skirmish).
-const SUPPORTED_WHEN := ["component_cracked", "rolled", "reach_melee", "reach_line", "reach_indirect", "target_status", "ally_present"]
+## A `tag_<tag>` condition reads the component's tags (10 October: a tag never carries a rule of
+## its own; a passive may read one its machine's stock carries, the Badger's melee).
+const SUPPORTED_WHEN := ["component_cracked", "rolled", "reach_direct", "reach_indirect", "target_status", "ally_present"]
 ## Stats a static effect may change: the mech's base numbers by these names.
 const STATS := ["hull", "shield", "heat", "armour", "move", "recharge", "cooling"]
 ## Effects that are bonuses (a destroyed component keeps them) rather than abilities.
@@ -272,7 +274,7 @@ static func supports(trigger: String, effect: String) -> bool:
 
 
 static func supports_when(when: String) -> bool:
-	return when.is_empty() or SUPPORTED_WHEN.has(when)
+	return when.is_empty() or SUPPORTED_WHEN.has(when) or (when.begins_with("tag_") and when.length() > 4)
 
 
 # ---------------------------------------------------------------- lifetimes
@@ -345,7 +347,7 @@ static func _fires(trigger: String) -> bool:
 
 
 ## Does an effect's `when` hold for the component in hand? Reach conditions read the
-## effective reach, so "+10% melee" follows a component the same passive sent to melee.
+## effective reach, so a reach condition follows a component a passive's set_reach moved.
 ## `target` is the foe an attack is aimed at, for conditions on it; null outside an attack.
 static func _holds(u, eff: Dictionary, face: Face, target = null) -> bool:
 	match str(eff.get("when", "")):
@@ -355,16 +357,17 @@ static func _holds(u, eff: Dictionary, face: Face, target = null) -> bool:
 			return face != null and face.cracked
 		"rolled":
 			return face != null and face.is_ranged()
-		"reach_melee":
-			return face != null and effective_reach(u, face) == Face.Reach.MELEE
-		"reach_line":
-			return face != null and effective_reach(u, face) == Face.Reach.LINE
+		"reach_direct":
+			return face != null and effective_reach(u, face) == Face.Reach.DIRECT
 		"reach_indirect":
 			return face != null and effective_reach(u, face) == Face.Reach.INDIRECT
 		"target_status":
 			return target != null and target.get("modifiers") != null and not live(target).is_empty()
 		"ally_present":
 			return u.get("allies") != null and int(u.allies) > 0
+	var w := str(eff.get("when", ""))
+	if w.begins_with("tag_"):
+		return face != null and face.tags.has(w.substr(4))
 	return false
 
 
@@ -436,7 +439,7 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null) -> Diction
 		var v: float = float(eff.get("value", 0))
 		var n: int = pair[1].stacks
 		# `per_stack` scales an effect by the machine's stacks of a status (the Nemesis's
-		# Crucible: melee damage per Overheating stack); none of the status, no effect.
+		# Crucible: its melee weapons' damage per Overheating stack); none of the status, no effect.
 		if eff.has("per_stack"):
 			n *= stacks_of(u, str(eff["per_stack"]))
 		match str(eff.get("effect", "")):
@@ -887,11 +890,12 @@ static func effect_text(eff: Dictionary) -> String:
 	match str(eff.get("when", "")):
 		"component_cracked": lead += "cracked components: "
 		"rolled": lead += "rolled weapons: "
-		"reach_melee": lead += "melee attacks: "
-		"reach_line": lead += "line-of-sight attacks: "
+		"reach_direct": lead += "direct attacks: "
 		"reach_indirect": lead += "indirect attacks: "
 		"target_status": lead += "foes carrying a status: "
 		"ally_present": lead += "with an ally in the fight: "
+	if str(eff.get("when", "")).begins_with("tag_"):
+		lead += "%s weapons: " % str(eff["when"]).substr(4)
 	return lead + body
 
 

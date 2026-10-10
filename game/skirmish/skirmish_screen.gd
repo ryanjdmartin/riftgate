@@ -1352,7 +1352,7 @@ func _use_die(i: int, target) -> bool:
 				var hook := "foe_down_" + fallen
 				Sound.claim_line(hook if Sound.FAMILIES.has(fallen) else "foe_down", landed + AFTER_DEATH)
 		landed = fire_at + Sound.lands(blow)
-		var ranged := bool(sk.last_roll.get("ranged", false))
+		var ranged := not bool(sk.last_roll.get("melee", false))   # a melee weapon (the tag) lunges, anything else kicks back
 		var hit := (target as Foe).alive()
 		if fire_at > BLOW_AT and is_inside_tree():
 			var tw := create_tween()   # the attacker moves when its weapon fires, into her line
@@ -1390,7 +1390,7 @@ func _use_die(i: int, target) -> bool:
 # ---------------------------------------------------------------- filler animation
 # Nothing here changes state. It makes the exchange readable: who struck, who was struck.
 
-## A melee face lunges the attacker at the target; a ranged face kicks it back. The target
+## A melee weapon (the tag) lunges the attacker at the target; anything else kicks it back. The target
 ## flashes and shakes a beat later, when the blow lands.
 func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool, hit: bool = true, lands: float = 0.08) -> void:
 	if not is_inside_tree() or attacker == null:

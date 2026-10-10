@@ -12,11 +12,11 @@
     "stage": "draft",
     "fantasy": "Two swings a round if the dice agree. Ghouls in threes.",
     "niche": "",
-    "notes": "Reach melee since 26 September (authored melee is allowed now): the front rank, and the back only once the front is gone."
+    "notes": "Reach melee since 26 September (authored melee is allowed now): the front rank, and the back only once the front is gone. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass."
    },
    "face": {
     "kind": "attack",
-    "reach": "melee",
+    "reach": "direct",
     "power": 10,
     "power_max": 20,
     "keywords": [
@@ -69,11 +69,11 @@
     "stage": "draft",
     "fantasy": "One big round. Warm barrel.",
     "niche": "",
-    "notes": " 6 October (Ryan): the Slug Cannon converted to melee, renamed the Bullion Fragmenter, and locked to the Badger as a funny mining reference; its line kinetic numbers kept (30 to 60, crit 15, 10 heat) as placeholders. Ryan, later 6 October: a sawed-off cannon, not a breaker; melee is very short range, not contact (a shotgun is melee), and the irony is that bullion is so useless it is better crushed and fired. Codex cut 6 October (Ryan: never explain the joke; keep a component's line short)."
+    "notes": "6 October (Ryan): the Slug Cannon converted to melee, renamed the Bullion Fragmenter, and locked to the Badger as a funny mining reference; its line kinetic numbers kept (30 to 60, crit 15, 10 heat) as placeholders. Ryan, later 6 October: a sawed-off cannon, not a breaker; melee is very short range, not contact (a shotgun is melee), and the irony is that bullion is so useless it is better crushed and fired. Codex cut 6 October (Ryan: never explain the joke; keep a component's line short). 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass."
    },
    "face": {
     "kind": "attack",
-    "reach": "melee",
+    "reach": "direct",
     "power": 15,
     "power_max": 30,
     "keywords": [],
@@ -101,7 +101,7 @@
    },
    "face": {
     "kind": "attack",
-    "reach": "line",
+    "reach": "direct",
     "power": 15,
     "power_max": 30,
     "keywords": [],
@@ -127,7 +127,7 @@
    },
    "face": {
     "kind": "attack",
-    "reach": "line",
+    "reach": "direct",
     "power": 5,
     "power_max": 15,
     "keywords": [],
@@ -154,7 +154,7 @@
    },
    "face": {
     "kind": "attack",
-    "reach": "line",
+    "reach": "direct",
     "power": 15,
     "keywords": [
      "penetrate"
@@ -337,7 +337,7 @@
    },
    "face": {
     "kind": "attack",
-    "reach": "line",
+    "reach": "direct",
     "power": 50,
     "keywords": [],
     "heat": 40
@@ -364,7 +364,7 @@
    },
    "face": {
     "kind": "attack",
-    "reach": "line",
+    "reach": "direct",
     "power": 10,
     "keywords": [],
     "heat": 0,
@@ -393,7 +393,7 @@
    },
    "face": {
     "kind": "attack",
-    "reach": "line",
+    "reach": "direct",
     "power": 15,
     "keywords": [
      "chain"
@@ -443,7 +443,7 @@
    },
    "face": {
     "kind": "attack",
-    "reach": "line",
+    "reach": "direct",
     "power": 10,
     "keywords": [
      "suppress"
@@ -528,7 +528,7 @@
    },
    "face": {
     "kind": "attack",
-    "reach": "line",
+    "reach": "direct",
     "power": 5,
     "keywords": [
      "rapid"
@@ -617,11 +617,11 @@
     "stage": "draft",
     "fantasy": "The Wild Boar's front end: a ram and a plow blade that go through a wall or a rank of fodder at the same speed.",
     "niche": "The Boar's locked melee: one big cleaving hit, and the front armour rides on it.",
-    "notes": "Claude's fill, 28 September. Its passive is flat armour now; once the engine can tell which rank struck, it becomes armour against front-rank blows only."
+    "notes": "Claude's fill, 28 September. Its passive is flat armour now; once the engine can tell which rank struck, it becomes armour against front-rank blows only. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass."
    },
    "face": {
     "kind": "attack",
-    "reach": "melee",
+    "reach": "direct",
     "power": 15,
     "power_max": 30,
     "keywords": [
@@ -663,7 +663,7 @@
    },
    "face": {
     "kind": "attack",
-    "reach": "line",
+    "reach": "direct",
     "power": 5,
     "power_max": 15,
     "keywords": [
@@ -693,7 +693,7 @@
    },
    "face": {
     "kind": "attack",
-    "reach": "line",
+    "reach": "direct",
     "power": 5,
     "power_max": 10,
     "keywords": [
@@ -722,7 +722,7 @@
    },
    "face": {
     "kind": "attack",
-    "reach": "line",
+    "reach": "direct",
     "power": 10,
     "keywords": [],
     "heat": 0,
@@ -751,11 +751,11 @@
     "stage": "draft",
     "fantasy": "Fists that weigh what the Arsenal says they weigh. Each blow burns, and each blow costs the machine a little of itself.",
     "niche": "The Nemesis's locked melee: energy, static, burning, and volatile so every punch feeds the Crucible.",
-    "notes": "Live since volatile landed (30 September). Claude's fill, 28 September; the name is from Ryan's list. Planned until volatile exists."
+    "notes": "Live since volatile landed (30 September). Claude's fill, 28 September; the name is from Ryan's list. Planned until volatile exists. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass."
    },
    "face": {
     "kind": "attack",
-    "reach": "melee",
+    "reach": "direct",
     "power": 15,
     "keywords": [
      "burn",
@@ -781,11 +781,11 @@
     "stage": "draft",
     "fantasy": "Four blades that take something from what they kill. The Arsenal's manual calls it attunement.",
     "niche": "The Ammit's locked melee: flat, and devour to grow; the machine's scaling threat for the whole battle and nothing more.",
-    "notes": "Live since devour landed (30 September). Claude's fill, 28 September; the name is from Ryan's list. Planned until devour and Overcharged exist. 10 October (Ryan, bible section 5): Execute dropped (it was probably too strong with it anyway); no heal suppression or utility here, any of that on a stock tier two or three component of the Ammit's."
+    "notes": "Live since devour landed (30 September). Claude's fill, 28 September; the name is from Ryan's list. Planned until devour and Overcharged exist. 10 October (Ryan, bible section 5): Execute dropped (it was probably too strong with it anyway); no heal suppression or utility here, any of that on a stock tier two or three component of the Ammit's. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass."
    },
    "face": {
     "kind": "attack",
-    "reach": "melee",
+    "reach": "direct",
     "power": 10,
     "keywords": [
      "devour"
@@ -814,7 +814,7 @@
    },
    "face": {
     "kind": "attack",
-    "reach": "line",
+    "reach": "direct",
     "power": 5,
     "power_max": 15,
     "keywords": [],
@@ -863,7 +863,7 @@
    },
    "face": {
     "kind": "attack",
-    "reach": "line",
+    "reach": "direct",
     "power": 10,
     "keywords": [],
     "heat": 5
@@ -911,7 +911,7 @@
    },
    "face": {
     "kind": "attack",
-    "reach": "line",
+    "reach": "direct",
     "power": 15,
     "keywords": [],
     "heat": 10
@@ -1006,7 +1006,7 @@
    },
    "face": {
     "kind": "attack",
-    "reach": "line",
+    "reach": "direct",
     "power": 5,
     "keywords": [],
     "heat": 5,
@@ -1034,7 +1034,7 @@
    },
    "face": {
     "kind": "attack",
-    "reach": "line",
+    "reach": "direct",
     "power": 10,
     "keywords": [
      "burn"
@@ -1113,7 +1113,7 @@
    },
    "face": {
     "kind": "attack",
-    "reach": "line",
+    "reach": "direct",
     "power": 10,
     "keywords": [
      "burn"
@@ -1248,7 +1248,7 @@
    },
    "face": {
     "kind": "attack",
-    "reach": "line",
+    "reach": "direct",
     "power": 0,
     "keywords": [
      "shock"
@@ -1319,11 +1319,11 @@
     "stage": "draft",
     "fantasy": "Mining gauntlets with the arc welder left switched on. What they punch stays live.",
     "niche": "Melee that Shocks what it hits and leaves standing: the Armadillo's status on a weapon (Ryan's board), so the next blow on it lands double.",
-    "notes": "From Ryan's Names board. Stocked on no chassis, so it carries its own tier. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders. Halved to 10 to 20 when the branch met the damage scale (9 October; bible section 11, the damage-scale row). 10 October (Ryan, bible section 5): By its niche it is flat (a shock rider), 15 for the 10 to 20 it was."
+    "notes": "From Ryan's Names board. Stocked on no chassis, so it carries its own tier. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders. Halved to 10 to 20 when the branch met the damage scale (9 October; bible section 11, the damage-scale row). 10 October (Ryan, bible section 5): By its niche it is flat (a shock rider), 15 for the 10 to 20 it was. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass."
    },
    "face": {
     "kind": "attack",
-    "reach": "melee",
+    "reach": "direct",
     "power": 15,
     "keywords": [
      "shock"
@@ -1403,7 +1403,7 @@
    },
    "face": {
     "kind": "attack",
-    "reach": "line",
+    "reach": "direct",
     "power": 5,
     "strikes": 3,
     "keywords": [],

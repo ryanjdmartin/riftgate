@@ -9,7 +9,9 @@ extends RefCounted
 ## live on riders, never on the damage (bible section 5, the damage ranges row).
 
 enum Kind { ATTACK, SHIELD, VENT, BLANK, BUFF }
-enum Reach { NONE, LINE, INDIRECT, MELEE }
+## Two reaches since 10 October (Ryan): Close, a worse Direct by design, is removed and melee
+## is a tag. Direct was line of sight until 9 October.
+enum Reach { NONE, DIRECT, INDIRECT }
 ## Execute and Steady are retired (10 October): a threshold doubling is a hard sum hidden in
 ## a keyword, and a rolled weapon dealing its average is simply a flat one.
 enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, VOLATILE, DEVOUR, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK }
@@ -26,7 +28,7 @@ const KIND_NAMES := {
 	Kind.ATTACK: "attack", Kind.SHIELD: "shield", Kind.VENT: "vent", Kind.BLANK: "blank", Kind.BUFF: "buff",
 }
 const REACH_NAMES := {
-	Reach.NONE: "none", Reach.LINE: "line", Reach.INDIRECT: "indirect", Reach.MELEE: "melee",
+	Reach.NONE: "none", Reach.DIRECT: "direct", Reach.INDIRECT: "indirect",
 }
 const KEYWORD_NAMES := {
 	Keyword.NONE: "", Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.BURN: "burn",
@@ -64,7 +66,7 @@ static func keyword_label(k: int) -> String:
 # Enum-typed members are declared as int: GDScript 4 reports a spurious "Face.Kind vs Kind"
 # type mismatch when a class_name script is loaded from a headless -s runner.
 var kind: int = Kind.ATTACK
-var reach: int = Reach.LINE
+var reach: int = Reach.DIRECT
 var power: int = 20
 var power_max: int = 20       # equal to power for a flat face
 var keywords: Array[int] = []
@@ -83,10 +85,11 @@ var buff_rounds: int = 1      # ...through the end of this many rounds (1: this 
 var vents_all: bool = false   # an attack that fires the machine's whole heat: the gauge is empty after the shot...
 var power_per_heat: int = 0   # ...and each 10 heat it fired adds this to the blow (the Afterburner Cannon, 28 September)
 var power_per_missing: int = 0   # an attack: added for every MISSING_STEP hull its target is missing (10 October; flat, shown on the hover)
+var tags: Array[String] = []  # its component's tags (10 October): build flavour that never carries a rule; a passive may read one
 
 
 ## `kws` may be a single Keyword or an Array of them. `pwr_max` of 0 means static.
-static func attack(pwr: int, rch: int = Reach.LINE, kws = [], ht: int = 0, pwr_max: int = 0) -> Face:
+static func attack(pwr: int, rch: int = Reach.DIRECT, kws = [], ht: int = 0, pwr_max: int = 0) -> Face:
 	var f := Face.new()
 	f.kind = Kind.ATTACK
 	f.targets = Target.FOE
@@ -174,6 +177,8 @@ static func kind_from_name(name: String) -> int:
 
 
 static func reach_from_name(name: String) -> int:
+	if name == "line" or name == "melee":
+		return Reach.DIRECT   # a save from before 10 October: line was direct's name, and melee went into it
 	for r in REACH_NAMES.keys():
 		if REACH_NAMES[r] == name:
 			return r
@@ -187,14 +192,14 @@ static func target_from_name(name: String) -> int:
 	return -1
 
 
-## Build from content JSON: {"kind": "attack", "reach": "line", "power": 20, "power_max": 50,
+## Build from content JSON: {"kind": "attack", "reach": "direct", "power": 20, "power_max": 50,
 ## "keywords": ["cleave"], "heat": 10}. Unknown names are ignored here; the
 ## content validator reports them.
 static func from_dict(d: Dictionary) -> Face:
 	var f := Face.new()
 	var k := kind_from_name(str(d.get("kind", "attack")))
 	f.kind = k if k >= 0 else Kind.ATTACK
-	var r := reach_from_name(str(d.get("reach", "line" if f.kind == Kind.ATTACK else "none")))
+	var r := reach_from_name(str(d.get("reach", "direct" if f.kind == Kind.ATTACK else "none")))
 	f.reach = r if r >= 0 else Reach.NONE
 	f.power = int(d.get("power", 0))
 	f.power_max = maxi(f.power, int(d.get("power_max", f.power)))
@@ -317,6 +322,7 @@ func duplicate_face() -> Face:
 	f.vents_all = vents_all
 	f.power_per_heat = power_per_heat
 	f.power_per_missing = power_per_missing
+	f.tags = tags.duplicate()
 	for k in keywords:
 		f.keywords.append(k)
 	return f
@@ -361,8 +367,8 @@ func describe() -> String:
 			elif targets == Target.ALLY:
 				s += " (allies only)"
 		_:
-			# Line of fire is the default and goes unsaid; only indirect reach is called out.
-			s = number_text() if reach == Reach.LINE else "%s %s" % [REACH_NAMES[reach], number_text()]
+			# Direct is the default and goes unsaid; only indirect reach is called out.
+			s = number_text() if reach == Reach.DIRECT else "%s %s" % [REACH_NAMES[reach], number_text()]
 			if strikes > 1:
 				s += " ×%d" % strikes
 			for k in keywords:

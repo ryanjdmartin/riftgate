@@ -3,7 +3,7 @@ extends TestCase
 ## Numbers are in tens. Flat faces are used wherever the exact number matters; rolled faces
 ## are tested for bounds.
 
-const L := Face.Reach.LINE
+const L := Face.Reach.DIRECT
 const I := Face.Reach.INDIRECT
 const K := Face.Keyword
 
@@ -397,7 +397,7 @@ func test_burn_ticks_down() -> void:
 	assert_eq(g.burn_stacks(), 2, "one stack consumed")
 
 
-func test_ranged_face_rolls_within_bounds() -> void:
+func test_rolled_face_rolls_within_bounds() -> void:
 	var lowest := 999
 	var highest := 0
 	for seed_value in range(1, 41):
@@ -410,7 +410,7 @@ func test_ranged_face_rolls_within_bounds() -> void:
 		var dealt: int = 200 - sk.front[0].hp
 		assert_true(dealt >= 20 and dealt <= 50, "roll %d within 20 to 50" % dealt)
 		assert_eq(sk.last_roll["rolled"], dealt, "last_roll records the roll")
-		assert_true(sk.last_roll["ranged"], "flagged as ranged")
+		assert_false(sk.last_roll["melee"], "no melee tag, so the screen kicks it back")
 		lowest = mini(lowest, dealt)
 		highest = maxi(highest, dealt)
 	assert_true(highest - lowest >= 15, "forty seeds spread across the range (%d to %d)" % [lowest, highest])
@@ -771,7 +771,7 @@ func test_forecast_predicts_wreck_and_overheat() -> void:
 	m.shield = 0
 	m.shield_max = 40
 	m.heat_max = 30
-	m.die = Die.single(Face.attack(10, Face.Reach.LINE, [], 40))
+	m.die = Die.single(Face.attack(10, Face.Reach.DIRECT, [], 40))
 	var ms := sk.add_mech(m)
 	sk.add_foes([Foe.make("a", 30, 25)])
 	sk.begin()
@@ -805,8 +805,8 @@ func test_reroll_always_lands_on_a_different_face() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 11
 	var die := Die.of([
-		Face.attack(20, Face.Reach.LINE, [], 0, 40),
-		Face.attack(20, Face.Reach.LINE, [], 0, 40),
+		Face.attack(20, Face.Reach.DIRECT, [], 0, 40),
+		Face.attack(20, Face.Reach.DIRECT, [], 0, 40),
 		Face.attack(30),
 		Face.shield(20),
 	])
@@ -1023,26 +1023,28 @@ func test_strikes_are_separate_blows_with_their_own_rolls_and_procs() -> void:
 	assert_eq(Face.from_dict(gun.to_dict()).strikes, 3, "strikes survive content round-trip")
 
 
-func test_melee_reaches_the_back_only_when_the_whole_front_is_empty() -> void:
+## Two reaches since 10 October: a melee weapon is a direct one with a tag, and the tag
+## changes nothing about whom it reaches.
+func test_a_melee_tag_reaches_as_direct_does() -> void:
 	var sk := Skirmish.new(1)
-	sk.add_mech(_mech("A", Die.single(Face.attack(30, Face.Reach.MELEE))))
+	var claw := Face.attack(30)
+	claw.tags.append("melee")
+	sk.add_mech(_mech("A", Die.of([claw, Face.attack(30)])))
 	sk.add_foes([_ghoul(30), _archer(50), _archer(50)])
 	sk.begin()
 	sk.start_round()
-	assert_eq(sk.targets_for(0).size(), 1, "one ghoul in front: melee sees only it, though column 1 is exposed")
-	sk.assign(0, sk.front[0])
-	sk.end_round()
-	sk.start_round()
-	assert_eq(sk.targets_for(0).size(), 2, "front rank empty: melee reaches the back rank")
+	var plain := sk.targets_for_face(sk.mechs[0], sk.mechs[0].die.faces[1])
+	assert_eq(sk.targets_for_face(sk.mechs[0], claw), plain, "the claw sees what the gun sees")
+	assert_true(plain.size() > 1, "the front and an exposed back")
 
 
-func test_static_set_reach_sends_a_cracked_component_to_melee() -> void:
+func test_static_set_reach_sends_a_cracked_component_to_direct() -> void:
 	var sk := Skirmish.new(3)
 	var mortar := Face.attack(30, I)
 	var m := _mech("A", Die.single(mortar), 0, 100)
 	m.grant_passive({"id": "rs", "name": "RS", "description": "", "effects": [
-		{"trigger": "on_attack", "effect": "multiply_damage", "value": 1.1, "when": "reach_melee"},
-		{"trigger": "static", "effect": "set_reach", "value": "melee", "when": "component_cracked"}]})
+		{"trigger": "on_attack", "effect": "multiply_damage", "value": 1.1, "when": "reach_direct"},
+		{"trigger": "static", "effect": "set_reach", "value": "direct", "when": "component_cracked"}]})
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(200), _archer(200)])
 	sk.begin()
@@ -1051,11 +1053,11 @@ func test_static_set_reach_sends_a_cracked_component_to_melee() -> void:
 	sk.apply_injury(sk.mechs[0])
 	var f := sk.mechs[0].face()
 	assert_true(f.cracked and f.reach == Face.Reach.INDIRECT, "cracked; the component itself is untouched")
-	assert_eq(sk.reach_of(sk.mechs[0], f), Face.Reach.MELEE, "but read through the passive it is melee")
-	assert_eq(sk.shown_face(sk.mechs[0], f).reach, Face.Reach.MELEE, "and the screen shows it as melee")
+	assert_eq(sk.reach_of(sk.mechs[0], f), Face.Reach.DIRECT, "but read through the passive it is direct")
+	assert_eq(sk.shown_face(sk.mechs[0], f).reach, Face.Reach.DIRECT, "and the screen shows it as direct")
 	assert_eq(sk.targets_for(0).size(), 1, "so it reaches only the front")
 	sk.assign(0, sk.front[0])
-	assert_eq(sk.front[0].hp, 167, "30 at 1.1 is 33: the melee bonus follows the effective reach")
+	assert_eq(sk.front[0].hp, 167, "30 at 1.1 is 33: the direct bonus follows the effective reach")
 	var saved: Array = m.modifiers
 	m.modifiers = []
 	assert_eq(sk.reach_of(sk.mechs[0], f), Face.Reach.INDIRECT, "take the passive away (suppressed, or an ally reading it) and the reach is its own again")
@@ -1063,7 +1065,7 @@ func test_static_set_reach_sends_a_cracked_component_to_melee() -> void:
 	Effects.grant(m, Effects.make({"id": "jam", "name": "Jam", "description": "", "effects": [{"trigger": "static", "effect": "suppress", "value": "rs"}]}, Effects.SKIRMISH, "foe:whisperer"))
 	assert_eq(sk.reach_of(sk.mechs[0], f), Face.Reach.INDIRECT, "a skirmish-long suppression of the passive turns the transformation off too")
 	Effects.end_skirmish(m)
-	assert_eq(sk.reach_of(sk.mechs[0], f), Face.Reach.MELEE, "and when the skirmish ends the suppression is gone and the passive answers again")
+	assert_eq(sk.reach_of(sk.mechs[0], f), Face.Reach.DIRECT, "and when the skirmish ends the suppression is gone and the passive answers again")
 	m.repair_faces()
 	assert_eq(m.die.faces[0].reach, Face.Reach.INDIRECT, "repair restores the original mortar")
 
@@ -1140,13 +1142,13 @@ func test_a_destroyed_component_keeps_its_bonus_and_loses_its_ability() -> void:
 
 func test_shorter_lived_sources_override_longer_ones() -> void:
 	var u := Unit.mech(0, "A", Vector2i.ZERO)
-	var f := Face.attack(20, L)
-	u.grant_passive({"id": "a", "name": "A", "description": "", "effects": [{"trigger": "static", "effect": "set_reach", "value": "melee"}]})
-	assert_eq(Effects.effective_reach(u, f), Face.Reach.MELEE, "the loadout rule holds")
+	var f := Face.attack(20, I)
+	u.grant_passive({"id": "a", "name": "A", "description": "", "effects": [{"trigger": "static", "effect": "set_reach", "value": "direct"}]})
+	assert_eq(Effects.effective_reach(u, f), Face.Reach.DIRECT, "the loadout rule holds")
 	Effects.grant(u, Effects.make({"id": "b", "name": "B", "description": "", "effects": [{"trigger": "static", "effect": "set_reach", "value": "indirect"}]}, Effects.SKIRMISH, "buff"))
 	assert_eq(Effects.effective_reach(u, f), Face.Reach.INDIRECT, "a skirmish-long rule wins over the loadout one")
 	Effects.end_skirmish(u)
-	assert_eq(Effects.effective_reach(u, f), Face.Reach.MELEE, "and the loadout rule is back when it ends")
+	assert_eq(Effects.effective_reach(u, f), Face.Reach.DIRECT, "and the loadout rule is back when it ends")
 
 
 func test_statuses_stack_tick_and_decay_on_both_sides() -> void:
@@ -1262,19 +1264,19 @@ func test_the_die_screen_explains_what_applies_to_a_component() -> void:
 	var u := Unit.mech(0, "A", Vector2i.ZERO)
 	var mortar := Face.attack(30, I)
 	u.grant_passive({"id": "rs", "name": "Reinforced Skeleton", "description": "", "effects": [
-		{"trigger": "on_attack", "effect": "multiply_damage", "value": 1.1, "when": "reach_melee"},
-		{"trigger": "static", "effect": "set_reach", "value": "melee", "when": "component_cracked"}]})
+		{"trigger": "on_attack", "effect": "multiply_damage", "value": 1.1, "when": "reach_direct"},
+		{"trigger": "static", "effect": "set_reach", "value": "direct", "when": "component_cracked"}]})
 	assert_true(Effects.explain(u, mortar).is_empty(), "nothing applies to an intact mortar")
 	mortar.crack()
 	var notes := Effects.explain(u, mortar)
-	assert_eq(notes.size(), 2, "cracked: the reach change and the melee bonus both apply")
-	assert_true(notes[0].contains("reach becomes melee (Reinforced Skeleton)") or notes[1].contains("reach becomes melee (Reinforced Skeleton)"), "the reach change names its source")
+	assert_eq(notes.size(), 2, "cracked: the reach change and the direct bonus both apply")
+	assert_true(notes[0].contains("reach becomes direct (Reinforced Skeleton)") or notes[1].contains("reach becomes direct (Reinforced Skeleton)"), "the reach change names its source")
 	assert_eq(Effects.effect_text({"trigger": "on_injury", "effect": "no_destroy", "value": 1}), "on an injury: cracked components are never destroyed", "effects read as sentences")
 
 
 func test_a_kill_clears_the_slot_at_once_and_opens_the_back_rank() -> void:
 	# Ryan, 22 September: burning a hole through the front is a legitimate choice, since it
-	# opens the back rank to line and melee until reinforcements plug it at the round's end.
+	# opens the back rank to direct fire until reinforcements plug it at the round's end.
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.of([Face.attack(90, L), Face.attack(90, L)]), 0, 100)
 	sk.add_mech(m)
@@ -1284,7 +1286,7 @@ func test_a_kill_clears_the_slot_at_once_and_opens_the_back_rank() -> void:
 	var ghoul: Foe = sk.front[0]
 	var archer: Foe = sk.back[0]
 	assert_true(archer != null, "the archer stands behind the first ghoul")
-	assert_false(sk.targets_for(0).has(archer), "covered: the line weapon cannot reach it")
+	assert_false(sk.targets_for(0).has(archer), "covered: the direct weapon cannot reach it")
 	assert_true(sk.assign(0, ghoul), "the blow kills the ghoul")
 	assert_eq(sk.front[0], null, "its slot is empty at once")
 	assert_true(sk.log[sk.log.size() - 1].ends_with("destroyed"), "logged as destroyed now, not at the round's end")
@@ -2147,7 +2149,7 @@ func test_a_passive_may_grant_a_keyword_and_the_entry_wears_it() -> void:
 
 func test_a_vent_on_fire_attack_fires_the_heat_into_the_blow_and_empties_the_gauge() -> void:
 	var sk := Skirmish.new(1)
-	var cannon := Face.from_dict({"kind": "attack", "reach": "line", "power": 20, "heat": 0, "vents_all": true, "power_per_heat": 10})
+	var cannon := Face.from_dict({"kind": "attack", "reach": "direct", "power": 20, "heat": 0, "vents_all": true, "power_per_heat": 10})
 	var m := _mech("A", Die.single(cannon), 40, 100)
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(500, 10)])
@@ -2164,7 +2166,7 @@ func test_a_vent_on_fire_attack_fires_the_heat_into_the_blow_and_empties_the_gau
 	assert_eq(sk.mechs[0].heat, 0, "the airframe is cold")
 	assert_true("\n".join(sk.log).contains("A fires its heat: -47, +40 to the blow"), "the log says so")
 	# Cold, it is a plain 20; its own heat cost still lands.
-	var hot := Face.from_dict({"kind": "attack", "reach": "line", "power": 20, "heat": 15, "vents_all": true, "power_per_heat": 10})
+	var hot := Face.from_dict({"kind": "attack", "reach": "direct", "power": 20, "heat": 15, "vents_all": true, "power_per_heat": 10})
 	var s2 := Skirmish.new(2)
 	s2.add_mech(_mech("B", Die.single(hot), 40, 100))
 	s2.add_foes([_ghoul(500, 10)])
@@ -2263,10 +2265,11 @@ func test_a_free_reroll_of_one_die_spares_the_teams() -> void:
 
 func test_the_crucible_stacks_overheating_on_hull_hits_and_melee_grows_with_it() -> void:
 	var crucible := {"id": "crucible", "name": "Crucible Capacitor", "description": "", "effects": [
-		{"trigger": "on_attack", "effect": "add_damage", "value": 5, "per_stack": "overheating", "when": "reach_melee"},
+		{"trigger": "on_attack", "effect": "add_damage", "value": 5, "per_stack": "overheating", "when": "tag_melee"},
 		{"trigger": "on_hull_damage", "effect": "stack_status", "value": "overheating"}]}
 	var sk := Skirmish.new(1)
-	var fist := Face.attack(30, Face.Reach.MELEE)
+	var fist := Face.attack(30)
+	fist.tags.append("melee")
 	var m := _mech("A", Die.single(fist), 0, 200)
 	m.grant_passive(crucible)
 	sk.add_mech(m)
@@ -2284,10 +2287,10 @@ func test_the_crucible_stacks_overheating_on_hull_hits_and_melee_grows_with_it()
 	sk.start_round()
 	Effects.stack(m, Effects.STATUS["overheating"], Effects.SKIRMISH, "test", 2)
 	assert_eq(Effects.stacks_of(m, "overheating"), 3, "three stacks now")
-	assert_eq(Effects.explain(m, fist), ["melee attacks: damage +5 per stack of Overheating (Crucible Capacitor)"], "the die row says so")
+	assert_eq(Effects.explain(m, fist), ["melee weapons: damage +5 per stack of Overheating (Crucible Capacitor)"], "the die row says so")
 	sk.assign(0, g)
 	assert_eq(g.hp, 470 - 45, "30 plus 5 a stack for three")
-	# A line weapon gains nothing, and the round's overheat burn never feeds it.
+	# A weapon without the tag gains nothing, and the round's overheat burn never feeds it.
 	var gun := Face.attack(30, L)
 	assert_eq(int(Effects.attack(m, gun, 30, 0, g)["damage"]), 30, "not a melee blow")
 	var before := Effects.stacks_of(m, "overheating")
@@ -2296,7 +2299,7 @@ func test_the_crucible_stacks_overheating_on_hull_hits_and_melee_grows_with_it()
 	assert_eq(Effects.stacks_of(m, "overheating"), before, "the burn is not a hit")
 	# A volatile bite is the machine's own weapon reaching hull: it counts.
 	var s2 := Skirmish.new(2)
-	var n := _mech("N", Die.single(Face.attack(30, Face.Reach.MELEE, K.VOLATILE)), 40, 200)
+	var n := _mech("N", Die.single(Face.attack(30, L, K.VOLATILE)), 40, 200)
 	n.grant_passive(crucible)
 	s2.add_mech(n)
 	s2.add_foes([_ghoul(500, 10)])
@@ -3054,4 +3057,4 @@ func test_the_reach_tally_counts_a_spend_its_hull_and_its_splash() -> void:
 	assert_eq(int(t["back"]), 0, "aimed at the front")
 	assert_eq(int(t["front_spends"]), 1, "so it is a front spend")
 	assert_eq(int(t["splash"]), 10, "and danger close cost half the blow in shield")
-	assert_false(sk.reach_tally.has("line"), "no line spend happened")
+	assert_false(sk.reach_tally.has("direct"), "no direct spend happened")

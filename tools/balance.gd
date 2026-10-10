@@ -458,7 +458,7 @@ func _reach_report(top: int) -> Array[String]:
 		L.append("")
 		L.append("| Reach | Share of attack spends | Hull a spend | Heat a spend | Aimed at the back | Splash a front spend |")
 		L.append("|---|---|---|---|---|---|")
-		for rk in ["melee", "line", "indirect"]:
+		for rk in ["direct", "indirect"]:
 			if not tot.has(rk):
 				continue
 			var t: Dictionary = tot[rk]

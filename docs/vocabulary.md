@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 105 implemented, 8 planned, 0 idea.
+Status: 104 implemented, 8 planned, 0 idea.
 
 ## Resource
 
@@ -52,8 +52,7 @@ Status: 105 implemented, 8 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Melee** | Targets any front-rank foe. Can target any back-rank foe when the front rank is empty. | implemented |
-| **Line of sight** | Targets any front-rank foe, and any back-rank foe whose column is exposed. | implemented |
+| **Direct** | Targets any front-rank foe, and any back-rank foe whose column is exposed. | implemented |
 | **Indirect** | Targets any foe in either rank. Hitting the front rank triggers danger close. | implemented |
 
 ## Keyword
@@ -163,7 +162,7 @@ Status: 105 implemented, 8 planned, 0 idea.
 | **On hull damage** | Passive trigger. Fires when this mech loses hull to a blow or a bite, never to its own overheat. | implemented |
 | **Out of combat** | Passive trigger. Fires at the end of a battlefield phase in which this mech had no skirmish, after the field recharge: more shield. | implemented |
 | **on_injury** | Passive trigger. Fires when an injury lands on a component. Effects: no_destroy (a cracked component holds instead of being destroyed). | implemented |
-| **Static** | Passive trigger. Always on. Its effects change a mech's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; set_reach on a component (the Badger's cracked weapons become melee); suppress, which turns off another effect by id or tag. | implemented |
+| **Static** | Passive trigger. Always on. Its effects change a mech's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; set_reach on a component (direct or indirect while a condition holds); suppress, which turns off another effect by id or tag. | implemented |
 
 ## Commander
 
@@ -207,6 +206,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Gate Integrity** (implemented): Gate damage formula is a placeholder (strength divided by three).
 - **Buff component** (implemented): Only one component carries it, a draft. Debuffs on foes stay weapons.
 - **Damage range** (implemented): Ranges are content-authored per component; no upgrade path raises min or max yet.
+- **Direct** (implemented): Line of sight until 9 October; one of two reaches since 10 October, when Close (melee) was removed and melee became a tag.
 - **Spillover** (implemented): Built 29 September as Overwhelm; renamed Spillover 6 October (Ryan: of the six over-words it was the one to move). The spill is plain damage: it spends a shock and feeds a devour, and carries no other keyword of the blow. The Wild Boar's Juggernaut Drive grants it to every attack (grant_keyword, the first passive to add a keyword).
 - **Lure** (implemented): Decided 2 October in place of Taunt and Beacon (bible, section 5). No status and no chip: the arrow is the record. A draw by ally (cover) is parked until a support role proves to need it. Built 9 October as Guard (equipment spent on an ally, the foes aimed at it turning on the spender, on the Blast Door) and taken out the same day (Ryan: until we feel we need it); the parking stands.
 - **Shock** (implemented): Decided 9 October with the content revision: the Armadillo's Shocked on a weapon (the Polarity Projector at no damage, the Tesla Gauntlets on a melee blow). Shocked is a status, so a shock feeds an on_foe_status passive (the Baboon's Pocket Paradox), which a suppress never does. A shock on a foe already Shocked by a blow that deals nothing adds nothing; it never stacks.

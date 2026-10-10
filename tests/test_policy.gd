@@ -3,7 +3,7 @@ extends TestCase
 ## The headless player. Synthetic dice throughout: numbers in tens, static faces where the
 ## exact number matters. Nothing here reads content.
 
-const L := Face.Reach.LINE
+const L := Face.Reach.DIRECT
 const I := Face.Reach.INDIRECT
 const K := Face.Keyword
 

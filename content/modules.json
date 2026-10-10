@@ -31,20 +31,11 @@
     "hull": 60,
     "armour": 10
    },
-   "text": {
-    "description": "Every weapon it carries has melee reach.",
-    "effects": [
-     {
-      "trigger": "static",
-      "effect": "set_reach",
-      "value": "melee"
-     }
-    ]
-   },
+   "text": null,
    "design": {
     "stage": "draft",
     "fantasy": "A reinforced prow and a driver who stopped asking.",
-    "niche": "An overload: the biggest hull in the catalogue for a machine that must close; a perk on a machine that already fights in melee (the Honey Badger).",
+    "niche": "To rework: its rule gave every weapon melee reach, an overload for a machine that must close, and Close is removed (10 October). Until then a plain heavy plating.",
     "notes": "Claude's proposal of 9 October, in Ryan's pick of the whole catalogue the same day; numbers are placeholders."
    }
   },

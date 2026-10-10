@@ -123,6 +123,8 @@ func build_die(fixed_ids: Array, loadout_ids: Array, hardpoints: int) -> Die:
 		var comp: Dictionary = components.get(cid, {})
 		var f := build_face(comp.get("face", {}))
 		f.component = str(cid)
+		for t in comp.get("tags", []):
+			f.tags.append(str(t))
 		f.fixed = fixed_ids.has(cid)
 		die.faces.append(f)
 	for i in range(maxi(0, hardpoints - loadout_ids.size())):
@@ -629,11 +631,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	if Face.kind_from_name(kind) < 0 or kind == "blank":
 		errs.append("%s: bad face kind '%s'" % [where, kind])
 	if kind == "attack":
-		# Melee is authored too (26 September: a claw is a claw); until then it only ever
-		# came from a passive's set_reach.
+		# Two reaches since 10 October (Ryan): Close (melee) is removed, and melee is a tag.
 		var reach := str(fd.get("reach", ""))
-		if not ["line", "indirect", "melee"].has(reach):
-			errs.append("%s: attack face needs reach line, indirect or melee, got '%s'" % [where, reach])
+		if not ["direct", "indirect"].has(reach):
+			errs.append("%s: attack face needs reach direct or indirect, got '%s'" % [where, reach])
 	if int(fd.get("power", 0)) < 0:
 		errs.append("%s: power cannot be negative" % where)
 	if int(fd.get("strikes", 1)) < 1:
@@ -827,13 +828,7 @@ func sound_of(component_id: String) -> Array[String]:
 	elif ["barrel", "twin_barrel", "rack", "blade"].has(shape):
 		out.append(shape)
 	else:
-		match str(face.get("reach", "line")):
-			"melee":
-				out.append("blade")
-			"indirect":
-				out.append("rack")
-			_:
-				out.append("barrel")
+		out.append("rack" if str(face.get("reach", "direct")) == "indirect" else "barrel")
 	return out
 
 

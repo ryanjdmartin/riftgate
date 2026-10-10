@@ -303,7 +303,7 @@ func test_sparrowhawk_passive_doubles_damage_and_heat() -> void:
 	var db := _db()
 	var u := db.make_mech("sparrowhawk")
 	assert_false(u.passive.is_empty(), "sparrowhawk carries its passive")
-	u.die = Die.single(Face.attack(30, Face.Reach.LINE, [], 10))
+	u.die = Die.single(Face.attack(30, Face.Reach.DIRECT, [], 10))
 	var sk := Skirmish.new(1)
 	sk.add_mech(u)
 	sk.add_foes([Foe.make("revenant", 90, 10)])
@@ -388,17 +388,30 @@ func test_crits_are_refused_in_content() -> void:
 	assert_true(passive_refused, "and so is a passive on the on_crit trigger")
 
 
-func test_melee_reach_can_be_authored() -> void:
+## Two reaches since 10 October: melee is refused as a reach in content, a melee weapon is a
+## direct one with the tag, and its built entry carries the tag for a passive to read. An old
+## save's line or melee reads as direct.
+func test_melee_is_a_tag_and_never_a_reach() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var claw: Dictionary = db.components["enfilade_beam"].duplicate(true)
 	claw["face"]["reach"] = "melee"
 	claw["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["fist"] = claw
+	var refused := false
 	for e in db.validate():
-		assert_false(e.begins_with("component fist"), "an authored melee component validates clean: %s" % e)
-	var f := Face.from_dict(claw["face"])
-	assert_eq(f.reach, Face.Reach.MELEE, "and builds with melee reach")
+		if e.begins_with("component fist") and e.contains("reach direct or indirect"):
+			refused = true
+	assert_true(refused, "melee is no reach")
+	claw["face"]["reach"] = "direct"
+	claw["tags"] = ["melee"]
+	for e in db.validate():
+		assert_false(e.begins_with("component fist"), "a direct weapon tagged melee validates clean: %s" % e)
+	var f: Face = db.build_die(["fist"], [], 0).faces[0]
+	assert_eq(f.reach, Face.Reach.DIRECT, "it builds direct")
+	assert_eq(f.tags, ["melee"] as Array[String], "carrying its tag")
+	assert_eq(Face.reach_from_name("line"), Face.Reach.DIRECT, "an old save's line is direct")
+	assert_eq(Face.reach_from_name("melee"), Face.Reach.DIRECT, "and its melee too")
 
 
 func test_content_dice_are_sane_and_kinetic_faces_roll() -> void:
@@ -1064,15 +1077,15 @@ func test_a_split_is_validated_one_deep_and_read_into_the_foe() -> void:
 ## from shape and face. Synthetic components, so no entry's sound is pinned here.
 func test_a_component_sound_is_its_label_or_derived() -> void:
 	var db := ContentDB.new()
-	var kinetic := {"kind": "attack", "reach": "line", "power": 10, "power_max": 20}
-	var energy := {"kind": "attack", "reach": "line", "power": 15}
+	var kinetic := {"kind": "attack", "reach": "direct", "power": 10, "power_max": 20}
+	var energy := {"kind": "attack", "reach": "direct", "power": 15}
 	db.components = {
 		"slug": {"shape": "barrel", "maker": "minerva", "face": kinetic},
 		"twin": {"shape": "twin_barrel", "maker": "kestrel", "face": kinetic},
 		"beam": {"shape": "barrel", "maker": "kestrel", "face": energy},
 		"hot": {"shape": "barrel", "maker": "arsenal", "face": energy},
 		"hot_rack": {"shape": "rack", "maker": "arsenal", "face": energy},
-		"plow": {"shape": "blade", "maker": "minerva", "face": {"kind": "attack", "reach": "melee", "power": 5, "power_max": 10}, "sound": "blunt"},
+		"plow": {"shape": "blade", "maker": "minerva", "face": {"kind": "attack", "reach": "direct", "power": 5, "power_max": 10}, "sound": "blunt"},
 		"fist": {"shape": "blade", "maker": "arsenal", "face": energy, "sound": ["blunt", "plasma"]},
 		"field": {"shape": "none", "maker": "minerva", "face": {"kind": "shield", "power": 20}},
 		"coil": {"shape": "dish", "maker": "kestrel", "face": {"kind": "buff"}},

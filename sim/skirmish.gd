@@ -72,7 +72,8 @@ var outcome: int = Outcome.NONE
 var destroyed: int = 0   # components destroyed this fight, for the balance runner (the hangar's destroyed-is-gone rule, bible section 10, depends on the rate)
 var log: Array[String] = []
 
-## The most recent attack, for the screen to show: {mech, target, rolled, final, ranged}.
+## The most recent attack, for the screen to show: {mech, target, rolled, final, melee}; melee
+## (the tag) is how the screen animates it, a lunge in place of a kick back.
 var last_roll: Dictionary = {}
 ## What each reach did this fight, for the balance runner's reach table (tools/balance.gd):
 ## by reach name, the spends, the hull its blows took off foes, the spends aimed at the back
@@ -403,12 +404,7 @@ func targets_for_face(ms: MechState, f: Face) -> Array[Foe]:
 	var out: Array[Foe] = []
 	if f == null or not f.is_attack():
 		return out
-	# Reach: melee hits the front rank, and the back only when the whole front is empty;
-	# line hits the front and any exposed column's back; indirect hits everyone.
-	var front_empty := true
-	for col in range(columns):
-		if front[col] != null:
-			front_empty = false
+	# Reach: direct hits the front and any exposed column's back; indirect hits everyone.
 	# A foe already killed this round still stands until the dead are cleared, but it is
 	# no target: a die spent on it would be wasted.
 	for col in range(columns):
@@ -416,21 +412,13 @@ func targets_for_face(ms: MechState, f: Face) -> Array[Foe]:
 			out.append(front[col])
 		if back[col] == null or not back[col].alive() or out.has(back[col]):
 			continue
-		var reaches_back := false
-		var reach := reach_of(ms, f)
-		if reach == Face.Reach.INDIRECT:
-			reaches_back = true
-		elif reach == Face.Reach.MELEE:
-			reaches_back = front_empty
-		else:
-			reaches_back = is_exposed(col)
-		if reaches_back:
+		if reach_of(ms, f) == Face.Reach.INDIRECT or is_exposed(col):
 			out.append(back[col])
 	return out
 
 
 ## A component's reach as it is right now: its own, unless the mech's passive says
-## otherwise while a condition holds (the Badger's cracked weapons are melee). Computed on
+## otherwise while a condition holds (a passive's set_reach). Computed on
 ## every read and never written to the component, so the answer always has a source: an
 ## ally reading the same component gets its own answer, and a suppressed passive stops
 ## answering.
@@ -982,7 +970,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 		_disrupt(touched)
 	if f.has(Face.Keyword.LURE):
 		_lure(ms, touched)
-	last_roll = {"mech": mech_index, "target": target, "rolled": rolled_total, "final": total, "ranged": f.is_ranged()}
+	last_roll = {"mech": mech_index, "target": target, "rolled": rolled_total, "final": total, "melee": f.tags.has("melee")}
 	var how := f.describe()
 	if f.is_ranged():
 		how = "rolled %d, " % rolled_total + how
@@ -991,7 +979,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 		log.append("%s fires its heat: -%d, +%d to the blow" % [ms.unit.display_name, vented_all, fired])
 	var was_front := target.rank == 0
 	# A kill clears the slot at once (Ryan, 22 September): burning a hole through the front
-	# opens the back rank to line and melee until reinforcements plug it.
+	# opens the back rank to direct fire until reinforcements plug it.
 	_clear_dead()
 	var splashed := 0
 	if reach == Face.Reach.INDIRECT and was_front:
