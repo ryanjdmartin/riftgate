@@ -19,18 +19,12 @@ command are in `README.md`.
 
 ## Branches
 
-- `ccr-abac8c0f-yig0e2` (this one) carries the content revision, the modules, the 10 October
-  weapon rules (no crits, two reaches, the die showing the number, the Paradox meter, Numbed
-  the only resistance, the mirrored Booster and Databank, the Nemesis's Crucible) and the
-  rewritten docs (`docs/rules.md`, the bible at v0.112, this file, the to-do). It is not on
-  main yet.
-- `main` has 21 commits this branch lacks: the first foe art (18 wildlife and 8 chibi heroes
-  cut at 72x96 from Ryan's picks, `UnitView.pixel_snap`), foeforge's briefs, takes and phone
-  picker, `RIFTGATE_FOES`, and a balance report at the halved scale on the four domains.
-  Merging main in conflicts in the bible, this file and the to-do (take this branch's, which
-  already carry main's facts), in `content/foes.json` (merge by hand: main's sprite briefs,
-  this branch's numbers) and in `docs/balance.md` (main's, until the rerun); the rest merges
-  clean (checked with `git merge-tree`). Rerun the tests after.
+- `ccr-abac8c0f-yig0e2` carries the content revision, the modules, the 10 October weapon
+  rules (no crits, two reaches, the die showing the number, the Paradox meter, Numbed the only
+  resistance, the mirrored Booster and Databank, the Nemesis's Crucible) and the rewritten
+  docs. Main (the first foe art at 72x96, foeforge's briefs and phone picker, `RIFTGATE_FOES`)
+  was merged into it on 10 October, so main can take it as a fast-forward until main moves.
+  It is not on main yet: a session on main still reads the old bible and status.
 
 ## Pages
 
@@ -45,8 +39,11 @@ goes into this file in the same commit as its first publish.
   files from `tools/hangar_data.py`'s map (which leaves out `content/modules.json`: add it).
   Stale since 9 October. After Ryan edits on its Content tab: pull `edits` with ArtifactData,
   apply by hand, test, commit, republish, clear the documents.
-- The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (private to Ryan, from
-  main's `forge.py phone`); picks and notes land in collection `picks`.
+- The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (private to Ryan). Picks
+  and notes land in collection `picks` (`{pick, note, set, at}` a set key): read them with
+  ArtifactData `list`, cut each with `forge.py cut`, carry the notes into the touch-up task.
+  Rebuild with `forge.py phone [--tags <experiment>]` and republish `tools/foeforge/out/phone/`
+  (with its `renders/`) to that URL with `root` set; a republish keeps the picks.
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV (`tools/soundforge/melody_desk.html`;
   collections `parts`, re-seeded by `desk_parts.py`, and `melodies`).
 - The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`).

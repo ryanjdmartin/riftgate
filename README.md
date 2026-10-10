@@ -185,6 +185,8 @@ tools/spriter/.venv/bin/python tools/sheet_export.py
 godot --headless --path . --import
 
 # better enemy sprites from an image model on this Mac (see tools/foeforge/README.md)
+tools/foeforge/.venv/bin/python tools/foeforge/forge.py phone --tags takesD                           # the picker as a phone page in out/phone, published as an artifact (status has the link)
+tools/foeforge/.venv/bin/python tools/foeforge/forge.py prompts                                   # every foe's prompt into tools/foeforge/prompts.md, no model needed (runs anywhere)
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate revenant --n 4
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut tools/foeforge/out/revenant/revenant_3.png revenant
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py rift --n 4                                   # the rift's vortex, the same way
@@ -270,7 +272,7 @@ loses nothing: Resume battle opens it where it stood, straight into the fight if
 on. A decided battle clears the save. Standalone scene runs and the tests never write it.
 
 The harness can add any faction's massive elite, which fills both ranks of a column. For the
-standalone screen, `RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,baboon` picks the team and
+standalone screen, `RIFTGATE_FOES=warrior,goblin:3,white_mage` puts any foes on by id and count (heroes included), `RIFTGATE_TEAM=badger,clydesdale,sparrowhawk,baboon` picks the team and
 `RIFTGATE_ELITE=1` adds the elite.
 
 The screens are laid out for 720 by 1280 and the window expands its height to the phone's

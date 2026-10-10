@@ -1,0 +1,266 @@
+<title>Riftgate Foe Picker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Share+Tech+Mono&display=swap">
+<style>
+  /* Layout: one foe at a time, its four candidates in a 2x2 grid (one column on very narrow
+     glass), a sticky bar with Back, the jump list and Next. Dark on purpose: the game's own
+     HUD (near-black ground, one green chrome), so the art is judged against the screen it
+     lives on. Picked state is carried by a heavy frame, a check and a label, never by hue. */
+  :root {
+    color-scheme: dark;
+    --ground: #070907;
+    --panel: #0f140f;
+    --rule: #2c3a2c;
+    --ink: #f2f4ee;
+    --muted: #8a958b;
+    --hud: #5cff6a;
+    --hud-ink: #070907;
+    --field: #5ca848;          /* the other world's flat green, the sprite's real ground */
+    --render: #ffffff;
+    --display: "Rajdhani", "Arial Narrow", system-ui, sans-serif;
+    --mono: "Share Tech Mono", ui-monospace, Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--display); font-size: 16px; }
+  .wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 12px 96px; }
+
+  header { display: grid; gap: 4px; padding-block: 8px 12px; border-bottom: 1px solid var(--rule); }
+  .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); display: flex; gap: 12px; flex-wrap: wrap; }
+  .eyebrow .count { color: var(--hud); }
+  h1 { margin: 0; font-size: 34px; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; line-height: 1; text-wrap: balance; }
+  .note { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+  .status { font-family: var(--mono); font-size: 12px; color: var(--muted); min-height: 1.2em; }
+  .status b { color: var(--ink); font-weight: normal; }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+  @media (max-width: 340px) { .grid { grid-template-columns: 1fr; } }
+  .cand { position: relative; display: grid; grid-template-rows: auto auto; border: 3px solid var(--rule); background: var(--panel); padding: 0; cursor: pointer; text-align: left; color: inherit; font: inherit; min-width: 0; }
+  .cand:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .cand .render { background: var(--render); aspect-ratio: 2 / 3; width: 100%; display: block; object-fit: contain; }
+  .cand .cut { background: var(--field); display: flex; align-items: flex-end; justify-content: center; padding: 8px 0 6px; min-height: 112px; }
+  .cand .cut img { image-rendering: pixelated; image-rendering: crisp-edges; display: block; }
+  .cand .tag { position: absolute; left: 0; top: 0; font-family: var(--mono); font-size: 14px; background: #000c; color: var(--ink); padding: 3px 8px; }
+  .cand .badges { position: absolute; right: 0; top: 0; display: grid; gap: 2px; justify-items: end; }
+  .badge { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; padding: 2px 6px; background: #000c; color: var(--ink); border: 1px dashed var(--muted); }
+  .cand.picked { border: 6px solid var(--hud); }
+  .cand.picked .tag { background: var(--hud); color: var(--hud-ink); font-weight: bold; }
+  .cand.picked .tag::after { content: "  \2713 PICKED"; }
+
+  .bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--panel); border-top: 1px solid var(--rule); padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px)); }
+  .bar .inner { max-width: 860px; margin: 0 auto; display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; }
+  button.nav { font-family: var(--display); font-weight: 700; font-size: 18px; letter-spacing: .06em; text-transform: uppercase; background: transparent; color: var(--hud); border: 2px solid var(--hud); padding: 10px 14px; min-width: 84px; cursor: pointer; }
+  button.nav:disabled { opacity: .35; cursor: default; }
+  button.nav:focus-visible, select:focus-visible, button.small:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  select { width: 100%; min-width: 0; font-family: var(--mono); font-size: 14px; background: var(--ground); color: var(--ink); border: 1px solid var(--rule); padding: 10px 8px; }
+
+  .tools { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; align-items: center; }
+  button.small { font-family: var(--mono); font-size: 13px; background: transparent; color: var(--ink); border: 1px solid var(--rule); padding: 8px 10px; cursor: pointer; }
+  #summary { font-family: var(--mono); font-size: 12px; color: var(--muted); white-space: pre-wrap; word-break: break-word; margin-top: 10px; }
+  .notes { display: grid; gap: 6px; margin-top: 12px; }
+  .notes label { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
+  .notes textarea { width: 100%; min-height: 64px; resize: vertical; font-family: var(--mono); font-size: 15px; line-height: 1.4; background: var(--panel); color: var(--ink); border: 1px solid var(--rule); padding: 8px 10px; }
+  .notes textarea:focus-visible { outline: 3px solid var(--ink); outline-offset: 1px; }
+  .switch { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 13px; color: var(--ink); }
+  .switch input { width: 20px; height: 20px; accent-color: var(--hud); }
+  @media (prefers-reduced-motion: no-preference) { .cand { transition: border-color .12s; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><span class="count" id="pos"></span><span id="done"></span></div>
+    <h1 id="name">Foe picker</h1>
+    <div class="note" id="note"></div>
+    <div class="status" id="status">Loading saved picks…</div>
+  </header>
+  <div class="notes">
+    <label for="note-text"><span>Notes for this foe</span><span id="note-state"></span></label>
+    <textarea id="note-text" placeholder="What to fix on the pick: a missing arm, a weapon through a hand…"></textarea>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="tools">
+    <button class="small" id="clear" type="button">Clear this pick</button>
+    <button class="small" id="copy" type="button">Copy all picks</button>
+    <label class="switch" for="auto"><input type="checkbox" id="auto" checked> Move on after a pick</label>
+  </div>
+  <div id="summary"></div>
+</div>
+<div class="bar"><div class="inner">
+  <button class="nav" id="prev" type="button">Back</button>
+  <select id="jump" aria-label="Jump to a foe"></select>
+  <button class="nav" id="next" type="button">Next</button>
+</div></div>
+
+<script>
+// Every foe's candidates, written by `forge.py phone` from tools/foeforge/out. `current` is
+// the candidate already in the game (tools/foeforge/picks/picks.json), or null.
+const SETS = /*__SETS__*/[];
+
+let index = 0;
+let picks = {};        // set key -> candidate number, from the page's store (or this device)
+let notes = {};        // set key -> what to fix on the pick, saved with it
+let noteTimer = null;
+let db = null;
+let saving = false;
+try { index = Math.min(SETS.length - 1, Math.max(0, parseInt(localStorage.getItem("foe-picker-index") || "0", 10) || 0)); } catch (e) {}
+
+const $ = (id) => document.getElementById(id);
+
+function pickedCount() { return SETS.filter((s) => picks[s.key]).length; }
+
+function summaryText() {
+  return SETS.filter((s) => picks[s.key] || notes[s.key]).map((s) =>
+    s.key + " " + (picks[s.key] || "-") + (notes[s.key] ? " (" + notes[s.key].replace(/\s+/g, " ").trim() + ")" : "")).join(", ");
+}
+
+function render() {
+  const s = SETS[index];
+  if (!s) { $("name").textContent = "No candidates yet"; return; }
+  $("pos").textContent = (index + 1) + " of " + SETS.length;
+  $("done").textContent = pickedCount() + " picked";
+  $("name").textContent = s.name;
+  $("note").textContent = s.note;
+  const grid = $("grid");
+  grid.textContent = "";
+  s.cands.forEach((c, k) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "cand" + (picks[s.key] === c.n ? " picked" : "");
+    b.setAttribute("aria-label", s.name + " candidate " + c.n + (picks[s.key] === c.n ? ", picked" : ""));
+    const img = document.createElement("img");
+    img.className = "render"; img.src = c.img; img.alt = ""; img.loading = k < 2 ? "eager" : "lazy";
+    const cut = document.createElement("div");
+    cut.className = "cut";
+    const ci = document.createElement("img");
+    ci.src = c.cut; ci.alt = ""; ci.width = c.cw * s.scale; ci.height = c.ch * s.scale;
+    cut.appendChild(ci);
+    const tag = document.createElement("span");
+    tag.className = "tag"; tag.textContent = c.n;
+    const badges = document.createElement("span");
+    badges.className = "badges";
+    if (s.current === c.n) {
+      const bg = document.createElement("span");
+      bg.className = "badge"; bg.textContent = "In game";
+      badges.appendChild(bg);
+    }
+    b.append(img, cut, tag, badges);
+    b.addEventListener("click", () => choose(c.n));
+    grid.appendChild(b);
+  });
+  const jump = $("jump");
+  if (jump.options.length !== SETS.length) {
+    jump.textContent = "";
+    SETS.forEach((t, i) => { const o = document.createElement("option"); o.value = i; jump.appendChild(o); });
+  }
+  SETS.forEach((t, i) => { jump.options[i].textContent = (picks[t.key] ? "✓ " : "• ") + t.name + (picks[t.key] ? "  (" + picks[t.key] + ")" : "") + (notes[t.key] ? "  ✎" : ""); });
+  const ta = $("note-text");
+  if (document.activeElement !== ta) ta.value = notes[s.key] || "";
+  jump.value = index;
+  $("prev").disabled = index === 0;
+  $("next").disabled = index === SETS.length - 1;
+  $("summary").textContent = summaryText();
+  try { localStorage.setItem("foe-picker-index", String(index)); } catch (e) {}
+}
+
+function go(i) {
+  flushNote();
+  $("note-text").blur();
+  index = Math.min(SETS.length - 1, Math.max(0, i));
+  render();
+  window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
+}
+
+async function save(key) {
+  const value = picks[key] || null;
+  const note = (notes[key] || "").trim();
+  if (db) {
+    const ref = db.collection("picks").doc(key);
+    try {
+      if (value || note) await ref.set({ pick: value, note: note, set: key, at: new Date().toISOString() });
+      else await ref.delete();
+      setStatus("Saved. Claude reads your picks from this page.");
+    } catch (e) {
+      setStatus("Could not save that pick (" + (e && e.code ? e.code : "error") + "). Use Copy all picks and paste them in chat.");
+    }
+  } else {
+    try { localStorage.setItem("foe-picker-picks", JSON.stringify({ picks, notes })); } catch (e) {}
+  }
+}
+
+function flushNote() {
+  if (!noteTimer) return null;
+  clearTimeout(noteTimer.t);
+  const key = noteTimer.key;
+  noteTimer = null;
+  return save(key);
+}
+
+async function choose(n) {
+  const s = SETS[index];
+  if (noteTimer && noteTimer.key === s.key) { clearTimeout(noteTimer.t); noteTimer = null; }
+  picks[s.key] = n;
+  render();
+  await save(s.key);
+  if ($("auto").checked && index < SETS.length - 1) setTimeout(() => go(index + 1), 220);
+}
+
+function setStatus(t) { $("status").textContent = t; }
+
+$("prev").addEventListener("click", () => go(index - 1));
+$("next").addEventListener("click", () => go(index + 1));
+$("jump").addEventListener("change", (e) => go(parseInt(e.target.value, 10)));
+$("clear").addEventListener("click", async () => {
+  const s = SETS[index];
+  if (!picks[s.key]) return;
+  delete picks[s.key];
+  render();
+  await save(s.key);
+});
+$("note-text").addEventListener("input", (e) => {
+  const key = SETS[index].key;
+  notes[key] = e.target.value;
+  $("note-state").textContent = "saving…";
+  if (noteTimer) clearTimeout(noteTimer.t);
+  noteTimer = { key, t: setTimeout(async () => { noteTimer = null; await save(key); $("note-state").textContent = "saved"; render(); }, 900) };
+});
+$("note-text").addEventListener("blur", () => { const p = flushNote(); if (p) p.then(() => { $("note-state").textContent = "saved"; render(); }); });
+try { $("auto").checked = localStorage.getItem("foe-picker-auto") !== "0"; } catch (e) {}
+$("auto").addEventListener("change", (e) => { try { localStorage.setItem("foe-picker-auto", e.target.checked ? "1" : "0"); } catch (err) {} });
+$("copy").addEventListener("click", async () => {
+  const t = summaryText() || "no picks yet";
+  try { await navigator.clipboard.writeText(t); setStatus("Copied: " + t); }
+  catch (e) {
+    const r = document.createRange(); r.selectNodeContents($("summary"));
+    const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    setStatus("Selected below: copy it and paste it in chat.");
+  }
+});
+
+render();
+
+(async () => {
+  try { db = window.claude && window.claude.use ? await window.claude.use("db") : null; } catch (e) { db = null; }
+  if (!db) {
+    try { const kept = JSON.parse(localStorage.getItem("foe-picker-picks") || "{}") || {}; picks = kept.picks || {}; notes = kept.notes || {}; } catch (e) { picks = {}; notes = {}; }
+    setStatus("Picks are kept on this device only. When you finish, tap Copy all picks and paste them in chat.");
+    render();
+    return;
+  }
+  db.collection("picks").onSnapshot((snap) => {
+    const next = {}, nextNotes = {};
+    snap.docs.forEach((d) => {
+      const v = d.data();
+      if (v && v.pick) next[d.id] = String(v.pick);
+      if (v && v.note) nextNotes[d.id] = String(v.note);
+    });
+    picks = next;
+    // A note being typed here wins over the store until it saves.
+    if (noteTimer && notes[noteTimer.key] !== undefined) nextNotes[noteTimer.key] = notes[noteTimer.key];
+    notes = nextNotes;
+    setStatus(pickedCount() ? "Picks saved on this page. Claude reads them from here." : "Tap a candidate to pick it. Picks save on this page for Claude to read.");
+    render();
+  }, (e) => {
+    setStatus("Saved picks could not load (" + (e && e.code ? e.code : "error") + "). Use Copy all picks when done.");
+  });
+})();
+</script>

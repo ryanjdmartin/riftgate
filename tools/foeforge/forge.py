@@ -19,6 +19,7 @@ run `cut`, so the exported sketch grids stay until a candidate beats them.
 """
 
 import argparse
+import io
 import json
 import re
 import subprocess
@@ -41,59 +42,347 @@ QUANTIZE = "4"
 STEPS = "4"
 WIDTH, HEIGHT = 512, 768
 
+# The enemy side is the JRPG genre invading (decided 9 October, bible section 9): the roster
+# homages the whole genre, Dragon Quest as much as Final Fantasy, but the art is one style of
+# our own (bible section 1, the enemy art row, says it in words). The line below anchors it on
+# SNES Final Fantasy IV to VI enemy sprites, the nearest concrete reference a model knows for
+# this register; naming Chrono Trigger and Dragon Quest pulled in big heads and clean inking.
 STYLE = (
-    "16-bit SNES RPG battle sprite in the style of Final Fantasy VI enemies: ornate, detailed, "
-    "over-the-top high fantasy, up to twenty colours, one-pixel dark outline. Full body, in "
-    "three-quarter view turned toward the viewer's left (its right shoulder nearest the viewer), "
-    "centered, isolated on a solid flat pure white background, "
-    "no text, no border, no ground shadow."
+    "16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: "
+    "ornate, detailed, over-the-top high fantasy, "
+    "menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark "
+    "outline. " + "{rules}" + " The whole creature in frame, facing toward the viewer's left, "
+    "centered, isolated on a solid flat pure white background, no text, no border, no ground shadow."
+)
+# The party's heroes (decided 9 October): the classic JRPG party seen from the other side,
+# levelled and on a quest, drawn in the elaborate Final Fantasy boss register.
+HERO_STYLE = (
+    "16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, "
+    "elaborate and over the top, in the style of Final Fantasy IV, V and VI boss art: "
+    "ornate armour or robes with gold trim and flowing cloth, "
+    "heroic and terrifying, a face that is not a recognisable "
+    "character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark "
+    "outline. " + "{rules}" + " Full body, facing toward the viewer's left, centered, "
+    "isolated on a solid flat pure white background, no text, no border, no ground shadow."
 )
 
 # The domains of 9 October (content/factions.json). The looks are the overworld biome's;
 # the domain reads on the map by its ground, so a sprite's hue is free (bible section 9).
+# A mood per domain, never a palette: the domain reads on the map by its ground, so each foe
+# keeps the colours its own description implies (a wolf grey, a goblin green).
 FACTION_LOOK = {
-    "meadow": "bright saturated greens and yellows, round and soft, the overworld's first monsters",
-    "waste": "sand, ochre, bleached bone white, dusty teal shadows, hard-edged",
-    "marsh": "bone ivory and rust over grave-blue shadow, tatters, lanterns, rusted ornate plate",
-    "peak": "black rock, lava orange and yellow in the cracks, red scale, lit from inside",
+    "meadow": "the bright, saturated light of a sunny overworld field",
+    "waste": "sun-bleached and dusty, hard desert light",
+    "marsh": "dim and damp, rust and old bone, lantern light in fog",
+    "peak": "lit from inside by heat, black rock and embers",
 }
+# Sentences that name a source series stay out of the prompt (the homage is the shape and the
+# move, never a trademark's design; Ryan, 9 October). They live in content for the designers.
+SOURCES = ("Final Fantasy", "Dragon Quest", "Chrono Trigger", "Breath of Fire", "Octopath", "Legend of Dragoon",
+           "Golden Sun", "Megami Tensei", "Lunar", "Suikoden", "Wild Arms", "Diablo", "Pit Lord",
+           "Hellcaster", "of September", "renamed")
+
+
+def _without_sources(text):
+    keep = [s for s in re.split(r"(?<=[.!?:])\s+", text) if s and not any(n in s for n in SOURCES)]
+    return " ".join(keep)
 
 # The enemy sheet's three palettes, kept for the optional snap; the domains borrow the nearest.
 PALETTE_FOR = {"meadow": "UND", "waste": "DEM", "marsh": "UND", "peak": "DEM"}
-COMBAT_SIZE = {1: (48, 64), 2: (64, 96)}
+# The frames (decided 9 October, Ryan, from an in-engine comparison at the phone's density):
+# 72x96 and 96x144 massive, drawn by the slot at whole device pixels, two a pixel on the 1080
+# phone; 48x64 lost the art's detail and 96x128 went uneven and thin-outlined at 1.5.
+COMBAT_SIZE = {1: (72, 96), 2: (96, 144)}
 MAP_SIZE = {1: (16, 16), 2: (16, 16)}
-BIG_MAP = {"bone_colossus": (40, 40)}
+BIG_MAP = {"bone_dragon": (40, 40)}   # the old three-hex colossus's token; the other bosses take MAP_SIZE until the multi-hex boss returns
 
 
 def load_foes():
     return {e["id"]: e for e in json.loads(FOES.read_text())["entries"]}
 
 
+# Ryan's rules of 9 October, after the first full pass, said as what to draw, since a diffusion
+# model tends to draw what a prompt says not to. Readability at phone scale is the cut's job,
+# never the prompt's: a first try that asked for "a few large simple shapes, little fine detail"
+# and dropped "ornate, detailed" turned the painterly SNES register into a TV cartoon (Ryan,
+# 9 October), while the September Ghoul read best of all from a detailed, painterly render.
+RULES = (
+    "Its posture follows its own body plan, so it need not stand upright like a person. "
+    "Its eyes are solid glowing or blank shapes without pupils. "
+    "It carries only what the description names."
+)
+STYLE = STYLE.replace("{rules}", RULES)
+HERO_STYLE = HERO_STYLE.replace("{rules}", RULES)
+
+# The hero split (decided 9 October): a hero met in its domain's final is the genre's party
+# member, a small chibi battle sprite in one slot (CHIBI_SIZE, drawn by the slot at 4x); its
+# promoted form at the finale is the boss register, massive, 64x96 (HERO_STYLE above).
+CHIBI_STYLE = (
+    "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, "
+    "the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel "
+    "dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid "
+    "flat pure white background, no text, no border, no ground shadow. A face that is not a "
+    "recognisable character, played straight and determined, never comic."
+)
+CHIBI_SIZE = (36, 48)   # exactly twice the wildlife's pixel beside it: a deliberate party-sprite coarseness, not a mismatch
+
+DOMAIN_NAME = {"meadow": "the grasslands", "waste": "the desert", "marsh": "the swamp and graveyard", "peak": "the volcano"}
+
+
 def prompt_for(foe):
     look = FACTION_LOOK.get(foe.get("faction", ""), "")
-    body = " ".join(s for s in [foe.get("design", {}).get("fantasy", ""), foe.get("codex", "")] if s)
+    where = DOMAIN_NAME.get(foe.get("faction", ""), "the overworld")
+    # A foe's sprite brief (design.sprite) leads: the model weighs the start of a prompt most,
+    # and a brief says the shape (a blob, a ball of fire) the style text would otherwise turn
+    # into a muscled body (9 October: every Bomb and Gel came out humanoid without one). With
+    # a brief, the codex's rule text stays out; without one, it fills in as before.
+    brief = foe.get("design", {}).get("sprite", "")
+    fantasy = _without_sources(foe.get("design", {}).get("fantasy", ""))
+    body = " ".join(s for s in [fantasy] + ([] if brief else [foe.get("codex", "")]) if s)
+    lead = f"{brief[0].upper() + brief[1:]}. " if brief else ""
+    if foe.get("hero"):
+        return f"{lead}{HERO_STYLE} Subject: {foe['name']}, a hero of the party who comes out of {where}. {body} Light: {look}."
     size = "A towering elite, twice the height of a common foe." if int(foe.get("size") or 1) > 1 else ""
-    return f"{STYLE} Subject: {foe['name']}, a {foe.get('faction', '')} monster. {body} {size} Colours: {look}."
+    return f"{lead}{STYLE} Subject: {foe['name']}, a monster of {where}. {body} {size} Light: {look}."
+
+
+PICKER_HTML = """<!doctype html><html><head><meta charset="utf-8"><title>Foe picker</title>
+<style>
+:root{--bg:#14171c;--panel:#1d2126;--ink:#e7ebee;--muted:#8a949e;--pick:#f2b233}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px -apple-system,Helvetica,sans-serif}
+header{display:flex;gap:16px;align-items:baseline;padding:12px 20px;border-bottom:1px solid #2e353e}
+h1{font-size:22px;margin:0}#pos{color:var(--muted)}#hint{color:var(--muted);margin-left:auto;font-size:13px}
+#row{display:flex;gap:14px;padding:16px 20px;overflow-x:auto}
+figure{margin:0;flex:0 0 auto;background:#fff;border:4px solid transparent;cursor:pointer;position:relative}
+figure .pair{display:flex;align-items:flex-end;gap:0}
+figure img.full{display:block;height:min(62vh,700px);width:auto}
+figure img.game{display:block;image-rendering:pixelated;background:#5ca848;padding:10px;align-self:stretch;object-fit:contain;object-position:bottom}
+#ref{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px}
+#ref img{image-rendering:pixelated;background:#5ca848;padding:6px;height:140px}
+figure.pick{border-color:var(--pick)}
+figcaption{position:absolute;left:0;top:0;background:#000c;color:#fff;padding:3px 8px;font-weight:600}
+figure.pick figcaption{background:var(--pick);color:#000}
+#out{padding:8px 20px 20px;display:flex;gap:10px;align-items:center}
+#text{flex:1;background:var(--panel);color:var(--ink);border:1px solid #2e353e;padding:8px;font:13px ui-monospace,Menlo,monospace;min-height:40px}
+button{background:var(--pick);border:0;padding:9px 14px;font-weight:600;cursor:pointer}
+</style></head><body>
+<header><h1 id="name"></h1><span id="pos"></span><span id="hint">1-9 pick and move on &middot; &larr; &rarr; move &middot; 0 clears</span><span id="ref">__REF__</span></header>
+<div id="row"></div>
+<div id="out"><div id="text"></div><button id="copy">Copy picks</button></div>
+<script>
+const FOES = __FOES__;
+let i = 0, picks = {};
+try { picks = JSON.parse(localStorage.getItem('foe-picks') || '{}'); } catch (e) {}
+function save(){ try { localStorage.setItem('foe-picks', JSON.stringify(picks)); } catch (e) {} }
+function text(){ return FOES.filter(f => picks[f.id]).map(f => f.id + ' ' + picks[f.id]).join(', '); }
+function show(){
+  const f = FOES[i];
+  document.getElementById('name').textContent = f.name;
+  document.getElementById('pos').textContent = (i + 1) + ' of ' + FOES.length + ' · ' + f.note;
+  const row = document.getElementById('row'); row.innerHTML = '';
+  f.cands.forEach((c, k) => {
+    const fig = document.createElement('figure');
+    if (picks[f.id] === c.label) fig.className = 'pick';
+    fig.innerHTML = '<div class="pair"><img class="full" src="' + c.src + '">' + (c.game ? '<img class="game" src="' + c.game + '" style="width:' + c.gw + 'px">' : '') + '</div><figcaption>' + (k + 1) + ' · ' + c.label + '</figcaption>';
+    fig.onclick = () => choose(k);
+    row.appendChild(fig);
+  });
+  document.getElementById('text').textContent = text() || 'no picks yet';
+}
+function choose(k){ const f = FOES[i]; picks[f.id] = f.cands[k].label; save(); if (i < FOES.length - 1) i++; show(); }
+document.addEventListener('keydown', e => {
+  if (e.key >= '1' && e.key <= '9') { const k = +e.key - 1; if (k < FOES[i].cands.length) choose(k); }
+  else if (e.key === '0') { delete picks[FOES[i].id]; save(); show(); }
+  else if (e.key === 'ArrowRight') { i = Math.min(FOES.length - 1, i + 1); show(); }
+  else if (e.key === 'ArrowLeft') { i = Math.max(0, i - 1); show(); }
+});
+document.getElementById('copy').onclick = () => { navigator.clipboard.writeText(text()); };
+show();
+</script></body></html>"""
+
+
+def game_preview(src, dest, frame, scale):
+    """A candidate cut as the game will draw it (its frame, sixteen colours, the outline) and
+    blown up by the slot's scale with nearest sampling, cached beside the render: the picker
+    shows it so a pick is judged at phone scale, where a face's details do not survive."""
+    if dest.exists() and dest.stat().st_mtime >= src.stat().st_mtime:
+        return
+    c = cut_sprite(key_background(Image.open(src)), frame)
+    c.resize((c.width * scale, c.height * scale), Image.NEAREST).save(dest)
+
+
+def picker(args):
+    """One page for picking: every foe's candidates big, one foe at a time, number keys to pick.
+    The heroes' chibi renders (<id>_chibi) sit beside their boss register; set-aside first
+    rounds (<id>_v1) only with --all. Written into the git-ignored out folder, so the images load by relative path."""
+    foes = load_foes()
+    order = []
+    for fid, foe in foes.items():
+        rounds = [("_chibi", "chibi party sprite"), ("", "boss register" if foe.get("hero") else "")]
+        for t in args.tags:
+            rounds.append((f"_{t}", t))
+        if args.all:
+            rounds.append(("_v1", "first round"))   # the set-aside first rounds, only on request
+        for suffix, note in rounds:
+            d = OUT / (fid + suffix)
+            cands = sorted(p for p in d.glob(f"{fid}_*.png") if re.fullmatch(rf"{re.escape(fid)}_\d+", p.stem)) if d.is_dir() else []
+            if not cands:
+                continue
+            key = fid + suffix
+            # The frame the game draws it at, and the slot's scale (bible section 9, the hero split).
+            if suffix == "_chibi":
+                frame, scale = CHIBI_SIZE, 4
+            elif foe.get("hero") or int(foe.get("size") or 1) > 1:
+                frame, scale = COMBAT_SIZE[2], 2
+            else:
+                frame, scale = COMBAT_SIZE[1], 2
+            entry = []
+            for p in cands:
+                g = p.with_name(f"game_{p.name}")
+                game_preview(p, g, frame, scale)
+                entry.append({"src": f"{key}/{p.name}", "game": f"{key}/{g.name}", "gw": frame[0] * scale + 20, "label": p.stem.rsplit("_", 1)[1]})
+            order.append({"id": key, "name": foe["name"] + (" (chibi)" if suffix == "_chibi" else ""),
+                          "note": " ".join(x for x in [foe.get("faction", ""), note] if x), "cands": entry})
+    # The old Ghoul (15 September), the one cut that read best at phone scale, as the yardstick.
+    ref = ""
+    ghoul = OUT / "ghoul" / "ghoul_game_ref.png"
+    if not ghoul.exists():
+        try:
+            data = subprocess.run(["git", "show", "2bd7ffa:art/foes/ghoul_combat.png"], cwd=ROOT, capture_output=True, check=True).stdout
+            img = Image.open(io.BytesIO(data))
+            ghoul.parent.mkdir(parents=True, exist_ok=True)
+            img.resize((img.width * 2, img.height * 2), Image.NEAREST).save(ghoul)
+        except (subprocess.CalledProcessError, FileNotFoundError, OSError):
+            pass
+    if ghoul.exists():
+        ref = f'<img src="ghoul/{ghoul.name}">the old Ghoul, at the same scale'
+    dest = OUT / "picker.html"
+    dest.write_text(PICKER_HTML.replace("__FOES__", json.dumps(order)).replace("__REF__", ref))
+    print(f"wrote {dest.relative_to(ROOT)}: {len(order)} sets; open it with: open {dest.relative_to(ROOT)}")
+
+
+def phone(args):
+    """The picker as a phone page (tools/foeforge/phone_picker.html filled in), written to
+    out/phone/ with every render as a small WebP and every game cut inline, for publishing as
+    an artifact: tap a candidate to pick it, picks saved in the page's db collection `picks`
+    (one document per set key: {pick, set, at}) for a session to read back."""
+    import base64
+    foes = load_foes()
+    picks = {}
+    pf = ROOT / "tools" / "foeforge" / "picks" / "picks.json"
+    if pf.exists():
+        for key, p in json.loads(pf.read_text())["picks"].items():
+            picks[key] = str(p["candidate"])
+    dest = OUT / "phone"
+    (dest / "renders").mkdir(parents=True, exist_ok=True)
+    sets, files = [], []
+    for fid, foe in foes.items():
+        rounds = [("_chibi", "chibi party sprite"), ("", "boss register" if foe.get("hero") else "")]
+        for t in args.tags:
+            rounds.append((f"_{t}", f"new takes ({t})"))
+        for suffix, note in rounds:
+            d = OUT / (fid + suffix)
+            cands = sorted(p for p in d.glob(f"{fid}_*.png") if re.fullmatch(rf"{re.escape(fid)}_\d+", p.stem)) if d.is_dir() else []
+            if not cands:
+                continue
+            key = fid + suffix
+            if suffix == "_chibi":
+                frame, scale = CHIBI_SIZE, 2
+            elif foe.get("hero") or int(foe.get("size") or 1) > 1:
+                frame, scale = COMBAT_SIZE[2], 1
+            else:
+                frame, scale = COMBAT_SIZE[1], 1
+            entry = []
+            for p in cands:
+                n = p.stem.rsplit("_", 1)[1]
+                small = Image.open(p).convert("RGB")
+                small.thumbnail((360, 540))
+                rel = f"renders/{key}_{n}.webp"
+                small.save(dest / rel, "WEBP", quality=82)
+                files.append(rel)
+                cut = cut_sprite(key_background(Image.open(p)), frame)
+                buf = io.BytesIO()
+                cut.save(buf, "PNG")
+                entry.append({"n": n, "img": rel, "cut": "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode(),
+                              "cw": frame[0], "ch": frame[1]})
+            kind = " ".join(x for x in [foe.get("faction", ""), note] if x)
+            sets.append({"key": key, "foe": fid, "name": foe["name"] + (" (chibi)" if suffix == "_chibi" else ""),
+                         "note": kind, "scale": scale, "current": picks.get(key), "cands": entry})
+    page = (ROOT / "tools" / "foeforge" / "phone_picker.html").read_text()
+    (dest / "index.html").write_text(page.replace("/*__SETS__*/[]", json.dumps(sets)))
+    (dest / "files.json").write_text(json.dumps({f: str((dest / f).relative_to(ROOT)) for f in files}, indent=0))
+    print(f"wrote {(dest / 'index.html').relative_to(ROOT)}: {len(sets)} sets, {len(files)} renders; files map in {(dest / 'files.json').relative_to(ROOT)}")
+
+
+def prompts(args):
+    """Every foe's prompt, in content order, into one sheet to read before generating."""
+    foes = load_foes()
+    have = {p.stem.removesuffix("_combat") for p in ART.glob("*_combat.png")}
+    lines = ["# Foeforge prompts", "",
+             "Generated by `forge.py prompts` from `content/foes.json`; regenerate after the text changes.",
+             "Each foe's prompt is its fantasy and codex text on the fixed brief (the heroes on the boss brief).",
+             "`art` says whether `art/foes` holds a sprite for it today (an inherited sketch grid counts).", ""]
+    for fid, foe in foes.items():
+        kind = "hero" if foe.get("hero") else ("boss" if int(foe.get("size") or 1) > 1 else "foe")
+        lines += [f"## {foe['name']} (`{fid}`, {foe.get('faction', '')}, {kind}, art: {'yes' if fid in have else 'no'})", "",
+                  "```", prompt_for(foe), "```", ""]
+    dest = Path(args.out) if args.out else ROOT / "tools" / "foeforge" / "prompts.md"
+    dest.write_text("\n".join(lines))
+    print(f"wrote {dest.relative_to(ROOT)}: {len(foes)} prompts")
+
+
+def chibi_prompt_for(foe):
+    brief = foe.get("design", {}).get("sprite", foe["name"])
+    return f"{CHIBI_STYLE} The hero: {brief}."
 
 
 def generate(args):
     foes = load_foes()
     foe = foes[args.foe]
-    out = OUT / args.foe
+    chibi = getattr(args, "chibi", False)
+    if chibi and not foe.get("hero"):
+        sys.exit(f"{args.foe} is not a hero; only heroes have a chibi form")
+    name = args.foe + ("_chibi" if chibi else "") + (f"_{args.tag}" if args.tag else "")
+    out = OUT / name
     out.mkdir(parents=True, exist_ok=True)
-    prompt = args.prompt or prompt_for(foe)
+    prompt = args.prompt or (chibi_prompt_for(foe) if chibi else prompt_for(foe))
+    takes = foe.get("design", {}).get("variants", []) if args.variants else []
+    if args.variants and not takes:
+        sys.exit(f"{args.foe} has no design.variants")
     (out / "prompt.txt").write_text(prompt + "\n")
     print(prompt)
     height = HEIGHT if int(foe.get("size") or 1) == 1 else 1024
     made = []
-    for seed in range(args.seed, args.seed + args.n):
+    prompts_used = []
+    for k, seed in enumerate(range(args.seed, args.seed + args.n)):
         path = out / f"{args.foe}_{seed}.png"
-        cmd = [str(MFLUX), "--model", MODEL, "--quantize", QUANTIZE, "--prompt", prompt,
-               "--width", str(WIDTH), "--height", str(height), "--steps", STEPS,
-               "--seed", str(seed), "--output", str(path)]
+        if path.exists():
+            path.unlink()   # mflux never overwrites; it writes a suffixed twin, which the contact sheet would miss
+        p = prompt
+        if takes:
+            # Each candidate its own design take: the brief's shape swapped for the take's, so
+            # the four differ in body plan and pose rather than in seed noise (Ryan, 9 October:
+            # more creative entropy within the style).
+            take = takes[k % len(takes)]
+            brief = foe.get("design", {}).get("sprite", "")
+            p = prompt.replace(brief[0].upper() + brief[1:], take[0].upper() + take[1:], 1) if brief else f"{take}. {prompt}"
+        if args.ref:
+            # A style reference through the edit model: the reference is drawn from for its
+            # finish only, never its creature.
+            p = ("Draw a different creature in exactly the same art style as the reference image: "
+                 "the same outline weight, shading, palette approach and level of detail. Do not draw "
+                 "the reference's creature. " + p)
+            cmd = [str(MFLUX_EDIT), "--model", MODEL, "--quantize", QUANTIZE, "--prompt", p,
+                   "--image-paths", args.ref, "--steps", STEPS, "--seed", str(seed), "--output", str(path)]
+        else:
+            cmd = [str(MFLUX), "--model", MODEL, "--quantize", QUANTIZE, "--prompt", p,
+                   "--width", str(WIDTH), "--height", str(height), "--steps", STEPS,
+                   "--seed", str(seed), "--output", str(path)]
+        prompts_used.append(f"{path.name}: {p}")
         print("rendering", path.name)
         subprocess.run(cmd, check=True)
         made.append(path)
+    (out / "prompt.txt").write_text("\n\n".join(prompts_used) + "\n")
     contact(made, out / "contact.png")
     print(f"{len(made)} candidates in {out.relative_to(ROOT)}")
 
@@ -155,6 +444,39 @@ def key_background(img, tol=48):
     return img
 
 
+def key_holes(img, tol=24, min_area=400):
+    """Alpha out pockets of background the edge fill cannot reach (sky between branches, the gap
+    between an arm and a body): connected patches within `tol` of the background colour and at
+    least `min_area` pixels at the render's size. Opt-in per cut, since a white robe or an eye's
+    highlight is the same colour; the area floor spares highlights, not robes."""
+    img = img.convert("RGBA")
+    w, h = img.size
+    px = img.load()
+    bg = (255, 255, 255)   # the prompt's flat white; the corners are already keyed by now
+
+    def near(p):
+        return p[3] > 0 and all(abs(p[i] - bg[i]) <= tol for i in range(3))
+
+    seen = bytearray(w * h)
+    for sy in range(h):
+        for sx in range(w):
+            if seen[sy * w + sx] or not near(px[sx, sy]):
+                continue
+            region, stack = [], [(sx, sy)]
+            seen[sy * w + sx] = 1
+            while stack:
+                x, y = stack.pop()
+                region.append((x, y))
+                for nx, ny in ((x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)):
+                    if 0 <= nx < w and 0 <= ny < h and not seen[ny * w + nx] and near(px[nx, ny]):
+                        seen[ny * w + nx] = 1
+                        stack.append((nx, ny))
+            if len(region) >= min_area:
+                for x, y in region:
+                    px[x, y] = (0, 0, 0, 0)
+    return img
+
+
 def quantize(img, palette, colours=16):
     """Flatten the shading into a few coherent regions (median cut on the opaque pixels),
     then, if a palette is given, snap each region colour to its nearest palette colour.
@@ -187,6 +509,50 @@ def quantize(img, palette, colours=16):
                 cache[(r, g, b)] = min(palette, key=lambda c: (c[0] - r) ** 2 + (c[1] - g) ** 2 + (c[2] - b) ** 2)
             px[x, y] = cache[(r, g, b)] + (255,)
     return img
+
+
+def source_palette(keyed, colours=16):
+    """The palette from the full-size render's opaque pixels, before any shrinking: averaging
+    in the shrink washes out highlights and darks, so a palette taken after it is duller."""
+    arr = np.array(keyed)
+    px = arr[arr[..., 3] >= 128][:, :3]
+    if len(px) == 0:
+        return [(0, 0, 0)]
+    q = Image.fromarray(px.reshape(1, -1, 3), "RGB").quantize(colors=colours, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
+    pal = q.getpalette()[:colours * 3]
+    return [tuple(pal[i:i + 3]) for i in range(0, len(pal), 3)]
+
+
+def sharpen_quantize(small, keyed, colours=16, amount=60):
+    """The gentle sharpen (decided 9 October; Ryan may want it stronger after a phone read):
+    after the shrink, an unsharp mask of `amount` percent and a slight contrast lift, then
+    every pixel snapped to the full render's own palette. A stronger pass that also kept
+    the dark linework speckled the goblin and the mandragora; this one only gives back the
+    contrast the shrink averaged away."""
+    from PIL import ImageEnhance, ImageFilter
+    a = np.array(small)
+    opaque = a[..., 3] >= 128
+    rgb = Image.fromarray(a[..., :3], "RGB")
+    if amount > 0:
+        rgb = rgb.filter(ImageFilter.UnsharpMask(radius=1, percent=int(amount), threshold=3))
+        rgb = ImageEnhance.Contrast(rgb).enhance(1.0 + 0.08 * amount / 60.0)
+    pal = np.array(source_palette(keyed, colours), dtype=np.int32)
+    out = np.array(rgb).astype(np.int32)
+    idx = ((out[..., None, :] - pal[None, None, :, :]) ** 2).sum(-1).argmin(-1)
+    res = np.zeros((a.shape[0], a.shape[1], 4), np.uint8)
+    res[..., :3] = pal[idx]
+    res[..., 3] = np.where(opaque, 255, 0)
+    return Image.fromarray(res, "RGBA")
+
+
+def cut_sprite(keyed, frame, colours=16, sharpen=60, palette=None):
+    """One sprite as the game draws it: fitted to its frame, flattened to `colours` (the
+    gentle sharpen with the render's own palette unless a faction palette is asked for or
+    `sharpen` is negative, which is the old median cut), and outlined."""
+    small = fit(keyed, frame)
+    if palette or sharpen < 0:
+        return outline(quantize(small, palette, colours))
+    return outline(sharpen_quantize(small, keyed, colours, sharpen))
 
 
 def outline(img, colour=(20, 22, 28, 255)):
@@ -236,10 +602,13 @@ def cut(args):
     foes = load_foes()
     foe = foes[args.foe]
     pal = parse_palettes()[PALETTE_FOR.get(foe.get("faction", "marsh"), "UND")] if args.faction_palette else None
-    src = key_background(Image.open(args.image))
+    src = key_background(Image.open(args.image), args.tol)
+    if args.holes:
+        src = key_holes(src)
     size = int(foe.get("size") or 1)
     ART.mkdir(parents=True, exist_ok=True)
-    combat = outline(quantize(fit(src, COMBAT_SIZE[size]), pal, args.colours))
+    frame = CHIBI_SIZE if (foe.get("hero") and size == 1) else COMBAT_SIZE[size]   # a hero in one slot is its chibi
+    combat = cut_sprite(src, frame, args.colours, args.sharpen, pal)
     combat.save(ART / f"{args.foe}_combat.png")
     map_frame = BIG_MAP.get(args.foe, MAP_SIZE[size])
     token = outline(quantize(fit(src, map_frame), pal, min(args.colours, 8)))
@@ -501,7 +870,7 @@ def load_chassis():
 def mech_prompt(c):
     body = " ".join(s for s in [c.get("design", {}).get("fantasy", ""), c.get("codex", "")] if s)
     look = MAKER_LOOK.get(c.get("maker", ""), "cold steel")
-    return f"{MECH_STYLE} Subject: the {c['name']}, a war machine. {body} Colours: {look}."
+    return f"{MECH_STYLE} Subject: the {c['name']}, a war machine. {body} Light: {look}."
 
 
 def mech_reference(chassis_id, turn, src=""):
@@ -590,16 +959,33 @@ def main():
     cm.add_argument("--chunk", type=int, default=1, help="pixel size relative to the foes: 2 draws the mech on a grid twice as coarse (tried; it loses too much at 40x48)")
     cm.add_argument("--out", default="", help="write here instead of art/mechs (for experiments)")
     cm.set_defaults(func=cut_mech)
+    pk = sub.add_parser("picker", help="a page for picking candidates, one foe at a time (tools/foeforge/out/picker.html)")
+    pk.add_argument("--all", action="store_true", help="also show the set-aside first rounds (<id>_v1)")
+    pk.add_argument("--tags", nargs="*", default=[], help="also show experiments' sets (out/<id>_<tag>), beside each foe's current set")
+    pk.set_defaults(func=picker)
+    ph = sub.add_parser("phone", help="the picker as a phone page in out/phone/, for publishing as an artifact")
+    ph.add_argument("--tags", nargs="*", default=[], help="also include experiments' sets (out/<id>_<tag>)")
+    ph.set_defaults(func=phone)
+    p = sub.add_parser("prompts", help="every foe's prompt into tools/foeforge/prompts.md, to read before generating (no model needed)")
+    p.add_argument("--out", default="")
+    p.set_defaults(func=prompts)
     g = sub.add_parser("generate")
     g.add_argument("foe")
     g.add_argument("--n", type=int, default=4)
     g.add_argument("--seed", type=int, default=1)
     g.add_argument("--prompt", default="")
+    g.add_argument("--chibi", action="store_true", help="a hero's chibi party sprite, into out/<hero>_chibi")
+    g.add_argument("--tag", default="", help="an experiment's own folder: out/<foe>_<tag>")
+    g.add_argument("--ref", default="", help="a style reference image, through the edit model (its finish, never its creature)")
+    g.add_argument("--variants", action="store_true", help="each candidate from its own take in design.variants")
     g.set_defaults(func=generate)
     c = sub.add_parser("cut")
     c.add_argument("image")
     c.add_argument("foe")
     c.add_argument("--colours", type=int, default=16, help="colours to keep (default 16)")
+    c.add_argument("--sharpen", type=int, default=60, help="the gentle sharpen's unsharp amount, percent (default 60; raise it for a crisper cut, -1 for the old plain median cut)")
+    c.add_argument("--tol", type=int, default=48, help="how far from the background colour still keys out (default 48); raise it, to 90 or so, when a render left a grey ground shadow")
+    c.add_argument("--holes", action="store_true", help="also key enclosed pockets of background (sky between branches); off by default, since a white robe is the same colour")
     c.add_argument("--faction-palette", action="store_true", help="snap to the faction palette from the enemy sheet instead of keeping the model's colours")
     c.set_defaults(func=cut)
     r = sub.add_parser("rift", help="candidates for the rift: a vortex tearing a hole in reality")

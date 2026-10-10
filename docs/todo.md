@@ -14,12 +14,14 @@ bible (section 12). "Discuss first" means a proposal in chat before code.
 - [ ] Play the 10 October weapon rules: the die showing the number, rolled against flat, the two reaches, the Paradox meter, Numbed's chip
 - [ ] Play the content revision's components and the modules (the harness's TEAM tab): the Wake Diffuser's tempo, the Maxigun into armour, the Oblation Ward's price, the Polarity Projector feeding the Baboon, the mirrored Booster and Databank; confirm the Susceptibility Tensor's name
 - [ ] Play the four domains and their wildlife, the Thief's Flee and the plaque's rule; judge the plaque running on the phone (`SkirmishScreen.PLAQUE_HOLD`, `Plaque.px`, its place, whether a boss's plain blow earns one, a sound of its own)
-- [ ] Play the round: the rings, the attack range, the hunters' catch, nine wide, the walks on the phone; the five map types and the water feature (`RIFTGATE_MAP_KIND`, the harness's picker); the move gauge on the phone
+- [ ] Play the round: the rings, the attack range, the hunters' catch, nine wide, the walks on the phone; every chassis's move and the movement words; the five map types and the water feature (`RIFTGATE_MAP_KIND`, the harness's picker); the move gauge on the phone
+- [ ] Play the foes' aims, the lure and the disrupt: whether the exposed weighting leans hard enough, whether the swarm's opening blows read as pressure or as a wall, whether a disrupt into a boss's signature feels like a trick or a trap
 - [ ] Judge on the phone after a re-export: the machines' outline at 2.6 (`MechView3D.OUTLINE`), the intent field in motion (`STRIPE`, `SPOKES`, the pulse), the machine's lock's contrast, the gate's hazard pulse, the grid at `GRID_GAIN_PHONE`
 - [ ] Judge the motion running: the idle acts resting 6 to 12 s and opening in turn, the hovercraft's balancing idle, the drift through the double corner (Dingo, Puffin, Stingray), the Clydesdale's trot to gallop, the limbs striking and turrets flinching, each size class on the phone (`Map3D.SIZE_FIT`, `MechView3D.SIZE_FILL`)
 - [ ] Hear the in-game sound on the phone and confirm or overturn the calls made landing it: a hovercraft steps like a flyer, information lines wait only for the line in progress and a second, no route tick, random pitch only on footfalls and plates; then a full play of Hold The Line, notes by section letter
 - [ ] Discuss: the enemy turn under the spend chain's rule (a machine lost: Jenny's line at the landing in place of the kill blast, or after it as now)
-- [ ] Read `docs/campaign_run.md` after its rerun and say which placeholders move
+- [ ] Read `docs/balance.md` and `docs/campaign_run.md` after their rerun: which placeholders move, and enemy damage against the team's durability (the next axis)
+- [ ] Judge the campaign and the economy in play once the mission map and the hangar exist: twelve battles, the capital's bleed per fallen city, a battle in the shop, the module archetypes, about three rule texts a machine read running
 
 ### Discuss first, then decide
 
@@ -48,7 +50,8 @@ bible (section 12). "Discuss first" means a proposal in chat before code.
 - [ ] Three bosses a domain before its hero: `boss` a list, each battle drawing one its domain has not ended on this run; the second and third written once Ryan moves the proposals
 - [ ] Anathema as the weighted bar, and the pacing pieces, after Ryan's session
 - [ ] The Sponsorship tallies in the run (Kestrel hexes moved, Minerva damage taken on shield and armour, Wainwright & Sutler dice spent on entries that deal damage, Aphelion on entries that deal none)
-- [ ] The hangar's economy verbs on the run (the host maker's offer, a token unpacked, building from a blueprint, fitting a module), after the economy pass (`docs/economy_pass.md`, the runner's spending policy first)
+- [ ] The economy pass, a session of its own (`docs/economy_pass.md`): the runner's spending policy first, then every price and yield
+- [ ] The hangar's economy verbs on the run (the host maker's offer, a token unpacked, building from a blueprint, fitting a module), procurement (each standing maker's stock for Favour, refreshed each turn; the Arsenal's trickle at the capital by the Convergence's tier) and loot on the map (seeded with the map, claimed by ending a move on one, a tap telling its kind and likely contents), after the economy pass
 - [ ] Weld each machine at load (bible section 11): meshes merged by material within each moving group, skipping the acts' glow parts; count draw calls before and after
 - [ ] Props by hex back in the big batches, with a fade as a machine enters (a debug switch to judge it)
 - [ ] The 3D at 30 while planning, once the acts and movement are judged

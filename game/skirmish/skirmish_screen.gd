@@ -36,8 +36,8 @@ const BASE_H := 1280.0   # the design's height; on a taller phone the rows sprea
 var H := BASE_H
 var BACK_Y := 72.0    # the foes' ground starts 14 above: 16 px of black under the header (Ryan, 23 September)
 var FRONT_Y := 266.0
-const SLOT_SIZE := Vector2(150, 194)     # floating gauge 18 + 48x64 foe at 2x + chip row 38
-const MASSIVE_SIZE := Vector2(150, 388)  # 64x96 elites at 2x across both ranks
+const SLOT_SIZE := Vector2(150, 194)     # floating gauge 18 + a 72x96 foe at two device pixels a pixel on the 1080 phone (96x128 design) + chip row 38
+const MASSIVE_SIZE := Vector2(150, 388)  # 96x144 elites across both ranks, the same way
 var EYE_Y := 510.0   # 12 px into the black under the foes' ground, the same as its margin from the right edge
 const EYE := 60.0
 var LOG_Y := 508.0
@@ -254,9 +254,24 @@ static func _default_skirmish() -> Skirmish:
 				u.paint = paints[id]
 			s.add_mech(u)
 	# The first faction's first and last spawn entries: its rank and file, then its support.
+	# RIFTGATE_FOES=warrior,goblin:3,white_mage puts those foes on instead, by content id and
+	# count (heroes included), each its own pack: to see any sprite in the fight.
 	var fac := db.default_faction()
 	var table: Array = db.spawn_table(fac)
 	var uid := 1
+	var foes_env := OS.get_environment("RIFTGATE_FOES")
+	if not foes_env.is_empty():
+		table = []
+		for spec in foes_env.split(",", false):
+			var kv := spec.split(":")
+			if db.foes.has(kv[0]):
+				table.append([kv[0], int(kv[1]) if kv.size() > 1 else 1])
+		for entry in table:
+			var fid := str(entry[0])
+			var sq := Unit.pack(uid, "%s pack" % fid, Vector2i.ZERO, db.faction_of_foe(fid), 2, int(entry[1]), fid)
+			s.add_foes(db.foes_for(sq), sq)
+			uid += 1
+		table = []
 	for entry in [table[0], table[table.size() - 1]] if not table.is_empty() else []:
 		var sq := Unit.pack(uid, "%s pack" % str(entry[0]), Vector2i.ZERO, fac, 2, int(entry[1]), str(entry[0]))
 		s.add_foes(db.foes_for(sq), sq)
@@ -873,6 +888,7 @@ func _log_scroller() -> ScrollContainer:
 func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -> void:
 	v.display_name = foe.display_name
 	v.sprite = Sprites.combat_foe(foe.content_id)
+	v.pixel_snap = true
 	# Enemies face left, the convention; a sprite painted facing right says so in content.
 	v.flip_h = bool(ContentDB.load_default().foes.get(foe.content_id, {}).get("flip", false))
 	v.breathe = true
