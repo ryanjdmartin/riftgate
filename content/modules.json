@@ -114,20 +114,20 @@
     "shield": -20
    },
    "text": {
-    "description": "Its crits deal triple damage.",
+    "description": "Its rolled weapons reach 10 higher.",
     "effects": [
      {
-      "trigger": "on_crit",
-      "effect": "add_crit_damage",
-      "value": 1
+      "trigger": "on_attack",
+      "effect": "add_ceiling",
+      "value": 10
      }
     ]
    },
    "design": {
     "stage": "draft",
     "fantasy": "Everything leaves the barrel faster. Including the barrel, eventually.",
-    "niche": "A prototype: crit-fishing at the price of the shield.",
-    "notes": "Claude's proposal of 9 October, in Ryan's pick of the whole catalogue the same day; numbers are placeholders."
+    "niche": "A prototype: the ceiling of every rolled weapon raised, at the price of the shield; the Tactical Databank's floor is the other way.",
+    "notes": "Claude's proposal of 9 October, in Ryan's pick of the whole catalogue the same day; numbers are placeholders. 10 October (Ryan): no crits, so it raises the top of the range instead (it was triple-damage crits); never tuned to parity with the Databank, since a module carries stats too."
    }
   },
   {

@@ -20,15 +20,17 @@ extends RefCounted
 ##   0. suppression: shortest scope to longest, a live modifier's `suppress` effect turns off
 ##      every modifier whose id or tag it names; a suppressed modifier suppresses nothing
 ##   1. gate: a modifier takes part only if it is live, not suppressed, its trigger fires now
-##      (static: always; on_attack: any attack; on_crit: only a crit; on_injury: an injury),
+##      (static: always; on_attack: any attack; on_injury: an injury),
 ##      its `when` holds, and, for an ability, its component is not destroyed (a destroyed
 ##      component keeps its stat bonuses and loses its abilities)
 ##   2. adds, every source summed
 ##   3. multiplies, every source multiplied
 ##   4. floors and caps (min_damage; a stat never below zero)
 ##   5. overrides (set_reach): the shortest-lived source wins, then the latest granted
-## In an attack, the crit multiplier and the fixed keyword rules (execute) are
-## applied by the skirmish before step 2, so the pipeline's adds and multiplies come last.
+## In an attack, the roll (or the flat number) and the fixed keyword rules (execute) come
+## first, from the skirmish, so the pipeline's adds and multiplies come last. A raised
+## ceiling (add_ceiling) is the one exception: it widens the range before the roll, so it
+## lives on the effective face (effective_face) and the face shows it.
 ##
 ## Stacking. A modifier has stacks (one by default). Granting the same id in the same scope
 ## again adds stacks instead of a second copy; an add is worth its value per stack, a
@@ -43,8 +45,7 @@ const ROUNDS := 3
 
 ## What the content may ask for, by trigger. The validator refuses anything else.
 const SUPPORTED_EFFECTS := {
-	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "roll_max"],
-	"on_crit": ["multiply_damage", "add_damage", "add_burn", "vent_heat", "add_crit_damage"],
+	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "roll_max", "add_ceiling"],
 	"on_injury": ["no_destroy"],
 	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "spares_splash", "hull_per_spend"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
@@ -338,10 +339,8 @@ static func _usable(u, m: Modifier, effect: String) -> bool:
 
 
 ## Whether a trigger fires in the query asking: the caller asks on_injury only on an injury
-## and on_attack only on an attack, so those always fire here; on_crit needs the crit.
-static func _fires(trigger: String, crit: bool) -> bool:
-	if trigger == "on_crit":
-		return crit
+## and on_attack only on an attack, so a known trigger always fires here.
+static func _fires(trigger: String) -> bool:
 	return SUPPORTED_EFFECTS.has(trigger)
 
 
@@ -368,11 +367,11 @@ static func _holds(u, eff: Dictionary, face: Face, target = null) -> bool:
 
 
 ## Every effect taking part in a query: [effect dictionary, modifier], gated as above.
-static func _taking_part(u, trigger: String, face: Face, crit: bool = false, target = null) -> Array:
+static func _taking_part(u, trigger: String, face: Face, target = null) -> Array:
 	var out: Array = []
 	for m in live(u):
 		for eff in m.effects:
-			if str(eff.get("trigger", "")) != trigger or not _fires(trigger, crit):
+			if str(eff.get("trigger", "")) != trigger or not _fires(trigger):
 				continue
 			var name := str(eff.get("effect", ""))
 			if not _usable(u, m, name) or not _holds(u, eff, face, target):
@@ -404,20 +403,24 @@ static func stat(u, name: String, upto: int = ROUNDS) -> int:
 	return maxi(0, int(roundf((base + add) * mult)))
 
 
-## What the pipeline adds to the crit multiplier (add_crit_damage, on a crit), summed.
-static func crit_bonus(u, face: Face, target = null) -> float:
-	var total := 0.0
-	for pair in _taking_part(u, "on_crit", face, true, target):
-		if str(pair[0].get("effect", "")) == "add_crit_damage":
-			total += float(pair[0].get("value", 0)) * pair[1].stacks
-	return total
+## What a machine's live effects add to the top of its rolled weapons' ranges (add_ceiling,
+## on_attack; the Muzzle Velocity Booster, 10 October), summed. A flat face has no range to
+## widen, so it gets nothing.
+static func ceiling_bonus(u, face: Face) -> int:
+	if face == null or not face.is_attack() or not face.is_ranged():
+		return 0
+	var total := 0
+	for pair in _taking_part(u, "on_attack", face):
+		if str(pair[0].get("effect", "")) == "add_ceiling":
+			total += int(pair[0].get("value", 0)) * pair[1].stacks
+	return maxi(0, total)
 
 
-## An attack after the crit multiplier and the keyword rules: adds, then multiplies, then
-## floors, on damage and on heat; burn and vent from crit effects. `target` is the foe the
+## An attack after the roll and the keyword rules: adds, then multiplies, then floors, on
+## damage and on heat, with the burn and the vent the effects add. `target` is the foe the
 ## blow is aimed at, for conditions on it (null when only the heat is asked). Returns
 ## {damage, heat, burn, vent}.
-static func attack(u, face: Face, dmg: int, heat: int, crit: bool, target = null) -> Dictionary:
+static func attack(u, face: Face, dmg: int, heat: int, target = null) -> Dictionary:
 	var d_add := 0.0
 	var d_mult := 1.0
 	var d_floor := 0
@@ -425,8 +428,7 @@ static func attack(u, face: Face, dmg: int, heat: int, crit: bool, target = null
 	var h_mult := 1.0
 	var burn := 0
 	var vent := 0
-	var parts: Array = _taking_part(u, "on_attack", face, crit, target)
-	parts.append_array(_taking_part(u, "on_crit", face, crit, target))
+	var parts: Array = _taking_part(u, "on_attack", face, target)
 	for pair in parts:
 		var eff: Dictionary = pair[0]
 		var v: float = float(eff.get("value", 0))
@@ -511,19 +513,22 @@ static func granted_keywords(u, face: Face) -> Array[int]:
 
 
 ## The component as it is right now for this machine: its own entry, unless a live passive
-## changes its reach or grants it a keyword, in which case a copy carrying both. What the
-## resolver spends, the bot weighs and the screen draws; the die keeps the real one.
+## changes its reach, grants it a keyword or raises its ceiling, in which case a copy
+## carrying all three. What the resolver spends, the bot weighs and the screen draws; the
+## die keeps the real one.
 static func effective_face(u, face: Face) -> Face:
 	if face == null:
 		return null
 	var r := effective_reach(u, face)
 	var granted := granted_keywords(u, face)
-	if r == face.reach and granted.is_empty():
+	var ceiling := ceiling_bonus(u, face)
+	if r == face.reach and granted.is_empty() and ceiling == 0:
 		return face
 	var c := face.duplicate_face()
 	c.reach = r
 	for kw in granted:
 		c.add_keyword(kw)
+	c.power_max += ceiling
 	return c
 
 
@@ -683,7 +688,7 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 ## Does a kinetic attack roll its maximum (roll_max on_attack; the Dingo's Tactical Databank
 ## with an ally in the fight)?
 static func rolls_max(u, face: Face, target = null) -> bool:
-	for pair in _taking_part(u, "on_attack", face, false, target):
+	for pair in _taking_part(u, "on_attack", face, target):
 		if str(pair[0].get("effect", "")) == "roll_max":
 			return true
 	return false
@@ -833,7 +838,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"add_heat": body = "heat +%s" % vs
 		"add_burn": body = "+%s burn" % vs
 		"vent_heat": body = "sheds %s heat" % vs
-		"add_crit_damage": body = "crit multiplier +%s" % vs
+		"add_ceiling": body = "rolls reach %s higher" % vs
 		"no_destroy": body = "cracked components are never destroyed"
 		"set_reach": body = "reach becomes %s" % vs
 		"add_stat": body = "%s +%s" % [str(eff.get("stat", "")), vs]
@@ -879,7 +884,6 @@ static func effect_text(eff: Dictionary) -> String:
 		body += " per stack of %s" % str(STATUS.get(str(eff["per_stack"]), {}).get("name", str(eff["per_stack"])))
 	var lead := ""
 	match str(eff.get("trigger", "")):
-		"on_crit": lead = "on a crit: "
 		"on_injury": lead = "on an injury: "
 		"on_round_start": lead = "at the start of the round: "
 		"on_hull_damage": lead = "on losing hull: "
@@ -925,9 +929,11 @@ static func explain(u, face: Face) -> Array[String]:
 				var kw := Face.keyword_from_name(str(eff.get("value", "")))
 				if kw > 0 and not face.has(kw) and granted_keywords(u, face).has(kw):
 					out.append("%s (%s)" % [effect_text(eff), m.name])
-			elif trig == "on_attack" or trig == "on_crit":
+			elif trig == "on_attack":
 				# A condition on the target is shown as a rule (its lead says when), since
-				# the row has no target in hand.
+				# the row has no target in hand. A raised ceiling means nothing to a flat face.
+				if name == "add_ceiling" and not face.is_ranged():
+					continue
 				if _usable(u, m, name) and (str(eff.get("when", "")) == "target_status" or _holds(u, eff, face)):
 					out.append("%s (%s)" % [effect_text(eff), m.name])
 	return out

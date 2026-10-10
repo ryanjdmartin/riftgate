@@ -1,5 +1,5 @@
 {
- "_about": "Components: the equipment a mech's die is made of. Each is exactly one entry on the die (its face: the engine's word for one entry). Nothing generic exists: every entry on a die is a component, or an empty hardpoint. A component a chassis lists under fixed is built in and is never bought or crafted, which is what makes it unique. Numbers are in tens. Kinetic entries carry power and power_max and roll between them, and may crit; energy entries are static and never crit. Keywords are a list; authored entries should stay under the validator's cap, upgrades may push past it. passive is null or one object, same shape as a chassis passive. A face's kind makes it a weapon (attack: spent on a foe, need not deal damage) or equipment (shield, vent: spent on a machine); equipment may carry targets, self_ally (the default), self or ally, and the die shows a chip for a narrowed one. design.stage is draft until Ryan signs the entry off as final; nothing is final yet. Shown to the player: codex (the inspect entry), flavour (a quote); both still to be written. design is internal and never shown: fantasy, niche. Numbers are placeholders. A component the engine cannot run yet carries \"status\": \"planned\": it is kept, its face is checked for shape, a keyword the vocabulary names but the engine lacks is allowed on it, and the die builds it without that keyword. tier (7 October, bible section 10, the ledger): a component stocked by any chassis takes the lowest tier of the chassis that stock it, derived and never stored; one that no chassis stocks carries its own tier; a fixed-only component has none. Tier one is the blueprints a run starts with, and the capital's maker has no tier-one component. shape is the silhouette class the model wears when the component is fitted (decided 29 September, the rule settled 30 September: hardpoints are gun mounts on the model, and a component with a shape takes the next mount in the die's order): barrel, twin_barrel, rack, blade (katar-style, every one points forward) or dish (a projector, for equipment that can look like a gun: shield projectors, a buff coil); none for what is applied to the whole machine and shows nowhere (armour panels, vents). Each class is built by tools/lowforge in every maker's metal (art/models/shapes); the validator holds it to that list.",
+ "_about": "Components: the equipment a mech's die is made of. Each is exactly one entry on the die (its face: the engine's word for one entry). Nothing generic exists: every entry on a die is a component, or an empty hardpoint. A component a chassis lists under fixed is built in and is never bought or crafted, which is what makes it unique. Numbers are in tens. A rolled entry carries power and power_max and rolls between them; a flat entry is one number and involves no roll. There are no crits (10 October). Keywords are a list; authored entries should stay under the validator's cap, upgrades may push past it. passive is null or one object, same shape as a chassis passive. A face's kind makes it a weapon (attack: spent on a foe, need not deal damage) or equipment (shield, vent: spent on a machine); equipment may carry targets, self_ally (the default), self or ally, and the die shows a chip for a narrowed one. design.stage is draft until Ryan signs the entry off as final; nothing is final yet. Shown to the player: codex (the inspect entry), flavour (a quote); both still to be written. design is internal and never shown: fantasy, niche. Numbers are placeholders. A component the engine cannot run yet carries \"status\": \"planned\": it is kept, its face is checked for shape, a keyword the vocabulary names but the engine lacks is allowed on it, and the die builds it without that keyword. tier (7 October, bible section 10, the ledger): a component stocked by any chassis takes the lowest tier of the chassis that stock it, derived and never stored; one that no chassis stocks carries its own tier; a fixed-only component has none. Tier one is the blueprints a run starts with, and the capital's maker has no tier-one component. shape is the silhouette class the model wears when the component is fitted (decided 29 September, the rule settled 30 September: hardpoints are gun mounts on the model, and a component with a shape takes the next mount in the die's order): barrel, twin_barrel, rack, blade (katar-style, every one points forward) or dish (a projector, for equipment that can look like a gun: shield projectors, a buff coil); none for what is applied to the whole machine and shows nowhere (armour panels, vents). Each class is built by tools/lowforge in every maker's metal (art/models/shapes); the validator holds it to that list.",
  "entries": [
   {
    "id": "chainsaw_claw",
@@ -19,7 +19,6 @@
     "reach": "melee",
     "power": 10,
     "power_max": 20,
-    "crit": 10,
     "keywords": [
      "cleave"
     ],
@@ -50,7 +49,6 @@
     "reach": "indirect",
     "power": 10,
     "power_max": 20,
-    "crit": 10,
     "keywords": [],
     "heat": 10
    },
@@ -78,7 +76,6 @@
     "reach": "melee",
     "power": 15,
     "power_max": 30,
-    "crit": 15,
     "keywords": [],
     "heat": 10
    },
@@ -107,7 +104,6 @@
     "reach": "line",
     "power": 15,
     "power_max": 30,
-    "crit": 15,
     "keywords": [],
     "heat": 10
    },
@@ -134,7 +130,6 @@
     "reach": "line",
     "power": 5,
     "power_max": 15,
-    "crit": 10,
     "keywords": [],
     "heat": 0
    },
@@ -190,7 +185,6 @@
     "reach": "indirect",
     "power": 5,
     "power_max": 15,
-    "crit": 5,
     "keywords": [],
     "heat": 0
    },
@@ -239,7 +233,6 @@
     "reach": "indirect",
     "power": 10,
     "power_max": 25,
-    "crit": 10,
     "keywords": [],
     "heat": 0
    },
@@ -266,7 +259,6 @@
     "reach": "indirect",
     "power": 5,
     "power_max": 15,
-    "crit": 5,
     "keywords": [
      "burn"
     ],
@@ -297,7 +289,6 @@
     "reach": "indirect",
     "power": 15,
     "power_max": 25,
-    "crit": 10,
     "keywords": [
      "suppress"
     ],
@@ -375,7 +366,6 @@
     "reach": "line",
     "power": 10,
     "power_max": 20,
-    "crit": 20,
     "keywords": [
      "execute"
     ],
@@ -484,7 +474,6 @@
     "reach": "indirect",
     "power": 5,
     "power_max": 15,
-    "crit": 5,
     "keywords": [
      "burn",
      "steady"
@@ -637,7 +626,6 @@
     "reach": "melee",
     "power": 15,
     "power_max": 30,
-    "crit": 10,
     "keywords": [
      "cleave"
     ],
@@ -680,7 +668,6 @@
     "reach": "line",
     "power": 5,
     "power_max": 15,
-    "crit": 10,
     "keywords": [
      "rapid"
     ],
@@ -711,7 +698,6 @@
     "reach": "line",
     "power": 5,
     "power_max": 10,
-    "crit": 5,
     "keywords": [
      "suppress"
     ],
@@ -834,7 +820,6 @@
     "reach": "line",
     "power": 5,
     "power_max": 15,
-    "crit": 10,
     "keywords": [],
     "heat": 0
    },
@@ -1342,7 +1327,6 @@
     "reach": "melee",
     "power": 10,
     "power_max": 20,
-    "crit": 10,
     "keywords": [
      "shock"
     ],
@@ -1423,7 +1407,6 @@
     "kind": "attack",
     "reach": "line",
     "power": 5,
-    "crit": 5,
     "strikes": 3,
     "keywords": [],
     "heat": 5,

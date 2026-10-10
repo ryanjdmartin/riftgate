@@ -319,8 +319,8 @@ func test_min_damage_passive_raises_the_floor() -> void:
 	var floor_passive := {"id": "floor", "name": "Floor", "description": "", "effects": [{"trigger": "on_attack", "effect": "min_damage", "value": 30}]}
 	var u := Unit.mech(0, "A", Vector2i.ZERO)
 	u.grant_passive(floor_passive)
-	assert_eq(Effects.attack(u, null, 12, 0, false)["damage"], 30, "a 12 is lifted to 30")
-	assert_eq(Effects.attack(u, null, 45, 5, false)["damage"], 45, "a 45 stays")
+	assert_eq(Effects.attack(u, null, 12, 0)["damage"], 30, "a 12 is lifted to 30")
+	assert_eq(Effects.attack(u, null, 45, 5)["damage"], 45, "a 45 stays")
 
 
 func test_planned_passive_is_kept_but_not_run() -> void:
@@ -365,22 +365,27 @@ func test_planned_component_may_carry_a_planned_keyword() -> void:
 	assert_true(hit, "the same component marked implemented is refused")
 
 
-func test_a_crit_burn_passive_from_content_adds_a_stack() -> void:
+## No crits (10 October): a face carrying a crit chance and a passive on the old on_crit trigger
+## are both stale content, and the validator says so.
+func test_crits_are_refused_in_content() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
+	var gun: Dictionary = db.components["enfilade_beam"].duplicate(true)
+	gun["face"]["crit"] = 10
+	gun["tier"] = 1
+	db.components["old_gun"] = gun
 	var c: Dictionary = db.chassis[db.chassis.keys()[0]].duplicate(true)
 	c["passive"] = {"id": "hot", "name": "Hot", "description": "Crits burn.", "effects": [{"trigger": "on_crit", "effect": "add_burn", "value": 1}]}
 	db.chassis["hot_one"] = c
-	var u := db.make_mech("hot_one")
-	u.die = Die.single(Face.attack(20, Face.Reach.INDIRECT, [], 0, 0, 100))
-	var sk := Skirmish.new(1)
-	sk.add_mech(u)
-	sk.add_foes([Foe.make("revenant", 200, 10)])
-	sk.begin()
-	sk.start_round()
-	sk.assign(0, sk.front[0])
-	assert_eq(sk.front[0].hp, 160, "20 crit for 40")
-	assert_eq(sk.front[0].burn_stacks(), 1, "the passive added a burn stack")
+	var gun_refused := false
+	var passive_refused := false
+	for e in db.validate():
+		if e.begins_with("component old_gun") and e.contains("no crits"):
+			gun_refused = true
+		if e.begins_with("chassis hot_one") and e.contains("on_crit"):
+			passive_refused = true
+	assert_true(gun_refused, "a crit chance on a face is refused")
+	assert_true(passive_refused, "and so is a passive on the on_crit trigger")
 
 
 func test_melee_reach_can_be_authored() -> void:
@@ -413,7 +418,6 @@ func test_content_dice_are_sane_and_kinetic_faces_roll() -> void:
 			if tags.has("energy"):
 				energy += 1
 				assert_false(fd.has("power_max"), "%s energy face is static" % id)
-				assert_eq(int(fd.get("crit", 0)), 0, "%s energy face never crits" % id)
 	assert_true(kinetic >= 5 and energy >= 3, "both weapon classes present")
 
 
@@ -985,7 +989,7 @@ func test_a_module_is_its_stat_lines_and_its_text_on_the_machine() -> void:
 		if f.kind == Face.Kind.ATTACK:
 			gun = f
 			break
-	assert_eq(int(Effects.attack(u, gun, 10, 10, false)["heat"]), 2 * int(Effects.attack(plain, gun, 10, 10, false)["heat"]), "and the text runs")
+	assert_eq(int(Effects.attack(u, gun, 10, 10)["heat"]), 2 * int(Effects.attack(plain, gun, 10, 10)["heat"]), "and the text runs")
 	var rows: Array = db.codex_for_unit(u)["passive_rows"]
 	var found := false
 	for r in rows:
@@ -1060,7 +1064,7 @@ func test_a_split_is_validated_one_deep_and_read_into_the_foe() -> void:
 ## from shape and face. Synthetic components, so no entry's sound is pinned here.
 func test_a_component_sound_is_its_label_or_derived() -> void:
 	var db := ContentDB.new()
-	var kinetic := {"kind": "attack", "reach": "line", "power": 10, "power_max": 20, "crit": 10}
+	var kinetic := {"kind": "attack", "reach": "line", "power": 10, "power_max": 20}
 	var energy := {"kind": "attack", "reach": "line", "power": 15}
 	db.components = {
 		"slug": {"shape": "barrel", "maker": "minerva", "face": kinetic},

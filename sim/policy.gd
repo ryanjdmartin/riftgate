@@ -308,14 +308,14 @@ static func _raw_attack_mean(ms: Skirmish.MechState) -> float:
 ## The heat one use of an attack entry adds, through the pipeline; negative for one that
 ## fires the gauge empty first.
 static func heat_of(ms: Skirmish.MechState, f: Face) -> int:
-	var added := int(Effects.attack(ms.unit, f, 0, f.heat, false)["heat"])
+	var added := int(Effects.attack(ms.unit, f, 0, f.heat)["heat"])
 	return added - ms.heat if f.vents_all else added
 
 
 ## What one use of an attack entry can land, with the odds of each: [[damage, weight], ...].
-## A kinetic roll is read at five points (its ends, its quarters, its middle), each with and
-## without a crit; a static entry is one point. Overcharge, execute and the pipeline's
-## modifiers apply as the resolver applies them; the strikes multiply the blow.
+## A rolled entry is read at five points (its ends, its quarters, its middle); a flat entry is
+## one point. Overcharge, execute and the pipeline's modifiers apply as the resolver applies
+## them; the strikes multiply the blow.
 func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null) -> Array:
 	f = Effects.effective_face(ms.unit, f)
 	var rolls: Array[int] = []
@@ -329,26 +329,19 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null) -> Arr
 		var span := f.power_max - f.power
 		for q in [0.0, 0.25, 0.5, 0.75, 1.0]:
 			rolls.append(f.power + int(roundf(span * q)))
-	var crit_p := clampf(float(f.crit) / 100.0, 0.0, 1.0)
-	var crit_mult := Face.CRIT_MULT + f.crit_bonus + Effects.crit_bonus(ms.unit, f)
 	var fired := f.power_per_heat * int(ms.heat / 10) if f.vents_all else 0   # what the heat it fires adds
 	var out: Array = []
+	var w := 1.0 / rolls.size()
 	for v in rolls:
-		for crit in [false, true]:
-			var w := (crit_p if crit else 1.0 - crit_p) / rolls.size()
-			if w <= 0.0:
-				continue
-			var dmg: int = v + fired
-			if crit:
-				dmg = int(roundf(dmg * crit_mult))
-			if target != null and f.has(Face.Keyword.EXECUTE) and target.hp * 2 <= target.hp_max:
-				dmg = int(roundf(dmg * (1.5 if target.is_massive() else 2.0)))
-			dmg = int(Effects.attack(ms.unit, f, dmg, 0, crit, target)["damage"])
-			# The foe's own statuses read last: a Shocked foe takes the first blow double. Then its
-			# armour comes off every blow, so a hardened foe is worth less to a volume weapon.
-			var arm := target.armour_total() if target != null else 0
-			var first := maxi(0, (Effects.damage_taken(target, dmg) if target != null else dmg) - arm)
-			out.append([first + maxi(0, dmg - arm) * (maxi(1, f.strikes) - 1), w])
+		var dmg: int = v + fired
+		if target != null and f.has(Face.Keyword.EXECUTE) and target.hp * 2 <= target.hp_max:
+			dmg = int(roundf(dmg * (1.5 if target.is_massive() else 2.0)))
+		dmg = int(Effects.attack(ms.unit, f, dmg, 0, target)["damage"])
+		# The foe's own statuses read last: a Shocked foe takes the first blow double. Then its
+		# armour comes off every blow, so a hardened foe is worth less to a volume weapon.
+		var arm := target.armour_total() if target != null else 0
+		var first := maxi(0, (Effects.damage_taken(target, dmg) if target != null else dmg) - arm)
+		out.append([first + maxi(0, dmg - arm) * (maxi(1, f.strikes) - 1), w])
 	return out
 
 

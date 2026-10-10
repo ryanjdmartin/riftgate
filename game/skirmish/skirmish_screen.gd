@@ -1026,13 +1026,12 @@ func _show_details(text: String, near: Control, faces: Array = [], current: int 
 	_details.position = pos
 
 
-## The damage number pops over the struck foe, gold for a crit, then fades.
+## The damage number pops over the struck foe, then fades.
 func _flash_roll(fv: UnitView) -> void:
 	if sk.last_roll.is_empty() or fv == null:
 		return
-	var crit: bool = sk.last_roll["crit"]
-	_roll_label.text = ("CRIT %d" if crit else "%d") % int(sk.last_roll["final"])
-	_roll_label.add_theme_color_override("font_color", Palette.SELECT if crit else Palette.INK)
+	_roll_label.text = "%d" % int(sk.last_roll["final"])
+	_roll_label.add_theme_color_override("font_color", Palette.INK)
 	_roll_label.position = fv.position + Vector2(fv.size.x * 0.5 - 100.0, 4.0)
 	_roll_label.modulate = Color.WHITE
 	_roll_label.visible = true
@@ -1244,7 +1243,6 @@ func _drop_target_at(global_pos: Vector2):
 ## A foe's blow this big or bigger lands as its family's heavy blow (a placeholder, like
 ## every number).
 const HEAVY_DAMAGE := 20
-const CRIT_DB := 2.0   # a crit is the same blow, a little louder (the third cut has no crit of its own)
 
 
 ## The sound of a component's use: by the weapon (ContentDB.sound_of: its shape, an energy
@@ -1362,7 +1360,7 @@ func _use_die(i: int, target) -> bool:
 			tw.tween_callback(_animate_attack.bind(_mech_views[i], tv, ranged, hit, BLOW_AT + Sound.lands(blow)))
 		else:
 			_animate_attack(_mech_views[i], tv, ranged, hit, landed)
-		Sound.play_after(fire_at, blow, CRIT_DB if bool(sk.last_roll.get("crit", false)) else 0.0)
+		Sound.play_after(fire_at, blow)
 		for k in range(dead.size()):
 			var w: Array = was[dead[k]]
 			_animate_death(w[0], w[1], w[2], w[3], landed)

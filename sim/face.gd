@@ -2,12 +2,11 @@ class_name Face
 extends RefCounted
 
 ## One face of a die. Reads as: primary icon (kind and reach), a number or a range (power to
-## power_max), a list of keywords, a heat cost, and a crit chance.
+## power_max), a list of keywords and a heat cost.
 ##
-## Numbers are in tens. A static face has power_max equal to power (energy weapons). A kinetic
-## face rolls between power and power_max when spent, and may crit for double.
-
-const CRIT_MULT := 2.0        # a crit multiplies the roll by this plus every crit bonus (component, passives): additive, tunable
+## Numbers are in tens. A flat face has power_max equal to power and involves no roll; a rolled
+## face rolls between power and power_max when spent. There are no crits (10 October): chances
+## live on riders, never on the damage (bible section 5, the damage ranges row).
 
 enum Kind { ATTACK, SHIELD, VENT, BLANK, BUFF }
 enum Reach { NONE, LINE, INDIRECT, MELEE }
@@ -61,12 +60,10 @@ static func keyword_label(k: int) -> String:
 var kind: int = Kind.ATTACK
 var reach: int = Reach.LINE
 var power: int = 20
-var power_max: int = 20       # equal to power for a static face
-var crit: int = 0             # percent chance to crit
-var crit_bonus: float = 0.0   # added to the crit multiplier (base Skirmish.CRIT_MULT); +0.5 means crits do half again more
+var power_max: int = 20       # equal to power for a flat face
 var keywords: Array[int] = []
 var heat: int = 0
-var strikes: int = 1          # blows per use: a rapid-fire weapon lands many small hits (each rolls, crits and procs on its own)
+var strikes: int = 1          # blows per use: a rapid-fire weapon lands many small hits (each rolls and procs on its own)
 var label: String = ""
 var cracked: bool = false     # injured: modifiers gone, basic action intact
 var component: String = ""    # the component this entry is (content id); "" for an empty hardpoint
@@ -82,14 +79,13 @@ var power_per_heat: int = 0   # ...and each 10 heat it fired adds this to the bl
 
 
 ## `kws` may be a single Keyword or an Array of them. `pwr_max` of 0 means static.
-static func attack(pwr: int, rch: int = Reach.LINE, kws = [], ht: int = 0, pwr_max: int = 0, crit_pct: int = 0) -> Face:
+static func attack(pwr: int, rch: int = Reach.LINE, kws = [], ht: int = 0, pwr_max: int = 0) -> Face:
 	var f := Face.new()
 	f.kind = Kind.ATTACK
 	f.targets = Target.FOE
 	f.reach = rch
 	f.power = pwr
 	f.power_max = maxi(pwr, pwr_max)
-	f.crit = crit_pct
 	f.heat = ht
 	if kws is Array:
 		for k in kws:
@@ -185,7 +181,7 @@ static func target_from_name(name: String) -> int:
 
 
 ## Build from content JSON: {"kind": "attack", "reach": "line", "power": 20, "power_max": 50,
-## "crit": 15, "keywords": ["cleave"], "heat": 10}. Unknown names are ignored here; the
+## "keywords": ["cleave"], "heat": 10}. Unknown names are ignored here; the
 ## content validator reports them.
 static func from_dict(d: Dictionary) -> Face:
 	var f := Face.new()
@@ -195,8 +191,6 @@ static func from_dict(d: Dictionary) -> Face:
 	f.reach = r if r >= 0 else Reach.NONE
 	f.power = int(d.get("power", 0))
 	f.power_max = maxi(f.power, int(d.get("power_max", f.power)))
-	f.crit = int(d.get("crit", 0))
-	f.crit_bonus = float(d.get("crit_bonus", 0.0))
 	f.heat = int(d.get("heat", 0))
 	f.strikes = maxi(1, int(d.get("strikes", 1)))
 	if f.kind == Kind.ATTACK:
@@ -229,10 +223,6 @@ func to_dict() -> Dictionary:
 	}
 	if power_max != power:
 		d["power_max"] = power_max
-	if crit > 0:
-		d["crit"] = crit
-	if crit_bonus != 0.0:
-		d["crit_bonus"] = crit_bonus
 	if strikes > 1:
 		d["strikes"] = strikes
 	if kind != Kind.ATTACK and targets != Target.SELF_ALLY:
@@ -279,7 +269,7 @@ func can_target_ally() -> bool:
 	return is_equipment() and (targets == Target.SELF_ALLY or targets == Target.ALLY)
 
 
-## Kinetic: the face rolls when spent.
+## Rolled: the face rolls when spent. A flat face involves no roll, whatever feeds its number.
 func is_ranged() -> bool:
 	return power_max > power
 
@@ -294,8 +284,6 @@ func duplicate_face() -> Face:
 	f.reach = reach
 	f.power = power
 	f.power_max = power_max
-	f.crit = crit
-	f.crit_bonus = crit_bonus
 	f.heat = heat
 	f.strikes = strikes
 	f.label = label
@@ -315,7 +303,7 @@ func duplicate_face() -> Face:
 	return f
 
 
-## An injury: the component keeps its action, its numbers, its crit and its heat, and loses
+## An injury: the component keeps its action, its numbers and its heat, and loses
 ## its keywords (Ryan, 18 September: cracked is the mild state; destroyed is the real one).
 ## A cracked component hit again is destroyed, which is Face.blank().
 func crack() -> void:
@@ -360,10 +348,6 @@ func describe() -> String:
 				s += " ×%d" % strikes
 			for k in keywords:
 				s += " " + keyword_label(k)
-			if crit > 0:
-				s += " crit %d%%" % crit
-				if crit_bonus != 0.0:
-					s += " (×%s)" % _trim(CRIT_MULT + crit_bonus)   # the resulting multiplier, never the bonus
 			if vents_all:
 				s += " vents all" + (", +%d per 10 heat" % power_per_heat if power_per_heat > 0 else "")
 			if heat > 0:
@@ -371,7 +355,3 @@ func describe() -> String:
 	if cracked:
 		s += " (cracked)"
 	return s
-
-
-static func _trim(x: float) -> String:
-	return str(x) if x != floorf(x) else str(int(x))

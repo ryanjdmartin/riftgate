@@ -426,22 +426,32 @@ func test_steady_deals_the_average() -> void:
 	assert_eq(sk.front[0].hp, 165, "20 to 50 steady deals 35")
 
 
-func test_crit_doubles_the_roll() -> void:
-	var sk := Skirmish.new(1)
-	sk.add_mech(_mech("A", Die.single(Face.attack(30, L, [], 0, 0, 100))))
-	sk.add_foes([_ghoul(200)])
-	sk.begin()
-	sk.start_round()
-	sk.assign(0, sk.front[0])
-	assert_eq(sk.front[0].hp, 140, "30 crit for 60")
-	assert_true(sk.last_roll["crit"], "recorded as a crit")
-	var never := Skirmish.new(1)
-	never.add_mech(_mech("B", Die.single(Face.attack(30, L, [], 0, 0, 0))))
-	never.add_foes([_ghoul(200)])
-	never.begin()
-	never.start_round()
-	never.assign(0, never.front[0])
-	assert_eq(never.front[0].hp, 170, "zero crit chance never crits")
+## No crits (10 October): a raised ceiling (add_ceiling, the Muzzle Velocity Booster) widens a
+## rolled range before the roll, the face shows it, and a flat face gets nothing.
+func test_a_raised_ceiling_widens_a_rolled_range_and_leaves_a_flat_one() -> void:
+	var gun := Face.attack(10, L, [], 0, 20)
+	var beam := Face.attack(15, L)
+	var m := _mech("A", Die.of([gun, beam]))
+	m.grant_passive({"id": "mv", "name": "MV", "description": "", "effects": [{"trigger": "on_attack", "effect": "add_ceiling", "value": 10}]})
+	var shown := Effects.effective_face(m, gun)
+	assert_eq([shown.power, shown.power_max], [10, 30], "the rolled face shows 10 to 30")
+	assert_eq(gun.power_max, 20, "the die keeps the real one")
+	assert_eq(Effects.effective_face(m, beam).power_max, 15, "a flat face has no range to widen")
+	var high := 0
+	for seed in range(40):
+		var sk := Skirmish.new(seed)
+		var u := _mech("A", Die.single(Face.attack(10, L, [], 0, 20)))
+		u.grant_passive({"id": "mv", "name": "MV", "description": "", "effects": [{"trigger": "on_attack", "effect": "add_ceiling", "value": 10}]})
+		sk.add_mech(u)
+		sk.add_foes([_ghoul(200)])
+		sk.begin()
+		sk.start_round()
+		sk.assign(0, sk.front[0])
+		var dealt: int = 200 - sk.front[0].hp
+		assert_true(dealt >= 10 and dealt <= 30, "every roll between 10 and 30: %d" % dealt)
+		if dealt > 20:
+			high += 1
+	assert_true(high > 0, "and some land above the old ceiling")
 
 
 func test_static_energy_face_never_varies() -> void:
@@ -610,7 +620,7 @@ func test_small_hits_and_shielded_hits_never_crack() -> void:
 
 func test_injury_cracks_then_destroys_and_persists_until_repaired() -> void:
 	var sk := Skirmish.new(3)
-	var d := Die.single(Face.attack(30, L, [K.CLEAVE, K.BURN], 10, 50, 15))
+	var d := Die.single(Face.attack(30, L, [K.CLEAVE, K.BURN], 10, 50))
 	var m := _mech("A", d, 0, 100)
 	sk.add_mech(m)
 	sk.add_foes([Foe.make("revenant", 90, 10)])
@@ -622,7 +632,7 @@ func test_injury_cracks_then_destroys_and_persists_until_repaired() -> void:
 	assert_eq(f.kind, Face.Kind.ATTACK, "it still attacks")
 	assert_eq(f.power, 30, "with its basic damage")
 	assert_true(f.keywords.is_empty(), "keywords gone")
-	assert_eq(f.crit, 15, "crit kept (18 September: a crack takes only the keywords)")
+	assert_eq(f.power_max, 50, "its range kept (18 September: a crack takes only the keywords)")
 	assert_true(f.describe().ends_with("(cracked)"), "described as cracked")
 	assert_eq(m.damaged_component_count(), 1, "one damaged component on the unit")
 	sk.apply_injury(sk.mechs[0])
@@ -781,8 +791,8 @@ func test_reroll_always_lands_on_a_different_face() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 11
 	var die := Die.of([
-		Face.attack(20, Face.Reach.LINE, [], 0, 40, 10),
-		Face.attack(20, Face.Reach.LINE, [], 0, 40, 10),
+		Face.attack(20, Face.Reach.LINE, [], 0, 40),
+		Face.attack(20, Face.Reach.LINE, [], 0, 40),
 		Face.attack(30),
 		Face.shield(20),
 	])
@@ -841,7 +851,7 @@ func test_four_columns_fill_and_reach() -> void:
 
 func test_no_destroy_passive_holds_a_cracked_component() -> void:
 	var sk := Skirmish.new(3)
-	var d := Die.single(Face.attack(30, L, [K.CLEAVE], 0, 50, 15))
+	var d := Die.single(Face.attack(30, L, [K.CLEAVE], 0, 50))
 	var m := _mech("A", d, 0, 100)
 	m.grant_passive({"id": "hold", "name": "Hold", "description": "", "effects": [{"trigger": "on_injury", "effect": "no_destroy", "value": 1}]})
 	sk.add_mech(m)
@@ -876,10 +886,10 @@ func test_cracked_condition_narrows_a_passive_to_cracked_components() -> void:
 	var u := Unit.mech(0, "A", Vector2i.ZERO)
 	u.grant_passive(bonus)
 	var f := Face.attack(20, L)
-	assert_eq(Effects.attack(u, f, 20, 0, false)["damage"], 20, "an intact component gets nothing")
+	assert_eq(Effects.attack(u, f, 20, 0)["damage"], 20, "an intact component gets nothing")
 	f.crack()
-	assert_eq(Effects.attack(u, f, 20, 0, false)["damage"], 30, "a cracked one hits harder")
-	assert_eq(Effects.attack(u, null, 20, 0, false)["damage"], 20, "no component in hand, no bonus")
+	assert_eq(Effects.attack(u, f, 20, 0)["damage"], 30, "a cracked one hits harder")
+	assert_eq(Effects.attack(u, null, 20, 0)["damage"], 20, "no component in hand, no bonus")
 
 
 func test_shield_never_comes_back_on_its_own_in_a_fight() -> void:
@@ -999,22 +1009,6 @@ func test_strikes_are_separate_blows_with_their_own_rolls_and_procs() -> void:
 	assert_eq(Face.from_dict(gun.to_dict()).strikes, 3, "strikes survive content round-trip")
 
 
-func test_crit_bonuses_add_to_one_multiplier() -> void:
-	var sk := Skirmish.new(1)
-	var gun := Face.attack(30, L, [], 0, 0, 100)
-	gun.crit_bonus = 0.5
-	var m := _mech("A", Die.single(gun))
-	m.grant_passive({"id": "eye", "name": "Eye", "description": "", "effects": [{"trigger": "on_crit", "effect": "add_crit_damage", "value": 0.5}]})
-	sk.add_mech(m)
-	sk.add_foes([_ghoul(200)])
-	sk.begin()
-	sk.start_round()
-	sk.assign(0, sk.front[0])
-	assert_eq(sk.front[0].hp, 110, "30 at base 2 plus 0.5 plus 0.5 is 90: additive, not 2 x 1.5 x 1.5")
-	assert_eq(gun.describe(), "30 crit 100% (×2.5)", "the readout shows the component's own resulting multiplier")
-	assert_eq(Face.from_dict(gun.to_dict()).crit_bonus, 0.5, "crit_bonus survives content round-trip")
-
-
 func test_melee_reaches_the_back_only_when_the_whole_front_is_empty() -> void:
 	var sk := Skirmish.new(1)
 	sk.add_mech(_mech("A", Die.single(Face.attack(30, Face.Reach.MELEE))))
@@ -1030,7 +1024,7 @@ func test_melee_reaches_the_back_only_when_the_whole_front_is_empty() -> void:
 
 func test_static_set_reach_sends_a_cracked_component_to_melee() -> void:
 	var sk := Skirmish.new(3)
-	var mortar := Face.attack(30, I, [], 0, 0, 15)
+	var mortar := Face.attack(30, I)
 	var m := _mech("A", Die.single(mortar), 0, 100)
 	m.grant_passive({"id": "rs", "name": "RS", "description": "", "effects": [
 		{"trigger": "on_attack", "effect": "multiply_damage", "value": 1.1, "when": "reach_melee"},
@@ -1045,10 +1039,9 @@ func test_static_set_reach_sends_a_cracked_component_to_melee() -> void:
 	assert_true(f.cracked and f.reach == Face.Reach.INDIRECT, "cracked; the component itself is untouched")
 	assert_eq(sk.reach_of(sk.mechs[0], f), Face.Reach.MELEE, "but read through the passive it is melee")
 	assert_eq(sk.shown_face(sk.mechs[0], f).reach, Face.Reach.MELEE, "and the screen shows it as melee")
-	assert_eq(f.crit, 15, "and keeps its crit")
 	assert_eq(sk.targets_for(0).size(), 1, "so it reaches only the front")
 	sk.assign(0, sk.front[0])
-	assert_true(sk.front[0].hp == 167 or sk.front[0].hp == 134, "30 at 1.1 is 33 (or 66 on a crit): the melee bonus follows the effective reach")
+	assert_eq(sk.front[0].hp, 167, "30 at 1.1 is 33: the melee bonus follows the effective reach")
 	var saved: Array = m.modifiers
 	m.modifiers = []
 	assert_eq(sk.reach_of(sk.mechs[0], f), Face.Reach.INDIRECT, "take the passive away (suppressed, or an ally reading it) and the reach is its own again")
@@ -1136,12 +1129,12 @@ func test_a_destroyed_component_keeps_its_bonus_and_loses_its_ability() -> void:
 		{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 10},
 		{"trigger": "on_attack", "effect": "add_damage", "value": 10}]}, "big_gun", "big_gun")
 	assert_eq(u.armour, 10, "fitted: the bonus")
-	assert_eq(Effects.attack(u, gun, 30, 0, false)["damage"], 40, "fitted: the ability")
+	assert_eq(Effects.attack(u, gun, 30, 0)["damage"], 40, "fitted: the ability")
 	var wreck := Face.blank()
 	wreck.component = "big_gun"
 	u.die.faces[0] = wreck
 	assert_eq(u.armour, 10, "destroyed: the bonus stays")
-	assert_eq(Effects.attack(u, gun, 30, 0, false)["damage"], 30, "destroyed: the ability is gone")
+	assert_eq(Effects.attack(u, gun, 30, 0)["damage"], 30, "destroyed: the ability is gone")
 
 
 func test_shorter_lived_sources_override_longer_ones() -> void:
@@ -1561,7 +1554,7 @@ func test_a_target_status_condition_reads_the_foe_struck() -> void:
 	var notes := Effects.explain(m, m.die.faces[0])
 	assert_eq(notes.size(), 1, "the die row shows the rule")
 	assert_true(notes[0].begins_with("foes carrying a status: damage ×1.5"), "with its condition as the lead: %s" % notes[0])
-	assert_eq(int(Effects.attack(m, m.die.faces[0], 20, 0, false)["damage"]), 20, "asked without a target, the condition does not hold")
+	assert_eq(int(Effects.attack(m, m.die.faces[0], 20, 0)["damage"]), 20, "asked without a target, the condition does not hold")
 
 
 func test_stacks_a_hot_machine_applies_run_deeper() -> void:
@@ -2299,7 +2292,7 @@ func test_the_crucible_stacks_overheating_on_hull_hits_and_melee_grows_with_it()
 	assert_eq(g.hp, 470 - 45, "30 plus 5 a stack for three")
 	# A line weapon gains nothing, and the round's overheat burn never feeds it.
 	var gun := Face.attack(30, L)
-	assert_eq(int(Effects.attack(m, gun, 30, 0, false, g)["damage"]), 30, "not a melee blow")
+	assert_eq(int(Effects.attack(m, gun, 30, 0, g)["damage"]), 30, "not a melee blow")
 	var before := Effects.stacks_of(m, "overheating")
 	sk.mechs[0].heat = sk.mechs[0].heat_max + 20
 	sk._settle_heat()

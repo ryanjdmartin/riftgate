@@ -642,13 +642,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: only attacks strike more than once" % where)
 	if fd.has("power_max") and int(fd["power_max"]) < int(fd.get("power", 0)):
 		errs.append("%s: power_max below power" % where)
-	var crit := int(fd.get("crit", 0))
-	if crit < 0 or crit > 100:
-		errs.append("%s: crit must be 0 to 100" % where)
-	if crit > 0 and kind != "attack":
-		errs.append("%s: only attack faces crit" % where)
-	if float(fd.get("crit_bonus", 0.0)) <= -Face.CRIT_MULT:
-		errs.append("%s: crit_bonus would make crits do nothing or heal" % where)
+	# No crits since 10 October (bible section 5, the damage ranges row): chances live on
+	# riders, so a face that still carries one is stale content.
+	if fd.has("crit") or fd.has("crit_bonus"):
+		errs.append("%s: there are no crits (10 October); drop crit and crit_bonus" % where)
 	if (fd.has("vents_all") or fd.has("power_per_heat")) and kind != "attack":
 		errs.append("%s: vents_all and power_per_heat belong to an attack" % where)
 	if fd.has("power_per_heat") and not bool(fd.get("vents_all", false)):
@@ -796,8 +793,8 @@ const SOUNDS := ["barrel", "twin_barrel", "rack", "blade", "blunt", "laser", "pl
 ## The sound a component's use plays, as layers (the first the blow, each after it riding on
 ## the landing): its `sound` where content names one, else derived as SOUNDS says. A shield
 ## is a deflector and a buff a coil, whatever the mount; an attack is its shape, an energy
-## barrel a laser and the Arsenal's a plasma (energy is the static face: no power_max above
-## power, no crit); a dish that attacks (the Klaxon's lure) is a coil; an attack with no
+## barrel a laser and the Arsenal's a plasma (the flat face: no power_max above
+## power); a dish that attacks (the Klaxon's lure) is a coil; an attack with no
 ## mount sounds by its reach. A vent, or an id content does not know, is [].
 func sound_of(component_id: String) -> Array[String]:
 	var out: Array[String] = []
@@ -820,7 +817,7 @@ func sound_of(component_id: String) -> Array[String]:
 		return out
 	var shape := str(c.get("shape", SHAPE_NONE))
 	var power := int(face.get("power", 0))
-	var energy := int(face.get("power_max", power)) <= power and int(face.get("crit", 0)) == 0
+	var energy := int(face.get("power_max", power)) <= power
 	if shape == "barrel" and energy:
 		out.append("plasma" if str(c.get("maker", "")) == "arsenal" else "laser")
 	elif shape == "dish":

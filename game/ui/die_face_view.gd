@@ -4,8 +4,8 @@ extends Control
 ## A die drawn as an object under the tactical overlay. The face is a chamfered square that
 ## bobs gently; its keywords sit as small annotation chips hugging its right edge, one per
 ## keyword, bright and flickering now and then. On the face, as Ryan sketched it: the primary
-## glyph large at the top centre, the number or range beneath it, heat bottom-left, crit
-## bottom-right, the lock top-right. A locked die gets bracket corners and a LOCKED readout.
+## glyph large at the top centre, the number or range beneath it, heat bottom-left, the lock
+## top-right. A locked die gets bracket corners and a LOCKED readout.
 ## A unique effect adds a star chip.
 ##
 ## Gestures:
@@ -226,9 +226,6 @@ func _draw() -> void:
 	if face.heat > 0:
 		var hc := Color(Palette.HEAT, alpha)
 		draw_string(mono, Vector2(10.0, FACE - 9.0 + bob), "+%d HEAT" % face.heat, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, hc)
-	if face.crit > 0:
-		var cc := Color(Palette.SELECT, alpha)
-		draw_string(mono, Vector2(0, FACE - 9.0 + bob), "✦%d" % face.crit, HORIZONTAL_ALIGNMENT_RIGHT, FACE - 10.0, 12, cc)
 	if locked and not spent:
 		Glyphs.draw(self, "lock", Vector2(FACE - 20.0, 20.0 + bob), 14, hud, 2.0)
 	# Annotation chips hugging the right edge, one per keyword, star for a unique effect.

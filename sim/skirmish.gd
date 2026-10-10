@@ -72,14 +72,14 @@ var outcome: int = Outcome.NONE
 var destroyed: int = 0   # components destroyed this fight, for the balance runner (the hangar's destroyed-is-gone rule, bible section 10, depends on the rate)
 var log: Array[String] = []
 
-## The most recent attack, for the screen to show: {mech, target, rolled, final, crit, ranged}.
+## The most recent attack, for the screen to show: {mech, target, rolled, final, ranged}.
 var last_roll: Dictionary = {}
 ## What each reach did this fight, for the balance runner's reach table (tools/balance.gd):
 ## by reach name, the spends, the hull its blows took off foes, the spends aimed at the back
 ## rank, the heat paid and the shield lost to danger close. Never read by the game.
 var reach_tally: Dictionary = {}
-## The same by the shape of the number (rolled or flat), with the crits and what they
-## added, and the damage the foes dealt by the rank they struck from. The runner's alone.
+## The same by the shape of the number (rolled or flat), and the damage the foes dealt by
+## the rank they struck from. The runner's alone.
 var class_tally: Dictionary = {}
 var taken_by_rank: Dictionary = {}
 var _chaining := false
@@ -229,7 +229,7 @@ func pending_heat(ms: MechState) -> int:
 	var f := ms.face()
 	if f == null or ms.assigned or not f.is_attack():
 		return 0
-	var added: int = Effects.attack(ms.unit, f, 0, f.heat, false)["heat"]
+	var added: int = Effects.attack(ms.unit, f, 0, f.heat)["heat"]
 	return added - ms.heat if f.vents_all else added
 
 
@@ -877,18 +877,15 @@ func withdraw() -> bool:
 
 # ---------------------------------------------------------------- resolution
 
-## Spend an attack: every strike is its own blow (its own roll, its own crit, its own
-## keywords and passives), landing on every foe the component reaches. Heat is paid once per
+## Spend an attack: every strike is its own blow (its own roll, its own keywords and
+## passives), landing on every foe the component reaches. Heat is paid once per
 ## use; danger close is charged on the total.
 func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> void:
 	var reach := reach_of(ms, f)
 	var aimed_back := target.rank == 1
 	var dealt := 0             # hull the blows took off every foe they reached, for the reach tally
-	var crits := 0
-	var crit_extra := 0        # what the crits added to the blows, for the class tally
 	var total := 0
 	var rolled_total := 0
-	var any_crit := false
 	var heat_total := 0
 	var vent := 0
 	var extra_burn := 0
@@ -910,12 +907,6 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 		rolled += fired
 		var dmg := rolled
 		var heat := f.heat if s == 0 else 0
-		var crit := f.crit > 0 and rng.randi_range(1, 100) <= f.crit
-		if crit:
-			var plain := dmg
-			dmg = int(roundf(dmg * (Face.CRIT_MULT + f.crit_bonus + Effects.crit_bonus(ms.unit, f, target))))
-			crits += 1
-			crit_extra += dmg - plain
 		if f.has(Face.Keyword.EXECUTE):
 			target.executed = true   # a foe that would get back up stays down
 			if target.hp * 2 <= target.hp_max:
@@ -923,7 +914,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 		# Then the pipeline: every live modifier's adds, multiplies and floors, in that order.
 		# Conditions on the foe read the primary target; a spread or a penetrate carries
 		# the same blow to the others.
-		var modded := Effects.attack(ms.unit, f, dmg, heat, crit, target)
+		var modded := Effects.attack(ms.unit, f, dmg, heat, target)
 		dmg = modded["damage"]
 		heat_total += modded["heat"]
 		extra_burn += modded["burn"]
@@ -983,7 +974,6 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 				touched.append(foe)
 		total += landed
 		rolled_total += rolled
-		any_crit = any_crit or crit
 	if extra_burn > 0:
 		Effects.stack(target, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", _stacks_from(ms, "burning", extra_burn))
 		_foe_gained_status(target, "burning")
@@ -998,11 +988,9 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 		_disrupt(touched)
 	if f.has(Face.Keyword.LURE):
 		_lure(ms, touched)
-	last_roll = {"mech": mech_index, "target": target, "rolled": rolled_total, "final": total, "crit": any_crit, "ranged": f.is_ranged()}
+	last_roll = {"mech": mech_index, "target": target, "rolled": rolled_total, "final": total, "ranged": f.is_ranged()}
 	var how := f.describe()
-	if any_crit:
-		how = "CRIT " + how
-	elif f.is_ranged():
+	if f.is_ranged():
 		how = "rolled %d, " % rolled_total + how
 	log.append("%s hits %s for %d (%s)%s" % [ms.unit.display_name, target.display_name, total, how, " (armour -%d)" % armoured_total if armoured_total > 0 else ""])
 	if vented_all > 0:
@@ -1020,7 +1008,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 			log.append("%s: splash, shield -%d" % [ms.unit.display_name, splash])
 	if f.power > 0 or f.power_max > 0:   # a lure or a probe deals nothing: it is no spend of damage
 		_tally_reach(reach, dealt, aimed_back, heat_total, splashed)
-		_tally_class(f.is_ranged(), dealt, heat_total, crits, crit_extra, maxi(1, f.strikes))
+		_tally_class(f.is_ranged(), dealt, heat_total, maxi(1, f.strikes))
 	if vent > 0:
 		ms.heat = maxi(0, ms.heat - vent)
 	_add_heat(ms, heat_total)
@@ -1152,16 +1140,14 @@ func _tally_reach(reach: int, dealt: int, aimed_back: bool, heat: int, splashed:
 
 
 ## One attack's share of the class tally (the runner's; the game never reads it).
-func _tally_class(rolled: bool, dealt: int, heat: int, crits: int, crit_extra: int, strikes: int) -> void:
+func _tally_class(rolled: bool, dealt: int, heat: int, strikes: int) -> void:
 	var k := "rolled" if rolled else "flat"
-	var t: Dictionary = class_tally.get(k, {"spends": 0, "damage": 0, "heat": 0, "strikes": 0, "crits": 0, "crit_extra": 0})
+	var t: Dictionary = class_tally.get(k, {"spends": 0, "damage": 0, "heat": 0, "strikes": 0})
 	if not _chaining:
 		t["spends"] += 1
 	t["damage"] += dealt
 	t["heat"] += heat
 	t["strikes"] += strikes
-	t["crits"] += crits
-	t["crit_extra"] += crit_extra
 	class_tally[k] = t
 
 
@@ -1463,7 +1449,7 @@ static func _blow(shield: int, hull_max: int, armour: int, amount: int, breach: 
 
 
 ## The injury rolls the die and hits the component it lands on. An intact component cracks:
-## keywords, crit and unique effect are gone, the basic action stays. A cracked component is
+## keywords and unique effect are gone, the basic action stays. A cracked component is
 ## destroyed: blank. A destroyed component or an empty hardpoint takes the blow and nothing
 ## happens, so a mech with little left to break shrugs off more of them. The damage lives on
 ## the unit and persists until repaired in the hangar. (Decided 17 September: one threshold,

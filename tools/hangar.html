@@ -479,7 +479,7 @@ const FILTER_SPECS = {
     ],
     sorts: [BY_ORDER, BY_NAME, BY_MAKER,
       stat("power", "Power", e => (e.face || {}).power), stat("power_max", "Top power", e => (e.face || {}).power_max ?? (e.face || {}).power),
-      stat("crit", "Crit", e => (e.face || {}).crit), stat("heat", "Heat", e => (e.face || {}).heat ?? 0), stat("tier", "Tier", compTier),
+      stat("heat", "Heat", e => (e.face || {}).heat ?? 0), stat("tier", "Tier", compTier),
       stat("fitted", "Dice carrying it", e => ctx().fitted.get(e.id) || 0)],
     line: e => {
       const n = ctx().fitted.get(e.id) || 0;
@@ -712,7 +712,6 @@ function faceLine(f) {
   const p = f.power, pmax = f.power_max;
   if (kind === "attack") {
     bits.push(pmax && pmax !== p ? `${p}–${pmax}` : String(p));
-    if (f.crit) bits.push(`crit ${f.crit}%`);
     const r = REACH[f.reach] || f.reach; if (r) bits.push(r);
   } else if (kind === "buff") {
     bits.push(`${vocabName(f.status || "")} ×${Number(f.stacks || 1)}`);

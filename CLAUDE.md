@@ -10,7 +10,7 @@ godot --headless --path . --import                 # first run, and after adding
 perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s tests/run_tests.gd   # tests, about four minutes (watchdog: no `timeout` on macOS)
 godot --path .                                     # harness: skirmish screen and map viewer
 godot --headless --path . -s tools/export_vocabulary.gd   # regenerate docs/vocabulary.md
-perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200   # balance report to docs/balance.md (about 90 minutes with four domains); --trace "row|pack|policy|seed" for one fight's log; --crit none|energy for the crit what-ifs
+perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200   # balance report to docs/balance.md (about 90 minutes with four domains); --trace "row|pack|policy|seed" for one fight's log
 perl -e 'alarm 900; exec @ARGV' godot --headless --path . -s tools/map_survey.gd -- --seeds 200   # map generator report to docs/map_survey.md (shares, water, the horde's crossing, phases and reach by way of moving, every map type compared); --type KIND, --show SEED prints a map
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40   # whole runs played headless into docs/campaign_run.md (the campaign's placeholders against a plain player); --trace SEED prints one run
 tools/spriter/.venv/bin/python tools/sheet_export.py      # export enemy grids to art/foes, then --import
