@@ -751,15 +751,14 @@
     "stage": "draft",
     "fantasy": "Fists that weigh what the Arsenal says they weigh. Each blow burns, and each blow costs the machine a little of itself.",
     "niche": "The Nemesis's locked melee: energy, static, burning, and volatile so every punch feeds the Crucible.",
-    "notes": "Live since volatile landed (30 September). Claude's fill, 28 September; the name is from Ryan's list. Planned until volatile exists. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass."
+    "notes": "Live since volatile landed (30 September). Claude's fill, 28 September; the name is from Ryan's list. Planned until volatile exists. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass. 10 October (Ryan): volatile off; with the Nemesis's passive reading hull damage, a self-biting fist was a ramp and a payoff in one, so no other entry was ever worth spending. Something more like gravity is open (half damage to the foes beside it, or pulling a back-rank foe forward)."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
     "power": 15,
     "keywords": [
-     "burn",
-     "volatile"
+     "burn"
     ],
     "heat": 10
    },

@@ -411,7 +411,7 @@ static func _foe_dict(f: Foe, sk: Skirmish) -> Dictionary:
 		target = sk.mechs.find(f.target)
 	return {
 		"name": f.display_name, "content_id": f.content_id, "hp": f.hp, "hp_max": f.hp_max, "attack": f.attack,
-		"prefers_back": f.prefers_back, "pack_id": f.pack_id, "size": f.size, "stun_resist": f.stun_resist, "armour": f.armour, "aim": f.aim, "last_special": f.last_special, "kin": f.kin,
+		"prefers_back": f.prefers_back, "pack_id": f.pack_id, "size": f.size, "armour": f.armour, "aim": f.aim, "last_special": f.last_special, "kin": f.kin,
 		"actions": f.actions, "rank": f.rank, "column": f.column, "target": target,
 		"action": f.actions.find(f.action), "modifiers": mods,
 	}
@@ -427,7 +427,6 @@ static func _foe_from(d: Dictionary, sk: Skirmish) -> Foe:
 	f.prefers_back = bool(d.get("prefers_back", false))
 	f.pack_id = int(d.get("pack_id", 0))
 	f.size = int(d.get("size", 1))
-	f.stun_resist = int(d.get("stun_resist", 0))
 	f.armour = int(d.get("armour", 0))
 	f.aim = str(d.get("aim", Foe.AIM_EXPOSED))
 	f.last_special = str(d.get("last_special", ""))

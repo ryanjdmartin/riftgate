@@ -71,6 +71,10 @@ const CLEANSABLE := "cleansable"
 const STATUS := {
 	"burning": {"id": "burning", "name": "Burning", "description": "Loses 5 HP per stack at the start of its action, then loses a stack.",
 		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_hp", "value": 5}]},
+	# The Nemesis's Crucible (10 October): taking hull damage adds a stack, melee blows deal 5
+	# more a stack, and it lasts the skirmish (`decay` none overrides a passive's tick).
+	"crucible": {"id": "crucible", "name": "Crucible", "description": "Melee blows deal +5 per stack, for the skirmish.", "decay": "none",
+		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 5, "when": "tag_melee"}]},
 	"overheating": {"id": "overheating", "name": "Overheating", "description": "Gains 5 heat per stack at the end of the round, then loses a stack.",
 		"tags": ["dot", CLEANSABLE], "effects": [{"trigger": "status", "effect": "tick_heat", "value": 5}]},
 	"suppressed": {"id": "suppressed", "name": "Suppressed", "description": "Skips its telegraphed action this round.",
@@ -719,7 +723,8 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 			"stack_status":
 				var id := str(eff.get("value", ""))
 				if STATUS.has(id):
-					var m := stack(u if onto == null else onto, STATUS[id], SKIRMISH, "passive:" + str(pair[1].id), int(pair[1].stacks), DECAY_TICK)
+					var decay := DECAY_NONE if str(STATUS[id].get("decay", "")) == "none" else DECAY_TICK
+					var m := stack(u if onto == null else onto, STATUS[id], SKIRMISH, "passive:" + str(pair[1].id), int(pair[1].stacks), decay)
 					if m != null and not (out["statuses"] as Array).has(m.name):
 						(out["statuses"] as Array).append(m.name)
 	return out

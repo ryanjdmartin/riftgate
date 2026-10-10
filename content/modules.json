@@ -101,24 +101,22 @@
    "tier": 2,
    "codex": "",
    "flavour": "",
-   "stats": {
-    "shield": -20
-   },
+   "stats": {},
    "text": {
-    "description": "Its rolled weapons reach 10 higher.",
+    "description": "Its rolled weapons reach 5 higher.",
     "effects": [
      {
       "trigger": "on_attack",
       "effect": "add_ceiling",
-      "value": 10
+      "value": 5
      }
     ]
    },
    "design": {
     "stage": "draft",
     "fantasy": "Everything leaves the barrel faster. Including the barrel, eventually.",
-    "niche": "A prototype: the ceiling of every rolled weapon raised, at the price of the shield; the Tactical Databank's floor is the other way.",
-    "notes": "Claude's proposal of 9 October, in Ryan's pick of the whole catalogue the same day; numbers are placeholders. 10 October (Ryan): no crits, so it raises the top of the range instead (it was triple-damage crits); never tuned to parity with the Databank, since a module carries stats too."
+    "niche": "The ceiling to the Tactical Databank's floor: a rolled weapon's highest roll raised a little.",
+    "notes": "Claude's proposal of 9 October, in Ryan's pick of the whole catalogue the same day; numbers are placeholders. 10 October (Ryan): no crits, so it raises the top of the range instead (it was triple-damage crits); never tuned to parity with the Databank, since a module carries stats too. Then (Ryan): mirror images with the Databank, 5 each with no stats (its -20 shield was left over from the crit module), until the runner's module rows measure them."
    }
   },
   {
@@ -194,9 +192,7 @@
    "tier": 2,
    "codex": "",
    "flavour": "",
-   "stats": {
-    "hull": 20
-   },
+   "stats": {},
    "text": {
     "description": "Its rolled weapons' lowest roll is 5 higher.",
     "effects": [
@@ -211,7 +207,7 @@
     "stage": "draft",
     "fantasy": "Every firing solution the regiment ever logged, in a box that hums.",
     "niche": "The floor to the Muzzle Velocity Booster's ceiling: a rolled weapon's lowest roll raised a little, with a little hull stapled on so it is worth a slot.",
-    "notes": "The Dingo's passive until 8 October, then the game's first module with its name kept (Ryan), with an ally in the fight. The ally condition was there so the Dingo's stealth could not carry it alone; stealth is gone, and Ryan said it may not be needed (9 October), so it is dropped for the runner to judge (Claude's lean; a raised minimum is the lighter fallback). 10 October (Ryan): a flat increase in place of rolling the maximum, more interesting and far less abusable; no stat line, and never tuned to parity with the Booster (a module carries stats too; the runner's module rows are the guard against a must-pick). Later on 10 October (Ryan, as on 9 October: increase the minimum instead of maxing it): the floor raised by a small amount, stats stapled on if that is too weak; the +5 on every blow was a flat damage increase, good everywhere and so bad design. Hull +20 is Claude's placeholder until the runner's module rows read it."
+    "notes": "The Dingo's passive until 8 October, then the game's first module with its name kept (Ryan), with an ally in the fight. The ally condition was there so the Dingo's stealth could not carry it alone; stealth is gone, and Ryan said it may not be needed (9 October), so it is dropped for the runner to judge (Claude's lean; a raised minimum is the lighter fallback). 10 October (Ryan): a flat increase in place of rolling the maximum, more interesting and far less abusable; no stat line, and never tuned to parity with the Booster (a module carries stats too; the runner's module rows are the guard against a must-pick). Later on 10 October (Ryan, as on 9 October: increase the minimum instead of maxing it): the floor raised by a small amount, stats stapled on if that is too weak; the +5 on every blow was a flat damage increase, good everywhere and so bad design. Hull +20 is Claude's placeholder until the runner's module rows read it. Then (Ryan): no reason, and no data, for a stat on one and a cost on the other, so the Databank and the Booster are mirror images, the floor and the ceiling 5 each with no stats, until the runner's module rows measure them."
    }
   },
   {

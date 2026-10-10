@@ -230,7 +230,6 @@ func make_foe(foe_id: String) -> Foe:
 	f.size = int(d.get("size", 1))
 	f.armour = maxi(0, int(d.get("armour", 0)))
 	f.aim = str(d.get("aim", Foe.AIM_EXPOSED))
-	f.stun_resist = clampi(int(d.get("stun_resist", 0)), 0, 100)
 	f.hero = bool(d.get("hero", false))
 	if d.get("on_death", {}) is Dictionary and d.get("on_death", {}).has("summon"):
 		f.on_death = {"summon": str(d["on_death"]["summon"]), "count": maxi(1, int(d["on_death"].get("count", 1)))}
@@ -1126,8 +1125,8 @@ func _validate_foes(errs: Array[String]) -> void:
 			errs.append("%s: a massive foe fills both ranks and must be rank front" % where)
 		if f.has("injures"):
 			errs.append("%s: 'injures' is gone; component injuries are a global rule" % where)
-		if f.has("stun_resist") and (int(f["stun_resist"]) < 0 or int(f["stun_resist"]) > 100):
-			errs.append("%s: stun_resist is a percent, 0 to 100" % where)
+		if f.has("stun_resist"):
+			errs.append("%s: no foe resists a suppress by nature (10 October); drop stun_resist" % where)
 		if f.has("zone") and (int(f["zone"]) < 1 or int(f["zone"]) > 4):
 			errs.append("%s: zone is the pack's ring in hexes, 1 to 4" % where)
 		if f.has("behaviour") and not ["push", "hunt"].has(str(f["behaviour"])):

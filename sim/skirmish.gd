@@ -1165,9 +1165,9 @@ func _tally_class(rolled: bool, dealt: int, heat: int, strikes: int) -> void:
 	class_tally[k] = t
 
 
-## Hull lost to a blow or a bite: the on_hull_damage passives fire (the Nemesis's Crucible
-## stacks Overheating; a shield raised or heat shed lands too). Never for the round's
-## overheat burn, which would feed itself.
+## Hull lost, to a blow, a bite or an overheat (Ryan, 10 October: taking hull damage is any of
+## them): the on_hull_damage passives fire (the Nemesis's Crucible, a shield raised, heat
+## shed, a buff stacked).
 func _hull_damaged(ms: MechState) -> void:
 	var parts := _apply(ms, Effects.hull_damaged(ms.unit))
 	if not parts.is_empty():
@@ -1425,6 +1425,8 @@ func _settle_heat() -> void:
 		ms.heat = ms.heat_max
 		overheats.append({"mech": mechs.find(ms), "over": over, "hull": ms.unit.hull})
 		log.append("%s overheats: hull -%d" % [ms.unit.display_name, over])
+		if ms.alive():
+			_hull_damaged(ms)   # an overheat is hull damage like any other (10 October)
 
 
 ## One blow. Decided 18 September: a standing shield blocks the whole blow, however small the

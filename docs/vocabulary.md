@@ -67,7 +67,7 @@ Status: 105 implemented, 8 planned, 0 idea.
 | **Lure** | Player keyword, on any entry aimed at a foe: a weapon, a status, or an entry that does nothing else. Every foe the entry reaches turns on this machine for the round, intents and all; reach and area decide who and how many. A lured foe whose move has no target keeps doing it. | implemented |
 | **Shock** | Player keyword, on any entry aimed at a foe. Every foe the entry reaches and leaves standing is Shocked: the next blow it takes deals double. The entry's own blow never spends the shock it leaves. | implemented |
 | **Disrupt** | Player keyword, on any entry aimed at a foe. The foe does its other move instead, this round, and its new intent shows at once. A foe with nothing else open is not moved. | implemented |
-| **Suppress** | Player keyword. The target skips its telegraphed action this round, then gains two stacks of Numbed (three if massive). A foe may shrug it off: its own stun resistance plus 10% a Numbed stack. | implemented |
+| **Suppress** | Player keyword. The target skips its telegraphed action this round, then gains two stacks of Numbed (three if massive). A foe may shrug it off at 10% a Numbed stack; no foe resists by nature. | implemented |
 | **Volatile** | Player keyword, on any kind of component. Spending it bites its owner for 10 hull, past shield and armour, before the component acts. A blank is never spent, so a disabled entry does not bite. | implemented |
 | **Devour** | Player keyword. Every foe this component kills gives its owner a stack of Overcharged for the skirmish; the stacks fade one a round at the round's end. | implemented |
 | **Chain** | If this attack kills an enemy, repeat it on a new, valid target. | implemented |
@@ -94,13 +94,14 @@ Status: 105 implemented, 8 planned, 0 idea.
 | **Suppressed** | Foe status. Skips its action this round, then clears. | implemented |
 | **Cracked component** | Mech status, global rule. When a blow lands on bare hull (no shield standing) and what gets past armour is at least a quarter of maximum hull, the mech's die is rolled and the component it lands on is injured. An intact component cracks: it loses its keywords and unique effects, but still does its basic action, still generates heat, and still provides its passive bonuses and abilities. Any shield standing, however small, prevents injury, except against a breach; a foe's double strike is the other way past it. A cracked component stays cracked across skirmishes and battles until repaired in the hangar. | implemented |
 | **Destroyed component** | Mech status. When an injury lands on a component that is already cracked, it is destroyed: blank, it does nothing when it comes up, and provides its passive bonuses but not passive abilities. until the hangar repairs or replaces it. An injury that lands on a destroyed component or an empty hardpoint finds nothing to break, so a badly broken mech shrugs off more of them. | implemented |
+| **Crucible** | Machine buff, the Nemesis's: a stack for each time it takes hull damage (a blow, a bite of its own or an overheat), and its melee blows deal 5 more a stack. Lasts the skirmish. | implemented |
 | **Overheating** | Mech status. Gains 5 heat per stack at the end of the round, after the enemy has struck, then loses one stack. The mech-side counterpart of Burning: metal does not burn, it heats. Applied by foe attacks that scorch. Clears at end of skirmish. Can be cleansed. | implemented |
 
 ## Resistance
 
 | Term | Codex | Status |
 |---|---|---|
-| **Numbed** | Foe resistance, not a status or a buff: nothing reads it, deepens it, spreads it or cleanses it, and it never counts as a status (Ryan, 10 October). Each stack is 10% resistance to a suppress on top of the foe's own; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. Its chip wears brackets, not the box a status wears. | implemented |
+| **Numbed** | Foe resistance, not a buff or a debuff: nothing reads it, deepens it, spreads it or cleanses it, and it never counts as a status (Ryan, 10 October). Each stack is 10% resistance to a suppress, the only resistance a foe has; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. Its chip wears brackets, not the box a status wears. | implemented |
 
 ## Formation
 
@@ -189,7 +190,6 @@ Status: 105 implemented, 8 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Stun resistance** | A foe's base chance to shrug off a suppress, before Numbed. Rank and file have none; bosses carry some. | implemented |
 | **Aim** | What a foe's sense goes for when it picks whom to strike, chosen for every foe on its own as the round opens and shown as its arrow before you act. The exposed: weighted toward the machine its blow would hurt most, a shield standing lowering the draw and a shield about to break raising it. Anything: any machine alike. Heat: the hottest machine. The armed: a machine showing an intact weapon. Fires as one: the rank shares a pick. A move may aim differently from its foe. The pick is a commitment: a foe whose target shields up still swings at it. | implemented |
 | **Breach** | A breaching blow overflows: what the shield cannot absorb reaches the hull, and if that is a quarter of maximum hull it injures a component like any bare-hull blow. It breaks the fundamental promise that a standing shield stops the big hit, so it is a dangerous, uncommon attack modifier, and its counterplay is not the shield: redirect it or interrupt it. | implemented |
 | **Self-Destruct** | A blow that spends the striker: after it lands the foe is gone, whole, and nothing brings it back. The blow is the foe's whole life, so it is announced like any other and the answer is to kill it first or to shield what it has picked. | implemented |
@@ -219,7 +219,6 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Disrupt** (implemented): Decided 2 October in place of the planned Scramble and Confuse (bible, section 5). Deterministic: the next move in the foe's list that its conditions allow, so a boss steps through its pattern.
 - **Numbed** (implemented): Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths. Exempt from everything (Ryan, 2 October): a stun resist that passives or cleanses could touch is where other games' combat loops broke.
 - **Paradox** (implemented): Built 10 October (Ryan's pick of Claude's option B), in place of the 28 September chance to suppress. The count is a placeholder; the missing-shield clause is dropped.
-- **Stun resistance** (implemented): 30 on the three bosses as a placeholder.
 - **Volatile** (implemented): The Arsenal's self-damage (Ryan, 28 September), built 29 September: hull outright where the Corrupted bite takes shield first. The bite is a placeholder number (Skirmish.VOLATILE_BITE). It will feed the Nemesis's Crucible Capacitor once that counts blows that reach hull.
 - **Devour** (implemented): The Ammit's talons (28 September), built 29 September on the kill in the attack resolution: a spread that kills two feeds two, a chain feeds on every link. The Quintessence Tap, which stops the fade and keeps the stacks for the battle, is planned.
 - **Equipment** (implemented): Buffs will be equipment too, once they exist.
@@ -276,5 +275,6 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Strikes** (implemented): Heat is paid once per use, not per strike. Foes have no armour yet, so on the player side strikes only matter for procs until they do.
 - **Static** (implemented): Every read asks the pipeline; nothing is written to a stat or a component, so an effect that is gone stops answering. A static reach rule cannot be conditioned on reach.
 - **Order of operations** (implemented): Refit (the hangar) is what changes loadout-scoped effects; not built.
+- **Crucible** (implemented): Built 10 October from Ryan's wording of the passive; +5 a stack is a placeholder.
 - **Overheating** (implemented): Placeholder name and numbers, engine id overheating; Ryan is looking for the flavour.
 - **Scorch** (implemented): Placeholder name. No foe carries it yet; Ryan places it (fire demons, presumably).

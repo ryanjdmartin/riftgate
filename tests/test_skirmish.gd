@@ -1479,18 +1479,10 @@ func test_a_numbed_foe_shrugs_off_a_suppress_at_its_odds() -> void:
 			landed += 1
 			assert_eq(Effects.stacks_of(f, "numbed"), 5, "a suppress that lands numbs two more")
 	assert_true(landed > 110 and landed < 170, "about 140 of 200 land at 30%% resistance, got %d" % landed)
-	# A foe's own resistance counts before any Numbed, and a full one never lands.
-	var s2 := Skirmish.new(3)
-	s2.add_mech(_mech("A", Die.single(Face.attack(10, L, K.SUPPRESS)), 0, 100))
-	var stubborn := _ghoul(500, 30)
-	stubborn.stun_resist = 100
-	s2.add_foes([stubborn])
-	s2.begin()
-	s2.start_round()
-	assert_eq(stubborn.resist_total(), 100, "base resistance reads")
-	s2.assign(0, s2.front[0])
-	assert_false(stubborn.is_suppressed(), "never suppressed")
-	assert_eq(Effects.stacks_of(stubborn, "numbed"), 0, "and never numbed")
+	# No foe resists by nature (Ryan, 10 October): a first suppress always lands, boss or not.
+	var boss := _ghoul(500, 30)
+	boss.size = 2
+	assert_eq(boss.resist_total(), 0, "a fresh boss resists nothing")
 
 
 func test_a_corrupt_blow_rots_the_showing_entry_and_it_bites_when_spent() -> void:
@@ -2346,10 +2338,11 @@ func test_a_free_reroll_of_one_die_spares_the_teams() -> void:
 	assert_eq(sk.mechs[0].free_rerolls, 1, "back each round")
 
 
-func test_the_crucible_stacks_overheating_on_hull_hits_and_melee_grows_with_it() -> void:
-	var crucible := {"id": "crucible", "name": "Crucible Capacitor", "description": "", "effects": [
-		{"trigger": "on_attack", "effect": "add_damage", "value": 5, "per_stack": "overheating", "when": "tag_melee"},
-		{"trigger": "on_hull_damage", "effect": "stack_status", "value": "overheating"}]}
+## The Nemesis's Crucible in Ryan's words (10 October): taking hull damage increases melee damage
+## by 5 for the skirmish. A blow, a bite of its own and an overheat are all hull damage.
+func test_the_crucible_grows_melee_with_every_hull_hit_for_the_skirmish() -> void:
+	var crucible := {"id": "crucible_capacitor", "name": "Crucible Capacitor", "description": "", "effects": [
+		{"trigger": "on_hull_damage", "effect": "stack_status", "value": "crucible"}]}
 	var sk := Skirmish.new(1)
 	var fist := Face.attack(30)
 	fist.tags.append("melee")
@@ -2362,24 +2355,25 @@ func test_the_crucible_stacks_overheating_on_hull_hits_and_melee_grows_with_it()
 	sk.begin()
 	sk.start_round()
 	sk.assign(0, g)
-	assert_eq(g.hp, 470, "cold: a plain 30")
+	assert_eq(g.hp, 470, "untouched: a plain 30")
 	sk.end_round()
 	assert_eq(m.hull, 180, "two blows reached hull")
-	assert_eq(Effects.stacks_of(m, "overheating"), 1, "two stacks from the hits, one ticked away at the round's end")
-	assert_true("\n".join(sk.log).contains("A: Overheating from the hit"), "the log says so")
+	assert_eq(Effects.stacks_of(m, "crucible"), 2, "a stack each")
 	sk.start_round()
-	Effects.stack(m, Effects.STATUS["overheating"], Effects.SKIRMISH, "test", 2)
-	assert_eq(Effects.stacks_of(m, "overheating"), 3, "three stacks now")
-	assert_eq(Effects.explain(m, fist), ["melee weapons: damage +5 per stack of Overheating (Crucible Capacitor)"], "the die row says so")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(Effects.stacks_of(m, "crucible"), 4, "never fading: two more blows, four stacks")
+	assert_eq(Effects.explain(m, fist), ["melee weapons: damage +5 (Crucible)"], "the die row says so")
 	sk.assign(0, g)
-	assert_eq(g.hp, 470 - 45, "30 plus 5 a stack for three")
-	# A weapon without the tag gains nothing, and the round's overheat burn never feeds it.
+	assert_eq(g.hp, 470 - 50, "30 plus 5 a stack for four")
+	# A weapon without the tag gains nothing.
 	var gun := Face.attack(30, L)
 	assert_eq(int(Effects.attack(m, gun, 30, 0, g)["damage"]), 30, "not a melee blow")
-	var before := Effects.stacks_of(m, "overheating")
+	# An overheat is hull damage too.
+	var before := Effects.stacks_of(m, "crucible")
 	sk.mechs[0].heat = sk.mechs[0].heat_max + 20
 	sk._settle_heat()
-	assert_eq(Effects.stacks_of(m, "overheating"), before, "the burn is not a hit")
+	assert_eq(Effects.stacks_of(m, "crucible"), before + 1, "the overheat fed it")
 	# A volatile bite is the machine's own weapon reaching hull: it counts.
 	var s2 := Skirmish.new(2)
 	var n := _mech("N", Die.single(Face.attack(30, L, K.VOLATILE)), 40, 200)
@@ -2389,7 +2383,7 @@ func test_the_crucible_stacks_overheating_on_hull_hits_and_melee_grows_with_it()
 	s2.begin()
 	s2.start_round()
 	s2.assign(0, s2.front[0])
-	assert_eq(Effects.stacks_of(n, "overheating"), 1, "the bite fed the core")
+	assert_eq(Effects.stacks_of(n, "crucible"), 1, "the bite fed the core")
 
 
 func test_glacis_armours_against_the_front_rank_only() -> void:
