@@ -8,6 +8,7 @@
   "reach",
   "keyword",
   "status",
+  "resistance",
   "formation",
   "battlefield",
   "terrain",
@@ -251,12 +252,22 @@
   },
   {
    "id": "numbed",
-   "category": "status",
+   "category": "resistance",
    "name": "Numbed",
-   "codex": "Foe status. Each stack is 10% resistance to a suppress on top of the foe's own; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. Numbed is exempt from every other interaction: nothing deepens it, spreads it, cleanses it or reads it beyond suppress itself and its own decay.",
+   "codex": "Foe resistance, not a status or a buff: nothing reads it, deepens it, spreads it or cleanses it, and it never counts as a status (Ryan, 10 October). Each stack is 10% resistance to a suppress on top of the foe's own; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. Its chip wears brackets, not the box a status wears.",
    "status": "implemented",
    "design": {
     "holes": "Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths. Exempt from everything (Ryan, 2 October): a stun resist that passives or cleanses could touch is where other games' combat loops broke."
+   }
+  },
+  {
+   "id": "paradox",
+   "category": "status",
+   "name": "Paradox",
+   "codex": "Foe status. While a machine runs the Paradox meter (the Baboon's Pocket Paradox), a foe gains a stack each time it gains any other status: one a spend, however many strikes or stacks. At the machine's count (three) its past self knocks it out: it is Suppressed and the Paradox clears. A foe already suppressed loses its next action instead. Never decays. A status like any other: it counts for what reads a status, and a machine that deepens the statuses it applies deepens it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 10 October (Ryan's pick of Claude's option B), in place of the 28 September chance to suppress. The count is a placeholder; the missing-shield clause is dropped."
    }
   },
   {
@@ -863,7 +874,7 @@
    "id": "on_foe_status",
    "category": "trigger",
    "name": "On foe status",
-   "codex": "Passive trigger. Fires when any foe gains a status (Burning today; the buffs and debuffs to come), whoever applied it, and never for Suppressed or Numbed themselves. Effects: chance_suppress (a chance the foe is also Suppressed, rising per point of shield the owner is missing).",
+   "codex": "Passive trigger. Fires when any foe gains a status, whoever applied it: once for each status a spend puts on a foe, however many strikes or stacks (an application, not a stack). Never for Paradox, nor for the Suppressed a Paradox causes, and Numbed is no status. Effects: paradox (the foe gains a stack of Paradox; at the count it is Suppressed and the Paradox clears).",
    "status": "implemented",
    "design": {
     "holes": "One machine's passive so far (the Baboon's Pocket Paradox)."

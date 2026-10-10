@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 104 implemented, 8 planned, 0 idea.
+Status: 105 implemented, 8 planned, 0 idea.
 
 ## Resource
 
@@ -81,7 +81,7 @@ Status: 104 implemented, 8 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Numbed** | Foe status. Each stack is 10% resistance to a suppress on top of the foe's own; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. Numbed is exempt from every other interaction: nothing deepens it, spreads it, cleanses it or reads it beyond suppress itself and its own decay. | implemented |
+| **Paradox** | Foe status. While a machine runs the Paradox meter (the Baboon's Pocket Paradox), a foe gains a stack each time it gains any other status: one a spend, however many strikes or stacks. At the machine's count (three) its past self knocks it out: it is Suppressed and the Paradox clears. A foe already suppressed loses its next action instead. Never decays. A status like any other: it counts for what reads a status, and a machine that deepens the statuses it applies deepens it. | implemented |
 | **Retaliate** | Mech status. While it lasts, a foe that strikes this machine's bare hull is Shocked. From buff equipment it lasts the rounds the component says; the Armadillo's Faraday Hull carries it always. | implemented |
 | **Shocked** | Foe status. The next blow this foe takes deals double damage, then the status clears; a blow of nothing (a lure, a probe) leaves it standing. A Shocked foe that strikes bare hull again takes 10. Never stacks. Applied by a machine whose hull is live, and by weapons that shock. | implemented |
 | **Overcharged** | Mech status. Each stack is +5 damage on this machine's attacks, flat. From buff equipment it lasts through the rounds the component says; from devour it lasts the skirmish and loses a stack at the end of each round unless a passive says otherwise. | implemented |
@@ -95,6 +95,12 @@ Status: 104 implemented, 8 planned, 0 idea.
 | **Cracked component** | Mech status, global rule. When a blow lands on bare hull (no shield standing) and what gets past armour is at least a quarter of maximum hull, the mech's die is rolled and the component it lands on is injured. An intact component cracks: it loses its keywords and unique effects, but still does its basic action, still generates heat, and still provides its passive bonuses and abilities. Any shield standing, however small, prevents injury, except against a breach; a foe's double strike is the other way past it. A cracked component stays cracked across skirmishes and battles until repaired in the hangar. | implemented |
 | **Destroyed component** | Mech status. When an injury lands on a component that is already cracked, it is destroyed: blank, it does nothing when it comes up, and provides its passive bonuses but not passive abilities. until the hangar repairs or replaces it. An injury that lands on a destroyed component or an empty hardpoint finds nothing to break, so a badly broken mech shrugs off more of them. | implemented |
 | **Overheating** | Mech status. Gains 5 heat per stack at the end of the round, after the enemy has struck, then loses one stack. The mech-side counterpart of Burning: metal does not burn, it heats. Applied by foe attacks that scorch. Clears at end of skirmish. Can be cleansed. | implemented |
+
+## Resistance
+
+| Term | Codex | Status |
+|---|---|---|
+| **Numbed** | Foe resistance, not a status or a buff: nothing reads it, deepens it, spreads it or cleanses it, and it never counts as a status (Ryan, 10 October). Each stack is 10% resistance to a suppress on top of the foe's own; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. Its chip wears brackets, not the box a status wears. | implemented |
 
 ## Formation
 
@@ -157,7 +163,7 @@ Status: 104 implemented, 8 planned, 0 idea.
 | **On heat gain** | Passive trigger. Fires when this mech gains heat, with the amount; it may raise shield or grant a status, never add heat. | implemented |
 | **On round start** | Passive trigger. Fires after the roll, before rerolls: shield from heat, a flat shield, a vent. | implemented |
 | **On skirmish start** | Passive trigger. Fires once as the skirmish begins, before the first roll: a shield, a vent, a status. | implemented |
-| **On foe status** | Passive trigger. Fires when any foe gains a status (Burning today; the buffs and debuffs to come), whoever applied it, and never for Suppressed or Numbed themselves. Effects: chance_suppress (a chance the foe is also Suppressed, rising per point of shield the owner is missing). | implemented |
+| **On foe status** | Passive trigger. Fires when any foe gains a status, whoever applied it: once for each status a spend puts on a foe, however many strikes or stacks (an application, not a stack). Never for Paradox, nor for the Suppressed a Paradox causes, and Numbed is no status. Effects: paradox (the foe gains a stack of Paradox; at the count it is Suppressed and the Paradox clears). | implemented |
 | **On applying stacks** | Passive trigger. Fires when this machine applies stacks of a status to anyone: a foe's Burning (from a burn or from Primed), an ally's or its own buff, its own Overcharged from a devour. Effects: add_stacks (so many stacks more, flat or for every so much heat the machine carries). Never for Numbed, which is exempt from every interaction. | implemented |
 | **On hull damage** | Passive trigger. Fires when this mech loses hull to a blow or a bite, never to its own overheat. | implemented |
 | **Out of combat** | Passive trigger. Fires at the end of a battlefield phase in which this mech had no skirmish, after the field recharge: more shield. | implemented |
@@ -212,6 +218,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Shock** (implemented): Decided 9 October with the content revision: the Armadillo's Shocked on a weapon (the Polarity Projector at no damage, the Tesla Gauntlets on a melee blow). Shocked is a status, so a shock feeds an on_foe_status passive (the Baboon's Pocket Paradox), which a suppress never does. A shock on a foe already Shocked by a blow that deals nothing adds nothing; it never stacks.
 - **Disrupt** (implemented): Decided 2 October in place of the planned Scramble and Confuse (bible, section 5). Deterministic: the next move in the foe's list that its conditions allow, so a boss steps through its pattern.
 - **Numbed** (implemented): Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths. Exempt from everything (Ryan, 2 October): a stun resist that passives or cleanses could touch is where other games' combat loops broke.
+- **Paradox** (implemented): Built 10 October (Ryan's pick of Claude's option B), in place of the 28 September chance to suppress. The count is a placeholder; the missing-shield clause is dropped.
 - **Stun resistance** (implemented): 30 on the three bosses as a placeholder.
 - **Volatile** (implemented): The Arsenal's self-damage (Ryan, 28 September), built 29 September: hull outright where the Corrupted bite takes shield first. The bite is a placeholder number (Skirmish.VOLATILE_BITE). It will feed the Nemesis's Crucible Capacitor once that counts blows that reach hull.
 - **Devour** (implemented): The Ammit's talons (28 September), built 29 September on the kill in the attack resolution: a spread that kills two feeds two, a chain feeds on every link. The Quintessence Tap, which stops the fade and keeps the stacks for the battle, is planned.

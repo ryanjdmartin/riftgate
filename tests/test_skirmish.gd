@@ -1647,56 +1647,96 @@ func test_stacks_a_hot_machine_applies_run_deeper() -> void:
 	assert_true(Effects.effect_text({"trigger": "on_stack", "effect": "add_stacks", "value": 1, "per_heat": 20}).begins_with("every stack this machine applies is 1 deeper for every 20 heat it carries"), "reads as a sentence")
 
 
-func test_a_foe_gaining_a_status_may_be_caught_by_the_loop() -> void:
-	var loop := {"id": "loop", "name": "Pocket Paradox", "description": "", "effects": [
-		{"trigger": "on_foe_status", "effect": "chance_suppress", "value": 100, "per_missing_shield": 0}]}
+## The Pocket Paradox as a meter (Ryan, 10 October): a foe gains Paradox for each other status
+## it gains, once a spend however many strikes or stacks; at the count it is Suppressed and
+## the Paradox clears. Paradox is a status, never decays, and never feeds itself.
+func test_the_paradox_meter_knocks_a_foe_out_at_its_count() -> void:
+	var meter := {"id": "loop", "name": "Pocket Paradox", "description": "", "effects": [
+		{"trigger": "on_foe_status", "effect": "paradox", "value": 3}]}
 	var sk := Skirmish.new(1)
-	var m := _mech("A", Die.single(Face.attack(20, L, K.BURN)), 40, 100)
-	m.grant_passive(loop)
+	var gun := Face.attack(5, L, [K.BURN, K.SHOCK])
+	gun.strikes = 3
+	var m := _mech("A", Die.single(gun), 0, 100)
+	m.grant_passive(meter)
 	sk.add_mech(m)
 	var g := _ghoul(500, 30)
 	sk.add_foes([g])
 	sk.begin()
 	sk.start_round()
-	assert_eq(Effects.foe_status_suppress_chance(m), 100, "a sure thing at 100")
-	sk.assign(0, sk.front[0])
-	assert_true(Effects.stacks_of(g, "burning") >= 1, "the burn landed")
-	assert_true(g.is_suppressed(), "and the loop caught it")
-	assert_eq(Effects.stacks_of(g, "numbed"), 2, "a caught foe is numbed like any suppressed one, once")
+	assert_eq(Effects.paradox(m), [1, 3] as Array[int], "a stack an application, three to trip")
+	assert_eq(sk.paradox_count(), 3, "the team's count")
+	sk.assign(0, g)
+	assert_eq(Effects.stacks_of(g, "paradox"), 2, "three strikes of burn are one application and the shock a second: two, not four")
+	assert_false(g.is_suppressed(), "not yet")
+	sk._foe_gained_status(g, "paradox")
+	assert_eq(Effects.stacks_of(g, "paradox"), 2, "Paradox never feeds itself")
+	sk._foe_gained_status(g, "numbed")
+	assert_eq(Effects.stacks_of(g, "paradox"), 2, "nor Numbed, which is no status")
+	sk._foe_gained_status(g, "burning")
+	assert_true(g.is_suppressed(), "the third trips it: its past self knocks it out")
+	assert_eq(Effects.stacks_of(g, "paradox"), 0, "the Paradox clears, and the Suppressed it caused added none")
+	assert_eq(Effects.stacks_of(g, "numbed"), 2, "numbed like any suppressed foe")
+	assert_true("\n".join(sk.log).contains("trapped in a paradox"), "the log says so")
 	sk.end_round()
 	assert_eq(m.hull, 100, "it skipped its blow")
-	# Missing shield scales the chance, and a full resistance still shrugs it off.
-	var u := Unit.mech(1, "B", Vector2i.ZERO)
-	u.shield_max = 60
-	u.shield = 20
-	u.grant_passive({"id": "loop2", "name": "Loop", "description": "", "effects": [
-		{"trigger": "on_foe_status", "effect": "chance_suppress", "value": 20, "per_missing_shield": 1}]})
-	assert_eq(Effects.foe_status_suppress_chance(u), 60, "20 plus 40 missing shield")
-	u.shield = 60
-	assert_eq(Effects.foe_status_suppress_chance(u), 20, "the base alone when the shield is full")
-	assert_true(Effects.effect_text({"trigger": "on_foe_status", "effect": "chance_suppress", "value": 20, "per_missing_shield": 1}).begins_with("20% chance a foe gaining a status is also suppressed, +1% per shield point missing"), "reads as a sentence")
+	# Paradox never decays.
+	sk.start_round()
+	sk._foe_gained_status(g, "burning")
+	sk.end_round()
+	sk.start_round()
+	sk.end_round()
+	assert_eq(Effects.stacks_of(g, "paradox"), 1, "two rounds on, the stack still stands")
+	# A weapon's suppress is a status gained; a trip on a foe already suppressed takes its next action.
 	var s2 := Skirmish.new(2)
-	var m2 := _mech("C", Die.single(Face.attack(20, L, K.BURN)), 40, 100)
-	m2.grant_passive(loop)
+	var m2 := _mech("B", Die.single(Face.attack(10, L, K.SUPPRESS)), 0, 100)
+	m2.grant_passive(meter)
 	s2.add_mech(m2)
-	var stubborn := _ghoul(500, 30)
-	stubborn.stun_resist = 100
-	s2.add_foes([stubborn])
+	var g2 := _ghoul(500, 30)
+	s2.add_foes([g2])
 	s2.begin()
 	s2.start_round()
-	s2.assign(0, s2.front[0])
-	assert_false(stubborn.is_suppressed(), "a fully resistant foe shrugs the loop off too")
-	# A suppress itself never feeds the loop.
+	s2.assign(0, g2)
+	assert_true(g2.is_suppressed(), "the weapon's suppress landed")
+	assert_eq(Effects.stacks_of(g2, "paradox"), 1, "and it counts as a status gained")
+	Effects.remove(g2, "numbed")   # no resistance, so the trip is certain
+	s2._foe_gained_status(g2, "burning")
+	s2._foe_gained_status(g2, "shocked")
+	assert_eq(Effects.stacks_of(g2, "paradox"), 0, "tripped")
+	s2.end_round()
+	assert_eq(m2.hull, 100, "suppressed this round")
+	s2.start_round()
+	assert_true(g2.is_suppressed(), "and, already suppressed when it tripped, it loses its next action too")
+	# A machine that deepens what it applies deepens Paradox, so it trips sooner.
 	var s3 := Skirmish.new(3)
-	var m3 := _mech("D", Die.single(Face.attack(20, L, K.SUPPRESS)), 40, 100)
-	m3.grant_passive(loop)
+	var m3 := _mech("C", Die.single(Face.attack(20, L, K.BURN)), 40, 100)
+	m3.grant_passive(meter)
+	m3.grant_passive({"id": "deep", "name": "Deep", "description": "", "effects": [{"trigger": "on_stack", "effect": "add_stacks", "value": 1}]})
 	s3.add_mech(m3)
 	var g3 := _ghoul(500, 30)
 	s3.add_foes([g3])
 	s3.begin()
 	s3.start_round()
-	s3.assign(0, s3.front[0])
-	assert_eq(Effects.stacks_of(g3, "numbed"), 2, "one suppress, one set of stacks: no loop on a suppress")
+	s3.assign(0, g3)
+	assert_eq(Effects.stacks_of(g3, "paradox"), 2, "one application, two stacks")
+	assert_true(Effects.effect_text({"trigger": "on_foe_status", "effect": "paradox", "value": 3}).begins_with("a foe gaining any other status gains Paradox; at 3 it is suppressed"), "reads as a sentence")
+
+
+## A foe carrying a status (the Susceptibility Tensor's condition, 10 October) means what the
+## team put on it: never Numbed, a resistance, and never the foe's own buffs.
+func test_a_status_on_a_foe_is_what_the_team_put_there() -> void:
+	var g := _ghoul(100)
+	assert_false(Effects.carries_status(g), "bare")
+	Effects.stack(g, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 2)
+	assert_false(Effects.carries_status(g), "Numbed is no status")
+	Effects.stack(g, Effects.STATUS["folded"], Effects.SKIRMISH, "foe", 1)
+	assert_false(Effects.carries_status(g), "nor is its own buff")
+	Effects.stack(g, Effects.STATUS["paradox"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	assert_true(Effects.carries_status(g), "Paradox is")
+	var u := _mech("A", Die.single(Face.attack(20, L)))
+	u.grant_passive({"id": "tensor", "name": "Tensor", "description": "", "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 5, "when": "target_status"}]})
+	assert_eq(int(Effects.attack(u, u.die.faces[0], 20, 0, g)["damage"]), 25, "so the Tensor reads it")
+	Effects.remove(g, "paradox")
+	assert_eq(int(Effects.attack(u, u.die.faces[0], 20, 0, g)["damage"]), 20, "and not Numbed or a Folded foe")
 
 
 func test_a_buff_component_grants_its_status_through_the_round() -> void:
@@ -1744,9 +1784,9 @@ func test_a_buff_component_grants_its_status_through_the_round() -> void:
 	assert_eq(rt.to_dict(), {"kind": "buff", "reach": "none", "power": 0, "keywords": [], "heat": 0, "targets": "self", "status": "primed", "stacks": 3, "rounds": 2}, "a buff round-trips through content")
 
 
-func test_the_bot_values_a_burn_more_when_a_loop_may_catch_the_foe() -> void:
+func test_the_bot_values_a_burn_more_when_a_paradox_may_trip_on_the_foe() -> void:
 	var loop := {"id": "loop", "name": "Pocket Paradox", "description": "", "effects": [
-		{"trigger": "on_foe_status", "effect": "chance_suppress", "value": 100, "per_missing_shield": 0}]}
+		{"trigger": "on_foe_status", "effect": "paradox", "value": 1}]}
 	var scores: Array[float] = []
 	for with_loop in [false, true]:
 		var sk := Skirmish.new(1)
@@ -1988,7 +2028,7 @@ func test_retaliate_is_a_buff_a_component_may_grant() -> void:
 
 func test_a_status_gained_after_a_foe_acted_suppresses_its_next_action() -> void:
 	var loop := {"id": "loop", "name": "Pocket Paradox", "description": "", "effects": [
-		{"trigger": "on_foe_status", "effect": "chance_suppress", "value": 100, "per_missing_shield": 0}]}
+		{"trigger": "on_foe_status", "effect": "paradox", "value": 1}]}
 	var live := {"id": "live_hull", "name": "Faraday Hull", "description": "", "effects": [
 		{"trigger": "static", "effect": "shock_on_hull_strike", "value": 1}]}
 	var sk := Skirmish.new(1)
@@ -2004,7 +2044,7 @@ func test_a_status_gained_after_a_foe_acted_suppresses_its_next_action() -> void
 	assert_eq(m.hull, 190, "the blow landed")
 	assert_true(Effects.has(g, "shocked"), "shocked by it")
 	sk.start_round()
-	assert_true(g.is_suppressed(), "the loop's suppress holds for the round after, since the ghoul had already struck")
+	assert_true(g.is_suppressed(), "the Paradox's suppress holds for the round after, since the ghoul had already struck")
 	sk.end_round()
 	assert_eq(m.hull, 190, "and it skipped that blow")
 

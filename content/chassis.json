@@ -44,7 +44,7 @@
     "fantasy": "A repurposed mining vehicle, designed to take severe punishment and keep on working. Refurbishments were minimal, basically bolting on weapons and armour, it keeps most of its utilitarian mining machinery flavour.",
     "niche": "tanky bruiser",
     "name_clash": "Flagged 28 September: the id badger is Heavy Gear's Badger APC and BattleTech's Badger transport; the nickname Honey Badger is nobody's. Kept: the shown name is clear.",
-    "notes": "6 October (Ryan): the Slug Cannon becomes the Bullion Fragmenter, melee, locked to the Badger as a mining joke; the second Chainsaw Claw goes, so the die is one claw, one fragmenter and three hardpoints (d5) and every face with a model is one face; the right boom's mount is the fragmenter built in, the pins renumbered 1 to 3 (missile box, left gimbal, right gimbal). 9 October, the content revision: the Twin Autoguns became the Blast Door, Minerva's intercept for the starter set, beside the Klaxon (the lure picks foes, the door picks the ally). Later on 9 October Guard came out (Ryan: until we feel we need it), so the Twin Autoguns are back in place of the Blast Door. 10 October (Ryan): Close removed, so the cracked-weapons-go-melee line went with it; the +5 reads the melee tag its two locked weapons carry; the passive is overloaded and is to be reworked around the Chainsaw Claw and the Bullion Fragmenter."
+    "notes": "6 October (Ryan): the Slug Cannon becomes the Bullion Fragmenter, melee, locked to the Badger as a mining joke; the second Chainsaw Claw goes, so the die is one claw, one fragmenter and three hardpoints (d5) and every face with a model is one face; the right boom's mount is the fragmenter built in, the pins renumbered 1 to 3 (missile box, left gimbal, right gimbal). 9 October, the content revision: the Twin Autoguns became the Blast Door, Minerva's intercept for the starter set, beside the Klaxon (the lure picks foes, the door picks the ally). Later on 9 October Guard came out (Ryan: until we feel we need it), so the Twin Autoguns are back in place of the Blast Door. 10 October (Ryan): Close removed, so the cracked-weapons-go-melee line went with it; the +5 reads the melee tag its two locked weapons carry; the passive is overloaded and is to be reworked around the Chainsaw Claw and the Bullion Fragmenter. Later on 10 October (Ryan): the +5 to melee trimmed too, since a chassis passive that reads a tag asks for every melee component; its two locked weapons are where its identity goes."
    },
    "codex": "The Minerva EX-45L (colloquially nicknamed the \"Badger\") was popular a mining mech widely praised for its reliability and durability, being designed to operate in the harshest, deepest environments imaginable. Reports exist of Badgers being caught in cave-ins while mining over 5 kilometers underground, only to dig their way out to the surface by nightfall, just in time for drinks with the crew. So naturally, when the Rifts opened, the ever-practical Minerva engineering team's first instinct was to finally give their prized Badger claws, teeth, and as many missiles as it could carry, putting its legendary longevity to work on the battlefield.",
    "hull": 160,
@@ -72,18 +72,12 @@
    "passive": {
     "id": "reinforced_skeleton",
     "name": "Reinforced Skeleton",
-    "description": "Legendary Minervan strength. Components can be cracked but never destroyed. Melee attacks deal +5 damage.",
+    "description": "Legendary Minervan strength. Components can be cracked but never destroyed.",
     "effects": [
      {
       "trigger": "on_injury",
       "effect": "no_destroy",
       "value": 1
-     },
-     {
-      "trigger": "on_attack",
-      "effect": "add_damage",
-      "value": 5,
-      "when": "tag_melee"
      }
     ]
    },
@@ -200,7 +194,7 @@
    "design": {
     "fantasy": "A long-armed, stubby-legged plantigrade walker with a high tech suite of weapons and equipment mounted on its backpack. Not fast or heavily armoured, it specializes in battlefield control through status effects and high-tech equipment with complex effects.",
     "niche": "combat support",
-    "notes": "Numbers and designation are Claude's first fill (26 September), the passive and stock re-cut 28 September, all Ryan's to move. Stock is Aphelion's generic kit (two Umbra Projectors on the shoulders, two Pulse Vacillators and the Zenith Emitter on the fists, a Radiator Sail); the Corona Shield is a unique unlock now, not stock. A d7 since 30 September (Ryan: the fists rest on the ground and carry the guns, two mounts a hand): the Halo Shield was dropped, since Pocket Paradox pays for missing shield and a shield component fights it. The fixed pods carry the Solar Flare Array so the passive has a status to read alone. 9 October, the content revision (Aphelion's support most): the two Pulse Vacillators became the Differentiation Probe and the Polarity Projector, and the Radiator Sail the Phased Sublimator, so its stock carries a disrupt, a shock that feeds the Pocket Paradox, and a cleanse.",
+    "notes": "Numbers and designation are Claude's first fill (26 September), the passive and stock re-cut 28 September, all Ryan's to move. Stock is Aphelion's generic kit (two Umbra Projectors on the shoulders, two Pulse Vacillators and the Zenith Emitter on the fists, a Radiator Sail); the Corona Shield is a unique unlock now, not stock. A d7 since 30 September (Ryan: the fists rest on the ground and carry the guns, two mounts a hand): the Halo Shield was dropped, since Pocket Paradox pays for missing shield and a shield component fights it. The fixed pods carry the Solar Flare Array so the passive has a status to read alone. 9 October, the content revision (Aphelion's support most): the two Pulse Vacillators became the Differentiation Probe and the Polarity Projector, and the Radiator Sail the Phased Sublimator, so its stock carries a disrupt, a shock that feeds the Pocket Paradox, and a cleanse. 10 October (Ryan): the Pocket Paradox is a meter, not a chance (a chance to stun is game-winning when it lands and nothing when it does not): an application of any other status adds a Paradox, of any number of stacks, so several components must fire or one hit must carry several statuses; at three the foe is Suppressed. Paradox is a status like any other and never decays; it never feeds itself (the Suppressed it causes is not counted). The missing-shield clause is dropped, so a shield no longer fights the passive and the stock may take one again (the stock pass).",
     "name_clash": "Was the Mandrill (a BattleTech 'Mech that looks like ours); renamed the Baboon 28 September, Ryan's pick: a funny name for a funky machine Aphelion thought was cool. Gelada was too obscure for pilots to have coined, Silverback implied a fighter. Baboon is itself the Clan designation of BattleTech's Howler (a 20-ton light 'Mech); Ryan keeps it, a designation-tier clash like the Goshawk's."
    },
    "codex": "Looking like a cross between an orangutan and a troll, what the Baboon lacks in speed or endurance it more than makes up for with high-tech Aphelion technomagic. After the rifts first opened (and upended everything mankind knew about the laws of physics and the nature of the universe), Aphelion set to work assimilating the torrent of new data, developing experimental countermeasures at a frenetic pace. One unlucky researcher managed to knock out his past self using a localized pocket paradoxical time loop. The effect was quickly weaponized and a frame built to lug the heavy device in into battle, nicknamed the \"Baboon\" in the researcher's memory.",
@@ -231,13 +225,12 @@
    "passive": {
     "id": "pocket_paradox",
     "name": "Pocket Paradox",
-    "description": "A localized paradoxical time loop, weaponized. When a foe gains a status there is a 20% chance its past self knocks it out as well (Suppressed), plus 10% for every 10 shield the Baboon is missing.",
+    "description": "A localized paradoxical time loop, weaponized. When a foe gains a status other than Paradox, it gains a stack of Paradox; at three its past self knocks it out (Suppressed), and the Paradox clears.",
     "effects": [
      {
       "trigger": "on_foe_status",
-      "effect": "chance_suppress",
-      "value": 20,
-      "per_missing_shield": 1
+      "effect": "paradox",
+      "value": 3
      }
     ]
    },

@@ -907,6 +907,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 	var extra_burn := 0
 	var armoured_total := 0   # what the primary target's armour took off, for the log
 	var touched: Array = []    # every foe the blows reached and left alive, for a lure or a disrupt
+	var gained := {}           # foe -> the statuses this spend put on it, told once each at the end (an application, never a stack or a strike)
 	# A vent-on-fire attack fires the machine's whole heat into the blow: its bonus is read
 	# now and the gauge is emptied once the strikes have landed.
 	var fired := heat_bonus(ms, f)
@@ -977,16 +978,16 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 						_devour(ms, behind)
 			if f.has(Face.Keyword.BURN):
 				Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", _stacks_from(ms, "burning", ceili(float(dmg) / BURN_DAMAGE_PER_STACK)))
-				_foe_gained_status(foe, "burning")
-			if f.has(Face.Keyword.SUPPRESS):
-				_suppress(foe)
+				_note_status(gained, foe, "burning")
+			if f.has(Face.Keyword.SUPPRESS) and _suppress(foe):
+				_note_status(gained, foe, "suppressed")
 			if foe.alive() and not touched.has(foe):
 				touched.append(foe)
 		total += landed
 		rolled_total += rolled
 	if extra_burn > 0:
 		Effects.stack(target, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", _stacks_from(ms, "burning", extra_burn))
-		_foe_gained_status(target, "burning")
+		_note_status(gained, target, "burning")
 	# Shock (9 October): every foe the blows reached and left alive carries a charge for the
 	# team's next blow, after this one landed, so a shocking weapon never spends its own.
 	if f.has(Face.Keyword.SHOCK):
@@ -998,6 +999,9 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 		_disrupt(touched)
 	if f.has(Face.Keyword.LURE):
 		_lure(ms, touched)
+	for foe in gained.keys():
+		for status_id in gained[foe]:
+			_foe_gained_status(foe, status_id)
 	last_roll = {"mech": mech_index, "target": target, "rolled": rolled_total, "final": total, "melee": f.tags.has("melee")}
 	var how := f.describe()
 	if f.is_ranged():
@@ -1214,31 +1218,59 @@ func _stacks_from(ms: MechState, status_id: String, n: int) -> int:
 ## skirmish's own die (Ryan, 26 September): a suppress it shrugs off does nothing at all
 ## and numbs it no further, and Numbed loses a stack at each of the foe's turns, so a stun
 ## repeated on one foe stops landing while stuns spread across the formation keep working.
-func _suppress(foe: Foe) -> bool:
+## `carry`: a foe already suppressed loses its next action instead (a Paradox tripping on
+## it, 10 October), so the knock-out is never spent on an action already lost.
+func _suppress(foe: Foe, carry: bool = false) -> bool:
 	var resist := foe.resist_total()
 	if resist > 0 and rng.randi_range(1, 100) <= resist:
 		log.append("%s shrugs off the suppression (%d%% resistant)" % [foe.display_name, resist])
 		return false
 	# A foe that has already acted this turn loses its next action instead of one it has taken.
-	Effects.grant_for_rounds(foe, Effects.STATUS["suppressed"], "mech", round + 1 if _acted.has(foe) else round)
+	var next := _acted.has(foe) or (carry and foe.is_suppressed())
+	Effects.grant_for_rounds(foe, Effects.STATUS["suppressed"], "mech", round + 1 if next else round)
 	Effects.stack(foe, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", NUMBED_PER_SUPPRESS_MASSIVE if foe.is_massive() else NUMBED_PER_SUPPRESS, Effects.DECAY_TICK)
 	return true
 
 
-## A foe has just gained a status (whoever applied it): every live machine's on_foe_status
-## passives get their roll, the first that lands suppressing the foe (the Baboon's Pocket
-## Paradox, 28 September). Never for Suppressed or Numbed themselves, or the loop would feed
-## itself; a foe already suppressed or dead has nothing to lose.
+## The count that knocks a foe out through Paradox: the lowest any live machine runs, or 0 when
+## no machine runs the meter (the screen's chips read it).
+func paradox_count() -> int:
+	var at := 0
+	for ms in live_mechs():
+		var t: int = Effects.paradox(ms.unit)[1]
+		if t > 0 and (at == 0 or t < at):
+			at = t
+	return at
+
+
+## One spend's status on one foe, told once at the end of the spend however many strikes or
+## stacks put it there (Ryan, 10 October: an application, not a stack).
+static func _note_status(gained: Dictionary, foe: Foe, status_id: String) -> void:
+	var ids: Array = gained.get(foe, [])
+	if not ids.has(status_id):
+		ids.append(status_id)
+	gained[foe] = ids
+
+
+## A foe has just gained a status (whoever applied it, once a spend): every live machine's
+## on_foe_status passive answers. The Baboon's Pocket Paradox, a meter since 10 October
+## (Ryan): the foe gains Paradox, deepened like any status its machine applies, and at the
+## machine's count it is Suppressed and the Paradox clears. Paradox never counts, and the
+## Suppressed it causes is never told, so it never feeds itself; a weapon's Suppressed does
+## count. Numbed is a resistance, not a status.
 func _foe_gained_status(foe: Foe, status_id: String) -> void:
-	if status_id == "suppressed" or status_id == "numbed" or not foe.alive() or foe.is_suppressed():
+	if status_id == "paradox" or status_id == "numbed" or not foe.alive():
 		return
 	for ms in live_mechs():
-		var chance := Effects.foe_status_suppress_chance(ms.unit)
-		if chance <= 0 or rng.randi_range(1, 100) > chance:
+		var meter := Effects.paradox(ms.unit)
+		if meter[1] <= 0:
 			continue
-		log.append("%s got trapped in a paradox! (%s, %d%%)" % [foe.display_name, ms.unit.display_name, chance])
-		_suppress(foe)
-		return
+		Effects.stack(foe, Effects.STATUS["paradox"], Effects.SKIRMISH, "mech", _stacks_from(ms, "paradox", meter[0]), Effects.DECAY_NONE)
+		if Effects.stacks_of(foe, "paradox") >= meter[1]:
+			Effects.remove(foe, "paradox")
+			log.append("%s got trapped in a paradox! (%s)" % [foe.display_name, ms.unit.display_name])
+			_suppress(foe, true)
+			return
 
 
 ## Lure (decided 2 October, in place of taunt and beacon): every foe this entry reached turns

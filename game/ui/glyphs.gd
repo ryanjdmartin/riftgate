@@ -67,6 +67,10 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_polyline(PackedVector2Array([
 				c + Vector2(0, -s * 0.6), c + Vector2(s * 0.4, s * 0.1), c + Vector2(0, s * 0.55), c + Vector2(-s * 0.4, s * 0.1), c + Vector2(0, -s * 0.6),
 			]), color, width)
+		"paradox":
+			# A loop closing on itself: two rings touching, the past self and the present.
+			ci.draw_arc(c + Vector2(-s * 0.45, 0.0), s * 0.47, 0.0, TAU, 20, color, width)
+			ci.draw_arc(c + Vector2(s * 0.45, 0.0), s * 0.47, 0.0, TAU, 20, color, width)
 		"numbed":
 			# A suppress ring with a bar across it: the stun it shrugs off.
 			ci.draw_arc(c, s * 0.9, 0.0, TAU, 28, color, width)

@@ -226,13 +226,11 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		# A Numbed foe shrugs it off at its resistance, so the stopped blow is worth its odds.
 		var lands := 1.0 - float(target.resist_total()) / 100.0
 		score += (1.0 - p_kill) * _threat_now(target) * HULL_WEIGHT * maxf(0.0, lands)
-	elif (f.has(Face.Keyword.BURN) or f.has(Face.Keyword.SHOCK)) and not target.is_suppressed():
-		# A status this blow applies may knock the foe out through a machine's on_foe_status
-		# passive (the Baboon's Pocket Paradox): the stopped blow at the loop's odds, at the
-		# foe's odds of not shrugging it off.
-		var loop := _loop_chance(sk)
-		if loop > 0.0:
-			score += loop * maxf(0.0, 1.0 - float(target.resist_total()) / 100.0) * (1.0 - p_kill) * _threat_now(target) * HULL_WEIGHT
+	# The statuses this blow applies feed any machine's Paradox meter (the Baboon's Pocket
+	# Paradox, a meter since 10 October): the share of a knock-out they move on this foe.
+	var apps := int(f.has(Face.Keyword.BURN)) + int(f.has(Face.Keyword.SHOCK)) + int(f.has(Face.Keyword.SUPPRESS))
+	if apps > 0:
+		score += _paradox_share(sk, target, apps) * (1.0 - p_kill) * _threat_now(target) * HULL_WEIGHT
 	if f.has(Face.Keyword.BURN):
 		score += (1.0 - p_kill) * mean * BURN_WEIGHT
 	if f.has(Face.Keyword.DEVOUR):
@@ -534,13 +532,22 @@ func _attack_mean(sk: Skirmish, who: Skirmish.MechState) -> float:
 	return total / float(who.die.faces.size())
 
 
-## The odds that a foe gaining a status is knocked out by some machine's on_foe_status
-## passive this round: one minus every machine missing.
-static func _loop_chance(sk: Skirmish) -> float:
-	var miss := 1.0
+## What `apps` statuses landing on a foe move toward a Paradox knock-out: the share of the
+## stacks it still needs, whole when they trip it, at its odds of not shrugging it off.
+## Nothing without a machine running the meter.
+static func _paradox_share(sk: Skirmish, target: Foe, apps: int) -> float:
+	var adds := 0
+	var at := 0
 	for ms in sk.live_mechs():
-		miss *= 1.0 - float(Effects.foe_status_suppress_chance(ms.unit)) / 100.0
-	return 1.0 - miss
+		var meter := Effects.paradox(ms.unit)
+		if meter[1] <= 0:
+			continue
+		adds += meter[0]
+		at = meter[1] if at == 0 else mini(at, meter[1])
+	if at <= 0 or apps <= 0 or not target.alive():
+		return 0.0
+	var need := maxi(1, at - Effects.stacks_of(target, "paradox"))
+	return minf(1.0, float(apps * adds) / float(need)) * maxf(0.0, 1.0 - float(target.resist_total()) / 100.0)
 
 
 ## A vent on a machine: the hull its overheat would burn this round, and a little for the

@@ -41,7 +41,7 @@ var intent_value: int = 0
 var intent_note: String = ""      # after the number: "×2" for a double strike, "!" for a breach
 var intent: String = ""           # quiet text for an empty slot, e.g. "EXPOSED"
 var intent_dim: bool = false
-var statuses: Array = []          # [[glyph id, chip text, (Color)], ...] under the sprite
+var statuses: Array = []          # [[glyph id, chip text, (Color), (kind)], ...] under the sprite; kind "resist" is no status (Numbed)
 var highlight: bool = false       # valid drop target while dragging a die
 var dead: bool = false
 var sprite: Texture2D = null      # pixel art drawn at an integer scale; null draws a placeholder
@@ -364,7 +364,7 @@ func _draw() -> void:
 	if not intent_kind.is_empty():
 		chips.append([Glyphs.intent_for(intent_kind), (str(intent_value) + intent_note) if intent_value > 0 else "", Palette.ENEMY if is_enemy else hud])
 	for s in statuses:
-		chips.append([s[0], str(s[1]), s[2] if s.size() >= 3 else hud])
+		chips.append([s[0], str(s[1]), s[2] if s.size() >= 3 else hud, s[3] if s.size() >= 4 else "status"])
 	if chips.is_empty():
 		return
 	var widths: Array[float] = []
@@ -383,7 +383,13 @@ func _draw() -> void:
 		var ch: Array = chips[i]
 		var col: Color = ch[2]
 		var rect := Rect2(x, cy - CHIP_H * 0.5, widths[i], CHIP_H)
-		Hud.box(self, rect, 4.0, Color(Palette.BG, 0.94), col, 1.2)
+		if ch.size() >= 4 and ch[3] == "resist":
+			# A resistance is no status (Numbed, 10 October): bracket corners on a bare ground,
+			# never the box a status wears, so the difference is the frame, not a hue.
+			Hud.fill_poly(self, Hud.cut(rect, 4.0), Color(Palette.BG, 0.94))
+			Hud.brackets(self, rect, 5.0, col, 1.6)
+		else:
+			Hud.box(self, rect, 4.0, Color(Palette.BG, 0.94), col, 1.2)
 		Glyphs.draw(self, ch[0], Vector2(x + CHIP_H * 0.5, cy), CHIP_GLYPH, col, 2.0)
 		var txt: String = ch[1]
 		var locking := i == 0 and not intent_kind.is_empty() and acq < 1.0

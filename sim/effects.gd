@@ -56,7 +56,7 @@ const SUPPORTED_EFFECTS := {
 	"on_heat_gain": ["add_shield", "stack_status"],
 	"out_of_combat": ["add_shield"],
 	"status": ["tick_hp", "tick_heat", "skip_action", "resist_suppress", "disable_entry", "corrupt_entry", "scramble_reroll"],
-	"on_foe_status": ["chance_suppress"],
+	"on_foe_status": ["paradox"],
 	"on_stack": ["add_stacks"],
 }
 const DECAY_NONE := 0    # lives until its scope ends
@@ -75,8 +75,14 @@ const STATUS := {
 		"tags": ["dot", CLEANSABLE], "effects": [{"trigger": "status", "effect": "tick_heat", "value": 5}]},
 	"suppressed": {"id": "suppressed", "name": "Suppressed", "description": "Skips its telegraphed action this round.",
 		"effects": [{"trigger": "status", "effect": "skip_action", "value": 1}]},
+	# Numbed is a resistance, not a status or a buff (Ryan, 10 October): it lives here as a
+	# modifier for the pipeline's arithmetic, and nothing reads it but suppress (FOE_STATUSES).
 	"numbed": {"id": "numbed", "name": "Numbed", "description": "Resists a suppress, 10% per stack, on top of its own resistance; loses a stack each turn.",
 		"effects": [{"trigger": "status", "effect": "resist_suppress", "value": 10}]},
+	# The Baboon's Pocket Paradox as a meter (Ryan, 10 October): a status like any other, and
+	# it never decays; at the machine's count the foe is Suppressed and the Paradox clears.
+	"paradox": {"id": "paradox", "name": "Paradox", "description": "A paradox building: at the count it is Suppressed, and the Paradox clears.",
+		"effects": []},
 	# The machines' buffs (29 September): what buff equipment grants for a round or more.
 	# Devour will stack Overcharged too, for the skirmish. Names are placeholders for Ryan.
 	# Flat since 2 October (the damage scale: a tenth of a blow of 10 to 20 is nothing to read).
@@ -109,7 +115,11 @@ const STATUS := {
 }
 ## The statuses a buff component may grant: the machines' own, never a foe's.
 const MECH_STATUSES := ["overcharged", "braced", "primed", "retaliate"]
-## target_status: the foe struck carries any live status (burning, suppressed, numbed...).
+## What a foe carrying a status means (target_status, the Susceptibility Tensor; 10 October):
+## what the team put on it. Never Numbed, a resistance and not a status, and never the foe's
+## own buffs (Folded, Kindled, Getting Back Up).
+const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox"]
+## target_status: the foe struck carries any of FOE_STATUSES (Numbed and its own buffs never count).
 ## ally_present: another live machine is in the fight (the unit's `allies`, kept by the skirmish).
 ## A `tag_<tag>` condition reads the component's tags (10 October: a tag never carries a rule of
 ## its own; a passive may read one its machine's stock carries, the Badger's melee).
@@ -362,7 +372,7 @@ static func _holds(u, eff: Dictionary, face: Face, target = null) -> bool:
 		"reach_indirect":
 			return face != null and effective_reach(u, face) == Face.Reach.INDIRECT
 		"target_status":
-			return target != null and target.get("modifiers") != null and not live(target).is_empty()
+			return target != null and target.get("modifiers") != null and carries_status(target)
 		"ally_present":
 			return u.get("allies") != null and int(u.allies) > 0
 	var w := str(eff.get("when", ""))
@@ -537,19 +547,31 @@ static func effective_face(u, face: Face) -> Face:
 	return c
 
 
-## The chance, percent, that a foe gaining a status is also suppressed by this machine's
-## passives (the Baboon's Pocket Paradox, 28 September): each effect's base plus its
-## `per_missing_shield` for every point of shield the machine is missing, summed, capped.
-static func foe_status_suppress_chance(u) -> int:
-	var total := 0.0
-	var missing: int = maxi(0, int(u.shield_max) - int(u.shield))
+## Does a foe carry a status the team put on it (FOE_STATUSES)? Numbed and its own buffs
+## never count.
+static func carries_status(f) -> bool:
+	for m in live(f):
+		if FOE_STATUSES.has(m.id):
+			return true
+	return false
+
+
+## The Paradox meter a machine runs (the Baboon's Pocket Paradox, a meter since 10 October,
+## Ryan): [stacks of Paradox a foe gains each time it gains another status, the count that
+## knocks it out], or [0, 0] for none. Several effects add their stacks; the lowest count trips.
+static func paradox(u) -> Array[int]:
+	var adds := 0
+	var at := 0
 	for pair in _taking_part(u, "on_foe_status", null):
-		var eff: Dictionary = pair[0]
-		if str(eff.get("effect", "")) != "chance_suppress":
+		if str(pair[0].get("effect", "")) != "paradox":
 			continue
-		var n: int = pair[1].stacks
-		total += (float(eff.get("value", 0)) + float(eff.get("per_missing_shield", 0)) * missing) * n
-	return clampi(int(roundf(total)), 0, 100)
+		adds += int(pair[1].stacks)
+		var t := int(pair[0].get("value", 0))
+		if t > 0 and (at == 0 or t < at):
+			at = t
+	if at <= 0:
+		return [0, 0] as Array[int]
+	return [adds, at] as Array[int]
 
 
 ## Stacks a status this machine applies gains from its passives (add_stacks on on_stack;
@@ -866,10 +888,8 @@ static func effect_text(eff: Dictionary) -> String:
 		"resist_suppress": body = "resists suppress %s%% per stack" % vs
 		"disable_entry": body = "die entry %s switched off" % str(int(v) + 1)
 		"corrupt_entry": body = "die entry %s bites its owner when spent" % str(int(v) + 1)
-		"chance_suppress":
-			body = "%s%% chance a foe gaining a status is also suppressed" % vs
-			if float(eff.get("per_missing_shield", 0)) > 0.0:
-				body += ", +%s%% per shield point missing" % _trim_num(float(eff.get("per_missing_shield", 0)))
+		"paradox":
+			body = "a foe gaining any other status gains Paradox; at %s it is suppressed and the Paradox clears" % vs
 		"add_stacks":
 			body = "every stack this machine applies is %s deeper" % vs
 			if int(eff.get("per_heat", 0)) > 0:
@@ -897,10 +917,6 @@ static func effect_text(eff: Dictionary) -> String:
 	if str(eff.get("when", "")).begins_with("tag_"):
 		lead += "%s weapons: " % str(eff["when"]).substr(4)
 	return lead + body
-
-
-static func _trim_num(x: float) -> String:
-	return str(x) if x != floorf(x) else str(int(x))
 
 
 ## The effects that apply to this component right now, as short tags with their source:

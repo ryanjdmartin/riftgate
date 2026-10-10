@@ -741,6 +741,8 @@ func _validate_passive(where: String, p, errs: Array[String]) -> void:
 			errs.append("%s: %s needs an engine status as its value" % [where, effect])
 		if effect == "add_armour_vs_rank" and not ["front", "back"].has(str(eff.get("rank", "front"))):
 			errs.append("%s: add_armour_vs_rank's rank is front or back" % where)
+		if effect == "paradox" and int(eff.get("value", 0)) < 1:
+			errs.append("%s: paradox's value is the count that knocks a foe out, at least 1" % where)
 		if effect == "grant_keyword":
 			var kw := str(eff.get("value", ""))
 			if Face.keyword_from_name(kw) <= 0:

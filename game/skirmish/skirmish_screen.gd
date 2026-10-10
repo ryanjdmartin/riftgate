@@ -892,11 +892,12 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	v.intent_note = (("×%d" % foe.strikes() if foe.strikes() > 1 else "") + ("!" if foe.breaches() else "")) if foe.attacks() else ""
 	v.statuses = []
 	for r in _foe_rows(foe):
-		v.statuses.append([r[0], r[1], r[3]])
+		v.statuses.append([r[0], r[1], r[3], r[4] if r.size() > 4 else "status"])
 	v.queue_redraw()
 
 
-## Statuses on a foe as [glyph, chip text, readout text, colour].
+## Statuses on a foe as [glyph, chip text, readout text, colour], and a fifth "resist" for a
+## chip that is no status at all (Numbed, 10 October: drawn in brackets, never boxed).
 func _foe_rows(foe: Foe) -> Array:
 	var rows: Array = []
 	if foe.burn_stacks() > 0:
@@ -909,11 +910,15 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(["overcharge", "+%d" % Effects.foe_attack_bonus(foe), "Kindled: hits %d harder this round" % Effects.foe_attack_bonus(foe), Palette.HEAT])
 	if Effects.has(foe, "risen"):
 		rows.append(["star", "", "Getting back up: returns from the pool once after dying", Palette.ENEMY])
+	var paradox := Effects.stacks_of(foe, "paradox")
+	if paradox > 0:
+		var at := sk.paradox_count()
+		rows.append(["paradox", "%d/%d" % [paradox, at] if at > 0 else str(paradox), "Paradox: %d%s; at the count its past self knocks it out (Suppressed), and the Paradox clears" % [paradox, " of %d" % at if at > 0 else ""], Palette.SHIELD])
 	if Effects.has(foe, "shocked"):
 		rows.append(["shocked", "×2", "Shocked: the next blow it takes lands double; striking bare hull again costs it %d" % Skirmish.SHOCK_DISCHARGE, Palette.HEAT])
 	var numbed := Effects.stacks_of(foe, "numbed")
 	if numbed > 0 or foe.stun_resist > 0:
-		rows.append(["numbed", "%d%%" % foe.resist_total(), "Numbed: shrugs off a suppress %d%% of the time (%d%% its own, 10%% a stack, a stack less each turn)" % [foe.resist_total(), foe.stun_resist], Palette.SHIELD])
+		rows.append(["numbed", "%d%%" % foe.resist_total(), "Numbed, a resistance and not a status (nothing reads, deepens or clears it): shrugs off a suppress %d%% of the time (%d%% its own, 10%% a stack, a stack less each turn)" % [foe.resist_total(), foe.stun_resist], Palette.SHIELD, "resist"])
 	if foe.rank == 1 and sk.is_exposed(foe.column):
 		rows.append(["exposed", "", "Exposed: nothing in front, line weapons reach it", Palette.HUD])
 	return rows
@@ -933,16 +938,16 @@ func _mech_rows(i: int) -> Array:
 	var damaged := ms.unit.damaged_component_count()
 	if damaged > 0:
 		rows.append(["crack", str(damaged), "%d damaged component%s: repair in the hangar" % [damaged, "" if damaged == 1 else "s"], Palette.HUD])
-	# An on_foe_status passive is live all fight and its chance moves with the shield, so it
-	# reads here as an active effect (Ryan, 28 September), the current percentage as the chip.
-	var loop_chance := Effects.foe_status_suppress_chance(ms.unit)
-	if loop_chance > 0:
+	# An on_foe_status passive is live all fight, so it reads here as an active effect (Ryan,
+	# 28 September); its count is the chip (the Paradox meter, 10 October).
+	var meter := Effects.paradox(ms.unit)
+	if meter[1] > 0:
 		var loop_names: Array[String] = []
 		for m in Effects.live(ms.unit):
 			for eff in m.effects:
 				if str(eff.get("trigger", "")) == "on_foe_status" and not loop_names.has(m.name):
 					loop_names.append(m.name)
-		rows.append(["suppress", "%d%%" % loop_chance, "%s: a foe gaining a status has a %d%% chance of being knocked out too; the chance rises as this machine's shield falls" % [", ".join(loop_names), loop_chance], Palette.SHIELD])
+		rows.append(["paradox", str(meter[1]), "%s: a foe gaining any status but Paradox gains Paradox; at %d its past self knocks it out (Suppressed), and the Paradox clears" % [", ".join(loop_names), meter[1]], Palette.SHIELD])
 	# Every in-combat effect on the machine (Ryan, 26 September: the codex is the base state;
 	# the fight's statuses live here, as chips that the hold expands into their descriptions).
 	for d in Effects.describe(ms.unit):
