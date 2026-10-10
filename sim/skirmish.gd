@@ -838,7 +838,7 @@ func _enemy_turn() -> void:
 		if f.has_keyword(f.action, "self_destruct") and f.alive():
 			# The blow spends the striker (the Bomb): it dies whole and never gets back up.
 			f.hp = 0
-			f.executed = true
+			f.stays_down = true
 			log.append("%s bursts, and is gone" % f.display_name)
 	_acted.clear()
 	_clear_dead()
@@ -894,23 +894,17 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 	# A vent-on-fire attack fires the machine's whole heat into the blow: its bonus is read
 	# now and the gauge is emptied once the strikes have landed.
 	var fired := heat_bonus(ms, f)
+	var missing := f.missing_bonus(target)   # what the target's lost hull adds, read once as the die is spent
 	var vented_all := ms.heat if f.vents_all else 0
 	if f.vents_all:
 		ms.heat = 0
 	for s in range(maxi(1, f.strikes)):
 		var rolled := f.power
 		if f.is_ranged():
-			if Effects.rolls_max(ms.unit, f, target):
-				rolled = f.power_max   # every ally's firing solution: the roll is its ceiling
-			else:
-				rolled = f.average() if f.has(Face.Keyword.STEADY) else rng.randi_range(f.power, f.power_max)
-		rolled += fired
+			rolled = rng.randi_range(f.power, f.power_max)
+		rolled += fired + missing
 		var dmg := rolled
 		var heat := f.heat if s == 0 else 0
-		if f.has(Face.Keyword.EXECUTE):
-			target.executed = true   # a foe that would get back up stays down
-			if target.hp * 2 <= target.hp_max:
-				dmg = int(roundf(dmg * (1.5 if target.is_massive() else 2.0)))   # bosses and elites: half the bonus
 		# Then the pipeline: every live modifier's adds, multiplies and floors, in that order.
 		# Conditions on the foe read the primary target; a spread or a penetrate carries
 		# the same blow to the others.
@@ -1049,7 +1043,7 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			log.append("%s: %s, regrows %d" % [f.display_name, str(a.get("name", "regrows")), f.hp - before])
 		"revive_once":
 			Effects.stack(f, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_NONE)
-			log.append("%s: %s (it will return once, unless executed)" % [f.display_name, str(a.get("name", "readies"))])
+			log.append("%s: %s (it will return once)" % [f.display_name, str(a.get("name", "readies"))])
 		"summon":
 			var count := maxi(1, int(a.get("count", 1)))
 			var who := str(a.get("foe", ""))
@@ -1598,8 +1592,8 @@ func _clear_dead_slots() -> void:
 			if f != null and not f.alive():
 				if f.rank >= 0:
 					# A foe that readied itself to get back up returns to the pool once, whole,
-					# unless an executing blow touched it this fight.
-					if Effects.has(f, "risen") and not f.executed:
+					# unless it went whole (a Bomb's burst).
+					if Effects.has(f, "risen") and not f.stays_down:
 						Effects.remove(f, "risen")
 						f.hp = f.hp_max
 						f.rank = -1

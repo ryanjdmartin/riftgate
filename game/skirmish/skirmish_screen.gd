@@ -907,7 +907,7 @@ func _foe_rows(foe: Foe) -> Array:
 	if Effects.has(foe, "kindled"):
 		rows.append(["overcharge", "+%d" % Effects.foe_attack_bonus(foe), "Kindled: hits %d harder this round" % Effects.foe_attack_bonus(foe), Palette.HEAT])
 	if Effects.has(foe, "risen"):
-		rows.append(["star", "", "Getting back up: returns from the pool once after dying, unless executed", Palette.ENEMY])
+		rows.append(["star", "", "Getting back up: returns from the pool once after dying", Palette.ENEMY])
 	if Effects.has(foe, "shocked"):
 		rows.append(["shocked", "×2", "Shocked: the next blow it takes lands double; striking bare hull again costs it %d" % Skirmish.SHOCK_DISCHARGE, Palette.HEAT])
 	var numbed := Effects.stacks_of(foe, "numbed")

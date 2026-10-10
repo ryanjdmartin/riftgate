@@ -63,11 +63,6 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_polyline(PackedVector2Array([
 				c + Vector2(s * 0.3, -s), c + Vector2(-s * 0.5, s * 0.1), c + Vector2(s * 0.1, s * 0.1), c + Vector2(-s * 0.3, s),
 			]), color, width)
-		"execute":
-			ci.draw_polyline(PackedVector2Array([
-				c + Vector2(-s, -s), c + Vector2(s, -s), c + Vector2(0, s * 0.9), c + Vector2(-s, -s),
-			]), color, width)
-			ci.draw_circle(c + Vector2(0, -s * 0.35), width * 1.2, color)
 		"chain":
 			ci.draw_arc(c + Vector2(-s * 0.45, 0), s * 0.5, 0.0, TAU, 20, color, width)
 			ci.draw_arc(c + Vector2(s * 0.45, 0), s * 0.5, 0.0, TAU, 20, color, width)
@@ -250,7 +245,7 @@ static func colour_for(id: String) -> Color:
 	match id:
 		"burn", "overcharge", "heat", "devour", "shocked", "shock":
 			return Palette.HEAT
-		"execute", "skull", "shieldbreak", "corrupt", "volatile":
+		"skull", "shieldbreak", "corrupt", "volatile":
 			return Palette.ENEMY
 		"star":
 			return Palette.SELECT

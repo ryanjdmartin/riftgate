@@ -36,7 +36,7 @@ var target: RefCounted = null    # Skirmish.MechState, set when intents are tele
 var action: Dictionary = {}      # this round's chosen action
 var modifiers: Array = []        # statuses on this foe (burning, suppressed, numbed...): Effects.Modifier list
 var die = null                   # foes have no die; the pipeline asks, so the field exists
-var executed: bool = false       # struck by an executing blow this fight: a foe that would get back up stays down
+var stays_down: bool = false     # gone whole (a Bomb's burst): a foe that would get back up does not (Execute retired 10 October)
 var last_special: String = ""    # the special it announced last round, so none fires twice running
 var kin: int = 0                 # other live foes of its type on the field, for a swarm blow; the skirmish keeps it
 var hero: bool = false           # one of the party (content `hero`): human-sized, a domain's final, dealt from its bench
@@ -183,7 +183,8 @@ func strikes() -> int:
 ##   defend  harden: armour +`value` until its next action (Fold; flat since 2 October, one word
 ##           and one icon for both sides, the half it was is gone)
 ##           regrow: regains `value` hit points (Knit)
-##   buff    revive_once: comes back from the pool once after dying, unless executed (Get Back Up)
+##   buff    revive_once: comes back from the pool once after dying (Get Back Up); Suppress and
+##           Disrupt answer the telegraphed move, kill order the rest
 ##           summon: `count` foes of `foe` join the pool at the round's end (Raise)
 ##           rally: every other foe on the field hits `value` harder next round (Kindle)
 ##   debuff  drain_rerolls: the team has `value` fewer rerolls next round (Roar)

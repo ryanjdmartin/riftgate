@@ -47,7 +47,7 @@ static func mortar_die() -> Die:
 static func sparrowhawk_die() -> Die:
 	return Die.of([
 		Face.attack(100, L, [], 40),
-		Face.attack(20, L, K.EXECUTE, 0, 40),
+		Face.attack(20, L, [], 0, 40),
 		Face.attack(30, L, K.CHAIN, 10),
 		Face.shield(30),
 	])

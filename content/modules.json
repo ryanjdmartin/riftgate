@@ -205,20 +205,21 @@
    "flavour": "",
    "stats": {},
    "text": {
-    "description": "Its kinetic weapons roll their maximum.",
+    "description": "Its rolled weapons deal 5 more.",
     "effects": [
      {
       "trigger": "on_attack",
-      "effect": "roll_max",
-      "value": 1
+      "effect": "add_damage",
+      "value": 5,
+      "when": "rolled"
      }
     ]
    },
    "design": {
     "stage": "draft",
     "fantasy": "Every firing solution the regiment ever logged, in a box that hums.",
-    "niche": "Kinetic rolls at their ceiling: the plain gun's best friend.",
-    "notes": "The Dingo's passive until 8 October, then the game's first module with its name kept (Ryan), with an ally in the fight. The ally condition was there so the Dingo's stealth could not carry it alone; stealth is gone, and Ryan said it may not be needed (9 October), so it is dropped for the runner to judge (Claude's lean; a raised minimum is the lighter fallback)."
+    "niche": "The plain gun's best friend: every blow of a rolled weapon 5 harder, the floor raised with the rest; the Muzzle Velocity Booster's ceiling is the other way.",
+    "notes": "The Dingo's passive until 8 October, then the game's first module with its name kept (Ryan), with an ally in the fight. The ally condition was there so the Dingo's stealth could not carry it alone; stealth is gone, and Ryan said it may not be needed (9 October), so it is dropped for the runner to judge (Claude's lean; a raised minimum is the lighter fallback). 10 October (Ryan): a flat increase in place of rolling the maximum, more interesting and far less abusable; no stat line, and never tuned to parity with the Booster (a module carries stats too; the runner's module rows are the guard against a must-pick)."
    }
   },
   {

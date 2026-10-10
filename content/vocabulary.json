@@ -330,16 +330,6 @@
    }
   },
   {
-   "id": "execute",
-   "category": "keyword",
-   "name": "Execute",
-   "codex": "+100% damage against a foe at or below half its health. Reduced to +50% against bosses and elites.",
-   "status": "implemented",
-   "design": {
-    "holes": ""
-   }
-  },
-  {
    "id": "chain",
    "category": "keyword",
    "name": "Chain",
@@ -357,16 +347,6 @@
    "status": "implemented",
    "design": {
     "holes": "On equipment since 9 October (the Wake Diffuser first): a rapid vent is cooling that gives the turn back, so a support entry is not a dead roll."
-   }
-  },
-  {
-   "id": "steady",
-   "category": "keyword",
-   "name": "Steady",
-   "codex": "A component with steady always uses its average damage as its base damage. It may still crit.",
-   "status": "implemented",
-   "design": {
-    "holes": ""
    }
   },
   {
@@ -1110,6 +1090,16 @@
    }
   },
   {
+   "id": "power_per_missing",
+   "category": "component_property",
+   "name": "Grows with missing hull",
+   "codex": "A flat blow that grows with its target's lost hull: it adds its bonus for every 20 hull the target is missing, read as the die is spent. No roll is involved, so the number is known before the spend, and the face shows it while held over a target.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 10 October for the Sparrowhawk's rifle (the Headhunter Rifle until it is renamed). MISSING_STEP is a placeholder."
+   }
+  },
+  {
    "id": "strikes",
    "category": "component_property",
    "name": "Strikes",
@@ -1133,7 +1123,7 @@
    "id": "order_of_operations",
    "category": "rules",
    "name": "Order of operations",
-   "codex": "Everything that changes a number goes through one pipeline, in one order. Sources: the chassis passive and each fitted component's passive (until refitted), skirmish rewards (until the battle ends), buffs and debuffs (until the skirmish ends, or until the end of a given round). First suppression, shortest-lived source to longest: a live effect that suppresses another by id or tag turns it off, and a suppressed effect suppresses nothing. Then the gate: an effect takes part only if it is live, its trigger fires now, its condition holds, and, for an ability, its component is not destroyed (a destroyed component keeps its stat bonuses and loses its abilities). Then adds, all sources summed; then multiplies, all sources multiplied; then floors and caps; then overrides, where the shortest-lived source wins and the latest granted breaks ties. In an attack, the roll (or the flat number) and the fixed keyword rule (execute) come before the pipeline's adds and multiplies; a raised ceiling widens a rolled range before the roll, and the face shows it. Nothing is ever stored as a total: every read asks again, so an effect that is gone stops answering. Statuses stack: the same status granted again adds stacks instead of a second copy; an add is worth its value per stack and a multiply is applied once per stack; a status that ticks applies its per-stack tick at its owner's turn, then loses one stack, and is gone at zero.",
+   "codex": "Everything that changes a number goes through one pipeline, in one order. Sources: the chassis passive and each fitted component's passive (until refitted), skirmish rewards (until the battle ends), buffs and debuffs (until the skirmish ends, or until the end of a given round). First suppression, shortest-lived source to longest: a live effect that suppresses another by id or tag turns it off, and a suppressed effect suppresses nothing. Then the gate: an effect takes part only if it is live, its trigger fires now, its condition holds, and, for an ability, its component is not destroyed (a destroyed component keeps its stat bonuses and loses its abilities). Then adds, all sources summed; then multiplies, all sources multiplied; then floors and caps; then overrides, where the shortest-lived source wins and the latest granted breaks ties. In an attack, the roll (or the flat number, with what fired heat or a target's missing hull adds) comes before the pipeline's adds and multiplies; a raised ceiling widens a rolled range before the roll, and the face shows it. Nothing is ever stored as a total: every read asks again, so an effect that is gone stops answering. Statuses stack: the same status granted again adds stacks instead of a second copy; an add is worth its value per stack and a multiply is applied once per stack; a status that ticks applies its per-stack tick at its owner's turn, then loses one stack, and is gone at zero.",
    "status": "implemented",
    "design": {
     "holes": "Refit (the hangar) is what changes loadout-scoped effects; not built."

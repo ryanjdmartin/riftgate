@@ -206,7 +206,7 @@ func test_keyword_cap_is_enforced() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var comp: Dictionary = db.components["enfilade_beam"].duplicate(true)
-	comp["face"]["keywords"] = ["penetrate", "burn", "chain", "execute"]
+	comp["face"]["keywords"] = ["penetrate", "burn", "chain", "shock"]
 	comp["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["too_many"] = comp
 	var errs := db.validate()

@@ -1,7 +1,7 @@
 extends TestCase
 
-## Numbers are in tens. Static faces are used wherever the exact number matters; ranged
-## faces are tested for bounds and for the steady keyword.
+## Numbers are in tens. Flat faces are used wherever the exact number matters; rolled faces
+## are tested for bounds.
 
 const L := Face.Reach.LINE
 const I := Face.Reach.INDIRECT
@@ -416,14 +416,28 @@ func test_ranged_face_rolls_within_bounds() -> void:
 	assert_true(highest - lowest >= 15, "forty seeds spread across the range (%d to %d)" % [lowest, highest])
 
 
-func test_steady_deals_the_average() -> void:
+## A blow that grows with its target's missing hull (10 October, the Sparrowhawk's rifle): flat,
+## +5 for every 20 the target has lost, read as the die is spent, and the bot reads the same.
+func test_a_blow_grows_with_its_targets_missing_hull() -> void:
+	var gun := Face.attack(10, L)
+	gun.power_per_missing = 5
+	var whole := _ghoul(200)
+	var hurt := _ghoul(200)
+	hurt.hp = 130   # 70 missing: three steps of 20
+	assert_eq(gun.missing_bonus(whole), 0, "a whole foe adds nothing")
+	assert_eq(gun.missing_bonus(hurt), 15, "70 missing is three steps")
+	assert_eq(gun.missing_bonus(null), 0, "no target, no bonus")
+	assert_false(gun.is_ranged(), "still flat")
+	assert_eq(Face.from_dict(gun.to_dict()).power_per_missing, 5, "it survives the content round-trip")
 	var sk := Skirmish.new(3)
-	sk.add_mech(_mech("A", Die.single(Face.attack(20, L, K.STEADY, 0, 50))))
-	sk.add_foes([_ghoul(200)])
+	sk.add_mech(_mech("A", Die.single(gun)))
+	sk.add_foes([hurt])
 	sk.begin()
 	sk.start_round()
+	var pol := Policy.make(Policy.GREEDY)
+	assert_eq(pol.expected_damage(sk.mechs[0], gun, hurt), 25.0, "the bot reads 25")
 	sk.assign(0, sk.front[0])
-	assert_eq(sk.front[0].hp, 165, "20 to 50 steady deals 35")
+	assert_eq(hurt.hp, 105, "and 25 lands")
 
 
 ## No crits (10 October): a raised ceiling (add_ceiling, the Muzzle Velocity Booster) widens a
@@ -1052,19 +1066,6 @@ func test_static_set_reach_sends_a_cracked_component_to_melee() -> void:
 	assert_eq(sk.reach_of(sk.mechs[0], f), Face.Reach.MELEE, "and when the skirmish ends the suppression is gone and the passive answers again")
 	m.repair_faces()
 	assert_eq(m.die.faces[0].reach, Face.Reach.INDIRECT, "repair restores the original mortar")
-
-
-func test_execute_gives_bosses_half_the_bonus() -> void:
-	var sk := Skirmish.new(1)
-	sk.add_mech(_mech("A", Die.single(Face.attack(20, L, K.EXECUTE))))
-	var boss := Foe.make("maw", 200, 10)
-	boss.size = 2
-	boss.hp = 90
-	sk.add_foes([boss])
-	sk.begin()
-	sk.start_round()
-	sk.assign(0, sk.front[0])
-	assert_eq(boss.hp, 60, "20 at +50% against a wounded boss, not +100%")
 
 
 func test_chain_repeats_on_a_kill() -> void:
@@ -2202,13 +2203,20 @@ func test_a_round_start_passive_regains_shield_from_heat() -> void:
 	assert_true(m.shield <= 60, "capped at the maximum")
 
 
-func test_a_kinetic_weapon_rolls_its_maximum_with_an_ally_in_the_fight() -> void:
+## The rolled condition (10 October, the Tactical Databank as a flat increase): an add that
+## holds for a rolled weapon and never for a flat one. The ally condition still reads allies.
+func test_a_rolled_condition_holds_for_rolled_weapons_only() -> void:
 	var databank := {"id": "databank", "name": "Tactical Databank", "description": "", "effects": [
-		{"trigger": "on_attack", "effect": "roll_max", "value": 1, "when": "ally_present"}]}
-	var sk := Skirmish.new(1)
+		{"trigger": "on_attack", "effect": "add_damage", "value": 5, "when": "rolled"}]}
 	var gun := Face.attack(10, L, [], 0, 30)
-	var a := _mech("A", Die.single(gun), 40, 100)
+	var beam := Face.attack(15, L)
+	var a := _mech("A", Die.of([gun, beam]), 40, 100)
 	a.grant_passive(databank)
+	assert_eq(int(Effects.attack(a, gun, 20, 0)["damage"]), 25, "a rolled blow lands 5 harder")
+	assert_eq(int(Effects.attack(a, beam, 15, 0)["damage"]), 15, "a flat one does not")
+	assert_eq(Effects.explain(a, gun), ["rolled weapons: damage +5 (Tactical Databank)"], "the die row says so")
+	assert_eq(Effects.explain(a, beam), [], "and says nothing on the flat one")
+	var sk := Skirmish.new(1)
 	var b := _mech("B", Die.single(Face.blank()), 40, 10)
 	sk.add_mech(a)
 	sk.add_mech(b)
@@ -2216,20 +2224,9 @@ func test_a_kinetic_weapon_rolls_its_maximum_with_an_ally_in_the_fight() -> void
 	sk.begin()
 	sk.start_round()
 	assert_eq(a.allies, 1, "the skirmish tells the unit who stands with it")
-	assert_true(Effects.rolls_max(a, gun), "the solution holds")
-	assert_eq(Effects.explain(a, gun), ["with an ally in the fight: kinetic weapons roll their maximum (Tactical Databank)"], "the die row says so")
-	sk.assign(0, sk.front[0])
-	assert_eq(sk.front[0].hp, 470, "the roll is its ceiling")
-	# Alone, it rolls as any gun does.
 	b.hull = 0
 	sk._refresh_allies()
 	assert_eq(a.allies, 0, "alone")
-	assert_false(Effects.rolls_max(a, gun), "and the solution is gone")
-	var pol := Policy.make(Policy.GREEDY)
-	assert_true(pol.expected_damage(sk.mechs[0], gun, sk.front[0]) < 30.0, "the bot reads the plain roll")
-	b.hull = 10
-	sk._refresh_allies()
-	assert_eq(pol.expected_damage(sk.mechs[0], gun, sk.front[0]), 30.0, "and the ceiling with the ally back")
 
 
 func test_a_free_reroll_of_one_die_spares_the_teams() -> void:
@@ -2453,7 +2450,7 @@ func test_a_folding_foe_takes_half_until_its_next_action_and_a_knitting_one_regr
 	assert_eq(k.hp, 100, "never past its maximum")
 
 
-func test_a_readied_foe_gets_back_up_once_unless_executed() -> void:
+func test_a_readied_foe_gets_back_up_once() -> void:
 	var sk := Skirmish.new(3, 1)
 	var m := _mech("A", Die.single(Face.attack(50, L)), 40, 100)
 	sk.add_mech(m)
@@ -2479,21 +2476,6 @@ func test_a_readied_foe_gets_back_up_once_unless_executed() -> void:
 	sk.assign(0, g)
 	assert_eq(sk.reinforcements.size(), 0, "once only")
 	assert_eq(sk.outcome, Skirmish.Outcome.VICTORY, "and the second death holds")
-	# An executing blow at any point keeps it down.
-	var s2 := Skirmish.new(4, 1)
-	s2.add_mech(_mech("B", Die.single(Face.attack(50, L, K.EXECUTE)), 40, 100))
-	var e := _ghoul(30, 10)
-	e.actions = [_special("buff", "revive_once")]
-	e.action = e.actions[0]
-	s2.add_foes([e])
-	s2.begin()
-	s2.start_round()
-	s2.end_round()
-	s2.start_round()
-	s2.assign(0, e)
-	assert_true(e.executed, "marked by the execute")
-	assert_eq(s2.reinforcements.size(), 0, "it stays down")
-	assert_eq(s2.outcome, Skirmish.Outcome.VICTORY, "won")
 
 
 func test_a_summoning_foe_calls_up_reinforcements_through_the_factory() -> void:
@@ -3016,7 +2998,7 @@ func test_a_self_destructing_blow_lands_and_spends_the_striker() -> void:
 	sk.end_round()
 	assert_eq(m.hull, 80, "the blow landed")
 	assert_false(bomb.alive(), "and the striker is spent")
-	assert_true(bomb.executed, "never to get back up")
+	assert_true(bomb.stays_down, "never to get back up")
 	assert_eq(sk.front[0], null, "its slot is clear")
 	assert_eq(sk.reinforcements.size(), 0, "and it did not return to the pool")
 	assert_true("\n".join(sk.log).contains("bursts, and is gone"), "the log says so")

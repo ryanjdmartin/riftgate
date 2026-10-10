@@ -652,6 +652,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: power_per_heat needs vents_all (the heat it adds for is the heat it fires)" % where)
 	if int(fd.get("power_per_heat", 0)) < 0:
 		errs.append("%s: power_per_heat cannot be negative" % where)
+	if fd.has("power_per_missing") and (kind != "attack" or int(fd["power_per_missing"]) <= 0):
+		errs.append("%s: power_per_missing is a positive number on an attack" % where)
 	if kind == "buff":
 		# A buff grants one of the machines' statuses: it must exist and be theirs.
 		var st := str(fd.get("status", ""))

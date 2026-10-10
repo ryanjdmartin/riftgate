@@ -359,24 +359,24 @@
    "design": {
     "stage": "draft",
     "fantasy": "For finishing what someone else started.",
-    "niche": ""
+    "niche": "The assassin's finisher: flat, and it grows with the target's missing hull, so the face shows what it will deal to the foe it is held over.",
+    "notes": "10 October (Ryan, bible section 5): Execute retired; flat, +5 for every 20 hull the target is missing (placeholders). To be locked on the Sparrowhawk with a subtler bird name, the Coriolis Accelerator kept for another component; locked in the stock pass, where the Goshawk's hardpoint takes a basic. Its sound stays the gun's (a flat barrel would derive the laser)."
    },
    "face": {
     "kind": "attack",
     "reach": "line",
     "power": 10,
-    "power_max": 20,
-    "keywords": [
-     "execute"
-    ],
-    "heat": 0
+    "keywords": [],
+    "heat": 0,
+    "power_per_missing": 5
    },
    "passive": null,
    "tags": [
-    "kinetic",
+    "energy",
     "single",
     "finisher"
-   ]
+   ],
+   "sound": "barrel"
   },
   {
    "id": "arc_fault_cannon",
@@ -466,23 +466,21 @@
    "design": {
     "stage": "draft",
     "fantasy": "Lobbed light. It lands at the same brightness every time and keeps burning.",
-    "niche": "Indirect burn with a steady roll: predictable stacks for the passive to read.",
-    "notes": "Claude's fill, 26 September."
+    "niche": "Indirect burn at a flat number: predictable stacks for the passive to read.",
+    "notes": "Claude's fill, 26 September. 10 October (Ryan, bible section 5): Steady retired, so it is a flat 10 (it was 5 to 15 steady)."
    },
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 5,
-    "power_max": 15,
+    "power": 10,
     "keywords": [
-     "burn",
-     "steady"
+     "burn"
     ],
     "heat": 10
    },
    "passive": null,
    "tags": [
-    "kinetic",
+    "energy",
     "artillery",
     "burn"
    ]
@@ -782,15 +780,14 @@
    "design": {
     "stage": "draft",
     "fantasy": "Four blades that take something from what they kill. The Arsenal's manual calls it attunement.",
-    "niche": "The Ammit's locked melee: execute to finish, devour to grow.",
-    "notes": "Live since devour landed (30 September). Claude's fill, 28 September; the name is from Ryan's list. Planned until devour and Overcharged exist."
+    "niche": "The Ammit's locked melee: flat, and devour to grow; the machine's scaling threat for the whole battle and nothing more.",
+    "notes": "Live since devour landed (30 September). Claude's fill, 28 September; the name is from Ryan's list. Planned until devour and Overcharged exist. 10 October (Ryan, bible section 5): Execute dropped (it was probably too strong with it anyway); no heal suppression or utility here, any of that on a stock tier two or three component of the Ammit's."
    },
    "face": {
     "kind": "attack",
     "reach": "melee",
     "power": 10,
     "keywords": [
-     "execute",
      "devour"
     ],
     "heat": 5
@@ -1003,22 +1000,24 @@
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "The Arsenal's issue weapon. Flat, hot, and it never misses the way a shell can.",
+    "fantasy": "The Arsenal's issue weapon, older than it looks: plasma loaded like powder, and no two shots alike.",
     "niche": "The Arsenal's starter gun.",
-    "notes": "Claude's fill, 28 September. Renamed from the Plasma Carbine 9 October (Ryan, the name audit): carbine is W&S's word and the Laser Carbine already carries it; an arquebus is the Arsenal's medieval firearm."
+    "notes": "Claude's fill, 28 September. Renamed from the Plasma Carbine 9 October (Ryan, the name audit): carbine is W&S's word and the Laser Carbine already carries it; an arquebus is the Arsenal's medieval firearm. 10 October (Ryan, bible section 5): By its niche it rolls (an old, unreliable gun), 5 to 15 for the flat 10 it was; the sound stays plasma (a rolled barrel would derive gunfire)."
    },
    "face": {
     "kind": "attack",
     "reach": "line",
-    "power": 10,
+    "power": 5,
     "keywords": [],
-    "heat": 5
+    "heat": 5,
+    "power_max": 15
    },
    "passive": null,
    "tags": [
-    "energy",
+    "kinetic",
     "single"
-   ]
+   ],
+   "sound": "plasma"
   },
   {
    "id": "blazethrower",
@@ -1320,13 +1319,12 @@
     "stage": "draft",
     "fantasy": "Mining gauntlets with the arc welder left switched on. What they punch stays live.",
     "niche": "Melee that Shocks what it hits and leaves standing: the Armadillo's status on a weapon (Ryan's board), so the next blow on it lands double.",
-    "notes": "From Ryan's Names board. Stocked on no chassis, so it carries its own tier. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders. Halved to 10 to 20 when the branch met the damage scale (9 October; bible section 11, the damage-scale row)."
+    "notes": "From Ryan's Names board. Stocked on no chassis, so it carries its own tier. Decided 9 October in the content revision (more support and status entries everywhere, Aphelion's most; Ryan: the names in the right register). Numbers are placeholders. Halved to 10 to 20 when the branch met the damage scale (9 October; bible section 11, the damage-scale row). 10 October (Ryan, bible section 5): By its niche it is flat (a shock rider), 15 for the 10 to 20 it was."
    },
    "face": {
     "kind": "attack",
     "reach": "melee",
-    "power": 10,
-    "power_max": 20,
+    "power": 15,
     "keywords": [
      "shock"
     ],
@@ -1334,7 +1332,7 @@
    },
    "passive": null,
    "tags": [
-    "kinetic",
+    "energy",
     "melee",
     "control"
    ]

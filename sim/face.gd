@@ -10,11 +10,17 @@ extends RefCounted
 
 enum Kind { ATTACK, SHIELD, VENT, BLANK, BUFF }
 enum Reach { NONE, LINE, INDIRECT, MELEE }
-enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, EXECUTE, CHAIN, STEADY, RAPID, CLEANSE, VOLATILE, DEVOUR, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK }
+## Execute and Steady are retired (10 October): a threshold doubling is a hard sum hidden in
+## a keyword, and a rolled weapon dealing its average is simply a flat one.
+enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, VOLATILE, DEVOUR, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK }
 ## Whom a component may be spent on (Ryan, 26 September): a weapon (an attack) targets foes;
 ## equipment (a shield, a vent) targets self and allies by default, and content may narrow
 ## one to self only or allies only, so the design space stays open.
 enum Target { SELF_ALLY, SELF, ALLY, FOE }
+
+## A blow that grows with its target's missing hull adds its power_per_missing for every this
+## much the target has lost (the Sparrowhawk's rifle, 10 October). Flat: no roll involved.
+const MISSING_STEP := 20
 
 const KIND_NAMES := {
 	Kind.ATTACK: "attack", Kind.SHIELD: "shield", Kind.VENT: "vent", Kind.BLANK: "blank", Kind.BUFF: "buff",
@@ -24,8 +30,8 @@ const REACH_NAMES := {
 }
 const KEYWORD_NAMES := {
 	Keyword.NONE: "", Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.BURN: "burn",
-	Keyword.SUPPRESS: "suppress", Keyword.EXECUTE: "execute",
-	Keyword.CHAIN: "chain", Keyword.STEADY: "steady", Keyword.RAPID: "rapid", Keyword.CLEANSE: "cleanse",
+	Keyword.SUPPRESS: "suppress",
+	Keyword.CHAIN: "chain", Keyword.RAPID: "rapid", Keyword.CLEANSE: "cleanse",
 	Keyword.VOLATILE: "volatile", Keyword.DEVOUR: "devour", Keyword.LURE: "lure", Keyword.DISRUPT: "disrupt",
 	Keyword.SPILLOVER: "spillover", Keyword.OVERSHIELD: "overshield", Keyword.SHOCK: "shock",
 }
@@ -76,6 +82,7 @@ var buff_stacks: int = 1      # ...this many stacks...
 var buff_rounds: int = 1      # ...through the end of this many rounds (1: this round)
 var vents_all: bool = false   # an attack that fires the machine's whole heat: the gauge is empty after the shot...
 var power_per_heat: int = 0   # ...and each 10 heat it fired adds this to the blow (the Afterburner Cannon, 28 September)
+var power_per_missing: int = 0   # an attack: added for every MISSING_STEP hull its target is missing (10 October; flat, shown on the hover)
 
 
 ## `kws` may be a single Keyword or an Array of them. `pwr_max` of 0 means static.
@@ -205,6 +212,7 @@ static func from_dict(d: Dictionary) -> Face:
 	if f.kind == Kind.ATTACK:
 		f.vents_all = bool(d.get("vents_all", false))
 		f.power_per_heat = maxi(0, int(d.get("power_per_heat", 0))) if f.vents_all else 0
+		f.power_per_missing = maxi(0, int(d.get("power_per_missing", 0)))
 	for name in d.get("keywords", []):
 		var kw := keyword_from_name(str(name))
 		if kw > 0:
@@ -235,6 +243,8 @@ func to_dict() -> Dictionary:
 		d["vents_all"] = true
 		if power_per_heat > 0:
 			d["power_per_heat"] = power_per_heat
+	if power_per_missing > 0:
+		d["power_per_missing"] = power_per_missing
 	return d
 
 
@@ -274,6 +284,14 @@ func is_ranged() -> bool:
 	return power_max > power
 
 
+## What this blow adds against `target` for the hull it is missing (power_per_missing), read
+## as the die is spent: a known number, so the face is still flat. Nothing without a target.
+func missing_bonus(target) -> int:
+	if power_per_missing <= 0 or target == null:
+		return 0
+	return power_per_missing * int(maxi(0, int(target.hp_max) - int(target.hp)) / MISSING_STEP)
+
+
 func average() -> int:
 	return ceili((power + power_max) / 2.0)
 
@@ -298,6 +316,7 @@ func duplicate_face() -> Face:
 	f.buff_rounds = buff_rounds
 	f.vents_all = vents_all
 	f.power_per_heat = power_per_heat
+	f.power_per_missing = power_per_missing
 	for k in keywords:
 		f.keywords.append(k)
 	return f
@@ -350,6 +369,8 @@ func describe() -> String:
 				s += " " + keyword_label(k)
 			if vents_all:
 				s += " vents all" + (", +%d per 10 heat" % power_per_heat if power_per_heat > 0 else "")
+			if power_per_missing > 0:
+				s += " +%d per %d hull missing" % [power_per_missing, MISSING_STEP]
 			if heat > 0:
 				s += " (+%d heat)" % heat
 	if cracked:

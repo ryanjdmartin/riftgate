@@ -27,8 +27,8 @@ extends RefCounted
 ##   3. multiplies, every source multiplied
 ##   4. floors and caps (min_damage; a stat never below zero)
 ##   5. overrides (set_reach): the shortest-lived source wins, then the latest granted
-## In an attack, the roll (or the flat number) and the fixed keyword rules (execute) come
-## first, from the skirmish, so the pipeline's adds and multiplies come last. A raised
+## In an attack, the roll (or the flat number, with what heat fired or the target's missing
+## hull adds) comes first, from the skirmish, so the pipeline's adds and multiplies come last. A raised
 ## ceiling (add_ceiling) is the one exception: it widens the range before the roll, so it
 ## lives on the effective face (effective_face) and the face shows it.
 ##
@@ -45,7 +45,7 @@ const ROUNDS := 3
 
 ## What the content may ask for, by trigger. The validator refuses anything else.
 const SUPPORTED_EFFECTS := {
-	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "roll_max", "add_ceiling"],
+	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "add_ceiling"],
 	"on_injury": ["no_destroy"],
 	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "screen_withdraw", "add_attack", "never_hunted", "extra_action", "spares_splash", "hull_per_spend"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
@@ -102,7 +102,7 @@ const STATUS := {
 		"tags": ["guard"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 5}]},
 	"kindled": {"id": "kindled", "name": "Kindled", "description": "Hits 10 harder this round.",
 		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 10}]},
-	"risen": {"id": "risen", "name": "Getting Back Up", "description": "Returns from the pool once after dying, unless executed.",
+	"risen": {"id": "risen", "name": "Getting Back Up", "description": "Returns from the pool once after dying.",
 		"tags": ["revive"], "effects": []},
 	"scrambled": {"id": "scrambled", "name": "Scrambled", "description": "This die's next reroll lands anywhere, the same entry included.",
 		"tags": [CLEANSABLE], "effects": [{"trigger": "status", "effect": "scramble_reroll", "value": 1}]},
@@ -111,7 +111,7 @@ const STATUS := {
 const MECH_STATUSES := ["overcharged", "braced", "primed", "retaliate"]
 ## target_status: the foe struck carries any live status (burning, suppressed, numbed...).
 ## ally_present: another live machine is in the fight (the unit's `allies`, kept by the skirmish).
-const SUPPORTED_WHEN := ["component_cracked", "reach_melee", "reach_line", "reach_indirect", "target_status", "ally_present"]
+const SUPPORTED_WHEN := ["component_cracked", "rolled", "reach_melee", "reach_line", "reach_indirect", "target_status", "ally_present"]
 ## Stats a static effect may change: the mech's base numbers by these names.
 const STATS := ["hull", "shield", "heat", "armour", "move", "recharge", "cooling"]
 ## Effects that are bonuses (a destroyed component keeps them) rather than abilities.
@@ -353,6 +353,8 @@ static func _holds(u, eff: Dictionary, face: Face, target = null) -> bool:
 			return true
 		"component_cracked":
 			return face != null and face.cracked
+		"rolled":
+			return face != null and face.is_ranged()
 		"reach_melee":
 			return face != null and effective_reach(u, face) == Face.Reach.MELEE
 		"reach_line":
@@ -685,15 +687,6 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 	return out
 
 
-## Does a kinetic attack roll its maximum (roll_max on_attack; the Dingo's Tactical Databank
-## with an ally in the fight)?
-static func rolls_max(u, face: Face, target = null) -> bool:
-	for pair in _taking_part(u, "on_attack", face, target):
-		if str(pair[0].get("effect", "")) == "roll_max":
-			return true
-	return false
-
-
 ## Free rerolls of this machine's own die each round, on top of the team's (free_reroll,
 ## static; the Clydesdale's Battery Director).
 static func free_rerolls(u) -> int:
@@ -851,7 +844,6 @@ static func effect_text(eff: Dictionary) -> String:
 		"grant_keyword":
 			var kw := Face.keyword_from_name(str(v))
 			body = "gains %s" % (Face.keyword_label(kw) if kw > 0 else str(v))
-		"roll_max": body = "kinetic weapons roll their maximum"
 		"add_armour_vs_rank": body = "armour +%s against %s-rank blows" % [vs, str(eff.get("rank", "front"))]
 		"keep_status": body = "%s never fades and lasts the battle" % str(STATUS.get(str(v), {}).get("name", str(v)))
 		"screen_withdraw": body = "on a withdrawal this machine is out before the enemy strikes, and each ally has a %s%% chance to slip out with it; a blow at a covered machine is lost" % vs
@@ -894,6 +886,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"out_of_combat": lead = "each phase out of combat: "
 	match str(eff.get("when", "")):
 		"component_cracked": lead += "cracked components: "
+		"rolled": lead += "rolled weapons: "
 		"reach_melee": lead += "melee attacks: "
 		"reach_line": lead += "line-of-sight attacks: "
 		"reach_indirect": lead += "indirect attacks: "

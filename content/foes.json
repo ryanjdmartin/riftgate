@@ -136,7 +136,7 @@
     },
     {
       "id": "zombie_knight", "name": "Zombie Knight", "faction": "marsh",
-      "design": { "fantasy": "The genre's death knight: a cape, rusted plate, a sword as long as it is tall.", "niche": "The Marsh's one armoured foe, and it gets back up once. Big single blows, and an execute if you have one.", "notes": "The elite tier's candidate. Reraise is revive_once." },
+      "design": { "fantasy": "The genre's death knight: a cape, rusted plate, a sword as long as it is tall.", "niche": "The Marsh's one armoured foe, and it gets back up once. Big single blows, and Suppress or Disrupt on its telegraphed Reraise if you have one.", "notes": "The elite tier's candidate. Reraise is revive_once." },
       "codex": "A knight that died in its armour and kept the armour. Hits hard, takes little, and the first time you put it down it gets back up.",
       "hp": 50, "attack": 20, "armour": 5, "rank": "front", "zone": 1, "movespeed": 20,
       "actions": [

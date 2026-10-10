@@ -314,28 +314,23 @@ static func heat_of(ms: Skirmish.MechState, f: Face) -> int:
 
 ## What one use of an attack entry can land, with the odds of each: [[damage, weight], ...].
 ## A rolled entry is read at five points (its ends, its quarters, its middle); a flat entry is
-## one point. Overcharge, execute and the pipeline's modifiers apply as the resolver applies
-## them; the strikes multiply the blow.
+## one point. Overcharge, a target's missing hull and the pipeline's modifiers apply as the
+## resolver applies them; the strikes multiply the blow.
 func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null) -> Array:
 	f = Effects.effective_face(ms.unit, f)
 	var rolls: Array[int] = []
 	if not f.is_ranged():
 		rolls.append(f.power)
-	elif Effects.rolls_max(ms.unit, f, target):
-		rolls.append(f.power_max)
-	elif f.has(Face.Keyword.STEADY):
-		rolls.append(f.average())
 	else:
 		var span := f.power_max - f.power
 		for q in [0.0, 0.25, 0.5, 0.75, 1.0]:
 			rolls.append(f.power + int(roundf(span * q)))
 	var fired := f.power_per_heat * int(ms.heat / 10) if f.vents_all else 0   # what the heat it fires adds
+	fired += f.missing_bonus(target)   # and what the target's lost hull adds
 	var out: Array = []
 	var w := 1.0 / rolls.size()
 	for v in rolls:
 		var dmg: int = v + fired
-		if target != null and f.has(Face.Keyword.EXECUTE) and target.hp * 2 <= target.hp_max:
-			dmg = int(roundf(dmg * (1.5 if target.is_massive() else 2.0)))
 		dmg = int(Effects.attack(ms.unit, f, dmg, 0, target)["damage"])
 		# The foe's own statuses read last: a Shocked foe takes the first blow double. Then its
 		# armour comes off every blow, so a hardened foe is worth less to a volume weapon.

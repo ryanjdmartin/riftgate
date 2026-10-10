@@ -28,7 +28,7 @@
   {
    "id": "arsenal",
    "name": "The Arsenal",
-   "style": "The Council's own R&D house, which need not compete for favour. Heavy walkers, plasma and energy that runs hot and never crits, big single hits, execute, burn. Dark steel and gunmetal, black chrome.",
+   "style": "The Council's own R&D house, which need not compete for favour. Heavy walkers, plasma that runs hot, big single hits, burn. Dark steel and gunmetal, black chrome.",
    "voice": "A manual written as liturgy.",
    "capital": true
   }
@@ -557,7 +557,7 @@
    "design": {
     "fantasy": "A sinister digitigrade figure, with 4 clawed arms, the middle set which can be used as an additional pair of legs. A low-set snout like cockpit with burning \"eyes.\" Absorbs energy from units it defeats with its 4 signature locked claw weapons, granting permanent overcharge.",
     "niche": "Scaling damage",
-    "notes": "Needs 4 locked components: melee weapons that grant overcharge on kill. Not sure of name, something sinister about assimilation or draining or attuning or something. Decided 28 September: four locked Soulcutter Talons (execute to finish, devour to grow) and four hardpoints, the d8 Ryan wrote as a total. Quintessence Tap keeps the Overcharged stacks for the battle, never the campaign, so the snowball has an end. Arsenal names stay sanctified on their face and sinister on reflection. Numbers, designation and kit are Claude's fills, Ryan's to move. 9 October, the content revision: the Ward Plate became the Oblation Ward (a volatile shield, the Arsenal's premium)."
+    "notes": "Needs 4 locked components: melee weapons that grant overcharge on kill. Not sure of name, something sinister about assimilation or draining or attuning or something. Decided 28 September: four locked Soulcutter Talons (devour to grow; execute to finish until 10 October) and four hardpoints, the d8 Ryan wrote as a total. Quintessence Tap keeps the Overcharged stacks for the battle, never the campaign, so the snowball has an end. Arsenal names stay sanctified on their face and sinister on reflection. Numbers, designation and kit are Claude's fills, Ryan's to move. 9 October, the content revision: the Ward Plate became the Oblation Ward (a volatile shield, the Arsenal's premium)."
    },
    "codex": "",
    "hull": 120,
