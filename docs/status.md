@@ -8,7 +8,8 @@ bible is published at https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF (v0.106 
 **The foe picker on the phone** (https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei, private to Ryan, from 9 October):
 every foe's foeforge candidates one foe at a time, each render beside its in-game cut on the other world's green, the
 current in-game pick badged; a tap picks and moves on. Picks land in the page's db collection `picks` (one document
-per set key, `{pick, set, at}`); read them with ArtifactData `list`, then cut each with `forge.py cut`. Rebuild with
+per set key, `{pick, note, set, at}`; the note is what Ryan wants fixed on that pick, 10 October); read them with
+ArtifactData `list`, then cut each with `forge.py cut` and carry the notes into the touch-up to-do. Rebuild with
 `forge.py phone [--tags <experiment>]` (template `tools/foeforge/phone_picker.html`, output `tools/foeforge/out/phone/`)
 and republish to that URL with `root` set to the output folder and its `renders/` files; a republish keeps the picks.
 

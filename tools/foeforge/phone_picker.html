@@ -57,6 +57,12 @@
   .tools { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; align-items: center; }
   button.small { font-family: var(--mono); font-size: 13px; background: transparent; color: var(--ink); border: 1px solid var(--rule); padding: 8px 10px; cursor: pointer; }
   #summary { font-family: var(--mono); font-size: 12px; color: var(--muted); white-space: pre-wrap; word-break: break-word; margin-top: 10px; }
+  .notes { display: grid; gap: 6px; margin-top: 12px; }
+  .notes label { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
+  .notes textarea { width: 100%; min-height: 64px; resize: vertical; font-family: var(--mono); font-size: 15px; line-height: 1.4; background: var(--panel); color: var(--ink); border: 1px solid var(--rule); padding: 8px 10px; }
+  .notes textarea:focus-visible { outline: 3px solid var(--ink); outline-offset: 1px; }
+  .switch { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 13px; color: var(--ink); }
+  .switch input { width: 20px; height: 20px; accent-color: var(--hud); }
   @media (prefers-reduced-motion: no-preference) { .cand { transition: border-color .12s; } }
 </style>
 
@@ -67,10 +73,15 @@
     <div class="note" id="note"></div>
     <div class="status" id="status">Loading saved picks…</div>
   </header>
+  <div class="notes">
+    <label for="note-text"><span>Notes for this foe</span><span id="note-state"></span></label>
+    <textarea id="note-text" placeholder="What to fix on the pick: a missing arm, a weapon through a hand…"></textarea>
+  </div>
   <div class="grid" id="grid"></div>
   <div class="tools">
     <button class="small" id="clear" type="button">Clear this pick</button>
     <button class="small" id="copy" type="button">Copy all picks</button>
+    <label class="switch" for="auto"><input type="checkbox" id="auto" checked> Move on after a pick</label>
   </div>
   <div id="summary"></div>
 </div>
@@ -87,6 +98,8 @@ const SETS = /*__SETS__*/[];
 
 let index = 0;
 let picks = {};        // set key -> candidate number, from the page's store (or this device)
+let notes = {};        // set key -> what to fix on the pick, saved with it
+let noteTimer = null;
 let db = null;
 let saving = false;
 try { index = Math.min(SETS.length - 1, Math.max(0, parseInt(localStorage.getItem("foe-picker-index") || "0", 10) || 0)); } catch (e) {}
@@ -96,7 +109,8 @@ const $ = (id) => document.getElementById(id);
 function pickedCount() { return SETS.filter((s) => picks[s.key]).length; }
 
 function summaryText() {
-  return SETS.filter((s) => picks[s.key]).map((s) => s.key + " " + picks[s.key]).join(", ");
+  return SETS.filter((s) => picks[s.key] || notes[s.key]).map((s) =>
+    s.key + " " + (picks[s.key] || "-") + (notes[s.key] ? " (" + notes[s.key].replace(/\s+/g, " ").trim() + ")" : "")).join(", ");
 }
 
 function render() {
@@ -138,7 +152,9 @@ function render() {
     jump.textContent = "";
     SETS.forEach((t, i) => { const o = document.createElement("option"); o.value = i; jump.appendChild(o); });
   }
-  SETS.forEach((t, i) => { jump.options[i].textContent = (picks[t.key] ? "✓ " : "• ") + t.name + (picks[t.key] ? "  (" + picks[t.key] + ")" : ""); });
+  SETS.forEach((t, i) => { jump.options[i].textContent = (picks[t.key] ? "✓ " : "• ") + t.name + (picks[t.key] ? "  (" + picks[t.key] + ")" : "") + (notes[t.key] ? "  ✎" : ""); });
+  const ta = $("note-text");
+  if (document.activeElement !== ta) ta.value = notes[s.key] || "";
   jump.value = index;
   $("prev").disabled = index === 0;
   $("next").disabled = index === SETS.length - 1;
@@ -147,32 +163,45 @@ function render() {
 }
 
 function go(i) {
+  flushNote();
+  $("note-text").blur();
   index = Math.min(SETS.length - 1, Math.max(0, i));
   render();
   window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
 }
 
-async function save(key, value) {
+async function save(key) {
+  const value = picks[key] || null;
+  const note = (notes[key] || "").trim();
   if (db) {
     const ref = db.collection("picks").doc(key);
     try {
-      if (value) await ref.set({ pick: value, set: key, at: new Date().toISOString() });
+      if (value || note) await ref.set({ pick: value, note: note, set: key, at: new Date().toISOString() });
       else await ref.delete();
       setStatus("Saved. Claude reads your picks from this page.");
     } catch (e) {
       setStatus("Could not save that pick (" + (e && e.code ? e.code : "error") + "). Use Copy all picks and paste them in chat.");
     }
   } else {
-    try { localStorage.setItem("foe-picker-picks", JSON.stringify(picks)); } catch (e) {}
+    try { localStorage.setItem("foe-picker-picks", JSON.stringify({ picks, notes })); } catch (e) {}
   }
+}
+
+function flushNote() {
+  if (!noteTimer) return null;
+  clearTimeout(noteTimer.t);
+  const key = noteTimer.key;
+  noteTimer = null;
+  return save(key);
 }
 
 async function choose(n) {
   const s = SETS[index];
+  if (noteTimer && noteTimer.key === s.key) { clearTimeout(noteTimer.t); noteTimer = null; }
   picks[s.key] = n;
   render();
-  await save(s.key, n);
-  if (index < SETS.length - 1) setTimeout(() => go(index + 1), 220);
+  await save(s.key);
+  if ($("auto").checked && index < SETS.length - 1) setTimeout(() => go(index + 1), 220);
 }
 
 function setStatus(t) { $("status").textContent = t; }
@@ -185,8 +214,18 @@ $("clear").addEventListener("click", async () => {
   if (!picks[s.key]) return;
   delete picks[s.key];
   render();
-  await save(s.key, null);
+  await save(s.key);
 });
+$("note-text").addEventListener("input", (e) => {
+  const key = SETS[index].key;
+  notes[key] = e.target.value;
+  $("note-state").textContent = "saving…";
+  if (noteTimer) clearTimeout(noteTimer.t);
+  noteTimer = { key, t: setTimeout(async () => { noteTimer = null; await save(key); $("note-state").textContent = "saved"; render(); }, 900) };
+});
+$("note-text").addEventListener("blur", () => { const p = flushNote(); if (p) p.then(() => { $("note-state").textContent = "saved"; render(); }); });
+try { $("auto").checked = localStorage.getItem("foe-picker-auto") !== "0"; } catch (e) {}
+$("auto").addEventListener("change", (e) => { try { localStorage.setItem("foe-picker-auto", e.target.checked ? "1" : "0"); } catch (err) {} });
 $("copy").addEventListener("click", async () => {
   const t = summaryText() || "no picks yet";
   try { await navigator.clipboard.writeText(t); setStatus("Copied: " + t); }
@@ -202,15 +241,22 @@ render();
 (async () => {
   try { db = window.claude && window.claude.use ? await window.claude.use("db") : null; } catch (e) { db = null; }
   if (!db) {
-    try { picks = JSON.parse(localStorage.getItem("foe-picker-picks") || "{}") || {}; } catch (e) { picks = {}; }
+    try { const kept = JSON.parse(localStorage.getItem("foe-picker-picks") || "{}") || {}; picks = kept.picks || {}; notes = kept.notes || {}; } catch (e) { picks = {}; notes = {}; }
     setStatus("Picks are kept on this device only. When you finish, tap Copy all picks and paste them in chat.");
     render();
     return;
   }
   db.collection("picks").onSnapshot((snap) => {
-    const next = {};
-    snap.docs.forEach((d) => { const v = d.data(); if (v && v.pick) next[d.id] = String(v.pick); });
+    const next = {}, nextNotes = {};
+    snap.docs.forEach((d) => {
+      const v = d.data();
+      if (v && v.pick) next[d.id] = String(v.pick);
+      if (v && v.note) nextNotes[d.id] = String(v.note);
+    });
     picks = next;
+    // A note being typed here wins over the store until it saves.
+    if (noteTimer && notes[noteTimer.key] !== undefined) nextNotes[noteTimer.key] = notes[noteTimer.key];
+    notes = nextNotes;
     setStatus(pickedCount() ? "Picks saved on this page. Claude reads them from here." : "Tap a candidate to pick it. Picks save on this page for Claude to read.");
     render();
   }, (e) => {
