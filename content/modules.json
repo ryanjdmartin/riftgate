@@ -51,7 +51,7 @@
     "heat": -20
    },
    "text": {
-    "description": "A blow that reaches its hull stands up 10 shield, which blocks the next blow whole.",
+    "description": "Taking hull damage stands up 10 shield, which blocks the next blow whole.",
     "effects": [
      {
       "trigger": "on_hull_damage",
@@ -348,7 +348,7 @@
     "hull": 10
    },
    "text": {
-    "description": "A blow on its hull Overcharges it.",
+    "description": "Taking hull damage Overcharges it.",
     "effects": [
      {
       "trigger": "on_hull_damage",

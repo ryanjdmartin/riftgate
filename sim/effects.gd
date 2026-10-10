@@ -81,7 +81,7 @@ const STATUS := {
 		"effects": [{"trigger": "status", "effect": "skip_action", "value": 1}]},
 	# Numbed is a resistance, not a status or a buff (Ryan, 10 October): it lives here as a
 	# modifier for the pipeline's arithmetic, and nothing reads it but suppress (FOE_STATUSES).
-	"numbed": {"id": "numbed", "name": "Numbed", "description": "Resists a suppress, 10% per stack, on top of its own resistance; loses a stack each turn.",
+	"numbed": {"id": "numbed", "name": "Numbed", "description": "Resists a suppress, 10% per stack, the only resistance a foe has; loses a stack each turn.",
 		"effects": [{"trigger": "status", "effect": "resist_suppress", "value": 10}]},
 	# The Baboon's Pocket Paradox as a meter (Ryan, 10 October): a status like any other, and
 	# it never decays; at the machine's count the foe is Suppressed and the Paradox clears.
@@ -691,8 +691,8 @@ static func extra_actions(u) -> int:
 	return maxi(0, n)
 
 
-## The machine has just lost hull to a blow or a bite (never to its own overheat): every
-## on_hull_damage passive fires (the Crucible's Overheating). Returns the names of the
+## The machine has just lost hull to a blow, a bite or its own overheat: every on_hull_damage
+## passive fires (the Nemesis's Crucible). Returns the names of the
 ## statuses granted, for the log; shield and vent from it are the caller's to apply.
 static func hull_damaged(u) -> Dictionary:
 	return fire(u, "on_hull_damage")

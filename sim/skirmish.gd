@@ -1,8 +1,8 @@
 class_name Skirmish
 extends RefCounted
 
-## The dice skirmish. Mechs have no positions. Enemies stand in a two-rank, three-column
-## formation fed from a reinforcements, so a horde keeps coming.
+## The dice skirmish. Mechs have no positions. Enemies stand in a two-rank, four-column
+## formation fed from the reinforcements, so a horde keeps coming. The rules are docs/rules.md's.
 ##
 ## Round loop:
 ##   start_round()       passive cooling, roll every live mech's die, telegraph foe intents
@@ -10,14 +10,15 @@ extends RefCounted
 ##                       before or after spending others: a low damage roll is information;
 ##                       a reroll always lands on a different face (see Die.reroll)
 ##   assign(i, target)   spend a mech's face on a foe (attacks) or a mech (shield, vent);
-##                       kinetic faces roll their damage here, immediately and visibly
+##                       a rolled face rolls its damage here, immediately and visibly
 ##                       a kill clears its slot at once; a decided fight ends at once
 ##   end_round()         burn ticks, foes act, the dead are cleared, mech statuses tick
 ##                       (overheating), heat over the cap burns hull, the reinforcements
 ##                       refill, outcome is checked
-##   can_withdraw()      at the start of any round, before any face is spent
+##   can_withdraw()      at any point of the player's turn
 ##
-## Numbers are in tens. Enemy damage is static; only the player's kinetic faces roll.
+## The player's damage is in fives, everything else in tens. Enemy damage is static; only
+## the player's rolled faces roll.
 
 enum State { SETUP, ROUND_START, ASSIGN, DONE }
 enum Outcome { NONE, VICTORY, DEFEAT, WITHDRAWN }

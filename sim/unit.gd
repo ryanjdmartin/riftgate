@@ -54,8 +54,8 @@ var recharge_field: int:
 		return Effects.stat(self, "recharge")
 	set(v):
 		base["recharge"] = v
-## Heat shed at the end of every skirmish round, passively (Ryan, 22 September): venting is
-## a tactic, but a round spent on ballistics or shields is a way of cooling too.
+## Heat shed at the start of every skirmish round, passively, before the roll: venting is a
+## tactic, but a round spent on shields or cool weapons is a way of cooling too.
 var cooling: int:
 	get:
 		return Effects.stat(self, "cooling")

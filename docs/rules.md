@@ -338,7 +338,5 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
 
 - Rally grants a fixed +10 at once, not its move's value next round, so foes acting after
   the rallier that turn hit above their shown intent.
-- Several codex lines in `content/vocabulary.json` are stale (Burn's stack size, "can be
-  resisted", splash, the hull-damage trigger, kinetic and energy).
 - Jenny's foe-down lines are keyed by the retired families, so only the generic pool plays.
 - `tools/hangar_data.py` leaves `content/modules.json` out of the hangar page's files.

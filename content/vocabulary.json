@@ -34,7 +34,7 @@
    "id": "shield",
    "category": "resource",
    "name": "Shield",
-   "codex": "Enemy damage hits shield before hull, and a standing shield blocks a blow whole: however small the shield and however big the blow, nothing bleeds through to the hull (a breaching foe is the exception). The blow still costs the shield its damage. Shield components add shield up to the chassis maximum (a component with Overshield may pass it, and the excess fades at the end of the round); in a fight that is the only way shield comes back. Out of combat it returns each battlefield phase at the chassis's field rate. It never refills for free between skirmishes.",
+   "codex": "Enemy damage hits shield before hull, and a standing shield blocks a blow whole: however small the shield and however big the blow, nothing bleeds through to the hull (a breaching foe is the exception). The blow still costs the shield its damage. Shield components add shield up to the chassis maximum (a component with Overshield may pass it, and the excess fades at the end of the round); in a fight shield comes back only from components, modules and passives. Out of combat it returns each battlefield phase at the chassis's field rate. It never refills for free between skirmishes.",
    "status": "implemented",
    "design": {
     "holes": "Rates and shield sizes are placeholders. Decided 18 September: block-the-blow replaced bleed-through, and the in-combat trickle was dropped the same day (a passive may bring it back for one chassis)."
@@ -44,7 +44,7 @@
    "id": "heat",
    "category": "resource",
    "name": "Heat",
-   "codex": "Attack components may add heat. At the end of the round, heat above the chassis maximum burns hull one for one and the gauge settles at the maximum; until then a vent can still bring it down. Vent components remove heat. At the start of every turn a mech sheds its chassis's cooling rating in heat, so a round spent on ballistics or shields is a way of cooling down without a vent; Overheating ticks at the end of the round, after the enemy has struck, so a scorch lands on the round's peak heat before cooling relieves it.",
+   "codex": "Attack components may add heat. At the end of the round, heat above the chassis maximum burns hull one for one and the gauge settles at the maximum; until then a vent can still bring it down. Vent components remove heat. At the start of every turn a mech sheds its chassis's cooling rating in heat, so a round spent on shields or cool weapons is a way of cooling down without a vent; Overheating ticks at the end of the round, after the enemy has struck, so a scorch lands on the round's peak heat before cooling relieves it.",
    "status": "implemented",
    "design": {
     "holes": "Heat does nothing below the cap. Consider effects at high heat short of overflow. Cooling numbers are placeholders; cooling must stay below a typical weapon's heat or heat never matters, and a vent component must be worth a whole turn (tuning)."
@@ -134,7 +134,7 @@
    "id": "damage_range",
    "category": "component_property",
    "name": "Damage range",
-   "codex": "A kinetic attack component shows a minimum and a maximum and rolls between them when spent, immediately and visibly. Energy components show one number and never roll. Numbers are in tens.",
+   "codex": "A rolled weapon shows a minimum and a maximum and rolls between them when spent, immediately and visibly. A flat weapon shows one number and never rolls. The player's damage comes in fives.",
    "status": "implemented",
    "design": {
     "holes": "Ranges are content-authored per component; no upgrade path raises min or max yet."
@@ -154,7 +154,7 @@
    "id": "indirect",
    "category": "reach",
    "name": "Indirect",
-   "codex": "Targets any foe in either rank. Hitting the front rank triggers danger close.",
+   "codex": "Targets any foe in either rank. Hitting the front rank splashes the firer's own shield.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -194,7 +194,7 @@
    "id": "burn",
    "category": "keyword",
    "name": "Burn",
-   "codex": "Player keyword. Burning enemies lose 5 HP per stack at the start of their action, then lose one stack. Bypasses armour. Can be resisted.",
+   "codex": "Player keyword. Each foe hit gains a stack of Burning for every 10 of the blow's damage, rounded up. Burning enemies lose 5 HP per stack at the start of their action, then lose one stack. Bypasses armour.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -204,7 +204,7 @@
    "id": "corrode",
    "category": "keyword",
    "name": "Corrode",
-   "codex": "Player keyword. Corroding enemies lose 1% of their HP per stack at the start of their action, then lose one stack. Bypasses armour. Can be resisted.",
+   "codex": "Player keyword. Corroding enemies lose 1% of their HP per stack at the start of their action, then lose one stack. Bypasses armour.",
    "status": "planned",
    "design": {
     "holes": ""
@@ -254,7 +254,7 @@
    "id": "numbed",
    "category": "resistance",
    "name": "Numbed",
-   "codex": "Foe resistance, not a buff or a debuff: nothing reads it, deepens it, spreads it or cleanses it, and it never counts as a status (Ryan, 10 October). Each stack is 10% resistance to a suppress, the only resistance a foe has; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. Its chip wears brackets, not the box a status wears.",
+   "codex": "Foe resistance, not a buff or a debuff: nothing reads it, deepens it, spreads it or cleanses it, and it never counts as a status. Each stack is 10% resistance to a suppress, the only resistance a foe has; a suppress it shrugs off does nothing and adds no stack. Loses a stack at the start of each of its turns, so a stun repeated on one foe stops landing while stuns spread across the formation keep working. Its chip wears brackets, not the box a status wears.",
    "status": "implemented",
    "design": {
     "holes": "Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths. Exempt from everything (Ryan, 2 October): a stun resist that passives or cleanses could touch is where other games' combat loops broke."
@@ -364,7 +364,7 @@
    "id": "cleanse",
    "category": "keyword",
    "name": "Cleanse",
-   "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Disabled, Corrupted and Overheating status. A rapid component's own switch-off is not a status a cleanse touches.",
+   "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Disabled, Corrupted, Overheating and Scrambled status. A rapid component's own switch-off is not a status a cleanse touches.",
    "status": "implemented",
    "design": {
     "holes": "Carried by the Corona Shield (a unique unlock) and since 9 October by the Phased Sublimator, Aphelion's vent, stocked on the Baboon. The bot values what it clears since the same day."
@@ -464,7 +464,7 @@
    "id": "burning",
    "category": "status",
    "name": "Burning",
-   "codex": "Foe status. Loses 5 HP per stack at the start of its action, then loses one stack. Bypasses armour. Applied by the burn keyword, one stack per twenty damage dealt.",
+   "codex": "Foe status. Loses 5 HP per stack at the start of its action, then loses one stack. Bypasses armour. Applied by the burn keyword, one stack for every 10 damage dealt, rounded up.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -504,7 +504,7 @@
    "id": "front_rank",
    "category": "formation",
    "name": "Front rank",
-   "codex": "Three slots. Front-preferring foes fill these. Always in line of fire.",
+   "codex": "Four slots, one a column. Front-rank foes fill these. Always in Direct reach.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -514,7 +514,7 @@
    "id": "back_rank",
    "category": "formation",
    "name": "Back rank",
-   "codex": "Three slots behind the front. Back-preferring foes hold these.",
+   "codex": "Four slots behind the front. Back-rank foes hold these.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -524,7 +524,7 @@
    "id": "exposed",
    "category": "formation",
    "name": "Exposed",
-   "codex": "A back-rank foe is exposed when the front slot in its column is empty. Exposed foes are in line of fire.",
+   "codex": "A back-rank foe is exposed when the front slot in its column is empty. Exposed foes are in Direct reach.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -544,7 +544,7 @@
    "id": "danger_close",
    "category": "formation",
    "name": "Splash",
-   "codex": "Indirect fire on the front rank damages the firing unit equal to half the component's power, rounded up.",
+   "codex": "Indirect fire on the front rank costs the firer shield equal to half the damage the target took, rounded up. It never reaches hull.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -564,7 +564,7 @@
    "id": "withdraw",
    "category": "formation",
    "name": "Withdraw",
-   "codex": "Available at any point of the player's turn, the first round included. The price is always the same: the enemy takes its turn, then the team flees at the end of the round, so nobody leapfrogs out of contact unscathed. Ends the skirmish; survivors on both sides carry their damage to the battlefield. Shields do not refill on withdrawing; they recharge at the field rate only in phases spent out of combat.",
+   "codex": "Available at any point of the player's turn, the first round included. The price is always the same: the enemy takes its full turn, then the skirmish ends, so nobody leapfrogs out of contact unscathed. Machines keep their damage; a pack keeps its survivors, who return whole. Shields do not refill on withdrawing; they recharge at the field rate only in phases spent out of combat.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -644,7 +644,7 @@
    "id": "pack",
    "category": "battlefield",
    "name": "Pack",
-   "codex": "An enemy hex is a pack: one foe type times a strength. A skirmish's enemy composition is every pack whose zone your machines stand in, so the rift's formations and how you come at them decide what you fight. Bosses are single three-hex units.",
+   "codex": "An enemy hex is a pack: one foe type times a strength. A fight is the pack you attack and every pack whose ring covers it, so the rift's formations and the order you attack them in decide what you fight. A boss is one unit on one hex.",
    "status": "implemented",
    "design": {
     "holes": "The rift should seed and spawn formations, not single packs (Ryan, 1 October): to design."
@@ -654,7 +654,7 @@
    "id": "footprint",
    "category": "battlefield",
    "name": "Footprint",
-   "codex": "A unit covers one or more hexes. A boss covers three in a triangle. Every footprint hex is occupied, counts for rings and range, and is a tap target. Packs and mechs stay single-hex.",
+   "codex": "Every unit covers one hex, the boss included: it is occupied, counts for rings and range, and is a tap target. The gate and the rift are wider structures.",
    "status": "implemented",
    "design": {
     "holes": "Footprints do not rotate with facing."
@@ -674,7 +674,7 @@
    "id": "spawn",
    "category": "battlefield",
    "name": "Spawn",
-   "codex": "When Rift Pressure fills, the next pack of the faction's spawn list appears on the nearest free hex to the rift.",
+   "codex": "When Rift Pressure fills, the next pack of the spawn cycle (the lead domain's packs alternating with the guest's) appears on the nearest free hex to the rift.",
    "status": "implemented",
    "design": {
     "holes": "A full spawn list should arrive together as a formation; pressure currently sends one pack at a time."
@@ -884,7 +884,7 @@
    "id": "on_hull_damage",
    "category": "trigger",
    "name": "On hull damage",
-   "codex": "Passive trigger. Fires when this mech loses hull to a blow or a bite, never to its own overheat.",
+   "codex": "Passive trigger. Fires when this machine loses hull: to a blow, a bite or an overheat.",
    "status": "implemented",
    "design": {
     "holes": "Built 30 September for the Crucible Capacitor (stack_status). Still the hook for the pinned berserker idea."
@@ -1084,7 +1084,7 @@
    "id": "power_per_missing",
    "category": "component_property",
    "name": "Grows with missing hull",
-   "codex": "A flat blow that grows with its target's lost hull: it adds its bonus for every 20 hull the target is missing, read as the die is spent. No roll is involved, so the number is known before the spend, and the face shows it while held over a target.",
+   "codex": "A flat blow that grows with its target's lost hull: it adds its bonus for every 20 hull the target is missing, read as the die is spent. No roll is involved, so the number is known before the spend, and the die shows it while held over a target.",
    "status": "implemented",
    "design": {
     "holes": "Built 10 October for the Sparrowhawk's rifle (the Headhunter Rifle until it is renamed). MISSING_STEP is a placeholder."
@@ -1094,7 +1094,7 @@
    "id": "strikes",
    "category": "component_property",
    "name": "Strikes",
-   "codex": "An attack's blows per use. A weapon with three strikes lands three separate hits: each rolls its own damage and carries its own effects, so a rapid-fire weapon procs often. Against a shield, every strike past the first reaches the hull; against armour, every small strike loses the armour, so many small hits are the wrong tool for a heavy target and the right one for a soft one. Foe attacks have strikes too.",
+   "codex": "An attack's blows per use. A weapon with three strikes lands three separate hits: each rolls its own damage and carries its own effects, so a rapid-fire weapon procs often. Against a shield, each strike is its own blow, so once one breaks the shield the next reaches the hull; against armour, every small strike loses the armour, so many small hits are the wrong tool for a heavy target and the right one for a soft one. Foe attacks have strikes too.",
    "status": "implemented",
    "design": {
     "holes": "Heat is paid once per use, not per strike. Foes have no armour yet, so on the player side strikes only matter for procs until they do."
@@ -1114,7 +1114,7 @@
    "id": "order_of_operations",
    "category": "rules",
    "name": "Order of operations",
-   "codex": "Everything that changes a number goes through one pipeline, in one order. Sources: the chassis passive and each fitted component's passive (until refitted), skirmish rewards (until the battle ends), buffs and debuffs (until the skirmish ends, or until the end of a given round). First suppression, shortest-lived source to longest: a live effect that suppresses another by id or tag turns it off, and a suppressed effect suppresses nothing. Then the gate: an effect takes part only if it is live, its trigger fires now, its condition holds, and, for an ability, its component is not destroyed (a destroyed component keeps its stat bonuses and loses its abilities). Then adds, all sources summed; then multiplies, all sources multiplied; then floors and caps; then overrides, where the shortest-lived source wins and the latest granted breaks ties. In an attack, the roll (or the flat number, with what fired heat or a target's missing hull adds) comes before the pipeline's adds and multiplies; a raised ceiling widens a rolled range before the roll, and the face shows it. Nothing is ever stored as a total: every read asks again, so an effect that is gone stops answering. Statuses stack: the same status granted again adds stacks instead of a second copy; an add is worth its value per stack and a multiply is applied once per stack; a status that ticks applies its per-stack tick at its owner's turn, then loses one stack, and is gone at zero.",
+   "codex": "Everything that changes a number goes through one pipeline, in one order. Sources: the chassis passive and each fitted component's passive (until refitted), skirmish rewards (until the battle ends), buffs and debuffs (until the skirmish ends, or until the end of a given round). First suppression, shortest-lived source to longest: a live effect that suppresses another by id or tag turns it off, and a suppressed effect suppresses nothing. Then the gate: an effect takes part only if it is live, its trigger fires now, its condition holds, and, for an ability, its component is not destroyed (a destroyed component keeps its stat bonuses and loses its abilities). Then adds, all sources summed; then multiplies, all sources multiplied; then floors and caps; then overrides, where the shortest-lived source wins and the latest granted breaks ties. In an attack, the roll (or the flat number, with what fired heat or a target's missing hull adds) comes before the pipeline's adds and multiplies; a raised ceiling or floor moves a rolled range before the roll, and the die shows it. Nothing is ever stored as a total: every read asks again, so an effect that is gone stops answering. Statuses stack: the same status granted again adds stacks instead of a second copy; an add is worth its value per stack and a multiply is applied once per stack; a status that ticks applies its per-stack tick at its owner's turn, then loses one stack, and is gone at zero.",
    "status": "implemented",
    "design": {
     "holes": "Refit (the hangar) is what changes loadout-scoped effects; not built."
