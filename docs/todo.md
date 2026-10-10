@@ -61,7 +61,6 @@ today lives in `docs/status.md`. "Discuss first" means a proposal in chat before
 - [x] Re-cut the Tactical Databank (built 10 October, Ryan: raise the floor by a small amount, stats stapled on if too weak: its rolled weapons' lowest roll 5 higher, hull +20 placeholder)
 - [ ] Rework the Nemesis (Ryan, 10 October: the Gravity Knuckles are a ramp and a payoff in one, so no other entry is ever worth spending; the passive has too many words; its melee bonus is fine); Claude's proposal in chat
 - [ ] Discuss first, then decide: chips as buffs and debuffs, the word status retired (Ryan, 10 October), Claude's holes in chat; then the text pass and a kind on every chip the validator holds
-- [ ] An Aphelion chassis passive for the Catalyzer Matrix's idea (every status it applies a stack deeper), pulled from the modules 10 October since it copied the Stingray's passive
 - [x] The tag readers' rule (Ryan, 10 October; bible section 7, the tags row): soft synergies, one tag making a state another reads; a module may name two tags; a chassis passive must open build space
 - [ ] Once tags are assigned, propose the module catalogue again as soft-synergy pairs (Ryan's example: beam weapons deal extra to burning foes, missile weapons add a stack of burn), simple text
 - [ ] Player-facing tags on every component (Ballistic, Missile, Beam, Plasma, Flame, Arc, Blade and melee as the example set), the assignment proposed in chat; they replace the internal filing tags (kinetic, energy, single, support...) and show in the codex only
