@@ -43,9 +43,10 @@ STEPS = "4"
 WIDTH, HEIGHT = 512, 768
 
 # The enemy side is the JRPG genre invading (decided 9 October, bible section 9): the roster
-# blends the genre, but the art's register is the SNES Final Fantasy enemy sprite alone (Ryan's
-# reference sheets, 9 October, were all IV to VI). Naming Chrono Trigger and Dragon Quest here
-# pulled toward their designer's big heads and clean inking. Played straight, never a gag.
+# homages the whole genre, Dragon Quest as much as Final Fantasy, but the art is one style of
+# our own (bible section 1, the enemy art row, says it in words). The line below anchors it on
+# SNES Final Fantasy IV to VI enemy sprites, the nearest concrete reference a model knows for
+# this register; naming Chrono Trigger and Dragon Quest pulled in big heads and clean inking.
 STYLE = (
     "16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: "
     "ornate, detailed, over-the-top high fantasy, "
