@@ -19,12 +19,11 @@ command are in `README.md`.
 
 ## Branches
 
-- `ccr-abac8c0f-yig0e2` carries the content revision, the modules, the 10 October weapon
-  rules (no crits, two reaches, the die showing the number, the Paradox meter, Numbed the only
-  resistance, the mirrored Booster and Databank, the Nemesis's Crucible) and the rewritten
-  docs. Main (the first foe art at 72x96, foeforge's briefs and phone picker, `RIFTGATE_FOES`)
-  was merged into it on 10 October, so main can take it as a fast-forward until main moves.
-  It is not on main yet: a session on main still reads the old bible and status.
+- `main` has everything since 10 October: the content revision, the modules, the 10 October
+  weapon rules (no crits, two reaches, the die showing the number, the Paradox meter, Numbed
+  the only resistance, the mirrored Booster and Databank, the Nemesis's Crucible), the first
+  foe art at 72x96 and the rewritten docs. `ccr-abac8c0f-yig0e2` was fast-forwarded into it
+  and has nothing main lacks; new work starts from main.
 
 ## Pages
 
