@@ -242,6 +242,34 @@ func heat_bonus(ms: MechState, f: Face) -> int:
 	return f.power_per_heat * int(ms.heat / 10)
 
 
+## What one blow of an attack entry will deal, as the die shows it (decided 10 October, bible
+## section 5: the game does the arithmetic and the player reads it): [low, high], equal for a
+## flat entry. Without a target, every source that needs none: the pipeline's adds and
+## multiplies, the heat a vent-on-fire shot fires, a raised ceiling. Over a foe, what it deals
+## to that foe: its missing hull, conditions on it (a status it carries), and its armour off
+## the blow. A shock is left out, the foe's own chip, and spent by the first blow of many.
+## `f` is the entry as this machine's passives make it (shown_face); [0, 0] for no attack.
+func shown_number(ms: MechState, f: Face, target: Foe = null) -> Array[int]:
+	if f == null or not f.is_attack():
+		return [0, 0]
+	var add := heat_bonus(ms, f) + f.missing_bonus(target)
+	var out: Array[int] = []
+	for v in [f.power, f.power_max]:
+		var d := int(Effects.attack(ms.unit, f, v + add, 0, target)["damage"])
+		if target != null:
+			d = maxi(0, d - target.armour_total())
+		out.append(d)
+	return out
+
+
+## The shown number as the die prints it: one number, or the range.
+func shown_number_text(ms: MechState, f: Face, target: Foe = null) -> String:
+	if f == null or not f.is_attack():
+		return f.number_text() if f != null else ""
+	var n := shown_number(ms, f, target)
+	return str(n[0]) if n[0] == n[1] else "%d–%d" % [n[0], n[1]]
+
+
 ## Every live machine learns how many allies stand with it, for passives that read it.
 func _refresh_allies() -> void:
 	var n := live_mechs().size()

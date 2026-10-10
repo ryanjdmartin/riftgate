@@ -760,7 +760,8 @@ func _refresh() -> void:
 			v.statuses.append([r[0], r[1], r[3]])
 		v.queue_refresh()
 		var d := _dice[i]
-		d.set_face(sk.shown_face(ms, ms.face()))   # reach as the passive reads it now
+		var sf := sk.shown_face(ms, ms.face())   # reach as the passive reads it now
+		d.set_face(sf, sk.shown_number_text(ms, sf))   # and the number the blow will deal
 		d.corrupted = Effects.corrupt_stacks(ms.unit, ms.face_index) if ms.face_index >= 0 else 0
 		d.spent = ms.assigned
 		d.dead = not ms.alive()
@@ -1199,7 +1200,8 @@ func _on_hold_released() -> void:
 func _on_drag_started(i: int) -> void:
 	_drag_from = i
 	Sound.play("die_pick")
-	_ghost.set_face(sk.shown_face(sk.mechs[i], sk.mechs[i].face()))
+	var sf := sk.shown_face(sk.mechs[i], sk.mechs[i].face())
+	_ghost.set_face(sf, sk.shown_number_text(sk.mechs[i], sf))
 	_ghost.corrupted = Effects.corrupt_stacks(sk.mechs[i].unit, sk.mechs[i].face_index)
 	_ghost.visible = true
 	_refresh()
@@ -1212,7 +1214,13 @@ func _on_drag_moved(global_pos: Vector2) -> void:
 	_ghost.position = local - Vector2(DIE_SIZE * 0.5, DIE_SIZE * 0.5)
 	# The hover hum while the die is over somewhere it may be spent (Ryan, 5 October).
 	var target = _drop_target_at(global_pos)
-	Sound.hover(target != null and sk.can_assign(_drag_from, target))
+	var can := target != null and sk.can_assign(_drag_from, target)
+	Sound.hover(can)
+	# Over a foe it may strike, the die shows what it will deal to that foe (10 October):
+	# its missing hull, a status on it, its armour. Anywhere else, the plain number.
+	if _drag_from >= 0:
+		var ms: Skirmish.MechState = sk.mechs[_drag_from]
+		_ghost.set_number(sk.shown_number_text(ms, _ghost.face, target if can and target is Foe else null))
 
 
 func _on_drag_ended(global_pos: Vector2) -> void:

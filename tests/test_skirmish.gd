@@ -440,6 +440,39 @@ func test_a_blow_grows_with_its_targets_missing_hull() -> void:
 	assert_eq(hurt.hp, 105, "and 25 lands")
 
 
+## The face shows the number (10 October, bible section 5): what the blow will deal now, and
+## held over a foe, what it deals to that foe. Flat means no roll, however much feeds it.
+func test_the_shown_number_is_what_the_blow_will_deal() -> void:
+	var sk := Skirmish.new(1)
+	var gun := Face.attack(10, L, [], 0, 20)
+	var rifle := Face.attack(10)
+	rifle.power_per_missing = 5
+	var cannon := Face.from_dict({"kind": "attack", "reach": "direct", "power": 20, "vents_all": true, "power_per_heat": 10})
+	var m := _mech("A", Die.of([gun, rifle, cannon]), 40, 100)
+	m.grant_passive({"id": "db", "name": "Databank", "description": "", "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 5, "when": "rolled"}]})
+	sk.add_mech(m)
+	var hard := _ghoul(200)
+	hard.armour = 5
+	hard.hp = 120   # 80 missing: four steps of 20
+	sk.add_foes([hard])
+	sk.begin()
+	sk.start_round()
+	var ms := sk.mechs[0]
+	assert_eq(sk.shown_number(ms, gun), [15, 25] as Array[int], "a rolled range with the Databank's 5 on both ends")
+	assert_eq(sk.shown_number_text(ms, gun), "15–25", "printed as the range")
+	assert_eq(sk.shown_number_text(ms, rifle), "10", "the rifle with nobody under it")
+	assert_eq(sk.shown_number_text(ms, rifle, hard), "25", "over the wounded foe: 10, +20 for its missing hull, -5 armour")
+	assert_eq(sk.shown_number_text(ms, gun, hard), "10–20", "armour comes off the range too")
+	ms.heat = 30
+	assert_eq(sk.shown_number_text(ms, cannon), "50", "the Afterburner shows what its heat will add: 20, +10 a 10 heat")
+	Effects.stack(m, Effects.STATUS["overcharged"], Effects.SKIRMISH, "test", 1)
+	assert_eq(sk.shown_number_text(ms, rifle), "15", "a buff on the machine shows on the face")
+	assert_eq(sk.shown_number_text(ms, rifle, hard), "30", "and over the foe")
+	ms.face_index = 1
+	sk.assign(0, hard)
+	assert_eq(hard.hp, 90, "and the spend deals exactly the 30 it showed")
+
+
 ## No crits (10 October): a raised ceiling (add_ceiling, the Muzzle Velocity Booster) widens a
 ## rolled range before the roll, the face shows it, and a flat face gets nothing.
 func test_a_raised_ceiling_widens_a_rolled_range_and_leaves_a_flat_one() -> void:

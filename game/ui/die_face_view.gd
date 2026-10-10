@@ -34,6 +34,7 @@ const CUT := 16.0
 const FLICKER_PERIOD := 4.5   # seconds between dips, per chip
 
 var face: Face = null
+var shown_number: String = ""   # what the blow will deal now, or against the foe it is held over (10 October)
 var corrupted: int = 0       # Corrupted stacks on the entry showing: a chip in the enemy's colour, with the count
 var locked: bool = false
 var spent: bool = false
@@ -63,9 +64,18 @@ static func view_size() -> Vector2:
 	return Vector2(FACE + RAIL, FACE)
 
 
-func set_face(f: Face) -> void:
+func set_face(f: Face, shown: String = "") -> void:
 	face = f
+	shown_number = shown
 	queue_redraw()
+
+
+## The number the blow will deal (Skirmish.shown_number_text), in place of the component's
+## own; empty draws the component's own number.
+func set_number(shown: String) -> void:
+	if shown != shown_number:
+		shown_number = shown
+		queue_redraw()
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -209,8 +219,8 @@ func _draw() -> void:
 	var ink := Color(hud, alpha)
 	var mono := Hud.mono()
 	Glyphs.draw(self, Glyphs.primary_for(face), Vector2(FACE * 0.5, 34.0 + bob), 34, ink, 2.6)
-	var num := face.number_text()
-	var num_size := 28 if face.is_ranged() else 38
+	var num := shown_number if not shown_number.is_empty() else face.number_text()
+	var num_size := 28 if num.contains("–") else 38
 	if _recalc >= 0.0:
 		# The display recomputes this face: its ink dips a little and the frame flashes once;
 		# the static itself is drawn last, over the whole die (`_draw_static`). The number
