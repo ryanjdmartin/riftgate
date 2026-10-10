@@ -42,11 +42,13 @@ QUANTIZE = "4"
 STEPS = "4"
 WIDTH, HEIGHT = 512, 768
 
-# The enemy side is the JRPG genre invading (decided 9 October, bible section 9): Final Fantasy
-# its spine, the genre blended so ours reads as its own. Played straight: menacing, never a gag.
+# The enemy side is the JRPG genre invading (decided 9 October, bible section 9): the roster
+# blends the genre, but the art's register is the SNES Final Fantasy enemy sprite alone (Ryan's
+# reference sheets, 9 October, were all IV to VI). Naming Chrono Trigger and Dragon Quest here
+# pulled toward their designer's big heads and clean inking. Played straight, never a gag.
 STYLE = (
-    "16-bit SNES JRPG battle sprite in the tradition of Final Fantasy VI, Chrono Trigger, "
-    "Dragon Quest and Breath of Fire enemies: ornate, detailed, over-the-top high fantasy, "
+    "16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: "
+    "ornate, detailed, over-the-top high fantasy, "
     "menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark "
     "outline. " + "{rules}" + " The whole creature in frame, facing toward the viewer's left, "
     "centered, isolated on a solid flat pure white background, no text, no border, no ground shadow."
@@ -55,8 +57,8 @@ STYLE = (
 # levelled and on a quest, drawn in the elaborate Final Fantasy boss register.
 HERO_STYLE = (
     "16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, "
-    "elaborate and over the top, in the tradition of Final Fantasy VI's and Chrono Trigger's "
-    "boss art: ornate armour or robes with gold trim and flowing cloth, "
+    "elaborate and over the top, in the style of Final Fantasy IV, V and VI boss art: "
+    "ornate armour or robes with gold trim and flowing cloth, "
     "heroic and terrifying, a face that is not a recognisable "
     "character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark "
     "outline. " + "{rules}" + " Full body, facing toward the viewer's left, centered, "
