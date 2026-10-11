@@ -125,7 +125,10 @@ defeat when every machine is wrecked. There is no round limit.
 
 Component properties: **Vents all** fires the whole heat gauge into the shot, adding its
 bonus per 10 heat fired, then its own heat lands. **Missing hull** adds its bonus for every
-20 hull the target is missing.
+20 hull the target is missing. **The hopper**: a weapon that fills it puts a load in its
+machine's hopper for each foe its blows reach, after the blow; a weapon that fires it takes
+up to its most loads a shot, each adding its bonus to the blow, and spends them (the Honey
+Badger's Chainsaw Claw fills, its Bullion Fragmenter fires three at +5).
 
 ### Buffs, debuffs and resistance
 On a machine:
@@ -136,6 +139,8 @@ On a machine:
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.
 - **Crucible** (buff, the Nemesis's): its melee blows deal +5 a stack, a stack each time it
   takes hull damage; lasts the skirmish.
+- **Hopper** (a store, the Honey Badger's): loads for a weapon that fires the hopper; lasts
+  the skirmish, never decays, and nothing cleanses it.
 - **Overheating** (debuff, from a foe's scorch): +5 heat a stack at the round's end, then a
   stack fades; the heat burns at the end of the next turn unless vented. Cleansable.
 - **Scrambled** (debuff): the die's next reroll may land anywhere, the same entry included.

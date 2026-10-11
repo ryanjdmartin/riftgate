@@ -1091,6 +1091,16 @@
    }
   },
   {
+   "id": "hopper_property",
+   "category": "component_property",
+   "name": "The hopper",
+   "codex": "Two weapons that work together. One fills its machine's hopper, a load for each foe its blows reach, after the blow. The other fires the hopper: each load it takes adds its bonus to the blow, up to its most a shot, and the loads it takes are spent. The hopper lasts the skirmish and shows on the machine; the die shows what a shot would fire.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 11 October for the Honey Badger's locked pair (Ryan): the Chainsaw Claw fills, the Bullion Fragmenter fires, +5 a load and three a shot as placeholders. Ryan floated the passive feeding it from every melee hit, the claw giving extra; held in chat."
+   }
+  },
+  {
    "id": "strikes",
    "category": "component_property",
    "name": "Strikes",
@@ -1128,6 +1138,16 @@
    "status": "implemented",
    "design": {
     "holes": "Built 10 October from Ryan's wording of the passive; +5 a stack is a placeholder."
+   }
+  },
+  {
+   "id": "hopper",
+   "category": "status",
+   "name": "Hopper",
+   "codex": "Machine store, the Honey Badger's: loads its Chainsaw Claw digs out of whatever it hits, which its Bullion Fragmenter fires a few a shot. Lasts the skirmish; never decays, and nothing cleanses it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 11 October. Whether a store is a buff or its own kind waits on the buffs-and-debuffs wording."
    }
   },
   {

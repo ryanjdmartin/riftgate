@@ -654,6 +654,13 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: power_per_heat cannot be negative" % where)
 	if fd.has("power_per_missing") and (kind != "attack" or int(fd["power_per_missing"]) <= 0):
 		errs.append("%s: power_per_missing is a positive number on an attack" % where)
+	# The hopper (11 October): a weapon fills it by the foes it reaches, another fires a few
+	# loads a shot for a bonus each.
+	for key in ["fills_hopper", "fires_hopper"]:
+		if fd.has(key) and (kind != "attack" or int(fd[key]) <= 0):
+			errs.append("%s: %s is a positive number on an attack" % [where, key])
+	if fd.has("fires_hopper") != fd.has("power_per_load") or (fd.has("power_per_load") and int(fd["power_per_load"]) <= 0):
+		errs.append("%s: fires_hopper and a positive power_per_load go together" % where)
 	if kind == "buff":
 		# A buff grants one of the machines' statuses: it must exist and be theirs.
 		var st := str(fd.get("status", ""))

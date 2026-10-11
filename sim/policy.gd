@@ -28,6 +28,7 @@ const OPTION_GUARD := 64         # spends in one round, at most: rapid rerolls t
 const DEVOUR_ROUNDS := 1.0       # rounds of the die's own damage a devoured stack is worth (it fades a stack a round)
 const SHOCK_WEIGHT := 0.6        # the doubled blow a Shocked foe will take, as a share of the die's own damage
 const CLEANSE_ROUNDS := 2.0      # rounds a cleansed status would otherwise have cost (Corrupted lasts the fight, Overheating fades)
+const HOPPER_WEIGHT := 0.6       # a load in the hopper, as a share of what it adds when a later shot fires it
 
 var kind: int = GREEDY
 var withdraw_below: int = 0      # persona: withdraw when the team's hull is under this percent (0: never)
@@ -233,6 +234,8 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		score += _paradox_share(sk, target, apps) * (1.0 - p_kill) * _threat_now(target) * HULL_WEIGHT
 	if f.has(Face.Keyword.BURN):
 		score += (1.0 - p_kill) * mean * BURN_WEIGHT
+	if f.fills_hopper > 0:
+		score += hopper_fill_score(sk, ms, f, target)
 	if f.has(Face.Keyword.DEVOUR):
 		# A kill feeds a stack of Overcharged: what the status adds to the die's own damage,
 		# for about the rounds the stack lasts. Read from the status, never hardcoded.
@@ -277,6 +280,34 @@ static func volatile_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: f
 
 ## What one stack of a status adds to a blow of `mean` damage: a flat add as itself, a
 ## multiplier as its share of the blow. Read from the status, never hardcoded.
+## What filling the hopper is worth (the Chainsaw Claw, 11 October): each load what this
+## machine's best hopper-firing entry adds a load, at the odds a later shot fires it, while
+## the hopper holds less than two of that entry's shots (more would sit unfired).
+func hopper_fill_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> float:
+	var per_load := 0
+	var per_shot := 0
+	for e in ms.die.faces:
+		var ef := Effects.effective_face(ms.unit, e)
+		if ef.fires_hopper > 0 and ef.power_per_load > per_load:
+			per_load = ef.power_per_load
+			per_shot = ef.fires_hopper
+	if per_load <= 0:
+		return 0.0
+	var reached := 1
+	if f.has(Face.Keyword.CLEAVE):
+		for c in [target.column - 1, target.column + 1]:
+			if c >= 0 and c < sk.columns:
+				var n := sk.foe_at(target.rank, c)
+				if n != null and n != target and n.alive():
+					reached += 1
+	if f.has(Face.Keyword.PENETRATE):
+		var other := sk.foe_at(1 - target.rank, target.column)
+		if other != null and other != target and other.alive():
+			reached += 1
+	var room := maxi(0, per_shot * 2 - Effects.stacks_of(ms.unit, "hopper"))
+	return float(mini(f.fills_hopper * reached, room) * per_load) * HOPPER_WEIGHT
+
+
 static func _stack_damage_gain(status_id: String, mean: float) -> float:
 	var gain := 0.0
 	for eff in Effects.STATUS.get(status_id, {}).get("effects", []):
@@ -325,6 +356,7 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null) -> Arr
 			rolls.append(f.power + int(roundf(span * q)))
 	var fired := f.power_per_heat * int(ms.heat / 10) if f.vents_all else 0   # what the heat it fires adds
 	fired += f.missing_bonus(target)   # and what the target's lost hull adds
+	fired += Skirmish.hopper_bonus(ms.unit, f)   # and what the loads it fires add
 	var out: Array = []
 	var w := 1.0 / rolls.size()
 	for v in rolls:

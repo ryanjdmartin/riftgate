@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 105 implemented, 8 planned, 0 idea.
+Status: 107 implemented, 8 planned, 0 idea.
 
 ## Resource
 
@@ -46,6 +46,7 @@ Status: 105 implemented, 8 planned, 0 idea.
 | **Targets** | Whom a piece of equipment may be spent on: self and allies, self only, or allies only. Shown as a chip on the die when narrowed. | implemented |
 | **Vents all** | An attack that fires the machine's whole heat as it is spent: the heat gauge is empty after the shot, and every 10 heat fired adds the component's bonus to the blow before the passives. The shot's own heat cost still lands. | implemented |
 | **Grows with missing hull** | A flat blow that grows with its target's lost hull: it adds its bonus for every 20 hull the target is missing, read as the die is spent. No roll is involved, so the number is known before the spend, and the die shows it while held over a target. | implemented |
+| **The hopper** | Two weapons that work together. One fills its machine's hopper, a load for each foe its blows reach, after the blow. The other fires the hopper: each load it takes adds its bonus to the blow, up to its most a shot, and the loads it takes are spent. The hopper lasts the skirmish and shows on the machine; the die shows what a shot would fire. | implemented |
 | **Strikes** | An attack's blows per use. A weapon with three strikes lands three separate hits: each rolls its own damage and carries its own effects, so a rapid-fire weapon procs often. Against a shield, each strike is its own blow, so once one breaks the shield the next reaches the hull; against armour, every small strike loses the armour, so many small hits are the wrong tool for a heavy target and the right one for a soft one. Foe attacks have strikes too. | implemented |
 
 ## Reach
@@ -95,6 +96,7 @@ Status: 105 implemented, 8 planned, 0 idea.
 | **Cracked component** | Mech status, global rule. When a blow lands on bare hull (no shield standing) and what gets past armour is at least a quarter of maximum hull, the mech's die is rolled and the component it lands on is injured. An intact component cracks: it loses its keywords and unique effects, but still does its basic action, still generates heat, and still provides its passive bonuses and abilities. Any shield standing, however small, prevents injury, except against a breach; a foe's double strike is the other way past it. A cracked component stays cracked across skirmishes and battles until repaired in the hangar. | implemented |
 | **Destroyed component** | Mech status. When an injury lands on a component that is already cracked, it is destroyed: blank, it does nothing when it comes up, and provides its passive bonuses but not passive abilities. until the hangar repairs or replaces it. An injury that lands on a destroyed component or an empty hardpoint finds nothing to break, so a badly broken mech shrugs off more of them. | implemented |
 | **Crucible** | Machine buff, the Nemesis's: a stack for each time it takes hull damage (a blow, a bite of its own or an overheat), and its melee blows deal 5 more a stack. Lasts the skirmish. | implemented |
+| **Hopper** | Machine store, the Honey Badger's: loads its Chainsaw Claw digs out of whatever it hits, which its Bullion Fragmenter fires a few a shot. Lasts the skirmish; never decays, and nothing cleanses it. | implemented |
 | **Overheating** | Mech status. Gains 5 heat per stack at the end of the round, after the enemy has struck, then loses one stack; the heat burns at the end of the next turn unless it is vented. The mech-side counterpart of Burning: metal does not burn, it heats. Applied by foe attacks that scorch. Clears at end of skirmish. Can be cleansed. | implemented |
 
 ## Resistance
@@ -272,9 +274,11 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Foe action** (implemented): Only attacks run; defend, buff and debuff actions stay planned. Weighted RNG is the whole brain for now.
 - **Vents all** (implemented): Built 30 September for the Afterburner Cannon (vents_all and power_per_heat on the face). Only the first shot of a chain fires the heat.
 - **Grows with missing hull** (implemented): Built 10 October for the Sparrowhawk's rifle (the Headhunter Rifle until it is renamed). MISSING_STEP is a placeholder.
+- **The hopper** (implemented): Built 11 October for the Honey Badger's locked pair (Ryan): the Chainsaw Claw fills, the Bullion Fragmenter fires, +5 a load and three a shot as placeholders. Ryan floated the passive feeding it from every melee hit, the claw giving extra; held in chat.
 - **Strikes** (implemented): Heat is paid once per use, not per strike. Foes have no armour yet, so on the player side strikes only matter for procs until they do.
 - **Static** (implemented): Every read asks the pipeline; nothing is written to a stat or a component, so an effect that is gone stops answering. A static reach rule cannot be conditioned on reach.
 - **Order of operations** (implemented): Refit (the hangar) is what changes loadout-scoped effects; not built.
 - **Crucible** (implemented): Built 10 October from Ryan's wording of the passive; +5 a stack is a placeholder.
+- **Hopper** (implemented): Built 11 October. Whether a store is a buff or its own kind waits on the buffs-and-debuffs wording.
 - **Overheating** (implemented): Placeholder name and numbers, engine id overheating; Ryan is looking for the flavour.
 - **Scorch** (implemented): Placeholder name. No foe carries it yet; Ryan places it (fire demons, presumably).

@@ -58,6 +58,13 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_polyline(PackedVector2Array([
 				c + Vector2(s * 0.3, -s), c + Vector2(-s * 0.5, s * 0.1), c + Vector2(s * 0.1, s * 0.1), c + Vector2(-s * 0.3, s),
 			]), color, width)
+		"hopper":
+			# A funnel and its spout: what the claw digs out, waiting to be fired.
+			ci.draw_polyline(PackedVector2Array([
+				c + Vector2(-s, -s * 0.8), c + Vector2(s, -s * 0.8), c + Vector2(s * 0.22, s * 0.15),
+				c + Vector2(s * 0.22, s), c + Vector2(-s * 0.22, s), c + Vector2(-s * 0.22, s * 0.15), c + Vector2(-s, -s * 0.8),
+			]), color, width)
+			ci.draw_line(c + Vector2(-s * 0.55, -s * 0.35), c + Vector2(s * 0.55, -s * 0.35), color, width * 0.7)
 		"chain":
 			ci.draw_arc(c + Vector2(-s * 0.45, 0), s * 0.5, 0.0, TAU, 20, color, width)
 			ci.draw_arc(c + Vector2(s * 0.45, 0), s * 0.5, 0.0, TAU, 20, color, width)

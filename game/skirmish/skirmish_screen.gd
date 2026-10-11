@@ -970,7 +970,7 @@ func _mech_rows(i: int) -> Array:
 		if int(d[3]) < Effects.SKIRMISH:
 			continue
 		var id := str(d[5])
-		var glyph := "heat" if id == "overheating" else ("corrupt" if id.begins_with("corrupted") else ("blank" if id.begins_with("disabled") else ("overcharge" if id == "overcharged" or id == "crucible" else ("shield" if id == "braced" else ("burn" if id == "primed" else ("shocked" if id == "retaliate" else ("reroll" if id == "scrambled" else "star")))))))
+		var glyph := "heat" if id == "overheating" else ("corrupt" if id.begins_with("corrupted") else ("blank" if id.begins_with("disabled") else ("overcharge" if id == "overcharged" or id == "crucible" else ("shield" if id == "braced" else ("burn" if id == "primed" else ("shocked" if id == "retaliate" else ("reroll" if id == "scrambled" else ("hopper" if id == "hopper" else "star"))))))))
 		var colour: Color = Palette.HEAT if id in ["overheating", "overcharged", "primed", "crucible"] else (Palette.ENEMY if id.begins_with("corrupted") or id == "scrambled" else (Palette.SHIELD if id in ["braced", "retaliate"] else Palette.HUD))
 		var stacks := int(d[4])
 		rows.append([glyph, ("×%d" % stacks) if stacks > 1 else "", "%s: %s" % [str(d[0]), str(d[1])], colour])

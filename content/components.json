@@ -12,7 +12,7 @@
     "stage": "draft",
     "fantasy": "Two swings a round if the dice agree. Ghouls in threes.",
     "niche": "",
-    "notes": "Reach melee since 26 September (authored melee is allowed now): the front rank, and the back only once the front is gone. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass."
+    "notes": "Reach melee since 26 September (authored melee is allowed now): the front rank, and the back only once the front is gone. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass. 11 October (Ryan): the hopper, the Badger's two locked weapons working together: each foe the claw's blows reach puts a load in the Badger's hopper, so its spread turns a crowd into ammunition for the Bullion Fragmenter."
    },
    "face": {
     "kind": "attack",
@@ -22,7 +22,8 @@
     "keywords": [
      "cleave"
     ],
-    "heat": 0
+    "heat": 0,
+    "fills_hopper": 1
    },
    "passive": null,
    "tags": [
@@ -69,15 +70,16 @@
     "stage": "draft",
     "fantasy": "One big round. Warm barrel.",
     "niche": "",
-    "notes": "6 October (Ryan): the Slug Cannon converted to melee, renamed the Bullion Fragmenter, and locked to the Badger as a funny mining reference; its line kinetic numbers kept (30 to 60, crit 15, 10 heat) as placeholders. Ryan, later 6 October: a sawed-off cannon, not a breaker; melee is very short range, not contact (a shotgun is melee), and the irony is that bullion is so useless it is better crushed and fired. Codex cut 6 October (Ryan: never explain the joke; keep a component's line short). 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass."
+    "notes": "6 October (Ryan): the Slug Cannon converted to melee, renamed the Bullion Fragmenter, and locked to the Badger as a funny mining reference; its line kinetic numbers kept (30 to 60, crit 15, 10 heat) as placeholders. Ryan, later 6 October: a sawed-off cannon, not a breaker; melee is very short range, not contact (a shotgun is melee), and the irony is that bullion is so useless it is better crushed and fired. Codex cut 6 October (Ryan: never explain the joke; keep a component's line short). 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass. 11 October (Ryan): flat 20, and it fires the hopper the Chainsaw Claw fills, +5 a load and at most three a shot, so a full hopper feeds several big shots rather than one burst (Ryan's cap); numbers placeholders."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 15,
-    "power_max": 30,
+    "power": 20,
     "keywords": [],
-    "heat": 10
+    "heat": 10,
+    "fires_hopper": 3,
+    "power_per_load": 5
    },
    "passive": null,
    "tags": [

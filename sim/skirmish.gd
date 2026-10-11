@@ -243,6 +243,20 @@ func heat_bonus(ms: MechState, f: Face) -> int:
 	return f.power_per_heat * int(ms.heat / 10)
 
 
+## The loads one shot of a hopper-firing attack takes (fires_hopper, the Bullion Fragmenter,
+## 11 October): as many as the machine's hopper holds, up to the shot's most, so a full
+## hopper feeds several shots rather than one. Read as the die is spent.
+static func hopper_loads(u, f: Face) -> int:
+	if f == null or f.fires_hopper <= 0:
+		return 0
+	return mini(Effects.stacks_of(u, "hopper"), f.fires_hopper)
+
+
+## What the hopper adds to every blow of that shot.
+static func hopper_bonus(u, f: Face) -> int:
+	return hopper_loads(u, f) * f.power_per_load if f != null else 0
+
+
 ## What one blow of an attack entry will deal, as the die shows it (decided 10 October, bible
 ## section 5: the game does the arithmetic and the player reads it): [low, high], equal for a
 ## flat entry. Without a target, every source that needs none: the pipeline's adds and
@@ -253,7 +267,7 @@ func heat_bonus(ms: MechState, f: Face) -> int:
 func shown_number(ms: MechState, f: Face, target: Foe = null) -> Array[int]:
 	if f == null or not f.is_attack():
 		return [0, 0]
-	var add := heat_bonus(ms, f) + f.missing_bonus(target)
+	var add := heat_bonus(ms, f) + f.missing_bonus(target) + hopper_bonus(ms.unit, f)
 	var out: Array[int] = []
 	for v in [f.power, f.power_max]:
 		var d := int(Effects.attack(ms.unit, f, v + add, 0, target)["damage"])
@@ -935,6 +949,9 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 	# now and the gauge is emptied once the strikes have landed.
 	var fired := heat_bonus(ms, f)
 	var missing := f.missing_bonus(target)   # what the target's lost hull adds, read once as the die is spent
+	var loads := hopper_loads(ms.unit, f)   # the loads this shot fires from the hopper, read once too
+	var from_hopper := loads * f.power_per_load
+	var reached: Array = []    # every foe the blows reached, killed or not, for a weapon that fills the hopper
 	var vented_all := ms.heat if f.vents_all else 0
 	if f.vents_all:
 		ms.heat = 0
@@ -942,7 +959,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 		var rolled := f.power
 		if f.is_ranged():
 			rolled = rng.randi_range(f.power, f.power_max)
-		rolled += fired + missing
+		rolled += fired + missing + from_hopper
 		var dmg := rolled
 		var heat := f.heat if s == 0 else 0
 		# Then the pipeline: every live modifier's adds, multiplies and floors, in that order.
@@ -969,6 +986,8 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 		for foe in hit:
 			var was_alive := foe.alive()
 			var hp_before := foe.hp
+			if not reached.has(foe):
+				reached.append(foe)
 			# What the foe takes of the blow: its own statuses read last (a Shocked foe takes
 			# double, and the shock is spent by the blow), then its armour comes off, flat, so
 			# small blows bounce off a hardened foe the way they do off a heavy machine.
@@ -1011,6 +1030,16 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 	if extra_burn > 0:
 		Effects.stack(target, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", _stacks_from(ms, "burning", extra_burn))
 		_note_status(gained, target, "burning")
+	# The hopper (11 October): a shot that fires it spends the loads it took; a weapon that
+	# fills it puts its loads in for every foe its blows reached, after the blow, so a claw
+	# never feeds the shot it is part of.
+	if loads > 0:
+		Effects.spend_stacks(ms.unit, "hopper", loads)
+		log.append("%s fires the hopper: %d load%s, +%d" % [ms.unit.display_name, loads, "" if loads == 1 else "s", from_hopper])
+	if f.fills_hopper > 0 and not reached.is_empty():
+		var n := f.fills_hopper * reached.size()
+		Effects.stack(ms.unit, Effects.STATUS["hopper"], Effects.SKIRMISH, "mech", n, Effects.DECAY_NONE)
+		log.append("%s fills the hopper: +%d (%d)" % [ms.unit.display_name, n, Effects.stacks_of(ms.unit, "hopper")])
 	# Shock (9 October): every foe the blows reached and left alive carries a charge for the
 	# team's next blow, after this one landed, so a shocking weapon never spends its own.
 	if f.has(Face.Keyword.SHOCK):

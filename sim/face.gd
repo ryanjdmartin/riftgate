@@ -85,6 +85,9 @@ var buff_rounds: int = 1      # ...through the end of this many rounds (1: this 
 var vents_all: bool = false   # an attack that fires the machine's whole heat: the gauge is empty after the shot...
 var power_per_heat: int = 0   # ...and each 10 heat it fired adds this to the blow (the Afterburner Cannon, 28 September)
 var power_per_missing: int = 0   # an attack: added for every MISSING_STEP hull its target is missing (10 October; flat, shown on the hover)
+var fills_hopper: int = 0     # an attack: loads it puts in its machine's hopper for each foe its blows reach (the Chainsaw Claw, 11 October)
+var fires_hopper: int = 0     # an attack: the most loads one shot fires from the hopper...
+var power_per_load: int = 0   # ...each adding this to the blow (the Bullion Fragmenter, 11 October)
 var tags: Array[String] = []  # its component's tags (10 October): build flavour that never carries a rule; a passive may read one
 
 
@@ -218,6 +221,9 @@ static func from_dict(d: Dictionary) -> Face:
 		f.vents_all = bool(d.get("vents_all", false))
 		f.power_per_heat = maxi(0, int(d.get("power_per_heat", 0))) if f.vents_all else 0
 		f.power_per_missing = maxi(0, int(d.get("power_per_missing", 0)))
+		f.fills_hopper = maxi(0, int(d.get("fills_hopper", 0)))
+		f.fires_hopper = maxi(0, int(d.get("fires_hopper", 0)))
+		f.power_per_load = maxi(0, int(d.get("power_per_load", 0))) if f.fires_hopper > 0 else 0
 	for name in d.get("keywords", []):
 		var kw := keyword_from_name(str(name))
 		if kw > 0:
@@ -250,6 +256,11 @@ func to_dict() -> Dictionary:
 			d["power_per_heat"] = power_per_heat
 	if power_per_missing > 0:
 		d["power_per_missing"] = power_per_missing
+	if fills_hopper > 0:
+		d["fills_hopper"] = fills_hopper
+	if fires_hopper > 0:
+		d["fires_hopper"] = fires_hopper
+		d["power_per_load"] = power_per_load
 	return d
 
 
@@ -322,6 +333,9 @@ func duplicate_face() -> Face:
 	f.vents_all = vents_all
 	f.power_per_heat = power_per_heat
 	f.power_per_missing = power_per_missing
+	f.fills_hopper = fills_hopper
+	f.fires_hopper = fires_hopper
+	f.power_per_load = power_per_load
 	f.tags = tags.duplicate()
 	for k in keywords:
 		f.keywords.append(k)
@@ -377,6 +391,10 @@ func describe() -> String:
 				s += " vents all" + (", +%d per 10 heat" % power_per_heat if power_per_heat > 0 else "")
 			if power_per_missing > 0:
 				s += " +%d per %d hull missing" % [power_per_missing, MISSING_STEP]
+			if fills_hopper > 0:
+				s += " fills the hopper" + ("" if fills_hopper == 1 else " ×%d" % fills_hopper)
+			if fires_hopper > 0:
+				s += " fires the hopper, +%d a load (%d a shot)" % [power_per_load, fires_hopper]
 			if heat > 0:
 				s += " (+%d heat)" % heat
 	if cracked:

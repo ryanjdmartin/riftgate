@@ -114,6 +114,12 @@ const STATUS := {
 		"tags": ["rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 10}]},
 	"risen": {"id": "risen", "name": "Getting Back Up", "description": "Returns from the pool once after dying.",
 		"tags": ["revive"], "effects": []},
+	# The Honey Badger's hopper (Ryan, 11 October): loads the Chainsaw Claw digs out of what it
+	# hits, which the Bullion Fragmenter fires a few a shot. A store on the machine with no
+	# effect of its own (the weapon that fires it reads it); it lasts the skirmish, never
+	# decays, and nothing cleanses it.
+	"hopper": {"id": "hopper", "name": "Hopper", "description": "Loads in the hopper, for a weapon that fires it.", "decay": "none",
+		"tags": ["store"], "effects": []},
 	"scrambled": {"id": "scrambled", "name": "Scrambled", "description": "This die's next reroll lands anywhere, the same entry included.",
 		"tags": [CLEANSABLE], "effects": [{"trigger": "status", "effect": "scramble_reroll", "value": 1}]},
 }
@@ -221,6 +227,25 @@ static func stacks_of(u, id: String) -> int:
 
 static func has(u, id: String) -> bool:
 	return stacks_of(u, id) > 0
+
+
+## Spend up to `n` stacks of a status, shortest-lived scope first (the hopper's loads, fired a
+## few a shot); a copy spent to nothing goes. Returns how many were spent.
+static func spend_stacks(u, id: String, n: int) -> int:
+	var spent := 0
+	var order: Array = []
+	for m in u.modifiers:
+		if m.id == id:
+			order.append(m)
+	order.sort_custom(func(a, b) -> bool: return a.scope > b.scope)
+	for m in order:
+		if spent >= n:
+			break
+		var take := mini(m.stacks, n - spent)
+		m.stacks -= take
+		spent += take
+	u.modifiers = u.modifiers.filter(func(m) -> bool: return m.id != id or m.stacks > 0)
+	return spent
 
 
 ## Drop every copy of a status, whatever its scope: a spent one-shot (Shocked, once the blow

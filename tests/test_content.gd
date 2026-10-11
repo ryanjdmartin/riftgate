@@ -414,24 +414,24 @@ func test_melee_is_a_tag_and_never_a_reach() -> void:
 	assert_eq(Face.reach_from_name("melee"), Face.Reach.DIRECT, "and its melee too")
 
 
-func test_content_dice_are_sane_and_kinetic_faces_roll() -> void:
+## No weapon classes since 10 October (bible section 5): a weapon is rolled or flat by its
+## niche, whatever its filing tags say, so the content holds sane numbers and both shapes.
+func test_content_dice_are_sane_and_both_shapes_are_present() -> void:
 	var db := _db()
-	var kinetic := 0
-	var energy := 0
+	var rolled := 0
+	var flat := 0
 	for id in db.components.keys():
 		var c: Dictionary = db.components[id]
 		for fd in [c.get("face", {})]:
 			assert_true(int(fd.get("power", 0)) >= 0, "%s power is not negative" % id)
 			if str(fd.get("kind", "")) != "attack":
 				continue
-			var tags: Array = c.get("tags", [])
-			if tags.has("kinetic"):
-				kinetic += 1
-				assert_true(int(fd.get("power_max", 0)) > int(fd["power"]), "%s kinetic face has a range" % id)
-			if tags.has("energy"):
-				energy += 1
-				assert_false(fd.has("power_max"), "%s energy face is static" % id)
-	assert_true(kinetic >= 5 and energy >= 3, "both weapon classes present")
+			if fd.has("power_max"):
+				rolled += 1
+				assert_true(int(fd["power_max"]) > int(fd["power"]), "%s: a rolled face has a real range" % id)
+			else:
+				flat += 1
+	assert_true(rolled >= 5 and flat >= 3, "both shapes present (%d rolled, %d flat)" % [rolled, flat])
 
 
 func test_unsupported_passive_effect_is_rejected() -> void:
