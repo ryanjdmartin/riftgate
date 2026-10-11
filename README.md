@@ -126,6 +126,8 @@ godot --headless --path . -s tools/export_vocabulary.gd
 # cell, written to docs/balance.md (about half an hour); the team cells run under both targeting
 # rules and a section compares them. --seeds N, --policies greedy, --withdraw 40 (a persona),
 # --targeting lowest (the rule before 2 October for the matrix), --json out.json for every cell;
+# --rows badger,team runs only those rows; --module tactical_databank fits that module to every
+# machine (--out elsewhere, then compare against a run without it);
 # --trace "sparrowhawk|brute x4|greedy|3" plays that one fight and prints its log instead.
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
 
