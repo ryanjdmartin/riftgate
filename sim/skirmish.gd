@@ -1454,8 +1454,8 @@ func _settle_heat() -> void:
 
 ## One blow. Decided 18 September: a standing shield blocks the whole blow, however small the
 ## shield and however big the blow; nothing bleeds through (unless the foe breaches, then the
-## excess reaches the hull). A blow on bare hull loses the chassis's armour first, so small
-## hits bounce off a heavy machine. Only a bare-hull blow can injure a component, and only
+## excess reaches the hull). A blow that reaches the hull loses the chassis's armour first, a
+## breach's overflow included, so small hits bounce off a heavy machine. Only a bare-hull blow can injure a component, and only
 ## when what gets through is at least a quarter of max hull. Shield before a telegraphed
 ## blow is the counterplay; a double strike is how a foe gets past it.
 func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
@@ -1504,8 +1504,10 @@ static func _blow(shield: int, hull_max: int, armour: int, amount: int, breach: 
 	else:
 		absorbed = mini(shield, amount)
 		blocked = true
+	# Armour comes off every blow that reaches the hull, a breach's overflow too (Ryan, 11
+	# October): a breach beats the shield, never the plate under it.
 	var armoured := 0
-	if through > 0 and bare:
+	if through > 0:
 		armoured = mini(armour, through)
 		through -= armoured
 	# Injury is about hull lost in one blow, wherever it came from: a breach that overflows a

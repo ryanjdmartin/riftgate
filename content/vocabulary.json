@@ -1014,7 +1014,7 @@
    "id": "armour",
    "category": "resource",
    "name": "Armour",
-   "codex": "A chassis number taken off every blow that lands on bare hull, flat, never a percentage. A blow smaller than the armour does nothing. Shield is not armoured: a blow on shield costs the shield its full damage.",
+   "codex": "A chassis number taken off every blow that reaches the hull, flat, never a percentage, a breach's overflow included. A blow smaller than the armour does nothing. Shield is not armoured: a blow on shield costs the shield its full damage.",
    "status": "implemented",
    "design": {
     "holes": "Numbers are placeholders. Armour from components is content, not yet written."
@@ -1044,7 +1044,7 @@
    "id": "breach",
    "category": "foe",
    "name": "Breach",
-   "codex": "A breaching blow overflows: what the shield cannot absorb reaches the hull, and if that is a quarter of maximum hull it injures a component like any bare-hull blow. It breaks the fundamental promise that a standing shield stops the big hit, so it is a dangerous, uncommon attack modifier, and its counterplay is not the shield: redirect it or interrupt it.",
+   "codex": "A breaching blow overflows: what the shield cannot absorb reaches the hull, armour coming off it as off any blow on hull, and if what gets through is a quarter of maximum hull it injures a component like any bare-hull blow. It breaks the fundamental promise that a standing shield stops the big hit, so it is a dangerous, uncommon attack modifier, and its counterplay is not the shield: redirect it or interrupt it.",
    "status": "implemented",
    "design": {
     "holes": "A property of a foe's attack action. No foe carries it yet; Ryan places it. Redirect and interrupt do not exist yet. Name is a placeholder (pierce is taken by the player keyword)."

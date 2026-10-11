@@ -168,10 +168,10 @@ Burning, Suppressed, Shocked or Paradox.
 
 ### Shields, armour, hull
 - A standing shield blocks a whole blow, however small, and loses the blow's damage. A
-  **breach** blow's overflow reaches the hull, past armour.
-- A machine's armour comes off every blow on bare hull, flat; shields are never armoured. A
-  foe's armour comes off every blow on it, never off Burning. Damage-taken effects apply
-  before armour.
+  **breach** blow's overflow past the shield reaches the hull.
+- A machine's armour comes off every blow that reaches its hull, flat, a breach's overflow
+  included; shields are never armoured. A foe's armour comes off every blow on it, never off
+  Burning. Damage-taken effects apply before armour.
 - In a fight, shield comes only from components, modules and passives. Shield carries
   between fights and returns at the field rate only in map turns spent out of a fight. Hull
   never heals in a battle.
