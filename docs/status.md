@@ -43,6 +43,10 @@ goes into this file in the same commit as its first publish.
   ArtifactData `list`, cut each with `forge.py cut`, carry the notes into the touch-up task.
   Rebuild with `forge.py phone [--tags <experiment>]` and republish `tools/foeforge/out/phone/`
   (with its `renders/`) to that URL with `root` set; a republish keeps the picks.
+  Every candidate's source render lives only in `tools/foeforge/out` on Ryan's Mac (git-ignored,
+  about 150 MB; never delete it): cutting a new pick, rebuilding the page and rendering takes all
+  need the Mac. A cloud session can read the picks and notes, but only picks already copied into
+  `tools/foeforge/picks` can be cut from there.
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV (`tools/soundforge/melody_desk.html`;
   collections `parts`, re-seeded by `desk_parts.py`, and `melodies`).
 - The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9 (`tools/soundforge/out/fx/`).
