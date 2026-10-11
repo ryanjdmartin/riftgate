@@ -108,9 +108,13 @@ const $ = (id) => document.getElementById(id);
 
 function pickedCount() { return SETS.filter((s) => picks[s.key]).length; }
 
+// Every saved pick and note, the page's sets first, then any set a rebuild has since taken off
+// the page (its document stays in the store), so a copy never loses one.
 function summaryText() {
-  return SETS.filter((s) => picks[s.key] || notes[s.key]).map((s) =>
-    s.key + " " + (picks[s.key] || "-") + (notes[s.key] ? " (" + notes[s.key].replace(/\s+/g, " ").trim() + ")" : "")).join(", ");
+  const shown = SETS.map((s) => s.key);
+  const gone = Object.keys(picks).concat(Object.keys(notes)).filter((k, i, all) => !shown.includes(k) && all.indexOf(k) === i).sort();
+  return shown.concat(gone).filter((k) => picks[k] || notes[k]).map((k) =>
+    k + " " + (picks[k] || "-") + (notes[k] ? " (" + notes[k].replace(/\s+/g, " ").trim() + ")" : "")).join(", ");
 }
 
 function render() {

@@ -70,8 +70,9 @@ bible (section 12). "Discuss first" means a proposal in chat before code.
 
 - [ ] Ryan's touch-ups on the picked foes (missing arms, weapons through hands) on the sources in `tools/foeforge/picks`, recut with `forge.py cut` and the options `picks.json` records (on main)
 - [ ] Judge the 72x96 foes on the phone (the frame, the whole-pixel slot, the sharpen's strength), then recut every pick at the strength chosen
-- [ ] The foe picker on the phone: a session reads the `picks` collection and cuts the new picks
-- [ ] Battle-pose takes for the other 23 foes and heroes, on Ryan's go (he called the Goblin, Revenant and Cockatrice takes workable, 9 October): four takes each in `design.variants` (costume and pose over the same anatomy, colour pinned, a small head on humanoids, never "facing the party"), `forge.py generate <foe> --variants --tag takes`, then `forge.py phone --tags takesD takes` and republish the picker
+- [ ] Ryan picks every wildlife foe from its takes on the phone picker; a session reads the picks (or his pasted Copy all picks), cuts each with `forge.py cut` from `out/<foe>_<tag>/` and the options it needs, copies the source into `tools/foeforge/picks` and records it in `picks.json`
+- [x] Battle-pose takes for the wildlife (10 October): four in `design.variants` for each of the fifteen without, four more for the Goblin and the Revenant (`--seed 5`), rendered as `takesE`; the original sets off the picker
+- [ ] Battle-pose takes for the eight heroes' boss register, once the promoted forms are entries (their chibis stay as picked)
 - [ ] The four bleeds for the flattened ground
 - [ ] The hangar as a model; a licensed icon set (game-icons.net, CC BY) in place of the line-drawn glyphs, in one pass
 - [ ] Each component class's size per machine on a refit (a pin's `scale` in `models_low.py`); the Armadillo's Lockdown Shutters made real, if Ryan takes it up

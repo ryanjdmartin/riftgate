@@ -38,11 +38,14 @@ goes into this file in the same commit as its first publish.
   files from `tools/hangar_data.py`'s map (which leaves out `content/modules.json`: add it).
   Stale since 9 October. After Ryan edits on its Content tab: pull `edits` with ArtifactData,
   apply by hand, test, commit, republish, clear the documents.
-- The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (private to Ryan). Picks
-  and notes land in collection `picks` (`{pick, note, set, at}` a set key): read them with
-  ArtifactData `list`, cut each with `forge.py cut`, carry the notes into the touch-up task.
-  Rebuild with `forge.py phone [--tags <experiment>]` and republish `tools/foeforge/out/phone/`
-  (with its `renders/`) to that URL with `root` set; a republish keeps the picks.
+- The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (shared to the work account
+  as Editor). Picks and notes land in collection `picks` (`{pick, note, set, at}` a set key):
+  read them with ArtifactData `list` from the personal account. The work account cannot read
+  the page's data even shared, so there Ryan taps Copy all picks (every stored pick and note,
+  sets since taken off the page included) and pastes it. Cut each with `forge.py cut`, carry
+  the notes into the touch-up task. Rebuild with `forge.py phone --tags takesD takesE
+  --drop-originals` and republish `tools/foeforge/out/phone/index.html` to that URL with `root`
+  set, its new `renders/` in `files` and a dropped set's renders as null; a republish keeps the picks.
   Every candidate's source render lives only in `tools/foeforge/out` on Ryan's Mac (git-ignored,
   about 150 MB; never delete it): cutting a new pick, rebuilding the page and rendering takes all
   need the Mac. A cloud session can read the picks and notes, but only picks already copied into
@@ -68,7 +71,9 @@ goes into this file in the same commit as its first publish.
 - Foe art: every foe and hero is cut from Ryan's picks at 72x96 (massive 96x144, chibis 36x48),
   drawn on whole device pixels with a gentle sharpen; the style is fixed in words in the bible's
   enemy art row (painterly, small heads, battle poses, the prompt anchored on SNES Final Fantasy IV
-  to VI). Ryan is picking on the phone picker (two notes in so far, on the Goblin); the takes pass
-  for the other 23 waits on his go.
+  to VI). On 10 October Ryan retired the original candidate sets (rendered before the style rules):
+  every wildlife foe now has four battle-pose takes on the picker (`takesE`; the Goblin and the
+  Revenant beside their 9 October takes, the Cockatrice with its 9 October takes alone), the heroes
+  keep their chibi and boss sets. Next: Ryan picks from the takes, a session cuts each pick.
 - Known gaps: Rally's Kindled is +10 at once, so foes acting after the rallier hit above their
   shown intent; Jenny's foe-down lines are keyed by the retired families.
