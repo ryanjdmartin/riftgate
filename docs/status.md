@@ -62,6 +62,10 @@ goes into this file in the same commit as its first publish.
   content revision's components, the domains and the plaque.
 - Reports out of date: `docs/balance.md` and `docs/campaign_run.md` on this branch predate the
   weapon rules; rerun after the stock pass, with module rows.
+- Proposed, waiting on Ryan (11 October): four more Arsenal chassis for the register the
+  domains left to the Council (medieval, demonic, eldritch, sinister), in
+  `docs/arsenal_proposal.md` with the holes in the direction; nothing in content or the bible
+  until he moves them.
 - Decided, not built: the shared basic kit and its stock pass, tags on components, heat from
   foes only through debuffs, the Headhunter's successor on the Sparrowhawk. The bible's
   section 12 lists the questions only Ryan can settle.

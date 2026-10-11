@@ -25,6 +25,7 @@ bible (section 12). "Discuss first" means a proposal in chat before code.
 
 ### Discuss first, then decide
 
+- [ ] The Arsenal's new chassis (`docs/arsenal_proposal.md`: Misaru, Mastema, Minos, Onryō, one each for medieval, demonic, eldritch and sinister): the frame (the occult as the Council's register, held at plate and silhouette, liturgy in the shown text), the names rule, which machines and in what order, names and numbers, the drag as a passive or a keyword, Overcharged twice or the Onryō's vendetta; then content, the three engine pieces and the models
 - [ ] The content questions, then the stock pass (Engine): tags on every component (Ballistic, Missile, Beam, Plasma, Flame, Arc, Blade, Melee as the working set), the basic kit's names, makers and numbers, the equipment basics' names, the twists for the Laminar Deflector and the Entropy Condenser
 - [ ] The module catalogue again as soft-synergy pairs once tags are assigned, simple text; a new rule for the Ram Frame
 - [ ] Heat from foes only through debuffs: names (the Overheating name goes), the ticking one at the end of the player's turn before the overheat, the softer one raising every weapon's heat per stack, maybe both, and a glyph of its own
