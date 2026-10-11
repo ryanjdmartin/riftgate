@@ -162,7 +162,7 @@
    "fixed": [],
    "loadout": [
     "overclocked_railgun",
-    "headhunter_rifle",
+    "pinion_driver",
     "arc_fault_cannon",
     "laminar_deflector"
    ],
@@ -245,7 +245,7 @@
    "design": {
     "fantasy": "A squat, heavily armoured walker with short, thick legs, its back bristling with weaponry from shielded ports that can seal for additional protection. The cockpit is tucked under the front armour, providing reduced visibility but extra protection. An internal electric generator shocks foes that strike is hull when activated.",
     "niche": "tank",
-    "notes": "Probably needs taunt effects on one or more locked or stock components. Wants a retaliate ability that  damages and/or causes status on foes that hit hull, but not sure if that is a passive or component that needs activating. Decided 28 September: the tankiest machine in the game, its toughness in the numbers and the passive and never in locked plating, so the free die is the player's. Faraday Hull is retaliation as a debuff, not thorns (thorns scales with enemy blows and inverts horde against boss); the locked Faraday Shutters are its taunt and extend the shock to blocked blows; the crack threshold needs no help at this hull. Numbers, designation and kit are Claude's fills, Ryan's to move. 6 October: its Slug Cannon slot carries the Slugthrower, Minerva's new default gun, since the cannon became the Badger's fixed Bullion Fragmenter. 9 October, the content revision: the Ablative Plating became the Shoring Jack (Braced on itself or an ally)."
+    "notes": "Probably needs taunt effects on one or more locked or stock components. Wants a retaliate ability that  damages and/or causes status on foes that hit hull, but not sure if that is a passive or component that needs activating. Decided 28 September: the tankiest machine in the game, its toughness in the numbers and the passive and never in locked plating, so the free die is the player's. Faraday Hull is retaliation as a debuff, not thorns (thorns scales with enemy blows and inverts horde against boss); the locked Faraday Shutters are its taunt and extend the shock to blocked blows; the crack threshold needs no help at this hull. Numbers, designation and kit are Claude's fills, Ryan's to move. 6 October: its Slug Cannon slot carries the Slugthrower, Minerva's new default gun, since the cannon became the Badger's fixed Bullion Fragmenter. 9 October, the content revision: the Ablative Plating became the Shoring Jack (Braced on itself or an ally). 11 October (Ryan): the discharge a Shocked striker paid went (it was the larger share of the passive's strength against a horde, measured: the lone Armadillo 85 and 92 to 64 and 85); Shocked is the setup alone."
    },
    "codex": "",
    "hull": 150,
@@ -274,7 +274,7 @@
    "passive": {
     "id": "faraday_hull",
     "name": "Faraday Hull",
-    "description": "The whole hull is live. A foe that strikes bare hull is Shocked: the next blow it takes deals double. A Shocked foe that strikes again takes 10.",
+    "description": "The whole hull is live. A foe that strikes bare hull is Shocked: the next blow it takes deals double.",
     "effects": [
      {
       "trigger": "static",
@@ -460,7 +460,7 @@
    ],
    "loadout": [
     "laser_carbine",
-    "headhunter_rifle",
+    "pinion_driver",
     "arc_fault_cannon",
     "laminar_deflector",
     "ram_air_scoop"

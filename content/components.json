@@ -352,8 +352,8 @@
    ]
   },
   {
-   "id": "headhunter_rifle",
-   "name": "Headhunter Rifle",
+   "id": "pinion_driver",
+   "name": "Pinion Driver",
    "maker": "kestrel",
    "shape": "barrel",
    "codex": "",
@@ -362,7 +362,7 @@
     "stage": "draft",
     "fantasy": "For finishing what someone else started.",
     "niche": "The assassin's finisher: flat, and it grows with the target's missing hull, so the face shows what it will deal to the foe it is held over.",
-    "notes": "10 October (Ryan, bible section 5): Execute retired; flat, +5 for every 20 hull the target is missing (placeholders). To be locked on the Sparrowhawk with a subtler bird name, the Coriolis Accelerator kept for another component; locked in the stock pass, where the Goshawk's hardpoint takes a basic. Its sound stays the gun's (a flat barrel would derive the laser)."
+    "notes": "10 October (Ryan, bible section 5): Execute retired; flat, +5 for every 20 hull the target is missing (placeholders). To be locked on the Sparrowhawk with a subtler bird name, the Coriolis Accelerator kept for another component; locked in the stock pass, where the Goshawk's hardpoint takes a basic. Its sound stays the gun's (a flat barrel would derive the laser). 11 October (Ryan): named the Pinion Driver (a wing's flight feathers, and a gear; never a rifle, since a locked Kestrel piece would not be called one); the id with it."
    },
    "face": {
     "kind": "attack",
@@ -782,16 +782,15 @@
     "stage": "draft",
     "fantasy": "Four blades that take something from what they kill. The Arsenal's manual calls it attunement.",
     "niche": "The Ammit's locked melee: flat, and devour to grow; the machine's scaling threat for the whole battle and nothing more.",
-    "notes": "Live since devour landed (30 September). Claude's fill, 28 September; the name is from Ryan's list. Planned until devour and Overcharged exist. 10 October (Ryan, bible section 5): Execute dropped (it was probably too strong with it anyway); no heal suppression or utility here, any of that on a stock tier two or three component of the Ammit's. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass."
+    "notes": "Live since devour landed (30 September). Claude's fill, 28 September; the name is from Ryan's list. Planned until devour and Overcharged exist. 10 October (Ryan, bible section 5): Execute dropped (it was probably too strong with it anyway); no heal suppression or utility here, any of that on a stock tier two or three component of the Ammit's. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass. 11 October (Ryan): devour folded into a rule printed on the talons, its one carrier, so it is no longer a keyword to learn."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
     "power": 10,
-    "keywords": [
-     "devour"
-    ],
-    "heat": 5
+    "keywords": [],
+    "heat": 5,
+    "devours": true
    },
    "passive": null,
    "tags": [

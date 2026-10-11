@@ -236,7 +236,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		score += (1.0 - p_kill) * mean * BURN_WEIGHT
 	if f.fills_hopper > 0:
 		score += hopper_fill_score(sk, ms, f, target)
-	if f.has(Face.Keyword.DEVOUR):
+	if f.devours:
 		# A kill feeds a stack of Overcharged: what the status adds to the die's own damage,
 		# for about the rounds the stack lasts. Read from the status, never hardcoded.
 		score += p_kill * _stack_damage_gain("overcharged", _raw_attack_mean(ms)) * DEVOUR_ROUNDS

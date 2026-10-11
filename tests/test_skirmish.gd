@@ -2024,13 +2024,15 @@ func test_a_disabled_volatile_entry_does_not_bite() -> void:
 
 func test_devour_feeds_a_stack_of_overcharged_per_kill_and_it_fades_a_round_at_a_time() -> void:
 	var sk := Skirmish.new(3)
-	var talon := Face.attack(30, L, [K.CLEAVE, K.DEVOUR])
+	var talon := Face.from_dict({"kind": "attack", "reach": "direct", "power": 30, "keywords": ["cleave"], "devours": true})
 	var m := _mech("A", Die.single(talon), 40, 100)
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(30, 10), _ghoul(30, 10), _ghoul(500, 10)])
 	sk.begin()
 	sk.start_round()
-	assert_eq(talon.describe(), "30 spread devour", "the keyword reads on the entry")
+	assert_eq(talon.describe(), "30 spread devours", "the rule reads on the entry")
+	assert_true(talon.has_unique_rule(), "a rule printed on the entry: the die's star chip")
+	assert_true(Face.from_dict({"kind": "attack", "reach": "direct", "power": 30, "keywords": ["devour"]}).devours, "an old save's devour keyword reads as the rule")
 	# Column 1 (the middle) spreads to both neighbours: two ghouls at 30 die, the big one lives.
 	var middle: Foe = sk.front[1]
 	assert_true(sk.assign(0, middle), "spent on the middle")
@@ -2058,7 +2060,7 @@ func test_devour_feeds_a_stack_of_overcharged_per_kill_and_it_fades_a_round_at_a
 
 func test_a_buffs_overcharged_and_devours_add_up() -> void:
 	var sk := Skirmish.new(1)
-	var m := _mech("A", Die.single(Face.attack(20, L, K.DEVOUR)), 40, 100)
+	var m := _mech("A", Die.single(Face.from_dict({"kind": "attack", "reach": "direct", "power": 20, "devours": true})), 40, 100)
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(500, 10)])
 	sk.begin()
@@ -2103,7 +2105,9 @@ func test_a_live_hull_shocks_the_foe_that_strikes_it_and_the_next_blow_lands_dou
 	assert_eq(g.hp, 440, "plain 20 after")
 
 
-func test_a_shocked_foe_that_reaches_hull_again_pays_the_discharge() -> void:
+func test_a_shocked_foe_that_reaches_hull_again_pays_nothing() -> void:
+	# Ryan, 11 October: the discharge went. Shocked sets up the team's next blow and does
+	# nothing to the foe on its own, however often it strikes.
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.shield(10)), 40, 200)
 	m.shield = 0
@@ -2118,15 +2122,15 @@ func test_a_shocked_foe_that_reaches_hull_again_pays_the_discharge() -> void:
 	assert_eq(g.hp, 500, "no discharge on the strike that shocked it")
 	sk.start_round()
 	sk.end_round()
-	assert_eq(g.hp, 500 - Skirmish.SHOCK_DISCHARGE, "the second strike on bare hull costs it the discharge")
+	assert_eq(g.hp, 500, "the second strike on bare hull costs it nothing")
 	assert_true(Effects.has(g, "shocked"), "and it stays Shocked, never doubly")
-	assert_true("\n".join(sk.log).contains("A discharges into revenant: 10"), "the log says so")
-	# A blocked blow neither shocks nor discharges, unless a passive extends the shock to blocks.
+	assert_false("\n".join(sk.log).contains("discharges"), "no discharge in the log")
+	# A blocked blow does not shock, unless a passive extends the shock to blocks.
 	sk.start_round()
 	sk.assign(0, null)
 	assert_eq(m.shield, 10, "shield up")
 	sk.end_round()
-	assert_eq(g.hp, 490, "the blocked blow cost the ghoul nothing")
+	assert_eq(g.hp, 500, "the blocked blow cost the ghoul nothing")
 	var s2 := Skirmish.new(2)
 	var shutters := {"id": "live_shell", "name": "Live Shell", "description": "", "effects": [
 		{"trigger": "static", "effect": "shock_on_block", "value": 1}]}
@@ -2543,7 +2547,7 @@ func test_a_kept_status_never_fades_and_lasts_the_battle() -> void:
 	var tap := {"id": "tap", "name": "Quintessence Tap", "description": "", "effects": [
 		{"trigger": "static", "effect": "keep_status", "value": "overcharged"}]}
 	var sk := Skirmish.new(1, 2)
-	var m := _mech("A", Die.single(Face.attack(30, L, K.DEVOUR)), 40, 100)
+	var m := _mech("A", Die.single(Face.from_dict({"kind": "attack", "reach": "direct", "power": 30, "devours": true})), 40, 100)
 	m.grant_passive(tap)
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(20, 10), _ghoul(20, 10), _ghoul(500, 10)])

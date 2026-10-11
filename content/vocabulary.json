@@ -282,12 +282,12 @@
   },
   {
    "id": "devour",
-   "category": "keyword",
+   "category": "component_property",
    "name": "Devour",
-   "codex": "Player keyword. Every foe this component kills gives its owner a stack of Overcharged for the skirmish; the stacks fade one a round at the round's end.",
+   "codex": "A rule printed on a weapon (the Soulcutter Talons'). Every foe it kills gives its owner a stack of Overcharged for the skirmish; the stacks fade one a round at the round's end.",
    "status": "implemented",
    "design": {
-    "holes": "The Ammit's talons (28 September), built 29 September on the kill in the attack resolution: a spread that kills two feeds two, a chain feeds on every link. The Quintessence Tap, which stops the fade and keeps the stacks for the battle, is planned."
+    "holes": "The Ammit's talons (28 September), built 29 September on the kill in the attack resolution: a spread that kills two feeds two, a chain feeds on every link. The Quintessence Tap keeps the stacks for the battle. A keyword until 11 October, when Ryan folded it into a rule on its one carrier."
    }
   },
   {
@@ -394,10 +394,10 @@
    "id": "shocked",
    "category": "status",
    "name": "Shocked",
-   "codex": "Foe status. The next blow this foe takes deals double damage, then the status clears; a blow of nothing (a lure, a probe) leaves it standing. A Shocked foe that strikes bare hull again takes 10. Never stacks. Applied by a machine whose hull is live, and by weapons that shock.",
+   "codex": "Foe status. The next blow this foe takes deals double damage, then the status clears; a blow of nothing (a lure, a probe) leaves it standing. Never stacks. Applied by a machine whose hull is live, and by weapons that shock.",
    "status": "implemented",
    "design": {
-    "holes": "The Armadillo's retaliation (Ryan, 28 September): the tank sets up kills instead of out-damaging area weapons against a horde, and it works on a boss. The discharge on a second strike is the small thorns left in. Numbers are placeholders."
+    "holes": "The Armadillo's retaliation (Ryan, 28 September): the tank sets up kills instead of out-damaging area weapons against a horde, and it works on a boss. The discharge a Shocked striker paid (10 a blow) went on 11 October (Ryan): it was thorns, the larger share of the Armadillo's strength against a horde. Numbers are placeholders."
    }
   },
   {
@@ -1087,7 +1087,7 @@
    "codex": "A flat blow that grows with its target's lost hull: it adds its bonus for every 20 hull the target is missing, read as the die is spent. No roll is involved, so the number is known before the spend, and the die shows it while held over a target.",
    "status": "implemented",
    "design": {
-    "holes": "Built 10 October for the Sparrowhawk's rifle (the Headhunter Rifle until it is renamed). MISSING_STEP is a placeholder."
+    "holes": "Built 10 October for the Sparrowhawk's finisher, the Pinion Driver (named 11 October). MISSING_STEP is a placeholder."
    }
   },
   {

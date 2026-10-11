@@ -210,7 +210,7 @@ func test_greedy_holds_a_volatile_die_that_would_wreck_the_machine() -> void:
 func test_greedy_values_the_kill_that_feeds_it() -> void:
 	var sk := Skirmish.new(3)
 	var plain := Face.attack(30, L)
-	var talon := Face.attack(30, L, K.DEVOUR)
+	var talon := Face.from_dict({"kind": "attack", "reach": "direct", "power": 30, "devours": true})
 	sk.add_mech(_mech("A", Die.of([plain, talon]), 40, 100))
 	sk.add_foes([_ghoul(30, 10)])
 	sk.begin()

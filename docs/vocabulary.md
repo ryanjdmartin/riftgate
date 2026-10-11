@@ -43,6 +43,7 @@ Status: 107 implemented, 8 planned, 0 idea.
 | Term | Codex | Status |
 |---|---|---|
 | **Damage range** | A rolled weapon shows a minimum and a maximum and rolls between them when spent, immediately and visibly. A flat weapon shows one number and never rolls. The player's damage comes in fives. | implemented |
+| **Devour** | A rule printed on a weapon (the Soulcutter Talons'). Every foe it kills gives its owner a stack of Overcharged for the skirmish; the stacks fade one a round at the round's end. | implemented |
 | **Targets** | Whom a piece of equipment may be spent on: self and allies, self only, or allies only. Shown as a chip on the die when narrowed. | implemented |
 | **Vents all** | An attack that fires the machine's whole heat as it is spent: the heat gauge is empty after the shot, and every 10 heat fired adds the component's bonus to the blow before the passives. The shot's own heat cost still lands. | implemented |
 | **Grows with missing hull** | A flat blow that grows with its target's lost hull: it adds its bonus for every 20 hull the target is missing, read as the die is spent. No roll is involved, so the number is known before the spend, and the die shows it while held over a target. | implemented |
@@ -70,7 +71,6 @@ Status: 107 implemented, 8 planned, 0 idea.
 | **Disrupt** | Player keyword, on any entry aimed at a foe. The foe does its other move instead, this round, and its new intent shows at once. A foe with nothing else open is not moved. | implemented |
 | **Suppress** | Player keyword. The target skips its telegraphed action this round, then gains two stacks of Numbed (three if massive). A foe may shrug it off at 10% a Numbed stack; no foe resists by nature. | implemented |
 | **Volatile** | Player keyword, on any kind of component. Spending it bites its owner for 10 hull, past shield and armour, before the component acts. A blank is never spent, so a disabled entry does not bite. | implemented |
-| **Devour** | Player keyword. Every foe this component kills gives its owner a stack of Overcharged for the skirmish; the stacks fade one a round at the round's end. | implemented |
 | **Chain** | If this attack kills an enemy, repeat it on a new, valid target. | implemented |
 | **Rapid** | After this component is spent, it is switched off for the rest of this round, the die rerolls for free (never the same entry), and the mech may act again. Any component may carry it, a vent or a shield as well as a weapon. The switch-off only stops an infinite turn. | implemented |
 | **Disable** | Enemy keyword. The component the target's die is showing is switched off through the target's next turn: if the die lands on it, it comes up blank. | implemented |
@@ -84,7 +84,7 @@ Status: 107 implemented, 8 planned, 0 idea.
 |---|---|---|
 | **Paradox** | Foe status. While a machine runs the Paradox meter (the Baboon's Pocket Paradox), a foe gains a stack each time it gains any other status: one a spend, however many strikes or stacks. At the machine's count (three) its past self knocks it out: it is Suppressed and the Paradox clears. A foe already suppressed loses its next action instead. Never decays. A status like any other: it counts for what reads a status, and a machine that deepens the statuses it applies deepens it. | implemented |
 | **Retaliate** | Mech status. While it lasts, a foe that strikes this machine's bare hull is Shocked. From buff equipment it lasts the rounds the component says; the Armadillo's Faraday Hull carries it always. | implemented |
-| **Shocked** | Foe status. The next blow this foe takes deals double damage, then the status clears; a blow of nothing (a lure, a probe) leaves it standing. A Shocked foe that strikes bare hull again takes 10. Never stacks. Applied by a machine whose hull is live, and by weapons that shock. | implemented |
+| **Shocked** | Foe status. The next blow this foe takes deals double damage, then the status clears; a blow of nothing (a lure, a probe) leaves it standing. Never stacks. Applied by a machine whose hull is live, and by weapons that shock. | implemented |
 | **Overcharged** | Mech status. Each stack is +5 damage on this machine's attacks, flat. From buff equipment it lasts through the rounds the component says; from devour it lasts the skirmish and loses a stack at the end of each round unless a passive says otherwise. | implemented |
 | **Braced** | Mech status. Armour +5 per stack: that much off every blow on bare hull, flat. Granted by buff equipment for the rounds it says. | implemented |
 | **Primed** | Mech status. Every blow this machine lands leaves a stack of Burning per stack of Primed. Granted by buff equipment for the rounds it says. | implemented |
@@ -222,14 +222,14 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Numbed** (implemented): Decaying since 26 September (was permanent for the fight); numbers are placeholders, to be judged against skirmish and boss-fight lengths. Exempt from everything (Ryan, 2 October): a stun resist that passives or cleanses could touch is where other games' combat loops broke.
 - **Paradox** (implemented): Built 10 October (Ryan's pick of Claude's option B), in place of the 28 September chance to suppress. The count is a placeholder; the missing-shield clause is dropped.
 - **Volatile** (implemented): The Arsenal's self-damage (Ryan, 28 September), built 29 September: hull outright where the Corrupted bite takes shield first. The bite is a placeholder number (Skirmish.VOLATILE_BITE). It will feed the Nemesis's Crucible Capacitor once that counts blows that reach hull.
-- **Devour** (implemented): The Ammit's talons (28 September), built 29 September on the kill in the attack resolution: a spread that kills two feeds two, a chain feeds on every link. The Quintessence Tap, which stops the fade and keeps the stacks for the battle, is planned.
+- **Devour** (implemented): The Ammit's talons (28 September), built 29 September on the kill in the attack resolution: a spread that kills two feeds two, a chain feeds on every link. The Quintessence Tap keeps the stacks for the battle. A keyword until 11 October, when Ryan folded it into a rule on its one carrier.
 - **Equipment** (implemented): Buffs will be equipment too, once they exist.
 - **Rapid** (implemented): On equipment since 9 October (the Wake Diffuser first): a rapid vent is cooling that gives the turn back, so a support entry is not a dead roll.
 - **Corrupt** (implemented): No foe carries it yet; Ryan places it (The Chorus, presumably).
 - **Cleanse** (implemented): Carried by the Corona Shield (a unique unlock) and since 9 October by the Phased Sublimator, Aphelion's vent, stocked on the Baboon. The bot values what it clears since the same day.
 - **Overshield** (implemented): Decided 5 October (Ryan: overshield as a component keyword, a rare one). The Puffin's fixed Backwash Ionizer carries it, allies only, so the excess never lands on the Puffin itself. Rare because every overshield on the field makes shield max a soft number. The fade is the whole safeguard: a persisting excess would stack a team past every blow. The gauge shows the excess as a hatched block beyond the bar's end.
 - **Retaliate** (implemented): Was flat damage equal to the component's power. Thorns scales with enemy blows and so inverts horde against boss; a debuff does not (Ryan, 28 September). The Armadillo's passive carries it always on.
-- **Shocked** (implemented): The Armadillo's retaliation (Ryan, 28 September): the tank sets up kills instead of out-damaging area weapons against a horde, and it works on a boss. The discharge on a second strike is the small thorns left in. Numbers are placeholders.
+- **Shocked** (implemented): The Armadillo's retaliation (Ryan, 28 September): the tank sets up kills instead of out-damaging area weapons against a horde, and it works on a boss. The discharge a Shocked striker paid (10 a blow) went on 11 October (Ryan): it was thorns, the larger share of the Armadillo's strength against a horde. Numbers are placeholders.
 - **Overcharged** (implemented): The buff side and devour run (29 September); a buff's stacks and devour's are the same status to the machine and add up. The Ammit's Quintessence Tap (which stops the decay and keeps the stacks for the battle, never the campaign) is planned. Name is a placeholder.
 - **Braced** (implemented): Placeholder name and number (29 September). Flat since 2 October; it was 15% less damage a stack.
 - **Primed** (implemented): Placeholder name (29 September).
@@ -273,7 +273,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Self-Destruct** (implemented): The Bomb's (decided 9 October, the Peak). A property of a foe's attack action, like breach. A self-destructing foe counts as a kill like any other.
 - **Foe action** (implemented): Only attacks run; defend, buff and debuff actions stay planned. Weighted RNG is the whole brain for now.
 - **Vents all** (implemented): Built 30 September for the Afterburner Cannon (vents_all and power_per_heat on the face). Only the first shot of a chain fires the heat.
-- **Grows with missing hull** (implemented): Built 10 October for the Sparrowhawk's rifle (the Headhunter Rifle until it is renamed). MISSING_STEP is a placeholder.
+- **Grows with missing hull** (implemented): Built 10 October for the Sparrowhawk's finisher, the Pinion Driver (named 11 October). MISSING_STEP is a placeholder.
 - **The hopper** (implemented): Built 11 October for the Honey Badger's locked pair (Ryan): the Chainsaw Claw fills, the Bullion Fragmenter fires, +5 a load and three a shot as placeholders. Ryan floated the passive feeding it from every melee hit, the claw giving extra; held in chat.
 - **Strikes** (implemented): Heat is paid once per use, not per strike. Foes have no armour yet, so on the player side strikes only matter for procs until they do.
 - **Static** (implemented): Every read asks the pipeline; nothing is written to a stat or a component, so an effect that is gone stops answering. A static reach rule cannot be conditioned on reach.

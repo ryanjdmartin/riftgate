@@ -656,6 +656,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: power_per_missing is a positive number on an attack" % where)
 	# The hopper (11 October): a weapon fills it by the foes it reaches, another fires a few
 	# loads a shot for a bonus each.
+	if fd.has("devours") and kind != "attack":
+		errs.append("%s: devours belongs to an attack" % where)
+	if Array(fd.get("keywords", [])).has("devour"):
+		errs.append("%s: devour is a unique rule since 11 October: write devours: true" % where)
 	for key in ["fills_hopper", "fires_hopper"]:
 		if fd.has(key) and (kind != "attack" or int(fd[key]) <= 0):
 			errs.append("%s: %s is a positive number on an attack" % [where, key])
@@ -683,7 +687,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: %d keywords, authored cap is %d" % [where, kws.size(), MAX_AUTHORED_KEYWORDS])
 	for k in kws:
 		# A planned component may carry a keyword the vocabulary names but the engine lacks
-		# (taunt, volatile, devour): Face.from_dict builds it without that keyword until it is coded.
+		# (taunt, corrode): Face.from_dict builds it without that keyword until it is coded.
 		if planned and vocabulary.has(str(k)) and vocabulary[str(k)].get("status") != "implemented":
 			continue
 		var kw := Face.keyword_from_name(str(k))

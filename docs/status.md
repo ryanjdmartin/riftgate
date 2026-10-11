@@ -76,7 +76,7 @@ goes into this file in the same commit as its first publish.
 - Reports out of date: `docs/balance.md` and `docs/campaign_run.md` predate the weapon rules;
   rerun after the stock pass. Scratch reads at 50 seeds (11 October) are in the bible's rows.
 - Decided, not built: the shared basic kit and its stock pass (the twists with it), tags on
-  components, heat from foes only through debuffs, the Headhunter's successor on the
+  components, heat from foes only through debuffs, the Pinion Driver locked on the
   Sparrowhawk, the Gravity Knuckles as a blueprint. The bible's section 12 lists the
   questions only Ryan can settle.
 - Foe art: every foe and hero is cut from Ryan's picks at 72x96 (massive 96x144, chibis 36x48),

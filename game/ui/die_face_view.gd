@@ -242,8 +242,8 @@ func _draw() -> void:
 	var tags: Array[String] = []
 	for k in face.keywords:
 		tags.append(Face.KEYWORD_NAMES[k])
-	if not face.label.is_empty():
-		tags.append("star")
+	if face.has_unique_rule():
+		tags.append("star")      # a rule printed on the entry: the hold reads it out
 	if face.targets == Face.Target.SELF:
 		tags.append("self")      # equipment that reaches only its own machine
 	elif face.targets == Face.Target.ALLY:

@@ -103,7 +103,7 @@ const STATUS := {
 	"retaliate": {"id": "retaliate", "name": "Retaliate", "description": "A foe that strikes this machine's bare hull is Shocked.",
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "shock_on_hull_strike", "value": 1}]},
 	# The foe's side of it: one status, never stacked, spent by the blow it doubles.
-	"shocked": {"id": "shocked", "name": "Shocked", "description": "The next blow it takes deals double, then the shock is spent. Striking bare hull again costs it 10.",
+	"shocked": {"id": "shocked", "name": "Shocked", "description": "The next blow it takes deals double, then the shock is spent.",
 		"tags": ["shock"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 2}]},
 	# What a foe's defend, buff and debuff actions leave (30 September). Folded fades at the
 	# foe's next action; Kindled lasts the next round; Risen is a charge spent by a death;

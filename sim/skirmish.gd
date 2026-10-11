@@ -30,7 +30,6 @@ const BURN_DAMAGE_PER_STACK := 10   # damage dealt per stack applied (halved 2 O
 const CRACK_MIN_HULL_PCT := 25      # a single hull hit this big (percent of max) injures a face
 const CORRUPT_BITE_PER_STACK := 10  # what a corrupted entry costs its owner each time it is spent, per stack (placeholder)
 const VOLATILE_BITE := 10           # what a volatile component costs its owner each time it is spent: hull, past shield and armour (placeholder)
-const SHOCK_DISCHARGE := 10         # what a Shocked foe pays for striking bare hull again (placeholder; the small thorns left in, Ryan, 28 September)
 const NUMBED_PER_SUPPRESS := 2       # Numbed stacks a landed suppress adds; one is lost at each of the foe's turns
 const NUMBED_PER_SUPPRESS_MASSIVE := 3
 
@@ -860,17 +859,12 @@ func _enemy_turn() -> void:
 		for s in range(f.strikes()):
 			if not t.alive():
 				break
-			var was_shocked := Effects.has(f, "shocked")
 			_damage_mech(t, f.damage(), f)
 			var blocked: bool = turn_events[turn_events.size() - 1]["blocked"]
 			# The live hull (the Armadillo's, a machine under Retaliate): a blow that reaches
-			# hull shocks the foe that struck; a shutters' blocked blow shocks too. A foe already
-			# Shocked that reaches hull again pays the discharge, and may die of it.
-			if was_shocked and not blocked:
-				f.hp -= SHOCK_DISCHARGE
-				log.append("%s discharges into %s: %d" % [t.unit.display_name, f.display_name, SHOCK_DISCHARGE])
-				if not f.alive():
-					break
+			# hull shocks the foe that struck; a shutters' blocked blow shocks too. Shocked is a
+			# setup and nothing else (Ryan, 11 October): the discharge a Shocked striker paid was
+			# thorns, scaling with the blows a horde lands, and it went.
 			if Effects.shocks_striker(t.unit, blocked):
 				_shock(f, t)
 			if f.has_keyword(f.action, "scorch") and t.alive():
@@ -1003,7 +997,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 			# A blow of nothing (a lure, a probe) leaves a shock standing for a blow that counts.
 			if dmg > 0 and Effects.remove(foe, "shocked"):
 				log.append("%s: the shock lands, %d doubled" % [foe.display_name, dmg])
-			if was_alive and not foe.alive() and f.has(Face.Keyword.DEVOUR):
+			if was_alive and not foe.alive() and f.devours:
 				_devour(ms, foe)
 			# Spillover (Overwhelm until 6 October): what the blow had past the kill of a front-rank foe carries into the
 			# foe behind it in the column, as plain damage that still spends a shock and
@@ -1016,7 +1010,7 @@ func _resolve_attack(mech_index: int, ms: MechState, f: Face, target: Foe) -> vo
 					behind.hp -= behind_taken
 					Effects.remove(behind, "shocked")
 					log.append("%s spills over: %d into %s" % [ms.unit.display_name, behind_taken, behind.display_name])
-					if not behind.alive() and f.has(Face.Keyword.DEVOUR):
+					if not behind.alive() and f.devours:
 						_devour(ms, behind)
 			if f.has(Face.Keyword.BURN):
 				Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", _stacks_from(ms, "burning", ceili(float(dmg) / BURN_DAMAGE_PER_STACK)))

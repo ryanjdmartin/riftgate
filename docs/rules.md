@@ -111,7 +111,6 @@ defeat when every machine is wrecked. There is no round limit.
   again, until a link fails to kill.
 - **Spillover**: damage past the kill of a front-rank foe carries into the foe behind it as
   plain damage.
-- **Devour**: each kill gives the owner a stack of Overcharged.
 - **Lure**: every foe reached and left standing turns on the spender for the round.
 - **Disrupt**: every foe reached and left standing takes the next move in its list that its
   conditions allow, with a new target. Disrupt resolves before Lure.
@@ -123,8 +122,10 @@ defeat when every machine is wrecked. There is no round limit.
   foe's Disabled and Corrupted (never a Rapid switch-off).
 - **Overshield** (shields): may pass the maximum; the excess fades at the round's end.
 
-Component properties: **Vents all** fires the whole heat gauge into the shot, adding its
-bonus per 10 heat fired, then its own heat lands. **Missing hull** adds its bonus for every
+Component properties, printed on the entry rather than learned as keywords (the die marks
+them with a star): **Vents all** fires the whole heat gauge into the shot, adding its
+bonus per 10 heat fired, then its own heat lands. **Devour** (the Soulcutter Talons): each
+kill gives the owner a stack of Overcharged. **Missing hull** adds its bonus for every
 20 hull the target is missing. **The hopper**: a weapon that fills it puts a load in its
 machine's hopper for each foe its blows reach, after the blow; a weapon that fires it takes
 up to its most loads a shot, each adding its bonus to the blow, and spends them (the Honey
@@ -154,7 +155,7 @@ On a foe:
 - **Suppressed** (debuff): it skips its action this round; landed on a foe that has already
   acted, or by a Paradox on a foe already suppressed, it costs the next action instead.
 - **Shocked** (debuff): the next team blow that deals it damage deals double, spending the
-  shock; it never stacks. While Shocked, each blow it lands on bare hull costs it 10.
+  shock; it never stacks.
 - **Paradox** (debuff, while the Baboon fights): a stack each time the foe gains any other
   debuff, once a spend per debuff however many strikes or stacks; at three it is Suppressed
   (Numbed may resist) and the Paradox clears. It never decays. The Suppressed a Paradox

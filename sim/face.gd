@@ -14,7 +14,8 @@ enum Kind { ATTACK, SHIELD, VENT, BLANK, BUFF }
 enum Reach { NONE, DIRECT, INDIRECT }
 ## Execute and Steady are retired (10 October): a threshold doubling is a hard sum hidden in
 ## a keyword, and a rolled weapon dealing its average is simply a flat one.
-enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, VOLATILE, DEVOUR, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK }
+## Devour folded into a unique rule on its one carrier (Ryan, 11 October): `devours`.
+enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, VOLATILE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK }
 ## Whom a component may be spent on (Ryan, 26 September): a weapon (an attack) targets foes;
 ## equipment (a shield, a vent) targets self and allies by default, and content may narrow
 ## one to self only or allies only, so the design space stays open.
@@ -34,7 +35,7 @@ const KEYWORD_NAMES := {
 	Keyword.NONE: "", Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.BURN: "burn",
 	Keyword.SUPPRESS: "suppress",
 	Keyword.CHAIN: "chain", Keyword.RAPID: "rapid", Keyword.CLEANSE: "cleanse",
-	Keyword.VOLATILE: "volatile", Keyword.DEVOUR: "devour", Keyword.LURE: "lure", Keyword.DISRUPT: "disrupt",
+	Keyword.VOLATILE: "volatile", Keyword.LURE: "lure", Keyword.DISRUPT: "disrupt",
 	Keyword.SPILLOVER: "spillover", Keyword.OVERSHIELD: "overshield", Keyword.SHOCK: "shock",
 }
 ## What the player reads where it differs from the content id (the vocabulary's name).
@@ -85,6 +86,7 @@ var buff_rounds: int = 1      # ...through the end of this many rounds (1: this 
 var vents_all: bool = false   # an attack that fires the machine's whole heat: the gauge is empty after the shot...
 var power_per_heat: int = 0   # ...and each 10 heat it fired adds this to the blow (the Afterburner Cannon, 28 September)
 var power_per_missing: int = 0   # an attack: added for every MISSING_STEP hull its target is missing (10 October; flat, shown on the hover)
+var devours: bool = false     # an attack: each kill gives its owner a stack of Overcharged (the Soulcutter Talons; a keyword until 11 October)
 var fills_hopper: int = 0     # an attack: loads it puts in its machine's hopper for each foe its blows reach (the Chainsaw Claw, 11 October)
 var fires_hopper: int = 0     # an attack: the most loads one shot fires from the hopper...
 var power_per_load: int = 0   # ...each adding this to the blow (the Bullion Fragmenter, 11 October)
@@ -222,6 +224,8 @@ static func from_dict(d: Dictionary) -> Face:
 		f.power_per_heat = maxi(0, int(d.get("power_per_heat", 0))) if f.vents_all else 0
 		f.power_per_missing = maxi(0, int(d.get("power_per_missing", 0)))
 		f.fills_hopper = maxi(0, int(d.get("fills_hopper", 0)))
+		# A save or a draft from before 11 October lists devour as a keyword: it reads as the rule.
+		f.devours = bool(d.get("devours", false)) or Array(d.get("keywords", [])).has("devour")
 		f.fires_hopper = maxi(0, int(d.get("fires_hopper", 0)))
 		f.power_per_load = maxi(0, int(d.get("power_per_load", 0))) if f.fires_hopper > 0 else 0
 	for name in d.get("keywords", []):
@@ -256,6 +260,8 @@ func to_dict() -> Dictionary:
 			d["power_per_heat"] = power_per_heat
 	if power_per_missing > 0:
 		d["power_per_missing"] = power_per_missing
+	if devours:
+		d["devours"] = true
 	if fills_hopper > 0:
 		d["fills_hopper"] = fills_hopper
 	if fires_hopper > 0:
@@ -271,6 +277,12 @@ func add_keyword(kw: int) -> void:
 
 func has(kw: int) -> bool:
 	return keywords.has(kw)
+
+
+## A rule printed on the entry rather than a keyword (bible section 6: the die's star chip):
+## Vents all, the missing-hull bonus, devour, the hopper, or a labelled effect.
+func has_unique_rule() -> bool:
+	return vents_all or power_per_missing > 0 or devours or fills_hopper > 0 or fires_hopper > 0 or not label.is_empty()
 
 
 func is_attack() -> bool:
@@ -333,6 +345,7 @@ func duplicate_face() -> Face:
 	f.vents_all = vents_all
 	f.power_per_heat = power_per_heat
 	f.power_per_missing = power_per_missing
+	f.devours = devours
 	f.fills_hopper = fills_hopper
 	f.fires_hopper = fires_hopper
 	f.power_per_load = power_per_load
@@ -391,6 +404,8 @@ func describe() -> String:
 				s += " vents all" + (", +%d per 10 heat" % power_per_heat if power_per_heat > 0 else "")
 			if power_per_missing > 0:
 				s += " +%d per %d hull missing" % [power_per_missing, MISSING_STEP]
+			if devours:
+				s += " devours"
 			if fills_hopper > 0:
 				s += " fills the hopper" + ("" if fills_hopper == 1 else " ×%d" % fills_hopper)
 			if fires_hopper > 0:
