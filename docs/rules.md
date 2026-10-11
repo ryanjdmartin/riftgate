@@ -59,10 +59,12 @@ skirmish.
 2. Every foe picks its move, then its target; both show, exact, before the player acts.
 3. The player's turn: spend, lock and reroll in any order. Each spend resolves fully before
    the next. Withdrawal is open at any point.
-4. END TURN: the enemy's turn (below). Round-timed effects end.
-5. Machines' statuses tick. Heat over a machine's maximum burns hull one for one and the gauge
-   settles at the maximum. Shield past the maximum (overshield) fades.
-6. Reinforcements step into empty slots. Next round.
+4. END TURN: heat over a machine's maximum burns hull one for one and the gauge settles at
+   the maximum (an overheat). A machine it wrecks is lost on its own turn, before the enemy
+   acts.
+5. The enemy's turn (below). Round-timed effects end.
+6. Machines' statuses tick. Shield past the maximum (overshield) fades.
+7. Reinforcements step into empty slots. Next round.
 
 The fight ends the moment it is decided, mid-turn too: victory when no foe stands or waits,
 defeat when every machine is wrecked. There is no round limit.
@@ -135,7 +137,7 @@ On a machine:
 - **Crucible** (buff, the Nemesis's): its melee blows deal +5 a stack, a stack each time it
   takes hull damage; lasts the skirmish.
 - **Overheating** (debuff, from a foe's scorch): +5 heat a stack at the round's end, then a
-  stack fades. Cleansable.
+  stack fades; the heat burns at the end of the next turn unless vented. Cleansable.
 - **Scrambled** (debuff): the die's next reroll may land anywhere, the same entry included.
 - **Disabled** (debuff): the entry comes up blank through the machine's next turn.
 - **Corrupted** (debuff): each spend of the entry bites its owner 10 a stack, shield first,
@@ -176,12 +178,14 @@ Burning, Suppressed, Shocked or Paradox.
 
 ### Heat
 - A weapon adds its heat when spent, once a spend. Heat may pass the maximum during the
-  round harmlessly; at the round's end the excess burns hull one for one (an overheat) and
-  the gauge settles at the maximum. Machines cool at the start of the round. Heat starts each
-  fight at zero.
+  player's turn harmlessly; at the end of the turn, before the enemy acts, the excess burns
+  hull one for one (an overheat) and the gauge settles at the maximum. With volatile, it is
+  the way a machine dies on its own turn. Machines cool at the start of the round. Heat
+  starts each fight at zero.
 - An overheat is hull damage for every passive that reads hull damage.
 - Foes heat machines by scorch (Overheating), and by moves that add heat to one machine or
-  to all. (The direction, not built: foes heat machines only through debuffs; one adds its
+  to all. That heat lands after the burn, so it waits on the gauge for the next turn, where a
+  vent or a cleanse answers it. (The direction, not built: foes heat machines only through debuffs; one adds its
   heat at the end of the player's turn, before the overheat, so it can be vented or cleansed
   first; a softer one raises the heat every weapon generates, per stack; the names are open.)
 
@@ -219,8 +223,9 @@ Burning, Suppressed, Shocked or Paradox.
   splits into two Half-Gels in the reinforcements (one deep).
 
 ### Withdrawal
-Open at any point of the player's turn. The enemy takes its full turn, then the skirmish
-ends; the round's end does not run. Kills stay counted, machines keep their damage and
+Open at any point of the player's turn. Withdrawing ends the turn, so heat over the maximum
+burns first; then the enemy takes its full turn, and the skirmish ends; the round's end does
+not run. Kills stay counted, machines keep their damage and
 shields do not refill; a pack keeps its survivors, who return whole.
 
 ### Passives: triggers and conditions

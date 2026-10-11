@@ -249,11 +249,11 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 			var link := damage_outcomes(ms, f, n)
 			score += p * (_capped(link, n.hp) + _kill_odds(link, n.hp) * (KILL_BONUS + _threat_now(n) * HULL_WEIGHT))
 			p *= _kill_odds(link, n.hp)
-	# The heat this entry adds, on top of what the round's end already brings: whatever ends
-	# over the cap burns hull, and a machine burnt out is the worst trade there is. Asked of
-	# the entry itself, not the one showing, so a reroll can weigh every entry the same way.
+	# The heat this entry adds, on top of what the gauge already holds: whatever ends the
+	# turn over the cap burns hull, and a machine burnt out is the worst trade there is. Asked
+	# of the entry itself, not the one showing, so a reroll can weigh every entry the same way.
 	var fc := sk.forecast(ms, false)
-	var over := maxi(0, int(fc["heat_after"]) + int(fc["overheat"]) + int(roundf(heat_of(ms, f) * uses)) - ms.heat_max)
+	var over := maxi(0, int(fc["heat_end"]) + int(roundf(heat_of(ms, f) * uses)) - ms.heat_max)
 	score -= float(over - int(fc["overheat"])) * HULL_WEIGHT
 	if not fc["destroyed"] and int(fc["hull_after"]) - (over - int(fc["overheat"])) <= 0:
 		score -= DEATH_WEIGHT
@@ -382,16 +382,16 @@ func equipment_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.MechSta
 	return score - volatile_cost(sk, ms, f)
 
 
-## What a cleanse clears from a machine, in hull: the Overheating it would gain (the heat this
-## round's tick adds past the cap as hull, the rest as room), the bites its Corrupted entries
-## would take over the rounds to come, and the entries a foe switched off, at the die's own
-## mean for each. A Scrambled reroll is small change.
+## What a cleanse clears from a machine, in hull: the Overheating it would gain (the heat the
+## round's tick would put over the cap for the next turn as hull, the rest as room), the bites
+## its Corrupted entries would take over the rounds to come, and the entries a foe switched
+## off, at the die's own mean for each. A Scrambled reroll is small change.
 func cleanse_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 	var score := 0.0
 	var tick := int(Effects.tick_preview(who.unit)["heat"])
 	if tick > 0:
 		var fc := sk.forecast(who, false)
-		var over := mini(tick, int(fc["overheat"]))
+		var over := clampi(int(fc["heat_after"]) - who.heat_max, 0, tick)
 		score += float(over) * HULL_WEIGHT + float(tick - over) * BANK_WEIGHT * CLEANSE_ROUNDS
 	var n := who.die.faces.size()
 	if n > 0:

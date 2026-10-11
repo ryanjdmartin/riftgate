@@ -12,9 +12,9 @@ extends RefCounted
 ##   assign(i, target)   spend a mech's face on a foe (attacks) or a mech (shield, vent);
 ##                       a rolled face rolls its damage here, immediately and visibly
 ##                       a kill clears its slot at once; a decided fight ends at once
-##   end_round()         burn ticks, foes act, the dead are cleared, mech statuses tick
-##                       (overheating), heat over the cap burns hull, the reinforcements
-##                       refill, outcome is checked
+##   end_round()         the player's turn ends: heat over the cap burns hull; then burn
+##                       ticks, foes act, the dead are cleared, mech statuses tick
+##                       (overheating), the reinforcements refill, outcome is checked
 ##   can_withdraw()      at any point of the player's turn
 ##
 ## The player's damage is in fives, everything else in tens. Enemy damage is static; only
@@ -302,8 +302,9 @@ func acting_on(ms: MechState) -> Array[Foe]:
 	return out
 
 
-## Heat the round's end will add from the foes acting on this mech: a stack of Overheating
-## per scorching blow, ticking at once, and a stoking debuff's heat outright.
+## Heat the foes will add to this mech after the player's turn has burnt its own: a stack
+## of Overheating per scorching blow, ticking at the round's end, and a stoking debuff's heat
+## outright. It waits on the gauge for the next turn.
 func scorch_incoming(ms: MechState) -> int:
 	var per_stack := int(Effects.STATUS["overheating"]["effects"][0]["value"])
 	var stacks := 0
@@ -389,19 +390,22 @@ func forecast(ms: MechState, with_face: bool = true, extra_shield: int = 0, over
 			hull -= r["through"]
 			if r["injures"]:
 				component_risk = true
-	# Heat: what the gauge holds (past the cap, if the round ran hot), the face's own if
-	# asked, then the end of the round's Overheating tick: the stacks it carries plus one
-	# per scorching blow coming. Whatever ends over the cap burns hull at the round's end.
-	var heat_after := ms.heat + (pending_heat(ms) if with_face else 0) + int(Effects.tick_preview(ms.unit)["heat"]) + scorch_incoming(ms)
-	var over := maxi(0, heat_after - ms.heat_max)
+	# Heat: what the gauge holds (past the cap, if the turn ran hot) and the face's own if
+	# asked burns at the end of the player's turn, before the enemy acts (11 October). The
+	# heat the foes and the Overheating tick add comes after the burn, onto the gauge for the
+	# next turn, where a vent can still take it off.
+	var heat_end := ms.heat + (pending_heat(ms) if with_face else 0)
+	var over := maxi(0, heat_end - ms.heat_max)
 	hull -= over
+	var heat_after := mini(heat_end, ms.heat_max) + int(Effects.tick_preview(ms.unit)["heat"]) + scorch_incoming(ms)
 	return {
 		"incoming": incoming,
 		"bite": bite,
 		"volatile": volatile,
 		"shield_after": shield,
 		"hull_after": hull,
-		"heat_after": mini(heat_after, ms.heat_max),
+		"heat_end": heat_end,       # the gauge as the turn ends, uncapped: what the burn reads
+		"heat_after": heat_after,   # the gauge after the round: settled at the cap, then the foes' heat
 		"overheat": over,
 		"breaks_shield": ms.unit.shield > 0 and incoming >= ms.unit.shield,
 		"component_risk": component_risk,
@@ -779,9 +783,11 @@ func assign(mech_index: int, target = null) -> bool:
 
 func end_round() -> int:
 	assert(state == State.ASSIGN, "end_round called out of order")
+	_end_player_turn()
+	if outcome != Outcome.NONE:
+		return outcome   # the burn wrecked the last machine: the enemy never acts
 	_enemy_turn()
 	_tick_mechs()
-	_settle_heat()
 	_trim_overshield()
 	_reinforce(true)    # the reinforcement phase: a random waiting foe of the right rank per empty slot
 	_refresh_allies()
@@ -791,13 +797,24 @@ func end_round() -> int:
 	return outcome
 
 
+## The end of the player's turn (Ryan, 11 October): heat over the maximum burns hull now,
+## before the enemy acts, so an overheat is the machine's own doing on its own turn, like a
+## volatile bite. A machine it wrecks is gone before the enemy strikes, and a fight it
+## decides ends here. Heat a foe adds lands after it, so it waits on the gauge for the
+## next turn, where a vent or a cleanse can answer it. Shared by END TURN and a withdrawal.
+func _end_player_turn() -> void:
+	overheats.clear()
+	_settle_heat()
+	_refresh_allies()
+	_check_outcome()
+
+
 ## The enemy's turn: every foe on the field acts in order, statuses tick, timed effects run
 ## out. Shared by the end of a round and by a withdrawal.
 func _enemy_turn() -> void:
 	turn_events.clear()
 	turn_specials.clear()
 	_seq = 0
-	overheats.clear()
 	# Foes act in the order they stand: front rank left to right, then the back rank. Each
 	# foe's statuses tick at the start of its action (burning may kill it first), a
 	# suppressed foe skips, and a foe with two strikes lands two separate blows, so a shield
@@ -866,8 +883,8 @@ func _enemy_turn() -> void:
 
 
 ## The round ends with the machines' statuses ticking, after the enemy has struck: an
-## Overheating stack lands on the round's peak heat, before the next turn's cooling can
-## relieve it (Ryan, 22 September), so a scorch bites the round it was dealt.
+## Overheating stack adds its heat to the gauge now, and that heat burns only at the end of
+## the next player's turn (11 October), after the cooling, so a vent or a cleanse answers it.
 func _tick_mechs() -> void:
 	for ms in live_mechs():
 		var t := Effects.tick(ms.unit)
@@ -882,6 +899,11 @@ func withdraw() -> bool:
 	if state == State.ROUND_START:
 		start_round()
 	log.append("Withdrawing: the enemy strikes as the team pulls out")
+	# Leaving ends the player's turn, so the heat burns first (Ryan, 11 October): running hot
+	# and then withdrawing is no way round an overheat.
+	_end_player_turn()
+	if outcome != Outcome.NONE:
+		return true   # burnt out on the way: the fight is lost, and the enemy never strikes
 	_screen_cover()
 	_enemy_turn()
 	_screened.clear()
@@ -1415,7 +1437,7 @@ func _apply(ms: MechState, result: Dictionary) -> Array[String]:
 	return parts
 
 
-## The end of the round: heat above the maximum burns hull one for one and the gauge
+## The end of the player's turn: heat above the maximum burns hull one for one and the gauge
 ## settles at its cap.
 func _settle_heat() -> void:
 	for ms in live_mechs():

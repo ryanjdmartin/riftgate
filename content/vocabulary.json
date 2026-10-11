@@ -44,7 +44,7 @@
    "id": "heat",
    "category": "resource",
    "name": "Heat",
-   "codex": "Attack components may add heat. At the end of the round, heat above the chassis maximum burns hull one for one and the gauge settles at the maximum; until then a vent can still bring it down. Vent components remove heat. At the start of every turn a mech sheds its chassis's cooling rating in heat, so a round spent on shields or cool weapons is a way of cooling down without a vent; Overheating ticks at the end of the round, after the enemy has struck, so a scorch lands on the round's peak heat before cooling relieves it.",
+   "codex": "Attack components may add heat. At the end of your turn, before the enemy acts, heat above the chassis maximum burns hull one for one and the gauge settles at the maximum; until then a vent can still bring it down, and a machine the burn wrecks is lost on its own turn. Vent components remove heat. At the start of every round a mech sheds its chassis's cooling rating in heat, so a round spent on shields or cool weapons is a way of cooling down without a vent. Heat the foes add, and the Overheating tick at the end of the round, lands after the burn and waits on the gauge for your next turn.",
    "status": "implemented",
    "design": {
     "holes": "Heat does nothing below the cap. Consider effects at high heat short of overflow. Cooling numbers are placeholders; cooling must stay below a typical weapon's heat or heat never matters, and a vent component must be worth a whole turn (tuning)."
@@ -564,7 +564,7 @@
    "id": "withdraw",
    "category": "formation",
    "name": "Withdraw",
-   "codex": "Available at any point of the player's turn, the first round included. The price is always the same: the enemy takes its full turn, then the skirmish ends, so nobody leapfrogs out of contact unscathed. Machines keep their damage; a pack keeps its survivors, who return whole. Shields do not refill on withdrawing; they recharge at the field rate only in phases spent out of combat.",
+   "codex": "Available at any point of the player's turn, the first round included. The price is always the same: your turn ends (heat over the maximum burns), the enemy takes its full turn, then the skirmish ends, so nobody leapfrogs out of contact unscathed. Machines keep their damage; a pack keeps its survivors, who return whole. Shields do not refill on withdrawing; they recharge at the field rate only in phases spent out of combat.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1134,7 +1134,7 @@
    "id": "overheating",
    "category": "status",
    "name": "Overheating",
-   "codex": "Mech status. Gains 5 heat per stack at the end of the round, after the enemy has struck, then loses one stack. The mech-side counterpart of Burning: metal does not burn, it heats. Applied by foe attacks that scorch. Clears at end of skirmish. Can be cleansed.",
+   "codex": "Mech status. Gains 5 heat per stack at the end of the round, after the enemy has struck, then loses one stack; the heat burns at the end of the next turn unless it is vented. The mech-side counterpart of Burning: metal does not burn, it heats. Applied by foe attacks that scorch. Clears at end of skirmish. Can be cleansed.",
    "status": "implemented",
    "design": {
     "holes": "Placeholder name and numbers, engine id overheating; Ryan is looking for the flavour."

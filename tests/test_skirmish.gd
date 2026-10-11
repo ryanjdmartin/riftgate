@@ -828,7 +828,7 @@ func test_forecast_predicts_wreck_and_overheat() -> void:
 	assert_eq(sk.pending_heat(ms), 0, "a spent face adds no more heat")
 	assert_eq(ms.heat, 40, "the heat is on the gauge, past the cap")
 	assert_eq(m.hull, 20, "nothing burnt yet")
-	assert_eq(fc["overheat"], 10, "the burn is still coming at the end of the round")
+	assert_eq(fc["overheat"], 10, "the burn is still coming at the end of the turn")
 	assert_eq(sk.forecast(ms, false)["overheat"], 10, "with or without the die counted: it is spent")
 
 
@@ -1343,9 +1343,10 @@ func test_a_kill_clears_the_slot_at_once_and_opens_the_back_rank() -> void:
 	assert_true(sk.front[0] != null or sk.reinforcements.is_empty(), "the hole is plugged at the round's end when anyone waits")
 
 
-func test_cooling_at_the_start_of_the_turn_and_overheating_at_the_end_of_the_round() -> void:
-	# Ryan, 22 September: cool at the start, heat at the end, so a scorch lands on the
-	# round's peak heat before cooling relieves it.
+func test_cooling_at_the_start_of_the_round_and_overheating_at_the_end_of_the_turn() -> void:
+	# Ryan, 22 September: cool at the start of the round. Ryan, 11 October: the overheat burns
+	# at the end of the player's turn, before the enemy acts; heat the foes and the
+	# Overheating tick add lands after it, on the gauge for the next turn.
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.attack(10, L, [], 30)), 40, 100)
 	m.heat_max = 60
@@ -1363,8 +1364,8 @@ func test_cooling_at_the_start_of_the_turn_and_overheating_at_the_end_of_the_rou
 	sk.start_round()
 	assert_eq(ms.heat, 20, "cooled by 10 as the turn begins")
 	assert_true(sk.log[sk.log.size() - 1].begins_with("cooling: A -10"), "one log line: %s" % sk.log[sk.log.size() - 1])
-	# Overflow burns at the end of the round, never when the face is spent (Ryan, 22
-	# September), so a hot machine can still be vented before it pays.
+	# Overflow burns as the turn ends, never when the face is spent (Ryan, 22 September), so
+	# a hot machine can still be vented before it pays.
 	ms.heat = 50
 	assert_eq(sk.forecast(ms, false)["overheat"], 0, "the die's heat is not counted unless asked")
 	assert_eq(sk.forecast(ms, true)["overheat"], 20, "asked (the die is dragged): 50 plus 30 on a 60 cap")
@@ -1372,16 +1373,17 @@ func test_cooling_at_the_start_of_the_turn_and_overheating_at_the_end_of_the_rou
 	assert_eq(ms.heat, 80, "80 on the gauge, past the cap")
 	assert_eq(m.hull, 100, "nothing burnt yet")
 	assert_eq(sk.forecast(ms)["overheat"], 20, "the forecast warns of the twenty to come")
-	# Overheating ticks at the end of the round, on that peak, before the next cooling.
+	# Overheating ticks at the end of the round, after the burn: its heat waits for the next turn.
 	Effects.stack(m, Effects.STATUS["overheating"], Effects.SKIRMISH, "test", 2)
-	assert_eq(sk.forecast(ms)["heat_after"], 60, "the forecast caps the gauge")
-	assert_eq(sk.forecast(ms)["overheat"], 30, "twenty over plus the tick's ten")
+	assert_eq(sk.forecast(ms)["overheat"], 20, "the tick is not in this turn's burn")
+	assert_eq(sk.forecast(ms)["heat_after"], 70, "the gauge settles at its cap, then the tick's ten lands on it")
 	sk.end_round()
-	assert_eq(m.hull, 70, "all of it burns at once at the end of the round")
-	assert_eq(ms.heat, 60, "and the gauge settles at its cap")
+	assert_eq(m.hull, 80, "twenty burns as the turn ends")
+	assert_eq(ms.heat, 70, "settled at the cap, then ten from the tick, over the cap again")
 	assert_eq(Effects.stacks_of(m, "overheating"), 1, "one stack ticked away")
 	sk.start_round()
-	assert_eq(ms.heat, 50, "then cooled by 10")
+	assert_eq(ms.heat, 60, "then cooled by 10, back at the cap")
+	assert_eq(m.hull, 80, "nothing burns at the round's start")
 	# Cooling is a stat like any other: a passive can raise it, and it never goes below zero.
 	m.grant_passive({"id": "fins", "name": "Fins", "description": "", "effects": [{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 15}]}, "fins")
 	assert_eq(m.cooling, 25, "base plus the passive")
@@ -1407,11 +1409,13 @@ func test_forecast_counts_the_scorch_about_to_land() -> void:
 	sk.start_round()
 	ms.heat = 55
 	var fc := sk.forecast(ms)
-	assert_eq(fc["heat_after"], 60, "two scorching blows: two stacks tick ten at the round's end, capped")
-	assert_eq(fc["overheat"], 5, "five of it burns hull")
+	assert_eq(fc["heat_after"], 65, "two scorching blows: two stacks tick ten at the round's end")
+	assert_eq(fc["overheat"], 0, "after the burn, so none of it burns this turn")
 	sk.end_round()
-	assert_eq(ms.heat, 60, "as forecast")
-	assert_eq(m.hull, 100 - 20 - 5, "two blows of ten on bare hull, then five burnt")
+	assert_eq(ms.heat, 65, "as forecast: five over the cap, waiting")
+	assert_eq(m.hull, 100 - 20, "two blows of ten on bare hull, and nothing burnt")
+	sk.start_round()
+	assert_eq(sk.forecast(ms, false)["overheat"], 5, "the next turn burns it unless it is vented")
 
 
 func test_no_cooling_means_no_line_and_no_change() -> void:
@@ -1428,7 +1432,7 @@ func test_no_cooling_means_no_line_and_no_change() -> void:
 		assert_false(sk.log[j].begins_with("cooling"), "no cooling line")
 
 
-func test_venting_before_the_end_of_the_round_prevents_the_burn() -> void:
+func test_venting_before_the_end_of_the_turn_prevents_the_burn() -> void:
 	var sk := Skirmish.new(1)
 	var hot := _mech("Hot", Die.single(Face.attack(10, L, [], 50)), 40, 100)
 	hot.heat_max = 60
@@ -1447,6 +1451,60 @@ func test_venting_before_the_end_of_the_round_prevents_the_burn() -> void:
 	assert_eq(sk.forecast(ms)["overheat"], 0, "nothing to burn")
 	sk.end_round()
 	assert_eq(hot.hull, 100, "no burn: the vent came in time")
+
+
+func test_the_overheat_burns_before_the_enemy_acts() -> void:
+	# Ryan, 11 October: the burn is the end of the player's turn. A machine it wrecks is gone
+	# before the enemy strikes, so the foe aimed at it turns on the one still standing.
+	var sk := Skirmish.new(1)
+	var hot := _mech("Hot", Die.single(Face.attack(10, L, [], 50)), 0, 10)
+	hot.heat_max = 30
+	sk.add_mech(hot)
+	var other := _mech("Other", Die.single(Face.shield(10)), 0, 100)
+	sk.add_mech(other)
+	var g := _ghoul(500, 10)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	g.target = sk.mechs[0]
+	sk.assign(0, sk.front[0])
+	assert_eq(sk.forecast(sk.mechs[0])["overheat"], 20, "twenty over a 30 cap")
+	assert_eq(sk.end_round(), Skirmish.Outcome.NONE, "one machine still stands")
+	assert_false(sk.mechs[0].alive(), "the burn wrecked it as the turn ended")
+	assert_eq(other.hull, 90, "so the blow aimed at it landed on the other")
+	assert_eq(sk.overheats.size(), 1, "the burn is on record for the replay")
+	assert_eq(int(sk.turn_events[0]["mech"]), 1, "and the enemy's only blow fell on the survivor")
+
+
+func test_an_overheat_that_wrecks_the_last_machine_ends_the_fight_before_the_enemy_acts() -> void:
+	var sk := Skirmish.new(1)
+	var hot := _mech("Hot", Die.single(Face.attack(10, L, [], 50)), 40, 10)
+	hot.heat_max = 30
+	sk.add_mech(hot)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	sk.assign(0, sk.front[0])
+	assert_eq(sk.end_round(), Skirmish.Outcome.DEFEAT, "burnt out on its own turn")
+	assert_true(sk.turn_events.is_empty(), "the enemy never struck")
+	assert_eq(sk.state, Skirmish.State.DONE, "the fight is over")
+
+
+func test_withdrawing_burns_the_overheat_first() -> void:
+	# Ryan, 11 October: leaving ends the turn, so running hot and then withdrawing is no way
+	# round an overheat.
+	var sk := Skirmish.new(1)
+	var hot := _mech("Hot", Die.single(Face.attack(10, L, [], 50)), 40, 100)
+	hot.heat_max = 30
+	sk.add_mech(hot)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	sk.assign(0, sk.front[0])
+	assert_true(sk.withdraw(), "withdrawn")
+	assert_eq(sk.outcome, Skirmish.Outcome.WITHDRAWN, "the team got out")
+	assert_eq(hot.hull, 80, "but the twenty over the cap burnt on the way")
+	assert_eq(hot.shield, 30, "and the parting blow still landed on the shield")
 
 
 func test_a_numbed_foe_shrugs_off_a_suppress_at_its_odds() -> void:

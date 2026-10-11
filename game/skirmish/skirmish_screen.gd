@@ -977,8 +977,8 @@ func _mech_rows(i: int) -> Array:
 	if sk.state == Skirmish.State.ASSIGN:
 		var fc := sk.forecast(ms, _drag_from == i)
 		if int(fc["overheat"]) > 0:
-			# Overheating burns at the end of the round, so there is still time to vent.
-			rows.append(["heat", "-%d" % int(fc["overheat"]), "Overheating: hull -%d at the end of the round unless vented" % int(fc["overheat"]), Palette.HEAT])
+			# The heat burns as the turn ends, so there is still time to vent.
+			rows.append(["heat", "-%d" % int(fc["overheat"]), "Overheating: hull -%d at the end of the turn unless vented" % int(fc["overheat"]), Palette.HEAT])
 		if int(fc.get("volatile", 0)) > 0:
 			rows.append(["volatile", "-%d" % int(fc["volatile"]), "Volatile: spending this component costs hull -%d, past shield and armour" % int(fc["volatile"]), Palette.ENEMY])
 		if bool(fc["destroyed"]):
@@ -1527,7 +1527,9 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 	if not is_inside_tree() or (steps.is_empty() and sk.overheats.is_empty()):
 		then.call()
 		return
-	_set_phase("ENEMY PHASE")
+	# The burn is the end of the player's own turn (11 October): it lands before the phase
+	# turns over to the enemy.
+	_set_phase("ASSIGN" if not sk.overheats.is_empty() else "ENEMY PHASE")
 	_replay_shade.visible = true
 	_replay_shade.move_to_front()
 	if _menu != null:
@@ -1546,17 +1548,21 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 	# dies at the end of the turn, one after another, with nothing over it (Ryan, 9 October).
 	var deaths: Array = []
 	_dying.clear()
-	for h in hits:
-		if int(h[5]) <= 0 and not h[1].dead and not _dying.has(h[1]):
-			_dying[h[1]] = true
-			deaths.append([h[1], h[10]])
 	for ov in sk.overheats:
 		var oi: int = ov["mech"]
 		if oi >= 0 and oi < _mech_views.size() and int(ov["hull"]) <= 0 and not _mech_views[oi].dead and not _dying.has(_mech_views[oi]):
 			_dying[_mech_views[oi]] = true
 			deaths.append([_mech_views[oi], _maker_of(sk.mechs[oi])])
+	for h in hits:
+		if int(h[5]) <= 0 and not h[1].dead and not _dying.has(h[1]):
+			_dying[h[1]] = true
+			deaths.append([h[1], h[10]])
 	var beat := _enemy_beat()
 	var tw := create_tween()
+	if not sk.overheats.is_empty():
+		tw.tween_callback(_land_overheats)
+		tw.tween_interval(beat)
+		tw.tween_callback(_set_phase.bind("ENEMY PHASE"))
 	for st in steps:
 		if not str(st["announce"]).is_empty():
 			tw.tween_callback(_announce.bind(str(st["announce"])))
@@ -1564,9 +1570,6 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 		if not (st["blow"] as Array).is_empty():
 			tw.tween_callback(_land_blow.bind(st["blow"]))
 			tw.tween_interval(beat)
-	if not sk.overheats.is_empty():
-		tw.tween_callback(_land_overheats)
-		tw.tween_interval(beat)
 	for d in deaths:
 		tw.tween_callback(_land_death.bind(d[0], d[1]))
 		tw.tween_interval(Sound.death_span(d[1]))
@@ -1680,9 +1683,9 @@ func _land_death(mv: UnitView, maker: String) -> void:
 	Sound.say_after(Sound.death_voice_at(maker), "machine_lost")
 
 
-## The round's overheats land together after the enemy's blows (the sim burns them at the
-## round's end, all at once): the machines that ran hot flinch and their hull steps down.
-## Heard once, however many burn.
+## The turn's overheats land together before the enemy's blows (the sim burns them as the
+## player's turn ends, all at once): the machines that ran hot flinch and their hull steps
+## down. Heard once, however many burn.
 func _land_overheats() -> void:
 	Sound.play("overheat")
 	for ov in sk.overheats:
