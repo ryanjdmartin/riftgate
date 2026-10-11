@@ -24,6 +24,10 @@ command are in `README.md`.
   the only resistance, the mirrored Booster and Databank, the Nemesis's Crucible), the first
   foe art at 72x96 and the rewritten docs. `ccr-abac8c0f-yig0e2` was fast-forwarded into it
   and has nothing main lacks; new work starts from main.
+- `claude/ws-chassis-designs-wssq2u` (11 October): only `docs/ws_chassis_proposal.md`, six
+  Wainwright & Sutler chassis pitched from Ryan's silhouettes (two spiders, a chicken walker,
+  two helicopters, a fan-boat), with the holes in his brief. Nothing decided or in content;
+  waiting on his picks and changes in chat.
 
 ## Pages
 
