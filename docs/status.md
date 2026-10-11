@@ -11,19 +11,23 @@ command are in `README.md`.
   disagree, the chat is newer.
 - Sessions run in parallel on this repo: `git status` first, stage by path, diff a shared
   file before staging it, never a bare `git add -A`, never kill a bare `godot --path .`.
-- Tests: 428 tests, 19,544 checks, green (10 October, on `ccr-abac8c0f-yig0e2`). A cloud
-  session fetches Godot 4.7's Linux build from the GitHub release asset
+- Tests: 433 tests, 19,569 checks, green (11 October, on `claude/focused-ritchie-omn8i5`).
+  A cloud session fetches Godot 4.7's Linux build from the GitHub release asset
   (`godotengine/godot-builds`, `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for
   screenshots, and builds models with `BPY_PYTHON` set to a python3.11 venv holding
-  `bpy==5.0.1`.
+  `bpy==5.0.1`. Its first `--import` rewrites four Prairie Dog textures; restore them
+  (`git checkout -- art/models/prairie_dog_*`) rather than commit them.
 
 ## Branches
 
-- `main` has everything since 10 October: the content revision, the modules, the 10 October
+- `main` has everything to 10 October: the content revision, the modules, the 10 October
   weapon rules (no crits, two reaches, the die showing the number, the Paradox meter, Numbed
   the only resistance, the mirrored Booster and Databank, the Nemesis's Crucible), the first
-  foe art at 72x96 and the rewritten docs. `ccr-abac8c0f-yig0e2` was fast-forwarded into it
-  and has nothing main lacks; new work starts from main.
+  foe art at 72x96 and the rewritten docs.
+- `claude/focused-ritchie-omn8i5` (11 October) is main plus Ryan's calls of that day: the
+  overheat at the end of the player's turn, armour off a breach's overflow, the Badger's
+  hopper, the Stingray at tier one, the runner's `--rows` and `--module`, and the keyword
+  line-up proposal. Merge it into main once Ryan has read the chat.
 
 ## Pages
 
@@ -55,16 +59,26 @@ goes into this file in the same commit as its first publish.
 
 ## Where things stand
 
-- The docs were rebuilt on 10 October: `docs/rules.md` is new and states the rules; the bible
-  is decisions and why, 538 KB down to 133 KB; shown text in the vocabulary and two modules
-  now matches the rules. Ryan reads `docs/rules.md` once, then a fresh session starts here.
-- Built, waiting on Ryan's play: the 10 October weapon rules, the modules (harness only), the
+- 11 October (this branch): Ryan's answers to the open questions of the 10 October session,
+  in chat. Built: the overheat burns at the end of the player's turn (a withdrawal too; a
+  foe's heat waits on the gauge for the next turn), armour comes off a breach's overflow, the
+  Badger's hopper (the claw fills a load a foe, the fragmenter fires three at +5: greedy 62 to
+  69 on the lone Badger, random unchanged), the Stingray at tier one, the runner's `--rows` and
+  `--module`. Measured, in the bible: the Faraday Hull's levers (the discharge is the larger),
+  the Booster and the Databank even, danger close doing almost nothing, cracks (see the chat
+  of 11 October). Proposed, waiting on Ryan: `docs/keyword_lineup.md`, the Nemesis's new locked
+  fists, the Ram Frame's rule, the Sparrowhawk finisher's name, the Gravity Knuckles as a
+  blueprint with an area effect.
+- The docs were rebuilt on 10 October: `docs/rules.md` states the rules; the bible is
+  decisions and why. Ryan reads `docs/rules.md` once, then a fresh session starts here.
+- Built, waiting on Ryan's play: the 10 and 11 October rules, the modules (harness only), the
   content revision's components, the domains and the plaque.
-- Reports out of date: `docs/balance.md` and `docs/campaign_run.md` on this branch predate the
-  weapon rules; rerun after the stock pass, with module rows.
-- Decided, not built: the shared basic kit and its stock pass, tags on components, heat from
-  foes only through debuffs, the Headhunter's successor on the Sparrowhawk. The bible's
-  section 12 lists the questions only Ryan can settle.
+- Reports out of date: `docs/balance.md` and `docs/campaign_run.md` predate the weapon rules;
+  rerun after the stock pass. Scratch reads at 50 seeds (11 October) are in the bible's rows.
+- Decided, not built: the shared basic kit and its stock pass (the twists with it), tags on
+  components, heat from foes only through debuffs, the Headhunter's successor on the
+  Sparrowhawk, the Gravity Knuckles as a blueprint. The bible's section 12 lists the
+  questions only Ryan can settle.
 - Foe art: every foe and hero is cut from Ryan's picks at 72x96 (massive 96x144, chibis 36x48),
   drawn on whole device pixels with a gentle sharpen; the style is fixed in words in the bible's
   enemy art row (painterly, small heads, battle poses, the prompt anchored on SNES Final Fantasy IV
