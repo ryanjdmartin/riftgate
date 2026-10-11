@@ -61,5 +61,10 @@ goes into this file in the same commit as its first publish.
 - Decided, not built: the shared basic kit and its stock pass, tags on components, heat from
   foes only through debuffs, the Headhunter's successor on the Sparrowhawk. The bible's
   section 12 lists the questions only Ryan can settle.
+- Foe art: every foe and hero is cut from Ryan's picks at 72x96 (massive 96x144, chibis 36x48),
+  drawn on whole device pixels with a gentle sharpen; the style is fixed in words in the bible's
+  enemy art row (painterly, small heads, battle poses, the prompt anchored on SNES Final Fantasy IV
+  to VI). Ryan is picking on the phone picker (two notes in so far, on the Goblin); the takes pass
+  for the other 23 waits on his go.
 - Known gaps: Rally's Kindled is +10 at once, so foes acting after the rallier hit above their
   shown intent; Jenny's foe-down lines are keyed by the retired families.

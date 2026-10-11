@@ -71,6 +71,7 @@ bible (section 12). "Discuss first" means a proposal in chat before code.
 - [ ] Ryan's touch-ups on the picked foes (missing arms, weapons through hands) on the sources in `tools/foeforge/picks`, recut with `forge.py cut` and the options `picks.json` records (on main)
 - [ ] Judge the 72x96 foes on the phone (the frame, the whole-pixel slot, the sharpen's strength), then recut every pick at the strength chosen
 - [ ] The foe picker on the phone: a session reads the `picks` collection and cuts the new picks
+- [ ] Battle-pose takes for the other 23 foes and heroes, on Ryan's go (he called the Goblin, Revenant and Cockatrice takes workable, 9 October): four takes each in `design.variants` (costume and pose over the same anatomy, colour pinned, a small head on humanoids, never "facing the party"), `forge.py generate <foe> --variants --tag takes`, then `forge.py phone --tags takesD takes` and republish the picker
 - [ ] The four bleeds for the flattened ground
 - [ ] The hangar as a model; a licensed icon set (game-icons.net, CC BY) in place of the line-drawn glyphs, in one pass
 - [ ] Each component class's size per machine on a refit (a pin's `scale` in `models_low.py`); the Armadillo's Lockdown Shutters made real, if Ryan takes it up
