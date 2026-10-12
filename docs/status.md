@@ -33,7 +33,7 @@ by URL (read first). Databases are reachable only from the personal account. A p
 goes into this file in the same commit as its first publish.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change (v0.112).
+  `docs/design-bible.html` after every change (v0.113).
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s map (which leaves out `content/modules.json`: add it).
   Stale since 9 October. After Ryan edits on its Content tab: pull `edits` with ArtifactData,
@@ -62,10 +62,11 @@ goes into this file in the same commit as its first publish.
   content revision's components, the domains and the plaque.
 - Reports out of date: `docs/balance.md` and `docs/campaign_run.md` on this branch predate the
   weapon rules; rerun after the stock pass, with module rows.
-- Proposed, waiting on Ryan (11 October): four more Arsenal chassis for the register the
-  domains left to the Council (medieval, demonic, eldritch, sinister), in
-  `docs/arsenal_proposal.md` with the holes in the direction; nothing in content or the bible
-  until he moves them.
+- The Arsenal's register (12 October, bible v0.113): the occult is the Council's; its machines
+  are twisted by it, never merged (mechanical, CARE-piloted, no mind of their own); demonic in
+  look, liturgical in word; a passive may break a rule as a one-off. Four chassis on that frame
+  wait on Ryan in `docs/arsenal_proposal.md` (Misharu and the Onryō reworked off Overcharged on
+  his notes); nothing in content until he moves them.
 - Decided, not built: the shared basic kit and its stock pass, tags on components, heat from
   foes only through debuffs, the Headhunter's successor on the Sparrowhawk. The bible's
   section 12 lists the questions only Ryan can settle.

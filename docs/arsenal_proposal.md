@@ -1,125 +1,117 @@
 # The Arsenal's new chassis
 
-A pitch of 11 October 2026, on Ryan's call that day: more Arsenal chassis, "medieval, demonic,
-eldritch, sinister", since the enemy's move to the JRPG domains left the demonic, occult and
-eldritch register to the Council and the Arsenal alone. Everything below is a proposal: names,
-numbers, kit and looks are Ryan's to move against his own notes before any of it lands in
-`content/` or the bible, and the holes in section 3 are for discussion first (CLAUDE.md).
+A pitch of 11 October 2026 on Ryan's call that day (more Arsenal chassis: medieval, demonic,
+eldritch, sinister), revised 12 October on his notes: Misharu and the Onryō leave Overcharged
+for archetypes of their own, Mastema loses its cauldron, Minos flips every foe it reaches. The
+frame those notes settled is in the bible (v0.113, sections 1 and 7). Everything below is still
+a proposal: names, numbers, kit and looks are Ryan's to move before any of it lands in
+`content/`, and the holes in section 3 are for discussion first (CLAUDE.md).
 
-## 1. The frame
+## 1. The frame, as decided
 
-**The occult is ours now.** The naming line had two sides: Earth's animals for us, myth and
-religion for the invasion, the Arsenal the deliberate exception. The domains moved the invasion
-to the JRPG bestiary (the Gel, the Treant, the Bone Dragon), so the line has three sides now:
-Earth's animals for the four city makers, the genre's high fantasy for the invasion, and the
-occult, the demonic and the eldritch, for the Council and its house alone. The Arsenal is the
-only place the player meets the dark, and every new Arsenal machine is where it shows.
-
-**Held to the tone row.** Doom and Space Marine, over the top and played straight, never
-grimdark. The demonic and the eldritch live in silhouette, posture, motion, glow and the
-manual's liturgy: plate, black chrome and red glass, horns of steel, limbs too long or too many,
-a stillness that is wrong. Never flesh, gore, organs or skulls, and never Evangelion: these are
-serviced machines with pilots in them, and the creepiness is how the Council chose to build them.
-
-**Named for what punishes.** Nemesis and Ammit set the through-line: a figure of myth who stands
-for justice, vengeance or retribution, never war. The new register widens the bench, not the
-rule: Hell's wardens, avenging spirits and angels of punishment all serve justice in their own
-myths, so a player who looks a name up finds the Council's righteousness and Hell in the same
-entry. Spread across cultures, since Egypt and Greece would swallow the list: Mesopotamia, the
-Hebrew apocrypha, Dante, Japan. Two of the four are Ryan's own candidates from the old bible
-(Misaru and Onryō, "next to look at").
+- **The occult is the Council's.** The domains moved the invasion to the genre's high fantasy,
+  so the demonic and the eldritch belong to the Council and its Arsenal alone: the one place the
+  player meets the dark.
+- **Twisted, never merged.** Each Arsenal machine is a battlemech with a sealed occult power
+  source where a fusion reactor would be, drawn by an engineer who has had things whispering in
+  his ear. Mechanical only, no flesh and no gore. It may borrow another line's frame, twisted;
+  it never has a mind of its own, and CARE pilots fly it. Grimdark is the Council's and the
+  Arsenal's, to be taken as ironic dark humour; Evangelion's demon-mecha is too far.
+- **Loud in look, liturgical in word.** Demonic in look and effect, liturgical in what the
+  player reads: the manual never says demon. Names keep the through-line, figures who punish
+  from any culture, and Hell is what a player finds behind them. Shown names stay sanctified on
+  the face.
+- **A passive may break a rule as a one-off.** That is the point of one.
 
 **One for each word, one for each domain.** Each machine leads with one of the four words and
 answers one domain's question, so each is the right pick somewhere and a slower fight elsewhere
-(mismatch costs time, never ability).
+(mismatch costs time, never ability). None of the four scales on Overcharged.
 
 | Word | Machine | Tier, size, moves | Its idea | Answers |
 |---|---|---|---|---|
-| Medieval | **Misaru**, the knight | 2, heavy, walker | Its shield raised is its arm strengthened | The Peak: shields for the telegraph |
+| Medieval | **Misharu**, the judge | 2, heavy, walker | A foe that breaks a shield is condemned for what it broke | The Peak: shields for the telegraph |
 | Demonic | **Mastema**, the gargoyle | 3, heavy, flyer | Fire passes from the dead to their neighbours | The Meadow: numbers that swarm |
-| Eldritch | **Minos**, the hanged saint | 3, medium, hover | Its indirect blows drag the back rank forward | The Marsh: the healer behind |
-| Sinister | **Onryō**, the crawler | 2, light, walker | Its allies' wounds are its strength | The Waste: damage no shield answers |
+| Eldritch | **Minos**, the corrupted frame | 3, medium, hover | Every foe it reaches changes rank | The Marsh: the healer behind |
+| Sinister | **Onryō**, the crawler | 2, medium, walker | It takes its allies' wounds and repays them | The Waste: damage no shield answers |
 
-**Across the other makers' lines.** The Arsenal builds "bipedal-ish walkers first, some large
-aircraft or hovercraft, always a little creepy; leg counts convert, legs ride on hoverjets,
-aircraft carry arms". So: a walker (the knight), its first large aircraft (a gargoyle with arms),
-its first hover (legs on hoverjets), and a walker whose arms and legs are the same limbs (the
-crawler). With the Nemesis and the Ammit that makes six: three at tier two, three at tier three,
-every size class but assault.
+With the Nemesis and the Ammit that makes six: three at tier two, three at tier three; a
+walker that judges, the Arsenal's first large aircraft, its first hover on legs, and a crawler.
 
 ## 2. The four
 
 Numbers are placeholders in the content's scale (player damage in fives; hull, shield and heat
 in tens). Stock is drawn from today's pool and is provisional until the stock pass places the
-basics. Codex and flavour are Ryan's.
+basics. Codex and flavour are Ryan's. Every passive below needs engine work (section 4).
 
-### Misaru, Arsenal Instrument II (medieval)
+### Misharu, Arsenal Instrument II (medieval: justice)
 
-- **Name.** Mīšaru, the Mesopotamian god of justice and equity: the most lawful name for the
-  most lawful-looking machine. Alternates: **Víðarr**, the silent Norse avenger; **Zhong Kui**,
-  the demon-queller of Tang legend, wronged in life and a hunter of ghosts after it. A hole:
-  Misaru reads like Mizaru, the see-no-evil monkey, which is the kind of name Aphelion's
-  primates take; Misharu, as the Akkadian is said, dodges it.
-- **The look.** A gothic knight, too tall and too narrow at the waist: fluted plate in black
-  chrome, red glass in the seams; a flat-topped great helm with a T-shaped visor slit lit red, a
-  sensor head (the cockpit rides in the chest); long tassets and pointed sabatons (poulaines); a
-  pavise as tall as its torso on the left forearm, ridged down the middle and carrying the
-  Council's seal; a halberd taller than the machine in the right hand, its axe blade and spike
-  edged in red glass. From above: the pavise a long slab on the left, the halberd's head forward
-  on the right, the helm's crest between. Mounts: hp_1 the right pauldron, hp_2 the left shoulder
-  behind the pavise's top edge, hp_3 a reliquary on the back.
-- **Character: at vigil.** Still, upright, ceremonial. Acts: sets the pavise's foot on the
-  ground and leans on it; raises the halberd in salute, its edge lighting; kneels on one knee
-  and rises; turns the helm slowly, the slit brightening as it looks. Under way: a measured
-  march, the pavise held before it, the halberd upright.
-- **Passive: Accolade Relay** (the accolade is the blow that makes a knight). *Gaining shield
-  Overcharges it.* `{"trigger": "on_shield_gain", "effect": "stack_status", "value":
-  "overcharged"}`, which the engine runs today: a stack for the skirmish, fading a stack a round,
-  and shield from any source fires it, an ally's too.
-- **Fixed.** The **Vigil Pavise**: shield 30, self only, Overshield, so it always stands shield up
-  and always feeds the relay; the only self overshield in the game. The **Interdict Halberd**:
-  Direct, flat 10, heat 5, Penetrate (tags Blade, Melee): a polearm reaching through the front
-  rank to the back of one column. An interdict is the Church's sentence; interdiction is fire
-  behind the lines.
-- **Stock, three hardpoints.** Oblation Ward, Proximity Klaxon, Plasma Arquebus: a second shield
-  that bleeds it, a lure that brings the blows onto the pavise, a gun.
+- **Name.** Mīšaru, the Mesopotamian god of justice and equity, who stands beside Shamash, the
+  god who handed Hammurabi his laws. Alternates: **Víðarr**, the silent Norse avenger;
+  **Zhong Kui**, the demon-queller of Tang legend.
+- **The look.** Unchanged: a gothic knight, too tall and too narrow at the waist, fluted black
+  chrome with red glass in the seams; a flat-topped great helm with a T-shaped slit lit red (a
+  sensor head; the cockpit rides in the chest); poulaines; a pavise as tall as its torso on the
+  left forearm, ridged and carrying the Council's seal; a halberd taller than the machine.
+  Mounts: hp_1 the right pauldron, hp_2 the left shoulder behind the pavise's top edge, hp_3 a
+  reliquary on the back. Character: at vigil (leans on the pavise, salutes with the halberd,
+  kneels and rises, turns the helm slowly).
+- **Passive: Assize Relay.** *A foe whose blow breaks a machine's shield is Condemned: at its
+  next action it takes as much as the shield it broke, past armour.* (The assizes were the
+  travelling courts of medieval England; on reflection, the Bloody Assizes.) Condemned is a new
+  debuff: a chip with its number, carried out with the foe's other ticks at the start of its
+  action, so a condemned foe can die before it strikes again; a second sentence adds to the
+  first. Any machine's shield counts, Misharu's own included.
+- **Why the shield.** Of Ryan's three triggers, a shield breaking is the one the player can
+  build toward: shields break most fights, every maker makes them, and a standing shield blocks
+  a whole blow, so the moment it goes is already the moment that matters. A blow that would
+  have wrecked an ally is rare and comes too late; a component breaking is rare and rides the
+  injury roll.
+- **Why it is no thorns.** The bible keeps retaliation a debuff, never thorns, because thorns
+  scale with the enemy's blows. The sentence scales with the shield the player raised: a fresh
+  40 broken by the golem's fist is 40 owed; the same shield chipped down to 10 by a swarm is
+  10. Against a boss it is at its best.
+- **Fixed.** The **Vigil Pavise**: shield 30, self only, Overshield, the only self overshield in
+  the game, so its own shield can stand high enough to make a heavy sentence. The **Interdict
+  Halberd**: Direct, flat 10, heat 5, Penetrate (tags Blade, Melee). An option if it needs a
+  hand of its own: the halberd carries out a Condemned foe's sentence at once.
+- **Stock, three hardpoints.** Oblation Ward, Proximity Klaxon, Plasma Arquebus: a big shield
+  for an ally, a lure that brings the blows onto the pavise, a gun.
 - **Numbers.** Hull 120, shield 40, move 20, heat 80, cooling 5, armour 10, field 20, two
   modules. A die of five.
-- **Build space.** Every shield is a blow: shields on its own die (each one costs a weapon),
-  allies who shield it (the Puffin's Backwash Ionizer passes the maximum; the Halo Shield; an
-  Arsenal ally's Oblation Ward), modules that stand shield up (the Spall Liner on hull damage,
-  the Boundary-layer Bleed on heat), and weapons that carry the stacks onto more than one blow
-  (the halberd's Penetrate, the Maxigun's strikes). A full shield gains nothing and foes aim at
-  exposed machines, so the knight wants to be struck: the lure is its other half.
-- **Its cost.** Slow and short of reach; when nothing strikes it, only the pavise feeds it.
-- **Answers the Peak.** It raises shield before the telegraphed blow and strikes harder for it.
+- **Build space.** Every shield on the team is a trap: big ones on allies (the Oblation Ward,
+  the Puffin's overshield, the Halo Shield) make heavy sentences; fresh ones raised before a
+  telegraphed blow make the heaviest; modules that stand shield up (the Spall Liner, the
+  Boundary-layer Bleed) set more of them. Kill order: a condemned foe may die to its sentence,
+  so the blows go elsewhere. Condemned is a debuff the team put on a foe, so it would count for
+  the Susceptibility Tensor and the Baboon's Paradox.
+- **Its cost.** Slow, little damage of its own, and nothing to judge while shields hold.
+- **Answers the Peak.** A fresh shield before the Drake's breath or the golem's fist condemns
+  the one that breaks it.
 
-### Mastema, Arsenal Instrument XI (demonic)
+### Mastema, Arsenal Instrument XI (demonic: everything burns)
 
-- **Name.** Mastema, the chief of the spirits in the Book of Jubilees, who asks to keep a tenth
-  of them under him because great is the wickedness of men, and whose powers strike down
-  Egypt's firstborn: God's own executioner with demons at his command, which is the Council in
-  one name. Alternate: **Alastor**, the Greek avenging spirit that demonology made Hell's chief
+- **Name.** Mastema, the chief of the spirits in the Book of Jubilees, who keeps a tenth of them
+  under him because great is the wickedness of men: God's executioner with demons at his
+  command. Alternate: **Alastor**, the Greek avenging spirit that demonology made Hell's chief
   executioner.
-- **The look.** A gargoyle off its cathedral, the Arsenal's first large aircraft: a hunched
-  torso and a horned head with a long jaw; two broad vanes of black chrome panels like a bat's
-  wings, ribbed in red glass, that tilt and vector and never flap; legs drawn up beneath in a
-  gargoyle's crouch; two long arms carrying the Unction Cauldron before its chest, its mouth
-  glowing, seen from above past the head. Boosters under the wing roots, each exhaust one glow,
-  pale at the centre and deep red at the rim. The homage: the Stryge, Viollet-le-Duc's chimera
-  on Notre-Dame. Mounts: hp_1 and hp_2 on the vanes' roots, hp_3 and hp_4 a pair on the
-  shoulders.
-- **Character: a gargoyle that has left its perch.** Acts: spreads its vanes wide and holds;
-  tips the cauldron and its mouth flares with embers; hunches with the vanes folded round it,
-  then opens; lifts the cauldron and peers down over its lip. Under way: heavy and wide,
-  banking, the vanes vectoring, the cauldron swinging a little in its hands.
+- **The look.** A creepy hovering thing: a hunched torso and a horned head with a long jaw, two
+  broad bat wings of black chrome panels ribbed in red glass that tilt and vector and never
+  flap, two long arms ending in claws, and nothing below the ribs but a tapering keel: no legs,
+  no feet. Boosters under the wing roots, each exhaust one glow, pale at the centre and deep
+  red at the rim. The homage: the Stryge, Viollet-le-Duc's chimera on Notre-Dame, off its
+  perch. Mounts: hp_1 and hp_2 on the wing roots, hp_3 and hp_4 a pair on the shoulders.
+- **Character: a thing on a wire.** It rides the flyer's slow swell and hangs too still between
+  acts. Acts: spreads its wings and holds; flexes its claws, embers spitting from the
+  forearms; wraps its wings round itself like a cloak, then opens; tilts its head down along
+  its arms. Under way: heavy and wide, banking, the wings vectoring, the arms trailing.
 - **Passive: Brimstone Bellows.** *While it fights, a Burning foe that dies passes its Burning
-  to the foes beside it.* Not built: one engine piece, a death handing its stacks to its
-  neighbours in the rank (the passive carries `"status": "planned"` until then).
-- **Fixed.** The **Unction Cauldron**: Indirect, flat 10, heat 15, Burn and Spread (tag Flame).
-  Extreme unction is the last anointing; this one is poured burning from above, and seeds three
-  foes at once. On the front rank it splashes as any indirect fire does, so pouring on the front
-  costs it shield.
+  to the foes beside it.* One engine piece: a death handing its stacks to its neighbours in the
+  rank.
+- **Fixed.** No cauldron. The seed moves into the arms: the **Aspergillum**, Indirect, flat 10,
+  heat 15, Burn and Spread (tag Flame), sprayers in the forearms with no prop to hold. An
+  aspergillum sprinkles holy water over the congregation, and "holy water sprinkler" was an old
+  nickname for a spiked mace; this one sprinkles a rank with fire. The other way:
+  no fixed part at all, five hardpoints, and the burn left to the stock and the team.
 - **Stock, four hardpoints.** Meteor Artillery, Blazethrower, Incendiary Shells, Entropy
   Condenser: three burners and a vent.
 - **Numbers.** Hull 120, shield 40, move 30 (the slowest flyer), heat 100, cooling 5, armour 0,
@@ -127,179 +119,175 @@ basics. Codex and flavour are Ryan's.
 - **Build space.** Every burn on the team spreads, not only its own: the Stingray's deepened
   stacks, the Aurora Lattice's Primed, the Solar Flare Array, the Incendiary Shells. Kill order
   is the decision: the burning foe in the middle of a rank is worth more dead than the one at
-  its end. A Burning tick that kills spreads too, so a rank can catch during the enemy's turn.
+  its end, and a Burning tick that kills spreads too, so a rank can catch in the enemy's turn.
 - **Its cost.** Nothing to spread to against a lone boss; hot, unarmoured and slow for a flyer.
 - **Answers the Meadow.** A crowded rank of goblins is fuel.
-- **Why not "every blow burns".** It would run today (`on_attack` `add_burn`), but it is the
-  Aurora Lattice's Primed made permanent, the kind of copy that pulled the Catalyzer Matrix, and
-  the engine lands a passive's extra burn on the primary target only.
 
-### Minos, Arsenal Instrument XIII (eldritch)
+### Minos, Arsenal Instrument XIII (eldritch: the ranks turned)
 
 - **Name.** Minos as Dante drew him at the mouth of the second circle: the judge who hears each
-  soul and sends it to its place by coiling his tail, which is what this machine does to the
-  enemy's ranks. Alternates: **Gozu**, Ox-Head, the warden of Hell's gate who drags the dead
-  before their judge; **Rashnu**, the Zoroastrian judge whose scales weigh the soul at the
-  bridge.
-- **The look.** A hanged saint, the Arsenal's first hover and its legs on hoverjets: a gaunt
-  figure in a long robe of overlapping plates ending in a hem off the ground; below the hem two
-  thin legs hang straight, feet pointed down, a hoverjet glowing red in each sole; arms long
-  enough to reach the hem, the left hand open on long fingers, the right holding the chain of
-  the Gibbet Hook; a narrow hood with no face and a ring of small red glass eyes round its
-  crown. From above: the round hem, the ring of eyes, the long arms. Mounts: hp_1 and hp_2 a
-  pair rising from the shoulders like a cowl, hp_3 and hp_4 a pair from the robe's front.
-- **Character: a body on a gibbet.** It hangs and sways instead of balancing like a platform on
-  water (a new hover idle). Acts: raises both arms slowly from its sides, palms out, and lowers
-  them; casts the hook a little way out and reels it in, the chain swinging; sinks until its
-  toes almost touch the ground and rises again; tilts its head too far to one side and holds it
-  there. Under way: it drifts with its legs trailing behind it, never banking. On water it
-  skims (a hover's water is fast), which is a codex line waiting for Ryan.
-- **Passive: Penance Windlass.** *Its indirect blows drag: a back-rank foe struck trades places
-  with the foe in front of it.* A foe the blow leaves standing steps forward; with nobody in
-  front it steps into the empty slot; intents and targets go with the foes; a massive foe has
-  no back rank to drag from. Not built: the swap in the skirmish, its forecast and drawing, the
-  save, and the greedy bot learning to value it (the bot reads one spend's trade, and a drag
-  pays on the team's next spends).
-- **Fixed.** The **Gibbet Hook**: Indirect, flat 10, heat 5, no keyword. The drag is the point;
-  Lure is the lever if it needs more, the hooked foe turning on the hover that hooked it.
+  soul and sends it to its place, which is what this machine does to every foe it touches.
+  Alternates: **Gozu**, Ox-Head, the warden of Hell's gate who drags the dead before their
+  judge; **Rashnu**, the Zoroastrian judge whose scales weigh the soul at the bridge.
+- **The look.** A corrupted Aile Strike, or an Evangelion frame: tall, thin and long-limbed, a
+  narrow waist under hunched shoulders; digitigrade legs on hoverjets, clawed feet with the jets
+  in the heels; an Aile-style pack on the back with two short swept wings and twin thrusters;
+  the V-fin crest grown into two horns, twin eyes in red glass. The corruption is mechanical:
+  one wing notched shorter than the other, seams lit red like cracks, the crest bent. The
+  Gibbet Hook coils on the right forearm as a chain whip. From above: the pack's two short
+  wings and the horned crest. Mounts: hp_1 and hp_2 a pair of pods beside the thrusters, hp_3
+  the left forearm (where the Strike carries its shield), hp_4 the right hip.
+- **Character: a predator at rest.** Acts: unfolds the pack's wings and flares the thrusters;
+  drops into a crouch on its digitigrade legs and rises; uncoils the whip and lets it hang,
+  then reels it in; turns its head, the crest catching the light, and holds. Under way: it
+  leans into its travel with its legs drawn back, the thrusters flaring at each start, with the
+  weight every machine moves with.
+- **Passive: Catherine Wheel.** *Every foe its weapons reach and leave standing changes rank,
+  trading places with whoever stands there.* Not optional. The wheel is the saint's emblem and
+  medieval justice's breaking wheel, and Fortune's wheel turns the first to the last. The
+  rules it needs: a foe changes rank once a spend, after the spend resolves, however many
+  strikes reached it; Spread turns three columns; Penetrate reaches both ranks of a column, so
+  the two change together and trade places; a lone foe steps into the empty slot; a massive
+  foe fills its column and never moves; intents and targets go with the foes. It breaks "the
+  ranks hold" for one machine, which is the point.
+- **Fixed.** The **Gibbet Hook**: Direct, flat 10, heat 5 (tag Melee), a chain whip. Struck
+  with it, a front-rank foe is cast back and the foe behind it comes forward.
 - **Stock, four hardpoints.** Suppression Battery, Shotfire Rack, Plasma Arquebus, Entropy
-  Condenser: drag and stun, drag and hit, a gun for what it dragged, a vent.
+  Condenser: Indirect fire reaches the back rank and brings it forward stunned or wounded, a gun
+  for what arrives, a vent.
 - **Numbers.** Hull 90, shield 40, move 30, heat 80, cooling 5, armour 0, field 25, two
   modules. A die of five.
-- **Build space.** Every indirect weapon is a hook, and its rider decides what arrives: a
-  suppressed healer, a burning caster, a disrupted Drake. The team's Direct weapons are the
-  payoff, so it rewards ordering the round's spends. The foe sent back is out of Direct reach,
-  which is a cost or a shelter.
-- **Its cost.** Little damage of its own, and no area.
-- **Answers the Marsh.** The White Mage and the Ghost are dragged into the front rank's fire.
+- **What the team works around.** Minos's turn is the round's hinge. First, it brings the
+  healer, the caster or the Drake into the front rank's fire for every Direct gun on the team;
+  last, it sends a wounded front-liner behind its fellows, out of their reach. Spillover finds a
+  different foe behind, the front rank acts first so the order of the enemy's turn changes, and
+  a back slot it empties fills from the reinforcements at the round's end. It shelters what it
+  sends back as surely as it exposes what it brings forward.
+- **Its cost.** Little damage of its own, nothing to turn against a boss, and a turn misplayed
+  undoes the team's.
+- **Answers the Marsh.** The White Mage and the Ghost come forward into the guns.
 
-### Onryō, Arsenal Instrument IX (sinister)
+### Onryō, Arsenal Instrument IX (sinister: retribution)
 
 - **Name.** The onryō, the Japanese spirit that comes back to avenge a wrong. Alternate:
   **Hannya**, the Noh mask of a woman turned demon by jealousy and resentment. Spelling: the
   Rajdhani and Barlow faces carry ō and Share Tech Mono does not, so content may want Onryo.
-- **The look.** Wrong in how it moves: a long thin body slung low between four long limbs, arms
-  and legs alike, every joint bending the wrong way for a person; a smooth mask with two red
-  slits for a sensor head (the cockpit rides in the body), under a fall of black cable hanging
-  forward like hair; the Misericorde folded along the right forearm, katar-style. From above: an
-  X of limbs, the cables spread over the front. A knowing homage to the crawling ghosts of
-  Japanese horror, the shape and the move. Mounts: hp_1, hp_2 and hp_3 along the spine,
-  pointing forward.
-- **Character: still, then sudden.** Acts: freezes, then twitches its mask to one side and back;
-  rears onto its hind limbs, holds, and drops; drags itself a step forward on its arms and back;
-  unfolds the Misericorde and folds it away. Under way: an offbeat crawl, limbs out of step, a
-  pause every few steps.
-- **Passive: Martyrology Engine.** *An ally taking hull damage Overcharges it.* A martyrology is
-  the Church's register of martyrs and their sufferings; this one keeps the team's. Not built:
-  one trigger, an ally's hull damage, fired on every other machine in the fight (blows, bites
-  and overheats count, as for every hull-damage passive; its own wounds never do, so nothing
-  feeds itself).
-- **Fixed.** The **Misericorde**: Direct, flat 10, heat 5, Rapid (tags Blade, Melee). The mercy
-  dagger, for the stroke that ends a wounded knight: mercy on the face, the killing blow on
-  reflection. Rapid gives it the turn back, so its stacks ride on two blows in a round.
-- **Stock, three hardpoints.** Maxigun, Blazethrower, Laminar Deflector: three strikes for every
-  stack to land on, a burner, a shield it badly needs.
-- **Numbers.** Hull 70, shield 30, move 40, heat 60, cooling 5, armour 0, field 25, two modules.
-  A die of four.
-- **Build space.** The team is its kit. The Nemesis wants hull damage and makes it; an ally on
-  the Tithe Coupling or carrying volatile kit pays hull on every spend; the Oblation Ward bleeds
-  whoever raises it; a lure puts the blows on an ally that can afford the hull. Sinister on
-  reflection: the Council's machine profits from CARE's wounds.
-- **Its cost.** Light and fragile, and its passive is dead alone (the Puffin's case), so the
-  runner's solo row will read it weak, by design. It can spike behind a swarm; one stack an ally
-  a round is the cap if it does.
-- **Answers the Waste.** The Needlers breach past shields to hull, and every breach is a stack.
+- **The look.** Unchanged and a size up: a long thin body slung low between four long limbs,
+  every joint bending the wrong way for a person; a smooth mask with two red slits for a sensor
+  head (the cockpit rides in the body) under a fall of black cable hanging forward like hair;
+  the Misericorde folded along the right forearm, katar-style. A knowing homage to the crawling
+  ghosts of Japanese horror. Mounts: hp_1, hp_2 and hp_3 along the spine, pointing forward.
+  Character: still, then sudden (twitches its mask, rears and drops, drags itself a step on its
+  arms, unfolds the blade); under way, an offbeat crawl with a pause every few steps.
+- **Passive: Martyrology Engine.** *It takes the hull damage foes deal its allies, straight to
+  its own hull, and the striker carries a Grudge of that much: the Onryō's next blow on that
+  foe deals the Grudge more.* A martyrology is the Church's register of martyrs and their
+  sufferings: it takes the wounds and keeps the record of who owes them. The rules it needs:
+  the ally's shield and armour come first, and only what would reach its hull moves; the moved
+  wound lands past the Onryō's shield and armour and never injures, as a bite does; Grudge is a
+  new debuff, a chip with its number on the striker, spent by the Onryō's next blow on it, and
+  grudges on one foe add up.
+- **What it answers Ryan's "for...?" with.** The wound is repaid to the one that dealt it, by
+  the Onryō's own hand: retribution that is personal, aimed and spent, where Misharu's sentence
+  is the law's and lands by itself.
+- **Fixed.** The **Misericorde**: Direct, flat 10, heat 5, Rapid (tags Blade, Melee), the
+  mercy dagger for the stroke that ends a wounded knight. Rapid gives it the turn back, so it
+  can call in two grudges in a round.
+- **Stock, three hardpoints.** Meteor Artillery, Plasma Arquebus, Laminar Deflector: Indirect
+  fire to reach a striker in the back rank, a gun, a shield against the blows aimed at it.
+- **Numbers.** Hull 150, shield 20, move 30, heat 60, cooling 5, armour 0, field 20, two
+  modules. A die of four. Medium now: it carries the team's wounds.
+- **Build space.** Its hull is the team's: plating modules (Ablative Plating, the Ram Frame)
+  are worth more on it than anywhere. Its weapons want one big blow to call in a big grudge, the
+  Arsenal's big single hits, and reach, since the strikers stand in both ranks (Indirect fire,
+  or Minos bringing them forward). Its allies change: a glass cannon can stand where it likes,
+  and a lure on a tough ally draws the blows whose wounds it will owe back.
+- **Its cost.** Every wound it saves comes off its own hull, so it wrecks when the wounds
+  outrun it, and it starves the allies whose passives read hull damage (the Nemesis's Crucible,
+  the Grievance Reliquary). Half the wound is the lever if it proves too much.
+- **Answers the Waste.** The Needlers' breaches go past every shield; it takes them, and every
+  one is owed back.
 
-## 3. Holes in the direction
+## 3. Holes for discussion
 
-1. **The tone.** Demonic and eldritch drift two ways the bible forbids: into grimdark (gore,
-   skulls, cults) and into Evangelion (flesh in the armour). Section 1 holds them at plate and
-   silhouette; worth stating in the bible's tone rows so every later Arsenal brief inherits it.
-2. **How loud the Council is.** A demonic machine says something about the Council, and the
-   lore keeps open, on purpose, whether it had a hand in the rifts. If the shown text names
-   demons, the Council's nature becomes the premise instead of a reveal. Proposed: demonic in
-   look and effect, liturgical in what the player reads. The manual never says demon; it says
-   devotion, penance, judgement. The names keep the justice through-line, and Hell is what a
-   player finds behind them.
-3. **The names rule.** Section 1 keeps "something that punishes" and widens the bench. The
-   alternative is any demon or eldritch being (Moloch, Baal, the sins), which loses the
-   Council's self-image. The sins vein (Hubris) stays open beside it either way.
-4. **The component names.** The bible asks whether "sanctified on the face" still governs the
-   Arsenal's components, with hellfire on its word list. This direction answers no: they may be
-   demonic on the face. These four still lean on the church and the gallows (Vigil, Interdict,
-   Unction, Accolade, Penance, Martyrology, Misericorde, Gibbet) with one Brimstone, because the
-   double meaning is the Arsenal's joke; the call is Ryan's.
-5. **Ranks hold.** The bible decides that the enemy's ranks hold. Minos breaks it for one
-   machine: moving foes becomes a player power. Editing the rules is the eldritch fantasy (the
-   Chorus did it from the other side), but it is a decided line.
-6. **A fifteenth keyword.** A new verb belongs on a component, so the drag could be a keyword
-   (Drag) that Minos's passive grants its indirect weapons, which would also serve the Gravity
-   Knuckles' open "pull a back-rank foe forward". The count already stands at fourteen against a
-   recommended ten, so this pitch keeps the drag on Minos's passive alone; if it becomes a
-   keyword, the Knuckles keep the other gravity option (half damage to the foes beside the
-   target).
-7. **Overcharged as the Arsenal's coin.** Two of the four mint it, beside the Grievance
-   Reliquary, Devour and the Overcharge Coil. A family trait, or sameness? The Onryō's
-   alternative is a vendetta: the foe that wounded an ally takes double from its next blow,
-   which needs a new mark and a chip.
-8. **The Arsenal's shelf.** Six machines over six Arsenal components (the Plasma Arquebus,
+1. **Minos's flip, written out.** Section 2 settles what Ryan's note leaves open: once a spend,
+   after it resolves; Spread, Penetrate, a lone foe, a massive one. Check those calls before the
+   engine has them.
+2. **Two new foe chips.** Condemned and Grudge each carry a number on a foe's chip row, beside
+   Burning and Paradox. A crowded row on a phone is the cost; one glyph each, the number in it.
+3. **The interpose, unparked.** The bible parks a draw by an ally until a support role needs
+   one, and Guard was built and taken out on 9 October. The Onryō is that role, but it moves only
+   the hull damage after the ally's own shield and armour: the foes' aims, the intents and the
+   forecast stay as they are. The Warrior's planned Cover is the same piece on the foe side.
+4. **An ally that cannot be injured.** While the Onryō stands, its allies take no hull damage
+   from blows, so no injuries: the one permanent cost of a bad fight, lifted from everyone but
+   the Onryō. Strong on purpose; the half-wound lever and its own hull are the answers.
+5. **Mastema's seed.** The Aspergillum keeps a guaranteed burn in its arms; no fixed part leaves
+   five hardpoints and a passive that idles without burners on the team.
+6. **Minos hovers.** Hover keeps the Arsenal's ways of moving apart (Mastema flies) and its
+   legs on hoverjets, the Arsenal's rule for hovers; the winged pack could make it a flyer.
+7. **Every passive needs engine work now.** The first Misharu's ran on today's engine; none of
+   these does.
+8. **Hellfire.** The loudness rule keeps shown names sanctified on the face; hellfire is on the
+   Arsenal's word list, says demon outright, and the Summoner's move wears it. Drop it from the
+   list? (Bible section 12.)
+9. **The Arsenal's shelf.** Six machines over six Arsenal components (the Plasma Arquebus,
    Blazethrower, Meteor Artillery, Entropy Condenser, Oblation Ward and Retribution Thurible)
    leaves most of their stock borrowed. The stock pass may want two or three more Arsenal parts:
-   a big single hit, a demonic shield.
-9. **The trickle.** Six of seventeen chassis late-gated (the Arsenal has no tier one) changes
-   nothing early, since the tender is the city makers'. Later, the capital's trickle offers a
-   choice between machines rather than more of them.
+   a big single hit for the Onryō, a heavy shield for Misharu's sentences.
 
 ## 4. What it costs
 
-- **Content.** Four chassis and five fixed components, the three unbuilt passives marked
-  planned, so the machines run without their passives as soon as they land. Misaru's runs today.
-- **Engine, three pieces.** Burning passed on at a death (small: one hook at a foe's death, the
-  neighbours in its rank). An ally's hull damage as a trigger (small: the hull-damage event fired
-  on every other machine in the fight). The drag (medium: the slot swap, its forecast and its
-  drawing, the save, the greedy bot's valuation).
+- **Content.** Four chassis and five fixed components, the passives marked planned until the
+  engine runs them, so the machines run without their passives as soon as they land.
+- **Engine, in rising size.** Burning passed on at a death (small: Mastema). A shield broken by
+  a foe's blow as an event, and Condemned (small: Misharu). An ally's hull damage moved to the
+  Onryō, shared with the Warrior's Cover, and Grudge, a numbered debuff one machine's blow spends
+  (medium). The flip: slot moves after a spend, its forecast and drawing, the save, and the
+  greedy bot, which reads one spend's trade and must learn the round's order (medium).
 - **Models.** Four lowforge functions with joints, four acts each and a gait, each a session or
-  more of passes on Ryan's notes (the Nemesis took three). Two are new kinds: a heavy flyer, and
-  legs on hoverjets with a hanging idle in place of a hovercraft's balance. The crawler is
-  nearest the Ammit's rig. Each dies in the Arsenal's flames over a ghost, as built.
+  more of passes on Ryan's notes (the Nemesis took three). New kinds: a legless winged flyer, and
+  digitigrade legs on hoverjets under a winged pack. The crawler is nearest the Ammit's rig.
+  Each dies in the Arsenal's flames over a ghost, as built.
 - **The runner.** Four new rows, and an Arsenal team row becomes possible (each maker's first
-  three in content order); it should hold the Onryō, whose passive needs company.
+  three in content order). The Onryō and Misharu read weak alone by design: the Onryō has no
+  allies to cover, and Misharu's own shield is the only one to break.
 
-## 5. What changes in the records once confirmed
+## 5. The records
 
-- The bible's tone rows: the guardrail in hole 1.
-- The bible's makers table and its nickname row: the Arsenal's builds (a creepy flyer, legs on
-  hoverjets), its names, and the reason myth is the Arsenal's alone (the invasion is the JRPG
-  bestiary now; the occult is the Council's).
-- The component names row: the Arsenal's "medieval and slightly occult" becomes "medieval,
-  demonic and eldritch", and section 12's question on "sanctified on the face" is struck.
-- Section 7's chassis and motion tables: the four rows.
-- `content/chassis.json`: the Arsenal maker's style line.
-- The hangar page's Names and Rules tabs: the Arsenal plate, and the stale Rules line naming the
-  retired foes (Ghoul, Necromancer, Pit Lord, the Maw).
-- `docs/rules.md`: thirteen chassis become seventeen, and the drag if it lands.
+- **Recorded on 12 October (bible v0.113):** the occult as the Council's register; the
+  Arsenal twisted by the occult, never merged with it (mechanical only, a sealed power source,
+  the whispering engineer, CARE pilots, no mind of its own, another line's frame borrowed
+  twisted); grimdark as the Council's ironic dark humour; the loudness rule; Arsenal names as
+  figures who punish; shown names sanctified on the face; a passive may break a rule as a
+  one-off.
+- **Once the chassis are confirmed:** section 7's chassis and motion tables; the Arsenal maker's
+  style line in `content/chassis.json`; `docs/rules.md` (seventeen chassis, Condemned, Grudge,
+  the flip); the vocabulary's new terms; the hangar page's Arsenal plate and its stale Rules
+  line naming the retired foes (Ghoul, Necromancer, Pit Lord, the Maw).
 
 ## 6. The bench
 
-Ideas set aside for these four, kept in case one is swapped:
+Set aside, kept in case one is swapped:
 
-- **The bell tower** (medieval): an assault walker with a bell caged on its back; its toll is a
-  big indirect blow with Shock and Spread, a whole rank set up for the team's doubled blows.
-- **Hubris** (the sins vein, and the Nemesis's own pairing): pride before the fall, strongest
-  whole and weaker as it is hurt; hard to keep from binary.
-- **The fate-edited die** (eldritch): its blanks reroll free until they show a component,
-  redundancy against the Waste's theft; the hole is that a stripped die degenerates to one entry.
-- **A veil** (eldritch): equipment that takes it out of the world for a round, waiting on
-  Phased's design line (discuss first, bible section 12).
-- **The sin-eater** (support): takes its allies' heat onto itself; the name is a person-noun, so
-  it would need one from the bench of punishers.
+- **The first Misharu**: gaining shield Overcharged it (an alternate Nemesis, Ryan, 12 October).
+- **The first Onryō**: an ally's wound Overcharged it.
+- **The guardian's stay**: a blow that would wreck an ally leaves it at 10 hull and condemns its
+  striker. Rare and binary for a chassis; perhaps a module, or a tier-three twist.
+- **The hanged saint**: Minos's first look, a robed figure hanging over its hoverjets with a ring
+  of eyes, free for a later Arsenal hover.
+- **The bell tower** (medieval): an assault walker with a bell caged on its back; its toll a big
+  indirect blow with Shock and Spread.
+- **Hubris** (the sins vein, the Nemesis's own pairing): strongest whole, weaker as it is hurt.
+- **The fate-edited die** (eldritch): its blanks reroll free; a stripped die degenerates.
+- **A veil** (eldritch): out of the world for a round, waiting on Phased's design line.
 
 ## 7. Decisions for Ryan
 
-1. The frame: the occult as the Council's register, held at plate and silhouette, liturgy in
-   the shown text.
-2. The names rule: "something that punishes" with a wider bench, or any demon.
-3. Which machines, and in what order (Misaru can be built first; its passive runs today).
-4. The names, the designations and the numbers.
-5. The drag: Minos's passive alone, or a keyword.
-6. Overcharged twice, or the Onryō's vendetta.
+1. Misharu: the shield trigger and the sentence, the halberd's option to carry it out at once.
+2. Onryō: the whole wound or half; the Grudge as written.
+3. Mastema: the Aspergillum in its arms, or no fixed part.
+4. Minos: the flip's rules as written; hover or flyer.
+5. The names, the designations and the numbers.
+6. The order to build (Mastema's engine piece is the smallest).
+7. Hellfire off the Arsenal's word list.
