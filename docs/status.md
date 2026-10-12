@@ -33,7 +33,7 @@ by URL (read first). Databases are reachable only from the personal account. A p
 goes into this file in the same commit as its first publish.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change (v0.121).
+  `docs/design-bible.html` after every change (v0.124).
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s map (which leaves out `content/modules.json`: add it).
   Stale since 9 October. After Ryan edits on its Content tab: pull `edits` with ArtifactData,
@@ -62,15 +62,19 @@ goes into this file in the same commit as its first publish.
   content revision's components, the domains and the plaque.
 - Reports out of date: `docs/balance.md` and `docs/campaign_run.md` on this branch predate the
   weapon rules; rerun after the stock pass, with module rows.
-- The Arsenal (12 October, bible v0.121): the occult is the Council's; its machines are twisted
+- The Arsenal (12 October, bible v0.124): the occult is the Council's; its machines are twisted
   by it, never merged (mechanical, CARE-piloted, no mind of their own); grimdark is playing it
   straight; demonic in look, liturgical in word; a passive may break a rule as a one-off;
-  retribution is the Arsenal's, thorns allowed with a drawback and never on a megatank. In
-  `docs/arsenal_proposal.md`: Misharu (a shield's breaker is Suppressed), Mastema (Burning
-  passes from the dead) and Minos (every foe hit changes rank) are settled in their mechanics;
-  the Onryō is being refined around its Grudge; nothing in content yet. The bible on
-  `ccr-baf790be-gootfd` is the live v0.119 (other sessions' 11 and 12 October rows, not on main
-  yet) with the Arsenal's rows over it: a merge takes the newer text of each row.
+  retribution is the Arsenal's, thorns allowed with a drawback and never on a megatank; the
+  rule-text budget counts the chassis's description, never its components. In
+  `docs/arsenal_proposal.md`: Misharu (a shield's breaker is Suppressed) and Minos (every foe
+  hit changes rank) are settled in their mechanics; Mastema (Burning passes from the dead) has
+  burn tools for locked pieces in place of an area burn (the Chrism Ewer doubles a foe's
+  Burning, the Votive Ward shields 10 a Burning foe, the Scapegoat Brand a rare for the Peak)
+  and the Onryō's Grudge is never cashed in and outlives it, both waiting on Ryan's word;
+  nothing in content yet. The bible on `ccr-baf790be-gootfd` carries other sessions' rows of 11
+  and 12 October from the live page (not on main yet) with the Arsenal's over them: a merge
+  takes the newer text of each row.
 - Decided, not built: the shared basic kit and its stock pass, tags on components, heat from
   foes only through debuffs, the Headhunter's successor on the Sparrowhawk. The bible's
   section 12 lists the questions only Ryan can settle.

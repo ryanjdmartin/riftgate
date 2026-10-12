@@ -1,10 +1,11 @@
 # The Arsenal's new chassis
 
 A pitch of 11 October 2026 on Ryan's call that day (more Arsenal chassis: medieval, demonic,
-eldritch, sinister), worked through with him on 12 October. Misharu, Mastema and Minos are
-settled in their mechanics; the Onryō is being refined around its Grudge. The frame and his calls
-are in the bible (v0.121, sections 1, 5 and 7). Names and numbers are placeholders until he moves
-them; nothing is in `content/` yet.
+eldritch, sinister), worked through with him on 12 October over three rounds of notes. Misharu
+and Minos are settled in their mechanics; Mastema's tools and the Onryō's Grudge are revised on
+his third notes and wait on his word. The frame and his calls are in the bible (v0.124,
+sections 1, 2, 5 and 7). Names and numbers are placeholders until he moves them; nothing is in
+`content/` yet.
 
 ## 1. The frame, as decided
 
@@ -25,18 +26,21 @@ them; nothing is in `content/` yet.
 - **Retribution is the Arsenal's.** Thorns are dangerous, not forbidden: one needs a drawback of
   its own and never rides a megatank. If a retaliation must go elsewhere, it is the Armadillo's
   (armoured, not a porcupine; Ryan is thinking about it).
+- **The rule-text budget is the description's.** About three rule texts on a chassis's
+  description, its passive and its modules. A component's rule shows in its own popup and is not
+  counted, so a locked piece may carry a unique rule without spending the machine's three.
 
 | Word | Machine | Tier, size, moves | Its idea | Answers |
 |---|---|---|---|---|
 | Medieval | **Misharu**, the judge | 2, heavy, walker | A foe that breaks a shield loses its next action | The Peak: shields for the telegraph |
-| Demonic | **Mastema**, the gargoyle | 2, heavy, flyer | Fire passes from the dead to their neighbours | The Meadow: numbers that swarm |
+| Demonic | **Mastema**, the gargoyle | 3, heavy, flyer | Fire passes from the dead; its tools deepen the fire and draw on it | The Meadow: numbers that swarm |
 | Eldritch | **Minos**, the dark frame | 3, medium, hover | Every foe it reaches changes rank in its column | The Marsh, and every formation |
-| Sinister | **Onryō**, the crawler | 3, medium, walker | Every foe that wounds the team carries a Grudge | The Waste: damage no shield answers |
+| Sinister | **Onryō**, the crawler | 2, medium, walker | Every foe that wounds the team carries a Grudge, past the Onryō's fall | The Waste: damage no shield answers |
 
-With the Nemesis and the Ammit that makes six, three at tier two and three at tier three (tier
-is complexity, never power). None of the four scales on Overcharged.
+With the Nemesis and the Ammit that makes six, three at tier two and three at tier three (a
+chassis's tier is complexity, never power). None of the four scales on Overcharged.
 
-## 2. The settled three
+## 2. Misharu and Minos, settled
 
 Numbers are placeholders in the content's scale. Stock is drawn from today's pool and is
 provisional until the stock pass places the basics. Codex and flavour are Ryan's.
@@ -68,30 +72,6 @@ provisional until the stock pass places the basics. Codex and flavour are Ryan's
   hitters' telegraphs, ally shields from anyone, modules that stand shield up (the Spall Liner,
   the Boundary-layer Bleed), and the lure on its own die when no one else is the bait.
 
-### Mastema, Arsenal Instrument XI (demonic: everything burns)
-
-- **Passive: Brimstone Bellows.** *While it fights, a Burning foe that dies passes its Burning
-  to the foes beside it.* Beside is the row, Spread's shape. A Burning tick that kills spreads
-  too, so a rank can catch in the enemy's turn.
-- **The look.** A creepy hovering thing: a hunched torso and a horned head with a long jaw, broad
-  bat wings of black chrome panels ribbed in red glass that tilt and vector and never flap, two
-  long arms ending in claws, and nothing below the ribs but a tapering keel. Boosters under the
-  wing roots. The homage: the Stryge, Viollet-le-Duc's chimera on Notre-Dame, off its perch.
-  Mounts: hp_1 and hp_2 on the wing roots, hp_3 and hp_4 on the shoulders. Character: a thing on
-  a wire (spreads its wings and holds, flexes its claws as embers spit from its forearms, wraps
-  its wings round itself like a cloak, tilts its head down along its arms).
-- **Fixed, still open.** The **Aspergillum**: Indirect, flat 10, heat 15, Burn and Spread (tag
-  Flame), fire sprayers built into its forearms, no prop to hold; or no fixed part at all, five
-  hardpoints and the burn left to the stock and the team.
-- **Stock, four hardpoints.** Meteor Artillery, Blazethrower, Incendiary Shells, Entropy
-  Condenser.
-- **Numbers.** Hull 120, shield 40, move 30 (the slowest flyer), heat 100, cooling 5, armour 0,
-  field 20, two modules. A die of five.
-- **Build space.** Every burn on the team spreads, not only its own (the Stingray's deepened
-  stacks, the Aurora Lattice's Primed, the Solar Flare Array, the Incendiary Shells), and kill
-  order is the decision: the burning foe in the middle of a rank is worth more dead than the one
-  at its end.
-
 ### Minos, Arsenal Instrument XIII (eldritch: the ranks turned)
 
 - **Passive: Catherine Wheel.** *Every foe its weapons reach and leave standing changes rank in
@@ -120,92 +100,153 @@ provisional until the stock pass places the basics. Codex and flavour are Ryan's
   different foe behind, the front acts first so the enemy's order changes, and a back slot it
   empties fills from the reinforcements at the round's end.
 
-## 3. The Onryō, refined around its Grudge
+## 3. Mastema, tools in place of a gun
 
-Ryan's notes (12 October): it cannot always take its allies' hull damage; a guard may come back
-conditionally on a locked piece, never as a core mechanic; Grudge is its build-around, perhaps a
-stacking damage over time on the foes that wound it or the team, so not straight thorns. His
-question: how does that open build space, or is another stacking debuff enough?
+Ryan's notes (12 October, the third round): an innate area burn on a locked entry would be the
+die's best face and want no upgrades. Better more tools, unique utility: a locked piece that
+doubles a target's burn, one that grants shield for each burning foe or stack on the board, one
+that moves burn from an ally to a foe.
 
-**Another stacking debuff is enough if its source differs from Burning's.** Burning comes from
-the team's weapons: the player spends dice to lay it, and it burns out. Grudge comes from the
-foes' own blows: the player lays it by being wounded and surviving, and it lingers. The build is
-around taking the hits, which nothing else in the game rewards with damage, and the team's own
-mitigation trades against it.
+### Mastema, Arsenal Instrument XI (demonic: everything burns)
+
+- **Passive: Brimstone Bellows.** *While it fights, a Burning foe that dies passes its Burning
+  to the foes beside it.* Beside is the row, Spread's shape. A Burning tick that kills spreads
+  too, so a rank can catch in the enemy's turn.
+- **Fixed: the Chrism Ewer.** Indirect, no damage, heat 10: *the foe's Burning doubles.* Deep
+  fire on one foe, which the Bellows passes on whole at its death. It cashes nothing in: the
+  damage still lands a stack at a time, at the foe's own actions. (Chrism is the oil of
+  anointing; on reflection, oil poured on a burning man.)
+- **Fixed: the Votive Ward.** Shield, any machine: *10 for each Burning foe.* Wide fire pays for
+  the team's shield, and since a standing shield blocks a whole blow, against a swarm each
+  burning foe is one more blow turned. Per foe, not per stack: per stack, the Ewer would fill it
+  every time and the two pieces would say one thing; per foe they pull apart, deep against
+  wide, and the Bellows bridges them (a deep fire turns wide at a death). (A votive is a candle
+  lit as an offering; here the foes are the candles.)
+- **Ryan's third tool, the Scapegoat Brand, better as a rare.** Spent on a foe: *every machine's
+  heat-tick debuff passes to it as Burning, a stack for a stack* (Overheating today, Burning on
+  a machine once the heat debuffs land): a cleanse that burns. Only the Peak's foes heat the
+  team (the Bomb, the Salamander, the Drake, the Magma Golem, the Black Mage, the Summoner), so
+  locked it is a blank in three domains of four. The lean: a rare Arsenal component with its
+  unique rule, the player's pick against the Peak, on Mastema or anyone; locked as Mastema's
+  third piece if Ryan wants it there anyway (a die of seven). (Leviticus 16: the goat that
+  carries the people's sins into the wilderness.)
+- **Why tools work.** Both locked pieces do nothing until burn is down, so the burners live in
+  the hardpoints, where the upgrades go, and the team's burn counts as much as its own. Its
+  rhythm: the first round is the burners' and the rerolls'; the fire builds and the tools wake.
+- **The look.** A creepy hovering thing: a hunched torso and a horned head with a long jaw, broad
+  bat wings of black chrome panels ribbed in red glass that tilt and vector and never flap, two
+  long arms ending in claws, and nothing below the ribs but a tapering keel. Boosters under the
+  wing roots. The Ewer is a long spout under its right wrist; the Ward a rack of votive lights
+  in its open chest, one lit for each Burning foe, a count read without hue. The homage: the
+  Stryge, Viollet-le-Duc's chimera on Notre-Dame, off its perch. Mounts: hp_1 and hp_2 on the
+  wing roots, hp_3 and hp_4 on the shoulders. Character: a thing on a wire (spreads its wings
+  and holds, flexes its claws as embers spit from its forearms, wraps its wings round itself
+  like a cloak, tilts its head down along its arms).
+- **Stock, four hardpoints.** Meteor Artillery, Blazethrower, Incendiary Shells, Entropy
+  Condenser.
+- **Numbers.** Hull 120, shield 40, move 30 (the slowest flyer), heat 100, cooling 5, armour 0,
+  field 20, two modules. A die of six; tier three for two locked pieces working with the
+  passive.
+- **Build space: deep or wide.** The Ewer wants one foe carrying a lot (the Stingray's deepened
+  stacks, the Aurora Lattice's Primed, the Photosphere Lance); the Ward wants many foes carrying
+  a little (a burner spent on each, an area burner found as a blueprint, the Bellows at every
+  death), since the area burn kept off its locked pieces belongs in a hardpoint. Kill order is
+  the bridge: the burning foe in the middle of a rank is worth more dead than the one at its
+  end, and more again once the Ewer has doubled it.
+- **The holes.** A team with no burn wastes a third of its die; that is the cost. The Ewer has
+  no cap, and a doubled stack that the Bellows passes to two neighbours compounds: the runner
+  says whether it wants one (ten stacks more at most, say). The foes' side must show how many
+  burn at a glance, since the Ward reads it.
+
+## 4. The Onryō, a curse that outlives it
+
+Ryan's notes (12 October, the third round): no popping the Grudge for burst, a playstyle the
+game has plenty of already, and it cheapens the curse; if it needs reliability, it can stay
+after the machine dies. The Requiem Pipes go, and so does the lift at its fall.
 
 - **Passive: Martyrology Engine.** *While it fights, each blow a foe lands on a machine's hull
-  earns that foe a stack of Grudge: 5 a stack at its action, past armour. Grudge never fades; it
-  lifts if the Onryō falls.* A martyrology is the Church's register of martyrs and their
+  earns that foe a stack of Grudge: 5 a stack at its action, past armour. Grudge never fades,
+  not even when the Onryō falls.* A martyrology is the Church's register of martyrs and their
   sufferings: it keeps the team's, and curses whoever caused them.
-- **Why it is not straight thorns.** Nothing lands at the blow; the striker pays at its own
-  action, slowly, and two drawbacks ride with it. It needs wounds: a shield that blocks the blow
-  or armour that turns it stops the curse too, so a megatank's team earns almost none. And the
-  whole curse hangs on the Onryō: if it falls, every Grudge lifts at once.
+- **The vengeance outlives it.** The folklore's own shape: an onryō is the ghost of someone who
+  died wronged. The machine is built to be the one who suffers, and its fall stops new curses
+  without lifting one. That is the reliability Ryan asked for, and it takes the old swing off
+  the screen (every Grudge lifting at once).
+- **Why it is still not thorns.** Nothing lands at the blow: the striker pays at its own
+  actions, slowly, and only for wounds. A shield that blocks the blow or armour that turns it
+  stops the curse too, so a team built to block earns little and a megatank's team almost none;
+  the team's own mitigation trades against it.
 - **Why a stack a blow.** Grudge never fades, so a stack for each wounding blow keeps a curse in
   proportion; Burning's stack per 10 would make one golem's fist worth four stacks for the rest
   of the fight.
-- **Fixed: the Pall,** the guard Ryan allowed on a locked piece. Equipment, an ally only: *until
-  the round's end, the hull damage foes deal that ally is dealt to the Onryō instead.* The ally's
-  shield and armour still come first; the moved wound lands straight on the Onryō's hull and
-  never injures, as a bite does; its striker still earns Grudge. Aims, intents and arrows stay
-  as they were shown; only the hull loss moves. (A pall is the cloth over a coffin.)
-- **Fixed, if it earns its rule text: the Requiem Pipes.** Indirect, heat 15: *every foe
-  carrying Grudge takes 15 a stack at once, in any rank, and its Grudge clears.* Calling the
-  curse in: the burst a swarm wants, and the insurance before the Onryō falls. Organ pipes along
-  its spine.
-- **Build space, in five places.**
+- **Fixed: the Pall,** its one locked piece, the guard Ryan allowed. Equipment, an ally only:
+  *until the round's end, the hull damage foes deal that ally is dealt to the Onryō instead.*
+  The ally's shield and armour still come first; the moved wound lands straight on the Onryō's
+  hull and never injures, as a bite does; its striker still earns Grudge. Aims, intents and
+  arrows stay as they were shown; only the hull loss moves. (A pall is the cloth over a coffin.)
+- **Build space, in four places.**
   1. *What it reads.* Every wound the team takes, so the team's make-up is the build: a team
      built to bleed (light armour, glass cannons, the Nemesis, which wants hull damage anyway)
      curses more than a team built to block.
   2. *Where the wounds land.* The Pall moves a fragile ally's wounds onto the Onryō; a lure (the
      Proximity Klaxon) draws a pack onto whichever machine can afford them.
   3. *What reads it.* Grudge is a debuff the team put on, so the Susceptibility Tensor (+5 on a
-     foe carrying one) and the Baboon's Paradox (each new Grudge counts) read it. Mastema's
-     Bellows could pass Grudge beside Burning, if the Arsenal's two curses should spread
-     together; off unless Ryan wants it.
-  4. *When to cash it.* The Pipes trade a curse that lasts for damage now.
-  5. *Keeping the Onryō up.* Plating and the Spall Liner (each wound stands up 10 shield) are
-     worth more on it than anywhere, since its fall lifts every curse.
-- **The look.** Unchanged: a long thin body slung low between four long limbs, every joint
-  bending the wrong way for a person; a smooth mask with two red slits under a fall of black
-  cable like hair; the organ pipes along its spine. A knowing homage to The Grudge. Mounts: hp_1
-  and hp_2 on the shoulders, hp_3 at the base of the spine.
-- **Stock, three hardpoints.** Meteor Artillery, Plasma Arquebus, Laminar Deflector.
+     foe carrying one) and the Baboon's Paradox (each new Grudge counts) read it.
+  4. *Keeping it standing.* It earns only while it fights, so plating and the Spall Liner (each
+     wound stands up 10 shield) buy more curses; four hardpoints choose between guns and its
+     own guard.
+- **The look.** A long thin body slung low between four long limbs, every joint bending the
+  wrong way for a person; a smooth mask with two red slits under a fall of black cable like
+  hair; the Pall a mantle of black lamellar plates on its back, spread toward the ally it
+  covers. A knowing homage to The Grudge. Mounts: hp_1 and hp_2 on the shoulders, hp_3 at the
+  base of the spine, hp_4 under the left forelimb.
+- **Stock, four hardpoints.** Meteor Artillery, Plasma Arquebus, Laminar Deflector, Proximity
+  Klaxon.
 - **Numbers.** Hull 120, shield 30, move 30, heat 60, cooling 5, armour 0, field 20, two
-  modules. A die of five with both locked pieces, four with the Pall alone.
-- **Its cost.** No armour, a target the foes' exposed aim prefers, and it must stand for its
-  curses to last: it wants to be struck and has to survive it.
+  modules. A die of five; tier two for one locked piece.
+- **Its cost.** No armour, a target the foes' exposed aim prefers, and the Pall puts its allies'
+  wounds on its own hull, which never heals in a battle: it is the one that suffers.
 - **Answers the Waste.** The Needlers breach every shield, and every breach earns its Needler a
   Grudge that never fades.
-- **The holes.** Three rule texts on one machine (the passive, the Pall, the Pipes) before any
-  module, the budget's edge; the Pipes go first if it reads heavy. Two damage-over-time chips on
-  a foe (Burning and Grudge) need their own glyphs and structure, never hue alone. And every
-  Grudge lifting at once when the Onryō falls is a big swing the screen must show.
+- **The holes.** Two damage-over-time chips on a foe (Burning and Grudge) need their own glyphs
+  and structure, never hue alone. A Grudge that never fades piles up on a boss that wounds often
+  (six wounds is 30 a round for the rest of the fight), which the runner reads against the
+  bosses' hull. Mastema's Bellows stays off Grudge unless Ryan wants the Arsenal's two curses to
+  spread together.
 
-## 4. What it costs
+## 5. What it costs
 
-- **Content.** Four chassis and five or six fixed components, the passives marked planned until
-  the engine runs them, so the machines run without their passives as soon as they land.
+- **Content.** Four chassis and six fixed components (the Vigil Pavise, the Interdict Halberd,
+  the Chrism Ewer, the Votive Ward, the Gibbet Hook, the Pall), and the Scapegoat Brand as a
+  rare if Ryan takes it. The passives are marked planned until the engine runs them, so the
+  machines run without them as soon as they land.
 - **Engine.** Misharu: a foe's blow that breaks a shield suppresses its striker (small; the
-  suppress exists). Mastema: Burning passed on at a death (small). Minos: slot moves after a
-  spend, its forecast and drawing, the save, and the greedy bot learning the round's order
-  (medium). The Onryō: Grudge (Burning's tick, no decay, tied to its keeper), the wounding-blow
-  trigger, the Pall (shared with the Warrior's planned Cover), the Pipes (medium).
+  suppress exists). Mastema: Burning passed on at a death, the Ewer's doubling and the Ward's
+  shield per Burning foe (small, each). Minos: slot moves after a spend, its forecast and
+  drawing, the save, and the greedy bot learning the round's order (medium). The Onryō: Grudge
+  (Burning's tick with no decay, a stack a wounding blow) and the Pall, shared with the
+  Warrior's planned Cover (medium). The Brand: the heat-tick debuff moved (small).
 - **Models.** Four lowforge functions with joints, four acts each and a gait; new kinds in a
   legless winged flyer and digitigrade legs on hoverjets under a winged pack. Each dies in the
   Arsenal's flames over a ghost, as built.
 - **The runner.** Four new rows, read as diagnostics; an Arsenal team row becomes possible.
   Minos shows its strength only in the formation cells, the only fights with a back rank.
 - **The order.** Misharu and Mastema first (the smallest engine pieces), Minos next, the Onryō
-  once its Grudge is settled; the models alongside, on the Mac or with the bpy wheel.
+  last (Grudge and the Pall are the biggest); the models alongside, on the Mac or with the bpy
+  wheel.
 
-## 5. The bench
+## 6. The bench
 
 - **The first Misharu**: gaining shield Overcharged it (an alternate Nemesis).
 - **The sentence**: a shield's breaker takes the shield it broke; now Misharu's first fallback.
+- **The Aspergillum**: Mastema's locked area burn (Indirect, Burn and Spread). Ryan's no: the
+  die's best face, wanting no upgrades.
 - **The first Onryō**: an ally's wound Overcharged it. Then a Grudge spent as a bonus on its next
   blow (a third copy of Shocked), then all its allies' hull damage taken as a core mechanic (too
   much; the Pall keeps a conditional part of it).
+- **The Requiem Pipes**: the Onryō's call on every Grudge at once. Ryan's no: a burst, a
+  playstyle the game has plenty of, and it cheapened the curse. With them went Grudge lifting at
+  the Onryō's fall.
 - **The Misericorde**: the Onryō's mercy dagger (Direct, flat 10, Rapid), free for another Arsenal
   machine.
 - **Haunted**: a striker spends its next blow on the foe beside it; nothing against a lone boss.
@@ -215,10 +256,10 @@ mitigation trades against it.
 - **The bell tower**, **Hubris**, **the fate-edited die**, **a veil**, **a sinister Zoid**: as
   pitched on 11 October.
 
-## 6. Decisions for Ryan
+## 7. Decisions for Ryan
 
-1. The Onryō: Grudge as written (a stack a wounding blow, never fading, lifting with the Onryō),
-   the Pall, and the Requiem Pipes or not.
-2. Mastema: the Aspergillum in its arms, or no fixed part.
+1. Mastema: the Chrism Ewer and the Votive Ward locked; the Scapegoat Brand a rare against the
+   Peak, or Mastema's third locked piece.
+2. The Onryō as revised: Grudge outliving it, the Pall its one locked piece, four hardpoints.
 3. The go to build Misharu, Mastema and Minos (content with their passives planned, the engine
-   pieces, tests and the runner's rows), the models after.
+   pieces, tests and the runner's rows), the Onryō after them, the models after that.
