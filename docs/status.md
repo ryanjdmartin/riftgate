@@ -72,7 +72,8 @@ goes into this file in the same commit as its first publish.
   Chain is the Sparrowhawk's swarm answer), the Glacis front-only (no change), the Booster and
   the Databank (even, apart by matchup), injuries, and the first price of every stat and
   passive (armour 5 about 53 hull, damage 5 a blow about 60, shield 20 about 17, heat and
-  cooling almost nothing; passives from 0 to about 200). Proposed, waiting on Ryan (the chat
+  cooling almost nothing; passives from 0 to about 200) and of twelve modules (the ruleless
+  Ram Frame the best on every machine, the two "bad text" ones losses). Proposed, waiting on Ryan (the chat
   of 11 October, `docs/keyword_lineup.md`, the bible's section 12): area by shape, the overflow
   word (Breach), the Nemesis's fists answering the foe that last struck it (as reach), the
   knuckles without Burn, the Glacis as a brace on the plow's spend, what a tier means (and no

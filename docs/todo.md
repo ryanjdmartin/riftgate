@@ -60,7 +60,7 @@ bible (section 12). "Discuss first" means a proposal in chat before code.
 - [ ] Anathema as the weighted bar, and the pacing pieces, after Ryan's session
 - [ ] The Sponsorship tallies in the run (Kestrel hexes moved, Minerva damage taken on shield and armour, Wainwright & Sutler dice spent on entries that deal damage, Aphelion on entries that deal none)
 - [ ] The economy pass, a session of its own (`docs/economy_pass.md`): the runner's spending policy first, then every price and yield
-- [ ] Prices (Ryan, 11 October; the stats and the passives priced in the bible's section 10): every module's rule with `--module` against a run without it, then every stocked component by knock-out with `--set`, into one table
+- [ ] Prices (Ryan, 11 October; the stats, the passives and twelve modules priced in the bible's section 10, 11 and 12 October): every stocked component by knock-out with `--set`, into one table with the rest; the Phase Conjugator on a team row
 - [ ] The hangar's economy verbs on the run (the host maker's offer, a token unpacked, building from a blueprint, fitting a module), procurement (each standing maker's stock for Favour, refreshed each turn; the Arsenal's trickle at the capital by the Convergence's tier) and loot on the map (seeded with the map, claimed by ending a move on one, a tap telling its kind and likely contents), after the economy pass
 - [ ] Weld each machine at load (bible section 11): meshes merged by material within each moving group, skipping the acts' glow parts; count draw calls before and after
 - [ ] Props by hex back in the big batches, with a fade as a machine enters (a debug switch to judge it)
