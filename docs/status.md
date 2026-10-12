@@ -24,13 +24,15 @@ command are in `README.md`.
   the only resistance, the mirrored Booster and Databank, the Nemesis's Crucible), the first
   foe art at 72x96 and the rewritten docs. `ccr-abac8c0f-yig0e2` was fast-forwarded into it
   and has nothing main lacks; new work starts from main.
-- `claude/ws-chassis-designs-wssq2u` (12 October): `docs/ws_chassis_proposal.md`, the second
+- `claude/ws-chassis-designs-wssq2u` (12 October): `docs/ws_chassis_proposal.md`, the third
   round of six Wainwright & Sutler passives for Ryan's silhouettes (two spiders, a chicken
-  walker, two helicopters, a fan-boat), the first round's verdicts at its foot; and bible
-  v0.113 with Ryan's design notes of 12 October (a chassis identity opens build space; a map
-  action buying a fight buff is no condition; every rule is open to debate; the decoy stays
-  out), one line on debate in CLAUDE.md. The maker profiles as guidelines and Aphelion's
-  propulsion are the keyword branches' wording. Merge it so other sessions get the notes;
+  walker, two helicopters, a fan-boat). Ryan liked the boiler (now cooling -10), the
+  multi-rotor (its look brief is written) and the stun punish at full; the cylinder takes his
+  wording; the gunship and the fan-boat now read tags, waiting on his read; retired ideas at
+  its foot. Bible v0.113 on this branch: Ryan's design notes of 12 October (a chassis identity
+  opens build space; a map action buying a fight buff is no condition; every rule is open to
+  debate; the decoy stays out) and the W&S row as simple and straightforward, suppression
+  being Aphelion's; one line on debate in CLAUDE.md. Merge it so other sessions get the notes;
   nothing is in content.
 
 ## Pages
@@ -41,9 +43,9 @@ by URL (read first). Databases are reachable only from the personal account. A p
 goes into this file in the same commit as its first publish.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.117 (12 October), the live v0.116 of
-  the keyword branches plus this branch's design notes; no single file holds it yet (main
-  v0.112, this branch v0.113), so the next publish starts from the live page.
+  `docs/design-bible.html` after every change. Live: v0.125 (12 October), the parallel
+  branches' v0.124 plus this branch's W&S row; no single file holds it yet (main v0.112, this
+  branch v0.113), so the next publish starts from the live page.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s map (which leaves out `content/modules.json`: add it).
   Stale since 9 October. After Ryan edits on its Content tab: pull `edits` with ArtifactData,
