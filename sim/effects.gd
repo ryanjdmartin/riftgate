@@ -72,10 +72,12 @@ const CLEANSABLE := "cleansable"
 const STATUS := {
 	"burning": {"id": "burning", "name": "Burning", "description": "Loses 5 HP per stack at the start of its action, then loses a stack.",
 		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_hp", "value": 5}]},
-	# The Nemesis's Crucible (10 October): taking hull damage adds a stack, melee blows deal 5
-	# more a stack, and it lasts the skirmish (`decay` none overrides a passive's tick).
-	"crucible": {"id": "crucible", "name": "Crucible", "description": "Melee blows deal +5 per stack, for the skirmish.", "decay": "none",
-		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 5, "when": "tag_melee"}]},
+	# The Nemesis's rage (Ryan, 12 October, in place of the Crucible): its passive banks a
+	# stack for every hull hit, its own included, for the skirmish (`decay` none overrides a
+	# passive's tick), and an entry that rolls again on it spends one to roll the die again.
+	# A store like the hopper: it does nothing by itself.
+	"rage": {"id": "rage", "name": "Rage", "description": "Banked for the skirmish; an entry that rolls again on rage spends one to roll the die again.", "decay": "none",
+		"tags": ["store"], "effects": []},
 	"overheating": {"id": "overheating", "name": "Overheating", "description": "Gains 5 heat per stack at the end of the round, then loses a stack.",
 		"tags": ["dot", CLEANSABLE], "effects": [{"trigger": "status", "effect": "tick_heat", "value": 5}]},
 	"suppressed": {"id": "suppressed", "name": "Suppressed", "description": "Skips its telegraphed action this round.",

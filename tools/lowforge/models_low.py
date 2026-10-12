@@ -1717,7 +1717,7 @@ def nemesis(b):
     visor slit and two horns, and asymmetry: the left shoulder a massive spiked pauldron
     carrying the Ward Plate, the right shoulder smaller with the Meteor Artillery's tubes
     behind it and the heavier arm below it carrying the Plasma Carbine. Spikes on the
-    shoulders, forearms and knees. The Gravity Knuckles are the fists (fixed, no pins).
+    shoulders, forearms and knees. Its fixed fists (the Knuckle of Fury) are modelled in, with no pins.
     Third pass (Ryan, 30 September): a humanoid's arms, elbows bent and the spiked fists
     forward, no gun on the hand; a hip cannon in the Atlas way; traps like the Hulk's; the
     core's port striped like a vent. Mounts: hp_1 the right hip cannon (Plasma Carbine),

@@ -1111,6 +1111,16 @@
    }
   },
   {
+   "id": "roll_again_property",
+   "category": "component_property",
+   "name": "Rolls again",
+   "codex": "A rule printed on a component (the Nemesis's Knuckle of Fury). Spending it with a stack of the status it names spends one, and the die rolls again, a plain roll as the round opens, so the machine acts again and the same component may show again. Unlike Rapid nothing switches off: the stacks are the limit.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 12 October for the Nemesis's rage (Ryan: \"it's not a choice, you just get rapid\", without the switch-off). A rule on one carrier, not a keyword, until another piece wants it."
+   }
+  },
+  {
    "id": "strikes",
    "category": "component_property",
    "name": "Strikes",
@@ -1141,13 +1151,13 @@
    }
   },
   {
-   "id": "crucible",
+   "id": "rage",
    "category": "status",
-   "name": "Crucible",
-   "codex": "Machine buff, the Nemesis's: a stack for each time it takes hull damage (a blow, a bite of its own or an overheat), and its melee blows deal 5 more a stack. Lasts the skirmish.",
+   "name": "Rage",
+   "codex": "Machine store, the Nemesis's: a rage for every time it takes hull damage (a blow, a bite of its own, an overheat), banked for the skirmish. Its fists spend one when they strike, and the die rolls again. Never decays; nothing cleanses it.",
    "status": "implemented",
    "design": {
-    "holes": "Built 10 October from Ryan's wording of the passive; +5 a stack is a placeholder."
+    "holes": "Built 12 October in place of the Crucible (melee +5 a stack), from Ryan's berserk: the passive banks rage on all hull damage, the fists spend it to roll again, and nothing switches off, so the rage is the limit. Whether a store is a buff or its own kind waits on the buffs-and-debuffs wording."
    }
   },
   {

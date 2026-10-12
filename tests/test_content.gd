@@ -766,6 +766,30 @@ func test_a_brace_is_a_positive_number_of_stacks() -> void:
 	assert_true(long_refused, "a buff granting Braced for two rounds is refused")
 
 
+func test_rolling_again_names_a_status_and_never_rides_on_rapid() -> void:
+	# Rolling again on a status (12 October, the Nemesis's fists on rage): the status must be
+	# one of the engine's, and a rapid entry already rolls again on its own.
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var gun: Dictionary = db.components["incendiary_shells"].duplicate(true)
+	gun["face"] = {"kind": "attack", "reach": "direct", "power": 10, "rolls_again_on": "fury"}
+	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
+	db.components["odd_gun"] = gun
+	var plate: Dictionary = db.components["incendiary_shells"].duplicate(true)
+	plate["face"] = {"kind": "shield", "power": 10, "keywords": ["rapid"], "rolls_again_on": "rage"}
+	plate["tier"] = 1
+	db.components["odd_plate"] = plate
+	var no_status := false
+	var on_rapid := false
+	for e in db.validate():
+		if e.begins_with("component odd_gun") and e.contains("rolls_again_on names a status"):
+			no_status = true
+		if e.begins_with("component odd_plate") and e.contains("a rapid entry already rolls again"):
+			on_rapid = true
+	assert_true(no_status, "a status the engine lacks is refused")
+	assert_true(on_rapid, "rolling again on a rapid entry is refused")
+
+
 func test_the_new_passive_fields_are_checked() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)

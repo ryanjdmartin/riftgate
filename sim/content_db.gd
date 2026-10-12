@@ -668,6 +668,13 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# The brace (12 October): spending the entry Braces its owner until the round's end.
 	if fd.has("braces") and int(fd["braces"]) <= 0:
 		errs.append("%s: braces is a positive number of Braced stacks" % where)
+	# Rolling again on a status (12 October, the Nemesis's fists on rage): the status it
+	# spends must be one of the engine's, and Rapid already rolls again on its own.
+	if fd.has("rolls_again_on"):
+		if not Effects.STATUS.has(str(fd["rolls_again_on"])):
+			errs.append("%s: rolls_again_on names a status, one of %s" % [where, ", ".join(Effects.STATUS.keys())])
+		if Array(fd.get("keywords", [])).has("rapid"):
+			errs.append("%s: a rapid entry already rolls again; rolls_again_on is for one that pays a status" % where)
 	if kind == "buff":
 		# A buff grants one of the machines' statuses: it must exist and be theirs.
 		var st := str(fd.get("status", ""))

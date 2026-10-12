@@ -29,6 +29,8 @@ const DEVOUR_ROUNDS := 1.0       # rounds of the die's own damage a devoured sta
 const SHOCK_WEIGHT := 0.6        # the doubled blow a Shocked foe will take, as a share of the die's own damage
 const CLEANSE_ROUNDS := 2.0      # rounds a cleansed status would otherwise have cost (Corrupted lasts the fight, Overheating fades)
 const HOPPER_WEIGHT := 0.6       # a load in the hopper, as a share of what it adds when a later shot fires it
+const ROLL_AGAIN_WEIGHT := 1.0   # another roll of the die bought with a stack (the Nemesis's rage), as the die's own average blow
+const RAGE_BANK_WEIGHT := 0.5    # a stack banked by a bite of its own, as a share of the roll it buys: it waits for a fist to show
 
 var kind: int = GREEDY
 var withdraw_below: int = 0      # persona: withdraw when the team's hull is under this percent (0: never)
@@ -238,6 +240,10 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		score += hopper_fill_score(sk, ms, f, target)
 	if f.braces > 0:
 		score += brace_score(sk, ms, f.braces)
+	if not f.rolls_again_on.is_empty() and Effects.stacks_of(ms.unit, f.rolls_again_on) > 0:
+		# A stack to spend buys another roll of the die, so the machine acts again: about the
+		# die's own average blow, read plainly so the scorer never asks itself.
+		score += ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)
 	if f.devours:
 		# A kill feeds a stack of Overcharged: what the status adds to the die's own damage,
 		# for about the rounds the stack lasts. Read from the status, never hardcoded.
@@ -274,10 +280,28 @@ static func volatile_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: f
 	if bite <= 0:
 		return 0.0
 	var cost := float(bite) * uses * HULL_WEIGHT
+	if not banked_on_hull(ms).is_empty():
+		# The bite is hull damage, so it banks a stack the machine's own entries spend to roll
+		# again (the Nemesis's rage): a share of the roll it will buy.
+		cost -= RAGE_BANK_WEIGHT * ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms) * uses
 	var fc := sk.forecast(ms, false)
 	if not fc["destroyed"] and int(fc["hull_after"]) - int(roundf(bite * uses)) <= 0:
 		cost += DEATH_WEIGHT
 	return cost
+
+
+## The status this machine banks on every hull hit that one of its own entries spends to
+## roll again (the Nemesis's rage, 12 October), or "" when it has no such pair.
+static func banked_on_hull(ms: Skirmish.MechState) -> String:
+	for m in Effects.live(ms.unit):
+		for eff in m.effects:
+			if str(eff.get("trigger", "")) != "on_hull_damage" or str(eff.get("effect", "")) != "stack_status":
+				continue
+			var st := str(eff.get("value", ""))
+			for f in ms.die.faces:
+				if f.rolls_again_on == st:
+					return st
+	return ""
 
 
 ## What one stack of a status adds to a blow of `mean` damage: a flat add as itself, a

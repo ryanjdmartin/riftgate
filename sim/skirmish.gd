@@ -794,6 +794,17 @@ func assign(mech_index: int, target = null) -> bool:
 		ms.face_index = ms.die.reroll(rng, ms.face_index)
 		ms.assigned = false
 		log.append("%s: rapid, rolls again" % ms.unit.display_name)
+	# Rolling again on a status (the Nemesis's fists on rage, Ryan, 12 October): spending the
+	# entry spends a stack, if its owner has one, and the die rolls again, a plain roll as the
+	# round opens. Not Rapid's reroll: that never lands on an identical entry, and the
+	# Nemesis's two fists are identical, so it could never chain them. Nothing switches off:
+	# the stacks are the limit, and a fist that shows again punches again. A fight already won
+	# rolls nothing.
+	elif not f.rolls_again_on.is_empty() and ms.alive() and not (field_foes().is_empty() and reinforcements.is_empty()) \
+			and Effects.spend_stacks(ms.unit, f.rolls_again_on, 1) > 0:
+		ms.face_index = ms.die.roll(rng)
+		ms.assigned = false
+		log.append("%s: %s, rolls again (%d left)" % [ms.unit.display_name, str(Effects.STATUS.get(f.rolls_again_on, {}).get("name", f.rolls_again_on)).to_lower(), Effects.stacks_of(ms.unit, f.rolls_again_on)])
 	# The fight ends the moment it is decided (Ryan, 22 September): the last foe down, or
 	# the last machine burnt out by its own heat, and nobody waits for End turn.
 	_refresh_allies()

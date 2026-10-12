@@ -22,7 +22,7 @@ what keywords are owned by what maker".
 | Shock | Each foe reached and left standing takes the team's next blow double | Polarity Projector (Aphelion), Tesla Gauntlets (Minerva, unstocked) | Keep: a core verb |
 | Lure | Each foe reached turns on the spender for the round | Proximity Klaxon (Minerva) | Keep: redirection is a core verb; needs carriers |
 | Disrupt | Each foe reached takes its next move, with a new target | Differentiation Probe (Aphelion) | Keep; needs carriers |
-| Rapid | The entry switches off, the die rerolls free, the machine acts again | Wake Diffuser, Laminar Deflector (Kestrel, the deflector since 12 October), Flakshot Repeater (W&S, locked), Pulse Vacillator (Aphelion, unstocked) | Keep: a core verb. The Nemesis's fists may borrow its roll, paid in rage (Ryan's berserk, 12 October; the bible's section 7) |
+| Rapid | The entry switches off, the die rerolls free, the machine acts again | Wake Diffuser, Laminar Deflector (Kestrel, the deflector since 12 October), Flakshot Repeater (W&S, locked), Pulse Vacillator (Aphelion, unstocked) | Keep: a core verb. The Nemesis's fists roll again on rage instead, a plain roll with no switch-off (built 12 October; section 2) |
 | Volatile | Spending it costs its owner 10 hull, past shield and armour | Oblation Ward, Entropy Condenser (the Arsenal, the condenser since 12 October) | Keep: the Arsenal's price. Corrupted stays its own (section 4) |
 | Cleanse | The machine it lands on loses a foe's debuffs | Corona Shield (unstocked), Phased Sublimator (Aphelion) | Keep |
 | Chain | A kill repeats the attack on the next target, rolling and paying heat again | Arc Fault Cannon (Kestrel) | The kill's area shape (section 7); area is no part of Kestrel's brief, so the Sparrowhawk is not balanced around it (Ryan, 12 October) |
@@ -46,7 +46,9 @@ waits on the whole content set being locked, so a tight list is no priority now.
 Printed on the entry, never a keyword, and marked on the die by the star chip: rolled or
 flat, strikes, whom equipment reaches (self, ally, both), **Vents all** (the Afterburner
 Cannon), **missing hull** (the Pinion Driver), **the hopper** (the Badger's pair), **devour**
-(the Soulcutter Talons). All built.
+(the Soulcutter Talons), **braces** (the Breaching Plow), **rolls again** on a status (the
+Nemesis's Knuckle of Fury, on rage). All built. One star stands for any number of rules: the
+hold lists each.
 
 Injuries (Ryan, 11 October): the threshold is a share of maximum hull on purpose, so the
 tank and the glass cannon both have a place and full greedy aggression risks something
@@ -59,8 +61,9 @@ should also take a unique rule, or its number, is the bible's question in sectio
 ## 3. Statuses as they stand
 
 - **On a machine, from its own kit:** Overcharged (+5 a stack), Braced (armour +5 a stack),
-  Primed (blows leave Burning), Retaliate (strikers are Shocked), Crucible (the Nemesis's
-  melee +5 a stack), Hopper (the Badger's loads).
+  Primed (blows leave Burning), Retaliate (strikers are Shocked), Rage (the Nemesis's store,
+  a stack a hull hit, spent by its fists to roll again; the Crucible's +5 melee until 12
+  October), Hopper (the Badger's loads).
 - **On a machine, from a foe:** Overheating (heat a stack at the round's end; its name goes, and
   direct heat becomes it or a softer debuff, decided 12 October), Scrambled (the
   next reroll lands anywhere), Disabled (an entry blank through the next turn), Corrupted
@@ -125,7 +128,7 @@ Nemesis and the Ammit). Each takes its maker's keyword:
 - **Laminar Deflector:** a shield of 20 with Rapid. Kestrel's tempo: shield, reroll, act
   again; it pairs with the Wake Diffuser.
 - **Entropy Condenser:** a vent of 40 with Volatile. Arsenal equipment is the biggest number,
-  paid in hull, like the Oblation Ward; on the Nemesis every vent is a Crucible stack.
+  paid in hull, like the Oblation Ward; on the Nemesis every vent banks a rage.
 
 ## 6. Splash, and what Indirect means
 

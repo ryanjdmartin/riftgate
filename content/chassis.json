@@ -488,7 +488,7 @@
    "design": {
     "fantasy": "A hulking, neckless, spiked brute. Thick arms made for pummeling. A glowing firey core in its torso that lights up as the mech takes damage and heats up.",
     "niche": "Sustained damage bruiser",
-    "notes": "One or more locked components should grant overheating, or deal self -damage. Decided 28 September: Crucible Capacitor counts blows that reach hull from foes or its own weapons, never overheat burn (that loop has no brake), and the stacks decay as Overheating does; a plain vent is its relief. The locked Gravity Knuckles are volatile, so every punch feeds it, and volatile is the general Arsenal self-damage keyword for later shield and vent faces. Meteor Artillery is its advanced piece. Numbers, designation and kit are Claude's fills, Ryan's to move. 9 October, the content revision: the Plasma Carbine became the Retribution Thurible (Retaliate, so the foes that reach its hull set up its next punch). 9 October: the platings left the dice for modules, so the Ward Plate became the Oblation Ward, the Arsenal's shield paid in hull. 10 October: Close removed, so the Crucible reads the melee tag (its Gravity Knuckles carry it). 10 October (Ryan): the passive in his words, hull damage feeding melee for the skirmish with no Overheating in between; the overheat that heat can cause is hull damage too, which a savvy player works out alone. The Gravity Knuckles lost volatile with it."
+    "notes": "One or more locked components should grant overheating, or deal self -damage. Decided 28 September: Crucible Capacitor counts blows that reach hull from foes or its own weapons, never overheat burn (that loop has no brake), and the stacks decay as Overheating does; a plain vent is its relief. The locked Gravity Knuckles are volatile, so every punch feeds it, and volatile is the general Arsenal self-damage keyword for later shield and vent faces. Meteor Artillery is its advanced piece. Numbers, designation and kit are Claude's fills, Ryan's to move. 9 October, the content revision: the Plasma Carbine became the Retribution Thurible (Retaliate, so the foes that reach its hull set up its next punch). 9 October: the platings left the dice for modules, so the Ward Plate became the Oblation Ward, the Arsenal's shield paid in hull. 10 October: Close removed, so the Crucible reads the melee tag (its Gravity Knuckles carry it). 10 October (Ryan): the passive in his words, hull damage feeding melee for the skirmish with no Overheating in between; the overheat that heat can cause is hull damage too, which a savvy player works out alone. The Gravity Knuckles lost volatile with it. 12 October (Ryan): the Crucible becomes rage. Taking hull damage, all of it (a blow, a bite of its own, an overheat), banks a rage for the skirmish, and its new locked fists, the Knuckle of Fury, spend one when they strike and the die rolls again, nothing switching off, so the rage is the limit: \"it's not a choice, you just get rapid\". The +5 melee a stack is gone, rage buying actions only. The Gravity Knuckles left for tier three."
    },
    "codex": "",
    "hull": 140,
@@ -505,8 +505,8 @@
    ],
    "size": "heavy",
    "fixed": [
-    "gravity_knuckles",
-    "gravity_knuckles"
+    "knuckle_of_fury",
+    "knuckle_of_fury"
    ],
    "loadout": [
     "retribution_thurible",
@@ -517,12 +517,12 @@
    "passive": {
     "id": "crucible_capacitor",
     "name": "Crucible Capacitor",
-    "description": "Taking hull damage increases melee damage by 5 for the duration of the skirmish.",
+    "description": "Taking hull damage banks a rage for the duration of the skirmish.",
     "effects": [
      {
       "trigger": "on_hull_damage",
       "effect": "stack_status",
-      "value": "crucible"
+      "value": "rage"
      }
     ]
    },

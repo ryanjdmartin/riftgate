@@ -2533,16 +2533,14 @@ func test_a_free_reroll_of_one_die_spares_the_teams() -> void:
 	assert_eq(sk.mechs[0].free_rerolls, 1, "back each round")
 
 
-## The Nemesis's Crucible in Ryan's words (10 October): taking hull damage increases melee damage
-## by 5 for the skirmish. A blow, a bite of its own and an overheat are all hull damage.
-func test_the_crucible_grows_melee_with_every_hull_hit_for_the_skirmish() -> void:
-	var crucible := {"id": "crucible_capacitor", "name": "Crucible Capacitor", "description": "", "effects": [
-		{"trigger": "on_hull_damage", "effect": "stack_status", "value": "crucible"}]}
+## The Nemesis's rage in Ryan's words (12 October): taking hull damage banks a rage for the
+## skirmish, all of it: a blow, a bite of its own, an overheat. Rage alone changes no blow.
+func test_rage_banks_on_every_hull_hit_for_the_skirmish() -> void:
+	var core := {"id": "rage_core", "name": "Rage Core", "description": "", "effects": [
+		{"trigger": "on_hull_damage", "effect": "stack_status", "value": "rage"}]}
 	var sk := Skirmish.new(1)
-	var fist := Face.attack(30)
-	fist.tags.append("melee")
-	var m := _mech("A", Die.single(fist), 0, 200)
-	m.grant_passive(crucible)
+	var m := _mech("A", Die.single(Face.attack(30)), 0, 200)
+	m.grant_passive(core)
 	sk.add_mech(m)
 	var g := _ghoul(500, 10)
 	g.actions[0]["strikes"] = 2
@@ -2550,35 +2548,70 @@ func test_the_crucible_grows_melee_with_every_hull_hit_for_the_skirmish() -> voi
 	sk.begin()
 	sk.start_round()
 	sk.assign(0, g)
-	assert_eq(g.hp, 470, "untouched: a plain 30")
+	assert_eq(g.hp, 470, "a plain 30")
 	sk.end_round()
 	assert_eq(m.hull, 180, "two blows reached hull")
-	assert_eq(Effects.stacks_of(m, "crucible"), 2, "a stack each")
+	assert_eq(Effects.stacks_of(m, "rage"), 2, "a rage each")
 	sk.start_round()
 	sk.end_round()
 	sk.start_round()
-	assert_eq(Effects.stacks_of(m, "crucible"), 4, "never fading: two more blows, four stacks")
-	assert_eq(Effects.explain(m, fist), ["melee weapons: damage +5 (Crucible)"], "the die row says so")
-	sk.assign(0, g)
-	assert_eq(g.hp, 470 - 50, "30 plus 5 a stack for four")
-	# A weapon without the tag gains nothing.
-	var gun := Face.attack(30, L)
-	assert_eq(int(Effects.attack(m, gun, 30, 0, g)["damage"]), 30, "not a melee blow")
+	assert_eq(Effects.stacks_of(m, "rage"), 4, "never fading: two more blows, four")
+	assert_eq(int(Effects.attack(m, Face.attack(30), 30, 0, g)["damage"]), 30, "rage alone adds nothing to a blow")
 	# An overheat is hull damage too.
-	var before := Effects.stacks_of(m, "crucible")
+	var before := Effects.stacks_of(m, "rage")
 	sk.mechs[0].heat = sk.mechs[0].heat_max + 20
 	sk._settle_heat()
-	assert_eq(Effects.stacks_of(m, "crucible"), before + 1, "the overheat fed it")
+	assert_eq(Effects.stacks_of(m, "rage"), before + 1, "the overheat fed it")
 	# A volatile bite is the machine's own weapon reaching hull: it counts.
 	var s2 := Skirmish.new(2)
 	var n := _mech("N", Die.single(Face.attack(30, L, K.VOLATILE)), 40, 200)
-	n.grant_passive(crucible)
+	n.grant_passive(core)
 	s2.add_mech(n)
 	s2.add_foes([_ghoul(500, 10)])
 	s2.begin()
 	s2.start_round()
 	s2.assign(0, s2.front[0])
-	assert_eq(Effects.stacks_of(n, "crucible"), 1, "the bite fed the core")
+	assert_eq(Effects.stacks_of(n, "rage"), 1, "the bite fed it")
+
+
+## The Nemesis's fists (Ryan, 12 October: "you just get rapid", without the switch-off): an
+## entry that rolls again on a status spends a stack as it is spent, and the die rolls again,
+## a plain roll that may show the same entry; with no stack left it is spent like any other.
+func test_an_entry_rolls_again_on_a_stack_and_nothing_switches_off() -> void:
+	var fist := Face.attack(10)
+	fist.rolls_again_on = "rage"
+	assert_true(fist.has_unique_rule(), "a rule printed on the entry: the star chip")
+	assert_true(fist.describe().contains("spends a Rage to roll again"), "and it says so: %s" % fist.describe())
+	var sk := Skirmish.new(3)
+	var m := _mech("A", Die.single(fist), 0, 200)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(m, Effects.STATUS["rage"], Effects.SKIRMISH, "test", 2, Effects.DECAY_NONE)
+	var g: Foe = sk.front[0]
+	assert_true(sk.assign(0, g), "spent")
+	assert_false(sk.mechs[0].assigned, "a rage spent: the die rolls again, and the machine acts again")
+	assert_eq(Effects.stacks_of(m, "rage"), 1, "one rage spent")
+	assert_false(Effects.is_entry_disabled(m, 0), "nothing switches off")
+	assert_true(sk.assign(0, g), "the fist showed again, and it punches again")
+	assert_false(sk.mechs[0].assigned, "the last rage rolls it again")
+	assert_eq(Effects.stacks_of(m, "rage"), 0, "no rage left")
+	assert_true(sk.assign(0, g), "and once more")
+	assert_true(sk.mechs[0].assigned, "no rage: spent like any entry")
+	assert_eq(g.hp, 470, "three blows of 10")
+	# The fight's last blow rolls nothing: the fight is over.
+	var s2 := Skirmish.new(4)
+	var n := _mech("N", Die.single(fist), 0, 200)
+	s2.add_mech(n)
+	s2.add_foes([_ghoul(10, 10)])
+	s2.begin()
+	s2.start_round()
+	Effects.stack(n, Effects.STATUS["rage"], Effects.SKIRMISH, "test", 2, Effects.DECAY_NONE)
+	s2.assign(0, s2.front[0])
+	assert_eq(s2.outcome, Skirmish.Outcome.VICTORY, "the last foe down")
+	for line in s2.log:
+		assert_false(line.contains("rolls again"), "no roll after the last kill: %s" % line)
 
 
 func test_glacis_armours_against_the_front_rank_only() -> void:

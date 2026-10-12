@@ -33,19 +33,21 @@ skirmish.
 - **Tags** (Ballistic, Missile, Beam, Plasma, Flame, Arc, Blade, Melee: the working set,
   not yet assigned to components) are build flavour shown in the codex only (not built).
   A tag carries no rule of its own; a module or passive may read one. Components still carry
-  the old internal filing tags; only `melee` is read today (the Nemesis's passive, and which
-  blows lunge on screen).
+  the old internal filing tags; only `melee` is read today (which blows lunge on screen).
+  Melee means short range, a shotgun included, never only a blade.
 - **Modules** sit inside the machine and are never spent: stat lines up or down (hull,
   shield, heat maximum, armour, move, field recharge, cooling) and at most one rule, tier 1
   to 3, run as one passive nothing on the die can remove. The same module twice stacks.
   Fitted in the harness only (not in the run yet). Catalogue: `content/modules.json`.
 - **Tiers and blueprints**: the basics are tier zero, what comes off the assembly line: a run
-  starts with every basic's blueprint, and a tier-one chassis stocks basics beside its fixed
-  pieces. Blueprints of tiers one to three are found, or their components come on a bought
-  chassis of tier two or three. A fixed component has no tier; the Arsenal (the capital's
+  starts with every basic's blueprint. Every other component carries its tier, one to three,
+  and a chassis stocks only components below its own tier, so a tier-one chassis stocks
+  basics beside its fixed pieces and a tier-three component is only ever found. Blueprints
+  of tiers one to three are found; a bought chassis brings one copy of each component it
+  stocks, never its blueprint. A fixed component has no tier; the Arsenal (the capital's
   maker) makes no basics and has no tier one. (Not built: today a stocked component takes the
   lowest tier of the chassis that stock it, an unstocked one carries its own, a run starts
-  with every tier-one blueprint, and the tier-one stocks wait on the stock pass.)
+  with every tier-one blueprint, and the stocks wait on the stock pass.)
 - **Damage states**: a component is intact, cracked or destroyed, for the whole battle.
 
 ## The skirmish
@@ -135,7 +137,10 @@ machine's hopper for each foe its blows reach, after the blow; a weapon that fir
 up to its most loads a shot, each adding its bonus to the blow, and spends them (the Honey
 Badger's Chainsaw Claw fills, its Bullion Fragmenter fires three at +5). **Braces**:
 spending it Braces its owner, the stacks it says, until the round's end (the Wild Boar's
-Breaching Plow, two).
+Breaching Plow, two). **Rolls again** (the Nemesis's Knuckle of Fury, on rage): spending it
+with a stack of its status spends one, and the die rolls again, a plain roll as the round
+opens, so the machine acts again and the same entry may show again; nothing switches off,
+the stacks being the limit, and the fight's last blow rolls nothing.
 
 ### Buffs, debuffs and resistance
 On a machine:
@@ -145,8 +150,9 @@ On a machine:
   whatever granted it.
 - **Primed** (buff): each blow leaves a Burning stack per Primed stack on its target.
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.
-- **Crucible** (buff, the Nemesis's): its melee blows deal +5 a stack, a stack each time it
-  takes hull damage; lasts the skirmish.
+- **Rage** (a store, the Nemesis's): a stack each time it takes hull damage (a blow, a bite
+  of its own, an overheat), spent by its fists to roll again; lasts the skirmish, never
+  decays, and nothing cleanses it.
 - **Hopper** (a store, the Honey Badger's): loads for a weapon that fires the hopper; lasts
   the skirmish, never decays, and nothing cleanses it.
 - **Overheating** (debuff, from a foe's scorch): +5 heat a stack at the round's end, then a

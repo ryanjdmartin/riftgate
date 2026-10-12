@@ -11,7 +11,7 @@ command are in `README.md`.
   disagree, the chat is newer.
 - Sessions run in parallel on this repo: `git status` first, stage by path, diff a shared
   file before staging it, never a bare `git add -A`, never kill a bare `godot --path .`.
-- Tests: 437 tests, 19,586 checks, green (12 October, on `claude/focused-ritchie-omn8i5`).
+- Tests: 440 tests, 19,610 checks, green (12 October, on `claude/focused-ritchie-omn8i5`).
   A cloud session fetches Godot 4.7's Linux build from the GitHub release asset
   (`godotengine/godot-builds`, `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for
   screenshots, and builds models with `BPY_PYTHON` set to a python3.11 venv holding
@@ -27,9 +27,10 @@ command are in `README.md`.
 - `claude/focused-ritchie-omn8i5` (11 and 12 October) is main plus Ryan's calls of 11
   October: the overheat at the end of the player's turn, armour off a breach's overflow, the
   Badger's hopper, the Stingray at tier one, the Faraday Hull's discharge gone, the Pinion
-  Driver, Devour a rule; the runner's `--rows`, `--module`, `--bump`, `--nopassive` and
-  `--set`; the keyword line-up and the first prices. Merge it into main once Ryan has read
-  the chat.
+  Driver, Devour a rule; and of 12 October: the plow's brace, Braced one turn, the two twists,
+  the Nemesis's rage and its new fists; the runner's `--rows`, `--module`, `--bump`,
+  `--nopassive` and `--set`; the keyword line-up and the first prices. Merge it into main once
+  Ryan has read the chat.
 
 ## Pages
 
@@ -87,12 +88,16 @@ goes into this file in the same commit as its first publish.
   diagnostic; keywords against written-out effects wait on the content lock; injuries shelved
   for an economy session; modules as bundles open. Tested: the area set (Splash folds into
   Spread and Penetrate, the firer's price no lever; the plus swings the formations), lower
-  armour (teams barely move). Last on 12 October (Ryan): hands tabled; the Nemesis's berserk
-  made simple (the passive banks rage, the fists spend one to roll again), with what banks
-  rage measured; the Boar's spill no keyword (the star proposed); the basics are tier zero,
-  7 October's call that the 11 October rewrite of the bible had dropped, restored in the bible
-  and the rules; direct heat from foes retired for the two debuffs. Open: what banks the rage,
-  the tier stocking rule, the heat debuffs' names (Burn and Scorch proposed), Melee's word.
+  armour (teams barely move). Last on 12 October (Ryan): hands tabled and Melee kept; the
+  Boar's spill no keyword (the star proposed); the basics are tier zero, 7 October's call
+  that the 11 October rewrite of the bible had dropped, restored; a chassis stocks only below
+  its own tier, a bought one bringing its stock and never the blueprints, tier three the
+  unique effects and raw power, tier two the synergy pieces; direct heat from foes retired
+  for the two debuffs. Built: the Nemesis's rage (all hull damage banks it; new locked fists,
+  the Knuckle of Fury, Ryan's working name, spend one and the die rolls again, a plain roll
+  with no switch-off), the Gravity Knuckles unstocked at tier three; measured alone 79%
+  greedy against the Crucible's 84, teams unmoved. Open: the names, the heat debuffs' names
+  (Burn and Scorch proposed).
 - The docs were rebuilt on 10 October: `docs/rules.md` states the rules; the bible is
   decisions and why. Ryan reads `docs/rules.md` once, then a fresh session starts here.
 - Built, waiting on Ryan's play: the 10 and 11 October rules, the modules (harness only), the
@@ -100,8 +105,9 @@ goes into this file in the same commit as its first publish.
 - Reports out of date: `docs/balance.md` and `docs/campaign_run.md` predate the weapon rules;
   rerun after the stock pass. Scratch reads at 50 seeds (11 October) are in the bible's rows.
 - Decided, not built: the shared basic kit and its stock pass (the twists with it), tags on
-  components, the basics at tier zero, heat from foes only through debuffs, the Pinion Driver
-  locked on the Sparrowhawk, danger close retired with the area keywords. The bible's
+  components, the basics at tier zero and stock below a chassis's tier, heat from foes only
+  through debuffs, the Pinion Driver locked on the Sparrowhawk, danger close retired with the
+  area keywords. The bible's
   section 12 lists the questions only Ryan can settle.
 - Foe art: every foe and hero is cut from Ryan's picks at 72x96 (massive 96x144, chibis 36x48),
   drawn on whole device pixels with a gentle sharpen; the style is fixed in words in the bible's

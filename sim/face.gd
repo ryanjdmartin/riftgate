@@ -91,6 +91,7 @@ var fills_hopper: int = 0     # an attack: loads it puts in its machine's hopper
 var fires_hopper: int = 0     # an attack: the most loads one shot fires from the hopper...
 var power_per_load: int = 0   # ...each adding this to the blow (the Bullion Fragmenter, 11 October)
 var braces: int = 0           # any entry: spending it Braces its owner, this many stacks, until the round's end (the Breaching Plow, 12 October)
+var rolls_again_on: String = ""   # any entry: spending it spends a stack of this status, if its owner has one, and the die rolls again (the Nemesis's fists on rage, 12 October)
 var tags: Array[String] = []  # its component's tags (10 October): build flavour that never carries a rule; a passive may read one
 
 
@@ -230,6 +231,7 @@ static func from_dict(d: Dictionary) -> Face:
 		f.fires_hopper = maxi(0, int(d.get("fires_hopper", 0)))
 		f.power_per_load = maxi(0, int(d.get("power_per_load", 0))) if f.fires_hopper > 0 else 0
 	f.braces = maxi(0, int(d.get("braces", 0)))
+	f.rolls_again_on = str(d.get("rolls_again_on", ""))
 	for name in d.get("keywords", []):
 		var kw := keyword_from_name(str(name))
 		if kw > 0:
@@ -271,6 +273,8 @@ func to_dict() -> Dictionary:
 		d["power_per_load"] = power_per_load
 	if braces > 0:
 		d["braces"] = braces
+	if not rolls_again_on.is_empty():
+		d["rolls_again_on"] = rolls_again_on
 	return d
 
 
@@ -284,9 +288,10 @@ func has(kw: int) -> bool:
 
 
 ## A rule printed on the entry rather than a keyword (bible section 6: the die's star chip):
-## Vents all, the missing-hull bonus, devour, the hopper, the brace, or a labelled effect.
+## Vents all, the missing-hull bonus, devour, the hopper, the brace, rolling again on a
+## status (the Nemesis's rage), or a labelled effect.
 func has_unique_rule() -> bool:
-	return vents_all or power_per_missing > 0 or devours or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not label.is_empty()
+	return vents_all or power_per_missing > 0 or devours or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty()
 
 
 func is_attack() -> bool:
@@ -354,6 +359,7 @@ func duplicate_face() -> Face:
 	f.fires_hopper = fires_hopper
 	f.power_per_load = power_per_load
 	f.braces = braces
+	f.rolls_again_on = rolls_again_on
 	f.tags = tags.duplicate()
 	for k in keywords:
 		f.keywords.append(k)
@@ -396,6 +402,8 @@ func describe() -> String:
 				s += " " + keyword_label(k)
 			if braces > 0:
 				s += " braces" + ("" if braces == 1 else " ×%d" % braces)
+			if not rolls_again_on.is_empty():
+				s += " spends a %s to roll again" % str(Effects.STATUS.get(rolls_again_on, {}).get("name", rolls_again_on))
 			if targets == Target.SELF:
 				s += " (self only)"
 			elif targets == Target.ALLY:
@@ -419,6 +427,8 @@ func describe() -> String:
 				s += " fires the hopper, +%d a load (%d a shot)" % [power_per_load, fires_hopper]
 			if braces > 0:
 				s += " braces" + ("" if braces == 1 else " ×%d" % braces)
+			if not rolls_again_on.is_empty():
+				s += " spends a %s to roll again" % str(Effects.STATUS.get(rolls_again_on, {}).get("name", rolls_again_on))
 			if heat > 0:
 				s += " (+%d heat)" % heat
 	if cracked:
