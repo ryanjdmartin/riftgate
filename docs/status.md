@@ -80,7 +80,12 @@ goes into this file in the same commit as its first publish.
   12 October, `docs/keyword_lineup.md`, the bible's section 12): the three area shapes with
   one half rule, the Boar's spill dropped, the Badger's identity, the Nemesis's rage and
   release, a blueprint bolts on, injuries in one state, modules as priced bundles, roster
-  turnover, the Rangefinder's and the Ram Frame's rules.
+  turnover, the Rangefinder's and the Ram Frame's rules. Later on 12 October (Ryan): the Boar
+  keeps its spill, written out; a component is balanced against its tier, a chassis alone is a
+  diagnostic; keywords against written-out effects wait on the content lock; injuries shelved
+  for an economy session; modules as bundles open. Tested: the area set (Splash folds into
+  Spread and Penetrate, the firer's price no lever; the plus swings the formations), lower
+  armour (teams barely move). Open: hands as a superset, the Nemesis's berserk or ladder.
 - The docs were rebuilt on 10 October: `docs/rules.md` states the rules; the bible is
   decisions and why. Ryan reads `docs/rules.md` once, then a fresh session starts here.
 - Built, waiting on Ryan's play: the 10 and 11 October rules, the modules (harness only), the

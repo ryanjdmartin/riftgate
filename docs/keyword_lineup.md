@@ -25,9 +25,9 @@ what keywords are owned by what maker".
 | Rapid | The entry switches off, the die rerolls free, the machine acts again | Wake Diffuser, Laminar Deflector (Kestrel, the deflector since 12 October), Flakshot Repeater (W&S, locked), Pulse Vacillator (Aphelion, unstocked) | Keep: a core verb |
 | Volatile | Spending it costs its owner 10 hull, past shield and armour | Oblation Ward, Entropy Condenser (the Arsenal, the condenser since 12 October) | Keep: the Arsenal's price (the Gravity Knuckles as a blueprint add a carrier). Corrupted stays its own (section 4) |
 | Cleanse | The machine it lands on loses a foe's debuffs | Corona Shield (unstocked), Phased Sublimator (Aphelion) | Keep |
-| Chain | A kill repeats the attack on the next target, rolling and paying heat again | Arc Fault Cannon (Kestrel) | Keeps its keyword: the kill's area shape, the Sparrowhawk's swarm answer (section 7); wants a second carrier |
+| Chain | A kill repeats the attack on the next target, rolling and paying heat again | Arc Fault Cannon (Kestrel) | The kill's area shape (section 7); area is no part of Kestrel's brief, so the Sparrowhawk is not balanced around it (Ryan, 12 October) |
 | Overshield | A shield that may pass the maximum; the excess fades at the round's end | Backwash Ionizer (Kestrel, locked) | Kept for now as a rare keyword (Ryan, 11 October) |
-| Spillover | Damage past a front-rank kill carries into the foe behind | None: the Wild Boar's Juggernaut Drive grants it to every weapon | Proposed to go (section 8): for a player it is a soft Penetrate (Ryan, 12 October), and it measures about one point |
+| Spillover | Damage past a front-rank kill carries into the foe behind | None: the Wild Boar's Juggernaut Drive grants it to every weapon | Kept as the Boar's rule, written out in its passive (Ryan, 12 October: it fits the Boar's brief and gives flexibility the runner cannot measure) |
 
 Thirteen today, Devour having become a rule printed on the Soulcutter Talons (Ryan, 11
 October; built). With Ryan's answers of 12 October: Spread, Penetrate and Splash (the three area
@@ -36,11 +36,10 @@ Overshield, thirteen, the Boar's spill gone; the dispel (decided 12 October, the
 section 5) makes fourteen once built. Ryan accepts more than ten where each earns its place:
 the gain is that each keyword is one shape or one verb, never a number.
 
-**The guide this suggests:** a keyword earns its place on three carriers, or on two makers.
-Anything on one or two pieces is better as a unique rule printed on the entry, the way Vents
-all and the missing-hull bonus already are, so the codex teaches it on the piece rather than
-as a word to learn. Ryan allows a rare keyword where more carriers are meant to follow
-(Overshield, 11 October), so this is a guide, never a check.
+**Keyword or written out (Ryan, 12 October):** a matter of how common an effect is and
+whether something can add it to a component during a skirmish (a passive, an effect). Three
+weapons with Chain and nothing that grants it could be written out as unique effects. That
+waits on the whole content set being locked, so a tight list is no priority now.
 
 ## 2. Unique rules (component properties)
 
@@ -211,9 +210,32 @@ made whole, and each shape asks its own aim of the player.
 4. **The column waits on back ranks.** Penetrate and Splash's back half matter only against
    a back rank, which only the formations have today; they earn their keep once the foes'
    fresh start puts back ranks in more fights.
-5. **Chain keeps its keyword**, the kill's shape beside the three: the one area that grows
-   with a blow's size rather than spreading it, the Sparrowhawk's answer to a swarm; it wants
-   a second carrier. The Boar's spill goes (section 8).
+5. **Chain is the kill's shape** beside the three: the one area that grows with a blow's
+   size rather than spreading it. Area is no part of Kestrel's brief, so the Sparrowhawk is
+   never balanced around it (Ryan, 12 October): it is something a player specs into. Its jump
+   today goes to the next foe in reach order (the leftmost, front first), neither random nor
+   seeking a kill, and the heaviest hitters deploy left, so a chain tends to stop on the foe
+   least likely to die; jumping to the weakest foe in reach would make it try for kills, and
+   the forecast could show the path.
+
+**Ryan, 12 October:** if the test shows explosives need no price on the firer, then Splash is
+Penetrate and Spread together, and no third keyword is needed: an explosive carries both.
+
+**Tested 12 October** (greedy, 30 seeds a cell; the artillery shells as a provisional
+explosive set, since tags are unassigned: the Shotfire Rack, the Ankle Mortar, the Howitzer,
+the Incendiary Shells, the Suppression Battery, the Meteor Artillery):
+
+| Run | The half rule, danger close gone | + the shells carrying Spread and Penetrate | + danger close kept as the firer's price |
+|---|---|---|---|
+| Wainwright & Sutler team, Meadow / Marsh / Peak formations | 63 / 10 / 13% won | 100 / 100 / 97% | 100 / 100 / 97% |
+| Its hull lost there | 62 / 98 / 97% | 10 / 17 / 23% | 18 / 17 / 26% |
+| Explosives' share of its spends | 35% | 46% | |
+
+Alone, the half rule costs the Badger and the Wild Boar 3 to 5 points (their spreads halved)
+and the shells add a few points to whoever carries them (the Clydesdale 48 to 61). So the
+price on the firer is no lever, and **Splash folds into Spread and Penetrate**. The plus is
+strong exactly where back ranks stand, turning the formations from walls into wins for an
+artillery team: if that is too much, the lever is the number, or an explosive with one shape.
 
 ## 8. The overflow word
 
@@ -222,9 +244,9 @@ word I think we need to look at our vocab and see if there's a more clear word t
 similar to something we already have. It's not terrible though."
 
 Ryan, 12 October: "Breach is also fine too, and really for a player, it's just a soft
-penetrate, so is it really needed?" No: the spill is the Wild Boar's whole passive and
-measures about one point (about 7 hull), so it goes, and Breach stays the foes' word. The
-Boar wants a passive that says it dives in. The scan below stands for the foes' word.
+penetrate, so is it really needed?", then: the spill "matches its brief. I would keep it and
+just write it out." So the Boar keeps it, its passive saying it in full, and Breach stays the
+foes' word. The scan below stands for that word.
 
 What the word must cover: a needle volley, a sandworm's swallow, a bomb's burst, a slag fist,
 a dragon's dive and a fire spell going through a shield (the foes' seven carriers today), and
