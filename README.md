@@ -127,7 +127,11 @@ godot --headless --path . -s tools/export_vocabulary.gd
 # rules and a section compares them. --seeds N, --policies greedy, --withdraw 40 (a persona),
 # --targeting lowest (the rule before 2 October for the matrix), --json out.json for every cell;
 # --rows badger,team runs only those rows; --module tactical_databank fits that module to every
-# machine (--out elsewhere, then compare against a run without it);
+# machine (--out elsewhere, then compare against a run without it); for prices, --bump armour:5
+# (repeatable: hull, shield, armour, heat, cooling, or damage on every blow) gives every machine
+# that much more, --nopassive strips every chassis's passive, and --set
+# components/arc_fault_cannon/face/keywords=[] replaces one content value for the run only
+# (repeatable, never validated: knock-outs and what-ifs); compare each against the same seeds without;
 # --trace "sparrowhawk|brute x4|greedy|3" plays that one fight and prints its log instead.
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
 

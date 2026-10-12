@@ -11,7 +11,7 @@ command are in `README.md`.
   disagree, the chat is newer.
 - Sessions run in parallel on this repo: `git status` first, stage by path, diff a shared
   file before staging it, never a bare `git add -A`, never kill a bare `godot --path .`.
-- Tests: 433 tests, 19,569 checks, green (11 October, on `claude/focused-ritchie-omn8i5`).
+- Tests: 433 tests, 19,571 checks, green (12 October, on `claude/focused-ritchie-omn8i5`).
   A cloud session fetches Godot 4.7's Linux build from the GitHub release asset
   (`godotengine/godot-builds`, `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for
   screenshots, and builds models with `BPY_PYTHON` set to a python3.11 venv holding
@@ -24,10 +24,12 @@ command are in `README.md`.
   weapon rules (no crits, two reaches, the die showing the number, the Paradox meter, Numbed
   the only resistance, the mirrored Booster and Databank, the Nemesis's Crucible), the first
   foe art at 72x96 and the rewritten docs.
-- `claude/focused-ritchie-omn8i5` (11 October) is main plus Ryan's calls of that day: the
-  overheat at the end of the player's turn, armour off a breach's overflow, the Badger's
-  hopper, the Stingray at tier one, the runner's `--rows` and `--module`, and the keyword
-  line-up proposal. Merge it into main once Ryan has read the chat.
+- `claude/focused-ritchie-omn8i5` (11 and 12 October) is main plus Ryan's calls of 11
+  October: the overheat at the end of the player's turn, armour off a breach's overflow, the
+  Badger's hopper, the Stingray at tier one, the Faraday Hull's discharge gone, the Pinion
+  Driver, Devour a rule; the runner's `--rows`, `--module`, `--bump`, `--nopassive` and
+  `--set`; the keyword line-up and the first prices. Merge it into main once Ryan has read
+  the chat.
 
 ## Pages
 
@@ -59,16 +61,23 @@ goes into this file in the same commit as its first publish.
 
 ## Where things stand
 
-- 11 October (this branch): Ryan's answers to the open questions of the 10 October session,
-  in chat. Built: the overheat burns at the end of the player's turn (a withdrawal too; a
-  foe's heat waits on the gauge for the next turn), armour comes off a breach's overflow, the
-  Badger's hopper (the claw fills a load a foe, the fragmenter fires three at +5: greedy 62 to
-  69 on the lone Badger, random unchanged), the Stingray at tier one, the runner's `--rows` and
-  `--module`. Measured, in the bible: the Faraday Hull's levers (the discharge is the larger),
-  the Booster and the Databank even, danger close doing almost nothing, cracks (see the chat
-  of 11 October). Proposed, waiting on Ryan: `docs/keyword_lineup.md`, the Nemesis's new locked
-  fists, the Ram Frame's rule, the Sparrowhawk finisher's name, the Gravity Knuckles as a
-  blueprint with an area effect.
+- 11 October (this branch): Ryan's answers to the 10 October session's questions, in three
+  rounds of chat. Built: the overheat at the end of the player's turn (a withdrawal too,
+  before the enemy's turn), armour off a breach's overflow, the Badger's hopper, the Stingray
+  at tier one, the discharge gone, the Pinion Driver, Devour a rule. Decided, not built:
+  danger close retires once the area keywords land; the foes' Breach and the Boar's spill
+  share a word. Measured, in the bible: the Gravity Knuckles as a blueprint (a sidegrade
+  elsewhere; four on the Nemesis its best build, which Burn would make simply best), area
+  (the spread at half costs about three points, Penetrate matters only against formations,
+  Chain is the Sparrowhawk's swarm answer), the Glacis front-only (no change), the Booster and
+  the Databank (even, apart by matchup), injuries, and the first price of every stat and
+  passive (armour 5 about 53 hull, damage 5 a blow about 60, shield 20 about 17, heat and
+  cooling almost nothing; passives from 0 to about 200). Proposed, waiting on Ryan (the chat
+  of 11 October, `docs/keyword_lineup.md`, the bible's section 12): area by shape, the overflow
+  word (Breach), the Nemesis's fists answering the foe that last struck it (as reach), the
+  knuckles without Burn, the Glacis as a brace on the plow's spend, what a tier means (and no
+  rolled module stats), new rules for the Ram Frame and the Artillery Rangefinder, what the
+  Assembly branch is.
 - The docs were rebuilt on 10 October: `docs/rules.md` states the rules; the bible is
   decisions and why. Ryan reads `docs/rules.md` once, then a fresh session starts here.
 - Built, waiting on Ryan's play: the 10 and 11 October rules, the modules (harness only), the
@@ -77,7 +86,8 @@ goes into this file in the same commit as its first publish.
   rerun after the stock pass. Scratch reads at 50 seeds (11 October) are in the bible's rows.
 - Decided, not built: the shared basic kit and its stock pass (the twists with it), tags on
   components, heat from foes only through debuffs, the Pinion Driver locked on the
-  Sparrowhawk, the Gravity Knuckles as a blueprint. The bible's section 12 lists the
+  Sparrowhawk, the Gravity Knuckles as a blueprint, danger close retired with the area
+  keywords. The bible's section 12 lists the
   questions only Ryan can settle.
 - Foe art: every foe and hero is cut from Ryan's picks at 72x96 (massive 96x144, chibis 36x48),
   drawn on whole device pixels with a gentle sharpen; the style is fixed in words in the bible's
