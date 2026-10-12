@@ -22,12 +22,12 @@ what keywords are owned by what maker".
 | Shock | Each foe reached and left standing takes the team's next blow double | Polarity Projector (Aphelion), Tesla Gauntlets (Minerva, unstocked) | Keep: a core verb |
 | Lure | Each foe reached turns on the spender for the round | Proximity Klaxon (Minerva) | Keep: redirection is a core verb; needs carriers |
 | Disrupt | Each foe reached takes its next move, with a new target | Differentiation Probe (Aphelion) | Keep; needs carriers |
-| Rapid | The entry switches off, the die rerolls free, the machine acts again | Wake Diffuser, Laminar Deflector (Kestrel, the deflector since 12 October), Flakshot Repeater (W&S, locked), Pulse Vacillator (Aphelion, unstocked) | Keep: a core verb |
-| Volatile | Spending it costs its owner 10 hull, past shield and armour | Oblation Ward, Entropy Condenser (the Arsenal, the condenser since 12 October) | Keep: the Arsenal's price (the Gravity Knuckles as a blueprint add a carrier). Corrupted stays its own (section 4) |
+| Rapid | The entry switches off, the die rerolls free, the machine acts again | Wake Diffuser, Laminar Deflector (Kestrel, the deflector since 12 October), Flakshot Repeater (W&S, locked), Pulse Vacillator (Aphelion, unstocked) | Keep: a core verb. The Nemesis's fists may borrow its roll, paid in rage (Ryan's berserk, 12 October; the bible's section 7) |
+| Volatile | Spending it costs its owner 10 hull, past shield and armour | Oblation Ward, Entropy Condenser (the Arsenal, the condenser since 12 October) | Keep: the Arsenal's price. Corrupted stays its own (section 4) |
 | Cleanse | The machine it lands on loses a foe's debuffs | Corona Shield (unstocked), Phased Sublimator (Aphelion) | Keep |
 | Chain | A kill repeats the attack on the next target, rolling and paying heat again | Arc Fault Cannon (Kestrel) | The kill's area shape (section 7); area is no part of Kestrel's brief, so the Sparrowhawk is not balanced around it (Ryan, 12 October) |
 | Overshield | A shield that may pass the maximum; the excess fades at the round's end | Backwash Ionizer (Kestrel, locked) | Kept for now as a rare keyword (Ryan, 11 October) |
-| Spillover | Damage past a front-rank kill carries into the foe behind | None: the Wild Boar's Juggernaut Drive grants it to every weapon | Kept as the Boar's rule, written out in its passive (Ryan, 12 October: it fits the Boar's brief and gives flexibility the runner cannot measure) |
+| Spillover | Damage past a front-rank kill carries into the foe behind | None: the Wild Boar's Juggernaut Drive grants it to every weapon | Kept as the Boar's rule, written out in its passive (Ryan, 12 October: it fits the Boar's brief and gives flexibility the runner cannot measure). No keyword, being unconditional and the Boar's alone; a keyword once a second source grants it (Ryan, later on 12 October). Its entries' Spillover chip becomes the star (proposed, the stock pass) |
 
 Thirteen today, Devour having become a rule printed on the Soulcutter Talons (Ryan, 11
 October; built). With Ryan's answers of 12 October: Spread, Penetrate and Splash (the three area
@@ -61,7 +61,8 @@ should also take a unique rule, or its number, is the bible's question in sectio
 - **On a machine, from its own kit:** Overcharged (+5 a stack), Braced (armour +5 a stack),
   Primed (blows leave Burning), Retaliate (strikers are Shocked), Crucible (the Nemesis's
   melee +5 a stack), Hopper (the Badger's loads).
-- **On a machine, from a foe:** Overheating (heat a stack at the round's end), Scrambled (the
+- **On a machine, from a foe:** Overheating (heat a stack at the round's end; its name goes, and
+  direct heat becomes it or a softer debuff, decided 12 October), Scrambled (the
   next reroll lands anywhere), Disabled (an entry blank through the next turn), Corrupted
   (spending an entry costs hull, shield first, for the skirmish; cleansable).
 - **On a foe, from the team:** Burning, Suppressed, Shocked, Paradox.
@@ -79,7 +80,7 @@ Where a machine and a foe fill the same niche with different words.
 | Temporary armour | Braced: +5 a stack, for rounds | Folded: +value until its next action | Proposed: **one word, Braced**, one shape: a foe that hardens is Braced until its next action |
 | Hits harder | Overcharged: +5 a stack | Kindled: +10 this round (fixed to its shown value in the to-do) | Proposed: one rule, +5 a stack; **Ryan's call** whether one neutral word or a word for each register (machines and myth) |
 | A spend that costs hull | Volatile: 10 hull, past shield, innate to the component | Corrupted: 10 a stack, shield first, put on by a foe | **Kept apart** (Ryan, 11 October): Corrupted can be cleansed and ends with the skirmish; Volatile is the component's own |
-| Damage over time | Burn, Burning: hull, 5 a stack | Scorch, Overheating: heat, 5 a stack | Keep the pair: hull and heat are different resources. The heat debuff's rename is already open (the bible's heat-debuff row) |
+| Damage over time | Burn, Burning: hull, 5 a stack | Scorch, Overheating: heat, 5 a stack | Keep the pair: hull and heat are different resources. Ryan, 12 October: direct heat goes; scorch puts on one of two heat debuffs, the other named anew or Burn reused on a machine. Claude's lean: Burn and Scorch, Burning on a machine the tick of heat, Scorched the softer (every weapon it fires hotter): fire takes a foe's hull and heats a machine (the bible's heat-debuff row) |
 | Denial | Suppress: a foe skips its action | Disable: a machine's showing entry is blank through its next turn | Keep both: a foe has one action, a machine a die |
 | Redirection | Lure: foes turn on the spender | Cover (planned, the Warrior): a foe takes blows meant for its allies | Keep both: mirror verbs |
 | Retaliation | Retaliate: a striker is Shocked | Counter, Ember Hide (planned): a striker is punished | Proposed: **one word, Retaliate**; the foe's version needs its effect on the machine designed |
@@ -196,7 +197,7 @@ made whole, and each shape asks its own aim of the player.
 |---|---|---|---|
 | Penetrate | The foe behind it (or in front, aimed at the back) | The column with two worth hitting | Beams, rails, the line pierce |
 | Spread | Its neighbours in the rank | The middle of a cluster | Blades, sweeps, a siren, a scattergun |
-| Splash | Its neighbours and the foe behind (a plus) | The foe with the most around it | Shells, missiles, the Gravity Knuckles |
+| Splash | Its neighbours and the foe behind (a plus) | The foe with the most around it | Shells, missiles |
 
 1. **Spread is the neighbours, never the whole row.** The whole row makes the aim moot (every
    front foe is hit wherever the blow lands) and reaches all four; the neighbours keep the

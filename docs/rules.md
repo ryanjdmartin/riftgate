@@ -39,9 +39,13 @@ skirmish.
   shield, heat maximum, armour, move, field recharge, cooling) and at most one rule, tier 1
   to 3, run as one passive nothing on the die can remove. The same module twice stacks.
   Fitted in the harness only (not in the run yet). Catalogue: `content/modules.json`.
-- **Tiers and blueprints**: a component stocked by a chassis takes the lowest tier of the
-  chassis that stock it; an unstocked one carries its own; a fixed one has none. Tier one is
-  what a run starts with; the Arsenal (the capital's maker) has no tier one.
+- **Tiers and blueprints**: the basics are tier zero, what comes off the assembly line: a run
+  starts with every basic's blueprint, and a tier-one chassis stocks basics beside its fixed
+  pieces. Blueprints of tiers one to three are found, or their components come on a bought
+  chassis of tier two or three. A fixed component has no tier; the Arsenal (the capital's
+  maker) makes no basics and has no tier one. (Not built: today a stocked component takes the
+  lowest tier of the chassis that stock it, an unstocked one carries its own, a run starts
+  with every tier-one blueprint, and the tier-one stocks wait on the stock pass.)
 - **Damage states**: a component is intact, cracked or destroyed, for the whole battle.
 
 ## The skirmish
@@ -194,9 +198,11 @@ Burning, Suppressed, Shocked or Paradox.
 - An overheat is hull damage for every passive that reads hull damage.
 - Foes heat machines by scorch (Overheating), and by moves that add heat to one machine or
   to all. That heat lands after the burn, so it waits on the gauge for the next turn, where a
-  vent or a cleanse answers it. (The direction, not built: foes heat machines only through debuffs; one adds its
-  heat at the end of the player's turn, before the overheat, so it can be vented or cleansed
-  first; a softer one raises the heat every weapon generates, per stack; the names are open.)
+  vent or a cleanse answers it. (Decided, not built: foes heat machines only through
+  debuffs, every move that adds heat today putting on one or the other by how threatening it
+  must be. One adds its heat at the end of the player's turn, before the overheat, so it can
+  be vented or cleansed first; a softer one raises the heat every weapon generates, per
+  stack. Scorch puts on one of them; the names are open.)
 
 ### Injury
 - A foe's blow that puts a quarter of the machine's maximum hull or more past armour into
@@ -310,7 +316,7 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   run is lost at zero.
 - **Start**: a tender of one tier-one machine from each city maker (by seed, in stock
   loadout); the player takes three. Four squad slots, 0 salvage, 100 Favour, a blueprint for
-  every tier-one component.
+  every basic (not built: today every tier-one component's).
 - **A turn** is one battle at a front, with one to four ready machines, or a pass.
 - **Won** (the boss dies): the gate refills, the rift closes, no rift opens there next turn;
   10 salvage a kill; 100 Favour less 1 per gate point the city lost, never below 0; a research

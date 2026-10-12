@@ -85,7 +85,12 @@ goes into this file in the same commit as its first publish.
   diagnostic; keywords against written-out effects wait on the content lock; injuries shelved
   for an economy session; modules as bundles open. Tested: the area set (Splash folds into
   Spread and Penetrate, the firer's price no lever; the plus swings the formations), lower
-  armour (teams barely move). Open: hands as a superset, the Nemesis's berserk or ladder.
+  armour (teams barely move). Last on 12 October (Ryan): hands tabled; the Nemesis's berserk
+  made simple (the passive banks rage, the fists spend one to roll again), with what banks
+  rage measured; the Boar's spill no keyword (the star proposed); the basics are tier zero,
+  7 October's call that the 11 October rewrite of the bible had dropped, restored in the bible
+  and the rules; direct heat from foes retired for the two debuffs. Open: what banks the rage,
+  the tier stocking rule, the heat debuffs' names (Burn and Scorch proposed), Melee's word.
 - The docs were rebuilt on 10 October: `docs/rules.md` states the rules; the bible is
   decisions and why. Ryan reads `docs/rules.md` once, then a fresh session starts here.
 - Built, waiting on Ryan's play: the 10 and 11 October rules, the modules (harness only), the
@@ -93,10 +98,9 @@ goes into this file in the same commit as its first publish.
 - Reports out of date: `docs/balance.md` and `docs/campaign_run.md` predate the weapon rules;
   rerun after the stock pass. Scratch reads at 50 seeds (11 October) are in the bible's rows.
 - Decided, not built: the shared basic kit and its stock pass (the twists with it), tags on
-  components, heat from foes only through debuffs, the Pinion Driver locked on the
-  Sparrowhawk, the Gravity Knuckles as a blueprint, danger close retired with the area
-  keywords. The bible's section 12 lists the
-  questions only Ryan can settle.
+  components, the basics at tier zero, heat from foes only through debuffs, the Pinion Driver
+  locked on the Sparrowhawk, danger close retired with the area keywords. The bible's
+  section 12 lists the questions only Ryan can settle.
 - Foe art: every foe and hero is cut from Ryan's picks at 72x96 (massive 96x144, chibis 36x48),
   drawn on whole device pixels with a gentle sharpen; the style is fixed in words in the bible's
   enemy art row (painterly, small heads, battle poses, the prompt anchored on SNES Final Fantasy IV
