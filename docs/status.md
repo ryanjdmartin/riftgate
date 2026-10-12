@@ -11,7 +11,7 @@ command are in `README.md`.
   disagree, the chat is newer.
 - Sessions run in parallel on this repo: `git status` first, stage by path, diff a shared
   file before staging it, never a bare `git add -A`, never kill a bare `godot --path .`.
-- Tests: 433 tests, 19,571 checks, green (12 October, on `claude/focused-ritchie-omn8i5`).
+- Tests: 437 tests, 19,586 checks, green (12 October, on `claude/focused-ritchie-omn8i5`).
   A cloud session fetches Godot 4.7's Linux build from the GitHub release asset
   (`godotengine/godot-builds`, `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for
   screenshots, and builds models with `BPY_PYTHON` set to a python3.11 venv holding
@@ -63,24 +63,21 @@ goes into this file in the same commit as its first publish.
 
 ## Where things stand
 
-- 11 October (this branch): Ryan's answers to the 10 October session's questions, in three
-  rounds of chat. Built: the overheat at the end of the player's turn (a withdrawal too,
-  before the enemy's turn), armour off a breach's overflow, the Badger's hopper, the Stingray
-  at tier one, the discharge gone, the Pinion Driver, Devour a rule. Decided, not built:
-  danger close retires once the area keywords land; the foes' Breach and the Boar's spill
-  share a word. Measured, in the bible: the Gravity Knuckles as a blueprint (a sidegrade
-  elsewhere; four on the Nemesis its best build, which Burn would make simply best), area
-  (the spread at half costs about three points, Penetrate matters only against formations,
-  Chain is the Sparrowhawk's swarm answer), the Glacis front-only (no change), the Booster and
-  the Databank (even, apart by matchup), injuries, and the first price of every stat and
-  passive (armour 5 about 53 hull, damage 5 a blow about 60, shield 20 about 17, heat and
-  cooling almost nothing; passives from 0 to about 200) and of twelve modules (the ruleless
-  Ram Frame the best on every machine, the two "bad text" ones losses). Proposed, waiting on Ryan (the chat
-  of 11 October, `docs/keyword_lineup.md`, the bible's section 12): area by shape, the overflow
-  word (Breach), the Nemesis's fists answering the foe that last struck it (as reach), the
-  knuckles without Burn, the Glacis as a brace on the plow's spend, what a tier means (and no
-  rolled module stats), new rules for the Ram Frame and the Artillery Rangefinder, what the
-  Assembly branch is.
+- 11 and 12 October (this branch): Ryan's answers to the 10 October session's questions, in
+  four rounds of chat. Built: the overheat at the end of the player's turn (a withdrawal too),
+  armour off a breach's overflow, the Badger's hopper, the Stingray at tier one, the discharge
+  gone, the Pinion Driver, Devour a rule; 12 October: the Breaching Plow braces the Boar (the
+  Glacis gone), Braced one turn from every source, the Laminar Deflector rapid 20 and the
+  Entropy Condenser volatile 40, the runner's `--bump`, `--nopassive` and `--set`. Decided,
+  not built: danger close retires once the area keywords land; tiers (a chassis's
+  complexity, a component's power, modules flat); no hard guard against a build. Measured,
+  in the bible: prices for every stat, passive and twelve modules; shields stopping a whole
+  blow is not why fights are easy (one point), three machines against one pack is; injuries
+  in one state at half the hull keep today's losses. Proposed, waiting on Ryan (the chat of
+  12 October, `docs/keyword_lineup.md`, the bible's section 12): the three area shapes with
+  one half rule, the Boar's spill dropped, the Badger's identity, the Nemesis's rage and
+  release, a blueprint bolts on, injuries in one state, modules as priced bundles, roster
+  turnover, the Rangefinder's and the Ram Frame's rules.
 - The docs were rebuilt on 10 October: `docs/rules.md` states the rules; the bible is
   decisions and why. Ryan reads `docs/rules.md` once, then a fresh session starts here.
 - Built, waiting on Ryan's play: the 10 and 11 October rules, the modules (harness only), the

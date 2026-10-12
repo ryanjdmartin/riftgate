@@ -414,10 +414,10 @@
    "id": "braced",
    "category": "status",
    "name": "Braced",
-   "codex": "Mech status. Armour +5 per stack: that much off every blow on bare hull, flat. Granted by buff equipment for the rounds it says.",
+   "codex": "Mech status. Armour +5 per stack: that much off every blow on bare hull, flat. It lasts until the round's end, every stack at once, whatever granted it: buff equipment, a bracing component, a passive.",
    "status": "implemented",
    "design": {
-    "holes": "Placeholder name and number (29 September). Flat since 2 October; it was 15% less damage a stack."
+    "holes": "Placeholder name and number (29 September). Flat since 2 October; it was 15% less damage a stack. One turn from every source since 12 October (Ryan: a lingering defensive buff would stack into a wall); a passive's stacks had faded one a round before."
    }
   },
   {
@@ -1098,6 +1098,16 @@
    "status": "implemented",
    "design": {
     "holes": "Built 11 October for the Honey Badger's locked pair (Ryan): the Chainsaw Claw fills, the Bullion Fragmenter fires, +5 a load and three a shot as placeholders. Ryan floated the passive feeding it from every melee hit, the claw giving extra; held in chat."
+   }
+  },
+  {
+   "id": "brace_property",
+   "category": "component_property",
+   "name": "Braces",
+   "codex": "A rule printed on a component (the Breaching Plow's). Spending it Braces its owner, the stacks it says, until the round's end: the armour stands behind the blow through the enemy's turn.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 12 October in place of the Glacis, a flat armour +5 on the plow that was meant for front-rank blows only and measured no different that way (Ryan: \"Give the plow braced. It fits.\"). Two stacks are a placeholder. A rule on one carrier, not a keyword, until another piece wants it."
    }
   },
   {

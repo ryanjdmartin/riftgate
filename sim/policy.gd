@@ -236,6 +236,8 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		score += (1.0 - p_kill) * mean * BURN_WEIGHT
 	if f.fills_hopper > 0:
 		score += hopper_fill_score(sk, ms, f, target)
+	if f.braces > 0:
+		score += brace_score(sk, ms, f.braces)
 	if f.devours:
 		# A kill feeds a stack of Overcharged: what the status adds to the die's own damage,
 		# for about the rounds the stack lasts. Read from the status, never hardcoded.
@@ -280,6 +282,33 @@ static func volatile_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: f
 
 ## What one stack of a status adds to a blow of `mean` damage: a flat add as itself, a
 ## multiplier as its share of the blow. Read from the status, never hardcoded.
+## What bracing its owner is worth (the Breaching Plow, 12 October): the hull the Braced
+## stacks keep from the blows coming at its bare hull this round. The armour a stack gives is
+## read from the status, never hardcoded.
+func brace_score(sk: Skirmish, ms: Skirmish.MechState, stacks: int) -> float:
+	var per := 0
+	for eff in Effects.STATUS.get("braced", {}).get("effects", []):
+		if str(eff.get("effect", "")) == "add_stat" and str(eff.get("stat", "")) == "armour":
+			per += int(eff.get("value", 0))
+	return _armour_saved(sk, ms, per * stacks) * HULL_WEIGHT
+
+
+## Hull that `extra` armour keeps this round: every strike of every foe aimed at this
+## machine that reaches its bare hull (no standing shield, or a breach) loses that much more,
+## down to nothing.
+func _armour_saved(sk: Skirmish, who: Skirmish.MechState, extra: int) -> float:
+	if extra <= 0:
+		return 0.0
+	var saved := 0
+	var arm := Effects.stat(who.unit, "armour")
+	for a in sk.attackers_of(who):
+		if who.unit.shield > 0 and not a.breaches():
+			continue
+		var through := maxi(0, Effects.damage_taken(who.unit, a.damage()) - arm)
+		saved += mini(extra, through) * a.strikes()
+	return float(saved)
+
+
 ## What filling the hopper is worth (the Chainsaw Claw, 11 October): each load what this
 ## machine's best hopper-firing entry adds a load, at the odds a later shot fires it, while
 ## the hopper holds less than two of that entry's shots (more would sit unfired).
@@ -526,6 +555,10 @@ func buff_score(sk: Skirmish, who: Skirmish.MechState, f: Face) -> float:
 				score += v * n * (1.0 if attack_now > 0.0 else 0.0) + v * n * float(f.buff_rounds - 1)
 			"multiply_damage_taken":
 				score += (1.0 - pow(v, n)) * float(sk.incoming_for(who)) * HULL_WEIGHT * float(f.buff_rounds)
+			"add_stat":
+				# Braced and its like: the armour stands behind this round's incoming blows.
+				if str(eff.get("stat", "")) == "armour":
+					score += _armour_saved(sk, who, int(v) * n) * HULL_WEIGHT * float(f.buff_rounds)
 			"add_burn":
 				var per := float(Effects.STATUS["burning"]["effects"][0]["value"])
 				score += per * v * n * BURN_WEIGHT * (1.0 if attack_now > 0.0 else 0.0) * float(f.buff_rounds)

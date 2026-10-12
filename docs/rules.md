@@ -129,13 +129,16 @@ kill gives the owner a stack of Overcharged. **Missing hull** adds its bonus for
 20 hull the target is missing. **The hopper**: a weapon that fills it puts a load in its
 machine's hopper for each foe its blows reach, after the blow; a weapon that fires it takes
 up to its most loads a shot, each adding its bonus to the blow, and spends them (the Honey
-Badger's Chainsaw Claw fills, its Bullion Fragmenter fires three at +5).
+Badger's Chainsaw Claw fills, its Bullion Fragmenter fires three at +5). **Braces**:
+spending it Braces its owner, the stacks it says, until the round's end (the Wild Boar's
+Breaching Plow, two).
 
 ### Buffs, debuffs and resistance
 On a machine:
 - **Overcharged** (buff): +5 damage a stack. From Devour it lasts the skirmish, losing a
   stack each round's end (the Ammit keeps it for the battle).
-- **Braced** (buff): armour +5 a stack.
+- **Braced** (buff): armour +5 a stack, until the round's end, every stack at once,
+  whatever granted it.
 - **Primed** (buff): each blow leaves a Burning stack per Primed stack on its target.
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.
 - **Crucible** (buff, the Nemesis's): its melee blows deal +5 a stack, a stack each time it

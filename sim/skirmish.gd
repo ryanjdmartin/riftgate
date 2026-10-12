@@ -778,6 +778,13 @@ func assign(mech_index: int, target = null) -> bool:
 			_cleanse_with(ms, who, f)
 		Face.Kind.ATTACK:
 			_resolve_attack(mech_index, ms, f, target)
+	# The brace (Ryan, 12 October; the Breaching Plow's in place of the Glacis): spending the
+	# entry Braces its owner until the round's end, so the plate stands behind the charge
+	# through the enemy's turn and is gone when the next round opens.
+	if f.braces > 0 and ms.alive():
+		var bm := Effects.grant_buff(ms.unit, "braced", f.braces, "brace:" + f.component, round)
+		if bm != null:
+			log.append("%s braces: %s ×%d" % [ms.unit.display_name, bm.name, f.braces])
 	ms.assigned = true
 	# Rapid: the component is switched off for the rest of this round, the die rerolls for
 	# free (never the same entry), and the mech may act again. The disable is only there to

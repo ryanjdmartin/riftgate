@@ -61,6 +61,7 @@ const SUPPORTED_EFFECTS := {
 }
 const DECAY_NONE := 0    # lives until its scope ends
 const DECAY_TICK := 1    # loses a stack each tick, gone at zero
+const DECAY_ROUND := 2   # gone at its owner's next tick, every stack at once (Braced: one turn from any source, 12 October)
 
 ## The tag a cleanse clears (decided 25 September): what a foe did to a machine, never what
 ## the machine did to itself (a rapid component's own switch-off keeps the turn finite).
@@ -94,7 +95,9 @@ const STATUS := {
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 5}]},
 	# Brace is temporary armour (2 October): flat off every blow, the same word and icon as the
 	# chassis stat, never a percentage.
-	"braced": {"id": "braced", "name": "Braced", "description": "Armour +5 per stack.",
+	# Braced lasts one turn from any source (Ryan, 12 October: a defensive buff that lingered,
+	# a stack fading a round, would stack into a wall; armour is the dearest stat there is).
+	"braced": {"id": "braced", "name": "Braced", "description": "Armour +5 per stack, until the round's end.", "decay": "round",
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 5}]},
 	"primed": {"id": "primed", "name": "Primed", "description": "Every blow it lands leaves a stack of Burning, per stack.",
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_burn", "value": 1}]},
@@ -299,6 +302,8 @@ static func tick(u) -> Dictionary:
 	var out := tick_preview(u)
 	var keep: Array = []
 	for m in u.modifiers:
+		if m.decay == DECAY_ROUND:
+			continue
 		if m.decay == DECAY_TICK:
 			m.stacks -= 1
 			if m.stacks <= 0:
@@ -748,7 +753,7 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 			"stack_status":
 				var id := str(eff.get("value", ""))
 				if STATUS.has(id):
-					var decay := DECAY_NONE if str(STATUS[id].get("decay", "")) == "none" else DECAY_TICK
+					var decay: int = {"none": DECAY_NONE, "round": DECAY_ROUND}.get(str(STATUS[id].get("decay", "")), DECAY_TICK)
 					var m := stack(u if onto == null else onto, STATUS[id], SKIRMISH, "passive:" + str(pair[1].id), int(pair[1].stacks), decay)
 					if m != null and not (out["statuses"] as Array).has(m.name):
 						(out["statuses"] as Array).append(m.name)

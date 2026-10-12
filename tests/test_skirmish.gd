@@ -503,6 +503,64 @@ func test_the_bot_fills_the_hopper_before_it_fires_it() -> void:
 	assert_eq(pol.hopper_fill_score(sk, ms, claw, sk.front[1]), 0.0, "two shots' worth waiting already: no more value")
 
 
+func test_a_bracing_entry_braces_its_owner_until_the_rounds_end() -> void:
+	# Ryan, 12 October: the Breaching Plow braces the Boar behind its blade, in place of the
+	# Glacis. Spending a bracing entry Braces its owner, the stacks it says, until the round's
+	# end: the armour stands through the enemy's turn and is gone when the next round opens.
+	var sk := Skirmish.new(1)
+	var plow := Face.from_dict({"kind": "attack", "reach": "direct", "power": 10, "braces": 2})
+	assert_eq(plow.describe(), "10 braces ×2", "the entry says what it does")
+	assert_true(plow.has_unique_rule(), "a rule printed on the entry: the star chip")
+	assert_eq(Face.from_dict(plow.to_dict()).braces, 2, "it round-trips")
+	var m := _mech("A", Die.single(plow), 0, 200)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(500, 20)])
+	sk.begin()
+	sk.start_round()
+	var armour: int = m.armour
+	assert_true(sk.assign(0, sk.front[0]), "the plow")
+	assert_eq(Effects.stacks_of(m, "braced"), 2, "two stacks of Braced")
+	assert_eq(m.armour, armour + 10, "armour +10 through the enemy's turn")
+	assert_true("\n".join(sk.log).contains("braces: Braced ×2"), "the log says so")
+	var hull: int = m.hull
+	sk.end_round()
+	assert_eq(hull - m.hull, maxi(0, 20 - (armour + 10)), "the ghoul's 20 lands less the brace")
+	assert_eq(Effects.stacks_of(m, "braced"), 0, "and it is gone at the round's end")
+	var cracked := plow.duplicate_face()
+	cracked.crack()
+	assert_eq(cracked.braces, 2, "a crack takes keywords only, so a cracked plow still braces")
+
+
+func test_braced_lasts_one_turn_from_every_source() -> void:
+	# Ryan, 12 October: a defensive buff that lingered, a stack fading a round, would stack
+	# into a wall. A passive's Braced (the Phase Conjugator's) goes at the round's end whole,
+	# like a buff's.
+	var m := _mech("A", Die.single(Face.attack(10)))
+	m.grant_passive({"id": "brace_on_round", "name": "Brace", "description": "",
+		"effects": [{"trigger": "on_round_start", "effect": "stack_status", "value": "braced"}]})
+	Effects.fire(m, "on_round_start")
+	Effects.fire(m, "on_round_start")
+	assert_eq(Effects.stacks_of(m, "braced"), 2, "two stacks from the passive")
+	Effects.tick(m)
+	assert_eq(Effects.stacks_of(m, "braced"), 0, "every stack goes at the tick, none lingers")
+
+
+func test_the_bot_values_a_brace_by_the_blows_coming() -> void:
+	var sk := Skirmish.new(1)
+	var plow := Face.from_dict({"kind": "attack", "reach": "direct", "power": 10, "braces": 2})
+	var bare := _mech("A", Die.single(plow), 0, 200)
+	var ms := sk.add_mech(bare)
+	sk.add_foes([_ghoul(500, 20), _ghoul(500, 3)])
+	sk.begin()
+	sk.start_round()
+	var pol := Policy.make(Policy.GREEDY, 1)
+	var arm: int = bare.armour
+	var saved := mini(10, maxi(0, 20 - arm)) + mini(10, maxi(0, 3 - arm))
+	assert_eq(pol.brace_score(sk, ms, 2), float(saved) * Policy.HULL_WEIGHT, "the armour each coming blow loses, in hull")
+	bare.shield = 30
+	assert_eq(pol.brace_score(sk, ms, 2), 0.0, "a standing shield takes every blow whole: nothing to brace against")
+
+
 func test_the_shown_number_is_what_the_blow_will_deal() -> void:
 	var sk := Skirmish.new(1)
 	var gun := Face.attack(10, L, [], 0, 20)

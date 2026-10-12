@@ -739,6 +739,33 @@ func test_the_vent_on_fire_fields_belong_to_an_attack() -> void:
 	assert_true(bad_gun, "power_per_heat without vents_all is refused")
 
 
+func test_a_brace_is_a_positive_number_of_stacks() -> void:
+	# The brace (12 October): the stacks of Braced a spend gives its owner. Any kind of entry
+	# may brace; nothing braces for zero.
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	assert_true(int(db.components["breaching_plow"]["face"].get("braces", 0)) > 0, "the plow braces")
+	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
+	plate["face"]["braces"] = 0
+	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
+	db.components["limp_plate"] = plate
+	var refused := false
+	for e in db.validate():
+		if e.begins_with("component limp_plate") and e.contains("braces is a positive number"):
+			refused = true
+	assert_true(refused, "a brace of nothing is refused")
+	# Braced lasts one turn from every source, so no buff grants it for longer.
+	var jack: Dictionary = db.components["shoring_jack"].duplicate(true)
+	jack["face"]["rounds"] = 2
+	jack["tier"] = 1
+	db.components["long_jack"] = jack
+	var long_refused := false
+	for e in db.validate():
+		if e.begins_with("component long_jack") and e.contains("lasts until the round's end"):
+			long_refused = true
+	assert_true(long_refused, "a buff granting Braced for two rounds is refused")
+
+
 func test_the_new_passive_fields_are_checked() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)

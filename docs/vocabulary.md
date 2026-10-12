@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 107 implemented, 8 planned, 0 idea.
+Status: 108 implemented, 8 planned, 0 idea.
 
 ## Resource
 
@@ -48,6 +48,7 @@ Status: 107 implemented, 8 planned, 0 idea.
 | **Vents all** | An attack that fires the machine's whole heat as it is spent: the heat gauge is empty after the shot, and every 10 heat fired adds the component's bonus to the blow before the passives. The shot's own heat cost still lands. | implemented |
 | **Grows with missing hull** | A flat blow that grows with its target's lost hull: it adds its bonus for every 20 hull the target is missing, read as the die is spent. No roll is involved, so the number is known before the spend, and the die shows it while held over a target. | implemented |
 | **The hopper** | Two weapons that work together. One fills its machine's hopper, a load for each foe its blows reach, after the blow. The other fires the hopper: each load it takes adds its bonus to the blow, up to its most a shot, and the loads it takes are spent. The hopper lasts the skirmish and shows on the machine; the die shows what a shot would fire. | implemented |
+| **Braces** | A rule printed on a component (the Breaching Plow's). Spending it Braces its owner, the stacks it says, until the round's end: the armour stands behind the blow through the enemy's turn. | implemented |
 | **Strikes** | An attack's blows per use. A weapon with three strikes lands three separate hits: each rolls its own damage and carries its own effects, so a rapid-fire weapon procs often. Against a shield, each strike is its own blow, so once one breaks the shield the next reaches the hull; against armour, every small strike loses the armour, so many small hits are the wrong tool for a heavy target and the right one for a soft one. Foe attacks have strikes too. | implemented |
 
 ## Reach
@@ -86,7 +87,7 @@ Status: 107 implemented, 8 planned, 0 idea.
 | **Retaliate** | Mech status. While it lasts, a foe that strikes this machine's bare hull is Shocked. From buff equipment it lasts the rounds the component says; the Armadillo's Faraday Hull carries it always. | implemented |
 | **Shocked** | Foe status. The next blow this foe takes deals double damage, then the status clears; a blow of nothing (a lure, a probe) leaves it standing. Never stacks. Applied by a machine whose hull is live, and by weapons that shock. | implemented |
 | **Overcharged** | Mech status. Each stack is +5 damage on this machine's attacks, flat. From buff equipment it lasts through the rounds the component says; from devour it lasts the skirmish and loses a stack at the end of each round unless a passive says otherwise. | implemented |
-| **Braced** | Mech status. Armour +5 per stack: that much off every blow on bare hull, flat. Granted by buff equipment for the rounds it says. | implemented |
+| **Braced** | Mech status. Armour +5 per stack: that much off every blow on bare hull, flat. It lasts until the round's end, every stack at once, whatever granted it: buff equipment, a bracing component, a passive. | implemented |
 | **Primed** | Mech status. Every blow this machine lands leaves a stack of Burning per stack of Primed. Granted by buff equipment for the rounds it says. | implemented |
 | **Disabled** | Component status. This die entry comes up blank while it lasts; the component itself is untouched. A foe's disable lasts through the mech's next turn and can be cleansed; a rapid component's own switch-off ends with the round. | implemented |
 | **Corrupted** | Component status. Every time this die entry is spent it bites its owner for 10 per stack, shield first, before the component acts. A blank is never spent, so a disabled entry does not bite. Stacks. Clears at end of skirmish. Can be cleansed. | implemented |
@@ -231,7 +232,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Retaliate** (implemented): Was flat damage equal to the component's power. Thorns scales with enemy blows and so inverts horde against boss; a debuff does not (Ryan, 28 September). The Armadillo's passive carries it always on.
 - **Shocked** (implemented): The Armadillo's retaliation (Ryan, 28 September): the tank sets up kills instead of out-damaging area weapons against a horde, and it works on a boss. The discharge a Shocked striker paid (10 a blow) went on 11 October (Ryan): it was thorns, the larger share of the Armadillo's strength against a horde. Numbers are placeholders.
 - **Overcharged** (implemented): The buff side and devour run (29 September); a buff's stacks and devour's are the same status to the machine and add up. The Ammit's Quintessence Tap (which stops the decay and keeps the stacks for the battle, never the campaign) is planned. Name is a placeholder.
-- **Braced** (implemented): Placeholder name and number (29 September). Flat since 2 October; it was 15% less damage a stack.
+- **Braced** (implemented): Placeholder name and number (29 September). Flat since 2 October; it was 15% less damage a stack. One turn from every source since 12 October (Ryan: a lingering defensive buff would stack into a wall); a passive's stacks had faded one a round before.
 - **Primed** (implemented): Placeholder name (29 September).
 - **Corrupted** (implemented): The bite is a placeholder number (Skirmish.CORRUPT_BITE_PER_STACK).
 - **Cracked component** (implemented): Threshold is a placeholder. Repair cost and the hangar screen are not built.
@@ -275,6 +276,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Vents all** (implemented): Built 30 September for the Afterburner Cannon (vents_all and power_per_heat on the face). Only the first shot of a chain fires the heat.
 - **Grows with missing hull** (implemented): Built 10 October for the Sparrowhawk's finisher, the Pinion Driver (named 11 October). MISSING_STEP is a placeholder.
 - **The hopper** (implemented): Built 11 October for the Honey Badger's locked pair (Ryan): the Chainsaw Claw fills, the Bullion Fragmenter fires, +5 a load and three a shot as placeholders. Ryan floated the passive feeding it from every melee hit, the claw giving extra; held in chat.
+- **Braces** (implemented): Built 12 October in place of the Glacis, a flat armour +5 on the plow that was meant for front-rank blows only and measured no different that way (Ryan: "Give the plow braced. It fits."). Two stacks are a placeholder. A rule on one carrier, not a keyword, until another piece wants it.
 - **Strikes** (implemented): Heat is paid once per use, not per strike. Foes have no armour yet, so on the player side strikes only matter for procs until they do.
 - **Static** (implemented): Every read asks the pipeline; nothing is written to a stat or a component, so an effect that is gone stops answering. A static reach rule cannot be conditioned on reach.
 - **Order of operations** (implemented): Refit (the hangar) is what changes loadout-scoped effects; not built.

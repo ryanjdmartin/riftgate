@@ -419,11 +419,14 @@
     "stage": "draft",
     "fantasy": "A very expensive bubble.",
     "niche": "",
-    "notes": "Renamed from the Deflector 9 October (Ryan, the name audit: the old name was bland; laminar is the smooth-airflow word, Kestrel's aerodynamics register)."
+    "notes": "Renamed from the Deflector 9 October (Ryan, the name audit: the old name was bland; laminar is the smooth-airflow word, Kestrel's aerodynamics register). 12 October (Ryan): the twist, so a Kestrel shield that is not a basic carries Kestrel's own keyword: 20 with rapid (a plain 30 before), shield, roll again and act."
    },
    "face": {
     "kind": "shield",
-    "power": 30
+    "power": 20,
+    "keywords": [
+     "rapid"
+    ]
    },
    "passive": null,
    "tags": [
@@ -618,8 +621,8 @@
    "design": {
     "stage": "draft",
     "fantasy": "The Wild Boar's front end: a ram and a plow blade that go through a wall or a rank of fodder at the same speed.",
-    "niche": "The Boar's locked melee: one big cleaving hit, and the front armour rides on it.",
-    "notes": "Claude's fill, 28 September. Its passive is flat armour now; once the engine can tell which rank struck, it becomes armour against front-rank blows only. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass."
+    "niche": "The Boar's locked melee: one big cleaving hit that braces the Boar behind its blade.",
+    "notes": "Claude's fill, 28 September. 10 October (Ryan): Close removed, so its reach is direct and melee is its tag; its number comes down to direct's band in the stock pass. 12 October (Ryan: \"Give the plow braced. It fits.\"): spending it Braces the Boar until the round's end (two stacks, a placeholder), in place of the Glacis, a flat armour +5 that was meant for front-rank blows only and measured no different that way (11 October), so it was hidden base armour."
    },
    "face": {
     "kind": "attack",
@@ -629,21 +632,10 @@
     "keywords": [
      "cleave"
     ],
-    "heat": 0
+    "heat": 0,
+    "braces": 2
    },
-   "passive": {
-    "id": "glacis",
-    "name": "Glacis",
-    "description": "Armour +5.",
-    "effects": [
-     {
-      "trigger": "static",
-      "effect": "add_stat",
-      "stat": "armour",
-      "value": 5
-     }
-    ]
-   },
+   "passive": null,
    "tags": [
     "kinetic",
     "melee",
@@ -1086,12 +1078,15 @@
    "design": {
     "stage": "draft",
     "fantasy": "Heat condensed and thrown away. Nobody outside the Arsenal knows where.",
-    "niche": "The Arsenal's starter vent, and the Nemesis's relief valve.",
-    "notes": "Claude's fill, 28 September; the name is from Ryan's list."
+    "niche": "The Arsenal's vent: the biggest number, paid in hull, and on the Nemesis every vent is a Crucible stack.",
+    "notes": "Claude's fill, 28 September; the name is from Ryan's list. 12 October (Ryan): the twist, so the Arsenal's equipment is its biggest number paid in hull like the Oblation Ward: 40 with volatile (a plain 30 before)."
    },
    "face": {
     "kind": "vent",
-    "power": 30
+    "power": 40,
+    "keywords": [
+     "volatile"
+    ]
    },
    "passive": null,
    "tags": [

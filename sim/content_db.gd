@@ -665,6 +665,9 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 			errs.append("%s: %s is a positive number on an attack" % [where, key])
 	if fd.has("fires_hopper") != fd.has("power_per_load") or (fd.has("power_per_load") and int(fd["power_per_load"]) <= 0):
 		errs.append("%s: fires_hopper and a positive power_per_load go together" % where)
+	# The brace (12 October): spending the entry Braces its owner until the round's end.
+	if fd.has("braces") and int(fd["braces"]) <= 0:
+		errs.append("%s: braces is a positive number of Braced stacks" % where)
 	if kind == "buff":
 		# A buff grants one of the machines' statuses: it must exist and be theirs.
 		var st := str(fd.get("status", ""))
@@ -674,6 +677,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 			errs.append("%s: '%s' is a foe's status; a buff grants one of %s" % [where, st, ", ".join(Effects.MECH_STATUSES)])
 		if int(fd.get("stacks", 1)) < 1 or int(fd.get("rounds", 1)) < 1:
 			errs.append("%s: a buff's stacks and rounds are at least 1" % where)
+		# Braced lasts one turn from every source (Ryan, 12 October): a status that decays
+		# whole at the round's end is never granted for longer.
+		if str(Effects.STATUS.get(st, {}).get("decay", "")) == "round" and int(fd.get("rounds", 1)) > 1:
+			errs.append("%s: %s lasts until the round's end, so a buff grants it for one round" % [where, st])
 	elif fd.has("status") or fd.has("stacks") or fd.has("rounds"):
 		errs.append("%s: status, stacks and rounds belong to a buff face" % where)
 	if fd.has("targets"):
