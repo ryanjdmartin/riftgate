@@ -28,9 +28,10 @@ command are in `README.md`.
   round of six Wainwright & Sutler passives for Ryan's silhouettes (two spiders, a chicken
   walker, two helicopters, a fan-boat), the first round's verdicts at its foot; and bible
   v0.113 with Ryan's design notes of 12 October (a chassis identity opens build space; a map
-  action buying a fight buff is no condition; every rule is open to debate; maker profiles
-  are guidelines; the decoy stays out) and one line on the last in CLAUDE.md. Merge it so
-  other sessions get the notes; nothing is in content.
+  action buying a fight buff is no condition; every rule is open to debate; the decoy stays
+  out), one line on debate in CLAUDE.md. The maker profiles as guidelines and Aphelion's
+  propulsion are the keyword branches' wording. Merge it so other sessions get the notes;
+  nothing is in content.
 
 ## Pages
 
@@ -40,7 +41,9 @@ by URL (read first). Databases are reachable only from the personal account. A p
 goes into this file in the same commit as its first publish.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change (v0.112).
+  `docs/design-bible.html` after every change. Live: v0.117 (12 October), the live v0.116 of
+  the keyword branches plus this branch's design notes; no single file holds it yet (main
+  v0.112, this branch v0.113), so the next publish starts from the live page.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s map (which leaves out `content/modules.json`: add it).
   Stale since 9 October. After Ryan edits on its Content tab: pull `edits` with ArtifactData,
