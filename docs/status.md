@@ -39,9 +39,12 @@ by URL (read first). Databases are reachable only from the personal account. A p
 goes into this file in the same commit as its first publish.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.116 (12 October), which is this
-  branch's file plus the Aphelion calls of 12 October from `ccr-550650c0-g0kcbg` (another
-  session's branch, built on this one); merge the two before republishing from either.
+  `docs/design-bible.html` after every change. Live: v0.118 (12 October), which is this
+  branch's file plus another session's rows: the Aphelion calls of 12 October on
+  `ccr-550650c0-g0kcbg` (built on this branch), and from a later publish not yet on any
+  pushed branch, two design tests (a map action that buys a buff is no condition; every rule
+  is open to debate), a chassis's identity opening build space, the cars' decoy line. Merge
+  the branches before republishing from either; until then, publish a three-way merge.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s map (which leaves out `content/modules.json`: add it).
   Stale since 9 October. After Ryan edits on its Content tab: pull `edits` with ArtifactData,
