@@ -25,7 +25,7 @@ bible (section 12). "Discuss first" means a proposal in chat before code.
 
 ### Discuss first, then decide
 
-- [ ] The Arsenal's new chassis (`docs/arsenal_proposal.md`): Misharu and Minos settled in their mechanics (12 October); Mastema's locked tools (the Chrism Ewer doubling a foe's Burning, the Votive Ward shielding 10 a Burning foe; the Scapegoat Brand a rare against the Peak, or a third locked piece) and the Onryō as revised (Grudge never cashed in, outliving it; the Pall its one locked piece); the go to build Misharu, Mastema and Minos (content with planned passives, the engine pieces, tests, the runner), the Onryō after, models after that
+- [ ] Every maker's proposed chassis evaluated together by a fresh session, nothing built first (Ryan, 12 October): the Arsenal's in `docs/arsenal_proposal.md` (four chassis and a cleanse that moves debuffs onto a foe), the others where `docs/status.md` lists them, Aphelion's written down first; then the go and the build order
 - [ ] The Armadillo's Faraday Hull: keep it, or let retaliation be the Arsenal's (Ryan is thinking about it: armoured, not a porcupine)
 - [ ] The content questions, then the stock pass (Engine): tags on every component (Ballistic, Missile, Beam, Plasma, Flame, Arc, Blade, Melee as the working set), the basic kit's names, makers and numbers, the equipment basics' names, the twists for the Laminar Deflector and the Entropy Condenser
 - [ ] The module catalogue again as soft-synergy pairs once tags are assigned, simple text; a new rule for the Ram Frame
@@ -95,4 +95,4 @@ bible (section 12). "Discuss first" means a proposal in chat before code.
 
 ## Pinned, not now
 
-- A low-hull berserker or last-stand entry; command entries with a battlefield meaning; an endless mode; livery by Sponsorship once the hangar exists; Jenny's idle nag; a map taunt for a slow Arsenal bruiser; a machine that moves after it fights
+- A low-hull berserker or last-stand entry; command entries with a battlefield meaning; an endless mode; livery by Sponsorship once the hangar exists; Jenny's idle nag; a map taunt for a slow Arsenal bruiser; a machine that moves after it fights; Hellfire as an Arsenal component prefix (Ryan, 12 October)

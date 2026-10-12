@@ -9,6 +9,8 @@ command are in `README.md`.
 
 - Read `CLAUDE.md`, `docs/rules.md`, this file and `docs/todo.md`. If a chat and a file
   disagree, the chat is newer.
+- Ryan's next step (12 October): a fresh session evaluates every maker's proposed chassis as
+  one batch, and nothing is built before it. Where each proposal lives is under Proposals below.
 - Sessions run in parallel on this repo: `git status` first, stage by path, diff a shared
   file before staging it, never a bare `git add -A`, never kill a bare `godot --path .`.
 - Tests: 428 tests, 19,544 checks, green (10 October, on `ccr-abac8c0f-yig0e2`). A cloud
@@ -24,6 +26,34 @@ command are in `README.md`.
   the only resistance, the mirrored Booster and Databank, the Nemesis's Crucible), the first
   foe art at 72x96 and the rewritten docs. `ccr-abac8c0f-yig0e2` was fast-forwarded into it
   and has nothing main lacks; new work starts from main.
+- Since 12 October `main` also carries the Arsenal's proposals (`docs/arsenal_proposal.md`,
+  fast-forwarded from `ccr-baf790be-gootfd`) and the bible as published (v0.126), which runs
+  ahead of main's code. It records work built on `claude/focused-ritchie-omn8i5` and not yet
+  merged: the overheat at the end of the player's turn, armour off a breach's overflow, the
+  Badger's hopper, the Stingray at tier one, the shock's discharge gone, the Pinion Driver
+  named, Devour a printed rule, the modules priced, Braced for one turn, the plow's brace, the
+  Deflector's Rapid and the Condenser's Volatile, the Nemesis's rage and the Knuckle of Fury,
+  the keyword line-up and the runner's `--rows` and `--module`. Main's `docs/rules.md`, content
+  and code predate all of it. `ccr-550650c0-g0kcbg` shares that branch's history to 12 October
+  and adds Aphelion's calls, which are in the bible already. Merging either brings its code;
+  its bible resolves to the live page, which holds every session's rows.
+
+## Proposals
+
+For the batch evaluation (Ryan, 12 October). Each is a pitch; nothing in them is in content.
+
+- The Arsenal: `docs/arsenal_proposal.md` on main (Misharu, Mastema, Minos, the Onryō, and a
+  cleanse that moves debuffs onto a foe).
+- Wainwright & Sutler: `docs/ws_chassis_proposal.md` on `claude/ws-chassis-designs-wssq2u`
+  (six silhouettes, the third round of 12 October).
+- Minerva: `docs/minerva_chassis_proposal.md` on `claude/minerva-chassis-candidates-po893q`
+  (four candidates, 11 October).
+- Kestrel: `docs/canvas/kestrel-airframes.html` on `ccr-1a6d0a75-y2oqy8` (five airframes,
+  11 October).
+- Aphelion: in chat only, per the bible's row "Aphelion's next chassis"; to be written down
+  before the evaluation.
+- The keyword line-up (`docs/keyword_lineup.md` on `claude/focused-ritchie-omn8i5`), which
+  several of the chassis lean on.
 
 ## Pages
 
@@ -33,7 +63,7 @@ by URL (read first). Databases are reachable only from the personal account. A p
 goes into this file in the same commit as its first publish.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change (v0.124).
+  `docs/design-bible.html` after every change (v0.126).
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s map (which leaves out `content/modules.json`: add it).
   Stale since 9 October. After Ryan edits on its Content tab: pull `edits` with ArtifactData,
@@ -62,19 +92,17 @@ goes into this file in the same commit as its first publish.
   content revision's components, the domains and the plaque.
 - Reports out of date: `docs/balance.md` and `docs/campaign_run.md` on this branch predate the
   weapon rules; rerun after the stock pass, with module rows.
-- The Arsenal (12 October, bible v0.124): the occult is the Council's; its machines are twisted
+- The Arsenal (12 October, bible v0.126): the occult is the Council's; its machines are twisted
   by it, never merged (mechanical, CARE-piloted, no mind of their own); grimdark is playing it
   straight; demonic in look, liturgical in word; a passive may break a rule as a one-off;
   retribution is the Arsenal's, thorns allowed with a drawback and never on a megatank; the
-  rule-text budget counts the chassis's description, never its components. In
-  `docs/arsenal_proposal.md`: Misharu (a shield's breaker is Suppressed) and Minos (every foe
-  hit changes rank) are settled in their mechanics; Mastema (Burning passes from the dead) has
-  burn tools for locked pieces in place of an area burn (the Chrism Ewer doubles a foe's
-  Burning, the Votive Ward shields 10 a Burning foe, the Scapegoat Brand a rare for the Peak)
-  and the Onryō's Grudge is never cashed in and outlives it, both waiting on Ryan's word;
-  nothing in content yet. The bible on `ccr-baf790be-gootfd` carries other sessions' rows of 11
-  and 12 October from the live page (not on main yet) with the Arsenal's over them: a merge
-  takes the newer text of each row.
+  rule-text budget counts the chassis's description, never its components. Four chassis are
+  proposed in full in `docs/arsenal_proposal.md`, written for the batch evaluation: Misharu (a
+  shield's breaker is Suppressed), Mastema (Burning passes from the dead; the Chrism Ewer
+  doubles a foe's Burning, the Votive Ward shields 10 for each Burning foe), Minos (every foe it
+  hits changes rank) and the Onryō (a Grudge on whoever wounds the team, never cashed in,
+  outliving it; the Pall its guard). Ryan's last note: a cleanse that moves the team's debuffs
+  onto a foe, which waits on the words the two sides share (none today). Nothing is built.
 - Decided, not built: the shared basic kit and its stock pass, tags on components, heat from
   foes only through debuffs, the Headhunter's successor on the Sparrowhawk. The bible's
   section 12 lists the questions only Ryan can settle.
