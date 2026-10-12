@@ -25,7 +25,8 @@ bible (section 12). "Discuss first" means a proposal in chat before code.
 
 ### Discuss first, then decide
 
-- [ ] The Arsenal's new chassis (`docs/arsenal_proposal.md`, revised 12 October: Misharu, Mastema, Minos, Onryō): Misharu's shield-break stun (or Penance), the Onryō's taken wounds, Grudge and Requiem Pipes (the whole wound or half), Mastema's seed in its arms or none, Minos's flip as written and hover or flyer, names and numbers, the order to build, hellfire off the Arsenal's word list; then content, the engine pieces and the models
+- [ ] The Arsenal's new chassis (`docs/arsenal_proposal.md`): Misharu, Mastema and Minos settled in their mechanics (12 October); the Onryō's Grudge (a stack a wounding blow, never fading, lifting with the Onryō), its Pall and the Requiem Pipes or not; Mastema's Aspergillum or no fixed part; the go to build the three (content with planned passives, the engine pieces, tests, the runner), models after
+- [ ] The Armadillo's Faraday Hull: keep it, or let retaliation be the Arsenal's (Ryan is thinking about it: armoured, not a porcupine)
 - [ ] The content questions, then the stock pass (Engine): tags on every component (Ballistic, Missile, Beam, Plasma, Flame, Arc, Blade, Melee as the working set), the basic kit's names, makers and numbers, the equipment basics' names, the twists for the Laminar Deflector and the Entropy Condenser
 - [ ] The module catalogue again as soft-synergy pairs once tags are assigned, simple text; a new rule for the Ram Frame
 - [ ] Heat from foes only through debuffs: names (the Overheating name goes), the ticking one at the end of the player's turn before the overheat, the softer one raising every weapon's heat per stack, maybe both, and a glyph of its own
