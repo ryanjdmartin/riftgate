@@ -136,6 +136,9 @@ it). Each has an alternative off that theme if three is one too many.
   It touches only its own Direct reach, and needs no danger close either way.
 - **Decisions.** Light first, then shoot; which back-rank foe to light; who on the team lights
   it.
+- **Kinship.** The Nemesis's open signature (bible section 7: its fists reach the foe that last
+  struck it, in any rank) is the same kind of rule, reach set by the target. If both land, the
+  gunship's is the broad one (any debuff, any Direct weapon) and the Nemesis's the personal one.
 - **Numbers and locked kit.** Medium, flyer, move 30 (the slow flyer); hull 100, shield 40,
   armour 5, heat 60, cooling 5, field recharge 20. Locked: the Flare Rockets (new), Indirect,
   flat 10, Burn, Rapid, heat 5: it lights a foe anywhere and rolls again. Four hardpoints (d5).
