@@ -73,7 +73,9 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   the runner decides macro. Never chase a simulated win rate to a decimal.
 - When Ryan suggests a rule or a change, look for holes in the argument and discuss them in
   chat before building. A suggestion opens a discussion; it is not a spec. If he reaffirms
-  after hearing the holes, build it as he said.
+  after hearing the holes, build it as he said. It runs both ways: every rule and guideline,
+  these included, is open to debate for a good reason (bible section 2), so argue for changing
+  one in the open rather than designing around it.
 - Judge a visual effect running, never from a still: Ryan does, and a screenshot of a
   breathing mark says nothing about it. Ship a debug switch that fires the thing constantly
   (`RIFTGATE_FEED_DEBUG=1` is the pattern), expect several rounds of small tweaks, and when

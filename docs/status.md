@@ -24,10 +24,13 @@ command are in `README.md`.
   the only resistance, the mirrored Booster and Databank, the Nemesis's Crucible), the first
   foe art at 72x96 and the rewritten docs. `ccr-abac8c0f-yig0e2` was fast-forwarded into it
   and has nothing main lacks; new work starts from main.
-- `claude/ws-chassis-designs-wssq2u` (11 October): only `docs/ws_chassis_proposal.md`, six
-  Wainwright & Sutler chassis pitched from Ryan's silhouettes (two spiders, a chicken walker,
-  two helicopters, a fan-boat), with the holes in his brief. Nothing decided or in content;
-  waiting on his picks and changes in chat.
+- `claude/ws-chassis-designs-wssq2u` (12 October): `docs/ws_chassis_proposal.md`, the second
+  round of six Wainwright & Sutler passives for Ryan's silhouettes (two spiders, a chicken
+  walker, two helicopters, a fan-boat), the first round's verdicts at its foot; and bible
+  v0.113 with Ryan's design notes of 12 October (a chassis identity opens build space; a map
+  action buying a fight buff is no condition; every rule is open to debate; maker profiles
+  are guidelines; the decoy stays out) and one line on the last in CLAUDE.md. Merge it so
+  other sessions get the notes; nothing is in content.
 
 ## Pages
 
