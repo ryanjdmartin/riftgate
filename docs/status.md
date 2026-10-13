@@ -38,7 +38,7 @@ command are in `README.md`.
   what main has, their rows already in the bible) and the proposal branches below. Merging
   any of them: its bible resolves to the live page, which holds every session's rows.
 - `claude/ws-chassis-designs-wssq2u` (13 October) carries main and adds no code: the W&S
-  proposal (below), the bible as published (v0.132), two lines in CLAUDE.md (every rule is
+  proposal (below), the bible as published (v0.133), two lines in CLAUDE.md (every rule is
   open to debate; a maker's profile is an identity, never an exclusion), a proposal's look
   tests (`tools/lowforge/looks/`, the README's line). Merge it so other sessions get them.
 
@@ -49,10 +49,11 @@ For the batch evaluation (Ryan, 12 October). Each is a pitch; nothing in them is
 - The Arsenal: `docs/arsenal_proposal.md` on main (Misharu, Mastema, Minos, the Onryō, and a
   cleanse that moves debuffs onto a foe).
 - Wainwright & Sutler: `docs/ws_chassis_proposal.md` on `claude/ws-chassis-designs-wssq2u`
-  (six silhouettes, the sixth round of 13 October: the boiler (its own heat, no blast from an
-  ally's vent), the revolver, the funnel-web's web bomb, the fan-boat's shells and the
-  multi-rotor's helicarrier look are Ryan's calls; the gunship's numbers built by its weapons'
-  tags wait on his read of the first table; the looks are in `docs/looks/ws_multirotor.png`).
+  (six silhouettes, the seventh round of 13 October: the boiler (its own heat, no blast from an
+  ally's vent), the revolver, the funnel-web's web bomb, the fan-boat's shells, the
+  multi-rotor's helicarrier look and the gunship built in the hangar (Missile's map speed
+  stands) are Ryan's calls; the gunship's paired table, with offence only on other tags' weapons,
+  and Ballistic's armour rate wait on his read; the looks are in `docs/looks/ws_multirotor.png`).
 - Minerva: `docs/minerva_chassis_proposal.md` on `claude/minerva-chassis-candidates-po893q`
   (four candidates, 11 October).
 - Kestrel: `docs/canvas/kestrel-airframes.html` on `ccr-1a6d0a75-y2oqy8` (five airframes,
@@ -71,8 +72,8 @@ by URL (read first). Databases are reachable only from the personal account. A p
 goes into this file in the same commit as its first publish.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.132 (13 October), this branch's file:
-  main's v0.131 with Wainwright & Sutler's sixth round; it also holds rows from branches not
+  `docs/design-bible.html` after every change. Live: v0.133 (13 October), this branch's file:
+  main's v0.131 with Wainwright & Sutler's seventh round; it also holds rows from branches not
   yet merged (Aphelion's calls). Before republishing, read the live page; if another session
   moved it, publish a three-way merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,

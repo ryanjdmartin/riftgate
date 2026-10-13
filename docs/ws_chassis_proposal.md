@@ -1,7 +1,7 @@
 # Wainwright & Sutler: new chassis
 
 A pitch for Ryan's candidate silhouettes (two true spider tanks, a chicken walker, a medium
-gunship, a large multi-rotor, a fan-boat hovercraft). Sixth round, 13 October 2026. Nothing
+gunship, a large multi-rotor, a fan-boat hovercraft). Seventh round, 13 October 2026. Nothing
 here is in content. The passives come first; names, designations and numbers follow once the
 passives hold, so the machines go by silhouette. Numbers are placeholders in the content's
 tens.
@@ -14,7 +14,7 @@ tens.
 | Large multi-rotor | 3 | Any machine in the fight may spend its die as its own. | A machine spends only its own die | Liked; the helicarrier deck is its look; the word "die" waits on another session |
 | Chicken walker | 2 | Whenever its die rolls, it moves to the next entry instead, in sequence. | Every die rolls | Liked (Ryan's revolver bot); Rapid stays small, so the chain is funny, not strong |
 | Four-legged spider (funnel-web) | 2 | A foe it would Suppress takes a web bomb instead: at the end of that foe's turn it bursts, Suppressing the foe and the next foe beside it. | A Suppress lands when it hits | Ryan's web bomb, the plan as below ("a good plan") |
-| Medium gunship | 2 | Each weapon it carries raises one of its numbers by its tag: Ballistic armour, Beam shield, Missile move, Plasma hull, Flame field recharge, Arc cooling. | A chassis's numbers are its own; no scaling with a tag's count | Ryan's: its numbers built in the hangar, nothing locked |
+| Medium gunship | 2 | Each weapon it carries raises its numbers by its tag: Ballistic armour, Beam shield and recharge, Missile move and cooling, Flame hull, Plasma its other weapons' damage, Arc a free reroll. | A chassis's numbers are its own; no scaling with a tag's count | Ryan's: built in the hangar, nothing locked; the paired table waits on his read |
 | Fan-boat hovercraft | 1 | Everything it fires goes through its deck gun: each weapon fires the deck gun's shot, with its own keywords. | A weapon's number, reach and heat are its own | Ryan's deck gun, the shells ("see where it takes us") |
 
 The tests it answers: a chassis's identity (passive, numbers, locked components) opens build
@@ -30,7 +30,7 @@ its pieces stay small (Ryan, 13 October, probably). Out of bounds: a kill making
 Rapid, every weapon Indirect, a decoy every hunter picks, debuffs as the engine of the gunship
 and the fan-boat (a gunship is about its weapons).
 
-The gunship counts its weapons by tag, each tag raising one of its numbers, so it waits on the
+The gunship counts its weapons by tag, each tag raising numbers of its own, so it waits on the
 stock pass that puts tags on components. No chassis passive reads a tag today (the Nemesis's
 melee bonus was the model until its rage replaced it), and the bible's bar applies: a chassis
 passive reads a tag only if it opens build space. The fan-boat's deck gun keeps a shell's tags,
@@ -215,33 +215,46 @@ tandem is set aside.
   surpass Metal Gear": the overbuilt gunship that becomes whatever its guns make it. It lives
   in the Clydesdale's utility space, and like the Clydesdale it locks nothing. The lore is
   Ryan's to write.
-- **Passive** (Ryan's shape, 13 October: it grows in anything but offence). "Each weapon it
-  carries raises one of its numbers by its tag: Ballistic armour, Beam shield, Missile move,
-  Plasma hull, Flame field recharge, Arc cooling." The first machine whose numbers the player
-  builds: a die of Beams makes a shield wall, Ballistic weapons an armoured brick, Missiles a
-  fast skirmisher, a mix whatever the run needs. Blade and Melee raise nothing (a gunship keeps
-  its distance), and a weapon wearing two tags raises both.
-- **A first table** (placeholders, priced by the bible's measurements of 11 October): Beam
-  +20 shield (about 17 hull), Plasma +20 hull, Ballistic +5 armour (about 53 hull, the dearest
-  step there is), Missile +10 move and Flame +10 field recharge (worth on the map, which the
-  runner cannot price), Arc +5 cooling (filler alone, real on a hot die).
-- **Nothing feeds itself** (Ryan's test for no clear winner). None of the six makes its own tag
-  stronger, so no tag snowballs. That is why his first missile example, a higher floor on
-  rolled weapons, is out: it is offence, and the rockets are rolled, so it fed the missiles
-  that raised it. The heat stats are the ones to watch: cooling helps hot weapons, so it goes
-  to whichever tag runs coolest once tags land (today's pieces do not sort by tag: beams run
-  5 to 20 heat, guns 0 to 10).
-- **The holes.** Ballistic's armour is the row to watch: armour comes in fives and 5 is worth
-  about 53 hull, so five Ballistic weapons make 25, a wall against every swarm; the lever is a
-  cap or a smaller rate (a step every second Ballistic weapon). It bends the tags row's "no
-  scaling with a tag's count", whose reason (a lynchpin, one blueprint farmed) does not hold
-  here, since any weapon of the tag counts and nothing feeds itself. Its fight decisions are the
-  usual ones; the new decision is all in the hangar, which must show what each weapon fitted
-  adds. A weapon counts for the battle once fitted, destroyed or not, as every bonus does.
-- **Growing in the fight instead** (Ryan's other shape, also never offence). The same table,
-  each number rising the first time it fires that tag. The map's numbers (move, field
-  recharge) cannot grow inside a fight, and more maximum hull or shield needs a rule for the
-  current, so Claude leans to the hangar shape.
+- **Passive** (Ryan's shape, 13 October). "Each weapon it carries raises its numbers by its tag:
+  Ballistic armour, Beam shield and recharge, Missile move and cooling, Flame hull, Plasma its
+  other weapons' damage, Arc a free reroll." The first machine whose numbers the player builds:
+  a die of Beams makes a shield wall, Ballistic weapons an armoured brick, Missiles a fast
+  skirmisher, Plasma beside other guns a striker, a mix whatever the run needs. A weapon
+  wearing two tags raises both.
+- **The hangar it is** (Ryan, 13 October), over growing in the fight, and Missile's map speed
+  stands. His test for no clear winner: nothing a tag grants feeds that tag.
+- **Why armour comes in fives.** Nothing in the code enforces it: it is the number grid, from
+  the bible's "when the team-to-foe ratio must move, the player's numbers move" (player damage
+  in fives, since small digits read faster, and 5 the smallest step, so armour matters; hull,
+  shield and heat in tens; `docs/rules.md` states it). Foe blows run 5 to 40, so armour in
+  fives keeps every hull hit round: a 2 or a 3 would run in the engine and put a 7 or a 13 on
+  the hull. Against small blows the step is a big one (5 halves a 10), which is why 5 armour
+  measured about 53 hull, and Ryan has said our armour may already be too high (12 October).
+- **Offence, on the other tags.** An offensive bonus feeds itself whenever it lands on the
+  weapons that count it, so offence on this machine lands on the other tags: a Plasma weapon
+  makes the rest hit harder, never itself, and the pull is toward a mix. Damage sits on the same
+  grid as armour, so +5 is the smallest offensive step, and a big one (5 more on every blow
+  measured about 60 hull).
+- **A second table, with pairs** (Ryan's idea, pairing to make room; placeholders):
+  - Beam: +20 shield and +10 field recharge, the shield's two numbers.
+  - Ballistic: +5 armour for every second Ballistic weapon (or +5 each, capped at 10).
+  - Missile: +10 move and +5 cooling; rockets run cold, so the cooling feeds nothing of theirs.
+  - Flame: +20 hull.
+  - Plasma: its weapons of other tags deal 5 more.
+  - Arc: one free reroll of its own die a fight, fire control (the Clydesdale's verb, small).
+  - Blade and Melee: nothing, a gunship keeping its distance.
+- **Candidates not taken.** A raised floor on rolled weapons of other tags (the Tactical
+  Databank's effect: a smaller offensive step, about 14 hull on average and 40 to 70 on a
+  rolled die); a share off damage taken, finer than armour at the price of round hull numbers;
+  attack range on the map (long guns are pinned while the engagement range may change); salvage
+  a kill (the economy is unbuilt); never hunted (a yes or no, which no count can scale);
+  maximum heat (filler by the measurements, except on the hottest machine).
+- **The holes.** Two rows of a passive's text, its amounts in the codex, the most the budget
+  holds. It bends the tags row's "no scaling with a tag's count", whose reason (a lynchpin, one
+  blueprint farmed) does not hold here, since any weapon of the tag counts and nothing feeds
+  itself. The hangar must show what each weapon fitted adds. A weapon counts for the battle
+  once fitted, destroyed or not, as every bonus does. Plasma's row is the strongest per weapon
+  (damage is the dearest number after armour), so it is the second row to watch.
 - **Numbers.** Medium, flyer, move 30 (the slow flyer, before its Missiles); hull 100, shield
   40, armour 0, heat 60, cooling 5, field recharge 20: low on purpose, the weapons building the
   rest. Nothing locked. Six hardpoints (d6). Stock: weapons of several tags once tags exist
@@ -305,3 +318,5 @@ tandem is set aside.
   grows in anything but offence, in the hangar), the switch, and its locked Rocket Pods (it
   locks nothing); the multi-rotor's V-12 wagon and its canvas bay (the V-12 kept for another
   machine) and the tandem; the fan-boat's other shapes (the magazine kept as an idea).
+- Round six (13 October): the gunship growing in the fight (Ryan: the hangar), and its first
+  table's single stats (paired to make room for one offensive row and a reroll).
