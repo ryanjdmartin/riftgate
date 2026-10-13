@@ -136,7 +136,7 @@ by URL (read first). Databases are reachable only from the personal account. A p
 goes into this file in the same commit as its first publish.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.139 (13 October, evening), the committed file
+  `docs/design-bible.html` after every change. Live: v0.140 (13 October, evening), the committed file
   as it stands on main; it also holds rows from branches not yet merged (Aphelion's
   calls, Wainwright & Sutler's next chassis, what shown text calls the die). Before
   republishing, read the live page; if another session moved it, publish a three-way merge
