@@ -38,7 +38,7 @@ command are in `README.md`.
   what main has, their rows already in the bible) and the proposal branches below. Merging
   any of them: its bible resolves to the live page, which holds every session's rows.
 - `claude/ws-chassis-designs-wssq2u` (13 October) carries main and adds no code: the W&S
-  proposal (below), the bible as published (v0.135), two lines in CLAUDE.md (every rule is
+  proposal (below), the bible as published (v0.136), two lines in CLAUDE.md (every rule is
   open to debate; a maker's profile is an identity, never an exclusion), a proposal's look
   tests (`tools/lowforge/looks/`, the README's line), and the rule on numbers restated (Ryan,
   13 October: the fives and tens are magnitudes, not steps, so any whole number may be used;
@@ -52,13 +52,13 @@ For the batch evaluation (Ryan, 12 October). Each is a pitch; nothing in them is
 - The Arsenal: `docs/arsenal_proposal.md` on main (Misharu, Mastema, Minos, the Onryō, and a
   cleanse that moves debuffs onto a foe).
 - Wainwright & Sutler: `docs/ws_chassis_proposal.md` on `claude/ws-chassis-designs-wssq2u`
-  (six silhouettes, the ninth round of 13 October: the boiler (its own heat, no blast from an
+  (six silhouettes, the tenth round of 13 October: the boiler (its own heat, no blast from an
   ally's vent), the revolver, the funnel-web's web bomb, the fan-boat's shells, the
   multi-rotor's helicarrier look and the gunship built in the hangar (Missile's map speed
-  stands), its rows numbers only (no rerolls; offence a raised top or bottom roll from tags
-  that seldom roll) and balanced around the stock, never the stock around it, are Ryan's calls;
-  the proposal's sizing (a full die of one tag reaches the roster's top, never past) waits on
-  his read; the looks are in `docs/looks/ws_multirotor.png`).
+  stands), its rows numbers only (no rerolls; offence a raised top or bottom roll from a tag
+  that seldom rolls), five hardpoints, fewer tags with two-tag pieces the chase, and no one
+  machine dictating the roster of components are Ryan's calls; the proposal's four tags
+  (Metal Gear REX's) and their paired rows wait on his read; the looks are in `docs/looks/ws_multirotor.png`).
 - Minerva: `docs/minerva_chassis_proposal.md` on `claude/minerva-chassis-candidates-po893q`
   (four candidates, 11 October).
 - Kestrel: `docs/canvas/kestrel-airframes.html` on `ccr-1a6d0a75-y2oqy8` (five airframes,
@@ -77,8 +77,8 @@ by URL (read first). Databases are reachable only from the personal account. A p
 goes into this file in the same commit as its first publish.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.135 (13 October), this branch's file:
-  main's v0.131 with Wainwright & Sutler's ninth round and the numbers' magnitudes; it also holds rows from branches not
+  `docs/design-bible.html` after every change. Live: v0.136 (13 October), this branch's file:
+  main's v0.131 with Wainwright & Sutler's tenth round and the numbers' magnitudes; it also holds rows from branches not
   yet merged (Aphelion's calls). Before republishing, read the live page; if another session
   moved it, publish a three-way merge onto it.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
