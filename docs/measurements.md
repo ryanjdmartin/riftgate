@@ -163,3 +163,33 @@ machines on the field, 674 fights were solo and 322 joint (one of two 424, one o
 of two 198, two of three 111, three of three 13). The balance team rows assume a joint fight;
 whether the ring and range rules split the team or the bot does is the question in bible
 section 11.
+
+## 13 October, the reports
+
+**The balance report at 200 seeds on today's rules** (`docs/balance.md`: 144,000 fights, the
+same twenty packs as the 9 October report, which predates the 10 to 13 October rules). Read as
+bands. Every team row keeps its band: the starting team 97/100, Minerva 100/100, Kestrel 82/91,
+Wainwright & Sutler 81/94. Alone, the row means move by a few points except the Nemesis (greedy
+61 to 76, mostly the Peak and the Meadow's swarms: the rage beside the heat debuffs reads higher
+than the 30-seed direction of 12 October had it), the Prairie Dog (21 to 31, the Deflector's
+Rapid) and the Badger (81 to 74, the bosses). The cells that moved 20 points or more follow the
+rules: the Peak's cells opened for nearly everyone once foes heat only through debuffs (the
+Bombs: the Clydesdale 1 to 72, the Wild Boar 76 to 100, the Nemesis 65 to 100; the Salamanders:
+the Boar 54 to 98, the Badger 77 to 97) and closed for the Goshawk (the Salamanders 80 to 6, as
+the heat-debuff row foresaw); the bosses got harder for the heavy machines (the Treant and the
+Bone Dragon: the Badger greedy 100 to 46, the Nemesis random 71 to 25; the Sandworm: the Badger
+66 to 21); the Marsh's formation turned from a free win into a decision for the Armadillo
+(random 98 to 2, greedy 100 to 99) and a wall for the Boar (greedy 95 to 49); the Wainwright &
+Sutler team took the Peak's formation (greedy 10 to 68) and the Meadow's (79 to 99). Reach:
+Direct is 76% of attack spends at 17.6 hull a spend for 9.8 heat, Indirect 24% at 12.5 for 8.9,
+so the numbers still carry the price. Rolled against flat: rolled is 59% of damaging spends at
+14.9 hull a spend for 6.4 heat, flat 41% at 18.4 for 14.3, so flat pays about twice the heat per
+point of damage, more than the "a little more" of the rolled-or-flat row (bible section 5): a
+band for Ryan's play to read.
+
+**The campaign report on the four domains** (`docs/campaign_run.md`: 40 runs, the plain
+player). 3 of 40 runs won (29 of 40 on 9 October, before the domains), 6% of battles won, 93%
+wiped, 3.9 cities fallen a run, the first city falling on turn 4 on average. The same report on
+the commit before the Rally fix gave 0 of 40 and 4%, so the fall is the domains and the 10 to 13
+October rules, not Rally. Fights: 1,157 of 1,747 with one machine alone; one machine wins 64%
+against one pack and 37% against two; two machines together win 92%.

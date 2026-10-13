@@ -84,7 +84,12 @@ can settle), the tasks are `docs/todo.md`, the layout and every command are in `
   plain player while the skirmish team rows beat every single pack, because the battle's
   fights are mostly solo (1,157 of 1,747 fights one machine alone, wrecks sitting out) and a
   lone machine loses to a pack a third of the time and to two packs two thirds. `docs/balance.md`
-  at 200 seeds is rerunning on today's rules (about ninety minutes).
+  was rerun the same day at 200 seeds on today's rules: every team row keeps its 9 October band
+  and the lone machines move a few points, the Nemesis most (greedy 61 to 76); the cells that
+  moved follow the rules (the Peak open to nearly everyone and closed to the Goshawk, the bosses
+  harder for the heavy machines, the Marsh's formation a decision for the Armadillo and a wall
+  for the Boar); flat weapons pay about twice the heat per point that rolled ones do. Both
+  reports' bands are in `docs/measurements.md`.
 - Foe art: every foe and hero is cut from Ryan's picks at 72x96 (massive 96x144, chibis 36x48).
   On 10 October Ryan retired the original candidate sets (rendered before the style rules):
   every wildlife foe now has four battle-pose takes on the picker (`takesE`; the Goblin and the
@@ -112,10 +117,10 @@ can settle), the tasks are `docs/todo.md`, the layout and every command are in `
 1. Ryan reads the bible's first row and the questions in its section 12, the stock rule's hole
    among them, and the campaign's fall above; the batch evaluation of the proposed chassis
    starts after, with the proposals' "out of bounds" lists re-read under the Lean rule.
-2. The 200-seed balance report, once it lands, read against the campaign's fall: which of the
-   domains and the 10 to 13 October rules moved the plain player from 29 to 3 of 40 runs (the
-   lone-machine cells and the formations first), and a measurement of the fights a team fights
-   together under a bot that bunches by design; then the runner's module rows.
+2. The two reports read against the campaign's fall: which of the domains and the 10 to 13
+   October rules moved the plain player from 29 to 3 of 40 runs (the lone-machine cells and the
+   formations first, since the team rows did not move), and a measurement of the fights a team
+   fights together under a bot that bunches by design; then the runner's module rows.
 3. The stock pass (above), once Ryan settles the content questions it needs: the basic kit's
    names, makers and numbers, and the Prairie Dog's basic shield (the bible's section 12).
 4. Ryan's play and phone reads of the 10 to 13 October builds (the to-do's Ryan list).
