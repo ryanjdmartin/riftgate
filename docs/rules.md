@@ -341,9 +341,11 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   every basic (not built: today every tier-one component's).
 - **A turn** is one battle at a front, with one to four ready machines, or a pass. The whole
   roster goes to the one front; the open fronts left alone bleed (below). A battle is played
-  to its end: there is no withdrawal from a battle, and a team wipe is the graded loss.
+  to its end and a team wipe is the graded loss; a withdrawal from a battle is not built (open:
+  the bible's section 4).
 - **Won** (the boss dies): the gate refills, the rift closes, no rift opens there next turn;
-  10 salvage a kill; 100 Favour less 1 per gate point the city lost, never below 0; a research
+  10 salvage a kill (to be weighted by the foe's threat, not built); 100 Favour less 1 per gate
+  point the city lost, never below 0; a research
   token of the lead domain and an offer from the host maker are owed (unpacking and offers
   not built).
 - **Fell** (the gate reached 0): the city falls, the battle's salvage is lost, the rift stays
