@@ -29,16 +29,17 @@ document's job and every command are in `README.md`.
   over; safe to delete) and the Minerva branch's one decision (its four designs abandoned, Ryan,
   13 October; the branch carries nothing else and is safe to delete). Pushed to `origin/main`
   on 13 October, evening. New work starts from main.
-- Active, not merged: `ccr-550650c0-g0kcbg`, the Aphelion session, with
-  `docs/aphelion_chassis_proposal.md` and the bible's Aphelion row. Its documents predate the
-  13 October refactor (it still carries the retired keyword line-up and roster proposal, and
-  lacks `docs/measurements.md`), so it merges main before it lands and keeps main's versions of
-  the status, the to-do, CLAUDE.md, the README and the rules.
+- `ccr-550650c0-g0kcbg`, the Aphelion session, stopped on Ryan's word (13 October, evening):
+  its proposal `docs/aphelion_chassis_proposal.md` is on main and its bible rows were carried
+  in; its other document changes described a pre-refactor state and were not taken. Safe to
+  delete. A local sprite session is in flight in this folder (uncommitted `art/foes/`,
+  `content/foes.json`, `tools/foeforge` and document hunks): leave them unstaged.
 - The chassis proposals for the batch evaluation: Wainwright & Sutler's on main
   (`docs/ws_chassis_proposal.md`, with its look tests in `tools/lowforge/looks/` and
   `docs/looks/`), the Arsenal's on main (`docs/arsenal_proposal.md`), Kestrel's five airframes as
-  a canvas on main (`docs/canvas/kestrel-airframes.html`, for Ryan's pick), Aphelion's on its
-  branch (above), Minerva's abandoned.
+  a canvas on main (`docs/canvas/kestrel-airframes.html`, for Ryan's pick), Aphelion's on main
+  (`docs/aphelion_chassis_proposal.md`, two rounds of proposals and their holes, no bench of
+  ideas set aside yet), Minerva's abandoned.
 
 ## The game as left (13 October, evening)
 
@@ -135,7 +136,7 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.144 (13 October, evening), the
+  `docs/design-bible.html` after every change. Live: v0.145 (13 October, evening), the
   committed file as it stands on main, the Aphelion session's rows carried in.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
