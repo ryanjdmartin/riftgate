@@ -59,6 +59,9 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
 - Numbers in content are placeholders, not balance.
 - Content ideas (makers, chassis, components, foes, names, lore) are proposed in conversation first;
   Ryan tweaks them against his own notes before they land in `content/*.json` or as decided in the bible.
+  A maker's profile, its vocabularies and the keywords it leans on are identities, never
+  exclusions: design from the piece's fantasy (a spider paralyses, whoever builds it), never
+  from a table of who owns what.
 - Numbers are questions, never stored totals: every stat, damage figure and component property
   is read through `sim/effects.gd` (base plus every live source, in one fixed order). A new
   buff, reward or passive is a Modifier with a scope and a source; never write to a stat or a
@@ -86,7 +89,9 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   row keeps the reason and the exit condition, never the run.
 - When Ryan suggests a rule or a change, look for holes in the argument and discuss them in
   chat before building. A suggestion opens a discussion; it is not a spec. If he reaffirms
-  after hearing the holes, build it as he said.
+  after hearing the holes, build it as he said. It runs both ways: every rule and guideline,
+  these included, is open to debate for a good reason (bible section 2), so argue for changing
+  one in the open rather than designing around it.
 - Judge a visual effect running, never from a still: Ryan does, and a screenshot of a
   breathing mark says nothing about it. Ship a debug switch that fires the thing constantly
   (`RIFTGATE_FEED_DEBUG=1` is the pattern), expect several rounds of small tweaks, and when

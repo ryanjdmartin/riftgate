@@ -216,6 +216,10 @@ tools/spriter/.venv/bin/python tools/lowforge/glbcmp.py art/models/badger.glb /t
 tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes
 # one machine wearing swapped components on its mounts ("2:" bares a mount; armour and vents show nowhere); a class alone: <chassis> shapes/barrel_minerva; rendered bare (RIFTGATE_OUTLINE_KEEP=1 keeps the display's edge)
 RIFTGATE_FIT="1:lance,4:blazethrower" godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva fit.png front 480 480
+# a proposal's look test (tools/lowforge/looks/, never content): built like a unit, rendered at a set yaw and pitch (180 75 is from above,
+# nose up), then the art/models/wslook_* files deleted again
+$BPY_PYTHON tools/lowforge/looks/build_look.py -- --model wslook_deck --out art/models/wslook_deck.glb --tiles /tmp/tiles
+godot --path . --resolution 360x640 -s tools/lowforge/looks/look_shot.gd -- wslook_deck wainwright_sutler deck.png 180 75 520 520
 
 # every sound and the six music tracks into art/audio (forge.py SHIP: the console from palette_sketches.py,
 # the iron, rift and red from fx_sketches.py's third cut, each as Ryan heard it; the loops from forge.py), then re-import
