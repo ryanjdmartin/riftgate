@@ -34,6 +34,13 @@ The one-to-four and solo measurements it leans on are in `docs/measurements.md`,
 4. **Every passive needs two routes in and two payoffs** from other makers' pieces, so it
    composes with the roster and not only with its own locked kit.
 
+## One question the session weighs
+
+Cooldowns in a skirmish (bible section 8, reopened 13 October): a printed rule on a specific
+piece, shown on the die as an entry blank for a round or two after it fires, paid in the die's
+reliability; a second axis beside heat for pricing a big hit. Ryan is willing to be convinced
+either way.
+
 ## Two measures the session adds
 
 - **Solo value beside team value** (`tools/balance.gd --team`): a detachment-class machine beats

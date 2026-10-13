@@ -66,9 +66,10 @@ document's job and every command are in `README.md`.
   Anathema fill by the threat-weighted tally, the Favour dock the gate's price (section 3);
   offers one of each kind, a chassis on the shelf, host-maker offers shaping the roster
   (section 10); twelve to sixteen battles recommended; the battle withdrawal reopened (section
-  4, Claude's walk-out proposal, which Ryan finds thematic and decides later); heat bites or it
-  is not in the game (section 5); the Arsenal's tier-one components exist (section 10); the map
-  stays nine wide; `docs/mechanic_budgets.md` the brief for the roster session.
+  4, Claude's walk-out proposal, which Ryan finds thematic and decides later); heat bites where
+  it is carried and a cold build pays elsewhere (section 5); cooldowns in a skirmish reopened, a
+  decision made for Ryan by a session (section 8); the Arsenal's tier-one components exist
+  (section 10); the map stays nine wide; the screens third in the order; `docs/mechanic_budgets.md` the brief for the roster session.
 - The records, after Ryan's review of 13 October: the bible's first row says what a Decided
   row may be, what a Lean is and what a "never" must carry; the measurements live in
   `docs/measurements.md`; section 12 holds only the questions; this file holds the order of
@@ -135,10 +136,12 @@ to-do's Ryan list).
    packs for detachments and formations for the body, the boss sealed by the threat-weighted
    meter and fought with its formation, the withdrawing persona on the campaign bot; then reruns
    both reports and measures the fights a team fights together.
-3. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
-   heat re-priced by niche so that it bites, the area keywords on the explosives.
-4. **The screens**: a prototype hangar, the mission map and the draft, so a run can be played;
-   section 12 asks whether they come before item 1.
+3. **The screens** (Ryan, 13 October: third, so the first thing built after the battle has its
+   shape is a run he can play): a prototype hangar, the mission map and the draft; every build
+   order the roster session hands down lands in a game being played.
+4. **The stock pass**, once Ryan answers section 12's content questions: tags, the basic kit,
+   heat re-priced by niche so that it bites where carried and a cold build pays elsewhere, the
+   area keywords on the explosives.
 5. **The economy pass** (`docs/economy_pass.md`): the runner's spending policy, then every price
    and yield with the offers one of each kind, a chassis on the shelf, the Favour dock as the
    gate's price, twelve to sixteen battles.
@@ -155,7 +158,7 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.147 (13 October, evening), the
+  `docs/design-bible.html` after every change. Live: v0.148 (13 October, evening), the
   committed file as it stands on main, the Aphelion session's rows carried in.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
