@@ -291,6 +291,8 @@ def phone(args):
         # the originals can go); a hero's chibi is its own register and stays.
         if args.only:
             found = [f for f in found if f[0] not in ("", "_chibi")]
+        if args.keys:
+            found = [f for f in found if fid + f[0] in args.keys]
         if args.drop_originals and any(s not in ("", "_chibi") for s, _, _ in found):
             found = [f for f in found if f[0] != ""]
         for suffix, note, cands in found:
@@ -1053,6 +1055,7 @@ def main():
     ph = sub.add_parser("phone", help="the picker as a phone page in out/phone/, for publishing as an artifact")
     ph.add_argument("--tags", nargs="*", default=[], help="also include experiments' sets (out/<id>_<tag>)")
     ph.add_argument("--drop-originals", action="store_true", help="leave out a foe's original set once it has one of the tagged sets")
+    ph.add_argument("--keys", nargs="*", default=[], help="show exactly these sets (out/<key>), in content order; the tags must still reach them")
     ph.add_argument("--only", action="store_true", help="show only the tagged sets (a round of fixes and new takes, the earlier sets already picked)")
     ph.set_defaults(func=phone)
     p = sub.add_parser("prompts", help="every foe's prompt into tools/foeforge/prompts.md, to read before generating (no model needed)")

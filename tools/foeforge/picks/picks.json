@@ -104,11 +104,15 @@
     "cockatrice": {
       "foe": "cockatrice",
       "role": "sprite",
-      "candidate": 1,
-      "source": "out/cockatrice_takesD/cockatrice_1.png",
+      "candidate": 3,
+      "source": "out/cockatrice_fix4/cockatrice_3.png",
       "kept": "picks/cockatrice.png",
       "prompt": "A cockatrice with a rooster's head and crimson comb above a coiled scaly serpent body, rearing up to strike with its beak open and its wings flared. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Cockatrice, a monster of the desert. The bird that turns you to stone.  Light: sun-bleached and dusty, hard desert light.",
-      "note": "Stubby hand"
+      "fix": {
+        "from": "out/cockatrice_takesD/cockatrice_1.png",
+        "asked": "both of its arms reach forward with full clawed hands: the second arm, behind the first and lower against its pale belly, now ends in a complete hand with three long hooked fingers, the same as the first hand."
+      },
+      "note": "3 does have a full hand now, but its huge and neither look all that reptilian anymore. Also, second wing?"
     },
     "sandworm": {
       "foe": "sandworm",
@@ -150,15 +154,18 @@
     "zombie_knight": {
       "foe": "zombie_knight",
       "role": "sprite",
-      "candidate": 3,
-      "source": "out/zombie_knight_takesE/zombie_knight_3.png",
+      "candidate": 1,
+      "source": "out/zombie_knight_fix4/zombie_knight_1.png",
       "kept": "picks/zombie_knight.png",
       "prompt": "A rotting knight in black plate split open at the chest over bare ribs and a tattered crimson cape, rising out of a crouch and wrenching a greatsword as long as it is tall up out of the ground, a small helmed head set low between hunched armoured shoulders. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Zombie Knight, a monster of the swamp and graveyard. The genre's death knight: a cape, rusted plate, a sword as long as it is tall.  Light: dim and damp, rust and old bone, lantern light in fog.",
-      "cut": {
-        "tol": 90,
-        "holes": 400
+      "fix": {
+        "from": "out/zombie_knight_takesE/zombie_knight_3.png",
+        "asked": "keep the greatsword exactly as it is, the same blade and crossguard; only its grip below the crossguard is short, one fist long, so the pommel sits just under its fist instead of reaching down to its knee."
       },
-      "note": "Needs cutting, sword handle goes through knee"
+      "note": "Only 1 shortened the hilt, but now its too short and doesn't have a visible pommel. I wonder if he should instead just be dragging the sword behind him? Same hand, just reversed grip, angle changed so that it drags behing everything, and then it can be a bigger sword.",
+      "cut": {
+        "holes": 400
+      }
     },
     "bone_dragon": {
       "foe": "bone_dragon",
