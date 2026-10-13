@@ -4,54 +4,72 @@
     "goblin": {
       "foe": "goblin",
       "role": "sprite",
-      "candidate": 2,
-      "source": "out/goblin_takesD/goblin_2.png",
+      "candidate": 4,
+      "source": "out/goblin_fix/goblin_4.png",
       "kept": "picks/goblin.png",
       "prompt": "A green-skinned goblin in a dented iron helm and a scavenged mail shirt, crouched low behind a round wooden buckler with a short blade drawn back to stab, its small head set low between hunched shoulders. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Goblin, a monster of the grasslands. The genre's first fight, with a knife. Every JRPG opens on one.  Light: the bright, saturated light of a sunny overworld field.",
-      "note": "1 is good for another enemy type, goblin shaman or warlock or something. 4 is not a terrible take for an elite or even boss. 2 needs better cutting and his last finger on his sword hand is wrong."
+      "fix": {
+        "from": "out/goblin_takesD/goblin_2.png",
+        "asked": "its hand on the sword grip is a correct hand: four fingers wrapped around the grip and the thumb over them."
+      },
+      "cut": {
+        "holes": 400
+      },
+      "note": "None of these really fix it, its just better on 4 since it looks like 3 fingers and the busted 4th one behind the handle is basically nonexistent."
     },
     "wolf": {
       "foe": "wolf",
       "role": "sprite",
-      "candidate": 4,
-      "source": "out/wolf_takesE/wolf_4.png",
+      "candidate": 1,
+      "source": "out/wolf_fix/wolf_1.png",
       "kept": "picks/wolf.png",
       "prompt": "A gaunt grey wolf with a pale chest and a ridge of bristling fur, crouched on four legs and coiled to spring, its head thrust low and its teeth bared in a snarl. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Wolf, a monster of the grasslands. The pack that runs down the straggler, in every forest the genre has.  Light: the bright, saturated light of a sunny overworld field.",
+      "fix": {
+        "from": "out/wolf_takesE/wolf_4.png",
+        "asked": "a ragged black mane runs down the back of its neck and along its spine, dark against its grey fur."
+      },
       "cut": {
         "holes": 1000
-      },
-      "note": "The dark mane from 1 would add some colour breakup, maybe. Needs better cutting, and I would call it a Dire Wolf or Lycanthrope probably."
+      }
     },
     "gel": {
       "foe": "gel",
       "role": "sprite",
-      "candidate": 3,
-      "source": "out/gel_takesE/gel_3.png",
+      "candidate": 1,
+      "source": "out/gel_fix/gel_1.png",
       "kept": "picks/gel.png",
       "prompt": "A heap of translucent bright green slime with jagged pale crystal shards jutting from its back, swelling upward with a sinister face, no arms, no legs, no body. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Gel, a monster of the grasslands. The genre's first monster, a blob:  Light: the bright, saturated light of a sunny overworld field.",
-      "note": "Needs a spookier mouth but I like the unique spikey take."
+      "fix": {
+        "from": "out/gel_takesE/gel_3.png",
+        "asked": "its mouth is a wide jagged maw full of uneven fangs, dark inside, in place of the small frowning mouth."
+      }
     },
     "gel_half": {
       "foe": "gel_half",
       "role": "sprite",
-      "candidate": 3,
-      "source": "out/gel_half_takesE/gel_half_3.png",
+      "candidate": 4,
+      "source": "out/gel_half_fix/gel_half_4.png",
       "kept": "picks/gel_half.png",
       "prompt": "A small heap of translucent bright green slime with a few jagged pale crystal shards jutting from its back, swelling upward with a sinister face, no arms, no legs, a blob half the size of a man. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Half-Gel, a monster of the grasslands. What a Gel leaves.  Light: the bright, saturated light of a sunny overworld field.",
-      "note": "Same, needs a different mouth."
+      "fix": {
+        "from": "out/gel_half_takesE/gel_half_3.png",
+        "asked": "its mouth is a wide jagged maw full of uneven fangs, dark inside, in place of the small frowning mouth."
+      }
     },
     "mandragora": {
       "foe": "mandragora",
       "role": "sprite",
-      "candidate": 2,
-      "source": "out/mandragora_takesE/mandragora_2.png",
+      "candidate": 4,
+      "source": "out/mandragora_fix/mandragora_4.png",
       "kept": "picks/mandragora.png",
       "prompt": "A gnarled dark brown root creature crouched low on splayed root legs, lashing a long whip of root out ahead of it, its screaming human face twisted with fury, leaves sprouting from its head. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Mandragora, a monster of the grasslands. The screaming root, pulled up and furious.  Light: the bright, saturated light of a sunny overworld field.",
-      "cut": {
-        "tol": 90,
-        "holes": 400
+      "fix": {
+        "from": "out/mandragora_takesE/mandragora_2.png",
+        "asked": "much brighter and livelier colours, warm lit bark, and lush green leaves and vines sprouting thickly from its head and shoulders."
       },
-      "note": "Best design but needs more foliage and to be brightned up a lot. And to fill the frame better, it's small because it's wide."
+      "cut": {
+        "holes": 100
+      }
     },
     "treant": {
       "foe": "treant",
@@ -96,10 +114,14 @@
       "foe": "sandworm",
       "role": "sprite",
       "candidate": 3,
-      "source": "out/sandworm_takesE/sandworm_3.png",
+      "source": "out/sandworm_fix/sandworm_3.png",
       "kept": "picks/sandworm.png",
       "prompt": "A colossal eyeless segmented worm with a row of jagged spines down its back, bursting out of the desert sand in a spray of rock and dust, its head nothing but a round gaping maw ringed with rows of inward-pointing teeth thrust forward. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Sandworm, a monster of the desert. The worm under the desert, the genre's and every desert's. The old Maw's ring of teeth is its mouth. A towering elite, twice the height of a common foe. Light: sun-bleached and dusty, hard desert light.",
-      "note": "Remove eyes, no eyes on a worm"
+      "fix": {
+        "from": "out/sandworm_takesE/sandworm_3.png",
+        "asked": "its head has no eyes at all: smooth segmented hide all around the round toothed mouth, where the small eyes were. The sand and rocks it bursts from stay."
+      },
+      "note": "Eye socket still remains. It's not terrible, but could be completely fixed maybe."
     },
     "revenant": {
       "foe": "revenant",
@@ -113,15 +135,17 @@
     "ghost": {
       "foe": "ghost",
       "role": "sprite",
-      "candidate": 1,
-      "source": "out/ghost_takesE/ghost_1.png",
+      "candidate": 3,
+      "source": "out/ghost_fix/ghost_3.png",
       "kept": "picks/ghost.png",
       "prompt": "A hooded floating ghost in a long tattered grey robe, swooping forward with a lantern of pale green flame swung out ahead of it on a chain, its robe trailing away to wisps where its feet should be. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Ghost, a monster of the swamp and graveyard. A hooded ghost carrying a lantern, the flame the brightest pixel in the domain. The reason the revenants keep coming.  Light: dim and damp, rust and old bone, lantern light in fog.",
-      "cut": {
-        "glow": true,
-        "holes": 400
+      "fix": {
+        "from": "out/ghost_takesE/ghost_1.png",
+        "asked": "the flame in its lantern is a crisp pixel art flame, a bright pale green core inside a saturated green flame with darker green edges, sharp edged with no soft glow around it."
       },
-      "note": "Cutting"
+      "cut": {
+        "holes": 1000
+      }
     },
     "zombie_knight": {
       "foe": "zombie_knight",
@@ -157,11 +181,14 @@
     "salamander": {
       "foe": "salamander",
       "role": "sprite",
-      "candidate": 4,
-      "source": "out/salamander_takesE/salamander_4.png",
+      "candidate": 1,
+      "source": "out/salamander_fix/salamander_1.png",
       "kept": "picks/salamander.png",
       "prompt": "A long low orange-red lizard with a frill around its neck spread wide like a fan of flame, crouched low on all four legs with glowing lava cracks across its scales, its tail lashing. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Salamander, a monster of the volcano. The lizard that lives in the fire. Its hide burns what touches it.  Light: lit from inside by heat, black rock and embers.",
-      "note": "Frill should be made of fire"
+      "fix": {
+        "from": "out/salamander_takesE/salamander_4.png",
+        "asked": "the frill around its neck is made of living flame, tongues of orange and yellow fire fanning out where the skin frill was."
+      }
     },
     "drake": {
       "foe": "drake",
@@ -175,15 +202,19 @@
     "magma_golem": {
       "foe": "magma_golem",
       "role": "sprite",
-      "candidate": 3,
-      "source": "out/magma_golem_takesE/magma_golem_3.png",
+      "candidate": 2,
+      "source": "out/magma_golem_fix/magma_golem_2.png",
       "kept": "picks/magma_golem.png",
       "prompt": "A hulking golem of black volcanic rock with broken iron shackles on its wrists and molten lava glowing through every crack, hunched forward with its knuckles on the ground, its small head sunk low between massive shoulders. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Magma Golem, a monster of the volcano. The furnace with a body: rock on the outside, lava in the seams. A towering elite, twice the height of a common foe. Light: lit from inside by heat, black rock and embers.",
+      "fix": {
+        "from": "out/magma_golem_takesE/magma_golem_3.png",
+        "asked": "its arms are clearly defined, thick and jointed, ending in large blocky stone hands with heavy fingers; its head has no face, only two glowing eyes in plain rock."
+      },
       "cut": {
         "tol": 90,
         "holes": 400
       },
-      "note": "I like this posture, but it needs more defined arms and hands, and this enemy does not need a real face, just eyes. Might not even need a head at all."
+      "note": "the arms still merge with the legs, it still has no fists. The eyes could be more pronounced since its its only facial feature."
     },
     "warrior_chibi": {
       "foe": "warrior",
