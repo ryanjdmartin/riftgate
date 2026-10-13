@@ -1327,6 +1327,25 @@ func test_shorter_lived_sources_override_longer_ones() -> void:
 	assert_eq(Effects.effective_reach(u, f), Face.Reach.DIRECT, "and the loadout rule is back when it ends")
 
 
+func test_a_doubled_heat_doubles_scorched_too() -> void:
+	# Heat reads adds before multiplies, the one order damage reads too, so a machine whose
+	# weapons run twice as hot (the Sparrowhawk's double; a synthetic passive here) doubles
+	# Scorched's extra as well, and its die says so (Ryan asked, 13 October).
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.attack(10, L, [], 10)), 0, 200)
+	m.heat_max = 100
+	m.cooling = 0
+	Effects.grant(m, Effects.make({"id": "hot", "name": "Hot", "description": "", "effects": [{"trigger": "on_attack", "effect": "multiply_heat", "value": 2}]}, Effects.BATTLE, "test"))
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(500, 10)])
+	sk.begin()
+	sk.start_round()
+	assert_eq(sk.pending_heat(sk.mechs[0]), 20, "the double alone")
+	Effects.stack(m, Effects.STATUS["scorched"], Effects.SKIRMISH, "foe:x", 1, Effects.DECAY_TURN_ALL)
+	assert_eq(sk.pending_heat(sk.mechs[0]), 30, "a stack of Scorched is doubled with the rest: (10 + 5) × 2")
+	assert_eq(sk.shown_face(sk.mechs[0], sk.mechs[0].face()).heat, 30, "and the die shows it")
+
+
 func test_statuses_stack_tick_and_decay_on_both_sides() -> void:
 	# A foe's fire on a machine (Ryan, 13 October: Burn and Scorch). A scorching blow leaves a
 	# stack of Scorched: no heat now, the next weapon fired runs five hotter, and every stack

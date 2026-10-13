@@ -152,7 +152,7 @@ perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run
 
 # screenshot a scene (needs a window; a small one opens briefly); an optional third argument
 # poses the screen first. Skirmish: codex, mechcodex, hold, confirm, lock, strike,
-# enemyturn, plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine, its die running hotter), withdraw, rounds, logfull, killed, acquire, menu, settings, quit, and the feed's
+# enemyturn, plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), withdraw, rounds, logfull, killed, acquire, menu, settings, quit, and the feed's
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
 # and groundtear (the corrupted side's tear as it fires).
 # RIFTGATE_MAP_KIND=rubble (any standalone battle run) picks the map's type; the harness has a picker.

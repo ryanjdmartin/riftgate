@@ -11,7 +11,7 @@ command are in `README.md`.
   disagree, the chat is newer.
 - Sessions run in parallel on this repo: `git status` first, stage by path, diff a shared
   file before staging it, never a bare `git add -A`, never kill a bare `godot --path .`.
-- Tests: 441 tests, 19,633 checks, green (13 October, on `claude/focused-ritchie-omn8i5`).
+- Tests: 442 tests, 19,636 checks, green (13 October, on `claude/focused-ritchie-omn8i5`).
   A cloud session fetches Godot 4.7's Linux build from the GitHub release asset
   (`godotengine/godot-builds`, `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for
   screenshots, and builds models with `BPY_PYTHON` set to a python3.11 venv holding
@@ -108,8 +108,9 @@ goes into this file in the same commit as its first publish.
   machines only through Burning (at the end of the player's turn, before the overheat) and
   Scorched (every weapon hotter for the turn, every stack going at its end, since a stack a
   turn piled up under several scorchers); teams unmoved, machines overheating far less, the
-  Goshawk (heat into shield) the one that loses; the die's heat shows every modifier. Open:
-  Burning's glyph on a machine.
+  Goshawk (heat into shield) the one that loses; the die's heat shows every modifier (the
+  Sparrowhawk's double takes Scorched's extra too, adds before multiplies); Burning on a
+  machine has its own glyph, a solid flame with the thermometer cut out.
 - The docs were rebuilt on 10 October: `docs/rules.md` states the rules; the bible is
   decisions and why. Ryan reads `docs/rules.md` once, then a fresh session starts here.
 - Built, waiting on Ryan's play: the 10 and 11 October rules, the modules (harness only), the

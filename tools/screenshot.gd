@@ -115,10 +115,12 @@ func _apply_pose() -> void:
 			# (RIFTGATE_SHOT_FRAME=8 catches the burst mid-flight).
 			s._rage_debug()
 		"heat":
-			# A foe's fire on the first machine: Burning ×2 and Scorched ×1 on its chip row.
+			# A foe's fire on the first machine: Burning ×2 and Scorched ×1 on its chip row, with
+			# Primed beside them, the one other flame a machine wears.
 			var u: Unit = s.sk.mechs[0].unit
 			Effects.stack(u, Effects.STATUS["burning_mech"], Effects.SKIRMISH, "shot", 2, Effects.DECAY_TURN)
 			Effects.stack(u, Effects.STATUS["scorched"], Effects.SKIRMISH, "shot", 1, Effects.DECAY_TURN_ALL)
+			Effects.stack(u, Effects.STATUS["primed"], Effects.SKIRMISH, "shot", 1, Effects.DECAY_TICK)
 			s._refresh()
 		"enemyturn":
 			# Thin every shield so the enemy turn breaks some: the replay and shatter play.

@@ -956,7 +956,7 @@ static func status_glyph(id: String) -> String:
 		return "blank"
 	match id:
 		"burning_mech":
-			return "heat"
+			return "burning"
 		"scorched":
 			return "scorch"
 		"overcharged":

@@ -202,11 +202,12 @@ Burning, Suppressed, Shocked or Paradox.
   never heals in a battle.
 
 ### Heat
-- A weapon adds its heat when spent, once a spend. Heat may pass the maximum during the
-  player's turn harmlessly; at the end of the turn, before the enemy acts, the excess burns
-  hull one for one (an overheat) and the gauge settles at the maximum. With volatile, it is
-  the way a machine dies on its own turn. Machines cool at the start of the round. Heat
-  starts each fight at zero.
+- A weapon adds its heat when spent, once a spend, through the attacker's modifiers in the
+  blow's order: adds, then multiplies (so a machine whose heat is doubled doubles Scorched's
+  extra too). Heat may pass the maximum during the player's turn harmlessly; at the end of
+  the turn, before the enemy acts, the excess burns hull one for one (an overheat) and the
+  gauge settles at the maximum. With volatile, it is the way a machine dies on its own
+  turn. Machines cool at the start of the round. Heat starts each fight at zero.
 - An overheat is hull damage for every passive that reads hull damage.
 - Foes heat machines only through two debuffs, never outright: Burning, the harsher, adds
   its heat at the end of the player's turn before the overheat, so a vent makes room for it

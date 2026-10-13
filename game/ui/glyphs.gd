@@ -151,6 +151,20 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 		"heat":
 			ci.draw_line(c + Vector2(0, -s), c + Vector2(0, s * 0.3), color, width)
 			ci.draw_circle(c + Vector2(0, s * 0.55), s * 0.45, color)
+		"burning":
+			# Burning on a machine (Ryan, 13 October: a glyph of its own): Burn's flame filled solid,
+			# the heat glyph's thermometer cut out of it, since on metal the fire is heat. The hollow
+			# flame stays Burn's, a foe's Burning's and Primed's, the bare thermometer the overheat's.
+			var flame := PackedVector2Array([
+				c + Vector2(0, -s), c + Vector2(s * 0.7, s * 0.1), c + Vector2(s * 0.3, s),
+				c + Vector2(-s * 0.3, s), c + Vector2(-s * 0.7, s * 0.1),
+			])
+			ci.draw_colored_polygon(flame, color)
+			flame.append(flame[0])
+			ci.draw_polyline(flame, color, width)
+			var cut := Color(Palette.ACCENT_INK, color.a)
+			ci.draw_line(c + Vector2(0, -s * 0.4), c + Vector2(0, s * 0.3), cut, maxf(1.5, width))
+			ci.draw_circle(c + Vector2(0, s * 0.5), s * 0.24, cut)
 		"scorch":
 			# Heat rising off a barrel: Scorched, every weapon running hotter (13 October).
 			ci.draw_line(c + Vector2(-s, s * 0.75), c + Vector2(s, s * 0.75), color, width)
@@ -257,7 +271,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 ## can share a shape in different colours.
 static func colour_for(id: String) -> Color:
 	match id:
-		"burn", "overcharge", "heat", "scorch", "devour", "shocked", "shock":
+		"burn", "overcharge", "heat", "burning", "scorch", "devour", "shocked", "shock":
 			return Palette.HEAT
 		"skull", "shieldbreak", "corrupt", "volatile":
 			return Palette.ENEMY
