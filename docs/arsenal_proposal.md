@@ -95,8 +95,8 @@ Each line is a bible row (sections 1, 5 and 7).
   King James Bible's own word, is pinned as a future component prefix.
 - **A passive may break a rule, as a one-off.** The rule bends for one machine and holds for
   every other.
-- **Retribution is the Arsenal's; thorns need a drawback of their own** and never ride a
-  megatank. If a retaliation mechanic must go, the Armadillo's Faraday Hull goes first (open).
+- **Retribution is the Arsenal's strongest suit, a lean; thorns need a drawback of their own**
+  and never ride a megatank. If a retaliation mechanic must go, the Armadillo's Faraday Hull goes first (open).
 - **An interpose comes back only on a locked piece**, never as a core mechanic.
 - **The rule-text budget is the description's**: about three rule texts on a chassis's
   description, its passive and its modules. A component's rule shows in its own popup and is not

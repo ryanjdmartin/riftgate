@@ -70,9 +70,10 @@ statuses are Aphelion's strength without being its alone. A passive that is pure
 no interest fails (the third round's Ballistic splash); so does a payoff not worth its setup
 (the third round's missile-marked reach). A damage rider on a support action the player takes
 anyway costs no tempo, so it needs a limit (Ryan, 13 October). Rapid is a high-budget keyword:
-its pieces stay small (Ryan, 13 October, probably). Out of bounds: a kill making a spend
-Rapid, every weapon Indirect, a decoy every hunter picks, debuffs as the engine of the gunship
-and the fan-boat (a gunship is about its weapons).
+its pieces stay small (Ryan, 13 October, probably). Set aside so far, each with its reason in the
+retired rounds at the end: a kill making a spend Rapid, every weapon Indirect, a decoy every
+hunter picks, debuffs as the engine of the gunship and the fan-boat. Ryan closed the last (a
+gunship is about its weapons); the rest are Claude's reasons and his to overrule.
 
 The gunship counts its weapons by tag, each tag raising numbers of its own, so it waits on the
 stock pass that puts tags on components, and never dictates the roster of components (Ryan,
