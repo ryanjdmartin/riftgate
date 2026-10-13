@@ -27,8 +27,8 @@ bible (section 12). "Discuss first" means a proposal in chat before code.
 
 ### Discuss first, then decide
 
-- [ ] Every maker's proposed chassis evaluated together by a fresh session, nothing built first (Ryan, 12 October): the Arsenal's in `docs/arsenal_proposal.md` (four chassis and a cleanse that moves debuffs onto a foe), the others where `docs/status.md` lists them, Aphelion's written down first; then the go and the build order
-- [ ] The Armadillo's Faraday Hull: keep it, or let retaliation be the Arsenal's (Ryan is thinking about it: armoured, not a porcupine)
+- [ ] Every maker's proposed chassis evaluated together by a fresh session, nothing built first (Ryan, 12 October): the Arsenal's in `docs/arsenal_proposal.md` (four chassis and a cleanse that moves debuffs onto a foe), the others where `docs/status.md` lists them, Aphelion's written down first; then the go and the build order; the proposals are work in progress on their branches (Ryan, 13 October)
+- [ ] The Armadillo's Faraday Hull: keep it, or let retaliation be the Arsenal's (Ryan is thinking about it: armoured, not a porcupine); folded into the chassis evaluation (Ryan, 13 October)
 - [ ] The content questions, then the stock pass (Engine): tags on every component (Ballistic, Missile, Beam, Plasma, Flame, Arc, Blade, Melee as the working set; Melee stays, Ryan 12 October), the basic kit's names, makers and numbers, the equipment basics' names (the twists landed 12 October)
 - [ ] The keyword line-up (`docs/keyword_lineup.md`; Ryan's answers of 11 and 12 October in it): the area set tested (the half rule, danger close gone, explosives carrying Spread and Penetrate; if they need no price on the firer, Splash folds into the two), Chain's jump to the weakest foe in reach and its maker (area is no part of Kestrel's brief), Breach the foes' word, Braced for Folded; a tight list is no priority until the content is locked (Ryan); the Artillery Rangefinder's new rule
 - [ ] Injuries, a session of their own with the economy (Ryan, 12 October: shelved until then): one state at half the hull, the cracked state gone, measured 12 October to keep today's losses and move no fight
@@ -38,7 +38,7 @@ bible (section 12). "Discuss first" means a proposal in chat before code.
 - [ ] The word "die" in shown text (Ryan, 13 October): the dice look like no dice, the problem that kept "face" out of shown text; a session of its own
 - [x] The Nemesis's rage, built 12 October (the passive banks a rage on all hull damage, the new locked fists spend one to roll again with no switch-off, a plain roll): measured in the bible's row; its numbers wait on Ryan's play
 - [x] The Faraday Hull against rank and file: the discharge went (Ryan, 11 October)
-- [ ] The Honey Badger's identity (Ryan, 12 October: a scrappy machine that keeps on coming, not a scaling threat; damage, support, tank, or its mining roots?): Claude's options in the bible's row (won't stay down, the campaign's workhorse, more salvage), the hopper kept as its kit
+- [ ] The Honey Badger's identity (Ryan, 12 October: a scrappy machine that keeps on coming, not a scaling threat; damage, support, tank, or its mining roots?): Claude's options in the bible's row (won't stay down, the campaign's workhorse, more salvage), the hopper kept as its kit; folded into the chassis evaluation (Ryan, 13 October)
 - [ ] Aphelion's next chassis (Ryan, 11 October: badly needed), proposed in chat first
 - [ ] What a tier means for chassis, components and modules, whether a starting chassis is replaced or kept, and rolled module stats (Ryan's questions, 11 October; Claude's lean and the measured tiers in the bible's section 10 row); decided 12 October: the basics tier zero, a chassis stocking only below its own tier, a bought chassis bringing its stock and never the blueprints, tier three the most unique effects and raw power, tier two most of the synergy pieces
 - [x] The Glacis: the plow braces the Boar instead (Ryan, 12 October), built
@@ -89,8 +89,9 @@ bible (section 12). "Discuss first" means a proposal in chat before code.
 
 - [ ] Ryan's touch-ups on the picked foes (missing arms, weapons through hands) on the sources in `tools/foeforge/picks`, recut with `forge.py cut` and the options `picks.json` records (on main)
 - [ ] Judge the 72x96 foes on the phone (the frame, the whole-pixel slot, the sharpen's strength), then recut every pick at the strength chosen
-- [ ] The foe picker on the phone: a session reads the `picks` collection and cuts the new picks
-- [ ] Battle-pose takes for the other 23 foes and heroes, on Ryan's go (he called the Goblin, Revenant and Cockatrice takes workable, 9 October): four takes each in `design.variants` (costume and pose over the same anatomy, colour pinned, a small head on humanoids, never "facing the party"), `forge.py generate <foe> --variants --tag takes`, then `forge.py phone --tags takesD takes` and republish the picker
+- [ ] Ryan picks every wildlife foe from its takes on the phone picker; a session reads the picks (or his pasted Copy all picks), cuts each with `forge.py cut` from `out/<foe>_<tag>/` and the options it needs, copies the source into `tools/foeforge/picks` and records it in `picks.json`
+- [x] Battle-pose takes for the wildlife (10 October): four in `design.variants` for each of the fifteen without, four more for the Goblin and the Revenant (`--seed 5`), rendered as `takesE`; the original sets off the picker
+- [ ] Battle-pose takes for the eight heroes' boss register, once the promoted forms are entries (their chibis stay as picked)
 - [ ] The four bleeds for the flattened ground
 - [ ] The hangar as a model; a licensed icon set (game-icons.net, CC BY) in place of the line-drawn glyphs, in one pass
 - [ ] Each component class's size per machine on a refit (a pin's `scale` in `models_low.py`); the Armadillo's Lockdown Shutters made real, if Ryan takes it up

@@ -280,11 +280,17 @@ def phone(args):
         rounds = [("_chibi", "chibi party sprite"), ("", "boss register" if foe.get("hero") else "")]
         for t in args.tags:
             rounds.append((f"_{t}", f"new takes ({t})"))
+        found = []
         for suffix, note in rounds:
             d = OUT / (fid + suffix)
             cands = sorted(p for p in d.glob(f"{fid}_*.png") if re.fullmatch(rf"{re.escape(fid)}_\d+", p.stem)) if d.is_dir() else []
-            if not cands:
-                continue
+            if cands:
+                found.append((suffix, note, cands))
+        # The original sets predate the style rules (Ryan, 10 October: once a foe has takes,
+        # the originals can go); a hero's chibi is its own register and stays.
+        if args.drop_originals and any(s not in ("", "_chibi") for s, _, _ in found):
+            found = [f for f in found if f[0] != ""]
+        for suffix, note, cands in found:
             key = fid + suffix
             if suffix == "_chibi":
                 frame, scale = CHIBI_SIZE, 2
@@ -354,7 +360,7 @@ def generate(args):
     height = HEIGHT if int(foe.get("size") or 1) == 1 else 1024
     made = []
     prompts_used = []
-    for k, seed in enumerate(range(args.seed, args.seed + args.n)):
+    for seed in range(args.seed, args.seed + args.n):
         path = out / f"{args.foe}_{seed}.png"
         if path.exists():
             path.unlink()   # mflux never overwrites; it writes a suffixed twin, which the contact sheet would miss
@@ -362,8 +368,9 @@ def generate(args):
         if takes:
             # Each candidate its own design take: the brief's shape swapped for the take's, so
             # the four differ in body plan and pose rather than in seed noise (Ryan, 9 October:
-            # more creative entropy within the style).
-            take = takes[k % len(takes)]
+            # more creative entropy within the style). Candidate n draws take n, so a foe's
+            # added takes render on their own with --seed (the Goblin's fifth on: --seed 5).
+            take = takes[(seed - 1) % len(takes)]
             brief = foe.get("design", {}).get("sprite", "")
             p = prompt.replace(brief[0].upper() + brief[1:], take[0].upper() + take[1:], 1) if brief else f"{take}. {prompt}"
         if args.ref:
@@ -965,6 +972,7 @@ def main():
     pk.set_defaults(func=picker)
     ph = sub.add_parser("phone", help="the picker as a phone page in out/phone/, for publishing as an artifact")
     ph.add_argument("--tags", nargs="*", default=[], help="also include experiments' sets (out/<id>_<tag>)")
+    ph.add_argument("--drop-originals", action="store_true", help="leave out a foe's original set once it has one of the tagged sets")
     ph.set_defaults(func=phone)
     p = sub.add_parser("prompts", help="every foe's prompt into tools/foeforge/prompts.md, to read before generating (no model needed)")
     p.add_argument("--out", default="")

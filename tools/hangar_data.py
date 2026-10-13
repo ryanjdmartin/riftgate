@@ -23,7 +23,7 @@ or render change, then publish tools/hangar.html with the printed map to the pag
 import base64, json, os, re, struct, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CONTENT = ["chassis", "components", "foes", "factions", "vocabulary", "reserved_names"]
+CONTENT = ["chassis", "components", "modules", "foes", "factions", "vocabulary", "reserved_names"]
 
 
 def model_pins(cid):
