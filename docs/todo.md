@@ -27,6 +27,8 @@ bible (section 12). "Discuss first" means a proposal in chat before code.
 
 ### Discuss first, then decide
 
+- [ ] Every maker's proposed chassis evaluated together by a fresh session, nothing built first (Ryan, 12 October): the Arsenal's in `docs/arsenal_proposal.md` (four chassis and a cleanse that moves debuffs onto a foe), the others where `docs/status.md` lists them, Aphelion's written down first; then the go and the build order
+- [ ] The Armadillo's Faraday Hull: keep it, or let retaliation be the Arsenal's (Ryan is thinking about it: armoured, not a porcupine)
 - [ ] The content questions, then the stock pass (Engine): tags on every component (Ballistic, Missile, Beam, Plasma, Flame, Arc, Blade, Melee as the working set; Melee stays, Ryan 12 October), the basic kit's names, makers and numbers, the equipment basics' names (the twists landed 12 October)
 - [ ] The keyword line-up (`docs/keyword_lineup.md`; Ryan's answers of 11 and 12 October in it): the area set tested (the half rule, danger close gone, explosives carrying Spread and Penetrate; if they need no price on the firer, Splash folds into the two), Chain's jump to the weakest foe in reach and its maker (area is no part of Kestrel's brief), Breach the foes' word, Braced for Folded, which maker owns which keyword; a tight list is no priority until the content is locked (Ryan); the Artillery Rangefinder's new rule
 - [ ] Injuries, a session of their own with the economy (Ryan, 12 October: shelved until then): one state at half the hull, the cracked state gone, measured 12 October to keep today's losses and move no fight
@@ -108,4 +110,4 @@ bible (section 12). "Discuss first" means a proposal in chat before code.
 
 ## Pinned, not now
 
-- A low-hull berserker or last-stand entry; command entries with a battlefield meaning; an endless mode; livery by Sponsorship once the hangar exists; Jenny's idle nag; a map taunt for a slow Arsenal bruiser; a machine that moves after it fights
+- A low-hull berserker or last-stand entry; command entries with a battlefield meaning; an endless mode; livery by Sponsorship once the hangar exists; Jenny's idle nag; a map taunt for a slow Arsenal bruiser; a machine that moves after it fights; Hellfire as an Arsenal component prefix (Ryan, 12 October); the gravity piece, a tier-three blueprint with an area effect (Ryan, 13 October: shelved, it will come back)
