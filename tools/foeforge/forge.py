@@ -484,6 +484,39 @@ def key_holes(img, tol=24, min_area=400):
     return img
 
 
+def key_glow(img, keyed, soft=150, min_alpha=0.15, min_chroma=110):
+    """Turn coloured light over the white (a lantern's flame, a glow in a hand) into its own
+    colour: pixels reached from the background through light ones whose colour, un-mixed from
+    white, is strongly coloured are made solid in that colour, or cleared when too faint.
+    Opt-in per cut: a binary key leaves such a glow a pale blob that does not read at 72x96
+    (the Ghost's lantern, the Necromancer's hand, 13 October), while un-mixing a grey or a
+    white the same way turns pale fur dark, so only coloured light is touched."""
+    src = np.array(img.convert("RGB")).astype(np.float32)
+    out = np.array(keyed).astype(np.float32)
+    bg = out[..., 3] == 0
+    light = (src >= 255 - soft).all(-1)
+    reach = bg.copy()
+    while True:
+        grown = reach.copy()
+        grown[1:, :] |= reach[:-1, :]
+        grown[:-1, :] |= reach[1:, :]
+        grown[:, 1:] |= reach[:, :-1]
+        grown[:, :-1] |= reach[:, 1:]
+        grown &= light | bg
+        if (grown == reach).all():
+            break
+        reach = grown
+    alpha = (255.0 - src.min(-1)) / 255.0
+    al = np.clip(alpha, 1e-3, 1.0)[..., None]
+    unmixed = np.clip((src - 255.0 * (1.0 - al)) / al, 0, 255)
+    tinted = reach & (unmixed.max(-1) - unmixed.min(-1) >= min_chroma) & (alpha >= 0.06)
+    keep = tinted & (alpha >= min_alpha)
+    out[keep, :3] = unmixed[keep]
+    out[keep, 3] = 255
+    out[tinted & (alpha < min_alpha)] = 0
+    return Image.fromarray(out.astype(np.uint8), "RGBA")
+
+
 def quantize(img, palette, colours=16):
     """Flatten the shading into a few coherent regions (median cut on the opaque pixels),
     then, if a palette is given, snap each region colour to its nearest palette colour.
@@ -609,9 +642,12 @@ def cut(args):
     foes = load_foes()
     foe = foes[args.foe]
     pal = parse_palettes()[PALETTE_FOR.get(foe.get("faction", "marsh"), "UND")] if args.faction_palette else None
-    src = key_background(Image.open(args.image), args.tol)
+    image = Image.open(args.image)
+    src = key_background(image, args.tol)
+    if args.glow:
+        src = key_glow(image, src)
     if args.holes:
-        src = key_holes(src)
+        src = key_holes(src, min_area=args.holes)
     size = int(foe.get("size") or 1)
     ART.mkdir(parents=True, exist_ok=True)
     frame = CHIBI_SIZE if (foe.get("hero") and size == 1) else COMBAT_SIZE[size]   # a hero in one slot is its chibi
@@ -993,7 +1029,8 @@ def main():
     c.add_argument("--colours", type=int, default=16, help="colours to keep (default 16)")
     c.add_argument("--sharpen", type=int, default=60, help="the gentle sharpen's unsharp amount, percent (default 60; raise it for a crisper cut, -1 for the old plain median cut)")
     c.add_argument("--tol", type=int, default=48, help="how far from the background colour still keys out (default 48); raise it, to 90 or so, when a render left a grey ground shadow")
-    c.add_argument("--holes", action="store_true", help="also key enclosed pockets of background (sky between branches); off by default, since a white robe is the same colour")
+    c.add_argument("--holes", type=int, nargs="?", const=400, default=0, metavar="MIN_AREA", help="also key enclosed pockets of background (sky between branches) of at least MIN_AREA render pixels (400 when not given; raise it to spare a pale highlight, as the Wolf's haunch at 1000); off by default, since a white robe is the same colour")
+    c.add_argument("--glow", action="store_true", help="coloured light over the white (a flame, a glow) cut as solid colour instead of a pale blob; off by default, since it is only for glows")
     c.add_argument("--faction-palette", action="store_true", help="snap to the faction palette from the enemy sheet instead of keeping the model's colours")
     c.set_defaults(func=cut)
     r = sub.add_parser("rift", help="candidates for the rift: a vortex tearing a hole in reality")

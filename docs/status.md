@@ -91,10 +91,10 @@ can settle), the tasks are `docs/todo.md`, the layout and every command are in `
   for the Boar); flat weapons pay about twice the heat per point that rolled ones do. Both
   reports' bands are in `docs/measurements.md`.
 - Foe art: every foe and hero is cut from Ryan's picks at 72x96 (massive 96x144, chibis 36x48).
-  On 10 October Ryan retired the original candidate sets (rendered before the style rules):
-  every wildlife foe now has four battle-pose takes on the picker (`takesE`; the Goblin and the
-  Revenant beside their 9 October takes, the Cockatrice with its 9 October takes alone), the
-  heroes keep their chibi and boss sets. Next: Ryan picks from the takes, a session cuts each.
+  On 13 October every wildlife foe but the Needler was re-picked from its battle-pose takes and
+  cut, with the Lancer's and the Summoner's chibis; Ryan's note on each pick is in
+  `tools/foeforge/picks/picks.json` and the touch-ups wait on who makes them. The cutter gained
+  `--holes N` (a size floor) and `--glow` (a coloured glow cut solid).
 - Known gaps: Jenny's foe-down lines are keyed by the retired families.
 
 ## Decided, not built
