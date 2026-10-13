@@ -218,3 +218,12 @@ pairs fighting two formations spend about three times the hull of one four fight
 turn, and risk half the team each. A boss alone is two rounds and 2% of a four's hull: no exam.
 Count dominates composition: a four of tank, controller, bruiser and support reads the same as
 a four of hitters. Bible sections 4 and 7.
+
+**The campaign without the in-fight Rift Pressure tick** (`docs/campaign_run.md`, 40 runs,
+the plain player, 13 October, late). With the tick per round fought removed and the map's tick
+alone: 12 of 40 runs won (3 with the tick that morning, on the same rules otherwise), 24% of
+battles won (6%), 75% wiped (93%), 3.5 cities fallen a run (3.9), the capital's gate at 90 of
+300 at the end (22), 1,383 fights against 1,747. The tick had been spawning packs into the
+bot's long solo fights, so about a third of the campaign's fall was the clock; the rest is the
+domains and the solo fights, which the fresh-start session owns. One battle ran 55 phases: a
+stall the runner now shows instead of punishing. Bible section 4.

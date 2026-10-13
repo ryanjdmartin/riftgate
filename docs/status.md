@@ -91,9 +91,10 @@ document's job and every command are in `README.md`.
 
 ## Measured, 13 October
 
-- `docs/campaign_run.md` on the four domains and today's rules: the plain player wins 3 of 40
-  runs (29 of 40 on 9 October, before the domains), 6% of battles, 93% wiped, every city but the
-  capital falling by turn 4 to 9. Not Rally: the commit before the fix gave 0 of 40. The bot
+- `docs/campaign_run.md` on the four domains and today's rules: the plain player wins 12 of 40
+  runs with the in-fight Rift Pressure tick gone (3 of 40 with it that morning; 29 of 40 on 9
+  October, before the domains), 24% of battles, 75% wiped, 3.5 cities fallen a run. Not Rally:
+  the commit before the fix gave 0 of 40 with the tick. The bot
   takes every ready machine to one front, as intended, but fights inside a battle are mostly
   one machine alone (1,157 of 1,747), wrecks sit out with no spares, and the bot never
   withdraws from a skirmish. A lone machine wins 64% against a pack and 37% against two; two
@@ -161,7 +162,7 @@ URL (read first). Databases are reachable only from the personal account. A page
 into this file in the same commit as its first publish; the procedures are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. Live: v0.152 (13 October, evening), the
+  `docs/design-bible.html` after every change. Live: v0.153 (13 October, evening), the
   committed file as it stands on main, the Aphelion session's rows carried in.
   Before republishing, read the live page; if another session moved it, publish a three-way
   merge onto it.
