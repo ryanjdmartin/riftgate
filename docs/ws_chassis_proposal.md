@@ -1,7 +1,7 @@
 # Wainwright & Sutler: new chassis
 
 A pitch for Ryan's candidate silhouettes (two true spider tanks, a chicken walker, a medium
-gunship, a large multi-rotor, a fan-boat hovercraft). Fifth round, 13 October 2026. Nothing
+gunship, a large multi-rotor, a fan-boat hovercraft). Sixth round, 13 October 2026. Nothing
 here is in content. The passives come first; names, designations and numbers follow once the
 passives hold, so the machines go by silhouette. Numbers are placeholders in the content's
 tens.
@@ -10,12 +10,12 @@ tens.
 
 | Silhouette | Tier | Passive (draft) | The rule it bends | State |
 |---|---|---|---|---|
-| Eight-legged spider | 2 | Its vents blast a random foe for the heat they take off it. Cooling -10. | Equipment touches only machines; cooling never below zero | Liked; its own heat only; an ally's vent on it is open |
-| Large multi-rotor | 3 | Any machine in the fight may spend its die as its own. | A machine spends only its own die | Liked; three looks rendered; the word "die" waits on another session |
+| Eight-legged spider | 2 | Its vents blast a random foe for the heat they take off it. Cooling -10. | Equipment touches only machines; cooling never below zero | Liked; its own heat only; an ally's vent on it blasting is the first buff if it is weak |
+| Large multi-rotor | 3 | Any machine in the fight may spend its die as its own. | A machine spends only its own die | Liked; the helicarrier deck is its look; the word "die" waits on another session |
 | Chicken walker | 2 | Whenever its die rolls, it moves to the next entry instead, in sequence. | Every die rolls | Liked (Ryan's revolver bot); Rapid stays small, so the chain is funny, not strong |
-| Four-legged spider (funnel-web) | 2 | A foe it would Suppress takes a web bomb instead: at the end of that foe's turn it bursts, Suppressing the foe and the next foe beside it. | A Suppress lands when it hits | Ryan's web bomb; the fangs cash it |
-| Medium gunship | 2 | Each weapon it carries gains its tag's upgrade: Ballistic Penetrate, Missile Spread, Beam Indirect, Plasma 10 more for 10 more heat, Flame Burn, Arc Shock. | Tags carry no rule | Ryan's upgrade by tag |
-| Fan-boat hovercraft | 1 | Everything it fires goes through its deck gun: each weapon fires the deck gun's shot, with its own keywords. | A weapon's number, reach and heat are its own | Ryan's deck gun; its shape, below |
+| Four-legged spider (funnel-web) | 2 | A foe it would Suppress takes a web bomb instead: at the end of that foe's turn it bursts, Suppressing the foe and the next foe beside it. | A Suppress lands when it hits | Ryan's web bomb, the plan as below ("a good plan") |
+| Medium gunship | 2 | Each weapon it carries raises one of its numbers by its tag: Ballistic armour, Beam shield, Missile move, Plasma hull, Flame field recharge, Arc cooling. | A chassis's numbers are its own; no scaling with a tag's count | Ryan's: its numbers built in the hangar, nothing locked |
+| Fan-boat hovercraft | 1 | Everything it fires goes through its deck gun: each weapon fires the deck gun's shot, with its own keywords. | A weapon's number, reach and heat are its own | Ryan's deck gun, the shells ("see where it takes us") |
 
 The tests it answers: a chassis's identity (passive, numbers, locked components) opens build
 space; a map action that buys a fight buff is no condition; a chassis exists to bend a rule,
@@ -30,11 +30,11 @@ its pieces stay small (Ryan, 13 October, probably). Out of bounds: a kill making
 Rapid, every weapon Indirect, a decoy every hunter picks, debuffs as the engine of the gunship
 and the fan-boat (a gunship is about its weapons).
 
-The gunship reads tags, every tag with its own upgrade, so it waits on the stock pass that
-puts tags on components. No chassis passive reads a tag today (the Nemesis's melee bonus was
-the model until its rage replaced it), and the bible's bar applies: a chassis passive reads a
-tag only if it opens build space. The fan-boat's deck gun keeps a shell's tags, so a tag
-reader still sees a Flame shell as Flame.
+The gunship counts its weapons by tag, each tag raising one of its numbers, so it waits on the
+stock pass that puts tags on components. No chassis passive reads a tag today (the Nemesis's
+melee bonus was the model until its rage replaced it), and the bible's bar applies: a chassis
+passive reads a tag only if it opens build space. The fan-boat's deck gun keeps a shell's tags,
+so a tag reader still sees a Flame shell as Flame.
 
 The stock lists name today's pieces as stand-ins. Under the stock rule (Ryan, 12 October) a
 tier one stocks basics beside its locked piece and every chassis stocks only below its own
@@ -56,13 +56,10 @@ becomes a shield of 20 with Rapid and the Entropy Condenser a vent of 40 with Vo
   tempo: the boiler vents every turn, so the blast fires every turn. The bible's tests agree:
   chances live on riders, and a chance the player shifts by their choices (here, when) is a
   decision.
-- **Open: an ally venting the boiler** (Ryan, 13 October: the real decision). Does a vent an
-  ally spends on it blast too (and the Puffin's shield, which sheds 10 heat)? Yes makes the
-  boiler the team's steam battery: every spare vent on the team becomes an attack, which is
-  the free damage rider on a support action, several a round, and the pressure stops being
-  the boiler's own problem. No keeps it the boiler's: an ally may cool it, a decision about
-  its survival, never an attack. Claude's lean: no, with yes as the buff if the boiler proves
-  weak.
+- **An ally venting the boiler** (Ryan, 13 October): it cools the boiler and blasts nothing,
+  so the pressure stays the boiler's own problem and no spare vent on the team turns into a
+  free attack. Letting an ally's vent blast (and the Puffin's shield, which sheds 10 heat) is
+  the first buff if the boiler proves weak.
 - **What it opens.** Heat is ammunition and every vent is a gun. Routes to heat: the boiler
   itself, hot weapons of any maker, and the foes' heat debuffs (built 13 October): Burning,
   which adds its heat at the end of the player's turn and so waits for the next turn's vents,
@@ -88,7 +85,7 @@ becomes a shield of 20 with Rapid and the Entropy Condenser a vent of 40 with Vo
   between the fangs, vent grilles along the abdomen glowing brighter as the heat climbs, and
   a blast of steam from a grille at whichever foe the vent finds.
 
-## Large multi-rotor: the sutler's wagon
+## Large multi-rotor: the sutler's deck
 
 - **Passive.** "Any machine in the fight may spend its die as its own." "As its own" carries
   the rest: that machine's passive and buffs apply to the spend, and it pays the heat and any
@@ -108,47 +105,34 @@ becomes a shield of 20 with Rapid and the Entropy Condenser a vent of 40 with Vo
   field recharge 15. Nothing locked: its kit is the team's. Six hardpoints (d6). Stock:
   Howitzer, Enfilade Beam, Maxigun, Incendiary Shells, Laminar Deflector, Coolant Jacket.
 
-### The looks
+### The look: the helicarrier deck
 
-Ryan, 13 October: not sold on the look as written, so three looks were built in lowforge (in
-Wainwright & Sutler's metal) and rendered through the game's own 3D view, at the codex angle
-and from above: `docs/looks/ws_multirotor.png`. They are look tests
-(`tools/lowforge/looks/ws_multirotor.py`, built by `build_look.py` there), never content.
+Ryan, 13 October, from three looks built in lowforge and rendered through the game's own 3D
+view (`docs/looks/ws_multirotor.png`; the models are look tests in
+`tools/lowforge/looks/ws_multirotor.py`, never content): the helicarrier is this chassis's
+look. The V-12 is cool too, without the wagon cover, and is kept for another machine; the
+tandem is set aside.
 
-1. **The V-12 wagon**, the brief as written below.
-2. **The tandem**: a Chinook in W&S iron, a long boxcar hull under two great three-blade
-   rotors fore and aft, the aft on a tall pylon so their discs overlap clear of each other;
-   the wagon's canvas along the long back between them, mounts on the side sponsons, a ramp
-   and a hook aft. The most familiar of the three, and long and narrow from above.
-3. **The helicarrier deck**: a flat iron deck held up by four rotors in iron rings at its
-   corners, an island on the starboard edge, a hazard landing square aft, mounts round the
-   deck's edge, the crane at the stern. From above it reads as a multi-rotor at once.
-
-The V-12 brief:
-
-- **Homage.** The Mil V-12, the biggest helicopter ever flown and the oddest design that
-  worked, crossed with a covered wagon and a carrier deck.
-- **From above.** A long boxy fuselage fore and aft; a high wing across its middle, wider at
-  the tips, braced by struts to the flanks; at each tip a nacelle and a great rotor, the two
-  turning against each other, their discs all but meeting over the spine: the horns. Blades
-  drawn as blades, never a disc, so the hull reads through.
-- **The fuselage.** A flying wagon: slab sides of riveted iron (`steel.panel`), a warm brown
-  band down its length (`livery.livery2`), a blunt nose glazed (`glass.glass`), amber lamps at
-  the nose and the wingtips (`amber.light`), a long tail with a tailplane and twin fins.
-- **The bay.** Amidships behind the wing, iron hoops over the spine carrying a canvas hood in
-  bone white (`bone.bone`): a covered wagon's bonnet laid along the top, the one pale shape on
-  the machine and the first thing the eye finds from above.
-- **The deck.** Flat plate forward and aft of the bay, a landing square on the aft deck in
-  hazard stripes (`steel.hazard`): the carrier's nod. Mounts bolted on and squared off, all
+- **Homage.** The helicarrier played straight, in Wainwright & Sutler iron: a flat deck held up
+  by four rotors in rings at its corners.
+- **From above.** A long flat iron deck with a blunt bow, a centre line in hazard dashes and a
+  hazard landing square aft; at each corner a rotor in an iron ring on an arm from the hull,
+  blades drawn as blades. It reads as a multi-rotor at once, and it is the biggest footprint
+  of the three.
+- **The hull.** A keel slung under the deck, slab sides of riveted iron (`steel.panel`) with a
+  warm brown band (`livery.livery2`), amber lamps at the bow (`amber.light`).
+- **The island.** On the starboard edge: a riveted block with the bridge glazed round
+  (`glass.glass`), a roof, a mast with an amber lamp and a stack.
+- **The mounts.** Six round the deck's edge and at the bow, bolted on and squared off, all
   reading from above.
-- **The boom.** A cargo crane aft: a mast, a jib, a hook on a line hanging below the hull. It
-  is the tell for the passive.
+- **The crane.** At the stern, a mast and a jib swung aft, a hook on a line hanging below the
+  hull: the tell for the passive.
 - **Size and float.** Assault: it overflows its hex, drawn south over north. Nothing touches
   the ground; only the hook hangs low.
-- **Joints and acts** (any of the three). The rotors spinning (`b.spin`), faster under way;
-  the boom's yaw and luff, the hook swinging; the mounts' yaw within the turret rule.
-  Resupply: the boom swings out, the hook drops and rises. A battery drill: the mounts
-  traverse in turn. A gust: a side dips, the rotors bite, it rights itself and settles.
+- **Joints and acts.** The four rotors spinning (`b.spin`), faster under way; the crane's yaw
+  and luff, the hook swinging; the mounts' yaw within the turret rule. Resupply: the crane
+  swings out, the hook drops and rises. A battery drill: the mounts traverse in turn. A gust:
+  a corner dips, its rotor bites, the deck rights itself and settles.
 - **Under way.** The helicopter style, unpinned at last: it holds its facing and tilts into
   its travel, heavy and slow to start, barely a bank.
 - **Death.** Wainwright & Sutler's winding down: the rotors spooling to a stop.
@@ -187,7 +171,8 @@ The V-12 brief:
 
 ## Four-legged spider: the funnel-web
 
-- **The name.** Ryan leans to the funnel-web spider (13 October); clear in the reserved names.
+- **The name.** Ryan leans to the funnel-web spider (13 October); clear in the reserved names. The
+  plan below is his call ("a good plan").
 - **Passive** (Ryan, 13 October). "A foe it would Suppress takes a web bomb instead: at the end
   of that foe's turn it bursts, Suppressing the foe and the next foe beside it." The web bomb
   is Ryan's working name.
@@ -227,74 +212,66 @@ The V-12 brief:
 ## Medium gunship: the weapon to surpass all weapons
 
 - **The fantasy** (Ryan, 13 October). The Hind-D and Metal Gear's running joke, "a weapon to
-  surpass Metal Gear": the overbuilt gunship sold as the last word in weapons, carrying one of
-  everything. The lore is Ryan's to write.
-- **Passive** (Ryan's shape, 13 October: a different bonus for each tag, more tags than a die
-  can carry). "Each weapon it carries gains its tag's upgrade: Ballistic Penetrate, Missile
-  Spread, Beam Indirect, Plasma 10 more for 10 more heat, Flame Burn, Arc Shock." Blade and
-  Melee gain nothing: a gunship keeps its distance. The upgrades are placeholders, each a
-  keyword or a number the die can show.
-- **What it opens.** A menu in the hangar: the pods and four hardpoints hold at most five
-  tags of the eight, so no die gets every upgrade, and the choice is which systems. Breadth or
-  depth: one of each, or every weapon a Missile and every one Spread. Weapons of any maker
-  come for their tags. The die shows each upgrade in place (a chip, a number), so the table is
-  read in the hangar, never in a fight.
-- **The holes.** It gives each tag a rule on this machine, the bend; the table is two lines,
-  the most a passive should carry; it waits on tags being assigned and stable (the working
-  eight); and it is six small passives to balance, the area rows (Penetrate, Spread) the
-  strong ones (the explosive set measured on 12 October swung the formations).
-- **On first spend** (Ryan's other shape, which he doubts suits this chassis). The same table,
-  each upgrade coming online the first time it fires that tag, for the fight: it scales, but
-  not in damage alone, and the round asks which system to bring online next, the pods (Rapid)
-  bringing Missile first. The holes: fights run three to five rounds, so the last systems come
-  online late; a chip per system; and another machine growing through a fight beside the
-  Goshawk, the Nemesis, the Ammit, the Stingray and the Badger. It may suit a machine whose
-  fantasy is warming up.
-- **The switch** (the fourth round's, kept as an alternative). "A weapon it fires deals 10
-  more if it shares no tag with the last weapon it fired."
-- **Numbers and locked kit.** Medium, flyer, move 30 (the slow flyer); hull 100, shield 40,
-  armour 5, heat 60, cooling 5, field recharge 20. Locked: the Rocket Pods, Indirect, rolled 5
-  to 15, Rapid, heat 5, tagged Missile, so Spread on this machine: rockets bursting over the
-  row, and the die rolls again. Four hardpoints (d5). Stock: three weapons of other tags and a
-  shield once tags exist (stand-ins: the Maxigun, the Slugthrower, the Enfilade Beam, the
-  Laminar Deflector).
+  surpass Metal Gear": the overbuilt gunship that becomes whatever its guns make it. It lives
+  in the Clydesdale's utility space, and like the Clydesdale it locks nothing. The lore is
+  Ryan's to write.
+- **Passive** (Ryan's shape, 13 October: it grows in anything but offence). "Each weapon it
+  carries raises one of its numbers by its tag: Ballistic armour, Beam shield, Missile move,
+  Plasma hull, Flame field recharge, Arc cooling." The first machine whose numbers the player
+  builds: a die of Beams makes a shield wall, Ballistic weapons an armoured brick, Missiles a
+  fast skirmisher, a mix whatever the run needs. Blade and Melee raise nothing (a gunship keeps
+  its distance), and a weapon wearing two tags raises both.
+- **A first table** (placeholders, priced by the bible's measurements of 11 October): Beam
+  +20 shield (about 17 hull), Plasma +20 hull, Ballistic +5 armour (about 53 hull, the dearest
+  step there is), Missile +10 move and Flame +10 field recharge (worth on the map, which the
+  runner cannot price), Arc +5 cooling (filler alone, real on a hot die).
+- **Nothing feeds itself** (Ryan's test for no clear winner). None of the six makes its own tag
+  stronger, so no tag snowballs. That is why his first missile example, a higher floor on
+  rolled weapons, is out: it is offence, and the rockets are rolled, so it fed the missiles
+  that raised it. The heat stats are the ones to watch: cooling helps hot weapons, so it goes
+  to whichever tag runs coolest once tags land (today's pieces do not sort by tag: beams run
+  5 to 20 heat, guns 0 to 10).
+- **The holes.** Ballistic's armour is the row to watch: armour comes in fives and 5 is worth
+  about 53 hull, so five Ballistic weapons make 25, a wall against every swarm; the lever is a
+  cap or a smaller rate (a step every second Ballistic weapon). It bends the tags row's "no
+  scaling with a tag's count", whose reason (a lynchpin, one blueprint farmed) does not hold
+  here, since any weapon of the tag counts and nothing feeds itself. Its fight decisions are the
+  usual ones; the new decision is all in the hangar, which must show what each weapon fitted
+  adds. A weapon counts for the battle once fitted, destroyed or not, as every bonus does.
+- **Growing in the fight instead** (the other shape, set aside). The same table, each number
+  rising the first time it fires that tag. The map's numbers (move, field recharge) cannot
+  grow inside a fight, and more maximum hull or shield needs a rule for the current, so the
+  hangar shape is the cleaner.
+- **Numbers.** Medium, flyer, move 30 (the slow flyer, before its Missiles); hull 100, shield
+  40, armour 0, heat 60, cooling 5, field recharge 20: low on purpose, the weapons building the
+  rest. Nothing locked. Six hardpoints (d6). Stock: weapons of several tags once tags exist
+  (stand-ins: the Maxigun, the Slugthrower, the Enfilade Beam, the Howitzer, the Incendiary
+  Shells, the Laminar Deflector).
 - **Model.** The Mi-24 Hind in W&S iron: a narrow armoured fuselage, two stepped bubble
-  canopies, stub wings crowded with pods and mounts of every kind, a chin gun, a five-blade
-  rotor and a tail rotor.
+  canopies, stub wings crowded with mounts of every kind (all six of its hardpoints), a chin
+  mount, a five-blade rotor and a tail rotor.
 
 ## Fan-boat hovercraft: the punt gun
 
 - **The fantasy** (Ryan, 13 October). A simple hovercraft with a deck gun, and everything it
-  fires goes through the deck gun. Ryan: "now we're getting somewhere"; what is the best shape
-  for a gun that assimilates other guns?
-- **The shells** (the passive as it stands). "Everything it fires goes through its deck gun:
-  each weapon fires the deck gun's shot, with its own keywords." The other guns lose their
-  bodies and keep what they do: the shot is the deck gun's number, reach and heat, one blow
-  (strikes fold into it); the weapon brings its keywords, any unique rule and its tags. Pieces
-  small by number and rich in keywords become its best guns, from any maker; each round asks
-  which shell to fire. No state, and a real cost: big numbers, Indirect reach and the modules
-  that move a rolled range are wasted on it. Holes: Rapid shells at 15 that fire again are its
-  strongest build (the lever is the deck gun's number), and a shell's own heat no longer
-  counts.
-- **The magazine.** "Its deck gun fires with the last three keywords its other weapons fired."
-  The other guns fire as themselves and leave their keyword in the deck gun, which holds three,
-  the oldest dropping out, so the firing order loads it. Each round asks what to load and when
-  to fire it, and the deck gun's entry shows its three chips, the authored cap. The most
-  assimilating of the shapes and the deepest. Holes: it pays only when the deck gun comes up
-  (one roll in four on a d4, rerolls hunting it), and loading takes rounds, since one die acts
-  once a round; the player carries its state (shown on the entry); and it is upside with no
-  cost, its interest all in the sequencing. More a tier two.
-- **The echo.** "Its deck gun fires again whatever it fired last." Assimilation as imitation:
-  the best gun twice. Simple, a little state, and it rewards one big gun, the opposite of the
-  shells.
-- **Set aside.** The sponge (the deck gun carries every keyword on the die, the others firing
-  as ever: pure upside, and a stack of chips no phone can read); the sum (the deck gun deals
-  every other weapon's number and the others never fire: one huge entry on a die of blanks);
-  the hopper (weapons load the deck gun, which fires them all: the Badger's already).
-- **Claude's lean.** The shells for the tier-one fan-boat: the simplest shape that still costs
-  something, simple at the start (its stock basics all fire the same 15) and a rack of shells
-  by the end of a run. The magazine is the best answer to "assimilates" and worth keeping for
-  a tier two or another machine.
+  fires goes through the deck gun. Ryan, 13 October: the shells, "and see where it takes us".
+- **Passive.** "Everything it fires goes through its deck gun: each weapon fires the deck gun's
+  shot, with its own keywords." The other guns lose their bodies and keep what they do: the
+  shot is the deck gun's number, reach and heat, one blow (strikes fold into it); the weapon
+  brings its keywords, any unique rule and its tags.
+- **What it opens.** Pieces small by number and rich in keywords become its best guns, from any
+  maker: a Suppress shell holds a foe at 15, a Burn shell sets one alight, a Penetrate shell
+  goes down the column, a Rapid shell fires and rolls again. Each round asks which shell to
+  fire. At tier one it starts simple, its stock basics all firing the same 15, and by the end of
+  a run it is a rack of shells.
+- **The cost.** Big numbers are wasted on it, Indirect reach too (the shot is Direct), and so
+  are the modules that move a rolled range: the punt gun is flat.
+- **The holes.** Rapid shells at 15 that fire again are its strongest build (the lever is the
+  deck gun's number), and a shell's own heat no longer counts.
+- **Considered.** The magazine (the deck gun fires with the last three keywords its other
+  weapons fired), the deepest shape and the most assimilating, kept as an idea for a tier two
+  or another machine; the echo (the deck gun fires again whatever it fired last); the sponge,
+  the sum and the hopper, set aside.
 - **Numbers and locked kit.** Light, hover, move 50; hull 60, shield 30, armour 0, heat 60,
   cooling 10 (the fan), field recharge 30. Locked: the deck gun (the Fowling Cannon, a working
   name), Direct, flat 15, heat 5, tagged Ballistic. Three hardpoints (d4). Stock, as a tier
@@ -324,3 +301,7 @@ The V-12 brief:
   piece (Ryan: broken), and the stun punish it served (a blow on a Suppressed foe striking
   every other); the venom version as a separate machine, its share of hull now on the fangs;
   the gunship's bonus counted per different tag (the upgrade by tag instead).
+- Round five (13 October): the gunship's offensive upgrade by tag and its first-spend shape (it
+  grows in anything but offence, in the hangar), the switch, and its locked Rocket Pods (it
+  locks nothing); the multi-rotor's V-12 wagon and its canvas bay (the V-12 kept for another
+  machine) and the tandem; the fan-boat's other shapes (the magazine kept as an idea).
