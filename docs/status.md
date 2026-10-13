@@ -38,7 +38,7 @@ command are in `README.md`.
   and adds Aphelion's calls, which are in the bible already. Merging either brings its code;
   its bible resolves to the live page, which holds every session's rows.
 - `claude/ws-chassis-designs-wssq2u` (13 October) carries main and adds no code: the W&S
-  proposal (below), the bible as published (v0.127), and two lines in CLAUDE.md (every rule is
+  proposal (below), the bible as published (v0.128), and two lines in CLAUDE.md (every rule is
   open to debate; a maker's profile is an identity, never an exclusion). Merge it so other
   sessions get them.
 
@@ -49,7 +49,9 @@ For the batch evaluation (Ryan, 12 October). Each is a pitch; nothing in them is
 - The Arsenal: `docs/arsenal_proposal.md` on main (Misharu, Mastema, Minos, the Onryō, and a
   cleanse that moves debuffs onto a foe).
 - Wainwright & Sutler: `docs/ws_chassis_proposal.md` on `claude/ws-chassis-designs-wssq2u`
-  (six silhouettes, the third round of 12 October with Ryan's correction of 13 October).
+  (six silhouettes, the fourth round of 13 October: the boiler's random vent and the revolver's
+  Rapid chain are Ryan's calls; the gunship and the fan-boat are new, waiting on his read; the
+  multi-rotor's look waits on a render or another silhouette).
 - Minerva: `docs/minerva_chassis_proposal.md` on `claude/minerva-chassis-candidates-po893q`
   (four candidates, 11 October).
 - Kestrel: `docs/canvas/kestrel-airframes.html` on `ccr-1a6d0a75-y2oqy8` (five airframes,
@@ -68,7 +70,7 @@ by URL (read first). Databases are reachable only from the personal account. A p
 goes into this file in the same commit as its first publish.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change (v0.127; main's file is v0.126 until this
+  `docs/design-bible.html` after every change (v0.128; main's file is v0.126 until this
   branch merges).
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s map (which leaves out `content/modules.json`: add it).

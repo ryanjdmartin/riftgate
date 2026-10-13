@@ -31,6 +31,7 @@ bible (section 12). "Discuss first" means a proposal in chat before code.
 - [ ] The module catalogue again as soft-synergy pairs once tags are assigned, simple text; a new rule for the Ram Frame
 - [ ] Heat from foes only through debuffs: names (the Overheating name goes), the ticking one at the end of the player's turn before the overheat, the softer one raising every weapon's heat per stack, maybe both, and a glyph of its own
 - [ ] Chips as buffs and debuffs, the word "status" retired; Numbed stays its own kind
+- [ ] The word "die" in shown text (Ryan, 13 October): the dice look like no dice, the problem that kept "face" out of shown text; a session of its own
 - [ ] A gravity effect for the Gravity Knuckles (half damage to the foes beside the target, or pulling a back-rank foe forward); the Honey Badger's two locked weapons made interesting; the Faraday Hull's strength against rank and file
 - [ ] The foes' fresh start, a session of its own: foe roles, a dedicated hunter foe (the Wolf, the Antlion and the Thief already hunt), formations with a front and a back spawned by the rift, the heroes' extra moves, the White Wizard's Shell
 - [ ] Pacing, Ryan's session: the Rupture meter's numbers and prizes, elites, Rift Pressure's escalation, one backstop (the flattening reaching the gate, or a forced boss); Anathema's fill with it

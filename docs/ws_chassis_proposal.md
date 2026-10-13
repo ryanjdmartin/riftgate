@@ -1,7 +1,7 @@
 # Wainwright & Sutler: new chassis
 
 A pitch for Ryan's candidate silhouettes (two true spider tanks, a chicken walker, a medium
-gunship, a large multi-rotor, a fan-boat hovercraft). Third round, 12 October 2026, corrected 13 October. Nothing
+gunship, a large multi-rotor, a fan-boat hovercraft). Fourth round, 13 October 2026. Nothing
 here is in content. The passives come first; names, designations and numbers follow once the
 passives hold, so the machines go by silhouette. Numbers are placeholders in the content's
 tens.
@@ -10,28 +10,29 @@ tens.
 
 | Silhouette | Tier | Passive (draft) | The rule it bends | State |
 |---|---|---|---|---|
-| Eight-legged spider | 2 | Its vents may be spent on a foe in reach: they deal, as one blow, the heat they take off it. Cooling -10. | Equipment is spent on a machine; cooling never below zero | Liked; numbers and the nerf to settle |
-| Large multi-rotor | 3 | Any machine in the fight may spend its die as its own. | A machine spends only its own die | Liked; wording and look below |
-| Chicken walker | 2 | Whenever its die rolls, it moves to the next entry instead, in sequence. | Every die rolls | Ryan's wording; the order shown, and Rapid as a sequence, below |
-| Four-legged spider | 2 | A blow it lands on a Suppressed foe also strikes every other Suppressed foe. | Area belongs to a keyword, and comes by shape | Stun punish, at full; now spins its own web; the venom version beside it |
-| Medium gunship | 2 | Its Ballistic weapons reach any foe a Missile weapon struck this round. | Direct reaches the back rank only through a hole | New: tags, not debuffs |
-| Fan-boat hovercraft | 1 | Its Ballistic weapons also hit the foes beside the target, for half. | Area belongs to a keyword | New: tags; the batch's one tier one |
+| Eight-legged spider | 2 | Its vents blast a random foe for the heat they take off. Cooling -10. | Equipment touches only machines; cooling never below zero | Liked; the random target is Ryan's call |
+| Large multi-rotor | 3 | Any machine in the fight may spend its die as its own. | A machine spends only its own die | Liked; the look not yet sold; the word "die" waits on another session |
+| Chicken walker | 2 | Whenever its die rolls, it moves to the next entry instead, in sequence. | Every die rolls | Liked (Ryan's revolver bot); the Rapid chain is an earned break |
+| Four-legged spider | 2 | A blow it lands on a Suppressed foe also strikes every other Suppressed foe. | Area belongs to a keyword, and comes by shape | Stun punish at full, spinning its own web; the venom version beside it |
+| Medium gunship | 2 | A weapon it fires deals 10 more if it shares no tag with the last weapon it fired. | A passive names a tag or two | New: the weapon to surpass Metal Gear |
+| Fan-boat hovercraft | 1 | Everything it fires goes through its deck gun: each weapon fires the deck gun's shot, with its own keywords. | A weapon's number, reach and heat are its own | New: Ryan's deck gun |
 
 The tests it answers: a chassis's identity (passive, numbers, locked components) opens build
 space; a map action that buys a fight buff is no condition; a chassis exists to bend a rule,
 and whether the bend is healthy is the debate; Wainwright & Sutler is simple and
 straightforward. A maker's profile is an identity, never an exclusion (Ryan, 13 October): a
 piece fits wherever its fantasy fits, so the four-legged spider paralyses because spiders do,
-and statuses are Aphelion's strength without being its alone. Out of bounds: a kill making a
-spend Rapid, every weapon Indirect, a decoy every hunter picks, debuffs as the engine of the
-gunship and the fan-boat (a gunship is about its weapons).
+and statuses are Aphelion's strength without being its alone. A passive that is pure upside
+with no interest (the third round's Ballistic splash) fails; so does a payoff not worth its
+setup (the third round's missile-marked reach). Out of bounds: a kill making a spend Rapid,
+every weapon Indirect, a decoy every hunter picks, debuffs as the engine of the gunship and
+the fan-boat (a gunship is about its weapons).
 
-Two of the six read tags (Ballistic, Missile), so they wait on the stock pass that puts tags on
-components. Both pay out on Ballistic weapons, which reads as the maker: plain guns, done well.
-No chassis passive reads a tag today (the Nemesis's melee bonus was the model until its rage
-replaced it), so these would be the first, and the bible's bar applies: a chassis passive
-reads a tag only if it opens build space. Both read every weapon of the tag, any maker's, not
-only their own locked piece.
+The gunship reads tags, so it waits on the stock pass that puts tags on components. No chassis
+passive reads a tag today (the Nemesis's melee bonus was the model until its rage replaced
+it), and the bible's bar applies: a chassis passive reads a tag only if it opens build space.
+It reads every tag, any maker's, never one. The fan-boat's deck gun keeps a shell's tags, so a
+tag reader still sees a Flame shell as Flame.
 
 The stock lists name today's pieces as stand-ins. Under the stock rule (Ryan, 12 October) a
 tier one stocks basics beside its locked piece and every chassis stocks only below its own
@@ -41,44 +42,54 @@ becomes a shield of 20 with Rapid and the Entropy Condenser a vent of 40 with Vo
 
 ## Eight-legged spider: the boiler
 
-- **Passive.** "Its vents may be spent on a foe in reach: they deal, as one blow, the heat they
-  take off it." With **cooling -10**: it gains 10 heat at the start of every round, the boiler
-  building pressure on its own (Ryan, 12 October).
+- **Passive.** "Its vents blast a random foe for the heat they take off." With **cooling
+  -10**: it gains 10 heat at the start of every round, the boiler building pressure on its own
+  (Ryan, 12 October). A vent is spent as ever, on the boiler or an ally; the heat it removes
+  lands on a random foe as one blow, armour and all.
+- **The random target** (Ryan, 13 October). A crazy steampunk machine venting everywhere. The
+  player times the chance: vent when only decent targets stand, as an opener while every
+  target is alike, or at a lone boss, where random is no chance at all. It is the limit the
+  passive needs, since a damage rider on a support action the player takes anyway costs no
+  tempo: the boiler vents every turn, so the blast fires every turn. The bible's tests agree:
+  chances live on riders, and a chance the player shifts by their choices (here, when) is a
+  decision.
 - **What it opens.** Heat is ammunition and every vent is a gun. Routes to heat: the boiler
-  itself, hot weapons of any maker, and the foes' heat moves, which now wait on the gauge for
-  the player's turn. Payoff: any vent of any maker; the Entropy Condenser is its biggest shot,
-  40 for 10 hull.
+  itself, hot weapons of any maker, a hot ally (a vent spent on the Sparrowhawk or the Nemesis
+  blasts with their heat), and the foes' heat moves, which wait on the gauge for the player's
+  turn: against the Peak it is paid for doing what the team must do anyway. Payoff: any vent
+  of any maker; the Entropy Condenser is its biggest shot, 40 for 10 hull.
 - **Balance.** The gain must stay under a vent's number. At -10 a vent of 20 or 30 still wants
-  a hot weapon behind it; at -20 or more a die of nothing but vents fires a free flat blow every
-  round, a straight-line build. The overheat now lands at the end of the player's turn, so the
-  boiler vents or burns every turn: the pressure is the play.
-- **If it is too strong.** Ryan's easy nerf, a random target for the blast, puts a second
-  randomness where the player cannot touch it (section 2: the randomness is the player's, and
-  a chance they cannot shift is noise), and the forecast could not show where it lands.
-  Deterministic nerfs keep the plan: a smaller gain, the blast dealing half the heat, or the
-  blast reaching only the front rank.
+  a hot weapon behind it; at -20 or more a die of nothing but vents fires a free blow every
+  round. The overheat lands at the end of the player's turn, so the boiler vents or burns
+  every turn: the pressure is the play. Levers past the random target: the gain, or the blast
+  dealing half the heat.
 - **Engine.** The validator refuses negative cooling and the pipeline floors every stat at
-  zero; both bend for it (the cooling step already adds heat when cooling is negative). Vents
-  spendable on a foe in Direct reach, the blow the heat removed.
+  zero; both bend for it (the cooling step already adds heat when cooling is negative). A
+  vent's spend gains a rider: the heat it removed, as one blow on a random live foe, drawn
+  from the skirmish's seeded stream. The forecast shows the blast's number and marks every foe
+  it may land on.
 - **Numbers and locked kit.** Heavy, walker, move 20; hull 150, shield 30, armour 10, heat 100,
   cooling -10, field recharge 15. Locked: the Steam Cannon, Direct, flat 30, heat 30. Four
   hardpoints (d5). Stock: two vents and two guns (stand-ins: the Coolant Jacket, a basic vent,
   the Suppression Battery, whose heat of 20 feeds the vents, and the Maxigun).
 - **Model.** A riveted cab with eight lamps for eyes, eight legs arched high over a body slung
   low (the Wild Wild West homage), the abdomen a boiler with its stack, the Steam Cannon
-  between the fangs, vent grilles along the abdomen glowing brighter as the heat climbs.
+  between the fangs, vent grilles along the abdomen glowing brighter as the heat climbs, and
+  a blast of steam from a grille at whichever foe the vent finds.
 
 ## Large multi-rotor: the sutler's wagon
 
 - **Passive.** "Any machine in the fight may spend its die as its own." "As its own" carries
   the rest: that machine's passive and buffs apply to the spend, and it pays the heat and any
   bite. The codex says so in a line; the shown text stays one sentence. Working name for it:
-  the Sutler's Manifest.
+  the Sutler's Manifest. The word "die" in shown text is a question for another session (Ryan,
+  13 October: the dice look like no dice, the problem that kept "face" out of shown text), so
+  the wording waits on it.
 - **What it opens.** Its loadout is built for the team: flat guns for the Sparrowhawk's double
-  damage, melee and volatile kit for the Nemesis's Crucible, stack appliers for the Stingray,
-  shields for the Puffin, status pieces for the Baboon. A sutler supplied an army in the field;
-  the maker's own name, in the air. It supplies; it never launches, which leaves Aphelion's
-  Carrier its verb.
+  damage, hull-biting kit for the Nemesis's rage, stack appliers for the Stingray, shields
+  for the Puffin, status pieces for the Baboon. A sutler supplied an army in the field; the
+  maker's own name, in the air. It supplies; it never launches, which leaves Aphelion's
+  proposed Carrier its verb.
 - **The gesture.** Its die dropped on an ally's die hands it over for the round, and that
   machine spends it as usual; dropped anywhere else it is spent by itself. The bot chooses
   the spender by its forecast.
@@ -87,6 +98,12 @@ becomes a shield of 20 with Rapid and the Entropy Condenser a vent of 40 with Vo
   Howitzer, Enfilade Beam, Maxigun, Incendiary Shells, Laminar Deflector, Coolant Jacket.
 
 ### The look brief
+
+Ryan, 13 October: not sold on the look as written, though he may need to see it. Two ways on:
+a lowforge look test rendered for him (kept out of content, so it does not jump the batch
+evaluation), or another silhouette, either a tandem (a Chinook: two great rotors fore and aft
+over a long boxcar hull) or the helicarrier straight (a flat iron deck held up by four rotors
+in rings at its corners). The brief as written:
 
 - **Homage.** The Mil V-12, the biggest helicopter ever flown and the oddest design that
   worked, crossed with a covered wagon and a carrier deck.
@@ -121,7 +138,7 @@ becomes a shield of 20 with Rapid and the Entropy Condenser a vent of 40 with Vo
   its travel, heavy and slow to start, barely a bank, the rotors spinning up.
 - **Death.** Wainwright & Sutler's winding down: the rotors spooling to a stop.
 
-## Chicken walker: the cylinder
+## Chicken walker: the revolver
 
 - **Passive.** "Whenever its die rolls, it moves to the next entry instead, in sequence."
   (Ryan's wording, 12 October.) A reroll is a roll, so it moves one on; a lock holds it.
@@ -141,9 +158,10 @@ becomes a shield of 20 with Rapid and the Entropy Condenser a vent of 40 with Vo
   the order. A foe's Scramble jams it: the next roll lands anywhere, and the sequence runs on
   from there.
 - **The cost.** No luck either way: a destroyed component is a known dead chamber every turn.
-- **The hole.** A run of Rapid chambers fires in order every round: five Rapid pieces and a gun
-  fire all six, against three and a half on a rolled die. Rapid pieces are small and pay heat,
-  so it may hold; if not, Rapid works once a round on it: one double, never a chain.
+- **The Rapid chain, an earned break.** Five Rapid pieces and a gun fire all six chambers
+  every round, against three and a half on a rolled die. Ryan, 13 October: a player who slots
+  that and neither overheats nor gets blown up has earned the broken game, and it is easily
+  nerfed (Rapid once a round on it: one double, never a chain), so the lever waits on play.
 - **Numbers and locked kit.** Medium, walker, move 40; hull 90, shield 40, armour 5, heat 60,
   cooling 5, field recharge 20. Locked: the Hogleg, Direct, two strikes of 10, heat 10, the
   hammer fanned. Five hardpoints: a six-chamber die. Stock: Twin Autoguns, Howitzer, Ankle
@@ -185,41 +203,65 @@ becomes a shield of 20 with Rapid and the Entropy Condenser a vent of 40 with Vo
   casemate slung between four long legs whose knees rise above the deck, the spinneret's
   nozzle under its prow between the fangs.
 
-## Medium gunship: rockets find it, guns finish it
+## Medium gunship: the weapon to surpass all weapons
 
-- **Passive.** "Its Ballistic weapons reach any foe a Missile weapon struck this round."
-- **What it opens.** The bible's tag model exactly: one tag makes a state, another reads it.
-  Routes: Missile weapons on any machine in the fight. Payoff: Ballistic weapons of any maker,
-  which reach the back rank once a missile has found the target. No debuff and no chip: the
-  struck foe simply lights up as a target when one of its guns is dragged. Not full Indirect:
-  only what a missile found, this round.
+- **The fantasy** (Ryan, 13 October). The Hind-D and Metal Gear's running joke, "a weapon to
+  surpass Metal Gear": the overbuilt gunship sold as the last word in weapons, carrying one of
+  everything. The lore is Ryan's to write; the passive rewards the variety.
+- **Passive.** "A weapon it fires deals 10 more if it shares no tag with the last weapon it
+  fired." The first shot of a fight has no last weapon, so it counts; equipment between shots
+  breaks nothing.
+- **What it opens.** Weapons of every tag, from every maker, on one die: rockets, then a gun,
+  then a beam. Each round asks a question: take the entry that rolled, or spend a reroll to
+  switch weapons and keep the bonus. The die shows it, as it shows every number: entries that
+  differ from the last shot show the higher figure. The locked pods are the switch: a Missile
+  shot, the die rolls again, and anything that is not a Missile lands its 10 more the same
+  turn.
+- **Why the switch, and not a count.** Ryan's first shape, a bonus for each different tag
+  equipped, asks one question in the hangar and none in the fight; it reads close to the
+  bible's no scaling with a tag's count (though no single blueprint is farmed for it); and 5 a
+  tag on a five-weapon die is 20 to 25 more on every blow, about what the Sparrowhawk's double
+  damage is worth, the strongest passive measured. The switch pays for the same variety one
+  shot at a time: a die of all different tags gets it about four shots in five, a die of pairs
+  far less. If Ryan prefers the count: "Its weapons deal 5 more for every other tag among
+  them", capped or smaller.
 - **Numbers and locked kit.** Medium, flyer, move 30 (the slow flyer); hull 100, shield 40,
   armour 5, heat 60, cooling 5, field recharge 20. Locked: the Rocket Pods, Indirect, rolled 5
-  to 15, Rapid, heat 5, tagged Missile: rockets on a back-rank foe, the die rolls again, a gun
-  follows. Four hardpoints (d5). Stock: Maxigun, Slugthrower, Twin Autoguns, Laminar Deflector.
-- **Alternative.** "Every Missile weapon it fires is Rapid": the pods ripple-fired. Simpler,
-  but Rapid on a whole class is the Kestrel racer's pitch.
+  to 15, Rapid, heat 5, tagged Missile. Four hardpoints (d5). Stock: three weapons of other
+  tags and a shield once tags exist (stand-ins: the Maxigun, the Slugthrower, the Enfilade
+  Beam, the Laminar Deflector).
 - **Model.** The Mi-24 Hind in W&S iron: a narrow armoured fuselage, two stepped bubble
-  canopies, stub wings with the pods and mounts under them, a chin gun, a five-blade rotor and
-  a tail rotor.
+  canopies, stub wings crowded with pods and mounts of every kind, a chin gun, a five-blade
+  rotor and a tail rotor.
 
 ## Fan-boat hovercraft: the punt gun
 
-- **Passive.** "Its Ballistic weapons also hit the foes beside the target, for half."
-- **What it opens.** Every plain gun of any maker becomes a scattergun on it: the punt gun's
-  spread, a market hunter's flock at once. The row at half is the shape the keyword line-up
-  proposes for the row, so it teaches the area rule rather than inventing one. Simple enough
-  for the batch's one tier one.
+- **The fantasy** (Ryan, 13 October). A simple hovercraft with a deck gun, and everything it
+  fires goes through the deck gun. The punt gun of the market hunters, loaded with whatever
+  was at hand.
+- **Passive.** "Everything it fires goes through its deck gun: each weapon fires the deck
+  gun's shot, with its own keywords." The shot is the deck gun's number, reach and heat, one
+  blow (strikes fold into it); the weapon brings its keywords, any unique rule and its tags.
+- **What it opens.** A weapon on it is a shell: its number no longer matters, only what it
+  does. Pieces that are small by number and rich in keywords become its best guns, from any
+  maker: a Suppress shell holds a foe at 15, a Burn shell sets one alight, a Penetrate shell
+  goes down the column, a Rapid shell fires and rolls again. Each round asks which shell to
+  fire. At tier one it starts simple, its stock basics beside the deck gun, so every weapon
+  entry is the same 15; the run turns it into a rack of shells.
+- **The cost.** Big numbers are wasted on it, Indirect reach too (the shot is Direct), and so
+  are the modules that move a rolled range: the punt gun is flat.
+- **The holes.** Rapid shells at 15 that fire again are its strongest build; the lever is the
+  deck gun's number. A shell's own heat no longer counts, so a hot piece is as cheap as a cold
+  one here.
+- **The other reading.** The deck gun takes every keyword on the die and the other weapons
+  fire as ever: pure upside, and a stack of chips no phone can read, so not that.
 - **Numbers and locked kit.** Light, hover, move 50; hull 60, shield 30, armour 0, heat 60,
-  cooling 10 (the fan), field recharge 30. Locked: the Fowling Cannon, Direct, rolled 5 to 15,
-  heat 5, tagged Ballistic. Three hardpoints (d4). Stock, as a tier one: basics beside the
-  Fowling Cannon, two basic guns and a basic shield. Its stock die reads its passive only if
-  the basic guns are Ballistic, a call for the stock pass.
-- **Alternative.** Air-cooled: "Every weapon it fires sheds 10 heat." Hot weapons of any maker
-  become affordable on a light machine; plainer, and it pays nothing on W&S's own cold guns.
+  cooling 10 (the fan), field recharge 30. Locked: the deck gun (the Fowling Cannon, a working
+  name), Direct, flat 15, heat 5, tagged Ballistic. Three hardpoints (d4). Stock, as a tier
+  one: basics beside it, two basic guns and a basic shield.
 - **Model.** An airboat on a skirt: a flat iron hull, one huge pusher propeller in a round cage
   at the stern with twin rudders behind, a caged wheelhouse forward (no open cockpit), the
-  punt gun along the bow.
+  punt gun along the bow on a swivel, a rack of mismatched shells beside it.
 
 ## Retired
 
@@ -233,3 +275,7 @@ becomes a shield of 20 with Rapid and the Entropy Condenser a vent of 40 with Vo
   its shield, so the idea is free again); debuffs as the gunship's sights and the fan-boat's
   drift (Ryan: statuses are Aphelion's strength, and a gunship is about its weapons); the web
   at half (Ryan: at full, stuns being rare).
+- Round three (12 October): the boiler's chosen target (Ryan: random, which he times and the
+  passive needs); Ballistic weapons reaching any foe a Missile struck (closer, not worth its
+  payoff), and every Missile weapon Rapid beside it; Ballistic weapons also hitting the foes
+  beside the target for half (pure upside, no interest), and air cooling beside it.
