@@ -17,7 +17,8 @@ command are in `README.md`.
   session fetches Godot 4.7's Linux build from the GitHub release asset
   (`godotengine/godot-builds`, `Godot_v4.7.2-stable_linux.x86_64.zip`), uses `xvfb-run` for
   screenshots, and builds models with `BPY_PYTHON` set to a python3.11 venv holding
-  `bpy==5.0.1`.
+  `bpy==5.0.1`. A fresh import there rewrites the Prairie Dog's extracted tiles
+  (`art/models/prairie_dog_*.png` and their `.import`): restore them, never commit them.
 
 ## Branches
 
@@ -38,9 +39,9 @@ command are in `README.md`.
   and adds Aphelion's calls, which are in the bible already. Merging either brings its code;
   its bible resolves to the live page, which holds every session's rows.
 - `claude/ws-chassis-designs-wssq2u` (13 October) carries main and adds no code: the W&S
-  proposal (below), the bible as published (v0.128), and two lines in CLAUDE.md (every rule is
-  open to debate; a maker's profile is an identity, never an exclusion). Merge it so other
-  sessions get them.
+  proposal (below), the bible as published (v0.130), two lines in CLAUDE.md (every rule is
+  open to debate; a maker's profile is an identity, never an exclusion) and a proposal's look
+  tests (`tools/lowforge/looks/`, the README's line). Merge it so other sessions get them.
 
 ## Proposals
 
@@ -49,9 +50,10 @@ For the batch evaluation (Ryan, 12 October). Each is a pitch; nothing in them is
 - The Arsenal: `docs/arsenal_proposal.md` on main (Misharu, Mastema, Minos, the Onryō, and a
   cleanse that moves debuffs onto a foe).
 - Wainwright & Sutler: `docs/ws_chassis_proposal.md` on `claude/ws-chassis-designs-wssq2u`
-  (six silhouettes, the fourth round of 13 October: the boiler's random vent and the revolver's
-  Rapid chain are Ryan's calls; the gunship and the fan-boat are new, waiting on his read; the
-  multi-rotor's look waits on a render or another silhouette).
+  (six silhouettes, the fifth round of 13 October: the boiler's random vent on its own heat,
+  the revolver and the funnel-web's web bomb are Ryan's calls; the gunship's upgrade by tag and
+  the fan-boat's deck gun wait on his read; the multi-rotor's three looks are rendered in
+  `docs/looks/ws_multirotor.png`, his pick pending).
 - Minerva: `docs/minerva_chassis_proposal.md` on `claude/minerva-chassis-candidates-po893q`
   (four candidates, 11 October).
 - Kestrel: `docs/canvas/kestrel-airframes.html` on `ccr-1a6d0a75-y2oqy8` (five airframes,
@@ -70,7 +72,7 @@ by URL (read first). Databases are reachable only from the personal account. A p
 goes into this file in the same commit as its first publish.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change (v0.128; main's file is v0.126 until this
+  `docs/design-bible.html` after every change (v0.130; main's file is v0.126 until this
   branch merges).
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s map (which leaves out `content/modules.json`: add it).
